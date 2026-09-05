@@ -769,7 +769,7 @@ theorem FlowMetricConvergenceData.gInf_pde
     intro k
     have hkgrow_add : kgrow ≤ k + kgrow := by omega
     have hadd_phi : k + kgrow ≤ co.φ (k + kgrow) := by
-      simpa only [id_eq] using co.hφ.id_le (k + kgrow)
+      simpa only [id_eq] using co.strictMono.id_le (k + kgrow)
     exact hkgrow (co.φ (k + kgrow)) (hkgrow_add.trans hadd_phi) (Set.mem_singleton x)
   have hconvTail : ∀ p : Nat, ∀ ε : Real, 0 < ε →
       ∃ k0 : Nat, ∀ k : Nat, k0 ≤ k → ∀ u ∈ Set.Icc β ψ,
@@ -916,7 +916,7 @@ theorem FlowMetricConvergenceData.scalar_convergence_at
     intro k
     have hkgrow_add : kgrow ≤ k + kgrow := by omega
     have hadd_phi : k + kgrow ≤ co.φ (k + kgrow) := by
-      simpa only [id_eq] using co.hφ.id_le (k + kgrow)
+      simpa only [id_eq] using co.strictMono.id_le (k + kgrow)
     exact hkgrow (co.φ (k + kgrow)) (hkgrow_add.trans hadd_phi) (Set.mem_singleton x)
   have hconvTail : ∀ p : Nat, ∀ ε : Real, 0 < ε →
       ∃ k0 : Nat, ∀ k : Nat, k0 ≤ k → ∀ u ∈ Set.Icc β ψ,
@@ -1073,7 +1073,7 @@ theorem FlowMetricConvergenceData.ricNorm_convergence_at
     intro k
     have hkgrow_add : kgrow ≤ k + kgrow := by omega
     have hadd_phi : k + kgrow ≤ co.φ (k + kgrow) := by
-      simpa only [id_eq] using co.hφ.id_le (k + kgrow)
+      simpa only [id_eq] using co.strictMono.id_le (k + kgrow)
     exact hkgrow (co.φ (k + kgrow)) (hkgrow_add.trans hadd_phi) (Set.mem_singleton x)
   have hconvTail : ∀ p : Nat, ∀ ε : Real, 0 < ε →
       ∃ k0 : Nat, ∀ k : Nat, k0 ≤ k → ∀ u ∈ Set.Icc β ψ,

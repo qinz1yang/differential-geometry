@@ -54,7 +54,7 @@ noncomputable def normalChartCenterOfMassEquation (g : SmoothRiemannianMetric I 
 
 theorem normalChartCenterOfMassEquation_center (g : SmoothRiemannianMetric I M) {ι : Type} [Fintype ι]
     (μ : ι → ℝ) (points : ι → M) (join : M → M → ℝ → M) (p : M) (r : ℝ)
-    (h : CenterInput (I := I) g μ points join p r)
+    (h : CenterOfMassConditions (I := I) g μ points join p r)
     (hcm : (centerOfMass (I := I) g μ points join p r h) ∈
       (NormalCoordinates.normalChartAt (I := I) g p).source)
     (hpts : ∀ i : ι, points i ∈ (NormalCoordinates.normalChartAt (I := I) g p).source) :
@@ -499,7 +499,7 @@ attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [T3Space M] in
 omit [ConnectedSpace M] in
-theorem exists_trivialized_diagExpInv_localData
+theorem exists_trivialized_diagExpInv_contMDiffAt_neighborhood
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
@@ -533,7 +533,7 @@ attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [T3Space M] in
 omit [ConnectedSpace M] in
-theorem exists_trivialized_diagExpInv_smooth_localData
+theorem exists_trivialized_diagExpInv_contMDiffOn_neighborhood
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
@@ -599,7 +599,7 @@ theorem exists_trivialized_diagExpInv_smooth_eball
         expMapIntrinsic (I := I) g hEnorm y.1
           (diagExpInv (I := I) g hEnorm p y).snd = y.2 := by
   obtain ⟨U, hUopen, hpU, hUsmooth, hU⟩ :=
-    exists_trivialized_diagExpInv_smooth_localData (I := I) g hEnorm p
+    exists_trivialized_diagExpInv_contMDiffOn_neighborhood (I := I) g hEnorm p
   have hextract : ∃ δ : ℝ≥0∞, 0 < δ ∧ δ < ⊤ ∧
       {y : M × M |
         max (riemannianEDist I y.1 p) (riemannianEDist I y.2 p) < δ} ⊆ U := by
@@ -631,7 +631,7 @@ omit [RiemannianBundle (fun x : M => TangentSpace I x)] [PseudoEMetricSpace M]
 theorem centerPairs_lt_of
     (g : SmoothRiemannianMetric I M) {ι : Type} [Fintype ι]
     (μ : ι → ℝ) (points : ι → M) (join : M → M → ℝ → M) (p : M) (r : ℝ)
-    (h : CenterInput (I := I) g μ points join p r) (q : M) {δ : ℝ≥0∞}
+    (h : CenterOfMassConditions (I := I) g μ points join p r) (q : M) {δ : ℝ≥0∞}
     (hδ :
       letI : RiemannianBundle (fun x : M => TangentSpace I x) :=
         ⟨g.toRiemannianMetric⟩
@@ -688,7 +688,7 @@ omit [RiemannianBundle (fun x : M => TangentSpace I x)] [PseudoEMetricSpace M]
 theorem centerPairs_lt_le
     (g : SmoothRiemannianMetric I M) {ι : Type} [Fintype ι]
     (μ : ι → ℝ) (points : ι → M) (join : M → M → ℝ → M) (p : M) (r : ℝ)
-    (h : CenterInput (I := I) g μ points join p r) (q : M) (R : ℝ) {δ : ℝ≥0∞}
+    (h : CenterOfMassConditions (I := I) g μ points join p r) (q : M) (R : ℝ) {δ : ℝ≥0∞}
     (hpq :
       letI : RiemannianBundle (fun x : M => TangentSpace I x) :=
         ⟨g.toRiemannianMetric⟩
@@ -715,7 +715,7 @@ omit [RiemannianBundle (fun x : M => TangentSpace I x)] [PseudoEMetricSpace M]
 theorem centerPairs_lt
     (g : SmoothRiemannianMetric I M) {ι : Type} [Fintype ι]
     (μ : ι → ℝ) (points : ι → M) (join : M → M → ℝ → M) (p : M) (r : ℝ)
-    (h : CenterInput (I := I) g μ points join p r) {δ : ℝ≥0∞}
+    (h : CenterOfMassConditions (I := I) g μ points join p r) {δ : ℝ≥0∞}
     (hδ : ENNReal.ofReal (2 * r) < δ) :
     letI : RiemannianBundle (fun x : M => TangentSpace I x) :=
       ⟨g.toRiemannianMetric⟩
@@ -1337,7 +1337,7 @@ theorem centerOfMass_hasStrictFDerivAt
     (p : M) {ι : Type} [Fintype ι] (z₀ : E) (params₀ : (ι → ℝ) × (ι → E))
     (join : M → M → ℝ → M) (r : ℝ)
     (H : ∀ params : (ι → ℝ) × (ι → E),
-      CenterInput (I := I) g params.1
+      CenterOfMassConditions (I := I) g params.1
         (fun i => (NormalCoordinates.normalChartAt (I := I) g p).symm (params.2 i)) join p r)
     (hchz : ContMDiffAt 𝓘(ℝ, E) I 1
       (fun z : E => (NormalCoordinates.normalChartAt (I := I) g p).symm z) z₀)
@@ -1384,7 +1384,7 @@ theorem centerOfMass_contDiffAt
     (p : M) {ι : Type} [Fintype ι] (z₀ : E) (params₀ : (ι → ℝ) × (ι → E)) (n : ℕ) (hn : 1 ≤ n)
     (join : M → M → ℝ → M) (r : ℝ)
     (H : ∀ params : (ι → ℝ) × (ι → E),
-      CenterInput (I := I) g params.1
+      CenterOfMassConditions (I := I) g params.1
         (fun i => (NormalCoordinates.normalChartAt (I := I) g p).symm (params.2 i)) join p r)
     (hchz : ContMDiffAt 𝓘(ℝ, E) I (n : ℕ∞)
       (fun z : E => (NormalCoordinates.normalChartAt (I := I) g p).symm z) z₀)
@@ -1430,7 +1430,7 @@ theorem centerOfMassChart_cont
     (p : M) {ι : Type} [Fintype ι] (params₀ : (ι → ℝ) × (ι → E))
     (join : M → M → ℝ → M) (r : ℝ)
     (H : ∀ params : (ι → ℝ) × (ι → E),
-      CenterInput (I := I) g params.1
+      CenterOfMassConditions (I := I) g params.1
         (fun i => (NormalCoordinates.normalChartAt (I := I) g p).symm (params.2 i)) join p r)
     (hpts : Continuous (fun params : (ι → ℝ) × (ι → E) =>
       fun i => (NormalCoordinates.normalChartAt (I := I) g p).symm (params.2 i)))

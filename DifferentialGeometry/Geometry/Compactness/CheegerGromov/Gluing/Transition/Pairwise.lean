@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.Metric.Bounds
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.MetricCompactness.Inputs
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.MetricCompactness.Assumptions
 
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.Transition.Overlap
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.AtomWeights.Convergence
@@ -55,8 +55,8 @@ theorem inter_slot_of_binter
     simpa only [hy, Option.isSome_some] using hgammaStable.symm
   exact ⟨⟨⟨gamma, hgammaLive⟩, htail⟩, rfl⟩
 
-theorem MetricCompactnessInputs.atom_trans_small
-    (inp : MetricCompactnessInputs (I := I) X)
+theorem MetricCompactnessAssumptions.atom_trans_small
+    (inp : MetricCompactnessAssumptions (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P) (r : Real) (k : Nat)
     (hgp : ExponentialRadiusScaleAt (I := I) inp.decay inp.D P L inp.pack r k)
@@ -78,7 +78,7 @@ theorem MetricCompactnessInputs.atom_trans_small
       letI : IsManifold I ∞ (X.obj (L.φ k)).M := (X.obj (L.φ k)).smooth
       letI : T2Space (TangentBundle I (X.obj (L.φ k)).M) :=
         (X.obj (L.φ k)).t2TangentBundle
-      seqAtom inp.decay inp.hD P L inp.pack r k gamma
+      seqAtom inp.decay inp.divisor_pos P L inp.pack r k gamma
       (Geometry.Riemannian.NormalCoordinates.expMapDiffeo
         (I := I) (X.obj (L.φ k)).metric x z) ≠ 0) :
     letI : TopologicalSpace (X.obj (L.φ k)).M := (X.obj (L.φ k)).topology
@@ -106,11 +106,11 @@ theorem MetricCompactnessInputs.atom_trans_small
       let q := Geometry.Riemannian.NormalCoordinates.expMapDiffeo
         (I := I) (X.obj (L.φ k)).metric x z
       have hqHat : q ∈ L.hatBall inp.decay inp.D P inp.pack r k gamma :=
-        seqAtom_mem_hat inp.decay inp.hD P L inp.pack r k gamma hne
+        seqAtom_mem_hat inp.decay inp.divisor_pos P L inp.pack r k gamma hne
       have hqBall : q ∈ Metric.ball y (4 * L.lamInf (gamma : Nat)) := by
         simpa only [NetLimitData.hatBall, hc] using hqHat
       have hlam : 0 < L.lamInf (gamma : Nat) :=
-        inp.decay.lambda_pos inp.hD (L.rInf (gamma : Nat))
+        inp.decay.lambda_pos inp.divisor_pos (L.rInf (gamma : Nat))
       have hhalf : (1 / 2 : Real) ≤
           Geometry.Riemannian.metricCoerciveConst
             (I := I) (X.obj (L.φ k)).metric y :=
@@ -170,8 +170,8 @@ theorem MetricCompactnessInputs.atom_trans_small
       exact normalTransition_mapsTo (I := I) (X.obj (L.φ k)) x y hVy hmaps
         (Set.mem_singleton z)
 
-theorem MetricCompactnessInputs.weight_trans_small
-    (inp : MetricCompactnessInputs (I := I) X)
+theorem MetricCompactnessAssumptions.weight_trans_small
+    (inp : MetricCompactnessAssumptions (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P) (r : Real) (k : Nat)
     (hgp : ExponentialRadiusScaleAt (I := I) inp.decay inp.D P L inp.pack r k)
@@ -190,9 +190,9 @@ theorem MetricCompactnessInputs.weight_trans_small
     (z : E)
     (hweight : rawWeights
       (cutRaw
-        (seqAtomChart (I := I) inp.decay inp.hD P L inp.pack r beta i0 k)
+        (seqAtomChart (I := I) inp.decay inp.divisor_pos P L inp.pack r beta i0 k)
         (fun target =>
-          seqAtomChart (I := I) inp.decay inp.hD P L inp.pack r beta target k)
+          seqAtomChart (I := I) inp.decay inp.divisor_pos P L inp.pack r beta target k)
         i0) z gamma ≠ 0) :
     letI : TopologicalSpace (X.obj (L.φ k)).M := (X.obj (L.φ k)).topology
     letI : ChartedSpace H (X.obj (L.φ k)).M := (X.obj (L.φ k)).charted
@@ -210,13 +210,13 @@ theorem MetricCompactnessInputs.weight_trans_small
     (X.obj (L.φ k)).t2TangentBundle
   apply inp.atom_trans_small P L r k hgp (beta k) gamma hGp z
   have hnum := num_ne_of_cut_ne (num_ne_of_raw_ne hweight)
-  change seqAtom inp.decay inp.hD P L inp.pack r k gamma
+  change seqAtom inp.decay inp.divisor_pos P L inp.pack r k gamma
       (Geometry.Riemannian.NormalCoordinates.expMapDiffeo
         (I := I) (X.obj (L.φ k)).metric (beta k) z) ≠ 0 at hnum
   exact hnum
 
-theorem MetricCompactnessInputs.pair_exp_maps_tail
-    (inp : MetricCompactnessInputs (I := I) X)
+theorem MetricCompactnessAssumptions.pair_exp_maps_tail
+    (inp : MetricCompactnessAssumptions (I := I) X)
     (hradRatio : 2 * exponentialBallRadiusFactor inp.decay inp.D <
       inp.normalRadius.ratio * inp.D)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
@@ -245,10 +245,10 @@ theorem MetricCompactnessInputs.pair_exp_maps_tail
               (exponentialBallRadiusFactor inp.decay inp.D * L.lamInf (β.1 : Nat))) := by
   have hrad : ExponentialBallRadiusTail (I := I) inp.decay inp.D P L inp.pack r
       (exponentialBallRadiusFactor inp.decay inp.D) :=
-    inp.normalRadius.radius_scale_tail inp.hD
+    inp.normalRadius.radius_scale_tail inp.divisor_pos
       (exponential_ball_radius_factor_pos inp.decay inp.D) hradRatio
       P inp.realizes L inp.pack r
-  have hgp := inp.normalRadius.half_metricCoerciveRatio_scale_tail inp.hD
+  have hgp := inp.normalRadius.half_metricCoerciveRatio_scale_tail inp.divisor_pos
     (exponential_ball_radius_factor_pos inp.decay inp.D) hradRatio
     P inp.realizes L inp.pack r
   have hα := seqCenterD_live inp.decay P L (α.1 : Nat) α.2
@@ -284,12 +284,12 @@ theorem MetricCompactnessInputs.pair_exp_maps_tail
         (seqCenterD inp.decay P L k (β.1 : Nat)) :=
     inp.normalBounds.half_le_metricCoerciveConst (L.φ k)
       (seqCenterD inp.decay P L k (β.1 : Nat))
-  exact L.pair_exp_maps inp.decay inp.hD P inp.pack r α.1 β.1
+  exact L.pair_exp_maps inp.decay inp.divisor_pos P inp.pack r α.1 β.1
     hfreq k hk hx hy hradk hmetric hhalf
     (hgpk β.1 (seqCenterD inp.decay P L k (β.1 : Nat)) hy)
 
-theorem MetricCompactnessInputs.pair_overlap_tail
-    (inp : MetricCompactnessInputs (I := I) X)
+theorem MetricCompactnessAssumptions.pair_overlap_tail
+    (inp : MetricCompactnessAssumptions (I := I) X)
     (hradRatio : 2 * exponentialBallRadiusFactor inp.decay inp.D <
       inp.normalRadius.ratio * inp.D)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
@@ -325,10 +325,10 @@ theorem MetricCompactnessInputs.pair_overlap_tail
   have hmaps := inp.pair_exp_maps_tail hradRatio P L r α β hinter
   have hrad : ExponentialBallRadiusTail (I := I) inp.decay inp.D P L inp.pack r
       (exponentialBallRadiusFactor inp.decay inp.D) :=
-    inp.normalRadius.radius_scale_tail inp.hD
+    inp.normalRadius.radius_scale_tail inp.divisor_pos
       (exponential_ball_radius_factor_pos inp.decay inp.D) hradRatio
       P inp.realizes L inp.pack r
-  have hmetric := inp.normalRadius.metric_scale_tail inp.hD
+  have hmetric := inp.normalRadius.metric_scale_tail inp.divisor_pos
     (exponential_ball_radius_factor_pos inp.decay inp.D) hradRatio
     P inp.realizes L inp.pack r
   have hα := seqCenterD_live inp.decay P L (α.1 : Nat) α.2
@@ -347,7 +347,7 @@ theorem MetricCompactnessInputs.pair_overlap_tail
     rw [show (1 : Real) = Real.exp 0 from Real.exp_zero.symm]
     exact Real.exp_le_exp.mpr
       (mul_nonneg inp.decay.C_nonneg
-        (by nlinarith [(inp.decay.lambda_pos inp.hD 0).le]))
+        (by nlinarith [(inp.decay.lambda_pos inp.divisor_pos 0).le]))
   have hfactor : (8 : Real) ≤ exponentialBallRadiusFactor inp.decay inp.D := by
     rw [exponentialBallRadiusFactor]
     nlinarith
@@ -355,7 +355,7 @@ theorem MetricCompactnessInputs.pair_overlap_tail
       Metric.ball 0 (inp.normalBounds.radius (L.φ k)
         (seqCenterD inp.decay P L k (α.1 : Nat))) :=
     Metric.ball_subset_ball <| (mul_le_mul_of_nonneg_right hfactor
-      (inp.decay.lambda_pos inp.hD (L.rInf (α.1 : Nat))).le).trans
+      (inp.decay.lambda_pos inp.divisor_pos (L.rInf (α.1 : Nat))).le).trans
         (hmetrick α.1 (seqCenterD inp.decay P L k (α.1 : Nat)) hx)
   have hVmetric : Metric.ball (0 : E)
         (exponentialBallRadiusFactor inp.decay inp.D * L.lamInf (β.1 : Nat)) ⊆
@@ -370,7 +370,7 @@ theorem MetricCompactnessInputs.pair_overlap_tail
     intro z hz
     rw [Metric.mem_ball] at hz ⊢
     exact hz.trans_le <| (mul_le_mul_of_nonneg_right hfactor
-      (inp.decay.lambda_pos inp.hD (L.rInf (α.1 : Nat))).le).trans
+      (inp.decay.lambda_pos inp.divisor_pos (L.rInf (α.1 : Nat))).le).trans
         (hradk α.1 (seqCenterD inp.decay P L k (α.1 : Nat)) hx).2
   have hVy : Metric.ball (0 : E)
         (exponentialBallRadiusFactor inp.decay inp.D * L.lamInf (β.1 : Nat)) ⊆
@@ -393,8 +393,8 @@ theorem MetricCompactnessInputs.pair_overlap_tail
       (seqCenterD inp.decay P L k (α.1 : Nat))
       (seqCenterD inp.decay P L k (β.1 : Nat)) hVy hmapsk⟩
 
-theorem MetricCompactnessInputs.exists_pair_trans
-    (inp : MetricCompactnessInputs (I := I) X)
+theorem MetricCompactnessAssumptions.exists_pair_trans
+    (inp : MetricCompactnessAssumptions (I := I) X)
     (hradRatio : 2 * exponentialBallRadiusFactor inp.decay inp.D <
       inp.normalRadius.ratio * inp.D)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))

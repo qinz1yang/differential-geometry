@@ -45,10 +45,10 @@ theorem exists_ballCalabi
     let n : Real := Module.finrank Real E
     let q : Real := n / B.radius
     let r := riemannianEDist I B.center x |>.toReal
-    ∃ tail : CalabiTailData (I := I) (S.base.metric t) hEnorm B.center x r,
-      tail.left + tail.ell * tail.b < B.radius ∧
+    ∃ tail : CalabiTail (I := I) (S.base.metric t) hEnorm B.center x r,
+      tail.initialLength + tail.terminalLength * tail.conjugateScale < B.radius ∧
       let rho : M → Real := fun y =>
-        tail.left + branchRadius (I := I) (S.base.metric t) tail.branch y
+        tail.initialLength + branchRadius (I := I) (S.base.metric t) tail.branch y
       ContMDiffAt I 𝓘(Real, Real) ∞ rho x ∧
       rho x = r ∧
       (∀ᶠ y in 𝓝 x, (riemannianEDist I B.center y).toReal ≤ rho y) ∧
@@ -142,7 +142,7 @@ theorem exists_ballCalabi
             (S.base.metric t).inner y w w := by ring
       _ ≤ ricciTensor (I := I) (S.base.metric t) y w w := by
         simpa only [n] using hbase
-  exact exists_calabiData_lt (I := I) (S.base.metric t) hEnorm q hq
+  exact exists_calabi_support_lt (I := I) (S.base.metric t) hEnorm q hq
     hRic hOx hfinite hr
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
@@ -167,7 +167,7 @@ theorem exists_ballFlow
     let Λ : Real := d ^ 2 / B.radius ^ 2
     let r := riemannianEDist I B.center x |>.toReal
     Nonempty
-      (DistanceBarrierCore.ScaledDistSupport
+      (DistanceBarrier.ScaledDistanceSupport
         (I := I) S B.center T t x d Λ r) := by
   classical
   dsimp only
@@ -256,8 +256,8 @@ theorem exists_ballFlow
   have hRicTail : 0 < Module.finrank Real E - 1 →
       let γ : Real → M :=
         intrinsicGeodesic
-          (I := I) (S.base.metric t) hEnorm tail.p tail.u
-      ∀ u ∈ Set.Ioo (0 : Real) tail.b,
+          (I := I) (S.base.metric t) hEnorm tail.splitPoint tail.endpointVector
+      ∀ u ∈ Set.Ioo (0 : Real) tail.conjugateScale,
         -(((Module.finrank Real E - 1 : Nat) : Real) * q ^ 2) *
               (S.base.metric t).inner (γ u)
                 (Geometry.Riemannian.Variation.curveVelocity
@@ -279,7 +279,7 @@ theorem exists_ballFlow
       (Geometry.Riemannian.Variation.curveVelocity
         (I := I)
         (intrinsicGeodesic
-          (I := I) (S.base.metric t) hEnorm tail.p tail.u) u)
+          (I := I) (S.base.metric t) hEnorm tail.splitPoint tail.endpointVector) u)
     have hneg := neg_le_of_abs_le habs
     rw [show ((Module.finrank Real E - 1 : Nat) : Real) = n by rfl,
       hscale hnNat_pos]
@@ -292,7 +292,7 @@ theorem exists_ballFlow
       simpa only [hdn] using hnq
     rw [show ((Module.finrank Real E - 1 : Nat) : Real) = n by rfl,
       hdn, hnq']
-  exact DistanceBarrierCore.scaled_of_tail
+  exact DistanceBarrier.exists_scaled_distance_support_of_calabi_tail
     (I := I) S hS B.center hT hreg ht htpos x hEnorm tail hreach hq
       hRicTail hricBall hcoef
 

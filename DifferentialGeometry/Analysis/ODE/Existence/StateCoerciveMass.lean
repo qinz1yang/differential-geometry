@@ -55,7 +55,7 @@ theorem coerOn_of_lip
         c * ‖v‖ * ‖v‖ - (c / 2) * ‖v‖ * ‖v‖ := by ring
     _ ≤ B 0 v v + D v v := add_le_add (hB_zero v) hDlow
 
-theorem stateMass_exists
+theorem exists_state_mass_solution
     {V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
     [CompleteSpace V]
     {mass : ℝ → V → V →L[ℝ] V →L[ℝ] ℝ}

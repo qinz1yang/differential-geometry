@@ -25,7 +25,7 @@ variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 variable {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
 
 theorem HasSupportedCenterMapConvergenceOn.exists_compactRootTube
-    (inp : MetricCompactCore (I := I) X)
+    (inp : MetricCompactSeedWithDivisor (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P) {r : Real} (hr : 0 ≤ r)
     (phi : Nat → Nat) (hphi : StrictMono phi)
@@ -110,7 +110,7 @@ theorem HasSupportedCenterMapConvergenceOn.exists_compactRootTube
   · simpa only using hroot
 
 theorem HasSupportedCenterMapConvergence.exists_compactRootTube
-    (inp : MetricCompactnessInputs (I := I) X)
+    (inp : MetricCompactnessAssumptions (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P) {r : Real} (hr : 0 ≤ r)
     (phi : Nat → Nat) (hphi : StrictMono phi)
@@ -222,7 +222,7 @@ theorem configuration_snd_convergence
     hcfg hcfgC hcfgInfC
 
 noncomputable def stageInvVelocitySub
-    (inp : MetricCompactCore (I := I) X)
+    (inp : MetricCompactSeedWithDivisor (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P) {r : Real} (hr : 0 ≤ r)
     (phi : Nat → Nat) (hphi : StrictMono phi)
@@ -238,7 +238,7 @@ noncomputable def stageInvVelocitySub
       (chart := chart)).2 q.2
 
 noncomputable def stageRootSub
-    (inp : MetricCompactCore (I := I) X)
+    (inp : MetricCompactSeedWithDivisor (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P) {r : Real} (hr : 0 ≤ r)
     (phi : Nat → Nat) (hphi : StrictMono phi)
@@ -255,7 +255,7 @@ noncomputable def stageRootSub
     else PhiInf z
 
 theorem stageRootSub_eq
-    (inp : MetricCompactCore (I := I) X)
+    (inp : MetricCompactSeedWithDivisor (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P) {r : Real} (hr : 0 ≤ r)
     (phi : Nat → Nat) (hphi : StrictMono phi)
@@ -280,7 +280,7 @@ theorem stageRootSub_eq
   next h => exact False.elim (h ⟨x, hx, hroot⟩)
 
 def HasStageRootCube
-    (inp : MetricCompactCore (I := I) X)
+    (inp : MetricCompactSeedWithDivisor (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P) {r : Real} (hr : 0 ≤ r)
     (phi : Nat → Nat) (hphi : StrictMono phi)
@@ -317,7 +317,7 @@ def HasStageRootCube
         x = Phi3 n k l z)
 
 theorem HasSupportedCenterMapConvergenceOn.exists_stage_root
-    (inp : MetricCompactCore (I := I) X)
+    (inp : MetricCompactSeedWithDivisor (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P) {r : Real} (hr : 0 ≤ r)
     (phi : Nat → Nat) (hphi : StrictMono phi)
@@ -386,12 +386,12 @@ theorem HasSupportedCenterMapConvergenceOn.exists_stage_root
     simpa only [D0, swap, FInf, mu, i0] using hT
   obtain ⟨D, T', hDcpt, hDD0, _hTW, _hTrho⟩ :=
     T.exists_domain_buffer
-  refine ⟨T'.W, PhiInf, T'.rho, T'.isOpen_W,
-    T'.isCompact_closure_W, T'.K_subset_W, T'.rho_pos, hPhiInf, ?_⟩
+  refine ⟨T'.parameterDomain, PhiInf, T'.rho, T'.isOpen_parameterDomain,
+    T'.isCompact_closure_parameterDomain, T'.K_subset_parameterDomain, T'.rho_pos, hPhiInf, ?_⟩
   intro nn kn ln hnn hkn hln
   obtain ⟨hU, _hC0, _hC1, _hC01, _hC1U⟩ :=
     hdata.core_on inp P L r hr chart U C0 C1 aInf Jinf Jbarinf alpha
-  have hcfgData := hdata.configurationSub_data inp P L hr phi hphi chart U C0 C1
+  have hcfgData := hdata.configurationSub_contDiffOn_and_converges inp P L hr phi hphi chart U C0 C1
     aInf Jinf Jbarinf kn ln hkn hln alpha
   dsimp only at hcfgData
   obtain ⟨hcfgC, hcfgInfC, hcfg⟩ := hcfgData
@@ -483,7 +483,7 @@ theorem HasSupportedCenterMapConvergenceOn.exists_stage_root
     exact huniq m hmRoot z hz x hx
 
 theorem HasSupportedCenterMapConvergence.exists_stage_root
-    (inp : MetricCompactnessInputs (I := I) X)
+    (inp : MetricCompactnessAssumptions (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P) {r : Real} (hr : 0 ≤ r)
     (phi : Nat → Nat) (hphi : StrictMono phi)
@@ -535,7 +535,7 @@ theorem HasSupportedCenterMapConvergence.exists_stage_root
       U C0 C1 aInf Jinf Jbarinf alpha hpair hC1q
 
 theorem HasSupportedCenterMapConvergenceOn.exists_stage_cube
-    (inp : MetricCompactCore (I := I) X)
+    (inp : MetricCompactSeedWithDivisor (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P) {r : Real} (hr : 0 ≤ r)
     (phi : Nat → Nat) (hphi : StrictMono phi)
@@ -636,7 +636,7 @@ theorem HasSupportedCenterMapConvergenceOn.exists_stage_cube
   exact ⟨hW, hWcpt, hC1W, hrho, hPhiInf, htriple, N, hN⟩
 
 theorem HasSupportedCenterMapConvergence.exists_stage_cube
-    (inp : MetricCompactnessInputs (I := I) X)
+    (inp : MetricCompactnessAssumptions (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P) {r : Real} (hr : 0 ≤ r)
     (phi : Nat → Nat) (hphi : StrictMono phi)
@@ -670,7 +670,7 @@ theorem HasSupportedCenterMapConvergence.exists_stage_cube
       U C0 C1 aInf Jinf Jbarinf alpha hpair hC1q
 
 theorem HasStageRootCube.map_tail
-    (inp : MetricCompactCore (I := I) X)
+    (inp : MetricCompactSeedWithDivisor (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P) {r : Real} (hr : 0 ≤ r)
     (phi : Nat → Nat) (hphi : StrictMono phi)
@@ -707,7 +707,7 @@ theorem HasStageRootCube.map_tail
   exact MapCInfConvergenceOnCompacts.three_tail hconvId hK hKC1 p eps heps
 
 theorem HasStageRootCube.at_tail
-    (inp : MetricCompactCore (I := I) X)
+    (inp : MetricCompactSeedWithDivisor (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P) {r : Real} (hr : 0 ≤ r)
     (phi : Nat → Nat) (hphi : StrictMono phi)
@@ -760,7 +760,7 @@ theorem HasStageRootCube.at_tail
     _ ≤ eps := hmap l hlMap k hkMap l hlMap j hj z hz
 
 theorem HasStageRootCube.symm_dist_tail
-    (inp : MetricCompactnessInputs (I := I) X)
+    (inp : MetricCompactnessAssumptions (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P) {r : Real} (hr : 0 ≤ r)
     (phi : Nat → Nat) (hphi : StrictMono phi)
@@ -859,7 +859,7 @@ theorem HasStageRootCube.symm_dist_tail
   exact hman.trans_lt hscaled
 
 theorem HasSupportedCenterMapConvergence.points_dist_tail
-    (inp : MetricCompactnessInputs (I := I) X)
+    (inp : MetricCompactnessAssumptions (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P) {r : Real} (hr : 0 ≤ r)
     (phi : Nat → Nat) (hphi : StrictMono phi)
@@ -924,14 +924,14 @@ theorem HasSupportedCenterMapConvergence.points_dist_tail
   let : MetricSpace Y.M := (P (Lphi.φ l)).ms
   have htuple := hN N le_rfl k hk l hl 0 le_rfl z hz
   simp only [PhiPoints, mapDerivNorm, norm_iteratedFDeriv_zero] at htuple
-  let gamma' : Fin (inp.toCore.pack.A r) := by
+  let gamma' : Fin (inp.toSeedWithDivisor.pack.A r) := by
     with_unfolding_all
       exact gamma
-  let diff : Fin (inp.toCore.pack.A r) → E := fun gamma =>
-    stagePointsSub inp.toCore P L phi hphi alpha k l z gamma - z
+  let diff : Fin (inp.toSeedWithDivisor.pack.A r) → E := fun gamma =>
+    stagePointsSub inp.toSeedWithDivisor P L phi hphi alpha k l z gamma - z
   have hdiff : diff =
-      (fun gamma : Fin (inp.toCore.pack.A r) =>
-        stagePointsSub inp.toCore P L phi hphi alpha k l z gamma) -
+      (fun gamma : Fin (inp.toSeedWithDivisor.pack.A r) =>
+        stagePointsSub inp.toSeedWithDivisor P L phi hphi alpha k l z gamma) -
         fun _ => z := by
     funext i
     rfl
@@ -990,7 +990,7 @@ theorem HasSupportedCenterMapConvergence.points_dist_tail
       _ < eps := by linarith
   exact hman.trans_lt hscaled
 theorem BoundedGeometryNormalChartData.points_dist_tail
-    (inp : MetricCompactCore (I := I) X)
+    (inp : MetricCompactSeedWithDivisor (I := I) X)
     (d : BoundedGeometryNormalChartData (I := I) X inp.decay)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P) {r : Real} (hr : 0 ≤ r)

@@ -257,7 +257,7 @@ omit [NeZero (Module.finrank ℝ E)] in
 theorem coordBall_vol_scale
     (g : SmoothRiemannianMetric I M) (p : M)
     {B R : ℝ} (hB : 0 ≤ B)
-    (hRpos : 0 < R)
+    (domainRadius_pos : 0 < R)
     (hR : R ≤ expMapC2Radius (I := I) g p)
     (hball_target : Metric.ball (0 : E) R ⊆ (normalChartAt (I := I) g p).target)
     (hJ : ∀ w ∈ Metric.ball (0 : E) R,
@@ -272,14 +272,14 @@ theorem coordBall_vol_scale
             (B * B) ^ Module.finrank ℝ E)) *
         (ENNReal.ofReal (R ^ Module.finrank ℝ E) *
           (modelHaar (E := E)) (Metric.ball (0 : E) 1)) := by
-  simpa [modelHaar_ball (E := E) hRpos] using
+  simpa [modelHaar_ball (E := E) domainRadius_pos] using
     coordBall_vol_le_target (I := I) g p hB hR hball_target hJ
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem coordBall_vol_scale_c2
     (g : SmoothRiemannianMetric I M) (p : M)
     {B R : ℝ} (hB : 0 ≤ B)
-    (hRpos : 0 < R)
+    (domainRadius_pos : 0 < R)
     (hR : R ≤ expMapC2Radius (I := I) g p)
     (hJ : ∀ w ∈ Metric.ball (0 : E) R,
       ∀ i : Fin (Module.finrank ℝ E),
@@ -293,7 +293,7 @@ theorem coordBall_vol_scale_c2
             (B * B) ^ Module.finrank ℝ E)) *
         (ENNReal.ofReal (R ^ Module.finrank ℝ E) *
           (modelHaar (E := E)) (Metric.ball (0 : E) 1)) :=
-  coordBall_vol_scale (I := I) g p hB hRpos hR
+  coordBall_vol_scale (I := I) g p hB domainRadius_pos hR
     (ball_target_of_radius (I := I) g p hR) hJ
 
 omit [NeZero (Module.finrank ℝ E)] in
@@ -340,7 +340,7 @@ theorem coordBall_vol_ge
 omit [NeZero (Module.finrank ℝ E)] in
 theorem coordBall_vol_ge_sc
     (g : SmoothRiemannianMetric I M) (p : M)
-    {c R : ℝ} (hRpos : 0 < R)
+    {c R : ℝ} (domainRadius_pos : 0 < R)
     (hball_target : Metric.ball (0 : E) R ⊆ (normalChartAt (I := I) g p).target)
     (hdens : ∀ w ∈ Metric.ball (0 : E) R,
       c ≤ normalChartDensity (I := I) g p w) :
@@ -349,13 +349,13 @@ theorem coordBall_vol_ge_sc
           (modelHaar (E := E)) (Metric.ball (0 : E) 1)) ≤
       riemannianVolumeMeasure (I := I) (M := M) g
         ((normalChartAt (I := I) g p).symm '' Metric.ball (0 : E) R) := by
-  simpa [modelHaar_ball (E := E) hRpos] using
+  simpa [modelHaar_ball (E := E) domainRadius_pos] using
     coordBall_vol_ge (I := I) g p hball_target hdens
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem coordBall_vol_ge_sc_c2
     (g : SmoothRiemannianMetric I M) (p : M)
-    {c R : ℝ} (hRpos : 0 < R)
+    {c R : ℝ} (domainRadius_pos : 0 < R)
     (hR : R ≤ expMapC2Radius (I := I) g p)
     (hdens : ∀ w ∈ Metric.ball (0 : E) R,
       c ≤ normalChartDensity (I := I) g p w) :
@@ -364,7 +364,7 @@ theorem coordBall_vol_ge_sc_c2
           (modelHaar (E := E)) (Metric.ball (0 : E) 1)) ≤
       riemannianVolumeMeasure (I := I) (M := M) g
         ((normalChartAt (I := I) g p).symm '' Metric.ball (0 : E) R) :=
-  coordBall_vol_ge_sc (I := I) g p hRpos
+  coordBall_vol_ge_sc (I := I) g p domainRadius_pos
     (ball_target_of_radius (I := I) g p hR) hdens
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
@@ -380,7 +380,7 @@ theorem coordBall_subset_smallNormalBall_of_agree
     (hagree : ∀ w ∈ Metric.ball (0 : E) R,
       expMapIntrinsic (I := I) g hEnorm p (show TangentSpace I p from w) =
         expMap (I := I) g p (show TangentSpace I p from w))
-    (hgs : ∀ w ∈ Metric.ball (0 : E) R,
+    (tangentBall_geodesicRadius_lt : ∀ w ∈ Metric.ball (0 : E) R,
       Real.sqrt (g.inner p (show TangentSpace I p from w) (show TangentSpace I p from w)) < s) :
     (normalChartAt (I := I) g p).symm '' Metric.ball (0 : E) R ⊆
       smallNormalBall (I := I) p s := by
@@ -392,7 +392,7 @@ theorem coordBall_subset_smallNormalBall_of_agree
     normalChartAt_symm_apply (I := I) g p (hball_target hw)
   have hconf :=
     smallNormalBall_radial_confined (I := I) g hEnorm p
-      (show TangentSpace I p from w) (hgs w hw) (t := 1) ⟨zero_le_one, le_rfl⟩
+      (show TangentSpace I p from w) (tangentBall_geodesicRadius_lt w hw) (t := 1) ⟨zero_le_one, le_rfl⟩
   have hconf' :
       expMapIntrinsic (I := I) g hEnorm p (show TangentSpace I p from w) ∈
         smallNormalBall (I := I) p s := by
@@ -421,15 +421,15 @@ theorem exists_coordBall_subset_smallNormalBall
         smallNormalBall (I := I) p s := by
   obtain ⟨ρ, hρpos, hagree⟩ := exists_expMapIntrinsic_eq_expMap_radius (I := I) g hEnorm p
   refine ⟨ρ, hρpos, ?_⟩
-  intro R s hball_target hρball hgs
+  intro R s hball_target tangentBall_metricRadius_lt tangentBall_geodesicRadius_lt
   exact coordBall_subset_smallNormalBall_of_agree (I := I) g hEnorm p
-    hball_target (fun w hw => hagree (hρball w hw)) hgs
+    hball_target (fun w hw => hagree (tangentBall_metricRadius_lt w hw)) tangentBall_geodesicRadius_lt
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem smallNormalBall_vol_ge_sc
     [RiemannianBundle (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M) (p : M)
-    {c R s : ℝ} (hRpos : 0 < R)
+    {c R s : ℝ} (domainRadius_pos : 0 < R)
     (hball_target : Metric.ball (0 : E) R ⊆ (normalChartAt (I := I) g p).target)
     (hcoord_subset :
       (normalChartAt (I := I) g p).symm '' Metric.ball (0 : E) R ⊆
@@ -441,14 +441,14 @@ theorem smallNormalBall_vol_ge_sc
           (modelHaar (E := E)) (Metric.ball (0 : E) 1)) ≤
       riemannianVolumeMeasure (I := I) (M := M) g (smallNormalBall (I := I) p s) := by
   exact le_trans
-    (coordBall_vol_ge_sc (I := I) g p hRpos hball_target hdens)
+    (coordBall_vol_ge_sc (I := I) g p domainRadius_pos hball_target hdens)
     (MeasureTheory.measure_mono hcoord_subset)
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem smallNormalBall_vol_ge_sc_c2
     [RiemannianBundle (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M) (p : M)
-    {c R s : ℝ} (hRpos : 0 < R)
+    {c R s : ℝ} (domainRadius_pos : 0 < R)
     (hR : R ≤ expMapC2Radius (I := I) g p)
     (hcoord_subset :
       (normalChartAt (I := I) g p).symm '' Metric.ball (0 : E) R ⊆
@@ -459,7 +459,7 @@ theorem smallNormalBall_vol_ge_sc_c2
         (ENNReal.ofReal (R ^ Module.finrank ℝ E) *
           (modelHaar (E := E)) (Metric.ball (0 : E) 1)) ≤
       riemannianVolumeMeasure (I := I) (M := M) g (smallNormalBall (I := I) p s) :=
-  smallNormalBall_vol_ge_sc (I := I) g p hRpos
+  smallNormalBall_vol_ge_sc (I := I) g p domainRadius_pos
     (ball_target_of_radius (I := I) g p hR) hcoord_subset hdens
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
@@ -486,9 +486,9 @@ theorem exists_smallNormalBall_vol_ge_sc
         riemannianVolumeMeasure (I := I) (M := M) g (smallNormalBall (I := I) p s) := by
   obtain ⟨ρ, hρpos, hsubset⟩ := exists_coordBall_subset_smallNormalBall (I := I) g hEnorm p
   refine ⟨ρ, hρpos, ?_⟩
-  intro c R s hRpos hR hρball hgs hdens
-  exact smallNormalBall_vol_ge_sc_c2 (I := I) g p hRpos hR
-    (hsubset (ball_target_of_radius (I := I) g p hR) hρball hgs) hdens
+  intro c R s domainRadius_pos hR tangentBall_metricRadius_lt tangentBall_geodesicRadius_lt hdens
+  exact smallNormalBall_vol_ge_sc_c2 (I := I) g p domainRadius_pos hR
+    (hsubset (ball_target_of_radius (I := I) g p hR) tangentBall_metricRadius_lt tangentBall_geodesicRadius_lt) hdens
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
@@ -569,10 +569,10 @@ theorem exists_metricBall_vol_ge_sc_local
         riemannianVolumeMeasure (I := I) (M := M) g (Metric.ball p s) := by
   obtain ⟨ρ, hρpos, hsmall⟩ := exists_smallNormalBall_vol_ge_sc (I := I) g hEnorm p
   refine ⟨ρ, hρpos, ?_⟩
-  intro c R s hRpos hR hρball hgs hdens
+  intro c R s domainRadius_pos hR tangentBall_metricRadius_lt tangentBall_geodesicRadius_lt hdens
   let : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
   exact le_trans
-    (hsmall hRpos hR hρball hgs hdens)
+    (hsmall domainRadius_pos hR tangentBall_metricRadius_lt tangentBall_geodesicRadius_lt hdens)
     (MeasureTheory.measure_mono (smallNormalBall_subset_metricBall (I := I) (M := M)))
 
 omit [T2Space M] [SigmaCompactSpace M] in
@@ -769,7 +769,7 @@ theorem metricBall_chartCtrl
   obtain ⟨ρ₀, hρ₀pos, hagree⟩ := exists_expMapIntrinsic_eq_expMap_radius (I := I) g hEnorm p
   refine ⟨min ρ₀ (metricCoerciveExpRadius (I := I) g p),
     lt_min hρ₀pos (metricCoerciveExpRadius_pos (I := I) g p), ?_⟩
-  intro R s hsR hsρ hs_div_R
+  intro R s geodesicRadius_lt_domainRadius geodesicRadius_lt_chartRadius hs_div_R
   let : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
   let ψ := normalChartAt (I := I) g p
   have hpoint : ∀ y ∈ Metric.ball p s,
@@ -795,10 +795,10 @@ theorem metricBall_chartCtrl
       exact lt_of_le_of_lt (norm_le_sqrt_div_sqrt_coercive (I := I) g p w) hw_sqrt_div_lt
     have hv_sqrt_lt_ρ₀ :
         Real.sqrt (g.inner p (v : E) (v : E)) < ρ₀ := by
-      exact lt_trans hv_sqrt_lt_s (lt_of_lt_of_le hsρ (min_le_left _ _))
+      exact lt_trans hv_sqrt_lt_s (lt_of_lt_of_le geodesicRadius_lt_chartRadius (min_le_left _ _))
     have hv_sqrt_lt_gp :
         Real.sqrt (g.inner p (v : E) (v : E)) < metricCoerciveExpRadius (I := I) g p := by
-      exact lt_trans hv_sqrt_lt_s (lt_of_lt_of_le hsρ (min_le_right _ _))
+      exact lt_trans hv_sqrt_lt_s (lt_of_lt_of_le geodesicRadius_lt_chartRadius (min_le_right _ _))
     have hagree_v :
         expMapIntrinsic (I := I) g hEnorm p v = expMap (I := I) g p v :=
       hagree hv_sqrt_lt_ρ₀
@@ -855,7 +855,7 @@ omit [NeZero (Module.finrank ℝ E)] in
 theorem metricBall_vol_scale [PseudoMetricSpace M]
     (g : SmoothRiemannianMetric I M) (p : M)
     {B R s : ℝ} (hB : 0 ≤ B)
-    (hRpos : 0 < R)
+    (domainRadius_pos : 0 < R)
     (hR : R ≤ expMapC2Radius (I := I) g p)
     (hball_meas : MeasurableSet (Metric.ball p s))
     (hball_source : Metric.ball p s ⊆ (normalChartAt (I := I) g p).source)
@@ -872,7 +872,7 @@ theorem metricBall_vol_scale [PseudoMetricSpace M]
             (B * B) ^ Module.finrank ℝ E)) *
         (ENNReal.ofReal (R ^ Module.finrank ℝ E) *
           (modelHaar (E := E)) (Metric.ball (0 : E) 1)) := by
-  simpa [modelHaar_ball (E := E) hRpos] using
+  simpa [modelHaar_ball (E := E) domainRadius_pos] using
     metricBall_vol_le (I := I) g p hB hR hball_meas hball_source hball_coord hJ
 
 
@@ -880,7 +880,7 @@ omit [NeZero (Module.finrank ℝ E)] in
 theorem metricBall_vol_scale_density [PseudoMetricSpace M]
     (g : SmoothRiemannianMetric I M) (p : M)
     {C R s : ℝ}
-    (hRpos : 0 < R)
+    (domainRadius_pos : 0 < R)
     (hball_meas : MeasurableSet (Metric.ball p s))
     (hball_source : Metric.ball p s ⊆ (normalChartAt (I := I) g p).source)
     (hball_coord :
@@ -891,7 +891,7 @@ theorem metricBall_vol_scale_density [PseudoMetricSpace M]
       ENNReal.ofReal C *
         (ENNReal.ofReal (R ^ Module.finrank ℝ E) *
           (modelHaar (E := E)) (Metric.ball (0 : E) 1)) := by
-  simpa [modelHaar_ball (E := E) hRpos] using
+  simpa [modelHaar_ball (E := E) domainRadius_pos] using
     vol_le_ball_of_density (I := I) g p
       (A := Metric.ball p s) hball_meas hball_source hball_coord
       (fun w hw => hdens w (hball_coord hw))
@@ -929,10 +929,10 @@ theorem exists_metricBall_vol_scale_local
             (modelHaar (E := E)) (Metric.ball (0 : E) 1)) := by
   obtain ⟨ρ, hρpos, hctrl⟩ := metricBall_chartCtrl (I := I) (M := M) g hEnorm p
   refine ⟨ρ, hρpos, ?_⟩
-  intro B R s hB hRpos hsR hsρ hs_div_R hRC2 hmeas hJ
+  intro B R s hB domainRadius_pos geodesicRadius_lt_domainRadius geodesicRadius_lt_chartRadius hs_div_R domainRadius_le_expMapC2Radius hmeas hJ
   let : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
-  obtain ⟨hsource, hcoord⟩ := hctrl hsR hsρ hs_div_R
-  exact metricBall_vol_scale (I := I) g p hB hRpos hRC2 hmeas hsource hcoord hJ
+  obtain ⟨hsource, hcoord⟩ := hctrl geodesicRadius_lt_domainRadius geodesicRadius_lt_chartRadius hs_div_R
+  exact metricBall_vol_scale (I := I) g p hB domainRadius_pos domainRadius_le_expMapC2Radius hmeas hsource hcoord hJ
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
@@ -958,10 +958,10 @@ theorem exists_metricBall_vol_le_dens_local
             (modelHaar (E := E)) (Metric.ball (0 : E) 1)) := by
   obtain ⟨ρ, hρpos, hctrl⟩ := metricBall_chartCtrl (I := I) (M := M) g hEnorm p
   refine ⟨ρ, hρpos, ?_⟩
-  intro C R s hRpos hsR hsρ hs_div_R hdens
+  intro C R s domainRadius_pos geodesicRadius_lt_domainRadius geodesicRadius_lt_chartRadius hs_div_R hdens
   let : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
-  obtain ⟨hsource, hcoord⟩ := hctrl hsR hsρ hs_div_R
-  exact metricBall_vol_scale_density (I := I) g p hRpos
+  obtain ⟨hsource, hcoord⟩ := hctrl geodesicRadius_lt_domainRadius geodesicRadius_lt_chartRadius hs_div_R
+  exact metricBall_vol_scale_density (I := I) g p domainRadius_pos
     (metricBall_meas (I := I) (M := M) p s) hsource hcoord hdens
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
@@ -1000,15 +1000,15 @@ theorem exists_vol_two_dens
   obtain ⟨ρlo, hρlo_pos, hlower⟩ := exists_metricBall_vol_ge_sc_local (I := I) g hEnorm p
   obtain ⟨ρup, hρup_pos, hupper⟩ := exists_metricBall_vol_le_dens_local (I := I) (M := M) g hEnorm p
   refine ⟨min ρlo ρup, lt_min hρlo_pos hρup_pos, ?_⟩
-  intro c C R s hRpos hR hρball hgs hdensLower hsR hsρ hsdiv hdensUpper
+  intro c C R s domainRadius_pos hR tangentBall_metricRadius_lt tangentBall_geodesicRadius_lt hdensLower geodesicRadius_lt_domainRadius geodesicRadius_lt_chartRadius normalizedGeodesicRadius_lt_domainRadius hdensUpper
   let : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
   have hρlo_ball : ∀ w ∈ Metric.ball (0 : E) R,
       Real.sqrt (g.inner p (show TangentSpace I p from w) (show TangentSpace I p from w)) < ρlo :=
-    fun w hw => lt_of_lt_of_le (hρball w hw) (min_le_left _ _)
-  have hsρup : s < ρup := lt_of_lt_of_le hsρ (min_le_right _ _)
+    fun w hw => lt_of_lt_of_le (tangentBall_metricRadius_lt w hw) (min_le_left _ _)
+  have geodesicRadius_lt_chartRadiusup : s < ρup := lt_of_lt_of_le geodesicRadius_lt_chartRadius (min_le_right _ _)
   exact ⟨
-    hlower hRpos hR hρlo_ball hgs hdensLower,
-    hupper hRpos hsR hsρup hsdiv hdensUpper⟩
+    hlower domainRadius_pos hR hρlo_ball tangentBall_geodesicRadius_lt hdensLower,
+    hupper domainRadius_pos geodesicRadius_lt_domainRadius geodesicRadius_lt_chartRadiusup normalizedGeodesicRadius_lt_domainRadius hdensUpper⟩
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
@@ -1048,16 +1048,16 @@ theorem exists_vol_two_dens_pairR
   obtain ⟨ρup, hρup_pos, hupper⟩ :=
     exists_metricBall_vol_le_dens_local (I := I) (M := M) g hEnorm p
   refine ⟨min ρlo ρup, lt_min hρlo_pos hρup_pos, ?_⟩
-  intro c C Rlo Rup s hRlo_pos hRlo hρlo_ball hgs hdensLower hRup_pos hsRup hsρ
-    hsdiv hdensUpper
+  intro c C Rlo Rup s hRlo_pos hRlo hρlo_ball tangentBall_geodesicRadius_lt hdensLower hRup_pos hsRup geodesicRadius_lt_chartRadius
+    normalizedGeodesicRadius_lt_domainRadius hdensUpper
   let : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
   have hρlo_ball' : ∀ w ∈ Metric.ball (0 : E) Rlo,
       Real.sqrt (g.inner p (show TangentSpace I p from w) (show TangentSpace I p from w)) < ρlo :=
     fun w hw => lt_of_lt_of_le (hρlo_ball w hw) (min_le_left _ _)
-  have hsρup : s < ρup := lt_of_lt_of_le hsρ (min_le_right _ _)
+  have geodesicRadius_lt_chartRadiusup : s < ρup := lt_of_lt_of_le geodesicRadius_lt_chartRadius (min_le_right _ _)
   exact ⟨
-    hlower hRlo_pos hRlo hρlo_ball' hgs hdensLower,
-    hupper hRup_pos hsRup hsρup hsdiv hdensUpper⟩
+    hlower hRlo_pos hRlo hρlo_ball' tangentBall_geodesicRadius_lt hdensLower,
+    hupper hRup_pos hsRup geodesicRadius_lt_chartRadiusup normalizedGeodesicRadius_lt_domainRadius hdensUpper⟩
 
 structure RadialCurveExtension
     (g : SmoothRiemannianMetric I M) (p : M) (R b : ℝ) where
@@ -1073,9 +1073,9 @@ structure RadialCurveExtension
 
 
 omit [NeZero (Module.finrank ℝ E)] [T2Space M] [SigmaCompactSpace M] in
-lemma exists_radialExtData
+lemma nonempty_radialCurveExtension
     (g : SmoothRiemannianMetric I M) (p : M) {R b : ℝ}
-    (hb1 : b ≤ 1)
+    (time_le_one : b ≤ 1)
     (hR : R ≤ expMapC2Radius (I := I) g p) :
     Nonempty (RadialCurveExtension (I := I) g p R b) := by
   classical
@@ -1090,7 +1090,7 @@ lemma exists_radialExtData
     · have hwR : ‖w‖ < R := by
         simpa [Metric.mem_ball, dist_eq_norm] using hw
       obtain ⟨eps, heps, gamma, hsmooth, heqNeighborhood⟩ :=
-        exists_rext_neighborhood (I := I) g p w hb1 (hwR.trans_le hR)
+        exists_rext_neighborhood (I := I) g p w time_le_one (hwR.trans_le hR)
       have heq : Set.EqOn gamma (radialCurve (I := I) g p w) (Set.Icc 0 b) := by
         intro t ht
         exact heqNeighborhood ⟨by linarith [ht.1, heps], by linarith [ht.2, heps]⟩
@@ -1141,7 +1141,7 @@ structure ExtendedRadialFrame
   [fintype : Fintype ι]
   [decidableEq : DecidableEq ι]
   [nonempty : Nonempty ι]
-  F : ∀ w : E, ι → ∀ t : ℝ, TangentSpace I (D.gamma w t)
+  frame : ∀ w : E, ι → ∀ t : ℝ, TangentSpace I (D.gamma w t)
 
 attribute [instance] ExtendedRadialFrame.fintype
 attribute [instance] ExtendedRadialFrame.decidableEq
@@ -1149,7 +1149,7 @@ attribute [instance] ExtendedRadialFrame.nonempty
 
 omit [T2Space M] [SigmaCompactSpace M] in
 omit [CompleteSpace E] [T2Space (TangentBundle I M)] in
-lemma exists_extFrameData
+lemma exists_extendedRadialFrame_with_properties
     [RiemannianBundle (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M) {p : M} {R b : ℝ}
     (D : RadialCurveExtension (I := I) g p R b) (hb : 0 < b) :
@@ -1158,11 +1158,11 @@ lemma exists_extFrameData
         Fintype.card Fd.ι =
           Module.finrank ℝ (TangentSpace I (D.gamma w t))) ∧
       (∀ w ∈ Metric.ball (0 : E) R, ∀ i, ∀ t ∈ Set.Icc (0 : ℝ) b,
-        DifferentiableAt ℝ (chartRepAt (I := I) (D.gamma w) (Fd.F w i) t) t) ∧
+        DifferentiableAt ℝ (chartRepAt (I := I) (D.gamma w) (Fd.frame w i) t) t) ∧
       (∀ w ∈ Metric.ball (0 : E) R, ∀ i, ∀ t ∈ Set.Icc (0 : ℝ) b,
-        covDerivAlong (I := I) g (D.gamma w) (Fd.F w i) t = 0) ∧
+        covDerivAlong (I := I) g (D.gamma w) (Fd.frame w i) t = 0) ∧
       (∀ w ∈ Metric.ball (0 : E) R, ∀ t ∈ Set.Icc (0 : ℝ) b, ∀ i j,
-        g.inner (D.gamma w t) (Fd.F w i t) (Fd.F w j t) =
+        g.inner (D.gamma w t) (Fd.frame w i t) (Fd.frame w j t) =
           if i = j then (1 : ℝ) else 0) := by
   classical
   have hframe : ∀ w : E,
@@ -1183,14 +1183,14 @@ lemma exists_extFrameData
     · obtain ⟨basis, hON0⟩ :=
         DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis
           (I := I) g (D.gamma w 0)
-      obtain ⟨F, _hF0, hFdiff, hFpar, hFON⟩ :=
+      obtain ⟨F, _hF0, frameRepresentation_differentiable, hFpar, hFON⟩ :=
         DifferentialGeometry.Geometry.Riemannian.exists_parallel_frame
           (I := I) g (D.gamma w) (N := 2) (by norm_num) (D.smooth w hw) hb basis hON0
       refine ⟨F, fun _ => ?_⟩
       exact ⟨fun t => by
         rw [show Module.finrank ℝ (TangentSpace I (D.gamma w t)) =
           Module.finrank ℝ E from rfl]
-        simp, hFdiff, hFpar, hFON⟩
+        simp, frameRepresentation_differentiable, hFpar, hFON⟩
     · exact ⟨fun _ t => 0, fun h => False.elim (hw h)⟩
   choose F hF using hframe
   let Fd : ExtendedRadialFrame (I := I) g D := {
@@ -1198,7 +1198,7 @@ lemma exists_extFrameData
     fintype := inferInstance
     decidableEq := inferInstance
     nonempty := inferInstance
-    F := fun w i => F w i.down }
+    frame := fun w i => F w i.down }
   refine ⟨Fd, ?_, ?_, ?_, ?_⟩
   · intro w hw t
     rw [show Module.finrank ℝ (TangentSpace I (D.gamma w t)) =
@@ -1221,49 +1221,49 @@ def radialFrameOfExt
   exact if hw : w ∈ Metric.ball (0 : E) R then
     if ht : t ∈ Set.Icc (-(D.eps w)) (b + D.eps w) then
       show TangentSpace I (radialCurve (I := I) g p w t) from by
-        exact (Fd.F w i t : E)
+        exact (Fd.frame w i t : E)
     else 0
   else 0
 
 
-structure Riemann04Frame
+structure RadialFrameFamily
     [RiemannianBundle (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M) (p : M) (R b : ℝ) where
   ι : Type*
   [fintype : Fintype ι]
   [decidableEq : DecidableEq ι]
   [nonempty : Nonempty ι]
-  F : ∀ w : E, ι → ∀ t : ℝ, TangentSpace I (radialCurve (I := I) g p w t)
+  frame : ∀ w : E, ι → ∀ t : ℝ, TangentSpace I (radialCurve (I := I) g p w t)
 
-attribute [instance] Riemann04Frame.fintype
-attribute [instance] Riemann04Frame.decidableEq
-attribute [instance] Riemann04Frame.nonempty
+attribute [instance] RadialFrameFamily.fintype
+attribute [instance] RadialFrameFamily.decidableEq
+attribute [instance] RadialFrameFamily.nonempty
 
-def riemann04FrameOfExt
+def radialFrameFamilyOfExtension
     [RiemannianBundle (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M) {p : M} {R b : ℝ}
     (D : RadialCurveExtension (I := I) g p R b) (Fd : ExtendedRadialFrame (I := I) g D) :
-    Riemann04Frame (I := I) g p R b where
+    RadialFrameFamily (I := I) g p R b where
   ι := Fd.ι
   fintype := Fd.fintype
   decidableEq := Fd.decidableEq
   nonempty := Fd.nonempty
-  F := fun w i t => radialFrameOfExt (I := I) g D Fd w i t
+  frame := fun w i t => radialFrameOfExt (I := I) g D Fd w i t
 
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompleteSpace E] [T2Space M]
     [SigmaCompactSpace M] [T2Space (TangentBundle I M)] in
-lemma riemann04FrameOfExt_card
+lemma radialFrameFamilyOfExtension_card
     [RiemannianBundle (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M) {p : M} {R b : ℝ}
     (D : RadialCurveExtension (I := I) g p R b) (Fd : ExtendedRadialFrame (I := I) g D)
-    (hcard : ∀ w ∈ Metric.ball (0 : E) R, ∀ t : ℝ,
+    (frame_cardinality : ∀ w ∈ Metric.ball (0 : E) R, ∀ t : ℝ,
       Fintype.card Fd.ι = Module.finrank ℝ (TangentSpace I (D.gamma w t))) :
     ∀ w ∈ Metric.ball (0 : E) R, ∀ t : ℝ,
-      Fintype.card (riemann04FrameOfExt (I := I) g D Fd).ι =
+      Fintype.card (radialFrameFamilyOfExtension (I := I) g D Fd).ι =
         Module.finrank ℝ (TangentSpace I (radialCurve (I := I) g p w t)) := by
   intro w hw t
-  have h := hcard w hw t
+  have h := frame_cardinality w hw t
   rw [show Module.finrank ℝ (TangentSpace I (D.gamma w t)) =
     Module.finrank ℝ E from rfl] at h
   rw [show Module.finrank ℝ (TangentSpace I (radialCurve (I := I) g p w t)) =
@@ -1273,33 +1273,33 @@ lemma riemann04FrameOfExt_card
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompleteSpace E] [T2Space M]
     [SigmaCompactSpace M] [T2Space (TangentBundle I M)] in
-lemma riemann04FrameOfExt_ON
+lemma radialFrameFamilyOfExtension_orthonormal
     [RiemannianBundle (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M) {p : M} {R b : ℝ}
     (D : RadialCurveExtension (I := I) g p R b) (Fd : ExtendedRadialFrame (I := I) g D)
-    (hON : ∀ w ∈ Metric.ball (0 : E) R, ∀ t ∈ Set.Icc (0 : ℝ) b, ∀ i j,
-      g.inner (D.gamma w t) (Fd.F w i t) (Fd.F w j t) =
+    (frame_orthonormal : ∀ w ∈ Metric.ball (0 : E) R, ∀ t ∈ Set.Icc (0 : ℝ) b, ∀ i j,
+      g.inner (D.gamma w t) (Fd.frame w i t) (Fd.frame w j t) =
         if i = j then (1 : ℝ) else 0) :
     ∀ w ∈ Metric.ball (0 : E) R, ∀ t ∈ Set.Icc (0 : ℝ) b, ∀ i j,
       g.inner (radialCurve (I := I) g p w t)
-        ((riemann04FrameOfExt (I := I) g D Fd).F w i t)
-        ((riemann04FrameOfExt (I := I) g D Fd).F w j t) =
+        ((radialFrameFamilyOfExtension (I := I) g D Fd).frame w i t)
+        ((radialFrameFamilyOfExtension (I := I) g D Fd).frame w j t) =
           if i = j then (1 : ℝ) else 0 := by
   intro w hw t ht i j
   have htN : t ∈ Set.Icc (-(D.eps w)) (b + D.eps w) :=
     ⟨by linarith [ht.1, D.eps_pos w hw], by linarith [ht.2, D.eps_pos w hw]⟩
   have hbase := D.eqOn w hw ht
-  have h := hON w hw t ht i j
+  have h := frame_orthonormal w hw t ht i j
   rw [hbase] at h
   by_cases hij : i = j
   · have hijFd : (show Fd.ι from i) = (show Fd.ι from j) := hij
     rw [if_pos hijFd] at h
     rw [if_pos hij]
-    simpa [riemann04FrameOfExt, radialFrameOfExt, hw, htN] using h
+    simpa [radialFrameFamilyOfExtension, radialFrameOfExt, hw, htN] using h
   · have hijFd : ¬(show Fd.ι from i) = (show Fd.ι from j) := hij
     rw [if_neg hijFd] at h
     rw [if_neg hij]
-    simpa [riemann04FrameOfExt, radialFrameOfExt, hw, htN] using h
+    simpa [radialFrameFamilyOfExtension, radialFrameOfExt, hw, htN] using h
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompleteSpace E] [T2Space M]
     [SigmaCompactSpace M] [T2Space (TangentBundle I M)] in
@@ -1308,8 +1308,8 @@ lemma radialFrameOfExt_evEq
     (g : SmoothRiemannianMetric I M) {p : M} {R b : ℝ}
     (D : RadialCurveExtension (I := I) g p R b) (Fd : ExtendedRadialFrame (I := I) g D) :
     ∀ w ∈ Metric.ball (0 : E) R, ∀ i, ∀ t ∈ Set.Icc (0 : ℝ) b,
-      (fun s : ℝ => ((riemann04FrameOfExt (I := I) g D Fd).F w i s : E))
-        =ᶠ[𝓝 t] fun s : ℝ => (Fd.F w i s : E) := by
+      (fun s : ℝ => ((radialFrameFamilyOfExtension (I := I) g D Fd).frame w i s : E))
+        =ᶠ[𝓝 t] fun s : ℝ => (Fd.frame w i s : E) := by
   intro w hw i t ht
   have heps := D.eps_pos w hw
   have htopen : t ∈ Set.Ioo (-(D.eps w)) (b + D.eps w) :=
@@ -1317,96 +1317,96 @@ lemma radialFrameOfExt_evEq
   filter_upwards [isOpen_Ioo.mem_nhds htopen] with s hs
   have hsN : s ∈ Set.Icc (-(D.eps w)) (b + D.eps w) :=
     ⟨le_of_lt hs.1, le_of_lt hs.2⟩
-  simp [riemann04FrameOfExt, radialFrameOfExt, hw, hsN]
+  simp [radialFrameFamilyOfExtension, radialFrameOfExt, hw, hsN]
   rfl
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompleteSpace E] [T2Space M]
     [SigmaCompactSpace M] [T2Space (TangentBundle I M)] in
-lemma riemann04FrameOfExt_par
+lemma radialFrameFamilyOfExtension_parallel
     [RiemannianBundle (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M) {p : M} {R b : ℝ}
     (D : RadialCurveExtension (I := I) g p R b) (Fd : ExtendedRadialFrame (I := I) g D)
-    (hpar : ∀ w ∈ Metric.ball (0 : E) R, ∀ i, ∀ t ∈ Set.Icc (0 : ℝ) b,
-      covDerivAlong (I := I) g (D.gamma w) (Fd.F w i) t = 0) :
+    (frame_parallel : ∀ w ∈ Metric.ball (0 : E) R, ∀ i, ∀ t ∈ Set.Icc (0 : ℝ) b,
+      covDerivAlong (I := I) g (D.gamma w) (Fd.frame w i) t = 0) :
     ∀ w ∈ Metric.ball (0 : E) R, ∀ i, ∀ t ∈ Set.Icc (0 : ℝ) b,
       covDerivAlong (I := I) g (radialCurve (I := I) g p w)
-        ((riemann04FrameOfExt (I := I) g D Fd).F w i) t = 0 := by
+        ((radialFrameFamilyOfExtension (I := I) g D Fd).frame w i) t = 0 := by
   intro w hw i t ht
-  have hγ : radialCurve (I := I) g p w =ᶠ[𝓝 t] D.gamma w :=
+  have radialCurve_contMDiffAt : radialCurve (I := I) g p w =ᶠ[𝓝 t] D.gamma w :=
     (radialCurveExtension_eventuallyEq (I := I) g p D w hw t ht).symm
   have hV := radialFrameOfExt_evEq (I := I) g D Fd w hw i t ht
   have hcongr := covDerivAlong_congr_curve (I := I) g
-    ((riemann04FrameOfExt (I := I) g D Fd).F w i) (Fd.F w i) hγ hV
+    ((radialFrameFamilyOfExtension (I := I) g D Fd).frame w i) (Fd.frame w i) radialCurve_contMDiffAt hV
   rw [hcongr]
-  exact hpar w hw i t ht
+  exact frame_parallel w hw i t ht
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompleteSpace E] [T2Space M]
     [SigmaCompactSpace M] [T2Space (TangentBundle I M)] in
-lemma riemann04FrameOfExt_diff
+lemma radialFrameFamilyOfExtension_differentiable
     [RiemannianBundle (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M) {p : M} {R b : ℝ}
     (D : RadialCurveExtension (I := I) g p R b) (Fd : ExtendedRadialFrame (I := I) g D)
-    (hFdiff : ∀ w ∈ Metric.ball (0 : E) R, ∀ i, ∀ t ∈ Set.Icc (0 : ℝ) b,
-      DifferentiableAt ℝ (chartRepAt (I := I) (D.gamma w) (Fd.F w i) t) t) :
+    (frameRepresentation_differentiable : ∀ w ∈ Metric.ball (0 : E) R, ∀ i, ∀ t ∈ Set.Icc (0 : ℝ) b,
+      DifferentiableAt ℝ (chartRepAt (I := I) (D.gamma w) (Fd.frame w i) t) t) :
     ∀ w ∈ Metric.ball (0 : E) R, ∀ i, ∀ t ∈ Set.Icc (0 : ℝ) b,
       DifferentiableAt ℝ
         (chartRepAt (I := I) (radialCurve (I := I) g p w)
-          ((riemann04FrameOfExt (I := I) g D Fd).F w i) t) t := by
+          ((radialFrameFamilyOfExtension (I := I) g D Fd).frame w i) t) t := by
   intro w hw i t ht
-  have hγ : radialCurve (I := I) g p w =ᶠ[𝓝 t] D.gamma w :=
+  have radialCurve_contMDiffAt : radialCurve (I := I) g p w =ᶠ[𝓝 t] D.gamma w :=
     (radialCurveExtension_eventuallyEq (I := I) g p D w hw t ht).symm
   have hV := radialFrameOfExt_evEq (I := I) g D Fd w hw i t ht
   have hrep := chartRep_congr_curve (I := I)
-    ((riemann04FrameOfExt (I := I) g D Fd).F w i) (Fd.F w i) hγ hV
+    ((radialFrameFamilyOfExtension (I := I) g D Fd).frame w i) (Fd.frame w i) radialCurve_contMDiffAt hV
   rw [hrep.differentiableAt_iff]
-  exact hFdiff w hw i t ht
+  exact frameRepresentation_differentiable w hw i t ht
 
 omit [T2Space M] [SigmaCompactSpace M] in
-lemma exists_rm04FrameData_radius
+lemma exists_radialFrameFamily_of_radius_le_expMapC2Radius
     [RiemannianBundle (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M) (p : M) {R b : ℝ}
-    (hb : 0 < b) (hb1 : b ≤ 1)
+    (hb : 0 < b) (time_le_one : b ≤ 1)
     (hR : R ≤ expMapC2Radius (I := I) g p) :
-    ∃ D : Riemann04Frame (I := I) g p R b,
+    ∃ D : RadialFrameFamily (I := I) g p R b,
       (∀ w ∈ Metric.ball (0 : E) R, ∀ t : ℝ,
         Fintype.card D.ι =
           Module.finrank ℝ (TangentSpace I (radialCurve (I := I) g p w t))) ∧
       (∀ w ∈ Metric.ball (0 : E) R, ∀ i, ∀ t ∈ Set.Icc (0 : ℝ) b,
-        covDerivAlong (I := I) g (radialCurve (I := I) g p w) (D.F w i) t = 0) ∧
+        covDerivAlong (I := I) g (radialCurve (I := I) g p w) (D.frame w i) t = 0) ∧
       (∀ w ∈ Metric.ball (0 : E) R, ∀ t ∈ Set.Icc (0 : ℝ) b, ∀ i j,
-        g.inner (radialCurve (I := I) g p w t) (D.F w i t) (D.F w j t) =
+        g.inner (radialCurve (I := I) g p w t) (D.frame w i t) (D.frame w j t) =
           if i = j then (1 : ℝ) else 0) ∧
       (∀ w ∈ Metric.ball (0 : E) R, ∀ i, ∀ t ∈ Set.Icc (0 : ℝ) b,
         DifferentiableAt ℝ
-          (chartRepAt (I := I) (radialCurve (I := I) g p w) (D.F w i) t) t) := by
-  obtain ⟨Dext⟩ := exists_radialExtData (I := I) g p hb1 hR
-  obtain ⟨Fd, hcard, hFdiff, hpar, hON⟩ := exists_extFrameData (I := I) g Dext hb
-  refine ⟨riemann04FrameOfExt (I := I) g Dext Fd, ?_, ?_, ?_, ?_⟩
-  · exact riemann04FrameOfExt_card (I := I) g Dext Fd hcard
-  · exact riemann04FrameOfExt_par (I := I) g Dext Fd hpar
-  · exact riemann04FrameOfExt_ON (I := I) g Dext Fd hON
-  · exact riemann04FrameOfExt_diff (I := I) g Dext Fd hFdiff
+          (chartRepAt (I := I) (radialCurve (I := I) g p w) (D.frame w i) t) t) := by
+  obtain ⟨Dext⟩ := nonempty_radialCurveExtension (I := I) g p time_le_one hR
+  obtain ⟨Fd, frame_cardinality, frameRepresentation_differentiable, frame_parallel, frame_orthonormal⟩ := exists_extendedRadialFrame_with_properties (I := I) g Dext hb
+  refine ⟨radialFrameFamilyOfExtension (I := I) g Dext Fd, ?_, ?_, ?_, ?_⟩
+  · exact radialFrameFamilyOfExtension_card (I := I) g Dext Fd frame_cardinality
+  · exact radialFrameFamilyOfExtension_parallel (I := I) g Dext Fd frame_parallel
+  · exact radialFrameFamilyOfExtension_orthonormal (I := I) g Dext Fd frame_orthonormal
+  · exact radialFrameFamilyOfExtension_differentiable (I := I) g Dext Fd frameRepresentation_differentiable
 
 omit [CompleteSpace E] in
 omit [T2Space M] [SigmaCompactSpace M] in
 omit [T2Space (TangentBundle I M)] in
-lemma exists_rm04FrameData
+lemma exists_radialFrameFamily_of_contMDiffAt
     [RiemannianBundle (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M) (p : M) {R b : ℝ} (hb : 0 < b)
-    (hγ2 : ∀ w ∈ Metric.ball (0 : E) R,
+    (radialCurve_contMDiffAt2 : ∀ w ∈ Metric.ball (0 : E) R,
       ContMDiff 𝓘(ℝ, ℝ) I (2 : ℕ∞) (radialCurve (I := I) g p w)) :
-    ∃ D : Riemann04Frame (I := I) g p R b,
+    ∃ D : RadialFrameFamily (I := I) g p R b,
       (∀ w ∈ Metric.ball (0 : E) R, ∀ t : ℝ,
         Fintype.card D.ι =
           Module.finrank ℝ (TangentSpace I (radialCurve (I := I) g p w t))) ∧
       (∀ w ∈ Metric.ball (0 : E) R, ∀ i, ∀ t ∈ Set.Icc (0 : ℝ) b,
-        covDerivAlong (I := I) g (radialCurve (I := I) g p w) (D.F w i) t = 0) ∧
+        covDerivAlong (I := I) g (radialCurve (I := I) g p w) (D.frame w i) t = 0) ∧
       (∀ w ∈ Metric.ball (0 : E) R, ∀ t ∈ Set.Icc (0 : ℝ) b, ∀ i j,
-        g.inner (radialCurve (I := I) g p w t) (D.F w i t) (D.F w j t) =
+        g.inner (radialCurve (I := I) g p w t) (D.frame w i t) (D.frame w j t) =
           if i = j then (1 : ℝ) else 0) ∧
       (∀ w ∈ Metric.ball (0 : E) R, ∀ i, ∀ t ∈ Set.Icc (0 : ℝ) b,
         DifferentiableAt ℝ
-          (chartRepAt (I := I) (radialCurve (I := I) g p w) (D.F w i) t) t) := by
+          (chartRepAt (I := I) (radialCurve (I := I) g p w) (D.frame w i) t) t) := by
   classical
   have hframe : ∀ w : E,
       ∃ F : Fin (Module.finrank ℝ E) →
@@ -1425,17 +1425,17 @@ lemma exists_rm04FrameData
               if i = j then (1 : ℝ) else 0)) := by
     intro w
     by_cases hw : w ∈ Metric.ball (0 : E) R
-    · obtain ⟨F, hcard, hFdiff, hpar, hON⟩ :=
-        exists_radialFrame (I := I) g p w hb (hγ2 w hw)
-      exact ⟨F, fun _ => ⟨hcard, hFdiff, hpar, hON⟩⟩
+    · obtain ⟨F, frame_cardinality, frameRepresentation_differentiable, frame_parallel, frame_orthonormal⟩ :=
+        exists_radialFrame (I := I) g p w hb (radialCurve_contMDiffAt2 w hw)
+      exact ⟨F, fun _ => ⟨frame_cardinality, frameRepresentation_differentiable, frame_parallel, frame_orthonormal⟩⟩
     · exact ⟨fun _ t => 0, fun h => False.elim (hw h)⟩
   choose F hF using hframe
-  let D : Riemann04Frame (I := I) g p R b := {
+  let D : RadialFrameFamily (I := I) g p R b := {
     ι := ULift (Fin (Module.finrank ℝ E))
     fintype := inferInstance
     decidableEq := inferInstance
     nonempty := inferInstance
-    F := fun w i => F w i.down }
+    frame := fun w i => F w i.down }
   refine ⟨D, ?_, ?_, ?_, ?_⟩
   · intro w hw t
     rw [show Module.finrank ℝ (TangentSpace I (radialCurve (I := I) g p w t)) =
@@ -1449,56 +1449,56 @@ lemma exists_rm04FrameData
     exact (hF w hw).2.1 i.down t ht
 
 
-structure IsRm04VolHypothesis
+structure RadialVolumeComparisonBounds
     [RiemannianBundle (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M) (p : M)
-    {R b : ℝ} (D : Riemann04Frame (I := I) g p R b)
+    {R b : ℝ} (D : RadialFrameFamily (I := I) g p R b)
     (ρ a K Rm Vb A B s : ℝ) : Prop where
-  hBnn : 0 ≤ B
-  ha : 0 < a
-  hK : 0 ≤ K
-  hRm_nonneg : 0 ≤ Rm
-  hVb : 0 ≤ Vb
-  hb0 : 0 ≤ b
-  hb1 : b ≤ 1
-  h1b : (1 : ℝ) ≤ b
-  hRpos : 0 < R
-  hRρ : R ≤ ρ
-  hRC2 : R ≤ expMapC2Radius (I := I) g p
-  hρball : ∀ w ∈ Metric.ball (0 : E) R,
+  bound_nonneg : 0 ≤ B
+  scale_pos : 0 < a
+  growthBound_nonneg : 0 ≤ K
+  curvatureBound_nonneg : 0 ≤ Rm
+  speedBound_nonneg : 0 ≤ Vb
+  time_nonneg : 0 ≤ b
+  time_le_one : b ≤ 1
+  one_le_time : (1 : ℝ) ≤ b
+  domainRadius_pos : 0 < R
+  domainRadius_le_chartRadius : R ≤ ρ
+  domainRadius_le_expMapC2Radius : R ≤ expMapC2Radius (I := I) g p
+  tangentBall_metricRadius_lt : ∀ w ∈ Metric.ball (0 : E) R,
     Real.sqrt (g.inner p (show TangentSpace I p from w) (show TangentSpace I p from w)) < ρ
-  hgs : ∀ w ∈ Metric.ball (0 : E) R,
+  tangentBall_geodesicRadius_lt : ∀ w ∈ Metric.ball (0 : E) R,
     Real.sqrt (g.inner p (show TangentSpace I p from w) (show TangentSpace I p from w)) < s
-  hsR : s < R
-  hsρ : s < ρ
-  hsdiv : s / Real.sqrt (metricCoerciveConst (I := I) g p) < R
-  hsmallBasis : ∀ k : Fin (Module.finrank ℝ E), ‖a • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k‖ < ρ
-  hsmallDir : ∀ v : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)), ‖v‖ = 1 →
+  geodesicRadius_lt_domainRadius : s < R
+  geodesicRadius_lt_chartRadius : s < ρ
+  normalizedGeodesicRadius_lt_domainRadius : s / Real.sqrt (metricCoerciveConst (I := I) g p) < R
+  scaledBasis_mem_chartRadius : ∀ k : Fin (Module.finrank ℝ E), ‖a • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k‖ < ρ
+  scaledUnitDirection_mem_chartRadius : ∀ v : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)), ‖v‖ = 1 →
     ‖a • (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)‖ < ρ
-  hlaunch : ∀ w ∈ Metric.ball (0 : E) R, Real.sqrt (g.inner p w w) ≤ Vb
-  hKbound : Real.sqrt ((Fintype.card (Fin 1 -> Fin (Module.finrank ℝ E)) : Real)) *
+  radialSpeed_le : ∀ w ∈ Metric.ball (0 : E) R, Real.sqrt (g.inner p w w) ≤ Vb
+  jacobiCoefficient_le : Real.sqrt ((Fintype.card (Fin 1 -> Fin (Module.finrank ℝ E)) : Real)) *
       Rm * Vb ^ 2 ≤ K
-  hRm : ∀ w ∈ Metric.ball (0 : E) R, ∀ t (_ht : t ∈ Set.Ioo (0 : Real) b),
+  curvature_norm_le : ∀ w ∈ Metric.ball (0 : E) R, ∀ t (_ht : t ∈ Set.Ioo (0 : Real) b),
     Real.sqrt (Tensor0SBundle.normSq0S (I := I) g
       (radialCurve (I := I) g p w t) 4
       (DifferentialGeometry.Geometry.Curvature.metricRm04At
         (I := I) (M := M) g (radialCurve (I := I) g p w t))) ≤ Rm
-  hγ : ∀ w ∈ Metric.ball (0 : E) R, ∀ t ∈ Set.Icc (0 : ℝ) b,
+  radialCurve_contMDiffAt : ∀ w ∈ Metric.ball (0 : E) R, ∀ t ∈ Set.Icc (0 : ℝ) b,
     ContMDiffAt 𝓘(ℝ, ℝ) I 1 (radialCurve (I := I) g p w) t
-  hcard : ∀ w ∈ Metric.ball (0 : E) R, ∀ t : ℝ,
+  frame_cardinality : ∀ w ∈ Metric.ball (0 : E) R, ∀ t : ℝ,
     Fintype.card D.ι = Module.finrank ℝ (TangentSpace I (radialCurve (I := I) g p w t))
-  hpar : ∀ w ∈ Metric.ball (0 : E) R, ∀ i, ∀ t ∈ Set.Icc (0 : ℝ) b,
-    covDerivAlong (I := I) g (radialCurve (I := I) g p w) (D.F w i) t = 0
-  hON : ∀ w ∈ Metric.ball (0 : E) R, ∀ t ∈ Set.Icc (0 : ℝ) b, ∀ i j,
-    g.inner (radialCurve (I := I) g p w t) (D.F w i t) (D.F w j t) =
+  frame_parallel : ∀ w ∈ Metric.ball (0 : E) R, ∀ i, ∀ t ∈ Set.Icc (0 : ℝ) b,
+    covDerivAlong (I := I) g (radialCurve (I := I) g p w) (D.frame w i) t = 0
+  frame_orthonormal : ∀ w ∈ Metric.ball (0 : E) R, ∀ t ∈ Set.Icc (0 : ℝ) b, ∀ i j,
+    g.inner (radialCurve (I := I) g p w t) (D.frame w i t) (D.frame w j t) =
       if i = j then (1 : ℝ) else 0
-  hFdiff : ∀ w ∈ Metric.ball (0 : E) R, ∀ i, ∀ t ∈ Set.Icc (0 : ℝ) b,
+  frameRepresentation_differentiable : ∀ w ∈ Metric.ball (0 : E) R, ∀ i, ∀ t ∈ Set.Icc (0 : ℝ) b,
     DifferentiableAt ℝ
-      (chartRepAt (I := I) (radialCurve (I := I) g p w) (D.F w i) t) t
-  hinit : ∀ k : Fin (Module.finrank ℝ E),
+      (chartRepAt (I := I) (radialCurve (I := I) g p w) (D.frame w i) t) t
+  initialFrame_norm_le : ∀ k : Fin (Module.finrank ℝ E),
     Real.sqrt (g.inner p (a • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k) (a • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k)) ≤ A
-  hmodelLe : A + gronwallBound 0 (max K 1) (K * (b * A)) 1 ≤ a * B
-  hmodelGe : ∀ v : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)), ‖v‖ = 1 →
+  upperComparison : A + gronwallBound 0 (max K 1) (K * (b * A)) 1 ≤ a * B
+  lowerComparison : ∀ v : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)), ‖v‖ = 1 →
     a * B ≤ Real.sqrt
         (g.inner p (a • (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))
           (a • (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))) -
@@ -1507,57 +1507,57 @@ structure IsRm04VolHypothesis
             (g.inner p (a • (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))
               (a • (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))))) 1
 
-structure IsRm04VolPairHypothesis
+structure TwoSidedRadialVolumeComparisonBounds
     [RiemannianBundle (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M) (p : M)
-    {R b : ℝ} (D : Riemann04Frame (I := I) g p R b)
+    {R b : ℝ} (D : RadialFrameFamily (I := I) g p R b)
     (ρ a K Rm Vb A Blo Bhi s : ℝ) : Prop where
-  hBlo : 0 ≤ Blo
-  hBhi : 0 ≤ Bhi
-  ha : 0 < a
-  hK : 0 ≤ K
-  hRm_nonneg : 0 ≤ Rm
-  hVb : 0 ≤ Vb
-  hb0 : 0 ≤ b
-  hb1 : b ≤ 1
-  h1b : (1 : ℝ) ≤ b
-  hRpos : 0 < R
-  hRρ : R ≤ ρ
-  hRC2 : R ≤ expMapC2Radius (I := I) g p
-  hρball : ∀ w ∈ Metric.ball (0 : E) R,
+  lowerBound_nonneg : 0 ≤ Blo
+  upperBound_nonneg : 0 ≤ Bhi
+  scale_pos : 0 < a
+  growthBound_nonneg : 0 ≤ K
+  curvatureBound_nonneg : 0 ≤ Rm
+  speedBound_nonneg : 0 ≤ Vb
+  time_nonneg : 0 ≤ b
+  time_le_one : b ≤ 1
+  one_le_time : (1 : ℝ) ≤ b
+  domainRadius_pos : 0 < R
+  domainRadius_le_chartRadius : R ≤ ρ
+  domainRadius_le_expMapC2Radius : R ≤ expMapC2Radius (I := I) g p
+  tangentBall_metricRadius_lt : ∀ w ∈ Metric.ball (0 : E) R,
     Real.sqrt (g.inner p (show TangentSpace I p from w) (show TangentSpace I p from w)) < ρ
-  hgs : ∀ w ∈ Metric.ball (0 : E) R,
+  tangentBall_geodesicRadius_lt : ∀ w ∈ Metric.ball (0 : E) R,
     Real.sqrt (g.inner p (show TangentSpace I p from w) (show TangentSpace I p from w)) < s
-  hsR : s < R
-  hsρ : s < ρ
-  hsdiv : s / Real.sqrt (metricCoerciveConst (I := I) g p) < R
-  hsmallBasis : ∀ k : Fin (Module.finrank ℝ E), ‖a • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k‖ < ρ
-  hsmallDir : ∀ v : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)), ‖v‖ = 1 →
+  geodesicRadius_lt_domainRadius : s < R
+  geodesicRadius_lt_chartRadius : s < ρ
+  normalizedGeodesicRadius_lt_domainRadius : s / Real.sqrt (metricCoerciveConst (I := I) g p) < R
+  scaledBasis_mem_chartRadius : ∀ k : Fin (Module.finrank ℝ E), ‖a • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k‖ < ρ
+  scaledUnitDirection_mem_chartRadius : ∀ v : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)), ‖v‖ = 1 →
     ‖a • (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)‖ < ρ
-  hlaunch : ∀ w ∈ Metric.ball (0 : E) R, Real.sqrt (g.inner p w w) ≤ Vb
-  hKbound : Real.sqrt ((Fintype.card (Fin 1 -> Fin (Module.finrank ℝ E)) : Real)) *
+  radialSpeed_le : ∀ w ∈ Metric.ball (0 : E) R, Real.sqrt (g.inner p w w) ≤ Vb
+  jacobiCoefficient_le : Real.sqrt ((Fintype.card (Fin 1 -> Fin (Module.finrank ℝ E)) : Real)) *
       Rm * Vb ^ 2 ≤ K
-  hRm : ∀ w ∈ Metric.ball (0 : E) R, ∀ t (_ht : t ∈ Set.Ioo (0 : Real) b),
+  curvature_norm_le : ∀ w ∈ Metric.ball (0 : E) R, ∀ t (_ht : t ∈ Set.Ioo (0 : Real) b),
     Real.sqrt (Tensor0SBundle.normSq0S (I := I) g
       (radialCurve (I := I) g p w t) 4
       (DifferentialGeometry.Geometry.Curvature.metricRm04At
         (I := I) (M := M) g (radialCurve (I := I) g p w t))) ≤ Rm
-  hγ : ∀ w ∈ Metric.ball (0 : E) R, ∀ t ∈ Set.Icc (0 : ℝ) b,
+  radialCurve_contMDiffAt : ∀ w ∈ Metric.ball (0 : E) R, ∀ t ∈ Set.Icc (0 : ℝ) b,
     ContMDiffAt 𝓘(ℝ, ℝ) I 1 (radialCurve (I := I) g p w) t
-  hcard : ∀ w ∈ Metric.ball (0 : E) R, ∀ t : ℝ,
+  frame_cardinality : ∀ w ∈ Metric.ball (0 : E) R, ∀ t : ℝ,
     Fintype.card D.ι = Module.finrank ℝ (TangentSpace I (radialCurve (I := I) g p w t))
-  hpar : ∀ w ∈ Metric.ball (0 : E) R, ∀ i, ∀ t ∈ Set.Icc (0 : ℝ) b,
-    covDerivAlong (I := I) g (radialCurve (I := I) g p w) (D.F w i) t = 0
-  hON : ∀ w ∈ Metric.ball (0 : E) R, ∀ t ∈ Set.Icc (0 : ℝ) b, ∀ i j,
-    g.inner (radialCurve (I := I) g p w t) (D.F w i t) (D.F w j t) =
+  frame_parallel : ∀ w ∈ Metric.ball (0 : E) R, ∀ i, ∀ t ∈ Set.Icc (0 : ℝ) b,
+    covDerivAlong (I := I) g (radialCurve (I := I) g p w) (D.frame w i) t = 0
+  frame_orthonormal : ∀ w ∈ Metric.ball (0 : E) R, ∀ t ∈ Set.Icc (0 : ℝ) b, ∀ i j,
+    g.inner (radialCurve (I := I) g p w t) (D.frame w i t) (D.frame w j t) =
       if i = j then (1 : ℝ) else 0
-  hFdiff : ∀ w ∈ Metric.ball (0 : E) R, ∀ i, ∀ t ∈ Set.Icc (0 : ℝ) b,
+  frameRepresentation_differentiable : ∀ w ∈ Metric.ball (0 : E) R, ∀ i, ∀ t ∈ Set.Icc (0 : ℝ) b,
     DifferentiableAt ℝ
-      (chartRepAt (I := I) (radialCurve (I := I) g p w) (D.F w i) t) t
-  hinit : ∀ k : Fin (Module.finrank ℝ E),
+      (chartRepAt (I := I) (radialCurve (I := I) g p w) (D.frame w i) t) t
+  initialFrame_norm_le : ∀ k : Fin (Module.finrank ℝ E),
     Real.sqrt (g.inner p (a • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k) (a • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k)) ≤ A
-  hmodelLe : A + gronwallBound 0 (max K 1) (K * (b * A)) 1 ≤ a * Bhi
-  hmodelGe : ∀ v : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)), ‖v‖ = 1 →
+  upperComparison : A + gronwallBound 0 (max K 1) (K * (b * A)) 1 ≤ a * Bhi
+  lowerComparison : ∀ v : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)), ‖v‖ = 1 →
     a * Blo ≤ Real.sqrt
         (g.inner p (a • (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))
           (a • (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))) -
@@ -1567,26 +1567,26 @@ structure IsRm04VolPairHypothesis
               (a • (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))))) 1
 
 omit [T2Space M] [SigmaCompactSpace M] in
-lemma IsRm04VolHypothesis.radialC2
+lemma RadialVolumeComparisonBounds.radialC2
     [RiemannianBundle (fun x : M => TangentSpace I x)]
     {g : SmoothRiemannianMetric I M} {p : M}
-    {R b ρ a K Rm Vb A B s : ℝ} {D : Riemann04Frame (I := I) g p R b}
-    (H : IsRm04VolHypothesis (I := I) g p D ρ a K Rm Vb A B s) :
+    {R b ρ a K Rm Vb A B s : ℝ} {D : RadialFrameFamily (I := I) g p R b}
+    (H : RadialVolumeComparisonBounds (I := I) g p D ρ a K Rm Vb A B s) :
     ∀ w ∈ Metric.ball (0 : E) R,
       ContMDiffOn 𝓘(ℝ, ℝ) I (2 : ℕ∞)
         (radialCurve (I := I) g p w) (Set.Icc (0 : ℝ) b) :=
-  radialC2OnBallIcc (I := I) g p H.hRC2 H.hb1
+  radialC2OnBallIcc (I := I) g p H.domainRadius_le_expMapC2Radius H.time_le_one
 
 omit [T2Space M] [SigmaCompactSpace M] in
-lemma IsRm04VolPairHypothesis.radialC2
+lemma TwoSidedRadialVolumeComparisonBounds.radialC2
     [RiemannianBundle (fun x : M => TangentSpace I x)]
     {g : SmoothRiemannianMetric I M} {p : M}
-    {R b ρ a K Rm Vb A Blo Bhi s : ℝ} {D : Riemann04Frame (I := I) g p R b}
-    (H : IsRm04VolPairHypothesis (I := I) g p D ρ a K Rm Vb A Blo Bhi s) :
+    {R b ρ a K Rm Vb A Blo Bhi s : ℝ} {D : RadialFrameFamily (I := I) g p R b}
+    (H : TwoSidedRadialVolumeComparisonBounds (I := I) g p D ρ a K Rm Vb A Blo Bhi s) :
     ∀ w ∈ Metric.ball (0 : E) R,
       ContMDiffOn 𝓘(ℝ, ℝ) I (2 : ℕ∞)
         (radialCurve (I := I) g p w) (Set.Icc (0 : ℝ) b) :=
-  radialC2OnBallIcc (I := I) g p H.hRC2 H.hb1
+  radialC2OnBallIcc (I := I) g p H.domainRadius_le_expMapC2Radius H.time_le_one
 
 omit [NeZero (Module.finrank ℝ E)] [T2Space M] [SigmaCompactSpace M] in
 lemma radialC1AtBall
@@ -1605,32 +1605,32 @@ lemma exists_rm04_hyperbolic
     [RiemannianBundle (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M) (p : M)
     {R b ρ a K Rm Vb A B s : ℝ}
-    (hBnn : 0 ≤ B) (ha : 0 < a) (hK : 0 ≤ K)
-    (hRm_nonneg : 0 ≤ Rm) (hVb : 0 ≤ Vb)
-    (hb0 : 0 ≤ b) (hb1 : b ≤ 1) (h1b : (1 : ℝ) ≤ b)
-    (hRpos : 0 < R) (hRρ : R ≤ ρ)
-    (hRC2 : R ≤ expMapC2Radius (I := I) g p)
-    (hρball : ∀ w ∈ Metric.ball (0 : E) R,
+    (bound_nonneg : 0 ≤ B) (scale_pos : 0 < a) (growthBound_nonneg : 0 ≤ K)
+    (curvatureBound_nonneg : 0 ≤ Rm) (speedBound_nonneg : 0 ≤ Vb)
+    (time_nonneg : 0 ≤ b) (time_le_one : b ≤ 1) (one_le_time : (1 : ℝ) ≤ b)
+    (domainRadius_pos : 0 < R) (domainRadius_le_chartRadius : R ≤ ρ)
+    (domainRadius_le_expMapC2Radius : R ≤ expMapC2Radius (I := I) g p)
+    (tangentBall_metricRadius_lt : ∀ w ∈ Metric.ball (0 : E) R,
       Real.sqrt (g.inner p (show TangentSpace I p from w) (show TangentSpace I p from w)) < ρ)
-    (hgs : ∀ w ∈ Metric.ball (0 : E) R,
+    (tangentBall_geodesicRadius_lt : ∀ w ∈ Metric.ball (0 : E) R,
       Real.sqrt (g.inner p (show TangentSpace I p from w) (show TangentSpace I p from w)) < s)
-    (hsR : s < R) (hsρ : s < ρ)
-    (hsdiv : s / Real.sqrt (metricCoerciveConst (I := I) g p) < R)
-    (hsmallBasis : ∀ k : Fin (Module.finrank ℝ E), ‖a • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k‖ < ρ)
-    (hsmallDir : ∀ v : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)), ‖v‖ = 1 →
+    (geodesicRadius_lt_domainRadius : s < R) (geodesicRadius_lt_chartRadius : s < ρ)
+    (normalizedGeodesicRadius_lt_domainRadius : s / Real.sqrt (metricCoerciveConst (I := I) g p) < R)
+    (scaledBasis_mem_chartRadius : ∀ k : Fin (Module.finrank ℝ E), ‖a • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k‖ < ρ)
+    (scaledUnitDirection_mem_chartRadius : ∀ v : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)), ‖v‖ = 1 →
       ‖a • (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)‖ < ρ)
-    (hlaunch : ∀ w ∈ Metric.ball (0 : E) R, Real.sqrt (g.inner p w w) ≤ Vb)
-    (hKbound : Real.sqrt ((Fintype.card (Fin 1 -> Fin (Module.finrank ℝ E)) : Real)) *
+    (radialSpeed_le : ∀ w ∈ Metric.ball (0 : E) R, Real.sqrt (g.inner p w w) ≤ Vb)
+    (jacobiCoefficient_le : Real.sqrt ((Fintype.card (Fin 1 -> Fin (Module.finrank ℝ E)) : Real)) *
         Rm * Vb ^ 2 ≤ K)
-    (hRm : ∀ w ∈ Metric.ball (0 : E) R, ∀ t (_ht : t ∈ Set.Ioo (0 : Real) b),
+    (curvature_norm_le : ∀ w ∈ Metric.ball (0 : E) R, ∀ t (_ht : t ∈ Set.Ioo (0 : Real) b),
       Real.sqrt (Tensor0SBundle.normSq0S (I := I) g
         (radialCurve (I := I) g p w t) 4
         (DifferentialGeometry.Geometry.Curvature.metricRm04At
           (I := I) (M := M) g (radialCurve (I := I) g p w t))) ≤ Rm)
-    (hinit : ∀ k : Fin (Module.finrank ℝ E),
+    (initialFrame_norm_le : ∀ k : Fin (Module.finrank ℝ E),
       Real.sqrt (g.inner p (a • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k) (a • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k)) ≤ A)
-    (hmodelLe : A + gronwallBound 0 (max K 1) (K * (b * A)) 1 ≤ a * B)
-    (hmodelGe : ∀ v : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)), ‖v‖ = 1 →
+    (upperComparison : A + gronwallBound 0 (max K 1) (K * (b * A)) 1 ≤ a * B)
+    (lowerComparison : ∀ v : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)), ‖v‖ = 1 →
       a * B ≤ Real.sqrt
           (g.inner p (a • (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))
             (a • (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))) -
@@ -1638,52 +1638,52 @@ lemma exists_rm04_hyperbolic
             (K * (b * Real.sqrt
               (g.inner p (a • (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))
                 (a • (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))))) 1) :
-    ∃ D : Riemann04Frame (I := I) g p R b,
-      IsRm04VolHypothesis (I := I) g p D ρ a K Rm Vb A B s := by
-  have hb : 0 < b := lt_of_lt_of_le zero_lt_one h1b
-  obtain ⟨D, hcard, hpar, hON, hFdiff⟩ :=
-    exists_rm04FrameData_radius (I := I) g p hb hb1 hRC2
+    ∃ D : RadialFrameFamily (I := I) g p R b,
+      RadialVolumeComparisonBounds (I := I) g p D ρ a K Rm Vb A B s := by
+  have hb : 0 < b := lt_of_lt_of_le zero_lt_one one_le_time
+  obtain ⟨D, frame_cardinality, frame_parallel, frame_orthonormal, frameRepresentation_differentiable⟩ :=
+    exists_radialFrameFamily_of_radius_le_expMapC2Radius (I := I) g p hb time_le_one domainRadius_le_expMapC2Radius
   exact ⟨D, {
-    hBnn := hBnn
-    ha := ha
-    hK := hK
-    hRm_nonneg := hRm_nonneg
-    hVb := hVb
-    hb0 := hb0
-    hb1 := hb1
-    h1b := h1b
-    hRpos := hRpos
-    hRρ := hRρ
-    hRC2 := hRC2
-    hρball := hρball
-    hgs := hgs
-    hsR := hsR
-    hsρ := hsρ
-    hsdiv := hsdiv
-    hsmallBasis := hsmallBasis
-    hsmallDir := hsmallDir
-    hlaunch := hlaunch
-    hKbound := hKbound
-    hRm := hRm
-    hγ := radialC1AtBall (I := I) g p hRC2 hb1
-    hcard := hcard
-    hpar := hpar
-    hON := hON
-    hFdiff := hFdiff
-    hinit := hinit
-    hmodelLe := hmodelLe
-    hmodelGe := hmodelGe }⟩
+    bound_nonneg := bound_nonneg
+    scale_pos := scale_pos
+    growthBound_nonneg := growthBound_nonneg
+    curvatureBound_nonneg := curvatureBound_nonneg
+    speedBound_nonneg := speedBound_nonneg
+    time_nonneg := time_nonneg
+    time_le_one := time_le_one
+    one_le_time := one_le_time
+    domainRadius_pos := domainRadius_pos
+    domainRadius_le_chartRadius := domainRadius_le_chartRadius
+    domainRadius_le_expMapC2Radius := domainRadius_le_expMapC2Radius
+    tangentBall_metricRadius_lt := tangentBall_metricRadius_lt
+    tangentBall_geodesicRadius_lt := tangentBall_geodesicRadius_lt
+    geodesicRadius_lt_domainRadius := geodesicRadius_lt_domainRadius
+    geodesicRadius_lt_chartRadius := geodesicRadius_lt_chartRadius
+    normalizedGeodesicRadius_lt_domainRadius := normalizedGeodesicRadius_lt_domainRadius
+    scaledBasis_mem_chartRadius := scaledBasis_mem_chartRadius
+    scaledUnitDirection_mem_chartRadius := scaledUnitDirection_mem_chartRadius
+    radialSpeed_le := radialSpeed_le
+    jacobiCoefficient_le := jacobiCoefficient_le
+    curvature_norm_le := curvature_norm_le
+    radialCurve_contMDiffAt := radialC1AtBall (I := I) g p domainRadius_le_expMapC2Radius time_le_one
+    frame_cardinality := frame_cardinality
+    frame_parallel := frame_parallel
+    frame_orthonormal := frame_orthonormal
+    frameRepresentation_differentiable := frameRepresentation_differentiable
+    initialFrame_norm_le := initialFrame_norm_le
+    upperComparison := upperComparison
+    lowerComparison := lowerComparison }⟩
 
 omit [CompleteSpace E] in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
     [T2Space (TangentBundle I M)] in
 lemma scalarModel_smul
     (g : SmoothRiemannianMetric I M) (p : M)
-    {a K b A B : ℝ} (ha : 0 < a)
+    {a K b A B : ℝ} (scale_pos : 0 < a)
     (hbasis : ∀ k : Fin (Module.finrank ℝ E),
       Real.sqrt (g.inner p ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k) ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k)) ≤ A)
-    (hmodelLe : A + gronwallBound 0 (max K 1) (K * (b * A)) 1 ≤ B)
-    (hmodelGe : ∀ v : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)), ‖v‖ = 1 →
+    (upperComparison : A + gronwallBound 0 (max K 1) (K * (b * A)) 1 ≤ B)
+    (lowerComparison : ∀ v : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)), ‖v‖ = 1 →
       B ≤ Real.sqrt
           (g.inner p (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)
             (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)) -
@@ -1703,19 +1703,19 @@ lemma scalarModel_smul
             (K * (b * Real.sqrt
               (g.inner p (a • (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))
                 (a • (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))))) 1) := by
-  obtain ⟨hinit, hle⟩ := basisModel_le_smul (I := I) g p ha hbasis hmodelLe
-  exact ⟨hinit, hle, dirModel_ge_smul (I := I) g p ha hmodelGe⟩
+  obtain ⟨initialFrame_norm_le, hle⟩ := basisModel_le_smul (I := I) g p scale_pos hbasis upperComparison
+  exact ⟨initialFrame_norm_le, hle, dirModel_ge_smul (I := I) g p scale_pos lowerComparison⟩
 
 omit [CompleteSpace E] in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
     [T2Space (TangentBundle I M)] in
 lemma scalarModel_pair_smul
     (g : SmoothRiemannianMetric I M) (p : M)
-    {a K b A Blo Bhi : ℝ} (ha : 0 < a)
+    {a K b A Blo Bhi : ℝ} (scale_pos : 0 < a)
     (hbasis : ∀ k : Fin (Module.finrank ℝ E),
       Real.sqrt (g.inner p ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k) ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k)) ≤ A)
-    (hmodelLe : A + gronwallBound 0 (max K 1) (K * (b * A)) 1 ≤ Bhi)
-    (hmodelGe : ∀ v : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)), ‖v‖ = 1 →
+    (upperComparison : A + gronwallBound 0 (max K 1) (K * (b * A)) 1 ≤ Bhi)
+    (lowerComparison : ∀ v : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)), ‖v‖ = 1 →
       Blo ≤ Real.sqrt
           (g.inner p (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)
             (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)) -
@@ -1735,40 +1735,40 @@ lemma scalarModel_pair_smul
             (K * (b * Real.sqrt
               (g.inner p (a • (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))
                 (a • (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))))) 1) := by
-  obtain ⟨hinit, hle⟩ := basisModel_le_smul (I := I) g p ha hbasis hmodelLe
-  exact ⟨hinit, hle, dirModel_ge_smul (I := I) g p ha hmodelGe⟩
+  obtain ⟨initialFrame_norm_le, hle⟩ := basisModel_le_smul (I := I) g p scale_pos hbasis upperComparison
+  exact ⟨initialFrame_norm_le, hle, dirModel_ge_smul (I := I) g p scale_pos lowerComparison⟩
 
 omit [T2Space M] [SigmaCompactSpace M] in
 lemma exists_rm04_scalar
     [RiemannianBundle (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M) (p : M)
     {R b ρ a K Rm Vb A B s : ℝ}
-    (hBnn : 0 ≤ B) (ha : 0 < a) (hK : 0 ≤ K)
-    (hRm_nonneg : 0 ≤ Rm) (hVb : 0 ≤ Vb)
-    (hb0 : 0 ≤ b) (hb1 : b ≤ 1) (h1b : (1 : ℝ) ≤ b)
-    (hRpos : 0 < R) (hRρ : R ≤ ρ)
-    (hRC2 : R ≤ expMapC2Radius (I := I) g p)
-    (hρball : ∀ w ∈ Metric.ball (0 : E) R,
+    (bound_nonneg : 0 ≤ B) (scale_pos : 0 < a) (growthBound_nonneg : 0 ≤ K)
+    (curvatureBound_nonneg : 0 ≤ Rm) (speedBound_nonneg : 0 ≤ Vb)
+    (time_nonneg : 0 ≤ b) (time_le_one : b ≤ 1) (one_le_time : (1 : ℝ) ≤ b)
+    (domainRadius_pos : 0 < R) (domainRadius_le_chartRadius : R ≤ ρ)
+    (domainRadius_le_expMapC2Radius : R ≤ expMapC2Radius (I := I) g p)
+    (tangentBall_metricRadius_lt : ∀ w ∈ Metric.ball (0 : E) R,
       Real.sqrt (g.inner p (show TangentSpace I p from w) (show TangentSpace I p from w)) < ρ)
-    (hgs : ∀ w ∈ Metric.ball (0 : E) R,
+    (tangentBall_geodesicRadius_lt : ∀ w ∈ Metric.ball (0 : E) R,
       Real.sqrt (g.inner p (show TangentSpace I p from w) (show TangentSpace I p from w)) < s)
-    (hsR : s < R) (hsρ : s < ρ)
-    (hsdiv : s / Real.sqrt (metricCoerciveConst (I := I) g p) < R)
-    (hsmallBasis : ∀ k : Fin (Module.finrank ℝ E), ‖a • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k‖ < ρ)
-    (hsmallDir : ∀ v : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)), ‖v‖ = 1 →
+    (geodesicRadius_lt_domainRadius : s < R) (geodesicRadius_lt_chartRadius : s < ρ)
+    (normalizedGeodesicRadius_lt_domainRadius : s / Real.sqrt (metricCoerciveConst (I := I) g p) < R)
+    (scaledBasis_mem_chartRadius : ∀ k : Fin (Module.finrank ℝ E), ‖a • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k‖ < ρ)
+    (scaledUnitDirection_mem_chartRadius : ∀ v : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)), ‖v‖ = 1 →
       ‖a • (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)‖ < ρ)
-    (hlaunch : ∀ w ∈ Metric.ball (0 : E) R, Real.sqrt (g.inner p w w) ≤ Vb)
-    (hKbound : Real.sqrt ((Fintype.card (Fin 1 -> Fin (Module.finrank ℝ E)) : Real)) *
+    (radialSpeed_le : ∀ w ∈ Metric.ball (0 : E) R, Real.sqrt (g.inner p w w) ≤ Vb)
+    (jacobiCoefficient_le : Real.sqrt ((Fintype.card (Fin 1 -> Fin (Module.finrank ℝ E)) : Real)) *
         Rm * Vb ^ 2 ≤ K)
-    (hRm : ∀ w ∈ Metric.ball (0 : E) R, ∀ t (_ht : t ∈ Set.Ioo (0 : Real) b),
+    (curvature_norm_le : ∀ w ∈ Metric.ball (0 : E) R, ∀ t (_ht : t ∈ Set.Ioo (0 : Real) b),
       Real.sqrt (Tensor0SBundle.normSq0S (I := I) g
         (radialCurve (I := I) g p w t) 4
         (DifferentialGeometry.Geometry.Curvature.metricRm04At
           (I := I) (M := M) g (radialCurve (I := I) g p w t))) ≤ Rm)
     (hbasis : ∀ k : Fin (Module.finrank ℝ E),
       Real.sqrt (g.inner p ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k) ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k)) ≤ A)
-    (hmodelLe : A + gronwallBound 0 (max K 1) (K * (b * A)) 1 ≤ B)
-    (hmodelGe : ∀ v : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)), ‖v‖ = 1 →
+    (upperComparison : A + gronwallBound 0 (max K 1) (K * (b * A)) 1 ≤ B)
+    (lowerComparison : ∀ v : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)), ‖v‖ = 1 →
       B ≤ Real.sqrt
           (g.inner p (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)
             (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)) -
@@ -1776,45 +1776,45 @@ lemma exists_rm04_scalar
             (K * (b * Real.sqrt
               (g.inner p (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)
                 (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)))) 1) :
-    ∃ D : Riemann04Frame (I := I) g p R b,
-      IsRm04VolHypothesis (I := I) g p D ρ a K Rm Vb (a * A) B s := by
-  obtain ⟨hinit, hmodelLe', hmodelGe'⟩ :=
-    scalarModel_smul (I := I) g p ha hbasis hmodelLe hmodelGe
-  exact exists_rm04_hyperbolic (I := I) g p hBnn ha hK hRm_nonneg hVb hb0 hb1 h1b
-    hRpos hRρ hRC2 hρball hgs hsR hsρ hsdiv hsmallBasis hsmallDir hlaunch
-    hKbound hRm hinit hmodelLe' hmodelGe'
+    ∃ D : RadialFrameFamily (I := I) g p R b,
+      RadialVolumeComparisonBounds (I := I) g p D ρ a K Rm Vb (a * A) B s := by
+  obtain ⟨initialFrame_norm_le, upperComparison', lowerComparison'⟩ :=
+    scalarModel_smul (I := I) g p scale_pos hbasis upperComparison lowerComparison
+  exact exists_rm04_hyperbolic (I := I) g p bound_nonneg scale_pos growthBound_nonneg curvatureBound_nonneg speedBound_nonneg time_nonneg time_le_one one_le_time
+    domainRadius_pos domainRadius_le_chartRadius domainRadius_le_expMapC2Radius tangentBall_metricRadius_lt tangentBall_geodesicRadius_lt geodesicRadius_lt_domainRadius geodesicRadius_lt_chartRadius normalizedGeodesicRadius_lt_domainRadius scaledBasis_mem_chartRadius scaledUnitDirection_mem_chartRadius radialSpeed_le
+    jacobiCoefficient_le curvature_norm_le initialFrame_norm_le upperComparison' lowerComparison'
 
 omit [T2Space M] [SigmaCompactSpace M] in
 lemma exists_rm04_pair_hyperbolic
     [RiemannianBundle (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M) (p : M)
     {R b ρ a K Rm Vb A Blo Bhi s : ℝ}
-    (hBlo : 0 ≤ Blo) (hBhi : 0 ≤ Bhi) (ha : 0 < a) (hK : 0 ≤ K)
-    (hRm_nonneg : 0 ≤ Rm) (hVb : 0 ≤ Vb)
-    (hb0 : 0 ≤ b) (hb1 : b ≤ 1) (h1b : (1 : ℝ) ≤ b)
-    (hRpos : 0 < R) (hRρ : R ≤ ρ)
-    (hRC2 : R ≤ expMapC2Radius (I := I) g p)
-    (hρball : ∀ w ∈ Metric.ball (0 : E) R,
+    (lowerBound_nonneg : 0 ≤ Blo) (upperBound_nonneg : 0 ≤ Bhi) (scale_pos : 0 < a) (growthBound_nonneg : 0 ≤ K)
+    (curvatureBound_nonneg : 0 ≤ Rm) (speedBound_nonneg : 0 ≤ Vb)
+    (time_nonneg : 0 ≤ b) (time_le_one : b ≤ 1) (one_le_time : (1 : ℝ) ≤ b)
+    (domainRadius_pos : 0 < R) (domainRadius_le_chartRadius : R ≤ ρ)
+    (domainRadius_le_expMapC2Radius : R ≤ expMapC2Radius (I := I) g p)
+    (tangentBall_metricRadius_lt : ∀ w ∈ Metric.ball (0 : E) R,
       Real.sqrt (g.inner p (show TangentSpace I p from w) (show TangentSpace I p from w)) < ρ)
-    (hgs : ∀ w ∈ Metric.ball (0 : E) R,
+    (tangentBall_geodesicRadius_lt : ∀ w ∈ Metric.ball (0 : E) R,
       Real.sqrt (g.inner p (show TangentSpace I p from w) (show TangentSpace I p from w)) < s)
-    (hsR : s < R) (hsρ : s < ρ)
-    (hsdiv : s / Real.sqrt (metricCoerciveConst (I := I) g p) < R)
-    (hsmallBasis : ∀ k : Fin (Module.finrank ℝ E), ‖a • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k‖ < ρ)
-    (hsmallDir : ∀ v : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)), ‖v‖ = 1 →
+    (geodesicRadius_lt_domainRadius : s < R) (geodesicRadius_lt_chartRadius : s < ρ)
+    (normalizedGeodesicRadius_lt_domainRadius : s / Real.sqrt (metricCoerciveConst (I := I) g p) < R)
+    (scaledBasis_mem_chartRadius : ∀ k : Fin (Module.finrank ℝ E), ‖a • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k‖ < ρ)
+    (scaledUnitDirection_mem_chartRadius : ∀ v : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)), ‖v‖ = 1 →
       ‖a • (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)‖ < ρ)
-    (hlaunch : ∀ w ∈ Metric.ball (0 : E) R, Real.sqrt (g.inner p w w) ≤ Vb)
-    (hKbound : Real.sqrt ((Fintype.card (Fin 1 -> Fin (Module.finrank ℝ E)) : Real)) *
+    (radialSpeed_le : ∀ w ∈ Metric.ball (0 : E) R, Real.sqrt (g.inner p w w) ≤ Vb)
+    (jacobiCoefficient_le : Real.sqrt ((Fintype.card (Fin 1 -> Fin (Module.finrank ℝ E)) : Real)) *
         Rm * Vb ^ 2 ≤ K)
-    (hRm : ∀ w ∈ Metric.ball (0 : E) R, ∀ t (_ht : t ∈ Set.Ioo (0 : Real) b),
+    (curvature_norm_le : ∀ w ∈ Metric.ball (0 : E) R, ∀ t (_ht : t ∈ Set.Ioo (0 : Real) b),
       Real.sqrt (Tensor0SBundle.normSq0S (I := I) g
         (radialCurve (I := I) g p w t) 4
         (DifferentialGeometry.Geometry.Curvature.metricRm04At
           (I := I) (M := M) g (radialCurve (I := I) g p w t))) ≤ Rm)
-    (hinit : ∀ k : Fin (Module.finrank ℝ E),
+    (initialFrame_norm_le : ∀ k : Fin (Module.finrank ℝ E),
       Real.sqrt (g.inner p (a • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k) (a • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k)) ≤ A)
-    (hmodelLe : A + gronwallBound 0 (max K 1) (K * (b * A)) 1 ≤ a * Bhi)
-    (hmodelGe : ∀ v : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)), ‖v‖ = 1 →
+    (upperComparison : A + gronwallBound 0 (max K 1) (K * (b * A)) 1 ≤ a * Bhi)
+    (lowerComparison : ∀ v : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)), ‖v‖ = 1 →
       a * Blo ≤ Real.sqrt
           (g.inner p (a • (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))
             (a • (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))) -
@@ -1822,74 +1822,74 @@ lemma exists_rm04_pair_hyperbolic
             (K * (b * Real.sqrt
               (g.inner p (a • (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))
                 (a • (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))))) 1) :
-    ∃ D : Riemann04Frame (I := I) g p R b,
-      IsRm04VolPairHypothesis (I := I) g p D ρ a K Rm Vb A Blo Bhi s := by
-  have hb : 0 < b := lt_of_lt_of_le zero_lt_one h1b
-  obtain ⟨D, hcard, hpar, hON, hFdiff⟩ :=
-    exists_rm04FrameData_radius (I := I) g p hb hb1 hRC2
+    ∃ D : RadialFrameFamily (I := I) g p R b,
+      TwoSidedRadialVolumeComparisonBounds (I := I) g p D ρ a K Rm Vb A Blo Bhi s := by
+  have hb : 0 < b := lt_of_lt_of_le zero_lt_one one_le_time
+  obtain ⟨D, frame_cardinality, frame_parallel, frame_orthonormal, frameRepresentation_differentiable⟩ :=
+    exists_radialFrameFamily_of_radius_le_expMapC2Radius (I := I) g p hb time_le_one domainRadius_le_expMapC2Radius
   exact ⟨D, {
-    hBlo := hBlo
-    hBhi := hBhi
-    ha := ha
-    hK := hK
-    hRm_nonneg := hRm_nonneg
-    hVb := hVb
-    hb0 := hb0
-    hb1 := hb1
-    h1b := h1b
-    hRpos := hRpos
-    hRρ := hRρ
-    hRC2 := hRC2
-    hρball := hρball
-    hgs := hgs
-    hsR := hsR
-    hsρ := hsρ
-    hsdiv := hsdiv
-    hsmallBasis := hsmallBasis
-    hsmallDir := hsmallDir
-    hlaunch := hlaunch
-    hKbound := hKbound
-    hRm := hRm
-    hγ := radialC1AtBall (I := I) g p hRC2 hb1
-    hcard := hcard
-    hpar := hpar
-    hON := hON
-    hFdiff := hFdiff
-    hinit := hinit
-    hmodelLe := hmodelLe
-    hmodelGe := hmodelGe }⟩
+    lowerBound_nonneg := lowerBound_nonneg
+    upperBound_nonneg := upperBound_nonneg
+    scale_pos := scale_pos
+    growthBound_nonneg := growthBound_nonneg
+    curvatureBound_nonneg := curvatureBound_nonneg
+    speedBound_nonneg := speedBound_nonneg
+    time_nonneg := time_nonneg
+    time_le_one := time_le_one
+    one_le_time := one_le_time
+    domainRadius_pos := domainRadius_pos
+    domainRadius_le_chartRadius := domainRadius_le_chartRadius
+    domainRadius_le_expMapC2Radius := domainRadius_le_expMapC2Radius
+    tangentBall_metricRadius_lt := tangentBall_metricRadius_lt
+    tangentBall_geodesicRadius_lt := tangentBall_geodesicRadius_lt
+    geodesicRadius_lt_domainRadius := geodesicRadius_lt_domainRadius
+    geodesicRadius_lt_chartRadius := geodesicRadius_lt_chartRadius
+    normalizedGeodesicRadius_lt_domainRadius := normalizedGeodesicRadius_lt_domainRadius
+    scaledBasis_mem_chartRadius := scaledBasis_mem_chartRadius
+    scaledUnitDirection_mem_chartRadius := scaledUnitDirection_mem_chartRadius
+    radialSpeed_le := radialSpeed_le
+    jacobiCoefficient_le := jacobiCoefficient_le
+    curvature_norm_le := curvature_norm_le
+    radialCurve_contMDiffAt := radialC1AtBall (I := I) g p domainRadius_le_expMapC2Radius time_le_one
+    frame_cardinality := frame_cardinality
+    frame_parallel := frame_parallel
+    frame_orthonormal := frame_orthonormal
+    frameRepresentation_differentiable := frameRepresentation_differentiable
+    initialFrame_norm_le := initialFrame_norm_le
+    upperComparison := upperComparison
+    lowerComparison := lowerComparison }⟩
 
 omit [T2Space M] [SigmaCompactSpace M] in
 lemma exists_rm04_pair_scalar
     [RiemannianBundle (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M) (p : M)
     {R b ρ a K Rm Vb A Blo Bhi s : ℝ}
-    (hBlo : 0 ≤ Blo) (hBhi : 0 ≤ Bhi) (ha : 0 < a) (hK : 0 ≤ K)
-    (hRm_nonneg : 0 ≤ Rm) (hVb : 0 ≤ Vb)
-    (hb0 : 0 ≤ b) (hb1 : b ≤ 1) (h1b : (1 : ℝ) ≤ b)
-    (hRpos : 0 < R) (hRρ : R ≤ ρ)
-    (hRC2 : R ≤ expMapC2Radius (I := I) g p)
-    (hρball : ∀ w ∈ Metric.ball (0 : E) R,
+    (lowerBound_nonneg : 0 ≤ Blo) (upperBound_nonneg : 0 ≤ Bhi) (scale_pos : 0 < a) (growthBound_nonneg : 0 ≤ K)
+    (curvatureBound_nonneg : 0 ≤ Rm) (speedBound_nonneg : 0 ≤ Vb)
+    (time_nonneg : 0 ≤ b) (time_le_one : b ≤ 1) (one_le_time : (1 : ℝ) ≤ b)
+    (domainRadius_pos : 0 < R) (domainRadius_le_chartRadius : R ≤ ρ)
+    (domainRadius_le_expMapC2Radius : R ≤ expMapC2Radius (I := I) g p)
+    (tangentBall_metricRadius_lt : ∀ w ∈ Metric.ball (0 : E) R,
       Real.sqrt (g.inner p (show TangentSpace I p from w) (show TangentSpace I p from w)) < ρ)
-    (hgs : ∀ w ∈ Metric.ball (0 : E) R,
+    (tangentBall_geodesicRadius_lt : ∀ w ∈ Metric.ball (0 : E) R,
       Real.sqrt (g.inner p (show TangentSpace I p from w) (show TangentSpace I p from w)) < s)
-    (hsR : s < R) (hsρ : s < ρ)
-    (hsdiv : s / Real.sqrt (metricCoerciveConst (I := I) g p) < R)
-    (hsmallBasis : ∀ k : Fin (Module.finrank ℝ E), ‖a • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k‖ < ρ)
-    (hsmallDir : ∀ v : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)), ‖v‖ = 1 →
+    (geodesicRadius_lt_domainRadius : s < R) (geodesicRadius_lt_chartRadius : s < ρ)
+    (normalizedGeodesicRadius_lt_domainRadius : s / Real.sqrt (metricCoerciveConst (I := I) g p) < R)
+    (scaledBasis_mem_chartRadius : ∀ k : Fin (Module.finrank ℝ E), ‖a • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k‖ < ρ)
+    (scaledUnitDirection_mem_chartRadius : ∀ v : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)), ‖v‖ = 1 →
       ‖a • (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)‖ < ρ)
-    (hlaunch : ∀ w ∈ Metric.ball (0 : E) R, Real.sqrt (g.inner p w w) ≤ Vb)
-    (hKbound : Real.sqrt ((Fintype.card (Fin 1 -> Fin (Module.finrank ℝ E)) : Real)) *
+    (radialSpeed_le : ∀ w ∈ Metric.ball (0 : E) R, Real.sqrt (g.inner p w w) ≤ Vb)
+    (jacobiCoefficient_le : Real.sqrt ((Fintype.card (Fin 1 -> Fin (Module.finrank ℝ E)) : Real)) *
         Rm * Vb ^ 2 ≤ K)
-    (hRm : ∀ w ∈ Metric.ball (0 : E) R, ∀ t (_ht : t ∈ Set.Ioo (0 : Real) b),
+    (curvature_norm_le : ∀ w ∈ Metric.ball (0 : E) R, ∀ t (_ht : t ∈ Set.Ioo (0 : Real) b),
       Real.sqrt (Tensor0SBundle.normSq0S (I := I) g
         (radialCurve (I := I) g p w t) 4
         (DifferentialGeometry.Geometry.Curvature.metricRm04At
           (I := I) (M := M) g (radialCurve (I := I) g p w t))) ≤ Rm)
     (hbasis : ∀ k : Fin (Module.finrank ℝ E),
       Real.sqrt (g.inner p ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k) ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k)) ≤ A)
-    (hmodelLe : A + gronwallBound 0 (max K 1) (K * (b * A)) 1 ≤ Bhi)
-    (hmodelGe : ∀ v : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)), ‖v‖ = 1 →
+    (upperComparison : A + gronwallBound 0 (max K 1) (K * (b * A)) 1 ≤ Bhi)
+    (lowerComparison : ∀ v : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)), ‖v‖ = 1 →
       Blo ≤ Real.sqrt
           (g.inner p (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)
             (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)) -
@@ -1897,28 +1897,28 @@ lemma exists_rm04_pair_scalar
             (K * (b * Real.sqrt
               (g.inner p (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)
                 (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)))) 1) :
-    ∃ D : Riemann04Frame (I := I) g p R b,
-      IsRm04VolPairHypothesis (I := I) g p D ρ a K Rm Vb (a * A) Blo Bhi s := by
-  obtain ⟨hinit, hmodelLe', hmodelGe'⟩ :=
-    scalarModel_pair_smul (I := I) g p ha hbasis hmodelLe hmodelGe
-  exact exists_rm04_pair_hyperbolic (I := I) g p hBlo hBhi ha hK hRm_nonneg hVb hb0 hb1 h1b
-    hRpos hRρ hRC2 hρball hgs hsR hsρ hsdiv hsmallBasis hsmallDir hlaunch
-    hKbound hRm hinit hmodelLe' hmodelGe'
+    ∃ D : RadialFrameFamily (I := I) g p R b,
+      TwoSidedRadialVolumeComparisonBounds (I := I) g p D ρ a K Rm Vb (a * A) Blo Bhi s := by
+  obtain ⟨initialFrame_norm_le, upperComparison', lowerComparison'⟩ :=
+    scalarModel_pair_smul (I := I) g p scale_pos hbasis upperComparison lowerComparison
+  exact exists_rm04_pair_hyperbolic (I := I) g p lowerBound_nonneg upperBound_nonneg scale_pos growthBound_nonneg curvatureBound_nonneg speedBound_nonneg time_nonneg time_le_one one_le_time
+    domainRadius_pos domainRadius_le_chartRadius domainRadius_le_expMapC2Radius tangentBall_metricRadius_lt tangentBall_geodesicRadius_lt geodesicRadius_lt_domainRadius geodesicRadius_lt_chartRadius normalizedGeodesicRadius_lt_domainRadius scaledBasis_mem_chartRadius scaledUnitDirection_mem_chartRadius radialSpeed_le
+    jacobiCoefficient_le curvature_norm_le initialFrame_norm_le upperComparison' lowerComparison'
 
 omit [T2Space M] [SigmaCompactSpace M] in
 lemma exists_rm04_scale
     [RiemannianBundle (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M) (p : M)
     {R b ρ K Rm Vb A B s : ℝ}
-    (D : Riemann04Frame (I := I) g p R b) (hρ : 0 < ρ)
+    (D : RadialFrameFamily (I := I) g p R b) (hρ : 0 < ρ)
     (H : ∀ a : ℝ, 0 < a →
       (∀ k : Fin (Module.finrank ℝ E), ‖a • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k‖ < ρ) →
       (∀ v : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)), ‖v‖ = 1 →
         ‖a • (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)‖ < ρ) →
-      IsRm04VolHypothesis (I := I) g p D ρ a K Rm Vb A B s) :
-    ∃ a : ℝ, IsRm04VolHypothesis (I := I) g p D ρ a K Rm Vb A B s := by
-  obtain ⟨a, ha, hsmallBasis, hsmallDir⟩ := basisUnitScaleSmall (E := E) hρ
-  exact ⟨a, H a ha hsmallBasis hsmallDir⟩
+      RadialVolumeComparisonBounds (I := I) g p D ρ a K Rm Vb A B s) :
+    ∃ a : ℝ, RadialVolumeComparisonBounds (I := I) g p D ρ a K Rm Vb A B s := by
+  obtain ⟨a, scale_pos, scaledBasis_mem_chartRadius, scaledUnitDirection_mem_chartRadius⟩ := basisUnitScaleSmall (E := E) hρ
+  exact ⟨a, H a scale_pos scaledBasis_mem_chartRadius scaledUnitDirection_mem_chartRadius⟩
 
 
 omit [T2Space M] [SigmaCompactSpace M] in
@@ -1926,15 +1926,15 @@ lemma exists_rm04_pair_scale
     [RiemannianBundle (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M) (p : M)
     {R b ρ K Rm Vb A Blo Bhi s : ℝ}
-    (D : Riemann04Frame (I := I) g p R b) (hρ : 0 < ρ)
+    (D : RadialFrameFamily (I := I) g p R b) (hρ : 0 < ρ)
     (H : ∀ a : ℝ, 0 < a →
       (∀ k : Fin (Module.finrank ℝ E), ‖a • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k‖ < ρ) →
       (∀ v : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)), ‖v‖ = 1 →
         ‖a • (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)‖ < ρ) →
-      IsRm04VolPairHypothesis (I := I) g p D ρ a K Rm Vb A Blo Bhi s) :
-    ∃ a : ℝ, IsRm04VolPairHypothesis (I := I) g p D ρ a K Rm Vb A Blo Bhi s := by
-  obtain ⟨a, ha, hsmallBasis, hsmallDir⟩ := basisUnitScaleSmall (E := E) hρ
-  exact ⟨a, H a ha hsmallBasis hsmallDir⟩
+      TwoSidedRadialVolumeComparisonBounds (I := I) g p D ρ a K Rm Vb A Blo Bhi s) :
+    ∃ a : ℝ, TwoSidedRadialVolumeComparisonBounds (I := I) g p D ρ a K Rm Vb A Blo Bhi s := by
+  obtain ⟨a, scale_pos, scaledBasis_mem_chartRadius, scaledUnitDirection_mem_chartRadius⟩ := basisUnitScaleSmall (E := E) hρ
+  exact ⟨a, H a scale_pos scaledBasis_mem_chartRadius scaledUnitDirection_mem_chartRadius⟩
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
@@ -2009,24 +2009,24 @@ theorem exists_vol_two_rm04_at
   obtain ⟨ρvol, hρvol_pos, hvol⟩ := exists_vol_two_dens (I := I) (M := M) g hEnorm p
   obtain ⟨ρdens, hρdens_pos, hdens⟩ := exists_dens_two_rm04_at (I := I) g hEnorm p
   refine ⟨min ρvol ρdens, lt_min hρvol_pos hρdens_pos, ?_⟩
-  intro a K Rm Vb b A B R s hBnn ha hK hRm_nonneg hVb hb0 hb1 h1b hRpos hRρ
-    hRC2 hρball hgs hsR hsρ hsdiv hsmallBasis hsmallDir hlaunch hKbound hRm hγ
-    ι _ _ _ hcard F hpar hON hFdiff hinit hmodelLe hmodelGe
+  intro a K Rm Vb b A B R s bound_nonneg scale_pos growthBound_nonneg curvatureBound_nonneg speedBound_nonneg time_nonneg time_le_one one_le_time domainRadius_pos domainRadius_le_chartRadius
+    domainRadius_le_expMapC2Radius tangentBall_metricRadius_lt tangentBall_geodesicRadius_lt geodesicRadius_lt_domainRadius geodesicRadius_lt_chartRadius normalizedGeodesicRadius_lt_domainRadius scaledBasis_mem_chartRadius scaledUnitDirection_mem_chartRadius radialSpeed_le jacobiCoefficient_le curvature_norm_le radialCurve_contMDiffAt
+    ι _ _ _ frame_cardinality F frame_parallel frame_orthonormal frameRepresentation_differentiable initialFrame_norm_le upperComparison lowerComparison
   let : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
   let : Fintype ι := ‹Fintype ι›
   let : DecidableEq ι := ‹DecidableEq ι›
   let : Nonempty ι := ‹Nonempty ι›
   have hρvol_ball : ∀ w ∈ Metric.ball (0 : E) R,
       Real.sqrt (g.inner p (show TangentSpace I p from w) (show TangentSpace I p from w)) < ρvol :=
-    fun w hw => lt_of_lt_of_le (hρball w hw) (min_le_left _ _)
-  have hsρvol : s < ρvol := lt_of_lt_of_le hsρ (min_le_left _ _)
+    fun w hw => lt_of_lt_of_le (tangentBall_metricRadius_lt w hw) (min_le_left _ _)
+  have geodesicRadius_lt_chartRadiusvol : s < ρvol := lt_of_lt_of_le geodesicRadius_lt_chartRadius (min_le_left _ _)
   have hsmallBasis_dens :
       ∀ k : Fin (Module.finrank ℝ E), ‖a • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k‖ < ρdens :=
-    fun k => lt_of_lt_of_le (hsmallBasis k) (min_le_right _ _)
+    fun k => lt_of_lt_of_le (scaledBasis_mem_chartRadius k) (min_le_right _ _)
   have hsmallDir_dens :
       ∀ v : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)), ‖v‖ = 1 →
         ‖a • (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)‖ < ρdens :=
-    fun v hv => lt_of_lt_of_le (hsmallDir v hv) (min_le_right _ _)
+    fun v hv => lt_of_lt_of_le (scaledUnitDirection_mem_chartRadius v hv) (min_le_right _ _)
   have hdensPair : ∀ w ∈ Metric.ball (0 : E) R,
       Real.sqrt ((B ^ 2) ^ Module.finrank ℝ E) ≤ normalChartDensity (I := I) g p w ∧
         normalChartDensity (I := I) g p w ≤
@@ -2036,19 +2036,19 @@ theorem exists_vol_two_rm04_at
     have hwR : ‖w‖ < R := by
       simpa [Metric.mem_ball, dist_eq_norm] using hw
     have hwdens : ‖w‖ < ρdens :=
-      lt_of_lt_of_le hwR (le_trans hRρ (min_le_right ρvol ρdens))
+      lt_of_lt_of_le hwR (le_trans domainRadius_le_chartRadius (min_le_right ρvol ρdens))
     have hwsrc : w ∈ (NormalCoordinates.expMapDiffeo (I := I) g p).source :=
-      ball_source_of_radius (I := I) g p hRC2 hw
+      ball_source_of_radius (I := I) g p domainRadius_le_expMapC2Radius hw
     have hwrad : ‖w‖ < expMapC2Radius (I := I) g p :=
-      lt_of_lt_of_le hwR hRC2
-    exact hdens w hwdens hBnn ha hK hVb hb0 hb1 h1b hsmallBasis_dens hsmallDir_dens
-      (hlaunch w hw) hKbound (hRm w hw) hwsrc hwrad (hγ w hw)
-      (hcard w hw) (F w) (fun i t ht => hpar w hw i t ht)
-      (fun t ht i j => hON w hw t ht i j)
-      (fun i t ht => hFdiff w hw i t ht) hinit hmodelLe hmodelGe
-  exact hvol hRpos hRC2 hρvol_ball hgs
+      lt_of_lt_of_le hwR domainRadius_le_expMapC2Radius
+    exact hdens w hwdens bound_nonneg scale_pos growthBound_nonneg speedBound_nonneg time_nonneg time_le_one one_le_time hsmallBasis_dens hsmallDir_dens
+      (radialSpeed_le w hw) jacobiCoefficient_le (curvature_norm_le w hw) hwsrc hwrad (radialCurve_contMDiffAt w hw)
+      (frame_cardinality w hw) (F w) (fun i t ht => frame_parallel w hw i t ht)
+      (fun t ht i j => frame_orthonormal w hw t ht i j)
+      (fun i t ht => frameRepresentation_differentiable w hw i t ht) initialFrame_norm_le upperComparison lowerComparison
+  exact hvol domainRadius_pos domainRadius_le_expMapC2Radius hρvol_ball tangentBall_geodesicRadius_lt
     (fun w hw => (hdensPair w hw).1)
-    hsR hsρvol hsdiv
+    geodesicRadius_lt_domainRadius geodesicRadius_lt_chartRadiusvol normalizedGeodesicRadius_lt_domainRadius
     (fun w hw => (hdensPair w hw).2)
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
@@ -2124,24 +2124,24 @@ theorem exists_vol_pair_rm04_at
   obtain ⟨ρvol, hρvol_pos, hvol⟩ := exists_vol_two_dens (I := I) (M := M) g hEnorm p
   obtain ⟨ρdens, hρdens_pos, hdens⟩ := exists_dens_pair_rm04_at (I := I) g hEnorm p
   refine ⟨min ρvol ρdens, lt_min hρvol_pos hρdens_pos, ?_⟩
-  intro a K Rm Vb b A Blo Bhi R s hBlo hBhi ha hK hRm_nonneg hVb hb0 hb1 h1b
-    hRpos hRρ hRC2 hρball hgs hsR hsρ hsdiv hsmallBasis hsmallDir hlaunch
-    hKbound hRm hγ ι _ _ _ hcard F hpar hON hFdiff hinit hmodelLe hmodelGe
+  intro a K Rm Vb b A Blo Bhi R s lowerBound_nonneg upperBound_nonneg scale_pos growthBound_nonneg curvatureBound_nonneg speedBound_nonneg time_nonneg time_le_one one_le_time
+    domainRadius_pos domainRadius_le_chartRadius domainRadius_le_expMapC2Radius tangentBall_metricRadius_lt tangentBall_geodesicRadius_lt geodesicRadius_lt_domainRadius geodesicRadius_lt_chartRadius normalizedGeodesicRadius_lt_domainRadius scaledBasis_mem_chartRadius scaledUnitDirection_mem_chartRadius radialSpeed_le
+    jacobiCoefficient_le curvature_norm_le radialCurve_contMDiffAt ι _ _ _ frame_cardinality F frame_parallel frame_orthonormal frameRepresentation_differentiable initialFrame_norm_le upperComparison lowerComparison
   let : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
   let : Fintype ι := ‹Fintype ι›
   let : DecidableEq ι := ‹DecidableEq ι›
   let : Nonempty ι := ‹Nonempty ι›
   have hρvol_ball : ∀ w ∈ Metric.ball (0 : E) R,
       Real.sqrt (g.inner p (show TangentSpace I p from w) (show TangentSpace I p from w)) < ρvol :=
-    fun w hw => lt_of_lt_of_le (hρball w hw) (min_le_left _ _)
-  have hsρvol : s < ρvol := lt_of_lt_of_le hsρ (min_le_left _ _)
+    fun w hw => lt_of_lt_of_le (tangentBall_metricRadius_lt w hw) (min_le_left _ _)
+  have geodesicRadius_lt_chartRadiusvol : s < ρvol := lt_of_lt_of_le geodesicRadius_lt_chartRadius (min_le_left _ _)
   have hsmallBasis_dens :
       ∀ k : Fin (Module.finrank ℝ E), ‖a • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k‖ < ρdens :=
-    fun k => lt_of_lt_of_le (hsmallBasis k) (min_le_right _ _)
+    fun k => lt_of_lt_of_le (scaledBasis_mem_chartRadius k) (min_le_right _ _)
   have hsmallDir_dens :
       ∀ v : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)), ‖v‖ = 1 →
         ‖a • (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)‖ < ρdens :=
-    fun v hv => lt_of_lt_of_le (hsmallDir v hv) (min_le_right _ _)
+    fun v hv => lt_of_lt_of_le (scaledUnitDirection_mem_chartRadius v hv) (min_le_right _ _)
   have hdensPair : ∀ w ∈ Metric.ball (0 : E) R,
       Real.sqrt ((Blo ^ 2) ^ Module.finrank ℝ E) ≤ normalChartDensity (I := I) g p w ∧
         normalChartDensity (I := I) g p w ≤
@@ -2151,19 +2151,19 @@ theorem exists_vol_pair_rm04_at
     have hwR : ‖w‖ < R := by
       simpa [Metric.mem_ball, dist_eq_norm] using hw
     have hwdens : ‖w‖ < ρdens :=
-      lt_of_lt_of_le hwR (le_trans hRρ (min_le_right ρvol ρdens))
+      lt_of_lt_of_le hwR (le_trans domainRadius_le_chartRadius (min_le_right ρvol ρdens))
     have hwsrc : w ∈ (NormalCoordinates.expMapDiffeo (I := I) g p).source :=
-      ball_source_of_radius (I := I) g p hRC2 hw
+      ball_source_of_radius (I := I) g p domainRadius_le_expMapC2Radius hw
     have hwrad : ‖w‖ < expMapC2Radius (I := I) g p :=
-      lt_of_lt_of_le hwR hRC2
-    exact hdens w hwdens hBlo hBhi ha hK hVb hb0 hb1 h1b hsmallBasis_dens hsmallDir_dens
-      (hlaunch w hw) hKbound (hRm w hw) hwsrc hwrad (hγ w hw)
-      (hcard w hw) (F w) (fun i t ht => hpar w hw i t ht)
-      (fun t ht i j => hON w hw t ht i j)
-      (fun i t ht => hFdiff w hw i t ht) hinit hmodelLe hmodelGe
-  exact hvol hRpos hRC2 hρvol_ball hgs
+      lt_of_lt_of_le hwR domainRadius_le_expMapC2Radius
+    exact hdens w hwdens lowerBound_nonneg upperBound_nonneg scale_pos growthBound_nonneg speedBound_nonneg time_nonneg time_le_one one_le_time hsmallBasis_dens hsmallDir_dens
+      (radialSpeed_le w hw) jacobiCoefficient_le (curvature_norm_le w hw) hwsrc hwrad (radialCurve_contMDiffAt w hw)
+      (frame_cardinality w hw) (F w) (fun i t ht => frame_parallel w hw i t ht)
+      (fun t ht i j => frame_orthonormal w hw t ht i j)
+      (fun i t ht => frameRepresentation_differentiable w hw i t ht) initialFrame_norm_le upperComparison lowerComparison
+  exact hvol domainRadius_pos domainRadius_le_expMapC2Radius hρvol_ball tangentBall_geodesicRadius_lt
     (fun w hw => (hdensPair w hw).1)
-    hsR hsρvol hsdiv
+    geodesicRadius_lt_domainRadius geodesicRadius_lt_chartRadiusvol normalizedGeodesicRadius_lt_domainRadius
     (fun w hw => (hdensPair w hw).2)
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
@@ -2245,10 +2245,10 @@ theorem exists_pairR_rm04_at
   obtain ⟨ρvol, hρvol_pos, hvol⟩ := exists_vol_two_dens_pairR (I := I) (M := M) g hEnorm p
   obtain ⟨ρdens, hρdens_pos, hdens⟩ := exists_dens_pair_rm04_at (I := I) g hEnorm p
   refine ⟨min ρvol ρdens, lt_min hρvol_pos hρdens_pos, ?_⟩
-  intro a K Rm Vb b A Blo Bhi Rlo Rup s hBlo hBhi ha hK hRm_nonneg hVb hb0 hb1
-    h1b hRlo_pos hRloρ hRloC2 hρlo_ball hgs hRup_pos hRupρ hRupC2 hsRup hsρ hsdiv
-    hsmallBasis hsmallDir hlaunch hKbound hRm hγ ι _ _ _ hcard F hpar hON hFdiff
-    hinit hmodelLe hmodelGe
+  intro a K Rm Vb b A Blo Bhi Rlo Rup s lowerBound_nonneg upperBound_nonneg scale_pos growthBound_nonneg curvatureBound_nonneg speedBound_nonneg time_nonneg time_le_one
+    one_le_time hRlo_pos hRloρ hRloC2 hρlo_ball tangentBall_geodesicRadius_lt hRup_pos hRupρ hRupC2 hsRup geodesicRadius_lt_chartRadius normalizedGeodesicRadius_lt_domainRadius
+    scaledBasis_mem_chartRadius scaledUnitDirection_mem_chartRadius radialSpeed_le jacobiCoefficient_le curvature_norm_le radialCurve_contMDiffAt ι _ _ _ frame_cardinality F frame_parallel frame_orthonormal frameRepresentation_differentiable
+    initialFrame_norm_le upperComparison lowerComparison
   let : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
   let : Fintype ι := ‹Fintype ι›
   let : DecidableEq ι := ‹DecidableEq ι›
@@ -2256,14 +2256,14 @@ theorem exists_pairR_rm04_at
   have hρvol_ball : ∀ w ∈ Metric.ball (0 : E) Rlo,
       Real.sqrt (g.inner p (show TangentSpace I p from w) (show TangentSpace I p from w)) < ρvol :=
     fun w hw => lt_of_lt_of_le (hρlo_ball w hw) (min_le_left _ _)
-  have hsρvol : s < ρvol := lt_of_lt_of_le hsρ (min_le_left _ _)
+  have geodesicRadius_lt_chartRadiusvol : s < ρvol := lt_of_lt_of_le geodesicRadius_lt_chartRadius (min_le_left _ _)
   have hsmallBasis_dens :
       ∀ k : Fin (Module.finrank ℝ E), ‖a • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k‖ < ρdens :=
-    fun k => lt_of_lt_of_le (hsmallBasis k) (min_le_right _ _)
+    fun k => lt_of_lt_of_le (scaledBasis_mem_chartRadius k) (min_le_right _ _)
   have hsmallDir_dens :
       ∀ v : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)), ‖v‖ = 1 →
         ‖a • (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)‖ < ρdens :=
-    fun v hv => lt_of_lt_of_le (hsmallDir v hv) (min_le_right _ _)
+    fun v hv => lt_of_lt_of_le (scaledUnitDirection_mem_chartRadius v hv) (min_le_right _ _)
   have hdensLower : ∀ w ∈ Metric.ball (0 : E) Rlo,
       Real.sqrt ((Blo ^ 2) ^ Module.finrank ℝ E) ≤ normalChartDensity (I := I) g p w := by
     intro w hw
@@ -2274,12 +2274,12 @@ theorem exists_pairR_rm04_at
     have hwsrc : w ∈ (NormalCoordinates.expMapDiffeo (I := I) g p).source :=
       ball_source_of_radius (I := I) g p hRloC2 hw
     have hwrad : ‖w‖ < expMapC2Radius (I := I) g p := lt_of_lt_of_le hwR hRloC2
-    exact (hdens w hwdens hBlo hBhi ha hK hVb hb0 hb1 h1b hsmallBasis_dens
-      hsmallDir_dens (hlaunch w (Or.inl hw)) hKbound (hRm w (Or.inl hw)) hwsrc hwrad
-      (hγ w (Or.inl hw)) (hcard w (Or.inl hw)) (F w)
-      (fun i t ht => hpar w (Or.inl hw) i t ht)
-      (fun t ht i j => hON w (Or.inl hw) t ht i j)
-      (fun i t ht => hFdiff w (Or.inl hw) i t ht) hinit hmodelLe hmodelGe).1
+    exact (hdens w hwdens lowerBound_nonneg upperBound_nonneg scale_pos growthBound_nonneg speedBound_nonneg time_nonneg time_le_one one_le_time hsmallBasis_dens
+      hsmallDir_dens (radialSpeed_le w (Or.inl hw)) jacobiCoefficient_le (curvature_norm_le w (Or.inl hw)) hwsrc hwrad
+      (radialCurve_contMDiffAt w (Or.inl hw)) (frame_cardinality w (Or.inl hw)) (F w)
+      (fun i t ht => frame_parallel w (Or.inl hw) i t ht)
+      (fun t ht i j => frame_orthonormal w (Or.inl hw) t ht i j)
+      (fun i t ht => frameRepresentation_differentiable w (Or.inl hw) i t ht) initialFrame_norm_le upperComparison lowerComparison).1
   have hdensUpper : ∀ w ∈ Metric.ball (0 : E) Rup,
       normalChartDensity (I := I) g p w ≤
         Real.sqrt (((Module.finrank ℝ E).factorial : ℝ) *
@@ -2292,13 +2292,13 @@ theorem exists_pairR_rm04_at
     have hwsrc : w ∈ (NormalCoordinates.expMapDiffeo (I := I) g p).source :=
       ball_source_of_radius (I := I) g p hRupC2 hw
     have hwrad : ‖w‖ < expMapC2Radius (I := I) g p := lt_of_lt_of_le hwR hRupC2
-    exact (hdens w hwdens hBlo hBhi ha hK hVb hb0 hb1 h1b hsmallBasis_dens
-      hsmallDir_dens (hlaunch w (Or.inr hw)) hKbound (hRm w (Or.inr hw)) hwsrc hwrad
-      (hγ w (Or.inr hw)) (hcard w (Or.inr hw)) (F w)
-      (fun i t ht => hpar w (Or.inr hw) i t ht)
-      (fun t ht i j => hON w (Or.inr hw) t ht i j)
-      (fun i t ht => hFdiff w (Or.inr hw) i t ht) hinit hmodelLe hmodelGe).2
-  exact hvol hRlo_pos hRloC2 hρvol_ball hgs hdensLower hRup_pos hsRup hsρvol hsdiv
+    exact (hdens w hwdens lowerBound_nonneg upperBound_nonneg scale_pos growthBound_nonneg speedBound_nonneg time_nonneg time_le_one one_le_time hsmallBasis_dens
+      hsmallDir_dens (radialSpeed_le w (Or.inr hw)) jacobiCoefficient_le (curvature_norm_le w (Or.inr hw)) hwsrc hwrad
+      (radialCurve_contMDiffAt w (Or.inr hw)) (frame_cardinality w (Or.inr hw)) (F w)
+      (fun i t ht => frame_parallel w (Or.inr hw) i t ht)
+      (fun t ht i j => frame_orthonormal w (Or.inr hw) t ht i j)
+      (fun i t ht => frameRepresentation_differentiable w (Or.inr hw) i t ht) initialFrame_norm_le upperComparison lowerComparison).2
+  exact hvol hRlo_pos hRloC2 hρvol_ball tangentBall_geodesicRadius_lt hdensLower hRup_pos hsRup geodesicRadius_lt_chartRadiusvol normalizedGeodesicRadius_lt_domainRadius
     hdensUpper
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
@@ -2356,27 +2356,27 @@ theorem exists_pairR_rglobal
   obtain ⟨ρ, hρ, hvol⟩ := exists_pairR_rm04_at (I := I) (M := M) g hEnorm p
   obtain ⟨C, hC, hlaunchC⟩ := exists_metric_upper_launch_const (I := I) g p
   refine ⟨ρ, C, hρ, hC, ?_⟩
-  intro Rm b A Blo Bhi Rlo Rup s hBlo hBhi hRm_nonneg hb0 hb1 h1b hRlo_pos
-    hRup_pos hRlo_le_Rup hRupρ hRupC2 hCRloρ hCRlo_s hsRup hsρ hsdiv
-    hRmGlobal hbasis hmodelLe hmodelGe
+  intro Rm b A Blo Bhi Rlo Rup s lowerBound_nonneg upperBound_nonneg curvatureBound_nonneg time_nonneg time_le_one one_le_time hRlo_pos
+    hRup_pos hRlo_le_Rup hRupρ hRupC2 hCRloρ hCRlo_s hsRup geodesicRadius_lt_chartRadius normalizedGeodesicRadius_lt_domainRadius
+    hRmGlobal hbasis upperComparison lowerComparison
   let K : ℝ :=
     Real.sqrt ((Fintype.card (Fin 1 -> Fin (Module.finrank ℝ E)) : Real)) *
       Rm * (C * Rup) ^ 2
   let Vb : ℝ := C * Rup
-  have hK : 0 ≤ K := by
-    exact mul_nonneg (mul_nonneg (Real.sqrt_nonneg _) hRm_nonneg) (sq_nonneg (C * Rup))
-  have hVb : 0 ≤ Vb := mul_nonneg hC.le hRup_pos.le
-  have hb : 0 < b := lt_of_lt_of_le zero_lt_one h1b
-  obtain ⟨a, ha, hsmallBasis, hsmallDir⟩ := basisUnitScaleSmall (E := E) hρ
-  obtain ⟨hinit, hmodelLe', hmodelGe'⟩ :=
+  have growthBound_nonneg : 0 ≤ K := by
+    exact mul_nonneg (mul_nonneg (Real.sqrt_nonneg _) curvatureBound_nonneg) (sq_nonneg (C * Rup))
+  have speedBound_nonneg : 0 ≤ Vb := mul_nonneg hC.le hRup_pos.le
+  have hb : 0 < b := lt_of_lt_of_le zero_lt_one one_le_time
+  obtain ⟨a, scale_pos, scaledBasis_mem_chartRadius, scaledUnitDirection_mem_chartRadius⟩ := basisUnitScaleSmall (E := E) hρ
+  obtain ⟨initialFrame_norm_le, upperComparison', lowerComparison'⟩ :=
     scalarModel_pair_smul (I := I) g p (a := a) (K := K) (b := b) (A := A)
-      (Blo := Blo) (Bhi := Bhi) ha hbasis
-      (by simpa [K] using hmodelLe)
+      (Blo := Blo) (Bhi := Bhi) scale_pos hbasis
+      (by simpa [K] using upperComparison)
       (by
         intro v hv
-        simpa [K] using hmodelGe v hv)
-  obtain ⟨D, hcard, hpar, hON, hFdiff⟩ :=
-    exists_rm04FrameData_radius.{_, _, _, 0} (I := I) g p hb hb1 hRupC2
+        simpa [K] using lowerComparison v hv)
+  obtain ⟨D, frame_cardinality, frame_parallel, frame_orthonormal, frameRepresentation_differentiable⟩ :=
+    exists_radialFrameFamily_of_radius_le_expMapC2Radius.{_, _, _, 0} (I := I) g p hb time_le_one hRupC2
   have hRloρ : Rlo ≤ ρ := hRlo_le_Rup.trans hRupρ
   have hRloC2 : Rlo ≤ expMapC2Radius (I := I) g p := hRlo_le_Rup.trans hRupC2
   have hmemRup : ∀ w,
@@ -2393,19 +2393,19 @@ theorem exists_pairR_rglobal
       Real.sqrt (g.inner p (show TangentSpace I p from w) (show TangentSpace I p from w)) < ρ := by
     intro w hw
     exact lt_of_le_of_lt (hlaunchC hRlo_pos.le w hw) hCRloρ
-  have hgs : ∀ w ∈ Metric.ball (0 : E) Rlo,
+  have tangentBall_geodesicRadius_lt : ∀ w ∈ Metric.ball (0 : E) Rlo,
       Real.sqrt (g.inner p (show TangentSpace I p from w) (show TangentSpace I p from w)) < s := by
     intro w hw
     exact lt_of_le_of_lt (hlaunchC hRlo_pos.le w hw) hCRlo_s
-  have hlaunch : ∀ w, w ∈ Metric.ball (0 : E) Rlo ∨ w ∈ Metric.ball (0 : E) Rup →
+  have radialSpeed_le : ∀ w, w ∈ Metric.ball (0 : E) Rlo ∨ w ∈ Metric.ball (0 : E) Rup →
       Real.sqrt (g.inner p w w) ≤ Vb := by
     intro w hw
     exact hlaunchC hRup_pos.le w (hmemRup w hw)
-  have hKbound :
+  have jacobiCoefficient_le :
       Real.sqrt ((Fintype.card (Fin 1 -> Fin (Module.finrank ℝ E)) : Real)) *
           Rm * Vb ^ 2 ≤ K := by
     rfl
-  have hRm : ∀ w, w ∈ Metric.ball (0 : E) Rlo ∨ w ∈ Metric.ball (0 : E) Rup →
+  have curvature_norm_le : ∀ w, w ∈ Metric.ball (0 : E) Rlo ∨ w ∈ Metric.ball (0 : E) Rup →
       ∀ t (_ht : t ∈ Set.Ioo (0 : Real) b),
         Real.sqrt (Tensor0SBundle.normSq0S (I := I) g
           (radialCurve (I := I) g p w t) 4
@@ -2413,23 +2413,23 @@ theorem exists_pairR_rglobal
             (I := I) (M := M) g (radialCurve (I := I) g p w t))) ≤ Rm := by
     intro w _ t _
     exact hRmGlobal (radialCurve (I := I) g p w t)
-  have hγ : ∀ w, w ∈ Metric.ball (0 : E) Rlo ∨ w ∈ Metric.ball (0 : E) Rup →
+  have radialCurve_contMDiffAt : ∀ w, w ∈ Metric.ball (0 : E) Rlo ∨ w ∈ Metric.ball (0 : E) Rup →
       ∀ t ∈ Set.Icc (0 : ℝ) b,
         ContMDiffAt 𝓘(ℝ, ℝ) I 1 (radialCurve (I := I) g p w) t := by
     intro w hw
-    exact radialC1AtBall (I := I) g p hRupC2 hb1 w (hmemRup w hw)
+    exact radialC1AtBall (I := I) g p hRupC2 time_le_one w (hmemRup w hw)
   let : Fintype D.ι := D.fintype
   let : DecidableEq D.ι := D.decidableEq
   let : Nonempty D.ι := D.nonempty
   exact hvol (a := a) (K := K) (Rm := Rm) (Vb := Vb) (b := b) (A := a * A)
     (Blo := Blo) (Bhi := Bhi) (Rlo := Rlo) (Rup := Rup) (s := s)
-    hBlo hBhi ha hK hRm_nonneg hVb hb0 hb1 h1b hRlo_pos hRloρ hRloC2
-    hρlo_ball hgs hRup_pos hRupρ hRupC2 hsRup hsρ hsdiv hsmallBasis hsmallDir
-    hlaunch hKbound hRm hγ (ι := D.ι) (fun w hw t => hcard w (hmemRup w hw) t) D.F
-    (fun w hw i t ht => hpar w (hmemRup w hw) i t ht)
-    (fun w hw t ht i j => hON w (hmemRup w hw) t ht i j)
-    (fun w hw i t ht => hFdiff w (hmemRup w hw) i t ht)
-    hinit hmodelLe' hmodelGe'
+    lowerBound_nonneg upperBound_nonneg scale_pos growthBound_nonneg curvatureBound_nonneg speedBound_nonneg time_nonneg time_le_one one_le_time hRlo_pos hRloρ hRloC2
+    hρlo_ball tangentBall_geodesicRadius_lt hRup_pos hRupρ hRupC2 hsRup geodesicRadius_lt_chartRadius normalizedGeodesicRadius_lt_domainRadius scaledBasis_mem_chartRadius scaledUnitDirection_mem_chartRadius
+    radialSpeed_le jacobiCoefficient_le curvature_norm_le radialCurve_contMDiffAt (ι := D.ι) (fun w hw t => frame_cardinality w (hmemRup w hw) t) D.frame
+    (fun w hw i t ht => frame_parallel w (hmemRup w hw) i t ht)
+    (fun w hw t ht i j => frame_orthonormal w (hmemRup w hw) t ht i j)
+    (fun w hw i t ht => frameRepresentation_differentiable w (hmemRup w hw) i t ht)
+    initialFrame_norm_le upperComparison' lowerComparison'
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
@@ -2479,10 +2479,10 @@ theorem exists_pairR_rm1
             (ENNReal.ofReal (Rup ^ Module.finrank ℝ E) *
               (modelHaar (E := E)) (Metric.ball (0 : E) 1)) := by
   obtain ⟨ρ, C, hρ, hC, hvol⟩ := exists_pairR_rglobal (I := I) (M := M) g hEnorm p
-  obtain ⟨κ, Blo, hκ, hBlo, hmodelGe⟩ := exists_dirModel_ge1 (I := I) g p
-  refine ⟨ρ, C, κ, Blo, hρ, hC, hκ, hBlo, ?_⟩
-  intro Rm A Rlo Rup s hRm_nonneg hRlo_pos hRup_pos hRlo_le_Rup hRupρ hRupC2
-    hCRloρ hCRlo_s hsRup hsρ hsdiv hKcap hRmGlobal hbasis
+  obtain ⟨κ, Blo, hκ, lowerBound_nonneg, lowerComparison⟩ := exists_dirModel_ge1 (I := I) g p
+  refine ⟨ρ, C, κ, Blo, hρ, hC, hκ, lowerBound_nonneg, ?_⟩
+  intro Rm A Rlo Rup s curvatureBound_nonneg hRlo_pos hRup_pos hRlo_le_Rup hRupρ hRupC2
+    hCRloρ hCRlo_s hsRup geodesicRadius_lt_chartRadius normalizedGeodesicRadius_lt_domainRadius hKcap hRmGlobal hbasis
   let K : ℝ :=
     Real.sqrt ((Fintype.card (Fin 1 -> Fin (Module.finrank ℝ E)) : Real)) *
       Rm * (C * Rup) ^ 2
@@ -2492,26 +2492,26 @@ theorem exists_pairR_rm1
         (max K 1)
         (K * A) 1)
       0
-  have hBhi : 0 ≤ Bhi := by
+  have upperBound_nonneg : 0 ≤ Bhi := by
     dsimp [Bhi]
     exact le_max_right _ _
-  have hmodelLe :
+  have upperComparison :
       A + gronwallBound 0 (max K 1) (K * ((1 : ℝ) * A)) 1 ≤ Bhi := by
     dsimp [Bhi]
     simp [one_mul, le_max_left
       (A + gronwallBound 0 (max K 1) (K * A) 1) (0 : ℝ)
     ]
   have hK_nonneg : 0 ≤ K := by
-    exact mul_nonneg (mul_nonneg (Real.sqrt_nonneg _) hRm_nonneg) (sq_nonneg (C * Rup))
+    exact mul_nonneg (mul_nonneg (Real.sqrt_nonneg _) curvatureBound_nonneg) (sq_nonneg (C * Rup))
   let : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
   exact hvol (Rm := Rm) (b := 1) (A := A) (Blo := Blo) (Bhi := Bhi)
-    (Rlo := Rlo) (Rup := Rup) (s := s) hBlo.le hBhi hRm_nonneg zero_le_one
+    (Rlo := Rlo) (Rup := Rup) (s := s) lowerBound_nonneg.le upperBound_nonneg curvatureBound_nonneg zero_le_one
     le_rfl le_rfl hRlo_pos hRup_pos hRlo_le_Rup hRupρ hRupC2 hCRloρ
-    hCRlo_s hsRup hsρ hsdiv hRmGlobal hbasis
-    (by simpa [K] using hmodelLe)
+    hCRlo_s hsRup geodesicRadius_lt_chartRadius normalizedGeodesicRadius_lt_domainRadius hRmGlobal hbasis
+    (by simpa [K] using upperComparison)
     (by
       intro v hv
-      simpa [K] using hmodelGe hK_nonneg hKcap v hv)
+      simpa [K] using lowerComparison hK_nonneg hKcap v hv)
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
@@ -2553,10 +2553,10 @@ theorem exists_pairR_small
                   (Bhi * Bhi) ^ Module.finrank ℝ E)) *
                 (ENNReal.ofReal (Rup ^ Module.finrank ℝ E) *
                   (modelHaar (E := E)) (Metric.ball (0 : E) 1)) := by
-  obtain ⟨ρ, C, κ, Blo, hρ, hC, hκ, hBlo, hvol⟩ :=
+  obtain ⟨ρ, C, κ, Blo, hρ, hC, hκ, lowerBound_nonneg, hvol⟩ :=
     exists_pairR_rm1 (I := I) (M := M) g hEnorm p
-  refine ⟨ρ, C, κ, Blo, hρ, hC, hκ, hBlo, ?_⟩
-  intro Rm A hRm_nonneg hRmGlobal hbasis
+  refine ⟨ρ, C, κ, Blo, hρ, hC, hκ, lowerBound_nonneg, ?_⟩
+  intro Rm A curvatureBound_nonneg hRmGlobal hbasis
   let S : ℝ :=
     Real.sqrt ((Fintype.card (Fin 1 -> Fin (Module.finrank ℝ E)) : Real)) * Rm
   have hρcap_pos : 0 < min ρ (expMapC2Radius (I := I) g p) :=
@@ -2575,7 +2575,7 @@ theorem exists_pairR_small
     exact lt_min hρ (lt_min hRup_pos (mul_pos hsc_pos hRup_pos))
   refine ⟨δ, hδ_pos, ?_⟩
   intro s hs_pos hsδ
-  have hsρ : s < ρ := lt_of_lt_of_le hsδ (min_le_left _ _)
+  have geodesicRadius_lt_chartRadius : s < ρ := lt_of_lt_of_le hsδ (min_le_left _ _)
   have hs_Rup : s < Rup := by
     have hs_min : s < min Rup (Real.sqrt (metricCoerciveConst (I := I) g p) * Rup) :=
       lt_of_lt_of_le hsδ (min_le_right _ _)
@@ -2584,16 +2584,16 @@ theorem exists_pairR_small
     have hs_min : s < min Rup (Real.sqrt (metricCoerciveConst (I := I) g p) * Rup) :=
       lt_of_lt_of_le hsδ (min_le_right _ _)
     exact lt_of_lt_of_le hs_min (min_le_right _ _)
-  have hsdiv : s / Real.sqrt (metricCoerciveConst (I := I) g p) < Rup := by
+  have normalizedGeodesicRadius_lt_domainRadius : s / Real.sqrt (metricCoerciveConst (I := I) g p) < Rup := by
     rw [div_lt_iff₀ hsc_pos]
     simpa [mul_comm] using hs_sqrt_Rup
   obtain ⟨Rlo, hRlo_pos, hRlo_le_Rup, hCRlo_s⟩ :=
     exists_pos_le_mul_lt hC hs_pos hRup_pos
-  have hCRloρ : C * Rlo < ρ := lt_trans hCRlo_s hsρ
+  have hCRloρ : C * Rlo < ρ := lt_trans hCRlo_s geodesicRadius_lt_chartRadius
   refine ⟨Rlo, Rup, hRlo_pos, hRup_pos, hRlo_le_Rup, ?_⟩
   exact hvol (Rm := Rm) (A := A) (Rlo := Rlo) (Rup := Rup) (s := s)
-    hRm_nonneg hRlo_pos hRup_pos hRlo_le_Rup hRupρ hRupC2 hCRloρ
-    hCRlo_s hs_Rup hsρ hsdiv (by simpa [S, mul_assoc] using hKcap) hRmGlobal hbasis
+    curvatureBound_nonneg hRlo_pos hRup_pos hRlo_le_Rup hRupρ hRupC2 hCRloρ
+    hCRlo_s hs_Rup geodesicRadius_lt_chartRadius normalizedGeodesicRadius_lt_domainRadius (by simpa [S, mul_assoc] using hKcap) hRmGlobal hbasis
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
@@ -2636,7 +2636,7 @@ theorem exists_pairR_scaled
                 (Bhi * Bhi) ^ Module.finrank ℝ E)) *
               (ENNReal.ofReal (Rup ^ Module.finrank ℝ E) *
                 (modelHaar (E := E)) (Metric.ball (0 : E) 1)) := by
-  obtain ⟨ρ, C, κ, Blo, hρ, hC, hκ, hBlo, hvol⟩ :=
+  obtain ⟨ρ, C, κ, Blo, hρ, hC, hκ, lowerBound_nonneg, hvol⟩ :=
     exists_pairR_rm1 (I := I) (M := M) g hEnorm p
   have hsc_pos : 0 < Real.sqrt (metricCoerciveConst (I := I) g p) :=
     Real.sqrt_pos.mpr (metricCoerciveConst_pos (I := I) g p)
@@ -2661,12 +2661,12 @@ theorem exists_pairR_scaled
         0 ≤ 1 + 1 / Real.sqrt (metricCoerciveConst (I := I) g p) := by
       positivity
     linarith
-  refine ⟨C, D, Blo, hC, hD_pos, hBlo, ?_⟩
-  intro Rm A hRm_nonneg hRmGlobal hbasis
+  refine ⟨C, D, Blo, hC, hD_pos, lowerBound_nonneg, ?_⟩
+  intro Rm A curvatureBound_nonneg hRmGlobal hbasis
   let S : ℝ :=
     Real.sqrt ((Fintype.card (Fin 1 -> Fin (Module.finrank ℝ E)) : Real)) * Rm
   let T : ℝ := S * (C * D) ^ 2
-  have hS_nonneg : 0 ≤ S := mul_nonneg (Real.sqrt_nonneg _) hRm_nonneg
+  have hS_nonneg : 0 ≤ S := mul_nonneg (Real.sqrt_nonneg _) curvatureBound_nonneg
   have hT_nonneg : 0 ≤ T := mul_nonneg hS_nonneg (sq_nonneg (C * D))
   have hbase_pos :
       0 < min ρ (min (ρ / D) (expMapC2Radius (I := I) g p / D)) := by
@@ -2694,7 +2694,7 @@ theorem exists_pairR_scaled
       ring
     rw [hcoef_eq]
     exact hT_s_le.trans hδ_cap
-  have hsρ : s < ρ := lt_of_lt_of_le hsδ (le_trans (le_of_lt hδ_base) (min_le_left _ _))
+  have geodesicRadius_lt_chartRadius : s < ρ := lt_of_lt_of_le hsδ (le_trans (le_of_lt hδ_base) (min_le_left _ _))
   have hs_ρ_div_D : s < ρ / D := by
     have hmin : s < min (ρ / D) (expMapC2Radius (I := I) g p / D) :=
       lt_of_lt_of_le hsδ (le_trans (le_of_lt hδ_base) (min_le_right _ _))
@@ -2728,16 +2728,16 @@ theorem exists_pairR_scaled
       field_simp [hC.ne']
     rw [hCRlo_eq]
     linarith
-  have hCRloρ : C * Rlo < ρ := lt_trans hCRlo_s hsρ
+  have hCRloρ : C * Rlo < ρ := lt_trans hCRlo_s geodesicRadius_lt_chartRadius
   have hsRup : s < Rup := by
     have hmul := mul_lt_mul_of_pos_right hD_gt_one hs_pos
     simpa [Rup, one_mul, mul_comm] using hmul
-  have hsdiv : s / Real.sqrt (metricCoerciveConst (I := I) g p) < Rup := by
+  have normalizedGeodesicRadius_lt_domainRadius : s / Real.sqrt (metricCoerciveConst (I := I) g p) < Rup := by
     have hmul := mul_lt_mul_of_pos_right hD_gt_inv_sqrt hs_pos
     simpa [Rup, div_eq_mul_inv, mul_assoc, mul_comm, mul_left_comm] using hmul
   exact hvol (Rm := Rm) (A := A) (Rlo := Rlo) (Rup := Rup) (s := s)
-    hRm_nonneg hRlo_pos hRup_pos hRlo_le_Rup hRupρ hRupC2 hCRloρ hCRlo_s
-    hsRup hsρ hsdiv hcoef_cap hRmGlobal hbasis
+    curvatureBound_nonneg hRlo_pos hRup_pos hRlo_le_Rup hRupρ hRupC2 hCRloρ hCRlo_s
+    hsRup geodesicRadius_lt_chartRadius normalizedGeodesicRadius_lt_domainRadius hcoef_cap hRmGlobal hbasis
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
@@ -2778,12 +2778,12 @@ theorem exists_pairR_autoA
                 (Bhi * Bhi) ^ Module.finrank ℝ E)) *
               (ENNReal.ofReal (Rup ^ Module.finrank ℝ E) *
                 (modelHaar (E := E)) (Metric.ball (0 : E) 1)) := by
-  obtain ⟨C, D, Blo, hC, hD, hBlo, hscaled⟩ :=
+  obtain ⟨C, D, Blo, hC, hD, lowerBound_nonneg, hscaled⟩ :=
     exists_pairR_scaled (I := I) (M := M) g hEnorm p
   obtain ⟨A, hA⟩ := exists_basis_upper_const (I := I) g p
-  refine ⟨C, D, Blo, A, hC, hD, hBlo, ?_⟩
-  intro Rm hRm_nonneg hRmGlobal
-  exact hscaled (Rm := Rm) (A := A) hRm_nonneg hRmGlobal hA
+  refine ⟨C, D, Blo, A, hC, hD, lowerBound_nonneg, ?_⟩
+  intro Rm curvatureBound_nonneg hRmGlobal
+  exact hscaled (Rm := Rm) (A := A) curvatureBound_nonneg hRmGlobal hA
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
@@ -2821,11 +2821,11 @@ theorem exists_pairR_bound
                 (Bhi * Bhi) ^ Module.finrank ℝ E)) *
               (ENNReal.ofReal (Rup ^ Module.finrank ℝ E) *
                 (modelHaar (E := E)) (Metric.ball (0 : E) 1)) := by
-  obtain ⟨C, D, Blo, A, hC, hD, hBlo, hvol⟩ :=
+  obtain ⟨C, D, Blo, A, hC, hD, lowerBound_nonneg, hvol⟩ :=
     exists_pairR_autoA (I := I) (M := M) g hEnorm p
-  refine ⟨C, D, Blo, A, hC, hD, hBlo, ?_⟩
-  intro Rm hRm_nonneg hRm
-  exact hvol (Rm := Rm) hRm_nonneg (by simpa [Rm04GlobalBound] using hRm)
+  refine ⟨C, D, Blo, A, hC, hD, lowerBound_nonneg, ?_⟩
+  intro Rm curvatureBound_nonneg curvature_norm_le
+  exact hvol (Rm := Rm) curvatureBound_nonneg (by simpa [Rm04GlobalBound] using curvature_norm_le)
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
@@ -2893,7 +2893,7 @@ theorem exists_pairR_bound_of_complete_metric
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-theorem exists_vol_rm04_pair_pkg
+theorem exists_twoSided_volume_bounds_of_radialComparison
     [RiemannianBundle (fun x : M => TangentSpace I x)]
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [T3Space M] [ConnectedSpace M]
@@ -2902,8 +2902,8 @@ theorem exists_vol_rm04_pair_pkg
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) :
     ∃ ρ : ℝ, 0 < ρ ∧ ∀ {a K Rm Vb b A Blo Bhi R s : ℝ},
-      (D : Riemann04Frame (I := I) g p R b) →
-      IsRm04VolPairHypothesis (I := I) g p D ρ a K Rm Vb A Blo Bhi s →
+      (D : RadialFrameFamily (I := I) g p R b) →
+      TwoSidedRadialVolumeComparisonBounds (I := I) g p D ρ a K Rm Vb A Blo Bhi s →
       letI : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
       ENNReal.ofReal (Real.sqrt ((Blo ^ 2) ^ Module.finrank ℝ E)) *
           (ENNReal.ofReal (R ^ Module.finrank ℝ E) *
@@ -2922,10 +2922,10 @@ theorem exists_vol_rm04_pair_pkg
   let : Fintype D.ι := D.fintype
   let : DecidableEq D.ι := D.decidableEq
   let : Nonempty D.ι := D.nonempty
-  exact hvol H.hBlo H.hBhi H.ha H.hK H.hRm_nonneg H.hVb H.hb0 H.hb1 H.h1b
-    H.hRpos H.hRρ H.hRC2 H.hρball H.hgs H.hsR H.hsρ H.hsdiv
-    H.hsmallBasis H.hsmallDir H.hlaunch H.hKbound H.hRm H.hγ
-    H.hcard D.F H.hpar H.hON H.hFdiff H.hinit H.hmodelLe H.hmodelGe
+  exact hvol H.lowerBound_nonneg H.upperBound_nonneg H.scale_pos H.growthBound_nonneg H.curvatureBound_nonneg H.speedBound_nonneg H.time_nonneg H.time_le_one H.one_le_time
+    H.domainRadius_pos H.domainRadius_le_chartRadius H.domainRadius_le_expMapC2Radius H.tangentBall_metricRadius_lt H.tangentBall_geodesicRadius_lt H.geodesicRadius_lt_domainRadius H.geodesicRadius_lt_chartRadius H.normalizedGeodesicRadius_lt_domainRadius
+    H.scaledBasis_mem_chartRadius H.scaledUnitDirection_mem_chartRadius H.radialSpeed_le H.jacobiCoefficient_le H.curvature_norm_le H.radialCurve_contMDiffAt
+    H.frame_cardinality D.frame H.frame_parallel H.frame_orthonormal H.frameRepresentation_differentiable H.initialFrame_norm_le H.upperComparison H.lowerComparison
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
@@ -2938,12 +2938,12 @@ theorem exists_vol_pair_scale
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) :
     ∃ ρ : ℝ, 0 < ρ ∧ ∀ {K Rm Vb b A Blo Bhi R s : ℝ},
-      (D : Riemann04Frame (I := I) g p R b) →
+      (D : RadialFrameFamily (I := I) g p R b) →
       (∀ a : ℝ, 0 < a →
         (∀ k : Fin (Module.finrank ℝ E), ‖a • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k‖ < ρ) →
         (∀ v : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)), ‖v‖ = 1 →
           ‖a • (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)‖ < ρ) →
-        IsRm04VolPairHypothesis (I := I) g p D ρ a K Rm Vb A Blo Bhi s) →
+        TwoSidedRadialVolumeComparisonBounds (I := I) g p D ρ a K Rm Vb A Blo Bhi s) →
       letI : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
       ENNReal.ofReal (Real.sqrt ((Blo ^ 2) ^ Module.finrank ℝ E)) *
           (ENNReal.ofReal (R ^ Module.finrank ℝ E) *
@@ -2955,7 +2955,7 @@ theorem exists_vol_pair_scale
             (Bhi * Bhi) ^ Module.finrank ℝ E)) *
           (ENNReal.ofReal (R ^ Module.finrank ℝ E) *
             (modelHaar (E := E)) (Metric.ball (0 : E) 1)) := by
-  obtain ⟨ρ, hρ, hvol⟩ := exists_vol_rm04_pair_pkg (I := I) (M := M) g hEnorm p
+  obtain ⟨ρ, hρ, hvol⟩ := exists_twoSided_volume_bounds_of_radialComparison (I := I) (M := M) g hEnorm p
   refine ⟨ρ, hρ, ?_⟩
   intro K Rm Vb b A Blo Bhi R s D H
   obtain ⟨a, Ha⟩ := exists_rm04_pair_scale (I := I) g p D hρ H
@@ -3013,15 +3013,15 @@ theorem exists_vol_pair_scalar
             (Bhi * Bhi) ^ Module.finrank ℝ E)) *
           (ENNReal.ofReal (R ^ Module.finrank ℝ E) *
             (modelHaar (E := E)) (Metric.ball (0 : E) 1)) := by
-  obtain ⟨ρ, hρ, hvol⟩ := exists_vol_rm04_pair_pkg.{_, _, _, 0} (I := I) (M := M) g hEnorm p
+  obtain ⟨ρ, hρ, hvol⟩ := exists_twoSided_volume_bounds_of_radialComparison.{_, _, _, 0} (I := I) (M := M) g hEnorm p
   refine ⟨ρ, hρ, ?_⟩
-  intro K Rm Vb b A Blo Bhi R s hBlo hBhi hK hRm_nonneg hVb hb0 hb1 h1b hRpos hRρ
-    hRC2 hρball hgs hsR hsρ hsdiv hlaunch hKbound hRm hbasis hmodelLe hmodelGe
-  obtain ⟨a, ha, hsmallBasis, hsmallDir⟩ := basisUnitScaleSmall (E := E) hρ
+  intro K Rm Vb b A Blo Bhi R s lowerBound_nonneg upperBound_nonneg growthBound_nonneg curvatureBound_nonneg speedBound_nonneg time_nonneg time_le_one one_le_time domainRadius_pos domainRadius_le_chartRadius
+    domainRadius_le_expMapC2Radius tangentBall_metricRadius_lt tangentBall_geodesicRadius_lt geodesicRadius_lt_domainRadius geodesicRadius_lt_chartRadius normalizedGeodesicRadius_lt_domainRadius radialSpeed_le jacobiCoefficient_le curvature_norm_le hbasis upperComparison lowerComparison
+  obtain ⟨a, scale_pos, scaledBasis_mem_chartRadius, scaledUnitDirection_mem_chartRadius⟩ := basisUnitScaleSmall (E := E) hρ
   obtain ⟨D, H⟩ :=
-    exists_rm04_pair_scalar.{_, _, _, 0} (I := I) g p hBlo hBhi ha hK hRm_nonneg hVb
-      hb0 hb1 h1b hRpos hRρ hRC2 hρball hgs hsR hsρ hsdiv hsmallBasis hsmallDir
-      hlaunch hKbound hRm hbasis hmodelLe hmodelGe
+    exists_rm04_pair_scalar.{_, _, _, 0} (I := I) g p lowerBound_nonneg upperBound_nonneg scale_pos growthBound_nonneg curvatureBound_nonneg speedBound_nonneg
+      time_nonneg time_le_one one_le_time domainRadius_pos domainRadius_le_chartRadius domainRadius_le_expMapC2Radius tangentBall_metricRadius_lt tangentBall_geodesicRadius_lt geodesicRadius_lt_domainRadius geodesicRadius_lt_chartRadius normalizedGeodesicRadius_lt_domainRadius scaledBasis_mem_chartRadius scaledUnitDirection_mem_chartRadius
+      radialSpeed_le jacobiCoefficient_le curvature_norm_le hbasis upperComparison lowerComparison
   exact hvol D H
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
@@ -3077,17 +3077,17 @@ theorem exists_vol_pair_launch
             (modelHaar (E := E)) (Metric.ball (0 : E) 1)) := by
   obtain ⟨ρ, hρ, hvol⟩ := exists_vol_pair_scalar (I := I) (M := M) g hEnorm p
   refine ⟨ρ, hρ, ?_⟩
-  intro K Rm b A Blo Bhi R s hBlo hBhi hK hRm_nonneg hb0 hb1 h1b hRpos hRρ hRC2
-    hρball hgs hsR hsρ hsdiv hKbound hRm hbasis hmodelLe hmodelGe
+  intro K Rm b A Blo Bhi R s lowerBound_nonneg upperBound_nonneg growthBound_nonneg curvatureBound_nonneg time_nonneg time_le_one one_le_time domainRadius_pos domainRadius_le_chartRadius domainRadius_le_expMapC2Radius
+    tangentBall_metricRadius_lt tangentBall_geodesicRadius_lt geodesicRadius_lt_domainRadius geodesicRadius_lt_chartRadius normalizedGeodesicRadius_lt_domainRadius jacobiCoefficient_le curvature_norm_le hbasis upperComparison lowerComparison
   let Vb : ℝ := ρ
-  have hVb : 0 ≤ Vb := hρ.le
-  have hlaunch : ∀ w ∈ Metric.ball (0 : E) R, Real.sqrt (g.inner p w w) ≤ Vb := by
+  have speedBound_nonneg : 0 ≤ Vb := hρ.le
+  have radialSpeed_le : ∀ w ∈ Metric.ball (0 : E) R, Real.sqrt (g.inner p w w) ≤ Vb := by
     intro w hw
-    exact le_of_lt (by simpa [Vb] using hρball w hw)
+    exact le_of_lt (by simpa [Vb] using tangentBall_metricRadius_lt w hw)
   exact hvol (K := K) (Rm := Rm) (Vb := Vb) (b := b) (A := A) (Blo := Blo)
-    (Bhi := Bhi) (R := R) (s := s) hBlo hBhi hK hRm_nonneg hVb hb0 hb1 h1b
-    hRpos hRρ hRC2 hρball hgs hsR hsρ hsdiv hlaunch
-    (by simpa [Vb] using hKbound) hRm hbasis hmodelLe hmodelGe
+    (Bhi := Bhi) (R := R) (s := s) lowerBound_nonneg upperBound_nonneg growthBound_nonneg curvatureBound_nonneg speedBound_nonneg time_nonneg time_le_one one_le_time
+    domainRadius_pos domainRadius_le_chartRadius domainRadius_le_expMapC2Radius tangentBall_metricRadius_lt tangentBall_geodesicRadius_lt geodesicRadius_lt_domainRadius geodesicRadius_lt_chartRadius normalizedGeodesicRadius_lt_domainRadius radialSpeed_le
+    (by simpa [Vb] using jacobiCoefficient_le) curvature_norm_le hbasis upperComparison lowerComparison
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
@@ -3142,21 +3142,21 @@ theorem exists_pair_rlaunch
   obtain ⟨ρ, hρ, hvol⟩ := exists_vol_pair_scalar (I := I) (M := M) g hEnorm p
   obtain ⟨C, hC, hlaunchC⟩ := exists_metric_upper_launch_const (I := I) g p
   refine ⟨ρ, C, hρ, hC, ?_⟩
-  intro K Rm b A Blo Bhi R s hBlo hBhi hK hRm_nonneg hb0 hb1 h1b hRpos hRρ hRC2
-    hCRρ hgs hsR hsρ hsdiv hKbound hRm hbasis hmodelLe hmodelGe
+  intro K Rm b A Blo Bhi R s lowerBound_nonneg upperBound_nonneg growthBound_nonneg curvatureBound_nonneg time_nonneg time_le_one one_le_time domainRadius_pos domainRadius_le_chartRadius domainRadius_le_expMapC2Radius
+    hCRρ tangentBall_geodesicRadius_lt geodesicRadius_lt_domainRadius geodesicRadius_lt_chartRadius normalizedGeodesicRadius_lt_domainRadius jacobiCoefficient_le curvature_norm_le hbasis upperComparison lowerComparison
   let Vb : ℝ := C * R
-  have hVb : 0 ≤ Vb := mul_nonneg hC.le hRpos.le
-  have hlaunch : ∀ w ∈ Metric.ball (0 : E) R, Real.sqrt (g.inner p w w) ≤ Vb := by
+  have speedBound_nonneg : 0 ≤ Vb := mul_nonneg hC.le domainRadius_pos.le
+  have radialSpeed_le : ∀ w ∈ Metric.ball (0 : E) R, Real.sqrt (g.inner p w w) ≤ Vb := by
     intro w hw
-    exact hlaunchC hRpos.le w hw
-  have hρball : ∀ w ∈ Metric.ball (0 : E) R,
+    exact hlaunchC domainRadius_pos.le w hw
+  have tangentBall_metricRadius_lt : ∀ w ∈ Metric.ball (0 : E) R,
       Real.sqrt (g.inner p (show TangentSpace I p from w) (show TangentSpace I p from w)) < ρ := by
     intro w hw
-    exact lt_of_le_of_lt (hlaunch w hw) (by simpa [Vb] using hCRρ)
+    exact lt_of_le_of_lt (radialSpeed_le w hw) (by simpa [Vb] using hCRρ)
   exact hvol (K := K) (Rm := Rm) (Vb := Vb) (b := b) (A := A) (Blo := Blo)
-    (Bhi := Bhi) (R := R) (s := s) hBlo hBhi hK hRm_nonneg hVb hb0 hb1 h1b
-    hRpos hRρ hRC2 hρball hgs hsR hsρ hsdiv hlaunch
-    (by simpa [Vb] using hKbound) hRm hbasis hmodelLe hmodelGe
+    (Bhi := Bhi) (R := R) (s := s) lowerBound_nonneg upperBound_nonneg growthBound_nonneg curvatureBound_nonneg speedBound_nonneg time_nonneg time_le_one one_le_time
+    domainRadius_pos domainRadius_le_chartRadius domainRadius_le_expMapC2Radius tangentBall_metricRadius_lt tangentBall_geodesicRadius_lt geodesicRadius_lt_domainRadius geodesicRadius_lt_chartRadius normalizedGeodesicRadius_lt_domainRadius radialSpeed_le
+    (by simpa [Vb] using jacobiCoefficient_le) curvature_norm_le hbasis upperComparison lowerComparison
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
@@ -3215,21 +3215,21 @@ theorem exists_pair_rcoeff
             (modelHaar (E := E)) (Metric.ball (0 : E) 1)) := by
   obtain ⟨ρ, C, hρ, hC, hvol⟩ := exists_pair_rlaunch (I := I) (M := M) g hEnorm p
   refine ⟨ρ, C, hρ, hC, ?_⟩
-  intro Rm b A Blo Bhi R s hBlo hBhi hRm_nonneg hb0 hb1 h1b hRpos hRρ hRC2
-    hCRρ hgs hsR hsρ hsdiv hRm hbasis hmodelLe hmodelGe
+  intro Rm b A Blo Bhi R s lowerBound_nonneg upperBound_nonneg curvatureBound_nonneg time_nonneg time_le_one one_le_time domainRadius_pos domainRadius_le_chartRadius domainRadius_le_expMapC2Radius
+    hCRρ tangentBall_geodesicRadius_lt geodesicRadius_lt_domainRadius geodesicRadius_lt_chartRadius normalizedGeodesicRadius_lt_domainRadius curvature_norm_le hbasis upperComparison lowerComparison
   let K : ℝ :=
     Real.sqrt ((Fintype.card (Fin 1 -> Fin (Module.finrank ℝ E)) : Real)) *
       Rm * (C * R) ^ 2
-  have hK : 0 ≤ K := by
-    exact mul_nonneg (mul_nonneg (Real.sqrt_nonneg _) hRm_nonneg) (sq_nonneg (C * R))
-  have hKbound :
+  have growthBound_nonneg : 0 ≤ K := by
+    exact mul_nonneg (mul_nonneg (Real.sqrt_nonneg _) curvatureBound_nonneg) (sq_nonneg (C * R))
+  have jacobiCoefficient_le :
       Real.sqrt ((Fintype.card (Fin 1 -> Fin (Module.finrank ℝ E)) : Real)) *
           Rm * (C * R) ^ 2 ≤ K := by
     rfl
   exact hvol (K := K) (Rm := Rm) (b := b) (A := A) (Blo := Blo) (Bhi := Bhi)
-    (R := R) (s := s) hBlo hBhi hK hRm_nonneg hb0 hb1 h1b hRpos hRρ hRC2
-    hCRρ hgs hsR hsρ hsdiv hKbound hRm hbasis (by simpa [K] using hmodelLe)
-    (by simpa [K] using hmodelGe)
+    (R := R) (s := s) lowerBound_nonneg upperBound_nonneg growthBound_nonneg curvatureBound_nonneg time_nonneg time_le_one one_le_time domainRadius_pos domainRadius_le_chartRadius domainRadius_le_expMapC2Radius
+    hCRρ tangentBall_geodesicRadius_lt geodesicRadius_lt_domainRadius geodesicRadius_lt_chartRadius normalizedGeodesicRadius_lt_domainRadius jacobiCoefficient_le curvature_norm_le hbasis (by simpa [K] using upperComparison)
+    (by simpa [K] using lowerComparison)
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
@@ -3287,12 +3287,12 @@ theorem exists_pair_rglobal
             (modelHaar (E := E)) (Metric.ball (0 : E) 1)) := by
   obtain ⟨ρ, C, hρ, hC, hvol⟩ := exists_pair_rcoeff (I := I) (M := M) g hEnorm p
   refine ⟨ρ, C, hρ, hC, ?_⟩
-  intro Rm b A Blo Bhi R s hBlo hBhi hRm_nonneg hb0 hb1 h1b hRpos hRρ hRC2
-    hCRρ hgs hsR hsρ hsdiv hRmGlobal hbasis hmodelLe hmodelGe
+  intro Rm b A Blo Bhi R s lowerBound_nonneg upperBound_nonneg curvatureBound_nonneg time_nonneg time_le_one one_le_time domainRadius_pos domainRadius_le_chartRadius domainRadius_le_expMapC2Radius
+    hCRρ tangentBall_geodesicRadius_lt geodesicRadius_lt_domainRadius geodesicRadius_lt_chartRadius normalizedGeodesicRadius_lt_domainRadius hRmGlobal hbasis upperComparison lowerComparison
   exact hvol (Rm := Rm) (b := b) (A := A) (Blo := Blo) (Bhi := Bhi) (R := R)
-    (s := s) hBlo hBhi hRm_nonneg hb0 hb1 h1b hRpos hRρ hRC2 hCRρ hgs hsR
-    hsρ hsdiv (fun w _ t _ => hRmGlobal (radialCurve (I := I) g p w t))
-    hbasis hmodelLe hmodelGe
+    (s := s) lowerBound_nonneg upperBound_nonneg curvatureBound_nonneg time_nonneg time_le_one one_le_time domainRadius_pos domainRadius_le_chartRadius domainRadius_le_expMapC2Radius hCRρ tangentBall_geodesicRadius_lt geodesicRadius_lt_domainRadius
+    geodesicRadius_lt_chartRadius normalizedGeodesicRadius_lt_domainRadius (fun w _ t _ => hRmGlobal (radialCurve (I := I) g p w t))
+    hbasis upperComparison lowerComparison
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
@@ -3349,12 +3349,12 @@ theorem exists_pair_rglobal1
             (modelHaar (E := E)) (Metric.ball (0 : E) 1)) := by
   obtain ⟨ρ, C, hρ, hC, hvol⟩ := exists_pair_rglobal (I := I) (M := M) g hEnorm p
   refine ⟨ρ, C, hρ, hC, ?_⟩
-  intro Rm A Blo Bhi R s hBlo hBhi hRm_nonneg hRpos hRρ hRC2 hCRρ hgs hsR hsρ
-    hsdiv hRmGlobal hbasis hmodelLe hmodelGe
+  intro Rm A Blo Bhi R s lowerBound_nonneg upperBound_nonneg curvatureBound_nonneg domainRadius_pos domainRadius_le_chartRadius domainRadius_le_expMapC2Radius hCRρ tangentBall_geodesicRadius_lt geodesicRadius_lt_domainRadius geodesicRadius_lt_chartRadius
+    normalizedGeodesicRadius_lt_domainRadius hRmGlobal hbasis upperComparison lowerComparison
   exact hvol (Rm := Rm) (b := 1) (A := A) (Blo := Blo) (Bhi := Bhi) (R := R) (s := s)
-    hBlo hBhi hRm_nonneg zero_le_one le_rfl le_rfl hRpos hRρ hRC2 hCRρ hgs hsR
-    hsρ hsdiv hRmGlobal hbasis (by simpa [one_mul] using hmodelLe)
-    (fun v hv => by simpa [one_mul] using hmodelGe v hv)
+    lowerBound_nonneg upperBound_nonneg curvatureBound_nonneg zero_le_one le_rfl le_rfl domainRadius_pos domainRadius_le_chartRadius domainRadius_le_expMapC2Radius hCRρ tangentBall_geodesicRadius_lt geodesicRadius_lt_domainRadius
+    geodesicRadius_lt_chartRadius normalizedGeodesicRadius_lt_domainRadius hRmGlobal hbasis (by simpa [one_mul] using upperComparison)
+    (fun v hv => by simpa [one_mul] using lowerComparison v hv)
 
 end BallUpper
 

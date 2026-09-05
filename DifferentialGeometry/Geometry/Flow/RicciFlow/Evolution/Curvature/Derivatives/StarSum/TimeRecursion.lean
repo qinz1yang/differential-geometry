@@ -451,9 +451,9 @@ private theorem frameExtGerm {Idx : Type*} {r : ℕ}
     (frame : Idx → (x : M) → TangentSpace I x)
     {A1 A2 : M → (Fin r → Idx) → Real} {y : M}
     (hfield : A1 =ᶠ[nhds y] A2) :
-    frameExtData (I := I) frame A1 y = frameExtData (I := I) frame A2 y := by
+    frameDirectionalDerivatives (I := I) frame A1 y = frameDirectionalDerivatives (I := I) frame A2 y := by
   funext m d
-  simp only [frameExtData]
+  simp only [frameDirectionalDerivatives]
   exact mvfderiv_eventuallyEq_congr (I := I) (frame d y) (hfield.mono fun z hz => congrFun hz m)
 
 def resStarNext
@@ -664,7 +664,7 @@ theorem resStarNext_spec
         filter_upwards [hu.mem_nhds hy] with z hz
         exact hfieldU z hz
       have hcs : covDerivStepComp
-            (frameExtData (I := I) frame
+            (frameDirectionalDerivatives (I := I) frame
               (fun z : M => iteratedRmCompDt (I := I) frame (lfChr (I := I) S frame hframe)
                 chrDt (lfBase (I := I) S frame) baseDt k (t : Real) z) y)
             (lfChr (I := I) S frame hframe (t : Real) y)

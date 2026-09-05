@@ -91,7 +91,7 @@ theorem hatPOUDataTwo
   let : MetricSpace (X.obj (L.φ n)).M := (P (L.φ n)).ms
   change x ∈ Metric.closedBall (X.obj (L.φ n)).basepoint r at hx
   simpa [Finset.sum_apply] using
-    (NetLimitData.hatPOU_active_data (I := I) (X := X) (hd := hd) (D := D) (P := P) (L := L)
+    (NetLimitData.hatPOU_nonneg_pos_sum_one_and_active_mem (I := I) (X := X) (hd := hd) (D := D) (P := P) (L := L)
       (pb := pb) (r := r) (k := n) (ρ := rho) (hρ := hrho) (x := x) hx)
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] in

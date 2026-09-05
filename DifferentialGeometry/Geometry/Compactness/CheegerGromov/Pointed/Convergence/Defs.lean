@@ -195,7 +195,7 @@ noncomputable def ofRestrictPullback
 
 end PointedRiemannianConverges
 
-structure MetricCompactnessConclusion
+structure MetricCompactLimit
     (X : PointedRiemannianSeq.{u, uE, uH} (I := I)) where
   subseq : Nat -> Nat
   strictMono : StrictMono subseq

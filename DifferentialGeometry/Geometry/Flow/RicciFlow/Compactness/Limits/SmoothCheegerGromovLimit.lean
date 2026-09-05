@@ -16,7 +16,7 @@ variable [FiniteDimensional Real E] [CompleteSpace E]
 variable {H : Type uH} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H}
 
-def compactnessConclusion (X : PointedFlowSeq.{u, uE, uH} (I := I)) : Prop :=
+def HasSmoothCheegerGromovLimit (X : PointedFlowSeq.{u, uE, uH} (I := I)) : Prop :=
   exists L : PointedFlowData.{u, uE, uH} (I := I) X.D, exists subseq : Nat -> Nat,
     StrictMono subseq /\
       Nonempty.{max (max uE uH) u + 1} (SmoothCGHConverges (I := I) X L subseq)

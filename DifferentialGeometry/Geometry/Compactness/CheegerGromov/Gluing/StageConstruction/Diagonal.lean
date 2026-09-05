@@ -28,7 +28,7 @@ variable {H : Type uH} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 variable {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
 
-structure NestedSubseq where
+private structure NestedSubseq where
   sigma : Nat → Nat → Nat
   tau : Nat → Nat → Nat
   sigma_strict : ∀ m, StrictMono (sigma m)
@@ -38,16 +38,16 @@ structure NestedSubseq where
 
 namespace NestedSubseq
 
-def diag (T : NestedSubseq) (m : Nat) : Nat := T.sigma (m + 1) m
+private def diag (T : NestedSubseq) (m : Nat) : Nat := T.sigma (m + 1) m
 
-def tailComp (T : NestedSubseq) (q : Nat) : Nat → (Nat → Nat)
+private def tailComp (T : NestedSubseq) (q : Nat) : Nat → (Nat → Nat)
   | 0 => id
   | n + 1 => T.tailComp q n ∘ T.tau (q + 1 + n)
 
-def tailFactor (T : NestedSubseq) (q n : Nat) : Nat :=
+private def tailFactor (T : NestedSubseq) (q n : Nat) : Nat :=
   T.tailComp q n (q + n)
 
-theorem tailComp_strict (T : NestedSubseq) (q : Nat) :
+private theorem tailComp_strict (T : NestedSubseq) (q : Nat) :
     ∀ n, StrictMono (T.tailComp q n) := by
   intro n
   induction n with
@@ -55,7 +55,7 @@ theorem tailComp_strict (T : NestedSubseq) (q : Nat) :
   | succ n ih =>
       exact ih.comp (T.tau_strict (q + 1 + n))
 
-theorem sigma_factor (T : NestedSubseq) (q n : Nat) :
+private theorem sigma_factor (T : NestedSubseq) (q n : Nat) :
     T.sigma (q + n + 1) = T.sigma (q + 1) ∘ T.tailComp q n := by
   induction n with
   | zero =>
@@ -67,7 +67,7 @@ theorem sigma_factor (T : NestedSubseq) (q n : Nat) :
       simp only [tailComp, Function.comp_apply]
       rw [show q + n + 1 = q + 1 + n by omega]
 
-theorem tailFactor_strict (T : NestedSubseq) (q : Nat) :
+private theorem tailFactor_strict (T : NestedSubseq) (q : Nat) :
     StrictMono (T.tailFactor q) := by
   apply strictMono_nat_of_lt_succ
   intro n
@@ -79,7 +79,7 @@ theorem tailFactor_strict (T : NestedSubseq) (q : Nat) :
   have hle := (T.tau_strict (q + 1 + n)).id_le (q + (n + 1))
   exact hlt.trans_le hle
 
-theorem diag_strict (T : NestedSubseq) : StrictMono T.diag := by
+private theorem diag_strict (T : NestedSubseq) : StrictMono T.diag := by
   apply strictMono_nat_of_lt_succ
   intro n
   rw [diag, diag, T.sigma_succ (n + 1)]
@@ -88,7 +88,7 @@ theorem diag_strict (T : NestedSubseq) : StrictMono T.diag := by
   have hle := (T.tau_strict (n + 1)).id_le (n + 1)
   exact (Nat.lt_succ_self n).trans_le hle
 
-theorem diag_step_factor (T : NestedSubseq) (q n : Nat) :
+private theorem diag_step_factor (T : NestedSubseq) (q n : Nat) :
     T.diag (q + n) =
       T.sigma q (T.tau q (T.tailFactor q n)) := by
   have hfactor := congrFun (T.sigma_factor q n) (q + n)
@@ -97,13 +97,10 @@ theorem diag_step_factor (T : NestedSubseq) (q n : Nat) :
 
 end NestedSubseq
 
-structure StagePayload
-    (inp : MetricCompactnessInputs (I := I) X)
+structure StageConvergenceSelection
+    (inp : MetricCompactnessAssumptions (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P)
-    (hconn : ∀ j,
-      letI : TopologicalSpace (X.obj j).M := (X.obj j).topology
-      ConnectedSpace (X.obj j).M)
     (r : Real) (hr : 0 ≤ r) where
   phi : Nat → Nat
   phi_strict : StrictMono phi
@@ -118,29 +115,23 @@ structure StagePayload
     InterSlot L inp.pack r alpha → E → E
   gInf : LiveSlot L inp.pack r →
     E → (E →L[Real] E →L[Real] Real)
-  data : HasStageJetData inp P L hr phi phi_strict U C0 C1
+  convergence : HasStageJetConvergence inp P L hr phi phi_strict U C0 C1
     aInf Jinf Jbarinf gInf
 
-theorem HasStageRefine.payload_nonempty
-    (inp : MetricCompactnessInputs (I := I) X)
+private theorem HasStageRefine.payload_nonempty
+    (inp : MetricCompactnessAssumptions (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P)
-    (hconn : ∀ j,
-      letI : TopologicalSpace (X.obj j).M := (X.obj j).topology
-      ConnectedSpace (X.obj j).M)
     (r : Real) (hr : 0 ≤ r)
     (h : HasStageRefine inp P L r hr) :
-    Nonempty (StagePayload inp P L hconn r hr) := by
+    Nonempty (StageConvergenceSelection inp P L r hr) := by
   rcases h with ⟨phi, hphi, U, C0, C1, aInf, Jinf, Jbarinf, gInf, hdata⟩
   exact ⟨⟨phi, hphi, U, C0, C1, aInf, Jinf, Jbarinf, gInf, hdata⟩⟩
 
-structure StagePayloadOn
-    (inp : MetricCompactCore (I := I) X)
+structure StageConvergenceSelectionOn
+    (inp : MetricCompactSeedWithDivisor (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P)
-    (hconn : ∀ j,
-      letI : TopologicalSpace (X.obj j).M := (X.obj j).topology
-      ConnectedSpace (X.obj j).M)
     (chart : NormalChartFamily (I := I) X)
     (r : Real) (hr : 0 ≤ r) where
   phi : Nat → Nat
@@ -157,141 +148,117 @@ structure StagePayloadOn
     InterSlot L inp.pack r alpha → E → E
   gInf : LiveSlot L inp.pack r →
     E → (E →L[Real] E →L[Real] Real)
-  data : HasStageJetDataOn inp P L hr phi phi_strict chart
+  convergence : HasStageJetConvergenceOn inp P L hr phi phi_strict chart
     V U C0 C1 aInf Jinf Jbarinf gInf
 
-theorem HasStageRefineOn.payload_nonempty
-    (inp : MetricCompactCore (I := I) X)
+private theorem HasStageRefineOn.payload_nonempty
+    (inp : MetricCompactSeedWithDivisor (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P)
-    (hconn : ∀ j,
-      letI : TopologicalSpace (X.obj j).M := (X.obj j).topology
-      ConnectedSpace (X.obj j).M)
     (chart : NormalChartFamily (I := I) X)
     (r : Real) (hr : 0 ≤ r)
     (h : HasStageRefineOn inp P L chart r hr) :
-    Nonempty (StagePayloadOn inp P L hconn chart r hr) := by
+    Nonempty (StageConvergenceSelectionOn inp P L chart r hr) := by
   rcases h with
     ⟨phi, hphi, V, U, C0, C1, aInf, Jinf, Jbarinf, gInf, hdata⟩
   exact
     ⟨⟨phi, hphi, V, U, C0, C1, aInf, Jinf, Jbarinf, gInf, hdata⟩⟩
 
-structure StageState where
+structure StageSubsequence where
   sigma : Nat → Nat
   sigma_strict : StrictMono sigma
 
-noncomputable def choosePayload
-    (inp : MetricCompactnessInputs (I := I) X)
+private noncomputable def choosePayload
+    (inp : MetricCompactnessAssumptions (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L0 : NetLimitData inp.decay inp.D P)
-    (hconn : ∀ j,
-      letI : TopologicalSpace (X.obj j).M := (X.obj j).topology
-      ConnectedSpace (X.obj j).M)
     (hseed : HasStageSeed inp P L0)
-    (S : StageState) (m : Nat) :
-    StagePayload inp P (L0.subseq S.sigma_strict) hconn (m : Real)
+    (S : StageSubsequence) (m : Nat) :
+    StageConvergenceSelection inp P (L0.subseq S.sigma_strict) (m : Real)
       (Nat.cast_nonneg m) :=
   Classical.choice <| HasStageRefine.payload_nonempty inp P
-    (L0.subseq S.sigma_strict) hconn (m : Real) (Nat.cast_nonneg m) <|
+    (L0.subseq S.sigma_strict) (m : Real) (Nat.cast_nonneg m) <|
       hseed.refine inp P L0 (L0.subseq S.sigma_strict)
         (NetLimitData.stable_subseq inp.decay P L0 S.sigma_strict hseed.1)
         (m : Real) (Nat.cast_nonneg m)
 
-noncomputable def nextState
-    (inp : MetricCompactnessInputs (I := I) X)
+private noncomputable def nextState
+    (inp : MetricCompactnessAssumptions (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L0 : NetLimitData inp.decay inp.D P)
-    (hconn : ∀ j,
-      letI : TopologicalSpace (X.obj j).M := (X.obj j).topology
-      ConnectedSpace (X.obj j).M)
     (hseed : HasStageSeed inp P L0)
-    (S : StageState) (m : Nat) : StageState :=
-  let d := choosePayload inp P L0 hconn hseed S m
+    (S : StageSubsequence) (m : Nat) : StageSubsequence :=
+  let d := choosePayload inp P L0 hseed S m
   ⟨S.sigma ∘ d.phi, S.sigma_strict.comp d.phi_strict⟩
 
-noncomputable def stageStates
-    (inp : MetricCompactnessInputs (I := I) X)
+noncomputable def stageSubsequence
+    (inp : MetricCompactnessAssumptions (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L0 : NetLimitData inp.decay inp.D P)
-    (hconn : ∀ j,
-      letI : TopologicalSpace (X.obj j).M := (X.obj j).topology
-      ConnectedSpace (X.obj j).M)
-    (hseed : HasStageSeed inp P L0) : Nat → StageState
+    (hseed : HasStageSeed inp P L0) : Nat → StageSubsequence
   | 0 => ⟨id, strictMono_id⟩
-  | m + 1 => nextState inp P L0 hconn hseed
-      (stageStates inp P L0 hconn hseed m) m
+  | m + 1 => nextState inp P L0 hseed
+      (stageSubsequence inp P L0 hseed m) m
 
-noncomputable def radiusPayload
-    (inp : MetricCompactnessInputs (I := I) X)
+noncomputable def radiusConvergenceSelection
+    (inp : MetricCompactnessAssumptions (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L0 : NetLimitData inp.decay inp.D P)
-    (hconn : ∀ j,
-      letI : TopologicalSpace (X.obj j).M := (X.obj j).topology
-      ConnectedSpace (X.obj j).M)
     (hseed : HasStageSeed inp P L0) (m : Nat) :=
-  choosePayload inp P L0 hconn hseed
-    (stageStates inp P L0 hconn hseed m) m
+  choosePayload inp P L0 hseed
+    (stageSubsequence inp P L0 hseed m) m
 
-noncomputable def stageNested
-    (inp : MetricCompactnessInputs (I := I) X)
+private noncomputable def stageNested
+    (inp : MetricCompactnessAssumptions (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L0 : NetLimitData inp.decay inp.D P)
-    (hconn : ∀ j,
-      letI : TopologicalSpace (X.obj j).M := (X.obj j).topology
-      ConnectedSpace (X.obj j).M)
     (hseed : HasStageSeed inp P L0) : NestedSubseq where
-  sigma m := (stageStates inp P L0 hconn hseed m).sigma
-  tau m := (radiusPayload inp P L0 hconn hseed m).phi
-  sigma_strict m := (stageStates inp P L0 hconn hseed m).sigma_strict
-  tau_strict m := (radiusPayload inp P L0 hconn hseed m).phi_strict
+  sigma m := (stageSubsequence inp P L0 hseed m).sigma
+  tau m := (radiusConvergenceSelection inp P L0 hseed m).phi
+  sigma_strict m := (stageSubsequence inp P L0 hseed m).sigma_strict
+  tau_strict m := (radiusConvergenceSelection inp P L0 hseed m).phi_strict
   sigma_zero := rfl
   sigma_succ m := by
-    rw [stageStates]
+    rw [stageSubsequence]
     rfl
 
 def HasRadiusTail
-    (inp : MetricCompactnessInputs (I := I) X)
+    (inp : MetricCompactnessAssumptions (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L0 : NetLimitData inp.decay inp.D P)
-    (hconn : ∀ j,
-      letI : TopologicalSpace (X.obj j).M := (X.obj j).topology
-      ConnectedSpace (X.obj j).M)
     (hseed : HasStageSeed inp P L0)
     (psi : Nat → Nat) (q : Nat) : Prop :=
-  let S := stageStates inp P L0 hconn hseed q
-  let d := radiusPayload inp P L0 hconn hseed q
+  let S := stageSubsequence inp P L0 hseed q
+  let d := radiusConvergenceSelection inp P L0 hseed q
   ∃ (rho : Nat → Nat) (hrho : StrictMono rho),
     (∀ n,
       (((L0.subseq S.sigma_strict).subseq
         (d.phi_strict.comp hrho)).φ n) = psi (q + n)) ∧
-    HasStageJetData inp P (L0.subseq S.sigma_strict)
+    HasStageJetConvergence inp P (L0.subseq S.sigma_strict)
       (Nat.cast_nonneg q) (d.phi ∘ rho) (d.phi_strict.comp hrho)
       d.U d.C0 d.C1 d.aInf d.Jinf d.Jbarinf d.gInf
 
 theorem HasStageSeed.exists_radius_diag
-    (inp : MetricCompactnessInputs (I := I) X)
+    (inp : MetricCompactnessAssumptions (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L0 : NetLimitData inp.decay inp.D P)
-    (hconn : ∀ j,
-      letI : TopologicalSpace (X.obj j).M := (X.obj j).topology
-      ConnectedSpace (X.obj j).M)
     (hseed : HasStageSeed inp P L0) :
     ∃ (psi : Nat → Nat) (_hpsi : StrictMono psi),
-      ∀ q : Nat, HasRadiusTail inp P L0 hconn hseed psi q := by
-  let T := stageNested inp P L0 hconn hseed
+      ∀ q : Nat, HasRadiusTail inp P L0 hseed psi q := by
+  let T := stageNested inp P L0 hseed
   let psi := L0.φ ∘ T.diag
   have hpsi : StrictMono psi := L0.φ_mono.comp T.diag_strict
   refine ⟨psi, hpsi, ?_⟩
   intro q
-  let S := stageStates inp P L0 hconn hseed q
-  let d := radiusPayload inp P L0 hconn hseed q
+  let S := stageSubsequence inp P L0 hseed q
+  let d := radiusConvergenceSelection inp P L0 hseed q
   let rho := T.tailFactor q
   have hrho : StrictMono rho := T.tailFactor_strict q
   change ∃ (rho : Nat → Nat) (hrho : StrictMono rho),
     (∀ n,
       (((L0.subseq S.sigma_strict).subseq
         (d.phi_strict.comp hrho)).φ n) = psi (q + n)) ∧
-    HasStageJetData inp P (L0.subseq S.sigma_strict)
+    HasStageJetConvergence inp P (L0.subseq S.sigma_strict)
       (Nat.cast_nonneg q) (d.phi ∘ rho) (d.phi_strict.comp hrho)
       d.U d.C0 d.C1 d.aInf d.Jinf d.Jbarinf d.gInf
   refine ⟨rho, hrho, ?_, ?_⟩
@@ -299,132 +266,111 @@ theorem HasStageSeed.exists_radius_diag
     have hfactor := congrArg L0.φ (T.diag_step_factor q n)
     simpa only [NetLimitData.subseq_phi, Function.comp_apply, psi, T, S, d,
       rho, stageNested] using hfactor.symm
-  · exact d.data.subseq inp P (L0.subseq S.sigma_strict)
+  · exact d.convergence.subseq inp P (L0.subseq S.sigma_strict)
       (Nat.cast_nonneg q) d.phi_strict d.U d.C0 d.C1 d.aInf
       d.Jinf d.Jbarinf d.gInf hrho
 
-noncomputable def choosePayloadOn
-    (inp : MetricCompactCore (I := I) X)
+private noncomputable def choosePayloadOn
+    (inp : MetricCompactSeedWithDivisor (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L0 : NetLimitData inp.decay inp.D P)
-    (hconn : ∀ j,
-      letI : TopologicalSpace (X.obj j).M := (X.obj j).topology
-      ConnectedSpace (X.obj j).M)
     (chart : NormalChartFamily (I := I) X)
     (hseed : HasStageSeedOn inp P L0 chart)
-    (S : StageState) (m : Nat) :
-    StagePayloadOn inp P (L0.subseq S.sigma_strict) hconn chart
+    (S : StageSubsequence) (m : Nat) :
+    StageConvergenceSelectionOn inp P (L0.subseq S.sigma_strict) chart
       (m : Real) (Nat.cast_nonneg m) :=
   Classical.choice <| HasStageRefineOn.payload_nonempty inp P
-    (L0.subseq S.sigma_strict) hconn chart (m : Real)
+    (L0.subseq S.sigma_strict) chart (m : Real)
     (Nat.cast_nonneg m) <|
       hseed.refine inp P L0 chart (L0.subseq S.sigma_strict)
         (NetLimitData.stable_subseq inp.decay P L0 S.sigma_strict hseed.1)
         (m : Real) (Nat.cast_nonneg m)
 
-noncomputable def nextStateOn
-    (inp : MetricCompactCore (I := I) X)
+private noncomputable def nextStateOn
+    (inp : MetricCompactSeedWithDivisor (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L0 : NetLimitData inp.decay inp.D P)
-    (hconn : ∀ j,
-      letI : TopologicalSpace (X.obj j).M := (X.obj j).topology
-      ConnectedSpace (X.obj j).M)
     (chart : NormalChartFamily (I := I) X)
     (hseed : HasStageSeedOn inp P L0 chart)
-    (S : StageState) (m : Nat) : StageState :=
-  let d := choosePayloadOn inp P L0 hconn chart hseed S m
+    (S : StageSubsequence) (m : Nat) : StageSubsequence :=
+  let d := choosePayloadOn inp P L0 chart hseed S m
   ⟨S.sigma ∘ d.phi, S.sigma_strict.comp d.phi_strict⟩
 
-noncomputable def stageStatesOn
-    (inp : MetricCompactCore (I := I) X)
+noncomputable def stageSubsequenceOn
+    (inp : MetricCompactSeedWithDivisor (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L0 : NetLimitData inp.decay inp.D P)
-    (hconn : ∀ j,
-      letI : TopologicalSpace (X.obj j).M := (X.obj j).topology
-      ConnectedSpace (X.obj j).M)
     (chart : NormalChartFamily (I := I) X)
-    (hseed : HasStageSeedOn inp P L0 chart) : Nat → StageState
+    (hseed : HasStageSeedOn inp P L0 chart) : Nat → StageSubsequence
   | 0 => ⟨id, strictMono_id⟩
-  | m + 1 => nextStateOn inp P L0 hconn chart hseed
-      (stageStatesOn inp P L0 hconn chart hseed m) m
+  | m + 1 => nextStateOn inp P L0 chart hseed
+      (stageSubsequenceOn inp P L0 chart hseed m) m
 
-noncomputable def radiusPayloadOn
-    (inp : MetricCompactCore (I := I) X)
+noncomputable def radiusConvergenceSelectionOn
+    (inp : MetricCompactSeedWithDivisor (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L0 : NetLimitData inp.decay inp.D P)
-    (hconn : ∀ j,
-      letI : TopologicalSpace (X.obj j).M := (X.obj j).topology
-      ConnectedSpace (X.obj j).M)
     (chart : NormalChartFamily (I := I) X)
     (hseed : HasStageSeedOn inp P L0 chart) (m : Nat) :=
-  choosePayloadOn inp P L0 hconn chart hseed
-    (stageStatesOn inp P L0 hconn chart hseed m) m
+  choosePayloadOn inp P L0 chart hseed
+    (stageSubsequenceOn inp P L0 chart hseed m) m
 
-noncomputable def stageNestedOn
-    (inp : MetricCompactCore (I := I) X)
+private noncomputable def stageNestedOn
+    (inp : MetricCompactSeedWithDivisor (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L0 : NetLimitData inp.decay inp.D P)
-    (hconn : ∀ j,
-      letI : TopologicalSpace (X.obj j).M := (X.obj j).topology
-      ConnectedSpace (X.obj j).M)
     (chart : NormalChartFamily (I := I) X)
     (hseed : HasStageSeedOn inp P L0 chart) : NestedSubseq where
-  sigma m := (stageStatesOn inp P L0 hconn chart hseed m).sigma
-  tau m := (radiusPayloadOn inp P L0 hconn chart hseed m).phi
+  sigma m := (stageSubsequenceOn inp P L0 chart hseed m).sigma
+  tau m := (radiusConvergenceSelectionOn inp P L0 chart hseed m).phi
   sigma_strict m :=
-    (stageStatesOn inp P L0 hconn chart hseed m).sigma_strict
+    (stageSubsequenceOn inp P L0 chart hseed m).sigma_strict
   tau_strict m :=
-    (radiusPayloadOn inp P L0 hconn chart hseed m).phi_strict
+    (radiusConvergenceSelectionOn inp P L0 chart hseed m).phi_strict
   sigma_zero := rfl
   sigma_succ m := by
-    rw [stageStatesOn]
+    rw [stageSubsequenceOn]
     rfl
 
 def HasRadiusTailOn
-    (inp : MetricCompactCore (I := I) X)
+    (inp : MetricCompactSeedWithDivisor (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L0 : NetLimitData inp.decay inp.D P)
-    (hconn : ∀ j,
-      letI : TopologicalSpace (X.obj j).M := (X.obj j).topology
-      ConnectedSpace (X.obj j).M)
     (chart : NormalChartFamily (I := I) X)
     (hseed : HasStageSeedOn inp P L0 chart)
     (psi : Nat → Nat) (q : Nat) : Prop :=
-  let S := stageStatesOn inp P L0 hconn chart hseed q
-  let d := radiusPayloadOn inp P L0 hconn chart hseed q
+  let S := stageSubsequenceOn inp P L0 chart hseed q
+  let d := radiusConvergenceSelectionOn inp P L0 chart hseed q
   ∃ (rho : Nat → Nat) (hrho : StrictMono rho),
     (∀ n,
       (((L0.subseq S.sigma_strict).subseq
         (d.phi_strict.comp hrho)).φ n) = psi (q + n)) ∧
-    HasStageJetDataOn inp P (L0.subseq S.sigma_strict)
+    HasStageJetConvergenceOn inp P (L0.subseq S.sigma_strict)
       (Nat.cast_nonneg q) (d.phi ∘ rho) (d.phi_strict.comp hrho)
       chart d.V d.U d.C0 d.C1 d.aInf d.Jinf d.Jbarinf d.gInf
 
 theorem HasStageSeedOn.exists_radius_diag
-    (inp : MetricCompactCore (I := I) X)
+    (inp : MetricCompactSeedWithDivisor (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L0 : NetLimitData inp.decay inp.D P)
-    (hconn : ∀ j,
-      letI : TopologicalSpace (X.obj j).M := (X.obj j).topology
-      ConnectedSpace (X.obj j).M)
     (chart : NormalChartFamily (I := I) X)
     (hseed : HasStageSeedOn inp P L0 chart) :
     ∃ (psi : Nat → Nat) (_hpsi : StrictMono psi),
-      ∀ q : Nat, HasRadiusTailOn inp P L0 hconn chart hseed psi q := by
-  let T := stageNestedOn inp P L0 hconn chart hseed
+      ∀ q : Nat, HasRadiusTailOn inp P L0 chart hseed psi q := by
+  let T := stageNestedOn inp P L0 chart hseed
   let psi := L0.φ ∘ T.diag
   have hpsi : StrictMono psi := L0.φ_mono.comp T.diag_strict
   refine ⟨psi, hpsi, ?_⟩
   intro q
-  let S := stageStatesOn inp P L0 hconn chart hseed q
-  let d := radiusPayloadOn inp P L0 hconn chart hseed q
+  let S := stageSubsequenceOn inp P L0 chart hseed q
+  let d := radiusConvergenceSelectionOn inp P L0 chart hseed q
   let rho := T.tailFactor q
   have hrho : StrictMono rho := T.tailFactor_strict q
   change ∃ (rho : Nat → Nat) (hrho : StrictMono rho),
     (∀ n,
       (((L0.subseq S.sigma_strict).subseq
         (d.phi_strict.comp hrho)).φ n) = psi (q + n)) ∧
-    HasStageJetDataOn inp P (L0.subseq S.sigma_strict)
+    HasStageJetConvergenceOn inp P (L0.subseq S.sigma_strict)
       (Nat.cast_nonneg q) (d.phi ∘ rho) (d.phi_strict.comp hrho)
       chart d.V d.U d.C0 d.C1 d.aInf d.Jinf d.Jbarinf d.gInf
   refine ⟨rho, hrho, ?_, ?_⟩
@@ -432,7 +378,7 @@ theorem HasStageSeedOn.exists_radius_diag
     have hfactor := congrArg L0.φ (T.diag_step_factor q n)
     simpa only [NetLimitData.subseq_phi, Function.comp_apply, psi, T, S, d,
       rho, stageNestedOn] using hfactor.symm
-  · exact d.data.subseq inp P (L0.subseq S.sigma_strict)
+  · exact d.convergence.subseq inp P (L0.subseq S.sigma_strict)
       (Nat.cast_nonneg q) d.phi_strict chart d.V d.U d.C0 d.C1
       d.aInf d.Jinf d.Jbarinf d.gInf hrho
 
@@ -442,17 +388,17 @@ theorem MetricCompactBase.exists_stage_diag
     (hconn : ∀ j,
       letI : TopologicalSpace (X.obj j).M := (X.obj j).topology
       ConnectedSpace (X.obj j).M) :
-    ∃ (inp : MetricCompactnessInputs (I := I) X)
+    ∃ (inp : MetricCompactnessAssumptions (I := I) X)
         (L0 : NetLimitData inp.decay inp.D
           (properMetricsOfCompleteConnected (I := I) hcomplete hconn))
         (hseed : HasStageSeed inp (properMetricsOfCompleteConnected (I := I) hcomplete hconn) L0)
         (psi : Nat → Nat) (_hpsi : StrictMono psi),
       ∀ q : Nat, HasRadiusTail inp (properMetricsOfCompleteConnected (I := I) hcomplete hconn)
-        L0 hconn hseed psi q := by
+        L0 hseed psi q := by
   obtain ⟨inp, L0, hseed⟩ := b.exists_stage_seed hcomplete hconn
   obtain ⟨psi, hpsi, htail⟩ :=
     hseed.exists_radius_diag inp (properMetricsOfCompleteConnected (I := I) hcomplete hconn)
-      L0 hconn
+      L0
   exact ⟨inp, L0, hseed, psi, hpsi, htail⟩
 
 end CheegerGromovCompactness

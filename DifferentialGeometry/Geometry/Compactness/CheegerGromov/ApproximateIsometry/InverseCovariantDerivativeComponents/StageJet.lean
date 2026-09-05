@@ -31,8 +31,8 @@ variable {H : Type uH} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 variable {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
 
-theorem HasStageJetData.inv_cov_comp_tail
-    (inp : MetricCompactnessInputs (I := I) X)
+theorem HasStageJetConvergence.inv_cov_comp_tail
+    (inp : MetricCompactnessAssumptions (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P) {r : Real} (hr : 0 ≤ r)
     (phi : Nat → Nat) (hphi : StrictMono phi)
@@ -47,7 +47,7 @@ theorem HasStageJetData.inv_cov_comp_tail
       InterSlot L inp.pack r alpha → E → E)
     (gInf : LiveSlot L inp.pack r →
       E → (E →L[Real] E →L[Real] Real))
-    (hstage : HasStageJetData (I := I) inp P L hr phi hphi
+    (hstage : HasStageJetConvergence (I := I) inp P L hr phi hphi
       U C0 C1 aInf Jinf Jbarinf gInf)
     {R S T Vrad : Real} (hRS : R < S) (hST : S < T)
     (hroom : T + (4 + 8 * Real.sqrt 2) * inp.decay.lambda inp.D 0 < Vrad)
@@ -224,7 +224,7 @@ theorem HasStageJetData.inv_cov_comp_tail
   rcases hstage with ⟨hdata, hmetric, hjets, hbase⟩
   have hgap : 0 ≤
       (4 + 8 * Real.sqrt 2) * inp.decay.lambda inp.D 0 :=
-    mul_nonneg (by positivity) (inp.decay.lambda_pos inp.hD 0).le
+    mul_nonneg (by positivity) (inp.decay.lambda_pos inp.divisor_pos 0).le
   have hTr : T < r := by linarith
   have hSr : S < r := hST.trans hTr
   obtain ⟨eta, heta, hcover⟩ :=
@@ -338,7 +338,7 @@ theorem HasStageJetData.inv_cov_comp_tail
     have hAconvW : MapCInfConvergenceOnCompacts W
         (fun n => A alpha (kn n) (ln n)) id := by
       simpa only [A, Lphi] using
-        HasStageJetData.chart_convergence (I := I) inp P L hr phi hphi
+        HasStageJetConvergence.chart_convergence (I := I) inp P L hr phi hphi
           U C0 C1 aInf Jinf Jbarinf gInf
           ⟨hdata, hmetric, hjets, hbase⟩ S hSr alpha W hWint
           kn ln hkn hln hstay'
@@ -346,7 +346,7 @@ theorem HasStageJetData.inv_cov_comp_tail
     have hKcompact : IsCompact K := isCompact_closedBall zInf (q / 2)
     have hKV : K ⊆ V := Metric.closedBall_subset_ball (by linarith)
     obtain ⟨Vout, hVoutOpen, hVoutCompact, hKVout, hGconv, hGcd⟩ :=
-      HasStageJetData.inv_chart_convergence (I := I) inp P L hr phi hphi
+      HasStageJetConvergence.inv_chart_convergence (I := I) inp P L hr phi hphi
         hcomplete hconn U C0 C1 aInf Jinf Jbarinf gInf
         ⟨hdata, hmetric, hjets, hbase⟩ S T Vrad hST hroom hVr
         alpha V W K hVopen Metric.isOpen_ball hKcompact hKV hVW hWint

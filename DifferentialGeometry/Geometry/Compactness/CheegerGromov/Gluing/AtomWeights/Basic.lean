@@ -356,7 +356,7 @@ theorem seqAtom_mem_hat (hd : InjectivityRadiusDecay (I := I) X) {D : Real}
       have hdist0 : 0 ≤ dist c q := dist_nonneg
       nlinarith
 
-theorem seqWeights_data (hd : InjectivityRadiusDecay (I := I) X) {D : Real}
+theorem seqWeights_weightDataOn (hd : InjectivityRadiusDecay (I := I) X) {D : Real}
     (hD : 0 < D) (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData hd D P) (pb : hd.PackingBound D) (r : Real) (k : Nat)
     (i0 : Fin (pb.A r))
@@ -367,7 +367,7 @@ theorem seqWeights_data (hd : InjectivityRadiusDecay (I := I) X) {D : Real}
       (rawWeights
         (cutRaw (seqAtom hd hD P L pb r k i0)
           (seqAtom hd hD P L pb r k) i0)) := by
-  apply cutWeights_data
+  apply cutWeights_weightDataOn
   · intro x _hx
     exact seqAtom_Icc hd hD P L pb r k i0 x
   · intro x _hx gamma
@@ -393,7 +393,7 @@ theorem seqWeights_ev (hd : InjectivityRadiusDecay (I := I) X) {D : Real}
           (cutRaw (seqAtom hd hD P L pb r k i0)
             (seqAtom hd hD P L pb r k) i0)) := by
   filter_upwards [L.innerBall_cover hd hD P hre pb r] with k hcover
-  exact seqWeights_data hd hD P L pb r k i0 hcover
+  exact seqWeights_weightDataOn hd hD P L pb r k i0 hcover
 
 
 private theorem packA_pos (hd : InjectivityRadiusDecay (I := I) X) {D : Real}

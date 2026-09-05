@@ -160,7 +160,7 @@ structure ForwardUniqueSlab (g₁ g₂ : Real → SmoothRiemannianMetric I M)
 
   volLe : ∀ t ∈ Ioo a c, ∀ x, (1 / 2 : Real) * traceTimeDerivMetric (I := I) g₁ t x ≤ C_V
 
-structure ForwardUniqueInputs (g₁ g₂ : Real → SmoothRiemannianMetric I M)
+structure ForwardUniquenessAssumptions (g₁ g₂ : Real → SmoothRiemannianMetric I M)
     (Avec : Real → (y : M) →
       TangentSpace I y →L[Real] TangentSpace I y →L[Real] TangentSpace I y)
     (Svec : Real → (y : M) →
@@ -242,7 +242,7 @@ end Inputs
 section
 
 
-theorem forward_unique_of_inputs
+theorem forward_unique_of_assumptions
     (g₁ g₂ : Real → SmoothRiemannianMetric I M) {a b : Real}
     (Avec : Real → (y : M) →
       TangentSpace I y →L[Real] TangentSpace I y →L[Real] TangentSpace I y)
@@ -265,7 +265,7 @@ theorem forward_unique_of_inputs
       HasDerivWithinAt (fun s : Real => (g₂ s).inner x v w)
         ((-2 : Real) * DifferentialGeometry.Geometry.Curvature.ricciTensor (I := I) (g₂ t) x v w) (Ici a) t)
     (h0 : g₁ a = g₂ a)
-    (hin : ForwardUniqueInputs (I := I) g₁ g₂ Avec Svec Sfield Uflux rem a b) :
+    (hin : ForwardUniquenessAssumptions (I := I) g₁ g₂ Avec Svec Sfield Uflux rem a b) :
     ∀ t ∈ Ico a b, g₁ t = g₂ t := by
   refine metrics_eq_ico (I := I) g₁ g₂ ?_
   intro c hc t ht

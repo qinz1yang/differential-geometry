@@ -46,7 +46,7 @@ private theorem subtype_norm_lip
     _ = ((⟨C, hC⟩ : NNReal) : ℝ) * dist x y := by
       rw [Subtype.dist_eq, dist_eq_norm]
 
-private theorem secondOrderActionFourthToSecondOrderCore_pairing
+private theorem secondOrderActionFourthToSecondOrderOnDenseCore_pairing
     (g : SmoothRiemannianMetric I M)
     {ρ δ C : ℝ} (hρ : 0 ≤ ρ) (hδ0 : 0 ≤ δ) (hδ_le : δ ≤ 1 / 3)
     (hreal : ∀ S : SmoothCcTensor g 0 2,
@@ -59,10 +59,10 @@ private theorem secondOrderActionFourthToSecondOrderCore_pairing
         (lowCoreActionCoefficients (I := I) (M := M)
           g hρ hδ0 hδ_le hreal U).secondOrderActionFourthToSecondOrder (I := I) (M := M)‖ ≤
         C * ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) (T - U)‖)
-    (x y : LowerScaleTimeInternal.LowCore (I := I) (M := M) g) :
-    ‖LowerScaleTimeInternal.secondOrderActionFourthToSecondOrderCore (I := I) (M := M)
+    (x y : LowerScaleTime.SecondOrderDenseCore (I := I) (M := M) g) :
+    ‖LowerScaleTime.secondOrderActionFourthToSecondOrderOnDenseCore (I := I) (M := M)
           g hρ hδ0 hδ_le hreal x -
-        LowerScaleTimeInternal.secondOrderActionFourthToSecondOrderCore (I := I) (M := M)
+        LowerScaleTime.secondOrderActionFourthToSecondOrderOnDenseCore (I := I) (M := M)
           g hρ hδ0 hδ_le hreal y‖ ≤
       C * ‖(x : TensorHs (I := I) (M := M) g 0 2 (2 : ℝ)) -
         (y : TensorHs (I := I) (M := M) g 0 2 (2 : ℝ))‖ := by
@@ -77,12 +77,12 @@ private theorem secondOrderActionFourthToSecondOrderCore_pairing
     apply Subtype.ext
     exact hU.symm
   rw [hx, hy]
-  rw [LowerScaleTimeInternal.secondOrderActionFourthToSecondOrderCore_value,
-    LowerScaleTimeInternal.secondOrderActionFourthToSecondOrderCore_value]
+  rw [LowerScaleTime.secondOrderActionFourthToSecondOrderOnDenseCore_apply,
+    LowerScaleTime.secondOrderActionFourthToSecondOrderOnDenseCore_apply]
   rw [← map_sub]
   simpa only [ccToHsLin_apply] using hpair T U
 
-private theorem secondOrderActionThirdToFirstOrderCore_pairing
+private theorem secondOrderActionThirdToFirstOrderOnDenseCore_pairing
     (g : SmoothRiemannianMetric I M)
     {ρ δ C : ℝ} (hρ : 0 ≤ ρ) (hδ0 : 0 ≤ δ) (hδ_le : δ ≤ 1 / 3)
     (hreal : ∀ S : SmoothCcTensor g 0 2,
@@ -95,10 +95,10 @@ private theorem secondOrderActionThirdToFirstOrderCore_pairing
         (lowCoreActionCoefficients (I := I) (M := M)
           g hρ hδ0 hδ_le hreal U).secondOrderActionThirdToFirstOrder (I := I) (M := M)‖ ≤
         C * ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) (T - U)‖)
-    (x y : LowerScaleTimeInternal.LowCore (I := I) (M := M) g) :
-    ‖LowerScaleTimeInternal.secondOrderActionThirdToFirstOrderCore (I := I) (M := M)
+    (x y : LowerScaleTime.SecondOrderDenseCore (I := I) (M := M) g) :
+    ‖LowerScaleTime.secondOrderActionThirdToFirstOrderOnDenseCore (I := I) (M := M)
           g hρ hδ0 hδ_le hreal x -
-        LowerScaleTimeInternal.secondOrderActionThirdToFirstOrderCore (I := I) (M := M)
+        LowerScaleTime.secondOrderActionThirdToFirstOrderOnDenseCore (I := I) (M := M)
           g hρ hδ0 hδ_le hreal y‖ ≤
       C * ‖(x : TensorHs (I := I) (M := M) g 0 2 (2 : ℝ)) -
         (y : TensorHs (I := I) (M := M) g 0 2 (2 : ℝ))‖ := by
@@ -113,8 +113,8 @@ private theorem secondOrderActionThirdToFirstOrderCore_pairing
     apply Subtype.ext
     exact hU.symm
   rw [hx, hy]
-  rw [LowerScaleTimeInternal.secondOrderActionThirdToFirstOrderCore_value,
-    LowerScaleTimeInternal.secondOrderActionThirdToFirstOrderCore_value]
+  rw [LowerScaleTime.secondOrderActionThirdToFirstOrderOnDenseCore_apply,
+    LowerScaleTime.secondOrderActionThirdToFirstOrderOnDenseCore_apply]
   rw [← map_sub]
   simpa only [ccToHsLin_apply] using hpair T U
 
@@ -137,19 +137,19 @@ private theorem secondOrderActionFourthToSecondOrder_extension_lipschitz
   change LipschitzWith ⟨C, hC⟩
     (Dense.extend
       (ccToHsLin_dense (I := I) (M := M) g 2 (by positivity))
-      (LowerScaleTimeInternal.secondOrderActionFourthToSecondOrderCore (I := I) (M := M)
+      (LowerScaleTime.secondOrderActionFourthToSecondOrderOnDenseCore (I := I) (M := M)
         g hρ hδ0 hδ_le hreal))
   refine
     DifferentialGeometry.Analysis.Parabolic.QuasiLinear.dense_lipschitz
       (ccToHsLin_dense (I := I) (M := M) g 2 (by positivity))
-      (LowerScaleTimeInternal.secondOrderActionFourthToSecondOrderCore (I := I) (M := M)
+      (LowerScaleTime.secondOrderActionFourthToSecondOrderOnDenseCore (I := I) (M := M)
         g hρ hδ0 hδ_le hreal) ?_
   exact subtype_norm_lip
     (X := TensorHs (I := I) (M := M) g 0 2 (2 : ℝ))
     (Y := TensorHs (I := I) (M := M) g 0 2 (4 : ℝ) →L[ℝ]
       TensorHs (I := I) (M := M) g 0 2 (2 : ℝ))
     hC _ <|
-    secondOrderActionFourthToSecondOrderCore_pairing (I := I) (M := M)
+    secondOrderActionFourthToSecondOrderOnDenseCore_pairing (I := I) (M := M)
       g hρ hδ0 hδ_le hreal hpair
 
 private theorem secondOrderActionThirdToFirstOrder_extension_lipschitz
@@ -171,19 +171,19 @@ private theorem secondOrderActionThirdToFirstOrder_extension_lipschitz
   change LipschitzWith ⟨C, hC⟩
     (Dense.extend
       (ccToHsLin_dense (I := I) (M := M) g 2 (by positivity))
-      (LowerScaleTimeInternal.secondOrderActionThirdToFirstOrderCore (I := I) (M := M)
+      (LowerScaleTime.secondOrderActionThirdToFirstOrderOnDenseCore (I := I) (M := M)
         g hρ hδ0 hδ_le hreal))
   refine
     DifferentialGeometry.Analysis.Parabolic.QuasiLinear.dense_lipschitz
       (ccToHsLin_dense (I := I) (M := M) g 2 (by positivity))
-      (LowerScaleTimeInternal.secondOrderActionThirdToFirstOrderCore (I := I) (M := M)
+      (LowerScaleTime.secondOrderActionThirdToFirstOrderOnDenseCore (I := I) (M := M)
         g hρ hδ0 hδ_le hreal) ?_
   exact subtype_norm_lip
     (X := TensorHs (I := I) (M := M) g 0 2 (2 : ℝ))
     (Y := TensorHs (I := I) (M := M) g 0 2 (3 : ℝ) →L[ℝ]
       TensorHs (I := I) (M := M) g 0 2 (1 : ℝ))
     hC _ <|
-    secondOrderActionThirdToFirstOrderCore_pairing (I := I) (M := M)
+    secondOrderActionThirdToFirstOrderOnDenseCore_pairing (I := I) (M := M)
       g hρ hδ0 hδ_le hreal hpair
 
 private theorem secondOrderActionFourthToSecondOrder_extension_core
@@ -210,14 +210,14 @@ private theorem secondOrderActionFourthToSecondOrder_extension_core
   let F : D →
       (TensorHs (I := I) (M := M) g 0 2 (4 : ℝ) →L[ℝ]
         TensorHs (I := I) (M := M) g 0 2 (2 : ℝ)) :=
-    LowerScaleTimeInternal.secondOrderActionFourthToSecondOrderCore (I := I) (M := M)
+    LowerScaleTime.secondOrderActionFourthToSecondOrderOnDenseCore (I := I) (M := M)
       g hρ hδ0 hδ_le hreal
   have hF : LipschitzWith ⟨C, hC⟩ F :=
     subtype_norm_lip
       (X := TensorHs (I := I) (M := M) g 0 2 (2 : ℝ))
       (Y := TensorHs (I := I) (M := M) g 0 2 (4 : ℝ) →L[ℝ]
         TensorHs (I := I) (M := M) g 0 2 (2 : ℝ))
-      hC F <| secondOrderActionFourthToSecondOrderCore_pairing (I := I) (M := M)
+      hC F <| secondOrderActionFourthToSecondOrderOnDenseCore_pairing (I := I) (M := M)
         g hρ hδ0 hδ_le hreal hpair
   let x : D :=
     ⟨ccToHsLin (I := I) (M := M) g 2 (2 : ℝ) T, ⟨T, rfl⟩⟩
@@ -234,7 +234,7 @@ private theorem secondOrderActionFourthToSecondOrder_extension_core
         (ccToHsLin_dense (I := I) (M := M) g 2 (by positivity))
         F (ccToHsLin (I := I) (M := M) g 2 (2 : ℝ) T) =
       F x := hext
-    _ = _ := LowerScaleTimeInternal.secondOrderActionFourthToSecondOrderCore_value
+    _ = _ := LowerScaleTime.secondOrderActionFourthToSecondOrderOnDenseCore_apply
       (I := I) (M := M) g hρ hδ0 hδ_le hreal T
 
 private theorem secondOrderActionThirdToFirstOrder_extension_core
@@ -261,14 +261,14 @@ private theorem secondOrderActionThirdToFirstOrder_extension_core
   let F : D →
       (TensorHs (I := I) (M := M) g 0 2 (3 : ℝ) →L[ℝ]
         TensorHs (I := I) (M := M) g 0 2 (1 : ℝ)) :=
-    LowerScaleTimeInternal.secondOrderActionThirdToFirstOrderCore (I := I) (M := M)
+    LowerScaleTime.secondOrderActionThirdToFirstOrderOnDenseCore (I := I) (M := M)
       g hρ hδ0 hδ_le hreal
   have hF : LipschitzWith ⟨C, hC⟩ F :=
     subtype_norm_lip
       (X := TensorHs (I := I) (M := M) g 0 2 (2 : ℝ))
       (Y := TensorHs (I := I) (M := M) g 0 2 (3 : ℝ) →L[ℝ]
         TensorHs (I := I) (M := M) g 0 2 (1 : ℝ))
-      hC F <| secondOrderActionThirdToFirstOrderCore_pairing (I := I) (M := M)
+      hC F <| secondOrderActionThirdToFirstOrderOnDenseCore_pairing (I := I) (M := M)
         g hρ hδ0 hδ_le hreal hpair
   let x : D :=
     ⟨ccToHsLin (I := I) (M := M) g 2 (2 : ℝ) T, ⟨T, rfl⟩⟩
@@ -285,7 +285,7 @@ private theorem secondOrderActionThirdToFirstOrder_extension_core
         (ccToHsLin_dense (I := I) (M := M) g 2 (by positivity))
         F (ccToHsLin (I := I) (M := M) g 2 (2 : ℝ) T) =
       F x := hext
-    _ = _ := LowerScaleTimeInternal.secondOrderActionThirdToFirstOrderCore_value
+    _ = _ := LowerScaleTime.secondOrderActionThirdToFirstOrderOnDenseCore_apply
       (I := I) (M := M) g hρ hδ0 hδ_le hreal T
 
 theorem radialSecondOrderAction_pairing_bound

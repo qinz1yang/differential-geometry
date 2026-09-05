@@ -154,7 +154,7 @@ theorem IntrinsicBallChartData.normal_chart_metric_equiv
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [CompleteSpace E] in
-theorem exists_intrinsic_ball_chart_data
+theorem nonempty_intrinsic_ball_chart_data
     (X : PointedRiemannianSeq.{u, uE, uH} (I := I))
     (hcomplete : SeqMetricComplete (I := I) X)
     (hconn : ∀ k : Nat,
@@ -282,7 +282,7 @@ theorem exists_intrinsic_ball_chart_data
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [CompleteSpace E] in
-theorem exists_normal_chart_data
+theorem nonempty_normal_chart_data
     (X : PointedRiemannianSeq.{u, uE, uH} (I := I))
     (hcomplete : SeqMetricComplete (I := I) X)
     (hconn : ∀ k : Nat,
@@ -293,12 +293,12 @@ theorem exists_normal_chart_data
     (hreal : hd.RealizesDistance) :
     Nonempty (NormalChartData (I := I) X hd) := by
   obtain ⟨d⟩ :=
-    exists_intrinsic_ball_chart_data (I := I) X hcomplete hconn hgeom hd hreal
+    nonempty_intrinsic_ball_chart_data (I := I) X hcomplete hconn hgeom hd hreal
   exact ⟨d.toNormalChartData⟩
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-theorem exists_bounded_geometry_normal_data
+theorem nonempty_bounded_geometry_normal_chart_data
     (X : PointedRiemannianSeq.{u, uE, uH} (I := I))
     (hcomplete : SeqMetricComplete (I := I) X)
     (hconn : ∀ k : Nat,
@@ -309,7 +309,7 @@ theorem exists_bounded_geometry_normal_data
     (hreal : hd.RealizesDistance) :
     Nonempty (BoundedGeometryNormalChartData (I := I) X hd) := by
   obtain ⟨d⟩ :=
-    exists_intrinsic_ball_chart_data (I := I) X hcomplete hconn hgeom hd hreal
+    nonempty_intrinsic_ball_chart_data (I := I) X hcomplete hconn hgeom hd hreal
   let U : Real := d.ratio * hd.mu 0
   let metricC : Nat → Real := fun n =>
     ContinuousMultilinearMap.polarConst n *

@@ -557,7 +557,7 @@ private theorem pdIter_rawCompOnE_eigenSeries_tsum_eq_local
     _ = ∑' i, d i * DifferentialGeometry.Analysis.iteratedDirDeriv L (ψ i) y := by
         refine tsum_congr (fun i => hmode_eval i)
 
-private theorem spectralPathFO_rawCompOnE_pdIter_euclidean_contDiffOn_local
+private theorem spectralPathFiniteOrder_rawCompOnE_pdIter_euclidean_contDiffOn_local
     (g : SmoothRiemannianMetric I M) {T : ℝ} (hT : 0 < T) (kk : ℕ)
     (T_rep : ℝ → SmoothCcTensor g 0 2)
     (φ : TensorEigenIdx (I := I) (M := M) g 0 2 → ℝ → ℝ)
@@ -694,7 +694,7 @@ private theorem anisoOn_rawCompOnE_spectralPath
     DifferentialGeometry.Analysis.AnisotropicJointContDiffOn kk T (interior (extChartAt I α).target)
       (fun t => tensorChartComponentOnModel (I := I) (M := M) g (T_rep t) α Jdx) :=
   ⟨fun t _ => rawCompOnE_contDiffOn (I := I) (M := M) g (T_rep t) α Jdx,
-   fun L => spectralPathFO_rawCompOnE_pdIter_euclidean_contDiffOn_local (I := I) (M := M)
+   fun L => spectralPathFiniteOrder_rawCompOnE_pdIter_euclidean_contDiffOn_local (I := I) (M := M)
      g hT kk T_rep φ hφ_smooth hcoeff hmodemass α Jdx L⟩
 
 section RealizedChartAtoms
@@ -1170,7 +1170,7 @@ private lemma tensorChartComponentRaw_sub_eq
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-private lemma reconFO_raw_eq_chartRHS
+private lemma reconstructedFiniteOrder_raw_eq_chartRHS
     (g₀ g_bg : SmoothRiemannianMetric I M)
     (S : SmoothCcTensor g₀ 0 2) {δ : ℝ} (hδ_lt : δ < 1)
     (hδS : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ S) δ)
@@ -1267,7 +1267,7 @@ private lemma euclidPartial_eq_pdDir (i : Fin (Module.finrank ℝ E))
     euclidPartial (E := E) i u
       = DifferentialGeometry.Analysis.dirDeriv (EuclideanSpace.single i 1) u := rfl
 
-private theorem anisoOn_pushed_oneMinusConnLapIter_reconFOPath
+private theorem anisoOn_pushed_oneMinusConnLapIter_reconstructedFiniteOrderPath
     (g₀ g_bg : SmoothRiemannianMetric I M) {T : ℝ} (hT : 0 < T) (k : ℕ)
     (F : ℝ → SmoothCcTensor g₀ 0 2) {δ : ℝ} (hδ_lt : δ < 1)
     (hδ : ∀ t : ℝ, metricCauchySchwarzBound (I := I) (M := M) g₀
@@ -1316,7 +1316,7 @@ private theorem anisoOn_pushed_oneMinusConnLapIter_reconFOPath
         have hsymm_source : (extChartAt I α).symm y ∈ (chartAt H α).source := by
           have := (extChartAt I α).map_target hy_t
           rwa [extChartAt_source (I := I)] at this
-        have hkey := reconFO_raw_eq_chartRHS (I := I) (M := M) g₀ g_bg (F t)
+        have hkey := reconstructedFiniteOrder_raw_eq_chartRHS (I := I) (M := M) g₀ g_bg (F t)
           hδ_lt (hδ t) α Jdx hsymm_source
         have hRI : (extChartAt I α) ((extChartAt I α).symm y) = y :=
           (extChartAt I α).right_inv hy_t
@@ -1474,7 +1474,7 @@ private theorem anisoOn_pushed_oneMinusConnLapIter_reconFOPath
       rw [← hWm_b]
       simp only [hQm_def, hWm_def, euclidPartial_eq_pdDir]
 
-private theorem reconFOIter_rawChartComponent_jointContMDiffOn_pou
+private theorem reconstructedFiniteOrderIter_rawChartComponent_jointContMDiffOn_pou
     (g₀ g_bg : SmoothRiemannianMetric I M) {T : ℝ} (hT : 0 < T) (k : ℕ)
     (F : ℝ → SmoothCcTensor g₀ 0 2) {δ : ℝ} (hδ_lt : δ < 1)
     (hδ : ∀ t : ℝ, metricCauchySchwarzBound (I := I) (M := M) g₀
@@ -1518,7 +1518,7 @@ private theorem reconFOIter_rawChartComponent_jointContMDiffOn_pou
           (deTurckRHSReconSectionFiniteOrder (I := I) g₀ g_bg (F q.1) hδ_lt (hδ q.1)))
         α ![] Jdx) q.2 with hG_def
   have hG : ContDiffOn ℝ (k : ℕ) G (Set.Icc (0 : ℝ) T ×ˢ R) :=
-    (anisoOn_pushed_oneMinusConnLapIter_reconFOPath (I := I) (M := M) g₀ g_bg hT k F
+    (anisoOn_pushed_oneMinusConnLapIter_reconstructedFiniteOrderPath (I := I) (M := M) g₀ g_bg hT k F
       hδ_lt hδ φ hφ_smooth hcoeff hmodemass α m Jdx).joint
   set f : M × ℝ → ℝ × EuclideanSpace ℝ (Fin (Module.finrank ℝ E)) :=
     fun p : M × ℝ => (p.2, toEuclidean (E := E) ((extChartAt I α) p.1)) with hf_def
@@ -1708,7 +1708,7 @@ end IterLaplacianInduction
 
 end FiniteOrderAnisotropicReconstruction
 
-private theorem deTurckRHSReconSectionFO_oneMinusConnLapIter_path_jointContMDiffOn
+private theorem deTurckRHSReconstructedFiniteOrderSection_oneMinusConnLapIter_path_jointContMDiffOn
     (g₀ g_bg : SmoothRiemannianMetric I M) {T : ℝ} (hT : 0 < T) (k : ℕ)
     (F : ℝ → SmoothCcTensor g₀ 0 2) {δ : ℝ} (hδ_lt : δ < 1)
     (hδ : ∀ t : ℝ, metricCauchySchwarzBound (I := I) (M := M) g₀
@@ -1738,12 +1738,12 @@ private theorem deTurckRHSReconSectionFO_oneMinusConnLapIter_path_jointContMDiff
     (fun t => oneMinusConnLapSmoothIter (I := I) g₀ 0 2 m
       (deTurckRHSReconSectionFiniteOrder (I := I) g₀ g_bg (F t) hδ_lt (hδ t)))
     (fun α Jdx =>
-      reconFOIter_rawChartComponent_jointContMDiffOn_pou (I := I) (M := M)
+      reconstructedFiniteOrderIter_rawChartComponent_jointContMDiffOn_pou (I := I) (M := M)
         g₀ g_bg hT k F hδ_lt hδ φ hφ_smooth hcoeff hmodemass m α Jdx)
 
 end FiniteOrderReconJetEnergy
 
-private theorem deTurckRHSReconSectionFO_pathCoeff_timeContDiff_spectralJetMass
+private theorem deTurckRHSReconstructedFiniteOrderSection_pathCoeff_timeContDiff_spectralJetMass
     (g₀ g_bg : SmoothRiemannianMetric I M) {T : ℝ} (hT : 0 < T) (k : ℕ)
     (F : ℝ → SmoothCcTensor g₀ 0 2) {δ : ℝ} (hδ_lt : δ < 1)
     (hδ : ∀ t : ℝ, metricCauchySchwarzBound (I := I) (M := M) g₀
@@ -1792,7 +1792,7 @@ private theorem deTurckRHSReconSectionFO_pathCoeff_timeContDiff_spectralJetMass
         (E := fun z : M => Tensor0SBundle.TensorRSSpace 0 2 I z) p.1
         ((oneMinusConnLapSmoothIter (I := I) g₀ 0 2 m (Rec p.2)).toSection p.1))
       ((Set.univ : Set M) ×ˢ Set.Icc (0 : ℝ) T) :=
-    fun m => deTurckRHSReconSectionFO_oneMinusConnLapIter_path_jointContMDiffOn
+    fun m => deTurckRHSReconstructedFiniteOrderSection_oneMinusConnLapIter_path_jointContMDiffOn
       (I := I) (M := M) g₀ g_bg hT k F hδ_lt hδ φ hφ_smooth hcoeff hmodemass m
   have hrec_joint : ContMDiffOn (I.prod 𝓘(ℝ, ℝ))
       (I.prod 𝓘(ℝ, Tensor0SBundle.TensorRSModel 0 2 ℝ E)) ((k : ℕ) : WithTop ℕ∞)
@@ -1938,7 +1938,7 @@ private theorem deTurckRHSReconSectionFO_pathCoeff_timeContDiff_spectralJetMass
         mul_le_mul_of_nonneg_left hsq hwneg_nn
     _ = C ^ 2 * tensorSobolevWeight (I := I) (M := M) i (-sW) := by ring
 
-private theorem deTurckRHSReconSectionFO_path_timeJet_mixed_regularity
+private theorem deTurckRHSReconstructedFiniteOrderSection_path_timeJet_mixed_regularity
     (g₀ g_bg : SmoothRiemannianMetric I M) {T : ℝ} (hT : 0 < T) (k : ℕ)
     (F : ℝ → SmoothCcTensor g₀ 0 2) {δ : ℝ} (hδ_lt : δ < 1)
     (hδ : ∀ t : ℝ, metricCauchySchwarzBound (I := I) (M := M) g₀
@@ -1975,7 +1975,7 @@ private theorem deTurckRHSReconSectionFO_path_timeJet_mixed_regularity
           ((Set.univ : Set M) ×ˢ Set.Icc (0 : ℝ) T)) := by
   classical
   obtain ⟨hcoeffCk, hjetmass⟩ :=
-    deTurckRHSReconSectionFO_pathCoeff_timeContDiff_spectralJetMass (I := I) (M := M)
+    deTurckRHSReconstructedFiniteOrderSection_pathCoeff_timeContDiff_spectralJetMass (I := I) (M := M)
       g₀ g_bg hT k F hδ_lt hδ φ hφ_smooth hcoeff hmodemass
   set hc := tensorResolventL2_isCompactOperator (I := I) (M := M) g₀ 0 2 with hhc
   have hUD : UniqueDiffOn ℝ (Set.Icc (0 : ℝ) T) := uniqueDiffOn_Icc hT
@@ -2015,7 +2015,7 @@ private theorem deTurckRHSReconSectionFO_path_timeJet_mixed_regularity
     refine ⟨B, hB1, fun i t ht => ?_⟩
     rw [hjets_global i j hj t ht]
     exact hB2 i t ht
-  have h1 := spectralPathFO_section_jointContMDiffOn_local (I := I) (M := M) g₀ hT k
+  have h1 := spectralPathFiniteOrder_section_jointContMDiffOn_local (I := I) (M := M) g₀ hT k
     (fun s => deTurckRHSReconSectionFiniteOrder (I := I) g₀ g_bg (F s) hδ_lt (hδ s))
     chat hchat_smooth hRcoeff hRmass
   have hRjet_ex : ∀ (j : ℕ) (t : ℝ), ∃ S : SmoothCcTensor g₀ 0 2,
@@ -2040,7 +2040,7 @@ private theorem deTurckRHSReconSectionFO_path_timeJet_mixed_regularity
   choose Rjet hRjet using hRjet_ex
   refine ⟨h1, Rjet, ?_, ?_⟩
   · intro j hj t ht x
-    exact spectralPathFO_toFun_timeJet_eq_of_coeff_jets_local (I := I) (M := M) g₀ hT k
+    exact spectralPathFiniteOrder_toFun_timeJet_eq_of_coeff_jets_local (I := I) (M := M) g₀ hT k
       (fun s => deTurckRHSReconSectionFiniteOrder (I := I) g₀ g_bg (F s) hδ_lt (hδ s))
       chat hchat_smooth hRcoeff hRmass j hj ht (Rjet j t) (hRjet j t hj ht) x
   · intro j hj κ
@@ -2089,13 +2089,13 @@ private theorem deTurckRHSReconSectionFO_path_timeJet_mixed_regularity
         ring
       rw [hwsplit]
       exact hB2 i t ht
-    exact spectralPathFO_section_jointContMDiffOn_local (I := I) (M := M) g₀ hT 0
+    exact spectralPathFiniteOrder_section_jointContMDiffOn_local (I := I) (M := M) g₀ hT 0
       (fun t => oneMinusConnLapSmoothIter (I := I) g₀ 0 2 κ (Rjet j t))
       (fun i t => (1 + TensorEigenIdx.lambda (I := I) (M := M) i) ^ κ *
         iteratedDeriv j (chat i) t)
       hφκ_smooth hκcoeff hκmass
 
-private theorem deTurckRHSReconSectionFO_eigenPairing_jointCk_timeJet_realization
+private theorem deTurckRHSReconstructedFiniteOrderSection_eigenPairing_jointCk_timeJet_realization
     (g₀ g_bg : SmoothRiemannianMetric I M) {T : ℝ} (hT : 0 < T) (k : ℕ)
     (F : ℝ → SmoothCcTensor g₀ 0 2) {δ : ℝ} (hδ_lt : δ < 1)
     (hδ : ∀ t : ℝ, metricCauchySchwarzBound (I := I) (M := M) g₀
@@ -2137,7 +2137,7 @@ private theorem deTurckRHSReconSectionFO_eigenPairing_jointCk_timeJet_realizatio
         (Set.Icc (0 : ℝ) T))) := by
   classical
   obtain ⟨hjointP, Rjet, hRjet_eq, hRjet_lap⟩ :=
-    deTurckRHSReconSectionFO_path_timeJet_mixed_regularity (I := I) (M := M)
+    deTurckRHSReconstructedFiniteOrderSection_path_timeJet_mixed_regularity (I := I) (M := M)
       g₀ g_bg hT k F hδ_lt hδ φ hφ_smooth hcoeff hmodemass
   have hkinf : ((k : ℕ) : WithTop ℕ∞) ≤ (∞ : WithTop ℕ∞) := by exact_mod_cast le_top
   have hpairing : ∀ i : TensorEigenIdx (I := I) (M := M) g₀ 0 2,
@@ -2285,7 +2285,7 @@ private theorem deTurckRHSRecon_pathCoeff_finiteOrder_timeContDiff_withinMass
                 (Set.Icc (0 : ℝ) T) t) ^ 2 ≤ B i) := by
   classical
   obtain ⟨hjoint, hjet⟩ :=
-    deTurckRHSReconSectionFO_eigenPairing_jointCk_timeJet_realization (I := I) (M := M)
+    deTurckRHSReconstructedFiniteOrderSection_eigenPairing_jointCk_timeJet_realization (I := I) (M := M)
       g₀ g_bg hT k F hδ_lt hδ φ hφ_smooth hcoeff hmodemass
   have : IsFiniteMeasure
       (DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure (I := I) (M := M) g₀) :=
@@ -2936,13 +2936,13 @@ theorem deTurckSobolevNHa2_finiteOrder_jetSpectralMass_preserving
       ∃ δ : ℝ, δ < 1 ∧ ∀ t : ℝ, metricCauchySchwarzBound (I := I) (M := M) g₀
         (ccTensorBilinSymm (I := I) g₀ (F t)) δ := by
     obtain ⟨hp_pos, hp_lt, hp_ball⟩ := Classical.choose_spec
-      (deTurckSobolevNHa2_exists_of_super (I := I) (M := M) g₀ a ha_super)
+      (exists_deTurckSobolev_fiber_bound_on_ball_of_supercritical (I := I) (M := M) g₀ a ha_super)
     have hsmoothZero : smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2)
         (0 : SmoothCcTensor g₀ 0 2) = 0 := by
       have h0 : (0 : SmoothCcTensor g₀ 0 2) = (0 : ℝ) • (0 : SmoothCcTensor g₀ 0 2) :=
         (zero_smul ℝ _).symm
       rw [h0, smoothCcToTensorHs_smul, zero_smul]
-    refine ⟨(Classical.choose (deTurckSobolevNHa2_exists_of_super
+    refine ⟨(Classical.choose (exists_deTurckSobolev_fiber_bound_on_ball_of_supercritical
       (I := I) (M := M) g₀ a ha_super)).2,
       lt_of_le_of_lt hp_lt (de_turck_remainder_contraction_threshold_lt_one_of_ne_zero (Module.finrank ℝ E)), fun t
         => ?_⟩
@@ -2973,7 +2973,7 @@ theorem deTurckSobolevNHa2_finiteOrder_jetSpectralMass_preserving
       (F t) hδ_lt (hδ_all t) (by
         have hle : ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2) (F t)‖ ≤ R₀ :=
           hball_pt t htmem
-        have hpf : (Classical.choose (deTurckSobolevNHa2_exists_of_super
+        have hpf : (Classical.choose (exists_deTurckSobolev_fiber_bound_on_ball_of_supercritical
             (I := I) (M := M) g₀ a ha_super)).1 = R₀ := rfl
         rw [hpf]; exact hle)]
   exact hψ_coeff t htmem i

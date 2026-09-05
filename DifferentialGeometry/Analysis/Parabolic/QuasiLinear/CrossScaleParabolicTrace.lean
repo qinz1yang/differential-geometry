@@ -128,34 +128,34 @@ theorem sq_eq_base_add_integral_of_indefinite
 
 structure CrossScaleField (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (a : ℝ) (T : ℝ) where
-  hiL2 : timeL2 (TensorHs (I := I) (M := M) g r s (a + 2)) T
-  lo : timeH1 (TensorHs (I := I) (M := M) g r s a) T
+  highRegularity : timeL2 (TensorHs (I := I) (M := M) g r s (a + 2)) T
+  lowRegularity : timeH1 (TensorHs (I := I) (M := M) g r s a) T
   link : ∀ᵐ t ∂(timeMeasure T),
     tensorHsInclusion (I := I) (M := M) (g := g) (r := r) (s := s)
-        (show a ≤ a + 2 by linarith) (hiL2 t) = lo.toFun t
+        (show a ≤ a + 2 by linarith) (highRegularity t) = lowRegularity.toFun t
 
 namespace CrossScaleField
 
 variable (u : CrossScaleField (I := I) (M := M) g r s a T)
 
 def coeffFun (i : TensorEigenIdx (I := I) (M := M) g r s) (t : ℝ) : ℝ :=
-  (u.lo.toFun t).coeff i
+  (u.lowRegularity.toFun t).coeff i
 
 omit [NeZero (Module.finrank ℝ E)] in
 lemma coeffFun_eq_integral (i : TensorEigenIdx (I := I) (M := M) g r s)
     {t : ℝ} (ht : t ∈ Icc (0 : ℝ) T) :
     u.coeffFun i t =
-      u.lo.initial.coeff i + ∫ s in (0 : ℝ)..t, (u.lo.deriv s).coeff i := by
+      u.lowRegularity.initial.coeff i + ∫ s in (0 : ℝ)..t, (u.lowRegularity.deriv s).coeff i := by
   have h0 : (0 : ℝ) ∈ Icc (0 : ℝ) T := ⟨le_rfl, le_trans ht.1 ht.2⟩
-  have hcomm : ∫ s in (0 : ℝ)..t, (u.lo.deriv s).coeff i =
+  have hcomm : ∫ s in (0 : ℝ)..t, (u.lowRegularity.deriv s).coeff i =
       (coeffCLM (I := I) (M := M) (g := g) (r := r) (s := s) (σ := a) i)
-        (∫ s in (0 : ℝ)..t, u.lo.deriv s) := by
+        (∫ s in (0 : ℝ)..t, u.lowRegularity.deriv s) := by
     rw [← ContinuousLinearMap.intervalIntegral_comp_comm
       (coeffCLM (I := I) (M := M) (g := g) (r := r) (s := s) (σ := a) i)
-      (u.lo.intervalIntegrable_deriv h0 ht)]
+      (u.lowRegularity.intervalIntegrable_deriv h0 ht)]
     rfl
   have hval : u.coeffFun i t =
-      (coeffCLM (I := I) (M := M) (g := g) (r := r) (s := s) (σ := a) i) (u.lo.toFun t) := rfl
+      (coeffCLM (I := I) (M := M) (g := g) (r := r) (s := s) (σ := a) i) (u.lowRegularity.toFun t) := rfl
   rw [hval, timeH1.toFun_apply, map_add, hcomm]
   rfl
 
@@ -164,16 +164,16 @@ lemma continuousOn_coeffFun (i : TensorEigenIdx (I := I) (M := M) g r s) :
     ContinuousOn (u.coeffFun i) (Icc (0 : ℝ) T) := by
   have hcomp : ContinuousOn
       (fun t => coeffCLM (I := I) (M := M) (g := g) (r := r) (s := s) (σ := a) i
-        (u.lo.toFun t)) (Icc (0 : ℝ) T) :=
+        (u.lowRegularity.toFun t)) (Icc (0 : ℝ) T) :=
     (coeffCLM (I := I) (M := M) (g := g) (r := r) (s := s) (σ := a)
-      i).continuous.comp_continuousOn u.lo.continuousOn_toFun
-  change ContinuousOn (fun t => (u.lo.toFun t).coeff i) (Icc (0 : ℝ) T)
+      i).continuous.comp_continuousOn u.lowRegularity.continuousOn_toFun
+  change ContinuousOn (fun t => (u.lowRegularity.toFun t).coeff i) (Icc (0 : ℝ) T)
   simpa only [coeffCLM_apply] using hcomp
 
 omit [NeZero (Module.finrank ℝ E)] in
 lemma ae_coeffFun_eq_hiL2 :
     ∀ᵐ t ∂(timeMeasure T), ∀ i : TensorEigenIdx (I := I) (M := M) g r s,
-      u.coeffFun i t = (u.hiL2 t).coeff i := by
+      u.coeffFun i t = (u.highRegularity t).coeff i := by
   filter_upwards [u.link] with t ht i
   have := congrArg (fun T => TensorHs.coeff T i) ht
   simpa only [coeffFun, tensorHsInclusion_coeff_apply] using this.symm
@@ -182,25 +182,25 @@ omit [NeZero (Module.finrank ℝ E)] in
 lemma ae_finset_top_sq_le (S : Finset (TensorEigenIdx (I := I) (M := M) g r s)) :
     ∀ᵐ t ∂(timeMeasure T),
       ∑ i ∈ S, tensorSobolevWeight (I := I) (M := M) i (a + 2) * (u.coeffFun i t) ^ 2 ≤
-        ‖u.hiL2 t‖ ^ 2 := by
+        ‖u.highRegularity t‖ ^ 2 := by
   filter_upwards [u.ae_coeffFun_eq_hiL2] with t ht
   have hsum_eq : ∑ i ∈ S, tensorSobolevWeight (I := I) (M := M) i (a + 2) * (u.coeffFun i t) ^ 2 =
-      ∑ i ∈ S, tensorSobolevWeight (I := I) (M := M) i (a + 2) * ((u.hiL2 t).coeff i) ^ 2 :=
+      ∑ i ∈ S, tensorSobolevWeight (I := I) (M := M) i (a + 2) * ((u.highRegularity t).coeff i) ^ 2 :=
     Finset.sum_congr rfl (fun i _ => by rw [ht i])
   rw [hsum_eq, TensorHs.norm_sq_eq_tsum]
-  refine Summable.sum_le_tsum S (fun i _ => ?_) (u.hiL2 t).weighted_summable
+  refine Summable.sum_le_tsum S (fun i _ => ?_) (u.highRegularity t).weighted_summable
   exact mul_nonneg (tensorSobolevWeight_nonneg (I := I) (M := M) i (a + 2)) (sq_nonneg _)
 
 omit [NeZero (Module.finrank ℝ E)] in
 lemma intervalIntegrable_deriv_coeffFun
     (i : TensorEigenIdx (I := I) (M := M) g r s)
     {t₀ t : ℝ} (ht₀ : t₀ ∈ Icc (0 : ℝ) T) (ht : t ∈ Icc (0 : ℝ) T) :
-    IntervalIntegrable (fun τ => (u.lo.deriv τ).coeff i) volume t₀ t := by
-  have hbase : IntervalIntegrable (fun τ => u.lo.deriv τ) volume t₀ t :=
-    u.lo.intervalIntegrable_deriv ht₀ ht
+    IntervalIntegrable (fun τ => (u.lowRegularity.deriv τ).coeff i) volume t₀ t := by
+  have hbase : IntervalIntegrable (fun τ => u.lowRegularity.deriv τ) volume t₀ t :=
+    u.lowRegularity.intervalIntegrable_deriv ht₀ ht
   have hcomp : IntervalIntegrable
       (fun τ => coeffCLM (I := I) (M := M) (g := g) (r := r) (s := s) (σ := a)
-        i (u.lo.deriv τ)) volume t₀ t :=
+        i (u.lowRegularity.deriv τ)) volume t₀ t :=
     intervalIntegrable_iff.mpr
       ((coeffCLM (I := I) (M := M) (g := g) (r := r) (s := s) (σ := a) i).integrable_comp
         (intervalIntegrable_iff.mp hbase))
@@ -210,7 +210,7 @@ omit [NeZero (Module.finrank ℝ E)] in
 lemma coeffFun_sq_eq (i : TensorEigenIdx (I := I) (M := M) g r s)
     {t₀ t : ℝ} (ht₀ : t₀ ∈ Icc (0 : ℝ) T) (ht : t ∈ Icc (0 : ℝ) T) :
     (u.coeffFun i t) ^ 2 = (u.coeffFun i t₀) ^ 2 +
-      ∫ s in t₀..t, 2 * (u.coeffFun i s) * (u.lo.deriv s).coeff i := by
+      ∫ s in t₀..t, 2 * (u.coeffFun i s) * (u.lowRegularity.deriv s).coeff i := by
   have h0 : (0 : ℝ) ∈ Icc (0 : ℝ) T := ⟨le_rfl, le_trans ht.1 ht.2⟩
   refine sq_eq_base_add_integral_of_indefinite
     (u.intervalIntegrable_deriv_coeffFun i ht₀ ht) (fun x hx => ?_)
@@ -226,82 +226,82 @@ lemma ae_abs_finset_crossPairing_le :
     ∀ᵐ τ ∂(timeMeasure T),
       ∀ S : Finset (TensorEigenIdx (I := I) (M := M) g r s),
         |∑ i ∈ S, tensorSobolevWeight (I := I) (M := M) i (a + 1) *
-          (u.coeffFun i τ * (u.lo.deriv τ).coeff i)| ≤
-            ‖u.hiL2 τ‖ * ‖u.lo.deriv τ‖ := by
+          (u.coeffFun i τ * (u.lowRegularity.deriv τ).coeff i)| ≤
+            ‖u.highRegularity τ‖ * ‖u.lowRegularity.deriv τ‖ := by
   filter_upwards [u.ae_coeffFun_eq_hiL2] with τ hs S
   set f : TensorEigenIdx (I := I) (M := M) g r s → ℝ :=
     fun i => Real.sqrt (tensorSobolevWeight (I := I) (M := M) i (a + 2)) * u.coeffFun i τ with
                hf_def
   set d : TensorEigenIdx (I := I) (M := M) g r s → ℝ :=
-    fun i => Real.sqrt (tensorSobolevWeight (I := I) (M := M) i a) * (u.lo.deriv τ).coeff i with
+    fun i => Real.sqrt (tensorSobolevWeight (I := I) (M := M) i a) * (u.lowRegularity.deriv τ).coeff i with
                hd_def
   have hsummand : ∀ i,
       tensorSobolevWeight (I := I) (M := M) i (a + 1) *
-        (u.coeffFun i τ * (u.lo.deriv τ).coeff i) = f i * d i := by
+        (u.coeffFun i τ * (u.lowRegularity.deriv τ).coeff i) = f i * d i := by
     intro i
     rw [hf_def, hd_def, tensorSobolevWeight_mid_eq_sqrt_mul_sqrt (I := I) (M := M) i a]
     ring
   rw [Finset.sum_congr rfl (fun i _ => hsummand i)]
   have hCS : (∑ i ∈ S, f i * d i) ^ 2 ≤ (∑ i ∈ S, (f i) ^ 2) * ∑ i ∈ S, (d i) ^ 2 :=
     Finset.sum_mul_sq_le_sq_mul_sq S f d
-  have hfsq : ∑ i ∈ S, (f i) ^ 2 ≤ ‖u.hiL2 τ‖ ^ 2 := by
+  have hfsq : ∑ i ∈ S, (f i) ^ 2 ≤ ‖u.highRegularity τ‖ ^ 2 := by
     have heq : ∑ i ∈ S, (f i) ^ 2 =
-        ∑ i ∈ S, tensorSobolevWeight (I := I) (M := M) i (a + 2) * ((u.hiL2 τ).coeff i) ^ 2 := by
+        ∑ i ∈ S, tensorSobolevWeight (I := I) (M := M) i (a + 2) * ((u.highRegularity τ).coeff i) ^ 2 := by
       refine Finset.sum_congr rfl (fun i _ => ?_)
       rw [hf_def, mul_pow, Real.sq_sqrt (tensorSobolevWeight_nonneg (I := I) (M := M) i (a + 2)),
         hs i]
     rw [heq, TensorHs.norm_sq_eq_tsum]
-    refine Summable.sum_le_tsum S (fun i _ => ?_) (u.hiL2 τ).weighted_summable
+    refine Summable.sum_le_tsum S (fun i _ => ?_) (u.highRegularity τ).weighted_summable
     exact mul_nonneg (tensorSobolevWeight_nonneg (I := I) (M := M) i (a + 2)) (sq_nonneg _)
-  have hdsq : ∑ i ∈ S, (d i) ^ 2 ≤ ‖u.lo.deriv τ‖ ^ 2 := by
+  have hdsq : ∑ i ∈ S, (d i) ^ 2 ≤ ‖u.lowRegularity.deriv τ‖ ^ 2 := by
     have heq : ∑ i ∈ S, (d i) ^ 2 =
-        ∑ i ∈ S, tensorSobolevWeight (I := I) (M := M) i a * ((u.lo.deriv τ).coeff i) ^ 2 := by
+        ∑ i ∈ S, tensorSobolevWeight (I := I) (M := M) i a * ((u.lowRegularity.deriv τ).coeff i) ^ 2 := by
       refine Finset.sum_congr rfl (fun i _ => ?_)
       rw [hd_def, mul_pow, Real.sq_sqrt (tensorSobolevWeight_nonneg (I := I) (M := M) i a)]
     rw [heq, TensorHs.norm_sq_eq_tsum]
-    refine Summable.sum_le_tsum S (fun i _ => ?_) (u.lo.deriv τ).weighted_summable
+    refine Summable.sum_le_tsum S (fun i _ => ?_) (u.lowRegularity.deriv τ).weighted_summable
     exact mul_nonneg (tensorSobolevWeight_nonneg (I := I) (M := M) i a) (sq_nonneg _)
-  have hsq_le : (∑ i ∈ S, f i * d i) ^ 2 ≤ (‖u.hiL2 τ‖ * ‖u.lo.deriv τ‖) ^ 2 := by
+  have hsq_le : (∑ i ∈ S, f i * d i) ^ 2 ≤ (‖u.highRegularity τ‖ * ‖u.lowRegularity.deriv τ‖) ^ 2 := by
     refine le_trans hCS ?_
     rw [mul_pow]
     refine mul_le_mul hfsq hdsq (Finset.sum_nonneg (fun i _ => sq_nonneg _)) (sq_nonneg _)
-  have hprodnn : 0 ≤ ‖u.hiL2 τ‖ * ‖u.lo.deriv τ‖ :=
+  have hprodnn : 0 ≤ ‖u.highRegularity τ‖ * ‖u.lowRegularity.deriv τ‖ :=
     mul_nonneg (norm_nonneg _) (norm_nonneg _)
   exact abs_le_of_sq_le_sq hsq_le hprodnn
 
 omit [NeZero (Module.finrank ℝ E)] in
 lemma integrableOn_normMul :
-    IntegrableOn (fun s => ‖u.hiL2 s‖ * ‖u.lo.deriv s‖) (Set.Icc (0 : ℝ) T) volume := by
-  have hhi : IntegrableOn (fun s => ‖u.hiL2 s‖ ^ 2) (Set.Icc (0 : ℝ) T) volume := by
-    have hLp : MemLp (fun s => u.hiL2 s) 2 (timeMeasure T) := Lp.memLp u.hiL2
+    IntegrableOn (fun s => ‖u.highRegularity s‖ * ‖u.lowRegularity.deriv s‖) (Set.Icc (0 : ℝ) T) volume := by
+  have hhi : IntegrableOn (fun s => ‖u.highRegularity s‖ ^ 2) (Set.Icc (0 : ℝ) T) volume := by
+    have hLp : MemLp (fun s => u.highRegularity s) 2 (timeMeasure T) := Lp.memLp u.highRegularity
     have hint := hLp.integrable_norm_rpow (by norm_num) (by norm_num)
-    have hpow : (fun x => ‖u.hiL2 x‖ ^ (2 : ℝ≥0∞).toReal) = (fun x => ‖u.hiL2 x‖ ^ 2) := by
+    have hpow : (fun x => ‖u.highRegularity x‖ ^ (2 : ℝ≥0∞).toReal) = (fun x => ‖u.highRegularity x‖ ^ 2) := by
       funext x
       rw [show ((2 : ℝ≥0∞).toReal) = (2 : ℝ) by norm_num, Real.rpow_two]
     rw [hpow] at hint
     exact hint
-  have hlo : IntegrableOn (fun s => ‖u.lo.deriv s‖ ^ 2) (Set.Icc (0 : ℝ) T) volume := by
-    have hLp : MemLp (fun s => u.lo.deriv s) 2 (timeMeasure T) := Lp.memLp u.lo.deriv
+  have hlo : IntegrableOn (fun s => ‖u.lowRegularity.deriv s‖ ^ 2) (Set.Icc (0 : ℝ) T) volume := by
+    have hLp : MemLp (fun s => u.lowRegularity.deriv s) 2 (timeMeasure T) := Lp.memLp u.lowRegularity.deriv
     have hint := hLp.integrable_norm_rpow (by norm_num) (by norm_num)
-    have hpow : (fun x => ‖u.lo.deriv x‖ ^ (2 : ℝ≥0∞).toReal) = (fun x => ‖u.lo.deriv x‖ ^ 2) := by
+    have hpow : (fun x => ‖u.lowRegularity.deriv x‖ ^ (2 : ℝ≥0∞).toReal) = (fun x => ‖u.lowRegularity.deriv x‖ ^ 2) := by
       funext x
       rw [show ((2 : ℝ≥0∞).toReal) = (2 : ℝ) by norm_num, Real.rpow_two]
     rw [hpow] at hint
     exact hint
-  have hmeas : AEStronglyMeasurable (fun s => ‖u.hiL2 s‖ * ‖u.lo.deriv s‖)
+  have hmeas : AEStronglyMeasurable (fun s => ‖u.highRegularity s‖ * ‖u.lowRegularity.deriv s‖)
       (volume.restrict (Set.Icc (0 : ℝ) T)) := by
-    have h1 : AEStronglyMeasurable (fun s => ‖u.hiL2 s‖)
+    have h1 : AEStronglyMeasurable (fun s => ‖u.highRegularity s‖)
         (volume.restrict (Set.Icc (0 : ℝ) T)) :=
-      (Lp.aestronglyMeasurable u.hiL2).norm
-    have h2 : AEStronglyMeasurable (fun s => ‖u.lo.deriv s‖)
+      (Lp.aestronglyMeasurable u.highRegularity).norm
+    have h2 : AEStronglyMeasurable (fun s => ‖u.lowRegularity.deriv s‖)
         (volume.restrict (Set.Icc (0 : ℝ) T)) :=
-      (Lp.aestronglyMeasurable u.lo.deriv).norm
+      (Lp.aestronglyMeasurable u.lowRegularity.deriv).norm
     exact h1.mul h2
-  refine Integrable.mono' (g := fun s => (1 / 2) * (‖u.hiL2 s‖ ^ 2 + ‖u.lo.deriv s‖ ^ 2))
+  refine Integrable.mono' (g := fun s => (1 / 2) * (‖u.highRegularity s‖ ^ 2 + ‖u.lowRegularity.deriv s‖ ^ 2))
     ((hhi.add hlo).const_mul (1 / 2)) hmeas (ae_of_all _ (fun s => ?_))
   rw [Real.norm_eq_abs, abs_of_nonneg (mul_nonneg (norm_nonneg _) (norm_nonneg _))]
-  nlinarith [sq_nonneg (‖u.hiL2 s‖ - ‖u.lo.deriv s‖), norm_nonneg (u.hiL2 s),
-    norm_nonneg (u.lo.deriv s)]
+  nlinarith [sq_nonneg (‖u.highRegularity s‖ - ‖u.lowRegularity.deriv s‖), norm_nonneg (u.highRegularity s),
+    norm_nonneg (u.lowRegularity.deriv s)]
 
 omit [NeZero (Module.finrank ℝ E)] in
 lemma exists_uniform_bound (hT : 0 < T) :
@@ -310,17 +310,17 @@ lemma exists_uniform_bound (hT : 0 < T) :
   have hμ_ne : timeMeasure T ≠ 0 := timeMeasure_ne_zero hT
   have : (ae (timeMeasure T)).NeBot := MeasureTheory.ae_neBot.2 hμ_ne
   have hcombine : ∀ᵐ t₀ ∂(timeMeasure T), t₀ ∈ Icc (0 : ℝ) T ∧
-      (∀ i : TensorEigenIdx (I := I) (M := M) g r s, u.coeffFun i t₀ = (u.hiL2 t₀).coeff i) := by
+      (∀ i : TensorEigenIdx (I := I) (M := M) g r s, u.coeffFun i t₀ = (u.highRegularity t₀).coeff i) := by
     filter_upwards [ae_restrict_mem (μ := volume) measurableSet_Icc, u.ae_coeffFun_eq_hiL2]
       with t₀ hmem hcoeff using ⟨hmem, hcoeff⟩
   obtain ⟨t₀, ht₀mem, ht₀coeff⟩ := hcombine.exists
-  set C : ℝ := 2 * ∫ s in Set.Icc (0 : ℝ) T, ‖u.hiL2 s‖ * ‖u.lo.deriv s‖ with hC_def
-  set R : ℝ := ‖u.hiL2 t₀‖ ^ 2 with hR_def
+  set C : ℝ := 2 * ∫ s in Set.Icc (0 : ℝ) T, ‖u.highRegularity s‖ * ‖u.lowRegularity.deriv s‖ with hC_def
+  set R : ℝ := ‖u.highRegularity t₀‖ ^ 2 with hR_def
   refine ⟨R + C, fun t ht S => ?_⟩
   have hsum_ftc : ∑ i ∈ S, tensorSobolevWeight (I := I) (M := M) i (a + 1) * (u.coeffFun i t) ^ 2 =
       ∑ i ∈ S, tensorSobolevWeight (I := I) (M := M) i (a + 1) * (u.coeffFun i t₀) ^ 2 +
         ∑ i ∈ S, tensorSobolevWeight (I := I) (M := M) i (a + 1) *
-          ∫ s in t₀..t, 2 * (u.coeffFun i s) * (u.lo.deriv s).coeff i := by
+          ∫ s in t₀..t, 2 * (u.coeffFun i s) * (u.lowRegularity.deriv s).coeff i := by
     rw [← Finset.sum_add_distrib]
     refine Finset.sum_congr rfl (fun i _ => ?_)
     rw [u.coeffFun_sq_eq i ht₀mem ht, mul_add]
@@ -329,39 +329,39 @@ lemma exists_uniform_bound (hT : 0 < T) :
     R := by
     rw [hR_def]
     have heq : ∑ i ∈ S, tensorSobolevWeight (I := I) (M := M) i (a + 1) * (u.coeffFun i t₀) ^ 2 =
-        ∑ i ∈ S, tensorSobolevWeight (I := I) (M := M) i (a + 1) * ((u.hiL2 t₀).coeff i) ^ 2 :=
+        ∑ i ∈ S, tensorSobolevWeight (I := I) (M := M) i (a + 1) * ((u.highRegularity t₀).coeff i) ^ 2 :=
       Finset.sum_congr rfl (fun i _ => by rw [ht₀coeff i])
     rw [heq]
     refine le_trans (Summable.sum_le_tsum S
       (fun i _ => mul_nonneg (tensorSobolevWeight_nonneg (I := I) (M := M) i (a + 1)) (sq_nonneg _))
       ((tensorHsInclusion (I := I) (M := M) (g := g) (r := r) (s := s)
-        (show a + 1 ≤ a + 2 by linarith) (u.hiL2 t₀)).weighted_summable.congr
+        (show a + 1 ≤ a + 2 by linarith) (u.highRegularity t₀)).weighted_summable.congr
         (fun i => by rw [tensorHsInclusion_coeff_apply]))) ?_
     have hnormSq : (∑' i, tensorSobolevWeight (I := I) (M := M) i (a + 1) *
-          ((u.hiL2 t₀).coeff i) ^ 2) =
+          ((u.highRegularity t₀).coeff i) ^ 2) =
         ‖tensorHsInclusion (I := I) (M := M) (g := g) (r := r) (s := s)
-          (show a + 1 ≤ a + 2 by linarith) (u.hiL2 t₀)‖ ^ 2 := by
+          (show a + 1 ≤ a + 2 by linarith) (u.highRegularity t₀)‖ ^ 2 := by
       rw [TensorHs.norm_sq_eq_tsum]
       exact (tsum_congr (fun i => by rw [tensorHsInclusion_coeff_apply])).symm
     rw [hnormSq]
     have hle := tensorHsInclusion_norm_le (I := I) (M := M)
-      (show a + 1 ≤ a + 2 by linarith) (u.hiL2 t₀)
-    nlinarith [hle, norm_nonneg (u.hiL2 t₀),
+      (show a + 1 ≤ a + 2 by linarith) (u.highRegularity t₀)
+    nlinarith [hle, norm_nonneg (u.highRegularity t₀),
       norm_nonneg (tensorHsInclusion (I := I) (M := M) (g := g) (r := r) (s := s)
-        (show a + 1 ≤ a + 2 by linarith) (u.hiL2 t₀))]
+        (show a + 1 ≤ a + 2 by linarith) (u.highRegularity t₀))]
   have hterm1 : ∑ i ∈ S, tensorSobolevWeight (I := I) (M := M) i (a + 1) *
-        ∫ s in t₀..t, 2 * (u.coeffFun i s) * (u.lo.deriv s).coeff i ≤ C := by
+        ∫ s in t₀..t, 2 * (u.coeffFun i s) * (u.lowRegularity.deriv s).coeff i ≤ C := by
     have hintegrable : ∀ i, IntervalIntegrable
-        (fun τ => 2 * (u.coeffFun i τ) * (u.lo.deriv τ).coeff i) volume t₀ t := by
+        (fun τ => 2 * (u.coeffFun i τ) * (u.lowRegularity.deriv τ).coeff i) volume t₀ t := by
       intro i
       have hcont : ContinuousOn (fun τ => 2 * u.coeffFun i τ) (uIcc t₀ t) :=
         continuousOn_const.mul ((u.continuousOn_coeffFun i).mono (uIcc_subset_Icc ht₀mem ht))
       have hd := u.intervalIntegrable_deriv_coeffFun i ht₀mem ht
       exact hd.continuousOn_mul hcont
     set G : ℝ → ℝ := fun τ => ∑ i ∈ S, tensorSobolevWeight (I := I) (M := M) i (a + 1) *
-      (2 * (u.coeffFun i τ) * (u.lo.deriv τ).coeff i) with hG_def
+      (2 * (u.coeffFun i τ) * (u.lowRegularity.deriv τ).coeff i) with hG_def
     have hsum_int : ∑ i ∈ S, tensorSobolevWeight (I := I) (M := M) i (a + 1) *
-          ∫ τ in t₀..t, 2 * (u.coeffFun i τ) * (u.lo.deriv τ).coeff i =
+          ∫ τ in t₀..t, 2 * (u.coeffFun i τ) * (u.lowRegularity.deriv τ).coeff i =
         ∫ τ in t₀..t, G τ := by
       rw [hG_def,
         intervalIntegral.integral_finsetSum (s := S) (fun i _ => (hintegrable i).const_mul _)]
@@ -370,7 +370,7 @@ lemma exists_uniform_bound (hT : 0 < T) :
     rw [hsum_int]
     have hsub : Set.uIoc t₀ t ⊆ Set.Icc (0 : ℝ) T :=
       (Set.uIoc_subset_uIcc).trans (uIcc_subset_Icc ht₀mem ht)
-    set dom : ℝ → ℝ := fun τ => 2 * (‖u.hiL2 τ‖ * ‖u.lo.deriv τ‖) with hdom_def
+    set dom : ℝ → ℝ := fun τ => 2 * (‖u.highRegularity τ‖ * ‖u.lowRegularity.deriv τ‖) with hdom_def
     have hdom_nonneg : ∀ τ, 0 ≤ dom τ := fun τ => by rw [hdom_def]; positivity
     have hGbound : ∀ᵐ τ ∂(volume.restrict (Set.uIoc t₀ t)), ‖G τ‖ ≤ dom τ := by
       have hfull := u.ae_abs_finset_crossPairing_le
@@ -378,13 +378,13 @@ lemma exists_uniform_bound (hT : 0 < T) :
       filter_upwards [hae] with τ hτ
       have hbnd := hτ S
       have hGeq : G τ = 2 * ∑ i ∈ S, tensorSobolevWeight (I := I) (M := M) i (a + 1) *
-          (u.coeffFun i τ * (u.lo.deriv τ).coeff i) := by
+          (u.coeffFun i τ * (u.lowRegularity.deriv τ).coeff i) := by
         rw [hG_def, Finset.mul_sum]
         refine Finset.sum_congr rfl (fun i _ => by ring)
       rw [Real.norm_eq_abs, hGeq, hdom_def, abs_mul, show |(2 : ℝ)| = 2 from by norm_num]
       nlinarith [hbnd, abs_nonneg (∑ i ∈ S, tensorSobolevWeight (I := I) (M := M) i (a + 1) *
-        (u.coeffFun i τ * (u.lo.deriv τ).coeff i)),
-        mul_nonneg (norm_nonneg (u.hiL2 τ)) (norm_nonneg (u.lo.deriv τ))]
+        (u.coeffFun i τ * (u.lowRegularity.deriv τ).coeff i)),
+        mul_nonneg (norm_nonneg (u.highRegularity τ)) (norm_nonneg (u.lowRegularity.deriv τ))]
     have hdom_int : IntervalIntegrable dom volume t₀ t := by
       rw [intervalIntegrable_iff, hdom_def]
       exact (u.integrableOn_normMul.mono_set (Set.uIoc_subset_uIcc.trans

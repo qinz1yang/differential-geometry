@@ -225,7 +225,7 @@ theorem second_variation_of_arcLength_eq_indexForm
       intro s t hpos
       have hGslice : HasDerivAt (fun u : ℝ => G (u, t))
           (fderiv ℝ G (s, t) (1, 0)) s := by
-        have := Aux2.hasDerivAt_slice_fst (fun u v : ℝ => G (u, v)) s t
+        have := TwoParameterDerivative.hasDerivAt_slice_fst (fun u v : ℝ => G (u, v)) s t
           ((hGcdiff.differentiable (by simp)).differentiableAt)
         simpa using this
       set fsh : ℝ → ℝ → M := fun a b : ℝ => f (s + a) b with hfsh
@@ -274,7 +274,7 @@ theorem second_variation_of_arcLength_eq_indexForm
           have hslicediff : DifferentiableAt ℝ
               (fun p : ℝ × ℝ => Real.sqrt (G p)) (s, t) :=
             ((hGcdiff.contDiffAt (x := (s, t))).sqrt (ne_of_gt hpos)).differentiableAt (by simp)
-          have := Aux2.hasDerivAt_slice_fst (fun u v : ℝ => Real.sqrt (G (u, v))) s t hslicediff
+          have := TwoParameterDerivative.hasDerivAt_slice_fst (fun u v : ℝ => Real.sqrt (G (u, v))) s t hslicediff
           simpa [hP] using this
         exact hP_isfderiv.unique hsqrt_slice
       rw [hPval, hGval, hfoot0, hcov_shift, hsh_velocityT_fun]
@@ -321,7 +321,7 @@ theorem second_variation_of_arcLength_eq_indexForm
       have hPdiffAt : DifferentiableAt ℝ P (s, t) :=
         ((hP_cdiff.differentiableOn (by norm_cast)).differentiableAt
           (hUopen.mem_nhds hsU))
-      have := Aux2.hasDerivAt_slice_fst (fun u v : ℝ => P (u, v)) s t hPdiffAt
+      have := TwoParameterDerivative.hasDerivAt_slice_fst (fun u v : ℝ => P (u, v)) s t hPdiffAt
       simpa [hQ] using this
     set Kset : Set (ℝ × ℝ) := Set.Icc (-δ') δ' ×ˢ Set.Icc (0 : ℝ) L with hKset
     have hKcompact : IsCompact Kset := (isCompact_Icc).prod isCompact_Icc
@@ -449,7 +449,7 @@ theorem second_variation_of_arcLength_eq_indexForm
       intro t
       have hS1 := speedSq_hasDerivAt (I := I) g f t hf
       have hGslice : HasDerivAt (fun u : ℝ => G (u, t)) (g_s t) 0 := by
-        have := Aux2.hasDerivAt_slice_fst (fun u v : ℝ => G (u, v)) 0 t
+        have := TwoParameterDerivative.hasDerivAt_slice_fst (fun u v : ℝ => G (u, v)) 0 t
           ((hGcdiff.differentiable (by simp)).differentiableAt)
         simpa [hg_sdef] using this
       have hS1' : HasDerivAt (fun u : ℝ => G (u, t))
@@ -480,7 +480,7 @@ theorem second_variation_of_arcLength_eq_indexForm
         hP_slice_deriv 0 h0mem t ht
       have hsqrtderiv : HasDerivAt (fun u : ℝ => Real.sqrt (G (u, t))) (P (0, t)) 0 := by
         have hGslice : HasDerivAt (fun u : ℝ => G (u, t)) (fderiv ℝ G (0, t) (1, 0)) 0 := by
-          have := Aux2.hasDerivAt_slice_fst (fun u v : ℝ => G (u, v)) 0 t
+          have := TwoParameterDerivative.hasDerivAt_slice_fst (fun u v : ℝ => G (u, v)) 0 t
             ((hGcdiff.differentiable (by simp)).differentiableAt)
           simpa using this
         have := hGslice.sqrt (by rw [hG0]; norm_num)
@@ -488,11 +488,11 @@ theorem second_variation_of_arcLength_eq_indexForm
           have hslicediff : DifferentiableAt ℝ (fun p : ℝ × ℝ => Real.sqrt (G p)) (0, t) :=
             ((hGcdiff.contDiffAt (x := (0, t))).sqrt (by rw [hG0]; norm_num)).differentiableAt
               (by simp)
-          have hslice := Aux2.hasDerivAt_slice_fst (fun u v : ℝ => Real.sqrt (G (u, v))) 0 t
+          have hslice := TwoParameterDerivative.hasDerivAt_slice_fst (fun u v : ℝ => Real.sqrt (G (u, v))) 0 t
             hslicediff
           have : P (0, t) = fderiv ℝ (fun p : ℝ × ℝ => Real.sqrt (G p)) (0, t) (1, 0) := rfl
           rw [this]
-          exact (Aux2.hasDerivAt_slice_fst (fun u v : ℝ => Real.sqrt (G (u, v))) 0 t
+          exact (TwoParameterDerivative.hasDerivAt_slice_fst (fun u v : ℝ => Real.sqrt (G (u, v))) 0 t
             hslicediff).unique
             (hGslice.sqrt (by rw [hG0]; norm_num))
         rw [hPeq]; exact this
@@ -503,12 +503,12 @@ theorem second_variation_of_arcLength_eq_indexForm
             ((hGcdiff.contDiffAt (x := (0, t))).sqrt (by rw [hG0]; norm_num)).differentiableAt
               (by simp)
           have hGslice : HasDerivAt (fun u : ℝ => G (u, t)) (fderiv ℝ G (0, t) (1, 0)) 0 := by
-            have := Aux2.hasDerivAt_slice_fst (fun u v : ℝ => G (u, v)) 0 t
+            have := TwoParameterDerivative.hasDerivAt_slice_fst (fun u v : ℝ => G (u, v)) 0 t
               ((hGcdiff.differentiable (by simp)).differentiableAt)
             simpa using this
           have hPis : P (0, t) = fderiv ℝ (fun p : ℝ × ℝ => Real.sqrt (G p)) (0, t) (1, 0) := rfl
           rw [hPis]
-          exact (Aux2.hasDerivAt_slice_fst (fun u v : ℝ => Real.sqrt (G (u, v))) 0 t
+          exact (TwoParameterDerivative.hasDerivAt_slice_fst (fun u v : ℝ => Real.sqrt (G (u, v))) 0 t
             hslicediff).unique
             (hGslice.sqrt (by rw [hG0]; norm_num))
         rw [this]
@@ -532,7 +532,7 @@ theorem second_variation_of_arcLength_eq_indexForm
           have hfdapp : ContDiff ℝ (6 : ℕ) (fun p : ℝ × ℝ => fderiv ℝ G p (1, 0)) :=
             (ContinuousLinearMap.apply ℝ ℝ ((1, 0) : ℝ × ℝ)).contDiff.comp hfd
           exact (hfdapp.differentiable (by norm_num)).differentiableAt
-        have := Aux2.hasDerivAt_slice_fst (fun u v : ℝ => fderiv ℝ G (u, v) (1, 0)) 0 t hslicediff
+        have := TwoParameterDerivative.hasDerivAt_slice_fst (fun u v : ℝ => fderiv ℝ G (u, v) (1, 0)) 0 t hslicediff
         simpa [hg_ssdef] using this
       have hagree : (fun s : ℝ => 2 * (P (s, t) * Real.sqrt (G (s, t))))
           =ᶠ[nhds (0 : ℝ)] (fun s : ℝ => fderiv ℝ G (s, t) (1, 0)) := by
@@ -545,12 +545,12 @@ theorem second_variation_of_arcLength_eq_indexForm
           have hslicediff : DifferentiableAt ℝ (fun p : ℝ × ℝ => Real.sqrt (G p)) (s, t) :=
             ((hGcdiff.contDiffAt (x := (s, t))).sqrt (ne_of_gt hGpos)).differentiableAt (by simp)
           have hGslice : HasDerivAt (fun u : ℝ => G (u, t)) (fderiv ℝ G (s, t) (1, 0)) s := by
-            have := Aux2.hasDerivAt_slice_fst (fun u v : ℝ => G (u, v)) s t
+            have := TwoParameterDerivative.hasDerivAt_slice_fst (fun u v : ℝ => G (u, v)) s t
               ((hGcdiff.differentiable (by simp)).differentiableAt)
             simpa using this
           have hPis : P (s, t) = fderiv ℝ (fun p : ℝ × ℝ => Real.sqrt (G p)) (s, t) (1, 0) := rfl
           rw [hPis]
-          exact (Aux2.hasDerivAt_slice_fst (fun u v : ℝ => Real.sqrt (G (u, v))) s t
+          exact (TwoParameterDerivative.hasDerivAt_slice_fst (fun u v : ℝ => Real.sqrt (G (u, v))) s t
             hslicediff).unique
             (hGslice.sqrt (ne_of_gt hGpos))
         rw [hPeq]
@@ -640,7 +640,7 @@ theorem second_variation_of_arcLength_eq_indexForm
             simpa using (hasDerivAt_id (0 : ℝ)).const_add s
           have hslice0 : HasDerivAt (fun u : ℝ => G (u, t)) (fderiv ℝ G (s, t) (1, 0)) (s + 0) := by
             rw [add_zero]
-            have := Aux2.hasDerivAt_slice_fst (fun u v : ℝ => G (u, v)) s t
+            have := TwoParameterDerivative.hasDerivAt_slice_fst (fun u v : ℝ => G (u, v)) s t
               ((hGcdiff.differentiable (by simp)).differentiableAt)
             simpa using this
           have hcomp := hslice0.comp 0 hshift
@@ -667,7 +667,7 @@ theorem second_variation_of_arcLength_eq_indexForm
           have hfdapp : ContDiff ℝ (6 : ℕ) (fun p : ℝ × ℝ => fderiv ℝ G p (1, 0)) :=
             (ContinuousLinearMap.apply ℝ ℝ ((1, 0) : ℝ × ℝ)).contDiff.comp hfd
           exact (hfdapp.differentiable (by norm_num)).differentiableAt
-        have := Aux2.hasDerivAt_slice_fst (fun u v : ℝ => fderiv ℝ G (u, v) (1, 0)) 0 t hslicediff
+        have := TwoParameterDerivative.hasDerivAt_slice_fst (fun u v : ℝ => fderiv ℝ G (u, v) (1, 0)) 0 t hslicediff
         simpa [hg_ssdef] using this
       have hmc'' : HasDerivAt (fun s : ℝ => fderiv ℝ G (s, t) (1, 0))
           (2 * (g.inner (γ t) (W2 t) (γ' t)

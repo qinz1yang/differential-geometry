@@ -326,7 +326,7 @@ private lemma eigenvector_chartComponent_wkpNorm_step_perPair
                   g r s) i‖ := by
   classical
   set n : ℕ := Module.finrank ℝ E with hn_def
-  have h_pou_resolv :
+  have resolventComponentRegularity :
       ∀ (i : TensorEigenIdx (I := I) (M := M) g r s) (K' : ℕ)
         (β : M) (Q : TensorCompIdx (E := E) r s), K' ≤ 0 + (m + 1) + 1 →
       MemWkp (d := Module.finrank ℝ E) K' 2
@@ -356,27 +356,27 @@ private lemma eigenvector_chartComponent_wkpNorm_step_perPair
   set C_cR_data :=
     eigenvector_crossRightLimit_perK_from_uniform_β
       (I := I) (M := M) g r s (0 + (m + 1) + 1) C_IH hC_IH_nn
-      (m + 1) h_IH_bd_at h_pou_resolv α with hC_cR_data_def
+      (m + 1) h_IH_bd_at resolventComponentRegularity α with hC_cR_data_def
   set C_cut_per : TensorCompIdx (E := E) r s → ℕ → ℝ := fun P K' =>
     (eigenvector_cutoffPartialLpLimit_perK_from_uniform_β
       (I := I) (M := M) g r s (0 + (m + 1) + 1) C_IH hC_IH_nn
-      (m + 1) h_IH_bd_at h_pou_resolv α P).choose K' with hC_cut_per_def
+      (m + 1) h_IH_bd_at resolventComponentRegularity α P).choose K' with hC_cut_per_def
   set C_cut : ℕ → ℝ := fun K' =>
     ∑ P : TensorCompIdx (E := E) r s, C_cut_per P K' with hC_cut_def
-  set H : EigenvectorChartRHSDiffSharpWkpBoundsUpToOrder (I := I) (M := M) g r s α P₀
+  set H : EigenvectorChartRightHandSideDifferentiatedSharpWkpBoundsUpToOrder (I := I) (M := M) g r s α P₀
       (0 + (m + 1) + 1) :=
-    { h_pou_resolv := fun i K' β Q hK' => h_pou_resolv i K' β Q hK'
-      Ceig := fun _ => C_IH
-      eEig := fun _ => m + 1
-      hCeig_nn := fun _ => hC_IH_nn
-      hCeig_bd := fun i K' hK' =>
+    { resolventComponentRegularity := fun i K' β Q hK' => resolventComponentRegularity i K' β Q hK'
+      eigenvectorConstant := fun _ => C_IH
+      eigenvectorExponent := fun _ => m + 1
+      eigenvectorConstant_nonneg := fun _ => hC_IH_nn
+      eigenvector_bound := fun i K' hK' =>
         eigenvector_chartComponent_perK_from_uniform_β
           (I := I) (M := M) g r s (0 + (m + 1) + 1) C_IH
           (m + 1) h_IH_bd_at α P₀ K' hK' i
-      CresH := fun _ => C_IH
-      eResH := fun _ => m + 1
-      hCresH_nn := fun _ => hC_IH_nn
-      hCresH_bd := fun i β Q K' hK' =>
+      highResolventConstant := fun _ => C_IH
+      highResolventExponent := fun _ => m + 1
+      highResolventConstant_nonneg := fun _ => hC_IH_nn
+      highResolvent_bound := fun i β Q K' hK' =>
         eigenvector_resolventHigh_perK_from_uniform_β
           (I := I) (M := M) g r s (0 + (m + 1) + 1) C_IH hC_IH_nn
           (m + 1) h_IH_bd_at
@@ -384,46 +384,46 @@ private lemma eigenvector_chartComponent_wkpNorm_step_perPair
             resolventChartComponent_memWkp_arbitrary_local
               (I := I) (M := M) g r s i' (K'' + 1) β' Q')
           K' hK' i β Q
-      CresL := fun _ => C_IH
-      eResL := fun _ => m + 1
-      hCresL_nn := fun _ => hC_IH_nn
-      hCresL_bd := fun i β Q K' hK' =>
+      lowResolventConstant := fun _ => C_IH
+      lowResolventExponent := fun _ => m + 1
+      lowResolventConstant_nonneg := fun _ => hC_IH_nn
+      lowResolvent_bound := fun i β Q K' hK' =>
         eigenvector_resolventLow_perK_from_uniform_β
           (I := I) (M := M) g r s (0 + (m + 1) + 1) C_IH hC_IH_nn
-          (m + 1) h_IH_bd_at h_pou_resolv K' hK' i β Q
-      Cpar := fun _ => C_IH
-      ePar := fun _ => m + 1
-      hCpar_nn := fun _ => hC_IH_nn
-      hCpar_bd := fun i P k K' hK' =>
+          (m + 1) h_IH_bd_at resolventComponentRegularity K' hK' i β Q
+      partialConstant := fun _ => C_IH
+      partialExponent := fun _ => m + 1
+      partialConstant_nonneg := fun _ => hC_IH_nn
+      partial_bound := fun i P k K' hK' =>
         eigenvector_partialLpLimit_perK_from_uniform_β
           (I := I) (M := M) g r s (0 + (m + 1) + 1) C_IH hC_IH_nn
-          (m + 1) h_IH_bd_at h_pou_resolv α K' hK' i P k
-      Ccom := fun _ => C_IH
-      eCom := fun _ => m + 1
-      hCcom_nn := fun _ => hC_IH_nn
-      hCcom_bd := fun i P K' hK' =>
+          (m + 1) h_IH_bd_at resolventComponentRegularity α K' hK' i P k
+      componentConstant := fun _ => C_IH
+      componentExponent := fun _ => m + 1
+      componentConstant_nonneg := fun _ => hC_IH_nn
+      component_bound := fun i P K' hK' =>
         eigenvector_componentLpLimit_perK_from_uniform_β
           (I := I) (M := M) g r s (0 + (m + 1) + 1) C_IH hC_IH_nn
-          (m + 1) h_IH_bd_at h_pou_resolv α K' hK' i P
-      CcR := C_cR_data.choose
-      eCcR := fun _ => m + 1
-      hCcR_nn := C_cR_data.choose_spec.1
-      hCcR_bd := fun i P K' hK' => C_cR_data.choose_spec.2 K' hK' i P
-      Ccut := C_cut
-      eCcut := fun _ => m + 1
-      hCcut_nn := fun K' => Finset.sum_nonneg fun P _ =>
+          (m + 1) h_IH_bd_at resolventComponentRegularity α K' hK' i P
+      crossRightConstant := C_cR_data.choose
+      crossRightExponent := fun _ => m + 1
+      crossRightConstant_nonneg := C_cR_data.choose_spec.1
+      crossRight_bound := fun i P K' hK' => C_cR_data.choose_spec.2 K' hK' i P
+      cutoffConstant := C_cut
+      cutoffExponent := fun _ => m + 1
+      cutoffConstant_nonneg := fun K' => Finset.sum_nonneg fun P _ =>
         (eigenvector_cutoffPartialLpLimit_perK_from_uniform_β
           (I := I) (M := M) g r s (0 + (m + 1) + 1) C_IH hC_IH_nn
-          (m + 1) h_IH_bd_at h_pou_resolv α P).choose_spec.1 K'
-      hCcut_bd := fun i P l K' hK' => by
+          (m + 1) h_IH_bd_at resolventComponentRegularity α P).choose_spec.1 K'
+      cutoff_bound := fun i P l K' hK' => by
         have h_per :=
           (eigenvector_cutoffPartialLpLimit_perK_from_uniform_β
             (I := I) (M := M) g r s (0 + (m + 1) + 1) C_IH hC_IH_nn
-            (m + 1) h_IH_bd_at h_pou_resolv α P).choose_spec.2 K' hK' i l
+            (m + 1) h_IH_bd_at resolventComponentRegularity α P).choose_spec.2 K' hK' i l
         have h_per_nn : ∀ P, 0 ≤ C_cut_per P K' := fun P =>
           (eigenvector_cutoffPartialLpLimit_perK_from_uniform_β
             (I := I) (M := M) g r s (0 + (m + 1) + 1) C_IH hC_IH_nn
-            (m + 1) h_IH_bd_at h_pou_resolv α P).choose_spec.1 K'
+            (m + 1) h_IH_bd_at resolventComponentRegularity α P).choose_spec.1 K'
         have h_dom_real : C_cut_per P K' ≤ C_cut K' :=
           Finset.single_le_sum (f := fun P' => C_cut_per P' K')
             (fun P' _ => h_per_nn P') (Finset.mem_univ P)
@@ -440,10 +440,10 @@ private lemma eigenvector_chartComponent_wkpNorm_step_perPair
         exact h_per.trans (mul_le_mul_of_nonneg_right h_const_le
           (zero_le)) }
   have h_eAtomMax : ∀ K', K' ≤ 0 + (m + 1) + 1 →
-      H.eEig K' ≤ m + 1 ∧ H.eResH K' ≤ m + 1 ∧
-        H.eResL K' ≤ m + 1 ∧ H.ePar K' ≤ m + 1 ∧
-        H.eCom K' ≤ m + 1 ∧ H.eCcR K' ≤ m + 1 ∧
-        H.eCcut K' ≤ m + 1 := fun K' _ =>
+      H.eigenvectorExponent K' ≤ m + 1 ∧ H.highResolventExponent K' ≤ m + 1 ∧
+        H.lowResolventExponent K' ≤ m + 1 ∧ H.partialExponent K' ≤ m + 1 ∧
+        H.componentExponent K' ≤ m + 1 ∧ H.crossRightExponent K' ≤ m + 1 ∧
+        H.cutoffExponent K' ≤ m + 1 := fun K' _ =>
     ⟨le_refl _, le_refl _, le_refl _, le_refl _,
       le_refl _, le_refl _, le_refl _⟩
   set C_p5 : (Fin (m + 1) → Fin n) → ℝ := fun directions =>

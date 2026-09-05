@@ -80,12 +80,12 @@ theorem iterCovComp_shift {r : ℕ}
           (fun y (nn : Fin (r + (m + 1)) → Idx) =>
             iterCovComp (I := I) frame chr (fun z => iterCovComp (I := I) frame chr base 1 z) m y
               (fun j => nn (shiftEquivC r m j))) from funext ih,
-      show frameExtData (I := I) frame
+      show frameDirectionalDerivatives (I := I) frame
             (fun y (nn : Fin (r + (m + 1)) → Idx) =>
               iterCovComp (I := I) frame chr (fun z => iterCovComp (I := I) frame chr base 1 z) m y
                 (fun j => nn (shiftEquivC r m j))) x =
           fun (m' : Fin (r + (m + 1)) → Idx) d =>
-            frameExtData (I := I) frame
+            frameDirectionalDerivatives (I := I) frame
               (iterCovComp (I := I) frame chr
                 (fun z => iterCovComp (I := I) frame chr base 1 z) m) x
               (fun i => m' (shiftEquivC r m i)) d from rfl,
@@ -261,11 +261,11 @@ theorem iterCovComp_compReindex {s s' : ℕ} (e : Fin s ≃ Fin s')
           (fun y (nn : Fin (s' + m) → Idx) =>
             iterCovComp (I := I) frame chr F m y (fun j => nn (frontExtendIterC e m j)))
         from funext ih,
-      show frameExtData (I := I) frame
+      show frameDirectionalDerivatives (I := I) frame
             (fun y (nn : Fin (s' + m) → Idx) =>
               iterCovComp (I := I) frame chr F m y (fun j => nn (frontExtendIterC e m j))) x =
           fun (m' : Fin (s' + m) → Idx) d =>
-            frameExtData (I := I) frame (iterCovComp (I := I) frame chr F m) x
+            frameDirectionalDerivatives (I := I) frame (iterCovComp (I := I) frame chr F m) x
               (fun i => m' (frontExtendIterC e m i)) d from rfl,
       covDerivStepComp_compReindex (frontExtendIterC e m), ← iterCovComp_succ]
     rfl
@@ -278,7 +278,7 @@ def iterCovCompU {r : ℕ}
   | 0 => base
   | (a + 1) => fun x =>
       covDerivStepCompU
-        (frameExtData (I := I) frame
+        (frameDirectionalDerivatives (I := I) frame
           (fun y : M => iterCovCompU frame chr base a y) x)
         (chr x)
         (iterCovCompU frame chr base a x)
@@ -299,7 +299,7 @@ omit [FiniteDimensional ℝ E] [I.Boundaryless] [IsManifold I ∞ M] [IsManifold
     (base : M → (Fin (r + 1) → Idx) → Real) (a : ℕ) (x : M) :
     iterCovCompU (I := I) frame chr base (a + 1) x =
       covDerivStepCompU
-        (frameExtData (I := I) frame
+        (frameDirectionalDerivatives (I := I) frame
           (fun y : M => iterCovCompU (I := I) frame chr base a y) x)
         (chr x)
         (iterCovCompU (I := I) frame chr base a x) := rfl
@@ -326,13 +326,13 @@ theorem iterCovCompU_shift {r : ℕ}
           (fun y (nn : Fin (r + (m + 1) + 1) → Idx) =>
             iterCovCompU (I := I) frame chr (fun z => iterCovCompU (I := I) frame chr base 1 z) m y
               (fun j => nn (extendLastEquiv (shiftEquivC r m) j))) from funext ih,
-      show frameExtData (I := I) frame
+      show frameDirectionalDerivatives (I := I) frame
             (fun y (nn : Fin (r + (m + 1) + 1) → Idx) =>
               iterCovCompU (I := I) frame chr (fun z => iterCovCompU (I := I) frame chr base 1 z) m
                 y
                 (fun j => nn (extendLastEquiv (shiftEquivC r m) j))) x =
           fun (m' : Fin (r + (m + 1) + 1) → Idx) d =>
-            frameExtData (I := I) frame
+            frameDirectionalDerivatives (I := I) frame
               (iterCovCompU (I := I) frame chr
                 (fun z => iterCovCompU (I := I) frame chr base 1 z) m) x
               (fun i => m' (extendLastEquiv (shiftEquivC r m) i)) d from rfl,
@@ -358,23 +358,23 @@ theorem compL2_iterCovCompU_shift {r : ℕ}
 omit [FiniteDimensional ℝ E] [I.Boundaryless] [IsManifold I ∞ M] [IsManifold I 1 M]
     [IsManifold I 2 M] [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
 omit [DecidableEq Idx] in
-theorem frameExtData_contrTail {p q : ℕ}
+theorem frameDirectionalDerivatives_contrTail {p q : ℕ}
     (frame : Idx → (x : M) → TangentSpace I x)
     (A : M → (Fin (p + 1) → Idx) → Real) (B : M → (Fin (q + 1) → Idx) → Real)
     (x : M)
     (hA : ∀ m : Fin (p + 1) → Idx, MDifferentiableAt I 𝓘(ℝ, ℝ) (fun y : M => A y m) x)
     (hB : ∀ m : Fin (q + 1) → Idx, MDifferentiableAt I 𝓘(ℝ, ℝ) (fun y : M => B y m) x)
     (idx : Fin (p + q) → Idx) (d : Idx) :
-    frameExtData (I := I) frame (fun y : M => contrTail (A y) (B y)) x idx d =
+    frameDirectionalDerivatives (I := I) frame (fun y : M => contrTail (A y) (B y)) x idx d =
       ∑ c : Idx,
-        (frameExtData (I := I) frame A x
+        (frameDirectionalDerivatives (I := I) frame A x
               (Fin.snoc (fun i : Fin p => idx (Fin.castAdd q i)) c) d *
             B x (Fin.snoc (fun j : Fin q => idx (Fin.natAdd p j)) c) +
           A x (Fin.snoc (fun i : Fin p => idx (Fin.castAdd q i)) c) *
-            frameExtData (I := I) frame B x
+            frameDirectionalDerivatives (I := I) frame B x
               (Fin.snoc (fun j : Fin q => idx (Fin.natAdd p j)) c) d) := by
   classical
-  unfold frameExtData
+  unfold frameDirectionalDerivatives
   rw [show (fun y : M => contrTail (A y) (B y) idx) =
       (fun y : M => ∑ c : Idx,
         A y (Fin.snoc (fun i : Fin p => idx (Fin.castAdd q i)) c) *
@@ -391,15 +391,15 @@ theorem frameExtData_contrTail {p q : ℕ}
 omit [FiniteDimensional ℝ E] [I.Boundaryless] [IsManifold I ∞ M] [IsManifold I 1 M]
     [IsManifold I 2 M] [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] [Fintype Idx]
     [DecidableEq Idx] in
-theorem frameExtData_add {r : ℕ}
+theorem frameDirectionalDerivatives_add {r : ℕ}
     (frame : Idx → (x : M) → TangentSpace I x)
     (f₁ f₂ : M → (Fin r → Idx) → Real) (x : M)
     (hf₁ : ∀ m : Fin r → Idx, MDifferentiableAt I 𝓘(ℝ, ℝ) (fun y : M => f₁ y m) x)
     (hf₂ : ∀ m : Fin r → Idx, MDifferentiableAt I 𝓘(ℝ, ℝ) (fun y : M => f₂ y m) x)
     (m : Fin r → Idx) (d : Idx) :
-    frameExtData (I := I) frame (fun y k => f₁ y k + f₂ y k) x m d =
-      frameExtData (I := I) frame f₁ x m d + frameExtData (I := I) frame f₂ x m d := by
-  unfold frameExtData
+    frameDirectionalDerivatives (I := I) frame (fun y k => f₁ y k + f₂ y k) x m d =
+      frameDirectionalDerivatives (I := I) frame f₁ x m d + frameDirectionalDerivatives (I := I) frame f₂ x m d := by
+  unfold frameDirectionalDerivatives
   rw [DifferentialGeometry.mvfderiv_real_eq_mfderiv I (fun y : M => f₁ y m + f₂ y m) x
       (frame d x),
     DifferentialGeometry.mvfderiv_real_eq_mfderiv I (fun y : M => f₁ y m) x (frame d x),
@@ -411,14 +411,14 @@ theorem frameExtData_add {r : ℕ}
 omit [FiniteDimensional ℝ E] [I.Boundaryless] [IsManifold I ∞ M] [IsManifold I 1 M]
     [IsManifold I 2 M] [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] [Fintype Idx]
     [DecidableEq Idx] in
-theorem frameExtData_smul {r : ℕ}
+theorem frameDirectionalDerivatives_smul {r : ℕ}
     (frame : Idx → (x : M) → TangentSpace I x)
     (c : Real) (f : M → (Fin r → Idx) → Real) (x : M)
     (hf : ∀ m : Fin r → Idx, MDifferentiableAt I 𝓘(ℝ, ℝ) (fun y : M => f y m) x)
     (m : Fin r → Idx) (d : Idx) :
-    frameExtData (I := I) frame (fun y k => c * f y k) x m d =
-      c * frameExtData (I := I) frame f x m d := by
-  unfold frameExtData
+    frameDirectionalDerivatives (I := I) frame (fun y k => c * f y k) x m d =
+      c * frameDirectionalDerivatives (I := I) frame f x m d := by
+  unfold frameDirectionalDerivatives
   rw [DifferentialGeometry.mvfderiv_real_eq_mfderiv I (fun y : M => c * f y m) x (frame d x),
     DifferentialGeometry.mvfderiv_real_eq_mfderiv I (fun y : M => f y m) x (frame d x),
     show (fun y : M => c * f y m) = c • (fun y : M => f y m) from rfl,
@@ -559,11 +559,11 @@ theorem iterCovCompU_mdiffAt {r : ℕ} {u : Set M} (hu : IsOpen u)
 omit [Fintype Idx] [DecidableEq Idx] in
 omit [FiniteDimensional ℝ E] [I.Boundaryless] [IsManifold I ∞ M] [IsManifold I 1 M]
     [IsManifold I 2 M] [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
-private theorem frameExtData_congr_nhds {r : ℕ}
+private theorem frameDirectionalDerivatives_congr_nhds {r : ℕ}
     (frame : Idx → (x : M) → TangentSpace I x)
     {F₁ F₂ : M → (Fin r → Idx) → Real} {y : M}
     (h : ∀ᶠ z in nhds y, F₁ z = F₂ z) :
-    frameExtData (I := I) frame F₁ y = frameExtData (I := I) frame F₂ y := by
+    frameDirectionalDerivatives (I := I) frame F₁ y = frameDirectionalDerivatives (I := I) frame F₂ y := by
   funext m d
   refine mvfderiv_eventuallyEq_congr (I := I) (frame d y) ?_
   filter_upwards [h] with z hz
@@ -594,13 +594,13 @@ theorem iterCovComp_add {r : ℕ} {u : Set M} (hu : IsOpen u)
             iterCovComp (I := I) frame chr f₂ a z k := by
       filter_upwards [hu.mem_nhds hy] with z hz
       funext k; exact ih z hz k
-    have hext : frameExtData (I := I) frame
+    have hext : frameDirectionalDerivatives (I := I) frame
           (iterCovComp (I := I) frame chr (fun z k => f₁ z k + f₂ z k) a) y =
-        fun m d => frameExtData (I := I) frame (iterCovComp (I := I) frame chr f₁ a) y m d +
-          frameExtData (I := I) frame (iterCovComp (I := I) frame chr f₂ a) y m d := by
-      rw [frameExtData_congr_nhds frame hfield]
+        fun m d => frameDirectionalDerivatives (I := I) frame (iterCovComp (I := I) frame chr f₁ a) y m d +
+          frameDirectionalDerivatives (I := I) frame (iterCovComp (I := I) frame chr f₂ a) y m d := by
+      rw [frameDirectionalDerivatives_congr_nhds frame hfield]
       funext m d
-      exact frameExtData_add frame (iterCovComp (I := I) frame chr f₁ a)
+      exact frameDirectionalDerivatives_add frame (iterCovComp (I := I) frame chr f₁ a)
         (iterCovComp (I := I) frame chr f₂ a) y
         (fun m => iterCovComp_mdiffAt hu frame chr f₁ hframe hchr hf₁ hy a m)
         (fun m => iterCovComp_mdiffAt hu frame chr f₂ hframe hchr hf₂ hy a m) m d
@@ -633,12 +633,12 @@ theorem iterCovComp_smul {r : ℕ} {u : Set M} (hu : IsOpen u)
           fun k => c * iterCovComp (I := I) frame chr f a z k := by
       filter_upwards [hu.mem_nhds hy] with z hz
       funext k; exact ih z hz k
-    have hext : frameExtData (I := I) frame
+    have hext : frameDirectionalDerivatives (I := I) frame
           (iterCovComp (I := I) frame chr (fun z k => c * f z k) a) y =
-        fun m d => c * frameExtData (I := I) frame (iterCovComp (I := I) frame chr f a) y m d := by
-      rw [frameExtData_congr_nhds frame hfield]
+        fun m d => c * frameDirectionalDerivatives (I := I) frame (iterCovComp (I := I) frame chr f a) y m d := by
+      rw [frameDirectionalDerivatives_congr_nhds frame hfield]
       funext m d
-      exact frameExtData_smul frame c (iterCovComp (I := I) frame chr f a) y
+      exact frameDirectionalDerivatives_smul frame c (iterCovComp (I := I) frame chr f a) y
         (fun m => iterCovComp_mdiffAt hu frame chr f hframe hchr hf hy a m) m d
     have harr : iterCovComp (I := I) frame chr (fun z k => c * f z k) a y =
         fun k => c * iterCovComp (I := I) frame chr f a y k := funext (ih y hy)
@@ -647,7 +647,7 @@ theorem iterCovComp_smul {r : ℕ} {u : Set M} (hu : IsOpen u)
 omit [FiniteDimensional ℝ E] [I.Boundaryless] [IsManifold I ∞ M] [IsManifold I 1 M]
     [IsManifold I 2 M] [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
 omit [DecidableEq Idx] in
-theorem covDerivStepComp_frameExtData_contrTail {p q : ℕ}
+theorem covDerivStepComp_frameDirectionalDerivatives_contrTail {p q : ℕ}
     (frame : Idx → (x : M) → TangentSpace I x)
     (chr : M → Idx → Idx → Idx → Real)
     (A : M → (Fin (p + 1) → Idx) → Real) (B : M → (Fin (q + 1) → Idx) → Real)
@@ -655,17 +655,17 @@ theorem covDerivStepComp_frameExtData_contrTail {p q : ℕ}
     (hA : ∀ m : Fin (p + 1) → Idx, MDifferentiableAt I 𝓘(ℝ, ℝ) (fun y : M => A y m) x)
     (hB : ∀ m : Fin (q + 1) → Idx, MDifferentiableAt I 𝓘(ℝ, ℝ) (fun y : M => B y m) x)
     (d : Idx) (aPart : Fin p → Idx) (bPart : Fin q → Idx) :
-    covDerivStepComp (frameExtData (I := I) frame (fun y : M => contrTail (A y) (B y)) x)
+    covDerivStepComp (frameDirectionalDerivatives (I := I) frame (fun y : M => contrTail (A y) (B y)) x)
         (chr x) (contrTail (A x) (B x)) (Fin.cons d (Fin.append aPart bPart)) =
-      contrTail (covDerivStepCompU (frameExtData (I := I) frame A x) (chr x) (A x)) (B x)
+      contrTail (covDerivStepCompU (frameDirectionalDerivatives (I := I) frame A x) (chr x) (A x)) (B x)
           (Fin.append (Fin.cons d aPart) bPart) +
-        contrTail (A x) (covDerivStepComp (frameExtData (I := I) frame B x) (chr x) (B x))
+        contrTail (A x) (covDerivStepComp (frameDirectionalDerivatives (I := I) frame B x) (chr x) (B x))
           (Fin.append aPart (Fin.cons d bPart)) :=
   covDerivStepCompU_contrTail_leibniz
-    (frameExtData (I := I) frame A x) (frameExtData (I := I) frame B x)
-    (frameExtData (I := I) frame (fun y : M => contrTail (A y) (B y)) x)
+    (frameDirectionalDerivatives (I := I) frame A x) (frameDirectionalDerivatives (I := I) frame B x)
+    (frameDirectionalDerivatives (I := I) frame (fun y : M => contrTail (A y) (B y)) x)
     (chr x) (A x) (B x)
-    (frameExtData_contrTail (I := I) frame A B x hA hB)
+    (frameDirectionalDerivatives_contrTail (I := I) frame A B x hA hB)
     d aPart bPart
 
 omit [FiniteDimensional ℝ E] [I.Boundaryless] [IsManifold I ∞ M] [IsManifold I 1 M]
@@ -699,7 +699,7 @@ theorem covStep_contrTail_field {p q : ℕ}
       · rw [Fin.append_left]
       · rw [Fin.append_right]
   conv_lhs => rw [hn]
-  rw [covDerivStepComp_frameExtData_contrTail frame chr A B x hA hB d aPart bPart,
+  rw [covDerivStepComp_frameDirectionalDerivatives_contrTail frame chr A B x hA hB d aPart bPart,
     slotId1 d aPart bPart, slotId2 d aPart bPart, ← hn]
   simp only [finCongr_apply]
 
@@ -732,7 +732,7 @@ theorem iterCovComp_congr_on {r : ℕ} {u : Set M} (hu : IsOpen u)
         iterCovComp (I := I) frame chr F₂ a z := by
       filter_upwards [hu.mem_nhds hx] with z hz
       exact ih z hz
-    rw [iterCovComp_succ, iterCovComp_succ, frameExtData_congr_nhds frame hfield, ih x hx]
+    rw [iterCovComp_succ, iterCovComp_succ, frameDirectionalDerivatives_congr_nhds frame hfield, ih x hx]
 
 omit [FiniteDimensional ℝ E] [I.Boundaryless] [IsManifold I ∞ M] [IsManifold I 1 M]
     [IsManifold I 2 M] [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] [DecidableEq Idx] in

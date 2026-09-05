@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Elliptic.Regularity.DiffChart.Differentiated.DerivedDataConstructor
+import DifferentialGeometry.Analysis.Elliptic.Regularity.DiffChart.Differentiated.CanonicalDerivedData
 import DifferentialGeometry.Analysis.Elliptic.Regularity.DiffChart.Differentiated.VariationalIdentity
 import DifferentialGeometry.Analysis.Elliptic.Regularity.Iterated.NirenbergInterior.ThirdMixedPartial
 import DifferentialGeometry.Analysis.Elliptic.Regularity.DiffChart.TwiceDifferentiated.EffectiveSource
@@ -7,8 +7,8 @@ import DifferentialGeometry.Analysis.Elliptic.Regularity.FChartResidual.Residual
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.Multiplication.SmoothCoefWeakPartialIBP
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.IteratedSobolevSpace.IteratedSobolev
 import Mathlib.Analysis.Calculus.FDeriv.Symmetric
-import DifferentialGeometry.Analysis.Elliptic.Regularity.DiffChart.TwiceDifferentiated.VariationalIdentityTestFunctionCalculus
-import DifferentialGeometry.Analysis.Elliptic.Regularity.DiffChart.TwiceDifferentiated.VariationalIdentityBaseDataLocalRegularity
+import DifferentialGeometry.Analysis.Elliptic.Regularity.DiffChart.TwiceDifferentiated.TestFunctionCalculus
+import DifferentialGeometry.Analysis.Elliptic.Regularity.DiffChart.TwiceDifferentiated.BaseLocalIntegrability
 open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
@@ -97,7 +97,8 @@ lemma per_pair_ibp_chosenSecond
   have hK_compact : IsCompact K := hψ_cs
   have hK_in : K ⊆ Ω := hψ_support
   obtain ⟨δ, φExt, hδ_pos, hδ_subset, hφExt_smooth, hφExt_eq⟩ :=
-    exists_smooth_global_extension_chart (φ := φ) hφ_chart hK_compact hK_in
+    exists_smooth_global_extension (I := I) (M := M) (φ := φ) α
+      hφ_chart hK_compact hK_in
   have hv_localMemLp : ∀ K' : Set EuclN, IsCompact K' → K' ⊆ Ω →
       MemLp v 2 ((volume : Measure EuclN).restrict K') := by
     intro K' hK'_compact hK'_in
@@ -210,7 +211,8 @@ lemma per_pair_ibp_base_weak_partial
   have hK_compact : IsCompact K := hψ_cs
   have hK_in : K ⊆ Ω := hψ_support
   obtain ⟨δ, φExt, hδ_pos, hδ_subset, hφExt_smooth, hφExt_eq⟩ :=
-    exists_smooth_global_extension_chart (φ := φ) hφ_chart hK_compact hK_in
+    exists_smooth_global_extension (I := I) (M := M) (φ := φ) α
+      hφ_chart hK_compact hK_in
   have hv_localMemLp : ∀ K' : Set EuclN, IsCompact K' → K' ⊆ Ω →
       MemLp v 2 ((volume : Measure EuclN).restrict K') := by
     intro K' hK'_compact hK'_in
@@ -324,7 +326,8 @@ lemma per_pair_ibp_base_u_chart
   have hK_compact : IsCompact K := hψ_cs
   have hK_in : K ⊆ Ω := hψ_support
   obtain ⟨δ, φExt, hδ_pos, hδ_subset, hφExt_smooth, hφExt_eq⟩ :=
-    exists_smooth_global_extension_chart (φ := φ) hφ_chart hK_compact hK_in
+    exists_smooth_global_extension (I := I) (M := M) (φ := φ) α
+      hφ_chart hK_compact hK_in
   have hv_localMemLp : ∀ K' : Set EuclN, IsCompact K' → K' ⊆ Ω →
       MemLp v 2 ((volume : Measure EuclN).restrict K') := by
     intro K' hK'_compact hK'_in
@@ -439,7 +442,8 @@ lemma per_pair_ibp_base_f_chart
   have hK_compact : IsCompact K := hψ_cs
   have hK_in : K ⊆ Ω := hψ_support
   obtain ⟨δ, φExt, hδ_pos, hδ_subset, hφExt_smooth, hφExt_eq⟩ :=
-    exists_smooth_global_extension_chart (φ := φ) hφ_chart hK_compact hK_in
+    exists_smooth_global_extension (I := I) (M := M) (φ := φ) α
+      hφ_chart hK_compact hK_in
   have hv_localMemLp : ∀ K' : Set EuclN, IsCompact K' → K' ⊆ Ω →
       MemLp v 2 ((volume : Measure EuclN).restrict K') := by
     intro K' hK'_compact hK'_in
@@ -564,7 +568,8 @@ lemma per_pair_ibp_chosenFChartDeriv
   have hK_compact : IsCompact K := hψ_cs
   have hK_in : K ⊆ Ω := hψ_support
   obtain ⟨δ, φExt, hδ_pos, hδ_subset, hφExt_smooth, hφExt_eq⟩ :=
-    exists_smooth_global_extension_chart (φ := φ) hφ_chart hK_compact hK_in
+    exists_smooth_global_extension (I := I) (M := M) (φ := φ) α
+      hφ_chart hK_compact hK_in
   have h_memW1p :=
     base_f_chart_memW1p_from_residual_memW1p (I := I) (M := M) g α hu_h
       (fChartResidual_memW1p (I := I) (M := M) g α hu_h)

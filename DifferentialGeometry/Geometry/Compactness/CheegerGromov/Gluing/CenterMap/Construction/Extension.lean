@@ -36,7 +36,7 @@ noncomputable def centerConfigurationOn
     (join : M -> M -> Real -> M) (r : Real)
     (V : Set ((ι -> Real) × (ι -> E)))
     (h : forall params, params ∈ V ->
-      CenterInput (I := I) g params.1
+      CenterOfMassConditions (I := I) g params.1
         (fun i => (NormalCoordinates.normalChartAt (I := I) g p).symm (params.2 i))
         join p r) :
     ((ι -> Real) × (ι -> E)) -> M :=
@@ -49,7 +49,7 @@ noncomputable def chartCenterOn
     (join : M -> M -> Real -> M) (r : Real)
     (V : Set ((ι -> Real) × (ι -> E)))
     (h : forall params, params ∈ V ->
-      CenterInput (I := I) g params.1
+      CenterOfMassConditions (I := I) g params.1
         (fun i => (NormalCoordinates.normalChartAt (I := I) g p).symm (params.2 i))
         join p r)
     (params : (ι -> Real) × (ι -> E)) : E :=
@@ -60,7 +60,7 @@ theorem centerConfigurationOn_eq
     (join : M -> M -> Real -> M) (r : Real)
     {V : Set ((ι -> Real) × (ι -> E))}
     (h : forall params, params ∈ V ->
-      CenterInput (I := I) g params.1
+      CenterOfMassConditions (I := I) g params.1
         (fun i => (NormalCoordinates.normalChartAt (I := I) g p).symm (params.2 i))
         join p r)
     {params : (ι -> Real) × (ι -> E)} (hparams : params ∈ V) :
@@ -88,7 +88,7 @@ theorem centerOfMass_normalChartCenterOfMassEquationWithBranch_eq_zero
     (p : M) (B : DiagonalInverseBranch (I := I) g hEnorm p)
     {ι : Type} [Fintype ι] (mu : ι -> Real) (xi : ι -> E)
     (join : M -> M -> Real -> M) (r : Real)
-    (h : CenterInput (I := I) g mu
+    (h : CenterOfMassConditions (I := I) g mu
       (fun i => (NormalCoordinates.normalChartAt (I := I) g p).symm (xi i))
       join p r)
     (hcenter : centerOfMass (I := I) g mu
@@ -207,7 +207,7 @@ theorem centerOfMass_normalChartCenterOfMassEquationStandard_eq_zero
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) {ι : Type} [Fintype ι] (mu : ι -> Real) (xi : ι -> E)
     (join : M -> M -> Real -> M) (r : Real)
-    (h : CenterInput (I := I) g mu
+    (h : CenterOfMassConditions (I := I) g mu
       (fun i => (NormalCoordinates.normalChartAt (I := I) g p).symm (xi i))
       join p r)
     (hcenter : centerOfMass (I := I) g mu
@@ -416,7 +416,7 @@ theorem chartCenterOn_cont
     (join : M -> M -> Real -> M) (r : Real)
     (V : Set ((ι -> Real) × (ι -> E)))
     (h : ∀ params, params ∈ V ->
-      CenterInput (I := I) g params.1
+      CenterOfMassConditions (I := I) g params.1
         (fun i => (NormalCoordinates.normalChartAt (I := I) g p).symm (params.2 i))
         join p r)
     (hpts : Continuous (fun params : V => fun i =>
@@ -430,7 +430,7 @@ theorem chartCenterOn_cont
   let _ := hRiemannianBundle
   rw [continuousOn_iff_continuous_domRestrict]
   let H : ∀ params : V,
-      CenterInput (I := I) g params.1.1
+      CenterOfMassConditions (I := I) g params.1.1
         (fun i => (NormalCoordinates.normalChartAt (I := I) g p).symm (params.1.2 i))
         join p r := fun params => h params params.2
   let f : V -> E := fun params =>
@@ -635,7 +635,7 @@ theorem centerOfMass_normalChartCenterOfMassEquationWithBranch_eq_zero_of_normal
       HopfRinow.riemMetricSpace (I := I) (M := (X.obj k).M)
     let points : ι → (X.obj k).M := fun i ↦
       (NormalCoordinates.normalChartAt (I := I) (X.obj k).metric x).symm (xi i)
-    ∀ h : CenterInput (I := I) (X.obj k).metric mu points join p r,
+    ∀ h : CenterOfMassConditions (I := I) (X.obj k).metric mu points join p r,
       0 < ρ →
       2 * ρ < (q : Real) →
       ρ ≤ hb.radius k x →

@@ -207,7 +207,7 @@ theorem HasDiagPairConvergence.congr_stage
     hInfDiag, hInfApprox, hforward', delta1, hdelta1,
     lt_min hdelta1ltStage' hdelta1ltInf, himage', hstageMap', hinv'⟩
 
-theorem HasDiagPairConvergence.inv_data
+theorem HasDiagPairConvergence.exists_inverse_convergence_radius
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hcomplete : SeqMetricComplete (I := I) X}
     {hconn : ∀ k,

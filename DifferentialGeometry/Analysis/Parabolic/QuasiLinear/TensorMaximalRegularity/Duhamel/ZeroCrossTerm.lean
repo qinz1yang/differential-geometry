@@ -160,7 +160,7 @@ theorem zeroRepr_norm_le (hT : 0 < T)
     simpa only [hu] using
       zeroRepr_zero (I := I) (M := M) hT h_compact f
   rw [hzero, norm_zero, zero_pow (by norm_num), zero_add] at hsq
-  have hhi : ‖u.hiL2‖ ≤ (1 + T) * ‖f‖ := by
+  have hhi : ‖u.highRegularity‖ ≤ (1 + T) * ‖f‖ := by
     rw [hu]
     change ‖recentredHiL2 (I := I) (M := M) hT
       (0 : TensorHs (I := I) (M := M) g r s (a + 2)) f‖ ≤ (1 + T) * ‖f‖
@@ -168,7 +168,7 @@ theorem zeroRepr_norm_le (hT : 0 < T)
       (h_compact := h_compact) hT
       (0 : TensorHs (I := I) (M := M) g r s (a + 2)) f
     simpa only [norm_zero, mul_zero, zero_add] using h
-  have hderiv : ‖u.lo.deriv‖ ≤ 2 * ‖f‖ := by
+  have hderiv : ‖u.lowRegularity.deriv‖ ≤ 2 * ‖f‖ := by
     rw [hu]
     change ‖(recentredCarrier (I := I) (M := M) hT
       (0 : TensorHs (I := I) (M := M) g r s (a + 2)) f).deriv‖ ≤ 2 * ‖f‖
@@ -178,38 +178,38 @@ theorem zeroRepr_norm_le (hT : 0 < T)
       (0 : TensorHs (I := I) (M := M) g r s (a + 2)) f
     simpa only [norm_zero, mul_zero, zero_add] using h
   have hmul :
-      ‖u.hiL2‖ * ‖u.lo.deriv‖ ≤
+      ‖u.highRegularity‖ * ‖u.lowRegularity.deriv‖ ≤
         ((1 + T) * ‖f‖) * (2 * ‖f‖) :=
     mul_le_mul hhi hderiv (norm_nonneg _) (by positivity)
   have hholder :
-      (∫ s in Set.Icc (0 : ℝ) T, ‖u.hiL2 s‖ * ‖u.lo.deriv s‖) ≤
-        ‖u.hiL2‖ * ‖u.lo.deriv‖ := by
-    have hhiLp : MemLp (fun s => ‖u.hiL2 s‖) (ENNReal.ofReal 2) (timeMeasure T) := by
-      convert (Lp.memLp u.hiL2).norm using 1; norm_num
-    have hloLp : MemLp (fun s => ‖u.lo.deriv s‖) (ENNReal.ofReal 2) (timeMeasure T) := by
-      convert (Lp.memLp u.lo.deriv).norm using 1; norm_num
+      (∫ s in Set.Icc (0 : ℝ) T, ‖u.highRegularity s‖ * ‖u.lowRegularity.deriv s‖) ≤
+        ‖u.highRegularity‖ * ‖u.lowRegularity.deriv‖ := by
+    have hhiLp : MemLp (fun s => ‖u.highRegularity s‖) (ENNReal.ofReal 2) (timeMeasure T) := by
+      convert (Lp.memLp u.highRegularity).norm using 1; norm_num
+    have hloLp : MemLp (fun s => ‖u.lowRegularity.deriv s‖) (ENNReal.ofReal 2) (timeMeasure T) := by
+      convert (Lp.memLp u.lowRegularity.deriv).norm using 1; norm_num
     have h := MeasureTheory.integral_mul_norm_le_Lp_mul_Lq
-      (μ := timeMeasure T) (f := fun s => ‖u.hiL2 s‖)
-      (g := fun s => ‖u.lo.deriv s‖) Real.HolderConjugate.two_two
+      (μ := timeMeasure T) (f := fun s => ‖u.highRegularity s‖)
+      (g := fun s => ‖u.lowRegularity.deriv s‖) Real.HolderConjugate.two_two
       hhiLp hloLp
     rw [TimeSobolev.norm_eq_sqrt_integral,
       TimeSobolev.norm_eq_sqrt_integral, Real.sqrt_eq_rpow,
       Real.sqrt_eq_rpow]
     simpa only [timeMeasure, norm_norm, Real.rpow_two] using h
   have hcross :
-      (∫ s in (0 : ℝ)..t, 2 * (‖u.hiL2 s‖ * ‖u.lo.deriv s‖)) ≤
-        2 * (‖u.hiL2‖ * ‖u.lo.deriv‖) := by
+      (∫ s in (0 : ℝ)..t, 2 * (‖u.highRegularity s‖ * ‖u.lowRegularity.deriv s‖)) ≤
+        2 * (‖u.highRegularity‖ * ‖u.lowRegularity.deriv‖) := by
     rw [intervalIntegral.integral_of_le ht.1]
     calc
-      (∫ s in Set.Ioc (0 : ℝ) t, 2 * (‖u.hiL2 s‖ * ‖u.lo.deriv s‖))
-          ≤ ∫ s in Set.Icc (0 : ℝ) T, 2 * (‖u.hiL2 s‖ * ‖u.lo.deriv s‖) := by
+      (∫ s in Set.Ioc (0 : ℝ) t, 2 * (‖u.highRegularity s‖ * ‖u.lowRegularity.deriv s‖))
+          ≤ ∫ s in Set.Icc (0 : ℝ) T, 2 * (‖u.highRegularity s‖ * ‖u.lowRegularity.deriv s‖) := by
             refine setIntegral_mono_set u.integrableOn_energyBound
               (Eventually.of_forall fun s => by positivity) ?_
             exact LE.le.eventuallyLE
               (fun x hx => ⟨le_of_lt hx.1, le_trans hx.2 ht.2⟩)
-      _ = 2 * (∫ s in Set.Icc (0 : ℝ) T, ‖u.hiL2 s‖ * ‖u.lo.deriv s‖) := by
+      _ = 2 * (∫ s in Set.Icc (0 : ℝ) T, ‖u.highRegularity s‖ * ‖u.lowRegularity.deriv s‖) := by
             rw [← MeasureTheory.integral_const_mul]
-      _ ≤ 2 * (‖u.hiL2‖ * ‖u.lo.deriv‖) :=
+      _ ≤ 2 * (‖u.highRegularity‖ * ‖u.lowRegularity.deriv‖) :=
             mul_le_mul_of_nonneg_left hholder (by positivity)
   have hsq' :
       ‖u.repr t‖ ^ 2 ≤ 4 * (1 + T) * ‖f‖ ^ 2 := by

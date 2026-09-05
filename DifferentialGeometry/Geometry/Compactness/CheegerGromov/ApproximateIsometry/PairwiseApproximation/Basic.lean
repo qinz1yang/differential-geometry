@@ -78,7 +78,7 @@ theorem exists_partial_diffeomorph_metric_approximation
 
 end Glue
 
-structure PairwiseApproximateIsometryInput (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k)) : Prop where
+structure HasPairwiseApproximateIsometries (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k)) : Prop where
   comparison : ∀ (r : Real), 0 < r → ∀ (ε : Real), 0 < ε → ε < 1 → ∀ (p : Nat),
     ∃ k₀ : Nat, ∀ k ℓ : Nat, k₀ ≤ k → k₀ ≤ ℓ →
       letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
@@ -108,10 +108,10 @@ structure PairwiseApproximateIsometryInput (P : ∀ k : Nat, ProperMetricOn (I :
 
 omit [Module.Finite ℝ E] in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
-theorem PairwiseApproximateIsometryInput.exists_partial_approximate_isometry
+theorem HasPairwiseApproximateIsometries.exists_partial_approximate_isometry
     [FiniteDimensional Real E]
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
-    (B : PairwiseApproximateIsometryInput (X := X) P)
+    (B : HasPairwiseApproximateIsometries (X := X) P)
     (r : Real) (hr : 0 < r) (ε : Real) (hε : 0 < ε) (hε1 : ε < 1) (p : Nat) :
     ∃ k₀ : Nat, ∀ k ℓ : Nat, k₀ ≤ k → k₀ ≤ ℓ →
       letI : TopologicalSpace (X.obj k).M := (X.obj k).topology

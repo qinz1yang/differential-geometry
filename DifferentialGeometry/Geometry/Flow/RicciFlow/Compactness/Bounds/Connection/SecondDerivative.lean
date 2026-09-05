@@ -4,6 +4,7 @@ import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Alge
 import DifferentialGeometry.Geometry.Connection.Convergence.DifferenceDerivativeBound
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Uniform.Algebra.CovariantSumCross
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Christoffel.DifferenceKoszulSecondDerivative
+import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.ConnectionDifference.DifferentiatedPalatini
 
 set_option autoImplicit false
 
@@ -29,7 +30,7 @@ variable [T2Space M] [IsManifold I ∞ M]
 variable [CompactSpace M] [I.Boundaryless]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-theorem covStepDiff2_opLeibniz
+private theorem covStepDiff2_opLeibniz
     (g₁ g₂ : SmoothRiemannianMetric I M) (s : ℕ)
     (S : Tensor0SBundle.Tensor0SField (𝕜 := ℝ) (E := E) (H := H)
       (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) s) :
@@ -49,7 +50,7 @@ theorem covStepDiff2_opLeibniz
     diffStep_leibniz (I := I) g₁ g₂ (s + 1) (covStep (I := I) g₂ s S)]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-theorem field1_eq_mcd1
+private theorem field1_eq_mcd1
     [VectorBundle ℝ E (TangentSpace I : M → Type _)]
     [hContMDiffBundle : ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I]
     (g₁ g₂ : SmoothRiemannianMetric I M) :
@@ -69,7 +70,7 @@ theorem field1_eq_mcd1
     (Tensor0SBundle.metricTensorField (I := I) g₁) x).symm
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-theorem field2_eq_mcd2
+private theorem field2_eq_mcd2
     [VectorBundle ℝ E (TangentSpace I : M → Type _)]
     [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I]
     (g₁ g₂ : SmoothRiemannianMetric I M) :
@@ -90,7 +91,7 @@ theorem field2_eq_mcd2
   exact (metricCovDerivStep_apply (I := I) g₂ 1 (metricCovDeriv (I := I) g₁ g₂ 1) x).symm
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-theorem nabla3_eq_mcd2
+private theorem nabla3_eq_mcd2
     [VectorBundle ℝ E (TangentSpace I : M → Type _)]
     [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I]
     (g₁ g₂ : SmoothRiemannianMetric I M)
@@ -112,7 +113,7 @@ theorem nabla3_eq_mcd2
     (metricCovDeriv (I := I) g₁ g₂ 1) x slots).symm
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-theorem nabla4_eq_mcd3
+private theorem nabla4_eq_mcd3
     [VectorBundle ℝ E (TangentSpace I : M → Type _)]
     [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I]
     (g₁ g₂ : SmoothRiemannianMetric I M)
@@ -137,7 +138,7 @@ theorem nabla4_eq_mcd3
     (metricCovDeriv (I := I) g₁ g₂ 2) x slots).symm
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-theorem nabla2_eq_mcd1
+private theorem nabla2_eq_mcd1
     [hVectorBundle : VectorBundle ℝ E (TangentSpace I : M → Type _)]
     (g₁ g₂ : SmoothRiemannianMetric I M)
     (W : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M → Type _))
@@ -149,106 +150,15 @@ theorem nabla2_eq_mcd1
   let _ := hVectorBundle
   exact (metricCovDeriv_one_apply_section (I := I) g₁ g₂ W x slots).symm
 
-def covDerivConnectionDifference2 (g₂ g₁ : SmoothRiemannianMetric I M)
-    (V W X Y : Π b : M, TangentSpace I b) (x : M) : TangentSpace I x :=
-  DifferentialGeometry.Geometry.Curvature.covApply
-      (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g₂) V
-      (fun p => DifferentialGeometry.Geometry.Curvature.covDerivConnectionDifference (I := I) g₂ g₁ W X Y p) x
-    - DifferentialGeometry.Geometry.Curvature.covDerivConnectionDifference (I := I) g₂ g₁
-        (DifferentialGeometry.Geometry.Curvature.covApply
-          (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g₂) V W) X Y x
-    - DifferentialGeometry.Geometry.Curvature.covDerivConnectionDifference (I := I) g₂ g₁ W
-        (DifferentialGeometry.Geometry.Curvature.covApply
-          (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g₂) V X) Y x
-    - DifferentialGeometry.Geometry.Curvature.covDerivConnectionDifference (I := I) g₂ g₁ W X
-        (DifferentialGeometry.Geometry.Curvature.covApply
-          (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g₂) V Y) x
-
-omit [NeZero (Module.finrank ℝ E)] [T2Space M] [CompactSpace M] [I.Boundaryless] in
-theorem covDerivConnectionDifference2_eq (g₂ g₁ : SmoothRiemannianMetric I M)
-    (V W X Y : Π b : M, TangentSpace I b) (x : M) :
-    covDerivConnectionDifference2 (I := I) g₂ g₁ V W X Y x =
-      DifferentialGeometry.Geometry.Curvature.covApply
-          (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g₂) V
-          (fun p => DifferentialGeometry.Geometry.Curvature.covDerivConnectionDifference (I := I) g₂ g₁ W X Y p)
-          x
-        - DifferentialGeometry.Geometry.Curvature.covDerivConnectionDifference (I := I) g₂ g₁
-            (DifferentialGeometry.Geometry.Curvature.covApply
-              (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g₂) V W) X Y x
-        - DifferentialGeometry.Geometry.Curvature.covDerivConnectionDifference (I := I) g₂ g₁ W
-            (DifferentialGeometry.Geometry.Curvature.covApply
-              (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g₂) V X) Y x
-        - DifferentialGeometry.Geometry.Curvature.covDerivConnectionDifference (I := I) g₂ g₁ W X
-            (DifferentialGeometry.Geometry.Curvature.covApply
-              (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g₂) V Y) x :=
-  rfl
-
-open DifferentialGeometry.Integral.Connection in
-omit [NeZero (Module.finrank ℝ E)] [T2Space M] [CompactSpace M] [I.Boundaryless] in
-theorem covDerivConnectionDifference_contMDiff
-    (g₂ g₁ : SmoothRiemannianMetric I M)
-    (W X Y : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M → Type _)) :
-    ContMDiff I (I.prod 𝓘(ℝ, E)) (∞ : WithTop ℕ∞)
-      (T% (fun p => covDerivConnectionDifference (I := I) g₂ g₁
-        (fun b => W b) (fun b => X b) (fun b => Y b) p)) := by
-  have : CovariantDerivative.ContMDiffCovariantDerivative
-      (LeviCivita (I := I) g₂) (∞ : WithTop ℕ∞) :=
-    leviCivitaConnectionOfMetric_contMDiffCovariantDerivative (I := I) g₂
-  have : CovariantDerivative.ContMDiffCovariantDerivative
-      (LeviCivita (I := I) g₁) (∞ : WithTop ℕ∞) :=
-    leviCivitaConnectionOfMetric_contMDiffCovariantDerivative (I := I) g₁
-  have hcast : ∀ (S : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M → Type _)),
-      ContMDiff I (I.prod 𝓘(ℝ, E)) ((∞ : WithTop ℕ∞) + 1) (T% (fun b => S b)) := by
-    intro S
-    rw [show ((∞ : WithTop ℕ∞) + 1) = (∞ : WithTop ℕ∞) from by rw [ENat.coe_top_add_one]]
-    exact S.contMDiff
-  have hDXY : ContMDiff I (I.prod 𝓘(ℝ, E)) (∞ : WithTop ℕ∞)
-      (T% (diffSec (LeviCivita (I := I) g₂) (LeviCivita (I := I) g₁)
-        (fun b => X b) (fun b => Y b))) :=
-    diffSec_contMDiff (LeviCivita (I := I) g₂) (LeviCivita (I := I) g₁) X.contMDiff (hcast Y)
-  have hDXYc : ContMDiff I (I.prod 𝓘(ℝ, E)) ((∞ : WithTop ℕ∞) + 1)
-      (T% (diffSec (LeviCivita (I := I) g₂) (LeviCivita (I := I) g₁)
-        (fun b => X b) (fun b => Y b))) := by
-    rw [show ((∞ : WithTop ℕ∞) + 1) = (∞ : WithTop ℕ∞) from by rw [ENat.coe_top_add_one]]
-    exact hDXY
-  have hA : ContMDiffOn I (I.prod 𝓘(ℝ, E)) (∞ : WithTop ℕ∞)
-      (T% (covApply (LeviCivita (I := I) g₂) (fun b => W b)
-        (diffSec (LeviCivita (I := I) g₂) (LeviCivita (I := I) g₁)
-          (fun b => X b) (fun b => Y b)))) Set.univ :=
-    covApply_contMDiffOn (cov := LeviCivita (I := I) g₂) W.contMDiff hDXYc
-  have hWX : ContMDiff I (I.prod 𝓘(ℝ, E)) (∞ : WithTop ℕ∞)
-      (T% (covApply (LeviCivita (I := I) g₂) (fun b => W b) (fun b => X b))) :=
-    contMDiffOn_univ.mp
-      (covApply_contMDiffOn (cov := LeviCivita (I := I) g₂) W.contMDiff (hcast X))
-  have hWY : ContMDiff I (I.prod 𝓘(ℝ, E)) (∞ : WithTop ℕ∞)
-      (T% (covApply (LeviCivita (I := I) g₂) (fun b => W b) (fun b => Y b))) :=
-    contMDiffOn_univ.mp
-      (covApply_contMDiffOn (cov := LeviCivita (I := I) g₂) W.contMDiff (hcast Y))
-  have hWYc : ContMDiff I (I.prod 𝓘(ℝ, E)) ((∞ : WithTop ℕ∞) + 1)
-      (T% (covApply (LeviCivita (I := I) g₂) (fun b => W b) (fun b => Y b))) := by
-    rw [show ((∞ : WithTop ℕ∞) + 1) = (∞ : WithTop ℕ∞) from by rw [ENat.coe_top_add_one]]
-    exact hWY
-  have hB : ContMDiff I (I.prod 𝓘(ℝ, E)) (∞ : WithTop ℕ∞)
-      (T% (diffSec (LeviCivita (I := I) g₂) (LeviCivita (I := I) g₁)
-        (covApply (LeviCivita (I := I) g₂) (fun b => W b) (fun b => X b)) (fun b => Y b))) :=
-    diffSec_contMDiff (LeviCivita (I := I) g₂) (LeviCivita (I := I) g₁) hWX (hcast Y)
-  have hC : ContMDiff I (I.prod 𝓘(ℝ, E)) (∞ : WithTop ℕ∞)
-      (T% (diffSec (LeviCivita (I := I) g₂) (LeviCivita (I := I) g₁)
-        (fun b => X b) (covApply (LeviCivita (I := I) g₂) (fun b => W b) (fun b => Y b)))) :=
-    diffSec_contMDiff (LeviCivita (I := I) g₂) (LeviCivita (I := I) g₁) X.contMDiff hWYc
-  rw [← contMDiffOn_univ]
-  refine ((hA.sub_section hB.contMDiffOn).sub_section hC.contMDiffOn).congr (fun p _hp => ?_)
-  rfl
-
 open DifferentialGeometry.Integral.Connection in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
-theorem koszul2
+private theorem koszul2
     [VectorBundle ℝ E (TangentSpace I : M → Type _)]
     [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I]
     (g₁ g₂ : SmoothRiemannianMetric I M)
     (V W X Y Z : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M → Type _))
     (x : M) :
-    2 * g₁.inner x (covDerivConnectionDifference2 (I := I) g₂ g₁
+    2 * g₁.inner x (secondCovDerivConnectionDifference (I := I) g₂ g₁
         (fun b => V b) (fun b => W b) (fun b => X b) (fun b => Y b) x) (Z x)
       = metricCovDeriv (I := I) g₁ g₂ 3 x ![V x, W x, X x, Y x, Z x]
         + metricCovDeriv (I := I) g₁ g₂ 3 x ![V x, W x, Y x, X x, Z x]
@@ -417,13 +327,13 @@ theorem koszul2
     hup4_2, hup4_3, hup2_0, hup2_1, hcons3, hcons4, hcons5, Tensor0SBundle.metricTensorField_apply,
     hDVWval, hDVXval, hDVYval, hDVZval, hQxval] at hmaster hkW hkX hkY hkZ
   rw [hAvec, hmcd1_add3] at hmaster
-  have hcdc2 : covDerivConnectionDifference2 (I := I) g₂ g₁
+  have hcdc2 : secondCovDerivConnectionDifference (I := I) g₂ g₁
         (fun b => V b) (fun b => W b) (fun b => X b) (fun b => Y b) x
       = ((LeviCivita (I := I) g₂) (fun p => Qsec p) x) (V x)
         - covDerivConnectionDifference (I := I) g₂ g₁ DVW X Y x
         - covDerivConnectionDifference (I := I) g₂ g₁ W DVX Y x
         - covDerivConnectionDifference (I := I) g₂ g₁ W X DVY x := by
-    rw [covDerivConnectionDifference2_eq]; rfl
+    rw [secondCovDerivConnectionDifference_apply]; rfl
   rw [hcdc2, g_sub, g_sub, g_sub,
     show covDerivConnectionDifference (I := I) g₂ g₁ (fun b => V b) (fun b => X b) (fun b => Y b) x
       = covDerivConnectionDifference (I := I) g₂ g₁ V X Y x from rfl,
@@ -435,15 +345,15 @@ open DifferentialGeometry.Geometry.Curvature
   (smoothExtensionTangent smoothExtensionTangent_eq smoothExtensionTangent_contMDiff) in
 open DifferentialGeometry.Geometry.Connection (leviCivitaConnectionOfMetric) in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
-theorem covDConnectionDifference2_g1_le
+private theorem covDConnectionDifference2_g1_le
     [VectorBundle ℝ E (TangentSpace I : M → Type _)]
     [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I]
     (g₂ g₁ : SmoothRiemannianMetric I M) (x : M) (v' v w u : TangentSpace I x) :
     Real.sqrt (g₁.inner x
-        (covDerivConnectionDifference2 (I := I) g₂ g₁
+        (secondCovDerivConnectionDifference (I := I) g₂ g₁
           (smoothExtensionTangent (I := I) x v') (smoothExtensionTangent (I := I) x v)
           (smoothExtensionTangent (I := I) x w) (smoothExtensionTangent (I := I) x u) x)
-        (covDerivConnectionDifference2 (I := I) g₂ g₁
+        (secondCovDerivConnectionDifference (I := I) g₂ g₁
           (smoothExtensionTangent (I := I) x v') (smoothExtensionTangent (I := I) x v)
           (smoothExtensionTangent (I := I) x w) (smoothExtensionTangent (I := I) x u) x)) ≤
       (3 / 2 * Real.sqrt (Tensor0SBundle.normSq0S (I := I) g₁ x 5
@@ -480,7 +390,7 @@ theorem covDConnectionDifference2_g1_le
   set M3 : ℝ := Real.sqrt (Tensor0SBundle.normSq0S (I := I) g₁ x 5
     (metricCovDeriv (I := I) g₁ g₂ 3 x)) with hM3def
   set B2 : TangentSpace I x :=
-    covDerivConnectionDifference2 (I := I) g₂ g₁
+    secondCovDerivConnectionDifference (I := I) g₂ g₁
       (smoothExtensionTangent (I := I) x v') (smoothExtensionTangent (I := I) x v)
       (smoothExtensionTangent (I := I) x w) (smoothExtensionTangent (I := I) x u) x with hB2def
   set Vsec : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M → Type _) :=
@@ -503,7 +413,7 @@ theorem covDConnectionDifference2_g1_le
   have hXx : Xsec x = w := smoothExtensionTangent_eq (I := I) x w
   have hYx : Ysec x = u := smoothExtensionTangent_eq (I := I) x u
   have hZx : Zsec x = B2 := smoothExtensionTangent_eq (I := I) x B2
-  have hAbr2 : covDerivConnectionDifference2 (I := I) g₂ g₁
+  have hAbr2 : secondCovDerivConnectionDifference (I := I) g₂ g₁
       (fun b => Vsec b) (fun b => Wsec b) (fun b => Xsec b) (fun b => Ysec b) x = B2 := by
     rw [hB2def]; rfl
   have hkos := koszul2 (I := I) g₁ g₂ Vsec Wsec Xsec Ysec Zsec x
@@ -644,7 +554,7 @@ theorem covDConnectionDifference2_g1_le
     linarith [hdiv]
 
 open DifferentialGeometry.Integral.Connection in
-noncomputable def mixedCommC (s : ℕ) (Λ Λ' Λ'' Λ''' : ℝ) : ℝ :=
+private noncomputable def mixedCommC (s : ℕ) (Λ Λ' Λ'' Λ''' : ℝ) : ℝ :=
   max 0 (Real.sqrt ((Module.finrank ℝ E : ℝ) ^ (s + 3)) *
     ((s : ℝ) *
         (3 / 2 * Λ ^ 5 * Λ''' + 9 / 2 * Λ ^ 6 * Λ' * Λ'' + 3 * Λ ^ 7 * Λ' ^ 3) +
@@ -653,7 +563,7 @@ noncomputable def mixedCommC (s : ℕ) (Λ Λ' Λ'' Λ''' : ℝ) : ℝ :=
 
 open DifferentialGeometry.Integral.Connection in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
-theorem covDConnectionDifference2_gJet_le
+theorem second_covariant_derivative_connection_difference_norm_le
     [VectorBundle ℝ E (TangentSpace I : M → Type _)]
     [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I]
     {K : Set M} {g₂ g₁ : SmoothRiemannianMetric I M} {Λ Λ' Λ'' Λ''' : ℝ}
@@ -663,10 +573,10 @@ theorem covDConnectionDifference2_gJet_le
     (hJet3 : MetricCovDerivOrderBoundOn (I := I) K 3 g₁ g₂ Λ''')
     {x : M} (hx : x ∈ K) (v' v w u : TangentSpace I x) :
     Real.sqrt (g₂.inner x
-        (covDerivConnectionDifference2 (I := I) g₂ g₁
+        (secondCovDerivConnectionDifference (I := I) g₂ g₁
           (smoothExtensionTangent (I := I) x v') (smoothExtensionTangent (I := I) x v)
           (smoothExtensionTangent (I := I) x w) (smoothExtensionTangent (I := I) x u) x)
-        (covDerivConnectionDifference2 (I := I) g₂ g₁
+        (secondCovDerivConnectionDifference (I := I) g₂ g₁
           (smoothExtensionTangent (I := I) x v') (smoothExtensionTangent (I := I) x v)
           (smoothExtensionTangent (I := I) x w) (smoothExtensionTangent (I := I) x u) x)) ≤
       (3 / 2 * Λ ^ 5 * Λ''' + 9 / 2 * Λ ^ 6 * Λ' * Λ'' + 3 * Λ ^ 7 * Λ' ^ 3) *
@@ -772,7 +682,7 @@ theorem covDConnectionDifference2_gJet_le
     add_nonneg (add_nonneg (by linarith) (mul_nonneg hM2nn hNAnn))
       (mul_nonneg (by linarith) (add_nonneg (by linarith) (mul_nonneg hM1nn hNAnn)))
   set B2 : TangentSpace I x :=
-    covDerivConnectionDifference2 (I := I) g₂ g₁
+    secondCovDerivConnectionDifference (I := I) g₂ g₁
       (smoothExtensionTangent (I := I) x v') (smoothExtensionTangent (I := I) x v)
       (smoothExtensionTangent (I := I) x w) (smoothExtensionTangent (I := I) x u) x with hB2def
   clear_value B2
@@ -839,7 +749,7 @@ theorem covDConnectionDifference2_gJet_le
 
 open DifferentialGeometry.Integral.Connection in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-theorem covStep2_diffStep_peel
+private theorem covStep2_diffStep_peel
     (g₁ g₂ : SmoothRiemannianMetric I M) (s : Nat)
     (S : Tensor0SBundle.Tensor0SField (𝕜 := ℝ) (E := E) (H := H)
       (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) s)
@@ -919,7 +829,7 @@ theorem covStep2_diffStep_peel
 
 open DifferentialGeometry.Integral.Connection in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-theorem covStep2_diffStep_branch1
+private theorem covStep2_diffStep_branch1
     (g₁ g₂ : SmoothRiemannianMetric I M) (s : Nat)
     (S : Tensor0SBundle.Tensor0SField (𝕜 := ℝ) (E := E) (H := H)
       (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) s)
@@ -936,7 +846,7 @@ theorem covStep2_diffStep_branch1
             (covDerivConnectionDifference (I := I) g₂ g₁
               (fun z => W z) (fun z => V z) (fun z => Vslots a z) x)))
         + (S x) (Function.update (fun b : Fin s => Vslots b x) a
-            (covDerivConnectionDifference2 (I := I) g₂ g₁
+            (secondCovDerivConnectionDifference (I := I) g₂ g₁
                 (fun z => U z) (fun z => W z) (fun z => V z) (fun z => Vslots a z) x
               + covDerivConnectionDifference (I := I) g₂ g₁
                   (covApply (LeviCivita (I := I) g₂) (fun z => U z) (fun z => W z))
@@ -1016,7 +926,7 @@ theorem covStep2_diffStep_branch1
     simp only [hσdef, Function.update_self]
     exact hCDCcoe y
   have hdiag : (leviCivitaConnectionOfMetric (I := I) g₂ (fun y : M => (σ a) y) x) (U x)
-      = covDerivConnectionDifference2 (I := I) g₂ g₁
+      = secondCovDerivConnectionDifference (I := I) g₂ g₁
           (fun z => U z) (fun z => W z) (fun z => V z) (fun z => Vslots a z) x
         + covDerivConnectionDifference (I := I) g₂ g₁
             (covApply (LeviCivita (I := I) g₂) (fun z => U z) (fun z => W z))
@@ -1026,7 +936,7 @@ theorem covStep2_diffStep_branch1
             (fun z => Vslots a z) x
         + covDerivConnectionDifference (I := I) g₂ g₁ (fun z => W z) (fun z => V z)
             (covApply (LeviCivita (I := I) g₂) (fun z => U z) (fun z => Vslots a z)) x := by
-    rw [hσa, covDerivConnectionDifference2_eq]
+    rw [hσa, secondCovDerivConnectionDifference_apply]
     simp only [covApply, LeviCivita_eq_leviCivitaConnectionOfMetric]
     abel
   have hoff : (∑ b ∈ Finset.univ.erase a, (S x) (Function.update
@@ -1050,7 +960,7 @@ theorem covStep2_diffStep_branch1
 
 open DifferentialGeometry.Integral.Connection in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-theorem covStep2_diffStep_branch2
+private theorem covStep2_diffStep_branch2
     (g₁ g₂ : SmoothRiemannianMetric I M) (s : Nat)
     (S : Tensor0SBundle.Tensor0SField (𝕜 := ℝ) (E := E) (H := H)
       (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) s)
@@ -1215,7 +1125,7 @@ theorem covStep2_diffStep_branch2
 
 open DifferentialGeometry.Integral.Connection in
 omit [NeZero (Module.finrank ℝ E)] [T2Space M] [CompactSpace M] [I.Boundaryless] in
-theorem covStep2_branch1_mdiff
+private theorem covStep2_branch1_mdiff
     (g₁ g₂ : SmoothRiemannianMetric I M) (s : Nat)
     (S : Tensor0SBundle.Tensor0SField (𝕜 := ℝ) (E := E) (H := H)
       (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) s)
@@ -1290,7 +1200,7 @@ theorem covStep2_branch1_mdiff
 
 open DifferentialGeometry.Integral.Connection in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-theorem covStep2_branch2_mdiff
+private theorem covStep2_branch2_mdiff
     (g₁ g₂ : SmoothRiemannianMetric I M) (s : Nat)
     (S : Tensor0SBundle.Tensor0SField (𝕜 := ℝ) (E := E) (H := H)
       (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) s)
@@ -1378,7 +1288,7 @@ theorem covStep2_branch2_mdiff
 
 open DifferentialGeometry.Integral.Connection in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-theorem covStep2_diffStep_split
+private theorem covStep2_diffStep_split
     (g₁ g₂ : SmoothRiemannianMetric I M) (s : Nat)
     (S : Tensor0SBundle.Tensor0SField (𝕜 := ℝ) (E := E) (H := H)
       (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) s)
@@ -1521,7 +1431,7 @@ theorem covStep2_diffStep_split
 
 open DifferentialGeometry.Integral.Connection in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-theorem covStep2_diffStep_OCsplit
+private theorem covStep2_diffStep_OCsplit
     (g₁ g₂ : SmoothRiemannianMetric I M) (s : Nat)
     (S : Tensor0SBundle.Tensor0SField (𝕜 := ℝ) (E := E) (H := H)
       (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) s)
@@ -1576,7 +1486,7 @@ theorem covStep2_diffStep_OCsplit
 
 open DifferentialGeometry.Integral.Connection in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-theorem covStep2_OC_q0
+private theorem covStep2_OC_q0
     (g₁ g₂ : SmoothRiemannianMetric I M) (s : Nat)
     (S : Tensor0SBundle.Tensor0SField (𝕜 := ℝ) (E := E) (H := H)
       (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) s)
@@ -1637,7 +1547,7 @@ theorem covStep2_OC_q0
 
 open DifferentialGeometry.Integral.Connection in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-theorem covStep2_OC_q1
+private theorem covStep2_OC_q1
     (g₁ g₂ : SmoothRiemannianMetric I M) (s : Nat)
     (S : Tensor0SBundle.Tensor0SField (𝕜 := ℝ) (E := E) (H := H)
       (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) s)
@@ -1700,7 +1610,7 @@ theorem covStep2_OC_q1
 
 open DifferentialGeometry.Integral.Connection in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-theorem covStep2_OC_int
+private theorem covStep2_OC_int
     (g₁ g₂ : SmoothRiemannianMetric I M) (s : Nat)
     (S : Tensor0SBundle.Tensor0SField (𝕜 := ℝ) (E := E) (H := H)
       (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) s)
@@ -1842,7 +1752,7 @@ theorem covStep2_OC_int
 
 open DifferentialGeometry.Integral.Connection in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-theorem covStep2_pieceB_eval
+private theorem covStep2_pieceB_eval
     (g₁ g₂ : SmoothRiemannianMetric I M) (s : Nat)
     (S : Tensor0SBundle.Tensor0SField (𝕜 := ℝ) (E := E) (H := H)
       (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) s)
@@ -1884,7 +1794,7 @@ theorem covStep2_pieceB_eval
 
 open DifferentialGeometry.Integral.Connection in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-theorem covStep2_diffStep_eval
+private theorem covStep2_diffStep_eval
     (g₁ g₂ : SmoothRiemannianMetric I M) (s : Nat)
     (S : Tensor0SBundle.Tensor0SField (𝕜 := ℝ) (E := E) (H := H)
       (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) s)
@@ -1896,7 +1806,7 @@ theorem covStep2_diffStep_eval
         (covStep (I := I) g₂ (s + 1) (diffStep (I := I) g₁ g₂ s S)) x
         (Fin.cons (U x) (Fin.cons (W x) (Fin.cons (V x) (fun a : Fin s => Vslots a x))))
       = (-∑ a : Fin s, (S x) (Function.update (fun b : Fin s => Vslots b x) a
-            (covDerivConnectionDifference2 (I := I) g₂ g₁
+            (secondCovDerivConnectionDifference (I := I) g₂ g₁
               (fun z => U z) (fun z => W z) (fun z => V z) (fun z => Vslots a z) x)))
         - ∑ a : Fin s, covStep (I := I) g₂ s S x
             (Fin.cons (U x) (Function.update (fun b : Fin s => Vslots b x) a
@@ -1914,7 +1824,7 @@ theorem covStep2_diffStep_eval
                   (Vslots a x)) (V x))))) := by
   classical
   have hsplitS : (∑ a : Fin s, (S x) (Function.update (fun b : Fin s => Vslots b x) a
-        (covDerivConnectionDifference2 (I := I) g₂ g₁
+        (secondCovDerivConnectionDifference (I := I) g₂ g₁
             (fun z => U z) (fun z => W z) (fun z => V z) (fun z => Vslots a z) x
           + covDerivConnectionDifference (I := I) g₂ g₁
               (covApply (LeviCivita (I := I) g₂) (fun z => U z) (fun z => W z))
@@ -1925,7 +1835,7 @@ theorem covStep2_diffStep_eval
           + covDerivConnectionDifference (I := I) g₂ g₁ (fun z => W z) (fun z => V z)
               (covApply (LeviCivita (I := I) g₂) (fun z => U z) (fun z => Vslots a z)) x)))
       = (∑ a : Fin s, (S x) (Function.update (fun b : Fin s => Vslots b x) a
-            (covDerivConnectionDifference2 (I := I) g₂ g₁
+            (secondCovDerivConnectionDifference (I := I) g₂ g₁
               (fun z => U z) (fun z => W z) (fun z => V z) (fun z => Vslots a z) x)))
         + (∑ a : Fin s, (S x) (Function.update (fun b : Fin s => Vslots b x) a
             (covDerivConnectionDifference (I := I) g₂ g₁
@@ -2032,7 +1942,7 @@ theorem covStep2_diffStep_eval
 
 open DifferentialGeometry.Integral.Connection in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-theorem diffStep_rank0_eq_zero
+private theorem diffStep_rank0_eq_zero
     (g₁ g₂ : SmoothRiemannianMetric I M)
     (S : Tensor0SBundle.Tensor0SField (𝕜 := ℝ) (E := E) (H := H)
       (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) 0) :
@@ -2045,7 +1955,7 @@ theorem diffStep_rank0_eq_zero
   simp
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-theorem covStep2_mixedComm_split
+private theorem covStep2_mixedComm_split
     (g₁ g₂ : SmoothRiemannianMetric I M) (s : ℕ)
     (S : Tensor0SBundle.Tensor0SField (𝕜 := ℝ) (E := E) (H := H)
       (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) s) :
@@ -2063,7 +1973,7 @@ theorem covStep2_mixedComm_split
 
 open DifferentialGeometry.Integral.Connection in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-theorem covStep2_mixedComm_eval_sub
+private theorem covStep2_mixedComm_eval_sub
     (g₁ g₂ : SmoothRiemannianMetric I M) (s : ℕ)
     (S : Tensor0SBundle.Tensor0SField (𝕜 := ℝ) (E := E) (H := H)
       (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) s)
@@ -2086,7 +1996,7 @@ theorem covStep2_mixedComm_eval_sub
 
 open DifferentialGeometry.Integral.Connection in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-theorem covStep2_mixedComm_eval
+private theorem covStep2_mixedComm_eval
     (g₁ g₂ : SmoothRiemannianMetric I M) (s : ℕ)
     (S : Tensor0SBundle.Tensor0SField (𝕜 := ℝ) (E := E) (H := H)
       (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) s)
@@ -2099,7 +2009,7 @@ theorem covStep2_mixedComm_eval
           - covStep (I := I) g₁ (s + 1) (covStep (I := I) g₂ s S)) x
         (Fin.cons (U x) (Fin.cons (W x) (Fin.cons (V x) (fun a : Fin s => Vslots a x))))
       = (-∑ a : Fin s, (S x) (Function.update (fun b : Fin s => Vslots b x) a
-            (covDerivConnectionDifference2 (I := I) g₂ g₁
+            (secondCovDerivConnectionDifference (I := I) g₂ g₁
               (fun z => U z) (fun z => W z) (fun z => V z) (fun z => Vslots a z) x)))
         - ∑ a : Fin s, covStep (I := I) g₂ s S x
             (Fin.cons (U x) (Function.update (fun b : Fin s => Vslots b x) a
@@ -2206,7 +2116,7 @@ private theorem mixedComm_le
   have hN1nn : (0 : ℝ) ≤ N1 := Real.sqrt_nonneg _
   have hN2nn : (0 : ℝ) ≤ N2 := Real.sqrt_nonneg _
   have hA2 := fun (v' v w u : TangentSpace I x) =>
-    covDConnectionDifference2_gJet_le (I := I) hEq hJet1 hJet2 hJet3 hx v' v w u
+    second_covariant_derivative_connection_difference_norm_le (I := I) hEq hJet1 hJet2 hJet3 hx v' v w u
   have hA1 := fun (v w u : TangentSpace I x) =>
     DifferentialGeometry.Geometry.Curvature.covDerivConnectionDifference_gJet_le (I := I)
       hEq hJet1 hJet2 hx v w u
@@ -2367,13 +2277,13 @@ private theorem mixedComm_le
           · exact (hZval a).symm
     rw [htuple, covStep2_mixedComm_eval (I := I) g₁ g₂ s S Usec Wsec Vsec Zsec x]
     have hI : ∀ a : Fin s, |(S x) (Function.update (fun b : Fin s => Zsec b x) a
-        (covDerivConnectionDifference2 (I := I) g₂ g₁
+        (secondCovDerivConnectionDifference (I := I) g₂ g₁
           (fun z => Usec z) (fun z => Wsec z) (fun z => Vsec z) (fun z => Zsec a z) x))| ≤
         NS * CA2 := by
       intro a
       have hb := habs s (S x)
         (Function.update (fun b : Fin s => Zsec b x) a
-          (covDerivConnectionDifference2 (I := I) g₂ g₁
+          (secondCovDerivConnectionDifference (I := I) g₂ g₁
             (fun z => Usec z) (fun z => Wsec z) (fun z => Vsec z) (fun z => Zsec a z) x)) a
         (fun b hbne => by rw [Function.update_of_ne hbne]; exact hnZ b)
       rw [Function.update_self, ← hNSdef] at hb
@@ -2668,7 +2578,7 @@ private theorem mixedComm_le
 
 open DifferentialGeometry.Integral.Connection in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
-theorem covStepDiff2_mixedComm_le
+private theorem covStepDiff2_mixedComm_le
     {K : Set M} (g₁ g₂ : SmoothRiemannianMetric I M) (s : ℕ)
     {Λ Λ' Λ'' Λ''' : ℝ}
     (hEq : MetricUniformEquivalentOn (I := I) K g₂ g₁ Λ)
@@ -2689,7 +2599,7 @@ theorem covStepDiff2_mixedComm_le
   refine ⟨mixedCommC (E := E) s Λ Λ' Λ'' Λ''', le_max_left _ _, ?_⟩
   exact mixedComm_le (I := I) g₁ g₂ s hEq hJet1 hJet2 hJet3
 
-noncomputable def covStepDiff2C (s : ℕ) (Λ Λ' Λ'' Λ''' : ℝ) : ℝ :=
+noncomputable def secondCovariantDerivativeStepDifferenceConstant (s : ℕ) (Λ Λ' Λ'' Λ''' : ℝ) : ℝ :=
   max 0 ((((s + 1 : ℕ) : ℝ) *
       Real.sqrt ((Module.finrank ℝ E : ℝ) ^ (s + 3)) *
       (3 / 2 * Λ ^ 4 * (Λ'' + Λ * Λ' ^ 2) +
@@ -2698,7 +2608,7 @@ noncomputable def covStepDiff2C (s : ℕ) (Λ Λ' Λ'' Λ''' : ℝ) : ℝ :=
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [CompactSpace M] in
-theorem covStepDiff2_le
+theorem second_covariant_derivative_step_difference_le
     {K : Set M} (g₁ g₂ : SmoothRiemannianMetric I M) (s : ℕ)
     {Λ Λ' Λ'' Λ''' : ℝ}
     (hEq : MetricUniformEquivalentOn (I := I) K g₂ g₁ Λ)
@@ -2711,7 +2621,7 @@ theorem covStepDiff2_le
       Real.sqrt (normSq0S (I := I) g₂ x (s + 3)
           (covStep (I := I) g₂ (s + 2)
             (covStep (I := I) g₂ (s + 1) (diffStep (I := I) g₁ g₂ s S)) x)) ≤
-        covStepDiff2C (E := E) s Λ Λ' Λ'' Λ''' *
+        secondCovariantDerivativeStepDifferenceConstant (E := E) s Λ Λ' Λ'' Λ''' *
           (Real.sqrt (normSq0S (I := I) g₂ x s (S x))
             + Real.sqrt (normSq0S (I := I) g₂ x (s + 1) (covStep (I := I) g₂ s S x))
             + Real.sqrt (normSq0S (I := I) g₂ x (s + 2)
@@ -2781,7 +2691,7 @@ theorem covStepDiff2_le
       (add_nonneg (add_nonneg ha hb) hc), ha, hb, hc, hK1nn, hCbr_nn]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
-theorem covStepDiff2_exists_const
+theorem exists_second_covariant_derivative_step_difference_bound
     {K : Set M} (g₁ g₂ : SmoothRiemannianMetric I M) (s : ℕ)
     {Λ Λ' Λ'' Λ''' : ℝ}
     (hEq : MetricUniformEquivalentOn (I := I) K g₂ g₁ Λ)
@@ -2799,10 +2709,10 @@ theorem covStepDiff2_exists_const
             + Real.sqrt (normSq0S (I := I) g₂ x (s + 1) (covStep (I := I) g₂ s S x))
             + Real.sqrt (normSq0S (I := I) g₂ x (s + 2)
                 (covStep (I := I) g₂ (s + 1) (covStep (I := I) g₂ s S) x))) := by
-  refine ⟨covStepDiff2C (E := E) s Λ Λ' Λ'' Λ''', ?_, ?_⟩
-  · dsimp [covStepDiff2C]
+  refine ⟨secondCovariantDerivativeStepDifferenceConstant (E := E) s Λ Λ' Λ'' Λ''', ?_, ?_⟩
+  · dsimp [secondCovariantDerivativeStepDifferenceConstant]
     exact le_max_left _ _
-  · exact covStepDiff2_le (I := I) g₁ g₂ s hEq hJet1 hJet2 hJet3 hJet1'
+  · exact second_covariant_derivative_step_difference_le (I := I) g₁ g₂ s hEq hJet1 hJet2 hJet3 hJet1'
 
 end CheegerGromovCompactness
 end DifferentialGeometry

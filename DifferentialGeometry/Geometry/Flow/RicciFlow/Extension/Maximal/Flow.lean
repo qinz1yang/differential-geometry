@@ -23,8 +23,8 @@ variable [SigmaCompactSpace M] [T2Space M]
 variable [CompactSpace M] [BoundarylessManifold I M] [I.Boundaryless]
 
 structure FlowTo (g0 : SmoothRiemannianMetric I M) (T : Real) where
-  hT : 0 < T
-  S : SolutionOn (I := I) (M := M) (RealTimeInterval.closedOpen 0 T hT)
+  time_pos : 0 < T
+  S : SolutionOn (I := I) (M := M) (RealTimeInterval.closedOpen 0 T time_pos)
   isSolution : IsSolutionOn (I := I) S
   start : S.family.metric 0 = g0
   joint : ∀ (x0 : M) (i j : Fin (Module.finrank Real E)),
@@ -62,7 +62,7 @@ theorem flow_to_agree
     (P : FlowTo (I := I) (M := M) g0 T)
     (Q : FlowTo (I := I) (M := M) g0 U) :
     ∀ t ∈ Ico 0 (min T U), P.S.family.metric t = Q.S.family.metric t := by
-  have hTU : 0 < min T U := lt_min P.hT Q.hT
+  have hTU : 0 < min T U := lt_min P.time_pos Q.time_pos
   apply ricci_flow_forward_unique (I := I) (M := M)
     P.S.family.metric Q.S.family.metric hTU
   · intro x0 i j
@@ -90,7 +90,7 @@ omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [CompactSpace M] [I.B
 theorem flow_to_extend
     {g0 : SmoothRiemannianMetric I M} {T : Real}
     (P : FlowTo (I := I) (M := M) g0 T)
-    (hext : ExtendsPastEndpoint (I := I) P.hT P.S) :
+    (hext : ExtendsPastEndpoint (I := I) P.time_pos P.S) :
     ∃ eps : Real, 0 < eps ∧
       Nonempty (FlowTo (I := I) (M := M) g0 (T + eps)) := by
   rcases hext with ⟨eps, heps, hwide, Shat, hShat, hagree⟩
@@ -99,7 +99,7 @@ theorem flow_to_extend
     intro t ht
     exact (hagree t ht).1
   have hstart : Shat.family.metric 0 = g0 := by
-    exact (hmetric 0 ⟨le_rfl, P.hT⟩).symm.trans P.start
+    exact (hmetric 0 ⟨le_rfl, P.time_pos⟩).symm.trans P.start
   have hjoint : ∀ (x0 : M) (i j : Fin (Module.finrank Real E)),
       ContMDiffOn (𝓘(Real, Real).prod I) 𝓘(Real) ∞
         (fun p : Real × M =>
@@ -123,7 +123,7 @@ theorem flow_to_extend
       refine ⟨Ioo 0 (T + eps) ×ˢ
           (trivializationAt E (TangentSpace I) x0).baseSet,
         isOpen_Ioo.prod (trivializationAt E (TangentSpace I) x0).open_baseSet,
-        ⟨⟨lt_of_lt_of_le P.hT hTp, hp.1.2⟩, hp.2⟩, ?_⟩
+        ⟨⟨lt_of_lt_of_le P.time_pos hTp, hp.1.2⟩, hp.2⟩, ?_⟩
       simpa using
         ((chartGram_smooth_of_solution (I := I) (M := M) hShat x0 i j).mono
           Set.inter_subset_right)
@@ -150,7 +150,7 @@ theorem flow_to_extend
         (P.pde t ht_old x v w).congr_of_eventuallyEq heq heq_t
       rw [hmetric t ht_old] at htransport
       exact htransport
-    · have ht_pos : 0 < t := lt_of_lt_of_le P.hT (le_of_not_gt htT)
+    · have ht_pos : 0 < t := lt_of_lt_of_le P.time_pos (le_of_not_gt htT)
       simpa using
         ricciFlowPDE_Ici_of_solution (I := I) (M := M) hShat t
           ⟨le_of_lt ht_pos, ht.2⟩ x v w
@@ -190,13 +190,13 @@ theorem exists_max_flow
     intro T hT
     change Nonempty (FlowTo (I := I) (M := M) g0 T) at hT
     let P : FlowTo (I := I) (M := M) g0 T := Classical.choice hT
-    exact flow_end_le (I := I) (M := M) g0 hdim hscalar_pos P.hT hc0
+    exact flow_end_le (I := I) (M := M) g0 hdim hscalar_pos P.time_pos hc0
       P.S P.isSolution P.start
   let omega : Real := sSup ends
   have hT0_le : T0 ≤ omega := by
     dsimp [omega]
     exact le_csSup hends_bdd hT0_mem
-  have h0omega : 0 < omega := lt_of_lt_of_le P0.hT hT0_le
+  have h0omega : 0 < omega := lt_of_lt_of_le P0.time_pos hT0_le
   have hcover : ∀ t : Real, t ∈ Ico 0 omega →
       Nonempty (FlowCover (I := I) (M := M) g0 t) := by
     intro t ht
@@ -292,7 +292,7 @@ theorem exists_max_flow
     ⟨h0omega, Smax, hSmax, hstart_max, hjoint_max, hpde_max⟩
   have hmaximal : IsMaximalAtEndpoint (I := I) h0omega Smax := by
     intro hext
-    have hext_P : ExtendsPastEndpoint (I := I) Pmax.hT Pmax.S := by
+    have hext_P : ExtendsPastEndpoint (I := I) Pmax.time_pos Pmax.S := by
       simpa [Pmax] using hext
     rcases flow_to_extend (I := I) (M := M) Pmax hext_P with
       ⟨eps, heps, hlong⟩

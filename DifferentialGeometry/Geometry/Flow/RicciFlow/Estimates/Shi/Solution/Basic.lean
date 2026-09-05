@@ -131,19 +131,19 @@ theorem bernsteinShi_solution_estimate
       K := K
       α := α
       T := T
-      hT := hT
-      hc := hc_nonneg
-      hK := hK
-      hα := hα
-      hslab := hslab
-      hregular := hregular
-      hw_nonneg := hw'_nonneg
-      hw0_bound := by
+      time_pos := hT
+      reactionConstant_nonneg := hc_nonneg
+      curvatureBound_pos := hK
+      scale_nonneg := hα
+      time_window_subset := hslab
+      regular_on_positive_time := hregular
+      quantity_nonneg := hw'_nonneg
+      initial_order_bound := by
         intro s hs y
         rw [hw'_val_le 0 (Nat.zero_le m)]
         exact hw0_bound s hs y
-      hTK := hTK
-      hheat := by
+      time_le_scale_div_curvatureBound := hTK
+      towerHeatBound := by
         intro k τ y
         rcases lt_trichotomy k m with hlt | heq | hgt
         · have hk_le : k <= m := le_of_lt hlt
@@ -192,7 +192,7 @@ theorem bernsteinShi_solution_estimate
               rw [hw'_val_gt k hk_gt]
               simp
             rw [hreact0]; norm_num
-      hLap := by
+      heatOperator_eq := by
         intro k s hs hspos y
         by_cases hk : k <= m
         · have hfun : (w' k s) = (w k s) := by funext z; rw [hw'_val_le k hk]
@@ -206,7 +206,7 @@ theorem bernsteinShi_solution_estimate
             DifferentialGeometry.Geometry.Curvature.laplacianAt_eq]
           exact DifferentialGeometry.Geometry.Operator.laplacian_const
             (I := I) (G.connection s) (G.metric s) 0 y
-      hw_cont := by
+      continuous := by
         intro k
         by_cases hk : k <= m
         · have hfun : (fun p : Real × M => w' k p.1 p.2) =
@@ -217,7 +217,7 @@ theorem bernsteinShi_solution_estimate
               (fun _p : Real × M => (0 : Real)) := by
             funext p; rw [hw'_val_gt k hk]
           rw [hfun]; exact continuousOn_const
-      hw_space := by
+      spatial_differentiable := by
         intro k s hs hspos y
         by_cases hk : k <= m
         · have hfun : (w' k s) = (w k s) := by funext z; rw [hw'_val_le k hk]
@@ -225,7 +225,7 @@ theorem bernsteinShi_solution_estimate
         · have hfun : (w' k s) = (fun _z : M => (0 : Real)) := by
             funext z; rw [hw'_val_gt k hk]
           rw [hfun]; exact mdifferentiableAt_const
-      hw_grad := by
+      gradient_differentiable := by
         intro k s hs hspos y
         by_cases hk : k <= m
         · have hfun : (w' k s) = (w k s) := by funext z; rw [hw'_val_le k hk]

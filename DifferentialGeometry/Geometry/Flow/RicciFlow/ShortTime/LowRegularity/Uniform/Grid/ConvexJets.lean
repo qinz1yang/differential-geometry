@@ -100,24 +100,24 @@ theorem exists_uniform_curvature_action_parameters
     has_uniform_curvature_action_bounds (I := I) (M := M) gBase hΛ
       hKb₀_nonneg hKb₀ hKb₁_nonneg hKb₁'⟩
 
-noncomputable def convexH2C (K : CurvatureActionParameters) : ℝ :=
+noncomputable def convexSecondOrderConstant (K : CurvatureActionParameters) : ℝ :=
   h2CovsumC K.rankTwo
 
-noncomputable def convexH3C (K : CurvatureActionParameters) : ℝ :=
+noncomputable def convexThirdOrderConstant (K : CurvatureActionParameters) : ℝ :=
   h3CovsumC K.rankTwo K.rankThree
 
 structure ConvexJetConstants where
-  h2C : ℝ
-  h3C : ℝ
+  secondOrder : ℝ
+  thirdOrder : ℝ
 
 noncomputable def convexJetConstants (K : CurvatureActionParameters) : ConvexJetConstants where
-  h2C := convexH2C K
-  h3C := convexH3C K
+  secondOrder := convexSecondOrderConstant K
+  thirdOrder := convexThirdOrderConstant K
 
 structure HasUniformConvexPerturbationJetBounds
     (gBase : SmoothRiemannianMetric I M) (Λ : ℝ) (C : ConvexJetConstants) : Prop where
-  h2_nonneg : 0 ≤ C.h2C
-  h3_nonneg : 0 ≤ C.h3C
+  secondOrder_nonneg : 0 ≤ C.secondOrder
+  thirdOrder_nonneg : 0 ≤ C.thirdOrder
   bounds : ∀ (g : SmoothRiemannianMetric I M),
     MetricUniformEquivalentOn (I := I) Set.univ gBase g Λ →
     (∀ a : ℕ, a ≤ 3 →
@@ -129,7 +129,7 @@ structure HasUniformConvexPerturbationJetBounds
         (∑ j ∈ Finset.range 3,
           ‖iteratedCovGrad (I := I) g 0 2 j
             (convexPerturbation (I := I) g T T' s)‖ ^ 2) ≤
-          (C.h2C * R) ^ 2) ∧
+          (C.secondOrder * R) ^ 2) ∧
     (∀ (T T' : SmoothCcTensor g 0 2) (R : ℝ), 0 ≤ R →
       ‖ccTensorToHs (I := I) (M := M) g 2 (3 : ℝ) T‖ ≤ R →
       ‖ccTensorToHs (I := I) (M := M) g 2 (3 : ℝ) T'‖ ≤ R →
@@ -137,7 +137,7 @@ structure HasUniformConvexPerturbationJetBounds
         (∑ j ∈ Finset.range 4,
           ‖iteratedCovGrad (I := I) g 0 2 j
             (convexPerturbation (I := I) g T T' s)‖ ^ 2) ≤
-          (C.h3C * R) ^ 2)
+          (C.thirdOrder * R) ^ 2)
 
 private theorem convex_hs_norm_le
     (g : SmoothRiemannianMetric I M) (q : ℝ)

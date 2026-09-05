@@ -428,7 +428,7 @@ variable [I.Boundaryless] [CompleteSpace E] [T2Space (TangentBundle I M)]
 
 omit [T2Space (TangentBundle I M)] in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem exists_chartFlowOrbitLift_data_uniform
+theorem exists_uniform_chartFlowOrbitLift
     (g : SmoothRiemannianMetric I M) (p : M) :
     ∃ (ρ T : ℝ) (Φ : (E × E) × ℝ → E × E),
       0 < ρ ∧ 0 < T ∧

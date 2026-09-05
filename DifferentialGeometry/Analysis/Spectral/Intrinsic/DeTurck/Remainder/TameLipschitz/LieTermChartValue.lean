@@ -5063,7 +5063,7 @@ lemma lieTerm_chartSlope_center_value_eq_covariantJet
   linear_combination -h0 - h1 - h2
 
 omit [SigmaCompactSpace M] in
-theorem realizedDeTurckLie_covariantJet_symmAbsorbed_perm_data
+theorem realizedDeTurckLie_covariantJet_symmAbsorbed_permutations
     (g₀ g_bg : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
@@ -5244,7 +5244,7 @@ theorem realizedDeTurckLie_covariantJet_covariant_identity
                   (iteratedCovGrad (I := I) g₀ 0 2 2 (T - T'))) x v := by
   classical
   obtain ⟨_, _, _, hj0, hj1, hj2, hident⟩ :=
-    realizedDeTurckLie_covariantJet_symmAbsorbed_perm_data (I := I) g₀ g_bg T T'
+    realizedDeTurckLie_covariantJet_symmAbsorbed_permutations (I := I) g₀ g_bg T T'
       hδ_lt hδ hδ'_lt hδ'
   exact ⟨_, _, _, hj0, hj1, hj2, hident⟩
 

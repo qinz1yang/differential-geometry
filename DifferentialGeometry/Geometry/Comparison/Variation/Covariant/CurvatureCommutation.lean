@@ -249,7 +249,7 @@ lemma slice_secondCovDeriv_chartRep_differentiableAt
       DifferentiableAt ℝ (chartChristoffel (I := I) g β i j k) (uC 0) := by
     intro i j k
     rw [huC0]
-    exact Aux3.chartChristoffel_differentiableAt_self (I := I) g β i j k
+    exact ChristoffelRegularity.chartChristoffel_differentiableAt_self (I := I) g β i j k
   have hsrcβ : f 0 t ∈ (chartAt H β).source := by rw [hβ]; exact mem_chart_source H (f 0 t)
   have hopenL : IsOpen {s : ℝ | f s t ∈ (chartAt H β).source} :=
     htransverse.continuous.isOpen_preimage _ (chartAt H β).open_source
@@ -1033,19 +1033,19 @@ lemma slice_secondCovDeriv_central_chartRep_differentiableAt
   have hpartialY : HasDerivAt
       (fun v : ℝ => fderiv ℝ (fun u : ℝ => Y u v) 0 (1 : ℝ))
       (fderiv ℝ (fderiv ℝ (fun p : ℝ × ℝ => Y p.1 p.2)) (0, t) (0, 1) (1, 0)) t :=
-    Aux2.hasDerivAt_partial_fst Y 0 t hY_C2
+    TwoParameterDerivative.hasDerivAt_partial_fst Y 0 t hY_C2
   have huC_joint_C2 : ContDiffAt ℝ 2 (fun p : ℝ × ℝ => uC p.1 p.2) (0, t) :=
     huC_joint.of_le (by norm_cast)
   have hpartialU : HasDerivAt
       (fun v : ℝ => fderiv ℝ (fun u : ℝ => uC u v) 0 (1 : ℝ))
       (fderiv ℝ (fderiv ℝ (fun p : ℝ × ℝ => uC p.1 p.2)) (0, t) (0, 1) (1, 0)) t :=
-    Aux2.hasDerivAt_partial_fst uC 0 t huC_joint_C2
+    TwoParameterDerivative.hasDerivAt_partial_fst uC 0 t huC_joint_C2
   have huC0t : uC 0 t = extChartAt I β β := by rw [huC, hβ]
   have hΓ_diff : ∀ i j k : Fin (Module.finrank ℝ E),
       DifferentiableAt ℝ (chartChristoffel (I := I) g β i j k) (uC 0 t) := by
     intro i j k
     rw [huC0t]
-    exact Aux3.chartChristoffel_differentiableAt_self (I := I) g β i j k
+    exact ChristoffelRegularity.chartChristoffel_differentiableAt_self (I := I) g β i j k
   set Z : ℝ → E := fun v : ℝ =>
     chartCovDerivAlong (I := I) g β (fun u : ℝ => f u v) (fun u : ℝ => Y u v) 0 with hZdef
   have hZ_diff : DifferentiableAt ℝ Z t := by
@@ -1138,7 +1138,7 @@ lemma variationField_covDeriv_chartRep_differentiableAt
       DifferentiableAt ℝ (chartChristoffel (I := I) g β i j k) (uC t) := by
     intro i j k
     rw [huC0]
-    exact Aux3.chartChristoffel_differentiableAt_self (I := I) g β i j k
+    exact ChristoffelRegularity.chartChristoffel_differentiableAt_self (I := I) g β i j k
   have hsrcβ : f 0 t ∈ (chartAt H β).source := by rw [hβ]; exact mem_chart_source H (f 0 t)
   have hopen : IsOpen {v : ℝ | f 0 v ∈ (chartAt H β).source} :=
     hcentral.continuous.isOpen_preimage _ (chartAt H β).open_source

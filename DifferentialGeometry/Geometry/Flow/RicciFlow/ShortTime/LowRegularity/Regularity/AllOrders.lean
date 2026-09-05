@@ -1122,21 +1122,21 @@ theorem exists_second_order_solution_with_all_order_spectral_jet_control_of_comp
         (show (1 : ℝ) ≤ (2 : ℝ) by norm_num) (fHi t),
       tensorHsCongr_refl]
     exact h1.trans h2
-  have hstateU : ∀ t ∈ Set.Icc (0 : ℝ) T, ‖timeH1.toFun ucs.lo t‖ ≤ Rcap :=
-    ucs.lo.norm_le_of_ae_le hT
+  have hstateU : ∀ t ∈ Set.Icc (0 : ℝ) T, ‖timeH1.toFun ucs.lowRegularity t‖ ≤ Rcap :=
+    ucs.lowRegularity.norm_le_of_ae_le hT
       (by filter_upwards [hballU] with t ht using ht.trans hRcapLe)
   have hδlt : δ < 1 := lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1)
   have hfid0 := hforceId
-  have hinit : ucs.lo.initial = (0 : TensorHs (I := I) (M := M) g 0 2 (2 : ℝ)) := by
+  have hinit : ucs.lowRegularity.initial = (0 : TensorHs (I := I) (M := M) g 0 2 (2 : ℝ)) := by
     have h := htr
     rwa [timeH1.trace0_apply] at h
-  have hduh : ucs.lo = maximalRegularityDuhamelMap (I := I) (M := M) (2 : ℝ) hT
+  have hduh : ucs.lowRegularity = maximalRegularityDuhamelMap (I := I) (M := M) (2 : ℝ) hT
       (0 : TensorHs (I := I) (M := M) g 0 2 ((2 : ℝ) + 2)) fHi := by
     refine timeH1.ext ?_ ?_
     · rw [hinit, maximalRegularityDuhamelMap_initial]
       exact (map_zero _).symm
-    · have e1 : ucs.lo.deriv =
-          timeScaleLaplacian (I := I) (M := M) (2 : ℝ) ucs.hiL2 + fHi := by
+    · have e1 : ucs.lowRegularity.deriv =
+          timeScaleLaplacian (I := I) (M := M) (2 : ℝ) ucs.highRegularity + fHi := by
         rw [← timeH1.timeDeriv_apply]
         exact hder
       have e2 : (maximalRegularityDuhamelMap (I := I) (M := M) (2 : ℝ) hT
@@ -1159,7 +1159,7 @@ theorem exists_second_order_solution_with_all_order_spectral_jet_control_of_comp
         (show (2 : ℝ) ≤ (2 : ℝ) + 2 by norm_num)
         (maximalRegularityDuhamelSolutionField (I := I) (M := M) (2 : ℝ) hT
           (0 : TensorHs (I := I) (M := M) g 0 2 ((2 : ℝ) + 2)) fHi t) =
-        timeH1.toFun ucs.lo t := by
+        timeH1.toFun ucs.lowRegularity t := by
       rw [← hhiL2]
       exact hlk
     rw [hstep]
@@ -1179,20 +1179,20 @@ theorem exists_second_order_solution_with_all_order_spectral_jet_control_of_comp
       ∀ i : TensorEigenIdx (I := I) (M := M) g 0 2,
       tensorL2Coeff (I := I) (M := M) hc
           (tensorHsToL2 (I := I) (M := M) (g := g) (r := 0) (s := 2) hc
-            (show (0 : ℝ) ≤ (2 : ℝ) by norm_num) (timeH1.toFun ucs.lo t)) i =
+            (show (0 : ℝ) ≤ (2 : ℝ) by norm_num) (timeH1.toFun ucs.lowRegularity t)) i =
         perModeConvolution (TensorEigenIdx.lambda (I := I) (M := M) i) (fc i) t := by
     intro t ht i
     rw [hduh]
     exact carrier_coeff_perModeConvolution (I := I) (M := M) g hT fHi fc
       (fun j => (hf_smooth j).continuous) hf_mass0 hpin t ht i
-  refine ⟨ucs.lo, fHi, fc, R₀, htr, hduh, hpin, hf_smooth, hf_mass, hf_id,
+  refine ⟨ucs.lowRegularity, fHi, fc, R₀, htr, hduh, hpin, hf_smooth, hf_mass, hf_id,
     hR₀_pos, ?_, ?_, hstateU⟩
   · intro t ht S hS
     exact hball t ht S (by rw [hS, hduh])
   · intro F δ' hδ_lt hδ' h_pin
     exact coord_eq_smoothN (I := I) (M := M) hDim g hR hρ hRρ hδ0 hδ_le hδlt
       hreal hreal' hNcont hcoreN hA2cont hA2core FHi FLo hFLo hFLoCore
-      hA2sq hFComm hT ucs.lo hballU ucs.hiL2 ucs.link fHi hfid0 fc hf_smooth
+      hA2sq hFComm hT ucs.lowRegularity hballU ucs.highRegularity ucs.link fHi hfid0 fc hf_smooth
       hf_mass hpin hf_id F hδ_lt hδ' h_pin
 
 

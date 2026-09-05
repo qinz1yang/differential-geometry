@@ -39,7 +39,7 @@ structure IsPointwiseLinearLocalOperator (g : SmoothRiemannianMetric I M)
   linear : ∀ (r : ℕ) (c₁ c₂ : ℝ) (W₁ W₂ : SmoothCcTensor g 0 r) (x : M),
     (op 0 r (c₁ • W₁ + c₂ • W₂)).toSection x =
       c₁ • (op 0 r W₁).toSection x + c₂ • (op 0 r W₂).toSection x
-  local' : ∀ (r : ℕ) (W₁ W₂ : SmoothCcTensor g 0 r) (x : M),
+  locality : ∀ (r : ℕ) (W₁ W₂ : SmoothCcTensor g 0 r) (x : M),
     W₁.toSection x = W₂.toSection x → (op 0 r W₁).toSection x = (op 0 r W₂).toSection x
 
 
@@ -54,7 +54,7 @@ theorem order_zero_apply_smul_of_pointwise_smul
     (op 0 r W₂).toSection x = c • (op 0 r W₁).toSection x := by
   have hcW : (c • W₁).toSection x = c • W₁.toSection x := by
     rw [SmoothCcTensor.toSection_smul]; rfl
-  rw [hbase.local' r W₂ (c • W₁) x (by rw [hval, hcW])]
+  rw [hbase.locality r W₂ (c • W₁) x (by rw [hval, hcW])]
   have hlin := hbase.linear r c 0 W₁ W₁ x
   rw [show (c • W₁) = c • W₁ + (0 : ℝ) • W₁ from by rw [zero_smul, add_zero]]
   rw [hlin]

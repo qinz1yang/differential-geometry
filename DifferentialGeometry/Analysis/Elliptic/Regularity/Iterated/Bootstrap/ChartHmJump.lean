@@ -5,7 +5,7 @@ import DifferentialGeometry.Analysis.Elliptic.Regularity.Iterated.NirenbergInter
 import DifferentialGeometry.Analysis.Elliptic.Regularity.Iterated.NirenbergInterior.InteriorH2RelaxedHyp
 import DifferentialGeometry.Analysis.Elliptic.Regularity.Iterated.Bootstrap.ChartHm
 import DifferentialGeometry.Analysis.Elliptic.Regularity.Iterated.NirenbergInterior.MixedPartials
-import DifferentialGeometry.Analysis.Elliptic.Regularity.DiffChart.Differentiated.DerivedDataConstructor
+import DifferentialGeometry.Analysis.Elliptic.Regularity.DiffChart.Differentiated.CanonicalDerivedData
 
 
 noncomputable section
@@ -36,9 +36,9 @@ open DifferentialGeometry.Analysis.Laplacian.IteratedBaseFChartRegularityB
 open DifferentialGeometry.Analysis.Laplacian.IteratedEffectiveSourceSuccessorRegularity
 open DifferentialGeometry.Analysis.Laplacian.IteratedNirenbergInteriorWeakened
 open DifferentialGeometry.Analysis.Laplacian.IteratedChartHmBootstrap
-open DifferentialGeometry.Analysis.Laplacian.IteratedVariationalIdentityStepScaffold
+open DifferentialGeometry.Analysis.Laplacian.IteratedVariationalIdentitySuccessorSource
 open DifferentialGeometry.Analysis.Laplacian.LaplacianDomainChartData
-open DifferentialGeometry.Analysis.Laplacian.DerivedChartBilinearH1ComplDataCanonical
+open DifferentialGeometry.Analysis.Laplacian.CanonicalDerivedChartBilinearH1ComplData
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Sobolev.Chart
 open DifferentialGeometry.Analysis.Sobolev.Euclidean
@@ -160,7 +160,7 @@ private def buildLevelZero
           (chartTargetEuclid (I := I) (M := M) α \
             chartImagePOUTsupport (I := I) (M := M) α)]
         (fun _ : EuclN => (0 : ℝ))
-      have h_ae := base_f_chart_ae_zero_off_K_α (I := I) (M := M) g α
+      have h_ae := base_f_chart_ae_zero_off_chart_image_pou_tsupport (I := I) (M := M) g α
         (laplacianDomainPow_succ_subset_laplacianDomain
           (I := I) (M := M) g 1 hu_h)
       filter_upwards [h_ae] with y hy using hy }

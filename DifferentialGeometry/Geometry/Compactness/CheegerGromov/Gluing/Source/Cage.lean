@@ -212,7 +212,7 @@ omit [CompleteSpace E] in
 
 omit [Module.Finite ℝ E] in
 omit [CompleteSpace E] in
-theorem hatCageData
+theorem hat_source_cage_compact_and_covers_ball_intersection
     [FiniteDimensional Real E]
     (hd : InjectivityRadiusDecay (I := I) X) {D : Real}
     (P : forall k : Nat, ProperMetricOn (I := I) (X.obj k))
@@ -257,7 +257,7 @@ theorem hatCageCompact
       IsCompact (NetLimitData.hatSourceCage (I := I) (X := X) hd P L pb r n gamma) := by
   let : TopologicalSpace (X.obj (L.φ n)).M := (X.obj (L.φ n)).topology
   intro gamma
-  exact (NetLimitData.hatCageData (I := I) (X := X) hd P L pb r n gamma).1
+  exact (NetLimitData.hat_source_cage_compact_and_covers_ball_intersection (I := I) (X := X) hd P L pb r n gamma).1
 
 omit [Module.Finite ℝ E] in
 omit [CompleteSpace E] in
@@ -276,7 +276,7 @@ theorem hatCageSub
         NetLimitData.hatSourceCage (I := I) (X := X) hd P L pb r n gamma := by
   let : TopologicalSpace (X.obj (L.φ n)).M := (X.obj (L.φ n)).topology
   intro gamma
-  exact (NetLimitData.hatCageData (I := I) (X := X) hd P L pb r n gamma).2
+  exact (NetLimitData.hat_source_cage_compact_and_covers_ball_intersection (I := I) (X := X) hd P L pb r n gamma).2
 
 omit [Module.Finite ℝ E] in
 omit [CompleteSpace E] in
@@ -428,7 +428,7 @@ theorem hat_source_cage_subset_normalChartAt_source
         gamma hc hrad
 
 omit [Module.Finite ℝ E] in
-theorem hatSupportCageData
+theorem exists_compact_source_cages_for_weight_support
     [FiniteDimensional Real E]
     (hd : InjectivityRadiusDecay (I := I) X) {D : Real}
     (P : forall k : Nat, ProperMetricOn (I := I) (X.obj k))

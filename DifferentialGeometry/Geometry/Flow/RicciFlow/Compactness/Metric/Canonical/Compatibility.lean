@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.Canonical
 
 
 
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Limits.Upgrade
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Limits.FlowConvergence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.SourceEstimates
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Geometry.Curvature

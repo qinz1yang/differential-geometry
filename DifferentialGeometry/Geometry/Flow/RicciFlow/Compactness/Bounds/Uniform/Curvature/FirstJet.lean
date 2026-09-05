@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Uniform.JetComparison.PalatiniFirstDerivative
 
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Uniform.Curvature.Package
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Uniform.Curvature.SectionBounds
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Derivatives.Pointwise
 import DifferentialGeometry.Geometry.Metric.DeTurck.ConnectionDifference.Basic
 
@@ -981,12 +981,12 @@ theorem uniformRmSecOne_of
     ∀ x : M,
       riemannianFiberNormSq (I := I) (M := M) g₀ 0 (4 + 1) x
           ((iteratedCovGrad (I := I) g₀ 0 4 1
-            (rmSection (I := I) (M := M) g₀)).toSection x) ≤
+            (riemannCurvatureSection (I := I) (M := M) g₀)).toSection x) ≤
         rmOneC (E := E) Λ Kb₀ Kb₁ ^ 2 := by
   intro x
   apply sq_le_of_sqrt_le
     (riemannianFiberNormSq_nonneg (I := I) (M := M) g₀ 0 (4 + 1) x _)
-  rw [riemannianFiberNormSq_rmSection_eq (I := I) g₀ 1 x]
+  rw [riemannianFiberNormSq_riemannCurvatureSection_eq (I := I) g₀ 1 x]
   exact uniformRmJetOne_of (I := I) (M := M) gBase g₀ hΛ
     hKb₀0 hKb₀ hKb₁0 hKb₁ hcomp hjet1 hjet2 hjet3 x
 
@@ -1003,14 +1003,14 @@ theorem uniformRmSecOne
     ∃ K : ℝ, 0 ≤ K ∧ ∀ x : M,
       riemannianFiberNormSq (I := I) (M := M) g₀ 0 (4 + 1) x
           ((iteratedCovGrad (I := I) g₀ 0 4 1
-            (rmSection (I := I) (M := M) g₀)).toSection x) ≤ K ^ 2 := by
+            (riemannCurvatureSection (I := I) (M := M) g₀)).toSection x) ≤ K ^ 2 := by
   obtain ⟨K, hK0, hK⟩ :=
     uniformRmJetOne (I := I) (M := M) gBase g₀
       hΛ hcomp hjet1 hjet2 hjet3
   refine ⟨K, hK0, fun x => ?_⟩
   apply sq_le_of_sqrt_le
     (riemannianFiberNormSq_nonneg (I := I) (M := M) g₀ 0 (4 + 1) x _)
-  rw [riemannianFiberNormSq_rmSection_eq (I := I) g₀ 1 x]
+  rw [riemannianFiberNormSq_riemannCurvatureSection_eq (I := I) g₀ 1 x]
   exact hK x
 
 end RicciFlow

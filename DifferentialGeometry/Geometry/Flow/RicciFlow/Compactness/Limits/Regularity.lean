@@ -970,7 +970,7 @@ theorem gramJets
     filter_upwards [Filter.eventually_ge_atTop kgrow] with k hk
     apply gSeqJet_contOn (Φ := Φ) (R := R) (bf := bf) (hsrc := hsrc) (htgt := htgt)
       hwin (co.φ k) r x₀ i j hCtgt
-    exact hkgrow (co.φ k) (hk.trans (co.hφ.id_le k))
+    exact hkgrow (co.φ k) (hk.trans (co.strictMono.id_le k))
   have hcOn : ContinuousOn
       (fun p : Real × E =>
         iteratedFDeriv Real r
@@ -1426,7 +1426,7 @@ theorem gramPDE
     refine ⟨kgrow, ?_⟩
     intro k hk u hu
     have hxgrow : x ∈ bf.grow (co.φ k) :=
-      hkgrow (co.φ k) (hk.trans (co.hφ.id_le k)) (Set.mem_singleton x)
+      hkgrow (co.φ k) (hk.trans (co.strictMono.id_le k)) (Set.mem_singleton x)
     have hmpde := gSeqExt_pde (I := I) Φ R bf hsrc htgt (co.φ k)
       β ψ u hwin hu x hxgrow
       (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ i x)

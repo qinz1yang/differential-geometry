@@ -126,10 +126,10 @@ theorem lowerScaleFirstOrderActionSecondToFirstOrder_apply_ccToHsLin {hρ : 0 �
         (I := I) (M := M) :=
   DifferentialGeometry.Analysis.extend_pair_apply
     (ccToHsLin_dense (I := I) (M := M) g 2 (by positivity))
-    (LowerScaleTimeInternal.firstOrderActionSecondToFirstOrderCore (I := I) (M := M) g hρ hδ0 hδ_le hreal)
+    (LowerScaleTime.firstOrderActionSecondToFirstOrderOnDenseCore (I := I) (M := M) g hρ hδ0 hδ_le hreal)
     (fun U => (lowCoreActionCoefficients (I := I) (M := M) g hρ hδ0 hδ_le hreal U).firstOrderActionSecondToFirstOrder
       (I := I) (M := M))
-    (LowerScaleTimeInternal.firstOrderActionSecondToFirstOrderCore_value (I := I) (M := M)
+    (LowerScaleTime.firstOrderActionSecondToFirstOrderOnDenseCore_apply (I := I) (M := M)
       g hρ hδ0 hδ_le hreal)
     hpair S
 
@@ -143,10 +143,10 @@ theorem lowerScaleFirstOrderActionSecondToFirstOrder_continuous {hρ : 0 ≤ ρ}
     Continuous (lowerScaleFirstOrderActionSecondToFirstOrder (I := I) (M := M) g hρ hδ0 hδ_le hreal) :=
   DifferentialGeometry.Analysis.cont_extend_pair
     (ccToHsLin_dense (I := I) (M := M) g 2 (by positivity))
-    (LowerScaleTimeInternal.firstOrderActionSecondToFirstOrderCore (I := I) (M := M) g hρ hδ0 hδ_le hreal)
+    (LowerScaleTime.firstOrderActionSecondToFirstOrderOnDenseCore (I := I) (M := M) g hρ hδ0 hδ_le hreal)
     (fun U => (lowCoreActionCoefficients (I := I) (M := M) g hρ hδ0 hδ_le hreal U).firstOrderActionSecondToFirstOrder
       (I := I) (M := M))
-    (LowerScaleTimeInternal.firstOrderActionSecondToFirstOrderCore_value (I := I) (M := M)
+    (LowerScaleTime.firstOrderActionSecondToFirstOrderOnDenseCore_apply (I := I) (M := M)
       g hρ hδ0 hδ_le hreal)
     hpair
 

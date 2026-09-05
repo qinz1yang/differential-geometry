@@ -1996,7 +1996,7 @@ theorem cov_commute_at
       ← chartedSpaceSelf_prod]
     exact hcomp
   have hfixed :=
-    Aux7.commutator_eq_chartRiemannCLM (I := I) g f Y s t hF2 hY2
+    CovariantDerivativeCommutator.commutator_eq_chartRiemannCLM (I := I) g f Y s t hF2 hY2
   rw [← DifferentialGeometry.Geometry.Connection.riemannOp_eq_chartRiemannCLM_apply_of_basis_identity
         (I := I) g (f s t)
         (DifferentialGeometry.Geometry.Connection.chartRiemannBasisIdentity_LeviCivita
@@ -2164,17 +2164,17 @@ theorem cov_commute_at
         (extChartAt I β (f s t)) := by
     intro i j k
     rw [hβ]
-    exact Aux3.chartChristoffel_differentiableAt_self (I := I) g β i j k
+    exact ChristoffelRegularity.chartChristoffel_differentiableAt_self (I := I) g β i j k
   have houterL : DifferentiableAt Real
       (chartRepAt (I := I) (fun u : Real ↦ f u t) innerL s) s := by
     refine hrepOuterL.differentiableAt_iff.mpr ?_
     exact
-      (Aux4.hasDerivAt_innerW (I := I) g β f Y s t hF2 hY2 hΓ).differentiableAt
+      (TwoParameterCovariantDerivative.hasDerivAt_innerW (I := I) g β f Y s t hF2 hY2 hΓ).differentiableAt
   have houterR : DifferentiableAt Real
       (chartRepAt (I := I) (fun v : Real ↦ f s v) innerR t) t := by
     refine hrepOuterR.differentiableAt_iff.mpr ?_
     exact
-      (Aux4.hasDerivAt_innerW_snd (I := I) g β f Y s t hF2 hY2 hΓ).differentiableAt
+      (TwoParameterCovariantDerivative.hasDerivAt_innerW_snd (I := I) g β f Y s t hF2 hY2 hΓ).differentiableAt
   have hbaseL :
       chartRepAtBase (I := I) β (fun u : Real ↦ f u t) innerL =
         chartRepAt (I := I) (fun u : Real ↦ f u t) innerL s := by
@@ -2482,17 +2482,17 @@ theorem cov_commute_smooth
         (extChartAt I β (f 0 t)) := by
     intro i j k
     rw [hβ]
-    exact Aux3.chartChristoffel_differentiableAt_self (I := I) g β i j k
+    exact ChristoffelRegularity.chartChristoffel_differentiableAt_self (I := I) g β i j k
   have houterL : DifferentiableAt Real
       (chartRepAt (I := I) (fun s : Real => f s t) innerL 0) 0 := by
     refine hrepOuterL.differentiableAt_iff.mpr ?_
     exact
-      (Aux4.hasDerivAt_innerW (I := I) g β f Y 0 t hF2 hY2 hΓ).differentiableAt
+      (TwoParameterCovariantDerivative.hasDerivAt_innerW (I := I) g β f Y 0 t hF2 hY2 hΓ).differentiableAt
   have houterR : DifferentiableAt Real
       (chartRepAt (I := I) (fun v : Real => f 0 v) innerR t) t := by
     refine hrepOuterR.differentiableAt_iff.mpr ?_
     exact
-      (Aux4.hasDerivAt_innerW_snd (I := I) g β f Y 0 t hF2 hY2 hΓ).differentiableAt
+      (TwoParameterCovariantDerivative.hasDerivAt_innerW_snd (I := I) g β f Y 0 t hF2 hY2 hΓ).differentiableAt
   exact
     cov_commute_curv (I := I) g f hf V t hV2 hinnerL hinnerR
       houterL houterR

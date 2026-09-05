@@ -25,7 +25,7 @@ variable {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
 namespace BoundedGeometryNormalChartData
 
 theorem exists_stage_metric
-    (inp : MetricCompactCore (I := I) X)
+    (inp : MetricCompactSeedWithDivisor (I := I) X)
     (d : BoundedGeometryNormalChartData (I := I) X inp.decay)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P) (r : Real) :
@@ -126,7 +126,7 @@ theorem exists_stage_metric
   · simpa only [V] using hQAlpha.2
 
 theorem exists_stage_pair
-    (inp : MetricCompactCore (I := I) X)
+    (inp : MetricCompactSeedWithDivisor (I := I) X)
     (d : BoundedGeometryNormalChartData (I := I) X inp.decay)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P) {r : Real}

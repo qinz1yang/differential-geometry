@@ -94,7 +94,7 @@ def liftSecondOrderActionToH2 (g : SmoothRiemannianMetric I M) {ρ δ : ℝ}
       (tensorHsCongrL (I := I) (M := M) g 0 2
         (show (2 : ℝ) + 2 = (4 : ℝ) by norm_num))
 
-theorem liftSecondOrderActionToH2_data
+theorem liftSecondOrderActionToH2_measurable_and_bounded
     (hDim : Module.finrank ℝ E = 3)
     (g : SmoothRiemannianMetric I M) {ρ₀ δ : ℝ}
     (hρ₀ : 0 < ρ₀) (hδ0 : 0 ≤ δ) (hδ_le : δ ≤ 1 / 3)
@@ -125,7 +125,7 @@ theorem liftSecondOrderActionToH2_data
               ‖liftSecondOrderActionToH2 (I := I) (M := M) g hρ0 hδ0 hδ_le hreal' hT f hR
                 hball t‖ ≤ C * ρ) := by
   obtain ⟨ρ, C, hρ, hρle, hC, hdata⟩ :=
-    lowRegularitySecondOrderActionTotal_data (I := I) (M := M) hDim g hρ₀ hδ0 hδ_le hreal
+    lowRegularitySecondOrderActionTotal_measurable_and_bounded (I := I) (M := M) hDim g hρ₀ hδ0 hδ_le hreal
   refine ⟨ρ, C, hρ, hρle, hC, ?_⟩
   intro hρ0 hreal' R hR hRρ T hT f hball
   obtain ⟨hmeas, hbd⟩ := hdata hρ0 hreal' hR hRρ hT f hball
@@ -147,7 +147,7 @@ def liftFirstOrderActionToH2 (g : SmoothRiemannianMetric I M) {ρ δ : ℝ}
       (tensorHsCongrL (I := I) (M := M) g 0 2
         (show (2 : ℝ) + 1 = (3 : ℝ) by norm_num))
 
-theorem liftFirstOrderActionToH2_data
+theorem liftFirstOrderActionToH2_memLp
     (g : SmoothRiemannianMetric I M) {ρ δ : ℝ}
     (hρ : 0 ≤ ρ) (hδ0 : 0 ≤ δ) (hδ_le : δ ≤ 1 / 3)
     (hreal : ∀ S : SmoothCcTensor g 0 2,
@@ -222,17 +222,17 @@ theorem exists_compatible_cross_scale_field_realization
         (g := g) (r := 0) (s := 2) aHi T)
       (fHi : timeL2 (TensorHs (I := I) (M := M) g 0 2 aHi) T)
       (u : CrossScaleField (I := I) (M := M) g 0 2 aHi T),
-      u.lo = uHi ∧
-        u.hiL2 = maximalRegularityDuhamelSolutionField (I := I) (M := M) aHi hT 0 fHi ∧
+      u.lowRegularity = uHi ∧
+        u.highRegularity = maximalRegularityDuhamelSolutionField (I := I) (M := M) aHi hT 0 fHi ∧
         fHi =
           nonautL2Map (I := I) (M := M) hT hT1
               (tensorResolventL2_isCompactOperator (I := I) (M := M) g 0 2)
               A2Hi hA2Hi C2Hi hC2Hi A1Hi hA1Hi fHi +
             f0Hi ∧
-        timeH1.trace0 _ T u.lo =
+        timeH1.trace0 _ T u.lowRegularity =
           (0 : TensorHs (I := I) (M := M) g 0 2 aHi) ∧
-        timeH1.timeDeriv _ T u.lo =
-          timeScaleLaplacian (I := I) (M := M) aHi u.hiL2 + fHi ∧
+        timeH1.timeDeriv _ T u.lowRegularity =
+          timeScaleLaplacian (I := I) (M := M) aHi u.highRegularity + fHi ∧
         timeL2Inclusion (I := I) (M := M) (g := g) (r := 0) (s := 2)
             hOrd fHi = fLo ∧
         (∀ᵐ t ∂timeMeasure T,
@@ -240,13 +240,13 @@ theorem exists_compatible_cross_scale_field_realization
               hOrd (fHi t) = fLo t) ∧
         (∀ t ∈ Icc (0 : ℝ) T,
           tensorHsInclusion (I := I) (M := M) (g := g) (r := 0) (s := 2)
-              hOrd (u.lo.toFun t) =
+              hOrd (u.lowRegularity.toFun t) =
             (maximalRegularityDuhamelMap (I := I) (M := M) aLo hT 0 fLo).toFun t) ∧
         u.repr 0 = (0 : TensorHs (I := I) (M := M) g 0 2 (aHi + 1)) ∧
         ContinuousOn (fun t => ‖u.repr t‖ ^ 2) (Icc (0 : ℝ) T) ∧
         (∀ t ∈ Icc (0 : ℝ) T,
           tensorHsInclusion (I := I) (M := M) (g := g) (r := 0) (s := 2)
-              hOrdUp (u.repr t) = u.lo.toFun t) ∧
+              hOrdUp (u.repr t) = u.lowRegularity.toFun t) ∧
         (fun t => tensorHsInclusion (I := I) (M := M) (g := g) (r := 0) (s := 2)
           hOrdRp (u.repr t)) =ᵐ[timeMeasure T]
             fun t => maximalRegularityDuhamelSolutionField (I := I) (M := M)

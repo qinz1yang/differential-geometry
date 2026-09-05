@@ -75,8 +75,8 @@ theorem lRegularizedIndexIntegrand_symm
       (leviCivitaConnectionOfMetric (I := I) g)
       (metricRm04 (I := I) (M := M) g)
     rw [show metricRm04 (I := I) (M := M) g =
-      (metricCurvData (I := I) (M := M) g).rm04 by rfl]
-    exact (metricCurvData (I := I) (M := M) g).rm04Realizes
+      (metricCurvatureSections (I := I) (M := M) g).rm04 by rfl]
+    exact (metricCurvatureSections (I := I) (M := M) g).rm04Realizes
   have hpair := rm04PairSymmAt_of_leviCivita_realizes
     (I := I) g (S.base.rm04 t) hreal (x := x)
   have hinput := rm04InputSkewAt_of_leviCivita_realizes

@@ -172,7 +172,7 @@ theorem punctCartan_match
       exact isOpen_compl_singleton.inter isOpen_compl_singleton⟩
   have hUconn : IsPreconnected (U : Set (sphere (0 : A) 1)) := by
     change IsPreconnected {x : sphere (0 : A) 1 | x ≠ -p ∧ x ≠ -q}
-    exact punct2_preconn hn (-p) (-q) (neg_injective.ne hpq)
+    exact sphere_compl_two_points_isPreconnected hn (-p) (-q) (neg_injective.ne hpq)
   let : PreconnectedSpace U :=
     Subtype.preconnectedSpace hUconn
   let : SigmaCompactSpace U :=

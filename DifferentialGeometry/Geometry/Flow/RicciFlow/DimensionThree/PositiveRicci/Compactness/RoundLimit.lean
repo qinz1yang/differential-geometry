@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.PositiveRicci.Compactness.FlowUpgrade
+import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.PositiveRicci.Compactness.SmoothFlowLimit
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.PositiveRicci.LimitRoundness
 import DifferentialGeometry.Geometry.Metric.Sphere.Quotient.SpaceForm
 
@@ -338,41 +338,41 @@ theorem round_at_zero_of_smooth_cgh
     hbasePos heinstein
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
-theorem flow_upgrade_data_connected
+theorem smooth_flow_limit_connected
     {X : PointedFlowSeq (I := I)}
-    {mc : MetricCompactnessConclusion (I := I) (X.atZero (I := I))}
-    (d : FlowUpgrade (I := I) X mc)
+    {mc : MetricCompactLimit (I := I) (X.atZero (I := I))}
+    (d : SmoothFlowLimitSubsequence (I := I) X mc)
     (hconn : letI : TopologicalSpace mc.limit.M := mc.limit.topology
       ConnectedSpace mc.limit.M) :
-    letI : TopologicalSpace d.data.L.M := d.data.L.topology
-    ConnectedSpace d.data.L.M := by
-  have hAt0 : letI : TopologicalSpace (d.data.L.atTime (I := I) 0).M :=
-      (d.data.L.atTime (I := I) 0).topology
-      ConnectedSpace (d.data.L.atTime (I := I) 0).M := by
-    rw [d.data.hL0]
+    letI : TopologicalSpace d.limit.L.M := d.limit.L.topology
+    ConnectedSpace d.limit.L.M := by
+  have hAt0 : letI : TopologicalSpace (d.limit.L.atTime (I := I) 0).M :=
+      (d.limit.L.atTime (I := I) 0).topology
+      ConnectedSpace (d.limit.L.atTime (I := I) 0).M := by
+    rw [d.limit.atTime_zero]
     exact hconn
   with_unfolding_all
     exact hAt0
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
-theorem flow_upgrade_data_converges
+theorem smooth_flow_limit_converges
     {X : PointedFlowSeq (I := I)}
-    {mc : MetricCompactnessConclusion (I := I) (X.atZero (I := I))}
-    (d : FlowUpgrade (I := I) X mc) :
-    Nonempty (SmoothCGHConverges (I := I) X d.data.L
-      (mc.compSubseq d.φ d.hφ).subseq) :=
+    {mc : MetricCompactLimit (I := I) (X.atZero (I := I))}
+    (d : SmoothFlowLimitSubsequence (I := I) X mc) :
+    Nonempty (SmoothCGHConverges (I := I) X d.limit.L
+      (mc.compSubseq d.φ d.strictMono).subseq) :=
   ⟨SmoothCGHConverges.ofRestrictPullback (I := I)
-    d.data.maps d.data.scalar d.data.ricciNorm d.data.hσsource
-    d.data.refMetric
-    (letI : TopologicalSpace d.data.L.M := d.data.L.topology
-     letI : ChartedSpace H d.data.L.M := d.data.L.charted
-     letI : IsManifold I ∞ d.data.L.M := d.data.L.smooth
-     letI : IsManifold I ((∞ : WithTop ℕ∞) + 1) d.data.L.M := by
-       change IsManifold I ∞ d.data.L.M
+    d.limit.maps d.limit.scalar d.limit.ricciNorm d.limit.source_sigmaCompact
+    d.limit.refMetric
+    (letI : TopologicalSpace d.limit.L.M := d.limit.L.topology
+     letI : ChartedSpace H d.limit.L.M := d.limit.L.charted
+     letI : IsManifold I ∞ d.limit.L.M := d.limit.L.smooth
+     letI : IsManifold I ((∞ : WithTop ℕ∞) + 1) d.limit.L.M := by
+       change IsManifold I ∞ d.limit.L.M
        infer_instance
-     letI : SigmaCompactSpace d.data.L.M := d.data.L.sigmaCompact
-     letI : T2Space d.data.L.M := d.data.L.t2
-     d.data.L.S.family.metric) d.data.convergence⟩
+     letI : SigmaCompactSpace d.limit.L.M := d.limit.L.sigmaCompact
+     letI : T2Space d.limit.L.M := d.limit.L.t2
+     d.limit.L.S.family.metric) d.limit.convergence⟩
 
 omit [SigmaCompactSpace M] in
 theorem constant_positive_sectional_curvature_of_smooth_cgh

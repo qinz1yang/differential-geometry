@@ -32,7 +32,7 @@ variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 variable {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
 
 theorem BoundedGeometryNormalChartData.inv_cov_comp_tail
-    (inp : MetricCompactCore (I := I) X)
+    (inp : MetricCompactSeedWithDivisor (I := I) X)
     (d : BoundedGeometryNormalChartData (I := I) X inp.decay)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P) {r : Real} (hr : 0 ≤ r)
@@ -48,7 +48,7 @@ theorem BoundedGeometryNormalChartData.inv_cov_comp_tail
       InterSlot L inp.pack r alpha → E → E)
     (gInf : LiveSlot L inp.pack r →
       E → (E →L[Real] E →L[Real] Real))
-    (hstage : HasStageJetDataOn (I := I) inp P L hr phi hphi
+    (hstage : HasStageJetConvergenceOn (I := I) inp P L hr phi hphi
       d.chart Vmetric U C0 C1 aInf Jinf Jbarinf gInf)
     {R S T Vrad : Real} (hRS : R < S) (hST : S < T)
     (hroom : T + (4 + 8 * Real.sqrt 2) * inp.decay.lambda inp.D 0 < Vrad)
@@ -230,7 +230,7 @@ theorem BoundedGeometryNormalChartData.inv_cov_comp_tail
   rcases hstage with ⟨hdata, hmetric, hjets, hbase⟩
   have hgap : 0 ≤
       (4 + 8 * Real.sqrt 2) * inp.decay.lambda inp.D 0 :=
-    mul_nonneg (by positivity) (inp.decay.lambda_pos inp.hD 0).le
+    mul_nonneg (by positivity) (inp.decay.lambda_pos inp.divisor_pos 0).le
   have hTr : T < r := by linarith
   have hSr : S < r := hST.trans hTr
   have hraw := hdata
@@ -351,7 +351,7 @@ theorem BoundedGeometryNormalChartData.inv_cov_comp_tail
     have hAconvW : MapCInfConvergenceOnCompacts W
         (fun n => A alpha (kn n) (ln n)) id := by
       simpa only [A, Lphi] using
-        HasStageJetDataOn.chart_convergence (I := I) inp P L hr phi hphi
+        HasStageJetConvergenceOn.chart_convergence (I := I) inp P L hr phi hphi
           d.chart Vmetric U C0 C1 aInf Jinf Jbarinf gInf
           ⟨hdata, hmetric, hjets, hbase⟩ S hSr alpha W hWint
           kn ln hkn hln hstay'

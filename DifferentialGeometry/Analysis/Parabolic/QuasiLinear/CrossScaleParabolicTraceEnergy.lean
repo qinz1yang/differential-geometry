@@ -47,7 +47,7 @@ theorem perMode_energyIdentity
       tensorSobolevWeight (I := I) (M := M) i (a + 1) * (u.coeffFun i 0) ^ 2 +
         ∫ τ in (0 : ℝ)..t,
           2 * (tensorSobolevWeight (I := I) (M := M) i (a + 1) *
-            ((u.coeffFun i τ) * (u.lo.deriv τ).coeff i)) := by
+            ((u.coeffFun i τ) * (u.lowRegularity.deriv τ).coeff i)) := by
   have h0 : (0 : ℝ) ∈ Icc (0 : ℝ) T := ⟨le_rfl, le_trans ht.1 ht.2⟩
   set w := tensorSobolevWeight (I := I) (M := M) i (a + 1) with hw_def
   rw [u.coeffFun_sq_eq i h0 ht, mul_add]
@@ -65,13 +65,13 @@ private lemma countable_eigenIdx :
 def energyIntegrand
     (i : TensorEigenIdx (I := I) (M := M) g r s) (τ : ℝ) : ℝ :=
   2 * (tensorSobolevWeight (I := I) (M := M) i (a + 1) *
-    ((u.coeffFun i τ) * (u.lo.deriv τ).coeff i))
+    ((u.coeffFun i τ) * (u.lowRegularity.deriv τ).coeff i))
 
 omit [NeZero (Module.finrank ℝ E)] in
 lemma tsum_energyIntegrand_eq (τ : ℝ) :
     ∑' i, u.energyIntegrand i τ =
       2 * ∑' i, tensorSobolevWeight (I := I) (M := M) i (a + 1) *
-        ((u.coeffFun i τ) * (u.lo.deriv τ).coeff i) := by
+        ((u.coeffFun i τ) * (u.lowRegularity.deriv τ).coeff i) := by
   unfold energyIntegrand
   rw [← tsum_mul_left]
 
@@ -79,13 +79,13 @@ omit [NeZero (Module.finrank ℝ E)] in
 lemma ae_finset_abs_energyIntegrand_le :
     ∀ᵐ τ ∂(volume.restrict (Set.Icc (0 : ℝ) T)),
       ∀ S : Finset (TensorEigenIdx (I := I) (M := M) g r s),
-      ∑ i ∈ S, |u.energyIntegrand i τ| ≤ 2 * (‖u.hiL2 τ‖ * ‖u.lo.deriv τ‖) := by
+      ∑ i ∈ S, |u.energyIntegrand i τ| ≤ 2 * (‖u.highRegularity τ‖ * ‖u.lowRegularity.deriv τ‖) := by
   filter_upwards [u.ae_coeffFun_eq_hiL2] with τ hτ S
   set f : TensorEigenIdx (I := I) (M := M) g r s → ℝ :=
     fun i => Real.sqrt (tensorSobolevWeight (I := I) (M := M) i (a + 2)) * |u.coeffFun i τ|
       with hf_def
   set d : TensorEigenIdx (I := I) (M := M) g r s → ℝ :=
-    fun i => Real.sqrt (tensorSobolevWeight (I := I) (M := M) i a) * |(u.lo.deriv τ).coeff i|
+    fun i => Real.sqrt (tensorSobolevWeight (I := I) (M := M) i a) * |(u.lowRegularity.deriv τ).coeff i|
       with hd_def
   have hsummand : ∀ i, |u.energyIntegrand i τ| = 2 * (f i * d i) := by
     intro i
@@ -98,32 +98,32 @@ lemma ae_finset_abs_energyIntegrand_le :
   rw [Finset.sum_congr rfl (fun i _ => hsummand i), ← Finset.mul_sum]
   have hCS : (∑ i ∈ S, f i * d i) ^ 2 ≤ (∑ i ∈ S, (f i) ^ 2) * ∑ i ∈ S, (d i) ^ 2 :=
     Finset.sum_mul_sq_le_sq_mul_sq S f d
-  have hfsq : ∑ i ∈ S, (f i) ^ 2 ≤ ‖u.hiL2 τ‖ ^ 2 := by
+  have hfsq : ∑ i ∈ S, (f i) ^ 2 ≤ ‖u.highRegularity τ‖ ^ 2 := by
     have heq : ∑ i ∈ S, (f i) ^ 2 =
-        ∑ i ∈ S, tensorSobolevWeight (I := I) (M := M) i (a + 2) * ((u.hiL2 τ).coeff i) ^ 2 := by
+        ∑ i ∈ S, tensorSobolevWeight (I := I) (M := M) i (a + 2) * ((u.highRegularity τ).coeff i) ^ 2 := by
       refine Finset.sum_congr rfl (fun i _ => ?_)
       rw [hf_def, mul_pow, Real.sq_sqrt (tensorSobolevWeight_nonneg (I := I) (M := M) i (a + 2)),
         sq_abs, hτ i]
     rw [heq, TensorHs.norm_sq_eq_tsum]
-    refine Summable.sum_le_tsum S (fun i _ => ?_) (u.hiL2 τ).weighted_summable
+    refine Summable.sum_le_tsum S (fun i _ => ?_) (u.highRegularity τ).weighted_summable
     exact mul_nonneg (tensorSobolevWeight_nonneg (I := I) (M := M) i (a + 2)) (sq_nonneg _)
-  have hdsq : ∑ i ∈ S, (d i) ^ 2 ≤ ‖u.lo.deriv τ‖ ^ 2 := by
+  have hdsq : ∑ i ∈ S, (d i) ^ 2 ≤ ‖u.lowRegularity.deriv τ‖ ^ 2 := by
     have heq : ∑ i ∈ S, (d i) ^ 2 =
-        ∑ i ∈ S, tensorSobolevWeight (I := I) (M := M) i a * ((u.lo.deriv τ).coeff i) ^ 2 := by
+        ∑ i ∈ S, tensorSobolevWeight (I := I) (M := M) i a * ((u.lowRegularity.deriv τ).coeff i) ^ 2 := by
       refine Finset.sum_congr rfl (fun i _ => ?_)
       rw [hd_def, mul_pow, Real.sq_sqrt (tensorSobolevWeight_nonneg (I := I) (M := M) i a), sq_abs]
     rw [heq, TensorHs.norm_sq_eq_tsum]
-    refine Summable.sum_le_tsum S (fun i _ => ?_) (u.lo.deriv τ).weighted_summable
+    refine Summable.sum_le_tsum S (fun i _ => ?_) (u.lowRegularity.deriv τ).weighted_summable
     exact mul_nonneg (tensorSobolevWeight_nonneg (I := I) (M := M) i a) (sq_nonneg _)
   have hsumfd_nonneg : 0 ≤ ∑ i ∈ S, f i * d i :=
     Finset.sum_nonneg (fun i _ => mul_nonneg
       (mul_nonneg (Real.sqrt_nonneg _) (abs_nonneg _))
       (mul_nonneg (Real.sqrt_nonneg _) (abs_nonneg _)))
-  have hsq_le : (∑ i ∈ S, f i * d i) ^ 2 ≤ (‖u.hiL2 τ‖ * ‖u.lo.deriv τ‖) ^ 2 := by
+  have hsq_le : (∑ i ∈ S, f i * d i) ^ 2 ≤ (‖u.highRegularity τ‖ * ‖u.lowRegularity.deriv τ‖) ^ 2 := by
     refine le_trans hCS ?_
     rw [mul_pow]
     exact mul_le_mul hfsq hdsq (Finset.sum_nonneg (fun i _ => sq_nonneg _)) (sq_nonneg _)
-  have hfd_le : ∑ i ∈ S, f i * d i ≤ ‖u.hiL2 τ‖ * ‖u.lo.deriv τ‖ := by
+  have hfd_le : ∑ i ∈ S, f i * d i ≤ ‖u.highRegularity τ‖ * ‖u.lowRegularity.deriv τ‖ := by
     have := abs_le_of_sq_le_sq hsq_le (mul_nonneg (norm_nonneg _) (norm_nonneg _))
     rwa [abs_of_nonneg hsumfd_nonneg] at this
   linarith [hfd_le]
@@ -136,7 +136,7 @@ lemma integrableOn_energyIntegrand
   have h0 : (0 : ℝ) ∈ Icc (0 : ℝ) T := ⟨le_rfl, le_trans ht.1 ht.2⟩
   have hcoeff_cont : ContinuousOn (u.coeffFun i) (Set.Icc (0 : ℝ) t) :=
     (u.continuousOn_coeffFun i).mono (fun x hx => ⟨hx.1, le_trans hx.2 ht.2⟩)
-  have hderiv_int : IntegrableOn (fun τ => (u.lo.deriv τ).coeff i)
+  have hderiv_int : IntegrableOn (fun τ => (u.lowRegularity.deriv τ).coeff i)
       (Set.Ioc (0 : ℝ) t) volume := by
     have h := u.intervalIntegrable_deriv_coeffFun i h0 ht
     rw [intervalIntegrable_iff_integrableOn_Ioc_of_le ht.1] at h
@@ -144,19 +144,19 @@ lemma integrableOn_energyIntegrand
   have hsubIcc : Set.Ioc (0 : ℝ) t ⊆ Set.Icc (0 : ℝ) t :=
     fun x hx => ⟨le_of_lt hx.1, hx.2⟩
   have hprod : IntegrableOn
-      (fun τ => (u.coeffFun i τ) * (u.lo.deriv τ).coeff i) (Set.Ioc (0 : ℝ) t) volume :=
+      (fun τ => (u.coeffFun i τ) * (u.lowRegularity.deriv τ).coeff i) (Set.Ioc (0 : ℝ) t) volume :=
     MeasureTheory.IntegrableOn.continuousOn_mul_of_subset hcoeff_cont hderiv_int
       isCompact_Icc measurableSet_Ioc hsubIcc
   have heq : (u.energyIntegrand i) = fun τ =>
       (2 * tensorSobolevWeight (I := I) (M := M) i (a + 1)) *
-        ((u.coeffFun i τ) * (u.lo.deriv τ).coeff i) := by
+        ((u.coeffFun i τ) * (u.lowRegularity.deriv τ).coeff i) := by
     funext τ; unfold energyIntegrand; ring
   rw [heq]
   exact hprod.const_mul _
 
 omit [NeZero (Module.finrank ℝ E)] in
 lemma integrableOn_energyBound :
-    IntegrableOn (fun s => 2 * (‖u.hiL2 s‖ * ‖u.lo.deriv s‖)) (Set.Icc (0 : ℝ) T) volume :=
+    IntegrableOn (fun s => 2 * (‖u.highRegularity s‖ * ‖u.lowRegularity.deriv s‖)) (Set.Icc (0 : ℝ) T) volume :=
   u.integrableOn_normMul.const_mul 2
 
 theorem tsum_intervalIntegral_energyIntegrand_eq
@@ -170,12 +170,12 @@ theorem tsum_intervalIntegral_energyIntegrand_eq
     u.integrableOn_energyIntegrand i ht
   have hsub : Set.Ioc (0 : ℝ) t ⊆ Set.Icc (0 : ℝ) T :=
     fun x hx => ⟨le_of_lt hx.1, le_trans hx.2 ht.2⟩
-  have hbound_int : Integrable (fun s => 2 * (‖u.hiL2 s‖ * ‖u.lo.deriv s‖)) μ :=
+  have hbound_int : Integrable (fun s => 2 * (‖u.highRegularity s‖ * ‖u.lowRegularity.deriv s‖)) μ :=
     u.integrableOn_energyBound.mono_set hsub
   have haebnd := ae_restrict_of_ae_restrict_of_subset (μ := volume) hsub
     u.ae_finset_abs_energyIntegrand_le
   have hF_sum : Summable (fun i => ∫ s, ‖u.energyIntegrand i s‖ ∂μ) := by
-    refine summable_of_sum_le (c := ∫ s, (2 * (‖u.hiL2 s‖ * ‖u.lo.deriv s‖)) ∂μ)
+    refine summable_of_sum_le (c := ∫ s, (2 * (‖u.highRegularity s‖ * ‖u.lowRegularity.deriv s‖)) ∂μ)
       (fun i => integral_nonneg (fun s => norm_nonneg _)) ?_
     intro S
     have hfin_int : ∀ i ∈ S, Integrable (fun s => ‖u.energyIntegrand i s‖) μ :=
@@ -186,7 +186,7 @@ theorem tsum_intervalIntegral_energyIntegrand_eq
     calc ∑ i ∈ S, ‖u.energyIntegrand i s‖
         = ∑ i ∈ S, |u.energyIntegrand i s| := by
           refine Finset.sum_congr rfl (fun i _ => ?_); rw [Real.norm_eq_abs]
-      _ ≤ 2 * (‖u.hiL2 s‖ * ‖u.lo.deriv s‖) := hs S
+      _ ≤ 2 * (‖u.highRegularity s‖ * ‖u.lowRegularity.deriv s‖) := hs S
   have hinterchange :=
     MeasureTheory.integral_tsum_of_summable_integral_norm hF_int hF_sum
   rw [intervalIntegral.integral_of_le ht.1]
@@ -202,11 +202,11 @@ lemma summable_integral_norm_energyIntegrand {t : ℝ} (ht : t ∈ Icc (0 : ℝ)
   set μ : Measure ℝ := volume.restrict (Set.Ioc (0 : ℝ) t) with hμ
   have hsub : Set.Ioc (0 : ℝ) t ⊆ Set.Icc (0 : ℝ) T :=
     fun x hx => ⟨le_of_lt hx.1, le_trans hx.2 ht.2⟩
-  have hbound_int : Integrable (fun s => 2 * (‖u.hiL2 s‖ * ‖u.lo.deriv s‖)) μ :=
+  have hbound_int : Integrable (fun s => 2 * (‖u.highRegularity s‖ * ‖u.lowRegularity.deriv s‖)) μ :=
     u.integrableOn_energyBound.mono_set hsub
   have haebnd := ae_restrict_of_ae_restrict_of_subset (μ := volume) hsub
     u.ae_finset_abs_energyIntegrand_le
-  refine summable_of_sum_le (c := ∫ s, (2 * (‖u.hiL2 s‖ * ‖u.lo.deriv s‖)) ∂μ)
+  refine summable_of_sum_le (c := ∫ s, (2 * (‖u.highRegularity s‖ * ‖u.lowRegularity.deriv s‖)) ∂μ)
     (fun i => integral_nonneg (fun s => norm_nonneg _)) ?_
   intro S
   have hfin_int : ∀ i ∈ S, Integrable (fun s => ‖u.energyIntegrand i s‖) μ :=
@@ -217,7 +217,7 @@ lemma summable_integral_norm_energyIntegrand {t : ℝ} (ht : t ∈ Icc (0 : ℝ)
   calc ∑ i ∈ S, ‖u.energyIntegrand i s‖
       = ∑ i ∈ S, |u.energyIntegrand i s| := by
         refine Finset.sum_congr rfl (fun i _ => ?_); rw [Real.norm_eq_abs]
-    _ ≤ 2 * (‖u.hiL2 s‖ * ‖u.lo.deriv s‖) := hs S
+    _ ≤ 2 * (‖u.highRegularity s‖ * ‖u.lowRegularity.deriv s‖) := hs S
 
 omit [NeZero (Module.finrank ℝ E)] in
 lemma summable_intervalIntegral_energyIntegrand {t : ℝ} (ht : t ∈ Icc (0 : ℝ) T) :
@@ -252,22 +252,22 @@ theorem energyIdentity (hT : 0 < T) {t : ℝ} (ht : t ∈ Icc (0 : ℝ) T) :
 omit [NeZero (Module.finrank ℝ E)] in
 theorem normSq_repr_le_initial_add_integral (hT : 0 < T) {t : ℝ} (ht : t ∈ Icc (0 : ℝ) T) :
     ‖u.repr t‖ ^ 2 ≤ ‖u.repr 0‖ ^ 2 +
-      ∫ s in (0 : ℝ)..t, 2 * (‖u.hiL2 s‖ * ‖u.lo.deriv s‖) := by
+      ∫ s in (0 : ℝ)..t, 2 * (‖u.highRegularity s‖ * ‖u.lowRegularity.deriv s‖) := by
   rw [u.energyIdentity hT ht]
   have hsub : Set.Ioc (0 : ℝ) t ⊆ Set.Icc (0 : ℝ) T :=
     fun x hx => ⟨le_of_lt hx.1, le_trans hx.2 ht.2⟩
-  have hbound_eq : (∫ s in (0 : ℝ)..t, 2 * (‖u.hiL2 s‖ * ‖u.lo.deriv s‖)) =
-      ∫ s, (2 * (‖u.hiL2 s‖ * ‖u.lo.deriv s‖)) ∂(volume.restrict (Set.Ioc (0 : ℝ) t)) := by
+  have hbound_eq : (∫ s in (0 : ℝ)..t, 2 * (‖u.highRegularity s‖ * ‖u.lowRegularity.deriv s‖)) =
+      ∫ s, (2 * (‖u.highRegularity s‖ * ‖u.lowRegularity.deriv s‖)) ∂(volume.restrict (Set.Ioc (0 : ℝ) t)) := by
     rw [intervalIntegral.integral_of_le ht.1]
   rw [hbound_eq]
   set μ : Measure ℝ := volume.restrict (Set.Ioc (0 : ℝ) t) with hμ
-  have hbound_int : Integrable (fun s => 2 * (‖u.hiL2 s‖ * ‖u.lo.deriv s‖)) μ :=
+  have hbound_int : Integrable (fun s => 2 * (‖u.highRegularity s‖ * ‖u.lowRegularity.deriv s‖)) μ :=
     u.integrableOn_energyBound.mono_set hsub
   have haebnd := ae_restrict_of_ae_restrict_of_subset (μ := volume) hsub
     u.ae_finset_abs_energyIntegrand_le
   have hpartial : ∀ S : Finset (TensorEigenIdx (I := I) (M := M) g r s),
       ∑ i ∈ S, (∫ s in (0 : ℝ)..t, u.energyIntegrand i s) ≤
-        ∫ s, (2 * (‖u.hiL2 s‖ * ‖u.lo.deriv s‖)) ∂μ := by
+        ∫ s, (2 * (‖u.highRegularity s‖ * ‖u.lowRegularity.deriv s‖)) ∂μ := by
     intro S
     have hfin_int : ∀ i ∈ S, Integrable (u.energyIntegrand i) μ :=
       fun i _ => u.integrableOn_energyIntegrand i ht
@@ -280,7 +280,7 @@ theorem normSq_repr_le_initial_add_integral (hT : 0 < T) {t : ℝ} (ht : t ∈ I
     calc ∑ i ∈ S, u.energyIntegrand i s
         ≤ ∑ i ∈ S, |u.energyIntegrand i s| :=
           Finset.sum_le_sum (fun i _ => le_abs_self _)
-      _ ≤ 2 * (‖u.hiL2 s‖ * ‖u.lo.deriv s‖) := hs S
+      _ ≤ 2 * (‖u.highRegularity s‖ * ‖u.lowRegularity.deriv s‖) := hs S
   have htsum_le := (u.summable_intervalIntegral_energyIntegrand ht).tsum_le_of_sum_le hpartial
   linarith [htsum_le]
 

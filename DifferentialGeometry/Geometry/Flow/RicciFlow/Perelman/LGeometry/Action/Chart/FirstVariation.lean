@@ -17,7 +17,7 @@ open DifferentialGeometry.Analysis.Parabolic.TimeSobolev
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator
-open DifferentialGeometry.Geometry.Riemannian.Variation.Aux5
+open DifferentialGeometry.Geometry.Riemannian.Variation.ChartCoordinateExpansion
 open DifferentialGeometry.Integral.DivergenceTheorem
 open DifferentialGeometry.Integral.Measure
 

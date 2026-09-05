@@ -490,7 +490,7 @@ theorem maximalGeodesic_cauchySeq_of_tendsto_sup
 omit [Module.Finite ℝ E] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
  [RiemannianBundle (fun (x : M) ↦ TangentSpace I x)]
   [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M] in
-theorem maximalGeodesic_limit_exists_tangent_speed_eq
+theorem exists_maximalGeodesic_limit_tangent_speed_eq
     (g : SmoothRiemannianMetric I M) (p : M) (v : TangentSpace I p)
     {y : M} :
     ∃ w : TangentSpace I y,
@@ -649,7 +649,7 @@ attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [Module.Finite ℝ E] [NeZero (Module.finrank ℝ E)]
   [I.Boundaryless] [IsManifold I ∞ M] [T2Space M] [SigmaCompactSpace M] in
-theorem curve_exists_limit_of_bounded_speed
+theorem exists_curve_limit_of_bounded_speed
     {γ : ℝ → M} {a b c : ℝ} (hab : a < b) (hc_nonneg : 0 ≤ c)
     (hγ_smooth : ContMDiffOn 𝓘(ℝ, ℝ) I 1 γ (Set.Ioo a b))
     (hSpeedBound : ∀ τ ∈ Set.Ioo a b,

@@ -31,7 +31,7 @@ variable {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
 namespace BoundedGeometryNormalChartData
 
 theorem stage_root_tail
-    (inp : MetricCompactCore (I := I) X)
+    (inp : MetricCompactSeedWithDivisor (I := I) X)
     (d : BoundedGeometryNormalChartData (I := I) X inp.decay)
     (aMin : Real) (haMin : 0 < aMin)
     (hphys : 8 * Real.exp inp.decay.C < aMin * inp.D)
@@ -328,18 +328,18 @@ theorem stage_root_tail
   let muM := fun (y : Yk.M) (gamma : Fin (inp.pack.A r)) =>
     rawWeights
       (cutRaw
-        (seqAtom inp.decay inp.hD P Lphi inp.pack r k i0)
-        (seqAtom inp.decay inp.hD P Lphi inp.pack r k) i0)
+        (seqAtom inp.decay inp.divisor_pos P Lphi inp.pack r k i0)
+        (seqAtom inp.decay inp.divisor_pos P Lphi inp.pack r k) i0)
       y gamma
   let qstarM : Yk.M → Yl.M := fun _ => p
   let pM : Yk.M → Yl.M := fun _ => p
   let radM : Yk.M → Real := fun _ => rad
   have hseqAtom :
-      seqAtom inp.decay inp.hD P Lphi inp.pack r k =
-        seqAtom inp.decay inp.hD P L inp.pack r (phi k) := by
+      seqAtom inp.decay inp.divisor_pos P Lphi inp.pack r k =
+        seqAtom inp.decay inp.divisor_pos P L inp.pack r (phi k) := by
     funext gamma
     simpa only [Lphi] using
-      seqAtom_subseq inp.decay inp.hD P L inp.pack r hphi k gamma
+      seqAtom_subseq inp.decay inp.divisor_pos P L inp.pack r hphi k gamma
   have hmu : muM x = mu z := by
     funext gamma
     dsimp only [muM, x, mu, i0]
@@ -363,7 +363,7 @@ theorem stage_root_tail
         htgtTail k hkTarget l hlTarget alpha z hzU gamma hi
       dsimp only at hdecode
       simpa only [x, stagePoints, chiK, Lphi] using hdecode.1.symm
-  have hcmM : CenterInput (I := I) Yl.metric (muM x)
+  have hcmM : CenterOfMassConditions (I := I) Yl.metric (muM x)
       (centerAverage.activeFill muM
         (stageTarget inp P Lphi r k l (chart := d.chart))
         qstarM x) join (pM x) (radM x) := by
@@ -417,7 +417,7 @@ theorem stage_root_tail
 end BoundedGeometryNormalChartData
 
 theorem HasSupportedCenterMapConvergenceOn.stage_jet_of_root
-    (inp : MetricCompactCore (I := I) X)
+    (inp : MetricCompactSeedWithDivisor (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P) {r : Real} (hr : 0 ≤ r)
     (phi : Nat → Nat) (hphi : StrictMono phi)
@@ -591,7 +591,7 @@ theorem HasSupportedCenterMapConvergenceOn.stage_jet_of_root
   simpa only [Psi] using hout
 
 theorem HasSupportedCenterMapConvergenceOn.stage_jet_tail
-    (inp : MetricCompactCore (I := I) X)
+    (inp : MetricCompactSeedWithDivisor (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P) {r : Real} (hr : 0 ≤ r)
     (phi : Nat → Nat) (hphi : StrictMono phi)
@@ -637,7 +637,7 @@ theorem HasSupportedCenterMapConvergenceOn.stage_jet_tail
 namespace BoundedGeometryNormalChartData
 
 theorem stage_jet_tail
-    (inp : MetricCompactCore (I := I) X)
+    (inp : MetricCompactSeedWithDivisor (I := I) X)
     (d : BoundedGeometryNormalChartData (I := I) X inp.decay)
     (aMin : Real) (haMin : 0 < aMin)
     (hphys : 8 * Real.exp inp.decay.C < aMin * inp.D)
@@ -756,7 +756,7 @@ theorem stage_jet_tail
   · exact heps
 
 theorem stage_base_tail
-    (inp : MetricCompactCore (I := I) X)
+    (inp : MetricCompactSeedWithDivisor (I := I) X)
     (d : BoundedGeometryNormalChartData (I := I) X inp.decay)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P)
@@ -769,7 +769,7 @@ theorem stage_base_tail
       (chart := d.chart)
 
 theorem exists_support_base
-    (inp : MetricCompactCore (I := I) X)
+    (inp : MetricCompactSeedWithDivisor (I := I) X)
     (d : BoundedGeometryNormalChartData (I := I) X inp.decay)
     (aMin : Real)
     (hphys : 8 * Real.exp inp.decay.C < aMin * inp.D)
@@ -799,13 +799,13 @@ theorem exists_support_base
         HasStageBaseTail inp P L hr phi hphi
           (chart := d.chart) := by
   obtain ⟨phi, hphi, U, C0, C1, aInf, Jinf, Jbarinf, hdata⟩ :=
-    d.exists_support_data inp aMin hphys P L hstable hcomplete hconn
+    d.exists_supported_center_map_convergence inp aMin hphys P L hstable hcomplete hconn
       r hr hratio
   exact ⟨phi, hphi, U, C0, C1, aInf, Jinf, Jbarinf, hdata,
     d.stage_base_tail inp P L hr phi hphi⟩
 
 theorem exists_support_metric
-    (inp : MetricCompactCore (I := I) X)
+    (inp : MetricCompactSeedWithDivisor (I := I) X)
     (d : BoundedGeometryNormalChartData (I := I) X inp.decay)
     (aMin : Real)
     (hphys : 8 * Real.exp inp.decay.C < aMin * inp.D)
@@ -886,7 +886,7 @@ theorem exists_support_metric
       (hdata.core_on inp P L r hr d.chart U C0 C1
         aInf Jinf Jbarinf alpha).2.2.2.2
     let Ralpha := L.rInf (alpha.1 : Nat) + 1
-    have hhalf := lamInf_lt_halfMin inp.decay inp.hD hphys P L
+    have hhalf := lamInf_lt_halfMin inp.decay inp.divisor_pos hphys P L
       (alpha.1 : Nat)
     have hmu : 0 < inp.decay.mu Ralpha := inp.decay.mu_pos Ralpha
     have hprod :
@@ -894,7 +894,7 @@ theorem exists_support_metric
           d.ratio * inp.decay.mu Ralpha :=
       mul_lt_mul_of_pos_right hratio hmu
     have hlam : 0 < L.lamInf (alpha.1 : Nat) :=
-      inp.decay.lambda_pos inp.hD (L.rInf (alpha.1 : Nat))
+      inp.decay.lambda_pos inp.divisor_pos (L.rInf (alpha.1 : Nat))
     have height :
         8 * L.lamInf (alpha.1 : Nat) <
           aMin * inp.decay.mu Ralpha := by
@@ -921,8 +921,8 @@ theorem exists_support_metric
   exact ⟨phi, hphi, V, U, C0, C1, aInf, Jinf, Jbarinf, gInf,
     fun _alpha => rfl, hcenter', hdata, hstageMetric, hbase⟩
 
-theorem stage_data_of
-    (inp : MetricCompactCore (I := I) X)
+theorem stage_jet_convergence_of_supported_center_maps_and_metrics
+    (inp : MetricCompactSeedWithDivisor (I := I) X)
     (d : BoundedGeometryNormalChartData (I := I) X inp.decay)
     (aMin : Real) (haMin : 0 < aMin)
     (hphys : 8 * Real.exp inp.decay.C < aMin * inp.D)
@@ -977,7 +977,7 @@ theorem stage_data_of
                 (E × E) →L[Real] (E × E))‖₊⁻¹ -
               PhaseFlow.phaseErr (d.phaseK (2 * q gamma)))⁻¹ *
             PhaseFlow.phaseErr (d.phaseK (2 * q gamma)) < 1 / 24) :
-    HasStageJetDataOn (I := I) inp P L hr phi hphi d.chart
+    HasStageJetConvergenceOn (I := I) inp P L hr phi hphi d.chart
       V U C0 C1 aInf Jinf Jbarinf gInf := by
   classical
   obtain ⟨deltaStage, _deltaInf, e, _eInf, hpair, hstage⟩ :=
@@ -1156,7 +1156,7 @@ theorem stage_data_of
     have hC1U : C1 alpha ⊆ U alpha :=
       (hdata.core_on inp P L r hr d.chart U C0 C1
         aInf Jinf Jbarinf alpha).2.2.2.2
-    have hlam := lamInf_lt_halfMin inp.decay inp.hD hphys P L
+    have hlam := lamInf_lt_halfMin inp.decay inp.divisor_pos hphys P L
       (alpha.1 : Nat)
     rcases hqdata alpha with
       ⟨_hq, _hrho, hrhoq, _hqWide, _hqAcc, _herr, _hinvErr⟩
@@ -1238,8 +1238,8 @@ theorem stageScale_ratio
     _ = d.ratio / 2 := by ring
     _ < d.ratio := half_lt_self d.ratio_pos
 
-theorem stage_data
-    (inp : MetricCompactCore (I := I) X)
+theorem exists_stage_jet_convergence
+    (inp : MetricCompactSeedWithDivisor (I := I) X)
     (d : BoundedGeometryNormalChartData (I := I) X inp.decay)
     (hcomplete : SeqMetricComplete (I := I) X)
     (hconn : ∀ k,
@@ -1263,7 +1263,7 @@ theorem stage_data
           InterSlot L inp.pack r alpha → E → E)
         (gInf : LiveSlot L inp.pack r →
           E → (E →L[Real] E →L[Real] Real)),
-      HasStageJetDataOn (I := I) inp P L hr phi hphi d.chart
+      HasStageJetConvergenceOn (I := I) inp P L hr phi hphi d.chart
         V U C0 C1 aInf Jinf Jbarinf gInf := by
   classical
   let aBase := baseScale d inp.realizes hcomplete hconn
@@ -1318,12 +1318,12 @@ theorem stage_data
     d.exists_support_metric inp aMin hphys P L hstable hcomplete hconn
       r hr hratio
   refine ⟨phi, hphi, V, U, C0, C1, aInf, Jinf, Jbarinf, gInf, ?_⟩
-  exact d.stage_data_of inp aMin haMin hphys hratio P L hstable hr
+  exact d.stage_jet_convergence_of_supported_center_maps_and_metrics inp aMin haMin hphys hratio P L hstable hr
     phi hphi V U C0 C1 aInf Jinf Jbarinf gInf hV hdata hmetric
     hcomplete hconn hbase (fun n alpha => (hcenter n alpha).le) q hqdata
 
-theorem exists_stage_data
-    (inp : MetricCompactCore (I := I) X)
+theorem exists_scale_with_stage_jet_convergence
+    (inp : MetricCompactSeedWithDivisor (I := I) X)
     (d : BoundedGeometryNormalChartData (I := I) X inp.decay)
     (hcomplete : SeqMetricComplete (I := I) X)
     (hconn : ∀ k,
@@ -1347,16 +1347,16 @@ theorem exists_stage_data
               InterSlot L inp.pack r alpha → E → E)
             (gInf : LiveSlot L inp.pack r →
               E → (E →L[Real] E →L[Real] Real)),
-          HasStageJetDataOn (I := I) inp P L hr phi hphi d.chart
+          HasStageJetConvergenceOn (I := I) inp P L hr phi hphi d.chart
             V U C0 C1 aInf Jinf Jbarinf gInf := by
   refine ⟨d.stageScale inp.realizes hcomplete hconn,
     d.stageScale_pos inp.realizes hcomplete hconn,
     d.stageScale_ratio inp.realizes hcomplete hconn, ?_⟩
   intro hphys P L hstable r hr
-  exact d.stage_data inp hcomplete hconn hphys P L hstable r hr
+  exact d.exists_stage_jet_convergence inp hcomplete hconn hphys P L hstable r hr
 
 theorem stage_diag
-    (inp : MetricCompactCore (I := I) X)
+    (inp : MetricCompactSeedWithDivisor (I := I) X)
     (d : BoundedGeometryNormalChartData (I := I) X inp.decay)
     (hcomplete : SeqMetricComplete (I := I) X)
     (hconn : ∀ k,
@@ -1370,17 +1370,17 @@ theorem stage_diag
     ∃ (hseed : HasStageSeedOn inp P L0 d.chart)
         (psi : Nat → Nat) (_hpsi : StrictMono psi),
       ∀ q : Nat,
-        HasRadiusTailOn inp P L0 hconn d.chart hseed psi q := by
+        HasRadiusTailOn inp P L0 d.chart hseed psi q := by
   have hseed : HasStageSeedOn inp P L0 d.chart := by
     refine ⟨hstable, ?_⟩
     intro L hstableL r hr
-    exact d.stage_data inp hcomplete hconn hphys P L hstableL r hr
+    exact d.exists_stage_jet_convergence inp hcomplete hconn hphys P L hstableL r hr
   obtain ⟨psi, hpsi, htail⟩ :=
-    hseed.exists_radius_diag inp P L0 hconn d.chart
+    hseed.exists_radius_diag inp P L0 d.chart
   exact ⟨hseed, psi, hpsi, htail⟩
 
 theorem exists_stage_diag
-    (inp : MetricCompactCore (I := I) X)
+    (inp : MetricCompactSeedWithDivisor (I := I) X)
     (d : BoundedGeometryNormalChartData (I := I) X inp.decay)
     (hcomplete : SeqMetricComplete (I := I) X)
     (hconn : ∀ k,
@@ -1394,7 +1394,7 @@ theorem exists_stage_diag
         ∃ (hseed : HasStageSeedOn inp P L0 d.chart)
             (psi : Nat → Nat) (_hpsi : StrictMono psi),
           ∀ q : Nat,
-            HasRadiusTailOn inp P L0 hconn d.chart hseed psi q := by
+            HasRadiusTailOn inp P L0 d.chart hseed psi q := by
   refine ⟨d.stageScale inp.realizes hcomplete hconn,
     d.stageScale_pos inp.realizes hcomplete hconn,
     d.stageScale_ratio inp.realizes hcomplete hconn, ?_⟩

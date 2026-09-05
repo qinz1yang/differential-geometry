@@ -24,7 +24,7 @@ open DifferentialGeometry.PDE.DeTurck.RicciLinearization
 open DifferentialGeometry.Analysis.Spectral.MetricRealization
 open DifferentialGeometry.Analysis.Spectral.DeTurck
 open DifferentialGeometry.Analysis.Spectral.DeTurckCoefficients
-open DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroCore
+open DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroFiberOperators
 
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]

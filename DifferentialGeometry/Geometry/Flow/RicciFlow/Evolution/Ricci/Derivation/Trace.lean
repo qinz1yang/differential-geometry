@@ -209,7 +209,7 @@ theorem rm13OfSolution
     (S : SolutionOn (I := I) (M := M) D) (s : Real) :
     DifferentialGeometry.Geometry.Curvature.rm13RealizesConnection (I := I)
       (S.family.connection s) (S.base.rm13 s) := by
-  have h := (metricCurvData (I := I) (M := M) (S.base.metric s)).rm13Realizes
+  have h := (metricCurvatureSections (I := I) (M := M) (S.base.metric s)).rm13Realizes
   change DifferentialGeometry.Geometry.Curvature.rm13RealizesConnection (I := I)
     (metricCov (I := I) (M := M) (S.base.metric s))
     (metricRm13 (I := I) (M := M) (S.base.metric s)) at h
@@ -224,7 +224,7 @@ theorem ricciTraceOfSolution
     (S : SolutionOn (I := I) (M := M) D) (s : Real) :
     DifferentialGeometry.Geometry.Curvature.ricciTensorRealizesRm13Trace (I := I)
       (S.ricci s) (S.base.rm13 s) := by
-  have h := (metricCurvData (I := I) (M := M) (S.base.metric s)).ricciRealizes
+  have h := (metricCurvatureSections (I := I) (M := M) (S.base.metric s)).ricciRealizes
   change DifferentialGeometry.Geometry.Curvature.ricciTensorRealizesRm13Trace (I := I)
     (metricRicci (I := I) (M := M) (S.base.metric s))
     (metricRm13 (I := I) (M := M) (S.base.metric s)) at h

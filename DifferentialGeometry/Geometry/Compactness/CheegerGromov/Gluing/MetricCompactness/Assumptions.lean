@@ -22,7 +22,7 @@ variable {H : Type uH} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H}
 variable [I.Boundaryless]
 
-structure MetricCompactCore
+structure MetricCompactSeedWithDivisor
     (X : PointedRiemannianSeq.{u, uE, uH} (I := I)) where
 
   decay : InjectivityRadiusDecay (I := I) X
@@ -30,7 +30,7 @@ structure MetricCompactCore
   packAll : ∀ D : Real, 0 < D → decay.PackingBound D
 
   D : Real
-  hD : 0 < D
+  divisor_pos : 0 < D
 
   pack : decay.PackingBound D
 
@@ -60,11 +60,11 @@ def withDivisor
     (hcap :
       max 4 (50 * Real.exp (s.decay.C * (20 * s.decay.lambda D 0))) *
         s.decay.lambda D 0 ≤ s.volume.r0) :
-    MetricCompactCore (I := I) X where
+    MetricCompactSeedWithDivisor (I := I) X where
   decay := s.decay
   packAll := s.packAll
   D := D
-  hD := hD
+  divisor_pos := hD
   pack := s.packAll D hD
   volume := s.volume
   dist_eq := s.dist_eq
@@ -142,11 +142,11 @@ theorem exists_admissible_divisor
 
 end MetricCompactSeed
 
-namespace MetricCompactCore
+namespace MetricCompactSeedWithDivisor
 
 theorem exists_stable_net
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    (inp : MetricCompactCore (I := I) X)
+    (inp : MetricCompactSeedWithDivisor (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k)) :
     ∃ L : NetLimitData inp.decay inp.D P,
       ∀ α β : Nat,
@@ -154,9 +154,9 @@ theorem exists_stable_net
           BInter inp.decay inp.D P L.lamInf α β (L.φ k)) ∨
         (∀ᶠ k in atTop,
           ¬ BInter inp.decay inp.D P L.lamInf α β (L.φ k)) :=
-  exists_stableNetData inp.decay inp.hD P
+  exists_netLimitData_with_stable_intersections inp.decay inp.divisor_pos P
 
-end MetricCompactCore
+end MetricCompactSeedWithDivisor
 
 noncomputable def properMetricsOfCompleteConnected
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
@@ -339,14 +339,14 @@ theorem exists_large_divisor_for_exponential_scales
 
 end MetricCompactBase
 
-structure MetricCompactnessInputs
+structure MetricCompactnessAssumptions
     (X : PointedRiemannianSeq.{u, uE, uH} (I := I)) where
   decay : InjectivityRadiusDecay (I := I) X
 
   packAll : ∀ D : Real, 0 < D → decay.PackingBound D
 
   D : Real
-  hD : 0 < D
+  divisor_pos : 0 < D
   pack : decay.PackingBound D
   volume : BallMultiplicityBound (I := I) X
   dist_eq : volume.dist = decay.dist
@@ -359,16 +359,16 @@ structure MetricCompactnessInputs
 
   normalRadius : NormalRadiusProfile decay normalBounds
 
-namespace MetricCompactnessInputs
+namespace MetricCompactnessAssumptions
 
-def toCore
+def toSeedWithDivisor
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    (inp : MetricCompactnessInputs (I := I) X) :
-    MetricCompactCore (I := I) X where
+    (inp : MetricCompactnessAssumptions (I := I) X) :
+    MetricCompactSeedWithDivisor (I := I) X where
   decay := inp.decay
   packAll := inp.packAll
   D := inp.D
-  hD := inp.hD
+  divisor_pos := inp.divisor_pos
   pack := inp.pack
   volume := inp.volume
   dist_eq := inp.dist_eq
@@ -377,13 +377,13 @@ def toCore
 
 instance
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)} :
-    Coe (MetricCompactnessInputs (I := I) X)
-      (MetricCompactCore (I := I) X) :=
-  ⟨toCore⟩
+    Coe (MetricCompactnessAssumptions (I := I) X)
+      (MetricCompactSeedWithDivisor (I := I) X) :=
+  ⟨toSeedWithDivisor⟩
 
 def toBase
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    (inp : MetricCompactnessInputs (I := I) X) :
+    (inp : MetricCompactnessAssumptions (I := I) X) :
     MetricCompactBase (I := I) X where
   decay := inp.decay
   pack := inp.packAll
@@ -399,11 +399,11 @@ def ofBase
     (hcap :
       max 4 (50 * Real.exp (b.decay.C * (20 * b.decay.lambda D 0))) *
         b.decay.lambda D 0 ≤ b.volume.r0) :
-    MetricCompactnessInputs (I := I) X where
+    MetricCompactnessAssumptions (I := I) X where
   decay := b.decay
   packAll := b.pack
   D := D
-  hD := hD
+  divisor_pos := hD
   pack := b.pack D hD
   volume := b.volume
   dist_eq := b.dist_eq
@@ -415,7 +415,7 @@ def ofBase
 theorem exists_of_base
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (b : MetricCompactBase (I := I) X) (c : Real) :
-    ∃ inp : MetricCompactnessInputs (I := I) X,
+    ∃ inp : MetricCompactnessAssumptions (I := I) X,
       1 < inp.D ∧ inp.decay.mu 0 ≤ inp.D ∧
         c < inp.normalRadius.metricCoerciveRatio * inp.D := by
   obtain ⟨D, hD_one, hmuD, hc, hcap⟩ := b.exists_large_divisor c
@@ -428,7 +428,7 @@ theorem exists_of_base
 theorem exists_of_base_with_exponential_scale_bounds
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (b : MetricCompactBase (I := I) X) (c₀ : Real) :
-    ∃ inp : MetricCompactnessInputs (I := I) X,
+    ∃ inp : MetricCompactnessAssumptions (I := I) X,
       1 < inp.D ∧ inp.decay.mu 0 ≤ inp.D ∧
       c₀ < inp.normalRadius.metricCoerciveRatio * inp.D ∧
       (8 : Real) < inp.normalRadius.metricCoerciveRatio * inp.D ∧
@@ -450,7 +450,7 @@ theorem exists_of_base_with_exponential_scale_bounds
 
 theorem physScale_of_extra
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    (inp : MetricCompactnessInputs (I := I) X) {aMin : Real}
+    (inp : MetricCompactnessAssumptions (I := I) X) {aMin : Real}
     (haMin : 0 < aMin)
     (hextra :
       (8 * Real.exp inp.decay.C / aMin) * inp.normalRadius.metricCoerciveRatio <
@@ -463,7 +463,7 @@ theorem physScale_of_extra
 
 theorem exponential_scale_tails
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    (inp : MetricCompactnessInputs (I := I) X)
+    (inp : MetricCompactnessAssumptions (I := I) X)
     (h8 : (8 : Real) < inp.normalRadius.metricCoerciveRatio * inp.D)
     (hradRatio : 2 * exponentialBallRadiusFactor inp.decay inp.D <
       inp.normalRadius.ratio * inp.D)
@@ -472,8 +472,8 @@ theorem exponential_scale_tails
     ExponentialRadiusScaleTail (I := I) inp.decay inp.D P L inp.pack r ∧
       ExponentialBallRadiusTail (I := I) inp.decay inp.D P L inp.pack r
         (exponentialBallRadiusFactor inp.decay inp.D) := by
-  exact ⟨inp.normalRadius.metricCoerciveRatio_scale_tail inp.hD h8 P inp.realizes L inp.pack r,
-    inp.normalRadius.radius_scale_tail inp.hD
+  exact ⟨inp.normalRadius.metricCoerciveRatio_scale_tail inp.divisor_pos h8 P inp.realizes L inp.pack r,
+    inp.normalRadius.radius_scale_tail inp.divisor_pos
       (exponential_ball_radius_factor_pos inp.decay inp.D) hradRatio
       P inp.realizes L inp.pack r⟩
 
@@ -490,11 +490,11 @@ def ofUniformVolume
     (realizes : decay.RealizesDistance)
     (normalBounds : NormalCoordMetricBounds (I := I) X)
     (normalRadius : NormalRadiusProfile decay normalBounds) :
-    MetricCompactnessInputs (I := I) X where
+    MetricCompactnessAssumptions (I := I) X where
   decay := decay
   packAll := packAll
   D := D
-  hD := hD
+  divisor_pos := hD
   pack := packAll D hD
   volume := vol.toBallMultiplicityBound
   dist_eq := by
@@ -510,12 +510,12 @@ def ofUniformVolume
 
 def subseq
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    (inp : MetricCompactnessInputs (I := I) X) (f : Nat -> Nat) :
-    MetricCompactnessInputs (I := I) (X.subseq f) where
+    (inp : MetricCompactnessAssumptions (I := I) X) (f : Nat -> Nat) :
+    MetricCompactnessAssumptions (I := I) (X.subseq f) where
   decay := inp.decay.subseq f
   packAll := fun D hD => (inp.packAll D hD).subseq f
   D := inp.D
-  hD := inp.hD
+  divisor_pos := inp.divisor_pos
   pack := inp.pack.subseq f
   volume := inp.volume.subseq f
   dist_eq := by
@@ -530,7 +530,7 @@ def subseq
   normalBounds := inp.normalBounds.subseq f
   normalRadius := inp.normalRadius.subseq f
 
-end MetricCompactnessInputs
+end MetricCompactnessAssumptions
 
 
 end CheegerGromovCompactness

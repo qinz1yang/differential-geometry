@@ -23,8 +23,8 @@ lemma restrict_center
     {x₁ : E} {r' : ℝ≥0}
     (hsub : closedBall x₁ (r' : ℝ) ⊆ closedBall x₀ (r : ℝ)) :
     IsLocalFlow f t₀ x₁ r' tmin tmax Φ where
-  htmin_le := hΦ.htmin_le
-  ht₀_le := hΦ.ht₀_le
+  minTime_le_initial := hΦ.minTime_le_initial
+  initial_le_maxTime := hΦ.initial_le_maxTime
   apply_initial := fun x hx => hΦ.apply_initial x (hsub hx)
   hasDerivWithinAt := fun x hx t ht => hΦ.hasDerivWithinAt x (hsub hx) t ht
   continuousOn := hΦ.continuousOn.mono (fun p hp => ⟨hsub hp.1, hp.2⟩)

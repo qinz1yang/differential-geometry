@@ -1139,7 +1139,7 @@ private lemma partialDeriv2_chartGramOnE_joint_continuousOn_of_manifold_Icc
 
 omit [I.Boundaryless] [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem deturck_vf_chartFrame_continuity_data
+theorem deturck_vf_chartFrame_continuousOn
     (g_DT : ℝ → SmoothRiemannianMetric I M) (g_bg : SmoothRiemannianMetric I M)
     (T : ℝ)
     (h_gram0 : ∀ (α : M) (i j : Fin (Module.finrank ℝ E)),

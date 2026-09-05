@@ -60,8 +60,8 @@ structure SmoothEllipticBilinearForm
   smooth_c : ContDiff ℝ (⊤ : ℕ∞) c
   lam : ℝ
   capLam : ℝ
-  hlam_pos : 0 < lam
-  hlam_le_capLam : lam ≤ capLam
+  ellipticity_pos : 0 < lam
+  ellipticity_le_upper : lam ≤ capLam
   coercive : ∀ x ∈ Ω, ∀ ξ : EuclideanSpace ℝ (Fin d),
     lam * ‖ξ‖ ^ 2 ≤ ⟪ξ, DeGiorgi.matMulE (a x) ξ⟫_ℝ
 
@@ -80,10 +80,10 @@ theorem continuous_c {Ω : Set E} (B : SmoothEllipticBilinearForm d Ω) :
   B.smooth_c.continuous
 
 theorem lam_nonneg {Ω : Set E} (B : SmoothEllipticBilinearForm d Ω) :
-    0 ≤ B.lam := B.hlam_pos.le
+    0 ≤ B.lam := B.ellipticity_pos.le
 
 theorem capLam_pos {Ω : Set E} (B : SmoothEllipticBilinearForm d Ω) :
-    0 < B.capLam := lt_of_lt_of_le B.hlam_pos B.hlam_le_capLam
+    0 < B.capLam := lt_of_lt_of_le B.ellipticity_pos B.ellipticity_le_upper
 
 theorem capLam_nonneg {Ω : Set E} (B : SmoothEllipticBilinearForm d Ω) :
     0 ≤ B.capLam := B.capLam_pos.le

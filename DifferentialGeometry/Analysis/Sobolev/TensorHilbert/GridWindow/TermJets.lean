@@ -155,7 +155,7 @@ theorem exists_ricciConnectionDifferenceQuadraticTerm_markWindow (g₀ : SmoothR
       (hasMarkedGridWindow_slotExtend (I := I) (M := M) g₀ P (hasMarkedGridWindow_slotExtend (I := I) (M := M) g₀ P hcdP))
   have hShapeA : ∀ (ρ : Equiv.Perm (Fin 4)) (ρ' : Equiv.Perm (Fin 3)),
       HasMarkedGridWindow (I := I) (M := M) g₀ P
-        (aaCoreP (I := I) (M := M) g₀ g₁ ρ ρ') 2 KA := by
+        (doublyPermutedConnectionDifferenceQuadraticCoefficient (I := I) (M := M) g₀ g₁ ρ ρ') 2 KA := by
     intro ρ ρ'
     have hinner : HasMarkedGridWindow (I := I) (M := M) g₀ P
         (ccOperatorFieldComp (I := I) (M := M) g₀ 2 3 3 (permCoeff (I := I) (M := M) g₀ ρ')
@@ -167,32 +167,32 @@ theorem exists_ricciConnectionDifferenceQuadraticTerm_markWindow (g₀ : SmoothR
           (ccOperatorFieldComp (I := I) (M := M) g₀ 2 3 3 (permCoeff (I := I) (M := M) g₀ ρ')
             (connectionDifferenceContrInsertionInnerField (I := I) g₀ g₁))) 2 KMA := by
       simpa using hasMarkedGridWindow_operatorFieldComp (I := I) (M := M) g₀ P _ _ hKIns_nn hKIC_nn hIns hinner
-    simpa only [aaCoreP, hKA_def] using
+    simpa only [doublyPermutedConnectionDifferenceQuadraticCoefficient, hKA_def] using
       hasMarkedGridWindow_operatorFieldComp (I := I) (M := M) g₀ P _ _
         hSP4_nn hKMA_nn (hP4 ρ) hmid
   have hShapeB : ∀ ρ : Equiv.Perm (Fin 4),
-      HasMarkedGridWindow (I := I) (M := M) g₀ P (aaCore (I := I) (M := M) g₀ g₁ ρ) 2 KB := by
+      HasMarkedGridWindow (I := I) (M := M) g₀ P (permutedConnectionDifferenceQuadraticCoefficient (I := I) (M := M) g₀ g₁ ρ) 2 KB := by
     intro ρ
     have hmid : HasMarkedGridWindow (I := I) (M := M) g₀ P
         (ccOperatorFieldComp (I := I) (M := M) g₀ 2 3 4
           (connectionDifferenceContravariantInsertionField (I := I) g₀ g₁)
           (connectionDifferenceContrInsertionInnerField (I := I) g₀ g₁)) 2 KMB := by
       simpa using hasMarkedGridWindow_operatorFieldComp (I := I) (M := M) g₀ P _ _ hKIns_nn hKInn_nn hIns hInn
-    simpa only [aaCore, hKB_def] using
+    simpa only [permutedConnectionDifferenceQuadraticCoefficient, hKB_def] using
       hasMarkedGridWindow_operatorFieldComp (I := I) (M := M) g₀ P _ _
         hSP4_nn hKMB_nn (hP4 ρ) hmid
   have hA' : ∀ (ρ : Equiv.Perm (Fin 4)) (ρ' : Equiv.Perm (Fin 3)),
-      HasMarkedGridWindow (I := I) (M := M) g₀ P (aaCoreP (I := I) (M := M) g₀ g₁ ρ ρ') 2 KQ :=
+      HasMarkedGridWindow (I := I) (M := M) g₀ P (doublyPermutedConnectionDifferenceQuadraticCoefficient (I := I) (M := M) g₀ g₁ ρ ρ') 2 KQ :=
     fun ρ ρ' => hasMarkedGridWindow_mono (I := I) (M := M) g₀ P
       (fun i => by have := hKB_nn i; simp only [hKQ_def]; linarith) (hShapeA ρ ρ')
   have hB' : ∀ ρ : Equiv.Perm (Fin 4),
-      HasMarkedGridWindow (I := I) (M := M) g₀ P (aaCore (I := I) (M := M) g₀ g₁ ρ) 2 KQ :=
+      HasMarkedGridWindow (I := I) (M := M) g₀ P (permutedConnectionDifferenceQuadraticCoefficient (I := I) (M := M) g₀ g₁ ρ) 2 KQ :=
     fun ρ => hasMarkedGridWindow_mono (I := I) (M := M) g₀ P
       (fun i => by have := hKA_nn i; simp only [hKQ_def]; linarith) (hShapeB ρ)
   have hKer : HasMarkedGridWindow (I := I) (M := M) g₀ P
       (ricciConnectionDifferenceQuadraticKernel (I := I) (M := M) g₀ g₁) 2 (fun i => 94 * KQ i) := by
     refine hasMarkedGridWindow_congr (I := I) (M := M) g₀ P
-      (aaKerSplit (I := I) (M := M) g₀ g₁) ?_
+      (ricciConnectionDifferenceQuadraticKernel_eq_sum (I := I) (M := M) g₀ g₁) ?_
     refine hasMarkedGridWindow_mono (I := I) (M := M) g₀ P ?_
       (hasMarkedGridWindow_add (I := I) (M := M) g₀ P
         (hasMarkedGridWindow_add (I := I) (M := M) g₀ P

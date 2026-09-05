@@ -29,7 +29,7 @@ variable [T2Space M] [IsManifold I ∞ M] [SigmaCompactSpace M]
 
 local instance : IsManifold I ((∞ : WithTop ℕ∞) + 1) M := by
   simpa using (inferInstance : IsManifold I (∞ : WithTop ℕ∞) M)
-structure MetricAllTimesFirstOrderInput
+structure MetricFirstOrderWindowBoundsAssumptions
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     (K u : Set M) (β ψ t0 : Real)
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
@@ -41,32 +41,32 @@ structure MetricAllTimesFirstOrderInput
           (I := I) (M := M) 2 x)
     (A : Real) where
   base :
-    MetricAllTimesBoundsInput (I := I) K β ψ t0
+    MetricWindowBoundsAssumptions (I := I) K β ψ t0
       (fun i t => (SSeq i).family.metric t) gRef
-  log_input :
-    MetricLogDerivativeInput (I := I) K β ψ t0
+  log_derivative :
+    MetricLogDerivativeAssumptions (I := I) K β ψ t0
       (fun i t => (SSeq i).family.metric t) T A
   frame : Idx -> (x : M) -> TangentSpace I x
-  hframe : IsLocalFrameOn I E (∞ : WithTop ℕ∞) frame u
-  hu : IsOpen u
+  frame_isLocal : IsLocalFrameOn I E (∞ : WithTop ℕ∞) frame u
+  domain_isOpen : IsOpen u
   K_subset_u : K ⊆ u
   subset_carrier : Set.Icc β ψ ⊆ D.carrier
   regular_on_window : forall s : Real, s ∈ Set.Icc β ψ -> s ∈ D.regular
   gInv : Nat -> Real -> DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M Idx
   nablaRic : Nat -> Real -> M -> Idx -> Idx -> Idx -> Real
-  hinv_id :
+  inverseMetric_eq_identity_on :
     forall i : Nat, forall s : Real, s ∈ Set.Icc β ψ ->
       forall x : M, x ∈ K ->
         forall e l : Idx, gInv i s x e l = if e = l then 1 else 0
-  hinv_frame :
+  inverseMetricComponents :
     forall i : Nat, forall s : Real, s ∈ Set.Icc β ψ ->
       DifferentialGeometry.Geometry.Curvature.InverseMetricComponentsInFrame
         (I := I) ((SSeq i).family.metric s) (gInv i s) frame
-  hevol :
+  christoffelEvolution :
     forall i : Nat,
       DifferentialGeometry.PDE.RicciFlow.ChristoffelEvolutionEquationInFrameOn
         (I := I) (SSeq i) (gInv i) frame
-        (localFrameOneOfInf (I := I) frame hframe) (nablaRic i)
+        (localFrameOneOfInf (I := I) frame frame_isLocal) (nablaRic i)
   R : Real
   R_nonneg : 0 <= R
   nablaRic_bound :
@@ -88,7 +88,7 @@ structure MetricAllTimesFirstOrderInput
   time_abs_le :
     forall t : Real, t ∈ Set.Icc β ψ -> |t - t0| <= timeRadius
 
-structure MetricAllTimesFirstOrderConclusion
+structure MetricFirstOrderWindowBounds
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (K : Set M) (β ψ : Real)
     (SSeq : Nat -> DifferentialGeometry.PDE.RicciFlow.SolutionOn (I := I) (M := M) D)
@@ -114,7 +114,7 @@ theorem metricCovOrderOneWindow_of_christoffel
           (I := I) (M := M) 2 x}
     {A : Real}
     (H :
-      MetricAllTimesFirstOrderInput (I := I) (Idx := Idx) K u β ψ t0
+      MetricFirstOrderWindowBoundsAssumptions (I := I) (Idx := Idx) K u β ψ t0
         (D := D) SSeq gRef T A) :
     MetricCovDerivOrderBoundOnWindow (I := I) K β ψ
       (fun i t => (SSeq i).family.metric t) gRef 1
@@ -125,10 +125,10 @@ theorem metricCovOrderOneWindow_of_christoffel
       MetricUniformEquivalentOnWindow (I := I) K β ψ gRef
         (fun i t => (SSeq i).family.metric t)
         (fun t : Real => metricEquivalenceFactor H.base.equivC A t t0) :=
-    metricUniformEquivalentOnWindow_of_logDerivativeInput
+    metricUniformEquivalentOnWindow_of_log_derivative_bound
       (I := I) K β ψ t0 H.base.equivC A gRef
       (fun i t => (SSeq i).family.metric t) T
-      H.base.t0_mem hEquivC H.base.equiv_at_t0 H.log_input
+      H.base.t0_mem hEquivC H.base.equiv_at_t0 H.log_derivative
   refine
     metricCovOrderWindow_of_pointwise (I := I) K β ψ
       (fun i t => (SSeq i).family.metric t) gRef 1
@@ -156,13 +156,13 @@ theorem metricCovOrderOneWindow_of_christoffel
                 (Real.sqrt (H.base.equivC ^ 3) * H.initialOneC))) :=
     covOne_le_initial
       (I := I) (K := K) (u := u) (SSeq i) gRef (H.gInv i)
-      H.frame H.hframe H.hu (H.K_subset_u hxK) hxK (H.nablaRic i)
+      H.frame H.frame_isLocal H.domain_isOpen (H.K_subset_u hxK) hxK (H.nablaRic i)
       hsub hregular
-      (fun s hs e l => H.hinv_id i s (hsegment hs) x hxK e l)
-      (H.hevol i)
+      (fun s hs e l => H.inverseMetric_eq_identity_on i s (hsegment hs) x hxK e l)
+      (H.christoffelEvolution i)
       (fun s hs => H.nablaRic_bound i s (hsegment hs) x hxK)
-      hEq_t (H.hinv_frame i t ht) (H.base.equiv_at_t0 i)
-      (H.hinv_frame i t0 H.base.t0_mem)
+      hEq_t (H.inverseMetricComponents i t ht) (H.base.equiv_at_t0 i)
+      (H.inverseMetricComponents i t0 H.base.t0_mem)
       (H.initial_one_bound i x hxK)
   have htime :
       3 * H.R * |t - t0| <= 3 * H.R * H.timeRadius := by
@@ -194,7 +194,7 @@ theorem metricCovOrderOneWindow_of_christoffel
         (Real.sqrt_nonneg _)
   exact le_trans hraw hconst
 
-def metricAllTimesFirstOrder
+def metricFirstOrderWindowBounds
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     {K u : Set M} {β ψ t0 : Real} {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     {SSeq : Nat -> DifferentialGeometry.PDE.RicciFlow.SolutionOn (I := I) (M := M) D}
@@ -205,17 +205,17 @@ def metricAllTimesFirstOrder
           (I := I) (M := M) 2 x}
     {A : Real}
     (H :
-      MetricAllTimesFirstOrderInput (I := I) (Idx := Idx) K u β ψ t0
+      MetricFirstOrderWindowBoundsAssumptions (I := I) (Idx := Idx) K u β ψ t0
         (D := D) SSeq gRef T A) :
-    MetricAllTimesFirstOrderConclusion (I := I) K β ψ SSeq gRef where
+    MetricFirstOrderWindowBounds (I := I) K β ψ SSeq gRef where
   B := fun t : Real => metricEquivalenceFactor H.base.equivC A t t0
   equiv_on_window := by
     have hEquivC : 1 <= H.base.equivC := (H.base.equiv_at_t0 0).1
     exact
-      metricUniformEquivalentOnWindow_of_logDerivativeInput
+      metricUniformEquivalentOnWindow_of_log_derivative_bound
         (I := I) K β ψ t0 H.base.equivC A gRef
         (fun i t => (SSeq i).family.metric t) T
-        H.base.t0_mem hEquivC H.base.equiv_at_t0 H.log_input
+        H.base.t0_mem hEquivC H.base.equiv_at_t0 H.log_derivative
   C1 :=
     metricFirstOrderConstant
       H.base.equivC H.Bmax H.R H.timeRadius H.initialOneC
@@ -271,7 +271,7 @@ def MetricCovOrderNormSqEvolutionOn
                 (Tensor0SBundle.normSq0S (I := I) gRef x (p + 2)
                   (nablaRic i s x))) ^ 2
 
-structure MetricCovOrderEvolutionInput
+structure MetricCovOrderEvolutionBounds
     (K : Set M) (β ψ t0 : Real)
     (gSeq : Nat -> Real -> SmoothRiemannianMetric I M)
     (gRef : SmoothRiemannianMetric I M) (p : Nat) where
@@ -308,7 +308,7 @@ theorem metricCovOrderWindow_of_evolution
     {gSeq : Nat -> Real -> SmoothRiemannianMetric I M}
     {gRef : SmoothRiemannianMetric I M} {p : Nat}
     (Hin :
-      MetricCovOrderEvolutionInput (I := I) K β ψ t0 gSeq gRef p) :
+      MetricCovOrderEvolutionBounds (I := I) K β ψ t0 gSeq gRef p) :
     MetricCovDerivOrderBoundOnWindow (I := I) K β ψ gSeq gRef p
       (metricCovOrderEvolutionConstant
         Hin.Cpp Hin.Cppp Hin.timeRadius Hin.initialC) := by
@@ -499,7 +499,7 @@ theorem metricMixedOneWindow_of_evolution
     {gSeq : Nat -> Real -> SmoothRiemannianMetric I M}
     {gRef : SmoothRiemannianMetric I M} {p : Nat} {Csp0 : Real}
     (Hin :
-      MetricCovOrderEvolutionInput (I := I) K β ψ t0 gSeq gRef p)
+      MetricCovOrderEvolutionBounds (I := I) K β ψ t0 gSeq gRef p)
     (hmixed :
       MetricMixedDerivOneEvolutionOn (I := I) K β ψ gSeq gRef p Hin.nablaRic)
     (hspatial :
@@ -625,7 +625,7 @@ theorem metricMixedBoundsWindow_of_layerBounds
     le_trans (hD a b) hsup
   exact le_trans (hlayer a b i t ht x hx) hsup
 
-structure MetricAllTimesInput
+structure MetricMixedLayerWindowBounds
     (K : Set M) (β ψ : Real)
     (gSeq : Nat -> Real -> SmoothRiemannianMetric I M)
     (gRef : SmoothRiemannianMetric I M) where
@@ -639,12 +639,12 @@ structure MetricAllTimesInput
       MetricMixedDerivBoundOnWindow (I := I) K β ψ gSeq gRef a b
         (layerC a b)
 
-noncomputable def metricAllTimes
+noncomputable def metricMixedWindowBounds
     {K : Set M} {β ψ : Real}
     {gSeq : Nat -> Real -> SmoothRiemannianMetric I M}
     {gRef : SmoothRiemannianMetric I M}
-    (H : MetricAllTimesInput (I := I) K β ψ gSeq gRef) :
-    MetricAllTimesConclusion (I := I) K β ψ gSeq gRef where
+    (H : MetricMixedLayerWindowBounds (I := I) K β ψ gSeq gRef) :
+    MetricMixedWindowBounds (I := I) K β ψ gSeq gRef where
   B := H.B
   equiv_on_window := H.equiv_on_window
   metricC := metricMixedCumulativeConstant H.layerC

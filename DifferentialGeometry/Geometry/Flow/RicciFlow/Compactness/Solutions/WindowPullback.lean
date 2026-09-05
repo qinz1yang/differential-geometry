@@ -107,16 +107,16 @@ noncomputable def solutionZeroOrderMetricBoundsPullback
       (fun i t => Diffeomorph.pullbackMetric (I := I) (gSeq i t) Φ)
       (Diffeomorph.pullbackMetric (I := I) gRef Φ) where
   U0 := (Φ : M → N) ⁻¹' hData.U0
-  hKU0 := fun _x hx => hData.hKU0 hx
+  subset_domain := fun _x hx => hData.subset_domain hx
   B0 := hData.B0
-  hequiv0 := metricUniformEquivalentOnWindow_pullback (I := I) hData.U0 β ψ gRef gSeq
-    hData.B0 hData.hequiv0 Φ (fun _x hx => hx)
+  uniform_equivalence := metricUniformEquivalentOnWindow_pullback (I := I) hData.U0 β ψ gRef gSeq
+    hData.B0 hData.uniform_equivalence Φ (fun _x hx => hx)
   Bmax0 := hData.Bmax0
-  hBmax01 := hData.hBmax01
-  hBmax0 := hData.hBmax0
+  one_le_equivalenceBound := hData.one_le_equivalenceBound
+  equivalence_le_bound := hData.equivalence_le_bound
   KShi0 := hData.KShi0
-  hKShi00 := hData.hKShi00
-  hShi0 := fun i t ht x hx => by
+  curvatureBound_nonneg := hData.curvatureBound_nonneg
+  ricci_bound := fun i t ht x hx => by
     have key :
         Tensor0SBundle.normSq0S (I := I)
             (Diffeomorph.pullbackMetric (I := I) (gSeq i t) Φ) x 2
@@ -126,7 +126,7 @@ noncomputable def solutionZeroOrderMetricBoundsPullback
               (ricCovTower (I := I) (gSeq i t) (gSeq i t) 0 (Φ x)) :=
       ricCovTower_normSq0S_pullback (I := I) (gSeq i t) Φ 0 x
     rw [key]
-    exact hData.hShi0 i t ht (Φ x) hx
+    exact hData.ricci_bound i t ht (Φ x) hx
 
 omit [I.Boundaryless] in
 theorem solutionCovariantDerivativeBounds_pullback
@@ -303,17 +303,17 @@ theorem solutionTimeDerivativeCommutation_pullback
   exact hData i n p' hp' (fun a => pushFwdSection (I := I) Φ (V a)) (Φ x0) t ht (Φ x)
     (by rw [Set.mem_singleton_iff] at hx ⊢; rw [hx]) (mfderiv I I (Φ : M → N) x Vdir)
 
-noncomputable def solutionWindowCompactnessInputPullback
+noncomputable def solutionWindowCompactnessPullback
     [NeZero (Module.finrank ℝ E)]
     [BoundarylessManifold I M] [BoundarylessManifold I N]
     [IsManifold I 1 M] [IsManifold I 2 M] [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
     [IsManifold I 1 N] [IsManifold I 2 N] [IsManifold I ((∞ : WithTop ℕ∞) + 1) N]
     [T2Space N]
-    (W : SolutionWindowCompactnessInput (I := I) (M := N)) (Φ : M ≃ₘ⟮I, I⟯ N) :
-    SolutionWindowCompactnessInput (I := I) (M := M) := by
+    (W : SolutionWindowCompactness (I := I) (M := N)) (Φ : M ≃ₘ⟮I, I⟯ N) :
+    SolutionWindowCompactness (I := I) (M := M) := by
   cases W with
   | mk K hK beta psiT t0 hbeta p gSeq gRef D S hS hmet hreg H0 hswap Hcov Hlip hlow =>
-    refine SolutionWindowCompactnessInput.mk ((Φ : M → N) ⁻¹' K) ?_ beta psiT t0 hbeta p
+    refine SolutionWindowCompactness.mk ((Φ : M → N) ⁻¹' K) ?_ beta psiT t0 hbeta p
       (fun i r => Diffeomorph.pullbackMetric (I := I) (gSeq i r) Φ)
       (Diffeomorph.pullbackMetric (I := I) gRef Φ) D
       (fun i => solutionOnPullback (I := I) (S i) Φ)
@@ -336,15 +336,16 @@ noncomputable def solutionWindowCompactnessInputPullback
     rw [hset]
     exact hK.image Φ.symm.continuous
 
-noncomputable def windowMetricPrecompactnessConclusionOfPullback
+theorem hasMetricWindowSubsequence_of_pullback
     [NeZero (Module.finrank ℝ E)]
     [BoundarylessManifold I M] [BoundarylessManifold I N]
     [IsManifold I 1 M] [IsManifold I 2 M] [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
     [IsManifold I 1 N] [IsManifold I 2 N] [IsManifold I ((∞ : WithTop ℕ∞) + 1) N]
     [T2Space N]
-    (hne : Nonempty M) (W : SolutionWindowCompactnessInput (I := I) (M := N)) (Φ : M ≃ₘ⟮I, I⟯ N) :
-    WindowMetricPrecompactnessConclusion (E := E) (H := H) (I := I) (M := M) :=
-  windowMetricPrecompactnessConclusion (I := I) hne (solutionWindowCompactnessInputPullback (I := I) W Φ)
+    (hne : Nonempty M) (W : SolutionWindowCompactness (I := I) (M := N)) (Φ : M ≃ₘ⟮I, I⟯ N) :
+    HasMetricWindowSubsequence (E := E) (H := H) (I := I) (M := M) :=
+  hasMetricWindowSubsequence_of_solution (I := I) hne
+    (solutionWindowCompactnessPullback (I := I) W Φ)
 
 end CheegerGromovCompactness
 end DifferentialGeometry

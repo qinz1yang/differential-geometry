@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Elliptic.Regularity.DiffChart.Differentiated.DerivedDataConstructor
+import DifferentialGeometry.Analysis.Elliptic.Regularity.DiffChart.Differentiated.CanonicalDerivedData
 import DifferentialGeometry.Analysis.Elliptic.Regularity.DiffChart.Differentiated.VariationalIdentity
 import DifferentialGeometry.Analysis.Elliptic.Regularity.Iterated.NirenbergInterior.ThirdMixedPartial
 import DifferentialGeometry.Analysis.Elliptic.Regularity.DiffChart.TwiceDifferentiated.EffectiveSource
@@ -43,7 +43,7 @@ open DifferentialGeometry.Analysis.Laplacian.DiffChartSecondOrderEffectiveSource
 open DifferentialGeometry.Analysis.Laplacian.FChartResidualMemW1p
 open DifferentialGeometry.Analysis.Sobolev.Chart
 open DifferentialGeometry.Analysis.Sobolev.Euclidean
-open Analysis.Laplacian.DiffChartBilinearH1ComplH3
+open Analysis.Laplacian.DiffChartChosenFirstPartial
 
 private local instance : MeasurableSpace E := borel E
 private local instance : BorelSpace E := ⟨rfl⟩
@@ -64,7 +64,7 @@ private lemma base_weak_partial_ae_eq_chartPushedChosenFirstPartial
           (I := I) (M := M) g 1 hu_h)).weakPartial i =ᵐ[
       (volume : Measure EuclN).restrict
         (chartTargetEuclid (I := I) (M := M) α)]
-      Analysis.Laplacian.DiffChartBilinearH1ComplH3.chartPushedChosenFirstPartial
+      Analysis.Laplacian.DiffChartChosenFirstPartial.chartPushedChosenFirstPartial
         (I := I) (M := M) g α u_h i :=
   chartPushedWeakPartialLp_ae_eq_chosenFirstPartial_on_chartTarget
     (I := I) (M := M) g α hu_h i
@@ -142,21 +142,6 @@ private lemma chosenWeakPartialOrZero_base_weak_partial_ae_eq_chosenSecond
     DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero_ae_congr
       (p := 2) (by norm_num : (1 : ℝ≥0∞) ≤ 2) hΩ_open h_aeEq l₂
   exact h_congr
-
-omit [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [CompactSpace M] [T2Space M]
-    [SigmaCompactSpace M] in
-lemma exists_smooth_global_extension_chart
-    {φ : EuclN → ℝ} {α : M}
-    (hφ_chart : ContDiffOn ℝ (⊤ : ℕ∞) φ (chartTargetEuclid (I := I) (M := M) α))
-    {K : Set EuclN} (hK_compact : IsCompact K)
-    (hK_in : K ⊆ chartTargetEuclid (I := I) (M := M) α) :
-    ∃ (δ : ℝ) (φExt : EuclN → ℝ),
-      0 < δ ∧
-      Metric.cthickening δ K ⊆ chartTargetEuclid (I := I) (M := M) α ∧
-      ContDiff ℝ (⊤ : ℕ∞) φExt ∧
-      (∀ y ∈ Metric.cthickening δ K, φExt y = φ y) :=
-  exists_smooth_global_extension (I := I) (M := M) (φ := φ) α
-    hφ_chart hK_compact hK_in
 
 omit [SigmaCompactSpace M] in
 lemma base_u_chart_locally_memLp

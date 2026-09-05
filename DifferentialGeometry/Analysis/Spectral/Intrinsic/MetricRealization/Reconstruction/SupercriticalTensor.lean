@@ -113,7 +113,7 @@ private lemma superCriticalChartComponent_ae_zero_off_kernel
   intro hy_V
   exact hy hy_V hy_V.2
 
-theorem superCriticalChartComponent_exists_smooth_representative
+theorem exists_smooth_supercritical_chart_component_representative
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (w : TensorL2 r s g) (α : M)
     (P₀ : DifferentialGeometry.Analysis.Parabolic.TensorSpectral.TensorCompIdx
@@ -221,7 +221,7 @@ private def chosenComp_w (w : TensorL2 r s g)
         (chartTargetEuclid (I := I) (M := M) α))
     (α : M) (P : TensorCompIdx (E := E) r s) : EuclN → ℝ :=
   Classical.choose
-    (superCriticalChartComponent_exists_smooth_representative
+    (exists_smooth_supercritical_chart_component_representative
       (I := I) (M := M) g r s w α P (fun k => h_all k α P))
 
 private lemma chosenComp_w_contDiffOn (w : TensorL2 r s g)
@@ -233,7 +233,7 @@ private lemma chosenComp_w_contDiffOn (w : TensorL2 r s g)
     ContDiffOn ℝ ∞ (chosenComp_w (I := I) (M := M) g r s w h_all α P)
       (chartTargetEuclid (I := I) (M := M) α) :=
   (Classical.choose_spec
-    (superCriticalChartComponent_exists_smooth_representative
+    (exists_smooth_supercritical_chart_component_representative
       (I := I) (M := M) g r s w α P (fun k => h_all k α P))).1
 
 
@@ -245,7 +245,7 @@ private lemma chosenComp_w_hasCompactSupport (w : TensorL2 r s g)
     (α : M) (P : TensorCompIdx (E := E) r s) :
     HasCompactSupport (chosenComp_w (I := I) (M := M) g r s w h_all α P) :=
   (Classical.choose_spec
-    (superCriticalChartComponent_exists_smooth_representative
+    (exists_smooth_supercritical_chart_component_representative
       (I := I) (M := M) g r s w α P (fun k => h_all k α P))).2.1
 
 private lemma chosenComp_w_tsupport (w : TensorL2 r s g)
@@ -257,7 +257,7 @@ private lemma chosenComp_w_tsupport (w : TensorL2 r s g)
     tsupport (chosenComp_w (I := I) (M := M) g r s w h_all α P) ⊆
       chartTargetEuclid (I := I) (M := M) α :=
   (Classical.choose_spec
-    (superCriticalChartComponent_exists_smooth_representative
+    (exists_smooth_supercritical_chart_component_representative
       (I := I) (M := M) g r s w α P (fun k => h_all k α P))).2.2.1
 
 private lemma chosenComp_w_ae_eq (w : TensorL2 r s g)
@@ -271,7 +271,7 @@ private lemma chosenComp_w_ae_eq (w : TensorL2 r s g)
           (chartTargetEuclid (I := I) (M := M) α)]
       wChartComp (I := I) (M := M) g r s w α P :=
   (Classical.choose_spec
-    (superCriticalChartComponent_exists_smooth_representative
+    (exists_smooth_supercritical_chart_component_representative
       (I := I) (M := M) g r s w α P (fun k => h_all k α P))).2.2.2
 
 private lemma chosenComp_w_hu (w : TensorL2 r s g)

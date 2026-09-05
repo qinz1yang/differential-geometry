@@ -59,7 +59,7 @@ theorem contDiff : ContDiff ℝ ∞ dominatedCutoffProfile := by
 
 end dominatedCutoffProfile
 
-theorem chartAtlasPOU_exists_dominated_cutoff
+theorem exists_chartAtlasPOU_dominated_cutoff
     [T2Space M] [SigmaCompactSpace M]
     (α : M) :
     ∃ (χ : C^∞⟮I, M; ℝ⟯) (K : ℝ) (ε : ℝ), 0 < K ∧ 0 < ε ∧

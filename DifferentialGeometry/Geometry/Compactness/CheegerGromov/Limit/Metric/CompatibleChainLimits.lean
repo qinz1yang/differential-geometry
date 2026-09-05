@@ -193,7 +193,7 @@ theorem exists_chain_pullback_metric_limit
 omit [I.Boundaryless] [∀ j, RiemannianBundle (fun x : M j => TangentSpace I x)]
   [∀ j, IsRiemannianManifold I (M j)] [NeZero (Module.finrank ℝ E)] in
 omit [∀ (j : ℕ), SigmaCompactSpace (M j)] in
-theorem exists_chain_metric_approximation_data
+theorem exists_chain_metric_approximations
     (b : ∀ j, M j)
     (Ψ : ∀ j, PartialDiffeomorph I I (M j) (M (j + 1)) (∞ : WithTop ℕ∞))
     (g : ∀ j, SmoothRiemannianMetric I (M j))
@@ -270,7 +270,7 @@ theorem exists_chain_pullback_metric_limits
                 (gInf n) ((g (j₀ + n)).restrictOpen (I := I) (U n)) := by
   classical
   obtain ⟨j₀, hj₀, hpacks⟩ :=
-    exists_chain_metric_approximation_data (I := I) b Ψ g hdata
+    exists_chain_metric_approximations (I := I) b Ψ g hdata
   let U : ∀ n, Opens (M (j₀ + n)) :=
     fun n => ballOpen b (fun s => (2 : ℝ) ^ s) (j₀ + n)
   have hpacks' : ∀ n,

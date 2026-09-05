@@ -234,7 +234,7 @@ theorem mixedMap_contract
     simpa only [NNReal.coe_mk] using h
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem mixed_strong_exists
+theorem exists_mixed_strong_solution
     (h_compact : IsCompactOperator (tensorResolventL2
       (I := I) (M := M) g r s))
     (hT : 0 < T) (hT1 : T ≤ 1)

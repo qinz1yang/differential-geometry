@@ -543,7 +543,7 @@ theorem flow_slot_pos
 
 omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem conjugating_flow_flat_data
+theorem conjugating_flow_pullback_metric_hasDerivWithinAt
     (g_DT : ℝ → SmoothRiemannianMetric I M) (g_bg : SmoothRiemannianMetric I M)
     (T : ℝ) (Φ_fam : ℝ → (M ≃ₘ⟮I, I⟯ M))
     (hDT_deriv : ∀ s ∈ Set.Ico (0 : ℝ) T, ∀ y : M, ∀ a b : TangentSpace I y,
@@ -594,7 +594,7 @@ theorem conjugating_flow_flat_data
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-theorem conjugating_flow_orbit_pushforward_continuity_data
+theorem conjugating_flow_orbit_pushforward_continuousOn
     (g_DT : ℝ → SmoothRiemannianMetric I M) (g_bg : SmoothRiemannianMetric I M)
     (T : ℝ) (Φ_fam : ℝ → (M ≃ₘ⟮I, I⟯ M))
     (hΦode : ∀ x : M, ∀ t ∈ Set.Ioo (0 : ℝ) T,
@@ -675,7 +675,7 @@ theorem conjugating_flow_orbit_pushforward_continuity_data
       ⟨hs₀.1, hs₀.2⟩ (horbit y |>.continuousWithinAt hs₀) hchartRepDiff
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [SigmaCompactSpace M] in
-theorem conjugating_flow_t0_continuity_data
+theorem conjugating_flow_pullback_metric_continuousOn_and_ricci_continuousWithinAt
     (g_DT : ℝ → SmoothRiemannianMetric I M)
     (T : ℝ) (hT : 0 < T) (Φ_fam : ℝ → (M ≃ₘ⟮I, I⟯ M))
     (hg_joint : ∀ (α : M) (i j : Fin (Module.finrank ℝ E)),
@@ -1095,7 +1095,7 @@ private theorem flow_chartGramMatrix_alpha_continuousWithinAt
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-theorem conjugating_flow_pullback_jointGram_data
+theorem conjugating_flow_pullback_chartGram_joint_regular
     (g_DT : ℝ → SmoothRiemannianMetric I M) (g_bg : SmoothRiemannianMetric I M)
     (T : ℝ) (Φ_fam : ℝ → (M ≃ₘ⟮I, I⟯ M))
     (hΦode : ∀ x : M, ∀ t ∈ Set.Ioo (0 : ℝ) T,

@@ -526,7 +526,7 @@ theorem framed_rm04_bounds
     exact tensor0SBundle_enorm_eq_riemannianBundle_enorm
       (I := I) Y.metric y w
   obtain ⟨D, hcard, hpar, hON, hFdiff⟩ :=
-    exists_rm04FrameData_radius.{_, _, _, 0} (I := I) Y.metric x
+    exists_radialFrameFamily_of_radius_le_expMapC2Radius.{_, _, _, 0} (I := I) Y.metric x
       (R := jacobiVarRadius (I := I) Y.metric x) (b := 1)
       (by norm_num) le_rfl (jacobi_radius_le_c2 (I := I) Y.metric x)
   have hzC2 :
@@ -559,13 +559,13 @@ theorem framed_rm04_bounds
   have hupper := rm04_one_le (I := I) Y.metric hEnorm x
     xRaw vRaw
     ha hK hVb (by norm_num) le_rfl le_rfl hzRaw havRaw hlaunchRaw
-    hKbound hRmRaw hgamma (hcard _ hzMem) (D.F _)
+    hKbound hRmRaw hgamma (hcard _ hzMem) (D.frame _)
     (hpar _ hzMem) (hON _ hzMem) (hFdiff _ hzMem) hinitRaw
     (by simpa only [one_mul] using hmodelLe)
   have hlower := rm04_one_ge (I := I) Y.metric hEnorm x
     xRaw vRaw
     ha hK hVb (by norm_num) le_rfl le_rfl hzRaw havRaw hlaunchRaw
-    hKbound hRmRaw hgamma (hcard _ hzMem) (D.F _)
+    hKbound hRmRaw hgamma (hcard _ hzMem) (D.frame _)
     (hpar _ hzMem) (hON _ hzMem) (hFdiff _ hzMem)
     (by simpa only [one_mul, hscaled] using hmodelGe)
   have hzGp : ‖z‖ < metricCoerciveExpRadius (I := I) Y.metric x := by

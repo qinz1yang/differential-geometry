@@ -342,7 +342,7 @@ lemma hasDerivAt_chartChristoffelContraction
 
 end FixedChartCurvatureHelpers
 
-namespace Aux2
+namespace TwoParameterDerivative
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 
 lemma partial_snd_apply_one (G : ℝ × ℝ → E) (u t : ℝ)
@@ -475,9 +475,9 @@ lemma hasDerivAt_partial_fst (F : ℝ → ℝ → E) (s t : ℝ)
     rw [hcomp', hch.fderiv]; simp [ContinuousLinearMap.inl]
   exact hbase.congr_of_eventuallyEq hev
 
-end Aux2
+end TwoParameterDerivative
 
-namespace Aux3
+namespace ChristoffelRegularity
 open DifferentialGeometry.Integral.DivergenceTheorem
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [InnerProductSpace ℝ E]
@@ -501,11 +501,11 @@ lemma chartChristoffel_differentiableAt_self
     hcd.contDiffAt (isOpen_interior.mem_nhds hx_int)
   exact hat.differentiableAt (by decide)
 
-end Aux3
+end ChristoffelRegularity
 
-namespace Aux4
+namespace TwoParameterCovariantDerivative
 open DifferentialGeometry.Integral.DivergenceTheorem
-open Aux2
+open TwoParameterDerivative
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [InnerProductSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
@@ -624,16 +624,16 @@ lemma hasDerivAt_innerW_snd
   rw [hinnerW_eq]
   have hterm1 : HasDerivAt (fun v => fderiv ℝ (fun u : ℝ => Y u v) s (1 : ℝ))
       (fderiv ℝ (fderiv ℝ (fun p : ℝ × ℝ => Y p.1 p.2)) (s, t) (0, 1) (1, 0)) t :=
-    Aux2.hasDerivAt_partial_fst Y s t hY
+    TwoParameterDerivative.hasDerivAt_partial_fst Y s t hY
   have hP : HasDerivAt (fun v => fderiv ℝ (fun u : ℝ => extChartAt I α (f u v)) s (1 : ℝ))
       (fderiv ℝ (fderiv ℝ (fun p : ℝ × ℝ => extChartAt I α (f p.1 p.2))) (s, t) (0, 1) (1, 0)) t :=
-    Aux2.hasDerivAt_partial_fst (fun u v => extChartAt I α (f u v)) s t hF
+    TwoParameterDerivative.hasDerivAt_partial_fst (fun u v => extChartAt I α (f u v)) s t hF
   have hQ : HasDerivAt (fun v => Y s v)
       (fderiv ℝ (fun p : ℝ × ℝ => Y p.1 p.2) (s, t) (0, 1)) t :=
-    Aux2.hasDerivAt_slice_snd Y s t (hY.differentiableAt two_ne_zero)
+    TwoParameterDerivative.hasDerivAt_slice_snd Y s t (hY.differentiableAt two_ne_zero)
   have hR : HasDerivAt (fun v => extChartAt I α (f s v))
       (fderiv ℝ (fun p : ℝ × ℝ => extChartAt I α (f p.1 p.2)) (s, t) (0, 1)) t :=
-    Aux2.hasDerivAt_slice_snd (fun u v => extChartAt I α (f u v)) s t
+    TwoParameterDerivative.hasDerivAt_slice_snd (fun u v => extChartAt I α (f u v)) s t
       (hF.differentiableAt two_ne_zero)
   have hΓ' : ∀ i j k : Fin (Module.finrank ℝ E),
       DifferentiableAt ℝ (chartChristoffel (I := I) g α i j k) ((fun v => extChartAt I α (f s v)) t)
@@ -655,9 +655,9 @@ lemma nabla_t_nabla_s_eq
             (extChartAt I α (f s t)) := by
   rw [chartCovDerivAlong_def]; rfl
 
-end Aux4
+end TwoParameterCovariantDerivative
 
-namespace Aux5
+namespace ChartCoordinateExpansion
 open DifferentialGeometry.Integral.DivergenceTheorem
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [InnerProductSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
@@ -695,12 +695,12 @@ lemma chartCoord_sum_smul_basis (c : Fin (Module.finrank ℝ E) → ℝ)
     rw [map_smul, chartCoordCLM_apply, chartCoord_basis, if_neg hb, smul_eq_mul, mul_zero]
   · intro h; exact absurd (Finset.mem_univ s) h
 
-end Aux5
+end ChartCoordinateExpansion
 
-namespace Aux6
+namespace CurvatureCoordinateExpansion
 open DifferentialGeometry.Integral.DivergenceTheorem
 
-open Aux5
+open ChartCoordinateExpansion
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [InnerProductSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
@@ -717,7 +717,7 @@ lemma chartCoord_chartChristoffelContraction
             chartCoord (E := E) i v * chartCoord (E := E) j w := by
   classical
   rw [chartChristoffelContraction_def]
-  rw [Aux5.chartCoord_sum_smul_basis (E := E)
+  rw [ChartCoordinateExpansion.chartCoord_sum_smul_basis (E := E)
       (fun l => ∑ i, ∑ j, chartChristoffel (I := I) g x i j l y *
         chartCoord (E := E) i v * chartCoord (E := E) j w) l]
 
@@ -760,10 +760,10 @@ lemma curvPart_eq_chartRiemannCLM
   set yc : Fin (Module.finrank ℝ E) → ℝ := fun i => chartCoord (E := E) i Yv with hyc
   have hfd₁ : ∀ i j k, fderiv ℝ (chartChristoffel (I := I) g x i j k) y₀ D₁
       = ∑ d, d₁ d * DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d (chartChristoffel (I := I) g x i j k) y₀ :=
-    fun i j k => Aux5.fderiv_eq_sum_partialDeriv _ y₀ D₁
+    fun i j k => ChartCoordinateExpansion.fderiv_eq_sum_partialDeriv _ y₀ D₁
   have hfd₂ : ∀ i j k, fderiv ℝ (chartChristoffel (I := I) g x i j k) y₀ D₂
       = ∑ d, d₂ d * DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d (chartChristoffel (I := I) g x i j k) y₀ :=
-    fun i j k => Aux5.fderiv_eq_sum_partialDeriv _ y₀ D₂
+    fun i j k => ChartCoordinateExpansion.fderiv_eq_sum_partialDeriv _ y₀ D₂
   have hAA₁ : chartChristoffelContraction (I := I) g x D₁
         (chartChristoffelContraction (I := I) g x D₂ Yv y₀) y₀
       = ∑ l, (∑ i, ∑ j, chartChristoffel (I := I) g x i j l y₀ * d₁ i *
@@ -985,12 +985,12 @@ lemma curvPart_eq_chartRiemannCLM
         rw [chartChristoffel_symm (I := I) g x w.2.1 w.2.2 w.1.2 y₀]
         ring
 
-end Aux6
+end CurvatureCoordinateExpansion
 
-namespace Aux7
+namespace CovariantDerivativeCommutator
 open DifferentialGeometry.Integral.DivergenceTheorem
 
-open Aux4 Aux6
+open TwoParameterCovariantDerivative CurvatureCoordinateExpansion
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [InnerProductSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
@@ -1022,7 +1022,7 @@ lemma commutator_eq_chartRiemannCLM
   have hΓ : ∀ i j k : Fin (Module.finrank ℝ E),
       DifferentiableAt ℝ (chartChristoffel (I := I) g α i j k) y₀ := by
     intro i j k
-    have := Aux3.chartChristoffel_differentiableAt_self (I := I) g α i j k
+    have := ChristoffelRegularity.chartChristoffel_differentiableAt_self (I := I) g α i j k
     rwa [show extChartAt I α α = y₀ from by rw [hy₀, hα]] at this
   rw [nabla_s_nabla_t_eq (I := I) g α f Y s t,
       nabla_t_nabla_s_eq (I := I) g α f Y s t]
@@ -1045,9 +1045,9 @@ lemma commutator_eq_chartRiemannCLM
   set Yv : E := Y s t with hYv
   have hGdiff : DifferentiableAt ℝ G (s, t) := hF.differentiableAt two_ne_zero
   have hpf₁ : fderiv ℝ (fun u : ℝ => extChartAt I α (f u t)) s (1 : ℝ) = D₁ :=
-    Aux2.partial_fst_apply_one (fun p : ℝ × ℝ => extChartAt I α (f p.1 p.2)) s t hGdiff
+    TwoParameterDerivative.partial_fst_apply_one (fun p : ℝ × ℝ => extChartAt I α (f p.1 p.2)) s t hGdiff
   have hpf₂ : fderiv ℝ (fun v : ℝ => extChartAt I α (f s v)) t (1 : ℝ) = D₂ :=
-    Aux2.partial_snd_apply_one (fun p : ℝ × ℝ => extChartAt I α (f p.1 p.2)) s t hGdiff
+    TwoParameterDerivative.partial_snd_apply_one (fun p : ℝ × ℝ => extChartAt I α (f p.1 p.2)) s t hGdiff
   have hSchwarzF : fderiv ℝ (fderiv ℝ G) (s, t) (1, 0) (0, 1)
       = fderiv ℝ (fderiv ℝ G) (s, t) (0, 1) (1, 0) := by
     have hsymm : IsSymmSndFDerivAt ℝ G (s, t) := by
@@ -1072,10 +1072,10 @@ lemma commutator_eq_chartRiemannCLM
         (chartChristoffelContraction (I := I) g α D₁ Yv y₀)]
   have hYpf₁ : fderiv ℝ (fun u : ℝ => Y u t) s (1 : ℝ)
       = fderiv ℝ (fun p : ℝ × ℝ => Y p.1 p.2) (s, t) (1, 0) :=
-    Aux2.partial_fst_apply_one (fun p : ℝ × ℝ => Y p.1 p.2) s t (hY.differentiableAt two_ne_zero)
+    TwoParameterDerivative.partial_fst_apply_one (fun p : ℝ × ℝ => Y p.1 p.2) s t (hY.differentiableAt two_ne_zero)
   have hYpf₂ : fderiv ℝ (fun v : ℝ => Y s v) t (1 : ℝ)
       = fderiv ℝ (fun p : ℝ × ℝ => Y p.1 p.2) (s, t) (0, 1) :=
-    Aux2.partial_snd_apply_one (fun p : ℝ × ℝ => Y p.1 p.2) s t (hY.differentiableAt two_ne_zero)
+    TwoParameterDerivative.partial_snd_apply_one (fun p : ℝ × ℝ => Y p.1 p.2) s t (hY.differentiableAt two_ne_zero)
   rw [hYpf₁, hYpf₂, hSchwarzY]
   set mY : E := fderiv ℝ (fderiv ℝ (fun p : ℝ × ℝ => Y p.1 p.2)) (s, t) (0, 1) (1, 0) with hmY
   set mF : E := fderiv ℝ (fderiv ℝ G) (s, t) (0, 1) (1, 0) with hmF
@@ -1145,7 +1145,7 @@ lemma commutator_eq_chartRiemannCLM
   rw [← hdGcomb]
   abel_nf
 
-end Aux7
+end CovariantDerivativeCommutator
 
 omit [InnerProductSpace ℝ E] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -1172,7 +1172,7 @@ theorem chartCovDerivAlong_commutator_eq_riemannOp_on_variation
           ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentEquiv (I := I) (f s t)).symm (Y s t))) := by
   have hF : ContDiffAt ℝ 2 (fun p : ℝ × ℝ => extChartAt I (f s t) (f p.1 p.2)) (s, t) :=
     chartPulled_contDiffAt (I := I) f hf s t
-  rw [Aux7.commutator_eq_chartRiemannCLM (I := I) g f Y s t hF hY,
+  rw [CovariantDerivativeCommutator.commutator_eq_chartRiemannCLM (I := I) g f Y s t hF hY,
     ← DifferentialGeometry.Geometry.Connection.riemannOp_eq_chartRiemannCLM_apply_of_basis_identity
       (I := I) g (f s t)
       (DifferentialGeometry.Geometry.Connection.chartRiemannBasisIdentity_LeviCivita

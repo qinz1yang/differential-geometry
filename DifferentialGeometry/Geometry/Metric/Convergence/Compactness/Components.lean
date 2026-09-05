@@ -576,7 +576,7 @@ theorem bumpTowerCarrier_all
       hKchart hUKc s frame vbasis hframeσ hspan IH
 
 omit [CompleteSpace E] [I.Boundaryless] in
-theorem exists_frameData (x₀ : M) {Kc : Set M} (hKc : IsCompact Kc)
+theorem exists_local_smooth_frame_spanning_on_compact (x₀ : M) {Kc : Set M} (hKc : IsCompact Kc)
     (hKchart : Kc ⊆ (chartAt H x₀).source) :
     ∃ (frame : Fin (Module.finrank Real E) → ContMDiffSection I E (∞ : WithTop ℕ∞)
         (TangentSpace I : M → Type _))

@@ -56,7 +56,7 @@ private theorem iterCovComp_succ_eq_step
   intro x hx
   funext n
   rw [iterCovComp_succ]
-  unfold covCompStep covDerivStepComp frameExtData
+  unfold covCompStep covDerivStepComp frameDirectionalDerivatives
   congr 1
   rw [DifferentialGeometry.mvfderiv_real_eq_mfderiv, mfderiv_eq_fderiv]
   have hdiff : DifferentiableAt Real
@@ -252,7 +252,7 @@ private theorem iterCovComp_zero_base
   | succ a ih =>
       funext x n
       rw [iterCovComp_succ, ih]
-      simp only [covDerivStepComp, frameExtData,
+      simp only [covDerivStepComp, frameDirectionalDerivatives,
         DifferentialGeometry.mvfderiv_real_eq_mfderiv, mfderiv_const,
         zero_apply, map_zero, mul_zero, Finset.sum_const_zero, sub_zero]
 

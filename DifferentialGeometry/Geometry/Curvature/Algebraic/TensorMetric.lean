@@ -89,7 +89,7 @@ theorem metricRm04At_mem_algebraicCurvatureTensorSubmodule
     (g : SmoothRiemannianMetric I M) (x : M) :
     metricRm04At (I := I) (M := M) g x ∈
       algebraicCurvatureTensorSubmodule (I := I) (M := M) x := by
-  let K := metricCurvData (I := I) (M := M) g
+  let K := metricCurvatureSections (I := I) (M := M) g
   apply mem_algebraicCurvatureTensorSubmodule_iff_symmetries.mpr
   refine ⟨?_, ?_, ?_⟩
   · intro X Y Z W

@@ -23,7 +23,7 @@ open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Combinatorics
 open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
 open DifferentialGeometry.PDE.DeTurck.RicciLinearization
-open DeTurckLieConnectionDifferenceDerivativeUniformInternal
+open DeTurckLieConnectionDifferenceDerivativeKernelBounds
 
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]

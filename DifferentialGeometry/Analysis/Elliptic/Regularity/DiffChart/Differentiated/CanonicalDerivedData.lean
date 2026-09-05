@@ -19,7 +19,7 @@ open scoped Manifold Topology ContDiff Matrix InnerProductSpace BigOperators
 namespace DifferentialGeometry
 namespace Analysis
 namespace Laplacian
-namespace DerivedChartBilinearH1ComplDataCanonical
+namespace CanonicalDerivedChartBilinearH1ComplData
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
@@ -331,7 +331,7 @@ private lemma memLp_top_of_continuousOn_on_compact
   apply ENNReal.ofReal_le_ofReal
   exact hy.trans (le_max_left _ _)
 
-lemma base_weak_partial_ae_zero_off_K_α
+lemma base_weak_partial_ae_zero_off_chart_image_pou_tsupport
     (g : SmoothRiemannianMetric I M) (α : M)
     {u_h : H1Compl (I := I) (M := M) g}
     (hu_h : u_h ∈ laplacianDomain (I := I) (M := M) g)
@@ -404,7 +404,7 @@ private lemma chartPushed_first_weak_partial_ae_zero_off_K_α
   exact weakPartial_ae_zero_on_open_of_ae_zero_on_open
     hΩ_open hU_open hU_sub (i := i) h_isWeak hw_li h_pushed_zero
 
-private lemma chosenSecondPartialChartPushedU_ae_zero_off_K_α
+private lemma chosenSecondPartialChartPushedU_ae_zero_on_chart_target_complement_support
     (g : SmoothRiemannianMetric I M) (α : M)
     {u_h : H1Compl (I := I) (M := M) g}
     (hu_h : u_h ∈ laplacianDomainPow (I := I) (M := M) g 2)
@@ -471,7 +471,7 @@ private lemma base_f_chart_locally_memLp
     h_weighted.smul_measure hc_ne_top
   exact h_smul.mono_measure h_le
 
-lemma base_f_chart_ae_zero_off_K_α
+lemma base_f_chart_ae_zero_off_chart_image_pou_tsupport
     (g : SmoothRiemannianMetric I M) (α : M)
     {u_h : H1Compl (I := I) (M := M) g}
     (hu_h : u_h ∈ laplacianDomain (I := I) (M := M) g) :
@@ -569,7 +569,7 @@ lemma base_f_chart_ae_zero_off_K_α
         have h_wp_each : ∀ i : Fin (Module.finrank ℝ E),
             ∀ᵐ y ∂((volume : Measure EuclN).restrict U),
               D.weakPartial i y = 0 := fun i =>
-          base_weak_partial_ae_zero_off_K_α (I := I) (M := M) g α hu_h i
+          base_weak_partial_ae_zero_off_chart_image_pou_tsupport (I := I) (M := M) g α hu_h i
         have h_wp_all_vol : ∀ᵐ y ∂(volume : Measure EuclN),
             ∀ i : Fin (Module.finrank ℝ E),
               y ∈ U → D.weakPartial i y = 0 := by
@@ -668,7 +668,7 @@ private lemma chosenFChartDeriv_ae_zero_off_K_α
     exact DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero_memLp_of_mem
       h_memW1p l
   have hw_li := locallyIntegrableOn_of_memLp_two_global (α := α) h_global
-  have h_base_fc_ae := base_f_chart_ae_zero_off_K_α (I := I) (M := M) g α
+  have h_base_fc_ae := base_f_chart_ae_zero_off_chart_image_pou_tsupport (I := I) (M := M) g α
     (laplacianDomainPow_succ_subset_laplacianDomain (I := I) (M := M) g 1 hu_h)
   exact weakPartial_ae_zero_on_open_of_ae_zero_on_open
     hΩ_open hU_open hU_sub (i := l) h_isWeak hw_li h_base_fc_ae
@@ -685,7 +685,7 @@ private lemma fChartEffectiveNumerator_ae_zero_off_K_α
   have h_fc_deriv := chosenFChartDeriv_ae_zero_off_K_α (I := I) (M := M) g α hu_h l
   have h_uc := base_u_chart_ae_zero_off_K_α (I := I) (M := M) g α
     (laplacianDomainPow_succ_subset_laplacianDomain (I := I) (M := M) g 1 hu_h)
-  have h_fc := base_f_chart_ae_zero_off_K_α (I := I) (M := M) g α
+  have h_fc := base_f_chart_ae_zero_off_chart_image_pou_tsupport (I := I) (M := M) g α
     (laplacianDomainPow_succ_subset_laplacianDomain (I := I) (M := M) g 1 hu_h)
   have h_wp_each : ∀ i : Fin (Module.finrank ℝ E),
       ∀ᵐ y ∂((volume : Measure EuclN).restrict
@@ -694,7 +694,7 @@ private lemma fChartEffectiveNumerator_ae_zero_off_K_α
           (laplacianDomainPow_succ_subset_laplacianDomain
             (I := I) (M := M) g 1 hu_h)
           ).weakPartial i y = 0 := fun i =>
-    base_weak_partial_ae_zero_off_K_α (I := I) (M := M) g α
+    base_weak_partial_ae_zero_off_chart_image_pou_tsupport (I := I) (M := M) g α
       (laplacianDomainPow_succ_subset_laplacianDomain
         (I := I) (M := M) g 1 hu_h) i
   have h_cspu_each : ∀ i j : Fin (Module.finrank ℝ E),
@@ -702,7 +702,8 @@ private lemma fChartEffectiveNumerator_ae_zero_off_K_α
         (chartTargetEuclid (I := I) (M := M) α \ K_α (I := I) (M := M) α)),
         chosenSecondPartialChartPushedU
           (I := I) (M := M) g α u_h i j y = 0 := fun i j =>
-    chosenSecondPartialChartPushedU_ae_zero_off_K_α (I := I) (M := M)
+    chosenSecondPartialChartPushedU_ae_zero_on_chart_target_complement_support
+      (I := I) (M := M)
       g α hu_h i j
   have h_wp_combine : ∀ᵐ y ∂((volume : Measure EuclN).restrict
       (chartTargetEuclid (I := I) (M := M) α \ K_α (I := I) (M := M) α)),
@@ -788,7 +789,7 @@ private lemma integral_fChartEffectiveNumerator_eq_integral_density_fChartEffect
       rw [h_pt]
   exact MeasureTheory.integral_congr_ae h_ae_eq
 
-theorem derived_variational_identity_holds
+theorem derived_chart_variational_identity
     (g : SmoothRiemannianMetric I M) (α : M)
     (l : Fin (Module.finrank ℝ E))
     {u_h : H1Compl (I := I) (M := M) g}
@@ -1137,7 +1138,7 @@ noncomputable def canonicalDerivedChartBilinearH1ComplData
     ChartBilinearH1ComplData (I := I) (M := M) g α :=
   derivedChartBilinearH1ComplData (I := I) (M := M) g α l hu_h
     (fun _ψ hψ hψ_cs hψ_support =>
-      derived_variational_identity_holds (I := I) (M := M) g α l hu_h
+      derived_chart_variational_identity (I := I) (M := M) g α l hu_h
         hψ hψ_cs hψ_support)
 
 lemma chosenSecondPartialChartPushedU_ae_zero_off_chartImagePOUTsupport
@@ -1149,10 +1150,10 @@ lemma chosenSecondPartialChartPushedU_ae_zero_off_chartImagePOUTsupport
       (chartTargetEuclid (I := I) (M := M) α \
         chartImagePOUTsupport (I := I) (M := M) α)),
       chosenSecondPartialChartPushedU (I := I) (M := M) g α u_h i j y = 0 :=
-  chosenSecondPartialChartPushedU_ae_zero_off_K_α
+  chosenSecondPartialChartPushedU_ae_zero_on_chart_target_complement_support
     (I := I) (M := M) g α hu_h i j
 
-end DerivedChartBilinearH1ComplDataCanonical
+end CanonicalDerivedChartBilinearH1ComplData
 end Laplacian
 end Analysis
 end DifferentialGeometry

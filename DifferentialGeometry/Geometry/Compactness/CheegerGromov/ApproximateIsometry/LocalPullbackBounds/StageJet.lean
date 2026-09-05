@@ -48,7 +48,7 @@ variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 variable {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
 
 theorem HasSupportedCenterMapConvergence.source_stay
-    (inp : MetricCompactnessInputs (I := I) X)
+    (inp : MetricCompactnessAssumptions (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P) {r : Real} (hr : 0 ≤ r)
     (phi : Nat → Nat) (hphi : StrictMono phi)
@@ -190,8 +190,8 @@ theorem HasSupportedCenterMapConvergence.source_stay
     change dist (chiK.symm w) Yk.basepoint ≤ S
     exact hdist.le
 
-theorem HasStageJetData.pb_buf_tail
-    (inp : MetricCompactnessInputs (I := I) X)
+theorem HasStageJetConvergence.pb_buf_tail
+    (inp : MetricCompactnessAssumptions (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P) {r : Real} (hr : 0 ≤ r)
     (phi : Nat → Nat) (hphi : StrictMono phi)
@@ -202,7 +202,7 @@ theorem HasStageJetData.pb_buf_tail
       InterSlot L inp.pack r alpha → E → E)
     (gInf : LiveSlot L inp.pack r →
       E → (E →L[Real] E →L[Real] Real))
-    (hstage : HasStageJetData (I := I) inp P L hr phi hphi
+    (hstage : HasStageJetConvergence (I := I) inp P L hr phi hphi
       U C0 C1 aInf Jinf Jbarinf gInf)
     (alpha : LiveSlot L inp.pack r) {R S eta : Real}
     (hRS : R < S) (hSr : S < r) (heta : 0 < eta)
@@ -384,7 +384,7 @@ theorem HasStageJetData.pb_buf_tail
   have hQconv : MapCInfConvergenceOnCompacts V
       (fun n ↦ Q (kn n) (ln n)) (gInf alpha) := by
     simpa only [V, W, Q, B, A, Lphi] using
-      HasStageJetData.pb_convergence (I := I) inp P L hr phi hphi
+      HasStageJetConvergence.pb_convergence (I := I) inp P L hr phi hphi
         U C0 C1 aInf Jinf Jbarinf gInf
         ⟨hdata, hmetric, hjets, hbase⟩ S hSr alpha V W hVopen hVcompact
         hVW hWint kn ln hkn hln hstay'
@@ -486,7 +486,7 @@ theorem HasStageJetData.pb_buf_tail
       simpa only using c2_radius_normal_ball_chart_inv (I := I) Yln cln
     have hjet0 := hjet.2.2 0 le_rfl
     simp only [mapDerivNorm, norm_iteratedFDeriv_zero, id_eq,
-      MetricCompactnessInputs.toCore, c2RadiusNormalChartFamily] at hjet0
+      MetricCompactnessAssumptions.toSeedWithDivisor, c2RadiusNormalChartFamily] at hjet0
     change ‖(c2RadiusNormalBallChart (I := I) Yln cln).inv
         (stageComparisonMap inp P Lphi r hr (kn n) (ln n)
           ((c2RadiusNormalBallChart (I := I) Ykn ckn).hom (zn n))) - zn n‖ ≤
@@ -549,8 +549,8 @@ theorem HasStageJetData.pb_buf_tail
   have hbad' := hbad (ψ n)
   simpa only [kn, ln, zn] using (not_lt_of_ge hle hbad')
 
-theorem HasStageJetData.pb_local_tail
-    (inp : MetricCompactnessInputs (I := I) X)
+theorem HasStageJetConvergence.pb_local_tail
+    (inp : MetricCompactnessAssumptions (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P) {r : Real} (hr : 0 ≤ r)
     (phi : Nat → Nat) (hphi : StrictMono phi)
@@ -561,7 +561,7 @@ theorem HasStageJetData.pb_local_tail
       InterSlot L inp.pack r alpha → E → E)
     (gInf : LiveSlot L inp.pack r →
       E → (E →L[Real] E →L[Real] Real))
-    (hstage : HasStageJetData (I := I) inp P L hr phi hphi
+    (hstage : HasStageJetConvergence (I := I) inp P L hr phi hphi
       U C0 C1 aInf Jinf Jbarinf gInf)
     {R S : Real} (hRS : R < S) (hSr : S < r)
     (p : Nat) (eps : Real) (heps : 0 < eps) :

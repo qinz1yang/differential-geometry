@@ -14,7 +14,7 @@ open scoped Manifold Topology ContDiff Matrix InnerProductSpace BigOperators
 namespace DifferentialGeometry
 namespace Analysis
 namespace Laplacian
-namespace IteratedVariationalIdentityStepScaffold
+namespace IteratedVariationalIdentitySuccessorSource
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
@@ -919,7 +919,7 @@ theorem fChartEffectiveStep_memLp_two_weighted
     h_chart_regularity_1 h_chart_regularity_2 fChartEffectivePrev
     h_prev_memLp_weighted l
 
-end IteratedVariationalIdentityStepScaffold
+end IteratedVariationalIdentitySuccessorSource
 end Laplacian
 end Analysis
 end DifferentialGeometry

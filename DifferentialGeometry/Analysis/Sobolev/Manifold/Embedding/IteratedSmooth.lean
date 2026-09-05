@@ -158,7 +158,7 @@ theorem exists_contMDiff_zero_representative_of_supercritical_chart_sobolev
   rw [DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure_def]
   exact hv_ae
 
-namespace SuperCriticalBridge
+namespace SupercriticalChartEmbedding
 
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
     [FiniteDimensional ℝ E]
@@ -303,9 +303,9 @@ lemma chartPullback_contMDiff_of_contDiff_finite
     intro y hy
     exact h_zero_on hy
 
-end SuperCriticalBridge
+end SupercriticalChartEmbedding
 
-namespace SuperCriticalWitness
+namespace SupercriticalExponentIteration
 
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
     [FiniteDimensional ℝ E]
@@ -384,7 +384,7 @@ private theorem chain_to_supercritical
           MemWkpChart.le_of_le (by omega) hu
         exact ⟨p, hp_one, hp_gt, hu_order⟩
 
-end SuperCriticalWitness
+end SupercriticalExponentIteration
 
 theorem hasSupercriticalChartSobolevRegularity_of_all_even_orders
     {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]
@@ -433,10 +433,10 @@ theorem hasSupercriticalChartSobolevRegularity_of_all_even_orders
       (ENNReal.ofReal p₀) u :=
     DifferentialGeometry.Analysis.Sobolev.Chart.ChartLevelMonoExp.memWkpChart_mono_exponent
       (I := I) (M := M) hp₀_one_enn hp₀_le_two_enn hu_order'
-  exact SuperCriticalWitness.chain_to_supercritical (I := I) (M := M) g m s_max
+  exact SupercriticalExponentIteration.chain_to_supercritical (I := I) (M := M) g m s_max
     hp₀_one hp₀_regularity h_n_lt_kp₀ hu_p₀
 
-namespace SuperCriticalBridge
+namespace SupercriticalChartEmbedding
 
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
     [FiniteDimensional ℝ E]
@@ -494,7 +494,7 @@ private lemma exists_ball_subset_chartTargetEuclid
     chartTargetEuclid_isOpen (I := I) (M := M) α
   exact Metric.isOpen_iff.mp hopen y₀ hy₀
 
-theorem memWkpChart_super_critical_implies_contMDiff_m_representative
+theorem exists_contMDiff_representative_of_supercritical_chart_sobolev
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (m : ℕ)
     {p : ℝ} (hp : (Module.finrank ℝ E : ℝ) < p)
@@ -787,9 +787,9 @@ theorem memWkpChart_super_critical_implies_contMDiff_m_representative
   · rw [DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure_def]
     exact hũ_ae
 
-end SuperCriticalBridge
+end SupercriticalChartEmbedding
 
-theorem memWkpChart_forall_implies_contMDiff_m_representative_uncond
+theorem exists_contMDiff_representative_of_all_even_chart_sobolev_orders
     {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
@@ -807,7 +807,7 @@ theorem memWkpChart_forall_implies_contMDiff_m_representative_uncond
     (I := I) (M := M) g m hu_meas
     (hasSupercriticalChartSobolevRegularity_of_all_even_orders (I := I) (M := M) g m h_all) ?_
   intro p hp_dim v hv_meas hv
-  exact SuperCriticalBridge.memWkpChart_super_critical_implies_contMDiff_m_representative
+  exact SupercriticalChartEmbedding.exists_contMDiff_representative_of_supercritical_chart_sobolev
     (I := I) (M := M) g m hp_dim hv_meas hv
 
 theorem sobolev_smooth_representative_of_memWkpChart_forall
@@ -828,7 +828,7 @@ theorem sobolev_smooth_representative_of_memWkpChart_forall
       ContMDiff I 𝓘(ℝ, ℝ) m u_m ∧
       u_m =ᵐ[DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure
         (I := I) (M := M) g] u := fun m =>
-    memWkpChart_forall_implies_contMDiff_m_representative_uncond
+    exists_contMDiff_representative_of_all_even_chart_sobolev_orders
       (I := I) (M := M) g m hu_meas h_all
   choose u_fam hu_fam_smooth hu_fam_ae using h_choice
   set u_smooth : M → ℝ := u_fam 0 with hu_smooth_def

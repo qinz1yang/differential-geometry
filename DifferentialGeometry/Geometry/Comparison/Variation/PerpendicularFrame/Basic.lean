@@ -732,7 +732,7 @@ theorem exists_cutoff_one_on_Icc_supported_Ioo {L δ : ℝ} (hδ : 0 < δ) :
     exact ⟨by linarith [hx.1], by linarith [hx.2]⟩
 
 theorem exists_time_window_clip {a b lam : ℝ}
-    (hlam_pos : 0 < lam) (ha : -lam < a) (hb : b < lam) :
+    (ellipticity_pos : 0 < lam) (ha : -lam < a) (hb : b < lam) :
     ∃ tau : ℝ → ℝ, ContDiff ℝ (∞ : WithTop ℕ∞) tau ∧
       Set.EqOn tau id (Set.Icc a b) ∧ ∀ t, |tau t| ≤ lam := by
   have hclosed_t : IsClosed (Set.Icc a b) := isClosed_Icc
@@ -768,14 +768,14 @@ theorem exists_time_window_clip {a b lam : ℝ}
           mul_le_mul hχ_abs ht_abs (abs_nonneg _) (by norm_num)
         _ = lam := one_mul _
     · have hχ_zero : χ t = 0 := hχ0 htΩ
-      simpa [hχ_zero] using hlam_pos.le
+      simpa [hχ_zero] using ellipticity_pos.le
 
 theorem exists_time_clip {L lam : ℝ} (hL : 0 ≤ L) (hlam : L < lam) :
     ∃ tau : ℝ → ℝ, ContDiff ℝ (∞ : WithTop ℕ∞) tau ∧
       Set.EqOn tau id (Set.Icc 0 L) ∧ ∀ t, |tau t| ≤ lam := by
   set delta : ℝ := (lam - L) / 2 with hdelta_def
   have hdelta_pos : 0 < delta := by rw [hdelta_def]; linarith
-  have hlam_pos : 0 < lam := lt_of_le_of_lt hL hlam
+  have ellipticity_pos : 0 < lam := lt_of_le_of_lt hL hlam
   obtain ⟨chi, hchi_cd, hchi_one, hchi_support, hchi_range⟩ :=
     exists_cutoff_one_on_Icc_supported_Ioo (L := L) hdelta_pos
   refine ⟨fun t => chi t * t, hchi_cd.mul contDiff_id, ?_, ?_⟩
@@ -805,7 +805,7 @@ theorem exists_time_clip {L lam : ℝ} (hL : 0 ≤ L) (hlam : L < lam) :
         have hnot_support : t ∉ Function.support chi := fun h =>
           hnot_tsupport (subset_closure h)
         simpa [Function.support] using hnot_support
-      simpa [hchi_zero] using hlam_pos.le
+      simpa [hchi_zero] using ellipticity_pos.le
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem perp_to_velocity_preserved_on

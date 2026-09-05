@@ -3,7 +3,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Extension.Limit.Smooth
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.Derivatives.AllBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extension.Endpoint.Metric
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extension.Endpoint.Ricci
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Extension.Restart.ShiInputs
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extension.Restart.SolutionBounds
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
@@ -42,7 +42,7 @@ def cinftyLimitDataOfAllMBounds
                 (S.base.metric s).inner x v v ∧
               (S.base.metric s).inner x v v ≤
                 Lambda * (S.base.metric alpha).inner x v v) :
-    SmoothLimitData (I := I) S.base.metric alpha omega hαω := by
+    SmoothMetricLimit (I := I) S.base.metric alpha omega hαω := by
   classical
   have hex := exists_endMetric (I := I) S hdim hS hbound hEquiv
   refine
@@ -65,7 +65,7 @@ def cinftyLimitDataOfSolution
     (hbound : ∃ K : ℝ, ∀ (t : ℝ) (x : M),
         alpha ≤ t → t < omega →
           Tensor0SBundle.normSq0S (I := I) (S.base.metric t) x 4 (Rm04 t x) ≤ K) :
-    SmoothLimitData (I := I) S.base.metric alpha omega hαω := by
+    SmoothMetricLimit (I := I) S.base.metric alpha omega hαω := by
   have hRmRaw : ∀ t ∈ Set.Ico alpha omega,
       rm04RealizesConnection (I := I) (S.base.metric t)
         (metricCov (I := I) (M := M) (S.base.metric t)) (Rm04 t) := by

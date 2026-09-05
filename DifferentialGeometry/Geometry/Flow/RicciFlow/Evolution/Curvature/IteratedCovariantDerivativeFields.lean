@@ -115,14 +115,14 @@ theorem iteratedRmComp_eq_nablaKRm04Field
         simpa [frameComp0S, hframe_def] using ih hy m
       rw [iteratedRmComp_succ]
       have hext :
-          frameExtData (I := I) frame
+          frameDirectionalDerivatives (I := I) frame
               (fun y : M =>
                 iteratedRmComp (I := I) frame
                   (solutionChristoffelComponents (I := I) S x₀) (solutionCurvatureComponents (I := I) S x₀) k t y) x =
-            frameExtData (I := I) frame
+            frameDirectionalDerivatives (I := I) frame
               (frameComp0S (I := I) (nablaKRm04Field (I := I) S t k) frame) x := by
         funext m d
-        simp only [frameExtData]
+        simp only [frameDirectionalDerivatives]
         refine mvfderiv_eventuallyEq_congr (I := I) _ ?_
         exact hlevelk.mono fun y hy => congrFun hy m
       have hbase :
@@ -188,15 +188,15 @@ theorem iterRmLF_eq_nabla
         simpa [frameComp0S] using ih hy m
       rw [iteratedRmComp_succ]
       have hext :
-          frameExtData (I := I) frame
+          frameDirectionalDerivatives (I := I) frame
               (fun y : M =>
                 iteratedRmComp (I := I) frame
                   (fun s y => christoffelSymbolInFrame (S.family.connection s) frame hframe y)
                   (fun s => frameComp0S (I := I) (S.base.rm04 s) frame) k t y) x =
-            frameExtData (I := I) frame
+            frameDirectionalDerivatives (I := I) frame
               (frameComp0S (I := I) (nablaKRm04Field (I := I) S t k) frame) x := by
         funext m d
-        simp only [frameExtData]
+        simp only [frameDirectionalDerivatives]
         refine mvfderiv_eventuallyEq_congr (I := I) _ ?_
         exact hlevelk.mono fun y hy => congrFun hy m
       have hbase :

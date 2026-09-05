@@ -979,7 +979,7 @@ private lemma eLpNorm_iteratedFDeriv_le_wkpNorm_local
       rw [Real.norm_eq_abs, Real.norm_eq_abs, abs_abs]
   rw [h_norm_eq, eLpNorm_congr_ae h_ae.symm]
 
-noncomputable def SmoothDiffeoBoundedAtOrder.wkpCompConst'
+noncomputable def SmoothDiffeoBoundedAtOrder.wkpCompositionConstant
     {kmax : ℕ} {Ω Ω' : Set E}
     (Φ : SmoothDiffeoBoundedAtOrder d Ω Ω' kmax) (k : ℕ) (p : ℝ≥0∞) : ℝ :=
   ((Finset.range (k + 1)).sum (fun j => (Fintype.card (Fin j → Fin d) : ℝ))) *
@@ -987,11 +987,11 @@ noncomputable def SmoothDiffeoBoundedAtOrder.wkpCompConst'
     ((1 / Φ.jacobianLowerBound) ^ (1 / p.toReal)) *
     ((k + 1 : ℕ) : ℝ)
 
-private lemma SmoothDiffeoBoundedAtOrder.wkpComp_const'_pos
+private lemma SmoothDiffeoBoundedAtOrder.wkpCompositionConstant_pos
     {kmax : ℕ} {Ω Ω' : Set E}
     (Φ : SmoothDiffeoBoundedAtOrder d Ω Ω' kmax) (k : ℕ) (p : ℝ≥0∞)
     (hp_one : 1 ≤ p) (hp_top : p ≠ (⊤ : ℝ≥0∞)) :
-    0 < Φ.wkpCompConst' k p := by
+    0 < Φ.wkpCompositionConstant k p := by
   have hp_zero : p ≠ 0 := by
     intro hpz; rw [hpz] at hp_one
     exact absurd hp_one (by norm_num)
@@ -1000,7 +1000,7 @@ private lemma SmoothDiffeoBoundedAtOrder.wkpComp_const'_pos
   have hjLB_inv_pos : 0 < 1 / Φ.jacobianLowerBound := by positivity
   have hKchg_pos : 0 < (1 / Φ.jacobianLowerBound) ^ (1 / p.toReal) :=
     Real.rpow_pos_of_pos hjLB_inv_pos _
-  unfold wkpCompConst'
+  unfold wkpCompositionConstant
   have h_zero_in : (0 : ℕ) ∈ Finset.range (k + 1) :=
     Finset.mem_range.mpr (Nat.zero_lt_succ _)
   have h_at_zero : (Fintype.card (Fin 0 → Fin d) : ℝ) = 1 := by
@@ -1028,7 +1028,7 @@ theorem SmoothDiffeoBoundedAtOrder.wkpNorm_comp_smooth_le
     {ψ : E → ℝ} (hψ_smooth : ContDiff ℝ (⊤ : ℕ∞) ψ)
     (hψ_compact : HasCompactSupport ψ) (hψ_support : tsupport ψ ⊆ Ω') :
     iteratedWeakSobolevNorm (d := d) k p (fun x => ψ (Φ.toFun x)) Ω ≤
-      ENNReal.ofReal (Φ.wkpCompConst' k p) *
+      ENNReal.ofReal (Φ.wkpCompositionConstant k p) *
         iteratedWeakSobolevNorm (d := d) k p ψ Ω' := by
   classical
   set Comp_const : ℝ := (k.factorial : ℝ) * Φ.derivBoundMaxOne ^ k with hComp_const_def
@@ -1133,7 +1133,7 @@ theorem SmoothDiffeoBoundedAtOrder.wkpNorm_comp_smooth_le
     intro j _
     exact (ENNReal.ofReal_natCast _).symm
   rw [h_card_sum_eq]
-  have h_wc : Φ.wkpCompConst' k p =
+  have h_wc : Φ.wkpCompositionConstant k p =
       CardSum * Comp_const * Kchg * ((k + 1 : ℕ) : ℝ) := rfl
   rw [h_wc]
   have hk1_nn : (0 : ℝ) ≤ ((k + 1 : ℕ) : ℝ) := by exact_mod_cast Nat.zero_le _
@@ -1174,9 +1174,9 @@ theorem MemWkp.comp_smoothDiffeoBoundedAtOrder
     (hu_support : tsupport u ⊆ Ω') :
     MemWkp (d := d) k p (fun x => u (Φ.toFun x)) Ω := by
   classical
-  set K_const : ℝ := Φ.wkpCompConst' k p with hK_def
+  set K_const : ℝ := Φ.wkpCompositionConstant k p with hK_def
   have hK_pos : 0 < K_const :=
-    Φ.wkpComp_const'_pos k p hp_one hp_top
+    Φ.wkpCompositionConstant_pos k p hp_one hp_top
   have hK_nonneg : 0 ≤ K_const := hK_pos.le
   have h_approx : ∀ n : ℕ, ∃ ψ : E → ℝ,
       ContDiff ℝ (⊤ : ℕ∞) ψ ∧ HasCompactSupport ψ ∧ tsupport ψ ⊆ Ω' ∧

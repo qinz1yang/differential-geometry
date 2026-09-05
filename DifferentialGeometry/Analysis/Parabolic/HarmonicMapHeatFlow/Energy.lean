@@ -152,37 +152,37 @@ omit [BoundarylessManifold I M] [ConnectedSpace M] in
     expMapIntrinsic_zero (I := I) q hEnorm x]
 
 omit [BoundarylessManifold I M] [ConnectedSpace M] in
-@[simp] theorem harmonicMapFlowAdd_zero_md
+@[simp] theorem harmonicMapFlowAdd_zero_mdifferentiableAt
     (q : SmoothRiemannianMetric I M) (x : M) (v : TangentSpace I x) :
     mfderiv I I (harmonicMapFlowAdd (I := I) (M := M) q
       (0 : SmoothCcTensor q 0 1)) x v = v := by
   rw [harmonicMapFlowAdd_zero, mfderiv_id]
   rfl
 
-noncomputable def harmonicMapFlowSpecLaunch
+noncomputable def harmonicMapFlowSpectralLaunch
     (q : SmoothRiemannianMetric I M)
     (S : Finset (TensorEigenIdx (I := I) (M := M) q 0 1))
     (p : EuclideanSpace ℝ {i // i ∈ S} × M) : TangentBundle I M :=
   TotalSpace.mk' E p.2
     (harmonicMapFlowUnknown (I := I) q
-      (harmonicMapFlowSpecIncl (I := I) (M := M) q S p.1) p.2)
+      (harmonicMapFlowSpectralInclusion (I := I) (M := M) q S p.1) p.2)
 
 omit [BoundarylessManifold I M] [ConnectedSpace M] in
-@[simp] theorem harmonicMapFlowSpecLaunch_zero
+@[simp] theorem harmonicMapFlowSpectralLaunch_zero
     (q : SmoothRiemannianMetric I M)
     (S : Finset (TensorEigenIdx (I := I) (M := M) q 0 1)) (x : M) :
-    harmonicMapFlowSpecLaunch (I := I) (M := M) q S (0, x) =
+    harmonicMapFlowSpectralLaunch (I := I) (M := M) q S (0, x) =
       (⟨x, (0 : E)⟩ : TangentBundle I M) := by
-  simp only [harmonicMapFlowSpecLaunch, map_zero, harmonicMapFlowUnknown_zero]
+  simp only [harmonicMapFlowSpectralLaunch, map_zero, harmonicMapFlowUnknown_zero]
   rfl
 
 omit [BoundarylessManifold I M] [ConnectedSpace M] in
-theorem harmonicMapFlowSpecLaunch_cd
+theorem harmonicMapFlowSpectralLaunch_contMDiff
     (q : SmoothRiemannianMetric I M)
     (S : Finset (TensorEigenIdx (I := I) (M := M) q 0 1)) :
     ContMDiff (𝓘(ℝ, EuclideanSpace ℝ {i // i ∈ S}).prod I) I.tangent
       (∞ : WithTop ℕ∞)
-      (harmonicMapFlowSpecLaunch (I := I) (M := M) q S) := by
+      (harmonicMapFlowSpectralLaunch (I := I) (M := M) q S) := by
   classical
   have hterm : ∀ j : {i // i ∈ S},
       ContMDiff (𝓘(ℝ, EuclideanSpace ℝ {i // i ∈ S}).prod I) I.tangent
@@ -222,7 +222,7 @@ theorem harmonicMapFlowSpecLaunch_cd
     exact ContMDiff.sum_bundle (F := E) contMDiff_snd Finset.univ
       (fun j _ => hterm j)
   refine hsum.congr (fun p => ?_)
-  simp only [harmonicMapFlowSpecLaunch, harmonicMapFlowSpecIncl_apply]
+  simp only [harmonicMapFlowSpectralLaunch, harmonicMapFlowSpectralInclusion_apply]
   apply congrArg (TotalSpace.mk' E p.2)
   change harmonicMapFlowUnknownLM (I := I) q p.2
       (∑ j : {i // i ∈ S},
@@ -233,7 +233,7 @@ theorem harmonicMapFlowSpecLaunch_cd
   rw [map_smul, harmonicMapFlowUnknownLM_apply]
 
 omit [BoundarylessManifold I M] [ConnectedSpace M] in
-theorem harmonicMapFlowSpecChart
+theorem harmonicMapFlowSpectralChart
     (q : SmoothRiemannianMetric I M)
     (S : Finset (TensorEigenIdx (I := I) (M := M) q 0 1))
     (n : ℕ) :
@@ -242,7 +242,7 @@ theorem harmonicMapFlowSpecChart
         ∀ x : M,
           ContMDiffAt I.tangent (I.prod I) (n : ℕ∞)
             (harmonicMapFlowDiagExp (I := I) (M := M) q)
-            (harmonicMapFlowSpecLaunch (I := I) (M := M) q S (u, x)) := by
+            (harmonicMapFlowSpectralLaunch (I := I) (M := M) q S (u, x)) := by
   classical
   let U : Set (TangentBundle I M) :=
     {z | ContMDiffAt I.tangent (I.prod I) (n : ℕ∞)
@@ -254,16 +254,16 @@ theorem harmonicMapFlowSpecChart
     intro z hz
     exact (contMDiffAt_iff_contMDiffAt_nhds hfinite).1 hz
   let P : Set (EuclideanSpace ℝ {i // i ∈ S} × M) :=
-    (harmonicMapFlowSpecLaunch (I := I) (M := M) q S) ⁻¹' U
+    (harmonicMapFlowSpectralLaunch (I := I) (M := M) q S) ⁻¹' U
   have hP_open : IsOpen P :=
-    hU_open.preimage (harmonicMapFlowSpecLaunch_cd (I := I) (M := M) q S).continuous
+    hU_open.preimage (harmonicMapFlowSpectralLaunch_contMDiff (I := I) (M := M) q S).continuous
   have hslice :
       ({(0 : EuclideanSpace ℝ {i // i ∈ S})} ×ˢ (Set.univ : Set M)) ⊆ P := by
     rintro ⟨u, x⟩ ⟨hu, -⟩
     simp only [Set.mem_singleton_iff] at hu
     subst u
-    change harmonicMapFlowSpecLaunch (I := I) (M := M) q S (0, x) ∈ U
-    rw [harmonicMapFlowSpecLaunch_zero]
+    change harmonicMapFlowSpectralLaunch (I := I) (M := M) q S (0, x) ∈ U
+    rw [harmonicMapFlowSpectralLaunch_zero]
     exact harmonicMapFlowDiagExp_cd_zero (I := I) (M := M) q x n
   obtain ⟨A, B, hA_open, _hB_open, hzeroA, hunivB, hAB⟩ :=
     generalized_tube_lemma
@@ -278,7 +278,7 @@ theorem harmonicMapFlowSpecChart
   exact hAB hux
 
 omit [BoundarylessManifold I M] [ConnectedSpace M] in
-theorem harmonicMapFlowSpecAdd_cd
+theorem harmonicMapFlowSpectralAdd_contMDiff
     (q : SmoothRiemannianMetric I M)
     (S : Finset (TensorEigenIdx (I := I) (M := M) q 0 1))
     (n : ℕ) :
@@ -287,20 +287,20 @@ theorem harmonicMapFlowSpecAdd_cd
         (n : ℕ∞)
         (fun p : EuclideanSpace ℝ {i // i ∈ S} × M =>
           harmonicMapFlowDiagExp (I := I) (M := M) q
-            (harmonicMapFlowSpecLaunch (I := I) (M := M) q S p))
+            (harmonicMapFlowSpectralLaunch (I := I) (M := M) q S p))
         (Metric.ball 0 R ×ˢ (Set.univ : Set M)) := by
   obtain ⟨R, hR, hchart⟩ :=
-    harmonicMapFlowSpecChart (I := I) (M := M) q S n
+    harmonicMapFlowSpectralChart (I := I) (M := M) q S n
   refine ⟨R, hR, ?_⟩
   intro p hp
   have hlaunch :
       ContMDiffAt (𝓘(ℝ, EuclideanSpace ℝ {i // i ∈ S}).prod I) I.tangent
-        (n : ℕ∞) (harmonicMapFlowSpecLaunch (I := I) (M := M) q S) p :=
-    (harmonicMapFlowSpecLaunch_cd (I := I) (M := M) q S).contMDiffAt.of_le
+        (n : ℕ∞) (harmonicMapFlowSpectralLaunch (I := I) (M := M) q S) p :=
+    (harmonicMapFlowSpectralLaunch_contMDiff (I := I) (M := M) q S).contMDiffAt.of_le
       (by exact_mod_cast le_top)
   exact ((hchart p.1 hp.1 p.2).comp p hlaunch).contMDiffWithinAt
 
-noncomputable def harmonicMapFlowDirDensity
+noncomputable def harmonicMapFlowDirichletDensity
     (q h : SmoothRiemannianMetric I M) (Phi : M → M) (x : M) : ℝ :=
   (1 / 2 : ℝ) *
     ∑ i : Fin (Module.finrank ℝ E),
@@ -311,9 +311,9 @@ noncomputable def harmonicMapFlowDirDensity
         (mfderiv I I Phi x (smoothOrthoFrame (I := I) q x i x))
 
 omit [BoundarylessManifold I M] [ConnectedSpace M] in
-theorem harmonicMapFlowDirDensity_zero
+theorem harmonicMapFlowDirichletDensity_zero
     (q h : SmoothRiemannianMetric I M) (x : M) :
-    harmonicMapFlowDirDensity (I := I) (M := M) q h
+    harmonicMapFlowDirichletDensity (I := I) (M := M) q h
         (harmonicMapFlowAdd (I := I) (M := M) q (0 : SmoothCcTensor q 0 1)) x =
       (1 / 2 : ℝ) *
         ∑ i : Fin (Module.finrank ℝ E),
@@ -321,85 +321,85 @@ theorem harmonicMapFlowDirDensity_zero
             (metricComparisonEndomorphism (I := I) q h x
               (smoothOrthoFrame (I := I) q x i x))
             (smoothOrthoFrame (I := I) q x i x) := by
-  rw [harmonicMapFlowDirDensity, harmonicMapFlowAdd_zero]
+  rw [harmonicMapFlowDirichletDensity, harmonicMapFlowAdd_zero]
   simp only [id_eq, mfderiv_id]
   rfl
 
-noncomputable def harmonicMapFlowDirEnergy
+noncomputable def harmonicMapFlowDirichletEnergy
     (q h : SmoothRiemannianMetric I M) (S : SmoothCcTensor q 0 1) : ℝ :=
-  ∫ x, harmonicMapFlowDirDensity (I := I) (M := M) q h
+  ∫ x, harmonicMapFlowDirichletDensity (I := I) (M := M) q h
       (harmonicMapFlowAdd (I := I) (M := M) q S) x
     ∂(riemannianVolumeMeasure (I := I) (M := M) h)
 
-noncomputable def harmonicMapFlowSpecEnergy
+noncomputable def harmonicMapFlowSpectralEnergy
     (q : SmoothRiemannianMetric I M)
     (g : ℝ → SmoothRiemannianMetric I M)
     (S : Finset (TensorEigenIdx (I := I) (M := M) q 0 1))
     (t : ℝ) (u : EuclideanSpace ℝ {i // i ∈ S}) : ℝ :=
-  harmonicMapFlowDirEnergy (I := I) (M := M) q (g t)
-    (harmonicMapFlowSpecIncl (I := I) (M := M) q S u)
+  harmonicMapFlowDirichletEnergy (I := I) (M := M) q (g t)
+    (harmonicMapFlowSpectralInclusion (I := I) (M := M) q S u)
 
-noncomputable def harmonicMapFlowSpecResid
+noncomputable def harmonicMapFlowSpectralResidual
     (q : SmoothRiemannianMetric I M)
     (g : ℝ → SmoothRiemannianMetric I M)
     (S : Finset (TensorEigenIdx (I := I) (M := M) q 0 1))
     (t : ℝ) (u : EuclideanSpace ℝ {i // i ∈ S}) :
     EuclideanSpace ℝ {i // i ∈ S} →L[ℝ] ℝ :=
-  -fderiv ℝ (harmonicMapFlowSpecEnergy (I := I) (M := M) q g S t) u
+  -fderiv ℝ (harmonicMapFlowSpectralEnergy (I := I) (M := M) q g S t) u
 
-noncomputable def harmonicMapFlowSpecPrincipal
+noncomputable def harmonicMapFlowSpectralPrincipal
     (q : SmoothRiemannianMetric I M)
     (g : ℝ → SmoothRiemannianMetric I M)
     (S : Finset (TensorEigenIdx (I := I) (M := M) q 0 1))
     (t : ℝ) (u : EuclideanSpace ℝ {i // i ∈ S}) :
     EuclideanSpace ℝ {i // i ∈ S} →L[ℝ] ℝ :=
-  -(harmonicMapFlowFinForm (I := I) (M := M) q (g t)
-      (harmonicMapFlowSpecIncl (I := I) (M := M) q S) u)
+  -(harmonicMapFlowFiniteDimensionalForm (I := I) (M := M) q (g t)
+      (harmonicMapFlowSpectralInclusion (I := I) (M := M) q S) u)
 
 omit [BoundarylessManifold I M] [ConnectedSpace M] in
-@[simp] theorem harmonicMapFlowSpecPrincipal_apply
+@[simp] theorem harmonicMapFlowSpectralPrincipal_apply
     (q : SmoothRiemannianMetric I M)
     (g : ℝ → SmoothRiemannianMetric I M)
     (S : Finset (TensorEigenIdx (I := I) (M := M) q 0 1))
     (t : ℝ) (u v : EuclideanSpace ℝ {i // i ∈ S}) :
-    harmonicMapFlowSpecPrincipal (I := I) (M := M) q g S t u v =
+    harmonicMapFlowSpectralPrincipal (I := I) (M := M) q g S t u v =
       -harmonicMapFlowWeakForm (I := I) (M := M) q (g t)
-        (harmonicMapFlowSpecIncl (I := I) (M := M) q S u)
-        (harmonicMapFlowSpecIncl (I := I) (M := M) q S v) := by
-  simp only [harmonicMapFlowSpecPrincipal, neg_apply, harmonicMapFlowFinForm_apply]
+        (harmonicMapFlowSpectralInclusion (I := I) (M := M) q S u)
+        (harmonicMapFlowSpectralInclusion (I := I) (M := M) q S v) := by
+  simp only [harmonicMapFlowSpectralPrincipal, neg_apply, harmonicMapFlowFiniteDimensionalForm_apply]
 
-noncomputable def harmonicMapFlowSpecLow
+noncomputable def harmonicMapFlowSpectralLow
     (q : SmoothRiemannianMetric I M)
     (g : ℝ → SmoothRiemannianMetric I M)
     (S : Finset (TensorEigenIdx (I := I) (M := M) q 0 1))
     (t : ℝ) (u : EuclideanSpace ℝ {i // i ∈ S}) :
     EuclideanSpace ℝ {i // i ∈ S} →L[ℝ] ℝ :=
-  harmonicMapFlowSpecResid (I := I) (M := M) q g S t u -
-    harmonicMapFlowSpecPrincipal (I := I) (M := M) q g S t u
+  harmonicMapFlowSpectralResidual (I := I) (M := M) q g S t u -
+    harmonicMapFlowSpectralPrincipal (I := I) (M := M) q g S t u
 
 omit [BoundarylessManifold I M] [ConnectedSpace M] in
-theorem harmonicMapFlowSpec_split
+theorem harmonicMapFlowSpectral_split
     (q : SmoothRiemannianMetric I M)
     (g : ℝ → SmoothRiemannianMetric I M)
     (S : Finset (TensorEigenIdx (I := I) (M := M) q 0 1))
     (t : ℝ) (u : EuclideanSpace ℝ {i // i ∈ S}) :
-    harmonicMapFlowSpecResid (I := I) (M := M) q g S t u =
-      harmonicMapFlowSpecPrincipal (I := I) (M := M) q g S t u +
-        harmonicMapFlowSpecLow (I := I) (M := M) q g S t u := by
-  simp only [harmonicMapFlowSpecLow]
+    harmonicMapFlowSpectralResidual (I := I) (M := M) q g S t u =
+      harmonicMapFlowSpectralPrincipal (I := I) (M := M) q g S t u +
+        harmonicMapFlowSpectralLow (I := I) (M := M) q g S t u := by
+  simp only [harmonicMapFlowSpectralLow]
   abel
 
 omit [BoundarylessManifold I M] [ConnectedSpace M] in
-@[simp] theorem harmonicMapFlowSpecPrincipal_zero
+@[simp] theorem harmonicMapFlowSpectralPrincipal_zero
     (q : SmoothRiemannianMetric I M)
     (g : ℝ → SmoothRiemannianMetric I M)
     (S : Finset (TensorEigenIdx (I := I) (M := M) q 0 1))
     (t : ℝ) :
-    harmonicMapFlowSpecPrincipal (I := I) (M := M) q g S t 0 = 0 := by
-  simp only [harmonicMapFlowSpecPrincipal, map_zero, neg_zero]
+    harmonicMapFlowSpectralPrincipal (I := I) (M := M) q g S t 0 = 0 := by
+  simp only [harmonicMapFlowSpectralPrincipal, map_zero, neg_zero]
 
 omit [BoundarylessManifold I M] [ConnectedSpace M] in
-theorem harmonicMapFlowSpecPrincipal_nonpos
+theorem harmonicMapFlowSpectralPrincipal_nonpos
     (q : SmoothRiemannianMetric I M)
     (g : ℝ → SmoothRiemannianMetric I M)
     (S : Finset (TensorEigenIdx (I := I) (M := M) q 0 1))
@@ -410,14 +410,14 @@ theorem harmonicMapFlowSpecPrincipal_nonpos
     {δ : ℝ} (hδ_half : δ < 1 / 2) (hδ_nn : 0 ≤ δ)
     (hδ : metricCauchySchwarzBound (I := I) (M := M) q k δ)
     (u : EuclideanSpace ℝ {i // i ∈ S}) :
-    harmonicMapFlowSpecPrincipal (I := I) (M := M) q g S t u u ≤ 0 := by
-  rw [harmonicMapFlowSpecPrincipal_apply]
+    harmonicMapFlowSpectralPrincipal (I := I) (M := M) q g S t u u ≤ 0 := by
+  rw [harmonicMapFlowSpectralPrincipal_apply]
   exact neg_nonpos.mpr (harmonicMapFlowWeak_nonneg (I := I) (M := M)
     q (g t) k htie hδ_half hδ_nn hδ
-    (harmonicMapFlowSpecIncl (I := I) (M := M) q S u))
+    (harmonicMapFlowSpectralInclusion (I := I) (M := M) q S u))
 
 omit [BoundarylessManifold I M] [ConnectedSpace M] in
-theorem harmonicMapFlowSpecPrincipal_lower
+theorem harmonicMapFlowSpectralPrincipal_lower
     (q : SmoothRiemannianMetric I M)
     (g : ℝ → SmoothRiemannianMetric I M)
     (S : Finset (TensorEigenIdx (I := I) (M := M) q 0 1))
@@ -432,58 +432,58 @@ theorem harmonicMapFlowSpecPrincipal_lower
     (u : EuclideanSpace ℝ {i // i ∈ S}) :
     (1 - δ / (1 - δ)) *
         harmonicMapFlowWeakForm (I := I) (M := M) q q
-          (harmonicMapFlowSpecIncl (I := I) (M := M) q S u)
-          (harmonicMapFlowSpecIncl (I := I) (M := M) q S u) ≤
+          (harmonicMapFlowSpectralInclusion (I := I) (M := M) q S u)
+          (harmonicMapFlowSpectralInclusion (I := I) (M := M) q S u) ≤
       C.toReal *
-        (-harmonicMapFlowSpecPrincipal (I := I) (M := M) q g S t u u) := by
-  simpa only [harmonicMapFlowSpecPrincipal_apply, neg_neg] using
+        (-harmonicMapFlowSpectralPrincipal (I := I) (M := M) q g S t u u) := by
+  simpa only [harmonicMapFlowSpectralPrincipal_apply, neg_neg] using
     (harmonicMapFlowForm_self_rev (I := I) (M := M) q (g t) C hC0 hCtop hvol
       k htie hδ_half hδ_nn hδ
-      (harmonicMapFlowSpecIncl (I := I) (M := M) q S u))
+      (harmonicMapFlowSpectralInclusion (I := I) (M := M) q S u))
 
 omit [BoundarylessManifold I M] [ConnectedSpace M] in
-@[simp] theorem harmonicMapFlowSpecLow_zero
+@[simp] theorem harmonicMapFlowSpectralLow_zero
     (q : SmoothRiemannianMetric I M)
     (g : ℝ → SmoothRiemannianMetric I M)
     (S : Finset (TensorEigenIdx (I := I) (M := M) q 0 1))
     (t : ℝ) :
-    harmonicMapFlowSpecLow (I := I) (M := M) q g S t 0 =
-      harmonicMapFlowSpecResid (I := I) (M := M) q g S t 0 := by
-  simp only [harmonicMapFlowSpecLow, harmonicMapFlowSpecPrincipal_zero, sub_zero]
+    harmonicMapFlowSpectralLow (I := I) (M := M) q g S t 0 =
+      harmonicMapFlowSpectralResidual (I := I) (M := M) q g S t 0 := by
+  simp only [harmonicMapFlowSpectralLow, harmonicMapFlowSpectralPrincipal_zero, sub_zero]
 
-noncomputable def harmonicMapFlowSpecResidR
+noncomputable def harmonicMapFlowRetractedSpectralResidual
     (q : SmoothRiemannianMetric I M)
     (g : ℝ → SmoothRiemannianMetric I M)
     (S : Finset (TensorEigenIdx (I := I) (M := M) q 0 1))
     (R t : ℝ) (u : EuclideanSpace ℝ {i // i ∈ S}) :
     EuclideanSpace ℝ {i // i ∈ S} →L[ℝ] ℝ :=
-  harmonicMapFlowSpecResid (I := I) (M := M) q g S t (ballRetraction R u)
+  harmonicMapFlowSpectralResidual (I := I) (M := M) q g S t (ballRetraction R u)
 
 omit [BoundarylessManifold I M] [ConnectedSpace M] in
-theorem harmonicMapFlowSpecResidR_eq
+theorem harmonicMapFlowRetractedSpectralResidual_eq
     (q : SmoothRiemannianMetric I M)
     (g : ℝ → SmoothRiemannianMetric I M)
     (S : Finset (TensorEigenIdx (I := I) (M := M) q 0 1))
     {R : ℝ} (t : ℝ) (u : EuclideanSpace ℝ {i // i ∈ S})
     (hu : ‖u‖ ≤ R) :
-    harmonicMapFlowSpecResidR (I := I) (M := M) q g S R t u =
-      harmonicMapFlowSpecResid (I := I) (M := M) q g S t u := by
-  rw [harmonicMapFlowSpecResidR, ballRetraction_eq_self_of_mem hu]
+    harmonicMapFlowRetractedSpectralResidual (I := I) (M := M) q g S R t u =
+      harmonicMapFlowSpectralResidual (I := I) (M := M) q g S t u := by
+  rw [harmonicMapFlowRetractedSpectralResidual, ballRetraction_eq_self_of_mem hu]
 
 omit [BoundarylessManifold I M] [ConnectedSpace M] in
-theorem harmonicMapFlowSpecRes_data
+theorem harmonicMapFlowRetractedSpectralResidual_lipschitz_continuous_affine_bound
     (q : SmoothRiemannianMetric I M)
     (g : ℝ → SmoothRiemannianMetric I M)
     (S : Finset (TensorEigenIdx (I := I) (M := M) q 0 1))
     {T R : ℝ} (hR : 0 ≤ R)
     (hF : ContinuousOn
-      (Function.uncurry (harmonicMapFlowSpecResid (I := I) (M := M) q g S))
+      (Function.uncurry (harmonicMapFlowSpectralResidual (I := I) (M := M) q g S))
       (Icc (0 : ℝ) T ×ˢ
         Metric.closedBall
           (0 : EuclideanSpace ℝ {i // i ∈ S}) R))
     (hD : ContinuousOn
       (fun p : ℝ × EuclideanSpace ℝ {i // i ∈ S} =>
-        fderiv ℝ (harmonicMapFlowSpecResid (I := I) (M := M) q g S p.1) p.2)
+        fderiv ℝ (harmonicMapFlowSpectralResidual (I := I) (M := M) q g S p.1) p.2)
       (Icc (0 : ℝ) T ×ˢ
         Metric.closedBall
           (0 : EuclideanSpace ℝ {i // i ∈ S}) R))
@@ -491,22 +491,22 @@ theorem harmonicMapFlowSpecRes_data
       ∀ u ∈ Metric.closedBall
         (0 : EuclideanSpace ℝ {i // i ∈ S}) R,
         DifferentiableAt ℝ
-          (harmonicMapFlowSpecResid (I := I) (M := M) q g S t) u) :
+          (harmonicMapFlowSpectralResidual (I := I) (M := M) q g S t) u) :
     ∃ A : ℝ, ∃ L : ℝ≥0, 0 ≤ A ∧
       (∀ t ∈ Icc (0 : ℝ) T,
         LipschitzWith L
-          (harmonicMapFlowSpecResidR (I := I) (M := M) q g S R t)) ∧
+          (harmonicMapFlowRetractedSpectralResidual (I := I) (M := M) q g S R t)) ∧
       (∀ u : EuclideanSpace ℝ {i // i ∈ S},
         ContinuousOn
-          (fun t => harmonicMapFlowSpecResidR (I := I) (M := M) q g S R t u)
+          (fun t => harmonicMapFlowRetractedSpectralResidual (I := I) (M := M) q g S R t u)
           (Icc (0 : ℝ) T)) ∧
       (∀ t ∈ Icc (0 : ℝ) T,
         ∀ u : EuclideanSpace ℝ {i // i ∈ S},
-          ‖harmonicMapFlowSpecResidR (I := I) (M := M) q g S R t u‖ ≤
+          ‖harmonicMapFlowRetractedSpectralResidual (I := I) (M := M) q g S R t u‖ ≤
             A + (L : ℝ) * ‖u‖) := by
   with_unfolding_all
-    exact retractResid_data
-      (F := harmonicMapFlowSpecResid (I := I) (M := M) q g S) hR hF hD hdiff
+    exact exists_ballRetraction_lipschitz_continuous_affine_bound
+      (F := harmonicMapFlowSpectralResidual (I := I) (M := M) q g S) hR hF hD hdiff
 
 end DifferentialGeometry.PDE.RicciFlow.Pullback
 

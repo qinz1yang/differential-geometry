@@ -741,7 +741,7 @@ lemma norm_wkpChartL2_def
     (u : WkpChartL2 (I := I) (M := M) k) :
     ‖u‖ = (wkpNormChartL2 (I := I) (M := M) k (wkpChartL2Fun u)).toReal := rfl
 
-lemma wkpChartL2_seminormedSpace_core
+private lemma wkpChartL2_seminormedSpace_core
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
     (k : ℕ) :
     SeminormedSpace.Core ℝ (WkpChartL2 (I := I) (M := M) k) where

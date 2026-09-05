@@ -49,7 +49,7 @@ theorem chartCoord_hasDerivWithinAt_to_manifold_hasMFDerivWithinAt
     (t := u ⁻¹' Set.range I) hconf).mp hcomp
 
 omit [FiniteDimensional ℝ E] [T2Space M] [SigmaCompactSpace M] in
-theorem manifoldFlowFamily_exists
+theorem exists_manifoldFlowFamily
     (X : ℝ → ∀ x : M, TangentSpace I x)
     (hper : ∀ α : M, ChartLocalPicardData X α)
     (hperNeg : ∀ α : M, ChartLocalPicardData (fun t x => -(X t x)) α)
@@ -110,7 +110,7 @@ theorem manifoldFlowFamily_exists
     exact (hdiffeo t ht htT).choose_spec x
 
 omit [FiniteDimensional ℝ E] [T2Space M] [SigmaCompactSpace M] in
-theorem manifoldFlowFamily_exists_chartRepr
+theorem exists_manifoldFlowFamily_chartRepr
     (X : ℝ → ∀ x : M, TangentSpace I x)
     (hper : ∀ α : M, ChartLocalPicardData X α)
     (hperNeg : ∀ α : M, ChartLocalPicardData (fun t x => -(X t x)) α)
@@ -207,7 +207,7 @@ theorem manifoldFlow_hasMFDerivWithinAt_of_chartLocal
   set y : E := I ((chartAt H α) x) with hy
   set u : ℝ → E := hper.flow y with hu
   have hball : y ∈ Metric.closedBall (I ((chartAt H α) α)) hper.r :=
-    picard_data_chart_coord_in_closedBall X α hper x hxU
+    ChartLocalPicardData.chart_coord_mem_closedBall X α hper x hxU
   obtain ⟨_hinit, hode⟩ := hper.flow_spec y hball
   have hd : HasDerivWithinAt u
       (X t ((chartAt H α).symm (I.symm (u t))))

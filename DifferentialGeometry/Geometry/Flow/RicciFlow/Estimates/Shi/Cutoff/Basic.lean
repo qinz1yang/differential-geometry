@@ -111,7 +111,7 @@ private theorem cutoff_par_bound
     _ ≤ Ccut * a :=
       mul_le_mul_of_nonneg_right hcut ha0
 
-theorem exists_shi_barrier_cutoff_data_of_solution
+theorem nonempty_shi_barrier_cutoff_data_of_solution
     {D : RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S)

@@ -50,7 +50,7 @@ noncomputable def sublevelCellAdjunctionHomotopyEquivUnderOfMorseChart {n : ℕ}
     HomotopyEquivUnder
       (X := SublevelSpace f (c - data.ε)) (Y := SublevelSpace f (c + data.ε))
       (Z := CellAdjunctionSpace k (cellAttachingMap hk c data))
-      (toBase := sublevelInclusion f (by linarith [data.hεpos]))
+      (toBase := sublevelInclusion f (by linarith [data.epsilon_pos]))
       (fromBase := ContinuousMap.mk (adjunctionLower (i := cellBoundaryInclusion k) (cellAttachingMap hk c data))
         (continuous_adjunctionLower (i := cellBoundaryInclusion k) (cellAttachingMap hk c data))) := by
   let E : Set M := cellImage hk c data
@@ -63,7 +63,7 @@ noncomputable def sublevelCellAdjunctionHomotopyEquivUnderOfMorseChart {n : ℕ}
     exists_globalIntegralCurve_of_compactSupport v hv hsupp
   let T : M → ℝ := fun x => max (g x - (c - data.ε)) 0
   let ι : C(SublevelSpace f (c - data.ε), SublevelSpace f (c + data.ε)) :=
-    sublevelInclusion f (by linarith [data.hεpos])
+    sublevelInclusion f (by linarith [data.epsilon_pos])
   let j : C(SublevelSpace f (c - data.ε), CellAdjunctionSpace k φ) :=
     ContinuousMap.mk (adjunctionLower (i := cellBoundaryInclusion k) φ)
       (continuous_adjunctionLower (i := cellBoundaryInclusion k) φ)
@@ -141,7 +141,7 @@ noncomputable def sublevelCellAdjunctionHomotopyEquivUnderOfMorseChart {n : ℕ}
         have hy' : g y.1 ≤ c - data.ε := by
           change y.1 ∈ sublevel g (c - data.ε)
           exact y.2
-        have hle : g y.1 ≤ c + data.ε := by linarith [data.hεpos]
+        have hle : g y.1 ≤ c + data.ε := by linarith [data.epsilon_pos]
         exact hle)⟩)
       (by
         exact Continuous.subtype_mk continuous_subtype_val (by
@@ -150,7 +150,7 @@ noncomputable def sublevelCellAdjunctionHomotopyEquivUnderOfMorseChart {n : ℕ}
             have hy' : g y.1 ≤ c - data.ε := by
               change y.1 ∈ sublevel g (c - data.ε)
               exact y.2
-            have hle : g y.1 ≤ c + data.ε := by linarith [data.hεpos]
+            have hle : g y.1 ≤ c + data.ε := by linarith [data.epsilon_pos]
             exact hle)))
   let hset : sublevel f (c - data.ε) ∪ U₀ = sublevel f (c - data.ε) ∪ E := by
     simp [E, U₀, hcell]
@@ -631,9 +631,11 @@ private theorem morse_smooth_handle_attachment_relative {m : ℕ} {H : Type} [To
       nlinarith [h1]
     exact le_of_sq_le_sq hsq (le_of_lt hRpos)
   let data : MorseChart (m + 1) k hk c I f :=
-    { p := p, R := R, R' := R', ε := ε₀, χ := χ, hχ0 := hχ0val, hRpos := hRpos,
-      hR'pos := hR'pos, hεpos := hε₀, hεR := hεR, hnorm := hnorm, hχsource := hχsource,
-      hχon := hχon, hχsymmOn := hχsymmOn }
+    { p := p, R := R, smoothRadius := R', ε := ε₀, χ := χ, map_zero := hχ0val,
+      radius_pos := hRpos, smoothRadius_pos := hR'pos, epsilon_pos := hε₀,
+      sqrt_two_epsilon_le_radius := hεR, normalForm_on := hnorm,
+      closedBall_subset_source := hχsource, contMDiffOn := hχon,
+      symm_contMDiffOn := hχsymmOn }
   let φ : AttachingRegion k (m + 1 - k) → SublevelSpace f (c - ε₀) :=
     fun p => ⟨(cocoreAttachingEmbedding hk c ε₀ r₀ data hε₀ hεr₀ p).1,
       le_of_eq (cocoreAttachingEmbedding_value hk c ε₀ r₀ data hε₀ hεr₀ p)⟩
@@ -675,7 +677,7 @@ private theorem morse_smooth_handle_attachment_relative {m : ℕ} {H : Type} [To
       intro y hy
       rcases hy with ⟨p, hp⟩
       rw [← hp]
-      exact data.hχsource (cocoreModelPoint hk ε₀ r₀ p)
+      exact data.closedBall_subset_source (cocoreModelPoint hk ε₀ r₀ p)
         (le_trans (cocoreModelPoint_norm_le hk ε₀ r₀ (le_of_lt hε₀) p) hεr₀)
     have hmap : Set.MapsTo (fun p : AttachingRegion k (m + 1 - k) =>
         cocoreModelPoint hk ε₀ r₀ p) Set.univ
@@ -795,17 +797,17 @@ private theorem morse_smooth_handle_attachment_relative {m : ℕ} {H : Type} [To
       intro hk0 hl0
       let := hk0
       let := hl0
-      have hεr₀' : Real.sqrt (2 * ε₀ + 2 * r₀ ^ 2) < data.R' := by
+      have hεr₀' : Real.sqrt (2 * ε₀ + 2 * r₀ ^ 2) < data.smoothRadius := by
         rw [hr₀sq]
         have hsix : 2 * ε₀ + 2 * (2 * ε₀) = 6 * ε₀ := by ring
         rw [hsix]
-        have hsq : (Real.sqrt (6 * ε₀)) ^ 2 < data.R' ^ 2 := by
+        have hsq : (Real.sqrt (6 * ε₀)) ^ 2 < data.smoothRadius ^ 2 := by
           rw [Real.sq_sqrt (by positivity : 0 ≤ 6 * ε₀)]
           have h1 : ε₀ ≤ R' ^ 2 / 16 := le_trans hεmin (by
             have hle' := min_le_right (R ^ 2) (R' ^ 2)
             nlinarith)
           nlinarith [h1, sq_pos_of_pos hR'pos]
-        have hlt : |Real.sqrt (6 * ε₀)| < data.R' :=
+        have hlt : |Real.sqrt (6 * ε₀)| < data.smoothRadius :=
           abs_lt_of_sq_lt_sq hsq (le_of_lt hR'pos)
         have hnonneg : 0 ≤ Real.sqrt (6 * ε₀) := Real.sqrt_nonneg _
         rwa [abs_of_nonneg hnonneg] at hlt

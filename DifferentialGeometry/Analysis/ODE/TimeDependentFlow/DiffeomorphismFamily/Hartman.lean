@@ -42,7 +42,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] [CompactSpace M] [I.Boundaryless] [T2Space M]
     [SigmaCompactSpace M] in
-theorem picard_data_flow_initial_value_manifold
+theorem ChartLocalPicardData.flow_initial_value
     (X : ℝ → ∀ x : M, TangentSpace I x) (α : M)
     (hper : ChartLocalPicardData X α)
     (x : M) (hx : x ∈ hper.U) :
@@ -67,7 +67,7 @@ theorem chart_coord_roundtrip
 
 omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] [CompactSpace M] [I.Boundaryless] [T2Space M]
     [SigmaCompactSpace M] in
-theorem picard_data_chart_coord_in_closedBall
+theorem ChartLocalPicardData.chart_coord_mem_closedBall
     (X : ℝ → ∀ x : M, TangentSpace I x) (α : M)
     (hper : ChartLocalPicardData X α)
     (x : M) (hx : x ∈ hper.U) :

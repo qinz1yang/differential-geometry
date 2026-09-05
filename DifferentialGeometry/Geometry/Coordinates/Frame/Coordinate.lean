@@ -201,7 +201,7 @@ namespace LocalChartAt
 structure Frame {x₀ : M} (C : LocalChartAt (I := I) x₀) where
   domain : Set M
   frame : CoordinateIdx (𝕜 := 𝕜) E -> (x : M) -> TangentSpace I x
-  hframe : IsLocalFrameOn I E (∞ : WithTop ℕ∞) frame domain
+  isLocalFrame : IsLocalFrameOn I E (∞ : WithTop ℕ∞) frame domain
   isOpen_domain : IsOpen domain
   mem_base : x₀ ∈ domain
   domain_subset_source : domain ⊆ C.source
@@ -219,7 +219,7 @@ theorem mem_source {x₀ : M} {C : LocalChartAt (I := I) x₀} (F : C.Frame)
 def basisAt {x₀ : M} {C : LocalChartAt (I := I) x₀} (F : C.Frame) {x : M}
     (hx : x ∈ F.domain) :
     Module.Basis (CoordinateIdx (𝕜 := 𝕜) E) 𝕜 (TangentSpace I x) :=
-  F.hframe.toBasisAt hx
+  F.isLocalFrame.toBasisAt hx
 
 omit [CompleteSpace 𝕜] in
 theorem basisAt_apply {x₀ : M} {C : LocalChartAt (I := I) x₀} (F : C.Frame)
@@ -234,7 +234,7 @@ def toFrame {x₀ : M} (C : LocalChartAt (I := I) x₀) : C.Frame where
   frame := by
     haveI : MemTrivializationAtlas C.triv := C.triv_mem
     exact C.triv.localFrame (Module.finBasis 𝕜 E)
-  hframe := by
+  isLocalFrame := by
     have : MemTrivializationAtlas C.triv := C.triv_mem
     exact C.triv.isLocalFrameOn_localFrame_baseSet I (∞ : WithTop ℕ∞) (Module.finBasis 𝕜 E)
   isOpen_domain := C.triv.open_baseSet
@@ -250,7 +250,7 @@ def toFrame {x₀ : M} (C : LocalChartAt (I := I) x₀) : C.Frame where
 def defaultFrame (x₀ : M) : (LocalChartAt.default (I := I) x₀).Frame where
   domain := coordinateFrameSet (I := I) x₀
   frame := coordinateFrameAt (I := I) x₀
-  hframe := coordinateFrameAt_isLocalFrame (I := I) x₀
+  isLocalFrame := coordinateFrameAt_isLocalFrame (I := I) x₀
   isOpen_domain := coordinateFrameSet_open (I := I) x₀
   mem_base := coordinateFrameAt_mem (I := I) x₀
   domain_subset_source := by
@@ -713,20 +713,20 @@ theorem coordinateFrameAt_bracket_zero_of_mem [IsRCLikeNormedField 𝕜] {x₀ x
 
 
 structure CoordinateFrameAt (x₀ : M) where
-  u : Set M
+  domain : Set M
   frame : CoordinateIdx (𝕜 := 𝕜) E -> (x : M) -> TangentSpace I x
-  hframe : IsLocalFrameOn I E (∞ : WithTop ℕ∞) frame u
-  isOpen_u : IsOpen u
-  mem_base : x₀ ∈ u
+  isLocalFrame : IsLocalFrameOn I E (∞ : WithTop ℕ∞) frame domain
+  isOpen_domain : IsOpen domain
+  mem_base : x₀ ∈ domain
   bracket_zero : ∀ i j : CoordinateIdx (𝕜 := 𝕜) E,
     VectorField.mlieBracket I (frame i) (frame j) x₀ = 0
 
 
 def canonicalCoordinateFrameAt (x₀ : M) : CoordinateFrameAt (I := I) x₀ where
-  u := coordinateFrameSet (I := I) x₀
+  domain := coordinateFrameSet (I := I) x₀
   frame := coordinateFrameAt (I := I) x₀
-  hframe := coordinateFrameAt_isLocalFrame (I := I) x₀
-  isOpen_u := coordinateFrameSet_open (I := I) x₀
+  isLocalFrame := coordinateFrameAt_isLocalFrame (I := I) x₀
+  isOpen_domain := coordinateFrameSet_open (I := I) x₀
   mem_base := coordinateFrameAt_mem (I := I) x₀
   bracket_zero := coordinateFrameAt_bracket_zero (I := I) x₀
 

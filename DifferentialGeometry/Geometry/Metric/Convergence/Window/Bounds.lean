@@ -64,7 +64,7 @@ def TwoTensorQuadBoundOnWindow
           |T i t x (DifferentialGeometry.Geometry.Curvature.vec2 (I := I) v v)| <=
             A * (gSeq i t).inner x v v
 
-structure MetricLogDerivativeInput
+structure MetricLogDerivativeAssumptions
     (K : Set M) (β ψ t0 : Real)
     (gSeq : Nat -> Real -> SmoothRiemannianMetric I M)
     (T :
@@ -123,7 +123,7 @@ private theorem metric_factor_mul
   ring
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [T2Space M] [SigmaCompactSpace M] in
-theorem metricUniformEquivalentOnWindow_of_logDerivativeInput
+theorem metricUniformEquivalentOnWindow_of_log_derivative_bound
     (K : Set M) (β ψ t0 C A : Real)
     (gRef : SmoothRiemannianMetric I M)
     (gSeq : Nat -> Real -> SmoothRiemannianMetric I M)
@@ -136,7 +136,7 @@ theorem metricUniformEquivalentOnWindow_of_logDerivativeInput
     (hequiv0 :
       forall i : Nat,
         MetricUniformEquivalentOn (I := I) K gRef (gSeq i t0) C)
-    (hlog : MetricLogDerivativeInput (I := I) K β ψ t0 gSeq T A) :
+    (hlog : MetricLogDerivativeAssumptions (I := I) K β ψ t0 gSeq T A) :
     MetricUniformEquivalentOnWindow (I := I) K β ψ gRef gSeq
       (fun t : Real => metricEquivalenceFactor C A t t0) := by
   intro i t ht
@@ -214,7 +214,7 @@ theorem metricUniformEquivalentOnWindow_of_logDerivativeInput
       _ = metricEquivalenceFactor C A t t0 * gRef.inner x v v :=
           metric_factor_mul
 
-structure MetricAllTimesBoundsInput
+structure MetricWindowBoundsAssumptions
     (K : Set M) (β ψ t0 : Real)
     (gSeq : Nat -> Real -> SmoothRiemannianMetric I M)
     (gRef : SmoothRiemannianMetric I M) where
@@ -233,7 +233,7 @@ structure MetricAllTimesBoundsInput
   curv_on_window :
     CurvDerivBoundsOnWindow (I := I) K β ψ gSeq curvC
 
-structure MetricAllTimesSpatialConclusion
+structure MetricSpatialWindowBounds
     (K : Set M) (β ψ : Real)
     (gSeq : Nat -> Real -> SmoothRiemannianMetric I M)
     (gRef : SmoothRiemannianMetric I M) where
@@ -244,7 +244,7 @@ structure MetricAllTimesSpatialConclusion
   metric_on_window :
     MetricCovDerivBoundsOnWindow (I := I) K β ψ gSeq gRef metricC
 
-structure MetricAllTimesSpatialInput
+structure MetricSpatialOrderWindowBounds
     (K : Set M) (β ψ : Real)
     (gSeq : Nat -> Real -> SmoothRiemannianMetric I M)
     (gRef : SmoothRiemannianMetric I M) where
@@ -258,12 +258,12 @@ structure MetricAllTimesSpatialInput
       MetricCovDerivOrderBoundOnWindow (I := I) K β ψ gSeq gRef a
         (orderC a)
 
-noncomputable def metricAllTimesSpatial
+noncomputable def metricSpatialWindowBounds
     {K : Set M} {β ψ : Real}
     {gSeq : Nat -> Real -> SmoothRiemannianMetric I M}
     {gRef : SmoothRiemannianMetric I M}
-    (H : MetricAllTimesSpatialInput (I := I) K β ψ gSeq gRef) :
-    MetricAllTimesSpatialConclusion (I := I) K β ψ gSeq gRef where
+    (H : MetricSpatialOrderWindowBounds (I := I) K β ψ gSeq gRef) :
+    MetricSpatialWindowBounds (I := I) K β ψ gSeq gRef where
   B := H.B
   equiv_on_window := H.equiv_on_window
   metricC := metricCovCumulativeConstant H.orderC
@@ -464,7 +464,7 @@ theorem metricMixedOneWindow_of_ric_bound
     exact mul_le_mul_of_nonneg_left hric_sp (by norm_num : (0 : Real) <= 2)
   simpa [hnorm_eq] using hmain
 
-structure MetricAllTimesConclusion
+structure MetricMixedWindowBounds
     (K : Set M) (β ψ : Real)
     (gSeq : Nat -> Real -> SmoothRiemannianMetric I M)
     (gRef : SmoothRiemannianMetric I M) where

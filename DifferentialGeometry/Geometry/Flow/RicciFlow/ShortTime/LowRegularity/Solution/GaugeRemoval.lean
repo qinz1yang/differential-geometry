@@ -178,13 +178,13 @@ theorem ricci_gauge_of_dt
   obtain ⟨Φ_fam, hΦ0, hΦode, hΦorbit0, hΦmfderiv0, hΦjoint⟩ :=
     exists_conjugatingDiffeomorphismFamily (I := I) g_DT g_bg T hT hsmooth
   obtain ⟨hΦorbit, hΦtotal⟩ :=
-    conjugating_flow_orbit_pushforward_continuity_data
+    conjugating_flow_orbit_pushforward_continuousOn
       (I := I) g_DT g_bg T Φ_fam hΦode hreg hΦorbit0 hΦmfderiv0
   have hgramRF :=
     conjugating_flow_pullback_jointGram_onesided
       (I := I) g_DT T Φ_fam hΦjoint hJ
   have hinterior :=
-    conjugating_flow_flat_data
+    conjugating_flow_pullback_metric_hasDerivWithinAt
       (I := I) g_DT g_bg T Φ_fam hderiv hΦode hreg hgram
   refine ⟨Φ_fam, hΦ0, hΦode,
     fun s => Diffeomorph.pullbackMetric (g_DT s) (Φ_fam s), fun _ => rfl, ?_, ?_, ?_, ?_⟩

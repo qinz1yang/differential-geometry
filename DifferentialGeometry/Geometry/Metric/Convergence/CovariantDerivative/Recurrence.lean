@@ -378,8 +378,8 @@ theorem iter_cov_one_christoffel_change {r : ℕ}
       iterCovComp (I := I) frame chrH X 1 y n -
         ∑ s : Fin r,
           christoffelCorrectionField (fun z d b p => chrG z d b p - chrH z d b p) X s y n := by
-  change covDerivStepComp (frameExtData (I := I) frame X y) (chrG y) (X y) n = _
-  rw [cov_deriv_step_comp_christoffel_sub (frameExtData (I := I) frame X y) (chrG y) (chrH y) (X y) n]
+  change covDerivStepComp (frameDirectionalDerivatives (I := I) frame X y) (chrG y) (X y) n = _
+  rw [cov_deriv_step_comp_christoffel_sub (frameDirectionalDerivatives (I := I) frame X y) (chrG y) (chrH y) (X y) n]
   rfl
 
 omit [FiniteDimensional ℝ E] [I.Boundaryless] [IsManifold I ∞ M] [IsManifold I 1 M]

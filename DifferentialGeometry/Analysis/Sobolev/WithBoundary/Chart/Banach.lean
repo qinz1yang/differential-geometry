@@ -125,7 +125,7 @@ lemma norm_wkpChart_def
     (u : WkpChart (n := n) (M := M) k p hp) :
     ‖u‖ = (wkpNormChart (n := n) (M := M) k p (wkpChartFun u)).toReal := rfl
 
-lemma wkpChart_seminormedSpace_core
+private lemma wkpChart_seminormedSpace_core
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
     (k : ℕ) (p : ℝ≥0∞) (hp : 1 ≤ p) :
     SeminormedSpace.Core ℝ (WkpChart (n := n) (M := M) k p hp) where

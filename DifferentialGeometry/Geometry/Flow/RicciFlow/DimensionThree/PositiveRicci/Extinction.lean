@@ -32,7 +32,7 @@ variable [SigmaCompactSpace M] [T2Space M]
 
 omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem hamilton_finite_time_flow_exists_on_closed_open
+theorem exists_hamilton_finite_time_flow_on_closed_open
     (hM : isClosedThreeManifold (I := I) (M := M))
     (g0 : SmoothRiemannianMetric I M)
     (hpos : positiveRicciMetric (I := I) (M := M) g0) :
@@ -481,7 +481,7 @@ theorem hamilton_scalar_slab_lipschitz
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-theorem hamilton_scalar_evolution_data
+theorem exists_hamilton_scalar_evolution_system
     {omega : Real} (h0ω : 0 < omega)
     (hM : isClosedThreeManifold (I := I) (M := M))
     (g0 : SmoothRiemannianMetric I M)
@@ -566,7 +566,7 @@ theorem hamilton_extinction_time_bound
   let : ConnectedSpace M := hconnected
   let : I.Boundaryless := hboundaryless
   let : Nonempty M := inferInstance
-  rcases hamilton_scalar_evolution_data (I := I) (M := M) h0ω hMcopy g0 hpos P hD with
+  rcases exists_hamilton_scalar_evolution_system (I := I) (M := M) h0ω hMcopy g0 hpos P hD with
     ⟨G, c0, scalar, scalarLap, ricciNormSq, K,
       hinit_min, hinit_pos, hscalar_cont, hreg, hevol, hlap, hricci, hF_lip⟩
   have hfinite :

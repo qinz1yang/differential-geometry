@@ -28,7 +28,7 @@ structure ProperMetricOn {I : ModelWithCorners Real E H}
       dist x y)
   proper : letI : MetricSpace Y.M := ms
     ProperSpace Y.M
-  hint : letI : MetricSpace Y.M := ms
+  exists_dist_to_basepoint_eq : letI : MetricSpace Y.M := ms
     ∀ p : Y.M, ∀ t : ℝ, 0 ≤ t → t ≤ dist p Y.basepoint →
       ∃ q : Y.M, dist q Y.basepoint = t
 

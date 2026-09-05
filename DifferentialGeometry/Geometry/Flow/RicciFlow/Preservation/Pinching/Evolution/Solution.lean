@@ -222,8 +222,8 @@ theorem ricci_is_symmetric
       (DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric (I := I)
         (S.base.metric t)) (metricRm13 (I := I) (M := M) (S.base.metric t))
     rw [show metricRm13 (I := I) (M := M) (S.base.metric t) =
-        (metricCurvData (I := I) (M := M) (S.base.metric t)).rm13 by rfl]
-    exact (metricCurvData (I := I) (M := M) (S.base.metric t)).rm13Realizes
+        (metricCurvatureSections (I := I) (M := M) (S.base.metric t)).rm13 by rfl]
+    exact (metricCurvatureSections (I := I) (M := M) (S.base.metric t)).rm13Realizes
   have hRm04 :
       DifferentialGeometry.Geometry.Curvature.rm04RealizesConnection (I := I) (S.base.metric t)
         (DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric (I := I)
@@ -233,8 +233,8 @@ theorem ricci_is_symmetric
       (DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric (I := I)
         (S.base.metric t)) (metricRm04 (I := I) (M := M) (S.base.metric t))
     rw [show metricRm04 (I := I) (M := M) (S.base.metric t) =
-        (metricCurvData (I := I) (M := M) (S.base.metric t)).rm04 by rfl]
-    exact (metricCurvData (I := I) (M := M) (S.base.metric t)).rm04Realizes
+        (metricCurvatureSections (I := I) (M := M) (S.base.metric t)).rm04 by rfl]
+    exact (metricCurvatureSections (I := I) (M := M) (S.base.metric t)).rm04Realizes
   have hRic13 :
       S.ricciAt t x =
         DifferentialGeometry.Geometry.Curvature.ricciFromRm13At (I := I) (M := M)
@@ -274,7 +274,7 @@ theorem ricci_is_symmetric
     hInvSym
 
 omit [Module.Finite ℝ E] in
-theorem riemann_from_ricci_trace_data
+theorem riemann_from_ricci_trace
     [FiniteDimensional Real E]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     [T2Space M]
@@ -301,8 +301,8 @@ theorem riemann_from_ricci_trace_data
       (DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric (I := I)
         (S.base.metric t)) (metricRm13 (I := I) (M := M) (S.base.metric t))
     rw [show metricRm13 (I := I) (M := M) (S.base.metric t) =
-        (metricCurvData (I := I) (M := M) (S.base.metric t)).rm13 by rfl]
-    exact (metricCurvData (I := I) (M := M) (S.base.metric t)).rm13Realizes
+        (metricCurvatureSections (I := I) (M := M) (S.base.metric t)).rm13 by rfl]
+    exact (metricCurvatureSections (I := I) (M := M) (S.base.metric t)).rm13Realizes
   have hRm04 :
       DifferentialGeometry.Geometry.Curvature.rm04RealizesConnection (I := I) (S.base.metric t)
         (DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric (I := I)
@@ -312,8 +312,8 @@ theorem riemann_from_ricci_trace_data
       (DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric (I := I)
         (S.base.metric t)) (metricRm04 (I := I) (M := M) (S.base.metric t))
     rw [show metricRm04 (I := I) (M := M) (S.base.metric t) =
-        (metricCurvData (I := I) (M := M) (S.base.metric t)).rm04 by rfl]
-    exact (metricCurvData (I := I) (M := M) (S.base.metric t)).rm04Realizes
+        (metricCurvatureSections (I := I) (M := M) (S.base.metric t)).rm04 by rfl]
+    exact (metricCurvatureSections (I := I) (M := M) (S.base.metric t)).rm04Realizes
   have hRic13 :
       S.ricciAt t x =
         DifferentialGeometry.Geometry.Curvature.ricciFromRm13At (I := I) (M := M)
@@ -393,7 +393,7 @@ theorem trace_free_ricci_reaction_relation_of_smooth_solution
     ricciCubeInv_diag (I := I) (S.base.metric t) horth hdiag0
   have hrel := trace_free_ricci_reaction_relation_of_trace_data (I := I) (g := S.base.metric t)
     (Ric := S.ricciAt t x) (Rm04 := S.base.rm04 t x)
-    (basis := basis) (riemann_from_ricci_trace_data (I := I) S horth) hdiag hcube hR
+    (basis := basis) (riemann_from_ricci_trace (I := I) S horth) hdiag hcube hR
   have hinv :
       MetricInverseInBasis (I := I) (S.base.metric t) x basis
         DifferentialGeometry.Geometry.Curvature.delta3 :=
@@ -415,7 +415,7 @@ theorem trace_free_ricci_reaction_relation_of_smooth_solution
     SolutionOn.scalar_eq_metricTrace, hnorm, hreact] using hrel
 
 omit [Module.Finite ℝ E] in
-theorem ricci_norm_heat_equation_data_of_smooth_solution
+theorem ricci_norm_heat_equation_and_laplacian_identity_of_smooth_solution
     [FiniteDimensional Real E]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
@@ -453,10 +453,10 @@ theorem trace_free_ricci_norm_laplacian_eq
             DifferentialGeometry.Geometry.Curvature.laplacianAt (I := I) (flowG (I := I) S) t
               (S.scalar t) x)
           (scalarGradientNormSq (I := I) S) (ricciNormLap (I := I) S) (t : Real) x :=
-  (ricci_norm_heat_equation_data_of_smooth_solution (I := I) S hS).2
+  (ricci_norm_heat_equation_and_laplacian_identity_of_smooth_solution (I := I) S hS).2
 
 omit [Module.Finite ℝ E] in
-theorem exists_trace_free_ricci_reaction_data_of_smooth_solution
+theorem exists_trace_free_ricci_reaction_relation_of_smooth_solution
     [FiniteDimensional Real E]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
@@ -480,11 +480,11 @@ theorem exists_trace_free_ricci_reaction_data_of_smooth_solution
         (traceFreeRicciNormSq S.scalar (ricciNorm (I := I) S))
         (cubicQ S.scalar (ricciNorm (I := I) S) (ricciCube (I := I) S))
         reaction := by
-  rcases ricci_norm_heat_equation_data_of_smooth_solution (I := I) S _hS with ⟨hRic, hLap⟩
+  rcases ricci_norm_heat_equation_and_laplacian_identity_of_smooth_solution (I := I) S _hS with ⟨hRic, hLap⟩
   exact ⟨ricciReact (I := I) S, hRic, hLap, trace_free_ricci_reaction_relation_of_smooth_solution (I := I) S _hdim⟩
 
 omit [Module.Finite ℝ E] in
-theorem exists_trace_free_ricci_norm_sq_heat_equation_data
+theorem exists_trace_free_ricci_norm_sq_heat_equation
     [FiniteDimensional Real E]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
@@ -508,7 +508,7 @@ theorem exists_trace_free_ricci_norm_sq_heat_equation_data
         (traceFreeRicciNormSq S.scalar (ricciNorm (I := I) S))
         (cubicQ S.scalar (ricciNorm (I := I) S) (ricciCube (I := I) S))
         reaction := by
-  rcases exists_trace_free_ricci_reaction_data_of_smooth_solution (I := I) S _hS _hdim with ⟨reaction, hRic, hLap, hRel⟩
+  rcases exists_trace_free_ricci_reaction_relation_of_smooth_solution (I := I) S _hS _hdim with ⟨reaction, hRic, hLap, hRel⟩
   exact ⟨ricciNormLap (I := I) S, reaction, hRic, hLap, hRel⟩
 
 omit [Module.Finite ℝ E] in
@@ -562,7 +562,7 @@ theorem trace_free_ricci_norm_sq_heat_equation_of_smooth_solution
           (traceFreeRicciNormSq S.scalar (ricciNorm (I := I) S))
           (cubicQ S.scalar (ricciNorm (I := I) S) (ricciCube (I := I) S))
           reaction := by
-    simpa [scalarLap, G] using exists_trace_free_ricci_norm_sq_heat_equation_data (I := I) S hS hdim
+    simpa [scalarLap, G] using exists_trace_free_ricci_norm_sq_heat_equation (I := I) S hS hdim
   rcases hbridge with ⟨ricciNormLap, reaction, hRic, hLap, hRel⟩
   have hcore :
       TraceFreeRicciNormSqHeatEquationOn
@@ -820,7 +820,7 @@ theorem gradient_scalar_rpow
   exact hsmul
 
 omit [Module.Finite ℝ E] in
-theorem pinch_quotient_evolution_of_solution_data
+theorem pinch_quotient_evolution_of_solution_components
     [FiniteDimensional Real E]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]

@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Limits.CompactnessConclusion
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Limits.SmoothCheegerGromovLimit
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Limits.Regularity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Limits.FlowOfMetric
 import DifferentialGeometry.Geometry.Metric.Convergence.Naturality.PullbackCross
@@ -992,7 +992,7 @@ theorem hamilton_limit_chart_jets_continuous
   filter_upwards [Filter.eventually_ge_atTop kgrow] with k hk
   apply hamilton_source_chart_jet_bound (I := I) h0omega P hD Q hsel hwindow Φ
     (co.φ k) r x₀ i j hCtgt
-  simpa only [K] using hkgrow (co.φ k) (hk.trans (co.hφ.id_le k))
+  simpa only [K] using hkgrow (co.φ k) (hk.trans (co.strictMono.id_le k))
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem hamilton_limit_chart_gram_smooth
@@ -1156,7 +1156,7 @@ private theorem nablaK_restrict
   simp only [
     DifferentialGeometry.PDE.RicciFlow.SolutionOn.timeRestrict_base]
 
-noncomputable def hamiltonSourceDerivativeInput
+noncomputable def hamiltonSourceCompactnessBounds
     {omega : Real} (h0omega : 0 < omega)
     (hcompact : CompactSpace M)
     {g0 : SmoothRiemannianMetric I M}
@@ -1168,7 +1168,7 @@ noncomputable def hamiltonSourceDerivativeInput
     (hsel : hamiltonBlowupPointSelection (I := I) P Q)
     (hrm : hamiltonRiemannCurvatureBound (I := I) P Q)
     (hwindow : hamiltonWindow (I := I) P Q hamiltonReferenceRadius) :
-    FlowDerivativeInput (I := I)
+    FlowCompactnessBounds (I := I)
       (hamiltonSourceSequence (I := I) h0omega P hD Q hsel hwindow) := by
   classical
   letI : CompactSpace M := hcompact
@@ -1388,7 +1388,7 @@ theorem hamilton_source_covariant_lipschitz_bound
     dsimp only [hamiltonShiLeft]
     nlinarith [sq_pos_of_pos hamilton_reference_radius_pos, hs.1]
 
-theorem hamilton_flow_upgrade_of_metric_compactness
+theorem exists_hamilton_smooth_flow_limit_subsequence
     {omega : Real} (h0omega : 0 < omega)
     (hcompact : CompactSpace M)
     {g0 : SmoothRiemannianMetric I M}
@@ -1403,11 +1403,11 @@ theorem hamilton_flow_upgrade_of_metric_compactness
     (canon : CanonicalMetricCompactness (I := I)
       ((hamiltonSourceSequence (I := I) h0omega P hD Q hsel hwindow).atZero
         (I := I))) :
-    ∃ d : FlowUpgrade (I := I)
+    ∃ d : SmoothFlowLimitSubsequence (I := I)
         (hamiltonSourceSequence (I := I) h0omega P hD Q hsel hwindow) canon.compactness,
       ∀ t : Real,
         t ∈ (hamiltonSourceSequence (I := I) h0omega P hD Q hsel hwindow).D.carrier →
-          MetricComplete (I := I) (d.data.L.atTime (I := I) t) := by
+          MetricComplete (I := I) (d.limit.L.atTime (I := I) t) := by
   classical
   let : CompactSpace M := hcompact
   let X := hamiltonSourceSequence (I := I) h0omega P hD Q hsel hwindow
@@ -1756,18 +1756,18 @@ theorem hamilton_flow_upgrade_of_metric_compactness
     cases h
     rfl
   have hmap (k : Nat) (x : mc.limit.M) :
-      (hL0.symm ▸ (Phi.compSubseq co.φ co.hφ) :
+      (hL0.symm ▸ (Phi.compSubseq co.φ co.strictMono) :
         PointedCGHMaps (I := I) X
           (L.atTime (I := I) 0) (mc.subseq ∘ co.φ)).map k x =
-        (Phi.compSubseq co.φ co.hφ).map k x := by
+        (Phi.compSubseq co.φ co.strictMono).map k x := by
     have hx : hL0 ▸ x = x :=
       eq_of_heq ((eqRec_heq
         (φ := fun Q₀ : PointedRiemannianManifold (I := I) => Q₀.M) hL0) x)
     exact
-      (eq_of_heq (map_cast hL0 (Phi.compSubseq co.φ co.hφ) k x)).trans
-        (congrArg (fun y => (Phi.compSubseq co.φ co.hφ).map k y) hx)
+      (eq_of_heq (map_cast hL0 (Phi.compSubseq co.φ co.strictMono) k x)).trans
+        (congrArg (fun y => (Phi.compSubseq co.φ co.strictMono).map k y) hx)
   have scalar : ScalarPullbackTendsto (I := I)
-      (hL0.symm ▸ (Phi.compSubseq co.φ co.hφ) :
+      (hL0.symm ▸ (Phi.compSubseq co.φ co.strictMono) :
         PointedCGHMaps (I := I) X
           (L.atTime (I := I) 0) (mc.subseq ∘ co.φ)) := by
     unfold ScalarPullbackTendsto FunctionPullbackTendsto
@@ -1799,7 +1799,7 @@ theorem hamilton_flow_upgrade_of_metric_compactness
       (fun y => (X.term ((mc.subseq ∘ co.φ) k)).S.scalar t y)
       (hmap k x).symm
   have ricciNorm : RicNormPullback (I := I)
-      (hL0.symm ▸ (Phi.compSubseq co.φ co.hφ) :
+      (hL0.symm ▸ (Phi.compSubseq co.φ co.strictMono) :
         PointedCGHMaps (I := I) X
           (L.atTime (I := I) 0) (mc.subseq ∘ co.φ)) := by
     unfold RicNormPullback FunctionPullbackTendsto
@@ -1832,7 +1832,7 @@ theorem hamilton_flow_upgrade_of_metric_compactness
       (fun y => DifferentialGeometry.PDE.RicciFlow.ricciNorm
         (I := I) (X.term ((mc.subseq ∘ co.φ) k)).S t y)
       (hmap k x).symm
-  let d := flowUpgradeOfMaps (I := I) (X := X) mc L mc.limit rfl hL0
+  let d := smoothFlowLimitSubsequenceOfMaps (I := I) (X := X) mc L mc.limit rfl hL0
     Phi mc.limit.metric bf hsrc htgt (-(hamiltonReferenceRadius ^ 2)) 0 hcarrier co
     (fun _ _ => HEq.rfl) scalar ricciNorm
   refine ⟨d, ?_⟩
@@ -1849,8 +1849,8 @@ theorem hamilton_flow_upgrade_of_metric_compactness
       cLow (-(hamiltonReferenceRadius ^ 2)) 0 hcLow hbound (co.φ k) s hs x v
   have hcomplete := FlowMetricConvergenceData.complete_at (I := I) Phi mc.limit_complete co
     (lt_min hcLow one_pos) hseq htWindow
-  have hdL : d.data.L = L :=
-    flowUpgrade_maps_L (I := I) (X := X) mc L mc.limit rfl hL0
+  have hdL : d.limit.L = L :=
+    smoothFlowLimitSubsequenceOfMaps_limit (I := I) (X := X) mc L mc.limit rfl hL0
       Phi mc.limit.metric bf hsrc htgt (-(hamiltonReferenceRadius ^ 2)) 0 hcarrier co
       (fun _ _ => HEq.rfl) scalar ricciNorm
   rw [hdL]

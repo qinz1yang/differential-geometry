@@ -16,7 +16,7 @@ open DifferentialGeometry.Integral.Connection
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 open DifferentialGeometry.Analysis.Spectral.DeTurck
 open DifferentialGeometry.Analysis.Spectral
-open DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroCore
+open DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroFiberOperators
 open DifferentialGeometry.Analysis.Sobolev
 
 variable

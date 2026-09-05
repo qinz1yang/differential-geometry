@@ -120,7 +120,7 @@ private lemma coeffOpApply_slotSwapField_eq_apply_of_symm (g₀ : SmoothRiemanni
   rfl
 
 
-theorem exists_riemannPalatini_decomposition_identity_data
+theorem exists_riemannPalatini_decomposition_identity_with_bounds
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
@@ -1042,7 +1042,7 @@ theorem exists_deTurckLieCovariantDerivativeDecompositionC2Family_cap_l2JetWindo
       hG0 hG1 hG2 (hK0_nn i) (hK1_nn i) (hK2_nn i) hwin_nn
 
 
-theorem exists_deTurckLieCovariantDerivativeTerm_curvatureDecomposition_data
+theorem exists_deTurckLieCovariantDerivativeTerm_curvatureDecomposition_with_bounds
     (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
@@ -1084,7 +1084,7 @@ theorem exists_deTurckLieCovariantDerivativeTerm_curvatureDecomposition_data
                 ‖iteratedCovGrad (I := I) g₀ 0 2 j T‖ ^ 2)) := by
   classical
   obtain ⟨Λ, hΛ, KA, hKA, q, ε, hε, hmain⟩ :=
-    exists_deTurckLieCovariantDerivativeTerm_decomposition_identity_data (I := I) (M := M) g₀ g_bg a
+    exists_deTurckLieCovariantDerivativeTerm_decomposition_identity_with_bounds (I := I) (M := M) g₀ g_bg a
       ha_super hR hδ₀
   obtain ⟨KB, hKB, hfam⟩ :=
     exists_deTurckLieCovariantDerivativeDecompositionC2Family_cap_l2JetWindow (I := I) (M := M) g₀ a
@@ -1251,7 +1251,7 @@ theorem exists_deTurckLieEndoTerm_backgroundDifference_l2JetWindow
     norm_nonneg (iteratedCovGrad (I := I) g₀ 0 2 j T)]
 
 
-theorem exists_deTurckLieEndoTerm_backgroundDifference_order0_data
+theorem exists_deTurckLieEndoTerm_backgroundDifference_order0_bounds
     (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :

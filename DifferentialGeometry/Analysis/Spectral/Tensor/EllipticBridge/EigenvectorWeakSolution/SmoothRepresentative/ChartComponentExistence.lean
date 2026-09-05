@@ -36,7 +36,7 @@ local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 variable [I.Boundaryless] [T2Space M] [CompactSpace M]
 
 omit [CompleteSpace E] in
-theorem eigenvectorChartComponent_exists_smooth_representative
+theorem exists_smooth_eigenvectorChartComponent_representative
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (i : TensorEigenIdx (I := I) (M := M) g r s)
     (α : M) (P₀ : TensorCompIdx (E := E) r s) :

@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Subsequence
 
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Limits.CompactnessConclusion
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Limits.SmoothCheegerGromovLimit
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Geometry.Curvature
 
@@ -47,25 +47,25 @@ def pointedCGHMapsOfManifold
 
 def cghMapsOfHL0
     (X : PointedFlowSeq.{u, uE, uH} (I := I))
-    (mc : MetricCompactnessConclusion (I := I) (X.atZero (I := I)))
+    (mc : MetricCompactLimit (I := I) (X.atZero (I := I)))
     (L : PointedFlowData.{u, uE, uH} (I := I) X.D)
     (hL0 : L.atTime (I := I) 0 = mc.limit) :
     PointedCGHMaps (I := I) X (L.atTime 0) mc.subseq :=
   pointedCGHMapsOfAtZero (I := I) X L mc.subseq (hL0.symm ▸ mc.maps)
 
-structure FlowLimitData
+structure SmoothFlowLimitAlongMetricSubsequence
     (X : PointedFlowSeq.{u, uE, uH} (I := I))
-    (mc : MetricCompactnessConclusion (I := I) (X.atZero (I := I))) where
+    (mc : MetricCompactLimit (I := I) (X.atZero (I := I))) where
   L : PointedFlowData.{u, uE, uH} (I := I) X.D
-  hL0 : L.atTime (I := I) 0 = mc.limit
+  atTime_zero : L.atTime (I := I) 0 = mc.limit
   maps : PointedCGHMaps (I := I) X (L.atTime 0) mc.subseq
   scalar : ScalarPullbackTendsto (I := I) maps
   ricciNorm : RicNormPullback (I := I) maps
 
-  hσsource : forall k : Nat,
+  source_sigmaCompact : forall k : Nat,
     letI : TopologicalSpace (L.atTime 0).M := L.topology
     IsSigmaCompact (maps.source k)
-  hσtarget : forall k : Nat,
+  target_sigmaCompact : forall k : Nat,
     letI : TopologicalSpace (X.term (mc.subseq k)).M :=
       (X.term (mc.subseq k)).topology
     IsSigmaCompact (maps.target k)
@@ -83,38 +83,43 @@ structure FlowLimitData
         exists k0 : Nat, forall k : Nat, k0 <= k ->
           forall t : Real, t ∈ Set.Icc a b ->
             ((SourceDomainMetricData.ofRestrictPullback (I := I)
-              (Φ := maps) (k := k) (hσsource k)
+              (Φ := maps) (k := k) (source_sigmaCompact k)
               (refMetric k) (letI : TopologicalSpace L.M := L.topology; letI : ChartedSpace H L.M :=
                                                                           L.charted; letI : IsManifold I ∞ L.M := L.smooth; letI : IsManifold I ((∞ : WithTop ℕ∞) + 1) L.M := (by change IsManifold I ∞ L.M; infer_instance); letI : SigmaCompactSpace L.M := L.sigmaCompact; letI : T2Space L.M := L.t2; L.S.family.metric)).derivNormSupOn (I := I) K p t) < ε
 
+namespace SmoothFlowLimitAlongMetricSubsequence
+
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
-theorem flowLimit_upgrade
+theorem hasSmoothCheegerGromovLimit
     (X : PointedFlowSeq.{u, uE, uH} (I := I))
-    (mc : MetricCompactnessConclusion (I := I) (X.atZero (I := I)))
-    (d : FlowLimitData (I := I) X mc) :
-    compactnessConclusion (I := I) X :=
+    (mc : MetricCompactLimit (I := I) (X.atZero (I := I)))
+    (d : SmoothFlowLimitAlongMetricSubsequence (I := I) X mc) :
+    HasSmoothCheegerGromovLimit (I := I) X :=
   ⟨d.L, mc.subseq, mc.strictMono,
     ⟨SmoothCGHConverges.ofRestrictPullback (I := I)
-      d.maps d.scalar d.ricciNorm d.hσsource d.refMetric (letI : TopologicalSpace d.L.M := d.L.topology; letI : ChartedSpace H d.L.M := d.L.charted; letI : IsManifold I ∞ d.L.M := d.L.smooth; letI : IsManifold I ((∞ : WithTop ℕ∞) + 1) d.L.M := (by change IsManifold I ∞ d.L.M; infer_instance); letI : SigmaCompactSpace d.L.M := d.L.sigmaCompact; letI : T2Space d.L.M := d.L.t2; d.L.S.family.metric) d.convergence⟩⟩
+      d.maps d.scalar d.ricciNorm d.source_sigmaCompact d.refMetric (letI : TopologicalSpace d.L.M := d.L.topology; letI : ChartedSpace H d.L.M := d.L.charted; letI : IsManifold I ∞ d.L.M := d.L.smooth; letI : IsManifold I ((∞ : WithTop ℕ∞) + 1) d.L.M := (by change IsManifold I ∞ d.L.M; infer_instance); letI : SigmaCompactSpace d.L.M := d.L.sigmaCompact; letI : T2Space d.L.M := d.L.t2; d.L.S.family.metric) d.convergence⟩⟩
 
-structure FlowUpgrade
+end SmoothFlowLimitAlongMetricSubsequence
+
+structure SmoothFlowLimitSubsequence
     (X : PointedFlowSeq.{u, uE, uH} (I := I))
-    (mc : MetricCompactnessConclusion (I := I) (X.atZero (I := I))) where
+    (mc : MetricCompactLimit (I := I) (X.atZero (I := I))) where
   φ : Nat -> Nat
-  hφ : StrictMono φ
-  data : FlowLimitData (I := I) X (mc.compSubseq φ hφ)
+  strictMono : StrictMono φ
+  limit : SmoothFlowLimitAlongMetricSubsequence (I := I) X (mc.compSubseq φ strictMono)
 
-namespace FlowUpgrade
+namespace SmoothFlowLimitSubsequence
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
-theorem toConclusion
+theorem hasSmoothCheegerGromovLimit
     {X : PointedFlowSeq.{u, uE, uH} (I := I)}
-    {mc : MetricCompactnessConclusion (I := I) (X.atZero (I := I))}
-    (d : FlowUpgrade (I := I) X mc) :
-    compactnessConclusion (I := I) X :=
-  flowLimit_upgrade (I := I) X (mc.compSubseq d.φ d.hφ) d.data
+    {mc : MetricCompactLimit (I := I) (X.atZero (I := I))}
+    (d : SmoothFlowLimitSubsequence (I := I) X mc) :
+    HasSmoothCheegerGromovLimit (I := I) X :=
+  SmoothFlowLimitAlongMetricSubsequence.hasSmoothCheegerGromovLimit
+    (I := I) X (mc.compSubseq d.φ d.strictMono) d.limit
 
-end FlowUpgrade
+end SmoothFlowLimitSubsequence
 
 end CheegerGromovCompactness
 end DifferentialGeometry

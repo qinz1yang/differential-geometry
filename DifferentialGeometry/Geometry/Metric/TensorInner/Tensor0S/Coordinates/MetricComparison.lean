@@ -560,7 +560,7 @@ theorem exists_diagInv_of_equiv
     constructor
     · simp [identityInvMetric, diagonalInvMetric, hg_orth]
     · simp [identityInvMetric, diagonalInvMetric, hg_orth]
-  have hlam_pos : forall i : Fin n, 0 < lam i := by
+  have ellipticity_pos : forall i : Fin n, 0 < lam i := by
     intro i
     have hne : basis i ≠ 0 := by
       simpa [basis] using ob.orthonormal.ne_zero i
@@ -577,11 +577,11 @@ theorem exists_diagInv_of_equiv
     simpa [hgii, hhii] using hlow
   have hmu_nonneg : forall i : Fin n, 0 <= mu i := by
     intro i
-    exact le_of_lt (inv_pos.mpr (hlam_pos i))
+    exact le_of_lt (inv_pos.mpr (ellipticity_pos i))
   have hmu_le : forall i : Fin n, mu i <= C := by
     intro i
     have h :=
-      (one_div_le (hlam_pos i) hC_pos).mpr (by
+      (one_div_le (ellipticity_pos i) hC_pos).mpr (by
         simpa [one_div] using hlam_lower i)
     simpa [mu, one_div] using h
   have hhinv :
@@ -589,9 +589,9 @@ theorem exists_diagInv_of_equiv
         (I := I) h x basis (diagonalInvMetric mu) := by
     intro i j
     have hmulam (i : Fin n) : mu i * lam i = 1 := by
-      simpa [mu] using inv_mul_cancel₀ (ne_of_gt (hlam_pos i))
+      simpa [mu] using inv_mul_cancel₀ (ne_of_gt (ellipticity_pos i))
     have hlammu (i : Fin n) : lam i * mu i = 1 := by
-      simpa [mu] using mul_inv_cancel₀ (ne_of_gt (hlam_pos i))
+      simpa [mu] using mul_inv_cancel₀ (ne_of_gt (ellipticity_pos i))
     constructor
     · rw [Finset.sum_eq_single i]
       · by_cases hij : i = j

@@ -155,7 +155,7 @@ theorem diffCurvOp_isOrderZeroCurvFactor :
         SmoothCcTensor.toSection_smul, ContMDiffSection.coe_smul, Pi.smul_apply,
         SmoothCcTensor.toSection_smul, ContMDiffSection.coe_smul, Pi.smul_apply]]
     rw [map_add, map_smul, map_smul]
-  local' := by
+  locality := by
     intro r W₁ W₂ x hx
     rw [show (diffCurvOp (I := I) (M := M) g hX hY 0 r W₁).toSection x =
           (curvatureContraction (I := I) (M := M) g r W₁ hX hY).toSection x from rfl,

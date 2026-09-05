@@ -291,7 +291,7 @@ noncomputable def tensor0SContinuousRiemannianMetric
     have h := innerBundleCLM_continuous (I := I) (M := M) g s
     simpa only [tensor0SRiemannianInnerCLM] using h
 
-theorem isContinuousRiemannianBundle_data
+theorem exists_continuous_tensor0S_inner
     (g : SmoothRiemannianMetric I M) (s : ℕ) :
     ∃ (γ : Π b : M,
         Tensor0SSpace s I b →L[ℝ] Tensor0SSpace s I b →L[ℝ] ℝ),
@@ -328,7 +328,7 @@ instance tensor0S_isContinuousRiemannianBundle
   let : ∀ b : M, @InnerProductSpace ℝ (Tensor0SSpace s I b) _ (nag b).toSeminormedAddCommGroup :=
     fun b => @Bundle.instInnerProductSpaceReal M (fun b : M => Tensor0SSpace s I b)
       _ _ _ rb (fun _ => inferInstance) (fun _ => inferInstance) b
-  exact ⟨isContinuousRiemannianBundle_data (I := I) (M := M) g s⟩
+  exact ⟨exists_continuous_tensor0S_inner (I := I) (M := M) g s⟩
 
 end Tensor0SInnerSectionContinuity
 end Tensor

@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.RicciNorm
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Extension.Restart.ShiInputs
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extension.Restart.SolutionBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extension.Limit.Smooth
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extension.Limit.CurvatureBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extension.Regularity
@@ -168,7 +168,7 @@ theorem extends_of_rmBounded
   have hric := ric_quad_le_of_solution (I := I) hRmRaw hbound_raw
   have hbound_can := canonical_curvature_norm_sq_bounded_of_realization
     (I := I) Rm04 hRmRaw ⟨K', hbound_raw⟩
-  obtain ⟨hell, hcov⟩ := extendInputs_of_solution (I := I) hdim _hS
+  obtain ⟨hell, hcov⟩ := exists_metric_equivalence_and_covariant_derivative_bounds_of_solution (I := I) hdim _hS
     (K := (Module.finrank ℝ E : ℝ) ^ 2 * Real.sqrt K') (by positivity) hric hbound_can
   obtain ⟨t_star, ht_star, TT, hreach, rr, hrr0, hrr_smooth, hrr_cont, hrr_pde⟩ :=
     ricci_flow_interior_restart (I := I) hdim g_fam hαω hell hcov
@@ -241,7 +241,7 @@ theorem extends_of_rmBounded
         hwide) :=
     { base := { metric := g_ext } }
   refine ⟨ε, hε, hwide, Shat, ?_, ?_⟩
-  · exact DifferentialGeometry.PDE.RicciFlow.isSolutionOn_of_extendData
+  · exact DifferentialGeometry.PDE.RicciFlow.isSolutionOn_of_metric_extension
       hwide hαω g_ext S _hS hagree _hsmooth _hcont hpde
   · intro t ht
     have htlt : t < omega := ht.2

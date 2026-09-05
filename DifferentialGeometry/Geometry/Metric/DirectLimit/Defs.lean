@@ -72,24 +72,24 @@ private theorem mfd_base_eq
 
 def MetricCocycle (g : ∀ k, SmoothRiemannianMetric I (A k)) : Prop :=
   ∀ ⦃k ℓ : ℕ⦄ (h : k ≤ ℓ) (a : A k) (v w : TangentSpace I a),
-    (g ℓ).inner (S.toSeqSystem.F h a)
-      (mfderiv I I (S.toSeqSystem.F h) a v) (mfderiv I I (S.toSeqSystem.F h) a w)
+    (g ℓ).inner (S.toSeqSystem.map h a)
+      (mfderiv I I (S.toSeqSystem.map h) a v) (mfderiv I I (S.toSeqSystem.map h) a w)
       = (g k).inner a v w
 
 
 omit [FiniteDimensional ℝ E] [∀ (k : ℕ), SigmaCompactSpace (A k)] [∀ (k : ℕ), T2Space (A k)] in
 theorem MetricCocycle.ofSucc (g : ∀ k, SmoothRiemannianMetric I (A k))
     (hstep : ∀ k (a : A k) (v w : TangentSpace I a),
-      (g (k + 1)).inner (S.toSeqSystem.F (Nat.le_succ k) a)
-        (mfderiv I I (S.toSeqSystem.F (Nat.le_succ k)) a v)
-        (mfderiv I I (S.toSeqSystem.F (Nat.le_succ k)) a w) =
+      (g (k + 1)).inner (S.toSeqSystem.map (Nat.le_succ k) a)
+        (mfderiv I I (S.toSeqSystem.map (Nat.le_succ k)) a v)
+        (mfderiv I I (S.toSeqSystem.map (Nat.le_succ k)) a w) =
       (g k).inner a v w) :
     S.MetricCocycle g := by
   intro k l h
   induction l, h using Nat.le_induction with
   | base =>
       intro a v w
-      have hself : S.toSeqSystem.F (Nat.le_refl k) = id := by
+      have hself : S.toSeqSystem.map (Nat.le_refl k) = id := by
         funext x
         exact S.toSeqSystem.map_self k x
       rw [hself, mfderiv_id]
@@ -97,34 +97,34 @@ theorem MetricCocycle.ofSucc (g : ∀ k, SmoothRiemannianMetric I (A k))
   | succ l hkl ih =>
       intro a v w
       let hs : l ≤ l + 1 := Nat.le_succ l
-      have hcomp : S.toSeqSystem.F (Nat.le.step hkl) =
-          S.toSeqSystem.F hs ∘ S.toSeqSystem.F hkl := by
+      have hcomp : S.toSeqSystem.map (Nat.le.step hkl) =
+          S.toSeqSystem.map hs ∘ S.toSeqSystem.map hkl := by
         funext x
         calc
-          S.toSeqSystem.F (Nat.le.step hkl) x =
-              S.toSeqSystem.F (hkl.trans hs) x :=
-            S.toSeqSystem.F_apply_irrel (Nat.le.step hkl) (hkl.trans hs) x
-          _ = S.toSeqSystem.F hs (S.toSeqSystem.F hkl x) :=
+          S.toSeqSystem.map (Nat.le.step hkl) x =
+              S.toSeqSystem.map (hkl.trans hs) x :=
+            S.toSeqSystem.map_apply_irrel (Nat.le.step hkl) (hkl.trans hs) x
+          _ = S.toSeqSystem.map hs (S.toSeqSystem.map hkl x) :=
             (S.toSeqSystem.map_map hkl hs x).symm
-      have hhd : MDifferentiableAt I I (S.toSeqSystem.F hkl) a :=
-        (S.contMDiff_F hkl).contMDiffAt.mdifferentiableAt (by decide)
-      have hsd : MDifferentiableAt I I (S.toSeqSystem.F hs)
-          (S.toSeqSystem.F hkl a) :=
-        (S.contMDiff_F hs).contMDiffAt.mdifferentiableAt (by decide)
+      have hhd : MDifferentiableAt I I (S.toSeqSystem.map hkl) a :=
+        (S.contMDiff_map hkl).contMDiffAt.mdifferentiableAt (by decide)
+      have hsd : MDifferentiableAt I I (S.toSeqSystem.map hs)
+          (S.toSeqSystem.map hkl a) :=
+        (S.contMDiff_map hs).contMDiffAt.mdifferentiableAt (by decide)
       rw [hcomp, mfderiv_comp a hsd hhd]
       simp only [Function.comp_apply]
       calc
-        (g (l + 1)).inner (S.toSeqSystem.F hs (S.toSeqSystem.F hkl a))
-            (mfderiv I I (S.toSeqSystem.F hs) (S.toSeqSystem.F hkl a)
-              (mfderiv I I (S.toSeqSystem.F hkl) a v))
-            (mfderiv I I (S.toSeqSystem.F hs) (S.toSeqSystem.F hkl a)
-              (mfderiv I I (S.toSeqSystem.F hkl) a w)) =
-          (g l).inner (S.toSeqSystem.F hkl a)
-            (mfderiv I I (S.toSeqSystem.F hkl) a v)
-            (mfderiv I I (S.toSeqSystem.F hkl) a w) :=
-          hstep l (S.toSeqSystem.F hkl a)
-            (mfderiv I I (S.toSeqSystem.F hkl) a v)
-            (mfderiv I I (S.toSeqSystem.F hkl) a w)
+        (g (l + 1)).inner (S.toSeqSystem.map hs (S.toSeqSystem.map hkl a))
+            (mfderiv I I (S.toSeqSystem.map hs) (S.toSeqSystem.map hkl a)
+              (mfderiv I I (S.toSeqSystem.map hkl) a v))
+            (mfderiv I I (S.toSeqSystem.map hs) (S.toSeqSystem.map hkl a)
+              (mfderiv I I (S.toSeqSystem.map hkl) a w)) =
+          (g l).inner (S.toSeqSystem.map hkl a)
+            (mfderiv I I (S.toSeqSystem.map hkl) a v)
+            (mfderiv I I (S.toSeqSystem.map hkl) a w) :=
+          hstep l (S.toSeqSystem.map hkl a)
+            (mfderiv I I (S.toSeqSystem.map hkl) a v)
+            (mfderiv I I (S.toSeqSystem.map hkl) a w)
         _ = (g k).inner a v w := ih a v w
 
 noncomputable def stageInner (g : ∀ k, SmoothRiemannianMetric I (A k)) (k : ℕ)
@@ -234,39 +234,39 @@ theorem stageInner_mono (g : ∀ k, SmoothRiemannianMetric I (A k)) (hg : S.Metr
   have hinjm := S.toSeqSystem.incl_injective m
   have hφk : Function.invFun (S.toSeqSystem.incl k) (S.toSeqSystem.incl k a) = a :=
     Function.leftInverse_invFun hinjk a
-  have hcomp : S.toSeqSystem.incl m (S.toSeqSystem.F hkm a) = S.toSeqSystem.incl k a :=
+  have hcomp : S.toSeqSystem.incl m (S.toSeqSystem.map hkm a) = S.toSeqSystem.incl k a :=
     S.toSeqSystem.incl_comp hkm a
   have hφm : Function.invFun (S.toSeqSystem.incl m) (S.toSeqSystem.incl k a)
-      = S.toSeqSystem.F hkm a := by
+      = S.toSeqSystem.map hkm a := by
     conv_lhs => rw [← hcomp]
     exact Function.leftInverse_invFun hinjm _
-  have hev : (S.toSeqSystem.F hkm) ∘ (Function.invFun (S.toSeqSystem.incl k))
+  have hev : (S.toSeqSystem.map hkm) ∘ (Function.invFun (S.toSeqSystem.incl k))
       =ᶠ[nhds (S.toSeqSystem.incl k a)] Function.invFun (S.toSeqSystem.incl m) := by
     filter_upwards [(S.toSeqSystem.incl_isOpenEmb k).isOpen_range.mem_nhds ⟨a, rfl⟩] with z' hz'
     obtain ⟨a', rfl⟩ := hz'
-    change S.toSeqSystem.F hkm (Function.invFun (S.toSeqSystem.incl k) (S.toSeqSystem.incl k a'))
+    change S.toSeqSystem.map hkm (Function.invFun (S.toSeqSystem.incl k) (S.toSeqSystem.incl k a'))
       = Function.invFun (S.toSeqSystem.incl m) (S.toSeqSystem.incl k a')
     rw [Function.leftInverse_invFun hinjk a']
     conv_rhs => rw [← S.toSeqSystem.incl_comp hkm a']
     rw [Function.leftInverse_invFun hinjm _]
   have hφk_at : ContMDiffAt I I ∞ (Function.invFun (S.toSeqSystem.incl k))
       (S.toSeqSystem.incl k a) := S.contMDiffAt_invIncl k ⟨a, rfl⟩
-  have hD : (mfderiv I I (S.toSeqSystem.F hkm)
+  have hD : (mfderiv I I (S.toSeqSystem.map hkm)
         (Function.invFun (S.toSeqSystem.incl k) (S.toSeqSystem.incl k a))).comp
       (mfderiv I I (Function.invFun (S.toSeqSystem.incl k)) (S.toSeqSystem.incl k a))
       = mfderiv I I (Function.invFun (S.toSeqSystem.incl m)) (S.toSeqSystem.incl k a) := by
-    rw [← mfderiv_comp _ ((S.contMDiff_F hkm).mdifferentiableAt (by decide))
+    rw [← mfderiv_comp _ ((S.contMDiff_map hkm).mdifferentiableAt (by decide))
       (hφk_at.mdifferentiableAt (by decide))]
     exact hev.mfderiv_eq
   have hDapp : ∀ u : TangentSpace I (S.toSeqSystem.incl k a),
-      mfderiv I I (S.toSeqSystem.F hkm)
+      mfderiv I I (S.toSeqSystem.map hkm)
         (Function.invFun (S.toSeqSystem.incl k) (S.toSeqSystem.incl k a))
         (mfderiv I I (Function.invFun (S.toSeqSystem.incl k)) (S.toSeqSystem.incl k a) u)
       = mfderiv I I (Function.invFun (S.toSeqSystem.incl m)) (S.toSeqSystem.incl k a) u := by
     intro u
     have h := DFunLike.congr_fun hD u
     exact h
-  have hFb : S.toSeqSystem.F hkm (Function.invFun (S.toSeqSystem.incl k) (S.toSeqSystem.incl k a))
+  have hFb : S.toSeqSystem.map hkm (Function.invFun (S.toSeqSystem.incl k) (S.toSeqSystem.incl k a))
       = Function.invFun (S.toSeqSystem.incl m) (S.toSeqSystem.incl k a) := by
     rw [hφk, hφm]
   apply ContinuousLinearMap.ext; intro v
@@ -275,16 +275,16 @@ theorem stageInner_mono (g : ∀ k, SmoothRiemannianMetric I (A k)) (hg : S.Metr
   calc (g k).inner (Function.invFun (S.toSeqSystem.incl k) (S.toSeqSystem.incl k a))
         (mfderiv I I (Function.invFun (S.toSeqSystem.incl k)) (S.toSeqSystem.incl k a) v)
         (mfderiv I I (Function.invFun (S.toSeqSystem.incl k)) (S.toSeqSystem.incl k a) w)
-      = (g m).inner (S.toSeqSystem.F hkm
+      = (g m).inner (S.toSeqSystem.map hkm
             (Function.invFun (S.toSeqSystem.incl k) (S.toSeqSystem.incl k a)))
-          (mfderiv I I (S.toSeqSystem.F hkm)
+          (mfderiv I I (S.toSeqSystem.map hkm)
             (Function.invFun (S.toSeqSystem.incl k) (S.toSeqSystem.incl k a))
             (mfderiv I I (Function.invFun (S.toSeqSystem.incl k)) (S.toSeqSystem.incl k a) v))
-          (mfderiv I I (S.toSeqSystem.F hkm)
+          (mfderiv I I (S.toSeqSystem.map hkm)
             (Function.invFun (S.toSeqSystem.incl k) (S.toSeqSystem.incl k a))
             (mfderiv I I (Function.invFun (S.toSeqSystem.incl k)) (S.toSeqSystem.incl k a) w)) :=
         (hg hkm _ _ _).symm
-    _ = (g m).inner (S.toSeqSystem.F hkm
+    _ = (g m).inner (S.toSeqSystem.map hkm
             (Function.invFun (S.toSeqSystem.incl k) (S.toSeqSystem.incl k a)))
           (mfderiv I I (Function.invFun (S.toSeqSystem.incl m)) (S.toSeqSystem.incl k a) v)
           (mfderiv I I (Function.invFun (S.toSeqSystem.incl m)) (S.toSeqSystem.incl k a) w) := by

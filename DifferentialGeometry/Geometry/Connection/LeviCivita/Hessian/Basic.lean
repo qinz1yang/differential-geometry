@@ -89,7 +89,7 @@ private theorem leviCivita_nablaDuSec_pointwise_symm_direct
     (hu : ContMDiff I 𝓘(Real, Real) ∞ u)
     (duSec : OneFormSection (I := I) (M := M))
     (nablaDuSec : TwoTensorSection (I := I) (M := M))
-    (hnabla : NablaOneFormSectionRealizes (I := I)
+    (hnabla : NablaOneFormRealizes (I := I)
       (leviCivitaConnectionOfMetric (I := I) g) duSec nablaDuSec)
     (hdu : DuFieldRealizes (I := I) u duSec)
     (x : M) (U V : TangentSpace I x) :
@@ -193,7 +193,7 @@ private theorem leviCivita_nablaDuSec_coordFrame_symm
     (hu : ContMDiff I 𝓘(Real, Real) ∞ u)
     (duSec : OneFormSection (I := I) (M := M))
     (nablaDuSec : TwoTensorSection (I := I) (M := M))
-    (hnabla : NablaOneFormSectionRealizes (I := I)
+    (hnabla : NablaOneFormRealizes (I := I)
       (leviCivitaConnectionOfMetric (I := I) g) duSec nablaDuSec)
     (hdu : DuFieldRealizes (I := I) u duSec)
     (x : M) (i j : CoordinateIdx (𝕜 := Real) E) :
@@ -214,7 +214,7 @@ private theorem leviCivita_nablaDuSec_pointwise_symm
     (hu : ContMDiff I 𝓘(Real, Real) ∞ u)
     (duSec : OneFormSection (I := I) (M := M))
     (nablaDuSec : TwoTensorSection (I := I) (M := M))
-    (hnabla : NablaOneFormSectionRealizes (I := I)
+    (hnabla : NablaOneFormRealizes (I := I)
       (leviCivitaConnectionOfMetric (I := I) g) duSec nablaDuSec)
     (hdu : DuFieldRealizes (I := I) u duSec)
     (x : M) :
@@ -254,7 +254,7 @@ theorem hessSymm
   let du := duSec (I := I) u hu
   let Hess := hessianSec (I := I) cov hcov u hu
   have hnabla :
-      NablaOneFormSectionRealizes (I := I) cov du Hess := by
+      NablaOneFormRealizes (I := I) cov du Hess := by
     simpa [cov, hcov, du, Hess] using
       hessianSec_nabla (I := I) cov hcov u hu
   have hdu : DuFieldRealizes (I := I) u du := by

@@ -25,7 +25,7 @@ open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 open DifferentialGeometry.Analysis.Sobolev.TensorHilbert
 open DifferentialGeometry.PDE.DeTurck.RicciLinearization
 open DifferentialGeometry.Analysis.Spectral.MetricRealization
-open LieCorrectionZeroCore
+open LieCorrectionZeroFiberOperators
 
 variable
     {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]

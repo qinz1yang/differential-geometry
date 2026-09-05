@@ -448,11 +448,11 @@ private theorem exists_lieCorrectionZeroMixedConnectionHalfRF_fourthOrder_tame_d
     slotExtendIter (I := I) (M := M) g 0 3 2 mcdU with hS5Udef
   set S4T : SmoothCcTensor g 2 3 :=
     ccOperatorFieldComp (I := I) (M := M) g 2 5 3
-      (reindexedPureTrace (I := I) (M := M) g gmT 3 DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroOneFour) S5T
+      (reindexedPureTrace (I := I) (M := M) g gmT 3 DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroFiberOperators.lieCorrectionZeroMixedConnectionPermutationCycleZeroOneFour) S5T
     with hS4Tdef
   set S4U : SmoothCcTensor g 2 3 :=
     ccOperatorFieldComp (I := I) (M := M) g 2 5 3
-      (reindexedPureTrace (I := I) (M := M) g gmU 3 DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroOneFour) S5U
+      (reindexedPureTrace (I := I) (M := M) g gmU 3 DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroFiberOperators.lieCorrectionZeroMixedConnectionPermutationCycleZeroOneFour) S5U
     with hS4Udef
   set E3T : SmoothCcTensor g 3 6 :=
     slotExtendIter (I := I) (M := M) g 0 3 3 mcdT with hE3Tdef
@@ -464,11 +464,11 @@ private theorem exists_lieCorrectionZeroMixedConnectionHalfRF_fourthOrder_tame_d
     ccOperatorFieldComp (I := I) (M := M) g 2 3 6 E3U S4U with hS3Udef
   set S2T : SmoothCcTensor g 2 4 :=
     ccOperatorFieldComp (I := I) (M := M) g 2 6 4
-      (reindexedPureTrace (I := I) (M := M) g gmT 4 DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoThreeOne) S3T
+      (reindexedPureTrace (I := I) (M := M) g gmT 4 DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroFiberOperators.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoThreeOne) S3T
     with hS2Tdef
   set S2U : SmoothCcTensor g 2 4 :=
     ccOperatorFieldComp (I := I) (M := M) g 2 6 4
-      (reindexedPureTrace (I := I) (M := M) g gmU 4 DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoThreeOne) S3U
+      (reindexedPureTrace (I := I) (M := M) g gmU 4 DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroFiberOperators.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoThreeOne) S3U
     with hS2Udef
   have hHalfT : lieCorrectionZeroMixedConnectionHalfExpansion (I := I) (M := M) g gmT g σlast =
       ccOperatorFieldComp (I := I) (M := M) g 2 4 2
@@ -565,10 +565,10 @@ private theorem exists_lieCorrectionZeroMixedConnectionHalfRF_fourthOrder_tame_d
     rw [hS4Tdef]
     refine (happ4 _ S5T).trans ?_
     have htr := (covariantJetNormSq_reindexedPureTrace (I := I) (M := M) g gmT 3 2
-      DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroOneFour).le.trans htb3'.1
+      DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroFiberOperators.lieCorrectionZeroMixedConnectionPermutationCycleZeroOneFour).le.trans htb3'.1
     calc
       Ca4 * covariantJetNormSq (I := I) (M := M) g 2
-          (reindexedPureTrace (I := I) (M := M) g gmT 3 DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroOneFour) *
+          (reindexedPureTrace (I := I) (M := M) g gmT 3 DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroFiberOperators.lieCorrectionZeroMixedConnectionPermutationCycleZeroOneFour) *
         covariantJetNormSq (I := I) (M := M) g 2 S5T ≤
         Ca4 * Bt3 ^ 2 * (S5b R * pl2) := by
         exact mul_le_mul
@@ -598,10 +598,10 @@ private theorem exists_lieCorrectionZeroMixedConnectionHalfRF_fourthOrder_tame_d
     rw [hS2Tdef]
     refine (happ2 _ S3T).trans ?_
     have htr := (covariantJetNormSq_reindexedPureTrace (I := I) (M := M) g gmT 4 2
-      DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoThreeOne).le.trans htb4'.1
+      DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroFiberOperators.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoThreeOne).le.trans htb4'.1
     calc
       Ca2 * covariantJetNormSq (I := I) (M := M) g 2
-          (reindexedPureTrace (I := I) (M := M) g gmT 4 DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoThreeOne) *
+          (reindexedPureTrace (I := I) (M := M) g gmT 4 DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroFiberOperators.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoThreeOne) *
         covariantJetNormSq (I := I) (M := M) g 2 S3T ≤
         Ca2 * Bt4 ^ 2 * (S3b R * (pl2 * pl2)) := by
         exact mul_le_mul
@@ -642,8 +642,8 @@ private theorem exists_lieCorrectionZeroMixedConnectionHalfRF_fourthOrder_tame_d
         simp only [D5c]
         ring
   have htrd3 : covariantJetNormSq (I := I) (M := M) g 2
-      (reindexedPureTrace (I := I) (M := M) g gmT 3 DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroOneFour -
-        reindexedPureTrace (I := I) (M := M) g gmU 3 DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroOneFour) ≤
+      (reindexedPureTrace (I := I) (M := M) g gmT 3 DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroFiberOperators.lieCorrectionZeroMixedConnectionPermutationCycleZeroOneFour -
+        reindexedPureTrace (I := I) (M := M) g gmU 3 DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroFiberOperators.lieCorrectionZeroMixedConnectionPermutationCycleZeroOneFour) ≤
       Ct3 ^ 2 * u := by
     rw [reindexedPureTrace_sub, covariantJetNormSq_reindexCoefficientInputSlots]
     exact htp3'
@@ -651,7 +651,7 @@ private theorem exists_lieCorrectionZeroMixedConnectionHalfRF_fourthOrder_tame_d
       2 * (K4 R * (pl2 * u) + K5 R * (pl2 * u)) := by
     rw [hS4Tdef, hS4Udef]
     have htr := (covariantJetNormSq_reindexedPureTrace (I := I) (M := M) g gmU 3 2
-      DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroOneFour).le.trans htb3'.2
+      DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroFiberOperators.lieCorrectionZeroMixedConnectionPermutationCycleZeroOneFour).le.trans htb3'.2
     calc
       covariantJetNormSq (I := I) (M := M) g 2 (_ - _) ≤
           2 * (Ca4 * (Ct3 ^ 2 * u) * (S5b R * pl2) +
@@ -721,8 +721,8 @@ private theorem exists_lieCorrectionZeroMixedConnectionHalfRF_fourthOrder_tame_d
         simp only [K3, K34]
         ring
   have htrd4 : covariantJetNormSq (I := I) (M := M) g 2
-      (reindexedPureTrace (I := I) (M := M) g gmT 4 DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoThreeOne -
-        reindexedPureTrace (I := I) (M := M) g gmU 4 DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoThreeOne) ≤
+      (reindexedPureTrace (I := I) (M := M) g gmT 4 DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroFiberOperators.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoThreeOne -
+        reindexedPureTrace (I := I) (M := M) g gmU 4 DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroFiberOperators.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoThreeOne) ≤
       Ct4 ^ 2 * u := by
     rw [reindexedPureTrace_sub, covariantJetNormSq_reindexCoefficientInputSlots]
     exact htp4'
@@ -730,7 +730,7 @@ private theorem exists_lieCorrectionZeroMixedConnectionHalfRF_fourthOrder_tame_d
       2 * (K2 R * ((pl2 * pl2) * u) + K23 R * ((pl2 * pl2) * u)) := by
     rw [hS2Tdef, hS2Udef]
     have htr := (covariantJetNormSq_reindexedPureTrace (I := I) (M := M) g gmU 4 2
-      DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoThreeOne).le.trans htb4'.2
+      DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroFiberOperators.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoThreeOne).le.trans htb4'.2
     calc
       covariantJetNormSq (I := I) (M := M) g 2 (_ - _) ≤
           2 * (Ca2 * (Ct4 ^ 2 * u) * (S3b R * (pl2 * pl2)) +
@@ -833,11 +833,11 @@ theorem RicciDeTurckLowOrder.exists_lieCorrectionZeroMixedConnection_covariantJe
   have hh1 := hhalf T U hT hU hδ_le hδ0 hδT hδU hδZ
     R A A4 D2 D3 D4 N hR hA hA4 hD2 hD3 hD4 hN
     hT2 hU2 hT3 hU3 hT4 hU4 hTU2 hTU3 hTU4 hTn hUn hTUn hs
-    DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoOne
+    DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroFiberOperators.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoOne
   have hh2 := hhalf T U hT hU hδ_le hδ0 hδT hδU hδZ
     R A A4 D2 D3 D4 N hR hA hA4 hD2 hD3 hD4 hN
     hT2 hU2 hT3 hU3 hT4 hU4 hTU2 hTU3 hTU4 hTn hUn hTUn hs
-    (lieCorrectionZeroMixedConnectionTraceOutputSwapPermutation * DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoOne)
+    (lieCorrectionZeroMixedConnectionTraceOutputSwapPermutation * DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroFiberOperators.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoOne)
   rw [lieCorrectionZeroMixedConnection_eq_expansion (I := I) (M := M) g
       (metricPerturbationPath (I := I) g T 0 hδT hδZ s) g,
     lieCorrectionZeroMixedConnection_eq_expansion (I := I) (M := M) g
@@ -850,32 +850,32 @@ theorem RicciDeTurckLowOrder.exists_lieCorrectionZeroMixedConnection_covariantJe
       (2 : ℝ) •
         ((lieCorrectionZeroMixedConnectionHalfExpansion (I := I) (M := M) g
             (metricPerturbationPath (I := I) g T 0 hδT hδZ s) g
-              DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoOne -
+              DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroFiberOperators.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoOne -
           lieCorrectionZeroMixedConnectionHalfExpansion (I := I) (M := M) g
             (metricPerturbationPath (I := I) g U 0 hδU hδZ s) g
-              DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoOne) +
+              DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroFiberOperators.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoOne) +
         (lieCorrectionZeroMixedConnectionHalfExpansion (I := I) (M := M) g
             (metricPerturbationPath (I := I) g T 0 hδT hδZ s) g
-              (lieCorrectionZeroMixedConnectionTraceOutputSwapPermutation * DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoOne) -
+              (lieCorrectionZeroMixedConnectionTraceOutputSwapPermutation * DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroFiberOperators.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoOne) -
           lieCorrectionZeroMixedConnectionHalfExpansion (I := I) (M := M) g
             (metricPerturbationPath (I := I) g U 0 hδU hδZ s) g
-              (lieCorrectionZeroMixedConnectionTraceOutputSwapPermutation * DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoOne))) := by
+              (lieCorrectionZeroMixedConnectionTraceOutputSwapPermutation * DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroFiberOperators.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoOne))) := by
     simp only [lieCorrectionZeroMixedConnectionExpansion]
     module
   rw [hform, covariantJetNormSq_smul]
   have hadd := covariantJetNormSq_add_le (I := I) (M := M) g 2
     (lieCorrectionZeroMixedConnectionHalfExpansion (I := I) (M := M) g
         (metricPerturbationPath (I := I) g T 0 hδT hδZ s) g
-          DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoOne -
+          DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroFiberOperators.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoOne -
       lieCorrectionZeroMixedConnectionHalfExpansion (I := I) (M := M) g
         (metricPerturbationPath (I := I) g U 0 hδU hδZ s) g
-          DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoOne)
+          DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroFiberOperators.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoOne)
     (lieCorrectionZeroMixedConnectionHalfExpansion (I := I) (M := M) g
         (metricPerturbationPath (I := I) g T 0 hδT hδZ s) g
-          (lieCorrectionZeroMixedConnectionTraceOutputSwapPermutation * DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoOne) -
+          (lieCorrectionZeroMixedConnectionTraceOutputSwapPermutation * DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroFiberOperators.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoOne) -
       lieCorrectionZeroMixedConnectionHalfExpansion (I := I) (M := M) g
         (metricPerturbationPath (I := I) g U 0 hδU hδZ s) g
-          (lieCorrectionZeroMixedConnectionTraceOutputSwapPermutation * DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoOne))
+          (lieCorrectionZeroMixedConnectionTraceOutputSwapPermutation * DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroFiberOperators.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoOne))
   calc
     (2 : ℝ) ^ 2 * covariantJetNormSq (I := I) (M := M) g 2 (_ + _) ≤
       (2 : ℝ) ^ 2 * (2 * (covariantJetNormSq (I := I) (M := M) g 2 _ +
@@ -2398,11 +2398,11 @@ private theorem exists_lieCorrectionZeroMixedConnectionHalfRF_thirdOrder_tame_di
     slotExtendIter (I := I) (M := M) g 0 3 2 mcdU with hS5Udef
   set S4T : SmoothCcTensor g 2 3 :=
     ccOperatorFieldComp (I := I) (M := M) g 2 5 3
-      (reindexedPureTrace (I := I) (M := M) g gmT 3 DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroOneFour) S5T
+      (reindexedPureTrace (I := I) (M := M) g gmT 3 DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroFiberOperators.lieCorrectionZeroMixedConnectionPermutationCycleZeroOneFour) S5T
     with hS4Tdef
   set S4U : SmoothCcTensor g 2 3 :=
     ccOperatorFieldComp (I := I) (M := M) g 2 5 3
-      (reindexedPureTrace (I := I) (M := M) g gmU 3 DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroOneFour) S5U
+      (reindexedPureTrace (I := I) (M := M) g gmU 3 DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroFiberOperators.lieCorrectionZeroMixedConnectionPermutationCycleZeroOneFour) S5U
     with hS4Udef
   set E3T : SmoothCcTensor g 3 6 :=
     slotExtendIter (I := I) (M := M) g 0 3 3 mcdT with hE3Tdef
@@ -2414,11 +2414,11 @@ private theorem exists_lieCorrectionZeroMixedConnectionHalfRF_thirdOrder_tame_di
     ccOperatorFieldComp (I := I) (M := M) g 2 3 6 E3U S4U with hS3Udef
   set S2T : SmoothCcTensor g 2 4 :=
     ccOperatorFieldComp (I := I) (M := M) g 2 6 4
-      (reindexedPureTrace (I := I) (M := M) g gmT 4 DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoThreeOne) S3T
+      (reindexedPureTrace (I := I) (M := M) g gmT 4 DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroFiberOperators.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoThreeOne) S3T
     with hS2Tdef
   set S2U : SmoothCcTensor g 2 4 :=
     ccOperatorFieldComp (I := I) (M := M) g 2 6 4
-      (reindexedPureTrace (I := I) (M := M) g gmU 4 DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoThreeOne) S3U
+      (reindexedPureTrace (I := I) (M := M) g gmU 4 DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroFiberOperators.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoThreeOne) S3U
     with hS2Udef
   have hHalfT : lieCorrectionZeroMixedConnectionHalfExpansion (I := I) (M := M) g gmT g σlast =
       ccOperatorFieldComp (I := I) (M := M) g 2 4 2
@@ -2515,10 +2515,10 @@ private theorem exists_lieCorrectionZeroMixedConnectionHalfRF_thirdOrder_tame_di
     rw [hS4Tdef]
     refine (happ4 _ S5T).trans ?_
     have htr := (covariantJetNormSq_reindexedPureTrace (I := I) (M := M) g gmT 3 2
-      DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroOneFour).le.trans htb3'.1
+      DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroFiberOperators.lieCorrectionZeroMixedConnectionPermutationCycleZeroOneFour).le.trans htb3'.1
     calc
       Ca4 * covariantJetNormSq (I := I) (M := M) g 2
-          (reindexedPureTrace (I := I) (M := M) g gmT 3 DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroOneFour) *
+          (reindexedPureTrace (I := I) (M := M) g gmT 3 DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroFiberOperators.lieCorrectionZeroMixedConnectionPermutationCycleZeroOneFour) *
         covariantJetNormSq (I := I) (M := M) g 2 S5T ≤
         Ca4 * Bt3 ^ 2 * (S5b R * pl2) := by
         exact mul_le_mul
@@ -2548,10 +2548,10 @@ private theorem exists_lieCorrectionZeroMixedConnectionHalfRF_thirdOrder_tame_di
     rw [hS2Tdef]
     refine (happ2 _ S3T).trans ?_
     have htr := (covariantJetNormSq_reindexedPureTrace (I := I) (M := M) g gmT 4 2
-      DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoThreeOne).le.trans htb4'.1
+      DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroFiberOperators.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoThreeOne).le.trans htb4'.1
     calc
       Ca2 * covariantJetNormSq (I := I) (M := M) g 2
-          (reindexedPureTrace (I := I) (M := M) g gmT 4 DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoThreeOne) *
+          (reindexedPureTrace (I := I) (M := M) g gmT 4 DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroFiberOperators.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoThreeOne) *
         covariantJetNormSq (I := I) (M := M) g 2 S3T ≤
         Ca2 * Bt4 ^ 2 * (S3b R * (pl2 * pl2)) := by
         exact mul_le_mul
@@ -2592,8 +2592,8 @@ private theorem exists_lieCorrectionZeroMixedConnectionHalfRF_thirdOrder_tame_di
         simp only [D5c]
         ring
   have htrd3 : covariantJetNormSq (I := I) (M := M) g 2
-      (reindexedPureTrace (I := I) (M := M) g gmT 3 DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroOneFour -
-        reindexedPureTrace (I := I) (M := M) g gmU 3 DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroOneFour) ≤
+      (reindexedPureTrace (I := I) (M := M) g gmT 3 DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroFiberOperators.lieCorrectionZeroMixedConnectionPermutationCycleZeroOneFour -
+        reindexedPureTrace (I := I) (M := M) g gmU 3 DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroFiberOperators.lieCorrectionZeroMixedConnectionPermutationCycleZeroOneFour) ≤
       Ct3 ^ 2 * u := by
     rw [reindexedPureTrace_sub, covariantJetNormSq_reindexCoefficientInputSlots]
     exact htp3'
@@ -2601,7 +2601,7 @@ private theorem exists_lieCorrectionZeroMixedConnectionHalfRF_thirdOrder_tame_di
       2 * (K4 R * (pl2 * u) + K5 R * (pl2 * u)) := by
     rw [hS4Tdef, hS4Udef]
     have htr := (covariantJetNormSq_reindexedPureTrace (I := I) (M := M) g gmU 3 2
-      DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroOneFour).le.trans htb3'.2
+      DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroFiberOperators.lieCorrectionZeroMixedConnectionPermutationCycleZeroOneFour).le.trans htb3'.2
     calc
       covariantJetNormSq (I := I) (M := M) g 2 (_ - _) ≤
           2 * (Ca4 * (Ct3 ^ 2 * u) * (S5b R * pl2) +
@@ -2671,8 +2671,8 @@ private theorem exists_lieCorrectionZeroMixedConnectionHalfRF_thirdOrder_tame_di
         simp only [K3, K34]
         ring
   have htrd4 : covariantJetNormSq (I := I) (M := M) g 2
-      (reindexedPureTrace (I := I) (M := M) g gmT 4 DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoThreeOne -
-        reindexedPureTrace (I := I) (M := M) g gmU 4 DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoThreeOne) ≤
+      (reindexedPureTrace (I := I) (M := M) g gmT 4 DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroFiberOperators.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoThreeOne -
+        reindexedPureTrace (I := I) (M := M) g gmU 4 DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroFiberOperators.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoThreeOne) ≤
       Ct4 ^ 2 * u := by
     rw [reindexedPureTrace_sub, covariantJetNormSq_reindexCoefficientInputSlots]
     exact htp4'
@@ -2680,7 +2680,7 @@ private theorem exists_lieCorrectionZeroMixedConnectionHalfRF_thirdOrder_tame_di
       2 * (K2 R * ((pl2 * pl2) * u) + K23 R * ((pl2 * pl2) * u)) := by
     rw [hS2Tdef, hS2Udef]
     have htr := (covariantJetNormSq_reindexedPureTrace (I := I) (M := M) g gmU 4 2
-      DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoThreeOne).le.trans htb4'.2
+      DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroFiberOperators.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoThreeOne).le.trans htb4'.2
     calc
       covariantJetNormSq (I := I) (M := M) g 2 (_ - _) ≤
           2 * (Ca2 * (Ct4 ^ 2 * u) * (S3b R * (pl2 * pl2)) +
@@ -2772,11 +2772,11 @@ theorem RicciDeTurckLowOrder.exists_lieCorrectionZeroMixedConnection_covariantJe
     hTn hUn hTUn s hs
   have hh1 := hhalf T U hT hU hδ_le hδ0 hδT hδU hδZ
     R A D3 N hR hA hD3 hN hT2 hU2 hT3 hU3 hTU3
-    hTn hUn hTUn hs DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoOne
+    hTn hUn hTUn hs DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroFiberOperators.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoOne
   have hh2 := hhalf T U hT hU hδ_le hδ0 hδT hδU hδZ
     R A D3 N hR hA hD3 hN hT2 hU2 hT3 hU3 hTU3
     hTn hUn hTUn hs
-    (lieCorrectionZeroMixedConnectionTraceOutputSwapPermutation * DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoOne)
+    (lieCorrectionZeroMixedConnectionTraceOutputSwapPermutation * DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroFiberOperators.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoOne)
   rw [lieCorrectionZeroMixedConnection_eq_expansion (I := I) (M := M) g
       (metricPerturbationPath (I := I) g T 0 hδT hδZ s) g,
     lieCorrectionZeroMixedConnection_eq_expansion (I := I) (M := M) g
@@ -2789,32 +2789,32 @@ theorem RicciDeTurckLowOrder.exists_lieCorrectionZeroMixedConnection_covariantJe
       (2 : ℝ) •
         ((lieCorrectionZeroMixedConnectionHalfExpansion (I := I) (M := M) g
             (metricPerturbationPath (I := I) g T 0 hδT hδZ s) g
-              DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoOne -
+              DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroFiberOperators.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoOne -
           lieCorrectionZeroMixedConnectionHalfExpansion (I := I) (M := M) g
             (metricPerturbationPath (I := I) g U 0 hδU hδZ s) g
-              DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoOne) +
+              DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroFiberOperators.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoOne) +
         (lieCorrectionZeroMixedConnectionHalfExpansion (I := I) (M := M) g
             (metricPerturbationPath (I := I) g T 0 hδT hδZ s) g
-              (lieCorrectionZeroMixedConnectionTraceOutputSwapPermutation * DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoOne) -
+              (lieCorrectionZeroMixedConnectionTraceOutputSwapPermutation * DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroFiberOperators.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoOne) -
           lieCorrectionZeroMixedConnectionHalfExpansion (I := I) (M := M) g
             (metricPerturbationPath (I := I) g U 0 hδU hδZ s) g
-              (lieCorrectionZeroMixedConnectionTraceOutputSwapPermutation * DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoOne))) := by
+              (lieCorrectionZeroMixedConnectionTraceOutputSwapPermutation * DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroFiberOperators.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoOne))) := by
     simp only [lieCorrectionZeroMixedConnectionExpansion]
     module
   rw [hform, covariantJetNormSq_smul]
   have hadd := covariantJetNormSq_add_le (I := I) (M := M) g 2
     (lieCorrectionZeroMixedConnectionHalfExpansion (I := I) (M := M) g
         (metricPerturbationPath (I := I) g T 0 hδT hδZ s) g
-          DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoOne -
+          DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroFiberOperators.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoOne -
       lieCorrectionZeroMixedConnectionHalfExpansion (I := I) (M := M) g
         (metricPerturbationPath (I := I) g U 0 hδU hδZ s) g
-          DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoOne)
+          DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroFiberOperators.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoOne)
     (lieCorrectionZeroMixedConnectionHalfExpansion (I := I) (M := M) g
         (metricPerturbationPath (I := I) g T 0 hδT hδZ s) g
-          (lieCorrectionZeroMixedConnectionTraceOutputSwapPermutation * DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoOne) -
+          (lieCorrectionZeroMixedConnectionTraceOutputSwapPermutation * DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroFiberOperators.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoOne) -
       lieCorrectionZeroMixedConnectionHalfExpansion (I := I) (M := M) g
         (metricPerturbationPath (I := I) g U 0 hδU hδZ s) g
-          (lieCorrectionZeroMixedConnectionTraceOutputSwapPermutation * DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoOne))
+          (lieCorrectionZeroMixedConnectionTraceOutputSwapPermutation * DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroFiberOperators.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoOne))
   calc
     (2 : ℝ) ^ 2 * covariantJetNormSq (I := I) (M := M) g 2 (_ + _) ≤
       (2 : ℝ) ^ 2 * (2 * (covariantJetNormSq (I := I) (M := M) g 2 _ +

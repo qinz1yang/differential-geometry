@@ -70,8 +70,8 @@ def HasCompatibleSecondOrderSolution
           (((1 : ℕ) : ℝ) + 1) S‖ ≤ R →
         gFibreOpBound (I := I) (M := M) g
           (ccTensorBilinSymm (I := I) g S) δ),
-    u.lo = uHi ∧
-      u.hiL2 =
+    u.lowRegularity = uHi ∧
+      u.highRegularity =
         maximalRegularityDuhamelSolutionField (I := I) (M := M) (2 : ℝ) hT 0 fHi ∧
       fHi =
         nonautL2Map (I := I) (M := M) hT hT1
@@ -81,10 +81,10 @@ def HasCompatibleSecondOrderSolution
             (highFirstOrderAffineOperator (I := I) (M := M) g ρ FHi hT f)
             hA1Hi fHi +
           liftForceHi (I := I) (M := M) g g T ∧
-      timeH1.trace0 _ T u.lo =
+      timeH1.trace0 _ T u.lowRegularity =
         (0 : TensorHs (I := I) (M := M) g 0 2 (2 : ℝ)) ∧
-      timeH1.timeDeriv _ T u.lo =
-        timeScaleLaplacian (I := I) (M := M) (2 : ℝ) u.hiL2 + fHi ∧
+      timeH1.timeDeriv _ T u.lowRegularity =
+        timeScaleLaplacian (I := I) (M := M) (2 : ℝ) u.highRegularity + fHi ∧
       timeL2Inclusion (I := I) (M := M) (g := g) (r := 0) (s := 2)
           (show (1 : ℝ) ≤ (2 : ℝ) by norm_num) fHi = f ∧
       (∀ᵐ t ∂timeMeasure T,
@@ -92,7 +92,7 @@ def HasCompatibleSecondOrderSolution
             (show (1 : ℝ) ≤ (2 : ℝ) by norm_num) (fHi t) = f t) ∧
       (∀ t ∈ Icc (0 : ℝ) T,
         tensorHsInclusion (I := I) (M := M) (g := g) (r := 0) (s := 2)
-            (show (1 : ℝ) ≤ (2 : ℝ) by norm_num) (u.lo.toFun t) =
+            (show (1 : ℝ) ≤ (2 : ℝ) by norm_num) (u.lowRegularity.toFun t) =
           (maximalRegularityDuhamelMap (I := I) (M := M)
             (1 : ℝ) hT 0 f).toFun t) ∧
       u.repr 0 =
@@ -101,7 +101,7 @@ def HasCompatibleSecondOrderSolution
       (∀ t ∈ Icc (0 : ℝ) T,
         tensorHsInclusion (I := I) (M := M) (g := g) (r := 0) (s := 2)
             (show (2 : ℝ) ≤ (2 : ℝ) + 1 by norm_num) (u.repr t) =
-          u.lo.toFun t) ∧
+          u.lowRegularity.toFun t) ∧
       ((fun t =>
           tensorHsInclusion (I := I) (M := M) (g := g) (r := 0) (s := 2)
             (show (1 : ℝ) + 2 ≤ (2 : ℝ) + 1 by norm_num) (u.repr t)) =ᵐ[
@@ -111,7 +111,7 @@ def HasCompatibleSecondOrderSolution
       ((fun t => fHi t) =ᵐ[timeMeasure T]
         fun t => liftHiN (I := I) (M := M) g hρ.le hδ0 hδ_le hreal' FHi
           (tensorHsCongr (I := I) (M := M) g 0 2
-            (show (2 : ℝ) + 2 = (4 : ℝ) by norm_num) (u.hiL2 t))) ∧
+            (show (2 : ℝ) + 2 = (4 : ℝ) by norm_num) (u.highRegularity t))) ∧
       R ≤ ρ ∧
       Continuous (deTurckRemainderOnLowerState (I := I) (M := M) g g hR
         (lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1)) hreal) ∧
@@ -145,7 +145,7 @@ def HasCompatibleSecondOrderSolution
           (FLo x).comp
             (tensorHsInclusion (I := I) (M := M) (g := g) (r := 0) (s := 2)
               (show (2 : ℝ) ≤ (3 : ℝ) by norm_num))) ∧
-      (∀ᵐ t ∂timeMeasure T, ‖u.lo.toFun t‖ ≤ R) ∧
+      (∀ᵐ t ∂timeMeasure T, ‖u.lowRegularity.toFun t‖ ≤ R) ∧
       R ≤ Rcap
 
 theorem hasCompatibleSecondOrderSolution_of_bounds
@@ -229,7 +229,7 @@ theorem hasCompatibleSecondOrderSolution_of_bounds
     HasCompatibleSecondOrderSolution (I := I) (M := M) g hρ hδ0 hδ_le hreal' hT hT1 f Rcap := by
   obtain ⟨C2, hA2, hC2, hA1, hA1Hi, hC2eq, hA1norm, hA1HiNorm,
       hA1compat, heq⟩ :=
-    exists_affine_forcing_operator_data (I := I) (M := M) hDim g hR hρ hRρ hδ0 hδ_le hδ
+    exists_affine_forcing_operator_with_bounds (I := I) (M := M) hDim g hR hρ hRρ hδ0 hδ_le hδ
       hreal hreal' hNcont hcoreN hA2cont hA2core hB2 hA2bd hZ hL
       FHi FLo hFHi hFLo hFLoCore hFHiBd hFLoBd hFComm hT hT1 f hball hforce
   have hduh : L * ‖duhamelH3 (I := I) (M := M) g hT f‖ ≤ 2 * L * ‖f‖ := by
@@ -239,7 +239,7 @@ theorem hasCompatibleSecondOrderSolution_of_bounds
       mul_nonneg (by linarith) (mul_nonneg hL (norm_nonneg f))
     nlinarith
   obtain ⟨C2Hi, hC2Hieq, hA2Hi, hC2Hi⟩ :=
-    lowAffineSecondOrderActionHigh_data (I := I) (M := M) g hρ.le hδ0 hδ_le hreal'
+    lowAffineSecondOrderActionHigh_measurable_and_bounded (I := I) (M := M) g hρ.le hδ0 hδ_le hreal'
       hA2Hicont hB2Hi hA2Hibd hT f
   have hnormHi : ‖hA1Hi.toLp
       (highFirstOrderAffineOperator (I := I) (M := M) g ρ FHi hT f)‖ ≤
@@ -314,14 +314,14 @@ theorem hasCompatibleSecondOrderSolution_of_bounds
       (maximalRegularityDuhamelSolutionField (I := I) (M := M) (1 : ℝ) hT
         (0 : TensorHs (I := I) (M := M) g 0 2 ((1 : ℝ) + 2)) f)] with t ht
     simpa only [stateField, tensorHsCongrL_apply] using ht
-  have hballU : ∀ᵐ t ∂timeMeasure T, ‖u.lo.toFun t‖ ≤ R := by
+  have hballU : ∀ᵐ t ∂timeMeasure T, ‖u.lowRegularity.toFun t‖ ≤ R := by
     filter_upwards [hreprae, hsf, hball,
       ae_restrict_mem (measurableSet_Icc (a := (0 : ℝ)) (b := T))]
       with t hrae hsfa hbl htmem
     have hmem : ‖tensorHsInclusion (I := I) (M := M) (g := g) (r := 0) (s := 2)
         (show ((1 : ℕ) : ℝ) + 1 ≤ ((1 : ℕ) : ℝ) + 2 by norm_num)
         (stateField (I := I) (M := M) g hT f t)‖ ≤ R := hbl
-    calc ‖u.lo.toFun t‖
+    calc ‖u.lowRegularity.toFun t‖
         = ‖tensorHsInclusion (I := I) (M := M) (g := g) (r := 0) (s := 2)
             (show (2 : ℝ) ≤ (2 : ℝ) + 1 by norm_num) (u.repr t)‖ := by
           rw [hreprpin t htmem]
@@ -359,7 +359,7 @@ theorem hasCompatibleSecondOrderSolution_of_bounds
       tensorHsInclusion (I := I) (M := M) (g := g) (r := 0) (s := 2)
           (show (3 : ℝ) ≤ (4 : ℝ) by norm_num)
           (tensorHsCongr (I := I) (M := M) g 0 2
-            (show (2 : ℝ) + 2 = (4 : ℝ) by norm_num) (u.hiL2 t)) =
+            (show (2 : ℝ) + 2 = (4 : ℝ) by norm_num) (u.highRegularity t)) =
         tensorHsCongr (I := I) (M := M) g 0 2
           (show ((1 : ℕ) : ℝ) + 2 = (3 : ℝ) by norm_num)
           ((aeSetLift (zero_mem_lowerState (I := I) (M := M) g 1 hR.le)
@@ -368,7 +368,7 @@ theorem hasCompatibleSecondOrderSolution_of_bounds
       ae_restrict_mem (measurableSet_Icc (a := (0 : ℝ)) (b := T))]
       with t hlink hrae hst hsfa htmem
     have h3 : tensorHsInclusion (I := I) (M := M) (g := g) (r := 0) (s := 2)
-        (show (2 : ℝ) + 1 ≤ (2 : ℝ) + 2 by norm_num) (u.hiL2 t) =
+        (show (2 : ℝ) + 1 ≤ (2 : ℝ) + 2 by norm_num) (u.highRegularity t) =
         u.repr t := by
       apply tensorHsInclusion_injective (I := I) (M := M) (g := g)
         (r := 0) (s := 2) (show (2 : ℝ) ≤ (2 : ℝ) + 1 by norm_num)

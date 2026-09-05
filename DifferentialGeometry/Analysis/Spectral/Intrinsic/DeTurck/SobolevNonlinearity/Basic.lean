@@ -806,7 +806,7 @@ def deTurckSobolevNonlinearity (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ
           (Classical.choose h).1 v)
     else 0
 
-theorem deTurckSobolevNHa2_exists_of_super (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
+theorem exists_deTurckSobolev_fiber_bound_on_ball_of_supercritical (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) :
     ∃ p : ℝ × ℝ, 0 < p.1 ∧ p.2 ≤ deTurckRemainderContractionThreshold (Module.finrank ℝ E) ∧
       ∀ (T : SmoothCcTensor g₀ 0 2),
@@ -821,7 +821,7 @@ theorem deTurckSobolevNHa2_lipschitzWith (g₀ g_bg : SmoothRiemannianMetric I M
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) :
     ∃ K : ℝ≥0, LipschitzWith K (deTurckSobolevNonlinearity (I := I) (M := M) g₀ g_bg a) := by
   classical
-  have h := deTurckSobolevNHa2_exists_of_super (I := I) (M := M) g₀ a ha_super
+  have h := exists_deTurckSobolev_fiber_bound_on_ball_of_supercritical (I := I) (M := M) g₀ a ha_super
   set R₀ := (Classical.choose h).1 with hR₀_def
   have hR₀ : 0 < R₀ := (Classical.choose_spec h).1
   have hδ₀_lt : (Classical.choose h).2 < 1 :=
@@ -937,12 +937,12 @@ theorem deTurckSobolevNHa2_eq_smoothN (g₀ g_bg : SmoothRiemannianMetric I M) (
     {δ : ℝ} (hδ_lt : δ < 1)
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     (hball : ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2) T‖ ≤
-      (Classical.choose (deTurckSobolevNHa2_exists_of_super (I := I) (M := M) g₀ a ha_super)).1) :
+      (Classical.choose (exists_deTurckSobolev_fiber_bound_on_ball_of_supercritical (I := I) (M := M) g₀ a ha_super)).1) :
     deTurckSobolevNonlinearity (I := I) (M := M) g₀ g_bg a
         (smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2) T) =
       deTurckSmoothRemainderTensorHs (I := I) (M := M) g₀ g_bg a T hδ_lt hδ := by
   classical
-  have h := deTurckSobolevNHa2_exists_of_super (I := I) (M := M) g₀ a ha_super
+  have h := exists_deTurckSobolev_fiber_bound_on_ball_of_supercritical (I := I) (M := M) g₀ a ha_super
   set R₀ := (Classical.choose h).1 with hR₀_def
   have hR₀ : 0 < R₀ := (Classical.choose_spec h).1
   have hδ₀_lt : (Classical.choose h).2 < 1 :=
@@ -1028,18 +1028,18 @@ theorem deTurckSobolevNHa2_smoothEmbed_eq (g₀ g_bg : SmoothRiemannianMetric I 
         (smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2) T) =
       deTurckSmoothRemainderTensorHs (I := I) (M := M) g₀ g_bg a
         (radialScaleSmooth (I := I) (M := M) g₀ a
-          (Classical.choose (deTurckSobolevNHa2_exists_of_super
+          (Classical.choose (exists_deTurckSobolev_fiber_bound_on_ball_of_supercritical
             (I := I) (M := M) g₀ a ha_super)).1 T)
-        (lt_of_le_of_lt (Classical.choose_spec (deTurckSobolevNHa2_exists_of_super
+        (lt_of_le_of_lt (Classical.choose_spec (exists_deTurckSobolev_fiber_bound_on_ball_of_supercritical
           (I := I) (M := M) g₀ a ha_super)).2.1
             (de_turck_remainder_contraction_threshold_lt_one_of_ne_zero (Module.finrank ℝ E)))
-        ((Classical.choose_spec (deTurckSobolevNHa2_exists_of_super
+        ((Classical.choose_spec (exists_deTurckSobolev_fiber_bound_on_ball_of_supercritical
           (I := I) (M := M) g₀ a ha_super)).2.2 _
           (norm_smoothCcToTensorHs_radialScaleSmooth_le (I := I) (M := M) g₀ a
-            (Classical.choose_spec (deTurckSobolevNHa2_exists_of_super
+            (Classical.choose_spec (exists_deTurckSobolev_fiber_bound_on_ball_of_supercritical
               (I := I) (M := M) g₀ a ha_super)).1.le T)) := by
   classical
-  set h := deTurckSobolevNHa2_exists_of_super (I := I) (M := M) g₀ a ha_super with hh
+  set h := exists_deTurckSobolev_fiber_bound_on_ball_of_supercritical (I := I) (M := M) g₀ a ha_super with hh
   set R₀ := (Classical.choose h).1 with hR₀_def
   have hR₀ : 0 < R₀ := (Classical.choose_spec h).1
   set S := radialScaleSmooth (I := I) (M := M) g₀ a R₀ T with hS_def
@@ -1174,7 +1174,7 @@ theorem deTurckSobolevNHa2Symm_lipschitzWith (g₀ g_bg : SmoothRiemannianMetric
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) :
     ∃ K : ℝ≥0, LipschitzWith K (deTurckSobolevNonlinearitySymm (I := I) (M := M) g₀ g_bg a) := by
   classical
-  have h := deTurckSobolevNHa2_exists_of_super (I := I) (M := M) g₀ a ha_super
+  have h := exists_deTurckSobolev_fiber_bound_on_ball_of_supercritical (I := I) (M := M) g₀ a ha_super
   set R₀ := (Classical.choose h).1 with hR₀_def
   have hR₀ : 0 < R₀ := (Classical.choose_spec h).1
   have hδ₀_lt : (Classical.choose h).2 < 1 :=
@@ -1311,13 +1311,13 @@ theorem deTurckSobolevNHa2Symm_eq_smoothN (g₀ g_bg : SmoothRiemannianMetric I 
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀
       (ccTensorBilinSymm (I := I) g₀ (ccTensor02Symm (I := I) (M := M) g₀ T)) δ)
     (hball : ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2) T‖ ≤
-      (Classical.choose (deTurckSobolevNHa2_exists_of_super (I := I) (M := M) g₀ a ha_super)).1) :
+      (Classical.choose (exists_deTurckSobolev_fiber_bound_on_ball_of_supercritical (I := I) (M := M) g₀ a ha_super)).1) :
     deTurckSobolevNonlinearitySymm (I := I) (M := M) g₀ g_bg a
         (smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2) T) =
       deTurckSmoothRemainderTensorHs (I := I) (M := M) g₀ g_bg a
         (ccTensor02Symm (I := I) (M := M) g₀ T) hδ_lt hδ := by
   classical
-  have h := deTurckSobolevNHa2_exists_of_super (I := I) (M := M) g₀ a ha_super
+  have h := exists_deTurckSobolev_fiber_bound_on_ball_of_supercritical (I := I) (M := M) g₀ a ha_super
   set R₀ := (Classical.choose h).1 with hR₀_def
   have hR₀ : 0 < R₀ := (Classical.choose_spec h).1
   have hδ₀_lt : (Classical.choose h).2 < 1 :=
@@ -1468,20 +1468,20 @@ theorem deTurckSobolevNHa2Symm_smoothEmbed_eq (g₀ g_bg : SmoothRiemannianMetri
         (smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2) T) =
       deTurckSmoothRemainderTensorHs (I := I) (M := M) g₀ g_bg a
         (radialScaleSmooth (I := I) (M := M) g₀ a
-          (Classical.choose (deTurckSobolevNHa2_exists_of_super
+          (Classical.choose (exists_deTurckSobolev_fiber_bound_on_ball_of_supercritical
             (I := I) (M := M) g₀ a ha_super)).1
           (ccTensor02Symm (I := I) (M := M) g₀ T))
-        (lt_of_le_of_lt (Classical.choose_spec (deTurckSobolevNHa2_exists_of_super
+        (lt_of_le_of_lt (Classical.choose_spec (exists_deTurckSobolev_fiber_bound_on_ball_of_supercritical
           (I := I) (M := M) g₀ a ha_super)).2.1
           (de_turck_remainder_contraction_threshold_lt_one_of_ne_zero (Module.finrank ℝ E)))
-        ((Classical.choose_spec (deTurckSobolevNHa2_exists_of_super
+        ((Classical.choose_spec (exists_deTurckSobolev_fiber_bound_on_ball_of_supercritical
           (I := I) (M := M) g₀ a ha_super)).2.2 _
           (norm_smoothCcToTensorHs_radialScaleSmooth_le (I := I) (M := M) g₀ a
-            (Classical.choose_spec (deTurckSobolevNHa2_exists_of_super
+            (Classical.choose_spec (exists_deTurckSobolev_fiber_bound_on_ball_of_supercritical
               (I := I) (M := M) g₀ a ha_super)).1.le
             (ccTensor02Symm (I := I) (M := M) g₀ T))) := by
   classical
-  have h := deTurckSobolevNHa2_exists_of_super (I := I) (M := M) g₀ a ha_super
+  have h := exists_deTurckSobolev_fiber_bound_on_ball_of_supercritical (I := I) (M := M) g₀ a ha_super
   set R₀ := (Classical.choose h).1 with hR₀_def
   have hR₀ : 0 < R₀ := (Classical.choose_spec h).1
   have hδ₀_lt : (Classical.choose h).2 < 1 :=
@@ -1630,7 +1630,7 @@ theorem deTurckSobolevNHa2Symm_eq_smoothN_of_symm (g₀ g_bg : SmoothRiemannianM
     (hTsymm : ∀ (x : M) (v w : TangentSpace I x),
       smoothCcTensorBilinForm (I := I) g₀ T x v w = smoothCcTensorBilinForm (I := I) g₀ T x w v)
     (hball : ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2) T‖ ≤
-      (Classical.choose (deTurckSobolevNHa2_exists_of_super (I := I) (M := M) g₀ a ha_super)).1) :
+      (Classical.choose (exists_deTurckSobolev_fiber_bound_on_ball_of_supercritical (I := I) (M := M) g₀ a ha_super)).1) :
     deTurckSobolevNonlinearitySymm (I := I) (M := M) g₀ g_bg a
         (smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2) T) =
       deTurckSmoothRemainderTensorHs (I := I) (M := M) g₀ g_bg a T hδ_lt hδ := by
@@ -1659,7 +1659,7 @@ theorem deTurckSobolevNonlinearitySymm_mixed_lipschitz_pointwise
         (C₂ : ℝ) * ‖tensorHsInclusion (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
                       (show (a : ℝ) + 1 ≤ (a : ℝ) + 2 by linarith) (u - u')‖ := by
   classical
-  set hex := deTurckSobolevNHa2_exists_of_super (I := I) (M := M) g₀ a ha_super with hhex
+  set hex := exists_deTurckSobolev_fiber_bound_on_ball_of_supercritical (I := I) (M := M) g₀ a ha_super with hhex
   set R₀ := (Classical.choose hex).1 with hR₀_def
   have hR₀ : 0 < R₀ := (Classical.choose_spec hex).1
   have hδ₀_lt : (Classical.choose hex).2 < 1 :=

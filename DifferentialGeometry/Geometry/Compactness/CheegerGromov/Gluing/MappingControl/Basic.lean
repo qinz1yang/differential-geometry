@@ -53,7 +53,7 @@ private theorem c2_radius_normal_ball_chart_restrict_ball_target
 
 omit [CompleteSpace E] in
 theorem liveCenters_radial
-    (inp : MetricCompactnessInputs (I := I) X)
+    (inp : MetricCompactnessAssumptions (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P) (s : Real)
     (phi : Nat → Nat) (hphi : StrictMono phi)
@@ -87,8 +87,8 @@ theorem liveCenters_radial
   have hl' := abs_lt.mp (hN l hl alpha)
   linarith
 
-theorem HasStageJetData.mapsTo_tail
-    (inp : MetricCompactnessInputs (I := I) X)
+theorem HasStageJetConvergence.mapsTo_tail
+    (inp : MetricCompactnessAssumptions (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P) {s : Real} (hs : 0 ≤ s)
     (phi : Nat → Nat) (hphi : StrictMono phi)
@@ -99,7 +99,7 @@ theorem HasStageJetData.mapsTo_tail
       InterSlot L inp.pack s alpha → E → E)
     (gInf : LiveSlot L inp.pack s →
       E → (E →L[Real] E →L[Real] Real))
-    (hstage : HasStageJetData (I := I) inp P L hs phi hphi
+    (hstage : HasStageJetConvergence (I := I) inp P L hs phi hphi
       U C0 C1 aInf Jinf Jbarinf gInf)
     (R0 R1 : Real)
     (hroom : R0 + (4 + 8 * Real.sqrt 2) * inp.decay.lambda inp.D 0 < R1)
@@ -118,7 +118,7 @@ theorem HasStageJetData.mapsTo_tail
       hbuffer, _hcore, hgeom, _hlim, _hweight, _htrans, _hsmooth⟩
   let Lphi := L.subseq hphi
   let lam0 := inp.decay.lambda inp.D 0
-  have hlam0 : 0 < lam0 := inp.decay.lambda_pos inp.hD 0
+  have hlam0 : 0 < lam0 := inp.decay.lambda_pos inp.divisor_pos 0
   have hsqrt0 : 0 < Real.sqrt 2 := Real.sqrt_pos.2 (by norm_num)
   have hsqrt2 : Real.sqrt 2 ≤ 2 := by
     linarith [Real.sqrt_two_lt_three_halves]
@@ -208,12 +208,12 @@ theorem HasStageJetData.mapsTo_tail
       hat_dist_centerD inp.decay P Lphi inp.pack s hxHat
   have hlam : L.lamInf (alpha.1 : Nat) ≤ lam0 := by
     dsimp only [lam0, NetLimitData.lamInf]
-    exact inp.decay.lambda_antitone inp.hD (L.rInf_mem (alpha.1 : Nat)).1
+    exact inp.decay.lambda_antitone inp.divisor_pos (L.rInf_mem (alpha.1 : Nat)).1
   let w := chiL (F x)
   have hcoord : dist w z ≤ epsA alpha := by
     have hjet0 := hjet.2.2 0 le_rfl
     simp only [mapDerivNorm, norm_iteratedFDeriv_zero, id_eq,
-      MetricCompactnessInputs.toCore, c2RadiusNormalChartFamily] at hjet0
+      MetricCompactnessAssumptions.toSeedWithDivisor, c2RadiusNormalChartFamily] at hjet0
     change ‖(c2RadiusNormalBallChart (I := I) Yl cl).inv
         (F ((c2RadiusNormalBallChart (I := I) Yk ck).hom z)) - z‖ ≤
       epsA alpha at hjet0
@@ -250,7 +250,7 @@ theorem HasStageJetData.mapsTo_tail
   have hFw : chiL.symm w = F x := by
     have htarget : F x ∈ (normalExpPD (I := I) Yl cl).target := by
       have htarget' := hjet.1
-      simp only [MetricCompactnessInputs.toCore, c2RadiusNormalChartFamily] at htarget'
+      simp only [MetricCompactnessAssumptions.toSeedWithDivisor, c2RadiusNormalChartFamily] at htarget'
       change F ((c2RadiusNormalBallChart (I := I) Yk ck).hom z) ∈
         (c2RadiusNormalBallChart (I := I) Yl cl).restrictBall.target at htarget'
       rw [hxChart] at htarget'
@@ -306,7 +306,7 @@ theorem HasStageJetData.mapsTo_tail
       _ = R0 + 4 * lam0 := by ring
   have hradPair := hrad k l hkRad hlRad alpha
   have hlCenter : dist cl Yl.basepoint < R0 + 4 * lam0 + gap / 4 := by
-    dsimp only [MetricCompactnessInputs.toCore, Lphi, Yk, Yl, ck, cl]
+    dsimp only [MetricCompactnessAssumptions.toSeedWithDivisor, Lphi, Yk, Yl, ck, cl]
       at hradPair
     linarith
   have hfinal : dist (F x) Yl.basepoint < R1 := by
@@ -321,8 +321,8 @@ theorem HasStageJetData.mapsTo_tail
   change dist (F x) Yl.basepoint ≤ R1
   exact hfinal.le
 
-theorem HasStageJetData.return_tail
-    (inp : MetricCompactnessInputs (I := I) X)
+theorem HasStageJetConvergence.return_tail
+    (inp : MetricCompactnessAssumptions (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P) {s : Real} (hs : 0 ≤ s)
     (phi : Nat → Nat) (hphi : StrictMono phi)
@@ -333,7 +333,7 @@ theorem HasStageJetData.return_tail
       InterSlot L inp.pack s alpha → E → E)
     (gInf : LiveSlot L inp.pack s →
       E → (E →L[Real] E →L[Real] Real))
-    (hstage : HasStageJetData (I := I) inp P L hs phi hphi
+    (hstage : HasStageJetConvergence (I := I) inp P L hs phi hphi
       U C0 C1 aInf Jinf Jbarinf gInf)
     (R0 R1 : Real)
     (hroom : R0 + (4 + 8 * Real.sqrt 2) * inp.decay.lambda inp.D 0 < R1)
@@ -350,7 +350,7 @@ theorem HasStageJetData.return_tail
             (stageComparisonMap inp P Lphi s hs k l x))
           x < eps := by
   classical
-  obtain ⟨Nmap, hmap⟩ := HasStageJetData.mapsTo_tail inp P L hs phi hphi
+  obtain ⟨Nmap, hmap⟩ := HasStageJetConvergence.mapsTo_tail inp P L hs phi hphi
     U C0 C1 aInf Jinf Jbarinf gInf hstage R0 R1 hroom hR1s
   rcases hstage with ⟨hdata, _hmetric, hjets, _hbase⟩
   have hraw := hdata
@@ -360,7 +360,7 @@ theorem HasStageJetData.return_tail
       hbuffer, _hcore, hgeom, _hlim, _hweight, _htrans, _hsmooth⟩
   let Lphi := L.subseq hphi
   have hlam0 : 0 < inp.decay.lambda inp.D 0 :=
-    inp.decay.lambda_pos inp.hD 0
+    inp.decay.lambda_pos inp.divisor_pos 0
   have hcoef : 0 <
       (4 + 8 * Real.sqrt 2) * inp.decay.lambda inp.D 0 := by positivity
   have hR0R1 : R0 < R1 := by linarith
@@ -446,7 +446,7 @@ theorem HasStageJetData.return_tail
   have hwz : dist w z ≤ delta alpha := by
     have hforward0 := hforward.2.2 0 le_rfl
     simp only [mapDerivNorm, norm_iteratedFDeriv_zero, id_eq,
-      MetricCompactnessInputs.toCore, c2RadiusNormalChartFamily] at hforward0
+      MetricCompactnessAssumptions.toSeedWithDivisor, c2RadiusNormalChartFamily] at hforward0
     change ‖(c2RadiusNormalBallChart (I := I) Yl cl).inv
         (Fkl ((c2RadiusNormalBallChart (I := I) Yk ck).hom z)) - z‖ ≤
       delta alpha at hforward0
@@ -463,7 +463,7 @@ theorem HasStageJetData.return_tail
   have hFw : chiL.symm w = Fkl x := by
     have htarget : Fkl x ∈ (normalExpPD (I := I) Yl cl).target := by
       have htarget' := hforward.1
-      simp only [MetricCompactnessInputs.toCore, c2RadiusNormalChartFamily] at htarget'
+      simp only [MetricCompactnessAssumptions.toSeedWithDivisor, c2RadiusNormalChartFamily] at htarget'
       change Fkl ((c2RadiusNormalBallChart (I := I) Yk ck).hom z) ∈
         (c2RadiusNormalBallChart (I := I) Yl cl).restrictBall.target at htarget'
       rw [hxChart] at htarget'
@@ -482,7 +482,7 @@ theorem HasStageJetData.return_tail
   have huw : dist u w ≤ delta alpha := by
     have hrev0 := hreverse.2.2 0 le_rfl
     simp only [mapDerivNorm, norm_iteratedFDeriv_zero, id_eq,
-      MetricCompactnessInputs.toCore, c2RadiusNormalChartFamily] at hrev0
+      MetricCompactnessAssumptions.toSeedWithDivisor, c2RadiusNormalChartFamily] at hrev0
     change ‖(c2RadiusNormalBallChart (I := I) Yk ck).inv
         (Flk ((c2RadiusNormalBallChart (I := I) Yl cl).hom w)) - w‖ ≤
       delta alpha at hrev0
@@ -528,7 +528,7 @@ theorem HasStageJetData.return_tail
   have hHu : chiK.symm u = Flk (Fkl x) := by
     have htarget : Flk (Fkl x) ∈ (normalExpPD (I := I) Yk ck).target := by
       have htarget' := hreverse.1
-      simp only [MetricCompactnessInputs.toCore, c2RadiusNormalChartFamily] at htarget'
+      simp only [MetricCompactnessAssumptions.toSeedWithDivisor, c2RadiusNormalChartFamily] at htarget'
       change Flk ((c2RadiusNormalBallChart (I := I) Yl cl).hom w) ∈
         (c2RadiusNormalBallChart (I := I) Yk ck).restrictBall.target at htarget'
       rw [hFwChart] at htarget'

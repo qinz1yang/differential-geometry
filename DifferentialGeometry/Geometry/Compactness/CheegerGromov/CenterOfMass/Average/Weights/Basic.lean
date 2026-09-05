@@ -56,7 +56,7 @@ theorem normWeights_delta {E' : Type uX} {ι : Type uι} [Fintype ι]
   · simp [normWeights, hsum, div_self hne]
   · simp [normWeights, hzero j hj]
 
-theorem normWeights_data {E' : Type uX} {ι : Type} [Fintype ι]
+theorem normWeights_weightDataOn {E' : Type uX} {ι : Type} [Fintype ι]
     {s : Set E'} {U : ι → Set E'} {num : ι → E' → ℝ}
     (hnn : ∀ z ∈ s, ∀ i, 0 ≤ num i z)
     (hne : ∀ z ∈ s, (∑ j, num j z) ≠ 0)
@@ -182,7 +182,7 @@ theorem rawWeights_delta {X : Type uX} {ι : Type uι} [Fintype ι]
   · simp [rawWeights, hsum, div_self hne]
   · simp [rawWeights, hzero j hj]
 
-theorem rawWeights_data {X : Type uX} {ι : Type} [Fintype ι]
+theorem rawWeights_weightDataOn {X : Type uX} {ι : Type} [Fintype ι]
     {s : Set X} {U : ι → Set X} {a : ι → X → ℝ}
     (hnn : ∀ x ∈ s, ∀ i, 0 ≤ a i x)
     (hne : ∀ x ∈ s, (∑ j, a j x) ≠ 0)
@@ -193,7 +193,7 @@ theorem rawWeights_data {X : Type uX} {ι : Type} [Fintype ι]
   sum_one x hx := rawWeights_sum (hne x hx)
   active_mem x hx i hi := hactive x hx i (num_ne_of_raw_ne hi)
 
-theorem cutWeights_data {X : Type uX} {ι : Type} [Fintype ι] [DecidableEq ι]
+theorem cutWeights_weightDataOn {X : Type uX} {ι : Type} [Fintype ι] [DecidableEq ι]
     {s : Set X} {U : ι → Set X} {cut : X → ℝ} {a : ι → X → ℝ} {i0 : ι}
     (hcut : ∀ x ∈ s, cut x ∈ Set.Icc (0 : ℝ) 1)
     (hnn : ∀ x ∈ s, ∀ i, 0 ≤ a i x)
@@ -201,7 +201,7 @@ theorem cutWeights_data {X : Type uX} {ι : Type} [Fintype ι] [DecidableEq ι]
     (hbase : ∀ x ∈ s, cut x ≠ 0 → 0 < a i0 x)
     (hactive : ∀ x ∈ s, ∀ i, a i x ≠ 0 → x ∈ U i) :
     centerAverage.WeightDataOn s U (rawWeights (cutRaw cut a i0)) := by
-  apply rawWeights_data
+  apply rawWeights_weightDataOn
   · intro x hx i
     exact cutRaw_nonneg (hcut x hx) (hnn x hx) i
   · intro x hx

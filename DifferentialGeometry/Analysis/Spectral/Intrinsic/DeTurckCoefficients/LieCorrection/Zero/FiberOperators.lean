@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.MetricJets.CovariantInput
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.MetricJets.CovariantJetBounds
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.LieCorrection.Zero.ChartComponents
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.LieCorrection.Zero.NormalForm.ZeroOrderRemainderNormalForm
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.RicciDeTurck.LieHigherOrderCoefficientField
@@ -50,7 +50,7 @@ open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 open DifferentialGeometry.Analysis.Spectral.DeTurck
   (cometricDoubleTraceFib cometricDoubleTraceFib_toModel cometricDoubleTraceFib_contMDiff)
 
-namespace LieCorrectionZeroCore
+namespace LieCorrectionZeroFiberOperators
 
 noncomputable def lieCorrectionZeroNEndo
     (g₀ g₁ g_bg : SmoothRiemannianMetric I M) (x : M) :
@@ -606,9 +606,9 @@ theorem lieCorrectionZeroTotalFib_contMDiff
   rw [lieCorrectionZeroTotalFib]
   rfl
 
-end LieCorrectionZeroCore
+end LieCorrectionZeroFiberOperators
 
-open LieCorrectionZeroCore
+open LieCorrectionZeroFiberOperators
 
 def lieCorrectionZeroField (g₀ g₁ g_bg : SmoothRiemannianMetric I M) :
     SmoothCcTensor g₀ 2 2 where

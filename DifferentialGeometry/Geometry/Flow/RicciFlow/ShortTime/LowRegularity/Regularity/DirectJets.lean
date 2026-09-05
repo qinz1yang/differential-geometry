@@ -729,7 +729,7 @@ private theorem direct_state_bound
       ‖tensorHsInclusion (I := I) (M := M) (g := g) (r := 0) (s := 2)
         (show ((1 : ℕ) : ℝ) + 1 ≤ ((1 : ℕ) : ℝ) + 2 by norm_num)
         ((duhamelCross (I := I) (M := M) g 0 2 ((1 : ℕ) : ℝ) hT
-          (0 : TensorHs (I := I) (M := M) g 0 2 (((1 : ℕ) : ℝ) + 2)) fLo).hiL2 t)‖ ≤
+          (0 : TensorHs (I := I) (M := M) g 0 2 (((1 : ℕ) : ℝ) + 2)) fLo).highRegularity t)‖ ≤
           R := by
     filter_upwards [hmem] with t ht
     change maximalRegularityDuhamelSolutionField (I := I) (M := M) ((1 : ℕ) : ℝ) hT

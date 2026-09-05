@@ -1080,10 +1080,10 @@ private theorem ricciUpperBoundSecCore
     (hdim : ∀ x : M, Module.finrank Real (TangentSpace I x) = 3)
     (hTsub : Set.Icc 0 T ⊆ D.carrier)
     (hTreg : Set.Ioc 0 T ⊆ D.regular) :
-    TensorWeakMaximumPrincipleSectionCore (I := I) (M := M)
+    TensorWeakMaximumPrincipleSectionCompactness (I := I) (M := M)
       (fun t : Real => S.base.metric t) (ricciUpperBoundSec S)
       (fun _t x => (0 : TangentSpace I x)) ricciUpperBoundReact T := by
-  exact TensorWeakMaximumPrincipleSectionCore.ofSmoothMetric (I := I) (M := M)
+  exact TensorWeakMaximumPrincipleSectionCompactness.ofSmoothMetric (I := I) (M := M)
     (G := S.family) (S := ricciUpperBoundSec S)
     (X := fun _t x => (0 : TangentSpace I x)) (N := ricciUpperBoundReact) (T := T)
     hTsub hS.smoothMetric
@@ -1113,14 +1113,14 @@ theorem ricci_upper_bound_preserved
     TwoTensorFamilyNonnegativeOn (I := I) (M := M)
       (twoTensorSecToFamily (I := I) (M := M) (ricciUpperBoundSec S)) (Set.Icc 0 T) := by
   exact tensor_weak_maximum_principle (I := I) (M := M)
-    { hT := hT
+    { time_nonneg := hT
       regularity := ricciUpperBoundSecCore (I := I) S hS.isSolution hdim hTsub hTreg
       parabolic := ricci_upper_bound_parabolic (I := I) S hS hdim hTsub hTreg
       null := ricci_upper_bound_reaction_null (fun t : Real => S.base.metric t) (Set.Icc 0 T) hdim
       initial := hinit
-      hcov1 := fun t => ricciCov1 (I := I) S t
-      hcovInf := fun t => ricciCovInf (I := I) S t
-      hmc := fun t => ricciMetricComp (I := I) S t
+      connection_contMDiff_one := fun t => ricciCov1 (I := I) S t
+      connection_contMDiff_infty := fun t => ricciCovInf (I := I) S t
+      metricCompatible := fun t => ricciMetricComp (I := I) S t
       spatial := ricciUpperBoundSpatialModel (I := I) S }
 
 theorem ricci_upper_bound_of_metric_curvature_operator_nonnegative

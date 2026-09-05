@@ -115,7 +115,7 @@ theorem nablaRicciBilin_chartBasis_contMDiffOn
           (fun c => smoothExtensionTangent (I := I) b (Y b) c)
           (fun c => smoothExtensionTangent (I := I) b (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j b) c) b =
         nablaRicci (I := I) g (fun c => X c) (fun c => Y c) (fun c => Yext c) b
-    refine nablaRicci_eq_of_VW_eq (g := g) X
+    refine nablaRicci_eq_of_second_third_eq (g := g) X
       (ContMDiffSection.mk (smoothExtensionTangent (I := I) b (Y b))
         (smoothExtensionTangent_contMDiff (I := I) b (Y b))) Y
       (ContMDiffSection.mk (smoothExtensionTangent (I := I) b (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j b))

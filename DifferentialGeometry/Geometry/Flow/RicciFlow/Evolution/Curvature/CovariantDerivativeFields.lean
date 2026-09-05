@@ -182,14 +182,14 @@ theorem iteratedRmComp_two_eq_nabla2Rm04Field
       iteratedRmComp_one_eq_nablaRm04Field (I := I) S x₀ t hy m
   rw [iteratedRmComp_succ]
   have hext :
-      frameExtData (I := I) frame
+      frameDirectionalDerivatives (I := I) frame
           (fun y : M =>
             iteratedRmComp (I := I) frame
               (solutionChristoffelComponents (I := I) S x₀) (solutionCurvatureComponents (I := I) S x₀) 1 t y) x₀ =
-        frameExtData (I := I) frame
+        frameDirectionalDerivatives (I := I) frame
           (frameComp0S (I := I) (nablaRm04Field (I := I) S t) frame) x₀ := by
     funext m d
-    simp only [frameExtData]
+    simp only [frameDirectionalDerivatives]
     refine mvfderiv_eventuallyEq_congr (I := I) _ ?_
     exact hlevel1.mono fun y hy => congrFun hy m
   have hbase :

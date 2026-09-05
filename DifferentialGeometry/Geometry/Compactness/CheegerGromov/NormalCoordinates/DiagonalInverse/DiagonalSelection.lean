@@ -23,11 +23,11 @@ variable [NeZero (Module.finrank Real E)]
 variable {H : Type uH} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 
-namespace MetricCompactnessInputs
+namespace MetricCompactnessAssumptions
 
 theorem exists_live_diag
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    (inp : MetricCompactnessInputs (I := I) X)
+    (inp : MetricCompactnessAssumptions (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P) (r : Real)
     (hcomplete : SeqMetricComplete (I := I) X)
@@ -116,7 +116,7 @@ theorem exists_live_diag
         (fun z ↦ gInf z alpha) := by
       simpa only [index, Xpsi, c, PointedRiemannianSeq.subseq] using
         (mapCInf_apply Metric.isOpen_ball hconv hstage hgInf alpha)
-    simpa only [MetricCompactnessInputs.subseq, NormalRadiusProfile.subseq,
+    simpa only [MetricCompactnessAssumptions.subseq, NormalRadiusProfile.subseq,
         InjectivityRadiusDecay.subseq, NormalCoordMetricBounds.subseq,
         NormalRadiusProfile.phaseRadius] using
       (inp.normalRadius.subseq index).exists_diagPair_convergence
@@ -131,7 +131,7 @@ theorem exists_live_diag
 
 theorem exists_slot_diag
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    (inp : MetricCompactnessInputs (I := I) X)
+    (inp : MetricCompactnessAssumptions (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P) (r : Real)
     (hcomplete : SeqMetricComplete (I := I) X)
@@ -248,7 +248,7 @@ theorem exists_slot_diag
 
 theorem exists_diagonal_subsequence_of_eventually
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    (inp : MetricCompactnessInputs (I := I) X)
+    (inp : MetricCompactnessAssumptions (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P) (r : Real)
     (hcomplete : SeqMetricComplete (I := I) X)
@@ -427,6 +427,6 @@ theorem exists_diagonal_subsequence_of_eventually
   intro alpha
   exact ⟨hpair alpha, hfence alpha⟩
 
-end MetricCompactnessInputs
+end MetricCompactnessAssumptions
 end CheegerGromovCompactness
 end DifferentialGeometry

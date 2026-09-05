@@ -51,7 +51,7 @@ theorem binfMemClosed {U V' : Set E} {B : Nat -> E -> E} {Binf : E -> E}
   hV'closed.mem_of_tendsto (tendsto_of_cInf hB hv) hmem
 
 theorem HasAtomWeightLim.binf_of_live
-    (inp : MetricCompactnessInputs (I := I) X)
+    (inp : MetricCompactnessAssumptions (I := I) X)
     (hradRatio : 2 * exponentialBallRadiusFactor inp.decay inp.D <
       inp.normalRadius.ratio * inp.D)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
@@ -59,7 +59,7 @@ theorem HasAtomWeightLim.binf_of_live
     (hgp : ExponentialRadiusScaleTail (I := I) inp.decay inp.D P L inp.pack r)
     (alpha : LiveSlot L inp.pack r) (U : Set E)
     (aInf : Fin (inp.pack.A r) → E → Real)
-    (hlim : HasAtomWeightLim (I := I) inp.decay inp.hD P L inp.realizes
+    (hlim : HasAtomWeightLim (I := I) inp.decay inp.divisor_pos P L inp.realizes
       inp.pack r hr
       (fun k => seqCenterD inp.decay P L k (alpha.1 : Nat)) U aInf)
     (phi : Nat -> Nat) (hphi : StrictMono phi)
@@ -79,7 +79,7 @@ theorem HasAtomWeightLim.binf_of_live
     (hlim.weight_ne_tail hz hweight)
   have hrad : ExponentialBallRadiusTail (I := I) inp.decay inp.D P L inp.pack r
       (exponentialBallRadiusFactor inp.decay inp.D) :=
-    inp.normalRadius.radius_scale_tail inp.hD
+    inp.normalRadius.radius_scale_tail inp.divisor_pos
       (exponential_ball_radius_factor_pos inp.decay inp.D) hradRatio
       P inp.realizes L inp.pack r
   have hradTail := hphi.tendsto_atTop.eventually hrad
@@ -106,7 +106,7 @@ theorem HasAtomWeightLim.binf_of_live
       rw [show (1 : Real) = Real.exp 0 from Real.exp_zero.symm]
       exact Real.exp_le_exp.mpr
         (mul_nonneg inp.decay.C_nonneg
-          (by nlinarith [(inp.decay.lambda_pos inp.hD 0).le]))
+          (by nlinarith [(inp.decay.lambda_pos inp.divisor_pos 0).le]))
     have hfactor : (8 : Real) ≤ exponentialBallRadiusFactor inp.decay inp.D := by
       rw [exponentialBallRadiusFactor]
       nlinarith
@@ -114,7 +114,7 @@ theorem HasAtomWeightLim.binf_of_live
         expMapC2Radius (I := I) (X.obj (L.φ (phi k))).metric
           (seqCenterD inp.decay P L (phi k) (gamma.1 : Nat)) :=
       (mul_le_mul_of_nonneg_right hfactor
-        (inp.decay.lambda_pos inp.hD (L.rInf (gamma.1 : Nat))).le).trans
+        (inp.decay.lambda_pos inp.divisor_pos (L.rInf (gamma.1 : Nat))).le).trans
           (hradK gamma.1
             (seqCenterD inp.decay P L (phi k) (gamma.1 : Nat)) hcenterK).2
     exact Metric.ball_subset_closedBall
@@ -124,7 +124,7 @@ theorem HasAtomWeightLim.binf_of_live
   exact binfMemClosed hB hz Metric.isClosed_closedBall hmem
 
 theorem HasAtomWeightLim.binf_of_slot
-    (inp : MetricCompactnessInputs (I := I) X)
+    (inp : MetricCompactnessAssumptions (I := I) X)
     (hradRatio : 2 * exponentialBallRadiusFactor inp.decay inp.D <
       inp.normalRadius.ratio * inp.D)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
@@ -132,7 +132,7 @@ theorem HasAtomWeightLim.binf_of_slot
     (hgp : ExponentialRadiusScaleTail (I := I) inp.decay inp.D P L inp.pack r)
     (alpha : LiveSlot L inp.pack r) (U : Set E)
     (aInf : Fin (inp.pack.A r) → E → Real)
-    (hlim : HasAtomWeightLim (I := I) inp.decay inp.hD P L inp.realizes
+    (hlim : HasAtomWeightLim (I := I) inp.decay inp.divisor_pos P L inp.realizes
       inp.pack r hr
       (fun k => seqCenterD inp.decay P L k (alpha.1 : Nat)) U aInf)
     (phi : Nat -> Nat) (hphi : StrictMono phi)
@@ -153,7 +153,7 @@ theorem HasAtomWeightLim.binf_of_slot
     phi hphi target.1 (Binf target) hB hz hweight
 
 theorem HasAtomWeightLim.binf_of_weight
-    (inp : MetricCompactnessInputs (I := I) X)
+    (inp : MetricCompactnessAssumptions (I := I) X)
     (hradRatio : 2 * exponentialBallRadiusFactor inp.decay inp.D <
       inp.normalRadius.ratio * inp.D)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
@@ -161,7 +161,7 @@ theorem HasAtomWeightLim.binf_of_weight
     (hgp : ExponentialRadiusScaleTail (I := I) inp.decay inp.D P L inp.pack r)
     (alpha : LiveSlot L inp.pack r) (U : Set E)
     (aInf : Fin (inp.pack.A r) → E → Real)
-    (hlim : HasAtomWeightLim (I := I) inp.decay inp.hD P L inp.realizes
+    (hlim : HasAtomWeightLim (I := I) inp.decay inp.divisor_pos P L inp.realizes
       inp.pack r hr
       (fun k => seqCenterD inp.decay P L k (alpha.1 : Nat)) U aInf)
     (hsource : ∀ᶠ k in Filter.atTop,
@@ -211,8 +211,8 @@ theorem HasAtomWeightLim.binf_of_weight
     (hlim.binf_of_slot inp hradRatio P L r hr hgp alpha U aInf
       phi hphi target Binf (hB target) hz (by simpa only [target] using hweight))
 
-theorem MetricCompactnessInputs.exists_support_trans
-    (inp : MetricCompactnessInputs (I := I) X)
+theorem MetricCompactnessAssumptions.exists_support_trans
+    (inp : MetricCompactnessAssumptions (I := I) X)
     (hradRatio : 2 * exponentialBallRadiusFactor inp.decay inp.D <
       inp.normalRadius.ratio * inp.D)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
@@ -221,7 +221,7 @@ theorem MetricCompactnessInputs.exists_support_trans
     (alpha : LiveSlot L inp.pack r) (U : Set E)
     (hUsub : U ⊆ Metric.ball 0 (8 * L.lamInf (alpha.1 : Nat)))
     (aInf : Fin (inp.pack.A r) → E → Real)
-    (hlim : HasAtomWeightLim (I := I) inp.decay inp.hD P L inp.realizes
+    (hlim : HasAtomWeightLim (I := I) inp.decay inp.divisor_pos P L inp.realizes
       inp.pack r hr
       (fun k => seqCenterD inp.decay P L k (alpha.1 : Nat)) U aInf)
     (hsource : ∀ᶠ k in Filter.atTop,
@@ -293,8 +293,8 @@ theorem MetricCompactnessInputs.exists_support_trans
       (hspec target).2.2.2.2.1 K hK (hKU.trans hUsub) p)
     hz gamma hweight
 
-theorem MetricCompactnessInputs.exists_support_fin
-    (inp : MetricCompactnessInputs (I := I) X)
+theorem MetricCompactnessAssumptions.exists_support_fin
+    (inp : MetricCompactnessAssumptions (I := I) X)
     (hradRatio : 2 * exponentialBallRadiusFactor inp.decay inp.D <
       inp.normalRadius.ratio * inp.D)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
@@ -306,7 +306,7 @@ theorem MetricCompactnessInputs.exists_support_fin
     (aInf : (alpha : LiveSlot L inp.pack r) →
       Fin (inp.pack.A r) → E → Real)
     (hlim : ∀ alpha,
-      HasAtomWeightLim (I := I) inp.decay inp.hD P L inp.realizes
+      HasAtomWeightLim (I := I) inp.decay inp.divisor_pos P L inp.realizes
         inp.pack r hr
         (fun k => seqCenterD inp.decay P L k (alpha.1 : Nat))
         (U alpha) (aInf alpha))
@@ -474,8 +474,8 @@ theorem activeFill_totalPoints_of_ne
   refine ⟨target, htarget, ?_⟩
   simp [centerAverage.activeFill, hne, totalPoints, hlookup]
 
-theorem MetricCompactnessInputs.exists_atom_support_fin
-    (inp : MetricCompactnessInputs (I := I) X)
+theorem MetricCompactnessAssumptions.exists_atom_support_fin
+    (inp : MetricCompactnessAssumptions (I := I) X)
     (h8 : (8 : Real) < inp.normalRadius.metricCoerciveRatio * inp.D)
     (hradRatio : 2 * exponentialBallRadiusFactor inp.decay inp.D <
       inp.normalRadius.ratio * inp.D)
@@ -561,7 +561,7 @@ theorem MetricCompactnessInputs.exists_atom_support_fin
             (fun z => expMapDiffeo (I := I) Y.metric
               (seqCenterD inp.decay P Lphi k (alpha.1 : Nat)) z) '' U alpha) ∧
       (∀ alpha,
-        HasAtomWeightLim (I := I) inp.decay inp.hD P Lphi inp.realizes
+        HasAtomWeightLim (I := I) inp.decay inp.divisor_pos P Lphi inp.realizes
           inp.pack r hr
           (fun k => seqCenterD inp.decay P Lphi k (alpha.1 : Nat))
           (U alpha) (aInf alpha)) ∧
@@ -785,11 +785,11 @@ theorem MetricCompactnessInputs.exists_atom_support_fin
         target.1.1 = gamma then
       let target := Classical.choose htarget
       fun z => gluingBump (L.lamInf (gamma : Nat))
-        (inp.decay.lambda_pos inp.hD (L.rInf (gamma : Nat)))
+        (inp.decay.lambda_pos inp.divisor_pos (L.rInf (gamma : Nat)))
         (gInf z target.1 (Jinf alpha target z) (Jinf alpha target z))
     else fun _ => 0
   have hlimAll : ∀ alpha,
-      HasAtomWeightLim (I := I) inp.decay inp.hD P Lphi inp.realizes
+      HasAtomWeightLim (I := I) inp.decay inp.divisor_pos P Lphi inp.realizes
         inp.pack r hr
         (fun k => seqCenterD inp.decay P Lphi k (alpha.1 : Nat))
         (U alpha) (aInf alpha) := by
@@ -909,7 +909,7 @@ theorem MetricCompactnessInputs.exists_atom_support_fin
       exact hover z (hU8 alpha hz)
     have hatom (gamma : Fin (inp.pack.A r)) :
         MapCInfConvergenceOnCompacts (U alpha)
-          (fun k => seqAtomChart (I := I) inp.decay inp.hD P Lphi inp.pack r
+          (fun k => seqAtomChart (I := I) inp.decay inp.divisor_pos P Lphi inp.pack r
             beta gamma k) (aInf alpha gamma) := by
       by_cases htarget : ∃ target : InterSlot L inp.pack r alpha,
           target.1.1 = gamma
@@ -920,24 +920,24 @@ theorem MetricCompactnessInputs.exists_atom_support_fin
         have hraw := quadPiBump_convergence (hUopen alpha) hgU (hJConvergence target)
           (fun _ => contDiffOn_const) hginfU (hJStage target) (hJInf target)
           target.1 (gluingBump (L.lamInf (gamma : Nat))
-            (inp.decay.lambda_pos inp.hD (L.rInf (gamma : Nat))))
+            (inp.decay.lambda_pos inp.divisor_pos (L.rInf (gamma : Nat))))
           (gluingBump (L.lamInf (gamma : Nat))
-            (inp.decay.lambda_pos inp.hD (L.rInf (gamma : Nat)))).contDiff
+            (inp.decay.lambda_pos inp.divisor_pos (L.rInf (gamma : Nat)))).contDiff
         have hstep : MapCInfConvergenceOnCompacts (U alpha)
             (fun k => gluingAtomChart (I := I) (X.obj (Lphi.φ k)) (beta k)
               (seqCenterD inp.decay P Lphi k (gamma : Nat))
               (L.lamInf (gamma : Nat))
-              (inp.decay.lambda_pos inp.hD (L.rInf (gamma : Nat))))
+              (inp.decay.lambda_pos inp.divisor_pos (L.rInf (gamma : Nat))))
             (aInf alpha gamma) := by
           refine hraw.congr (hUopen alpha) (fun k z hz => ?_) (fun z _hz => ?_)
           · simpa only [gluingAtomChart, gluingAtomOn, c2_radius_normal_ball_chart_apply, hslot] using
               (gluingAtom_expMapDiffeo_apply (I := I) (X.obj (Lphi.φ k)) (beta k)
                 (seqCenterD inp.decay P Lphi k (target.1.1 : Nat))
                 (L.lamInf (gamma : Nat))
-                (inp.decay.lambda_pos inp.hD (L.rInf (gamma : Nat)))
+                (inp.decay.lambda_pos inp.divisor_pos (L.rInf (gamma : Nat)))
                 ((hOverlap target k) z hz).2)
           · simp only [aInf, dif_pos htarget, target]
-        exact seqAtom_live_convergence (I := I) inp.decay inp.hD P Lphi inp.pack r
+        exact seqAtom_live_convergence (I := I) inp.decay inp.divisor_pos P Lphi inp.pack r
           hgpPhi beta gamma (hUopen alpha) hgamma (by
             simpa only [Lphi, NetLimitData.subseq_lamInf] using hstep)
       · cases hgamma : L.alive (gamma : Nat) with
@@ -945,7 +945,7 @@ theorem MetricCompactnessInputs.exists_atom_support_fin
             have hgammaPhi : Lphi.alive (gamma : Nat) = false := by
               simpa only [Lphi, NetLimitData.subseq] using hgamma
             simpa only [aInf, dif_neg htarget] using
-              (seqAtom_dead_convergence (I := I) inp.decay inp.hD P Lphi inp.pack r
+              (seqAtom_dead_convergence (I := I) inp.decay inp.divisor_pos P Lphi inp.pack r
                 beta gamma (hUopen alpha) hgammaPhi)
         | true =>
             rcases hstable (alpha.1 : Nat) (gamma : Nat) with hinter | hdisjoint
@@ -973,7 +973,7 @@ theorem MetricCompactnessInputs.exists_atom_support_fin
                     (Lphi.hatBall inp.decay inp.D P inp.pack r k alpha.1) :=
                 Filter.Eventually.of_forall hsourcePhi
               simpa only [aInf, dif_neg htarget] using
-                (atom_disjoint_convergence (I := I) inp.decay inp.hD P Lphi inp.pack r
+                (atom_disjoint_convergence (I := I) inp.decay inp.divisor_pos P Lphi inp.pack r
                   beta alpha.1 gamma (hUopen alpha) hsourceTail
                   hdisjointPhi)
     have hdead (gamma : Fin (inp.pack.A r))
@@ -990,9 +990,9 @@ theorem MetricCompactnessInputs.exists_atom_support_fin
       rfl
     have hatomSmooth (k : Nat) (gamma : Fin (inp.pack.A r)) :
         ContDiffOn Real (∞ : WithTop ℕ∞)
-          (seqAtomChart (I := I) inp.decay inp.hD P Lphi inp.pack r
+          (seqAtomChart (I := I) inp.decay inp.divisor_pos P Lphi inp.pack r
             beta gamma k) (U alpha) :=
-      seqAtomChart_smooth (I := I) inp.decay inp.hD P Lphi inp.pack r k
+      seqAtomChart_smooth (I := I) inp.decay inp.divisor_pos P Lphi inp.pack r k
         (hgpPhi k) beta gamma (hUexpPhi k)
     have hatomInfSmooth (gamma : Fin (inp.pack.A r)) :
         ContDiffOn Real (∞ : WithTop ℕ∞) (aInf alpha gamma) (U alpha) := by
@@ -1006,14 +1006,14 @@ theorem MetricCompactnessInputs.exists_atom_support_fin
             (hJInf target)
         refine ContDiffOn.congr
           ((gluingBump (L.lamInf (gamma : Nat))
-            (inp.decay.lambda_pos inp.hD (L.rInf (gamma : Nat)))).contDiff.comp_contDiffOn
+            (inp.decay.lambda_pos inp.divisor_pos (L.rInf (gamma : Nat)))).contDiff.comp_contDiffOn
               hquad) ?_
         intro z hz
         simp only [aInf, dif_pos htarget, target, Function.comp_apply]
       · simpa only [aInf, dif_neg htarget] using
           (contDiffOn_const : ContDiffOn Real (∞ : WithTop ℕ∞)
             (fun _ : E => (0 : Real)) (U alpha))
-    exact HasAtomWeightLim.of_atoms (I := I) inp.hD P Lphi inp.realizes inp.pack
+    exact HasAtomWeightLim.of_atoms (I := I) inp.divisor_pos P Lphi inp.realizes inp.pack
       r hr beta (U alpha) (hUopen alpha) hcoverPhi (aInf alpha)
       hdead hatom hatomSmooth hatomInfSmooth
   refine ⟨phi, hphi, U, C0, C1, aInf, Jinf, Jbarinf, ?_⟩
@@ -1095,7 +1095,7 @@ theorem MetricCompactnessInputs.exists_atom_support_fin
         have hk := hN (shift k) (by simpa only [shift] using Nat.le_add_left N k)
         simpa only [ExponentialRadiusScaleAt, Lphi, phi, L0, Function.comp_apply,
           NetLimitData.subseq_phi, NetLimitData.subseq_lamInf] using hk.2.1
-    have hlimPhi : HasAtomWeightLim (I := I) inp.decay inp.hD P Lphi
+    have hlimPhi : HasAtomWeightLim (I := I) inp.decay inp.divisor_pos P Lphi
         inp.realizes inp.pack r hr
         (fun k => seqCenterD inp.decay P Lphi k (alphaPhi.1 : Nat))
         (U alpha) (aInf alpha) := by

@@ -502,23 +502,23 @@ structure CompactRootTube
     [NormedAddCommGroup Y] [NormedSpace Real Y]
     (D : Set (P × X)) (W₀ K : Set P)
     (FInf : P × X → Y) (PhiInf : P → X) where
-  W : Set P
+  parameterDomain : Set P
   rho : Real
-  isOpen_W : IsOpen W
-  isCompact_closure_W : IsCompact (closure W)
-  K_subset_W : K ⊆ W
-  closure_W_subset : closure W ⊆ W₀
+  isOpen_parameterDomain : IsOpen parameterDomain
+  isCompact_closure_parameterDomain : IsCompact (closure parameterDomain)
+  K_subset_parameterDomain : K ⊆ parameterDomain
+  closure_parameterDomain_subset : closure parameterDomain ⊆ W₀
   rho_pos : 0 < rho
   isOpen_domain : IsOpen D
   isOpen_ambient : IsOpen W₀
   limit_equation_smooth : ContDiffOn Real ∞ FInf D
   limit_branch_smooth : ContDiffOn Real ∞ PhiInf W₀
-  limit_root : ∀ p ∈ closure W, FInf (p, PhiInf p) = 0
-  tube_subset : ∀ p ∈ closure W,
+  limit_root : ∀ p ∈ closure parameterDomain, FInf (p, PhiInf p) = 0
+  tube_subset : ∀ p ∈ closure parameterDomain,
     Metric.closedBall (PhiInf p) rho ⊆ Prod.mk p ⁻¹' D
-  limit_unique : ∀ p ∈ closure W, ∀ x,
+  limit_unique : ∀ p ∈ closure parameterDomain, ∀ x,
     dist x (PhiInf p) ≤ rho → FInf (p, x) = 0 → x = PhiInf p
-  limit_root_deriv_inv : ∀ p ∈ closure W,
+  limit_root_deriv_inv : ∀ p ∈ closure parameterDomain,
     (partialFDeriv₂ FInf p (PhiInf p)).IsInvertible
 
 namespace CompactRootTube
@@ -533,7 +533,7 @@ def closedTube
     {FInf : P × X → Y} {PhiInf : P → X}
     (T : CompactRootTube D W₀ K FInf PhiInf) (r : Real) : Set (P × X) :=
   (fun q : P × X => (q.1, PhiInf q.1 + q.2)) ''
-    (closure T.W ×ˢ Metric.closedBall 0 r)
+    (closure T.parameterDomain ×ˢ Metric.closedBall 0 r)
 
 theorem mem_closedTube
     {P X Y : Type*}
@@ -544,7 +544,7 @@ theorem mem_closedTube
     {FInf : P × X → Y} {PhiInf : P → X}
     (T : CompactRootTube D W₀ K FInf PhiInf) {r : Real} {z : P × X} :
     z ∈ T.closedTube r ↔
-      z.1 ∈ closure T.W ∧ dist z.2 (PhiInf z.1) ≤ r := by
+      z.1 ∈ closure T.parameterDomain ∧ dist z.2 (PhiInf z.1) ≤ r := by
   constructor
   · rintro ⟨⟨p, u⟩, ⟨hp, hu⟩, rfl⟩
     refine ⟨hp, ?_⟩
@@ -567,14 +567,14 @@ theorem closedTube_compact
     {FInf : P × X → Y} {PhiInf : P → X}
     (T : CompactRootTube D W₀ K FInf PhiInf) (r : Real) :
     IsCompact (T.closedTube r) := by
-  have hPhi : ContinuousOn PhiInf (closure T.W) :=
-    T.limit_branch_smooth.continuousOn.mono T.closure_W_subset
+  have hPhi : ContinuousOn PhiInf (closure T.parameterDomain) :=
+    T.limit_branch_smooth.continuousOn.mono T.closure_parameterDomain_subset
   have hmap : ContinuousOn
       (fun q : P × X => (q.1, PhiInf q.1 + q.2))
-      (closure T.W ×ˢ Metric.closedBall 0 r) := by
+      (closure T.parameterDomain ×ˢ Metric.closedBall 0 r) := by
     exact continuousOn_fst.prodMk
       ((hPhi.comp continuousOn_fst (fun q hq => hq.1)).add continuousOn_snd)
-  exact (T.isCompact_closure_W.prod (isCompact_closedBall 0 r)).image_of_continuousOn hmap
+  exact (T.isCompact_closure_parameterDomain.prod (isCompact_closedBall 0 r)).image_of_continuousOn hmap
 
 
 theorem closedTube_subset
@@ -602,7 +602,7 @@ theorem exists_domain_buffer
     ∃ (D' : Set (P × X))
         (T' : CompactRootTube D' W₀ K FInf PhiInf),
       IsCompact (closure D') ∧ closure D' ⊆ D ∧
-        T'.W = T.W ∧ T'.rho = T.rho / 2 := by
+        T'.parameterDomain = T.parameterDomain ∧ T'.rho = T.rho / 2 := by
   let r : Real := T.rho / 2
   have hr : 0 < r := div_pos T.rho_pos (by norm_num)
   have hrle : r ≤ T.rho := by
@@ -613,12 +613,12 @@ theorem exists_domain_buffer
     exists_open_between_and_isCompact_closure
       (T.closedTube_compact r) T.isOpen_domain htubeD
   let T' : CompactRootTube D' W₀ K FInf PhiInf :=
-    { W := T.W
+    { parameterDomain := T.parameterDomain
       rho := r
-      isOpen_W := T.isOpen_W
-      isCompact_closure_W := T.isCompact_closure_W
-      K_subset_W := T.K_subset_W
-      closure_W_subset := T.closure_W_subset
+      isOpen_parameterDomain := T.isOpen_parameterDomain
+      isCompact_closure_parameterDomain := T.isCompact_closure_parameterDomain
+      K_subset_parameterDomain := T.K_subset_parameterDomain
+      closure_parameterDomain_subset := T.closure_parameterDomain_subset
       rho_pos := hr
       isOpen_domain := hD'
       isOpen_ambient := T.isOpen_ambient
@@ -647,7 +647,7 @@ def closedAnnulus
     {FInf : P × X → Y} {PhiInf : P → X}
     (T : CompactRootTube D W₀ K FInf PhiInf) (inner outer : Real) : Set (P × X) :=
   (fun q : P × X => (q.1, PhiInf q.1 + q.2)) ''
-    (closure T.W ×ˢ (Metric.closedBall 0 outer \ Metric.ball 0 inner))
+    (closure T.parameterDomain ×ˢ (Metric.closedBall 0 outer \ Metric.ball 0 inner))
 
 theorem mem_closedAnnulus
     {P X Y : Type*}
@@ -659,7 +659,7 @@ theorem mem_closedAnnulus
     (T : CompactRootTube D W₀ K FInf PhiInf)
     {inner outer : Real} {z : P × X} :
     z ∈ T.closedAnnulus inner outer ↔
-      z.1 ∈ closure T.W ∧ inner ≤ dist z.2 (PhiInf z.1) ∧
+      z.1 ∈ closure T.parameterDomain ∧ inner ≤ dist z.2 (PhiInf z.1) ∧
         dist z.2 (PhiInf z.1) ≤ outer := by
   constructor
   · rintro ⟨⟨p, u⟩, ⟨hp, huBall, huInner⟩, rfl⟩
@@ -686,14 +686,14 @@ theorem annulus_compact
     {FInf : P × X → Y} {PhiInf : P → X}
     (T : CompactRootTube D W₀ K FInf PhiInf) (inner outer : Real) :
     IsCompact (T.closedAnnulus inner outer) := by
-  have hPhi : ContinuousOn PhiInf (closure T.W) :=
-    T.limit_branch_smooth.continuousOn.mono T.closure_W_subset
+  have hPhi : ContinuousOn PhiInf (closure T.parameterDomain) :=
+    T.limit_branch_smooth.continuousOn.mono T.closure_parameterDomain_subset
   have hmap : ContinuousOn
       (fun q : P × X => (q.1, PhiInf q.1 + q.2))
-      (closure T.W ×ˢ (Metric.closedBall 0 outer \ Metric.ball 0 inner)) := by
+      (closure T.parameterDomain ×ˢ (Metric.closedBall 0 outer \ Metric.ball 0 inner)) := by
     exact continuousOn_fst.prodMk
       ((hPhi.comp continuousOn_fst (fun q hq => hq.1)).add continuousOn_snd)
-  exact (T.isCompact_closure_W.prod
+  exact (T.isCompact_closure_parameterDomain.prod
     ((isCompact_closedBall 0 outer).diff Metric.isOpen_ball)).image_of_continuousOn hmap
 
 theorem exists_residual_gap
@@ -889,9 +889,9 @@ theorem exists_root_buffer
     {inner : Real} (hinner : 0 < inner) :
     ∃ b : Real, 0 < b ∧ b < inner ∧
       ∃ N : Nat, ∀ n ≥ N,
-        (∀ p ∈ closure T.W, ∃ x,
+        (∀ p ∈ closure T.parameterDomain, ∃ x,
           dist x (PhiInf p) < inner ∧ F n (p, x) = 0) ∧
-        ∀ p ∈ closure T.W,
+        ∀ p ∈ closure T.parameterDomain,
           Set.InjOn (fun x => F n (p, x)) (Metric.ball (PhiInf p) b) := by
   classical
   let H : Nat → P × X → Y × P := fun n => pinnedRootMap (F n)
@@ -909,13 +909,13 @@ theorem exists_root_buffer
         (mapCInfConvergence_const (U := D) (fun z : P × X => z.1))
         hF_cd T.limit_equation_smooth
         (fun _ => contDiff_fst.contDiffOn) contDiff_fst.contDiffOn
-  have hlocal : ∀ p ∈ closure T.W,
+  have hlocal : ∀ p ∈ closure T.parameterDomain,
       ∃ (U : Set P) (b : Real) (N : Nat),
         IsOpen U ∧ p ∈ U ∧ 0 < b ∧ b < inner ∧
         ∀ n ≥ N,
-          (∀ q ∈ closure T.W, q ∈ U → ∃ x,
+          (∀ q ∈ closure T.parameterDomain, q ∈ U → ∃ x,
             dist x (PhiInf q) < inner ∧ F n (q, x) = 0) ∧
-          ∀ q ∈ closure T.W, q ∈ U →
+          ∀ q ∈ closure T.parameterDomain, q ∈ U →
             Set.InjOn (fun x => F n (q, x))
               (Metric.ball (PhiInf q) b) := by
     intro p hp
@@ -949,7 +949,7 @@ theorem exists_root_buffer
       exact lt_min (div_pos hr (by norm_num)) (div_pos hinner (by norm_num))
     have hPhiCont : ContinuousAt PhiInf p :=
       T.limit_branch_smooth.continuousOn.continuousAt
-        (T.isOpen_ambient.mem_nhds (T.closure_W_subset hp))
+        (T.isOpen_ambient.mem_nhds (T.closure_parameterDomain_subset hp))
     obtain ⟨eps, heps, hPhiClose⟩ :=
       Metric.continuousAt_iff.mp hPhiCont phiTol hphiTol
     let uRad : Real := min (δ / 2) (min (r / 8) eps)
@@ -1044,22 +1044,22 @@ theorem exists_root_buffer
         · simpa only [H, pinnedRootMap] using! hxy
         · rfl
       exact congrArg Prod.snd (hInj (hpair_mem x hx) (hpair_mem y hy) hpairs)
-  have hlocal' : ∀ p : {p // p ∈ closure T.W},
+  have hlocal' : ∀ p : {p // p ∈ closure T.parameterDomain},
       ∃ (U : Set P) (b : Real) (N : Nat),
         IsOpen U ∧ p.1 ∈ U ∧ 0 < b ∧ b < inner ∧
         ∀ n ≥ N,
-          (∀ q ∈ closure T.W, q ∈ U → ∃ x,
+          (∀ q ∈ closure T.parameterDomain, q ∈ U → ∃ x,
             dist x (PhiInf q) < inner ∧ F n (q, x) = 0) ∧
-          ∀ q ∈ closure T.W, q ∈ U →
+          ∀ q ∈ closure T.parameterDomain, q ∈ U →
             Set.InjOn (fun x => F n (q, x))
               (Metric.ball (PhiInf q) b) :=
     fun p => hlocal p.1 p.2
   choose U b N hUopen hpU hbpos hbinner htail using hlocal'
-  have hcover : closure T.W ⊆ ⋃ p : {p // p ∈ closure T.W}, U p := by
+  have hcover : closure T.parameterDomain ⊆ ⋃ p : {p // p ∈ closure T.parameterDomain}, U p := by
     intro p hp
     exact Set.mem_iUnion.mpr ⟨⟨p, hp⟩, hpU ⟨p, hp⟩⟩
   obtain ⟨sf, hsf⟩ :=
-    T.isCompact_closure_W.elim_finite_subcover U hUopen hcover
+    T.isCompact_closure_parameterDomain.elim_finite_subcover U hUopen hcover
   let b₀ : Real := if h : sf.Nonempty then sf.inf' h b else 1
   have hb₀ : 0 < b₀ := by
     rw [show b₀ = if h : sf.Nonempty then sf.inf' h b else 1 by rfl]
@@ -1112,12 +1112,12 @@ theorem exists_root_c0
     (hF_cd : ∀ n, ContDiffOn Real ∞ (F n) D)
     (hF_convergence : MapCInfConvergenceOnCompacts D F FInf) :
     ∃ N : Nat, ∃ Phi : Nat → P → X,
-      TendstoUniformlyOn Phi PhiInf Filter.atTop (closure T.W) ∧
-      (∀ n ≥ N, ∀ p ∈ closure T.W,
+      TendstoUniformlyOn Phi PhiInf Filter.atTop (closure T.parameterDomain) ∧
+      (∀ n ≥ N, ∀ p ∈ closure T.parameterDomain,
         dist (Phi n p) (PhiInf p) < T.rho / 2 ∧
         F n (p, Phi n p) = 0 ∧
         (partialFDeriv₂ (F n) p (Phi n p)).IsInvertible) ∧
-      ∀ n ≥ N, ∀ p ∈ closure T.W, ∀ x,
+      ∀ n ≥ N, ∀ p ∈ closure T.parameterDomain, ∀ x,
         dist x (PhiInf p) < T.rho →
           (F n (p, x) = 0 ↔ x = Phi n p) := by
   classical
@@ -1137,16 +1137,16 @@ theorem exists_root_c0
   obtain ⟨b, hb, hbInner, Nroot, hroot⟩ :=
     T.exists_root_buffer hF_cd hF_convergence hinner
   let Phi : Nat → P → X := fun n p =>
-    if h : Nroot ≤ n ∧ p ∈ closure T.W then
+    if h : Nroot ≤ n ∧ p ∈ closure T.parameterDomain then
       Classical.choose ((hroot n h.1).1 p h.2)
     else PhiInf p
-  have hPhiSpec : ∀ n ≥ Nroot, ∀ p ∈ closure T.W,
+  have hPhiSpec : ∀ n ≥ Nroot, ∀ p ∈ closure T.parameterDomain,
       dist (Phi n p) (PhiInf p) < inner ∧ F n (p, Phi n p) = 0 := by
     intro n hn p hp
     dsimp only [Phi]
     rw [dif_pos ⟨hn, hp⟩]
     exact Classical.choose_spec ((hroot n hn).1 p hp)
-  have hPhiConvergence : TendstoUniformlyOn Phi PhiInf Filter.atTop (closure T.W) := by
+  have hPhiConvergence : TendstoUniformlyOn Phi PhiInf Filter.atTop (closure T.parameterDomain) := by
     rw [Metric.tendstoUniformlyOn_iff]
     intro eps heps
     let a : Real := min (eps / 2) (inner / 2)
@@ -1233,16 +1233,16 @@ theorem root_contDiffOn
     {F : Nat → P × X → Y}
     (hF_cd : ∀ n, ContDiffOn Real ∞ (F n) D)
     {N : Nat} {Phi : Nat → P → X}
-    (hspec : ∀ n ≥ N, ∀ p ∈ closure T.W,
+    (hspec : ∀ n ≥ N, ∀ p ∈ closure T.parameterDomain,
       dist (Phi n p) (PhiInf p) < T.rho / 2 ∧
       F n (p, Phi n p) = 0 ∧
       (partialFDeriv₂ (F n) p (Phi n p)).IsInvertible)
-    (huniq : ∀ n ≥ N, ∀ p ∈ closure T.W, ∀ x,
+    (huniq : ∀ n ≥ N, ∀ p ∈ closure T.parameterDomain, ∀ x,
       dist x (PhiInf p) < T.rho →
         (F n (p, x) = 0 ↔ x = Phi n p)) :
-    ∀ n ≥ N, ContDiffOn Real ∞ (Phi n) T.W := by
+    ∀ n ≥ N, ContDiffOn Real ∞ (Phi n) T.parameterDomain := by
   intro n hn p hp
-  have hpClosure : p ∈ closure T.W := subset_closure hp
+  have hpClosure : p ∈ closure T.parameterDomain := subset_closure hp
   obtain ⟨hPhiDist, hPhiRoot, hPhiInv⟩ := hspec n hn p hpClosure
   have hzD : (p, Phi n p) ∈ D := by
     apply T.tube_subset p hpClosure
@@ -1265,7 +1265,7 @@ theorem root_contDiffOn
     exact hq.trans hPhiRoot
   have hPhiInfCont : ContinuousAt PhiInf p :=
     T.limit_branch_smooth.continuousOn.continuousAt
-      (T.isOpen_ambient.mem_nhds (T.closure_W_subset hpClosure))
+      (T.isOpen_ambient.mem_nhds (T.closure_parameterDomain_subset hpClosure))
   have hdistCont : ContinuousAt (fun q => dist (psi q) (PhiInf q)) p :=
     hpsiCD.continuousAt.dist hPhiInfCont
   have hdistBase : dist (psi p) (PhiInf p) < T.rho := by
@@ -1273,7 +1273,7 @@ theorem root_contDiffOn
     exact hPhiDist.trans (half_lt_self T.rho_pos)
   have hdistEv : ∀ᶠ q in 𝓝 p, dist (psi q) (PhiInf q) < T.rho :=
     hdistCont (Iio_mem_nhds hdistBase)
-  have hWEv : ∀ᶠ q in 𝓝 p, q ∈ T.W := T.isOpen_W.mem_nhds hp
+  have hWEv : ∀ᶠ q in 𝓝 p, q ∈ T.parameterDomain := T.isOpen_parameterDomain.mem_nhds hp
   have heq : Phi n =ᶠ[𝓝 p] psi := by
     filter_upwards [hpsiRoot, hdistEv, hWEv] with q hqRoot hqDist hqW
     exact ((huniq n hn q (subset_closure hqW) (psi q) hqDist).mp hqRoot).symm
@@ -1290,18 +1290,18 @@ theorem root_fderiv_eq
     {F : Nat → P × X → Y}
     (hF_cd : ∀ n, ContDiffOn Real ∞ (F n) D)
     {N : Nat} {Phi : Nat → P → X}
-    (hspec : ∀ n ≥ N, ∀ p ∈ closure T.W,
+    (hspec : ∀ n ≥ N, ∀ p ∈ closure T.parameterDomain,
       dist (Phi n p) (PhiInf p) < T.rho / 2 ∧
       F n (p, Phi n p) = 0 ∧
       (partialFDeriv₂ (F n) p (Phi n p)).IsInvertible)
-    (huniq : ∀ n ≥ N, ∀ p ∈ closure T.W, ∀ x,
+    (huniq : ∀ n ≥ N, ∀ p ∈ closure T.parameterDomain, ∀ x,
       dist x (PhiInf p) < T.rho →
         (F n (p, x) = 0 ↔ x = Phi n p)) :
-    ∀ n ≥ N, ∀ p ∈ T.W,
+    ∀ n ≥ N, ∀ p ∈ T.parameterDomain,
       fderiv Real (Phi n) p =
         implicitRootDeriv (fderiv Real (F n) (p, Phi n p)) := by
   intro n hn p hp
-  have hpClosure : p ∈ closure T.W := subset_closure hp
+  have hpClosure : p ∈ closure T.parameterDomain := subset_closure hp
   obtain ⟨hPhiDist, hPhiRoot, hPhiInv⟩ := hspec n hn p hpClosure
   have hzD : (p, Phi n p) ∈ D := by
     apply T.tube_subset p hpClosure
@@ -1324,7 +1324,7 @@ theorem root_fderiv_eq
     exact hq.trans hPhiRoot
   have hPhiInfCont : ContinuousAt PhiInf p :=
     T.limit_branch_smooth.continuousOn.continuousAt
-      (T.isOpen_ambient.mem_nhds (T.closure_W_subset hpClosure))
+      (T.isOpen_ambient.mem_nhds (T.closure_parameterDomain_subset hpClosure))
   have hdistCont : ContinuousAt (fun q => dist (psi q) (PhiInf q)) p :=
     hpsiCD.continuousAt.dist hPhiInfCont
   have hdistBase : dist (psi p) (PhiInf p) < T.rho := by
@@ -1332,7 +1332,7 @@ theorem root_fderiv_eq
     exact hPhiDist.trans (half_lt_self T.rho_pos)
   have hdistEv : ∀ᶠ q in 𝓝 p, dist (psi q) (PhiInf q) < T.rho :=
     hdistCont (Iio_mem_nhds hdistBase)
-  have hWEv : ∀ᶠ q in 𝓝 p, q ∈ T.W := T.isOpen_W.mem_nhds hp
+  have hWEv : ∀ᶠ q in 𝓝 p, q ∈ T.parameterDomain := T.isOpen_parameterDomain.mem_nhds hp
   have heq : Phi n =ᶠ[𝓝 p] psi := by
     filter_upwards [hpsiRoot, hdistEv, hWEv] with q hqRoot hqDist hqW
     exact ((huniq n hn q (subset_closure hqW) (psi q) hqDist).mp hqRoot).symm
@@ -1349,17 +1349,17 @@ theorem limit_fderiv_eq
     {D : Set (P × X)} {W₀ K : Set P}
     {FInf : P × X → Y} {PhiInf : P → X}
     (T : CompactRootTube D W₀ K FInf PhiInf) :
-    ∀ p ∈ T.W,
+    ∀ p ∈ T.parameterDomain,
       fderiv Real PhiInf p =
         implicitRootDeriv (fderiv Real FInf (p, PhiInf p)) := by
-  have hspec : ∀ n : Nat, n ≥ 0 → ∀ p ∈ closure T.W,
+  have hspec : ∀ n : Nat, n ≥ 0 → ∀ p ∈ closure T.parameterDomain,
       dist (PhiInf p) (PhiInf p) < T.rho / 2 ∧
       FInf (p, PhiInf p) = 0 ∧
       (partialFDeriv₂ FInf p (PhiInf p)).IsInvertible := by
     intro n hn p hp
     exact ⟨by simpa using! half_pos T.rho_pos, T.limit_root p hp,
       T.limit_root_deriv_inv p hp⟩
-  have huniq : ∀ n : Nat, n ≥ 0 → ∀ p ∈ closure T.W, ∀ x,
+  have huniq : ∀ n : Nat, n ≥ 0 → ∀ p ∈ closure T.parameterDomain, ∀ x,
       dist x (PhiInf p) < T.rho →
         (FInf (p, x) = 0 ↔ x = PhiInf p) := by
     intro n hn p hp x hx
@@ -1383,20 +1383,20 @@ theorem root_cInf
     (hF_cd : ∀ n, ContDiffOn Real ∞ (F n) D)
     (hF_convergence : MapCInfConvergenceOnCompacts D F FInf)
     {Phi : Nat → P → X}
-    (hPhi_convergence : TendstoUniformlyOn Phi PhiInf Filter.atTop (closure T.W))
-    (hPhi_cd : ∀ n, ContDiffOn Real ∞ (Phi n) T.W)
-    (hspec : ∀ n, ∀ p ∈ closure T.W,
+    (hPhi_convergence : TendstoUniformlyOn Phi PhiInf Filter.atTop (closure T.parameterDomain))
+    (hPhi_cd : ∀ n, ContDiffOn Real ∞ (Phi n) T.parameterDomain)
+    (hspec : ∀ n, ∀ p ∈ closure T.parameterDomain,
       dist (Phi n p) (PhiInf p) < T.rho / 2 ∧
       F n (p, Phi n p) = 0 ∧
       (partialFDeriv₂ (F n) p (Phi n p)).IsInvertible)
-    (huniq : ∀ n, ∀ p ∈ closure T.W, ∀ x,
+    (huniq : ∀ n, ∀ p ∈ closure T.parameterDomain, ∀ x,
       dist x (PhiInf p) < T.rho →
         (F n (p, x) = 0 ↔ x = Phi n p)) :
-    MapCInfConvergenceOnCompacts T.W Phi PhiInf := by
+    MapCInfConvergenceOnCompacts T.parameterDomain Phi PhiInf := by
   intro K' hK' hK'W p
-  have hPhiInf_cd : ContDiffOn Real ∞ PhiInf T.W :=
+  have hPhiInf_cd : ContDiffOn Real ∞ PhiInf T.parameterDomain :=
     T.limit_branch_smooth.mono fun q hq =>
-      T.closure_W_subset (subset_closure hq)
+      T.closure_parameterDomain_subset (subset_closure hq)
   induction p with
   | zero =>
       rw [Metric.tendstoUniformlyOn_iff] at hPhi_convergence
@@ -1410,25 +1410,25 @@ theorem root_cInf
         norm_sub_rev] using! hdist.le
   | succ p ih =>
       have hId : MapCPConvergenceOn K' p (fun _ : Nat => id) id :=
-        (mapCInfConvergence_const (U := T.W) (id : P → P)) K' hK' hK'W p
+        (mapCInfConvergence_const (U := T.parameterDomain) (id : P → P)) K' hK' hK'W p
       have hGraph : MapCPConvergenceOn K' p
           (fun n q => (q, Phi n q)) (fun q => (q, PhiInf q)) :=
-        MapCPConvergenceOn.prodMk T.isOpen_W hK'W hId ih
+        MapCPConvergenceOn.prodMk T.isOpen_parameterDomain hK'W hId ih
           (fun _ => contDiff_id.contDiffOn) contDiff_id.contDiffOn
           hPhi_cd hPhiInf_cd
       have hGraph_cd : ∀ n, ContDiffOn Real ∞
-          (fun q => (q, Phi n q)) T.W :=
+          (fun q => (q, Phi n q)) T.parameterDomain :=
         fun n => contDiff_id.contDiffOn.prodMk (hPhi_cd n)
       have hGraphInf_cd : ContDiffOn Real ∞
-          (fun q => (q, PhiInf q)) T.W :=
+          (fun q => (q, PhiInf q)) T.parameterDomain :=
         contDiff_id.contDiffOn.prodMk hPhiInf_cd
-      have hGraph_map : ∀ n, Set.MapsTo (fun q => (q, Phi n q)) T.W D := by
+      have hGraph_map : ∀ n, Set.MapsTo (fun q => (q, Phi n q)) T.parameterDomain D := by
         intro n q hq
         apply T.tube_subset q (subset_closure hq)
         rw [Metric.mem_closedBall]
         exact (hspec n q (subset_closure hq)).1.le.trans
           (by linarith [T.rho_pos])
-      have hGraphInf_map : Set.MapsTo (fun q => (q, PhiInf q)) T.W D := by
+      have hGraphInf_map : Set.MapsTo (fun q => (q, PhiInf q)) T.parameterDomain D := by
         intro q hq
         apply T.tube_subset q (subset_closure hq)
         rw [Metric.mem_closedBall]
@@ -1446,23 +1446,23 @@ theorem root_cInf
       have hAlong : MapCPConvergenceOn K' p
           (fun n q => fderiv Real (F n) (q, Phi n q))
           (fun q => fderiv Real FInf (q, PhiInf q)) :=
-        MapCPConvergenceOn.comp_cInf T.isOpen_W T.isOpen_domain hK' hK'W hGraph
+        MapCPConvergenceOn.comp_cInf T.isOpen_parameterDomain T.isOpen_domain hK' hK'W hGraph
           hDF_convergence hGraph_cd hGraphInf_cd hDF_cd hDFInf_cd
           hGraphInf_map hGraph_map
       have hAlong_cd : ∀ n, ContDiffOn Real ∞
-          (fun q => fderiv Real (F n) (q, Phi n q)) T.W :=
+          (fun q => fderiv Real (F n) (q, Phi n q)) T.parameterDomain :=
         fun n => (hDF_cd n).comp (hGraph_cd n) (hGraph_map n)
       have hAlongInf_cd : ContDiffOn Real ∞
-          (fun q => fderiv Real FInf (q, PhiInf q)) T.W :=
+          (fun q => fderiv Real FInf (q, PhiInf q)) T.parameterDomain :=
         hDFInf_cd.comp hGraphInf_cd hGraphInf_map
       have hAlong_dom : ∀ n, Set.MapsTo
-          (fun q => fderiv Real (F n) (q, Phi n q)) T.W
+          (fun q => fderiv Real (F n) (q, Phi n q)) T.parameterDomain
           (implicitRootDomain (P := P) (X := X) (Y := Y)) := by
         intro n q hq
         change (partialFDeriv₂ (F n) q (Phi n q)).IsInvertible
         exact (hspec n q (subset_closure hq)).2.2
       have hAlongInf_dom : Set.MapsTo
-          (fun q => fderiv Real FInf (q, PhiInf q)) T.W
+          (fun q => fderiv Real FInf (q, PhiInf q)) T.parameterDomain
           (implicitRootDomain (P := P) (X := X) (Y := Y)) := by
         intro q hq
         change (partialFDeriv₂ FInf q (PhiInf q)).IsInvertible
@@ -1472,7 +1472,7 @@ theorem root_cInf
             (fderiv Real (F n) (q, Phi n q)))
           (fun q => implicitRootDeriv
             (fderiv Real FInf (q, PhiInf q))) :=
-        MapCPConvergenceOn.comp_cInf T.isOpen_W
+        MapCPConvergenceOn.comp_cInf T.isOpen_parameterDomain
           (isOpen_rootDerivDom (P := P) (X := X) (Y := Y))
           hK' hK'W hAlong
           (mapCInfConvergence_const
@@ -1485,7 +1485,7 @@ theorem root_cInf
       have hFormula : ∀ n, Set.EqOn
           (fun q => fderiv Real (Phi n) q)
           (fun q => implicitRootDeriv
-            (fderiv Real (F n) (q, Phi n q))) T.W := by
+            (fderiv Real (F n) (q, Phi n q))) T.parameterDomain := by
         intro n q hq
         exact T.root_fderiv_eq hF_cd (N := 0) (Phi := Phi)
           (fun m hm => hspec m) (fun m hm => huniq m)
@@ -1493,9 +1493,9 @@ theorem root_cInf
       have hFD : MapCPConvergenceOn K' p
           (fun n q => fderiv Real (Phi n) q)
           (fun q => fderiv Real PhiInf q) :=
-        hRhs.congr T.isOpen_W hK'W hFormula T.limit_fderiv_eq
+        hRhs.congr T.isOpen_parameterDomain hK'W hFormula T.limit_fderiv_eq
       simpa only [Nat.succ_eq_add_one] using
-        MapCPConvergenceOn.succ_of_fderiv T.isOpen_W hK'W
+        MapCPConvergenceOn.succ_of_fderiv T.isOpen_parameterDomain hK'W
           (ih.mono_order (Nat.zero_le p)) hFD
           (fun n => (hPhi_cd n).differentiableOn (by simp))
           (hPhiInf_cd.differentiableOn (by simp))
@@ -1512,13 +1512,13 @@ theorem exists_root_smooth
     (hF_cd : ∀ n, ContDiffOn Real ∞ (F n) D)
     (hF_convergence : MapCInfConvergenceOnCompacts D F FInf) :
     ∃ N : Nat, ∃ Phi : Nat → P → X,
-      TendstoUniformlyOn Phi PhiInf Filter.atTop (closure T.W) ∧
-      (∀ n ≥ N, ContDiffOn Real ∞ (Phi n) T.W) ∧
-      (∀ n ≥ N, ∀ p ∈ closure T.W,
+      TendstoUniformlyOn Phi PhiInf Filter.atTop (closure T.parameterDomain) ∧
+      (∀ n ≥ N, ContDiffOn Real ∞ (Phi n) T.parameterDomain) ∧
+      (∀ n ≥ N, ∀ p ∈ closure T.parameterDomain,
         dist (Phi n p) (PhiInf p) < T.rho / 2 ∧
         F n (p, Phi n p) = 0 ∧
         (partialFDeriv₂ (F n) p (Phi n p)).IsInvertible) ∧
-      ∀ n ≥ N, ∀ p ∈ closure T.W, ∀ x,
+      ∀ n ≥ N, ∀ p ∈ closure T.parameterDomain, ∀ x,
         dist x (PhiInf p) < T.rho →
           (F n (p, x) = 0 ↔ x = Phi n p) := by
   obtain ⟨N, Phi, hconv, hspec, huniq⟩ := T.exists_root_c0 hF_cd hF_convergence
@@ -1536,13 +1536,13 @@ theorem exists_root_cInf
     (hF_cd : ∀ n, ContDiffOn Real ∞ (F n) D)
     (hF_convergence : MapCInfConvergenceOnCompacts D F FInf) :
     ∃ N : Nat, ∃ Phi : Nat → P → X,
-      MapCInfConvergenceOnCompacts T.W Phi PhiInf ∧
-      (∀ n, ContDiffOn Real ∞ (Phi n) T.W) ∧
-      (∀ n ≥ N, ∀ p ∈ closure T.W,
+      MapCInfConvergenceOnCompacts T.parameterDomain Phi PhiInf ∧
+      (∀ n, ContDiffOn Real ∞ (Phi n) T.parameterDomain) ∧
+      (∀ n ≥ N, ∀ p ∈ closure T.parameterDomain,
         dist (Phi n p) (PhiInf p) < T.rho / 2 ∧
         F n (p, Phi n p) = 0 ∧
         (partialFDeriv₂ (F n) p (Phi n p)).IsInvertible) ∧
-      ∀ n ≥ N, ∀ p ∈ closure T.W, ∀ x,
+      ∀ n ≥ N, ∀ p ∈ closure T.parameterDomain, ∀ x,
         dist x (PhiInf p) < T.rho →
           (F n (p, x) = 0 ↔ x = Phi n p) := by
   obtain ⟨N, Phi₀, hconv₀, hcd₀, hspec₀, huniq₀⟩ :=
@@ -1551,16 +1551,16 @@ theorem exists_root_cInf
     if N ≤ n then Phi₀ n else PhiInf
   let F' : Nat → P × X → Y := fun n =>
     if N ≤ n then F n else FInf
-  have hPhiInf_cd : ContDiffOn Real ∞ PhiInf T.W :=
+  have hPhiInf_cd : ContDiffOn Real ∞ PhiInf T.parameterDomain :=
     T.limit_branch_smooth.mono fun q hq =>
-      T.closure_W_subset (subset_closure hq)
-  have hPhi_convergence : TendstoUniformlyOn Phi PhiInf Filter.atTop (closure T.W) := by
+      T.closure_parameterDomain_subset (subset_closure hq)
+  have hPhi_convergence : TendstoUniformlyOn Phi PhiInf Filter.atTop (closure T.parameterDomain) := by
     rw [Metric.tendstoUniformlyOn_iff] at hconv₀ ⊢
     intro eps heps
     filter_upwards [hconv₀ eps heps, eventually_ge_atTop N] with n hnConvergence hn
     intro q hq
     simpa only [Phi, if_pos hn] using! hnConvergence q hq
-  have hPhi_cd : ∀ n, ContDiffOn Real ∞ (Phi n) T.W := by
+  have hPhi_cd : ∀ n, ContDiffOn Real ∞ (Phi n) T.parameterDomain := by
     intro n
     by_cases hn : N ≤ n
     · simpa only [Phi, if_pos hn] using! hcd₀ n hn
@@ -1577,7 +1577,7 @@ theorem exists_root_cInf
       simp only [F', if_pos hn]
     · intro z hz
       rfl
-  have hspec : ∀ n, ∀ p ∈ closure T.W,
+  have hspec : ∀ n, ∀ p ∈ closure T.parameterDomain,
       dist (Phi n p) (PhiInf p) < T.rho / 2 ∧
       F' n (p, Phi n p) = 0 ∧
       (partialFDeriv₂ (F' n) p (Phi n p)).IsInvertible := by
@@ -1588,7 +1588,7 @@ theorem exists_root_cInf
         simpa using! half_pos T.rho_pos
       simpa only [Phi, F', if_neg hn] using
         ⟨hdist, T.limit_root p hp, T.limit_root_deriv_inv p hp⟩
-  have huniq : ∀ n, ∀ p ∈ closure T.W, ∀ x,
+  have huniq : ∀ n, ∀ p ∈ closure T.parameterDomain, ∀ x,
       dist x (PhiInf p) < T.rho →
         (F' n (p, x) = 0 ↔ x = Phi n p) := by
     intro n p hp x hx
@@ -1599,7 +1599,7 @@ theorem exists_root_cInf
       · exact T.limit_unique p hp x hx.le
       · rintro rfl
         exact T.limit_root p hp
-  have hCInf : MapCInfConvergenceOnCompacts T.W Phi PhiInf :=
+  have hCInf : MapCInfConvergenceOnCompacts T.parameterDomain Phi PhiInf :=
     T.root_cInf hF'_cd hF'_convergence hPhi_convergence hPhi_cd hspec huniq
   refine ⟨N, Phi, hCInf, hPhi_cd, ?_, ?_⟩
   · intro n hn p hp
@@ -1619,13 +1619,13 @@ theorem exists_cInf_tail
     (hF_cd : ∀ᶠ n in Filter.atTop, ContDiffOn Real ∞ (F n) D)
     (hF_convergence : MapCInfConvergenceOnCompacts D F FInf) :
     ∃ N : Nat, ∃ Phi : Nat → P → X,
-      MapCInfConvergenceOnCompacts T.W Phi PhiInf ∧
-      (∀ n, ContDiffOn Real ∞ (Phi n) T.W) ∧
-      (∀ n ≥ N, ∀ p ∈ closure T.W,
+      MapCInfConvergenceOnCompacts T.parameterDomain Phi PhiInf ∧
+      (∀ n, ContDiffOn Real ∞ (Phi n) T.parameterDomain) ∧
+      (∀ n ≥ N, ∀ p ∈ closure T.parameterDomain,
         dist (Phi n p) (PhiInf p) < T.rho / 2 ∧
         F n (p, Phi n p) = 0 ∧
         (partialFDeriv₂ (F n) p (Phi n p)).IsInvertible) ∧
-      ∀ n ≥ N, ∀ p ∈ closure T.W, ∀ x,
+      ∀ n ≥ N, ∀ p ∈ closure T.parameterDomain, ∀ x,
         dist x (PhiInf p) < T.rho →
           (F n (p, x) = 0 ↔ x = Phi n p) := by
   obtain ⟨N₀, hN₀⟩ := eventually_atTop.mp hF_cd

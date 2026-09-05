@@ -849,7 +849,7 @@ theorem closedCellSign_mul_pos {a : ℝ} (ha : a ≠ 0) :
   · have hneg : a < 0 := lt_of_le_of_ne (le_of_not_gt hapos) ha
     simp [hapos, hneg]
 
-theorem closedCell_exists_coord_ne_zero {m : ℕ} (x : EuclideanSpace ℝ (Fin (m + 1)))
+theorem exists_closedCell_coord_ne_zero {m : ℕ} (x : EuclideanSpace ℝ (Fin (m + 1)))
     (hx : 1 ≤ ‖x‖) : ∃ i : Fin (m + 1), x i ≠ 0 := by
   by_contra h
   have hx0 : x = 0 := by
@@ -887,7 +887,7 @@ noncomputable def closedCellChartAt {m : ℕ} (x : ClosedCell (m + 1)) :
     OpenPartialHomeomorph (ClosedCell (m + 1)) (EuclideanHalfSpace (m + 1)) :=
   if hx : ‖x.1‖ < 1 then closedCellInteriorChart m
   else
-    let i : Fin (m + 1) := Classical.choose (closedCell_exists_coord_ne_zero x.1 (by
+    let i : Fin (m + 1) := Classical.choose (exists_closedCell_coord_ne_zero x.1 (by
       have hle : ‖x.1‖ ≤ 1 := x.2
       have hnot : ¬ ‖x.1‖ < 1 := hx
       linarith))
@@ -904,11 +904,11 @@ noncomputable def closedCellChartedSpaceSucc (m : ℕ) :
     · rw [closedCellChartAt, dif_pos hx]
       exact hx
     · rw [closedCellChartAt, dif_neg hx]
-      have hne : x.1 (Classical.choose (closedCell_exists_coord_ne_zero x.1 (by
+      have hne : x.1 (Classical.choose (exists_closedCell_coord_ne_zero x.1 (by
           have hle : ‖x.1‖ ≤ 1 := x.2
           have hnot : ¬ ‖x.1‖ < 1 := hx
           linarith))) ≠ 0 :=
-        (Classical.choose_spec (closedCell_exists_coord_ne_zero x.1 (by
+        (Classical.choose_spec (exists_closedCell_coord_ne_zero x.1 (by
           have hle : ‖x.1‖ ≤ 1 := x.2
           have hnot : ¬ ‖x.1‖ < 1 := hx
           linarith)))
@@ -1553,10 +1553,10 @@ theorem closedCellChart_transition_mem_groupoid {m : ℕ} (x₁ x₂ : ClosedCel
     · unfold closedCellChartAt
       rw [dif_pos hx₁, dif_neg hx₂]
       exact closedCellInteriorBoundary_transition_mem_groupoid
-        (Classical.choose (closedCell_exists_coord_ne_zero x₂.1 (by
+        (Classical.choose (exists_closedCell_coord_ne_zero x₂.1 (by
           have hle : ‖x₂.1‖ ≤ 1 := x₂.2
           have hnot : ¬ ‖x₂.1‖ < 1 := hx₂
-          linarith))) (0 < x₂.1 (Classical.choose (closedCell_exists_coord_ne_zero x₂.1 (by
+          linarith))) (0 < x₂.1 (Classical.choose (exists_closedCell_coord_ne_zero x₂.1 (by
           have hle : ‖x₂.1‖ ≤ 1 := x₂.2
           have hnot : ¬ ‖x₂.1‖ < 1 := hx₂
           linarith))))
@@ -1564,27 +1564,27 @@ theorem closedCellChart_transition_mem_groupoid {m : ℕ} (x₁ x₂ : ClosedCel
     · unfold closedCellChartAt
       rw [dif_neg hx₁, dif_pos hx₂]
       exact closedCellBoundaryInterior_transition_mem_groupoid
-        (Classical.choose (closedCell_exists_coord_ne_zero x₁.1 (by
+        (Classical.choose (exists_closedCell_coord_ne_zero x₁.1 (by
           have hle : ‖x₁.1‖ ≤ 1 := x₁.2
           have hnot : ¬ ‖x₁.1‖ < 1 := hx₁
-          linarith))) (0 < x₁.1 (Classical.choose (closedCell_exists_coord_ne_zero x₁.1 (by
+          linarith))) (0 < x₁.1 (Classical.choose (exists_closedCell_coord_ne_zero x₁.1 (by
           have hle : ‖x₁.1‖ ≤ 1 := x₁.2
           have hnot : ¬ ‖x₁.1‖ < 1 := hx₁
           linarith))))
     · unfold closedCellChartAt
       rw [dif_neg hx₁, dif_neg hx₂]
       exact closedCellBoundaryBoundary_transition_mem_groupoid
-        (Classical.choose (closedCell_exists_coord_ne_zero x₁.1 (by
+        (Classical.choose (exists_closedCell_coord_ne_zero x₁.1 (by
           have hle : ‖x₁.1‖ ≤ 1 := x₁.2
           have hnot : ¬ ‖x₁.1‖ < 1 := hx₁
-          linarith))) (0 < x₁.1 (Classical.choose (closedCell_exists_coord_ne_zero x₁.1 (by
+          linarith))) (0 < x₁.1 (Classical.choose (exists_closedCell_coord_ne_zero x₁.1 (by
           have hle : ‖x₁.1‖ ≤ 1 := x₁.2
           have hnot : ¬ ‖x₁.1‖ < 1 := hx₁
           linarith))))
-        (Classical.choose (closedCell_exists_coord_ne_zero x₂.1 (by
+        (Classical.choose (exists_closedCell_coord_ne_zero x₂.1 (by
           have hle : ‖x₂.1‖ ≤ 1 := x₂.2
           have hnot : ¬ ‖x₂.1‖ < 1 := hx₂
-          linarith))) (0 < x₂.1 (Classical.choose (closedCell_exists_coord_ne_zero x₂.1 (by
+          linarith))) (0 < x₂.1 (Classical.choose (exists_closedCell_coord_ne_zero x₂.1 (by
           have hle : ‖x₂.1‖ ≤ 1 := x₂.2
           have hnot : ¬ ‖x₂.1‖ < 1 := hx₂
           linarith))))
@@ -1942,7 +1942,7 @@ theorem closedCellInclusion_contMDiff (m : ℕ) :
       intro y hy
       rw [(closedCellInteriorChart m).left_inv hy]
     exact hcong.contMDiffAt ((closedCellInteriorChart m).open_source.mem_nhds hx)
-  · let i : Fin (m + 1) := Classical.choose (closedCell_exists_coord_ne_zero x.1 (by
+  · let i : Fin (m + 1) := Classical.choose (exists_closedCell_coord_ne_zero x.1 (by
       have hle : ‖x.1‖ ≤ 1 := x.2
       have hnot : ¬ ‖x.1‖ < 1 := hx
       linarith))
@@ -2697,7 +2697,7 @@ theorem closedCellInclusion_contMDiff_of (l : ℕ) [Fact (l = (l - 1) + 1)] :
     exact hcong.contMDiffAt ((r.toOpenPartialHomeomorph ≫ₕ closedCellInteriorChart (l - 1)).open_source.mem_nhds (by
       simpa [hchart] using (mem_chart_source (H := EuclideanHalfSpace ((l - 1) + 1))
         (M := ClosedCell l) x)))
-  · let i : Fin ((l - 1) + 1) := Classical.choose (closedCell_exists_coord_ne_zero (r x).1 (by
+  · let i : Fin ((l - 1) + 1) := Classical.choose (exists_closedCell_coord_ne_zero (r x).1 (by
       have hle : ‖(r x).1‖ ≤ 1 := (r x).2
       have hnot : ¬ ‖(r x).1‖ < 1 := by
         intro h

@@ -20,7 +20,7 @@ open DifferentialGeometry.Analysis.Spectral.MetricRealization
 open DifferentialGeometry.PDE.DeTurck.RicciLinearization
 open DifferentialGeometry.Integral.DivergenceTheorem
 open DifferentialGeometry.Analysis.Laplacian.TensorRegularity
-open LieCorrectionZeroCore
+open LieCorrectionZeroFiberOperators
 
 variable
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]

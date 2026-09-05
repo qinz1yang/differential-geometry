@@ -33,7 +33,7 @@ variable {M : Type u} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ 
 namespace NetLimitData
 
 omit [Module.Finite ℝ E] in
-theorem uniformHatSupportData
+theorem center_average_uniformly_converges_to_identity_of_support_cages
     [FiniteDimensional Real E]
     (hd : InjectivityRadiusDecay (I := I) X) {D : Real}
     (P : forall k : Nat, ProperMetricOn (I := I) (X.obj k))
@@ -125,7 +125,7 @@ theorem uniformHatSupportData
       let pointsSeq := decodedCompPoints (I := I) (X.obj (L.φ n)).metric center B A
       forall a b : Nat, forall x : (X.obj (L.φ n)).M,
         x ∈ NetLimitData.hatSourceBall (I := I) (X := X) hd P L r n ->
-          StrictDistInput (I := I) (X.obj (L.φ n)).metric
+          StrictDistanceConvexity (I := I) (X.obj (L.φ n)).metric
             (centerAverage.activeFill mu (pointsSeq a b)
               (fun y : (X.obj (L.φ n)).M => y) x)
             join x (radSeq a b x))
@@ -197,7 +197,7 @@ theorem uniformHatSupportData
                   (r := radSeq a b) (qstar := fun y : (X.obj (L.φ n)).M => y)
                   y hcomplete (hrad a b y hy)
                   (hactive_mem a b y hy)
-                  ((hmu.data hy).1.1) ((hmu.data hy).1.2.1)
+                  (hmu.nonneg y hy) (hmu.pos y hy)
                   (hstrict a b y hy)) x) < eps := by
   let : TopologicalSpace (X.obj (L.φ n)).M := (X.obj (L.φ n)).topology
   let : ChartedSpace H (X.obj (L.φ n)).M := (X.obj (L.φ n)).charted
@@ -228,7 +228,8 @@ theorem uniformHatSupportData
     (USeq := fun _ _ gamma => {x | mu x gamma ≠ 0})
     (μSeq := fun _ _ => mu) (pointsSeq := pointsSeq) (rSeq := radSeq)
     hcomplete hrad (by simpa [pointsSeq] using hactive_mem)
-    (fun _ _ y hy => ⟨(hmu.data hy).1, fun _ hne => hne⟩)
+    (fun _ _ y hy =>
+      ⟨⟨hmu.nonneg y hy, hmu.pos y hy, hmu.sum_one y hy⟩, fun _ hne => hne⟩)
     (by simpa [pointsSeq] using hstrict)
     (by
       simpa [pointsSeq, decodedCompPoints] using
@@ -237,7 +238,7 @@ theorem uniformHatSupportData
           hBcont hAcont hid hKU hKV)
 
 omit [Module.Finite ℝ E] in
-theorem uniformHatCageData
+theorem center_average_uniformly_converges_to_identity_of_hat_cages
     [FiniteDimensional Real E]
     (hd : InjectivityRadiusDecay (I := I) X) {D : Real}
     (P : forall k : Nat, ProperMetricOn (I := I) (X.obj k))
@@ -328,7 +329,7 @@ theorem uniformHatCageData
         decodedCompPoints (I := I) (X.obj (L.φ n)).metric center B A
       forall a b : Nat, forall x : (X.obj (L.φ n)).M,
         x ∈ NetLimitData.hatSourceBall (I := I) (X := X) hd P L r n ->
-          StrictDistInput (I := I) (X.obj (L.φ n)).metric
+          StrictDistanceConvexity (I := I) (X.obj (L.φ n)).metric
             (centerAverage.activeFill mu (pointsSeq a b)
               (fun y : (X.obj (L.φ n)).M => y) x)
             join x (radSeq a b x))
@@ -405,7 +406,7 @@ theorem uniformHatCageData
                   (r := radSeq a b) (qstar := fun y : (X.obj (L.φ n)).M => y)
                   y hcomplete (hrad a b y hy)
                   (hactive_mem a b y hy)
-                  ((hmu.data hy).1.1) ((hmu.data hy).1.2.1)
+                  (hmu.nonneg y hy) (hmu.pos y hy)
                   (hstrict a b y hy)) x) < eps := by
   let : TopologicalSpace (X.obj (L.φ n)).M := (X.obj (L.φ n)).topology
   let : ChartedSpace H (X.obj (L.φ n)).M := (X.obj (L.φ n)).charted
@@ -442,7 +443,8 @@ theorem uniformHatCageData
         Set (X.obj (L.φ n)).M))
     (μSeq := fun _ _ => mu) (pointsSeq := pointsSeq) (rSeq := radSeq)
     hcomplete hrad (by simpa [pointsSeq] using hactive_mem)
-    (fun _ _ y hy => hmu.data hy)
+    (fun _ _ y hy =>
+      ⟨⟨hmu.nonneg y hy, hmu.pos y hy, hmu.sum_one y hy⟩, hmu.active_mem y hy⟩)
     (by simpa [pointsSeq] using hstrict)
     (by
       simpa [pointsSeq, decodedCompPoints] using

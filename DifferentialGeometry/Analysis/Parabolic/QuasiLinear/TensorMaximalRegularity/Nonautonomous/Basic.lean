@@ -221,7 +221,7 @@ theorem nonautMap_contract
     simpa only [NNReal.coe_mk] using h
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem nonaut_strong_exists
+theorem exists_nonautonomous_strong_solution
     (h_compact : IsCompactOperator (tensorResolventL2
       (I := I) (M := M) g r s))
     (hT : 0 < T) (hT1 : T ≤ 1)
@@ -283,7 +283,7 @@ theorem nonaut_strong_exists
     exact congrArg₂ (fun x y => x + y) rfl hforceStar_eq
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem nonaut_forced_exists
+theorem exists_nonautonomous_forced_solution
     (h_compact : IsCompactOperator (tensorResolventL2
       (I := I) (M := M) g r s))
     (hT : 0 < T) (hT1 : T ≤ 1)

@@ -80,7 +80,7 @@ theorem loopRadial_len_lt
         hcLen (ENNReal.ofReal_le_ofReal hz)
     _ = ENNReal.ofReal (L + a) := (ENNReal.ofReal_add hL ha).symm
 
-theorem loopLift_exists
+theorem exists_loopLift
     (g : SmoothRiemannianMetric I M)
     (hEnorm : ∀ (x : M) (v : TangentSpace I x),
       ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x v v)))
@@ -126,7 +126,7 @@ noncomputable def loopTransportLift
     IntrinsicFrameLift (I := I) g hEnorm p
       (loopRadial (I := I) g hEnorm p c (z : E)).extend 0 1 :=
   Classical.choice
-    (loopLift_exists (I := I) g hEnorm p hL ha hfit hloc c hc hcLen z hz)
+    (exists_loopLift (I := I) g hEnorm p hL ha hfit hloc c hc hcLen z hz)
 
 noncomputable def loopTransport
     (g : SmoothRiemannianMetric I M)

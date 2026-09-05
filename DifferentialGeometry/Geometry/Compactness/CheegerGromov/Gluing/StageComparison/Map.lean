@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.ChartFamily
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.MetricCompactness.Inputs
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.MetricCompactness.Assumptions
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.AtomWeights.Convergence
 open DifferentialGeometry.Geometry.Curvature
 
@@ -28,7 +28,7 @@ variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 variable {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
 
 noncomputable def stageTarget
-    (inp : MetricCompactCore (I := I) X)
+    (inp : MetricCompactSeedWithDivisor (I := I) X)
     (P : ∀ j : Nat, ProperMetricOn (I := I) (X.obj j))
     (L : NetLimitData inp.decay inp.D P) (s : Real) (k l : Nat)
     (x : (X.obj (L.φ k)).M) (gamma : Fin (inp.pack.A s))
@@ -51,7 +51,7 @@ noncomputable def stageTarget
     ((chart (L.φ k) (seqCenterD inp.decay P L k (gamma : Nat))).inv x)
 
 @[simp] theorem stageTarget_chart
-    (inp : MetricCompactCore (I := I) X)
+    (inp : MetricCompactSeedWithDivisor (I := I) X)
     (P : ∀ j : Nat, ProperMetricOn (I := I) (X.obj j))
     (L : NetLimitData inp.decay inp.D P) (s : Real) (k l : Nat)
     (alpha gamma : Fin (inp.pack.A s)) (z : E)
@@ -86,7 +86,7 @@ noncomputable def stageTarget
   rfl
 
 theorem stageTarget_local
-    (inp : MetricCompactCore (I := I) X)
+    (inp : MetricCompactSeedWithDivisor (I := I) X)
     (P : ∀ j : Nat, ProperMetricOn (I := I) (X.obj j))
     (L : NetLimitData inp.decay inp.D P) (s : Real) (k l : Nat)
     (alpha gamma : Fin (inp.pack.A s)) (z : E)
@@ -155,7 +155,7 @@ theorem stageTarget_local
     (seqCenterD inp.decay P L l (alpha : Nat))).hom.right_inv hsrc
 
 theorem stageTarget_subseq
-    (inp : MetricCompactCore (I := I) X)
+    (inp : MetricCompactSeedWithDivisor (I := I) X)
     (P : ∀ j : Nat, ProperMetricOn (I := I) (X.obj j))
     (L : NetLimitData inp.decay inp.D P) (s : Real)
     {ψ : Nat → Nat} (hψ : StrictMono ψ) (k l : Nat)
@@ -204,7 +204,7 @@ private theorem stageCenterChoice_heq
       (Classical.choose_spec h'.exists))
 
 def HasUniqueStageCenter
-    (inp : MetricCompactCore (I := I) X)
+    (inp : MetricCompactSeedWithDivisor (I := I) X)
     (P : ∀ j : Nat, ProperMetricOn (I := I) (X.obj j))
     (L : NetLimitData inp.decay inp.D P) (s : Real) (hs : 0 ≤ s)
     (k l : Nat) (x : (X.obj (L.φ k)).M)
@@ -216,13 +216,13 @@ def HasUniqueStageCenter
     IsStageCenter (I := I) Y
       (fun gamma => rawWeights
         (cutRaw
-          (seqAtom inp.decay inp.hD P L inp.pack s k i0)
-          (seqAtom inp.decay inp.hD P L inp.pack s k) i0)
+          (seqAtom inp.decay inp.divisor_pos P L inp.pack s k i0)
+          (seqAtom inp.decay inp.divisor_pos P L inp.pack s k) i0)
         x gamma)
       (stageTarget inp P L s k l x (chart := chart)) y
 
 theorem uniqueCenter_subseq
-    (inp : MetricCompactCore (I := I) X)
+    (inp : MetricCompactSeedWithDivisor (I := I) X)
     (P : ∀ j : Nat, ProperMetricOn (I := I) (X.obj j))
     (L : NetLimitData inp.decay inp.D P) (s : Real) (hs : 0 ≤ s)
     {ψ : Nat → Nat} (hψ : StrictMono ψ) (k l : Nat)
@@ -234,16 +234,16 @@ theorem uniqueCenter_subseq
       HasUniqueStageCenter inp P L s hs (ψ k) (ψ l) x
         (chart := chart) := by
   have hseq :
-      seqAtom inp.decay inp.hD P (L.subseq hψ) inp.pack s k =
-        seqAtom inp.decay inp.hD P L inp.pack s (ψ k) := by
+      seqAtom inp.decay inp.divisor_pos P (L.subseq hψ) inp.pack s k =
+        seqAtom inp.decay inp.divisor_pos P L inp.pack s (ψ k) := by
     funext gamma
-    exact seqAtom_subseq inp.decay inp.hD P L inp.pack s hψ k gamma
+    exact seqAtom_subseq inp.decay inp.divisor_pos P L inp.pack s hψ k gamma
   simp only [HasUniqueStageCenter, hseq,
     NetLimitData.subseq_phi, Function.comp_apply]
   rfl
 
 noncomputable def stageComparisonMap
-    (inp : MetricCompactCore (I := I) X)
+    (inp : MetricCompactSeedWithDivisor (I := I) X)
     (P : ∀ j : Nat, ProperMetricOn (I := I) (X.obj j))
     (L : NetLimitData inp.decay inp.D P) (s : Real) (hs : 0 ≤ s)
     (k l : Nat) (x : (X.obj (L.φ k)).M)
@@ -261,7 +261,7 @@ noncomputable def stageComparisonMap
       (X.obj (L.φ l)).basepoint
 
 theorem stageCompare_choose
-    (inp : MetricCompactCore (I := I) X)
+    (inp : MetricCompactSeedWithDivisor (I := I) X)
     (P : ∀ j : Nat, ProperMetricOn (I := I) (X.obj j))
     (L : NetLimitData inp.decay inp.D P) (s : Real) (hs : 0 ≤ s)
     (k l : Nat) (x : (X.obj (L.φ k)).M)
@@ -274,7 +274,7 @@ theorem stageCompare_choose
   simp only [stageComparisonMap, hx, huniq, dite_true]
 
 theorem stageCompare_default
-    (inp : MetricCompactCore (I := I) X)
+    (inp : MetricCompactSeedWithDivisor (I := I) X)
     (P : ∀ j : Nat, ProperMetricOn (I := I) (X.obj j))
     (L : NetLimitData inp.decay inp.D P) (s : Real) (hs : 0 ≤ s)
     (k l : Nat) (x : (X.obj (L.φ k)).M)
@@ -291,7 +291,7 @@ theorem stageCompare_default
     · simp only [stageComparisonMap, hx, dite_false]
 
 theorem stageCompare_subseq
-    (inp : MetricCompactCore (I := I) X)
+    (inp : MetricCompactSeedWithDivisor (I := I) X)
     (P : ∀ j : Nat, ProperMetricOn (I := I) (X.obj j))
     (L : NetLimitData inp.decay inp.D P) (s : Real) (hs : 0 ≤ s)
     {ψ : Nat → Nat} (hψ : StrictMono ψ) (k l : Nat)
@@ -306,10 +306,10 @@ theorem stageCompare_subseq
   have hcenter := uniqueCenter_subseq (I := I) inp P L s hs hψ k l x
     (chart := chart)
   have hseq :
-      seqAtom inp.decay inp.hD P (L.subseq hψ) inp.pack s k =
-        seqAtom inp.decay inp.hD P L inp.pack s (ψ k) := by
+      seqAtom inp.decay inp.divisor_pos P (L.subseq hψ) inp.pack s k =
+        seqAtom inp.decay inp.divisor_pos P L inp.pack s (ψ k) := by
     funext gamma
-    exact seqAtom_subseq inp.decay inp.hD P L inp.pack s hψ k gamma
+    exact seqAtom_subseq inp.decay inp.divisor_pos P L inp.pack s hψ k gamma
   by_cases hx : x ∈ L.hatSourceBall inp.decay P s (ψ k)
   · have hx' : x ∈ (L.subseq hψ).hatSourceBall inp.decay P s k := by
       change x ∈ (L.subseq hψ).hatSourceBall inp.decay P s k at hx
@@ -322,15 +322,15 @@ theorem stageCompare_subseq
         stageCompare_choose (I := I) inp P L s hs (ψ k) (ψ l) x hx hu]
       let mu : Fin (inp.pack.A s) → Real := fun gamma => rawWeights
         (cutRaw
-          (seqAtom inp.decay inp.hD P (L.subseq hψ) inp.pack s k
+          (seqAtom inp.decay inp.divisor_pos P (L.subseq hψ) inp.pack s k
             (baseIndex inp.decay inp.realizes inp.pack hs))
-          (seqAtom inp.decay inp.hD P (L.subseq hψ) inp.pack s k)
+          (seqAtom inp.decay inp.divisor_pos P (L.subseq hψ) inp.pack s k)
           (baseIndex inp.decay inp.realizes inp.pack hs)) x gamma
       let mu' : Fin (inp.pack.A s) → Real := fun gamma => rawWeights
         (cutRaw
-          (seqAtom inp.decay inp.hD P L inp.pack s (ψ k)
+          (seqAtom inp.decay inp.divisor_pos P L inp.pack s (ψ k)
             (baseIndex inp.decay inp.realizes inp.pack hs))
-          (seqAtom inp.decay inp.hD P L inp.pack s (ψ k))
+          (seqAtom inp.decay inp.divisor_pos P L inp.pack s (ψ k))
           (baseIndex inp.decay inp.realizes inp.pack hs)) x gamma
       have hmu : mu = mu' := by
         simp only [mu, mu', hseq]
@@ -359,7 +359,7 @@ theorem stageCompare_subseq
     simp only [NetLimitData.subseq_phi, Function.comp_apply]
 
 theorem stageCompare_base
-    (inp : MetricCompactCore (I := I) X)
+    (inp : MetricCompactSeedWithDivisor (I := I) X)
     (P : ∀ j : Nat, ProperMetricOn (I := I) (X.obj j))
     (L : NetLimitData inp.decay inp.D P) (s : Real) (hs : 0 ≤ s)
     (k l : Nat)
@@ -399,12 +399,12 @@ theorem stageCompare_base
     let mu := fun gamma : Fin (inp.pack.A s) =>
       rawWeights
         (cutRaw
-          (seqAtom inp.decay inp.hD P L inp.pack s k i0)
-          (seqAtom inp.decay inp.hD P L inp.pack s k) i0)
+          (seqAtom inp.decay inp.divisor_pos P L inp.pack s k i0)
+          (seqAtom inp.decay inp.divisor_pos P L inp.pack s k) i0)
         Yk.basepoint gamma
     have hdelta : mu i0 = 1 ∧ ∀ j, j ≠ i0 → mu j = 0 := by
       simpa only [mu, i0] using
-        seqWeights_base inp.decay inp.hD P L inp.realizes inp.pack hs k
+        seqWeights_base inp.decay inp.divisor_pos P L inp.realizes inp.pack hs k
     have hcenterK :
         seqCenterD inp.decay P L k (i0 : Nat) = Yk.basepoint := by
       simp only [i0, baseIndex_val, seqCenterD, seqCenter_zero,

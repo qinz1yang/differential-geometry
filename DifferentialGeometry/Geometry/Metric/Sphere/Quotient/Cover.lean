@@ -35,7 +35,7 @@ noncomputable def roundQuotientUC
           (mfderiv (𝓡 n) (𝓡 n) d x v)
           (mfderiv (𝓡 n) (𝓡 n) d x w) =
         (roundMetric (E := E) (n := n)).inner x v w) :
-    RoundQuotientData E n := by
+    RoundSphereQuotient E n := by
   classical
   let φ (a : FundamentalGroup Q (default : Q)) :
       sphere (0 : E) 1 ≃ₘ⟮𝓡 n, 𝓡 n⟯ sphere (0 : E) 1 :=

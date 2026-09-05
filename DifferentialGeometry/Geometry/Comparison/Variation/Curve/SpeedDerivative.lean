@@ -120,7 +120,7 @@ theorem speedSq_hasDerivAt
       (fderiv ℝ (fderiv ℝ (fun p : ℝ × ℝ => extChartAt I α (f p.1 p.2)))
         (0, t) (1, 0) (0, 1)) 0 := by
     rw [hV]
-    exact Aux2.hasDerivAt_partial_snd (fun u v => extChartAt I α (f u v)) 0 t hF2
+    exact TwoParameterDerivative.hasDerivAt_partial_snd (fun u v => extChartAt I α (f u v)) 0 t hF2
   have hchartCurve_eq : AlongCurve.chartCurve (I := I) α γ
       = fun s : ℝ => extChartAt I α (f s t) := by
     funext s; rw [AlongCurve.chartCurve_def, hγ]
@@ -130,7 +130,7 @@ theorem speedSq_hasDerivAt
   have hu_hasDerivAt : HasDerivAt (AlongCurve.chartCurve (I := I) α γ)
       (fderiv ℝ (fun p : ℝ × ℝ => extChartAt I α (f p.1 p.2)) (0, t) (1, 0)) 0 := by
     rw [hchartCurve_eq]
-    exact Aux2.hasDerivAt_slice_fst (fun u v => extChartAt I α (f u v)) 0 t hF1diff
+    exact TwoParameterDerivative.hasDerivAt_slice_fst (fun u v => extChartAt I α (f u v)) 0 t hF1diff
   have hmem : AlongCurve.chartCurve (I := I) α γ 0 ∈
       interior (extChartAt I α).target := by
     have hxsrc : γ 0 ∈ (extChartAt I α).source := by
@@ -361,7 +361,7 @@ theorem speedIntegral_hasDerivAt
   have hslice_deriv : ∀ s t : ℝ,
       HasDerivAt (fun u : ℝ => Φ u t) (fderiv ℝ G (s, t) (1, 0)) s := by
     intro s t
-    have := Aux2.hasDerivAt_slice_fst (fun u v => Φ u v) s t (hΦdiff (s, t))
+    have := TwoParameterDerivative.hasDerivAt_slice_fst (fun u v => Φ u v) s t (hΦdiff (s, t))
     simpa only [hG] using this
   have hD_eq : ∀ t : ℝ, D t = fderiv ℝ G (0, t) (1, 0) := by
     intro t

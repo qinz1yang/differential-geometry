@@ -113,7 +113,7 @@ private lemma leftSmoothFactor_norm_le
     rw [norm_zero]
     exact mul_nonneg hCb_nn hCu_nn
 
-lemma exists_chart_cutoff_with_data
+lemma exists_chart_cutoff_with_range_and_support
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M] (α : M) :
     ∃ b : M → ℝ, ContMDiff I 𝓘(ℝ, ℝ) ∞ b ∧
       (∀ x : M, 0 ≤ b x ∧ b x ≤ 1) ∧

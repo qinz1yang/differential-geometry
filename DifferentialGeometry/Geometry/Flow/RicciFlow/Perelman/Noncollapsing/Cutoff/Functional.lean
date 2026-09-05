@@ -165,7 +165,7 @@ theorem normalize_cutoff
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-theorem exists_cutoff_wdata
+theorem exists_l2_normalized_cutoff_with_energy_bound
     [I.Boundaryless] (g : SmoothRiemannianMetric I M) (a : M)
     {r : ℝ} (hr : 0 < r) :
     ∃ v : M → ℝ, ContMDiff I 𝓘(ℝ, ℝ) ∞ v ∧
@@ -311,7 +311,7 @@ theorem exists_cutoff_wform
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace
       (I := I) (M := M) g
   obtain ⟨v, hv, hvsupp, hvmass, hvgradi, hvenergy⟩ :=
-    exists_cutoff_wdata (I := I) (M := M) g a hr
+    exists_l2_normalized_cutoff_with_energy_bound (I := I) (M := M) g a hr
   have hv2i : Integrable (fun x => v x ^ 2) μ :=
     (hv.continuous.pow 2).integrable_of_hasCompactSupport
       (HasCompactSupport.of_compactSpace _)

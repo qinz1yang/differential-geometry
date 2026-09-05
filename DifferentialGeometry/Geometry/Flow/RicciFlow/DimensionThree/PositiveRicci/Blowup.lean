@@ -357,7 +357,7 @@ private theorem hamilton_rm_scalar_ctl
         (Ric := P.S.ricciAt t x) (scalar := P.S.scalar t x)
         (Rm04 := P.S.base.rm04 t x) hdimT hricSym hricNonneg
         (fun basis horth =>
-          DifferentialGeometry.PDE.RicciFlow.riemann_from_ricci_trace_data (I := I) (M := M) P.S horth)
+          DifferentialGeometry.PDE.RicciFlow.riemann_from_ricci_trace (I := I) (M := M) P.S horth)
     simpa [hamiltonRiemannNormSq, hamiltonScalar, hamiltonSolution] using hpoint
   have hscalarNonneg : 0 <= hamiltonScalar (I := I) P t x := by
     rcases DifferentialGeometry.Geometry.Curvature.ricciEigenBasis3
@@ -503,7 +503,7 @@ theorem hamilton_scalar_blowup
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-theorem hamilton_exists_blowup_point_sequence
+theorem exists_hamilton_blowup_point_sequence
     [CompactSpace M]
     {omega : Real} (h0ω : 0 < omega)
     {g0 : SmoothRiemannianMetric I M}
@@ -727,7 +727,7 @@ theorem hamilton_fixed_pinching
       (scalar := P.S.scalar)
       (DifferentialGeometry.PDE.RicciFlow.initialMetricRicciDataOfSolution
         (I := I) (M := M) P.S)
-      (DifferentialGeometry.PDE.RicciFlow.initial_metric_ricci_data_positive
+      (DifferentialGeometry.PDE.RicciFlow.initialMetricRicciDataOfSolution_positive
         (I := I) (M := M) P.S hpos0)
       (DifferentialGeometry.PDE.RicciFlow.initial_scalar_curvature_continuous_of_solution
         (I := I) (M := M) P.S
@@ -801,7 +801,7 @@ theorem hamilton_ricci_nonnegative
     intro t ht
     rw [hD]
     exact ⟨ht.1, lt_of_le_of_lt ht.2 hTω⟩
-  exact DifferentialGeometry.PDE.RicciFlow.ricci_nonnegative_of_closed_solution_weak_maximum_principle_data
+  exact DifferentialGeometry.PDE.RicciFlow.ricci_nonnegative_of_closed_solution
     (I := I) (M := M) (S := P.S)
     P.isSmooth hT hdimT hTsub hTreg hinit
 
@@ -1045,7 +1045,7 @@ theorem hamilton_rescaled_curvature_bound
         (Ric := P.S.ricciAt τ x) (scalar := P.S.scalar τ x)
         (Rm04 := P.S.base.rm04 τ x) hdimT hricSym hricNonneg
         (fun basis horth =>
-          DifferentialGeometry.PDE.RicciFlow.riemann_from_ricci_trace_data (I := I) (M := M) P.S horth)
+          DifferentialGeometry.PDE.RicciFlow.riemann_from_ricci_trace (I := I) (M := M) P.S horth)
     simpa [hamiltonRiemannNormSq, hamiltonScalar, hamiltonSolution, τ] using hpoint
   have hscalarNonneg : 0 <= hamiltonScalar (I := I) P τ x := by
     rcases DifferentialGeometry.Geometry.Curvature.ricciEigenBasis3

@@ -337,21 +337,21 @@ private theorem exists_trunc_tower
       K := K
       α := aScale
       T := T
-      hT := hT
-      hc := hc
-      hK := hK
-      hα := haScale
-      hslab := hslab
-      hregular := hregular
-      hw_nonneg := by
+      time_pos := hT
+      reactionConstant_nonneg := hc
+      curvatureBound_pos := hK
+      scale_nonneg := haScale
+      time_window_subset := hslab
+      regular_on_positive_time := hregular
+      quantity_nonneg := by
         intro k s _hs y
         exact hw'_nonneg k s y
-      hw0_bound := by
+      initial_order_bound := by
         intro s hs y
         rw [hw'_val_le 0 (Nat.zero_le top)]
         exact hw0_bound s hs y
-      hTK := hTK
-      hheat := by
+      time_le_scale_div_curvatureBound := hTK
+      towerHeatBound := by
         intro k tau y
         rcases lt_trichotomy k top with hlt | heq | hgt
         · have hk : k ≤ top := hlt.le
@@ -388,7 +388,7 @@ private theorem exists_trunc_tower
               simp
             rw [hzero]
             norm_num
-      hLap := by
+      heatOperator_eq := by
         intro k s hs hspos y
         by_cases hk : k ≤ top
         · have hfun : w' k s = w k s := by
@@ -403,7 +403,7 @@ private theorem exists_trunc_tower
             heatOperatorWithDrift_zero_drift, heatOperator_eq_laplacianAt,
             laplacianAt_eq]
           exact laplacian_const (I := I) (G.connection s) (G.metric s) 0 y
-      hw_cont := by
+      continuous := by
         intro k
         by_cases hk : k ≤ top
         · have hfun : (fun p : Real × M ↦ w' k p.1 p.2) =
@@ -418,7 +418,7 @@ private theorem exists_trunc_tower
             rw [hw'_val_gt k hk]
           rw [hfun]
           exact continuousOn_const
-      hw_space := by
+      spatial_differentiable := by
         intro k s hs hspos y
         by_cases hk : k ≤ top
         · have hfun : w' k s = w k s := by
@@ -431,7 +431,7 @@ private theorem exists_trunc_tower
             rw [hw'_val_gt k hk]
           rw [hfun]
           exact mdifferentiableAt_const
-      hw_grad := by
+      gradient_differentiable := by
         intro k s hs hspos y
         by_cases hk : k ≤ top
         · have hfun : w' k s = w k s := by
@@ -934,7 +934,7 @@ theorem movingRm_of_bound
     exact hraw'.trans hCK
   have hcut : ∀ O : F.M,
       Nonempty (ShiBarrierCutoffData (I := I) (flowG (I := I) S0) T O) := by
-    exact exists_shi_barrier_cutoff_data_of_solution
+    exact nonempty_shi_barrier_cutoff_data_of_solution
       (I := I) (S := S0) hS0 hT hSlab hreg0
       hRiemannT0 hKNonneg hcurv0
   intro k hk t ht x
@@ -1301,7 +1301,7 @@ theorem movingShi_of_bound
     exact hraw'.trans hCK
   have hcut : ∀ O : F.M,
       Nonempty (ShiBarrierCutoffData (I := I) (flowG (I := I) S0) T O) := by
-    exact exists_shi_barrier_cutoff_data_of_solution
+    exact nonempty_shi_barrier_cutoff_data_of_solution
       (I := I) (S := S0) hS0 hT hSlab hreg0
       hRiemannT0 hKNonneg hcurv0
   intro k hk _i t ht x _hx
@@ -1412,14 +1412,14 @@ theorem movingShi_complete
   exact movingShi_of_bound (I := I) F halphaBeta hbetaPsi hslab hreg
     hcomplete hC hcurv N
 
-namespace CurvBoundInput
+namespace FlowCurvatureBoundedOnCompactWindows
 
 theorem movingShi_open
     {a b : Real} (h0 : (0 : Real) ∈ Set.Ioo a b)
     (X : PointedFlowSeq.{u, uE, uH} (I := I))
     (hD : X.D = RealTimeInterval.openInterval a b 0 h0)
-    (hcomplete : CompleteInput (I := I) X)
-    (hcurv : CurvBoundInput (I := I) X) :
+    (hcomplete : FlowMetricComplete (I := I) X)
+    (hcurv : FlowCurvatureBoundedOnCompactWindows (I := I) X) :
     ∀ n N : Nat, ∃ KShi : Real, 0 <= KShi ∧
       ∀ k : Nat,
         letI : TopologicalSpace (X.term k).M := (X.term k).topology
@@ -1485,8 +1485,8 @@ noncomputable def atZeroGeomOpen
     {a b : Real} (h0 : (0 : Real) ∈ Set.Ioo a b)
     (X : PointedFlowSeq.{u, uE, uH} (I := I))
     (hD : X.D = RealTimeInterval.openInterval a b 0 h0)
-    (hcomplete : CompleteInput (I := I) X)
-    (hcurv : CurvBoundInput (I := I) X) :
+    (hcomplete : FlowMetricComplete (I := I) X)
+    (hcurv : FlowCurvatureBoundedOnCompactWindows (I := I) X) :
     SeqBoundedGeometry (I := I) (X.atZero (I := I)) := by
   classical
   let alpha := RealTimeInterval.openWindowLeft a 0 1
@@ -1570,6 +1570,6 @@ noncomputable def atZeroGeomOpen
   with_unfolding_all
     exact hbound
 
-end CurvBoundInput
+end FlowCurvatureBoundedOnCompactWindows
 end CheegerGromovCompactness
 end DifferentialGeometry

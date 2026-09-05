@@ -24,8 +24,8 @@ variable {H : Type uH} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 variable {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
 
-theorem HasStageJetDataOn.chart_convergence
-    (inp : MetricCompactCore (I := I) X)
+theorem HasStageJetConvergenceOn.chart_convergence
+    (inp : MetricCompactSeedWithDivisor (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P) {r : Real} (hr : 0 ≤ r)
     (phi : Nat → Nat) (hphi : StrictMono phi)
@@ -37,7 +37,7 @@ theorem HasStageJetDataOn.chart_convergence
       InterSlot L inp.pack r alpha → E → E)
     (gInf : LiveSlot L inp.pack r →
       E → (E →L[Real] E →L[Real] Real))
-    (hstage : HasStageJetDataOn (I := I) inp P L hr phi hphi chart
+    (hstage : HasStageJetConvergenceOn (I := I) inp P L hr phi hphi chart
       Vmetric U C0 C1 aInf Jinf Jbarinf gInf)
     (R : Real) (hRr : R < r) (alpha : LiveSlot L inp.pack r)
     (V : Set E) (hVint : V ⊆ interior (C0 alpha))
@@ -96,8 +96,8 @@ theorem HasStageJetDataOn.chart_convergence
   have hsrc := hNs n hnS hzV
   simpa only using (hjet hzInt hsrc).2.2 j hj
 
-theorem HasStageJetDataOn.pb_convergence
-    (inp : MetricCompactCore (I := I) X)
+theorem HasStageJetConvergenceOn.pb_convergence
+    (inp : MetricCompactSeedWithDivisor (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P) {r : Real} (hr : 0 ≤ r)
     (phi : Nat → Nat) (hphi : StrictMono phi)
@@ -109,7 +109,7 @@ theorem HasStageJetDataOn.pb_convergence
       InterSlot L inp.pack r alpha → E → E)
     (gInf : LiveSlot L inp.pack r →
       E → (E →L[Real] E →L[Real] Real))
-    (hstage : HasStageJetDataOn (I := I) inp P L hr phi hphi chart
+    (hstage : HasStageJetConvergenceOn (I := I) inp P L hr phi hphi chart
       Vmetric U C0 C1 aInf Jinf Jbarinf gInf)
     (R : Real) (hRr : R < r) (alpha : LiveSlot L inp.pack r)
     (V W : Set E) (hVopen : IsOpen V) (hVcompact : IsCompact (closure V))
@@ -208,7 +208,7 @@ theorem HasStageJetDataOn.pb_convergence
     hVcompact.exists_cthickening_subset_open hDopen hclosureD
   have hAconvW : MapCInfConvergenceOnCompacts W A id := by
     simpa only [A, Lphi] using
-      HasStageJetDataOn.chart_convergence (I := I) inp P L hr phi hphi
+      HasStageJetConvergenceOn.chart_convergence (I := I) inp P L hr phi hphi
         chart Vmetric U C0 C1 aInf Jinf Jbarinf gInf
         ⟨hdata, hmetric, hjets, _hbase⟩ R hRr alpha W hWint
         kn ln hkn hln hsource

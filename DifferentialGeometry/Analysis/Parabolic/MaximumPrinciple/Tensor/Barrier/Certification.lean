@@ -55,7 +55,7 @@ theorem strictBarrierBounds
     {X : TimeDependentVectorField (I := I) (M := M)}
     {N : TwoTensorReaction (I := I) (M := M)}
     {T t0 : Real}
-    (hreg : TensorWeakMaximumPrincipleCore (I := I) (M := M) G S X N T)
+    (hreg : TensorWeakMaximumPrincipleCompactness (I := I) (M := M) G S X N T)
     (ht0 : t0 ∈ Set.Icc 0 T)
     (ht0T : t0 < T) :
     ∃ delta0 K : Real,
@@ -220,7 +220,7 @@ theorem tensorBarrier_strict_supersolution
         delta t0 := by
   obtain ⟨delta0, K, hdelta0, hK, _hdelta0T, hstrict_bounds⟩ :=
     strictBarrierBounds (I := I) (M := M)
-      hreg.toCore ht0 ht0T
+      hreg.toCompactness ht0 ht0T
   obtain ⟨delta, hdelta, hdelta_le_delta0, hdeltaT, hsmall⟩ :=
     exists_small_delta (t0 := t0) (T := T) (delta0 := delta0) (K := K)
       ht0T hdelta0 hK
@@ -233,7 +233,7 @@ theorem tensorBarrier_strict_supersolution
   have hsubInterior : Set.Ioc t0 (t0 + delta) ⊆ Set.Ioc 0 T := by
     intro t ht
     exact ⟨lt_of_le_of_lt ht0.1 ht.1, le_trans ht.2 hdeltaT⟩
-  exact strictBarrier_of_derivEst (I := I) (M := M)
+  exact strictBarrier_of_derivative_estimate (I := I) (M := M)
     (G := G) (S := S) (X := X) (N := N)
     (nabla2S := nabla2S) (nablaS := nablaS)
     (epsilon := epsilon) (delta := delta) (t0 := t0) (T := T)
@@ -292,7 +292,7 @@ theorem strictCert_sec
     {t0 T : Real}
     (ht0 : t0 ∈ Set.Icc 0 T)
     (ht0T : t0 < T)
-    (hreg : TensorWeakMaximumPrincipleSectionCore (I := I) (M := M) G S X N T)
+    (hreg : TensorWeakMaximumPrincipleSectionCompactness (I := I) (M := M) G S X N T)
     (hparabolic : TensorParabolicSupersolutionWithDriftOn
       (I := I) (M := M) G (twoTensorSecToFamily (I := I) (M := M) S) X N
       (fun t x => nabla2S t x) (fun t x => nablaS t x) T)
@@ -329,7 +329,7 @@ theorem strictCert_sec
       G (twoTensorSecToFamily (I := I) (M := M) S) X N
       (fun t x => nabla2S t x) (fun t x => nablaS t x)
       epsilon delta t0 :=
-    strictBarrier_of_derivEst (I := I) (M := M)
+    strictBarrier_of_derivative_estimate (I := I) (M := M)
       (G := G) (S := twoTensorSecToFamily (I := I) (M := M) S)
       (X := X) (N := N)
       (nabla2S := fun t x => nabla2S t x)

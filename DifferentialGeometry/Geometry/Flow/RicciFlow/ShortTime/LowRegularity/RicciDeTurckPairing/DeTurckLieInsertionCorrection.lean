@@ -26,7 +26,7 @@ open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Spectral
   (ccOperatorFieldComp operatorFieldComposition_sub_left covGrad_sub lieCorrectionZeroInsertion nEndo_diff
     rsDomDomCongr toModel_rsDomDomCongr_apply)
-open DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroCore
+open DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroFiberOperators
   (lieCorrectionZeroInsertionFib lieCorrectionZeroInsertionFib_toModel lieCorrectionZeroNEndo)
 open DifferentialGeometry.Geometry.Connection
   (slotInsertEndoCc slotInsertEndoCc_add)
@@ -36,7 +36,7 @@ open DifferentialGeometry.PDE.DeTurck.RicciLinearization
 open DifferentialGeometry.Analysis.Spectral.DeTurck
 open DifferentialGeometry.Analysis.Spectral.DeTurckCoefficients
 open DifferentialGeometry.Analysis.Spectral.MetricRealization
-open LieCorrectionZeroCore
+open LieCorrectionZeroFiberOperators
 
 variable
     {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]

@@ -118,7 +118,7 @@ variable [I.Boundaryless] [CompleteSpace E]
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompleteSpace E]
     [T2Space (TangentBundle I M)] in
-theorem hasChartFlowGeodesicMatchData_of_match
+theorem hasChartFlowGeodesicMatchAtZero_of_eventually_fixed
     (g : SmoothRiemannianMetric I M) (p : M)
     (h : ∃ (Φ : (E × E) × ℝ → E × E) (ρ T T_match t' ρ' : ℝ),
       0 < ρ ∧ 0 < T ∧ 0 < T_match ∧ T_match ≤ T ∧
@@ -171,7 +171,7 @@ variable [I.Boundaryless] [CompleteSpace E]
 
 omit [T2Space (TangentBundle I M)] in
 omit [NeZero (Module.finrank ℝ E)] [CompleteSpace E] in
-theorem expMap_contMDiffAt_zero_of_chartFlowGeodesicMatchData
+theorem expMap_contMDiffAt_zero_of_match_at_zero
     (g : SmoothRiemannianMetric I M) (p : M)
     (h : HasChartFlowGeodesicMatchAtZero (I := I) g p) :
     ContMDiffAt 𝓘(ℝ, E) I 1

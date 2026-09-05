@@ -304,7 +304,7 @@ theorem highAffineFirstOrderActionBackground_norm_le
     _ ≤ ‖A1‖ * 1 := mul_le_mul_of_nonneg_left hR3 (norm_nonneg A1)
     _ = ‖A1‖ := mul_one _
 
-theorem highAffineFirstOrderActionBackground_data
+theorem highAffineFirstOrderActionBackground_memLp_and_bounded
     (g : SmoothRiemannianMetric I M) {ρ δ : ℝ}
     (hρ : 0 ≤ ρ) (hδ0 : 0 ≤ δ) (hδ_le : δ ≤ 1 / 3)
     (hreal : ∀ S : SmoothCcTensor g 0 2,
@@ -458,7 +458,7 @@ theorem affineFirstOrderActionBackground_extensions_commute
   rw [show J23 (R3 x) = R2 (J23 x) by
       exact DFunLike.congr_fun hrad x]
 
-theorem lowAffineFirstOrderActionBackground_data
+theorem lowAffineFirstOrderActionBackground_memLp_and_bounded
     (g : SmoothRiemannianMetric I M) {ρ δ : ℝ}
     (hρ : 0 ≤ ρ) (hδ0 : 0 ≤ δ) (hδ_le : δ ≤ 1 / 3)
     (hreal : ∀ S : SmoothCcTensor g 0 2,

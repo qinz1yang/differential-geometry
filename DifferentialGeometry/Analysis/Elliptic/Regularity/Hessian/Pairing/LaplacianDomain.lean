@@ -31,7 +31,6 @@ open DifferentialGeometry.Integral.DivergenceTheorem
 
 open DifferentialGeometry.Analysis.Laplacian.MetricExtension
   hiding chartTargetEuclid chartTargetEuclid_isOpen
-open DifferentialGeometry.Analysis.Laplacian.LaplacianDomainPerChartWitness
 open DifferentialGeometry.Analysis.Laplacian.HessianLpClass
 open DifferentialGeometry.Analysis.Sobolev.Chart
 

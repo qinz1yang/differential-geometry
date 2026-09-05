@@ -124,8 +124,8 @@ def maximalRegularityRecentredCrossScaleField (hT : 0 < T)
     (u₀ : TensorHs (I := I) (M := M) g r s (a + 2))
     (gforce : timeL2 (TensorHs (I := I) (M := M) g r s a) T) :
     CrossScaleField (I := I) (M := M) g r s a T where
-  hiL2 := recentredHiL2 (I := I) (M := M) hT u₀ gforce
-  lo := recentredCarrier (I := I) (M := M) hT u₀ gforce
+  highRegularity := recentredHiL2 (I := I) (M := M) hT u₀ gforce
+  lowRegularity := recentredCarrier (I := I) (M := M) hT u₀ gforce
   link := recentred_link (I := I) (M := M) (h_compact := h_compact) hT u₀ gforce
 
 omit [NeZero (Module.finrank ℝ E)] in
@@ -141,7 +141,7 @@ theorem recentred_repr_zero (hT : 0 < T)
   refine TensorHs.ext ?_
   funext i
   rw [u.repr_coeff hT ⟨le_rfl, hT.le⟩ i, TensorHs.zero_coeff]
-  change (u.lo.toFun 0).coeff i = 0
+  change (u.lowRegularity.toFun 0).coeff i = 0
   rw [TimeSobolev.timeH1.toFun_zero]
   change (recentredCarrier (I := I) (M := M) hT u₀ gforce).initial.coeff i = 0
   rw [recentredCarrier, TimeSobolev.timeH1.initial_mk, TensorHs.zero_coeff]
@@ -386,30 +386,30 @@ theorem recentred_repr_normSq_le (hT : 0 < T)
     norm_zero] at henergy
   simp only [ne_eq, OfNat.ofNat_ne_zero, not_false_eq_true, zero_pow, zero_add] at henergy
   refine le_trans henergy ?_
-  have hhi_sq : IntegrableOn (fun s => ‖u.hiL2 s‖ ^ 2) (Set.Icc (0 : ℝ) T) volume := by
-    have hLp : MemLp (fun s => u.hiL2 s) 2 (timeMeasure T) := Lp.memLp u.hiL2
+  have hhi_sq : IntegrableOn (fun s => ‖u.highRegularity s‖ ^ 2) (Set.Icc (0 : ℝ) T) volume := by
+    have hLp : MemLp (fun s => u.highRegularity s) 2 (timeMeasure T) := Lp.memLp u.highRegularity
     have hint := hLp.integrable_norm_rpow (by norm_num) (by norm_num)
-    have hpow : (fun x => ‖u.hiL2 x‖ ^ (2 : ℝ≥0∞).toReal) = (fun x => ‖u.hiL2 x‖ ^ 2) := by
+    have hpow : (fun x => ‖u.highRegularity x‖ ^ (2 : ℝ≥0∞).toReal) = (fun x => ‖u.highRegularity x‖ ^ 2) := by
       funext x; rw [show ((2 : ℝ≥0∞).toReal) = (2 : ℝ) by norm_num, Real.rpow_two]
     rw [hpow] at hint; exact hint
-  have hlo_sq : IntegrableOn (fun s => ‖u.lo.deriv s‖ ^ 2) (Set.Icc (0 : ℝ) T) volume := by
-    have hLp : MemLp (fun s => u.lo.deriv s) 2 (timeMeasure T) := Lp.memLp u.lo.deriv
+  have hlo_sq : IntegrableOn (fun s => ‖u.lowRegularity.deriv s‖ ^ 2) (Set.Icc (0 : ℝ) T) volume := by
+    have hLp : MemLp (fun s => u.lowRegularity.deriv s) 2 (timeMeasure T) := Lp.memLp u.lowRegularity.deriv
     have hint := hLp.integrable_norm_rpow (by norm_num) (by norm_num)
-    have hpow : (fun x => ‖u.lo.deriv x‖ ^ (2 : ℝ≥0∞).toReal) = (fun x => ‖u.lo.deriv x‖ ^ 2) := by
+    have hpow : (fun x => ‖u.lowRegularity.deriv x‖ ^ (2 : ℝ≥0∞).toReal) = (fun x => ‖u.lowRegularity.deriv x‖ ^ 2) := by
       funext x; rw [show ((2 : ℝ≥0∞).toReal) = (2 : ℝ) by norm_num, Real.rpow_two]
     rw [hpow] at hint; exact hint
-  have hstep1 : (∫ s in (0 : ℝ)..t, 2 * (‖u.hiL2 s‖ * ‖u.lo.deriv s‖)) ≤
-      ∫ s in Set.Icc (0 : ℝ) T, 2 * (‖u.hiL2 s‖ * ‖u.lo.deriv s‖) := by
+  have hstep1 : (∫ s in (0 : ℝ)..t, 2 * (‖u.highRegularity s‖ * ‖u.lowRegularity.deriv s‖)) ≤
+      ∫ s in Set.Icc (0 : ℝ) T, 2 * (‖u.highRegularity s‖ * ‖u.lowRegularity.deriv s‖) := by
     rw [intervalIntegral.integral_of_le ht.1]
     refine setIntegral_mono_set (u.integrableOn_energyBound)
       (ae_of_all _ (fun s => by positivity)) ?_
     exact LE.le.eventuallyLE (fun x hx => ⟨le_of_lt hx.1, le_trans hx.2 ht.2⟩)
   refine le_trans hstep1 ?_
-  have hyoung : ∀ s, 2 * (‖u.hiL2 s‖ * ‖u.lo.deriv s‖) ≤
-      Real.sqrt T * ‖u.hiL2 s‖ ^ 2 + (Real.sqrt T)⁻¹ * ‖u.lo.deriv s‖ ^ 2 := by
+  have hyoung : ∀ s, 2 * (‖u.highRegularity s‖ * ‖u.lowRegularity.deriv s‖) ≤
+      Real.sqrt T * ‖u.highRegularity s‖ ^ 2 + (Real.sqrt T)⁻¹ * ‖u.lowRegularity.deriv s‖ ^ 2 := by
     intro s
-    have hkey : 0 ≤ (Real.sqrt (Real.sqrt T) * ‖u.hiL2 s‖ -
-        (Real.sqrt (Real.sqrt T))⁻¹ * ‖u.lo.deriv s‖) ^ 2 := sq_nonneg _
+    have hkey : 0 ≤ (Real.sqrt (Real.sqrt T) * ‖u.highRegularity s‖ -
+        (Real.sqrt (Real.sqrt T))⁻¹ * ‖u.lowRegularity.deriv s‖) ^ 2 := sq_nonneg _
     have hssT_pos : 0 < Real.sqrt (Real.sqrt T) := Real.sqrt_pos.mpr hsqrtT_pos
     have hssT_sq : Real.sqrt (Real.sqrt T) ^ 2 = Real.sqrt T := Real.sq_sqrt hsqrtT_pos.le
     have hinv_sq : (Real.sqrt (Real.sqrt T))⁻¹ ^ 2 = (Real.sqrt T)⁻¹ := by
@@ -417,9 +417,9 @@ theorem recentred_repr_normSq_le (hT : 0 < T)
     have hmid : Real.sqrt (Real.sqrt T) * (Real.sqrt (Real.sqrt T))⁻¹ = 1 :=
       mul_inv_cancel₀ (ne_of_gt hssT_pos)
     nlinarith only [hkey, hssT_sq, hinv_sq, hmid,
-      mul_nonneg (norm_nonneg (u.hiL2 s)) (norm_nonneg (u.lo.deriv s))]
+      mul_nonneg (norm_nonneg (u.highRegularity s)) (norm_nonneg (u.lowRegularity.deriv s))]
   have hbound_int : IntegrableOn
-      (fun s => Real.sqrt T * ‖u.hiL2 s‖ ^ 2 + (Real.sqrt T)⁻¹ * ‖u.lo.deriv s‖ ^ 2)
+      (fun s => Real.sqrt T * ‖u.highRegularity s‖ ^ 2 + (Real.sqrt T)⁻¹ * ‖u.lowRegularity.deriv s‖ ^ 2)
       (Set.Icc (0 : ℝ) T) volume :=
     (hhi_sq.const_mul (Real.sqrt T)).add (hlo_sq.const_mul (Real.sqrt T)⁻¹)
   refine le_trans (setIntegral_mono (u.integrableOn_energyBound) hbound_int
@@ -428,10 +428,10 @@ theorem recentred_repr_normSq_le (hT : 0 < T)
       (hlo_sq.const_mul (Real.sqrt T)⁻¹),
     MeasureTheory.integral_const_mul, MeasureTheory.integral_const_mul]
   have hhi_norm : ‖recentredHiL2 (I := I) (M := M) hT u₀ gforce‖ ^ 2 =
-      ∫ s in Set.Icc (0 : ℝ) T, ‖u.hiL2 s‖ ^ 2 :=
+      ∫ s in Set.Icc (0 : ℝ) T, ‖u.highRegularity s‖ ^ 2 :=
     TimeSobolev.norm_sq_eq_integral _
   have hlo_norm : ‖(maximalRegularityDuhamelMap (I := I) (M := M) a hT u₀ gforce).deriv‖ ^ 2 =
-      ∫ s in Set.Icc (0 : ℝ) T, ‖u.lo.deriv s‖ ^ 2 :=
+      ∫ s in Set.Icc (0 : ℝ) T, ‖u.lowRegularity.deriv s‖ ^ 2 :=
     TimeSobolev.norm_sq_eq_integral _
   rw [hhi_norm, hlo_norm]
 

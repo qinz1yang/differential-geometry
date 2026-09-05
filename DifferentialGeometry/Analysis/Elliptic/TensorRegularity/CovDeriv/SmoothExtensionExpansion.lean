@@ -1,5 +1,5 @@
-import DifferentialGeometry.Analysis.Elliptic.TensorRegularity.SecondCovDerivExpansion.SkExtChartComponentEqCovDerivEuclid
-import DifferentialGeometry.Analysis.Elliptic.TensorRegularity.SecondCovDerivExpansion.ChartProjectionSecondCovDerivViaSkExt
+import DifferentialGeometry.Analysis.Elliptic.TensorRegularity.SecondCovDerivExpansion.SmoothExtensionComponent
+import DifferentialGeometry.Analysis.Elliptic.TensorRegularity.SecondCovDerivExpansion.LocalSecondCovariantDerivativeProjection
 import DifferentialGeometry.Analysis.Elliptic.TensorRegularity.CovDeriv.ComponentSecondFormula
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
@@ -284,7 +284,7 @@ private lemma covDerivComponentEuclid_T₀_eqOn
 
 omit [CompleteSpace E] in
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
-theorem covDerivComponentEuclid_S_k_ext_eq_iteratedFDeriv_T₀_add_lowerOrder
+theorem covDerivComponentEuclid_smoothExtension_eq_iteratedFDeriv_add_lowerOrder
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (T₀ : SmoothCcTensor g r s)
     (k l : Fin (Module.finrank ℝ E))

@@ -218,7 +218,7 @@ theorem modelModifiedFiberDip_zero {ε δ s : ℝ} (hδ : 0 < δ) :
   rw [hg]
   ring
 
-theorem modelModifiedFiberRoot_exists (ε δ r s w2 : ℝ) (hε : 0 < ε) (hδ : 0 < δ)
+theorem exists_modelModifiedFiberRoot (ε δ r s w2 : ℝ) (hε : 0 < ε) (hδ : 0 < δ)
     (hr : r ≠ 0) (hs : 0 ≤ s) (hw : 0 ≤ w2) :
     ∃ u : ℝ, 0 ≤ u ∧
       u * (s + r ^ 2) = w2 * (s + 2 * modelModifiedFiberDip ε δ s u - 2 * ε) := by
@@ -303,7 +303,7 @@ noncomputable def modelModifiedFiberRoot (ε δ r : ℝ) (hε : 0 < ε) (hδ : 0
     (s w2 : ℝ) : ℝ :=
   if hs₀ : 0 ≤ s then
     if hw₀ : 0 ≤ w2 then
-      Classical.choose (modelModifiedFiberRoot_exists ε δ r s w2 hε hδ hr hs₀ hw₀)
+      Classical.choose (exists_modelModifiedFiberRoot ε δ r s w2 hε hδ hr hs₀ hw₀)
     else 0
   else 0
 
@@ -311,14 +311,14 @@ theorem modelModifiedFiberRoot_nonneg {ε δ r s w2 : ℝ} (hε : 0 < ε) (hδ :
     (hr : r ≠ 0) (hs : 0 ≤ s) (hw : 0 ≤ w2) :
     0 ≤ modelModifiedFiberRoot ε δ r hε hδ hr s w2 := by
   rw [modelModifiedFiberRoot, dif_pos hs, dif_pos hw]
-  exact (Classical.choose_spec (modelModifiedFiberRoot_exists ε δ r s w2 hε hδ hr hs hw)).1
+  exact (Classical.choose_spec (exists_modelModifiedFiberRoot ε δ r s w2 hε hδ hr hs hw)).1
 
 theorem modelModifiedFiberRoot_eq {ε δ r s w2 : ℝ} (hε : 0 < ε) (hδ : 0 < δ)
     (hr : r ≠ 0) (hs : 0 ≤ s) (hw : 0 ≤ w2) :
     modelModifiedFiberRoot ε δ r hε hδ hr s w2 * (s + r ^ 2) =
       w2 * (s + 2 * modelModifiedFiberDip ε δ s (modelModifiedFiberRoot ε δ r hε hδ hr s w2) - 2 * ε) := by
   rw [modelModifiedFiberRoot, dif_pos hs, dif_pos hw]
-  exact (Classical.choose_spec (modelModifiedFiberRoot_exists ε δ r s w2 hε hδ hr hs hw)).2
+  exact (Classical.choose_spec (exists_modelModifiedFiberRoot ε δ r s w2 hε hδ hr hs hw)).2
 
 
 

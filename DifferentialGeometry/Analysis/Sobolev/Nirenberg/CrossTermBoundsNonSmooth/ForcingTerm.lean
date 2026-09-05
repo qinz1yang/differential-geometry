@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Sobolev.Nirenberg.MasterInequality.CrossBounds
 import DifferentialGeometry.Analysis.Sobolev.Nirenberg.CrossTermBoundsNonSmooth.CrossBoundsNonSmooth
-import DifferentialGeometry.Analysis.Sobolev.Nirenberg.CrossTermBoundsNonSmooth.CrossBoundsNonSmoothCross2
+import DifferentialGeometry.Analysis.Sobolev.Nirenberg.CrossTermBoundsNonSmooth.CoefficientDifferenceQuotient
 import DifferentialGeometry.Analysis.Sobolev.Nirenberg.TestFunction.TranslatedCutoffDiffQuot
 
 
@@ -40,7 +40,7 @@ private lemma two_abs_mul_le_eps_mul_sq_add_inv_eps_mul_sq (a b ε : ℝ) (hε :
     _ = ε * a^2 + (1/ε) * b^2 := by rw [hu_sq, hv_sq]
 
 omit [NeZero d] in
-private lemma v_test_supported_in_Ω'_nonsmooth_fterm
+private lemma nirenbergTestFunction_tsupport_subset_of_thickening_nonsmooth_fterm
     {u : E → ℝ}
     {η : E → ℝ}
     {Ω' : Set E}
@@ -127,7 +127,7 @@ private lemma pointwise_half_sum_f_v_test
 
 
 omit [NeZero d] in
-theorem f_term_bound_nonsmooth_quantitative
+theorem forcing_term_bound_nonsmooth_quantitative
     {Ω : Set E}
     {f : E → ℝ} (hf_l2_local : ∀ {Ω' : Set E}, IsCompact (closure Ω') →
       MemLp f 2 (volume.restrict Ω'))
@@ -184,7 +184,7 @@ theorem f_term_bound_nonsmooth_quantitative
     DifferentialGeometry.Analysis.Sobolev.NirenbergTestFunction.nirenbergTestFunction
       k h η u with hv_test_def
   have h_v_test_support : tsupport v_test ⊆ Ω' :=
-    v_test_supported_in_Ω'_nonsmooth_fterm (d := d) hh_support_in_Ω' k hh_le
+    nirenbergTestFunction_tsupport_subset_of_thickening_nonsmooth_fterm (d := d) hh_support_in_Ω' k hh_le
   have h_v_test_support_cmp : HasCompactSupport v_test :=
     hasCompactSupport_v_test_nonsmooth_fterm (d := d) hη_support k h
   have h_v_test_memLp : MemLp v_test 2 (volume : Measure E) :=
@@ -358,7 +358,7 @@ theorem f_term_bound_nonsmooth_quantitative
 
 
 omit [NeZero d] in
-theorem f_term_bound_nonsmooth
+theorem forcing_term_bound_nonsmooth
     {Ω : Set E}
     {f : E → ℝ} (hf_l2_local : ∀ {Ω' : Set E}, IsCompact (closure Ω') →
       MemLp f 2 (volume.restrict Ω'))
@@ -408,7 +408,7 @@ theorem f_term_bound_nonsmooth
     refine mul_nonneg ?_ (sq_nonneg _)
     exact mul_nonneg (by linarith) hε.le
   · intro h hh hh_le
-    exact f_term_bound_nonsmooth_quantitative (d := d) hf_l2_local hu_l2
+    exact forcing_term_bound_nonsmooth_quantitative (d := d) hf_l2_local hu_l2
       hη hη_support hΩ'_closure hΩ'_compact hh_support_in_Ω' k h_FK_diffQuot_u_bound
       h_v_test_l2_bound ε hε hh hh_le
 

@@ -151,7 +151,7 @@ theorem massDuhamel_contract
       massDuhamel_diff h_compact hT B hB C hC u₀ f u v
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem massDuhamel_exists
+theorem exists_unique_massDuhamel_fixedPoint
     (h_compact : IsCompactOperator (tensorResolventL2
       (I := I) (M := M) g r s))
     (hT : 0 < T)

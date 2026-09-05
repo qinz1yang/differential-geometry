@@ -335,7 +335,7 @@ private theorem pureRGenuineDiffOp_isOrderZeroCurvFactor (g : SmoothRiemannianMe
           show (pureRGenuineDiffOp (I := I) (M := M) g 0 (m + 1) W₂).toSection x =
               pureRGenuineEndoFib (I := I) (M := M) g m W₂ x from rfl,
           pureRGenuineEndoFib_linear (I := I) (M := M) g m c₁ c₂ W₁ W₂ x]
-  local' := by
+  locality := by
     intro r W₁ W₂ x hx
     cases r with
     | zero =>

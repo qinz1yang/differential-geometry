@@ -33,8 +33,8 @@ def duhamelCross (g : SmoothRiemannianMetric I M) (r s : ℕ) (a : ℝ)
     (u₀ : TensorHs (I := I) (M := M) g r s (a + 2))
     (f : timeL2 (TensorHs (I := I) (M := M) g r s a) T) :
     CrossScaleField (I := I) (M := M) g r s a T where
-  hiL2 := maximalRegularityDuhamelSolutionField (I := I) (M := M) a hT u₀ f
-  lo := maximalRegularityDuhamelMap (I := I) (M := M) a hT u₀ f
+  highRegularity := maximalRegularityDuhamelSolutionField (I := I) (M := M) a hT u₀ f
+  lowRegularity := maximalRegularityDuhamelMap (I := I) (M := M) a hT u₀ f
   link := solutionField_toFun_ae (I := I) (M := M) hT
     (tensorResolventL2_isCompactOperator (I := I) (M := M) g r s) u₀ f
 
@@ -44,7 +44,7 @@ theorem crossRepr_toFun
     (u : CrossScaleField (I := I) (M := M) g r s a T)
     (hT : 0 < T) {t : ℝ} (ht : t ∈ Set.Icc (0 : ℝ) T) :
     tensorHsInclusion (I := I) (M := M) (g := g) (r := r) (s := s)
-        (show a ≤ a + 1 by linarith) (u.repr t) = u.lo.toFun t := by
+        (show a ≤ a + 1 by linarith) (u.repr t) = u.lowRegularity.toFun t := by
   refine TensorHs.ext ?_
   funext i
   rw [tensorHsInclusion_coeff_apply, u.repr_coeff hT ht]
@@ -57,7 +57,7 @@ theorem crossRepr_hi_ae
     (hT : 0 < T) :
     (fun t => u.repr t) =ᵐ[timeMeasure T]
       fun t => tensorHsInclusion (I := I) (M := M) (g := g) (r := r) (s := s)
-        (show a + 1 ≤ a + 2 by linarith) (u.hiL2 t) := by
+        (show a + 1 ≤ a + 2 by linarith) (u.highRegularity t) := by
   filter_upwards [u.ae_coeffFun_eq_hiL2,
     ae_restrict_mem (μ := volume) measurableSet_Icc] with t hcoeff ht
   refine TensorHs.ext ?_
@@ -129,7 +129,7 @@ theorem crossRepr_ball
     (hT : 0 < T) {R : ℝ} (hR : 0 ≤ R)
     (hball : ∀ᵐ t ∂(timeMeasure T),
       ‖tensorHsInclusion (I := I) (M := M) (g := g) (r := r) (s := s)
-        (show a + 1 ≤ a + 2 by linarith) (u.hiL2 t)‖ ≤ R) :
+        (show a + 1 ≤ a + 2 by linarith) (u.highRegularity t)‖ ≤ R) :
     ∀ t ∈ Set.Icc (0 : ℝ) T, ‖u.repr t‖ ≤ R := by
   have hrepr := crossRepr_hi_ae (I := I) (M := M) u hT
   have hzero :
@@ -139,7 +139,7 @@ theorem crossRepr_ball
     rw [htrepr]
     have hsq :
         ‖tensorHsInclusion (I := I) (M := M) (g := g) (r := r) (s := s)
-            (show a + 1 ≤ a + 2 by linarith) (u.hiL2 t)‖ ^ 2 ≤ R ^ 2 :=
+            (show a + 1 ≤ a + 2 by linarith) (u.highRegularity t)‖ ^ 2 ≤ R ^ 2 :=
       (sq_le_sq₀ (norm_nonneg _) hR).2 htball
     exact max_eq_right (sub_nonpos.mpr hsq)
   have hcont : ContinuousOn (fun t => max (‖u.repr t‖ ^ 2 - R ^ 2) 0)
@@ -302,7 +302,7 @@ theorem crossRepr_toFun
     (u : CrossScaleField (I := I) (M := M) g r s a T)
     (hT : 0 < T) {t : ℝ} (ht : t ∈ Set.Icc (0 : ℝ) T) :
     tensorHsInclusion (I := I) (M := M) (g := g) (r := r) (s := s)
-        (show a ≤ a + 1 by linarith) (u.repr t) = u.lo.toFun t :=
+        (show a ≤ a + 1 by linarith) (u.repr t) = u.lowRegularity.toFun t :=
   IntrinsicSpectral.crossRepr_toFun (I := I) (M := M) u hT ht
 
 omit [NeZero (Module.finrank ℝ E)]
@@ -312,7 +312,7 @@ theorem crossRepr_hi_ae
     (hT : 0 < T) :
     (fun t => u.repr t) =ᵐ[timeMeasure T]
       fun t => tensorHsInclusion (I := I) (M := M) (g := g) (r := r) (s := s)
-        (show a + 1 ≤ a + 2 by linarith) (u.hiL2 t) :=
+        (show a + 1 ≤ a + 2 by linarith) (u.highRegularity t) :=
   IntrinsicSpectral.crossRepr_hi_ae (I := I) (M := M) u hT
 
 omit [BoundarylessManifold I M] in
@@ -352,7 +352,7 @@ theorem crossRepr_ball
     (hT : 0 < T) {R : ℝ} (hR : 0 ≤ R)
     (hball : ∀ᵐ t ∂(timeMeasure T),
       ‖tensorHsInclusion (I := I) (M := M) (g := g) (r := r) (s := s)
-        (show a + 1 ≤ a + 2 by linarith) (u.hiL2 t)‖ ≤ R) :
+        (show a + 1 ≤ a + 2 by linarith) (u.highRegularity t)‖ ≤ R) :
     ∀ t ∈ Set.Icc (0 : ℝ) T, ‖u.repr t‖ ≤ R :=
   IntrinsicSpectral.crossRepr_ball (I := I) (M := M) u hT hR hball
 

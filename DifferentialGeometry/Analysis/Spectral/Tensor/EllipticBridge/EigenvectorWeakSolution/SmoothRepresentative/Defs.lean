@@ -68,7 +68,7 @@ variable (g : SmoothRiemannianMetric I M) (r s : ℕ)
 
 def chosenComp (α : M) (P : TensorCompIdx (E := E) r s) : EuclN → ℝ :=
   Classical.choose
-    (eigenvectorChartComponent_exists_smooth_representative
+    (exists_smooth_eigenvectorChartComponent_representative
       (I := I) (M := M) g r s i α P)
 
 omit [CompleteSpace E] in
@@ -77,7 +77,7 @@ private lemma chosenComp_contDiffOn
     ContDiffOn ℝ ∞ (chosenComp (I := I) (M := M) g r s i α P)
       (chartTargetEuclid (I := I) (M := M) α) :=
   (Classical.choose_spec
-    (eigenvectorChartComponent_exists_smooth_representative
+    (exists_smooth_eigenvectorChartComponent_representative
       (I := I) (M := M) g r s i α P)).1
 
 omit [CompleteSpace E] in
@@ -85,7 +85,7 @@ private lemma chosenComp_hasCompactSupport
     (α : M) (P : TensorCompIdx (E := E) r s) :
     HasCompactSupport (chosenComp (I := I) (M := M) g r s i α P) :=
   (Classical.choose_spec
-    (eigenvectorChartComponent_exists_smooth_representative
+    (exists_smooth_eigenvectorChartComponent_representative
       (I := I) (M := M) g r s i α P)).2.1
 
 omit [CompleteSpace E] in
@@ -93,7 +93,7 @@ private lemma chosenComp_tsupport (α : M) (P : TensorCompIdx (E := E) r s) :
     tsupport (chosenComp (I := I) (M := M) g r s i α P) ⊆
       chartTargetEuclid (I := I) (M := M) α :=
   (Classical.choose_spec
-    (eigenvectorChartComponent_exists_smooth_representative
+    (exists_smooth_eigenvectorChartComponent_representative
       (I := I) (M := M) g r s i α P)).2.2.1
 
 omit [CompleteSpace E] in
@@ -103,7 +103,7 @@ lemma chosenComp_ae_eq (α : M) (P : TensorCompIdx (E := E) r s) :
           (chartTargetEuclid (I := I) (M := M) α)]
       eigenvectorChartComponentFun (I := I) (M := M) g r s i α P :=
   (Classical.choose_spec
-    (eigenvectorChartComponent_exists_smooth_representative
+    (exists_smooth_eigenvectorChartComponent_representative
       (I := I) (M := M) g r s i α P)).2.2.2
 
 omit [CompleteSpace E] in

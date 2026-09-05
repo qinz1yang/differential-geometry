@@ -54,12 +54,12 @@ theorem strictBarrier_of_est
       G S X N nabla2S nablaS T)
     (hest : ∀ timeDerivS : TensorQuadraticFormFamily (I := I) (M := M),
       ∃ timeDerivBarrier : TensorQuadraticFormFamily (I := I) (M := M),
-        TensorBarrierLocalEst (I := I) (M := M) G S X N
+        TensorBarrierLocalEstimate (I := I) (M := M) G S X N
           nabla2S nablaS nabla2Barrier nablaBarrier epsilon delta t0
           (Set.Ioc t0 (t0 + delta)) timeDerivS timeDerivBarrier) :
     TensorBarrierStrictSupersolutionOn (I := I) (M := M) G S X N
       nabla2Barrier nablaBarrier epsilon delta t0 := by
-  exact strictParabolic_of_est (I := I) (M := M)
+  exact strictParabolic_of_barrier_estimate (I := I) (M := M)
     (G := G) (S := S) (X := X) (N := N)
     (nabla2S := nabla2S) (nablaS := nablaS)
     (nabla2Barrier := nabla2Barrier) (nablaBarrier := nablaBarrier)

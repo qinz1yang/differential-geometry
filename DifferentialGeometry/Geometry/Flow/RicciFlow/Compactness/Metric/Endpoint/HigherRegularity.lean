@@ -52,7 +52,7 @@ def higherRegularityMetricCompactness
     (hconn : ∀ k : Nat,
       letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
       ConnectedSpace (X.obj k).M) :
-    MetricCompactnessConclusion (I := I) X :=
+    MetricCompactLimit (I := I) X :=
   (b.higherRegularityCanonicalMetricCompactness d hcomplete hconn).compactness
 
 theorem higher_regularity_canonical_metric_compactness_connected
@@ -68,7 +68,7 @@ theorem higher_regularity_canonical_metric_compactness_connected
     ConnectedSpace C.compactness.limit.M := by
   classical
   dsimp only [higherRegularityCanonicalMetricCompactness, CanonicalMetricCompactness.ofSubsequence,
-    MetricCompactnessConclusion.ofSeqSubseq]
+    MetricCompactLimit.ofSeqSubseq]
   exact canonical_metric_compactness_connected (I := I) _ _
 
 end MetricCompactSeed
@@ -94,7 +94,7 @@ def higherRegularityMetricCompactness
     (hconn : ∀ k : Nat,
       letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
       ConnectedSpace (X.obj k).M) :
-    MetricCompactnessConclusion (I := I) X :=
+    MetricCompactLimit (I := I) X :=
   b.toSeed.higherRegularityMetricCompactness d hcomplete hconn
 
 theorem higher_regularity_canonical_metric_compactness_connected

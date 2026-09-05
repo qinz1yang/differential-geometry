@@ -2056,7 +2056,7 @@ theorem minExp_of_ne_top
     have ht₀_mem : t₀ ∈ A := hA_closed.csSup_mem hA_ne hA_bdd
     have ht₀_Icc : t₀ ∈ Set.Icc (0 : ℝ) r := hA_sub ht₀_mem
     have ht₀_nn : 0 ≤ t₀ := ht₀_Icc.1
-    have ht₀_le : t₀ ≤ r := ht₀_Icc.2
+    have initial_le_maxTime : t₀ ≤ r := ht₀_Icc.2
     have ht₀_pos : 0 < t₀ := lt_of_lt_of_le hδ₀_pos (le_csSup hA_bdd hδ₀A)
     have ht₀_dist : (riemannianEDist I (γ t₀) q).toReal = r - t₀ := ht₀_mem.2
     set Γu : ℝ → M := intrinsicGeodesic (I := I) g hEnorm p u with hΓu_def
@@ -2077,7 +2077,7 @@ theorem minExp_of_ne_top
       exact hsp
     have ht₀_eq_r : t₀ = r := by
       by_contra hne'
-      have ht₀_lt : t₀ < r := lt_of_le_of_ne ht₀_le hne'
+      have ht₀_lt : t₀ < r := lt_of_le_of_ne initial_le_maxTime hne'
       set c : M := Γu t₀ with hc_def
       set ρc : ℝ := r - t₀ with hρc_def
       have hρc_pos : 0 < ρc := by rw [hρc_def]; linarith

@@ -52,7 +52,7 @@ lemma diffQuot_mul_apply
     (d := Module.finrank ℝ E) k h f g x
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] in
-lemma integral_F_diffQuot_neg_eq_neg_integral_diffQuot_F
+lemma integral_mul_diffQuot_neg_eq_neg_integral_diffQuot_mul
     {F G : EuclN → ℝ} (k : Fin (Module.finrank ℝ E)) {h : ℝ} (hh : h ≠ 0)
     (hF_cont : Continuous F) (hG_smooth : ContDiff ℝ (⊤ : ℕ∞) G)
     (hG_support : HasCompactSupport G) :

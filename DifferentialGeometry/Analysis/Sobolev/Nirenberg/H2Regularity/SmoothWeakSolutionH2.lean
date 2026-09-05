@@ -49,7 +49,7 @@ theorem uniform_nirenberg_estimate
       hη hη_support hη_range hN h_fderiv_eta hΩ' hΩ'_closure hΩ'_compact
       hh_support_in_Ω' k
   set C : ℝ := (2 / B.lam) * C₀ with hC_def
-  have hlam_pos : 0 < B.lam := B.hlam_pos
+  have ellipticity_pos : 0 < B.lam := B.ellipticity_pos
   have hC_nn : 0 ≤ C := by
     rw [hC_def]; exact mul_nonneg (by positivity) hC₀_nn
   refine ⟨C, hC_nn, ?_⟩

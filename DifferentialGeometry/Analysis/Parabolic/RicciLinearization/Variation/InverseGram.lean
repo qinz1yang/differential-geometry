@@ -105,8 +105,8 @@ end PartialDerivAlgebra
 structure ChartMetricPerturbation (E : Type*) [NormedAddCommGroup E] [NormedSpace ℝ E]
     [FiniteDimensional ℝ E] where
   toFun : Fin (Module.finrank ℝ E) → Fin (Module.finrank ℝ E) → (E → ℝ)
-  symm' : ∀ i j y, toFun i j y = toFun j i y
-  smooth' : ∀ i j, ContDiff ℝ ∞ (toFun i j)
+  symmetric : ∀ i j y, toFun i j y = toFun j i y
+  contDiff : ∀ i j, ContDiff ℝ ∞ (toFun i j)
 
 namespace ChartMetricPerturbation
 
@@ -116,7 +116,7 @@ instance : CoeFun (ChartMetricPerturbation E)
 
 omit [NeZero (Module.finrank ℝ E)] in
 lemma symm (h : ChartMetricPerturbation E) (i j : Fin (Module.finrank ℝ E)) (y : E) :
-    h i j y = h j i y := h.symm' i j y
+    h i j y = h j i y := h.symmetric i j y
 
 omit [NeZero (Module.finrank ℝ E)] in
 lemma symm_fun (h : ChartMetricPerturbation E) (i j : Fin (Module.finrank ℝ E)) :
@@ -124,7 +124,7 @@ lemma symm_fun (h : ChartMetricPerturbation E) (i j : Fin (Module.finrank ℝ E)
 
 omit [NeZero (Module.finrank ℝ E)] in
 lemma smooth (h : ChartMetricPerturbation E) (i j : Fin (Module.finrank ℝ E)) :
-    ContDiff ℝ ∞ (h i j) := h.smooth' i j
+    ContDiff ℝ ∞ (h i j) := h.contDiff i j
 
 omit [NeZero (Module.finrank ℝ E)] in
 lemma differentiableAt (h : ChartMetricPerturbation E)
@@ -134,8 +134,8 @@ lemma differentiableAt (h : ChartMetricPerturbation E)
 
 instance : Zero (ChartMetricPerturbation E) :=
   ⟨{ toFun := fun _ _ _ => 0
-     symm' := fun _ _ _ => rfl
-     smooth' := fun _ _ => contDiff_const }⟩
+     symmetric := fun _ _ _ => rfl
+     contDiff := fun _ _ => contDiff_const }⟩
 
 omit [NeZero (Module.finrank ℝ E)] in
 @[simp] lemma zero_apply (i j : Fin (Module.finrank ℝ E)) (y : E) :

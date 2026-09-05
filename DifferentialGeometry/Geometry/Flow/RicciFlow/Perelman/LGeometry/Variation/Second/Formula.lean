@@ -148,7 +148,7 @@ theorem lLength_second_variation
       ⟨lt_of_lt_of_le hpos htau.1, ht tau htau⟩
     have hEulAt : DifferentiableAt Real Eul (0, tau) :=
       (hEulDiff (0, tau) hpA).differentiableAt (hAopen.mem_nhds hpA)
-    simpa only [dEul] using Aux2.hasDerivAt_slice_fst
+    simpa only [dEul] using TwoParameterDerivative.hasDerivAt_slice_fst
       (fun u s : Real => Eul (u, s)) 0 tau hEulAt
   have hdEulEq : ∀ tau ∈ Set.uIcc a b, dEul tau = -2 * J tau := by
     intro tau htau

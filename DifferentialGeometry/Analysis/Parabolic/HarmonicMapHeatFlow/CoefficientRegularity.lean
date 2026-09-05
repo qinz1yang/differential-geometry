@@ -34,7 +34,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   [SigmaCompactSpace M] [BoundarylessManifold I M] [ConnectedSpace M]
 
 omit [BoundarylessManifold I M] [ConnectedSpace M] in
-private theorem harmonicMapFlowSpecPush_cd
+private theorem harmonicMapFlowSpectralPush_contMDiff
     (q : SmoothRiemannianMetric I M)
     (S : Finset (TensorEigenIdx (I := I) (M := M) q 0 1))
     (R : ℝ)
@@ -42,7 +42,7 @@ private theorem harmonicMapFlowSpecPush_cd
       (𝓘(ℝ, EuclideanSpace ℝ {i // i ∈ S}).prod I) I (3 : ℕ∞)
       (fun p : EuclideanSpace ℝ {i // i ∈ S} × M ↦
         harmonicMapFlowAdd (I := I) (M := M) q
-          (harmonicMapFlowSpecIncl (I := I) (M := M) q S p.1) p.2)
+          (harmonicMapFlowSpectralInclusion (I := I) (M := M) q S p.1) p.2)
       (Metric.ball 0 R ×ˢ (Set.univ : Set M)))
     (B : ∀ x : M, TangentSpace I x)
     (hB : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞
@@ -52,10 +52,10 @@ private theorem harmonicMapFlowSpecPush_cd
       (fun p : EuclideanSpace ℝ {i // i ∈ S} × M ↦
         (TotalSpace.mk' E
           (harmonicMapFlowAdd (I := I) (M := M) q
-            (harmonicMapFlowSpecIncl (I := I) (M := M) q S p.1) p.2)
+            (harmonicMapFlowSpectralInclusion (I := I) (M := M) q S p.1) p.2)
           (mfderiv I I
             (harmonicMapFlowAdd (I := I) (M := M) q
-              (harmonicMapFlowSpecIncl (I := I) (M := M) q S p.1)) p.2 (B p.2)) :
+              (harmonicMapFlowSpectralInclusion (I := I) (M := M) q S p.1)) p.2 (B p.2)) :
           TangentBundle I M))
       (Metric.ball 0 R ×ˢ (Set.univ : Set M)) := by
   intro p hp
@@ -63,7 +63,7 @@ private theorem harmonicMapFlowSpecPush_cd
     Metric.ball 0 R ×ˢ (Set.univ : Set M)
   let f : (EuclideanSpace ℝ {i // i ∈ S} × M) → M → M :=
     fun z y ↦ harmonicMapFlowAdd (I := I) (M := M) q
-      (harmonicMapFlowSpecIncl (I := I) (M := M) q S z.1) y
+      (harmonicMapFlowSpectralInclusion (I := I) (M := M) q S z.1) y
   have hpD : p ∈ D := hp
   have hf : ContMDiffWithinAt
       ((𝓘(ℝ, EuclideanSpace ℝ {i // i ∈ S}).prod I).prod I) I (3 : ℕ∞)
@@ -146,7 +146,7 @@ private theorem harmonicMapFlowSpecPush_cd
 omit [CompactSpace M] [BoundarylessManifold I M] [ConnectedSpace M] in
 omit [CompactSpace M] [SigmaCompactSpace M] [BoundarylessManifold I M] [ConnectedSpace M] in
 omit [I.Boundaryless] in
-private theorem harmonicMapFlowRaisedFrame_cd
+private theorem harmonicMapFlowRaisedFrame_contMDiff
     (q h : SmoothRiemannianMetric I M)
     (x₀ : M) (i : Fin (Module.finrank ℝ E)) :
     ContMDiff I (I.prod 𝓘(ℝ, E)) ∞
@@ -160,7 +160,7 @@ private theorem harmonicMapFlowRaisedFrame_cd
       (smoothOrthoFrame_smooth (I := I) q x₀ i)
 
 omit [BoundarylessManifold I M] [ConnectedSpace M] in
-private theorem harmonicMapFlowSpecFrozen_cd
+private theorem harmonicMapFlowSpectralFrozen_contMDiff
     (q h : SmoothRiemannianMetric I M)
     (S : Finset (TensorEigenIdx (I := I) (M := M) q 0 1))
     (R : ℝ)
@@ -168,7 +168,7 @@ private theorem harmonicMapFlowSpecFrozen_cd
       (𝓘(ℝ, EuclideanSpace ℝ {i // i ∈ S}).prod I) I (3 : ℕ∞)
       (fun p : EuclideanSpace ℝ {i // i ∈ S} × M ↦
         harmonicMapFlowAdd (I := I) (M := M) q
-          (harmonicMapFlowSpecIncl (I := I) (M := M) q S p.1) p.2)
+          (harmonicMapFlowSpectralInclusion (I := I) (M := M) q S p.1) p.2)
       (Metric.ball 0 R ×ˢ (Set.univ : Set M)))
     (x₀ : M) :
     ContMDiffOn (𝓘(ℝ, EuclideanSpace ℝ {i // i ∈ S}).prod I) 𝓘(ℝ)
@@ -178,15 +178,15 @@ private theorem harmonicMapFlowSpecFrozen_cd
           ∑ i : Fin (Module.finrank ℝ E),
             q.inner
               (harmonicMapFlowAdd (I := I) (M := M) q
-                (harmonicMapFlowSpecIncl (I := I) (M := M) q S p.1) p.2)
+                (harmonicMapFlowSpectralInclusion (I := I) (M := M) q S p.1) p.2)
               (mfderiv I I
                 (harmonicMapFlowAdd (I := I) (M := M) q
-                  (harmonicMapFlowSpecIncl (I := I) (M := M) q S p.1)) p.2
+                  (harmonicMapFlowSpectralInclusion (I := I) (M := M) q S p.1)) p.2
                 (metricComparisonEndomorphism (I := I) q h p.2
                   (smoothOrthoFrame (I := I) q x₀ i p.2)))
               (mfderiv I I
                 (harmonicMapFlowAdd (I := I) (M := M) q
-                  (harmonicMapFlowSpecIncl (I := I) (M := M) q S p.1)) p.2
+                  (harmonicMapFlowSpectralInclusion (I := I) (M := M) q S p.1)) p.2
                 (smoothOrthoFrame (I := I) q x₀ i p.2)))
       (Metric.ball 0 R ×ˢ (Set.univ : Set M)) := by
   classical
@@ -194,7 +194,7 @@ private theorem harmonicMapFlowSpecFrozen_cd
     Metric.ball 0 R ×ˢ (Set.univ : Set M)
   let F : EuclideanSpace ℝ {i // i ∈ S} × M → M :=
     fun p ↦ harmonicMapFlowAdd (I := I) (M := M) q
-      (harmonicMapFlowSpecIncl (I := I) (M := M) q S p.1) p.2
+      (harmonicMapFlowSpectralInclusion (I := I) (M := M) q S p.1) p.2
   have hmetric : ContMDiffOn
       (𝓘(ℝ, EuclideanSpace ℝ {i // i ∈ S}).prod I)
       (I.prod 𝓘(ℝ, E →L[ℝ] E →L[ℝ] ℝ)) (2 : ℕ∞)
@@ -215,22 +215,22 @@ private theorem harmonicMapFlowSpecFrozen_cd
           q.inner (F p)
             (mfderiv I I
               (harmonicMapFlowAdd (I := I) (M := M) q
-                (harmonicMapFlowSpecIncl (I := I) (M := M) q S p.1)) p.2
+                (harmonicMapFlowSpectralInclusion (I := I) (M := M) q S p.1)) p.2
               (metricComparisonEndomorphism (I := I) q h p.2
                 (smoothOrthoFrame (I := I) q x₀ i p.2)))
             (mfderiv I I
               (harmonicMapFlowAdd (I := I) (M := M) q
-                (harmonicMapFlowSpecIncl (I := I) (M := M) q S p.1)) p.2
+                (harmonicMapFlowSpectralInclusion (I := I) (M := M) q S p.1)) p.2
               (smoothOrthoFrame (I := I) q x₀ i p.2))) D := by
     intro i
     have hframe : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞
         (fun x : M ↦ (TotalSpace.mk' E x
           (smoothOrthoFrame (I := I) q x₀ i x) : TangentBundle I M)) :=
       smoothOrthoFrame_smooth (I := I) q x₀ i
-    have hraised := harmonicMapFlowRaisedFrame_cd (I := I) (M := M) q h x₀ i
-    have hpush := harmonicMapFlowSpecPush_cd (I := I) (M := M) q S R hmap
+    have hraised := harmonicMapFlowRaisedFrame_contMDiff (I := I) (M := M) q h x₀ i
+    have hpush := harmonicMapFlowSpectralPush_contMDiff (I := I) (M := M) q S R hmap
       (fun x : M ↦ smoothOrthoFrame (I := I) q x₀ i x) hframe
-    have hpushRaised := harmonicMapFlowSpecPush_cd (I := I) (M := M) q S R hmap
+    have hpushRaised := harmonicMapFlowSpectralPush_contMDiff (I := I) (M := M) q S R hmap
       (fun x : M ↦ metricComparisonEndomorphism (I := I) q h x
         (smoothOrthoFrame (I := I) q x₀ i x))
       hraised
@@ -257,7 +257,7 @@ private theorem harmonicMapFlowDens_eq_frozen
     (q h : SmoothRiemannianMetric I M) (Φ : M → M)
     (x₀ : M) {y : M}
     (hy : y ∈ smoothOrthoFrameNeighborhood (I := I) (M := M) x₀) :
-    harmonicMapFlowDirDensity (I := I) (M := M) q h Φ y =
+    harmonicMapFlowDirichletDensity (I := I) (M := M) q h Φ y =
       (1 / 2 : ℝ) *
         ∑ i : Fin (Module.finrank ℝ E),
           q.inner (Φ y)
@@ -282,44 +282,44 @@ private theorem harmonicMapFlowDens_eq_frozen
   have hfixed := orthonormal_basis_bilin_trace (I := I) (M := M) q y Hb
     (fun i ↦ smoothOrthoFrame (I := I) q x₀ i y)
     (fun i j ↦ smoothOrthoFrame_orthonormal (I := I) q x₀ hy i j)
-  unfold harmonicMapFlowDirDensity
+  unfold harmonicMapFlowDirichletDensity
   exact congrArg (fun z : ℝ ↦ (1 / 2 : ℝ) * z) (by
     simpa only [Hb, precomp, step₁, dΦ, A, ContinuousLinearMap.comp_apply,
       ContinuousLinearMap.precomp_apply] using hmove.trans hfixed.symm)
 
 omit [BoundarylessManifold I M] [ConnectedSpace M] in
-theorem harmonicMapFlowSpecDens_cd
+theorem harmonicMapFlowSpectralDensity_contMDiff
     (q h : SmoothRiemannianMetric I M)
     (S : Finset (TensorEigenIdx (I := I) (M := M) q 0 1)) :
     ∃ R : ℝ, 0 < R ∧
       ContMDiffOn (𝓘(ℝ, EuclideanSpace ℝ {i // i ∈ S}).prod I) 𝓘(ℝ)
         (2 : ℕ∞)
         (fun p : EuclideanSpace ℝ {i // i ∈ S} × M ↦
-          harmonicMapFlowDirDensity (I := I) (M := M) q h
+          harmonicMapFlowDirichletDensity (I := I) (M := M) q h
             (harmonicMapFlowAdd (I := I) (M := M) q
-              (harmonicMapFlowSpecIncl (I := I) (M := M) q S p.1)) p.2)
+              (harmonicMapFlowSpectralInclusion (I := I) (M := M) q S p.1)) p.2)
         (Metric.ball 0 R ×ˢ (Set.univ : Set M)) := by
-  obtain ⟨R, hR, hmap⟩ := harmonicMapFlowSpecMap_cd (I := I) (M := M) q S 3
+  obtain ⟨R, hR, hmap⟩ := harmonicMapFlowSpectralMap_contMDiff (I := I) (M := M) q S 3
   refine ⟨R, hR, ?_⟩
   intro p hp
   have hmap' : ContMDiffOn
       (𝓘(ℝ, EuclideanSpace ℝ {i // i ∈ S}).prod I) I (3 : ℕ∞)
       (fun z : EuclideanSpace ℝ {i // i ∈ S} × M ↦
         harmonicMapFlowAdd (I := I) (M := M) q
-          (harmonicMapFlowSpecIncl (I := I) (M := M) q S z.1) z.2)
+          (harmonicMapFlowSpectralInclusion (I := I) (M := M) q S z.1) z.2)
       (Metric.ball 0 R ×ˢ (Set.univ : Set M)) := by
     intro z hz
     have hfun :
         (fun p : EuclideanSpace ℝ {i // i ∈ S} × M ↦
-          harmonicMapFlowSpecMap (I := I) (M := M) q S p.2 p.1) =
+          harmonicMapFlowSpectralMap (I := I) (M := M) q S p.2 p.1) =
         (fun p : EuclideanSpace ℝ {i // i ∈ S} × M ↦
           harmonicMapFlowAdd (I := I) (M := M) q
-            (harmonicMapFlowSpecIncl (I := I) (M := M) q S p.1) p.2) := by
+            (harmonicMapFlowSpectralInclusion (I := I) (M := M) q S p.1) p.2) := by
       funext p
-      exact harmonicMapFlowSpecMap_apply (I := I) (M := M) q S p.2 p.1
+      exact harmonicMapFlowSpectralMap_apply (I := I) (M := M) q S p.2 p.1
     rw [← hfun]
     exact hmap z hz
-  have hfrozen := harmonicMapFlowSpecFrozen_cd (I := I) (M := M) q h S R hmap' p.2 p hp
+  have hfrozen := harmonicMapFlowSpectralFrozen_contMDiff (I := I) (M := M) q h S R hmap' p.2 p hp
   refine hfrozen.congr_of_eventuallyEq_of_mem ?_ hp
   have hnbhd : ∀ᶠ z : EuclideanSpace ℝ {i // i ∈ S} × M in
       𝓝[Metric.ball 0 R ×ˢ (Set.univ : Set M)] p,
@@ -330,11 +330,11 @@ theorem harmonicMapFlowSpecDens_cd
   filter_upwards [hnbhd] with z hz
   exact harmonicMapFlowDens_eq_frozen (I := I) (M := M) q h
     (harmonicMapFlowAdd (I := I) (M := M) q
-      (harmonicMapFlowSpecIncl (I := I) (M := M) q S z.1)) p.2 hz
+      (harmonicMapFlowSpectralInclusion (I := I) (M := M) q S z.1)) p.2 hz
 
 omit [BoundarylessManifold I M]
   [ConnectedSpace M] in
-theorem harmonicMapFlowSpecCoeff_cd
+theorem harmonicMapFlowSpectralCoefficient_contMDiff
     (q : SmoothRiemannianMetric I M)
     (S : Finset (TensorEigenIdx (I := I) (M := M) q 0 1))
     (v : EuclideanSpace ℝ {i // i ∈ S}) :
@@ -343,9 +343,9 @@ theorem harmonicMapFlowSpecCoeff_cd
         (I.prod 𝓘(ℝ, E)) (2 : ℕ∞)
         (fun p : EuclideanSpace ℝ {i // i ∈ S} × M ↦
           (TotalSpace.mk' E
-            (harmonicMapFlowSpecMap (I := I) (M := M) q S p.2 p.1)
+            (harmonicMapFlowSpectralMap (I := I) (M := M) q S p.2 p.1)
             (mfderiv 𝓘(ℝ, EuclideanSpace ℝ {i // i ∈ S}) I
-              (harmonicMapFlowSpecMap (I := I) (M := M) q S p.2)
+              (harmonicMapFlowSpectralMap (I := I) (M := M) q S p.2)
               p.1
               ((tangentSpaceModelContinuousLinearEquiv
                 (I := 𝓘(ℝ, EuclideanSpace ℝ {i // i ∈ S}))
@@ -353,15 +353,15 @@ theorem harmonicMapFlowSpecCoeff_cd
             TangentBundle I M))
         (Metric.ball 0 R ×ˢ (Set.univ : Set M)) := by
   obtain ⟨R, hR, hmap⟩ :=
-    harmonicMapFlowSpecMap_cd (I := I) (M := M) q S 3
+    harmonicMapFlowSpectralMap_contMDiff (I := I) (M := M) q S 3
   refine ⟨R, hR, ?_⟩
   intro p hp
   let V := EuclideanSpace ℝ {i // i ∈ S}
   let IV : ModelWithCorners ℝ V V := 𝓘(ℝ, V)
   let F : V × M → M := fun z ↦
-    harmonicMapFlowSpecMap (I := I) (M := M) q S z.2 z.1
+    harmonicMapFlowSpectralMap (I := I) (M := M) q S z.2 z.1
   let f : (V × M) → V → M := fun z =>
-    harmonicMapFlowSpecMap (I := I) (M := M) q S z.2
+    harmonicMapFlowSpectralMap (I := I) (M := M) q S z.2
   have hopen : IsOpen (Metric.ball (0 : V) R ×ˢ (Set.univ : Set M)) :=
     Metric.isOpen_ball.prod isOpen_univ
   have hmapAt : ContMDiffAt (𝓘(ℝ, V).prod I) I (3 : ℕ∞) F p := by
@@ -418,7 +418,7 @@ theorem harmonicMapFlowSpecCoeff_cd
     rw [hrw]
     exact hφ
 
-noncomputable def harmonicMapFlowStateVar
+noncomputable def harmonicMapFlowStateVariation
     (q : SmoothRiemannianMetric I M)
     (S U : SmoothCcTensor q 0 1) (x : M) :
     TangentSpace I (harmonicMapFlowAdd (I := I) (M := M) q S x) :=
@@ -429,8 +429,8 @@ noncomputable def harmonicMapFlowStateMass
     (q h : SmoothRiemannianMetric I M)
     (S U V : SmoothCcTensor q 0 1) : ℝ :=
   ∫ x, q.inner (harmonicMapFlowAdd (I := I) (M := M) q S x)
-      (harmonicMapFlowStateVar (I := I) (M := M) q S U x)
-      (harmonicMapFlowStateVar (I := I) (M := M) q S V x)
+      (harmonicMapFlowStateVariation (I := I) (M := M) q S U x)
+      (harmonicMapFlowStateVariation (I := I) (M := M) q S V x)
     ∂(riemannianVolumeMeasure (I := I) (M := M) h)
 
 private noncomputable def harmonicMapFlowFiberExp
@@ -463,7 +463,7 @@ private theorem harmonicMapFlowFiberExp_mfd
     exact mfderiv_expMapIntrinsic_at_zero (I := I) q hEnorm x
 
 omit [BoundarylessManifold I M] [ConnectedSpace M] in
-private theorem harmonicMapFlowFiberExp_md
+private theorem harmonicMapFlowFiberExp_mdifferentiableAt
     (q : SmoothRiemannianMetric I M) (x : M) :
     MDifferentiableAt 𝓘(ℝ, E) I
       (harmonicMapFlowFiberExp (I := I) (M := M) q x) 0 := by
@@ -480,10 +480,10 @@ private theorem harmonicMapFlowFiberExp_md
   exact hv hv'.symm
 
 omit [BoundarylessManifold I M] [ConnectedSpace M] in
-@[simp] theorem harmonicMapFlowStateVar_zero
+@[simp] theorem harmonicMapFlowStateVariation_zero
     (q : SmoothRiemannianMetric I M)
     (U : SmoothCcTensor q 0 1) (x : M) :
-    harmonicMapFlowStateVar (I := I) (M := M) q 0 U x =
+    harmonicMapFlowStateVariation (I := I) (M := M) q 0 U x =
       harmonicMapFlowUnknown (I := I) q U x := by
   let w : E := harmonicMapFlowUnknown (I := I) q U x
   let line : ℝ → E := fun a : ℝ ↦ a • w
@@ -514,8 +514,8 @@ omit [BoundarylessManifold I M] [ConnectedSpace M] in
   have houter : MDifferentiableAt 𝓘(ℝ, E) I
       (harmonicMapFlowFiberExp (I := I) (M := M) q x) (line 0) := by
     simpa only [line, zero_smul] using
-      harmonicMapFlowFiberExp_md (I := I) (M := M) q x
-  unfold harmonicMapFlowStateVar
+      harmonicMapFlowFiberExp_mdifferentiableAt (I := I) (M := M) q x
+  unfold harmonicMapFlowStateVariation
   rw [hpath]
   have hcomp := mfderiv_comp_apply (f := line) (x := (0 : ℝ))
     houter hline_md (1 : ℝ)
@@ -741,7 +741,7 @@ omit [BoundarylessManifold I M] [ConnectedSpace M] in
       harmonicMapFlowMass (I := I) (M := M) q h U V := by
   unfold harmonicMapFlowStateMass harmonicMapFlowMass
   rw [harmonicMapFlowAdd_zero]
-  simp only [id_eq, harmonicMapFlowStateVar_zero]
+  simp only [id_eq, harmonicMapFlowStateVariation_zero]
   apply integral_congr_ae
   filter_upwards with x
   exact harmonicMapFlowMassPt (I := I) (M := M) q U V x

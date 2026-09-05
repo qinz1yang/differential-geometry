@@ -65,7 +65,7 @@ theorem manifoldFlowFamily_of_regular
         Φ_fam 0 = Diffeomorph.refl I M ∞ ∧
         (∀ x : M, Φ 0 x = x) ∧
         (∀ t : ℝ, 0 < t → t < T → ∀ x : M, Φ_fam t x = Φ t x) :=
-  manifoldFlowFamily_exists X
+  exists_manifoldFlowFamily X
     (fun α => chartLocalPicardDataOfRegular X hRegularity α)
     (fun α => chartLocalPicardDataOfRegular (fun t x => -(X t x)) hRegularityNeg α)
     hLocalFwd hLocalRev hBijPerChart

@@ -410,7 +410,7 @@ theorem scalar_galerkin_bound
                 (k : Real) t ≤ Bound := by
   classical
   dsimp only
-  obtain ⟨G, hG⟩ := scalar_galerkin_exists (I := I) (M := M) S hS T
+  obtain ⟨G, hG⟩ := exists_scalar_galerkin_solution (I := I) (M := M) S hS T
   let tauG : Real := G.tau
   have htauG : 0 < tauG := by simpa only [tauG] using hG.pos
   obtain ⟨tauC, htauC, _htauC_one, Cmid, hCmid, hcrit⟩ :=

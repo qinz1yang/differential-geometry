@@ -1413,7 +1413,8 @@ theorem c_term_bound
   set v_test : E → ℝ :=
     DifferentialGeometry.Analysis.Sobolev.NirenbergTestFunction.nirenbergTestFunction
       k h η u with hv_test_def
-  have h_v_test_support : tsupport v_test ⊆ Ω' := v_test_supported_in_Ω' hh_support_in_Ω' k hh_le
+  have h_v_test_support : tsupport v_test ⊆ Ω' :=
+    nirenbergTestFunction_tsupport_subset_of_thickening hh_support_in_Ω' k hh_le
   have h_v_test_in_Ω : tsupport v_test ⊆ Ω := fun x hx =>
     hΩ'_closure (subset_closure (h_v_test_support hx))
   have h_v_test_cont : Continuous v_test := continuous_v_test (d := d) hu hη k hh
@@ -1716,7 +1717,8 @@ theorem f_term_bound
   set v_test : E → ℝ :=
     DifferentialGeometry.Analysis.Sobolev.NirenbergTestFunction.nirenbergTestFunction
       k h η u with hv_test_def
-  have h_v_test_support : tsupport v_test ⊆ Ω' := v_test_supported_in_Ω' hh_support_in_Ω' k hh_le
+  have h_v_test_support : tsupport v_test ⊆ Ω' :=
+    nirenbergTestFunction_tsupport_subset_of_thickening hh_support_in_Ω' k hh_le
   have h_v_test_cont : Continuous v_test := continuous_v_test (d := d) hu hη k hh
   have h_v_test_support_cmp : HasCompactSupport v_test :=
     hasCompactSupport_v_test (d := d) hη_support k h
@@ -1970,7 +1972,7 @@ theorem nirenberg_master_inequality_after_young
   classical
   set ε_effective : ℝ := B.lam / 8 with hε_effective_def
   have hε_effective_pos : 0 < ε_effective := by
-    rw [hε_effective_def]; exact div_pos B.hlam_pos (by norm_num)
+    rw [hε_effective_def]; exact div_pos B.ellipticity_pos (by norm_num)
   obtain ⟨C1, hC1_nn, hC1⟩ := translated_coeff_cutoff_deriv_diffQuot_cross_bound (d := d) B hη
     hη_support hη_range h_fderiv_eta hΩ' hΩ'_compact hh_support_in_Ω' k ε_effective hε_effective_pos
   obtain ⟨C2, hC2_nn, hC2⟩ := coeff_diffQuot_cutoff_sq_gradient_cross_bound (d := d) B hη hη_support

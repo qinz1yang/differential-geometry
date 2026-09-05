@@ -35,7 +35,7 @@ open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 open DifferentialGeometry.Analysis.Spectral.DeTurck
   (cometricDoubleTraceFib cometricDoubleTraceFib_toModel cometricDoubleTraceFib_contMDiff)
 
-open LieCorrectionZeroCore
+open LieCorrectionZeroFiberOperators
 
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   (deTurckVF_metricPerturbationPath_jointContMDiffOn metricConnectionDifferenceLowered_selfFam_jointContMDiffOn

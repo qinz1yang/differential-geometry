@@ -32,12 +32,12 @@ open DifferentialGeometry.Analysis.Spectral
     metricComparisonEndomorphismField hs2_low2 lieCorrectionZeroMixedConnection lieCorrectionZeroInsertion lieCorrectionZeroKappa lieCorrectionZeroPbLow lieCorrectionZeroField
     lieCorrectionZero_decomp slotExtend slotExtendIter slotExtend_sub
     ccTensor02Symm_eq_self)
-open DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroCore
+open DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroFiberOperators
   (lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoThreeOne lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoOne lieCorrectionZeroMixedConnectionPermutationCycleZeroOneFour)
 open DifferentialGeometry.Geometry.Connection (slotInsertEndoCc)
 open DifferentialGeometry.PDE.DeTurck.RicciLinearization
 open DifferentialGeometry.Analysis.Spectral.MetricRealization
-open LieCorrectionZeroCore
+open LieCorrectionZeroFiberOperators
 open RicciDeTurckPairing
 
 variable

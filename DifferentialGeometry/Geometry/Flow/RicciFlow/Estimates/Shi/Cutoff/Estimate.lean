@@ -610,8 +610,8 @@ theorem cross_le
   let q := 4 * cut.err n * B.w k t x
   have hchi : 0 ≤ cut.chi n t x := (cut.range n t x ht).1
   have herr : 0 ≤ cut.err n := cut.err_nonneg n
-  have hw : 0 ≤ B.w k t x := B.hw_nonneg k t ht x
-  have hnext : 0 ≤ B.w (k + 1) t x := B.hw_nonneg (k + 1) t ht x
+  have hw : 0 ≤ B.w k t x := B.quantity_nonneg k t ht x
+  have hnext : 0 ≤ B.w (k + 1) t x := B.quantity_nonneg (k + 1) t ht x
   have ha : (G.metric t).inner x a a ≤ cut.err n * cut.chi n t x := by
     simpa [a] using cut.grad_sq_le n t ht htpos x
   have hb : (G.metric t).inner x b b ≤ 4 * B.w k t x * B.w (k + 1) t x := by
@@ -765,8 +765,8 @@ theorem pow_cross_le
     (cut.chi n t x) ^ p * B.w k t x
   have hchi : 0 ≤ cut.chi n t x := (cut.range n t x ht).1
   have herr : 0 ≤ cut.err n := cut.err_nonneg n
-  have hw : 0 ≤ B.w k t x := B.hw_nonneg k t ht x
-  have hnext : 0 ≤ B.w (k + 1) t x := B.hw_nonneg (k + 1) t ht x
+  have hw : 0 ≤ B.w k t x := B.quantity_nonneg k t ht x
+  have hnext : 0 ≤ B.w (k + 1) t x := B.quantity_nonneg (k + 1) t ht x
   have ha : (G.metric t).inner x a a ≤ cut.err n * cut.chi n t x := by
     simpa [a] using cut.grad_sq_le n t ht htpos x
   have hb : (G.metric t).inner x b b ≤ 4 * B.w k t x * B.w (k + 1) t x := by
@@ -996,11 +996,11 @@ private theorem support_pow_cross
     dsimp [q₁]
     exact mul_nonneg
       (mul_nonneg (by norm_num) (pow_nonneg hphi0 (p + 1)))
-      (B.hw_nonneg (k + 1) t ht x)
+      (B.quantity_nonneg (k + 1) t ht x)
   have hq₂ : 0 ≤ q₂ := by
     dsimp [q₂]
     exact mul_nonneg (mul_nonneg (mul_nonneg (by positivity) heps)
-      (pow_nonneg hphi0 p)) (B.hw_nonneg k t ht x)
+      (pow_nonneg hphi0 p)) (B.quantity_nonneg k t ht x)
   have hhalf : q₁ * q₂ ≤ ((q₁ + q₂) / 2) ^ 2 := by
     nlinarith [sq_nonneg (q₁ - q₂)]
   have habs : |c| ≤ (q₁ + q₂) / 2 :=
@@ -1043,7 +1043,7 @@ theorem GfunCut_nonneg
       (mul_nonneg (BernsteinTower.Gcoef_nonneg (I := I) B m i)
         (pow_nonneg ht.1 i))
       (pow_nonneg hchi (i + 1)))
-    (B.hw_nonneg i t ht x)
+    (B.quantity_nonneg i t ht x)
 
 omit [NeZero (Module.finrank Real E)] [CompleteSpace E] [SigmaCompactSpace M]
   [T2Space M] in
@@ -1085,7 +1085,7 @@ theorem GfunCut_cont
   apply continuousOn_finsetSum
   intro i hi
   exact (((continuous_const.mul (continuous_fst.pow i)).continuousOn.mul
-    ((cut.joint_cont n).pow (i + 1))).mul (B.hw_cont i))
+    ((cut.joint_cont n).pow (i + 1))).mul (B.continuous i))
 
 omit [NeZero (Module.finrank Real E)] [CompleteSpace E] [SigmaCompactSpace M]
   [T2Space M] in
@@ -1128,16 +1128,16 @@ private theorem cutWterms_nonpos
   have ht0 : 0 ≤ t := ht.1
   have hT0 : 0 ≤ B.T := le_trans ht.1 ht.2
   have hbeta0 : 0 ≤ beta := by
-    simpa [beta] using towerBeta_nonneg B.hc B.hα m
+    simpa [beta] using towerBeta_nonneg B.reactionConstant_nonneg B.scale_nonneg m
   have hbarTop0 : 0 ≤ barTop := by
-    simpa [barTop] using towerBarTop_nonneg B.hc B.α m
+    simpa [barTop] using towerBarTop_nonneg B.reactionConstant_nonneg B.α m
   have hKt : t * B.K ≤ B.α := by
     have htT : t ≤ B.T := ht.2
-    have htle : t ≤ B.α / B.K := htT.trans B.hTK
+    have htle : t ≤ B.α / B.K := htT.trans B.time_le_scale_div_curvatureBound
     calc
       t * B.K ≤ (B.α / B.K) * B.K :=
-        mul_le_mul_of_nonneg_right htle (le_of_lt B.hK)
-      _ = B.α := div_mul_cancel₀ B.α (ne_of_gt B.hK)
+        mul_le_mul_of_nonneg_right htle (le_of_lt B.curvatureBound_pos)
+      _ = B.α := div_mul_cancel₀ B.α (ne_of_gt B.curvatureBound_pos)
   have herr_le (k : Nat) (hk : k ≤ m) :
       eps * cutErrCoeff k * t ≤ (1 / 2 : Real) := by
     have hck : cutErrCoeff k ≤ cutErrCoeff m := cutErrCoeff_mono hk
@@ -1174,7 +1174,7 @@ private theorem cutWterms_nonpos
       nat_mul_towerFactCoeff m hk1
     have hG0 : 0 ≤ BernsteinTower.Gcoef (I := I) B m k :=
       BernsteinTower.Gcoef_nonneg (I := I) B m k
-    have hw0 : 0 ≤ B.w k t x := B.hw_nonneg k t ht x
+    have hw0 : 0 ≤ B.w k t x := B.quantity_nonneg k t ht x
     have hz0 : 0 ≤ t ^ (k - 1) * q ^ k * B.w k t x := by positivity
     have hqpow : q ^ (k + 1) ≤ q ^ k := by
       rw [pow_succ]
@@ -1255,7 +1255,7 @@ private theorem cutWterms_nonpos
   have hfactm : towerFactCoeff m (m - 1) = 1 := by
     rw [towerFactCoeff]
     rw [div_self (by exact_mod_cast (Nat.factorial_pos (m - 1)).ne')]
-  have hwm0 : 0 ≤ B.w m t x := B.hw_nonneg m t ht x
+  have hwm0 : 0 ≤ B.w m t x := B.quantity_nonneg m t ht x
   have hz0 : 0 ≤ t ^ (m - 1) * q ^ m * B.w m t x := by positivity
   have hqpow : q ^ (m + 1) ≤ q ^ m := by
     rw [pow_succ]
@@ -1299,7 +1299,7 @@ private theorem cutWterms_nonpos
       have hKt' : B.K * t ≤ B.α := by simpa [mul_comm] using hKt
       calc
         B.K * t * q ≤ B.K * t * 1 :=
-          mul_le_mul_of_nonneg_left hq1 (mul_nonneg (le_of_lt B.hK) ht0)
+          mul_le_mul_of_nonneg_left hq1 (mul_nonneg (le_of_lt B.curvatureBound_pos) ht0)
         _ = B.K * t := by ring
         _ ≤ B.α := hKt'
     calc
@@ -1328,7 +1328,7 @@ private theorem cutWterms_nonpos
             barTop * B.α ≤ 0 := by
       rw [hbetaEq]
       have hm1 : (1 : Real) ≤ (m : Real) := by exact_mod_cast hm
-      nlinarith [hbarTop0, B.hα]
+      nlinarith [hbarTop0, B.scale_nonneg]
     nlinarith [htimeTop, herrTop, hreactTop, mul_nonpos_of_nonpos_of_nonneg hcoef hz0]
   linarith
 omit [NeZero (Module.finrank Real E)] [CompleteSpace E]
@@ -1476,7 +1476,7 @@ private theorem supportLevel_le
   have hv_space : ∀ y : M,
       MDifferentiableAt I 𝓘(Real, Real) (v t) y := by
     intro y
-    have h := (B.hw_space i t ht htpos y).const_smul (t ^ i)
+    have h := (B.spatial_differentiable i t ht htpos y).const_smul (t ^ i)
     rw [show t ^ i • B.w i t = (fun z => t ^ i * B.w i t z) by
       funext z
       rw [Pi.smul_apply, smul_eq_mul]] at h
@@ -1508,7 +1508,7 @@ private theorem supportLevel_le
         funext w
         simp [v, smul_eq_mul]]
       exact gradientFun_const_smul (I := I) (G.metric t) (t ^ i)
-        (B.hw_space i t ht htpos z)
+        (B.spatial_differentiable i t ht htpos z)
     have hsection :
         (T% fun z : M => gradientFun (I := I) (G.metric t) (v t) z) =
           (T% (t ^ i • fun z : M =>
@@ -1516,7 +1516,7 @@ private theorem supportLevel_le
       funext z
       simpa using congrFun hplain z
     rw [hsection]
-    exact (B.hw_grad i t ht htpos y).smul_const_section (a := t ^ i)
+    exact (B.gradient_differentiable i t ht htpos y).smul_const_section (a := t ^ i)
   have hprod_grad :
       MDifferentiableAt I (I.prod 𝓘(Real, E)) (T% fun z : M =>
         gradientFun (I := I) (G.metric t)
@@ -1542,7 +1542,7 @@ private theorem supportLevel_le
         (i : Real) * t ^ (i - 1) * B.w i t x +
           t ^ i * (d - B.wLap i t x) := by
     have huniq : UniqueDiffWithinAt Real (Set.Icc 0 B.T) t :=
-      (uniqueDiffOn_Icc B.hT).uniqueDiffWithinAt ht
+      (uniqueDiffOn_Icc B.time_pos).uniqueDiffWithinAt ht
     have htime : derivWithin (fun s : Real => v s x) (Set.Icc 0 B.T) t =
         (i : Real) * t ^ (i - 1) * B.w i t x + t ^ i * d := by
       have hder :=
@@ -1559,11 +1559,11 @@ private theorem supportLevel_le
         t ^ i * B.wLap i t x := by
       have hscale := heatOperatorWithDrift_const_smul
         (I := I) G t (fun y : M => (0 : TangentSpace I y)) (t ^ i)
-        (B.hw_space i t ht htpos) (B.hw_grad i t ht htpos x)
+        (B.spatial_differentiable i t ht htpos) (B.gradient_differentiable i t ht htpos x)
       rw [show v t = t ^ i • B.w i t by
         funext y
         simp [v, smul_eq_mul]]
-      rw [hscale, B.hLap i t ht htpos x]
+      rw [hscale, B.heatOperator_eq i t ht htpos x]
     rw [parabolicOperatorWithDrift_eq, htime, hheat]
     ring
   have hv_gradient : gradientAt (I := I) G t (v t) x =
@@ -1573,9 +1573,9 @@ private theorem supportLevel_le
       funext y
       simp [v, smul_eq_mul]]
     exact gradientFun_const_smul (I := I) (G.metric t) (t ^ i)
-      (B.hw_space i t ht htpos x)
+      (B.spatial_differentiable i t ht htpos x)
   have huniq : UniqueDiffWithinAt Real (Set.Icc 0 B.T) t :=
-    (uniqueDiffOn_Icc B.hT).uniqueDiffWithinAt ht
+    (uniqueDiffOn_Icc B.time_pos).uniqueDiffWithinAt ht
   have hmul := parabolic_mul_nhds (I := I) B.T
     (fun _ y => (0 : TangentSpace I y)) qpow v t x
     hq_time hv_time hq_space (Filter.Eventually.of_forall hv_space)
@@ -1602,7 +1602,7 @@ private theorem supportLevel_le
   have hcoef0 : 0 ≤ BernsteinTower.Gcoef (I := I) B m i :=
     BernsteinTower.Gcoef_nonneg (I := I) B m i
   have hti0 : 0 ≤ t ^ i := pow_nonneg ht.1 i
-  have hwi0 : 0 ≤ B.w i t x := B.hw_nonneg i t ht x
+  have hwi0 : 0 ≤ B.w i t x := B.quantity_nonneg i t ht x
   have hq_term :
       v t x * parabolicOperatorWithDrift (I := I) G B.T
           (fun _ y => (0 : TangentSpace I y)) qpow t x ≤
@@ -1790,22 +1790,22 @@ private theorem GfunSupport_parabolic_le
           _ = q ^ k := mul_one _
           _ ≤ 1 := ih
   have hbeta0 : 0 ≤ beta := by
-    simpa only [hbeta, hC] using towerBeta_nonneg B.hc B.hα m
+    simpa only [hbeta, hC] using towerBeta_nonneg B.reactionConstant_nonneg B.scale_nonneg m
   have hbarTop0 : 0 ≤ barTop := by
-    simpa only [hbarTop, hC] using towerBarTop_nonneg B.hc B.α m
+    simpa only [hbarTop, hC] using towerBarTop_nonneg B.reactionConstant_nonneg B.α m
   let tau : RealTimeInterval.RegularTime B.D :=
-    ⟨t, B.hregular t ht htpos⟩
-  set dvec : Nat → Real := fun i ↦ Classical.choose (B.hheat i tau x) with hdvec
+    ⟨t, B.regular_on_positive_time t ht htpos⟩
+  set dvec : Nat → Real := fun i ↦ Classical.choose (B.towerHeatBound i tau x) with hdvec
   have hspec : ∀ i : Nat,
       HasDerivWithinAt (fun r : Real ↦ B.w i r x) (dvec i) B.D.carrier t ∧
       dvec i ≤ B.wLap i t x +
         (-2 * B.w (i + 1) t x + towerReactionSum (M := M) B.w B.c i t x) := by
     intro i
-    have h := Classical.choose_spec (B.hheat i tau x)
+    have h := Classical.choose_spec (B.towerHeatBound i tau x)
     simpa only [hdvec, tau] using h
   have hd : ∀ i : Nat,
       HasDerivWithinAt (fun r : Real ↦ B.w i r x) (dvec i) (Set.Icc 0 B.T) t :=
-    fun i ↦ (hspec i).1.mono B.hslab
+    fun i ↦ (hspec i).1.mono B.time_window_subset
   let term : Nat → Real → M → Real := fun i s y ↦
     (BernsteinTower.Gcoef (I := I) B m i * s ^ i) *
       (support.phi s y ^ (i + 1) * B.w i s y)
@@ -1822,7 +1822,7 @@ private theorem GfunSupport_parabolic_le
       MDifferentiableAt I 𝓘(Real, Real) (term i t) y := by
     intro i _
     filter_upwards [support.space_diff_nhds] with y hy
-    have hprod := (hy.pow (i + 1)).mul (B.hw_space i t ht htpos y)
+    have hprod := (hy.pow (i + 1)).mul (B.spatial_differentiable i t ht htpos y)
     rw [show term i t =
         (BernsteinTower.Gcoef (I := I) B m i * t ^ i) •
           (fun z : M => support.phi t z ^ (i + 1) * B.w i t z) by
@@ -1846,7 +1846,7 @@ private theorem GfunSupport_parabolic_le
       exact hpow
     have hw_space : ∀ z : M, MDifferentiableAt I 𝓘(Real, Real) wi z := by
       intro z
-      simpa only [wi] using B.hw_space i t ht htpos z
+      simpa only [wi] using B.spatial_differentiable i t ht htpos z
     have hq_grad :
         MDifferentiableAt I (I.prod 𝓘(Real, E)) (T% fun w : M ↦
         gradientFun (I := I) (G.metric t) qpow w) x := by
@@ -1860,7 +1860,7 @@ private theorem GfunSupport_parabolic_le
     have hw_grad :
         MDifferentiableAt I (I.prod 𝓘(Real, E)) (T% fun w : M ↦
         gradientFun (I := I) (G.metric t) wi w) x := by
-      simpa only [wi] using B.hw_grad i t ht htpos x
+      simpa only [wi] using B.gradient_differentiable i t ht htpos x
     have hprod_grad : MDifferentiableAt I (I.prod 𝓘(Real, E)) (T% fun z : M ↦
         gradientFun (I := I) (G.metric t) (fun w ↦ qpow w * wi w) z) x := by
       have hplain :
@@ -1970,8 +1970,8 @@ private theorem GfunSupport_parabolic_le
       (fun j hj ↦ hIH j (lt_of_le_of_lt hj him))
     rw [← hC] at hR
     have hforce0 : 0 ≤ towerBarGood B.c C i * B.K ^ 3 :=
-      mul_nonneg (by simpa only [hC] using towerBarGood_nonneg B.hc B.α i)
-        (pow_nonneg (le_of_lt B.hK) 3)
+      mul_nonneg (by simpa only [hC] using towerBarGood_nonneg B.reactionConstant_nonneg B.α i)
+        (pow_nonneg (le_of_lt B.curvatureBound_pos) 3)
     have hRq : q ^ (i + 1) *
         (t ^ i * towerReactionSum (M := M) B.w B.c i t x) ≤
           towerBarGood B.c C i * B.K ^ 3 := by
@@ -2010,7 +2010,7 @@ private theorem GfunSupport_parabolic_le
         _ = barTop * B.K * (t ^ m * B.w m t x) + barTop * B.K ^ 3 := by
           field_simp
     have htopForce0 : 0 ≤ barTop * B.K ^ 3 :=
-      mul_nonneg hbarTop0 (pow_nonneg (le_of_lt B.hK) 3)
+      mul_nonneg hbarTop0 (pow_nonneg (le_of_lt B.curvatureBound_pos) 3)
     have hRq : q ^ (m + 1) *
         (t ^ m * towerReactionSum (M := M) B.w B.c m t x) ≤
           topSpace + barTop * B.K ^ 3 := by
@@ -2068,7 +2068,7 @@ private theorem GfunSupport_parabolic_le
     dsimp only [topNeg]
     exact mul_nonneg
       (mul_nonneg (mul_nonneg (by norm_num) (pow_nonneg ht.1 m))
-        (pow_nonneg hq0 (m + 1))) (B.hw_nonneg (m + 1) t ht x)
+        (pow_nonneg hq0 (m + 1))) (B.quantity_nonneg (m + 1) t ht x)
   have hassembled :
       (∑ i ∈ Finset.range m, lowerBound i) + topBound ≤
         errTerm 0 +
@@ -2090,7 +2090,7 @@ private theorem GfunSupport_parabolic_le
         simp only [errTerm, cutErrCoeff, Nat.cast_zero, zero_add, pow_zero]
         ring
       _ ≤ (9 * eps * BernsteinTower.Gcoef (I := I) B m 0) * B.K ^ 2 :=
-        mul_le_mul_of_nonneg_left (B.hw0_bound t ht x) hcoef0
+        mul_le_mul_of_nonneg_left (B.initial_order_bound t ht x) hcoef0
       _ = 9 * eps * BernsteinTower.Gcoef (I := I) B m 0 * B.K ^ 2 := rfl
   rw [hsum]
   linarith [hsumBound, hassembled, herr0]
@@ -2149,17 +2149,17 @@ private theorem GfunCut_time_diff
       (Set.Icc 0 B.T) t := by
   classical
   let τ : RealTimeInterval.RegularTime B.D :=
-    ⟨t, B.hregular t ht htpos⟩
-  set dvec : Nat → Real := fun i ↦ Classical.choose (B.hheat i τ x) with hdvec
+    ⟨t, B.regular_on_positive_time t ht htpos⟩
+  set dvec : Nat → Real := fun i ↦ Classical.choose (B.towerHeatBound i τ x) with hdvec
   have hd : ∀ i : Nat,
       HasDerivWithinAt (fun s : Real ↦ B.w i s x) (dvec i)
         (Set.Icc 0 B.T) t := by
     intro i
-    have hi := (Classical.choose_spec (B.hheat i τ x)).1
+    have hi := (Classical.choose_spec (B.towerHeatBound i τ x)).1
     have hi' : HasDerivWithinAt (fun s : Real ↦ B.w i s x) (dvec i)
         B.D.carrier t := by
       simpa only [hdvec, τ] using hi
-    exact hi'.mono B.hslab
+    exact hi'.mono B.time_window_subset
   let term : Nat → Real → Real := fun i s ↦
     BernsteinTower.Gcoef (I := I) B m i * s ^ i *
       (cut.chi n s x) ^ (i + 1) * B.w i s x
@@ -2203,7 +2203,7 @@ private theorem GfunCut_space_diff
   exact mdifferentiableAt_finset_sum_smul (I := I)
     (Finset.range (m + 1)) f c x (fun i _ ↦ by
       exact ((cut.space_diff (n := n) ht x).pow (i + 1)).mul
-        (B.hw_space i t ht htpos x))
+        (B.spatial_differentiable i t ht htpos x))
 
 namespace BernsteinTower
 
@@ -2225,15 +2225,15 @@ theorem estimate_cutoff_at
     · subst hm0
       intro t ht _ x
       simp only [pow_zero, one_mul, towerConst_zero, one_pow]
-      exact B.hw0_bound t ht x
+      exact B.initial_order_bound t ht x
     · classical
       set C : Nat → Real := towerConst B.c B.α with hC
       set beta : Real := towerBeta B.c B.α C m with hbeta
       have hbeta0 : 0 ≤ beta := by
-        simpa only [hbeta, hC] using towerBeta_nonneg B.hc B.hα m
+        simpa only [hbeta, hC] using towerBeta_nonneg B.reactionConstant_nonneg B.scale_nonneg m
       set barTop : Real := towerBarTop B.c C m with hbarTop
       have hbarTop0 : 0 ≤ barTop := by
-        simpa only [hbarTop, hC] using towerBarTop_nonneg B.hc B.α m
+        simpa only [hbarTop, hC] using towerBarTop_nonneg B.reactionConstant_nonneg B.α m
       set aBar : Real := beta * (Nat.factorial (m - 1) : Real) * B.K ^ 2
         with haBar
       set bCore : Real :=
@@ -2247,18 +2247,18 @@ theorem estimate_cutoff_at
         rw [haBar]
         exact mul_nonneg
           (mul_nonneg hbeta0 (Nat.cast_nonneg (Nat.factorial (m - 1))))
-          (pow_nonneg (le_of_lt B.hK) 2)
+          (pow_nonneg (le_of_lt B.curvatureBound_pos) 2)
       have hsum0 : 0 ≤ ∑ i ∈ Finset.range m,
           towerFactCoeff m i * towerBarGood B.c C i := by
         apply Finset.sum_nonneg
         intro i _
         exact mul_nonneg (towerFactCoeff_nonneg _ _)
-          (by simpa only [hC] using towerBarGood_nonneg B.hc B.α i)
+          (by simpa only [hC] using towerBarGood_nonneg B.reactionConstant_nonneg B.α i)
       have hbCore0 : 0 ≤ bCore := by
         rw [hbCore]
         exact mul_nonneg
           (add_nonneg hbarTop0 (mul_nonneg hbeta0 hsum0))
-          (pow_nonneg (le_of_lt B.hK) 3)
+          (pow_nonneg (le_of_lt B.curvatureBound_pos) 3)
       have hbErr0 : ∀ n, 0 ≤ bErr n := by
         intro n
         dsimp only [bErr]
@@ -2266,16 +2266,16 @@ theorem estimate_cutoff_at
           (mul_nonneg
             (mul_nonneg (by norm_num) (cut.err_nonneg n))
             (BernsteinTower.Gcoef_nonneg (I := I) B m 0))
-          (pow_nonneg (le_of_lt B.hK) 2)
+          (pow_nonneg (le_of_lt B.curvatureBound_pos) 2)
       have hbBar0 : ∀ n, 0 ≤ bBar n :=
         fun n ↦ add_nonneg hbCore0 (hbErr0 n)
       have htK_slab : ∀ s : Real, s ∈ Set.Icc 0 B.T → s * B.K ≤ B.α := by
         intro s hs
-        have hsle : s ≤ B.α / B.K := le_trans hs.2 B.hTK
+        have hsle : s ≤ B.α / B.K := le_trans hs.2 B.time_le_scale_div_curvatureBound
         calc
           s * B.K ≤ (B.α / B.K) * B.K :=
-            mul_le_mul_of_nonneg_right hsle (le_of_lt B.hK)
-          _ = B.α := div_mul_cancel₀ B.α (ne_of_gt B.hK)
+            mul_le_mul_of_nonneg_right hsle (le_of_lt B.curvatureBound_pos)
+          _ = B.α := div_mul_cancel₀ B.α (ne_of_gt B.curvatureBound_pos)
       have hbound_cut : ∀ n : Nat,
           2 * cut.err n * B.T * cutErrCoeff m ≤ 1 →
           ∀ s : Real, s ∈ Set.Icc 0 B.T → ∀ y : M,
@@ -2306,7 +2306,7 @@ theorem estimate_cutoff_at
               MDifferentiableAt I 𝓘(Real, Real) (f i) z := by
             intro i _ z
             exact ((cut.space_diff (n := n) hs z).pow (i + 1)).mul
-              (B.hw_space i s hs hspos z)
+              (B.spatial_differentiable i s hs hspos z)
           have hgradf : ∀ i ∈ Finset.range (m + 1),
               MDifferentiableAt I (I.prod 𝓘(Real, E)) (T% fun z : M ↦
                 gradientFun (I := I) (G.metric s) (f i) z) y := by
@@ -2325,7 +2325,7 @@ theorem estimate_cutoff_at
             have hw_space : ∀ z : M,
                 MDifferentiableAt I 𝓘(Real, Real) wi z := by
               intro z
-              simpa only [wi] using B.hw_space i s hs hspos z
+              simpa only [wi] using B.spatial_differentiable i s hs hspos z
             have hq_grad : ∀ z : M,
                 MDifferentiableAt I (I.prod 𝓘(Real, E)) (T% fun u : M ↦
                   gradientFun (I := I) (G.metric s) qpow u) z := by
@@ -2336,7 +2336,7 @@ theorem estimate_cutoff_at
                 MDifferentiableAt I (I.prod 𝓘(Real, E)) (T% fun u : M ↦
                   gradientFun (I := I) (G.metric s) wi u) z := by
               intro z
-              simpa only [wi] using B.hw_grad i s hs hspos z
+              simpa only [wi] using B.gradient_differentiable i s hs hspos z
             have hprod_grad :
                 MDifferentiableAt I (I.prod 𝓘(Real, E)) (T% fun z : M ↦
                   gradientFun (I := I) (G.metric s)
@@ -2379,7 +2379,7 @@ theorem estimate_cutoff_at
         have hinit : ∀ y : M, F 0 y ≤ aBar := by
           intro y
           have h0mem : (0 : Real) ∈ Set.Icc 0 B.T :=
-            ⟨le_rfl, le_of_lt B.hT⟩
+            ⟨le_rfl, le_of_lt B.time_pos⟩
           have hF0 : F 0 y =
               BernsteinTower.Gcoef (I := I) B m 0 * cut.chi n 0 y * B.w 0 0 y := by
             change GfunCut (I := I) B cut m n 0 y = _
@@ -2398,13 +2398,13 @@ theorem estimate_cutoff_at
               towerFactCoeff]
             rw [Nat.factorial_zero, Nat.cast_one, div_one, ← hC, ← hbeta]
           have hchi := cut.range n 0 y h0mem
-          have hw0 := B.hw_nonneg 0 0 h0mem y
+          have hw0 := B.quantity_nonneg 0 0 h0mem y
           have hchi_w : cut.chi n 0 y * B.w 0 0 y ≤ B.K ^ 2 := by
             calc
               cut.chi n 0 y * B.w 0 0 y ≤ 1 * B.w 0 0 y :=
                 mul_le_mul_of_nonneg_right hchi.2 hw0
               _ = B.w 0 0 y := one_mul _
-              _ ≤ B.K ^ 2 := B.hw0_bound 0 h0mem y
+              _ ≤ B.K ^ 2 := B.initial_order_bound 0 h0mem y
           rw [hF0, hGc0, haBar]
           calc
             beta * (Nat.factorial (m - 1) : Real) * cut.chi n 0 y * B.w 0 0 y =
@@ -2502,7 +2502,7 @@ theorem estimate_cutoff_at
                 (fun _ z ↦ (0 : TangentSpace I z)) w s y := by
           intro s hs hspos y _
           have huniq : UniqueDiffWithinAt Real (Set.Icc 0 B.T) s :=
-            (uniqueDiffOn_Icc B.hT).uniqueDiffWithinAt hs
+            (uniqueDiffOn_Icc B.time_pos).uniqueDiffWithinAt hs
           have hop :
               parabolicOperatorWithDrift (I := I) G B.T
                   (fun _ z ↦ (0 : TangentSpace I z)) w s y =
@@ -2551,7 +2551,7 @@ theorem estimate_cutoff_at
           exact mul_nonneg
             (mul_nonneg (BernsteinTower.Gcoef_nonneg (I := I) B m i)
               (pow_nonneg ht.1 i))
-            (B.hw_nonneg i t ht x)
+            (B.quantity_nonneg i t ht x)
         linarith
       have hsmall_eventually : ∀ᶠ n in Filter.atTop,
           2 * cut.err n * B.T * cutErrCoeff m ≤ 1 := by
@@ -2587,9 +2587,9 @@ theorem estimate_cutoff_at
         have hcoeff0 : 0 ≤ barTop + beta * ∑ i ∈ Finset.range m,
             towerFactCoeff m i * towerBarGood B.c C i :=
           add_nonneg hbarTop0 (mul_nonneg hbeta0 hsum0)
-        have hKsq0 : 0 ≤ B.K ^ 2 := pow_nonneg (le_of_lt B.hK) 2
+        have hKsq0 : 0 ≤ B.K ^ 2 := pow_nonneg (le_of_lt B.curvatureBound_pos) 2
         nlinarith [htK, mul_nonneg hcoeff0 hKsq0]
-      rw [towerConst_sq B.hc B.hα]
+      rw [towerConst_sq B.reactionConstant_nonneg B.scale_nonneg]
       exact hlimit.trans hfinal
 
 omit [NeZero (Module.finrank Real E)] [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
@@ -2611,7 +2611,7 @@ theorem estimate_barrier_at
     · subst hm0
       intro t ht _ x
       simpa only [pow_zero, one_mul, towerConst_zero, one_pow] using
-        B.hw0_bound t ht x
+        B.initial_order_bound t ht x
     · classical
       set C : Nat → Real := towerConst B.c B.α with hC
       set beta : Real := towerBeta B.c B.α C m with hbeta
@@ -2623,31 +2623,31 @@ theorem estimate_barrier_at
           towerFactCoeff m i * towerBarGood B.c C i) * B.K ^ 3
         with hbCore
       have hbeta0 : 0 ≤ beta := by
-        simpa only [hbeta, hC] using towerBeta_nonneg B.hc B.hα m
+        simpa only [hbeta, hC] using towerBeta_nonneg B.reactionConstant_nonneg B.scale_nonneg m
       have hbarTop0 : 0 ≤ barTop := by
-        simpa only [hbarTop, hC] using towerBarTop_nonneg B.hc B.α m
+        simpa only [hbarTop, hC] using towerBarTop_nonneg B.reactionConstant_nonneg B.α m
       have haBar0 : 0 ≤ aBar := by
         rw [haBar]
         exact mul_nonneg
           (mul_nonneg hbeta0 (Nat.cast_nonneg (Nat.factorial (m - 1))))
-          (pow_nonneg (le_of_lt B.hK) 2)
+          (pow_nonneg (le_of_lt B.curvatureBound_pos) 2)
       have hsum0 : 0 ≤ ∑ i ∈ Finset.range m,
           towerFactCoeff m i * towerBarGood B.c C i := by
         apply Finset.sum_nonneg
         intro i _
         exact mul_nonneg (towerFactCoeff_nonneg _ _)
-          (by simpa only [hC] using towerBarGood_nonneg B.hc B.α i)
+          (by simpa only [hC] using towerBarGood_nonneg B.reactionConstant_nonneg B.α i)
       have hbCore0 : 0 ≤ bCore := by
         rw [hbCore]
         exact mul_nonneg
           (add_nonneg hbarTop0 (mul_nonneg hbeta0 hsum0))
-          (pow_nonneg (le_of_lt B.hK) 3)
+          (pow_nonneg (le_of_lt B.curvatureBound_pos) 3)
       have htK_slab : ∀ s : Real, s ∈ Set.Icc 0 B.T → s * B.K ≤ B.α := by
         intro s hs
         calc
           s * B.K ≤ (B.α / B.K) * B.K :=
-            mul_le_mul_of_nonneg_right (hs.2.trans B.hTK) (le_of_lt B.hK)
-          _ = B.α := div_mul_cancel₀ B.α (ne_of_gt B.hK)
+            mul_le_mul_of_nonneg_right (hs.2.trans B.time_le_scale_div_curvatureBound) (le_of_lt B.curvatureBound_pos)
+          _ = B.α := div_mul_cancel₀ B.α (ne_of_gt B.curvatureBound_pos)
       have hbound_cut : ∀ {O : M}
           (cut : ShiBarrierCutoffData (I := I) G B.T O) (n : Nat),
           2 * cut.err n * B.T * cutErrCoeff m ≤ 1 →
@@ -2668,7 +2668,7 @@ theorem estimate_barrier_at
             (mul_nonneg
               (mul_nonneg (by norm_num) (cut.err_nonneg n))
               (BernsteinTower.Gcoef_nonneg (I := I) B m 0))
-            (pow_nonneg (le_of_lt B.hK) 2)
+            (pow_nonneg (le_of_lt B.curvatureBound_pos) 2)
         have hbBar0 : 0 ≤ bBar := add_nonneg hbCore0 hbErr0
         have hFcont : ContinuousOn (fun p : Real × M ↦ F p.1 p.2)
             (Set.Icc 0 B.T ×ˢ cut.support n) := by
@@ -2683,11 +2683,11 @@ theorem estimate_barrier_at
           intro i _
           exact (((continuous_const.mul (continuous_fst.pow i)).continuousOn.mul
             ((cut.joint_cont n).pow (i + 1))).mul
-              ((B.hw_cont i).mono fun p hp ↦ ⟨hp.1, Set.mem_univ _⟩))
+              ((B.continuous i).mono fun p hp ↦ ⟨hp.1, Set.mem_univ _⟩))
         have hinit : ∀ y : M, F 0 y ≤ aBar := by
           intro y
           have h0mem : (0 : Real) ∈ Set.Icc 0 B.T :=
-            ⟨le_rfl, le_of_lt B.hT⟩
+            ⟨le_rfl, le_of_lt B.time_pos⟩
           have hF0 : F 0 y =
               BernsteinTower.Gcoef (I := I) B m 0 *
                 cut.chi n 0 y * B.w 0 0 y := by
@@ -2708,9 +2708,9 @@ theorem estimate_barrier_at
           have hchi_w : cut.chi n 0 y * B.w 0 0 y ≤ B.K ^ 2 := by
             calc
               cut.chi n 0 y * B.w 0 0 y ≤ 1 * B.w 0 0 y :=
-                mul_le_mul_of_nonneg_right hchi.2 (B.hw_nonneg 0 0 h0mem y)
+                mul_le_mul_of_nonneg_right hchi.2 (B.quantity_nonneg 0 0 h0mem y)
               _ = B.w 0 0 y := one_mul _
-              _ ≤ B.K ^ 2 := B.hw0_bound 0 h0mem y
+              _ ≤ B.K ^ 2 := B.initial_order_bound 0 h0mem y
           rw [hF0, hGc0, haBar]
           calc
             beta * (Nat.factorial (m - 1) : Real) *
@@ -2770,7 +2770,7 @@ theorem estimate_barrier_at
           have hFs_eq : Fs s y = F s y := by
             simp only [Fs, F, GfunLocal, support.eq_at]
           refine
-            { v := v
+            { upperSupport := v
               eq_at := by simp only [v, w, hFs_eq]
               upper_nhds := ?_
               time_diff := ?_
@@ -2794,7 +2794,7 @@ theorem estimate_barrier_at
                   mul_le_mul_of_nonneg_left
                     (mul_le_mul_of_nonneg_right
                       (pow_le_pow_left₀ hp.1 hp.2 (i + 1))
-                      (B.hw_nonneg i p.1 hpslab.1 p.2))
+                      (B.quantity_nonneg i p.1 hpslab.1 p.2))
                     (mul_nonneg
                       (BernsteinTower.Gcoef_nonneg (I := I) B m i)
                       (pow_nonneg hpslab.1.1 i))
@@ -2834,7 +2834,7 @@ theorem estimate_barrier_at
                   _ = (-1 : Real) •
                       gradientFun (I := I) (G.metric s) (Fs s) z := by simp)
           · have huniq : UniqueDiffWithinAt Real (Set.Icc 0 B.T) s :=
-              (uniqueDiffOn_Icc B.hT).uniqueDiffWithinAt hs
+              (uniqueDiffOn_Icc B.time_pos).uniqueDiffWithinAt hs
             have hop := parabolic_aff_nhds (I := I) B.T
               (fun _ z ↦ (0 : TangentSpace I z)) Fs aBar bBar s y
               huniq hrec.1 hrec.2.1 hrec.2.2.1
@@ -2864,7 +2864,7 @@ theorem estimate_barrier_at
           exact mul_nonneg
             (mul_nonneg (BernsteinTower.Gcoef_nonneg (I := I) B m i)
               (pow_nonneg ht.1 i))
-            (B.hw_nonneg i t ht x)
+            (B.quantity_nonneg i t ht x)
         have htop : BernsteinTower.Gcoef (I := I) B m m *
             t ^ m * B.w m t x = t ^ m * B.w m t x := by
           rw [BernsteinTower.Gcoef]
@@ -2919,9 +2919,9 @@ theorem estimate_barrier_at
         have hcoeff0 : 0 ≤ barTop + beta * ∑ i ∈ Finset.range m,
             towerFactCoeff m i * towerBarGood B.c C i :=
           add_nonneg hbarTop0 (mul_nonneg hbeta0 hsum0)
-        have hKsq0 : 0 ≤ B.K ^ 2 := pow_nonneg (le_of_lt B.hK) 2
+        have hKsq0 : 0 ≤ B.K ^ 2 := pow_nonneg (le_of_lt B.curvatureBound_pos) 2
         nlinarith [htK, mul_nonneg hcoeff0 hKsq0]
-      rw [towerConst_sq B.hc B.hα]
+      rw [towerConst_sq B.reactionConstant_nonneg B.scale_nonneg]
       exact hlimit.trans hfinal
 
 omit [NeZero (Module.finrank Real E)] [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in

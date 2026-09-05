@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.Metric.ThirdJetDifference
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.Chart.RawComponentIdentification
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.MetricJets.CovariantInput
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.MetricJets.CovariantJetBounds
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.ResidualCoefficient.Decomposition
 open DifferentialGeometry.Analysis.Calculus
 open DifferentialGeometry.Analysis.Elliptic

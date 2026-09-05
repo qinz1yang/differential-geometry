@@ -59,7 +59,7 @@ private theorem telescoping_covariant_derivative_difference_accumulation_one (g�
   rw [hunfold, show telescAccum (I := I) g₁ g₂ r T 0 = 0 from rfl, covariant_derivative_step_zero, zero_add]
 
 noncomputable def covariantDerivativeStepAccumulationTwoComparisonConstant (r : ℕ) (Λ Λ' Λ'' Λ''' : ℝ) : ℝ :=
-  max 0 (covStepDiff2C (E := E) r Λ Λ' Λ'' Λ''' +
+  max 0 (secondCovariantDerivativeStepDifferenceConstant (E := E) r Λ Λ' Λ'' Λ''' +
     (((r + 1 : ℕ) : ℝ) * Real.sqrt ((Module.finrank ℝ E : ℝ) ^ (r + 3)) *
       (3 / 2 * Λ ^ 4 * (Λ'' + Λ * Λ' ^ 2) +
         (3 / 2 : ℝ) * (Real.sqrt (Λ ^ 3) * Λ'))) *
@@ -85,11 +85,11 @@ theorem covariant_derivative_step_accumulation_two_le_comparison_constant
           ∑ k ∈ Finset.range 3,
             Real.sqrt (normSq0S (I := I) g₂ x (r + k) (iterCov (I := I) g₂ r T k x)) := by
   classical
-  let C₂ : ℝ := covStepDiff2C (E := E) r Λ Λ' Λ'' Λ'''
+  let C₂ : ℝ := secondCovariantDerivativeStepDifferenceConstant (E := E) r Λ Λ' Λ'' Λ'''
   have hC₂nn : 0 ≤ C₂ := by
-    dsimp [C₂, covStepDiff2C]
+    dsimp [C₂, secondCovariantDerivativeStepDifferenceConstant]
     exact le_max_left _ _
-  have hC₂ := covStepDiff2_le (I := I) g₁ g₂ r
+  have hC₂ := second_covariant_derivative_step_difference_le (I := I) g₁ g₂ r
     (metricUniformEquivalentOn_symm (I := I) hEq) hJet1 hJet2 hJet3 hjet
   set CA0 : ℝ := (r : ℝ) * Real.sqrt ((Module.finrank ℝ E : ℝ) ^ (r + 2)) *
     (3 / 2 * Λ ^ 4 * (Λ'' + Λ * Λ' ^ 2) + (3 / 2 : ℝ) * (Real.sqrt (Λ ^ 3) * Λ')) with hCA0def

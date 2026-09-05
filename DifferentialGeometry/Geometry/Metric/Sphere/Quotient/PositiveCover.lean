@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Metric.Sphere.Isometry.KillingHopf
-import DifferentialGeometry.Geometry.Metric.Sphere.Round.Inputs
+import DifferentialGeometry.Geometry.Metric.Sphere.Round.BasisPoints
 import DifferentialGeometry.Bundle.FiberBundleHausdorff
 import DifferentialGeometry.Topology.Covering.SemilocallySimplyConnected
 import DifferentialGeometry.Geometry.Metric.UniversalCover.Completeness

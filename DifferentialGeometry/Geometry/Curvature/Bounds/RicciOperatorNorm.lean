@@ -148,7 +148,7 @@ theorem metricRicciComp_le
   have hinv : MetricInverseInBasis (I := I) g x basis
       (identityInvMetric (Idx := ι)) :=
     DifferentialGeometry.Tensor0SBundle.metricInverseInBasis_of_orthonormal (I := I) g basis hON
-  let D := metricCurvData (I := I) (M := M) g
+  let D := metricCurvatureSections (I := I) (M := M) g
   have hLower : Rm04LowersRm13At (I := I) g x
       (metricRm13 (I := I) (M := M) g x)
       (metricRm04 (I := I) (M := M) g x) :=
@@ -273,7 +273,7 @@ theorem exists_ricci_bound
     have h := DifferentialGeometry.Tensor0SBundle.metricInverseInBasis_of_orthonormal (I := I) g basis hON
     intro i j
     simpa [identityInvMetric, diagonalInvMetric] using h i j
-  let D := metricCurvData (I := I) (M := M) g
+  let D := metricCurvatureSections (I := I) (M := M) g
   have hLower :
       Rm04LowersRm13At (I := I) g x
         (metricRm13 (I := I) (M := M) g x)

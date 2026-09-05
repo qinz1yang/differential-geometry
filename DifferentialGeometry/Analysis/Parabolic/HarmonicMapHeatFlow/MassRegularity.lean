@@ -104,28 +104,28 @@ private theorem harmonicMapFlowBilin_eq_sum
   ring
 
 omit [BoundarylessManifold I M] [ConnectedSpace M] in
-private theorem harmonicMapFlowSpecMassPt_mfderiv_apply
+private theorem harmonicMapFlowSpectralMassPointwise_mfderiv_apply
     (q : SmoothRiemannianMetric I M)
     (S : Finset (TensorEigenIdx (I := I) (M := M) q 0 1))
     (u v w : EuclideanSpace ℝ {i // i ∈ S}) (x : M) :
-    harmonicMapFlowSpecMassPt (I := I) (M := M) q S u x v w =
-      q.inner (harmonicMapFlowSpecMap (I := I) (M := M) q S x u)
+    harmonicMapFlowSpectralMassPointwise (I := I) (M := M) q S u x v w =
+      q.inner (harmonicMapFlowSpectralMap (I := I) (M := M) q S x u)
         (mfderiv 𝓘(ℝ, EuclideanSpace ℝ {i // i ∈ S}) I
-          (harmonicMapFlowSpecMap (I := I) (M := M) q S x) u
+          (harmonicMapFlowSpectralMap (I := I) (M := M) q S x) u
           ((tangentSpaceModelContinuousLinearEquiv
             (I := 𝓘(ℝ, EuclideanSpace ℝ {i // i ∈ S}))
             u).symm.toContinuousLinearMap v))
         (mfderiv 𝓘(ℝ, EuclideanSpace ℝ {i // i ∈ S}) I
-          (harmonicMapFlowSpecMap (I := I) (M := M) q S x) u
+          (harmonicMapFlowSpectralMap (I := I) (M := M) q S x) u
           ((tangentSpaceModelContinuousLinearEquiv
             (I := 𝓘(ℝ, EuclideanSpace ℝ {i // i ∈ S}))
             u).symm.toContinuousLinearMap w)) := by
-  simp only [harmonicMapFlowSpecMassPt_apply, harmonicMapFlowSpecVar_def,
+  simp only [harmonicMapFlowSpectralMassPointwise_apply, harmonicMapFlowSpectralVariation_def,
     ContinuousLinearMap.comp_apply]
 
 omit [BoundarylessManifold I M]
   [ConnectedSpace M] in
-theorem harmonicMapFlowSpecMassPt_cd
+theorem harmonicMapFlowSpectralMassPointwise_contMDiff
     (q : SmoothRiemannianMetric I M)
     (S : Finset (TensorEigenIdx (I := I) (M := M) q 0 1)) :
     ∃ R : ℝ, 0 < R ∧
@@ -134,7 +134,7 @@ theorem harmonicMapFlowSpecMassPt_cd
           EuclideanSpace ℝ {i // i ∈ S} →L[ℝ] ℝ)
         (1 : ℕ∞)
         (fun p : EuclideanSpace ℝ {i // i ∈ S} × M ↦
-          harmonicMapFlowSpecMassPt (I := I) (M := M) q S p.1 p.2)
+          harmonicMapFlowSpectralMassPointwise (I := I) (M := M) q S p.1 p.2)
         (Metric.ball 0 R ×ˢ (Set.univ : Set M)) := by
   classical
   let : CompleteSpace E := FiniteDimensional.complete ℝ E
@@ -148,9 +148,9 @@ theorem harmonicMapFlowSpecMassPt_cd
       ContMDiffOn P (I.prod 𝓘(ℝ, E)) (2 : ℕ∞)
         (fun p : EuclideanSpace ℝ {i // i ∈ S} × M ↦
           (TotalSpace.mk' E
-            (harmonicMapFlowSpecMap (I := I) (M := M) q S p.2 p.1)
+            (harmonicMapFlowSpectralMap (I := I) (M := M) q S p.2 p.1)
             (mfderiv 𝓘(ℝ, EuclideanSpace ℝ {i // i ∈ S}) I
-              (harmonicMapFlowSpecMap (I := I) (M := M) q S p.2)
+              (harmonicMapFlowSpectralMap (I := I) (M := M) q S p.2)
               p.1
               ((tangentSpaceModelContinuousLinearEquiv
                 (I := 𝓘(ℝ, EuclideanSpace ℝ {i // i ∈ S}))
@@ -158,7 +158,7 @@ theorem harmonicMapFlowSpecMassPt_cd
         (Metric.ball 0 R ×ˢ (Set.univ : Set M)) := by
     intro a
     simpa only [P] using
-      harmonicMapFlowSpecCoeff_cd (I := I) (M := M) q S (dir a)
+      harmonicMapFlowSpectralCoefficient_contMDiff (I := I) (M := M) q S (dir a)
   choose rad hrad hsec using hdir
   let R : ℝ := (Finset.univ : Finset (Option {i // i ∈ S})).inf'
     Finset.univ_nonempty rad
@@ -177,9 +177,9 @@ theorem harmonicMapFlowSpecMassPt_cd
       ContMDiffOn P (I.prod 𝓘(ℝ, E)) (2 : ℕ∞)
         (fun p : EuclideanSpace ℝ {i // i ∈ S} × M ↦
           (TotalSpace.mk' E
-            (harmonicMapFlowSpecMap (I := I) (M := M) q S p.2 p.1)
+            (harmonicMapFlowSpectralMap (I := I) (M := M) q S p.2 p.1)
             (mfderiv 𝓘(ℝ, EuclideanSpace ℝ {i // i ∈ S}) I
-              (harmonicMapFlowSpecMap (I := I) (M := M) q S p.2)
+              (harmonicMapFlowSpectralMap (I := I) (M := M) q S p.2)
               p.1
               ((tangentSpaceModelContinuousLinearEquiv
                 (I := 𝓘(ℝ, EuclideanSpace ℝ {i // i ∈ S}))
@@ -189,7 +189,7 @@ theorem harmonicMapFlowSpecMassPt_cd
       (Metric.ball_subset_ball (hRle a)) (Set.Subset.rfl))
   have hmap : ContMDiffOn P I (2 : ℕ∞)
       (fun p : EuclideanSpace ℝ {i // i ∈ S} × M ↦
-        harmonicMapFlowSpecMap (I := I) (M := M) q S p.2 p.1) D := by
+        harmonicMapFlowSpectralMap (I := I) (M := M) q S p.2 p.1) D := by
     intro p hp
     have hat := hsecR none p hp
     rw [Bundle.contMDiffWithinAt_totalSpace] at hat
@@ -200,14 +200,14 @@ theorem harmonicMapFlowSpecMassPt_cd
         TotalSpace.mk' (E →L[ℝ] E →L[ℝ] ℝ)
           (E := fun y : M ↦
             TangentSpace I y →L[ℝ] TangentSpace I y →L[ℝ] ℝ)
-          (harmonicMapFlowSpecMap (I := I) (M := M) q S p.2 p.1)
-          (q.inner (harmonicMapFlowSpecMap (I := I) (M := M) q S p.2 p.1))) D := by
+          (harmonicMapFlowSpectralMap (I := I) (M := M) q S p.2 p.1)
+          (q.inner (harmonicMapFlowSpectralMap (I := I) (M := M) q S p.2 p.1))) D := by
     with_unfolding_all
       exact (q.contMDiff.of_le (by simp)).comp_contMDiffOn
         (hmap.of_le (by norm_num))
   have hcoeff : ∀ i j : {i // i ∈ S}, ContMDiffOn P 𝓘(ℝ) (1 : ℕ∞)
       (fun p : EuclideanSpace ℝ {i // i ∈ S} × M ↦
-        harmonicMapFlowSpecMassPt (I := I) (M := M) q S p.1 p.2 (b i) (b j)) D := by
+        harmonicMapFlowSpectralMassPointwise (I := I) (M := M) q S p.1 p.2 (b i) (b j)) D := by
     intro i j
     have happ := ContMDiffOn.clm_bundle_apply₂
       (F₁ := E) (F₂ := E) (F₃ := ℝ)
@@ -215,7 +215,7 @@ theorem harmonicMapFlowSpecMassPt_cd
       (E₂ := fun y : M ↦ TangentSpace I y)
       (E₃ := fun _ : M ↦ ℝ)
       (b := fun p : EuclideanSpace ℝ {i // i ∈ S} × M ↦
-        harmonicMapFlowSpecMap (I := I) (M := M) q S p.2 p.1) hmetric
+        harmonicMapFlowSpectralMap (I := I) (M := M) q S p.2 p.1) hmetric
       ((hsecR (some i)).of_le (by norm_num))
       ((hsecR (some j)).of_le (by norm_num))
     intro p hp
@@ -227,16 +227,16 @@ theorem harmonicMapFlowSpecMassPt_cd
     apply hraw.congr
     · intro y hy
       simpa only [dir] using
-        harmonicMapFlowSpecMassPt_mfderiv_apply (I := I) (M := M)
+        harmonicMapFlowSpectralMassPointwise_mfderiv_apply (I := I) (M := M)
           q S y.1 (b i) (b j) y.2
     · simpa only [dir] using
-        harmonicMapFlowSpecMassPt_mfderiv_apply (I := I) (M := M)
+        harmonicMapFlowSpectralMassPointwise_mfderiv_apply (I := I) (M := M)
           q S p.1 (b i) (b j) p.2
   have hsum : ContMDiffOn P
       𝓘(ℝ, EuclideanSpace ℝ {i // i ∈ S} →L[ℝ]
         EuclideanSpace ℝ {i // i ∈ S} →L[ℝ] ℝ) (1 : ℕ∞)
       (fun p : EuclideanSpace ℝ {i // i ∈ S} × M ↦ ∑ i, ∑ j,
-        harmonicMapFlowSpecMassPt (I := I) (M := M) q S p.1 p.2 (b i) (b j) •
+        harmonicMapFlowSpectralMassPointwise (I := I) (M := M) q S p.1 p.2 (b i) (b j) •
           harmonicMapFlowMUnit {i // i ∈ S} i j) D := by
     refine contMDiffOn_finsetSum (fun i _ ↦ ?_)
     refine contMDiffOn_finsetSum (fun j _ ↦ ?_)
@@ -246,7 +246,7 @@ theorem harmonicMapFlowSpecMassPt_cd
     intro p hp
     simpa only [b] using
       (harmonicMapFlowBilin_eq_sum {i // i ∈ S}
-        (harmonicMapFlowSpecMassPt (I := I) (M := M) q S p.1 p.2)))
+        (harmonicMapFlowSpectralMassPointwise (I := I) (M := M) q S p.1 p.2)))
 
 omit [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
   [ConnectedSpace M] in
@@ -286,25 +286,25 @@ private theorem mdifferentiable_coeff_slice
 
 omit [BoundarylessManifold I M]
   [ConnectedSpace M] in
-theorem harmonicMapFlowSpecMassPt_continuous
+theorem harmonicMapFlowSpectralMassPointwise_continuous
     (q : SmoothRiemannianMetric I M)
     (S : Finset (TensorEigenIdx (I := I) (M := M) q 0 1)) :
     ∃ R : ℝ, 0 < R ∧
       ∀ u : EuclideanSpace ℝ {i // i ∈ S}, u ∈ Metric.ball 0 R →
         Continuous
-          (fun x : M ↦ harmonicMapFlowSpecMassPt (I := I) (M := M) q S u x) := by
+          (fun x : M ↦ harmonicMapFlowSpectralMassPointwise (I := I) (M := M) q S u x) := by
   obtain ⟨R, hR, hmass⟩ :=
-    harmonicMapFlowSpecMassPt_cd (I := I) (M := M) q S
+    harmonicMapFlowSpectralMassPointwise_contMDiff (I := I) (M := M) q S
   refine ⟨R, hR, ?_⟩
   intro u hu
   exact continuous_slice_of_continuousOn_prod
-    (fun z x ↦ harmonicMapFlowSpecMassPt (I := I) (M := M) q S z x)
+    (fun z x ↦ harmonicMapFlowSpectralMassPointwise (I := I) (M := M) q S z x)
     hmass.continuousOn hu
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
   [I.Boundaryless] [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
   [BoundarylessManifold I M] [ConnectedSpace M] in
-private theorem partialFderiv_cont
+private theorem partialFderiv_continuous
     {V W : Type*} [NormedAddCommGroup V] [NormedSpace ℝ V]
     [NormedAddCommGroup W] [NormedSpace ℝ W]
     (F : V → M → W) {R r : ℝ} (hrr : r < R)
@@ -350,7 +350,7 @@ private theorem partialFderiv_cont
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
   [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
   [BoundarylessManifold I M] [ConnectedSpace M] in
-private theorem point_lip_cball
+private theorem exists_pointwise_lipschitzOn_closedBall
     {V W : Type*} [NormedAddCommGroup V] [NormedSpace ℝ V]
     [FiniteDimensional ℝ V]
     [NormedAddCommGroup W] [NormedSpace ℝ W]
@@ -372,7 +372,7 @@ private theorem point_lip_cball
     Metric.closedBall 0 r ×ˢ (Set.univ : Set M)
   have hDK : ContinuousOn
       (fun p : V × M ↦ fderiv ℝ (fun u : V ↦ F u p.2) p.1) K :=
-    partialFderiv_cont (I := I) (M := M) F hrR hF
+    partialFderiv_continuous (I := I) (M := M) F hrR hF
   have hK : IsCompact K :=
     (isCompact_closedBall (0 : V) r).prod isCompact_univ
   obtain ⟨C, hC⟩ := hK.exists_bound_of_continuousOn hDK.norm
@@ -412,28 +412,28 @@ private theorem point_lip_cball
 
 omit [BoundarylessManifold I M]
   [ConnectedSpace M] in
-theorem harmonicMapFlowSpecMassPt_lip
+theorem harmonicMapFlowSpectralMassPointwise_lipschitzOn
     (q : SmoothRiemannianMetric I M)
     (S : Finset (TensorEigenIdx (I := I) (M := M) q 0 1)) :
     ∃ R : ℝ, 0 < R ∧ ∃ L : ℝ≥0, ∀ x : M,
       LipschitzOnWith L
         (fun u : EuclideanSpace ℝ {i // i ∈ S} ↦
-          harmonicMapFlowSpecMassPt (I := I) (M := M) q S u x)
+          harmonicMapFlowSpectralMassPointwise (I := I) (M := M) q S u x)
         (Metric.closedBall 0 R) := by
-  obtain ⟨R, hR, hmass⟩ := harmonicMapFlowSpecMassPt_cd (I := I) (M := M) q S
+  obtain ⟨R, hR, hmass⟩ := harmonicMapFlowSpectralMassPointwise_contMDiff (I := I) (M := M) q S
   obtain ⟨r, hr, L, hlip, _⟩ :=
-    point_lip_cball (I := I) (M := M)
-      (fun u x ↦ harmonicMapFlowSpecMassPt (I := I) (M := M) q S u x) hR hmass
+    exists_pointwise_lipschitzOn_closedBall (I := I) (M := M)
+      (fun u x ↦ harmonicMapFlowSpectralMassPointwise (I := I) (M := M) q S u x) hR hmass
   exact ⟨r, hr, L, hlip⟩
 
 omit [BoundarylessManifold I M]
   [ConnectedSpace M] in
-theorem harmonicMapFlowSpecMass_lip
+theorem harmonicMapFlowSpectralMassOperator_lipschitzOn
     (q h : SmoothRiemannianMetric I M)
     (S : Finset (TensorEigenIdx (I := I) (M := M) q 0 1)) :
     ∃ R : ℝ, 0 < R ∧ ∃ L : ℝ≥0,
       LipschitzOnWith L
-        (harmonicMapFlowSpecMassOp (I := I) (M := M) q h S)
+        (harmonicMapFlowSpectralMassOperator (I := I) (M := M) q h S)
         (Metric.closedBall 0 R) := by
   let : NormedAddCommGroup
       (EuclideanSpace ℝ {i // i ∈ S} →L[ℝ] ℝ) :=
@@ -453,46 +453,46 @@ theorem harmonicMapFlowSpecMass_lip
   have : IsFiniteMeasure μ :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace
       (I := I) (M := M) h
-  obtain ⟨R, hR, hmass⟩ := harmonicMapFlowSpecMassPt_cd (I := I) (M := M) q S
+  obtain ⟨R, hR, hmass⟩ := harmonicMapFlowSpectralMassPointwise_contMDiff (I := I) (M := M) q S
   obtain ⟨r, hr, Lp, hpLip, hpCont⟩ :=
-    point_lip_cball (I := I) (M := M)
-      (fun u x ↦ harmonicMapFlowSpecMassPt (I := I) (M := M) q S u x) hR hmass
+    exists_pointwise_lipschitzOn_closedBall (I := I) (M := M)
+      (fun u x ↦ harmonicMapFlowSpectralMassPointwise (I := I) (M := M) q S u x) hR hmass
   let vol : ℝ≥0 := ⟨μ.real Set.univ, measureReal_nonneg⟩
   have hvol_coe : (vol : ℝ) = μ.real Set.univ := rfl
   let L : ℝ≥0 := Lp * vol
   refine ⟨r, hr, L, LipschitzOnWith.of_dist_le_mul ?_⟩
   intro u hu v hv
   have hcont_u : Continuous
-      (fun x : M ↦ harmonicMapFlowSpecMassPt (I := I) (M := M) q S u x) := by
+      (fun x : M ↦ harmonicMapFlowSpectralMassPointwise (I := I) (M := M) q S u x) := by
     exact continuous_slice_of_continuousOn_prod
-      (fun z x ↦ harmonicMapFlowSpecMassPt (I := I) (M := M) q S z x) hpCont hu
+      (fun z x ↦ harmonicMapFlowSpectralMassPointwise (I := I) (M := M) q S z x) hpCont hu
   have hcont_v : Continuous
-      (fun x : M ↦ harmonicMapFlowSpecMassPt (I := I) (M := M) q S v x) := by
+      (fun x : M ↦ harmonicMapFlowSpectralMassPointwise (I := I) (M := M) q S v x) := by
     exact continuous_slice_of_continuousOn_prod
-      (fun z x ↦ harmonicMapFlowSpecMassPt (I := I) (M := M) q S z x) hpCont hv
+      (fun z x ↦ harmonicMapFlowSpectralMassPointwise (I := I) (M := M) q S z x) hpCont hv
   have hint_u : Integrable
-      (fun x : M ↦ harmonicMapFlowSpecMassPt (I := I) (M := M) q S u x) μ :=
+      (fun x : M ↦ harmonicMapFlowSpectralMassPointwise (I := I) (M := M) q S u x) μ :=
     integrableOn_univ.mp
       (hcont_u.continuousOn.integrableOn_compact isCompact_univ)
   have hint_v : Integrable
-      (fun x : M ↦ harmonicMapFlowSpecMassPt (I := I) (M := M) q S v x) μ :=
+      (fun x : M ↦ harmonicMapFlowSpectralMassPointwise (I := I) (M := M) q S v x) μ :=
     integrableOn_univ.mp
       (hcont_v.continuousOn.integrableOn_compact isCompact_univ)
   rw [dist_eq_norm]
-  change ‖(∫ x, harmonicMapFlowSpecMassPt (I := I) (M := M) q S u x ∂μ) -
-      ∫ x, harmonicMapFlowSpecMassPt (I := I) (M := M) q S v x ∂μ‖ ≤
+  change ‖(∫ x, harmonicMapFlowSpectralMassPointwise (I := I) (M := M) q S u x ∂μ) -
+      ∫ x, harmonicMapFlowSpectralMassPointwise (I := I) (M := M) q S v x ∂μ‖ ≤
     (L : ℝ) * ‖u - v‖
   rw [← integral_sub hint_u hint_v]
   have hbound : ∀ᵐ x ∂μ,
-      ‖harmonicMapFlowSpecMassPt (I := I) (M := M) q S u x -
-          harmonicMapFlowSpecMassPt (I := I) (M := M) q S v x‖ ≤
+      ‖harmonicMapFlowSpectralMassPointwise (I := I) (M := M) q S u x -
+          harmonicMapFlowSpectralMassPointwise (I := I) (M := M) q S v x‖ ≤
         (Lp : ℝ) * ‖u - v‖ := by
     filter_upwards with x
     simpa only [dist_eq_norm] using
       (hpLip x).dist_le_mul u hu v hv
   calc
-    ‖∫ x, harmonicMapFlowSpecMassPt (I := I) (M := M) q S u x -
-        harmonicMapFlowSpecMassPt (I := I) (M := M) q S v x ∂μ‖
+    ‖∫ x, harmonicMapFlowSpectralMassPointwise (I := I) (M := M) q S u x -
+        harmonicMapFlowSpectralMassPointwise (I := I) (M := M) q S v x ∂μ‖
         ≤ ((Lp : ℝ) * ‖u - v‖) * μ.real Set.univ :=
       norm_integral_le_of_norm_le_const hbound
     _ = (L : ℝ) * ‖u - v‖ := by
@@ -503,7 +503,7 @@ theorem harmonicMapFlowSpecMass_lip
 
 omit [BoundarylessManifold I M]
   [ConnectedSpace M] in
-theorem harmonicMapFlowMassFam_lip
+theorem harmonicMapFlowMassFamily_lipschitzOn
     (q : SmoothRiemannianMetric I M)
     (S : Finset (TensorEigenIdx (I := I) (M := M) q 0 1))
     (g : ℝ → SmoothRiemannianMetric I M) {K : Set ℝ} (B : ℝ≥0)
@@ -511,12 +511,12 @@ theorem harmonicMapFlowMassFam_lip
       (riemannianVolumeMeasure (I := I) (M := M) (g t)).real Set.univ ≤ B) :
     ∃ R : ℝ, 0 < R ∧ ∃ L : ℝ≥0, ∀ t ∈ K,
       LipschitzOnWith L
-        (harmonicMapFlowSpecMassOp (I := I) (M := M) q (g t) S)
+        (harmonicMapFlowSpectralMassOperator (I := I) (M := M) q (g t) S)
         (Metric.closedBall 0 R) := by
-  obtain ⟨R, hR, hmass⟩ := harmonicMapFlowSpecMassPt_cd (I := I) (M := M) q S
+  obtain ⟨R, hR, hmass⟩ := harmonicMapFlowSpectralMassPointwise_contMDiff (I := I) (M := M) q S
   obtain ⟨r, hr, Lp, hpLip, hpCont⟩ :=
-    point_lip_cball (I := I) (M := M)
-      (fun u x ↦ harmonicMapFlowSpecMassPt (I := I) (M := M) q S u x) hR hmass
+    exists_pointwise_lipschitzOn_closedBall (I := I) (M := M)
+      (fun u x ↦ harmonicMapFlowSpectralMassPointwise (I := I) (M := M) q S u x) hR hmass
   let L : ℝ≥0 := Lp * B
   refine ⟨r, hr, L, ?_⟩
   intro t ht
@@ -541,36 +541,36 @@ theorem harmonicMapFlowMassFam_lip
   apply LipschitzOnWith.of_dist_le_mul
   intro u hu v hv
   have hcont_u : Continuous
-      (fun x : M ↦ harmonicMapFlowSpecMassPt (I := I) (M := M) q S u x) := by
+      (fun x : M ↦ harmonicMapFlowSpectralMassPointwise (I := I) (M := M) q S u x) := by
     exact continuous_slice_of_continuousOn_prod
-      (fun z x ↦ harmonicMapFlowSpecMassPt (I := I) (M := M) q S z x) hpCont hu
+      (fun z x ↦ harmonicMapFlowSpectralMassPointwise (I := I) (M := M) q S z x) hpCont hu
   have hcont_v : Continuous
-      (fun x : M ↦ harmonicMapFlowSpecMassPt (I := I) (M := M) q S v x) := by
+      (fun x : M ↦ harmonicMapFlowSpectralMassPointwise (I := I) (M := M) q S v x) := by
     exact continuous_slice_of_continuousOn_prod
-      (fun z x ↦ harmonicMapFlowSpecMassPt (I := I) (M := M) q S z x) hpCont hv
+      (fun z x ↦ harmonicMapFlowSpectralMassPointwise (I := I) (M := M) q S z x) hpCont hv
   have hint_u : Integrable
-      (fun x : M ↦ harmonicMapFlowSpecMassPt (I := I) (M := M) q S u x) μ :=
+      (fun x : M ↦ harmonicMapFlowSpectralMassPointwise (I := I) (M := M) q S u x) μ :=
     integrableOn_univ.mp
       (hcont_u.continuousOn.integrableOn_compact isCompact_univ)
   have hint_v : Integrable
-      (fun x : M ↦ harmonicMapFlowSpecMassPt (I := I) (M := M) q S v x) μ :=
+      (fun x : M ↦ harmonicMapFlowSpectralMassPointwise (I := I) (M := M) q S v x) μ :=
     integrableOn_univ.mp
       (hcont_v.continuousOn.integrableOn_compact isCompact_univ)
   rw [dist_eq_norm]
-  change ‖(∫ x, harmonicMapFlowSpecMassPt (I := I) (M := M) q S u x ∂μ) -
-      ∫ x, harmonicMapFlowSpecMassPt (I := I) (M := M) q S v x ∂μ‖ ≤
+  change ‖(∫ x, harmonicMapFlowSpectralMassPointwise (I := I) (M := M) q S u x ∂μ) -
+      ∫ x, harmonicMapFlowSpectralMassPointwise (I := I) (M := M) q S v x ∂μ‖ ≤
     (L : ℝ) * ‖u - v‖
   rw [← integral_sub hint_u hint_v]
   have hbound : ∀ᵐ x ∂μ,
-      ‖harmonicMapFlowSpecMassPt (I := I) (M := M) q S u x -
-          harmonicMapFlowSpecMassPt (I := I) (M := M) q S v x‖ ≤
+      ‖harmonicMapFlowSpectralMassPointwise (I := I) (M := M) q S u x -
+          harmonicMapFlowSpectralMassPointwise (I := I) (M := M) q S v x‖ ≤
         (Lp : ℝ) * ‖u - v‖ := by
     filter_upwards with x
     simpa only [dist_eq_norm] using
       (hpLip x).dist_le_mul u hu v hv
   calc
-    ‖∫ x, harmonicMapFlowSpecMassPt (I := I) (M := M) q S u x -
-        harmonicMapFlowSpecMassPt (I := I) (M := M) q S v x ∂μ‖
+    ‖∫ x, harmonicMapFlowSpectralMassPointwise (I := I) (M := M) q S u x -
+        harmonicMapFlowSpectralMassPointwise (I := I) (M := M) q S v x ∂μ‖
         ≤ ((Lp : ℝ) * ‖u - v‖) * μ.real Set.univ :=
       norm_integral_le_of_norm_le_const hbound
     _ ≤ ((Lp : ℝ) * ‖u - v‖) * (B : ℝ) := by
@@ -582,22 +582,22 @@ theorem harmonicMapFlowMassFam_lip
 
 omit [BoundarylessManifold I M]
   [ConnectedSpace M] in
-theorem harmonicMapFlowSpecMassQ_lip
+theorem harmonicMapFlowSpectralMassOperator_self_lipschitzOn
     (q : SmoothRiemannianMetric I M)
     (S : Finset (TensorEigenIdx (I := I) (M := M) q 0 1)) :
     ∃ R : ℝ, 0 < R ∧ ∃ L : ℝ≥0,
       LipschitzOnWith L
-        (harmonicMapFlowSpecMassOp (I := I) (M := M) q q S)
+        (harmonicMapFlowSpectralMassOperator (I := I) (M := M) q q S)
         (Metric.closedBall 0 R) :=
-  harmonicMapFlowSpecMass_lip (I := I) (M := M) q q S
+  harmonicMapFlowSpectralMassOperator_lipschitzOn (I := I) (M := M) q q S
 
 omit [BoundarylessManifold I M] [ConnectedSpace M] in
-theorem harmonicMapFlowSpecMass_zero
+theorem harmonicMapFlowSpectralMass_zero
     (q h : SmoothRiemannianMetric I M)
     (S : Finset (TensorEigenIdx (I := I) (M := M) q 0 1)) :
-    harmonicMapFlowSpecMassOp (I := I) (M := M) q h S 0 =
-      harmonicMapFlowFinMass (I := I) (M := M) q h
-        (harmonicMapFlowSpecIncl (I := I) (M := M) q S) := by
+    harmonicMapFlowSpectralMassOperator (I := I) (M := M) q h S 0 =
+      harmonicMapFlowFiniteDimensionalMass (I := I) (M := M) q h
+        (harmonicMapFlowSpectralInclusion (I := I) (M := M) q S) := by
   let : NormedAddCommGroup
       (EuclideanSpace ℝ {i // i ∈ S} →L[ℝ] ℝ) :=
     ContinuousLinearMap.toNormedAddCommGroup
@@ -612,9 +612,9 @@ theorem harmonicMapFlowSpecMass_zero
       (EuclideanSpace ℝ {i // i ∈ S} →L[ℝ]
         EuclideanSpace ℝ {i // i ∈ S} →L[ℝ] ℝ) :=
     ContinuousLinearMap.toNormedSpace
-  obtain ⟨Rm, hRm, hmass⟩ := harmonicMapFlowSpecMassPt_cd (I := I) (M := M) q S
+  obtain ⟨Rm, hRm, hmass⟩ := harmonicMapFlowSpectralMassPointwise_contMDiff (I := I) (M := M) q S
   obtain ⟨Ra, hRa, hmap⟩ :=
-    harmonicMapFlowSpecMap_cd (I := I) (M := M) q S 1
+    harmonicMapFlowSpectralMap_contMDiff (I := I) (M := M) q S 1
   let μ := riemannianVolumeMeasure (I := I) (M := M) h
   have : IsFiniteMeasure μ :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace
@@ -624,12 +624,12 @@ theorem harmonicMapFlowSpecMass_zero
   have hzero_a : (0 : EuclideanSpace ℝ {i // i ∈ S}) ∈ Metric.ball 0 Ra := by
     simpa only [Metric.mem_ball, dist_self] using hRa
   have hcont : Continuous
-      (fun x : M ↦ harmonicMapFlowSpecMassPt (I := I) (M := M) q S 0 x) := by
+      (fun x : M ↦ harmonicMapFlowSpectralMassPointwise (I := I) (M := M) q S 0 x) := by
     exact continuous_slice_of_continuousOn_prod
-      (fun z x ↦ harmonicMapFlowSpecMassPt (I := I) (M := M) q S z x)
+      (fun z x ↦ harmonicMapFlowSpectralMassPointwise (I := I) (M := M) q S z x)
       hmass.continuousOn hzero_m
   have hint : Integrable
-      (fun x : M ↦ harmonicMapFlowSpecMassPt (I := I) (M := M) q S 0 x)
+      (fun x : M ↦ harmonicMapFlowSpectralMassPointwise (I := I) (M := M) q S 0 x)
       μ :=
     integrableOn_univ.mp
       (hcont.continuousOn.integrableOn_compact isCompact_univ)
@@ -637,30 +637,30 @@ theorem harmonicMapFlowSpecMass_zero
       MDifferentiableAt 𝓘(ℝ, EuclideanSpace ℝ {i // i ∈ S}) I
         (fun z : EuclideanSpace ℝ {i // i ∈ S} ↦
           harmonicMapFlowAdd (I := I) (M := M) q
-            (harmonicMapFlowSpecIncl (I := I) (M := M) q S z) x) 0 := by
+            (harmonicMapFlowSpectralInclusion (I := I) (M := M) q S z) x) 0 := by
     intro x
-    simpa only [harmonicMapFlowSpecMap_apply] using
+    simpa only [harmonicMapFlowSpectralMap_apply] using
       mdifferentiable_coeff_slice
-        (fun z y ↦ harmonicMapFlowSpecMap (I := I) (M := M) q S y z)
+        (fun z y ↦ harmonicMapFlowSpectralMap (I := I) (M := M) q S y z)
         hmap hzero_a x
   ext v w
   calc
-    harmonicMapFlowSpecMassOp (I := I) (M := M) q h S 0 v w =
+    harmonicMapFlowSpectralMassOperator (I := I) (M := M) q h S 0 v w =
         harmonicMapFlowStateMass (I := I) (M := M) q h
-          (harmonicMapFlowSpecIncl (I := I) (M := M) q S 0)
-          (harmonicMapFlowSpecIncl (I := I) (M := M) q S v)
-          (harmonicMapFlowSpecIncl (I := I) (M := M) q S w) :=
-      harmonicMapFlowSpecMass_state (I := I) (M := M) q h S 0 v w hmd hint
+          (harmonicMapFlowSpectralInclusion (I := I) (M := M) q S 0)
+          (harmonicMapFlowSpectralInclusion (I := I) (M := M) q S v)
+          (harmonicMapFlowSpectralInclusion (I := I) (M := M) q S w) :=
+      harmonicMapFlowSpectralMass_state (I := I) (M := M) q h S 0 v w hmd hint
     _ = harmonicMapFlowMass (I := I) (M := M) q h
-          (harmonicMapFlowSpecIncl (I := I) (M := M) q S v)
-          (harmonicMapFlowSpecIncl (I := I) (M := M) q S w) := by
+          (harmonicMapFlowSpectralInclusion (I := I) (M := M) q S v)
+          (harmonicMapFlowSpectralInclusion (I := I) (M := M) q S w) := by
       rw [map_zero, harmonicMapFlowStateMass_zero_eq]
-    _ = harmonicMapFlowFinMass (I := I) (M := M) q h
-          (harmonicMapFlowSpecIncl (I := I) (M := M) q S) v w := by
-      rw [harmonicMapFlowFinMass_apply]
+    _ = harmonicMapFlowFiniteDimensionalMass (I := I) (M := M) q h
+          (harmonicMapFlowSpectralInclusion (I := I) (M := M) q S) v w := by
+      rw [harmonicMapFlowFiniteDimensionalMass_apply]
 
 omit [BoundarylessManifold I M] [ConnectedSpace M] in
-theorem harmonicMapFlowSpecMass_lower
+theorem harmonicMapFlowSpectralMass_lower
     (q h : SmoothRiemannianMetric I M)
     (S : Finset (TensorEigenIdx (I := I) (M := M) q 0 1))
     (C : ℝ≥0∞) (hC0 : C ≠ 0) (hCtop : C ≠ ⊤)
@@ -668,15 +668,15 @@ theorem harmonicMapFlowSpecMass_lower
       C • riemannianVolumeMeasure (I := I) (M := M) h)
     (v : EuclideanSpace ℝ {i // i ∈ S}) :
     C.toReal⁻¹ * ‖v‖ * ‖v‖ ≤
-      harmonicMapFlowSpecMassOp (I := I) (M := M) q h S 0 v v := by
-  rw [harmonicMapFlowSpecMass_zero (I := I) (M := M) q h S]
-  exact harmonicMapFlowFinMass_lower (I := I) (M := M) q h C hC0 hCtop hvol
-    (harmonicMapFlowSpecIncl (I := I) (M := M) q S)
-    (harmonicMapFlowSpecIncl_orth (I := I) (M := M) q S) v
+      harmonicMapFlowSpectralMassOperator (I := I) (M := M) q h S 0 v v := by
+  rw [harmonicMapFlowSpectralMass_zero (I := I) (M := M) q h S]
+  exact harmonicMapFlowFiniteDimensionalMass_lower (I := I) (M := M) q h C hC0 hCtop hvol
+    (harmonicMapFlowSpectralInclusion (I := I) (M := M) q S)
+    (harmonicMapFlowSpectralInclusion_mass_self_eq_norm_sq (I := I) (M := M) q S) v
 
 omit [BoundarylessManifold I M]
   [ConnectedSpace M] in
-theorem harmonicMapFlowStateTime_cont
+theorem harmonicMapFlowStateTime_continuousOn
     (q : SmoothRiemannianMetric I M)
     (S : Finset (TensorEigenIdx (I := I) (M := M) q 0 1)) :
     ∃ R : ℝ, 0 < R ∧
@@ -688,12 +688,12 @@ theorem harmonicMapFlowStateTime_cont
       ∀ v w : EuclideanSpace ℝ {i // i ∈ S},
         ContinuousOn
           (fun t ↦ harmonicMapFlowStateMass (I := I) (M := M) q (g t)
-            (harmonicMapFlowSpecIncl (I := I) (M := M) q S u)
-            (harmonicMapFlowSpecIncl (I := I) (M := M) q S v)
-            (harmonicMapFlowSpecIncl (I := I) (M := M) q S w)) K := by
-  obtain ⟨Rm, hRm, hmass⟩ := harmonicMapFlowSpecMassPt_cd (I := I) (M := M) q S
+            (harmonicMapFlowSpectralInclusion (I := I) (M := M) q S u)
+            (harmonicMapFlowSpectralInclusion (I := I) (M := M) q S v)
+            (harmonicMapFlowSpectralInclusion (I := I) (M := M) q S w)) K := by
+  obtain ⟨Rm, hRm, hmass⟩ := harmonicMapFlowSpectralMassPointwise_contMDiff (I := I) (M := M) q S
   obtain ⟨Ra, hRa, hmap⟩ :=
-    harmonicMapFlowSpecMap_cd (I := I) (M := M) q S 1
+    harmonicMapFlowSpectralMap_contMDiff (I := I) (M := M) q S 1
   let R := min Rm Ra
   have hR : 0 < R := lt_min hRm hRa
   refine ⟨R, hR, ?_⟩
@@ -705,50 +705,50 @@ theorem harmonicMapFlowStateTime_cont
       (0 : EuclideanSpace ℝ {i // i ∈ S}) Ra :=
     Metric.ball_subset_ball (min_le_right Rm Ra) hu
   have hpt : Continuous
-      (fun x : M ↦ harmonicMapFlowSpecMassPt (I := I) (M := M) q S u x) := by
+      (fun x : M ↦ harmonicMapFlowSpectralMassPointwise (I := I) (M := M) q S u x) := by
     exact continuous_slice_of_continuousOn_prod
-      (fun z x ↦ harmonicMapFlowSpecMassPt (I := I) (M := M) q S z x)
+      (fun z x ↦ harmonicMapFlowSpectralMassPointwise (I := I) (M := M) q S z x)
       hmass.continuousOn hu_m
   have hscalar : Continuous
-      (fun x : M ↦ harmonicMapFlowSpecMassPt (I := I) (M := M) q S u x v w) :=
+      (fun x : M ↦ harmonicMapFlowSpectralMassPointwise (I := I) (M := M) q S u x v w) :=
     (hpt.clm_apply continuous_const).clm_apply continuous_const
   have hmd : ∀ x : M,
       MDifferentiableAt 𝓘(ℝ, EuclideanSpace ℝ {i // i ∈ S}) I
         (fun z : EuclideanSpace ℝ {i // i ∈ S} ↦
           harmonicMapFlowAdd (I := I) (M := M) q
-            (harmonicMapFlowSpecIncl (I := I) (M := M) q S z) x) u := by
+            (harmonicMapFlowSpectralInclusion (I := I) (M := M) q S z) x) u := by
     intro x
-    simpa only [harmonicMapFlowSpecMap_apply] using
+    simpa only [harmonicMapFlowSpectralMap_apply] using
       mdifferentiable_coeff_slice
-        (fun z y ↦ harmonicMapFlowSpecMap (I := I) (M := M) q S y z)
+        (fun z y ↦ harmonicMapFlowSpectralMap (I := I) (M := M) q S y z)
         hmap hu_a x
   have heq : (fun x : M ↦
       q.inner
         (harmonicMapFlowAdd (I := I) (M := M) q
-          (harmonicMapFlowSpecIncl (I := I) (M := M) q S u) x)
-        (harmonicMapFlowStateVar (I := I) (M := M) q
-          (harmonicMapFlowSpecIncl (I := I) (M := M) q S u)
-          (harmonicMapFlowSpecIncl (I := I) (M := M) q S v) x)
-        (harmonicMapFlowStateVar (I := I) (M := M) q
-          (harmonicMapFlowSpecIncl (I := I) (M := M) q S u)
-          (harmonicMapFlowSpecIncl (I := I) (M := M) q S w) x)) =
-      (fun x : M ↦ harmonicMapFlowSpecMassPt (I := I) (M := M) q S u x v w) := by
+          (harmonicMapFlowSpectralInclusion (I := I) (M := M) q S u) x)
+        (harmonicMapFlowStateVariation (I := I) (M := M) q
+          (harmonicMapFlowSpectralInclusion (I := I) (M := M) q S u)
+          (harmonicMapFlowSpectralInclusion (I := I) (M := M) q S v) x)
+        (harmonicMapFlowStateVariation (I := I) (M := M) q
+          (harmonicMapFlowSpectralInclusion (I := I) (M := M) q S u)
+          (harmonicMapFlowSpectralInclusion (I := I) (M := M) q S w) x)) =
+      (fun x : M ↦ harmonicMapFlowSpectralMassPointwise (I := I) (M := M) q S u x v w) := by
     funext x
-    rw [harmonicMapFlowSpecVar_state (I := I) (M := M) q S u v x (hmd x),
-      harmonicMapFlowSpecVar_state (I := I) (M := M) q S u w x (hmd x),
-      harmonicMapFlowSpecMassPt_apply, harmonicMapFlowSpecMap_apply]
+    rw [harmonicMapFlowSpectralVariation_state (I := I) (M := M) q S u v x (hmd x),
+      harmonicMapFlowSpectralVariation_state (I := I) (M := M) q S u w x (hmd x),
+      harmonicMapFlowSpectralMassPointwise_apply, harmonicMapFlowSpectralMap_apply]
   unfold harmonicMapFlowStateMass
   apply integral_family_cont (I := I) (M := M) hK hgram
   have hspace : Continuous (fun x : M ↦
       q.inner
         (harmonicMapFlowAdd (I := I) (M := M) q
-          (harmonicMapFlowSpecIncl (I := I) (M := M) q S u) x)
-        (harmonicMapFlowStateVar (I := I) (M := M) q
-          (harmonicMapFlowSpecIncl (I := I) (M := M) q S u)
-          (harmonicMapFlowSpecIncl (I := I) (M := M) q S v) x)
-        (harmonicMapFlowStateVar (I := I) (M := M) q
-          (harmonicMapFlowSpecIncl (I := I) (M := M) q S u)
-          (harmonicMapFlowSpecIncl (I := I) (M := M) q S w) x)) := by
+          (harmonicMapFlowSpectralInclusion (I := I) (M := M) q S u) x)
+        (harmonicMapFlowStateVariation (I := I) (M := M) q
+          (harmonicMapFlowSpectralInclusion (I := I) (M := M) q S u)
+          (harmonicMapFlowSpectralInclusion (I := I) (M := M) q S v) x)
+        (harmonicMapFlowStateVariation (I := I) (M := M) q
+          (harmonicMapFlowSpectralInclusion (I := I) (M := M) q S u)
+          (harmonicMapFlowSpectralInclusion (I := I) (M := M) q S w) x)) := by
     rw [heq]
     exact hscalar
   exact (hspace.comp continuous_snd).continuousOn

@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Elliptic.Regularity.GradInner.Laplacian.SmoothViaDensity
+import DifferentialGeometry.Analysis.Elliptic.Regularity.GradInner.Laplacian.ChristoffelDischarge
 import DifferentialGeometry.Analysis.Elliptic.Regularity.GradInner.Laplacian.DensityExtension
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator

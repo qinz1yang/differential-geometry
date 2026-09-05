@@ -98,14 +98,14 @@ private lemma rhsZeroAggregate_le_at_target
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (α : M) (P₀ : TensorCompIdx (E := E) r s) (K N target : ℕ)
     (hKN : K + 1 ≤ N)
-    (H : EigenvectorChartRHSDiffSharpWkpBoundsUpToOrder (I := I) (M := M) g r s α P₀ N)
-    (hEig_le : H.eEig K ≤ target)
-    (hResH_le_K : H.eResH K ≤ target)
-    (hResL_le : H.eResL K ≤ target)
-    (hPar_le : H.ePar K ≤ target)
-    (hCom_le : H.eCom K ≤ target)
-    (hCcR_le : H.eCcR K ≤ target)
-    (hCcut_le : H.eCcut K ≤ target) :
+    (H : EigenvectorChartRightHandSideDifferentiatedSharpWkpBoundsUpToOrder (I := I) (M := M) g r s α P₀ N)
+    (hEig_le : H.eigenvectorExponent K ≤ target)
+    (hResH_le_K : H.highResolventExponent K ≤ target)
+    (hResL_le : H.lowResolventExponent K ≤ target)
+    (hPar_le : H.partialExponent K ≤ target)
+    (hCom_le : H.componentExponent K ≤ target)
+    (hCcR_le : H.crossRightExponent K ≤ target)
+    (hCcut_le : H.cutoffExponent K ≤ target) :
     ∃ C : ℝ, 0 ≤ C ∧
       ∀ i : TensorEigenIdx (I := I) (M := M) g r s,
         rhsZeroAggregate (I := I) (M := M) g r s i α P₀ K
@@ -116,45 +116,45 @@ private lemma rhsZeroAggregate_le_at_target
                   g r s) i‖ := by
   classical
   have hK_le_N : K ≤ N := by omega
-  set Cqtot : ℝ := (Fintype.card (TensorCompIdx (E := E) r s) : ℝ) * H.CresH K
+  set Cqtot : ℝ := (Fintype.card (TensorCompIdx (E := E) r s) : ℝ) * H.highResolventConstant K
     with hCqtot_def
   set Cmid_α : ℝ := (transportChartCenters (I := I) (M := M) α).sum fun β =>
         Cqtot + ((transportChartCenters (I := I) (M := M) β).card : ℝ) * Cqtot
     with hCmid_α_def
   set Clow_α : ℝ :=
     ((transportChartCenters (I := I) (M := M) α).card : ℝ) *
-      ((Fintype.card (TensorCompIdx (E := E) r s) : ℝ) * H.CresL K) with hClow_α_def
-  set Cpar' : ℝ := (Fintype.card (TensorCompIdx (E := E) r s) : ℝ) *
-        ((Fintype.card (Fin (Module.finrank ℝ E)) : ℝ) * H.Cpar K) with hCpar'_def
-  set Ccom' : ℝ := (Fintype.card (TensorCompIdx (E := E) r s) : ℝ) * H.Ccom K
+      ((Fintype.card (TensorCompIdx (E := E) r s) : ℝ) * H.lowResolventConstant K) with hClow_α_def
+  set partialConstant' : ℝ := (Fintype.card (TensorCompIdx (E := E) r s) : ℝ) *
+        ((Fintype.card (Fin (Module.finrank ℝ E)) : ℝ) * H.partialConstant K) with hCpar'_def
+  set componentConstant' : ℝ := (Fintype.card (TensorCompIdx (E := E) r s) : ℝ) * H.componentConstant K
     with hCcom'_def
-  set CcR' : ℝ := (Fintype.card (TensorCompIdx (E := E) r s) : ℝ) * H.CcR K
+  set crossRightConstant' : ℝ := (Fintype.card (TensorCompIdx (E := E) r s) : ℝ) * H.crossRightConstant K
     with hCcR'_def
-  set Ccut' : ℝ := (Fintype.card (TensorCompIdx (E := E) r s) : ℝ) *
-        ((Fintype.card (Fin (Module.finrank ℝ E)) : ℝ) * H.Ccut K) with hCcut'_def
-  set Cagg : ℝ := H.Ceig K + Cmid_α + Clow_α + Cpar' + Ccom' + CcR' + Ccut'
+  set cutoffConstant' : ℝ := (Fintype.card (TensorCompIdx (E := E) r s) : ℝ) *
+        ((Fintype.card (Fin (Module.finrank ℝ E)) : ℝ) * H.cutoffConstant K) with hCcut'_def
+  set Cagg : ℝ := H.eigenvectorConstant K + Cmid_α + Clow_α + partialConstant' + componentConstant' + crossRightConstant' + cutoffConstant'
     with hCagg_def
   have hCqtot_nn : 0 ≤ Cqtot := by
-    have h := H.hCresH_nn K; positivity
+    have h := H.highResolventConstant_nonneg K; positivity
   have hCmid_α_nn : 0 ≤ Cmid_α := by
     refine Finset.sum_nonneg (fun β _ => ?_)
     have h : (0 : ℝ) ≤ ((transportChartCenters (I := I) (M := M) β).card : ℝ) := by
       exact_mod_cast Nat.zero_le _
     exact add_nonneg hCqtot_nn (mul_nonneg h hCqtot_nn)
   have hClow_α_nn : 0 ≤ Clow_α := by
-    have h := H.hCresL_nn K; positivity
-  have hCpar'_nn : 0 ≤ Cpar' := by
-    have h := H.hCpar_nn K; positivity
-  have hCcom'_nn : 0 ≤ Ccom' := by
-    have h := H.hCcom_nn K; positivity
-  have hCcR'_nn : 0 ≤ CcR' := by
-    have h := H.hCcR_nn K; positivity
-  have hCcut'_nn : 0 ≤ Ccut' := by
-    have h := H.hCcut_nn K; positivity
+    have h := H.lowResolventConstant_nonneg K; positivity
+  have hCpar'_nn : 0 ≤ partialConstant' := by
+    have h := H.partialConstant_nonneg K; positivity
+  have hCcom'_nn : 0 ≤ componentConstant' := by
+    have h := H.componentConstant_nonneg K; positivity
+  have hCcR'_nn : 0 ≤ crossRightConstant' := by
+    have h := H.crossRightConstant_nonneg K; positivity
+  have hCcut'_nn : 0 ≤ cutoffConstant' := by
+    have h := H.cutoffConstant_nonneg K; positivity
   have hCagg_nn : 0 ≤ Cagg := by
     refine add_nonneg (add_nonneg (add_nonneg (add_nonneg (add_nonneg
       (add_nonneg ?_ hCmid_α_nn) hClow_α_nn) hCpar'_nn) hCcom'_nn) hCcR'_nn) hCcut'_nn
-    exact H.hCeig_nn K
+    exact H.eigenvectorConstant_nonneg K
   refine ⟨Cagg, hCagg_nn, fun i => ?_⟩
   have hμ_inv_ge_one : (1 : ℝ) ≤ (i.fst.val)⁻¹ :=
     sharpDiff_eigen_inv_one_le (I := I) (M := M) g r s i
@@ -189,9 +189,9 @@ private lemma rhsZeroAggregate_le_at_target
           (eigenvectorChartComponentFun (I := I) (M := M)
             g r s i α P₀)
           (chartTargetEuclid (I := I) (M := M) α)
-        ≤ ENNReal.ofReal (H.Ceig K) * Rhs_effective :=
-    h_bridge _ (H.Ceig K) (H.eEig K) (H.hCeig_nn K) hEig_le
-      (H.hCeig_bd i K hK_le_N)
+        ≤ ENNReal.ofReal (H.eigenvectorConstant K) * Rhs_effective :=
+    h_bridge _ (H.eigenvectorConstant K) (H.eigenvectorExponent K) (H.eigenvectorConstant_nonneg K) hEig_le
+      (H.eigenvector_bound i K hK_le_N)
   have hS2_inner : ∀ β ∈ transportChartCenters (I := I) (M := M) α,
       ((∑ Q : TensorCompIdx (E := E) r s,
             iteratedWeakSobolevNorm (d := Module.finrank ℝ E) (K + 1) 2
@@ -232,9 +232,9 @@ private lemma rhsZeroAggregate_le_at_target
                   β Q : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) :
                   EuclN → ℝ) y)
               (chartTargetEuclid (I := I) (M := M) β)
-            ≤ ENNReal.ofReal (H.CresH K) * Rhs_effective := fun Q _hQ =>
-        h_bridge _ (H.CresH K) (H.eResH K) (H.hCresH_nn K) hResH_le_K
-          (H.hCresH_bd i β Q K hKN)
+            ≤ ENNReal.ofReal (H.highResolventConstant K) * Rhs_effective := fun Q _hQ =>
+        h_bridge _ (H.highResolventConstant K) (H.highResolventExponent K) (H.highResolventConstant_nonneg K) hResH_le_K
+          (H.highResolvent_bound i β Q K hKN)
       have h_sum := sum_le_of_le_ofReal_mul
         (Finset.univ : Finset (TensorCompIdx (E := E) r s))
         (fun Q => iteratedWeakSobolevNorm (d := Module.finrank ℝ E) (K + 1) 2
@@ -244,7 +244,7 @@ private lemma rhsZeroAggregate_le_at_target
                 β Q : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) :
                 EuclN → ℝ) y)
             (chartTargetEuclid (I := I) (M := M) β))
-        (fun _Q => H.CresH K) Rhs_effective (fun _ _ => H.hCresH_nn K) h_each
+        (fun _Q => H.highResolventConstant K) Rhs_effective (fun _ _ => H.highResolventConstant_nonneg K) h_each
       rw [Finset.sum_const, nsmul_eq_mul, Finset.card_univ] at h_sum
       exact h_sum.trans_eq (by rw [hCqtot_def])
     have h_inner_β' :
@@ -279,9 +279,9 @@ private lemma rhsZeroAggregate_le_at_target
                     β' Q : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β')) :
                     EuclN → ℝ) y)
                 (chartTargetEuclid (I := I) (M := M) β')
-              ≤ ENNReal.ofReal (H.CresH K) * Rhs_effective := fun Q _hQ =>
-          h_bridge _ (H.CresH K) (H.eResH K) (H.hCresH_nn K) hResH_le_K
-            (H.hCresH_bd i β' Q K hKN)
+              ≤ ENNReal.ofReal (H.highResolventConstant K) * Rhs_effective := fun Q _hQ =>
+          h_bridge _ (H.highResolventConstant K) (H.highResolventExponent K) (H.highResolventConstant_nonneg K) hResH_le_K
+            (H.highResolvent_bound i β' Q K hKN)
         have h_sum := sum_le_of_le_ofReal_mul
           (Finset.univ : Finset (TensorCompIdx (E := E) r s))
           (fun Q => iteratedWeakSobolevNorm (d := Module.finrank ℝ E) (K + 1) 2
@@ -291,7 +291,7 @@ private lemma rhsZeroAggregate_le_at_target
                   β' Q : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β')) :
                   EuclN → ℝ) y)
               (chartTargetEuclid (I := I) (M := M) β'))
-          (fun _Q => H.CresH K) Rhs_effective (fun _ _ => H.hCresH_nn K) h_each
+          (fun _Q => H.highResolventConstant K) Rhs_effective (fun _ _ => H.highResolventConstant_nonneg K) h_each
         rw [Finset.sum_const, nsmul_eq_mul, Finset.card_univ] at h_sum
         exact h_sum.trans_eq (by rw [hCqtot_def])
       have h_sum := sum_le_of_le_ofReal_mul
@@ -390,7 +390,7 @@ private lemma rhsZeroAggregate_le_at_target
                   EuclN → ℝ) y)
               (chartTargetEuclid (I := I) (M := M) β))
           ≤ ENNReal.ofReal
-              ((Fintype.card (TensorCompIdx (E := E) r s) : ℝ) * H.CresL K) *
+              ((Fintype.card (TensorCompIdx (E := E) r s) : ℝ) * H.lowResolventConstant K) *
             Rhs_effective := by
       intro β _hβ
       have h_each : ∀ Q ∈ (Finset.univ : Finset (TensorCompIdx (E := E) r s)),
@@ -401,9 +401,9 @@ private lemma rhsZeroAggregate_le_at_target
                   β Q : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) :
                   EuclN → ℝ) y)
               (chartTargetEuclid (I := I) (M := M) β)
-            ≤ ENNReal.ofReal (H.CresL K) * Rhs_effective := fun Q _hQ =>
-        h_bridge _ (H.CresL K) (H.eResL K) (H.hCresL_nn K) hResL_le
-          (H.hCresL_bd i β Q K hK_le_N)
+            ≤ ENNReal.ofReal (H.lowResolventConstant K) * Rhs_effective := fun Q _hQ =>
+        h_bridge _ (H.lowResolventConstant K) (H.lowResolventExponent K) (H.lowResolventConstant_nonneg K) hResL_le
+          (H.lowResolvent_bound i β Q K hK_le_N)
       have h_sum := sum_le_of_le_ofReal_mul
         (Finset.univ : Finset (TensorCompIdx (E := E) r s))
         (fun Q => iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2
@@ -413,14 +413,14 @@ private lemma rhsZeroAggregate_le_at_target
                 β Q : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) :
                 EuclN → ℝ) y)
             (chartTargetEuclid (I := I) (M := M) β))
-        (fun _Q => H.CresL K) Rhs_effective (fun _ _ => H.hCresL_nn K) h_each
+        (fun _Q => H.lowResolventConstant K) Rhs_effective (fun _ _ => H.lowResolventConstant_nonneg K) h_each
       rw [Finset.sum_const, nsmul_eq_mul, Finset.card_univ] at h_sum
       exact h_sum
     have hQ_nn : (0 : ℝ) ≤
-        (Fintype.card (TensorCompIdx (E := E) r s) : ℝ) * H.CresL K := by
+        (Fintype.card (TensorCompIdx (E := E) r s) : ℝ) * H.lowResolventConstant K := by
       have hQ : (0 : ℝ) ≤ (Fintype.card (TensorCompIdx (E := E) r s) : ℝ) := by
         exact_mod_cast Nat.zero_le _
-      exact mul_nonneg hQ (H.hCresL_nn K)
+      exact mul_nonneg hQ (H.lowResolventConstant_nonneg K)
     have h_sum := sum_le_of_le_ofReal_mul
       (transportChartCenters (I := I) (M := M) α)
       (fun β => ∑ Q : TensorCompIdx (E := E) r s,
@@ -431,7 +431,7 @@ private lemma rhsZeroAggregate_le_at_target
                 β Q : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) :
                 EuclN → ℝ) y)
             (chartTargetEuclid (I := I) (M := M) β))
-      (fun _β => (Fintype.card (TensorCompIdx (E := E) r s) : ℝ) * H.CresL K)
+      (fun _β => (Fintype.card (TensorCompIdx (E := E) r s) : ℝ) * H.lowResolventConstant K)
       Rhs_effective (fun _ _ => hQ_nn) h_perβ
     rw [Finset.sum_const, nsmul_eq_mul] at h_sum
     exact h_sum.trans_eq (by rw [hClow_α_def])
@@ -444,7 +444,7 @@ private lemma rhsZeroAggregate_le_at_target
               Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
               EuclN → ℝ) y)
             (chartTargetEuclid (I := I) (M := M) α))
-      ≤ ENNReal.ofReal Cpar' * Rhs_effective := by
+      ≤ ENNReal.ofReal partialConstant' * Rhs_effective := by
     have h_perP : ∀ P ∈ (Finset.univ : Finset (TensorCompIdx (E := E) r s)),
         (∑ k : Fin (Module.finrank ℝ E),
             iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2
@@ -454,7 +454,7 @@ private lemma rhsZeroAggregate_le_at_target
                 EuclN → ℝ) y)
               (chartTargetEuclid (I := I) (M := M) α))
           ≤ ENNReal.ofReal
-              ((Fintype.card (Fin (Module.finrank ℝ E)) : ℝ) * H.Cpar K) *
+              ((Fintype.card (Fin (Module.finrank ℝ E)) : ℝ) * H.partialConstant K) *
             Rhs_effective := by
       intro P _hP
       have h_each : ∀ k ∈ (Finset.univ : Finset (Fin (Module.finrank ℝ E))),
@@ -464,8 +464,8 @@ private lemma rhsZeroAggregate_le_at_target
                 Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
                 EuclN → ℝ) y)
               (chartTargetEuclid (I := I) (M := M) α)
-            ≤ ENNReal.ofReal (H.Cpar K) * Rhs_effective := fun k _hk =>
-        h_bridge _ (H.Cpar K) (H.ePar K) (H.hCpar_nn K) hPar_le (H.hCpar_bd i P k K hKN)
+            ≤ ENNReal.ofReal (H.partialConstant K) * Rhs_effective := fun k _hk =>
+        h_bridge _ (H.partialConstant K) (H.partialExponent K) (H.partialConstant_nonneg K) hPar_le (H.partial_bound i P k K hKN)
       have h_sum := sum_le_of_le_ofReal_mul
         (Finset.univ : Finset (Fin (Module.finrank ℝ E)))
         (fun k => iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2
@@ -474,14 +474,14 @@ private lemma rhsZeroAggregate_le_at_target
               Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
               EuclN → ℝ) y)
             (chartTargetEuclid (I := I) (M := M) α))
-        (fun _k => H.Cpar K) Rhs_effective (fun _ _ => H.hCpar_nn K) h_each
+        (fun _k => H.partialConstant K) Rhs_effective (fun _ _ => H.partialConstant_nonneg K) h_each
       rw [Finset.sum_const, nsmul_eq_mul, Finset.card_univ] at h_sum
       exact h_sum
     have hk_nn : (0 : ℝ) ≤
-        (Fintype.card (Fin (Module.finrank ℝ E)) : ℝ) * H.Cpar K := by
+        (Fintype.card (Fin (Module.finrank ℝ E)) : ℝ) * H.partialConstant K := by
       have hk : (0 : ℝ) ≤ (Fintype.card (Fin (Module.finrank ℝ E)) : ℝ) := by
         exact_mod_cast Nat.zero_le _
-      exact mul_nonneg hk (H.hCpar_nn K)
+      exact mul_nonneg hk (H.partialConstant_nonneg K)
     have h_sum := sum_le_of_le_ofReal_mul
       (Finset.univ : Finset (TensorCompIdx (E := E) r s))
       (fun P => ∑ k : Fin (Module.finrank ℝ E),
@@ -491,7 +491,7 @@ private lemma rhsZeroAggregate_le_at_target
               Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
               EuclN → ℝ) y)
             (chartTargetEuclid (I := I) (M := M) α))
-      (fun _P => (Fintype.card (Fin (Module.finrank ℝ E)) : ℝ) * H.Cpar K)
+      (fun _P => (Fintype.card (Fin (Module.finrank ℝ E)) : ℝ) * H.partialConstant K)
       Rhs_effective (fun _ _ => hk_nn) h_perP
     rw [Finset.sum_const, nsmul_eq_mul, Finset.card_univ] at h_sum
     exact h_sum.trans_eq (by rw [hCpar'_def])
@@ -503,7 +503,7 @@ private lemma rhsZeroAggregate_le_at_target
             Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
             EuclN → ℝ) y)
           (chartTargetEuclid (I := I) (M := M) α))
-      ≤ ENNReal.ofReal Ccom' * Rhs_effective := by
+      ≤ ENNReal.ofReal componentConstant' * Rhs_effective := by
     have h_each : ∀ p ∈ (Finset.univ : Finset (TensorCompIdx (E := E) r s)),
         iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2
             (fun y => ((componentLpLimit (I := I) (M := M)
@@ -511,8 +511,8 @@ private lemma rhsZeroAggregate_le_at_target
               Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
               EuclN → ℝ) y)
             (chartTargetEuclid (I := I) (M := M) α)
-          ≤ ENNReal.ofReal (H.Ccom K) * Rhs_effective := fun p _hp =>
-      h_bridge _ (H.Ccom K) (H.eCom K) (H.hCcom_nn K) hCom_le (H.hCcom_bd i p K hK_le_N)
+          ≤ ENNReal.ofReal (H.componentConstant K) * Rhs_effective := fun p _hp =>
+      h_bridge _ (H.componentConstant K) (H.componentExponent K) (H.componentConstant_nonneg K) hCom_le (H.component_bound i p K hK_le_N)
     have h_sum := sum_le_of_le_ofReal_mul
       (Finset.univ : Finset (TensorCompIdx (E := E) r s))
       (fun p => iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2
@@ -521,7 +521,7 @@ private lemma rhsZeroAggregate_le_at_target
             Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
             EuclN → ℝ) y)
           (chartTargetEuclid (I := I) (M := M) α))
-      (fun _p => H.Ccom K) Rhs_effective (fun _ _ => H.hCcom_nn K) h_each
+      (fun _p => H.componentConstant K) Rhs_effective (fun _ _ => H.componentConstant_nonneg K) h_each
     rw [Finset.sum_const, nsmul_eq_mul, Finset.card_univ] at h_sum
     exact h_sum.trans_eq (by rw [hCcom'_def])
   have hS6 :
@@ -532,7 +532,7 @@ private lemma rhsZeroAggregate_le_at_target
             Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
             EuclN → ℝ) y)
           (chartTargetEuclid (I := I) (M := M) α))
-      ≤ ENNReal.ofReal CcR' * Rhs_effective := by
+      ≤ ENNReal.ofReal crossRightConstant' * Rhs_effective := by
     have h_each : ∀ P ∈ (Finset.univ : Finset (TensorCompIdx (E := E) r s)),
         iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2
             (fun y => ((crossRightLimitComponent (I := I) (M := M)
@@ -540,8 +540,8 @@ private lemma rhsZeroAggregate_le_at_target
               Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
               EuclN → ℝ) y)
             (chartTargetEuclid (I := I) (M := M) α)
-          ≤ ENNReal.ofReal (H.CcR K) * Rhs_effective := fun P _hP =>
-      h_bridge _ (H.CcR K) (H.eCcR K) (H.hCcR_nn K) hCcR_le (H.hCcR_bd i P K hK_le_N)
+          ≤ ENNReal.ofReal (H.crossRightConstant K) * Rhs_effective := fun P _hP =>
+      h_bridge _ (H.crossRightConstant K) (H.crossRightExponent K) (H.crossRightConstant_nonneg K) hCcR_le (H.crossRight_bound i P K hK_le_N)
     have h_sum := sum_le_of_le_ofReal_mul
       (Finset.univ : Finset (TensorCompIdx (E := E) r s))
       (fun P => iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2
@@ -550,7 +550,7 @@ private lemma rhsZeroAggregate_le_at_target
             Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
             EuclN → ℝ) y)
           (chartTargetEuclid (I := I) (M := M) α))
-      (fun _P => H.CcR K) Rhs_effective (fun _ _ => H.hCcR_nn K) h_each
+      (fun _P => H.crossRightConstant K) Rhs_effective (fun _ _ => H.crossRightConstant_nonneg K) h_each
     rw [Finset.sum_const, nsmul_eq_mul, Finset.card_univ] at h_sum
     exact h_sum.trans_eq (by rw [hCcR'_def])
   have hS7 :
@@ -562,7 +562,7 @@ private lemma rhsZeroAggregate_le_at_target
               Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
               EuclN → ℝ) y)
             (chartTargetEuclid (I := I) (M := M) α))
-      ≤ ENNReal.ofReal Ccut' * Rhs_effective := by
+      ≤ ENNReal.ofReal cutoffConstant' * Rhs_effective := by
     have h_perP : ∀ P ∈ (Finset.univ : Finset (TensorCompIdx (E := E) r s)),
         (∑ l : Fin (Module.finrank ℝ E),
             iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2
@@ -572,7 +572,7 @@ private lemma rhsZeroAggregate_le_at_target
                 EuclN → ℝ) y)
               (chartTargetEuclid (I := I) (M := M) α))
           ≤ ENNReal.ofReal
-              ((Fintype.card (Fin (Module.finrank ℝ E)) : ℝ) * H.Ccut K) *
+              ((Fintype.card (Fin (Module.finrank ℝ E)) : ℝ) * H.cutoffConstant K) *
             Rhs_effective := by
       intro P _hP
       have h_each : ∀ l ∈ (Finset.univ : Finset (Fin (Module.finrank ℝ E))),
@@ -582,8 +582,8 @@ private lemma rhsZeroAggregate_le_at_target
                 Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
                 EuclN → ℝ) y)
               (chartTargetEuclid (I := I) (M := M) α)
-            ≤ ENNReal.ofReal (H.Ccut K) * Rhs_effective := fun l _hl =>
-        h_bridge _ (H.Ccut K) (H.eCcut K) (H.hCcut_nn K) hCcut_le (H.hCcut_bd i P l K hKN)
+            ≤ ENNReal.ofReal (H.cutoffConstant K) * Rhs_effective := fun l _hl =>
+        h_bridge _ (H.cutoffConstant K) (H.cutoffExponent K) (H.cutoffConstant_nonneg K) hCcut_le (H.cutoff_bound i P l K hKN)
       have h_sum := sum_le_of_le_ofReal_mul
         (Finset.univ : Finset (Fin (Module.finrank ℝ E)))
         (fun l => iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2
@@ -592,14 +592,14 @@ private lemma rhsZeroAggregate_le_at_target
               Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
               EuclN → ℝ) y)
             (chartTargetEuclid (I := I) (M := M) α))
-        (fun _l => H.Ccut K) Rhs_effective (fun _ _ => H.hCcut_nn K) h_each
+        (fun _l => H.cutoffConstant K) Rhs_effective (fun _ _ => H.cutoffConstant_nonneg K) h_each
       rw [Finset.sum_const, nsmul_eq_mul, Finset.card_univ] at h_sum
       exact h_sum
     have hk_nn : (0 : ℝ) ≤
-        (Fintype.card (Fin (Module.finrank ℝ E)) : ℝ) * H.Ccut K := by
+        (Fintype.card (Fin (Module.finrank ℝ E)) : ℝ) * H.cutoffConstant K := by
       have hk : (0 : ℝ) ≤ (Fintype.card (Fin (Module.finrank ℝ E)) : ℝ) := by
         exact_mod_cast Nat.zero_le _
-      exact mul_nonneg hk (H.hCcut_nn K)
+      exact mul_nonneg hk (H.cutoffConstant_nonneg K)
     have h_sum := sum_le_of_le_ofReal_mul
       (Finset.univ : Finset (TensorCompIdx (E := E) r s))
       (fun P => ∑ l : Fin (Module.finrank ℝ E),
@@ -609,29 +609,29 @@ private lemma rhsZeroAggregate_le_at_target
               Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
               EuclN → ℝ) y)
             (chartTargetEuclid (I := I) (M := M) α))
-      (fun _P => (Fintype.card (Fin (Module.finrank ℝ E)) : ℝ) * H.Ccut K)
+      (fun _P => (Fintype.card (Fin (Module.finrank ℝ E)) : ℝ) * H.cutoffConstant K)
       Rhs_effective (fun _ _ => hk_nn) h_perP
     rw [Finset.sum_const, nsmul_eq_mul, Finset.card_univ] at h_sum
     exact h_sum.trans_eq (by rw [hCcut'_def])
   rw [rhsZeroAggregate]
-  have hp1 : 0 ≤ H.Ceig K + Cmid_α := add_nonneg (H.hCeig_nn K) hCmid_α_nn
-  have hp2 : 0 ≤ H.Ceig K + Cmid_α + Clow_α := add_nonneg hp1 hClow_α_nn
-  have hp3 : 0 ≤ H.Ceig K + Cmid_α + Clow_α + Cpar' := add_nonneg hp2 hCpar'_nn
-  have hp4 : 0 ≤ H.Ceig K + Cmid_α + Clow_α + Cpar' + Ccom' :=
+  have hp1 : 0 ≤ H.eigenvectorConstant K + Cmid_α := add_nonneg (H.eigenvectorConstant_nonneg K) hCmid_α_nn
+  have hp2 : 0 ≤ H.eigenvectorConstant K + Cmid_α + Clow_α := add_nonneg hp1 hClow_α_nn
+  have hp3 : 0 ≤ H.eigenvectorConstant K + Cmid_α + Clow_α + partialConstant' := add_nonneg hp2 hCpar'_nn
+  have hp4 : 0 ≤ H.eigenvectorConstant K + Cmid_α + Clow_α + partialConstant' + componentConstant' :=
     add_nonneg hp3 hCcom'_nn
-  have hp5 : 0 ≤ H.Ceig K + Cmid_α + Clow_α + Cpar' + Ccom' + CcR' :=
+  have hp5 : 0 ≤ H.eigenvectorConstant K + Cmid_α + Clow_α + partialConstant' + componentConstant' + crossRightConstant' :=
     add_nonneg hp4 hCcR'_nn
   have h_expand :
       ENNReal.ofReal Cagg
-        = ENNReal.ofReal (H.Ceig K) + ENNReal.ofReal Cmid_α
-          + ENNReal.ofReal Clow_α + ENNReal.ofReal Cpar' + ENNReal.ofReal Ccom'
-          + ENNReal.ofReal CcR' + ENNReal.ofReal Ccut' := by
+        = ENNReal.ofReal (H.eigenvectorConstant K) + ENNReal.ofReal Cmid_α
+          + ENNReal.ofReal Clow_α + ENNReal.ofReal partialConstant' + ENNReal.ofReal componentConstant'
+          + ENNReal.ofReal crossRightConstant' + ENNReal.ofReal cutoffConstant' := by
     rw [hCagg_def, ENNReal.ofReal_add hp5 hCcut'_nn,
       ENNReal.ofReal_add hp4 hCcR'_nn,
       ENNReal.ofReal_add hp3 hCcom'_nn,
       ENNReal.ofReal_add hp2 hCpar'_nn,
       ENNReal.ofReal_add hp1 hClow_α_nn,
-      ENNReal.ofReal_add (H.hCeig_nn K) hCmid_α_nn]
+      ENNReal.ofReal_add (H.eigenvectorConstant_nonneg K) hCmid_α_nn]
   have h_sum_bound :
       iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2
           (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s
@@ -715,14 +715,14 @@ private lemma sharpDiffBdd_level_zero_wkpNorm_at_target
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (α : M) (P₀ : TensorCompIdx (E := E) r s) (K N target : ℕ)
     (hKN : K + 1 ≤ N)
-    (H : EigenvectorChartRHSDiffSharpWkpBoundsUpToOrder (I := I) (M := M) g r s α P₀ N)
-    (hEig_le : H.eEig K ≤ target)
-    (hResH_le_K : H.eResH K ≤ target)
-    (hResL_le : H.eResL K ≤ target)
-    (hPar_le : H.ePar K ≤ target)
-    (hCom_le : H.eCom K ≤ target)
-    (hCcR_le : H.eCcR K ≤ target)
-    (hCcut_le : H.eCcut K ≤ target) :
+    (H : EigenvectorChartRightHandSideDifferentiatedSharpWkpBoundsUpToOrder (I := I) (M := M) g r s α P₀ N)
+    (hEig_le : H.eigenvectorExponent K ≤ target)
+    (hResH_le_K : H.highResolventExponent K ≤ target)
+    (hResL_le : H.lowResolventExponent K ≤ target)
+    (hPar_le : H.partialExponent K ≤ target)
+    (hCom_le : H.componentExponent K ≤ target)
+    (hCcR_le : H.crossRightExponent K ≤ target)
+    (hCcut_le : H.cutoffExponent K ≤ target) :
     ∃ C : ℝ, 0 ≤ C ∧
       ∀ i : TensorEigenIdx (I := I) (M := M) g r s,
         iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2
@@ -745,7 +745,7 @@ private lemma sharpDiffBdd_level_zero_wkpNorm_at_target
               (eigenvectorResolvent (I := I) (M := M) g r s i))
             β Q : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) : EuclN → ℝ) y)
         (chartTargetEuclid (I := I) (M := M) β) := fun i β Q =>
-    H.h_pou_resolv i (K + 1) β Q hKN
+    H.resolventComponentRegularity i (K + 1) β Q hKN
   obtain ⟨Cmu, hCmu_nn, hCmu_bd⟩ :=
     eigenvectorChartRHS_wkpNorm_le_uniform (I := I) (M := M)
       g r s α P₀ K h_pou
@@ -1202,26 +1202,26 @@ omit [CompleteSpace E] in
 private lemma sharpDiffExplicit_diff_memWkp
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (α : M) (P₀ : TensorCompIdx (E := E) r s) (N : ℕ)
-    (H : EigenvectorChartRHSDiffSharpWkpBoundsUpToOrder (I := I) (M := M) g r s α P₀ N)
+    (H : EigenvectorChartRightHandSideDifferentiatedSharpWkpBoundsUpToOrder (I := I) (M := M) g r s α P₀ N)
     (i : TensorEigenIdx (I := I) (M := M) g r s)
     (m K' : ℕ) (hN : m + 1 + K' ≤ N) (l : Fin m → Fin (Module.finrank ℝ E)) :
     MemWkp (d := Module.finrank ℝ E) K' 2
       (eigenvectorChartRHSDiff (I := I) (M := M) g r s i α P₀ m l)
       (chartTargetEuclid (I := I) (M := M) α) :=
   eigenvectorChartRHSDiff_memWkp (I := I) (M := M) g r s i α P₀
-    m K' l (fun β Q => H.h_pou_resolv i (m + 1 + K') β Q hN)
+    m K' l (fun β Q => H.resolventComponentRegularity i (m + 1 + K') β Q hN)
 
 open DifferentialGeometry.Analysis.Spectral in
 omit [CompleteSpace E] in
 private lemma sharpDiffBdd_recursion_at_target
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (α : M) (P₀ : TensorCompIdx (E := E) r s) (N eAtomMax : ℕ)
-    (H : EigenvectorChartRHSDiffSharpWkpBoundsUpToOrder (I := I) (M := M) g r s α P₀ N)
+    (H : EigenvectorChartRightHandSideDifferentiatedSharpWkpBoundsUpToOrder (I := I) (M := M) g r s α P₀ N)
     (h_atom_bd : ∀ K', K' ≤ N →
-      H.eEig K' ≤ eAtomMax ∧ H.eResH K' ≤ eAtomMax ∧
-        H.eResL K' ≤ eAtomMax ∧ H.ePar K' ≤ eAtomMax ∧
-        H.eCom K' ≤ eAtomMax ∧ H.eCcR K' ≤ eAtomMax ∧
-        H.eCcut K' ≤ eAtomMax) :
+      H.eigenvectorExponent K' ≤ eAtomMax ∧ H.highResolventExponent K' ≤ eAtomMax ∧
+        H.lowResolventExponent K' ≤ eAtomMax ∧ H.partialExponent K' ≤ eAtomMax ∧
+        H.componentExponent K' ≤ eAtomMax ∧ H.crossRightExponent K' ≤ eAtomMax ∧
+        H.cutoffExponent K' ≤ eAtomMax) :
     ∀ (m : ℕ) (K : ℕ) (_ : K + m + 1 ≤ N)
       (l : Fin m → Fin (Module.finrank ℝ E)),
       ∃ C : ℝ, 0 ≤ C ∧
@@ -1281,7 +1281,7 @@ private lemma sharpDiffBdd_recursion_at_target
               (eigenvectorChartIteratedPartial (I := I) (M := M)
                 g r s i α P₀ (m + 1) (Fin.cons a (Fin.init l)))
               (chartTargetEuclid (I := I) (M := M) α)
-            ≤ ENNReal.ofReal (H.Ceig (K + m + 1) *
+            ≤ ENNReal.ofReal (H.eigenvectorConstant (K + m + 1) *
               (i.fst.val)⁻¹ ^ (eAtomMax + 1)) *
               ENNReal.ofReal
                 ‖tensorResolventEigenbasisVec
@@ -1302,13 +1302,13 @@ private lemma sharpDiffBdd_recursion_at_target
             h_chart_compact_mem
             (Fin.cons a (Fin.init l))).2
         refine le_trans h_bridge ?_
-        have h_eig := H.hCeig_bd i (K + (m + 1)) (by omega)
+        have h_eig := H.eigenvector_bound i (K + (m + 1)) (by omega)
         have h_arith : K + m + 1 = K + (m + 1) := by ring
         rw [h_arith]
         refine le_trans h_eig ?_
         refine mul_le_mul_of_nonneg_right ?_ (zero_le)
         exact sharpDiff_ofReal_const_pow_eigen_inv_le
-          (I := I) (M := M) g r s i (H.hCeig_nn _)
+          (I := I) (M := M) g r s i (H.eigenvectorConstant_nonneg _)
           (le_trans (h_atom_bd (K + (m + 1)) (by omega)).1 (Nat.le_succ _))
       have hAtomB_bd : ∀ (i : TensorEigenIdx (I := I) (M := M) g r s)
           (a b : Fin (Module.finrank ℝ E)),
@@ -1319,7 +1319,7 @@ private lemma sharpDiffBdd_recursion_at_target
                   g r s i α P₀ (m + 1) (Fin.cons a (Fin.init l)))
                 (chartTargetEuclid (I := I) (M := M) α))
               (chartTargetEuclid (I := I) (M := M) α)
-            ≤ ENNReal.ofReal (H.Ceig (K + m + 2) *
+            ≤ ENNReal.ofReal (H.eigenvectorConstant (K + m + 2) *
               (i.fst.val)⁻¹ ^ (eAtomMax + 1)) *
               ENNReal.ofReal
                 ‖tensorResolventEigenbasisVec
@@ -1345,20 +1345,20 @@ private lemma sharpDiffBdd_recursion_at_target
             h_chart_compact_mem
             (Fin.cons a (Fin.init l))).2
         refine le_trans h_bridge ?_
-        have h_eig := H.hCeig_bd i ((K + 1) + (m + 1)) (by omega)
+        have h_eig := H.eigenvector_bound i ((K + 1) + (m + 1)) (by omega)
         have h_arith : K + m + 2 = (K + 1) + (m + 1) := by ring
         rw [h_arith]
         refine le_trans h_eig ?_
         refine mul_le_mul_of_nonneg_right ?_ (zero_le)
         exact sharpDiff_ofReal_const_pow_eigen_inv_le
-          (I := I) (M := M) g r s i (H.hCeig_nn _)
+          (I := I) (M := M) g r s i (H.eigenvectorConstant_nonneg _)
           (le_trans (h_atom_bd ((K + 1) + (m + 1)) (by omega)).1 (Nat.le_succ _))
       have hAtomC_bd : ∀ (i : TensorEigenIdx (I := I) (M := M) g r s),
           iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2
               (eigenvectorChartIteratedPartial (I := I) (M := M)
                 g r s i α P₀ m (Fin.init l))
               (chartTargetEuclid (I := I) (M := M) α)
-            ≤ ENNReal.ofReal (H.Ceig (K + m) *
+            ≤ ENNReal.ofReal (H.eigenvectorConstant (K + m) *
               (i.fst.val)⁻¹ ^ (eAtomMax + 1)) *
               ENNReal.ofReal
                 ‖tensorResolventEigenbasisVec
@@ -1379,10 +1379,10 @@ private lemma sharpDiffBdd_recursion_at_target
             h_chart_compact_mem
             (Fin.init l)).2
         refine le_trans h_bridge ?_
-        refine le_trans (H.hCeig_bd i (K + m) (by omega)) ?_
+        refine le_trans (H.eigenvector_bound i (K + m) (by omega)) ?_
         refine mul_le_mul_of_nonneg_right ?_ (zero_le)
         exact sharpDiff_ofReal_const_pow_eigen_inv_le
-          (I := I) (M := M) g r s i (H.hCeig_nn _)
+          (I := I) (M := M) g r s i (H.eigenvectorConstant_nonneg _)
           (le_trans (h_atom_bd (K + m) (by omega)).1 (Nat.le_succ _))
       have hAtomD_bd : ∀ (i : TensorEigenIdx (I := I) (M := M) g r s),
           iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2
@@ -1420,9 +1420,9 @@ private lemma sharpDiffBdd_recursion_at_target
           (I := I) (M := M) g r s α P₀ m K (eAtomMax + 1) l
           (fun i => eigenvectorChartRHSDiff (I := I) (M := M)
             g r s i α P₀ m (Fin.init l))
-          (H.Ceig (K + m + 1)) (H.hCeig_nn _) hAtomA_bd
-          (H.Ceig (K + m + 2)) (H.hCeig_nn _) hAtomB_bd
-          (H.Ceig (K + m)) (H.hCeig_nn _) hAtomC_bd
+          (H.eigenvectorConstant (K + m + 1)) (H.eigenvectorConstant_nonneg _) hAtomA_bd
+          (H.eigenvectorConstant (K + m + 2)) (H.eigenvectorConstant_nonneg _) hAtomB_bd
+          (H.eigenvectorConstant (K + m)) (H.eigenvectorConstant_nonneg _) hAtomC_bd
           C_K hC_K_nn hAtomD_bd
           C_K1 hC_K1_nn hAtomE_bd
           h_prev_mem_succ h_prev_ae_zero
@@ -1523,13 +1523,13 @@ theorem eigenvectorChartRHSDiff_wkpNorm_le_chartcpt_sharp_bdd_explicit
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (α : M) (P₀ : TensorCompIdx (E := E) r s) (m K : ℕ)
     (l : Fin m → Fin (Module.finrank ℝ E))
-    (H : EigenvectorChartRHSDiffSharpWkpBoundsUpToOrder (I := I) (M := M) g r s α P₀ (K + m + 1))
+    (H : EigenvectorChartRightHandSideDifferentiatedSharpWkpBoundsUpToOrder (I := I) (M := M) g r s α P₀ (K + m + 1))
     (eAtomMax : ℕ)
     (h_eAtomMax_ge : ∀ K', K' ≤ K + m + 1 →
-      H.eEig K' ≤ eAtomMax ∧ H.eResH K' ≤ eAtomMax ∧
-        H.eResL K' ≤ eAtomMax ∧ H.ePar K' ≤ eAtomMax ∧
-        H.eCom K' ≤ eAtomMax ∧ H.eCcR K' ≤ eAtomMax ∧
-        H.eCcut K' ≤ eAtomMax) :
+      H.eigenvectorExponent K' ≤ eAtomMax ∧ H.highResolventExponent K' ≤ eAtomMax ∧
+        H.lowResolventExponent K' ≤ eAtomMax ∧ H.partialExponent K' ≤ eAtomMax ∧
+        H.componentExponent K' ≤ eAtomMax ∧ H.crossRightExponent K' ≤ eAtomMax ∧
+        H.cutoffExponent K' ≤ eAtomMax) :
     ∃ C : ℝ, 0 ≤ C ∧
       ∀ i : TensorEigenIdx (I := I) (M := M) g r s,
         iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2

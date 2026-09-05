@@ -66,13 +66,13 @@ theorem hamilton_constant_positive_sectional_curvature_of_injectivity_radius_bou
     change @ConnectedSpace (X.term k).M (X.term k).topology
     with_unfolding_all
       exact hM.2.1
-  let hderiv : FlowDerivativeInput (I := I) X :=
-    hamiltonSourceDerivativeInput (I := I) h0omega hM.1 P hD Q hsel hrm hwindow
+  let hderiv : FlowCompactnessBounds (I := I) X :=
+    hamiltonSourceCompactnessBounds (I := I) h0omega hM.1 P hD Q hsel hrm hwindow
   let seed : MetricCompactSeed (I := I) (X.atZero (I := I)) :=
     metricSeedOfBG (I := I) (X.atZero (I := I))
       hcpl hderiv.atZeroGeom hinj hconn
   have hd : Nonempty (BoundedGeometryNormalChartData (I := I) (X.atZero (I := I)) seed.decay) :=
-    exists_bounded_geometry_normal_data (I := I) (X.atZero (I := I))
+    nonempty_bounded_geometry_normal_chart_data (I := I) (X.atZero (I := I))
       hcpl hconn hderiv.atZeroGeom seed.decay seed.realizes
   let canon : CanonicalMetricCompactness (I := I) (X.atZero (I := I)) :=
     seed.higherRegularityCanonicalMetricCompactness (Classical.choice hd) hcpl hconn
@@ -82,21 +82,21 @@ theorem hamilton_constant_positive_sectional_curvature_of_injectivity_radius_bou
     simpa only [canon] using
       seed.higher_regularity_canonical_metric_compactness_connected (Classical.choice hd) hcpl hconn
   obtain ⟨d, hlimCpl⟩ :=
-    hamilton_flow_upgrade_of_metric_compactness (I := I) h0omega hM.1 P hD Q hsel hrm
+    exists_hamilton_smooth_flow_limit_subsequence (I := I) h0omega hM.1 P hD Q hsel hrm
       hwindow canon
   have hlimitConn :
-      letI : TopologicalSpace d.data.L.M := d.data.L.topology
-      ConnectedSpace d.data.L.M :=
-    flow_upgrade_data_connected (I := I) d hcanonConn
+      letI : TopologicalSpace d.limit.L.M := d.limit.L.topology
+      ConnectedSpace d.limit.L.M :=
+    smooth_flow_limit_connected (I := I) d hcanonConn
   have hzero : (0 : Real) ∈ X.D.carrier := by
     change (0 : Real) ∈ Set.Icc (-(hamiltonReferenceRadius ^ 2)) 0
     exact ⟨neg_nonpos.mpr (sq_nonneg hamiltonReferenceRadius), le_rfl⟩
-  let mc := canon.compactness.compSubseq d.φ d.hφ
+  let mc := canon.compactness.compSubseq d.φ d.strictMono
   exact constant_positive_sectional_curvature_of_smooth_cgh
     (I := I) (M := M) h0omega hM P hD Q hsel hscalar hpinch
     (hamiltonSourceLink (I := I) h0omega P hD Q hsel hwindow)
-    hzero d.data.L mc.subseq mc.strictMono
-    (Classical.choice (flow_upgrade_data_converges (I := I) d)) hlimCpl hlimitConn
+    hzero d.limit.L mc.subseq mc.strictMono
+    (Classical.choice (smooth_flow_limit_converges (I := I) d)) hlimCpl hlimitConn
 
 theorem hamilton_constant_positive_sectional_curvature_of_volume_noncollapse
     {omega : Real} (h0omega : 0 < omega)
@@ -137,8 +137,8 @@ theorem hamilton_constant_positive_sectional_curvature_of_volume_noncollapse
     change @ConnectedSpace (X.term k).M (X.term k).topology
     with_unfolding_all
       exact hM.2.1
-  let hderiv : FlowDerivativeInput (I := I) X :=
-    hamiltonSourceDerivativeInput (I := I) h0omega hM.1 P hD Q hsel hrm hwindow
+  let hderiv : FlowCompactnessBounds (I := I) X :=
+    hamiltonSourceCompactnessBounds (I := I) h0omega hM.1 P hD Q hsel hrm hwindow
   have hinj : FlowScaleInjectivityBound (I := I) X :=
     flowInjOfVol (I := I) X hcpl hconn hderiv.atZeroGeom V hvol
   exact hamilton_constant_positive_sectional_curvature_of_injectivity_radius_bound
@@ -177,14 +177,14 @@ theorem hamilton_admits_constant_positive_sectional_curvature
     rw [hM.2.2.2]; norm_num⟩
   rcases hpos with ⟨g0, hg0⟩
   let : CompactSpace M := hM.1
-  rcases hamilton_finite_time_flow_exists_on_closed_open
+  rcases exists_hamilton_finite_time_flow_on_closed_open
       (I := I) (M := M) hM g0 hg0 with
     ⟨omega, h0omega, P, hD⟩
   have hnonnegative : hamiltonRicciNonnegative (I := I) P omega :=
     hamilton_ricci_nonnegative (I := I) (M := M) h0omega hM hg0 P hD
   have hscalarBlow : hamiltonScalarBlowup (I := I) P :=
     hamilton_scalar_blowup (I := I) (M := M) h0omega hM P hD hnonnegative
-  rcases hamilton_exists_blowup_point_sequence
+  rcases exists_hamilton_blowup_point_sequence
       (I := I) (M := M) h0omega P hD hscalarBlow with
     ⟨Q, hsel⟩
   have hric : hamiltonRescaledRicciNonnegative (I := I) P Q :=

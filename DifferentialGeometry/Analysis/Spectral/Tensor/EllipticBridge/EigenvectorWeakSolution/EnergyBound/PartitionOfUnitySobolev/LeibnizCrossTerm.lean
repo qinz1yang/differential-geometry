@@ -143,7 +143,7 @@ lemma covGradPouLeibnizCrossLimit_memWkp_and_wkpNorm_le
       (tensorResolventEigenbasisVec (I := I) (M := M)
         (tensorResolventL2_isCompactOperator (I := I) (M := M) g r s) i)
       β P K (fun β' Q => h_eigen_K β' Q)
-  obtain ⟨Ccut, hCcut_nn, hCcut_bd⟩ :=
+  obtain ⟨cutoffConstant, cutoffConstant_nonneg, cutoff_bound⟩ :=
     wkpNorm_tensorL2ChartComponentCutoff_le_of_pou (I := I) (M := M) g r s
       (tensorResolventEigenbasisVec (I := I) (M := M)
         (tensorResolventL2_isCompactOperator (I := I) (M := M) g r s) i)
@@ -249,17 +249,17 @@ lemma covGradPouLeibnizCrossLimit_memWkp_and_wkpNorm_le
             (tensorResolventL2_isCompactOperator (I := I) (M := M) g r s)
             i) β P :
           Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) : EuclN → ℝ) y) Ω
-      ≤ ENNReal.ofReal Ccut *
+      ≤ ENNReal.ofReal cutoffConstant *
         (ENNReal.ofReal
             (((transportChartCenters (I := I) (M := M) β).card : ℝ) *
               ((Fintype.card (TensorCompIdx (E := E) r s) : ℝ) *
                 ‖(i.fst.val)⁻¹‖)) * Saggr) := by
-    refine le_trans hCcut_bd ?_
+    refine le_trans cutoff_bound ?_
     refine mul_le_mul_of_nonneg_left ?_ (zero_le)
     rw [← h_double_const]
     exact h_double_le
   refine ⟨h_prod_memWkp,
-    Kmul * (Ccut *
+    Kmul * (cutoffConstant *
       (((transportChartCenters (I := I) (M := M) β).card : ℝ) *
         ((Fintype.card (TensorCompIdx (E := E) r s) : ℝ) *
           ‖(i.fst.val)⁻¹‖))),
@@ -300,19 +300,19 @@ lemma covGradPouLeibnizCrossLimit_memWkp_and_wkpNorm_le
                   EuclN → ℝ) y) Ω :=
       hKmul_bd hcutoff_memWkp
     _ ≤ ENNReal.ofReal Kmul *
-          (ENNReal.ofReal Ccut *
+          (ENNReal.ofReal cutoffConstant *
             (ENNReal.ofReal
                 (((transportChartCenters (I := I) (M := M) β).card : ℝ) *
                   ((Fintype.card (TensorCompIdx (E := E) r s) : ℝ) *
                     ‖(i.fst.val)⁻¹‖)) * Saggr)) :=
       mul_le_mul_of_nonneg_left h_cutoff_le (zero_le)
     _ = ENNReal.ofReal
-          (Kmul * (Ccut *
+          (Kmul * (cutoffConstant *
             (((transportChartCenters (I := I) (M := M) β).card : ℝ) *
               ((Fintype.card (TensorCompIdx (E := E) r s) : ℝ) *
                 ‖(i.fst.val)⁻¹‖)))) * Saggr := by
       rw [ENNReal.ofReal_mul (le_of_lt hKmul_pos),
-        ENNReal.ofReal_mul hCcut_nn]
+        ENNReal.ofReal_mul cutoffConstant_nonneg]
       ring
 
 omit [CompleteSpace E] in
@@ -385,10 +385,10 @@ lemma covGradPouLeibnizCrossLimit_wkpNorm_le_uniform
     wkpNorm_smul_smooth_bounded_le (d := Module.finrank ℝ E) K
       (by norm_num : (1 : ℝ≥0∞) ≤ 2) (by norm_num) hΩ_open hmult_smooth'
       hC₀_nn (fun j _hj y _hy => hC₀_bd y j _hj)
-  obtain ⟨Ccut, hCcut_nn, hCcut_bd⟩ :=
+  obtain ⟨cutoffConstant, cutoffConstant_nonneg, cutoff_bound⟩ :=
     wkpNorm_tensorL2ChartComponentCutoff_le_of_pou_uniform (I := I) (M := M)
       g r s β P K
-  refine ⟨Kmul * (Ccut *
+  refine ⟨Kmul * (cutoffConstant *
       (((transportChartCenters (I := I) (M := M) β).card : ℝ) *
         (Fintype.card (TensorCompIdx (E := E) r s) : ℝ))),
     by positivity, fun i => ?_⟩
@@ -513,12 +513,12 @@ lemma covGradPouLeibnizCrossLimit_wkpNorm_le_uniform
             (tensorResolventL2_isCompactOperator (I := I) (M := M) g r s)
             i) β P :
           Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) : EuclN → ℝ) y) Ω
-      ≤ ENNReal.ofReal Ccut *
+      ≤ ENNReal.ofReal cutoffConstant *
         (ENNReal.ofReal
             (((transportChartCenters (I := I) (M := M) β).card : ℝ) *
               ((Fintype.card (TensorCompIdx (E := E) r s) : ℝ) *
                 ‖(i.fst.val)⁻¹‖)) * Saggr) := by
-    refine le_trans (hCcut_bd (tensorResolventEigenbasisVec
+    refine le_trans (cutoff_bound (tensorResolventEigenbasisVec
       (I := I) (M := M)
       (tensorResolventL2_isCompactOperator (I := I) (M := M) g r s) i)
       (fun β' Q => h_eigen_K β' Q)) ?_
@@ -561,28 +561,28 @@ lemma covGradPouLeibnizCrossLimit_wkpNorm_le_uniform
                   EuclN → ℝ) y) Ω :=
       hKmul_bd hcutoff_memWkp
     _ ≤ ENNReal.ofReal Kmul *
-          (ENNReal.ofReal Ccut *
+          (ENNReal.ofReal cutoffConstant *
             (ENNReal.ofReal
                 (((transportChartCenters (I := I) (M := M) β).card : ℝ) *
                   ((Fintype.card (TensorCompIdx (E := E) r s) : ℝ) *
                     ‖(i.fst.val)⁻¹‖)) * Saggr)) :=
       mul_le_mul_of_nonneg_left h_cutoff_le (zero_le)
     _ = ENNReal.ofReal ((i.fst.val)⁻¹ *
-          (Kmul * (Ccut *
+          (Kmul * (cutoffConstant *
             (((transportChartCenters (I := I) (M := M) β).card : ℝ) *
               (Fintype.card (TensorCompIdx (E := E) r s) : ℝ))))) * Saggr := by
       have h_fold : ENNReal.ofReal Kmul *
-            (ENNReal.ofReal Ccut *
+            (ENNReal.ofReal cutoffConstant *
               (ENNReal.ofReal
                   (((transportChartCenters (I := I) (M := M) β).card : ℝ) *
                     ((Fintype.card (TensorCompIdx (E := E) r s) : ℝ) *
                       ‖(i.fst.val)⁻¹‖)) * Saggr))
-          = ENNReal.ofReal (Kmul * (Ccut *
+          = ENNReal.ofReal (Kmul * (cutoffConstant *
               (((transportChartCenters (I := I) (M := M) β).card : ℝ) *
                 ((Fintype.card (TensorCompIdx (E := E) r s) : ℝ) *
                   ‖(i.fst.val)⁻¹‖)))) * Saggr := by
         rw [ENNReal.ofReal_mul (le_of_lt hKmul_pos),
-          ENNReal.ofReal_mul hCcut_nn]
+          ENNReal.ofReal_mul cutoffConstant_nonneg]
         ring
       rw [h_fold]
       congr 2

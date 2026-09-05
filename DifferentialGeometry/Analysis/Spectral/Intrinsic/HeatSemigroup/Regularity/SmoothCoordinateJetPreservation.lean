@@ -88,14 +88,14 @@ def JetSpectralMassControl
 noncomputable def deTurckRealizabilityRadius
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) : ℝ :=
-  (Classical.choose (deTurckSobolevNHa2_exists_of_super (I := I) (M := M) g₀ a ha_super)).1
+  (Classical.choose (exists_deTurckSobolev_fiber_bound_on_ball_of_supercritical (I := I) (M := M) g₀ a ha_super)).1
 
 theorem deTurckRealizabilityRadius_pos
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) :
     0 < deTurckRealizabilityRadius (I := I) (M := M) g₀ a ha_super :=
   (Classical.choose_spec
-    (deTurckSobolevNHa2_exists_of_super (I := I) (M := M) g₀ a ha_super)).1
+    (exists_deTurckSobolev_fiber_bound_on_ball_of_supercritical (I := I) (M := M) g₀ a ha_super)).1
 
 theorem per_mode_convolution_sq_le_time_mul_integral (lam : ℝ) (hlam : 0 ≤ lam)
     {c : ℝ → ℝ} (hc : Continuous c) {t : ℝ} (ht : 0 ≤ t) :
@@ -463,13 +463,13 @@ theorem deTurckSobolevNHa2_jetSpectralMass_preserving
       ∃ δ : ℝ, δ < 1 ∧ ∀ t : ℝ, metricCauchySchwarzBound (I := I) (M := M) g₀
         (ccTensorBilinSymm (I := I) g₀ (F t)) δ := by
     obtain ⟨hp_pos, hp_lt, hp_ball⟩ := Classical.choose_spec
-      (deTurckSobolevNHa2_exists_of_super (I := I) (M := M) g₀ a ha_super)
+      (exists_deTurckSobolev_fiber_bound_on_ball_of_supercritical (I := I) (M := M) g₀ a ha_super)
     have hsmoothZero : smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2)
         (0 : SmoothCcTensor g₀ 0 2) = 0 := by
       have h0 : (0 : SmoothCcTensor g₀ 0 2) = (0 : ℝ) • (0 : SmoothCcTensor g₀ 0 2) :=
         (zero_smul ℝ _).symm
       rw [h0, smoothCcToTensorHs_smul, zero_smul]
-    refine ⟨(Classical.choose (deTurckSobolevNHa2_exists_of_super
+    refine ⟨(Classical.choose (exists_deTurckSobolev_fiber_bound_on_ball_of_supercritical
       (I := I) (M := M) g₀ a ha_super)).2,
       lt_of_le_of_lt hp_lt (de_turck_remainder_contraction_threshold_lt_one_of_ne_zero (Module.finrank ℝ E)), fun t
         => ?_⟩
@@ -500,7 +500,7 @@ theorem deTurckSobolevNHa2_jetSpectralMass_preserving
       (F t) hδ_lt (hδ_all t) (by
         have hle : ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2) (F t)‖ ≤ R₀ :=
           hball_pt t htmem
-        have hpf : (Classical.choose (deTurckSobolevNHa2_exists_of_super
+        have hpf : (Classical.choose (exists_deTurckSobolev_fiber_bound_on_ball_of_supercritical
             (I := I) (M := M) g₀ a ha_super)).1 = R₀ := rfl
         rw [hpf]; exact hle)]
   exact hψ_coeff t htmem i

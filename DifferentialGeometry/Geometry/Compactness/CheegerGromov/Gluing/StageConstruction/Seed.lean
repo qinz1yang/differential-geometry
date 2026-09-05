@@ -31,7 +31,7 @@ variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 variable {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
 
 def IsStableNet
-    (inp : MetricCompactCore (I := I) X)
+    (inp : MetricCompactSeedWithDivisor (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P) : Prop :=
   ∀ a b : Nat,
@@ -41,7 +41,7 @@ def IsStableNet
       ¬ BInter inp.decay inp.D P L.lamInf a b (L.φ k))
 
 def HasStageRefine
-    (inp : MetricCompactnessInputs (I := I) X)
+    (inp : MetricCompactnessAssumptions (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P)
     (r : Real) (hr : 0 ≤ r) : Prop :=
@@ -54,11 +54,11 @@ def HasStageRefine
         InterSlot L inp.pack r alpha → E → E)
       (gInf : LiveSlot L inp.pack r →
         E → (E →L[Real] E →L[Real] Real)),
-    HasStageJetData inp P L hr phi hphi U C0 C1
+    HasStageJetConvergence inp P L hr phi hphi U C0 C1
       aInf Jinf Jbarinf gInf
 
 def HasStageRefineOn
-    (inp : MetricCompactCore (I := I) X)
+    (inp : MetricCompactSeedWithDivisor (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P)
     (chart : NormalChartFamily (I := I) X)
@@ -71,11 +71,11 @@ def HasStageRefineOn
         InterSlot L inp.pack r alpha → E → E)
       (gInf : LiveSlot L inp.pack r →
         E → (E →L[Real] E →L[Real] Real)),
-    HasStageJetDataOn inp P L hr phi hphi chart
+    HasStageJetConvergenceOn inp P L hr phi hphi chart
       V U C0 C1 aInf Jinf Jbarinf gInf
 
 def HasStageSeed
-    (inp : MetricCompactnessInputs (I := I) X)
+    (inp : MetricCompactnessAssumptions (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L0 : NetLimitData inp.decay inp.D P) : Prop :=
   IsStableNet inp P L0 ∧
@@ -84,7 +84,7 @@ def HasStageSeed
         HasStageRefine inp P L r hr
 
 def HasStageSeedOn
-    (inp : MetricCompactCore (I := I) X)
+    (inp : MetricCompactSeedWithDivisor (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L0 : NetLimitData inp.decay inp.D P)
     (chart : NormalChartFamily (I := I) X) : Prop :=
@@ -94,7 +94,7 @@ def HasStageSeedOn
         HasStageRefineOn inp P L chart r hr
 
 theorem HasStageSeed.refine
-    (inp : MetricCompactnessInputs (I := I) X)
+    (inp : MetricCompactnessAssumptions (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L0 : NetLimitData inp.decay inp.D P)
     (hseed : HasStageSeed inp P L0)
@@ -104,7 +104,7 @@ theorem HasStageSeed.refine
   hseed.2 L hstable r hr
 
 theorem HasStageSeed.subseq
-    (inp : MetricCompactnessInputs (I := I) X)
+    (inp : MetricCompactnessAssumptions (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L0 : NetLimitData inp.decay inp.D P)
     (hseed : HasStageSeed inp P L0)
@@ -114,7 +114,7 @@ theorem HasStageSeed.subseq
   exact NetLimitData.stable_subseq inp.decay P L0 hψ hseed.1
 
 theorem HasStageSeedOn.refine
-    (inp : MetricCompactCore (I := I) X)
+    (inp : MetricCompactSeedWithDivisor (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L0 : NetLimitData inp.decay inp.D P)
     (chart : NormalChartFamily (I := I) X)
@@ -125,7 +125,7 @@ theorem HasStageSeedOn.refine
   hseed.2 L hstable r hr
 
 theorem HasStageSeedOn.subseq
-    (inp : MetricCompactCore (I := I) X)
+    (inp : MetricCompactSeedWithDivisor (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L0 : NetLimitData inp.decay inp.D P)
     (chart : NormalChartFamily (I := I) X)
@@ -141,7 +141,7 @@ theorem MetricCompactBase.exists_stage_seed
     (hconn : ∀ j,
       letI : TopologicalSpace (X.obj j).M := (X.obj j).topology
       ConnectedSpace (X.obj j).M) :
-    ∃ (inp : MetricCompactnessInputs (I := I) X)
+    ∃ (inp : MetricCompactnessAssumptions (I := I) X)
         (L0 : NetLimitData inp.decay inp.D
           (properMetricsOfCompleteConnected (I := I) hcomplete hconn)),
       HasStageSeed inp (properMetricsOfCompleteConnected (I := I) hcomplete hconn) L0 := by
@@ -154,18 +154,18 @@ theorem MetricCompactBase.exists_stage_seed
   obtain ⟨D, hD_one, _hmuD, hc0, h8, _h16, hradD, hradRatio, hcap⟩ :=
     b.exists_large_divisor_for_exponential_scales c0
   have hD : 0 < D := zero_lt_one.trans hD_one
-  let inp := MetricCompactnessInputs.ofBase b D hD hcap
+  let inp := MetricCompactnessAssumptions.ofBase b D hD hcap
   have h8' : (8 : Real) < inp.normalRadius.metricCoerciveRatio * inp.D := by
-    simpa only [inp, MetricCompactnessInputs.ofBase] using h8
+    simpa only [inp, MetricCompactnessAssumptions.ofBase] using h8
   have hradD' : 2 * exponentialBallRadiusFactor inp.decay inp.D < inp.D := by
-    simpa only [inp, MetricCompactnessInputs.ofBase] using hradD
+    simpa only [inp, MetricCompactnessAssumptions.ofBase] using hradD
   have hradRatio' : 2 * exponentialBallRadiusFactor inp.decay inp.D <
       inp.normalRadius.ratio * inp.D := by
-    simpa only [inp, MetricCompactnessInputs.ofBase] using hradRatio
+    simpa only [inp, MetricCompactnessAssumptions.ofBase] using hradRatio
   have hc0' :
       (8 * Real.exp inp.decay.C / aMin) * inp.normalRadius.metricCoerciveRatio <
         inp.normalRadius.metricCoerciveRatio * inp.D := by
-    simpa only [inp, c0, MetricCompactnessInputs.ofBase] using hc0
+    simpa only [inp, c0, MetricCompactnessAssumptions.ofBase] using hc0
   have hphys : 8 * Real.exp inp.decay.C < aMin * inp.D :=
     inp.physScale_of_extra haMin hc0'
   let P := properMetricsOfCompleteConnected (I := I) hcomplete hconn
@@ -182,7 +182,7 @@ theorem MetricCompactBase.exists_stage_seed
   let Lphi := L.subseq hphi
   obtain ⟨q, δ, hqdata, hqWide, hqAcc, herr, hinvErr,
       hbranchTail, hscaleTail, hreadTail⟩ :=
-    hread inp.hD hphys P Lphi inp.pack r
+    hread inp.divisor_pos hphys P Lphi inp.pack r
   have hqdata0 : ∀ gamma : LiveSlot L inp.pack r,
       let Rgamma := L.rInf (gamma.1 : Nat) + 1
       let rhoMin := aMin * inp.decay.mu Rgamma
@@ -206,7 +206,7 @@ theorem MetricCompactBase.exists_stage_seed
     dsimp only [HasSupportedCenterMapConvergence] at hconv0
     have hzBall := (hconv0.2.1 gamma)
       ((hconv0.2.2.2.2.2.1 gamma) hz)
-    have hlam := lamInf_lt_halfMin inp.decay inp.hD hphys P L
+    have hlam := lamInf_lt_halfMin inp.decay inp.divisor_pos hphys P L
       (gamma.1 : Nat)
     have hqGamma := hqdata0 gamma
     dsimp only at hqGamma
@@ -437,7 +437,7 @@ theorem MetricCompactBase.exists_stage_seed
       hhalfSix.trans (hqWide0 alpha)
     exact (hC1q alpha).trans (Metric.ball_subset_ball hhalfPhase.le)
   refine ⟨theta, htheta, U, C0, C1, aInf, Jinf, Jbarinf, gInf, ?_⟩
-  dsimp only [HasStageJetData]
+  dsimp only [HasStageJetConvergence]
   exact ⟨hconvTheta, hmetric', hjet, hbase⟩
 
 end CheegerGromovCompactness

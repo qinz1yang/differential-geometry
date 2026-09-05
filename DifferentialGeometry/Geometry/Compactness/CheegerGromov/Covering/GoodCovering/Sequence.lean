@@ -83,7 +83,8 @@ theorem seqRadius_mem (hd : InjectivityRadiusDecay (I := I) X) {D : Real} (hD : 
   let : MetricSpace (X.obj k).M := (P k).ms
   have : ProperSpace (X.obj k).M := (P k).proper
   exact OrderedNet.netRadius_mem (X.obj k).basepoint (hd.lambda_continuous D)
-    (hd.lambda_antitone hD) (fun s => hd.lambda_pos hD s) (P k).hint α
+    (hd.lambda_antitone hD) (fun s => hd.lambda_pos hD s)
+      (P k).exists_dist_to_basepoint_eq α
 
 
 theorem seqCenter_mu_hasInj (hd : InjectivityRadiusDecay (I := I) X)
@@ -144,7 +145,7 @@ def subseq {hd : InjectivityRadiusDecay (I := I) X} {D : Real}
 end NetLimitData
 
 
-theorem exists_netLimitData (hd : InjectivityRadiusDecay (I := I) X) {D : Real}
+theorem nonempty_netLimitData (hd : InjectivityRadiusDecay (I := I) X) {D : Real}
     (hD : 0 < D) (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k)) :
     Nonempty (NetLimitData hd D P) := by
   obtain ⟨φ₁, hφ₁, h₁⟩ := exists_subseq_tendsto_pi
@@ -683,13 +684,13 @@ theorem NetLimitData.inter_count (hd : InjectivityRadiusDecay (I := I) X) {D : R
       exact hcont b.down)
   rwa [Finset.card_univ, Fintype.card_ulift, Fintype.card_coe] at hmul
 
-theorem exists_stableNetData (hd : InjectivityRadiusDecay (I := I) X) {D : Real}
+theorem exists_netLimitData_with_stable_intersections (hd : InjectivityRadiusDecay (I := I) X) {D : Real}
     (hD : 0 < D) (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k)) :
     ∃ L : NetLimitData hd D P,
       ∀ α β : Nat,
         (∀ᶠ k in atTop, BInter hd D P L.lamInf α β (L.φ k)) ∨
         (∀ᶠ k in atTop, ¬ BInter hd D P L.lamInf α β (L.φ k)) := by
-  obtain ⟨L0⟩ := exists_netLimitData hd hD P
+  obtain ⟨L0⟩ := nonempty_netLimitData hd hD P
   obtain ⟨L, hLr, hstab⟩ := exists_stableNet hd P L0
   have hlam : L0.lamInf = L.lamInf := by
     funext γ

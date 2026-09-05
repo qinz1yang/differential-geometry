@@ -154,9 +154,9 @@ structure SmoothSeqSystem
     (A : ℕ → Type u) [∀ k, TopologicalSpace (A k)] [∀ k, ChartedSpace H (A k)]
     [∀ k, IsManifold I ∞ (A k)] [∀ k, Nonempty (A k)]
     extends SeqSystem A where
-  contMDiff_F : ∀ {k ℓ : ℕ} (h : k ≤ ℓ), ContMDiff I I ∞ (toSeqSystem.F h)
-  contMDiffOn_invFun_F : ∀ {k ℓ : ℕ} (h : k ≤ ℓ),
-    ContMDiffOn I I ∞ (Function.invFun (toSeqSystem.F h)) (Set.range (toSeqSystem.F h))
+  contMDiff_map : ∀ {k ℓ : ℕ} (h : k ≤ ℓ), ContMDiff I I ∞ (toSeqSystem.map h)
+  contMDiffOn_invFun_map : ∀ {k ℓ : ℕ} (h : k ≤ ℓ),
+    ContMDiffOn I I ∞ (Function.invFun (toSeqSystem.map h)) (Set.range (toSeqSystem.map h))
 
 theorem modelSpace_contDiffOn
     {E : Type uE} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -266,16 +266,16 @@ def ofSucc (f : ∀ k, A k → A (k + 1))
     (hfInv : ∀ k, ContMDiffOn I I ∞ (Function.invFun (f k)) (Set.range (f k))) :
     SmoothSeqSystem I A where
   toSeqSystem := SeqSystem.ofSucc f hemb
-  contMDiff_F h := succMap_contMDiff f hf h
-  contMDiffOn_invFun_F h := succMap_inv_mdiff f hemb hfInv h
+  contMDiff_map h := succMap_contMDiff f hf h
+  contMDiffOn_invFun_map h := succMap_inv_mdiff f hemb hfInv h
 
 
-@[simp] theorem ofSucc_F_succ (f : ∀ k, A k → A (k + 1))
+@[simp] theorem ofSucc_map_succ (f : ∀ k, A k → A (k + 1))
     (hemb : ∀ k, IsOpenEmbedding (f k))
     (hf : ∀ k, ContMDiff I I ∞ (f k))
     (hfInv : ∀ k, ContMDiffOn I I ∞ (Function.invFun (f k)) (Set.range (f k)))
     (k : ℕ) :
-    (ofSucc (I := I) f hemb hf hfInv).toSeqSystem.F (Nat.le_succ k) = f k := by
+    (ofSucc (I := I) f hemb hf hfInv).toSeqSystem.map (Nat.le_succ k) = f k := by
   funext x
   change SeqSystem.succMap f (Nat.le_succ k) x = f k x
   unfold SeqSystem.succMap
@@ -289,25 +289,25 @@ theorem transitionHomeo_contMDiffOn (k ℓ : ℕ) :
   have hkm : k ≤ m := le_max_left k ℓ
   have hℓm : ℓ ≤ m := le_max_right k ℓ
   have hFeq : ∀ w ∈ (S.toSeqSystem.transitionHomeo k ℓ).source,
-      S.toSeqSystem.F hℓm (S.toSeqSystem.transitionHomeo k ℓ w) = S.toSeqSystem.F hkm w := by
+      S.toSeqSystem.map hℓm (S.toSeqSystem.transitionHomeo k ℓ w) = S.toSeqSystem.map hkm w := by
     intro w hw
     apply S.toSeqSystem.incl_injective m
     rw [S.toSeqSystem.incl_comp hℓm, S.toSeqSystem.incl_comp hkm,
       S.toSeqSystem.incl_transitionHomeo hw]
   have hpt : ∀ w ∈ (S.toSeqSystem.transitionHomeo k ℓ).source,
       S.toSeqSystem.transitionHomeo k ℓ w
-        = (Function.invFun (S.toSeqSystem.F hℓm) ∘ S.toSeqSystem.F hkm) w := by
+        = (Function.invFun (S.toSeqSystem.map hℓm) ∘ S.toSeqSystem.map hkm) w := by
     intro w hw
-    change S.toSeqSystem.transitionHomeo k ℓ w = Function.invFun (S.toSeqSystem.F hℓm)
-      (S.toSeqSystem.F hkm w)
+    change S.toSeqSystem.transitionHomeo k ℓ w = Function.invFun (S.toSeqSystem.map hℓm)
+      (S.toSeqSystem.map hkm w)
     rw [← hFeq w hw,
       Function.leftInverse_invFun (S.toSeqSystem.isOpenEmb hℓm).injective]
   have hrange : (S.toSeqSystem.transitionHomeo k ℓ).source ⊆
-      S.toSeqSystem.F hkm ⁻¹' range (S.toSeqSystem.F hℓm) := by
+      S.toSeqSystem.map hkm ⁻¹' range (S.toSeqSystem.map hℓm) := by
     intro w hw
     exact ⟨S.toSeqSystem.transitionHomeo k ℓ w, hFeq w hw⟩
   refine ContMDiffOn.congr ?_ (fun w hw => hpt w hw)
-  exact (S.contMDiffOn_invFun_F hℓm).comp ((S.contMDiff_F hkm).contMDiffOn) hrange
+  exact (S.contMDiffOn_invFun_map hℓm).comp ((S.contMDiff_map hkm).contMDiffOn) hrange
 
 instance instIsManifoldLim : IsManifold I ∞ S.toSeqSystem.Lim := by
   have : Nonempty H :=
@@ -426,7 +426,7 @@ noncomputable def inclPartialDiffeo (k : ℕ) :
 
 theorem invIncl_incl_le {j k : ℕ} (hjk : j ≤ k) (a : A j) :
     Function.invFun (S.toSeqSystem.incl k) (S.toSeqSystem.incl j a)
-      = S.toSeqSystem.F hjk a := by
+      = S.toSeqSystem.map hjk a := by
   conv_lhs => rw [← S.toSeqSystem.incl_comp hjk a]
   exact Function.leftInverse_invFun (S.toSeqSystem.incl_injective k) _
 

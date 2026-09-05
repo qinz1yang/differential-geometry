@@ -213,7 +213,7 @@ lemma fderiv_tensorRepr_opNorm_le_sum_fderiv_components
   rw [ContinuousLinearMap.norm_smulRight_apply]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
-theorem chart_pulled_tensor_repr_norm_le_chartComp_data
+theorem chart_pulled_tensor_repr_norm_le_chartComp_bounds
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M) :
     ∃ K : ℝ, 0 ≤ K ∧
       ∀ (T : SmoothCcTensor g r s),

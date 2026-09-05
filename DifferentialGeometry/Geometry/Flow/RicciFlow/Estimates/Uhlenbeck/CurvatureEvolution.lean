@@ -223,7 +223,7 @@ theorem solution_rm04_kn_firstTrace_gform_at
               - (S.base.metric t).inner x Y Z * (S.base.metric t).inner x X W) := by
   have h :=
     DifferentialGeometry.Geometry.Curvature.rm04_kn_gform (I := I)
-      (riemann_from_ricci_trace_data (I := I) S horth) X Y Z W
+      (riemann_from_ricci_trace (I := I) S horth) X Y Z W
   simp only [Tensor0SSpace.neg_apply] at h
   rw [h]
   ring

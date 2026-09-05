@@ -206,7 +206,7 @@ private theorem div_ricGrad [I.Boundaryless]
     rw [hdR]
     simpa only [cov, Ric, nRic0, metricCov, metricRicci,
       LeviCivita_eq_leviCivitaConnectionOfMetric] using
-      (exists_levi_civita_bianchi_trace_data (I := I) (M := M) g basis delta hinv)
+      (exists_levi_civita_bianchi_trace_identities (I := I) (M := M) g basis delta hinv)
   obtain ⟨nablaRm04, hsecond, hRmSymm, hRicTrace, hScalar⟩ := hpack
   have hInv : ∀ i j, delta i j = delta j i := by
     intro i j

@@ -46,7 +46,7 @@ noncomputable local instance sourceCoverModelModelBilinearNormedSpace :
   ContinuousLinearMap.toNormedSpace
 
 theorem liveMetric0_close
-    (inp : MetricCompactnessInputs (I := I) X)
+    (inp : MetricCompactnessAssumptions (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P) (r : Real)
     {psi : Nat → Nat}
@@ -108,7 +108,7 @@ theorem liveMetric0_close
     _ = (1 / 10 : Real) * ‖v‖ ^ 2 := by ring
 
 theorem liveMetric0_symm
-    (inp : MetricCompactnessInputs (I := I) X)
+    (inp : MetricCompactnessAssumptions (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P) (r : Real)
     {psi : Nat → Nat}
@@ -162,8 +162,8 @@ theorem liveMetric0_symm
   rw [hstage] at hvw'
   exact tendsto_nhds_unique hvw' hwv'
 
-theorem MetricCompactnessInputs.exists_live_cores
-    (inp : MetricCompactnessInputs (I := I) X)
+theorem MetricCompactnessAssumptions.exists_live_cores
+    (inp : MetricCompactnessAssumptions (I := I) X)
     (h8 : (8 : Real) < inp.normalRadius.metricCoerciveRatio * inp.D)
     (hradRatio : 2 * exponentialBallRadiusFactor inp.decay inp.D <
       inp.normalRadius.ratio * inp.D)
@@ -239,7 +239,7 @@ theorem MetricCompactnessInputs.exists_live_cores
   have hsymm := liveMetric0_symm (I := I) inp P L r hconv
   have hclose := liveMetric0_close (I := I) inp P L r hconv
   have hscaled := hpsi.tendsto_atTop.eventually
-    (L.scaled_cover inp.decay inp.hD P inp.realizes inp.pack r (9 / 4 : Real) (by norm_num))
+    (L.scaled_cover inp.decay inp.divisor_pos P inp.realizes inp.pack r (9 / 4 : Real) (by norm_num))
   have halive : ∀ᶠ k in atTop, ∀ gamma ∈ Finset.range (inp.pack.A r),
       (seqCenter inp.decay inp.D P (L.φ (psi k)) gamma).isSome = L.alive gamma :=
     hpsi.tendsto_atTop.eventually <|
@@ -247,7 +247,7 @@ theorem MetricCompactnessInputs.exists_live_cores
   obtain ⟨hgp, hrad⟩ := inp.exponential_scale_tails h8 hradRatio P L r
   have hgpPsi := hpsi.tendsto_atTop.eventually hgp
   have hradPsi := hpsi.tendsto_atTop.eventually hrad
-  have hmetric := inp.normalRadius.metric_scale_tail inp.hD
+  have hmetric := inp.normalRadius.metric_scale_tail inp.divisor_pos
     (exponential_ball_radius_factor_pos inp.decay inp.D) hradRatio
     P inp.realizes L inp.pack r
   have hmetricPsi := hpsi.tendsto_atTop.eventually hmetric
@@ -263,7 +263,7 @@ theorem MetricCompactnessInputs.exists_live_cores
       rw [show (1 : Real) = Real.exp 0 from Real.exp_zero.symm]
       exact Real.exp_le_exp.mpr
         (mul_nonneg inp.decay.C_nonneg
-          (by nlinarith [(inp.decay.lambda_pos inp.hD 0).le]))
+          (by nlinarith [(inp.decay.lambda_pos inp.divisor_pos 0).le]))
     rw [exponentialBallRadiusFactor]
     nlinarith
   have hopen : ∀ alpha, IsOpen (U alpha) := by
@@ -275,7 +275,7 @@ theorem MetricCompactnessInputs.exists_live_cores
       Metric.ball 0 (8 * L.lamInf (alpha.1 : Nat)) := by
     intro alpha v hv
     have hlambda : 0 < L.lamInf (alpha.1 : Nat) :=
-      inp.decay.lambda_pos inp.hD (L.rInf (alpha.1 : Nat))
+      inp.decay.lambda_pos inp.divisor_pos (L.rInf (alpha.1 : Nat))
     have hlower := (hequiv alpha v).1
     have hvlt : gInf 0 alpha v v <
         ((5 / 2 : Real) * L.lamInf (alpha.1 : Nat)) ^ 2 := hv
@@ -303,7 +303,7 @@ theorem MetricCompactnessInputs.exists_live_cores
     change gInf 0 alpha v v ≤
       (49 / 8 : Real) * L.lamInf (alpha.1 : Nat) ^ 2 at hv
     have hlambda : 0 < L.lamInf (alpha.1 : Nat) :=
-      inp.decay.lambda_pos inp.hD (L.rInf (alpha.1 : Nat))
+      inp.decay.lambda_pos inp.divisor_pos (L.rInf (alpha.1 : Nat))
     nlinarith [sq_pos_of_pos hlambda]
   have hC1U : ∀ alpha, C1 alpha ⊆ U alpha := by
     intro alpha v hv
@@ -312,7 +312,7 @@ theorem MetricCompactnessInputs.exists_live_cores
     change gInf 0 alpha v v ≤
       (99 / 16 : Real) * L.lamInf (alpha.1 : Nat) ^ 2 at hv
     have hlambda : 0 < L.lamInf (alpha.1 : Nat) :=
-      inp.decay.lambda_pos inp.hD (L.rInf (alpha.1 : Nat))
+      inp.decay.lambda_pos inp.divisor_pos (L.rInf (alpha.1 : Nat))
     nlinarith [sq_pos_of_pos hlambda]
   have hC0compact : ∀ alpha, IsCompact (C0 alpha) := by
     intro alpha
@@ -399,7 +399,7 @@ theorem MetricCompactnessInputs.exists_live_cores
     change gInf 0 alpha v v ≤
       (243 / 40 : Real) * L.lamInf (alpha.1 : Nat) ^ 2 at hv
     have hlambda : 0 < L.lamInf (alpha.1 : Nat) :=
-      inp.decay.lambda_pos inp.hD (L.rInf (alpha.1 : Nat))
+      inp.decay.lambda_pos inp.divisor_pos (L.rInf (alpha.1 : Nat))
     exact hv.trans_lt <| mul_lt_mul_of_pos_right (by norm_num)
       (sq_pos_of_pos hlambda)
   have hdeepCompact : ∀ alpha, IsCompact (Cdeep alpha) := by
@@ -434,14 +434,14 @@ theorem MetricCompactnessInputs.exists_live_cores
           (exponentialBallRadiusFactor inp.decay inp.D * L.lamInf (alpha.1 : Nat)) :=
       (hU8 alpha).trans <| Metric.ball_subset_ball <|
         mul_le_mul_of_nonneg_right hfactor
-          (inp.decay.lambda_pos inp.hD (L.rInf (alpha.1 : Nat))).le
+          (inp.decay.lambda_pos inp.divisor_pos (L.rInf (alpha.1 : Nat))).le
     refine ⟨hUfac.trans (Metric.ball_subset_ball
       (hmetrick alpha.1 _ hcenterk)),
       hUfac.trans (Metric.ball_subset_ball (hradk alpha.1 _ hcenterk).2), ?_⟩
     intro v hv
     let c : Y.M := seqCenterD inp.decay P L (psi k) (alpha.1 : Nat)
     have hlambda : 0 < L.lamInf (alpha.1 : Nat) :=
-      inp.decay.lambda_pos inp.hD (L.rInf (alpha.1 : Nat))
+      inp.decay.lambda_pos inp.divisor_pos (L.rInf (alpha.1 : Nat))
     have hlower := (hequiv alpha v).1
     have hvlt : gInf 0 alpha v v <
         ((5 / 2 : Real) * L.lamInf (alpha.1 : Nat)) ^ 2 := hv
@@ -486,7 +486,7 @@ theorem MetricCompactnessInputs.exists_live_cores
         3 * L.lamInf (alpha.1 : Nat)
       rw [hexp, dist_comm, hdist]
       exact hsqrt
-    exact ⟨L.innerBall_subset_hat inp.decay inp.hD P inp.pack r (psi k) alpha.1 hinner,
+    exact ⟨L.innerBall_subset_hat inp.decay inp.divisor_pos P inp.pack r (psi k) alpha.1 hinner,
       mem_iUnion.mpr ⟨alpha.1, hinner⟩⟩
   · have hselect : ∀ y ∈ L.hatSourceBall inp.decay P r (psi k),
         ∃ (alpha : LiveSlot L inp.pack r) (v : E),
@@ -509,7 +509,7 @@ theorem MetricCompactnessInputs.exists_live_cores
         exact Option.some.inj this.symm
       have hgpC := hgpk ⟨gamma, hgamma⟩ c hcenter
       have hlambda : 0 < L.lamInf gamma :=
-        inp.decay.lambda_pos inp.hD (L.rInf gamma)
+        inp.decay.lambda_pos inp.divisor_pos (L.rInf gamma)
       have hyball : y ∈ Metric.ball c (4 * L.lamInf gamma) := by
         rw [Metric.mem_ball]
         exact hyc.trans <|
@@ -586,8 +586,8 @@ theorem MetricCompactnessInputs.exists_live_cores
       exact (Metric.closedBall_subset_cthickening hvdeep (eta alpha)).trans
         (heta_sub alpha)
 
-theorem MetricCompactnessInputs.exists_live_source_cover
-    (inp : MetricCompactnessInputs (I := I) X)
+theorem MetricCompactnessAssumptions.exists_live_source_cover
+    (inp : MetricCompactnessAssumptions (I := I) X)
     (h8 : (8 : Real) < inp.normalRadius.metricCoerciveRatio * inp.D)
     (hradRatio : 2 * exponentialBallRadiusFactor inp.decay inp.D <
       inp.normalRadius.ratio * inp.D)

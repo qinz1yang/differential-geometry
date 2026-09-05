@@ -69,7 +69,7 @@ theorem exponential_ball_radius_factor_pos (hd : InjectivityRadiusDecay (I := I)
     0 < exponentialBallRadiusFactor hd D := by
   exact mul_pos (by norm_num) (Real.exp_pos _)
 
-def ExponentialBallRadiusInput (hd : InjectivityRadiusDecay (I := I) X) (D : Real)
+def ExponentialBallRadiusBounds (hd : InjectivityRadiusDecay (I := I) X) (D : Real)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k)) (ρ : Nat → Nat → Real) : Prop :=
   ∀ k α : Nat, ∀ c : (X.obj k).M, c ∈ seqCenter hd D P k α →
     letI := (X.obj k).topology
@@ -112,12 +112,12 @@ theorem ExponentialBallRadiusTail.subseq (hd : InjectivityRadiusDecay (I := I) X
   intro γ c hc
   exact hn γ c hc
 
-namespace ExponentialBallRadiusInput
+namespace ExponentialBallRadiusBounds
 
 theorem subseq (hd : InjectivityRadiusDecay (I := I) X) (D : Real)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k)) (ρ : Nat → Nat → Real)
-    (hrad : ExponentialBallRadiusInput (I := I) hd D P ρ) (f : Nat -> Nat) :
-    ExponentialBallRadiusInput (I := I) (hd.subseq f) D (fun k => P (f k))
+    (hrad : ExponentialBallRadiusBounds (I := I) hd D P ρ) (f : Nat -> Nat) :
+    ExponentialBallRadiusBounds (I := I) (hd.subseq f) D (fun k => P (f k))
       (fun k α => ρ (f k) α) := by
   intro k α c hc
   have hc' : c ∈ seqCenter hd D P (f k) α := by
@@ -129,12 +129,12 @@ theorem subseq (hd : InjectivityRadiusDecay (I := I) X) (D : Real)
   simpa [InjectivityRadiusDecay.subseq, PointedRiemannianSeq.subseq] using
     hrad (f k) α c hc'
 
-end ExponentialBallRadiusInput
+end ExponentialBallRadiusBounds
 
 theorem exists_sequence_exponential_ball_partial_diffeomorph
     (hd : InjectivityRadiusDecay (I := I) X) (D : Real)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k)) (ρ : Nat → Nat → Real)
-    (hrad : ExponentialBallRadiusInput (I := I) hd D P ρ)
+    (hrad : ExponentialBallRadiusBounds (I := I) hd D P ρ)
     (k α : Nat) (c : (X.obj k).M) (hc : c ∈ seqCenter hd D P k α) :
     letI := (X.obj k).topology
     letI := (X.obj k).charted
@@ -182,7 +182,7 @@ theorem exists_exponential_ball_partial_diffeomorph
   exact fun hinj => (X.obj (L.φ n)).exists_exponential_ball_partial_diffeomorph c
     hinj (hrad γ c hc).2
 
-def ExponentialRadiusScaleInput (hd : InjectivityRadiusDecay (I := I) X) (D : Real)
+def ExponentialRadiusScaleBounds (hd : InjectivityRadiusDecay (I := I) X) (D : Real)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData (I := I) hd D P) : Prop :=
   ∀ n γ : Nat, ∀ c : (X.obj (L.φ n)).M,
@@ -214,29 +214,29 @@ def ExponentialRadiusScaleTail (hd : InjectivityRadiusDecay (I := I) X) (D : Rea
     (L : NetLimitData (I := I) hd D P) (pb : hd.PackingBound D) (r : Real) : Prop :=
   ∀ᶠ n in Filter.atTop, ExponentialRadiusScaleAt (I := I) hd D P L pb r n
 
-theorem ExponentialRadiusScaleInput.at (hd : InjectivityRadiusDecay (I := I) X) (D : Real)
+theorem ExponentialRadiusScaleBounds.at (hd : InjectivityRadiusDecay (I := I) X) (D : Real)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData (I := I) hd D P)
-    (hgp : ExponentialRadiusScaleInput (I := I) hd D P L)
+    (hgp : ExponentialRadiusScaleBounds (I := I) hd D P L)
     (pb : hd.PackingBound D) (r : Real) (n : Nat) :
     ExponentialRadiusScaleAt (I := I) hd D P L pb r n := by
   intro γ c hc
   exact hgp n (γ : Nat) c hc
 
-theorem ExponentialRadiusScaleInput.to_tail (hd : InjectivityRadiusDecay (I := I) X) (D : Real)
+theorem ExponentialRadiusScaleBounds.to_tail (hd : InjectivityRadiusDecay (I := I) X) (D : Real)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData (I := I) hd D P)
-    (hgp : ExponentialRadiusScaleInput (I := I) hd D P L)
+    (hgp : ExponentialRadiusScaleBounds (I := I) hd D P L)
     (pb : hd.PackingBound D) (r : Real) :
     ExponentialRadiusScaleTail (I := I) hd D P L pb r :=
   Filter.Eventually.of_forall fun n => hgp.at hd D P L pb r n
 
-theorem ExponentialRadiusScaleInput.subseq (hd : InjectivityRadiusDecay (I := I) X) (D : Real)
+theorem ExponentialRadiusScaleBounds.subseq (hd : InjectivityRadiusDecay (I := I) X) (D : Real)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData (I := I) hd D P)
-    (hgp : ExponentialRadiusScaleInput (I := I) hd D P L)
+    (hgp : ExponentialRadiusScaleBounds (I := I) hd D P L)
     {ψ : Nat → Nat} (hψ : StrictMono ψ) :
-    ExponentialRadiusScaleInput (I := I) hd D P (L.subseq hψ) := by
+    ExponentialRadiusScaleBounds (I := I) hd D P (L.subseq hψ) := by
   intro n γ c hc
   exact hgp (ψ n) γ c hc
 
@@ -287,7 +287,7 @@ theorem PointedRiemannianManifold.exists_framed_exponential_ball_partial_diffeom
 
 variable {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
 
-def FramedExponentialBallRadiusInput (hd : InjectivityRadiusDecay (I := I) X) (D : Real)
+def FramedExponentialBallRadiusBounds (hd : InjectivityRadiusDecay (I := I) X) (D : Real)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k)) (ρ : Nat → Nat → Real) : Prop :=
   ∀ k α : Nat, ∀ c : (X.obj k).M, c ∈ seqCenter hd D P k α →
     letI := (X.obj k).topology
@@ -332,12 +332,12 @@ theorem FramedExponentialBallRadiusTail.subseq
   intro γ c hc
   exact hn γ c hc
 
-namespace FramedExponentialBallRadiusInput
+namespace FramedExponentialBallRadiusBounds
 
 theorem subseq (hd : InjectivityRadiusDecay (I := I) X) (D : Real)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k)) (ρ : Nat → Nat → Real)
-    (hrad : FramedExponentialBallRadiusInput (I := I) hd D P ρ) (f : Nat → Nat) :
-    FramedExponentialBallRadiusInput (I := I) (hd.subseq f) D (fun k => P (f k))
+    (hrad : FramedExponentialBallRadiusBounds (I := I) hd D P ρ) (f : Nat → Nat) :
+    FramedExponentialBallRadiusBounds (I := I) (hd.subseq f) D (fun k => P (f k))
       (fun k α => ρ (f k) α) := by
   intro k α c hc
   have hc' : c ∈ seqCenter hd D P (f k) α := by
@@ -349,12 +349,12 @@ theorem subseq (hd : InjectivityRadiusDecay (I := I) X) (D : Real)
   simpa [InjectivityRadiusDecay.subseq, PointedRiemannianSeq.subseq] using
     hrad (f k) α c hc'
 
-end FramedExponentialBallRadiusInput
+end FramedExponentialBallRadiusBounds
 
 theorem exists_sequence_framed_exponential_ball_partial_diffeomorph
     (hd : InjectivityRadiusDecay (I := I) X) (D : Real)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k)) (ρ : Nat → Nat → Real)
-    (hrad : FramedExponentialBallRadiusInput (I := I) hd D P ρ)
+    (hrad : FramedExponentialBallRadiusBounds (I := I) hd D P ρ)
     (k α : Nat) (c : (X.obj k).M) (hc : c ∈ seqCenter hd D P k α) :
     letI := (X.obj k).topology
     letI := (X.obj k).charted

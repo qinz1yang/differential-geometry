@@ -313,7 +313,7 @@ theorem hasDerivAt_integral_lEulerPair_variation
     have hFAt : DifferentiableAt Real
         (fun p : Real × Real => F p.1 p.2) (u, tau) :=
       (hFDiff (u, tau) hpU).differentiableAt (hUopen.mem_nhds hpU)
-    simpa only [dF] using Aux2.hasDerivAt_slice_fst
+    simpa only [dF] using TwoParameterDerivative.hasDerivAt_slice_fst
       (fun z s : Real => F z s) u tau hFAt
   let K : Set (Real × Real) :=
     Set.Icc (-1 : Real) 1 ×ˢ Set.uIcc a b
@@ -649,7 +649,7 @@ private theorem lVarRicci_c1
         (hWopen.mem_nhds hpW)
     have hslice : HasDerivAt
         (fun s : Real => Q (s, tau)) (dQ (tau, tau)) tau := by
-      simpa only [dQ] using Aux2.hasDerivAt_slice_fst
+      simpa only [dQ] using TwoParameterDerivative.hasDerivAt_slice_fst
         (fun s r : Real => Q (s, r)) tau tau hQAt
     let Y : TangentSpace I (f u tau) :=
       lVelocity (I := I) (fun v : Real => f v tau) u

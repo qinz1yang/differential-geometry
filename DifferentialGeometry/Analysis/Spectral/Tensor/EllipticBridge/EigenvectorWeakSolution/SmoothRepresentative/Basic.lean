@@ -52,7 +52,7 @@ theorem eigenvectorSmooth_toL2
 
 open DifferentialGeometry.Analysis.Spectral in
 omit [CompleteSpace E] in
-theorem tensorEigenvector_exists_smooth
+theorem exists_smooth_tensorEigenvector
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (i : TensorEigenIdx (I := I) (M := M) g r s) :
     ∃ T : SmoothCcTensor g r s,

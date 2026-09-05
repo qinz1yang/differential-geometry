@@ -339,11 +339,11 @@ noncomputable def tailMemberMaps
     exact range_exhausts S
   · change S.toSeqSystem.incl 0 (tailCenter b j₀ 0) ∈
       Set.range (S.toSeqSystem.incl n)
-    exact ⟨S.toSeqSystem.F (Nat.zero_le n) (tailCenter b j₀ 0),
+    exact ⟨S.toSeqSystem.map (Nat.zero_le n) (tailCenter b j₀ 0),
       S.toSeqSystem.incl_comp (Nat.zero_le n) (tailCenter b j₀ 0)⟩
   · calc
       Φ n (S.toSeqSystem.incl 0 (tailCenter b j₀ 0)) =
-          (S.toSeqSystem.F (Nat.zero_le n) (tailCenter b j₀ 0) :
+          (S.toSeqSystem.map (Nat.zero_le n) (tailCenter b j₀ 0) :
             (X.obj (σ (j₀ + n))).M) :=
         congrArg Subtype.val
           (S.invIncl_incl_le (Nat.zero_le n) (tailCenter b j₀ 0))
@@ -445,7 +445,7 @@ noncomputable def tailMemberConvergence
   intro gTail hgTail C
   let XTail := X.subseq (fun n => σ (j₀ + n))
   let bTail : ∀ n, (XTail.obj n).M := fun n =>
-    (S.toSeqSystem.F (Nat.zero_le n) (tailCenter b j₀ 0) :
+    (S.toSeqSystem.map (Nat.zero_le n) (tailCenter b j₀ 0) :
       (X.obj (σ (j₀ + n))).M)
   let L := pointedDirectLimitOfMetricCocycle S (tailCenter b j₀ 0) gTail hgTail
   let Φr : PointedRiemannianConvergenceMaps (I := I) (XTail.repoint bTail) L id := by
@@ -877,7 +877,7 @@ attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 structure CanonicalMetricCompactness
     (X : PointedRiemannianSeq.{u, uE, uH} (I := I)) where
-  compactness : MetricCompactnessConclusion (I := I) X
+  compactness : MetricCompactLimit (I := I) X
   domain_eq_canonical : forall k : Nat,
     compactness.convergence.metrics.domain k =
       CanonicalMetricCompactness.canonicalSourceData (I := I) compactness.maps k
@@ -950,7 +950,7 @@ attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
 private opaque connectedCanonicalMetricCompactness
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (P : ∀ k, ProperMetricOn (I := I) (X.obj k))
-    (B : PairwiseApproximateIsometryInput (X := X) P) :
+    (B : HasPairwiseApproximateIsometries (X := X) P) :
     ConnectedCanonicalMetricCompactness (I := I) X := by
   classical
   let hdirectedEx := exists_directed_approximate_isometry_subsequence (I := I) P B
@@ -1174,7 +1174,7 @@ private opaque connectedCanonicalMetricCompactness
       exact hcov k (F x)
   let XTail := X.subseq (fun n => σ (j₀ + n))
   let bTail : forall n, (XTail.obj n).M := fun n =>
-    (S.toSeqSystem.F (Nat.zero_le n) (tailCenter b j₀ 0) :
+    (S.toSeqSystem.map (Nat.zero_le n) (tailCenter b j₀ 0) :
       (X.obj (σ (j₀ + n))).M)
   let Φr : PointedRiemannianConvergenceMaps (I := I) (XTail.repoint bTail) L id := by
     change PointedRiemannianConvergenceMaps (I := I)
@@ -1221,7 +1221,7 @@ private opaque connectedCanonicalMetricCompactness
       CanonicalMetricCompactness.canonicalSourceData (I := I) maps k
     rw [hchain_domain k]
     rfl
-  let mc : MetricCompactnessConclusion (I := I) X :=
+  let mc : MetricCompactLimit (I := I) X :=
     { subseq := fun n => σ (j₀ + n)
       strictMono := fun _ _ hnm => hσ (Nat.add_lt_add_left hnm j₀)
       limit := L
@@ -1251,7 +1251,7 @@ private opaque connectedCanonicalMetricCompactness
 noncomputable def canonicalMetricCompactness
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (P : ∀ k, ProperMetricOn (I := I) (X.obj k))
-    (B : PairwiseApproximateIsometryInput (X := X) P) :
+    (B : HasPairwiseApproximateIsometries (X := X) P) :
     CanonicalMetricCompactness (I := I) X :=
   (connectedCanonicalMetricCompactness (I := I) P B).canonical
 
@@ -1259,7 +1259,7 @@ omit [NeZero (Module.finrank ℝ E)] in
 theorem canonical_metric_compactness_connected
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (P : ∀ k, ProperMetricOn (I := I) (X.obj k))
-    (B : PairwiseApproximateIsometryInput (X := X) P) :
+    (B : HasPairwiseApproximateIsometries (X := X) P) :
     let C := canonicalMetricCompactness (I := I) P B
     letI : TopologicalSpace C.compactness.limit.M := C.compactness.limit.topology
     ConnectedSpace C.compactness.limit.M := by
@@ -1269,8 +1269,8 @@ theorem canonical_metric_compactness_connected
 noncomputable def metricCompactnessOfPairwiseApproximateIsometries
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (P : ∀ k, ProperMetricOn (I := I) (X.obj k))
-    (B : PairwiseApproximateIsometryInput (X := X) P) :
-    MetricCompactnessConclusion (I := I) X :=
+    (B : HasPairwiseApproximateIsometries (X := X) P) :
+    MetricCompactLimit (I := I) X :=
   (canonicalMetricCompactness (I := I) P B).compactness
 
 end CheegerGromovCompactness

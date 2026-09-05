@@ -1144,7 +1144,7 @@ theorem solutionOn_of_joint [I.Boundaryless]
     exact gradientFun_mdiffAt (I := I) (g (t : ℝ)) hs x
 
 omit [CompactSpace M] [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
-theorem isSolutionOn_of_extendData
+theorem isSolutionOn_of_metric_extension
     {α omega b : ℝ} (hαb : α < b) (hαω : α < omega)
     (g_ext : ℝ → SmoothRiemannianMetric I M)
     (S : SolutionOn (I := I) (M := M) (RealTimeInterval.closedOpen α omega hαω))

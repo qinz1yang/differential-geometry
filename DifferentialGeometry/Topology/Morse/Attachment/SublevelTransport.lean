@@ -14,8 +14,8 @@ private theorem morseFunction_value_at_morseChartPoint {m k : ℕ} (hk : k ≤ m
     (c : ℝ) {H : Type} [TopologicalSpace H] {M : Type} [TopologicalSpace M] [ChartedSpace H M]
     {I : ModelWithCorners ℝ (MorseModel (m + 1)) H} {f : M → ℝ}
     (data : MorseChart (m + 1) k hk c I f) : f data.p = c := by
-  rw [← data.hχ0]
-  have hnorm := data.hnorm 0 (by simpa [CellAttachment.morseNorm] using (le_of_lt data.hRpos))
+  rw [← data.map_zero]
+  have hnorm := data.normalForm_on 0 (by simpa [CellAttachment.morseNorm] using (le_of_lt data.radius_pos))
   rw [hnorm]
   have hsplit := CellAttachment.morseNormalForm_split hk c (0 : MorseModel (m + 1))
   rw [hsplit]
@@ -59,7 +59,7 @@ theorem exists_morseRoundedSublevel_diffeomorph_upperSublevel_of_morseChart
     (hε : 0 < ε) (hε₀ : 0 < ε₀) (hδ : 0 < δ) (hδr : δ < r ^ 2) (hR : R₀ < R₁) (hR0 : 0 ≤ R₀)
     (hbig : 2 * (r ^ 2 + 2 * ε + δ) ≤ R₀ ^ 2) (hδR : 40 * δ < R₁ ^ 2 - R₀ ^ 2)
     (hε₀le : 2 * ε₀ < min (min ε (r ^ 2 / 2)) ((r ^ 2 - δ) / 2))
-    (hR₁₂ : R₁ < R₁') (hR₁₂R : R₁' ≤ data.R) (hR₁₂R' : R₁' ≤ data.R')
+    (hR₁₂ : R₁ < R₁') (hR₁₂R : R₁' ≤ data.R) (hR₁₂R' : R₁' ≤ data.smoothRadius)
     (hf : ContMDiff I 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞) f)
     (haε : ε + 2 * ε₀ ≤ a)
     (hcompact : IsCompact (f ⁻¹' Set.Icc (c - a) (c + a)))
@@ -640,7 +640,7 @@ private theorem morseHandleAdjunction_diffeomorph_upperSublevel_engine
     (hbig' : 2 * (r ^ 2 + 2 * ε + δ) ≤ R₀' ^ 2)
     (hδR : 40 * δ < R₁' ^ 2 - R₀' ^ 2)
     (hε₀le : 2 * ε₀ < min (min ε (r ^ 2 / 2)) ((r ^ 2 - δ) / 2))
-    (hR₁₂ : R₁' < R₁'') (hR₁₂R : R₁' ≤ data.R) (hR₁₂R'' : R₁'' ≤ data.R) (hR₁₂R''' : R₁'' ≤ data.R')
+    (hR₁₂ : R₁' < R₁'') (hR₁₂R : R₁' ≤ data.R) (hR₁₂R'' : R₁'' ≤ data.R) (hR₁₂R''' : R₁'' ≤ data.smoothRadius)
     (hf : ContMDiff I 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞) f)
     (haε : ε + 2 * ε₀ ≤ a)
     (hcompact : IsCompact (f ⁻¹' Set.Icc (c - a) (c + a)))
@@ -1037,7 +1037,7 @@ theorem exists_morseHandleAdjunction_diffeomorph_upperSublevel_of_morseChart
     [IsManifold I (⊤ : WithTop ℕ∞) M] {f : M → ℝ}
     (data : MorseChart (m + 1) k hk c I f)
     (hf : ContMDiff I 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞) f)
-    (ha : 0 < a) (haR : a ≤ data.R ^ 2 / 16) (hRR' : data.R < data.R')
+    (ha : 0 < a) (haR : a ≤ data.R ^ 2 / 16) (hRR' : data.R < data.smoothRadius)
     (hcompact : IsCompact (f ⁻¹' Set.Icc (c - a) (c + a)))
     (hunique : ∀ x : M, f x ∈ Set.Icc (c - a) (c + a) →
       x = data.p ∨ ¬ IsCriticalPointAt I f x)
@@ -1091,7 +1091,7 @@ theorem exists_morseHandleAdjunction_diffeomorph_upperSublevel_of_morseChart
               z = Handle.lower (morseAttachingEmbedding hk c ε r data hε h.2)
                 ⟨y, le_trans hydeep (by linarith [hηpos] : c - ε - η ≤ c - ε)⟩) := by
   classical
-  rcases morseHandleAttachment_real_params data.R data.R' a data.hRpos ha haR hRR' with
+  rcases morseHandleAttachment_real_params data.R data.smoothRadius a data.radius_pos ha haR hRR' with
     ⟨ε, r, δ, θ, R₀, R₀', R₁', R₁'', η, ε₀, η', R₁,
       hε, hε₀, hδ, hδr, hr, hθ, hθr, hR, hR0, hR0lt, hR0', hbig, hbig', hδR, hε₀le,
       hR₁₂, hR₁₂R, hR₁₂R'', hR₁₂R''', haε, hη, hηε₀, hεr, hεr', hRbig, hR₁big, hηpos, hεa,
@@ -1176,7 +1176,7 @@ theorem exists_morseHandleAdjunction_diffeomorph_upperSublevel_of_morseChart_zer
     [IsManifold I (⊤ : WithTop ℕ∞) M] {f : M → ℝ}
     (data : MorseChart (m + 1) 0 (Nat.zero_le (m + 1)) c I f)
     (hf : ContMDiff I 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞) f)
-    (ha : 0 < a) (haR : a ≤ data.R ^ 2 / 16) (hRR' : data.R < data.R')
+    (ha : 0 < a) (haR : a ≤ data.R ^ 2 / 16) (hRR' : data.R < data.smoothRadius)
     (hcompact : IsCompact (f ⁻¹' Set.Icc (c - a) (c + a)))
     (hunique : ∀ x : M, f x ∈ Set.Icc (c - a) (c + a) →
       x = data.p ∨ ¬ IsCriticalPointAt I f x)
@@ -1229,7 +1229,7 @@ theorem exists_morseHandleAdjunction_diffeomorph_upperSublevel_of_morseChart_zer
               z = Handle.lower (morseAttachingEmbedding (Nat.zero_le (m + 1)) c ε r data hε h.2)
                 ⟨y, le_trans hydeep (by linarith [hηpos] : c - ε - η ≤ c - ε)⟩) := by
   classical
-  rcases morseHandleAttachment_real_params data.R data.R' a data.hRpos ha haR hRR' with
+  rcases morseHandleAttachment_real_params data.R data.smoothRadius a data.radius_pos ha haR hRR' with
     ⟨ε, r, δ, θ, R₀, R₀', R₁', R₁'', η, ε₀, η', R₁,
       hε, hε₀, hδ, hδr, hr, hθ, hθr, hR, hR0, hR0lt, hR0', hbig, hbig', hδR, hε₀le,
       hR₁₂, hR₁₂R, hR₁₂R'', hR₁₂R''', haε, hη, hηε₀, hεr, hεr', hRbig, hR₁big, hηpos, hεa,
@@ -1313,7 +1313,7 @@ theorem exists_morseHandleAdjunction_diffeomorph_upperSublevel_of_morseChart_top
     [IsManifold I (⊤ : WithTop ℕ∞) M] {f : M → ℝ}
     (data : MorseChart (m + 1) (m + 1) (le_rfl : m + 1 ≤ m + 1) c I f)
     (hf : ContMDiff I 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞) f)
-    (ha : 0 < a) (haR : a ≤ data.R ^ 2 / 16) (hRR' : data.R < data.R')
+    (ha : 0 < a) (haR : a ≤ data.R ^ 2 / 16) (hRR' : data.R < data.smoothRadius)
     (hcompact : IsCompact (f ⁻¹' Set.Icc (c - a) (c + a)))
     (hunique : ∀ x : M, f x ∈ Set.Icc (c - a) (c + a) →
       x = data.p ∨ ¬ IsCriticalPointAt I f x)
@@ -1366,7 +1366,7 @@ theorem exists_morseHandleAdjunction_diffeomorph_upperSublevel_of_morseChart_top
               z = Handle.lower (morseAttachingEmbedding (le_rfl : m + 1 ≤ m + 1) c ε r data hε h.2)
                 ⟨y, le_trans hydeep (by linarith [hηpos] : c - ε - η ≤ c - ε)⟩) := by
   classical
-  rcases morseHandleAttachment_real_params data.R data.R' a data.hRpos ha haR hRR' with
+  rcases morseHandleAttachment_real_params data.R data.smoothRadius a data.radius_pos ha haR hRR' with
     ⟨ε, r, δ, θ, R₀, R₀', R₁', R₁'', η, ε₀, η', R₁,
       hε, hε₀, hδ, hδr, hr, hθ, hθr, hR, hR0, hR0lt, hR0', hbig, hbig', hδR, hε₀le,
       hR₁₂, hR₁₂R, hR₁₂R'', hR₁₂R''', haε, hη, hηε₀, hεr, hεr', hRbig, hR₁big, hηpos, hεa,

@@ -17,7 +17,7 @@ open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 open DifferentialGeometry.Analysis.Spectral.MetricRealization
 open DifferentialGeometry.Analysis.Spectral.DeTurck
 open DifferentialGeometry.Analysis.Spectral
-open DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroCore
+open DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroFiberOperators
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature

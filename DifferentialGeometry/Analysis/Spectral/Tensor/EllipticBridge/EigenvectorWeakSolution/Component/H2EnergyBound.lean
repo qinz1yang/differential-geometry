@@ -658,7 +658,7 @@ theorem eigenvector_chartComponent_wkpNorm_two_energy_le
     refine hg_norm.trans ?_
     exact ENNReal.ofReal_le_ofReal (by rw [← hDATA_def]; exact h_real_le)
   obtain ⟨h_uChart_memW1p, h_wp_memW1p⟩ :=
-    tensorChartBilinear_chartComponent_regularity_of_data
+    tensorChartBilinear_chartComponent_and_weakPartials_memW1p
       (g := g) (r := r) (s := s) (α := α) (P₀ := P₀) D
       hΩ''_open hΩ''_compact_closure hR₀_pos h_room
   have h_uChart_memWkp_two_Ω'' :

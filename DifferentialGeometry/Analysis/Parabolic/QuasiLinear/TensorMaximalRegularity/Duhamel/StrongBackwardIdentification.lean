@@ -103,8 +103,8 @@ def strongCross
           (show a ≤ a + 2 by linarith) field =
         timeH1.toTimeL2 (TensorHs (I := I) (M := M) g r s a) T u) :
     CrossScaleField (I := I) (M := M) g r s a T where
-  hiL2 := field
-  lo := u
+  highRegularity := field
+  lowRegularity := u
   link := by
     have hincl :
         ⇑(timeL2Inclusion (I := I) (M := M) (g := g) (r := r) (s := s)

@@ -595,7 +595,7 @@ theorem lLength_deriv
       (hcoreDiff (u, tau) hpU).differentiableAt (hUopen.mem_nhds hpU)
     have hslice : HasDerivAt (fun z : Real => core (z, tau))
         (fderiv Real core (u, tau) (1, 0)) u := by
-      simpa only using Aux2.hasDerivAt_slice_fst
+      simpa only using TwoParameterDerivative.hasDerivAt_slice_fst
         (fun z s : Real => core (z, s)) u tau hcoreAt
     change HasDerivAt ((fun _ : Real => Real.sqrt tau) *
       fun z : Real => core (z, tau)) _ u
@@ -737,7 +737,7 @@ theorem lGrad_contOn
       (hscalarDiff (0, tau) hpU).differentiableAt (hUopen.mem_nhds hpU)
     have hslice : HasDerivAt (fun u : Real => scalar (u, tau))
         (dScalar tau) 0 := by
-      simpa only [dScalar] using Aux2.hasDerivAt_slice_fst
+      simpa only [dScalar] using TwoParameterDerivative.hasDerivAt_slice_fst
         (fun u s : Real => scalar (u, s)) 0 tau hscalarAt
     exact hslice.unique (by
       simpa only [scalar] using lScalar_var_deriv S T tau f (hfSlice tau))
@@ -1007,7 +1007,7 @@ theorem lCross_contOn
       (hspeedDiff (0, tau) hpU).differentiableAt (hUopen.mem_nhds hpU)
     have hslice : HasDerivAt (fun u : Real => speed (u, tau))
         (dSpeed tau) 0 := by
-      simpa only [dSpeed] using Aux2.hasDerivAt_slice_fst
+      simpa only [dSpeed] using TwoParameterDerivative.hasDerivAt_slice_fst
         (fun u s : Real => speed (u, s)) 0 tau hspeedAt
     exact hslice.unique (by
       simpa only [speed] using lSpeedSq_var_deriv S T tau f hf)
@@ -1543,7 +1543,7 @@ theorem lEuler_var_c1
       (hpairDiff p hpV).differentiableAt (hVopen.mem_nhds hpV)
     have hscalarSlice : HasDerivAt
         (fun u : Real => scalar (u, p.2)) (dScalar p) p.1 := by
-      simpa only [dScalar] using Aux2.hasDerivAt_slice_fst
+      simpa only [dScalar] using TwoParameterDerivative.hasDerivAt_slice_fst
         (fun u tau : Real => scalar (u, tau)) p.1 p.2 hscalarAt
     have hscalarShift : HasDerivAt
         (fun u : Real => scalar (p.1 + u, p.2)) (dScalar p) 0 := by
@@ -1567,7 +1567,7 @@ theorem lEuler_var_c1
         simpa [scalar, fp, hYshift] using hscalarGeom)
     have hspeedSlice : HasDerivAt
         (fun u : Real => speed (u, p.2)) (dSpeed p) p.1 := by
-      simpa only [dSpeed] using Aux2.hasDerivAt_slice_fst
+      simpa only [dSpeed] using TwoParameterDerivative.hasDerivAt_slice_fst
         (fun u tau : Real => speed (u, tau)) p.1 p.2 hspeedAt
     have hspeedShift : HasDerivAt
         (fun u : Real => speed (p.1 + u, p.2)) (dSpeed p) 0 := by
@@ -1587,7 +1587,7 @@ theorem lEuler_var_c1
         simpa [speed, fp, hYshift] using hspeedGeom)
     have hpairSlice : HasDerivAt
         (fun tau : Real => pair (p.1, tau)) (dPair p) p.2 := by
-      simpa only [dPair] using Aux2.hasDerivAt_slice_snd
+      simpa only [dPair] using TwoParameterDerivative.hasDerivAt_slice_snd
         (fun u tau : Real => pair (u, tau)) p.1 p.2 hpairAt
     have hpairGeom := lPair_deriv S hS T p.2 fp hfp hp.2
     rw [hfp0, hYfun] at hpairGeom

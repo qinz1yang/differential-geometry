@@ -234,7 +234,7 @@ theorem lowAffineSecondOrderAction_norm_le
       mul_le_mul_of_nonneg_left hR3Q (norm_nonneg A2)
     _ = ‖A2‖ := mul_one _
 
-theorem lowAffineSecondOrderAction_data
+theorem lowAffineSecondOrderAction_measurable_and_bounded
     (g : SmoothRiemannianMetric I M)
     {ρ δ : ℝ} (hρ : 0 ≤ ρ) (hδ0 : 0 ≤ δ) (hδ_le : δ ≤ 1 / 3)
     (hreal : ∀ S : SmoothCcTensor g 0 2,
@@ -388,7 +388,7 @@ theorem lowAffineSecondOrderActionHigh_norm_le
       mul_le_mul_of_nonneg_left hR4Q (norm_nonneg A2)
     _ = ‖A2‖ := mul_one _
 
-theorem lowAffineSecondOrderActionHigh_data
+theorem lowAffineSecondOrderActionHigh_measurable_and_bounded
     (g : SmoothRiemannianMetric I M)
     {ρ δ : ℝ} (hρ : 0 ≤ ρ) (hδ0 : 0 ≤ δ) (hδ_le : δ ≤ 1 / 3)
     (hreal : ∀ S : SmoothCcTensor g 0 2,
@@ -1071,7 +1071,7 @@ theorem low_order_forcing_eq_affine_fixed_point
   rw [hft, hstate', ← hself]
   abel
 
-theorem exists_affine_forcing_operator_data
+theorem exists_affine_forcing_operator_with_bounds
     (hDim : Module.finrank ℝ E = 3)
     (g : SmoothRiemannianMetric I M)
     {R ρ δ T B2 Z L : ℝ}
@@ -1165,7 +1165,7 @@ theorem exists_affine_forcing_operator_data
               (lowFirstOrderAffineOperator (I := I) (M := M) g ρ FLo hT f) hA1 f +
             liftForceLo (I := I) (M := M) g g T := by
   obtain ⟨C2, hC2eq, hA2, hC2⟩ :=
-    lowAffineSecondOrderAction_data (I := I) (M := M) g
+    lowAffineSecondOrderAction_measurable_and_bounded (I := I) (M := M) g
       hρ.le hδ0 hδ_le hreal' hA2cont hB2 hA2bd hT f
   obtain ⟨hA1, hA1norm⟩ :=
     lowFirstOrderAffineOperator_memLp (I := I) (M := M) g hρ.le FLo hFLo hZ hL hFLoBd hT f

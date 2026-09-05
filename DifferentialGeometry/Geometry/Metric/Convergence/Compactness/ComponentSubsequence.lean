@@ -332,7 +332,7 @@ theorem exists_tower_convergence
               (Tensor0SBundle.metricTensorField (I := I) gInf) a) w
                 (fun a => V a w)) z) := by
   classical
-  obtain ⟨frame, vbasis, hframeσ, hspan⟩ := exists_frameData (I := I) x₀ hK₀ hK₀chart
+  obtain ⟨frame, vbasis, hframeσ, hspan⟩ := exists_local_smooth_frame_spanning_on_compact (I := I) x₀ hK₀ hK₀chart
   obtain ⟨ψ, χ, hψ, hχcd, htsupp, hχ1, hpairs⟩ :=
     framePairs_pinned (I := I) gRef gSeq hbdd x₀ hK₀ hK₀chart frame φ gInf hconv
   set U : Set E := (extChartAt I x₀).target ∩
@@ -399,7 +399,7 @@ theorem exists_tower_refs
               (Tensor0SBundle.metricTensorField (I := I) gInf) a) w
                 (fun a => V a w)) z) := by
   classical
-  obtain ⟨frame, vbasis, hframeσ, hspan⟩ := exists_frameData (I := I) x₀ hK₀ hK₀chart
+  obtain ⟨frame, vbasis, hframeσ, hspan⟩ := exists_local_smooth_frame_spanning_on_compact (I := I) x₀ hK₀ hK₀chart
   obtain ⟨ψ, χ, hψ, hχcd, htsupp, hχ1, hpairs⟩ :=
     pairs_pinned_refs (I := I) gBase gRef gSeq hbdd
       x₀ hK₀ hK₀chart frame φ gInf hconv

@@ -419,7 +419,7 @@ private theorem linearizedRicciOrderZeroCorrectionField_perOrder_riemannianFiber
       (DifferentialGeometry.PDE.DeTurck.RicciLinearization.convexPerturbation
         (I := I) g₀ T T' s) hδP_le hδP htie hPball i hi
     obtain ⟨_, _, hbound, _⟩ :=
-      (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.exists_orderZero_firstOrder_correctionField_data
+      (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.exists_orderZero_firstOrder_correctionFields
         (I := I) g₀ T T' hδ hδ').choose_spec.choose_spec
     have hjet := ((hbound ha_super hR hδ₀ hδ_le hδ'_le hTball hT'ball).2 i hi s hs).1
     have hwin : ∑ j ∈ Finset.range (i + 2),
@@ -459,10 +459,10 @@ private theorem linearizedRicciOrderZeroCorrectionField_perOrder_riemannianFiber
         (I := I) (M := M) g₀ a R δ₀ i
     have hZraw := le_trans hjet (mul_le_mul_of_nonneg_left hone hK_nn)
     rw [show linearizedRicciOrderZeroCorrectionField (I := I) g₀ T T' hδ hδ' =
-        (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.exists_orderZero_firstOrder_correctionField_data
+        (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.exists_orderZero_firstOrder_correctionFields
           (I := I) g₀ T T' hδ hδ').choose from rfl]
     set Cf :=
-      (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.exists_orderZero_firstOrder_correctionField_data
+      (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.exists_orderZero_firstOrder_correctionFields
         (I := I) g₀ T T' hδ hδ').choose s with hCf_def
     set Rmf := DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciOrderZeroRiemannCoeff
         (I := I) (M := M) g₀ (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) with hRmf_def
@@ -579,7 +579,7 @@ private theorem linearizedRicciFirstOrderCorrectionField_perOrder_riemannianFibe
         (by positivity), ?_⟩
   intro T T' δ hδ_le hδ δ' hδ'_le hδ' hTball hT'ball i hi s hs
   obtain ⟨_, _, hbound, _⟩ :=
-    (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.exists_orderZero_firstOrder_correctionField_data
+    (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.exists_orderZero_firstOrder_correctionFields
       (I := I) g₀ T T' hδ hδ').choose_spec.choose_spec
   have hjet := ((hbound ha_super hR hδ₀ hδ_le hδ'_le hTball hT'ball).2 i hi s hs).2
   have hwin : ∑ j ∈ Finset.range (i + 2),
@@ -618,7 +618,7 @@ private theorem linearizedRicciFirstOrderCorrectionField_perOrder_riemannianFibe
     DifferentialGeometry.Analysis.Parabolic.TensorSpectral.correctionFieldTameJetBound_nonneg
       (I := I) (M := M) g₀ a R δ₀ i
   rw [show linearizedRicciFirstOrderCorrectionField (I := I) g₀ T T' hδ hδ' =
-      (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.exists_orderZero_firstOrder_correctionField_data
+      (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.exists_orderZero_firstOrder_correctionFields
         (I := I) g₀ T T' hδ hδ').choose_spec.choose from rfl]
   exact le_trans hjet (mul_le_mul_of_nonneg_left hone hK_nn)
 
@@ -950,7 +950,7 @@ private theorem uniform_riemannianFiberNormSq_bound_lichnerowicz_coeffFields
       (linearizedRicci_secondOrderFieldLichnerowicz_jointSmooth (I := I) g₀ T T' hδ hδ')
   · intro s hs x v
     obtain ⟨_, _, _, hident, _, _⟩ :=
-      (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.exists_orderZero_firstOrder_correctionField_data
+      (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.exists_orderZero_firstOrder_correctionFields
         (I := I) g₀ T T' hδ hδ').choose_spec.choose_spec
     exact hident hTsymm hT'symm s hs x v hδ_lt hδ'_lt
   · intro s hs x

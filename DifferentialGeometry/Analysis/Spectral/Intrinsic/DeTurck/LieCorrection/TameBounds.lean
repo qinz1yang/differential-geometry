@@ -54,7 +54,7 @@ open scoped ENNReal NNReal BigOperators Manifold ContDiff
 
 namespace DifferentialGeometry.Analysis.Spectral
 
-open LieCorrectionZeroCore
+open LieCorrectionZeroFiberOperators
 open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.Sobolev
     DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Spectral.MetricRealization
@@ -577,7 +577,7 @@ open scoped ENNReal NNReal BigOperators Manifold ContDiff
 
 namespace DifferentialGeometry.Analysis.Spectral
 
-open LieCorrectionZeroCore
+open LieCorrectionZeroFiberOperators
 open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.Sobolev
     DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Spectral.MetricRealization
@@ -1312,7 +1312,7 @@ open scoped ENNReal NNReal BigOperators Manifold ContDiff
 
 namespace DifferentialGeometry.Analysis.Spectral
 
-open LieCorrectionZeroCore
+open LieCorrectionZeroFiberOperators
 open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.Sobolev
     DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Spectral.MetricRealization
@@ -1887,7 +1887,7 @@ open scoped ENNReal NNReal BigOperators Manifold ContDiff
 
 namespace DifferentialGeometry.Analysis.Spectral
 
-open LieCorrectionZeroCore
+open LieCorrectionZeroFiberOperators
 open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.Sobolev
     DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Spectral.MetricRealization
@@ -2501,7 +2501,7 @@ open scoped ENNReal NNReal BigOperators Manifold ContDiff
 
 namespace DifferentialGeometry.Analysis.Spectral
 
-open LieCorrectionZeroCore
+open LieCorrectionZeroFiberOperators
 open DifferentialGeometry.Analysis.Spectral.MetricRealization
 open DifferentialGeometry.Integral.L2
 
@@ -2599,7 +2599,7 @@ private lemma lieCorrectionZero_clm_unit_smul (x : M) (s : ℕ)
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
     [SigmaCompactSpace M] in
-lemma lieCorrectionZero_KLift_fiber_13 (g₀ : SmoothRiemannianMetric I M)
+lemma slotExtendIter_zero_three_one_apply (g₀ : SmoothRiemannianMetric I M)
     (K : SmoothCcTensor g₀ 0 3) (x : M) (D : Tensor0SSpace 1 I x) :
     (show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 4 I x from
       (slotExtendIter (I := I) (M := M) g₀ 0 3 1 K).toSection x) D =
@@ -2641,7 +2641,7 @@ lemma lieCorrectionZero_KLift_fiber_13 (g₀ : SmoothRiemannianMetric I M)
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
     [SigmaCompactSpace M] in
-lemma lieCorrectionZero_KLift_fiber_21 (g₀ : SmoothRiemannianMetric I M)
+lemma slotExtendIter_zero_one_two_apply (g₀ : SmoothRiemannianMetric I M)
     (K : SmoothCcTensor g₀ 0 1) (x : M) (D : Tensor0SSpace 2 I x) :
     (show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 3 I x from
       (slotExtendIter (I := I) (M := M) g₀ 0 1 2 K).toSection x) D =
@@ -2706,7 +2706,7 @@ lemma lieCorrectionZero_KLift_fiber_21 (g₀ : SmoothRiemannianMetric I M)
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
     [SigmaCompactSpace M] in
-lemma lieCorrectionZero_KLift_fiber_23 (g₀ : SmoothRiemannianMetric I M)
+lemma slotExtendIter_zero_three_two_apply (g₀ : SmoothRiemannianMetric I M)
     (K : SmoothCcTensor g₀ 0 3) (x : M) (D : Tensor0SSpace 2 I x) :
     (show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 5 I x from
       (slotExtendIter (I := I) (M := M) g₀ 0 3 2 K).toSection x) D =
@@ -2778,7 +2778,7 @@ lemma lieCorrectionZero_KLift_fiber_23 (g₀ : SmoothRiemannianMetric I M)
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
     [SigmaCompactSpace M] in
-lemma lieCorrectionZero_KLift_fiber_33 (g₀ : SmoothRiemannianMetric I M)
+lemma slotExtendIter_zero_three_three_apply (g₀ : SmoothRiemannianMetric I M)
     (K : SmoothCcTensor g₀ 0 3) (x : M) (D : Tensor0SSpace 3 I x) :
     (show Tensor0SSpace 3 I x →L[ℝ] Tensor0SSpace 6 I x from
       (slotExtendIter (I := I) (M := M) g₀ 0 3 3 K).toSection x) D =
@@ -2807,7 +2807,7 @@ lemma lieCorrectionZero_KLift_fiber_33 (g₀ : SmoothRiemannianMetric I M)
     set D2 : Tensor0SSpace 2 I x :=
       tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 2 x D
         ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (m 0)) with hD2
-    rw [lieCorrectionZero_KLift_fiber_23 (I := I) (M := M) g₀ K x D2]
+    rw [slotExtendIter_zero_three_two_apply (I := I) (M := M) g₀ K x D2]
     rw [← hκ]
     rw [tensor0SProdKappaFib_apply (I := I) x κ D2, Tensor0SSpace.toModel_ofModel]
     rw [Bundle.continuousMultilinearMap.modelProduct_apply]
@@ -2906,7 +2906,7 @@ open scoped ENNReal NNReal BigOperators Manifold ContDiff
 
 namespace DifferentialGeometry.Analysis.Spectral
 
-open LieCorrectionZeroCore
+open LieCorrectionZeroFiberOperators
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Analysis.Spectral.MetricRealization
 open DifferentialGeometry.Integral.L2
@@ -3046,7 +3046,7 @@ open scoped ENNReal NNReal BigOperators Manifold ContDiff
 
 namespace DifferentialGeometry.Analysis.Spectral
 
-open LieCorrectionZeroCore
+open LieCorrectionZeroFiberOperators
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Analysis.Spectral.MetricRealization
 open DifferentialGeometry.Integral.L2
@@ -3144,7 +3144,8 @@ lemma lieCorrectionZero_iV_fiber (g₀ g₁ gB : SmoothRiemannianMetric I M) (x 
           ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 3 I x from
             (slotExtendIter (I := I) (M := M) g₀ 0 1 2
               (lieCorrectionZeroVFlat (I := I) (M := M) g₀ g₁ gB)).toSection x) B) from rfl]
-    rw [lieCorrectionZero_KLift_fiber_21 (I := I) (M := M) g₀ (lieCorrectionZeroVFlat (I := I) (M := M) g₀ g₁ gB) x B]
+    rw [slotExtendIter_zero_one_two_apply (I := I) (M := M) g₀
+      (lieCorrectionZeroVFlat (I := I) (M := M) g₀ g₁ gB) x B]
     rw [← hVf]
     have h := lieCorrectionZero_traceStep_fiber (I := I) (M := M) g₀ g₁ 1 lieCorrectionZeroIVPerm x
     exact congrFun (congrArg DFunLike.coe h)
@@ -3258,7 +3259,7 @@ open scoped ENNReal NNReal BigOperators Manifold ContDiff
 
 namespace DifferentialGeometry.Analysis.Spectral
 
-open LieCorrectionZeroCore
+open LieCorrectionZeroFiberOperators
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Analysis.Spectral.MetricRealization
 open DifferentialGeometry.Integral.L2
@@ -3425,7 +3426,7 @@ open scoped ENNReal NNReal BigOperators Manifold ContDiff
 
 namespace DifferentialGeometry.Analysis.Spectral
 
-open LieCorrectionZeroCore
+open LieCorrectionZeroFiberOperators
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Analysis.Spectral.MetricRealization
 open DifferentialGeometry.Integral.L2
@@ -3659,7 +3660,7 @@ open scoped ENNReal NNReal BigOperators Manifold ContDiff
 
 namespace DifferentialGeometry.Analysis.Spectral
 
-open LieCorrectionZeroCore
+open LieCorrectionZeroFiberOperators
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Analysis.Spectral.MetricRealization
 open DifferentialGeometry.Integral.L2
@@ -3740,7 +3741,8 @@ lemma lieCorrectionZero_vb_fiber (g₀ g₁ : SmoothRiemannianMetric I M) (x : M
       Tensor0SBundle.interiorProduct (𝕜 := ℝ) (I := I) 1 x
         ((PDE.DeTurck.deTurckVF (I := I) g₁ g₀ : Π b : M, TangentSpace I b) x) D from
     lieCorrectionZero_iV_fiber (I := I) (M := M) g₀ g₁ g₀ x D]
-  rw [lieCorrectionZero_KLift_fiber_13 (I := I) (M := M) g₀ (lieCorrectionZeroKappa (I := I) (M := M) g₀ g₁ g₀) x _]
+  rw [slotExtendIter_zero_three_one_apply (I := I) (M := M) g₀
+    (lieCorrectionZeroKappa (I := I) (M := M) g₀ g₁ g₀) x _]
   rw [lieCorrectionZero_kappa_fiber (I := I) (M := M) g₀ g₁ g₀ x]
   have h2 := lieCorrectionZero_traceStep_fiber (I := I) (M := M) g₀ g₁ 2 lieCorrectionZeroVectorBundleTracePermutation x
   rw [show ((show Tensor0SSpace 4 I x →L[ℝ] Tensor0SSpace 2 I x from
@@ -3784,7 +3786,7 @@ open scoped ENNReal NNReal BigOperators Manifold ContDiff
 
 namespace DifferentialGeometry.Analysis.Spectral
 
-open LieCorrectionZeroCore
+open LieCorrectionZeroFiberOperators
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Analysis.Spectral.MetricRealization
 open DifferentialGeometry.Integral.L2
@@ -3851,7 +3853,7 @@ private lemma lieCorrectionZero_amix_slot_fiber (g₀ g₁ : SmoothRiemannianMet
         (lieCorrectionZeroKappa (I := I) (M := M) g₀ g₁ g₀)).toSection x) D =
     (tensor0SProdKappaFib (I := I) (p := 2) (q := 3) x
       (metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ g₀ x)) D := by
-  rw [lieCorrectionZero_KLift_fiber_23 (I := I) (M := M) g₀
+  rw [slotExtendIter_zero_three_two_apply (I := I) (M := M) g₀
     (lieCorrectionZeroKappa (I := I) (M := M) g₀ g₁ g₀) x D]
   rw [lieCorrectionZero_kappa_fiber (I := I) (M := M) g₀ g₁ g₀ x]
 
@@ -3893,7 +3895,7 @@ open scoped ENNReal NNReal BigOperators Manifold ContDiff
 
 namespace DifferentialGeometry.Analysis.Spectral
 
-open LieCorrectionZeroCore
+open LieCorrectionZeroFiberOperators
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Analysis.Spectral.MetricRealization
 open DifferentialGeometry.Integral.L2
@@ -3969,7 +3971,7 @@ lemma lieCorrectionZero_amix_middle_fiber (g₀ g₁ g_bg : SmoothRiemannianMetr
       ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 3 I x from
         (lieCorrectionZeroMixedConnectionInnerField (I := I) (M := M) g₀ g₁).toSection x) D) = _
   rw [lieCorrectionZero_amix_inner_fiber (I := I) (M := M) g₀ g₁ x D]
-  rw [lieCorrectionZero_KLift_fiber_33 (I := I) (M := M) g₀
+  rw [slotExtendIter_zero_three_three_apply (I := I) (M := M) g₀
     (lieCorrectionZeroKappa (I := I) (M := M) g₀ g₁ g_bg) x _]
   rw [lieCorrectionZero_kappa_fiber (I := I) (M := M) g₀ g₁ g_bg x]
 
@@ -3993,7 +3995,7 @@ open scoped Manifold ContDiff
 
 namespace DifferentialGeometry.Analysis.Spectral
 
-open LieCorrectionZeroCore
+open LieCorrectionZeroFiberOperators
 open DifferentialGeometry.Integral.L2
 
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
@@ -4055,7 +4057,7 @@ open scoped ENNReal NNReal BigOperators Manifold ContDiff
 
 namespace DifferentialGeometry.Analysis.Spectral
 
-open LieCorrectionZeroCore
+open LieCorrectionZeroFiberOperators
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Analysis.Spectral.MetricRealization
 open DifferentialGeometry.Integral.L2
@@ -4147,7 +4149,7 @@ open scoped ENNReal NNReal BigOperators Manifold ContDiff
 
 namespace DifferentialGeometry.Analysis.Spectral
 
-open LieCorrectionZeroCore
+open LieCorrectionZeroFiberOperators
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Analysis.Spectral.MetricRealization
 open DifferentialGeometry.Integral.L2
@@ -4246,7 +4248,7 @@ open scoped ENNReal NNReal BigOperators Manifold ContDiff
 
 namespace DifferentialGeometry.Analysis.Spectral
 
-open LieCorrectionZeroCore
+open LieCorrectionZeroFiberOperators
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Analysis.Spectral.MetricRealization
 open DifferentialGeometry.Integral.L2
@@ -4361,7 +4363,7 @@ open scoped ENNReal NNReal BigOperators Manifold ContDiff
 
 namespace DifferentialGeometry.Analysis.Spectral
 
-open LieCorrectionZeroCore
+open LieCorrectionZeroFiberOperators
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Analysis.Spectral.MetricRealization
 open DifferentialGeometry.Integral.L2
@@ -4479,7 +4481,7 @@ open scoped ENNReal NNReal BigOperators Manifold ContDiff
 
 namespace DifferentialGeometry.Analysis.Spectral
 
-open LieCorrectionZeroCore
+open LieCorrectionZeroFiberOperators
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Analysis.Spectral.MetricRealization
 open DifferentialGeometry.Integral.L2
@@ -4680,7 +4682,7 @@ open scoped ENNReal NNReal BigOperators Manifold ContDiff
 
 namespace DifferentialGeometry.Analysis.Spectral
 
-open LieCorrectionZeroCore
+open LieCorrectionZeroFiberOperators
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Analysis.Spectral.MetricRealization
 open DifferentialGeometry.Integral.L2
@@ -4812,7 +4814,7 @@ open scoped ENNReal NNReal BigOperators Manifold ContDiff
 
 namespace DifferentialGeometry.Analysis.Spectral
 
-open LieCorrectionZeroCore
+open LieCorrectionZeroFiberOperators
 open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.Sobolev
     DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Spectral.MetricRealization
@@ -5069,7 +5071,7 @@ open scoped ENNReal NNReal BigOperators Manifold ContDiff
 
 namespace DifferentialGeometry.Analysis.Spectral
 
-open LieCorrectionZeroCore
+open LieCorrectionZeroFiberOperators
 open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.Sobolev
     DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Spectral.MetricRealization
@@ -5376,7 +5378,7 @@ open scoped ENNReal NNReal BigOperators Manifold ContDiff
 
 namespace DifferentialGeometry.Analysis.Spectral
 
-open LieCorrectionZeroCore
+open LieCorrectionZeroFiberOperators
 open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.Sobolev
     DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Spectral.MetricRealization
@@ -5807,7 +5809,7 @@ open scoped ENNReal NNReal BigOperators Manifold ContDiff
 
 namespace DifferentialGeometry.Analysis.Spectral
 
-open LieCorrectionZeroCore
+open LieCorrectionZeroFiberOperators
 open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.Sobolev
     DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Spectral.MetricRealization

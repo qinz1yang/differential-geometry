@@ -108,13 +108,13 @@ private abbrev lowA2LoBackgroundOp (g : SmoothRiemannianMetric I M) :=
 
 private noncomputable def lowBackgroundRep
     (g : SmoothRiemannianMetric I M)
-    (x : LowerScaleTimeInternal.LowCore (I := I) (M := M) g) :
+    (x : LowerScaleTime.SecondOrderDenseCore (I := I) (M := M) g) :
     SmoothCcTensor g 0 2 :=
   Classical.choose x.property
 
 private theorem lowBackgroundRep_spec
     (g : SmoothRiemannianMetric I M)
-    (x : LowerScaleTimeInternal.LowCore (I := I) (M := M) g) :
+    (x : LowerScaleTime.SecondOrderDenseCore (I := I) (M := M) g) :
     ccToHsLin (I := I) (M := M) g 2 (2 : ℝ)
         (lowBackgroundRep (I := I) (M := M) g x) =
       (x : metricH2 (I := I) (M := M) g) :=
@@ -128,7 +128,7 @@ private noncomputable def lowBackgroundCore
         gFibreOpBound (I := I) (M := M) g
           (ccTensorBilinSymm (I := I) g S) δ)
     (proj : LowerScaleActionCoefficients g → Y) :
-    LowerScaleTimeInternal.LowCore (I := I) (M := M) g → Y :=
+    LowerScaleTime.SecondOrderDenseCore (I := I) (M := M) g → Y :=
   fun x => proj (lowCoreActionCoefficientsBackground (I := I) (M := M)
     g gB hρ hδ0 hδ_le hreal (lowBackgroundRep (I := I) (M := M) g x))
 
@@ -154,13 +154,13 @@ private theorem lowBackgroundCore_value
 
 private noncomputable def highBackgroundRep
     (g : SmoothRiemannianMetric I M)
-    (x : LowerScaleTimeInternal.HighCore (I := I) (M := M) g) :
+    (x : LowerScaleTime.ThirdOrderDenseCore (I := I) (M := M) g) :
     SmoothCcTensor g 0 2 :=
   Classical.choose x.property
 
 private theorem highBackgroundRep_spec
     (g : SmoothRiemannianMetric I M)
-    (x : LowerScaleTimeInternal.HighCore (I := I) (M := M) g) :
+    (x : LowerScaleTime.ThirdOrderDenseCore (I := I) (M := M) g) :
     ccToHsLin (I := I) (M := M) g 2 (3 : ℝ)
         (highBackgroundRep (I := I) (M := M) g x) =
       (x : metricThirdOrderSobolev (I := I) (M := M) g) :=
@@ -174,7 +174,7 @@ private noncomputable def highBackgroundCore
         gFibreOpBound (I := I) (M := M) g
           (ccTensorBilinSymm (I := I) g S) δ)
     (proj : LowerScaleActionCoefficients g → Y) :
-    LowerScaleTimeInternal.HighCore (I := I) (M := M) g → Y :=
+    LowerScaleTime.ThirdOrderDenseCore (I := I) (M := M) g → Y :=
   fun x => proj (lowCoreActionCoefficientsBackground (I := I) (M := M)
     g gB hρ hδ0 hδ_le hreal (highBackgroundRep (I := I) (M := M) g x))
 
@@ -240,7 +240,7 @@ noncomputable def lowerScaleFirstOrderActionThirdToSecondOrderBackground
         gFibreOpBound (I := I) (M := M) g
           (ccTensorBilinSymm (I := I) g S) δ) :
     metricThirdOrderSobolev (I := I) (M := M) g →
-      LowerScaleTimeInternal.FirstOrderActionThirdToSecondOrderSpace (I := I) (M := M) g :=
+      LowerScaleTime.FirstOrderActionThirdToSecondOrderSpace (I := I) (M := M) g :=
   Dense.extend
     (ccToHsLin_dense (I := I) (M := M) g 2 (by positivity))
     (highBackgroundCore (I := I) (M := M) g gB hρ hδ0 hδ_le hreal
@@ -254,7 +254,7 @@ noncomputable def lowerScaleFirstOrderActionSecondToFirstOrderBackground
         gFibreOpBound (I := I) (M := M) g
           (ccTensorBilinSymm (I := I) g S) δ) :
     metricThirdOrderSobolev (I := I) (M := M) g →
-      LowerScaleTimeInternal.FirstOrderActionSecondToFirstOrderSpace (I := I) (M := M) g :=
+      LowerScaleTime.FirstOrderActionSecondToFirstOrderSpace (I := I) (M := M) g :=
   Dense.extend
     (ccToHsLin_dense (I := I) (M := M) g 2 (by positivity))
     (highBackgroundCore (I := I) (M := M) g gB hρ hδ0 hδ_le hreal
@@ -1327,7 +1327,7 @@ private theorem lowBackgroundCore_pair
         proj (lowCoreActionCoefficientsBackground (I := I) (M := M)
           g gB hρ hδ0 hδ_le hreal U)‖ ≤
         C * ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) (T - U)‖)
-    (x y : LowerScaleTimeInternal.LowCore (I := I) (M := M) g) :
+    (x y : LowerScaleTime.SecondOrderDenseCore (I := I) (M := M) g) :
     ‖lowBackgroundCore (I := I) (M := M)
           g gB hρ hδ0 hδ_le hreal proj x -
         lowBackgroundCore (I := I) (M := M)

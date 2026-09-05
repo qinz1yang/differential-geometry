@@ -86,7 +86,7 @@ def HasSupportedFiniteCenterMapConstruction
         let join := minJoin (I := I) Y.metric (normal_enorm (I := I) Y)
         let points := centerAverage.activeFill (mu alpha) (pointsSeq alpha a b)
           (fun y => y) x
-        ∃ hcm : CenterInput (I := I) Y.metric (mu alpha x) points join x
+        ∃ hcm : CenterOfMassConditions (I := I) Y.metric (mu alpha x) points join x
             (radSeq alpha a b x),
           HasHatStrictCenterOfMassSolutionAt (I := I) hd P L pb r n hcomplete hconn q δ alpha
             (mu alpha x) points join x (radSeq alpha a b x) hcm
@@ -137,7 +137,7 @@ theorem HasSupportedFiniteCenterMapConstruction.subseq
 
 def HasSupportedCenterMapConstruction
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    (inp : MetricCompactnessInputs (I := I) X)
+    (inp : MetricCompactnessAssumptions (I := I) X)
     (P : ∀ j : Nat, ProperMetricOn (I := I) (X.obj j))
     (L : NetLimitData inp.decay inp.D P) (r : Real) (hr : 0 ≤ r)
     (phi : Nat → Nat) (hphi : StrictMono phi) (n : Nat)
@@ -207,7 +207,7 @@ def HasSupportedCenterMapConstruction
 
 theorem HasSupportedCenterMapConstruction.subseq
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    {inp : MetricCompactnessInputs (I := I) X}
+    {inp : MetricCompactnessAssumptions (I := I) X}
     {P : ∀ j : Nat, ProperMetricOn (I := I) (X.obj j)}
     {L : NetLimitData inp.decay inp.D P} {r : Real} {hr : 0 ≤ r} {n : Nat}
     {hcomplete : SeqMetricComplete (I := I) X}
@@ -284,7 +284,7 @@ def HasSourceFiniteCenterOfMassSolution
           let join := minJoin (I := I) Y.metric (normal_enorm (I := I) Y)
           let points := centerAverage.activeFill (mu alpha) (pointsSeq alpha a b)
             (fun y => y) x
-          ∃ hcm : CenterInput (I := I) Y.metric (mu alpha x) points join x
+          ∃ hcm : CenterOfMassConditions (I := I) Y.metric (mu alpha x) points join x
               (radSeq alpha a b x),
             HasHatStrictCenterOfMassSolutionAt (I := I) hd P L pb r n hcomplete hconn q δ alpha
               (mu alpha x) points join x (radSeq alpha a b x) hcm
@@ -331,7 +331,7 @@ theorem MetricCompactBase.exists_supported_finite_center_of_mass
         (E × E) →L[Real] (E × E))‖₊
     let T : NNReal := N⁻¹
     ∃ (aMin : Real) (_haMin : 0 < aMin)
-        (inp : MetricCompactnessInputs (I := I) X)
+        (inp : MetricCompactnessAssumptions (I := I) X)
         (L : NetLimitData inp.decay inp.D
           (properMetricsOfCompleteConnected (I := I) hcomplete hconn))
         (phi : Nat → Nat) (hphi : StrictMono phi)
@@ -464,18 +464,18 @@ theorem MetricCompactBase.exists_supported_finite_center_of_mass
   obtain ⟨D, hD_one, _hmuD, hc0, h8, _h16, hradD, hradRatio, hcap⟩ :=
     b.exists_large_divisor_for_exponential_scales c0
   have hD : 0 < D := zero_lt_one.trans hD_one
-  let inp := MetricCompactnessInputs.ofBase b D hD hcap
+  let inp := MetricCompactnessAssumptions.ofBase b D hD hcap
   have h8' : (8 : Real) < inp.normalRadius.metricCoerciveRatio * inp.D := by
-    simpa only [inp, MetricCompactnessInputs.ofBase] using h8
+    simpa only [inp, MetricCompactnessAssumptions.ofBase] using h8
   have hradD' : 2 * exponentialBallRadiusFactor inp.decay inp.D < inp.D := by
-    simpa only [inp, MetricCompactnessInputs.ofBase] using hradD
+    simpa only [inp, MetricCompactnessAssumptions.ofBase] using hradD
   have hradRatio' : 2 * exponentialBallRadiusFactor inp.decay inp.D <
       inp.normalRadius.ratio * inp.D := by
-    simpa only [inp, MetricCompactnessInputs.ofBase] using hradRatio
+    simpa only [inp, MetricCompactnessAssumptions.ofBase] using hradRatio
   have hc0' :
       (8 * Real.exp inp.decay.C / aMin) * inp.normalRadius.metricCoerciveRatio <
         inp.normalRadius.metricCoerciveRatio * inp.D := by
-    simpa only [inp, c0, MetricCompactnessInputs.ofBase] using hc0
+    simpa only [inp, c0, MetricCompactnessAssumptions.ofBase] using hc0
   have hphys : 8 * Real.exp inp.decay.C < aMin * inp.D :=
     inp.physScale_of_extra haMin hc0'
   let P := properMetricsOfCompleteConnected (I := I) hcomplete hconn
@@ -485,7 +485,7 @@ theorem MetricCompactBase.exists_supported_finite_center_of_mass
   let Lphi := L.subseq hphi
   obtain ⟨q, δ, hqdata, hqWide, hqAcc, herr, hinvErr,
       hbranchTail, hscaleTail, hreadTail⟩ :=
-    hread inp.hD hphys P Lphi inp.pack r
+    hread inp.divisor_pos hphys P Lphi inp.pack r
   refine ⟨aMin, haMin, inp, L, phi, hphi, U, C0, C1, aInf, Jinf, Jbarinf,
     q, δ, ?_⟩
   dsimp only
@@ -511,7 +511,7 @@ theorem MetricCompactBase.exists_supported_finite_center_of_mass
     dsimp only [HasSupportedCenterMapConvergence] at hconv0
     have hzBall := (hconv0.2.1 gamma)
       ((hconv0.2.2.2.2.2.1 gamma) hz)
-    have hlam := lamInf_lt_halfMin inp.decay inp.hD hphys P L
+    have hlam := lamInf_lt_halfMin inp.decay inp.divisor_pos hphys P L
       (gamma.1 : Nat)
     have hqGamma := hqdata0 gamma
     dsimp only at hqGamma
@@ -603,7 +603,7 @@ theorem MetricCompactBase.exists_support_diag_fin
         (E × E) →L[Real] (E × E))‖₊
     let T : NNReal := N⁻¹
     ∃ (aMin : Real) (_haMin : 0 < aMin)
-        (inp : MetricCompactnessInputs (I := I) X)
+        (inp : MetricCompactnessAssumptions (I := I) X)
         (L : NetLimitData inp.decay inp.D
           (properMetricsOfCompleteConnected (I := I) hcomplete hconn))
         (theta : Nat → Nat) (htheta : StrictMono theta)
@@ -852,7 +852,7 @@ theorem MetricCompactBase.exists_center_of_mass_on_source
       ConnectedSpace (X.obj j).M)
     (r : Real) (hr : 0 ≤ r) :
     ∃ (aMin : Real) (_haMin : 0 < aMin)
-        (inp : MetricCompactnessInputs (I := I) X)
+        (inp : MetricCompactnessAssumptions (I := I) X)
         (L : NetLimitData inp.decay inp.D
           (properMetricsOfCompleteConnected (I := I) hcomplete hconn))
         (phi : Nat → Nat) (hphi : StrictMono phi)

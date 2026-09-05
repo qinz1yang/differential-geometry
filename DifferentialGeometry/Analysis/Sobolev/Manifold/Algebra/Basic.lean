@@ -387,7 +387,7 @@ private lemma per_chart_bilinear_bound
             ENNReal.ofReal (Bα * uMax * vMax) := by
   classical
   obtain ⟨b, hb_smooth, hb_range, hb_one_on_tsupp, hb_support⟩ :=
-    exists_chart_cutoff_with_data (I := I) (M := M) α
+    exists_chart_cutoff_with_range_and_support (I := I) (M := M) α
   have hb_le_one : ∀ x : M, 0 ≤ b x ∧ b x ≤ 1 := hb_range
   obtain ⟨C_R, hC_R_nn, hC_R_bound⟩ :=
     exists_liftedPou_grad_bound (I := I) (M := M) α

@@ -48,8 +48,8 @@ def chartLocalEuclideanForm
   smooth_c := contDiff_const
   lam := 1
   capLam := 1
-  hlam_pos := by norm_num
-  hlam_le_capLam := le_refl _
+  ellipticity_pos := by norm_num
+  ellipticity_le_upper := le_refl _
   coercive := by
     intro x _hx ξ
     have h_id_action :

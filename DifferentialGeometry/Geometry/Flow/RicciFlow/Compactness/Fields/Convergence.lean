@@ -148,7 +148,7 @@ structure FlowMetricConvergenceData
     (β ψ : Real) where
 
   φ : Nat -> Nat
-  hφ : StrictMono φ
+  strictMono : StrictMono φ
   gInf : letI : TopologicalSpace P.M := P.topology
     letI : ChartedSpace H P.M := P.charted
     letI : IsManifold I ∞ P.M := P.smooth
@@ -189,7 +189,7 @@ noncomputable def restrict
     (hsub : Set.Icc c d ⊆ Set.Icc β ψ) :
     FlowMetricConvergenceData (I := I) Φ R bf hsrc htgt c d where
   φ := co.φ
-  hφ := co.hφ
+  strictMono := co.strictMono
   gInf := co.gInf
   convergence := by
     intro K hK p ε hε
@@ -212,7 +212,7 @@ noncomputable def compSubseq
     (η : Nat → Nat) (hη : StrictMono η) :
     FlowMetricConvergenceData (I := I) Φ R bf hsrc htgt β ψ where
   φ := co.φ ∘ η
-  hφ := co.hφ.comp hη
+  strictMono := co.strictMono.comp hη
   gInf := co.gInf
   convergence := by
     intro K hK p ε hε
@@ -304,7 +304,7 @@ noncomputable def flowMetricConvergenceData
       hlow_gSeqExt (I := I) Φ R bf hsrc htgt cLow β ψ hcLow hbound rho)
   refine
     { φ := hAA.choose
-      hφ := hAA.choose_spec.1
+      strictMono := hAA.choose_spec.1
       gInf := hAA.choose_spec.2.choose
       convergence := hAA.choose_spec.2.choose_spec
       convergencePt := ?_ }
@@ -555,7 +555,7 @@ theorem ofRP_supOn_convergence
   obtain ⟨k0g, hk0g⟩ := bf.grow_cover K hK
   refine ⟨max k0c k0g, fun k hk t ht => ?_⟩
   have hkg : K ⊆ bf.grow (co.φ k) :=
-    hk0g (co.φ k) (le_trans (le_trans (le_max_right _ _) hk) (co.hφ.id_le k))
+    hk0g (co.φ k) (le_trans (le_trans (le_max_right _ _) hk) (co.strictMono.id_le k))
   rw [ofRP_supOn_eq (I := I) Φ R bf hsrc htgt (co.φ k) K p t (co.gInf t) gInf
     (hmetric t ht) hkg]
   exact hk0c k (le_trans (le_max_left _ _) hk) t ht
@@ -645,9 +645,9 @@ theorem gInf_zero_eq
     obtain ⟨k2, hk2⟩ := bf.grow_cover {x} isCompact_singleton
     refine ⟨max k1 k2, fun k hk => ?_⟩
     have hφk1 : k1 <= co.φ k :=
-      le_trans (le_trans (le_max_left _ _) hk) (co.hφ.id_le k)
+      le_trans (le_trans (le_max_left _ _) hk) (co.strictMono.id_le k)
     have hgrow : x ∈ bf.grow (co.φ k) :=
-      hk2 (co.φ k) (le_trans (le_trans (le_max_right _ _) hk) (co.hφ.id_le k))
+      hk2 (co.φ k) (le_trans (le_trans (le_max_right _ _) hk) (co.strictMono.id_le k))
         (Set.mem_singleton x)
     have hxsrc : x ∈ Φ.source (co.φ k) := bf.grow_subset (co.φ k) hgrow
     obtain ⟨W, hWopen, hgrowW, hW1⟩ := bf.chi_one (co.φ k)

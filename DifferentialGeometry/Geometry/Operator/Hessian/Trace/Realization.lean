@@ -273,7 +273,7 @@ theorem hessianSec_nabla
     (hcov : CovariantDerivative.ContMDiffCovariantDerivativeLocally cov
       (∞ : WithTop ℕ∞))
     (u : M -> Real) (hu : ContMDiff I 𝓘(Real, Real) (∞ : WithTop ℕ∞) u) :
-    NablaOneFormSectionRealizes (I := I) cov (duSec (I := I) u hu)
+    NablaOneFormRealizes (I := I) cov (duSec (I := I) u hu)
       (hessianSec (I := I) cov hcov u hu) := by
   intro x X Y
   have hreal :=

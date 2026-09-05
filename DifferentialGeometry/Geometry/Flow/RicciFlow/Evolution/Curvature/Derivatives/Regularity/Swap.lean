@@ -145,7 +145,7 @@ theorem frameTowerSwap
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-theorem tailTowerData
+theorem exists_tail_curvature_component_time_derivative_tower
     {alpha t0 omega : Real} {hAlphaOmega : alpha < omega}
     {S : SolutionOn (I := I) (M := M)
       (RealTimeInterval.closedOpen alpha omega hAlphaOmega)}
@@ -377,7 +377,7 @@ theorem towerDataAt
   have ht0b : t0 < b := ht0t.trans htab.2
   let Dt := RealTimeInterval.closedOpen t0 b ht0b
   obtain ⟨hframe1, baseDt, chrDt, hrm, hchr, hchrId, hswap⟩ :=
-    tailTowerData (I := I) hSab hat0 ht0b frame hframe hu
+    exists_tail_curvature_component_time_derivative_tower (I := I) hSab hat0 ht0b frame hframe hu
   have htDt : (t : Real) ∈ Dt.regular := ⟨ht0t, htab.2⟩
   let tt : RealTimeInterval.RegularTime Dt := ⟨(t : Real), htDt⟩
   have hDt : Dt.carrier ∈ nhds (t : Real) := Dt.regular_mem_nhds htDt

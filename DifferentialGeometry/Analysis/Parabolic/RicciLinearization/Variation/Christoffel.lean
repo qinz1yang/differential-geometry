@@ -27,9 +27,9 @@ namespace ChartMetricPerturbation
 instance : Add (ChartMetricPerturbation E) :=
   ⟨fun h₁ h₂ =>
     { toFun := fun i j y => h₁ i j y + h₂ i j y
-      symm' := fun i j y => by
+      symmetric := fun i j y => by
         simp only [ChartMetricPerturbation.symm h₁ i j y, ChartMetricPerturbation.symm h₂ i j y]
-      smooth' := fun i j => (h₁.smooth i j).add (h₂.smooth i j) }⟩
+      contDiff := fun i j => (h₁.smooth i j).add (h₂.smooth i j) }⟩
 
 omit [NeZero (Module.finrank ℝ E)] in
 @[simp] lemma add_apply (h₁ h₂ : ChartMetricPerturbation E)
@@ -39,9 +39,9 @@ omit [NeZero (Module.finrank ℝ E)] in
 instance : SMul ℝ (ChartMetricPerturbation E) :=
   ⟨fun c h =>
     { toFun := fun i j y => c • h i j y
-      symm' := fun i j y => by
+      symmetric := fun i j y => by
         simp only [ChartMetricPerturbation.symm h i j y]
-      smooth' := fun i j => (h.smooth i j).const_smul c }⟩
+      contDiff := fun i j => (h.smooth i j).const_smul c }⟩
 
 omit [NeZero (Module.finrank ℝ E)] in
 @[simp] lemma smul_apply (c : ℝ) (h : ChartMetricPerturbation E)

@@ -250,13 +250,13 @@ def ofSubseq
 
 end PointedRiemannianConverges
 
-namespace MetricCompactnessConclusion
+namespace MetricCompactLimit
 
 def ofSeqSubseq
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (f : Nat -> Nat) (hf : StrictMono f)
-    (mc : MetricCompactnessConclusion (I := I) (X.subseq f)) :
-    MetricCompactnessConclusion (I := I) X where
+    (mc : MetricCompactLimit (I := I) (X.subseq f)) :
+    MetricCompactLimit (I := I) X where
   subseq := f ∘ mc.subseq
   strictMono := hf.comp mc.strictMono
   limit := mc.limit
@@ -268,21 +268,21 @@ omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 @[simp] theorem ofSeqSubseq_subseq
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (f : Nat -> Nat) (hf : StrictMono f)
-    (mc : MetricCompactnessConclusion (I := I) (X.subseq f)) :
+    (mc : MetricCompactLimit (I := I) (X.subseq f)) :
     (mc.ofSeqSubseq f hf).subseq = f ∘ mc.subseq := rfl
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 @[simp] theorem ofSeqSubseq_limit
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (f : Nat -> Nat) (hf : StrictMono f)
-    (mc : MetricCompactnessConclusion (I := I) (X.subseq f)) :
+    (mc : MetricCompactLimit (I := I) (X.subseq f)) :
     (mc.ofSeqSubseq f hf).limit = mc.limit := rfl
 
 def compSubseq
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    (mc : MetricCompactnessConclusion (I := I) X)
+    (mc : MetricCompactLimit (I := I) X)
     (φ : Nat -> Nat) (hφ : StrictMono φ) :
-    MetricCompactnessConclusion (I := I) X where
+    MetricCompactLimit (I := I) X where
   subseq := mc.subseq ∘ φ
   strictMono := mc.strictMono.comp hφ
   limit := mc.limit
@@ -293,18 +293,18 @@ def compSubseq
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 @[simp] theorem compSubseq_subseq
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    (mc : MetricCompactnessConclusion (I := I) X)
+    (mc : MetricCompactLimit (I := I) X)
     (φ : Nat -> Nat) (hφ : StrictMono φ) :
     (mc.compSubseq φ hφ).subseq = mc.subseq ∘ φ := rfl
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 @[simp] theorem compSubseq_limit
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    (mc : MetricCompactnessConclusion (I := I) X)
+    (mc : MetricCompactLimit (I := I) X)
     (φ : Nat -> Nat) (hφ : StrictMono φ) :
     (mc.compSubseq φ hφ).limit = mc.limit := rfl
 
-end MetricCompactnessConclusion
+end MetricCompactLimit
 
 end CheegerGromovCompactness
 end DifferentialGeometry

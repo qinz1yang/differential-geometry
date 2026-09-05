@@ -86,19 +86,19 @@ omit [CompleteSpace E] in
 lemma rhsZeroAggregate_le_energy_perK
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (α : M) (P₀ : TensorCompIdx (E := E) r s) (K : ℕ)
-    (Ceig : ℕ → ℝ) (eEig : ℕ → ℕ) (hCeig_nn : ∀ K', 0 ≤ Ceig K')
-    (hCeig_bd : ∀ (i : TensorEigenIdx (I := I) (M := M) g r s) (K' : ℕ),
+    (eigenvectorConstant : ℕ → ℝ) (eigenvectorExponent : ℕ → ℕ) (eigenvectorConstant_nonneg : ∀ K', 0 ≤ eigenvectorConstant K')
+    (eigenvector_bound : ∀ (i : TensorEigenIdx (I := I) (M := M) g r s) (K' : ℕ),
       iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K' 2
           (eigenvectorChartComponentFun (I := I) (M := M)
             g r s i α P₀)
           (chartTargetEuclid (I := I) (M := M) α)
-        ≤ ENNReal.ofReal (Ceig K' * (i.fst.val)⁻¹ ^ (eEig K')) *
+        ≤ ENNReal.ofReal (eigenvectorConstant K' * (i.fst.val)⁻¹ ^ (eigenvectorExponent K')) *
           ENNReal.ofReal
             ‖tensorResolventEigenbasisVec (I := I) (M := M)
               (tensorResolventL2_isCompactOperator (I := I) (M := M)
                 g r s) i‖)
-    (CresH : ℕ → ℝ) (eResH : ℕ → ℕ) (hCresH_nn : ∀ K', 0 ≤ CresH K')
-    (hCresH_bd : ∀ (i : TensorEigenIdx (I := I) (M := M) g r s)
+    (highResolventConstant : ℕ → ℝ) (highResolventExponent : ℕ → ℕ) (highResolventConstant_nonneg : ∀ K', 0 ≤ highResolventConstant K')
+    (highResolvent_bound : ∀ (i : TensorEigenIdx (I := I) (M := M) g r s)
       (β : M) (Q : TensorCompIdx (E := E) r s) (K' : ℕ),
       iteratedWeakSobolevNorm (d := Module.finrank ℝ E) (K' + 1) 2
           (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s
@@ -107,13 +107,13 @@ lemma rhsZeroAggregate_le_energy_perK
               β Q : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) :
               EuclN → ℝ) y)
           (chartTargetEuclid (I := I) (M := M) β)
-        ≤ ENNReal.ofReal (CresH K' * (i.fst.val)⁻¹ ^ (eResH K')) *
+        ≤ ENNReal.ofReal (highResolventConstant K' * (i.fst.val)⁻¹ ^ (highResolventExponent K')) *
           ENNReal.ofReal
             ‖tensorResolventEigenbasisVec (I := I) (M := M)
               (tensorResolventL2_isCompactOperator (I := I) (M := M)
                 g r s) i‖)
-    (CresL : ℕ → ℝ) (eResL : ℕ → ℕ) (hCresL_nn : ∀ K', 0 ≤ CresL K')
-    (hCresL_bd : ∀ (i : TensorEigenIdx (I := I) (M := M) g r s)
+    (lowResolventConstant : ℕ → ℝ) (lowResolventExponent : ℕ → ℕ) (lowResolventConstant_nonneg : ∀ K', 0 ≤ lowResolventConstant K')
+    (lowResolvent_bound : ∀ (i : TensorEigenIdx (I := I) (M := M) g r s)
       (β : M) (Q : TensorCompIdx (E := E) r s) (K' : ℕ),
       iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K' 2
           (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s
@@ -122,13 +122,13 @@ lemma rhsZeroAggregate_le_energy_perK
               β Q : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) :
               EuclN → ℝ) y)
           (chartTargetEuclid (I := I) (M := M) β)
-        ≤ ENNReal.ofReal (CresL K' * (i.fst.val)⁻¹ ^ (eResL K')) *
+        ≤ ENNReal.ofReal (lowResolventConstant K' * (i.fst.val)⁻¹ ^ (lowResolventExponent K')) *
           ENNReal.ofReal
             ‖tensorResolventEigenbasisVec (I := I) (M := M)
               (tensorResolventL2_isCompactOperator (I := I) (M := M)
                 g r s) i‖)
-    (Cpar : ℕ → ℝ) (ePar : ℕ → ℕ) (hCpar_nn : ∀ K', 0 ≤ Cpar K')
-    (hCpar_bd : ∀ (i : TensorEigenIdx (I := I) (M := M) g r s)
+    (partialConstant : ℕ → ℝ) (partialExponent : ℕ → ℕ) (partialConstant_nonneg : ∀ K', 0 ≤ partialConstant K')
+    (partial_bound : ∀ (i : TensorEigenIdx (I := I) (M := M) g r s)
       (P : TensorCompIdx (E := E) r s) (k : Fin (Module.finrank ℝ E)) (K' : ℕ),
       iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K' 2
           (fun y => ((partialLpLimit (I := I) (M := M)
@@ -136,13 +136,13 @@ lemma rhsZeroAggregate_le_energy_perK
               Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
               EuclN → ℝ) y)
           (chartTargetEuclid (I := I) (M := M) α)
-        ≤ ENNReal.ofReal (Cpar K' * (i.fst.val)⁻¹ ^ (ePar K')) *
+        ≤ ENNReal.ofReal (partialConstant K' * (i.fst.val)⁻¹ ^ (partialExponent K')) *
           ENNReal.ofReal
             ‖tensorResolventEigenbasisVec (I := I) (M := M)
               (tensorResolventL2_isCompactOperator (I := I) (M := M)
                 g r s) i‖)
-    (Ccom : ℕ → ℝ) (eCom : ℕ → ℕ) (hCcom_nn : ∀ K', 0 ≤ Ccom K')
-    (hCcom_bd : ∀ (i : TensorEigenIdx (I := I) (M := M) g r s)
+    (componentConstant : ℕ → ℝ) (componentExponent : ℕ → ℕ) (componentConstant_nonneg : ∀ K', 0 ≤ componentConstant K')
+    (component_bound : ∀ (i : TensorEigenIdx (I := I) (M := M) g r s)
       (p : TensorCompIdx (E := E) r s) (K' : ℕ),
       iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K' 2
           (fun y => ((componentLpLimit (I := I) (M := M)
@@ -150,13 +150,13 @@ lemma rhsZeroAggregate_le_energy_perK
               Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
               EuclN → ℝ) y)
           (chartTargetEuclid (I := I) (M := M) α)
-        ≤ ENNReal.ofReal (Ccom K' * (i.fst.val)⁻¹ ^ (eCom K')) *
+        ≤ ENNReal.ofReal (componentConstant K' * (i.fst.val)⁻¹ ^ (componentExponent K')) *
           ENNReal.ofReal
             ‖tensorResolventEigenbasisVec (I := I) (M := M)
               (tensorResolventL2_isCompactOperator (I := I) (M := M)
                 g r s) i‖)
-    (CcR : ℕ → ℝ) (eCcR : ℕ → ℕ) (hCcR_nn : ∀ K', 0 ≤ CcR K')
-    (hCcR_bd : ∀ (i : TensorEigenIdx (I := I) (M := M) g r s)
+    (crossRightConstant : ℕ → ℝ) (crossRightExponent : ℕ → ℕ) (crossRightConstant_nonneg : ∀ K', 0 ≤ crossRightConstant K')
+    (crossRight_bound : ∀ (i : TensorEigenIdx (I := I) (M := M) g r s)
       (P : TensorCompIdx (E := E) r s) (K' : ℕ),
       iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K' 2
           (fun y => ((crossRightLimitComponent (I := I) (M := M)
@@ -164,13 +164,13 @@ lemma rhsZeroAggregate_le_energy_perK
               Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
               EuclN → ℝ) y)
           (chartTargetEuclid (I := I) (M := M) α)
-        ≤ ENNReal.ofReal (CcR K' * (i.fst.val)⁻¹ ^ (eCcR K')) *
+        ≤ ENNReal.ofReal (crossRightConstant K' * (i.fst.val)⁻¹ ^ (crossRightExponent K')) *
           ENNReal.ofReal
             ‖tensorResolventEigenbasisVec (I := I) (M := M)
               (tensorResolventL2_isCompactOperator (I := I) (M := M)
                 g r s) i‖)
-    (Ccut : ℕ → ℝ) (eCcut : ℕ → ℕ) (hCcut_nn : ∀ K', 0 ≤ Ccut K')
-    (hCcut_bd : ∀ (i : TensorEigenIdx (I := I) (M := M) g r s)
+    (cutoffConstant : ℕ → ℝ) (cutoffExponent : ℕ → ℕ) (cutoffConstant_nonneg : ∀ K', 0 ≤ cutoffConstant K')
+    (cutoff_bound : ∀ (i : TensorEigenIdx (I := I) (M := M) g r s)
       (P : TensorCompIdx (E := E) r s) (l : Fin (Module.finrank ℝ E)) (K' : ℕ),
       iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K' 2
           (fun y => ((cutoffPartialLpLimit (I := I) (M := M)
@@ -178,7 +178,7 @@ lemma rhsZeroAggregate_le_energy_perK
               Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
               EuclN → ℝ) y)
           (chartTargetEuclid (I := I) (M := M) α)
-        ≤ ENNReal.ofReal (Ccut K' * (i.fst.val)⁻¹ ^ (eCcut K')) *
+        ≤ ENNReal.ofReal (cutoffConstant K' * (i.fst.val)⁻¹ ^ (cutoffExponent K')) *
           ENNReal.ofReal
             ‖tensorResolventEigenbasisVec (I := I) (M := M)
               (tensorResolventL2_isCompactOperator (I := I) (M := M)
@@ -194,30 +194,30 @@ lemma rhsZeroAggregate_le_energy_perK
   classical
   set e_max : ℕ :=
     max (max (max (max (max (max (max
-      (eEig K) (eResH K)) (eResH (K + 1))) (eResL K)) (ePar K))
-      (eCom K)) (eCcR K)) (eCcut K) with he_max_def
-  set Cqtot : ℝ := (Fintype.card (TensorCompIdx (E := E) r s) : ℝ) * CresH K
+      (eigenvectorExponent K) (highResolventExponent K)) (highResolventExponent (K + 1))) (lowResolventExponent K)) (partialExponent K))
+      (componentExponent K)) (crossRightExponent K)) (cutoffExponent K) with he_max_def
+  set Cqtot : ℝ := (Fintype.card (TensorCompIdx (E := E) r s) : ℝ) * highResolventConstant K
     with hCqtot_def
   set Cmid_α : ℝ := (transportChartCenters (I := I) (M := M) α).sum fun β =>
         Cqtot + ((transportChartCenters (I := I) (M := M) β).card : ℝ) * Cqtot
     with hCmid_α_def
   set Clow_α : ℝ :=
     ((transportChartCenters (I := I) (M := M) α).card : ℝ) *
-      ((Fintype.card (TensorCompIdx (E := E) r s) : ℝ) * CresL K) with hClow_α_def
-  set Cpar' : ℝ := (Fintype.card (TensorCompIdx (E := E) r s) : ℝ) *
-        ((Fintype.card (Fin (Module.finrank ℝ E)) : ℝ) * Cpar K) with hCpar'_def
-  set Ccom' : ℝ := (Fintype.card (TensorCompIdx (E := E) r s) : ℝ) * Ccom K
+      ((Fintype.card (TensorCompIdx (E := E) r s) : ℝ) * lowResolventConstant K) with hClow_α_def
+  set partialConstant' : ℝ := (Fintype.card (TensorCompIdx (E := E) r s) : ℝ) *
+        ((Fintype.card (Fin (Module.finrank ℝ E)) : ℝ) * partialConstant K) with hCpar'_def
+  set componentConstant' : ℝ := (Fintype.card (TensorCompIdx (E := E) r s) : ℝ) * componentConstant K
     with hCcom'_def
-  set CcR' : ℝ := (Fintype.card (TensorCompIdx (E := E) r s) : ℝ) * CcR K
+  set crossRightConstant' : ℝ := (Fintype.card (TensorCompIdx (E := E) r s) : ℝ) * crossRightConstant K
     with hCcR'_def
-  set Ccut' : ℝ := (Fintype.card (TensorCompIdx (E := E) r s) : ℝ) *
-        ((Fintype.card (Fin (Module.finrank ℝ E)) : ℝ) * Ccut K) with hCcut'_def
-  set Cagg : ℝ := Ceig K + Cmid_α + Clow_α + Cpar' + Ccom' + CcR' + Ccut'
+  set cutoffConstant' : ℝ := (Fintype.card (TensorCompIdx (E := E) r s) : ℝ) *
+        ((Fintype.card (Fin (Module.finrank ℝ E)) : ℝ) * cutoffConstant K) with hCcut'_def
+  set Cagg : ℝ := eigenvectorConstant K + Cmid_α + Clow_α + partialConstant' + componentConstant' + crossRightConstant' + cutoffConstant'
     with hCagg_def
   have hCqtot_nn : 0 ≤ Cqtot := by
     have : (0 : ℝ) ≤ (Fintype.card (TensorCompIdx (E := E) r s) : ℝ) := by
       exact_mod_cast Nat.zero_le _
-    exact mul_nonneg this (hCresH_nn K)
+    exact mul_nonneg this (highResolventConstant_nonneg K)
   have hCmid_α_nn : 0 ≤ Cmid_α := by
     refine Finset.sum_nonneg (fun β _ => ?_)
     have h1 : (0 : ℝ) ≤ ((transportChartCenters (I := I) (M := M) β).card : ℝ) := by
@@ -228,31 +228,31 @@ lemma rhsZeroAggregate_le_energy_perK
       exact_mod_cast Nat.zero_le _
     have hQ : (0 : ℝ) ≤ (Fintype.card (TensorCompIdx (E := E) r s) : ℝ) := by
       exact_mod_cast Nat.zero_le _
-    exact mul_nonneg hT (mul_nonneg hQ (hCresL_nn K))
-  have hCpar'_nn : 0 ≤ Cpar' := by
+    exact mul_nonneg hT (mul_nonneg hQ (lowResolventConstant_nonneg K))
+  have hCpar'_nn : 0 ≤ partialConstant' := by
     have hQ : (0 : ℝ) ≤ (Fintype.card (TensorCompIdx (E := E) r s) : ℝ) := by
       exact_mod_cast Nat.zero_le _
     have hk : (0 : ℝ) ≤ (Fintype.card (Fin (Module.finrank ℝ E)) : ℝ) := by
       exact_mod_cast Nat.zero_le _
-    exact mul_nonneg hQ (mul_nonneg hk (hCpar_nn K))
-  have hCcom'_nn : 0 ≤ Ccom' := by
+    exact mul_nonneg hQ (mul_nonneg hk (partialConstant_nonneg K))
+  have hCcom'_nn : 0 ≤ componentConstant' := by
     have hQ : (0 : ℝ) ≤ (Fintype.card (TensorCompIdx (E := E) r s) : ℝ) := by
       exact_mod_cast Nat.zero_le _
-    exact mul_nonneg hQ (hCcom_nn K)
-  have hCcR'_nn : 0 ≤ CcR' := by
+    exact mul_nonneg hQ (componentConstant_nonneg K)
+  have hCcR'_nn : 0 ≤ crossRightConstant' := by
     have hQ : (0 : ℝ) ≤ (Fintype.card (TensorCompIdx (E := E) r s) : ℝ) := by
       exact_mod_cast Nat.zero_le _
-    exact mul_nonneg hQ (hCcR_nn K)
-  have hCcut'_nn : 0 ≤ Ccut' := by
+    exact mul_nonneg hQ (crossRightConstant_nonneg K)
+  have hCcut'_nn : 0 ≤ cutoffConstant' := by
     have hQ : (0 : ℝ) ≤ (Fintype.card (TensorCompIdx (E := E) r s) : ℝ) := by
       exact_mod_cast Nat.zero_le _
     have hk : (0 : ℝ) ≤ (Fintype.card (Fin (Module.finrank ℝ E)) : ℝ) := by
       exact_mod_cast Nat.zero_le _
-    exact mul_nonneg hQ (mul_nonneg hk (hCcut_nn K))
+    exact mul_nonneg hQ (mul_nonneg hk (cutoffConstant_nonneg K))
   have hCagg_nn : 0 ≤ Cagg := by
     refine add_nonneg (add_nonneg (add_nonneg (add_nonneg (add_nonneg
       (add_nonneg ?_ hCmid_α_nn) hClow_α_nn) hCpar'_nn) hCcom'_nn) hCcR'_nn) hCcut'_nn
-    exact hCeig_nn K
+    exact eigenvectorConstant_nonneg K
   refine ⟨Cagg, e_max, hCagg_nn, fun i => ?_⟩
   have hμ_pos : 0 < i.fst.val :=
     eigenvalue_pos (I := I) (M := M) g r s i
@@ -264,35 +264,35 @@ lemma rhsZeroAggregate_le_energy_perK
   have hpow_e_max_pos : 0 < (i.fst.val)⁻¹ ^ e_max :=
     pow_pos (inv_pos.mpr hμ_pos) _
   have hpow_e_max_nn : 0 ≤ (i.fst.val)⁻¹ ^ e_max := hpow_e_max_pos.le
-  have hEig_le : eEig K ≤ e_max := by
+  have hEig_le : eigenvectorExponent K ≤ e_max := by
     refine le_trans ?_ (le_max_left _ _)
     refine le_trans ?_ (le_max_left _ _); refine le_trans ?_ (le_max_left _ _)
     refine le_trans ?_ (le_max_left _ _); refine le_trans ?_ (le_max_left _ _)
     refine le_trans ?_ (le_max_left _ _); exact le_max_left _ _
-  have hResH_le : eResH K ≤ e_max := by
+  have hResH_le : highResolventExponent K ≤ e_max := by
     refine le_trans ?_ (le_max_left _ _)
     refine le_trans ?_ (le_max_left _ _); refine le_trans ?_ (le_max_left _ _)
     refine le_trans ?_ (le_max_left _ _); refine le_trans ?_ (le_max_left _ _)
     refine le_trans ?_ (le_max_left _ _); exact le_max_right _ _
-  have hResH1_le : eResH (K + 1) ≤ e_max := by
+  have hResH1_le : highResolventExponent (K + 1) ≤ e_max := by
     refine le_trans ?_ (le_max_left _ _)
     refine le_trans ?_ (le_max_left _ _); refine le_trans ?_ (le_max_left _ _)
     refine le_trans ?_ (le_max_left _ _); refine le_trans ?_ (le_max_left _ _)
     exact le_max_right _ _
-  have hResL_le : eResL K ≤ e_max := by
+  have hResL_le : lowResolventExponent K ≤ e_max := by
     refine le_trans ?_ (le_max_left _ _)
     refine le_trans ?_ (le_max_left _ _); refine le_trans ?_ (le_max_left _ _)
     refine le_trans ?_ (le_max_left _ _); exact le_max_right _ _
-  have hPar_le : ePar K ≤ e_max := by
+  have hPar_le : partialExponent K ≤ e_max := by
     refine le_trans ?_ (le_max_left _ _)
     refine le_trans ?_ (le_max_left _ _); refine le_trans ?_ (le_max_left _ _)
     exact le_max_right _ _
-  have hCom_le : eCom K ≤ e_max := by
+  have hCom_le : componentExponent K ≤ e_max := by
     refine le_trans ?_ (le_max_left _ _)
     refine le_trans ?_ (le_max_left _ _); exact le_max_right _ _
-  have hCcR_le : eCcR K ≤ e_max := by
+  have hCcR_le : crossRightExponent K ≤ e_max := by
     refine le_trans ?_ (le_max_left _ _); exact le_max_right _ _
-  have hCcut_le : eCcut K ≤ e_max := le_max_right _ _
+  have hCcut_le : cutoffExponent K ≤ e_max := le_max_right _ _
   have hpow_dom : ∀ a, a ≤ e_max → (i.fst.val)⁻¹ ^ a ≤ (i.fst.val)⁻¹ ^ e_max :=
     fun _a ha => pow_le_pow_right₀ hμ_inv_ge_one ha
   set Rhs : ℝ≥0∞ := ENNReal.ofReal
@@ -324,8 +324,8 @@ lemma rhsZeroAggregate_le_energy_perK
           (eigenvectorChartComponentFun (I := I) (M := M)
             g r s i α P₀)
           (chartTargetEuclid (I := I) (M := M) α)
-        ≤ ENNReal.ofReal (Ceig K) * Rhs_effective :=
-    h_bridge _ (Ceig K) (eEig K) (hCeig_nn K) hEig_le (hCeig_bd i K)
+        ≤ ENNReal.ofReal (eigenvectorConstant K) * Rhs_effective :=
+    h_bridge _ (eigenvectorConstant K) (eigenvectorExponent K) (eigenvectorConstant_nonneg K) hEig_le (eigenvector_bound i K)
   have hS2_inner : ∀ β ∈ transportChartCenters (I := I) (M := M) α,
       ((∑ Q : TensorCompIdx (E := E) r s,
             iteratedWeakSobolevNorm (d := Module.finrank ℝ E) (K + 1) 2
@@ -366,9 +366,9 @@ lemma rhsZeroAggregate_le_energy_perK
                   β Q : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) :
                   EuclN → ℝ) y)
               (chartTargetEuclid (I := I) (M := M) β)
-            ≤ ENNReal.ofReal (CresH K) * Rhs_effective := fun Q _hQ =>
-        h_bridge _ (CresH K) (eResH K) (hCresH_nn K) hResH_le
-          (hCresH_bd i β Q K)
+            ≤ ENNReal.ofReal (highResolventConstant K) * Rhs_effective := fun Q _hQ =>
+        h_bridge _ (highResolventConstant K) (highResolventExponent K) (highResolventConstant_nonneg K) hResH_le
+          (highResolvent_bound i β Q K)
       have h_sum := sum_le_of_le_ofReal_mul
         (Finset.univ : Finset (TensorCompIdx (E := E) r s))
         (fun Q => iteratedWeakSobolevNorm (d := Module.finrank ℝ E) (K + 1) 2
@@ -378,7 +378,7 @@ lemma rhsZeroAggregate_le_energy_perK
                 β Q : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) :
                 EuclN → ℝ) y)
             (chartTargetEuclid (I := I) (M := M) β))
-        (fun _Q => CresH K) Rhs_effective (fun _ _ => hCresH_nn K) h_each
+        (fun _Q => highResolventConstant K) Rhs_effective (fun _ _ => highResolventConstant_nonneg K) h_each
       rw [Finset.sum_const, nsmul_eq_mul, Finset.card_univ] at h_sum
       exact h_sum.trans_eq (by rw [hCqtot_def])
     have h_inner_β' :
@@ -413,9 +413,9 @@ lemma rhsZeroAggregate_le_energy_perK
                     β' Q : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β')) :
                     EuclN → ℝ) y)
                 (chartTargetEuclid (I := I) (M := M) β')
-              ≤ ENNReal.ofReal (CresH K) * Rhs_effective := fun Q _hQ =>
-          h_bridge _ (CresH K) (eResH K) (hCresH_nn K) hResH_le
-            (hCresH_bd i β' Q K)
+              ≤ ENNReal.ofReal (highResolventConstant K) * Rhs_effective := fun Q _hQ =>
+          h_bridge _ (highResolventConstant K) (highResolventExponent K) (highResolventConstant_nonneg K) hResH_le
+            (highResolvent_bound i β' Q K)
         have h_sum := sum_le_of_le_ofReal_mul
           (Finset.univ : Finset (TensorCompIdx (E := E) r s))
           (fun Q => iteratedWeakSobolevNorm (d := Module.finrank ℝ E) (K + 1) 2
@@ -425,7 +425,7 @@ lemma rhsZeroAggregate_le_energy_perK
                   β' Q : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β')) :
                   EuclN → ℝ) y)
               (chartTargetEuclid (I := I) (M := M) β'))
-          (fun _Q => CresH K) Rhs_effective (fun _ _ => hCresH_nn K) h_each
+          (fun _Q => highResolventConstant K) Rhs_effective (fun _ _ => highResolventConstant_nonneg K) h_each
         rw [Finset.sum_const, nsmul_eq_mul, Finset.card_univ] at h_sum
         exact h_sum.trans_eq (by rw [hCqtot_def])
       have h_sum := sum_le_of_le_ofReal_mul
@@ -524,7 +524,7 @@ lemma rhsZeroAggregate_le_energy_perK
                   EuclN → ℝ) y)
               (chartTargetEuclid (I := I) (M := M) β))
           ≤ ENNReal.ofReal
-              ((Fintype.card (TensorCompIdx (E := E) r s) : ℝ) * CresL K) *
+              ((Fintype.card (TensorCompIdx (E := E) r s) : ℝ) * lowResolventConstant K) *
             Rhs_effective := by
       intro β _hβ
       have h_each : ∀ Q ∈ (Finset.univ : Finset (TensorCompIdx (E := E) r s)),
@@ -535,9 +535,9 @@ lemma rhsZeroAggregate_le_energy_perK
                   β Q : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) :
                   EuclN → ℝ) y)
               (chartTargetEuclid (I := I) (M := M) β)
-            ≤ ENNReal.ofReal (CresL K) * Rhs_effective := fun Q _hQ =>
-        h_bridge _ (CresL K) (eResL K) (hCresL_nn K) hResL_le
-          (hCresL_bd i β Q K)
+            ≤ ENNReal.ofReal (lowResolventConstant K) * Rhs_effective := fun Q _hQ =>
+        h_bridge _ (lowResolventConstant K) (lowResolventExponent K) (lowResolventConstant_nonneg K) hResL_le
+          (lowResolvent_bound i β Q K)
       have h_sum := sum_le_of_le_ofReal_mul
         (Finset.univ : Finset (TensorCompIdx (E := E) r s))
         (fun Q => iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2
@@ -547,14 +547,14 @@ lemma rhsZeroAggregate_le_energy_perK
                 β Q : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) :
                 EuclN → ℝ) y)
             (chartTargetEuclid (I := I) (M := M) β))
-        (fun _Q => CresL K) Rhs_effective (fun _ _ => hCresL_nn K) h_each
+        (fun _Q => lowResolventConstant K) Rhs_effective (fun _ _ => lowResolventConstant_nonneg K) h_each
       rw [Finset.sum_const, nsmul_eq_mul, Finset.card_univ] at h_sum
       exact h_sum
     have hQ_nn : (0 : ℝ) ≤
-        (Fintype.card (TensorCompIdx (E := E) r s) : ℝ) * CresL K := by
+        (Fintype.card (TensorCompIdx (E := E) r s) : ℝ) * lowResolventConstant K := by
       have hQ : (0 : ℝ) ≤ (Fintype.card (TensorCompIdx (E := E) r s) : ℝ) := by
         exact_mod_cast Nat.zero_le _
-      exact mul_nonneg hQ (hCresL_nn K)
+      exact mul_nonneg hQ (lowResolventConstant_nonneg K)
     have h_sum := sum_le_of_le_ofReal_mul
       (transportChartCenters (I := I) (M := M) α)
       (fun β => ∑ Q : TensorCompIdx (E := E) r s,
@@ -565,7 +565,7 @@ lemma rhsZeroAggregate_le_energy_perK
                 β Q : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) :
                 EuclN → ℝ) y)
             (chartTargetEuclid (I := I) (M := M) β))
-      (fun _β => (Fintype.card (TensorCompIdx (E := E) r s) : ℝ) * CresL K)
+      (fun _β => (Fintype.card (TensorCompIdx (E := E) r s) : ℝ) * lowResolventConstant K)
       Rhs_effective (fun _ _ => hQ_nn) h_perβ
     rw [Finset.sum_const, nsmul_eq_mul] at h_sum
     exact h_sum.trans_eq (by rw [hClow_α_def])
@@ -578,7 +578,7 @@ lemma rhsZeroAggregate_le_energy_perK
               Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
               EuclN → ℝ) y)
             (chartTargetEuclid (I := I) (M := M) α))
-      ≤ ENNReal.ofReal Cpar' * Rhs_effective := by
+      ≤ ENNReal.ofReal partialConstant' * Rhs_effective := by
     have h_perP : ∀ P ∈ (Finset.univ : Finset (TensorCompIdx (E := E) r s)),
         (∑ k : Fin (Module.finrank ℝ E),
             iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2
@@ -588,7 +588,7 @@ lemma rhsZeroAggregate_le_energy_perK
                 EuclN → ℝ) y)
               (chartTargetEuclid (I := I) (M := M) α))
           ≤ ENNReal.ofReal
-              ((Fintype.card (Fin (Module.finrank ℝ E)) : ℝ) * Cpar K) *
+              ((Fintype.card (Fin (Module.finrank ℝ E)) : ℝ) * partialConstant K) *
             Rhs_effective := by
       intro P _hP
       have h_each : ∀ k ∈ (Finset.univ : Finset (Fin (Module.finrank ℝ E))),
@@ -598,8 +598,8 @@ lemma rhsZeroAggregate_le_energy_perK
                 Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
                 EuclN → ℝ) y)
               (chartTargetEuclid (I := I) (M := M) α)
-            ≤ ENNReal.ofReal (Cpar K) * Rhs_effective := fun k _hk =>
-        h_bridge _ (Cpar K) (ePar K) (hCpar_nn K) hPar_le (hCpar_bd i P k K)
+            ≤ ENNReal.ofReal (partialConstant K) * Rhs_effective := fun k _hk =>
+        h_bridge _ (partialConstant K) (partialExponent K) (partialConstant_nonneg K) hPar_le (partial_bound i P k K)
       have h_sum := sum_le_of_le_ofReal_mul
         (Finset.univ : Finset (Fin (Module.finrank ℝ E)))
         (fun k => iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2
@@ -608,14 +608,14 @@ lemma rhsZeroAggregate_le_energy_perK
               Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
               EuclN → ℝ) y)
             (chartTargetEuclid (I := I) (M := M) α))
-        (fun _k => Cpar K) Rhs_effective (fun _ _ => hCpar_nn K) h_each
+        (fun _k => partialConstant K) Rhs_effective (fun _ _ => partialConstant_nonneg K) h_each
       rw [Finset.sum_const, nsmul_eq_mul, Finset.card_univ] at h_sum
       exact h_sum
     have hk_nn : (0 : ℝ) ≤
-        (Fintype.card (Fin (Module.finrank ℝ E)) : ℝ) * Cpar K := by
+        (Fintype.card (Fin (Module.finrank ℝ E)) : ℝ) * partialConstant K := by
       have hk : (0 : ℝ) ≤ (Fintype.card (Fin (Module.finrank ℝ E)) : ℝ) := by
         exact_mod_cast Nat.zero_le _
-      exact mul_nonneg hk (hCpar_nn K)
+      exact mul_nonneg hk (partialConstant_nonneg K)
     have h_sum := sum_le_of_le_ofReal_mul
       (Finset.univ : Finset (TensorCompIdx (E := E) r s))
       (fun P => ∑ k : Fin (Module.finrank ℝ E),
@@ -625,7 +625,7 @@ lemma rhsZeroAggregate_le_energy_perK
               Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
               EuclN → ℝ) y)
             (chartTargetEuclid (I := I) (M := M) α))
-      (fun _P => (Fintype.card (Fin (Module.finrank ℝ E)) : ℝ) * Cpar K)
+      (fun _P => (Fintype.card (Fin (Module.finrank ℝ E)) : ℝ) * partialConstant K)
       Rhs_effective (fun _ _ => hk_nn) h_perP
     rw [Finset.sum_const, nsmul_eq_mul, Finset.card_univ] at h_sum
     exact h_sum.trans_eq (by rw [hCpar'_def])
@@ -637,7 +637,7 @@ lemma rhsZeroAggregate_le_energy_perK
             Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
             EuclN → ℝ) y)
           (chartTargetEuclid (I := I) (M := M) α))
-      ≤ ENNReal.ofReal Ccom' * Rhs_effective := by
+      ≤ ENNReal.ofReal componentConstant' * Rhs_effective := by
     have h_each : ∀ p ∈ (Finset.univ : Finset (TensorCompIdx (E := E) r s)),
         iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2
             (fun y => ((componentLpLimit (I := I) (M := M)
@@ -645,8 +645,8 @@ lemma rhsZeroAggregate_le_energy_perK
               Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
               EuclN → ℝ) y)
             (chartTargetEuclid (I := I) (M := M) α)
-          ≤ ENNReal.ofReal (Ccom K) * Rhs_effective := fun p _hp =>
-      h_bridge _ (Ccom K) (eCom K) (hCcom_nn K) hCom_le (hCcom_bd i p K)
+          ≤ ENNReal.ofReal (componentConstant K) * Rhs_effective := fun p _hp =>
+      h_bridge _ (componentConstant K) (componentExponent K) (componentConstant_nonneg K) hCom_le (component_bound i p K)
     have h_sum := sum_le_of_le_ofReal_mul
       (Finset.univ : Finset (TensorCompIdx (E := E) r s))
       (fun p => iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2
@@ -655,7 +655,7 @@ lemma rhsZeroAggregate_le_energy_perK
             Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
             EuclN → ℝ) y)
           (chartTargetEuclid (I := I) (M := M) α))
-      (fun _p => Ccom K) Rhs_effective (fun _ _ => hCcom_nn K) h_each
+      (fun _p => componentConstant K) Rhs_effective (fun _ _ => componentConstant_nonneg K) h_each
     rw [Finset.sum_const, nsmul_eq_mul, Finset.card_univ] at h_sum
     exact h_sum.trans_eq (by rw [hCcom'_def])
   have hS6 :
@@ -666,7 +666,7 @@ lemma rhsZeroAggregate_le_energy_perK
             Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
             EuclN → ℝ) y)
           (chartTargetEuclid (I := I) (M := M) α))
-      ≤ ENNReal.ofReal CcR' * Rhs_effective := by
+      ≤ ENNReal.ofReal crossRightConstant' * Rhs_effective := by
     have h_each : ∀ P ∈ (Finset.univ : Finset (TensorCompIdx (E := E) r s)),
         iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2
             (fun y => ((crossRightLimitComponent (I := I) (M := M)
@@ -674,8 +674,8 @@ lemma rhsZeroAggregate_le_energy_perK
               Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
               EuclN → ℝ) y)
             (chartTargetEuclid (I := I) (M := M) α)
-          ≤ ENNReal.ofReal (CcR K) * Rhs_effective := fun P _hP =>
-      h_bridge _ (CcR K) (eCcR K) (hCcR_nn K) hCcR_le (hCcR_bd i P K)
+          ≤ ENNReal.ofReal (crossRightConstant K) * Rhs_effective := fun P _hP =>
+      h_bridge _ (crossRightConstant K) (crossRightExponent K) (crossRightConstant_nonneg K) hCcR_le (crossRight_bound i P K)
     have h_sum := sum_le_of_le_ofReal_mul
       (Finset.univ : Finset (TensorCompIdx (E := E) r s))
       (fun P => iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2
@@ -684,7 +684,7 @@ lemma rhsZeroAggregate_le_energy_perK
             Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
             EuclN → ℝ) y)
           (chartTargetEuclid (I := I) (M := M) α))
-      (fun _P => CcR K) Rhs_effective (fun _ _ => hCcR_nn K) h_each
+      (fun _P => crossRightConstant K) Rhs_effective (fun _ _ => crossRightConstant_nonneg K) h_each
     rw [Finset.sum_const, nsmul_eq_mul, Finset.card_univ] at h_sum
     exact h_sum.trans_eq (by rw [hCcR'_def])
   have hS7 :
@@ -696,7 +696,7 @@ lemma rhsZeroAggregate_le_energy_perK
               Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
               EuclN → ℝ) y)
             (chartTargetEuclid (I := I) (M := M) α))
-      ≤ ENNReal.ofReal Ccut' * Rhs_effective := by
+      ≤ ENNReal.ofReal cutoffConstant' * Rhs_effective := by
     have h_perP : ∀ P ∈ (Finset.univ : Finset (TensorCompIdx (E := E) r s)),
         (∑ l : Fin (Module.finrank ℝ E),
             iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2
@@ -706,7 +706,7 @@ lemma rhsZeroAggregate_le_energy_perK
                 EuclN → ℝ) y)
               (chartTargetEuclid (I := I) (M := M) α))
           ≤ ENNReal.ofReal
-              ((Fintype.card (Fin (Module.finrank ℝ E)) : ℝ) * Ccut K) *
+              ((Fintype.card (Fin (Module.finrank ℝ E)) : ℝ) * cutoffConstant K) *
             Rhs_effective := by
       intro P _hP
       have h_each : ∀ l ∈ (Finset.univ : Finset (Fin (Module.finrank ℝ E))),
@@ -716,8 +716,8 @@ lemma rhsZeroAggregate_le_energy_perK
                 Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
                 EuclN → ℝ) y)
               (chartTargetEuclid (I := I) (M := M) α)
-            ≤ ENNReal.ofReal (Ccut K) * Rhs_effective := fun l _hl =>
-        h_bridge _ (Ccut K) (eCcut K) (hCcut_nn K) hCcut_le (hCcut_bd i P l K)
+            ≤ ENNReal.ofReal (cutoffConstant K) * Rhs_effective := fun l _hl =>
+        h_bridge _ (cutoffConstant K) (cutoffExponent K) (cutoffConstant_nonneg K) hCcut_le (cutoff_bound i P l K)
       have h_sum := sum_le_of_le_ofReal_mul
         (Finset.univ : Finset (Fin (Module.finrank ℝ E)))
         (fun l => iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2
@@ -726,14 +726,14 @@ lemma rhsZeroAggregate_le_energy_perK
               Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
               EuclN → ℝ) y)
             (chartTargetEuclid (I := I) (M := M) α))
-        (fun _l => Ccut K) Rhs_effective (fun _ _ => hCcut_nn K) h_each
+        (fun _l => cutoffConstant K) Rhs_effective (fun _ _ => cutoffConstant_nonneg K) h_each
       rw [Finset.sum_const, nsmul_eq_mul, Finset.card_univ] at h_sum
       exact h_sum
     have hk_nn : (0 : ℝ) ≤
-        (Fintype.card (Fin (Module.finrank ℝ E)) : ℝ) * Ccut K := by
+        (Fintype.card (Fin (Module.finrank ℝ E)) : ℝ) * cutoffConstant K := by
       have hk : (0 : ℝ) ≤ (Fintype.card (Fin (Module.finrank ℝ E)) : ℝ) := by
         exact_mod_cast Nat.zero_le _
-      exact mul_nonneg hk (hCcut_nn K)
+      exact mul_nonneg hk (cutoffConstant_nonneg K)
     have h_sum := sum_le_of_le_ofReal_mul
       (Finset.univ : Finset (TensorCompIdx (E := E) r s))
       (fun P => ∑ l : Fin (Module.finrank ℝ E),
@@ -743,29 +743,29 @@ lemma rhsZeroAggregate_le_energy_perK
               Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
               EuclN → ℝ) y)
             (chartTargetEuclid (I := I) (M := M) α))
-      (fun _P => (Fintype.card (Fin (Module.finrank ℝ E)) : ℝ) * Ccut K)
+      (fun _P => (Fintype.card (Fin (Module.finrank ℝ E)) : ℝ) * cutoffConstant K)
       Rhs_effective (fun _ _ => hk_nn) h_perP
     rw [Finset.sum_const, nsmul_eq_mul, Finset.card_univ] at h_sum
     exact h_sum.trans_eq (by rw [hCcut'_def])
   rw [rhsZeroAggregate]
-  have hp1 : 0 ≤ Ceig K + Cmid_α := add_nonneg (hCeig_nn K) hCmid_α_nn
-  have hp2 : 0 ≤ Ceig K + Cmid_α + Clow_α := add_nonneg hp1 hClow_α_nn
-  have hp3 : 0 ≤ Ceig K + Cmid_α + Clow_α + Cpar' := add_nonneg hp2 hCpar'_nn
-  have hp4 : 0 ≤ Ceig K + Cmid_α + Clow_α + Cpar' + Ccom' :=
+  have hp1 : 0 ≤ eigenvectorConstant K + Cmid_α := add_nonneg (eigenvectorConstant_nonneg K) hCmid_α_nn
+  have hp2 : 0 ≤ eigenvectorConstant K + Cmid_α + Clow_α := add_nonneg hp1 hClow_α_nn
+  have hp3 : 0 ≤ eigenvectorConstant K + Cmid_α + Clow_α + partialConstant' := add_nonneg hp2 hCpar'_nn
+  have hp4 : 0 ≤ eigenvectorConstant K + Cmid_α + Clow_α + partialConstant' + componentConstant' :=
     add_nonneg hp3 hCcom'_nn
-  have hp5 : 0 ≤ Ceig K + Cmid_α + Clow_α + Cpar' + Ccom' + CcR' :=
+  have hp5 : 0 ≤ eigenvectorConstant K + Cmid_α + Clow_α + partialConstant' + componentConstant' + crossRightConstant' :=
     add_nonneg hp4 hCcR'_nn
   have h_expand :
       ENNReal.ofReal Cagg
-        = ENNReal.ofReal (Ceig K) + ENNReal.ofReal Cmid_α + ENNReal.ofReal Clow_α
-          + ENNReal.ofReal Cpar' + ENNReal.ofReal Ccom' + ENNReal.ofReal CcR'
-          + ENNReal.ofReal Ccut' := by
+        = ENNReal.ofReal (eigenvectorConstant K) + ENNReal.ofReal Cmid_α + ENNReal.ofReal Clow_α
+          + ENNReal.ofReal partialConstant' + ENNReal.ofReal componentConstant' + ENNReal.ofReal crossRightConstant'
+          + ENNReal.ofReal cutoffConstant' := by
     rw [hCagg_def, ENNReal.ofReal_add hp5 hCcut'_nn,
       ENNReal.ofReal_add hp4 hCcR'_nn,
       ENNReal.ofReal_add hp3 hCcom'_nn,
       ENNReal.ofReal_add hp2 hCpar'_nn,
       ENNReal.ofReal_add hp1 hClow_α_nn,
-      ENNReal.ofReal_add (hCeig_nn K) hCmid_α_nn]
+      ENNReal.ofReal_add (eigenvectorConstant_nonneg K) hCmid_α_nn]
   have h_sum_bound :
       iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2
           (eigenvectorChartComponentFun (I := I) (M := M)
@@ -845,19 +845,19 @@ theorem diffRHSAggregate_le_energy_perK
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (α : M) (P₀ : TensorCompIdx (E := E) r s) (m K : ℕ)
     (l : Fin m → Fin (Module.finrank ℝ E))
-    (Ceig : ℕ → ℝ) (eEig : ℕ → ℕ) (hCeig_nn : ∀ K', 0 ≤ Ceig K')
-    (hCeig_bd : ∀ (i : TensorEigenIdx (I := I) (M := M) g r s) (K' : ℕ),
+    (eigenvectorConstant : ℕ → ℝ) (eigenvectorExponent : ℕ → ℕ) (eigenvectorConstant_nonneg : ∀ K', 0 ≤ eigenvectorConstant K')
+    (eigenvector_bound : ∀ (i : TensorEigenIdx (I := I) (M := M) g r s) (K' : ℕ),
       iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K' 2
           (eigenvectorChartComponentFun (I := I) (M := M)
             g r s i α P₀)
           (chartTargetEuclid (I := I) (M := M) α)
-        ≤ ENNReal.ofReal (Ceig K' * (i.fst.val)⁻¹ ^ (eEig K')) *
+        ≤ ENNReal.ofReal (eigenvectorConstant K' * (i.fst.val)⁻¹ ^ (eigenvectorExponent K')) *
           ENNReal.ofReal
             ‖tensorResolventEigenbasisVec (I := I) (M := M)
               (tensorResolventL2_isCompactOperator (I := I) (M := M)
                 g r s) i‖)
-    (CresH : ℕ → ℝ) (eResH : ℕ → ℕ) (hCresH_nn : ∀ K', 0 ≤ CresH K')
-    (hCresH_bd : ∀ (i : TensorEigenIdx (I := I) (M := M) g r s)
+    (highResolventConstant : ℕ → ℝ) (highResolventExponent : ℕ → ℕ) (highResolventConstant_nonneg : ∀ K', 0 ≤ highResolventConstant K')
+    (highResolvent_bound : ∀ (i : TensorEigenIdx (I := I) (M := M) g r s)
       (β : M) (Q : TensorCompIdx (E := E) r s) (K' : ℕ),
       iteratedWeakSobolevNorm (d := Module.finrank ℝ E) (K' + 1) 2
           (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s
@@ -866,13 +866,13 @@ theorem diffRHSAggregate_le_energy_perK
               β Q : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) :
               EuclN → ℝ) y)
           (chartTargetEuclid (I := I) (M := M) β)
-        ≤ ENNReal.ofReal (CresH K' * (i.fst.val)⁻¹ ^ (eResH K')) *
+        ≤ ENNReal.ofReal (highResolventConstant K' * (i.fst.val)⁻¹ ^ (highResolventExponent K')) *
           ENNReal.ofReal
             ‖tensorResolventEigenbasisVec (I := I) (M := M)
               (tensorResolventL2_isCompactOperator (I := I) (M := M)
                 g r s) i‖)
-    (CresL : ℕ → ℝ) (eResL : ℕ → ℕ) (hCresL_nn : ∀ K', 0 ≤ CresL K')
-    (hCresL_bd : ∀ (i : TensorEigenIdx (I := I) (M := M) g r s)
+    (lowResolventConstant : ℕ → ℝ) (lowResolventExponent : ℕ → ℕ) (lowResolventConstant_nonneg : ∀ K', 0 ≤ lowResolventConstant K')
+    (lowResolvent_bound : ∀ (i : TensorEigenIdx (I := I) (M := M) g r s)
       (β : M) (Q : TensorCompIdx (E := E) r s) (K' : ℕ),
       iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K' 2
           (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s
@@ -881,13 +881,13 @@ theorem diffRHSAggregate_le_energy_perK
               β Q : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) :
               EuclN → ℝ) y)
           (chartTargetEuclid (I := I) (M := M) β)
-        ≤ ENNReal.ofReal (CresL K' * (i.fst.val)⁻¹ ^ (eResL K')) *
+        ≤ ENNReal.ofReal (lowResolventConstant K' * (i.fst.val)⁻¹ ^ (lowResolventExponent K')) *
           ENNReal.ofReal
             ‖tensorResolventEigenbasisVec (I := I) (M := M)
               (tensorResolventL2_isCompactOperator (I := I) (M := M)
                 g r s) i‖)
-    (Cpar : ℕ → ℝ) (ePar : ℕ → ℕ) (hCpar_nn : ∀ K', 0 ≤ Cpar K')
-    (hCpar_bd : ∀ (i : TensorEigenIdx (I := I) (M := M) g r s)
+    (partialConstant : ℕ → ℝ) (partialExponent : ℕ → ℕ) (partialConstant_nonneg : ∀ K', 0 ≤ partialConstant K')
+    (partial_bound : ∀ (i : TensorEigenIdx (I := I) (M := M) g r s)
       (P : TensorCompIdx (E := E) r s) (k : Fin (Module.finrank ℝ E)) (K' : ℕ),
       iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K' 2
           (fun y => ((partialLpLimit (I := I) (M := M)
@@ -895,13 +895,13 @@ theorem diffRHSAggregate_le_energy_perK
               Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
               EuclN → ℝ) y)
           (chartTargetEuclid (I := I) (M := M) α)
-        ≤ ENNReal.ofReal (Cpar K' * (i.fst.val)⁻¹ ^ (ePar K')) *
+        ≤ ENNReal.ofReal (partialConstant K' * (i.fst.val)⁻¹ ^ (partialExponent K')) *
           ENNReal.ofReal
             ‖tensorResolventEigenbasisVec (I := I) (M := M)
               (tensorResolventL2_isCompactOperator (I := I) (M := M)
                 g r s) i‖)
-    (Ccom : ℕ → ℝ) (eCom : ℕ → ℕ) (hCcom_nn : ∀ K', 0 ≤ Ccom K')
-    (hCcom_bd : ∀ (i : TensorEigenIdx (I := I) (M := M) g r s)
+    (componentConstant : ℕ → ℝ) (componentExponent : ℕ → ℕ) (componentConstant_nonneg : ∀ K', 0 ≤ componentConstant K')
+    (component_bound : ∀ (i : TensorEigenIdx (I := I) (M := M) g r s)
       (p : TensorCompIdx (E := E) r s) (K' : ℕ),
       iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K' 2
           (fun y => ((componentLpLimit (I := I) (M := M)
@@ -909,13 +909,13 @@ theorem diffRHSAggregate_le_energy_perK
               Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
               EuclN → ℝ) y)
           (chartTargetEuclid (I := I) (M := M) α)
-        ≤ ENNReal.ofReal (Ccom K' * (i.fst.val)⁻¹ ^ (eCom K')) *
+        ≤ ENNReal.ofReal (componentConstant K' * (i.fst.val)⁻¹ ^ (componentExponent K')) *
           ENNReal.ofReal
             ‖tensorResolventEigenbasisVec (I := I) (M := M)
               (tensorResolventL2_isCompactOperator (I := I) (M := M)
                 g r s) i‖)
-    (CcR : ℕ → ℝ) (eCcR : ℕ → ℕ) (hCcR_nn : ∀ K', 0 ≤ CcR K')
-    (hCcR_bd : ∀ (i : TensorEigenIdx (I := I) (M := M) g r s)
+    (crossRightConstant : ℕ → ℝ) (crossRightExponent : ℕ → ℕ) (crossRightConstant_nonneg : ∀ K', 0 ≤ crossRightConstant K')
+    (crossRight_bound : ∀ (i : TensorEigenIdx (I := I) (M := M) g r s)
       (P : TensorCompIdx (E := E) r s) (K' : ℕ),
       iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K' 2
           (fun y => ((crossRightLimitComponent (I := I) (M := M)
@@ -923,13 +923,13 @@ theorem diffRHSAggregate_le_energy_perK
               Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
               EuclN → ℝ) y)
           (chartTargetEuclid (I := I) (M := M) α)
-        ≤ ENNReal.ofReal (CcR K' * (i.fst.val)⁻¹ ^ (eCcR K')) *
+        ≤ ENNReal.ofReal (crossRightConstant K' * (i.fst.val)⁻¹ ^ (crossRightExponent K')) *
           ENNReal.ofReal
             ‖tensorResolventEigenbasisVec (I := I) (M := M)
               (tensorResolventL2_isCompactOperator (I := I) (M := M)
                 g r s) i‖)
-    (Ccut : ℕ → ℝ) (eCcut : ℕ → ℕ) (hCcut_nn : ∀ K', 0 ≤ Ccut K')
-    (hCcut_bd : ∀ (i : TensorEigenIdx (I := I) (M := M) g r s)
+    (cutoffConstant : ℕ → ℝ) (cutoffExponent : ℕ → ℕ) (cutoffConstant_nonneg : ∀ K', 0 ≤ cutoffConstant K')
+    (cutoff_bound : ∀ (i : TensorEigenIdx (I := I) (M := M) g r s)
       (P : TensorCompIdx (E := E) r s) (l : Fin (Module.finrank ℝ E)) (K' : ℕ),
       iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K' 2
           (fun y => ((cutoffPartialLpLimit (I := I) (M := M)
@@ -937,7 +937,7 @@ theorem diffRHSAggregate_le_energy_perK
               Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
               EuclN → ℝ) y)
           (chartTargetEuclid (I := I) (M := M) α)
-        ≤ ENNReal.ofReal (Ccut K' * (i.fst.val)⁻¹ ^ (eCcut K')) *
+        ≤ ENNReal.ofReal (cutoffConstant K' * (i.fst.val)⁻¹ ^ (cutoffExponent K')) *
           ENNReal.ofReal
             ‖tensorResolventEigenbasisVec (I := I) (M := M)
               (tensorResolventL2_isCompactOperator (I := I) (M := M)
@@ -966,119 +966,119 @@ theorem diffRHSAggregate_le_energy_perK
   classical
   set e_max : ℕ := (Finset.range (m + 2)).sup (fun j =>
       max (max (max (max (max (max (max (max
-        (eEig (K + j)) (eResH (K + j))) (eResH (K + j + 1)))
-        (eResL (K + j))) (ePar (K + j))) (eCom (K + j))) (eCcR (K + j)))
-        (eCcut (K + j))) (eIter (K + j))) with he_max_def
-  have hEig_le : ∀ j ≤ m + 1, eEig (K + j) ≤ e_max := by
+        (eigenvectorExponent (K + j)) (highResolventExponent (K + j))) (highResolventExponent (K + j + 1)))
+        (lowResolventExponent (K + j))) (partialExponent (K + j))) (componentExponent (K + j))) (crossRightExponent (K + j)))
+        (cutoffExponent (K + j))) (eIter (K + j))) with he_max_def
+  have hEig_le : ∀ j ≤ m + 1, eigenvectorExponent (K + j) ≤ e_max := by
     intro j hj
     have hj_mem : j ∈ Finset.range (m + 2) := Finset.mem_range.mpr (by omega)
     refine le_trans ?_ (Finset.le_sup (f := fun j' =>
       max (max (max (max (max (max (max (max
-        (eEig (K + j')) (eResH (K + j'))) (eResH (K + j' + 1)))
-        (eResL (K + j'))) (ePar (K + j'))) (eCom (K + j'))) (eCcR (K + j')))
-        (eCcut (K + j'))) (eIter (K + j'))) hj_mem)
+        (eigenvectorExponent (K + j')) (highResolventExponent (K + j'))) (highResolventExponent (K + j' + 1)))
+        (lowResolventExponent (K + j'))) (partialExponent (K + j'))) (componentExponent (K + j'))) (crossRightExponent (K + j')))
+        (cutoffExponent (K + j'))) (eIter (K + j'))) hj_mem)
     refine le_trans ?_ (le_max_left _ _)
     refine le_trans ?_ (le_max_left _ _); refine le_trans ?_ (le_max_left _ _)
     refine le_trans ?_ (le_max_left _ _); refine le_trans ?_ (le_max_left _ _)
     refine le_trans ?_ (le_max_left _ _); refine le_trans ?_ (le_max_left _ _)
     exact le_max_left _ _
-  have hResH_le : ∀ j ≤ m + 1, eResH (K + j) ≤ e_max := by
+  have hResH_le : ∀ j ≤ m + 1, highResolventExponent (K + j) ≤ e_max := by
     intro j hj
     have hj_mem : j ∈ Finset.range (m + 2) := Finset.mem_range.mpr (by omega)
     refine le_trans ?_ (Finset.le_sup (f := fun j' =>
       max (max (max (max (max (max (max (max
-        (eEig (K + j')) (eResH (K + j'))) (eResH (K + j' + 1)))
-        (eResL (K + j'))) (ePar (K + j'))) (eCom (K + j'))) (eCcR (K + j')))
-        (eCcut (K + j'))) (eIter (K + j'))) hj_mem)
+        (eigenvectorExponent (K + j')) (highResolventExponent (K + j'))) (highResolventExponent (K + j' + 1)))
+        (lowResolventExponent (K + j'))) (partialExponent (K + j'))) (componentExponent (K + j'))) (crossRightExponent (K + j')))
+        (cutoffExponent (K + j'))) (eIter (K + j'))) hj_mem)
     refine le_trans ?_ (le_max_left _ _)
     refine le_trans ?_ (le_max_left _ _); refine le_trans ?_ (le_max_left _ _)
     refine le_trans ?_ (le_max_left _ _); refine le_trans ?_ (le_max_left _ _)
     refine le_trans ?_ (le_max_left _ _); refine le_trans ?_ (le_max_left _ _)
     exact le_max_right _ _
-  have hResH1_le : ∀ j ≤ m + 1, eResH (K + j + 1) ≤ e_max := by
+  have hResH1_le : ∀ j ≤ m + 1, highResolventExponent (K + j + 1) ≤ e_max := by
     intro j hj
     have hj_mem : j ∈ Finset.range (m + 2) := Finset.mem_range.mpr (by omega)
     refine le_trans ?_ (Finset.le_sup (f := fun j' =>
       max (max (max (max (max (max (max (max
-        (eEig (K + j')) (eResH (K + j'))) (eResH (K + j' + 1)))
-        (eResL (K + j'))) (ePar (K + j'))) (eCom (K + j'))) (eCcR (K + j')))
-        (eCcut (K + j'))) (eIter (K + j'))) hj_mem)
+        (eigenvectorExponent (K + j')) (highResolventExponent (K + j'))) (highResolventExponent (K + j' + 1)))
+        (lowResolventExponent (K + j'))) (partialExponent (K + j'))) (componentExponent (K + j'))) (crossRightExponent (K + j')))
+        (cutoffExponent (K + j'))) (eIter (K + j'))) hj_mem)
     refine le_trans ?_ (le_max_left _ _)
     refine le_trans ?_ (le_max_left _ _); refine le_trans ?_ (le_max_left _ _)
     refine le_trans ?_ (le_max_left _ _); refine le_trans ?_ (le_max_left _ _)
     refine le_trans ?_ (le_max_left _ _); exact le_max_right _ _
-  have hResL_le : ∀ j ≤ m + 1, eResL (K + j) ≤ e_max := by
+  have hResL_le : ∀ j ≤ m + 1, lowResolventExponent (K + j) ≤ e_max := by
     intro j hj
     have hj_mem : j ∈ Finset.range (m + 2) := Finset.mem_range.mpr (by omega)
     refine le_trans ?_ (Finset.le_sup (f := fun j' =>
       max (max (max (max (max (max (max (max
-        (eEig (K + j')) (eResH (K + j'))) (eResH (K + j' + 1)))
-        (eResL (K + j'))) (ePar (K + j'))) (eCom (K + j'))) (eCcR (K + j')))
-        (eCcut (K + j'))) (eIter (K + j'))) hj_mem)
+        (eigenvectorExponent (K + j')) (highResolventExponent (K + j'))) (highResolventExponent (K + j' + 1)))
+        (lowResolventExponent (K + j'))) (partialExponent (K + j'))) (componentExponent (K + j'))) (crossRightExponent (K + j')))
+        (cutoffExponent (K + j'))) (eIter (K + j'))) hj_mem)
     refine le_trans ?_ (le_max_left _ _)
     refine le_trans ?_ (le_max_left _ _); refine le_trans ?_ (le_max_left _ _)
     refine le_trans ?_ (le_max_left _ _); refine le_trans ?_ (le_max_left _ _)
     exact le_max_right _ _
-  have hPar_le : ∀ j ≤ m + 1, ePar (K + j) ≤ e_max := by
+  have hPar_le : ∀ j ≤ m + 1, partialExponent (K + j) ≤ e_max := by
     intro j hj
     have hj_mem : j ∈ Finset.range (m + 2) := Finset.mem_range.mpr (by omega)
     refine le_trans ?_ (Finset.le_sup (f := fun j' =>
       max (max (max (max (max (max (max (max
-        (eEig (K + j')) (eResH (K + j'))) (eResH (K + j' + 1)))
-        (eResL (K + j'))) (ePar (K + j'))) (eCom (K + j'))) (eCcR (K + j')))
-        (eCcut (K + j'))) (eIter (K + j'))) hj_mem)
+        (eigenvectorExponent (K + j')) (highResolventExponent (K + j'))) (highResolventExponent (K + j' + 1)))
+        (lowResolventExponent (K + j'))) (partialExponent (K + j'))) (componentExponent (K + j'))) (crossRightExponent (K + j')))
+        (cutoffExponent (K + j'))) (eIter (K + j'))) hj_mem)
     refine le_trans ?_ (le_max_left _ _)
     refine le_trans ?_ (le_max_left _ _); refine le_trans ?_ (le_max_left _ _)
     refine le_trans ?_ (le_max_left _ _); exact le_max_right _ _
-  have hCom_le : ∀ j ≤ m + 1, eCom (K + j) ≤ e_max := by
+  have hCom_le : ∀ j ≤ m + 1, componentExponent (K + j) ≤ e_max := by
     intro j hj
     have hj_mem : j ∈ Finset.range (m + 2) := Finset.mem_range.mpr (by omega)
     refine le_trans ?_ (Finset.le_sup (f := fun j' =>
       max (max (max (max (max (max (max (max
-        (eEig (K + j')) (eResH (K + j'))) (eResH (K + j' + 1)))
-        (eResL (K + j'))) (ePar (K + j'))) (eCom (K + j'))) (eCcR (K + j')))
-        (eCcut (K + j'))) (eIter (K + j'))) hj_mem)
+        (eigenvectorExponent (K + j')) (highResolventExponent (K + j'))) (highResolventExponent (K + j' + 1)))
+        (lowResolventExponent (K + j'))) (partialExponent (K + j'))) (componentExponent (K + j'))) (crossRightExponent (K + j')))
+        (cutoffExponent (K + j'))) (eIter (K + j'))) hj_mem)
     refine le_trans ?_ (le_max_left _ _)
     refine le_trans ?_ (le_max_left _ _); refine le_trans ?_ (le_max_left _ _)
     exact le_max_right _ _
-  have hCcR_le : ∀ j ≤ m + 1, eCcR (K + j) ≤ e_max := by
+  have hCcR_le : ∀ j ≤ m + 1, crossRightExponent (K + j) ≤ e_max := by
     intro j hj
     have hj_mem : j ∈ Finset.range (m + 2) := Finset.mem_range.mpr (by omega)
     refine le_trans ?_ (Finset.le_sup (f := fun j' =>
       max (max (max (max (max (max (max (max
-        (eEig (K + j')) (eResH (K + j'))) (eResH (K + j' + 1)))
-        (eResL (K + j'))) (ePar (K + j'))) (eCom (K + j'))) (eCcR (K + j')))
-        (eCcut (K + j'))) (eIter (K + j'))) hj_mem)
+        (eigenvectorExponent (K + j')) (highResolventExponent (K + j'))) (highResolventExponent (K + j' + 1)))
+        (lowResolventExponent (K + j'))) (partialExponent (K + j'))) (componentExponent (K + j'))) (crossRightExponent (K + j')))
+        (cutoffExponent (K + j'))) (eIter (K + j'))) hj_mem)
     refine le_trans ?_ (le_max_left _ _)
     refine le_trans ?_ (le_max_left _ _); exact le_max_right _ _
-  have hCcut_le : ∀ j ≤ m + 1, eCcut (K + j) ≤ e_max := by
+  have hCcut_le : ∀ j ≤ m + 1, cutoffExponent (K + j) ≤ e_max := by
     intro j hj
     have hj_mem : j ∈ Finset.range (m + 2) := Finset.mem_range.mpr (by omega)
     refine le_trans ?_ (Finset.le_sup (f := fun j' =>
       max (max (max (max (max (max (max (max
-        (eEig (K + j')) (eResH (K + j'))) (eResH (K + j' + 1)))
-        (eResL (K + j'))) (ePar (K + j'))) (eCom (K + j'))) (eCcR (K + j')))
-        (eCcut (K + j'))) (eIter (K + j'))) hj_mem)
+        (eigenvectorExponent (K + j')) (highResolventExponent (K + j'))) (highResolventExponent (K + j' + 1)))
+        (lowResolventExponent (K + j'))) (partialExponent (K + j'))) (componentExponent (K + j'))) (crossRightExponent (K + j')))
+        (cutoffExponent (K + j'))) (eIter (K + j'))) hj_mem)
     refine le_trans ?_ (le_max_left _ _); exact le_max_right _ _
   have hIter_le : ∀ j ≤ m + 1, eIter (K + j) ≤ e_max := by
     intro j hj
     have hj_mem : j ∈ Finset.range (m + 2) := Finset.mem_range.mpr (by omega)
     refine le_trans ?_ (Finset.le_sup (f := fun j' =>
       max (max (max (max (max (max (max (max
-        (eEig (K + j')) (eResH (K + j'))) (eResH (K + j' + 1)))
-        (eResL (K + j'))) (ePar (K + j'))) (eCom (K + j'))) (eCcR (K + j')))
-        (eCcut (K + j'))) (eIter (K + j'))) hj_mem)
+        (eigenvectorExponent (K + j')) (highResolventExponent (K + j'))) (highResolventExponent (K + j' + 1)))
+        (lowResolventExponent (K + j'))) (partialExponent (K + j'))) (componentExponent (K + j'))) (crossRightExponent (K + j')))
+        (cutoffExponent (K + j'))) (eIter (K + j'))) hj_mem)
     exact le_max_right _ _
   obtain ⟨Cbase_m, eBase_m, hCbase_m_nn, hCbase_m_bd⟩ :=
     rhsZeroAggregate_le_energy_perK (I := I) (M := M)
       g r s α P₀ (K + m)
-      Ceig eEig hCeig_nn hCeig_bd
-      CresH eResH hCresH_nn hCresH_bd
-      CresL eResL hCresL_nn hCresL_bd
-      Cpar ePar hCpar_nn hCpar_bd
-      Ccom eCom hCcom_nn hCcom_bd
-      CcR eCcR hCcR_nn hCcR_bd
-      Ccut eCcut hCcut_nn hCcut_bd
+      eigenvectorConstant eigenvectorExponent eigenvectorConstant_nonneg eigenvector_bound
+      highResolventConstant highResolventExponent highResolventConstant_nonneg highResolvent_bound
+      lowResolventConstant lowResolventExponent lowResolventConstant_nonneg lowResolvent_bound
+      partialConstant partialExponent partialConstant_nonneg partial_bound
+      componentConstant componentExponent componentConstant_nonneg component_bound
+      crossRightConstant crossRightExponent crossRightConstant_nonneg crossRight_bound
+      cutoffConstant cutoffExponent cutoffConstant_nonneg cutoff_bound
   refine ⟨Cbase_m + (m : ℝ) *
       (((Fintype.card (Fin (Module.finrank ℝ E)) : ℝ) + 1) *
         (Finset.range (m + 1)).sup' ⟨0, by simp⟩ (fun j => Citer (K + j))),

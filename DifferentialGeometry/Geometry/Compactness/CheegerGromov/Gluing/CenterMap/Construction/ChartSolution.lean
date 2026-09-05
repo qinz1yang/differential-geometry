@@ -58,7 +58,7 @@ def HasChartCenterOfMassSolution
         MetricComplete.complete (I := I) Y hcomplete
       letI : MetricSpace Y.M :=
         HopfRinow.riemMetricSpace (I := I) (M := Y.M)
-      CenterInput (I := I) Y.metric mu points join x rad) : Prop :=
+      CenterOfMassConditions (I := I) Y.metric mu points join x rad) : Prop :=
   letI : TopologicalSpace Y.M := Y.topology
   letI : ChartedSpace H Y.M := Y.charted
   letI : IsManifold I ∞ Y.M := Y.smooth

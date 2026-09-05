@@ -52,7 +52,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 include I in
 omit [InnerProductSpace ℝ E] [IsManifold I ∞ M] in
-theorem manifold_exists_contractible_open_nhd (x : M) :
+theorem exists_contractible_open_nhd (x : M) :
     ∃ U : Set M, IsOpen U ∧ x ∈ U ∧ ContractibleSpace U := by
   set e : OpenPartialHomeomorph M E :=
     (chartAt H x).transHomeomorph I.toHomeomorph with he_def
@@ -93,7 +93,7 @@ omit [InnerProductSpace ℝ E] [IsManifold I ∞ M] in
 theorem manifold_semilocallySimplyConnectedSpace :
     SemilocallySimplyConnectedSpace M := ⟨by
   intro x
-  obtain ⟨U, hU_open, hxU, hU_contr⟩ := manifold_exists_contractible_open_nhd (I := I) x
+  obtain ⟨U, hU_open, hxU, hU_contr⟩ := exists_contractible_open_nhd (I := I) x
   refine ⟨U, hU_open.mem_nhds hxU, fun γ hγU => ?_⟩
   exact contractible_loops_nullhomotopic_in_subset γ hγU⟩
 

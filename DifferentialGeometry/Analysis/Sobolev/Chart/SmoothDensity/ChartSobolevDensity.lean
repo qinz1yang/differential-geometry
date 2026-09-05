@@ -34,10 +34,10 @@ theorem SmoothDiffeoBoundedAtOrder.wkpNorm_comp_le
     (hu_compactSupport : HasCompactSupport u)
     (hu_support : tsupport u ⊆ Ω') :
     iteratedWeakSobolevNorm (d := d) k p (fun x => u (Φ.toFun x)) Ω ≤
-      ENNReal.ofReal (Φ.wkpCompConst' k p) *
+      ENNReal.ofReal (Φ.wkpCompositionConstant k p) *
         iteratedWeakSobolevNorm (d := d) k p u Ω' := by
   classical
-  set K_const : ℝ := Φ.wkpCompConst' k p with hK_def
+  set K_const : ℝ := Φ.wkpCompositionConstant k p with hK_def
   have hK_pos : 0 < K_const := by
     have hp_zero : p ≠ 0 := by
       intro hpz; rw [hpz] at hp_one
@@ -48,7 +48,7 @@ theorem SmoothDiffeoBoundedAtOrder.wkpNorm_comp_le
     have hKchg_pos : 0 < (1 / Φ.jacobianLowerBound) ^ (1 / p.toReal) :=
       Real.rpow_pos_of_pos hjLB_inv_pos _
     rw [hK_def]
-    unfold DifferentialGeometry.Analysis.Sobolev.Euclidean.SmoothDiffeoBoundedAtOrder.wkpCompConst'
+    unfold DifferentialGeometry.Analysis.Sobolev.Euclidean.SmoothDiffeoBoundedAtOrder.wkpCompositionConstant
     have h_zero_in : (0 : ℕ) ∈ Finset.range (k + 1) :=
       Finset.mem_range.mpr (Nat.zero_lt_succ _)
     have h_at_zero : (Fintype.card (Fin 0 → Fin d) : ℝ) = 1 := by

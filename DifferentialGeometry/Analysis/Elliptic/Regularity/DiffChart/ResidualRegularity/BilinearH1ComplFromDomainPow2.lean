@@ -30,7 +30,6 @@ open DifferentialGeometry.Analysis.Laplacian.H1ComplWeakPartialLimit
 open DifferentialGeometry.Analysis.Laplacian.LaplacianDomainChartData
 open DifferentialGeometry.Analysis.Laplacian.LaplacianDomainVariationalIdentityIntegralForm
 open DifferentialGeometry.Analysis.Laplacian.LaplacianDomainSmoothMul
-open DifferentialGeometry.Analysis.Laplacian.LaplacianDomainPerChartWitness
 open DifferentialGeometry.Analysis.Sobolev.NirenbergEuclidean
 
 private local instance : MeasurableSpace E := borel E

@@ -351,7 +351,7 @@ theorem smoothGeom_strong
     (hball : ∀ t ∈ Icc (0 : ℝ) T,
       ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2) (Phi t)‖ ≤
         (Classical.choose
-          (deTurckSobolevNHa2_exists_of_super (I := I) (M := M) g₀ a ha_super)).1)
+          (exists_deTurckSobolev_fiber_bound_on_ball_of_supercritical (I := I) (M := M) g₀ a ha_super)).1)
     (hPDE : ∀ (t : ℝ) (ht : t ∈ Icc (0 : ℝ) T), ∀ x : M,
       ∀ slots : Fin 2 → E,
         HasDerivAt
@@ -637,11 +637,11 @@ theorem smoothGeom_unique
     (hball₁ : ∀ t ∈ Icc (0 : ℝ) T,
       ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2) (Phi₁ t)‖ ≤
         (Classical.choose
-          (deTurckSobolevNHa2_exists_of_super (I := I) (M := M) g₀ a ha_super)).1)
+          (exists_deTurckSobolev_fiber_bound_on_ball_of_supercritical (I := I) (M := M) g₀ a ha_super)).1)
     (hball₂ : ∀ t ∈ Icc (0 : ℝ) T,
       ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2) (Phi₂ t)‖ ≤
         (Classical.choose
-          (deTurckSobolevNHa2_exists_of_super (I := I) (M := M) g₀ a ha_super)).1)
+          (exists_deTurckSobolev_fiber_bound_on_ball_of_supercritical (I := I) (M := M) g₀ a ha_super)).1)
     (hPDE₁ : ∀ (t : ℝ) (ht : t ∈ Icc (0 : ℝ) T), ∀ x : M,
       ∀ slots : Fin 2 → E,
         HasDerivAt
@@ -745,13 +745,13 @@ theorem metricRD_unique
         (metricDifferenceCcTensor (I := I) (M := M) q
           (G₁ (c + t)))‖ ≤
         (Classical.choose
-          (deTurckSobolevNHa2_exists_of_super (I := I) (M := M) q a ha_super)).1)
+          (exists_deTurckSobolev_fiber_bound_on_ball_of_supercritical (I := I) (M := M) q a ha_super)).1)
     (hball₂ : ∀ t ∈ Icc (0 : ℝ) T,
       ‖smoothCcToTensorHs (I := I) (M := M) q ((a : ℝ) + 2)
         (metricDifferenceCcTensor (I := I) (M := M) q
           (G₂ (c + t)))‖ ≤
         (Classical.choose
-          (deTurckSobolevNHa2_exists_of_super (I := I) (M := M) q a ha_super)).1)
+          (exists_deTurckSobolev_fiber_bound_on_ball_of_supercritical (I := I) (M := M) q a ha_super)).1)
     (hPDE₁ : ∀ t ∈ Icc (0 : ℝ) T, ∀ x : M,
       ∀ v w : TangentSpace I x,
         HasDerivAt (fun tau => (G₁ (c + tau)).inner x v w)
@@ -841,7 +841,7 @@ theorem metricRD_local
     simp only [Phi₁, add_zero, hG₁0, metricDifferenceCcTensor_self]
   have hPhi₂0 : Phi₂ 0 = 0 := by
     simp only [Phi₂, add_zero, hG₂0, metricDifferenceCcTensor_self]
-  let hex := deTurckSobolevNHa2_exists_of_super
+  let hex := exists_deTurckSobolev_fiber_bound_on_ball_of_supercritical
     (I := I) (M := M) q a ha
   let R₀ : ℝ := (Classical.choose hex).1
   let δ₀ : ℝ := (Classical.choose hex).2
@@ -867,7 +867,7 @@ theorem metricRD_local
   have hball₁pre : ∀ t ∈ Icc (0 : ℝ) Tpre,
       ‖smoothCcToTensorHs (I := I) (M := M) q ((a : ℝ) + 2) (Phi₁ t)‖ ≤
         (Classical.choose
-          (deTurckSobolevNHa2_exists_of_super (I := I) (M := M) q a ha)).1 := by
+          (exists_deTurckSobolev_fiber_bound_on_ball_of_supercritical (I := I) (M := M) q a ha)).1 := by
     intro t ht
     have h := hball₁ t (hsub₁ ht)
     rw [hcast] at h
@@ -875,7 +875,7 @@ theorem metricRD_local
   have hball₂pre : ∀ t ∈ Icc (0 : ℝ) Tpre,
       ‖smoothCcToTensorHs (I := I) (M := M) q ((a : ℝ) + 2) (Phi₂ t)‖ ≤
         (Classical.choose
-          (deTurckSobolevNHa2_exists_of_super (I := I) (M := M) q a ha)).1 := by
+          (exists_deTurckSobolev_fiber_bound_on_ball_of_supercritical (I := I) (M := M) q a ha)).1 := by
     intro t ht
     have h := hball₂ t (hsub₂ ht)
     rw [hcast] at h

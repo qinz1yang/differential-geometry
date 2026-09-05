@@ -203,12 +203,6 @@ noncomputable def Diffeomorph.pullbackMetric
     rfl
 
 
-theorem diffeomorph_pullback_metric_exists
-    [T2Space M]
-    (g : SmoothRiemannianMetric I N) (Φ : M ≃ₘ⟮I, I⟯ N) :
-    ∃ g' : SmoothRiemannianMetric I M, g' = Diffeomorph.pullbackMetric g Φ :=
-  ⟨Diffeomorph.pullbackMetric g Φ, rfl⟩
-
 theorem Diffeomorph.pullbackMetric_inner
     [T2Space M]
     (g : SmoothRiemannianMetric I N) (Φ : M ≃ₘ⟮I, I⟯ N) (x : M) (v w : TangentSpace I x) :

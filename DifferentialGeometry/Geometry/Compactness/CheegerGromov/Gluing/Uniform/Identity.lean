@@ -155,7 +155,7 @@ theorem uniformHatIdOn
       letI : T3Space (X.obj (L.φ n)).M := inferInstance
       forall a b : Nat, forall x : (X.obj (L.φ n)).M,
         x ∈ NetLimitData.hatSourceBall (I := I) (X := X) hd P L r n ->
-          StrictDistInput (I := I) (X.obj (L.φ n)).metric
+          StrictDistanceConvexity (I := I) (X.obj (L.φ n)).metric
             (centerAverage.activeFill
               (fun y : (X.obj (L.φ n)).M => fun gamma : Fin (pb.A r) => rho gamma y)
               (pointsSeq a b) (fun y : (X.obj (L.φ n)).M => y) x)
@@ -371,7 +371,7 @@ theorem uniformHatIdSelfOn
       letI : T3Space (X.obj (L.φ n)).M := inferInstance
       forall a b : Nat, forall x : (X.obj (L.φ n)).M,
         x ∈ NetLimitData.hatSourceBall (I := I) (X := X) hd P L r n ->
-          StrictDistInput (I := I) (X.obj (L.φ n)).metric
+          StrictDistanceConvexity (I := I) (X.obj (L.φ n)).metric
             (centerAverage.activeFill
               (fun y : (X.obj (L.φ n)).M => fun gamma : Fin (pb.A r) => rho gamma y)
               (pointsSeq a b) (fun y : (X.obj (L.φ n)).M => y) x)

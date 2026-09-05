@@ -277,7 +277,7 @@ theorem galerkinCoordField_affineBound
         ring
 
 open scoped Classical in
-theorem deTurckGalerkin_solution_exists_single
+theorem exists_deTurckGalerkin_solution_on_finset
     (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a)
     (u₀ : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) {T : ℝ} (hT : 0 < T)
@@ -379,7 +379,7 @@ theorem deTurckGalerkin_solution_exists_single
   · intro t i hi
     simp only [dif_neg hi]
 
-theorem deTurckGalerkin_solution_exists
+theorem exists_deTurckGalerkin_solution
     (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a)
     (u₀ : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) {T : ℝ} (hT : 0 ≤ T) :
@@ -402,7 +402,7 @@ theorem deTurckGalerkin_solution_exists
       exact absurd ht.2 (not_lt.mpr ht.1)
     · intro N i _; rfl
   · choose V hVcont hVderiv hVinit hVzero using fun N =>
-      deTurckGalerkin_solution_exists_single (I := I) (M := M) g₀ g_bg a ha_super u₀ hTpos
+      exists_deTurckGalerkin_solution_on_finset (I := I) (M := M) g₀ g_bg a ha_super u₀ hTpos
         (eigenIdxFinset (I := I) (M := M) g₀ N)
     refine ⟨V, hVcont, ?_, hVinit⟩
     intro N t ht i hi
@@ -429,7 +429,7 @@ theorem deTurckGalerkinForcing_seed_mass
                 (0 : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2))).coeff i) ^ 2 ≤
           Cseed k ^ 2 := by
   classical
-  set h := deTurckSobolevNHa2_exists_of_super (I := I) (M := M) g₀ a ha_super with hh
+  set h := exists_deTurckSobolev_fiber_bound_on_ball_of_supercritical (I := I) (M := M) g₀ a ha_super with hh
   set R₀ := (Classical.choose h).1 with hR₀_def
   have hR₀ : 0 < R₀ := (Classical.choose_spec h).1
   set S₀ : SmoothCcTensor g₀ 0 2 :=
@@ -1289,9 +1289,9 @@ private theorem deTurckGalerkinForcingSymm_tame_diff_mass_perScale
   have ha2 : 2 * Module.finrank ℝ E + 10 ≤ a := by omega
   obtain ⟨Cδ₀, Crem, hCδ₀_nn, hCδ₀_lt, hCrem_nn, hsplit⟩ :=
     de_turck_sobolev_nonlinearity_difference_sobolev_split_per_scale (I := I) (M := M) g₀ g_bg a ha_super
-      (Classical.choose_spec (deTurckSobolevNHa2_exists_of_super (I := I) (M := M) g₀ a ha2)).1
-      (Classical.choose_spec (deTurckSobolevNHa2_exists_of_super (I := I) (M := M) g₀ a ha2)).2.1
-      (Classical.choose_spec (deTurckSobolevNHa2_exists_of_super (I := I) (M := M) g₀ a ha2)).2.2
+      (Classical.choose_spec (exists_deTurckSobolev_fiber_bound_on_ball_of_supercritical (I := I) (M := M) g₀ a ha2)).1
+      (Classical.choose_spec (exists_deTurckSobolev_fiber_bound_on_ball_of_supercritical (I := I) (M := M) g₀ a ha2)).2.1
+      (Classical.choose_spec (exists_deTurckSobolev_fiber_bound_on_ball_of_supercritical (I := I) (M := M) g₀ a ha2)).2.2
       (fun T' => deTurckSobolevNHa2_smoothEmbed_eq (I := I) (M := M) g₀ g_bg a ha2 T') U
   have hden_pos : 0 < 1 - Cδ₀ ^ 2 := by nlinarith only [hCδ₀_nn, hCδ₀_lt]
   refine ⟨Real.sqrt ((1 + Cδ₀ ^ 2) / 2),

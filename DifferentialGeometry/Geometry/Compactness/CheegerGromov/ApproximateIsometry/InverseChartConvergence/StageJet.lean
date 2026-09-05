@@ -163,8 +163,8 @@ variable {H : Type uH} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 variable {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
 
-theorem HasStageJetData.inv_chart_convergence
-    (inp : MetricCompactnessInputs (I := I) X)
+theorem HasStageJetConvergence.inv_chart_convergence
+    (inp : MetricCompactnessAssumptions (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P) {r : Real} (hr : 0 ≤ r)
     (phi : Nat → Nat) (hphi : StrictMono phi)
@@ -179,7 +179,7 @@ theorem HasStageJetData.inv_chart_convergence
       InterSlot L inp.pack r alpha → E → E)
     (gInf : LiveSlot L inp.pack r →
       E → (E →L[Real] E →L[Real] Real))
-    (hstage : HasStageJetData (I := I) inp P L hr phi hphi
+    (hstage : HasStageJetConvergence (I := I) inp P L hr phi hphi
       U C0 C1 aInf Jinf Jbarinf gInf)
     (S T Vrad : Real) (hST : S < T)
     (hroom : T + (4 + 8 * Real.sqrt 2) * inp.decay.lambda inp.D 0 < Vrad)
@@ -287,7 +287,7 @@ theorem HasStageJetData.inv_chart_convergence
   rcases hstage with ⟨hdata, hmetric, hjets, hbase⟩
   have hgap : 0 ≤
       (4 + 8 * Real.sqrt 2) * inp.decay.lambda inp.D 0 :=
-    mul_nonneg (by positivity) (inp.decay.lambda_pos inp.hD 0).le
+    mul_nonneg (by positivity) (inp.decay.lambda_pos inp.divisor_pos 0).le
   have hTr : T < r := by linarith
   have hSr : S < r := hST.trans hTr
   have hQint : Q ⊆ interior (C0 alpha) :=
@@ -308,7 +308,7 @@ theorem HasStageJetData.inv_chart_convergence
       hn.mono_left (subset_closure.trans hQW)
   have hAconv : MapCInfConvergenceOnCompacts Q A id := by
     simpa only [A, Lphi] using
-      HasStageJetData.chart_convergence
+      HasStageJetConvergence.chart_convergence
         (E := E) (H := H) (I := I) (X := X)
         (inp := inp) (P := P) (L := L) (r := r) (hr := hr)
         (phi := phi) (hphi := hphi)
@@ -321,7 +321,7 @@ theorem HasStageJetData.inv_chart_convergence
         (hsource := hsourceQ)
   obtain ⟨Njet, hNjet⟩ := hjets S hSr 1 (1 / 2 : Real) (by norm_num)
   obtain ⟨Ninj, hNinj⟩ :=
-    HasStageJetData.inj_tail
+    HasStageJetConvergence.inj_tail
       (E := E) (H := H) (I := I) (X := X)
       (inp := inp) (P := P) (L := L) (s := r) (hs := hr)
       (phi := phi) (hphi := hphi) (hcomplete := hcomplete)
@@ -463,8 +463,8 @@ theorem HasStageJetData.inv_chart_convergence
     exact ⟨hAloc, hAinj, hleft⟩
   exact exists_inv_seq hQ hW hK hKQ hQW hAconv hgood
 
-theorem HasStageJetData.inv_chart_tail
-    (inp : MetricCompactnessInputs (I := I) X)
+theorem HasStageJetConvergence.inv_chart_tail
+    (inp : MetricCompactnessAssumptions (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P) {r : Real} (hr : 0 ≤ r)
     (phi : Nat → Nat) (hphi : StrictMono phi)
@@ -479,7 +479,7 @@ theorem HasStageJetData.inv_chart_tail
       InterSlot L inp.pack r alpha → E → E)
     (gInf : LiveSlot L inp.pack r →
       E → (E →L[Real] E →L[Real] Real))
-    (hstage : HasStageJetData (I := I) inp P L hr phi hphi
+    (hstage : HasStageJetConvergence (I := I) inp P L hr phi hphi
       U C0 C1 aInf Jinf Jbarinf gInf)
     (S T Vrad : Real) (hST : S < T)
     (hroom : T + (4 + 8 * Real.sqrt 2) * inp.decay.lambda inp.D 0 < Vrad)
@@ -574,7 +574,7 @@ theorem HasStageJetData.inv_chart_tail
     filter_upwards [hkn.eventually_ge_atTop Nsrc] with n hn
     simpa only [Lphi] using hNsrc (kn n) hn
   obtain ⟨Vout, _hVopen, _hVcompact, hKVout, hconv, _hGcd⟩ :=
-    HasStageJetData.inv_chart_convergence (I := I) inp P L hr phi hphi
+    HasStageJetConvergence.inv_chart_convergence (I := I) inp P L hr phi hphi
       hcomplete hconn U C0 C1 aInf Jinf Jbarinf gInf hstage
       S T Vrad hST hroom hVr alpha Q W K hQ hW hK hKQ hQW hWint
       kn ln hkn hln hsourceSeq

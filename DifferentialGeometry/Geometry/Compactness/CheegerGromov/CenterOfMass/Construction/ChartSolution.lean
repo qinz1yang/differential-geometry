@@ -77,7 +77,7 @@ def HasLiveChartCenterSolution
           (hcomplete.complete (L.φ n))
       letI : MetricSpace (X.obj (L.φ n)).M :=
         HopfRinow.riemMetricSpace (I := I) (M := (X.obj (L.φ n)).M)
-      CenterInput (I := I) (X.obj (L.φ n)).metric mu points join x rad) : Prop :=
+      CenterOfMassConditions (I := I) (X.obj (L.φ n)).metric mu points join x rad) : Prop :=
   HasChartCenterOfMassSolution (I := I) (X.obj (L.φ n))
     (hcomplete.complete (L.φ n)) (hconn (L.φ n))
     (seqCenterD hd P L n (alpha.1 : Nat))
@@ -184,7 +184,7 @@ theorem has_live_chart_center_solution_of_cage
         (join : (X.obj (L.φ k)).M → (X.obj (L.φ k)).M → Real →
           (X.obj (L.φ k)).M)
         (x : (X.obj (L.φ k)).M) (rad : Real),
-      ∀ h : CenterInput (I := I) (X.obj (L.φ k)).metric
+      ∀ h : CenterOfMassConditions (I := I) (X.obj (L.φ k)).metric
           mu points join x rad,
         ∑ i, mu i = 1 →
         x ∈ NetLimitData.hatBall (I := I) (X := X)
@@ -411,7 +411,7 @@ theorem exists_live_chart_center_solutions
                           (normal_enorm (I := I) (X.obj (L.φ n)))
                         let points := centerAverage.activeFill mu (pointsSeq a b)
                           (fun y => y) x
-                        ∃ hcm : CenterInput (I := I)
+                        ∃ hcm : CenterOfMassConditions (I := I)
                             (X.obj (L.φ n)).metric (mu x) points join x
                             (radSeq a b x),
                           HasLiveChartCenterSolution (I := I) d P L pb r n hcomplete hconn
@@ -526,14 +526,14 @@ theorem exists_live_chart_center_solutions
         ring
       rw [heq] at hc
       simpa only [rho0] using hc
-    have hstrict : StrictDistInput (I := I) (X.obj (L.φ n)).metric
+    have hstrict : StrictDistanceConvexity (I := I) (X.obj (L.φ n)).metric
         points join x (radSeq a b x) := by
       simpa only [points, join, x0, rho0] using
-        d.strict_dist_input (L.φ n) (hcomplete.complete (L.φ n))
+        d.strict_distance_convexity (L.φ n) (hcomplete.complete (L.φ n))
           (hconn (L.φ n)) x0 hq he hf happrox hinvErr hqAcc
           points x (radSeq a b x) (4 * L.lamInf (alpha.1 : Nat))
           hρInner hρ hρq (hpos a b x) hpq hptsFilled hcage6
-    have hcm : CenterInput (I := I) (X.obj (L.φ n)).metric
+    have hcm : CenterOfMassConditions (I := I) (X.obj (L.φ n)).metric
         (mu x) points join x (radSeq a b x) := by
       simpa only [points, join] using
         centerAverage.inputOfFillSelf (I := I)

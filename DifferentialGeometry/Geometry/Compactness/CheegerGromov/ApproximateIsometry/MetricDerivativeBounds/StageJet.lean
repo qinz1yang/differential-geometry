@@ -684,8 +684,8 @@ private theorem local_norm_le
     _ ≤ bnd := by simpa only [B, Gamma, base] using hcomp slots
 
 
-theorem HasStageJetData.cov_comp_tail
-    (inp : MetricCompactnessInputs (I := I) X)
+theorem HasStageJetConvergence.cov_comp_tail
+    (inp : MetricCompactnessAssumptions (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P) {r : Real} (hr : 0 ≤ r)
     (phi : Nat → Nat) (hphi : StrictMono phi)
@@ -696,7 +696,7 @@ theorem HasStageJetData.cov_comp_tail
       InterSlot L inp.pack r alpha → E → E)
     (gInf : LiveSlot L inp.pack r →
       E → (E →L[Real] E →L[Real] Real))
-    (hstage : HasStageJetData (I := I) inp P L hr phi hphi
+    (hstage : HasStageJetConvergence (I := I) inp P L hr phi hphi
       U C0 C1 aInf Jinf Jbarinf gInf)
     {R S : Real} (hRS : R < S) (hSr : S < r)
     (e : Module.Basis (Fin (Module.finrank Real E)) Real E)
@@ -917,7 +917,7 @@ theorem HasStageJetData.cov_comp_tail
     have hQconv : MapCInfConvergenceOnCompacts V
         (fun n => Q alpha (kn n) (ln n)) (gInf alpha) := by
       simpa only [V, W, Q, B, A, Lphi] using
-        HasStageJetData.pb_convergence (I := I) inp P L hr phi hphi
+        HasStageJetConvergence.pb_convergence (I := I) inp P L hr phi hphi
           U C0 C1 aInf Jinf Jbarinf gInf
           ⟨hdata, hmetric, hjets, hbase⟩ S hSr alpha V W hVopen hVcompact
           hVW hWint kn ln hkn hln hstay'
@@ -973,7 +973,7 @@ theorem HasStageJetData.cov_comp_tail
     have hAconvW : MapCInfConvergenceOnCompacts W
         (fun n => A alpha (kn n) (ln n)) id := by
       simpa only [A, Lphi] using
-        HasStageJetData.chart_convergence (I := I) inp P L hr phi hphi
+        HasStageJetConvergence.chart_convergence (I := I) inp P L hr phi hphi
           U C0 C1 aInf Jinf Jbarinf gInf
           ⟨hdata, hmetric, hjets, hbase⟩ S hSr alpha W hWint
           kn ln hkn hln hstay'
@@ -1167,8 +1167,8 @@ theorem HasStageJetData.cov_comp_tail
   simpa only [chiK, Yk, Lphi, afin] using
     hNaa alpha afin k hkAfin l hlAfin z hzbuffer hzSource slots
 
-theorem HasStageJetData.fwd_norm_tail
-    (inp : MetricCompactnessInputs (I := I) X)
+theorem HasStageJetConvergence.fwd_norm_tail
+    (inp : MetricCompactnessAssumptions (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P) {r : Real} (hr : 0 ≤ r)
     (phi : Nat → Nat) (hphi : StrictMono phi)
@@ -1179,7 +1179,7 @@ theorem HasStageJetData.fwd_norm_tail
       InterSlot L inp.pack r alpha → E → E)
     (gInf : LiveSlot L inp.pack r →
       E → (E →L[Real] E →L[Real] Real))
-    (hstage : HasStageJetData (I := I) inp P L hr phi hphi
+    (hstage : HasStageJetConvergence (I := I) inp P L hr phi hphi
       U C0 C1 aInf Jinf Jbarinf gInf)
     {R S : Real} (hRS : R < S) (hSr : S < r)
     (p : Nat) (eps : Real) (heps : 0 < eps) :
@@ -1539,8 +1539,8 @@ theorem HasStageJetData.fwd_norm_tail
       let afin : Fin (p + 1) := ⟨a, Nat.lt_succ_iff.mpr ha⟩
       simpa only [fac, afin, mul_assoc] using hbudget afin
 
-theorem HasStageJetData.inv_norm_tail
-    (inp : MetricCompactnessInputs (I := I) X)
+theorem HasStageJetConvergence.inv_norm_tail
+    (inp : MetricCompactnessAssumptions (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P) {r : Real} (hr : 0 ≤ r)
     (phi : Nat → Nat) (hphi : StrictMono phi)
@@ -1555,7 +1555,7 @@ theorem HasStageJetData.inv_norm_tail
       InterSlot L inp.pack r alpha → E → E)
     (gInf : LiveSlot L inp.pack r →
       E → (E →L[Real] E →L[Real] Real))
-    (hstage : HasStageJetData (I := I) inp P L hr phi hphi
+    (hstage : HasStageJetConvergence (I := I) inp P L hr phi hphi
       U C0 C1 aInf Jinf Jbarinf gInf)
     {R S T Vrad : Real} (hRS : R < S) (hST : S < T)
     (hroom : T + (4 + 8 * Real.sqrt 2) * inp.decay.lambda inp.D 0 < Vrad)
@@ -1627,7 +1627,7 @@ theorem HasStageJetData.inv_norm_tail
     nlinarith
   have hgap : 0 ≤
       (4 + 8 * Real.sqrt 2) * inp.decay.lambda inp.D 0 :=
-    mul_nonneg (by positivity) (inp.decay.lambda_pos inp.hD 0).le
+    mul_nonneg (by positivity) (inp.decay.lambda_pos inp.divisor_pos 0).le
   have hTr : T < r := by linarith
   have hSr : S < r := hST.trans hTr
   obtain ⟨eta, heta, Ncomp, hcomp⟩ :=

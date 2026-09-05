@@ -109,7 +109,7 @@ theorem metricLogDerivativeInput_of_solutions
                 (S i).ricciAt s x (DifferentialGeometry.Geometry.Curvature.vec2 (I := I) v v)) /
                 ((S i).family.metric s).inner x v v)
             MeasureTheory.volume t0 t) :
-    MetricLogDerivativeInput (I := I) K β ψ t0
+    MetricLogDerivativeAssumptions (I := I) K β ψ t0
       (fun i s => (S i).family.metric s)
       (fun i t x => (S i).ricciAt t x) A where
   quad_bound := ⟨hA, fun i t ht x hx v => hquad i t ht x hx v⟩
@@ -148,7 +148,7 @@ theorem metric_uniform_equivalent_on_window_of_solutions_of_interval_integrable
     MetricUniformEquivalentOnWindow (I := I) K β ψ gRef
       (fun i s => (S i).family.metric s)
       (fun t : Real => metricEquivalenceFactor C A t t0) :=
-  metricUniformEquivalentOnWindow_of_logDerivativeInput (I := I) K β ψ t0 C A gRef
+  metricUniformEquivalentOnWindow_of_log_derivative_bound (I := I) K β ψ t0 C A gRef
     (fun i s => (S i).family.metric s) (fun i t x => (S i).ricciAt t x)
     ht0 hC hequiv0
     (metricLogDerivativeInput_of_solutions (I := I) S hS K β ψ t0 A hwin hA hquad hint)

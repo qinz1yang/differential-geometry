@@ -932,7 +932,7 @@ theorem normSqLeOfFirstTrace
   rw [hnorm, rmSecNormSq3_neg, hscalar]
   exact rmSqLe100ScalSq3 l1 l2 l3 h1 h2 h3
 
-theorem normSqLeOfFirstData
+theorem normSq_le_of_first_trace_realizations
     {g : SmoothRiemannianMetric I M}
     {Ric : Tensor02At (I := I) (M := M) x}
     {scalar : Real}

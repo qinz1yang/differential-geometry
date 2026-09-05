@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.Metric.Bounds
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.MetricCompactness.Inputs
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.MetricCompactness.Assumptions
 import DifferentialGeometry.Analysis.Calculus.MapConvergence.Composition
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.Construction.Branch
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.Metric.Subsequence
@@ -24,11 +24,11 @@ variable [NeZero (Module.finrank Real E)]
 variable {H : Type uH} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 
-namespace MetricCompactnessInputs
+namespace MetricCompactnessAssumptions
 
 theorem exists_live_metric
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    (inp : MetricCompactnessInputs (I := I) X)
+    (inp : MetricCompactnessAssumptions (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P) (r : Real) :
     let R := 2 * inp.decay.lambda inp.D 0 * (inp.pack.A r : Real)
@@ -60,7 +60,7 @@ theorem exists_live_metric
   classical
   let R : Real := 2 * inp.decay.lambda inp.D 0 * (inp.pack.A r : Real)
   obtain ⟨N, hN⟩ := eventually_atTop.mp
-    (liveCenters_cage inp.decay inp.hD P inp.realizes L inp.pack r)
+    (liveCenters_cage inp.decay inp.divisor_pos P inp.realizes L inp.pack r)
   let shift : Nat → Nat := fun k ↦ k + N
   have hshift : StrictMono shift := by
     intro a b hab
@@ -122,7 +122,7 @@ theorem exists_live_metric
 
 theorem exists_slot_metric
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    (inp : MetricCompactnessInputs (I := I) X)
+    (inp : MetricCompactnessAssumptions (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P) (r : Real) :
     ∃ (psi : Nat → Nat)
@@ -236,6 +236,6 @@ theorem exists_slot_metric
   · simpa only [U, Φ, psi, Function.comp_apply] using hconvAlpha
   · simpa only [U] using hQAlpha.2
 
-end MetricCompactnessInputs
+end MetricCompactnessAssumptions
 end CheegerGromovCompactness
 end DifferentialGeometry

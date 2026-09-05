@@ -504,7 +504,7 @@ theorem shiCovBound_of_solution
       (le_trans (le_max_right _ _) (le_max_right _ _))
 
 omit [SigmaCompactSpace M] in
-theorem extendInputs_of_solution
+theorem exists_metric_equivalence_and_covariant_derivative_bounds_of_solution
     {alpha omega : ℝ} {hαω : alpha < omega}
     {S : SolutionOn (I := I) (M := M) (RealTimeInterval.closedOpen alpha omega hαω)}
     (hdim : Module.finrank ℝ E = 3)

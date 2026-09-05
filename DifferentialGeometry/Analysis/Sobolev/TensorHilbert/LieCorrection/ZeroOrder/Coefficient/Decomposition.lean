@@ -39,7 +39,7 @@ open DifferentialGeometry.Geometry.Connection
 open DifferentialGeometry.Geometry.Connection.Realization
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator
-open LieCorrectionZeroCore
+open LieCorrectionZeroFiberOperators
 
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]

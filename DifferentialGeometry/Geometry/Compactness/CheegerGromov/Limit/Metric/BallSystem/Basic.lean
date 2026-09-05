@@ -375,11 +375,11 @@ theorem chain_metric_cocycle
     (chainBallSystem (I := I) j₀ U Ψ hU hmap).MetricCocycle gInf := by
   apply SmoothSeqSystem.MetricCocycle.ofSucc
   intro n x v w
-  have hF : (chainBallSystem (I := I) j₀ U Ψ hU hmap).toSeqSystem.F
+  have hF : (chainBallSystem (I := I) j₀ U Ψ hU hmap).toSeqSystem.map
       (Nat.le_succ n) = PartialDiffeomorph.opensMap
         (chainComp (I := I) (Mf := M) Ψ (j₀ + n) 1) (hmap n) := by
     unfold chainBallSystem
-    apply SmoothSeqSystem.ofSucc_F_succ
+    apply SmoothSeqSystem.ofSucc_map_succ
   rw [hF]
   exact (hstep n x v w).symm
 
@@ -390,7 +390,7 @@ def chainAmbientSeq
     PointedRiemannianSeq (I := I) where
   obj n :=
     { M := M (j₀ + n)
-      basepoint := (S.toSeqSystem.F (Nat.zero_le n) O₀ : M (j₀ + n))
+      basepoint := (S.toSeqSystem.map (Nat.zero_le n) O₀ : M (j₀ + n))
       metric := g (j₀ + n) }
 
 noncomputable def chainAmbientMaps
@@ -411,7 +411,7 @@ noncomputable def chainAmbientMaps
   base_mem n := by
     change S.toSeqSystem.incl 0 O₀ ∈ Set.range (S.toSeqSystem.incl n)
     exact
-      ⟨S.toSeqSystem.F (Nat.zero_le n) O₀,
+      ⟨S.toSeqSystem.map (Nat.zero_le n) O₀,
         S.toSeqSystem.incl_comp (Nat.zero_le n) O₀⟩
   basepoint_map n := by
     exact congrArg Subtype.val (S.invIncl_incl_le (Nat.zero_le n) O₀)

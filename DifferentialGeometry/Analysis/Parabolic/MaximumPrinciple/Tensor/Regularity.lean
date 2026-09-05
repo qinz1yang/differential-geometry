@@ -21,7 +21,7 @@ variable {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 variable [IsManifold I 1 M] [IsManifold I 2 M]
 
-structure TensorWeakMaximumPrincipleCore
+structure TensorWeakMaximumPrincipleCompactness
     (G : Real -> SmoothRiemannianMetric I M)
     (S : TwoTensorFamily (I := I) (M := M))
     (X : TimeDependentVectorField (I := I) (M := M))
@@ -76,14 +76,14 @@ structure TensorWeakMaximumPrincipleRegularityOn
 namespace TensorWeakMaximumPrincipleRegularityOn
 
 omit [IsManifold I 2 M] in
-theorem toCore
+theorem toCompactness
     {G : Real -> SmoothRiemannianMetric I M}
     {S : TwoTensorFamily (I := I) (M := M)}
     {X : TimeDependentVectorField (I := I) (M := M)}
     {N : TwoTensorReaction (I := I) (M := M)}
     {T : Real}
     (h : TensorWeakMaximumPrincipleRegularityOn (I := I) (M := M) G S X N T) :
-    TensorWeakMaximumPrincipleCore (I := I) (M := M) G S X N T where
+    TensorWeakMaximumPrincipleCompactness (I := I) (M := M) G S X N T where
   symmetric := h.symmetric
   bilinear := h.bilinear
   barrierRegularity := h.barrierRegularity
@@ -91,7 +91,7 @@ theorem toCore
 
 end TensorWeakMaximumPrincipleRegularityOn
 
-structure TensorWeakMaximumPrincipleSectionCore
+structure TensorWeakMaximumPrincipleSectionCompactness
     (G : Real -> SmoothRiemannianMetric I M)
     (S : TwoTensorSecFamily (I := I) (M := M))
     (X : TimeDependentVectorField (I := I) (M := M))
@@ -202,7 +202,7 @@ structure TensorWeakMaximumPrincipleSectionRegularity
         (twoTensorSecToFamily (I := I) (M := M) S) X N
         nabla2Barrier nablaBarrier epsilon delta t0 d
 
-namespace TensorWeakMaximumPrincipleSectionCore
+namespace TensorWeakMaximumPrincipleSectionCompactness
 
 omit [IsManifold I 2 M] in
 theorem ofCompact
@@ -244,7 +244,7 @@ theorem ofCompact
                 (twoTensorSecToFamily (I := I) (M := M) S)
                 epsilon delta t0 t x v v)
             (Set.Icc t0 (t0 + delta))) :
-    TensorWeakMaximumPrincipleSectionCore (I := I) (M := M) G S X N T where
+    TensorWeakMaximumPrincipleSectionCompactness (I := I) (M := M) G S X N T where
   symmetric := hsym
   barrierRegularity := hbar
   unitSlabCompact := by
@@ -303,7 +303,7 @@ theorem ofTotal
                 (twoTensorSecToFamily (I := I) (M := M) S)
                 epsilon delta t0 t x v v)
             (Set.Icc t0 (t0 + delta))) :
-    TensorWeakMaximumPrincipleSectionCore (I := I) (M := M) G S X N T :=
+    TensorWeakMaximumPrincipleSectionCompactness (I := I) (M := M) G S X N T :=
   ofCompact (I := I) (M := M)
     (G := G) (S := S) (X := X) (N := N) (T := T)
     hsym hbar
@@ -355,7 +355,7 @@ theorem ofSmoothMetric
                 (twoTensorSecToFamily (I := I) (M := M) S)
                 epsilon delta t0 t x v v)
             (Set.Icc t0 (t0 + delta))) :
-    TensorWeakMaximumPrincipleSectionCore (I := I) (M := M) (fun t => G.metric t) S X N T :=
+    TensorWeakMaximumPrincipleSectionCompactness (I := I) (M := M) (fun t => G.metric t) S X N T :=
   ofTotal (I := I) (M := M)
     (G := fun t => G.metric t) (S := S) (X := X) (N := N) (T := T)
     hsym hbar
@@ -372,8 +372,8 @@ theorem toRaw
     {X : TimeDependentVectorField (I := I) (M := M)}
     {N : TwoTensorReaction (I := I) (M := M)}
     {T : Real}
-    (h : TensorWeakMaximumPrincipleSectionCore (I := I) (M := M) G S X N T) :
-    TensorWeakMaximumPrincipleCore (I := I) (M := M) G
+    (h : TensorWeakMaximumPrincipleSectionCompactness (I := I) (M := M) G S X N T) :
+    TensorWeakMaximumPrincipleCompactness (I := I) (M := M) G
       (twoTensorSecToFamily (I := I) (M := M) S) X N T where
   symmetric := h.symmetric
   bilinear := fun t _ht x => twoTensorSecToFamily_bilin (I := I) (M := M) S t x
@@ -389,19 +389,19 @@ theorem toRaw
         (h.metricQuadCont delta t0 hdelta hsub))
       (h.barrierFixedContinuous epsilon delta t0 hepsilon hdelta hsub)
 
-end TensorWeakMaximumPrincipleSectionCore
+end TensorWeakMaximumPrincipleSectionCompactness
 
 namespace TensorWeakMaximumPrincipleSectionRegularity
 
 omit [IsManifold I 2 M] in
-theorem toCore
+theorem toCompactness
     {G : Real -> SmoothRiemannianMetric I M}
     {S : TwoTensorSecFamily (I := I) (M := M)}
     {X : TimeDependentVectorField (I := I) (M := M)}
     {N : TwoTensorReaction (I := I) (M := M)}
     {T : Real}
     (h : TensorWeakMaximumPrincipleSectionRegularity (I := I) (M := M) G S X N T) :
-    TensorWeakMaximumPrincipleSectionCore (I := I) (M := M) G S X N T where
+    TensorWeakMaximumPrincipleSectionCompactness (I := I) (M := M) G S X N T where
   symmetric := h.symmetric
   barrierRegularity := h.barrierRegularity
   unitSlabCompact := h.unitSlabCompact

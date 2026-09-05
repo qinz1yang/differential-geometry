@@ -124,7 +124,7 @@ private theorem S2_diff_under_interval_integral
   have hslice_deriv : ∀ s t : ℝ,
       HasDerivAt (fun u : ℝ => Φ u t) (fderiv ℝ G (s, t) (1, 0)) s := by
     intro s t
-    have := Aux2.hasDerivAt_slice_fst (fun u v => Φ u v) s t (hΦdiff (s, t))
+    have := TwoParameterDerivative.hasDerivAt_slice_fst (fun u v => Φ u v) s t (hΦdiff (s, t))
     simpa only [hG] using this
   set Dnum : ℝ → ℝ := fun t : ℝ => fderiv ℝ G (s₀, t) (1, 0) with hDnum
   have hpartial_cont : Continuous (fun p : ℝ × ℝ => fderiv ℝ G p (1, 0)) := by
@@ -286,7 +286,7 @@ theorem first_variation_of_arcLength_at_regular_parameter
       have hslice0 : HasDerivAt (fun u : ℝ => speedSq (I := I) g f u t)
           (fderiv ℝ (fun p : ℝ × ℝ => speedSq (I := I) g f p.1 p.2) (s₀, t) (1, 0)) (s₀ + 0) := by
         rw [add_zero]
-        exact Aux2.hasDerivAt_slice_fst
+        exact TwoParameterDerivative.hasDerivAt_slice_fst
           (fun u v : ℝ => speedSq (I := I) g f u v) s₀ t (hG_diff (s₀, t))
       have hshift : HasDerivAt (fun a : ℝ => s₀ + a) (1 : ℝ) 0 := by
         simpa using (hasDerivAt_id (0 : ℝ)).const_add s₀

@@ -703,7 +703,7 @@ theorem first_variation_of_arcLength_fixed_endpoints
         (fderiv ℝ (fun p : ℝ × ℝ => speedSq (I := I) g f p.1 p.2) (0, t) (1, 0)) 0 := by
       have hdiff : DifferentiableAt ℝ (fun p : ℝ × ℝ => speedSq (I := I) g f p.1 p.2) (0, t) :=
         (hG.differentiable (by simp)).differentiableAt
-      have := Aux2.hasDerivAt_slice_fst
+      have := TwoParameterDerivative.hasDerivAt_slice_fst
         (fun u v : ℝ => speedSq (I := I) g f u v) 0 t hdiff
       simpa using this
     have hS1' : HasDerivAt
@@ -895,7 +895,7 @@ theorem first_variation_of_arcLength_free_endpoints
         (fderiv ℝ (fun p : ℝ × ℝ => speedSq (I := I) g f p.1 p.2) (0, t) (1, 0)) 0 := by
       have hdiff : DifferentiableAt ℝ (fun p : ℝ × ℝ => speedSq (I := I) g f p.1 p.2) (0, t) :=
         (hG.differentiable (by simp)).differentiableAt
-      have := Aux2.hasDerivAt_slice_fst
+      have := TwoParameterDerivative.hasDerivAt_slice_fst
         (fun u v : ℝ => speedSq (I := I) g f u v) 0 t hdiff
       simpa using this
     have hS1' : HasDerivAt

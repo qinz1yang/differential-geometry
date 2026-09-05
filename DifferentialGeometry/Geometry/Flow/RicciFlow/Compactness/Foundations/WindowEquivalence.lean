@@ -20,14 +20,14 @@ variable {E : Type uE} [NormedAddCommGroup E] [NormedSpace Real E]
 variable {H : Type uH} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 
-namespace CurvBoundInput
+namespace FlowCurvatureBoundedOnCompactWindows
 
 omit [I.Boundaryless] in
 theorem metricEquiv_open
     {a b : Real} (h0 : (0 : Real) ∈ Set.Ioo a b)
     (X : PointedFlowSeq.{u, uE, uH} (I := I))
     (hD : X.D = RealTimeInterval.openInterval a b 0 h0)
-    (hcurv : CurvBoundInput (I := I) X) (n : Nat) :
+    (hcurv : FlowCurvatureBoundedOnCompactWindows (I := I) X) (n : Nat) :
     let beta := RealTimeInterval.openWindowLeft a 0 n
     let psi := RealTimeInterval.openWindowRight b 0 n
     ∃ A Bmax : Real, 0 ≤ A ∧ 1 ≤ Bmax ∧
@@ -123,7 +123,7 @@ theorem metricEquiv_open
     hregular hzeroWindow le_rfl hA hequiv0 hquad.2
   simpa only [Sseq] using hequiv
 
-end CurvBoundInput
+end FlowCurvatureBoundedOnCompactWindows
 
 end CheegerGromovCompactness
 end DifferentialGeometry

@@ -33,7 +33,7 @@ variable {g : SmoothRiemannianMetric I M} {X : Type uX} {ι : Type}
 variable [Fintype ι]
 variable {μ : X → ι → ℝ} {points : X → ι → M} {join : M → M → ℝ → M}
   {p : X → M} {r : X → ℝ}
-  (h : ∀ x : X, CenterInput (I := I) g (μ x) (points x) join (p x) (r x))
+  (h : ∀ x : X, CenterOfMassConditions (I := I) g (μ x) (points x) join (p x) (r x))
 theorem uniformTwoIdRegularityOn {s : Set M} {USeq : ℕ → ℕ → ι → Set M}
     {μSeq : ℕ → ℕ → M → ι → ℝ} {pointsSeq : ℕ → ℕ → M → ι → M}
     {pSeq : ℕ → ℕ → M → M} {rSeq : ℕ → ℕ → M → ℝ}
@@ -65,7 +65,7 @@ theorem uniformTwoIdRegularityOn {s : Set M} {USeq : ℕ → ℕ → ι → Set 
         (∃ i : ι, 0 < μSeq k l x i) ∧
           ∑ i : ι, μSeq k l x i = 1)
     (hstrict : ∀ k l : ℕ, ∀ x : M, x ∈ s →
-      StrictDistInput (I := I) g
+      StrictDistanceConvexity (I := I) g
         (activeFill (μSeq k l) (pointsSeq k l) (fun x : M => x) x) join
         (pSeq k l x) (rSeq k l x))
     (hregion : ∀ k l : ℕ, ∀ x : M, x ∈ s → ∀ i : ι,
@@ -138,7 +138,7 @@ theorem uniformTwoIdDataOn {s : Set M} {USeq : ℕ → ℕ → ι → Set M}
           ∑ i : ι, μSeq k l x i = 1) ∧
         ∀ i : ι, μSeq k l x i ≠ 0 → x ∈ USeq k l i)
     (hstrict : ∀ k l : ℕ, ∀ x : M, x ∈ s →
-      StrictDistInput (I := I) g
+      StrictDistanceConvexity (I := I) g
         (activeFill (μSeq k l) (pointsSeq k l) (fun x : M => x) x) join
         (pSeq k l x) (rSeq k l x))
     (hpts :
@@ -198,7 +198,7 @@ theorem uniformTwoIdDataSelf {s : Set M} {USeq : ℕ → ℕ → ι → Set M}
           ∑ i : ι, μSeq k l x i = 1) ∧
         ∀ i : ι, μSeq k l x i ≠ 0 → x ∈ USeq k l i)
     (hstrict : ∀ k l : ℕ, ∀ x : M, x ∈ s →
-      StrictDistInput (I := I) g
+      StrictDistanceConvexity (I := I) g
         (activeFill (μSeq k l) (pointsSeq k l) (fun x : M => x) x) join x
         (rSeq k l x))
     (hpts :
@@ -281,7 +281,7 @@ theorem equation_local (x : X)
     (join := join) (p := p x) (r := r x) (h x) hdiffSummands hsrc
 
 theorem equation_local_on {s : Set X} {qstar : X → M}
-    (hOn : ∀ x : X, x ∈ s → CenterInput (I := I) g (μ x) (points x) join (p x) (r x))
+    (hOn : ∀ x : X, x ∈ s → CenterOfMassConditions (I := I) g (μ x) (points x) join (p x) (r x))
     {x : X} (hx : x ∈ s)
     (hdiffSummands :
       letI : RiemannianBundle (fun x : M => TangentSpace I x) :=

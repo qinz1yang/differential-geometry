@@ -59,7 +59,7 @@ open scoped ENNReal NNReal BigOperators Manifold ContDiff
 
 namespace DifferentialGeometry.Analysis.Spectral
 
-open LieCorrectionZeroCore
+open LieCorrectionZeroFiberOperators
 open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.Sobolev
     DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Spectral.MetricRealization
@@ -1791,8 +1791,8 @@ private theorem exists_lieDerivativeCorrectionPlusEndoTerm_order0_data
 
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral (deTurckLieEndoTermField
   deTurckLieCovariantDerivativeTermField deTurckLieCoeffField_eq_covDerivTerm_add_endoTerm
-  exists_deTurckLieCovariantDerivativeTerm_curvatureDecomposition_data
-  exists_deTurckLieEndoTerm_backgroundDifference_order0_data) in
+  exists_deTurckLieCovariantDerivativeTerm_curvatureDecomposition_with_bounds
+  exists_deTurckLieEndoTerm_backgroundDifference_order0_bounds) in
 private theorem exists_lieDerivativeCorrection_curvatureDecomposition_termSplit_data
     (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
@@ -1836,10 +1836,10 @@ private theorem exists_lieDerivativeCorrection_curvatureDecomposition_termSplit_
                 ‖iteratedCovGrad (I := I) g₀ 0 2 j T‖ ^ 2)) := by
   classical
   obtain ⟨Λda, -, Kda, hKda_nn, hDA⟩ :=
-    exists_deTurckLieCovariantDerivativeTerm_curvatureDecomposition_data (I := I) (M := M) g₀ g_bg a
+    exists_deTurckLieCovariantDerivativeTerm_curvatureDecomposition_with_bounds (I := I) (M := M) g₀ g_bg a
       ha_super hR hδ₀
   obtain ⟨Λdf, -, Kdf, hKdf_nn, hDF⟩ :=
-    exists_deTurckLieEndoTerm_backgroundDifference_order0_data (I := I) (M := M) g₀ g_bg
+    exists_deTurckLieEndoTerm_backgroundDifference_order0_bounds (I := I) (M := M) g₀ g_bg
       a ha_super hR hδ₀
   obtain ⟨Λrs, -, Krs, hKrs_nn, hRS⟩ :=
     exists_lieDerivativeCorrectionPlusEndoTerm_order0_data (I := I) (M := M) g₀ g_bg a ha_super hR
@@ -2102,7 +2102,7 @@ private theorem exists_riemannLieDerivativeCorrection_curvatureDecomposition_dat
                 ‖iteratedCovGrad (I := I) g₀ 0 2 j T‖ ^ 2)) := by
   classical
   obtain ⟨Λra, hΛra_nn, Kra, hKra_nn, hRA⟩ :=
-    exists_riemannPalatini_curvatureDecomposition_data (I := I) (M := M) g₀ a ha_super hR hδ₀
+    exists_riemannPalatini_curvatureDecomposition_with_bounds (I := I) (M := M) g₀ a ha_super hR hδ₀
       hδ₀_half
   obtain ⟨Λlc, hΛlc_nn, Klc, hKlc_nn, hLC⟩ :=
     exists_lieDerivativeCorrection_curvatureDecomposition_data (I := I) (M := M) g₀ g_bg a ha_super hR hδ₀

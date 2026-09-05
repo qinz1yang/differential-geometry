@@ -1921,7 +1921,7 @@ theorem heatpot_of_gallim
       simpa only [laplacianAt, reverseFamily, flowG, SolutionOn.family] using hpde s hsP x
 
 omit [SigmaCompactSpace M] in
-theorem heatpot_exists
+theorem exists_heat_potential
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) (T : D.RegularTime)
@@ -1948,7 +1948,7 @@ theorem heatpot_exists
   · simpa only [u] using galerkinLim_initial (I := I) (M := M) hlim
 
 omit [SigmaCompactSpace M] in
-theorem conj_heat_exists
+theorem exists_conjugate_heat_solution
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) (T : D.RegularTime)
@@ -1961,7 +1961,7 @@ theorem conj_heat_exists
         u (T : Real) =
           TensorRSField.scalar0 (n := (∞ : WithTop ℕ∞)) u0.toSection := by
   obtain ⟨tau', htau', htau'_one, v, hv, hv0⟩ :=
-    heatpot_exists (I := I) (M := M) S hS T u0
+    exists_heat_potential (I := I) (M := M) S hS T u0
   have hv' :
       DifferentialGeometry.Analysis.Parabolic.IsHeatPotOn
         (RealTimeInterval.closed 0 tau' htau'.le)
@@ -1997,7 +1997,7 @@ theorem gallim_nonneg
         u 0 = TensorRSField.scalar0 (n := (∞ : WithTop ℕ∞)) u0.toSection ∧
         ∀ s ∈ Set.Icc (0 : Real) tau', ∀ x : M, 0 ≤ u s x := by
   obtain ⟨tauH, htauH, htauH_one, u, hu, hu0⟩ :=
-    heatpot_exists (I := I) (M := M) S hS T u0
+    exists_heat_potential (I := I) (M := M) S hS T u0
   obtain ⟨tauC, htauC, _htauC_one, C, _hCnonneg, hC⟩ :=
     conjCoeff_bound (I := I) (M := M) S hS T
   let tau' : Real := min tauH tauC
@@ -2057,7 +2057,7 @@ theorem gallim_pos
         u 0 = TensorRSField.scalar0 (n := (∞ : WithTop ℕ∞)) u0.toSection ∧
         ∀ s ∈ Set.Icc (0 : Real) tau', ∀ x : M, 0 < u s x := by
   obtain ⟨tauH, htauH, htauH_one, u, hu, hu0⟩ :=
-    heatpot_exists (I := I) (M := M) S hS T u0
+    exists_heat_potential (I := I) (M := M) S hS T u0
   obtain ⟨tauC, htauC, _htauC_one, C, _hCnonneg, hC⟩ :=
     conjCoeff_bound (I := I) (M := M) S hS T
   let tau' : Real := min tauH tauC

@@ -71,7 +71,7 @@ theorem ricciDeTurckRemainderZeroOrderCoefficient_h1_bound_of_uniform_component_
             (B0 R + B1 R * A) ^ 2 := by
   obtain ⟨hpath2, hpath3⟩ := hC.bounds g hEq hjet
   exact ricciDeTurckRemainderZeroOrderCoefficient_h1_tame_bound_of_segment_bounds (I := I) (M := M) hDim g gBase
-    hδ₀_nonneg hδ₀_lt C.h2C C.h3C hC.h2_nonneg hC.h3_nonneg
+    hδ₀_nonneg hδ₀_lt C.secondOrder C.thirdOrder hC.secondOrder_nonneg hC.thirdOrder_nonneg
     hpath2 hpath3
 
 theorem ricciDeTurckRemainderZeroOrderCoefficient_h1_uniform_bound
@@ -109,28 +109,28 @@ theorem ricciDeTurckRemainderZeroOrderCoefficient_h1_uniform_bound
     exists_uniform_deTurckLieConnectionDifferenceDerivativeCoefficient_covariantJetNormSq_one_bound (I := I) (M := M) hDim gBase hΛ hδ₀_lt
   obtain ⟨Bt0, Bt1, hBt0, hBt1, htail⟩ :=
     tail_h1_uniform (I := I) (M := M) hDim gBase hΛ hδ₀_lt
-  let R0 : ℝ → ℝ := fun R => Br0 (C.h2C * R)
-  let R1 : ℝ → ℝ := fun R => Br1 (C.h2C * R) * C.h3C
-  let D0 : ℝ → ℝ := fun R => Bd0 (C.h2C * R)
-  let D1 : ℝ → ℝ := fun R => Bd1 (C.h2C * R) * C.h3C
-  let T0 : ℝ → ℝ := fun R => Bt0 (C.h2C * R)
-  let T1 : ℝ → ℝ := fun R => Bt1 (C.h2C * R) * C.h3C
+  let R0 : ℝ → ℝ := fun R => Br0 (C.secondOrder * R)
+  let R1 : ℝ → ℝ := fun R => Br1 (C.secondOrder * R) * C.thirdOrder
+  let D0 : ℝ → ℝ := fun R => Bd0 (C.secondOrder * R)
+  let D1 : ℝ → ℝ := fun R => Bd1 (C.secondOrder * R) * C.thirdOrder
+  let T0 : ℝ → ℝ := fun R => Bt0 (C.secondOrder * R)
+  let T1 : ℝ → ℝ := fun R => Bt1 (C.secondOrder * R) * C.thirdOrder
   let B0 : ℝ → ℝ := fun R => 4 * (R0 R + D0 R + T0 R)
   let B1 : ℝ → ℝ := fun R => 4 * (R1 R + D1 R + T1 R)
-  have hCR : ∀ R : ℝ, 0 ≤ R → 0 ≤ C.h2C * R := fun R hR =>
-    mul_nonneg hC.h2_nonneg hR
+  have hCR : ∀ R : ℝ, 0 ≤ R → 0 ≤ C.secondOrder * R := fun R hR =>
+    mul_nonneg hC.secondOrder_nonneg hR
   have hR0 : ∀ R : ℝ, 0 ≤ R → 0 ≤ R0 R := fun R hR =>
-    hBr0 (C.h2C * R) (hCR R hR)
+    hBr0 (C.secondOrder * R) (hCR R hR)
   have hR1 : ∀ R : ℝ, 0 ≤ R → 0 ≤ R1 R := fun R hR =>
-    mul_nonneg (hBr1 (C.h2C * R) (hCR R hR)) hC.h3_nonneg
+    mul_nonneg (hBr1 (C.secondOrder * R) (hCR R hR)) hC.thirdOrder_nonneg
   have hD0 : ∀ R : ℝ, 0 ≤ R → 0 ≤ D0 R := fun R hR =>
-    hBd0 (C.h2C * R) (hCR R hR)
+    hBd0 (C.secondOrder * R) (hCR R hR)
   have hD1 : ∀ R : ℝ, 0 ≤ R → 0 ≤ D1 R := fun R hR =>
-    mul_nonneg (hBd1 (C.h2C * R) (hCR R hR)) hC.h3_nonneg
+    mul_nonneg (hBd1 (C.secondOrder * R) (hCR R hR)) hC.thirdOrder_nonneg
   have hT0 : ∀ R : ℝ, 0 ≤ R → 0 ≤ T0 R := fun R hR =>
-    hBt0 (C.h2C * R) (hCR R hR)
+    hBt0 (C.secondOrder * R) (hCR R hR)
   have hT1 : ∀ R : ℝ, 0 ≤ R → 0 ≤ T1 R := fun R hR =>
-    mul_nonneg (hBt1 (C.h2C * R) (hCR R hR)) hC.h3_nonneg
+    mul_nonneg (hBt1 (C.secondOrder * R) (hCR R hR)) hC.thirdOrder_nonneg
   refine ⟨B0, B1, fun R hR => mul_nonneg (by norm_num)
       (add_nonneg (add_nonneg (hR0 R hR) (hD0 R hR)) (hT0 R hR)),
     fun R hR => mul_nonneg (by norm_num)
@@ -142,13 +142,13 @@ theorem ricciDeTurckRemainderZeroOrderCoefficient_h1_uniform_bound
   obtain ⟨hpath2, hpath3⟩ := hC.bounds g hEq hjet
   let P : SmoothCcTensor g 0 2 := convexPerturbation (I := I) g T T' s
   let g₁ : SmoothRiemannianMetric I M := metricPerturbationPath (I := I) g T T' hδ hδ' s
-  have hlow : 0 ≤ C.h2C * R := mul_nonneg hC.h2_nonneg hR
-  have hhigh : 0 ≤ C.h3C * A := mul_nonneg hC.h3_nonneg hA
+  have hlow : 0 ≤ C.secondOrder * R := mul_nonneg hC.secondOrder_nonneg hR
+  have hhigh : 0 ≤ C.thirdOrder * A := mul_nonneg hC.thirdOrder_nonneg hA
   have hP2 : (∑ j ∈ Finset.range 3,
-      ‖iteratedCovGrad (I := I) g 0 2 j P‖ ^ 2) ≤ (C.h2C * R) ^ 2 := by
+      ‖iteratedCovGrad (I := I) g 0 2 j P‖ ^ 2) ≤ (C.secondOrder * R) ^ 2 := by
     simpa only [P] using hpath2 T T' R hR hT2 hT2' s hs
   have hP3 : (∑ j ∈ Finset.range 4,
-      ‖iteratedCovGrad (I := I) g 0 2 j P‖ ^ 2) ≤ (C.h3C * A) ^ 2 := by
+      ‖iteratedCovGrad (I := I) g 0 2 j P‖ ^ 2) ≤ (C.thirdOrder * A) ^ 2 := by
     simpa only [P] using hpath3 T T' A hA hT3 hT3' s hs
   have hsingle : ‖iteratedCovGrad (I := I) g 0 2 3 P‖ ^ 2 ≤
       ∑ j ∈ Finset.range 4,
@@ -158,8 +158,8 @@ theorem ricciDeTurckRemainderZeroOrderCoefficient_h1_uniform_bound
       (f := fun j : ℕ => ‖iteratedCovGrad (I := I) g 0 2 j P‖ ^ 2)
       (fun j _ => sq_nonneg _) hmem
   have htopSq : ‖iteratedCovGrad (I := I) g 0 2 3 P‖ ^ 2 ≤
-      (C.h3C * A) ^ 2 := hsingle.trans hP3
-  have htop : ‖iteratedCovGrad (I := I) g 0 2 3 P‖ ≤ C.h3C * A := by
+      (C.thirdOrder * A) ^ 2 := hsingle.trans hP3
+  have htop : ‖iteratedCovGrad (I := I) g 0 2 3 P‖ ≤ C.thirdOrder * A := by
     nlinarith [htopSq, hhigh,
       norm_nonneg (iteratedCovGrad (I := I) g 0 2 3 P)]
   have hPbound : gFibreOpBound (I := I) (M := M) g
@@ -184,7 +184,7 @@ theorem ricciDeTurckRemainderZeroOrderCoefficient_h1_uniform_bound
   have hTB : 0 ≤ TB := add_nonneg (hT0 R hR) (mul_nonneg (hT1 R hR) hA)
   have hRicRaw := hric g hEq hjet1 hjet2 g₁ P htie
     (δ := δ₀) le_rfl hδ₀_nonneg hPbound
-    (C.h2C * R) (C.h3C * A) hlow hhigh hP2 htop
+    (C.secondOrder * R) (C.thirdOrder * A) hlow hhigh hP2 htop
   have hRic : (∑ i ∈ Finset.range 2,
       ‖iteratedCovGrad (I := I) g 2 2 i
         (linearizedRicciConnectionDifferenceOrder0CoeffField
@@ -192,7 +192,7 @@ theorem ricciDeTurckRemainderZeroOrderCoefficient_h1_uniform_bound
     simpa only [RB, R0, R1, mul_assoc] using hRicRaw
   have hDlaRaw := hdla g hEq hjet1 hjet2 hjet3 g₁ P htie
     (δ := δ₀) le_rfl hδ₀_nonneg hPbound
-    (C.h2C * R) (C.h3C * A) hlow hhigh hP2 htop
+    (C.secondOrder * R) (C.thirdOrder * A) hlow hhigh hP2 htop
   have hDla : (∑ i ∈ Finset.range 2,
       ‖iteratedCovGrad (I := I) g 2 2 i
         (deTurckLieConnectionDifferenceDerivCoeffField (I := I) (M := M) g g₁ gBase)‖ ^ 2) ≤
@@ -200,7 +200,7 @@ theorem ricciDeTurckRemainderZeroOrderCoefficient_h1_uniform_bound
     simpa only [DB, D0, D1, mul_assoc] using hDlaRaw
   have hTailRaw := htail g hEq hjet g₁ P htie
     (δ := δ₀) le_rfl hδ₀_nonneg hPbound
-    (C.h2C * R) (C.h3C * A) hlow hhigh hP2 htop
+    (C.secondOrder * R) (C.thirdOrder * A) hlow hhigh hP2 htop
   have hTail : (∑ i ∈ Finset.range 2,
       ‖iteratedCovGrad (I := I) g 2 2 i
         (deTurckLieCovariantDerivativeInsertionField (I := I) (M := M) g g₁ gBase +
@@ -293,7 +293,7 @@ theorem ricciDeTurckRemainderFirstOrderCoefficient_h2_bound_of_uniform_component
             (B0 R + B1 R * A) ^ 2 := by
   obtain ⟨hpath2, hpath3⟩ := hC.bounds g hEq hjet
   exact ricciDeTurckRemainderFirstOrderCoefficient_h2_tame_bound_of_segment_bounds (I := I) (M := M) hDim g gBase
-    hδ₀_nonneg hδ₀_lt C.h2C C.h3C hC.h2_nonneg hC.h3_nonneg
+    hδ₀_nonneg hδ₀_lt C.secondOrder C.thirdOrder hC.secondOrder_nonneg hC.thirdOrder_nonneg
     hpath2 hpath3
 
 theorem ricciDeTurckRemainderFirstOrderCoefficient_h2_uniform_bound
@@ -329,22 +329,22 @@ theorem ricciDeTurckRemainderFirstOrderCoefficient_h2_uniform_bound
     exists_uniform_linearizedRicciConnectionDifferenceOrderOneCoefficient_covariantJetNormSq_two_bound (I := I) (M := M) hDim gBase hΛ hδ₀_lt
   obtain ⟨Bl0, Bl1, hBl0, hBl1, hlie⟩ :=
     deTurckLieFirstOrder_h2_uniform_bound (I := I) (M := M) hDim gBase hΛ hδ₀_lt
-  let R0 : ℝ → ℝ := fun R => Br0 (C.h2C * R)
-  let R1 : ℝ → ℝ := fun R => Br1 (C.h2C * R) * C.h3C
-  let L0 : ℝ → ℝ := fun R => Bl0 (C.h2C * R)
-  let L1 : ℝ → ℝ := fun R => Bl1 (C.h2C * R) * C.h3C
+  let R0 : ℝ → ℝ := fun R => Br0 (C.secondOrder * R)
+  let R1 : ℝ → ℝ := fun R => Br1 (C.secondOrder * R) * C.thirdOrder
+  let L0 : ℝ → ℝ := fun R => Bl0 (C.secondOrder * R)
+  let L1 : ℝ → ℝ := fun R => Bl1 (C.secondOrder * R) * C.thirdOrder
   let B0 : ℝ → ℝ := fun R => 4 * R0 R + 2 * L0 R
   let B1 : ℝ → ℝ := fun R => 4 * R1 R + 2 * L1 R
-  have hCR : ∀ R : ℝ, 0 ≤ R → 0 ≤ C.h2C * R := fun R hR =>
-    mul_nonneg hC.h2_nonneg hR
+  have hCR : ∀ R : ℝ, 0 ≤ R → 0 ≤ C.secondOrder * R := fun R hR =>
+    mul_nonneg hC.secondOrder_nonneg hR
   have hR0 : ∀ R : ℝ, 0 ≤ R → 0 ≤ R0 R := fun R hR =>
-    hBr0 (C.h2C * R) (hCR R hR)
+    hBr0 (C.secondOrder * R) (hCR R hR)
   have hR1 : ∀ R : ℝ, 0 ≤ R → 0 ≤ R1 R := fun R hR =>
-    mul_nonneg (hBr1 (C.h2C * R) (hCR R hR)) hC.h3_nonneg
+    mul_nonneg (hBr1 (C.secondOrder * R) (hCR R hR)) hC.thirdOrder_nonneg
   have hL0 : ∀ R : ℝ, 0 ≤ R → 0 ≤ L0 R := fun R hR =>
-    hBl0 (C.h2C * R) (hCR R hR)
+    hBl0 (C.secondOrder * R) (hCR R hR)
   have hL1 : ∀ R : ℝ, 0 ≤ R → 0 ≤ L1 R := fun R hR =>
-    mul_nonneg (hBl1 (C.h2C * R) (hCR R hR)) hC.h3_nonneg
+    mul_nonneg (hBl1 (C.secondOrder * R) (hCR R hR)) hC.thirdOrder_nonneg
   refine ⟨B0, B1, fun R hR => add_nonneg
       (mul_nonneg (by norm_num) (hR0 R hR))
       (mul_nonneg (by norm_num) (hL0 R hR)),
@@ -358,13 +358,13 @@ theorem ricciDeTurckRemainderFirstOrderCoefficient_h2_uniform_bound
   obtain ⟨hpath2, hpath3⟩ := hC.bounds g hEq hjet
   let P : SmoothCcTensor g 0 2 := convexPerturbation (I := I) g T T' s
   let g₁ : SmoothRiemannianMetric I M := metricPerturbationPath (I := I) g T T' hδ hδ' s
-  have hlow : 0 ≤ C.h2C * R := mul_nonneg hC.h2_nonneg hR
-  have hhigh : 0 ≤ C.h3C * A := mul_nonneg hC.h3_nonneg hA
+  have hlow : 0 ≤ C.secondOrder * R := mul_nonneg hC.secondOrder_nonneg hR
+  have hhigh : 0 ≤ C.thirdOrder * A := mul_nonneg hC.thirdOrder_nonneg hA
   have hP2 : (∑ j ∈ Finset.range 3,
-      ‖iteratedCovGrad (I := I) g 0 2 j P‖ ^ 2) ≤ (C.h2C * R) ^ 2 := by
+      ‖iteratedCovGrad (I := I) g 0 2 j P‖ ^ 2) ≤ (C.secondOrder * R) ^ 2 := by
     simpa only [P] using hpath2 T T' R hR hT2 hT2' s hs
   have hP3 : (∑ j ∈ Finset.range 4,
-      ‖iteratedCovGrad (I := I) g 0 2 j P‖ ^ 2) ≤ (C.h3C * A) ^ 2 := by
+      ‖iteratedCovGrad (I := I) g 0 2 j P‖ ^ 2) ≤ (C.thirdOrder * A) ^ 2 := by
     simpa only [P] using hpath3 T T' A hA hT3 hT3' s hs
   have hPbound : gFibreOpBound (I := I) (M := M) g
       (ccTensorBilinSymm (I := I) g P) δ₀ := by
@@ -386,7 +386,7 @@ theorem ricciDeTurckRemainderFirstOrderCoefficient_h2_uniform_bound
   have hLB : 0 ≤ LB := add_nonneg (hL0 R hR) (mul_nonneg (hL1 R hR) hA)
   have hRicRaw := hric g hEq hjet1 hjet2 g₁ P htie
     (δ := δ₀) le_rfl hδ₀_nonneg hPbound
-    (C.h2C * R) (C.h3C * A) hlow hhigh hP2 hP3
+    (C.secondOrder * R) (C.thirdOrder * A) hlow hhigh hP2 hP3
   have hRic : (∑ i ∈ Finset.range 3,
       ‖iteratedCovGrad (I := I) g 3 2 i
         (linearizedRicciConnectionDifferenceOrder1CoeffField
@@ -394,7 +394,7 @@ theorem ricciDeTurckRemainderFirstOrderCoefficient_h2_uniform_bound
     simpa only [RB, R0, R1, mul_assoc] using hRicRaw
   have hLieRaw := hlie g hEq hjet1 hjet2 hjet3 g₁ P htie
     (δ := δ₀) le_rfl hδ₀_nonneg hPbound
-    (C.h2C * R) (C.h3C * A) hlow hhigh hP2 hP3
+    (C.secondOrder * R) (C.thirdOrder * A) hlow hhigh hP2 hP3
   have hLie : (∑ i ∈ Finset.range 3,
       ‖iteratedCovGrad (I := I) g 3 2 i
         (deTurckLieFirstOrderCoeff (I := I) (M := M) g g₁ gBase)‖ ^ 2) ≤

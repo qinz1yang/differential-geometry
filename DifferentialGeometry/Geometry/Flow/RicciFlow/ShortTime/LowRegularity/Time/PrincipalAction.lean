@@ -168,7 +168,7 @@ theorem lowRegularityPrincipalSecondOrderActionTime_ae
   simpa only [lowRegularityPrincipalSecondOrderActionTime] using hp.trans (congrArg
     (lowRegularityPrincipalOperatorH2 (I := I) (M := M) g) hf)
 
-theorem lowRegularityPrincipalSecondOrderActionTime_data
+theorem lowRegularityPrincipalSecondOrderActionTime_measurable_bounded_and_ae_eq
     (hDim : Module.finrank ℝ E = 3)
     (g : SmoothRiemannianMetric I M) :
     ∃ (ρ : ℝ) (C : NNReal), 0 < ρ ∧

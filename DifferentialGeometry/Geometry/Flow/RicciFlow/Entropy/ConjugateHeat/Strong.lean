@@ -62,7 +62,7 @@ noncomputable def conjA1MR
       (g := S.family.metric (T : Real)) (r := 0) (s := 0)
       (show (1 : Real) ≤ 0 + 1 by norm_num))
 
-theorem conj_inputs
+theorem exists_conjugate_heat_coefficient_control
     {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) (T : D.RegularTime) :
     ∃ (tau : Real) (C2 C1 : NNReal),
@@ -252,7 +252,7 @@ theorem conj_inputs
   exact ⟨tau, C2, C1, htau, htauone, hmeas2', hbound2', hmeas1',
     hbound1', hf_tau, hgraphAE⟩
 
-theorem conj_strong_exists
+theorem exists_strong_conjugate_heat_solution
     {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) (T : D.RegularTime)
     (u0 : TensorHs (I := I) (M := M)
@@ -323,7 +323,7 @@ theorem conj_strong_exists
   dsimp only
   obtain ⟨tau, C2, C1, htau, htau1, hA2, hC2, hA1, hC1, hsmall,
       hgraph⟩ :=
-    conj_inputs (I := I) (M := M) S hS T
+    exists_conjugate_heat_coefficient_control (I := I) (M := M) S hS T
   let A2 : Real → TensorHs (I := I) (M := M)
       (S.family.metric (T : Real)) 0 0 (0 + 2) →L[Real]
         TensorHs (I := I) (M := M)
@@ -343,7 +343,7 @@ theorem conj_strong_exists
   have hC1' : ∀ᵐ t ∂timeMeasure tau, ‖A1 t‖ ≤ (C1 : Real) := by
     simpa only [A1] using hC1
   obtain ⟨u, force, hu, hforce, htrace, hderiv⟩ :=
-    nonaut_strong_exists (I := I) (M := M)
+    exists_nonautonomous_strong_solution (I := I) (M := M)
       (g := S.family.metric (T : Real)) (r := 0) (s := 0) (a := 0)
       (tensorResolventL2_isCompactOperator (I := I) (M := M)
         (S.family.metric (T : Real)) 0 0)
@@ -454,7 +454,7 @@ theorem conj_weak_ae
   dsimp only
   obtain ⟨tau, htau, htau1, C2, C1, hA2, hC2, hA1, hC1, u,
       force, _hu, _hforce, htrace, hderiv, hgraph, hfield2, hfield1⟩ :=
-    conj_strong_exists (I := I) (M := M) S hS T u0
+    exists_strong_conjugate_heat_solution (I := I) (M := M) S hS T u0
   let U2 : timeL2 (TensorHs (I := I) (M := M)
       (S.family.metric (T : Real)) 0 0 (0 + 2)) tau :=
     maximalRegularityDuhamelSolutionField (I := I) (M := M)

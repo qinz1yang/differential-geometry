@@ -28,7 +28,7 @@ open DifferentialGeometry.Analysis.Laplacian.DiffChartBilinearH1Compl
 open DifferentialGeometry.Analysis.Laplacian.DifferentiatedCrossTermIBP
 open DifferentialGeometry.Analysis.Laplacian.IteratedMixedPartials
 open DifferentialGeometry.Analysis.Laplacian.IteratedDifferentiatedData
-open DifferentialGeometry.Analysis.Laplacian.IteratedVariationalIdentityStepScaffold
+open DifferentialGeometry.Analysis.Laplacian.IteratedVariationalIdentitySuccessorSource
 open DifferentialGeometry.Analysis.Sobolev.Chart
 open DifferentialGeometry.Analysis.Sobolev.Euclidean
 

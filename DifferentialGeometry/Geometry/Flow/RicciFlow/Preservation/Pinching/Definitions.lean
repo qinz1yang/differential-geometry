@@ -298,7 +298,7 @@ theorem trace_free_ricci_reaction_relation_of_eigenvalues
   exact trace_free_ricci_reaction_relation_eigenvalues (l1 t x) (l2 t x) (l3 t x) hR'
 
 omit [TopologicalSpace M] in
-theorem trace_free_ricci_reaction_relation_of_diagonal_data
+theorem trace_free_ricci_reaction_relation_of_diagonal_components
     (scalar ricciNormSq ricciTraceCube : Real -> M -> Real)
     (l1 l2 l3 : Real -> M -> Real)
     (hscalar : ∀ t x,
@@ -1147,7 +1147,7 @@ theorem trace_free_ricci_reaction_relation_of_frame_basis
   rw [hnorm]
   exact hpoint
 
-theorem trace_free_ricci_reaction_relation_of_first_trace_data
+theorem trace_free_ricci_reaction_relation_of_first_trace
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (Rm04 : Real -> DifferentialGeometry.Geometry.Curvature.Tensor04Section (I := I) (M := M))
@@ -1491,7 +1491,7 @@ theorem ricciSym_rm04
       DifferentialGeometry.Geometry.Curvature.ricciSymm_of_rm04 (I := I) basis gInv Ric Rm04 hTrace
         hPair hOutput hInput hInv i j)
 
-theorem trace_free_ricci_reaction_relation_of_diagonal_frame_data
+theorem trace_free_ricci_reaction_relation_of_diagonal_frame_components
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (Rm04 : Real -> DifferentialGeometry.Geometry.Curvature.Tensor04Section (I := I) (M := M))
@@ -1554,7 +1554,7 @@ theorem trace_free_ricci_reaction_relation_of_diagonal_frame_data
       (l1 t x) (l2 t x) (l3 t x)
       (hInv t x) (hRic t x) (hRm t x)
 
-theorem trace_free_ricci_reaction_relation_of_curvature_trace_data
+theorem trace_free_ricci_reaction_relation_of_curvature_trace
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (Rm04 : Real -> DifferentialGeometry.Geometry.Curvature.Tensor04Section (I := I) (M := M))
@@ -1612,10 +1612,10 @@ theorem trace_free_ricci_reaction_relation_of_curvature_trace_data
       DifferentialGeometry.Geometry.Curvature.rm04Comp,
         DifferentialGeometry.Geometry.Curvature.rm04CompAt_apply,
       hbasis t x i, hbasis t x k, hbasis t x j, hbasis t x l] using h
-  exact trace_free_ricci_reaction_relation_of_diagonal_frame_data (I := I) S Rm04 gInv frame scalar ricciTraceCube
+  exact trace_free_ricci_reaction_relation_of_diagonal_frame_components (I := I) S Rm04 gInv frame scalar ricciTraceCube
     l1 l2 l3 hscalar hcube hInv hRic hRm
 
-theorem trace_free_ricci_reaction_relation_of_first_trace_frame_data
+theorem trace_free_ricci_reaction_relation_of_first_trace_frame
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (Rm04 : Real -> DifferentialGeometry.Geometry.Curvature.Tensor04Section (I := I) (M := M))
@@ -1659,7 +1659,7 @@ theorem trace_free_ricci_reaction_relation_of_first_trace_frame_data
       (cubicQ scalar (ricciNormSqInFrame (I := I) S gInv frame)
         ricciTraceCube)
       (ricciNormCurvatureReactionInFrame (I := I) S Rm04 gInv frame) := by
-  refine trace_free_ricci_reaction_relation_of_curvature_trace_data (I := I) S Rm04 gInv frame basis scalar
+  refine trace_free_ricci_reaction_relation_of_curvature_trace (I := I) S Rm04 gInv frame basis scalar
     ricciTraceCube l1 l2 l3 hbasis ?_ hscalar hcube hInv hRic
   intro t x
   exact DifferentialGeometry.Geometry.Curvature.traceDataOfFirst

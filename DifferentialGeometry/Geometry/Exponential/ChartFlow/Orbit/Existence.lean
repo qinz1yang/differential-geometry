@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Exponential.ChartFlow.Orbit.TangentLift
 import DifferentialGeometry.Geometry.Exponential.ChartFlow.Orbit.InverseManifoldChain
 import DifferentialGeometry.Geometry.Exponential.Smoothness.AtZero.ZeroSectionConstancy
-import DifferentialGeometry.Geometry.Exponential.Smoothness.AtZero.MatchData
+import DifferentialGeometry.Geometry.Exponential.Smoothness.AtZero.ZeroSectionMatch
 import DifferentialGeometry.Geometry.Exponential.ChartFlow.Orbit.UniformExistence
 import DifferentialGeometry.Geometry.Geodesic.Flow.ChartPhase
 open DifferentialGeometry.Geometry.Curvature
@@ -32,7 +32,7 @@ variable [I.Boundaryless] [CompleteSpace E] [T2Space (TangentBundle I M)]
 
 omit [T2Space (TangentBundle I M)] in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem exists_unified_chartFlow_data
+theorem exists_unified_chartFlow
     (g : SmoothRiemannianMetric I M) (p : M) :
     ∃ (Φ : (E × E) × ℝ → E × E) (ρ T T_match : ℝ),
       0 < ρ ∧ 0 < T ∧ 0 < T_match ∧ T_match ≤ T ∧

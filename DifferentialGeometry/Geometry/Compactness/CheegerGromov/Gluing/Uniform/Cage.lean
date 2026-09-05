@@ -155,7 +155,7 @@ theorem uniformHatCageComp
         decodedCompPoints (I := I) (X.obj (L.φ n)).metric center B A
       forall a b : Nat, forall x : (X.obj (L.φ n)).M,
         x ∈ NetLimitData.hatSourceBall (I := I) (X := X) hd P L r n ->
-          StrictDistInput (I := I) (X.obj (L.φ n)).metric
+          StrictDistanceConvexity (I := I) (X.obj (L.φ n)).metric
             (centerAverage.activeFill
               (fun y : (X.obj (L.φ n)).M => fun gamma : Fin (pb.A r) => rho gamma y)
               (pointsSeq a b) (fun y : (X.obj (L.φ n)).M => y) x)
@@ -355,7 +355,7 @@ theorem uniform_hat_source_cage_subset_normalChartAt_source
         decodedCompPoints (I := I) (X.obj (L.φ n)).metric center B A
       forall a b : Nat, forall x : (X.obj (L.φ n)).M,
         x ∈ NetLimitData.hatSourceBall (I := I) (X := X) hd P L r n ->
-          StrictDistInput (I := I) (X.obj (L.φ n)).metric
+          StrictDistanceConvexity (I := I) (X.obj (L.φ n)).metric
             (centerAverage.activeFill mu (pointsSeq a b)
               (fun y : (X.obj (L.φ n)).M => y) x)
             join x (radSeq a b x))
@@ -432,7 +432,7 @@ theorem uniform_hat_source_cage_subset_normalChartAt_source
                   (r := radSeq a b) (qstar := fun y : (X.obj (L.φ n)).M => y)
                   y hcomplete (hrad a b y hy)
                   (hactive_mem a b y hy)
-                  ((hmu.data hy).1.1) ((hmu.data hy).1.2.1)
+                  (hmu.nonneg y hy) (hmu.pos y hy)
                   (hstrict a b y hy)) x) < eps := by
   let : TopologicalSpace (X.obj (L.φ n)).M := (X.obj (L.φ n)).topology
   let : ChartedSpace H (X.obj (L.φ n)).M := (X.obj (L.φ n)).charted
@@ -469,7 +469,8 @@ theorem uniform_hat_source_cage_subset_normalChartAt_source
         Set (X.obj (L.φ n)).M))
     (μSeq := fun _ _ => mu) (pointsSeq := pointsSeq) (rSeq := radSeq)
     hcomplete hrad (by simpa [pointsSeq] using hactive_mem)
-    (fun _ _ y hy => hmu.data hy)
+    (fun _ _ y hy =>
+      ⟨⟨hmu.nonneg y hy, hmu.pos y hy, hmu.sum_one y hy⟩, hmu.active_mem y hy⟩)
     (by simpa [pointsSeq] using hstrict)
     (by
       simpa [pointsSeq, decodedCompPoints] using
@@ -582,7 +583,7 @@ theorem uniformHatCageSelfComp
         decodedCompPoints (I := I) (X.obj (L.φ n)).metric center B A
       forall a b : Nat, forall x : (X.obj (L.φ n)).M,
         x ∈ NetLimitData.hatSourceBall (I := I) (X := X) hd P L r n ->
-          StrictDistInput (I := I) (X.obj (L.φ n)).metric
+          StrictDistanceConvexity (I := I) (X.obj (L.φ n)).metric
             (centerAverage.activeFill
               (fun y : (X.obj (L.φ n)).M => fun gamma : Fin (pb.A r) => rho gamma y)
               (pointsSeq a b) (fun y : (X.obj (L.φ n)).M => y) x)

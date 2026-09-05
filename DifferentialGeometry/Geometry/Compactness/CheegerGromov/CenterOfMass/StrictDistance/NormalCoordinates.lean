@@ -35,7 +35,7 @@ variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 
 namespace HasControlledNormalBranch
 
-theorem strict_dist_input
+theorem strict_distance_convexity
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (hb : NormalCoordMetricBounds (I := I) X) (k : Nat)
     (hcomplete : MetricComplete (I := I) (X.obj k))
@@ -82,7 +82,7 @@ theorem strict_dist_input
       dist x p ≤ R →
       (∀ i, dist p (points i) < r) →
       ENNReal.ofReal (R + 6 * r) < ENNReal.ofReal (ρ / 2) →
-      StrictDistInput (I := I) (X.obj k).metric points
+      StrictDistanceConvexity (I := I) (X.obj k).metric points
         (minJoin (I := I) (X.obj k).metric
           (normal_enorm (I := I) (X.obj k))) p r := by
   classical
@@ -271,7 +271,7 @@ theorem strict_dist_input
       ((CenterOfMass.halfSqDist pt) ∘ γ)
     exact strictConvex_geo (I := I) (X.obj k).metric hSopen hsmooth hγsmooth hgeo
       (convex_Icc (0 : Real) 1) hcont hmem hpos
-  change StrictDistInput (I := I) (X.obj k).metric points join p r
+  change StrictDistanceConvexity (I := I) (X.obj k).metric points join p r
   refine ⟨?_, ?_, ?_, ?_⟩
   · intro a ha b hbmem hab
     have hstrictP := hstrict_pt p hpCage a ha b hbmem hab

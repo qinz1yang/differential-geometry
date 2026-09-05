@@ -1191,7 +1191,7 @@ theorem linearizedRicciFirstOrderCorrectionField_allOrder_tameEnvelope_interface
   refine ⟨K, hK_nn, ?_⟩
   intro T T' δ hδ_le hδ δ' hδ'_le hδ' hTball hT'ball i s hs
   have hid :=
-    (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.exists_orderZero_firstOrder_correctionField_data
+    (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.exists_orderZero_firstOrder_correctionFields
       (I := I) g₀ T T' hδ hδ').choose_spec.choose_spec.2.2.2.2.2
   rw [show linearizedRicciFirstOrderCorrectionField (I := I) g₀ T T' hδ hδ' s =
       DifferentialGeometry.Analysis.Parabolic.TensorSpectral.linearizedRicciConnectionDifferenceOrder1Coeff

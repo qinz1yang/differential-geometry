@@ -30,8 +30,8 @@ variable {H : Type uH} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 variable {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
 
-theorem HasStageJetData.coeff_tail
-    (inp : MetricCompactnessInputs (I := I) X)
+theorem HasStageJetConvergence.coeff_tail
+    (inp : MetricCompactnessAssumptions (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P) {r : Real} (hr : 0 ≤ r)
     (phi : Nat → Nat) (hphi : StrictMono phi)
@@ -42,7 +42,7 @@ theorem HasStageJetData.coeff_tail
       InterSlot L inp.pack r alpha → E → E)
     (gInf : LiveSlot L inp.pack r →
       E → (E →L[Real] E →L[Real] Real))
-    (hstage : HasStageJetData (I := I) inp P L hr phi hphi
+    (hstage : HasStageJetConvergence (I := I) inp P L hr phi hphi
       U C0 C1 aInf Jinf Jbarinf gInf)
     (R : Real) (hRr : R < r) (eps : Real) (heps : 0 < eps) :
     ∃ N : Nat, ∀ k ≥ N, ∀ l ≥ N,
@@ -322,8 +322,8 @@ theorem HasStageJetData.coeff_tail
       have htau_sq : tau ^ 2 ≤ tau := by nlinarith [sq_nonneg tau]
       nlinarith
 
-theorem HasStageJetData.chart_convergence
-    (inp : MetricCompactnessInputs (I := I) X)
+theorem HasStageJetConvergence.chart_convergence
+    (inp : MetricCompactnessAssumptions (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P) {r : Real} (hr : 0 ≤ r)
     (phi : Nat → Nat) (hphi : StrictMono phi)
@@ -334,7 +334,7 @@ theorem HasStageJetData.chart_convergence
       InterSlot L inp.pack r alpha → E → E)
     (gInf : LiveSlot L inp.pack r →
       E → (E →L[Real] E →L[Real] Real))
-    (hstage : HasStageJetData (I := I) inp P L hr phi hphi
+    (hstage : HasStageJetConvergence (I := I) inp P L hr phi hphi
       U C0 C1 aInf Jinf Jbarinf gInf)
     (R : Real) (hRr : R < r) (alpha : LiveSlot L inp.pack r)
     (V : Set E) (hVint : V ⊆ interior (C0 alpha))
@@ -393,8 +393,8 @@ theorem HasStageJetData.chart_convergence
   have hsrc := hNs n hnS hzV
   exact (hjet hzInt hsrc).2.2 j hj
 
-theorem HasStageJetData.pb_convergence
-    (inp : MetricCompactnessInputs (I := I) X)
+theorem HasStageJetConvergence.pb_convergence
+    (inp : MetricCompactnessAssumptions (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P) {r : Real} (hr : 0 ≤ r)
     (phi : Nat → Nat) (hphi : StrictMono phi)
@@ -405,7 +405,7 @@ theorem HasStageJetData.pb_convergence
       InterSlot L inp.pack r alpha → E → E)
     (gInf : LiveSlot L inp.pack r →
       E → (E →L[Real] E →L[Real] Real))
-    (hstage : HasStageJetData (I := I) inp P L hr phi hphi
+    (hstage : HasStageJetConvergence (I := I) inp P L hr phi hphi
       U C0 C1 aInf Jinf Jbarinf gInf)
     (R : Real) (hRr : R < r) (alpha : LiveSlot L inp.pack r)
     (V W : Set E) (hVopen : IsOpen V) (hVcompact : IsCompact (closure V))
@@ -505,7 +505,7 @@ theorem HasStageJetData.pb_convergence
     hVcompact.exists_cthickening_subset_open Metric.isOpen_ball hclosureD
   have hAconvW : MapCInfConvergenceOnCompacts W A id := by
     simpa only [A, Lphi] using
-      HasStageJetData.chart_convergence (I := I) inp P L hr phi hphi
+      HasStageJetConvergence.chart_convergence (I := I) inp P L hr phi hphi
         U C0 C1 aInf Jinf Jbarinf gInf
         ⟨hdata, hmetric, hjets, _hbase⟩ R hRr alpha W hWint
         kn ln hkn hln hsource
@@ -621,8 +621,8 @@ theorem HasStageJetData.pb_convergence
     ext v w
     rfl
 
-theorem HasStageJetData.pb_jet_tail
-    (inp : MetricCompactnessInputs (I := I) X)
+theorem HasStageJetConvergence.pb_jet_tail
+    (inp : MetricCompactnessAssumptions (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P) {r : Real} (hr : 0 ≤ r)
     (phi : Nat → Nat) (hphi : StrictMono phi)
@@ -633,7 +633,7 @@ theorem HasStageJetData.pb_jet_tail
       InterSlot L inp.pack r alpha → E → E)
     (gInf : LiveSlot L inp.pack r →
       E → (E →L[Real] E →L[Real] Real))
-    (hstage : HasStageJetData (I := I) inp P L hr phi hphi
+    (hstage : HasStageJetConvergence (I := I) inp P L hr phi hphi
       U C0 C1 aInf Jinf Jbarinf gInf)
     (R : Real) (hRr : R < r) (alpha : LiveSlot L inp.pack r)
     (V W K : Set E) (hVopen : IsOpen V)
@@ -726,7 +726,7 @@ theorem HasStageJetData.pb_jet_tail
     filter_upwards [hkn.eventually_ge_atTop Ns] with n hn
     simpa only [Lphi] using hNs (kn n) hn
   simpa only [Q, A, B, Lphi] using
-    HasStageJetData.pb_convergence (I := I) inp P L hr phi hphi
+    HasStageJetConvergence.pb_convergence (I := I) inp P L hr phi hphi
       U C0 C1 aInf Jinf Jbarinf gInf hstage R hRr alpha V W
       hVopen hVcompact hVW hWint kn ln hkn hln hsourceSeq
 

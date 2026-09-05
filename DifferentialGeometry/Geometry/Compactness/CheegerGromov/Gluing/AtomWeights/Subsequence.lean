@@ -137,7 +137,7 @@ theorem HasAtomWeightLim.weight_ne_tail
     ((tendsto_pi_nhds.mp (tendsto_of_cInf hweightConvergence hz)) gamma).eventually_ne
       hweight
 
-theorem HasAtomWeightLim.weight_data_of_innerCover
+theorem HasAtomWeightLim.weightDataOn_of_innerCover
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjectivityRadiusDecay (I := I) X} {D : Real} {hD : 0 < D}
     {P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k)}
@@ -177,7 +177,7 @@ theorem HasAtomWeightLim.weight_data_of_innerCover
           (cutRaw (seqAtom hd hD P L pb r k i0)
             (seqAtom hd hD P L pb r k) i0)) := by
     exact Filter.Eventually.of_forall fun k =>
-      seqWeights_data hd hD P L pb r k i0 Set.Subset.rfl
+      seqWeights_weightDataOn hd hD P L pb r k i0 Set.Subset.rfl
   dsimp only [HasAtomWeightLim] at hlim
   rcases hlim with
     ⟨_hdead, _hatomSmooth, _hatomInfSmooth, _hatomConvergence,
@@ -243,7 +243,7 @@ theorem HasAtomWeightLim.weight_data_of_innerCover
   · intro _z _hz _gamma _hweight
     exact Set.mem_univ _
 
-theorem HasAtomWeightLim.weight_data
+theorem HasAtomWeightLim.weightDataOn
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjectivityRadiusDecay (I := I) X} {D : Real} {hD : 0 < D}
     {P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k)}
@@ -286,7 +286,7 @@ theorem HasAtomWeightLim.weight_data
     intro z hz
     apply hcover
     simpa only [NetLimitData.hatSourceBall] using hmap hz
-  exact hlim.weight_data_of_innerCover hcoverU
+  exact hlim.weightDataOn_of_innerCover hcoverU
 
 theorem HasAtomWeightLim.binter_of_weight
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
@@ -606,40 +606,6 @@ def HasAtomWeightLimOn
     ContDiffOn Real (∞ : WithTop ℕ∞) weightInf U ∧
     MapCInfConvergenceOnCompacts U weight weightInf
 
-theorem HasAtomWeightLimOn.of_raw
-    {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    (chart : NormalChartFamily (I := I) X)
-    {hd : InjectivityRadiusDecay (I := I) X} {D : Real} (hD : 0 < D)
-    (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
-    (L : NetLimitData hd D P) (hre : hd.RealizesDistance)
-    (pb : hd.PackingBound D) (r : Real) (hr : 0 ≤ r)
-    (beta : ∀ k : Nat, (X.obj (L.φ k)).M)
-    (U : Set E) (hU : IsOpen U)
-    (hcoverU : ∀ k,
-      letI : TopologicalSpace (X.obj (L.φ k)).M := (X.obj (L.φ k)).topology
-      letI : ChartedSpace H (X.obj (L.φ k)).M := (X.obj (L.φ k)).charted
-      letI : IsManifold I ∞ (X.obj (L.φ k)).M := (X.obj (L.φ k)).smooth
-      letI : T2Space (TangentBundle I (X.obj (L.φ k)).M) :=
-        (X.obj (L.φ k)).t2TangentBundle
-      Set.MapsTo
-        (fun z => (chart (L.φ k) (beta k)).hom z)
-        U (⋃ gamma : Fin (pb.A r), L.innerBall hd D P pb r k gamma))
-    (aInf : Fin (pb.A r) → E → Real)
-    (hdead : ∀ gamma : Fin (pb.A r),
-      L.alive (gamma : Nat) = false → aInf gamma = 0)
-    (hatom : ∀ gamma : Fin (pb.A r),
-      MapCInfConvergenceOnCompacts U
-        (fun k => seqAtomOn (I := I) chart hd hD P L pb r beta gamma k)
-        (aInf gamma))
-    (hatomSmooth : ∀ k (gamma : Fin (pb.A r)),
-      ContDiffOn Real (∞ : WithTop ℕ∞)
-        (seqAtomOn (I := I) chart hd hD P L pb r beta gamma k) U)
-    (hatomInfSmooth : ∀ gamma : Fin (pb.A r),
-      ContDiffOn Real (∞ : WithTop ℕ∞) (aInf gamma) U) :
-    HasAtomWeightLimOn (I := I) chart hd hD P L hre pb r hr beta U aInf := by
-  exact atomWeightOn_of_atoms (I := I) chart hD P L hre pb r hr beta U hU
-    hcoverU aInf hdead hatom hatomSmooth hatomInfSmooth
-
 theorem HasAtomWeightLimOn.of_atoms
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (chart : NormalChartFamily (I := I) X)
@@ -671,7 +637,7 @@ theorem HasAtomWeightLimOn.of_atoms
     (hatomInfSmooth : ∀ gamma : Fin (pb.A r),
       ContDiffOn Real (∞ : WithTop ℕ∞) (aInf gamma) U) :
     HasAtomWeightLimOn (I := I) chart hd hD P L hre pb r hr beta U aInf := by
-  exact HasAtomWeightLimOn.of_raw (I := I) chart hD P L hre pb r hr beta U hU
+  exact atomWeightOn_of_atoms (I := I) chart hD P L hre pb r hr beta U hU
     hcoverU aInf hdead hatom hatomSmooth hatomInfSmooth
 
 theorem HasAtomWeightLimOn.subseq
@@ -731,7 +697,7 @@ theorem HasAtomWeightLimOn.weight_ne_tail
     ((tendsto_pi_nhds.mp (tendsto_of_cInf hweightConvergence hz)) gamma).eventually_ne
       hweight
 
-theorem HasAtomWeightLimOn.weight_data_raw
+theorem HasAtomWeightLimOn.raw_weightDataOn
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {chart : NormalChartFamily (I := I) X}
     {hd : InjectivityRadiusDecay (I := I) X} {D : Real} {hD : 0 < D}
@@ -774,7 +740,7 @@ theorem HasAtomWeightLimOn.weight_data_raw
           (cutRaw (seqAtom hd hD P L pb r k i0)
             (seqAtom hd hD P L pb r k) i0)) := by
     exact Filter.Eventually.of_forall fun k =>
-      seqWeights_data hd hD P L pb r k i0 Set.Subset.rfl
+      seqWeights_weightDataOn hd hD P L pb r k i0 Set.Subset.rfl
   dsimp only [HasAtomWeightLimOn] at hlim
   rcases hlim with
     ⟨_hdead, _hatomSmooth, _hatomInfSmooth, _hatomConvergence,
@@ -836,7 +802,7 @@ theorem HasAtomWeightLimOn.weight_data_raw
   · intro _z _hz _gamma _hweight
     exact Set.mem_univ _
 
-theorem HasAtomWeightLimOn.weight_data_of_innerCover
+theorem HasAtomWeightLimOn.weightDataOn_of_innerCover
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {chart : NormalChartFamily (I := I) X}
     {hd : InjectivityRadiusDecay (I := I) X} {D : Real} {hD : 0 < D}
@@ -860,9 +826,9 @@ theorem HasAtomWeightLimOn.weight_data_of_innerCover
       (fun z gamma => rawWeights
         (cutRaw (aInf (baseIndex hd hre pb hr)) aInf
           (baseIndex hd hre pb hr)) z gamma) := by
-  exact hlim.weight_data_raw hcoverU
+  exact hlim.raw_weightDataOn hcoverU
 
-theorem HasAtomWeightLimOn.weight_data
+theorem HasAtomWeightLimOn.weightDataOn
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {chart : NormalChartFamily (I := I) X}
     {hd : InjectivityRadiusDecay (I := I) X} {D : Real} {hD : 0 < D}
@@ -907,7 +873,7 @@ theorem HasAtomWeightLimOn.weight_data
     intro z hz
     apply hcover
     simpa only [NetLimitData.hatSourceBall] using hmap hz
-  exact hlim.weight_data_of_innerCover hcoverU
+  exact hlim.weightDataOn_of_innerCover hcoverU
 
 theorem HasAtomWeightLimOn.binter_of_weight
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}

@@ -265,7 +265,7 @@ theorem eigenvectorChartIteratedPartial_memWkp_two_two
       exact Metric.cthickening_mono hle K
     exact ((h1.trans h2).trans h3).trans hR_α_subset
   obtain ⟨h_uChart_memW1p, h_wp_memW1p⟩ :=
-    tensorChartBilinear_chartComponent_regularity_of_data
+    tensorChartBilinear_chartComponent_and_weakPartials_memW1p
       (g := g) (r := r) (s := s) (α := α) (P₀ := P₀) D
       hΩ''_open hΩ''_compact_closure hR₀_pos h_room
   have h_uChart_memWkp_two_Ω'' :

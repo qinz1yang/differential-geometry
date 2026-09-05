@@ -1,8 +1,8 @@
 import DifferentialGeometry.Analysis.Sobolev.Nirenberg.CrossTermBoundsNonSmooth.CrossBoundsNonSmooth
-import DifferentialGeometry.Analysis.Sobolev.Nirenberg.CrossTermBoundsNonSmooth.CrossBoundsNonSmoothCross2
-import DifferentialGeometry.Analysis.Sobolev.Nirenberg.CrossTermBoundsNonSmooth.CrossBoundsNonSmoothCross3
+import DifferentialGeometry.Analysis.Sobolev.Nirenberg.CrossTermBoundsNonSmooth.CoefficientDifferenceQuotient
+import DifferentialGeometry.Analysis.Sobolev.Nirenberg.CrossTermBoundsNonSmooth.CoefficientCutoffGradient
 import DifferentialGeometry.Analysis.Sobolev.Nirenberg.CrossTermBoundsNonSmooth.CrossBoundsNonSmoothCTerm
-import DifferentialGeometry.Analysis.Sobolev.Nirenberg.CrossTermBoundsNonSmooth.CrossBoundsNonSmoothFTerm
+import DifferentialGeometry.Analysis.Sobolev.Nirenberg.CrossTermBoundsNonSmooth.ForcingTerm
 
 noncomputable section
 
@@ -56,7 +56,7 @@ theorem nirenbergMasterYoungConstant_nonneg
     (hΩ'_compact : IsCompact (closure Ω')) (k : Fin d) :
     0 ≤ nirenbergMasterYoungConstant (d := d) B N hΩ'_compact k := by
   classical
-  have hε₀ : (0 : ℝ) < B.lam / 8 := div_pos B.hlam_pos (by norm_num)
+  have hε₀ : (0 : ℝ) < B.lam / 8 := div_pos B.ellipticity_pos (by norm_num)
   have hd_pos : (0 : ℝ) < (Fintype.card (Fin d) : ℝ) := by
     exact_mod_cast Fintype.card_pos
   have hε'_pos : 0 < (B.lam / 8) / (Fintype.card (Fin d) : ℝ) := div_pos hε₀ hd_pos
@@ -159,11 +159,11 @@ theorem nirenberg_master_inequality_after_young_nonsmooth_quantitative
           ∫ x in Ω', (u x)^2 ∂(volume : Measure E) +
           ∫ x in Ω', (f x)^2 ∂(volume : Measure E)) := by
   classical
-  have hε_effective_pos₀ : (0 : ℝ) < B.lam / 8 := div_pos B.hlam_pos (by norm_num)
+  have hε_effective_pos₀ : (0 : ℝ) < B.lam / 8 := div_pos B.ellipticity_pos (by norm_num)
   have hC1 := cross_1_bound_nonsmooth_quantitative (d := d) B hu_l2 hg_l2
     hη hη_support hη_range h_fderiv_eta hΩ'_compact
     hh_support_in_Ω' k h_FK_diffQuot_u_bound (B.lam / 8) hε_effective_pos₀
-  have hC2 := cross_2_bound_nonsmooth_quantitative (d := d) B hg_l2
+  have hC2 := coefficient_difference_quotient_mixed_term_bound_nonsmooth_quantitative (d := d) B hg_l2
     hη hη_support hη_range hΩ' hΩ'_compact
     hh_support_in_Ω' k (B.lam / 8) hε_effective_pos₀
   have hC3 := diffQuot_coeff_cutoff_gradient_bound_nonsmooth_quantitative (d := d) B hu_l2 hg_l2
@@ -256,7 +256,7 @@ theorem nirenberg_master_inequality_after_young_nonsmooth_quantitative
             ∂(volume : Measure E) :=
       mul_le_mul_of_nonneg_left h_int_le (by linarith)
     linarith
-  have hCf := f_term_bound_nonsmooth_quantitative (d := d) hf_l2_local hu_l2
+  have hCf := forcing_term_bound_nonsmooth_quantitative (d := d) hf_l2_local hu_l2
     hη hη_support hΩ'_closure hΩ'_compact hh_support_in_Ω' k
     h_FK_diffQuot_u_bound h_v_test_sq_bound_sum
     (B.lam / 8) hε_effective_pos₀
@@ -687,7 +687,7 @@ theorem nirenberg_diffQuot_g_localL2_bound_quantitative
       ∫ x in Ω'', sumSq x ∂(volume : Measure E) :=
     MeasureTheory.integral_indicator hΩ''_meas
   rw [h_indicator_eq] at h_int_le
-  have h_lam_half_nn : 0 ≤ B.lam / 2 := by linarith [B.hlam_pos]
+  have h_lam_half_nn : 0 ≤ B.lam / 2 := by linarith [B.ellipticity_pos]
   have h_step1 : (B.lam / 2) * ∫ x in Ω'', sumSq x ∂(volume : Measure E) ≤
       (B.lam / 2) * ∫ x, (η x)^2 * sumSq x ∂(volume : Measure E) :=
     mul_le_mul_of_nonneg_left h_int_le h_lam_half_nn

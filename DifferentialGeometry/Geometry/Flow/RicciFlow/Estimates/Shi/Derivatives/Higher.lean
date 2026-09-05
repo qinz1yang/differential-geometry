@@ -461,25 +461,25 @@ structure BernsteinTower
   K : Real
   α : Real
   T : Real
-  hT : 0 < T
-  hc : 0 <= c
-  hK : 0 < K
-  hα : 0 <= α
-  hslab : Set.Icc 0 T ⊆ D.carrier
-  hregular : ∀ t : Real, t ∈ Set.Icc 0 T -> 0 < t -> t ∈ D.regular
-  hw_nonneg : ∀ k : ℕ, ∀ t : Real, t ∈ Set.Icc 0 T -> ∀ x : M, 0 <= w k t x
-  hw0_bound : ∀ t : Real, t ∈ Set.Icc 0 T -> ∀ x : M, w 0 t x <= K ^ 2
-  hTK : T <= α / K
-  hheat : ∀ k : ℕ, TowerHeatBoundOn (D := D) w wLap c k
-  hLap : ∀ k : ℕ, ∀ t : Real, t ∈ Set.Icc 0 T -> 0 < t -> ∀ x : M,
+  time_pos : 0 < T
+  reactionConstant_nonneg : 0 <= c
+  curvatureBound_pos : 0 < K
+  scale_nonneg : 0 <= α
+  time_window_subset : Set.Icc 0 T ⊆ D.carrier
+  regular_on_positive_time : ∀ t : Real, t ∈ Set.Icc 0 T -> 0 < t -> t ∈ D.regular
+  quantity_nonneg : ∀ k : ℕ, ∀ t : Real, t ∈ Set.Icc 0 T -> ∀ x : M, 0 <= w k t x
+  initial_order_bound : ∀ t : Real, t ∈ Set.Icc 0 T -> ∀ x : M, w 0 t x <= K ^ 2
+  time_le_scale_div_curvatureBound : T <= α / K
+  towerHeatBound : ∀ k : ℕ, TowerHeatBoundOn (D := D) w wLap c k
+  heatOperator_eq : ∀ k : ℕ, ∀ t : Real, t ∈ Set.Icc 0 T -> 0 < t -> ∀ x : M,
     DifferentialGeometry.Geometry.Curvature.heatOperatorWithDrift (I := I) G t
       (fun _y : M => (0 : TangentSpace I _y)) (w k t) x = wLap k t x
 
-  hw_cont : ∀ k : ℕ, ContinuousOn (fun p : Real × M => w k p.1 p.2)
+  continuous : ∀ k : ℕ, ContinuousOn (fun p : Real × M => w k p.1 p.2)
     (DifferentialGeometry.Analysis.Parabolic.spacetimeSlab (M := M) T)
-  hw_space : ∀ k : ℕ, ∀ t : Real, t ∈ Set.Icc 0 T -> 0 < t -> ∀ y : M,
+  spatial_differentiable : ∀ k : ℕ, ∀ t : Real, t ∈ Set.Icc 0 T -> 0 < t -> ∀ y : M,
     MDifferentiableAt I 𝓘(Real, Real) (w k t) y
-  hw_grad : ∀ k : ℕ, ∀ t : Real, t ∈ Set.Icc 0 T -> 0 < t -> ∀ x : M,
+  gradient_differentiable : ∀ k : ℕ, ∀ t : Real, t ∈ Set.Icc 0 T -> 0 < t -> ∀ x : M,
     MDiffAt (T% fun y : M =>
       DifferentialGeometry.Geometry.Operator.gradientFun (I := I) (G.metric t) (w k t) y) x
 
@@ -494,7 +494,7 @@ theorem sqrt_pow_mul_w_le (B : BernsteinTower (I := I) G) (j : ℕ)
     (hbound : t ^ j * B.w j t x <= (towerConst B.c B.α j) ^ 2 * B.K ^ 2) :
     Real.sqrt (t ^ j * B.w j t x) <= towerConst B.c B.α j * B.K := by
   have hrhs_nonneg : 0 <= towerConst B.c B.α j * B.K :=
-    mul_nonneg (towerConst_nonneg _ _ _) (le_of_lt B.hK)
+    mul_nonneg (towerConst_nonneg _ _ _) (le_of_lt B.curvatureBound_pos)
   have hsq : (towerConst B.c B.α j * B.K) ^ 2 = (towerConst B.c B.α j) ^ 2 * B.K ^ 2 := by ring
   calc Real.sqrt (t ^ j * B.w j t x)
       <= Real.sqrt ((towerConst B.c B.α j * B.K) ^ 2) := by
@@ -560,8 +560,8 @@ theorem tpow_mul_reactionSum_le (B : BernsteinTower (I := I) G) (k : ℕ)
   have hs1 : 0 <= Real.sqrt (t ^ j * B.w j t x) := Real.sqrt_nonneg _
   have hs2 : 0 <= Real.sqrt (t ^ (k - j) * B.w (k - j) t x) := Real.sqrt_nonneg _
   have hs3 : 0 <= Real.sqrt (t ^ k * B.w k t x) := Real.sqrt_nonneg _
-  have hCK1 : 0 <= C j * B.K := mul_nonneg (towerConst_nonneg _ _ _) (le_of_lt B.hK)
-  have hCK2 : 0 <= C (k - j) * B.K := mul_nonneg (towerConst_nonneg _ _ _) (le_of_lt B.hK)
+  have hCK1 : 0 <= C j * B.K := mul_nonneg (towerConst_nonneg _ _ _) (le_of_lt B.curvatureBound_pos)
+  have hCK2 : 0 <= C (k - j) * B.K := mul_nonneg (towerConst_nonneg _ _ _) (le_of_lt B.curvatureBound_pos)
   have hprod_le :
       Real.sqrt (t ^ j * B.w j t x) * Real.sqrt (t ^ (k - j) * B.w (k - j) t x) *
         Real.sqrt (t ^ k * B.w k t x) <=
@@ -571,7 +571,7 @@ theorem tpow_mul_reactionSum_le (B : BernsteinTower (I := I) G) (k : ℕ)
   calc B.c * (Real.sqrt (t ^ j * B.w j t x) * Real.sqrt (t ^ (k - j) * B.w (k - j) t x) *
         Real.sqrt (t ^ k * B.w k t x))
       <= B.c * ((C j * B.K) * (C (k - j) * B.K) * (C k * B.K)) :=
-        mul_le_mul_of_nonneg_left hprod_le B.hc
+        mul_le_mul_of_nonneg_left hprod_le B.reactionConstant_nonneg
     _ = B.c * (C j * C (k - j)) * C k * B.K ^ 3 := by ring
 
 theorem sum_range_succ_split {α : Type*} [AddCommMonoid α] (f : ℕ -> α) {m : ℕ} (hm : 1 <= m) :
@@ -592,12 +592,12 @@ theorem reactionSum_top_le (B : BernsteinTower (I := I) G) {m : ℕ} (hm : 1 <= 
   set C : ℕ -> Real := towerConst B.c B.α with hC
   have hht : (0 : Real) <= t := le_of_lt htpos
   have htm_pos : 0 < t ^ m := pow_pos htpos m
-  have hwm_nonneg : 0 <= B.w m t x := B.hw_nonneg m t hmem x
-  have hw0_nonneg : 0 <= B.w 0 t x := B.hw_nonneg 0 t hmem x
+  have hwm_nonneg : 0 <= B.w m t x := B.quantity_nonneg m t hmem x
+  have hw0_nonneg : 0 <= B.w 0 t x := B.quantity_nonneg 0 t hmem x
   have hsqrt_w0 : Real.sqrt (B.w 0 t x) <= B.K := by
-    have : B.w 0 t x <= B.K ^ 2 := B.hw0_bound t hmem x
+    have : B.w 0 t x <= B.K ^ 2 := B.initial_order_bound t hmem x
     calc Real.sqrt (B.w 0 t x) <= Real.sqrt (B.K ^ 2) := Real.sqrt_le_sqrt this
-      _ = B.K := Real.sqrt_sq (le_of_lt B.hK)
+      _ = B.K := Real.sqrt_sq (le_of_lt B.curvatureBound_pos)
   set r : Real := Real.sqrt (t ^ m) with hr
   have hr_pos : 0 < r := Real.sqrt_pos.mpr htm_pos
   have hr_sq : r ^ 2 = t ^ m := Real.sq_sqrt (le_of_lt htm_pos)
@@ -623,7 +623,7 @@ theorem reactionSum_top_le (B : BernsteinTower (I := I) G) {m : ℕ} (hm : 1 <= 
         ring
       rw [hid]
       have hs2 : 0 <= Real.sqrt (t ^ (m - j) * B.w (m - j) t x) := Real.sqrt_nonneg _
-      have hCK1 : 0 <= C j * B.K := mul_nonneg (towerConst_nonneg _ _ _) (le_of_lt B.hK)
+      have hCK1 : 0 <= C j * B.K := mul_nonneg (towerConst_nonneg _ _ _) (le_of_lt B.curvatureBound_pos)
       calc Real.sqrt (t ^ j * B.w j t x) * Real.sqrt (t ^ (m - j) * B.w (m - j) t x)
           <= (C j * B.K) * (C (m - j) * B.K) := mul_le_mul hbj hbmj hs2 hCK1
         _ = C j * C (m - j) * B.K ^ 2 := by ring
@@ -649,13 +649,13 @@ theorem reactionSum_top_le (B : BernsteinTower (I := I) G) {m : ℕ} (hm : 1 <= 
         _ <= C j * C (m - j) * B.K ^ 2 := hpair
     calc B.c * ((Real.sqrt (B.w j t x) * Real.sqrt (B.w (m - j) t x)) * Real.sqrt (B.w m t x))
         <= B.c * ((C j * C (m - j) * B.K ^ 2 / r) * Real.sqrt (B.w m t x)) := by
-          apply mul_le_mul_of_nonneg_left _ B.hc
+          apply mul_le_mul_of_nonneg_left _ B.reactionConstant_nonneg
           exact mul_le_mul_of_nonneg_right hpair' hsqrtwm_nonneg
       _ = B.c * (C j * C (m - j)) * B.K * ((B.K / r) * Real.sqrt (B.w m t x)) := by
           ring
       _ <= B.c * (C j * C (m - j)) * B.K * (1 / 2 * (B.K ^ 2 / t ^ m + B.w m t x)) := by
           apply mul_le_mul_of_nonneg_left hAMGM
-          exact mul_nonneg (mul_nonneg B.hc hCmid_nonneg) (le_of_lt B.hK)
+          exact mul_nonneg (mul_nonneg B.reactionConstant_nonneg hCmid_nonneg) (le_of_lt B.curvatureBound_pos)
   have hbdry0 :
       B.c * Real.sqrt (B.w 0 t x) * Real.sqrt (B.w (m - 0) t x) * Real.sqrt (B.w m t x) <=
         B.c * B.K * B.w m t x := by
@@ -667,7 +667,7 @@ theorem reactionSum_top_le (B : BernsteinTower (I := I) G) {m : ℕ} (hm : 1 <= 
       _ = B.c * Real.sqrt (B.w 0 t x) * B.w m t x := by rw [hsqm]
       _ <= B.c * B.K * B.w m t x := by
           apply mul_le_mul_of_nonneg_right _ hwm_nonneg
-          exact mul_le_mul_of_nonneg_left hsqrt_w0 B.hc
+          exact mul_le_mul_of_nonneg_left hsqrt_w0 B.reactionConstant_nonneg
   have hbdrym :
       B.c * Real.sqrt (B.w m t x) * Real.sqrt (B.w (m - m) t x) * Real.sqrt (B.w m t x) <=
         B.c * B.K * B.w m t x := by
@@ -679,7 +679,7 @@ theorem reactionSum_top_le (B : BernsteinTower (I := I) G) {m : ℕ} (hm : 1 <= 
       _ = B.c * Real.sqrt (B.w 0 t x) * B.w m t x := by rw [hsqm]
       _ <= B.c * B.K * B.w m t x := by
           apply mul_le_mul_of_nonneg_right _ hwm_nonneg
-          exact mul_le_mul_of_nonneg_left hsqrt_w0 B.hc
+          exact mul_le_mul_of_nonneg_left hsqrt_w0 B.reactionConstant_nonneg
   rw [towerReactionSum, sum_range_succ_split _ hm]
   have hmidsum :
       (∑ j ∈ Finset.Ico 1 m,
@@ -702,8 +702,8 @@ theorem reactionSum_top_le (B : BernsteinTower (I := I) G) {m : ℕ} (hm : 1 <= 
   have hKtm_nonneg : 0 <= B.K ^ 2 / t ^ m := by positivity
   rw [hStop]
   set S : Real := ∑ j ∈ Finset.Ico 1 m, C j * C (m - j) with hS
-  nlinarith [hbdry0, hbdrym, hmidsum, mul_nonneg (mul_nonneg B.hc (le_of_lt B.hK)) hKtm_nonneg,
-    hwm_nonneg, hKtm_nonneg, B.hc, le_of_lt B.hK]
+  nlinarith [hbdry0, hbdrym, hmidsum, mul_nonneg (mul_nonneg B.reactionConstant_nonneg (le_of_lt B.curvatureBound_pos)) hKtm_nonneg,
+    hwm_nonneg, hKtm_nonneg, B.reactionConstant_nonneg, le_of_lt B.curvatureBound_pos]
 
 def Gcoef (B : BernsteinTower (I := I) G) (m i : ℕ) : Real :=
   if i = m then 1 else towerBeta B.c B.α (towerConst B.c B.α) m * towerFactCoeff m i
@@ -713,7 +713,7 @@ theorem Gcoef_nonneg (B : BernsteinTower (I := I) G) (m i : ℕ) :
   rw [Gcoef]
   split_ifs
   · norm_num
-  · exact mul_nonneg (towerBeta_nonneg B.hc B.hα m) (towerFactCoeff_nonneg m i)
+  · exact mul_nonneg (towerBeta_nonneg B.reactionConstant_nonneg B.scale_nonneg m) (towerFactCoeff_nonneg m i)
 
 def Gfun (B : BernsteinTower (I := I) G) (m : ℕ) (s : Real) (y : M) : Real :=
   ∑ i ∈ Finset.range (m + 1), Gcoef (I := I) B m i * s ^ i * B.w i s y
@@ -735,8 +735,8 @@ theorem Gfun_heatOp (B : BernsteinTower (I := I) G) (m : ℕ)
   rw [hGfun_eq]
   exact heatOperator_linear_combo_finset (I := I) (Finset.range (m + 1)) G t
     (fun i => B.w i t) (fun i => Gcoef (I := I) B m i * t ^ i) x
-    (fun i _ y => B.hw_space i t hmem htpos y)
-    (fun i _ => B.hw_grad i t hmem htpos x)
+    (fun i _ y => B.spatial_differentiable i t hmem htpos y)
+    (fun i _ => B.gradient_differentiable i t hmem htpos x)
 omit [CompleteSpace E] [T2Space M] in
 theorem Gfun_hasDerivWithin (B : BernsteinTower (I := I) G) (m : ℕ)
     {t : Real} (x : M)
@@ -788,14 +788,14 @@ theorem Gfun_parabolic_eq (B : BernsteinTower (I := I) G) (m : ℕ)
         ∑ i ∈ Finset.range (m + 1),
           Gcoef (I := I) B m i * ((i : Real) * t ^ (i - 1) * B.w i t x + t ^ i * dvec i) := by
     have huniq : UniqueDiffWithinAt Real (Set.Icc 0 B.T) t :=
-      (uniqueDiffOn_Icc B.hT).uniqueDiffWithinAt htmem
+      (uniqueDiffOn_Icc B.time_pos).uniqueDiffWithinAt htmem
     exact (Gfun_hasDerivWithin (I := I) B m x dvec hd).derivWithin huniq
   rw [DifferentialGeometry.Analysis.Parabolic.parabolicOperatorWithDrift_eq, htime]
   rw [Gfun_heatOp (I := I) B m htmem htpos x]
   rw [← Finset.sum_sub_distrib, ← Finset.sum_add_distrib]
   apply Finset.sum_congr rfl
   intro i _
-  rw [B.hLap i t htmem htpos x]
+  rw [B.heatOperator_eq i t htmem htpos x]
   ring
 omit [CompleteSpace E] [T2Space M] in
 theorem Wterms_nonpos (B : BernsteinTower (I := I) G) {m : ℕ} (hm : 1 <= m)
@@ -810,10 +810,10 @@ theorem Wterms_nonpos (B : BernsteinTower (I := I) G) {m : ℕ} (hm : 1 <= m)
   set C : ℕ -> Real := towerConst B.c B.α with hC
   set β : Real := towerBeta B.c B.α C m with hβ
   set bt : Real := towerBarTop B.c C m with hbt
-  have hβ_nonneg : 0 <= β := towerBeta_nonneg B.hc B.hα m
-  have hbt_nonneg : 0 <= bt := towerBarTop_nonneg B.hc B.α m
+  have hβ_nonneg : 0 <= β := towerBeta_nonneg B.reactionConstant_nonneg B.scale_nonneg m
+  have hbt_nonneg : 0 <= bt := towerBarTop_nonneg B.reactionConstant_nonneg B.α m
   have hht : (0 : Real) <= t := le_of_lt htpos
-  have hwnn : ∀ i, 0 <= B.w i t x := fun i => B.hw_nonneg i t htmem x
+  have hwnn : ∀ i, 0 <= B.w i t x := fun i => B.quantity_nonneg i t htmem x
   have hIcc_eq : Finset.Ico 1 (m + 1) = Finset.Icc 1 m := by
     ext j; simp only [Finset.mem_Ico, Finset.mem_Icc]; omega
   have hS1 :
@@ -927,29 +927,29 @@ theorem Gfun_dissipative (B : BernsteinTower (I := I) G)
   classical
   set C : ℕ → Real := towerConst B.c B.α with hC
   set β : Real := towerBeta B.c B.α C m with hβ
-  have hβ_nonneg : 0 ≤ β := towerBeta_nonneg B.hc B.hα m
+  have hβ_nonneg : 0 ≤ β := towerBeta_nonneg B.reactionConstant_nonneg B.scale_nonneg m
   set bt : Real := towerBarTop B.c C m with hbt
   have hht : (0 : Real) ≤ t := le_of_lt htpos
   have htm_pos : 0 < t ^ m := pow_pos htpos m
   have htK : t * B.K ≤ B.α := by
-    have htle : t ≤ B.α / B.K := htmem.2.trans B.hTK
+    have htle : t ≤ B.α / B.K := htmem.2.trans B.time_le_scale_div_curvatureBound
     calc
       t * B.K ≤ (B.α / B.K) * B.K :=
-        mul_le_mul_of_nonneg_right htle (le_of_lt B.hK)
-      _ = B.α := div_mul_cancel₀ B.α (ne_of_gt B.hK)
+        mul_le_mul_of_nonneg_right htle (le_of_lt B.curvatureBound_pos)
+      _ = B.α := div_mul_cancel₀ B.α (ne_of_gt B.curvatureBound_pos)
   let τ : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime B.D :=
-    ⟨t, B.hregular t htmem htpos⟩
-  set dvec : ℕ → Real := fun i => Classical.choose (B.hheat i τ x) with hdvec
+    ⟨t, B.regular_on_positive_time t htmem htpos⟩
+  set dvec : ℕ → Real := fun i => Classical.choose (B.towerHeatBound i τ x) with hdvec
   have hspec : ∀ i : ℕ,
       HasDerivWithinAt (fun r : Real => B.w i r x) (dvec i) B.D.carrier t ∧
       dvec i ≤ B.wLap i t x +
         (-2 * B.w (i + 1) t x + towerReactionSum (M := M) B.w B.c i t x) := by
     intro i
-    have h := Classical.choose_spec (B.hheat i τ x)
+    have h := Classical.choose_spec (B.towerHeatBound i τ x)
     simpa [hdvec, τ] using h
   have hd : ∀ i ∈ Finset.range (m + 1),
       HasDerivWithinAt (fun r : Real => B.w i r x) (dvec i) (Set.Icc 0 B.T) t :=
-    fun i _ => (hspec i).1.mono B.hslab
+    fun i _ => (hspec i).1.mono B.time_window_subset
   have hIHle : ∀ k, k < m → ∀ j, j ≤ k →
       t ^ j * B.w j t x ≤ (C j) ^ 2 * B.K ^ 2 :=
     fun k hk j hj => by simpa only [hC] using hIH j (lt_of_le_of_lt hj hk)
@@ -1084,22 +1084,22 @@ theorem estimate [CompactSpace M] (B : BernsteinTower (I := I) G) :
     · subst hm0
       intro t htmem htpos x
       simp only [pow_zero, one_mul, towerConst_zero, one_pow]
-      exact B.hw0_bound t htmem x
+      exact B.initial_order_bound t htmem x
     · classical
       set C : ℕ -> Real := towerConst B.c B.α with hC
       set β : Real := towerBeta B.c B.α C m with hβ
-      have hβ_nonneg : 0 <= β := towerBeta_nonneg B.hc B.hα m
+      have hβ_nonneg : 0 <= β := towerBeta_nonneg B.reactionConstant_nonneg B.scale_nonneg m
       set bt : Real := towerBarTop B.c C m with hbt
-      have hbt_nonneg : 0 <= bt := towerBarTop_nonneg B.hc B.α m
+      have hbt_nonneg : 0 <= bt := towerBarTop_nonneg B.reactionConstant_nonneg B.α m
       set aBar : Real := β * (Nat.factorial (m - 1) : Real) * B.K ^ 2 with haBar
       set bBar : Real :=
         (bt + β * ∑ i ∈ Finset.range m, towerFactCoeff m i * towerBarGood B.c C i) * B.K ^ 3
         with hbBar
       have htK_slab : ∀ s : Real, s ∈ Set.Icc 0 B.T -> s * B.K <= B.α := by
         intro s hs
-        have hsle : s <= B.α / B.K := le_trans hs.2 B.hTK
-        calc s * B.K <= (B.α / B.K) * B.K := mul_le_mul_of_nonneg_right hsle (le_of_lt B.hK)
-          _ = B.α := div_mul_cancel₀ B.α (ne_of_gt B.hK)
+        have hsle : s <= B.α / B.K := le_trans hs.2 B.time_le_scale_div_curvatureBound
+        calc s * B.K <= (B.α / B.K) * B.K := mul_le_mul_of_nonneg_right hsle (le_of_lt B.curvatureBound_pos)
+          _ = B.α := div_mul_cancel₀ B.α (ne_of_gt B.curvatureBound_pos)
       have hsub : ∀ s : Real, s ∈ Set.Icc 0 B.T -> 0 < s -> ∀ y : M,
           DifferentialGeometry.Analysis.Parabolic.parabolicOperatorWithDrift (I := I) G B.T
             (fun _t x => (0 : TangentSpace I x)) (Gfun (I := I) B m) s y <= bBar := by
@@ -1109,7 +1109,7 @@ theorem estimate [CompactSpace M] (B : BernsteinTower (I := I) G) :
         rw [← hC, ← hbt, ← hβ] at hdiss
         have hnext : 0 <= s ^ m * B.w (m + 1) s y :=
           mul_nonneg (pow_nonneg (le_of_lt hspos) m)
-            (B.hw_nonneg (m + 1) s hsmem y)
+            (B.quantity_nonneg (m + 1) s hsmem y)
         rw [hbBar]
         linarith
       have hGspace : ∀ s : Real, s ∈ Set.Icc 0 B.T -> 0 < s -> ∀ y : M,
@@ -1122,7 +1122,7 @@ theorem estimate [CompactSpace M] (B : BernsteinTower (I := I) G) :
         rw [heq]
         exact mdifferentiableAt_finset_sum_smul (I := I) (Finset.range (m + 1))
           (fun i => B.w i s) (fun i => Gcoef (I := I) B m i * s ^ i) y
-          (fun i _ => B.hw_space i s hsmem hspos y)
+          (fun i _ => B.spatial_differentiable i s hsmem hspos y)
       have hGgrad : ∀ s : Real, s ∈ Set.Icc 0 B.T -> 0 < s -> ∀ y : M,
           MDiffAt (T% fun z : M =>
             DifferentialGeometry.Geometry.Operator.gradientFun (I := I) (G.metric s)
@@ -1135,21 +1135,21 @@ theorem estimate [CompactSpace M] (B : BernsteinTower (I := I) G) :
         rw [heq]
         exact mdiffAt_gradientFun_finset_sum_smul (I := I) (Finset.range (m + 1)) G s
           (fun i => B.w i s) (fun i => Gcoef (I := I) B m i * s ^ i) y
-          (fun i _ z => B.hw_space i s hsmem hspos z)
-          (fun i _ => B.hw_grad i s hsmem hspos y)
+          (fun i _ z => B.spatial_differentiable i s hsmem hspos z)
+          (fun i _ => B.gradient_differentiable i s hsmem hspos y)
       have hGtime : ∀ s : Real, s ∈ Set.Icc 0 B.T -> 0 < s -> ∀ y : M,
           DifferentiableWithinAt Real (fun r : Real => Gfun (I := I) B m r y) (Set.Icc 0 B.T)
             s := by
         intro s hsmem hspos y
         let τ : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime B.D :=
-          ⟨s, B.hregular s hsmem hspos⟩
-        set dvec : ℕ -> Real := fun i => Classical.choose (B.hheat i τ y) with hdvec
+          ⟨s, B.regular_on_positive_time s hsmem hspos⟩
+        set dvec : ℕ -> Real := fun i => Classical.choose (B.towerHeatBound i τ y) with hdvec
         have hd : ∀ i ∈ Finset.range (m + 1),
             HasDerivWithinAt (fun r : Real => B.w i r y) (dvec i) (Set.Icc 0 B.T) s := by
           intro i _
-          have := (Classical.choose_spec (B.hheat i τ y)).1
+          have := (Classical.choose_spec (B.towerHeatBound i τ y)).1
           exact (by simpa [hdvec, τ] using this : HasDerivWithinAt (fun r : Real => B.w i r y)
-                      (dvec i) B.D.carrier s).mono B.hslab
+                      (dvec i) B.D.carrier s).mono B.time_window_subset
         exact (Gfun_hasDerivWithin (I := I) B m y dvec hd).differentiableWithinAt
       have hGcont : ContinuousOn
           (fun p : Real × M =>
@@ -1167,7 +1167,7 @@ theorem estimate [CompactSpace M] (B : BernsteinTower (I := I) G) :
           intro i _
           apply ContinuousOn.mul
           · exact ((continuous_const.mul (continuous_fst.pow i)).continuousOn)
-          · exact B.hw_cont i
+          · exact B.continuous i
       have hPartA : ∀ s : Real, s ∈ Set.Icc 0 B.T -> ∀ y : M,
           Gfun (I := I) B m s y <= aBar + bBar * s := by
         apply scalar_subsolution_affine_bound (I := I) G B.T
@@ -1191,8 +1191,8 @@ theorem estimate [CompactSpace M] (B : BernsteinTower (I := I) G) :
             rw [Gcoef, if_neg (by omega : ¬ (0 : ℕ) = m), towerFactCoeff]
             rw [Nat.factorial_zero, Nat.cast_one, div_one, ← hC, ← hβ]
           rw [hGc0]
-          have h0mem : (0 : Real) ∈ Set.Icc 0 B.T := ⟨le_rfl, le_of_lt B.hT⟩
-          have hw00 : B.w 0 0 y <= B.K ^ 2 := B.hw0_bound 0 h0mem y
+          have h0mem : (0 : Real) ∈ Set.Icc 0 B.T := ⟨le_rfl, le_of_lt B.time_pos⟩
+          have hw00 : B.w 0 0 y <= B.K ^ 2 := B.initial_order_bound 0 h0mem y
           have hcoef_nn : 0 <= β * (Nat.factorial (m - 1) : Real) := by positivity
           calc β * (Nat.factorial (m - 1) : Real) * B.w 0 0 y
               <= β * (Nat.factorial (m - 1) : Real) * B.K ^ 2 :=
@@ -1217,7 +1217,7 @@ theorem estimate [CompactSpace M] (B : BernsteinTower (I := I) G) :
             rw [Gcoef, if_neg hine]
             exact mul_nonneg hβ_nonneg (towerFactCoeff_nonneg _ _)
           have : 0 <= t ^ i := pow_nonneg (le_of_lt htpos) i
-          have : 0 <= B.w i t x := B.hw_nonneg i t htmem x
+          have : 0 <= B.w i t x := B.quantity_nonneg i t htmem x
           positivity
         linarith
       have hfinal : aBar + bBar * t <= towerConstSq B.c B.α m * B.K ^ 2 := by
@@ -1227,12 +1227,12 @@ theorem estimate [CompactSpace M] (B : BernsteinTower (I := I) G) :
           i) := by
           have hsum : 0 <= ∑ i ∈ Finset.range m, towerFactCoeff m i * towerBarGood B.c C i := by
             apply Finset.sum_nonneg; intro i _
-            exact mul_nonneg (towerFactCoeff_nonneg _ _) (towerBarGood_nonneg B.hc B.α i)
+            exact mul_nonneg (towerFactCoeff_nonneg _ _) (towerBarGood_nonneg B.reactionConstant_nonneg B.α i)
           positivity
         have hKnn : (0 : Real) <= B.K ^ 2 := by positivity
         nlinarith [hbBarnn, hKnn, htK, mul_nonneg hbBarnn hKnn]
       have hGle : Gfun (I := I) B m t x <= aBar + bBar * t := hPartA t htmem x
-      rw [towerConst_sq B.hc B.hα]
+      rw [towerConst_sq B.reactionConstant_nonneg B.scale_nonneg]
       linarith [hwm_le_G, hGle, hfinal]
 omit [CompleteSpace E] [T2Space M] in
 theorem estimate_div [CompactSpace M] (B : BernsteinTower (I := I) G)

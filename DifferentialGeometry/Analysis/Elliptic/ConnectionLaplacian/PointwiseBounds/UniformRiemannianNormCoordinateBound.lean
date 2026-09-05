@@ -34,7 +34,7 @@ private local instance : BorelSpace E := ⟨rfl⟩
 private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
-theorem rawTensorConnLap_riemannianFiberNormSq_le_chart_α_data_T0_uniform
+theorem rawTensorConnLap_riemannianFiberNormSq_le_coordinate_two_jet_uniform
     [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M) :
     ∃ C : ℝ, 0 ≤ C ∧

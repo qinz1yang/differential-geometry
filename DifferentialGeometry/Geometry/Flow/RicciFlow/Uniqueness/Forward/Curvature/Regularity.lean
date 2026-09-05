@@ -261,12 +261,12 @@ theorem nablaChartJoint
       ContMDiffWithinAt (𝓘(Real, Real).prod I) 𝓘(Real, Real) ∞
         (fun p : Real × M =>
           covDerivStepComp
-            (frameExtData (I := I) frame
+            (frameDirectionalDerivatives (I := I) frame
               (fun y : M => frameComp0S (I := I) (A p.1) frame y) p.2)
             (chr p.1 p.2)
             (frameComp0S (I := I) (A p.1) frame p.2) K)
         (J ×ˢ e.baseSet) (t, x₀) := by
-    simpa only [covDerivStepComp, frameExtData] using hstep
+    simpa only [covDerivStepComp, frameDirectionalDerivatives] using hstep
   have hintrinsic :
       ContMDiffWithinAt (𝓘(Real, Real).prod I) 𝓘(Real, Real) ∞
         (fun p : Real × M =>
@@ -291,7 +291,7 @@ theorem nablaChartJoint
           funext a
           exact (local_frame_eq_chart (I := I) x₀ hp.2 (K a)).symm
         _ = covDerivStepComp
-            (frameExtData (I := I) frame
+            (frameDirectionalDerivatives (I := I) frame
               (fun y : M => frameComp0S (I := I) (A p.1) frame y) p.2)
             (chr p.1 p.2)
             (frameComp0S (I := I) (A p.1) frame p.2) K := by
@@ -311,7 +311,7 @@ theorem nablaChartJoint
           funext a
           exact (local_frame_eq_chart (I := I) x₀ hxbase (K a)).symm
         _ = covDerivStepComp
-            (frameExtData (I := I) frame
+            (frameDirectionalDerivatives (I := I) frame
               (fun y : M => frameComp0S (I := I) (A t) frame y) x₀)
             (chr t x₀)
             (frameComp0S (I := I) (A t) frame x₀) K := by

@@ -496,7 +496,7 @@ theorem hasFDerivAt_flow_at_initial_of_isLocalFlow
       have hτ'_Ioc_full : 2 * t₀ - τ' ∈ Ioc tmin tmax := by
         refine ⟨?_, hτ'_full.2⟩
         have hτ'_gt : 2 * t₀ - τ' > t₀ - T := by linarith [hτ'R.2]
-        have htmin_le : tmin ≤ t₀ - T :=
+        have minTime_le_initial : tmin ≤ t₀ - T :=
           (hsub (Set.left_mem_Icc.mpr (by linarith : t₀ - T ≤ t₀ + T))).1
         linarith
       have h_d := hΦ.hasDerivWithinAt (x₀ + h) hxh_mem_ball (2 * t₀ - τ') hτ'_full

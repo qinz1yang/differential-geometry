@@ -177,8 +177,8 @@ private theorem exists_smooth_metric_extension_with_density
       smooth_c := h_c_smooth
       lam := lamK
       capLam := max lamK 1
-      hlam_pos := hlamK_pos
-      hlam_le_capLam := le_max_left _ _
+      ellipticity_pos := hlamK_pos
+      ellipticity_le_upper := le_max_left _ _
       coercive := h_a_coercive }
   have h_agree_a : ∀ y ∈ K, ∀ i j : Fin (Module.finrank ℝ E),
       B.a y i j = weightedInvGramOnEuclid (I := I) g α i j y := by
@@ -1291,7 +1291,7 @@ theorem uniform_diffQuot_weakPartial_bound_quantitative
         ≤ Cχ * (Mden2 * (Sw + Su + Sf)) :=
           mul_le_mul_of_nonneg_left h_inner hCχ_nn
       _ = Cχ * Mden2 * (Sw + Su + Sf) := by ring
-  have hlam_pos : 0 < B.lam := B.hlam_pos
+  have ellipticity_pos : 0 < B.lam := B.ellipticity_pos
   have h_two_lam_nn : (0 : ℝ) ≤ 2 / B.lam := by positivity
   have hC_young_nn : 0 ≤ nirenbergMasterYoungConstant B N hΩ'_compact k :=
     nirenbergMasterYoungConstant_nonneg B hN hΩ'_compact k

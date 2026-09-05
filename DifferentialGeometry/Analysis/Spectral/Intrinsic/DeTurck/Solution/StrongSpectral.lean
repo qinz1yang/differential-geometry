@@ -40,23 +40,23 @@ structure StrongSpectralSolution
     (hLip : LipschitzWith L Nfun) {T : ℝ}
     (Phi : ℝ → SmoothCcTensor g₀ 0 2) where
   force : timeL2 (TensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ)) T
-  lo : timeH1 (TensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ)) T
-  hi : timeL2 (TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) T
-  trace_zero : timeH1.trace0 _ T lo = 0
+  lowRegularity : timeH1 (TensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ)) T
+  highRegularity : timeL2 (TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) T
+  trace_zero : timeH1.trace0 _ T lowRegularity = 0
   scale_link :
     timeL2Inclusion (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
-        (show (a : ℝ) ≤ (a : ℝ) + 2 by linarith) hi =
+        (show (a : ℝ) ≤ (a : ℝ) + 2 by linarith) highRegularity =
       timeH1.toTimeL2
-        (TensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ)) T lo
-  heat_eq : timeH1.timeDeriv _ T lo =
-    timeScaleLaplacian (I := I) (M := M) (a : ℝ) hi + force
-  force_eq : force = nemytskii (I := I) (M := M) hLip hi
-  hi_rep :
-    (hi : ℝ → TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2))
+        (TensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ)) T lowRegularity
+  heat_eq : timeH1.timeDeriv _ T lowRegularity =
+    timeScaleLaplacian (I := I) (M := M) (a : ℝ) highRegularity + force
+  force_eq : force = nemytskii (I := I) (M := M) hLip highRegularity
+  highRegularity_ae_eq :
+    (highRegularity : ℝ → TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2))
       =ᵐ[timeMeasure T] fun t =>
         smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2) (Phi t)
   path_rep : ∀ t ∈ Icc (0 : ℝ) T,
-    lo.toFun t = smoothCcToTensorHs (I := I) (M := M) g₀ (a : ℝ) (Phi t)
+    lowRegularity.toFun t = smoothCcToTensorHs (I := I) (M := M) g₀ (a : ℝ) (Phi t)
 
 attribute [-simp] StrongSpectralSolution.mk.sizeOf_spec
 
@@ -140,13 +140,13 @@ noncomputable def strongSpectralSolutionOfSmoothPath
     simp
   refine
     { force := force
-      lo := lo
-      hi := hi
+      lowRegularity := lo
+      highRegularity := hi
       trace_zero := ?_
       scale_link := ?_
       heat_eq := ?_
       force_eq := rfl
-      hi_rep := by simpa only [Fhi] using hhiRep
+      highRegularity_ae_eq := by simpa only [Fhi] using hhiRep
       path_rep := by simpa only [Flow] using htoFun }
   · simp only [lo, timeH1.trace0_mk]
   · refine Lp.ext ?_
@@ -209,14 +209,15 @@ theorem smooth_paths_eq_of_strong_spectral_solutions
     (hball₁ : ‖d₁.force‖ ≤ ρ) (hball₂ : ‖d₂.force‖ ≤ ρ) :
     ∀ t ∈ Icc (0 : ℝ) T, Phi₁ t = Phi₂ t := by
   have huniq := deTurckStrong_unique (I := I) (M := M) g₀ a hLip hsingle
-    hT hT1 hρ hsmall d₁.force d₂.force d₁.lo d₂.lo d₁.hi d₂.hi
+    hT hT1 hρ hsmall d₁.force d₂.force d₁.lowRegularity d₂.lowRegularity
+      d₁.highRegularity d₂.highRegularity
     d₁.trace_zero d₂.trace_zero d₁.scale_link d₂.scale_link
     d₁.heat_eq d₂.heat_eq d₁.force_eq d₂.force_eq hball₁ hball₂
   intro t ht
   have hu := congrArg
     (fun u : timeH1 (TensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ)) T =>
       u.toFun t) huniq.2.2
-  change d₁.lo.toFun t = d₂.lo.toFun t at hu
+  change d₁.lowRegularity.toFun t = d₂.lowRegularity.toFun t at hu
   rw [d₁.path_rep t ht, d₂.path_rep t ht] at hu
   apply ccToHs_injective (I := I) (M := M) g₀ 2 (a : ℝ)
   simpa only [ccHs_eq_smoothHs] using hu

@@ -28,8 +28,8 @@ private instance : Fact (Module.finrank ℝ (EuclideanSpace ℝ (Fin 4)) = 3 + 1
 structure SphericalSpaceFormQuotientModel
     (I : ModelWithCorners ℝ E H) (N : Type u)
     [TopologicalSpace N] [ChartedSpace H N] : Type _ where
-  data : RoundQuotientData.{0, u} (EuclideanSpace ℝ (Fin 4)) 3
-  equiv : N ≃ₘ⟮I, 𝓡 3⟯ data.Q
+  quotient : RoundSphereQuotient.{0, u} (EuclideanSpace ℝ (Fin 4)) 3
+  equiv : N ≃ₘ⟮I, 𝓡 3⟯ quotient.Q
 
 def isSphericalSpaceFormQuotient
     (I : ModelWithCorners ℝ E H) (N : Type u)
@@ -59,12 +59,12 @@ theorem spherical_space_form_admits_constant_positive_sectional_curvature
   obtain ⟨S⟩ := model
   have : NeZero (Module.finrank ℝ (EuclideanSpace ℝ (Fin 3))) := by
     rw [finrank_euclideanSpace_fin]; infer_instance
-  obtain ⟨c, hc, hsec⟩ := S.data.gQuot_constPosSec
-  refine ⟨Diffeomorph.pullbackMetricCross S.data.gQuot S.equiv, c, hc, fun x X Y => ?_⟩
-  rw [metricRm04Standard_pullbackCross S.data.gQuot S.equiv x X Y Y X, hsec,
-    ← Diffeomorph.pullbackMetricCross_inner S.data.gQuot S.equiv x X X,
-    ← Diffeomorph.pullbackMetricCross_inner S.data.gQuot S.equiv x Y Y,
-    ← Diffeomorph.pullbackMetricCross_inner S.data.gQuot S.equiv x X Y]
+  obtain ⟨c, hc, hsec⟩ := S.quotient.gQuot_constPosSec
+  refine ⟨Diffeomorph.pullbackMetricCross S.quotient.gQuot S.equiv, c, hc, fun x X Y => ?_⟩
+  rw [metricRm04Standard_pullbackCross S.quotient.gQuot S.equiv x X Y Y X, hsec,
+    ← Diffeomorph.pullbackMetricCross_inner S.quotient.gQuot S.equiv x X X,
+    ← Diffeomorph.pullbackMetricCross_inner S.quotient.gQuot S.equiv x Y Y,
+    ← Diffeomorph.pullbackMetricCross_inner S.quotient.gQuot S.equiv x X Y]
 
 omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in

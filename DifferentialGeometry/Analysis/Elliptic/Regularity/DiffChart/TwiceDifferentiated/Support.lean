@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Elliptic.Regularity.DiffChart.Differentiated.DerivedDataConstructor
+import DifferentialGeometry.Analysis.Elliptic.Regularity.DiffChart.Differentiated.CanonicalDerivedData
 import DifferentialGeometry.Analysis.Elliptic.Regularity.DiffChart.Differentiated.VariationalIdentity
 import DifferentialGeometry.Analysis.Elliptic.Regularity.Iterated.NirenbergInterior.ThirdMixedPartial
 import DifferentialGeometry.Analysis.Elliptic.Regularity.DiffChart.TwiceDifferentiated.EffectiveSource
@@ -7,7 +7,7 @@ import DifferentialGeometry.Analysis.Elliptic.Regularity.FChartResidual.Residual
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.Multiplication.SmoothCoefWeakPartialIBP
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.IteratedSobolevSpace.IteratedSobolev
 import Mathlib.Analysis.Calculus.FDeriv.Symmetric
-import DifferentialGeometry.Analysis.Elliptic.Regularity.DiffChart.TwiceDifferentiated.VariationalIdentityBaseDataLocalRegularity
+import DifferentialGeometry.Analysis.Elliptic.Regularity.DiffChart.TwiceDifferentiated.BaseLocalIntegrability
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 
@@ -457,7 +457,7 @@ private lemma base_u_chart_ae_zero_off_K_α
   exact DifferentialGeometry.Analysis.Sobolev.Chart.chartPushed_eq_zero_off_chartImagePOUTsupport
     (I := I) (M := M) α _ hy_diff.1 hy_diff.2
 
-private lemma base_weak_partial_ae_zero_off_K_α
+private lemma base_weak_partial_ae_zero_off_chart_image_pou_tsupport
     (g : SmoothRiemannianMetric I M) (α : M)
     {u_h : H1Compl (I := I) (M := M) g}
     (hu_h : u_h ∈ laplacianDomain (I := I) (M := M) g)
@@ -538,7 +538,7 @@ private lemma memLp_top_of_continuousOn_on_compact_chart
   apply ENNReal.ofReal_le_ofReal
   exact hy.trans (le_max_left _ _)
 
-private lemma base_f_chart_ae_zero_off_K_α
+private lemma base_f_chart_ae_zero_off_chart_image_pou_tsupport
     (g : SmoothRiemannianMetric I M) (α : M)
     {u_h : H1Compl (I := I) (M := M) g}
     (hu_h : u_h ∈ laplacianDomain (I := I) (M := M) g) :
@@ -628,7 +628,7 @@ private lemma base_f_chart_ae_zero_off_K_α
         have h_wp_each : ∀ i : Fin (Module.finrank ℝ E),
             ∀ᵐ y ∂((volume : Measure EuclN).restrict U),
               D.weakPartial i y = 0 := fun i =>
-          base_weak_partial_ae_zero_off_K_α (I := I) (M := M) g α hu_h i
+          base_weak_partial_ae_zero_off_chart_image_pou_tsupport (I := I) (M := M) g α hu_h i
         have h_wp_all_vol : ∀ᵐ y ∂(volume : Measure EuclN),
             ∀ i : Fin (Module.finrank ℝ E),
               y ∈ U → D.weakPartial i y = 0 := by
@@ -714,7 +714,7 @@ private lemma chosenFChartDeriv_ae_zero_off_K_α
   have h_memW1p :=
     base_f_chart_memW1p_from_residual_memW1p (I := I) (M := M) g α hu_h
       (fChartResidual_memW1p (I := I) (M := M) g α hu_h)
-  have h_base_fc_ae := base_f_chart_ae_zero_off_K_α (I := I) (M := M) g α
+  have h_base_fc_ae := base_f_chart_ae_zero_off_chart_image_pou_tsupport (I := I) (M := M) g α
     (laplacianDomainPow_succ_subset_laplacianDomain (I := I) (M := M) g 1 hu_h)
   exact chosenWeakPartialOrZero_ae_zero_on_open_subset_of_ae_zero
     (p := 2) (by norm_num : (1 : ℝ≥0∞) ≤ 2) hΩ_open hU_open hU_sub
@@ -772,7 +772,7 @@ private lemma fChartEffectiveTwiceNumerator_ae_zero_off_K_α
   classical
   have h_uc := base_u_chart_ae_zero_off_K_α (I := I) (M := M) g α
     (laplacianDomainPow_succ_subset_laplacianDomain (I := I) (M := M) g 1 hu_h)
-  have h_fc := base_f_chart_ae_zero_off_K_α (I := I) (M := M) g α
+  have h_fc := base_f_chart_ae_zero_off_chart_image_pou_tsupport (I := I) (M := M) g α
     (laplacianDomainPow_succ_subset_laplacianDomain (I := I) (M := M) g 1 hu_h)
   have h_wp_each : ∀ i : Fin (Module.finrank ℝ E),
       ∀ᵐ y ∂((volume : Measure EuclN).restrict
@@ -780,7 +780,7 @@ private lemma fChartEffectiveTwiceNumerator_ae_zero_off_K_α
       (chartBilinearH1ComplDataOfLaplacianDomain (I := I) (M := M) g α
         (laplacianDomainPow_succ_subset_laplacianDomain
           (I := I) (M := M) g 1 hu_h)).weakPartial i y = 0 := fun i =>
-    base_weak_partial_ae_zero_off_K_α (I := I) (M := M) g α
+    base_weak_partial_ae_zero_off_chart_image_pou_tsupport (I := I) (M := M) g α
       (laplacianDomainPow_succ_subset_laplacianDomain
         (I := I) (M := M) g 1 hu_h) i
   have h_sec_each : ∀ i j : Fin (Module.finrank ℝ E),

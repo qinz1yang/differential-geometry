@@ -30,7 +30,7 @@ variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 variable {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
 
 theorem BoundedGeometryNormalChartData.inj_tail
-    (inp : MetricCompactCore (I := I) X)
+    (inp : MetricCompactSeedWithDivisor (I := I) X)
     (d : BoundedGeometryNormalChartData (I := I) X inp.decay)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P) {s : Real} (hs : 0 ≤ s)
@@ -46,7 +46,7 @@ theorem BoundedGeometryNormalChartData.inj_tail
       InterSlot L inp.pack s alpha → E → E)
     (gInf : LiveSlot L inp.pack s →
       E → (E →L[Real] E →L[Real] Real))
-    (hstage : HasStageJetDataOn (I := I) inp P L hs phi hphi
+    (hstage : HasStageJetConvergenceOn (I := I) inp P L hs phi hphi
       d.chart V U C0 C1 aInf Jinf Jbarinf gInf)
     (R0 R1 : Real)
     (hroom : R0 + (4 + 8 * Real.sqrt 2) * inp.decay.lambda inp.D 0 < R1)
@@ -67,7 +67,7 @@ theorem BoundedGeometryNormalChartData.inj_tail
     ⟨_hU, _hU8, _hC0, _hC1, _hC01, _hC1U, hconvex, _hzero,
       _hbuffer, _hcore, _hgeom, _hlim, _hweight, _htrans, _hsmooth⟩
   have hlam0 : 0 < inp.decay.lambda inp.D 0 :=
-    inp.decay.lambda_pos inp.hD 0
+    inp.decay.lambda_pos inp.divisor_pos 0
   have hcoef : 0 <
       (4 + 8 * Real.sqrt 2) * inp.decay.lambda inp.D 0 := by
     positivity

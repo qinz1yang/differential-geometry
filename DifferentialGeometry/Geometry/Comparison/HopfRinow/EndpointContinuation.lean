@@ -530,7 +530,7 @@ theorem hasEndpointContinuation_of_complete
     (hγ : IsGeodesicOn (I := I) g γ (Set.Ioo aL b)) :
     HasEndpointContinuation (I := I) g γ b := by
   obtain ⟨y, hy_metric⟩ :=
-    curve_exists_limit_of_bounded_speed (I := I) (γ := γ) (a := aL) (b := b) (c := c)
+    exists_curve_limit_of_bounded_speed (I := I) (γ := γ) (a := aL) (b := b) (c := c)
       haLb hc_nonneg hγ_smooth hSpeedBound
   exact endpointCont_of_lim (I := I) g y haLb hc_nonneg hγ_smooth hSpeedBound
     hSpeedSq hγ hy_metric

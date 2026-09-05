@@ -39,7 +39,7 @@ omit [SigmaCompactSpace M] in
 private theorem negRm_isAlg
     (g : SmoothRiemannianMetric I M) (x : M) :
     IsAlgCurvForm (negRmForm (I := I) (M := M) g x) := by
-  let K := metricCurvData (I := I) (M := M) g
+  let K := metricCurvatureSections (I := I) (M := M) g
   let Rm := metricRm04At (I := I) (M := M) g x
   have hadd (X₁ X₂ Y Z W : TangentSpace I x) :
       Rm (vec4 (I := I) (X₁ + X₂) Y Z W) =

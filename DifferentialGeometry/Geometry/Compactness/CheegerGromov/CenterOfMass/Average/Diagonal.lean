@@ -34,7 +34,7 @@ theorem centerOfMass_diag
     [Module.Finite ℝ E]
     (g : SmoothRiemannianMetric I M') {ι : Type} [Fintype ι]
     (μ : ι → ℝ) (points : ι → M') (join : M' → M' → ℝ → M') (p : M') (r : ℝ)
-    (h : CenterInput (I := I) g μ points join p r) (q : M') (hall : ∀ i, points i = q) :
+    (h : CenterOfMassConditions (I := I) g μ points join p r) (q : M') (hall : ∀ i, points i = q) :
     centerOfMass (I := I) g μ points join p r h = q := by
   let : RiemannianBundle (fun x : M' => TangentSpace I x) := ⟨g.toRiemannianMetric⟩
   let : IsContinuousRiemannianBundle E (fun x : M' => TangentSpace I x) :=
@@ -54,7 +54,7 @@ theorem normalChartCenterOfMass_diag
     (g : SmoothRiemannianMetric I M') {ι : Type} [Fintype ι]
     (μ : ι → ℝ) (join : M' → M' → ℝ → M') (p : M') (r : ℝ) (z : E)
     (hz : z ∈ (NormalCoordinates.normalChartAt (I := I) g p).target)
-    (h : CenterInput (I := I) g μ
+    (h : CenterOfMassConditions (I := I) g μ
       (fun _ : ι => (NormalCoordinates.normalChartAt (I := I) g p).symm z) join p r) :
     NormalCoordinates.normalChartAt (I := I) g p
       (centerOfMass (I := I) g μ
@@ -70,7 +70,7 @@ theorem centerOfMass_delta
     [Module.Finite ℝ E]
     (g : SmoothRiemannianMetric I M') {ι : Type} [Fintype ι]
     (μ : ι → ℝ) (points : ι → M') (join : M' → M' → ℝ → M') (p : M') (r : ℝ)
-    (h : CenterInput (I := I) g μ points join p r) (i0 : ι)
+    (h : CenterOfMassConditions (I := I) g μ points join p r) (i0 : ι)
     (hdead : ∀ i, i ≠ i0 → μ i = 0) :
     centerOfMass (I := I) g μ points join p r h = points i0 := by
   let : RiemannianBundle (fun x : M' => TangentSpace I x) := ⟨g.toRiemannianMetric⟩
@@ -104,7 +104,7 @@ theorem diagEventuallyEqId
     (μfun : E → ι → ℝ) (join : M' → M' → ℝ → M') (p : M') (r : ℝ)
     {x : E} {V : Set E} (hV : IsOpen V) (hxV : x ∈ V)
     (hVtgt : V ⊆ (NormalCoordinates.normalChartAt (I := I) g p).target)
-    (H : ∀ z ∈ V, CenterInput (I := I) g (μfun z)
+    (H : ∀ z ∈ V, CenterOfMassConditions (I := I) g (μfun z)
       (fun _ : ι => (NormalCoordinates.normalChartAt (I := I) g p).symm z) join p r)
     {G : E → E}
     (hagree : ∀ z, ∀ hz : z ∈ V,
@@ -128,7 +128,7 @@ theorem centerOfMass_eq_point_of_bump_weights
     (points : ι → M') (join : M' → M' → ℝ → M') (p : M') (r : ℝ)
     (hfar : ∀ j, j ≠ i0 → (f j).rOut ≤ ‖J j x₀‖)
     (hmem0 : ‖J i0 x₀‖ ≤ (f i0).rIn)
-    (H : CenterInput (I := I) g
+    (H : CenterOfMassConditions (I := I) g
       (fun i => normWeights (bumpNum χ (fun i' => ⇑(f i')) J i0) i x₀) points join p r) :
     centerOfMass (I := I) g
       (fun i => normWeights (bumpNum χ (fun i' => ⇑(f i')) J i0) i x₀) points join p r H

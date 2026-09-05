@@ -77,7 +77,7 @@ theorem covDerivStepComp_frameComp_eq {s : ℕ}
     (hframe : IsLocalFrameOn I E (1 : WithTop ℕ∞) frame u) (hu : IsOpen u)
     {x : M} (hx : x ∈ u) (n : Fin (s + 1) → Idx) :
     covDerivStepComp
-        (frameExtData (I := I) frame (frameComp0S (I := I) A frame) x)
+        (frameDirectionalDerivatives (I := I) frame (frameComp0S (I := I) A frame) x)
         (christoffelSymbolInFrame cov frame hframe x)
         (frameComp0S (I := I) A frame x) n =
       nablaA x (frameTuple (I := I) frame x n) := by
@@ -114,7 +114,7 @@ theorem covDerivStepComp_frameComp_eq {s : ℕ}
   have hext :
       mvfderiv (I := I)
           (fun p : M => A p (fun q : Fin s => V q p)) x (frame (n 0) x) =
-        frameExtData (I := I) frame (frameComp0S (I := I) A frame) x
+        frameDirectionalDerivatives (I := I) frame (frameComp0S (I := I) A frame) x
           (Fin.tail n) (n 0) := by
     rfl
   rw [hext]

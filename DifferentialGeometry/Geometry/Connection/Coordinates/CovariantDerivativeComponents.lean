@@ -23,7 +23,7 @@ def covDerivStepComp {r : ℕ}
       ∑ s : Fin r, ∑ p : Idx,
         chr (n 0) (Fin.tail n s) p * A (Function.update (Fin.tail n) s p)
 
-def frameExtData {r : ℕ}
+def frameDirectionalDerivatives {r : ℕ}
     {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners Real E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
@@ -59,7 +59,7 @@ theorem covDerivComp_joint
         (modelWithCornersSelf Real Real) (∞ : WithTop ℕ∞)
         (fun q : Real × M ↦
           covDerivStepComp
-            (frameExtData (I := I) frame (fun y ↦ A q.1 y) q.2)
+            (frameDirectionalDerivatives (I := I) frame (fun y ↦ A q.1 y) q.2)
             (chr q.1 q.2) (A q.1 q.2) n)
         (J ×ˢ u) (t, x) := by
   classical
@@ -79,6 +79,6 @@ theorem covDerivComp_joint
       ContMDiffWithinAt.sum fun p _ ↦ ?_
     exact (hchr (n 0) (Fin.tail n s) p).mul
       (hA (Function.update (Fin.tail n) s p))
-  simpa [covDerivStepComp, frameExtData] using hext.sub hsum
+  simpa [covDerivStepComp, frameDirectionalDerivatives] using hext.sub hsum
 
 end DifferentialGeometry.PDE.RicciFlow

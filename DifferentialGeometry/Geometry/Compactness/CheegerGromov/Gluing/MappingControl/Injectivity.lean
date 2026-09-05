@@ -29,8 +29,8 @@ variable {H : Type uH} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 variable {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
 
-theorem HasStageJetData.inj_tail
-    (inp : MetricCompactnessInputs (I := I) X)
+theorem HasStageJetConvergence.inj_tail
+    (inp : MetricCompactnessAssumptions (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P) {s : Real} (hs : 0 ≤ s)
     (phi : Nat → Nat) (hphi : StrictMono phi)
@@ -45,7 +45,7 @@ theorem HasStageJetData.inj_tail
       InterSlot L inp.pack s alpha → E → E)
     (gInf : LiveSlot L inp.pack s →
       E → (E →L[Real] E →L[Real] Real))
-    (hstage : HasStageJetData (I := I) inp P L hs phi hphi
+    (hstage : HasStageJetConvergence (I := I) inp P L hs phi hphi
       U C0 C1 aInf Jinf Jbarinf gInf)
     (R0 R1 : Real)
     (hroom : R0 + (4 + 8 * Real.sqrt 2) * inp.decay.lambda inp.D 0 < R1)
@@ -60,7 +60,7 @@ theorem HasStageJetData.inj_tail
   have hstage0 := hstage
   rcases hstage with ⟨hdata, _hmetric, hjets, _hbase⟩
   have hlam0 : 0 < inp.decay.lambda inp.D 0 :=
-    inp.decay.lambda_pos inp.hD 0
+    inp.decay.lambda_pos inp.divisor_pos 0
   have hcoef : 0 <
       (4 + 8 * Real.sqrt 2) * inp.decay.lambda inp.D 0 := by positivity
   have hR0R1 : R0 < R1 := by linarith

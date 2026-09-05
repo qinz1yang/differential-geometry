@@ -46,11 +46,11 @@ theorem canonChi_source
       (chartAt H (canonicalFlatBase (I := I) (M := M) rFine hr z)).source := by
   intro x hx
   change x ∈ tsupport
-      ((((canonicalFineChartData (I := I) (M := M) rFine hr z.1.1).chi z.2 :
+      ((((canonicalFineChartCover (I := I) (M := M) rFine hr z.1.1).chi z.2 :
         C^∞⟮I, M; ℝ⟯) : M → ℝ)) at hx
   change x ∈ (chartAt H z.1.1).source
   rw [← extChartAt_source (I := I)]
-  exact ((canonicalFineChartData (I := I) (M := M) rFine hr z.1.1).chi_support z.2 hx).1
+  exact ((canonicalFineChartCover (I := I) (M := M) rFine hr z.1.1).chi_support z.2 hx).1
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem canonPsi_compact
@@ -71,11 +71,11 @@ theorem canonPsi_source
       (chartAt H (canonicalFlatBase (I := I) (M := M) rFine hr z)).source := by
   intro x hx
   change x ∈ tsupport
-      ((((canonicalFineChartData (I := I) (M := M) rFine hr z.1.1).psi z.2 :
+      ((((canonicalFineChartCover (I := I) (M := M) rFine hr z.1.1).psi z.2 :
         C^∞⟮I, M; ℝ⟯) : M → ℝ)) at hx
   change x ∈ (chartAt H z.1.1).source
   rw [← extChartAt_source (I := I)]
-  exact ((canonicalFineChartData (I := I) (M := M) rFine hr z.1.1).psi_support z.2 hx).1
+  exact ((canonicalFineChartCover (I := I) (M := M) rFine hr z.1.1).psi_support z.2 hx).1
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem canonPsi_one
@@ -88,9 +88,9 @@ theorem canonPsi_one
     ((canonicalFlatPsi (I := I) (M := M) rFine hr z :
       C^∞⟮I, M; ℝ⟯) : M → ℝ) x = 1 := by
   change x ∈ tsupport
-      ((((canonicalFineChartData (I := I) (M := M) rFine hr z.1.1).chi z.2 :
+      ((((canonicalFineChartCover (I := I) (M := M) rFine hr z.1.1).chi z.2 :
         C^∞⟮I, M; ℝ⟯) : M → ℝ)) at hx
-  exact ((canonicalFineChartData (I := I) (M := M) rFine hr z.1.1).psi_one z.2)
+  exact ((canonicalFineChartCover (I := I) (M := M) rFine hr z.1.1).psi_one z.2)
     |>.self_of_nhdsSet x hx
 
 def canonicalCutE
@@ -216,13 +216,13 @@ theorem canonicalCut_joint
   · exact hKbound hu
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem modelRepack_mul
+theorem modelReconstruct_mul
     (r s : ℕ) (c : EuclN → ℝ)
     (u : TensorCompIdx (E := E) r s → EuclN → ℝ) (y : EuclN) :
-    modelRepack (E := E) r s (fun P y => c y * u P y) y =
-      c y • modelRepack (E := E) r s u y := by
+    modelReconstruct (E := E) r s (fun P y => c y * u P y) y =
+      c y • modelReconstruct (E := E) r s u y := by
   classical
-  unfold modelRepack
+  unfold modelReconstruct
   rw [Finset.smul_sum]
   refine Finset.sum_congr rfl ?_
   intro Idx _
@@ -231,7 +231,7 @@ theorem modelRepack_mul
   intro Jdx _
   rw [smul_smul]
 
-noncomputable def canonicalEuclideanRepack
+noncomputable def canonicalEuclideanReconstruct
     (rFine : M → ℝ) (hr : ∀ α, 0 < rFine α)
     (r s : ℕ)
     (u : FineCompArray (E := E)
@@ -240,62 +240,62 @@ noncomputable def canonicalEuclideanRepack
   fun x =>
     ∑ a : CanonicalChartIndex (I := I) (M := M),
       ∑ z : CanonicalFineIndex (I := I) (M := M) rFine hr a.1,
-        chartRepack (I := I) (M := M) r s a.1
+        chartReconstruct (I := I) (M := M) r s a.1
           (fun P => canonicalCutMul (I := I) (M := M) rFine hr ⟨a, z⟩
             (u ⟨a, z⟩ P)) x
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem chartRepack_cut
+theorem chartReconstruct_cut
     (rFine : M → ℝ) (hr : ∀ α, 0 < rFine α)
     (r s : ℕ) (z : CanonicalFineFlatIndex (I := I) (M := M) rFine hr)
     (u : TensorCompIdx (E := E) r s → EuclN → ℝ) :
-    chartRepack (I := I) (M := M) r s
+    chartReconstruct (I := I) (M := M) r s
         (canonicalFlatBase (I := I) (M := M) rFine hr z)
         (fun P => canonicalCutMul (I := I) (M := M) rFine hr z (u P)) =
       fun x =>
         ((canonicalFlatChi (I := I) (M := M) rFine hr z :
           C^∞⟮I, M; ℝ⟯) : M → ℝ) x •
-          chartRepack (I := I) (M := M) r s
+          chartReconstruct (I := I) (M := M) r s
             (canonicalFlatBase (I := I) (M := M) rFine hr z) u x := by
   funext x
   by_cases hx : x ∈
       (chartAt H (canonicalFlatBase (I := I) (M := M) rFine hr z)).source
-  · unfold chartRepack secModelPull
+  · unfold chartReconstruct secModelPull
     simp only [dif_pos hx]
     unfold canonicalCutMul
-    rw [modelRepack_mul (E := E) r s
+    rw [modelReconstruct_mul (E := E) r s
       (canonicalCutE (I := I) (M := M) rFine hr z) u,
       canonicalCut_coord (I := I) (M := M) rFine hr z hx,
       ContinuousLinearMap.map_smul]
-  · unfold chartRepack secModelPull
+  · unfold chartReconstruct secModelPull
     simp only [dif_neg hx, smul_zero]
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem canonERepack_eq
+theorem canonicalEuclideanReconstruct_eq
     (rFine : M → ℝ) (hr : ∀ α, 0 < rFine α)
     (r s : ℕ)
     (u : FineCompArray (E := E)
       (CanonicalFineFlatIndex (I := I) (M := M) rFine hr) r s) :
-    canonicalEuclideanRepack (I := I) (M := M) rFine hr r s u =
-      canonicalCutRepack (I := I) (M := M) rFine hr r s u := by
+    canonicalEuclideanReconstruct (I := I) (M := M) rFine hr r s u =
+      canonicalCutReconstruct (I := I) (M := M) rFine hr r s u := by
   classical
   funext x
-  unfold canonicalEuclideanRepack canonicalCutRepack
+  unfold canonicalEuclideanReconstruct canonicalCutReconstruct
   refine Finset.sum_congr rfl ?_
   intro a _
   refine Finset.sum_congr rfl ?_
   intro z _
   exact congrFun
-    (chartRepack_cut (I := I) (M := M) rFine hr r s ⟨a, z⟩ (u ⟨a, z⟩)) x
+    (chartReconstruct_cut (I := I) (M := M) rFine hr r s ⟨a, z⟩ (u ⟨a, z⟩)) x
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem canonicalEuclidean_retract
     (rFine : M → ℝ) (hr : ∀ α, 0 < rFine α)
     (r s : ℕ) (S : RSTensorSection I M r s) :
-    canonicalEuclideanRepack (I := I) (M := M) rFine hr r s
+    canonicalEuclideanReconstruct (I := I) (M := M) rFine hr r s
         (canonicalFineRaw (I := I) (M := M) rFine hr r s S) =
       S := by
-  rw [canonERepack_eq (I := I) (M := M)]
+  rw [canonicalEuclideanReconstruct_eq (I := I) (M := M)]
   exact canonicalCut_retract (I := I) (M := M) rFine hr r s S
 
 def fineTransCoeff
@@ -731,7 +731,7 @@ theorem finePullEq
             C^∞⟮I, M; ℝ⟯) : M → ℝ)))
     (α : M) (P : TensorCompIdx (E := E) r s) :
     secChartComp (I := I) (M := M) r s
-        (chartRepack (I := I) (M := M) r s
+        (chartReconstruct (I := I) (M := M) r s
           (canonicalFlatBase (I := I) (M := M) rFine hr z) u)
         α P.1 P.2 =ᵐ[
       (volume : Measure EuclN).restrict
@@ -755,14 +755,14 @@ theorem finePullEq
   by_cases hx : x ∈
       (chartAt H
         (canonicalFlatBase (I := I) (M := M) rFine hr z)).source
-  · rw [chartRepack,
+  · rw [chartReconstruct,
       secPull_raw_trans (E := E) (I := I) (M := M) r s
         (canonicalFlatBase (I := I) (M := M) rFine hr z) α
-        (modelRepack (E := E) r s u) P ⟨hx, hxα⟩,
+        (modelReconstruct (E := E) r s u) P ⟨hx, hxα⟩,
       Finset.mul_sum]
     refine Finset.sum_congr rfl ?_
     intro Q _
-    rw [modelRepack_proj (E := E) r s u Q]
+    rw [modelReconstruct_proj (E := E) r s u Q]
     unfold fineSecTerm chartPushed
     rw [chartPullback_apply_of_mem (I := I) (M := M)
         (canonicalFlatBase (I := I) (M := M) rFine hr z) _ hx,
@@ -771,9 +771,9 @@ theorem finePullEq
     exact fineCoeffEq (I := I) (M := M)
       rFine hr r s z α P Q (hu Q) hx
   · have hpull :
-        chartRepack (I := I) (M := M) r s
+        chartReconstruct (I := I) (M := M) r s
           (canonicalFlatBase (I := I) (M := M) rFine hr z) u x = 0 := by
-      unfold chartRepack secModelPull
+      unfold chartReconstruct secModelPull
       rw [dif_neg hx]
     unfold secCompRaw secTriv
     rw [hpull, ContinuousLinearMap.map_zero,

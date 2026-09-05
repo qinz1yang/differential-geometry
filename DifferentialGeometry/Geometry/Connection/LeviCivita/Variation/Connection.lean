@@ -193,7 +193,7 @@ theorem metricVar_path
       DifferentialGeometry.Geometry.Connection.IsMetricPotentialVariationPath (I := I) path
         metricVariation
         potentialVariation) :
-    metricVarOn (I := I) path.G frame path.base u
+    metricVarOn (I := I) path.connectionFamily frame path.base u
       (metricDotFrame (I := I) metricVariation frame) := by
   intro x _hx a b
   simpa [metricDotFrame] using

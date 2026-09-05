@@ -51,7 +51,7 @@ abbrev factorPointed (S : SmoothSeqSystem I A) (O₀ : A 0)
     (g : ∀ k, SmoothRiemannianMetric I (A k)) (k : ℕ) :
     PointedRiemannianManifold.{u, uE, uH} (I := I) where
   M := A k
-  basepoint := S.toSeqSystem.F (Nat.zero_le k) O₀
+  basepoint := S.toSeqSystem.map (Nat.zero_le k) O₀
   metric := g k
 
 abbrev factorSeq (S : SmoothSeqSystem I A) (O₀ : A 0)
@@ -66,7 +66,7 @@ theorem range_exhausts (S : SmoothSeqSystem I A) :
   isOpen k := (S.toSeqSystem.incl_isOpenEmb k).isOpen_range
   mono_step k := S.toSeqSystem.range_incl_mono (Nat.le_succ k)
   subset K hK := by
-    obtain ⟨k₀, Kk, _, hKeq⟩ := S.toSeqSystem.isCompact_exists hK
+    obtain ⟨k₀, Kk, _, hKeq⟩ := S.toSeqSystem.exists_compact_stage_representation hK
     refine ⟨k₀, fun k hk => ?_⟩
     rw [hKeq]
     exact (Set.image_subset_range _ _).trans (S.toSeqSystem.range_incl_mono hk)
@@ -80,7 +80,7 @@ noncomputable def limitConvergenceMapsOf (S : SmoothSeqSystem I A) (O₀ : A 0)
       (subseq := id) where
   partialDiffeomorph k := S.inclPartialDiffeo k
   source_exhausts := range_exhausts S
-  base_mem k := ⟨S.toSeqSystem.F (Nat.zero_le k) O₀, S.toSeqSystem.incl_comp (Nat.zero_le k) O₀⟩
+  base_mem k := ⟨S.toSeqSystem.map (Nat.zero_le k) O₀, S.toSeqSystem.incl_comp (Nat.zero_le k) O₀⟩
   basepoint_map k := S.invIncl_incl_le (Nat.zero_le k) O₀
 
 noncomputable def limitConvergenceMaps (S : SmoothSeqSystem I A) (O₀ : A 0)

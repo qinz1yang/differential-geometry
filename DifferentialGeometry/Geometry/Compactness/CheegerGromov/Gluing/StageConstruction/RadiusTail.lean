@@ -26,7 +26,7 @@ variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 variable {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
 
 noncomputable def stageMapCast
-    (inp : MetricCompactCore (I := I) X)
+    (inp : MetricCompactSeedWithDivisor (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P) (s : Real) (hs : 0 ≤ s)
     (k l K L' : Nat) (hk : L.φ k = K) (hl : L.φ l = L')
@@ -38,7 +38,7 @@ noncomputable def stageMapCast
   exact stageComparisonMap inp P L s hs k l (chart := chart)
 
 private theorem cast_geom
-    (inp : MetricCompactCore (I := I) X)
+    (inp : MetricCompactSeedWithDivisor (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P) (s : Real) (hs : 0 ≤ s)
     (k l K L' : Nat) (hk : L.φ k = K) (hl : L.φ l = L') (R : Real)
@@ -98,7 +98,7 @@ private theorem cast_geom
   simpa only [stageMapCast] using hgeom
 
 private theorem cast_local
-    (inp : MetricCompactCore (I := I) X)
+    (inp : MetricCompactSeedWithDivisor (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P) (s : Real) (hs : 0 ≤ s)
     (k l K L' : Nat) (hk : L.φ k = K) (hl : L.φ l = L') (R : Real)
@@ -150,24 +150,21 @@ private theorem cast_local
   simpa only [stageMapCast] using hgeom
 
 theorem HasRadiusTailOn.local_tail
-    (inp : MetricCompactCore (I := I) X)
+    (inp : MetricCompactSeedWithDivisor (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L0 : NetLimitData inp.decay inp.D P)
-    (hconn : ∀ j,
-      letI : TopologicalSpace (X.obj j).M := (X.obj j).topology
-      ConnectedSpace (X.obj j).M)
     (chart : NormalChartFamily (I := I) X)
     (hseed : HasStageSeedOn inp P L0 chart)
     (psi : Nat → Nat) (q : Nat)
-    (htail : HasRadiusTailOn inp P L0 hconn chart hseed psi q)
+    (htail : HasRadiusTailOn inp P L0 chart hseed psi q)
     (R : Real) (hRq : R < (q : Real)) :
-    let S := stageStatesOn inp P L0 hconn chart hseed q
-    let d := radiusPayloadOn inp P L0 hconn chart hseed q
+    let S := stageSubsequenceOn inp P L0 chart hseed q
+    let d := radiusConvergenceSelectionOn inp P L0 chart hseed q
     ∃ (rho : Nat → Nat) (hrho : StrictMono rho)
         (hindex : ∀ n,
           (((L0.subseq S.sigma_strict).subseq
             (d.phi_strict.comp hrho)).φ n) = psi (q + n)),
-      HasStageJetDataOn inp P (L0.subseq S.sigma_strict)
+      HasStageJetConvergenceOn inp P (L0.subseq S.sigma_strict)
           (Nat.cast_nonneg q) (d.phi ∘ rho) (d.phi_strict.comp hrho)
           chart d.V d.U d.C0 d.C1 d.aInf d.Jinf d.Jbarinf d.gInf ∧
         ∃ (N : Nat) (hNq : q ≤ N), ∀ (k : Nat) (hk : N ≤ k)
@@ -209,8 +206,8 @@ theorem HasRadiusTailOn.local_tail
   classical
   dsimp only
   obtain ⟨rho, hrho, hindex, hstage⟩ := htail
-  let S := stageStatesOn inp P L0 hconn chart hseed q
-  let d := radiusPayloadOn inp P L0 hconn chart hseed q
+  let S := stageSubsequenceOn inp P L0 chart hseed q
+  let d := radiusConvergenceSelectionOn inp P L0 chart hseed q
   let Lbase := L0.subseq S.sigma_strict
   let Lq := Lbase.subseq (d.phi_strict.comp hrho)
   obtain ⟨Nloc, hloc⟩ := hstage.hloc_tail inp P Lbase
@@ -247,7 +244,7 @@ theorem HasRadiusTailOn.local_tail
     by simpa only [Lq, Lbase] using hbase0⟩
 
 theorem HasRadiusTailOn.geom_tail
-    (inp : MetricCompactCore (I := I) X)
+    (inp : MetricCompactSeedWithDivisor (I := I) X)
     (d : BoundedGeometryNormalChartData (I := I) X inp.decay)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L0 : NetLimitData inp.decay inp.D P)
@@ -257,17 +254,17 @@ theorem HasRadiusTailOn.geom_tail
       ConnectedSpace (X.obj j).M)
     (hseed : HasStageSeedOn inp P L0 d.chart)
     (psi : Nat → Nat) (q : Nat)
-    (htail : HasRadiusTailOn inp P L0 hconn d.chart hseed psi q)
+    (htail : HasRadiusTailOn inp P L0 d.chart hseed psi q)
     (R0 R1 : Real)
     (hroom : R0 + (4 + 8 * Real.sqrt 2) * inp.decay.lambda inp.D 0 < R1)
     (hR1q : R1 < (q : Real)) :
-    let S := stageStatesOn inp P L0 hconn d.chart hseed q
-    let a := radiusPayloadOn inp P L0 hconn d.chart hseed q
+    let S := stageSubsequenceOn inp P L0 d.chart hseed q
+    let a := radiusConvergenceSelectionOn inp P L0 d.chart hseed q
     ∃ (rho : Nat → Nat) (hrho : StrictMono rho)
         (hindex : ∀ n,
           (((L0.subseq S.sigma_strict).subseq
             (a.phi_strict.comp hrho)).φ n) = psi (q + n)),
-      HasStageJetDataOn inp P (L0.subseq S.sigma_strict)
+      HasStageJetConvergenceOn inp P (L0.subseq S.sigma_strict)
           (Nat.cast_nonneg q) (a.phi ∘ rho) (a.phi_strict.comp hrho)
           d.chart a.V a.U a.C0 a.C1 a.aInf a.Jinf a.Jbarinf a.gInf ∧
         ∃ (N : Nat) (hNq : q ≤ N), ∀ (k : Nat) (hk : N ≤ k)
@@ -310,13 +307,13 @@ theorem HasRadiusTailOn.geom_tail
   classical
   dsimp only
   obtain ⟨rho, hrho, hindex, hstage⟩ := htail
-  let S := stageStatesOn inp P L0 hconn d.chart hseed q
-  let a := radiusPayloadOn inp P L0 hconn d.chart hseed q
+  let S := stageSubsequenceOn inp P L0 d.chart hseed q
+  let a := radiusConvergenceSelectionOn inp P L0 d.chart hseed q
   let Lbase := L0.subseq S.sigma_strict
   let Lq := Lbase.subseq (a.phi_strict.comp hrho)
   have hR0q : R0 < (q : Real) := by
     have hlam : 0 ≤ inp.decay.lambda inp.D 0 :=
-      (inp.decay.lambda_pos inp.hD 0).le
+      (inp.decay.lambda_pos inp.divisor_pos 0).le
     have hcoef : 0 ≤
         (4 + 8 * Real.sqrt 2) * inp.decay.lambda inp.D 0 := by
       positivity
@@ -372,7 +369,7 @@ theorem HasRadiusTailOn.geom_tail
     by simpa only [Lq, Lbase] using hbase0⟩
 
 theorem HasRadiusTail.geom_tail
-    (inp : MetricCompactnessInputs (I := I) X)
+    (inp : MetricCompactnessAssumptions (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L0 : NetLimitData inp.decay inp.D P)
     (hcomplete : ∀ j, MetricComplete (I := I) (X.obj j))
@@ -381,17 +378,17 @@ theorem HasRadiusTail.geom_tail
       ConnectedSpace (X.obj j).M)
     (hseed : HasStageSeed inp P L0)
     (psi : Nat → Nat) (q : Nat)
-    (htail : HasRadiusTail inp P L0 hconn hseed psi q)
+    (htail : HasRadiusTail inp P L0 hseed psi q)
     (R0 R1 : Real)
     (hroom : R0 + (4 + 8 * Real.sqrt 2) * inp.decay.lambda inp.D 0 < R1)
     (hR1q : R1 < (q : Real)) :
-    let S := stageStates inp P L0 hconn hseed q
-    let d := radiusPayload inp P L0 hconn hseed q
+    let S := stageSubsequence inp P L0 hseed q
+    let d := radiusConvergenceSelection inp P L0 hseed q
     ∃ (rho : Nat → Nat) (hrho : StrictMono rho)
         (hindex : ∀ n,
           (((L0.subseq S.sigma_strict).subseq
             (d.phi_strict.comp hrho)).φ n) = psi (q + n)),
-      HasStageJetData inp P (L0.subseq S.sigma_strict)
+      HasStageJetConvergence inp P (L0.subseq S.sigma_strict)
           (Nat.cast_nonneg q) (d.phi ∘ rho) (d.phi_strict.comp hrho)
           d.U d.C0 d.C1 d.aInf d.Jinf d.Jbarinf d.gInf ∧
         ∃ (N : Nat) (hNq : q ≤ N), ∀ (k : Nat) (hk : N ≤ k)
@@ -433,13 +430,13 @@ theorem HasRadiusTail.geom_tail
   classical
   dsimp only
   obtain ⟨rho, hrho, hindex, hstage⟩ := htail
-  let S := stageStates inp P L0 hconn hseed q
-  let d := radiusPayload inp P L0 hconn hseed q
+  let S := stageSubsequence inp P L0 hseed q
+  let d := radiusConvergenceSelection inp P L0 hseed q
   let Lbase := L0.subseq S.sigma_strict
   let Lq := Lbase.subseq (d.phi_strict.comp hrho)
   have hR0q : R0 < (q : Real) := by
     have hlam : 0 ≤ inp.decay.lambda inp.D 0 :=
-      (inp.decay.lambda_pos inp.hD 0).le
+      (inp.decay.lambda_pos inp.divisor_pos 0).le
     have hcoef : 0 ≤
         (4 + 8 * Real.sqrt 2) * inp.decay.lambda inp.D 0 := by
       positivity

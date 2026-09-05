@@ -303,22 +303,24 @@ attribute [-simp] LowRegularityTimeSolution.mk.sizeOf_spec
 structure LowRegularityPartialSolution (g₀ g_bg : SmoothRiemannianMetric I M) where
   R : ℝ
   δ : ℝ
-  hR : 0 < R
-  hδ : δ < 1
-  hrealR : ∀ S : SmoothCcTensor g₀ 0 2,
+  radius_pos : 0 < R
+  contraction_lt_one : δ < 1
+  metric_bound : ∀ S : SmoothCcTensor g₀ 0 2,
     ‖smoothCcToTensorHs (I := I) (M := M) g₀ (((1 : ℕ) : ℝ) + 1) S‖ ≤ R →
       metricCauchySchwarzBound (I := I) (M := M) g₀
         (ccTensorBilinSymm (I := I) g₀ S) δ
   continuous_nonlinearity :
-    Continuous (deTurckRemainderOnLowerState (I := I) (M := M) g₀ g_bg hR hδ hrealR)
-  continuous_core :
-    Continuous (deTurckRemainderOnSmoothCore (I := I) (M := M) g₀ g_bg hδ hrealR)
+    Continuous (deTurckRemainderOnLowerState (I := I) (M := M) g₀ g_bg
+      radius_pos contraction_lt_one metric_bound)
+  smoothCore_continuous :
+    Continuous (deTurckRemainderOnSmoothCore (I := I) (M := M) g₀ g_bg
+      contraction_lt_one metric_bound)
   T₀ : ℝ
-  hT₀ : 0 < T₀
+  maxTime_pos : 0 < T₀
   solution :
     ∀ {T : ℝ} (hT : 0 < T) (_hTT₀ : T ≤ T₀) (hT1 : T ≤ 1),
       Nonempty (LowRegularityTimeSolution (I := I) (M := M) g₀ g_bg R δ T
-        hR hδ hrealR hT hT1)
+        radius_pos contraction_lt_one metric_bound hT hT1)
 
 theorem exists_lowRegularity_partial_solution
     (hDim : Module.finrank ℝ E = 3)
@@ -457,13 +459,13 @@ theorem exists_lowRegularity_partial_solution
   refine ⟨{
     R := R
     δ := θ
-    hR := hR
-    hδ := hθlt
-    hrealR := hrealR
+    radius_pos := hR
+    contraction_lt_one := hθlt
+    metric_bound := hrealR
     continuous_nonlinearity := by simpa only [Nfun] using hcont
-    continuous_core := hcorecont
+    smoothCore_continuous := hcorecont
     T₀ := T₀
-    hT₀ := hT₀
+    maxTime_pos := hT₀
     solution := ?_
   }⟩
   intro T hT hTT₀ hT1

@@ -831,7 +831,7 @@ theorem deTurckRHSCovariantTermDifference_eq_pathIntegralCoeff_triple_of_symm
               (linearizedRicciSecondOrderFieldLichnerowicz (I := I) g₀ T T' hδ hδ' s)
               (iteratedCovGrad (I := I) g₀ 0 2 2 (T - T'))) x v := by
       obtain ⟨_, _, _, hident, _, _⟩ :=
-        (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.exists_orderZero_firstOrder_correctionField_data
+        (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.exists_orderZero_firstOrder_correctionFields
           (I := I) g₀ T T' hδ hδ').choose_spec.choose_spec
       exact hident hTsymm hT'symm s hsIoo x v hδ_lt hδ'_lt
     have hLid := linearizedDeTurckLieAt_eq_covariantJet_of_symm (I := I) (M := M)

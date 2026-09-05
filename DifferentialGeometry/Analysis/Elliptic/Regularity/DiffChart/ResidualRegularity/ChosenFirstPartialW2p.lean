@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Elliptic.Regularity.DiffChart.ResidualRegularity.BilinearH1ComplViaH3
+import DifferentialGeometry.Analysis.Elliptic.Regularity.DiffChart.ResidualRegularity.ChosenFirstPartialW1p
 
 
 noncomputable section
@@ -10,7 +10,7 @@ open scoped Manifold Topology ContDiff Matrix InnerProductSpace BigOperators
 namespace DifferentialGeometry
 namespace Analysis
 namespace Laplacian
-namespace DiffChartBilinearH1ComplH3Direct
+namespace DiffChartChosenFirstPartialW2p
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
@@ -27,7 +27,7 @@ open DifferentialGeometry.Analysis.Laplacian.H1ComplGradientH1LipschitzBound
 open DifferentialGeometry.Analysis.Laplacian.H1ComplWeakPartialLimit
 open DifferentialGeometry.Analysis.Laplacian.LaplacianDomainChartData
 open DifferentialGeometry.Analysis.Laplacian.DiffChartBilinearH1Compl
-open DifferentialGeometry.Analysis.Laplacian.DiffChartBilinearH1ComplH3
+open DifferentialGeometry.Analysis.Laplacian.DiffChartChosenFirstPartial
 open DifferentialGeometry.Analysis.Sobolev.Chart
 open DifferentialGeometry.Analysis.Sobolev.NirenbergEuclidean
 
@@ -141,7 +141,7 @@ theorem diffChartBilinearH1Compl_u_chart_deriv_memWkp_two
     (chartTargetEuclid_isOpen (I := I) (M := M) α) h_ae.symm).mp
     h_chosenFirst_memWkp_two
 
-end DiffChartBilinearH1ComplH3Direct
+end DiffChartChosenFirstPartialW2p
 end Laplacian
 end Analysis
 end DifferentialGeometry

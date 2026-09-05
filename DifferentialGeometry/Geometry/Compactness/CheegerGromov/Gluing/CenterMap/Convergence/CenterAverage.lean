@@ -123,7 +123,7 @@ theorem uniform_center_average_convergence (hd : InjectivityRadiusDecay (I := I)
       let pointsSeq := NetLimitData.decodedCompPoints (I := I) (X.obj (L.φ n)).metric center B A
       forall a b : Nat, forall x : (X.obj (L.φ n)).M,
         x ∈ NetLimitData.hatSourceBall (I := I) (X := X) hd P L r n ->
-          StrictDistInput (I := I) (X.obj (L.φ n)).metric
+          StrictDistanceConvexity (I := I) (X.obj (L.φ n)).metric
             (centerAverage.activeFill
               (fun y : (X.obj (L.φ n)).M => fun gamma : Fin (pb.A r) => rho gamma y)
               (pointsSeq a b) (fun y : (X.obj (L.φ n)).M => y) x)
@@ -280,7 +280,7 @@ theorem uniform_center_average_convergence_of_weight_data (hd : InjectivityRadiu
       let pointsSeq := NetLimitData.decodedCompPoints (I := I) (X.obj (L.φ n)).metric center B A
       forall a b : Nat, forall x : (X.obj (L.φ n)).M,
         x ∈ NetLimitData.hatSourceBall (I := I) (X := X) hd P L r n ->
-          StrictDistInput (I := I) (X.obj (L.φ n)).metric
+          StrictDistanceConvexity (I := I) (X.obj (L.φ n)).metric
             (centerAverage.activeFill mu (pointsSeq a b)
               (fun y : (X.obj (L.φ n)).M => y) x)
             join x (radSeq a b x))
@@ -346,9 +346,9 @@ theorem uniform_center_average_convergence_of_weight_data (hd : InjectivityRadiu
                   (points := pointsSeq a b) (join := join)
                   (r := radSeq a b) (qstar := fun y : (X.obj (L.φ n)).M => y)
                   y hcomplete (hrad a b y hy) (hactive_mem a b y hy)
-                  ((hmu.data hy).1.1) ((hmu.data hy).1.2.1)
+                  (hmu.nonneg y hy) (hmu.pos y hy)
                   (hstrict a b y hy)) x) < eps := by
-  exact NetLimitData.uniformHatCageData hd P L pb r n mu hmu join radSeq center U V
+  exact NetLimitData.center_average_uniformly_converges_to_identity_of_hat_cages hd P L pb r n mu hmu join radSeq center U V
     B Binf A Ainf hconn hX hcenter
     (fun gamma => hgp gamma (center gamma) (hcenter gamma))
     hrad hactive_mem hstrict hVopen hB hA hBcont hAcont hid hKU
@@ -511,7 +511,7 @@ theorem exists_center_average_identity_convergence_subsequence (hd : Injectivity
       letI : T3Space (X.obj (L.φ n)).M := inferInstance
       forall a b : Nat, forall xx : (X.obj (L.φ n)).M,
         xx ∈ NetLimitData.hatSourceBall (I := I) (X := X) hd P L r n ->
-          StrictDistInput (I := I) (X.obj (L.φ n)).metric
+          StrictDistanceConvexity (I := I) (X.obj (L.φ n)).metric
             (centerAverage.activeFill
               (fun yy : (X.obj (L.φ n)).M => fun gamma : Fin (pb.A r) => rho gamma yy)
               (NetLimitData.decodedCompPoints (I := I) (X.obj (L.φ n)).metric

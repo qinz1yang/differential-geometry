@@ -132,7 +132,7 @@ theorem shortSlab_cert
     {N : TwoTensorReaction (I := I) (M := M)}
     {t0 T : Real}
     (ht0 : t0 ∈ Set.Icc 0 T)
-    (hreg : TensorWeakMaximumPrincipleCore (I := I) (M := M) G S X N T)
+    (hreg : TensorWeakMaximumPrincipleCompactness (I := I) (M := M) G S X N T)
     (hcert :
       ∃ delta : Real, 0 < delta ∧ t0 + delta ≤ T ∧
         TensorStrictCertSlab (I := I) (M := M) G S X N delta t0)
@@ -194,7 +194,7 @@ theorem tensorBarrier_nonnegative_on_short_slab
       tensorBarrierUniformOnSlab (I := I) (M := M) G S delta t0 := by
   exact shortSlab_cert (I := I) (M := M)
     (G := G) (S := S) (X := X) (N := N)
-    ht0 hreg.toCore
+    ht0 hreg.toCompactness
     (certSlab_of_regularity (I := I) (M := M)
       (G := G) (S := S) (X := X) (N := N)
       ht0 ht0T hreg hparabolic)
@@ -220,7 +220,7 @@ theorem tensor_weak_maximum_principle_of_barrier_limit
     (fun t0 ht0 ht0T hinit_t0 =>
       shortSlab_cert (I := I) (M := M)
         (G := G) (S := S) (X := X) (N := N)
-        ht0 hreg.toCore
+        ht0 hreg.toCompactness
         (certSlab_of_regularity (I := I) (M := M)
           (G := G) (S := S) (X := X) (N := N)
           ht0 ht0T hreg hparabolic)
@@ -233,7 +233,7 @@ theorem weak_maximum_principle_of_cert
     {X : TimeDependentVectorField (I := I) (M := M)}
     {N : TwoTensorReaction (I := I) (M := M)}
     {T : Real}
-    (hreg : TensorWeakMaximumPrincipleCore (I := I) (M := M) G S X N T)
+    (hreg : TensorWeakMaximumPrincipleCompactness (I := I) (M := M) G S X N T)
     (hcert :
       ∀ t0 : Real, t0 ∈ Set.Icc 0 T -> t0 < T ->
         ∃ delta : Real, 0 < delta ∧ t0 + delta ≤ T ∧
@@ -260,7 +260,7 @@ theorem weak_maximum_principle_section_sec
     {nabla2S : TensorNabla2SecFamily (I := I) (M := M)}
     {cov : Real -> CovariantDerivative I E (TangentSpace I : M -> Type _)}
     {T : Real}
-    (hreg : TensorWeakMaximumPrincipleSectionCore (I := I) (M := M) G S X N T)
+    (hreg : TensorWeakMaximumPrincipleSectionCompactness (I := I) (M := M) G S X N T)
     (hparabolic : TensorParabolicSupersolutionWithDriftOn
       (I := I) (M := M) G (twoTensorSecToFamily (I := I) (M := M) S) X N
       (fun t x => nabla2S t x) (fun t x => nablaS t x) T)
@@ -288,7 +288,7 @@ theorem weak_maximum_principle_section_sec
         ht0 ht0T hreg hparabolic hcov1 hcovInf hmc hS)
     hnull hinit
 
-structure TensorWeakMaximumPrincipleInput
+structure TensorWeakMaximumPrincipleAssumptions
     (G : Real -> SmoothRiemannianMetric I M)
     (S : TwoTensorSecFamily (I := I) (M := M))
     (X : TimeDependentVectorField (I := I) (M := M))
@@ -297,8 +297,8 @@ structure TensorWeakMaximumPrincipleInput
     (nablaS : TensorNabla1SecFamily (I := I) (M := M))
     (nabla2S : TensorNabla2SecFamily (I := I) (M := M))
     (T : Real) : Prop where
-  hT : 0 ≤ T
-  regularity : TensorWeakMaximumPrincipleSectionCore (I := I) (M := M) G S X N T
+  time_nonneg : 0 ≤ T
+  regularity : TensorWeakMaximumPrincipleSectionCompactness (I := I) (M := M) G S X N T
   parabolic :
     TensorParabolicSupersolutionWithDriftOn
       (I := I) (M := M) G (twoTensorSecToFamily (I := I) (M := M) S) X N
@@ -307,13 +307,13 @@ structure TensorWeakMaximumPrincipleInput
   initial :
     TwoTensorFamilyNonnegativeAtTime (I := I) (M := M)
       (twoTensorSecToFamily (I := I) (M := M) S) 0
-  hcov1 : ∀ t : Real,
+  connection_contMDiff_one : ∀ t : Real,
     CovariantDerivative.ContMDiffCovariantDerivativeLocally
       (cov t) (1 : WithTop ℕ∞)
-  hcovInf : ∀ t : Real,
+  connection_contMDiff_infty : ∀ t : Real,
     CovariantDerivative.ContMDiffCovariantDerivativeLocally
       (cov t) (∞ : WithTop ℕ∞)
-  hmc : ∀ t : Real,
+  metricCompatible : ∀ t : Real,
     DifferentialGeometry.Geometry.Connection.IsMetricCompatible (I := I) (cov t) (G t)
   spatial : TensorSpatialDerivs (I := I) (M := M) cov S nablaS nabla2S
 
@@ -329,14 +329,15 @@ theorem tensor_weak_maximum_principle
     {nablaS : TensorNabla1SecFamily (I := I) (M := M)}
     {nabla2S : TensorNabla2SecFamily (I := I) (M := M)}
     {T : Real}
-    (data : TensorWeakMaximumPrincipleInput (I := I) (M := M) G S X N cov nablaS nabla2S T) :
+    (data : TensorWeakMaximumPrincipleAssumptions (I := I) (M := M) G S X N cov nablaS nabla2S T) :
     TwoTensorFamilyNonnegativeOn (I := I) (M := M)
       (twoTensorSecToFamily (I := I) (M := M) S) (Set.Icc 0 T) := by
   exact weak_maximum_principle_section_sec (I := I) (M := M)
     (G := G) (S := S) (X := X) (N := N)
     (nablaS := nablaS) (nabla2S := nabla2S) (cov := cov)
     data.regularity data.parabolic data.null data.initial
-    data.hcov1 data.hcovInf data.hmc data.spatial
+    data.connection_contMDiff_one data.connection_contMDiff_infty
+      data.metricCompatible data.spatial
 
 omit [IsManifold I 2 M] in
 theorem hamilton_tensor_weak_maximum_principle
@@ -354,7 +355,7 @@ theorem hamilton_tensor_weak_maximum_principle
     (_hinit : TwoTensorFamilyNonnegativeAtTime (I := I) (M := M) S 0) :
     TwoTensorFamilyNonnegativeOn (I := I) (M := M) S (Set.Icc 0 T) := by
   exact weak_maximum_principle_of_cert (I := I) (M := M)
-    (G := G) (S := S) (X := X) (N := N) hreg.toCore
+    (G := G) (S := S) (X := X) (N := N) hreg.toCompactness
     (fun t0 ht0 ht0T =>
       certSlab_of_regularity (I := I) (M := M)
         (G := G) (S := S) (X := X) (N := N)
@@ -381,7 +382,7 @@ theorem hamilton_tensor_weak_maximum_principle_section
       (twoTensorSecToFamily (I := I) (M := M) S) (Set.Icc 0 T) := by
   exact weak_maximum_principle_of_cert (I := I) (M := M)
     (G := G) (S := twoTensorSecToFamily (I := I) (M := M) S)
-    (X := X) (N := N) hreg.toCore.toRaw
+    (X := X) (N := N) hreg.toCompactness.toRaw
     (fun t0 ht0 ht0T =>
       certSlab_of_sectionRegularity (I := I) (M := M)
         (G := G) (S := S) (X := X) (N := N)

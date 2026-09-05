@@ -61,7 +61,7 @@ theorem MetricCompactBase.exists_partial_approximate_isometry_subsequence
   refine ⟨ψ, hψ, ?_⟩
   dsimp only
   intro r hr ε hε hε1 p
-  exact PairwiseApproximateIsometryInput.exists_partial_approximate_isometry
+  exact HasPairwiseApproximateIsometries.exists_partial_approximate_isometry
     (X := X.subseq ψ)
     (fun k => properMetricOn (I := I) ((X.subseq ψ).obj k)
       (hcomplete.complete (ψ k)) (hconn (ψ k)))

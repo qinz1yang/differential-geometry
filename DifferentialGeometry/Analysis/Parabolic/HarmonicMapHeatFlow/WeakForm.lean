@@ -348,7 +348,7 @@ noncomputable def harmonicMapFlowWeakForm
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
   [BoundarylessManifold I M] in
-theorem harmonicMapFlowMass_time_cont
+theorem harmonicMapFlowMass_time_continuousOn
     (q : SmoothRiemannianMetric I M)
     (g : ℝ → SmoothRiemannianMetric I M) {K : Set ℝ} (hK : IsCompact K)
     (hcont : ∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)), ContinuousOn
@@ -1535,7 +1535,7 @@ theorem harmonicMapFlowCompl_coercive
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
   [BoundarylessManifold I M] in
-theorem harmonicMapFlowEdge_inputs
+theorem exists_harmonic_map_flow_volume_equivalence_and_metric_difference_bound
     (q : SmoothRiemannianMetric I M)
     (g : ℝ → SmoothRiemannianMetric I M) {a b : ℝ} (hab : a < b)
     (hcont : ∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)), ContinuousOn

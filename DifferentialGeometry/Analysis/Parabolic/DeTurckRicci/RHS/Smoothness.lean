@@ -32,48 +32,7 @@ variable [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-theorem deturckvf_chart_smooth_in_g_jet
-    (g g_bg : SmoothRiemannianMetric I M) (α : M)
-    (k : Fin (Module.finrank ℝ E)) :
-    ContMDiffOn I 𝓘(ℝ, ℝ) ∞
-      (fun x : M =>
-        chartCoeff (I := I) α
-          (deTurckVF (I := I) g g_bg
-            : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) k x)
-      (chartAt H α).source := by
-  have h := chartCoeff_contMDiffOn (I := I) α
-    (deTurckVF (I := I) g g_bg
-      : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) k
-  exact h
-
-omit [NeZero (Module.finrank ℝ E)] in
-omit [SigmaCompactSpace M] in
-theorem deturckvf_chart_component_smooth_in_g_input
-    (g g_bg : SmoothRiemannianMetric I M) (α : M)
-    (k : Fin (Module.finrank ℝ E)) :
-    ContMDiffOn I 𝓘(ℝ, ℝ) ∞
-      (fun x : M =>
-        chartCoeff (I := I) α
-          (deTurckVF (I := I) g g_bg
-            : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) k x)
-      (chartAt H α).source :=
-  chartCoeff_contMDiffOn (I := I) α
-    (deTurckVF (I := I) g g_bg
-      : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) k
-
-omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
-theorem liederivmetric_chart_smooth_in_g_w_jet [I.Boundaryless]
-    (g : SmoothRiemannianMetric I M)
-    (W : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
-    (α : M) (i j : Fin (Module.finrank ℝ E)) :
-    ContMDiffOn I 𝓘(ℝ, ℝ) ∞
-      (fun x : M => chartLieDerivMetricMatrix (I := I) g W α i j x)
-      (chartAt H α).source :=
-  chartLieDerivMetricMatrix_contMDiffOn (I := I) g W α i j
-
-omit [NeZero (Module.finrank ℝ E)] in
-omit [SigmaCompactSpace M] in
-theorem liederivmetric_chart_component_smooth_in_g_w_input
+theorem lieDerivMetric_chart_basis_contMDiffOn
     (g : SmoothRiemannianMetric I M)
     (W : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
     (α : M) (i j : Fin (Module.finrank ℝ E)) :
@@ -257,7 +216,7 @@ theorem combine_smoothness_of_summands
       (fun x : M => lieDerivMetric (I := I) g W x
         (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x) (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j x))
       (chartAt H α).source :=
-    liederivmetric_chart_component_smooth_in_g_w_input (I := I) g W α i j
+    lieDerivMetric_chart_basis_contMDiffOn (I := I) g W α i j
   have h_unfold : ∀ x : M,
       deTurckRicciRHS (I := I) g_bg g x
           (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x) (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j x) =

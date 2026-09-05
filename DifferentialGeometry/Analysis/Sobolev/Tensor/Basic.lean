@@ -436,7 +436,7 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
     ‖T‖ = wtwokTwoNormReal (I := I) (M := M) g k (wtwokTwoFun T) := rfl
 
 omit [NeZero (Module.finrank ℝ E)] in
-lemma wtwokTwo_normedSpace_core
+private lemma wtwokTwo_normedSpace_core
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (k : ℕ) :
     NormedSpace.Core ℝ (WtwokTwo (I := I) (M := M) g r s k) where
   norm_nonneg T := ENNReal.toReal_nonneg

@@ -1218,10 +1218,10 @@ theorem exists_lowerScaleFirstOrderCoefficient_backgroundDifference_covariantJet
   obtain ⟨C, hC⟩ := exists_convex_jets (I := I) (M := M) gBase hΛ
   obtain ⟨Bc, hBc, hcorr⟩ :=
     exists_deTurckLieFirstOrderCoefficient_backgroundDifference_covariantJetNormSq_two_uniform_bound (I := I) (M := M) hDim gBase hΛ hδ₀
-  let B : ℝ → ℝ := fun R => Bc (C.h2C * R)
+  let B : ℝ → ℝ := fun R => Bc (C.secondOrder * R)
   have hB : ∀ R : ℝ, 0 ≤ R → 0 ≤ B R := by
     intro R hR
-    exact hBc (C.h2C * R) (mul_nonneg hC.h2_nonneg hR)
+    exact hBc (C.secondOrder * R) (mul_nonneg hC.secondOrder_nonneg hR)
   refine ⟨B, hB, ?_⟩
   intro g hEq hjet T δ hδ_le hδ_nonneg hδT hδZ R hR hTHs
   have hδ_lt : δ < 1 := lt_of_le_of_lt hδ_le hδ₀
@@ -1251,7 +1251,7 @@ theorem exists_lowerScaleFirstOrderCoefficient_backgroundDifference_covariantJet
       simpa only [zero_smul] using hz
     rw [hz', norm_zero]
     exact hR
-  have hCR : 0 ≤ C.h2C * R := mul_nonneg hC.h2_nonneg hR
+  have hCR : 0 ≤ C.secondOrder * R := mul_nonneg hC.secondOrder_nonneg hR
   have hpoint : ∀ s ∈ Set.Icc (0 : ℝ) 1,
       covariantJetNormSq (I := I) (M := M) g 2 (Φ s) ≤ (B R) ^ 2 := by
     intro s hs
@@ -1278,12 +1278,12 @@ theorem exists_lowerScaleFirstOrderCoefficient_backgroundDifference_covariantJet
         ring
       simpa only [P, convexPerturbation, smul_zero, zero_add, heq] using hraw
     have hP2 : covariantJetNormSq (I := I) (M := M) g 2 P ≤
-        (C.h2C * R) ^ 2 := by
+        (C.secondOrder * R) ^ 2 := by
       simpa only [P, covariantJetNormSq, Nat.reduceAdd] using
         hpath2 T 0 R hR hTHs hZero s hs
     have hraw := hcorr g hEq (hjet 1 (by norm_num))
       (hjet 2 (by norm_num)) (hjet 3 (by norm_num)) gm P hPtie
-      hδ_le hδ_nonneg hδP (C.h2C * R) hCR hP2
+      hδ_le hδ_nonneg hδP (C.secondOrder * R) hCR hP2
     rw [show Φ s =
         deTurckLieFirstOrderCoeff (I := I) (M := M) g gm gBase -
           deTurckLieFirstOrderCoeff (I := I) (M := M) g gm g by

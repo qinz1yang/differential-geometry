@@ -11,7 +11,7 @@ open scoped Manifold Topology ContDiff
 
 namespace DifferentialGeometry.Analysis.Spectral
 
-open LieCorrectionZeroCore
+open LieCorrectionZeroFiberOperators
 open DifferentialGeometry.Integral.L2
 
 variable

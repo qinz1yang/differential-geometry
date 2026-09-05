@@ -114,10 +114,10 @@ theorem exists_ricciDeTurck_pairing_coefficient_decomposition
       (ccTensorBilinSymm (I := I) g (0 : SmoothCcTensor g 0 2)) delta :=
     metricPerturbation_zero_bound_at (I := I) (M := M) g hdelta_nn
   obtain ⟨LambdaR, hLambdaR, KR, hKR, qA, qB, hq, hRmain⟩ :=
-    exists_riemannPalatini_decomposition_identity_data (I := I) (M := M)
+    exists_riemannPalatini_decomposition_identity_with_bounds (I := I) (M := M)
       g a ha hR hhalf_lt
   obtain ⟨LambdaD, hLambdaD, KD, hKD, q, epsilon, hepsilon, hDmain⟩ :=
-    exists_deTurckLieCovariantDerivativeTerm_decomposition_identity_data (I := I) (M := M)
+    exists_deTurckLieCovariantDerivativeTerm_decomposition_identity_with_bounds (I := I) (M := M)
       g g_bg a ha hR hhalf_lt
   obtain ⟨C0R, hjR, hidR, hsupR, henvR⟩ :=
     hRmain W hWsymm hdelta_half hdelta hdeltaZ hball

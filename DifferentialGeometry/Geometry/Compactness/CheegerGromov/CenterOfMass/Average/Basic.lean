@@ -42,7 +42,7 @@ theorem metricEnorm (g : SmoothRiemannianMetric I M) :
 noncomputable def centerAverage (g : SmoothRiemannianMetric I M)
     {X : Type uX} {ι : Type} [Fintype ι] (μ : X → ι → ℝ)
     (points : X → ι → M) (join : M → M → ℝ → M) (p : X → M) (r : X → ℝ)
-    (h : ∀ x : X, CenterInput (I := I) g (μ x) (points x) join (p x) (r x))
+    (h : ∀ x : X, CenterOfMassConditions (I := I) g (μ x) (points x) join (p x) (r x))
     (x : X) : M :=
   centerOfMass (I := I) g (μ x) (points x) join (p x) (r x) (h x)
 
@@ -50,7 +50,7 @@ noncomputable def centerAverageOn (g : SmoothRiemannianMetric I M)
     {X : Type uX} {ι : Type} [Fintype ι] (s : Set X) (μ : X → ι → ℝ)
     (points : X → ι → M) (join : M → M → ℝ → M) (p : X → M) (r : X → ℝ)
     (qstar : X → M)
-    (h : ∀ x : X, x ∈ s → CenterInput (I := I) g (μ x) (points x) join (p x) (r x))
+    (h : ∀ x : X, x ∈ s → CenterOfMassConditions (I := I) g (μ x) (points x) join (p x) (r x))
     (x : X) : M :=
   by
     classical
@@ -83,7 +83,7 @@ theorem energy_activeFill [Fintype ι] (g : SmoothRiemannianMetric I M)
 theorem uniqueMin_activeFill [Fintype ι] (g : SmoothRiemannianMetric I M)
     (μ : X → ι → ℝ) (points : X → ι → M) (qstar : X → M)
     (join : M → M → ℝ → M) (p : X → M) (r : X → ℝ)
-    (x : X) (h : CenterInput (I := I) g (μ x)
+    (x : X) (h : CenterOfMassConditions (I := I) g (μ x)
       (activeFill μ points qstar x) join (p x) (r x)) :
     ∃! y : M, ∀ z : M,
       CenterOfMass.centerEnergy (I := I) g (μ x) (points x) y ≤
@@ -245,18 +245,12 @@ theorem WeightDataOn.comp {Y : Type uY} {s : Set Y} {U : Set X}
   · intro y hy i hne
     exact h.active_mem (f y) (hf hy) i hne
 
-theorem WeightDataOn.data {s : Set X} {U : ι → Set X} {μ : X → ι → ℝ}
-    (h : WeightDataOn s U μ) {x : X} (hx : x ∈ s) :
-    ((∀ i : ι, 0 ≤ μ x i) ∧ (∃ i : ι, 0 < μ x i) ∧ ∑ i : ι, μ x i = 1) ∧
-      ∀ i : ι, μ x i ≠ 0 → x ∈ U i := by
-  exact ⟨⟨h.nonneg x hx, h.pos x hx, h.sum_one x hx⟩, h.active_mem x hx⟩
-
 variable {μ : X → ι → ℝ} {points : X → ι → M} {join : M → M → ℝ → M}
   {p : X → M} {r : X → ℝ}
-  (h : ∀ x : X, CenterInput (I := I) g (μ x) (points x) join (p x) (r x))
+  (h : ∀ x : X, CenterOfMassConditions (I := I) g (μ x) (points x) join (p x) (r x))
 
 theorem on_eq {s : Set X} {qstar : X → M}
-    (hOn : ∀ x : X, x ∈ s → CenterInput (I := I) g (μ x) (points x) join (p x) (r x))
+    (hOn : ∀ x : X, x ∈ s → CenterOfMassConditions (I := I) g (μ x) (points x) join (p x) (r x))
     {x : X} (hx : x ∈ s) :
     centerAverageOn (I := I) g s μ points join p r qstar hOn x =
       centerOfMass (I := I) g (μ x) (points x) join (p x) (r x) (hOn x hx) := by
@@ -290,8 +284,8 @@ theorem inputOfFill {qstar : X → M} (x : X)
     (hμ_nonneg : ∀ i : ι, 0 ≤ μ x i)
     (hμ_pos : ∃ i : ι, 0 < μ x i)
     (hstrict :
-      StrictDistInput (I := I) g (activeFill μ points qstar x) join (p x) (r x)) :
-    CenterInput (I := I) g (μ x) (activeFill μ points qstar x) join (p x) (r x) := by
+      StrictDistanceConvexity (I := I) g (activeFill μ points qstar x) join (p x) (r x)) :
+    CenterOfMassConditions (I := I) g (μ x) (activeFill μ points qstar x) join (p x) (r x) := by
   let : RiemannianBundle (fun x : M => TangentSpace I x) :=
     ⟨g.toRiemannianMetric⟩
   let : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
@@ -304,7 +298,7 @@ theorem inputOfFill {qstar : X → M} (x : X)
       points_mem := ?_
       μ_nonneg := hμ_nonneg
       μ_pos := hμ_pos
-      strict := hstrict }
+      strict_distance := hstrict }
   intro i
   by_cases hzero : μ x i = 0
   · simpa [activeFill, hzero] using hqstar
@@ -331,8 +325,8 @@ theorem inputOfFillSelf {qstar : X -> M} (x : X)
     (hμ_nonneg : forall i : ι, 0 ≤ μ x i)
     (hμ_pos : exists i : ι, 0 < μ x i)
     (hstrict :
-      StrictDistInput (I := I) g (activeFill μ points qstar x) join (qstar x) (r x)) :
-    CenterInput (I := I) g (μ x) (activeFill μ points qstar x) join (qstar x)
+      StrictDistanceConvexity (I := I) g (activeFill μ points qstar x) join (qstar x) (r x)) :
+    CenterOfMassConditions (I := I) g (μ x) (activeFill μ points qstar x) join (qstar x)
       (r x) := by
   let : RiemannianBundle (fun x : M => TangentSpace I x) :=
     ⟨g.toRiemannianMetric⟩
@@ -356,7 +350,7 @@ theorem mem (x : X) :
       (p := p x) (r := r x) (h x)
 
 theorem mem_on {s : Set X} {qstar : X → M}
-    (hOn : ∀ x : X, x ∈ s → CenterInput (I := I) g (μ x) (points x) join (p x) (r x))
+    (hOn : ∀ x : X, x ∈ s → CenterOfMassConditions (I := I) g (μ x) (points x) join (p x) (r x))
     {x : X} (hx : x ∈ s) :
     letI : RiemannianBundle (fun x : M => TangentSpace I x) :=
       ⟨g.toRiemannianMetric⟩
@@ -419,7 +413,7 @@ theorem dist_le {qstar : X → M} {ε : ℝ} (x : X) (hε : 0 ≤ ε)
       (join := join) (p := p x) (r := r x) (h x) (qstar := qstar x) hε hnear
 
 theorem dist_le_on {s : Set X} {default target : X → M} {ε : ℝ}
-    (hOn : ∀ x : X, x ∈ s → CenterInput (I := I) g (μ x) (points x) join (p x) (r x))
+    (hOn : ∀ x : X, x ∈ s → CenterOfMassConditions (I := I) g (μ x) (points x) join (p x) (r x))
     {x : X} (hx : x ∈ s) (hε : 0 ≤ ε)
     (hnear :
       letI : RiemannianBundle (fun x : M => TangentSpace I x) :=

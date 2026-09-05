@@ -88,7 +88,7 @@ theorem trace_free_ricci_norm_sq_heat_equation_of_diagonal_reaction
     (cubicQ scalar ricciNormSq ricciTraceCube)
     (diagReact3 l1 l2 l3)
     hscalarHeat hRicHeat
-    (trace_free_ricci_reaction_relation_of_diagonal_data
+    (trace_free_ricci_reaction_relation_of_diagonal_components
       (M := M)
       scalar ricciNormSq ricciTraceCube l1 l2 l3 hscalar hnorm hcube)
 
@@ -145,7 +145,7 @@ theorem trace_free_ricci_norm_sq_heat_equation_of_frame_evolution
     hRel
 
 omit [Module.Finite ℝ E] in
-theorem trace_free_ricci_norm_sq_heat_equation_of_frame_and_eigenbasis_data
+theorem trace_free_ricci_norm_sq_heat_equation_of_frame_and_eigenbasis
     [FiniteDimensional Real E]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     [CompleteSpace E]
@@ -217,7 +217,7 @@ theorem trace_free_ricci_norm_sq_heat_equation_of_frame_and_eigenbasis_data
     hscalarHeat h_inv h_ricci hInvSym hRicSym h_lap hRel
 
 omit [Module.Finite ℝ E] in
-theorem trace_free_ricci_norm_sq_heat_equation_of_first_trace_and_eigenbasis_data
+theorem trace_free_ricci_norm_sq_heat_equation_of_first_trace_and_eigenbasis
     [FiniteDimensional Real E]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     [CompleteSpace E]
@@ -280,7 +280,7 @@ theorem trace_free_ricci_norm_sq_heat_equation_of_first_trace_and_eigenbasis_dat
       (ricciNormSqInFrame (I := I) S gInv frame)
       (cubicQ scalar (ricciNormSqInFrame (I := I) S gInv frame)
         ricciTraceCube) := by
-  refine trace_free_ricci_norm_sq_heat_equation_of_frame_and_eigenbasis_data (I := I) S Rm04 gInv frame heatBasis eigBasis
+  refine trace_free_ricci_norm_sq_heat_equation_of_frame_and_eigenbasis (I := I) S Rm04 gInv frame heatBasis eigBasis
     roughLapRic ricciNormLap nablaRic scalar scalarLap gradScalarNormSq
     ricciTraceCube l1 l2 l3 hscalarHeat h_inv h_ricci h_lap hheatBasis hheat heig
     ?_ hdiag hcube hInv hRicSym
@@ -412,7 +412,7 @@ theorem exists_eigenbasis_and_cubic_trace_with_trace_free_ricci_norm_sq_heat_equ
     exact ricciCubeInv_diag (I := I) (S.base.metric t)
       (heigOn t x) (hdiag0 t x)
   refine ⟨eigBasis, l1, l2, l3, cube, heigOn, hdiag, hcube, ?_⟩
-  exact trace_free_ricci_norm_sq_heat_equation_of_first_trace_and_eigenbasis_data (I := I) S Rm04 gInv frame heatBasis eigBasis
+  exact trace_free_ricci_norm_sq_heat_equation_of_first_trace_and_eigenbasis (I := I) S Rm04 gInv frame heatBasis eigBasis
     roughLapRic ricciNormLap nablaRic scalar scalarLap gradScalarNormSq
     cube l1 l2 l3 hscalarHeat h_inv h_ricci h_lap hheatBasis hheat heigOn
     (fun t x => hcurv t x (eigBasis t x) (heigOn t x))
@@ -421,7 +421,7 @@ theorem exists_eigenbasis_and_cubic_trace_with_trace_free_ricci_norm_sq_heat_equ
     hdiag hcube hInv hRicSym
 
 omit [Module.Finite ℝ E] in
-theorem exists_eigenbasis_with_trace_free_ricci_norm_sq_heat_equation_of_frame_evolution_data
+theorem exists_eigenbasis_with_trace_free_ricci_norm_sq_heat_equation_of_frame_evolution
     [FiniteDimensional Real E]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     [CompleteSpace E]
@@ -516,7 +516,7 @@ theorem exists_eigenbasis_with_trace_free_ricci_norm_sq_heat_equation_of_frame_e
   simpa [hcubeEq] using hheatEq
 
 omit [Module.Finite ℝ E] in
-theorem exists_eigenbasis_with_trace_free_ricci_norm_sq_heat_equation_of_reaction_data
+theorem exists_eigenbasis_with_trace_free_ricci_norm_sq_heat_equation_of_reaction_equation
     [FiniteDimensional Real E]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     [CompleteSpace E]
@@ -636,7 +636,7 @@ theorem exists_eigenbasis_with_trace_free_ricci_norm_sq_heat_equation_of_reactio
         (cubicQ scalar (ricciNormSqInFrame (I := I) S gInv frame)
           (ricciCube (I := I) S))
         (ricciNormCurvatureReactionInFrame (I := I) S Rm04 gInv frame) :=
-    trace_free_ricci_reaction_relation_of_first_trace_data (I := I) S Rm04 gInv frame heatBasis eigBasis
+    trace_free_ricci_reaction_relation_of_first_trace (I := I) S Rm04 gInv frame heatBasis eigBasis
       scalar (ricciCube (I := I) S) l1 l2 l3 hheatBasis hheat heigOn
       (fun t x => hcurv t x (eigBasis t x) (heigOn t x))
       (fun t x => hRicFirst t x (eigBasis t x) (heigOn t x))
@@ -724,7 +724,7 @@ theorem exists_eigenbasis_with_trace_free_ricci_norm_sq_heat_equation_of_scalar_
         (ricciNormSqInFrame (I := I) S gInv frame)
         (cubicQ S.scalar (ricciNormSqInFrame (I := I) S gInv frame)
           (ricciCube (I := I) S)) := by
-  refine exists_eigenbasis_with_trace_free_ricci_norm_sq_heat_equation_of_frame_evolution_data (I := I) S Rm04 gInv frame heatBasis roughLapRic
+  refine exists_eigenbasis_with_trace_free_ricci_norm_sq_heat_equation_of_frame_evolution (I := I) S Rm04 gInv frame heatBasis roughLapRic
     ricciNormLap nablaRic S.scalar scalarLap gradScalarNormSq hscalarHeat
     h_inv h_ricci h_lap hheatBasis hheat hdim hRicSymAt hcurv hRicFirst ?_
     hInv hRicSym
@@ -975,13 +975,13 @@ theorem exists_eigenbasis_with_trace_free_ricci_norm_sq_heat_equation_of_metric_
     h_inv h_ricci h_lap hheatBasis hheat hdim ?_ ?_ ?_ hInv
   · intro t
     with_unfolding_all exact
-      (metricCurvData (I := I) (M := M) (S.base.metric t)).rm13Realizes
+      (metricCurvatureSections (I := I) (M := M) (S.base.metric t)).rm13Realizes
   · intro t
     with_unfolding_all exact
-      (metricCurvData (I := I) (M := M) (S.base.metric t)).rm04Realizes
+      (metricCurvatureSections (I := I) (M := M) (S.base.metric t)).rm04Realizes
   · intro t x
     with_unfolding_all exact
-      (metricCurvData (I := I) (M := M) (S.base.metric t)).ricciRealizes x
+      (metricCurvatureSections (I := I) (M := M) (S.base.metric t)).ricciRealizes x
 
 omit [Module.Finite ℝ E] in
 theorem exists_eigenbasis_with_trace_free_ricci_norm_sq_heat_equation_of_ricci_norm_heat_equation
@@ -1049,21 +1049,21 @@ theorem exists_eigenbasis_with_trace_free_ricci_norm_sq_heat_equation_of_ricci_n
           (S.base.metric t)) (S.base.rm13 t) := by
     intro t
     with_unfolding_all exact
-      (metricCurvData (I := I) (M := M) (S.base.metric t)).rm13Realizes
+      (metricCurvatureSections (I := I) (M := M) (S.base.metric t)).rm13Realizes
   have hRm04 : ∀ t,
       DifferentialGeometry.Geometry.Curvature.rm04RealizesConnection (I := I) (S.base.metric t)
         (DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric (I := I)
           (S.base.metric t)) (S.base.rm04 t) := by
     intro t
     with_unfolding_all exact
-      (metricCurvData (I := I) (M := M) (S.base.metric t)).rm04Realizes
+      (metricCurvatureSections (I := I) (M := M) (S.base.metric t)).rm04Realizes
   have hRic13 : ∀ t x,
       S.ricciAt t x =
         DifferentialGeometry.Geometry.Curvature.ricciFromRm13At (I := I) (M := M)
           (S.base.rm13 t x) := by
     intro t x
     with_unfolding_all exact
-      (metricCurvData (I := I) (M := M) (S.base.metric t)).ricciRealizes x
+      (metricCurvatureSections (I := I) (M := M) (S.base.metric t)).ricciRealizes x
   have hRicSymAt : ∀ (t : Real) (x : M),
       DifferentialGeometry.Geometry.Curvature.RicciSymAt (I := I) (S.ricciAt t x) := by
     intro t x
@@ -1095,7 +1095,7 @@ theorem exists_eigenbasis_with_trace_free_ricci_norm_sq_heat_equation_of_ricci_n
         (I := I) (g := S.base.metric t)
         (Rm04 := S.base.rm04 t) (hRm04 := hRm04 t))
       delta3_symm
-  refine exists_eigenbasis_with_trace_free_ricci_norm_sq_heat_equation_of_reaction_data (I := I) S S.base.rm04 gInv frame heatBasis
+  refine exists_eigenbasis_with_trace_free_ricci_norm_sq_heat_equation_of_reaction_equation (I := I) S S.base.rm04 gInv frame heatBasis
     ricciNormLap nablaRic S.scalar scalarLap gradScalarNormSq
     hscalarHeat hRicHeat hheatBasis hheat hdim hRicSymAt ?_ ?_ ?_ hInv
   · intro t x basis _horth
@@ -1241,21 +1241,21 @@ theorem exists_eigenbasis_with_trace_free_ricci_norm_sq_heat_equation_of_metric_
           (S.base.metric t)) (S.base.rm13 t) := by
     intro t
     with_unfolding_all exact
-      (metricCurvData (I := I) (M := M) (S.base.metric t)).rm13Realizes
+      (metricCurvatureSections (I := I) (M := M) (S.base.metric t)).rm13Realizes
   have hRm04 : ∀ t,
       DifferentialGeometry.Geometry.Curvature.rm04RealizesConnection (I := I) (S.base.metric t)
         (DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric (I := I)
           (S.base.metric t)) (S.base.rm04 t) := by
     intro t
     with_unfolding_all exact
-      (metricCurvData (I := I) (M := M) (S.base.metric t)).rm04Realizes
+      (metricCurvatureSections (I := I) (M := M) (S.base.metric t)).rm04Realizes
   have hRic13 : ∀ t x,
       S.ricciAt t x =
         DifferentialGeometry.Geometry.Curvature.ricciFromRm13At (I := I) (M := M)
           (S.base.rm13 t x) := by
     intro t x
     with_unfolding_all exact
-      (metricCurvData (I := I) (M := M) (S.base.metric t)).ricciRealizes x
+      (metricCurvatureSections (I := I) (M := M) (S.base.metric t)).ricciRealizes x
   have hRicSymAt : ∀ (t : Real) (x : M),
       DifferentialGeometry.Geometry.Curvature.RicciSymAt (I := I) (S.ricciAt t x) := by
     intro t x

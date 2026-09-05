@@ -40,7 +40,7 @@ private theorem crossRepr_lo
     (u : CrossScaleField (I := I) (M := M) g r s a T)
     (hT : 0 < T) {t : ℝ} (ht : t ∈ Icc (0 : ℝ) T) :
     tensorHsInclusion (I := I) (M := M) (g := g) (r := r) (s := s)
-        (show a ≤ a + 1 by linarith) (u.repr t) = u.lo.toFun t := by
+        (show a ≤ a + 1 by linarith) (u.repr t) = u.lowRegularity.toFun t := by
   refine TensorHs.ext ?_
   funext i
   rw [tensorHsInclusion_coeff_apply, u.repr_coeff hT ht]
@@ -53,7 +53,7 @@ private theorem crossRepr_hi_ae
     (fun t => u.repr t) =ᵐ[timeMeasure T]
       fun t => tensorHsInclusion (I := I) (M := M)
         (g := g) (r := r) (s := s)
-        (show a + 1 ≤ a + 2 by linarith) (u.hiL2 t) := by
+        (show a + 1 ≤ a + 2 by linarith) (u.highRegularity t) := by
   filter_upwards [u.ae_coeffFun_eq_hiL2,
     ae_restrict_mem (μ := volume) measurableSet_Icc] with t hcoeff ht
   refine TensorHs.ext ?_
@@ -106,20 +106,20 @@ theorem nonautL2_realize
       maximalRegularityDuhamelSolutionField (I := I) (M := M)
         (a - 1) hT 0 fLo) :
     ∃ u : CrossScaleField (I := I) (M := M) g r s a T,
-      u.lo = uHi ∧
-      u.hiL2 = maximalRegularityDuhamelSolutionField (I := I) (M := M)
+      u.lowRegularity = uHi ∧
+      u.highRegularity = maximalRegularityDuhamelSolutionField (I := I) (M := M)
         a hT 0 fHi ∧
-      timeH1.trace0 _ T u.lo =
+      timeH1.trace0 _ T u.lowRegularity =
         (0 : TensorHs (I := I) (M := M) g r s a) ∧
-      timeH1.timeDeriv _ T u.lo =
-        timeScaleLaplacian (I := I) (M := M) a u.hiL2 + fHi ∧
+      timeH1.timeDeriv _ T u.lowRegularity =
+        timeScaleLaplacian (I := I) (M := M) a u.highRegularity + fHi ∧
       timeL2Inclusion (I := I) (M := M)
         (g := g) (r := r) (s := s)
         (show a - 1 ≤ a by linarith) fHi = fLo ∧
       (∀ t ∈ Icc (0 : ℝ) T,
         tensorHsInclusion (I := I) (M := M)
             (g := g) (r := r) (s := s)
-            (show a - 1 ≤ a by linarith) (u.lo.toFun t) =
+            (show a - 1 ≤ a by linarith) (u.lowRegularity.toFun t) =
           (maximalRegularityDuhamelMap (I := I) (M := M)
             (a - 1) hT 0 fLo).toFun t) ∧
       u.repr 0 = (0 : TensorHs (I := I) (M := M) g r s (a + 1)) ∧
@@ -128,7 +128,7 @@ theorem nonautL2_realize
         tensorHsInclusion (I := I) (M := M)
             (g := g) (r := r) (s := s)
             (show a ≤ a + 1 by linarith) (u.repr t) =
-          u.lo.toFun t) ∧
+          u.lowRegularity.toFun t) ∧
       (fun t => tensorHsInclusion (I := I) (M := M)
         (g := g) (r := r) (s := s)
         (show (a - 1) + 2 ≤ a + 1 by linarith) (u.repr t)) =ᵐ[timeMeasure T]
@@ -148,16 +148,16 @@ theorem nonautL2_realize
     strongCross (I := I) (M := M)
       (maximalRegularityDuhamelSolutionField (I := I) (M := M)
         a hT 0 fHi) uHi hlink
-  have hlo : u.lo = uHi := rfl
-  have hhi : u.hiL2 = maximalRegularityDuhamelSolutionField (I := I) (M := M)
+  have hlo : u.lowRegularity = uHi := rfl
+  have hhi : u.highRegularity = maximalRegularityDuhamelSolutionField (I := I) (M := M)
       a hT 0 fHi := rfl
-  have htrace' : timeH1.trace0 _ T u.lo =
+  have htrace' : timeH1.trace0 _ T u.lowRegularity =
       (0 : TensorHs (I := I) (M := M) g r s a) := by
     simpa only [hlo] using htrace
-  have hpde' : timeH1.timeDeriv _ T u.lo =
-      timeScaleLaplacian (I := I) (M := M) a u.hiL2 + fHi := by
+  have hpde' : timeH1.timeDeriv _ T u.lowRegularity =
+      timeScaleLaplacian (I := I) (M := M) a u.highRegularity + fHi := by
     calc
-      timeH1.timeDeriv _ T u.lo =
+      timeH1.timeDeriv _ T u.lowRegularity =
           timeH1.timeDeriv _ T uHi := by rw [hlo]
       _ = timeScaleLaplacian (I := I) (M := M) a
             (maximalRegularityDuhamelSolutionField (I := I) (M := M)
@@ -176,11 +176,11 @@ theorem nonautL2_realize
             (maximalRegularityDuhamelSolutionField (I := I) (M := M)
               a hT 0 fHi) + z)
           hfixed.symm
-      _ = timeScaleLaplacian (I := I) (M := M) a u.hiL2 + fHi := by
+      _ = timeScaleLaplacian (I := I) (M := M) a u.highRegularity + fHi := by
         rw [hhi]
   have hzero : u.repr 0 =
       (0 : TensorHs (I := I) (M := M) g r s (a + 1)) := by
-    have hinit : u.lo.initial =
+    have hinit : u.lowRegularity.initial =
         (0 : TensorHs (I := I) (M := M) g r s a) := by
       simpa only [timeH1.trace0_apply] using htrace'
     refine TensorHs.ext ?_
@@ -222,7 +222,7 @@ theorem nonautL2_realize
   have hcarrier_ae :
       (fun t => tensorHsInclusion (I := I) (M := M)
         (g := g) (r := r) (s := s)
-        (show a - 1 ≤ a by linarith) (u.lo.toFun t)) =ᵐ[timeMeasure T]
+        (show a - 1 ≤ a by linarith) (u.lowRegularity.toFun t)) =ᵐ[timeMeasure T]
           fun t => (maximalRegularityDuhamelMap (I := I) (M := M)
             (a - 1) hT 0 fLo).toFun t := by
     filter_upwards [u.link, hfield_coe, hlow_link] with t hu hf hl
@@ -233,8 +233,8 @@ theorem nonautL2_realize
     change
       ((tensorHsInclusion (I := I) (M := M)
         (g := g) (r := r) (s := s)
-        (show a ≤ a + 2 by linarith) (u.hiL2 t)).coeff i) =
-          (u.lo.toFun t).coeff i at huc
+        (show a ≤ a + 2 by linarith) (u.highRegularity t)).coeff i) =
+          (u.lowRegularity.toFun t).coeff i at huc
     rw [tensorHsInclusion_coeff_apply, hhi] at huc
     have hfc := congrArg (fun z => z.coeff i) hf
     change
@@ -260,12 +260,12 @@ theorem nonautL2_realize
   have hleft_cont : ContinuousOn
       (fun t => tensorHsInclusion (I := I) (M := M)
         (g := g) (r := r) (s := s)
-        (show a - 1 ≤ a by linarith) (u.lo.toFun t))
+        (show a - 1 ≤ a by linarith) (u.lowRegularity.toFun t))
       (Icc (0 : ℝ) T) :=
     (tensorHsInclusion (I := I) (M := M)
       (g := g) (r := r) (s := s)
       (show a - 1 ≤ a by linarith)).continuous.comp_continuousOn
-        u.lo.continuousOn_toFun
+        u.lowRegularity.continuousOn_toFun
   have hright_cont : ContinuousOn
       (fun t => (maximalRegularityDuhamelMap (I := I) (M := M)
         (a - 1) hT 0 fLo).toFun t) (Icc (0 : ℝ) T) :=
@@ -277,7 +277,7 @@ theorem nonautL2_realize
       ∀ t ∈ Icc (0 : ℝ) T,
         tensorHsInclusion (I := I) (M := M)
             (g := g) (r := r) (s := s)
-            (show a - 1 ≤ a by linarith) (u.lo.toFun t) =
+            (show a - 1 ≤ a by linarith) (u.lowRegularity.toFun t) =
           (maximalRegularityDuhamelMap (I := I) (M := M)
             (a - 1) hT 0 fLo).toFun t :=
     MeasureTheory.Measure.eqOn_of_ae_eq

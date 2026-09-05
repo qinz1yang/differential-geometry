@@ -303,10 +303,10 @@ lemma sharpDiff_ofReal_const_pow_eigen_inv_le
   exact sharpDiff_pow_eigen_inv_mono (I := I) (M := M) g r s i hke
 
 open DifferentialGeometry.Analysis.Spectral in
-structure EigenvectorChartRHSDiffSharpWkpBounds
+structure EigenvectorChartRightHandSideDifferentiatedSharpWkpBounds
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (α : M) (P₀ : TensorCompIdx (E := E) r s) where
-  h_pou_resolv : ∀ (i : TensorEigenIdx (I := I) (M := M) g r s) (K' : ℕ)
+  resolventComponentRegularity : ∀ (i : TensorEigenIdx (I := I) (M := M) g r s) (K' : ℕ)
     (β : M) (Q : TensorCompIdx (E := E) r s),
     MemWkp (d := Module.finrank ℝ E) K' 2
       (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s
@@ -315,23 +315,23 @@ structure EigenvectorChartRHSDiffSharpWkpBounds
           β Q : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) :
           EuclN → ℝ) y)
       (chartTargetEuclid (I := I) (M := M) β)
-  Ceig : ℕ → ℝ
-  eEig : ℕ → ℕ
-  hCeig_nn : ∀ K', 0 ≤ Ceig K'
-  hCeig_bd : ∀ (i : TensorEigenIdx (I := I) (M := M) g r s) (K' : ℕ),
+  eigenvectorConstant : ℕ → ℝ
+  eigenvectorExponent : ℕ → ℕ
+  eigenvectorConstant_nonneg : ∀ K', 0 ≤ eigenvectorConstant K'
+  eigenvector_bound : ∀ (i : TensorEigenIdx (I := I) (M := M) g r s) (K' : ℕ),
     iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K' 2
         (eigenvectorChartComponentFun (I := I) (M := M)
           g r s i α P₀)
         (chartTargetEuclid (I := I) (M := M) α)
-      ≤ ENNReal.ofReal (Ceig K' * (i.fst.val)⁻¹ ^ (eEig K')) *
+      ≤ ENNReal.ofReal (eigenvectorConstant K' * (i.fst.val)⁻¹ ^ (eigenvectorExponent K')) *
         ENNReal.ofReal
           ‖tensorResolventEigenbasisVec (I := I) (M := M)
             (tensorResolventL2_isCompactOperator (I := I) (M := M)
               g r s) i‖
-  CresH : ℕ → ℝ
-  eResH : ℕ → ℕ
-  hCresH_nn : ∀ K', 0 ≤ CresH K'
-  hCresH_bd : ∀ (i : TensorEigenIdx (I := I) (M := M) g r s)
+  highResolventConstant : ℕ → ℝ
+  highResolventExponent : ℕ → ℕ
+  highResolventConstant_nonneg : ∀ K', 0 ≤ highResolventConstant K'
+  highResolvent_bound : ∀ (i : TensorEigenIdx (I := I) (M := M) g r s)
     (β : M) (Q : TensorCompIdx (E := E) r s) (K' : ℕ),
     iteratedWeakSobolevNorm (d := Module.finrank ℝ E) (K' + 1) 2
         (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s
@@ -340,15 +340,15 @@ structure EigenvectorChartRHSDiffSharpWkpBounds
             β Q : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) :
             EuclN → ℝ) y)
         (chartTargetEuclid (I := I) (M := M) β)
-      ≤ ENNReal.ofReal (CresH K' * (i.fst.val)⁻¹ ^ (eResH K')) *
+      ≤ ENNReal.ofReal (highResolventConstant K' * (i.fst.val)⁻¹ ^ (highResolventExponent K')) *
         ENNReal.ofReal
           ‖tensorResolventEigenbasisVec (I := I) (M := M)
             (tensorResolventL2_isCompactOperator (I := I) (M := M)
               g r s) i‖
-  CresL : ℕ → ℝ
-  eResL : ℕ → ℕ
-  hCresL_nn : ∀ K', 0 ≤ CresL K'
-  hCresL_bd : ∀ (i : TensorEigenIdx (I := I) (M := M) g r s)
+  lowResolventConstant : ℕ → ℝ
+  lowResolventExponent : ℕ → ℕ
+  lowResolventConstant_nonneg : ∀ K', 0 ≤ lowResolventConstant K'
+  lowResolvent_bound : ∀ (i : TensorEigenIdx (I := I) (M := M) g r s)
     (β : M) (Q : TensorCompIdx (E := E) r s) (K' : ℕ),
     iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K' 2
         (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s
@@ -357,15 +357,15 @@ structure EigenvectorChartRHSDiffSharpWkpBounds
             β Q : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) :
             EuclN → ℝ) y)
         (chartTargetEuclid (I := I) (M := M) β)
-      ≤ ENNReal.ofReal (CresL K' * (i.fst.val)⁻¹ ^ (eResL K')) *
+      ≤ ENNReal.ofReal (lowResolventConstant K' * (i.fst.val)⁻¹ ^ (lowResolventExponent K')) *
         ENNReal.ofReal
           ‖tensorResolventEigenbasisVec (I := I) (M := M)
             (tensorResolventL2_isCompactOperator (I := I) (M := M)
               g r s) i‖
-  Cpar : ℕ → ℝ
-  ePar : ℕ → ℕ
-  hCpar_nn : ∀ K', 0 ≤ Cpar K'
-  hCpar_bd : ∀ (i : TensorEigenIdx (I := I) (M := M) g r s)
+  partialConstant : ℕ → ℝ
+  partialExponent : ℕ → ℕ
+  partialConstant_nonneg : ∀ K', 0 ≤ partialConstant K'
+  partial_bound : ∀ (i : TensorEigenIdx (I := I) (M := M) g r s)
     (P : TensorCompIdx (E := E) r s) (k : Fin (Module.finrank ℝ E)) (K' : ℕ),
     iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K' 2
         (fun y => ((partialLpLimit (I := I) (M := M)
@@ -373,15 +373,15 @@ structure EigenvectorChartRHSDiffSharpWkpBounds
             Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
             EuclN → ℝ) y)
         (chartTargetEuclid (I := I) (M := M) α)
-      ≤ ENNReal.ofReal (Cpar K' * (i.fst.val)⁻¹ ^ (ePar K')) *
+      ≤ ENNReal.ofReal (partialConstant K' * (i.fst.val)⁻¹ ^ (partialExponent K')) *
         ENNReal.ofReal
           ‖tensorResolventEigenbasisVec (I := I) (M := M)
             (tensorResolventL2_isCompactOperator (I := I) (M := M)
               g r s) i‖
-  Ccom : ℕ → ℝ
-  eCom : ℕ → ℕ
-  hCcom_nn : ∀ K', 0 ≤ Ccom K'
-  hCcom_bd : ∀ (i : TensorEigenIdx (I := I) (M := M) g r s)
+  componentConstant : ℕ → ℝ
+  componentExponent : ℕ → ℕ
+  componentConstant_nonneg : ∀ K', 0 ≤ componentConstant K'
+  component_bound : ∀ (i : TensorEigenIdx (I := I) (M := M) g r s)
     (p : TensorCompIdx (E := E) r s) (K' : ℕ),
     iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K' 2
         (fun y => ((componentLpLimit (I := I) (M := M)
@@ -389,15 +389,15 @@ structure EigenvectorChartRHSDiffSharpWkpBounds
             Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
             EuclN → ℝ) y)
         (chartTargetEuclid (I := I) (M := M) α)
-      ≤ ENNReal.ofReal (Ccom K' * (i.fst.val)⁻¹ ^ (eCom K')) *
+      ≤ ENNReal.ofReal (componentConstant K' * (i.fst.val)⁻¹ ^ (componentExponent K')) *
         ENNReal.ofReal
           ‖tensorResolventEigenbasisVec (I := I) (M := M)
             (tensorResolventL2_isCompactOperator (I := I) (M := M)
               g r s) i‖
-  CcR : ℕ → ℝ
-  eCcR : ℕ → ℕ
-  hCcR_nn : ∀ K', 0 ≤ CcR K'
-  hCcR_bd : ∀ (i : TensorEigenIdx (I := I) (M := M) g r s)
+  crossRightConstant : ℕ → ℝ
+  crossRightExponent : ℕ → ℕ
+  crossRightConstant_nonneg : ∀ K', 0 ≤ crossRightConstant K'
+  crossRight_bound : ∀ (i : TensorEigenIdx (I := I) (M := M) g r s)
     (P : TensorCompIdx (E := E) r s) (K' : ℕ),
     iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K' 2
         (fun y => ((crossRightLimitComponent (I := I) (M := M)
@@ -405,15 +405,15 @@ structure EigenvectorChartRHSDiffSharpWkpBounds
             Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
             EuclN → ℝ) y)
         (chartTargetEuclid (I := I) (M := M) α)
-      ≤ ENNReal.ofReal (CcR K' * (i.fst.val)⁻¹ ^ (eCcR K')) *
+      ≤ ENNReal.ofReal (crossRightConstant K' * (i.fst.val)⁻¹ ^ (crossRightExponent K')) *
         ENNReal.ofReal
           ‖tensorResolventEigenbasisVec (I := I) (M := M)
             (tensorResolventL2_isCompactOperator (I := I) (M := M)
               g r s) i‖
-  Ccut : ℕ → ℝ
-  eCcut : ℕ → ℕ
-  hCcut_nn : ∀ K', 0 ≤ Ccut K'
-  hCcut_bd : ∀ (i : TensorEigenIdx (I := I) (M := M) g r s)
+  cutoffConstant : ℕ → ℝ
+  cutoffExponent : ℕ → ℕ
+  cutoffConstant_nonneg : ∀ K', 0 ≤ cutoffConstant K'
+  cutoff_bound : ∀ (i : TensorEigenIdx (I := I) (M := M) g r s)
     (P : TensorCompIdx (E := E) r s) (l : Fin (Module.finrank ℝ E)) (K' : ℕ),
     iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K' 2
         (fun y => ((cutoffPartialLpLimit (I := I) (M := M)
@@ -421,7 +421,7 @@ structure EigenvectorChartRHSDiffSharpWkpBounds
             Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
             EuclN → ℝ) y)
         (chartTargetEuclid (I := I) (M := M) α)
-      ≤ ENNReal.ofReal (Ccut K' * (i.fst.val)⁻¹ ^ (eCcut K')) *
+      ≤ ENNReal.ofReal (cutoffConstant K' * (i.fst.val)⁻¹ ^ (cutoffExponent K')) *
         ENNReal.ofReal
           ‖tensorResolventEigenbasisVec (I := I) (M := M)
             (tensorResolventL2_isCompactOperator (I := I) (M := M)
@@ -432,7 +432,7 @@ omit [CompleteSpace E] in
 private lemma sharpDiff_diff_memWkp
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (α : M) (P₀ : TensorCompIdx (E := E) r s)
-    (H : EigenvectorChartRHSDiffSharpWkpBounds (I := I) (M := M) g r s α P₀)
+    (H : EigenvectorChartRightHandSideDifferentiatedSharpWkpBounds (I := I) (M := M) g r s α P₀)
     (i : TensorEigenIdx (I := I) (M := M) g r s)
     (m K' : ℕ) (l : Fin m → Fin (Module.finrank ℝ E)) :
     MemWkp (d := Module.finrank ℝ E) K' 2
@@ -440,14 +440,14 @@ private lemma sharpDiff_diff_memWkp
       (chartTargetEuclid (I := I) (M := M) α) :=
   eigenvectorChartRHSDiff_memWkp (I := I) (M := M)
     g r s i α P₀ m K' l
-    (fun β Q => H.h_pou_resolv i (m + 1 + K') β Q)
+    (fun β Q => H.resolventComponentRegularity i (m + 1 + K') β Q)
 
 open DifferentialGeometry.Analysis.Spectral in
 omit [CompleteSpace E] in
 private lemma sharpDiff_level_zero_wkpNorm
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (α : M) (P₀ : TensorCompIdx (E := E) r s) (K : ℕ)
-    (H : EigenvectorChartRHSDiffSharpWkpBounds (I := I) (M := M) g r s α P₀) :
+    (H : EigenvectorChartRightHandSideDifferentiatedSharpWkpBounds (I := I) (M := M) g r s α P₀) :
     ∃ (C : ℝ) (e : ℕ), 0 ≤ C ∧
       ∀ i : TensorEigenIdx (I := I) (M := M) g r s,
         iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2
@@ -461,13 +461,13 @@ private lemma sharpDiff_level_zero_wkpNorm
   classical
   obtain ⟨Cagg, eAgg, hCagg_nn, hCagg_bd⟩ :=
     rhsZeroAggregate_le_energy_perK (I := I) (M := M) g r s α P₀ K
-      H.Ceig H.eEig H.hCeig_nn H.hCeig_bd
-      H.CresH H.eResH H.hCresH_nn H.hCresH_bd
-      H.CresL H.eResL H.hCresL_nn H.hCresL_bd
-      H.Cpar H.ePar H.hCpar_nn H.hCpar_bd
-      H.Ccom H.eCom H.hCcom_nn H.hCcom_bd
-      H.CcR H.eCcR H.hCcR_nn H.hCcR_bd
-      H.Ccut H.eCcut H.hCcut_nn H.hCcut_bd
+      H.eigenvectorConstant H.eigenvectorExponent H.eigenvectorConstant_nonneg H.eigenvector_bound
+      H.highResolventConstant H.highResolventExponent H.highResolventConstant_nonneg H.highResolvent_bound
+      H.lowResolventConstant H.lowResolventExponent H.lowResolventConstant_nonneg H.lowResolvent_bound
+      H.partialConstant H.partialExponent H.partialConstant_nonneg H.partial_bound
+      H.componentConstant H.componentExponent H.componentConstant_nonneg H.component_bound
+      H.crossRightConstant H.crossRightExponent H.crossRightConstant_nonneg H.crossRight_bound
+      H.cutoffConstant H.cutoffExponent H.cutoffConstant_nonneg H.cutoff_bound
   have h_pou : ∀ (i : TensorEigenIdx (I := I) (M := M) g r s)
       (β : M) (Q : TensorCompIdx (E := E) r s),
       MemWkp (d := Module.finrank ℝ E) (K + 1) 2
@@ -476,7 +476,7 @@ private lemma sharpDiff_level_zero_wkpNorm
               (eigenvectorResolvent (I := I) (M := M) g r s i))
             β Q : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) : EuclN → ℝ) y)
         (chartTargetEuclid (I := I) (M := M) β) := fun i β Q =>
-    H.h_pou_resolv i (K + 1) β Q
+    H.resolventComponentRegularity i (K + 1) β Q
   obtain ⟨Cmu, hCmu_nn, hCmu_bd⟩ :=
     eigenvectorChartRHS_wkpNorm_le_uniform (I := I) (M := M)
       g r s α P₀ K h_pou
@@ -516,7 +516,7 @@ omit [CompleteSpace E] in
 private lemma sharpDiff_recursion
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (α : M) (P₀ : TensorCompIdx (E := E) r s)
-    (H : EigenvectorChartRHSDiffSharpWkpBounds (I := I) (M := M) g r s α P₀) :
+    (H : EigenvectorChartRightHandSideDifferentiatedSharpWkpBounds (I := I) (M := M) g r s α P₀) :
     ∀ (m : ℕ) (K : ℕ) (l : Fin m → Fin (Module.finrank ℝ E)),
       ∃ (C : ℝ) (e : ℕ), 0 ≤ C ∧
         ∀ i : TensorEigenIdx (I := I) (M := M) g r s,
@@ -571,8 +571,8 @@ private lemma sharpDiff_recursion
               (eigenvectorChartIteratedPartial (I := I) (M := M)
                 g r s i α P₀ (m + 1) (Fin.cons a (Fin.init l)))
               (chartTargetEuclid (I := I) (M := M) α)
-            ≤ ENNReal.ofReal (H.Ceig (K + m + 1) *
-              (i.fst.val)⁻¹ ^ (H.eEig (K + m + 1))) *
+            ≤ ENNReal.ofReal (H.eigenvectorConstant (K + m + 1) *
+              (i.fst.val)⁻¹ ^ (H.eigenvectorExponent (K + m + 1))) *
               ENNReal.ofReal
                 ‖tensorResolventEigenbasisVec
                   (I := I) (M := M)
@@ -592,7 +592,7 @@ private lemma sharpDiff_recursion
             h_chart_compact_mem
             (Fin.cons a (Fin.init l))).2
         refine le_trans h_bridge ?_
-        have h_eig := H.hCeig_bd i (K + (m + 1))
+        have h_eig := H.eigenvector_bound i (K + (m + 1))
         have h_arith : K + m + 1 = K + (m + 1) := by ring
         rw [h_arith]
         exact h_eig
@@ -605,8 +605,8 @@ private lemma sharpDiff_recursion
                   g r s i α P₀ (m + 1) (Fin.cons a (Fin.init l)))
                 (chartTargetEuclid (I := I) (M := M) α))
               (chartTargetEuclid (I := I) (M := M) α)
-            ≤ ENNReal.ofReal (H.Ceig (K + m + 2) *
-              (i.fst.val)⁻¹ ^ (H.eEig (K + m + 2))) *
+            ≤ ENNReal.ofReal (H.eigenvectorConstant (K + m + 2) *
+              (i.fst.val)⁻¹ ^ (H.eigenvectorExponent (K + m + 2))) *
               ENNReal.ofReal
                 ‖tensorResolventEigenbasisVec
                   (I := I) (M := M)
@@ -631,7 +631,7 @@ private lemma sharpDiff_recursion
             h_chart_compact_mem
             (Fin.cons a (Fin.init l))).2
         refine le_trans h_bridge ?_
-        have h_eig := H.hCeig_bd i ((K + 1) + (m + 1))
+        have h_eig := H.eigenvector_bound i ((K + 1) + (m + 1))
         have h_arith : K + m + 2 = (K + 1) + (m + 1) := by ring
         rw [h_arith]
         exact h_eig
@@ -640,8 +640,8 @@ private lemma sharpDiff_recursion
               (eigenvectorChartIteratedPartial (I := I) (M := M)
                 g r s i α P₀ m (Fin.init l))
               (chartTargetEuclid (I := I) (M := M) α)
-            ≤ ENNReal.ofReal (H.Ceig (K + m) *
-              (i.fst.val)⁻¹ ^ (H.eEig (K + m))) *
+            ≤ ENNReal.ofReal (H.eigenvectorConstant (K + m) *
+              (i.fst.val)⁻¹ ^ (H.eigenvectorExponent (K + m))) *
               ENNReal.ofReal
                 ‖tensorResolventEigenbasisVec
                   (I := I) (M := M)
@@ -661,7 +661,7 @@ private lemma sharpDiff_recursion
             h_chart_compact_mem
             (Fin.init l)).2
         refine le_trans h_bridge ?_
-        exact H.hCeig_bd i (K + m)
+        exact H.eigenvector_bound i (K + m)
       have hAtomD_bd : ∀ (i : TensorEigenIdx (I := I) (M := M) g r s),
           iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2
               (eigenvectorChartRHSDiff (I := I) (M := M)
@@ -698,9 +698,9 @@ private lemma sharpDiff_recursion
           (I := I) (M := M) g r s α P₀ m K l
           (fun i => eigenvectorChartRHSDiff (I := I) (M := M)
             g r s i α P₀ m (Fin.init l))
-          (H.Ceig (K + m + 1)) (H.eEig (K + m + 1)) (H.hCeig_nn _) hAtomA_bd
-          (H.Ceig (K + m + 2)) (H.eEig (K + m + 2)) (H.hCeig_nn _) hAtomB_bd
-          (H.Ceig (K + m)) (H.eEig (K + m)) (H.hCeig_nn _) hAtomC_bd
+          (H.eigenvectorConstant (K + m + 1)) (H.eigenvectorExponent (K + m + 1)) (H.eigenvectorConstant_nonneg _) hAtomA_bd
+          (H.eigenvectorConstant (K + m + 2)) (H.eigenvectorExponent (K + m + 2)) (H.eigenvectorConstant_nonneg _) hAtomB_bd
+          (H.eigenvectorConstant (K + m)) (H.eigenvectorExponent (K + m)) (H.eigenvectorConstant_nonneg _) hAtomC_bd
           C_K e_K hC_K_nn hAtomD_bd
           C_K1 e_K1 hC_K1_nn hAtomE_bd
           h_prev_mem_succ h_prev_ae_zero
@@ -801,7 +801,7 @@ theorem eigenvectorChartRHSDiff_wkpNorm_le_chartcpt_sharp
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (α : M) (P₀ : TensorCompIdx (E := E) r s) (m K : ℕ)
     (l : Fin m → Fin (Module.finrank ℝ E))
-    (H : EigenvectorChartRHSDiffSharpWkpBounds (I := I) (M := M) g r s α P₀) :
+    (H : EigenvectorChartRightHandSideDifferentiatedSharpWkpBounds (I := I) (M := M) g r s α P₀) :
     ∃ (C : ℝ) (e : ℕ), 0 ≤ C ∧
       ∀ i : TensorEigenIdx (I := I) (M := M) g r s,
         iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2

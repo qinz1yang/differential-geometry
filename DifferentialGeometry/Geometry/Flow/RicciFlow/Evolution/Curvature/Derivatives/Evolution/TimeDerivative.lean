@@ -44,10 +44,10 @@ theorem covDerivStepComp_hasDerivWithinAt {r : ℕ}
     HasDerivWithinAt
       (fun s : Real =>
         covDerivStepComp
-          (frameExtData (I := I) frame (fun y : M => A s y) x)
+          (frameDirectionalDerivatives (I := I) frame (fun y : M => A s y) x)
           (chr s x) (A s x) n)
       (covDerivStepComp
-          (frameExtData (I := I) frame (fun y : M => Adt t y) x)
+          (frameDirectionalDerivatives (I := I) frame (fun y : M => Adt t y) x)
           (chr t x) (Adt t x) n -
         covDerivStepDt (chrDt t x) (A t x) n)
       D t := by
@@ -74,7 +74,7 @@ theorem covDerivStepComp_hasDerivWithinAt {r : ℕ}
       HasDerivWithinAt
         (fun s : Real =>
           covDerivStepComp
-            (frameExtData (I := I) frame (fun y : M => A s y) x)
+            (frameDirectionalDerivatives (I := I) frame (fun y : M => A s y) x)
             (chr s x) (A s x) n)
         (mvfderiv (I := I) (fun y : M => Adt t y (Fin.tail n)) x (frame (n 0) x) -
           ∑ slot : Fin r, ∑ p : Idx,
@@ -85,7 +85,7 @@ theorem covDerivStepComp_hasDerivWithinAt {r : ℕ}
         D t :=
     hlead.sub hcorr
   refine hmain.congr_deriv ?_
-  rw [covDerivStepComp, frameExtData, covDerivStepDt]
+  rw [covDerivStepComp, frameDirectionalDerivatives, covDerivStepDt]
   simp only [Finset.sum_add_distrib]
   ring
 
@@ -137,7 +137,7 @@ theorem iteratedRmComp_one_hasDerivWithinAt
         iteratedRmComp (I := I) (coordinateFrameAt (I := I) x₀)
           (solutionChristoffelComponents (I := I) S x₀) (solutionCurvatureComponents (I := I) S x₀) 1 s x n)
       (covDerivStepComp
-          (frameExtData (I := I) (coordinateFrameAt (I := I) x₀)
+          (frameDirectionalDerivatives (I := I) (coordinateFrameAt (I := I) x₀)
             (fun y : M => rm04Dt (t : Real) y) x)
           (solutionChristoffelComponents (I := I) S x₀ (t : Real) x)
           (rm04Dt (t : Real) x) n -
@@ -150,7 +150,7 @@ theorem iteratedRmComp_one_hasDerivWithinAt
           (solutionChristoffelComponents (I := I) S x₀) (solutionCurvatureComponents (I := I) S x₀) 1 s x n) =
         fun s : Real =>
           covDerivStepComp
-            (frameExtData (I := I) (coordinateFrameAt (I := I) x₀)
+            (frameDirectionalDerivatives (I := I) (coordinateFrameAt (I := I) x₀)
               (fun y : M => solutionCurvatureComponents (I := I) S x₀ s y) x)
             (solutionChristoffelComponents (I := I) S x₀ s x)
             (solutionCurvatureComponents (I := I) S x₀ s x) n := by

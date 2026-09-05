@@ -12,7 +12,7 @@ open scoped Manifold Topology ContDiff Matrix InnerProductSpace BigOperators
 namespace DifferentialGeometry
 namespace Analysis
 namespace Laplacian
-namespace DiffChartBilinearH1ComplH3
+namespace DiffChartChosenFirstPartial
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
@@ -485,7 +485,7 @@ theorem diffChartBilinearH1Compl_weak_partial_deriv_memW1p
     at h_step_two
   exact h_step_two
 
-end DiffChartBilinearH1ComplH3
+end DiffChartChosenFirstPartial
 end Laplacian
 end Analysis
 end DifferentialGeometry

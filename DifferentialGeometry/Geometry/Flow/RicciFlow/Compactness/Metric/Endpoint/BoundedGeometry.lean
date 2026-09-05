@@ -49,10 +49,10 @@ def metricCompactnessOfBoundedGeometry
     (hconn : ∀ k : Nat,
       letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
       ConnectedSpace (X.obj k).M) :
-    MetricCompactnessConclusion (I := I) X := by
+    MetricCompactLimit (I := I) X := by
   let b := metricSeedOfBG (I := I) X hcomplete hgeom hinj hconn
   have hd : Nonempty (BoundedGeometryNormalChartData (I := I) X b.decay) :=
-    exists_bounded_geometry_normal_data (I := I) X hcomplete hconn hgeom b.decay b.realizes
+    nonempty_bounded_geometry_normal_chart_data (I := I) X hcomplete hconn hgeom b.decay b.realizes
   exact b.higherRegularityMetricCompactness (Classical.choice hd) hcomplete hconn
 
 end CheegerGromovCompactness

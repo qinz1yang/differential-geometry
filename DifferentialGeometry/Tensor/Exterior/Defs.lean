@@ -330,11 +330,13 @@ theorem reindex_comp {k l m : ℕ} (e : Fin k ≃ Fin l) (f : Fin l ≃ Fin m)
   ext v
   rfl
 
-@[simp] theorem reindex_symm {k l : ℕ} (e : Fin k ≃ Fin l) (α : DifferentialForm IM M l) :
+@[simp] theorem reindex_reindex_symm
+    {k l : ℕ} (e : Fin k ≃ Fin l) (α : DifferentialForm IM M l) :
     reindex e (reindex e.symm α) = α := by
   rw [reindex_comp e.symm e α, Equiv.symm_trans_self, reindex_refl]
 
-@[simp] theorem reindex_symm' {k l : ℕ} (e : Fin k ≃ Fin l) (α : DifferentialForm IM M k) :
+@[simp] theorem reindex_symm_reindex
+    {k l : ℕ} (e : Fin k ≃ Fin l) (α : DifferentialForm IM M k) :
     reindex e.symm (reindex e α) = α := by
   rw [reindex_comp e e.symm α, Equiv.self_trans_symm, reindex_refl]
 

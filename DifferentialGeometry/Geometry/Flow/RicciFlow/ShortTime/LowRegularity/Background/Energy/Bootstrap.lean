@@ -221,8 +221,8 @@ theorem exists_cross_scale_field_of_background_lowRegularity_solution
       (TensorHs (I := I) (M := M) g 0 2 ((1 : ℕ) : ℝ)) T)
     (hsol : IsBackgroundLowRegularitySolution (I := I) (M := M) g g_bg K hK hT hT1 u gforce) :
     ∃ v : CrossScaleField (I := I) (M := M) g 0 2 ((1 : ℕ) : ℝ) T,
-      v.lo = u ∧
-        v.hiL2 = maximalRegularityDuhamelSolutionField (I := I) (M := M)
+      v.lowRegularity = u ∧
+        v.highRegularity = maximalRegularityDuhamelSolutionField (I := I) (M := M)
           ((1 : ℕ) : ℝ) hT 0 gforce ∧
         (∀ t ∈ Set.Icc (0 : ℝ) T,
           tensorHsInclusion (I := I) (M := M) (g := g) (r := 0) (s := 2)
@@ -232,7 +232,7 @@ theorem exists_cross_scale_field_of_background_lowRegularity_solution
           lowRegularityStateRadius K.top K.slope K.outer K.realize := by
   let v := duhamelCross (I := I) (M := M) g 0 2 ((1 : ℕ) : ℝ)
     hT 0 gforce
-  have hvlo : v.lo = u := by
+  have hvlo : v.lowRegularity = u := by
     change maximalRegularityDuhamelMap (I := I) (M := M) ((1 : ℕ) : ℝ)
       hT 0 gforce = u
     exact hsol.map_eq.symm

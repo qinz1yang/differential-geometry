@@ -77,7 +77,7 @@ theorem lc_lapTrace
     (duSec : OneFormSection (I := I) (M := M))
     (nablaDuSec : TwoTensorSection (I := I) (M := M))
     (hdu : DuFieldRealizes (I := I) u duSec)
-    (hnabla : NablaOneFormSectionRealizes (I := I)
+    (hnabla : NablaOneFormRealizes (I := I)
       (leviCivitaConnectionOfMetric (I := I) g) duSec nablaDuSec)
     (hgrad : ∀ y : M,
       MDiffAt (T% fun z : M => gradientFun (I := I) g u z) y) :
@@ -287,7 +287,7 @@ theorem lc_bochner_dlap
     (hnablaTrace : TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H)
       (I := I) (M := M) 2 (leviCivitaConnectionOfMetric (I := I) g)
       nablaDuSec nabla2DuSec)
-    (hnablaSec : NablaOneFormSectionRealizes (I := I)
+    (hnablaSec : NablaOneFormRealizes (I := I)
       (leviCivitaConnectionOfMetric (I := I) g) duSec nablaDuSec)
     (hgradU : ∀ y : M,
       MDiffAt (T% fun z : M => gradientFun (I := I) g u z) y)
@@ -377,7 +377,7 @@ theorem lc_bochner_norm
     (hnablaTrace : TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H)
       (I := I) (M := M) 2 (leviCivitaConnectionOfMetric (I := I) g)
       nablaDuSec nabla2DuSec)
-    (hnablaSec : NablaOneFormSectionRealizes (I := I)
+    (hnablaSec : NablaOneFormRealizes (I := I)
       (leviCivitaConnectionOfMetric (I := I) g) duSec nablaDuSec)
     (hgradU : ∀ y : M,
       MDiffAt (T% fun z : M => gradientFun (I := I) g u z) y)
@@ -472,7 +472,7 @@ theorem lc_bochner_rm04
     (hnablaTrace : TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H)
       (I := I) (M := M) 2 (leviCivitaConnectionOfMetric (I := I) g)
       nablaDuSec nabla2DuSec)
-    (hnablaSec : NablaOneFormSectionRealizes (I := I)
+    (hnablaSec : NablaOneFormRealizes (I := I)
       (leviCivitaConnectionOfMetric (I := I) g) duSec nablaDuSec)
     (hgradU : ∀ y : M,
       MDiffAt (T% fun z : M => gradientFun (I := I) g u z) y)

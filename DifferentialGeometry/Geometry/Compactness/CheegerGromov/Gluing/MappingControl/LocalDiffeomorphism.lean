@@ -28,8 +28,8 @@ variable {H : Type uH} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 variable {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
 
-theorem HasStageJetDataOn.hloc_tail
-    (inp : MetricCompactCore (I := I) X)
+theorem HasStageJetConvergenceOn.hloc_tail
+    (inp : MetricCompactSeedWithDivisor (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P) {r : Real} (hr : 0 ≤ r)
     (phi : Nat → Nat) (hphi : StrictMono phi)
@@ -41,7 +41,7 @@ theorem HasStageJetDataOn.hloc_tail
       InterSlot L inp.pack r alpha → E → E)
     (gInf : LiveSlot L inp.pack r →
       E → (E →L[Real] E →L[Real] Real))
-    (hstage : HasStageJetDataOn (I := I) inp P L hr phi hphi
+    (hstage : HasStageJetConvergenceOn (I := I) inp P L hr phi hphi
       chart V U C0 C1 aInf Jinf Jbarinf gInf)
     (R : Real) (hRr : R < r) :
     ∃ N : Nat, ∀ k ≥ N, ∀ l ≥ N,

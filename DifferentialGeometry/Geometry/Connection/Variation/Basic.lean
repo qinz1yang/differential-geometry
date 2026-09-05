@@ -26,10 +26,11 @@ def metricVariationComponent
 
 structure MetricPotentialVariationPath
     (g : SmoothRiemannianMetric I M) (potential : M -> Real) where
-  G : DifferentialGeometry.Geometry.Curvature.MetricConnectionFamily (I := I) (M := M) Real
+  connectionFamily :
+    DifferentialGeometry.Geometry.Curvature.MetricConnectionFamily (I := I) (M := M) Real
   potentialPath : Real -> M -> Real
   base : Real
-  metricBase : G.metric base = g
+  metricBase : connectionFamily.metric base = g
   potentialBase : potentialPath base = potential
 
 namespace MetricPotentialVariationPath
@@ -39,7 +40,7 @@ variable {g : SmoothRiemannianMetric I M} {potential : M -> Real}
 omit [FiniteDimensional ℝ E] in
 @[simp] theorem metric_base
     (path : MetricPotentialVariationPath (I := I) g potential) :
-    path.G.metric path.base = g :=
+    path.connectionFamily.metric path.base = g :=
   path.metricBase
 
 omit [FiniteDimensional ℝ E] in
@@ -59,12 +60,12 @@ structure IsMetricPotentialVariationPath
     (potentialVariation : M -> Real) : Prop where
   leviCivita :
     ∀ s : Real,
-      DifferentialGeometry.Geometry.Connection.IsLeviCivita (I := I) (path.G.connection s)
-        (path.G.metric s)
+      DifferentialGeometry.Geometry.Connection.IsLeviCivita (I := I) (path.connectionFamily.connection s)
+        (path.connectionFamily.metric s)
   metric_deriv :
     ∀ x : M, ∀ X Y : TangentSpace I x,
       HasDerivAt
-        (fun s : Real => (path.G.metric s).inner x X Y)
+        (fun s : Real => (path.connectionFamily.metric s).inner x X Y)
         (metricVariationComponent (I := I) metricVariation x X Y)
         path.base
   potential_deriv :

@@ -31,7 +31,7 @@ variable {M : Type u} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ 
   [T2Space M] [T2Space (TangentBundle I M)] [SigmaCompactSpace M]
   [ConnectedSpace M] [T3Space M]
 
-structure CenterInput (g : SmoothRiemannianMetric I M)
+structure CenterOfMassConditions (g : SmoothRiemannianMetric I M)
     {ι : Type} [Fintype ι] (μ : ι → ℝ) (points : ι → M)
     (join : M → M → ℝ → M) (p : M) (r : ℝ) : Prop where
   complete :
@@ -56,14 +56,14 @@ structure CenterInput (g : SmoothRiemannianMetric I M)
     ∀ i : ι, dist p (points i) < r
   μ_nonneg : ∀ i : ι, 0 ≤ μ i
   μ_pos : ∃ i : ι, 0 < μ i
-  strict : StrictDistInput (I := I) g points join p r
+  strict_distance : StrictDistanceConvexity (I := I) g points join p r
 
-namespace CenterInput
+namespace CenterOfMassConditions
 
 variable {g : SmoothRiemannianMetric I M} {ι : Type} [Fintype ι]
   {μ : ι → ℝ} {points : ι → M} {join : M → M → ℝ → M} {p : M} {r : ℝ}
 
-theorem exists_unique_minimizer (h : CenterInput (I := I) g μ points join p r) :
+theorem exists_unique_minimizer (h : CenterOfMassConditions (I := I) g μ points join p r) :
     letI : RiemannianBundle (fun x : M => TangentSpace I x) :=
       ⟨g.toRiemannianMetric⟩
     letI : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
@@ -76,15 +76,15 @@ theorem exists_unique_minimizer (h : CenterInput (I := I) g μ points join p r) 
         (∀ z : M, CenterOfMass.centerEnergy (I := I) g μ points y ≤
           CenterOfMass.centerEnergy (I := I) g μ points z) → y = q := by
   exact CenterOfMass.exists_unique_curve (I := I) g h.complete h.enorm μ points join
-    h.r_pos h.points_mem h.μ_nonneg h.μ_pos h.strict.mid h.strict.zero h.strict.one
-    h.strict.strict
+    h.r_pos h.points_mem h.μ_nonneg h.μ_pos h.strict_distance.mid h.strict_distance.zero
+    h.strict_distance.one h.strict_distance.strict
 
-end CenterInput
+end CenterOfMassConditions
 
 noncomputable def centerOfMass (g : SmoothRiemannianMetric I M)
     {ι : Type} [Fintype ι] (μ : ι → ℝ) (points : ι → M)
     (join : M → M → ℝ → M) (p : M) (r : ℝ)
-    (h : CenterInput (I := I) g μ points join p r) : M :=
+    (h : CenterOfMassConditions (I := I) g μ points join p r) : M :=
   letI : RiemannianBundle (fun x : M => TangentSpace I x) :=
     ⟨g.toRiemannianMetric⟩
   letI : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
@@ -96,7 +96,7 @@ namespace centerOfMass
 
 variable {g : SmoothRiemannianMetric I M} {ι : Type} [Fintype ι]
   {μ : ι → ℝ} {points : ι → M} {join : M → M → ℝ → M} {p : M} {r : ℝ}
-  (h : CenterInput (I := I) g μ points join p r)
+  (h : CenterOfMassConditions (I := I) g μ points join p r)
 
 omit [NeZero (Module.finrank ℝ E)] [T2Space M] [SigmaCompactSpace M] in
 theorem grad_half_self (q : M)
@@ -205,8 +205,8 @@ theorem dist_le {qstar : M} {ε : ℝ} (hε : 0 ≤ ε)
   let : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
   obtain ⟨q, _hqmem, hqmin, hqdist, _hquniq⟩ :=
     CenterOfMass.exists_unique_curve_dist_le (I := I) g h.complete h.enorm μ points join
-      h.r_pos h.points_mem hε hnear h.μ_nonneg h.μ_pos h.strict.mid h.strict.zero
-      h.strict.one h.strict.strict
+      h.r_pos h.points_mem hε hnear h.μ_nonneg h.μ_pos h.strict_distance.mid
+      h.strict_distance.zero h.strict_distance.one h.strict_distance.strict
   have hq_eq : q = centerOfMass (I := I) g μ points join p r h := unique h q hqmin
   simpa [hq_eq] using hqdist
 
@@ -521,7 +521,7 @@ end centerOfMass
 theorem centerOfMass_cont {P : Type*} [TopologicalSpace P] [FirstCountableTopology P]
     (g : SmoothRiemannianMetric I M) {ι : Type} [Fintype ι]
     (μ : P → ι → ℝ) (points : P → ι → M) (join : M → M → ℝ → M) (p : M) (r : ℝ) (p₀ : P)
-    (H : ∀ a : P, CenterInput (I := I) g (μ a) (points a) join p r)
+    (H : ∀ a : P, CenterOfMassConditions (I := I) g (μ a) (points a) join p r)
     (hμ : Continuous μ) (hpts : Continuous points) :
     letI : RiemannianBundle (fun x : M => TangentSpace I x) := ⟨g.toRiemannianMetric⟩
     letI : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=

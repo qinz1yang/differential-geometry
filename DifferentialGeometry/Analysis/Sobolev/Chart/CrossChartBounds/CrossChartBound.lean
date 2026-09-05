@@ -63,7 +63,7 @@ lemma crossChartCompact_isCompact
     IsCompact (crossChartCompact (I := I) (M := M) γ α) :=
   (crossChartCompact_isClosed (I := I) (M := M) γ α).isCompact
 
-theorem cross_chart_diffeo_exists
+theorem exists_cross_chart_diffeomorph
     [I.Boundaryless] [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
     (γ α : M) :
     ∃ (Ω_γα Ω_αγ : Set EuclN)

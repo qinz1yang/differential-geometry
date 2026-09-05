@@ -1,13 +1,13 @@
 import DifferentialGeometry.Analysis.Elliptic.Regularity.Iterated.NirenbergInterior.MixedPartials
 import DifferentialGeometry.Analysis.Elliptic.Regularity.Iterated.VariationalIdentity.LeibnizCoefficients
-import DifferentialGeometry.Analysis.Elliptic.Regularity.DiffChart.Differentiated.DerivedDataConstructor
+import DifferentialGeometry.Analysis.Elliptic.Regularity.DiffChart.Differentiated.CanonicalDerivedData
 import DifferentialGeometry.Analysis.Elliptic.Regularity.DiffChart.TwiceDifferentiated.VariationalIdentity
 import DifferentialGeometry.Analysis.Elliptic.Regularity.DiffChart.ResidualRegularity.ChosenFChartDerivMemW1p
 import DifferentialGeometry.Analysis.Elliptic.Regularity.Iterated.BaseFChart.MemWkpTwoTwo
 import DifferentialGeometry.Analysis.Elliptic.Regularity.DiffChart.Differentiated.EffectiveSource
 import DifferentialGeometry.Analysis.Elliptic.Regularity.DiffChart.TwiceDifferentiated.EffectiveSource
-import DifferentialGeometry.Analysis.Elliptic.Regularity.LaplacianDomain.Chart.H1Data
-import DifferentialGeometry.Analysis.Elliptic.Regularity.DiffChart.ResidualRegularity.BilinearH1ComplViaH3
+import DifferentialGeometry.Analysis.Elliptic.Regularity.LaplacianDomain.Chart.VariationalData
+import DifferentialGeometry.Analysis.Elliptic.Regularity.DiffChart.ResidualRegularity.ChosenFirstPartialW1p
 
 
 noncomputable section
@@ -34,8 +34,8 @@ open DifferentialGeometry.Analysis.Laplacian.ChartBilinearH1Compl
 open DifferentialGeometry.Analysis.Laplacian.LaplacianDomainChartData
 open DifferentialGeometry.Analysis.Laplacian.IteratedMixedPartials
 open DifferentialGeometry.Analysis.Laplacian.DiffChartBilinearH1Compl
-open DifferentialGeometry.Analysis.Laplacian.DiffChartBilinearH1ComplH3
-open DifferentialGeometry.Analysis.Laplacian.DerivedChartBilinearH1ComplDataCanonical
+open DifferentialGeometry.Analysis.Laplacian.DiffChartChosenFirstPartial
+open DifferentialGeometry.Analysis.Laplacian.CanonicalDerivedChartBilinearH1ComplData
 open DifferentialGeometry.Analysis.Laplacian.TwiceDifferentiatedVariationalIdentity
 open DifferentialGeometry.Analysis.Laplacian.ChosenFChartDerivMemW1p
 open DifferentialGeometry.Analysis.Laplacian.BaseFChartMemW22
@@ -350,7 +350,7 @@ def ofDiff
   m_diff_variational_identity := by
     classical
     intro ψ hψ_smooth hψ_cs hψ_support
-    have h_once := derived_variational_identity_holds
+    have h_once := derived_chart_variational_identity
       (I := I) (M := M) g α l hu_h hψ_smooth hψ_cs hψ_support
     have h_principal_eq :
         ∫ y in chartTargetEuclid (I := I) (M := M) α,

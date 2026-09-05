@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Exponential.ChartFlow.Rescaling.Lift
 import DifferentialGeometry.Geometry.Exponential.Smoothness.AtZero.ZeroSectionConstancy
-import DifferentialGeometry.Geometry.Exponential.Smoothness.AtZero.MatchData
+import DifferentialGeometry.Geometry.Exponential.Smoothness.AtZero.ZeroSectionMatch
 import DifferentialGeometry.Geometry.Exponential.ChartFlow.Orbit.Existence
 open DifferentialGeometry.Geometry.Curvature
 
@@ -34,7 +34,7 @@ theorem hasChartFlowGeodesicMatchAtZero
   classical
   obtain ⟨Φ, ρ, T, T_match, hρ_pos, hT_pos, hT_match_pos, hT_match_le_T,
     hΦ_cd, hΦ_initial0, hΦ_initial_v, hΦ_target, hΦ_phase, hΦ_const_zero, _hF_int⟩ :=
-    exists_unified_chartFlow_data (I := I) g p
+    exists_unified_chartFlow (I := I) g p
   set t' : ℝ := T_match / 2 with ht'_def
   have ht'_pos : 0 < t' := by
     have : (0 : ℝ) < T_match / 2 := half_pos hT_match_pos
@@ -114,7 +114,7 @@ theorem expMap_contMDiffAt_zero
     ContMDiffAt 𝓘(ℝ, E) I 1
       (fun v : E => (expMap (I := I) g p (show TangentSpace I p from v) : M))
       (0 : E) :=
-  expMap_contMDiffAt_zero_of_chartFlowGeodesicMatchData (I := I) g p
+  expMap_contMDiffAt_zero_of_match_at_zero (I := I) g p
     (hasChartFlowGeodesicMatchAtZero (I := I) g p)
 
 end MainResult

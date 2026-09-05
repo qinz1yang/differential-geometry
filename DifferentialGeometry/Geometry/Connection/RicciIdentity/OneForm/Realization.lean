@@ -54,7 +54,7 @@ def NablaOneFormRealizesAt
       nabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
         1 cov X alpha x (fun _ : Fin 1 => Y)
 
-def NablaOneFormSectionRealizes
+def NablaOneFormRealizes
     [IsManifold I 1 M] [IsManifold I 2 M]
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (alpha : OneFormSection (I := I) (M := M))
@@ -70,7 +70,7 @@ def Nabla2OneFormRealizesAt
     (nabla2Alpha :
       Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 3 x) :
     Prop :=
-  NablaOneFormSectionRealizes (I := I) cov alpha nablaAlpha ∧
+  NablaOneFormRealizes (I := I) cov alpha nablaAlpha ∧
     ∀ (X : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _))
         (Y Z : TangentSpace I x),
       nabla2Alpha (vec3 (X x) Y Z) =
@@ -86,7 +86,7 @@ theorem nabla2OneFormRealizesAt_first
     (nabla2Alpha :
       Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 3 x)
     (h : Nabla2OneFormRealizesAt (I := I) cov alpha nablaAlpha x nabla2Alpha) :
-    NablaOneFormSectionRealizes (I := I) cov alpha nablaAlpha :=
+    NablaOneFormRealizes (I := I) cov alpha nablaAlpha :=
   h.1
 
 theorem nabla2OneFormRealizesAt_apply

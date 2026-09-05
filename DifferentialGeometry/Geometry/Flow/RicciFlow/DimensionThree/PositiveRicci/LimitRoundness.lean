@@ -314,7 +314,7 @@ theorem limit_round_base
       (L.S.ricciAt t0 x) hdimT hsym with
     ⟨basis, _l1, _l2, _l3, horth, _hdiag⟩
   have htrace :=
-    DifferentialGeometry.PDE.RicciFlow.riemann_from_ricci_trace_data (I := I) (M := L.N) L.S
+    DifferentialGeometry.PDE.RicciFlow.riemann_from_ricci_trace (I := I) (M := L.N) L.S
       (t := t0) (x := x) (basis := basis) horth
   have hEinCompNeg : ∀ i j : Fin 3,
       DifferentialGeometry.Geometry.Curvature.ricciCompAt (I := I) basis (-(L.S.ricciAt t0 x)) i j

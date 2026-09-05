@@ -361,7 +361,7 @@ theorem hasDerivAt_lRegularizedAction
     have hpU : (u, s) ∈ U := ht s hs
     have hat := (hlagDiff (u, s) hpU).differentiableAt
       (hUopen.mem_nhds hpU)
-    simpa only [lag, dLag] using Aux2.hasDerivAt_slice_fst
+    simpa only [lag, dLag] using TwoParameterDerivative.hasDerivAt_slice_fst
       (fun z r : Real ↦ lRegularizedLagrangian S T (f z) r) u s hat
   let K : Set (Real × Real) := Set.Icc (-1 : Real) 1 ×ˢ Set.uIcc a b
   have hKcompact : IsCompact K := by
@@ -498,11 +498,11 @@ theorem lRegularizedEulerPair_variation_contDiffOn_one
       (hlagDiff p hp).differentiableAt (hUopen.mem_nhds hp)
     have hpairSlice : HasDerivAt
         (fun s : Real ↦ pair (p.1, s)) (dPair p) p.2 := by
-      simpa only [dPair] using Aux2.hasDerivAt_slice_snd
+      simpa only [dPair] using TwoParameterDerivative.hasDerivAt_slice_snd
         (fun u s : Real ↦ pair (u, s)) p.1 p.2 hpairAt
     have hlagSlice : HasDerivAt
         (fun u : Real ↦ lag (u, p.2)) (dLag p) p.1 := by
-      simpa only [dLag] using Aux2.hasDerivAt_slice_fst
+      simpa only [dLag] using TwoParameterDerivative.hasDerivAt_slice_fst
         (fun u s : Real ↦ lag (u, s)) p.1 p.2 hlagAt
     have hlagShift : HasDerivAt
         (fun u : Real ↦ lag (p.1 + u, p.2)) (dLag p) 0 :=
@@ -636,7 +636,7 @@ theorem lRegularizedAction_first_variation
     have hp : ((0 : Real), s) ∈ U := ht s hs
     have hat : DifferentiableAt Real pair (0, s) :=
       (hpairDiff (0, s) hp).differentiableAt (hUopen.mem_nhds hp)
-    simpa only [B, dPair] using Aux2.hasDerivAt_slice_snd
+    simpa only [B, dPair] using TwoParameterDerivative.hasDerivAt_slice_snd
       (fun u r : Real ↦ pair (u, r)) 0 s hat
   have hdBint : IntervalIntegrable (deriv B)
       MeasureTheory.volume a b := by

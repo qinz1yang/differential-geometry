@@ -37,7 +37,7 @@ open DifferentialGeometry.Geometry.Connection
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
-open LieCorrectionZeroCore
+open LieCorrectionZeroFiberOperators
 open TensorMultilinear
 
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]

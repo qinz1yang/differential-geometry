@@ -21,8 +21,8 @@ variable {H : Type*} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 variable {X : PointedFlowSeq (I := I)}
 
-theorem exists_complete_flowUpgrade_of_open_metric_bounds
-    (mc : MetricCompactnessConclusion (I := I) (X.atZero (I := I)))
+theorem exists_complete_smooth_flow_limit_subsequence_of_open_metric_bounds
+    (mc : MetricCompactLimit (I := I) (X.atZero (I := I)))
     (Phi : PointedCGHMaps (I := I) X mc.limit mc.subseq)
     (bf : BumpFamily (I := I) Phi)
     (hsrc : SourceIsSigmaCompact (I := I) Phi) (htgt : TargetIsSigmaCompact (I := I) Phi)
@@ -124,9 +124,9 @@ theorem exists_complete_flowUpgrade_of_open_metric_bounds
              (sourceMetric (I := I) Phi hsrc htgt k 0)
              (sourceMetricRestriction (I := I) Phi (k := k) mc.limit.metric)
              (sourceMetricRestriction (I := I) Phi mc.limit.metric k) < eps)) :
-    exists d : FlowUpgrade (I := I) X mc,
+    exists d : SmoothFlowLimitSubsequence (I := I) X mc,
       forall t : Real, t ∈ X.D.carrier ->
-        MetricComplete (I := I) (d.data.L.atTime (I := I) t) := by
+        MetricComplete (I := I) (d.limit.L.atTime (I := I) t) := by
   let : TopologicalSpace mc.limit.M := mc.limit.topology
   let : ChartedSpace H mc.limit.M := mc.limit.charted
   let : T2Space mc.limit.M := mc.limit.t2
@@ -162,16 +162,16 @@ theorem exists_complete_flowUpgrade_of_open_metric_bounds
     cases h
     rfl
   have hmap (k : Nat) (x : mc.limit.M) :
-      (hL0.symm ▸ (Phi.compSubseq co.φ co.hφ) : PointedCGHMaps (I := I) X
+      (hL0.symm ▸ (Phi.compSubseq co.φ co.strictMono) : PointedCGHMaps (I := I) X
         (L.atTime (I := I) 0) (mc.subseq ∘ co.φ)).map k x =
-        (Phi.compSubseq co.φ co.hφ).map k x := by
+        (Phi.compSubseq co.φ co.strictMono).map k x := by
     have hx : hL0 ▸ x = x :=
       eq_of_heq ((eqRec_heq
         (φ := fun Q : PointedRiemannianManifold (I := I) => Q.M) hL0) x)
-    exact (eq_of_heq (map_cast hL0 (Phi.compSubseq co.φ co.hφ) k x)).trans
-      (congrArg (fun y => (Phi.compSubseq co.φ co.hφ).map k y) hx)
+    exact (eq_of_heq (map_cast hL0 (Phi.compSubseq co.φ co.strictMono) k x)).trans
+      (congrArg (fun y => (Phi.compSubseq co.φ co.strictMono).map k y) hx)
   have scalar : ScalarPullbackTendsto (I := I)
-      (hL0.symm ▸ (Phi.compSubseq co.φ co.hφ) : PointedCGHMaps (I := I) X
+      (hL0.symm ▸ (Phi.compSubseq co.φ co.strictMono) : PointedCGHMaps (I := I) X
         (L.atTime (I := I) 0) (mc.subseq ∘ co.φ)) := by
     unfold ScalarPullbackTendsto FunctionPullbackTendsto
     intro t ht x
@@ -200,7 +200,7 @@ theorem exists_complete_flowUpgrade_of_open_metric_bounds
     exact congrArg
       (fun y => (X.term ((mc.subseq ∘ co.φ) k)).S.scalar t y) (hmap k x).symm
   have ricciNorm : RicNormPullback (I := I)
-      (hL0.symm ▸ (Phi.compSubseq co.φ co.hφ) : PointedCGHMaps (I := I) X
+      (hL0.symm ▸ (Phi.compSubseq co.φ co.strictMono) : PointedCGHMaps (I := I) X
         (L.atTime (I := I) 0) (mc.subseq ∘ co.φ)) := by
     unfold RicNormPullback FunctionPullbackTendsto
     intro t ht x
@@ -230,7 +230,7 @@ theorem exists_complete_flowUpgrade_of_open_metric_bounds
     exact congrArg
       (fun y => DifferentialGeometry.PDE.RicciFlow.ricciNorm (I := I)
         (X.term ((mc.subseq ∘ co.φ) k)).S t y) (hmap k x).symm
-  let d := flowUpgradeOfOpen (I := I) mc L mc.limit rfl hL0 Phi
+  let d := smoothFlowLimitSubsequenceOfOpenMetricConvergence (I := I) mc L mc.limit rfl hL0 Phi
     mc.limit.metric bf hsrc htgt hzero_mem hD co (fun _ _ => HEq.rfl) scalar
     ricciNorm
   refine ⟨d, ?_⟩
@@ -251,8 +251,8 @@ theorem exists_complete_flowUpgrade_of_open_metric_bounds
       (fun j u hu => hbound n j u hu) (co.φ k) s hs x v
   have hcomplete := OpenMetricConvergenceData.complete_at (I := I) Phi mc.limit_complete co
     (fun n => min (cLow n) 1) hcExt hseq htOpen
-  have hdL : d.data.L = L := by
-    exact flowUpgrade_open_L (I := I) mc L mc.limit rfl hL0 Phi
+  have hdL : d.limit.L = L := by
+    exact smoothFlowLimitSubsequenceOfOpenMetricConvergence_limit (I := I) mc L mc.limit rfl hL0 Phi
       mc.limit.metric bf hsrc htgt hzero_mem hD co (fun _ _ => HEq.rfl) scalar
       ricciNorm
   rw [hdL]

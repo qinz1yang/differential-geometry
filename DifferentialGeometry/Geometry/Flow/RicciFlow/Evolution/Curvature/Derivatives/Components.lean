@@ -28,7 +28,7 @@ def iteratedRmComp
   | 0 => base
   | (k + 1) => fun t x =>
       covDerivStepComp
-        (frameExtData (I := I) frame
+        (frameDirectionalDerivatives (I := I) frame
           (fun y : M => iteratedRmComp frame chr base k t y) x)
         (chr t x)
         (iteratedRmComp frame chr base k t x)
@@ -53,7 +53,7 @@ theorem iteratedRmComp_succ
     (base : Real → M → (Fin 4 → Idx) → Real) (k : ℕ) (t : Real) (x : M) :
     iteratedRmComp (I := I) frame chr base (k + 1) t x =
       covDerivStepComp
-        (frameExtData (I := I) frame
+        (frameDirectionalDerivatives (I := I) frame
           (fun y : M => iteratedRmComp (I := I) frame chr base k t y) x)
         (chr t x)
         (iteratedRmComp (I := I) frame chr base k t x) := rfl

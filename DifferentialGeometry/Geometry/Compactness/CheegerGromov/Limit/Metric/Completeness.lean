@@ -633,7 +633,7 @@ theorem tail_limit_complete
     simpa only [S, gTail, hgTail] using
       tail_range_exhausts (I := I) b Ψ hbase g hnorm j₀ D₀ hU hmap gInf hstep hclose
   have hcompact : ∀ n, ∃ K : Set (tailBallOpen b j₀ (n + 1)), IsCompact K ∧
-      Set.range (S.toSeqSystem.F (Nat.le_succ n)) ⊆ K := by
+      Set.range (S.toSeqSystem.map (Nat.le_succ n)) ⊆ K := by
     simpa only [S] using
       tail_ball_system_step_range_compact (I := I) b Ψ hbase g hnorm j₀ hj₀ D₀
   have hcover : S.hasCompactBallCover gTail hgTail :=

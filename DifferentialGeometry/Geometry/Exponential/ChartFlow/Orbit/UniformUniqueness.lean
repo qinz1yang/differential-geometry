@@ -28,7 +28,7 @@ variable [I.Boundaryless]
 
 omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
-lemma chartPhaseVF_exists_lipschitzOnWith_at
+lemma exists_chartPhaseVF_lipschitzOnWith_at
     (g : SmoothRiemannianMetric I M) (α : M)
     {z : E × E} (hz : z ∈ (interior (extChartAt I α).target) ×ˢ (Set.univ : Set E)) :
     ∃ L : ℝ≥0, ∃ t ∈ 𝓝 z, LipschitzOnWith L (chartPhaseVF (I := I) g α) t := by
@@ -51,7 +51,7 @@ lemma chartPhaseVF_locallyLipschitzOn_of_compact
     LocallyLipschitzOn K (chartPhaseVF (I := I) g α) := by
   intro z hz
   obtain ⟨L, t, ht, hL⟩ :=
-    chartPhaseVF_exists_lipschitzOnWith_at (I := I) g α (hK_subset hz)
+    exists_chartPhaseVF_lipschitzOnWith_at (I := I) g α (hK_subset hz)
   refine ⟨L, t, ?_, hL⟩
   exact mem_nhdsWithin_of_mem_nhds ht
 

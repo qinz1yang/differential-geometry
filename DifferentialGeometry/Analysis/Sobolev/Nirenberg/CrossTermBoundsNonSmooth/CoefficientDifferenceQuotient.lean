@@ -421,7 +421,7 @@ private lemma integrable_eta_sq_diffQuot_g_sq_cross2
   exact hint
 
 
-theorem cross_2_bound_nonsmooth_quantitative
+theorem coefficient_difference_quotient_mixed_term_bound_nonsmooth_quantitative
     {Ω : Set E} (B : SmoothEllipticBilinearForm d Ω)
     {g : Fin d → E → ℝ}
     (hg_l2 : ∀ i, MemLp (g i) 2 (volume : Measure E))
@@ -920,7 +920,7 @@ theorem cross_2_bound_nonsmooth_quantitative
   linarith
 
 
-theorem cross_2_bound_nonsmooth
+theorem coefficient_difference_quotient_mixed_term_bound_nonsmooth
     {Ω : Set E} (B : SmoothEllipticBilinearForm d Ω)
     {g : Fin d → E → ℝ}
     (hg_l2 : ∀ i, MemLp (g i) 2 (volume : Measure E))
@@ -960,7 +960,7 @@ theorem cross_2_bound_nonsmooth
     refine mul_nonneg (sq_nonneg _) ?_
     refine inv_nonneg.mpr (by linarith [hε'_pos])
   · intro h hh hh_le
-    exact cross_2_bound_nonsmooth_quantitative (d := d) B hg_l2
+    exact coefficient_difference_quotient_mixed_term_bound_nonsmooth_quantitative (d := d) B hg_l2
       hη hη_support hη_range hΩ' hΩ'_compact
       hh_support_in_Ω' k ε hε hh hh_le
 

@@ -471,7 +471,7 @@ private lemma tensorChartBilinear_uniform_diffQuot_bound_of_data
   exact h_bd j k h hh_pos (by rw [hε_def] at *; linarith)
 
 omit [CompleteSpace E] in
-lemma tensorChartBilinear_chartComponent_regularity_of_data
+lemma tensorChartBilinear_chartComponent_and_weakPartials_memW1p
     {g : SmoothRiemannianMetric I M} {r s : ℕ} {α : M}
     {P₀ : TensorCompIdx (E := E) r s}
     (D : TensorChartBilinearH1ComplData (I := I) (M := M) g r s α P₀)

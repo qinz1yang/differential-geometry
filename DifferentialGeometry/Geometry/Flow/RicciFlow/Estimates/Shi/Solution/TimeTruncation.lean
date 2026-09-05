@@ -111,21 +111,21 @@ theorem estimate_of_heat
       K := K
       α := aScale
       T := T
-      hT := hT
-      hc := hc
-      hK := hK
-      hα := haScale
-      hslab := hslab
-      hregular := hregular
-      hw_nonneg := by
+      time_pos := hT
+      reactionConstant_nonneg := hc
+      curvatureBound_pos := hK
+      scale_nonneg := haScale
+      time_window_subset := hslab
+      regular_on_positive_time := hregular
+      quantity_nonneg := by
         intro k s _hs y
         exact hw'_nonneg k s y
-      hw0_bound := by
+      initial_order_bound := by
         intro s hs y
         rw [hw'_val_le 0 (Nat.zero_le m)]
         exact hw0_bound s hs y
-      hTK := hTK
-      hheat := by
+      time_le_scale_div_curvatureBound := hTK
+      towerHeatBound := by
         intro k tau y
         rcases lt_trichotomy k m with hlt | heq | hgt
         · have hk_le : k <= m := le_of_lt hlt
@@ -177,7 +177,7 @@ theorem estimate_of_heat
               simp
             rw [hreact0]
             norm_num
-      hLap := by
+      heatOperator_eq := by
         intro k s hs hspos y
         by_cases hk : k <= m
         · have hfun : w' k s = w k s := by
@@ -194,7 +194,7 @@ theorem estimate_of_heat
             DifferentialGeometry.Geometry.Curvature.laplacianAt_eq]
           exact DifferentialGeometry.Geometry.Operator.laplacian_const
             (I := I) (G.connection s) (G.metric s) 0 y
-      hw_cont := by
+      continuous := by
         intro k
         by_cases hk : k <= m
         · have hfun : (fun p : Real × M => w' k p.1 p.2) =
@@ -209,7 +209,7 @@ theorem estimate_of_heat
             rw [hw'_val_gt k hk]
           rw [hfun]
           exact continuousOn_const
-      hw_space := by
+      spatial_differentiable := by
         intro k s hs hspos y
         by_cases hk : k <= m
         · have hfun : w' k s = w k s := by
@@ -222,7 +222,7 @@ theorem estimate_of_heat
             rw [hw'_val_gt k hk]
           rw [hfun]
           exact mdifferentiableAt_const
-      hw_grad := by
+      gradient_differentiable := by
         intro k s hs hspos y
         by_cases hk : k <= m
         · have hfun : w' k s = w k s := by

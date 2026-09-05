@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Sobolev.Tensor.Fine.Repacking
+import DifferentialGeometry.Analysis.Sobolev.Tensor.Fine.Reconstruction
 open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
@@ -36,7 +36,7 @@ noncomputable def fineBlock
     (r s : ℕ) (z : CanonicalFineFlatIndex (I := I) (M := M) rFine hr)
     (u : TensorCompIdx (E := E) r s → EuclN → ℝ) :
     RSTensorSection I M r s :=
-  chartRepack (I := I) (M := M) r s
+  chartReconstruct (I := I) (M := M) r s
     (canonicalFlatBase (I := I) (M := M) rFine hr z)
     (fun Q => canonicalCutMul (I := I) (M := M) rFine hr z (u Q))
 

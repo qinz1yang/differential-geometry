@@ -260,10 +260,10 @@ lemma exists_rclip_neighborhood
   · set lam : ℝ := 2 with hlam_def
     set eps : ℝ := (1 / 2 : ℝ) with heps_def
     have heps_pos : 0 < eps := by rw [heps_def]; norm_num
-    have hlam_pos : 0 < lam := by rw [hlam_def]; norm_num
+    have ellipticity_pos : 0 < lam := by rw [hlam_def]; norm_num
     obtain ⟨tau, htau_cd, htau_eq, htau_bound⟩ :=
       DifferentialGeometry.Geometry.Riemannian.exists_time_window_clip
-        (a := -eps) (b := b + eps) (lam := lam) hlam_pos
+        (a := -eps) (b := b + eps) (lam := lam) ellipticity_pos
         (by rw [hlam_def, heps_def]; norm_num)
         (by rw [hlam_def, heps_def]; linarith)
     refine ⟨eps, heps_pos, tau, htau_cd, htau_eq, ?_⟩
@@ -277,7 +277,7 @@ lemma exists_rclip_neighborhood
     set lam : ℝ := (1 + R / ‖x‖) / 2 with hlam_def
     set eps : ℝ := (lam - 1) / 2 with heps_def
     have h1lam : 1 < lam := by rw [hlam_def]; linarith
-    have hlam_pos : 0 < lam := by linarith
+    have ellipticity_pos : 0 < lam := by linarith
     have heps_pos : 0 < eps := by rw [heps_def]; linarith
     have heps_lt_lam : eps < lam := by rw [heps_def]; linarith
     have hb_eps_lt : b + eps < lam := by
@@ -292,7 +292,7 @@ lemma exists_rclip_neighborhood
       linarith [show ‖x‖ < R by simpa [R] using hx]
     obtain ⟨tau, htau_cd, htau_eq, htau_bound⟩ :=
       DifferentialGeometry.Geometry.Riemannian.exists_time_window_clip
-        (a := -eps) (b := b + eps) (lam := lam) hlam_pos
+        (a := -eps) (b := b + eps) (lam := lam) ellipticity_pos
         (by linarith [heps_lt_lam]) hb_eps_lt
     refine ⟨eps, heps_pos, tau, htau_cd, htau_eq, ?_⟩
     intro t
@@ -1690,7 +1690,7 @@ theorem exists_ode_rm04
 open Bundle in
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-theorem exists_rm04_data
+theorem exists_radial_jacobi_regularity_and_second_derivative_bound
     [PseudoEMetricSpace M] [RiemannianBundle (fun x : M => TangentSpace I x)]
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
@@ -1778,7 +1778,7 @@ theorem exists_rm04_basis
         ≤ K ^ 2 * g.inner (radialCurve (I := I) g p x t)
           (radialJacobiField (I := I) g p x (a • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k) t)
           (radialJacobiField (I := I) g p x (a • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k) t) := by
-  obtain ⟨r, hr, hdata⟩ := exists_rm04_data (I := I) g hEnorm p
+  obtain ⟨r, hr, hdata⟩ := exists_radial_jacobi_regularity_and_second_derivative_bound (I := I) g hEnorm p
   refine ⟨r, hr, ?_⟩
   intro x hx a K R Vb b hK hVb hb hsmall hlaunch hKbound hRm
   refine ⟨?_, ?_, ?_⟩

@@ -97,8 +97,8 @@ def symbolTestPerturbation (x : M) (α : M) (ξ : E)
           (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr ξ a *
             (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (y - extChartAt I α x) a)) ^ 2 *
       formComp (I := I) x t c d
-  symm' c d y := by rw [formComp_symm (I := I) x t ht c d]
-  smooth' c d := by
+  symmetric c d y := by rw [formComp_symm (I := I) x t ht c d]
+  contDiff c d := by
     have hsum : ContDiff ℝ ∞ (fun y : E =>
         ∑ a : Fin (Module.finrank ℝ E),
           (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr ξ a *

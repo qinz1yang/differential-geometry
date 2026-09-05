@@ -26,7 +26,7 @@ open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Integral.Measure
 
-theorem coerciveODE_exists
+theorem exists_solution_of_coercive_mass_ode
     {V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
     [CompleteSpace V]
     {mass : ℝ → V →L[ℝ] V →L[ℝ] ℝ}
@@ -110,7 +110,7 @@ theorem coerciveODE_exists
   have ht' : t ∈ Icc (0 : ℝ) T := ⟨ht.1, le_of_lt ht.2⟩
   simpa only [f, dif_pos ht'] using hγderiv t ht
 
-theorem retractResid_data
+theorem exists_ballRetraction_lipschitz_continuous_affine_bound
     {V W : Type*} [NormedAddCommGroup V] [NormedSpace ℝ V]
     [FiniteDimensional ℝ V]
     [NormedAddCommGroup W] [NormedSpace ℝ W]
@@ -227,7 +227,7 @@ section FiniteNormed
 variable {V : Type*} [NormedAddCommGroup V] [NormedSpace ℝ V]
   [FiniteDimensional ℝ V]
 
-noncomputable def harmonicMapFlowFinMass
+noncomputable def harmonicMapFlowFiniteDimensionalMass
     (q h : SmoothRiemannianMetric I M)
     (J : V →ₗ[ℝ] SmoothCcTensor q 0 1) :
     V →L[ℝ] V →L[ℝ] ℝ :=
@@ -241,13 +241,13 @@ noncomputable def harmonicMapFlowFinMass
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompactSpace M]
   [BoundarylessManifold I M] in
-@[simp] theorem harmonicMapFlowFinMass_apply
+@[simp] theorem harmonicMapFlowFiniteDimensionalMass_apply
     (q h : SmoothRiemannianMetric I M)
     (J : V →ₗ[ℝ] SmoothCcTensor q 0 1) (u v : V) :
-    harmonicMapFlowFinMass (I := I) (M := M) q h J u v =
+    harmonicMapFlowFiniteDimensionalMass (I := I) (M := M) q h J u v =
       harmonicMapFlowMass (I := I) (M := M) q h (J u) (J v) := rfl
 
-noncomputable def harmonicMapFlowFinForm
+noncomputable def harmonicMapFlowFiniteDimensionalForm
     (q h : SmoothRiemannianMetric I M)
     (J : V →ₗ[ℝ] SmoothCcTensor q 0 1) :
     V →L[ℝ] V →L[ℝ] ℝ :=
@@ -260,32 +260,32 @@ noncomputable def harmonicMapFlowFinForm
       simp only [map_smul, harmonicMapFlowWeak_smul_right, smul_eq_mul])).toContinuousBilinearMap
 
 omit [BoundarylessManifold I M] in
-@[simp] theorem harmonicMapFlowFinForm_apply
+@[simp] theorem harmonicMapFlowFiniteDimensionalForm_apply
     (q h : SmoothRiemannianMetric I M)
     (J : V →ₗ[ℝ] SmoothCcTensor q 0 1) (u v : V) :
-    harmonicMapFlowFinForm (I := I) (M := M) q h J u v =
+    harmonicMapFlowFiniteDimensionalForm (I := I) (M := M) q h J u v =
       harmonicMapFlowWeakForm (I := I) (M := M) q h (J u) (J v) := rfl
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
   [BoundarylessManifold I M] in
-theorem harmonicMapFlowFinMass_cont
+theorem harmonicMapFlowFiniteDimensionalMass_continuousOn
     (q : SmoothRiemannianMetric I M)
     (g : ℝ → SmoothRiemannianMetric I M) {K : Set ℝ} (hK : IsCompact K)
     (hcont : ∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)), ContinuousOn
       (fun p : ℝ × M => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g p.1) x₀ p.2 i j)
       (K ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
     (J : V →ₗ[ℝ] SmoothCcTensor q 0 1) :
-    ContinuousOn (fun t => harmonicMapFlowFinMass (I := I) (M := M) q (g t) J) K := by
+    ContinuousOn (fun t => harmonicMapFlowFiniteDimensionalMass (I := I) (M := M) q (g t) J) K := by
   rw [continuousOn_clm_apply]
   intro u
   rw [continuousOn_clm_apply]
   intro v
-  simpa only [harmonicMapFlowFinMass_apply] using
-    harmonicMapFlowMass_time_cont (I := I) (M := M) q g hK hcont (J u) (J v)
+  simpa only [harmonicMapFlowFiniteDimensionalMass_apply] using
+    harmonicMapFlowMass_time_continuousOn (I := I) (M := M) q g hK hcont (J u) (J v)
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompactSpace M]
   [BoundarylessManifold I M] in
-theorem harmonicMapFlowFinMass_lower
+theorem harmonicMapFlowFiniteDimensionalMass_lower
     (q h : SmoothRiemannianMetric I M) (C : ℝ≥0∞)
     (hC0 : C ≠ 0) (hCtop : C ≠ ⊤)
     (hvol : riemannianVolumeMeasure (I := I) (M := M) q ≤
@@ -295,7 +295,7 @@ theorem harmonicMapFlowFinMass_lower
       harmonicMapFlowMass (I := I) (M := M) q q (J u) (J u) = ‖u‖ ^ 2)
     (u : V) :
     C.toReal⁻¹ * ‖u‖ * ‖u‖ ≤
-      harmonicMapFlowFinMass (I := I) (M := M) q h J u u := by
+      harmonicMapFlowFiniteDimensionalMass (I := I) (M := M) q h J u u := by
   have hCr : 0 < C.toReal := ENNReal.toReal_pos hC0 hCtop
   have hrev := harmonicMapFlowMass_self_rev (I := I) (M := M)
     q h C hC0 hCtop hvol (J u)
@@ -304,8 +304,8 @@ theorem harmonicMapFlowFinMass_lower
     C.toReal⁻¹ * ‖u‖ * ‖u‖ = C.toReal⁻¹ * ‖u‖ ^ 2 := by ring
     _ ≤ harmonicMapFlowMass (I := I) (M := M) q h (J u) (J u) :=
       (inv_mul_le_iff₀ hCr).2 hrev
-    _ = harmonicMapFlowFinMass (I := I) (M := M) q h J u u := by
-      rw [harmonicMapFlowFinMass_apply]
+    _ = harmonicMapFlowFiniteDimensionalMass (I := I) (M := M) q h J u u := by
+      rw [harmonicMapFlowFiniteDimensionalMass_apply]
 
 end FiniteNormed
 
@@ -317,7 +317,7 @@ variable {V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompactSpace M]
   [BoundarylessManifold I M] in
 omit [CompleteSpace V] in
-theorem harmonicMapFlowFinMass_coercive
+theorem harmonicMapFlowFiniteDimensionalMass_coercive
     (q h : SmoothRiemannianMetric I M) (C : ℝ≥0∞)
     (hC0 : C ≠ 0) (hCtop : C ≠ ⊤)
     (hvol : riemannianVolumeMeasure (I := I) (M := M) q ≤
@@ -325,14 +325,14 @@ theorem harmonicMapFlowFinMass_coercive
     (J : V →ₗ[ℝ] SmoothCcTensor q 0 1)
     (horth : ∀ u : V,
       harmonicMapFlowMass (I := I) (M := M) q q (J u) (J u) = ‖u‖ ^ 2) :
-    IsCoercive (harmonicMapFlowFinMass (I := I) (M := M) q h J) := by
+    IsCoercive (harmonicMapFlowFiniteDimensionalMass (I := I) (M := M) q h J) := by
   refine ⟨C.toReal⁻¹, inv_pos.mpr (ENNReal.toReal_pos hC0 hCtop), ?_⟩
-  exact harmonicMapFlowFinMass_lower (I := I) (M := M)
+  exact harmonicMapFlowFiniteDimensionalMass_lower (I := I) (M := M)
     q h C hC0 hCtop hvol J horth
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
   [BoundarylessManifold I M] in
-theorem harmonicMapFlowFinSharp_cont
+theorem harmonicMapFlowFiniteDimensionalSharp_continuousOn
     (q : SmoothRiemannianMetric I M)
     (g : ℝ → SmoothRiemannianMetric I M) {K : Set ℝ} (hK : IsCompact K)
     (hcont : ∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)), ContinuousOn
@@ -345,18 +345,18 @@ theorem harmonicMapFlowFinSharp_cont
     (horth : ∀ u : V,
       harmonicMapFlowMass (I := I) (M := M) q q (J u) (J u) = ‖u‖ ^ 2) :
     Continuous (fun t : K =>
-      (harmonicMapFlowFinMass_coercive (I := I) (M := M) q (g t) C hC0 hCtop
+      (harmonicMapFlowFiniteDimensionalMass_coercive (I := I) (M := M) q (g t) C hC0 hCtop
         (hvol t t.2) J horth).sharpCLM) := by
   exact IsCoercive.sharpCLM_cont_sub
-    (fun t => harmonicMapFlowFinMass (I := I) (M := M) q (g t) J)
-    (harmonicMapFlowFinMass_cont (I := I) (M := M) q g hK hcont J)
+    (fun t => harmonicMapFlowFiniteDimensionalMass (I := I) (M := M) q (g t) J)
+    (harmonicMapFlowFiniteDimensionalMass_continuousOn (I := I) (M := M) q g hK hcont J)
     (fun t ht =>
-      harmonicMapFlowFinMass_coercive (I := I) (M := M) q (g t) C hC0 hCtop
+      harmonicMapFlowFiniteDimensionalMass_coercive (I := I) (M := M) q (g t) C hC0 hCtop
         (hvol t ht) J horth)
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
   [BoundarylessManifold I M] in
-theorem harmonicMapFlowFin_exists
+theorem exists_harmonic_map_flow_finite_dimensional_solution
     (q : SmoothRiemannianMetric I M)
     (g : ℝ → SmoothRiemannianMetric I M) {T : ℝ} (hT : 0 < T)
     (hcont : ∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)), ContinuousOn
@@ -380,22 +380,22 @@ theorem harmonicMapFlowFin_exists
     ∃ γ : ℝ → V, γ 0 = v₀ ∧ ContinuousOn γ (Icc (0 : ℝ) T) ∧
       ∀ t, (ht : t ∈ Ico (0 : ℝ) T) →
         HasDerivWithinAt γ
-          ((harmonicMapFlowFinMass_coercive (I := I) (M := M) q (g t) C hC0 hCtop
+          ((harmonicMapFlowFiniteDimensionalMass_coercive (I := I) (M := M) q (g t) C hC0 hCtop
               (hvol t ⟨ht.1, le_of_lt ht.2⟩) J horth).sharpCLM
             (resid t (γ t)))
           (Ici (0 : ℝ)) t := by
   have hCr : 0 < C.toReal := ENNReal.toReal_pos hC0 hCtop
   let mass : ℝ → V →L[ℝ] V →L[ℝ] ℝ := fun t =>
-    harmonicMapFlowFinMass (I := I) (M := M) q (g t) J
+    harmonicMapFlowFiniteDimensionalMass (I := I) (M := M) q (g t) J
   have hmass : ContinuousOn mass (Icc (0 : ℝ) T) :=
-    harmonicMapFlowFinMass_cont (I := I) (M := M) q g isCompact_Icc hcont J
+    harmonicMapFlowFiniteDimensionalMass_continuousOn (I := I) (M := M) q g isCompact_Icc hcont J
   have hcoer : ∀ t ∈ Icc (0 : ℝ) T, ∀ v : V,
       C.toReal⁻¹ * ‖v‖ * ‖v‖ ≤ mass t v v := by
     intro t ht v
-    exact harmonicMapFlowFinMass_lower (I := I) (M := M)
+    exact harmonicMapFlowFiniteDimensionalMass_lower (I := I) (M := M)
       q (g t) C hC0 hCtop (hvol t ht) J horth v
   simpa only [mass] using
-    (coerciveODE_exists (mass := mass) (resid := resid) hT (inv_pos.mpr hCr)
+    (exists_solution_of_coercive_mass_ode (mass := mass) (resid := resid) hT (inv_pos.mpr hCr)
       hA hmass hcoer hlip hres_cont haff v₀)
 
 end FiniteHilbert
@@ -403,7 +403,7 @@ end FiniteHilbert
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 omit [BoundarylessManifold I M] in
-theorem harmonicMapFlowSpec_orthonormal
+theorem harmonic_map_flow_spectral_eigenvectors_orthonormal
     (q : SmoothRiemannianMetric I M) :
     Orthonormal ℝ
       (fun i : TensorEigenIdx (I := I) (M := M) q 0 1 =>
@@ -428,7 +428,7 @@ theorem harmonicMapFlowSpec_orthonormal
   rw [orthonormal_iff_ite] at horth
   simpa only [tensorResolventHilbertEigenbasisSigma_apply] using horth i j
 
-noncomputable def harmonicMapFlowSpecIncl
+noncomputable def harmonicMapFlowSpectralInclusion
     (q : SmoothRiemannianMetric I M)
     (S : Finset (TensorEigenIdx (I := I) (M := M) q 0 1)) :
     EuclideanSpace ℝ {i // i ∈ S} →ₗ[ℝ] SmoothCcTensor q 0 1 where
@@ -442,30 +442,30 @@ noncomputable def harmonicMapFlowSpecIncl
       Finset.smul_sum, RingHom.id_apply]
 
 omit [BoundarylessManifold I M] in
-@[simp] theorem harmonicMapFlowSpecIncl_apply
+@[simp] theorem harmonicMapFlowSpectralInclusion_apply
     (q : SmoothRiemannianMetric I M)
     (S : Finset (TensorEigenIdx (I := I) (M := M) q 0 1))
     (u : EuclideanSpace ℝ {i // i ∈ S}) :
-    harmonicMapFlowSpecIncl (I := I) (M := M) q S u =
+    harmonicMapFlowSpectralInclusion (I := I) (M := M) q S u =
       ∑ j : {i // i ∈ S},
         u j • eigenvectorSmooth (I := I) (M := M) q 0 1 j.1 := rfl
 
 omit [BoundarylessManifold I M] in
-theorem harmonicMapFlowSpecIncl_orth
+theorem harmonicMapFlowSpectralInclusion_mass_self_eq_norm_sq
     (q : SmoothRiemannianMetric I M)
     (S : Finset (TensorEigenIdx (I := I) (M := M) q 0 1))
     (u : EuclideanSpace ℝ {i // i ∈ S}) :
     harmonicMapFlowMass (I := I) (M := M) q q
-        (harmonicMapFlowSpecIncl (I := I) (M := M) q S u)
-        (harmonicMapFlowSpecIncl (I := I) (M := M) q S u) = ‖u‖ ^ 2 := by
+        (harmonicMapFlowSpectralInclusion (I := I) (M := M) q S u)
+        (harmonicMapFlowSpectralInclusion (I := I) (M := M) q S u) = ‖u‖ ^ 2 := by
   rw [harmonicMapFlowMass_self]
-  change ⟪harmonicMapFlowSpecIncl (I := I) (M := M) q S u,
-      harmonicMapFlowSpecIncl (I := I) (M := M) q S u⟫_ℝ = ‖u‖ ^ 2
-  rw [harmonicMapFlowSpecIncl_apply]
+  change ⟪harmonicMapFlowSpectralInclusion (I := I) (M := M) q S u,
+      harmonicMapFlowSpectralInclusion (I := I) (M := M) q S u⟫_ℝ = ‖u‖ ^ 2
+  rw [harmonicMapFlowSpectralInclusion_apply]
   have horth : Orthonormal ℝ
       (fun j : {i // i ∈ S} =>
         eigenvectorSmooth (I := I) (M := M) q 0 1 j.1) :=
-    (harmonicMapFlowSpec_orthonormal (I := I) (M := M) q).comp
+    (harmonic_map_flow_spectral_eigenvectors_orthonormal (I := I) (M := M) q).comp
       Subtype.val Subtype.val_injective
   rw [horth.inner_sum (fun j => u j) (fun j => u j) Finset.univ]
   simp only [RCLike.conj_to_real]
@@ -476,7 +476,7 @@ theorem harmonicMapFlowSpecIncl_orth
   ring
 
 omit [BoundarylessManifold I M] in
-theorem harmonicMapFlowSpec_exists
+theorem exists_harmonic_map_flow_spectral_solution
     (q : SmoothRiemannianMetric I M)
     (g : ℝ → SmoothRiemannianMetric I M) {T : ℝ} (hT : 0 < T)
     (hcont : ∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)), ContinuousOn
@@ -502,15 +502,15 @@ theorem harmonicMapFlowSpec_exists
       γ 0 = v₀ ∧ ContinuousOn γ (Icc (0 : ℝ) T) ∧
         ∀ t, (ht : t ∈ Ico (0 : ℝ) T) →
           HasDerivWithinAt γ
-            ((harmonicMapFlowFinMass_coercive (I := I) (M := M) q (g t) C hC0 hCtop
+            ((harmonicMapFlowFiniteDimensionalMass_coercive (I := I) (M := M) q (g t) C hC0 hCtop
                 (hvol t ⟨ht.1, le_of_lt ht.2⟩)
-                (harmonicMapFlowSpecIncl (I := I) (M := M) q S)
-                (harmonicMapFlowSpecIncl_orth (I := I) (M := M) q S)).sharpCLM
+                (harmonicMapFlowSpectralInclusion (I := I) (M := M) q S)
+                (harmonicMapFlowSpectralInclusion_mass_self_eq_norm_sq (I := I) (M := M) q S)).sharpCLM
               (resid t (γ t)))
             (Ici (0 : ℝ)) t := by
-  exact harmonicMapFlowFin_exists (I := I) (M := M) q g hT hcont C hC0 hCtop hvol
-    (harmonicMapFlowSpecIncl (I := I) (M := M) q S)
-    (harmonicMapFlowSpecIncl_orth (I := I) (M := M) q S)
+  exact exists_harmonic_map_flow_finite_dimensional_solution (I := I) (M := M) q g hT hcont C hC0 hCtop hvol
+    (harmonicMapFlowSpectralInclusion (I := I) (M := M) q S)
+    (harmonicMapFlowSpectralInclusion_mass_self_eq_norm_sq (I := I) (M := M) q S)
     resid hA hlip hres_cont haff v₀
 
 end DifferentialGeometry.PDE.RicciFlow.Pullback

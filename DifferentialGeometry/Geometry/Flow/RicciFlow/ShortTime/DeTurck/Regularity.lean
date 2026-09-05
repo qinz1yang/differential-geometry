@@ -37,23 +37,4 @@ theorem c1_norm_time_continuous_from_h1_time_derivative
       ContinuousWithinAt (fun s : ℝ => (g_DT s).inner x v w) (Set.Ici (0 : ℝ)) t :=
     (hderiv t ht x v w).continuousWithinAt
   exact hcont_within_Ici.mono Set.Ico_subset_Ici_self
-omit [CompactSpace M] in
-omit [NeZero (Module.finrank ℝ E)] in
-omit [SigmaCompactSpace M] in
-theorem deturck_vf_continuous_in_c1_input
-    (g_bg : SmoothRiemannianMetric I M)
-    (T : ℝ) (g_DT : ℝ → SmoothRiemannianMetric I M)
-    (h_pointwise_vf : ∀ x : M,
-      ContinuousOn
-        (fun t : ℝ =>
-          (deTurckVF (I := I) (g_DT t) g_bg :
-            Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
-        (Set.Ico (0 : ℝ) T)) :
-    ∀ x : M,
-      ContinuousOn
-        (fun t : ℝ =>
-          (deTurckVF (I := I) (g_DT t) g_bg :
-            Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
-        (Set.Ico (0 : ℝ) T) := h_pointwise_vf
-
 end DifferentialGeometry.PDE.RicciFlow

@@ -324,7 +324,7 @@ lemma interiorSmoothScalarH1Inner_nonneg
 
 omit [CompactSpace M] in
 omit [T2Space M] in
-@[simp] lemma grad_g_with_boundary_section_apply'
+@[simp] lemma InteriorSmoothScalar.grad_g_with_boundary_section_apply
     {g : SmoothRiemannianMetric (I_half n) M}
     (f : InteriorSmoothScalar g) (x : M) :
     (gradGWithBoundarySection
@@ -350,8 +350,9 @@ lemma InteriorSmoothScalar.grad_g_with_boundary_section_add_apply
             (I := I_half n) g f₂.smooth f₂.interior_support :
           Cₛ^∞⟮I_half n; EuclideanSpace ℝ (Fin n),
             (TangentSpace (I_half n) : M → Type _)⟯) x) := by
-  rw [grad_g_with_boundary_section_apply', grad_g_with_boundary_section_apply',
-    grad_g_with_boundary_section_apply']
+  rw [InteriorSmoothScalar.grad_g_with_boundary_section_apply,
+    InteriorSmoothScalar.grad_g_with_boundary_section_apply,
+    InteriorSmoothScalar.grad_g_with_boundary_section_apply]
   have hfun : (f₁ + f₂).toFun = f₁.toFun + f₂.toFun := rfl
   rw [hfun]
   exact gradFun_add (I := I_half n) g
@@ -489,7 +490,8 @@ lemma InteriorSmoothScalar.grad_g_with_boundary_section_smul_apply
         (I := I_half n) g f.smooth f.interior_support :
       Cₛ^∞⟮I_half n; EuclideanSpace ℝ (Fin n),
         (TangentSpace (I_half n) : M → Type _)⟯) x) := by
-  rw [grad_g_with_boundary_section_apply', grad_g_with_boundary_section_apply']
+  rw [InteriorSmoothScalar.grad_g_with_boundary_section_apply,
+    InteriorSmoothScalar.grad_g_with_boundary_section_apply]
   apply metricFlatLinear_injective (I := I_half n) g x
   ext v
   change g.inner x (gradFun (I := I_half n) g (c • f.toFun) x) v =

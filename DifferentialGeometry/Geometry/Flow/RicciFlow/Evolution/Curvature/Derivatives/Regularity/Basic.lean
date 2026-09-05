@@ -62,6 +62,6 @@ theorem iterRmComp_smoothAt
         exact (hchr (n 0) (Fin.tail n s) p).mul
           (ih (Function.update (Fin.tail n) s p))
       have hstep := hext.sub hsum
-      simpa [iteratedRmComp_succ, covDerivStepComp, frameExtData] using hstep
+      simpa [iteratedRmComp_succ, covDerivStepComp, frameDirectionalDerivatives] using hstep
 
 end DifferentialGeometry.PDE.RicciFlow

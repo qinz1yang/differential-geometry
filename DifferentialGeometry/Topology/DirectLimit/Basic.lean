@@ -14,11 +14,11 @@ namespace DifferentialGeometry
 open Set Topology
 
 structure SeqSystem (A : ℕ → Type u) [∀ k, TopologicalSpace (A k)] where
-  F : ∀ {k ℓ : ℕ}, k ≤ ℓ → A k → A ℓ
-  map_self : ∀ (k : ℕ) (x : A k), F (le_refl k) x = x
+  map : ∀ {k ℓ : ℕ}, k ≤ ℓ → A k → A ℓ
+  map_self : ∀ (k : ℕ) (x : A k), map (le_refl k) x = x
   map_map : ∀ {k ℓ m : ℕ} (h1 : k ≤ ℓ) (h2 : ℓ ≤ m) (x : A k),
-    F h2 (F h1 x) = F (h1.trans h2) x
-  isOpenEmb : ∀ {k ℓ : ℕ} (h : k ≤ ℓ), IsOpenEmbedding (F h)
+    map h2 (map h1 x) = map (h1.trans h2) x
+  isOpenEmb : ∀ {k ℓ : ℕ} (h : k ≤ ℓ), IsOpenEmbedding (map h)
 
 namespace SeqSystem
 
@@ -48,23 +48,23 @@ theorem succMap_isOpenEmb (f : ∀ k, A k → A (k + 1))
 
 
 def ofSucc (f : ∀ k, A k → A (k + 1)) (hf : ∀ k, IsOpenEmbedding (f k)) : SeqSystem A where
-  F h := succMap f h
+  map h := succMap f h
   map_self _ x := Nat.leRecOn_self x
   map_map h₁ h₂ x := (Nat.leRecOn_trans h₁ h₂ x).symm
   isOpenEmb h := succMap_isOpenEmb f hf h
 
-theorem F_proof_irrel {k ℓ : ℕ} (h₁ h₂ : k ≤ ℓ) :
-    S.F h₁ = S.F h₂ := by
+theorem map_proof_irrel {k ℓ : ℕ} (h₁ h₂ : k ≤ ℓ) :
+    S.map h₁ = S.map h₂ := by
   rw [Subsingleton.elim h₁ h₂]
 
 
-theorem F_apply_irrel {k ℓ : ℕ} (h₁ h₂ : k ≤ ℓ) (x : A k) :
-    S.F h₁ x = S.F h₂ x := by
-  rw [S.F_proof_irrel h₁ h₂]
+theorem map_apply_irrel {k ℓ : ℕ} (h₁ h₂ : k ≤ ℓ) (x : A k) :
+    S.map h₁ x = S.map h₂ x := by
+  rw [S.map_proof_irrel h₁ h₂]
 
 
 def Rel (p q : Σ k, A k) : Prop :=
-  ∃ (m : ℕ) (hp : p.1 ≤ m) (hq : q.1 ≤ m), S.F hp p.2 = S.F hq q.2
+  ∃ (m : ℕ) (hp : p.1 ≤ m) (hq : q.1 ≤ m), S.map hp p.2 = S.map hq q.2
 
 theorem rel_refl (p : Σ k, A k) : S.Rel p p :=
   ⟨p.1, le_refl _, le_refl _, rfl⟩
@@ -77,8 +77,8 @@ theorem rel_trans {p q r : Σ k, A k} (h1 : S.Rel p q) (h2 : S.Rel q r) : S.Rel 
   obtain ⟨m1, hp1, hq1, e1⟩ := h1
   obtain ⟨m2, hq2, hr2, e2⟩ := h2
   refine ⟨max m1 m2, hp1.trans (le_max_left _ _), hr2.trans (le_max_right _ _), ?_⟩
-  have e1' := congrArg (S.F (le_max_left m1 m2)) e1
-  have e2' := congrArg (S.F (le_max_right m1 m2)) e2
+  have e1' := congrArg (S.map (le_max_left m1 m2)) e1
+  have e2' := congrArg (S.map (le_max_right m1 m2)) e2
   rw [S.map_map, S.map_map] at e1'
   rw [S.map_map, S.map_map] at e2'
   exact e1'.trans e2'
@@ -98,7 +98,7 @@ def incl (ℓ : ℕ) : A ℓ → S.Lim :=
 
 
 theorem incl_comp {k ℓ : ℕ} (h : k ≤ ℓ) (x : A k) :
-    S.incl ℓ (S.F h x) = S.incl k x := by
+    S.incl ℓ (S.map h x) = S.incl k x := by
   refine Quotient.sound ⟨ℓ, le_refl ℓ, h, ?_⟩
   rw [S.map_self]
 
@@ -124,7 +124,7 @@ theorem incl_isOpenMap (ℓ : ℕ) : IsOpenMap (S.incl ℓ) := by
     rw [isOpen_sigma_iff]
     intro m
     have hfib : Sigma.mk m ⁻¹' (Quotient.mk S.setoid ⁻¹' (S.incl ℓ '' U)) =
-        ⋃ (p : ℕ) (hmp : m ≤ p) (hℓp : ℓ ≤ p), S.F hmp ⁻¹' (S.F hℓp '' U) := by
+        ⋃ (p : ℕ) (hmp : m ≤ p) (hℓp : ℓ ≤ p), S.map hmp ⁻¹' (S.map hℓp '' U) := by
       ext y
       simp only [Set.mem_preimage, Set.mem_image, Set.mem_iUnion]
       constructor
@@ -147,7 +147,7 @@ theorem incl_isOpenEmb (ℓ : ℕ) : IsOpenEmbedding (S.incl ℓ) :=
 theorem range_incl_mono {k ℓ : ℕ} (h : k ≤ ℓ) :
     Set.range (S.incl k) ⊆ Set.range (S.incl ℓ) := by
   rintro - ⟨x, rfl⟩
-  exact ⟨S.F h x, S.incl_comp h x⟩
+  exact ⟨S.map h x, S.incl_comp h x⟩
 
 
 theorem iUnion_range_incl : ⋃ ℓ : ℕ, Set.range (S.incl ℓ) = Set.univ := by
@@ -169,7 +169,7 @@ theorem isOpen_iff_incl {U : Set S.Lim} :
     change IsOpen (S.incl k ⁻¹' U)
     exact hU k
 
-theorem isCompact_exists {K : Set S.Lim} (hK : IsCompact K) :
+theorem exists_compact_stage_representation {K : Set S.Lim} (hK : IsCompact K) :
     ∃ (k : ℕ) (Kk : Set (A k)), IsCompact Kk ∧ K = S.incl k '' Kk := by
   obtain ⟨t, ht⟩ := hK.elim_finite_subcover (fun ℓ : ℕ => Set.range (S.incl ℓ))
     (fun ℓ => (S.incl_isOpenEmb ℓ).isOpen_range)
@@ -185,7 +185,7 @@ theorem isCompact_exists {K : Set S.Lim} (hK : IsCompact K) :
 
 theorem compact_subset_range {K : Set S.Lim} (hK : IsCompact K) :
     ∃ k : ℕ, K ⊆ Set.range (S.incl k) := by
-  obtain ⟨k, Kk, _hKk, hK_eq⟩ := S.isCompact_exists hK
+  obtain ⟨k, Kk, _hKk, hK_eq⟩ := S.exists_compact_stage_representation hK
   refine ⟨k, ?_⟩
   rw [hK_eq]
   rintro z ⟨x, _hx, rfl⟩
@@ -213,11 +213,11 @@ theorem t2Space [∀ k, T2Space (A k)] : T2Space S.Lim := by
   refine ⟨fun x y hxy => ?_⟩
   obtain ⟨k, a, rfl⟩ := S.exists_incl_eq x
   obtain ⟨ℓ, b, rfl⟩ := S.exists_incl_eq y
-  have hax : S.incl (max k ℓ) (S.F (le_max_left k ℓ) a) = S.incl k a :=
+  have hax : S.incl (max k ℓ) (S.map (le_max_left k ℓ) a) = S.incl k a :=
     S.incl_comp (le_max_left k ℓ) a
-  have hbx : S.incl (max k ℓ) (S.F (le_max_right k ℓ) b) = S.incl ℓ b :=
+  have hbx : S.incl (max k ℓ) (S.map (le_max_right k ℓ) b) = S.incl ℓ b :=
     S.incl_comp (le_max_right k ℓ) b
-  have hab : S.F (le_max_left k ℓ) a ≠ S.F (le_max_right k ℓ) b := by
+  have hab : S.map (le_max_left k ℓ) a ≠ S.map (le_max_right k ℓ) b := by
     intro h
     apply hxy
     rw [← hax, ← hbx, h]
@@ -232,18 +232,18 @@ theorem t2Space [∀ k, T2Space (A k)] : T2Space S.Lim := by
 
 
 def lift {X : Type*} (ψ : ∀ k, A k → X)
-    (hψ : ∀ {k ℓ : ℕ} (h : k ≤ ℓ) (x : A k), ψ ℓ (S.F h x) = ψ k x) : S.Lim → X :=
+    (hψ : ∀ {k ℓ : ℕ} (h : k ≤ ℓ) (x : A k), ψ ℓ (S.map h x) = ψ k x) : S.Lim → X :=
   Quotient.lift (fun p : Σ k, A k => ψ p.1 p.2) (by
     rintro ⟨k, x⟩ ⟨ℓ, y⟩ ⟨m, h1, h2, he⟩
     have h := congrArg (ψ m) he
     rwa [hψ h1 x, hψ h2 y] at h)
 
 theorem lift_incl {X : Type*} (ψ : ∀ k, A k → X)
-    (hψ : ∀ {k ℓ : ℕ} (h : k ≤ ℓ) (x : A k), ψ ℓ (S.F h x) = ψ k x)
+    (hψ : ∀ {k ℓ : ℕ} (h : k ≤ ℓ) (x : A k), ψ ℓ (S.map h x) = ψ k x)
     (ℓ : ℕ) (x : A ℓ) : S.lift ψ hψ (S.incl ℓ x) = ψ ℓ x := rfl
 
 theorem continuous_lift {X : Type*} [TopologicalSpace X] (ψ : ∀ k, A k → X)
-    (hψ : ∀ {k ℓ : ℕ} (h : k ≤ ℓ) (x : A k), ψ ℓ (S.F h x) = ψ k x)
+    (hψ : ∀ {k ℓ : ℕ} (h : k ≤ ℓ) (x : A k), ψ ℓ (S.map h x) = ψ k x)
     (hcont : ∀ k, Continuous (ψ k)) : Continuous (S.lift ψ hψ) := by
   apply Continuous.quotient_lift
   exact continuous_sigma fun k => hcont k

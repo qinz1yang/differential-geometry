@@ -230,7 +230,7 @@ theorem uniform_diffQuot_bound
       intro x; exact sq_nonneg _
     · refine integral_nonneg ?_
       intro x; exact sq_nonneg _
-  have hlam_pos : 0 < B.lam := B.hlam_pos
+  have ellipticity_pos : 0 < B.lam := B.ellipticity_pos
   have hlam_half_pos : 0 < B.lam / 2 := by linarith
   let CkChoice : Fin d → ℝ := fun k => Classical.choose (h_per_k k)
   have CkChoice_spec : ∀ k, 0 ≤ CkChoice k ∧
@@ -260,7 +260,7 @@ theorem uniform_diffQuot_bound
       rw [hS_def]
       refine mul_nonneg (mul_nonneg ?_ (CkChoice_spec k).1) hG_total_nn
       have : (0 : ℝ) ≤ 2 := by norm_num
-      exact div_nonneg this hlam_pos.le
+      exact div_nonneg this ellipticity_pos.le
     have h_sumInt_le_S : sumInt ≤ S := by
       have h_factor : (2 / B.lam) > 0 := by positivity
       have h_step2 : sumInt = (2 / B.lam) * ((B.lam / 2) * sumInt) := by
@@ -455,7 +455,7 @@ theorem uniform_diffQuot_bound_quantitative
       intro x; exact sq_nonneg _
     · refine integral_nonneg ?_
       intro x; exact sq_nonneg _
-  have hlam_pos : 0 < B.lam := B.hlam_pos
+  have ellipticity_pos : 0 < B.lam := B.ellipticity_pos
   have hlam_half_pos : 0 < B.lam / 2 := by linarith
   have hC_nn : 0 ≤ nirenbergMasterYoungConstant B N hΩ'_compact k :=
     nirenbergMasterYoungConstant_nonneg B hN hΩ'_compact k
@@ -471,7 +471,7 @@ theorem uniform_diffQuot_bound_quantitative
     rw [hS_def]
     refine mul_nonneg (mul_nonneg ?_ hC_nn) hG_total_nn
     have : (0 : ℝ) ≤ 2 := by norm_num
-    exact div_nonneg this hlam_pos.le
+    exact div_nonneg this ellipticity_pos.le
   have h_sumInt_le_S : sumInt ≤ S := by
     have h_factor : (2 / B.lam) > 0 := by positivity
     have h_step2 : sumInt = (2 / B.lam) * ((B.lam / 2) * sumInt) := by

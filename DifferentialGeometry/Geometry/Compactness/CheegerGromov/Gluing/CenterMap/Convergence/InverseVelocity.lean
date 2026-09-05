@@ -27,7 +27,7 @@ variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 variable {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
 
 theorem invVelocitySub_convergence_on
-    (inp : MetricCompactCore (I := I) X)
+    (inp : MetricCompactSeedWithDivisor (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P) {r : Real} (hr : 0 ≤ r)
     (phi : Nat → Nat) (hphi : StrictMono phi)
@@ -100,7 +100,7 @@ theorem invVelocitySub_convergence_on
     hmap (fun q hq _ => hmapInf q hq)
 
 theorem invVelocitySub_convergence
-    (inp : MetricCompactnessInputs (I := I) X)
+    (inp : MetricCompactnessAssumptions (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P) {r : Real} (hr : 0 ≤ r)
     (phi : Nat → Nat) (hphi : StrictMono phi)
@@ -109,13 +109,13 @@ theorem invVelocitySub_convergence
     (weightInf : E → Fin (inp.pack.A r) → Real)
     {chart : NormalChartFamily (I := I) X}
     (hcfgC : ∀ m, ContDiffOn Real (∞ : WithTop ℕ∞)
-      (stageConfigurationSub inp.toCore P L hr phi hphi alpha (kn m) (ln m)
+      (stageConfigurationSub inp.toSeedWithDivisor P L hr phi hphi alpha (kn m) (ln m)
         (chart := chart)) S)
     (hcfgInfC : ContDiffOn Real (∞ : WithTop ℕ∞)
       (fun z => (weightInf z,
         fun _ : Fin (inp.pack.A r) => z)) S)
     (hcfg : MapCInfConvergenceOnCompacts S
-      (fun m => stageConfigurationSub inp.toCore P L hr phi hphi alpha (kn m) (ln m)
+      (fun m => stageConfigurationSub inp.toSeedWithDivisor P L hr phi hphi alpha (kn m) (ln m)
         (chart := chart))
       (fun z => (weightInf z, fun _ : Fin (inp.pack.A r) => z)))
     (e : Nat → OpenPartialHomeomorph (E × E) (E × E))
@@ -132,15 +132,15 @@ theorem invVelocitySub_convergence
       ∀ (D : Set (E × E)), IsOpen D →
         MapsTo (fun q : E × E => q.1) D S →
         (∀ m q, q ∈ D → ∀ gamma : Fin (inp.pack.A r),
-          (q.2, (stageConfigurationSub inp.toCore P L hr phi hphi alpha
+          (q.2, (stageConfigurationSub inp.toSeedWithDivisor P L hr phi hphi alpha
             (kn m) (ln m) q.1 (chart := chart)).2 gamma) ∈
               Metric.ball 0 delta0) →
         (∀ q, q ∈ D → (q.2, q.1) ∈ Metric.ball 0 delta0) →
         MapCInfConvergenceOnCompacts D
           (fun m q => invVelocitySum (e (nn m))
-            (stageConfigurationSub inp.toCore P L hr phi hphi alpha
+            (stageConfigurationSub inp.toSeedWithDivisor P L hr phi hphi alpha
               (kn m) (ln m) q.1 (chart := chart)).1
-            (stageConfigurationSub inp.toCore P L hr phi hphi alpha
+            (stageConfigurationSub inp.toSeedWithDivisor P L hr phi hphi alpha
               (kn m) (ln m) q.1 (chart := chart)).2 q.2)
       (fun q => invVelocitySum eInf
             (weightInf q.1) (fun _ => q.1) q.2) := by
@@ -148,13 +148,13 @@ theorem invVelocitySub_convergence
   refine ⟨delta0, hdelta0, ?_⟩
   intro D hD hfst hmap hmapInf
   have he := hinv.comp_tendsto_atTop hnn
-  exact invVelocitySub_convergence_on inp.toCore P L hr phi hphi alpha kn ln hS weightInf
+  exact invVelocitySub_convergence_on inp.toSeedWithDivisor P L hr phi hphi alpha kn ln hS weightInf
     hcfgC hcfgInfC hcfg (fun m => e (nn m)) eInf Metric.isOpen_ball
     (Filter.Eventually.of_forall fun m => heC (nn m)) heInfC he hD hfst
     (Filter.Eventually.of_forall hmap) hmapInf
 
 theorem HasSupportedCenterMapConvergence.invVelocity_sub_convergence
-    (inp : MetricCompactnessInputs (I := I) X)
+    (inp : MetricCompactnessAssumptions (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P) {r : Real} (hr : 0 ≤ r)
     (phi : Nat → Nat) (hphi : StrictMono phi)
@@ -204,7 +204,7 @@ theorem HasSupportedCenterMapConvergence.invVelocity_sub_convergence
     dsimp only [HasSupportedCenterMapConvergence] at hdata0
     exact hdata0.1 alpha
   obtain ⟨hcfgC, hcfgInfC, hcfg⟩ :=
-    hdata.configurationSub_data inp P L hr phi hphi U C0 C1 aInf Jinf Jbarinf
+    hdata.configurationSub_contDiffOn_and_converges inp P L hr phi hphi U C0 C1 aInf Jinf Jbarinf
       kn ln hkn hln alpha
   exact invVelocitySub_convergence inp P L hr phi hphi alpha kn ln hUopen weightInf
     hcfgC hcfgInfC hcfg e eInf hinvData nn hnn

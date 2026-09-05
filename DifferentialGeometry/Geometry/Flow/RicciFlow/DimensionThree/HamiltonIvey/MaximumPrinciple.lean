@@ -203,12 +203,12 @@ private theorem mem_regionNormalDirections_iff_mem_fiberNormalDirections
     · left
       have hw : curvatureOperatorMatrixAt (I := I) x (basisAt x) ⟨ν, hν'⟩ =
           curvatureOperatorMatrixAt (I := I) x (basisAt x) ⟨ν, hν⟩ := by
-        apply curvatureOperatorMatrixAt_independent_of_membership_proof
+        apply curvatureOperatorMatrixAt_independent_of_membership
       simpa [hw, regionProjMatrix_eq_curvatureOperatorMatrixAt (I := I) g (basisAt x) hν] using hlt
     · right
       have hw : curvatureOperatorMatrixAt (I := I) x (basisAt x) ⟨ν, hν'⟩ =
           curvatureOperatorMatrixAt (I := I) x (basisAt x) ⟨ν, hν⟩ := by
-        apply curvatureOperatorMatrixAt_independent_of_membership_proof
+        apply curvatureOperatorMatrixAt_independent_of_membership
       simpa [hw, regionProjMatrix_eq_curvatureOperatorMatrixAt (I := I) g (basisAt x) hν] using hz
 
 end RegionMatrixLemmas
@@ -250,7 +250,7 @@ private theorem fiberRegion_mem_iff_forall_normalDirections_of_mem_algebraicCurv
       rw [mem_hamiltonIveyConvexMatrixRegionEuclidean_iff]
       have hw : curvatureOperatorMatrixAt (I := I) x (basisAt x) ⟨p, hAlg⟩ =
           curvatureOperatorMatrixAt (I := I) x (basisAt x) ⟨p, hp⟩ := by
-        apply curvatureOperatorMatrixAt_independent_of_membership_proof
+        apply curvatureOperatorMatrixAt_independent_of_membership
       rwa [hw]
     have hmain := (hamiltonIveyConvexMatrixRegionEuclidean_mem_iff_forall_support_le hK hτ
       (matrixToEuclidean (curvatureOperatorMatrixAt (I := I) x (basisAt x) ⟨p, hp⟩))).mp

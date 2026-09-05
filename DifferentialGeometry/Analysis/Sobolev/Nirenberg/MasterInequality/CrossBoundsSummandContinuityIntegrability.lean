@@ -393,7 +393,7 @@ lemma integrable_cross_3_summand
     (cross_3_summand_compactSupport (d := d) B u hη_support i j k h)
 
 omit [NeZero d] in
-lemma v_test_supported_in_Ω'
+lemma nirenbergTestFunction_tsupport_subset_of_thickening
     {u : E → ℝ}
     {η : E → ℝ}
     {Ω' : Set E}

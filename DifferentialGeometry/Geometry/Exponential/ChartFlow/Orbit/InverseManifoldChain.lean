@@ -381,7 +381,7 @@ variable [I.Boundaryless] [CompleteSpace E] [T2Space (TangentBundle I M)]
 
 omit [T2Space (TangentBundle I M)] in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem exists_chartFlowOrbitLift_isMIntegralCurveOn_Ioo_data
+theorem exists_chartFlowOrbitLift_isMIntegralCurveOn_Ioo
     (g : SmoothRiemannianMetric I M) (p : M) :
     ∃ (ρ T : ℝ) (Φ : (E × E) × ℝ → E × E),
       0 < ρ ∧ 0 < T ∧
@@ -404,7 +404,7 @@ theorem exists_chartFlowOrbitLift_isMIntegralCurveOn_Ioo_data
   classical
   obtain ⟨ρ, T, Φ, hρ_pos, hT_pos, hΦ_initial, hΦ_target, hΦ_phase, hF_0,
     _hF_proj, _hF_chartPush, _hF_int⟩ :=
-    exists_chartFlowOrbitLift_data_uniform (I := I) (g := g) (p := p)
+    exists_uniform_chartFlowOrbitLift (I := I) (g := g) (p := p)
   refine ⟨ρ, T, Φ, hρ_pos, hT_pos, hΦ_initial, hΦ_target, hΦ_phase, hF_0, ?_⟩
   intro v hv
   exact chartFlowOrbitLift_isMIntegralCurveOn_Ioo (I := I) g p v

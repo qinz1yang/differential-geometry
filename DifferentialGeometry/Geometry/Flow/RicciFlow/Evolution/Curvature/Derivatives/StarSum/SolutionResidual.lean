@@ -254,7 +254,7 @@ theorem resStarSolution
   have hS' : IsSolutionOn (I := I) S' := by
     simpa [S', D'] using isSolutionOn_tailRestrict (I := I) hS hAlphaT0 hT0Omega
   obtain ⟨hframe1, baseDt, chrDt, hrm, hchr, hchrId, hswap⟩ :=
-    tailTowerData (I := I) hS hAlphaT0 hT0Omega frame hframe hu
+    exists_tail_curvature_component_time_derivative_tower (I := I) hS hAlphaT0 hT0Omega frame hframe hu
   have hbase := riemann_component_evolution_in_orthonormal_frame_of_solution
     (I := I) S' hS' t hdim
   have hrm' : ∀ (y : M), y ∈ u -> ∀ m : Fin 4 -> Fin 3,

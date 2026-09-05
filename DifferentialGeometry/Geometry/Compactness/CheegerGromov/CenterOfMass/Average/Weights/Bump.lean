@@ -26,7 +26,7 @@ theorem bumpNum_nonneg {ι : Type*} [DecidableEq ι]
   · exact mul_nonneg (hχ _) (hψ i _)
 
 omit [NormedAddCommGroup E'] [NormedSpace Real E'] in
-theorem bumpWeights_data {ι : Type} [DecidableEq ι] [Fintype ι]
+theorem bumpWeights_weightDataOn {ι : Type} [DecidableEq ι] [Fintype ι]
     {s : Set E'} {U : ι → Set E'} {χ : E' → Real} {ψ : ι → E' → Real}
     {J : ι → E' → E'} {i0 : ι}
     (hχ : ∀ t, 0 ≤ χ t) (hψ : ∀ i t, 0 ≤ ψ i t)
@@ -34,7 +34,7 @@ theorem bumpWeights_data {ι : Type} [DecidableEq ι] [Fintype ι]
     (hactive : ∀ z ∈ s, ∀ i, bumpNum χ ψ J i0 i z ≠ 0 → z ∈ U i) :
     centerAverage.WeightDataOn s U
       (fun z i => normWeights (bumpNum χ ψ J i0) i z) :=
-  normWeights_data (fun z _hz i => bumpNum_nonneg hχ hψ i z) hne hactive
+  normWeights_weightDataOn (fun z _hz i => bumpNum_nonneg hχ hψ i z) hne hactive
 
 omit [NormedAddCommGroup E'] [NormedSpace Real E'] in
 theorem bumpNum_delta_of_cutoff_eq_zero {ι : Type*} [DecidableEq ι]

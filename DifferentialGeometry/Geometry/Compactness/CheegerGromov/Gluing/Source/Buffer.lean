@@ -548,7 +548,7 @@ theorem NormalCoordMetricEquivOn.ball_subset_symm_image_interior
     h hCU hUtgt heta hclosed hrhoeta hx).1
 
 theorem HasSupportedCenterMapConvergence.metric_buffer
-    (inp : MetricCompactnessInputs (I := I) X)
+    (inp : MetricCompactnessAssumptions (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P)
     (r : Real) (hr : 0 ≤ r)

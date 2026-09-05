@@ -237,7 +237,7 @@ theorem canBianchiAt
       (I := I) (M := M) (S.family.metric t) x basis gInvAt at h
     exact h
   have hmetric :=
-    DifferentialGeometry.Geometry.Connection.exists_levi_civita_bianchi_trace_data (I := I) (M := M)
+    DifferentialGeometry.Geometry.Connection.exists_levi_civita_bianchi_trace_identities (I := I) (M := M)
       (g := S.family.metric t) basis gInvAt hinv
   change ∃ nablaRm04,
       DifferentialGeometry.Geometry.Curvature.SecondBianchiAt (I := I) nablaRm04 ∧
@@ -617,8 +617,8 @@ theorem coordCommAt
         DifferentialGeometry.Geometry.Curvature.rm04LowersRm13At_of_realizes
           (I := I) (S.base.metric (t : Real)) (S.base.connection (t : Real))
           (S.base.rm13 (t : Real)) (S.base.rm04 (t : Real))
-          (metricCurvData (I := I) (M := M) (S.base.metric (t : Real))).rm13Realizes
-          (metricCurvData (I := I) (M := M) (S.base.metric (t : Real))).rm04Realizes
+          (metricCurvatureSections (I := I) (M := M) (S.base.metric (t : Real))).rm13Realizes
+          (metricCurvatureSections (I := I) (M := M) (S.base.metric (t : Real))).rm04Realizes
           x
       simpa [SolutionOn.family, SolutionFamily.connection, SolutionFamily.rm13,
         SolutionFamily.rm04, metricCov] using h

@@ -216,25 +216,25 @@ theorem exists_symm_convergenceOn_ball
     simpa only [F, FInf, subMap] using hcomp
   obtain ⟨Nroot, Phi, hPhi_convergence, hPhi_cd, hspec, huniq⟩ :=
     T.exists_root_cInf hF_cd hF_convergence
-  have hzero_TW : (0 : X) ∈ T.W := T.K_subset_W (by simp)
+  have hzero_TW : (0 : X) ∈ T.parameterDomain := T.K_subset_parameterDomain (by simp)
   obtain ⟨b, hb, hbsub⟩ :=
-    Metric.mem_nhds_iff.mp (T.isOpen_W.mem_nhds hzero_TW)
+    Metric.mem_nhds_iff.mp (T.isOpen_parameterDomain.mem_nhds hzero_TW)
   let delta₀ : Real := min (b / 2) (delta / 2)
   have hdelta₀ : 0 < delta₀ := lt_min (half_pos hb) (half_pos hdelta)
   have hdelta₀b : delta₀ < b :=
     (min_le_left (b / 2) (delta / 2)).trans_lt (half_lt_self hb)
   have hdelta₀delta : delta₀ < delta :=
     (min_le_right (b / 2) (delta / 2)).trans_lt (half_lt_self hdelta)
-  have hclosed_TW : Metric.closedBall (0 : X) delta₀ ⊆ T.W := by
+  have hclosed_TW : Metric.closedBall (0 : X) delta₀ ⊆ T.parameterDomain := by
     intro w hw
     apply hbsub
     rw [Metric.mem_ball]
     exact (Metric.mem_closedBall.mp hw).trans_lt hdelta₀b
-  have hball_TW : Metric.ball (0 : X) delta₀ ⊆ T.W :=
+  have hball_TW : Metric.ball (0 : X) delta₀ ⊆ T.parameterDomain :=
     (Metric.ball_subset_closedBall.trans hclosed_TW)
   have hInf_maps : eInf.symm '' Metric.closedBall (0 : X) delta₀ ⊆ Q := by
     rintro _ ⟨w, hw, rfl⟩
-    have hwW₀ : w ∈ W₀ := T.closure_W_subset (subset_closure (hclosed_TW hw))
+    have hwW₀ : w ∈ W₀ := T.closure_parameterDomain_subset (subset_closure (hclosed_TW hw))
     exact (hW₀_map hwW₀).1
   obtain ⟨Nsource, hNsource⟩ := eventually_atTop.mp hsource
   let N : Nat := max Nroot Nsource
@@ -242,8 +242,8 @@ theorem exists_symm_convergenceOn_ball
       (Metric.closedBall (0 : X) delta₀) Q := by
     intro n hn w hw
     have hnroot : Nroot ≤ n := (Nat.le_max_left _ _).trans hn
-    have hwTW : w ∈ T.W := hclosed_TW hw
-    have hwclosure : w ∈ closure T.W := subset_closure hwTW
+    have hwTW : w ∈ T.parameterDomain := hclosed_TW hw
+    have hwclosure : w ∈ closure T.parameterDomain := subset_closure hwTW
     have hsp := hspec n hnroot w hwclosure
     have hpairD : (w, Phi n w) ∈ D := by
       apply T.tube_subset w hwclosure
@@ -262,7 +262,7 @@ theorem exists_symm_convergenceOn_ball
       apply htarget n
       rw [Metric.mem_closedBall]
       exact (Metric.mem_closedBall.mp hw).trans hdelta₀delta.le
-    have hwTW : w ∈ T.W := hclosed_TW hw
+    have hwTW : w ∈ T.parameterDomain := hclosed_TW hw
     have hroot_n := (hspec n hnroot w (subset_closure hwTW)).2.1
     have hew : e n (Phi n w) = w := by
       exact sub_eq_zero.mp hroot_n
@@ -414,23 +414,23 @@ theorem exists_symm_cInf
   obtain ⟨Nroot, Phi, hPhi_convergence, _hPhi_cd, hspec, _huniq⟩ :=
     T.exists_root_cInf hF_cd hF_convergence
   obtain ⟨V, hVopen, hKV, hVT, hVcompact⟩ :=
-    exists_open_between_and_isCompact_closure hK T.isOpen_W T.K_subset_W
+    exists_open_between_and_isCompact_closure hK T.isOpen_parameterDomain T.K_subset_parameterDomain
   have hVtarget : closure V ⊆ eInf.target := by
     intro w hw
     have hwW₀ : w ∈ W₀ :=
-      T.closure_W_subset (subset_closure (hVT hw))
+      T.closure_parameterDomain_subset (subset_closure (hVT hw))
     exact hW₀target hwW₀
   have hVmap : eInf.symm '' closure V ⊆ Q := by
     rintro _ ⟨w, hw, rfl⟩
     have hwW₀ : w ∈ W₀ :=
-      T.closure_W_subset (subset_closure (hVT hw))
+      T.closure_parameterDomain_subset (subset_closure (hVT hw))
     exact hW₀map hwW₀
   obtain ⟨Nsource, hNsource⟩ := eventually_atTop.mp hsource
   let N : Nat := max Nroot Nsource
   have hselected_Q : ∀ n ≥ N, Set.MapsTo (Phi n) (closure V) Q := by
     intro n hn w hw
     have hnroot : Nroot ≤ n := (Nat.le_max_left _ _).trans hn
-    have hwTW : w ∈ T.W := hVT hw
+    have hwTW : w ∈ T.parameterDomain := hVT hw
     have hsp := hspec n hnroot w (subset_closure hwTW)
     have hpairD : (w, Phi n w) ∈ D := by
       apply T.tube_subset w (subset_closure hwTW)

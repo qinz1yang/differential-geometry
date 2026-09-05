@@ -156,8 +156,8 @@ theorem preapprox_pair
 variable [NeZero (Module.finrank Real E)]
 variable {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
 
-theorem HasStageJetData.preapprox_tail
-    (inp : MetricCompactnessInputs (I := I) X)
+theorem HasStageJetConvergence.preapprox_tail
+    (inp : MetricCompactnessAssumptions (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P) {s : Real} (hs : 0 ≤ s)
     (phi : Nat → Nat) (hphi : StrictMono phi)
@@ -172,7 +172,7 @@ theorem HasStageJetData.preapprox_tail
       InterSlot L inp.pack s alpha → E → E)
     (gInf : LiveSlot L inp.pack s →
       E → (E →L[Real] E →L[Real] Real))
-    (hstage : HasStageJetData (I := I) inp P L hs phi hphi
+    (hstage : HasStageJetConvergence (I := I) inp P L hs phi hphi
       U C0 C1 aInf Jinf Jbarinf gInf)
     {R S T Vrad : Real} (hRS : R < S) (hST : S < T)
     (hroom : T + (4 + 8 * Real.sqrt 2) * inp.decay.lambda inp.D 0 < Vrad)
@@ -209,7 +209,7 @@ theorem HasStageJetData.preapprox_tail
   classical
   have hgap : 0 ≤
       (4 + 8 * Real.sqrt 2) * inp.decay.lambda inp.D 0 :=
-    mul_nonneg (by positivity) (inp.decay.lambda_pos inp.hD 0).le
+    mul_nonneg (by positivity) (inp.decay.lambda_pos inp.divisor_pos 0).le
   have hTr : T < s := by linarith
   have hSr : S < s := hST.trans hTr
   obtain ⟨Nfwd, hfwd⟩ :=

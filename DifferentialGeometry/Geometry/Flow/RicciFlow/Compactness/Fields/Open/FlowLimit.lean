@@ -132,8 +132,8 @@ theorem isSolution
 
 end OpenMetricConvergenceData
 
-noncomputable def flowUpgradeOfOpen
-    (mc : MetricCompactnessConclusion (I := I) (X.atZero (I := I)))
+noncomputable def smoothFlowLimitSubsequenceOfOpenMetricConvergence
+    (mc : MetricCompactLimit (I := I) (X.atZero (I := I)))
     (L : PointedFlowData (I := I) X.D)
     (P : PointedRiemannianManifold (I := I))
     (hPlim : P = mc.limit)
@@ -159,12 +159,12 @@ noncomputable def flowUpgradeOfOpen
       ∀ t : Real, t ∈ X.D.carrier →
         HEq (L.S.family.metric t) (co.gInf t))
     (scalar : ScalarPullbackTendsto (I := I)
-      (hPL.symm ▸ (Φ.compSubseq co.φ co.hφ) :
+      (hPL.symm ▸ (Φ.compSubseq co.φ co.strictMono) :
         PointedCGHMaps (I := I) X (L.atTime 0) (mc.subseq ∘ co.φ)))
     (ricciNorm : RicNormPullback (I := I)
-      (hPL.symm ▸ (Φ.compSubseq co.φ co.hφ) :
+      (hPL.symm ▸ (Φ.compSubseq co.φ co.strictMono) :
         PointedCGHMaps (I := I) X (L.atTime 0) (mc.subseq ∘ co.φ))) :
-    FlowUpgrade (I := I) X mc := by
+    SmoothFlowLimitSubsequence (I := I) X mc := by
   have hL0 : L.atTime (I := I) 0 = mc.limit := hPL.trans hPlim
   subst hPL
   letI : TopologicalSpace L.M := L.topology
@@ -180,23 +180,23 @@ noncomputable def flowUpgradeOfOpen
   have hLm : ∀ t : Real, t ∈ X.D.carrier →
       L.S.family.metric t = co.gInf t :=
     fun t ht => eq_of_heq (hLmetric t ht)
-  have hscalar : ScalarPullbackTendsto (I := I) (Φ.compSubseq co.φ co.hφ) := scalar
-  have hricciNorm : RicNormPullback (I := I) (Φ.compSubseq co.φ co.hφ) := ricciNorm
-  set mc' := mc.compSubseq co.φ co.hφ with hmc'
-  set Φ' := Φ.compSubseq co.φ co.hφ with hΦ'
+  have hscalar : ScalarPullbackTendsto (I := I) (Φ.compSubseq co.φ co.strictMono) := scalar
+  have hricciNorm : RicNormPullback (I := I) (Φ.compSubseq co.φ co.strictMono) := ricciNorm
+  set mc' := mc.compSubseq co.φ co.strictMono with hmc'
+  set Φ' := Φ.compSubseq co.φ co.strictMono with hΦ'
   have hσsource' : ∀ k : Nat, IsSigmaCompact (Φ'.source k) :=
     fun k => Geometry.isSigmaCompact_of_isOpen I
       (PointedCGHMaps.source_open (I := I) Φ' k)
-  refine ⟨co.φ, co.hφ, ?_⟩
-  change FlowLimitData (I := I) X mc'
+  refine ⟨co.φ, co.strictMono, ?_⟩
+  change SmoothFlowLimitAlongMetricSubsequence (I := I) X mc'
   refine
     { L := L
-      hL0 := by simpa [mc'] using hL0
+      atTime_zero := by simpa [mc'] using hL0
       maps := Φ'
       scalar := hscalar
       ricciNorm := hricciNorm
-      hσsource := hσsource'
-      hσtarget := ?_
+      source_sigmaCompact := hσsource'
+      target_sigmaCompact := ?_
       refMetric := ?_
       convergence := ?_ }
   · intro k
@@ -243,8 +243,8 @@ noncomputable def flowUpgradeOfOpen
 
 omit [NeZero (Module.finrank ℝ E)]
   [I.Boundaryless] in
-theorem flowUpgrade_open_L
-    (mc : MetricCompactnessConclusion (I := I) (X.atZero (I := I)))
+theorem smoothFlowLimitSubsequenceOfOpenMetricConvergence_limit
+    (mc : MetricCompactLimit (I := I) (X.atZero (I := I)))
     (L : PointedFlowData (I := I) X.D)
     (P : PointedRiemannianManifold (I := I))
     (hPlim : P = mc.limit)
@@ -270,20 +270,20 @@ theorem flowUpgrade_open_L
       ∀ t : Real, t ∈ X.D.carrier →
         HEq (L.S.family.metric t) (co.gInf t))
     (scalar : ScalarPullbackTendsto (I := I)
-      (hPL.symm ▸ (Φ.compSubseq co.φ co.hφ) :
+      (hPL.symm ▸ (Φ.compSubseq co.φ co.strictMono) :
         PointedCGHMaps (I := I) X (L.atTime 0) (mc.subseq ∘ co.φ)))
     (ricciNorm : RicNormPullback (I := I)
-      (hPL.symm ▸ (Φ.compSubseq co.φ co.hφ) :
+      (hPL.symm ▸ (Φ.compSubseq co.φ co.strictMono) :
         PointedCGHMaps (I := I) X (L.atTime 0) (mc.subseq ∘ co.φ))) :
-    (flowUpgradeOfOpen (I := I) mc L P hPlim hPL Φ R bf hsrc htgt ht₀ hD co
-      hLmetric scalar ricciNorm).data.L = L := by
+    (smoothFlowLimitSubsequenceOfOpenMetricConvergence (I := I) mc L P hPlim hPL Φ R bf hsrc htgt ht₀ hD co
+      hLmetric scalar ricciNorm).limit.L = L := by
   cases hPL
   rfl
 
 omit [NeZero (Module.finrank ℝ E)]
   [I.Boundaryless] in
 theorem flowLimit_of_open
-    (mc : MetricCompactnessConclusion (I := I) (X.atZero (I := I)))
+    (mc : MetricCompactLimit (I := I) (X.atZero (I := I)))
     (L : PointedFlowData (I := I) X.D)
     (P : PointedRiemannianManifold (I := I))
     (hPlim : P = mc.limit)
@@ -309,14 +309,14 @@ theorem flowLimit_of_open
       ∀ t : Real, t ∈ X.D.carrier →
         HEq (L.S.family.metric t) (co.gInf t))
     (scalar : ScalarPullbackTendsto (I := I)
-      (hPL.symm ▸ (Φ.compSubseq co.φ co.hφ) :
+      (hPL.symm ▸ (Φ.compSubseq co.φ co.strictMono) :
         PointedCGHMaps (I := I) X (L.atTime 0) (mc.subseq ∘ co.φ)))
     (ricciNorm : RicNormPullback (I := I)
-      (hPL.symm ▸ (Φ.compSubseq co.φ co.hφ) :
+      (hPL.symm ▸ (Φ.compSubseq co.φ co.strictMono) :
         PointedCGHMaps (I := I) X (L.atTime 0) (mc.subseq ∘ co.φ))) :
-    compactnessConclusion (I := I) X :=
-  (flowUpgradeOfOpen (I := I) mc L P hPlim hPL Φ R bf hsrc htgt ht₀ hD co
-    hLmetric scalar ricciNorm).toConclusion
+    HasSmoothCheegerGromovLimit (I := I) X :=
+  (smoothFlowLimitSubsequenceOfOpenMetricConvergence (I := I) mc L P hPlim hPL Φ R bf hsrc htgt ht₀ hD co
+    hLmetric scalar ricciNorm).hasSmoothCheegerGromovLimit
 
 end CheegerGromovCompactness
 end DifferentialGeometry

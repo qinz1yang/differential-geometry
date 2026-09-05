@@ -629,7 +629,7 @@ theorem hatPOU_weights (hd : InjectivityRadiusDecay (I := I) X) {D : Real}
     L.hatPOU_pos hd P pb r k ρ hx,
     L.hatPOU_sum_one hd P pb r k ρ hx⟩
 
-theorem hatPOU_active_data (hd : InjectivityRadiusDecay (I := I) X) {D : Real}
+theorem hatPOU_nonneg_pos_sum_one_and_active_mem (hd : InjectivityRadiusDecay (I := I) X) {D : Real}
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData hd D P) (pb : hd.PackingBound D) (r : Real) (k : Nat)
     (ρ :

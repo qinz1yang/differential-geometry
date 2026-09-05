@@ -135,7 +135,7 @@ private lemma add_le_product_growth
       exact mul_le_mul_of_nonneg_left (by nlinarith) (le_trans zero_le_one hc)
     _ = c * (n + 1) * (q + 1) := by ring
 
-theorem rawTensorConnLap_riemannianFiberNormSq_le_chart_α_data_on_pouTsupport_goodSet
+theorem rawTensorConnLap_riemannianFiberNormSq_le_second_derivative_and_value_on_pou_tsupport
     [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (T₀ : SmoothCcTensor g r s) :

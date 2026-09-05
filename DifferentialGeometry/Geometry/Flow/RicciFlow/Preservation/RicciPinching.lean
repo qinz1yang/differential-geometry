@@ -688,7 +688,7 @@ theorem pinchBarrierRegularity
     intro delta0 t0 _hdelta0
     exact pinchSmallLip (I := I) (M := M) S hS hdelta hdim hTsub delta0 t0
 
-theorem pinchSecCore
+theorem pinchSec_tensorWeakMaximumPrincipleSectionCompactness
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     [CompactSpace M] [T2Space M]
     (S : SolutionOn (I := I) (M := M) D)
@@ -700,9 +700,9 @@ theorem pinchSecCore
       (fun t : Real => S.base.metric t)
       (twoTensorSecToFamily (I := I) (M := M) (pinchSec (I := I) S delta))
       X N T) :
-    TensorWeakMaximumPrincipleSectionCore (I := I) (M := M)
+    TensorWeakMaximumPrincipleSectionCompactness (I := I) (M := M)
       (fun t : Real => S.base.metric t) (pinchSec (I := I) S delta) X N T := by
-  exact TensorWeakMaximumPrincipleSectionCore.ofSmoothMetric (I := I) (M := M)
+  exact TensorWeakMaximumPrincipleSectionCompactness.ofSmoothMetric (I := I) (M := M)
     (G := S.family) (S := pinchSec (I := I) S delta)
     (X := X) (N := N) (T := T)
     hTsub hS.smoothMetric
@@ -714,14 +714,14 @@ theorem pinchSecCore
     (fun epsilon d t0 _hepsilon _hd hsub x v =>
       hbar.barrier_eval_continuous epsilon d t0 hsub x v v)
 
-structure RicciWeakMaximumPrincipleInput
+structure RicciWeakMaximumPrincipleAssumptions
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
     (S : SolutionOn (I := I) (M := M) D) (T : Real) : Type _ where
   X : TimeDependentVectorField (I := I) (M := M)
   N : TwoTensorReaction (I := I) (M := M)
   regularity :
-    TensorWeakMaximumPrincipleSectionCore (I := I) (M := M)
+    TensorWeakMaximumPrincipleSectionCompactness (I := I) (M := M)
       (fun t : Real => S.base.metric t) S.ricci X N T
   parabolic :
     TensorParabolicSupersolutionWithDriftOn (I := I) (M := M)
@@ -736,30 +736,30 @@ structure RicciWeakMaximumPrincipleInput
     TwoTensorFamilyNonnegativeAtTime (I := I) (M := M)
       (twoTensorSecToFamily (I := I) (M := M) S.ricci) 0
 
-namespace RicciWeakMaximumPrincipleInput
+namespace RicciWeakMaximumPrincipleAssumptions
 
-theorem toInput
+theorem toTensorAssumptions
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
     {S : SolutionOn (I := I) (M := M) D} {T : Real}
-    (data : RicciWeakMaximumPrincipleInput (I := I) (M := M) S T) (hT : 0 <= T) :
-    TensorWeakMaximumPrincipleInput (I := I) (M := M)
+    (data : RicciWeakMaximumPrincipleAssumptions (I := I) (M := M) S T) (hT : 0 <= T) :
+    TensorWeakMaximumPrincipleAssumptions (I := I) (M := M)
       (fun t : Real => S.base.metric t) S.ricci data.X data.N
       (fun t : Real => S.base.connection t)
       (ricciNablaWeakMaximumPrinciple (I := I) S) (ricciNabla2WeakMaximumPrinciple (I := I) S) T where
-  hT := hT
+  time_nonneg := hT
   regularity := data.regularity
   parabolic := data.parabolic
   null := data.null
   initial := data.initial
-  hcov1 := fun t => ricciCov1 (I := I) S t
-  hcovInf := fun t => ricciCovInf (I := I) S t
-  hmc := fun t => ricciMetricComp (I := I) S t
+  connection_contMDiff_one := fun t => ricciCov1 (I := I) S t
+  connection_contMDiff_infty := fun t => ricciCovInf (I := I) S t
+  metricCompatible := fun t => ricciMetricComp (I := I) S t
   spatial := ricciSpatialWeakMaximumPrinciple (I := I) S
 
-end RicciWeakMaximumPrincipleInput
+end RicciWeakMaximumPrincipleAssumptions
 
-structure RicciPinchingWeakMaximumPrincipleInput
+structure RicciPinchingWeakMaximumPrincipleAssumptions
     (G : Real -> SmoothRiemannianMetric I M)
     (Ric : TwoTensorFamily (I := I) (M := M))
     (scalar : Real -> M -> Real) (T delta : Real) : Type _ where
@@ -773,60 +773,60 @@ structure RicciPinchingWeakMaximumPrincipleInput
     twoTensorSecToFamily (I := I) (M := M) S =
       pinchTensor (I := I) (M := M) G Ric scalar delta
   regularity :
-    TensorWeakMaximumPrincipleSectionCore (I := I) (M := M) G S X N T
+    TensorWeakMaximumPrincipleSectionCompactness (I := I) (M := M) G S X N T
   parabolic :
     TensorParabolicSupersolutionWithDriftOn (I := I) (M := M) G
       (twoTensorSecToFamily (I := I) (M := M) S) X N
       (fun t x => nabla2S t x) (fun t x => nablaS t x) T
   null :
     TensorNullEigenvectorCondition (I := I) (M := M) G N (Set.Icc 0 T)
-  hcov1 :
+  connection_contMDiff_one :
     forall t : Real,
       CovariantDerivative.ContMDiffCovariantDerivativeLocally
         (cov t) (1 : WithTop ℕ∞)
-  hcovInf :
+  connection_contMDiff_infty :
     forall t : Real,
       CovariantDerivative.ContMDiffCovariantDerivativeLocally
         (cov t) (∞ : WithTop ℕ∞)
-  hmc :
+  metricCompatible :
     forall t : Real,
       DifferentialGeometry.Geometry.Connection.IsMetricCompatible (I := I) (cov t) (G t)
   spatial : TensorSpatialDerivs (I := I) (M := M) cov S nablaS nabla2S
 
-namespace RicciPinchingWeakMaximumPrincipleInput
+namespace RicciPinchingWeakMaximumPrincipleAssumptions
 
-theorem toInput
+theorem toTensorAssumptions
     {G : Real -> SmoothRiemannianMetric I M}
     {Ric : TwoTensorFamily (I := I) (M := M)}
     {scalar : Real -> M -> Real}
     {T delta : Real}
-    (data : RicciPinchingWeakMaximumPrincipleInput (I := I) (M := M) G Ric scalar T delta)
+    (data : RicciPinchingWeakMaximumPrincipleAssumptions (I := I) (M := M) G Ric scalar T delta)
     (hT : 0 <= T)
     (hinit : TwoTensorFamilyNonnegativeAtTime (I := I) (M := M)
       (pinchTensor (I := I) (M := M) G Ric scalar delta) 0) :
-    TensorWeakMaximumPrincipleInput (I := I) (M := M)
+    TensorWeakMaximumPrincipleAssumptions (I := I) (M := M)
       G data.S data.X data.N data.cov data.nablaS data.nabla2S T where
-  hT := hT
+  time_nonneg := hT
   regularity := data.regularity
   parabolic := data.parabolic
   null := data.null
   initial := by
     simpa [data.section_eq] using hinit
-  hcov1 := data.hcov1
-  hcovInf := data.hcovInf
-  hmc := data.hmc
+  connection_contMDiff_one := data.connection_contMDiff_one
+  connection_contMDiff_infty := data.connection_contMDiff_infty
+  metricCompatible := data.metricCompatible
   spatial := data.spatial
 
-end RicciPinchingWeakMaximumPrincipleInput
+end RicciPinchingWeakMaximumPrincipleAssumptions
 
-structure RicciPinchingFlowWeakMaximumPrincipleInput
+structure RicciPinchingFlowWeakMaximumPrincipleAssumptions
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
     (S : SolutionOn (I := I) (M := M) D) (T delta : Real) : Type _ where
   X : TimeDependentVectorField (I := I) (M := M)
   N : TwoTensorReaction (I := I) (M := M)
   regularity :
-    TensorWeakMaximumPrincipleSectionCore (I := I) (M := M)
+    TensorWeakMaximumPrincipleSectionCompactness (I := I) (M := M)
       (fun t : Real => S.base.metric t) (pinchSec (I := I) S delta) X N T
   spatial :
     TensorSpatialDerivs (I := I) (M := M)
@@ -843,7 +843,7 @@ structure RicciPinchingFlowWeakMaximumPrincipleInput
     TensorNullEigenvectorCondition (I := I) (M := M)
       (fun t : Real => S.base.metric t) N (Set.Icc 0 T)
 
-namespace RicciPinchingFlowWeakMaximumPrincipleInput
+namespace RicciPinchingFlowWeakMaximumPrincipleAssumptions
 
 def ofBarrier
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
@@ -867,10 +867,10 @@ def ofBarrier
     (hnull :
       TensorNullEigenvectorCondition (I := I) (M := M)
         (fun t : Real => S.base.metric t) N (Set.Icc 0 T)) :
-    RicciPinchingFlowWeakMaximumPrincipleInput (I := I) (M := M) S T delta where
+    RicciPinchingFlowWeakMaximumPrincipleAssumptions (I := I) (M := M) S T delta where
   X := X
   N := N
-  regularity := pinchSecCore (I := I) S hS hTsub hbar
+  regularity := pinchSec_tensorWeakMaximumPrincipleSectionCompactness (I := I) S hS hTsub hbar
   spatial := pinchSpatialModel (I := I) S delta
   parabolic := hparabolic
   null := hnull
@@ -900,7 +900,7 @@ def ofSymmNull
     (hnull :
       TensorNullEigenvectorConditionSymm (I := I) (M := M)
         (fun t : Real => S.base.metric t) N (Set.Icc 0 T)) :
-    RicciPinchingFlowWeakMaximumPrincipleInput (I := I) (M := M) S T delta :=
+    RicciPinchingFlowWeakMaximumPrincipleAssumptions (I := I) (M := M) S T delta :=
   ofBarrier (I := I) (M := M) hS hTsub X N hbar hparabolic
     (null_of_symm (I := I) (M := M) hdep hnull)
 
@@ -924,7 +924,7 @@ def ofShiftN
         X (shiftNRaw (I := I) (M := M) delta)
         (fun t x => pinchNab2ModelSec (I := I) S delta t x)
         (fun t x => pinchNablaModel (I := I) S delta t x) T) :
-    RicciPinchingFlowWeakMaximumPrincipleInput (I := I) (M := M) S T delta :=
+    RicciPinchingFlowWeakMaximumPrincipleAssumptions (I := I) (M := M) S T delta :=
   ofSymmNull (I := I) (M := M) hS hTsub X
     (shiftNRaw (I := I) (M := M) delta) hbar hparabolic
     (shiftNRaw_symmInputOn (I := I) (M := M)
@@ -953,7 +953,7 @@ def ofShiftNLt
         X (shiftNRaw (I := I) (M := M) delta)
         (fun t x => pinchNab2ModelSec (I := I) S delta t x)
         (fun t x => pinchNablaModel (I := I) S delta t x) T) :
-    RicciPinchingFlowWeakMaximumPrincipleInput (I := I) (M := M) S T delta :=
+    RicciPinchingFlowWeakMaximumPrincipleAssumptions (I := I) (M := M) S T delta :=
   ofSymmNull (I := I) (M := M) hS hTsub X
     (shiftNRaw (I := I) (M := M) delta) hbar hparabolic
     (shiftNRaw_symmInputOn (I := I) (M := M)
@@ -983,7 +983,7 @@ def ofShiftNReact
           (twoTensorSecToFamily (I := I) (M := M)
             (pinchSec (I := I) S delta) t)) x v v =
           pinchCoordReact (I := I) S delta t x v) :
-    RicciPinchingFlowWeakMaximumPrincipleInput (I := I) (M := M) S T delta :=
+    RicciPinchingFlowWeakMaximumPrincipleAssumptions (I := I) (M := M) S T delta :=
   ofShiftN (I := I) (M := M) hS.isSolution hdelta13 hdim hTsub
     (fun _t x => (0 : TangentSpace I x)) hbar
     (pinchParabolic_of_react (I := I) (M := M) S hS
@@ -1004,7 +1004,7 @@ def ofShiftNDirect
       (twoTensorSecToFamily (I := I) (M := M) (pinchSec (I := I) S delta))
       (fun _t x => (0 : TangentSpace I x))
       (shiftNRaw (I := I) (M := M) delta) T) :
-    RicciPinchingFlowWeakMaximumPrincipleInput (I := I) (M := M) S T delta :=
+    RicciPinchingFlowWeakMaximumPrincipleAssumptions (I := I) (M := M) S T delta :=
   ofShiftN (I := I) (M := M) hS.isSolution hdelta13 hdim hTsub
     (fun _t x => (0 : TangentSpace I x)) hbar
     (pinchParabolic (I := I) (M := M) S hS hdelta13 hdim hTsub hTreg)
@@ -1019,17 +1019,17 @@ def ofShiftNClosed
     (hdim : ∀ x : M, Module.finrank Real (TangentSpace I x) = 3)
     (hTsub : Set.Icc 0 T ⊆ D.carrier)
     (hTreg : Set.Ioc 0 T ⊆ D.regular) :
-    RicciPinchingFlowWeakMaximumPrincipleInput (I := I) (M := M) S T delta :=
+    RicciPinchingFlowWeakMaximumPrincipleAssumptions (I := I) (M := M) S T delta :=
   ofShiftNDirect (I := I) (M := M) hS hdelta13 hdim hTsub hTreg
     (pinchBarrierRegularity (I := I) (M := M) S hS.isSolution
       hdelta13 hdim hTsub hTreg)
 
-def toRicciPinchingWeakMaximumPrincipleInput
+def toRicciPinchingWeakMaximumPrincipleAssumptions
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
     {S : SolutionOn (I := I) (M := M) D} {T delta : Real}
-    (data : RicciPinchingFlowWeakMaximumPrincipleInput (I := I) (M := M) S T delta) :
-    RicciPinchingWeakMaximumPrincipleInput (I := I) (M := M)
+    (data : RicciPinchingFlowWeakMaximumPrincipleAssumptions (I := I) (M := M) S T delta) :
+    RicciPinchingWeakMaximumPrincipleAssumptions (I := I) (M := M)
       (fun t : Real => S.base.metric t)
       (twoTensorSecToFamily (I := I) (M := M) S.ricci)
       S.scalar T delta where
@@ -1043,12 +1043,12 @@ def toRicciPinchingWeakMaximumPrincipleInput
   regularity := data.regularity
   parabolic := data.parabolic
   null := data.null
-  hcov1 := fun t => ricciCov1 (I := I) S t
-  hcovInf := fun t => ricciCovInf (I := I) S t
-  hmc := fun t => ricciMetricComp (I := I) S t
+  connection_contMDiff_one := fun t => ricciCov1 (I := I) S t
+  connection_contMDiff_infty := fun t => ricciCovInf (I := I) S t
+  metricCompatible := fun t => ricciMetricComp (I := I) S t
   spatial := data.spatial
 
-end RicciPinchingFlowWeakMaximumPrincipleInput
+end RicciPinchingFlowWeakMaximumPrincipleAssumptions
 
 theorem ricci_nonneg_weak_maximum_principle_of_hypotheses
     {G : Real -> SmoothRiemannianMetric I M}
@@ -1083,7 +1083,7 @@ theorem ricci_nonneg_weak_maximum_principle
     {T : Real}
     (hRic :
       twoTensorSecToFamily (I := I) (M := M) RicSec = Ric)
-    (data : TensorWeakMaximumPrincipleInput (I := I) (M := M)
+    (data : TensorWeakMaximumPrincipleAssumptions (I := I) (M := M)
       G RicSec X N cov nablaRic nabla2Ric T) :
     TwoTensorFamilyNonnegativeOn (I := I) (M := M) Ric (Set.Icc 0 T) := by
   have hsec :
@@ -1092,7 +1092,7 @@ theorem ricci_nonneg_weak_maximum_principle
     tensor_weak_maximum_principle (I := I) (M := M) data
   simpa [hRic] using hsec
 
-theorem ricci_nonnegative_of_solution_weak_maximum_principle_data
+theorem ricci_nonnegative_of_weak_maximum_principle_assumptions
     [I.Boundaryless] [T2Space M]
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
     [ContMDiffVectorBundle (∞ : WithTop ℕ∞) E (TangentSpace I : M -> Type _) I]
@@ -1101,10 +1101,10 @@ theorem ricci_nonnegative_of_solution_weak_maximum_principle_data
     (S : SolutionOn (I := I) (M := M) D)
     {T : Real}
     (hT : 0 <= T)
-    (data : RicciWeakMaximumPrincipleInput (I := I) (M := M) S T) :
+    (data : RicciWeakMaximumPrincipleAssumptions (I := I) (M := M) S T) :
     TwoTensorFamilyNonnegativeOn (I := I) (M := M)
       (twoTensorSecToFamily (I := I) (M := M) S.ricci) (Set.Icc 0 T) := by
-  exact tensor_weak_maximum_principle (I := I) (M := M) (RicciWeakMaximumPrincipleInput.toInput
+  exact tensor_weak_maximum_principle (I := I) (M := M) (RicciWeakMaximumPrincipleAssumptions.toTensorAssumptions
     (I := I) (M := M) data hT)
 
 theorem ricci_pinch_weak_maximum_principle_of_hypotheses
@@ -1151,7 +1151,7 @@ theorem ricci_pinch_weak_maximum_principle
     (hS :
       twoTensorSecToFamily (I := I) (M := M) S =
         pinchTensor (I := I) (M := M) G Ric scalar delta)
-    (data : TensorWeakMaximumPrincipleInput (I := I) (M := M)
+    (data : TensorWeakMaximumPrincipleAssumptions (I := I) (M := M)
       G S X N cov nablaS nabla2S T) :
     PinchPres (I := I) (M := M) G Ric scalar T delta := by
   have hsec :
@@ -1160,7 +1160,7 @@ theorem ricci_pinch_weak_maximum_principle
     tensor_weak_maximum_principle (I := I) (M := M) data
   simpa [PinchPres, hS] using hsec
 
-namespace RicciPinchingWeakMaximumPrincipleInput
+namespace RicciPinchingWeakMaximumPrincipleAssumptions
 
 theorem preserve
     [I.Boundaryless] [T2Space M]
@@ -1170,7 +1170,7 @@ theorem preserve
     {Ric : TwoTensorFamily (I := I) (M := M)}
     {scalar : Real -> M -> Real}
     {T delta : Real}
-    (data : RicciPinchingWeakMaximumPrincipleInput (I := I) (M := M) G Ric scalar T delta)
+    (data : RicciPinchingWeakMaximumPrincipleAssumptions (I := I) (M := M) G Ric scalar T delta)
     (hT : 0 <= T)
     (hinit : TwoTensorFamilyNonnegativeAtTime (I := I) (M := M)
       (pinchTensor (I := I) (M := M) G Ric scalar delta) 0) :
@@ -1179,11 +1179,11 @@ theorem preserve
     (scalar := scalar) (delta := delta) (S := data.S) (X := data.X)
     (N := data.N) (cov := data.cov) (nablaS := data.nablaS)
     (nabla2S := data.nabla2S) (T := T)
-    data.section_eq (data.toInput hT hinit)
+    data.section_eq (data.toTensorAssumptions hT hinit)
 
-end RicciPinchingWeakMaximumPrincipleInput
+end RicciPinchingWeakMaximumPrincipleAssumptions
 
-namespace RicciPinchingFlowWeakMaximumPrincipleInput
+namespace RicciPinchingFlowWeakMaximumPrincipleAssumptions
 
 theorem preserve
     [I.Boundaryless] [T2Space M]
@@ -1193,17 +1193,17 @@ theorem preserve
     [CompleteSpace E] [SigmaCompactSpace M]
     {S : SolutionOn (I := I) (M := M) D}
     {T delta : Real}
-    (data : RicciPinchingFlowWeakMaximumPrincipleInput (I := I) (M := M) S T delta)
+    (data : RicciPinchingFlowWeakMaximumPrincipleAssumptions (I := I) (M := M) S T delta)
     (hT : 0 <= T)
     (hinit : TwoTensorFamilyNonnegativeAtTime (I := I) (M := M)
       (pinchTensor (I := I) (M := M) (fun t : Real => S.base.metric t)
         (twoTensorSecToFamily (I := I) (M := M) S.ricci) S.scalar delta) 0) :
     PinchPres (I := I) (M := M) (fun t : Real => S.base.metric t)
       (twoTensorSecToFamily (I := I) (M := M) S.ricci) S.scalar T delta := by
-  exact (data.toRicciPinchingWeakMaximumPrincipleInput (I := I) (M := M)).preserve
+  exact (data.toRicciPinchingWeakMaximumPrincipleAssumptions (I := I) (M := M)).preserve
     (I := I) (M := M) hT hinit
 
-end RicciPinchingFlowWeakMaximumPrincipleInput
+end RicciPinchingFlowWeakMaximumPrincipleAssumptions
 
 theorem pinch_solution_closed
     [I.Boundaryless] [T2Space M]
@@ -1224,7 +1224,7 @@ theorem pinch_solution_closed
         (twoTensorSecToFamily (I := I) (M := M) S.ricci) S.scalar delta) 0) :
     PinchPres (I := I) (M := M) (fun t : Real => S.base.metric t)
       (twoTensorSecToFamily (I := I) (M := M) S.ricci) S.scalar T delta := by
-  exact (RicciPinchingFlowWeakMaximumPrincipleInput.ofShiftNClosed (I := I) (M := M) hS
+  exact (RicciPinchingFlowWeakMaximumPrincipleAssumptions.ofShiftNClosed (I := I) (M := M) hS
     hdelta13 hdim hTsub hTreg).preserve
       (I := I) (M := M) hT hinit
 
@@ -1247,14 +1247,14 @@ theorem pinch_solution_closed_nonneg
         (twoTensorSecToFamily (I := I) (M := M) S.ricci) S.scalar delta) 0) :
     PinchPres (I := I) (M := M) (fun t : Real => S.base.metric t)
       (twoTensorSecToFamily (I := I) (M := M) S.ricci) S.scalar T delta := by
-  exact (RicciPinchingFlowWeakMaximumPrincipleInput.ofShiftNLt (I := I) (M := M) hS.isSolution
+  exact (RicciPinchingFlowWeakMaximumPrincipleAssumptions.ofShiftNLt (I := I) (M := M) hS.isSolution
     hdelta13 hdim hTsub (fun _t x => (0 : TangentSpace I x))
     (pinchBarrierRegularity (I := I) (M := M) S hS.isSolution
       hdelta13 hdim hTsub hTreg)
     (pinchParabolic (I := I) (M := M) S hS hdelta13 hdim hTsub hTreg)).preserve
       (I := I) (M := M) hT hinit
 
-theorem ricci_nonnegative_of_closed_solution_weak_maximum_principle_data
+theorem ricci_nonnegative_of_closed_solution
     [I.Boundaryless] [T2Space M]
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
     [ContMDiffVectorBundle (∞ : WithTop ℕ∞) E (TangentSpace I : M -> Type _) I]
@@ -1297,7 +1297,7 @@ theorem pinch_initial_weak_maximum_principle
     (hinit : PinchInitial (I := I) (M := M) G Ric scalar)
     (hdata :
       ∀ delta : Real, 0 < delta -> delta <= (1 : Real) / 3 ->
-        RicciPinchingWeakMaximumPrincipleInput (I := I) (M := M) G Ric scalar T delta) :
+        RicciPinchingWeakMaximumPrincipleAssumptions (I := I) (M := M) G Ric scalar T delta) :
     ∃ delta : Real,
       0 < delta ∧ delta <= (1 : Real) / 3 ∧
         PinchPres (I := I) (M := M) G Ric scalar T delta := by
@@ -1319,7 +1319,7 @@ theorem pinch_initial_weak_maximum_principle_lt
     (hinit : PinchInitialLt (I := I) (M := M) G Ric scalar)
     (hdata :
       ∀ delta : Real, 0 < delta -> delta < (1 : Real) / 3 ->
-        RicciPinchingWeakMaximumPrincipleInput (I := I) (M := M) G Ric scalar T delta) :
+        RicciPinchingWeakMaximumPrincipleAssumptions (I := I) (M := M) G Ric scalar T delta) :
     ∃ delta : Real,
       0 < delta ∧ delta < (1 : Real) / 3 ∧
         PinchPres (I := I) (M := M) G Ric scalar T delta := by
@@ -1354,8 +1354,8 @@ theorem pinch_initial_solution_lt
     (Ric := twoTensorSecToFamily (I := I) (M := M) S.ricci)
     (scalar := S.scalar) (T := T) hT hinit ?_
   intro delta hdelta0 hdelta13
-  exact (RicciPinchingFlowWeakMaximumPrincipleInput.ofShiftNClosed (I := I) (M := M) hS
-    hdelta13 hdim hTsub hTreg).toRicciPinchingWeakMaximumPrincipleInput (I := I) (M := M)
+  exact (RicciPinchingFlowWeakMaximumPrincipleAssumptions.ofShiftNClosed (I := I) (M := M) hS
+    hdelta13 hdim hTsub hTreg).toRicciPinchingWeakMaximumPrincipleAssumptions (I := I) (M := M)
 
 theorem strict_pinch_weak_maximum_principle
     [I.Boundaryless] [T2Space M]
@@ -1370,7 +1370,7 @@ theorem strict_pinch_weak_maximum_principle
     (hselect : BoundsOfPosRic (I := I) (M := M) G Ric scalar)
     (hdata :
       ∀ delta : Real, 0 < delta -> delta <= (1 : Real) / 3 ->
-        RicciPinchingWeakMaximumPrincipleInput (I := I) (M := M) G Ric scalar T delta) :
+        RicciPinchingWeakMaximumPrincipleAssumptions (I := I) (M := M) G Ric scalar T delta) :
     ∃ delta : Real,
       0 < delta ∧ delta <= (1 : Real) / 3 ∧
         PinchPres (I := I) (M := M) G Ric scalar T delta := by
@@ -1393,7 +1393,7 @@ theorem strict_pinch_weak_maximum_principle_lt
     (hselect : BoundsOfPosRic (I := I) (M := M) G Ric scalar)
     (hdata :
       ∀ delta : Real, 0 < delta -> delta < (1 : Real) / 3 ->
-        RicciPinchingWeakMaximumPrincipleInput (I := I) (M := M) G Ric scalar T delta) :
+        RicciPinchingWeakMaximumPrincipleAssumptions (I := I) (M := M) G Ric scalar T delta) :
     ∃ delta : Real,
       0 < delta ∧ delta < (1 : Real) / 3 ∧
         PinchPres (I := I) (M := M) G Ric scalar T delta := by
@@ -1418,7 +1418,7 @@ theorem strict_pinch_min
     (hscalar : Continuous (fun x : M => scalar 0 x))
     (hdata :
       ∀ delta : Real, 0 < delta -> delta <= (1 : Real) / 3 ->
-        RicciPinchingWeakMaximumPrincipleInput (I := I) (M := M) G Ric scalar T delta) :
+        RicciPinchingWeakMaximumPrincipleAssumptions (I := I) (M := M) G Ric scalar T delta) :
     ∃ delta : Real,
       0 < delta ∧ delta <= (1 : Real) / 3 ∧
         PinchPres (I := I) (M := M) G Ric scalar T delta := by
@@ -1443,7 +1443,7 @@ theorem strict_pinch_min_lt
     (hscalar : Continuous (fun x : M => scalar 0 x))
     (hdata :
       ∀ delta : Real, 0 < delta -> delta < (1 : Real) / 3 ->
-        RicciPinchingWeakMaximumPrincipleInput (I := I) (M := M) G Ric scalar T delta) :
+        RicciPinchingWeakMaximumPrincipleAssumptions (I := I) (M := M) G Ric scalar T delta) :
     ∃ delta : Real,
       0 < delta ∧ delta < (1 : Real) / 3 ∧
         PinchPres (I := I) (M := M) G Ric scalar T delta := by
@@ -1469,7 +1469,7 @@ theorem strict_pinch_metric
     (hscalar : Continuous (fun x : M => scalar 0 x))
     (hdata :
       ∀ delta : Real, 0 < delta -> delta <= (1 : Real) / 3 ->
-        RicciPinchingWeakMaximumPrincipleInput (I := I) (M := M) G Ric scalar T delta) :
+        RicciPinchingWeakMaximumPrincipleAssumptions (I := I) (M := M) G Ric scalar T delta) :
     ∃ delta : Real,
       0 < delta ∧ delta <= (1 : Real) / 3 ∧
         PinchPres (I := I) (M := M) G Ric scalar T delta := by
@@ -1495,7 +1495,7 @@ theorem strict_pinch_metric_lt
     (hscalar : Continuous (fun x : M => scalar 0 x))
     (hdata :
       ∀ delta : Real, 0 < delta -> delta < (1 : Real) / 3 ->
-        RicciPinchingWeakMaximumPrincipleInput (I := I) (M := M) G Ric scalar T delta) :
+        RicciPinchingWeakMaximumPrincipleAssumptions (I := I) (M := M) G Ric scalar T delta) :
     ∃ delta : Real,
       0 < delta ∧ delta < (1 : Real) / 3 ∧
         PinchPres (I := I) (M := M) G Ric scalar T delta := by
@@ -1520,7 +1520,7 @@ theorem strict_pinch_pos
     (hscalar : Continuous (fun x : M => scalar 0 x))
     (hdata :
       ∀ delta : Real, 0 < delta -> delta <= (1 : Real) / 3 ->
-        RicciPinchingWeakMaximumPrincipleInput (I := I) (M := M) G Ric scalar T delta) :
+        RicciPinchingWeakMaximumPrincipleAssumptions (I := I) (M := M) G Ric scalar T delta) :
     ∃ delta : Real,
       0 < delta ∧ delta <= (1 : Real) / 3 ∧
         PinchPres (I := I) (M := M) G Ric scalar T delta := by
@@ -1545,7 +1545,7 @@ theorem strict_pinch_pos_lt
     (hscalar : Continuous (fun x : M => scalar 0 x))
     (hdata :
       ∀ delta : Real, 0 < delta -> delta < (1 : Real) / 3 ->
-        RicciPinchingWeakMaximumPrincipleInput (I := I) (M := M) G Ric scalar T delta) :
+        RicciPinchingWeakMaximumPrincipleAssumptions (I := I) (M := M) G Ric scalar T delta) :
     ∃ delta : Real,
       0 < delta ∧ delta < (1 : Real) / 3 ∧
         PinchPres (I := I) (M := M) G Ric scalar T delta := by
@@ -1581,7 +1581,7 @@ theorem strict_pinch_solution_lt
       (Ric := twoTensorSecToFamily (I := I) (M := M) S.ricci)
       (scalar := S.scalar)
       (initialMetricRicciDataOfSolution (I := I) (M := M) S)
-      (initial_metric_ricci_data_positive (I := I) (M := M) S hpos)
+      (initialMetricRicciDataOfSolution_positive (I := I) (M := M) S hpos)
       (initial_scalar_curvature_continuous_of_solution
         (I := I) (M := M) S hS.isSolution
         (hTsub (show (0 : Real) ∈ Set.Icc 0 T from ⟨le_rfl, hT⟩))))

@@ -54,8 +54,8 @@ theorem canonical_curvature_norm_sq_bounded_of_realization
       (leviCivitaConnectionOfMetric (I := I) (S.base.metric t))
       (metricRm04 (I := I) (M := M) (S.base.metric t))
     rw [show metricRm04 (I := I) (M := M) (S.base.metric t) =
-      (metricCurvData (I := I) (M := M) (S.base.metric t)).rm04 by rfl]
-    exact (metricCurvData (I := I) (M := M) (S.base.metric t)).rm04Realizes
+      (metricCurvatureSections (I := I) (M := M) (S.base.metric t)).rm04 by rfl]
+    exact (metricCurvatureSections (I := I) (M := M) (S.base.metric t)).rm04Realizes
   have heq := rm04_eq_of_realizes (I := I) (S.base.metric t)
     (metricCov (I := I) (M := M) (S.base.metric t)) hcan
     (hRm t ⟨htAlpha, htOmega⟩) x

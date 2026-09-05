@@ -41,8 +41,8 @@ structure CenterOfMassEquationInverseDerivativeBound
     (p : M) {ι : Type} [Fintype ι] (z₀ : E) (params₀ : (ι → ℝ) × (ι → E)) where
   Λ : ℝ
   L : E ≃L[ℝ] E
-  hL : HasFDerivAt (fun z : E => normalChartCenterOfMassEquationStandard (I := I) g hEnorm p z params₀) (L : E →L[ℝ] E) z₀
-  hLinv : ‖(L.symm : E →L[ℝ] E)‖ ≤ Λ
+  hasFDerivAt : HasFDerivAt (fun z : E => normalChartCenterOfMassEquationStandard (I := I) g hEnorm p z params₀) (L : E →L[ℝ] E) z₀
+  inverse_norm_le : ‖(L.symm : E →L[ℝ] E)‖ ≤ Λ
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
@@ -57,7 +57,7 @@ theorem CenterOfMassEquationInverseDerivativeBound.toInv
     (hbd : CenterOfMassEquationInverseDerivativeBound (I := I) g hEnorm p z₀ params₀) :
     ∃ L : E ≃L[ℝ] E,
       HasFDerivAt (fun z : E => normalChartCenterOfMassEquationStandard (I := I) g hEnorm p z params₀) (L : E →L[ℝ] E) z₀ :=
-  ⟨hbd.L, hbd.hL⟩
+  ⟨hbd.L, hbd.hasFDerivAt⟩
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
@@ -118,7 +118,7 @@ theorem normalChartCenterOfMassEquation_fderiv_norm_le
   exact norm_fderiv_implicit_le (fun z params => normalChartCenterOfMassEquationStandard (I := I) g hEnorm p z params) z₀ params₀
     (fun params => (NormalCoordinates.normalChartAt (I := I) g p (c params) : E)) Df Dj hbd.L hbd.Λ
       B1
-    hc0 hcderiv hG hbd.hL hbd.hLinv hB hc_solves
+    hc0 hcderiv hG hbd.hasFDerivAt hbd.inverse_norm_le hB hc_solves
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
@@ -192,7 +192,7 @@ theorem normalChartCenterOfMassEquation_second_derivative_norm_le
     have hDf_le : ‖Df‖ ≤ hbd.Λ * B 1 :=
       norm_fderiv_implicit_le (fun z params => normalChartCenterOfMassEquationStandard (I := I) g hEnorm p z params) z₀ params₀
         (fun params => (NormalCoordinates.normalChartAt (I := I) g p (c params) : E)) Df Dj
-        hbd.L hbd.Λ (B 1) hc0 hcderiv hG hbd.hL hbd.hLinv hB1 hc_solves
+        hbd.L hbd.Λ (B 1) hc0 hcderiv hG hbd.hasFDerivAt hbd.inverse_norm_le hB1 hc_solves
     have hmax_le : max ‖Df‖ 1 ≤ hbd.Λ * B 1 + 1 :=
       max_le (hDf_le.trans (le_add_of_nonneg_right zero_le_one))
         (le_add_of_nonneg_left (le_trans (norm_nonneg Df) hDf_le))

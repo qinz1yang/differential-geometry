@@ -474,8 +474,8 @@ private theorem coordScalarRmTrace_center
       DifferentialGeometry.Geometry.Curvature.rm04LowersRm13At_of_realizes
         (I := I) (S.base.metric (τ : Real)) (S.base.connection (τ : Real))
         (S.base.rm13 (τ : Real)) (S.base.rm04 (τ : Real))
-        (metricCurvData (I := I) (M := M) (S.base.metric (τ : Real))).rm13Realizes
-        (metricCurvData (I := I) (M := M) (S.base.metric (τ : Real))).rm04Realizes
+        (metricCurvatureSections (I := I) (M := M) (S.base.metric (τ : Real))).rm13Realizes
+        (metricCurvatureSections (I := I) (M := M) (S.base.metric (τ : Real))).rm04Realizes
         y
     simpa [SolutionOn.family, SolutionFamily.connection, SolutionFamily.rm13,
       SolutionFamily.rm04, metricCov] using h

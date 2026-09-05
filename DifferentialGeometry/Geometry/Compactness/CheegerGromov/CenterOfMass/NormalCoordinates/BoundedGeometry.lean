@@ -1453,7 +1453,7 @@ theorem hess_pos
   nlinarith
 
 omit [CompleteSpace E] in
-theorem center_of_mass_normal_coordinate_data
+theorem center_of_mass_normal_coordinate_equation
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjectivityRadiusDecay (I := I) X}
     (d : BoundedGeometryNormalChartData (I := I) X hd) (k : Nat)
@@ -1499,7 +1499,7 @@ theorem center_of_mass_normal_coordinate_data
       MetricComplete.complete (I := I) (X.obj k) hcomplete
     letI : MetricSpace (X.obj k).M :=
       HopfRinow.riemMetricSpace (I := I) (M := (X.obj k).M)
-    ∀ h : CenterInput (I := I) (X.obj k).metric mu points join p r,
+    ∀ h : CenterOfMassConditions (I := I) (X.obj k).metric mu points join p r,
       0 < ρ →
       2 * ρ < (q : Real) →
       ρ ≤ (d.chart k x).radius →
@@ -1708,7 +1708,7 @@ theorem center_of_mass_satisfies_normal_coordinate_equation
       MetricComplete.complete (I := I) (X.obj k) hcomplete
     letI : MetricSpace (X.obj k).M :=
       HopfRinow.riemMetricSpace (I := I) (M := (X.obj k).M)
-    ∀ h : CenterInput (I := I) (X.obj k).metric mu points join p r,
+    ∀ h : CenterOfMassConditions (I := I) (X.obj k).metric mu points join p r,
       0 < ρ →
       2 * ρ < (q : Real) →
       ρ ≤ (d.chart k x).radius →
@@ -1761,7 +1761,7 @@ theorem center_of_mass_satisfies_normal_coordinate_equation
     (I := I) (X.obj k) hcomplete hconn x hq he
   let z := c.inv y
   let xi : ι → E := fun i => c.inv (points i)
-  have hdata := d.center_of_mass_normal_coordinate_data
+  have hdata := d.center_of_mass_normal_coordinate_equation
     k hcomplete hconn x hq he hf
     mu points join p r h hρ hρq hρChart hpairs
   rcases hdata with ⟨hy, hz, hxi, htgt, hdom, hzero⟩

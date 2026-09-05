@@ -79,7 +79,7 @@ theorem galerkin_span
         (conjA1 (I := I) (M := M) S T s).comp Inc) (Set.Icc 0 h)
     exact hcont2.add hPot
   have hG : IsConjGalerkinTime (I := I) (M := M) S T ⟨h⟩ :=
-    galerkin_exists_on (I := I) (M := M) S T hh (hhρ.trans hρone) hpert
+    exists_galerkin_solution_on (I := I) (M := M) S T hh (hhρ.trans hρone) hpert
   have hbound := galerkin_bound_on (I := I) (M := M) S T hG
     Cmid hCmid hcrit hcore
   have hsub := galerkin_subseq_on (I := I) (M := M) S T hh hbound hpert

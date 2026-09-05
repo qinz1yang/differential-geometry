@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Exponential.Defs
-import DifferentialGeometry.Geometry.Exponential.Smoothness.AtZero.MatchData
+import DifferentialGeometry.Geometry.Exponential.Smoothness.AtZero.ZeroSectionMatch
 import DifferentialGeometry.Geometry.Exponential.Smoothness.AtZero.Smoothness
 import DifferentialGeometry.Geometry.Exponential.ChartFlow.Continuity
 open DifferentialGeometry.Geometry.Curvature
@@ -260,7 +260,7 @@ theorem expMap_contMDiffAt_of_norm_lt
   classical
   obtain ⟨Φ, ρ, T, T_match, hρ_pos, hT_pos, hT_match_pos, hT_match_le_T,
     hΦ_cd, hΦ_initial0, hΦ_initial_v, hΦ_target, hΦ_phase, hΦ_const_zero, _hF_int⟩ :=
-    exists_unified_chartFlow_data (I := I) g p
+    exists_unified_chartFlow (I := I) g p
   set t' : ℝ := T_match / 2 with ht'_def
   have ht'_pos : 0 < t' := by rw [ht'_def]; exact half_pos hT_match_pos
   have ht'_lt_T_match : t' < T_match := by

@@ -699,7 +699,7 @@ theorem scalar_galerkin_perturbation_uniform_bound_on
   exact (hC ⟨t, ht, rfl⟩).trans (le_max_left _ _)
 
 
-theorem galerkin_exists_on
+theorem exists_galerkin_solution_on
     {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D)
     (T : D.RegularTime) {tau : Real} (htau : 0 < tau) (htau_one : tau ≤ 1)
     (hpert : ContinuousOn
@@ -828,7 +828,7 @@ theorem galerkin_time_mono
     exact hV.deriv t ⟨ht.1, ht.2.trans_le hle⟩ i hi
 
 
-theorem scalar_galerkin_exists
+theorem exists_scalar_galerkin_solution
     {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) (T : D.RegularTime) :
     ∃ G : ConjGalerkinTime, IsConjGalerkinTime (I := I) (M := M) S T G := by
@@ -861,7 +861,7 @@ theorem scalar_galerkin_exists
         fun t => conjA1 (I := I) (M := M) S T t |>.comp Inc)
       (Set.Icc (0 : Real) tau)
     exact (hcont2.mono hIcc2).add hPot
-  exact ⟨⟨tau⟩, galerkin_exists_on (I := I) (M := M) S T htau htau_one hpert⟩
+  exact ⟨⟨tau⟩, exists_galerkin_solution_on (I := I) (M := M) S T htau htau_one hpert⟩
 
 end DifferentialGeometry.PDE.RicciFlow.Entropy
 

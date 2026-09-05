@@ -1116,8 +1116,8 @@ private lemma sublevel_const_of_deriv_eq_zero_ge'
   have hδlt : u > t₀ := by
     by_contra hnot'
     have hu_le : u ≤ t₀ := le_of_not_gt hnot'
-    have ht₀_le : t₀ ≤ u := csInf_le hSbdd huS
-    have hu_eq : u = t₀ := le_antisymm hu_le ht₀_le
+    have initial_le_maxTime : t₀ ≤ u := csInf_le hSbdd huS
+    have hu_eq : u = t₀ := le_antisymm hu_le initial_le_maxTime
     have hfua : f a < f u := huS.2
     have hcontr : f a < f a := by
       calc
@@ -1400,8 +1400,8 @@ private lemma sublevel_const_of_deriv_eq_zero_on_unit'
   have hδlt : u > t₀ := by
     by_contra hnot'
     have hu_le : u ≤ t₀ := le_of_not_gt hnot'
-    have ht₀_le : t₀ ≤ u := csInf_le hSbdd huS
-    have hu_eq : u = t₀ := le_antisymm hu_le ht₀_le
+    have initial_le_maxTime : t₀ ≤ u := csInf_le hSbdd huS
+    have hu_eq : u = t₀ := le_antisymm hu_le initial_le_maxTime
     have hfua : f 0 < f u := huS.2
     have hcontr : f 0 < f 0 := by
       calc

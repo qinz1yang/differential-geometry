@@ -78,7 +78,7 @@ theorem lieDerivMetric_pairing_contMDiff
             lieDerivMetric (I := I) g W b
               (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) b₀ i b) (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) b₀ j b))
           (chartAt H b₀).source := fun i j =>
-    liederivmetric_chart_component_smooth_in_g_w_input (I := I) g W b₀ i j
+    lieDerivMetric_chart_basis_contMDiffOn (I := I) g W b₀ i j
   have h_decomp : ∀ b ∈ (chartAt H b₀).source,
       lieDerivMetric (I := I) g W b (Y b) (Z b) =
         ∑ i : Fin (Module.finrank ℝ E),

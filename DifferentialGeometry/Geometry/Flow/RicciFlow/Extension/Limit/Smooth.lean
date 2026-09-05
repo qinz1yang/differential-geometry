@@ -103,7 +103,7 @@ theorem chartGramMatrix_tendsto_nhdsLT_of_bounded_deriv
     hderiv (fun s hs => ?_)
   simpa [Real.norm_eq_abs] using hbound s hs
 
-structure SmoothLimitData
+structure SmoothMetricLimit
     (g_fam : ℝ → SmoothRiemannianMetric I M) (α omega : ℝ) (hαomega : α < omega) where
   limitMetric : SmoothRiemannianMetric I M
   tendsto_left :
@@ -360,7 +360,7 @@ theorem gluedFamily_pde
       (by rw [gluedFamily_of_ge (I := I) g_fam r omega (le_of_lt htgt)])).congr_deriv ?_
     simp
 
-structure SmoothGluingData
+structure SmoothMetricGluing
     (g_fam r : ℝ → SmoothRiemannianMetric I M) (α omega ε : ℝ) : Prop where
   gram_smooth :
     ∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)),
@@ -391,7 +391,7 @@ theorem ricci_flow_extends_construction
         ((-2 : ℝ) *
           DifferentialGeometry.Geometry.Curvature.ricciTensor (I := I) (g_fam t) x v w)
         (Set.Ici α) t)
-    (limit : SmoothLimitData (I := I) g_fam α omega hαomega)
+    (limit : SmoothMetricLimit (I := I) g_fam α omega hαomega)
     (glue : ∀ (r : ℝ → SmoothRiemannianMetric I M) (T : ℝ),
       r 0 = limit.limitMetric → 0 < T →
       (∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)),
@@ -404,7 +404,7 @@ theorem ricci_flow_extends_construction
           ((-2 : ℝ) *
             DifferentialGeometry.Geometry.Curvature.ricciTensor (I := I) (r t) x v w)
           (Set.Ici 0) t) →
-      ∃ ε : ℝ, 0 < ε ∧ ε ≤ T ∧ SmoothGluingData (I := I) g_fam r α omega ε) :
+      ∃ ε : ℝ, 0 < ε ∧ ε ≤ T ∧ SmoothMetricGluing (I := I) g_fam r α omega ε) :
     ∃ ε : ℝ, 0 < ε ∧ ∃ g_ext : ℝ → SmoothRiemannianMetric I M,
       (∀ s : ℝ, s < omega → g_ext s = g_fam s) ∧
       (∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)),

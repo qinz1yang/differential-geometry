@@ -19,11 +19,11 @@ variable [CompleteSpace E]
 variable {H : Type uH} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 
-namespace MetricCompactnessInputs
+namespace MetricCompactnessAssumptions
 
 def canonicalMetricCompactness
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    (inp : MetricCompactnessInputs (I := I) X)
+    (inp : MetricCompactnessAssumptions (I := I) X)
     (hcomplete : SeqMetricComplete (I := I) X)
     (hconn : forall k : Nat,
       letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
@@ -45,14 +45,14 @@ def canonicalMetricCompactness
 
 def metricCompactness
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    (inp : MetricCompactnessInputs (I := I) X)
+    (inp : MetricCompactnessAssumptions (I := I) X)
     (hcomplete : SeqMetricComplete (I := I) X)
     (hconn : forall k : Nat,
       letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
       ConnectedSpace (X.obj k).M) :
-    MetricCompactnessConclusion (I := I) X :=
+    MetricCompactLimit (I := I) X :=
   (canonicalMetricCompactness inp hcomplete hconn).compactness
 
-end MetricCompactnessInputs
+end MetricCompactnessAssumptions
 end CheegerGromovCompactness
 end DifferentialGeometry

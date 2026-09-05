@@ -2612,7 +2612,7 @@ private theorem deTurckSobolevNHa2Symm_embed_eq_raw_embed_ccTensor02Symm
     (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) (X : SmoothCcTensor g₀ 0 2)
     (hball : ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2) X‖ ≤
-      (Classical.choose (deTurckSobolevNHa2_exists_of_super
+      (Classical.choose (exists_deTurckSobolev_fiber_bound_on_ball_of_supercritical
         (I := I) (M := M) g₀ a ha_super)).1) :
     deTurckSobolevNonlinearitySymm (I := I) (M := M) g₀ g_bg a
         (smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2) X) =
@@ -2621,8 +2621,8 @@ private theorem deTurckSobolevNHa2Symm_embed_eq_raw_embed_ccTensor02Symm
           (ccTensor02Symm (I := I) (M := M) g₀ X)) := by
   classical
   obtain ⟨hp_pos, hp_lt, hp_ball⟩ := Classical.choose_spec
-    (deTurckSobolevNHa2_exists_of_super (I := I) (M := M) g₀ a ha_super)
-  have hδ_lt : (Classical.choose (deTurckSobolevNHa2_exists_of_super
+    (exists_deTurckSobolev_fiber_bound_on_ball_of_supercritical (I := I) (M := M) g₀ a ha_super)
+  have hδ_lt : (Classical.choose (exists_deTurckSobolev_fiber_bound_on_ball_of_supercritical
       (I := I) (M := M) g₀ a ha_super)).2 < 1 :=
     lt_of_le_of_lt hp_lt (de_turck_remainder_contraction_threshold_lt_one_of_ne_zero (Module.finrank ℝ E))
   rw [deTurckSobolevNHa2Symm_eq_smoothN (I := I) (M := M) g₀ g_bg a ha_super X hδ_lt
@@ -2714,7 +2714,7 @@ private theorem deTurckForcing_jetSpectralMass_preservingSymm
   refine ⟨ψ, hψ_ctrl, fun i => ?_⟩
   filter_upwards [hψ_ae i, hw_ball, hwF] with t hψt hwball_t hwF_t
   have hballF : ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2) (F t)‖ ≤
-      (Classical.choose (deTurckSobolevNHa2_exists_of_super
+      (Classical.choose (exists_deTurckSobolev_fiber_bound_on_ball_of_supercritical
         (I := I) (M := M) g₀ a ha_super)).1 := by
     rw [← hwF_t]
     exact hwball_t
@@ -2812,7 +2812,7 @@ private theorem deTurckSobolevNHa2Symm_finiteOrder_jetSpectralMass_preserving
   refine ⟨ψ, hψ_smooth, hψ_mass, fun i => ?_⟩
   filter_upwards [hψ_ae i, hw_ball, hwF] with t hψt hwball_t hwF_t
   have hballF : ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2) (F t)‖ ≤
-      (Classical.choose (deTurckSobolevNHa2_exists_of_super
+      (Classical.choose (exists_deTurckSobolev_fiber_bound_on_ball_of_supercritical
         (I := I) (M := M) g₀ a ha_super)).1 := by
     rw [← hwF_t]
     exact hwball_t
@@ -4084,7 +4084,7 @@ private theorem realizedForcingCoord_eq_smoothNSymm
           (Nat.cast_nonneg a) (timeH1.toFun u t))
     (hball : ∀ t ∈ Set.Ico (0 : ℝ) T₁,
       ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2) (F t)‖ ≤
-        (Classical.choose (deTurckSobolevNHa2_exists_of_super (I := I) (M := M) g₀ a
+        (Classical.choose (exists_deTurckSobolev_fiber_bound_on_ball_of_supercritical (I := I) (M := M) g₀ a
           ha_super)).1) :
     ∀ t ∈ Set.Ico (0 : ℝ) T₁, ∀ i,
       f i t = tensorL2Coeff (I := I) (M := M)
@@ -4335,10 +4335,10 @@ theorem deTurckRicci_forcingBootstrap_symm
       hduh hforce hgforce htrace
   refine ⟨d₂F, hd₂F_pos, hd₂F_le, f, hf_smooth, hf_mass, hf_id, ?_⟩
   set R₀ : ℝ := (Classical.choose
-    (deTurckSobolevNHa2_exists_of_super (I := I) (M := M) g₀ a (by omega))).1 with hR₀_def
+    (exists_deTurckSobolev_fiber_bound_on_ball_of_supercritical (I := I) (M := M) g₀ a (by omega))).1 with hR₀_def
   have hR₀_pos : 0 < R₀ :=
     (Classical.choose_spec
-      (deTurckSobolevNHa2_exists_of_super (I := I) (M := M) g₀ a (by omega))).1
+      (exists_deTurckSobolev_fiber_bound_on_ball_of_supercritical (I := I) (M := M) g₀ a (by omega))).1
   refine ⟨R₀, hR₀_pos, ?_, ?_⟩
   · exact realizedSolution_solutionField_smallnessHorizon_Ha2Symm (I := I) (M := M) g₀ g_bg a ha_super
       hT hT1 hTT₀ u gforce hduh hforce hgforce htrace hR₀_pos

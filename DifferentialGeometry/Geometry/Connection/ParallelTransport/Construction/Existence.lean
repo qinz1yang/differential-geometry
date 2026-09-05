@@ -249,41 +249,43 @@ theorem parallel_global_extension [I.Boundaryless]
     (hY_initial.trans hV'_initial.symm)
 
 
-structure ParallelSegmentData [I.Boundaryless]
+structure ParallelTransportSegment [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (α : M) (γ : ℝ → M) (a b t₀ : ℝ) : Prop where
-  hab : a ≤ b
-  ht₀ : t₀ ∈ Set.Ioo a b
-  huCont : ContinuousOn (fun t => deriv (chartCurve (I := I) α γ) t) (Set.Icc a b)
-  huCurveCont : ContinuousOn (chartCurve (I := I) α γ) (Set.Icc a b)
-  huDeriv : ∀ t ∈ Set.Ioo a b,
+  interval_nonempty : a ≤ b
+  initial_mem : t₀ ∈ Set.Ioo a b
+  velocity_continuous : ContinuousOn (fun t => deriv (chartCurve (I := I) α γ) t) (Set.Icc a b)
+  curve_continuous : ContinuousOn (chartCurve (I := I) α γ) (Set.Icc a b)
+  curve_hasDerivAt : ∀ t ∈ Set.Ioo a b,
     HasDerivAt (chartCurve (I := I) α γ) (deriv (chartCurve (I := I) α γ) t) t
-  hsource : ∀ t ∈ Set.Icc a b, γ t ∈ (chartAt H α).source
+  curve_mem_chartSource : ∀ t ∈ Set.Icc a b, γ t ∈ (chartAt H α).source
 
 
 noncomputable def parallelTransport [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (α : M) (γ : ℝ → M) {a b t₀ : ℝ}
-    (hd : ParallelSegmentData (I := I) g α γ a b t₀) (v₀ : E) :
+    (hd : ParallelTransportSegment (I := I) g α γ a b t₀) (v₀ : E) :
     SectionAlongCurve I M γ :=
-  ⟨(parallel_global_extension (I := I) g α γ hd.hab hd.ht₀ hd.huCont
-      hd.huCurveCont hd.huDeriv hd.hsource v₀).choose⟩
+  ⟨(parallel_global_extension (I := I) g α γ hd.interval_nonempty hd.initial_mem
+      hd.velocity_continuous hd.curve_continuous hd.curve_hasDerivAt
+      hd.curve_mem_chartSource v₀).choose⟩
 
 
 omit [NeZero (Module.finrank ℝ E)] in
 lemma parallelTransport_spec [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (α : M) (γ : ℝ → M) {a b t₀ : ℝ}
-    (hd : ParallelSegmentData (I := I) g α γ a b t₀) (v₀ : E) :
+    (hd : ParallelTransportSegment (I := I) g α γ a b t₀) (v₀ : E) :
     (parallelTransport (I := I) g α γ hd v₀).toFun t₀ = v₀ ∧
       IsParallelChart (I := I) g α γ
         (fun t => deriv (chartCurve (I := I) α γ) t)
         (parallelTransport (I := I) g α γ hd v₀).toFun (Set.Ioo a b) :=
-  (parallel_global_extension (I := I) g α γ hd.hab hd.ht₀ hd.huCont
-    hd.huCurveCont hd.huDeriv hd.hsource v₀).choose_spec.1
+  (parallel_global_extension (I := I) g α γ hd.interval_nonempty hd.initial_mem
+    hd.velocity_continuous hd.curve_continuous hd.curve_hasDerivAt
+    hd.curve_mem_chartSource v₀).choose_spec.1
 
 
 omit [NeZero (Module.finrank ℝ E)] in
 @[simp] theorem parallelTransport_initial [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (α : M) (γ : ℝ → M) {a b t₀ : ℝ}
-    (hd : ParallelSegmentData (I := I) g α γ a b t₀) (v₀ : E) :
+    (hd : ParallelTransportSegment (I := I) g α γ a b t₀) (v₀ : E) :
     (parallelTransport (I := I) g α γ hd v₀).toFun t₀ = v₀ :=
   (parallelTransport_spec (I := I) g α γ hd v₀).1
 
@@ -291,7 +293,7 @@ omit [NeZero (Module.finrank ℝ E)] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem parallelTransport_isParallel [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (α : M) (γ : ℝ → M) {a b t₀ : ℝ}
-    (hd : ParallelSegmentData (I := I) g α γ a b t₀) (v₀ : E) :
+    (hd : ParallelTransportSegment (I := I) g α γ a b t₀) (v₀ : E) :
     IsParallelChart (I := I) g α γ
       (fun t => deriv (chartCurve (I := I) α γ) t)
       (parallelTransport (I := I) g α γ hd v₀).toFun (Set.Ioo a b) :=
@@ -367,7 +369,7 @@ theorem chartGramAlongCurve_hasDerivAt_zero_of_parallel [I.Boundaryless]
 omit [NeZero (Module.finrank ℝ E)] in
 theorem parallelTransport_preserves_inner_product [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (α : M) (γ : ℝ → M) {a b t₀ : ℝ}
-    (hd : ParallelSegmentData (I := I) g α γ a b t₀) (v₀ w₀ : E)
+    (hd : ParallelTransportSegment (I := I) g α γ a b t₀) (v₀ w₀ : E)
     {t : ℝ} (ht : t ∈ Set.Ioo a b) :
     AlongCurve.chartGramAlongCurve (I := I) g α γ
         (parallelTransport (I := I) g α γ hd v₀).toFun
@@ -383,7 +385,7 @@ theorem parallelTransport_preserves_inner_product [I.Boundaryless]
   set o : Set ℝ := Set.Ioo a b with ho_def
   have ho_open : IsOpen o := isOpen_Ioo
   have hsrc_o : ∀ τ ∈ o, γ τ ∈ (chartAt H α).source :=
-    fun τ hτ => hd.hsource τ (Set.mem_Icc_of_Ioo hτ)
+    fun τ hτ => hd.curve_mem_chartSource τ (Set.mem_Icc_of_Ioo hτ)
   have hVparo : IsParallelChart (I := I) g α γ
       (fun τ => deriv (AlongCurve.chartCurve (I := I) α γ) τ) V o :=
     parallelTransport_isParallel (I := I) g α γ hd v₀
@@ -397,7 +399,7 @@ theorem parallelTransport_preserves_inner_product [I.Boundaryless]
   have hconst : ∀ x ∈ o, f x = f t₀ :=
     fun x hx => ho_open.is_const_of_deriv_eq_zero isPreconnected_Ioo
       (fun τ hτ => (hderiv τ hτ).differentiableAt.differentiableWithinAt)
-      (fun τ hτ => (hderiv τ hτ).deriv) hx hd.ht₀
+      (fun τ hτ => (hderiv τ hτ).deriv) hx hd.initial_mem
   exact hconst t ht
 
 

@@ -34,12 +34,12 @@ variable {g : SmoothRiemannianMetric I M} {X : Type uX} {ι : Type}
 variable [Fintype ι]
 variable {μ : X → ι → ℝ} {points : X → ι → M} {join : M → M → ℝ → M}
   {p : X → M} {r : X → ℝ}
-  (h : ∀ x : X, CenterInput (I := I) g (μ x) (points x) join (p x) (r x))
+  (h : ∀ x : X, CenterOfMassConditions (I := I) g (μ x) (points x) join (p x) (r x))
 theorem uniform_tendsto {s : Set X} {qstar : X → M}
     {μSeq : ℕ → X → ι → ℝ} {pointsSeq : ℕ → X → ι → M}
     {pSeq : ℕ → X → M} {rSeq : ℕ → X → ℝ}
     (hSeq : ∀ n : ℕ, ∀ x : X,
-      CenterInput (I := I) g (μSeq n x) (pointsSeq n x) join (pSeq n x) (rSeq n x))
+      CenterOfMassConditions (I := I) g (μSeq n x) (pointsSeq n x) join (pSeq n x) (rSeq n x))
     (hpts :
       letI : RiemannianBundle (fun x : M => TangentSpace I x) :=
         ⟨g.toRiemannianMetric⟩
@@ -86,7 +86,7 @@ theorem uniform_tendsto_i {s : Set X} {qstar : X → M}
     {μSeq : ℕ → X → ι → ℝ} {pointsSeq : ℕ → X → ι → M}
     {pSeq : ℕ → X → M} {rSeq : ℕ → X → ℝ}
     (hSeq : ∀ n : ℕ, ∀ x : X,
-      CenterInput (I := I) g (μSeq n x) (pointsSeq n x) join (pSeq n x) (rSeq n x))
+      CenterOfMassConditions (I := I) g (μSeq n x) (pointsSeq n x) join (pSeq n x) (rSeq n x))
     (hpts :
       letI : RiemannianBundle (fun x : M => TangentSpace I x) :=
         ⟨g.toRiemannianMetric⟩
@@ -124,7 +124,7 @@ theorem uniform_tendsto_id {s : Set M}
     {μSeq : ℕ → M → ι → ℝ} {pointsSeq : ℕ → M → ι → M}
     {pSeq : ℕ → M → M} {rSeq : ℕ → M → ℝ}
     (hSeq : ∀ n : ℕ, ∀ x : M,
-      CenterInput (I := I) g (μSeq n x) (pointsSeq n x) join (pSeq n x) (rSeq n x))
+      CenterOfMassConditions (I := I) g (μSeq n x) (pointsSeq n x) join (pSeq n x) (rSeq n x))
     (hpts :
       letI : RiemannianBundle (fun x : M => TangentSpace I x) :=
         ⟨g.toRiemannianMetric⟩
@@ -152,7 +152,7 @@ theorem uniform_two_index {s : Set X} {qstar : X → M}
     {μSeq : ℕ → ℕ → X → ι → ℝ} {pointsSeq : ℕ → ℕ → X → ι → M}
     {pSeq : ℕ → ℕ → X → M} {rSeq : ℕ → ℕ → X → ℝ}
     (hSeq : ∀ k l : ℕ, ∀ x : X,
-      CenterInput (I := I) g (μSeq k l x) (pointsSeq k l x) join (pSeq k l x)
+      CenterOfMassConditions (I := I) g (μSeq k l x) (pointsSeq k l x) join (pSeq k l x)
         (rSeq k l x))
     (hpts :
       letI : RiemannianBundle (fun x : M => TangentSpace I x) :=
@@ -203,7 +203,7 @@ theorem uniform_two_index_i {s : Set X} {qstar : X → M}
     {μSeq : ℕ → ℕ → X → ι → ℝ} {pointsSeq : ℕ → ℕ → X → ι → M}
     {pSeq : ℕ → ℕ → X → M} {rSeq : ℕ → ℕ → X → ℝ}
     (hSeq : ∀ k l : ℕ, ∀ x : X,
-      CenterInput (I := I) g (μSeq k l x) (pointsSeq k l x) join (pSeq k l x)
+      CenterOfMassConditions (I := I) g (μSeq k l x) (pointsSeq k l x) join (pSeq k l x)
         (rSeq k l x))
     (hpts :
       letI : RiemannianBundle (fun x : M => TangentSpace I x) :=
@@ -241,7 +241,7 @@ theorem uniform_two_index_id {s : Set M}
     {μSeq : ℕ → ℕ → M → ι → ℝ} {pointsSeq : ℕ → ℕ → M → ι → M}
     {pSeq : ℕ → ℕ → M → M} {rSeq : ℕ → ℕ → M → ℝ}
     (hSeq : ∀ k l : ℕ, ∀ x : M,
-      CenterInput (I := I) g (μSeq k l x) (pointsSeq k l x) join (pSeq k l x)
+      CenterOfMassConditions (I := I) g (μSeq k l x) (pointsSeq k l x) join (pSeq k l x)
         (rSeq k l x))
     (hpts :
       letI : RiemannianBundle (fun x : M => TangentSpace I x) :=
@@ -271,7 +271,7 @@ theorem uniform_two_id_fill {s : Set M}
     {μSeq : ℕ → ℕ → M → ι → ℝ} {pointsSeq : ℕ → ℕ → M → ι → M}
     {pSeq : ℕ → ℕ → M → M} {rSeq : ℕ → ℕ → M → ℝ}
     (hSeq : ∀ k l : ℕ, ∀ x : M,
-      CenterInput (I := I) g (μSeq k l x)
+      CenterOfMassConditions (I := I) g (μSeq k l x)
         (activeFill (μSeq k l) (pointsSeq k l) (fun x : M => x) x) join
         (pSeq k l x) (rSeq k l x))
     (hpts :
@@ -309,7 +309,7 @@ theorem uniform_two_id_fill_on {s : Set M}
     {μSeq : ℕ → ℕ → M → ι → ℝ} {pointsSeq : ℕ → ℕ → M → ι → M}
     {pSeq : ℕ → ℕ → M → M} {rSeq : ℕ → ℕ → M → ℝ}
     (hSeq : ∀ k l : ℕ, ∀ x : M, x ∈ s →
-      CenterInput (I := I) g (μSeq k l x)
+      CenterOfMassConditions (I := I) g (μSeq k l x)
         (activeFill (μSeq k l) (pointsSeq k l) (fun x : M => x) x) join
         (pSeq k l x) (rSeq k l x))
     (hpts :
@@ -396,7 +396,7 @@ theorem uniformTwoIdOfFill {s : Set M}
     (hμ_nonneg : ∀ k l : ℕ, ∀ x : M, ∀ i : ι, 0 ≤ μSeq k l x i)
     (hμ_pos : ∀ k l : ℕ, ∀ x : M, ∃ i : ι, 0 < μSeq k l x i)
     (hstrict : ∀ k l : ℕ, ∀ x : M,
-      StrictDistInput (I := I) g
+      StrictDistanceConvexity (I := I) g
         (activeFill (μSeq k l) (pointsSeq k l) (fun x : M => x) x) join
         (pSeq k l x) (rSeq k l x))
     (hpts :
@@ -464,7 +464,7 @@ theorem uniformTwoIdOfFillOn {s : Set M}
     (hμ_nonneg : ∀ k l : ℕ, ∀ x : M, x ∈ s → ∀ i : ι, 0 ≤ μSeq k l x i)
     (hμ_pos : ∀ k l : ℕ, ∀ x : M, x ∈ s → ∃ i : ι, 0 < μSeq k l x i)
     (hstrict : ∀ k l : ℕ, ∀ x : M, x ∈ s →
-      StrictDistInput (I := I) g
+      StrictDistanceConvexity (I := I) g
         (activeFill (μSeq k l) (pointsSeq k l) (fun x : M => x) x) join
         (pSeq k l x) (rSeq k l x))
     (hpts :

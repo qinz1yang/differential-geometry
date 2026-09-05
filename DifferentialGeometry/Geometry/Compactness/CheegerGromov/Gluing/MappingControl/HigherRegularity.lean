@@ -27,7 +27,7 @@ variable {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
 
 omit [CompleteSpace E] in
 theorem eventually_seqCenterD_distance_lt_add
-    (inp : MetricCompactCore (I := I) X)
+    (inp : MetricCompactSeedWithDivisor (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P) (s : Real)
     (phi : Nat → Nat) (hphi : StrictMono phi)
@@ -62,7 +62,7 @@ theorem eventually_seqCenterD_distance_lt_add
   linarith
 
 theorem BoundedGeometryNormalChartData.mapsTo_tail
-    (inp : MetricCompactCore (I := I) X)
+    (inp : MetricCompactSeedWithDivisor (I := I) X)
     (d : BoundedGeometryNormalChartData (I := I) X inp.decay)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P) {s : Real} (hs : 0 ≤ s)
@@ -74,7 +74,7 @@ theorem BoundedGeometryNormalChartData.mapsTo_tail
       InterSlot L inp.pack s alpha → E → E)
     (gInf : LiveSlot L inp.pack s →
       E → (E →L[Real] E →L[Real] Real))
-    (hstage : HasStageJetDataOn (I := I) inp P L hs phi hphi
+    (hstage : HasStageJetConvergenceOn (I := I) inp P L hs phi hphi
       d.chart V U C0 C1 aInf Jinf Jbarinf gInf)
     (R0 R1 : Real)
     (hroom : R0 + (4 + 8 * Real.sqrt 2) * inp.decay.lambda inp.D 0 < R1)
@@ -94,7 +94,7 @@ theorem BoundedGeometryNormalChartData.mapsTo_tail
       hbuffer, _hcore, hgeom, _hlim, _hweight, _htrans, _hsmooth⟩
   let Lphi := L.subseq hphi
   let lam0 := inp.decay.lambda inp.D 0
-  have hlam0 : 0 < lam0 := inp.decay.lambda_pos inp.hD 0
+  have hlam0 : 0 < lam0 := inp.decay.lambda_pos inp.divisor_pos 0
   have hsqrt0 : 0 < Real.sqrt 2 := Real.sqrt_pos.2 (by norm_num)
   have hsqrt2 : Real.sqrt 2 ≤ 2 := by
     linarith [Real.sqrt_two_lt_three_halves]
@@ -188,7 +188,7 @@ theorem BoundedGeometryNormalChartData.mapsTo_tail
       hat_dist_centerD inp.decay P Lphi inp.pack s hxHat
   have hlam : L.lamInf (alpha.1 : Nat) ≤ lam0 := by
     dsimp only [lam0, NetLimitData.lamInf]
-    exact inp.decay.lambda_antitone inp.hD (L.rInf_mem (alpha.1 : Nat)).1
+    exact inp.decay.lambda_antitone inp.divisor_pos (L.rInf_mem (alpha.1 : Nat)).1
   let w := chiL.inv (F x)
   have hcoord : dist w z ≤ epsA alpha := by
     simpa only [mapDerivNorm, norm_iteratedFDeriv_zero, id_eq, dist_eq_norm,
@@ -287,7 +287,7 @@ theorem BoundedGeometryNormalChartData.mapsTo_tail
   exact hfinal.le
 
 theorem BoundedGeometryNormalChartData.return_tail
-    (inp : MetricCompactCore (I := I) X)
+    (inp : MetricCompactSeedWithDivisor (I := I) X)
     (d : BoundedGeometryNormalChartData (I := I) X inp.decay)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P) {s : Real} (hs : 0 ≤ s)
@@ -299,7 +299,7 @@ theorem BoundedGeometryNormalChartData.return_tail
       InterSlot L inp.pack s alpha → E → E)
     (gInf : LiveSlot L inp.pack s →
       E → (E →L[Real] E →L[Real] Real))
-    (hstage : HasStageJetDataOn (I := I) inp P L hs phi hphi
+    (hstage : HasStageJetConvergenceOn (I := I) inp P L hs phi hphi
       d.chart V U C0 C1 aInf Jinf Jbarinf gInf)
     (R0 R1 : Real)
     (hroom : R0 + (4 + 8 * Real.sqrt 2) * inp.decay.lambda inp.D 0 < R1)
@@ -328,7 +328,7 @@ theorem BoundedGeometryNormalChartData.return_tail
       hbuffer, _hcore, hgeom, _hlim, _hweight, _htrans, _hsmooth⟩
   let Lphi := L.subseq hphi
   have hlam0 : 0 < inp.decay.lambda inp.D 0 :=
-    inp.decay.lambda_pos inp.hD 0
+    inp.decay.lambda_pos inp.divisor_pos 0
   have hcoef : 0 <
       (4 + 8 * Real.sqrt 2) * inp.decay.lambda inp.D 0 := by
     positivity

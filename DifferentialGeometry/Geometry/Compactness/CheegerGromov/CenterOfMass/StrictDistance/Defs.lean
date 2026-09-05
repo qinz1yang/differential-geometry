@@ -25,7 +25,7 @@ variable {M : Type u} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ 
   [T2Space M] [T2Space (TangentBundle I M)] [SigmaCompactSpace M]
   [ConnectedSpace M] [T3Space M]
 
-structure StrictDistInput (g : SmoothRiemannianMetric I M)
+structure StrictDistanceConvexity (g : SmoothRiemannianMetric I M)
     {ι : Type} [Fintype ι] (points : ι → M)
     (join : M → M → ℝ → M) (p : M) (r : ℝ) : Prop where
   mid :

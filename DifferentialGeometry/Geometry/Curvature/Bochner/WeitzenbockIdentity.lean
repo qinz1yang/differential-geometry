@@ -269,7 +269,7 @@ def IsChartOrthonormalAt
       g.inner x (gradFun (I := I) g (ΔG (I := I) g ⟨_, hf⟩) x) w +
         g.inner x (ricciSharp (I := I) g x (gradFun (I := I) g f x)) w
 
-structure BochnerReductionAt [I.Boundaryless]
+private structure BochnerReductionAt [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) {f : M → ℝ}
     (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) (x : M) : Prop where
   leibniz : IsLeibnizTraceAt (I := I) g
@@ -277,7 +277,7 @@ structure BochnerReductionAt [I.Boundaryless]
   heart : IsHeartOfBochnerInnerAt (I := I) g hf x
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem bochner_pointwise_abstract_of_reduction [I.Boundaryless]
+private theorem bochner_pointwise_abstract_of_reduction [I.Boundaryless]
     (g : SmoothRiemannianMetric I M)
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ) ∞ f) (x : M)
     (hRed : BochnerReductionAt (I := I) g hf x) :

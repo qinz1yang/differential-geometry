@@ -304,7 +304,7 @@ theorem exists_fine_tricut [NormalSpace M]
   · exact fun z => (hψspec z).2.2.2.1
   · exact fun z => (hψspec z).2.2.2.2
 
-structure FineChartData
+structure FineChartCover
     (e : OpenPartialHomeomorph M E) (K : Set M) (r : ℝ) where
   ε : ℝ
   ε_pos : 0 < ε
@@ -339,18 +339,18 @@ structure FineChartData
 
 omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] [T2Space M]
   [SigmaCompactSpace M] [I.Boundaryless] in
-theorem FineChartData.rho_sum
+theorem FineChartCover.rho_sum
     {e : OpenPartialHomeomorph M E} {K : Set M} {r : ℝ}
-    (D : FineChartData (I := I) e K r) {x : M} (hx : x ∈ K) :
+    (D : FineChartCover (I := I) e K r) {x : M} (hx : x ∈ K) :
     ∑ z : D.S, ((D.rho z : C^∞⟮I, M; ℝ⟯) : M → ℝ) x = 1 := by
   simpa only [finsum_eq_sum_of_fintype] using D.rho.sum_eq_one hx
 
 omit [I.Boundaryless] in
-theorem existsFineChart [NormalSpace M]
+theorem existsFineChartCover [NormalSpace M]
     (e : OpenPartialHomeomorph M E) {K : Set M}
     (hK : IsCompact K) (hKsrc : K ⊆ e.source)
     {r : ℝ} (hr : 0 < r) :
-    Nonempty (FineChartData (I := I) e K r) := by
+    Nonempty (FineChartCover (I := I) e K r) := by
   classical
   obtain ⟨ε, hε, hεr, S, ρ, χ, ψ, hρ, houter, hχsmooth,
     hχone, hχrange, hχsupport, hψsmooth, hψone, hψrange, hψzero, hψsupport⟩ :=

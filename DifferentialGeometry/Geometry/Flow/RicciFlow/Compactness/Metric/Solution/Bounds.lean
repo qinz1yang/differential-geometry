@@ -95,15 +95,15 @@ structure SolutionZeroOrderMetricBounds
     (gSeq : Nat -> Real -> SmoothRiemannianMetric I M)
     (gRef : SmoothRiemannianMetric I M) where
   U0 : Set M
-  hKU0 : K ⊆ U0
+  subset_domain : K ⊆ U0
   B0 : Real -> Real
-  hequiv0 : MetricUniformEquivalentOnWindow (I := I) U0 beta psiT gRef gSeq B0
+  uniform_equivalence : MetricUniformEquivalentOnWindow (I := I) U0 beta psiT gRef gSeq B0
   Bmax0 : Real
-  hBmax01 : 1 <= Bmax0
-  hBmax0 : forall t, t ∈ Set.Icc beta psiT -> B0 t <= Bmax0
+  one_le_equivalenceBound : 1 <= Bmax0
+  equivalence_le_bound : forall t, t ∈ Set.Icc beta psiT -> B0 t <= Bmax0
   KShi0 : Real
-  hKShi00 : 0 <= KShi0
-  hShi0 : forall i : Nat, forall t : Real, t ∈ Set.Icc beta psiT -> forall x : M,
+  curvatureBound_nonneg : 0 <= KShi0
+  ricci_bound : forall i : Nat, forall t : Real, t ∈ Set.Icc beta psiT -> forall x : M,
     x ∈ U0 ->
       Real.sqrt
         (Tensor0SBundle.normSq0S (I := I) (gSeq i t) x 2
@@ -117,7 +117,7 @@ def SolutionSubsequenceMetricLowerBound
     exists c : Real, 0 < c /\ forall (k : Nat) (x : M) (v : TangentSpace I x),
       c * gRef.inner x v v <= (gSeq (rho k) t).inner x v v
 
-inductive SolutionWindowCompactnessInput : Type _ where
+inductive SolutionWindowCompactness : Type _ where
   | mk
       (K : Set M) (hK : IsCompact K)
       (beta psiT t0 : Real) (hbeta : beta <= psiT) (p : Nat)
@@ -134,12 +134,13 @@ inductive SolutionWindowCompactnessInput : Type _ where
       (Hlip : SolutionMetricLipschitzBounds (I := I) K beta psiT p gSeq gRef D S)
       (hlow : SolutionSubsequenceMetricLowerBound (I := I) beta psiT gSeq gRef)
 
-inductive WindowMetricPrecompactnessConclusion : Type _ where
-  | intro
-      (K : Set M) (beta psiT : Real) (p : Nat)
+def HasMetricWindowSubsequence : Prop :=
+  ∃ (K : Set M) (beta psiT : Real) (p : Nat)
       (gSeq : Nat -> Real -> SmoothRiemannianMetric I M)
-      (gRef : SmoothRiemannianMetric I M)
-      (out : MetricWindowSubsequence (E := E) (H := H) (I := I) (M := M) K beta psiT p gSeq gRef)
+      (gRef : SmoothRiemannianMetric I M),
+    Nonempty
+      (MetricWindowSubsequence (E := E) (H := H) (I := I) (M := M)
+        K beta psiT p gSeq gRef)
 
 omit [Module.Finite ℝ E] [CompleteSpace E] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
     [IsManifold I 2 M] [VectorBundle ℝ E (TangentSpace I : M → Type _)]
@@ -419,8 +420,8 @@ theorem metricWindowSubsequence_of_solution
     MetricWindowSubsequence (E := E) (H := H) (I := I) (M := M) K beta psiT p gSeq gRef := by
   classical
   obtain ⟨e, he, hdense⟩ := denseIccSeq hbeta
-  have h0 := hgLip0Solution (I := I) H0.hKU0 H0.B0 H0.hequiv0 H0.Bmax0 H0.hBmax01
-    H0.hBmax0 H0.KShi0 H0.hKShi00 H0.hShi0 D S hS hmet hreg
+  have h0 := hgLip0Solution (I := I) H0.subset_domain H0.B0 H0.uniform_equivalence H0.Bmax0 H0.one_le_equivalenceBound
+    H0.equivalence_le_bound H0.KShi0 H0.curvatureBound_nonneg H0.ricci_bound D S hS hmet hreg
   obtain ⟨L, hL, hgLip⟩ :=
     hgLipFinSolution (I := I) hK hS hmet hreg hswap h0 Hlip
   have hlow' :
@@ -436,15 +437,15 @@ theorem metricWindowSubsequence_of_solution
         (I := I) hS hmet hreg Hcov rho)
     hlow'
 
-noncomputable def windowMetricPrecompactnessConclusion (hne : Nonempty M)
-    (W : SolutionWindowCompactnessInput (I := I) (M := M)) :
-    WindowMetricPrecompactnessConclusion (E := E) (H := H) (I := I) (M := M) := by
+theorem hasMetricWindowSubsequence_of_solution (hne : Nonempty M)
+    (W : SolutionWindowCompactness (I := I) (M := M)) :
+    HasMetricWindowSubsequence (E := E) (H := H) (I := I) (M := M) := by
   classical
   cases W with
   | mk K hK beta psiT t0 hbeta p gSeq gRef D S hS hmet hreg H0 hswap Hcov Hlip hlow =>
-      exact WindowMetricPrecompactnessConclusion.intro K beta psiT p gSeq gRef
-        (metricWindowSubsequence_of_solution (I := I) hne K hK beta psiT t0 hbeta p gSeq gRef D S hS hmet
-          hreg H0 hswap Hcov Hlip hlow)
+      exact ⟨K, beta, psiT, p, gSeq, gRef,
+        ⟨metricWindowSubsequence_of_solution (I := I) hne K hK beta psiT t0 hbeta p gSeq gRef
+          D S hS hmet hreg H0 hswap Hcov Hlip hlow⟩⟩
 
 end
 

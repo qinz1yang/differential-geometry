@@ -1492,7 +1492,7 @@ theorem levi_civita_bianchi_scalar_trace_identities
   exact ⟨hcore.1, hcore.2.1, hcore.2.2, hscalar⟩
 
 omit [SigmaCompactSpace M] [I.Boundaryless] in
-theorem exists_levi_civita_bianchi_trace_data
+theorem exists_levi_civita_bianchi_trace_identities
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     (g : SmoothRiemannianMetric I M)
     {x : M} (basis : Module.Basis Idx Real (TangentSpace I x))

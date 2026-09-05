@@ -29,7 +29,7 @@ variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 
 private theorem cast_preapprox
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    (inp : MetricCompactCore (I := I) X)
+    (inp : MetricCompactSeedWithDivisor (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P) (s : Real) (hs : 0 ≤ s)
     (i j K L' : Nat) (hi : L.φ i = K) (hj : L.φ j = L')
@@ -105,7 +105,7 @@ theorem MetricCompactBase.exists_pairwise_approximate_isometry_subsequence
       let Xpsi := X.subseq psi
       let Ppsi : ∀ k : Nat, ProperMetricOn (I := I) (Xpsi.obj k) :=
         fun k => P (psi k)
-      PairwiseApproximateIsometryInput (I := I) (X := Xpsi) Ppsi := by
+      HasPairwiseApproximateIsometries (I := I) (X := Xpsi) Ppsi := by
   classical
   dsimp only
   obtain ⟨inp, L0, hseed, psi, hpsi, htail⟩ :=
@@ -129,7 +129,7 @@ theorem MetricCompactBase.exists_pairwise_approximate_isometry_subsequence
     norm_num
   have hgap : 0 < gap := by
     dsimp only [gap]
-    exact mul_pos (by positivity) (inp.decay.lambda_pos inp.hD 0)
+    exact mul_pos (by positivity) (inp.decay.lambda_pos inp.divisor_pos 0)
   have hroom : R + gap < R1 := by
     dsimp only [R1]
     linarith
@@ -141,8 +141,10 @@ theorem MetricCompactBase.exists_pairwise_approximate_isometry_subsequence
   obtain ⟨rho, hrho, hindex, hstage, N, hNq, hgeom⟩ :=
     HasRadiusTail.geom_tail inp (properMetricsOfCompleteConnected (I := I) hcomplete hconn) L0
       hcomplete.complete hconn hseed psi q (htail q) R R1 hroom hR1q
-  let Sstate := stageStates inp (properMetricsOfCompleteConnected (I := I) hcomplete hconn) L0 hconn hseed q
-  let d := radiusPayload inp (properMetricsOfCompleteConnected (I := I) hcomplete hconn) L0 hconn hseed q
+  let Sstate := stageSubsequence inp
+    (properMetricsOfCompleteConnected (I := I) hcomplete hconn) L0 hseed q
+  let d := radiusConvergenceSelection inp
+    (properMetricsOfCompleteConnected (I := I) hcomplete hconn) L0 hseed q
   let Lbase := L0.subseq Sstate.sigma_strict
   obtain ⟨Nm, hmetric⟩ :=
     hstage.preapprox_tail inp (properMetricsOfCompleteConnected (I := I) hcomplete hconn) Lbase
@@ -187,9 +189,9 @@ theorem MetricCompactBase.exists_pairwise_approximate_isometry_subsequence
   · exact hpair.1
   · exact hpair.2
 
-theorem BoundedGeometryNormalChartData.pairwise_approximate_isometry_input_of_diagonal_data
+theorem BoundedGeometryNormalChartData.has_pairwise_approximate_isometries_of_radius_tails
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    (inp : MetricCompactCore (I := I) X)
+    (inp : MetricCompactSeedWithDivisor (I := I) X)
     (d : BoundedGeometryNormalChartData (I := I) X inp.decay)
     (P : ∀ j : Nat, ProperMetricOn (I := I) (X.obj j))
     (L0 : NetLimitData inp.decay inp.D P)
@@ -200,11 +202,11 @@ theorem BoundedGeometryNormalChartData.pairwise_approximate_isometry_input_of_di
     (hseed : HasStageSeedOn inp P L0 d.chart)
     (psi : Nat → Nat)
     (htail : ∀ q : Nat,
-      HasRadiusTailOn inp P L0 hconn d.chart hseed psi q) :
+      HasRadiusTailOn inp P L0 d.chart hseed psi q) :
     let Xpsi := X.subseq psi
     let Ppsi : ∀ k : Nat, ProperMetricOn (I := I) (Xpsi.obj k) :=
       fun k => P (psi k)
-    PairwiseApproximateIsometryInput (I := I) (X := Xpsi) Ppsi := by
+    HasPairwiseApproximateIsometries (I := I) (X := Xpsi) Ppsi := by
   classical
   dsimp only
   refine { comparison := ?_ }
@@ -225,7 +227,7 @@ theorem BoundedGeometryNormalChartData.pairwise_approximate_isometry_input_of_di
     norm_num
   have hgap : 0 < gap := by
     dsimp only [gap]
-    exact mul_pos (by positivity) (inp.decay.lambda_pos inp.hD 0)
+    exact mul_pos (by positivity) (inp.decay.lambda_pos inp.divisor_pos 0)
   have hroom : R + gap < R1 := by
     dsimp only [R1]
     linarith
@@ -237,8 +239,8 @@ theorem BoundedGeometryNormalChartData.pairwise_approximate_isometry_input_of_di
   obtain ⟨rho, hrho, hindex, hstage, N, hNq, hgeom⟩ :=
     HasRadiusTailOn.geom_tail inp d P L0 hcomplete.complete hconn hseed psi q
       (htail q) R R1 hroom hR1q
-  let Sstate := stageStatesOn inp P L0 hconn d.chart hseed q
-  let a := radiusPayloadOn inp P L0 hconn d.chart hseed q
+  let Sstate := stageSubsequenceOn inp P L0 d.chart hseed q
+  let a := radiusConvergenceSelectionOn inp P L0 d.chart hseed q
   let Lbase := L0.subseq Sstate.sigma_strict
   obtain ⟨Nm, hmetric⟩ :=
     d.preapprox_tail inp P Lbase (Nat.cast_nonneg q)
@@ -296,7 +298,7 @@ theorem MetricCompactSeed.exists_pairwise_approximate_isometry_subsequence_of_bo
       let Xpsi := X.subseq psi
       let Ppsi : ∀ k : Nat, ProperMetricOn (I := I) (Xpsi.obj k) :=
         fun k => P (psi k)
-      PairwiseApproximateIsometryInput (I := I) (X := Xpsi) Ppsi := by
+      HasPairwiseApproximateIsometries (I := I) (X := Xpsi) Ppsi := by
   classical
   dsimp only
   let aMin := d.stageScale b.realizes hcomplete hconn
@@ -323,7 +325,8 @@ theorem MetricCompactSeed.exists_pairwise_approximate_isometry_subsequence_of_bo
   obtain ⟨hseed, psi, hpsi, htail⟩ :=
     d.stage_diag inp hcomplete hconn hphys P L0 hstable
   refine ⟨psi, hpsi, ?_⟩
-  exact d.pairwise_approximate_isometry_input_of_diagonal_data inp P L0 hcomplete hconn hseed psi htail
+  exact d.has_pairwise_approximate_isometries_of_radius_tails
+    inp P L0 hcomplete hconn hseed psi htail
 
 theorem MetricCompactBase.exists_pairwise_approximate_isometry_subsequence_of_bounded_geometry
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
@@ -340,7 +343,7 @@ theorem MetricCompactBase.exists_pairwise_approximate_isometry_subsequence_of_bo
       let Xpsi := X.subseq psi
       let Ppsi : ∀ k : Nat, ProperMetricOn (I := I) (Xpsi.obj k) :=
         fun k => P (psi k)
-      PairwiseApproximateIsometryInput (I := I) (X := Xpsi) Ppsi := by
+      HasPairwiseApproximateIsometries (I := I) (X := Xpsi) Ppsi := by
   exact b.toSeed.exists_pairwise_approximate_isometry_subsequence_of_bounded_geometry d hcomplete hconn
 
 end CheegerGromovCompactness

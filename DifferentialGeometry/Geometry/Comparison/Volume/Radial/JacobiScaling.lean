@@ -1338,7 +1338,7 @@ theorem exists_dir_ge_rm04_at
             (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) 1)
           (radialJacobiField (I := I) g p x
             (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) 1) := by
-  obtain ⟨r₀, hr₀, hdata⟩ := exists_rm04_data (I := I) g hEnorm p
+  obtain ⟨r₀, hr₀, hdata⟩ := exists_radial_jacobi_regularity_and_second_derivative_bound (I := I) g hEnorm p
   obtain ⟨r₁, hr₁, hderiv⟩ := exists_radialJacobi_deriv_radius (I := I) g p
   refine ⟨min r₀ r₁, lt_min hr₀ hr₁, ?_⟩
   intro x hx a K R Vb b B ha hB hK hVb hb0 hb1 h1b hsmall hlaunch hKbound hRm

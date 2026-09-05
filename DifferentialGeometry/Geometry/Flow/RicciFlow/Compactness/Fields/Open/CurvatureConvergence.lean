@@ -65,7 +65,7 @@ theorem scalar_convergence
         ∀ z : P.M, z ∈ bf.grow k →
           metricCovDerivNorm (I := I) q
             (gSeqExt (I := I) Φ R bf hsrc htgt k t) R z ≤ C) :
-    FunctionPullbackTendsto (I := I) (Φ.compSubseq co.φ co.hφ)
+    FunctionPullbackTendsto (I := I) (Φ.compSubseq co.φ co.strictMono)
       (fun k t x ↦
         letI : TopologicalSpace (X.term ((subseq ∘ co.φ) k)).M :=
           (X.term ((subseq ∘ co.φ) k)).topology
@@ -145,7 +145,7 @@ theorem ricNorm_convergence
         ∀ z : P.M, z ∈ bf.grow k →
           metricCovDerivNorm (I := I) q
             (gSeqExt (I := I) Φ R bf hsrc htgt k t) R z ≤ C) :
-    FunctionPullbackTendsto (I := I) (Φ.compSubseq co.φ co.hφ)
+    FunctionPullbackTendsto (I := I) (Φ.compSubseq co.φ co.strictMono)
       (fun k t x ↦
         letI : TopologicalSpace (X.term ((subseq ∘ co.φ) k)).M :=
           (X.term ((subseq ∘ co.φ) k)).topology

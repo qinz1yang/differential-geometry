@@ -97,14 +97,14 @@ theorem hasCompactBallCover_of_step (S : SmoothSeqSystem I A)
       ∃ k, ∀ w : S.toSeqSystem.Lim,
         Manifold.riemannianEDist I z w ≤ r → w ∈ Set.range (S.toSeqSystem.incl k))
     (hstep : ∀ k, ∃ K : Set (A (k + 1)), IsCompact K ∧
-      Set.range (S.toSeqSystem.F (Nat.le_succ k)) ⊆ K) :
+      Set.range (S.toSeqSystem.map (Nat.le_succ k)) ⊆ K) :
     S.hasCompactBallCover g hg := by
   intro z r hr
   obtain ⟨k, hk⟩ := hexh z r hr
   obtain ⟨K, hK, hFK⟩ := hstep k
   refine ⟨k + 1, K, hK, fun w hw => ?_⟩
   obtain ⟨a, rfl⟩ := hk w hw
-  refine ⟨S.toSeqSystem.F (Nat.le_succ k) a, hFK ⟨a, rfl⟩, ?_⟩
+  refine ⟨S.toSeqSystem.map (Nat.le_succ k) a, hFK ⟨a, rfl⟩, ?_⟩
   exact S.toSeqSystem.incl_comp (Nat.le_succ k) a
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup

@@ -14,7 +14,7 @@ namespace Geometry
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
 variable {n : ℕ} [Fact (Module.finrank ℝ E = n + 1)]
 
-theorem punct2_preconn
+theorem sphere_compl_two_points_isPreconnected
     (hn : 1 < n) (p q : sphere (0 : E) 1) (hpq : p ≠ q) :
     IsPreconnected {x : sphere (0 : E) 1 | x ≠ p ∧ x ≠ q} := by
   classical

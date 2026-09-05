@@ -253,7 +253,7 @@ theorem smoothCcTensor_rawChartComponent_eigenSeries_tsum_eq_local
     htend_raw.congr hpartial
   exact tendsto_nhds_unique htend_lhs htend_tsum
 
-private theorem spectralPathFO_rawCompOnE_euclidean_contDiffOn_local
+private theorem spectralPathFiniteOrder_rawCompOnE_euclidean_contDiffOn_local
     (g : SmoothRiemannianMetric I M) {T : ℝ} (hT : 0 < T) (kk : ℕ)
     (T_rep : ℝ → SmoothCcTensor g 0 2)
     (φ : TensorEigenIdx (I := I) (M := M) g 0 2 → ℝ → ℝ)
@@ -351,7 +351,7 @@ private theorem spectralPathFO_rawCompOnE_euclidean_contDiffOn_local
       rwa [iteratedDeriv_zero] at h)
     α Jdx hq_symm_source
 
-private theorem spectralPathFO_rawChartComponent_jointContMDiffOn_local
+private theorem spectralPathFiniteOrder_rawChartComponent_jointContMDiffOn_local
     (g : SmoothRiemannianMetric I M) {T : ℝ} (hT : 0 < T) (kk : ℕ)
     (T_rep : ℝ → SmoothCcTensor g 0 2)
     (φ : TensorEigenIdx (I := I) (M := M) g 0 2 → ℝ → ℝ)
@@ -376,7 +376,7 @@ private theorem spectralPathFO_rawChartComponent_jointContMDiffOn_local
                        hG_def
   have hGEuclid : ContDiffOn ℝ (kk : ℕ) G
       (Set.Icc (0 : ℝ) T ×ˢ interior (extChartAt I α).target) :=
-    spectralPathFO_rawCompOnE_euclidean_contDiffOn_local (I := I) (M := M)
+    spectralPathFiniteOrder_rawCompOnE_euclidean_contDiffOn_local (I := I) (M := M)
       g hT kk T_rep φ hφ_smooth hcoeff hmodemass α Jdx
   set f : M × ℝ → ℝ × E := fun p : M × ℝ => (p.2, extChartAt I α p.1) with hf_def
   have hf_smooth : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, ℝ × E) (kk : ℕ) f
@@ -410,7 +410,7 @@ private theorem spectralPathFO_rawChartComponent_jointContMDiffOn_local
     hGEuclid.contDiffWithinAt (hmaps hq)
   exact hGf.comp_contMDiffWithinAt (hf_smooth q hq) hmaps
 
-private theorem spectralPathFO_rawChartComponent_fibre_contDiffWithinAt_local
+private theorem spectralPathFiniteOrder_rawChartComponent_fibre_contDiffWithinAt_local
     (g : SmoothRiemannianMetric I M) {T : ℝ} (hT : 0 < T) (kk : ℕ)
     (T_rep : ℝ → SmoothCcTensor g 0 2)
     (φ : TensorEigenIdx (I := I) (M := M) g 0 2 → ℝ → ℝ)
@@ -430,7 +430,7 @@ private theorem spectralPathFO_rawChartComponent_fibre_contDiffWithinAt_local
     ContDiffWithinAt ℝ (kk : ℕ)
       (fun s : ℝ => tensorChartComponentRaw (I := I) (M := M) g 0 2 (T_rep s) α ![] Jdx x)
       (Set.Icc (0 : ℝ) T) t := by
-  have hCR := spectralPathFO_rawChartComponent_jointContMDiffOn_local (I := I) (M := M)
+  have hCR := spectralPathFiniteOrder_rawChartComponent_jointContMDiffOn_local (I := I) (M := M)
     g hT kk T_rep φ hφ_smooth hcoeff hmodemass α Jdx
   have harg : ContMDiffOn 𝓘(ℝ, ℝ) (I.prod 𝓘(ℝ, ℝ)) (kk : ℕ) (fun u : ℝ => (x, u))
       (Set.Icc (0 : ℝ) T) :=
@@ -441,7 +441,7 @@ private theorem spectralPathFO_rawChartComponent_fibre_contDiffWithinAt_local
   rw [contMDiffOn_iff_contDiffOn] at hcomp
   exact hcomp t ht
 
-theorem spectralPathFO_section_jointContMDiffOn_local
+theorem spectralPathFiniteOrder_section_jointContMDiffOn_local
     (g : SmoothRiemannianMetric I M) {T : ℝ} (hT : 0 < T) (kk : ℕ)
     (T_rep : ℝ → SmoothCcTensor g 0 2)
     (φ : TensorEigenIdx (I := I) (M := M) g 0 2 → ℝ → ℝ)
@@ -486,7 +486,7 @@ theorem spectralPathFO_section_jointContMDiffOn_local
       ((chartAt H α).source ×ˢ Set.Icc (0 : ℝ) T) := by
     refine contMDiffOn_finsetSum (fun Q _ => ?_)
     have hQ1 : Q.1 = (![] : Fin 0 → Fin (Module.finrank ℝ E)) := funext fun i0 => i0.elim0
-    have hraw := spectralPathFO_rawChartComponent_jointContMDiffOn_local (I := I) (M := M)
+    have hraw := spectralPathFiniteOrder_rawChartComponent_jointContMDiffOn_local (I := I) (M := M)
       g hT kk T_rep φ hφ_smooth hcoeff hmodemass α Q.2
     rw [hQ1]
     exact hraw.smul contMDiffOn_const
@@ -573,7 +573,7 @@ theorem spectralPathFO_section_jointContMDiffOn_local
       (fun y : M => Tensor0SBundle.TensorRSSpace 0 2 I y) α) hsource).mpr
     ⟨contMDiffWithinAt_fst, hfib⟩)
 
-theorem spectralPathFO_toFun_timeJet_eq_of_coeff_jets_local
+theorem spectralPathFiniteOrder_toFun_timeJet_eq_of_coeff_jets_local
     (g : SmoothRiemannianMetric I M) {T : ℝ} (hT : 0 < T) (kk : ℕ)
     (T_rep : ℝ → SmoothCcTensor g 0 2)
     (φ : TensorEigenIdx (I := I) (M := M) g 0 2 → ℝ → ℝ)
@@ -642,7 +642,7 @@ theorem spectralPathFO_toFun_timeJet_eq_of_coeff_jets_local
   have hraws : ∀ Q : CompIdx E 0 2, ContDiffWithinAt ℝ (j : ℕ)
       (fun s => rawγ s Q) (Set.Icc (0 : ℝ) T) t := by
     intro Q
-    have h := spectralPathFO_rawChartComponent_fibre_contDiffWithinAt_local (I := I) (M := M)
+    have h := spectralPathFiniteOrder_rawChartComponent_fibre_contDiffWithinAt_local (I := I) (M := M)
       g hT kk T_rep φ hφ_smooth hcoeff hmodemass α Q.2 hx ht
     have hfun : (fun s => rawγ s Q) =
         (fun s : ℝ => tensorChartComponentRaw (I := I) (M := M) g 0 2 (T_rep s) α ![]

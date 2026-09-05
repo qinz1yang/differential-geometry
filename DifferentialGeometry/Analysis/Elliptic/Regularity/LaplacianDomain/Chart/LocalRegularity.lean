@@ -12,7 +12,6 @@ open scoped Manifold Topology ContDiff Matrix InnerProductSpace BigOperators
 namespace DifferentialGeometry
 namespace Analysis
 namespace Laplacian
-namespace LaplacianDomainPerChartWitness
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
@@ -412,7 +411,6 @@ theorem laplacianDomain_memWkpChart_two
     DifferentialGeometry.Analysis.Sobolev.Chart.wkpNormChart_lt_top_of_memWkpChart
       (I := I) (M := M) (k := 2) (p := 2) (by norm_num) h_mem⟩
 
-end LaplacianDomainPerChartWitness
 end Laplacian
 end Analysis
 end DifferentialGeometry

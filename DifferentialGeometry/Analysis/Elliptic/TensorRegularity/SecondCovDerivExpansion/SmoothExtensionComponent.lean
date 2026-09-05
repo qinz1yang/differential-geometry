@@ -120,7 +120,7 @@ private lemma toEuclidean_extChartAt_mem_euclidNeighbourhood
 omit [CompactSpace M] in
 omit [CompleteSpace E] in
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
-theorem chartPushedRaw_tensorChartComponentRaw_S_k_ext_eqOn_covDerivComponentEuclid
+theorem exists_chartPushed_tensorComponent_eqOn_covDerivComponentEuclid
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (T₀ : SmoothCcTensor g r s) (k : Fin (Module.finrank ℝ E))
     (Idx : Fin r → Fin (Module.finrank ℝ E))

@@ -940,8 +940,8 @@ theorem exists_smooth_metric_extension
       smooth_c := contDiff_const
       lam := lamK
       capLam := max lamK 1
-      hlam_pos := hlamK_pos
-      hlam_le_capLam := le_max_left _ _
+      ellipticity_pos := hlamK_pos
+      ellipticity_le_upper := le_max_left _ _
       coercive := h_a_coercive }
   have h_agree : ∀ y ∈ K, ∀ i j : Fin (Module.finrank ℝ E),
       B.a y i j = weightedInvGramOnEuclid (I := I) g α i j y := by

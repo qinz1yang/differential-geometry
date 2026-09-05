@@ -721,13 +721,13 @@ noncomputable def initialMetricRicciDataOfSolution
     MetricRicciData (I := I) (M := M)
       (fun t : Real => S.base.metric t)
       (twoTensorSecToFamily (I := I) (M := M) S.ricci) where
-  K := metricCurvData (I := I) (M := M) (S.base.metric 0)
+  K := metricCurvatureSections (I := I) (M := M) (S.base.metric 0)
   ricci_eq := by
     intro x v w
     simp [twoTensorSecToFamily, SolutionOn.ricci, SolutionFamily.ricci,
-      metricCurvData, DifferentialGeometry.Geometry.Curvature.metricCurvData]
+      metricCurvatureSections, DifferentialGeometry.Geometry.Curvature.metricCurvatureSections]
 
-theorem initial_metric_ricci_data_positive
+theorem initialMetricRicciDataOfSolution_positive
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     [SigmaCompactSpace M] [T2Space M]
     (S : SolutionOn (I := I) (M := M) D)
@@ -1553,8 +1553,8 @@ theorem traceData_metricTrace
     change DifferentialGeometry.Geometry.Curvature.rm13RealizesConnection (I := I)
       (DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric (I := I)
         (S.base.metric t))
-      (metricCurvData (I := I) (M := M) (S.base.metric t)).rm13
-    exact (metricCurvData (I := I) (M := M) (S.base.metric t)).rm13Realizes
+      (metricCurvatureSections (I := I) (M := M) (S.base.metric t)).rm13
+    exact (metricCurvatureSections (I := I) (M := M) (S.base.metric t)).rm13Realizes
   have hRm04 :
       DifferentialGeometry.Geometry.Curvature.rm04RealizesConnection (I := I) (S.base.metric t)
         (DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric (I := I)
@@ -1563,16 +1563,16 @@ theorem traceData_metricTrace
       (S.base.metric t)
       (DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric (I := I)
         (S.base.metric t))
-      (metricCurvData (I := I) (M := M) (S.base.metric t)).rm04
-    exact (metricCurvData (I := I) (M := M) (S.base.metric t)).rm04Realizes
+      (metricCurvatureSections (I := I) (M := M) (S.base.metric t)).rm04
+    exact (metricCurvatureSections (I := I) (M := M) (S.base.metric t)).rm04Realizes
   have hRic13 :
       S.ricci t x =
         DifferentialGeometry.Geometry.Curvature.ricciFromRm13At (I := I) (M := M)
           (S.base.rm13 t x) := by
-    change (metricCurvData (I := I) (M := M) (S.base.metric t)).ricci x =
+    change (metricCurvatureSections (I := I) (M := M) (S.base.metric t)).ricci x =
       DifferentialGeometry.Geometry.Curvature.ricciFromRm13At (I := I) (M := M)
-        ((metricCurvData (I := I) (M := M) (S.base.metric t)).rm13 x)
-    exact (metricCurvData (I := I) (M := M) (S.base.metric t)).ricciRealizes x
+        ((metricCurvatureSections (I := I) (M := M) (S.base.metric t)).rm13 x)
+    exact (metricCurvatureSections (I := I) (M := M) (S.base.metric t)).ricciRealizes x
   have hLowerAt :
       DifferentialGeometry.Geometry.Curvature.Rm04LowersRm13At (I := I) (S.base.metric t) x
         (S.base.rm13 t x) (S.base.rm04 t x) :=

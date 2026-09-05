@@ -47,7 +47,7 @@ theorem exists_uniform_norm_fderiv_le_on_flow_box
   have hne : B.Nonempty :=
     ⟨⟨x₀, t₀⟩, Set.mem_prod.mpr
       ⟨Metric.mem_closedBall_self r.coe_nonneg,
-       Set.mem_Icc.mpr ⟨hΦ.htmin_le, hΦ.ht₀_le⟩⟩⟩
+       Set.mem_Icc.mpr ⟨hΦ.minTime_le_initial, hΦ.initial_le_maxTime⟩⟩⟩
   obtain ⟨q₀, _, hq₀_max⟩ := hK.exists_isMaxOn hne hnorm
   refine ⟨‖fderiv ℝ (f q₀.2) (Φ q₀)‖, norm_nonneg _, fun x hx τ hτ => ?_⟩
   exact hq₀_max (show (x, τ) ∈ B from ⟨hx, hτ⟩)

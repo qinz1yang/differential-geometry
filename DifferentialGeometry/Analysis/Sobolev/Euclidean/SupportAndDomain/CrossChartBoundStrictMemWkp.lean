@@ -1184,7 +1184,7 @@ theorem cross_chart_bound_strict_strong_memWkp
     DifferentialGeometry.Analysis.Sobolev.Euclidean.wkpNorm_smul_smooth_bounded_le_one
       1 (le_refl _) (d := Module.finrank ℝ E) hp_one hp_top hΩα_target_open hη_α_local_smooth
       hCmax_η_α_nonneg hη_α_local_iter_bound
-  set K_chain : ℝ := Φ.wkpCompConst' 1 p with hK_chain_def
+  set K_chain : ℝ := Φ.wkpCompositionConstant 1 p with hK_chain_def
   have hK_chain_pos : 0 < K_chain := by
     have hp_zero : p ≠ 0 := by
       intro hpz; rw [hpz] at hp_one
@@ -1195,7 +1195,7 @@ theorem cross_chart_bound_strict_strong_memWkp
     have hKchg_pos : 0 < (1 / Φ.jacobianLowerBound) ^ (1 / p.toReal) :=
       Real.rpow_pos_of_pos hjLB_inv_pos _
     rw [hK_chain_def]
-    unfold DifferentialGeometry.Analysis.Sobolev.Euclidean.SmoothDiffeoBoundedAtOrder.wkpCompConst'
+    unfold DifferentialGeometry.Analysis.Sobolev.Euclidean.SmoothDiffeoBoundedAtOrder.wkpCompositionConstant
     have h_zero_in : (0 : ℕ) ∈ Finset.range (1 + 1) :=
       Finset.mem_range.mpr (Nat.zero_lt_succ _)
     have h_at_zero : (Fintype.card (Fin 0 → Fin (Module.finrank ℝ E)) : ℝ) = 1 := by

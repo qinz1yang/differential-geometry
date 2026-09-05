@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.PointwiseBounds.SectionUniformRiemannianNormChartData
+import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.PointwiseBounds.UniformRiemannianNormCoordinateBound
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.ChartRepresentationBounds.Euclidean.DerivativeComparison
 import DifferentialGeometry.Analysis.Elliptic.TensorRegularity.CovDeriv.ChartFormLowerOrder
 open DifferentialGeometry.Analysis.Elliptic
@@ -58,7 +58,7 @@ theorem rawTensorConnLap_riemannianFiberNormSq_le_chartPouSobolevSummand_T0_unif
   classical
   set n : ℕ := Module.finrank ℝ E with hn_def
   obtain ⟨C_B, hC_B_nn, hB⟩ :=
-    rawTensorConnLap_riemannianFiberNormSq_le_chart_α_data_T0_uniform
+    rawTensorConnLap_riemannianFiberNormSq_le_coordinate_two_jet_uniform
       (I := I) (M := M) g r s α
   set Lop : ℝ :=
       ‖((toEuclidean (E := E)).symm :

@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.ODE.Flow.HigherRegularity.Variational.SuccessorWitness
+import DifferentialGeometry.Analysis.ODE.Flow.HigherRegularity.Variational.SuccessorExistence
 
 
 noncomputable section

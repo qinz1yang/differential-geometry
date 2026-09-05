@@ -357,7 +357,7 @@ def TensorParabolicStrictInequalityWithDriftOn
             (nabla2S t x) (nablaS t x) v +
           N t (G t) (S t) x v v < timeDeriv t x v)
 
-def TensorBarrierLocalEst
+def TensorBarrierLocalEstimate
     (G : Real -> SmoothRiemannianMetric I M)
     (S : TwoTensorFamily (I := I) (M := M))
     (X : TimeDependentVectorField (I := I) (M := M))
@@ -390,7 +390,7 @@ def TensorBarrierLocalEst
         N t (G t) (S t) x v v + reactionErr ∧
         (v ≠ 0 -> heatErr + reactionErr < metricGain))
 
-def BarrierLocalCore
+private def BarrierLocalCore
     (G : Real -> SmoothRiemannianMetric I M)
     (S : TwoTensorFamily (I := I) (M := M))
     (N : TwoTensorReaction (I := I) (M := M))
@@ -443,7 +443,7 @@ theorem hasDerivWithinAt_barrier_quad
   · simp only [id_eq, one_mul]
 
 omit [FiniteDimensional ℝ E] [IsManifold I 1 M] [IsManifold I 2 M] in
-theorem barrierCore_deriv
+private theorem barrierCore_deriv
     {G : Real -> SmoothRiemannianMetric I M}
     {S : TwoTensorFamily (I := I) (M := M)}
     {N : TwoTensorReaction (I := I) (M := M)}
@@ -494,7 +494,7 @@ theorem barrierCore_deriv
     linarith
 
 omit [FiniteDimensional ℝ E] [IsManifold I 1 M] [IsManifold I 2 M] in
-theorem barrierCore_of_pt
+private theorem barrierCore_of_pt
     {G : Real -> SmoothRiemannianMetric I M}
     {S : TwoTensorFamily (I := I) (M := M)}
     {N : TwoTensorReaction (I := I) (M := M)}
@@ -533,7 +533,7 @@ theorem barrierCore_of_pt
       hTime t ht x v, hReaction t ht x v, hMargin t ht x v⟩
 
 omit [IsManifold I 2 M] in
-theorem localEst_of_core
+private theorem localEst_of_core
     {G : Real -> SmoothRiemannianMetric I M}
     {S : TwoTensorFamily (I := I) (M := M)}
     {X : TimeDependentVectorField (I := I) (M := M)}
@@ -545,7 +545,7 @@ theorem localEst_of_core
       TensorQuadraticFormFamily (I := I) (M := M)}
     (hcore : BarrierLocalCore (I := I) (M := M) G S N epsilon delta t0 U
       timeDerivS timeDerivBarrier) :
-    TensorBarrierLocalEst (I := I) (M := M) G S X N
+    TensorBarrierLocalEstimate (I := I) (M := M) G S X N
       nabla2S nablaS nabla2S nablaS epsilon delta t0 U
       timeDerivS timeDerivBarrier := by
   constructor
@@ -560,7 +560,7 @@ theorem localEst_of_core
       linarith
 
 omit [IsManifold I 2 M] in
-theorem localEst_deriv
+private theorem localEst_deriv
     {G : Real -> SmoothRiemannianMetric I M}
     {S : TwoTensorFamily (I := I) (M := M)}
     {X : TimeDependentVectorField (I := I) (M := M)}
@@ -597,7 +597,7 @@ theorem localEst_deriv
       ∀ t, t ∈ U ->
         ∀ x, ∀ v : TangentSpace I x,
           v ≠ 0 -> reactionErr t x v < metricGain t x v) :
-    TensorBarrierLocalEst (I := I) (M := M) G S X N
+    TensorBarrierLocalEstimate (I := I) (M := M) G S X N
       nabla2S nablaS nabla2S nablaS epsilon delta t0 U
       timeDerivS
       (fun t x v =>
@@ -609,7 +609,7 @@ theorem localEst_deriv
       hS hG hGain hReaction hMargin)
 
 omit [IsManifold I 2 M] in
-theorem strictBarrier_of_derivEst
+theorem strictBarrier_of_derivative_estimate
     {G : Real -> SmoothRiemannianMetric I M}
     {S : TwoTensorFamily (I := I) (M := M)}
     {X : TimeDependentVectorField (I := I) (M := M)}
@@ -673,7 +673,7 @@ theorem strictBarrier_of_derivEst
       intro s hs
       exact ⟨le_of_lt hs.1, hs.2⟩)
   have hest :
-      TensorBarrierLocalEst (I := I) (M := M) G S X N
+      TensorBarrierLocalEstimate (I := I) (M := M) G S X N
         nabla2S nablaS nabla2S nablaS epsilon delta t0
         (Set.Ioc t0 (t0 + delta)) timeDerivS timeDerivBarrier :=
     localEst_deriv (I := I) (M := M)
@@ -693,7 +693,7 @@ theorem strictBarrier_of_derivEst
   linarith
 
 omit [IsManifold I 2 M] in
-theorem strictParabolic_of_est
+theorem strictParabolic_of_barrier_estimate
     {G : Real -> SmoothRiemannianMetric I M}
     {S : TwoTensorFamily (I := I) (M := M)}
     {X : TimeDependentVectorField (I := I) (M := M)}
@@ -708,7 +708,7 @@ theorem strictParabolic_of_est
       G S X N nabla2S nablaS T)
     (hest : ∀ timeDerivS : TensorQuadraticFormFamily (I := I) (M := M),
       ∃ timeDerivBarrier : TensorQuadraticFormFamily (I := I) (M := M),
-        TensorBarrierLocalEst (I := I) (M := M) G S X N
+        TensorBarrierLocalEstimate (I := I) (M := M) G S X N
           nabla2S nablaS nabla2Barrier nablaBarrier epsilon delta t0 U
           timeDerivS timeDerivBarrier) :
     TensorParabolicStrictInequalityWithDriftOn (I := I) (M := M) G

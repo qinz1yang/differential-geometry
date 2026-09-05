@@ -415,7 +415,7 @@ theorem deTurckLieConnectionDifferenceDerivCoeffField_metricPerturbationPath_jet
           exact mul_le_mul_of_nonneg_right hcast (sq_nonneg R)
   linarith [hsum_le]
 
-namespace DeTurckLieConnectionDifferenceDerivativeUniformInternal
+namespace DeTurckLieConnectionDifferenceDerivativeKernelBounds
 
 noncomputable abbrev deTurckLieConnectionDifferenceDerivativeKernel := @deTurckLieConnectionDifferenceDerivativeKernelRaisedCc
 noncomputable abbrev deTurckLieConnectionDifferenceDerivativeLowered := @deTurckLieConnectionDifferenceDerivativeLoweredCc
@@ -506,7 +506,7 @@ theorem deTurckLieConnectionDifferenceDerivativeCoefficient_eq_pairTrace
             (deTurckLieConnectionDifferenceDerivativeSym (I := I) (M := M) g₀ T g₁ g_bg))) :=
   deTurckLieConnectionDifferenceDerivCoeffField_eq_pairTrace (I := I) (M := M) g₀ g_bg g₁ T htie
 
-end DeTurckLieConnectionDifferenceDerivativeUniformInternal
+end DeTurckLieConnectionDifferenceDerivativeKernelBounds
 
 end DeTurckLieConnectionDifferenceDerivativeGridBrick
 

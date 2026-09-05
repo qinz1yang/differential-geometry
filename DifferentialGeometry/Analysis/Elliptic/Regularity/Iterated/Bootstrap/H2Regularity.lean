@@ -130,7 +130,7 @@ theorem iteratedH2Regularity_one
       ((H1ComplToLp (I := I) (M := M) g u_h :
         Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ) < ⊤ := by
   rw [laplacianDomainPow_one] at hu_h
-  exact LaplacianDomainPerChartWitness.laplacianDomain_memWkpChart_two
+  exact laplacianDomain_memWkpChart_two
     (I := I) (M := M) g hu_h
 
 theorem laplacianDomainPow_memWkpChart_two_k_le_one

@@ -202,7 +202,7 @@ private theorem lieTerm_covariantJet_coeffFields_perOrder_data
     refine ⟨fun _ => C, fun i => hC_nn, ?_⟩
     intro T T' δ hδ_le hδ δ' hδ'_le hδ' hTball hT'ball
     obtain ⟨σ'₀, σ'₁, σ'₂, hj0, hj1, hj2, hident⟩ :=
-      realizedDeTurckLie_covariantJet_symmAbsorbed_perm_data (I := I) g₀ g_bg T T'
+      realizedDeTurckLie_covariantJet_symmAbsorbed_permutations (I := I) g₀ g_bg T T'
         (lt_of_le_of_lt hδ_le hδ₀) hδ (lt_of_le_of_lt hδ'_le hδ₀) hδ'
     refine ⟨_, _, _, hj0, hj1, hj2, ?_, ?_, ?_⟩
     · intro s hs x v

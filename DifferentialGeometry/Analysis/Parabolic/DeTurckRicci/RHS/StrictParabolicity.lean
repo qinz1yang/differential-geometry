@@ -440,14 +440,4 @@ theorem deTurckRicciRHS_isStrictlyParabolic_at_self [I.Boundaryless]
       (DifferentialGeometry.PDE.DeTurck.deTurckSymbolCoeff (I := I) g₀),
     deTurckRicciRHS_hasPrincipalSymbol_at_self g₀ g_bg⟩
 
-omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
-theorem bridge_symbol_equality_to_is_strictly_parabolic_metric_rhs
-    (F : SmoothRiemannianMetric I M →
-         (∀ x : M, TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ))
-    (g₀ : SmoothRiemannianMetric I M)
-    (σ : DifferentialGeometry.PDE.DeTurck.TensorSymbol (E := E) I M)
-    (h : HasPrincipalSymbol F g₀ σ) :
-    IsStrictlyParabolicMetricRHS (I := I) F g₀ :=
-  ⟨σ, h⟩
-
 end DifferentialGeometry.Analysis.Parabolic

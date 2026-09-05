@@ -1,4 +1,5 @@
-import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.PointwiseBounds.ChartDataBound
+import DifferentialGeometry.Geometry.Connection.Laplacian.TensorConnLaplacianChart
+import DifferentialGeometry.Analysis.Elliptic.TensorRegularity.CovariantDerivativeBounds.OperatorNorm
 import DifferentialGeometry.Analysis.Integration.Measure.Chart.L2TargetBound
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Connection

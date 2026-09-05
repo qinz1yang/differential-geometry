@@ -3,7 +3,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.Canonical
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Foundations.WindowEquivalence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Shi.Local
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Source.CovariantLipschitz
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.Open.Upgrade
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.Open.Existence
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Geometry.Curvature
 
@@ -26,15 +26,15 @@ variable {H : Type uH} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 variable {X : PointedFlowSeq.{u, uE, uH} (I := I)}
 
-theorem open_upgrade_of_canonical_metric_compactness
+theorem exists_smooth_flow_limit_subsequence_of_canonical_metric_compactness
     (canon : CanonicalMetricCompactness (I := I) (X.atZero (I := I)))
     {a b : Real} (hzero : (0 : Real) ∈ Set.Ioo a b)
     (hD : X.D = RealTimeInterval.openInterval a b 0 hzero)
-    (hcomplete : CompleteInput (I := I) X)
-    (hcurv : CurvBoundInput (I := I) X) :
-    ∃ d : FlowUpgrade (I := I) X canon.compactness,
+    (hcomplete : FlowMetricComplete (I := I) X)
+    (hcurv : FlowCurvatureBoundedOnCompactWindows (I := I) X) :
+    ∃ d : SmoothFlowLimitSubsequence (I := I) X canon.compactness,
       ∀ t : Real, t ∈ X.D.carrier →
-        MetricComplete (I := I) (d.data.L.atTime (I := I) t) := by
+        MetricComplete (I := I) (d.limit.L.atTime (I := I) t) := by
   classical
   let mc := canon.compactness
   let Phi := pointedCGHMapsOfManifold (I := I) X
@@ -134,7 +134,7 @@ theorem open_upgrade_of_canonical_metric_compactness
             (fun t => metricEquivalenceFactor 1 A t 0) := by
     intro n
     simpa only [beta, psi] using
-      CurvBoundInput.metricEquiv_open (I := I) hzero X hD hcurv n
+      FlowCurvatureBoundedOnCompactWindows.metricEquiv_open (I := I) hzero X hD hcurv n
   choose A Bmax hwindowData using hwindow
   let B : Nat → Real → Real := fun n t =>
     metricEquivalenceFactor 1 (A n) t 0
@@ -196,7 +196,7 @@ theorem open_upgrade_of_canonical_metric_compactness
         MovingShiBoundOn (I := I) (Phi.target k) (beta n) (psi n)
           (fun _ t => (X.term (mc.subseq k)).S.family.metric t) N KShi := by
     obtain ⟨KShi, hKShi, hShiAll⟩ :=
-      CurvBoundInput.movingShi_open (I := I) hzero X hD hcomplete hcurv n N
+      FlowCurvatureBoundedOnCompactWindows.movingShi_open (I := I) hzero X hD hcomplete hcurv n N
     refine ⟨KShi, hKShi, ?_⟩
     intro k
     have hk := hShiAll (mc.subseq k)
@@ -396,7 +396,7 @@ theorem open_upgrade_of_canonical_metric_compactness
       (by simpa only [beta, psi, RealTimeInterval.openWindow] using ht)
       q hq y
   simpa only [mc] using
-    (exists_complete_flowUpgrade_of_open_metric_bounds (I := I) (X := X) mc Phi bf hsrc htgt
+    (exists_complete_smooth_flow_limit_subsequence_of_open_metric_bounds (I := I) (X := X) mc Phi bf hsrc htgt
       hzero hD cLow hcLow hbound hcovTail hlipTail hlipSource hcp)
 
 end CheegerGromovCompactness

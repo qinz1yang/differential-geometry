@@ -289,7 +289,7 @@ section HeadlineRD2
 variable [I.Boundaryless] [CompleteSpace E] [T2Space (TangentBundle I M)]
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem exists_chartFlowOrbitLift_proj_eq_maximalGeodesic_data
+theorem exists_chartFlowOrbitLift_eventually_proj_eq_maximalGeodesic
     (g : SmoothRiemannianMetric I M) (p : M) :
     ∃ (ρ T : ℝ) (Φ : (E × E) × ℝ → E × E),
       0 < ρ ∧ 0 < T ∧
@@ -316,7 +316,7 @@ theorem exists_chartFlowOrbitLift_proj_eq_maximalGeodesic_data
   classical
   obtain ⟨ρ, T, Φ, hρ_pos, hT_pos, hΦ_initial, hΦ_target, hΦ_phase, hF_0,
     _hF_proj, _hF_chartPush, hF_int⟩ :=
-    exists_chartFlowOrbitLift_data_uniform (I := I) (g := g) (p := p)
+    exists_uniform_chartFlowOrbitLift (I := I) (g := g) (p := p)
   refine ⟨ρ, T, Φ, hρ_pos, hT_pos, hΦ_initial, hΦ_target, hΦ_phase, hF_0,
     hF_int, ?_⟩
   intro v hv

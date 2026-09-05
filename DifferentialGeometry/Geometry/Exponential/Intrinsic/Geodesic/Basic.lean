@@ -739,7 +739,7 @@ theorem expMapIntrinsic_eq_expMap_of_geodesicOn
 omit [T2Space M] [SigmaCompactSpace M]
     [RiemannianBundle (fun x : M => TangentSpace I x)] in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem exists_maximalGeodesic_data_of_small
+theorem exists_maximalGeodesic_local_properties
     [T2Space (TangentBundle I M)]
     (g : SmoothRiemannianMetric I M) (q : M) :
     ∃ ρ : ℝ, 0 < ρ ∧ ∀ {v : TangentSpace I q}, ‖(v : E)‖ < ρ →
@@ -904,7 +904,7 @@ theorem intrinsicGeodesic_foot_in_source_of_small
         intrinsicGeodesic (I := I) g hEnorm q v t ∈ (chartAt H q).source := by
   classical
   obtain ⟨c, hc_pos, hcoerc⟩ := gq_coercive (I := I) g q
-  obtain ⟨ρ₁, hρ₁_pos, hdata⟩ := exists_maximalGeodesic_data_of_small (I := I) g q
+  obtain ⟨ρ₁, hρ₁_pos, hdata⟩ := exists_maximalGeodesic_local_properties (I := I) g q
   obtain ⟨ρ₂, hρ₂_pos, hMdata⟩ :=
     DifferentialGeometry.Geometry.Riemannian.radial_maximalGeodesic_cont_and_foot_in_source_of_small
       (I := I) g q
@@ -1147,7 +1147,7 @@ theorem expMapIntrinsic_eq_expMap_of_small
       expMapIntrinsic (I := I) g hEnorm q v = expMap (I := I) g q v := by
   classical
   obtain ⟨c, hc_pos, hcoerc⟩ := gq_coercive (I := I) g q
-  obtain ⟨ρ₁, hρ₁_pos, hdata⟩ := exists_maximalGeodesic_data_of_small (I := I) g q
+  obtain ⟨ρ₁, hρ₁_pos, hdata⟩ := exists_maximalGeodesic_local_properties (I := I) g q
   set R : ℝ := min ρ₁ (DifferentialGeometry.Geometry.Riemannian.expMapC2Radius (I := I) g q)
     with hR_def
   have hR_pos : 0 < R :=

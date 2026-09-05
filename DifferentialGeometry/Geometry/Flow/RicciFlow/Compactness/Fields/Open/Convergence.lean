@@ -268,7 +268,7 @@ structure OpenMetricConvergenceData
     (bf : BumpFamily (I := I) Φ) (hsrc : SourceIsSigmaCompact Φ) (htgt : TargetIsSigmaCompact Φ)
     (a b t₀ : Real) where
   φ : Nat → Nat
-  hφ : StrictMono φ
+  strictMono : StrictMono φ
   gInf : letI : TopologicalSpace P.M := P.topology
     letI : ChartedSpace H P.M := P.charted
     letI : IsManifold I ∞ P.M := P.smooth
@@ -292,7 +292,7 @@ noncomputable def atWindow
       (RealTimeInterval.openWindowLeft a t₀ n)
       (RealTimeInterval.openWindowRight b t₀ n) where
   φ := co.φ
-  hφ := co.hφ
+  strictMono := co.strictMono
   gInf := co.gInf
   convergence := (co.convergenceOn n).convergence
   convergencePt := (co.convergenceOn n).convergencePt
@@ -316,7 +316,7 @@ end OpenMetricConvergenceData
 
 omit [NeZero (Module.finrank ℝ E)]
   [I.Boundaryless] in
-theorem exists_openMetricConvergenceData
+theorem nonempty_openMetricConvergenceData
     {R : letI : TopologicalSpace P.M := P.topology
       letI : ChartedSpace H P.M := P.charted
       letI : IsManifold I ∞ P.M := P.smooth
@@ -379,7 +379,7 @@ theorem exists_openMetricConvergenceData
     exact BumpMetricConvergence.unique (Φ := Φ) (hgN (idx t)) (hgN n) (hidx htOpen) ht
   exact ⟨{
     φ := φ
-    hφ := hφ
+    strictMono := hφ
     gInf := gInf
     convergenceOn := fun n =>
       BumpMetricConvergence.congr (Φ := Φ) (hgN n) fun t ht => (hgInf n t ht).symm
@@ -473,7 +473,7 @@ theorem exists_openMetricConvergenceData_of_bounds
   let : T2Space P.M := P.t2
   let : IsManifold I ∞ P.M := P.smooth
   let : SigmaCompactSpace P.M := P.sigmaCompact
-  refine exists_openMetricConvergenceData (Φ := Φ) ht₀ ?_
+  refine nonempty_openMetricConvergenceData (Φ := Φ) ht₀ ?_
   intro n ρ hρ
   let bfρ := BumpFamily.compSubseq (I := I) Φ bf ρ hρ
   let hsrcρ := SourceIsSigmaCompact.compSubseq (I := I) Φ hsrc ρ hρ
@@ -570,7 +570,7 @@ theorem exists_openMetricConvergenceData_of_bounds
     (RealTimeInterval.openWindowLeft a t₀ n)
     (RealTimeInterval.openWindowRight b t₀ n) hβψ (cLow n) (hcLow n)
     hboundρ hcovTailρ hlipTailρ hlipSourceρ
-  refine ⟨coρ.φ, coρ.hφ, coρ.gInf, ?_⟩
+  refine ⟨coρ.φ, coρ.strictMono, coρ.gInf, ?_⟩
   exact BumpMetricConvergence.of_compSubseq (Φ := Φ) ρ hρ
     (FlowMetricConvergenceData.bump_convergence (Φ := Φ.compSubseq ρ hρ) coρ)
 

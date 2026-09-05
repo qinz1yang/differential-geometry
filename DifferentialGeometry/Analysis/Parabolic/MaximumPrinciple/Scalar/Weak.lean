@@ -723,20 +723,20 @@ structure ParabolicUpperSupportAt
     (X : Real -> (x : M) -> TangentSpace I x)
     (w : Real -> M -> Real)
     (t : Real) (x : M) where
-  v : Real -> M -> Real
-  eq_at : v t x = w t x
+  upperSupport : Real -> M -> Real
+  eq_at : upperSupport t x = w t x
   upper_nhds :
     ∀ᶠ p in 𝓝[spacetimeSlab (M := M) T] (t, x),
-      w p.1 p.2 <= v p.1 p.2
+      w p.1 p.2 <= upperSupport p.1 p.2
   time_diff :
-    DifferentiableWithinAt Real (fun s : Real => v s x) (Set.Icc 0 T) t
+    DifferentiableWithinAt Real (fun s : Real => upperSupport s x) (Set.Icc 0 T) t
   space_diff_nhds :
-    ∀ᶠ y in 𝓝 x, MDifferentiableAt I 𝓘(Real, Real) (v t) y
+    ∀ᶠ y in 𝓝 x, MDifferentiableAt I 𝓘(Real, Real) (upperSupport t) y
   grad_diff :
     MDifferentiableAt I (I.prod 𝓘(Real, E))
-      (T% fun y : M => gradientFun (I := I) (G.metric t) (v t) y) x
+      (T% fun y : M => gradientFun (I := I) (G.metric t) (upperSupport t) y) x
   operator_nonneg :
-    0 <= parabolicOperatorWithDrift (I := I) G T X v t x
+    0 <= parabolicOperatorWithDrift (I := I) G T X upperSupport t x
 
 private theorem spacetimeSlab_isCompact
     [CompactSpace M] (T : Real) :
@@ -1309,7 +1309,7 @@ theorem strict_barrier_compact_of_upperSupport
       nlinarith [hΦ0_neg, hεt_nonneg]
     let support := hsupport t0 hp0_time ht0_pos x0 hw_t0_neg
     let Ψ : Real × M -> Real :=
-      fun p => support.v p.1 p.2 + ε * p.1
+      fun p => support.upperSupport p.1 p.2 + ε * p.1
     have hΨ_local :
         IsLocalMinOn Ψ (spacetimeSlab (M := M) T) (t0, x0) := by
       unfold IsLocalMinOn IsMinFilter
@@ -1319,7 +1319,7 @@ theorem strict_barrier_compact_of_upperSupport
       rw [support.eq_at]
       linarith
     have htime_min :
-        IsLocalMinOn (fun s : Real => support.v s x0 + ε * s)
+        IsLocalMinOn (fun s : Real => support.upperSupport s x0 + ε * s)
           (Set.Icc 0 T) t0 := by
       have hcomp := hΨ_local.comp_continuousOn
         (s := Set.Icc 0 T) (g := fun s : Real => (s, x0))
@@ -1327,32 +1327,32 @@ theorem strict_barrier_compact_of_upperSupport
           intro s hs
           exact ⟨hs, Set.mem_univ x0⟩)
         (continuous_id.prodMk continuous_const).continuousOn hp0_time
-      change IsLocalMinOn (fun s : Real => support.v s x0 + ε * s)
+      change IsLocalMinOn (fun s : Real => support.upperSupport s x0 + ε * s)
         (Set.Icc 0 T) t0 at hcomp
       exact hcomp
     have htime_diff :
         DifferentiableWithinAt Real
-          (fun s : Real => support.v s x0 + ε * s) (Set.Icc 0 T) t0 :=
+          (fun s : Real => support.upperSupport s x0 + ε * s) (Set.Icc 0 T) t0 :=
       support.time_diff.add
         ((differentiableWithinAt_fun_id
           (𝕜 := Real) (s := Set.Icc 0 T) (x := t0)).const_mul ε)
     have hbarrier_deriv_nonpos :
-        derivWithin (fun s : Real => support.v s x0 + ε * s)
+        derivWithin (fun s : Real => support.upperSupport s x0 + ε * s)
           (Set.Icc 0 T) t0 <= 0 :=
       derivWithin_nonpos_at_Icc_min_of_pos
         htime_min hp0_time ht0_pos
     have hderiv_eq :
-        derivWithin (fun s : Real => support.v s x0 + ε * s)
+        derivWithin (fun s : Real => support.upperSupport s x0 + ε * s)
             (Set.Icc 0 T) t0 =
-          derivWithin (fun s : Real => support.v s x0)
+          derivWithin (fun s : Real => support.upperSupport s x0)
             (Set.Icc 0 T) t0 + ε :=
       derivWithin_add_eps_mul_time (M := M) huniq support.time_diff
     have hv_deriv_le :
-        derivWithin (fun s : Real => support.v s x0)
+        derivWithin (fun s : Real => support.upperSupport s x0)
           (Set.Icc 0 T) t0 <= -ε := by
       linarith
     have hspace_min_shift :
-        IsLocalMin (fun y : M => support.v t0 y + ε * t0) x0 := by
+        IsLocalMin (fun y : M => support.upperSupport t0 y + ε * t0) x0 := by
       rw [← isLocalMinOn_univ_iff]
       have hcomp := hΨ_local.comp_continuousOn
         (s := Set.univ) (g := fun y : M => (t0, y))
@@ -1360,22 +1360,22 @@ theorem strict_barrier_compact_of_upperSupport
           intro y _
           exact ⟨hp0_time, Set.mem_univ y⟩)
         (continuous_const.prodMk continuous_id).continuousOn (Set.mem_univ x0)
-      change IsLocalMinOn (fun y : M => support.v t0 y + ε * t0)
+      change IsLocalMinOn (fun y : M => support.upperSupport t0 y + ε * t0)
         Set.univ x0 at hcomp
       exact hcomp
-    have hspatial_min : IsLocalMin (support.v t0) x0 := by
+    have hspatial_min : IsLocalMin (support.upperSupport t0) x0 := by
       unfold IsLocalMin IsMinFilter at hspace_min_shift ⊢
       filter_upwards [hspace_min_shift] with y hy
       linarith
     have hheat_nonneg :
         0 <= heatOperatorWithDrift
-          (I := I) G t0 (X t0) (support.v t0) x0 :=
+          (I := I) G t0 (X t0) (support.upperSupport t0) x0 :=
       heatOperatorWithDrift_at_spatial_min_nonneg (I := I) G t0 (X t0)
         hspatial_min support.space_diff_nhds.self_of_nhds support.space_diff_nhds
         support.grad_diff
     have hP_neg :
         parabolicOperatorWithDrift
-          (I := I) G T X support.v t0 x0 < 0 := by
+          (I := I) G T X support.upperSupport t0 x0 < 0 := by
       unfold parabolicOperatorWithDrift
       linarith
     exact not_lt_of_ge support.operator_nonneg hP_neg

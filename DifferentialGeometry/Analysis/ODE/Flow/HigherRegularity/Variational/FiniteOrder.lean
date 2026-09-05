@@ -306,7 +306,7 @@ theorem exists_lipschitzOnWith_closedBall_of_C1
     exact Exists.intro 0 hK
 
 omit [CompleteSpace E] in
-theorem exists_flow_nesting_data
+theorem exists_flow_nesting_parameters
     (hΦ : IsLocalFlow f t₀ x₀ r tmin tmax Φ)
     (hf : ContDiffOn ℝ 1 (uncurry f) (Set.univ : Set (ℝ × E)))
     (ht₀ : t₀ ∈ Ioo tmin tmax) (hr_pos : 0 < (r : ℝ)) :
@@ -1243,7 +1243,7 @@ theorem exists_contDiffOn_flow_C1 [FiniteDimensional ℝ E]
     ∃ U : Set (E × ℝ), IsOpen U ∧ (x₀, t₀) ∈ U ∧ ContDiffOn ℝ 1 Φ U := by
   obtain ⟨T_out, T_mid, T, M, ρ_out, ρ_mid, ρ, r',
     hT, hT_lt_mid, hT_mid_lt_out, hM, hMT_mid, hr', hρ_pos, hρ_lt_mid, hρ_mid_lt_out,
-    hρρ', hρ_out_le_r, hsub, hA_bd⟩ := exists_flow_nesting_data hΦ hf ht₀ hr_pos
+    hρρ', hρ_out_le_r, hsub, hA_bd⟩ := exists_flow_nesting_parameters hΦ hf ht₀ hr_pos
   exact exists_contDiffOn_flow_of_contDiff hΦ (le_refl 1) hf hT hT_lt_mid hT_mid_lt_out hM hMT_mid
     hsub hr' hρ_pos hρ_lt_mid hρ_mid_lt_out hρρ' hρ_out_le_r hA_bd
 
@@ -1294,7 +1294,7 @@ theorem exists_ball_prod_Ioo_mapsTo_insert_id_of_mem_open
 variable [FiniteDimensional ℝ E]
 
 omit [CompleteSpace E] in
-theorem exists_flow_nesting_data_capped
+theorem exists_capped_flow_nesting_parameters
     (hΦ : IsLocalFlow f t₀ x₀ r tmin tmax Φ)
     (hf : ContDiffOn ℝ 1 (uncurry f) (Set.univ : Set (ℝ × E)))
     (ht₀ : t₀ ∈ Ioo tmin tmax) (hr_pos : 0 < (r : ℝ))
@@ -1446,7 +1446,7 @@ theorem exists_contDiffOn_flow_succ_driver
   have hTcap_pos : 0 < Tcap := lt_min (lt_min hT_a_pos hT_p_pos) (lt_min hT_c1_pos hT_c2_pos)
   obtain ⟨T_out, T_mid, T, M, ρ_out, ρ_mid, ρ, r', hT, hT_lt_mid, hT_mid_lt_out, hM, hMT_mid,
     hr', hρ_pos, hρ_lt_mid, hρ_mid_lt_out, hρρ', hρ_out_le_r, hρ_out_le_cap, hT_out_le_cap,
-    hsub_out, hA_bd⟩ := exists_flow_nesting_data_capped hΦ hf_C1 ht₀ hr_pos hρcap_pos hTcap_pos
+    hsub_out, hA_bd⟩ := exists_capped_flow_nesting_parameters hΦ hf_C1 ht₀ hr_pos hρcap_pos hTcap_pos
   have hρcap_le_ρa : ρcap ≤ ρ_a := le_trans (min_le_left _ _) (min_le_left _ _)
   have hρcap_le_ρp : ρcap ≤ ρ_p := le_trans (min_le_left _ _) (min_le_right _ _)
   have hρcap_le_ρc1 : ρcap ≤ ρ_c1 := le_trans (min_le_right _ _) (min_le_left _ _)
@@ -1639,7 +1639,7 @@ theorem exists_contDiffOn_flow_smooth
     simpa using hf.of_le h_le
   obtain ⟨T_out, T_mid, T, M, ρ_out, ρ_mid, ρ, r',
     hT, hT_lt_mid, hT_mid_lt_out, hM, hMT_mid, hr', hρ_pos, hρ_lt_mid, hρ_mid_lt_out,
-    hρρ', hρ_out_le_r, hsub, hA_bd⟩ := exists_flow_nesting_data hΦ hf_C1 ht₀ hr
+    hρρ', hρ_out_le_r, hsub, hA_bd⟩ := exists_flow_nesting_parameters hΦ hf_C1 ht₀ hr
   have h_ρ_r : (ρ : ℝ) ≤ (r : ℝ) :=
     le_trans (le_of_lt hρ_lt_mid) (le_trans (le_of_lt hρ_mid_lt_out) hρ_out_le_r)
   have h_T_out : Icc (t₀ - T) (t₀ + T) ⊆ Icc (t₀ - T_out) (t₀ + T_out) :=

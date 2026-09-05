@@ -378,7 +378,7 @@ theorem iterCovComp_restrict {r : Nat} (U : TopologicalSpace.Opens E)
   | succ a ih =>
       intro x n
       rw [iterCovComp_succ, iterCovComp_succ]
-      unfold covDerivStepComp frameExtData
+      unfold covDerivStepComp frameDirectionalDerivatives
       have hscalar :
           (fun y : U ↦
             iterCovComp (I := 𝓘(Real, E)) (M := U)

@@ -973,7 +973,7 @@ private lemma chartTarget_pouWeighted_fderiv_repr_pointwise
 
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem chartTargetPouWeightedL2NormSq_fderiv_repr_le_sum_chartComp_data
+theorem chartTargetPouWeightedL2NormSq_fderiv_repr_le_sum_chartComp_bounds
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M) :
     ∃ K : ℝ, 0 ≤ K ∧
       ∀ (T : SmoothCcTensor g r s),

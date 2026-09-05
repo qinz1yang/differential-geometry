@@ -76,7 +76,7 @@ theorem tail_ball_system_map_center_succ
       (g (j₀ + n)) (g ((j₀ + n) + k)))
     (n : ℕ) :
     letI : ∀ m, Nonempty (tailBallOpen b j₀ m) := fun m => tail_ball_nonempty b j₀ m
-    (tailBallSystem (I := I) b Ψ hbase g hnorm j₀ D₀).toSeqSystem.F
+    (tailBallSystem (I := I) b Ψ hbase g hnorm j₀ D₀).toSeqSystem.map
         (Nat.le_succ n) (tailCenter b j₀ n) = tailCenter b j₀ (n + 1) := by
   let _ : ∀ m, Nonempty (tailBallOpen b j₀ m) := fun m => tail_ball_nonempty b j₀ m
   let hU := fun m => tail_ball_source (I := I) b Ψ g j₀ m (D₀ m)
@@ -89,12 +89,12 @@ theorem tail_ball_system_map_center_succ
     change y ∈ Metric.ball (b ((j₀ + m) + 1)) ((2 : ℝ) ^ (m + 1))
     exact tail_ball_image (I := I) b Ψ hbase g hnorm j₀ m (D₀ m 1) hy
   have hF :
-      (tailBallSystem (I := I) b Ψ hbase g hnorm j₀ D₀).toSeqSystem.F
+      (tailBallSystem (I := I) b Ψ hbase g hnorm j₀ D₀).toSeqSystem.map
           (Nat.le_succ n) =
         PartialDiffeomorph.opensMap
           (chainComp (I := I) (Mf := M) Ψ (j₀ + n) 1) (hmap n) := by
     unfold tailBallSystem
-    apply SmoothSeqSystem.ofSucc_F_succ
+    apply SmoothSeqSystem.ofSucc_map_succ
   rw [hF]
   apply Subtype.ext
   change (chainComp (I := I) (Mf := M) Ψ (j₀ + n) 1 :
@@ -118,7 +118,7 @@ theorem tail_ball_system_map_center
       (g (j₀ + n)) (g ((j₀ + n) + k)))
     (n : ℕ) :
     letI : ∀ m, Nonempty (tailBallOpen b j₀ m) := fun m => tail_ball_nonempty b j₀ m
-    (tailBallSystem (I := I) b Ψ hbase g hnorm j₀ D₀).toSeqSystem.F
+    (tailBallSystem (I := I) b Ψ hbase g hnorm j₀ D₀).toSeqSystem.map
         (Nat.zero_le n) (tailCenter b j₀ 0) = tailCenter b j₀ n := by
   let _ : ∀ m, Nonempty (tailBallOpen b j₀ m) := fun m => tail_ball_nonempty b j₀ m
   let S := tailBallSystem (I := I) b Ψ hbase g hnorm j₀ D₀
@@ -127,15 +127,15 @@ theorem tail_ball_system_map_center
       exact S.toSeqSystem.map_self 0 (tailCenter b j₀ 0)
   | succ n ih =>
       calc
-        S.toSeqSystem.F (Nat.zero_le (n + 1)) (tailCenter b j₀ 0) =
-            S.toSeqSystem.F ((Nat.zero_le n).trans (Nat.le_succ n))
+        S.toSeqSystem.map (Nat.zero_le (n + 1)) (tailCenter b j₀ 0) =
+            S.toSeqSystem.map ((Nat.zero_le n).trans (Nat.le_succ n))
               (tailCenter b j₀ 0) :=
-          S.toSeqSystem.F_apply_irrel _ _ _
-        _ = S.toSeqSystem.F (Nat.le_succ n)
-              (S.toSeqSystem.F (Nat.zero_le n) (tailCenter b j₀ 0)) :=
+          S.toSeqSystem.map_apply_irrel _ _ _
+        _ = S.toSeqSystem.map (Nat.le_succ n)
+              (S.toSeqSystem.map (Nat.zero_le n) (tailCenter b j₀ 0)) :=
           (S.toSeqSystem.map_map (Nat.zero_le n) (Nat.le_succ n)
             (tailCenter b j₀ 0)).symm
-        _ = S.toSeqSystem.F (Nat.le_succ n) (tailCenter b j₀ n) := by rw [ih]
+        _ = S.toSeqSystem.map (Nat.le_succ n) (tailCenter b j₀ n) := by rw [ih]
         _ = tailCenter b j₀ (n + 1) :=
           tail_ball_system_map_center_succ (I := I) b Ψ hbase g hnorm j₀ D₀ n
 
@@ -167,7 +167,7 @@ theorem tail_ball_system_incl_center
       calc
         S.toSeqSystem.incl (n + 1) (tailCenter b j₀ (n + 1)) =
             S.toSeqSystem.incl (n + 1)
-              (S.toSeqSystem.F (Nat.le_succ n) (tailCenter b j₀ n)) := by
+              (S.toSeqSystem.map (Nat.le_succ n) (tailCenter b j₀ n)) := by
           rw [tail_ball_system_map_center_succ (I := I) b Ψ hbase g hnorm j₀ D₀ n]
         _ = S.toSeqSystem.incl n (tailCenter b j₀ n) :=
           S.toSeqSystem.incl_comp (Nat.le_succ n) (tailCenter b j₀ n)
@@ -191,7 +191,7 @@ theorem tail_ball_system_step_range_compact
       (g (j₀ + n)) (g ((j₀ + n) + k))) :
     letI : ∀ n, Nonempty (tailBallOpen b j₀ n) := fun n => tail_ball_nonempty b j₀ n
     ∀ n, ∃ K : Set (tailBallOpen b j₀ (n + 1)), IsCompact K ∧
-      Set.range ((tailBallSystem (I := I) b Ψ hbase g hnorm j₀ D₀).toSeqSystem.F
+      Set.range ((tailBallSystem (I := I) b Ψ hbase g hnorm j₀ D₀).toSeqSystem.map
         (Nat.le_succ n)) ⊆ K := by
   classical
   let _ : ∀ n, Nonempty (tailBallOpen b j₀ n) := fun n => tail_ball_nonempty b j₀ n
@@ -240,11 +240,11 @@ theorem tail_ball_system_step_range_compact
     rw [hval]
     exact hImage
   · have hF :
-        (tailBallSystem (I := I) b Ψ hbase g hnorm j₀ D₀).toSeqSystem.F
+        (tailBallSystem (I := I) b Ψ hbase g hnorm j₀ D₀).toSeqSystem.map
             (Nat.le_succ n) =
           PartialDiffeomorph.opensMap Φ (hmap n) := by
       unfold tailBallSystem
-      apply SmoothSeqSystem.ofSucc_F_succ
+      apply SmoothSeqSystem.ofSucc_map_succ
     rw [hF]
     rintro _ ⟨x, rfl⟩
     change ((Φ : M (j₀ + n) → M ((j₀ + n) + 1)) x ∈

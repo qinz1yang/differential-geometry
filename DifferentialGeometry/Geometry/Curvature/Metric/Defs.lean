@@ -211,7 +211,7 @@ omit [SigmaCompactSpace M] in
   simp [metricRicci, metricRicciAt]
 
 
-noncomputable def metricCurvData
+noncomputable def metricCurvatureSections
     (g : SmoothRiemannianMetric I M) :
     DifferentialGeometry.Geometry.Curvature.ConnectionCurvatureSections (I := I)
       (DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric (I := I) g) g where
@@ -485,7 +485,7 @@ theorem dScalar_zero_ein3_at
       2 cov Ric x
   let dScalar := DifferentialGeometry.Geometry.Operator.differential1FormFun (I := I) scalar x
   obtain ⟨nablaRm04, hsecond, hRmSymm, hRicTrace, hScalar⟩ :=
-    DifferentialGeometry.Geometry.Connection.exists_levi_civita_bianchi_trace_data (I := I) (M := M) g basis gInv hinv
+    DifferentialGeometry.Geometry.Connection.exists_levi_civita_bianchi_trace_identities (I := I) (M := M) g basis gInv hinv
   have hInv : ∀ i j : Fin 3, gInv i j = gInv j i :=
     MetricInverseInBasis.symmetric (I := I) (M := M) g x basis gInv hinv
   have hEinNabla : ∀ A B C : TangentSpace I x,
@@ -533,7 +533,7 @@ theorem metricRicciSymm
         (DifferentialGeometry.Geometry.Curvature.vec2 (I := I) (basis i) (basis j)) =
       metricRicciAt (I := I) (M := M) g x
         (DifferentialGeometry.Geometry.Curvature.vec2 (I := I) (basis j) (basis i)) := by
-  let K := metricCurvData (I := I) (M := M) g
+  let K := metricCurvatureSections (I := I) (M := M) g
   have hLower :
       DifferentialGeometry.Geometry.Curvature.Rm04LowersRm13At (I := I) g x
         (metricRm13 (I := I) (M := M) g x)
@@ -677,7 +677,7 @@ theorem metricRicci_velocity_eq_sum_rm04_frame
     metricRicci (I := I) (M := M) g x (vec2 (I := I) T T) =
       ∑ i, metricRm04StandardAt (I := I) (M := M) g x (E i) T T (E i) := by
   classical
-  let K := metricCurvData (I := I) (M := M) g
+  let K := metricCurvatureSections (I := I) (M := M) g
   have hLower :
       DifferentialGeometry.Geometry.Curvature.Rm04LowersRm13At (I := I) g x
         (metricRm13 (I := I) (M := M) g x)

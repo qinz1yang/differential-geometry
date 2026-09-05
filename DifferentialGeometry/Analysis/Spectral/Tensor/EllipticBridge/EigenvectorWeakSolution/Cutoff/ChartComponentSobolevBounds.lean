@@ -62,11 +62,11 @@ private lemma tsupport_chartPushedRaw_subset_chartImage
       (I := I) (M := M) (u := u) α hy_target hy_off')
   · exact hy (chartPushedRaw_apply_of_notMem (I := I) (M := M) α u hy_target)
 
-private lemma wkpComp_const'_pos
+private lemma wkpCompositionConstant_pos
     {d : ℕ} {kmax : ℕ} {Ω Ω' : Set (EuclideanSpace ℝ (Fin d))}
     (Φ : SmoothDiffeoBoundedAtOrder d Ω Ω' kmax) (k : ℕ) (p : ℝ≥0∞) :
-    0 < Φ.wkpCompConst' k p := by
-  unfold SmoothDiffeoBoundedAtOrder.wkpCompConst'
+    0 < Φ.wkpCompositionConstant k p := by
+  unfold SmoothDiffeoBoundedAtOrder.wkpCompositionConstant
   have h_card_pos : (0 : ℝ) <
       (Finset.range (k + 1)).sum (fun j => (Fintype.card (Fin j → Fin d) : ℝ)) := by
     have h_zero_in : (0 : ℕ) ∈ Finset.range (k + 1) :=
@@ -93,8 +93,8 @@ private lemma wkpComp_const'_pos
 private lemma wkpComp_const'_nonneg
     {d : ℕ} {kmax : ℕ} {Ω Ω' : Set (EuclideanSpace ℝ (Fin d))}
     (Φ : SmoothDiffeoBoundedAtOrder d Ω Ω' kmax) (k : ℕ) (p : ℝ≥0∞) :
-    0 ≤ Φ.wkpCompConst' k p :=
-  (wkpComp_const'_pos Φ k p).le
+    0 ≤ Φ.wkpCompositionConstant k p :=
+  (wkpCompositionConstant_pos Φ k p).le
 
 private lemma wkpNorm_comp_smoothDiffeoBoundedAtOrder_le
     {d : ℕ} [NeZero d] {kmax : ℕ} (k : ℕ) (hk : k ≤ kmax)
@@ -105,10 +105,10 @@ private lemma wkpNorm_comp_smoothDiffeoBoundedAtOrder_le
     {u : EuclideanSpace ℝ (Fin d) → ℝ} (hu : MemWkp (d := d) k p u Ω')
     (hu_compactSupport : HasCompactSupport u) (hu_support : tsupport u ⊆ Ω') :
     iteratedWeakSobolevNorm (d := d) k p (fun x => u (Φ.toFun x)) Ω ≤
-      ENNReal.ofReal (Φ.wkpCompConst' k p) * iteratedWeakSobolevNorm (d := d) k p u Ω' := by
+      ENNReal.ofReal (Φ.wkpCompositionConstant k p) * iteratedWeakSobolevNorm (d := d) k p u Ω' := by
   classical
-  set K_const : ℝ := Φ.wkpCompConst' k p with hK_def
-  have hK_pos : 0 < K_const := wkpComp_const'_pos Φ k p
+  set K_const : ℝ := Φ.wkpCompositionConstant k p with hK_def
+  have hK_pos : 0 < K_const := wkpCompositionConstant_pos Φ k p
   have hK_nonneg : 0 ≤ K_const := hK_pos.le
   have h_approx : ∀ n : ℕ, ∃ ψ : EuclideanSpace ℝ (Fin d) → ℝ,
       ContDiff ℝ (⊤ : ℕ∞) ψ ∧ HasCompactSupport ψ ∧ tsupport ψ ⊆ Ω' ∧
@@ -627,7 +627,7 @@ private lemma wkpNorm_chartTransitionTransportCLM_le
       (by norm_num) (by norm_num)
       hΩαβ_open hcE_smooth' hCcoeff_nn
       (fun j hj y _ => hCcoeff_bound y j hj)
-  set Kcomp : ℝ := Φ.wkpCompConst' k 2 with hKcomp_def
+  set Kcomp : ℝ := Φ.wkpCompositionConstant k 2 with hKcomp_def
   have hKcomp_nn : 0 ≤ Kcomp := wkpComp_const'_nonneg Φ k 2
   refine ⟨Kc' * (Kcomp * Kχ), by positivity, ?_⟩
   intro f hf

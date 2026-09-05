@@ -369,7 +369,7 @@ private theorem connLowTwo_eval
     iterCov (I := I) g₀ 3 (metricLoweredConnectionDifferenceField (I := I) g₀ gBase) 2 x
         (vec5 (I := I) (D x) (X x) (Y x) (Z x) (W x)) =
       g₀.inner x
-        (DifferentialGeometry.Geometry.Curvature.covDerivConnectionDifference2
+        (DifferentialGeometry.Geometry.Curvature.secondCovDerivConnectionDifference
           (I := I) g₀ gBase D X Z Y x) (W x) := by
   classical
   let cov := leviCivitaConnectionOfMetric (I := I) g₀
@@ -532,12 +532,12 @@ private theorem connLowTwo_eval
       D slots x]
   rw [hderiv, hcorr]
   have hvalue :
-      DifferentialGeometry.Geometry.Curvature.covDerivConnectionDifference2 (I := I) g₀ gBase D X Z Y x =
+      DifferentialGeometry.Geometry.Curvature.secondCovDerivConnectionDifference (I := I) g₀ gBase D X Z Y x =
         (cov (fun p : M => R p) x) (D x) -
           covDerivConnectionDifference (I := I) g₀ gBase DX Z Y x -
           covDerivConnectionDifference (I := I) g₀ gBase X DZ Y x -
           covDerivConnectionDifference (I := I) g₀ gBase X Z DY x := by
-    rw [DifferentialGeometry.Geometry.Curvature.covDerivConnectionDifference2_eq]
+    rw [DifferentialGeometry.Geometry.Curvature.secondCovDerivConnectionDifference_apply]
     rw [LeviCivita_eq_leviCivitaConnectionOfMetric]
     dsimp only [R, DX, DY, DZ, cov]
     rfl
@@ -911,7 +911,7 @@ theorem uniformConnectionDifferenceTwo
     have hval :
         component0S (I := I) basis T slots =
           g₀.inner x
-            (DifferentialGeometry.Geometry.Curvature.covDerivConnectionDifference2
+            (DifferentialGeometry.Geometry.Curvature.secondCovDerivConnectionDifference
               (I := I) g₀ gBase D X Z Y x) (W x) := by
       rw [component0S]
       rw [show (fun a : Fin 5 => basis (slots a)) =
@@ -920,20 +920,17 @@ theorem uniformConnectionDifferenceTwo
         exact hvec]
       exact connLowTwo_eval (I := I) gBase g₀ D X Y Z W x
     let N : TangentSpace I x :=
-      DifferentialGeometry.Geometry.Curvature.covDerivConnectionDifference2
+      DifferentialGeometry.Geometry.Curvature.secondCovDerivConnectionDifference
         (I := I) g₀ gBase D X Z Y x
     have hNN : Real.sqrt (g₀.inner x N N) ≤ C := by
-      have h := covDConnectionDifference2_gJet_le (I := I)
+      have h := second_covariant_derivative_connection_difference_norm_le (I := I)
         hEq' hrev1 hrev2 hrev3 (Set.mem_univ x)
         (basis (slots 0)) (basis (slots 1))
         (basis (slots 3)) (basis (slots 2))
       rw [hunit (slots 0), hunit (slots 1),
         hunit (slots 3), hunit (slots 2)] at h
       norm_num at h
-      have hN : N = CheegerGromovCompactness.covDerivConnectionDifference2 (I := I)
-          g₀ gBase D X Z Y x := rfl
-      rw [hN]
-      simpa [C, C₁, C₂, C₃, D, X, Y, Z] using h
+      simpa [C, C₁, C₂, C₃, D, X, Y, Z, N] using h
     rw [hval]
     change |g₀.inner x N (W x)| ≤ C
     calc
@@ -1256,7 +1253,7 @@ private theorem uniformRicOne_of
     ∀ x : M,
       riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + 1) x
         ((iteratedCovGrad (I := I) g₀ 0 2 1
-          (ccOfField (I := I) g₀ 2
+          (smoothCompactTensorOfField (I := I) g₀ 2
             (metricRicci (I := I) (M := M) g₀))).toSection x) ≤
         ricciOneC (E := E) Λ Kb₀ Kb₁ ^ 2 := by
   let KR : ℝ := rmOneC (E := E) Λ Kb₀ Kb₁
@@ -1275,9 +1272,9 @@ private theorem uniformRicOne_of
     simpa [metricRicci, metricRm04, metricCov] using
       (levi_civita_ricci_section_eq_riemann_trace (I := I) (M := M) g₀)
   rw [riemannianFiberNormSq_iterCovGrad_eq (I := I) g₀ 2 1
-      (ccOfField (I := I) g₀ 2
+      (smoothCompactTensorOfField (I := I) g₀ 2
         (metricRicci (I := I) (M := M) g₀)) x,
-    ccOfField_unit, hcan]
+    smoothCompactTensorOfField_unit, hcan]
   calc
     normSq0S (I := I) g₀ x (2 + 1)
         (iterCov (I := I) g₀ 2
@@ -1293,8 +1290,8 @@ private theorem uniformRicOne_of
     _ = d ^ 5 *
         riemannianFiberNormSq (I := I) (M := M) g₀ 0 (4 + 1) x
           ((iteratedCovGrad (I := I) g₀ 0 4 1
-            (rmSection (I := I) (M := M) g₀)).toSection x) := by
-          rw [riemannianFiberNormSq_rmSection_eq (I := I) g₀ 1 x]
+            (riemannCurvatureSection (I := I) (M := M) g₀)).toSection x) := by
+          rw [riemannianFiberNormSq_riemannCurvatureSection_eq (I := I) g₀ 1 x]
     _ ≤ d ^ 5 * KR ^ 2 :=
       mul_le_mul_of_nonneg_left (hRm x) (pow_nonneg hd0 5)
     _ = K ^ 2 := by
@@ -1313,7 +1310,7 @@ private theorem uniformRicOne
     ∃ K : ℝ, 0 ≤ K ∧ ∀ x : M,
       riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + 1) x
         ((iteratedCovGrad (I := I) g₀ 0 2 1
-          (ccOfField (I := I) g₀ 2
+          (smoothCompactTensorOfField (I := I) g₀ 2
             (metricRicci (I := I) (M := M) g₀))).toSection x) ≤ K ^ 2 := by
   obtain ⟨Kb₀, hKb₀0, hKb₀⟩ :=
     exists_uniform_riemannOp_LeviCivita_gNorm_bound (I := I) (M := M) gBase
@@ -1325,7 +1322,7 @@ private theorem uniformRicOne
 
 private def ricciCc
     (g : SmoothRiemannianMetric I M) : SmoothCcTensor g 0 2 :=
-  ccOfField (I := I) g 2 (metricRicci (I := I) (M := M) g)
+  smoothCompactTensorOfField (I := I) g 2 (metricRicci (I := I) (M := M) g)
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
 private lemma unit_add2
@@ -1415,7 +1412,7 @@ private theorem ricci_unit
   change Tensor0SSpace.eval
     (ccUnitField (I := I) g 2 (ricciCc (I := I) (M := M) g) x)
       (fun i => (tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v i)) = _
-  rw [ricciCc, ccOfField_unit]
+  rw [ricciCc, smoothCompactTensorOfField_unit]
   rw [Tensor0SSpace.eval_eq]
   have hcmm : metricRicciAt (I := I) (M := M) g x
         (fun i => (tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v i)) =

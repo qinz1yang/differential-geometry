@@ -108,14 +108,6 @@ private theorem covD_eq_ext
     (extSec (I := I) x (Y x))
   all_goals simp
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
-private theorem covD2_eq_hcg
-    (gB g₀ : SmoothRiemannianMetric I M)
-    (D X Y Z : Π b : M, TangentSpace I b) (x : M) :
-    DifferentialGeometry.Geometry.Curvature.covDerivConnectionDifference2 (I := I) gB g₀ D X Y Z x =
-      CheegerGromovCompactness.covDerivConnectionDifference2 (I := I) gB g₀ D X Y Z x :=
-  rfl
-
 noncomputable def palatiniJet1At
     (gBase g₀ : SmoothRiemannianMetric I M) (x : M)
     (D X Y Z : TangentSpace I x) : TangentSpace I x :=
@@ -344,9 +336,9 @@ theorem uniformPalatini1_le
   let Ys := extSec (I := I) x Y
   let Zs := extSec (I := I) x Z
   let A₂xy : TangentSpace I x :=
-    DifferentialGeometry.Geometry.Curvature.covDerivConnectionDifference2 (I := I) gBase g₀ Ds Xs Ys Zs x
+    DifferentialGeometry.Geometry.Curvature.secondCovDerivConnectionDifference (I := I) gBase g₀ Ds Xs Ys Zs x
   let A₂yx : TangentSpace I x :=
-    DifferentialGeometry.Geometry.Curvature.covDerivConnectionDifference2 (I := I) gBase g₀ Ds Ys Xs Zs x
+    DifferentialGeometry.Geometry.Curvature.secondCovDerivConnectionDifference (I := I) gBase g₀ Ds Ys Xs Zs x
   let AYZs : ContMDiffSection I E (∞ : WithTop ℕ∞)
       (TangentSpace I : M → Type _) :=
     ContMDiffSection.mk
@@ -397,14 +389,14 @@ theorem uniformPalatini1_le
     dsimp [prod4, L]
     positivity
   have hA₂xy : L A₂xy ≤ C₂ * prod4 := by
-    simpa [A₂xy, Ds, Xs, Ys, Zs, extSec, L, prod4, C₂, covD2_eq_hcg,
+    simpa [A₂xy, Ds, Xs, Ys, Zs, extSec, L, prod4, C₂,
       mul_assoc] using
-      CheegerGromovCompactness.covDConnectionDifference2_gJet_le (I := I) hEq hjet1 hjet2 hjet3
+      CheegerGromovCompactness.second_covariant_derivative_connection_difference_norm_le (I := I) hEq hjet1 hjet2 hjet3
         (Set.mem_univ x) D X Y Z
   have hA₂yx : L A₂yx ≤ C₂ * prod4 := by
-    have h := CheegerGromovCompactness.covDConnectionDifference2_gJet_le (I := I)
+    have h := CheegerGromovCompactness.second_covariant_derivative_connection_difference_norm_le (I := I)
       hEq hjet1 hjet2 hjet3 (Set.mem_univ x) D Y X Z
-    simpa [A₂yx, Ds, Xs, Ys, Zs, extSec, L, prod4, C₂, covD2_eq_hcg, mul_assoc,
+    simpa [A₂yx, Ds, Xs, Ys, Zs, extSec, L, prod4, C₂, mul_assoc,
       mul_left_comm, mul_comm] using h
   have hAYZ : L (AYZs x) ≤ C₀ * L Y * L Z := by
     have h := hC₀ x Z Y

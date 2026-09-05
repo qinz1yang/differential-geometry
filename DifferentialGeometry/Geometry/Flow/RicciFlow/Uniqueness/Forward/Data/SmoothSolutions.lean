@@ -2238,7 +2238,7 @@ theorem forwardUniquenessInputs_of_gram (g₁ g₂ : Real → SmoothRiemannianMe
         (forwardUniquenessSfield (I := I) g₁ g₂) (forwardUniquenessUflux (I := I) g₁ g₂) (forwardUniquenessRem (I := I) g₁ g₂)
         a c C_A C_R C_Ric C_V C_U C_rem)
     (hedge : ContinuousWithinAt (forwardUniqueEnergy (I := I) (M := M) g₁ g₂) (Ico a b) a) :
-    ForwardUniqueInputs (I := I) g₁ g₂ (forwardUniquenessAvec (I := I) g₁ g₂) (forwardUniquenessSvec (I := I) g₁ g₂)
+    ForwardUniquenessAssumptions (I := I) g₁ g₂ (forwardUniquenessAvec (I := I) g₁ g₂) (forwardUniquenessSvec (I := I) g₁ g₂)
       (forwardUniquenessSfield (I := I) g₁ g₂) (forwardUniquenessUflux (I := I) g₁ g₂) (forwardUniquenessRem (I := I) g₁ g₂) a b := by
   have hS₁ := forwardUniquenessIsSolution (I := I) g₁ hab hjoint₁ hpde₁
   have hS₂ := forwardUniquenessIsSolution (I := I) g₂ hab hjoint₂ hpde₂
@@ -2287,7 +2287,7 @@ theorem forward_unique_of_gram (g₁ g₂ : Real → SmoothRiemannianMetric I M)
         a c C_A C_R C_Ric C_V C_U C_rem)
     (hedge : ContinuousWithinAt (forwardUniqueEnergy (I := I) (M := M) g₁ g₂) (Ico a b) a) :
     ∀ t ∈ Ico a b, g₁ t = g₂ t :=
-  forward_unique_of_inputs (I := I) g₁ g₂ (forwardUniquenessAvec (I := I) g₁ g₂) (forwardUniquenessSvec (I := I) g₁ g₂)
+  forward_unique_of_assumptions (I := I) g₁ g₂ (forwardUniquenessAvec (I := I) g₁ g₂) (forwardUniquenessSvec (I := I) g₁ g₂)
     (forwardUniquenessSfield (I := I) g₁ g₂) (forwardUniquenessUflux (I := I) g₁ g₂) (forwardUniquenessRem (I := I) g₁ g₂)
     h1smooth h1pde h2pde h0
     (forwardUniquenessInputs_of_gram (I := I) g₁ g₂ hab h1smooth h2smooth h1pde h2pde hbounds hedge)

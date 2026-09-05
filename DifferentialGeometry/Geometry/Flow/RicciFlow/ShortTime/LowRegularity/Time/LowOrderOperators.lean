@@ -1420,9 +1420,9 @@ private theorem lowerScaleSecondOrderActionThirdToFirstOrderCore_value
         ⟨ccToHsLin (I := I) (M := M) g 2 (2 : ℝ) T, ⟨T, rfl⟩⟩
   simp only [lowerScaleSecondOrderActionThirdToFirstOrderCore, hrep]
 
-namespace LowerScaleTimeInternal
+namespace LowerScaleTime
 
-abbrev LowCore (g : SmoothRiemannianMetric I M) :=
+abbrev SecondOrderDenseCore (g : SmoothRiemannianMetric I M) :=
   lowCore (I := I) (M := M) g
 
 abbrev SecondOrderActionFourthToSecondOrderSpace (g : SmoothRiemannianMetric I M) :=
@@ -1431,27 +1431,27 @@ abbrev SecondOrderActionFourthToSecondOrderSpace (g : SmoothRiemannianMetric I M
 abbrev SecondOrderActionThirdToFirstOrderSpace (g : SmoothRiemannianMetric I M) :=
   lowerScaleSecondOrderActionThirdToFirstOrderSpace (I := I) (M := M) g
 
-noncomputable def secondOrderActionFourthToSecondOrderCore
+noncomputable def secondOrderActionFourthToSecondOrderOnDenseCore
     (g : SmoothRiemannianMetric I M)
     {ρ δ : ℝ} (hρ : 0 ≤ ρ) (hδ0 : 0 ≤ δ) (hδ_le : δ ≤ 1 / 3)
     (hreal : ∀ S : SmoothCcTensor g 0 2,
       ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) S‖ ≤ ρ →
         gFibreOpBound (I := I) (M := M) g
           (ccTensorBilinSymm (I := I) g S) δ) :
-    LowCore (I := I) (M := M) g → SecondOrderActionFourthToSecondOrderSpace (I := I) (M := M) g :=
+    SecondOrderDenseCore (I := I) (M := M) g → SecondOrderActionFourthToSecondOrderSpace (I := I) (M := M) g :=
   lowerScaleSecondOrderActionFourthToSecondOrderCore (I := I) (M := M) g hρ hδ0 hδ_le hreal
 
-noncomputable def secondOrderActionThirdToFirstOrderCore
+noncomputable def secondOrderActionThirdToFirstOrderOnDenseCore
     (g : SmoothRiemannianMetric I M)
     {ρ δ : ℝ} (hρ : 0 ≤ ρ) (hδ0 : 0 ≤ δ) (hδ_le : δ ≤ 1 / 3)
     (hreal : ∀ S : SmoothCcTensor g 0 2,
       ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) S‖ ≤ ρ →
         gFibreOpBound (I := I) (M := M) g
           (ccTensorBilinSymm (I := I) g S) δ) :
-    LowCore (I := I) (M := M) g → SecondOrderActionThirdToFirstOrderSpace (I := I) (M := M) g :=
+    SecondOrderDenseCore (I := I) (M := M) g → SecondOrderActionThirdToFirstOrderSpace (I := I) (M := M) g :=
   lowerScaleSecondOrderActionThirdToFirstOrderCore (I := I) (M := M) g hρ hδ0 hδ_le hreal
 
-theorem secondOrderActionFourthToSecondOrderCore_value
+theorem secondOrderActionFourthToSecondOrderOnDenseCore_apply
     (g : SmoothRiemannianMetric I M)
     {ρ δ : ℝ} (hρ : 0 ≤ ρ) (hδ0 : 0 ≤ δ) (hδ_le : δ ≤ 1 / 3)
     (hreal : ∀ S : SmoothCcTensor g 0 2,
@@ -1459,13 +1459,13 @@ theorem secondOrderActionFourthToSecondOrderCore_value
         gFibreOpBound (I := I) (M := M) g
           (ccTensorBilinSymm (I := I) g S) δ)
     (T : SmoothCcTensor g 0 2) :
-    secondOrderActionFourthToSecondOrderCore (I := I) (M := M) g hρ hδ0 hδ_le hreal
+    secondOrderActionFourthToSecondOrderOnDenseCore (I := I) (M := M) g hρ hδ0 hδ_le hreal
         ⟨ccToHsLin (I := I) (M := M) g 2 (2 : ℝ) T, ⟨T, rfl⟩⟩ =
       (lowCoreActionCoefficients (I := I) (M := M) g hρ hδ0 hδ_le hreal T).secondOrderActionFourthToSecondOrder
         (I := I) (M := M) :=
   lowerScaleSecondOrderActionFourthToSecondOrderCore_value (I := I) (M := M) g hρ hδ0 hδ_le hreal T
 
-theorem secondOrderActionThirdToFirstOrderCore_value
+theorem secondOrderActionThirdToFirstOrderOnDenseCore_apply
     (g : SmoothRiemannianMetric I M)
     {ρ δ : ℝ} (hρ : 0 ≤ ρ) (hδ0 : 0 ≤ δ) (hδ_le : δ ≤ 1 / 3)
     (hreal : ∀ S : SmoothCcTensor g 0 2,
@@ -1473,13 +1473,13 @@ theorem secondOrderActionThirdToFirstOrderCore_value
         gFibreOpBound (I := I) (M := M) g
           (ccTensorBilinSymm (I := I) g S) δ)
     (T : SmoothCcTensor g 0 2) :
-    secondOrderActionThirdToFirstOrderCore (I := I) (M := M) g hρ hδ0 hδ_le hreal
+    secondOrderActionThirdToFirstOrderOnDenseCore (I := I) (M := M) g hρ hδ0 hδ_le hreal
         ⟨ccToHsLin (I := I) (M := M) g 2 (2 : ℝ) T, ⟨T, rfl⟩⟩ =
       (lowCoreActionCoefficients (I := I) (M := M) g hρ hδ0 hδ_le hreal T).secondOrderActionThirdToFirstOrder
         (I := I) (M := M) :=
   lowerScaleSecondOrderActionThirdToFirstOrderCore_value (I := I) (M := M) g hρ hδ0 hδ_le hreal T
 
-end LowerScaleTimeInternal
+end LowerScaleTime
 
 noncomputable def lowerScaleSecondOrderActionFourthToSecondOrder
     (g : SmoothRiemannianMetric I M)
@@ -1579,9 +1579,9 @@ private theorem lowerScaleFirstOrderActionSecondToFirstOrderCore_value
         ⟨ccToHsLin (I := I) (M := M) g 2 (3 : ℝ) T, ⟨T, rfl⟩⟩
   simp only [lowerScaleFirstOrderActionSecondToFirstOrderCore, hrep]
 
-namespace LowerScaleTimeInternal
+namespace LowerScaleTime
 
-abbrev HighCore (g : SmoothRiemannianMetric I M) :=
+abbrev ThirdOrderDenseCore (g : SmoothRiemannianMetric I M) :=
   highCore (I := I) (M := M) g
 
 abbrev FirstOrderActionThirdToSecondOrderSpace (g : SmoothRiemannianMetric I M) :=
@@ -1590,27 +1590,27 @@ abbrev FirstOrderActionThirdToSecondOrderSpace (g : SmoothRiemannianMetric I M) 
 abbrev FirstOrderActionSecondToFirstOrderSpace (g : SmoothRiemannianMetric I M) :=
   lowerScaleFirstOrderActionSecondToFirstOrderSpace (I := I) (M := M) g
 
-noncomputable def firstOrderActionThirdToSecondOrderCore
+noncomputable def firstOrderActionThirdToSecondOrderOnDenseCore
     (g : SmoothRiemannianMetric I M)
     {ρ δ : ℝ} (hρ : 0 ≤ ρ) (hδ0 : 0 ≤ δ) (hδ_le : δ ≤ 1 / 3)
     (hreal : ∀ S : SmoothCcTensor g 0 2,
       ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) S‖ ≤ ρ →
         gFibreOpBound (I := I) (M := M) g
           (ccTensorBilinSymm (I := I) g S) δ) :
-    HighCore (I := I) (M := M) g → FirstOrderActionThirdToSecondOrderSpace (I := I) (M := M) g :=
+    ThirdOrderDenseCore (I := I) (M := M) g → FirstOrderActionThirdToSecondOrderSpace (I := I) (M := M) g :=
   lowerScaleFirstOrderActionThirdToSecondOrderCore (I := I) (M := M) g hρ hδ0 hδ_le hreal
 
-noncomputable def firstOrderActionSecondToFirstOrderCore
+noncomputable def firstOrderActionSecondToFirstOrderOnDenseCore
     (g : SmoothRiemannianMetric I M)
     {ρ δ : ℝ} (hρ : 0 ≤ ρ) (hδ0 : 0 ≤ δ) (hδ_le : δ ≤ 1 / 3)
     (hreal : ∀ S : SmoothCcTensor g 0 2,
       ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) S‖ ≤ ρ →
         gFibreOpBound (I := I) (M := M) g
           (ccTensorBilinSymm (I := I) g S) δ) :
-    HighCore (I := I) (M := M) g → FirstOrderActionSecondToFirstOrderSpace (I := I) (M := M) g :=
+    ThirdOrderDenseCore (I := I) (M := M) g → FirstOrderActionSecondToFirstOrderSpace (I := I) (M := M) g :=
   lowerScaleFirstOrderActionSecondToFirstOrderCore (I := I) (M := M) g hρ hδ0 hδ_le hreal
 
-theorem firstOrderActionThirdToSecondOrderCore_value
+theorem firstOrderActionThirdToSecondOrderOnDenseCore_apply
     (g : SmoothRiemannianMetric I M)
     {ρ δ : ℝ} (hρ : 0 ≤ ρ) (hδ0 : 0 ≤ δ) (hδ_le : δ ≤ 1 / 3)
     (hreal : ∀ S : SmoothCcTensor g 0 2,
@@ -1618,13 +1618,13 @@ theorem firstOrderActionThirdToSecondOrderCore_value
         gFibreOpBound (I := I) (M := M) g
           (ccTensorBilinSymm (I := I) g S) δ)
     (T : SmoothCcTensor g 0 2) :
-    firstOrderActionThirdToSecondOrderCore (I := I) (M := M) g hρ hδ0 hδ_le hreal
+    firstOrderActionThirdToSecondOrderOnDenseCore (I := I) (M := M) g hρ hδ0 hδ_le hreal
         ⟨ccToHsLin (I := I) (M := M) g 2 (3 : ℝ) T, ⟨T, rfl⟩⟩ =
       (lowCoreActionCoefficients (I := I) (M := M) g hρ hδ0 hδ_le hreal T).firstOrderActionThirdToSecondOrder
         (I := I) (M := M) :=
   lowerScaleFirstOrderActionThirdToSecondOrderCore_value (I := I) (M := M) g hρ hδ0 hδ_le hreal T
 
-theorem firstOrderActionSecondToFirstOrderCore_value
+theorem firstOrderActionSecondToFirstOrderOnDenseCore_apply
     (g : SmoothRiemannianMetric I M)
     {ρ δ : ℝ} (hρ : 0 ≤ ρ) (hδ0 : 0 ≤ δ) (hδ_le : δ ≤ 1 / 3)
     (hreal : ∀ S : SmoothCcTensor g 0 2,
@@ -1632,13 +1632,13 @@ theorem firstOrderActionSecondToFirstOrderCore_value
         gFibreOpBound (I := I) (M := M) g
           (ccTensorBilinSymm (I := I) g S) δ)
     (T : SmoothCcTensor g 0 2) :
-    firstOrderActionSecondToFirstOrderCore (I := I) (M := M) g hρ hδ0 hδ_le hreal
+    firstOrderActionSecondToFirstOrderOnDenseCore (I := I) (M := M) g hρ hδ0 hδ_le hreal
         ⟨ccToHsLin (I := I) (M := M) g 2 (3 : ℝ) T, ⟨T, rfl⟩⟩ =
       (lowCoreActionCoefficients (I := I) (M := M) g hρ hδ0 hδ_le hreal T).firstOrderActionSecondToFirstOrder
         (I := I) (M := M) :=
   lowerScaleFirstOrderActionSecondToFirstOrderCore_value (I := I) (M := M) g hρ hδ0 hδ_le hreal T
 
-end LowerScaleTimeInternal
+end LowerScaleTime
 
 noncomputable def lowerScaleFirstOrderActionThirdToSecondOrder
     (g : SmoothRiemannianMetric I M)

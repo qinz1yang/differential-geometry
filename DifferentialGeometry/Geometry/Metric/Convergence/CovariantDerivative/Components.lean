@@ -34,7 +34,7 @@ def iterCovComp {r : ℕ}
   | 0 => base
   | (a + 1) => fun x =>
       covDerivStepComp
-        (frameExtData (I := I) frame
+        (frameDirectionalDerivatives (I := I) frame
           (fun y : M => iterCovComp frame chr base a y) x)
         (chr x)
         (iterCovComp frame chr base a x)
@@ -55,7 +55,7 @@ theorem iterCovComp_succ {r : ℕ}
     (base : M → (Fin r → Idx) → Real) (a : ℕ) (x : M) :
     iterCovComp (I := I) frame chr base (a + 1) x =
       covDerivStepComp
-        (frameExtData (I := I) frame
+        (frameDirectionalDerivatives (I := I) frame
           (fun y : M => iterCovComp (I := I) frame chr base a y) x)
         (chr x)
         (iterCovComp (I := I) frame chr base a x) := rfl
@@ -125,17 +125,17 @@ theorem iterCovComp_eq_iterCov
         simpa [frameComp0S, frameTuple] using ih hy m
       rw [iterCovComp_succ]
       have hext :
-          frameExtData (I := I) frame
+          frameDirectionalDerivatives (I := I) frame
               (fun y : M =>
                 iterCovComp (I := I) frame
                   (fun z : M =>
                     christoffelSymbolInFrame
                       (leviCivitaConnectionOfMetric (I := I) gRef) frame hframe z)
                   (frameComp0S (I := I) T frame) a y) x =
-            frameExtData (I := I) frame
+            frameDirectionalDerivatives (I := I) frame
               (frameComp0S (I := I) (iterCov (I := I) gRef r T a) frame) x := by
         funext m d
-        simp only [frameExtData]
+        simp only [frameDirectionalDerivatives]
         refine mvfderiv_eventuallyEq_congr (I := I) _ ?_
         exact hlevela.mono fun y hy => congrFun hy m
       have hbase :

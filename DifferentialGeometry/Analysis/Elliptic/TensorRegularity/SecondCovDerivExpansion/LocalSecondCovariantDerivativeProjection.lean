@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Connection.CovApplyCovRSChartBasisExtension
 import DifferentialGeometry.Geometry.Connection.TensorNabla.Naturality.LocalCongruence
-import DifferentialGeometry.Analysis.Elliptic.TensorRegularity.SecondCovDerivExpansion.SkExtChartComponentEqCovDerivEuclid
+import DifferentialGeometry.Analysis.Elliptic.TensorRegularity.SecondCovDerivExpansion.SmoothExtensionComponent
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 
@@ -48,7 +48,7 @@ private lemma packageAsCc_toSection
 
 omit [CompleteSpace E] in
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
-theorem chartα_proj_secondCovDeriv_eq_chartCoord_first_deriv_of_Sk_ext
+theorem exists_chartProjection_secondCovDeriv_eq_covDerivComponentEuclid
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (T₀ : SmoothCcTensor g r s)
     (k l : Fin (Module.finrank ℝ E))

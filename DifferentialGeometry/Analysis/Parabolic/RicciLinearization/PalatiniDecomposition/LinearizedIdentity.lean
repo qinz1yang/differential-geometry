@@ -438,7 +438,7 @@ private lemma lrWindowOneThree_le (b : ℕ → ℝ) (hb : ∀ j, 0 ≤ b j) {B :
   nlinarith [hb 1, hB1, hB0, sq_nonneg (b 1 - B)]
 
 
-theorem exists_deTurckLieCovariantDerivativeTerm_basepointBackground_pairTraceResidual_order0_data
+theorem exists_deTurckLieCovariantDerivativeTerm_basepointBackground_pairTraceResidual_order0_bounds
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
@@ -580,7 +580,7 @@ theorem exists_deTurckLieCovariantDerivativeTerm_basepointBackground_pairTraceRe
       nlinarith [hwin_nn, hK_nn]
 
 
-theorem exists_deTurckLieCovariantDerivativeTerm_basepointBackground_decomposition_identity_data
+theorem exists_deTurckLieCovariantDerivativeTerm_basepointBackground_decomposition_identity_with_bounds
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
@@ -615,7 +615,7 @@ theorem exists_deTurckLieCovariantDerivativeTerm_basepointBackground_decompositi
                 ‖iteratedCovGrad (I := I) g₀ 0 2 j T‖ ^ 2)) := by
   classical
   obtain ⟨Λ, hΛ_nn, K, hK_nn, hres⟩ :=
-    exists_deTurckLieCovariantDerivativeTerm_basepointBackground_pairTraceResidual_order0_data
+    exists_deTurckLieCovariantDerivativeTerm_basepointBackground_pairTraceResidual_order0_bounds
       (I := I) (M := M) g₀ a ha_super hR hδ₀
   refine ⟨Λ, hΛ_nn, K, hK_nn,
     ![Equiv.swap (0 : Fin 4) 1 * Equiv.swap (0 : Fin 4) 2,
@@ -645,7 +645,7 @@ theorem exists_deTurckLieCovariantDerivativeTerm_basepointBackground_decompositi
   abel
 
 
-theorem exists_deTurckLieCovariantDerivativeTerm_decomposition_identity_data
+theorem exists_deTurckLieCovariantDerivativeTerm_decomposition_identity_with_bounds
     (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
@@ -680,7 +680,7 @@ theorem exists_deTurckLieCovariantDerivativeTerm_decomposition_identity_data
                 ‖iteratedCovGrad (I := I) g₀ 0 2 j T‖ ^ 2)) := by
   classical
   obtain ⟨Λv, hΛv_nn, Kv, hKv_nn, q, ε, hε, hmov⟩ :=
-    exists_deTurckLieCovariantDerivativeTerm_basepointBackground_decomposition_identity_data (I := I) (M := M)
+    exists_deTurckLieCovariantDerivativeTerm_basepointBackground_decomposition_identity_with_bounds (I := I) (M := M)
       g₀ a ha_super hR hδ₀
   obtain ⟨Λbg, hΛbg_nn, hsup_bg⟩ :=
     deTurckLieConnectionDifferenceDerivCoeffField_metricPerturbationPath_riemannianFiberNormSq_order0_ballUniform (I := I) (M := M)

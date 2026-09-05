@@ -5322,7 +5322,7 @@ private lemma vbmcd_rel_lip (g₀ g₁ : SmoothRiemannianMetric I M) :
       Tensor0SSpace.toModel
           ((show Tensor0SSpace 1 I y →L[ℝ] Tensor0SSpace 4 I y from
             (lieCorrectionZeroVectorBundleMetricConnectionDifferenceTerm (I := I) (M := M) g₀ g₁).toSection y) d) =
-        ContinuousMultilinearMap.domDomCongr LieCorrectionZeroCore.lieCorrectionZeroVectorBundleTracePermutation
+        ContinuousMultilinearMap.domDomCongr LieCorrectionZeroFiberOperators.lieCorrectionZeroVectorBundleTracePermutation
           (Tensor0SSpace.toModel
             ((show Tensor0SSpace 1 I y →L[ℝ] Tensor0SSpace 4 I y from
               (slotExtend (I := I) (M := M) g₀ 0 3
@@ -5331,12 +5331,12 @@ private lemma vbmcd_rel_lip (g₀ g₁ : SmoothRiemannianMetric I M) :
   intro y d
   rw [show ((show Tensor0SSpace 1 I y →L[ℝ] Tensor0SSpace 4 I y from
       (lieCorrectionZeroVectorBundleMetricConnectionDifferenceTerm (I := I) (M := M) g₀ g₁).toSection y) d) =
-      domDomCongrFibRank (I := I) 4 LieCorrectionZeroCore.lieCorrectionZeroVectorBundleTracePermutation y
+      domDomCongrFibRank (I := I) 4 LieCorrectionZeroFiberOperators.lieCorrectionZeroVectorBundleTracePermutation y
         (tensor0SProdKappaFib (I := I) (p := 1) (q := 3) y
           (metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ g₀ y) d) from rfl]
   rw [domDomCongrFibRank_apply, Tensor0SSpace.toModel_ofModel]
   exact congrArg
-    (ContinuousMultilinearMap.domDomCongr LieCorrectionZeroCore.lieCorrectionZeroVectorBundleTracePermutation)
+    (ContinuousMultilinearMap.domDomCongr LieCorrectionZeroFiberOperators.lieCorrectionZeroVectorBundleTracePermutation)
     (vbPK_slotExt_lip (I := I) (M := M) g₀ g₁ y d)
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [SigmaCompactSpace M] in
@@ -5344,7 +5344,7 @@ private theorem vbmcd_perm_eq
     (g gm : SmoothRiemannianMetric I M) :
     lieCorrectionZeroVectorBundleMetricConnectionDifferenceTerm (I := I) (M := M) g gm =
       rsDomDomCongrSection (I := I) (M := M) g 1 4
-        LieCorrectionZeroCore.lieCorrectionZeroVectorBundleTracePermutation
+        LieCorrectionZeroFiberOperators.lieCorrectionZeroVectorBundleTracePermutation
         (slotExtend (I := I) (M := M) g 0 3
           (metricConnectionDifferenceLoweredCoefficient (I := I) (M := M) g gm g)) := by
   apply SmoothCcTensor.ext
@@ -6507,11 +6507,11 @@ private theorem amixHalf_pair_h1
     slotExtendIter (I := I) (M := M) g 0 3 2 mcdU with hS5Udef
   set S4T : SmoothCcTensor g 2 3 :=
     ccOperatorFieldComp (I := I) (M := M) g 2 5 3
-      (reindexedPureTrace (I := I) (M := M) g gmT 3 LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroOneFour) S5T
+      (reindexedPureTrace (I := I) (M := M) g gmT 3 LieCorrectionZeroFiberOperators.lieCorrectionZeroMixedConnectionPermutationCycleZeroOneFour) S5T
     with hS4Tdef
   set S4U : SmoothCcTensor g 2 3 :=
     ccOperatorFieldComp (I := I) (M := M) g 2 5 3
-      (reindexedPureTrace (I := I) (M := M) g gmU 3 LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroOneFour) S5U
+      (reindexedPureTrace (I := I) (M := M) g gmU 3 LieCorrectionZeroFiberOperators.lieCorrectionZeroMixedConnectionPermutationCycleZeroOneFour) S5U
     with hS4Udef
   set E3T : SmoothCcTensor g 3 6 :=
     slotExtendIter (I := I) (M := M) g 0 3 3 mcdT with hE3Tdef
@@ -6523,11 +6523,11 @@ private theorem amixHalf_pair_h1
     ccOperatorFieldComp (I := I) (M := M) g 2 3 6 E3U S4U with hS3Udef
   set S2T : SmoothCcTensor g 2 4 :=
     ccOperatorFieldComp (I := I) (M := M) g 2 6 4
-      (reindexedPureTrace (I := I) (M := M) g gmT 4 LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoThreeOne) S3T
+      (reindexedPureTrace (I := I) (M := M) g gmT 4 LieCorrectionZeroFiberOperators.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoThreeOne) S3T
     with hS2Tdef
   set S2U : SmoothCcTensor g 2 4 :=
     ccOperatorFieldComp (I := I) (M := M) g 2 6 4
-      (reindexedPureTrace (I := I) (M := M) g gmU 4 LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoThreeOne) S3U
+      (reindexedPureTrace (I := I) (M := M) g gmU 4 LieCorrectionZeroFiberOperators.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoThreeOne) S3U
     with hS2Udef
   have hHalfT : lieCorrectionZeroMixedConnectionHalfExpansion (I := I) (M := M) g gmT g σlast =
       ccOperatorFieldComp (I := I) (M := M) g 2 4 2
@@ -6646,10 +6646,10 @@ private theorem amixHalf_pair_h1
     rw [hS4Tdef]
     refine (happ4 _ S5T).trans ?_
     have htr := (covariantJetNormSq_reindexedPureTrace (I := I) (M := M) g gmT 3 2
-      LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroOneFour).le.trans htb3'.1
+      LieCorrectionZeroFiberOperators.lieCorrectionZeroMixedConnectionPermutationCycleZeroOneFour).le.trans htb3'.1
     calc
       Ca4 * covariantJetNormSq (I := I) (M := M) g 2
-          (reindexedPureTrace (I := I) (M := M) g gmT 3 LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroOneFour) *
+          (reindexedPureTrace (I := I) (M := M) g gmT 3 LieCorrectionZeroFiberOperators.lieCorrectionZeroMixedConnectionPermutationCycleZeroOneFour) *
         covariantJetNormSq (I := I) (M := M) g 1 S5T ≤
         Ca4 * Bt3 ^ 2 * (S5b R * pl2) := by
         exact mul_le_mul
@@ -6662,10 +6662,10 @@ private theorem amixHalf_pair_h1
     rw [hS4Tdef]
     refine (happ4b _ S5T).trans ?_
     have htr := (covariantJetNormSq_reindexedPureTrace (I := I) (M := M) g gmT 3 2
-      LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroOneFour).le.trans htb3'.1
+      LieCorrectionZeroFiberOperators.lieCorrectionZeroMixedConnectionPermutationCycleZeroOneFour).le.trans htb3'.1
     calc
       Ca4b * covariantJetNormSq (I := I) (M := M) g 2
-          (reindexedPureTrace (I := I) (M := M) g gmT 3 LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroOneFour) *
+          (reindexedPureTrace (I := I) (M := M) g gmT 3 LieCorrectionZeroFiberOperators.lieCorrectionZeroMixedConnectionPermutationCycleZeroOneFour) *
         covariantJetNormSq (I := I) (M := M) g 2 S5T ≤
         Ca4b * Bt3 ^ 2 * (S5b R * pl2) := by
         exact mul_le_mul
@@ -6691,10 +6691,10 @@ private theorem amixHalf_pair_h1
     rw [hS2Tdef]
     refine (happ2 _ S3T).trans ?_
     have htr := (covariantJetNormSq_reindexedPureTrace (I := I) (M := M) g gmT 4 2
-      LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoThreeOne).le.trans htb4'.1
+      LieCorrectionZeroFiberOperators.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoThreeOne).le.trans htb4'.1
     calc
       Ca2 * covariantJetNormSq (I := I) (M := M) g 2
-          (reindexedPureTrace (I := I) (M := M) g gmT 4 LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoThreeOne) *
+          (reindexedPureTrace (I := I) (M := M) g gmT 4 LieCorrectionZeroFiberOperators.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoThreeOne) *
         covariantJetNormSq (I := I) (M := M) g 1 S3T ≤
         Ca2 * Bt4 ^ 2 * (S3b R * (pl2 * pl2)) := by
         exact mul_le_mul
@@ -6732,16 +6732,16 @@ private theorem amixHalf_pair_h1
           (mul_le_mul_of_nonneg_left hmpd hfr) hfr
       _ = M5 R * (pl2 * u) := by simp only [M5]; ring
   have htrd3 : covariantJetNormSq (I := I) (M := M) g 2
-      (reindexedPureTrace (I := I) (M := M) g gmT 3 LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroOneFour -
-        reindexedPureTrace (I := I) (M := M) g gmU 3 LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroOneFour) ≤
+      (reindexedPureTrace (I := I) (M := M) g gmT 3 LieCorrectionZeroFiberOperators.lieCorrectionZeroMixedConnectionPermutationCycleZeroOneFour -
+        reindexedPureTrace (I := I) (M := M) g gmU 3 LieCorrectionZeroFiberOperators.lieCorrectionZeroMixedConnectionPermutationCycleZeroOneFour) ≤
       Ct3 ^ 2 * u := by
     rw [reindexedPureTrace_sub, covariantJetNormSq_reindexCoefficientInputSlots]
     exact htp3'
   have htrU3 : covariantJetNormSq (I := I) (M := M) g 2
       (reindexedPureTrace (I := I) (M := M) g gmU 3
-        LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroOneFour) ≤ Bt3 ^ 2 :=
+        LieCorrectionZeroFiberOperators.lieCorrectionZeroMixedConnectionPermutationCycleZeroOneFour) ≤ Bt3 ^ 2 :=
     (covariantJetNormSq_reindexedPureTrace (I := I) (M := M) g gmU 3 2
-      LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroOneFour).le.trans htb3'.2
+      LieCorrectionZeroFiberOperators.lieCorrectionZeroMixedConnectionPermutationCycleZeroOneFour).le.trans htb3'.2
   have hd4 : covariantJetNormSq (I := I) (M := M) g 1 (S4T - S4U) ≤
       2 * (K4 R * (pl2 * u) + K5 R * (pl2 * u)) := by
     rw [hS4Tdef, hS4Udef]
@@ -6812,16 +6812,16 @@ private theorem amixHalf_pair_h1
       (fr ^ 3 * (2 * (B0m R) ^ 2 + 2 * (B1m R) ^ 2)) (S4b R)
       Ca3 (fr ^ 3 * (Bm R) ^ 2 * 2) (K4 R) (K5 R) pl2 u)
   have htrd4 : covariantJetNormSq (I := I) (M := M) g 2
-      (reindexedPureTrace (I := I) (M := M) g gmT 4 LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoThreeOne -
-        reindexedPureTrace (I := I) (M := M) g gmU 4 LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoThreeOne) ≤
+      (reindexedPureTrace (I := I) (M := M) g gmT 4 LieCorrectionZeroFiberOperators.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoThreeOne -
+        reindexedPureTrace (I := I) (M := M) g gmU 4 LieCorrectionZeroFiberOperators.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoThreeOne) ≤
       Ct4 ^ 2 * u := by
     rw [reindexedPureTrace_sub, covariantJetNormSq_reindexCoefficientInputSlots]
     exact htp4'
   have htrU4 : covariantJetNormSq (I := I) (M := M) g 2
       (reindexedPureTrace (I := I) (M := M) g gmU 4
-        LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoThreeOne) ≤ Bt4 ^ 2 :=
+        LieCorrectionZeroFiberOperators.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoThreeOne) ≤ Bt4 ^ 2 :=
     (covariantJetNormSq_reindexedPureTrace (I := I) (M := M) g gmU 4 2
-      LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoThreeOne).le.trans htb4'.2
+      LieCorrectionZeroFiberOperators.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoThreeOne).le.trans htb4'.2
   have hd2 : covariantJetNormSq (I := I) (M := M) g 1 (S2T - S2U) ≤
       2 * (K2 R * ((pl2 * pl2) * u) + K23 R * ((pl2 * pl2) * u)) := by
     rw [hS2Tdef, hS2Udef]
@@ -6914,10 +6914,10 @@ private theorem amix_pair_h1
     R A D2 N hR hA hD2 hN hT2 hU2 hT3 hU3 hTU2 hTn hUn hTUn s hs
   have hh1 := hhalf T U hT hU hδ_le hδ0 hδT hδU hδZ
     R A D2 N hR hA hD2 hN hT2 hU2 hT3 hU3 hTU2 hTn hUn hTUn hs
-    LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoOne
+    LieCorrectionZeroFiberOperators.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoOne
   have hh2 := hhalf T U hT hU hδ_le hδ0 hδT hδU hδZ
     R A D2 N hR hA hD2 hN hT2 hU2 hT3 hU3 hTU2 hTn hUn hTUn hs
-    (lieCorrectionZeroMixedConnectionTraceOutputSwapPermutation * LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoOne)
+    (lieCorrectionZeroMixedConnectionTraceOutputSwapPermutation * LieCorrectionZeroFiberOperators.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoOne)
   have hX0 : 0 ≤ (1 + A + A ^ 2) ^ 4 * (D2 ^ 2 + N ^ 2) := by
     positivity
   rw [lieCorrectionZeroMixedConnection_eq_expansion (I := I) (M := M) g
@@ -6932,32 +6932,32 @@ private theorem amix_pair_h1
       (2 : ℝ) •
         ((lieCorrectionZeroMixedConnectionHalfExpansion (I := I) (M := M) g
             (metricPerturbationPath (I := I) g T 0 hδT hδZ s) g
-              LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoOne -
+              LieCorrectionZeroFiberOperators.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoOne -
           lieCorrectionZeroMixedConnectionHalfExpansion (I := I) (M := M) g
             (metricPerturbationPath (I := I) g U 0 hδU hδZ s) g
-              LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoOne) +
+              LieCorrectionZeroFiberOperators.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoOne) +
         (lieCorrectionZeroMixedConnectionHalfExpansion (I := I) (M := M) g
             (metricPerturbationPath (I := I) g T 0 hδT hδZ s) g
-              (lieCorrectionZeroMixedConnectionTraceOutputSwapPermutation * LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoOne) -
+              (lieCorrectionZeroMixedConnectionTraceOutputSwapPermutation * LieCorrectionZeroFiberOperators.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoOne) -
           lieCorrectionZeroMixedConnectionHalfExpansion (I := I) (M := M) g
             (metricPerturbationPath (I := I) g U 0 hδU hδZ s) g
-              (lieCorrectionZeroMixedConnectionTraceOutputSwapPermutation * LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoOne))) := by
+              (lieCorrectionZeroMixedConnectionTraceOutputSwapPermutation * LieCorrectionZeroFiberOperators.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoOne))) := by
     simp only [lieCorrectionZeroMixedConnectionExpansion]
     module
   rw [hform, jet_smul_lip]
   have hadd := jet_add_lip (I := I) (M := M) g 1
     (lieCorrectionZeroMixedConnectionHalfExpansion (I := I) (M := M) g
         (metricPerturbationPath (I := I) g T 0 hδT hδZ s) g
-          LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoOne -
+          LieCorrectionZeroFiberOperators.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoOne -
       lieCorrectionZeroMixedConnectionHalfExpansion (I := I) (M := M) g
         (metricPerturbationPath (I := I) g U 0 hδU hδZ s) g
-          LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoOne)
+          LieCorrectionZeroFiberOperators.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoOne)
     (lieCorrectionZeroMixedConnectionHalfExpansion (I := I) (M := M) g
         (metricPerturbationPath (I := I) g T 0 hδT hδZ s) g
-          (lieCorrectionZeroMixedConnectionTraceOutputSwapPermutation * LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoOne) -
+          (lieCorrectionZeroMixedConnectionTraceOutputSwapPermutation * LieCorrectionZeroFiberOperators.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoOne) -
       lieCorrectionZeroMixedConnectionHalfExpansion (I := I) (M := M) g
         (metricPerturbationPath (I := I) g U 0 hδU hδZ s) g
-          (lieCorrectionZeroMixedConnectionTraceOutputSwapPermutation * LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoOne))
+          (lieCorrectionZeroMixedConnectionTraceOutputSwapPermutation * LieCorrectionZeroFiberOperators.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoOne))
   have h4 : (2 : ℝ) ^ 2 = 4 := by norm_num
   calc
     (2 : ℝ) ^ 2 * covariantJetNormSq (I := I) (M := M) g 1 (_ + _) ≤

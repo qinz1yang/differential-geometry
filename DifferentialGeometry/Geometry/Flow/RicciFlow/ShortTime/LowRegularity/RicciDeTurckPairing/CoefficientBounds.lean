@@ -35,21 +35,21 @@ open DifferentialGeometry.PDE.DeTurck.RicciLinearization
 open DifferentialGeometry.Analysis.Spectral.DeTurck
 open DifferentialGeometry.Analysis.Spectral.MetricRealization
 
-namespace LieCorrectionZeroCore
+namespace LieCorrectionZeroFiberOperators
 
 private abbrev lieCorrectionZeroMixedConnectionPermutationCycleZeroOneFour :=
-  DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroOneFour
+  DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroFiberOperators.lieCorrectionZeroMixedConnectionPermutationCycleZeroOneFour
 
 private abbrev lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoThreeOne :=
-  DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoThreeOne
+  DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroFiberOperators.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoThreeOne
 
 private abbrev lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoOne :=
-  DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoOne
+  DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroFiberOperators.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoOne
 
 private abbrev lieCorrectionZeroVectorBundleTracePermutation :=
-  DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroCore.lieCorrectionZeroVectorBundleTracePermutation
+  DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroFiberOperators.lieCorrectionZeroVectorBundleTracePermutation
 
-end LieCorrectionZeroCore
+end LieCorrectionZeroFiberOperators
 
 variable
     {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
@@ -456,12 +456,12 @@ theorem reindexedPureTrace_metricPerturbationPath_jointlySmooth
       ((reindexedPureTrace (I := I) (M := M) g
         (metricPerturbationPath (I := I) g T 0 hδ hδZ q.2) p σ).toSection q.1)
           (Y q.1) =
-        DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroCore.lieCorrectionZeroTraceStep (I := I)
+        DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroFiberOperators.lieCorrectionZeroTraceStep (I := I)
           (metricPerturbationPath (I := I) g T 0 hδ hδZ q.2) p σ q.1 (Y q.1) from
       congrArg (fun L => L (Y q.1))
         (reindexedPureTrace_toSection (I := I) (M := M) g
           (metricPerturbationPath (I := I) g T 0 hδ hδZ q.2) p σ q.1),
-    DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroCore.lieCorrectionZeroTraceStep,
+    DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroFiberOperators.lieCorrectionZeroTraceStep,
     ContinuousLinearMap.comp_apply, domDomCongrFibRank_apply]
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
@@ -607,7 +607,7 @@ theorem lieCorrectionZeroVectorBundleMetricConnectionDifferenceTerm_metricPertur
       (E := fun x : M => Tensor0SSpace 4 I x) q.1 z) ?_
     rw [tensor0SProdKappaFib_apply]
   have hperm := domDomCongrField_jointContMDiffOn (I := I)
-    LieCorrectionZeroCore.lieCorrectionZeroVectorBundleTracePermutation
+    LieCorrectionZeroFiberOperators.lieCorrectionZeroVectorBundleTracePermutation
     (S := metricPerturbationPathDomain (δ := δ) (δ' := δ)) _ hprod'
   refine hperm.congr (fun q _ => ?_)
   refine congrArg (fun z => TotalSpace.mk' (Tensor0SModel 4 ℝ E)
@@ -615,7 +615,7 @@ theorem lieCorrectionZeroVectorBundleMetricConnectionDifferenceTerm_metricPertur
   rw [show
       ((lieCorrectionZeroVectorBundleMetricConnectionDifferenceTerm (I := I) (M := M) g
         (metricPerturbationPath (I := I) g T 0 hδ hδZ q.2)).toSection q.1) (Y q.1) =
-        domDomCongrFibRank (I := I) 4 LieCorrectionZeroCore.lieCorrectionZeroVectorBundleTracePermutation q.1
+        domDomCongrFibRank (I := I) 4 LieCorrectionZeroFiberOperators.lieCorrectionZeroVectorBundleTracePermutation q.1
           (tensor0SProdKappaFib (I := I) (p := 1) (q := 3) q.1
             (metricConnectionDifferenceLoweredFib (I := I)
               (metricPerturbationPath (I := I) g T 0 hδ hδZ q.2)
@@ -786,15 +786,15 @@ theorem lieCorrectionZeroMixedConnectionHalfDerivativeCoefficient_metricPerturba
   have hQ : JointlySmoothCcTensorFamily (I := I) g 5 3 S
       (fun t => reindexedPureTrace (I := I) (M := M) g
         (metricPerturbationPath (I := I) g T 0 hδ hδZ t) 3
-        LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroOneFour) := by
+        LieCorrectionZeroFiberOperators.lieCorrectionZeroMixedConnectionPermutationCycleZeroOneFour) := by
     simpa only [S] using reindexedPureTrace_metricPerturbationPath_jointlySmooth (I := I) (M := M) g T hδ hδZ
-      3 LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroOneFour
+      3 LieCorrectionZeroFiberOperators.lieCorrectionZeroMixedConnectionPermutationCycleZeroOneFour
   have h₄ : JointlySmoothCcTensorFamily (I := I) g 6 4 S
       (fun t => reindexedPureTrace (I := I) (M := M) g
         (metricPerturbationPath (I := I) g T 0 hδ hδZ t) 4
-        LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoThreeOne) := by
+        LieCorrectionZeroFiberOperators.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoThreeOne) := by
     simpa only [S] using reindexedPureTrace_metricPerturbationPath_jointlySmooth (I := I) (M := M) g T hδ hδZ
-      4 LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoThreeOne
+      4 LieCorrectionZeroFiberOperators.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoThreeOne
   have h₂ : JointlySmoothCcTensorFamily (I := I) g 4 2 S
       (fun t => reindexedPureTrace (I := I) (M := M) g
         (metricPerturbationPath (I := I) g T 0 hδ hδZ t) 2 σlast) := by
@@ -829,18 +829,18 @@ theorem lieCorrectionZeroMixedConnectionDerivativeCoefficient_metricPerturbation
       (fun t => lieCorrectionZeroMixedConnectionDerivativeCoefficient (I := I) (M := M) g
         (metricPerturbationPath (I := I) g T 0 hδ hδZ t) g W) := by
   have hA := lieCorrectionZeroMixedConnectionHalfDerivativeCoefficient_metricPerturbationPath_jointlySmooth (I := I) (M := M) g T W hδ hδZ
-    LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoOne
+    LieCorrectionZeroFiberOperators.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoOne
   have hB := lieCorrectionZeroMixedConnectionHalfDerivativeCoefficient_metricPerturbationPath_jointlySmooth (I := I) (M := M) g T W hδ hδZ
-    (lieCorrectionZeroMixedConnectionTraceOutputSwapPermutation * LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoOne)
+    (lieCorrectionZeroMixedConnectionTraceOutputSwapPermutation * LieCorrectionZeroFiberOperators.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoOne)
   have hadd := jointlySmoothCcTensorFamily_add (I := I) (M := M) g hA hB
   have hadd' : linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g 3
       (fun t =>
         lieCorrectionZeroMixedConnectionHalfDerivativeCoefficient (I := I) (M := M) g
             (metricPerturbationPath (I := I) g T 0 hδ hδZ t) g W
-            LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoOne +
+            LieCorrectionZeroFiberOperators.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoOne +
           lieCorrectionZeroMixedConnectionHalfDerivativeCoefficient (I := I) (M := M) g
             (metricPerturbationPath (I := I) g T 0 hδ hδZ t) g W
-            (lieCorrectionZeroMixedConnectionTraceOutputSwapPermutation * LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoOne))
+            (lieCorrectionZeroMixedConnectionTraceOutputSwapPermutation * LieCorrectionZeroFiberOperators.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoOne))
       (δ := δ) (δ' := δ) := hadd
   have hs := covariantJetJoint_smul (I := I) (M := M) (r := 3) g (2 : ℝ) _ hadd'
   simpa only [linearizedRicciCovariantJetJointSmoothness, lieCorrectionZeroMixedConnectionDerivativeCoefficient] using hs
@@ -4869,7 +4869,7 @@ theorem exists_lieCorrectionZeroMixedConnectionDerivativeCoefficient_covariantJe
     let X1 : SmoothCcTensor g 3 3 :=
       ccOperatorFieldComp (I := I) (M := M) g 3 5 3
         (reindexedPureTrace (I := I) (M := M) g gm 3
-          DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroOneFour) X0
+          DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroFiberOperators.lieCorrectionZeroMixedConnectionPermutationCycleZeroOneFour) X0
     let X2 : SmoothCcTensor g 3 6 :=
       ccOperatorFieldComp (I := I) (M := M) g 3 3 6
         (slotExtendIter (I := I) (M := M) g 0 3 3
@@ -4877,7 +4877,7 @@ theorem exists_lieCorrectionZeroMixedConnectionDerivativeCoefficient_covariantJe
     let X3 : SmoothCcTensor g 3 4 :=
       ccOperatorFieldComp (I := I) (M := M) g 3 6 4
         (reindexedPureTrace (I := I) (M := M) g gm 4
-          DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoThreeOne) X2
+          DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroFiberOperators.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoThreeOne) X2
     let X4 : SmoothCcTensor g 3 2 :=
       ccOperatorFieldComp (I := I) (M := M) g 3 4 2
         (reindexedPureTrace (I := I) (M := M) g gm 2 σlast) X3
@@ -4892,7 +4892,7 @@ theorem exists_lieCorrectionZeroMixedConnectionDerivativeCoefficient_covariantJe
       refine (happ1 _ _).trans ?_
       simpa only [Z1] using
         mul_le_mul (mul_le_mul_of_nonneg_left
-          (ht3 DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroOneFour) hC1) hx0
+          (ht3 DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroFiberOperators.lieCorrectionZeroMixedConnectionPermutationCycleZeroOneFour) hC1) hx0
           (covariantJetNormSq_nonneg (I := I) (M := M) (m := 2) g X0)
           (mul_nonneg hC1 (sq_nonneg Ct3))
     have hx2 : covariantJetNormSq (I := I) (M := M) g 2 X2 ≤ Z2 R * S := by
@@ -4910,7 +4910,7 @@ theorem exists_lieCorrectionZeroMixedConnectionDerivativeCoefficient_covariantJe
       refine (happ3 _ _).trans ?_
       have hmul := mul_le_mul
         (mul_le_mul_of_nonneg_left
-          (ht4 DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoThreeOne) hC3) hx2
+          (ht4 DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroFiberOperators.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoThreeOne) hC3) hx2
         (covariantJetNormSq_nonneg (I := I) (M := M) (m := 2) g X2)
         (mul_nonneg hC3 (sq_nonneg Ct4))
       refine hmul.trans_eq ?_
@@ -4928,13 +4928,13 @@ theorem exists_lieCorrectionZeroMixedConnectionDerivativeCoefficient_covariantJe
       ring
     simpa only [lieCorrectionZeroMixedConnectionHalfDerivativeCoefficient, X0, X1, X2, X3, X4] using hx4
   let Y0 := lieCorrectionZeroMixedConnectionHalfDerivativeCoefficient (I := I) (M := M) g gm g W
-    DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoOne
+    DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroFiberOperators.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoOne
   let Y1 := lieCorrectionZeroMixedConnectionHalfDerivativeCoefficient (I := I) (M := M) g gm g W
-    (lieCorrectionZeroMixedConnectionTraceOutputSwapPermutation * DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoOne)
+    (lieCorrectionZeroMixedConnectionTraceOutputSwapPermutation * DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroFiberOperators.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoOne)
   have hy0 : covariantJetNormSq (I := I) (M := M) g 2 Y0 ≤ Q R * S :=
-    hhalf DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoOne
+    hhalf DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroFiberOperators.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoOne
   have hy1 : covariantJetNormSq (I := I) (M := M) g 2 Y1 ≤ Q R * S :=
-    hhalf (lieCorrectionZeroMixedConnectionTraceOutputSwapPermutation * DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoOne)
+    hhalf (lieCorrectionZeroMixedConnectionTraceOutputSwapPermutation * DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroFiberOperators.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoOne)
   have hadd := covariantJetNormSq_add_le (I := I) (M := M) g 2 Y0 Y1
   have hsum : covariantJetNormSq (I := I) (M := M) g 2 (Y0 + Y1) ≤
       4 * (Q R * S) := by linarith
@@ -7589,13 +7589,13 @@ theorem exists_lieCorrectionZeroMixedConnectionHalfDerivativeCoefficient_pairing
   let T2T : SmoothCcTensor g 4 2 := reindexedPureTrace (I := I) (M := M) g gT 2 σ
   let T2U : SmoothCcTensor g 4 2 := reindexedPureTrace (I := I) (M := M) g gU 2 σ
   let T3T : SmoothCcTensor g 5 3 := reindexedPureTrace (I := I) (M := M) g gT 3
-    DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroOneFour
+    DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroFiberOperators.lieCorrectionZeroMixedConnectionPermutationCycleZeroOneFour
   let T3U : SmoothCcTensor g 5 3 := reindexedPureTrace (I := I) (M := M) g gU 3
-    DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroOneFour
+    DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroFiberOperators.lieCorrectionZeroMixedConnectionPermutationCycleZeroOneFour
   let T4T : SmoothCcTensor g 6 4 := reindexedPureTrace (I := I) (M := M) g gT 4
-    DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoThreeOne
+    DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroFiberOperators.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoThreeOne
   let T4U : SmoothCcTensor g 6 4 := reindexedPureTrace (I := I) (M := M) g gU 4
-    DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoThreeOne
+    DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroFiberOperators.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoThreeOne
   let McT : SmoothCcTensor g 0 3 :=
     metricConnectionDifferenceLoweredCoefficient (I := I) (M := M) g gT g
   let McU : SmoothCcTensor g 0 3 :=
@@ -8006,9 +8006,9 @@ theorem exists_lieCorrectionZeroMixedConnectionDerivativeCoefficient_pairing_sec
     hTn hUn R A D2 D3 N hR hA hD2 hD3 hN
     hT2 hU2 hT3 hU3 hTU2 hTU3 hTUn
   let σ1 : Equiv.Perm (Fin 4) :=
-    DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoOne
+    DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroFiberOperators.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoOne
   let σ2 : Equiv.Perm (Fin 4) :=
-    lieCorrectionZeroMixedConnectionTraceOutputSwapPermutation * DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoOne
+    lieCorrectionZeroMixedConnectionTraceOutputSwapPermutation * DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroFiberOperators.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoOne
   let X : SmoothCcTensor g 3 2 :=
     lieCorrectionZeroMixedConnectionHalfDerivativeCoefficient (I := I) (M := M) g gT g T σ1 -
       lieCorrectionZeroMixedConnectionHalfDerivativeCoefficient (I := I) (M := M) g gU g U σ1

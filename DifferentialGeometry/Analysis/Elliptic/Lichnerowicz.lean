@@ -71,7 +71,7 @@ private theorem lichnerowicz_inequality
     (hn_ge_two : 2 ≤ Module.finrank ℝ E)
     {K : ℝ} (hK : 0 < K)
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f)
-    {lam : ℝ} (hlam_pos : 0 < lam)
+    {lam : ℝ} (ellipticity_pos : 0 < lam)
     (hf_eigen : ∀ x : M, ΔG (I := I) g ⟨_, hf⟩ x = -lam * f x)
     (gradNormSqSmooth :
       ContMDiff I 𝓘(ℝ, ℝ) ∞ (fun x : M => g.inner x
@@ -317,7 +317,7 @@ private theorem lichnerowicz_inequality
       have hne : n ≠ 0 := ne_of_gt hn_pos
       field_simp
     linarith [h_chain2, h1]
-  have hlam_S_pos : 0 < lam * S := mul_pos hlam_pos hS_pos
+  have hlam_S_pos : 0 < lam * S := mul_pos ellipticity_pos hS_pos
   have h_factor_pos : 0 < (n - 1) * (lam * S) := mul_pos hn_minus_one_pos hlam_S_pos
   have h_n_chain : n * (((n - 1) * K) * (lam * S)) ≤ lam^2 * S * (n - 1) := by
     have h1 : n * (lam^2 * S * (n - 1) / n) = lam^2 * S * (n - 1) := by
@@ -601,7 +601,7 @@ theorem lichnerowicz_eigenvalue_ge_dim_mul_curvature_of_closed
     (hn_ge_two : 2 ≤ Module.finrank ℝ E)
     {K : ℝ} (hK : 0 < K)
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f)
-    {lam : ℝ} (hlam_pos : 0 < lam)
+    {lam : ℝ} (ellipticity_pos : 0 < lam)
     (hf_eigen : ∀ x : M, ΔG (I := I) g ⟨_, hf⟩ x = -lam * f x)
     (h_ricci : ∀ x : M, ∀ X : TangentSpace I x,
       ((Module.finrank ℝ E : ℝ) - 1) * K * g.inner x X X ≤
@@ -661,7 +661,7 @@ theorem lichnerowicz_eigenvalue_ge_dim_mul_curvature_of_closed
     have h := laplacian_sq_le_dim_mul_chartHessFrobeniusSq_pointwise
       (I := I) g hf x
     exact (div_le_iff₀ hpos).mpr (by linarith [h])
-  exact lichnerowicz_inequality (I := I) (M := M) g hn_ge_two hK hf hlam_pos
+  exact lichnerowicz_inequality (I := I) (M := M) g hn_ge_two hK hf ellipticity_pos
     hf_eigen hgrad_norm_sq_smooth
     (fun x => chartHessFrobeniusSq (I := I) g f x) h_frob_cont
     (fun x => ricciTensor (I := I) g x

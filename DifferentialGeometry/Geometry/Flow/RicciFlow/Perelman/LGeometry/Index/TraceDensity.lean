@@ -135,11 +135,11 @@ private theorem sum_rm04_diag
   obtain ⟨Esec, hEsec⟩ := ContMDiffSection.exists_eq_at
     (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞)) x (e i)
   have hRm :=
-    (metricCurvData (I := I) (M := M) g).rm04Realizes Esec Asec Asec Esec x
+    (metricCurvatureSections (I := I) (M := M) g).rm04Realizes Esec Asec Asec Esec x
   have hop := riemannOp_apply_smooth (cov := LeviCivita (I := I) g) (x := x)
     Esec.contMDiff Asec.contMDiff Asec.contMDiff
   rw [hEsec, hAsec] at hRm hop
-  change (metricCurvData (I := I) (M := M) g).rm04 x
+  change (metricCurvatureSections (I := I) (M := M) g).rm04 x
       (vec4 (e i) A A (e i)) = _
   rw [hRm, hop]
   exact g.symm x _ _

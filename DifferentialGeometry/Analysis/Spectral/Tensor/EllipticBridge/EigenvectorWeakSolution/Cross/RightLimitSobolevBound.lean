@@ -242,7 +242,7 @@ theorem eigenvector_crossRightLimit_perK_from_uniform_β
             ‖tensorResolventEigenbasisVec (I := I) (M := M)
               (tensorResolventL2_isCompactOperator (I := I) (M := M)
                 g r s) i‖)
-    (h_pou_resolv : ∀ (i : TensorEigenIdx (I := I) (M := M) g r s) (K' : ℕ)
+    (resolventComponentRegularity : ∀ (i : TensorEigenIdx (I := I) (M := M) g r s) (K' : ℕ)
         (β : M) (Q : TensorCompIdx (E := E) r s),
       K' ≤ N →
       MemWkp (d := Module.finrank ℝ E) K' 2
@@ -339,7 +339,7 @@ theorem eigenvector_crossRightLimit_perK_from_uniform_β
         (chartTargetEuclid (I := I) (M := M) β) :=
     fun β Q => eigenvectorVec_pou_memWkp_local
       (I := I) (M := M) g r s i K'
-      (fun β' Q' => h_pou_resolv i K' β' Q' hK') β Q
+      (fun β' Q' => resolventComponentRegularity i K' β' Q' hK') β Q
   have h_cutoff_mem : MemWkp (d := d) K' 2
       (fun y => ((tensorL2ChartComponentCutoff (I := I) (M := M) g r s
           (tensorResolventEigenbasisVec (I := I) (M := M)

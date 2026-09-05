@@ -60,7 +60,7 @@ def transitionCoreBuffer
 
 omit [CompleteSpace E] in
 theorem transition_patch_geometry
-    (inp : MetricCompactCore (I := I) X)
+    (inp : MetricCompactSeedWithDivisor (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P) (r : Real) :
     (∀ alpha : LiveSlot L inp.pack r, IsOpen (transitionPatch L alpha)) ∧
@@ -78,7 +78,7 @@ theorem transition_patch_geometry
     ∀ alpha : LiveSlot L inp.pack r, 0 < transitionCoreBuffer L alpha := by
   have hlam (alpha : LiveSlot L inp.pack r) :
       0 < L.lamInf (alpha.1 : Nat) :=
-    inp.decay.lambda_pos inp.hD (L.rInf (alpha.1 : Nat))
+    inp.decay.lambda_pos inp.divisor_pos (L.rInf (alpha.1 : Nat))
   refine ⟨fun _ => Metric.isOpen_ball, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩
   · intro alpha z hz
     change z ∈ Metric.ball 0
@@ -132,7 +132,7 @@ theorem transition_patch_geometry
 
 omit [CompleteSpace E] in
 theorem closedBall_subset_interior_innerTransitionCore
-    (inp : MetricCompactCore (I := I) X)
+    (inp : MetricCompactSeedWithDivisor (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P) {r : Real}
     (alpha : LiveSlot L inp.pack r) {z : E}
@@ -140,7 +140,7 @@ theorem closedBall_subset_interior_innerTransitionCore
     Metric.closedBall z (transitionCoreBuffer L alpha) ⊆
       interior (innerTransitionCore L alpha) := by
   have hlam : 0 < L.lamInf (alpha.1 : Nat) :=
-    inp.decay.lambda_pos inp.hD (L.rInf (alpha.1 : Nat))
+    inp.decay.lambda_pos inp.divisor_pos (L.rInf (alpha.1 : Nat))
   intro w hw
   change w ∈ interior (Metric.closedBall 0
     ((83 / 40 : Real) * L.lamInf (alpha.1 : Nat)))
@@ -158,7 +158,7 @@ theorem closedBall_subset_interior_innerTransitionCore
 
 omit [CompleteSpace E] in
 theorem pair_overlap_at
-    (inp : MetricCompactCore (I := I) X)
+    (inp : MetricCompactSeedWithDivisor (I := I) X)
     (d : BoundedGeometryNormalChartData (I := I) X inp.decay)
     (aMin : Real)
     (hphys : 8 * Real.exp inp.decay.C < aMin * inp.D)
@@ -231,9 +231,9 @@ theorem pair_overlap_at
     simpa only [chiGamma, cGamma, Y, j] using
       d.stage_radius_gt inp aMin hphys P L hratio hcenterGamma
   have hlamAlpha : 0 < L.lamInf alpha :=
-    inp.decay.lambda_pos inp.hD (L.rInf alpha)
+    inp.decay.lambda_pos inp.divisor_pos (L.rInf alpha)
   have hlamGamma : 0 < L.lamInf gamma :=
-    inp.decay.lambda_pos inp.hD (L.rInf gamma)
+    inp.decay.lambda_pos inp.divisor_pos (L.rInf gamma)
   have hfreq' : ∀ᶠ n : Nat in Filter.atTop,
       BInter inp.decay inp.D P L.lamInf gamma alpha (L.φ n) :=
     hfreq.mono fun n hn =>
@@ -372,7 +372,7 @@ theorem pair_overlap_at
 
 omit [CompleteSpace E] in
 theorem chart_transition_pair_eventually
-    (inp : MetricCompactCore (I := I) X)
+    (inp : MetricCompactSeedWithDivisor (I := I) X)
     (d : BoundedGeometryNormalChartData (I := I) X inp.decay)
     (aMin : Real)
     (hphys : 8 * Real.exp inp.decay.C < aMin * inp.D)
@@ -409,7 +409,7 @@ theorem chart_transition_pair_eventually
 
 omit [CompleteSpace E] in
 theorem transition_patch_eventually
-    (inp : MetricCompactCore (I := I) X)
+    (inp : MetricCompactSeedWithDivisor (I := I) X)
     (d : BoundedGeometryNormalChartData (I := I) X inp.decay)
     (aMin : Real)
     (hphys : 8 * Real.exp inp.decay.C < aMin * inp.D)
@@ -453,7 +453,7 @@ theorem transition_patch_eventually
             Metric.closedBall z (transitionCoreBuffer L alpha) ⊆
               interior (innerTransitionCore L alpha) := by
   have hscaled :=
-    L.scaled_cover inp.decay inp.hD P inp.realizes inp.pack r
+    L.scaled_cover inp.decay inp.divisor_pos P inp.realizes inp.pack r
       (41 / 20 : Real) (by norm_num)
   have hcenters :=
     liveCenters_rInf (I := I) inp.decay P inp.realizes L inp.pack r
@@ -507,7 +507,7 @@ theorem transition_patch_eventually
     let c := seqCenterD inp.decay P L k (alpha.1 : Nat)
     let chi := d.chart j c
     have hlam : 0 < L.lamInf (alpha.1 : Nat) :=
-      inp.decay.lambda_pos inp.hD (L.rInf (alpha.1 : Nat))
+      inp.decay.lambda_pos inp.divisor_pos (L.rInf (alpha.1 : Nat))
     have hrad : 384 * L.lamInf (alpha.1 : Nat) < chi.radius := by
       simpa only [chi, c, Y, j] using
         d.stage_radius_gt inp aMin hphys P L hratio (hcentersK alpha)
@@ -595,7 +595,7 @@ theorem transition_patch_eventually
       exact hisSome
     let alpha : LiveSlot L inp.pack r := ⟨gammaFin, hgammaLive⟩
     have hlam : 0 < L.lamInf gamma :=
-      inp.decay.lambda_pos inp.hD (L.rInf gamma)
+      inp.decay.lambda_pos inp.divisor_pos (L.rInf gamma)
     have hcD : seqCenterD inp.decay P L k gamma = c := by
       unfold seqCenterD
       rw [hc]
@@ -662,7 +662,7 @@ theorem transition_patch_eventually
 
 omit [CompleteSpace E] in
 theorem transition_target_ball_eventually
-    (inp : MetricCompactCore (I := I) X)
+    (inp : MetricCompactSeedWithDivisor (I := I) X)
     (d : BoundedGeometryNormalChartData (I := I) X inp.decay)
     (aMin : Real)
     (hphys : 8 * Real.exp inp.decay.C < aMin * inp.D)
@@ -700,7 +700,7 @@ theorem transition_target_ball_eventually
   intro z hz
   rw [Metric.mem_ball, dist_zero_right] at hz ⊢
   exact hz.trans <| (mul_lt_mul_of_pos_right (by norm_num)
-    (inp.decay.lambda_pos inp.hD (L.rInf (alpha.1 : Nat)))).trans hstage
+    (inp.decay.lambda_pos inp.divisor_pos (L.rInf (alpha.1 : Nat)))).trans hstage
 
 private theorem trans_fin
     {ι : Type*} (s : Finset ι)
@@ -808,7 +808,7 @@ private theorem trans_fin
 
 omit [CompleteSpace E] in
 theorem seqAtomOn_eq_gluingBump_chartTransition_norm_sq
-    (inp : MetricCompactCore (I := I) X)
+    (inp : MetricCompactSeedWithDivisor (I := I) X)
     (d : BoundedGeometryNormalChartData (I := I) X inp.decay)
     (P : ∀ j : Nat, ProperMetricOn (I := I) (X.obj j))
     (L : NetLimitData inp.decay inp.D P) (r : Real) (k : Nat)
@@ -824,10 +824,10 @@ theorem seqAtomOn_eq_gluingBump_chartTransition_norm_sq
         (seqCenterD inp.decay P L k (gamma : Nat))
         (d.chartMap (L.φ k)
           (seqCenterD inp.decay P L k (alpha : Nat)) z)) :
-    seqAtomOn (I := I) d.chart inp.decay inp.hD P L inp.pack r
+    seqAtomOn (I := I) d.chart inp.decay inp.divisor_pos P L inp.pack r
         (fun n => seqCenterD inp.decay P L n (alpha : Nat)) gamma k z =
       gluingBump (L.lamInf (gamma : Nat))
-          (inp.decay.lambda_pos inp.hD (L.rInf (gamma : Nat)))
+          (inp.decay.lambda_pos inp.divisor_pos (L.rInf (gamma : Nat)))
         (‖d.chartTransition (L.φ k)
           (seqCenterD inp.decay P L k (alpha : Nat))
           (seqCenterD inp.decay P L k (gamma : Nat)) z‖ ^ 2) := by
@@ -836,7 +836,7 @@ theorem seqAtomOn_eq_gluingBump_chartTransition_norm_sq
   let cAlpha := seqCenterD inp.decay P L k (alpha : Nat)
   let cGamma := seqCenterD inp.decay P L k (gamma : Nat)
   let lam := L.lamInf (gamma : Nat)
-  let hlam := inp.decay.lambda_pos inp.hD (L.rInf (gamma : Nat))
+  let hlam := inp.decay.lambda_pos inp.divisor_pos (L.rInf (gamma : Nat))
   let : TopologicalSpace Y.M := Y.topology
   let : ChartedSpace H Y.M := Y.charted
   let : IsManifold I ∞ Y.M := Y.smooth
@@ -849,7 +849,7 @@ theorem seqAtomOn_eq_gluingBump_chartTransition_norm_sq
     exact (ProperMetricOn.dist_eq inp.decay inp.realizes P
       j cGamma (d.chartMap j cAlpha z)).trans hnorm.symm
   unfold seqAtomOn
-  rw [seqAtom_some inp.decay inp.hD P L inp.pack r k gamma hc]
+  rw [seqAtom_some inp.decay inp.divisor_pos P L inp.pack r k gamma hc]
   change gluingBump lam hlam
       (dist cGamma (d.chartMap j cAlpha z) ^ 2) =
     gluingBump lam hlam
@@ -902,7 +902,7 @@ private theorem normBump_smooth
 
 omit [CompleteSpace E] in
 theorem atomOn_live_convergence
-    (inp : MetricCompactCore (I := I) X)
+    (inp : MetricCompactSeedWithDivisor (I := I) X)
     (d : BoundedGeometryNormalChartData (I := I) X inp.decay)
     (P : ∀ j : Nat, ProperMetricOn (I := I) (X.obj j))
     (L : NetLimitData inp.decay inp.D P) (r : Real)
@@ -928,16 +928,16 @@ theorem atomOn_live_convergence
           (d.chartMap (L.φ k)
             (seqCenterD inp.decay P L k (alpha.1 : Nat)) z)) :
     MapCInfConvergenceOnCompacts U
-      (fun k => seqAtomOn (I := I) d.chart inp.decay inp.hD P L
+      (fun k => seqAtomOn (I := I) d.chart inp.decay inp.divisor_pos P L
         inp.pack r
         (fun n => seqCenterD inp.decay P L n (alpha.1 : Nat))
         gamma.1 k)
       (fun z => gluingBump (L.lamInf (gamma.1 : Nat))
-        (inp.decay.lambda_pos inp.hD (L.rInf (gamma.1 : Nat)))
+        (inp.decay.lambda_pos inp.divisor_pos (L.rInf (gamma.1 : Nat)))
         (‖Jinf z‖ ^ 2)) := by
   have hbump := normBump_convergence hU hJ hJc hJinf
     (L.lamInf (gamma.1 : Nat))
-    (inp.decay.lambda_pos inp.hD (L.rInf (gamma.1 : Nat)))
+    (inp.decay.lambda_pos inp.divisor_pos (L.rInf (gamma.1 : Nat)))
   refine hbump.congr_eventually hU ?_ fun _ _ => rfl
   filter_upwards [hread,
     seqCenterD_live inp.decay P L (gamma.1 : Nat) gamma.2] with k hreadK hc
@@ -998,8 +998,8 @@ theorem atomOn_disjoint_convergence
     (seqAtom_mem_hat hd hD P L pb r k gamma (by
       simpa only [seqAtomOn] using hne))
 
-theorem exists_support_data
-    (inp : MetricCompactCore (I := I) X)
+theorem exists_supported_center_map_convergence
+    (inp : MetricCompactSeedWithDivisor (I := I) X)
     (d : BoundedGeometryNormalChartData (I := I) X inp.decay)
     (aMin : Real)
     (hphys : 8 * Real.exp inp.decay.C < aMin * inp.D)
@@ -1338,7 +1338,7 @@ theorem exists_support_data
         target.1.1 = gamma then
       let target := Classical.choose htarget
       fun z => gluingBump (L.lamInf (gamma : Nat))
-        (inp.decay.lambda_pos inp.hD (L.rInf (gamma : Nat)))
+        (inp.decay.lambda_pos inp.divisor_pos (L.rInf (gamma : Nat)))
         (‖Jinf alpha target z‖ ^ 2)
     else fun _ => 0
   have hpatchPhi (k : Nat) :
@@ -1383,7 +1383,7 @@ theorem exists_support_data
   have hgeom := transition_patch_geometry inp P L r
   have hlimAll : ∀ alpha,
       HasAtomWeightLimOn (I := I) d.chart
-        inp.decay inp.hD P Lphi inp.realizes inp.pack r hr
+        inp.decay inp.divisor_pos P Lphi inp.realizes inp.pack r hr
         (fun k => seqCenterD inp.decay P Lphi k (alpha.1 : Nat))
         (U alpha) (aInf alpha) := by
     intro alpha
@@ -1478,7 +1478,7 @@ theorem exists_support_data
         exact hreadK
     have hatom (gamma : Fin (inp.pack.A r)) :
         MapCInfConvergenceOnCompacts (U alpha)
-          (fun k => seqAtomOn (I := I) d.chart inp.decay inp.hD P Lphi
+          (fun k => seqAtomOn (I := I) d.chart inp.decay inp.divisor_pos P Lphi
             inp.pack r beta gamma k)
           (aInf alpha gamma) := by
       by_cases htarget : ∃ target : InterSlot L inp.pack r alpha,
@@ -1498,7 +1498,7 @@ theorem exists_support_data
             have hgammaPhi : Lphi.alive (gamma : Nat) = false := by
               simpa only [Lphi, NetLimitData.subseq] using hgamma
             simpa only [aInf, dif_neg htarget] using
-              atomOn_dead_convergence (I := I) d.chart inp.decay inp.hD P Lphi
+              atomOn_dead_convergence (I := I) d.chart inp.decay inp.divisor_pos P Lphi
                 inp.pack r beta gamma (hgeom.1 alpha) hgammaPhi
         | true =>
             rcases hstable (alpha.1 : Nat) (gamma : Nat) with hinter | hdisjoint
@@ -1525,7 +1525,7 @@ theorem exists_support_data
                 Filter.Eventually.of_forall fun k z hz =>
                   ((hpatchPhi k).1 alpha).2 hz |>.1
               simpa only [aInf, dif_neg htarget] using
-                atomOn_disjoint_convergence (I := I) d.chart inp.decay inp.hD P Lphi
+                atomOn_disjoint_convergence (I := I) d.chart inp.decay inp.divisor_pos P Lphi
                   inp.pack r beta alpha.1 gamma (hgeom.1 alpha)
                   hsourceTail hdisjointPhi
     have hdead (gamma : Fin (inp.pack.A r))
@@ -1542,7 +1542,7 @@ theorem exists_support_data
       rfl
     have hatomSmooth (k : Nat) (gamma : Fin (inp.pack.A r)) :
         ContDiffOn Real (∞ : WithTop ℕ∞)
-          (seqAtomOn (I := I) d.chart inp.decay inp.hD P Lphi
+          (seqAtomOn (I := I) d.chart inp.decay inp.divisor_pos P Lphi
             inp.pack r beta gamma k) (U alpha) := by
       by_cases htarget : ∃ target : InterSlot L inp.pack r alpha,
           target.1.1 = gamma
@@ -1571,10 +1571,10 @@ theorem exists_support_data
             Function.comp_apply, beta, seqCenterD_subseq, hslot] using hr
         have hsmooth := normBump_smooth (hJStage target k)
           (Lphi.lamInf (gamma : Nat))
-          (inp.decay.lambda_pos inp.hD (Lphi.rInf (gamma : Nat)))
+          (inp.decay.lambda_pos inp.divisor_pos (Lphi.rInf (gamma : Nat)))
         have hsmooth' : ContDiffOn Real (∞ : WithTop ℕ∞)
             (fun z => gluingBump (Lphi.lamInf (gamma : Nat))
-              (inp.decay.lambda_pos inp.hD (Lphi.rInf (gamma : Nat)))
+              (inp.decay.lambda_pos inp.divisor_pos (Lphi.rInf (gamma : Nat)))
               (‖d.chartTransition (Lphi.φ k)
                 (beta k)
                 (seqCenterD inp.decay P Lphi k (gamma : Nat)) z‖ ^ 2))
@@ -1595,7 +1595,7 @@ theorem exists_support_data
               (contDiffOn_const : ContDiffOn Real (∞ : WithTop ℕ∞)
                 (fun _ : E => (0 : Real)) (U alpha)) fun z _ => ?_
             simp [seqAtomOn,
-              seqAtom_none inp.decay inp.hD P Lphi inp.pack r k gamma hnone]
+              seqAtom_none inp.decay inp.divisor_pos P Lphi inp.pack r k gamma hnone]
         | true =>
             rcases hstable (alpha.1 : Nat) (gamma : Nat) with hinter | hdisjoint
             · exact (htarget
@@ -1612,9 +1612,9 @@ theorem exists_support_data
                   (fun _ : E => (0 : Real)) (U alpha)) fun z hz => ?_
               by_contra hne
               apply hdisjointK
-              exact Lphi.binter_of_mem_hat inp.decay inp.hD P inp.pack r k
+              exact Lphi.binter_of_mem_hat inp.decay inp.divisor_pos P inp.pack r k
                 (((hpatchPhi k).1 alpha).2 hz).1
-                (seqAtom_mem_hat inp.decay inp.hD P Lphi inp.pack r k
+                (seqAtom_mem_hat inp.decay inp.divisor_pos P Lphi inp.pack r k
                   gamma (by simpa only [seqAtomOn] using hne))
     have hatomInfSmooth (gamma : Fin (inp.pack.A r)) :
         ContDiffOn Real (∞ : WithTop ℕ∞) (aInf alpha gamma) (U alpha) := by
@@ -1624,11 +1624,11 @@ theorem exists_support_data
         simpa only [aInf, dif_pos htarget, target] using
           normBump_smooth (hJInf target)
             (L.lamInf (gamma : Nat))
-            (inp.decay.lambda_pos inp.hD (L.rInf (gamma : Nat)))
+            (inp.decay.lambda_pos inp.divisor_pos (L.rInf (gamma : Nat)))
       · simpa only [aInf, dif_neg htarget] using
           (contDiffOn_const : ContDiffOn Real (∞ : WithTop ℕ∞)
             (fun _ : E => (0 : Real)) (U alpha))
-    exact HasAtomWeightLimOn.of_raw (I := I) d.chart inp.hD P Lphi
+    exact HasAtomWeightLimOn.of_atoms (I := I) d.chart inp.divisor_pos P Lphi
       inp.realizes inp.pack r hr beta (U alpha) (hgeom.1 alpha)
       hsourcePhi (aInf alpha) hdead hatom hatomSmooth hatomInfSmooth
   have hweightAll : ∀ alpha,
@@ -1641,7 +1641,7 @@ theorem exists_support_data
               (aInf alpha) (baseIndex inp.decay inp.realizes inp.pack hr))
             z gamma) := by
     intro alpha
-    exact (hlimAll alpha).weight_data_raw
+    exact (hlimAll alpha).raw_weightDataOn
       (Filter.Eventually.of_forall fun k z hz =>
         ((hpatchPhi k).1 alpha).2 hz |>.2)
   have htransAll : ∀ alpha target,

@@ -40,7 +40,7 @@ theorem normalChartCenterOfMass_contDiffOn
     (hEnorm : IsMetricNorm (I := I) (M := M') g)
     (p : M') {ι : Type} [Fintype ι] (join : M' → M' → ℝ → M') (r : ℝ)
     (H : ∀ params : (ι → ℝ) × (ι → E),
-      CenterInput (I := I) g params.1
+      CenterOfMassConditions (I := I) g params.1
         (fun i => (NormalCoordinates.normalChartAt (I := I) g p).symm (params.2 i)) join p r)
     {V : Set ((ι → ℝ) × (ι → E))}
     (hchz : ∀ params₀ ∈ V, ∀ n : ℕ, ContMDiffAt 𝓘(ℝ, E) I (n : ℕ∞)

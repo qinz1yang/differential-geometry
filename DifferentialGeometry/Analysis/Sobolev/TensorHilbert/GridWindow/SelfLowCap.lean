@@ -23,7 +23,7 @@ open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 open DifferentialGeometry.Analysis.Sobolev.TensorHilbert
-open DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroCore
+open DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroFiberOperators
 
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
@@ -228,7 +228,7 @@ private def aaP2103 : Equiv.Perm (Fin 4) := ⟨![2, 1, 0, 3], ![2, 1, 0, 3], by 
 private def aaP102 : Equiv.Perm (Fin 3) := ⟨![1, 0, 2], ![1, 0, 2], by decide, by decide⟩
 private def aaP120 : Equiv.Perm (Fin 3) := ⟨![1, 2, 0], ![2, 0, 1], by decide, by decide⟩
 
-def aaCoreP (g₀ g₁ : SmoothRiemannianMetric I M) (ρ : Equiv.Perm (Fin 4))
+def doublyPermutedConnectionDifferenceQuadraticCoefficient (g₀ g₁ : SmoothRiemannianMetric I M) (ρ : Equiv.Perm (Fin 4))
     (ρ' : Equiv.Perm (Fin 3)) : SmoothCcTensor g₀ 2 4 :=
   ccOperatorFieldComp (I := I) (M := M) g₀ 2 4 4 (permCoeff (I := I) (M := M) g₀ ρ)
     (ccOperatorFieldComp (I := I) (M := M) g₀ 2 3 4
@@ -236,7 +236,7 @@ def aaCoreP (g₀ g₁ : SmoothRiemannianMetric I M) (ρ : Equiv.Perm (Fin 4))
       (ccOperatorFieldComp (I := I) (M := M) g₀ 2 3 3 (permCoeff (I := I) (M := M) g₀ ρ')
         (connectionDifferenceContrInsertionInnerField (I := I) g₀ g₁)))
 
-def aaCore (g₀ g₁ : SmoothRiemannianMetric I M) (ρ : Equiv.Perm (Fin 4)) :
+def permutedConnectionDifferenceQuadraticCoefficient (g₀ g₁ : SmoothRiemannianMetric I M) (ρ : Equiv.Perm (Fin 4)) :
     SmoothCcTensor g₀ 2 4 :=
   ccOperatorFieldComp (I := I) (M := M) g₀ 2 4 4 (permCoeff (I := I) (M := M) g₀ ρ)
     (ccOperatorFieldComp (I := I) (M := M) g₀ 2 3 4
@@ -244,17 +244,17 @@ def aaCore (g₀ g₁ : SmoothRiemannianMetric I M) (ρ : Equiv.Perm (Fin 4)) :
       (connectionDifferenceContrInsertionInnerField (I := I) g₀ g₁))
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [SigmaCompactSpace M] in
-theorem aaKerSplit (g₀ g₁ : SmoothRiemannianMetric I M) :
+theorem ricciConnectionDifferenceQuadraticKernel_eq_sum (g₀ g₁ : SmoothRiemannianMetric I M) :
     ricciConnectionDifferenceQuadraticKernel (I := I) (M := M) g₀ g₁ =
-      aaCoreP (I := I) (M := M) g₀ g₁ aaP3201 aaP102 +
+      doublyPermutedConnectionDifferenceQuadraticCoefficient (I := I) (M := M) g₀ g₁ aaP3201 aaP102 +
         reindexCoefficientInputSlots (I := I) (M := M) g₀ 2 4
-          (aaCoreP (I := I) (M := M) g₀ g₁ aaP2301 aaP102) innerCoreInPerm10 +
-        aaCoreP (I := I) (M := M) g₀ g₁ aaP3102 aaP120 +
+          (doublyPermutedConnectionDifferenceQuadraticCoefficient (I := I) (M := M) g₀ g₁ aaP2301 aaP102) innerCoreInPerm10 +
+        doublyPermutedConnectionDifferenceQuadraticCoefficient (I := I) (M := M) g₀ g₁ aaP3102 aaP120 +
         reindexCoefficientInputSlots (I := I) (M := M) g₀ 2 4
-          (aaCore (I := I) (M := M) g₀ g₁ aaP1302) innerCoreInPerm10 +
-        aaCore (I := I) (M := M) g₀ g₁ aaP1203 +
+          (permutedConnectionDifferenceQuadraticCoefficient (I := I) (M := M) g₀ g₁ aaP1302) innerCoreInPerm10 +
+        permutedConnectionDifferenceQuadraticCoefficient (I := I) (M := M) g₀ g₁ aaP1203 +
         reindexCoefficientInputSlots (I := I) (M := M) g₀ 2 4
-          (aaCoreP (I := I) (M := M) g₀ g₁ aaP2103 aaP120) innerCoreInPerm10 := by
+          (doublyPermutedConnectionDifferenceQuadraticCoefficient (I := I) (M := M) g₀ g₁ aaP2103 aaP120) innerCoreInPerm10 := by
   rw [ricciConnectionDifferenceQuadraticKernel]
   apply congrArg₂ (· + ·)
   · apply congrArg₂ (· + ·)
@@ -358,28 +358,28 @@ theorem exists_ricciConnectionDifferenceQuadraticTerm_capWindow (g₀ : SmoothRi
     exact capReindex (I := I) (M := M) g₀ P innerCoreInPerm10
       (capSlotExt (I := I) (M := M) g₀ P hcdcap)
   have hShapeA : ∀ (ρ : Equiv.Perm (Fin 4)) (ρ' : Equiv.Perm (Fin 3)),
-      HasCapWin (I := I) (M := M) g₀ P (aaCoreP (I := I) (M := M) g₀ g₁ ρ ρ') KA := by
+      HasCapWin (I := I) (M := M) g₀ P (doublyPermutedConnectionDifferenceQuadraticCoefficient (I := I) (M := M) g₀ g₁ ρ ρ') KA := by
     intro ρ ρ'
     exact capApp (I := I) (M := M) g₀ P _ _ hSP4_nn hKMA_nn (hP4 ρ)
       (capApp (I := I) (M := M) g₀ P _ _ hKIns_nn hKIC_nn hIns
         (capApp (I := I) (M := M) g₀ P _ _ hSP3_nn hKInn_nn (hP3 ρ') hInn))
   have hShapeB : ∀ ρ : Equiv.Perm (Fin 4),
-      HasCapWin (I := I) (M := M) g₀ P (aaCore (I := I) (M := M) g₀ g₁ ρ) KB := by
+      HasCapWin (I := I) (M := M) g₀ P (permutedConnectionDifferenceQuadraticCoefficient (I := I) (M := M) g₀ g₁ ρ) KB := by
     intro ρ
     exact capApp (I := I) (M := M) g₀ P _ _ hSP4_nn hKMB_nn (hP4 ρ)
       (capApp (I := I) (M := M) g₀ P _ _ hKIns_nn hKInn_nn hIns hInn)
   have hA' : ∀ (ρ : Equiv.Perm (Fin 4)) (ρ' : Equiv.Perm (Fin 3)),
-      HasCapWin (I := I) (M := M) g₀ P (aaCoreP (I := I) (M := M) g₀ g₁ ρ ρ') KQ :=
+      HasCapWin (I := I) (M := M) g₀ P (doublyPermutedConnectionDifferenceQuadraticCoefficient (I := I) (M := M) g₀ g₁ ρ ρ') KQ :=
     fun ρ ρ' => capMono (I := I) (M := M) g₀ P
       (fun i => by have := hKB_nn i; simp only [hKQ_def]; linarith) (hShapeA ρ ρ')
   have hB' : ∀ ρ : Equiv.Perm (Fin 4),
-      HasCapWin (I := I) (M := M) g₀ P (aaCore (I := I) (M := M) g₀ g₁ ρ) KQ :=
+      HasCapWin (I := I) (M := M) g₀ P (permutedConnectionDifferenceQuadraticCoefficient (I := I) (M := M) g₀ g₁ ρ) KQ :=
     fun ρ => capMono (I := I) (M := M) g₀ P
       (fun i => by have := hKA_nn i; simp only [hKQ_def]; linarith) (hShapeB ρ)
   have hKer : HasCapWin (I := I) (M := M) g₀ P
       (ricciConnectionDifferenceQuadraticKernel (I := I) (M := M) g₀ g₁) (fun i => 94 * KQ i) := by
     refine capCongr (I := I) (M := M) g₀ P
-      (aaKerSplit (I := I) (M := M) g₀ g₁) ?_
+      (ricciConnectionDifferenceQuadraticKernel_eq_sum (I := I) (M := M) g₀ g₁) ?_
     have hsum := capAdd (I := I) (M := M) g₀ P
       (capAdd (I := I) (M := M) g₀ P
         (capAdd (I := I) (M := M) g₀ P

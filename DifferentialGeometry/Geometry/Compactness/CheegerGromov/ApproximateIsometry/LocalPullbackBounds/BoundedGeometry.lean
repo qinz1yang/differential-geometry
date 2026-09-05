@@ -26,7 +26,7 @@ variable {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
 
 omit [CompleteSpace E] in
 theorem BoundedGeometryNormalChartData.source_stay
-    (inp : MetricCompactCore (I := I) X)
+    (inp : MetricCompactSeedWithDivisor (I := I) X)
     (d : BoundedGeometryNormalChartData (I := I) X inp.decay)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P) {r : Real} (hr : 0 ≤ r)

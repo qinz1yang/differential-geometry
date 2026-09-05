@@ -4,7 +4,7 @@ import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.Uniform.Ha
 
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Covering.ExponentialBallCovering
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.Transition.Refinement
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.MetricCompactness.Inputs
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.MetricCompactness.Assumptions
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.AtomWeights.Convergence
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.AtomWeights.Subsequence
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.Transition.Pairwise

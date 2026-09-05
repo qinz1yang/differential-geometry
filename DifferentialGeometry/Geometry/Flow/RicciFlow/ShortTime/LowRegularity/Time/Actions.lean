@@ -176,14 +176,14 @@ private theorem coreLip
 
 private theorem highCorePair {Y : Type*} [SeminormedAddCommGroup Y]
     (g : SmoothRiemannianMetric I M) {C : ℝ}
-    (F : LowerScaleTimeInternal.HighCore (I := I) (M := M) g → Y)
+    (F : LowerScaleTime.ThirdOrderDenseCore (I := I) (M := M) g → Y)
     (c : SmoothCcTensor g 0 2 → Y)
     (hval : ∀ T : SmoothCcTensor g 0 2,
       F ⟨ccToHsLin (I := I) (M := M) g 2 (3 : ℝ) T, ⟨T, rfl⟩⟩ = c T)
     (hpair : ∀ T U : SmoothCcTensor g 0 2,
       ‖c T - c U‖ ≤
         C * ‖ccTensorToHs (I := I) (M := M) g 2 (3 : ℝ) (T - U)‖)
-    (x y : LowerScaleTimeInternal.HighCore (I := I) (M := M) g) :
+    (x y : LowerScaleTime.ThirdOrderDenseCore (I := I) (M := M) g) :
     ‖F x - F y‖ ≤
       C * ‖(x : TensorHs (I := I) (M := M) g 0 2 (3 : ℝ)) -
         (y : TensorHs (I := I) (M := M) g 0 2 (3 : ℝ))‖ := by
@@ -240,21 +240,21 @@ theorem lowerScaleFirstOrderAction_lipschitz
               (show (2 : ℝ) ≤ 3 by norm_num))) := by
   have hdense : DenseRange (ccToHsLin (I := I) (M := M) g 2 (3 : ℝ)) :=
     ccToHsLin_dense (I := I) (M := M) g 2 (by positivity)
-  let FHi : LowerScaleTimeInternal.HighCore (I := I) (M := M) g →
+  let FHi : LowerScaleTime.ThirdOrderDenseCore (I := I) (M := M) g →
       a1Op (I := I) (M := M) g :=
-    LowerScaleTimeInternal.firstOrderActionThirdToSecondOrderCore (I := I) (M := M) g hρ.le hδ0 hδ_le hreal
-  let FLo : LowerScaleTimeInternal.HighCore (I := I) (M := M) g →
+    LowerScaleTime.firstOrderActionThirdToSecondOrderOnDenseCore (I := I) (M := M) g hρ.le hδ0 hδ_le hreal
+  let FLo : LowerScaleTime.ThirdOrderDenseCore (I := I) (M := M) g →
       a1LoOp (I := I) (M := M) g :=
-    LowerScaleTimeInternal.firstOrderActionSecondToFirstOrderCore (I := I) (M := M) g hρ.le hδ0 hδ_le hreal
+    LowerScaleTime.firstOrderActionSecondToFirstOrderOnDenseCore (I := I) (M := M) g hρ.le hδ0 hδ_le hreal
   have hFHi : LipschitzWith ⟨C, hC⟩ FHi :=
     coreLip hC FHi
       (highCorePair (I := I) (M := M) g FHi _
-        (LowerScaleTimeInternal.firstOrderActionThirdToSecondOrderCore_value (I := I) (M := M)
+        (LowerScaleTime.firstOrderActionThirdToSecondOrderOnDenseCore_apply (I := I) (M := M)
           g hρ.le hδ0 hδ_le hreal) hHiPair)
   have hFLo : LipschitzWith ⟨C, hC⟩ FLo :=
     coreLip hC FLo
       (highCorePair (I := I) (M := M) g FLo _
-        (LowerScaleTimeInternal.firstOrderActionSecondToFirstOrderCore_value (I := I) (M := M)
+        (LowerScaleTime.firstOrderActionSecondToFirstOrderOnDenseCore_apply (I := I) (M := M)
           g hρ.le hδ0 hδ_le hreal) hLoPair)
   have hlipHi : LipschitzWith ⟨C, hC⟩
       (lowerScaleFirstOrderActionThirdToSecondOrder (I := I) (M := M) g hρ.le hδ0 hδ_le hreal) :=
@@ -274,9 +274,9 @@ theorem lowerScaleFirstOrderAction_lipschitz
       (ccToHsLin_dense (I := I) (M := M) g 2 (by positivity)).extend_eq
         hFHi.continuous
         (⟨ccToHsLin (I := I) (M := M) g 2 (3 : ℝ) T, ⟨T, rfl⟩⟩ :
-          LowerScaleTimeInternal.HighCore (I := I) (M := M) g)
+          LowerScaleTime.ThirdOrderDenseCore (I := I) (M := M) g)
     exact hext.trans
-      (LowerScaleTimeInternal.firstOrderActionThirdToSecondOrderCore_value (I := I) (M := M)
+      (LowerScaleTime.firstOrderActionThirdToSecondOrderOnDenseCore_apply (I := I) (M := M)
         g hρ.le hδ0 hδ_le hreal T)
   have hcoreLo : ∀ T : SmoothCcTensor g 0 2,
       lowerScaleFirstOrderActionSecondToFirstOrder (I := I) (M := M) g hρ.le hδ0 hδ_le hreal
@@ -288,9 +288,9 @@ theorem lowerScaleFirstOrderAction_lipschitz
       (ccToHsLin_dense (I := I) (M := M) g 2 (by positivity)).extend_eq
         hFLo.continuous
         (⟨ccToHsLin (I := I) (M := M) g 2 (3 : ℝ) T, ⟨T, rfl⟩⟩ :
-          LowerScaleTimeInternal.HighCore (I := I) (M := M) g)
+          LowerScaleTime.ThirdOrderDenseCore (I := I) (M := M) g)
     exact hext.trans
-      (LowerScaleTimeInternal.firstOrderActionSecondToFirstOrderCore_value (I := I) (M := M)
+      (LowerScaleTime.firstOrderActionSecondToFirstOrderOnDenseCore_apply (I := I) (M := M)
         g hρ.le hδ0 hδ_le hreal T)
   refine ⟨hlipHi, hlipLo, hcoreHi, hcoreLo, ?_⟩
   obtain ⟨CP, K, hCP, hK, hpair⟩ :=
@@ -660,7 +660,7 @@ theorem lowerScaleSecondOrderAction_norm_lt_one
   · exact a2Lo_total_le (I := I) (M := M) g hρ0 hδ0 hδ_le hreal'
       hlipLo.continuous hcoreLo (fun S => (hpairdata hρ0 hρA' S).2.1) v
 
-theorem lowRegularitySecondOrderActionTotal_data
+theorem lowRegularitySecondOrderActionTotal_measurable_and_bounded
     (hDim : Module.finrank ℝ E = 3)
     (g : SmoothRiemannianMetric I M) {ρ₀ δ : ℝ}
     (hρ₀ : 0 < ρ₀) (hδ0 : 0 ≤ δ) (hδ_le : δ ≤ 1 / 3)
@@ -692,7 +692,7 @@ theorem lowRegularitySecondOrderActionTotal_data
               ‖lowRegularitySecondOrderActionTotal (I := I) (M := M)
                 g hρ0 hδ0 hδ_le hreal' hT f hR hball t‖ ≤ C * ρ) := by
   obtain ⟨ρP, CP, hρP, hdataP⟩ :=
-    lowRegularityPrincipalSecondOrderActionTime_data (I := I) (M := M) hDim g
+    lowRegularityPrincipalSecondOrderActionTime_measurable_bounded_and_ae_eq (I := I) (M := M) hDim g
   have hρ₁ : 0 < min ρ₀ ρP := lt_min hρ₀ hρP
   have hreal₁ : ∀ S : SmoothCcTensor g 0 2,
       ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) S‖ ≤ min ρ₀ ρP →
@@ -755,7 +755,7 @@ def lowRegularitySecondOrderActionLowerScaleTime
         (aeSetLift (principalOperatorDomainBall_zero (I := I) (M := M) g hR)
           (lowRegularityStateL2 (I := I) (M := M) g hT f hR hball) t).1)
 
-theorem lowRegularitySecondOrderActionLowerScaleTime_data
+theorem lowRegularitySecondOrderActionLowerScaleTime_measurable_bounded_and_compatible
     (hDim : Module.finrank ℝ E = 3)
     (g : SmoothRiemannianMetric I M) :
     ∃ ρ C : ℝ, 0 < ρ ∧ 0 ≤ C ∧
@@ -877,7 +877,7 @@ def lowRegularitySecondOrderActionTotalLowerScale
       lowerScaleSecondOrderActionThirdToFirstOrder (I := I) (M := M) g hρ hδ0 hδ_le hreal
         (lowRegularityStateL2 (I := I) (M := M) g hT f hR hball t)
 
-theorem lowRegularitySecondOrderActionTotalLowerScale_data
+theorem lowRegularitySecondOrderActionTotalLowerScale_measurable_bounded_and_compatible
     (hDim : Module.finrank ℝ E = 3)
     (g : SmoothRiemannianMetric I M) {ρ₀ δ : ℝ}
     (hρ₀ : 0 < ρ₀) (hδ0 : 0 ≤ δ) (hδ_le : δ ≤ 1 / 3)
@@ -918,7 +918,7 @@ theorem lowRegularitySecondOrderActionTotalLowerScale_data
                   (tensorHsInclusion (I := I) (M := M) (g := g) (r := 0) (s := 2)
                     (show (3 : ℝ) ≤ 4 by norm_num))) := by
   obtain ⟨ρP, CP, hρP, hCP, hdataP⟩ :=
-    lowRegularitySecondOrderActionLowerScaleTime_data (I := I) (M := M) hDim g
+    lowRegularitySecondOrderActionLowerScaleTime_measurable_bounded_and_compatible (I := I) (M := M) hDim g
   have hρ₁ : 0 < min ρ₀ ρP := lt_min hρ₀ hρP
   have hreal₁ : ∀ S : SmoothCcTensor g 0 2,
       ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) S‖ ≤ min ρ₀ ρP →

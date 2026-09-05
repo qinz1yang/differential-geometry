@@ -433,13 +433,13 @@ private theorem oneForm_eval_moving_C1_slot_mdiffAt
       (I := I) Z alpha x₀)
 
 omit [CompleteSpace E] [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] in
-private theorem nablaOneFormSectionRealizes_eval_moving_C1_slot
+private theorem nablaOneFormRealizes_eval_moving_C1_slot
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (X : ContMDiffSection I E (∞ : WithTop ℕ∞)
       (TangentSpace I : M -> Type _))
     (alpha : OneFormSection (I := I) (M := M))
     (nablaAlpha : TwoTensorSection (I := I) (M := M))
-    (hnabla : NablaOneFormSectionRealizes (I := I) cov alpha nablaAlpha)
+    (hnabla : NablaOneFormRealizes (I := I) cov alpha nablaAlpha)
     (Z : (x : M) -> TangentSpace I x)
     (x : M)
     (hZ : ContMDiffAt I (I.prod 𝓘(Real, E)) (1 : WithTop ℕ∞)
@@ -1434,14 +1434,14 @@ private theorem oneFormThirdCovDerivCommAt_of_leviCivita_higherOrder
       (fun p : M => nablaAlphaSec p (vec2 (I := I) (Yf p) (Zf p))) =
         fun p : M => directionalDerivAlong (I := I) Yf f p - gYZ p := by
     funext p
-    have h := nablaOneFormSectionRealizes_eval_moving_C1_slot
+    have h := nablaOneFormRealizes_eval_moving_C1_slot
       (I := I) cov Ysec alphaSec nablaAlphaSec hnabla Zf p (hZ1_at p)
     simpa [directionalDerivAlong, f, gYZ, YZc, Yf, Zf, cov] using h
   have hFXZ :
       (fun p : M => nablaAlphaSec p (vec2 (I := I) (Xf p) (Zf p))) =
         fun p : M => directionalDerivAlong (I := I) Xf f p - gXZ p := by
     funext p
-    have h := nablaOneFormSectionRealizes_eval_moving_C1_slot
+    have h := nablaOneFormRealizes_eval_moving_C1_slot
       (I := I) cov Xsec alphaSec nablaAlphaSec hnabla Zf p (hZ1_at p)
     simpa [directionalDerivAlong, f, gXZ, XZc, Xf, Zf, cov] using h
   have hDX_FYZ :
@@ -1465,14 +1465,14 @@ private theorem oneFormThirdCovDerivCommAt_of_leviCivita_higherOrder
         directionalDerivAlong (I := I) Xf gYZ x -
           alphaSec x (fun _ : Fin 1 => (cov YZc x) (Xf x)) := by
     simpa [directionalDerivAlong, gYZ, Xf, cov] using
-      nablaOneFormSectionRealizes_eval_moving_C1_slot
+      nablaOneFormRealizes_eval_moving_C1_slot
         (I := I) cov Xsec alphaSec nablaAlphaSec hnabla YZc x hYZc1
   have hA_Y_XZ :
       nablaAlphaSec x (vec2 (I := I) (Yf x) (XZc x)) =
         directionalDerivAlong (I := I) Yf gXZ x -
           alphaSec x (fun _ : Fin 1 => (cov XZc x) (Yf x)) := by
     simpa [directionalDerivAlong, gXZ, Yf, cov] using
-      nablaOneFormSectionRealizes_eval_moving_C1_slot
+      nablaOneFormRealizes_eval_moving_C1_slot
         (I := I) cov Ysec alphaSec nablaAlphaSec hnabla XZc x hXZc1
   obtain ⟨XYsec, hXYsecx⟩ :=
     ContMDiffSection.exists_eq_at
@@ -1486,14 +1486,14 @@ private theorem oneFormThirdCovDerivCommAt_of_leviCivita_higherOrder
       nablaAlphaSec x (vec2 (I := I) XYv (Zf x)) =
         directionalDerivAlong (I := I) XYf f x -
           alphaSec x (fun _ : Fin 1 => (cov Zf x) (XYf x)) := by
-    have h := nablaOneFormSectionRealizes_eval_moving_C1_slot
+    have h := nablaOneFormRealizes_eval_moving_C1_slot
       (I := I) cov XYsec alphaSec nablaAlphaSec hnabla Zf x (hZ1_at x)
     simpa [directionalDerivAlong, f, XYf, Zf, cov, hXYsecx] using h
   have hA_YX_Z :
       nablaAlphaSec x (vec2 (I := I) YXv (Zf x)) =
         directionalDerivAlong (I := I) YXf f x -
           alphaSec x (fun _ : Fin 1 => (cov Zf x) (YXf x)) := by
-    have h := nablaOneFormSectionRealizes_eval_moving_C1_slot
+    have h := nablaOneFormRealizes_eval_moving_C1_slot
       (I := I) cov YXsec alphaSec nablaAlphaSec hnabla Zf x (hZ1_at x)
     simpa [directionalDerivAlong, f, YXf, Zf, cov, hYXsecx] using h
   have hXYZ :

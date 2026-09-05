@@ -678,7 +678,7 @@ theorem linearizedRicciOrderZeroCorrectionField_allOrder_tameEnvelope_interface
     ε, hε_nn, hε_cap, ?_⟩
   intro T T' δ hδ_le hδ δ' hδ'_le hδ' hTball hT'ball i s hs
   have hid :=
-    (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.exists_orderZero_firstOrder_correctionField_data
+    (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.exists_orderZero_firstOrder_correctionFields
       (I := I) g₀ T T' hδ hδ').choose_spec.choose_spec.2.2.2.2.1
   rw [show linearizedRicciOrderZeroCorrectionField (I := I) g₀ T T' hδ hδ' s =
       DifferentialGeometry.Analysis.Parabolic.TensorSpectral.linearizedRicciConnectionDifferenceOrder0Coeff
@@ -717,7 +717,7 @@ theorem linearizedRicciOrderZeroCorrectionField_allOrder_tameEnvelope_interface
       mul_nonneg (hKle_nn i) (by linarith)
     linarith
 
-theorem exists_riemannPalatini_curvatureDecomposition_data
+theorem exists_riemannPalatini_curvatureDecomposition_with_bounds
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) (hδ₀_half : δ₀ ≤ 1 / 2) :
@@ -764,7 +764,7 @@ theorem exists_riemannPalatini_curvatureDecomposition_data
   by
     classical
     obtain ⟨Λid, hΛid_nn, Kid, hKid_nn, qA, qB, hqAB, hID⟩ :=
-      Analysis.Parabolic.TensorSpectral.exists_riemannPalatini_decomposition_identity_data
+      Analysis.Parabolic.TensorSpectral.exists_riemannPalatini_decomposition_identity_with_bounds
         (I := I) (M := M) g₀ a ha_super hR hδ₀
     obtain ⟨Λrm, hΛrm_nn, hRm⟩ :=
       exists_ricciOrderZeroRiemannCoeff_metricPerturbationPath_riemannianFiberNormSq_ballUniform_sq

@@ -408,7 +408,7 @@ theorem affineSecondOrderActionBackground_extensions_commute
       exact DFunLike.congr_fun hrad x]
 
 
-theorem affineSecondOrderActionBackground_data
+theorem affineSecondOrderActionBackground_measurable_and_bounded
     (g : SmoothRiemannianMetric I M) {ρ δ c : ℝ}
     (hρ : 0 ≤ ρ) (hδ0 : 0 ≤ δ) (hδ_le : δ ≤ 1 / 3)
     (hreal : ∀ S : SmoothCcTensor g 0 2,

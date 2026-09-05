@@ -28,7 +28,7 @@ variable
       [IsManifold I ∞ M] [CompactSpace M] [BoundarylessManifold I M]
       [I.Boundaryless] [T2Space M]
 
-theorem quasilinear_metric_short_time_existence_of_nemytskii_data
+theorem quasilinear_metric_short_time_existence_of_nemytskii
     (F : SmoothRiemannianMetric I M → (∀ x : M, TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ))
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_eq : a = 4 * Module.finrank ℝ E + 10)

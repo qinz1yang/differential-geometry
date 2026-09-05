@@ -352,7 +352,7 @@ theorem HasControlledNormalBranch.exists_centerOfMass_equation
       MetricComplete.complete (I := I) (X.obj k) hcomplete
     letI : MetricSpace (X.obj k).M :=
       HopfRinow.riemMetricSpace (I := I) (M := (X.obj k).M)
-    ∀ h : CenterInput (I := I) (X.obj k).metric mu points join p r,
+    ∀ h : CenterOfMassConditions (I := I) (X.obj k).metric mu points join p r,
       dist p x ≤ R →
       ENNReal.ofReal (R + 2 * r) < ENNReal.ofReal (ρ / 2) →
       0 < ρ →
@@ -424,7 +424,7 @@ theorem HasControlledNormalBranch.exists_centerOfMass_equation
     funext i
     exact (NormalCoordinates.normalChartAt
       (I := I) (X.obj k).metric x).left_inv (hsrc i)
-  have h' : CenterInput (I := I) (X.obj k).metric mu
+  have h' : CenterOfMassConditions (I := I) (X.obj k).metric mu
       (fun i => (NormalCoordinates.normalChartAt
         (I := I) (X.obj k).metric x).symm (xi i)) join p r := by
     rw [hdecode]
@@ -486,7 +486,7 @@ theorem HasControlledNormalBranch.exists_centerOfMass_derivative
       MetricComplete.complete (I := I) (X.obj k) hcomplete
     letI : MetricSpace (X.obj k).M :=
       HopfRinow.riemMetricSpace (I := I) (M := (X.obj k).M)
-    ∀ h : CenterInput (I := I) (X.obj k).metric mu points join p r,
+    ∀ h : CenterOfMassConditions (I := I) (X.obj k).metric mu points join p r,
       dist p x ≤ R →
       ENNReal.ofReal (R + 2 * r) < ENNReal.ofReal (ρ / 2) →
       0 < ρ →
@@ -579,7 +579,7 @@ theorem HasControlledNormalBranch.exists_centerOfMass_derivative
     funext i
     exact (NormalCoordinates.normalChartAt
       (I := I) (X.obj k).metric x).left_inv (hsrc i)
-  have h' : CenterInput (I := I) (X.obj k).metric mu
+  have h' : CenterOfMassConditions (I := I) (X.obj k).metric mu
       (fun i => (NormalCoordinates.normalChartAt
         (I := I) (X.obj k).metric x).symm (xi i)) join p r := by
     rw [hdecode]
@@ -691,7 +691,7 @@ theorem HasControlledNormalBranch.exists_centerOfMass_solution
       MetricComplete.complete (I := I) (X.obj k) hcomplete
     letI : MetricSpace (X.obj k).M :=
       HopfRinow.riemMetricSpace (I := I) (M := (X.obj k).M)
-    ∀ h : CenterInput (I := I) (X.obj k).metric mu points join p r,
+    ∀ h : CenterOfMassConditions (I := I) (X.obj k).metric mu points join p r,
       dist p x ≤ R →
       ENNReal.ofReal (R + 2 * r) < ENNReal.ofReal (ρ / 2) →
       0 < ρ →
@@ -754,7 +754,7 @@ theorem HasControlledNormalBranch.exists_centerOfMass_solution
     funext i
     exact (NormalCoordinates.normalChartAt
       (I := I) (X.obj k).metric x).left_inv (hsrc i)
-  have h' : CenterInput (I := I) (X.obj k).metric mu
+  have h' : CenterOfMassConditions (I := I) (X.obj k).metric mu
       (fun i => (NormalCoordinates.normalChartAt
         (I := I) (X.obj k).metric x).symm (xi i)) join p r := by
     rw [hdecode]
@@ -976,7 +976,7 @@ theorem exists_hat_center_of_mass_equation_at
         (join : (X.obj (L.φ k)).M → (X.obj (L.φ k)).M → Real →
           (X.obj (L.φ k)).M)
         (x : (X.obj (L.φ k)).M) (rad : Real),
-      ∀ h : CenterInput (I := I) (X.obj (L.φ k)).metric mu points join x rad,
+      ∀ h : CenterOfMassConditions (I := I) (X.obj (L.φ k)).metric mu points join x rad,
         x ∈ NetLimitData.hatBall (I := I) (X := X) hd D P L pb r k alpha.1 →
         ENNReal.ofReal
             (4 * L.lamInf (alpha.1 : Nat) + 2 * rad) <
@@ -1134,7 +1134,7 @@ theorem exists_hat_center_of_mass_solution_at
         (join : (X.obj (L.φ k)).M → (X.obj (L.φ k)).M → Real →
           (X.obj (L.φ k)).M)
         (x : (X.obj (L.φ k)).M) (rad : Real),
-      ∀ h : CenterInput (I := I) (X.obj (L.φ k)).metric mu points join x rad,
+      ∀ h : CenterOfMassConditions (I := I) (X.obj (L.φ k)).metric mu points join x rad,
         ∑ i, mu i = 1 →
         x ∈ NetLimitData.hatBall (I := I) (X := X) hd D P L pb r k alpha.1 →
         ENNReal.ofReal
@@ -1318,7 +1318,7 @@ theorem exists_hat_center_of_massC_at
         (join : (X.obj (L.φ k)).M → (X.obj (L.φ k)).M → Real →
           (X.obj (L.φ k)).M)
         (x : (X.obj (L.φ k)).M) (rad : Real),
-      ∀ h : CenterInput (I := I) (X.obj (L.φ k)).metric mu points join x rad,
+      ∀ h : CenterOfMassConditions (I := I) (X.obj (L.φ k)).metric mu points join x rad,
         ∑ i, mu i = 1 →
         x ∈ NetLimitData.hatBall (I := I) (X := X) hd D P L pb r k alpha.1 →
         ENNReal.ofReal
@@ -1465,7 +1465,7 @@ theorem exists_hat_center_of_mass_equation
         (join : (X.obj (L.φ k)).M → (X.obj (L.φ k)).M → Real →
           (X.obj (L.φ k)).M)
         (x : (X.obj (L.φ k)).M) (rad : Real),
-      ∀ h : CenterInput (I := I) (X.obj (L.φ k)).metric mu points join x rad,
+      ∀ h : CenterOfMassConditions (I := I) (X.obj (L.φ k)).metric mu points join x rad,
         (∀ gamma, mu gamma ≠ 0 →
           x ∈ NetLimitData.hatBall (I := I) (X := X) hd D P L pb r k gamma) →
         (∀ gamma : LiveSlot L pb r,
@@ -1571,7 +1571,7 @@ theorem exists_center_of_mass_branch
     letI : EMetricSpace (X.obj k).M := (X.obj k).emetricSpace (I := I)
     letI : CompleteSpace (X.obj k).M :=
       MetricComplete.complete (I := I) (X.obj k) hcomplete
-    ∀ h : CenterInput (I := I) (X.obj k).metric μ points join p r,
+    ∀ h : CenterOfMassConditions (I := I) (X.obj k).metric μ points join p r,
       (letI : MetricSpace (X.obj k).M :=
           HopfRinow.riemMetricSpace (I := I) (M := (X.obj k).M);
         dist p x ≤ R) →

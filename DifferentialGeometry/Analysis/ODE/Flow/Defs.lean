@@ -15,8 +15,8 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E
 
 structure IsLocalFlow (f : ℝ → E → E) (t₀ : ℝ) (x₀ : E) (r : ℝ≥0) (tmin tmax : ℝ)
     (Φ : E × ℝ → E) : Prop where
-  htmin_le : tmin ≤ t₀
-  ht₀_le : t₀ ≤ tmax
+  minTime_le_initial : tmin ≤ t₀
+  initial_le_maxTime : t₀ ≤ tmax
   apply_initial : ∀ x ∈ closedBall x₀ r, Φ ⟨x, t₀⟩ = x
   hasDerivWithinAt : ∀ x ∈ closedBall x₀ r, ∀ t ∈ Icc tmin tmax,
     HasDerivWithinAt (fun s => Φ ⟨x, s⟩) (f t (Φ ⟨x, t⟩)) (Icc tmin tmax) t
@@ -30,7 +30,7 @@ variable {f : ℝ → E → E} {t₀ : ℝ} {x₀ : E} {r : ℝ≥0} {tmin tmax 
 
 omit [CompleteSpace E] in
 lemma t₀_mem_Icc (h : IsLocalFlow f t₀ x₀ r tmin tmax Φ) : t₀ ∈ Icc tmin tmax :=
-  ⟨h.htmin_le, h.ht₀_le⟩
+  ⟨h.minTime_le_initial, h.initial_le_maxTime⟩
 
 omit [CompleteSpace E] in
 lemma orbit_continuousOn (h : IsLocalFlow f t₀ x₀ r tmin tmax Φ)
@@ -195,8 +195,8 @@ theorem exists_isLocalFlow_of_contDiffOn_univ
     exact fun x hx => HasDerivWithinAt.continuousOn (hΦ₁ x hx).2
   refine ⟨r, ε, hr, hε, Φ, ?_⟩
   refine
-  { htmin_le := by linarith,
-    ht₀_le := by linarith,
+  { minTime_le_initial := by linarith,
+    initial_le_maxTime := by linarith,
     apply_initial := fun x hx => (hΦ₁ x hx).1,
     hasDerivWithinAt := fun x hx t ht => (hΦ₁ x hx).2 t ht,
     continuousOn := hΦ_cont,

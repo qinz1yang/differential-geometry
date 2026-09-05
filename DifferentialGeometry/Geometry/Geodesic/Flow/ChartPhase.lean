@@ -839,7 +839,7 @@ theorem exists_smooth_chartPhase_localFlow
   obtain ⟨T_out, T_mid, T, M, ρ_out, ρ_mid, ρ, r',
     hT, hT_lt_mid, hT_mid_lt_out, hM, hMT_mid, hr', hρ_pos, hρ_lt_mid, hρ_mid_lt_out,
     hρρ', hρ_out_le_r, hsub, hA_bd⟩ :=
-    DifferentialGeometry.Analysis.ODE.Flow.exists_flow_nesting_data hΦ' hC1 ht₀_mem hrN_pos
+    DifferentialGeometry.Analysis.ODE.Flow.exists_flow_nesting_parameters hΦ' hC1 ht₀_mem hrN_pos
   have hCDOn0 : ContDiffOn ℝ ∞ Φ
       ((Metric.ball ((x₀, v₀) : E × E) ρ) ×ˢ Set.Ioo ((0 : ℝ) - T) ((0 : ℝ) + T)) :=
     hΦ'.contDiffOn_top hf_inf hT hT_lt_mid hT_mid_lt_out hM hMT_mid hsub hr'

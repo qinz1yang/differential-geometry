@@ -266,7 +266,7 @@ theorem eigenvector_resolventHigh_perK_from_uniform_β
             ‖tensorResolventEigenbasisVec (I := I) (M := M)
               (tensorResolventL2_isCompactOperator (I := I) (M := M)
                 g r s) i‖)
-    (h_pou_resolv : ∀ (i : TensorEigenIdx (I := I) (M := M) g r s) (K' : ℕ)
+    (resolventComponentRegularity : ∀ (i : TensorEigenIdx (I := I) (M := M) g r s) (K' : ℕ)
         (β : M) (Q : TensorCompIdx (E := E) r s),
       K' + 1 ≤ N →
       MemWkp (d := Module.finrank ℝ E) (K' + 1) 2
@@ -304,7 +304,7 @@ theorem eigenvector_resolventHigh_perK_from_uniform_β
             (eigenvectorResolvent (I := I) (M := M) g r s i))
           β Q : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) : EuclN → ℝ) y)
       Ω :=
-    h_pou_resolv i K' β Q hK'
+    resolventComponentRegularity i K' β Q hK'
   have h_eig_mem : MemWkp (d := Module.finrank ℝ E) (K' + 1) 2
       (eigenvectorChartComponentFun (I := I) (M := M)
         g r s i β Q) Ω :=
@@ -431,7 +431,7 @@ theorem eigenvector_resolventLow_perK_from_uniform_β
             ‖tensorResolventEigenbasisVec (I := I) (M := M)
               (tensorResolventL2_isCompactOperator (I := I) (M := M)
                 g r s) i‖)
-    (h_pou_resolv : ∀ (i : TensorEigenIdx (I := I) (M := M) g r s) (K' : ℕ)
+    (resolventComponentRegularity : ∀ (i : TensorEigenIdx (I := I) (M := M) g r s) (K' : ℕ)
         (β : M) (Q : TensorCompIdx (E := E) r s),
       K' ≤ N →
       MemWkp (d := Module.finrank ℝ E) K' 2
@@ -469,7 +469,7 @@ theorem eigenvector_resolventLow_perK_from_uniform_β
             (eigenvectorResolvent (I := I) (M := M) g r s i))
           β Q : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) : EuclN → ℝ) y)
       Ω :=
-    h_pou_resolv i K' β Q hK'
+    resolventComponentRegularity i K' β Q hK'
   have h_eig_mem : MemWkp (d := Module.finrank ℝ E) K' 2
       (eigenvectorChartComponentFun (I := I) (M := M)
         g r s i β Q) Ω :=

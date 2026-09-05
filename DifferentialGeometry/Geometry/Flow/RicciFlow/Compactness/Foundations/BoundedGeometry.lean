@@ -66,7 +66,7 @@ def atTime
 
 end FlowDerivBounds
 
-structure FlowDerivativeInput
+structure FlowCompactnessBounds
     (X : PointedFlowSeq.{u, uE, uH} (I := I)) where
   spacetime : FlowDerivBounds (I := I) X
   atZeroGeom : SeqBoundedGeometry (I := I) (X.atZero (I := I))

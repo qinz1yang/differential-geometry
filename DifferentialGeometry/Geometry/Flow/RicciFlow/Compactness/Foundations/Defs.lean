@@ -111,23 +111,23 @@ def atZero (X : PointedFlowSeq.{u, uE, uH} (I := I)) :
 
 end PointedFlowSeq
 
-structure CompleteInput {I : ModelWithCorners Real E H}
-    (X : PointedFlowSeq.{u, uE, uH} (I := I)) where
+structure FlowMetricComplete {I : ModelWithCorners Real E H}
+    (X : PointedFlowSeq.{u, uE, uH} (I := I)) : Prop where
   complete_on :
     forall i : Nat, forall t : Real, t ∈ X.D.carrier ->
       MetricComplete (I := I) ((X.term i).atTime (I := I) t)
 
-namespace CompleteInput
+namespace FlowMetricComplete
 
 theorem at_time {I : ModelWithCorners Real E H}
     {X : PointedFlowSeq.{u, uE, uH} (I := I)}
-    (h : CompleteInput (I := I) X) {t : Real} (ht : t ∈ X.D.carrier) :
+    (h : FlowMetricComplete (I := I) X) {t : Real} (ht : t ∈ X.D.carrier) :
     SeqMetricComplete (I := I) (X.atTime (I := I) t) where
   complete := fun i => h.complete_on i t ht
 
-end CompleteInput
+end FlowMetricComplete
 
-structure CurvBoundInput {I : ModelWithCorners Real E H}
+structure FlowCurvatureBoundedOnCompactWindows {I : ModelWithCorners Real E H}
     (X : PointedFlowSeq.{u, uE, uH} (I := I)) : Prop where
   bound_on_window :
     forall a b : Real, Set.Icc a b ⊆ X.D.carrier ->
@@ -135,13 +135,6 @@ structure CurvBoundInput {I : ModelWithCorners Real E H}
         forall i : Nat, forall t : Real, t ∈ Set.Icc a b ->
           forall x : (X.term i).M,
             (X.term i).rmNormSq (I := I) t x <= C
-
-structure InjInput {I : ModelWithCorners Real E H}
-    (_X : PointedFlowSeq.{u, uE, uH} (I := I)) where
-  injRadiusAtBase : Nat -> Real
-  iota : Real
-  iota_pos : 0 < iota
-  inj_lower : forall i : Nat, iota <= injRadiusAtBase i
 
 end CheegerGromovCompactness
 end DifferentialGeometry

@@ -42,13 +42,13 @@ omit [CompleteSpace E] in
 private lemma iteratedPartial_wkpNorm_le_of_chart_perK
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (α : M) (P₀ : TensorCompIdx (E := E) r s) (m : ℕ)
-    (Ceig : ℕ → ℝ) (eEig : ℕ → ℕ)
-    (hCeig_bd : ∀ (i : TensorEigenIdx (I := I) (M := M) g r s) (K' : ℕ),
+    (eigenvectorConstant : ℕ → ℝ) (eigenvectorExponent : ℕ → ℕ)
+    (eigenvector_bound : ∀ (i : TensorEigenIdx (I := I) (M := M) g r s) (K' : ℕ),
       iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K' 2
           (eigenvectorChartComponentFun (I := I) (M := M)
             g r s i α P₀)
           (chartTargetEuclid (I := I) (M := M) α)
-        ≤ ENNReal.ofReal (Ceig K' * (i.fst.val)⁻¹ ^ (eEig K')) *
+        ≤ ENNReal.ofReal (eigenvectorConstant K' * (i.fst.val)⁻¹ ^ (eigenvectorExponent K')) *
           ENNReal.ofReal
             ‖tensorResolventEigenbasisVec (I := I) (M := M)
               (tensorResolventL2_isCompactOperator (I := I) (M := M)
@@ -60,8 +60,8 @@ private lemma iteratedPartial_wkpNorm_le_of_chart_perK
             (eigenvectorChartIteratedPartial (I := I) (M := M)
               g r s i α P₀ j idx)
             (chartTargetEuclid (I := I) (M := M) α)
-          ≤ ENNReal.ofReal (Ceig (K' + m + 3) *
-              (i.fst.val)⁻¹ ^ (eEig (K' + m + 3))) *
+          ≤ ENNReal.ofReal (eigenvectorConstant (K' + m + 3) *
+              (i.fst.val)⁻¹ ^ (eigenvectorExponent (K' + m + 3))) *
             ENNReal.ofReal
               ‖tensorResolventEigenbasisVec (I := I) (M := M)
                 (tensorResolventL2_isCompactOperator (I := I) (M := M)
@@ -73,13 +73,13 @@ private lemma iteratedPartial_wkpNorm_le_of_chart_perK
           (eigenvectorChartComponentFun (I := I) (M := M)
             g r s i α P₀)
           (chartTargetEuclid (I := I) (M := M) α)
-        ≤ ENNReal.ofReal (Ceig (K' + m + 3) *
-            (i.fst.val)⁻¹ ^ (eEig (K' + m + 3))) *
+        ≤ ENNReal.ofReal (eigenvectorConstant (K' + m + 3) *
+            (i.fst.val)⁻¹ ^ (eigenvectorExponent (K' + m + 3))) *
           ENNReal.ofReal
             ‖tensorResolventEigenbasisVec (I := I) (M := M)
               (tensorResolventL2_isCompactOperator (I := I) (M := M)
                 g r s) i‖ :=
-    hCeig_bd i (K' + m + 3)
+    eigenvector_bound i (K' + m + 3)
   have h_chart_compact_memWkp :
       MemWkp (d := Module.finrank ℝ E) ((2 + K') + j) 2
           (eigenvectorChartComponentFun (I := I) (M := M)
@@ -117,19 +117,19 @@ theorem eigenvectorChartRHSDiff_eLpNorm_le_chartcpt
             β Q : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) :
             EuclN → ℝ) y)
         (chartTargetEuclid (I := I) (M := M) β))
-    (Ceig : ℕ → ℝ) (eEig : ℕ → ℕ) (hCeig_nn : ∀ K', 0 ≤ Ceig K')
-    (hCeig_bd : ∀ (i : TensorEigenIdx (I := I) (M := M) g r s) (K' : ℕ),
+    (eigenvectorConstant : ℕ → ℝ) (eigenvectorExponent : ℕ → ℕ) (eigenvectorConstant_nonneg : ∀ K', 0 ≤ eigenvectorConstant K')
+    (eigenvector_bound : ∀ (i : TensorEigenIdx (I := I) (M := M) g r s) (K' : ℕ),
       iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K' 2
           (eigenvectorChartComponentFun (I := I) (M := M)
             g r s i α P₀)
           (chartTargetEuclid (I := I) (M := M) α)
-        ≤ ENNReal.ofReal (Ceig K' * (i.fst.val)⁻¹ ^ (eEig K')) *
+        ≤ ENNReal.ofReal (eigenvectorConstant K' * (i.fst.val)⁻¹ ^ (eigenvectorExponent K')) *
           ENNReal.ofReal
             ‖tensorResolventEigenbasisVec (I := I) (M := M)
               (tensorResolventL2_isCompactOperator (I := I) (M := M)
                 g r s) i‖)
-    (CresH : ℕ → ℝ) (eResH : ℕ → ℕ) (hCresH_nn : ∀ K', 0 ≤ CresH K')
-    (hCresH_bd : ∀ (i : TensorEigenIdx (I := I) (M := M) g r s)
+    (highResolventConstant : ℕ → ℝ) (highResolventExponent : ℕ → ℕ) (highResolventConstant_nonneg : ∀ K', 0 ≤ highResolventConstant K')
+    (highResolvent_bound : ∀ (i : TensorEigenIdx (I := I) (M := M) g r s)
       (β : M) (Q : TensorCompIdx (E := E) r s) (K' : ℕ),
       iteratedWeakSobolevNorm (d := Module.finrank ℝ E) (K' + 1) 2
           (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s
@@ -138,13 +138,13 @@ theorem eigenvectorChartRHSDiff_eLpNorm_le_chartcpt
               β Q : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) :
               EuclN → ℝ) y)
           (chartTargetEuclid (I := I) (M := M) β)
-        ≤ ENNReal.ofReal (CresH K' * (i.fst.val)⁻¹ ^ (eResH K')) *
+        ≤ ENNReal.ofReal (highResolventConstant K' * (i.fst.val)⁻¹ ^ (highResolventExponent K')) *
           ENNReal.ofReal
             ‖tensorResolventEigenbasisVec (I := I) (M := M)
               (tensorResolventL2_isCompactOperator (I := I) (M := M)
                 g r s) i‖)
-    (CresL : ℕ → ℝ) (eResL : ℕ → ℕ) (hCresL_nn : ∀ K', 0 ≤ CresL K')
-    (hCresL_bd : ∀ (i : TensorEigenIdx (I := I) (M := M) g r s)
+    (lowResolventConstant : ℕ → ℝ) (lowResolventExponent : ℕ → ℕ) (lowResolventConstant_nonneg : ∀ K', 0 ≤ lowResolventConstant K')
+    (lowResolvent_bound : ∀ (i : TensorEigenIdx (I := I) (M := M) g r s)
       (β : M) (Q : TensorCompIdx (E := E) r s) (K' : ℕ),
       iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K' 2
           (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s
@@ -153,13 +153,13 @@ theorem eigenvectorChartRHSDiff_eLpNorm_le_chartcpt
               β Q : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) :
               EuclN → ℝ) y)
           (chartTargetEuclid (I := I) (M := M) β)
-        ≤ ENNReal.ofReal (CresL K' * (i.fst.val)⁻¹ ^ (eResL K')) *
+        ≤ ENNReal.ofReal (lowResolventConstant K' * (i.fst.val)⁻¹ ^ (lowResolventExponent K')) *
           ENNReal.ofReal
             ‖tensorResolventEigenbasisVec (I := I) (M := M)
               (tensorResolventL2_isCompactOperator (I := I) (M := M)
                 g r s) i‖)
-    (Cpar : ℕ → ℝ) (ePar : ℕ → ℕ) (hCpar_nn : ∀ K', 0 ≤ Cpar K')
-    (hCpar_bd : ∀ (i : TensorEigenIdx (I := I) (M := M) g r s)
+    (partialConstant : ℕ → ℝ) (partialExponent : ℕ → ℕ) (partialConstant_nonneg : ∀ K', 0 ≤ partialConstant K')
+    (partial_bound : ∀ (i : TensorEigenIdx (I := I) (M := M) g r s)
       (P : TensorCompIdx (E := E) r s) (k : Fin (Module.finrank ℝ E)) (K' : ℕ),
       iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K' 2
           (fun y => ((partialLpLimit (I := I) (M := M)
@@ -167,13 +167,13 @@ theorem eigenvectorChartRHSDiff_eLpNorm_le_chartcpt
               Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
               EuclN → ℝ) y)
           (chartTargetEuclid (I := I) (M := M) α)
-        ≤ ENNReal.ofReal (Cpar K' * (i.fst.val)⁻¹ ^ (ePar K')) *
+        ≤ ENNReal.ofReal (partialConstant K' * (i.fst.val)⁻¹ ^ (partialExponent K')) *
           ENNReal.ofReal
             ‖tensorResolventEigenbasisVec (I := I) (M := M)
               (tensorResolventL2_isCompactOperator (I := I) (M := M)
                 g r s) i‖)
-    (Ccom : ℕ → ℝ) (eCom : ℕ → ℕ) (hCcom_nn : ∀ K', 0 ≤ Ccom K')
-    (hCcom_bd : ∀ (i : TensorEigenIdx (I := I) (M := M) g r s)
+    (componentConstant : ℕ → ℝ) (componentExponent : ℕ → ℕ) (componentConstant_nonneg : ∀ K', 0 ≤ componentConstant K')
+    (component_bound : ∀ (i : TensorEigenIdx (I := I) (M := M) g r s)
       (p : TensorCompIdx (E := E) r s) (K' : ℕ),
       iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K' 2
           (fun y => ((componentLpLimit (I := I) (M := M)
@@ -181,13 +181,13 @@ theorem eigenvectorChartRHSDiff_eLpNorm_le_chartcpt
               Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
               EuclN → ℝ) y)
           (chartTargetEuclid (I := I) (M := M) α)
-        ≤ ENNReal.ofReal (Ccom K' * (i.fst.val)⁻¹ ^ (eCom K')) *
+        ≤ ENNReal.ofReal (componentConstant K' * (i.fst.val)⁻¹ ^ (componentExponent K')) *
           ENNReal.ofReal
             ‖tensorResolventEigenbasisVec (I := I) (M := M)
               (tensorResolventL2_isCompactOperator (I := I) (M := M)
                 g r s) i‖)
-    (CcR : ℕ → ℝ) (eCcR : ℕ → ℕ) (hCcR_nn : ∀ K', 0 ≤ CcR K')
-    (hCcR_bd : ∀ (i : TensorEigenIdx (I := I) (M := M) g r s)
+    (crossRightConstant : ℕ → ℝ) (crossRightExponent : ℕ → ℕ) (crossRightConstant_nonneg : ∀ K', 0 ≤ crossRightConstant K')
+    (crossRight_bound : ∀ (i : TensorEigenIdx (I := I) (M := M) g r s)
       (P : TensorCompIdx (E := E) r s) (K' : ℕ),
       iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K' 2
           (fun y => ((crossRightLimitComponent (I := I) (M := M)
@@ -195,13 +195,13 @@ theorem eigenvectorChartRHSDiff_eLpNorm_le_chartcpt
               Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
               EuclN → ℝ) y)
           (chartTargetEuclid (I := I) (M := M) α)
-        ≤ ENNReal.ofReal (CcR K' * (i.fst.val)⁻¹ ^ (eCcR K')) *
+        ≤ ENNReal.ofReal (crossRightConstant K' * (i.fst.val)⁻¹ ^ (crossRightExponent K')) *
           ENNReal.ofReal
             ‖tensorResolventEigenbasisVec (I := I) (M := M)
               (tensorResolventL2_isCompactOperator (I := I) (M := M)
                 g r s) i‖)
-    (Ccut : ℕ → ℝ) (eCcut : ℕ → ℕ) (hCcut_nn : ∀ K', 0 ≤ Ccut K')
-    (hCcut_bd : ∀ (i : TensorEigenIdx (I := I) (M := M) g r s)
+    (cutoffConstant : ℕ → ℝ) (cutoffExponent : ℕ → ℕ) (cutoffConstant_nonneg : ∀ K', 0 ≤ cutoffConstant K')
+    (cutoff_bound : ∀ (i : TensorEigenIdx (I := I) (M := M) g r s)
       (P : TensorCompIdx (E := E) r s) (k : Fin (Module.finrank ℝ E)) (K' : ℕ),
       iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K' 2
           (fun y => ((cutoffPartialLpLimit (I := I) (M := M)
@@ -209,7 +209,7 @@ theorem eigenvectorChartRHSDiff_eLpNorm_le_chartcpt
               Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
               EuclN → ℝ) y)
           (chartTargetEuclid (I := I) (M := M) α)
-        ≤ ENNReal.ofReal (Ccut K' * (i.fst.val)⁻¹ ^ (eCcut K')) *
+        ≤ ENNReal.ofReal (cutoffConstant K' * (i.fst.val)⁻¹ ^ (cutoffExponent K')) *
           ENNReal.ofReal
             ‖tensorResolventEigenbasisVec (I := I) (M := M)
               (tensorResolventL2_isCompactOperator (I := I) (M := M)
@@ -229,9 +229,9 @@ theorem eigenvectorChartRHSDiff_eLpNorm_le_chartcpt
   obtain ⟨Cwk, hCwk_nn, hCwk_bd⟩ :=
     eigenvectorChartRHSDiff_eLpNorm_le_uniform (I := I) (M := M)
       g r s α P₀ m l h_pou
-  set Citer : ℕ → ℝ := fun K' => Ceig (K' + m + 3) with hCiter_def
-  set eIter : ℕ → ℕ := fun K' => eEig (K' + m + 3) with heIter_def
-  have hCiter_nn : ∀ K', 0 ≤ Citer K' := fun K' => hCeig_nn (K' + m + 3)
+  set Citer : ℕ → ℝ := fun K' => eigenvectorConstant (K' + m + 3) with hCiter_def
+  set eIter : ℕ → ℕ := fun K' => eigenvectorExponent (K' + m + 3) with heIter_def
+  have hCiter_nn : ∀ K', 0 ≤ Citer K' := fun K' => eigenvectorConstant_nonneg (K' + m + 3)
   have hCiter_bd :
       ∀ (i : TensorEigenIdx (I := I) (M := M) g r s) (j : ℕ),
         j ≤ m + 1 →
@@ -246,17 +246,17 @@ theorem eigenvectorChartRHSDiff_eLpNorm_le_chartcpt
                   (tensorResolventL2_isCompactOperator (I := I) (M := M)
                     g r s) i‖ :=
     iteratedPartial_wkpNorm_le_of_chart_perK (I := I) (M := M)
-      g r s α P₀ m Ceig eEig hCeig_bd
+      g r s α P₀ m eigenvectorConstant eigenvectorExponent eigenvector_bound
   obtain ⟨Caggr, eAggr, hCaggr_nn, hCaggr_bd⟩ :=
     diffRHSAggregate_le_energy_perK (I := I) (M := M)
       g r s α P₀ m 0 l
-      Ceig eEig hCeig_nn hCeig_bd
-      CresH eResH hCresH_nn hCresH_bd
-      CresL eResL hCresL_nn hCresL_bd
-      Cpar ePar hCpar_nn hCpar_bd
-      Ccom eCom hCcom_nn hCcom_bd
-      CcR eCcR hCcR_nn hCcR_bd
-      Ccut eCcut hCcut_nn hCcut_bd
+      eigenvectorConstant eigenvectorExponent eigenvectorConstant_nonneg eigenvector_bound
+      highResolventConstant highResolventExponent highResolventConstant_nonneg highResolvent_bound
+      lowResolventConstant lowResolventExponent lowResolventConstant_nonneg lowResolvent_bound
+      partialConstant partialExponent partialConstant_nonneg partial_bound
+      componentConstant componentExponent componentConstant_nonneg component_bound
+      crossRightConstant crossRightExponent crossRightConstant_nonneg crossRight_bound
+      cutoffConstant cutoffExponent cutoffConstant_nonneg cutoff_bound
       Citer eIter hCiter_nn hCiter_bd
   refine ⟨Cwk * Caggr, eAggr + 1, mul_nonneg hCwk_nn hCaggr_nn, fun i => ?_⟩
   have hμ_unit : i.fst.val ∈ Set.Ioc (0 : ℝ) 1 := by
@@ -315,19 +315,19 @@ theorem eigenvectorChartRHSDiff_wkpNormOne_le_chartcpt
             β Q : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) :
             EuclN → ℝ) y)
         (chartTargetEuclid (I := I) (M := M) β))
-    (Ceig : ℕ → ℝ) (eEig : ℕ → ℕ) (hCeig_nn : ∀ K', 0 ≤ Ceig K')
-    (hCeig_bd : ∀ (i : TensorEigenIdx (I := I) (M := M) g r s) (K' : ℕ),
+    (eigenvectorConstant : ℕ → ℝ) (eigenvectorExponent : ℕ → ℕ) (eigenvectorConstant_nonneg : ∀ K', 0 ≤ eigenvectorConstant K')
+    (eigenvector_bound : ∀ (i : TensorEigenIdx (I := I) (M := M) g r s) (K' : ℕ),
       iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K' 2
           (eigenvectorChartComponentFun (I := I) (M := M)
             g r s i α P₀)
           (chartTargetEuclid (I := I) (M := M) α)
-        ≤ ENNReal.ofReal (Ceig K' * (i.fst.val)⁻¹ ^ (eEig K')) *
+        ≤ ENNReal.ofReal (eigenvectorConstant K' * (i.fst.val)⁻¹ ^ (eigenvectorExponent K')) *
           ENNReal.ofReal
             ‖tensorResolventEigenbasisVec (I := I) (M := M)
               (tensorResolventL2_isCompactOperator (I := I) (M := M)
                 g r s) i‖)
-    (CresH : ℕ → ℝ) (eResH : ℕ → ℕ) (hCresH_nn : ∀ K', 0 ≤ CresH K')
-    (hCresH_bd : ∀ (i : TensorEigenIdx (I := I) (M := M) g r s)
+    (highResolventConstant : ℕ → ℝ) (highResolventExponent : ℕ → ℕ) (highResolventConstant_nonneg : ∀ K', 0 ≤ highResolventConstant K')
+    (highResolvent_bound : ∀ (i : TensorEigenIdx (I := I) (M := M) g r s)
       (β : M) (Q : TensorCompIdx (E := E) r s) (K' : ℕ),
       iteratedWeakSobolevNorm (d := Module.finrank ℝ E) (K' + 1) 2
           (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s
@@ -336,13 +336,13 @@ theorem eigenvectorChartRHSDiff_wkpNormOne_le_chartcpt
               β Q : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) :
               EuclN → ℝ) y)
           (chartTargetEuclid (I := I) (M := M) β)
-        ≤ ENNReal.ofReal (CresH K' * (i.fst.val)⁻¹ ^ (eResH K')) *
+        ≤ ENNReal.ofReal (highResolventConstant K' * (i.fst.val)⁻¹ ^ (highResolventExponent K')) *
           ENNReal.ofReal
             ‖tensorResolventEigenbasisVec (I := I) (M := M)
               (tensorResolventL2_isCompactOperator (I := I) (M := M)
                 g r s) i‖)
-    (CresL : ℕ → ℝ) (eResL : ℕ → ℕ) (hCresL_nn : ∀ K', 0 ≤ CresL K')
-    (hCresL_bd : ∀ (i : TensorEigenIdx (I := I) (M := M) g r s)
+    (lowResolventConstant : ℕ → ℝ) (lowResolventExponent : ℕ → ℕ) (lowResolventConstant_nonneg : ∀ K', 0 ≤ lowResolventConstant K')
+    (lowResolvent_bound : ∀ (i : TensorEigenIdx (I := I) (M := M) g r s)
       (β : M) (Q : TensorCompIdx (E := E) r s) (K' : ℕ),
       iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K' 2
           (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s
@@ -351,13 +351,13 @@ theorem eigenvectorChartRHSDiff_wkpNormOne_le_chartcpt
               β Q : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) :
               EuclN → ℝ) y)
           (chartTargetEuclid (I := I) (M := M) β)
-        ≤ ENNReal.ofReal (CresL K' * (i.fst.val)⁻¹ ^ (eResL K')) *
+        ≤ ENNReal.ofReal (lowResolventConstant K' * (i.fst.val)⁻¹ ^ (lowResolventExponent K')) *
           ENNReal.ofReal
             ‖tensorResolventEigenbasisVec (I := I) (M := M)
               (tensorResolventL2_isCompactOperator (I := I) (M := M)
                 g r s) i‖)
-    (Cpar : ℕ → ℝ) (ePar : ℕ → ℕ) (hCpar_nn : ∀ K', 0 ≤ Cpar K')
-    (hCpar_bd : ∀ (i : TensorEigenIdx (I := I) (M := M) g r s)
+    (partialConstant : ℕ → ℝ) (partialExponent : ℕ → ℕ) (partialConstant_nonneg : ∀ K', 0 ≤ partialConstant K')
+    (partial_bound : ∀ (i : TensorEigenIdx (I := I) (M := M) g r s)
       (P : TensorCompIdx (E := E) r s) (k : Fin (Module.finrank ℝ E)) (K' : ℕ),
       iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K' 2
           (fun y => ((partialLpLimit (I := I) (M := M)
@@ -365,13 +365,13 @@ theorem eigenvectorChartRHSDiff_wkpNormOne_le_chartcpt
               Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
               EuclN → ℝ) y)
           (chartTargetEuclid (I := I) (M := M) α)
-        ≤ ENNReal.ofReal (Cpar K' * (i.fst.val)⁻¹ ^ (ePar K')) *
+        ≤ ENNReal.ofReal (partialConstant K' * (i.fst.val)⁻¹ ^ (partialExponent K')) *
           ENNReal.ofReal
             ‖tensorResolventEigenbasisVec (I := I) (M := M)
               (tensorResolventL2_isCompactOperator (I := I) (M := M)
                 g r s) i‖)
-    (Ccom : ℕ → ℝ) (eCom : ℕ → ℕ) (hCcom_nn : ∀ K', 0 ≤ Ccom K')
-    (hCcom_bd : ∀ (i : TensorEigenIdx (I := I) (M := M) g r s)
+    (componentConstant : ℕ → ℝ) (componentExponent : ℕ → ℕ) (componentConstant_nonneg : ∀ K', 0 ≤ componentConstant K')
+    (component_bound : ∀ (i : TensorEigenIdx (I := I) (M := M) g r s)
       (p : TensorCompIdx (E := E) r s) (K' : ℕ),
       iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K' 2
           (fun y => ((componentLpLimit (I := I) (M := M)
@@ -379,13 +379,13 @@ theorem eigenvectorChartRHSDiff_wkpNormOne_le_chartcpt
               Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
               EuclN → ℝ) y)
           (chartTargetEuclid (I := I) (M := M) α)
-        ≤ ENNReal.ofReal (Ccom K' * (i.fst.val)⁻¹ ^ (eCom K')) *
+        ≤ ENNReal.ofReal (componentConstant K' * (i.fst.val)⁻¹ ^ (componentExponent K')) *
           ENNReal.ofReal
             ‖tensorResolventEigenbasisVec (I := I) (M := M)
               (tensorResolventL2_isCompactOperator (I := I) (M := M)
                 g r s) i‖)
-    (CcR : ℕ → ℝ) (eCcR : ℕ → ℕ) (hCcR_nn : ∀ K', 0 ≤ CcR K')
-    (hCcR_bd : ∀ (i : TensorEigenIdx (I := I) (M := M) g r s)
+    (crossRightConstant : ℕ → ℝ) (crossRightExponent : ℕ → ℕ) (crossRightConstant_nonneg : ∀ K', 0 ≤ crossRightConstant K')
+    (crossRight_bound : ∀ (i : TensorEigenIdx (I := I) (M := M) g r s)
       (P : TensorCompIdx (E := E) r s) (K' : ℕ),
       iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K' 2
           (fun y => ((crossRightLimitComponent (I := I) (M := M)
@@ -393,13 +393,13 @@ theorem eigenvectorChartRHSDiff_wkpNormOne_le_chartcpt
               Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
               EuclN → ℝ) y)
           (chartTargetEuclid (I := I) (M := M) α)
-        ≤ ENNReal.ofReal (CcR K' * (i.fst.val)⁻¹ ^ (eCcR K')) *
+        ≤ ENNReal.ofReal (crossRightConstant K' * (i.fst.val)⁻¹ ^ (crossRightExponent K')) *
           ENNReal.ofReal
             ‖tensorResolventEigenbasisVec (I := I) (M := M)
               (tensorResolventL2_isCompactOperator (I := I) (M := M)
                 g r s) i‖)
-    (Ccut : ℕ → ℝ) (eCcut : ℕ → ℕ) (hCcut_nn : ∀ K', 0 ≤ Ccut K')
-    (hCcut_bd : ∀ (i : TensorEigenIdx (I := I) (M := M) g r s)
+    (cutoffConstant : ℕ → ℝ) (cutoffExponent : ℕ → ℕ) (cutoffConstant_nonneg : ∀ K', 0 ≤ cutoffConstant K')
+    (cutoff_bound : ∀ (i : TensorEigenIdx (I := I) (M := M) g r s)
       (P : TensorCompIdx (E := E) r s) (k : Fin (Module.finrank ℝ E)) (K' : ℕ),
       iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K' 2
           (fun y => ((cutoffPartialLpLimit (I := I) (M := M)
@@ -407,7 +407,7 @@ theorem eigenvectorChartRHSDiff_wkpNormOne_le_chartcpt
               Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
               EuclN → ℝ) y)
           (chartTargetEuclid (I := I) (M := M) α)
-        ≤ ENNReal.ofReal (Ccut K' * (i.fst.val)⁻¹ ^ (eCcut K')) *
+        ≤ ENNReal.ofReal (cutoffConstant K' * (i.fst.val)⁻¹ ^ (cutoffExponent K')) *
           ENNReal.ofReal
             ‖tensorResolventEigenbasisVec (I := I) (M := M)
               (tensorResolventL2_isCompactOperator (I := I) (M := M)
@@ -427,9 +427,9 @@ theorem eigenvectorChartRHSDiff_wkpNormOne_le_chartcpt
   obtain ⟨Cwk, hCwk_nn, hCwk_bd⟩ :=
     eigenvectorChartRHSDiff_wkpNorm_le_uniform (I := I) (M := M)
       g r s α P₀ m 1 l h_pou
-  set Citer : ℕ → ℝ := fun K' => Ceig (K' + m + 3) with hCiter_def
-  set eIter : ℕ → ℕ := fun K' => eEig (K' + m + 3) with heIter_def
-  have hCiter_nn : ∀ K', 0 ≤ Citer K' := fun K' => hCeig_nn (K' + m + 3)
+  set Citer : ℕ → ℝ := fun K' => eigenvectorConstant (K' + m + 3) with hCiter_def
+  set eIter : ℕ → ℕ := fun K' => eigenvectorExponent (K' + m + 3) with heIter_def
+  have hCiter_nn : ∀ K', 0 ≤ Citer K' := fun K' => eigenvectorConstant_nonneg (K' + m + 3)
   have hCiter_bd :
       ∀ (i : TensorEigenIdx (I := I) (M := M) g r s) (j : ℕ),
         j ≤ m + 1 →
@@ -444,17 +444,17 @@ theorem eigenvectorChartRHSDiff_wkpNormOne_le_chartcpt
                   (tensorResolventL2_isCompactOperator (I := I) (M := M)
                     g r s) i‖ :=
     iteratedPartial_wkpNorm_le_of_chart_perK (I := I) (M := M)
-      g r s α P₀ m Ceig eEig hCeig_bd
+      g r s α P₀ m eigenvectorConstant eigenvectorExponent eigenvector_bound
   obtain ⟨Caggr, eAggr, hCaggr_nn, hCaggr_bd⟩ :=
     diffRHSAggregate_le_energy_perK (I := I) (M := M)
       g r s α P₀ m 1 l
-      Ceig eEig hCeig_nn hCeig_bd
-      CresH eResH hCresH_nn hCresH_bd
-      CresL eResL hCresL_nn hCresL_bd
-      Cpar ePar hCpar_nn hCpar_bd
-      Ccom eCom hCcom_nn hCcom_bd
-      CcR eCcR hCcR_nn hCcR_bd
-      Ccut eCcut hCcut_nn hCcut_bd
+      eigenvectorConstant eigenvectorExponent eigenvectorConstant_nonneg eigenvector_bound
+      highResolventConstant highResolventExponent highResolventConstant_nonneg highResolvent_bound
+      lowResolventConstant lowResolventExponent lowResolventConstant_nonneg lowResolvent_bound
+      partialConstant partialExponent partialConstant_nonneg partial_bound
+      componentConstant componentExponent componentConstant_nonneg component_bound
+      crossRightConstant crossRightExponent crossRightConstant_nonneg crossRight_bound
+      cutoffConstant cutoffExponent cutoffConstant_nonneg cutoff_bound
       Citer eIter hCiter_nn hCiter_bd
   refine ⟨Cwk * Caggr, eAggr + 1, mul_nonneg hCwk_nn hCaggr_nn, fun i => ?_⟩
   have hμ_unit : i.fst.val ∈ Set.Ioc (0 : ℝ) 1 := by

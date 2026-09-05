@@ -52,7 +52,7 @@ variable {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 theorem exists_directed_approximate_isometry_subsequence (P : ∀ k, ProperMetricOn (I := I) (X.obj k))
-    (B : PairwiseApproximateIsometryInput (X := X) P) :
+    (B : HasPairwiseApproximateIsometries (X := X) P) :
     ∃ σ : ℕ → ℕ, StrictMono σ ∧
       (letI : ∀ j, TopologicalSpace (X.obj (σ j)).M := fun j => (X.obj (σ j)).topology
        letI : ∀ j, ChartedSpace H (X.obj (σ j)).M := fun j => (X.obj (σ j)).charted
@@ -75,7 +75,7 @@ theorem exists_directed_approximate_isometry_subsequence (P : ∀ k, ProperMetri
   have helt : ∀ j : ℕ, (1 / 2 : ℝ) ^ (j + 1) < 1 :=
     fun j => pow_lt_one₀ (by norm_num) (by norm_num) (by omega)
   set T : ℕ → ℕ := fun j =>
-    (PairwiseApproximateIsometryInput.exists_partial_approximate_isometry P B ((2 : ℝ) ^ (j + 1)) (hrpos j) ((1 / 2 : ℝ) ^ (j + 1)) (hepos j)
+    (HasPairwiseApproximateIsometries.exists_partial_approximate_isometry P B ((2 : ℝ) ^ (j + 1)) (hrpos j) ((1 / 2 : ℝ) ^ (j + 1)) (hepos j)
       (helt j) j).choose with hT
   obtain ⟨σ, hσmono, hσge⟩ := exists_strictMono_ge T
   refine ⟨σ, hσmono, ?_⟩
@@ -108,7 +108,7 @@ theorem exists_directed_approximate_isometry_subsequence (P : ∀ k, ProperMetri
         Nonempty (PartialDiffeomorphMetricApproximation (I := I)
           (Metric.closedBall ((X.obj (σ j)).basepoint) ((2 : ℝ) ^ (j + 1)))
           ((1 / 2 : ℝ) ^ (j + 1)) j Φ (X.obj (σ j)).metric (X.obj (σ (j + 1))).metric) :=
-    fun j => (PairwiseApproximateIsometryInput.exists_partial_approximate_isometry P B ((2 : ℝ) ^ (j + 1)) (hrpos j) ((1 / 2 : ℝ) ^ (j + 1)) (hepos j)
+    fun j => (HasPairwiseApproximateIsometries.exists_partial_approximate_isometry P B ((2 : ℝ) ^ (j + 1)) (hrpos j) ((1 / 2 : ℝ) ^ (j + 1)) (hepos j)
       (helt j) j).choose_spec (σ j) (σ (j + 1)) (hstep j).1 (hstep j).2
   choose Ψ hΨsource hΨbase hΨdata using hΨex
   refine ⟨Ψ, hΨbase, ?_⟩

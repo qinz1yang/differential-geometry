@@ -95,7 +95,7 @@ theorem hasDerivAt_integral_lRegularizedEulerPair_variation
     have hFAt : DifferentiableAt Real
         (fun p : Real × Real ↦ F p.1 p.2) (u, s) :=
       (hFDiff (u, s) hpU).differentiableAt (hUopen.mem_nhds hpU)
-    simpa only [dF] using Aux2.hasDerivAt_slice_fst
+    simpa only [dF] using TwoParameterDerivative.hasDerivAt_slice_fst
       (fun z r : Real ↦ F z r) u s hFAt
   let K : Set (Real × Real) :=
     Set.Icc (-1 : Real) 1 ×ˢ Set.uIcc a b
@@ -300,7 +300,7 @@ theorem continuousOn_lRegularizedJacobiPair_variation
     have hp : ((0 : Real), s) ∈ U := ht s hs
     have hat : DifferentiableAt Real Eul (0, s) :=
       (hEulDiff (0, s) hp).differentiableAt (hUopen.mem_nhds hp)
-    simpa only [dEul] using Aux2.hasDerivAt_slice_fst
+    simpa only [dEul] using TwoParameterDerivative.hasDerivAt_slice_fst
       (fun u r : Real ↦ Eul (u, r)) 0 s hat
   have hdEq : ∀ s ∈ Set.uIcc a b, dEul s = J s := by
     intro s hs
@@ -432,7 +432,7 @@ theorem lRegularizedAction_second_variation
         (hWopen.mem_nhds hpW)
     have hslice : HasDerivAt
         (fun r : Real ↦ Q (s ^ 2, r)) (dQ (s ^ 2, s)) s := by
-      simpa only [dQ] using Aux2.hasDerivAt_slice_snd
+      simpa only [dQ] using TwoParameterDerivative.hasDerivAt_slice_snd
         (fun u r : Real ↦ Q (u, r)) (s ^ 2) s hQAt
     have hYs : DifferentiableAt Real
         (chartRepAt (I := I) alpha Y s) s := by

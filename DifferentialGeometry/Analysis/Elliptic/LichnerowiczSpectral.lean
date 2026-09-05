@@ -245,7 +245,7 @@ theorem lichnerowicz_spectral_eigenvalue_ge_dim_mul_curvature_of_closed
         ricciTensor (I := I) g x X X)
     (i : Σ μ : NonzeroResolventEigenvalue (I := I) (M := M) g,
         Fin (Module.finrank ℝ (resolventEigenspace (I := I) (M := M) g μ.val)))
-    (hlam_pos : 0 < laplacianEigenvalueOf i.1.val) :
+    (ellipticity_pos : 0 < laplacianEigenvalueOf i.1.val) :
     (Module.finrank ℝ E : ℝ) * K ≤ laplacianEigenvalueOf i.1.val := by
   classical
   set μ_g : Measure M := riemannianVolumeMeasure (I := I) (M := M) g with hμ_g_def
@@ -283,7 +283,7 @@ theorem lichnerowicz_spectral_eigenvalue_ge_dim_mul_curvature_of_closed
       rw [h_b_i_norm]; norm_num
     linarith
   exact lichnerowicz_eigenvalue_ge_dim_mul_curvature_of_closed (I := I) (M := M) g hn_ge_two hK
-    hf hlam_pos h_eigen h_ricci h_f_sq_pos
+    hf ellipticity_pos h_eigen h_ricci h_f_sq_pos
 
 end Laplacian
 end Analysis
