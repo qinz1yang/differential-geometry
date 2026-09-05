@@ -81,6 +81,16 @@ theorem KappaSolution.has_curvature_bound
   rcases hS.bounded_curvature with ⟨C, hC, hbound⟩
   exact ⟨C, hC, fun x => hbound t ht x⟩
 
+theorem KappaSolution.has_global_curvature_bound
+    {T kappa : Real}
+    {S : SolutionOn (I := I) (M := M)
+      (DifferentialGeometry.Geometry.Curvature.RealTimeInterval.ancient T)}
+    (hS : KappaSolution (I := I) (kappa := kappa) S) :
+    ∃ C : Real, 0 ≤ C ∧
+      ∀ t ∈ (DifferentialGeometry.Geometry.Curvature.RealTimeInterval.ancient T).carrier,
+        ∀ x : M, FlowMetricBall.rmNormSq S t x ≤ C :=
+  hS.bounded_curvature
+
 end
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman
