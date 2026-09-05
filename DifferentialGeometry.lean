@@ -487,6 +487,9 @@ import DifferentialGeometry.Analysis.Integration.Measure.Chart.MeasureComparison
 import DifferentialGeometry.Analysis.Integration.Measure.Parametric.Evaluation
 import DifferentialGeometry.Analysis.Integration.Measure.Parametric.Defs
 import DifferentialGeometry.Analysis.Integration.Measure.Parametric.Density
+import DifferentialGeometry.Analysis.Integration.Measure.Parametric.AreaFormula
+import DifferentialGeometry.Analysis.Integration.Measure.Parametric.Multiplicity
+import DifferentialGeometry.Analysis.Integration.Measure.LocallyInjective
 import DifferentialGeometry.Analysis.Integration.Measure.Polar.Evaluation
 import DifferentialGeometry.Analysis.Integration.Measure.Chart.PartitionOfUnity.DensityBound
 import DifferentialGeometry.Analysis.Integration.Measure.Chart.PartitionOfUnity.DominatedCutoff
