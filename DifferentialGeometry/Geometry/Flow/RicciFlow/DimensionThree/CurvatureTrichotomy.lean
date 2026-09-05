@@ -380,4 +380,242 @@ theorem flow_time_slice_global_trichotomy_of_derived_data
     (I := I) (M := M) (S.base.metric t) (hg t ht)
     hpositive hnull hrank hkernel
 
+def curvatureOperatorImageRank
+    {E : Type} [NormedAddCommGroup E] [NormedSpace Real E]
+    [FiniteDimensional Real E]
+    {H : Type} [TopologicalSpace H]
+    {I : ModelWithCorners Real E H}
+    {M : Type} [TopologicalSpace M] [ChartedSpace H M]
+    [IsManifold I ∞ M] [T2Space M]
+    (g : SmoothRiemannianMetric I M) (x : M) : Nat :=
+  Module.finrank Real
+    (curvatureOperatorImageAt (I := I) g x
+      ⟨metricRm04 (I := I) g x,
+        metricRm04At_mem_algebraicCurvatureTensorSubmodule
+          (I := I) g x⟩)
+
+structure CurvatureTimeSliceDerivedData
+    {E : Type} [NormedAddCommGroup E] [NormedSpace Real E]
+    [FiniteDimensional Real E]
+    {H : Type} [TopologicalSpace H]
+    {I : ModelWithCorners Real E H} [I.Boundaryless]
+    {M : Type} [TopologicalSpace M] [ChartedSpace H M]
+    [IsManifold I ∞ M] [T2Space M] [Nonempty M]
+    (g : SmoothRiemannianMetric I M) where
+  dimension : Module.finrank Real E = 3
+  nonnegative : ∀ x,
+    ∀ a : TangentSpace I x [⋀^Fin 2]→L[Real] Real,
+      0 ≤ (twoFormMetricData (I := I) g x).inner
+        (curvatureOperatorEndomorphismAt (I := I) g x
+          ⟨metricRm04 (I := I) g x,
+            metricRm04At_mem_algebraicCurvatureTensorSubmodule
+              (I := I) g x⟩ a) a
+  nullReaction : ∀ x,
+    ∀ a : TangentSpace I x [⋀^Fin 2]→L[Real] Real,
+      curvatureOperatorEndomorphismAt (I := I) g x
+          ⟨metricRm04 (I := I) g x,
+            metricRm04At_mem_algebraicCurvatureTensorSubmodule
+              (I := I) g x⟩ a = 0 →
+        curvatureOperatorReactionEndomorphism3
+          (curvatureOperatorEndomorphismAt (I := I) g x
+            ⟨metricRm04 (I := I) g x,
+              metricRm04At_mem_algebraicCurvatureTensorSubmodule
+                (I := I) g x⟩).toLinearMap a = 0
+  spatialRank : ∀ x y, curvatureOperatorImageRank g x = curvatureOperatorImageRank g y
+  parallelKernel : IsParallelContinuousAlternatingSubmoduleFamily g
+    (fun x => curvatureOperatorKernelAt (I := I) g x
+      ⟨metricRm04 (I := I) g x,
+        metricRm04At_mem_algebraicCurvatureTensorSubmodule
+          (I := I) g x⟩)
+
+structure CurvatureFlowDerivedData
+    {H : Type} [TopologicalSpace H]
+    {I : ModelWithCorners Real
+      (DifferentialGeometry.Topology.Morse.MorseModel 3) H}
+    [I.Boundaryless]
+    {M : Type} [TopologicalSpace M] [ChartedSpace H M]
+    [IsManifold I ∞ M] [T2Space M]
+    [SigmaCompactSpace M] [ConnectedSpace M] [Nonempty M]
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
+    (S : DifferentialGeometry.PDE.RicciFlow.SolutionOn (I := I) (M := M) D) where
+  complete : ∀ t ∈ D.carrier,
+    DifferentialGeometry.RiemannianMetricComplete (I := I) (S.base.metric t)
+  slice : ∀ t ∈ D.carrier,
+    CurvatureTimeSliceDerivedData (I := I) (M := M) (S.base.metric t)
+
+inductive WholeFlowCurvatureAlternative
+    {H : Type} [TopologicalSpace H]
+    {I : ModelWithCorners Real
+      (DifferentialGeometry.Topology.Morse.MorseModel 3) H}
+    [I.Boundaryless]
+    {M : Type} [TopologicalSpace M] [ChartedSpace H M]
+    [IsManifold I (⊤ : WithTop ℕ∞) M] [T2Space M]
+    [SigmaCompactSpace M] [ConnectedSpace M] [Nonempty M]
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
+    (S : DifferentialGeometry.PDE.RicciFlow.SolutionOn (I := I) (M := M) D) : Prop where
+  | flat
+      (hzero : ∀ t ∈ D.carrier, ∀ x,
+        curvatureOperatorEndomorphismAt (I := I) (S.base.metric t) x
+          ⟨S.base.rm04 t x,
+            metricRm04At_mem_algebraicCurvatureTensorSubmodule
+              (I := I) (S.base.metric t) x⟩ = 0)
+      (hcover : ∀ t ∈ D.carrier,
+        DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover.HasEuclideanUniversalCover
+          (I := I) (M := M) (S.base.metric t))
+  | rankOne
+      (hrank : ∀ t ∈ D.carrier, curvatureOperatorImageRank (S.base.metric t) = 1)
+      (hproduct : ∀ t ∈ D.carrier,
+        DifferentialGeometry.Geometry.Curvature.DimensionThree.HasCurvatureSurfaceProductSplitting
+          (I := I) (M := M) (S.base.metric t))
+  | positive
+      (hrank : ∀ t ∈ D.carrier, curvatureOperatorImageRank (S.base.metric t) = 3)
+      (hpositive : ∀ t ∈ D.carrier, ∀ x,
+        ∀ a : TangentSpace I x [⋀^Fin 2]→L[Real] Real, a ≠ 0 →
+          0 < (twoFormMetricData (I := I) (S.base.metric t) x).inner
+            (curvatureOperatorEndomorphismAt (I := I) (S.base.metric t) x
+              ⟨S.base.rm04 t x,
+                metricRm04At_mem_algebraicCurvatureTensorSubmodule
+                  (I := I) (S.base.metric t) x⟩ a) a)
+
+theorem whole_flow_trichotomy_of_constant_rank_mode
+    {H : Type} [TopologicalSpace H]
+    {I : ModelWithCorners Real
+      (DifferentialGeometry.Topology.Morse.MorseModel 3) H}
+    [I.Boundaryless]
+    {M : Type} [TopologicalSpace M] [ChartedSpace H M]
+    [IsManifold I (⊤ : WithTop ℕ∞) M] [T2Space M]
+    [SigmaCompactSpace M] [ConnectedSpace M] [Nonempty M]
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
+    (S : DifferentialGeometry.PDE.RicciFlow.SolutionOn (I := I) (M := M) D)
+    (data : CurvatureFlowDerivedData (I := I) (M := M) S)
+    (hmode : ∃ q : Nat, ∀ t ∈ D.carrier, ∀ x,
+      curvatureOperatorImageRank (S.base.metric t) x = q)
+    (hcarrier : ∃ t, t ∈ D.carrier) :
+    WholeFlowCurvatureAlternative S := by
+  let global := fun (t : Real) (ht : t ∈ D.carrier) =>
+    curvature_time_slice_global_trichotomy_of_derived_data
+      (I := I) (M := M) (S.base.metric t) (data.slice t ht).dimension
+      (data.slice t ht).nonnegative (data.slice t ht).nullReaction
+      (fun x y => by
+        simpa [curvatureOperatorImageRank] using (data.slice t ht).spatialRank x y)
+      (data.slice t ht).parallelKernel
+  obtain ⟨q, hq⟩ := hmode
+  obtain ⟨t₀, ht₀⟩ := hcarrier
+  have rank_zero_of_zero : ∀ {t : Real}, t ∈ D.carrier →
+      (∀ x, curvatureOperatorEndomorphismAt (I := I) (S.base.metric t) x
+        ⟨metricRm04 (I := I) (S.base.metric t) x,
+          metricRm04At_mem_algebraicCurvatureTensorSubmodule
+            (I := I) (S.base.metric t) x⟩ = 0) →
+      curvatureOperatorImageRank (S.base.metric t) = 0 := by
+    intro t ht hzero
+    funext x
+    have hrange : curvatureOperatorImageAt (I := I) (S.base.metric t) x
+        ⟨metricRm04 (I := I) (S.base.metric t) x,
+          metricRm04At_mem_algebraicCurvatureTensorSubmodule
+            (I := I) (S.base.metric t) x⟩ = ⊥ := by
+      apply le_antisymm
+      · rintro v ⟨a, rfl⟩
+        exact hzero x a
+      · exact bot_le
+    simp [curvatureOperatorImageRank, hrange]
+  have hq_cases : q = 0 ∨ q = 1 ∨ q = 3 := by
+    rcases global t₀ ht₀ with
+      | .flat hzero _ =>
+          exact Or.inl ((hq t₀ ht₀ (Classical.choice (inferInstance : Nonempty M))).symm.trans
+            (rank_zero_of_zero ht₀ hzero))
+      | .rankOne hrank _ =>
+          exact Or.inr (Or.inl ((hq t₀ ht₀ (Classical.choice (inferInstance : Nonempty M))).symm.trans
+            (by simpa [curvatureOperatorImageRank] using
+              hrank (Classical.choice (inferInstance : Nonempty M)))))
+      | .positive hrank _ =>
+          exact Or.inr (Or.inr ((hq t₀ ht₀ (Classical.choice (inferInstance : Nonempty M))).symm.trans
+            (by simpa [curvatureOperatorImageRank] using
+              hrank (Classical.choice (inferInstance : Nonempty M)))))
+  rcases hq_cases with rfl | rfl | rfl
+  · refine .flat ?_ ?_
+    · intro t ht
+      rcases global t ht with
+        | .flat hzero _ => exact hzero
+        | .rankOne hrank _ =>
+            exfalso
+            have h := hq t ht (Classical.choice (inferInstance : Nonempty M))
+            have h' := hrank (Classical.choice (inferInstance : Nonempty M))
+            simpa [curvatureOperatorImageRank] using h.trans h'.symm
+        | .positive hrank _ =>
+            exfalso
+            have h := hq t ht (Classical.choice (inferInstance : Nonempty M))
+            have h' := hrank (Classical.choice (inferInstance : Nonempty M))
+            simpa [curvatureOperatorImageRank] using h.trans h'.symm
+    · intro t ht
+      rcases global t ht with
+        | .flat _ hcover => exact hcover
+        | .rankOne hrank _ =>
+            exfalso
+            have h := hq t ht (Classical.choice (inferInstance : Nonempty M))
+            have h' := hrank (Classical.choice (inferInstance : Nonempty M))
+            simpa [curvatureOperatorImageRank] using h.trans h'.symm
+        | .positive hrank _ =>
+            exfalso
+            have h := hq t ht (Classical.choice (inferInstance : Nonempty M))
+            have h' := hrank (Classical.choice (inferInstance : Nonempty M))
+            simpa [curvatureOperatorImageRank] using h.trans h'.symm
+  · refine .rankOne ?_ ?_
+    · intro t ht
+      rcases global t ht with
+        | .flat hzero _ =>
+            exfalso
+            have h := hq t ht (Classical.choice (inferInstance : Nonempty M))
+            have h' := rank_zero_of_zero ht hzero
+            simpa [curvatureOperatorImageRank] using h.trans h'.symm
+        | .rankOne hrank _ =>
+            simpa [curvatureOperatorImageRank] using
+              hrank (Classical.choice (inferInstance : Nonempty M))
+        | .positive hrank _ =>
+            exfalso
+            have h := hq t ht (Classical.choice (inferInstance : Nonempty M))
+            have h' := hrank (Classical.choice (inferInstance : Nonempty M))
+            simpa [curvatureOperatorImageRank] using h.trans h'.symm
+    · intro t ht
+      rcases global t ht with
+        | .flat hzero _ =>
+            exfalso
+            have h := hq t ht (Classical.choice (inferInstance : Nonempty M))
+            have h' := rank_zero_of_zero ht hzero
+            simpa [curvatureOperatorImageRank] using h.trans h'.symm
+        | .rankOne _ hproduct => exact hproduct
+        | .positive hrank _ =>
+            exfalso
+            have h := hq t ht (Classical.choice (inferInstance : Nonempty M))
+            have h' := hrank (Classical.choice (inferInstance : Nonempty M))
+            simpa [curvatureOperatorImageRank] using h.trans h'.symm
+  · refine .positive ?_ ?_
+    · intro t ht
+      rcases global t ht with
+        | .flat hzero _ =>
+            exfalso
+            have h := hq t ht (Classical.choice (inferInstance : Nonempty M))
+            have h' := rank_zero_of_zero ht hzero
+            simpa [curvatureOperatorImageRank] using h.trans h'.symm
+        | .rankOne hrank _ =>
+            exfalso
+            have h := hq t ht (Classical.choice (inferInstance : Nonempty M))
+            have h' := hrank (Classical.choice (inferInstance : Nonempty M))
+            simpa [curvatureOperatorImageRank] using h.trans h'.symm
+        | .positive hrank _ =>
+            simpa [curvatureOperatorImageRank] using
+              hrank (Classical.choice (inferInstance : Nonempty M))
+    · intro t ht x a ha
+      rcases global t ht with
+        | .flat hzero _ =>
+            exfalso
+            have h := hq t ht (Classical.choice (inferInstance : Nonempty M))
+            have h' := rank_zero_of_zero ht hzero
+            simpa [curvatureOperatorImageRank] using h.trans h'.symm
+        | .rankOne hrank _ =>
+            exfalso
+            have h := hq t ht (Classical.choice (inferInstance : Nonempty M))
+            have h' := hrank (Classical.choice (inferInstance : Nonempty M))
+            simpa [curvatureOperatorImageRank] using h.trans h'.symm
+        | .positive _ hpositive => exact hpositive x a ha
+
 end DifferentialGeometry.PDE.RicciFlow.DimensionThree
