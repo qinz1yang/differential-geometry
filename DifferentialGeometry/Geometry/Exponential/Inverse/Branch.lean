@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tangent.NormDiamond
-import DifferentialGeometry.Topology.Manifold.InverseFunctionTheorem.Basic
+import DifferentialGeometry.Topology.Manifold.InverseFunctionTheorem.ManifoldDerivative
 import DifferentialGeometry.Geometry.Exponential.ConjugatePoint.Basic
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
@@ -54,24 +54,6 @@ theorem hasFDerivAt_chart
   exact hcomp'.congr_fderiv (by
     ext v
     with_unfolding_all rfl)
-
-private theorem written_fderiv_inv
-    {f : E → M} {u : E}
-    (hf : MDifferentiableAt 𝓘(Real, E) I f u)
-    (hinv : (mfderiv 𝓘(Real, E) I f u).IsInvertible) :
-    (fderiv Real
-      (writtenInExtChartAt 𝓘(Real, E) I u f)
-      (extChartAt 𝓘(Real, E) u u)).IsInvertible := by
-  have hchart := hasFDerivAt_chart (I := I) hf
-  have hwritten : HasFDerivAt
-      (writtenInExtChartAt 𝓘(Real, E) I u f)
-      (modelMFDerivAt (I := I) f u)
-      (extChartAt 𝓘(Real, E) u u) := by
-    simpa only [writtenInExtChartAt, extChartAt_model_space_eq_id,
-      PartialEquiv.refl_symm, PartialEquiv.refl_coe, Function.comp_id, id_eq] using hchart
-  rw [hwritten.fderiv]
-  simpa only [modelMFDerivAt, ContinuousLinearMap.isInvertible_comp_equiv,
-    ContinuousLinearMap.isInvertible_equiv_comp] using hinv
 
 end ChartDerivative
 
@@ -191,7 +173,7 @@ private theorem branch_of_inj
   have hfd_u : (fderiv Real
       (writtenInExtChartAt 𝓘(Real, E) I u f)
       (extChartAt 𝓘(Real, E) u u)).IsInvertible :=
-    written_fderiv_inv (I := I) hfu hDinv
+    hfu.isInvertible_mfderiv_iff.mp hDinv
   have hf1 : ContMDiffAt 𝓘(Real, E) I 1 f u :=
     hf.contMDiffAt.of_le (by exact_mod_cast le_top)
   obtain ⟨Ψ, huΨ, hEqΨ⟩ :=
@@ -210,8 +192,7 @@ private theorem branch_of_inj
     have hDzinv : (mfderiv 𝓘(Real, E) I f z).IsInvertible :=
       ⟨hloc.mfderivToContinuousLinearEquiv one_ne_zero,
         hloc.mfderivToContinuousLinearEquiv_coe one_ne_zero⟩
-    exact written_fderiv_inv (I := I)
-      (hf.contMDiffAt.mdifferentiableAt (by simp)) hDzinv
+    exact (hf.contMDiffAt.mdifferentiableAt (by simp)).isInvertible_mfderiv_iff.mp hDzinv
   obtain ⟨Φ, huΦ, -, hEqΦ⟩ :=
     Coordinates.exists_partialDiffeomorph_of_contMDiffOn_infty (I := 𝓘(Real, E)) (J := I)
       Ψ.open_source huΨ hf.contMDiffOn hinv_source

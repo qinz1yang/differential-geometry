@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.Manifold.InverseFunctionTheorem.Basic
+import DifferentialGeometry.Topology.Manifold.InverseFunctionTheorem.ManifoldDerivative
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Jacobi.Regularized
 
 set_option autoImplicit false
@@ -48,27 +48,6 @@ private theorem lConjugate_hasFDerivAt_chart
   exact hcomp'.congr_fderiv (by
     ext v
     with_unfolding_all rfl)
-
-omit [FiniteDimensional Real E]
-  [NeZero (Module.finrank Real E)] [I.Boundaryless] [T2Space M]
-  [SigmaCompactSpace M] in
-private theorem written_fderiv_inv
-    {f : E → M} {u : E}
-    (hf : MDifferentiableAt 𝓘(Real, E) I f u)
-    (hinv : (mfderiv 𝓘(Real, E) I f u).IsInvertible) :
-    (fderiv Real
-      (writtenInExtChartAt 𝓘(Real, E) I u f)
-      (extChartAt 𝓘(Real, E) u u)).IsInvertible := by
-  have hchart := lConjugate_hasFDerivAt_chart (I := I) hf
-  have hwritten : HasFDerivAt
-      (writtenInExtChartAt 𝓘(Real, E) I u f)
-      (lConjugateModelMFDerivAt (I := I) f u)
-      (extChartAt 𝓘(Real, E) u u) := by
-    simpa only [writtenInExtChartAt, extChartAt_model_space_eq_id,
-      PartialEquiv.refl_symm, PartialEquiv.refl_coe, Function.comp_id, id_eq] using hchart
-  rw [hwritten.fderiv]
-  simpa only [lConjugateModelMFDerivAt, ContinuousLinearMap.isInvertible_comp_equiv,
-    ContinuousLinearMap.isInvertible_equiv_comp] using hinv
 
 omit [NeZero (Module.finrank Real E)]
   [SigmaCompactSpace M] in
@@ -250,7 +229,7 @@ theorem lExp_localDiffeo
     have hfW : MDifferentiableAt 𝓘(Real, E) I f W :=
       (hfPsi.contMDiffAt (Psi.open_source.mem_nhds hW)).mdifferentiableAt
         (by simp)
-    exact written_fderiv_inv (I := I) hfW hmfdinv
+    exact hfW.isInvertible_mfderiv_iff.mp hmfdinv
   obtain ⟨Phi, hZPhi, _hPhiPsi, hEqPhi⟩ :=
     DifferentialGeometry.Coordinates.exists_partialDiffeomorph_of_contMDiffOn_infty
       (I := 𝓘(Real, E)) (J := I) Psi.open_source hZPsi hfPsi hinvPsi

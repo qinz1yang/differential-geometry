@@ -2194,6 +2194,7 @@ import DifferentialGeometry.Geometry.Coordinates.Fields.Vector
 import DifferentialGeometry.Geometry.Coordinates.Connection.Coefficients
 import DifferentialGeometry.Geometry.Coordinates.Frame.Coordinate
 import DifferentialGeometry.Topology.Manifold.InverseFunctionTheorem.Basic
+import DifferentialGeometry.Topology.Manifold.InverseFunctionTheorem.ManifoldDerivative
 import DifferentialGeometry.Topology.Manifold.NearIdentity.Derivative
 import DifferentialGeometry.Topology.Manifold.InverseFunctionTheorem.Parametric
 import DifferentialGeometry.Topology.Manifold.LocalDiffeomorph.Open
@@ -2416,6 +2417,7 @@ import DifferentialGeometry.Geometry.Exponential.MinimizingGeodesic
 import DifferentialGeometry.Geometry.Exponential.Radial
 import DifferentialGeometry.Geometry.Exponential.CompactBall
 import DifferentialGeometry.Geometry.Exponential.Smoothness.Domain
+import DifferentialGeometry.Geometry.Exponential.Smoothness.Framed
 import DifferentialGeometry.Geometry.Exponential.NormalCoordinates.Convergence
 import DifferentialGeometry.Geometry.Exponential.NormalCoordinates.Frame
 import DifferentialGeometry.Geometry.Exponential.Intrinsic.Agreement
