@@ -63,3 +63,35 @@ theorem hasGeodesicEquationAt_expMap_smul [T2Space (TangentBundle I M)]
     ((hγ.isGeodesicAt hJt).hasGeodesicEquationAt g)
 
 end DifferentialGeometry.Geometry.Riemannian.Exponential
+
+namespace DifferentialGeometry.Geometry.Riemannian.VolumeComparison
+
+open Exponential
+
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [Module.Finite ℝ E]
+  {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+  {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+
+noncomputable def radialCurve (g : SmoothRiemannianMetric I M) (p : M)
+    (x : E) (t : ℝ) : M :=
+  expMap (I := I) g p (show TangentSpace I p from (t • x))
+
+@[simp] lemma radialCurve_apply
+    (g : SmoothRiemannianMetric I M) (p : M) (x : E) (t : ℝ) :
+    radialCurve (I := I) g p x t =
+      expMap (I := I) g p (show TangentSpace I p from (t • x)) := rfl
+
+lemma radialCurve_one
+    (g : SmoothRiemannianMetric I M) (p : M) (x : E) :
+    radialCurve (I := I) g p x 1 =
+      expMap (I := I) g p (show TangentSpace I p from x) := by
+  simp [radialCurve]
+
+lemma radialCurve_zero [I.Boundaryless] [T2Space (TangentBundle I M)]
+    (g : SmoothRiemannianMetric I M) (p : M) (x : E) :
+    radialCurve (I := I) g p x 0 = p := by
+  unfold radialCurve
+  rw [zero_smul]
+  exact expMap_zero (I := I) g p
+
+end DifferentialGeometry.Geometry.Riemannian.VolumeComparison

@@ -1,4 +1,5 @@
 import DifferentialGeometry.Geometry.Comparison.Variation.Covariant.Gronwall
+import DifferentialGeometry.Geometry.Exponential.Radial
 import DifferentialGeometry.Geometry.Comparison.Variation.PerpendicularFrame.Basic
 import DifferentialGeometry.Geometry.Comparison.Volume.NormalChartMeasure
 import DifferentialGeometry.Geometry.Curvature.Metric.LeviCivita
@@ -38,33 +39,6 @@ variable [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
   [T2Space (TangentBundle I M)]
 
 
-def radialCurve (g : SmoothRiemannianMetric I M) (p : M) (x : E) (t : ℝ) : M :=
-  expMap (I := I) g p (show TangentSpace I p from (t • x))
-
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
-    [T2Space (TangentBundle I M)] in
-@[simp] lemma radialCurve_apply
-    (g : SmoothRiemannianMetric I M) (p : M) (x : E) (t : ℝ) :
-    radialCurve (I := I) g p x t =
-      expMap (I := I) g p (show TangentSpace I p from (t • x)) :=
-  rfl
-
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
-    [T2Space (TangentBundle I M)] in
-lemma radialCurve_one
-    (g : SmoothRiemannianMetric I M) (p : M) (x : E) :
-    radialCurve (I := I) g p x 1 =
-      expMap (I := I) g p (show TangentSpace I p from x) := by
-  simp [radialCurve]
-
-omit [T2Space M] [SigmaCompactSpace M] in
-omit [NeZero (Module.finrank ℝ E)] in
-lemma radialCurve_zero
-    (g : SmoothRiemannianMetric I M) (p : M) (x : E) :
-    radialCurve (I := I) g p x 0 = p := by
-  unfold radialCurve
-  rw [zero_smul]
-  exact expMap_zero (I := I) g p
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [T2Space M] in

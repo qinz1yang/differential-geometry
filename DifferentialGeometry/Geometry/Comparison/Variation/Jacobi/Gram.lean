@@ -315,6 +315,50 @@ theorem hasDerivAt_symmDen
 end Gram
 
 end Variation
+
+namespace VolumeComparison
+
+open Variation
+
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+  {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+
+theorem curveGram_recomb
+    {ι : Type*} [Fintype ι]
+    (g : SmoothRiemannianMetric I M) (γ : ℝ → M)
+    (V V' : ι → ∀ t, TangentSpace I (γ t)) (t : ℝ) (C : Matrix ι ι ℝ)
+    (h : ∀ i, V' i t = ∑ k, C k i • V k t) :
+    curveGram (I := I) g γ V' t = Cᵀ * curveGram (I := I) g γ V t * C := by
+  exact Variation.curveGram_rect (I := I) g γ V V' t C h
+
+theorem curveDensity_reindex
+    {ι κ : Type*} [Fintype ι] [DecidableEq ι] [Fintype κ] [DecidableEq κ]
+    (g : SmoothRiemannianMetric I M) (γ : ℝ → M)
+    (V : κ → ∀ t, TangentSpace I (γ t)) (t : ℝ) (e : ι ≃ κ) :
+    curveDensity (I := I) g γ (fun i => V (e i)) t
+      = curveDensity (I := I) g γ V t := by
+  rw [curveDensity, curveDensity]
+  congr 1
+  have hsub : curveGram (I := I) g γ (fun i => V (e i)) t
+      = (curveGram (I := I) g γ V t).submatrix e e := by
+    ext i j; simp only [curveGram, Matrix.of_apply, Matrix.submatrix_apply]
+  rw [hsub, Matrix.det_submatrix_equiv_self]
+
+theorem curveDensity_recomb
+    {ι : Type*} [Fintype ι] [DecidableEq ι]
+    (g : SmoothRiemannianMetric I M) (γ : ℝ → M)
+    (V V' : ι → ∀ t, TangentSpace I (γ t)) (t : ℝ) (C : Matrix ι ι ℝ)
+    (h : ∀ i, V' i t = ∑ k, C k i • V k t) :
+    curveDensity (I := I) g γ V' t = |C.det| * curveDensity (I := I) g γ V t := by
+  rw [curveDensity, curveDensity, curveGram_recomb (I := I) g γ V V' t C h,
+    Matrix.det_mul, Matrix.det_mul, Matrix.det_transpose,
+    show C.det * (curveGram (I := I) g γ V t).det * C.det
+        = C.det ^ 2 * (curveGram (I := I) g γ V t).det from by ring,
+    Real.sqrt_mul (sq_nonneg C.det), Real.sqrt_sq_eq_abs]
+
+end VolumeComparison
+
 end Riemannian
 end Geometry
 end DifferentialGeometry

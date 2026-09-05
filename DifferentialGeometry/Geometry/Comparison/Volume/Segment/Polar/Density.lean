@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Integration.Measure.Parametric.Evaluation
+import DifferentialGeometry.Analysis.Integration.Measure.Parametric.Density
 import DifferentialGeometry.Geometry.Comparison.Variation.Jacobi.Gram
 import DifferentialGeometry.Geometry.Exponential.Variation.Jacobi
 import DifferentialGeometry.Geometry.Exponential.Variation.EndpointShape
@@ -40,67 +40,8 @@ theorem mfderiv_chartBasis
       ∑ k, (LinearMap.toMatrix (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E)
             (fderiv ℝ (fun u : E => extChartAt I y₀ (f u)) w).toLinearMap) k i •
         DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) y₀ k (f w) := by
-  have hxchart : f w ∈ (chartAt H y₀).source := by
-    simpa [trivializationAt_baseSet_eq_chartAt_source (I := I) y₀] using hx
-  have hchartdiff : MDifferentiableAt I 𝓘(ℝ, E) (extChartAt I y₀) (f w) :=
-    mdifferentiableAt_extChartAt (I := I) (x := y₀) (y := f w) hxchart
-  have hchain_f :
-      fderiv ℝ (fun u : E => extChartAt I y₀ (f u)) w =
-        (mfderiv I 𝓘(ℝ, E) (extChartAt I y₀) (f w)).comp
-          (mfderiv 𝓘(ℝ, E) I f w) := by
-    have hchain :
-        mfderiv 𝓘(ℝ, E) 𝓘(ℝ, E) (fun u : E => extChartAt I y₀ (f u)) w =
-          (mfderiv I 𝓘(ℝ, E) (extChartAt I y₀) (f w)).comp
-            (mfderiv 𝓘(ℝ, E) I f w) := by
-      simpa [Function.comp_def] using
-        (mfderiv_comp (I := 𝓘(ℝ, E)) (I' := I) (I'' := 𝓘(ℝ, E))
-          (g := extChartAt I y₀) (f := f) (x := w) hchartdiff hf)
-    rw [mfderiv_eq_fderiv] at hchain
-    apply ContinuousLinearMap.ext
-    intro v
-    exact congrArg (fun L ↦ L v) hchain
-  set T₀ : Bundle.Trivialization E (π E (TangentSpace I : M → Type _)) :=
-    trivializationAt E (TangentSpace I) y₀
-  apply (T₀.continuousLinearEquivAt ℝ (f w) hx).injective
-  have hrepr :
-      (fderiv ℝ (fun u : E => extChartAt I y₀ (f u)) w) ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) =
-        ∑ k, (LinearMap.toMatrix (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E)
-              (fderiv ℝ (fun u : E => extChartAt I y₀ (f u)) w).toLinearMap) k i •
-          (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k := by
-    simpa [LinearMap.toMatrix_apply] using
-      (((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).sum_repr
-        ((fderiv ℝ (fun u : E => extChartAt I y₀ (f u)) w)
-          ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))).symm)
-  calc
-    T₀.continuousLinearEquivAt ℝ (f w) hx
-        (mfderiv 𝓘(ℝ, E) I f w ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))
-        = (fderiv ℝ (fun u : E => extChartAt I y₀ (f u)) w) ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) := by
-          rw [Trivialization.coe_continuousLinearEquivAt_eq (R := ℝ) T₀ hx]
-          rw [TangentBundle.continuousLinearMapAt_trivializationAt
-            (I := I) (x₀ := y₀) (x := f w) hxchart]
-          rw [hchain_f]
-          rfl
-    _ = ∑ k, (LinearMap.toMatrix (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E)
-          (fderiv ℝ (fun u : E => extChartAt I y₀ (f u)) w).toLinearMap) k i •
-            (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k := hrepr
-    _ = T₀.continuousLinearEquivAt ℝ (f w) hx
-          (∑ k, (LinearMap.toMatrix (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E)
-              (fderiv ℝ (fun u : E => extChartAt I y₀ (f u)) w).toLinearMap) k i •
-            DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) y₀ k (f w)) := by
-          rw [map_sum]
-          refine Finset.sum_congr rfl ?_
-          intro k _
-          rw [map_smul]
-          have hbasis :
-              DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) y₀ k (f w) =
-                (T₀.continuousLinearEquivAt ℝ (f w) hx).symm
-                  ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k) := by
-            rw [DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber]
-            exact (congrFun
-              ((trivializationAt E (TangentSpace I) y₀).symm_continuousLinearEquivAt_eq hx)
-              ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k)).symm
-          rw [hbasis]
-          rw [ContinuousLinearEquiv.apply_symm_apply]
+  exact DifferentialGeometry.Tensor.Coordinates.mfderiv_chartModelBasis_eq_sum
+    (I := I) f hf y₀ hx i
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
@@ -120,62 +61,7 @@ theorem gramDiff_det
           (mfderiv 𝓘(ℝ, E) I f w ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j))).det =
       (fderiv ℝ (fun u : E => extChartAt I y₀ (f u)) w).det ^ 2
         * (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix g y₀ (f w)).det := by
-  set J : Matrix (Fin (Module.finrank ℝ E)) (Fin (Module.finrank ℝ E)) ℝ :=
-    LinearMap.toMatrix (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E)
-      (fderiv ℝ (fun u : E => extChartAt I y₀ (f u)) w).toLinearMap with hJ
-  have hmul :
-      (Matrix.of fun i j =>
-          g.inner (f w) (mfderiv 𝓘(ℝ, E) I f w ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))
-            (mfderiv 𝓘(ℝ, E) I f w ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j)))
-        = Jᵀ * DifferentialGeometry.Tensor.Coordinates.chartGramMatrix g y₀ (f w) * J := by
-    ext i j
-    have hsum :
-        g.inner (f w) (mfderiv 𝓘(ℝ, E) I f w ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))
-            (mfderiv 𝓘(ℝ, E) I f w ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j))
-          = ∑ k, ∑ l, J k i * J l j * DifferentialGeometry.Tensor.Coordinates.chartGramMatrix g y₀ (f w) k l := by
-      rw [mfderiv_chartBasis f hf y₀ hx i, mfderiv_chartBasis f hf y₀ hx j]
-      have hL :
-          g.inner (f w)
-              (∑ k, J k i • DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) y₀ k (f w))
-            = ∑ k, J k i •
-                g.inner (f w) (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) y₀ k (f w)) := by
-        rw [map_sum]
-        refine Finset.sum_congr rfl ?_
-        intro k _
-        rw [map_smul]
-      rw [hL, sum_apply]
-      refine Finset.sum_congr rfl ?_
-      intro k _
-      rw [smul_apply]
-      have hR :
-          g.inner (f w) (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) y₀ k (f w))
-              (∑ l, J l j • DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) y₀ l (f w))
-            = ∑ l, J l j *
-                g.inner (f w) (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) y₀ k (f w))
-                  (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) y₀ l (f w)) := by
-        rw [map_sum]
-        refine Finset.sum_congr rfl ?_
-        intro l _
-        rw [map_smul, smul_eq_mul]
-      rw [hR, smul_eq_mul, Finset.mul_sum]
-      refine Finset.sum_congr rfl ?_
-      intro l _
-      rw [DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_apply]
-      ring
-    rw [Matrix.of_apply, hsum]
-    simp only [Matrix.mul_apply, Matrix.transpose_apply]
-    rw [Finset.sum_comm]
-    refine Finset.sum_congr rfl ?_
-    intro l _
-    rw [Finset.sum_mul]
-    refine Finset.sum_congr rfl ?_
-    intro k _
-    ring
-  rw [hmul, Matrix.det_mul, Matrix.det_mul, Matrix.det_transpose]
-  have hJdet : J.det = (fderiv ℝ (fun u : E => extChartAt I y₀ (f u)) w).det := by
-    rw [hJ, LinearMap.det_toMatrix]
-  rw [hJdet]
-  ring
+  exact paramGramMatrix_det_eq_sq_det_mul (I := I) g f hf y₀ hx
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in

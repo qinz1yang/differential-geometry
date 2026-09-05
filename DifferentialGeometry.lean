@@ -2425,6 +2425,7 @@ import DifferentialGeometry.Geometry.Exponential.Intrinsic.Geodesic.ParallelFiel
 import DifferentialGeometry.Geometry.Exponential.Intrinsic.Velocity
 import DifferentialGeometry.Geometry.Exponential.Variation.Jacobi
 import DifferentialGeometry.Geometry.Exponential.Variation.Radial
+import DifferentialGeometry.Geometry.Exponential.VolumeDensity
 import DifferentialGeometry.Geometry.Exponential.LocalAddition.Basic
 import DifferentialGeometry.Geometry.Exponential.LocalDiffeomorphism
 import DifferentialGeometry.Geometry.Exponential.MinimizingGeodesic
