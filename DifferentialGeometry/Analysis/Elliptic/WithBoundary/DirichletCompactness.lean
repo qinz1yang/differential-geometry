@@ -78,7 +78,7 @@ private lemma sqrt_g_inner_grad_smoothScalarDirichlet_memLp_two
         (n := n) (M := M) g s.smooth s.smooth)
   exact h_cont.memLp_of_hasCompactSupport (HasCompactSupport.of_compactSpace _)
 
-private lemma eLpNorm_sqrt_g_inner_grad_smoothScalarDirichlet_le_norm
+theorem eLpNorm_sqrt_g_inner_grad_smoothScalarDirichlet_le_norm
     {g : SmoothRiemannianMetric (I_half n) M} (s : SmoothScalarDirichlet g) :
     eLpNorm (fun x : M => Real.sqrt
         (g.inner x
