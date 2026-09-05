@@ -76,6 +76,94 @@ structure WholeFlowRankOneProductData
             𝓘(Real, Real)) I (fun z : N × Real => F z) (y, s))
           (0, r)) = 0
 
+structure WholeFlowRankOneCommonProductWitness
+    (g : Real → SmoothRiemannianMetric I M) where
+  N : Type
+  [topologyN : TopologicalSpace N]
+  [chartedN : ChartedSpace
+    (DifferentialGeometry.Topology.Morse.MorseModel 2) N]
+  [manifoldN : IsManifold
+    (𝓘(Real, DifferentialGeometry.Topology.Morse.MorseModel 2))
+    (↑(⊤ : ℕ∞) : WithTop ℕ∞) N]
+  [t2N : T2Space N]
+  surfaceMetric : Real → SmoothRiemannianMetric
+    (𝓘(Real, DifferentialGeometry.Topology.Morse.MorseModel 2)) N
+  F : Diffeomorph
+    ((𝓘(Real, DifferentialGeometry.Topology.Morse.MorseModel 2)).prod
+      𝓘(Real, Real)) I (N × Real)
+      (DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover M)
+    (↑(⊤ : ℕ∞) : WithTop ℕ∞)
+  isometry : ∀ (t : Real) (y : N) (s : Real)
+      (u v : TangentSpace
+        (𝓘(Real, DifferentialGeometry.Topology.Morse.MorseModel 2)) y)
+      (r q : Real),
+    (liftedMetric (I := I) (g t)).inner (F (y, s))
+        ((mfderiv
+          ((𝓘(Real, DifferentialGeometry.Topology.Morse.MorseModel 2)).prod
+            𝓘(Real, Real)) I (fun z : N × Real => F z) (y, s))
+          (u, r))
+        ((mfderiv
+          ((𝓘(Real, DifferentialGeometry.Topology.Morse.MorseModel 2)).prod
+            𝓘(Real, Real)) I (fun z : N × Real => F z) (y, s))
+          (v, q)) =
+      (surfaceMetric t).inner y u v + r * q
+
+def WholeFlowRankOneCommonProductWitness.toProductData
+    (g : Real → SmoothRiemannianMetric I M)
+    (W : WholeFlowRankOneCommonProductWitness (I := I) (M := M) g) :
+    WholeFlowRankOneProductData (I := I) (M := M) g := by
+  let _ : TopologicalSpace W.N := W.topologyN
+  let _ : ChartedSpace
+      (DifferentialGeometry.Topology.Morse.MorseModel 2) W.N := W.chartedN
+  let _ : IsManifold
+      (𝓘(Real, DifferentialGeometry.Topology.Morse.MorseModel 2))
+      (↑(⊤ : ℕ∞) : WithTop ℕ∞) W.N := W.manifoldN
+  let _ : T2Space W.N := W.t2N
+  exact {
+    N := W.N
+    topologyN := W.topologyN
+    chartedN := W.chartedN
+    manifoldN := W.manifoldN
+    t2N := W.t2N
+    surfaceMetric := W.surfaceMetric
+    F := W.F
+    horizontal_inner := fun t y s u v => by
+      have h := W.isometry t y s u v 0 0
+      simpa only [zero_mul, add_zero] using h
+    vertical_inner := fun t y s r q => by
+      have h := W.isometry t y s
+        (0 : TangentSpace
+          (𝓘(Real, DifferentialGeometry.Topology.Morse.MorseModel 2)) y)
+        (0 : TangentSpace
+          (𝓘(Real, DifferentialGeometry.Topology.Morse.MorseModel 2)) y) r q
+      have hzero : (W.surfaceMetric t).inner y
+          (0 : TangentSpace
+            (𝓘(Real, DifferentialGeometry.Topology.Morse.MorseModel 2)) y)
+          (0 : TangentSpace
+            (𝓘(Real, DifferentialGeometry.Topology.Morse.MorseModel 2)) y) = 0 := by
+        simp
+      rw [hzero, zero_add] at h
+      exact h
+    mixed_inner := fun t y s u r => by
+      have h := W.isometry t y s u
+        (0 : TangentSpace
+          (𝓘(Real, DifferentialGeometry.Topology.Morse.MorseModel 2)) y) 0 r
+      have hzero : (W.surfaceMetric t).inner y u
+          (0 : TangentSpace
+            (𝓘(Real, DifferentialGeometry.Topology.Morse.MorseModel 2)) y) = 0 :=
+        ((W.surfaceMetric t).inner y u).map_zero
+      rw [hzero, zero_mul, add_zero] at h
+      exact h
+  }
+
+omit [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [ConnectedSpace M]
+    [Nonempty M] in
+theorem whole_flow_rank_one_product_data_nonempty_of_common_product_witness
+    (g : Real → SmoothRiemannianMetric I M)
+    (W : WholeFlowRankOneCommonProductWitness (I := I) (M := M) g) :
+    Nonempty (WholeFlowRankOneProductData (I := I) (M := M) g) :=
+  ⟨W.toProductData g⟩
+
 omit [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [ConnectedSpace M]
     [Nonempty M] in
 theorem whole_flow_rank_one_product_identity
