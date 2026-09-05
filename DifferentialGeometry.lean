@@ -46,6 +46,7 @@ import DifferentialGeometry.Analysis.Calculus.SmoothExtension.JetGluing.ProductM
 import DifferentialGeometry.Analysis.Calculus.SmoothExtension.JetGluing.Parametric
 import DifferentialGeometry.Geometry.Curvature.Coordinates.MetricJet.EntryDerivatives
 import DifferentialGeometry.Analysis.Calculus.SmoothExtension.Local
+import DifferentialGeometry.Analysis.Calculus.SmoothExtension.Curve
 import DifferentialGeometry.Analysis.Calculus.SmoothExtension.JetGluing.Smooth
 import DifferentialGeometry.Analysis.Calculus.IteratedDerivative.SpaceJets
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.HeatSemigroup.Projection.JointGramJetBounds
@@ -2411,6 +2412,7 @@ import DifferentialGeometry.Geometry.Exponential.LocalAddition.Basic
 import DifferentialGeometry.Geometry.Exponential.LocalDiffeomorphism
 import DifferentialGeometry.Geometry.Exponential.MinimizingGeodesic
 import DifferentialGeometry.Geometry.Exponential.Radial
+import DifferentialGeometry.Geometry.Exponential.Smoothness.Domain
 import DifferentialGeometry.Geometry.Exponential.NormalCoordinates.Convergence
 import DifferentialGeometry.Geometry.Exponential.NormalCoordinates.Frame
 import DifferentialGeometry.Geometry.Exponential.Intrinsic.Agreement
