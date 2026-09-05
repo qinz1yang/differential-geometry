@@ -163,6 +163,7 @@ lemma loweringIntertwiner_gen (g : SmoothRiemannianMetric I M) (s : ℕ) :
     LoweringIntertwiner (I := I) (M := M) g s :=
   fun S x v => loweredCovDerivAt_eq_lower_tensorCovDerivAt_gen (I := I) (M := M) g s S x v
 
+omit [CompactSpace M] in
 theorem tensorL2Inner_covGrad_eq_neg_tensorL2Inner_rawConnLap_gen
     (g : SmoothRiemannianMetric I M) (s : ℕ) (T v : SmoothCcTensor g 0 s) :
     tensorL2Inner (I := I) (M := M) g 0 (s + 1)
