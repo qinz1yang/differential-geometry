@@ -2001,6 +2001,7 @@ import DifferentialGeometry.Geometry.Comparison.Variation.FirstVariation.Basic
 import DifferentialGeometry.Geometry.Comparison.Variation.Coordinates.FixedChartIdentities
 import DifferentialGeometry.Geometry.Comparison.Variation.Jacobi.Coordinates
 import DifferentialGeometry.Geometry.Comparison.Variation.Jacobi.Basic
+import DifferentialGeometry.Geometry.Comparison.Variation.Jacobi.Variation
 import DifferentialGeometry.Geometry.Comparison.Variation.Jacobi.Gram
 import DifferentialGeometry.Geometry.Comparison.Variation.Jacobi.Shape
 import DifferentialGeometry.Geometry.Comparison.Variation.NoConjugatePoints.MinimalGeodesic
@@ -2414,6 +2415,7 @@ import DifferentialGeometry.Geometry.Exponential.Intrinsic.Geodesic.Smoothness
 import DifferentialGeometry.Geometry.Exponential.Intrinsic.Geodesic.ParallelField
 import DifferentialGeometry.Geometry.Exponential.Intrinsic.Velocity
 import DifferentialGeometry.Geometry.Exponential.Variation.Jacobi
+import DifferentialGeometry.Geometry.Exponential.Variation.Radial
 import DifferentialGeometry.Geometry.Exponential.LocalAddition.Basic
 import DifferentialGeometry.Geometry.Exponential.LocalDiffeomorphism
 import DifferentialGeometry.Geometry.Exponential.MinimizingGeodesic

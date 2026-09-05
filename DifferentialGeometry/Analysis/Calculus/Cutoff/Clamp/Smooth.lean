@@ -237,6 +237,36 @@ theorem exists_smooth_time_clamp
           field_simp [hmargin.ne']
           ring
 
+open scoped Topology in
+theorem exists_contDiff_eventuallyEq_id_range_subset {U : Set ℝ} {a : ℝ}
+    (hU : U ∈ 𝓝 a) :
+    ∃ φ : ℝ → ℝ, ContDiff ℝ ∞ φ ∧ φ =ᶠ[𝓝 a] id ∧ Set.range φ ⊆ U := by
+  obtain ⟨ε, hε, hball⟩ := Metric.mem_nhds_iff.mp hU
+  obtain ⟨φ, hφ, hφid, _, hφrange⟩ :=
+    exists_smooth_time_clamp (a - ε / 4) (a + ε / 4) (ε / 4)
+      (by linarith) (by positivity)
+  refine ⟨φ, hφ, ?_, ?_⟩
+  · filter_upwards [isOpen_Ioo.mem_nhds
+      (show a ∈ Ioo (a - ε / 4) (a + ε / 4) by constructor <;> linarith)] with t ht
+    exact hφid t ⟨ht.1.le, ht.2.le⟩
+  · rintro _ ⟨t, rfl⟩
+    apply hball
+    rw [Metric.mem_ball, Real.dist_eq, abs_lt]
+    have hrange := hφrange t
+    constructor <;> linarith [hrange.1, hrange.2]
+
+open scoped Topology in
+theorem exists_contDiff_prodMap_range_subset {U : Set (ℝ × ℝ)} {a b : ℝ}
+    (hU : U ∈ 𝓝 (a, b)) :
+    ∃ φ ψ : ℝ → ℝ, ContDiff ℝ ∞ φ ∧ ContDiff ℝ ∞ ψ ∧
+      φ =ᶠ[𝓝 a] id ∧ ψ =ᶠ[𝓝 b] id ∧ Set.range (Prod.map φ ψ) ⊆ U := by
+  obtain ⟨A, hA, B, hB, hAB⟩ := mem_nhds_prod_iff.mp hU
+  obtain ⟨φ, hφ, hφid, hφrange⟩ := exists_contDiff_eventuallyEq_id_range_subset hA
+  obtain ⟨ψ, hψ, hψid, hψrange⟩ := exists_contDiff_eventuallyEq_id_range_subset hB
+  refine ⟨φ, ψ, hφ, hψ, hφid, hψid, ?_⟩
+  rintro _ ⟨⟨s, t⟩, rfl⟩
+  exact hAB ⟨hφrange ⟨s, rfl⟩, hψrange ⟨t, rfl⟩⟩
+
 theorem exists_smooth_time_clamp_range_subset
     {K : Set ℝ} {a b : ℝ} (hKopen : IsOpen K)
     (hab : a < b) (hseg : Set.Icc a b ⊆ K) :

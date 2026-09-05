@@ -186,6 +186,30 @@ theorem contMDiffAt_expMap
     Filter.eventuallyEq_of_mem (hU_open.mem_nhds hvU) (fun w hw => heq w hw)
   exact hF.contMDiffAt.congr_of_eventuallyEq heq_ev
 
+theorem mfderiv_expMap_add_smul
+    [I.Boundaryless] [T2Space (TangentBundle I M)]
+    (g : SmoothRiemannianMetric I M) (p : M) (x w : E) (s₀ : ℝ)
+    (hx : (show TangentSpace I p from x + s₀ • w) ∈ expDomain (I := I) g p) :
+    mfderiv 𝓘(ℝ, ℝ) I (fun s : ℝ =>
+      expMap (I := I) g p (show TangentSpace I p from x + s • w)) s₀ (1 : ℝ) =
+      mfderiv 𝓘(ℝ, E) I
+        (fun v : E => expMap (I := I) g p (show TangentSpace I p from v))
+        (x + s₀ • w) w := by
+  have hline : HasFDerivAt (fun s : ℝ => x + s • w)
+      ((1 : ℝ →L[ℝ] ℝ).smulRight w) s₀ := by
+    simpa using! ((hasFDerivAt_id s₀).smul_const w).const_add x
+  have hlineMF : mfderiv 𝓘(ℝ, ℝ) 𝓘(ℝ, E)
+      (fun s : ℝ => x + s • w) s₀ (1 : ℝ) = w := by
+    rw [mfderiv_eq_fderiv, hline.fderiv]
+    change (1 : ℝ) • w = w
+    exact one_smul ℝ w
+  have hcomp := mfderiv_comp_apply (I := 𝓘(ℝ, ℝ)) (I' := 𝓘(ℝ, E)) (I'' := I)
+    (f := fun s : ℝ => x + s • w) (x := s₀)
+    (contMDiffAt_expMap (I := I) g p hx |>.mdifferentiableAt (by decide))
+    hline.differentiableAt.mdifferentiableAt (1 : ℝ)
+  rw [hlineMF] at hcomp
+  exact hcomp
+
 theorem mfderiv_expMap_smul
     [I.Boundaryless] [T2Space (TangentBundle I M)]
     (g : SmoothRiemannianMetric I M) (p : M) (a : E) (t₀ : ℝ)

@@ -159,6 +159,7 @@ private theorem jacobi_force_bound
     _ = (2 * C1 * U ^ 2 + 5 * C0 * U) * BA * BB := by
       ring
 
+omit [CompleteSpace E] in
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 theorem intrinsic_jacobi_pair_le
@@ -300,6 +301,7 @@ theorem intrinsic_jacobi_pair_le
     (Geometry.Riemannian.VolumeComparison.intrinsicJacobi_pair
       (I := I) P.metric hEnorm p u w hK hb hODE)
 
+omit [CompleteSpace E] in
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 theorem intrinsic_mixed_jacobi_force_le
@@ -490,6 +492,7 @@ theorem intrinsic_mixed_jacobi_force_le
     (Real.sqrt_nonneg _) (Real.sqrt_nonneg _)
     hLA hLT.le hLJ hLKA hLDJ hforce
 
+omit [CompleteSpace E] in
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 theorem intrinsic_mixed_jacobi_pair_le

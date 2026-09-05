@@ -92,41 +92,6 @@ lemma normalGram_contAt
         Set.inter_subset_left (fun w hw => hw.2)
   exact hcont.continuousAt (hUopen.mem_nhds hzeroU)
 
-def radialJacobiField (g : SmoothRiemannianMetric I M) (p : M)
-    (x w : E) (t : ℝ) :
-    TangentSpace I
-      ((expMap (I := I) g p (show TangentSpace I p from (t • x)) : M)) :=
-  (tangentSpaceModelContinuousLinearEquiv (I := I)
-      (expMap (I := I) g p (show TangentSpace I p from (t • x)))).symm
-    (tangentSpaceModelContinuousLinearEquiv (I := I)
-      (expMap (I := I) g p
-        (show TangentSpace I p from (t • (x + (0 : ℝ) • w))))
-      (mfderiv 𝓘(ℝ, ℝ) I (fun s : ℝ =>
-        (expMap (I := I) g p
-          (show TangentSpace I p from (t • (x + s • w))) : M)) 0 (1 : ℝ)))
-
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompleteSpace E] [T2Space M]
-    [SigmaCompactSpace M] [T2Space (TangentBundle I M)] in
-lemma radialJacobiField_eq
-    (g : SmoothRiemannianMetric I M) (p : M) (x w : E) (t : ℝ) :
-    radialJacobiField (I := I) g p x w t =
-      (show TangentSpace I
-          (expMap (I := I) g p (show TangentSpace I p from (t • x))) from
-        mfderiv 𝓘(ℝ, ℝ) I (fun s : ℝ =>
-          (expMap (I := I) g p
-            (show TangentSpace I p from (t • (x + s • w))) : M)) 0 (1 : ℝ)) := by
-  apply (tangentSpaceModelContinuousLinearEquiv (I := I)
-    (expMap (I := I) g p (show TangentSpace I p from (t • x)))).injective
-  rw [radialJacobiField, ContinuousLinearEquiv.apply_symm_apply]
-  have hbase :
-      (expMap (I := I) g p
-          (show TangentSpace I p from (t • (x + (0 : ℝ) • w))) : M) =
-        expMap (I := I) g p (show TangentSpace I p from (t • x)) := by
-    apply congrArg (fun z : E =>
-      (expMap (I := I) g p (show TangentSpace I p from z) : M))
-    module
-  rw [hbase]
-
 omit [T2Space M] [SigmaCompactSpace M] in
 omit [CompleteSpace E] in
 omit [NeZero (Module.finrank ℝ E)] in

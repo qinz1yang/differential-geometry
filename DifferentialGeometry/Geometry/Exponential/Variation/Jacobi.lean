@@ -3,6 +3,7 @@ import DifferentialGeometry.Analysis.Calculus.Cutoff.Clamp.Smooth
 import DifferentialGeometry.Geometry.Comparison.Variation.Jacobi.Basic
 import DifferentialGeometry.Geometry.Exponential.GaussLemma.Pullback
 import DifferentialGeometry.Geometry.Exponential.Intrinsic.Velocity
+import DifferentialGeometry.Geometry.Exponential.Variation.Radial
 open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
@@ -48,7 +49,7 @@ private lemma riemannOp_congr_point (g : SmoothRiemannianMetric I M)
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-omit [T2Space (TangentBundle I M)] in
+omit [T2Space (TangentBundle I M)] [CompleteSpace E] in
 theorem intrinsic_jacobi
     [PseudoEMetricSpace M] [RiemannianBundle (fun (x : M) ↦ TangentSpace I x)]
     [IsRiemannianManifold I M] [CompleteSpace M]
@@ -90,57 +91,8 @@ theorem intrinsic_jacobi
           (show TangentSpace I p from x + s • w) t₀)
     exact covDerivAlong_velocity_eq_zero_of_hasGeodesicEquationAt_C2
       (I := I) g _ t₀ hsliceC2 hgeo
-  have houterL : DifferentiableAt ℝ
-      (chartRepAt (I := I) (fun s : ℝ => F s t₀)
-        (fun s : ℝ => covDerivAlong (I := I) g (fun v : ℝ => F s v)
-          (fun v : ℝ => mfderiv 𝓘(ℝ, ℝ) I (fun u : ℝ => F s u) v (1 : ℝ)) t₀) 0) 0 := by
-    have hzero : (chartRepAt (I := I) (fun s : ℝ => F s t₀)
-        (fun s : ℝ => covDerivAlong (I := I) g (fun v : ℝ => F s v)
-          (fun v : ℝ => mfderiv 𝓘(ℝ, ℝ) I (fun u : ℝ => F s u) v (1 : ℝ)) t₀) 0)
-        =ᶠ[𝓝 (0 : ℝ)] (fun _ : ℝ => (0 : E)) := by
-      filter_upwards with s
-      rw [chartRepAt_apply, houterL_field s]
-      exact map_zero _
-    exact (hzero.differentiableAt_iff).mpr (differentiableAt_const _)
-  have hsymm : ∀ v : ℝ,
-      covDerivAlong (I := I) g (fun u : ℝ => F u v)
-        (fun u : ℝ => mfderiv 𝓘(ℝ, ℝ) I (fun u' : ℝ => F u u') v (1 : ℝ)) 0
-      = covDerivAlong (I := I) g (fun v' : ℝ => F 0 v')
-        (fun v' : ℝ => mfderiv 𝓘(ℝ, ℝ) I (fun u : ℝ => F u v') 0 (1 : ℝ)) v :=
-    fun v => commute_ds_dt_intrinsic (I := I) g F hFsmooth v
-  have hfields : (fun v : ℝ => covDerivAlong (I := I) g (fun u : ℝ => F u v)
-      (fun u : ℝ => mfderiv 𝓘(ℝ, ℝ) I (fun u' : ℝ => F u u') v (1 : ℝ)) 0)
-      = (fun v : ℝ => covDerivAlong (I := I) g (fun v' : ℝ => F 0 v')
-        (fun v' : ℝ => mfderiv 𝓘(ℝ, ℝ) I (fun u : ℝ => F u v') 0 (1 : ℝ)) v) :=
-    funext hsymm
-  have houterR : DifferentiableAt ℝ
-      (chartRepAt (I := I) (fun v : ℝ => F 0 v)
-        (fun v : ℝ => covDerivAlong (I := I) g (fun u : ℝ => F u v)
-          (fun u : ℝ => mfderiv 𝓘(ℝ, ℝ) I (fun u' : ℝ => F u u') v (1 : ℝ)) 0) t₀) t₀ := by
-    rw [hfields]
-    exact variationField_covDeriv_chartRep_differentiableAt (I := I) g F hFsmooth t₀
-  have hcomm := commute_ds_dt_curvature (I := I) g F hFsmooth t₀ houterL houterR
-  have hT1 : covDerivAlong (I := I) g (fun s : ℝ => F s t₀)
-      (fun s : ℝ => covDerivAlong (I := I) g (fun v : ℝ => F s v)
-        (fun v : ℝ => mfderiv 𝓘(ℝ, ℝ) I (fun u : ℝ => F s u) v (1 : ℝ)) t₀) 0 = 0 := by
-    have hfun : (fun s : ℝ => covDerivAlong (I := I) g (fun v : ℝ => F s v)
-        (fun v : ℝ => mfderiv 𝓘(ℝ, ℝ) I (fun u : ℝ => F s u) v (1 : ℝ)) t₀)
-        = (fun s : ℝ => (0 : TangentSpace I ((fun s' : ℝ => F s' t₀) s))) :=
-      funext houterL_field
-    rw [hfun]
-    exact covDerivAlong_zero (I := I) g (fun s' : ℝ => F s' t₀) 0
-  rw [hT1, hfields, zero_sub, neg_eq_iff_eq_neg] at hcomm
-  have hjac : IsJacobiAt (I := I) g (fun v : ℝ => F 0 v)
-      (fun v : ℝ => mfderiv 𝓘(ℝ, ℝ) I (fun u : ℝ => F u v) 0 (1 : ℝ)) t₀ := by
-    change covDerivAlong (I := I) g (fun v : ℝ => F 0 v)
-        (fun v : ℝ => covDerivAlong (I := I) g (fun v' : ℝ => F 0 v')
-          (fun v' : ℝ => mfderiv 𝓘(ℝ, ℝ) I (fun u : ℝ => F u v') 0 (1 : ℝ)) v) t₀
-      + (DifferentialGeometry.Geometry.Curvature.riemannOp
-          (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g) (F 0 t₀))
-          (mfderiv 𝓘(ℝ, ℝ) I (fun u : ℝ => F u t₀) 0 (1 : ℝ))
-          (mfderiv 𝓘(ℝ, ℝ) I (fun u : ℝ => F 0 u) t₀ (1 : ℝ))
-          (mfderiv 𝓘(ℝ, ℝ) I (fun u : ℝ => F 0 u) t₀ (1 : ℝ)) = 0
-    linear_combination (norm := module) hcomm
+  have hjac := isJacobiAt_variationField_of_covDerivAlong_velocity_eq_zero
+    (I := I) g F hFsmooth t₀ houterL_field
   have hF0 : (fun v : ℝ => F 0 v) =
       (fun v : ℝ => intrinsicGeodesic (I := I) g hEnorm p
         (show TangentSpace I p from x) v) := by
@@ -913,59 +865,22 @@ theorem radial_jacobi_one (g : SmoothRiemannianMetric I M) (p : M) (x w : E)
       0 (1 : ℝ)
     = mfderiv (𝓘(ℝ, E)) I
         (fun b : E => (expMap (I := I) g p (show TangentSpace I p from b) : M)) x w := by
-  have hfoot : (fun s : ℝ => x + s • w) 0 = x := by simp
-  have hone : (fun s : ℝ =>
-      (expMap (I := I) g p (show TangentSpace I p from ((1 : ℝ) • (x + s • w))) : M))
-      = (fun b : E => (expMap (I := I) g p (show TangentSpace I p from b) : M))
-        ∘ (fun s : ℝ => x + s • w) := by
-    funext s
-    simp only [Function.comp_apply, one_smul]
-  have hexp_md : MDifferentiableAt (𝓘(ℝ, E)) I
-      (fun b : E => (expMap (I := I) g p (show TangentSpace I p from b) : M)) x :=
-    (expMap_contMDiffAt2_of_norm_lt_radius (I := I) g p hx).mdifferentiableAt (by decide)
-  have hexp_md' : MDifferentiableAt (𝓘(ℝ, E)) I
-      (fun b : E => (expMap (I := I) g p (show TangentSpace I p from b) : M))
-      ((fun s : ℝ => x + s • w) 0) := by
-    rw [hfoot]
-    exact hexp_md
-  have hline_md : MDifferentiableAt (𝓘(ℝ, ℝ)) (𝓘(ℝ, E)) (fun s : ℝ => x + s • w) 0 := by
-    have hMD : ContMDiff (𝓘(ℝ, ℝ)) (𝓘(ℝ, E)) ∞ (fun s : ℝ => x + s • w) :=
-      contMDiff_const.add (contMDiff_id.smul contMDiff_const)
-    exact hMD.contMDiffAt.mdifferentiableAt (by decide)
-  have hline : mfderiv (𝓘(ℝ, ℝ)) (𝓘(ℝ, E)) (fun s : ℝ => x + s • w) 0 (1 : ℝ) = w := by
-    rw [mfderiv_eq_fderiv]
-    have h : HasFDerivAt (fun s : ℝ => x + s • w)
-        (ContinuousLinearMap.smulRight (1 : ℝ →L[ℝ] ℝ) w) 0 := by
-      have hadd : HasFDerivAt (fun s : ℝ => x + s • w)
-          ((0 : ℝ →L[ℝ] E) + (1 : ℝ →L[ℝ] ℝ).smulRight w) 0 := by
-        refine HasFDerivAt.add (hasFDerivAt_const (x := (0 : ℝ)) x) ?_
-        refine (((1 : ℝ →L[ℝ] ℝ).smulRight w).hasFDerivAt
-          (x := (0 : ℝ))).congr_of_eventuallyEq ?_
-        filter_upwards with r
-        simp only [ContinuousLinearMap.smulRight_apply, one_apply_eq_self]
-      rw [zero_add] at hadd
-      exact hadd
-    rw [h.fderiv]
-    change (ContinuousLinearMap.smulRight (1 : ℝ →L[ℝ] ℝ) w) (1 : ℝ) = w
-    rw [ContinuousLinearMap.smulRight_apply, one_apply_eq_self, one_smul]
-  have hfootCLM : (mfderiv (𝓘(ℝ, E)) I
-      (fun b : E => (expMap (I := I) g p (show TangentSpace I p from b) : M))
-      ((fun s : ℝ => x + s • w) 0) : E →L[ℝ] E)
-      = (mfderiv (𝓘(ℝ, E)) I
-        (fun b : E => (expMap (I := I) g p (show TangentSpace I p from b) : M)) x : E →L[ℝ] E) := by
-    rw [hfoot]
-  rw [hone]
-  have hstep := mfderiv_comp_apply (f := fun s : ℝ => x + s • w) (x := (0 : ℝ))
-    hexp_md' hline_md (1 : ℝ)
-  have hgoal : (mfderiv (𝓘(ℝ, E)) I
-      (fun b : E => (expMap (I := I) g p (show TangentSpace I p from b) : M))
-      ((fun s : ℝ => x + s • w) 0))
-      ((mfderiv (𝓘(ℝ, ℝ)) (𝓘(ℝ, E)) (fun s : ℝ => x + s • w) 0) (1 : ℝ))
-      = (mfderiv (𝓘(ℝ, E)) I
-        (fun b : E => (expMap (I := I) g p (show TangentSpace I p from b) : M)) x) w := by
-    rw [hline]
-    exact congrArg (fun L : E →L[ℝ] E => L w) hfootCLM
-  exact hstep.trans hgoal
+  have hxdom : (show TangentSpace I p from x) ∈ expDomain (I := I) g p :=
+    mem_expDomain_of_norm_lt_radius (I := I) g p hx
+  have h := VolumeComparison.radialJacobiField_eq_mfderiv_expMap (I := I) g p x w 1
+    (by simpa only [one_smul] using! hxdom)
+  rw [VolumeComparison.radialJacobiField_eq] at h
+  have hCLM : (mfderiv 𝓘(ℝ, E) I
+      (fun v : E => expMap (I := I) g p (show TangentSpace I p from v))
+      ((1 : ℝ) • x) : E →L[ℝ] E) =
+      (mfderiv 𝓘(ℝ, E) I
+        (fun v : E => expMap (I := I) g p (show TangentSpace I p from v))
+        x : E →L[ℝ] E) := by rw [one_smul]
+  exact h.trans ((congrArg (fun L : E →L[ℝ] E => L ((1 : ℝ) • w)) hCLM).trans
+    (congrArg
+      (mfderiv 𝓘(ℝ, E) I
+        (fun v : E => expMap (I := I) g p (show TangentSpace I p from v)) x)
+      (one_smul ℝ w)))
 
 open DifferentialGeometry.Geometry.Riemannian.Exponential in
 omit [T2Space M] [SigmaCompactSpace M] [NeZero (Module.finrank ℝ E)] in
