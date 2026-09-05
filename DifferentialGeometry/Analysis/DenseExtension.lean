@@ -8,10 +8,13 @@ import Mathlib.Topology.MetricSpace.Lipschitz
 import Mathlib.Topology.Algebra.LinearMapCompletion
 import Mathlib.Topology.UniformSpace.CompleteSeparated
 import Mathlib.Topology.UniformSpace.UniformApproximation
+import Mathlib.MeasureTheory.Measure.MeasureSpaceDef
+import Mathlib.MeasureTheory.Integral.Bochner.Basic
 
 noncomputable section
 
 open Filter Set
+open MeasureTheory
 open scoped NNReal Topology
 
 namespace DifferentialGeometry.Analysis
