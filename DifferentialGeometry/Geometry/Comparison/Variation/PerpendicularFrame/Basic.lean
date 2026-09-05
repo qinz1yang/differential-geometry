@@ -2,6 +2,7 @@ import DifferentialGeometry.Geometry.Connection.ParallelTransport.AlongCurve
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.Derivative.CovariantDerivativeAlong
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.Construction.Existence
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.Construction.Smoothness
+import DifferentialGeometry.Geometry.Connection.ParallelTransport.Frame
 import Mathlib.Geometry.Manifold.PartitionOfUnity
 import Mathlib.Geometry.Manifold.Riemannian.Basic
 open DifferentialGeometry.Geometry.Curvature
@@ -582,39 +583,6 @@ theorem exists_parallel_orthonormal_perp_frame_along_geodesic
     rw [show ((fun i => (⟨fun t => Vfun i t⟩ : SectionAlongCurve I M γ)) i).toFun t = Vfun i t
         from rfl]
     exact hperp
-
-omit [NeZero (Module.finrank ℝ E)] [CompleteSpace E]
-    [T2Space (TangentBundle I M)] in
-theorem exists_parallel_frame
-    (g : SmoothRiemannianMetric I M) (γ : ℝ → M)
-    {N : ℕ} (hN : 2 ≤ N) (hγ : ContMDiff 𝓘(ℝ, ℝ) I (N : ℕ∞) γ) {L : ℝ} (hL : 0 < L)
-    {ι : Type*} [DecidableEq ι] (v : ι → TangentSpace I (γ 0))
-    (hON0 : ∀ i j, g.inner (γ 0) (v i) (v j) = if i = j then (1 : ℝ) else 0) :
-    ∃ e : ι → ∀ t : ℝ, TangentSpace I (γ t),
-      (∀ i, e i 0 = v i) ∧
-      (∀ i, ∀ t ∈ Set.Icc (0 : ℝ) L,
-        DifferentiableAt ℝ (chartRepAt (I := I) γ (e i) t) t) ∧
-      (∀ i, ∀ t ∈ Set.Icc (0 : ℝ) L,
-        covDerivAlong (I := I) g γ (e i) t = 0) ∧
-      (∀ t ∈ Set.Icc (0 : ℝ) L, ∀ i j,
-        g.inner (γ t) (e i t) (e j t) = if i = j then 1 else 0) := by
-  classical
-  have htransport : ∀ i, ∃ V : ∀ t, TangentSpace I (γ t),
-      V 0 = v i ∧
-      (∀ t ∈ Set.Icc (0 : ℝ) L, DifferentiableAt ℝ (chartRepAt (I := I) γ V t) t) ∧
-      (∀ t ∈ Set.Icc (0 : ℝ) L, covDerivAlong (I := I) g γ V t = 0) :=
-    fun i =>
-      DifferentialGeometry.Geometry.Riemannian.Variation.exists_parallel_transport_on_Icc
-        (I := I) g γ hN hγ hL (v i)
-  choose Vfun hV0 hVdiff hVpar using htransport
-  refine ⟨Vfun, hV0, hVdiff, hVpar, ?_⟩
-  intro t ht i j
-  have hconst :=
-    DifferentialGeometry.Geometry.Riemannian.Variation.parallel_transport_preserves_inner_product
-      (I := I) g γ hN hγ (Vfun i) (Vfun j)
-      (hVdiff i) (hVdiff j) (hVpar i) (hVpar j) t ht
-  rw [hconst, hV0 i, hV0 j]
-  exact hON0 i j
 
 omit [NeZero (Module.finrank ℝ E)] [CompleteSpace E]
     [T2Space (TangentBundle I M)] in
