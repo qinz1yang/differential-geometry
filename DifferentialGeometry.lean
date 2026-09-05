@@ -1295,6 +1295,7 @@ import DifferentialGeometry.Analysis.Sobolev.WithBoundary.Chart.L2Hilbert
 import DifferentialGeometry.Analysis.Sobolev.WithBoundary.Embedding.EvenReflectionExtension
 import DifferentialGeometry.Analysis.Sobolev.WithBoundary.Embedding.IteratedTower
 import DifferentialGeometry.Analysis.Sobolev.WithBoundary.Embedding.MorreyManifold
+import DifferentialGeometry.Analysis.Sobolev.WithBoundary.Embedding.Rellich
 import DifferentialGeometry.Analysis.Sobolev.WithBoundary.Embedding.Subcritical
 import DifferentialGeometry.Analysis.Sobolev.WithBoundary.Euclidean.Density
 import DifferentialGeometry.Analysis.Sobolev.WithBoundary.Euclidean.IteratedL2
@@ -1302,6 +1303,7 @@ import DifferentialGeometry.Analysis.Sobolev.WithBoundary.Euclidean.IteratedSobo
 import DifferentialGeometry.Analysis.Sobolev.WithBoundary.Euclidean.Morrey
 import DifferentialGeometry.Analysis.Sobolev.WithBoundary.Intrinsic.Algebra
 import DifferentialGeometry.Analysis.Sobolev.WithBoundary.Intrinsic.ChartEquivalence
+import DifferentialGeometry.Analysis.Sobolev.WithBoundary.Intrinsic.EquivalenceReverse
 import DifferentialGeometry.Analysis.Sobolev.WithBoundary.Intrinsic.Lp
 import DifferentialGeometry.Analysis.Sobolev.WithBoundary.Intrinsic.Trace
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.CompactSAResolventIntrinsic
