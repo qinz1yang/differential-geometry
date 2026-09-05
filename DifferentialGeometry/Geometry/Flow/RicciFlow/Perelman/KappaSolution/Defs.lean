@@ -41,6 +41,8 @@ structure KappaSolution
     {T kappa : Real}
     (S : SolutionOn (I := I) (M := M)
       (DifferentialGeometry.Geometry.Curvature.RealTimeInterval.ancient T)) : Prop where
+  nonempty : Nonempty M
+  connected : ConnectedSpace M
   isSolution : IsSolutionOn (I := I) S
   complete : ∀ t ∈ (DifferentialGeometry.Geometry.Curvature.RealTimeInterval.ancient T).carrier,
     DifferentialGeometry.RiemannianMetricComplete (I := I) (S.base.metric t)
@@ -48,8 +50,12 @@ structure KappaSolution
   kappa_pos : 0 < kappa
   noncollapsed : KappaNoncollapsedOnAllScales S kappa
   bounded_curvature :
-    ∀ t ∈ (DifferentialGeometry.Geometry.Curvature.RealTimeInterval.ancient T).carrier,
-      ∃ C : Real, 0 ≤ C ∧ ∀ x : M, FlowMetricBall.rmNormSq S t x ≤ C
+    ∃ C : Real, 0 ≤ C ∧
+      ∀ t ∈ (DifferentialGeometry.Geometry.Curvature.RealTimeInterval.ancient T).carrier,
+        ∀ x : M, FlowMetricBall.rmNormSq S t x ≤ C
+  nonflat :
+    ¬ (∀ t ∈ (DifferentialGeometry.Geometry.Curvature.RealTimeInterval.ancient T).carrier,
+      ∀ x : M, S.base.rm04 t x = 0)
 
 theorem KappaSolution.curvatureOperator_nonnegative_at
     {T kappa : Real}
@@ -71,8 +77,9 @@ theorem KappaSolution.has_curvature_bound
       (DifferentialGeometry.Geometry.Curvature.RealTimeInterval.ancient T)}
     (hS : KappaSolution (I := I) (kappa := kappa) S)
     {t : Real} (ht : t ∈ (DifferentialGeometry.Geometry.Curvature.RealTimeInterval.ancient T).carrier) :
-    ∃ C : Real, 0 ≤ C ∧ ∀ x : M, FlowMetricBall.rmNormSq S t x ≤ C :=
-  hS.bounded_curvature t ht
+    ∃ C : Real, 0 ≤ C ∧ ∀ x : M, FlowMetricBall.rmNormSq S t x ≤ C := by
+  rcases hS.bounded_curvature with ⟨C, hC, hbound⟩
+  exact ⟨C, hC, fun x => hbound t ht x⟩
 
 end
 
