@@ -1,4 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.EnergyVanishing
+import Mathlib.Analysis.ODE.Gronwall
 
 set_option autoImplicit false
 
@@ -65,6 +66,38 @@ theorem metric_eq_of_energy_zero_noncompact
   simp only [metricDiffAt_apply, Tensor0SSpace.zero_apply] at hval
   norm_num at hval
   linarith [hval]
+
+theorem ricci_flow_forward_unique_of_energy_deriv_bound
+    (g₁ g₂ : ℝ → SmoothRiemannianMetric I M) {a b : ℝ} (hab : a < b)
+    (K : ℝ)
+    (hcont : ContinuousOn
+      (forwardUniqueEnergy (I := I) (M := M) g₁ g₂) (Set.Icc a b))
+    (henergy' : ℝ → ℝ)
+    (hderiv : ∀ t ∈ Set.Ioo a b,
+      HasDerivAt (forwardUniqueEnergy (I := I) (M := M) g₁ g₂)
+        (henergy' t) t)
+    (hbound : ∀ t ∈ Set.Ioo a b,
+      henergy' t ≤ K * forwardUniqueEnergy (I := I) (M := M) g₁ g₂ t)
+    (hinitial : g₁ a = g₂ a)
+    (hdcont : ∀ t ∈ Set.Icc a b,
+      Continuous (fun x => forwardUniqueDensity (I := I) g₁ g₂ t x))
+    (hden : ∀ t ∈ Set.Icc a b,
+      Integrable (fun x => forwardUniqueDensity (I := I) g₁ g₂ t x)
+        (riemannianMeasureFamily (I := I) (M := M) g₁ t)) :
+    ∀ t ∈ Set.Icc a b, g₁ t = g₂ t := by
+  have hzero : ∀ t ∈ Set.Icc a b,
+      forwardUniqueEnergy (I := I) (M := M) g₁ g₂ t = 0 := by
+    apply gronwall_zero_on hab
+      (forwardUniqueEnergy (I := I) (M := M) g₁ g₂) henergy' hcont
+      (by
+        simp only [forwardUniqueEnergy,
+          density_eq_zero_of_eq (I := I) g₁ g₂ hinitial, integral_zero])
+      (fun t _ => integral_nonneg fun x =>
+        density_nonneg (I := I) g₁ g₂ t x)
+      hderiv hbound
+  intro t ht
+  exact metric_eq_of_energy_zero_noncompact (I := I) g₁ g₂
+    (hdcont t ht) (hden t ht) (hzero t ht)
 
 end DifferentialGeometry.PDE.RicciFlow
 
