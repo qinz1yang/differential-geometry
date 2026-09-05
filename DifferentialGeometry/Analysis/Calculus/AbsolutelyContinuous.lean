@@ -1,7 +1,9 @@
 import Mathlib.Analysis.Calculus.Deriv.Slope
+import Mathlib.Analysis.Normed.Module.FiniteDimension
 import Mathlib.Analysis.SpecialFunctions.Integrals.Basic
 import Mathlib.MeasureTheory.Integral.IntervalIntegral.AbsolutelyContinuousFun
 import Mathlib.MeasureTheory.Integral.IntervalIntegral.FundThmCalculus
+import Mathlib.MeasureTheory.SpecificCodomains.Pi
 
 set_option autoImplicit false
 
@@ -239,6 +241,58 @@ theorem comp_sq
     rw [uIcc_of_le ((sq_le_sq₀ ha (ha.trans hab)).2 hab)]
     exact ⟨(sq_le_sq₀ ha hs0).2 hs.1,
       (sq_le_sq₀ hs0 (ha.trans hab)).2 hs.2⟩
+
+section Vector
+
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+  {f : ℝ → E} {a b : ℝ}
+
+private theorem ae_deriv_comp_continuousLinearMap
+    (hf : AbsolutelyContinuousOnInterval f a b) (L : E →L[ℝ] ℝ) :
+    deriv (L ∘ f) =ᵐ[volume.restrict (Ι a b)] fun t ↦ L (deriv f t) := by
+  change ∀ᵐ t ∂volume.restrict (Ι a b), deriv (L ∘ f) t = L (deriv f t)
+  rw [ae_restrict_iff' measurableSet_uIoc]
+  filter_upwards [hf.boundedVariationOn.ae_differentiableAt_of_mem_uIcc] with t ht htab
+  simpa only [ContinuousLinearMap.comp_apply,
+    ContinuousLinearMap.toSpanSingleton_apply, one_smul] using
+    ((L.hasFDerivAt.comp t
+      (ht (uIoc_subset_uIcc htab)).hasDerivAt.hasFDerivAt).hasDerivAt).deriv
+
+theorem intervalIntegrable_deriv_vector (hf : AbsolutelyContinuousOnInterval f a b) :
+    IntervalIntegrable (deriv f) volume a b := by
+  classical
+  let A := (Module.Basis.ofVectorSpace ℝ E).equivFun.toContinuousLinearEquiv
+  rw [intervalIntegrable_iff, IntegrableOn, ← A.integrable_comp_iff, integrable_pi_iff]
+  intro i
+  let L : E →L[ℝ] ℝ :=
+    LinearMap.toContinuousLinearMap ((LinearMap.proj i).comp A.toLinearMap)
+  have hLac : AbsolutelyContinuousOnInterval (L ∘ f) a b :=
+    L.lipschitz.lipschitzOnWith.comp_absolutelyContinuousOnInterval hf
+      (mapsTo_univ f (uIcc a b))
+  exact hLac.intervalIntegrable_deriv.def'.congr (ae_deriv_comp_continuousLinearMap hf L)
+
+theorem integral_deriv_eq_sub_vector (hf : AbsolutelyContinuousOnInterval f a b) :
+    ∫ t in a..b, deriv f t = f b - f a := by
+  let A := (Module.Basis.ofVectorSpace ℝ E).equivFun.toContinuousLinearEquiv
+  apply A.injective
+  ext i
+  let L : E →L[ℝ] ℝ :=
+    LinearMap.toContinuousLinearMap ((LinearMap.proj i).comp A.toLinearMap)
+  have hLac : AbsolutelyContinuousOnInterval (L ∘ f) a b :=
+    L.lipschitz.lipschitzOnWith.comp_absolutelyContinuousOnInterval hf
+      (mapsTo_univ f (uIcc a b))
+  change L (∫ t in a..b, deriv f t) = L (f b - f a)
+  calc
+    L (∫ t in a..b, deriv f t) = ∫ t in a..b, L (deriv f t) :=
+      (L.intervalIntegral_comp_comm hf.intervalIntegrable_deriv_vector).symm
+    _ = ∫ t in a..b, deriv (L ∘ f) t :=
+      intervalIntegral.integral_congr_ae_restrict
+        (ae_deriv_comp_continuousLinearMap hf L).symm
+    _ = L (f b) - L (f a) := by
+      simpa only [Function.comp_apply] using hLac.integral_deriv_eq_sub
+    _ = L (f b - f a) := (L.map_sub _ _).symm
+
+end Vector
 
 end AbsolutelyContinuousOnInterval
 

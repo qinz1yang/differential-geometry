@@ -3775,6 +3775,7 @@ import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.Curve.ManifoldC1Gluin
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.Curve.C1Gluing
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.H1.LineScale
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.H1.Regularity.C1Representative
+import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.H1.Regularity.AbsolutelyContinuous
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.H1.Compactness.Basic
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.H1.Approximation.Density
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.H1.Approximation.FlatDerivative
