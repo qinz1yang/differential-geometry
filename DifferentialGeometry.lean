@@ -531,6 +531,7 @@ import DifferentialGeometry.Analysis.ODE.Flow.IntegralCurveTransport
 import DifferentialGeometry.Analysis.ODE.Gronwall.Integral
 import DifferentialGeometry.Analysis.ODE.Flow.CompactSupport
 import DifferentialGeometry.Analysis.ODE.Flow.Complete
+import DifferentialGeometry.Analysis.ODE.Flow.Uniqueness
 import DifferentialGeometry.Analysis.ODE.InvariantSet.Basic
 import DifferentialGeometry.Analysis.ODE.InvariantSet.Naturality
 import DifferentialGeometry.Analysis.ODE.InvariantSet.Nagumo
@@ -3017,6 +3018,7 @@ import DifferentialGeometry.Geometry.Geodesic.Chart.Regularity
 import DifferentialGeometry.Geometry.Geodesic.Chart.TransitionJacobian
 import DifferentialGeometry.Geometry.Geodesic.Chart.TransitionMap
 import DifferentialGeometry.Geometry.Geodesic.Flow.CrossVectorFieldReduction
+import DifferentialGeometry.Geometry.Geodesic.Flow.Uniqueness
 import DifferentialGeometry.Geometry.Geodesic.Equation.Basic
 import DifferentialGeometry.Geometry.Geodesic.Local.Existence
 import DifferentialGeometry.Geometry.Geodesic.Flow.FlatPhase
