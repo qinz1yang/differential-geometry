@@ -244,6 +244,87 @@ theorem whole_flow_rank_one_product_identity
   rw [hflat]
   ring
 
+omit [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [ConnectedSpace M]
+    [Nonempty M] in
+theorem whole_flow_rank_one_surface_metric_unique
+    {N : Type}
+    [TopologicalSpace N]
+    [ChartedSpace (DifferentialGeometry.Topology.Morse.MorseModel 2) N]
+    [IsManifold
+      (𝓘(Real, DifferentialGeometry.Topology.Morse.MorseModel 2))
+      (↑(⊤ : ℕ∞) : WithTop ℕ∞) N]
+    [T2Space N]
+    (g : Real → SmoothRiemannianMetric I M)
+    (F : Diffeomorph
+      ((𝓘(Real, DifferentialGeometry.Topology.Morse.MorseModel 2)).prod
+        𝓘(Real, Real)) I (N × Real)
+      (DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover M)
+      (↑(⊤ : ℕ∞) : WithTop ℕ∞))
+    (h₁ h₂ : Real → SmoothRiemannianMetric
+      (𝓘(Real, DifferentialGeometry.Topology.Morse.MorseModel 2)) N)
+    (hh₁ : ∀ t : Real,
+      Diffeomorph.pullbackMetricCross
+          (I := (𝓘(Real, DifferentialGeometry.Topology.Morse.MorseModel 2)).prod
+            𝓘(Real, Real))
+          (J := I) (liftedMetric (I := I) (g t)) F =
+        (h₁ t).prod (flatModelMetric Real))
+    (hh₂ : ∀ t : Real,
+      Diffeomorph.pullbackMetricCross
+          (I := (𝓘(Real, DifferentialGeometry.Topology.Morse.MorseModel 2)).prod
+            𝓘(Real, Real))
+          (J := I) (liftedMetric (I := I) (g t)) F =
+        (h₂ t).prod (flatModelMetric Real)) :
+    ∀ t : Real, h₁ t = h₂ t := by
+  intro t
+  apply SmoothRiemannianMetric.ext_inner
+  intro y u v
+  have heq : (h₁ t).prod (flatModelMetric Real) =
+      (h₂ t).prod (flatModelMetric Real) := (hh₁ t).symm.trans (hh₂ t)
+  have he := congrArg
+      (fun G => G.inner (y, (0 : Real))
+        ((u, (0 : Real)) : TangentSpace
+          ((𝓘(Real, DifferentialGeometry.Topology.Morse.MorseModel 2)).prod
+            𝓘(Real, Real)) (y, (0 : Real)))
+        ((v, (0 : Real)) : TangentSpace
+          ((𝓘(Real, DifferentialGeometry.Topology.Morse.MorseModel 2)).prod
+            𝓘(Real, Real)) (y, (0 : Real)))) heq
+  rw [DifferentialGeometry.SmoothRiemannianMetric.prod_inner (h₁ t)
+      (flatModelMetric Real) (y, (0 : Real)) (u, (0 : Real)) (v, (0 : Real)),
+    DifferentialGeometry.SmoothRiemannianMetric.prod_inner (h₂ t)
+      (flatModelMetric Real) (y, (0 : Real)) (u, (0 : Real)) (v, (0 : Real))] at he
+  have hfst_u :
+      (mfderiv ((𝓘(Real, DifferentialGeometry.Topology.Morse.MorseModel 2)).prod
+        𝓘(Real, Real)) 𝓘(Real, DifferentialGeometry.Topology.Morse.MorseModel 2)
+        Prod.fst (y, (0 : Real)) (u, (0 : Real))) = u := by
+    rw [mfderiv_fst]
+    rfl
+  have hfst_v :
+      (mfderiv ((𝓘(Real, DifferentialGeometry.Topology.Morse.MorseModel 2)).prod
+        𝓘(Real, Real)) 𝓘(Real, DifferentialGeometry.Topology.Morse.MorseModel 2)
+        Prod.fst (y, (0 : Real)) (v, (0 : Real))) = v := by
+    rw [mfderiv_fst]
+    rfl
+  have hsnd_u :
+      (mfderiv ((𝓘(Real, DifferentialGeometry.Topology.Morse.MorseModel 2)).prod
+        𝓘(Real, Real)) 𝓘(Real, Real)
+        Prod.snd (y, (0 : Real)) (u, (0 : Real))) = (0 : Real) := by
+    rw [mfderiv_snd]
+    rfl
+  have hsnd_v :
+      (mfderiv ((𝓘(Real, DifferentialGeometry.Topology.Morse.MorseModel 2)).prod
+        𝓘(Real, Real)) 𝓘(Real, Real)
+        Prod.snd (y, (0 : Real)) (v, (0 : Real))) = (0 : Real) := by
+    rw [mfderiv_snd]
+    rfl
+  rw [hfst_u, hfst_v, hsnd_u, hsnd_v] at he
+  have hflat : ∀ x : Real,
+      (flatModelMetric Real).inner x (0 : Real) (0 : Real) = 0 := by
+    intro x
+    change inner Real (0 : Real) (0 : Real) = 0
+    simp
+  simp only [hflat, add_zero] at he
+  exact he
+
 end DifferentialGeometry.PDE.RicciFlow.DimensionThree
 
 end
