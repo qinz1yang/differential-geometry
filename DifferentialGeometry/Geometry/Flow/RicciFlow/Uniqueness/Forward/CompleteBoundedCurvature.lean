@@ -74,7 +74,6 @@ theorem ricci_flow_forward_unique_of_complete_bounded_curvature
     {a b : Real} (hab : a < b)
     (S₁ S₂ : CompleteBoundedCurvatureSolutionOn (I := I) (M := M)
       (D := DifferentialGeometry.Geometry.Curvature.RealTimeInterval.closedOpen a b hab))
-    (hnoncompact : NoncompactSpace M)
     (henergyCont : ContinuousOn
       (forwardUniqueEnergy (I := I) (M := M)
         S₁.solution.base.metric S₂.solution.base.metric) (Set.Icc a b))
@@ -99,7 +98,6 @@ theorem ricci_flow_forward_unique_of_complete_bounded_curvature
         (riemannianMeasureFamily (I := I) (M := M) S₁.solution.base.metric t)) :
     ∀ t ∈ Set.Ico a b,
       S₁.solution.base.metric t = S₂.solution.base.metric t := by
-  let _ := hnoncompact.noncompact_univ
   have hcriterion :
       NoncompactForwardUniquenessCriterion (I := I)
         S₁.solution.base.metric S₂.solution.base.metric a b K henergy' :=
