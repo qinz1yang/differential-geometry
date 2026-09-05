@@ -465,6 +465,8 @@ import DifferentialGeometry.Analysis.Integration.Measure.Chart.Density
 import DifferentialGeometry.Analysis.Integration.Measure.Parametric.CompactIntegral
 import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.CompactVolumeEquivalence
 import DifferentialGeometry.Analysis.Integration.Measure.Estimates.ExponentialTail
+import DifferentialGeometry.Analysis.Integration.Measure.Estimates.GaussianTail
+import DifferentialGeometry.Analysis.Integration.Measure.TightConvergence
 import DifferentialGeometry.Analysis.Integration.Measure.Family.Basic
 import DifferentialGeometry.Analysis.Integration.Measure.Family.Continuity
 import DifferentialGeometry.Analysis.Integration.Measure.Family.ParametricContinuity
