@@ -2409,6 +2409,7 @@ import DifferentialGeometry.Geometry.Exponential.Intrinsic.Geodesic.Continuity
 import DifferentialGeometry.Geometry.Exponential.Intrinsic.Framed.Coordinates
 import DifferentialGeometry.Geometry.Exponential.Intrinsic.GaussLemma
 import DifferentialGeometry.Geometry.Exponential.Intrinsic.Geodesic.Smoothness
+import DifferentialGeometry.Geometry.Exponential.Intrinsic.Geodesic.ParallelField
 import DifferentialGeometry.Geometry.Exponential.Intrinsic.Velocity
 import DifferentialGeometry.Geometry.Exponential.Variation.Jacobi
 import DifferentialGeometry.Geometry.Exponential.LocalAddition.Basic
@@ -3027,6 +3028,7 @@ import DifferentialGeometry.Geometry.Geodesic.Chart.Regularity
 import DifferentialGeometry.Geometry.Geodesic.Chart.TransitionJacobian
 import DifferentialGeometry.Geometry.Geodesic.Chart.TransitionMap
 import DifferentialGeometry.Geometry.Geodesic.Flow.CrossVectorFieldReduction
+import DifferentialGeometry.Geometry.Geodesic.Flow.ParallelField
 import DifferentialGeometry.Geometry.Geodesic.Flow.Uniqueness
 import DifferentialGeometry.Geometry.Geodesic.Flow.VelocityLift
 import DifferentialGeometry.Geometry.Geodesic.Flow.VectorField
