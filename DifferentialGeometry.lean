@@ -530,6 +530,7 @@ import DifferentialGeometry.Analysis.ODE.IndexForm.Uniqueness
 import DifferentialGeometry.Analysis.ODE.Flow.IntegralCurveTransport
 import DifferentialGeometry.Analysis.ODE.Gronwall.Integral
 import DifferentialGeometry.Analysis.ODE.Flow.CompactSupport
+import DifferentialGeometry.Analysis.ODE.Flow.Complete
 import DifferentialGeometry.Analysis.ODE.InvariantSet.Basic
 import DifferentialGeometry.Analysis.ODE.InvariantSet.Naturality
 import DifferentialGeometry.Analysis.ODE.InvariantSet.Nagumo
