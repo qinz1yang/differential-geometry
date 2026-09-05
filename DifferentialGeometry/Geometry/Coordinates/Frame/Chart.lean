@@ -5,6 +5,7 @@ import Mathlib.Geometry.Manifold.VectorBundle.Tangent
 import Mathlib.Geometry.Manifold.VectorBundle.Hom
 import Mathlib.Geometry.Manifold.ContMDiff.NormedSpace
 import Mathlib.Geometry.Manifold.MFDeriv.Atlas
+import Mathlib.LinearAlgebra.Matrix.ToLin
 
 noncomputable section
 
@@ -194,5 +195,68 @@ lemma chartBasisFamily_linearIndependent (x₀ : M) {x : M}
     exact chartBasisFamily_apply (I := I) x₀ hx i
   rw [← hcongr]
   exact h
+
+theorem mfderiv_chartModelBasis_eq_sum
+    (f : E → M) {x : E} (hf : MDifferentiableAt (modelWithCornersSelf ℝ E) I f x)
+    (y₀ : M) (hy : f x ∈ (trivializationAt E (TangentSpace I) y₀).baseSet)
+    (i : Fin (Module.finrank ℝ E)) :
+    mfderiv (modelWithCornersSelf ℝ E) I f x ((chartModelBasis E) i) =
+      ∑ k, (LinearMap.toMatrix (chartModelBasis E) (chartModelBasis E)
+            (fderiv ℝ (fun z : E => extChartAt I y₀ (f z)) x).toLinearMap) k i •
+        chartBasisVecFiber (I := I) y₀ k (f x) := by
+  have hy_chart : f x ∈ (chartAt H y₀).source := by
+    simpa only [trivializationAt_baseSet_eq_chartAt_source (I := I)] using hy
+  have hchart : MDifferentiableAt I (modelWithCornersSelf ℝ E) (extChartAt I y₀) (f x) :=
+    mdifferentiableAt_extChartAt (I := I) (x := y₀) (y := f x) hy_chart
+  have hchain :
+      fderiv ℝ (fun z : E => extChartAt I y₀ (f z)) x =
+        (mfderiv I (modelWithCornersSelf ℝ E) (extChartAt I y₀) (f x)).comp
+          (mfderiv (modelWithCornersSelf ℝ E) I f x) := by
+    have hchain' := mfderiv_comp (I := (modelWithCornersSelf ℝ E)) (I' := I) (I'' := (modelWithCornersSelf ℝ E))
+      (g := extChartAt I y₀) (f := f) (x := x) hchart hf
+    rw [mfderiv_eq_fderiv] at hchain'
+    exact hchain'
+  let T₀ : Trivialization E (π E (TangentSpace I : M → Type _)) :=
+    trivializationAt E (TangentSpace I) y₀
+  apply (T₀.continuousLinearEquivAt ℝ (f x) hy).injective
+  have hrepr :
+      (fderiv ℝ (fun z : E => extChartAt I y₀ (f z)) x) ((chartModelBasis E) i) =
+        ∑ k, (LinearMap.toMatrix (chartModelBasis E) (chartModelBasis E)
+              (fderiv ℝ (fun z : E => extChartAt I y₀ (f z)) x).toLinearMap) k i •
+          (chartModelBasis E) k := by
+    simp only [LinearMap.toMatrix_apply]
+    exact
+      (((chartModelBasis E).sum_repr
+        ((fderiv ℝ (fun z : E => extChartAt I y₀ (f z)) x)
+          ((chartModelBasis E) i))).symm)
+  calc
+    T₀.continuousLinearEquivAt ℝ (f x) hy
+        (mfderiv (modelWithCornersSelf ℝ E) I f x ((chartModelBasis E) i))
+        = (fderiv ℝ (fun z : E => extChartAt I y₀ (f z)) x)
+            ((chartModelBasis E) i) := by
+          rw [Trivialization.coe_continuousLinearEquivAt_eq (R := ℝ) T₀ hy]
+          rw [TangentBundle.continuousLinearMapAt_trivializationAt
+            (I := I) (x₀ := y₀) (x := f x) hy_chart]
+          rw [hchain]
+          rfl
+    _ = ∑ k, (LinearMap.toMatrix (chartModelBasis E) (chartModelBasis E)
+          (fderiv ℝ (fun z : E => extChartAt I y₀ (f z)) x).toLinearMap) k i •
+            (chartModelBasis E) k := hrepr
+    _ = T₀.continuousLinearEquivAt ℝ (f x) hy
+          (∑ k, (LinearMap.toMatrix (chartModelBasis E) (chartModelBasis E)
+              (fderiv ℝ (fun z : E => extChartAt I y₀ (f z)) x).toLinearMap) k i •
+            chartBasisVecFiber (I := I) y₀ k (f x)) := by
+          rw [map_sum]
+          refine Finset.sum_congr rfl ?_
+          intro k _
+          rw [map_smul]
+          have hbasis :
+              chartBasisVecFiber (I := I) y₀ k (f x) =
+                (T₀.continuousLinearEquivAt ℝ (f x) hy).symm
+                  ((chartModelBasis E) k) := by
+            unfold chartBasisVecFiber
+            exact (congrFun (T₀.symm_continuousLinearEquivAt_eq hy)
+              ((chartModelBasis E) k)).symm
+          rw [hbasis, ContinuousLinearEquiv.apply_symm_apply]
 
 end DifferentialGeometry.Tensor.Coordinates

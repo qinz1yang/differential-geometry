@@ -1,4 +1,5 @@
 import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.Invariance
+import DifferentialGeometry.Analysis.Integration.Measure.Parametric.Density
 import Mathlib.Geometry.Manifold.LocalDiffeomorph
 
 noncomputable section
@@ -19,34 +20,6 @@ private local instance : MeasurableSpace E := borel E
 private local instance : BorelSpace E := ⟨rfl⟩
 private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
-
-def paramGramMatrix (g : SmoothRiemannianMetric I M)
-    (Ψ : PartialDiffeomorph 𝓘(ℝ, E) I E M 1) :
-    E → Matrix (Fin (Module.finrank ℝ E)) (Fin (Module.finrank ℝ E)) ℝ :=
-  fun w => Matrix.of fun i j =>
-    g.inner (Ψ w)
-      (mfderiv 𝓘(ℝ, E) I Ψ w ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))
-      (mfderiv 𝓘(ℝ, E) I Ψ w ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j))
-
-@[simp] lemma paramGramMatrix_apply
-    (g : SmoothRiemannianMetric I M)
-    (Ψ : PartialDiffeomorph 𝓘(ℝ, E) I E M 1)
-    (w : E) (i j : Fin (Module.finrank ℝ E)) :
-    paramGramMatrix (I := I) g Ψ w i j =
-      g.inner (Ψ w)
-        (mfderiv 𝓘(ℝ, E) I Ψ w ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))
-        (mfderiv 𝓘(ℝ, E) I Ψ w ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j)) := rfl
-
-def paramDensity (g : SmoothRiemannianMetric I M)
-    (Ψ : PartialDiffeomorph 𝓘(ℝ, E) I E M 1) : E → ℝ :=
-  fun w => Real.sqrt (paramGramMatrix (I := I) g Ψ w).det
-
-@[simp] lemma paramDensity_apply
-    (g : SmoothRiemannianMetric I M)
-    (Ψ : PartialDiffeomorph 𝓘(ℝ, E) I E M 1)
-    (w : E) :
-    paramDensity (I := I) g Ψ w =
-      Real.sqrt (paramGramMatrix (I := I) g Ψ w).det := rfl
 
 noncomputable def paramDerivEquiv
     (Ψ : PartialDiffeomorph 𝓘(ℝ, E) I E M 1)
@@ -96,67 +69,8 @@ lemma paramDeriv_chartBasis_eq_sum
     mfderiv 𝓘(ℝ, E) I Ψ w ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) =
       ∑ k, paramJacobianMatrix (I := I) x₀ Ψ w k i •
         DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ k (Ψ w) := by
-  have hxchart : Ψ w ∈ (chartAt H x₀).source := by
-    simpa [trivializationAt_baseSet_eq_chartAt_source (I := I) x₀] using hx
-  have hxsrc : Ψ w ∈ (extChartAt I x₀).source := by
-    rw [extChartAt_source_eq_chartAt_source (I := I)]
-    exact hxchart
-  have hΨdiff : MDifferentiableAt 𝓘(ℝ, E) I Ψ w :=
-    (Ψ.contMDiffOn_toFun.mdifferentiableOn one_ne_zero w hw).mdifferentiableAt
-      (Ψ.open_source.mem_nhds hw)
-  have hchartdiff : MDifferentiableAt I 𝓘(ℝ, E) (extChartAt I x₀) (Ψ w) :=
-    mdifferentiableAt_extChartAt (I := I) (x := x₀) (y := Ψ w) hxchart
-  have hchain :
-      mfderiv 𝓘(ℝ, E) 𝓘(ℝ, E) (paramChartMap (I := I) x₀ Ψ) w =
-        (mfderiv I 𝓘(ℝ, E) (extChartAt I x₀) (Ψ w)).comp
-          (mfderiv 𝓘(ℝ, E) I Ψ w) := by
-    unfold paramChartMap
-    exact mfderiv_comp (I := 𝓘(ℝ, E)) (I' := I) (I'' := 𝓘(ℝ, E))
-      (g := extChartAt I x₀) (f := Ψ) (x := w) hchartdiff hΨdiff
-  have hchain_f :
-      fderiv ℝ (paramChartMap (I := I) x₀ Ψ) w =
-        (mfderiv I 𝓘(ℝ, E) (extChartAt I x₀) (Ψ w)).comp
-          (mfderiv 𝓘(ℝ, E) I Ψ w) := by
-    erw [← mfderiv_eq_fderiv]
-    exact hchain
-  set T₀ : Bundle.Trivialization E (π E (TangentSpace I : M → Type _)) :=
-    trivializationAt E (TangentSpace I) x₀
-  apply (T₀.continuousLinearEquivAt ℝ (Ψ w) hx).injective
-  have hrepr :
-      (fderiv ℝ (paramChartMap (I := I) x₀ Ψ) w) ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) =
-        ∑ k, paramJacobianMatrix (I := I) x₀ Ψ w k i •
-          (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k := by
-    simpa [paramJacobianMatrix_apply] using
-      (((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).sum_repr
-        ((fderiv ℝ (paramChartMap (I := I) x₀ Ψ) w)
-          ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))).symm)
-  calc
-    T₀.continuousLinearEquivAt ℝ (Ψ w) hx
-        (mfderiv 𝓘(ℝ, E) I Ψ w ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))
-        = (fderiv ℝ (paramChartMap (I := I) x₀ Ψ) w) ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) := by
-          rw [Trivialization.coe_continuousLinearEquivAt_eq (R := ℝ) T₀ hx]
-          rw [TangentBundle.continuousLinearMapAt_trivializationAt
-            (I := I) (x₀ := x₀) (x := Ψ w) hxchart]
-          rw [hchain_f]
-          rfl
-    _ = ∑ k, paramJacobianMatrix (I := I) x₀ Ψ w k i •
-          (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k := hrepr
-    _ = T₀.continuousLinearEquivAt ℝ (Ψ w) hx
-          (∑ k, paramJacobianMatrix (I := I) x₀ Ψ w k i •
-            DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ k (Ψ w)) := by
-          rw [map_sum]
-          refine Finset.sum_congr rfl ?_
-          intro k _
-          rw [map_smul]
-          have hbasis :
-              DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ k (Ψ w) =
-                (T₀.continuousLinearEquivAt ℝ (Ψ w) hx).symm
-                  ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k) := by
-            unfold DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber
-            exact (congrFun (T₀.symm_continuousLinearEquivAt_eq hx)
-              ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k)).symm
-          rw [hbasis]
-          rw [ContinuousLinearEquiv.apply_symm_apply]
+  exact DifferentialGeometry.Tensor.Coordinates.mfderiv_chartModelBasis_eq_sum
+    (I := I) Ψ (Ψ.mdifferentiableAt one_ne_zero hw) x₀ hx i
 
 lemma paramGramMatrix_pullback_eq_sum
     (g : SmoothRiemannianMetric I M) (x₀ : M)
@@ -169,41 +83,13 @@ lemma paramGramMatrix_pullback_eq_sum
         paramJacobianMatrix (I := I) x₀ Ψ w k i *
         paramJacobianMatrix (I := I) x₀ Ψ w l j *
         DifferentialGeometry.Tensor.Coordinates.chartGramMatrix g x₀ (Ψ w) k l := by
-  rw [paramGramMatrix_apply]
-  rw [paramDeriv_chartBasis_eq_sum (I := I) x₀ Ψ hw hx i]
-  rw [paramDeriv_chartBasis_eq_sum (I := I) x₀ Ψ hw hx j]
-  have hL :
-      g.inner (Ψ w)
-          (∑ k, paramJacobianMatrix (I := I) x₀ Ψ w k i •
-            DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ k (Ψ w))
-        = ∑ k, paramJacobianMatrix (I := I) x₀ Ψ w k i •
-            g.inner (Ψ w) (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ k (Ψ w)) := by
-    rw [map_sum]
-    refine Finset.sum_congr rfl ?_
-    intro k _
-    rw [map_smul]
-  rw [hL]
-  rw [sum_apply]
-  refine Finset.sum_congr rfl ?_
-  intro k _
-  rw [smul_apply]
-  have hR :
-      g.inner (Ψ w) (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ k (Ψ w))
-          (∑ l, paramJacobianMatrix (I := I) x₀ Ψ w l j •
-            DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ l (Ψ w))
-        = ∑ l, paramJacobianMatrix (I := I) x₀ Ψ w l j *
-            g.inner (Ψ w) (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ k (Ψ w))
-              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ l (Ψ w)) := by
-    rw [map_sum]
-    refine Finset.sum_congr rfl ?_
-    intro l _
-    rw [map_smul]
-    rw [smul_eq_mul]
-  rw [hR, smul_eq_mul, Finset.mul_sum]
-  refine Finset.sum_congr rfl ?_
-  intro l _
-  rw [DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_apply]
-  ring
+  rw [paramGramMatrix_eq_mul (I := I) g Ψ (Ψ.mdifferentiableAt one_ne_zero hw) x₀ hx]
+  simp only [Matrix.mul_apply, Matrix.transpose_apply, Finset.sum_mul,
+    paramJacobianMatrix]
+  rw [Finset.sum_comm]
+  refine Finset.sum_congr rfl fun k _ => ?_
+  refine Finset.sum_congr rfl fun l _ => ?_
+  exact mul_right_comm _ _ _
 
 theorem paramGramMatrix_pullback_eq_mul
     (g : SmoothRiemannianMetric I M) (x₀ : M)
@@ -214,16 +100,8 @@ theorem paramGramMatrix_pullback_eq_mul
       (paramJacobianMatrix (I := I) x₀ Ψ w)ᵀ *
         DifferentialGeometry.Tensor.Coordinates.chartGramMatrix g x₀ (Ψ w) *
         paramJacobianMatrix (I := I) x₀ Ψ w := by
-  ext i j
-  rw [paramGramMatrix_pullback_eq_sum (I := I) g x₀ Ψ hw hx i j]
-  simp only [Matrix.mul_apply, Matrix.transpose_apply]
-  rw [Finset.sum_comm]
-  refine Finset.sum_congr rfl ?_
-  intro l _
-  rw [Finset.sum_mul]
-  refine Finset.sum_congr rfl ?_
-  intro k _
-  ring
+  exact paramGramMatrix_eq_mul (I := I) g Ψ
+    (Ψ.mdifferentiableAt one_ne_zero hw) x₀ hx
 
 omit [IsManifold I ∞ M] in
 lemma paramJacobianMatrix_det
@@ -241,10 +119,8 @@ lemma paramGramMatrix_det_pullback
     (paramGramMatrix (I := I) g Ψ w).det =
       ((fderiv ℝ (paramChartMap (I := I) x₀ Ψ) w).det) ^ 2 *
         (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix g x₀ (Ψ w)).det := by
-  rw [paramGramMatrix_pullback_eq_mul (I := I) g x₀ Ψ hw hx]
-  rw [Matrix.det_mul, Matrix.det_mul, Matrix.det_transpose]
-  rw [paramJacobianMatrix_det (I := I) x₀ Ψ w]
-  ring
+  exact paramGramMatrix_det_eq_sq_det_mul (I := I) g Ψ
+    (Ψ.mdifferentiableAt one_ne_zero hw) x₀ hx
 
 theorem paramDensity_eq_abs_det_mul_chartDensity
     (g : SmoothRiemannianMetric I M) (x₀ : M)
@@ -254,10 +130,8 @@ theorem paramDensity_eq_abs_det_mul_chartDensity
     paramDensity (I := I) g Ψ w =
       |(fderiv ℝ (paramChartMap (I := I) x₀ Ψ) w).det| *
         chartDensity g x₀ (Ψ w) := by
-  unfold paramDensity chartDensity
-  rw [paramGramMatrix_det_pullback (I := I) g x₀ Ψ hw hx]
-  rw [Real.sqrt_mul (sq_nonneg _)]
-  rw [Real.sqrt_sq_eq_abs]
+  exact paramDensity_eq_abs_det_mul_chartDensity_of_mdifferentiableAt (I := I) g Ψ
+    (Ψ.mdifferentiableAt one_ne_zero hw) x₀ hx
 
 omit [FiniteDimensional ℝ E] in
 lemma paramChartMap_contDiffOn
@@ -329,63 +203,11 @@ lemma paramGram_contOn
     paramGramMatrix_pullback_eq_sum (I := I) g x₀ Ψ
       (hs_source hw) (hs_chart w hw) i j).domRestrict
 
-lemma paramDensity_continuousOn_chart
-    (g : SmoothRiemannianMetric I M) (x₀ : M)
-    (Ψ : PartialDiffeomorph 𝓘(ℝ, E) I E M 1)
-    {s : Set E} (hs_open : IsOpen s)
-    (hs_source : s ⊆ Ψ.source)
-    (hs_chart : ∀ w ∈ s, Ψ w ∈ (trivializationAt E (TangentSpace I) x₀).baseSet) :
-    ContinuousOn (paramDensity (I := I) g Ψ) s := by
-  have hT : ContDiffOn ℝ 1 (paramChartMap (I := I) x₀ Ψ) s :=
-    paramChartMap_contDiffOn (I := I) x₀ Ψ hs_source hs_chart
-  have hfderiv : ContinuousOn (fun w => fderiv ℝ (paramChartMap (I := I) x₀ Ψ) w) s :=
-    hT.continuousOn_fderiv_of_isOpen hs_open le_rfl
-  have hdet : ContinuousOn
-      (fun w => |(fderiv ℝ (paramChartMap (I := I) x₀ Ψ) w).det|) s :=
-    (ContinuousLinearMap.continuous_det.comp_continuousOn hfderiv).abs
-  have hΨcont : ContinuousOn Ψ s :=
-    (Ψ.contMDiffOn_toFun.mono hs_source).continuousOn
-  have hchartDensity : ContinuousOn (fun w => chartDensity g x₀ (Ψ w)) s :=
-    (chartDensity_continuousOn (I := I) g x₀).comp hΨcont hs_chart
-  have hR : ContinuousOn
-      (fun w => |(fderiv ℝ (paramChartMap (I := I) x₀ Ψ) w).det| *
-        chartDensity g x₀ (Ψ w)) s :=
-    hdet.mul hchartDensity
-  exact hR.congr (fun w hw =>
-    paramDensity_eq_abs_det_mul_chartDensity (I := I) g x₀ Ψ
-      (hs_source hw) (hs_chart w hw))
-
 lemma paramDensity_contOn
     (g : SmoothRiemannianMetric I M)
     (Ψ : PartialDiffeomorph 𝓘(ℝ, E) I E M 1) :
     ContinuousOn (paramDensity (I := I) g Ψ) Ψ.source := by
-  rw [continuousOn_iff_continuous_domRestrict, continuous_iff_continuousAt]
-  intro w
-  let x₀ : M := Ψ w
-  let U : Set E := Ψ.source ∩ Ψ ⁻¹' (chartAt H x₀).source
-  have hΨcont : ContinuousOn Ψ Ψ.source :=
-    Ψ.contMDiffOn_toFun.continuousOn
-  have hUopen : IsOpen U := by
-    dsimp only [U]
-    exact hΨcont.isOpen_inter_preimage Ψ.open_source (chartAt H x₀).open_source
-  have hU_source : U ⊆ Ψ.source := by
-    dsimp only [U]
-    exact Set.inter_subset_left
-  have hU_chart : ∀ z ∈ U,
-      Ψ z ∈ (trivializationAt E (TangentSpace I) x₀).baseSet := by
-    intro z hz
-    dsimp only [U] at hz
-    rw [trivializationAt_baseSet_eq_chartAt_source (I := I)]
-    exact hz.2
-  have hwU : (w : E) ∈ U := by
-    refine ⟨w.2, ?_⟩
-    change Ψ w ∈ (chartAt H (Ψ w)).source
-    exact mem_chart_source H (Ψ w)
-  have hcontU : ContinuousOn (paramDensity (I := I) g Ψ) U :=
-    paramDensity_continuousOn_chart (I := I) g x₀ Ψ
-      hUopen hU_source hU_chart
-  exact (hcontU.continuousAt (hUopen.mem_nhds hwU)).comp
-    continuous_subtype_val.continuousAt
+  exact continuousOn_paramDensity (I := I) g Ψ.open_source Ψ.contMDiffOn_toFun
 
 lemma aemeasurable_ofReal_paramDensity_on_chart
     (g : SmoothRiemannianMetric I M) (x₀ : M)
