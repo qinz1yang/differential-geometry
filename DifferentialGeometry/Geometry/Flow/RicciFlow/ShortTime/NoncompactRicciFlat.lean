@@ -54,7 +54,6 @@ def complete_bounded_curvature_solution_of_joint_ricci_flow
 
 theorem ricci_flow_short_time_existence_of_ricci_flat
     (g₀ : SmoothRiemannianMetric I M)
-    (hnoncompact : NoncompactSpace M)
     (hcomplete : RiemannianMetricComplete (I := I) g₀)
     (hRicci : ∀ (x : M) (v w : TangentSpace I x),
       ricciTensor (I := I) g₀ x v w = 0)
@@ -64,7 +63,6 @@ theorem ricci_flow_short_time_existence_of_ricci_flat
       ∃ S : CompleteBoundedCurvatureSolutionOn (I := I) (M := M)
         (D := RealTimeInterval.closedOpen 0 T hT),
         S.solution.base.metric 0 = g₀ := by
-  let _ := hnoncompact.noncompact_univ
   let g : Real → SmoothRiemannianMetric I M := fun _ => g₀
   have hjoint : ∀ (x₀ : M) (i j : Fin (Module.finrank Real E)),
       ContMDiffOn (𝓘(Real, Real).prod I) 𝓘(Real) ∞
