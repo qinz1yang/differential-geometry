@@ -143,7 +143,7 @@ private theorem MetricFiberData.inner_pos_of_nonnegative_of_finrank_range_eq
   rw [MetricFiberData.toCore_inner D] at hpos
   exact hpos
 
-theorem curvatureOperator_time_slice_trichotomy
+theorem curvatureOperator_time_slice_trichotomy_of_nonnegative_reaction_constant_rank_parallel_kernel
     {E : Type uE} [NormedAddCommGroup E] [NormedSpace Real E]
     [FiniteDimensional Real E]
     {H : Type uH} [TopologicalSpace H]
@@ -232,7 +232,7 @@ theorem curvatureOperator_time_slice_trichotomy
         (I := I) g x ⟨A x, hA x⟩)
       (hpositive x) hTwoFormDim (hthree x) ha
 
-theorem curvatureOperator_time_slice_trichotomy_of_metric
+theorem curvatureOperator_time_slice_trichotomy_of_metric_nonnegative_reaction_constant_rank_parallel_kernel
     {E : Type uE} [NormedAddCommGroup E] [NormedSpace Real E]
     [FiniteDimensional Real E]
     {H : Type uH} [TopologicalSpace H]
@@ -293,7 +293,8 @@ theorem curvatureOperator_time_slice_trichotomy_of_metric
             (curvatureOperatorEndomorphismAt (I := I) g x
               ⟨metricRm04 (I := I) g x,
                 metricRm04At_mem_algebraicCurvatureTensorSubmodule (I := I) g x⟩ a) a) := by
-  exact curvatureOperator_time_slice_trichotomy hE g (metricRm04 (I := I) g)
+  exact curvatureOperator_time_slice_trichotomy_of_nonnegative_reaction_constant_rank_parallel_kernel
+    hE g (metricRm04 (I := I) g)
     (fun x => metricRm04At_mem_algebraicCurvatureTensorSubmodule (I := I) g x)
     hpositive hnull hrank hkernel
 

@@ -539,7 +539,7 @@ theorem metricScalarAt_prod_flat
   simp_rw [hb_inl, hb_inr]
   simp [hflatRic]
 
-theorem curvatureOperator_time_slice_rank_trichotomy_of_complete_metric
+theorem curvatureOperator_time_slice_rank_trichotomy_of_complete_metric_nonnegative_reaction_constant_rank_parallel_kernel
     (g : SmoothRiemannianMetric I M)
     (hg : DifferentialGeometry.RiemannianMetricComplete (I := I) g)
     (hpositive : ∀ x,
@@ -612,7 +612,7 @@ theorem curvatureOperator_time_slice_rank_trichotomy_of_complete_metric
   have hE : Module.finrank Real
       (DifferentialGeometry.Topology.Morse.MorseModel 3) = 3 := by
     simp [DifferentialGeometry.Topology.Morse.MorseModel]
-  have htri := curvatureOperator_time_slice_trichotomy_of_metric
+  have htri := curvatureOperator_time_slice_trichotomy_of_metric_nonnegative_reaction_constant_rank_parallel_kernel
     (I := I) hE g hpositive hnull hrank hkernel
   rcases htri with hzero | hline | hpositiveRank
   · refine Or.inl ⟨hzero, ?_⟩

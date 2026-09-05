@@ -3981,6 +3981,7 @@ import DifferentialGeometry.Bundle.SmoothSubbundle.Range
 import DifferentialGeometry.Geometry.Comparison.Variation.Flow
 import DifferentialGeometry.Geometry.Connection.ExteriorDerivative
 import DifferentialGeometry.Geometry.Connection.Laplacian.VectorBundle
+import DifferentialGeometry.Geometry.Connection.TensorNabla.Alternating
 import DifferentialGeometry.Geometry.Connection.ParallelLine
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.Pullback
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.Subbundle
