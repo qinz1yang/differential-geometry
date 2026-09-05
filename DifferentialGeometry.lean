@@ -2307,6 +2307,7 @@ import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.TensorThirdOrde
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.AlgebraicCurvatureOperatorMetric
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureAlgebra
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureOperatorLeastEigenvalue
+import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureOperatorBounds
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureOperatorReaction
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureOperatorReactionPreservation
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureOperatorReactionTensor
@@ -2433,6 +2434,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.HamiltonIvey.
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.HamiltonIvey.CurvatureEvolution
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.HamiltonIvey.FixedFrameEvolution
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.HamiltonIvey.MaximumPrinciple
+import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.HamiltonIvey.Consequences
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.HamiltonIvey.Pinching
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.HamiltonIvey.RegionTransfer
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.HamiltonIvey.Transport
@@ -3982,6 +3984,7 @@ import DifferentialGeometry.Bundle.SmoothSubbundle.Range
 import DifferentialGeometry.Geometry.Comparison.Variation.Flow
 import DifferentialGeometry.Geometry.Connection.ExteriorDerivative
 import DifferentialGeometry.Geometry.Connection.Laplacian.VectorBundle
+import DifferentialGeometry.Geometry.Connection.Laplacian.Pullback
 import DifferentialGeometry.Geometry.Connection.TensorNabla.Alternating
 import DifferentialGeometry.Geometry.Connection.ParallelLine
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.Pullback
