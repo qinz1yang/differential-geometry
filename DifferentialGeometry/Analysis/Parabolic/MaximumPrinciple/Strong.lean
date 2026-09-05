@@ -326,6 +326,216 @@ private theorem strongBarrier_parabolicOperator
             (gradientFun (I := I) (G.metric t) rho x))) := hscale
     _ = _ := by ring
 
+theorem exists_annular_parabolic_subsolution
+    [VectorBundle Real E (TangentSpace I : M → Type _)]
+    (G : MetricConnectionFamily (I := I) (M := M) Real)
+    {T s t : Real} (hs : 0 ≤ s) (hst : s < t) (ht : t ≤ T)
+    (X : Real → (x : M) → TangentSpace I x)
+    (rho : M → Real) (hrho : ContMDiff I 𝓘(Real, Real) ∞ rho)
+    {r R : Real} (hrR : r < R)
+    (hK : IsCompact {x : M | r ≤ rho x ∧ rho x ≤ R})
+    (hgrad : ContinuousOn (fun p : Real × M =>
+      (G.metric p.1).inner p.2
+        (gradientFun (I := I) (G.metric p.1) rho p.2)
+        (gradientFun (I := I) (G.metric p.1) rho p.2))
+      (Icc s t ×ˢ {x : M | r ≤ rho x ∧ rho x ≤ R}))
+    (hgrad_ne : ∀ q ∈ Icc s t, ∀ x ∈ {x : M | r ≤ rho x ∧ rho x ≤ R},
+      gradientFun (I := I) (G.metric q) rho x ≠ 0)
+    (hheat : ContinuousOn (fun p : Real × M =>
+      heatOperatorWithDrift (I := I) G p.1 (X p.1) rho p.2)
+      (Icc s t ×ˢ {x : M | r ≤ rho x ∧ rho x ≤ R}))
+    {c delta eta : Real} (hdelta : 0 < delta) (heta : 0 < eta) :
+    ∃ f : Real → M → Real,
+      ContMDiff (𝓘(Real, Real).prod I) 𝓘(Real, Real) ∞
+        (fun p : Real × M => f p.1 p.2) ∧
+      (∀ x ∈ {x : M | r ≤ rho x ∧ rho x ≤ R}, f s x ≤ 0) ∧
+      (∀ q ∈ Icc s t, ∀ x ∈ {x : M | r ≤ rho x ∧ rho x ≤ R}, f q x < eta) ∧
+      (∀ q ∈ Icc s t, ∀ x ∈ {x : M | r ≤ rho x ∧ rho x ≤ R},
+        rho x = R → f q x ≤ 0) ∧
+      (∀ q ∈ Icc s t, q ≤ t - delta →
+        ∀ x ∈ {x : M | r ≤ rho x ∧ rho x ≤ R}, f q x ≤ 0) ∧
+      (∀ x ∈ {x : M | r ≤ rho x ∧ rho x ≤ R}, rho x < R → 0 < f t x) ∧
+      (∀ q ∈ Icc s t, ∀ x ∈ {x : M | r ≤ rho x ∧ rho x ≤ R},
+        parabolicOperatorWithDrift (I := I) G T X f q x ≤ -c * f q x) := by
+  let K : Set M := {x : M | r ≤ rho x ∧ rho x ≤ R}
+  let S : Set (Real × M) := Icc s t ×ˢ K
+  let gradSq : Real × M → Real := fun p =>
+    (G.metric p.1).inner p.2
+      (gradientFun (I := I) (G.metric p.1) rho p.2)
+      (gradientFun (I := I) (G.metric p.1) rho p.2)
+  let heatAbs : Real × M → Real := fun p =>
+    |heatOperatorWithDrift (I := I) G p.1 (X p.1) rho p.2|
+  have hS : IsCompact S := isCompact_Icc.prod hK
+  obtain ⟨m, B, hm, hB, hgrad_lower, hheat_upper⟩ :
+      ∃ m B : Real, 0 < m ∧ 0 ≤ B ∧
+        (∀ p ∈ S, m ≤ gradSq p) ∧
+        (∀ p ∈ S, heatOperatorWithDrift (I := I) G p.1 (X p.1) rho p.2 ≤ B) := by
+    by_cases hSne : S.Nonempty
+    · obtain ⟨pm, hpm, hmin⟩ := hS.exists_isMinOn hSne hgrad
+      obtain ⟨pB, hpB, hmax⟩ := hS.exists_isMaxOn hSne hheat.abs
+      refine ⟨gradSq pm, heatAbs pB, ?_, abs_nonneg _, hmin, ?_⟩
+      · exact (G.metric pm.1).pos pm.2 _ (hgrad_ne pm.1 hpm.1 pm.2 hpm.2)
+      · intro p hp
+        exact (le_abs_self _).trans (hmax hp)
+    · refine ⟨1, 0, by norm_num, le_rfl, ?_, ?_⟩
+      · intro p hp
+        exact (hSne ⟨p, hp⟩).elim
+      · intro p hp
+        exact (hSne ⟨p, hp⟩).elim
+  let gap : Real := t - s
+  have hgap : 0 < gap := sub_pos.mpr hst
+  have hwidth : 0 < R - r := sub_pos.mpr hrR
+  let kappa : Real := max ((R - r) / gap ^ 2) ((R - r) / delta ^ 2) + 1
+  have hkappa : 0 < kappa := by
+    dsimp only [kappa]
+    linarith [le_max_left ((R - r) / gap ^ 2) ((R - r) / delta ^ 2),
+      div_pos hwidth (sq_pos_of_pos hgap)]
+  have hinit : R - r ≤ kappa * gap ^ 2 := by
+    apply le_of_lt ((div_lt_iff₀ (sq_pos_of_pos hgap)).mp ?_)
+    dsimp only [kappa]
+    linarith [le_max_left ((R - r) / gap ^ 2) ((R - r) / delta ^ 2)]
+  have htime : R - r ≤ kappa * delta ^ 2 := by
+    apply le_of_lt ((div_lt_iff₀ (sq_pos_of_pos hdelta)).mp ?_)
+    dsimp only [kappa]
+    linarith [le_max_right ((R - r) / gap ^ 2) ((R - r) / delta ^ 2)]
+  let alpha : Real := (2 * kappa * gap + B) / m + 1
+  have halpha : 0 < alpha := by
+    dsimp only [alpha]
+    have : 0 ≤ (2 * kappa * gap + B) / m := by positivity
+    linarith
+  have hdom : 2 * kappa * gap + B ≤ alpha * m := by
+    apply le_of_lt ((div_lt_iff₀ hm).mp ?_)
+    dsimp only [alpha]
+    linarith
+  let epsilon : Real := Real.exp (min (c * s) (c * t) + alpha * r) * (eta / 2)
+  have hepsilon : 0 < epsilon := mul_pos (Real.exp_pos _) (half_pos heta)
+  let v : Real → M → Real := strongBarrier rho epsilon alpha R kappa t
+  let f : Real → M → Real := fun q x => Real.exp (-c * q) * v q x
+  have hvSmooth : ContMDiff (𝓘(Real, Real).prod I) 𝓘(Real, Real) ∞
+      (fun p : Real × M => v p.1 p.2) := by
+    have hphase : ContMDiff (𝓘(Real, Real).prod I) 𝓘(Real, Real) ∞
+        (fun p : Real × M => rho p.2 + kappa * (p.1 - t) ^ 2) :=
+      (hrho.comp contMDiff_snd).add
+        (contMDiff_const.mul ((contMDiff_fst.sub contMDiff_const).pow 2))
+    exact contMDiff_const.mul
+      ((Real.contDiff_exp.contMDiff.comp (contMDiff_const.mul hphase)).sub contMDiff_const)
+  have hfSmooth : ContMDiff (𝓘(Real, Real).prod I) 𝓘(Real, Real) ∞
+      (fun p : Real × M => f p.1 p.2) := by
+    exact (Real.contDiff_exp.contMDiff.comp
+      (contMDiff_const.mul contMDiff_fst)).mul hvSmooth
+  have hcoeffPos (q : Real) : 0 < Real.exp (-c * q) * epsilon :=
+    mul_pos (Real.exp_pos _) hepsilon
+  have hcoeffLe {q : Real} (hq : q ∈ Icc s t) :
+      Real.exp (-c * q) * epsilon * Real.exp (-alpha * r) ≤ eta / 2 := by
+    have hmin : min (c * s) (c * t) ≤ c * q := by
+      rcases le_total 0 c with hc | hc
+      · exact (min_le_left _ _).trans (mul_le_mul_of_nonneg_left hq.1 hc)
+      · exact (min_le_right _ _).trans (mul_le_mul_of_nonpos_left hq.2 hc)
+    have harg : -c * q + min (c * s) (c * t) ≤ 0 := by linarith only [hmin]
+    have hexp : Real.exp (-c * q + min (c * s) (c * t)) ≤ 1 :=
+      Real.exp_le_one_iff.mpr harg
+    have hexpEq : Real.exp (-c * q) * Real.exp (min (c * s) (c * t) + alpha * r) *
+        Real.exp (-alpha * r) = Real.exp (-c * q + min (c * s) (c * t)) := by
+      rw [← Real.exp_add, ← Real.exp_add]
+      congr 1
+      ring
+    dsimp only [epsilon]
+    calc
+      _ = (Real.exp (-c * q) * Real.exp (min (c * s) (c * t) + alpha * r) *
+          Real.exp (-alpha * r)) * (eta / 2) := by ring
+      _ = Real.exp (-c * q + min (c * s) (c * t)) * (eta / 2) := by rw [hexpEq]
+      _ ≤ eta / 2 := mul_le_of_le_one_left (half_pos heta).le hexp
+  have hfExpr (q : Real) (x : M) :
+      f q x = (Real.exp (-c * q) * epsilon) *
+        (Real.exp (-alpha * (rho x + kappa * (q - t) ^ 2)) - Real.exp (-alpha * R)) := by
+    dsimp only [f, v, strongBarrier, strongBarrierPhase]
+    ring
+  have hfNonpos {q : Real} {x : M} (hphase : R ≤ rho x + kappa * (q - t) ^ 2) :
+      f q x ≤ 0 := by
+    rw [hfExpr]
+    apply mul_nonpos_of_nonneg_of_nonpos (hcoeffPos q).le
+    apply sub_nonpos.mpr (Real.exp_le_exp.mpr ?_)
+    nlinarith
+  refine ⟨f, hfSmooth, ?_, ?_, ?_, ?_, ?_, ?_⟩
+  · intro x hx
+    apply hfNonpos
+    have heq : (s - t) ^ 2 = gap ^ 2 := by dsimp [gap]; ring
+    rw [heq]
+    linarith [hx.1]
+  · intro q hq x hx
+    have hphaseLower : r ≤ rho x + kappa * (q - t) ^ 2 :=
+      hx.1.trans (le_add_of_nonneg_right (mul_nonneg hkappa.le (sq_nonneg _)))
+    have hExpLe : Real.exp (-alpha * (rho x + kappa * (q - t) ^ 2)) ≤
+        Real.exp (-alpha * r) := Real.exp_le_exp.mpr
+      (mul_le_mul_of_nonpos_left hphaseLower (neg_nonpos.mpr halpha.le))
+    have hdiff : Real.exp (-alpha * (rho x + kappa * (q - t) ^ 2)) -
+        Real.exp (-alpha * R) < Real.exp (-alpha * r) := by
+      linarith only [hExpLe, Real.exp_pos (-alpha * R)]
+    rw [hfExpr]
+    calc
+      _ < Real.exp (-c * q) * epsilon * Real.exp (-alpha * r) :=
+        mul_lt_mul_of_pos_left hdiff (hcoeffPos q)
+      _ ≤ eta / 2 := hcoeffLe hq
+      _ < eta := half_lt_self heta
+  · intro q hq x hx hxR
+    apply hfNonpos
+    rw [hxR]
+    exact le_add_of_nonneg_right (mul_nonneg hkappa.le (sq_nonneg _))
+  · intro q hq hqEarly x hx
+    apply hfNonpos
+    have hsq : delta ^ 2 ≤ (q - t) ^ 2 := by
+      nlinarith [sq_nonneg (q - t + delta)]
+    have hmul := mul_le_mul_of_nonneg_left hsq hkappa.le
+    linarith [hx.1]
+  · intro x hx hxR
+    rw [hfExpr, sub_self, zero_pow (by norm_num : (2 : Nat) ≠ 0), mul_zero, add_zero]
+    apply mul_pos (hcoeffPos t) (sub_pos.mpr (Real.exp_lt_exp.mpr ?_))
+    nlinarith
+  · intro q hq x hx
+    have hxK : x ∈ K := hx
+    have hT : 0 < T := (hs.trans_lt hst).trans_le ht
+    have hqT : q ∈ Icc (0 : Real) T := ⟨hs.trans hq.1, hq.2.trans ht⟩
+    have hformula := strongBarrier_parabolicOperator (I := I) G T hT X hrho
+      epsilon alpha R (kappa := kappa) (tau := t) hqT x
+    have hheatBound := hheat_upper (q, x) ⟨hq, hxK⟩
+    have hgradBound := hgrad_lower (q, x) ⟨hq, hxK⟩
+    have hlin : -(2 * kappa * (q - t) -
+        heatOperatorWithDrift (I := I) G q (X q) rho x) ≤ 2 * kappa * gap + B := by
+      have hqmul := mul_le_mul_of_nonneg_left hq.1 (by positivity : 0 ≤ 2 * kappa)
+      dsimp only [Prod.fst, Prod.snd] at hheatBound
+      dsimp only [gap]
+      linarith only [hqmul, hheatBound]
+    have hgradScale := mul_le_mul_of_nonneg_left hgradBound halpha.le
+    have hlinGrad : -(2 * kappa * (q - t) -
+        heatOperatorWithDrift (I := I) G q (X q) rho x) ≤ alpha * gradSq (q, x) :=
+      hlin.trans (hdom.trans hgradScale)
+    have hbracket : -alpha * (2 * kappa * (q - t) -
+        heatOperatorWithDrift (I := I) G q (X q) rho x) - alpha ^ 2 * gradSq (q, x) ≤ 0 := by
+      nlinarith only [mul_le_mul_of_nonneg_left hlinGrad halpha.le]
+    have hvP : parabolicOperatorWithDrift (I := I) G T X v q x ≤ 0 := by
+      change parabolicOperatorWithDrift (I := I) G T X
+        (strongBarrier rho epsilon alpha R kappa t) q x ≤ 0
+      rw [hformula]
+      exact mul_nonpos_of_nonneg_of_nonpos
+        (mul_nonneg hepsilon.le (Real.exp_pos _).le) hbracket
+    have hvSlice : ContMDiff I 𝓘(Real, Real) ∞ (v q) :=
+      hvSmooth.comp (contMDiff_const.prodMk contMDiff_id)
+    have hvTime : DifferentiableWithinAt Real (fun a => v a x) (Icc 0 T) q := by
+      have htime : ContDiff Real ∞ (fun a => v a x) :=
+        contMDiff_iff_contDiff.mp (hvSmooth.comp (contMDiff_id.prodMk contMDiff_const))
+      exact (htime.differentiable (by norm_num) q).differentiableWithinAt
+    have hscale : DifferentiableWithinAt Real (fun a : Real => Real.exp (-c * a))
+        (Icc 0 T) q := by fun_prop
+    have hid := parabolic_exp_rescale_identity (I := I) G T c X v q
+      ((uniqueDiffOn_Icc hT).uniqueDiffWithinAt hqT)
+      (hvSlice.mdifferentiable (by simp)) x
+      (gradientFun_mdiffAt (I := I) (G.metric q) hvSlice x) hvTime hscale
+    change parabolicOperatorWithDrift (I := I) G T X f q x = _ at hid
+    rw [hid]
+    dsimp only [f]
+    have hscaled := mul_le_mul_of_nonneg_left hvP (Real.exp_pos (-c * q)).le
+    nlinarith only [hscaled]
+
 private theorem strong_derivWithin_nonpos_at_Icc_min_of_pos
     {phi : Real → Real} {T t : Real}
     (hmin : IsLocalMinOn phi (Set.Icc 0 T) t)
