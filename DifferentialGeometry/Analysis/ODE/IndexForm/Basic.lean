@@ -1,4 +1,5 @@
 import Mathlib.Analysis.InnerProductSpace.Calculus
+import DifferentialGeometry.Analysis.Calculus.SmoothExtension.BoundaryDerivLimit
 import Mathlib.MeasureTheory.Integral.IntervalIntegral.FundThmCalculus
 
 set_option autoImplicit false
@@ -27,6 +28,17 @@ theorem contOn_fst (h : IsJacobiFieldOn R a b y v) : ContinuousOn y (Icc a b) :=
 
 theorem contOn_snd (h : IsJacobiFieldOn R a b y v) : ContinuousOn v (Icc a b) :=
   fun t ht => (h.deriv_snd t ht).continuousWithinAt
+
+theorem of_hasDerivAt_Ioo {R : ℝ → F →L[ℝ] F} {a b : ℝ} {y v : ℝ → F}
+    (hy : ContinuousOn y (Icc a b)) (hv : ContinuousOn v (Icc a b))
+    (hacc : ContinuousOn (fun t => -(R t) (y t)) (Icc a b))
+    (hode : ∀ t ∈ Ioo a b,
+      HasDerivAt y (v t) t ∧ HasDerivAt v (-(R t) (y t)) t) :
+    IsJacobiFieldOn R a b y v := by
+  exact ⟨fun t ht => Calculus.SmoothExtension.hasDerivWithinAt_Icc_of_hasDerivAt_Ioo
+    hy hv (fun r hr => (hode r hr).1) ht,
+    fun t ht => Calculus.SmoothExtension.hasDerivWithinAt_Icc_of_hasDerivAt_Ioo
+      hv hacc (fun r hr => (hode r hr).2) ht⟩
 
 end IsJacobiFieldOn
 
