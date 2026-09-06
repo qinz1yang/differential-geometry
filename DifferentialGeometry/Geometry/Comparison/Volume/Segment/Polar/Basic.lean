@@ -2018,58 +2018,6 @@ private lemma intrinsicJacobi_smul
   rw [smul_apply, ContinuousLinearMap.id_apply]
   exact ContinuousLinearMap.map_smul (mfderiv 𝓘(ℝ, ℝ) I G 0) c⁻¹ (1 : ℝ)
 
-attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
-  Tensor0SBundle.tangentSpaceNormedSpace in
-omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
-  [T2Space M] [T2Space (TangentBundle I M)] [SigmaCompactSpace M]
-  [RiemannianBundle (fun (x : M) ↦ TangentSpace I x)] in
-private lemma curveDensity_smul
-    (g : SmoothRiemannianMetric I M)
-    {γ : ℝ → M} {ι : Type*} [Fintype ι] [DecidableEq ι]
-    (V : ι → ∀ t, TangentSpace I (γ t)) (t c : ℝ) (hc : 0 ≤ c)
-    (hLI : LinearIndependent ℝ fun i => V i t) :
-    curveDensity (I := I) g γ (fun i => c • V i) t
-      = c ^ (Fintype.card ι) * curveDensity (I := I) g γ V t := by
-  classical
-  unfold curveDensity curveGram
-  have hmat : Matrix.of (fun i j => g.inner (γ t) (c • V i t) (c • V j t))
-      = (c ^ 2 : ℝ) • Matrix.of (fun i j => g.inner (γ t) (V i t) (V j t)) := by
-    ext i j
-    have h1 := map_smul (g.inner (γ t)) c (V i t)
-    have h2 := map_smul (g.inner (γ t) (c • V i t)) c (V j t)
-    calc
-      g.inner (γ t) (c • V i t) (c • V j t)
-          = (g.inner (γ t) (c • V i t)) (c • V j t) := rfl
-      _ = c • ((g.inner (γ t) (c • V i t)) (V j t)) := h2
-      _ = c • (c • (g.inner (γ t) (V i t)) (V j t)) := by
-            rw [h1]
-            simp []
-      _ = (c ^ 2 : ℝ) • g.inner (γ t) (V i t) (V j t) := by
-            rw [smul_smul]
-            ring_nf
-  change Real.sqrt ((Matrix.of (fun i j => g.inner (γ t) (c • V i t) (c • V j t))).det)
-      = c ^ Fintype.card ι * Real.sqrt ((Matrix.of (fun i j => g.inner (γ t) (V i t) (V j t))).det)
-  rw [hmat]
-  rw [Matrix.det_smul]
-  have hdet : 0 ≤ (Matrix.of fun i j => g.inner (γ t) (V i t) (V j t)).det := by
-    exact le_of_lt (curveGram_det_pos (I := I) g γ V t hLI)
-  have hpow : 0 ≤ c ^ Fintype.card ι := pow_nonneg hc _
-  calc
-    Real.sqrt ((c ^ 2) ^ Fintype.card ι • (Matrix.of fun i j => g.inner (γ t) (V i t) (V j t)).det)
-        = Real.sqrt ((c ^ Fintype.card ι) ^ 2 * (Matrix.of fun i j => g.inner (γ t) (V i t)
-          (V j t)).det) := by
-          rw [← pow_mul, mul_comm, pow_mul, smul_eq_mul]
-    _ = c ^ Fintype.card ι * Real.sqrt (Matrix.of fun i j => g.inner (γ t) (V i t)
-      (V j t)).det := by
-          have hsq2 : (c ^ Fintype.card ι) ^ 2 * (Matrix.of fun i j => g.inner (γ t) (V i t)
-            (V j t)).det
-              = (c ^ Fintype.card ι * Real.sqrt (Matrix.of fun i j => g.inner (γ t) (V i t)
-                (V j t)).det) ^ 2 := by
-            rw [mul_pow, Real.sq_sqrt hdet]
-          rw [hsq2]
-          rw [Real.sqrt_sq (mul_nonneg hpow (Real.sqrt_nonneg _))]
-    _ = c ^ Fintype.card ι * curveDensity (I := I) g γ V t := by
-          simp [curveDensity, curveGram]
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
@@ -2103,9 +2051,7 @@ private lemma expJacobianDensity_radial_scaled
     (w : Fin (Module.finrank ℝ E - 1) → TangentSpace I x)
     (hON : ∀ i j, g.inner x (w i) (w j) = if i = j then 1 else 0)
     (hperp : ∀ i, g.inner x u (w i) = 0)
-    (r : ℝ) (hr : 0 < r)
-    (hLI : LinearIndependent ℝ fun i =>
-      intrinsicJacobi (I := I) g hEnorm x u (w i) r) :
+    (r : ℝ) (hr : 0 < r) :
     expJacobianDensity (I := I) g hEnorm x ((r • u) : E) * r ^ (Module.finrank ℝ E - 1) =
       normalChartDensity (I := I) g x 0 *
         curveDensity (I := I) g (intrinsicGeodesic (I := I) g hEnorm x u)
@@ -2150,7 +2096,8 @@ private lemma expJacobianDensity_radial_scaled
     exact hV1 i
   have hsmul := curveDensity_smul (I := I) g
     (γ := intrinsicGeodesic (I := I) g hEnorm x (r • u)) (V := V)
-    (t := 1) (c := r⁻¹) (inv_nonneg.mpr (le_of_lt hr)) hLI
+    (t := 1) (c := r⁻¹)
+  rw [abs_of_nonneg (inv_nonneg.mpr hr.le)] at hsmul
   have hbridge : curveDensity (I := I) g (intrinsicGeodesic (I := I) g hEnorm x (r • u))
       V 1 = curveDensity (I := I) g (intrinsicGeodesic (I := I) g hEnorm x u)
           (fun i => intrinsicJacobi (I := I) g hEnorm x u (w i)) r := by

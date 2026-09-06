@@ -67,65 +67,19 @@ theorem velocityJacobian_gram_split
       = g.inner x u u *
         (curveGram (I := I) g (intrinsicGeodesic (I := I) g hEnorm x u)
           (fun i => intrinsicJacobi (I := I) g hEnorm x u (w i)) 1).det := by
-  classical
-  set γ : ℝ → M := intrinsicGeodesic (I := I) g hEnorm x u with hγ
-  set velocity : TangentSpace I (γ 1) := curveVelocity (I := I) γ 1 with hvel
-  set T : Matrix (Fin d) (Fin d) ℝ :=
-    curveGram (I := I) g γ (fun i => intrinsicJacobi (I := I) g hEnorm x u (w i)) 1
-      with hT
-  have hdiag : g.inner (γ 1) velocity velocity = g.inner x u u := by
-    convert intrinsicGeodesic_speedSq_eq (I := I) g hEnorm x u 1 using 1
-    all_goals rfl
-  have hcross : ∀ i, g.inner (γ 1) velocity
-      (intrinsicJacobi (I := I) g hEnorm x u (w i) 1) = 0 := by
-    intro i
-    have hp := intrinsicJacobi_perp (I := I) g hEnorm x u (w i)
-    rw [hperp i] at hp
-    convert hp using 1
-    all_goals rfl
-  let e : Option (Fin d) ≃ Fin d ⊕ PUnit.{1} := Equiv.optionEquivSumPUnit (Fin d)
-  let D : Matrix PUnit.{1} PUnit.{1} ℝ := Matrix.of fun _ _ => g.inner x u u
-  have hblock :
-      Matrix.reindex e e
-          (curveGram (I := I) g γ (velocityJacobianFrame (I := I) g hEnorm x u w) 1) =
-        Matrix.fromBlocks T 0 0 D := by
-    ext a b
-    rcases a with i | a
-    · rcases b with j | b
-      · simp only [e, Matrix.reindex_apply, Matrix.submatrix_apply,
-          Equiv.optionEquivSumPUnit_symm_inl, Matrix.fromBlocks_apply₁₁,
-          curveGram, Matrix.of_apply, velocityJacobianFrame_some, hT]
-      · cases b
-        simp only [e, Matrix.reindex_apply, Matrix.submatrix_apply,
-          Equiv.optionEquivSumPUnit_symm_inl,
-          Equiv.optionEquivSumPUnit_symm_inr, Matrix.fromBlocks_apply₁₂,
-          curveGram, Matrix.of_apply, velocityJacobianFrame_some, velocityJacobianFrame_none]
-        rw [g.symm]
-        exact hcross i
-    · cases a
-      rcases b with j | b
-      · simp only [e, Matrix.reindex_apply, Matrix.submatrix_apply,
-          Equiv.optionEquivSumPUnit_symm_inr,
-          Equiv.optionEquivSumPUnit_symm_inl, Matrix.fromBlocks_apply₂₁,
-          curveGram, Matrix.of_apply, velocityJacobianFrame_some, velocityJacobianFrame_none]
-        exact hcross j
-      · cases b
-        simp only [e, Matrix.reindex_apply, Matrix.submatrix_apply,
-          Equiv.optionEquivSumPUnit_symm_inr, Matrix.fromBlocks_apply₂₂,
-          curveGram, Matrix.of_apply, velocityJacobianFrame_none, D]
-        exact hdiag
-  have hreindexDet :
-      (Matrix.reindex e e
-          (curveGram (I := I) g γ (velocityJacobianFrame (I := I) g hEnorm x u w) 1)).det =
-        (curveGram (I := I) g γ (velocityJacobianFrame (I := I) g hEnorm x u w) 1).det :=
-    Matrix.det_reindex_self e _
-  have hDdet : D.det = g.inner x u u := by
-    rw [Matrix.det_unique]; rfl
-  have hdet :
-      (curveGram (I := I) g γ (velocityJacobianFrame (I := I) g hEnorm x u w) 1).det =
-        T.det * D.det := by
-    rw [← hreindexDet, hblock, Matrix.det_fromBlocks_zero₂₁]
-  rw [hdet, hDdet, hT, mul_comm]
+  have hsplit := curveGram_det_option (I := I) g
+    (intrinsicGeodesic (I := I) g hEnorm x u)
+    (velocityJacobianFrame (I := I) g hEnorm x u w) 1 (fun i => by
+      simpa only [velocityJacobianFrame_none, velocityJacobianFrame_some, hperp i] using!
+        intrinsicJacobi_perp (I := I) g hEnorm x u (w i))
+  have hdiag :
+      g.inner (intrinsicGeodesic (I := I) g hEnorm x u 1)
+        (curveVelocity (I := I) (intrinsicGeodesic (I := I) g hEnorm x u) 1)
+        (curveVelocity (I := I) (intrinsicGeodesic (I := I) g hEnorm x u) 1) =
+      g.inner x u u := by
+    exact intrinsicGeodesic_speedSq_eq (I := I) g hEnorm x u 1
+  simpa only [velocityJacobianFrame_none, velocityJacobianFrame_some, hdiag] using! hsplit
+
 
 theorem velocityJacobian_density_split
     (g : SmoothRiemannianMetric I M)
@@ -137,12 +91,9 @@ theorem velocityJacobian_density_split
       = Real.sqrt (g.inner x u u) *
         curveDensity (I := I) g (intrinsicGeodesic (I := I) g hEnorm x u)
           (fun i => intrinsicJacobi (I := I) g hEnorm x u (w i)) 1 := by
-  have hnn : 0 ≤ g.inner x u u := by
-    rcases eq_or_ne u 0 with hu | hu
-    · simp [hu]
-    · exact (g.pos x u hu).le
-  rw [curveDensity, curveDensity, velocityJacobian_gram_split (I := I) g hEnorm x u w hperp,
-    Real.sqrt_mul hnn]
+  rw [curveDensity, curveDensity,
+    velocityJacobian_gram_split (I := I) g hEnorm x u w hperp,
+    Real.sqrt_mul (metric_inner_self_nonneg (I := I) g x u)]
 
 
 theorem jacobianDens_basis
@@ -236,48 +187,29 @@ theorem transDens_scale
       exact intrinsic_jacobi_one (I := I) g hEnorm x
         (t • (show E from u)) (show E from v)
     exact hat.trans (hmap.trans (congrArg (fun z : E => t • z) hone.symm))
-  have hgram :
-      curveGram (I := I) g
-          (intrinsicGeodesic (I := I) g hEnorm x u)
-          (fun i => intrinsicJacobi (I := I) g hEnorm x u (w i)) t =
-        (t ^ 2) •
-          curveGram (I := I) g
-            (intrinsicGeodesic (I := I) g hEnorm x (t • u))
-            (fun i => intrinsicJacobi (I := I) g hEnorm x (t • u) (w i)) 1 := by
+  let γ := intrinsicGeodesic (I := I) g hEnorm x (t • u)
+  let V : Fin d → ∀ s, TangentSpace I (γ s) :=
+    fun i => intrinsicJacobi (I := I) g hEnorm x (t • u) (w i)
+  have hbridge :
+      curveDensity (I := I) g
+        (intrinsicGeodesic (I := I) g hEnorm x u)
+        (fun i => intrinsicJacobi (I := I) g hEnorm x u (w i)) t =
+      curveDensity (I := I) g γ (fun i => t • V i) 1 := by
+    unfold curveDensity curveGram
+    apply congrArg Real.sqrt
+    apply congrArg Matrix.det
     ext i j
-    simp only [curveGram, Matrix.of_apply, Matrix.smul_apply]
+    simp only [Matrix.of_apply, Pi.smul_apply, γ, V]
     rw [intrinsicGeodesic_smul (I := I) g hEnorm x u t]
     change
-      g.inner
-          (intrinsicGeodesic (I := I) g hEnorm x u t)
-          (intrinsicJacobi (I := I) g hEnorm x u (w i) t)
-          (intrinsicJacobi (I := I) g hEnorm x u (w j) t) =
-        t ^ 2 *
-          g.inner
-            (intrinsicGeodesic (I := I) g hEnorm x u t)
-            (intrinsicJacobi (I := I) g hEnorm x (t • u) (w i) 1)
-            (intrinsicJacobi (I := I) g hEnorm x (t • u) (w j) 1)
-    rw [hcol, hcol]
-    let β : E →L[ℝ] E →L[ℝ] ℝ :=
       g.inner (intrinsicGeodesic (I := I) g hEnorm x u t)
-    let X : E :=
-      (intrinsicJacobi (I := I) g hEnorm x (t • u) (w i) 1 : E)
-    let Y : E :=
-      (intrinsicJacobi (I := I) g hEnorm x (t • u) (w j) 1 : E)
-    change β (t • X) (t • Y) = t ^ 2 * β X Y
-    have hleft : β (t • X) (t • Y) = t * β X (t • Y) := by
-      have h := congrArg (fun A : E →L[ℝ] ℝ => A (t • Y)) (β.map_smul t X)
-      simpa only [_root_.smul_apply, smul_eq_mul] using h
-    have hright : β X (t • Y) = t * β X Y := by
-      simpa only [smul_eq_mul] using (β X).map_smul t Y
-    rw [hleft, hright, pow_two]
-    ring
-  rw [curveDensity, curveDensity, hgram, Matrix.det_smul, Fintype.card_fin]
-  have hpow : (t ^ 2) ^ d = (t ^ d) ^ 2 := by
-    rw [← pow_mul, ← pow_mul]
-    congr 1
-    omega
-  rw [hpow, Real.sqrt_mul (sq_nonneg (t ^ d)), Real.sqrt_sq_eq_abs, abs_pow]
+        (intrinsicJacobi (I := I) g hEnorm x u (w i) t)
+        (intrinsicJacobi (I := I) g hEnorm x u (w j) t) =
+      g.inner (intrinsicGeodesic (I := I) g hEnorm x u t)
+        (t • (intrinsicJacobi (I := I) g hEnorm x (t • u) (w i) 1 : E))
+        (t • (intrinsicJacobi (I := I) g hEnorm x (t • u) (w j) 1 : E))
+    rw [hcol, hcol]
+  rw [hbridge, curveDensity_smul, Fintype.card_fin]
 
 theorem radialJacobian_eq_velocity
     (g : SmoothRiemannianMetric I M)

@@ -357,6 +357,65 @@ theorem curveDensity_recomb
         = C.det ^ 2 * (curveGram (I := I) g γ V t).det from by ring,
     Real.sqrt_mul (sq_nonneg C.det), Real.sqrt_sq_eq_abs]
 
+theorem curveGram_det_option
+    {ι : Type*} [Fintype ι] [DecidableEq ι]
+    (g : SmoothRiemannianMetric I M) (γ : ℝ → M)
+    (V : Option ι → ∀ t, TangentSpace I (γ t)) (t : ℝ)
+    (hperp : ∀ i, g.inner (γ t) (V none t) (V (some i) t) = 0) :
+    (curveGram (I := I) g γ V t).det =
+      g.inner (γ t) (V none t) (V none t) *
+        (curveGram (I := I) g γ (fun i => V (some i)) t).det := by
+  let e : Option ι ≃ ι ⊕ PUnit.{1} := Equiv.optionEquivSumPUnit ι
+  let T := curveGram (I := I) g γ (fun i => V (some i)) t
+  let D : Matrix PUnit.{1} PUnit.{1} ℝ :=
+    Matrix.of fun _ _ => g.inner (γ t) (V none t) (V none t)
+  have hblock : Matrix.reindex e e (curveGram (I := I) g γ V t) =
+      Matrix.fromBlocks T 0 0 D := by
+    ext a b
+    rcases a with i | a
+    · rcases b with j | b
+      · rfl
+      · cases b
+        change g.inner (γ t) (V (some i) t) (V none t) = 0
+        rw [g.symm]
+        exact hperp i
+    · cases a
+      rcases b with j | b
+      · exact hperp j
+      · cases b
+        rfl
+  rw [← Matrix.det_reindex_self e, hblock, Matrix.det_fromBlocks_zero₂₁,
+    Matrix.det_unique D]
+  exact mul_comm _ _
+
+theorem curveDensity_option
+    {ι : Type*} [Fintype ι] [DecidableEq ι]
+    (g : SmoothRiemannianMetric I M) (γ : ℝ → M)
+    (V : Option ι → ∀ t, TangentSpace I (γ t)) (t : ℝ)
+    (hperp : ∀ i, g.inner (γ t) (V none t) (V (some i) t) = 0) :
+    curveDensity (I := I) g γ V t =
+      Real.sqrt (g.inner (γ t) (V none t) (V none t)) *
+        curveDensity (I := I) g γ (fun i => V (some i)) t := by
+  rw [curveDensity, curveDensity, curveGram_det_option (I := I) g γ V t hperp,
+    Real.sqrt_mul (metric_inner_self_nonneg (I := I) g (γ t) (V none t))]
+
+theorem curveDensity_smul
+    {ι : Type*} [Fintype ι] [DecidableEq ι]
+    (g : SmoothRiemannianMetric I M) (γ : ℝ → M)
+    (V : ι → ∀ t, TangentSpace I (γ t)) (t c : ℝ) :
+    curveDensity (I := I) g γ (fun i => c • V i) t =
+      |c| ^ Fintype.card ι * curveDensity (I := I) g γ V t := by
+  have h := VolumeComparison.curveDensity_recomb (I := I) g γ V
+    (fun i => c • V i) t (Matrix.diagonal fun _ => c) (fun i => by
+      simp only [Matrix.diagonal_apply]
+      rw [Finset.sum_eq_single i]
+      · simp
+      · intro k _ hki
+        simp [hki]
+      · simp)
+  simpa only [Matrix.det_diagonal, Finset.prod_const, Finset.card_univ, abs_pow] using h
+
+
 end VolumeComparison
 
 end Riemannian
