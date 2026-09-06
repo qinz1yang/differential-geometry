@@ -104,6 +104,31 @@ theorem inner_curveVelocity_eq_add_mul_of_isJacobiAt
   dsimp only [u] at h
   linarith
 
+theorem inner_covDerivAlong_curveVelocity_eq_of_isJacobiAt
+    (g : SmoothRiemannianMetric I M) (γ : ℝ → M)
+    (J : ∀ t, TangentSpace I (γ t)) {s : Set ℝ} (hs : Convex ℝ s)
+    (hγ : ∀ t ∈ s, ContMDiffAt 𝓘(ℝ, ℝ) I 2 γ t)
+    (hgeo : IsGeodesicOn (I := I) g γ (interior s))
+    (hJ : ∀ t ∈ s, MDifferentiableAt 𝓘(ℝ, ℝ) I.tangent
+      (fun r => (TotalSpace.mk' E (γ r) (J r) : TangentBundle I M)) t)
+    (hDJ : ∀ t ∈ s, MDifferentiableAt 𝓘(ℝ, ℝ) I.tangent
+      (fun r => (TotalSpace.mk' E (γ r) (covDerivAlong (I := I) g γ J r) :
+        TangentBundle I M)) t)
+    (hJac : ∀ t ∈ interior s, IsJacobiAt (I := I) g γ J t)
+    {a t : ℝ} (ha : a ∈ s) (ht : t ∈ s) :
+    g.inner (γ t) (covDerivAlong (I := I) g γ J t) (curveVelocity (I := I) γ t) =
+      g.inner (γ a) (covDerivAlong (I := I) g γ J a) (curveVelocity (I := I) γ a) := by
+  by_cases hta : t = a
+  · subst t
+    rfl
+  have h₁ := inner_curveVelocity_eq_add_mul_of_isJacobiAt g γ J hs hγ hgeo hJ hDJ hJac ha ht
+  have h₂ := inner_curveVelocity_eq_add_mul_of_isJacobiAt g γ J hs hγ hgeo hJ hDJ hJac ht ha
+  have hmul : (t - a) *
+      (g.inner (γ t) (covDerivAlong (I := I) g γ J t) (curveVelocity (I := I) γ t) -
+        g.inner (γ a) (covDerivAlong (I := I) g γ J a) (curveVelocity (I := I) γ a)) = 0 := by
+    nlinarith
+  exact sub_eq_zero.mp ((mul_eq_zero.mp hmul).resolve_left (sub_ne_zero.mpr hta))
+
 theorem inner_covDerivAlong_curveVelocity_eq_zero_of_isJacobiAt
     (g : SmoothRiemannianMetric I M) (γ : ℝ → M)
     (J : ∀ t, TangentSpace I (γ t)) {s : Set ℝ} (hs : Convex ℝ s)

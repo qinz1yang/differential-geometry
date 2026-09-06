@@ -67,18 +67,6 @@ private theorem exists_dom_clamps
     exists_contDiff_prodMap_range_subset (hcont hmem)
   exact ⟨ψ, σ, hψ, hσ, hψid, hσid, fun s t => h ⟨(s, t), rfl⟩⟩
 
-private lemma riemannOp_congr_point (g : SmoothRiemannianMetric I M)
-    {x y : M} (h : x = y)
-    (A B C : TangentSpace I x) (A' B' C' : TangentSpace I y)
-    (hA : (A : E) = (A' : E)) (hB : (B : E) = (B' : E))
-    (hC : (C : E) = (C' : E)) :
-    ((DifferentialGeometry.Geometry.Curvature.riemannOp
-      (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g) x) A B C : E)
-    = ((DifferentialGeometry.Geometry.Curvature.riemannOp
-      (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g) y) A' B' C' : E) := by
-  subst y
-  rw [show A = A' from hA, show B = B' from hB, show C = C' from hC]
-
 private theorem radialJacobiField_properties
     (g : SmoothRiemannianMetric I M) (p : M) (x w : E) {t₀ : ℝ}
     (ht₀U : (show TangentSpace I p from t₀ • x) ∈ expDomain (I := I) g p) :
@@ -212,65 +200,10 @@ private theorem radialJacobiField_properties
       (I := I) g _ t₀ hsliceC2 hgeo_F
   have hjac_clamped := isJacobiAt_variationField_of_covDerivAlong_velocity_eq_zero
     (I := I) g F hFsmooth t₀ hzero
-  have houter_eq :
-      ((covDerivAlong (I := I) g (fun t : ℝ => F 0 t)
-        (fun t : ℝ => covDerivAlong (I := I) g (fun u : ℝ => F 0 u) Vc t)
-        t₀ : E))
-      = ((covDerivAlong (I := I) g γ
-        (fun t : ℝ => covDerivAlong (I := I) g γ J t) t₀ : E)) :=
-    covDerivAlong_congr_curve (I := I) g Dc D hcentral_ev hD_ev
-  have hfoot : F 0 t₀ = γ t₀ := hcentral_ev.eq_of_nhds
-  have hfield : (Vc t₀ : E) = (J t₀ : E) := hJ_ev.eq_of_nhds
-  have hvelocity :
-      (mfderiv (𝓘(ℝ, ℝ)) I (fun t : ℝ => F 0 t) t₀ (1 : ℝ) : E)
-        = (curveVelocity (I := I) γ t₀ : E) := by
-    have hmf : mfderiv (𝓘(ℝ, ℝ)) I (fun t : ℝ => F 0 t) t₀ =
-        mfderiv (𝓘(ℝ, ℝ)) I γ t₀ := hcentral_ev.mfderiv_eq
-    exact congrArg (fun L : ℝ →L[ℝ] TangentSpace I _ => (L (1 : ℝ) : E)) hmf
-  have hfinal :
-      (covDerivAlong (I := I) g γ
-        (fun t : ℝ => covDerivAlong (I := I) g γ J t) t₀ : E)
-      = -((DifferentialGeometry.Geometry.Curvature.riemannOp
-          (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g) (γ t₀))
-          (J t₀) (curveVelocity (I := I) γ t₀)
-          (curveVelocity (I := I) γ t₀) : E) := by
-    rw [← houter_eq]
-    change (covDerivAlong (I := I) g (fun t : ℝ => F 0 t)
-        (fun t : ℝ => covDerivAlong (I := I) g
-          (fun u : ℝ => F 0 u) Vc t) t₀ : E)
-      = -((DifferentialGeometry.Geometry.Curvature.riemannOp
-          (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g) (γ t₀))
-          (J t₀) (curveVelocity (I := I) γ t₀)
-          (curveVelocity (I := I) γ t₀) : E)
-    have hclamped :
-        (covDerivAlong (I := I) g (fun t : ℝ => F 0 t)
-          (fun t : ℝ => covDerivAlong (I := I) g
-            (fun u : ℝ => F 0 u) Vc t) t₀ : E)
-        = -((DifferentialGeometry.Geometry.Curvature.riemannOp
-            (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g) (F 0 t₀))
-            (Vc t₀)
-            (mfderiv (𝓘(ℝ, ℝ)) I (fun t : ℝ => F 0 t) t₀ (1 : ℝ))
-            (mfderiv (𝓘(ℝ, ℝ)) I (fun t : ℝ => F 0 t) t₀ (1 : ℝ)) : E) := by
-      change covDerivAlong (I := I) g (fun t : ℝ => F 0 t)
-          (fun t : ℝ => covDerivAlong (I := I) g (fun u : ℝ => F 0 u) Vc t) t₀
-        + (DifferentialGeometry.Geometry.Curvature.riemannOp
-            (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g) (F 0 t₀))
-            (Vc t₀)
-            (mfderiv (𝓘(ℝ, ℝ)) I (fun t : ℝ => F 0 t) t₀ (1 : ℝ))
-            (mfderiv (𝓘(ℝ, ℝ)) I (fun t : ℝ => F 0 t) t₀ (1 : ℝ)) = 0
-        at hjac_clamped
-      linear_combination (norm := module) hjac_clamped
-    rw [hclamped]
-    exact congrArg Neg.neg
-      (riemannOp_congr_point (I := I) g hfoot _ _ _ _ _ _ hfield hvelocity hvelocity)
-  have hJ : IsJacobiAt (I := I) g γ J t₀ := by
-    change covDerivAlong (I := I) g γ
-        (fun t : ℝ => covDerivAlong (I := I) g γ J t) t₀
-      + (DifferentialGeometry.Geometry.Curvature.riemannOp
-          (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g) (γ t₀))
-          (J t₀) (curveVelocity (I := I) γ t₀)
-          (curveVelocity (I := I) γ t₀) = 0
-    linear_combination (norm := module) hfinal
+  have hJ : IsJacobiAt (I := I) g γ J t₀ :=
+    hjac_clamped.congr_of_eventuallyEq (by
+      filter_upwards [hcentral_ev, hJ_ev] with t hcurve hfield
+      exact Bundle.TotalSpace.ext hcurve (heq_of_eq hfield))
   exact ⟨hVdiff, hDVdiff, hJ⟩
 
 variable [T2Space (TangentBundle I M)]
