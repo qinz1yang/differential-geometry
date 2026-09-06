@@ -4300,3 +4300,16 @@ import DifferentialGeometry.Geometry.Comparison.Volume.NormalChartJets
 import DifferentialGeometry.Geometry.Metric.MetricFiberData.Defs
 import DifferentialGeometry.Geometry.Metric.MetricFiberData.Hom
 import DifferentialGeometry.Geometry.Metric.MetricFiberData.Topology
+import DifferentialGeometry.Analysis.InnerProductSpace.HilbertSchmidt
+import DifferentialGeometry.Analysis.Parabolic.Dirichlet.LocalCoefficients
+import DifferentialGeometry.Analysis.Parabolic.Dirichlet.WeakEquationProduct
+import DifferentialGeometry.Bundle.Associated.Equivariant
+import DifferentialGeometry.Bundle.Associated.Topology
+import DifferentialGeometry.Geometry.Comparison.NormalCoordinates.Smoothness
+import DifferentialGeometry.Geometry.Comparison.Volume.NormalJacobian
+import DifferentialGeometry.Geometry.Connection.Trivial.AlongCurve
+import DifferentialGeometry.Geometry.Metric.Associated
+import DifferentialGeometry.Geometry.Metric.BundleHom
+import DifferentialGeometry.Geometry.Metric.BundlePullback
+import DifferentialGeometry.Topology.GroupAction.Hom
+import DifferentialGeometry.Topology.GroupAction.Module

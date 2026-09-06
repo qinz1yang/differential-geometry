@@ -36,7 +36,6 @@ theorem hamilton_weak_maximum_principle_of_supporting_normal
     (hK : ∀ t ∈ Ico a b, (cov t).IsParallelSet K)
     (hclosed : ∀ x, IsClosed {v : V x | (⟨x, v⟩ : TotalSpace F V) ∈ K})
     (hconvex : ∀ x, Convex ℝ {v : V x | (⟨x, v⟩ : TotalSpace F V) ∈ K})
-    (hne : ∀ x, {v : V x | (⟨x, v⟩ : TotalSpace F V) ∈ K}.Nonempty)
     (hreaction : ContMDiffOn (𝓘(ℝ, ℝ).prod (I.prod 𝓘(ℝ, F))) (I.prod 𝓘(ℝ, F)) 1
       (fun q : ℝ × TotalSpace F V =>
         (⟨q.2.proj, reaction q.1 q.2.proj q.2.2⟩ : TotalSpace F V)) (Ico a b ×ˢ univ))
@@ -51,6 +50,8 @@ theorem hamilton_weak_maximum_principle_of_supporting_normal
         reaction t x (u t x)) t)
     (hinitial : ∀ x, (⟨x, u a x⟩ : TotalSpace F V) ∈ K) :
     ∀ t ∈ Ico a b, ∀ x, (⟨x, u t x⟩ : TotalSpace F V) ∈ K := by
+  have hne (x : M) : {v : V x | (⟨x, v⟩ : TotalSpace F V) ∈ K}.Nonempty :=
+    ⟨u a x, hinitial x⟩
   intro τ hτ x₁
   by_cases hτa : τ = a
   · simpa only [hτa] using hinitial x₁
@@ -208,7 +209,6 @@ theorem hamilton_weak_maximum_principle
     (hK : ∀ t ∈ Ico a b, (cov t).IsParallelSet K)
     (hclosed : ∀ x, IsClosed {v : V x | (⟨x, v⟩ : TotalSpace F V) ∈ K})
     (hconvex : ∀ x, Convex ℝ {v : V x | (⟨x, v⟩ : TotalSpace F V) ∈ K})
-    (hne : ∀ x, {v : V x | (⟨x, v⟩ : TotalSpace F V) ∈ K}.Nonempty)
     (hreaction : ContMDiffOn (𝓘(ℝ, ℝ).prod (I.prod 𝓘(ℝ, F))) (I.prod 𝓘(ℝ, F)) 1
       (fun q : ℝ × TotalSpace F V =>
         (⟨q.2.proj, reaction q.1 q.2.proj q.2.2⟩ : TotalSpace F V)) (Ico a b ×ˢ univ))
@@ -223,7 +223,7 @@ theorem hamilton_weak_maximum_principle
     (hinitial : ∀ x, (⟨x, u a x⟩ : TotalSpace F V) ∈ K) :
     ∀ t ∈ Ico a b, ∀ x, (⟨x, u t x⟩ : TotalSpace F V) ∈ K := by
   apply hamilton_weak_maximum_principle_of_supporting_normal g cov X reaction hcov hmetric hK
-    hclosed hconvex hne hreaction _ hu hspace hequation hinitial
+    hclosed hconvex hreaction _ hu hspace hequation hinitial
   intro t ht x p ν hν
   let _ : FiniteDimensional ℝ (V x) := by
     let L := VectorBundle.continuousLinearEquivAt ℝ F V x
@@ -243,7 +243,6 @@ theorem hamilton_weak_maximum_principle_of_contMDiffOn
     (hK : ∀ t ∈ Ico a b, (cov t).IsParallelSet K)
     (hclosed : ∀ x, IsClosed {v : V x | (⟨x, v⟩ : TotalSpace F V) ∈ K})
     (hconvex : ∀ x, Convex ℝ {v : V x | (⟨x, v⟩ : TotalSpace F V) ∈ K})
-    (hne : ∀ x, {v : V x | (⟨x, v⟩ : TotalSpace F V) ∈ K}.Nonempty)
     (hreaction : ContMDiffOn (𝓘(ℝ, ℝ).prod (I.prod 𝓘(ℝ, F))) (I.prod 𝓘(ℝ, F)) 1
       (fun q : ℝ × TotalSpace F V =>
         (⟨q.2.proj, reaction q.1 q.2.proj q.2.2⟩ : TotalSpace F V)) (Ico a b ×ˢ univ))
@@ -256,7 +255,7 @@ theorem hamilton_weak_maximum_principle_of_contMDiffOn
         reaction t x (u t x)) t)
     (hinitial : ∀ x, (⟨x, u a x⟩ : TotalSpace F V) ∈ K) :
     ∀ t ∈ Ico a b, ∀ x, (⟨x, u t x⟩ : TotalSpace F V) ∈ K := by
-  apply hamilton_weak_maximum_principle g cov X reaction hcov hmetric hK hclosed hconvex hne
+  apply hamilton_weak_maximum_principle g cov X reaction hcov hmetric hK hclosed hconvex
     hreaction hinvariant hu.continuousOn _ hequation hinitial
   intro t ht x
   have hslice : ContMDiffOn I (I.prod 𝓘(ℝ, F)) 2 (T% (u t)) univ :=
