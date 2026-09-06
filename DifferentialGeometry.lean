@@ -3097,6 +3097,7 @@ import DifferentialGeometry.Geometry.Geodesic.Naturality.LocalIsometry.Rigidity
 import DifferentialGeometry.Geometry.Metric.Comparison.BallMonotonicity
 import DifferentialGeometry.Geometry.Metric.Construction.Existence
 import DifferentialGeometry.Geometry.Metric.Pullback.PartialDiffeomorph.OpenSubtype
+import DifferentialGeometry.Geometry.Metric.OrthogonalComplement
 import DifferentialGeometry.Geometry.Metric.PointwiseInner.Algebra
 import DifferentialGeometry.Geometry.Metric.PointwiseInner.Defs
 import DifferentialGeometry.Geometry.Metric.PointwiseInner.DualMetric

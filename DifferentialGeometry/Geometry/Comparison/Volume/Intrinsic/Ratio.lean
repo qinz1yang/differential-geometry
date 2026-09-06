@@ -1,4 +1,5 @@
 import DifferentialGeometry.Geometry.Comparison.Volume.Bishop.Intrinsic
+import DifferentialGeometry.Geometry.Metric.OrthogonalComplement
 import DifferentialGeometry.Geometry.Comparison.Variation.NoConjugatePoints.MinimizingSegment
 open DifferentialGeometry.Geometry.Curvature
 
@@ -119,55 +120,6 @@ theorem densUB_of_pole
   have hpt : 0 < hyperbolicDensity q' d t := hyperbolicDensity_pos hq' ht.1
   rwa [div_le_iff₀ hpt] at hRt
 
-omit [NeZero (Module.finrank ℝ E)]
-  [CompleteSpace E]
-  [I.Boundaryless]
-  [T2Space M]
-  [SigmaCompactSpace M]
-  [T2Space (TangentBundle I M)]
-  pseudoEMetricSpace
-  riemannianManifold
-  completeSpaceM
-  continuousRiemannianBundle
-  riemannianBundle in
-theorem exists_perp_basis
-    (g : SmoothRiemannianMetric I M) (p : M) (u : TangentSpace I p)
-    (v : Fin (Module.finrank Real E - 1) → TangentSpace I p)
-    (hv : LinearIndependent Real v)
-    (hperp : ∀ i, g.inner p u (v i) = 0)
-    (hu : 0 < g.inner p u u) :
-    ∃ B : Module.Basis (Option (Fin (Module.finrank Real E - 1))) Real E,
-      B none = (u : E) ∧ ∀ i, B (some i) = (v i : E) := by
-  classical
-  have hu_ne : u ≠ 0 := by
-    intro h; rw [h] at hu; simp at hu
-  let φ : TangentSpace I p →ₗ[Real] Real := (g.inner p u).toLinearMap
-  have hVker : Set.range v ⊆ LinearMap.ker φ := by
-    rintro y ⟨i, rfl⟩
-    change g.inner p u (v i) = 0
-    exact hperp i
-  have hZspan : u ∉ Submodule.span Real (Set.range v) := by
-    intro hmem
-    have hker : u ∈ LinearMap.ker φ := (Submodule.span_le.2 hVker) hmem
-    have hzero : g.inner p u u = 0 := hker
-    exact hu.ne' hzero
-  have hWLI : LinearIndependent Real
-      (fun o : Option (Fin (Module.finrank Real E - 1)) =>
-        Option.casesOn' o u v) := hv.option hZspan
-  have hdim : 0 < Module.finrank Real (TangentSpace I p) :=
-    Module.finrank_pos_iff.mpr ⟨u, 0, hu_ne⟩
-  have hcardW : Fintype.card (Option (Fin (Module.finrank Real E - 1))) =
-      Module.finrank Real (TangentSpace I p) := by
-    rw [Fintype.card_option, Fintype.card_fin]
-    exact Nat.sub_add_cancel hdim
-  let b : Module.Basis (Option (Fin (Module.finrank Real E - 1))) Real
-      (TangentSpace I p) :=
-    basisOfLinearIndependentOfCardEqFinrank hWLI hcardW
-  have hb : ∀ o, b o = Option.casesOn' o u v :=
-    congrFun (coe_basisOfLinearIndependentOfCardEqFinrank hWLI hcardW)
-  refine ⟨b, ?_, ?_⟩
-  · exact hb none
-  · intro i; exact hb (some i)
 
 private lemma hyperbolicSn_ge_id {q : Real} (hq : 0 ≤ q) {t : Real} (ht : 0 ≤ t) :
     t ≤ hyperbolicSn q t := by

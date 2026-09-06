@@ -4,6 +4,7 @@ import DifferentialGeometry.Analysis.Integration.Measure.Chart.HaarBasis
 import DifferentialGeometry.Geometry.Exponential.Variation.Radial
 import DifferentialGeometry.Geometry.Comparison.Variation.Jacobi.Gram
 import DifferentialGeometry.Geometry.Exponential.NormalCoordinates.Frame
+import DifferentialGeometry.Geometry.Metric.OrthogonalComplement
 import Mathlib.MeasureTheory.Integral.Lebesgue.Map
 
 noncomputable section
@@ -173,6 +174,185 @@ theorem curveDensity_radialJacobiField_smul
       g.inner (radialCurve (I := I) g p x t) (t • (V i 1 : E)) (t • (V j 1 : E))
     rw [hcol, hcol]
   rw [hbridge, curveDensity_smul]
+
+private theorem curveDensity_radialJacobiField_zero_launch
+    {ι : Type*} [Fintype ι] [DecidableEq ι]
+    (g : SmoothRiemannianMetric I M) (p : M) (v : ι → E) :
+    curveDensity (I := I) g (radialCurve (I := I) g p 0)
+        (fun i => radialJacobiField (I := I) g p 0 (v i)) 1 =
+      curveDensity (I := I) g (fun _ : ℝ => p)
+        (fun i (_ : ℝ) => show TangentSpace I p from v i) 0 := by
+  have hcol (i : ι) : (radialJacobiField (I := I) g p 0 (v i) 1 : E) = v i := by
+    have hJ := radialJacobiField_one (I := I) g p 0 (v i)
+      (zero_mem_expDomain (I := I) g p)
+    have hD : (mfderiv 𝓘(ℝ, E) I
+        (fun z : E => expMap (I := I) g p (show TangentSpace I p from z))
+        (0 : E) : E →L[ℝ] E) = ContinuousLinearMap.id ℝ E :=
+      mfderiv_expMap_at_zero (I := I) g p
+    exact hJ.trans (congrArg (fun A : E →L[ℝ] E => A (v i)) hD)
+  unfold curveDensity curveGram
+  apply congrArg Real.sqrt
+  apply congrArg Matrix.det
+  ext i j
+  simp only [Matrix.of_apply]
+  have hbase : radialCurve (I := I) g p (0 : E) 1 = p := by
+    exact (radialCurve_one (I := I) g p 0).trans (expMap_zero (I := I) g p)
+  rw [hbase]
+  exact congrArg₂ (fun a b : E => g.inner p a b) (hcol i) (hcol j)
+
+theorem paramDensity_expMap_zero
+    (g : SmoothRiemannianMetric I M) (p : M) :
+    paramDensity (I := I) g
+        (fun v : E => expMap (I := I) g p (show TangentSpace I p from v)) 0 =
+      curveDensity (I := I) g (fun _ : ℝ => p)
+        (fun i (_ : ℝ) => show TangentSpace I p from chartModelBasis E i) 0 := by
+  rw [paramDensity_expMap_eq_curveDensity (I := I) g p 0
+    (zero_mem_expDomain (I := I) g p)]
+  exact curveDensity_radialJacobiField_zero_launch (I := I) g p (chartModelBasis E)
+
+omit [FiniteDimensional ℝ E] [I.Boundaryless] [T2Space (TangentBundle I M)] in
+private theorem curveDensity_const_of_orthonormal
+    {ι : Type*} [Fintype ι] [DecidableEq ι]
+    (g : SmoothRiemannianMetric I M) (p : M) (w : ι → E)
+    (hON : ∀ i j, g.inner p (w i) (w j) = if i = j then 1 else 0) :
+    curveDensity (I := I) g (fun _ : ℝ => p)
+      (fun i (_ : ℝ) => show TangentSpace I p from w i) 0 = 1 := by
+  have hG : curveGram (I := I) g (fun _ : ℝ => p)
+      (fun i (_ : ℝ) => show TangentSpace I p from w i) 0 = 1 := by
+    ext i j
+    exact hON i j
+  unfold curveDensity
+  rw [hG, Matrix.det_one, Real.sqrt_one]
+
+theorem curveDensity_radialJacobiField_eq_mul_of_orthonormal
+    {κ : Type*} [Fintype κ] [DecidableEq κ]
+    (g : SmoothRiemannianMetric I M) (p : M) (x : E)
+    (hx : (show TangentSpace I p from x) ∈ expDomain (I := I) g p)
+    (B : Module.Basis κ ℝ E)
+    (w : Fin (Module.finrank ℝ E - 1) → E)
+    (hON : ∀ i j, g.inner p (w i) (w j) = if i = j then 1 else 0)
+    (hperp : ∀ i, g.inner p x (w i) = 0) :
+    curveDensity (I := I) g (radialCurve (I := I) g p x)
+        (fun i => radialJacobiField (I := I) g p x (B i)) 1 =
+      curveDensity (I := I) g (fun _ : ℝ => p)
+          (fun i (_ : ℝ) => show TangentSpace I p from B i) 0 *
+        curveDensity (I := I) g (radialCurve (I := I) g p x)
+          (fun i => radialJacobiField (I := I) g p x (w i)) 1 := by
+  classical
+  by_cases hx0 : x = 0
+  · subst x
+    rw [curveDensity_radialJacobiField_zero_launch,
+      curveDensity_radialJacobiField_zero_launch,
+      curveDensity_const_of_orthonormal (I := I) g p w hON, mul_one]
+  have hLI : LinearIndependent ℝ w := by
+    let G : E →L[ℝ] E →L[ℝ] ℝ := g.inner p
+    let Q : E →ₗ[ℝ] E →ₗ[ℝ] ℝ :=
+      (ContinuousLinearMap.coeLM ℝ).comp G.toLinearMap
+    apply LinearMap.linearIndependent_of_isOrthoᵢ (B := Q)
+    · rw [LinearMap.isOrthoᵢ_def]
+      intro i j hij
+      change g.inner p (w i) (w j) = 0
+      rw [hON, if_neg hij]
+    · intro i
+      change g.inner p (w i) (w i) ≠ 0
+      rw [hON, if_pos rfl]
+      exact one_ne_zero
+  obtain ⟨A, hA0, hAw⟩ :=
+    exists_perp_basis (I := I) g p x w hLI hperp (g.pos p x hx0)
+  let e : Option (Fin (Module.finrank ℝ E - 1)) ≃ κ :=
+    Fintype.equivOfCardEq
+      ((Module.finrank_eq_card_basis A).symm.trans (Module.finrank_eq_card_basis B))
+  let C : Module.Basis (Option (Fin (Module.finrank ℝ E - 1))) ℝ E := B.reindex e.symm
+  have hC (i) : C i = B (e i) := by
+    exact Module.Basis.reindex_apply B e.symm i
+  have hA (o) : A o = Option.elim o x w := by
+    cases o with
+    | none => exact hA0
+    | some i => exact hAw i
+  have hJreindex :
+      curveDensity (I := I) g (radialCurve (I := I) g p x)
+        (fun i => radialJacobiField (I := I) g p x (C i)) 1 =
+      curveDensity (I := I) g (radialCurve (I := I) g p x)
+        (fun i => radialJacobiField (I := I) g p x (B i)) 1 := by
+    simpa only [hC] using!
+      curveDensity_reindex (I := I) g (radialCurve (I := I) g p x)
+        (fun i => radialJacobiField (I := I) g p x (B i)) 1 e
+  have h0reindex :
+      curveDensity (I := I) g (fun _ : ℝ => p)
+        (fun i (_ : ℝ) => show TangentSpace I p from C i) 0 =
+      curveDensity (I := I) g (fun _ : ℝ => p)
+        (fun i (_ : ℝ) => show TangentSpace I p from B i) 0 := by
+    simpa only [hC] using!
+      curveDensity_reindex (I := I) g (fun _ : ℝ => p)
+        (fun i (_ : ℝ) => show TangentSpace I p from B i) 0 e
+  have hJchange := curveDensity_radialJacobiField_basis (I := I) g p x hx C A
+  rw [hJreindex] at hJchange
+  have h0change := curveDensity_radialJacobiField_basis (I := I) g p 0
+    (zero_mem_expDomain (I := I) g p) C A
+  rw [curveDensity_radialJacobiField_zero_launch,
+    curveDensity_radialJacobiField_zero_launch, h0reindex] at h0change
+  have hJsplit :
+      curveDensity (I := I) g (radialCurve (I := I) g p x)
+          (fun i => radialJacobiField (I := I) g p x (A i)) 1 =
+        Real.sqrt (g.inner p x x) *
+          curveDensity (I := I) g (radialCurve (I := I) g p x)
+            (fun i => radialJacobiField (I := I) g p x (w i)) 1 := by
+    simp_rw [hA]
+    simpa only [abs_one, one_mul] using!
+      curveDensity_radialJacobiField_option (I := I) g p x w
+        (t := 1) (by simpa only [one_smul] using! hx) hperp
+  have h0split :
+      curveDensity (I := I) g (fun _ : ℝ => p)
+          (fun i (_ : ℝ) => show TangentSpace I p from A i) 0 =
+        Real.sqrt (g.inner p x x) := by
+    rw [curveDensity_option (I := I) g (fun _ : ℝ => p)
+      (fun i (_ : ℝ) => show TangentSpace I p from A i) 0
+      (fun i => by simpa only [hA0, hAw] using! hperp i)]
+    simp_rw [hA0, hAw]
+    rw [curveDensity_const_of_orthonormal (I := I) g p w hON, mul_one]
+  apply mul_left_cancel₀ (abs_ne_zero.mpr (C.isUnit_det A).ne_zero)
+  rw [← hJchange, hJsplit, ← mul_assoc, ← h0change, h0split]
+
+theorem paramDensity_expMap_eq_mul_curveDensity_of_orthonormal
+    (g : SmoothRiemannianMetric I M) (p : M) (x : E)
+    (hx : (show TangentSpace I p from x) ∈ expDomain (I := I) g p)
+    (w : Fin (Module.finrank ℝ E - 1) → E)
+    (hON : ∀ i j, g.inner p (w i) (w j) = if i = j then 1 else 0)
+    (hperp : ∀ i, g.inner p x (w i) = 0) :
+    paramDensity (I := I) g
+        (fun v : E => expMap (I := I) g p (show TangentSpace I p from v)) x =
+      paramDensity (I := I) g
+          (fun v : E => expMap (I := I) g p (show TangentSpace I p from v)) 0 *
+        curveDensity (I := I) g (radialCurve (I := I) g p x)
+          (fun i => radialJacobiField (I := I) g p x (w i)) 1 := by
+  rw [paramDensity_expMap_eq_curveDensity (I := I) g p x hx,
+    paramDensity_expMap_zero]
+  exact curveDensity_radialJacobiField_eq_mul_of_orthonormal
+    (I := I) g p x hx (chartModelBasis E) w hON hperp
+
+theorem paramDensity_expMap_smul_mul_pow_of_orthonormal
+    (g : SmoothRiemannianMetric I M) (p : M) (x : E)
+    (w : Fin (Module.finrank ℝ E - 1) → E)
+    (hON : ∀ i j, g.inner p (w i) (w j) = if i = j then 1 else 0)
+    (hperp : ∀ i, g.inner p x (w i) = 0) (t : ℝ)
+    (ht : (show TangentSpace I p from t • x) ∈ expDomain (I := I) g p) :
+    paramDensity (I := I) g
+        (fun v : E => expMap (I := I) g p (show TangentSpace I p from v)) (t • x) *
+        |t| ^ (Module.finrank ℝ E - 1) =
+      paramDensity (I := I) g
+          (fun v : E => expMap (I := I) g p (show TangentSpace I p from v)) 0 *
+        curveDensity (I := I) g (radialCurve (I := I) g p x)
+          (fun i => radialJacobiField (I := I) g p x (w i)) t := by
+  have hperpt (i) : g.inner p (t • x) (w i) = 0 := by
+    let G : E →L[ℝ] E →L[ℝ] ℝ := g.inner p
+    change G (t • x) (w i) = 0
+    rw [G.map_smul, _root_.smul_apply, smul_eq_mul,
+      show G x (w i) = 0 from hperp i, mul_zero]
+  rw [paramDensity_expMap_eq_mul_curveDensity_of_orthonormal
+    (I := I) g p (t • x) ht w hON hperpt,
+    curveDensity_radialJacobiField_smul (I := I) g p x w t ht,
+    Fintype.card_fin]
+  ring
 
 end Normed
 
