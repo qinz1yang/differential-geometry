@@ -265,6 +265,53 @@ theorem ricci_flow_forward_unique_of_complete_bounded_curvature_energy_criterion
   intro t ht
   exact huniq t ⟨ht.1, ht.2.le⟩
 
+omit [NoncompactSpace M] in
+theorem ricci_flow_forward_unique_of_complete_bounded_curvature_compact_density
+    {a b : Real} (hab : a < b)
+    (S₁ S₂ : CompleteBoundedCurvatureSolutionOn (I := I) (M := M)
+      (D := DifferentialGeometry.Geometry.Curvature.RealTimeInterval.closedOpen a b hab))
+    (henergyCont : ContinuousOn
+      (forwardUniqueEnergy (I := I) (M := M)
+        S₁.solution.base.metric S₂.solution.base.metric) (Set.Icc a b))
+    (henergy' : Real → Real)
+    (henergyDeriv : ∀ t ∈ Set.Ioo a b,
+      HasDerivAt
+        (forwardUniqueEnergy (I := I) (M := M)
+          S₁.solution.base.metric S₂.solution.base.metric)
+        (henergy' t) t)
+    (K : Real)
+    (henergyBound : ∀ t ∈ Set.Ioo a b,
+      henergy' t ≤
+        K * forwardUniqueEnergy (I := I) (M := M)
+          S₁.solution.base.metric S₂.solution.base.metric t)
+    (hinitial : S₁.solution.base.metric a = S₂.solution.base.metric a)
+    (hdensityCont : ∀ t ∈ Set.Icc a b,
+      Continuous (fun x =>
+        forwardUniqueDensity (I := I) S₁.solution.base.metric S₂.solution.base.metric t x))
+    (hdensityCompact : ∀ t ∈ Set.Icc a b,
+      HasCompactSupport (fun x =>
+        forwardUniqueDensity (I := I) S₁.solution.base.metric S₂.solution.base.metric t x)) :
+    ∀ t ∈ Set.Ico a b,
+      S₁.solution.base.metric t = S₂.solution.base.metric t := by
+  let : MeasurableSpace M := borel M
+  let : BorelSpace M := ⟨rfl⟩
+  have hdensityIntegrable : ∀ t ∈ Set.Icc a b,
+      Integrable (fun x =>
+        forwardUniqueDensity (I := I) S₁.solution.base.metric S₂.solution.base.metric t x)
+        (riemannianMeasureFamily (I := I) (M := M)
+          S₁.solution.base.metric t) := by
+    intro t ht
+    have hfinite : IsFiniteMeasureOnCompacts
+        (riemannianVolumeMeasure (I := I) (M := M)
+          (S₁.solution.base.metric t)) :=
+      riemannianVolumeMeasure_isFiniteMeasureOnCompacts
+        (I := I) (M := M) (S₁.solution.base.metric t)
+    rw [riemannianMeasureFamily_def]
+    exact (hdensityCont t ht).integrable_of_hasCompactSupport (hdensityCompact t ht)
+  exact ricci_flow_forward_unique_of_complete_bounded_curvature_energy_criterion
+    (I := I) hab S₁ S₂ henergyCont henergy' henergyDeriv K henergyBound hinitial
+    hdensityCont hdensityIntegrable
+
 end DifferentialGeometry.PDE.RicciFlow
 
 end
