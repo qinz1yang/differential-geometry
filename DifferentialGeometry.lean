@@ -2032,6 +2032,7 @@ import DifferentialGeometry.Geometry.Comparison.Volume.Bishop.Jacobi
 import DifferentialGeometry.Geometry.Comparison.Volume.Bishop.Local
 import DifferentialGeometry.Geometry.Comparison.Volume.Bishop.Polar
 import DifferentialGeometry.Geometry.Comparison.Volume.Bishop.PolarFramed
+import DifferentialGeometry.Geometry.Comparison.Volume.Bishop.Measure
 import DifferentialGeometry.Geometry.Comparison.Volume.Bishop.Radial
 import DifferentialGeometry.Geometry.Comparison.Volume.Family.ParameterControl
 import DifferentialGeometry.Geometry.Comparison.Volume.Family.SmallBall
