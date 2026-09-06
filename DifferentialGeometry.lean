@@ -4350,3 +4350,11 @@ import DifferentialGeometry.Bundle.Hom.Pointwise
 import DifferentialGeometry.Geometry.Operator.LaplacianExponential
 import DifferentialGeometry.Geometry.Operator.LaplacianLinearity
 import DifferentialGeometry.Geometry.Operator.WithBoundary.TimeLaplacian
+import DifferentialGeometry.Analysis.Heat.Parametrix.CoordinateCoefficient
+import DifferentialGeometry.Analysis.Integration.RadialIntegralCongruence
+import DifferentialGeometry.Geometry.Connection.ParallelTransport.ConvexFamily
+import DifferentialGeometry.Geometry.Connection.ParallelTransport.Piecewise
+import DifferentialGeometry.Geometry.Exponential.NormalChartCompatibility
+import DifferentialGeometry.Geometry.LieGroup.Orthogonal
+import DifferentialGeometry.Geometry.Metric.OrthonormalFrame.Smooth
+import DifferentialGeometry.Topology.Manifold.Atlas

@@ -229,4 +229,56 @@ theorem integrable_chart_adjoint
   simp only [hP, hdiv hz, heq z]
   field_simp [hn]
 
+theorem integral_chart_adjoint_sub_potential_eq_neg_sum_integral
+    (q h : SmoothRiemannianMetric I_hs M) (α : M) {Ω : Set EuStd}
+    (hΩ : IsOpen Ω) (hΩc : IsCompact (closure Ω))
+    (hΩs : closure Ω ⊆ toEuclidean (E := EuN) '' interior (extChartAt I_hs α).target)
+    (X : Cₛ^∞⟮I_hs; EuN, (TangentSpace I_hs : M → Type _)⟯)
+    (u : H1ComplDirichlet q) {b ψ : EuStd → ℝ} (hb : ContinuousOn b Ω)
+    (hψ : ContDiff ℝ (⊤ : ℕ∞) ψ) (hψc : HasCompactSupport ψ) (hψs : tsupport ψ ⊆ Ω) :
+    let e := toEuclidean (E := EuN)
+    let ρ := fun z => chartDensityOnE (I := I_hs) h α (e.symm z)
+    let A := fun i j z => chartInvGramOnE (I := I_hs) h α i j (e.symm z)
+    let B := fun i z => chartCoeffOnE (I := I_hs) α X i (e.symm z)
+    let v := fun z => H1ComplDirichletToLp q u ((extChartAt I_hs α).symm (e.symm z))
+    (∫ z in Ω, ρ z * v z *
+      ((∑ i, fderiv ℝ (fun y => (∑ j, A i j y *
+          fderiv ℝ ψ y (EuclideanSpace.single j 1)) * ρ y) z (EuclideanSpace.single i 1)) / ρ z -
+        (∑ i, B i z * fderiv ℝ ψ z (EuclideanSpace.single i 1)) -
+        localDivergence (I := I_hs) h α X ((extChartAt I_hs α).symm (e.symm z)) * ψ z -
+        b z * ψ z)) =
+      -(∑ i, ∫ z in Ω, dirichletLocalWeakPartialLp q α hΩ hΩc hΩs i u z *
+        ((∑ j, A i j z * fderiv ℝ ψ z (EuclideanSpace.single j 1)) * ρ z -
+          B i z * ρ z * ψ z)) -
+        ∫ z in Ω, ρ z * v z * (b z * ψ z) := by
+  intro e ρ A B v
+  have hy {z : EuStd} (hz : z ∈ Ω) : e.symm z ∈ (extChartAt I_hs α).target := by
+    obtain ⟨y, hy, he⟩ := hΩs (subset_closure hz)
+    subst z
+    exact interior_subset (by simpa only [e, ContinuousLinearEquiv.symm_apply_apply] using hy)
+  have hρ : ContinuousOn ρ Ω :=
+    ((chartDensityOnE_contDiffOn (I := I_hs) h α).comp
+      e.symm.contDiff.contDiffOn (fun _ hz => hy hz)).continuousOn
+  have hval : MemLp v 2 (volume.restrict Ω) := by
+    have ht := hΩs.trans (image_mono interior_subset)
+    exact (Lp.memLp (chartRestrictionLp q α hΩ.measurableSet hΩc ht 2
+      (H1ComplDirichletToLp q u))).ae_eq
+      (chartRestrictionLp_coeFn q α hΩ.measurableSet hΩc ht 2 (H1ComplDirichletToLp q u))
+  have hc : Continuous (fun z => (ρ z * b z) * ψ z) :=
+    ((hρ.mul hb).mul hψ.continuous.continuousOn).continuous_of_tsupport_subset
+      hΩ (tsupport_mul_subset_right.trans hψs)
+  have hp : Integrable (fun z => ρ z * v z * (b z * ψ z)) (volume.restrict Ω) := by
+    have hi := (hval.locallyIntegrable (by norm_num)).integrable_smul_right_of_hasCompactSupport
+      hc hψc.mul_left
+    convert hi using 1
+    funext z
+    simp only [smul_eq_mul]
+    ring
+  have hai := integrable_chart_adjoint q h α hΩ hΩc hΩs X u hψ hψc hψs
+  have ha := integral_chart_adjoint_eq_neg_sum_integral q h α hΩ hΩc hΩs X u hψ hψc hψs
+  rw [← ha, ← integral_sub hai hp]
+  apply integral_congr_ae
+  filter_upwards [] with z
+  exact mul_sub _ _ _
+
 end DifferentialGeometry.Analysis.Laplacian.WithBoundary.Dirichlet

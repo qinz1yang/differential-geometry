@@ -1,6 +1,5 @@
-import DifferentialGeometry.Analysis.Integration.RadialIntegralSmoothness
+import DifferentialGeometry.Analysis.Heat.Parametrix.CoordinateCoefficient
 import DifferentialGeometry.Geometry.Comparison.Volume.NormalJacobianLaplacian
-import DifferentialGeometry.Geometry.Operator.LaplacianRegularity
 
 noncomputable section
 
@@ -21,22 +20,34 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [I.Boundaryless] [T2Space (TangentBundle I M)]
 
-def heatParametrixCoefficient (g : SmoothRiemannianMetric I M) (p : M) : ℕ → M → ℝ
-  | 0, q => (Real.sqrt (normalJacobian g p (normalChartAt g p q)))⁻¹
-  | k + 1, q => (Real.sqrt (normalJacobian g p (normalChartAt g p q)))⁻¹ *
-      radialIntegral k (fun v : E => Real.sqrt (normalJacobian g p v) *
-        laplacian (LeviCivita g) g (heatParametrixCoefficient g p k)
-          (expMap g p ((tangentSpaceModelContinuousLinearEquiv (I := I) p).symm v))) (normalChartAt g p q)
+def heatParametrixCoefficient (g : SmoothRiemannianMetric I M) (p : M) : ℕ → M → ℝ :=
+  heatParametrixCoefficientInCoordinates g
+    (fun v => expMap g p ((tangentSpaceModelContinuousLinearEquiv (I := I) p).symm v))
+    (normalChartAt g p) (normalJacobian g p)
+
+@[simp] theorem heatParametrixCoefficient_zero
+    (g : SmoothRiemannianMetric I M) (p q : M) :
+    heatParametrixCoefficient g p 0 q =
+      (Real.sqrt (normalJacobian g p (normalChartAt g p q)))⁻¹ := rfl
+
+theorem heatParametrixCoefficient_succ
+    (g : SmoothRiemannianMetric I M) (p : M) (k : ℕ) (q : M) :
+    heatParametrixCoefficient g p (k + 1) q =
+      (Real.sqrt (normalJacobian g p (normalChartAt g p q)))⁻¹ *
+        radialIntegral k (fun v : E => Real.sqrt (normalJacobian g p v) *
+          laplacian (LeviCivita g) g (heatParametrixCoefficient g p k)
+            (expMap g p ((tangentSpaceModelContinuousLinearEquiv (I := I) p).symm v)))
+          (normalChartAt g p q) := rfl
 
 theorem heatParametrixCoefficient_zero_centre
     (g : SmoothRiemannianMetric I M) (p : M) : heatParametrixCoefficient g p 0 p = 1 := by
-  simp only [heatParametrixCoefficient, normalChartAt_centre, normalJacobian_inv_sqrt_zero]
+  simp only [heatParametrixCoefficient_zero, normalChartAt_centre, normalJacobian_inv_sqrt_zero]
 
 theorem heatParametrixCoefficient_succ_centre
     (g : SmoothRiemannianMetric I M) (p : M) (k : ℕ) :
     heatParametrixCoefficient g p (k + 1) p =
       laplacian (LeviCivita g) g (heatParametrixCoefficient g p k) p / (k + 1 : ℝ) := by
-  rw [heatParametrixCoefficient, normalChartAt_centre, normalJacobian_inv_sqrt_zero,
+  rw [heatParametrixCoefficient_succ, normalChartAt_centre, normalJacobian_inv_sqrt_zero,
     one_mul, radialIntegral_zero, normalJacobian_zero, Real.sqrt_one, one_mul, map_zero, expMap_zero]
   simp only [smul_eq_mul, Nat.cast_add, Nat.cast_one, div_eq_mul_inv, mul_comm]
 
@@ -76,25 +87,13 @@ theorem contMDiffOn_heatParametrixCoefficient
     change normalChartAt g p (expMapDiffeo g p v) ∈ U
     rw [hinv]
     exact hv
-  have hsqrt : ContDiffOn ℝ ∞ (fun v : E => Real.sqrt (normalJacobian g p v)) U :=
-    (contDiffOn_normalJacobian g p).sqrt (fun v hv =>
-      (normalJacobian_pos g p (mem_expMapDiffeo_source_of_norm_lt_radius g p
-        (by simpa [U] using hv))).ne')
   have hstar : StarConvex ℝ (0 : E) U :=
     (convex_ball (0 : E) (expMapC2Radius g p)).starConvex
       (Metric.mem_ball_self (expMapC2Radius_pos g p))
-  induction k with
-  | zero => exact contMDiffOn_normalJacobian_inv_sqrt g p
-  | succ k ih =>
-    have hΔ := contMDiffOn_laplacian_leviCivita g hV ih
-    have hin : ContDiffOn ℝ ∞ (fun v : E => Real.sqrt (normalJacobian g p v) *
-        laplacian (LeviCivita g) g (heatParametrixCoefficient g p k)
-          (expMap g p ((tangentSpaceModelContinuousLinearEquiv (I := I) p).symm v))) U := by
-      apply hsqrt.mul
-      exact contMDiffOn_iff_contDiffOn.mp (hΔ.comp hexp hexpV)
-    have hrad := contDiffOn_radialIntegral (⊤ : ℕ∞) k Metric.isOpen_ball hstar hin
-    have hcomp := hrad.contMDiffOn.comp hchart (fun q hq => hq.2)
-    exact (contMDiffOn_normalJacobian_inv_sqrt g p).mul hcomp
+  exact contMDiffOn_heatParametrixCoefficientInCoordinates g Metric.isOpen_ball hstar hV
+    hexp hchart hexpV (fun q hq => hq.2) (contDiffOn_normalJacobian g p)
+    (fun v hv => normalJacobian_pos g p (mem_expMapDiffeo_source_of_norm_lt_radius g p
+      (by simpa [U] using hv))) k
 
 theorem heatParametrixCoefficient_one_centre
     (g : SmoothRiemannianMetric I M) (p : M) :

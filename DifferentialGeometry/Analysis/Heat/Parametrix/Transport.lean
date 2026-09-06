@@ -77,7 +77,7 @@ theorem hasDerivAt_heatParametrixCoefficient_zero_intrinsicGeodesic
     rw [expMapIntrinsic_def]
     exact hc
   have hd := hasDerivAt_normalJacobian_inv_sqrt_intrinsicGeodesic B hx hB
-  simpa only [heatParametrixCoefficient, hq] using hd
+  simpa only [heatParametrixCoefficient_zero, hq] using hd
 
 theorem hasDerivAt_heatParametrixCoefficient_succ_intrinsicGeodesic
     {g : SmoothRiemannianMetric I M} {hEnorm : IsMetricNorm g} {p : M}
@@ -107,14 +107,14 @@ theorem hasDerivAt_heatParametrixCoefficient_succ_intrinsicGeodesic
       (intrinsicGeodesic g hEnorm p (show TangentSpace I p from x) t)) =ᶠ[𝓝 1]
       fun t : ℝ => (Real.sqrt (normalJacobian g p (t • x)))⁻¹ * radialIntegral k Q (t • x) := by
     filter_upwards [hechart] with t ht
-    rw [heatParametrixCoefficient, ht]
+    rw [heatParametrixCoefficient_succ, ht]
   have hq : normalChartAt g p (expMapIntrinsic g hEnorm p (show TangentSpace I p from x)) = x := by
     rw [expMapIntrinsic_def]
     simpa only [one_smul] using hechart.eq_of_nhds
   have ha : heatParametrixCoefficient g p (k + 1)
       (expMapIntrinsic g hEnorm p (show TangentSpace I p from x)) =
       (Real.sqrt (normalJacobian g p x))⁻¹ * radialIntegral k Q x := by
-    rw [heatParametrixCoefficient, hq]
+    rw [heatParametrixCoefficient_succ, hq]
   have hxexp : expMap g p ((tangentSpaceModelContinuousLinearEquiv (I := I) p).symm x) =
       expMapIntrinsic g hEnorm p (show TangentSpace I p from x) := exp_eq_intr_of_c2 g hEnorm p hx
   have hpos := normalJacobian_pos g p (mem_expMapDiffeo_source_of_norm_lt_radius g p hx)

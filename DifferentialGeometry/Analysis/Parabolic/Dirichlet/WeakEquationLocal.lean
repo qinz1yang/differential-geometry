@@ -18,6 +18,41 @@ open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Integral.DivergenceTheorem
 open DifferentialGeometry.Integral.Measure
 
+private theorem integral_adjoint_test_restrict
+    {d : ℕ} {S Ω : Set (EuclideanSpace ℝ (Fin d))}
+    (hS : MeasurableSet S) (hΩ : Ω ⊆ S)
+    {ψ : EuclideanSpace ℝ (Fin d) → ℝ} (hψ : tsupport ψ ⊆ Ω)
+    (U ρ c a : EuclideanSpace ℝ (Fin d) → ℝ)
+    (A : Fin d → Fin d → EuclideanSpace ℝ (Fin d) → ℝ)
+    (B : Fin d → EuclideanSpace ℝ (Fin d) → ℝ) :
+    (∫ z in S, ρ z * U z *
+      ((∑ i, fderiv ℝ (fun y => (∑ j, A i j y *
+          fderiv ℝ ψ y (EuclideanSpace.single j 1)) * ρ y) z (EuclideanSpace.single i 1)) / ρ z -
+        (∑ i, B i z * fderiv ℝ ψ z (EuclideanSpace.single i 1)) - c z * ψ z - a z * ψ z)) =
+    (∫ z in Ω, ρ z * U z *
+      ((∑ i, fderiv ℝ (fun y => (∑ j, A i j y *
+          fderiv ℝ ψ y (EuclideanSpace.single j 1)) * ρ y) z (EuclideanSpace.single i 1)) / ρ z -
+        (∑ i, B i z * fderiv ℝ ψ z (EuclideanSpace.single i 1)) - c z * ψ z - a z * ψ z)) := by
+  apply setIntegral_eq_of_subset_of_forall_sdiff_eq_zero hS hΩ
+  intro z hz
+  have hzψ : z ∉ tsupport ψ := fun h => hz.2 (hψ h)
+  have hd (i : Fin d) : fderiv ℝ ψ z (EuclideanSpace.single i 1) = 0 :=
+    image_eq_zero_of_notMem_tsupport
+      (f := fun y => fderiv ℝ ψ y (EuclideanSpace.single i 1))
+      (fun h => hzψ (tsupport_fderiv_apply_subset ℝ (EuclideanSpace.single i 1) h))
+  have hF (i : Fin d) :
+      fderiv ℝ (fun y => (∑ j, A i j y *
+          fderiv ℝ ψ y (EuclideanSpace.single j 1)) * ρ y) z (EuclideanSpace.single i 1) = 0 := by
+    apply image_eq_zero_of_notMem_tsupport
+      (f := fun z => fderiv ℝ (fun y => (∑ j, A i j y *
+        fderiv ℝ ψ y (EuclideanSpace.single j 1)) * ρ y) z (EuclideanSpace.single i 1))
+    intro hzF
+    exact hzψ ((DifferentialGeometry.Analysis.Sobolev.Euclidean.tsupport_sum_mul_fderiv_subset
+      (A i) ψ) (tsupport_mul_subset_left (tsupport_fderiv_apply_subset ℝ
+        (EuclideanSpace.single i 1) hzF)))
+  simp only [hF, hd, image_eq_zero_of_notMem_tsupport hzψ, mul_zero,
+    Finset.sum_const_zero, zero_div, sub_zero]
+
 variable {n : ℕ} [NeZero n]
 variable {M : Type*} [TopologicalSpace M]
   [ChartedSpace (EuclideanHalfSpace n) M]
@@ -181,29 +216,11 @@ theorem IsWeakEvolutionSolution.exists_timeH1_integral_local_adjoint
             (∑ j, A t i j z' * fderiv ℝ ψ z' (EuclideanSpace.single j 1)) * ρ t z') z
             (EuclideanSpace.single i 1)) / ρ t z -
           (∑ i, B t i z * fderiv ℝ ψ z (EuclideanSpace.single i 1)) -
-          localDivergence (I := I_hs) (G.metric t) α (X t) (x z) * ψ z - a t * ψ z) := by
-    apply hrestrict
-    intro z hz
-    have hd (i : Fin (Module.finrank ℝ EuN)) :
-        fderiv ℝ ψ z (EuclideanSpace.single i 1) = 0 :=
-      image_eq_zero_of_notMem_tsupport
-        (f := fun y => fderiv ℝ ψ y (EuclideanSpace.single i 1))
-        (fun h => hz (tsupport_fderiv_apply_subset ℝ (EuclideanSpace.single i 1) h))
-    have hF (i : Fin (Module.finrank ℝ EuN)) :
-        fderiv ℝ (fun z' : EuStd =>
-          (∑ j, A t i j z' * fderiv ℝ ψ z' (EuclideanSpace.single j 1)) * ρ t z') z
-          (EuclideanSpace.single i 1) = 0 := by
-      apply image_eq_zero_of_notMem_tsupport
-        (f := fun y => fderiv ℝ (fun z' : EuStd =>
-          (∑ j, A t i j z' * fderiv ℝ ψ z' (EuclideanSpace.single j 1)) * ρ t z') y
-          (EuclideanSpace.single i 1))
-      intro hy
-      apply hz
-      exact (DifferentialGeometry.Analysis.Sobolev.Euclidean.tsupport_sum_mul_fderiv_subset
-        (A t i) ψ) (tsupport_mul_subset_left (tsupport_fderiv_apply_subset ℝ
-          (EuclideanSpace.single i 1) hy))
-    simp only [hF, hd, image_eq_zero_of_notMem_tsupport hz, mul_zero,
-      Finset.sum_const_zero, zero_div, sub_zero]
+          localDivergence (I := I_hs) (G.metric t) α (X t) (x z) * ψ z - a t * ψ z) :=
+    integral_adjoint_test_restrict hS.measurableSet hΩs hψ_supp
+      (fun z => H1ComplDirichletToLp q (u t) (x z)) (ρ t)
+      (fun z => localDivergence (I := I_hs) (G.metric t) α (X t) (x z))
+      (fun _ => a t) (A t) (B t)
   obtain ⟨w, hw₀, hwm, hwd⟩ := hu.exists_timeH1_integral_euclidean α ψ
     hψ_smooth hψ_cpt (hψ_supp.trans hΩs)
   refine ⟨w, hw₀.trans (hm₀ 0 (fun z => f₀ (x z))), ?_, ?_⟩
@@ -259,47 +276,8 @@ theorem IsWeakEvolutionSolution.exists_timeH1_integral_local
     (subset_closure.trans hΩs) ψ hψ_smooth hψ_cpt hψ_supp
   refine ⟨w, hw₀, hwm, ?_⟩
   filter_upwards [hwd] with t ht
-  have hy {z : EuStd} (hz : z ∈ Ω) : e.symm z ∈ (extChartAt I_hs α).target := by
-    obtain ⟨y, hy, he⟩ := hΩs (subset_closure hz)
-    subst z
-    exact interior_subset (by simpa only [e, ContinuousLinearEquiv.symm_apply_apply] using hy)
-  have hρ : ContinuousOn (ρ t) Ω :=
-    ((chartDensityOnE_contDiffOn (I := I_hs) (G.metric t) α).comp
-      e.symm.contDiff.contDiffOn (fun _ hz => hy hz)).continuousOn
-  have hval : MemLp (fun z => H1ComplDirichletToLp q (u t) (x z)) 2 (volume.restrict Ω) := by
-    have hΩt := hΩs.trans (image_mono interior_subset)
-    exact (Lp.memLp (chartRestrictionLp q α hΩ.measurableSet hΩc hΩt 2
-      (H1ComplDirichletToLp q (u t)))).ae_eq
-      (chartRestrictionLp_coeFn q α hΩ.measurableSet hΩc hΩt 2 (H1ComplDirichletToLp q (u t)))
-  have hc : Continuous (fun z => (ρ t z * a t) * ψ z) :=
-    ((hρ.mul continuousOn_const).mul hψ_smooth.continuous.continuousOn).continuous_of_tsupport_subset
-      hΩ (tsupport_mul_subset_right.trans hψ_supp)
-  have hp : Integrable
-      (fun z => ρ t z * H1ComplDirichletToLp q (u t) (x z) * (a t * ψ z)) (volume.restrict Ω) := by
-    have h := (hval.locallyIntegrable (by norm_num)).integrable_smul_right_of_hasCompactSupport
-      hc hψ_cpt.mul_left
-    convert h using 1
-    funext z
-    simp only [smul_eq_mul]
-    ring
-  have hai := integrable_chart_adjoint q (G.metric t) α hΩ hΩc hΩs (X t) (u t)
-    hψ_smooth hψ_cpt hψ_supp
-  have ha := integral_chart_adjoint_eq_neg_sum_integral q (G.metric t) α hΩ hΩc hΩs (X t) (u t)
-    hψ_smooth hψ_cpt hψ_supp
-  let L := fun z =>
-    (∑ i, fderiv ℝ (fun y => (∑ j, A t i j y *
-      fderiv ℝ ψ y (EuclideanSpace.single j 1)) * ρ t y) z (EuclideanSpace.single i 1)) / ρ t z -
-      (∑ i, B t i z * fderiv ℝ ψ z (EuclideanSpace.single i 1)) -
-      localDivergence (I := I_hs) (G.metric t) α (X t) (x z) * ψ z
-  have hsplit :
-      (∫ z in Ω, ρ t z * H1ComplDirichletToLp q (u t) (x z) * (L z - a t * ψ z)) =
-        (∫ z in Ω, ρ t z * H1ComplDirichletToLp q (u t) (x z) * L z) -
-          ∫ z in Ω, ρ t z * H1ComplDirichletToLp q (u t) (x z) * (a t * ψ z) := by
-    rw [← integral_sub hai hp]
-    apply integral_congr_ae
-    filter_upwards [] with z
-    exact mul_sub _ _ _
-  rw [ht, hsplit, ha]
+  rw [ht, integral_chart_adjoint_sub_potential_eq_neg_sum_integral q (G.metric t) α
+    hΩ hΩc hΩs (X t) (u t) continuousOn_const hψ_smooth hψ_cpt hψ_supp]
   ring
 
 theorem IsWeakEvolutionSolution.exists_timeH1_integral_spacetime
@@ -451,5 +429,205 @@ theorem IsWeakEvolutionSolution.integral_time_test
   have hi := w.integral_mul_deriv_add_deriv_mul hT hη
   rw [hb, hm, hd] at hi
   linarith
+
+theorem IsWeakEvolutionSolution.integral_local_adjoint_test
+    {q : SmoothRiemannianMetric I_hs M}
+    {D : RealTimeInterval}
+    {G : MetricConnectionFamilyOn (I := I_hs) (M := M) D}
+    {hG : MetricFamilySmoothOn (I := I_hs) (M := M) D G.metric}
+    {T : ℝ} {hT : 0 ≤ T} {hreg : Icc (0 : ℝ) T ⊆ D.regular}
+    {X : ℝ → Cₛ^∞⟮I_hs; EuclideanSpace ℝ (Fin n),
+      (TangentSpace I_hs : M → Type _)⟯}
+    (hXcont : ContinuousOn
+      (fun p : ℝ × M ↦
+        (TotalSpace.mk' (EuclideanSpace ℝ (Fin n)) p.2 (X p.1 p.2) :
+          TangentBundle I_hs M))
+      (Icc (0 : ℝ) T ×ˢ (Set.univ : Set M)))
+    {a : ℝ → ℝ} (hacont : ContinuousOn a (Icc (0 : ℝ) T))
+    {Bx Bv : ℝ}
+    {hX : ∀ t ∈ Ico (0 : ℝ) T, ∀ x : M,
+      (G.metric t).inner x (X t x) (X t x) ≤ Bx}
+    {htrace : ∀ t ∈ Ico (0 : ℝ) T, ∀ x : M,
+      |traceTimeDerivMetric (I := I_hs) G.metric t x| ≤ Bv}
+    {f₀ : Lp ℝ 2
+      (riemannianVolumeMeasure (I := I_hs) (M := M) q)}
+    {u : timeL2 (H1ComplDirichlet q) T}
+    (hu : IsWeakEvolutionSolution hG hT hreg X a Bx Bv
+      hX htrace f₀ u)
+    (α : M) {Ω : Set EuStd}
+    (hΩs : Ω ⊆ toEuclidean (E := EuN) '' interior (extChartAt I_hs α).target)
+    {φ : ℝ × EuStd → ℝ}
+    (hφ : ContDiff ℝ ∞ φ) (hφc : HasCompactSupport φ)
+    (hφi : tsupport φ ⊆ univ ×ˢ Ω)
+    (hφT : ∀ y, φ (T, y) = 0) :
+    let e := toEuclidean (E := EuN)
+    let x := fun z : EuStd => (extChartAt I_hs α).symm (e.symm z)
+    let ρ := fun t z => chartDensityOnE (I := I_hs) (G.metric t) α (e.symm z)
+    let A := fun t i j z => chartInvGramOnE (I := I_hs) (G.metric t) α i j (e.symm z)
+    let B := fun t i z => chartCoeffOnE (I := I_hs) α (X t) i (e.symm z)
+    (∫ t, ∫ z in Ω, ρ t z *
+      (H1ComplDirichletToLp q (u t) (x z) * fderiv ℝ φ (t, z) (1, 0)) ∂volume ∂timeMeasure T) +
+    (∫ t, (∫ z in Ω, ρ t z *
+        ((1 / 2 : ℝ) * traceTimeDerivMetric (I := I_hs) G.metric t (x z) *
+          (H1ComplDirichletToLp q (u t) (x z) * φ (t, z)))) +
+      ∫ z in Ω, ρ t z * H1ComplDirichletToLp q (u t) (x z) *
+        ((∑ i : Fin (Module.finrank ℝ EuN),
+          fderiv ℝ (fun z' : EuStd =>
+            (∑ j : Fin (Module.finrank ℝ EuN), A t i j z' *
+              fderiv ℝ (fun y => φ (t, y)) z' (EuclideanSpace.single j 1)) * ρ t z') z
+              (EuclideanSpace.single i 1)) / ρ t z -
+          (∑ i : Fin (Module.finrank ℝ EuN), B t i z *
+            fderiv ℝ (fun y => φ (t, y)) z (EuclideanSpace.single i 1)) -
+          localDivergence (I := I_hs) (G.metric t) α (X t) (x z) * φ (t, z) - a t * φ (t, z))
+      ∂volume ∂timeMeasure T) =
+      -(∫ z in Ω, ρ 0 z * (f₀ (x z) * φ (0, z))) := by
+  intro e x ρ A B
+  let S := e '' interior (extChartAt I_hs α).target
+  have hS : IsOpen S := e.toHomeomorph.isOpenMap _ isOpen_interior
+  have hs {ψ : ℝ × EuStd → ℝ} (hψ : tsupport ψ ⊆ tsupport φ) (t : ℝ) :
+      tsupport (fun z => ψ (t, z)) ⊆ Ω := by
+    have h := tsupport_comp_subset_preimage ψ (f := fun z : EuStd => (t, z))
+      (continuous_const.prodMk continuous_id)
+    exact h.trans fun z hz => (hφi (hψ hz)).2
+  have hm (ψ : EuStd → ℝ) (hψ : tsupport ψ ⊆ Ω) (t : ℝ) (F c : EuStd → ℝ) :
+      (∫ z in S, ρ t z * (c z * (F z * ψ z))) =
+        ∫ z in Ω, ρ t z * (c z * (F z * ψ z)) := by
+    apply setIntegral_eq_of_subset_of_forall_sdiff_eq_zero hS.measurableSet hΩs
+    intro z hz
+    rw [image_eq_zero_of_notMem_tsupport (fun h => hz.2 (hψ h))]
+    ring
+  have hm₀ (ψ : EuStd → ℝ) (hψ : tsupport ψ ⊆ Ω) (t : ℝ) (F : EuStd → ℝ) :
+      (∫ z in S, ρ t z * (F z * ψ z)) = ∫ z in Ω, ρ t z * (F z * ψ z) := by
+    simpa only [one_mul] using hm ψ hψ t F (fun _ => 1)
+  have h := hu.integral_euclidean_test hXcont hacont α hφ hφc
+    (hφi.trans (Set.prod_mono Subset.rfl hΩs)) hφT
+  refine (congrArg₂ (fun a b : ℝ => a + b) ?_ ?_).trans
+    (h.trans (congrArg Neg.neg ?_))
+  · apply integral_congr_ae
+    filter_upwards [] with t
+    exact (hm₀ (fun z => fderiv ℝ φ (t, z) (1, 0))
+      (hs (tsupport_fderiv_apply_subset ℝ (1, 0)) t) t
+      (fun z => H1ComplDirichletToLp q (u t) (x z))).symm
+  · apply integral_congr_ae
+    filter_upwards [] with t
+    apply congrArg₂ (fun a b : ℝ => a + b)
+    · exact (hm (fun z => φ (t, z)) (hs Subset.rfl t) t
+        (fun z => H1ComplDirichletToLp q (u t) (x z))
+        (fun z => (1 / 2 : ℝ) * traceTimeDerivMetric (I := I_hs) G.metric t (x z))).symm
+    · exact (integral_adjoint_test_restrict hS.measurableSet hΩs (hs Subset.rfl t)
+        (fun z => H1ComplDirichletToLp q (u t) (x z)) (ρ t)
+        (fun z => localDivergence (I := I_hs) (G.metric t) α (X t) (x z))
+        (fun _ => a t) (A t) (B t)).symm
+  · exact hm₀ (fun z => φ (0, z)) (hs Subset.rfl 0) 0 (fun z => f₀ (x z))
+
+theorem IsWeakEvolutionSolution.integral_local_test
+    {q : SmoothRiemannianMetric I_hs M}
+    {D : RealTimeInterval}
+    {G : MetricConnectionFamilyOn (I := I_hs) (M := M) D}
+    {hG : MetricFamilySmoothOn (I := I_hs) (M := M) D G.metric}
+    {T : ℝ} {hT : 0 ≤ T} {hreg : Icc (0 : ℝ) T ⊆ D.regular}
+    {X : ℝ → Cₛ^∞⟮I_hs; EuclideanSpace ℝ (Fin n),
+      (TangentSpace I_hs : M → Type _)⟯}
+    (hXcont : ContinuousOn
+      (fun p : ℝ × M ↦
+        (TotalSpace.mk' (EuclideanSpace ℝ (Fin n)) p.2 (X p.1 p.2) :
+          TangentBundle I_hs M))
+      (Icc (0 : ℝ) T ×ˢ (Set.univ : Set M)))
+    {a : ℝ → ℝ} (hacont : ContinuousOn a (Icc (0 : ℝ) T))
+    {Bx Bv : ℝ}
+    {hX : ∀ t ∈ Ico (0 : ℝ) T, ∀ x : M,
+      (G.metric t).inner x (X t x) (X t x) ≤ Bx}
+    {htrace : ∀ t ∈ Ico (0 : ℝ) T, ∀ x : M,
+      |traceTimeDerivMetric (I := I_hs) G.metric t x| ≤ Bv}
+    {f₀ : Lp ℝ 2
+      (riemannianVolumeMeasure (I := I_hs) (M := M) q)}
+    {u : timeL2 (H1ComplDirichlet q) T}
+    (hu : IsWeakEvolutionSolution hG hT hreg X a Bx Bv
+      hX htrace f₀ u)
+    (α : M) {Ω : Set EuStd}
+    (hΩ : IsOpen Ω) (hΩc : IsCompact (closure Ω))
+    (hΩs : closure Ω ⊆ toEuclidean (E := EuN) '' interior (extChartAt I_hs α).target)
+    {φ : ℝ × EuStd → ℝ}
+    (hφ : ContDiff ℝ ∞ φ) (hφc : HasCompactSupport φ)
+    (hφi : tsupport φ ⊆ univ ×ˢ Ω)
+    (hφT : ∀ y, φ (T, y) = 0) :
+    let e := toEuclidean (E := EuN)
+    let x := fun z : EuStd => (extChartAt I_hs α).symm (e.symm z)
+    let ρ := fun t z => chartDensityOnE (I := I_hs) (G.metric t) α (e.symm z)
+    let A := fun t i j z => chartInvGramOnE (I := I_hs) (G.metric t) α i j (e.symm z)
+    let B := fun t i z => chartCoeffOnE (I := I_hs) α (X t) i (e.symm z)
+    let U := dirichletLocalSpacetimeLp q α hΩ.measurableSet hΩc
+      (hΩs.trans (image_mono interior_subset)) (timeMeasure T) u
+    let DU := fun i => dirichletLocalSpacetimeWeakPartialLp q α hΩ hΩc hΩs (timeMeasure T) i u
+    (∫ t, ∫ z in Ω, ρ t z * (U (t, z) * fderiv ℝ φ (t, z) (1, 0)) ∂volume ∂timeMeasure T) +
+    (∫ t, (∫ z in Ω, ρ t z *
+        ((1 / 2 : ℝ) * traceTimeDerivMetric (I := I_hs) G.metric t (x z) *
+          (U (t, z) * φ (t, z)))) -
+      (∑ i : Fin (Module.finrank ℝ EuN), ∫ z in Ω, DU i (t, z) *
+        ((∑ j : Fin (Module.finrank ℝ EuN), A t i j z *
+          fderiv ℝ (fun y => φ (t, y)) z (EuclideanSpace.single j 1)) * ρ t z -
+            B t i z * ρ t z * φ (t, z))) -
+      (∫ z in Ω, ρ t z * U (t, z) * (a t * φ (t, z))) ∂timeMeasure T) =
+      -(∫ z in Ω, ρ 0 z * (f₀ (x z) * φ (0, z))) := by
+  intro e x ρ A B U DU
+  have hs (t : ℝ) : tsupport (fun z => φ (t, z)) ⊆ Ω := by
+    have h := tsupport_comp_subset_preimage φ (f := fun z : EuStd => (t, z))
+      (continuous_const.prodMk continuous_id)
+    exact h.trans fun z hz => (hφi hz).2
+  have hsc (t : ℝ) : HasCompactSupport (fun z => φ (t, z)) :=
+    hΩc.of_isClosed_subset (isClosed_tsupport _) ((hs t).trans subset_closure)
+  have hss (t : ℝ) : ContDiff ℝ ∞ (fun z => φ (t, z)) :=
+    hφ.comp (contDiff_const.prodMk contDiff_id)
+  have h := hu.integral_local_adjoint_test hXcont hacont α
+    (subset_closure.trans hΩs) hφ hφc hφi hφT
+  have hv := dirichletLocalSpacetimeLp_coeFn q α hΩ.measurableSet hΩc
+    (hΩs.trans (image_mono interior_subset)) (timeMeasure T) u
+  have hD : ∀ᵐ t ∂timeMeasure T, ∀ i : Fin (Module.finrank ℝ EuN),
+      (fun z => DU i (t, z)) =ᵐ[volume.restrict Ω]
+        (dirichletLocalWeakPartialLp q α hΩ hΩc hΩs i (u t) : EuStd → ℝ) :=
+    ae_all_iff.mpr (fun i => dirichletLocalSpacetimeWeakPartialLp_coeFn q α hΩ hΩc hΩs
+      (timeMeasure T) i u)
+  refine (congrArg₂ (fun a b : ℝ => a + b) ?_ ?_).trans h
+  · apply integral_congr_ae
+    filter_upwards [hv] with t ht
+    apply integral_congr_ae
+    filter_upwards [ht] with z hz
+    rw [hz]
+  · apply integral_congr_ae
+    filter_upwards [hv, hD] with t ht htD
+    rw [integral_chart_adjoint_sub_potential_eq_neg_sum_integral q (G.metric t) α
+      hΩ hΩc hΩs (X t) (u t) continuousOn_const (hss t) (hsc t) (hs t)]
+    have hm :
+        (∫ z in Ω, ρ t z *
+          ((1 / 2 : ℝ) * traceTimeDerivMetric (I := I_hs) G.metric t (x z) *
+            (U (t, z) * φ (t, z)))) =
+        ∫ z in Ω, ρ t z *
+          ((1 / 2 : ℝ) * traceTimeDerivMetric (I := I_hs) G.metric t (x z) *
+            (H1ComplDirichletToLp q (u t) (x z) * φ (t, z))) := by
+      apply integral_congr_ae
+      filter_upwards [ht] with z hz
+      rw [hz]
+    have hp : (∫ z in Ω, ρ t z * U (t, z) * (a t * φ (t, z))) =
+        ∫ z in Ω, ρ t z * H1ComplDirichletToLp q (u t) (x z) * (a t * φ (t, z)) := by
+      apply integral_congr_ae
+      filter_upwards [ht] with z hz
+      rw [hz]
+    have hflux :
+        (∑ i : Fin (Module.finrank ℝ EuN), ∫ z in Ω, DU i (t, z) *
+          ((∑ j : Fin (Module.finrank ℝ EuN), A t i j z *
+            fderiv ℝ (fun y => φ (t, y)) z (EuclideanSpace.single j 1)) * ρ t z -
+              B t i z * ρ t z * φ (t, z))) =
+        ∑ i : Fin (Module.finrank ℝ EuN), ∫ z in Ω,
+          dirichletLocalWeakPartialLp q α hΩ hΩc hΩs i (u t) z *
+            ((∑ j : Fin (Module.finrank ℝ EuN), A t i j z *
+              fderiv ℝ (fun y => φ (t, y)) z (EuclideanSpace.single j 1)) * ρ t z -
+                B t i z * ρ t z * φ (t, z)) := by
+      apply Finset.sum_congr rfl
+      intro i _
+      apply integral_congr_ae
+      filter_upwards [htD i] with z hz
+      rw [hz]
+    rw [hm, hp, hflux]
+    ring
 
 end DifferentialGeometry.Analysis.Parabolic.Dirichlet
