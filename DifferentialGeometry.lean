@@ -4320,3 +4320,13 @@ import DifferentialGeometry.Bundle.Principal.Defs
 import DifferentialGeometry.Geometry.Comparison.Volume.NormalJacobianLaplacian
 import DifferentialGeometry.Geometry.Comparison.Volume.RadialTransport
 import DifferentialGeometry.Geometry.Connection.Hessian.Scalar
+import DifferentialGeometry.Analysis.Integration.Integral.Prod
+import DifferentialGeometry.Analysis.Integration.RadialIntegral
+import DifferentialGeometry.Analysis.Parabolic.Dirichlet.SpacetimeWeakDerivative
+import DifferentialGeometry.Analysis.Sobolev.Euclidean.WeakDerivativeProduct
+import DifferentialGeometry.Bundle.Principal.Topology
+import DifferentialGeometry.Geometry.Comparison.NormalCoordinates.Intrinsic
+import DifferentialGeometry.Geometry.Comparison.Volume.NormalJacobianTransport
+import DifferentialGeometry.Geometry.Connection.ParallelTransport.OrthonormalFrame
+import DifferentialGeometry.Geometry.Metric.OrthonormalFrame.Topology
+import DifferentialGeometry.Geometry.Metric.OrthonormalFrame.Torsor

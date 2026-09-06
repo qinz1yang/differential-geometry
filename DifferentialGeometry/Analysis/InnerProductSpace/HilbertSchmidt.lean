@@ -1,3 +1,4 @@
+import Mathlib.Analysis.InnerProductSpace.Adjoint
 import Mathlib.Analysis.InnerProductSpace.CanonicalTensor
 import Mathlib.Analysis.Normed.Module.FiniteDimension
 
@@ -88,5 +89,46 @@ theorem hilbertSchmidtInner_congr (eU : U ≃ₗᵢ[ℝ] U') (eV : V →ₗᵢ[�
     LinearIsometry.coe_toContinuousLinearMap, LinearIsometryEquiv.coe_toContinuousLinearEquiv,
     ContinuousLinearEquiv.coe_coe, LinearIsometryEquiv.symm_apply_apply,
     LinearIsometry.inner_map_map, hilbertSchmidtInner]
+
+end ContinuousLinearMap
+
+
+namespace ContinuousLinearMap
+
+variable {U V : Type*} [NormedAddCommGroup U] [InnerProductSpace ℝ U]
+  [FiniteDimensional ℝ U] [NormedAddCommGroup V] [InnerProductSpace ℝ V]
+
+theorem hilbertSchmidtInner_comp_right (A C : U →L[ℝ] V) (K : U →L[ℝ] U) :
+    hilbertSchmidtInner (A.comp K) C = hilbertSchmidtInner A (C.comp K.adjoint) := by
+  classical
+  let b := stdOrthonormalBasis ℝ U
+  rw [hilbertSchmidtInner_eq_sum b, hilbertSchmidtInner_eq_sum b]
+  simp only [comp_apply]
+  have hleft (i) : inner ℝ (A (K (b i))) (C (b i)) =
+      ∑ j, inner ℝ (b j) (K (b i)) * inner ℝ (A (b j)) (C (b i)) := by
+    nth_rw 1 [← b.sum_repr' (K (b i))]
+    rw [map_sum, sum_inner]
+    simp only [map_smul, inner_smul_left, conj_trivial]
+  have hright (i) : inner ℝ (A (b i)) (C (K.adjoint (b i))) =
+      ∑ j, inner ℝ (b j) (K.adjoint (b i)) * inner ℝ (A (b i)) (C (b j)) := by
+    nth_rw 1 [← b.sum_repr' (K.adjoint (b i))]
+    rw [map_sum, inner_sum]
+    simp only [map_smul, inner_smul_right]
+  simp_rw [hleft, hright]
+  rw [Finset.sum_comm]
+  apply Finset.sum_congr rfl
+  intro i _
+  apply Finset.sum_congr rfl
+  intro j _
+  rw [K.adjoint_inner_right]
+  rw [real_inner_comm (K (b j)) (b i)]
+
+
+theorem hilbertSchmidtInner_comp_add_eq_zero (A C : U →L[ℝ] V) (K : U →L[ℝ] U)
+    (hK : K.adjoint = -K) :
+    hilbertSchmidtInner (A.comp K) C + hilbertSchmidtInner A (C.comp K) = 0 := by
+  rw [hilbertSchmidtInner_comp_right, hK, comp_neg]
+  rw [← hilbertSchmidtInnerSL_apply, ← hilbertSchmidtInnerSL_apply, map_neg]
+  exact neg_add_cancel _
 
 end ContinuousLinearMap

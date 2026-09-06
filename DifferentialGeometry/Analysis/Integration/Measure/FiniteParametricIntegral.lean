@@ -1,5 +1,4 @@
 import Mathlib.Analysis.Calculus.ParametricIntegral
-import Mathlib.Topology.MetricSpace.ProperSpace
 
 noncomputable section
 
@@ -8,57 +7,11 @@ open scoped Topology
 
 namespace DifferentialGeometry.Integral.Measure
 
-theorem hasFDerivAt_integral_compact
-    {X V W : Type*} [TopologicalSpace X] [CompactSpace X]
-    [MeasurableSpace X] [BorelSpace X]
-    [T2Space X] [SecondCountableTopology X]
-    [NormedAddCommGroup V] [NormedSpace ℝ V] [FiniteDimensional ℝ V]
-    [NormedAddCommGroup W] [NormedSpace ℝ W]
-    (μ : Measure X) [IsFiniteMeasure μ]
-    (F : V → X → W) (F' : V → X → (V →L[ℝ] W))
-    (hF : Continuous (fun p : V × X => F p.1 p.2))
-    (hF' : Continuous (fun p : V × X => F' p.1 p.2))
-    (hdiff : ∀ u : V, ∀ x : X,
-      HasFDerivAt (fun v : V => F v x) (F' u x) u)
-    (u : V) :
-    HasFDerivAt (fun v : V => ∫ x, F v x ∂μ) (∫ x, F' u x ∂μ) u := by
-  let K : Set (V × X) := Metric.closedBall u 1 ×ˢ (Set.univ : Set X)
-  have hK : IsCompact K :=
-    (isCompact_closedBall u 1).prod isCompact_univ
-  have hnorm : ContinuousOn (fun p : V × X => ‖F' p.1 p.2‖) K :=
-    hF'.norm.continuousOn
-  obtain ⟨C, hC⟩ := hK.exists_bound_of_continuousOn hnorm
-  have hs : Metric.closedBall u 1 ∈ 𝓝 u :=
-    Metric.closedBall_mem_nhds u zero_lt_one
-  have hmeas : ∀ᶠ v in 𝓝 u, AEStronglyMeasurable (F v) μ := by
-    filter_upwards [] with v
-    exact (hF.comp (continuous_const.prodMk continuous_id)).aestronglyMeasurable
-  have hint : Integrable (F u) μ := by
-    have hc : Continuous (F u) :=
-      hF.comp (continuous_const.prodMk continuous_id)
-    exact integrableOn_univ.mp
-      (hc.continuousOn.integrableOn_compact isCompact_univ)
-  have hmeas' : AEStronglyMeasurable (F' u) μ :=
-    (hF'.comp (continuous_const.prodMk continuous_id)).aestronglyMeasurable
-  have hbound : ∀ᵐ x ∂μ, ∀ v ∈ Metric.closedBall u 1,
-      ‖F' v x‖ ≤ C := by
-    filter_upwards [] with x
-    intro v hv
-    simpa using hC (v, x) ⟨hv, Set.mem_univ x⟩
-  have hCint : Integrable (fun _ : X => C) μ := integrable_const C
-  have hdiff' : ∀ᵐ x ∂μ, ∀ v ∈ Metric.closedBall u 1,
-      HasFDerivAt (fun w : V => F w x) (F' v x) v := by
-    filter_upwards [] with x
-    intro v _
-    exact hdiff v x
-  exact hasFDerivAt_integral_of_dominated_of_fderiv_le
-    hs hmeas hint hmeas' hbound hCint hdiff'
-
 theorem hasFDerivAt_integral_compactOn
     {X V W : Type*} [TopologicalSpace X] [CompactSpace X]
     [MeasurableSpace X] [BorelSpace X]
     [T2Space X] [SecondCountableTopology X]
-    [NormedAddCommGroup V] [NormedSpace ℝ V] [FiniteDimensional ℝ V]
+    [NormedAddCommGroup V] [NormedSpace ℝ V]
     [NormedAddCommGroup W] [NormedSpace ℝ W]
     (μ : Measure X) [IsFiniteMeasure μ]
     {U : Set V} (hU : IsOpen U)
@@ -69,62 +22,62 @@ theorem hasFDerivAt_integral_compactOn
       HasFDerivAt (fun v : V => F v x) (F' u x) u)
     (u : V) (hu : u ∈ U) :
     HasFDerivAt (fun v : V => ∫ x, F v x ∂μ) (∫ x, F' u x ∂μ) u := by
-  obtain ⟨δ, hδ, hball⟩ := Metric.isOpen_iff.mp hU u hu
-  have hδ2 : 0 < δ / 2 := by positivity
-  have hδ2lt : δ / 2 < δ := by linarith
-  have hcl : Metric.closedBall u (δ / 2) ⊆ U := by
-    exact fun y hy => hball ((Metric.closedBall_subset_ball hδ2lt) hy)
-  let K : Set (V × X) := Metric.closedBall u (δ / 2) ×ˢ (Set.univ : Set X)
-  have hK : IsCompact K :=
-    (isCompact_closedBall u (δ / 2)).prod isCompact_univ
-  have hKU : K ⊆ U ×ˢ (Set.univ : Set X) := by
-    intro p hp
-    exact ⟨hcl hp.1, Set.mem_univ p.2⟩
-  have hnorm : ContinuousOn (fun p : V × X => ‖F' p.1 p.2‖) K :=
-    (hF'.mono hKU).norm
-  obtain ⟨C, hC⟩ := hK.exists_bound_of_continuousOn hnorm
-  have hs : Metric.closedBall u (δ / 2) ∈ 𝓝 u :=
-    Metric.closedBall_mem_nhds u hδ2
+  have hslice (v : V) (hv : v ∈ U) : Continuous (F v) := by
+    rw [← continuousOn_univ]
+    exact hF.comp (continuousOn_const.prodMk continuousOn_id)
+      (fun x _ => ⟨hv, mem_univ x⟩)
+  have hslice' : Continuous (F' u) := by
+    rw [← continuousOn_univ]
+    exact hF'.comp (continuousOn_const.prodMk continuousOn_id)
+      (fun x _ => ⟨hu, mem_univ x⟩)
+  obtain ⟨C, hC⟩ := (isCompact_univ : IsCompact (univ : Set X)).exists_bound_of_continuousOn
+    hslice'.continuousOn
+  let A := (U ×ˢ (univ : Set X)) ∩
+    (fun p : V × X => ‖F' p.1 p.2‖) ⁻¹' Iio (C + 1)
+  have hA : IsOpen A :=
+    hF'.norm.isOpen_inter_preimage (hU.prod isOpen_univ) isOpen_Iio
+  have hsub : ({u} : Set V) ×ˢ (univ : Set X) ⊆ A := by
+    rintro ⟨v, x⟩ ⟨rfl, hx⟩
+    exact ⟨⟨hu, hx⟩, (hC x hx).trans_lt (lt_add_one C)⟩
+  obtain ⟨S, T, hS, _, huS, hT, hST⟩ :=
+    generalized_tube_lemma isCompact_singleton isCompact_univ hA hsub
+  have hnear : S ∩ U ∈ 𝓝 u :=
+    (hS.inter hU).mem_nhds ⟨singleton_subset_iff.mp huS, hu⟩
   have hmeas : ∀ᶠ v in 𝓝 u, AEStronglyMeasurable (F v) μ := by
-    filter_upwards [hs] with v hv
-    have hvU : v ∈ U := hcl hv
-    have hc : Continuous (F v) := by
-      rw [← continuousOn_univ]
-      exact (hF.comp (continuousOn_const.prodMk continuousOn_id)
-        (by intro x hx; exact ⟨hvU, Set.mem_univ x⟩))
-    exact hc.aestronglyMeasurable
-  have hint : Integrable (F u) μ := by
-    have hc : Continuous (F u) := by
-      rw [← continuousOn_univ]
-      exact (hF.comp (continuousOn_const.prodMk continuousOn_id)
-        (by intro x hx; exact ⟨hu, Set.mem_univ x⟩))
-    exact integrableOn_univ.mp
-      (hc.continuousOn.integrableOn_compact isCompact_univ)
-  have hmeas' : AEStronglyMeasurable (F' u) μ := by
-    have hc : Continuous (F' u) := by
-      rw [← continuousOn_univ]
-      exact (hF'.comp (continuousOn_const.prodMk continuousOn_id)
-        (by intro x hx; exact ⟨hu, Set.mem_univ x⟩))
-    exact hc.aestronglyMeasurable
-  have hbound : ∀ᵐ x ∂μ, ∀ v ∈ Metric.closedBall u (δ / 2),
-      ‖F' v x‖ ≤ C := by
+    filter_upwards [hnear] with v hv
+    exact (hslice v hv.2).aestronglyMeasurable
+  have hint : Integrable (F u) μ :=
+    integrableOn_univ.mp ((hslice u hu).continuousOn.integrableOn_compact isCompact_univ)
+  have hbound : ∀ᵐ x ∂μ, ∀ v ∈ S ∩ U, ‖F' v x‖ ≤ C + 1 := by
     filter_upwards [] with x
     intro v hv
-    simpa using hC (v, x) ⟨hv, Set.mem_univ x⟩
-  have hCint : Integrable (fun _ : X => C) μ := integrable_const C
-  have hdiff' : ∀ᵐ x ∂μ, ∀ v ∈ Metric.closedBall u (δ / 2),
-      HasFDerivAt (fun w : V => F w x) (F' v x) v := by
-    filter_upwards [] with x
-    intro v hv
-    exact hdiff v (hcl hv) x
-  exact hasFDerivAt_integral_of_dominated_of_fderiv_le
-    hs hmeas hint hmeas' hbound hCint hdiff'
+    exact le_of_lt (hST (show (v, x) ∈ S ×ˢ T from ⟨hv.1, hT (mem_univ x)⟩)).2
+  exact hasFDerivAt_integral_of_dominated_of_fderiv_le hnear hmeas hint
+    hslice'.aestronglyMeasurable hbound (integrable_const (C + 1))
+    (Filter.Eventually.of_forall fun x v hv => hdiff v hv.2 x)
+
+theorem hasFDerivAt_integral_compact
+    {X V W : Type*} [TopologicalSpace X] [CompactSpace X]
+    [MeasurableSpace X] [BorelSpace X]
+    [T2Space X] [SecondCountableTopology X]
+    [NormedAddCommGroup V] [NormedSpace ℝ V]
+    [NormedAddCommGroup W] [NormedSpace ℝ W]
+    (μ : Measure X) [IsFiniteMeasure μ]
+    (F : V → X → W) (F' : V → X → (V →L[ℝ] W))
+    (hF : Continuous (fun p : V × X => F p.1 p.2))
+    (hF' : Continuous (fun p : V × X => F' p.1 p.2))
+    (hdiff : ∀ u : V, ∀ x : X,
+      HasFDerivAt (fun v : V => F v x) (F' u x) u)
+    (u : V) :
+    HasFDerivAt (fun v : V => ∫ x, F v x ∂μ) (∫ x, F' u x ∂μ) u := by
+  exact hasFDerivAt_integral_compactOn μ isOpen_univ F F' hF.continuousOn hF'.continuousOn
+    (fun v _ x => hdiff v x) u (mem_univ u)
 
 theorem fderiv_integral_compact
     {X V W : Type*} [TopologicalSpace X] [CompactSpace X]
     [MeasurableSpace X] [BorelSpace X]
     [T2Space X] [SecondCountableTopology X]
-    [NormedAddCommGroup V] [NormedSpace ℝ V] [FiniteDimensional ℝ V]
+    [NormedAddCommGroup V] [NormedSpace ℝ V]
     [NormedAddCommGroup W] [NormedSpace ℝ W]
     (μ : Measure X) [IsFiniteMeasure μ]
     (F : V → X → W) (F' : V → X → (V →L[ℝ] W))
@@ -140,7 +93,7 @@ theorem continuous_fderiv_integral_compact
     {X V W : Type*} [TopologicalSpace X] [CompactSpace X]
     [MeasurableSpace X] [BorelSpace X]
     [T2Space X] [SecondCountableTopology X]
-    [NormedAddCommGroup V] [NormedSpace ℝ V] [FiniteDimensional ℝ V]
+    [NormedAddCommGroup V] [NormedSpace ℝ V]
     [NormedAddCommGroup W] [NormedSpace ℝ W]
     (μ : Measure X) [IsFiniteMeasure μ]
     (F : V → X → W) (F' : V → X → (V →L[ℝ] W))
