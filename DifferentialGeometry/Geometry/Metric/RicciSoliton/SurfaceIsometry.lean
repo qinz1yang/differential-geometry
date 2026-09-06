@@ -311,6 +311,47 @@ theorem gradientRicciSoliton_classification_of_finrank_eq_two
       rw [e.apply_symm_apply] at hp
       linarith
 
+theorem gradientRicciSoliton_classification_exclusive_of_finrank_eq_two
+    {g : SmoothRiemannianMetric I M} {f : C^∞⟮I, M; Real⟯} {sigma : Real}
+    (hcomplete : RiemannianMetricComplete (I := I) g)
+    (hsol : gradientRicciSoliton (I := I) g f sigma)
+    (hsigma : 0 < sigma) (hdim : Module.finrank Real E = 2) :
+    let gaussian := ∃ e : M ≃ₘ⟮I, 𝓡 2⟯ EuclideanSpace Real (Fin 2), ∃ b : Real,
+      Diffeomorph.pullbackMetricCross euclideanMetric e = g ∧
+        ∀ x, f x + b = sigma * ‖e x‖ ^ 2 / 4
+    let sphere := ∃ e : M ≃ₘ⟮I, 𝓡 2⟯ Metric.sphere (0 : EuclideanSpace Real (Fin 3)) 1,
+      ∃ b : Real,
+        Diffeomorph.pullbackMetricCross
+          (scaleMetric (2 / sigma) (div_pos (by norm_num) hsigma)
+            (roundMetric (E := EuclideanSpace Real (Fin 3)) (n := 2))) e = g ∧
+          ∀ x, f x = b
+    let projective := ∃ e : M ≃ₘ⟮I, 𝓡 2⟯ RealProjectivePlane, ∃ b : Real,
+      Diffeomorph.pullbackMetricCross
+        (scaleMetric (2 / sigma) (div_pos (by norm_num) hsigma)
+          (roundProjectiveMetric (E := EuclideanSpace Real (Fin 3)) (n := 2))) e = g ∧
+        ∀ x, f x = b
+    (gaussian ∧ ¬ sphere ∧ ¬ projective) ∨
+      (sphere ∧ ¬ gaussian ∧ ¬ projective) ∨
+      (projective ∧ ¬ gaussian ∧ ¬ sphere) := by
+  intro gaussian sphere projective
+  have hsep := euclidean_round_projective_isometries_pairwise_exclusive g hsigma
+  simp only [List.pairwise_cons, List.mem_cons, forall_eq_or_imp,
+    List.Pairwise.nil, List.not_mem_nil, false_implies, implies_true, and_true] at hsep
+  have hgs : ¬ (gaussian ∧ sphere) := by
+    rintro ⟨⟨e, _, he, _⟩, ⟨d, _, hd, _⟩⟩
+    exact hsep.1.1 ⟨⟨e, he⟩, ⟨d, hd⟩⟩
+  have hgp : ¬ (gaussian ∧ projective) := by
+    rintro ⟨⟨e, _, he, _⟩, ⟨d, _, hd, _⟩⟩
+    exact hsep.1.2 ⟨⟨e, he⟩, ⟨d, hd⟩⟩
+  have hsp : ¬ (sphere ∧ projective) := by
+    rintro ⟨⟨e, _, he, _⟩, ⟨d, _, hd, _⟩⟩
+    exact hsep.2 ⟨⟨e, he⟩, ⟨d, hd⟩⟩
+  rcases gradientRicciSoliton_classification_of_finrank_eq_two hcomplete hsol hsigma hdim
+    with h | h | h
+  · exact Or.inl ⟨h, fun hs => hgs ⟨h, hs⟩, fun hp => hgp ⟨h, hp⟩⟩
+  · exact Or.inr (Or.inl ⟨h, fun hg => hgs ⟨hg, h⟩, fun hp => hsp ⟨h, hp⟩⟩)
+  · exact Or.inr (Or.inr ⟨h, fun hg => hgp ⟨hg, h⟩, fun hs => hsp ⟨hs, h⟩⟩)
+
 theorem gradientRicciSoliton_exists_gaussian_isometry_of_finrank_eq_two_of_noncompact
     [NoncompactSpace M]
     {g : SmoothRiemannianMetric I M} {f : C^∞⟮I, M; Real⟯} {sigma : Real}
