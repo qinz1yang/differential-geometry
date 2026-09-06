@@ -1189,6 +1189,18 @@ theorem std_inv_eq
       diagExpInv (I := I) g hEnorm p :=
   Classical.choose_spec (exists_stdBranch (I := I) g hEnorm p)
 
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+theorem exists_contMDiffOn_diagExp
+    [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
+    [IsContinuousRiemannianBundle E (fun x : M ↦ TangentSpace I x)]
+    (g : SmoothRiemannianMetric I M) (hEnorm : IsMetricNorm g) (p : M) :
+    ∃ U : Set (TangentBundle I M), IsOpen U ∧
+      (⟨p, (0 : TangentSpace I p)⟩ : TangentBundle I M) ∈ U ∧
+      ContMDiffOn I.tangent (I.prod I) ∞ (diagExp g hEnorm) U := by
+  refine ⟨univ, isOpen_univ, mem_univ _, ?_⟩
+  exact ((contMDiff_proj (TangentSpace I)).prodMk (intrinsicExp_smooth g hEnorm)).contMDiffOn
+
 end DiagExpDerivative
 
 end Exponential
