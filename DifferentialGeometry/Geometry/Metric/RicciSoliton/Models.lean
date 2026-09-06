@@ -189,6 +189,21 @@ private lemma gaussianPotential_mfderiv
   rw [hfd]
   rfl
 
+theorem gaussianPotential_gradFun (x : E) :
+    (gradFun (euclideanMetric (E := E)) gaussianPotential x : E) =
+      (1 / 2 : Real) • x := by
+  change @Eq E _ ((1 / 2 : Real) • x)
+  apply ext_inner_right Real (E := E)
+  intro v
+  have heuc := euclideanMetric_inner x
+    (gradFun (euclideanMetric (E := E)) gaussianPotential x) v
+  have hinner := inner_gradFun (euclideanMetric (E := E)) gaussianPotential x v
+  have hderiv := gaussianPotential_mfderiv x v
+  have hsmul : (1 / 2 : Real) * inner Real x v =
+      inner Real ((1 / 2 : Real) • x) v := by
+    rw [real_inner_smul_left]
+  exact heuc.symm.trans (hinner.trans (hderiv.trans hsmul))
+
 theorem gaussianPotential_normGradSqFun (x : E) :
     normGradSqFun (I := 𝓘(Real, E)) (euclideanMetric (E := E))
         (gaussianPotential (E := E)) x = gaussianPotential x := by
