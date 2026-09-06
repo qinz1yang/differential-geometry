@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Connection.ParallelTransport.AffineReparam
 import DifferentialGeometry.Geometry.Comparison.Variation.CovariantCommutationCurvature
 open DifferentialGeometry.Geometry.Curvature
 
@@ -23,9 +24,6 @@ variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
   [I.Boundaryless]
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [T2Space M] [SigmaCompactSpace M]
-
-noncomputable def curveVelocity (γ : ℝ → M) (t : ℝ) : TangentSpace I (γ t) :=
-  mfderiv (𝓘(ℝ, ℝ)) I γ t (1 : ℝ)
 
 def IsJacobiAt (g : SmoothRiemannianMetric I M) (γ : ℝ → M)
     (J : ∀ t : ℝ, TangentSpace I (γ t)) (t : ℝ) : Prop :=

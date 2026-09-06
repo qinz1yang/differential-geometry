@@ -1,4 +1,5 @@
 import DifferentialGeometry.Geometry.Connection.AlongCurveHom
+import DifferentialGeometry.Bundle.PartialMfderiv.TimeDerivative
 import DifferentialGeometry.Geometry.Comparison.Variation.JacobiField
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.RicciConnection
 
@@ -23,17 +24,7 @@ private theorem curveVelocity_contMDiffAt
     {γ : ℝ → M} {t : ℝ} (hγ : ContMDiffAt 𝓘(ℝ, ℝ) I 2 γ t) :
     ContMDiffAt 𝓘(ℝ, ℝ) I.tangent 1
       (fun s => (⟨γ s, curveVelocity γ s⟩ : TangentBundle I M)) t := by
-  have hunit : ContMDiff 𝓘(ℝ, ℝ) (𝓘(ℝ, ℝ)).tangent 1
-      (fun t : ℝ => (⟨t, (1 : ℝ)⟩ : TangentBundle 𝓘(ℝ, ℝ) ℝ)) := by
-    have hc : ContMDiff 𝓘(ℝ, ℝ) (𝓘(ℝ, ℝ).prod 𝓘(ℝ, ℝ)) 1
-        (fun t : ℝ => (t, (1 : ℝ))) := contMDiff_id.prodMk contMDiff_const
-    rw [← modelWithCornersSelf_prod, chartedSpaceSelf_prod] at hc
-    exact (contMDiff_tangentBundleModelSpaceHomeomorph_symm (I := 𝓘(ℝ, ℝ))).comp hc
-  exact ContMDiffAt.clm_apply_of_inCoordinates
-    (F₁ := ℝ) (F₂ := E) (E₁ := TangentSpace 𝓘(ℝ, ℝ)) (E₂ := TangentSpace I)
-    (b₁ := id) (b₂ := γ) (ϕ := fun s => mfderiv 𝓘(ℝ, ℝ) I γ s)
-    (v := fun _ => (1 : ℝ)) (hγ.mfderiv_const (by norm_num)) hunit.contMDiffAt
-    (hγ.of_le (by norm_num))
+  exact hγ.time_mfderiv (m := 1) (by norm_num)
 
 omit [I.Boundaryless] [T2Space M] in
 private theorem derivAlongWithin_univ_eq_covDerivAlong_of_eq_zero

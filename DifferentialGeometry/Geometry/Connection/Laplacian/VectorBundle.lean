@@ -1,5 +1,6 @@
 import DifferentialGeometry.Geometry.Connection.ChartFrame.RicciIdentitySmoothFrame
 import DifferentialGeometry.Geometry.Connection.Subbundle
+import DifferentialGeometry.Geometry.Connection.Hessian
 import DifferentialGeometry.Geometry.Connection.TensorNabla.HomBundleNabla
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.HomBundleCurvatureLeibniz
 
@@ -20,10 +21,13 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [T2Space M]
 variable {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
   [FiniteDimensional ℝ F]
+
+section Raw
+
 variable {V : M → Type*} [TopologicalSpace (TotalSpace F V)]
-  [∀ x, NormedAddCommGroup (V x)] [∀ x, NormedSpace ℝ (V x)]
-  [FiberBundle F V] [VectorBundle ℝ F V]
-  [ContMDiffVectorBundle ∞ F V I]
+  [∀ x, AddCommGroup (V x)] [∀ x, Module ℝ (V x)]
+  [∀ x, TopologicalSpace (V x)] [∀ x, IsTopologicalAddGroup (V x)]
+  [∀ x, ContinuousSMul ℝ (V x)] [FiberBundle F V]
 
 def rawBundleConnLap
     (g : SmoothRiemannianMetric I M) (cov : CovariantDerivative I F V)
@@ -36,8 +40,7 @@ def rawBundleConnLap
           (smoothOrthoFrame (I := I) g x i) x
           (smoothOrthoFrame (I := I) g x i x)))
 
-omit [T2Space M] [FiniteDimensional ℝ F] [VectorBundle ℝ F V]
-    [ContMDiffVectorBundle ∞ F V I] in
+omit [T2Space M] [FiniteDimensional ℝ F] in
 @[simp] theorem rawBundleConnLap_def
     (g : SmoothRiemannianMetric I M) (cov : CovariantDerivative I F V)
     (s : (x : M) → V x) (x : M) :
@@ -49,6 +52,44 @@ omit [T2Space M] [FiniteDimensional ℝ F] [VectorBundle ℝ F V]
             ((LeviCivita (I := I) g)
               (smoothOrthoFrame (I := I) g x i) x
               (smoothOrthoFrame (I := I) g x i x))) := rfl
+
+end Raw
+
+variable {V : M → Type*} [TopologicalSpace (TotalSpace F V)]
+  [∀ x, NormedAddCommGroup (V x)] [∀ x, NormedSpace ℝ (V x)]
+  [FiberBundle F V] [VectorBundle ℝ F V]
+  [ContMDiffVectorBundle ∞ F V I]
+
+omit [FiniteDimensional ℝ F] [ContMDiffVectorBundle ∞ F V I] in
+theorem rawBundleConnLap_eq_sum_hessian
+    (g : SmoothRiemannianMetric I M) (cov : CovariantDerivative I F V)
+    {σ : ∀ x, V x} {x : M}
+    (hDσ : MDifferentiableAt I (I.prod 𝓘(ℝ, E →L[ℝ] F))
+      (fun y => (⟨y, cov σ y⟩ : TotalSpace (E →L[ℝ] F)
+        (fun y => TangentSpace I y →L[ℝ] V y))) x) :
+    rawBundleConnLap g cov σ x =
+      ∑ i : Fin (Module.finrank ℝ E),
+        cov.hessian (LeviCivita g) σ x
+          (smoothOrthoFrame g x i x) (smoothOrthoFrame g x i x) := by
+  rw [rawBundleConnLap_def]
+  apply Finset.sum_congr rfl
+  intro i _
+  let _ : NeZero (Module.finrank ℝ E) :=
+    ⟨Nat.ne_of_gt (lt_of_le_of_lt (Nat.zero_le i.val) i.isLt)⟩
+  exact (cov.hessian_apply (LeviCivita g) hDσ
+    ((smoothOrthoFrame_smooth g x i).mdifferentiableAt (by simp)) _).symm
+
+theorem rawBundleConnLap_eq_sum_hessian_of_contMDiffAt
+    (g : SmoothRiemannianMetric I M) (cov : CovariantDerivative I F V)
+    (hcov : ContMDiffCovariantDerivative cov ∞)
+    {σ : ∀ x, V x} {x : M}
+    (hσ : ContMDiffAt I (I.prod 𝓘(ℝ, F)) 2 (T% σ) x) :
+    rawBundleConnLap g cov σ x =
+      ∑ i : Fin (Module.finrank ℝ E),
+        cov.hessian (LeviCivita g) σ x
+          (smoothOrthoFrame g x i x) (smoothOrthoFrame g x i x) := by
+  exact rawBundleConnLap_eq_sum_hessian g cov
+    ((hcov.contMDiffAt (m := 1) hσ (by norm_num)).mdifferentiableAt (by simp))
 
 omit [FiniteDimensional ℝ F] [ContMDiffVectorBundle ∞ F V I] in
 theorem rawBundleConnLap_eq_zero_of_eventually_zero

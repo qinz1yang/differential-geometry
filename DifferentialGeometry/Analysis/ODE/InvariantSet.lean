@@ -17,6 +17,22 @@ def IsForwardInvariantForODE (f : ℝ → E → E) (C : Set E) : Prop :=
   ∀ a b, a ≤ b → ∀ γ : ℝ → E,
     IsIntegralCurveOn γ f (Icc a b) → γ a ∈ C → MapsTo γ (Icc a b) C
 
+def IsForwardInvariantForODEOn (f : ℝ → E → E) (C : Set E) (J : Set ℝ) : Prop :=
+  ∀ a b, a ≤ b → Icc a b ⊆ J → ∀ γ : ℝ → E,
+    IsIntegralCurveOn γ f (Icc a b) → γ a ∈ C → MapsTo γ (Icc a b) C
+
+@[simp] theorem isForwardInvariantForODEOn_univ {f : ℝ → E → E} {C : Set E} :
+    IsForwardInvariantForODEOn f C univ ↔ IsForwardInvariantForODE f C := by
+  constructor
+  · exact fun h a b hab γ hγ hinit => h a b hab (subset_univ _) γ hγ hinit
+  · exact fun h a b hab _ γ hγ hinit => h a b hab γ hγ hinit
+
+theorem IsForwardInvariantForODEOn.mono {f : ℝ → E → E} {C : Set E} {J K : Set ℝ}
+    (h : IsForwardInvariantForODEOn f C J) (hKJ : K ⊆ J) :
+    IsForwardInvariantForODEOn f C K :=
+  fun a b hab hsub γ hγ hinit => h a b hab (hsub.trans hKJ) γ hγ hinit
+
+
 theorem HasDerivAt.mem_posTangentConeAt_of_eventually_mem_right
     {γ : ℝ → E} {t : ℝ} {v : E} {C : Set E}
     (hγ : HasDerivAt γ v t) (hC : ∀ᶠ h in 𝓝[>] (0 : ℝ), γ (t + h) ∈ C) :

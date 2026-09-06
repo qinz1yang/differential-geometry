@@ -194,3 +194,26 @@ theorem ContMDiffOn.time_mfderivWithin {s : Set ℝ} {u : Set M}
     (b₁ := fun p : ℝ × M => p.1) (b₂ := fun p : ℝ × M => γ p.1 p.2)
     (ϕ := fun p : ℝ × M => mfderivWithin 𝓘(ℝ, ℝ) I' (fun t => γ t p.2) s p.1)
     hD hv ((hγ p₀ hp₀).of_le (le_self_add.trans hmn))
+
+theorem ContMDiffAt.time_mfderiv {γ : ℝ → N} {t₀ : ℝ}
+    (hγ : ContMDiffAt 𝓘(ℝ, ℝ) I' n γ t₀) (hmn : m + 1 ≤ n) :
+    ContMDiffAt 𝓘(ℝ, ℝ) (I'.prod 𝓘(ℝ, E')) m
+      (fun t => (⟨γ t, mfderiv 𝓘(ℝ, ℝ) I' γ t
+        ((NormedSpace.fromTangentSpace t).symm 1)⟩ : TangentBundle I' N)) t₀ := by
+  have hD := hγ.mfderiv_const hmn
+  have hv : ContMDiffAt 𝓘(ℝ, ℝ) (𝓘(ℝ, ℝ).prod 𝓘(ℝ, ℝ)) m
+      (fun t => (⟨t, (NormedSpace.fromTangentSpace t).symm 1⟩ :
+        TangentBundle 𝓘(ℝ, ℝ) ℝ)) t₀ := by
+    rw [contMDiffAt_totalSpace]
+    refine ⟨contMDiffAt_id, ?_⟩
+    convert (contMDiffAt_const (c := (1 : ℝ)) :
+      ContMDiffAt 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) m (fun _ : ℝ => (1 : ℝ)) t₀) using 1
+    funext t
+    simp only [TangentBundle.trivializationAt_apply, mfld_simps, chartAt_self_eq,
+      fderivWithin_univ, fderiv_id]
+    rfl
+  exact ContMDiffAt.clm_apply_of_inCoordinates
+    (F₁ := ℝ) (E₁ := TangentSpace 𝓘(ℝ, ℝ))
+    (F₂ := E') (E₂ := TangentSpace I')
+    (b₁ := id) (b₂ := γ) (ϕ := fun t => mfderiv 𝓘(ℝ, ℝ) I' γ t)
+    hD hv (hγ.of_le (le_self_add.trans hmn))

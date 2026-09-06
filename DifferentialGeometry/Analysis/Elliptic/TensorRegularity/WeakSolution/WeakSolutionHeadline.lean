@@ -1,3 +1,4 @@
+import DifferentialGeometry.Analysis.Calculus.ContDiff.Support
 import DifferentialGeometry.Analysis.Elliptic.TensorRegularity.WeakSolution.WeakSolutionGlobal
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
@@ -145,17 +146,12 @@ lemma contDiff_of_contDiffOn_chartTarget_zero_off
     (hP : ContDiffOn ℝ ∞ P (chartTargetEuclid (I := I) (M := M) α))
     (hzero : ∀ y, y ∉ C → P y = 0) :
     ContDiff ℝ ∞ P := by
-  classical
-  have hopen : IsOpen (chartTargetEuclid (I := I) (M := M) α) :=
-    DifferentialGeometry.Analysis.Sobolev.Chart.chartTargetEuclid_isOpen
-      (I := I) (M := M) α
-  rw [contDiff_iff_contDiffAt]
-  intro y
-  by_cases hy : y ∈ chartTargetEuclid (I := I) (M := M) α
-  · exact hP.contDiffAt (hopen.mem_nhds hy)
-  · have hyC : y ∉ C := fun hyC => hy (hC_target hyC)
-    refine (contDiffAt_const (c := (0 : ℝ))).congr_of_eventuallyEq ?_
-    filter_upwards [hC.isOpen_compl.mem_nhds hyC] with z hz using hzero z hz
+  apply hP.contDiff_of_tsupport_subset
+    (DifferentialGeometry.Analysis.Sobolev.Chart.chartTargetEuclid_isOpen
+      (I := I) (M := M) α)
+  exact (closure_minimal (fun y hy => by
+    by_contra hyC
+    exact hy (hzero y hyC)) hC).trans hC_target
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [CompactSpace M] [T2Space M]
     [SigmaCompactSpace M] in

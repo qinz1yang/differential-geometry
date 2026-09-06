@@ -238,6 +238,23 @@ private theorem exists_map_chartInverseOn_le_smul_riemannianVolumeMeasure
       gcongr
       exact Measure.restrict_le_self
 
+theorem ae_chartInverse_of_ae
+    [T2Space M] [SigmaCompactSpace M]
+    (g : SmoothRiemannianMetric I M) (α : M) {Ω : Set EuStd}
+    (hΩ : MeasurableSet Ω) (hΩc : IsCompact (closure Ω))
+    (hΩs : closure Ω ⊆ toEuclidean (E := E) '' (extChartAt I α).target)
+    {P : M → Prop} (hP : ∀ᵐ x ∂(riemannianVolumeMeasure (I := I) (M := M) g), P x) :
+    ∀ᵐ z ∂(volume.restrict Ω),
+      P ((extChartAt I α).symm ((toEuclidean (E := E)).symm z)) := by
+  obtain ⟨c, _, _, hc⟩ :=
+    exists_map_chartInverseOn_le_smul_riemannianVolumeMeasure g α hΩ hΩc hΩs
+  have hm := measurable_chartInverseOn α hΩ (subset_closure.trans hΩs)
+  have hmap := (Measure.absolutelyContinuous_of_le_smul hc).ae_le hP
+  have h := (Measure.tendsto_ae_map hm.aemeasurable) hmap
+  filter_upwards [h, ae_restrict_mem hΩ] with z hz hzΩ
+  change P (chartInverseOn (I := I) α Ω z) at hz
+  simpa only [chartInverseOn_apply_of_mem α hzΩ] using hz
+
 def chartRestrictionLp
     [T2Space M] [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (α : M) {Ω : Set EuStd}

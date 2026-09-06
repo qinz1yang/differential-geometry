@@ -60,7 +60,7 @@ private lemma eLpNorm_smoothScalarDirichlet_le_norm
     (ENNReal.ofReal_toReal h_finite).symm]
   exact ENNReal.ofReal_le_ofReal h_real
 
-private lemma sqrt_g_inner_grad_smoothScalarDirichlet_memLp_two
+lemma sqrt_g_inner_grad_smoothScalarDirichlet_memLp_two
     {g : SmoothRiemannianMetric (I_half n) M} (s : SmoothScalarDirichlet g) :
     MemLp (fun x : M => Real.sqrt
         (g.inner x

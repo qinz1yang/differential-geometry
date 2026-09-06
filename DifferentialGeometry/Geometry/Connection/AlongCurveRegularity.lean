@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Connection.AlongCurve
-import Mathlib.Geometry.Manifold.ContMDiffMFDeriv
+import DifferentialGeometry.Bundle.PartialMfderiv.TimeDerivative
 import Mathlib.Analysis.Calculus.ContDiff.Deriv
 
 noncomputable section
@@ -21,36 +21,16 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [ContMDiffVectorBundle ∞ F V I]
 
 omit [FiniteDimensional ℝ E] [T2Space M] in
-private theorem contMDiffAt_curve_velocity {γ : ℝ → M} {t₀ : ℝ} {m n : ℕ∞ω}
-    (hγ : ContMDiffAt 𝓘(ℝ, ℝ) I n γ t₀) (hmn : m + 1 ≤ n) :
-    ContMDiffAt 𝓘(ℝ, ℝ) (I.prod 𝓘(ℝ, E)) m
-      (fun t => (⟨γ t, mfderiv 𝓘(ℝ, ℝ) I γ t
-        ((NormedSpace.fromTangentSpace t).symm 1)⟩ : TangentBundle I M)) t₀ := by
-  have hD := hγ.mfderiv_const hmn
-  have hv : ContMDiffAt 𝓘(ℝ, ℝ) (𝓘(ℝ, ℝ).prod 𝓘(ℝ, ℝ)) m
-      (fun t => (⟨t, (NormedSpace.fromTangentSpace t).symm 1⟩ :
-        TangentBundle 𝓘(ℝ, ℝ) ℝ)) t₀ := by
-    rw [contMDiffAt_totalSpace]
-    refine ⟨contMDiffAt_id, ?_⟩
-    convert (contMDiffAt_const (c := (1 : ℝ)) :
-      ContMDiffAt 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) m (fun _ : ℝ => (1 : ℝ)) t₀) using 1
-    funext t
-    simp only [TangentBundle.trivializationAt_apply, mfld_simps, chartAt_self_eq,
-      fderivWithin_univ, fderiv_id]
-    rfl
-  exact ContMDiffAt.clm_apply_of_inCoordinates
-    (F₁ := ℝ) (E₁ := TangentSpace 𝓘(ℝ, ℝ))
-    (F₂ := E) (E₂ := TangentSpace I)
-    (b₁ := id) (b₂ := γ) (ϕ := fun t => mfderiv 𝓘(ℝ, ℝ) I γ t)
-    hD hv (hγ.of_le (le_self_add.trans hmn))
-
-theorem contMDiffAt_derivAlongWithin
-    (cov : CovariantDerivative I F V) (hcov : ContMDiffCovariantDerivative cov ∞)
+theorem contMDiffAt_derivAlongWithin_of_connectionForm
+    (cov : CovariantDerivative I F V)
     {γ : ℝ → M} {Z : ∀ t : ℝ, V (γ t)} {s : Set ℝ} {t₀ : ℝ}
     {m : ℕ∞} {n : ℕ∞ω} (hs : s ∈ 𝓝 t₀)
     (hZ : ContMDiffAt 𝓘(ℝ, ℝ) (I.prod 𝓘(ℝ, F)) n
       (fun t => (⟨γ t, Z t⟩ : TotalSpace F V)) t₀)
-    (hmn : (m : ℕ∞ω) + 1 ≤ n) :
+    (hmn : (m : ℕ∞ω) + 1 ≤ n)
+    (hA : ContMDiffAt 𝓘(ℝ, ℝ) 𝓘(ℝ, F →L[ℝ] F) m
+      (fun t => cov.connectionForm (trivializationAt F V (γ t₀)) (γ t)
+        (mfderiv 𝓘(ℝ, ℝ) I γ t ((NormedSpace.fromTangentSpace t).symm 1))) t₀) :
     ContMDiffAt 𝓘(ℝ, ℝ) (I.prod 𝓘(ℝ, F)) m
       (fun t => (⟨γ t, cov.derivAlongWithin γ Z s t⟩ : TotalSpace F V)) t₀ := by
   have hm : (m : ℕ∞ω) ≤ n := le_self_add.trans hmn
@@ -73,14 +53,6 @@ theorem contMDiffAt_derivAlongWithin
     exact e.continuousLinearMapAt_apply_of_mem ℝ ht (Z t)
   have hdz : ContMDiffAt 𝓘(ℝ, ℝ) 𝓘(ℝ, F) m (deriv z) t₀ :=
     (hz.contDiffAt.derivWithin le_rfl).contMDiffAt
-  have hv := contMDiffAt_curve_velocity hγ hmn
-  have hA : ContMDiffAt 𝓘(ℝ, ℝ) 𝓘(ℝ, F →L[ℝ] F) m
-      (fun t => cov.connectionForm e (γ t)
-        (mfderiv 𝓘(ℝ, ℝ) I γ t ((NormedSpace.fromTangentSpace t).symm 1))) t₀ :=
-    ((cov.contMDiffOn_connectionForm hcov e).contMDiffAt
-      ((e.open_baseSet.preimage
-        (FiberBundle.continuous_proj E (TangentSpace I))).mem_nhds he)).of_le
-        (by exact_mod_cast (le_top : m ≤ (⊤ : ℕ∞))) |>.comp t₀ hv
   have hsum := hdz.add (hA.clm_apply (hz.of_le le_self_add))
   have h := (e.contMDiffOn_symm.contMDiffAt
     (e.open_target.mem_nhds (e.mem_target.mpr he))).comp t₀ ((hγ.of_le hm).prodMk hsum)
@@ -94,5 +66,28 @@ theorem contMDiffAt_derivAlongWithin
     derivWithin_of_mem_nhds hst, mfderivWithin_of_mem_nhds hst]
   rw [e.symmL_apply ht, e.mk_symm ht]
   rfl
+
+theorem contMDiffAt_derivAlongWithin
+    (cov : CovariantDerivative I F V) (hcov : ContMDiffCovariantDerivative cov ∞)
+    {γ : ℝ → M} {Z : ∀ t : ℝ, V (γ t)} {s : Set ℝ} {t₀ : ℝ}
+    {m : ℕ∞} {n : ℕ∞ω} (hs : s ∈ 𝓝 t₀)
+    (hZ : ContMDiffAt 𝓘(ℝ, ℝ) (I.prod 𝓘(ℝ, F)) n
+      (fun t => (⟨γ t, Z t⟩ : TotalSpace F V)) t₀)
+    (hmn : (m : ℕ∞ω) + 1 ≤ n) :
+    ContMDiffAt 𝓘(ℝ, ℝ) (I.prod 𝓘(ℝ, F)) m
+      (fun t => (⟨γ t, cov.derivAlongWithin γ Z s t⟩ : TotalSpace F V)) t₀ := by
+  have hγ : ContMDiffAt 𝓘(ℝ, ℝ) I n γ t₀ :=
+    (contMDiff_proj V).contMDiffAt.comp t₀ hZ
+  let e := trivializationAt F V (γ t₀)
+  have he : γ t₀ ∈ e.baseSet := mem_baseSet_trivializationAt F V (γ t₀)
+  have hv := hγ.time_mfderiv hmn
+  have hA : ContMDiffAt 𝓘(ℝ, ℝ) 𝓘(ℝ, F →L[ℝ] F) m
+      (fun t => cov.connectionForm e (γ t)
+        (mfderiv 𝓘(ℝ, ℝ) I γ t ((NormedSpace.fromTangentSpace t).symm 1))) t₀ :=
+    ((cov.contMDiffOn_connectionForm hcov e).contMDiffAt
+      ((e.open_baseSet.preimage
+        (FiberBundle.continuous_proj E (TangentSpace I))).mem_nhds he)).of_le
+        (by exact_mod_cast (le_top : m ≤ (⊤ : ℕ∞))) |>.comp t₀ hv
+  exact cov.contMDiffAt_derivAlongWithin_of_connectionForm hs hZ hmn hA
 
 end CovariantDerivative
