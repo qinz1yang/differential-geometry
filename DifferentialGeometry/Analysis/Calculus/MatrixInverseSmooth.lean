@@ -1,3 +1,4 @@
+import DifferentialGeometry.Analysis.Calculus.Matrix.Determinant
 import Mathlib.Analysis.Calculus.ContDiff.Operations
 import Mathlib.LinearAlgebra.Matrix.NonsingularInverse
 
@@ -10,13 +11,12 @@ namespace Analysis
 
 variable {n : ℕ} {X : Type*} [NormedAddCommGroup X] [NormedSpace ℝ X]
 
+open scoped Matrix.Norms.Elementwise in
 theorem contDiff_det_of_entries (N : X → Matrix (Fin n) (Fin n) ℝ)
     (hN : ∀ a b : Fin n, ContDiff ℝ ∞ (fun x => N x a b)) :
     ContDiff ℝ ∞ (fun x => (N x).det) := by
-  classical
-  simp_rw [Matrix.det_apply]
-  exact ContDiff.sum (fun σ _ => ContDiff.const_smul (Equiv.Perm.sign σ)
-    (contDiff_prod (fun i _ => hN (σ i) i)))
+  exact (Matrix.contDiff_det (𝕜 := ℝ) (n := ∞)).comp
+    (contDiff_pi.mpr fun i => contDiff_pi.mpr (hN i))
 
 theorem contDiff_adjugate_of_entries (N : X → Matrix (Fin n) (Fin n) ℝ)
     (hN : ∀ a b : Fin n, ContDiff ℝ ∞ (fun x => N x a b)) (k l : Fin n) :

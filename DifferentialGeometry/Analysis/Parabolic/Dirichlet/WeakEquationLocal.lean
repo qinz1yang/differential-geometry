@@ -1,3 +1,4 @@
+import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.TimeH1IntegrationByParts
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.WeakEquationChart
 import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletLocalWeakForm
 import DifferentialGeometry.Analysis.Integration.Lp.Product
@@ -374,5 +375,81 @@ theorem IsWeakEvolutionSolution.exists_timeH1_integral_spacetime
     · apply integral_congr_ae
       filter_upwards [htval] with z hz
       rw [hz]
+
+theorem IsWeakEvolutionSolution.integral_time_test
+    {q : SmoothRiemannianMetric I_hs M}
+    {D : RealTimeInterval}
+    {G : MetricConnectionFamilyOn (I := I_hs) (M := M) D}
+    {hG : MetricFamilySmoothOn (I := I_hs) (M := M) D G.metric}
+    {T : ℝ} {hT : 0 ≤ T} {hreg : Icc (0 : ℝ) T ⊆ D.regular}
+    {X : ℝ → Cₛ^∞⟮I_hs; EuN, (TangentSpace I_hs : M → Type _)⟯}
+    {a : ℝ → ℝ} {Bx Bv : ℝ}
+    {hX : ∀ t ∈ Ico (0 : ℝ) T, ∀ x : M, (G.metric t).inner x (X t x) (X t x) ≤ Bx}
+    {htrace : ∀ t ∈ Ico (0 : ℝ) T, ∀ x : M,
+      |traceTimeDerivMetric (I := I_hs) G.metric t x| ≤ Bv}
+    {f₀ : Lp ℝ 2 (riemannianVolumeMeasure (I := I_hs) (M := M) q)}
+    {u : timeL2 (H1ComplDirichlet q) T}
+    (hu : IsWeakEvolutionSolution hG hT hreg X a Bx Bv hX htrace f₀ u)
+    (α : M) {Ω : Set EuStd}
+    (hΩ : IsOpen Ω) (hΩc : IsCompact (closure Ω))
+    (hΩs : closure Ω ⊆ toEuclidean (E := EuN) '' interior (extChartAt I_hs α).target)
+    (ψ : EuStd → ℝ)
+    (hψ_smooth : ContDiff ℝ (⊤ : ℕ∞) ψ)
+    (hψ_cpt : HasCompactSupport ψ)
+    (hψ_supp : tsupport ψ ⊆ Ω) {η : ℝ → ℝ}
+    (hη : ContDiffOn ℝ 1 η (Icc (0 : ℝ) T)) (hηT : η T = 0) :
+    let e := toEuclidean (E := EuN)
+    let x := fun z : EuStd => (extChartAt I_hs α).symm (e.symm z)
+    let ρ := fun t z => chartDensityOnE (I := I_hs) (G.metric t) α (e.symm z)
+    let A := fun t i j z => chartInvGramOnE (I := I_hs) (G.metric t) α i j (e.symm z)
+    let B := fun t i z => chartCoeffOnE (I := I_hs) α (X t) i (e.symm z)
+    let U := dirichletLocalSpacetimeLp q α hΩ.measurableSet hΩc
+      (hΩs.trans (image_mono interior_subset)) (timeMeasure T) u
+    let DU := fun i => dirichletLocalSpacetimeWeakPartialLp q α hΩ hΩc hΩs (timeMeasure T) i u;
+    -(∫ t, _root_.deriv η t * (∫ z in Ω, ρ t z * (U (t, z) * ψ z)) ∂timeMeasure T) -
+      η 0 * (∫ z in Ω, ρ 0 z * (f₀ (x z) * ψ z)) =
+        ∫ t, η t * ((∫ z in Ω, ρ t z *
+          ((1 / 2 : ℝ) * traceTimeDerivMetric (I := I_hs) G.metric t (x z) *
+            (U (t, z) * ψ z))) -
+        (∑ i : Fin (Module.finrank ℝ EuN), ∫ z in Ω,
+          DU i (t, z) *
+            ((∑ j : Fin (Module.finrank ℝ EuN), A t i j z *
+              fderiv ℝ ψ z (EuclideanSpace.single j 1)) * ρ t z - B t i z * ρ t z * ψ z)) -
+        ∫ z in Ω, ρ t z * U (t, z) * (a t * ψ z)) ∂timeMeasure T := by
+  intro e x ρ A B U DU
+  obtain ⟨w, hw₀, hwm, hwd⟩ := hu.exists_timeH1_integral_spacetime α hΩ hΩc hΩs ψ
+    hψ_smooth hψ_cpt hψ_supp
+  let m := fun t => ∫ z in Ω, ρ t z * (U (t, z) * ψ z)
+  let I₀ := ∫ z in Ω, ρ 0 z * (f₀ (x z) * ψ z)
+  let F := fun t => (∫ z in Ω, ρ t z *
+          ((1 / 2 : ℝ) * traceTimeDerivMetric (I := I_hs) G.metric t (x z) *
+            (U (t, z) * ψ z))) -
+        (∑ i : Fin (Module.finrank ℝ EuN), ∫ z in Ω,
+          DU i (t, z) *
+            ((∑ j : Fin (Module.finrank ℝ EuN), A t i j z *
+              fderiv ℝ ψ z (EuclideanSpace.single j 1)) * ρ t z - B t i z * ρ t z * ψ z)) -
+        ∫ z in Ω, ρ t z * U (t, z) * (a t * ψ z)
+  change -(∫ t, _root_.deriv η t * m t ∂timeMeasure T) - η 0 * I₀ =
+    ∫ t, η t * F t ∂timeMeasure T
+  have hm : (∫ t, w.toFun t * _root_.deriv η t ∂timeMeasure T) =
+      ∫ t, _root_.deriv η t * m t ∂timeMeasure T := by
+    apply integral_congr_ae
+    filter_upwards [hwm] with t ht
+    rw [← ht]
+    exact mul_comm _ _
+  have hd : (∫ t, η t * w.deriv t ∂timeMeasure T) =
+      ∫ t, η t * F t ∂timeMeasure T := by
+    apply integral_congr_ae
+    filter_upwards [hwd] with t ht
+    rw [ht]
+  have hzero : w.toFun 0 = I₀ := by
+    rw [timeH1.toFun_apply, intervalIntegral.integral_same, add_zero]
+    exact hw₀
+  have hb : w.toFun T * η T - w.toFun 0 * η 0 = -η 0 * I₀ := by
+    rw [hηT, hzero]
+    ring
+  have hi := w.integral_mul_deriv_add_deriv_mul hT hη
+  rw [hb, hm, hd] at hi
+  linarith
 
 end DifferentialGeometry.Analysis.Parabolic.Dirichlet

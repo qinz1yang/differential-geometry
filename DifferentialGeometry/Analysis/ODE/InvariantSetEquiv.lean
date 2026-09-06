@@ -135,27 +135,41 @@ theorem vectorFieldTangentTo_pushForwardVectorField_iff
     simpa using hback
   · exact fun h ↦ VectorFieldTangentTo.pushForwardVectorField h e
 
-theorem IsForwardInvariantForODE.pushForwardVectorField
-    {f : ℝ → E → E} {C : Set E} (h : IsForwardInvariantForODE f C) (e : E ≃L[ℝ] F) :
-    IsForwardInvariantForODE (pushForwardVectorField e f) (e '' C) := by
-  intro a b hab gamma hgamma hgammaa
+theorem IsForwardInvariantForODEOn.pushForwardVectorField
+    {f : ℝ → E → E} {C : Set E} {J : Set ℝ}
+    (h : IsForwardInvariantForODEOn f C J) (e : E ≃L[ℝ] F) :
+    IsForwardInvariantForODEOn (pushForwardVectorField e f) (e '' C) J := by
+  intro a b hab hJ gamma hgamma hgammaa
   have hback : IsIntegralCurveOn (fun t ↦ e.symm (gamma t)) f (Icc a b) := by
     simpa using IsIntegralCurveOn.pushForwardVectorField hgamma e.symm
   have ha : e.symm (gamma a) ∈ C := by
     obtain ⟨x, hx, hxeq⟩ := hgammaa
     simpa [← hxeq] using hx
-  have hmap := h a b hab (fun t ↦ e.symm (gamma t)) hback ha
+  have hmap := h a b hab hJ (fun t ↦ e.symm (gamma t)) hback ha
   intro t ht
   exact ⟨e.symm (gamma t), hmap ht, by simp⟩
+
+theorem isForwardInvariantForODEOn_pushForwardVectorField_iff
+    {f : ℝ → E → E} {C : Set E} {J : Set ℝ} (e : E ≃L[ℝ] F) :
+    IsForwardInvariantForODEOn (pushForwardVectorField e f) (e '' C) J ↔
+      IsForwardInvariantForODEOn f C J := by
+  constructor
+  · intro h
+    have hback := IsForwardInvariantForODEOn.pushForwardVectorField h e.symm
+    simpa using hback
+  · exact fun h ↦ IsForwardInvariantForODEOn.pushForwardVectorField h e
+
+theorem IsForwardInvariantForODE.pushForwardVectorField
+    {f : ℝ → E → E} {C : Set E} (h : IsForwardInvariantForODE f C) (e : E ≃L[ℝ] F) :
+    IsForwardInvariantForODE (pushForwardVectorField e f) (e '' C) :=
+  isForwardInvariantForODEOn_univ.mp
+    ((isForwardInvariantForODEOn_univ.mpr h).pushForwardVectorField e)
 
 theorem isForwardInvariantForODE_pushForwardVectorField_iff
     {f : ℝ → E → E} {C : Set E} (e : E ≃L[ℝ] F) :
     IsForwardInvariantForODE (pushForwardVectorField e f) (e '' C) ↔
       IsForwardInvariantForODE f C := by
-  constructor
-  · intro h
-    have hback := IsForwardInvariantForODE.pushForwardVectorField h e.symm
-    simpa using hback
-  · exact fun h ↦ IsForwardInvariantForODE.pushForwardVectorField h e
+  simpa only [isForwardInvariantForODEOn_univ] using
+    isForwardInvariantForODEOn_pushForwardVectorField_iff (J := univ) (f := f) (C := C) e
 
 end DifferentialGeometry.Analysis.ODE

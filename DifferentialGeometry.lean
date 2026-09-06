@@ -4291,3 +4291,12 @@ import DifferentialGeometry.Geometry.Connection.MetricCompatibility.Dual
 import DifferentialGeometry.Geometry.Metric.BundleMusical
 import DifferentialGeometry.Tensor.Alternating.BundleComp
 import DifferentialGeometry.Topology.Manifold.ExtChartAt
+import DifferentialGeometry.Analysis.Calculus.Matrix.Determinant
+import DifferentialGeometry.Analysis.Integration.Lp.ContinuousOn
+import DifferentialGeometry.Analysis.ODE.MaximalSolution
+import DifferentialGeometry.Analysis.ODE.Uniqueness
+import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.TimeH1IntegrationByParts
+import DifferentialGeometry.Geometry.Comparison.Volume.NormalChartJets
+import DifferentialGeometry.Geometry.Metric.MetricFiberData.Defs
+import DifferentialGeometry.Geometry.Metric.MetricFiberData.Hom
+import DifferentialGeometry.Geometry.Metric.MetricFiberData.Topology
