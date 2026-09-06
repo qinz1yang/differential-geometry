@@ -2007,7 +2007,7 @@ theorem exists_vol_two_rm04_at
           (ENNReal.ofReal (R ^ Module.finrank ℝ E) *
             (modelHaar (E := E)) (Metric.ball (0 : E) 1)) := by
   obtain ⟨ρvol, hρvol_pos, hvol⟩ := exists_vol_two_dens (I := I) (M := M) g hEnorm p
-  obtain ⟨ρdens, hρdens_pos, hdens⟩ := exists_dens_two_rm04_at (I := I) g hEnorm p
+  obtain ⟨ρdens, hρdens_pos, hdens⟩ := exists_dens_two_rm04_at (I := I) g p
   refine ⟨min ρvol ρdens, lt_min hρvol_pos hρdens_pos, ?_⟩
   intro a K Rm Vb b A B R s hBnn ha hK hRm_nonneg hVb hb0 hb1 h1b hRpos hRρ
     hRC2 hρball hgs hsR hsρ hsdiv hsmallBasis hsmallDir hlaunch hKbound hRm hγ
@@ -2122,7 +2122,7 @@ theorem exists_vol_pair_rm04_at
           (ENNReal.ofReal (R ^ Module.finrank ℝ E) *
             (modelHaar (E := E)) (Metric.ball (0 : E) 1)) := by
   obtain ⟨ρvol, hρvol_pos, hvol⟩ := exists_vol_two_dens (I := I) (M := M) g hEnorm p
-  obtain ⟨ρdens, hρdens_pos, hdens⟩ := exists_dens_pair_rm04_at (I := I) g hEnorm p
+  obtain ⟨ρdens, hρdens_pos, hdens⟩ := exists_dens_pair_rm04_at (I := I) g p
   refine ⟨min ρvol ρdens, lt_min hρvol_pos hρdens_pos, ?_⟩
   intro a K Rm Vb b A Blo Bhi R s hBlo hBhi ha hK hRm_nonneg hVb hb0 hb1 h1b
     hRpos hRρ hRC2 hρball hgs hsR hsρ hsdiv hsmallBasis hsmallDir hlaunch
@@ -2243,7 +2243,7 @@ theorem exists_pairR_rm04_at
           (ENNReal.ofReal (Rup ^ Module.finrank ℝ E) *
             (modelHaar (E := E)) (Metric.ball (0 : E) 1)) := by
   obtain ⟨ρvol, hρvol_pos, hvol⟩ := exists_vol_two_dens_pairR (I := I) (M := M) g hEnorm p
-  obtain ⟨ρdens, hρdens_pos, hdens⟩ := exists_dens_pair_rm04_at (I := I) g hEnorm p
+  obtain ⟨ρdens, hρdens_pos, hdens⟩ := exists_dens_pair_rm04_at (I := I) g p
   refine ⟨min ρvol ρdens, lt_min hρvol_pos hρdens_pos, ?_⟩
   intro a K Rm Vb b A Blo Bhi Rlo Rup s hBlo hBhi ha hK hRm_nonneg hVb hb0 hb1
     h1b hRlo_pos hRloρ hRloC2 hρlo_ball hgs hRup_pos hRupρ hRupC2 hsRup hsρ hsdiv

@@ -1180,15 +1180,9 @@ theorem radialJacobi_fin_le_of_scaled_radius
     (fun _ _ => hγ.contMDiffAt) hcard F hpar hON hFdiff hJdiff hDJdiff hODE
     hderivRadius hx hscaledSmall hinit hmodel hxrad
 
-open Bundle in
-attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
-  Tensor0SBundle.tangentSpaceNormedSpace in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem exists_fin_le_rm04_at
-    [PseudoEMetricSpace M] [RiemannianBundle (fun x : M => TangentSpace I x)]
-    [IsRiemannianManifold I M] [CompleteSpace M] [ConnectedSpace M]
-    [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) :
     ∃ r : Real, 0 < r ∧ ∀ x : E, ‖x‖ < r →
       ∀ {a K R Vb b A B : ℝ}, 0 < a → 0 ≤ K → 0 ≤ Vb → 0 ≤ b → b ≤ 1 →
@@ -1224,8 +1218,7 @@ theorem exists_fin_le_rm04_at
         Real.sqrt (g.inner (expMap (I := I) g p (show TangentSpace I p from x))
           (radialJacobiField (I := I) g p x ((chartModelBasis E) k) 1)
           (radialJacobiField (I := I) g p x ((chartModelBasis E) k) 1)) ≤ B := by
-  let _ := (inferInstance : (ConnectedSpace M))
-  obtain ⟨r, hr, hdata, hderiv⟩ := exists_rm04_pack (I := I) g hEnorm p
+  obtain ⟨r, hr, hdata, hderiv⟩ := exists_rm04_pack (I := I) g p
   refine ⟨r, hr, ?_⟩
   intro x hx a K R Vb b A B ha hK hVb hb0 hb1 h1b hsmall hlaunch hKbound hRm
     hγ ι _ _ _ hcard F hpar hON hFdiff hinit hmodel hxrad
@@ -1237,15 +1230,9 @@ theorem exists_fin_le_rm04_at
   exact radialJacobi_fin_le_of_scaled_radius_at (I := I) g p x ha hK hb0 h1b hγ
     hcard F hpar hON hFdiff hJdiff hDJdiff hODE hderiv hx hsmall hinit hmodel hxrad
 
-open Bundle in
-attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
-  Tensor0SBundle.tangentSpaceNormedSpace in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem exists_fin_le_rm04
-    [PseudoEMetricSpace M] [RiemannianBundle (fun x : M => TangentSpace I x)]
-    [IsRiemannianManifold I M] [CompleteSpace M] [ConnectedSpace M]
-    [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) :
     ∃ r : Real, 0 < r ∧ ∀ x : E, ‖x‖ < r →
       ∀ {a K R Vb b A B : ℝ}, 0 < a → 0 ≤ K → 0 ≤ Vb → 0 ≤ b → b ≤ 1 →
@@ -1280,21 +1267,16 @@ theorem exists_fin_le_rm04
         Real.sqrt (g.inner (expMap (I := I) g p (show TangentSpace I p from x))
           (radialJacobiField (I := I) g p x ((chartModelBasis E) k) 1)
           (radialJacobiField (I := I) g p x ((chartModelBasis E) k) 1)) ≤ B := by
-  obtain ⟨r, hr, h⟩ := exists_fin_le_rm04_at (I := I) g hEnorm p
+  obtain ⟨r, hr, h⟩ := exists_fin_le_rm04_at (I := I) g p
   refine ⟨r, hr, ?_⟩
   intro x hx a K R Vb b A B ha hK hVb hb0 hb1 h1b hsmall hlaunch hKbound hRm
     hγ ι _ _ _ hcard F hpar hON hFdiff hinit hmodel hxrad
   exact h x hx ha hK hVb hb0 hb1 h1b hsmall hlaunch hKbound hRm
     (fun _ _ => hγ.contMDiffAt) hcard F hpar hON hFdiff hinit hmodel hxrad
 
-open Bundle in
-attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
-  Tensor0SBundle.tangentSpaceNormedSpace in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem exists_dir_ge_rm04_at
-    [PseudoEMetricSpace M] [RiemannianBundle (fun x : M => TangentSpace I x)]
-    [IsRiemannianManifold I M] [CompleteSpace M] [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) :
     ∃ r : Real, 0 < r ∧ ∀ x : E, ‖x‖ < r →
       ∀ {a K R Vb b B : ℝ}, 0 < a → 0 ≤ B → 0 ≤ K → 0 ≤ Vb → 0 ≤ b →
@@ -1338,7 +1320,7 @@ theorem exists_dir_ge_rm04_at
             (∑ i, v i • (chartModelBasis E) i) 1)
           (radialJacobiField (I := I) g p x
             (∑ i, v i • (chartModelBasis E) i) 1) := by
-  obtain ⟨r₀, hr₀, hdata⟩ := exists_rm04_data (I := I) g hEnorm p
+  obtain ⟨r₀, hr₀, hdata⟩ := exists_rm04_data (I := I) g p
   obtain ⟨r₁, hr₁, hderiv⟩ := exists_radialJacobi_deriv_radius (I := I) g p
   refine ⟨min r₀ r₁, lt_min hr₀ hr₁, ?_⟩
   intro x hx a K R Vb b B ha hB hK hVb hb0 hb1 h1b hsmall hlaunch hKbound hRm
@@ -1370,15 +1352,9 @@ theorem exists_dir_ge_rm04_at
       (lt_of_lt_of_le (hsmall v hv) (min_le_left _ _))
       hK hVb hb1 hlaunch hKbound hRm).2.2
 
-open Bundle in
-attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
-  Tensor0SBundle.tangentSpaceNormedSpace in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem exists_dir_ge_rm04
-    [PseudoEMetricSpace M] [RiemannianBundle (fun x : M => TangentSpace I x)]
-    [IsRiemannianManifold I M] [CompleteSpace M] [ConnectedSpace M]
-    [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) :
     ∃ r : Real, 0 < r ∧ ∀ x : E, ‖x‖ < r →
       ∀ {a K R Vb b B : ℝ}, 0 < a → 0 ≤ B → 0 ≤ K → 0 ≤ Vb → 0 ≤ b →
@@ -1421,8 +1397,7 @@ theorem exists_dir_ge_rm04
             (∑ i, v i • (chartModelBasis E) i) 1)
           (radialJacobiField (I := I) g p x
             (∑ i, v i • (chartModelBasis E) i) 1) := by
-  let _ := (inferInstance : (ConnectedSpace M))
-  obtain ⟨r, hr, h⟩ := exists_dir_ge_rm04_at (I := I) g hEnorm p
+  obtain ⟨r, hr, h⟩ := exists_dir_ge_rm04_at (I := I) g p
   refine ⟨r, hr, ?_⟩
   intro x hx a K R Vb b B ha hB hK hVb hb0 hb1 h1b hsmall hlaunch hKbound hRm
     hγ ι _ _ _ hcard F hpar hON hFdiff hmodel hxrad

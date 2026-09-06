@@ -603,15 +603,9 @@ lemma density_le_gronwall_of_scaled_radius
       hpar hON hFdiff hJdiff hDJdiff hODE hderivRadius hxsmall hscaledSmall
       hinit hmodel hxrad)
 
-open Bundle in
-attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
-  Tensor0SBundle.tangentSpaceNormedSpace in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem exists_dens_le_rm04_at
-    [PseudoEMetricSpace M] [RiemannianBundle (fun x : M => TangentSpace I x)]
-    [IsRiemannianManifold I M] [CompleteSpace M] [ConnectedSpace M]
-    [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) :
     ∃ r : Real, 0 < r ∧ ∀ x : E, ‖x‖ < r →
       ∀ {a K R Vb b A B : ℝ}, 0 ≤ B → 0 < a → 0 ≤ K → 0 ≤ Vb → 0 ≤ b →
@@ -647,7 +641,7 @@ theorem exists_dens_le_rm04_at
       normalChartDensity (I := I) g p x ≤
         Real.sqrt (((Module.finrank ℝ E).factorial : ℝ) *
           (B * B) ^ Module.finrank ℝ E) := by
-  obtain ⟨r, hr, hfin⟩ := exists_fin_le_rm04_at (I := I) g hEnorm p
+  obtain ⟨r, hr, hfin⟩ := exists_fin_le_rm04_at (I := I) g p
   refine ⟨r, hr, ?_⟩
   intro x hx a K R Vb b A B hBnn ha hK hVb hb0 hb1 h1b hsmall hlaunch hKbound hRm
     hxsrc hxrad hγ ι _ _ _ hcard F hpar hON hFdiff hinit hmodel
@@ -658,15 +652,9 @@ theorem exists_dens_le_rm04_at
     (hfin x hx ha hK hVb hb0 hb1 h1b hsmall hlaunch hKbound hRm
       hγ hcard F hpar hON hFdiff hinit hmodel hxrad)
 
-open Bundle in
-attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
-  Tensor0SBundle.tangentSpaceNormedSpace in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem exists_dens_le_rm04
-    [PseudoEMetricSpace M] [RiemannianBundle (fun x : M => TangentSpace I x)]
-    [IsRiemannianManifold I M] [CompleteSpace M] [ConnectedSpace M]
-    [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) :
     ∃ r : Real, 0 < r ∧ ∀ x : E, ‖x‖ < r →
       ∀ {a K R Vb b A B : ℝ}, 0 ≤ B → 0 < a → 0 ≤ K → 0 ≤ Vb → 0 ≤ b →
@@ -701,7 +689,7 @@ theorem exists_dens_le_rm04
       normalChartDensity (I := I) g p x ≤
         Real.sqrt (((Module.finrank ℝ E).factorial : ℝ) *
           (B * B) ^ Module.finrank ℝ E) := by
-  obtain ⟨r, hr, h⟩ := exists_dens_le_rm04_at (I := I) g hEnorm p
+  obtain ⟨r, hr, h⟩ := exists_dens_le_rm04_at (I := I) g p
   refine ⟨r, hr, ?_⟩
   intro x hx a K R Vb b A B hBnn ha hK hVb hb0 hb1 h1b hsmall hlaunch hKbound hRm
     hxsrc hxrad hγ ι _ _ _ hcard F hpar hON hFdiff hinit hmodel
@@ -796,15 +784,9 @@ lemma normalDensity_ge_of_dir_bound
       rw [radialJacobi_one_sum (I := I) g p x (fun i => v i) hxrad] at h
       exact h)
 
-open Bundle in
-attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
-  Tensor0SBundle.tangentSpaceNormedSpace in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem exists_dens_ge_rm04_at
-    [PseudoEMetricSpace M] [RiemannianBundle (fun x : M => TangentSpace I x)]
-    [IsRiemannianManifold I M] [CompleteSpace M] [ConnectedSpace M]
-    [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) :
     ∃ r : Real, 0 < r ∧ ∀ x : E, ‖x‖ < r →
       ∀ {a K R Vb b B : ℝ}, 0 < a → 0 ≤ B → 0 ≤ K → 0 ≤ Vb → 0 ≤ b →
@@ -844,8 +826,7 @@ theorem exists_dens_ge_rm04_at
                 (g.inner p (a • (∑ i, v i • (chartModelBasis E) i))
                   (a • (∑ i, v i • (chartModelBasis E) i))))) 1) →
       Real.sqrt ((B ^ 2) ^ Module.finrank ℝ E) ≤ normalChartDensity (I := I) g p x := by
-  let _ := (inferInstance : (ConnectedSpace M))
-  obtain ⟨r, hr, hdir⟩ := exists_dir_ge_rm04_at (I := I) g hEnorm p
+  obtain ⟨r, hr, hdir⟩ := exists_dir_ge_rm04_at (I := I) g p
   refine ⟨r, hr, ?_⟩
   intro x hx a K R Vb b B ha hB hK hVb hb0 hb1 h1b hsmall hlaunch hKbound hRm
     hxsrc hxrad hγ ι _ _ _ hcard F hpar hON hFdiff hmodel
@@ -856,15 +837,9 @@ theorem exists_dens_ge_rm04_at
     (hdir x hx ha hB hK hVb hb0 hb1 h1b hsmall hlaunch hKbound hRm
       hγ hcard F hpar hON hFdiff hmodel hxrad)
 
-open Bundle in
-attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
-  Tensor0SBundle.tangentSpaceNormedSpace in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem exists_dens_ge_rm04
-    [PseudoEMetricSpace M] [RiemannianBundle (fun x : M => TangentSpace I x)]
-    [IsRiemannianManifold I M] [CompleteSpace M] [ConnectedSpace M]
-    [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) :
     ∃ r : Real, 0 < r ∧ ∀ x : E, ‖x‖ < r →
       ∀ {a K R Vb b B : ℝ}, 0 < a → 0 ≤ B → 0 ≤ K → 0 ≤ Vb → 0 ≤ b →
@@ -903,22 +878,16 @@ theorem exists_dens_ge_rm04
                 (g.inner p (a • (∑ i, v i • (chartModelBasis E) i))
                   (a • (∑ i, v i • (chartModelBasis E) i))))) 1) →
       Real.sqrt ((B ^ 2) ^ Module.finrank ℝ E) ≤ normalChartDensity (I := I) g p x := by
-  obtain ⟨r, hr, h⟩ := exists_dens_ge_rm04_at (I := I) g hEnorm p
+  obtain ⟨r, hr, h⟩ := exists_dens_ge_rm04_at (I := I) g p
   refine ⟨r, hr, ?_⟩
   intro x hx a K R Vb b B ha hB hK hVb hb0 hb1 h1b hsmall hlaunch hKbound hRm
     hxsrc hxrad hγ ι _ _ _ hcard F hpar hON hFdiff hmodel
   exact h x hx ha hB hK hVb hb0 hb1 h1b hsmall hlaunch hKbound hRm hxsrc hxrad
     (fun _ _ => hγ.contMDiffAt) hcard F hpar hON hFdiff hmodel
 
-open Bundle in
-attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
-  Tensor0SBundle.tangentSpaceNormedSpace in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem exists_dens_two_rm04_at
-    [PseudoEMetricSpace M] [RiemannianBundle (fun x : M => TangentSpace I x)]
-    [IsRiemannianManifold I M] [CompleteSpace M] [ConnectedSpace M]
-    [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) :
     ∃ r : Real, 0 < r ∧ ∀ x : E, ‖x‖ < r →
       ∀ {a K R Vb b A B : ℝ}, 0 ≤ B → 0 < a → 0 ≤ K → 0 ≤ Vb → 0 ≤ b →
@@ -965,8 +934,8 @@ theorem exists_dens_two_rm04_at
         normalChartDensity (I := I) g p x ≤
           Real.sqrt (((Module.finrank ℝ E).factorial : ℝ) *
             (B * B) ^ Module.finrank ℝ E) := by
-  obtain ⟨rle, hrle, hle⟩ := exists_dens_le_rm04_at (I := I) g hEnorm p
-  obtain ⟨rge, hrge, hge⟩ := exists_dens_ge_rm04_at (I := I) g hEnorm p
+  obtain ⟨rle, hrle, hle⟩ := exists_dens_le_rm04_at (I := I) g p
+  obtain ⟨rge, hrge, hge⟩ := exists_dens_ge_rm04_at (I := I) g p
   refine ⟨min rle rge, lt_min hrle hrge, ?_⟩
   intro x hx a K R Vb b A B hBnn ha hK hVb hb0 hb1 h1b hsmallBasis hsmallDir
     hlaunch hKbound hRm hxsrc hxrad hγ ι _ _ _ hcard F hpar hON hFdiff
@@ -995,15 +964,9 @@ theorem exists_dens_two_rm04_at
       hxsrc hxrad hγ hcard F hpar hON hFdiff hmodelGe
   exact ⟨hlower, hupper⟩
 
-open Bundle in
-attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
-  Tensor0SBundle.tangentSpaceNormedSpace in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem exists_dens_pair_rm04_at
-    [PseudoEMetricSpace M] [RiemannianBundle (fun x : M => TangentSpace I x)]
-    [IsRiemannianManifold I M] [CompleteSpace M] [ConnectedSpace M]
-    [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) :
     ∃ r : Real, 0 < r ∧ ∀ x : E, ‖x‖ < r →
       ∀ {a K R Vb b A Blo Bhi : ℝ}, 0 ≤ Blo → 0 ≤ Bhi →
@@ -1051,8 +1014,8 @@ theorem exists_dens_pair_rm04_at
         normalChartDensity (I := I) g p x ≤
           Real.sqrt (((Module.finrank ℝ E).factorial : ℝ) *
             (Bhi * Bhi) ^ Module.finrank ℝ E) := by
-  obtain ⟨rle, hrle, hle⟩ := exists_dens_le_rm04_at (I := I) g hEnorm p
-  obtain ⟨rge, hrge, hge⟩ := exists_dens_ge_rm04_at (I := I) g hEnorm p
+  obtain ⟨rle, hrle, hle⟩ := exists_dens_le_rm04_at (I := I) g p
+  obtain ⟨rge, hrge, hge⟩ := exists_dens_ge_rm04_at (I := I) g p
   refine ⟨min rle rge, lt_min hrle hrge, ?_⟩
   intro x hx a K R Vb b A Blo Bhi hBlo hBhi ha hK hVb hb0 hb1 h1b
     hsmallBasis hsmallDir hlaunch hKbound hRm hxsrc hxrad hγ ι _ _ _ hcard F
@@ -1081,15 +1044,9 @@ theorem exists_dens_pair_rm04_at
       hxsrc hxrad hγ hcard F hpar hON hFdiff hmodelGe
   exact ⟨hlower, hupper⟩
 
-open Bundle in
-attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
-  Tensor0SBundle.tangentSpaceNormedSpace in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem exists_dens_two_rm04
-    [PseudoEMetricSpace M] [RiemannianBundle (fun x : M => TangentSpace I x)]
-    [IsRiemannianManifold I M] [CompleteSpace M] [ConnectedSpace M]
-    [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) :
     ∃ r : Real, 0 < r ∧ ∀ x : E, ‖x‖ < r →
       ∀ {a K R Vb b A B : ℝ}, 0 ≤ B → 0 < a → 0 ≤ K → 0 ≤ Vb → 0 ≤ b →
@@ -1135,7 +1092,7 @@ theorem exists_dens_two_rm04
         normalChartDensity (I := I) g p x ≤
           Real.sqrt (((Module.finrank ℝ E).factorial : ℝ) *
             (B * B) ^ Module.finrank ℝ E) := by
-  obtain ⟨r, hr, h⟩ := exists_dens_two_rm04_at (I := I) g hEnorm p
+  obtain ⟨r, hr, h⟩ := exists_dens_two_rm04_at (I := I) g p
   refine ⟨r, hr, ?_⟩
   intro x hx a K R Vb b A B hBnn ha hK hVb hb0 hb1 h1b hsmallBasis hsmallDir
     hlaunch hKbound hRm hxsrc hxrad hγ ι _ _ _ hcard F hpar hON hFdiff

@@ -536,6 +536,20 @@ lemma gradChartLocal_eq_gradFun
   congr 1
   rw [inner_gradChartLocal_chartBasis (I := I) g α f hx k, hmfderiv_basis k]
 
+theorem chartBasisFamily_repr_gradFun
+    (g : SmoothRiemannianMetric I M) (α : M)
+    {f : M → ℝ} {x : M} (hf : MDifferentiableAt I 𝓘(ℝ, ℝ) f x)
+    (hx : x ∈ (trivializationAt E (TangentSpace I) α).baseSet)
+    (hx_int : extChartAt I α x ∈ interior (extChartAt I α).target)
+    (i : Fin (Module.finrank ℝ E)) :
+    (chartBasisFamily (I := I) α hx).repr (gradFun (I := I) g f x) i =
+      gradChartCoeff (I := I) g α f i x := by
+  classical
+  rw [← gradChartLocal_eq_gradFun (I := I) g α hf hx hx_int]
+  unfold gradChartLocal
+  simp_rw [← chartBasisFamily_apply (I := I) α hx]
+  simp [Finsupp.single_apply]
+
 theorem grad_norm_sq_chart
     (g : SmoothRiemannianMetric I M) [I.Boundaryless]
     (α : M) {f : M → ℝ} {x : M}

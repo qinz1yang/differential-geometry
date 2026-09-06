@@ -676,16 +676,10 @@ theorem radialRatio_auto
   obtain ⟨B, hB, hbase⟩ := exists_radial_base (I := I) g p x
   exact radialRatio_basis (I := I) g p x v q B hq hB hv hbase
 
-attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
-  Tensor0SBundle.tangentSpaceNormedSpace in
+omit [SigmaCompactSpace M] in
 theorem exists_radial_cmp
-    [PseudoEMetricSpace M] [RiemannianBundle (fun x : M => TangentSpace I x)]
-    [IsRiemannianManifold I M] [CompleteSpace M]
-    [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     {ι : Type*} [Fintype ι] [DecidableEq ι]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖₊ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
     (p : M) :
     ∃ r : ℝ, 0 < r ∧ ∀ (x : E) (v : ι → E) (q b : ℝ),
       ‖x‖ < r →
@@ -712,7 +706,7 @@ theorem exists_radial_cmp
           (Ioo (0 : ℝ) b) := by
   obtain ⟨rd, hrd, hdiff⟩ := exists_radialJacobi_diff (I := I) g p
   obtain ⟨rj, hrj, hJac⟩ := exists_jacobi_Ioo (I := I) g p
-  obtain ⟨rw, hrw, hW⟩ := radial_wronsk_zero (I := I) g hEnorm p
+  obtain ⟨rw, hrw, hW⟩ := radial_wronsk_zero (I := I) g p
   let re : ℝ := expMapC2Radius (I := I) g p
   let r : ℝ := min rw (min rd (min rj re))
   have hre : 0 < re := expMapC2Radius_pos (I := I) g p
@@ -878,16 +872,10 @@ theorem normalRatio_anti
       rw [hdensity r hr]
       ring
 
-attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
-  Tensor0SBundle.tangentSpaceNormedSpace in
+omit [SigmaCompactSpace M] in
 theorem exists_radial_mean
-    [PseudoEMetricSpace M] [RiemannianBundle (fun x : M => TangentSpace I x)]
-    [IsRiemannianManifold I M] [CompleteSpace M]
-    [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     {ι : Type*} [Fintype ι] [DecidableEq ι]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖₊ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
     (p : M) :
     ∃ r : ℝ, 0 < r ∧ ∀ (x : E) (v : ι → E) (q b : ℝ),
       ‖x‖ < r →
@@ -905,7 +893,7 @@ theorem exists_radial_mean
             (fun i => radialJacobiField (I := I) g p x (v i)) t ≤
           hypMeanCurv (q * Real.sqrt (g.inner p x x))
             (Module.finrank ℝ E - 1) t := by
-  obtain ⟨r, hr, hcmp⟩ := exists_radial_cmp (I := I) (ι := ι) g hEnorm p
+  obtain ⟨r, hr, hcmp⟩ := exists_radial_cmp (I := I) (ι := ι) g p
   refine ⟨r, hr, ?_⟩
   intro x v q b hx hvsmall hxne hv hperp hq hb hb1 hcard hd hRic
   exact (hcmp x v q b hx hvsmall hxne hv hperp hq hb hb1 hcard hd hRic).1

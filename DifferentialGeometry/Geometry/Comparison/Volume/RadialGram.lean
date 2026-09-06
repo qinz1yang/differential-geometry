@@ -73,14 +73,9 @@ lemma radialJacobi_li
   rw [hfield]
   exact hmapped
 
-attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
-  Tensor0SBundle.tangentSpaceNormedSpace in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem radial_wronsk_zero
-    [PseudoEMetricSpace M] [RiemannianBundle (fun x : M => TangentSpace I x)]
-    [IsRiemannianManifold I M] [CompleteSpace M]
-    [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) :
     ∃ r : ℝ, 0 < r ∧ ∀ x w z : E,
       ‖x‖ < r → ‖w‖ < r → ‖z‖ < r →
@@ -90,7 +85,7 @@ theorem radial_wronsk_zero
           (radialJacobiField (I := I) g p x z) t = 0 := by
   obtain ⟨rd, hrd, hdiff⟩ := exists_radialJacobi_diff (I := I) g p
   obtain ⟨rj, hrj, hJac⟩ := exists_jacobi_Ioo (I := I) g p
-  obtain ⟨r0, hr0, hJac0⟩ := exists_radialJacobi_zero_radius (I := I) g hEnorm p
+  obtain ⟨r0, hr0, hJac0⟩ := exists_radialJacobi_zero_radius (I := I) g p
   let re : ℝ := expMapC2Radius (I := I) g p
   let r : ℝ := min rd (min rj (min r0 re))
   have hre : 0 < re := expMapC2Radius_pos (I := I) g p

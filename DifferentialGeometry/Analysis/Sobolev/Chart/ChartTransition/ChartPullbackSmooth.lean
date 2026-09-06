@@ -20,7 +20,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
 omit [IsManifold I ∞ M] in
-private lemma tsupport_chartPullback_subset
+lemma tsupport_chartPullback_subset
     [T2Space M]
     (α : M)
     {ψ : EuclN → ℝ}
@@ -101,6 +101,27 @@ private lemma tsupport_chartPullback_image_subset_chartAt_source
     exact (extChartAt I α).map_target hz_target
   rw [extChartAt_source (I := I)] at hx_in_src
   exact hx_in_src
+
+omit [IsManifold I ∞ M] in
+theorem tsupport_chartPullback_subset_interior
+    [T2Space M] [IsManifold I 1 M]
+    (α : M) {ψ : EuclN → ℝ}
+    (hψ_cpt : HasCompactSupport ψ)
+    (hψ_supp : tsupport ψ ⊆
+      toEuclidean (E := E) '' interior (extChartAt I α).target) :
+    tsupport (chartPullback I α ψ) ⊆ I.interior M := by
+  have hs : tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α :=
+    hψ_supp.trans (Set.image_mono interior_subset)
+  intro x hx
+  obtain ⟨z, ⟨y, hy, rfl⟩, rfl⟩ := tsupport_chartPullback_subset α hψ_cpt hs hx
+  obtain ⟨z, hz, rfl⟩ := hψ_supp hy
+  simp only [ContinuousLinearEquiv.symm_apply_apply]
+  have hsrc := (extChartAt I α).map_target (interior_subset hz)
+  rw [extChartAt_source] at hsrc
+  apply (I.isInteriorPoint_iff_of_mem_atlas (M := M) (n := 1)
+    (by simp) (chart_mem_atlas H α) hsrc).2
+  change extChartAt I α ((extChartAt I α).symm z) ∈ interior (extChartAt I α).target
+  rwa [(extChartAt I α).right_inv (interior_subset hz)]
 
 theorem chartPullback_contMDiff
     [T2Space M]

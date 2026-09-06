@@ -5,6 +5,7 @@ import DifferentialGeometry.Geometry.Geodesic.ChartRegularity
 import DifferentialGeometry.Geometry.Geodesic.Equation
 import DifferentialGeometry.Geometry.Geodesic.CrossVFReduction
 import DifferentialGeometry.Geometry.Exponential.Defs
+import DifferentialGeometry.Geometry.Exponential.RadialGeodesic
 
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
@@ -1796,50 +1797,6 @@ theorem exp_radial_eq_intr
     _ = intrinsicGeodesic (I := I) g hEnorm q u s := by
         rw [expMapIntrinsic_def, intrinsicGeodesic_smul]
 
-attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
-  Tensor0SBundle.tangentSpaceNormedSpace in
-theorem exp_radial_geo_zero
-    [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
-    [T2Space (TangentBundle I M)]
-    [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
-    (g : SmoothRiemannianMetric I M)
-    (hEnorm : IsMetricNorm (I := I) (M := M) g)
-    (q : M) (u : TangentSpace I q) :
-    Geodesic.HasGeodesicEquationAt (I := I) g
-      (fun s : ℝ => expMap (I := I) g q (s • u)) 0 := by
-  classical
-  have hEq := exp_radial_eq_intr (I := I) g hEnorm q u
-  exact Geodesic.HasGeodesicEquationAt.congr_of_eventuallyEq_at
-    (γ := fun s : ℝ => expMap (I := I) g q (s • u))
-    (γ' := intrinsicGeodesic (I := I) g hEnorm q u) (t₀ := 0)
-    hEq.eq_of_nhds hEq (intrinsicGeodesic_isGeodesic (I := I) g hEnorm q u 0)
-
-attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
-  Tensor0SBundle.tangentSpaceNormedSpace in
-theorem exp_radial_d2_zero
-    [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
-    [T2Space (TangentBundle I M)]
-    [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
-    (g : SmoothRiemannianMetric I M)
-    (hEnorm : IsMetricNorm (I := I) (M := M) g)
-    (q : M) (u : TangentSpace I q) :
-    covDerivAlong (I := I) g
-      (fun s : ℝ => expMap (I := I) g q (s • u))
-      (fun s => (mfderiv 𝓘(ℝ, ℝ) I
-        (fun r : ℝ => expMap (I := I) g q (r • u)) s : ℝ →L[ℝ] _) (1 : ℝ))
-      0 = 0 := by
-  classical
-  have hC2 : ContMDiffAt 𝓘(ℝ, ℝ) I 2
-      (fun s : ℝ => expMap (I := I) g q (s • u)) 0 := by
-    set a : E := (u : E)
-    have hsmall : ‖(0 : ℝ) • a‖ < expMapC2Radius (I := I) g q := by
-      simp [expMapC2Radius_pos (I := I) g q]
-    have hC2a := radialCurve_contMDiffAt2 (I := I) g q a 0 hsmall
-    change ContMDiffAt 𝓘(ℝ, ℝ) I 2
-      (fun s : ℝ => expMap (I := I) g q (show TangentSpace I q from s • a)) 0
-    exact hC2a
-  exact covDerivAlong_velocity_eq_zero_of_hasGeodesicEquationAt_C2
-    (I := I) g _ 0 hC2 (exp_radial_geo_zero (I := I) g hEnorm q u)
 
 end AgreementBridge
 

@@ -96,61 +96,11 @@ lemma chartCoeff_grad_g_eq_gradChartCoeff [I.Boundaryless]
     (i : Fin (Module.finrank ℝ E)) :
     chartCoeff (I := I) α (gradG (I := I) g ⟨_, hf⟩) i x =
       gradChartCoeff (I := I) g α f i x := by
-  classical
-  set T : Bundle.Trivialization E (π E (TangentSpace I : M → Type _)) :=
-    trivializationAt E (TangentSpace I) α
-  set b : Module.Basis (Fin (Module.finrank ℝ E)) ℝ E := chartModelBasis E
-  have hxchart : x ∈ (chartAt H α).source := by
-    rw [trivializationAt_baseSet_eq_chartAt_source] at hx; exact hx
-  have hf_mdiff : MDifferentiableAt I 𝓘(ℝ, ℝ) f x :=
-    hf.mdifferentiable (by simp) x
-  have hgrad_eq :
-      gradFun (I := I) g f x =
-        ∑ k : Fin (Module.finrank ℝ E),
-          gradChartCoeff (I := I) g α f k x •
-            chartBasisVecFiber (I := I) α k x :=
-    (gradChartLocal_eq_gradFun (I := I) g α hf_mdiff hx hx_int).symm
-  set L : TangentSpace I x ≃L[ℝ] E := T.continuousLinearEquivAt ℝ x hx with hL_def
-  have hL_apply : ∀ v : TangentSpace I x, L v = (T ⟨x, v⟩).2 := fun _ => rfl
-  have hL_basis : ∀ k : Fin (Module.finrank ℝ E),
-      L (chartBasisVecFiber (I := I) α k x) = b k := by
-    intro k
-    rw [hL_apply]
-    exact trivializationAt_chartBasisVec_snd (I := I) α k hx
-  have hLgrad : L (gradFun (I := I) g f x) =
-      ∑ k : Fin (Module.finrank ℝ E),
-        gradChartCoeff (I := I) g α f k x • b k := by
-    rw [hgrad_eq]
-    rw [map_sum]
-    refine Finset.sum_congr rfl ?_
-    intro k _
-    rw [map_smul]
-    rw [hL_basis k]
-  have hrepr_basis_combo :
-      b.repr (∑ k : Fin (Module.finrank ℝ E),
-            gradChartCoeff (I := I) g α f k x • b k) i =
-        gradChartCoeff (I := I) g α f i x := by
-    rw [map_sum]
-    rw [Finsupp.coe_finsetSum, Finset.sum_apply]
-    rw [Finset.sum_eq_single i]
-    · rw [map_smul, Module.Basis.repr_self]
-      simp
-    · intro k _ hki
-      rw [map_smul, Module.Basis.repr_self]
-      simp [Ne.symm hki]
-    · intro hi
-      exact absurd (Finset.mem_univ i) hi
-  have hgrad_g_x : ((gradG (I := I) g ⟨_, hf⟩ :
-        Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x) = gradFun (I := I) g f x :=
-    grad_g_apply (I := I) g ⟨_, hf⟩ x
-  unfold chartCoeff
-  rw [show ((gradG (I := I) g ⟨_, hf⟩ :
-        Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x) = gradFun (I := I) g f x
-      from hgrad_g_x]
-  rw [show (T ⟨x, gradFun (I := I) g f x⟩).2 = L (gradFun (I := I) g f x)
-      from (hL_apply (gradFun (I := I) g f x)).symm]
-  rw [hLgrad]
-  exact hrepr_basis_combo
+  let fSmooth : C^∞⟮I, M; ℝ⟯ := ⟨f, hf⟩
+  change chartCoeff (I := I) α (gradG (I := I) g fSmooth) i x = _
+  rw [chartCoeff_def, grad_g_apply]
+  exact chartBasisFamily_repr_gradFun (I := I) g α
+    (hf.mdifferentiable (by simp) x) hx hx_int i
 
 private lemma chartCoeffOnE_grad_g_eq_gradChartCoeffOnE [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (α : M)

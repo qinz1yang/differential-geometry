@@ -83,16 +83,9 @@ private lemma jacobiRadius_lt_exp
     ‖x‖ < expMapC2Radius (I := I) g p :=
   hx.trans_le (jacobi_radius_le_c2 (I := I) g p)
 
-open Bundle in
-attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
-  Tensor0SBundle.tangentSpaceNormedSpace in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem rm04Data_jacobi
-    [PseudoEMetricSpace M]
-    [RiemannianBundle (fun x : M => TangentSpace I x)]
-    [IsRiemannianManifold I M] [CompleteSpace M]
-    [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) :
     Rm04DataAt (I := I) g p (jacobiVarRadius (I := I) g p) := by
   classical
@@ -111,7 +104,7 @@ theorem rm04Data_jacobi
     have hJac0 :
         IsJacobiAt (I := I) g (radialCurve (I := I) g p x)
           (radialJacobiField (I := I) g p x w) 0 := by
-      exact jacobi_zero_of_lt (I := I) g hEnorm p hx hw
+      exact jacobi_zero_of_lt (I := I) g p hx hw
     have hxrad : ‖x‖ < expMapC2Radius (I := I) g p :=
       jacobiRadius_lt_exp (I := I) g p hx
     have hbasis :
@@ -167,16 +160,9 @@ theorem rm04Data_jacobi
     exact ode_Ico_of_Ioo_d2 (I := I) g p x w hJac hcurv
       (d2_zero_of_jac0 (I := I) g p x w hJac0)
 
-open Bundle in
-attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
-  Tensor0SBundle.tangentSpaceNormedSpace in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem rm04_one_le
-    [PseudoEMetricSpace M]
-    [RiemannianBundle (fun x : M => TangentSpace I x)]
-    [IsRiemannianManifold I M] [CompleteSpace M]
-    [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (x w : E)
     {a K R Vb b A B : ℝ}
     (ha : 0 < a) (hK : 0 ≤ K) (hVb : 0 ≤ Vb)
@@ -214,7 +200,7 @@ theorem rm04_one_le
       (expMap (I := I) g p (show TangentSpace I p from x))
       (radialJacobiField (I := I) g p x w 1)
       (radialJacobiField (I := I) g p x w 1)) ≤ B := by
-  have hdata := rm04Data_jacobi (I := I) g hEnorm p
+  have hdata := rm04Data_jacobi (I := I) g p
   obtain ⟨hJdiff, hDJdiff, hODE⟩ :=
     hdata x (a • w) hx hw hK hVb hb1 hlaunch hKbound hRm
   have hderiv : ∀ y z : E,
@@ -230,16 +216,9 @@ theorem rm04_one_le
     ha hK hb0 h1b hγ hcard F hpar hON hFdiff hJdiff hDJdiff hODE
     hderiv hx hw hinit hmodel (jacobiRadius_lt_exp (I := I) g p hx)
 
-open Bundle in
-attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
-  Tensor0SBundle.tangentSpaceNormedSpace in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem rm04_one_ge
-    [PseudoEMetricSpace M]
-    [RiemannianBundle (fun x : M => TangentSpace I x)]
-    [IsRiemannianManifold I M] [CompleteSpace M]
-    [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (x w : E)
     {a K R Vb b B : ℝ}
     (ha : 0 < a) (hK : 0 ≤ K) (hVb : 0 ≤ Vb)
@@ -278,7 +257,7 @@ theorem rm04_one_ge
       (expMap (I := I) g p (show TangentSpace I p from x))
       (radialJacobiField (I := I) g p x w 1)
       (radialJacobiField (I := I) g p x w 1)) := by
-  have hdata := rm04Data_jacobi (I := I) g hEnorm p
+  have hdata := rm04Data_jacobi (I := I) g p
   obtain ⟨hJdiff, hDJdiff, hODE⟩ :=
     hdata x (a • w) hx hw hK hVb hb1 hlaunch hKbound hRm
   have hderiv : ∀ y z : E,

@@ -557,13 +557,13 @@ theorem framed_rm04_bounds
           (I := I) (M := Y.M) Y.metric
           (radialCurve (I := I) Y.metric x xRaw t))) ≤ R := by
     simpa only [FramedRm04Bound, xRaw] using hRm
-  have hupper := rm04_one_le (I := I) Y.metric hEnorm x
+  have hupper := rm04_one_le (I := I) Y.metric x
     xRaw vRaw
     ha hK hVb (by norm_num) le_rfl le_rfl hzRaw havRaw hlaunchRaw
     hKbound hRmRaw hgamma (hcard _ hzMem) (D.F _)
     (hpar _ hzMem) (hON _ hzMem) (hFdiff _ hzMem) hinitRaw
     (by simpa only [one_mul] using hmodelLe)
-  have hlower := rm04_one_ge (I := I) Y.metric hEnorm x
+  have hlower := rm04_one_ge (I := I) Y.metric x
     xRaw vRaw
     ha hK hVb (by norm_num) le_rfl le_rfl hzRaw havRaw hlaunchRaw
     hKbound hRmRaw hgamma (hcard _ hzMem) (D.F _)

@@ -304,7 +304,7 @@ theorem localBall_cross
           localBallVolume (I := I) g p r *
             ENNReal.ofReal (hypRadVol q (Module.finrank Real E - 1) R) := by
   obtain ⟨ρc, hρc, hcross⟩ :=
-    normalBall_cross (I := I) g hEnorm p q hq hd hRic
+    normalBall_cross (I := I) g p q hq hd hRic
   obtain ⟨ri, hri, hiinj⟩ :=
     exists_pos_injOn_metric_ball (I := I) g p
   let re : Real := expDiffeoRadius (I := I) g hEnorm p

@@ -34,6 +34,22 @@ noncomputable def dirichletMassLp
   let L := Lp.LpToLpOfMeasureLeSMul (E := ℝ) (p := 2) hCvtop hvol
   (innerSL ℝ).bilinearComp L L
 
+theorem dirichletMassLp_apply_eq_integral
+    {q : SmoothRiemannianMetric (I_half n) M}
+    (h : SmoothRiemannianMetric (I_half n) M)
+    (Cv : ℝ≥0∞) (hCvtop : Cv ≠ ⊤)
+    (hvol : riemannianVolumeMeasure (I := I_half n) (M := M) h ≤
+      Cv • riemannianVolumeMeasure (I := I_half n) (M := M) q)
+    (u v : Lp ℝ 2 (riemannianVolumeMeasure (I := I_half n) (M := M) q)) :
+    dirichletMassLp h Cv hCvtop hvol u v =
+      ∫ x, u x * v x ∂(riemannianVolumeMeasure (I := I_half n) (M := M) h) := by
+  rw [dirichletMassLp, ContinuousLinearMap.bilinearComp_apply, innerSL_apply_apply,
+    L2.inner_def]
+  apply integral_congr_ae
+  filter_upwards [Lp.coeFn_LpToLpOfMeasureLeSMul hCvtop hvol u,
+    Lp.coeFn_LpToLpOfMeasureLeSMul hCvtop hvol v] with x hu hv
+  rw [hu, hv, Real.inner_apply]
+
 theorem dirichletMassLp_apply_smooth
     {q : SmoothRiemannianMetric (I_half n) M}
     (h : SmoothRiemannianMetric (I_half n) M)
@@ -44,25 +60,19 @@ theorem dirichletMassLp_apply_smooth
     dirichletMassLp h Cv hCvtop hvol
         (smoothToLpDirichlet q u) (smoothToLpDirichlet q v) =
       dirichletMass h u v := by
-  let μq := riemannianVolumeMeasure (I := I_half n) (M := M) q
-  let μh := riemannianVolumeMeasure (I := I_half n) (M := M) h
-  let L := Lp.LpToLpOfMeasureLeSMul (E := ℝ) (p := 2) hCvtop hvol
-  change inner ℝ (L (smoothToLpDirichlet q u))
-      (L (smoothToLpDirichlet q v)) = dirichletMass h u v
-  rw [MeasureTheory.L2.inner_def]
-  unfold dirichletMass
-  refine integral_congr_ae ?_
-  have hac : μh ≪ μq := Measure.absolutelyContinuous_of_le_smul hvol
-  have huq : smoothToLpDirichlet q u =ᵐ[μq] u.toFun :=
+  rw [dirichletMassLp_apply_eq_integral]
+  apply integral_congr_ae
+  have hac : riemannianVolumeMeasure (I := I_half n) (M := M) h ≪
+      riemannianVolumeMeasure (I := I_half n) (M := M) q :=
+    Measure.absolutelyContinuous_of_le_smul hvol
+  have hu : (smoothToLpDirichlet q u : M → ℝ) =ᵐ[
+      riemannianVolumeMeasure (I := I_half n) (M := M) q] u.toFun :=
     MemLp.coeFn_toLp u.memLp_two
-  have hvq : smoothToLpDirichlet q v =ᵐ[μq] v.toFun :=
+  have hv : (smoothToLpDirichlet q v : M → ℝ) =ᵐ[
+      riemannianVolumeMeasure (I := I_half n) (M := M) q] v.toFun :=
     MemLp.coeFn_toLp v.memLp_two
-  filter_upwards [Lp.coeFn_LpToLpOfMeasureLeSMul hCvtop hvol
-      (smoothToLpDirichlet q u),
-    Lp.coeFn_LpToLpOfMeasureLeSMul hCvtop hvol
-      (smoothToLpDirichlet q v), hac.ae_eq huq, hac.ae_eq hvq] with x huL hvL hu hv
-  rw [huL, hvL, hu, hv]
-  simp only [RCLike.inner_apply, conj_trivial, mul_comm]
+  filter_upwards [hac.ae_eq hu, hac.ae_eq hv] with x hux hvx
+  rw [hux, hvx]
 
 theorem dirichletMassLp_self_apply
     {q : SmoothRiemannianMetric (I_half n) M}

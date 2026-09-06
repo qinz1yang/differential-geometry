@@ -1642,15 +1642,9 @@ theorem exists_ode_rm04_jac0
   exact hODE x w hx hw hK hVb hb hlaunch hKbound hRm
     (d2_zero_of_jac0 (I := I) g p x w hJac0)
 
-open Bundle in
-attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
-  Tensor0SBundle.tangentSpaceNormedSpace in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem exists_ode_rm04
-    [PseudoEMetricSpace M] [RiemannianBundle (fun x : M => TangentSpace I x)]
-    [IsRiemannianManifold I M] [CompleteSpace M]
-    [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) :
     ∃ r : Real, 0 < r ∧ ∀ x w : E, ‖x‖ < r → ‖w‖ < r →
       ∀ {K R Vb b : Real}, 0 ≤ K → 0 ≤ Vb → b ≤ 1 →
@@ -1675,7 +1669,7 @@ theorem exists_ode_rm04
           (radialJacobiField (I := I) g p x w t) := by
   obtain ⟨r₀, hr₀, hODE⟩ := exists_ode_rm04_jac0 (I := I) g p
   obtain ⟨r₁, hr₁, hJac0⟩ :=
-    exists_radialJacobi_zero_radius (I := I) g hEnorm p
+    exists_radialJacobi_zero_radius (I := I) g p
   refine ⟨min r₀ r₁, lt_min hr₀ hr₁, ?_⟩
   intro x w hx hw K R Vb b hK hVb hb hlaunch hKbound hRm
   have hx₀ : ‖x‖ < r₀ := lt_of_lt_of_le hx (min_le_left _ _)
@@ -1689,15 +1683,9 @@ theorem exists_ode_rm04
     exact hJac0 x w hx₁ hw₁
   exact hODE x w hx₀ hw₀ hK hVb hb hlaunch hKbound hRm hJac0'
 
-open Bundle in
-attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
-  Tensor0SBundle.tangentSpaceNormedSpace in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem exists_rm04_data
-    [PseudoEMetricSpace M] [RiemannianBundle (fun x : M => TangentSpace I x)]
-    [IsRiemannianManifold I M] [CompleteSpace M]
-    [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) :
     ∃ r : Real, 0 < r ∧ ∀ x w : E, ‖x‖ < r → ‖w‖ < r →
       ∀ {K R Vb b : Real}, 0 ≤ K → 0 ≤ Vb → b ≤ 1 →
@@ -1730,7 +1718,7 @@ theorem exists_rm04_data
           (radialJacobiField (I := I) g p x w t)
           (radialJacobiField (I := I) g p x w t) := by
   obtain ⟨r₀, hr₀, hdiff⟩ := exists_radialJacobi_diff (I := I) g p
-  obtain ⟨r₁, hr₁, hODE⟩ := exists_ode_rm04 (I := I) g hEnorm p
+  obtain ⟨r₁, hr₁, hODE⟩ := exists_ode_rm04 (I := I) g p
   refine ⟨min r₀ r₁, lt_min hr₀ hr₁, ?_⟩
   intro x w hx hw K R Vb b hK hVb hb hlaunch hKbound hRm
   have hx₀ : ‖x‖ < r₀ := lt_of_lt_of_le hx (min_le_left _ _)
@@ -1740,14 +1728,9 @@ theorem exists_rm04_data
   exact ⟨(hdiff x w hx₀ hw₀ hb).1, (hdiff x w hx₀ hw₀ hb).2,
     hODE x w hx₁ hw₁ hK hVb hb hlaunch hKbound hRm⟩
 
-open Bundle in
-attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
-  Tensor0SBundle.tangentSpaceNormedSpace in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem exists_rm04_basis
-    [PseudoEMetricSpace M] [RiemannianBundle (fun x : M => TangentSpace I x)]
-    [IsRiemannianManifold I M] [CompleteSpace M] [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) :
     ∃ r : Real, 0 < r ∧ ∀ x : E, ‖x‖ < r →
       ∀ {a K R Vb b : Real}, 0 ≤ K → 0 ≤ Vb → b ≤ 1 →
@@ -1780,7 +1763,7 @@ theorem exists_rm04_basis
         ≤ K ^ 2 * g.inner (radialCurve (I := I) g p x t)
           (radialJacobiField (I := I) g p x (a • (chartModelBasis E) k) t)
           (radialJacobiField (I := I) g p x (a • (chartModelBasis E) k) t) := by
-  obtain ⟨r, hr, hdata⟩ := exists_rm04_data (I := I) g hEnorm p
+  obtain ⟨r, hr, hdata⟩ := exists_rm04_data (I := I) g p
   refine ⟨r, hr, ?_⟩
   intro x hx a K R Vb b hK hVb hb hsmall hlaunch hKbound hRm
   refine ⟨?_, ?_, ?_⟩
@@ -1794,14 +1777,9 @@ theorem exists_rm04_basis
     exact (hdata x (a • (chartModelBasis E) k) hx (hsmall k)
       hK hVb hb hlaunch hKbound hRm).2.2
 
-open Bundle in
-attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
-  Tensor0SBundle.tangentSpaceNormedSpace in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem exists_rm04_pack
-    [PseudoEMetricSpace M] [RiemannianBundle (fun x : M => TangentSpace I x)]
-    [IsRiemannianManifold I M] [CompleteSpace M] [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) :
     ∃ r : Real, 0 < r ∧
       (∀ x : E, ‖x‖ < r →
@@ -1839,7 +1817,7 @@ theorem exists_rm04_pack
         (covDerivAlong (I := I) g
           (fun v : ℝ => (expMap (I := I) g p (show TangentSpace I p from (v • x)) : M))
           (radialJacobiField (I := I) g p x w) 0 : E) = w) := by
-  obtain ⟨r₀, hr₀, hdata⟩ := exists_rm04_basis (I := I) g hEnorm p
+  obtain ⟨r₀, hr₀, hdata⟩ := exists_rm04_basis (I := I) g p
   obtain ⟨r₁, hr₁, hderiv⟩ := exists_radialJacobi_deriv_radius (I := I) g p
   refine ⟨min r₀ r₁, lt_min hr₀ hr₁, ?_, ?_⟩
   · intro x hx a K R Vb b hK hVb hb hsmall hlaunch hKbound hRm
@@ -1871,16 +1849,9 @@ theorem rm04_Ioo_of_region
   intro t ht
   exact hRmU _ (hcurve t ht)
 
-open Bundle in
-attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
-  Tensor0SBundle.tangentSpaceNormedSpace in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem exists_ode_rm04_on
-    [PseudoEMetricSpace M] [RiemannianBundle (fun x : M => TangentSpace I x)]
-    [IsRiemannianManifold I M] [CompleteSpace M]
-    [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M) (p : M) :
-    (∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w))) →
     ∃ r : Real, 0 < r ∧ ∀ x w : E, ‖x‖ < r → ‖w‖ < r →
       ∀ {K R Vb b : Real} {U : Set M}, 0 ≤ K → 0 ≤ Vb → b ≤ 1 →
       Real.sqrt (g.inner p x x) ≤ Vb →
@@ -1903,8 +1874,7 @@ theorem exists_ode_rm04_on
         ≤ K ^ 2 * g.inner (radialCurve (I := I) g p x t)
           (radialJacobiField (I := I) g p x w t)
           (radialJacobiField (I := I) g p x w t) := by
-  intro hEnorm
-  obtain ⟨r, hr, hODE⟩ := exists_ode_rm04 (I := I) g hEnorm p
+  obtain ⟨r, hr, hODE⟩ := exists_ode_rm04 (I := I) g p
   refine ⟨r, hr, ?_⟩
   intro x w hx hw K R Vb b U hK hVb hb hlaunch hKbound hcurve hRmU
   exact hODE x w hx hw hK hVb hb hlaunch hKbound
