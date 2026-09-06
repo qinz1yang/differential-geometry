@@ -7,7 +7,7 @@ open DifferentialGeometry.Geometry.Curvature
 noncomputable section
 
 open Metric Set Bundle
-open scoped ENNReal Manifold Topology
+open scoped ENNReal Manifold Topology ContDiff
 
 namespace DifferentialGeometry.Geometry.Riemannian.VolumeComparison
 
@@ -21,8 +21,7 @@ variable {E : Type*} [NormedAddCommGroup E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners Real E H}
   [I.Boundaryless]
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
-  [IsManifold I (⊤ : WithTop ℕ∞) M] [T2Space M] [SigmaCompactSpace M]
-  [T2Space (TangentBundle I M)]
+  [IsManifold I (∞ : WithTop ℕ∞) M] [T2Space M] [SigmaCompactSpace M]
 
 private local instance : MeasurableSpace E := borel E
 private local instance : BorelSpace E := ⟨rfl⟩
@@ -293,7 +292,6 @@ theorem localBall_cross
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (q : Real) (hq : 0 ≤ q)
-    (hd : 0 < Module.finrank Real E - 1)
     (hRic : BonnetMyers.RicciBoundedBelow (I := I) g
       (-(((Module.finrank Real E - 1 : Nat) : Real) * q ^ 2))) :
     ∃ ρ : Real, 0 < ρ ∧
@@ -304,7 +302,7 @@ theorem localBall_cross
           localBallVolume (I := I) g p r *
             ENNReal.ofReal (hyperbolicRadialVolume q (Module.finrank Real E - 1) R) := by
   obtain ⟨ρc, hρc, hcross⟩ :=
-    normalBall_cross (I := I) g hEnorm p q hq hd hRic
+    exists_radius_normalBallVolume_mul_hyperbolicRadialVolume_le (I := I) g p q hq hRic
   obtain ⟨ri, hri, hiinj⟩ :=
     exists_pos_injOn_metric_ball (I := I) g p
   let re : Real := expDiffeoRadius (I := I) g hEnorm p
@@ -349,12 +347,11 @@ theorem localBall_cross_of_complete_metric
     (g : SmoothRiemannianMetric I M)
     (hcomplete : RiemannianMetricComplete (I := I) g)
     (p : M) (q : Real) (hq : 0 ≤ q)
-    (hd : 0 < Module.finrank Real E - 1)
     (hRic : BonnetMyers.RicciBoundedBelow (I := I) g
       (-(((Module.finrank Real E - 1 : Nat) : Real) * q ^ 2))) :
     letI : IsManifold I 1 M :=
-      IsManifold.of_le (I := I) (M := M) (n := (⊤ : WithTop ℕ∞))
-        (by decide : (1 : WithTop ℕ∞) ≤ (⊤ : WithTop ℕ∞))
+      IsManifold.of_le (I := I) (M := M) (n := (∞ : WithTop ℕ∞))
+        (by decide : (1 : WithTop ℕ∞) ≤ (∞ : WithTop ℕ∞))
     letI : TopologicalSpace.MetrizableSpace M :=
       Manifold.metrizableSpace I M
     letI : T3Space M := inferInstance
@@ -373,8 +370,8 @@ theorem localBall_cross_of_complete_metric
           localBallVolume (I := I) g p r *
             ENNReal.ofReal (hyperbolicRadialVolume q (Module.finrank Real E - 1) R) := by
   let : IsManifold I 1 M :=
-    IsManifold.of_le (I := I) (M := M) (n := (⊤ : WithTop ℕ∞))
-      (by decide : (1 : WithTop ℕ∞) ≤ (⊤ : WithTop ℕ∞))
+    IsManifold.of_le (I := I) (M := M) (n := (∞ : WithTop ℕ∞))
+      (by decide : (1 : WithTop ℕ∞) ≤ (∞ : WithTop ℕ∞))
   let : TopologicalSpace.MetrizableSpace M :=
     Manifold.metrizableSpace I M
   let : T3Space M := inferInstance
@@ -388,7 +385,7 @@ theorem localBall_cross_of_complete_metric
   have hEnorm : IsMetricNorm (I := I) (M := M) g := by
     intro x v
     exact tensor0SBundle_enorm_eq_riemannianBundle_enorm (I := I) g x v
-  exact localBall_cross (I := I) (M := M) g hEnorm p q hq hd hRic
+  exact localBall_cross (I := I) (M := M) g hEnorm p q hq hRic
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
@@ -400,7 +397,6 @@ theorem localBall_ratio
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (q : Real) (hq : 0 ≤ q)
-    (hd : 0 < Module.finrank Real E - 1)
     (hRic : BonnetMyers.RicciBoundedBelow (I := I) g
       (-(((Module.finrank Real E - 1 : Nat) : Real) * q ^ 2))) :
     ∃ ρ : Real, 0 < ρ ∧
@@ -412,7 +408,7 @@ theorem localBall_ratio
           ENNReal.ofReal (hyperbolicRadialVolume q (Module.finrank Real E - 1) R))
         (Ioo (0 : Real) ρ) := by
   obtain ⟨ρ, hρ, hρinj, hcross⟩ :=
-    localBall_cross (I := I) g hEnorm p q hq hd hRic
+    localBall_cross (I := I) g hEnorm p q hq hRic
   refine ⟨ρ, hρ, hρinj, ?_⟩
   intro r hr R hR hrR
   have hmr : 0 < hyperbolicRadialVolume q (Module.finrank Real E - 1) r :=
@@ -437,12 +433,11 @@ theorem localBall_ratio_of_complete_metric
     (g : SmoothRiemannianMetric I M)
     (hcomplete : RiemannianMetricComplete (I := I) g)
     (p : M) (q : Real) (hq : 0 ≤ q)
-    (hd : 0 < Module.finrank Real E - 1)
     (hRic : BonnetMyers.RicciBoundedBelow (I := I) g
       (-(((Module.finrank Real E - 1 : Nat) : Real) * q ^ 2))) :
     letI : IsManifold I 1 M :=
-      IsManifold.of_le (I := I) (M := M) (n := (⊤ : WithTop ℕ∞))
-        (by decide : (1 : WithTop ℕ∞) ≤ (⊤ : WithTop ℕ∞))
+      IsManifold.of_le (I := I) (M := M) (n := (∞ : WithTop ℕ∞))
+        (by decide : (1 : WithTop ℕ∞) ≤ (∞ : WithTop ℕ∞))
     letI : TopologicalSpace.MetrizableSpace M :=
       Manifold.metrizableSpace I M
     letI : T3Space M := inferInstance
@@ -462,8 +457,8 @@ theorem localBall_ratio_of_complete_metric
           ENNReal.ofReal (hyperbolicRadialVolume q (Module.finrank Real E - 1) R))
         (Ioo (0 : Real) ρ) := by
   let : IsManifold I 1 M :=
-    IsManifold.of_le (I := I) (M := M) (n := (⊤ : WithTop ℕ∞))
-      (by decide : (1 : WithTop ℕ∞) ≤ (⊤ : WithTop ℕ∞))
+    IsManifold.of_le (I := I) (M := M) (n := (∞ : WithTop ℕ∞))
+      (by decide : (1 : WithTop ℕ∞) ≤ (∞ : WithTop ℕ∞))
   let : TopologicalSpace.MetrizableSpace M :=
     Manifold.metrizableSpace I M
   let : T3Space M := inferInstance
@@ -477,7 +472,7 @@ theorem localBall_ratio_of_complete_metric
   have hEnorm : IsMetricNorm (I := I) (M := M) g := by
     intro x v
     exact tensor0SBundle_enorm_eq_riemannianBundle_enorm (I := I) g x v
-  exact localBall_ratio (I := I) (M := M) g hEnorm p q hq hd hRic
+  exact localBall_ratio (I := I) (M := M) g hEnorm p q hq hRic
 
 end DifferentialGeometry.Geometry.Riemannian.VolumeComparison
 

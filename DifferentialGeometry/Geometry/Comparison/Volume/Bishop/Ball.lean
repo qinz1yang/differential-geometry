@@ -1,5 +1,4 @@
 import DifferentialGeometry.Geometry.Comparison.Volume.Bishop.PolarFramed
-import DifferentialGeometry.Geometry.Metric.Completeness
 import Mathlib.MeasureTheory.Measure.Lebesgue.VolumeOfBalls
 
 open DifferentialGeometry.Analysis.Calculus
@@ -8,7 +7,7 @@ open DifferentialGeometry.Geometry.Curvature
 noncomputable section
 
 open Filter Metric Set Bundle MeasureTheory
-open scoped ENNReal Manifold Topology
+open scoped ENNReal Manifold Topology ContDiff
 
 namespace DifferentialGeometry.Geometry.Riemannian.VolumeComparison
 
@@ -161,12 +160,6 @@ private theorem integralRatio_anti_on
     simpa only [intervalIntegral.integral_const_mul,
       intervalIntegral.integral_mul_const, mul_comm] using hint
 
-private theorem clm_sum_apply
-    {F κ : Type*} [NormedAddCommGroup F] [NormedSpace Real F] [Fintype κ]
-    (B : F →L[Real] F →L[Real] Real) (v : κ → F) (w : F) :
-    B (∑ i, v i) w = ∑ i, B (v i) w := by
-  rw [map_sum, _root_.sum_apply]
-
 private theorem clm_smul_apply
     {F : Type*} [NormedAddCommGroup F] [NormedSpace Real F]
     (B : F →L[Real] F →L[Real] Real) (c : Real) (v w : F) :
@@ -174,45 +167,28 @@ private theorem clm_smul_apply
   have h := congrArg (fun L : F →L[Real] Real => L w) (B.map_smul c v)
   simpa only [_root_.smul_apply, smul_eq_mul] using h
 
-private theorem linIndep_of_ortho
-    {E H M : Type*} [NormedAddCommGroup E] [InnerProductSpace Real E]
+private theorem linearIndependent_of_orthonormal
+    {E H M : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
     [TopologicalSpace H] {I : ModelWithCorners Real E H}
-    [TopologicalSpace M] [ChartedSpace H M]
-    [IsManifold I (⊤ : WithTop ℕ∞) M]
-    {κ : Type*} [Finite κ] [DecidableEq κ]
+    [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+    {κ : Type*} [DecidableEq κ]
     (g : SmoothRiemannianMetric I M) (x : M) (e : κ → E)
     (hON : ∀ i j,
       tangentBilinearFormToModel (I := I) x (g.inner x) (e i) (e j) =
         if i = j then 1 else 0) :
     LinearIndependent Real e := by
-  classical
-  let _ := Fintype.ofFinite κ
-  let B : E →L[Real] E →L[Real] Real :=
+  let G : E →L[Real] E →L[Real] Real :=
     tangentBilinearFormToModel (I := I) x (g.inner x)
-  have hONModel : ∀ i j, B (e i) (e j) = if i = j then 1 else 0 := by
-    intro i j
-    simpa only [B] using hON i j
-  rw [Fintype.linearIndependent_iff]
-  intro c hc j
-  have hpair := congrArg (fun z : E => B z (e j)) hc
-  change B (∑ i, c i • e i) (e j) = B 0 (e j) at hpair
-  rw [clm_sum_apply, map_zero, _root_.zero_apply] at hpair
-  rw [Finset.sum_eq_single j] at hpair
-  · calc
-      c j = c j * 1 := by rw [mul_one]
-      _ = c j * B (e j) (e j) := by rw [hONModel j j, if_pos rfl]
-      _ = B (c j • e j) (e j) :=
-        (clm_smul_apply B (c j) (e j) (e j)).symm
-      _ = 0 := hpair
-  · intro i _ hij
-    calc
-      B (c i • e i) (e j) = c i * B (e i) (e j) :=
-        clm_smul_apply B (c i) (e i) (e j)
-      _ = c i * (if i = j then 1 else 0) := by rw [hONModel i j]
-      _ = c i * 0 := by rw [if_neg (by simpa using hij)]
-      _ = 0 := mul_zero _
-  · intro hj
-    exact (hj (Finset.mem_univ j)).elim
+  let B : E →ₗ[Real] E →ₗ[Real] Real :=
+    (ContinuousLinearMap.coeLM Real).comp G.toLinearMap
+  apply LinearMap.linearIndependent_of_isOrthoᵢ (B := B)
+  · rw [LinearMap.isOrthoᵢ_def]
+    intro i j hij
+    exact (hON i j).trans (if_neg hij)
+  · intro i
+    change G (e i) (e i) ≠ 0
+    rw [show G (e i) (e i) = 1 from (hON i i).trans (if_pos rfl)]
+    exact one_ne_zero
 
 private noncomputable def optionFamily
     {E : Type*} {d : Nat} (x : E) (e : Fin d → E) : Option (Fin d) → E
@@ -220,11 +196,11 @@ private noncomputable def optionFamily
   | some i => e i
 
 private theorem exists_scaled_basis
-    {E H M : Type*} [NormedAddCommGroup E] [InnerProductSpace Real E]
+    {E H M : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
     [hfinite : FiniteDimensional Real E]
     [TopologicalSpace H] {I : ModelWithCorners Real E H}
     [TopologicalSpace M] [ChartedSpace H M]
-    [IsManifold I (⊤ : WithTop ℕ∞) M]
+    [IsManifold I ∞ M]
     {d : Nat} (g : SmoothRiemannianMetric I M) (p : M)
     (x : E) (e : Fin d → E)
     (hON : ∀ i j, tangentBilinearFormToModel (I := I) p (g.inner p)
@@ -236,7 +212,7 @@ private theorem exists_scaled_basis
   let _ := hfinite
   classical
   have hLI : LinearIndependent Real (optionFamily x e) :=
-    linIndep_of_ortho g p (optionFamily x e) hON
+    linearIndependent_of_orthonormal g p (optionFamily x e) hON
   have hcard' : Fintype.card (Option (Fin d)) = Module.finrank Real E := by
     simpa using hcard
   let B₀ : Module.Basis (Option (Fin d)) Real E :=
@@ -266,8 +242,7 @@ variable {E : Type*} [NormedAddCommGroup E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners Real E H}
   [I.Boundaryless]
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
-  [IsManifold I (⊤ : WithTop ℕ∞) M] [T2Space M] [SigmaCompactSpace M]
-  [T2Space (TangentBundle I M)]
+  [IsManifold I ∞ M] [T2Space M] [SigmaCompactSpace M]
 
 def hyperbolicRadialVolume (q : Real) (d : Nat) (R : Real) : Real :=
   ∫ t in (0 : Real)..R, hyperbolicDensity q d t
@@ -428,16 +403,10 @@ def normalBallVolume (g : SmoothRiemannianMetric I M) (p : M)
   riemannianVolumeMeasure (I := I) (M := M) g
     (framedExpDiffeo (I := I) g p '' ball (0 : E) R)
 
-attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
-  Tensor0SBundle.tangentSpaceNormedSpace in
-theorem exists_framed_ratio
-    [PseudoEMetricSpace M] [RiemannianBundle (fun x : M => TangentSpace I x)]
-    [IsRiemannianManifold I M] [CompleteSpace M]
-    [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
+theorem exists_radius_antitoneOn_framedExpDiffeo_density_ratio
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (q : Real) (hq : 0 ≤ q)
-    (hd : 0 < Module.finrank Real E - 1)
     (hRic : RicciBoundedBelow (I := I) g
       (-(((Module.finrank Real E - 1 : Nat) : Real) * q ^ 2))) :
     ∃ ρ : Real, 0 < ρ ∧
@@ -452,7 +421,7 @@ theorem exists_framed_ratio
           (Ioo (0 : Real) ρ) := by
   let d : Nat := Module.finrank Real E - 1
   obtain ⟨r₀, hr₀, hcmp⟩ :=
-    exists_radial_cmp (I := I) (ι := Fin d) g hEnorm p
+    exists_radius_radialJacobiField_comparison (I := I) (ι := Fin d) g p
   let ιp : TangentSpace I p ≃L[Real] E :=
     tangentSpaceModelContinuousLinearEquiv (I := I) p
   let rExp : Real := expMapC2Radius (I := I) g p
@@ -525,6 +494,11 @@ theorem exists_framed_ratio
   have hxFrame : x = ιp (normalFrame (I := I) g p u.1) := by rfl
   have huNorm : ‖u.1‖ = 1 := by
     simpa only [mem_sphere_zero_iff_norm] using u.2
+  let _ : NeZero (Module.finrank ℝ E) := ⟨ne_of_gt
+    (Module.finrank_pos_iff_exists_ne_zero.mpr ⟨u.1, by
+      intro hu0
+      have hnorm : ‖u.1‖ = 0 := by rw [hu0, norm_zero]
+      linarith⟩)⟩
   have hxTangent :
     ιp.symm x = normalFrame (I := I) g p u.1 := by
     rw [hxFrame, ContinuousLinearEquiv.symm_apply_apply]
@@ -565,35 +539,15 @@ theorem exists_framed_ratio
         | some j => simpa only [optionFamily, Option.some.injEq] using heONModel i j
   have hcardPlus : d + 1 = Module.finrank Real E := by
     dsimp only [d]
-    omega
+    exact Nat.sub_add_cancel (Nat.one_le_iff_ne_zero.mpr (NeZero.ne (Module.finrank ℝ E)))
   obtain ⟨B, hBnone, hBsome⟩ :=
     exists_scaled_basis g p x eE hfullON hcardPlus hδ.ne'
   have hxC : ‖x‖ ≤ C := by
     have hLu := L.le_opNorm u.1
     simpa only [x, C, huNorm, mul_one] using hLu
-  have heC : ∀ i : Fin d, ‖eE i‖ ≤ C := by
-    intro i
-    let w : E := (normalFrame (I := I) g p).symm (e i)
-    have hwNorm : ‖w‖ = 1 := by
-      have hframe := normalFrame_sqrt (I := I) g p w
-      rw [show normalFrame (I := I) g p w = e i by
-        exact (normalFrame (I := I) g p).apply_symm_apply (e i)] at hframe
-      rw [heON i i, if_pos rfl, Real.sqrt_one] at hframe
-      exact hframe.symm
-    have hLw := L.le_opNorm w
-    have happly : L w = eE i := by
-      change ιp (normalFrame (I := I) g p w) = ιp (e i)
-      exact congrArg ιp ((normalFrame (I := I) g p).apply_symm_apply (e i))
-    rw [happly] at hLw
-    simpa only [C, hwNorm, mul_one] using hLw
   have hBnone_r₀ : ‖B none‖ < r₀ := by
     rw [hBnone, norm_smul, Real.norm_of_nonneg hδ.le]
     exact (mul_le_mul_of_nonneg_left hxC hδ.le).trans_lt hδC_r₀
-  have hBsome_r₀ : ∀ i : Fin d, ‖B (some i)‖ < r₀ := by
-    intro i
-    with_unfolding_all
-      rw [hBsome i, norm_smul, Real.norm_of_nonneg hδ.le]
-    exact (mul_le_mul_of_nonneg_left (heC i) hδ.le).trans_lt hδC_r₀
   have hBnone_exp : ‖B none‖ < rExp := by
     rw [hBnone, norm_smul, Real.norm_of_nonneg hδ.le]
     exact (mul_le_mul_of_nonneg_left hxC hδ.le).trans_lt hδC_rExp
@@ -630,8 +584,7 @@ theorem exists_framed_ratio
   have hcard : Fintype.card (Fin d) = Module.finrank Real E - 1 := by
     simp only [Fintype.card_fin, d]
   have hcmpData := hcmp (B none) (fun i : Fin d => B (some i)) q (1 / 2)
-    hBnone_r₀ hBsome_r₀ (B.ne_zero none) htransLI hscaledPerp hq
-    (by norm_num) (by norm_num) hcard hd hRic
+    hBnone_r₀ (B.ne_zero none) htransLI hscaledPerp hq (by norm_num) hcard hRic
   have hcurve : AntitoneOn
       (fun t =>
         curveDensity (I := I) g (radialCurve (I := I) g p (B none))
@@ -682,16 +635,10 @@ theorem exists_framed_ratio
   simpa only [d] using
     framedRatio_anti (I := I) g p u.1 q d hframedSource hrawPhysical'
 
-attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
-  Tensor0SBundle.tangentSpaceNormedSpace in
-theorem normalBall_cross
-    [PseudoEMetricSpace M] [RiemannianBundle (fun x : M => TangentSpace I x)]
-    [IsRiemannianManifold I M] [CompleteSpace M]
-    [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
+omit [NeZero (Module.finrank ℝ E)] in
+theorem exists_radius_normalBallVolume_mul_hyperbolicRadialVolume_le
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (q : Real) (hq : 0 ≤ q)
-    (hd : 0 < Module.finrank Real E - 1)
     (hRic : RicciBoundedBelow (I := I) g
       (-(((Module.finrank Real E - 1 : Nat) : Real) * q ^ 2))) :
     ∃ ρ : Real, 0 < ρ ∧ ∀ {r R : Real},
@@ -700,107 +647,116 @@ theorem normalBall_cross
             ENNReal.ofReal (hyperbolicRadialVolume q (Module.finrank Real E - 1) r) ≤
           normalBallVolume (I := I) g p r *
             ENNReal.ofReal (hyperbolicRadialVolume q (Module.finrank Real E - 1) R) := by
-  let _ : Nontrivial E := Module.nontrivial_of_finrank_pos
-    (Nat.pos_of_ne_zero (NeZero.ne (Module.finrank Real E)))
-  let _ : MeasurableSpace E := borel E
-  let _ : BorelSpace E := ⟨rfl⟩
-  let _ : MeasurableSpace M := borel M
-  let _ : BorelSpace M := ⟨rfl⟩
-  let d : Nat := Module.finrank Real E - 1
-  obtain ⟨ρ, hρ, hsource, hratio⟩ :=
-    exists_framed_ratio (I := I) g hEnorm p q hq hd hRic
-  refine ⟨ρ, hρ, ?_⟩
-  intro r R hr hrR hRρ
-  have hR : 0 < R := hr.trans_le hrR
-  let b : Real := (R + ρ) / 2
-  have hb : 0 < b := by
-    dsimp only [b]
-    linarith
-  have hRb : R < b := by
-    dsimp only [b]
-    linarith
-  have hbρ : b < ρ := by
-    dsimp only [b]
-    linarith
-  let P : sphere (0 : E) 1 → Real → Real := fun u t =>
-    paramDensity (I := I) g (framedExpDiffeo (I := I) g p) (t • u.1)
-  let A : sphere (0 : E) 1 → Real → Real := fun u s =>
-    ∫ t in (0 : Real)..s, t ^ d * P u t
-  have hP_nonneg (u : sphere (0 : E) 1) (t : Real) : 0 ≤ P u t := by
-    dsimp only [P, paramDensity]
-    exact Real.sqrt_nonneg _
-  have hP_cont (u : sphere (0 : E) 1) {s : Real}
-      (hs : 0 ≤ s) (hsρ : s < ρ) : ContinuousOn (P u) (Icc (0 : Real) s) := by
-    have hu : ‖u.1‖ = 1 := by
-      simpa only [mem_sphere_zero_iff_norm] using u.2
-    have hmap : MapsTo (fun t : Real => t • u.1) (Icc (0 : Real) s)
-        (framedExpDiffeo (I := I) g p).source := by
-      intro t ht
-      apply hsource
-      rw [mem_ball, dist_zero_right, norm_smul,
-        Real.norm_of_nonneg ht.1, hu, mul_one]
-      exact ht.2.trans_lt hsρ
-    exact (paramDensity_contOn (I := I) g (framedExpDiffeo (I := I) g p)).comp
-      (by fun_prop) hmap
-  have hA_nonneg (u : sphere (0 : E) 1) {s : Real}
-      (hs : 0 ≤ s) : 0 ≤ A u s := by
-    dsimp only [A]
-    exact intervalIntegral.integral_nonneg hs fun t ht =>
-      mul_nonneg (pow_nonneg ht.1 d) (hP_nonneg u t)
-  have hmodel_pos {s : Real} (hs : 0 < s) : 0 < hyperbolicRadialVolume q d s := by
-    exact intervalIntegral.intervalIntegral_pos_of_pos_on
-      ((hyperbolicDen_continuous q d).intervalIntegrable (0 : Real) s)
-      (fun t ht => hyperbolicDensity_pos hq ht.1) hs
-  have hpolar (s : Real) (hs : 0 < s) (hsρ : s < ρ) :
-      normalBallVolume (I := I) g p s =
-        ∫⁻ u : sphere (0 : E) 1, ENNReal.ofReal (A u s)
-          ∂(modelHaar (E := E)).toSphere := by
-    rw [normalBallVolume, framedBall_polar (I := I) g p hs
-      ((Metric.ball_subset_ball hsρ.le).trans hsource)]
-    apply lintegral_congr
-    intro u
-    exact radial_lintegral_eq (P u) d hs
-      (hP_cont u hs.le hsρ) (fun t _ht => hP_nonneg u t)
-  have hdir_real (u : sphere (0 : E) 1) :
-      A u R * hyperbolicRadialVolume q d r ≤ A u r * hyperbolicRadialVolume q d R := by
-    have hfcont : ContinuousOn (fun t : Real => t ^ d * P u t)
-        (Icc (0 : Real) b) :=
-      (continuousOn_pow d).mul (hP_cont u hb.le hbρ)
-    have hgcont : ContinuousOn (hyperbolicDensity q d) (Icc (0 : Real) b) :=
-      (hyperbolicDen_continuous q d).continuousOn
-    have hpoint : AntitoneOn
-        (fun t => (t ^ d * P u t) / hyperbolicDensity q d t)
-        (Ioo (0 : Real) b) := by
-      exact (hratio u).mono fun t ht => ⟨ht.1, ht.2.trans hbρ⟩
-    have hcum := integralRatio_anti_on hfcont hgcont
-      (fun t ht => hyperbolicDensity_pos hq ht.1) hpoint
-    have hquot := hcum
-      ⟨hr, hrR.trans_lt hRb⟩ ⟨hR, hRb⟩ hrR
-    exact (div_le_div_iff₀ (hmodel_pos hR) (hmodel_pos hr)).mp hquot
-  have hdir (u : sphere (0 : E) 1) :
-      ENNReal.ofReal (A u R) * ENNReal.ofReal (hyperbolicRadialVolume q d r) ≤
-        ENNReal.ofReal (A u r) * ENNReal.ofReal (hyperbolicRadialVolume q d R) := by
-    rw [← ENNReal.ofReal_mul (hA_nonneg u hR.le),
-      ← ENNReal.ofReal_mul (hA_nonneg u hr.le)]
-    exact ENNReal.ofReal_le_ofReal (hdir_real u)
-  rw [show Module.finrank Real E - 1 = d by rfl]
-  rw [hpolar R hR hRρ, hpolar r hr (hrR.trans_lt hRρ)]
-  rw [← lintegral_mul_const' (ENNReal.ofReal (hyperbolicRadialVolume q d r))
-    (fun u : sphere (0 : E) 1 => ENNReal.ofReal (A u R)) ENNReal.ofReal_ne_top]
-  rw [← lintegral_mul_const' (ENNReal.ofReal (hyperbolicRadialVolume q d R))
-    (fun u : sphere (0 : E) 1 => ENNReal.ofReal (A u r)) ENNReal.ofReal_ne_top]
-  exact lintegral_mono hdir
+  rcases subsingleton_or_nontrivial E with hE | hE
+  · let _ := hE
+    refine ⟨1, zero_lt_one, ?_⟩
+    intro r R hr hrR _
+    have hRpos : 0 < R := hr.trans_le hrR
+    have hball (s : ℝ) (hs : 0 < s) : ball (0 : E) s = univ := by
+      ext x
+      simp only [mem_ball, Subsingleton.elim x 0, dist_self, mem_univ, iff_true]
+      exact hs
+    have hvol : normalBallVolume (I := I) g p R = normalBallVolume (I := I) g p r := by
+      rw [normalBallVolume, normalBallVolume, hball R hRpos, hball r hr]
+    have hmodel (s : ℝ) :
+        hyperbolicRadialVolume q (Module.finrank Real E - 1) s = s := by
+      simp [hyperbolicRadialVolume, Module.finrank_zero_of_subsingleton, hyperbolicDensity]
+    rw [hvol, hmodel r, hmodel R]
+    exact mul_le_mul_of_nonneg_left (ENNReal.ofReal_le_ofReal hrR) zero_le
+  · let _ := hE
+    let _ : MeasurableSpace E := borel E
+    let _ : BorelSpace E := ⟨rfl⟩
+    let _ : MeasurableSpace M := borel M
+    let _ : BorelSpace M := ⟨rfl⟩
+    let d : Nat := Module.finrank Real E - 1
+    obtain ⟨ρ, hρ, hsource, hratio⟩ :=
+      exists_radius_antitoneOn_framedExpDiffeo_density_ratio (I := I) g p q hq hRic
+    refine ⟨ρ, hρ, ?_⟩
+    intro r R hr hrR hRρ
+    have hR : 0 < R := hr.trans_le hrR
+    let b : Real := (R + ρ) / 2
+    have hb : 0 < b := by
+      dsimp only [b]
+      linarith
+    have hRb : R < b := by
+      dsimp only [b]
+      linarith
+    have hbρ : b < ρ := by
+      dsimp only [b]
+      linarith
+    let P : sphere (0 : E) 1 → Real → Real := fun u t =>
+      paramDensity (I := I) g (framedExpDiffeo (I := I) g p) (t • u.1)
+    let A : sphere (0 : E) 1 → Real → Real := fun u s =>
+      ∫ t in (0 : Real)..s, t ^ d * P u t
+    have hP_nonneg (u : sphere (0 : E) 1) (t : Real) : 0 ≤ P u t := by
+      dsimp only [P, paramDensity]
+      exact Real.sqrt_nonneg _
+    have hP_cont (u : sphere (0 : E) 1) {s : Real}
+        (hs : 0 ≤ s) (hsρ : s < ρ) : ContinuousOn (P u) (Icc (0 : Real) s) := by
+      have hu : ‖u.1‖ = 1 := by
+        simpa only [mem_sphere_zero_iff_norm] using u.2
+      have hmap : MapsTo (fun t : Real => t • u.1) (Icc (0 : Real) s)
+          (framedExpDiffeo (I := I) g p).source := by
+        intro t ht
+        apply hsource
+        rw [mem_ball, dist_zero_right, norm_smul,
+          Real.norm_of_nonneg ht.1, hu, mul_one]
+        exact ht.2.trans_lt hsρ
+      exact (paramDensity_contOn (I := I) g (framedExpDiffeo (I := I) g p)).comp
+        (by fun_prop) hmap
+    have hA_nonneg (u : sphere (0 : E) 1) {s : Real}
+        (hs : 0 ≤ s) : 0 ≤ A u s := by
+      dsimp only [A]
+      exact intervalIntegral.integral_nonneg hs fun t ht =>
+        mul_nonneg (pow_nonneg ht.1 d) (hP_nonneg u t)
+    have hmodel_pos {s : Real} (hs : 0 < s) : 0 < hyperbolicRadialVolume q d s := by
+      exact intervalIntegral.intervalIntegral_pos_of_pos_on
+        ((hyperbolicDen_continuous q d).intervalIntegrable (0 : Real) s)
+        (fun t ht => hyperbolicDensity_pos hq ht.1) hs
+    have hpolar (s : Real) (hs : 0 < s) (hsρ : s < ρ) :
+        normalBallVolume (I := I) g p s =
+          ∫⁻ u : sphere (0 : E) 1, ENNReal.ofReal (A u s)
+            ∂(modelHaar (E := E)).toSphere := by
+      rw [normalBallVolume, framedBall_polar (I := I) g p hs
+        ((Metric.ball_subset_ball hsρ.le).trans hsource)]
+      apply lintegral_congr
+      intro u
+      exact radial_lintegral_eq (P u) d hs
+        (hP_cont u hs.le hsρ) (fun t _ht => hP_nonneg u t)
+    have hdir_real (u : sphere (0 : E) 1) :
+        A u R * hyperbolicRadialVolume q d r ≤ A u r * hyperbolicRadialVolume q d R := by
+      have hfcont : ContinuousOn (fun t : Real => t ^ d * P u t)
+          (Icc (0 : Real) b) :=
+        (continuousOn_pow d).mul (hP_cont u hb.le hbρ)
+      have hgcont : ContinuousOn (hyperbolicDensity q d) (Icc (0 : Real) b) :=
+        (hyperbolicDen_continuous q d).continuousOn
+      have hpoint : AntitoneOn
+          (fun t => (t ^ d * P u t) / hyperbolicDensity q d t)
+          (Ioo (0 : Real) b) := by
+        exact (hratio u).mono fun t ht => ⟨ht.1, ht.2.trans hbρ⟩
+      have hcum := integralRatio_anti_on hfcont hgcont
+        (fun t ht => hyperbolicDensity_pos hq ht.1) hpoint
+      have hquot := hcum
+        ⟨hr, hrR.trans_lt hRb⟩ ⟨hR, hRb⟩ hrR
+      exact (div_le_div_iff₀ (hmodel_pos hR) (hmodel_pos hr)).mp hquot
+    have hdir (u : sphere (0 : E) 1) :
+        ENNReal.ofReal (A u R) * ENNReal.ofReal (hyperbolicRadialVolume q d r) ≤
+          ENNReal.ofReal (A u r) * ENNReal.ofReal (hyperbolicRadialVolume q d R) := by
+      rw [← ENNReal.ofReal_mul (hA_nonneg u hR.le),
+        ← ENNReal.ofReal_mul (hA_nonneg u hr.le)]
+      exact ENNReal.ofReal_le_ofReal (hdir_real u)
+    rw [show Module.finrank Real E - 1 = d by rfl]
+    rw [hpolar R hR hRρ, hpolar r hr (hrR.trans_lt hRρ)]
+    rw [← lintegral_mul_const' (ENNReal.ofReal (hyperbolicRadialVolume q d r))
+      (fun u : sphere (0 : E) 1 => ENNReal.ofReal (A u R)) ENNReal.ofReal_ne_top]
+    rw [← lintegral_mul_const' (ENNReal.ofReal (hyperbolicRadialVolume q d R))
+      (fun u : sphere (0 : E) 1 => ENNReal.ofReal (A u r)) ENNReal.ofReal_ne_top]
+    exact lintegral_mono hdir
 
-attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
-  Tensor0SBundle.tangentSpaceNormedSpace in
-theorem normalBall_ratio
-    [PseudoEMetricSpace M] [RiemannianBundle (fun x : M => TangentSpace I x)]
-    [IsRiemannianManifold I M] [CompleteSpace M]
-    [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
+omit [NeZero (Module.finrank ℝ E)] in
+theorem exists_radius_antitoneOn_normalBallVolume_div_hyperbolicRadialVolume
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (q : Real) (hq : 0 ≤ q)
-    (hd : 0 < Module.finrank Real E - 1)
     (hRic : RicciBoundedBelow (I := I) g
       (-(((Module.finrank Real E - 1 : Nat) : Real) * q ^ 2))) :
     ∃ ρ : Real, 0 < ρ ∧
@@ -808,7 +764,8 @@ theorem normalBall_ratio
         (fun R => normalBallVolume (I := I) g p R /
           ENNReal.ofReal (hyperbolicRadialVolume q (Module.finrank Real E - 1) R))
         (Ioo (0 : Real) ρ) := by
-  obtain ⟨ρ, hρ, hcross⟩ := normalBall_cross (I := I) g hEnorm p q hq hd hRic
+  obtain ⟨ρ, hρ, hcross⟩ :=
+    exists_radius_normalBallVolume_mul_hyperbolicRadialVolume_le (I := I) g p q hq hRic
   refine ⟨ρ, hρ, ?_⟩
   intro r hr R hR hrR
   have hmr : 0 < hyperbolicRadialVolume q (Module.finrank Real E - 1) r :=
@@ -823,70 +780,5 @@ theorem normalBall_ratio
   rw [← ENNReal.mul_div_right_comm]
   rw [ENNReal.le_div_iff_mul_le (Or.inl hmr0) (Or.inl ENNReal.ofReal_ne_top)]
   exact hcross hr.1 hrR hR.2
-
-attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
-  Tensor0SBundle.tangentSpaceNormedSpace in
-theorem normalBall_cross_of_complete_metric
-    (g : SmoothRiemannianMetric I M)
-    (hcomplete : RiemannianMetricComplete (I := I) g)
-    (p : M) (q : Real) (hq : 0 ≤ q)
-    (hd : 0 < Module.finrank Real E - 1)
-    (hRic : RicciBoundedBelow (I := I) g
-      (-(((Module.finrank Real E - 1 : Nat) : Real) * q ^ 2))) :
-    ∃ ρ : Real, 0 < ρ ∧ ∀ {r R : Real},
-      0 < r → r ≤ R → R < ρ →
-        normalBallVolume (I := I) g p R *
-            ENNReal.ofReal (hyperbolicRadialVolume q (Module.finrank Real E - 1) r) ≤
-          normalBallVolume (I := I) g p r *
-            ENNReal.ofReal (hyperbolicRadialVolume q (Module.finrank Real E - 1) R) := by
-  let _ : IsManifold I 1 M :=
-    IsManifold.of_le (I := I) (M := M) (n := (⊤ : WithTop ℕ∞))
-      (by decide : (1 : WithTop ℕ∞) ≤ (⊤ : WithTop ℕ∞))
-  let _ : TopologicalSpace.MetrizableSpace M :=
-    Manifold.metrizableSpace I M
-  let _ : T3Space M := inferInstance
-  let _ : RiemannianBundle (fun x : M => TangentSpace I x) :=
-    ⟨g.toRiemannianMetric⟩
-  let _ : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
-    ⟨⟨g.inner, g.contMDiff.continuous, by intro x v w; rfl⟩⟩
-  let _ : EMetricSpace M := EMetricSpace.ofRiemannianMetric I M
-  let _ : PseudoEMetricSpace M := inferInstance
-  let _ : CompleteSpace M := hcomplete.complete
-  have hEnorm : IsMetricNorm (I := I) (M := M) g := by
-    intro x v
-    exact tensor0SBundle_enorm_eq_riemannianBundle_enorm (I := I) g x v
-  exact normalBall_cross (I := I) (M := M) g hEnorm p q hq hd hRic
-
-attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
-  Tensor0SBundle.tangentSpaceNormedSpace in
-theorem normalBall_ratio_of_complete_metric
-    (g : SmoothRiemannianMetric I M)
-    (hcomplete : RiemannianMetricComplete (I := I) g)
-    (p : M) (q : Real) (hq : 0 ≤ q)
-    (hd : 0 < Module.finrank Real E - 1)
-    (hRic : RicciBoundedBelow (I := I) g
-      (-(((Module.finrank Real E - 1 : Nat) : Real) * q ^ 2))) :
-    ∃ ρ : Real, 0 < ρ ∧
-      AntitoneOn
-        (fun R => normalBallVolume (I := I) g p R /
-          ENNReal.ofReal (hyperbolicRadialVolume q (Module.finrank Real E - 1) R))
-        (Ioo (0 : Real) ρ) := by
-  let _ : IsManifold I 1 M :=
-    IsManifold.of_le (I := I) (M := M) (n := (⊤ : WithTop ℕ∞))
-      (by decide : (1 : WithTop ℕ∞) ≤ (⊤ : WithTop ℕ∞))
-  let _ : TopologicalSpace.MetrizableSpace M :=
-    Manifold.metrizableSpace I M
-  let _ : T3Space M := inferInstance
-  let _ : RiemannianBundle (fun x : M => TangentSpace I x) :=
-    ⟨g.toRiemannianMetric⟩
-  let _ : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
-    ⟨⟨g.inner, g.contMDiff.continuous, by intro x v w; rfl⟩⟩
-  let _ : EMetricSpace M := EMetricSpace.ofRiemannianMetric I M
-  let _ : PseudoEMetricSpace M := inferInstance
-  let _ : CompleteSpace M := hcomplete.complete
-  have hEnorm : IsMetricNorm (I := I) (M := M) g := by
-    intro x v
-    exact tensor0SBundle_enorm_eq_riemannianBundle_enorm (I := I) g x v
-  exact normalBall_ratio (I := I) (M := M) g hEnorm p q hq hd hRic
 
 end DifferentialGeometry.Geometry.Riemannian.VolumeComparison
