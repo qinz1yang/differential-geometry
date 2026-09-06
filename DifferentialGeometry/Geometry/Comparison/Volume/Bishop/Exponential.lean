@@ -121,4 +121,3 @@ theorem paramDensity_expMap_le_of_ricci_nonneg
   simpa [hyperbolicDensity, hyperbolicSn] using! h
 
 end DifferentialGeometry.Geometry.Riemannian.VolumeComparison
-
