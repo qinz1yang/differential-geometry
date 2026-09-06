@@ -208,6 +208,50 @@ theorem normalizedGradientRicciSoliton_exists_scalar_eq_const_mul_exp_of_finrank
   exact normalizedGradientRicciSoliton_gradient_scalar_of_finrank_eq_two
     (I := I) h hdim x
 
+theorem normalizedGradientRicciSoliton_surface_exponential_scalar
+    [ConnectedSpace M]
+    {g : SmoothRiemannianMetric I M} {f : C^∞⟮I, M; Real⟯}
+    (h : normalizedGradientRicciSoliton (I := I) g f)
+    (hdim : Module.finrank Real E = 2) :
+    (∀ x : M, ∀ v w : TangentSpace I x,
+      ricciTensor (I := I) g x v w =
+        metricScalarAt (I := I) (M := M) g x / 2 * g.inner x v w) ∧
+    (∀ x : M, ∀ v w : TangentSpace I x,
+      hessFun (I := I) g f x v w =
+        (1 - metricScalarAt (I := I) (M := M) g x) / 2 * g.inner x v w) ∧
+    (∀ x : M,
+      ΔG (I := I) g f x = 1 - metricScalarAt (I := I) (M := M) g x) ∧
+    (∀ x : M, ∀ v : TangentSpace I x,
+      differential1FormFun (I := I)
+          (fun y : M => metricScalarAt (I := I) (M := M) g y) x
+          (fun _ : Fin 1 => v) =
+        metricScalarAt (I := I) (M := M) g x *
+          differential1FormFun (I := I) f x (fun _ : Fin 1 => v)) ∧
+    (∀ x : M, ∀ v : TangentSpace I x,
+      differential1FormFun (I := I)
+          (fun y : M => metricScalarAt (I := I) (M := M) g y *
+            Real.exp (-(f y))) x (fun _ : Fin 1 => v) = 0) ∧
+    (∃ c : Real, ∀ x : M,
+      metricScalarAt (I := I) (M := M) g x = c * Real.exp (f x)) := by
+  refine ⟨?_, ?_, ?_, ?_, ?_, ?_⟩
+  · intro x v w
+    exact Curvature.ricciTensor_eq_half_metricScalarAt_mul_inner_of_finrank_eq_two
+      (I := I) g hdim x v w
+  · intro x v w
+    exact normalizedGradientRicciSoliton_hessFun_of_finrank_eq_two
+      (I := I) h hdim x v w
+  · intro x
+    exact normalizedGradientRicciSoliton_laplacian_potential_of_finrank_eq_two
+      (I := I) h hdim x
+  · intro x v
+    exact normalizedGradientRicciSoliton_differential_scalar_of_finrank_eq_two
+      (I := I) h hdim x v
+  · intro x v
+    exact normalizedGradientRicciSoliton_differential_scalar_mul_exp_neg_of_finrank_eq_two
+      (I := I) h hdim x v
+  · exact normalizedGradientRicciSoliton_exists_scalar_eq_const_mul_exp_of_finrank_eq_two
+      (I := I) h hdim
+
 theorem normalizedGradientRicciSoliton_metricScalarAt_mul_exp_neg_eq_of_finrank_eq_two_of_gradient_eq_zero
     [ConnectedSpace M]
     {g : SmoothRiemannianMetric I M} {f : C^∞⟮I, M; Real⟯}

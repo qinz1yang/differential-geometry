@@ -64,6 +64,16 @@ theorem noncompactSpace_of_solitonModelCovering_roundThreeCylinder
     roundThreeCylinderShrinkerPotential_apply] at hle
   nlinarith [abs_nonneg C, le_abs_self C]
 
+theorem noncompactSpace_cylinderAntipodalQuotient :
+    NoncompactSpace CylinderAntipodalQuotient := by
+  exact noncompactSpace_of_solitonModelCovering_roundThreeCylinder
+    solitonModelCovering_cylinderAntipodalQuotient
+
+theorem noncompactSpace_cylinderDiagonalQuotient :
+    NoncompactSpace CylinderDiagonalQuotient := by
+  exact noncompactSpace_of_solitonModelCovering_roundThreeCylinder
+    solitonModelCovering_cylinderDiagonalQuotient
+
 theorem solitonModelCovering_roundThreeCylinder_deckGroup_eq_trichotomy
     {g : SmoothRiemannianMetric J N} {f : C^∞⟮J, N; Real⟯}
     {cover : Metric.sphere (0 : EuclideanSpace Real (Fin 3)) 1 × Real → N}

@@ -235,6 +235,31 @@ theorem solitonModelCovering_deckGroup_properlyDiscontinuousSMul
     (solitonModelCovering_isCoveringMap hπ)
     (solitonModelCovering_surjective hπ)
 
+theorem solitonModelCovering_deckGroup_data
+    [ConnectedSpace N] [SimplyConnectedSpace N] [LocallyPathConnectedSpace N]
+    {h : SmoothRiemannianMetric J N} {Fpot : C^∞⟮J, N; Real⟯}
+    {g : SmoothRiemannianMetric I M} {f : C^∞⟮I, M; Real⟯}
+    {cover : N → M}
+    (hπ : solitonModelCovering h Fpot g f cover) :
+    (∀ gamma : coveringDeckGroup cover, ∀ x : N,
+      gamma • x = x → gamma = 1) ∧
+    (∀ gamma : coveringDeckGroup cover,
+      Diffeomorph.pullbackMetricCross h
+          (coveringDeckGroupDiffeomorph
+            (solitonModelCovering_isLocalDiffeomorph hπ) gamma) = h ∧
+        Fpot.comp
+          (coveringDeckGroupDiffeomorph
+            (solitonModelCovering_isLocalDiffeomorph hπ) gamma).toContMDiffMap = Fpot) ∧
+    ProperlyDiscontinuousSMul (coveringDeckGroup cover) N ∧
+    IsQuotientCoveringMap cover (coveringDeckGroup cover) := by
+  refine ⟨?_, ?_, solitonModelCovering_deckGroup_properlyDiscontinuousSMul hπ,
+    solitonModelCovering_deckGroup_isQuotientCoveringMap hπ⟩
+  · intro gamma x hfix
+    exact coveringDeckGroup_eq_one_of_apply_eq
+      (solitonModelCovering_isCoveringMap hπ) gamma x hfix
+  · intro gamma
+    exact solitonModelCovering_deckGroup_preserves hπ gamma
+
 noncomputable def solitonModelCoveringDeckQuotientHomeomorph
     [SimplyConnectedSpace N] [LocallyPathConnectedSpace N]
     {h : SmoothRiemannianMetric J N} {Fpot : C^∞⟮J, N; Real⟯}

@@ -384,4 +384,33 @@ theorem gradientRicciSoliton_chow_lu_yang_scalar_lower_bound
     ring
   exact hcompare.trans hscaled'
 
+theorem gradientRicciSoliton_isGaussian_of_scalar_eq_zero_of_pos
+    {g : SmoothRiemannianMetric I M} {f : C^∞⟮I, M; Real⟯}
+    {sigma : Real} (hcomplete : RiemannianMetricComplete (I := I) g)
+    (hsol : gradientRicciSoliton (I := I) g f sigma)
+    (hsigma : 0 < sigma) {x : M}
+    (hx : metricScalarAt (I := I) g x = 0) :
+    isGaussianGradientRicciSoliton (E := E) g f sigma := by
+  obtain ⟨C, hnormalized⟩ :=
+    gradientRicciSoliton_exists_normalized (I := I) hcomplete hsol hsigma
+  let gHat : SmoothRiemannianMetric I M :=
+    scaleMetric (I := I) sigma hsigma g
+  let fHat : C^∞⟮I, M; Real⟯ :=
+    f + ContMDiffMap.const (I := I)
+      (I' := modelWithCornersSelf Real Real) (M := M) (n := ∞) (C / sigma)
+  have hzeroHat : metricScalarAt (I := I) gHat x = 0 := by
+    dsimp only [gHat]
+    rw [metricScalarAt_scaleMetric]
+    simp [hx]
+  have hGaussianHat :
+      isGaussianGradientRicciSoliton (E := E) gHat fHat 1 :=
+    normalizedGradientRicciSoliton_isGaussian_of_scalar_eq_zero
+      (I := I) hnormalized hzeroHat
+  have hGaussianShift :
+      isGaussianGradientRicciSoliton (E := E) gHat f 1 := by
+    exact (isGaussianGradientRicciSoliton_add_const (I := I)
+      (g := gHat) (f := f) (σ := 1) (C / sigma)).mp hGaussianHat
+  exact (isGaussianGradientRicciSoliton_scaleMetric (I := I) hsigma).mp
+    hGaussianShift
+
 end DifferentialGeometry.Geometry

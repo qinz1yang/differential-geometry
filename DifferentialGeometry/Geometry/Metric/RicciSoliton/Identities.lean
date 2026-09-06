@@ -605,4 +605,55 @@ theorem gradientRicciSoliton_existsUnique_hamiltonNormalized_add_const
   have heq : σ * c = σ * d := by nlinarith [hc', hd']
   exact (mul_left_cancel₀ hσ heq).symm
 
+theorem gradientRicciSoliton_fundamental_identities [ConnectedSpace M]
+    {g : SmoothRiemannianMetric I M} {f : C^∞⟮I, M; Real⟯} {σ : Real}
+    (h : gradientRicciSoliton (I := I) g f σ) :
+    (metricScalarAt (I := I) g + ΔG (I := I) g f =
+        fun _ : M => (Module.finrank Real E : Real) * σ / 2) ∧
+      (∀ x : M, ∀ v : TangentSpace I x,
+        differential1FormFun (I := I)
+            (fun b : M => metricScalarAt (I := I) g b) x
+            (fun _ : Fin 1 => v) =
+          2 * ricciTensor (I := I) g x (gradFun (I := I) g f x) v) ∧
+      (∃ C : Real, (∀ x : M,
+          metricScalarAt (I := I) g x +
+              g.inner x (gradFun (I := I) g f x)
+                (gradFun (I := I) g f x) - σ * f x = C) ∧
+        (∀ x : M,
+          weightedLaplacian (I := I) g f f x =
+            (Module.finrank Real E : Real) * σ / 2 - σ * f x - C)) ∧
+      (∀ x : M,
+        weightedLaplacian (I := I) g f
+            ⟨(fun b : M => metricScalarAt (I := I) g b),
+              metricScalar_smooth (I := I) (M := M) g⟩ x =
+          σ * metricScalarAt (I := I) g x -
+            2 * Tensor0SBundle.normSq0S (I := I) g x 2
+              (metricRicciAt (I := I) (M := M) g x)) := by
+  have htrace : ∀ x : M,
+      metricScalarAt (I := I) g x + ΔG (I := I) g f x =
+        (Module.finrank Real E : Real) * σ / 2 :=
+    gradientRicciSoliton_trace h
+  have hdiff : ∀ x : M, ∀ v : TangentSpace I x,
+      differential1FormFun (I := I)
+          (fun b : M => metricScalarAt (I := I) g b) x
+          (fun _ : Fin 1 => v) =
+        2 * ricciTensor (I := I) g x (gradFun (I := I) g f x) v :=
+    gradientRicciSoliton_differential_scalar h
+  obtain ⟨C, hC⟩ := gradientRicciSoliton_hamilton_constant h
+  have hpot : ∀ x : M,
+      weightedLaplacian (I := I) g f f x =
+        (Module.finrank Real E : Real) * σ / 2 - σ * f x - C :=
+    fun x => gradientRicciSoliton_weightedLaplacian_potential h hC x
+  have hscalar : ∀ x : M,
+      weightedLaplacian (I := I) g f
+          ⟨(fun b : M => metricScalarAt (I := I) g b),
+            metricScalar_smooth (I := I) (M := M) g⟩ x =
+        σ * metricScalarAt (I := I) g x -
+          2 * Tensor0SBundle.normSq0S (I := I) g x 2
+            (metricRicciAt (I := I) (M := M) g x) :=
+    gradientRicciSoliton_weightedLaplacian_scalar h
+  refine ⟨?_, hdiff, ⟨C, hC, hpot⟩, hscalar⟩
+  funext x
+  exact htrace x
+
 end DifferentialGeometry.Geometry

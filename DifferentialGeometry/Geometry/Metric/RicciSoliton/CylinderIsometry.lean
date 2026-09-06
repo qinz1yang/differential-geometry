@@ -922,4 +922,35 @@ theorem roundThreeCylinderDiffeomorph_eq_prodCongr_refl_or_neg
         Φ (φ.prodCongr ψneg)
         hmetric hprodnegmetric (y, 0) hpoint hmfderiv
 
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+theorem roundThreeCylinderSolitonAutomorphism_normal_form
+    (Φ : RoundThreeCylinder
+      ≃ₘ⟮(𝓡 2).prod 𝓘(Real, Real), (𝓡 2).prod 𝓘(Real, Real)⟯
+        RoundThreeCylinder)
+    (hpotential : ∀ x,
+      roundThreeCylinderShrinkerPotential (Φ x) =
+        roundThreeCylinderShrinkerPotential x)
+    (hmetric : Diffeomorph.pullbackMetric roundThreeCylinderShrinkerMetric Φ =
+      roundThreeCylinderShrinkerMetric) :
+    ∃ φ : Metric.sphere (0 : EuclideanSpace Real (Fin 3)) 1
+        ≃ₘ⟮𝓡 2, 𝓡 2⟯
+          Metric.sphere (0 : EuclideanSpace Real (Fin 3)) 1,
+      Diffeomorph.pullbackMetric roundTwoSphereShrinkerMetric φ =
+        roundTwoSphereShrinkerMetric ∧
+        (Φ = φ.prodCongr
+            (Diffeomorph.refl 𝓘(Real, Real) Real ∞) ∨
+          Φ = φ.prodCongr (ContinuousLinearEquiv.neg Real).toDiffeomorph) := by
+  let φ := roundThreeCylinderCentralSliceDiffeomorph Φ hpotential
+  have hφmetric :
+      Diffeomorph.pullbackMetric roundTwoSphereShrinkerMetric φ =
+        roundTwoSphereShrinkerMetric := by
+    simpa only [φ] using
+      roundThreeCylinderCentralSliceDiffeomorph_pullbackMetric
+        Φ hpotential hmetric
+  obtain hΦ | hΦ := roundThreeCylinderDiffeomorph_eq_prodCongr_refl_or_neg
+    Φ hpotential hmetric
+  · exact ⟨φ, hφmetric, Or.inl hΦ⟩
+  · exact ⟨φ, hφmetric, Or.inr hΦ⟩
+
 end DifferentialGeometry.Geometry

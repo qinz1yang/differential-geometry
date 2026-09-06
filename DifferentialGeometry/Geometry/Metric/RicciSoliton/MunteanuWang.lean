@@ -407,6 +407,49 @@ theorem normalizedGradientRicciSoliton_exists_ricci_reciprocalPotentialBarrier_l
     mul_le_mul_of_nonneg_left hweightedB hc.le
   linarith
 
+theorem normalizedGradientRicciSoliton_ricci_reciprocalPotentialBarrier_lower
+    {g : SmoothRiemannianMetric I M} {f : C^∞⟮I, M; Real⟯}
+    (h : normalizedGradientRicciSoliton (I := I) g f)
+    (hsec : ∀ x : M, metricRm04At (I := I) (M := M) g x ∈
+      tensor04SectionalNonnegativeCone (I := I) (M := M))
+    (hRic : ∀ (x : M) (v : TangentSpace I x), v ≠ 0 →
+      0 < ricciTensor (I := I) g x v v) :
+    ∃ c : Real, 0 < c ∧ ∀ (x : M) (v : TangentSpace I x),
+      c * reciprocalPotentialBarrier (I := I) f
+          (normalizedGradientRicciSoliton_potential_pos_of_ricci_pos
+            (I := I) h hRic) x * g.inner x v v ≤
+        ricciTensor (I := I) g x v v ∧
+      c / f x * g.inner x v v ≤
+        c * reciprocalPotentialBarrier (I := I) f
+          (normalizedGradientRicciSoliton_potential_pos_of_ricci_pos
+            (I := I) h hRic) x * g.inner x v v := by
+  obtain ⟨c, hc, hbarrier⟩ :=
+    normalizedGradientRicciSoliton_exists_ricci_reciprocalPotentialBarrier_lower
+      (I := I) h hsec hRic
+  let hpos : ∀ y : M, 0 < f y :=
+    normalizedGradientRicciSoliton_potential_pos_of_ricci_pos
+      (I := I) h hRic
+  refine ⟨c, hc, ?_⟩
+  intro x v
+  refine ⟨hbarrier x v, ?_⟩
+  have hBge : f x ^ (-1 : Real) ≤
+      reciprocalPotentialBarrier (I := I) f hpos x := by
+    change f x ^ (-1 : Real) ≤
+      f x ^ (-1 : Real) + (Module.finrank Real E : Real) * f x ^ (-2 : Real)
+    have hn : 0 ≤ (Module.finrank Real E : Real) := by positivity
+    have hp : 0 ≤ f x ^ (-2 : Real) :=
+      (Real.rpow_pos_of_pos (hpos x) _).le
+    exact le_add_of_nonneg_right (mul_nonneg hn hp)
+  have hcoef : c / f x ≤ c * reciprocalPotentialBarrier (I := I) f hpos x := by
+    have hmul := mul_le_mul_of_nonneg_left hBge hc.le
+    simpa only [div_eq_mul_inv, Real.rpow_neg_one] using hmul
+  have hmetric : 0 ≤ g.inner x v v := by
+    by_cases hv : v = 0
+    · subst hv
+      simp
+    · exact (g.pos x v hv).le
+  exact mul_le_mul_of_nonneg_right hcoef hmetric
+
 theorem normalizedGradientRicciSoliton_scalar_lower_bound_by_min_rank_potential
     {g : SmoothRiemannianMetric I M} {f : C^∞⟮I, M; Real⟯}
     (h : normalizedGradientRicciSoliton (I := I) g f)
