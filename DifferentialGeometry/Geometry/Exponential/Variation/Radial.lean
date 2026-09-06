@@ -471,6 +471,21 @@ theorem linearIndependent_radialJacobiField
   exact hmapped
 
 omit [T2Space M] in
+theorem radialJacobiField_self
+    (g : SmoothRiemannianMetric I M) (p : M) (x : E) {t : ℝ}
+    (ht : (show TangentSpace I p from t • x) ∈ expDomain (I := I) g p) :
+    radialJacobiField (I := I) g p x x t =
+      t • curveVelocity (I := I) (radialCurve (I := I) g p x) t := by
+  let A : E →L[ℝ] E := mfderiv 𝓘(ℝ, E) I
+    (fun v : E => expMap (I := I) g p (show TangentSpace I p from v)) (t • x)
+  have hv : (curveVelocity (I := I) (radialCurve (I := I) g p x) t : E) = A x :=
+    mfderiv_expMap_smul (I := I) g p x t ht
+  have hJ : (radialJacobiField (I := I) g p x x t : E) = A (t • x) :=
+    radialJacobiField_eq_mfderiv_expMap (I := I) g p x x t ht
+  exact hJ.trans ((A.map_smul t x).trans
+    (congrArg (fun v : E => t • v) hv.symm))
+
+omit [T2Space M] in
 theorem inner_curveVelocity_radialJacobiField
     (g : SmoothRiemannianMetric I M) (p : M) (x w : E) {t : ℝ}
     (ht : (show TangentSpace I p from t • x) ∈ expDomain (I := I) g p) :

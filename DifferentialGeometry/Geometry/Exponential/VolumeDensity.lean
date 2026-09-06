@@ -81,6 +81,99 @@ theorem curveDensity_radialJacobiField_basis
       (fun i => radialJacobiField (I := I) g p v (B i))
       (fun i => radialJacobiField (I := I) g p v (B' i)) 1 C hjac
 
+private theorem inner_radialJacobiField_self
+    (g : SmoothRiemannianMetric I M) (p : M) (x w : E) {t : ℝ}
+    (ht : (show TangentSpace I p from t • x) ∈ expDomain (I := I) g p) :
+    g.inner (radialCurve (I := I) g p x t)
+      (radialJacobiField (I := I) g p x x t)
+      (radialJacobiField (I := I) g p x w t) = t ^ 2 * g.inner p x w := by
+  let G : E →L[ℝ] E →L[ℝ] ℝ := g.inner (radialCurve (I := I) g p x t)
+  have hJ := radialJacobiField_self (I := I) g p x ht
+  have hpair : G
+      (curveVelocity (I := I) (radialCurve (I := I) g p x) t)
+      (radialJacobiField (I := I) g p x w t) = t * g.inner p x w :=
+    inner_curveVelocity_radialJacobiField (I := I) g p x w ht
+  let v : E := curveVelocity (I := I) (radialCurve (I := I) g p x) t
+  let z : E := radialJacobiField (I := I) g p x w t
+  have hJ' : (radialJacobiField (I := I) g p x x t : E) = t • v := hJ
+  change G (radialJacobiField (I := I) g p x x t) z = _
+  rw [hJ', G.map_smul, _root_.smul_apply, smul_eq_mul]
+  rw [show G v z = t * g.inner p x w from hpair]
+  ring
+
+theorem curveGram_det_radialJacobiField_option
+    {ι : Type*} [Fintype ι] [DecidableEq ι]
+    (g : SmoothRiemannianMetric I M) (p : M) (x : E) (w : ι → E) {t : ℝ}
+    (ht : (show TangentSpace I p from t • x) ∈ expDomain (I := I) g p)
+    (hperp : ∀ i, g.inner p x (w i) = 0) :
+    (curveGram (I := I) g (radialCurve (I := I) g p x)
+      (fun o => radialJacobiField (I := I) g p x (Option.elim o x w)) t).det =
+      t ^ 2 * g.inner p x x *
+        (curveGram (I := I) g (radialCurve (I := I) g p x)
+          (fun i => radialJacobiField (I := I) g p x (w i)) t).det := by
+  have h := curveGram_det_option (I := I) g (radialCurve (I := I) g p x)
+    (fun o => radialJacobiField (I := I) g p x (Option.elim o x w)) t (fun i => by
+      simpa only [Option.elim_none, Option.elim_some, hperp i, mul_zero] using!
+        inner_radialJacobiField_self (I := I) g p x (w i) ht)
+  simpa only [Option.elim_none, Option.elim_some,
+    inner_radialJacobiField_self (I := I) g p x x ht] using! h
+
+theorem curveDensity_radialJacobiField_option
+    {ι : Type*} [Fintype ι] [DecidableEq ι]
+    (g : SmoothRiemannianMetric I M) (p : M) (x : E) (w : ι → E) {t : ℝ}
+    (ht : (show TangentSpace I p from t • x) ∈ expDomain (I := I) g p)
+    (hperp : ∀ i, g.inner p x (w i) = 0) :
+    curveDensity (I := I) g (radialCurve (I := I) g p x)
+      (fun o => radialJacobiField (I := I) g p x (Option.elim o x w)) t =
+      |t| * Real.sqrt (g.inner p x x) *
+        curveDensity (I := I) g (radialCurve (I := I) g p x)
+          (fun i => radialJacobiField (I := I) g p x (w i)) t := by
+  unfold curveDensity
+  rw [curveGram_det_radialJacobiField_option (I := I) g p x w ht hperp,
+    Real.sqrt_mul (mul_nonneg (sq_nonneg t) (metric_inner_self_nonneg (I := I) g p x)),
+    Real.sqrt_mul (sq_nonneg t), Real.sqrt_sq_eq_abs]
+
+theorem curveDensity_radialJacobiField_smul
+    {ι : Type*} [Fintype ι] [DecidableEq ι]
+    (g : SmoothRiemannianMetric I M) (p : M) (x : E) (w : ι → E) (t : ℝ)
+    (ht : (show TangentSpace I p from t • x) ∈ expDomain (I := I) g p) :
+    curveDensity (I := I) g (radialCurve (I := I) g p x)
+      (fun i => radialJacobiField (I := I) g p x (w i)) t =
+      |t| ^ Fintype.card ι *
+        curveDensity (I := I) g (radialCurve (I := I) g p (t • x))
+          (fun i => radialJacobiField (I := I) g p (t • x) (w i)) 1 := by
+  let γ := radialCurve (I := I) g p (t • x)
+  let V : ι → ∀ s, TangentSpace I (γ s) :=
+    fun i => radialJacobiField (I := I) g p (t • x) (w i)
+  let A : E →L[ℝ] E := mfderiv 𝓘(ℝ, E) I
+    (fun v : E => expMap (I := I) g p (show TangentSpace I p from v)) (t • x)
+  have hcol (i : ι) : (radialJacobiField (I := I) g p x (w i) t : E) =
+      t • (V i 1 : E) := by
+    have hJ : (radialJacobiField (I := I) g p x (w i) t : E) = A (t • w i) :=
+      radialJacobiField_eq_mfderiv_expMap (I := I) g p x (w i) t ht
+    have hV : (V i 1 : E) = A (w i) :=
+      radialJacobiField_one (I := I) g p (t • x) (w i) ht
+    exact hJ.trans ((A.map_smul t (w i)).trans
+      (congrArg (fun v : E => t • v) hV.symm))
+  have hbridge :
+      curveDensity (I := I) g (radialCurve (I := I) g p x)
+        (fun i => radialJacobiField (I := I) g p x (w i)) t =
+      curveDensity (I := I) g γ (fun i => t • V i) 1 := by
+    unfold curveDensity curveGram
+    apply congrArg Real.sqrt
+    apply congrArg Matrix.det
+    ext i j
+    simp only [Matrix.of_apply, Pi.smul_apply]
+    have hbase : γ 1 = radialCurve (I := I) g p x t := by
+      simp only [γ, radialCurve, one_smul]
+    rw [hbase]
+    change g.inner (radialCurve (I := I) g p x t)
+      (radialJacobiField (I := I) g p x (w i) t)
+      (radialJacobiField (I := I) g p x (w j) t) =
+      g.inner (radialCurve (I := I) g p x t) (t • (V i 1 : E)) (t • (V j 1 : E))
+    rw [hcol, hcol]
+  rw [hbridge, curveDensity_smul]
+
 end Normed
 
 section InnerProduct
