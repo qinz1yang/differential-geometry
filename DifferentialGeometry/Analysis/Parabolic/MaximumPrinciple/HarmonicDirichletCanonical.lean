@@ -212,6 +212,32 @@ theorem exists_local_scalar_dirichlet_solution_of_constant_data
     simp
   · exact hharmonic
 
+theorem exists_local_scalar_dirichlet_solution_of_constant_data_value
+    [VectorBundle Real E (TangentSpace I : M → Type _)]
+    (G : MetricConnectionFamily (I := I) (M := M) Real)
+    {T s t c r : Real}
+    (X : Real → (x : M) → TangentSpace I x)
+    (hs : 0 ≤ s) (hst : s < t) (ht : t ≤ T) (hr : 0 < r) :
+    ∃ f : Real → M → Real,
+      IsLocalScalarDirichletSolution (I := I) G T X s t c Set.univ
+        (fun _ : M => r) f := by
+  have hharmonic : ∀ q ∈ Set.Ioc s t, ∀ z ∈ interior (Set.univ : Set M),
+      heatOperatorWithDrift (I := I) G q (X q) (fun _ : M => r) z = 0 := by
+    intro q hq z hz
+    unfold heatOperatorWithDrift laplacianAt driftTerm gradientAt
+    rw [laplacian_const, gradientFun_const]
+    simp
+  apply exists_local_scalar_dirichlet_solution_of_harmonic_data
+    (I := I) (c := c) G X hs hst ht Set.univ (fun _ : M => r)
+      contMDiff_const
+  · intro z hz
+    have hz' : z ∈ (∅ : Set M) := by
+      simpa only [frontier_univ] using hz
+    exact hz'.elim
+  · intro z hz
+    exact hr
+  · exact hharmonic
+
 end
 
 end DifferentialGeometry.Analysis.Parabolic

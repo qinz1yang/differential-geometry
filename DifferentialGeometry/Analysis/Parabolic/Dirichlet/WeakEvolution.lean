@@ -504,6 +504,60 @@ theorem exists_dirichlet_weak_evolution_solution
     hG hT hreg X hXcont a hacont Bx Bv hX htrace ha f₀
   exact ⟨u, hu.isWeakEvolutionSolution hT hXcont hacont⟩
 
+theorem IsWeakEvolutionSolution.sub
+    {q : SmoothRiemannianMetric (I_half n) M}
+    {D : RealTimeInterval}
+    {G : MetricConnectionFamilyOn (I := I_half n) (M := M) D}
+    {hG : MetricFamilySmoothOn (I := I_half n) (M := M) D G.metric}
+    {T : ℝ} {hT : 0 ≤ T} {hreg : Icc (0 : ℝ) T ⊆ D.regular}
+    {X : ℝ → Cₛ^∞⟮I_half n; EuclideanSpace ℝ (Fin n),
+      (TangentSpace (I_half n) : M → Type _)⟯}
+    {a : ℝ → ℝ}
+    {Bx Bv : ℝ}
+    {hX : ∀ t ∈ Ico (0 : ℝ) T, ∀ x : M,
+      (G.metric t).inner x (X t x) (X t x) ≤ Bx}
+    {htrace : ∀ t ∈ Ico (0 : ℝ) T, ∀ x : M,
+      |traceTimeDerivMetric (I := I_half n) G.metric t x| ≤ Bv}
+    {f₀ g₀ : Lp ℝ 2
+      (riemannianVolumeMeasure (I := I_half n) (M := M) q)}
+    {u v : timeL2 (H1ComplDirichlet q) T}
+    (hu : IsWeakEvolutionSolution hG hT hreg X a Bx Bv
+      hX htrace f₀ u)
+    (hv : IsWeakEvolutionSolution hG hT hreg X a Bx Bv
+      hX htrace g₀ v) :
+    IsWeakEvolutionSolution hG hT hreg X a Bx Bv hX htrace (f₀ - g₀) (u - v) := by
+  obtain ⟨Cg, Cv, hCg, hequiv, hCv0, hCvtop, hvol, hu⟩ := hu
+  obtain ⟨_, _, _, _, _, _, _, hv⟩ := hv
+  refine ⟨Cg, Cv, hCg, hequiv, hCv0, hCvtop, hvol, fun z => ?_⟩
+  obtain ⟨wu, hwuinit, hwumass, hwuderiv⟩ := hu z
+  obtain ⟨wv, hwvinit, hwvmass, hwvderiv⟩ := hv z
+  change wv.init = dirichletMassLp (G.metric 0) Cv hCvtop
+    (hvol 0 ⟨le_rfl, hT⟩) g₀ (H1ComplDirichletToLp q z) at hwvinit
+  change (fun t => dirichletMassComplOnIcc G.metric hCg hequiv
+    Cv hCv0 hCvtop hvol t (v t) z) =ᵐ[timeMeasure T] wv.toFun at hwvmass
+  change wv.deriv =ᵐ[timeMeasure T] fun t =>
+    dirichletMassVariationComplOnIco hG hreg Bv htrace
+      hCg hequiv Cv hCv0 hCvtop hvol t (v t) z +
+    dirichletWeakFormComplOnIco G.metric X a Bx hX
+      hCg hequiv Cv hCv0 hCvtop hvol t (v t) z at hwvderiv
+  refine ⟨wu + (-1 : ℝ) • wv, ?_, ?_, ?_⟩
+  · rw [timeH1.init_add, timeH1.init_smul, hwuinit, hwvinit]
+    simp only [neg_one_smul, map_sub, sub_apply]
+    rfl
+  · filter_upwards [hwumass, hwvmass, Lp.coeFn_sub u v,
+      ae_restrict_mem measurableSet_Icc] with t hut hvt huv ht
+    rw [timeH1.toFun_add wu ((-1 : ℝ) • wv) ht,
+      timeH1.toFun_smul (-1 : ℝ) wv ht, neg_one_smul, ← hut, ← hvt, huv]
+    simp only [Pi.sub_apply, map_sub, sub_apply]
+    exact sub_eq_add_neg _ _
+  · rw [timeH1.deriv_add, timeH1.deriv_smul]
+    filter_upwards [Lp.coeFn_add wu.deriv ((-1 : ℝ) • wv.deriv),
+      Lp.coeFn_smul (-1 : ℝ) wv.deriv, hwuderiv, hwvderiv, Lp.coeFn_sub u v]
+      with t hadd hsmul hut hvt huv
+    rw [hadd, Pi.add_apply, hsmul, Pi.smul_apply, neg_one_smul, hut, hvt, huv]
+    simp only [Pi.sub_apply, map_sub, sub_apply]
+    ring
+
 end DifferentialGeometry.Analysis.Parabolic.Dirichlet
 
 end

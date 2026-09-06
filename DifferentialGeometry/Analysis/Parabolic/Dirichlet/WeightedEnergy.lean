@@ -1,8 +1,9 @@
+import DifferentialGeometry.Analysis.ODE.IntegralGronwall
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.MovingMassTrace
 
 noncomputable section
 
-open Manifold MeasureTheory
+open Bundle Manifold MeasureTheory Set
 open scoped ContDiff ENNReal InnerProductSpace Manifold NNReal
   RealInnerProductSpace Topology
 
@@ -10,6 +11,7 @@ namespace DifferentialGeometry.Analysis.Parabolic.Dirichlet
 
 open DifferentialGeometry.Analysis.Laplacian.WithBoundary.Dirichlet
 open DifferentialGeometry.Analysis.Laplacian
+open DifferentialGeometry.Analysis.Parabolic.TimeSobolev
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Integral.Measure
@@ -222,5 +224,230 @@ theorem abs_dirichletMassVariationCompl_smoothMulH1ComplDirichlet_le
     _ ≤ max K 0 * (Cv.toReal * dirichletMass q v v) :=
       mul_le_mul_of_nonneg_left hmass (le_max_right _ _)
     _ = _ := by rw [hnorm]; ring
+
+theorem exists_uniform_volumeDensity_energy_bound
+    {q : SmoothRiemannianMetric (I_half n) M}
+    {D : RealTimeInterval}
+    {G : MetricConnectionFamilyOn (I := I_half n) (M := M) D}
+    (hG : MetricFamilySmoothOn (I := I_half n) (M := M) D G.metric)
+    {T : ℝ} (hreg : Icc (0 : ℝ) T ⊆ D.regular)
+    (X : ℝ → Cₛ^∞⟮I_half n; EuclideanSpace ℝ (Fin n),
+      (TangentSpace (I_half n) : M → Type _)⟯)
+    (a : ℝ → ℝ) (hacont : ContinuousOn a (Icc (0 : ℝ) T))
+    (Bx Bv : ℝ)
+    (hX : ∀ t ∈ Ico (0 : ℝ) T, ∀ x : M,
+      (G.metric t).inner x (X t x) (X t x) ≤ Bx)
+    (htrace : ∀ t ∈ Ico (0 : ℝ) T, ∀ x : M,
+      |traceTimeDerivMetric (I := I_half n) G.metric t x| ≤ Bv)
+    {Cg : ℝ} (hCg : 1 ≤ Cg)
+    (hequiv : ∀ t ∈ Icc (0 : ℝ) T, ∀ x : M,
+      ∀ v : TangentSpace (I_half n) x,
+        Cg⁻¹ * q.inner x v v ≤ (G.metric t).inner x v v ∧
+          (G.metric t).inner x v v ≤ Cg * q.inner x v v)
+    (Cv : ℝ≥0∞) (hCv0 : Cv ≠ 0) (hCvtop : Cv ≠ ⊤)
+    (hvol : ∀ t ∈ Icc (0 : ℝ) T,
+      riemannianVolumeMeasure (I := I_half n) (M := M) (G.metric t) ≤
+        Cv • riemannianVolumeMeasure (I := I_half n) (M := M) q) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ t ∈ Ico (0 : ℝ) T, ∀ u : H1ComplDirichlet q,
+      2 * (dirichletMassVariationComplOnIco hG hreg Bv htrace
+          hCg hequiv Cv hCv0 hCvtop hvol t u
+          (smoothMulH1ComplDirichlet q
+            (riemannianVolumeDensitySmoothMap q (G.metric t)) u) +
+        dirichletWeakFormComplOnIco G.metric X a Bx hX
+          hCg hequiv Cv hCv0 hCvtop hvol t u
+          (smoothMulH1ComplDirichlet q
+            (riemannianVolumeDensitySmoothMap q (G.metric t)) u)) ≤
+        C * ‖smoothMulLp q (riemannianVolumeDensitySmoothMap q (G.metric t))
+          (H1ComplDirichletToLp q u)‖ ^ 2 := by
+  let K : Set (ℝ × M) := Icc (0 : ℝ) T ×ˢ (Set.univ : Set M)
+  have hK : IsCompact K := isCompact_Icc.prod isCompact_univ
+  have hρ := riemannianVolumeDensity_contMDiffOn_of_metricFamilySmoothOn hG q
+  have hσ := riemannianVolumeDensity_swap_contMDiffOn_of_metricFamilySmoothOn hG q
+  have hρcont := hρ.continuousOn.mono (Set.prod_mono hreg Set.Subset.rfl)
+  have hσcont := hσ.continuousOn.mono (Set.prod_mono hreg Set.Subset.rfl)
+  have hgrad := gradSq_joint (I := I_half n) G.metric D.regular_isOpen
+    (fun α i j => hG.chartGramMatrix_contDiffOn (Set.Subset.rfl) α i j)
+    (fun t x => riemannianVolumeDensity q (G.metric t) x) hρ
+  have hgradcont := hgrad.continuousOn.mono (Set.prod_mono hreg Set.Subset.rfl)
+  obtain ⟨Cρ, hCρ⟩ := hK.exists_bound_of_continuousOn hρcont
+  obtain ⟨Cσ, hCσ⟩ := hK.exists_bound_of_continuousOn hσcont
+  obtain ⟨Cgrad, hCgrad⟩ := hK.exists_bound_of_continuousOn hgradcont
+  obtain ⟨Ca, hCa⟩ := isCompact_Icc.exists_bound_of_continuousOn hacont
+  let L := max 1 (max Cρ (max Cσ Cgrad))
+  have hL : 1 ≤ L := le_max_left _ _
+  have hLpos : 0 < L := zero_lt_one.trans_le hL
+  have hδ : 0 < L⁻¹ := inv_pos.mpr hLpos
+  have hbounds : ∀ t ∈ Icc (0 : ℝ) T, ∀ x : M,
+      L⁻¹ ≤ riemannianVolumeDensity q (G.metric t) x ∧
+      riemannianVolumeDensity q (G.metric t) x ≤ L ∧
+      (G.metric t).inner x
+        (gradientFun (I := I_half n) (G.metric t)
+          (riemannianVolumeDensity q (G.metric t)) x)
+        (gradientFun (I := I_half n) (G.metric t)
+          (riemannianVolumeDensity q (G.metric t)) x) ≤ L := by
+    intro t ht x
+    have hρbound := hCρ (t, x) ⟨ht, Set.mem_univ x⟩
+    have hσbound := hCσ (t, x) ⟨ht, Set.mem_univ x⟩
+    have hgbound := hCgrad (t, x) ⟨ht, Set.mem_univ x⟩
+    rw [Real.norm_eq_abs] at hρbound hσbound hgbound
+    have hρpos := riemannianVolumeDensity_pos q (G.metric t) x
+    have hσle : riemannianVolumeDensity (G.metric t) q x ≤ L :=
+      (le_abs_self _).trans (hσbound.trans
+        ((le_max_left Cσ Cgrad).trans ((le_max_right Cρ _).trans (le_max_right 1 _))))
+    have hρσ := riemannianVolumeDensity_mul_swap (G.metric t) q x
+    have hmul := mul_le_mul_of_nonneg_right hσle hρpos.le
+    have hlo : L⁻¹ ≤ riemannianVolumeDensity q (G.metric t) x := by
+      rw [← one_div]
+      apply (div_le_iff₀ hLpos).2
+      nlinarith
+    refine ⟨hlo, (le_abs_self _).trans (hρbound.trans
+      ((le_max_left Cρ _).trans (le_max_right 1 _))), ?_⟩
+    exact (le_abs_self _).trans (hgbound.trans
+      ((le_max_right Cσ Cgrad).trans ((le_max_right Cρ _).trans (le_max_right 1 _))))
+  let Kw := max ((2 * L ^ 2 * Bx + 2 * L) / L⁻¹ + 2 * max Ca 0 * L) 0
+  let Kv := max ((1 / 2) * Bv * L) 0
+  let B := (2 * Kv + Kw) * Cv.toReal
+  have hB : 0 ≤ B :=
+    mul_nonneg (add_nonneg (mul_nonneg (by norm_num) (le_max_right _ _))
+      (le_max_right _ _)) ENNReal.toReal_nonneg
+  refine ⟨B * L ^ 2, mul_nonneg hB (sq_nonneg _), fun t ht u => ?_⟩
+  have htc : t ∈ Icc (0 : ℝ) T := ⟨ht.1, ht.2.le⟩
+  let φ := riemannianVolumeDensitySmoothMap q (G.metric t)
+  have hφ : ∀ x : M, L⁻¹ ≤ φ x ∧ φ x ≤ L :=
+    fun x => ⟨(hbounds t htc x).1, (hbounds t htc x).2.1⟩
+  have hφabs : ∀ x : M, |φ x| ≤ L := by
+    intro x
+    rw [abs_of_nonneg (hδ.le.trans (hφ x).1)]
+    exact (hφ x).2
+  have hgφ : ∀ x : M, (G.metric t).inner x
+      (gradientFun (I := I_half n) (G.metric t) φ x)
+      (gradientFun (I := I_half n) (G.metric t) φ x) ≤ L :=
+    fun x => (hbounds t htc x).2.2
+  have hv := abs_dirichletMassVariationCompl_smoothMulH1ComplDirichlet_le
+    hG (hreg htc) Bv (htrace t ht) hCg (hequiv t htc)
+    Cv hCv0 hCvtop (hvol t htc) φ hφabs u
+  have hw := two_mul_dirichletWeakFormCompl_smoothMulH1ComplDirichlet_le
+    (G.metric t) (X t) (a t) Bx (hX t ht) hCg (hequiv t htc)
+    Cv hCv0 hCvtop (hvol t htc) φ hδ hφ hgφ u
+  have hCa' : |a t| ≤ max Ca 0 := by
+    have h := hCa t htc
+    rw [Real.norm_eq_abs] at h
+    exact h.trans (le_max_left _ _)
+  have hcoeff : max ((2 * L ^ 2 * Bx + 2 * L) / L⁻¹ + 2 * |a t| * L) 0 ≤ Kw := by
+    apply max_le_max _ le_rfl
+    gcongr
+  have hw' : 2 * dirichletWeakFormCompl (G.metric t) (X t) (a t) Bx (hX t ht)
+      hCg (hequiv t htc) Cv hCv0 hCvtop (hvol t htc) u
+      (smoothMulH1ComplDirichlet q φ u) ≤ Kw * Cv.toReal * ‖H1ComplDirichletToLp q u‖ ^ 2 :=
+    hw.trans (mul_le_mul_of_nonneg_right
+      (mul_le_mul_of_nonneg_right hcoeff ENNReal.toReal_nonneg) (sq_nonneg _))
+  have hnorm : ‖H1ComplDirichletToLp q u‖ ≤
+      L * ‖smoothMulLp q φ (H1ComplDirichletToLp q u)‖ := by
+    apply Lp.norm_le_mul_norm_of_ae_le_mul
+    filter_upwards [smoothMulLp_apply_coeFn q φ (H1ComplDirichletToLp q u)] with x hx
+    rw [hx, norm_mul, Real.norm_of_nonneg (hδ.le.trans (hφ x).1)]
+    have hlo := (hφ x).1
+    have hmul : 1 ≤ L * φ x := by
+      have h := mul_le_mul_of_nonneg_left hlo hLpos.le
+      rw [mul_inv_cancel₀ hLpos.ne'] at h
+      exact h
+    nlinarith [mul_nonneg (sub_nonneg.mpr hmul) (norm_nonneg (H1ComplDirichletToLp q u x))]
+  rw [dirichletMassVariationComplOnIco, dif_pos ht,
+    dirichletWeakFormComplOnIco, dif_pos ht]
+  have hv' := (le_abs_self _).trans hv
+  calc
+    _ ≤ B * ‖H1ComplDirichletToLp q u‖ ^ 2 := by
+      dsimp only [B, Kv]
+      nlinarith
+    _ ≤ B * (L * ‖smoothMulLp q φ (H1ComplDirichletToLp q u)‖) ^ 2 :=
+      mul_le_mul_of_nonneg_left
+        ((sq_le_sq₀ (norm_nonneg _) (mul_nonneg hLpos.le (norm_nonneg _))).2 hnorm) hB
+    _ = _ := by ring
+
+theorem IsWeakEvolutionSolution.exists_continuous_l2_representative_with_energy_bound
+    {q : SmoothRiemannianMetric (I_half n) M}
+    {D : RealTimeInterval}
+    {G : MetricConnectionFamilyOn (I := I_half n) (M := M) D}
+    {hG : MetricFamilySmoothOn (I := I_half n) (M := M) D G.metric}
+    {T : ℝ} {hT : 0 ≤ T} {hreg : Icc (0 : ℝ) T ⊆ D.regular}
+    {X : ℝ → Cₛ^∞⟮I_half n; EuclideanSpace ℝ (Fin n),
+      (TangentSpace (I_half n) : M → Type _)⟯}
+    (hXcont : ContinuousOn
+      (fun p : ℝ × M =>
+        (TotalSpace.mk' (EuclideanSpace ℝ (Fin n)) p.2 (X p.1 p.2) :
+          TangentBundle (I_half n) M))
+      (Icc (0 : ℝ) T ×ˢ (Set.univ : Set M)))
+    {a : ℝ → ℝ} (hacont : ContinuousOn a (Icc (0 : ℝ) T))
+    {Bx Bv : ℝ}
+    {hX : ∀ t ∈ Ico (0 : ℝ) T, ∀ x : M,
+      (G.metric t).inner x (X t x) (X t x) ≤ Bx}
+    {htrace : ∀ t ∈ Ico (0 : ℝ) T, ∀ x : M,
+      |traceTimeDerivMetric (I := I_half n) G.metric t x| ≤ Bv}
+    {f₀ : Lp ℝ 2
+      (riemannianVolumeMeasure (I := I_half n) (M := M) q)}
+    {u : timeL2 (H1ComplDirichlet q) T}
+    (hu : IsWeakEvolutionSolution hG hT hreg X a Bx Bv
+      hX htrace f₀ u) :
+    ∃ C : ℝ, 0 ≤ C ∧
+      ∃ U : ℝ → Lp ℝ 2
+          (riemannianVolumeMeasure (I := I_half n) (M := M) q),
+        ContinuousOn U (Icc (0 : ℝ) T) ∧
+        (U =ᵐ[timeMeasure T] fun t => H1ComplDirichletToLp q (u t)) ∧
+        U 0 = f₀ ∧
+        ∀ t ∈ Icc (0 : ℝ) T,
+          ‖smoothMulLp q (riemannianVolumeDensitySmoothMap q (G.metric t)) (U t)‖ ^ 2 ≤
+            ‖smoothMulLp q (riemannianVolumeDensitySmoothMap q (G.metric 0)) f₀‖ ^ 2 *
+              Real.exp (C * t) := by
+  obtain ⟨Cg, Cv, hCg, hequiv, hCv0, hCvtop, hvol,
+      U, hUcont, hUae, hUzero, henergy⟩ :=
+    hu.exists_continuous_l2_representative_with_mass_energy hXcont hacont
+  obtain ⟨C, hC, hbound⟩ := exists_uniform_volumeDensity_energy_bound
+    hG hreg X a hacont Bx Bv hX htrace hCg hequiv Cv hCv0 hCvtop hvol
+  let S : ℝ → ℝ := fun t => 2 * (
+    dirichletMassVariationComplOnIco hG hreg Bv htrace
+      hCg hequiv Cv hCv0 hCvtop hvol t (u t)
+      (smoothMulH1ComplDirichlet q
+        (riemannianVolumeDensitySmoothMap q (G.metric t)) (u t)) +
+    dirichletWeakFormComplOnIco G.metric X a Bx hX
+      hCg hequiv Cv hCv0 hCvtop hvol t (u t)
+      (smoothMulH1ComplDirichlet q
+        (riemannianVolumeDensitySmoothMap q (G.metric t)) (u t)))
+  let E : ℝ → ℝ := fun t =>
+    ‖smoothMulLp q (riemannianVolumeDensitySmoothMap q (G.metric t)) (U t)‖ ^ 2
+  have hS : Integrable S (timeMeasure T) :=
+    hu.integrable_volumeDensity_energy hXcont hacont hCg hequiv Cv hCv0 hCvtop hvol
+  have hρcont : ContinuousOn
+      (fun p : ℝ × M => riemannianVolumeDensity q (G.metric p.1) p.2)
+      (Icc (0 : ℝ) T ×ˢ (Set.univ : Set M)) :=
+    (riemannianVolumeDensity_contMDiffOn_of_metricFamilySmoothOn hG q).continuousOn.mono
+      (Set.prod_mono hreg Set.Subset.rfl)
+  have hEcont : ContinuousOn E (Icc (0 : ℝ) T) :=
+    (continuousOn_smoothMulLp_apply q
+      (fun t => riemannianVolumeDensitySmoothMap q (G.metric t)) hρcont hUcont).norm.pow 2
+  have hneT : ∀ᵐ t ∂(timeMeasure T), t ≠ T :=
+    ae_restrict_of_ae (ae_iff.mpr (by simp))
+  have hSbound : S ≤ᵐ[timeMeasure T] fun t => C * E t := by
+    filter_upwards [hUae, ae_restrict_mem measurableSet_Icc, hneT] with t hUt ht htne
+    have hti : t ∈ Ico (0 : ℝ) T := ⟨ht.1, lt_of_le_of_ne ht.2 htne⟩
+    simpa only [S, E, hUt] using hbound t hti (u t)
+  have hEint : ∀ t ∈ Icc (0 : ℝ) T,
+      E t ≤ E 0 + C * ∫ s in (0 : ℝ)..t, E s := by
+    intro t ht
+    have hzero : (0 : ℝ) ∈ Icc (0 : ℝ) T := ⟨le_rfl, hT⟩
+    have hSon : IntegrableOn S (Icc (0 : ℝ) T) volume := hS
+    have hSt : IntervalIntegrable S volume 0 t :=
+      (hSon.mono_set (uIcc_subset_Icc hzero ht)).intervalIntegrable
+    have hCEt : IntervalIntegrable (fun t => C * E t) volume 0 t :=
+      ContinuousOn.intervalIntegrable_of_Icc ht.1
+        (continuousOn_const.mul (hEcont.mono (Icc_subset_Icc le_rfl ht.2)))
+    have hSb := hSbound.filter_mono
+      (ae_mono (Measure.restrict_mono (Icc_subset_Icc le_rfl ht.2) le_rfl))
+    have hle := intervalIntegral.integral_mono_ae_restrict ht.1 hSt hCEt hSb
+    rw [intervalIntegral.integral_const_mul C] at hle
+    have hid : E t - E 0 = ∫ s in (0 : ℝ)..t, S s := henergy 0 t hzero ht
+    linarith
+  have hgronwall := DifferentialGeometry.Analysis.ODE.gronwall_integral_le hT hC hEcont hEint
+  refine ⟨C, hC, U, hUcont, hUae, hUzero, fun t ht => ?_⟩
+  simpa only [E, hUzero] using hgronwall t ht
 
 end DifferentialGeometry.Analysis.Parabolic.Dirichlet

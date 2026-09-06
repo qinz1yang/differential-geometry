@@ -530,40 +530,115 @@ private theorem abs_two_mul_metric_inner_le
   rw [abs_le]
   constructor <;> linarith
 
-private theorem dirichletEnergy_self_integrable
+private theorem two_mul_abs_dirichletDrift_le_add
     {q : SmoothRiemannianMetric (I_half n) M}
     (h : SmoothRiemannianMetric (I_half n) M)
-    (u : SmoothScalarDirichlet q) :
-    Integrable (fun x : M =>
-      h.inner x
+    (X : Cₛ^∞⟮I_half n; EuclideanSpace ℝ (Fin n),
+      (TangentSpace (I_half n) : M → Type _)⟯)
+    (C : ℝ)
+    (hX : ∀ x : M, h.inner x (X x) (X x) ≤ C)
+    (u v : SmoothScalarDirichlet q) :
+    2 * |dirichletDrift h X u v| ≤
+      dirichletEnergy h u u + C * dirichletMass h v v := by
+  let μ := riemannianVolumeMeasure (I := I_half n) (M := M) h
+  have henergy := dirichletEnergy_integrable h u u
+  have hmass := (dirichletMass_integrable h v v).const_mul C
+  have hright := henergy.add hmass
+  have hpoint : ∀ x : M,
+      |2 * (h.inner x (X x) (gradFun (I := I_half n) h u.toFun x) * v.toFun x)| ≤
+        h.inner x
           (gradFun (I := I_half n) h u.toFun x)
-          (gradFun (I := I_half n) h u.toFun x))
-      (riemannianVolumeMeasure (I := I_half n) (M := M) h) := by
-  let gu := DifferentialGeometry.Geometry.Operator.WithBoundary.gradGWithBoundarySection
-    (I := I_half n) h u.smooth u.interior_support
-  have henergy : Continuous (fun x : M => h.inner x (gu x) (gu x)) :=
-    TangentBundle.continuous_g_inner_of_smooth_sections (I := I_half n) h gu gu
-  let _ : IsFiniteMeasure
-      (riemannianVolumeMeasure (I := I_half n) (M := M) h) :=
-    riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace
-      (I := I_half n) (M := M) h
-  simpa only [gu,
-    DifferentialGeometry.Geometry.Operator.WithBoundary.grad_g_with_boundary_section_apply] using
-    henergy.integrable_of_hasCompactSupport
-      (HasCompactSupport.of_compactSpace _)
+          (gradFun (I := I_half n) h u.toFun x) +
+        C * (v.toFun x * v.toFun x) := by
+    intro x
+    let A := gradFun (I := I_half n) h u.toFun x
+    let B := v.toFun x • X x
+    have hab := abs_two_mul_metric_inner_le h x A B
+    have hBB : h.inner x B B =
+        (v.toFun x * v.toFun x) * h.inner x (X x) (X x) := by
+      simp only [B, map_smul, smul_apply, smul_eq_mul]
+      ring
+    have hbound : h.inner x B B ≤ C * (v.toFun x * v.toFun x) := by
+      rw [hBB]
+      have hmul := mul_le_mul_of_nonneg_left (hX x)
+        (mul_self_nonneg (v.toFun x))
+      nlinarith
+    have heq : 2 * (h.inner x (X x) A * v.toFun x) =
+        2 * h.inner x A B := by
+      simp only [B, map_smul, smul_eq_mul]
+      rw [h.symm x (X x) A]
+      ring
+    rw [heq]
+    have hsum : h.inner x A A + h.inner x B B ≤
+        h.inner x A A + C * (v.toFun x * v.toFun x) := by
+      linarith
+    exact hab.trans hsum
+  unfold dirichletDrift dirichletEnergy dirichletMass
+  change 2 * |∫ x, h.inner x (X x)
+      (gradFun (I := I_half n) h u.toFun x) * v.toFun x ∂μ| ≤
+    (∫ x, h.inner x
+        (gradFun (I := I_half n) h u.toFun x)
+        (gradFun (I := I_half n) h u.toFun x) ∂μ) +
+      C * ∫ x, v.toFun x * v.toFun x ∂μ
+  rw [← abs_of_nonneg (by norm_num : (0 : ℝ) ≤ 2), ← abs_mul, ← integral_const_mul]
+  calc
+    _ ≤ ∫ x, |2 * (h.inner x (X x)
+        (gradFun (I := I_half n) h u.toFun x) * v.toFun x)| ∂μ :=
+      abs_integral_le_integral_abs
+    _ ≤ ∫ x, h.inner x
+          (gradFun (I := I_half n) h u.toFun x)
+          (gradFun (I := I_half n) h u.toFun x) +
+        C * (v.toFun x * v.toFun x) ∂μ :=
+      integral_mono_of_nonneg
+        (Filter.Eventually.of_forall fun _ => abs_nonneg _)
+        hright (Filter.Eventually.of_forall hpoint)
+    _ = _ := by
+      rw [integral_add henergy hmass, integral_const_mul]
 
-private theorem dirichletMass_self_integrable
+
+theorem two_mul_abs_dirichletDrift_le
     {q : SmoothRiemannianMetric (I_half n) M}
-    (h : SmoothRiemannianMetric (I_half n) M) (C : ℝ)
-    (u : SmoothScalarDirichlet q) :
-    Integrable (fun x : M => C * (u.toFun x * u.toFun x))
-      (riemannianVolumeMeasure (I := I_half n) (M := M) h) := by
-  let _ : IsFiniteMeasure
-      (riemannianVolumeMeasure (I := I_half n) (M := M) h) :=
-    riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace
-      (I := I_half n) (M := M) h
-  exact (continuous_const.mul (u.smooth.continuous.mul u.smooth.continuous))
-    |>.integrable_of_hasCompactSupport (HasCompactSupport.of_compactSpace _)
+    (h : SmoothRiemannianMetric (I_half n) M)
+    (X : Cₛ^∞⟮I_half n; EuclideanSpace ℝ (Fin n),
+      (TangentSpace (I_half n) : M → Type _)⟯)
+    (C : ℝ) (hX : ∀ x : M, h.inner x (X x) (X x) ≤ C)
+    {ε : ℝ} (hε : 0 < ε) (u v : SmoothScalarDirichlet q) :
+    2 * |dirichletDrift h X u v| ≤
+      ε * dirichletEnergy h u u + (C / ε) * dirichletMass h v v := by
+  let r := Real.sqrt ε
+  have hrpos : 0 < r := Real.sqrt_pos.mpr hε
+  have hrr : r * r = ε := by simpa only [r, ← sq] using Real.sq_sqrt hε.le
+  have h := two_mul_abs_dirichletDrift_le_add h X C hX (r • u) (r⁻¹ • v)
+  rw [dirichletDrift_smul_left, dirichletDrift_smul_right,
+    ← mul_assoc, mul_inv_cancel₀ hrpos.ne', one_mul,
+    dirichletEnergy_smul_left, dirichletEnergy_smul_right,
+    dirichletMass_smul_left, dirichletMass_smul_right] at h
+  convert h using 1
+  rw [← hrr]
+  field_simp [hrpos.ne']
+
+
+theorem two_mul_abs_dirichletMass_le
+    {q : SmoothRiemannianMetric (I_half n) M}
+    (h : SmoothRiemannianMetric (I_half n) M)
+    {ε : ℝ} (hε : 0 < ε) (u v : SmoothScalarDirichlet q) :
+    2 * |dirichletMass h u v| ≤
+      ε * dirichletMass h u u + ε⁻¹ * dirichletMass h v v := by
+  have hu := (dirichletMass_integrable h u u).const_mul ε
+  have hv := (dirichletMass_integrable h v v).const_mul ε⁻¹
+  have hp : ∀ x : M, ‖2 * (u.toFun x * v.toFun x)‖ ≤
+      ε * (u.toFun x * u.toFun x) + ε⁻¹ * (v.toFun x * v.toFun x) := by
+    intro x
+    have h := two_mul_le_add_mul_sq (a := |u.toFun x|) (b := |v.toFun x|) hε
+    rw [sq_abs, sq_abs] at h
+    simpa only [Real.norm_eq_abs, abs_mul, abs_of_nonneg (by norm_num : (0 : ℝ) ≤ 2),
+      sq_abs, pow_two, mul_assoc] using h
+  have hb := norm_integral_le_of_norm_le (hu.add hv) (Filter.Eventually.of_forall hp)
+  simp only [Pi.add_apply] at hb
+  rw [Real.norm_eq_abs, integral_const_mul, abs_mul,
+    abs_of_nonneg (by norm_num : (0 : ℝ) ≤ 2), integral_add hu hv,
+    integral_const_mul, integral_const_mul] at hb
+  exact hb
 
 theorem two_mul_dirichletDrift_self_le
     {q : SmoothRiemannianMetric (I_half n) M}
@@ -575,62 +650,9 @@ theorem two_mul_dirichletDrift_self_le
     (u : SmoothScalarDirichlet q) :
     2 * dirichletDrift h X u u ≤
       dirichletEnergy h u u + C * dirichletMass h u u := by
-  let μ := riemannianVolumeMeasure (I := I_half n) (M := M) h
-  have henergy := dirichletEnergy_self_integrable h u
-  have hmass := dirichletMass_self_integrable h C u
-  have hright := henergy.add hmass
-  have hpoint : ∀ x : M,
-      |2 * (h.inner x (X x) (gradFun (I := I_half n) h u.toFun x) * u.toFun x)| ≤
-        h.inner x
-          (gradFun (I := I_half n) h u.toFun x)
-          (gradFun (I := I_half n) h u.toFun x) +
-        C * (u.toFun x * u.toFun x) := by
-    intro x
-    let A := gradFun (I := I_half n) h u.toFun x
-    let B := u.toFun x • X x
-    have hab := abs_two_mul_metric_inner_le h x A B
-    have hBB : h.inner x B B =
-        (u.toFun x * u.toFun x) * h.inner x (X x) (X x) := by
-      simp only [B, map_smul, smul_apply, smul_eq_mul]
-      ring
-    have hbound : h.inner x B B ≤ C * (u.toFun x * u.toFun x) := by
-      rw [hBB]
-      have hmul := mul_le_mul_of_nonneg_left (hX x)
-        (mul_self_nonneg (u.toFun x))
-      nlinarith
-    have heq : 2 * (h.inner x (X x) A * u.toFun x) =
-        2 * h.inner x A B := by
-      simp only [B, map_smul, smul_eq_mul]
-      rw [h.symm x (X x) A]
-      ring
-    rw [heq]
-    have hsum : h.inner x A A + h.inner x B B ≤
-        h.inner x A A + C * (u.toFun x * u.toFun x) := by
-      linarith
-    exact hab.trans hsum
-  unfold dirichletDrift dirichletEnergy dirichletMass
-  change 2 * (∫ x, h.inner x (X x)
-      (gradFun (I := I_half n) h u.toFun x) * u.toFun x ∂μ) ≤
-    (∫ x, h.inner x
-        (gradFun (I := I_half n) h u.toFun x)
-        (gradFun (I := I_half n) h u.toFun x) ∂μ) +
-      C * ∫ x, u.toFun x * u.toFun x ∂μ
-  rw [← integral_const_mul]
-  calc
-    _ ≤ |∫ x, 2 * (h.inner x (X x)
-        (gradFun (I := I_half n) h u.toFun x) * u.toFun x) ∂μ| := le_abs_self _
-    _ ≤ ∫ x, |2 * (h.inner x (X x)
-        (gradFun (I := I_half n) h u.toFun x) * u.toFun x)| ∂μ :=
-      abs_integral_le_integral_abs
-    _ ≤ ∫ x, h.inner x
-          (gradFun (I := I_half n) h u.toFun x)
-          (gradFun (I := I_half n) h u.toFun x) +
-        C * (u.toFun x * u.toFun x) ∂μ :=
-      integral_mono_of_nonneg
-        (Filter.Eventually.of_forall fun _ => abs_nonneg _)
-        hright (Filter.Eventually.of_forall hpoint)
-    _ = _ := by
-      rw [integral_add henergy hmass, integral_const_mul]
+  have h := two_mul_abs_dirichletDrift_le h X C hX (by norm_num : (0 : ℝ) < 1) u u
+  simp only [one_mul, div_one] at h
+  exact (mul_le_mul_of_nonneg_left (le_abs_self _) (by norm_num : (0 : ℝ) ≤ 2)).trans h
 
 theorem dirichletMass_self_nonneg
     {q : SmoothRiemannianMetric (I_half n) M}

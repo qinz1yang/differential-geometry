@@ -684,4 +684,57 @@ theorem IsWeakEvolutionSolution.exists_continuous_l2_representative
     hu.exists_continuous_l2_representative_with_mass_energy hXcont hacont
   exact ⟨U, hUcont, hUae, hUzero⟩
 
+theorem IsWeakEvolutionSolution.integrable_volumeDensity_energy
+    {q : SmoothRiemannianMetric (I_half n) M}
+    {D : RealTimeInterval}
+    {G : MetricConnectionFamilyOn (I := I_half n) (M := M) D}
+    {hG : MetricFamilySmoothOn (I := I_half n) (M := M) D G.metric}
+    {T : ℝ} {hT : 0 ≤ T} {hreg : Icc (0 : ℝ) T ⊆ D.regular}
+    {X : ℝ → Cₛ^∞⟮I_half n; EuclideanSpace ℝ (Fin n),
+      (TangentSpace (I_half n) : M → Type _)⟯}
+    (hXcont : ContinuousOn
+      (fun p : ℝ × M =>
+        (TotalSpace.mk' (EuclideanSpace ℝ (Fin n)) p.2 (X p.1 p.2) :
+          TangentBundle (I_half n) M))
+      (Icc (0 : ℝ) T ×ˢ (Set.univ : Set M)))
+    {a : ℝ → ℝ} (hacont : ContinuousOn a (Icc (0 : ℝ) T))
+    {Bx Bv : ℝ}
+    {hX : ∀ t ∈ Ico (0 : ℝ) T, ∀ x : M,
+      (G.metric t).inner x (X t x) (X t x) ≤ Bx}
+    {htrace : ∀ t ∈ Ico (0 : ℝ) T, ∀ x : M,
+      |traceTimeDerivMetric (I := I_half n) G.metric t x| ≤ Bv}
+    {f₀ : Lp ℝ 2
+      (riemannianVolumeMeasure (I := I_half n) (M := M) q)}
+    {u : timeL2 (H1ComplDirichlet q) T}
+    (hu : IsWeakEvolutionSolution hG hT hreg X a Bx Bv
+      hX htrace f₀ u)
+    {Cg : ℝ} (hCg : 1 ≤ Cg)
+    (hequiv : ∀ t ∈ Icc (0 : ℝ) T, ∀ x : M,
+      ∀ v : TangentSpace (I_half n) x,
+        Cg⁻¹ * q.inner x v v ≤ (G.metric t).inner x v v ∧
+          (G.metric t).inner x v v ≤ Cg * q.inner x v v)
+    (Cv : ℝ≥0∞) (hCv0 : Cv ≠ 0) (hCvtop : Cv ≠ ⊤)
+    (hvol : ∀ t ∈ Icc (0 : ℝ) T,
+      riemannianVolumeMeasure (I := I_half n) (M := M) (G.metric t) ≤
+        Cv • riemannianVolumeMeasure (I := I_half n) (M := M) q) :
+    Integrable (fun t => 2 * (
+      dirichletMassVariationComplOnIco hG hreg Bv htrace
+        hCg hequiv Cv hCv0 hCvtop hvol t (u t)
+        (smoothMulH1ComplDirichlet q
+          (riemannianVolumeDensitySmoothMap q (G.metric t)) (u t)) +
+      dirichletWeakFormComplOnIco G.metric X a Bx hX
+        hCg hequiv Cv hCv0 hCvtop hvol t (u t)
+        (smoothMulH1ComplDirichlet q
+          (riemannianVolumeDensitySmoothMap q (G.metric t)) (u t))))
+      (timeMeasure T) := by
+  obtain ⟨_, _, _, _, _, _, _, w, _, _, hwderiv⟩ :=
+    hu.exists_mass_timeH1 hXcont hacont
+  obtain ⟨z, hz⟩ :=
+    exists_timeL2_smoothMulH1ComplDirichlet_volumeDensity hG hreg u
+  have hint := (L2.integrable_inner (𝕜 := ℝ) z w.deriv).const_mul 2
+  refine hint.congr ?_
+  filter_upwards [hz, hwderiv] with t hzt hwt
+  rw [hzt, hwt, real_inner_comm, InnerProductSpace.toDual_symm_apply]
+  rfl
+
 end DifferentialGeometry.Analysis.Parabolic.Dirichlet

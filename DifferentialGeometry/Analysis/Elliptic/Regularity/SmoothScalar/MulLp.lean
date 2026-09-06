@@ -255,6 +255,19 @@ theorem smoothMulLp_apply_coeFn
   rw [smoothMulLp_apply]
   exact smoothMulLpFun_coeFn (I := I) (M := M) g φ f
 
+theorem smoothMulLp_injective
+    (g : SmoothRiemannianMetric I M) (φ : C^∞⟮I, M; ℝ⟯)
+    (hφ : ∀ᵐ x ∂(riemannianVolumeMeasure (I := I) (M := M) g), φ x ≠ 0) :
+    Function.Injective (smoothMulLp (I := I) (M := M) g φ) := by
+  intro u v huv
+  apply Lp.ext
+  filter_upwards [hφ, smoothMulLp_apply_coeFn g φ u, smoothMulLp_apply_coeFn g φ v]
+    with x hx hux hvx
+  have heq := congrArg
+    (fun f : Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g) => f x) huv
+  rw [hux, hvx] at heq
+  exact mul_left_cancel₀ hx heq
+
 theorem norm_smoothMulLp_le_of_bound
     (g : SmoothRiemannianMetric I M) (φ : C^∞⟮I, M; ℝ⟯)
     {C : ℝ} (hC : 0 ≤ C) (hφ : ∀ x : M, |φ x| ≤ C) :

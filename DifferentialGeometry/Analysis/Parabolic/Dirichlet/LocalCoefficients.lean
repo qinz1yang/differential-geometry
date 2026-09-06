@@ -1,9 +1,12 @@
+import DifferentialGeometry.Analysis.Elliptic.Coefficients
 import DifferentialGeometry.Analysis.Elliptic.MetricExtension
 import DifferentialGeometry.Analysis.Integration.Measure.VolumeDensityFamily
 import DifferentialGeometry.Analysis.Integration.Measure.FamilyLocal
 import DifferentialGeometry.Analysis.Integration.Lp.ContinuousOn
 
 noncomputable section
+
+set_option autoImplicit false
 
 open Bundle Manifold MeasureTheory Set
 open scoped ContDiff ENNReal InnerProductSpace Manifold Topology
