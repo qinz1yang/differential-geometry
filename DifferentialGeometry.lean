@@ -4385,6 +4385,7 @@ import DifferentialGeometry.Geometry.Connection.MetricCompatibility.Alternating
 import DifferentialGeometry.Geometry.Connection.MetricCompatibility.AlternatingEndomorphism
 import DifferentialGeometry.Geometry.Connection.MetricCompatibility.Trivial
 import DifferentialGeometry.Geometry.Exponential.Trivialization
+import DifferentialGeometry.Geometry.LieGroup.Orthogonal.LieAlgebra
 import DifferentialGeometry.Geometry.Metric.Family.TimeDerivative
 import DifferentialGeometry.Analysis.Elliptic.Coefficients
 import DifferentialGeometry.Tensor.Alternating.BundleCompSmooth

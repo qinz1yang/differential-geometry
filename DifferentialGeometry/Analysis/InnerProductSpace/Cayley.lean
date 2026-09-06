@@ -252,3 +252,43 @@ theorem contDiff_cayleyTransform_toContinuousLinearMap {n : ℕ∞ω} :
   exact h.congr_of_eventuallyEq (Filter.Eventually.of_forall cayleyTransform_toContinuousLinearMap)
 
 end skewAdjoint
+
+namespace skewAdjoint
+
+variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [CompleteSpace E]
+
+theorem hasFDerivAt_cayleyTransform_toContinuousLinearMap_zero :
+    HasFDerivAt (fun K : skewAdjoint.submodule ℝ (E →L[ℝ] E) =>
+      (cayleyTransform K : E →L[ℝ] E))
+      ((-2 : ℝ) • (skewAdjoint.submodule ℝ (E →L[ℝ] E)).subtypeL) 0 := by
+  let L : skewAdjoint.submodule ℝ (E →L[ℝ] E) →L[ℝ] (E →L[ℝ] E) :=
+    (skewAdjoint.submodule ℝ (E →L[ℝ] E)).subtypeL
+  have hL : HasFDerivAt L L (0 : skewAdjoint.submodule ℝ (E →L[ℝ] E)) :=
+    ContinuousLinearMap.hasFDerivAt L
+  have hc : HasFDerivAt (fun _ : skewAdjoint.submodule ℝ (E →L[ℝ] E) =>
+      (1 : E →L[ℝ] E)) 0 0 := hasFDerivAt_const (𝕜 := ℝ) _ _
+  have hplus : HasFDerivAt (fun K => 1 + L K) L 0 := by
+    convert! HasFDerivAt.add (𝕜 := ℝ) (E := skewAdjoint.submodule ℝ (E →L[ℝ] E))
+      (F := E →L[ℝ] E) hc hL using 1
+    simp
+  have hminus : HasFDerivAt (fun K => 1 - L K) (-L) 0 := by
+    convert! HasFDerivAt.sub (𝕜 := ℝ) (E := skewAdjoint.submodule ℝ (E →L[ℝ] E))
+      (F := E →L[ℝ] E) hc hL using 1
+    simp
+  have hring : HasFDerivAt Ring.inverse
+      (-ContinuousLinearMap.mulLeftRight ℝ (E →L[ℝ] E) 1 1) (1 + L 0) := by
+    simpa only [map_zero, add_zero, inv_one, Units.val_one] using
+      hasFDerivAt_ringInverse (𝕜 := ℝ) (1 : (E →L[ℝ] E)ˣ)
+  have hinv := HasFDerivAt.comp (𝕜 := ℝ)
+    (E := skewAdjoint.submodule ℝ (E →L[ℝ] E)) (F := E →L[ℝ] E) (G := E →L[ℝ] E)
+    (0 : skewAdjoint.submodule ℝ (E →L[ℝ] E)) hring hplus
+  have h := HasFDerivAt.clm_comp (𝕜 := ℝ)
+    (E := skewAdjoint.submodule ℝ (E →L[ℝ] E)) hminus hinv
+  convert! h using 1
+  · funext K
+    exact cayleyTransform_toContinuousLinearMap K
+  · ext K x
+    simp [L]
+    module
+
+end skewAdjoint
