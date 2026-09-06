@@ -1998,6 +1998,7 @@ import DifferentialGeometry.Geometry.Comparison.Laplacian.Radial
 import DifferentialGeometry.Geometry.Comparison.HopfRinow.RadialSurjectivity
 import DifferentialGeometry.Geometry.Comparison.Distance.Continuity
 import DifferentialGeometry.Geometry.Comparison.Variation.Curve.ArcLength
+import DifferentialGeometry.Geometry.Comparison.Variation.Curve.PathLength
 import DifferentialGeometry.Geometry.Comparison.Variation.Curve.AffineParameter
 import DifferentialGeometry.Geometry.Comparison.Variation.Jacobi.CoordinateTransfer
 import DifferentialGeometry.Geometry.Comparison.Variation.Covariant.ChainRule
