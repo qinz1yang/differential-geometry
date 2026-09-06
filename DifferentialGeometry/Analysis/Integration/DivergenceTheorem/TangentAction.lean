@@ -88,6 +88,24 @@ lemma scalarOnE_contDiffOn (α : M) {f : M → ℝ}
     hf_on.comp hsymm (fun _ _ => mem_univ _)
   exact hcomp.contDiffOn
 
+omit [Module.Finite ℝ E] [IsManifold I ∞ M] in
+lemma scalarOnE_contDiffOn_prod {P : Type*} [NormedAddCommGroup P] [NormedSpace ℝ P]
+    {k : ℕ∞ω} [IsManifold I k M] (α : M) {f : P → M → ℝ} {S : Set P}
+    (hf : ContMDiffOn (𝓘(ℝ, P).prod I) 𝓘(ℝ, ℝ) k
+      (fun p : P × M => f p.1 p.2) (S ×ˢ univ)) :
+    ContDiffOn ℝ k (fun p : P × E => scalarOnE (I := I) α (f p.1) p.2)
+      (S ×ˢ (extChartAt I α).target) := by
+  have hsym : ContMDiffOn (𝓘(ℝ, P).prod 𝓘(ℝ, E)) I k
+      (fun p : P × E => (extChartAt I α).symm p.2)
+      (S ×ˢ (extChartAt I α).target) :=
+    (contMDiffOn_extChartAt_symm (I := I) α).comp contMDiffOn_snd (fun _ hp => hp.2)
+  have hcomp : ContMDiffOn (𝓘(ℝ, P).prod 𝓘(ℝ, E)) 𝓘(ℝ, ℝ) k
+      (fun p : P × E => f p.1 ((extChartAt I α).symm p.2))
+      (S ×ˢ (extChartAt I α).target) :=
+    hf.comp (contMDiffOn_fst.prodMk hsym) (fun _ hp => ⟨hp.1, mem_univ _⟩)
+  rw [← contMDiffOn_iff_contDiffOn, modelWithCornersSelf_prod, ← chartedSpaceSelf_prod]
+  exact hcomp
+
 omit [Module.Finite ℝ E] in
 lemma scalarOnE_contDiffWithinAt
     (α : M) {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ) ∞ f) {y : E}

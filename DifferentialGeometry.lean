@@ -4330,3 +4330,16 @@ import DifferentialGeometry.Geometry.Comparison.Volume.NormalJacobianTransport
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.OrthonormalFrame
 import DifferentialGeometry.Geometry.Metric.OrthonormalFrame.Topology
 import DifferentialGeometry.Geometry.Metric.OrthonormalFrame.Torsor
+import DifferentialGeometry.Analysis.Calculus.ContinuousMapDerivative
+import DifferentialGeometry.Analysis.Heat.Parametrix.Coefficient
+import DifferentialGeometry.Analysis.Heat.Parametrix.Transport
+import DifferentialGeometry.Analysis.Integration.RadialIntegralSmoothness
+import DifferentialGeometry.Analysis.Parabolic.Dirichlet.WeakEquationTimeTest
+import DifferentialGeometry.Bundle.Equiv.Continuity
+import DifferentialGeometry.Geometry.Connection.MetricCompatibility.Hom
+import DifferentialGeometry.Geometry.Connection.ParallelTransport.HorizontalLift
+import DifferentialGeometry.Geometry.Exponential.BranchEnergy
+import DifferentialGeometry.Geometry.Metric.OrthonormalFrame.LocalTrivialization
+import DifferentialGeometry.Geometry.Metric.OrthonormalFrame.Principal
+import DifferentialGeometry.Geometry.Operator.LaplacianRegularity
+import DifferentialGeometry.Geometry.Operator.TimeLaplacian
