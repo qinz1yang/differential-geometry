@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Connection.Hessian.Scalar
 import DifferentialGeometry.Geometry.Comparison.Variation.FirstVariation
 import DifferentialGeometry.Geometry.Comparison.Variation.CovariantChainRule
 import DifferentialGeometry.Geometry.Comparison.Variation.PerpFrame
@@ -73,46 +74,18 @@ theorem deriv2_comp_geo_at
       hessFun (I := I) g f (γ t)
         ((mfderiv 𝓘(ℝ, ℝ) I γ t : ℝ →L[ℝ] TangentSpace I (γ t)) 1)
         ((mfderiv 𝓘(ℝ, ℝ) I γ t : ℝ →L[ℝ] TangentSpace I (γ t)) 1) := by
-  let V := fun s => gradFun (I := I) g f (γ s)
-  let W := fun s => (mfderiv 𝓘(ℝ, ℝ) I γ s : ℝ →L[ℝ] _) (1 : ℝ)
-  have hfirst : deriv (f ∘ γ) = fun s => g.inner (γ s) (V s) (W s) := by
-    funext s
-    exact deriv_comp_eq_inner_grad_velocity (I := I) g hf hγ s
-  have hgrad : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞
-      (T% fun x => gradFun (I := I) g f x) :=
-    gradFun_contMDiff_total_section (I := I) g hf
-  have hVdiff : DifferentiableAt ℝ (chartRepAt (I := I) γ V t) t := by
-    simpa only [V] using
-      chartRepAt_restrict_differentiableAt (I := I) (hγ.of_le (by simp))
-        (fun x => gradFun (I := I) g f x) (hgrad.of_le (by simp)) t
-  have hWdiff : DifferentiableAt ℝ (chartRepAt (I := I) γ W t) t := by
-    simpa only [W] using velocity_chartRepAt_differentiableAt (I := I) γ hγ t
-  have hinner := metric_compat_hasDerivAt_inner (I := I) (n := ∞)
-    (by simp) g γ V W t hγ hVdiff hWdiff
-  have hVcov : covDerivAlong (I := I) g γ V t =
-      (LeviCivita (I := I) g) (fun x => gradFun (I := I) g f x) (γ t) (W t) := by
-    simpa only [V, W] using
-      covDerivAlong_restrict_eq_leviCivita (I := I) g γ
-        (fun x => gradFun (I := I) g f x) t hγ
-        (hgrad.contMDiffAt.mdifferentiableAt (by simp))
-  have hWcov : covDerivAlong (I := I) g γ W t = 0 := by
-    simpa only [W] using
-      covDerivAlong_velocity_eq_zero_of_hasGeodesicEquationAt_C2
-        (I := I) g γ t
-          (hγ.contMDiffAt.of_le
-            (WithTop.coe_le_coe.mpr (le_top : (2 : ℕ∞) ≤ ⊤)))
-          hgeo
-  change (deriv^[2] (f ∘ γ)) t = hessFun (I := I) g f (γ t) (W t) (W t)
-  calc
-    (deriv^[2] (f ∘ γ)) t = deriv (deriv (f ∘ γ)) t := by rfl
-    _ = deriv (fun s => g.inner (γ s) (V s) (W s)) t := by rw [hfirst]
-    _ = g.inner (γ t) (covDerivAlong (I := I) g γ V t) (W t)
-        + g.inner (γ t) (V t) (covDerivAlong (I := I) g γ W t) := hinner.deriv
-    _ = g.inner (γ t)
-        ((LeviCivita (I := I) g) (fun x => gradFun (I := I) g f x) (γ t) (W t))
-        (W t) := by rw [hVcov, hWcov]; simp
-    _ = hessFun (I := I) g f (γ t) (W t) (W t) :=
-      (hessFun_eq_cov_grad (I := I) g hf (γ t) (W t) (W t)).symm
+  rw [hessFun_eq_abstract g hf]
+  have h1 : (NormedSpace.fromTangentSpace (𝕜 := ℝ) t).symm 1 =
+      (1 : TangentSpace 𝓘(ℝ, ℝ) t) := by
+    apply (NormedSpace.fromTangentSpace (𝕜 := ℝ) t).injective
+    simp only [ContinuousLinearEquiv.apply_symm_apply]
+    rfl
+  simpa only [iteratedDeriv_eq_iterate, h1] using
+    (abstractHessian_apply_velocity_of_hasGeodesicEquationAt g
+    (hf.contMDiffAt.of_le (ENat.natCast_le_of_coe_top_le_withTop le_rfl 2))
+    (hγ.contMDiffAt.of_le (ENat.natCast_le_of_coe_top_le_withTop le_rfl 2))
+    (BoundarylessManifold.isInteriorPoint (I := I)) hgeo).symm
+
 
 omit [InnerProductSpace ℝ E] in
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in

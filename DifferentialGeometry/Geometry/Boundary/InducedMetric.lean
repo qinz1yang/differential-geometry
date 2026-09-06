@@ -1,3 +1,5 @@
+import DifferentialGeometry.Analysis.FiniteDimensional.Coercivity
+import DifferentialGeometry.Bundle.Hom
 import DifferentialGeometry.Geometry.Boundary.BoundaryManifold
 import DifferentialGeometry.Bundle.TangentSpace
 import DifferentialGeometry.Analysis.Integration.Measure.ChartDensity
@@ -27,6 +29,21 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
+
+private local instance : NormedAddCommGroup (E →L[ℝ] ℝ) :=
+  ContinuousLinearMap.toNormedAddCommGroup
+
+private local instance : NormedSpace ℝ (E →L[ℝ] ℝ) :=
+  ContinuousLinearMap.toNormedSpace
+
+private local instance : NormedAddCommGroup (E →L[ℝ] E →L[ℝ] ℝ) :=
+  ContinuousLinearMap.toNormedAddCommGroup
+
+private local instance : NormedSpace ℝ (E →L[ℝ] E →L[ℝ] ℝ) :=
+  ContinuousLinearMap.toNormedSpace
+
+private local instance (x : M) : ContinuousAdd (TangentSpace I x →L[ℝ] ℝ) :=
+  (ContinuousLinearMap.topologicalAddGroup (𝕜₁ := ℝ) (𝕜₂ := ℝ)).toContinuousAdd
 
 def boundaryInclusion (I : ModelWithCorners ℝ E H) (M : Type*)
     [TopologicalSpace M] [ChartedSpace H M] :
@@ -141,6 +158,23 @@ theorem boundaryInclusion_contMDiff
     exact (IsEmpty.false x).elim
 
 variable [hI : HasSmoothBoundary E H I] [IsManifold I ∞ M]
+
+private local instance : NormedAddCommGroup (hI.boundaryE →L[ℝ] ℝ) :=
+  ContinuousLinearMap.toNormedAddCommGroup
+
+private local instance : NormedSpace ℝ (hI.boundaryE →L[ℝ] ℝ) :=
+  ContinuousLinearMap.toNormedSpace
+
+private local instance : NormedAddCommGroup (hI.boundaryE →L[ℝ] hI.boundaryE →L[ℝ] ℝ) :=
+  ContinuousLinearMap.toNormedAddCommGroup
+
+private local instance : NormedSpace ℝ (hI.boundaryE →L[ℝ] hI.boundaryE →L[ℝ] ℝ) :=
+  ContinuousLinearMap.toNormedSpace
+
+private local instance (x : BoundaryManifold I M) :
+    ContinuousAdd (TangentSpace hI.boundaryI x →L[ℝ] ℝ) :=
+  (ContinuousLinearMap.topologicalAddGroup (𝕜₁ := ℝ) (𝕜₂ := ℝ)).toContinuousAdd
+
 
 noncomputable def boundaryInclusionMfderiv (x : BoundaryManifold I M) :
     TangentSpace hI.boundaryI x →L[ℝ] TangentSpace I (x : M) :=
@@ -353,95 +387,22 @@ lemma inducedMetricInner_pos
   have h_zero : (boundaryInclusionMfderiv x) (0 : TangentSpace hI.boundaryI x) = 0 := map_zero _
   exact dincl_injective (I := I) (M := M) x (h0.trans h_zero.symm)
 
-private lemma exists_coercive_of_posDef
-    {V : Type*} [NormedAddCommGroup V] [NormedSpace ℝ V] [FiniteDimensional ℝ V]
-    (B : V →L[ℝ] V →L[ℝ] ℝ)
-    (hpos : ∀ v : V, v ≠ 0 → 0 < B v v) :
-    ∃ c : ℝ, 0 < c ∧ ∀ v : V, c * (‖v‖ * ‖v‖) ≤ B v v := by
-  classical
-  by_cases hzero : ∀ v : V, v = 0
-  · refine ⟨1, by norm_num, ?_⟩
-    intro v
-    rw [hzero v]; simp
-  push Not at hzero
-  obtain ⟨v₀, hv₀⟩ := hzero
-  let S : Set V := {v | ‖v‖ = 1}
-  have hS_eq : S = (Metric.closedBall (0 : V) 1) ∩ {v | ‖v‖ = 1} := by
-    ext v
-    refine ⟨fun h => ⟨?_, h⟩, fun h => h.2⟩
-    rw [Metric.mem_closedBall, dist_zero_right]
-    exact h.le
-  have hS_compact : IsCompact S := by
-    rw [hS_eq]
-    refine IsCompact.inter_right (isCompact_closedBall (0 : V) 1) ?_
-    exact isClosed_eq continuous_norm continuous_const
-  have hv₀_norm_pos : 0 < ‖v₀‖ := norm_pos_iff.mpr hv₀
-  have hS_nonempty : S.Nonempty := by
-    refine ⟨(‖v₀‖)⁻¹ • v₀, ?_⟩
-    change ‖(‖v₀‖)⁻¹ • v₀‖ = 1
-    rw [norm_smul, norm_inv, Real.norm_eq_abs, abs_norm]
-    field_simp
-  have h_cont : Continuous (fun v : V => B v v) :=
-    (B.continuous.clm_apply continuous_id)
-  obtain ⟨v₁, hv₁_mem, hv₁_min⟩ := hS_compact.exists_isMinOn hS_nonempty h_cont.continuousOn
-  have h_norm₁ : ‖v₁‖ = 1 := hv₁_mem
-  have h_v₁_ne : v₁ ≠ 0 := by
-    intro h0; rw [h0, norm_zero] at h_norm₁; exact zero_ne_one h_norm₁
-  set c : ℝ := B v₁ v₁
-  have hc_pos : 0 < c := hpos v₁ h_v₁_ne
-  refine ⟨c, hc_pos, ?_⟩
-  intro v
-  by_cases hvz : v = 0
-  · simp [hvz]
-  · have hnorm_v_pos : 0 < ‖v‖ := norm_pos_iff.mpr hvz
-    set u : V := (‖v‖)⁻¹ • v with hu_def
-    have h_u_norm : ‖u‖ = 1 := by
-      change ‖(‖v‖)⁻¹ • v‖ = 1
-      rw [norm_smul, norm_inv, Real.norm_eq_abs, abs_norm]
-      field_simp
-    have h_u_min : c ≤ B u u := hv₁_min h_u_norm
-    have h_B_u : B u u = (‖v‖)⁻¹ * ((‖v‖)⁻¹ * B v v) := by
-      change B ((‖v‖)⁻¹ • v) ((‖v‖)⁻¹ • v) = (‖v‖)⁻¹ * ((‖v‖)⁻¹ * B v v)
-      have h1 : B ((‖v‖)⁻¹ • v) = (‖v‖)⁻¹ • B v := map_smul B _ _
-      rw [h1]
-      simp [smul_apply, smul_eq_mul, map_smul]
-    have h_v_sq_pos : 0 ≤ ‖v‖ * ‖v‖ := mul_nonneg (le_of_lt hnorm_v_pos) (le_of_lt hnorm_v_pos)
-    have h_ne : ‖v‖ ≠ 0 := ne_of_gt hnorm_v_pos
-    have h_simplify : B u u * (‖v‖ * ‖v‖) = B v v := by
-      rw [h_B_u]
-      field_simp
-    have h_step : c * (‖v‖ * ‖v‖) ≤ B u u * (‖v‖ * ‖v‖) :=
-      mul_le_mul_of_nonneg_right h_u_min h_v_sq_pos
-    rw [h_simplify] at h_step
-    exact h_step
-
 omit [FiniteDimensional ℝ E] in
 lemma inducedMetricInner_isVonNBounded
     (g : SmoothRiemannianMetric I M) (x : BoundaryManifold I M) :
     IsVonNBounded ℝ
       {v : TangentSpace hI.boundaryI x | inducedMetricInner g x v v < 1} := by
-  obtain ⟨c, hc_pos, hc_bound⟩ := exists_coercive_of_posDef
-    (V := hI.boundaryE) (inducedMetricInnerModel g x)
+  have hc := (inducedMetricInnerModel g x).isCoercive_of_posDef
     (fun v hv => by
       rw [inducedMetricInnerModel_apply]
       apply inducedMetricInner_pos (I := I) (M := M) g x
       exact (tangentSpaceModelContinuousLinearEquiv (I := hI.boundaryI) x).symm.injective.ne hv)
   have h_model : IsVonNBounded ℝ
-      {v : hI.boundaryE | inducedMetricInnerModel g x v v < 1} := by
-    rw [NormedSpace.isVonNBounded_iff' (𝕜 := ℝ)]
-    refine ⟨Real.sqrt (1 / c), ?_⟩
-    intro v hv
-    have h_lt : c * (‖v‖ * ‖v‖) < 1 := lt_of_le_of_lt (hc_bound v) hv
-    have h_v_sq_lt : ‖v‖ * ‖v‖ < 1 / c := by
-      rw [lt_div_iff₀ hc_pos]
-      rw [mul_comm] at h_lt
-      exact h_lt
-    have h_v_sq_le : ‖v‖ * ‖v‖ ≤ 1 / c := le_of_lt h_v_sq_lt
-    have h_norm_nn : 0 ≤ ‖v‖ := norm_nonneg v
-    calc
-      ‖v‖ = Real.sqrt (‖v‖ * ‖v‖) := by
-        rw [show ‖v‖ * ‖v‖ = ‖v‖ ^ 2 from (sq ‖v‖).symm, Real.sqrt_sq h_norm_nn]
-      _ ≤ Real.sqrt (1 / c) := Real.sqrt_le_sqrt h_v_sq_le
+      {v : hI.boundaryE | inducedMetricInnerModel g x v v < 1} :=
+    NormedSpace.isVonNBounded_of_isBounded ℝ
+      ((hc.isBounded_le 1).subset (by
+        intro v hv
+        exact show inducedMetricInnerModel g x v v ≤ 1 from le_of_lt hv))
   let e := tangentSpaceModelContinuousLinearEquiv (I := hI.boundaryI) x
   have h_image := h_model.image e.symm.toContinuousLinearMap
   have h_set : e.symm.toContinuousLinearMap ''
@@ -461,67 +422,6 @@ lemma inducedMetricInner_isVonNBounded
       exact hv
   rwa [h_set] at h_image
 
-private noncomputable def inducedMetricInnerLocal
-    (g : SmoothRiemannianMetric I M) (x₀ : BoundaryManifold I M) :
-    hI.boundaryE → (hI.boundaryE →L[ℝ] hI.boundaryE →L[ℝ] ℝ) :=
-  fun e =>
-    (ambientMetricInnerModel g ((extChartAt I (x₀ : M)).symm (Phi I e))).bilinearComp
-      (fderiv ℝ (Phi I) e) (fderiv ℝ (Phi I) e)
-
-omit [FiniteDimensional ℝ E] in
-@[simp] private lemma inducedMetricInnerLocal_apply
-    (g : SmoothRiemannianMetric I M) (x₀ : BoundaryManifold I M)
-    (e : hI.boundaryE) (v w : hI.boundaryE) :
-    inducedMetricInnerLocal (I := I) (M := M) g x₀ e v w =
-      g.inner ((extChartAt I (x₀ : M)).symm (Phi I e))
-        ((tangentSpaceModelContinuousLinearEquiv (I := I)
-          ((extChartAt I (x₀ : M)).symm (Phi I e))).symm (fderiv ℝ (Phi I) e v))
-        ((tangentSpaceModelContinuousLinearEquiv (I := I)
-          ((extChartAt I (x₀ : M)).symm (Phi I e))).symm (fderiv ℝ (Phi I) e w)) := by
-  unfold inducedMetricInnerLocal
-  rw [ContinuousLinearMap.bilinearComp_apply]
-  rw [ambientMetricInnerModel_apply]
-
-omit [FiniteDimensional ℝ E] in
-private lemma fderiv_Phi_contDiff :
-    ContDiff ℝ ∞ (fun e : hI.boundaryE => fderiv ℝ (Phi I) e) :=
-  (Phi_contDiff I).fderiv_right (m := ∞) le_rfl
-
-private lemma bilinearComp_smooth_at
-    {Eb Hb Bb : Type*} [NormedAddCommGroup Eb] [NormedSpace ℝ Eb]
-    [TopologicalSpace Hb] {Ib : ModelWithCorners ℝ Eb Hb}
-    [TopologicalSpace Bb] [ChartedSpace Hb Bb]
-    {b₀ : Bb}
-    {Fa : Type*} [NormedAddCommGroup Fa] [NormedSpace ℝ Fa]
-    {Fb' : Type*} [NormedAddCommGroup Fb'] [NormedSpace ℝ Fb']
-    {ψ : Bb → Fa →L[ℝ] Fa →L[ℝ] ℝ}
-    {L : Bb → Fb' →L[ℝ] Fa}
-    (hψ : ContMDiffAt Ib 𝓘(ℝ, Fa →L[ℝ] Fa →L[ℝ] ℝ) ∞ ψ b₀)
-    (hL : ContMDiffAt Ib 𝓘(ℝ, Fb' →L[ℝ] Fa) ∞ L b₀) :
-    ContMDiffAt Ib 𝓘(ℝ, Fb' →L[ℝ] Fb' →L[ℝ] ℝ) ∞
-      (fun b => (ψ b).bilinearComp (L b) (L b)) b₀ := by
-  have h1 : ContMDiffAt Ib 𝓘(ℝ, Fb' →L[ℝ] Fa →L[ℝ] ℝ) ∞
-      (fun b => (ψ b).comp (L b)) b₀ := hψ.clm_comp hL
-  have h_flip_isom : ContDiff ℝ ∞ (ContinuousLinearMap.flip :
-      (Fb' →L[ℝ] Fa →L[ℝ] ℝ) → (Fa →L[ℝ] Fb' →L[ℝ] ℝ)) := by
-    change ContDiff ℝ ∞ (fun A : Fb' →L[ℝ] Fa →L[ℝ] ℝ => A.flip)
-    exact (ContinuousLinearMap.flipₗᵢ ℝ Fb' Fa ℝ).toContinuousLinearEquiv.contDiff
-  have h2 : ContMDiffAt Ib 𝓘(ℝ, Fa →L[ℝ] Fb' →L[ℝ] ℝ) ∞
-      (fun b => ((ψ b).comp (L b)).flip) b₀ :=
-    h_flip_isom.contMDiff.contMDiffAt.comp b₀ h1
-  have h3 : ContMDiffAt Ib 𝓘(ℝ, Fb' →L[ℝ] Fb' →L[ℝ] ℝ) ∞
-      (fun b => (((ψ b).comp (L b)).flip).comp (L b)) b₀ := h2.clm_comp hL
-  have h_flip_isom' : ContDiff ℝ ∞ (ContinuousLinearMap.flip :
-      (Fb' →L[ℝ] Fb' →L[ℝ] ℝ) → (Fb' →L[ℝ] Fb' →L[ℝ] ℝ)) := by
-    change ContDiff ℝ ∞ (fun A : Fb' →L[ℝ] Fb' →L[ℝ] ℝ => A.flip)
-    exact (ContinuousLinearMap.flipₗᵢ ℝ Fb' Fb' ℝ).toContinuousLinearEquiv.contDiff
-  have h4 : ContMDiffAt Ib 𝓘(ℝ, Fb' →L[ℝ] Fb' →L[ℝ] ℝ) ∞
-      (fun b => ((((ψ b).comp (L b)).flip).comp (L b)).flip) b₀ :=
-    h_flip_isom'.contMDiff.contMDiffAt.comp b₀ h3
-  refine h4.congr_of_eventuallyEq (Filter.Eventually.of_forall ?_)
-  intro b
-  rfl
-
 private noncomputable def gInnerCharted
     (g : SmoothRiemannianMetric I M) (x₀ : M) (b : M) : E →L[ℝ] E →L[ℝ] ℝ :=
   ((trivializationAt (E →L[ℝ] E →L[ℝ] ℝ)
@@ -539,7 +439,8 @@ private lemma gInnerCharted_contMDiffAt
   have h_x₀ : x₀ ∈ (trivializationAt (E →L[ℝ] E →L[ℝ] ℝ)
       (fun y : M => TangentSpace I y →L[ℝ] TangentSpace I y →L[ℝ] ℝ) x₀).baseSet :=
     FiberBundle.mem_baseSet_trivializationAt' x₀
-  exact ((trivializationAt _ _ x₀).contMDiffAt_section_iff h_x₀).mp
+  exact ((trivializationAt (E →L[ℝ] E →L[ℝ] ℝ)
+      (fun y : M => TangentSpace I y →L[ℝ] TangentSpace I y →L[ℝ] ℝ) x₀).contMDiffAt_section_iff h_x₀).mp
     h_section.contMDiffAt
 
 omit [FiniteDimensional ℝ E] in
@@ -696,7 +597,9 @@ theorem inducedMetricInner_contMDiff
   by_cases hN : Nonempty hI.boundaryH
   · have := hN
     intro x₀
-    rw [(trivializationAt _ _ x₀).contMDiffAt_section_iff
+    rw [(trivializationAt (hI.boundaryE →L[ℝ] hI.boundaryE →L[ℝ] ℝ)
+      (fun y : BoundaryManifold I M =>
+        TangentSpace hI.boundaryI y →L[ℝ] TangentSpace hI.boundaryI y →L[ℝ] ℝ) x₀).contMDiffAt_section_iff
       (FiberBundle.mem_baseSet_trivializationAt' x₀)]
     have h_gInner_at : ContMDiffAt hI.boundaryI 𝓘(ℝ, E →L[ℝ] E →L[ℝ] ℝ) ∞
         (fun b : BoundaryManifold I M =>
@@ -719,8 +622,43 @@ theorem inducedMetricInner_contMDiff
             (((trivializationAt E (TangentSpace I) (x₀ : M)).continuousLinearMapAt ℝ (b : M)).comp
               ((boundaryInclusionMfderiv b).comp
                 ((trivializationAt hI.boundaryE
-                    (TangentSpace hI.boundaryI) x₀).symmL ℝ b)))) x₀ :=
-      bilinearComp_smooth_at h_gInner_at h_L_at
+                    (TangentSpace hI.boundaryI) x₀).symmL ℝ b)))) x₀ := by
+      let ψ := fun b : BoundaryManifold I M =>
+        gInnerCharted (I := I) (M := M) g (x₀ : M) (b : M)
+      let L := fun b : BoundaryManifold I M =>
+        ((trivializationAt E (TangentSpace I) (x₀ : M)).continuousLinearMapAt ℝ (b : M)).comp
+          ((boundaryInclusionMfderiv b).comp
+            ((trivializationAt hI.boundaryE (TangentSpace hI.boundaryI) x₀).symmL ℝ b))
+      have hψb : ContMDiffAt hI.boundaryI (𝓘(ℝ, ℝ).prod 𝓘(ℝ, E →L[ℝ] E →L[ℝ] ℝ)) ∞
+          (fun b => (⟨0, ψ b⟩ : TotalSpace (E →L[ℝ] E →L[ℝ] ℝ)
+            (fun x : ℝ => Bundle.Trivial ℝ E x →L[ℝ] Bundle.Trivial ℝ E x →L[ℝ] Bundle.Trivial ℝ ℝ x))) x₀ := by
+        rw [contMDiffAt_hom_bundle]
+        refine ⟨contMDiffAt_const, ?_⟩
+        apply h_gInner_at.congr_of_eventuallyEq
+        apply Filter.Eventually.of_forall
+        intro b
+        ext v w
+        rw [inCoordinates_apply_eq₂ (by simp) (by simp) (by simp)]
+        simp [ψ]
+      have hLb : ContMDiffAt hI.boundaryI (𝓘(ℝ, ℝ).prod 𝓘(ℝ, hI.boundaryE →L[ℝ] E)) ∞
+          (fun b => (⟨0, L b⟩ : TotalSpace (hI.boundaryE →L[ℝ] E)
+            (fun x : ℝ => Bundle.Trivial ℝ hI.boundaryE x →L[ℝ] Bundle.Trivial ℝ E x))) x₀ := by
+        rw [contMDiffAt_hom_bundle]
+        refine ⟨contMDiffAt_const, ?_⟩
+        apply h_L_at.congr_of_eventuallyEq
+        exact Filter.Eventually.of_forall fun b => by
+          simp [ContinuousLinearMap.inCoordinates, L]
+      have h := hψb.clm_bundle_bilinearComp
+        (F₁ := E) (F₂ := E) (F₃ := ℝ) (F₄ := hI.boundaryE) (F₅ := hI.boundaryE)
+        (U₁ := Bundle.Trivial ℝ E) (U₂ := Bundle.Trivial ℝ E) (U₃ := Bundle.Trivial ℝ ℝ)
+        (U₄ := Bundle.Trivial ℝ hI.boundaryE) (U₅ := Bundle.Trivial ℝ hI.boundaryE) hLb hLb
+      rw [contMDiffAt_hom_bundle] at h
+      apply h.2.congr_of_eventuallyEq
+      apply Filter.Eventually.of_forall
+      intro b
+      ext v w
+      rw [inCoordinates_apply_eq₂ (by simp) (by simp) (by simp)]
+      simp [ψ, L]
     refine h_bilinearComp.congr_of_eventuallyEq ?_
     have h_nhds_amb : ∀ᶠ b : BoundaryManifold I M in 𝓝 x₀,
         (b : M) ∈ (trivializationAt E (TangentSpace I) (x₀ : M)).baseSet := by

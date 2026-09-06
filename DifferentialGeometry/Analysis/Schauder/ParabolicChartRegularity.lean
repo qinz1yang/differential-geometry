@@ -412,7 +412,7 @@ theorem exists_finite_buffered_chart_cover_with_uniform_parabolic_nondivergence_
       (Finset.single_le_sum (fun y _ ↦ (zero_le : 0 ≤ Kcx y)) (Finset.mem_univ x))
 
 theorem exists_finite_buffered_chart_cover_with_uniform_parabolic_nondivergence_operator_schauder_and_ellipticity_bounds
-    [I.Boundaryless] [CompactSpace M] [NeZero (Module.finrank Real E)]
+    [I.Boundaryless] [CompactSpace M]
     {D : RealTimeInterval}
     {G : MetricConnectionFamilyOn (I := I) (M := M) D}
     (hG : MetricFamilySmoothOn (I := I) (M := M) D G.metric)

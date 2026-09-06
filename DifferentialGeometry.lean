@@ -4313,3 +4313,10 @@ import DifferentialGeometry.Geometry.Metric.BundleHom
 import DifferentialGeometry.Geometry.Metric.BundlePullback
 import DifferentialGeometry.Topology.GroupAction.Hom
 import DifferentialGeometry.Topology.GroupAction.Module
+import DifferentialGeometry.Analysis.FiniteDimensional.Coercivity
+import DifferentialGeometry.Bundle.Associated.FiberBundle
+import DifferentialGeometry.Bundle.Associated.VectorBundle
+import DifferentialGeometry.Bundle.Principal.Defs
+import DifferentialGeometry.Geometry.Comparison.Volume.NormalJacobianLaplacian
+import DifferentialGeometry.Geometry.Comparison.Volume.RadialTransport
+import DifferentialGeometry.Geometry.Connection.Hessian.Scalar

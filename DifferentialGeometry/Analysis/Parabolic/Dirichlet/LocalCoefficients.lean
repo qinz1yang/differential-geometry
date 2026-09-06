@@ -6,7 +6,7 @@ import DifferentialGeometry.Analysis.Integration.Lp.ContinuousOn
 noncomputable section
 
 open Bundle Manifold MeasureTheory Set
-open scoped ContDiff ENNReal Manifold Topology
+open scoped ContDiff ENNReal InnerProductSpace Manifold Topology
 
 namespace DifferentialGeometry.Analysis.Laplacian.MetricExtension
 
@@ -95,6 +95,48 @@ theorem invGramOnEuclid_family_continuousOn
   have hc := (continuousAt_matrix_inv (A p) hinv).comp_continuousWithinAt (hA p hp)
   exact (continuous_apply j).continuousAt.comp_continuousWithinAt
     ((continuous_apply i).continuousAt.comp_continuousWithinAt hc)
+
+theorem exists_uniform_inv_gram_quadratic_lower_bound
+    {D : RealTimeInterval} {G : MetricConnectionFamilyOn (I := I) (M := M) D}
+    (hG : MetricFamilySmoothOn (I := I) (M := M) D G.metric)
+    {J : Set ℝ} (hJc : IsCompact J) (hJ : J ⊆ D.regular) (α : M)
+    {K : Set EuclN} (hKc : IsCompact K) (hKs : K ⊆ chartTargetEuclid (I := I) α) :
+    ∃ c : ℝ, 0 < c ∧ ∀ t ∈ J, ∀ y ∈ K, ∀ ξ : EuclN,
+      c * ‖ξ‖ ^ 2 ≤
+        ⟪ξ, DeGiorgi.matMulE (Matrix.of (fun i j : Fin (Module.finrank ℝ E) =>
+          invGramOnEuclid (I := I) (G.metric t) α i j y)) ξ⟫_ℝ := by
+  obtain ⟨c, hc, hbound⟩ := Schauder.exists_uniform_matrix_quadratic_lower_bound (hJc.prod hKc)
+    (fun p : ℝ × EuclN => Matrix.of (fun i j : Fin (Module.finrank ℝ E) =>
+      invGramOnEuclid (I := I) (G.metric p.1) α i j p.2))
+    (fun i j => (invGramOnEuclid_family_continuousOn hG hJ α i j).mono
+      (prod_mono Subset.rfl hKs))
+    (fun p hp => invGramOnEuclid_posDef (I := I) (G.metric p.1) α (hKs hp.2))
+  refine ⟨c, hc, ?_⟩
+  intro t ht y hy ξ
+  change c * ‖ξ‖ ^ 2 ≤ (DeGiorgi.matMulE _ ξ).ofLp ⬝ᵥ star ξ.ofLp
+  rw [DeGiorgi.matMulE_ofLp, dotProduct_comm]
+  exact hbound (t, y) ⟨ht, hy⟩ ξ
+
+theorem exists_uniform_weighted_inv_gram_quadratic_lower_bound
+    {D : RealTimeInterval} {G : MetricConnectionFamilyOn (I := I) (M := M) D}
+    (hG : MetricFamilySmoothOn (I := I) (M := M) D G.metric)
+    {J : Set ℝ} (hJc : IsCompact J) (hJ : J ⊆ D.regular) (α : M)
+    {K : Set EuclN} (hKc : IsCompact K) (hKs : K ⊆ chartTargetEuclid (I := I) α) :
+    ∃ c : ℝ, 0 < c ∧ ∀ t ∈ J, ∀ y ∈ K, ∀ ξ : EuclN,
+      c * ‖ξ‖ ^ 2 ≤
+        ⟪ξ, DeGiorgi.matMulE (Matrix.of (fun i j : Fin (Module.finrank ℝ E) =>
+          weightedInvGramOnEuclid (I := I) (G.metric t) α i j y)) ξ⟫_ℝ := by
+  obtain ⟨c, hc, hbound⟩ := Schauder.exists_uniform_matrix_quadratic_lower_bound (hJc.prod hKc)
+    (fun p : ℝ × EuclN => Matrix.of (fun i j : Fin (Module.finrank ℝ E) =>
+      weightedInvGramOnEuclid (I := I) (G.metric p.1) α i j p.2))
+    (fun i j => ((densityOnEuclid_family_continuousOn hG hJ α).mul
+      (invGramOnEuclid_family_continuousOn hG hJ α i j)).mono (prod_mono Subset.rfl hKs))
+    (fun p hp => weightedInvGramOnEuclid_posDef (I := I) (G.metric p.1) α (hKs hp.2))
+  refine ⟨c, hc, ?_⟩
+  intro t ht y hy ξ
+  change c * ‖ξ‖ ^ 2 ≤ (DeGiorgi.matMulE _ ξ).ofLp ⬝ᵥ star ξ.ofLp
+  rw [DeGiorgi.matMulE_ofLp, dotProduct_comm]
+  exact hbound (t, y) ⟨ht, hy⟩ ξ
 
 theorem _root_.DifferentialGeometry.Integral.DivergenceTheorem.chartCoeff_family_continuousOn
     {Z : Type*} [TopologicalSpace Z]

@@ -728,12 +728,24 @@ private lemma boundaryFlatCharted_contMDiffAt
     (x₀ : BoundaryManifold I M) :
     ContMDiffAt hI.boundaryI 𝓘(ℝ, hI.boundaryE →L[ℝ] hI.boundaryE →L[ℝ] ℝ) ∞
       (boundaryFlatCharted (M := M) g x₀) x₀ := by
+  let : NormedAddCommGroup (hI.boundaryE →L[ℝ] ℝ) :=
+    ContinuousLinearMap.toNormedAddCommGroup
+  let : NormedSpace ℝ (hI.boundaryE →L[ℝ] ℝ) :=
+    ContinuousLinearMap.toNormedSpace
+  let : NormedAddCommGroup (hI.boundaryE →L[ℝ] hI.boundaryE →L[ℝ] ℝ) :=
+    ContinuousLinearMap.toNormedAddCommGroup
+  let : NormedSpace ℝ (hI.boundaryE →L[ℝ] hI.boundaryE →L[ℝ] ℝ) :=
+    ContinuousLinearMap.toNormedSpace
+  let (x : BoundaryManifold I M) : ContinuousAdd (TangentSpace hI.boundaryI x →L[ℝ] ℝ) :=
+    (ContinuousLinearMap.topologicalAddGroup (𝕜₁ := ℝ) (𝕜₂ := ℝ)).toContinuousAdd
   have h_section := inducedMetricInner_contMDiff (g := g)
   have h_x₀ : x₀ ∈ (trivializationAt (hI.boundaryE →L[ℝ] hI.boundaryE →L[ℝ] ℝ)
       (fun y : BoundaryManifold I M =>
         TangentSpace hI.boundaryI y →L[ℝ] TangentSpace hI.boundaryI y →L[ℝ] ℝ) x₀).baseSet :=
     FiberBundle.mem_baseSet_trivializationAt' x₀
-  exact ((trivializationAt _ _ x₀).contMDiffAt_section_iff h_x₀).mp
+  exact ((trivializationAt (hI.boundaryE →L[ℝ] hI.boundaryE →L[ℝ] ℝ)
+      (fun y : BoundaryManifold I M =>
+        TangentSpace hI.boundaryI y →L[ℝ] TangentSpace hI.boundaryI y →L[ℝ] ℝ) x₀).contMDiffAt_section_iff h_x₀).mp
     h_section.contMDiffAt
 
 private noncomputable def boundaryFunOfInwardCLM

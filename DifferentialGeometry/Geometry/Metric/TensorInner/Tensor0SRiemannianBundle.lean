@@ -140,43 +140,16 @@ private lemma innerModel_diagonal_sublevel_isBounded
     Bornology.IsBounded
       {T : Tensor0SModel s ℝ E |
         innerModelCLM (I := I) (M := M) g s b T T < 1} := by
-  by_cases hNT : Nontrivial (Tensor0SModel s ℝ E)
-  · have := hNT
-    have hPD : ∀ v : Tensor0SModel s ℝ E,
-        v ≠ 0 → 0 < innerModelCLM (I := I) (M := M) g s b v v := by
-      intro v hv
-      change 0 < covariantTensorInnerPointwise (I := I) (M := M) s g b v v
-      have hQpos := (tensorInnerPointwise_0s_eq_zero_iff
-        (I := I) (M := M) g b s v).not.mpr hv
-      have hnn := tensorInnerPointwise_0s_nonneg (I := I) (M := M) g b s v
-      exact lt_of_le_of_ne hnn (Ne.symm hQpos)
-    have hNN : ∀ v : Tensor0SModel s ℝ E,
-        0 ≤ innerModelCLM (I := I) (M := M) g s b v v := fun v =>
-      tensorInnerPointwise_0s_nonneg (I := I) (M := M) g b s v
-    have hSmulL : ∀ (c : ℝ) (v w : Tensor0SModel s ℝ E),
-        innerModelCLM (I := I) (M := M) g s b (c • v) w =
-          c * innerModelCLM (I := I) (M := M) g s b v w := by
-      intro c v w
-      change covariantTensorInnerPointwise (I := I) (M := M) s g b (c • v) w =
-        c * covariantTensorInnerPointwise (I := I) (M := M) s g b v w
-      rw [tensorInnerPointwise_0s_smul_left]
-    have hSmulR : ∀ (c : ℝ) (v w : Tensor0SModel s ℝ E),
-        innerModelCLM (I := I) (M := M) g s b v (c • w) =
-          c * innerModelCLM (I := I) (M := M) g s b v w := by
-      intro c v w
-      change covariantTensorInnerPointwise (I := I) (M := M) s g b v (c • w) =
-        c * covariantTensorInnerPointwise (I := I) (M := M) s g b v w
-      rw [tensorInnerPointwise_0s_smul_right]
-    exact Tensor0SRiemannian.posDef_bilin_unit_ball_isBounded
-      (innerModelCLM (I := I) (M := M) g s b) hPD hNN hSmulL hSmulR
-  · have hSubsingleton : Subsingleton (Tensor0SModel s ℝ E) :=
-      not_nontrivial_iff_subsingleton.mp hNT
-    have := hSubsingleton
-    refine (Metric.isBounded_iff_subset_ball 0).mpr ⟨1, ?_⟩
-    intro v _
-    rw [Metric.mem_ball, dist_zero_right]
-    have hv0 : v = 0 := Subsingleton.elim v 0
-    rw [hv0, norm_zero]; exact one_pos
+  have hPD : ∀ v : Tensor0SModel s ℝ E,
+      v ≠ 0 → 0 < innerModelCLM (I := I) (M := M) g s b v v := by
+    intro v hv
+    change 0 < covariantTensorInnerPointwise (I := I) (M := M) s g b v v
+    have hQpos := (tensorInnerPointwise_0s_eq_zero_iff
+      (I := I) (M := M) g b s v).not.mpr hv
+    have hnn := tensorInnerPointwise_0s_nonneg (I := I) (M := M) g b s v
+    exact lt_of_le_of_ne hnn (Ne.symm hQpos)
+  exact Tensor0SRiemannian.posDef_bilin_unit_ball_isBounded
+    (innerModelCLM (I := I) (M := M) g s b) hPD
 
 private lemma innerModel_diagonal_sublevel_isVonNBounded
     (g : SmoothRiemannianMetric I M) (s : ℕ) (b : M) :
