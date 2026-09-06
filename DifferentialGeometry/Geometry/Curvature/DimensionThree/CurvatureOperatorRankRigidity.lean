@@ -405,6 +405,22 @@ theorem curvatureOperatorEndomorphism_finrank_range_trichotomy_of_metric
       exact hA_nonneg v
   exact curvatureOperatorEndomorphism_finrank_range_trichotomy hDim A hA hnull
 
+theorem curvatureOperatorEndomorphism_finrank_range_ne_two_of_metric
+    {V : Type*} [AddCommGroup V] [Module Real V] [FiniteDimensional Real V]
+    (D : DifferentialGeometry.Tensor0SBundle.MetricFiberData V)
+    (hDim : Module.finrank Real V = 3) (A : V →ₗ[Real] V)
+    (hA_symm : D.IsSymmetric A)
+    (hA_nonneg : ∀ v : V, 0 ≤ D.inner (A v) v)
+    (hnull : ∀ v : V, A v = 0 → curvatureOperatorReactionEndomorphism3 A v = 0) :
+    Module.finrank Real A.range ≠ 2 := by
+  intro htwo
+  have htri := curvatureOperatorEndomorphism_finrank_range_trichotomy_of_metric
+    D hDim A hA_symm hA_nonneg hnull
+  rcases htri with hzero | hone | hthree
+  · omega
+  · omega
+  · omega
+
 theorem curvatureOperatorImageAt_finrank_trichotomy
     [FiniteDimensional Real E]
     (hDim : Module.finrank Real E = 3)
@@ -459,6 +475,34 @@ theorem curvatureOperatorImageAt_finrank_trichotomy
     (DifferentialGeometry.Geometry.Curvature.curvatureOperatorEndomorphismAt_isSymmetric
       (I := I) g x A)
     hpositive hnull
+
+theorem curvatureOperatorImageAt_finrank_ne_two
+    [FiniteDimensional Real E]
+    (hDim : Module.finrank Real E = 3)
+    (g : SmoothRiemannianMetric I M) (x : M)
+    (A : DifferentialGeometry.Geometry.Curvature.algebraicCurvatureTensorSubmodule
+      (I := I) (M := M) x)
+    (hpositive : ∀ a : TangentSpace I x [⋀^Fin 2]→L[Real] Real,
+      0 ≤ (DifferentialGeometry.Geometry.Curvature.twoFormMetricData
+        (I := I) g x).inner
+          (DifferentialGeometry.Geometry.Curvature.curvatureOperatorEndomorphismAt
+            (I := I) g x A a) a)
+    (hnull : ∀ a : TangentSpace I x [⋀^Fin 2]→L[Real] Real,
+      DifferentialGeometry.Geometry.Curvature.curvatureOperatorEndomorphismAt
+          (I := I) g x A a = 0 →
+        curvatureOperatorReactionEndomorphism3
+            (DifferentialGeometry.Geometry.Curvature.curvatureOperatorEndomorphismAt
+              (I := I) g x A).toLinearMap a = 0) :
+    Module.finrank Real
+        (DifferentialGeometry.Geometry.Curvature.curvatureOperatorImageAt
+          (I := I) g x A) ≠ 2 := by
+  intro htwo
+  have htri := curvatureOperatorImageAt_finrank_trichotomy
+    hDim g x A hpositive hnull
+  rcases htri with hzero | hone | hthree
+  · omega
+  · omega
+  · omega
 
 theorem curvatureOperatorImageAt_finrank_trichotomy_of_spatially_constant
     [FiniteDimensional Real E] [Nonempty M]
