@@ -1293,3 +1293,118 @@ theorem ContMDiff.clm_bundle_inverse
   fun p => (hφ p).clm_bundle_inverse (hinv p)
 
 end Inverse
+
+section BundleMapInverse
+
+open Set Filter
+open scoped Topology ContDiff
+
+variable {𝕜 : Type*} [NontriviallyNormedField 𝕜] [CompleteSpace 𝕜]
+  {E₁ : Type*} [NormedAddCommGroup E₁] [NormedSpace 𝕜 E₁]
+  {H₁ : Type*} [TopologicalSpace H₁] {I₁ : ModelWithCorners 𝕜 E₁ H₁}
+  {M₁ : Type*} [TopologicalSpace M₁] [ChartedSpace H₁ M₁]
+  {E₂ : Type*} [NormedAddCommGroup E₂] [NormedSpace 𝕜 E₂]
+  {H₂ : Type*} [TopologicalSpace H₂] {I₂ : ModelWithCorners 𝕜 E₂ H₂}
+  {M₂ : Type*} [TopologicalSpace M₂] [ChartedSpace H₂ M₂]
+  {F₁ : Type*} [NormedAddCommGroup F₁] [NormedSpace 𝕜 F₁] [FiniteDimensional 𝕜 F₁]
+  {F₂ : Type*} [NormedAddCommGroup F₂] [NormedSpace 𝕜 F₂]
+  {V₁ : M₁ → Type*} [∀ x, AddCommGroup (V₁ x)] [∀ x, Module 𝕜 (V₁ x)]
+  [TopologicalSpace (TotalSpace F₁ V₁)] [∀ x, TopologicalSpace (V₁ x)]
+  [FiberBundle F₁ V₁] [VectorBundle 𝕜 F₁ V₁]
+  {V₂ : M₂ → Type*} [∀ x, AddCommGroup (V₂ x)] [∀ x, Module 𝕜 (V₂ x)]
+  [TopologicalSpace (TotalSpace F₂ V₂)] [∀ x, TopologicalSpace (V₂ x)]
+  [FiberBundle F₂ V₂] [VectorBundle 𝕜 F₂ V₂]
+  {n : ℕ∞ω} [ContMDiffVectorBundle n F₁ V₁ I₁] [ContMDiffVectorBundle n F₂ V₂ I₂]
+  {EP : Type*} [NormedAddCommGroup EP] [NormedSpace 𝕜 EP]
+  {HP : Type*} [TopologicalSpace HP] {IP : ModelWithCorners 𝕜 EP HP}
+  {P : Type*} [TopologicalSpace P] [ChartedSpace HP P]
+
+theorem contMDiffOn_bundle_map_symm
+    {b₁ : P → M₁} {b₂ : P → M₂} {s : Set P}
+    (φ : ∀ p : P, V₁ (b₁ p) ≃L[𝕜] V₂ (b₂ p))
+    (hb₁ : ContMDiffOn IP I₁ n b₁ s)
+    (hφ : ∀ (e₁ : Trivialization F₁ (TotalSpace.proj : TotalSpace F₁ V₁ → M₁)),
+      ∀ [MemTrivializationAtlas e₁],
+      ContMDiffOn (IP.prod 𝓘(𝕜, F₁)) (I₂.prod 𝓘(𝕜, F₂)) n
+        (fun q : P × F₁ =>
+          (⟨b₂ q.1, φ q.1 (e₁.symmL 𝕜 (b₁ q.1) q.2)⟩ : TotalSpace F₂ V₂))
+        {q | q.1 ∈ s ∧ b₁ q.1 ∈ e₁.baseSet})
+    (e₂ : Trivialization F₂ (TotalSpace.proj : TotalSpace F₂ V₂ → M₂))
+    [MemTrivializationAtlas e₂] :
+    ContMDiffOn (IP.prod 𝓘(𝕜, F₂)) (I₁.prod 𝓘(𝕜, F₁)) n
+      (fun q : P × F₂ =>
+        (⟨b₁ q.1, (φ q.1).symm (e₂.symmL 𝕜 (b₂ q.1) q.2)⟩ : TotalSpace F₁ V₁))
+      {q | q.1 ∈ s ∧ b₂ q.1 ∈ e₂.baseSet} := by
+  rintro ⟨p₀, v₀⟩ ⟨hp₀, he₂p₀⟩
+  let e₁ := trivializationAt F₁ V₁ (b₁ p₀)
+  have he₁p₀ : b₁ p₀ ∈ e₁.baseSet := mem_baseSet_trivializationAt F₁ V₁ (b₁ p₀)
+  let L : F₁ ≃L[𝕜] F₂ := (e₁.continuousLinearEquivAt 𝕜 (b₁ p₀) he₁p₀).symm.trans
+    ((φ p₀).trans (e₂.continuousLinearEquivAt 𝕜 (b₂ p₀) he₂p₀))
+  let : FiniteDimensional 𝕜 F₂ :=
+    FiniteDimensional.of_injective L.symm.toLinearMap L.symm.injective
+  have : CompleteSpace F₁ := FiniteDimensional.complete 𝕜 F₁
+  let K : Set P := {p | p ∈ s ∧ b₁ p ∈ e₁.baseSet ∧ b₂ p ∈ e₂.baseSet}
+  have hK₀ : p₀ ∈ K := ⟨hp₀, he₁p₀, he₂p₀⟩
+  let C (p : P) : F₁ →L[𝕜] F₂ :=
+    (e₂.continuousLinearMapAt 𝕜 (b₂ p)).comp
+      ((φ p).toContinuousLinearMap.comp (e₁.symmL 𝕜 (b₁ p)))
+  have hC : ContMDiffOn IP 𝓘(𝕜, F₁ →L[𝕜] F₂) n C K := by
+    intro p hp
+    apply contMDiffWithinAt_clm_of_pointwise
+    intro w
+    have hsection := (hφ e₁).comp
+      ((contMDiff_id.prodMk (contMDiff_const (c := w))).contMDiffOn (s := K))
+      (fun q hq => ⟨hq.1, hq.2.1⟩)
+    have hcoord := e₂.contMDiffOn.comp hsection
+      (fun q hq => e₂.mem_source.mpr hq.2.2)
+    apply (hcoord p hp).snd.congr
+    · intro q hq
+      exact e₂.continuousLinearMapAt_apply_of_mem 𝕜 hq.2.2 _
+    · exact e₂.continuousLinearMapAt_apply_of_mem 𝕜 hp.2.2 _
+  have hCinv (p : P) (hp : p ∈ K) : (C p).IsInvertible := by
+    dsimp only [C]
+    rw [← e₂.coe_continuousLinearEquivAt_eq' (R := 𝕜) hp.2.2,
+      ← e₁.symm_continuousLinearEquivAt_eq' (R := 𝕜) hp.2.1]
+    simp
+  have hCinvApply (p : P) (hp : p ∈ K) (v : F₂) :
+      e₁.symmL 𝕜 (b₁ p) ((C p).inverse v) = (φ p).symm (e₂.symmL 𝕜 (b₂ p) v) := by
+    dsimp only [C]
+    rw [← e₂.coe_continuousLinearEquivAt_eq' (R := 𝕜) hp.2.2,
+      ← e₁.symm_continuousLinearEquivAt_eq' (R := 𝕜) hp.2.1]
+    simp only [ContinuousLinearMap.inverse_equiv_comp,
+      ContinuousLinearMap.inverse_comp_equiv, ContinuousLinearMap.inverse_equiv,
+      ContinuousLinearEquiv.symm_symm, ContinuousLinearMap.comp_apply]
+    simp only [ContinuousLinearEquiv.coe_coe, ContinuousLinearEquiv.symm_apply_apply,
+      e₂.symm_continuousLinearEquivAt_eq (R := 𝕜) hp.2.2]
+  have hInv : ContMDiffOn IP 𝓘(𝕜, F₂ →L[𝕜] F₁) n (fun p => (C p).inverse) K :=
+    fun p hp => (hCinv p hp).contDiffAt_map_inverse.comp_contMDiffWithinAt (hC p hp)
+  have hbase : ContMDiffOn (IP.prod 𝓘(𝕜, F₂)) I₁ n
+      (fun q : P × F₂ => b₁ q.1) (Prod.fst ⁻¹' K) :=
+    hb₁.comp contMDiffOn_fst (fun q hq => hq.1)
+  have hvalue : ContMDiffOn (IP.prod 𝓘(𝕜, F₂)) 𝓘(𝕜, F₁) n
+      (fun q : P × F₂ => (C q.1).inverse q.2) (Prod.fst ⁻¹' K) :=
+    (hInv.comp contMDiffOn_fst (mapsTo_preimage _ _)).clm_apply contMDiffOn_snd
+  have htotal := e₁.contMDiffOn_symm.comp (hbase.prodMk hvalue)
+    (fun q hq => e₁.mem_target.mpr hq.2.1)
+  have hlocal : ContMDiffWithinAt (IP.prod 𝓘(𝕜, F₂)) (I₁.prod 𝓘(𝕜, F₁)) n
+      (fun q : P × F₂ =>
+        (⟨b₁ q.1, (φ q.1).symm (e₂.symmL 𝕜 (b₂ q.1) q.2)⟩ : TotalSpace F₁ V₁))
+      (Prod.fst ⁻¹' K) (p₀, v₀) := by
+    apply (htotal (p₀, v₀) hK₀).congr_of_eventuallyEq_of_mem _ hK₀
+    filter_upwards [self_mem_nhdsWithin] with q hq
+    dsimp only [Function.comp_def]
+    rw [← hCinvApply q.1 hq q.2, e₁.symmL_apply hq.2.1, e₁.mk_symm hq.2.1]
+  apply hlocal.mono_of_mem_nhdsWithin
+  have hbaseAt : ContinuousWithinAt (fun q : P × F₂ => b₁ q.1)
+      {q | q.1 ∈ s ∧ b₂ q.1 ∈ e₂.baseSet} (p₀, v₀) := by
+    have hbaseD : ContMDiffOn (IP.prod 𝓘(𝕜, F₂)) I₁ n (fun q : P × F₂ => b₁ q.1)
+        {q | q.1 ∈ s ∧ b₂ q.1 ∈ e₂.baseSet} :=
+      hb₁.comp contMDiffOn_fst (fun q hq => hq.1)
+    exact (hbaseD (p₀, v₀) ⟨hp₀, he₂p₀⟩).continuousWithinAt
+  have hinitial : ∀ᶠ q : P × F₂ in
+      𝓝[{q | q.1 ∈ s ∧ b₂ q.1 ∈ e₂.baseSet}] (p₀, v₀), b₁ q.1 ∈ e₁.baseSet :=
+    hbaseAt (e₁.open_baseSet.mem_nhds he₁p₀)
+  filter_upwards [self_mem_nhdsWithin, hinitial] with q hq hqi
+  exact ⟨hq.1, hqi, hq.2⟩
+
+end BundleMapInverse

@@ -4229,3 +4229,15 @@ import DifferentialGeometry.Topology.ProjectiveSpace.Manifold
 import DifferentialGeometry.Topology.ProjectiveSpace.PuncturedThree
 import DifferentialGeometry.Topology.ProjectiveSpace.Real
 import DifferentialGeometry.Topology.ProperlyDiscontinuousAction
+import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletSobolev
+import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletWeakDerivative
+import DifferentialGeometry.Analysis.Heat.Kernel.Basic
+import DifferentialGeometry.Analysis.Heat.Kernel.Conformal
+import DifferentialGeometry.Analysis.Heat.Kernel.Regularity
+import DifferentialGeometry.Analysis.Heat.Kernel.Semigroup
+import DifferentialGeometry.Analysis.Heat.Kernel.Smoothness
+import DifferentialGeometry.Analysis.Integration.Measure.ParamDensitySmoothness
+import DifferentialGeometry.Analysis.Sobolev.WithBoundary.Chart.WeakDerivative
+import DifferentialGeometry.Geometry.Comparison.Volume.NormalChartSmoothness
+import DifferentialGeometry.Geometry.Connection.Laplacian.PullbackHom
+import DifferentialGeometry.Geometry.Connection.PullbackHom

@@ -97,3 +97,113 @@ theorem ContMDiff.clm_bundle_comp
       (fun p => (⟨b p, (ψ p).comp (φ p)⟩ : TotalSpace (F₁ →L[𝕜] F₃)
         (fun x => V₁ x →L[𝕜] V₃ x))) :=
   fun p => (hψ p).clm_bundle_comp (hφ p)
+
+theorem ContMDiffWithinAt.clm_bundle_map
+    {φ : ∀ x : M, V₁ x →L[𝕜] V₂ x} {s : Set M} {p : TotalSpace F₁ V₁}
+    (hφ : ContMDiffWithinAt I (I.prod 𝓘(𝕜, F₁ →L[𝕜] F₂)) n
+      (fun x => (⟨x, φ x⟩ : TotalSpace (F₁ →L[𝕜] F₂)
+        (fun x => V₁ x →L[𝕜] V₂ x))) s p.1) :
+    ContMDiffWithinAt (I.prod 𝓘(𝕜, F₁)) (I.prod 𝓘(𝕜, F₂)) n
+      (fun q : TotalSpace F₁ V₁ => (⟨q.1, φ q.1 q.2⟩ : TotalSpace F₂ V₂))
+      (Bundle.TotalSpace.proj ⁻¹' s) p := by
+  have h := hφ.comp p (contMDiff_proj (IB := I) (F := F₁) V₁ p).contMDiffWithinAt
+    (Set.mapsTo_preimage _ _)
+  exact h.clm_bundle_apply contMDiffWithinAt_id
+
+theorem ContMDiffAt.clm_bundle_map
+    {φ : ∀ x : M, V₁ x →L[𝕜] V₂ x} {p : TotalSpace F₁ V₁}
+    (hφ : ContMDiffAt I (I.prod 𝓘(𝕜, F₁ →L[𝕜] F₂)) n
+      (fun x => (⟨x, φ x⟩ : TotalSpace (F₁ →L[𝕜] F₂)
+        (fun x => V₁ x →L[𝕜] V₂ x))) p.1) :
+    ContMDiffAt (I.prod 𝓘(𝕜, F₁)) (I.prod 𝓘(𝕜, F₂)) n
+      (fun q : TotalSpace F₁ V₁ => (⟨q.1, φ q.1 q.2⟩ : TotalSpace F₂ V₂)) p := by
+  have h := hφ.comp p (contMDiff_proj (F := F₁) V₁).contMDiffAt
+  exact h.clm_bundle_apply contMDiffAt_id
+
+theorem ContMDiffOn.clm_bundle_map
+    {φ : ∀ x : M, V₁ x →L[𝕜] V₂ x} {s : Set M}
+    (hφ : ContMDiffOn I (I.prod 𝓘(𝕜, F₁ →L[𝕜] F₂)) n
+      (fun x => (⟨x, φ x⟩ : TotalSpace (F₁ →L[𝕜] F₂)
+        (fun x => V₁ x →L[𝕜] V₂ x))) s) :
+    ContMDiffOn (I.prod 𝓘(𝕜, F₁)) (I.prod 𝓘(𝕜, F₂)) n
+      (fun p : TotalSpace F₁ V₁ => (⟨p.1, φ p.1 p.2⟩ : TotalSpace F₂ V₂))
+      (Bundle.TotalSpace.proj ⁻¹' s) :=
+  fun _ hp => (hφ _ hp).clm_bundle_map
+
+theorem ContMDiff.clm_bundle_map
+    {φ : ∀ x : M, V₁ x →L[𝕜] V₂ x}
+    (hφ : ContMDiff I (I.prod 𝓘(𝕜, F₁ →L[𝕜] F₂)) n
+      (fun x => (⟨x, φ x⟩ : TotalSpace (F₁ →L[𝕜] F₂)
+        (fun x => V₁ x →L[𝕜] V₂ x)))) :
+    ContMDiff (I.prod 𝓘(𝕜, F₁)) (I.prod 𝓘(𝕜, F₂)) n
+      (fun p : TotalSpace F₁ V₁ => (⟨p.1, φ p.1 p.2⟩ : TotalSpace F₂ V₂)) :=
+  fun _ => (hφ _).clm_bundle_map
+
+theorem MDifferentiableWithinAt.clm_bundle_comp
+    (hψ : MDifferentiableWithinAt J (I.prod 𝓘(𝕜, F₂ →L[𝕜] F₃))
+      (fun p => (⟨b p, ψ p⟩ : TotalSpace (F₂ →L[𝕜] F₃)
+        (fun x => V₂ x →L[𝕜] V₃ x))) s p₀)
+    (hφ : MDifferentiableWithinAt J (I.prod 𝓘(𝕜, F₁ →L[𝕜] F₂))
+      (fun p => (⟨b p, φ p⟩ : TotalSpace (F₁ →L[𝕜] F₂)
+        (fun x => V₁ x →L[𝕜] V₂ x))) s p₀) :
+    MDifferentiableWithinAt J (I.prod 𝓘(𝕜, F₁ →L[𝕜] F₃))
+      (fun p => (⟨b p, (ψ p).comp (φ p)⟩ : TotalSpace (F₁ →L[𝕜] F₃)
+        (fun x => V₁ x →L[𝕜] V₃ x))) s p₀ := by
+  rw [mdifferentiableWithinAt_hom_bundle] at hψ hφ ⊢
+  refine ⟨hφ.1, ?_⟩
+  have h := hψ.2.clm_comp hφ.2
+  let e := trivializationAt F₂ V₂ (b p₀)
+  have hx : b p₀ ∈ e.baseSet := mem_baseSet_trivializationAt F₂ V₂ (b p₀)
+  have heq : ∀ p, b p ∈ e.baseSet →
+      ContinuousLinearMap.inCoordinates F₁ V₁ F₃ V₃
+          (b p₀) (b p) (b p₀) (b p) ((ψ p).comp (φ p)) =
+        (ContinuousLinearMap.inCoordinates F₂ V₂ F₃ V₃
+          (b p₀) (b p) (b p₀) (b p) (ψ p)).comp
+          (ContinuousLinearMap.inCoordinates F₁ V₁ F₂ V₂
+            (b p₀) (b p) (b p₀) (b p) (φ p)) := by
+    intro p hp
+    ext v
+    simp only [ContinuousLinearMap.inCoordinates, ContinuousLinearMap.comp_apply]
+    rw [Trivialization.symmL_continuousLinearMapAt _ hp]
+  apply h.congr_of_eventuallyEq
+  · have hbase : ∀ᶠ p in 𝓝[s] p₀, b p ∈ e.baseSet :=
+      hφ.1.continuousWithinAt (e.open_baseSet.mem_nhds hx)
+    filter_upwards [hbase] with p hp
+    exact heq p hp
+  · exact heq p₀ hx
+
+theorem MDifferentiableAt.clm_bundle_comp
+    (hψ : MDifferentiableAt J (I.prod 𝓘(𝕜, F₂ →L[𝕜] F₃))
+      (fun p => (⟨b p, ψ p⟩ : TotalSpace (F₂ →L[𝕜] F₃)
+        (fun x => V₂ x →L[𝕜] V₃ x))) p₀)
+    (hφ : MDifferentiableAt J (I.prod 𝓘(𝕜, F₁ →L[𝕜] F₂))
+      (fun p => (⟨b p, φ p⟩ : TotalSpace (F₁ →L[𝕜] F₂)
+        (fun x => V₁ x →L[𝕜] V₂ x))) p₀) :
+    MDifferentiableAt J (I.prod 𝓘(𝕜, F₁ →L[𝕜] F₃))
+      (fun p => (⟨b p, (ψ p).comp (φ p)⟩ : TotalSpace (F₁ →L[𝕜] F₃)
+        (fun x => V₁ x →L[𝕜] V₃ x))) p₀ :=
+  MDifferentiableWithinAt.clm_bundle_comp hψ hφ
+
+theorem MDifferentiableOn.clm_bundle_comp
+    (hψ : MDifferentiableOn J (I.prod 𝓘(𝕜, F₂ →L[𝕜] F₃))
+      (fun p => (⟨b p, ψ p⟩ : TotalSpace (F₂ →L[𝕜] F₃)
+        (fun x => V₂ x →L[𝕜] V₃ x))) s)
+    (hφ : MDifferentiableOn J (I.prod 𝓘(𝕜, F₁ →L[𝕜] F₂))
+      (fun p => (⟨b p, φ p⟩ : TotalSpace (F₁ →L[𝕜] F₂)
+        (fun x => V₁ x →L[𝕜] V₂ x))) s) :
+    MDifferentiableOn J (I.prod 𝓘(𝕜, F₁ →L[𝕜] F₃))
+      (fun p => (⟨b p, (ψ p).comp (φ p)⟩ : TotalSpace (F₁ →L[𝕜] F₃)
+        (fun x => V₁ x →L[𝕜] V₃ x))) s :=
+  fun p hp => (hψ p hp).clm_bundle_comp (hφ p hp)
+
+theorem MDifferentiable.clm_bundle_comp
+    (hψ : MDifferentiable J (I.prod 𝓘(𝕜, F₂ →L[𝕜] F₃))
+      (fun p => (⟨b p, ψ p⟩ : TotalSpace (F₂ →L[𝕜] F₃)
+        (fun x => V₂ x →L[𝕜] V₃ x))))
+    (hφ : MDifferentiable J (I.prod 𝓘(𝕜, F₁ →L[𝕜] F₂))
+      (fun p => (⟨b p, φ p⟩ : TotalSpace (F₁ →L[𝕜] F₂)
+        (fun x => V₁ x →L[𝕜] V₂ x)))) :
+    MDifferentiable J (I.prod 𝓘(𝕜, F₁ →L[𝕜] F₃))
+      (fun p => (⟨b p, (ψ p).comp (φ p)⟩ : TotalSpace (F₁ →L[𝕜] F₃)
+        (fun x => V₁ x →L[𝕜] V₃ x))) :=
+  fun p => (hψ p).clm_bundle_comp (hφ p)

@@ -267,4 +267,185 @@ theorem derivAlongWithin_congr_set (cov : CovariantDerivative I F V)
   dsimp only [derivAlongWithin]
   rw [derivWithin_congr_set hJK, mfderivWithin_congr_set hJK]
 
+theorem derivAlongWithin_eq_zero_mono (cov : CovariantDerivative I F V)
+    {γ : ℝ → M} {Z : ∀ t : ℝ, V (γ t)} {J K : Set ℝ} {t : ℝ}
+    (hZ : MDifferentiableWithinAt 𝓘(ℝ, ℝ) (I.prod 𝓘(ℝ, F))
+      (fun s => (⟨γ s, Z s⟩ : TotalSpace F V)) J t)
+    (hKJ : K ⊆ J) (hpar : cov.derivAlongWithin γ Z J t = 0) :
+    cov.derivAlongWithin γ Z K t = 0 := by
+  by_cases hK : UniqueDiffWithinAt ℝ K t
+  · rw [cov.derivAlongWithin_mono hZ hK hKJ, hpar]
+  · exact cov.derivAlongWithin_eq_zero_of_not_uniqueDiffWithinAt γ Z hK
+
+theorem hasDerivWithinAt_coord (cov : CovariantDerivative I F V)
+    (e : Trivialization F (TotalSpace.proj : TotalSpace F V → M))
+    [MemTrivializationAtlas e] {γ : ℝ → M} {Z : ∀ t : ℝ, V (γ t)}
+    {J : Set ℝ} {t : ℝ} (he : γ t ∈ e.baseSet)
+    (hZ : MDifferentiableWithinAt 𝓘(ℝ, ℝ) (I.prod 𝓘(ℝ, F))
+      (fun s => (⟨γ s, Z s⟩ : TotalSpace F V)) J t) :
+    HasDerivWithinAt (fun s => e.continuousLinearMapAt ℝ (γ s) (Z s))
+      (e.continuousLinearMapAt ℝ (γ t) (cov.derivAlongWithin γ Z J t) -
+        cov.connectionForm e (γ t)
+          (mfderivWithin 𝓘(ℝ, ℝ) I γ J t ((NormedSpace.fromTangentSpace t).symm 1))
+          (e.continuousLinearMapAt ℝ (γ t) (Z t))) J t := by
+  have hcoord := differentiableWithinAt_trivialization_coord_along e he hZ
+  rw [cov.derivAlongWithin_coord e he hZ, add_sub_cancel_right]
+  exact hcoord.hasDerivWithinAt
+
+private theorem parallel_piecewise_at
+    (cov : CovariantDerivative I F V) {γ : ℝ → M} {Z W : ∀ t : ℝ, V (γ t)}
+    {a b c : ℝ} (hac : a < c) (hcb : c < b)
+    (hγ : MDifferentiableWithinAt 𝓘(ℝ, ℝ) I γ (Icc a b) c)
+    (hZ : MDifferentiableWithinAt 𝓘(ℝ, ℝ) (I.prod 𝓘(ℝ, F))
+      (fun t => (⟨γ t, Z t⟩ : TotalSpace F V)) (Icc a c) c)
+    (hW : MDifferentiableWithinAt 𝓘(ℝ, ℝ) (I.prod 𝓘(ℝ, F))
+      (fun t => (⟨γ t, W t⟩ : TotalSpace F V)) (Icc c b) c)
+    (hZpar : cov.derivAlongWithin γ Z (Icc a c) c = 0)
+    (hWpar : cov.derivAlongWithin γ W (Icc c b) c = 0) (hZW : Z c = W c) :
+    let U : ∀ t : ℝ, V (γ t) := fun t => if t ≤ c then Z t else W t
+    MDifferentiableWithinAt 𝓘(ℝ, ℝ) (I.prod 𝓘(ℝ, F))
+      (fun t => (⟨γ t, U t⟩ : TotalSpace F V)) (Icc a b) c ∧
+      cov.derivAlongWithin γ U (Icc a b) c = 0 := by
+  let U : ∀ t : ℝ, V (γ t) := fun t => if t ≤ c then Z t else W t
+  change MDifferentiableWithinAt _ _ (fun t => (⟨γ t, U t⟩ : TotalSpace F V)) _ _ ∧ _
+  let e := trivializationAt F V (γ c)
+  have he : γ c ∈ e.baseSet := mem_baseSet_trivializationAt F V (γ c)
+  let D := -cov.connectionForm e (γ c)
+    (mfderivWithin 𝓘(ℝ, ℝ) I γ (Icc a b) c ((NormedSpace.fromTangentSpace c).symm 1))
+    (e.continuousLinearMapAt ℝ (γ c) (Z c))
+  have hleft : Icc a c ⊆ Icc a b := Icc_subset_Icc_right hcb.le
+  have hright : Icc c b ⊆ Icc a b := Icc_subset_Icc_left hac.le
+  have hDZ : HasDerivWithinAt (fun t => e.continuousLinearMapAt ℝ (γ t) (Z t))
+      D (Icc a c) c := by
+    have h := cov.hasDerivWithinAt_coord e he hZ
+    rw [hZpar, map_zero, zero_sub,
+      hγ.mfderivWithin_mono (uniqueDiffOn_Icc hac c (right_mem_Icc.mpr hac.le)).uniqueMDiffWithinAt
+        hleft] at h
+    exact h
+  have hDW : HasDerivWithinAt (fun t => e.continuousLinearMapAt ℝ (γ t) (W t))
+      D (Icc c b) c := by
+    have h := cov.hasDerivWithinAt_coord e he hW
+    rw [hWpar, map_zero, zero_sub,
+      hγ.mfderivWithin_mono (uniqueDiffOn_Icc hcb c (left_mem_Icc.mpr hcb.le)).uniqueMDiffWithinAt
+        hright, ← hZW] at h
+    exact h
+  have hUZ (t : ℝ) (ht : t ∈ Icc a c) : U t = Z t := if_pos ht.2
+  have hUW (t : ℝ) (ht : t ∈ Icc c b) : U t = W t := by
+    dsimp only [U]
+    split_ifs with htc
+    · have htc' : t = c := le_antisymm htc ht.1
+      subst t
+      exact hZW
+    · rfl
+  have hDU : HasDerivWithinAt (fun t => e.continuousLinearMapAt ℝ (γ t) (U t))
+      D (Icc a b) c := by
+    rw [← Icc_union_Icc_eq_Icc hac.le hcb.le]
+    exact (hDZ.congr (fun t ht => congrArg (e.continuousLinearMapAt ℝ (γ t)) (hUZ t ht))
+      (congrArg (e.continuousLinearMapAt ℝ (γ c)) (hUZ c (right_mem_Icc.mpr hac.le)))).union
+      (hDW.congr (fun t ht => congrArg (e.continuousLinearMapAt ℝ (γ t)) (hUW t ht))
+        (congrArg (e.continuousLinearMapAt ℝ (γ c)) (hUW c (left_mem_Icc.mpr hcb.le))))
+  have hUM : MDifferentiableWithinAt 𝓘(ℝ, ℝ) (I.prod 𝓘(ℝ, F))
+      (fun t => (⟨γ t, U t⟩ : TotalSpace F V)) (Icc a b) c := by
+    apply (e.mdifferentiableWithinAt_totalSpace_iff I
+      (fun t => (⟨γ t, U t⟩ : TotalSpace F V)) (e.mem_source.mpr he)).mpr
+    refine ⟨hγ, ?_⟩
+    have hcoord : MDifferentiableWithinAt 𝓘(ℝ, ℝ) 𝓘(ℝ, F)
+        (fun t => e.continuousLinearMapAt ℝ (γ t) (U t)) (Icc a b) c :=
+      mdifferentiableWithinAt_iff_differentiableWithinAt.mpr hDU.differentiableWithinAt
+    apply hcoord.congr_of_eventuallyEq
+    · filter_upwards [hγ.continuousWithinAt.preimage_mem_nhdsWithin
+        (e.open_baseSet.mem_nhds he)] with t ht
+      exact (e.continuousLinearMapAt_apply_of_mem ℝ ht (U t)).symm
+    · exact (e.continuousLinearMapAt_apply_of_mem ℝ he (U c)).symm
+  refine ⟨hUM, ?_⟩
+  rw [cov.derivAlongWithin_eq e he hUM,
+    hDU.derivWithin (uniqueDiffOn_Icc (hac.trans hcb) c ⟨hac.le, hcb.le⟩),
+    hUZ c (right_mem_Icc.mpr hac.le)]
+  simp only [D, neg_add_cancel, map_zero]
+
+theorem parallel_piecewise_on_Icc
+    (cov : CovariantDerivative I F V) {γ : ℝ → M} {Z W : ∀ t : ℝ, V (γ t)}
+    {a b c : ℝ} (hc : c ∈ Icc a b)
+    (hγ : MDifferentiableOn 𝓘(ℝ, ℝ) I γ (Icc a b))
+    (hZ : MDifferentiableOn 𝓘(ℝ, ℝ) (I.prod 𝓘(ℝ, F))
+      (fun t => (⟨γ t, Z t⟩ : TotalSpace F V)) (Icc a c))
+    (hW : MDifferentiableOn 𝓘(ℝ, ℝ) (I.prod 𝓘(ℝ, F))
+      (fun t => (⟨γ t, W t⟩ : TotalSpace F V)) (Icc c b))
+    (hZpar : ∀ t ∈ Icc a c, cov.derivAlongWithin γ Z (Icc a c) t = 0)
+    (hWpar : ∀ t ∈ Icc c b, cov.derivAlongWithin γ W (Icc c b) t = 0)
+    (hZW : Z c = W c) :
+    let U : ∀ t : ℝ, V (γ t) := fun t => if t ≤ c then Z t else W t
+    MDifferentiableOn 𝓘(ℝ, ℝ) (I.prod 𝓘(ℝ, F))
+      (fun t => (⟨γ t, U t⟩ : TotalSpace F V)) (Icc a b) ∧
+      ∀ t ∈ Icc a b, cov.derivAlongWithin γ U (Icc a b) t = 0 := by
+  let U : ∀ t : ℝ, V (γ t) := fun t => if t ≤ c then Z t else W t
+  change MDifferentiableOn _ _ (fun t => (⟨γ t, U t⟩ : TotalSpace F V)) _ ∧ _
+  by_cases hac : a = c
+  · subst c
+    have hUW (t : ℝ) (ht : t ∈ Icc a b) : U t = W t := by
+      dsimp only [U]
+      split_ifs with hta
+      · have hta' : t = a := le_antisymm hta ht.1
+        subst t
+        exact hZW
+      · rfl
+    refine ⟨hW.congr (fun t ht => congrArg (fun v => (⟨γ t, v⟩ : TotalSpace F V)) (hUW t ht)), ?_⟩
+    intro t ht
+    rw [cov.derivAlongWithin_congr hUW (hUW t ht)]
+    exact hWpar t ht
+  by_cases hcb : c = b
+  · subst c
+    have hUZ (t : ℝ) (ht : t ∈ Icc a b) : U t = Z t := if_pos ht.2
+    refine ⟨hZ.congr (fun t ht => congrArg (fun v => (⟨γ t, v⟩ : TotalSpace F V)) (hUZ t ht)), ?_⟩
+    intro t ht
+    rw [cov.derivAlongWithin_congr hUZ (hUZ t ht)]
+    exact hZpar t ht
+  have hac' : a < c := lt_of_le_of_ne hc.1 hac
+  have hcb' : c < b := lt_of_le_of_ne hc.2 hcb
+  suffices ∀ t ∈ Icc a b,
+      MDifferentiableWithinAt 𝓘(ℝ, ℝ) (I.prod 𝓘(ℝ, F))
+        (fun s => (⟨γ s, U s⟩ : TotalSpace F V)) (Icc a b) t ∧
+        cov.derivAlongWithin γ U (Icc a b) t = 0 from
+    ⟨fun t ht => (this t ht).1, fun t ht => (this t ht).2⟩
+  intro t ht
+  rcases lt_trichotomy t c with htc | htc | hct
+  · have hts : t ∈ Icc a c := ⟨ht.1, htc.le⟩
+    have hdom : Icc a c =ᶠ[𝓝 t] Icc a b := by
+      filter_upwards [Iio_mem_nhds htc] with s hs
+      exact propext ⟨fun h => ⟨h.1, h.2.trans hc.2⟩, fun h => ⟨h.1, hs.le⟩⟩
+    have hZfull : MDifferentiableWithinAt 𝓘(ℝ, ℝ) (I.prod 𝓘(ℝ, F))
+        (fun s => (⟨γ s, Z s⟩ : TotalSpace F V)) (Icc a b) t :=
+      (mdifferentiableWithinAt_congr_set hdom).mp (hZ t hts)
+    have hUZ : ∀ᶠ s in 𝓝[Icc a b] t, U s = Z s := by
+      filter_upwards [nhdsWithin_le_nhds (Iio_mem_nhds htc)] with s hs
+      exact if_pos hs.le
+    have hUZt : U t = Z t := if_pos htc.le
+    refine ⟨hZfull.congr_of_eventuallyEq ?_ ?_, ?_⟩
+    · exact hUZ.mono fun s hs => congrArg (fun v => (⟨γ s, v⟩ : TotalSpace F V)) hs
+    · exact congrArg (fun v => (⟨γ t, v⟩ : TotalSpace F V)) hUZt
+    · rw [cov.derivAlongWithin_congr_of_eventuallyEq hUZ hUZt,
+        ← cov.derivAlongWithin_congr_set (γ := γ) (Z := Z) hdom]
+      exact hZpar t hts
+  · subst t
+    exact parallel_piecewise_at cov hac' hcb' (hγ c hc)
+      (hZ c (right_mem_Icc.mpr hc.1)) (hW c (left_mem_Icc.mpr hc.2))
+      (hZpar c (right_mem_Icc.mpr hc.1)) (hWpar c (left_mem_Icc.mpr hc.2)) hZW
+  · have hts : t ∈ Icc c b := ⟨hct.le, ht.2⟩
+    have hdom : Icc c b =ᶠ[𝓝 t] Icc a b := by
+      filter_upwards [Ioi_mem_nhds hct] with s hs
+      exact propext ⟨fun h => ⟨hc.1.trans h.1, h.2⟩, fun h => ⟨hs.le, h.2⟩⟩
+    have hWfull : MDifferentiableWithinAt 𝓘(ℝ, ℝ) (I.prod 𝓘(ℝ, F))
+        (fun s => (⟨γ s, W s⟩ : TotalSpace F V)) (Icc a b) t :=
+      (mdifferentiableWithinAt_congr_set hdom).mp (hW t hts)
+    have hUW : ∀ᶠ s in 𝓝[Icc a b] t, U s = W s := by
+      filter_upwards [nhdsWithin_le_nhds (Ioi_mem_nhds hct)] with s hs
+      exact if_neg (not_le.mpr hs)
+    have hUWt : U t = W t := if_neg (not_le.mpr hct)
+    refine ⟨hWfull.congr_of_eventuallyEq ?_ ?_, ?_⟩
+    · exact hUW.mono fun s hs => congrArg (fun v => (⟨γ s, v⟩ : TotalSpace F V)) hs
+    · exact congrArg (fun v => (⟨γ t, v⟩ : TotalSpace F V)) hUWt
+    · rw [cov.derivAlongWithin_congr_of_eventuallyEq hUW hUWt,
+        ← cov.derivAlongWithin_congr_set (γ := γ) (Z := W) hdom]
+      exact hWpar t hts
+
 end CovariantDerivative
