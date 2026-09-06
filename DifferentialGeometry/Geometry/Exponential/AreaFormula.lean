@@ -22,7 +22,7 @@ private local instance : BorelSpace E := ⟨rfl⟩
 private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
-theorem lintegral_encard_fiber_framedExpMap_eq_lintegral_curveDensity
+theorem lintegral_encard_fiber_framedExpMap_eq_lintegral_paramDensity
     (g : SmoothRiemannianMetric I M) (p : M)
     {U : Set E} (hU : MeasurableSet U)
     (hdom : ∀ w ∈ U,
@@ -32,12 +32,10 @@ theorem lintegral_encard_fiber_framedExpMap_eq_lintegral_curveDensity
     ∫⁻ y, {w : E | w ∈ U ∧
         framedExpMap (I := I) (E := E) g p w = y}.encard.toENNReal
         ∂(riemannianVolumeMeasure (I := I) (M := M) g) =
-      ∫⁻ w in U, ENNReal.ofReal
-        (curveDensity (I := I) g
-          (radialCurve (I := I) g p (normalFrame (I := I) (E := E) g p w))
-          (fun i => radialJacobiField (I := I) g p
-            (normalFrame (I := I) (E := E) g p w)
-            (normalBasis (I := I) g p i)) 1) ∂(volume : Measure E) := by
+      ∫⁻ v in (normalFrame (I := I) (E := E) g p) '' U,
+        ENNReal.ofReal (paramDensity (I := I) g
+          (fun b : E => expMap (I := I) g p (show TangentSpace I p from b)) v)
+          ∂(modelHaar (E := E)) := by
   let L : E ≃L[ℝ] E := normalFrame (I := I) (E := E) g p
   let K : Set E := L '' U
   let F : E → M := fun v =>
@@ -69,8 +67,6 @@ theorem lintegral_encard_fiber_framedExpMap_eq_lintegral_curveDensity
       · rintro ⟨w, ⟨hw, hwy⟩, rfl⟩
         exact ⟨⟨w, hw, rfl⟩, hwy⟩
     rw [hset, L.injective.encard_image]
-  have hpre : (normalFrame (I := I) (E := E) g p) ⁻¹' K = U :=
-    Set.preimage_image_eq U L.injective
   calc
     _ = ∫⁻ y, {v : E | v ∈ K ∧ F v = y}.encard.toENNReal
         ∂(riemannianVolumeMeasure (I := I) (M := M) g) := by
@@ -82,11 +78,89 @@ theorem lintegral_encard_fiber_framedExpMap_eq_lintegral_curveDensity
       lintegral_encard_fiber_eq_lintegral_paramDensity (I := I) g
         (isOpen_expDomain (I := I) g p) hK hKdom
         ((contMDiffOn_expMap (I := I) g p).of_le (by norm_num)) hFloc
-    _ = _ := by
-      have h := lintegral_paramDensity_expMap_eq_lintegral_curveDensity
-        (I := I) g p hK hKdom
-      rw [hpre] at h
-      exact h
+
+omit [SigmaCompactSpace M] in
+private theorem lintegral_paramDensity_image_normalFrame_eq
+    (g : SmoothRiemannianMetric I M) (p : M)
+    {U : Set E} (hU : MeasurableSet U)
+    (hdom : ∀ w ∈ U,
+      normalFrame (I := I) (E := E) g p w ∈ expDomain (I := I) g p) :
+    (∫⁻ v in (normalFrame (I := I) (E := E) g p) '' U,
+      ENNReal.ofReal (paramDensity (I := I) g
+        (fun b : E => expMap (I := I) g p (show TangentSpace I p from b)) v)
+        ∂(modelHaar (E := E))) =
+      ∫⁻ w in U, ENNReal.ofReal
+        (curveDensity (I := I) g
+          (radialCurve (I := I) g p (normalFrame (I := I) (E := E) g p w))
+          (fun i => radialJacobiField (I := I) g p
+            (normalFrame (I := I) (E := E) g p w)
+            (normalBasis (I := I) g p i)) 1) ∂(volume : Measure E) := by
+  let L : E ≃L[ℝ] E := normalFrame (I := I) (E := E) g p
+  have hK : MeasurableSet (L '' U) :=
+    L.toHomeomorph.toMeasurableEquiv.measurableSet_image.mpr hU
+  have hKdom : L '' U ⊆ expDomain (I := I) g p := by
+    rintro v ⟨w, hw, rfl⟩
+    exact hdom w hw
+  have h := lintegral_paramDensity_expMap_eq_lintegral_curveDensity (I := I) g p hK hKdom
+  have hpre : (normalFrame (I := I) (E := E) g p) ⁻¹' (L '' U) = U :=
+    Set.preimage_image_eq U L.injective
+  let D : E → ℝ≥0∞ := fun w => ENNReal.ofReal
+    (curveDensity (I := I) g
+      (radialCurve (I := I) g p (normalFrame (I := I) (E := E) g p w))
+      (fun i => radialJacobiField (I := I) g p
+        (normalFrame (I := I) (E := E) g p w) (normalBasis (I := I) g p i)) 1)
+  exact h.trans (congrArg (fun S : Set E => ∫⁻ w in S, D w ∂(volume : Measure E)) hpre)
+
+theorem lintegral_encard_fiber_framedExpMap_eq_lintegral_curveDensity
+    (g : SmoothRiemannianMetric I M) (p : M)
+    {U : Set E} (hU : MeasurableSet U)
+    (hdom : ∀ w ∈ U,
+      normalFrame (I := I) (E := E) g p w ∈ expDomain (I := I) g p)
+    (hloc : IsLocallyInjective
+      (U.domRestrict (framedExpMap (I := I) (E := E) g p))) :
+    ∫⁻ y, {w : E | w ∈ U ∧
+        framedExpMap (I := I) (E := E) g p w = y}.encard.toENNReal
+        ∂(riemannianVolumeMeasure (I := I) (M := M) g) =
+      ∫⁻ w in U, ENNReal.ofReal
+        (curveDensity (I := I) g
+          (radialCurve (I := I) g p (normalFrame (I := I) (E := E) g p w))
+          (fun i => radialJacobiField (I := I) g p
+            (normalFrame (I := I) (E := E) g p w)
+            (normalBasis (I := I) g p i)) 1) ∂(volume : Measure E) := by
+  exact (lintegral_encard_fiber_framedExpMap_eq_lintegral_paramDensity
+    (I := I) g p hU hdom hloc).trans
+      (lintegral_paramDensity_image_normalFrame_eq (I := I) g p hU hdom)
+
+theorem mul_riemannianVolumeMeasure_le_lintegral_paramDensity_framedExpMap
+    (g : SmoothRiemannianMetric I M) (p : M)
+    {U : Set E} (hU : MeasurableSet U)
+    (hdom : ∀ w ∈ U,
+      normalFrame (I := I) (E := E) g p w ∈ expDomain (I := I) g p)
+    (hloc : IsLocallyInjective
+      (U.domRestrict (framedExpMap (I := I) (E := E) g p)))
+    {S : Set M} (hS : MeasurableSet S) {m : ENat}
+    (hcount : ∀ y ∈ S, m ≤
+      {w : E | w ∈ U ∧ framedExpMap (I := I) (E := E) g p w = y}.encard) :
+    m.toENNReal * riemannianVolumeMeasure (I := I) (M := M) g S ≤
+      ∫⁻ v in (normalFrame (I := I) (E := E) g p) '' U,
+        ENNReal.ofReal (paramDensity (I := I) g
+          (fun b : E => expMap (I := I) g p (show TangentSpace I p from b)) v)
+          ∂(modelHaar (E := E)) := by
+  calc
+    _ = ∫⁻ _ in S, m.toENNReal
+        ∂(riemannianVolumeMeasure (I := I) (M := M) g) :=
+      (setLIntegral_const S m.toENNReal).symm
+    _ ≤ ∫⁻ y in S,
+        {w : E | w ∈ U ∧ framedExpMap (I := I) (E := E) g p w = y}.encard.toENNReal
+        ∂(riemannianVolumeMeasure (I := I) (M := M) g) :=
+      setLIntegral_mono' hS (fun y hy => ENat.toENNReal_mono (hcount y hy))
+    _ ≤ ∫⁻ y,
+        {w : E | w ∈ U ∧ framedExpMap (I := I) (E := E) g p w = y}.encard.toENNReal
+        ∂(riemannianVolumeMeasure (I := I) (M := M) g) :=
+      setLIntegral_le_lintegral S _
+    _ = _ :=
+      lintegral_encard_fiber_framedExpMap_eq_lintegral_paramDensity (I := I) g p
+        hU hdom hloc
 
 theorem mul_riemannianVolumeMeasure_le_lintegral_curveDensity_framedExpMap
     (g : SmoothRiemannianMetric I M) (p : M)
@@ -105,20 +179,8 @@ theorem mul_riemannianVolumeMeasure_le_lintegral_curveDensity_framedExpMap
           (fun i => radialJacobiField (I := I) g p
             (normalFrame (I := I) (E := E) g p w)
             (normalBasis (I := I) g p i)) 1) ∂(volume : Measure E) := by
-  calc
-    _ = ∫⁻ _ in S, m.toENNReal
-        ∂(riemannianVolumeMeasure (I := I) (M := M) g) :=
-      (setLIntegral_const S m.toENNReal).symm
-    _ ≤ ∫⁻ y in S,
-        {w : E | w ∈ U ∧ framedExpMap (I := I) (E := E) g p w = y}.encard.toENNReal
-        ∂(riemannianVolumeMeasure (I := I) (M := M) g) :=
-      setLIntegral_mono' hS (fun y hy => ENat.toENNReal_mono (hcount y hy))
-    _ ≤ ∫⁻ y,
-        {w : E | w ∈ U ∧ framedExpMap (I := I) (E := E) g p w = y}.encard.toENNReal
-        ∂(riemannianVolumeMeasure (I := I) (M := M) g) :=
-      setLIntegral_le_lintegral S _
-    _ = _ :=
-      lintegral_encard_fiber_framedExpMap_eq_lintegral_curveDensity (I := I) g p
-        hU hdom hloc
+  exact (mul_riemannianVolumeMeasure_le_lintegral_paramDensity_framedExpMap
+    (I := I) g p hU hdom hloc hS hcount).trans_eq
+      (lintegral_paramDensity_image_normalFrame_eq (I := I) g p hU hdom)
 
 end DifferentialGeometry.Geometry.Riemannian.VolumeComparison
