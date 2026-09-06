@@ -332,6 +332,94 @@ theorem whole_flow_rank_one_product_identity
   rw [hflat]
   ring
 
+omit [SigmaCompactSpace M] [ConnectedSpace M] [Nonempty M] in
+theorem whole_flow_rank_one_surface_scalar_eq_lifted
+    (g : Real → SmoothRiemannianMetric I M)
+    (data : WholeFlowRankOneProductData (I := I) (M := M) g) :
+    let _ : TopologicalSpace data.N := data.topologyN
+    let _ : ChartedSpace
+        (DifferentialGeometry.Topology.Morse.MorseModel 2) data.N := data.chartedN
+    let _ : IsManifold
+        (𝓘(Real, DifferentialGeometry.Topology.Morse.MorseModel 2))
+        (↑(⊤ : ℕ∞) : WithTop ℕ∞) data.N := data.manifoldN
+    let _ : T2Space data.N := data.t2N
+    ∀ (t : Real) (y : data.N) (s : Real),
+      metricScalarAt
+          (I := 𝓘(Real, DifferentialGeometry.Topology.Morse.MorseModel 2))
+          (data.surfaceMetric t) y =
+        metricScalarAt (I := I)
+          (M := DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover M)
+          (liftedMetric (I := I) (g t)) (data.F (y, s)) := by
+  dsimp
+  let _ : TopologicalSpace data.N := data.topologyN
+  let _ : ChartedSpace
+      (DifferentialGeometry.Topology.Morse.MorseModel 2) data.N := data.chartedN
+  let _ : IsManifold
+      (𝓘(Real, DifferentialGeometry.Topology.Morse.MorseModel 2))
+      (↑(⊤ : ℕ∞) : WithTop ℕ∞) data.N := data.manifoldN
+  let _ : T2Space data.N := data.t2N
+  intro t y s
+  have hprod :=
+    DifferentialGeometry.Geometry.Curvature.DimensionThree.metricScalarAt_prod_flat
+      (data.surfaceMetric t) y s
+  have hpull := DifferentialGeometry.HCGCompactness.metricScalar_cross
+    (I := (𝓘(Real, DifferentialGeometry.Topology.Morse.MorseModel 2)).prod
+      𝓘(Real, Real))
+    (J := I) (g := liftedMetric (I := I) (g t)) (Phi := data.F)
+    (x := (y, s))
+  have heq := whole_flow_rank_one_product_identity (I := I) (M := M) g data t
+  have heqscalar := congrArg
+      (fun q : SmoothRiemannianMetric
+        ((𝓘(Real, DifferentialGeometry.Topology.Morse.MorseModel 2)).prod
+          𝓘(Real, Real)) (data.N × Real) =>
+        metricScalarAt
+          (I := (𝓘(Real, DifferentialGeometry.Topology.Morse.MorseModel 2)).prod
+            𝓘(Real, Real)) q (y, s)) heq
+  rw [hprod] at heqscalar
+  exact heqscalar.symm.trans hpull
+
+omit [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [ConnectedSpace M]
+    [Nonempty M] in
+theorem whole_flow_rank_one_flat_factor_stationary
+    (g : Real → SmoothRiemannianMetric I M)
+    (data : WholeFlowRankOneProductData (I := I) (M := M) g) :
+    let _ : TopologicalSpace data.N := data.topologyN
+    let _ : ChartedSpace
+        (DifferentialGeometry.Topology.Morse.MorseModel 2) data.N := data.chartedN
+    let _ : IsManifold
+        (𝓘(Real, DifferentialGeometry.Topology.Morse.MorseModel 2))
+        (↑(⊤ : ℕ∞) : WithTop ℕ∞) data.N := data.manifoldN
+    let _ : T2Space data.N := data.t2N
+    ∀ (t₁ t₂ : Real) (y : data.N) (s r q : Real),
+      (liftedMetric (I := I) (g t₁)).inner (data.F (y, s))
+          ((mfderiv
+            ((𝓘(Real, DifferentialGeometry.Topology.Morse.MorseModel 2)).prod
+              𝓘(Real, Real)) I (fun z : data.N × Real => data.F z) (y, s))
+            (0, r))
+          ((mfderiv
+            ((𝓘(Real, DifferentialGeometry.Topology.Morse.MorseModel 2)).prod
+              𝓘(Real, Real)) I (fun z : data.N × Real => data.F z) (y, s))
+            (0, q)) =
+        (liftedMetric (I := I) (g t₂)).inner (data.F (y, s))
+          ((mfderiv
+            ((𝓘(Real, DifferentialGeometry.Topology.Morse.MorseModel 2)).prod
+              𝓘(Real, Real)) I (fun z : data.N × Real => data.F z) (y, s))
+            (0, r))
+          ((mfderiv
+            ((𝓘(Real, DifferentialGeometry.Topology.Morse.MorseModel 2)).prod
+              𝓘(Real, Real)) I (fun z : data.N × Real => data.F z) (y, s))
+            (0, q)) := by
+  dsimp
+  let _ : TopologicalSpace data.N := data.topologyN
+  let _ : ChartedSpace
+      (DifferentialGeometry.Topology.Morse.MorseModel 2) data.N := data.chartedN
+  let _ : IsManifold
+      (𝓘(Real, DifferentialGeometry.Topology.Morse.MorseModel 2))
+      (↑(⊤ : ℕ∞) : WithTop ℕ∞) data.N := data.manifoldN
+  let _ : T2Space data.N := data.t2N
+  intro t₁ t₂ y s r q
+  rw [data.vertical_inner, data.vertical_inner]
+
 omit [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [ConnectedSpace M]
     [Nonempty M] in
 theorem whole_flow_rank_one_surface_metric_unique

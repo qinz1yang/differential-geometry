@@ -677,6 +677,64 @@ def IsLocalScalarDirichletSolution
     ∀ q ∈ Set.Ioc s t, ∀ z ∈ interior Kset,
       parabolicOperatorWithDrift (I := I) G T X f q z = -c * f q z
 
+theorem IsLocalScalarDirichletSolution.nonnegative_of_closure_interior
+    (G : MetricConnectionFamily (I := I) (M := M) Real)
+    {T s t c : Real}
+    (X : Real → (x : M) → TangentSpace I x)
+    (Kset : Set M) (f₀ : M → Real) (f : Real → M → Real)
+    (h : IsLocalScalarDirichletSolution (I := I) G T X s t c Kset f₀ f)
+    (hK : Kset ⊆ closure (interior Kset)) :
+    ∀ q ∈ Set.Ioc s t, ∀ x ∈ Kset, 0 ≤ f q x := by
+  intro q hq x hx
+  have hqIcc : q ∈ Set.Icc s t := ⟨le_of_lt hq.1, hq.2⟩
+  have hcont_sp : ContinuousWithinAt
+      (fun p : Real × M => f p.1 p.2)
+      (Set.Icc s t ×ˢ Kset) (q, x) :=
+    h.1.continuousWithinAt ⟨hqIcc, hx⟩
+  have hphi : ContinuousAt (fun y : M => (q, y)) x :=
+    continuousAt_const.prodMk continuousAt_id
+  have hmap : Set.MapsTo (fun y : M => (q, y)) (interior Kset)
+      (Set.Icc s t ×ˢ Kset) := by
+    intro y hy
+    exact ⟨hqIcc, interior_subset hy⟩
+  have hcont_q : ContinuousWithinAt (fun y : M => f q y)
+      (interior Kset) x := by
+    have hc := hcont_sp.comp hphi.continuousWithinAt hmap
+    change ContinuousWithinAt (fun y : M => f q y) (interior Kset) x at hc
+    exact hc
+  have hle := ContinuousWithinAt.closure_le (x := x) (hK hx)
+    (continuousWithinAt_const : ContinuousWithinAt (fun _ : M => (0 : Real))
+      (interior Kset) x) hcont_q
+    (fun y hy => (h.2.2.2.1 q hq y hy).le)
+  simpa using hle
+
+theorem IsLocalScalarDirichletSolution.time_restrict
+    (G : MetricConnectionFamily (I := I) (M := M) Real)
+    {T s t c : Real}
+    (X : Real → (x : M) → TangentSpace I x)
+    (Kset : Set M) (f₀ : M → Real) (f : Real → M → Real)
+    (h : IsLocalScalarDirichletSolution (I := I) G T X s t c Kset f₀ f)
+    {u : Real} (hu : u ∈ Set.Icc s t) :
+    IsLocalScalarDirichletSolution (I := I) G T X s u c Kset f₀ f := by
+  refine ⟨?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩
+  · apply h.1.mono
+    intro p hp
+    exact ⟨⟨hp.1.1, hp.1.2.trans hu.2⟩, hp.2⟩
+  · intro z hz
+    exact h.2.1 z hz
+  · intro q hq z hz
+    exact h.2.2.1 q ⟨hq.1, hq.2.trans hu.2⟩ z hz
+  · intro q hq z hz
+    exact h.2.2.2.1 q ⟨hq.1, hq.2.trans hu.2⟩ z hz
+  · intro q hq z hz
+    exact h.2.2.2.2.1 q ⟨hq.1, hq.2.trans hu.2⟩ z hz
+  · intro q hq z hz
+    exact h.2.2.2.2.2.1 q ⟨hq.1, hq.2.trans hu.2⟩ z hz
+  · intro q hq z hz
+    exact h.2.2.2.2.2.2.1 q ⟨hq.1, hq.2.trans hu.2⟩ z hz
+  · intro q hq z hz
+    exact h.2.2.2.2.2.2.2 q ⟨hq.1, hq.2.trans hu.2⟩ z hz
+
 structure IsGlobalScalarDirichletSolution
     (G : MetricConnectionFamily (I := I) (M := M) Real)
     (T : Real) (X : Real → (x : M) → TangentSpace I x)
