@@ -1,5 +1,6 @@
 import DifferentialGeometry.Geometry.Connection.AlongCurveHom
 import DifferentialGeometry.Bundle.PartialMfderiv.TimeDerivative
+import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Defs
 
 noncomputable section
 
@@ -56,6 +57,38 @@ theorem hessian_apply_of_contMDiffAt (cov : CovariantDerivative I F V)
       cov (fun y => cov σ y (Y y)) x X - cov σ x (base Y x X) := by
   exact cov.hessian_apply base
     ((hcov.contMDiffAt (m := 1) hσ (by norm_num)).mdifferentiableAt (by simp)) hY X
+
+omit [FiniteDimensional ℝ F] [ContMDiffVectorBundle ∞ F V I] in
+theorem hessian_mem_of_isCovariantlyInvariant
+    (cov : CovariantDerivative I F V) [hcov : ContMDiffCovariantDerivative cov ∞]
+    (base : CovariantDerivative I E (TangentSpace I : M → Type _))
+    (S : ∀ x, Submodule ℝ (V x))
+    (hS : DifferentialGeometry.Geometry.Connection.IsCovariantlyInvariantSubmoduleFamily cov S)
+    (s : Cₛ^∞⟮I; F, V⟯) {x : M} {U : Set M}
+    (hU : IsOpen U) (hxU : x ∈ U) (hs : ∀ y ∈ U, s y ∈ S y)
+    (X Y : TangentSpace I x) : cov.hessian base s x X Y ∈ S x := by
+  obtain ⟨Z, hZ⟩ := ContMDiffSection.exists_eq_at
+    (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞)) x Y
+  let u : Cₛ^∞⟮I; F, V⟯ :=
+    ⟨DifferentialGeometry.Geometry.Curvature.covApply cov (fun y => Z y) (fun y => s y),
+      contMDiffOn_univ.mp (DifferentialGeometry.Geometry.Curvature.covApply_contMDiffOn
+        (cov := cov) Z.contMDiff (by simpa using s.contMDiff))⟩
+  have hu : ∀ y ∈ U, u y ∈ S y :=
+    fun y hy => by
+      change cov (fun z => s z) y (Z y) ∈ S y
+      exact DifferentialGeometry.Geometry.Connection.IsCovariantlyInvariantSubmoduleFamily.covariantDerivative_mem
+        hS s hU hs hy (Z y)
+  have hDs := (contMDiffOn_univ.mp
+    (hcov.contMDiff.contMDiff (by simpa using s.contMDiff.contMDiffOn))).mdifferentiableAt (x := x)
+      (by simp)
+  rw [← hZ, cov.hessian_apply base hDs Z.mdifferentiableAt]
+  exact (S x).sub_mem
+    (by
+      change cov (fun y => cov (fun z => s z) y (Z y)) x X ∈ S x
+      exact DifferentialGeometry.Geometry.Connection.IsCovariantlyInvariantSubmoduleFamily.covariantDerivative_mem
+        hS u hU hu hxU X)
+    (DifferentialGeometry.Geometry.Connection.IsCovariantlyInvariantSubmoduleFamily.covariantDerivative_mem
+      hS s hU hs hxU (base Z x X))
 
 theorem derivAlongWithin_derivAlongWithin_section
     (cov : CovariantDerivative I F V) (hcov : ContMDiffCovariantDerivative cov ∞)
