@@ -144,6 +144,26 @@ theorem associatedTrivialization_apply (ρ : Representation k G W)
     (z : TotalSpace W (fun x => P x →ₑ[ρ] W)) :
     ρ.associatedTrivialization hρ e z = (z.1, z.2 (e.principalSection z.1)) := rfl
 
+theorem associatedTrivialization_coordChangeL_apply (ρ : Representation k G W)
+    (hρ : Continuous (fun z : G × W => ρ z.1 z.2))
+    (e e' : Trivialization G (π G P)) [MemTrivializationAtlas e] [MemTrivializationAtlas e']
+    {x : B} (hx : x ∈ e.baseSet ∩ e'.baseSet) (w : W) :
+    let _ := (ρ.associatedFiberPrebundle (P := P) hρ).totalSpaceTopology
+    (Trivialization.coordChangeL k (ρ.associatedTrivialization hρ e)
+      (ρ.associatedTrivialization hρ e') x) w =
+      ρ (e'.principalSection x /ₛ e.principalSection x) w := by
+  let _ := (ρ.associatedFiberPrebundle (P := P) hρ).totalSpaceTopology
+  have hx' : x ∈ (ρ.associatedTrivialization hρ e).baseSet ∩
+      (ρ.associatedTrivialization hρ e').baseSet := by
+    change x ∈ e.baseSet ∩ e'.baseSet
+    exact hx
+  rw [Bundle.Trivialization.coordChangeL_apply' _ _ hx']
+  change ((ρ.associatedTrivialization hρ e')
+      ((ρ.associatedTrivialization hρ e).toOpenPartialHomeomorph.symm (x, w))).2 = _
+  convert congrArg Prod.snd
+      (Bundle.Pretrivialization.associated_coordChange ρ e' e (x, w)) using 1
+  rfl
+
 theorem isClosed_totalSpace_associatedSet (ρ : Representation k G W)
     (hρ : Continuous (fun z : G × W => ρ z.1 z.2)) {C : Set W}
     (hC : IsClosed C) (hG : ∀ g : G, MapsTo (ρ g) C C) :
