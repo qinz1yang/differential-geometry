@@ -2,6 +2,7 @@ import DifferentialGeometry.Geometry.Exponential.Smoothness.Domain
 import DifferentialGeometry.Bundle.FiberBundleHausdorff
 import DifferentialGeometry.Geometry.Exponential.GaussLemma.Pullback
 import DifferentialGeometry.Geometry.Comparison.Variation.Jacobi.Variation
+import DifferentialGeometry.Geometry.Comparison.Variation.Field.Smoothness
 import DifferentialGeometry.Analysis.Calculus.Cutoff.Clamp.Smooth
 import Mathlib.LinearAlgebra.LinearIndependent.Basic
 
@@ -67,29 +68,26 @@ private theorem exists_dom_clamps
     exists_contDiff_prodMap_range_subset (hcont hmem)
   exact ⟨ψ, σ, hψ, hσ, hψid, hσid, fun s t => h ⟨(s, t), rfl⟩⟩
 
-private theorem radialJacobiField_properties
-    (g : SmoothRiemannianMetric I M) (p : M) (x w : E) {t₀ : ℝ}
-    (ht₀U : (show TangentSpace I p from t₀ • x) ∈ expDomain (I := I) g p) :
-    let γ : ℝ → M := fun t => expMap (I := I) g p (show TangentSpace I p from t • x)
-    let J := radialJacobiField (I := I) g p x w
-    DifferentiableAt ℝ (chartRepAt (I := I) γ J t₀) t₀ ∧
-    DifferentiableAt ℝ (chartRepAt (I := I) γ
-      (fun u => covDerivAlong (I := I) g γ J u) t₀) t₀ ∧
-    IsJacobiAt (I := I) g γ J t₀ := by
-  let γ : ℝ → M := fun t => expMap (I := I) g p (show TangentSpace I p from t • x)
+theorem isJacobiAt_radialJacobiField
+    (g : SmoothRiemannianMetric I M) (p : M) (x w : E) {t : ℝ}
+    (ht : (show TangentSpace I p from t • x) ∈ expDomain (I := I) g p) :
+    IsJacobiAt (I := I) g
+      (fun u : ℝ => expMap (I := I) g p (show TangentSpace I p from u • x))
+      (radialJacobiField (I := I) g p x w) t := by
+  let γ : ℝ → M := fun r => expMap (I := I) g p (show TangentSpace I p from r • x)
   let J := radialJacobiField (I := I) g p x w
   let U : Set E := {v | (show TangentSpace I p from v) ∈ expDomain (I := I) g p}
   have hU : IsOpen U := by exact isOpen_expDomain (I := I) g p
   obtain ⟨ψ, σ, hψ, hσ, hψev, hσev, hlaunchU⟩ :=
-    exists_dom_clamps U hU x w t₀ ht₀U
-  let F : ℝ → ℝ → M := fun s t =>
+    exists_dom_clamps U hU x w t ht
+  let F : ℝ → ℝ → M := fun s r =>
     (expMap (I := I) g p
-      (show TangentSpace I p from ψ t • (x + σ s • w)) : M)
-  have hlaunch : ∀ s t : ℝ,
-      (show TangentSpace I p from ψ t • (x + σ s • w)) ∈
+      (show TangentSpace I p from ψ r • (x + σ s • w)) : M)
+  have hlaunch : ∀ s r : ℝ,
+      (show TangentSpace I p from ψ r • (x + σ s • w)) ∈
         expDomain (I := I) g p := by
-    intro s t
-    simpa only [U] using! hlaunchU s t
+    intro s r
+    simpa only [U] using! hlaunchU s r
   have hFsmooth : IsSmoothVariation (I := I) F := by
     have hψMD : ContMDiff 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) ∞ ψ := by
       rw [contMDiff_iff_contDiff]
@@ -111,102 +109,109 @@ private theorem radialJacobiField_properties
     exact hexp.comp q (hlaunchMD.contMDiffAt.of_le ENat.LEInfty.out)
   have hσ0 : σ 0 = 0 := by
     simpa only [id_eq] using hσev.eq_of_nhds
-  have hcentral_ev : (fun t : ℝ => F 0 t) =ᶠ[𝓝 t₀] γ := by
-    filter_upwards [hψev] with t ht
+  have hcentral_ev : (fun r : ℝ => F 0 r) =ᶠ[𝓝 t] γ := by
+    filter_upwards [hψev] with r ht
     change (expMap (I := I) g p
-      (show TangentSpace I p from ψ t • (x + σ 0 • w)) : M) = γ t
+      (show TangentSpace I p from ψ r • (x + σ 0 • w)) : M) = γ r
     rw [ht, hσ0]
     simp only [id_eq, zero_smul, add_zero, γ]
-  let Vc : ∀ t : ℝ, TangentSpace I (F 0 t) := fun t =>
-    mfderiv (𝓘(ℝ, ℝ)) I (fun s : ℝ => F s t) 0 (1 : ℝ)
-  have hJ_ev : (fun t : ℝ => (Vc t : E)) =ᶠ[𝓝 t₀]
-      (fun t : ℝ => (J t : E)) := by
-    filter_upwards [hψev] with t ht
-    have hgerm : (fun s : ℝ => F s t) =ᶠ[𝓝 (0 : ℝ)]
+  let Vc : ∀ r : ℝ, TangentSpace I (F 0 r) := fun r =>
+    mfderiv (𝓘(ℝ, ℝ)) I (fun s : ℝ => F s r) 0 (1 : ℝ)
+  have hJ_ev : (fun r : ℝ => (Vc r : E)) =ᶠ[𝓝 t]
+      (fun r : ℝ => (J r : E)) := by
+    filter_upwards [hψev] with r ht
+    have hgerm : (fun s : ℝ => F s r) =ᶠ[𝓝 (0 : ℝ)]
         (fun s : ℝ =>
           (expMap (I := I) g p
-            (show TangentSpace I p from t • (x + s • w)) : M)) := by
+            (show TangentSpace I p from r • (x + s • w)) : M)) := by
       filter_upwards [hσev] with s hs
       change (expMap (I := I) g p
-        (show TangentSpace I p from ψ t • (x + σ s • w)) : M) = _
+        (show TangentSpace I p from ψ r • (x + σ s • w)) : M) = _
       rw [ht, hs]
       simp only [id_eq]
     have hmf :
-        mfderiv (𝓘(ℝ, ℝ)) I (fun s : ℝ => F s t) 0 =
+        mfderiv (𝓘(ℝ, ℝ)) I (fun s : ℝ => F s r) 0 =
           mfderiv (𝓘(ℝ, ℝ)) I (fun s : ℝ =>
             (expMap (I := I) g p
-              (show TangentSpace I p from t • (x + s • w)) : M)) 0 :=
+              (show TangentSpace I p from r • (x + s • w)) : M)) 0 :=
       hgerm.mfderiv_eq
-    change ((mfderiv (𝓘(ℝ, ℝ)) I (fun s : ℝ => F s t) 0) (1 : ℝ) : E) =
+    change ((mfderiv (𝓘(ℝ, ℝ)) I (fun s : ℝ => F s r) 0) (1 : ℝ) : E) =
       ((mfderiv (𝓘(ℝ, ℝ)) I (fun s : ℝ =>
         (expMap (I := I) g p
-          (show TangentSpace I p from t • (x + s • w)) : M)) 0) (1 : ℝ) : E)
+          (show TangentSpace I p from r • (x + s • w)) : M)) 0) (1 : ℝ) : E)
     exact congrArg (fun L : ℝ →L[ℝ] TangentSpace I _ => L (1 : ℝ)) hmf
-  let Dc : ∀ t : ℝ, TangentSpace I (F 0 t) := fun t =>
-    covDerivAlong (I := I) g (fun u : ℝ => F 0 u) Vc t
-  let D : ∀ t : ℝ, TangentSpace I (γ t) := fun t =>
-    covDerivAlong (I := I) g γ J t
-  have hD_ev : ∀ᶠ t in 𝓝 t₀, (Dc t : E) = (D t : E) := by
-    filter_upwards [hcentral_ev.eventually_nhds, hJ_ev.eventually_nhds]
-      with t hcurve hfield
-    exact covDerivAlong_congr_curve (I := I) g Vc J hcurve hfield
-  have hVdiff : DifferentiableAt ℝ
-      (chartRepAt (I := I) γ J t₀) t₀ := by
-    have hclamped : DifferentiableAt ℝ
-        (chartRepAt (I := I) (fun t : ℝ => F 0 t) Vc t₀) t₀ := by
-      exact variationField_chartRep_differentiableAt (I := I) F hFsmooth t₀
-    have hrep := chartRep_congr_curve (I := I) Vc J hcentral_ev hJ_ev
-    exact hrep.differentiableAt_iff.mp hclamped
-  have hDVdiff : DifferentiableAt ℝ
-      (chartRepAt (I := I) γ D t₀) t₀ := by
-    have hclamped : DifferentiableAt ℝ
-        (chartRepAt (I := I) (fun t : ℝ => F 0 t) Dc t₀) t₀ := by
-      exact variationField_covDeriv_chartRep_differentiableAt
-        (I := I) g F hFsmooth t₀
-    have hrep := chartRep_congr_curve (I := I) Dc D hcentral_ev hD_ev
-    exact hrep.differentiableAt_iff.mp hclamped
   have hzero : ∀ s : ℝ,
-      covDerivAlong (I := I) g (fun t : ℝ => F s t)
-        (fun t : ℝ => mfderiv (𝓘(ℝ, ℝ)) I
-          (fun u : ℝ => F s u) t (1 : ℝ)) t₀ = 0 := by
+      covDerivAlong (I := I) g (fun r : ℝ => F s r)
+        (fun r : ℝ => mfderiv (𝓘(ℝ, ℝ)) I
+          (fun u : ℝ => F s u) r (1 : ℝ)) t = 0 := by
     intro s
     let a : E := x + σ s • w
-    have hψt₀ : ψ t₀ = t₀ := by
+    have hψt : ψ t = t := by
       simpa only [id_eq] using hψev.eq_of_nhds
-    have hatdom : (show TangentSpace I p from t₀ • a) ∈
+    have hatdom : (show TangentSpace I p from t • a) ∈
         expDomain (I := I) g p := by
-      simpa only [a, hψt₀] using hlaunch s t₀
+      simpa only [a, hψt] using hlaunch s t
     have hgeo_raw : HasGeodesicEquationAt (I := I) g
-        (fun t : ℝ =>
-          (expMap (I := I) g p (show TangentSpace I p from t • a) : M)) t₀ :=
+        (fun r : ℝ =>
+          (expMap (I := I) g p (show TangentSpace I p from r • a) : M)) t :=
       hasGeodesicEquationAt_expMap_smul (I := I) g p (show TangentSpace I p from a) hatdom
-    have hF_raw : (fun t : ℝ => F s t) =ᶠ[𝓝 t₀]
-        (fun t : ℝ =>
-          (expMap (I := I) g p (show TangentSpace I p from t • a) : M)) := by
-      filter_upwards [hψev] with t ht
+    have hF_raw : (fun r : ℝ => F s r) =ᶠ[𝓝 t]
+        (fun r : ℝ =>
+          (expMap (I := I) g p (show TangentSpace I p from r • a) : M)) := by
+      filter_upwards [hψev] with r ht
       change (expMap (I := I) g p
-        (show TangentSpace I p from ψ t • (x + σ s • w)) : M) = _
+        (show TangentSpace I p from ψ r • (x + σ s • w)) : M) = _
       rw [ht]
       simp only [id_eq, a]
-    have hgeo_F : HasGeodesicEquationAt (I := I) g (fun t : ℝ => F s t) t₀ :=
+    have hgeo_F : HasGeodesicEquationAt (I := I) g (fun r : ℝ => F s r) t :=
       HasGeodesicEquationAt.congr_of_eventuallyEq_at
         hF_raw.eq_of_nhds hF_raw hgeo_raw
     have hincl : ContMDiff 𝓘(ℝ, ℝ)
         (𝓘(ℝ, ℝ).prod 𝓘(ℝ, ℝ)) (8 : ℕ)
-        (fun t : ℝ => (s, t)) := contMDiff_const.prodMk contMDiff_id
-    have hsliceC2 : ContMDiffAt 𝓘(ℝ, ℝ) I 2 (fun t : ℝ => F s t) t₀ :=
+        (fun r : ℝ => (s, r)) := contMDiff_const.prodMk contMDiff_id
+    have hsliceC2 : ContMDiffAt 𝓘(ℝ, ℝ) I 2 (fun r : ℝ => F s r) t :=
       ((hFsmooth : ContMDiff _ _ _ _).comp hincl).contMDiffAt.of_le (by norm_num)
     exact covDerivAlong_velocity_eq_zero_of_hasGeodesicEquationAt_C2
-      (I := I) g _ t₀ hsliceC2 hgeo_F
+      (I := I) g _ t hsliceC2 hgeo_F
   have hjac_clamped := isJacobiAt_variationField_of_covDerivAlong_velocity_eq_zero
-    (I := I) g F hFsmooth t₀ hzero
-  have hJ : IsJacobiAt (I := I) g γ J t₀ :=
-    hjac_clamped.congr_of_eventuallyEq (by
-      filter_upwards [hcentral_ev, hJ_ev] with t hcurve hfield
-      exact Bundle.TotalSpace.ext hcurve (heq_of_eq hfield))
-  exact ⟨hVdiff, hDVdiff, hJ⟩
+    (I := I) g F hFsmooth t hzero
+  exact hjac_clamped.congr_of_eventuallyEq (by
+    filter_upwards [hcentral_ev, hJ_ev] with r hcurve hfield
+    exact Bundle.TotalSpace.ext hcurve (heq_of_eq hfield))
 
 variable [T2Space (TangentBundle I M)]
+
+omit [T2Space M] in
+theorem contMDiffAt_radialJacobiField
+    (g : SmoothRiemannianMetric I M) (p : M) (x w : E) {t : ℝ}
+    (ht : (show TangentSpace I p from t • x) ∈ expDomain (I := I) g p) :
+    ContMDiffAt 𝓘(ℝ, ℝ) I.tangent ∞
+      (fun r => (Bundle.TotalSpace.mk' E
+        (expMap (I := I) g p (show TangentSpace I p from r • x))
+        (radialJacobiField (I := I) g p x w r) : TangentBundle I M)) t := by
+  let f : ℝ → ℝ → M := fun s r =>
+    expMap (I := I) g p (show TangentSpace I p from r • (x + s • w))
+  have hlaunch : ContMDiff (𝓘(ℝ, ℝ).prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, E) ∞
+      (fun q : ℝ × ℝ => q.2 • (x + q.1 • w)) :=
+    contMDiff_snd.smul (contMDiff_const.add (contMDiff_fst.smul contMDiff_const))
+  have hf : ContMDiffAt (𝓘(ℝ, ℝ).prod 𝓘(ℝ, ℝ)) I ∞
+      (fun q : ℝ × ℝ => f q.1 q.2) (0, t) := by
+    have hdom : (show TangentSpace I p from t • (x + (0 : ℝ) • w)) ∈
+        expDomain (I := I) g p := by simpa only [zero_smul, add_zero] using ht
+    exact (contMDiffAt_expMap (I := I) g p hdom).comp (0, t) hlaunch.contMDiffAt
+  have heq :
+      (fun r => (Bundle.TotalSpace.mk' E
+        (expMap (I := I) g p (show TangentSpace I p from r • x))
+        (radialJacobiField (I := I) g p x w r) : TangentBundle I M)) =
+      (fun r => (Bundle.TotalSpace.mk' E (f 0 r)
+        (mfderiv 𝓘(ℝ, ℝ) I (fun s => f s r) 0 (1 : ℝ)) : TangentBundle I M)) := by
+    funext r
+    apply Bundle.TotalSpace.ext
+    · simp only [f, zero_smul, add_zero]
+      rfl
+    · exact heq_of_eq (radialJacobiField_eq (I := I) g p x w r)
+  rw [heq]
+  exact varField_smoothAt (I := I) f hf
 
 omit [T2Space M] in
 theorem differentiableAt_chartRep_radialJacobiField
@@ -216,8 +221,8 @@ theorem differentiableAt_chartRep_radialJacobiField
       (chartRepAt (I := I)
         (fun u : ℝ => expMap (I := I) g p (show TangentSpace I p from u • x))
         (radialJacobiField (I := I) g p x w) t) t := by
-  have : T2Space M := gauss_t2Space_base (I := I)
-  exact (radialJacobiField_properties (I := I) g p x w ht).1
+  exact (mdifferentiableAt_tangentField_iff.mp
+    ((contMDiffAt_radialJacobiField (I := I) g p x w ht).mdifferentiableAt (by simp))).2
 
 omit [T2Space M] in
 theorem differentiableAt_chartRep_covDerivAlong_radialJacobiField
@@ -227,17 +232,9 @@ theorem differentiableAt_chartRep_covDerivAlong_radialJacobiField
     DifferentiableAt ℝ
       (chartRepAt (I := I) γ
         (fun u => covDerivAlong (I := I) g γ (radialJacobiField (I := I) g p x w) u) t) t := by
-  have : T2Space M := gauss_t2Space_base (I := I)
-  exact (radialJacobiField_properties (I := I) g p x w ht).2.1
-
-omit [T2Space (TangentBundle I M)] in
-theorem isJacobiAt_radialJacobiField
-    (g : SmoothRiemannianMetric I M) (p : M) (x w : E) {t : ℝ}
-    (ht : (show TangentSpace I p from t • x) ∈ expDomain (I := I) g p) :
-    IsJacobiAt (I := I) g
-      (fun u : ℝ => expMap (I := I) g p (show TangentSpace I p from u • x))
-      (radialJacobiField (I := I) g p x w) t :=
-  (radialJacobiField_properties (I := I) g p x w ht).2.2
+  exact (mdifferentiableAt_tangentField_iff.mp
+    ((contMDiffAt_covDerivAlong (I := I) g (m := ⊤) (n := ⊤) (by simp)
+      (contMDiffAt_radialJacobiField (I := I) g p x w ht)).mdifferentiableAt (by simp))).2
 
 omit [T2Space (TangentBundle I M)] in
 theorem isJacobiAt_radialJacobiField_zero

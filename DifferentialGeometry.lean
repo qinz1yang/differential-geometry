@@ -2406,6 +2406,7 @@ import DifferentialGeometry.Geometry.Exponential.ChartFlow.Orbit.UniformExistenc
 import DifferentialGeometry.Geometry.Exponential.ChartFlow.Orbit.UniformUniqueness
 import DifferentialGeometry.Geometry.Exponential.ConjugatePoint.Basic
 import DifferentialGeometry.Geometry.Exponential.ConjugatePoint.CurvatureBound
+import DifferentialGeometry.Geometry.Exponential.ConjugatePoint.MinimizingGeodesic
 import DifferentialGeometry.Geometry.Exponential.Defs
 import DifferentialGeometry.Geometry.Exponential.DiagonalExponential.LocalInverse
 import DifferentialGeometry.Geometry.Exponential.DiagonalExponential.InverseBranch
