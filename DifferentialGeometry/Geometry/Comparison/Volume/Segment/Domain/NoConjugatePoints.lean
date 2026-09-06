@@ -113,7 +113,7 @@ theorem segmentDom_no_conj
   have hno :=
     not_conj_of_min_len
       (I := I) g hEnorm x (u : E)
-      hu_unit L hL_pos hmin hc
+      hu_unit L hmin hc
   have hvec :
       (t * L) • (u : E) = t • (v : E) := by
     calc

@@ -293,7 +293,7 @@ theorem segmentDom_not_conj
       constructor
       · exact mul_pos ht.1 hℓ_pos
       · simpa using (mul_lt_mul_of_pos_right ht.2 hℓ_pos)
-    have hn := not_conj_of_min_len (I := I) g hEnorm x u hunit ℓ hℓ_pos hmin hc
+    have hn := not_conj_of_min_len (I := I) g hEnorm x u hunit ℓ hmin hc
     have htv : ((t • v : TangentSpace I x) : E) = (t * ℓ) • u := by
       rw [← hlu, smul_smul]
       rfl

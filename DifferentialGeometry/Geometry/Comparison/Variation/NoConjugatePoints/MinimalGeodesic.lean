@@ -1,15 +1,12 @@
-import DifferentialGeometry.Analysis.ODE.IndexForm.SmoothNegativeDirection
-import DifferentialGeometry.Geometry.Comparison.Variation.PerpendicularFrame.IndexForm
-import DifferentialGeometry.Geometry.Comparison.Variation.SecondVariation.Minimizer
+import DifferentialGeometry.Geometry.Comparison.Variation.SecondVariation.NegativeDirection
 import DifferentialGeometry.Geometry.Comparison.Variation.Field.Smoothness
 import DifferentialGeometry.Geometry.Exponential.ConjugatePoint.Basic
 import DifferentialGeometry.Geometry.Exponential.Intrinsic.Geodesic.Smoothness
-open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
 
-open Set Function Filter Manifold Bundle
-open scoped Topology Manifold ContDiff RealInnerProductSpace Bundle
+open Set Filter Manifold Bundle
+open scoped Topology Manifold ContDiff
 
 noncomputable section
 
@@ -18,8 +15,6 @@ namespace Geometry
 namespace Riemannian
 namespace Variation
 
-open DifferentialGeometry.Analysis.ODE
-open DifferentialGeometry.Geometry.Riemannian.AlongCurve
 open DifferentialGeometry.Geometry.Riemannian.CovariantDerivativeAlong
 open DifferentialGeometry.Geometry.Riemannian.Exponential
 open DifferentialGeometry.Geometry.Riemannian.Geodesic
@@ -48,7 +43,7 @@ theorem not_conj_of_min_len
       g.inner p
         ((tangentSpaceModelContinuousLinearEquiv (I := I) p).symm u)
         ((tangentSpaceModelContinuousLinearEquiv (I := I) p).symm u) = 1)
-    (L : ℝ) (hL : 0 < L)
+    (L : ℝ)
     (hmin : ∀ η : ℝ → M,
       ContMDiffOn 𝓘(ℝ, ℝ) I 1 η (Icc 0 L) →
       η 0 = p →
@@ -84,11 +79,6 @@ theorem not_conj_of_min_len
         (show TangentSpace I p from u) := by
     funext t
     simp only [γ, f, zero_smul, add_zero]
-  have hγe :
-      γ = intrinsicGeodesic (I := I) g hEnorm p
-        ((tangentSpaceModelContinuousLinearEquiv (I := I) p).symm u) := by
-    rw [← huP]
-    exact hγ
   let J : ∀ t : ℝ, TangentSpace I (γ t) := fun t =>
     mfderiv 𝓘(ℝ, ℝ) I (fun s : ℝ => f s t) 0 (1 : ℝ)
   let DJ : ∀ t : ℝ, TangentSpace I (γ t) :=
@@ -117,23 +107,11 @@ theorem not_conj_of_min_len
         (fun q : ℝ × ℝ => f q.1 q.2) := by
     simpa only [f] using
       intrinsicVar_smooth (I := I) g hEnorm p u z
-  have hf_smooth : IsSmoothVariation (I := I) f :=
-    hf_infty.of_le ENat.LEInfty.out
   have hJ_bundle : ContMDiff 𝓘(ℝ, ℝ) I.tangent ∞
       (fun t => TotalSpace.mk' E
         (E := (TangentSpace I : M → Type _)) (γ t) (J t)) := by
     simpa only [γ, J] using
       varField_smooth (I := I) f hf_infty
-  have hJdiff (t : ℝ) :
-      DifferentiableAt ℝ (chartRepAt (I := I) γ J t) t := by
-    simpa only [γ, J] using
-      variationField_chartRep_differentiableAt
-        (I := I) f hf_smooth t
-  have hDJdiff (t : ℝ) :
-      DifferentiableAt ℝ (chartRepAt (I := I) γ DJ t) t := by
-    simpa only [γ, J, DJ] using
-      variationField_covDeriv_chartRep_differentiableAt
-        (I := I) g f hf_smooth t
   have hJacobian : IsJacobiAlong (I := I) g γ J := by
     rw [hγ]
     simpa only [J, f] using
@@ -143,10 +121,6 @@ theorem not_conj_of_min_len
       jacobiVar_zero (I := I) g hEnorm p u z
   have hJc : J c = 0 := by
     simpa only [γ, f, J] using hJc_raw
-  have hJperp :
-      ∀ t, g.inner (γ t) (J t) (curveVelocity (I := I) γ t) = 0 :=
-    jacobi_perp_of_ends (I := I) g γ J hc.1.ne'
-      hγ_smooth hgeo hJdiff hDJdiff hJacobian hJ0 hJc
   have hunit0 :
       g.inner (γ 0) (mfderiv 𝓘(ℝ, ℝ) I γ 0 (1 : ℝ))
         (mfderiv 𝓘(ℝ, ℝ) I γ 0 (1 : ℝ)) = 1 := by
@@ -166,67 +140,6 @@ theorem not_conj_of_min_len
       (show E from mfderiv 𝓘(ℝ, ℝ) I γ 0 (1 : ℝ)) = 1
     rw [hvel0]
     exact hunitLegacy
-  obtain ⟨F, hFdiff, hFpar, hON, hFperp, hFbundle⟩ :=
-    exists_parallel_perp_frame (I := I) g γ hγ_smooth
-      (L := L) hL (hgeo.isGeodesicOn (Icc 0 L)) hunit0
-  let e : Fin (Module.finrank ℝ E - 1) →
-      ∀ t : ℝ, TangentSpace I (γ t) :=
-    fun i => (F i).toFun
-  let R : ℝ → EuclideanSpace ℝ (Fin (Module.finrank ℝ E - 1)) →L[ℝ]
-      EuclideanSpace ℝ (Fin (Module.finrank ℝ E - 1)) :=
-    perpCurvOp (I := I) g γ e
-  let y : ℝ → EuclideanSpace ℝ (Fin (Module.finrank ℝ E - 1)) :=
-    perpCoeff (I := I) g e J
-  let v : ℝ → EuclideanSpace ℝ (Fin (Module.finrank ℝ E - 1)) :=
-    perpCoeff (I := I) g e DJ
-  have hspeed (t : ℝ) :
-      0 < g.inner (γ t) (curveVelocity (I := I) γ t)
-        (curveVelocity (I := I) γ t) := by
-    have hsq :=
-      intrinsicGeodesic_speedSq_eq (I := I) g hEnorm p
-        ((tangentSpaceModelContinuousLinearEquiv (I := I) p).symm u) t
-    have hsqUnit := hsq.trans hunit
-    have hsq' :
-        g.inner (γ t) (curveVelocity (I := I) γ t)
-            (curveVelocity (I := I) γ t) = 1 := by
-      rw [hγe]
-      exact hsqUnit
-    rw [hsq']
-    exact zero_lt_one
-  have hode (t : ℝ) (ht : t ∈ Icc (0 : ℝ) L) :
-      HasDerivAt y (v t) t ∧
-        HasDerivAt v (-(R t) (y t)) t := by
-    simpa only [y, v, R, e, DJ] using
-      perpCoeff_ode (I := I) (n := ∞) (by simp) g γ e J t
-        hγ_smooth.contMDiffAt
-        (fun i => hFdiff i t ht)
-        (hJdiff t) (hDJdiff t)
-        (fun i => hFpar i t ht)
-        (hJacobian t) (by simp) (hspeed t)
-        (fun i => hFperp t ht i)
-        (hJperp t) (fun i j => hON t ht i j)
-  have hsol : IsJacobiFieldOn R 0 L y v :=
-    { deriv_fst := fun t ht => (hode t ht).1.hasDerivWithinAt
-      deriv_snd := fun t ht => (hode t ht).2.hasDerivWithinAt }
-  have hR_smooth : ContDiff ℝ ∞ R := by
-    simpa only [R, e] using
-      perpCurv_smooth (I := I) g γ hγ_smooth e
-        (fun i => hFbundle i)
-  have hR_symm :
-      ∀ t, ∀ x x' : EuclideanSpace ℝ
-        (Fin (Module.finrank ℝ E - 1)),
-        ⟪R t x, x'⟫ = ⟪x, R t x'⟫ := by
-    intro t x x'
-    simpa only [R, e] using
-      perpCurv_symm (I := I) g γ e t x x'
-  have hy_smooth : ContDiff ℝ ∞ y := by
-    simpa only [y, e] using
-      perpCoeff_smooth (I := I) g e J
-        (fun i => hFbundle i) hJ_bundle
-  have hy0 : y 0 = 0 := by
-    exact perpCoeff_zero (I := I) g e J 0 hJ0
-  have hyc : y c = 0 := by
-    exact perpCoeff_zero (I := I) g e J c hJc
   have hDJ0 : (DJ 0 : E) = z := by
     change (covDerivAlong (I := I) g γ J 0 : E) = z
     have hcurve_ev :
@@ -260,123 +173,11 @@ theorem not_conj_of_min_len
         hcurve_ev hfield_ev
     exact htransport.trans
       (intrinsic_jacobi_d0 (I := I) g hEnorm p u z)
-  have hveldiff :
-      DifferentiableAt ℝ
-        (chartRepAt (I := I) γ (curveVelocity (I := I) γ) 0) 0 := by
-    change DifferentiableAt ℝ
-      (chartRepAt (I := I) γ (fun s => mfderiv 𝓘(ℝ, ℝ) I γ s (1 : ℝ)) 0) 0
-    exact velocity_chartRepAt_differentiableAt (I := I) γ hγ_smooth 0
-  have hvelpar :
-      covDerivAlong (I := I) g γ (curveVelocity (I := I) γ) 0 = 0 :=
-    (covDerivAlong_velocity_eq_zero_iff_hasGeodesicEquationAt
-      (I := I) g γ 0 hγ_smooth).mpr (hgeo.hasGeodesicEquationAt 0)
-  have hinnerDeriv :
-      HasDerivAt
-        (fun t : ℝ =>
-          g.inner (γ t) (curveVelocity (I := I) γ t) (J t))
-        (g.inner (γ 0) (curveVelocity (I := I) γ 0) (DJ 0)) 0 := by
-    simpa only [DJ] using
-      parInner_deriv (I := I) (n := ∞) (by simp) g γ
-        (curveVelocity (I := I) γ) J 0
-        hγ_smooth.contMDiffAt hveldiff (hJdiff 0) hvelpar
-  have hinnerZero :
-      (fun t : ℝ =>
-        g.inner (γ t) (curveVelocity (I := I) γ t) (J t)) =
-        fun _ : ℝ => 0 := by
-    funext t
-    rw [g.symm]
-    exact hJperp t
-  have hDJperp :
-      g.inner (γ 0) (DJ 0) (curveVelocity (I := I) γ 0) = 0 := by
-    have hzero :
-        g.inner (γ 0) (curveVelocity (I := I) γ 0) (DJ 0) = 0 := by
-      rw [hinnerZero] at hinnerDeriv
-      exact hinnerDeriv.unique (hasDerivAt_const (x := (0 : ℝ)) (c := (0 : ℝ)))
-    rw [g.symm]
-    exact hzero
   have hDJ0_ne : DJ 0 ≠ 0 := by
     intro hzero
     apply hz
     rw [← hDJ0]
     exact hzero
-  have hv0_ne : v 0 ≠ 0 := by
-    exact perpCoeff_ne_zero (I := I) g e DJ 0
-      (by simp) (hspeed 0)
-      (fun i => hFperp 0 ⟨le_rfl, hL.le⟩ i)
-      hDJperp (fun i j => hON 0 ⟨le_rfl, hL.le⟩ i j) hDJ0_ne
-  have hne : ∃ t ∈ Icc (0 : ℝ) L, y t ≠ 0 := by
-    have hev : {t : ℝ | y t ≠ 0} ∈ 𝓝[≠] (0 : ℝ) := by
-      change ∀ᶠ t in 𝓝[≠] (0 : ℝ), y t ≠ 0
-      simpa only [hy0] using
-        ((hode 0 ⟨le_rfl, hL.le⟩).1.eventually_ne hv0_ne :
-          ∀ᶠ t in 𝓝[≠] (0 : ℝ), y t ≠ 0)
-    obtain ⟨U, hU, hUsub⟩ :=
-      mem_nhdsWithin_iff_exists_mem_nhds_inter.mp hev
-    obtain ⟨ε, hε, hball⟩ := Metric.mem_nhds_iff.mp hU
-    let t : ℝ := min (ε / 2) (L / 2)
-    have htpos : 0 < t := by
-      exact lt_min (by linarith) (by linarith)
-    have htε : t < ε :=
-      (min_le_left (ε / 2) (L / 2)).trans_lt (by linarith)
-    have htL : t < L :=
-      (min_le_right (ε / 2) (L / 2)).trans_lt (by linarith)
-    refine ⟨t, ⟨htpos.le, htL.le⟩, ?_⟩
-    apply hUsub
-    refine ⟨hball ?_, ?_⟩
-    · simpa only [Metric.mem_ball, Real.dist_eq, sub_zero, abs_of_pos htpos] using htε
-    · simpa only [Set.mem_compl_iff, Set.mem_singleton_iff] using htpos.ne'
-  obtain ⟨W, hW_smooth, hW0, hWL, hWneg⟩ :=
-    hsol.exists_smooth_neg_on hc hR_smooth.continuous.continuousOn
-      hR_symm hy_smooth hy0 hyc hne
-  let V : ℝ → E := fun t =>
-    (perpFrameLift (I := I) e W t : E)
-  have hV_bundle : ContMDiff 𝓘(ℝ, ℝ) I.tangent ∞
-      (fun t => TotalSpace.mk' E
-        (E := (TangentSpace I : M → Type _)) (γ t) (V t)) := by
-    simpa only [V] using
-      perpLift_smooth (I := I) hγ_smooth e W hW_smooth
-        (fun i => hFbundle i)
-  have hVperp :
-      ∀ t ∈ Icc (0 : ℝ) L,
-        g.inner (γ t) (V t)
-          (mfderiv 𝓘(ℝ, ℝ) I γ t (1 : ℝ)) = 0 := by
-    intro t ht
-    simpa only [V, curveVelocity] using
-      perpLift_perp (I := I) g e W t
-        (curveVelocity (I := I) γ t)
-        (fun i => hFperp t ht i)
-  have hV0 : V 0 = 0 := by
-    exact perpLift_zero (I := I) e W 0 hW0
-  have hVL : V L = 0 := by
-    exact perpLift_zero (I := I) e W L hWL
-  have hindex_eq :
-      indexForm (I := I) g γ 0 L V V =
-        DifferentialGeometry.Analysis.ODE.indexForm R 0 L
-          W (deriv W) W (deriv W) := by
-    have h0L : uIcc (0 : ℝ) L = Icc (0 : ℝ) L :=
-      uIcc_of_le hL.le
-    simpa only [V, R, e] using
-      perpLift_indexForm (I := I) g γ e W W 0 L
-        (fun t _ => hW_smooth.differentiable (by simp) t)
-        (fun t _ => hW_smooth.differentiable (by simp) t)
-        (fun i t ht => hFdiff i t (by simpa only [h0L] using ht))
-        (fun i t ht => hFpar i t (by simpa only [h0L] using ht))
-        (fun t ht i j => hON t (by simpa only [h0L] using ht) i j)
-  have hgeom_neg : indexForm (I := I) g γ 0 L V V < 0 := by
-    rw [hindex_eq]
-    exact hWneg
-  have hUnit :
-      ∀ t ∈ Icc (0 : ℝ) L,
-        g.inner (γ t)
-          (mfderiv 𝓘(ℝ, ℝ) I γ t (1 : ℝ))
-          (mfderiv 𝓘(ℝ, ℝ) I γ t (1 : ℝ)) = 1 := by
-    intro t _
-    have hsq :=
-      intrinsicGeodesic_speedSq_eq (I := I) g hEnorm p
-        ((tangentSpaceModelContinuousLinearEquiv (I := I) p).symm u) t
-    have hsqUnit := hsq.trans hunit
-    rw [hγe]
-    exact hsqUnit
   have hminγ :
       ∀ η : ℝ → M,
         ContMDiffOn 𝓘(ℝ, ℝ) I 1 η (Icc 0 L) →
@@ -392,13 +193,10 @@ theorem not_conj_of_min_len
         η L = intrinsicGeodesic (I := I) g hEnorm p
           (show TangentSpace I p from u) L := hηL.trans (by rw [hγ])
     simpa only [hγ] using hmin η hη hη0' hηL'
-  have hnonneg :
-      0 ≤ indexForm (I := I) g γ 0 L V V :=
-    indexForm_nonneg_of_minimising_geodesic
-      (I := I) g γ L V hL.le
-      (hV_bundle.of_le (WithTop.coe_le_coe.2 le_top)) (hgeo.isGeodesicOn (Icc 0 L)) hminγ
-      hUnit hVperp hV0 hVL
-  exact (not_lt_of_ge hnonneg) hgeom_neg
+  exact jacobi_field_ne_zero_of_minimising_geodesic (I := I) g γ J
+    hγ_smooth hJ_bundle.contMDiffOn isOpen_univ (subset_univ _)
+    (hgeo.isGeodesicOn (Icc 0 L)) (fun t _ => hJacobian t)
+    hunit0 hminγ hc hJ0 hDJ0_ne hJc
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
@@ -427,7 +225,7 @@ theorem not_conj_of_min
     {c : ℝ} (hc : c ∈ Ioo (0 : ℝ) 1) :
     ¬ IsConjVec (I := I) g hEnorm p (c • u) :=
   not_conj_of_min_len (I := I) g hEnorm p u hunit 1
-    (by norm_num) hmin hc
+    hmin hc
 
 end Variation
 end Riemannian

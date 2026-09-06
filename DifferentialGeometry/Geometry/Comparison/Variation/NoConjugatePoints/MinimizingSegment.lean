@@ -394,7 +394,7 @@ theorem tail_not_conj_of_min
   have hrev_no :
       ¬ IsConjVec (I := I) g hEnorm z₁.proj (ell • eRev : E) :=
     not_conj_of_min_len (I := I) g hEnorm z₁.proj (eRev : E)
-      heRev_unit r hr_pos hrev_min ⟨hell_pos, hell_lt⟩
+      heRev_unit r hrev_min ⟨hell_pos, hell_lt⟩
   intro htail
   have htail_rev :=
     (conjVec_reverse (I := I) g hEnorm z.proj uTail).mp htail
@@ -563,7 +563,7 @@ theorem tail_no_conj
       exact ⟨mul_pos ht.1 hell_pos, (mul_lt_iff_lt_one_left hell_pos).mpr ht_lt⟩
     have hno :=
       not_conj_of_min_len (I := I) g hEnorm z.proj (eTail : E)
-        heTail_unit ell hell_pos htail_min hcell
+        heTail_unit ell htail_min hcell
     have hvec :
         (t * ell) • (eTail : E) = t • (uTail : E) := by
       calc
