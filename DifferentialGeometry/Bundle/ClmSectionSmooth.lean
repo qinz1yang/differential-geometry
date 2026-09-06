@@ -10,6 +10,7 @@ import Mathlib.Geometry.Manifold.BumpFunction
 import Mathlib.Geometry.Manifold.VectorBundle.Hom
 import Mathlib.Geometry.Manifold.VectorBundle.Tangent
 import Mathlib.Geometry.Manifold.VectorBundle.ContMDiffSection
+import Mathlib.LinearAlgebra.Trace
 
 set_option autoImplicit false
 
@@ -95,5 +96,42 @@ theorem cotangentCov_clmSection_smooth_aux
   change (Trivialization.continuousLinearMapAt ℝ e₂ x) ((φ x) ((Y i) x)) = _
   rw [show ⇑(e₂.continuousLinearMapAt ℝ x) = ⇑(e₂.linearMapAt ℝ x) from rfl,
     e₂.coe_linearMapAt_of_mem hx₂]
+
+omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] in
+theorem contMDiff_linearMap_trace
+    {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F] [FiniteDimensional ℝ F]
+    {V : M → Type*} [∀ x, AddCommGroup (V x)] [∀ x, Module ℝ (V x)]
+    [TopologicalSpace (TotalSpace F V)] [∀ x, TopologicalSpace (V x)]
+    [FiberBundle F V] [VectorBundle ℝ F V]
+    [∀ x, IsTopologicalAddGroup (V x)] [∀ x, ContinuousSMul ℝ (V x)]
+    (A : ∀ x : M, V x →L[ℝ] V x)
+    (hA : ContMDiff I (I.prod 𝓘(ℝ, F →L[ℝ] F)) ∞
+      (fun x : M => (⟨x, A x⟩ : TotalSpace (F →L[ℝ] F)
+        (fun y : M => V y →L[ℝ] V y)))) :
+    ContMDiff I 𝓘(ℝ) ∞
+      (fun x : M => LinearMap.trace ℝ (V x) (A x).toLinearMap) := by
+  intro x
+  have hcoord := (contMDiffAt_hom_bundle
+    (f := fun y : M => (⟨y, A y⟩ : TotalSpace (F →L[ℝ] F)
+      (fun z : M => V z →L[ℝ] V z)))).mp (hA x)
+  let tr : (F →L[ℝ] F) →L[ℝ] ℝ :=
+    LinearMap.toContinuousLinearMap
+      ((LinearMap.trace ℝ F).comp
+        (LinearMap.toContinuousLinearMap :
+          (F →ₗ[ℝ] F) ≃ₗ[ℝ] F →L[ℝ] F).symm.toLinearMap)
+  have hsmooth : ContMDiffAt I 𝓘(ℝ) ∞
+      (fun y : M => tr (ContinuousLinearMap.inCoordinates
+        F V F V x y x y (A y))) x :=
+    tr.contMDiff.contMDiffAt.comp x hcoord.2
+  refine hsmooth.congr_of_eventuallyEq ?_
+  have hxbase : x ∈ (trivializationAt F V x).baseSet :=
+    mem_baseSet_trivializationAt F V x
+  filter_upwards [(trivializationAt F V x).open_baseSet.mem_nhds hxbase] with y hy
+  change LinearMap.trace ℝ (V y) (A y).toLinearMap =
+    LinearMap.trace ℝ F
+      (ContinuousLinearMap.inCoordinates F V F V x y x y (A y)).toLinearMap
+  rw [ContinuousLinearMap.inCoordinates_eq hy hy]
+  let e := (trivializationAt F V x).continuousLinearEquivAt ℝ y hy
+  exact (LinearMap.trace_conj' (A y).toLinearMap e.toLinearEquiv).symm
 
 end DifferentialGeometry

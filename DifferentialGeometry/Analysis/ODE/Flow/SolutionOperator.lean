@@ -1,5 +1,12 @@
 import DifferentialGeometry.Analysis.ODE.Flow.HigherRegularity.VariationalLinearMapSmoothness
+import Mathlib.Analysis.Calculus.ContDiff.Deriv
 import Mathlib.Analysis.Calculus.ContDiff.FiniteDimension
+import Mathlib.Analysis.InnerProductSpace.Symmetric
+import Mathlib.Analysis.Normed.Group.Quotient
+import Mathlib.Analysis.Normed.Module.ContinuousInverse
+import Mathlib.Analysis.Normed.Ring.Units
+import Mathlib.Topology.Algebra.Module.ContinuousLinearMap.Quotient
+import Mathlib.Topology.LocallyConstant.Basic
 
 
 noncomputable section
@@ -147,6 +154,333 @@ theorem linearODE_unique_on_Ioo
     heq) ht_mem'
 
 end Uniqueness
+
+section InvariantRange
+
+variable {F G : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
+  [FiniteDimensional ℝ F] [NormedAddCommGroup G] [NormedSpace ℝ G]
+
+theorem _root_.ContinuousLinearMap.range_eq_on_Ioo_of_hasDerivAt_eq_comp
+    {W : ℝ → F →L[ℝ] G} {C : ℝ → F →L[ℝ] F} {a b : ℝ}
+    (hC : ContinuousOn C (Ioo a b))
+    (hW : ∀ t ∈ Ioo a b, HasDerivAt W ((W t).comp (C t)) t)
+    {s t : ℝ} (hs : s ∈ Ioo a b) (ht : t ∈ Ioo a b) :
+    (W s).range = (W t).range := by
+  have hle : ∀ {u v : ℝ}, u ∈ Ioo a b → v ∈ Ioo a b →
+      (W v).range ≤ (W u).range := by
+    intro u v hu hv y hy
+    let S : Submodule ℝ G := (W u).range
+    let _ : FiniteDimensional ℝ S := by
+      dsimp [S]
+      infer_instance
+    let _ : IsClosed (S : Set G) := Submodule.closed_of_finiteDimensional S
+    let Q : G →L[ℝ] G ⧸ S := S.mkQL
+    let Z : ℝ → F →L[ℝ] G ⧸ S := fun τ => Q.comp (W τ)
+    let R : ℝ → (F →L[ℝ] G ⧸ S) →L[ℝ] F →L[ℝ] G ⧸ S :=
+      fun τ => (ContinuousLinearMap.compL ℝ F F (G ⧸ S)).flip (C τ)
+    have hR : ContinuousOn R (Ioo a b) :=
+      (ContinuousLinearMap.compL ℝ F F (G ⧸ S)).flip.continuous.comp_continuousOn hC
+    have hZ : ∀ τ ∈ Ioo a b, HasDerivAt Z (R τ (Z τ)) τ := by
+      intro τ hτ
+      have h := (hasDerivAt_const (τ) Q).clm_comp (hW τ hτ)
+      simpa [Z, R, ContinuousLinearMap.comp_assoc] using h
+    have hzero : ∀ τ ∈ Ioo a b,
+        HasDerivAt (fun _ : ℝ => (0 : F →L[ℝ] G ⧸ S))
+          (R τ ((fun _ : ℝ => (0 : F →L[ℝ] G ⧸ S)) τ)) τ := by
+      intro τ hτ
+      simpa using (hasDerivAt_const (τ) (0 : F →L[ℝ] G ⧸ S))
+    have hinit : Z u = 0 := by
+      ext x
+      exact (Submodule.Quotient.mk_eq_zero S).mpr ⟨x, rfl⟩
+    have huniq := linearODE_unique_on_Ioo hu hR hZ hzero hinit
+    rcases hy with ⟨x, rfl⟩
+    have hz := congrArg (fun L : F →L[ℝ] G ⧸ S => L x) (huniq hv)
+    exact (Submodule.Quotient.mk_eq_zero S).mp (by simpa [Z, Q] using hz)
+  exact le_antisymm (hle ht hs) (hle hs ht)
+
+theorem _root_.ContinuousLinearMap.range_eq_on_Ioo_of_hasDerivAt_of_injective_of_deriv_range_le
+    [FiniteDimensional ℝ G]
+    {W D : ℝ → F →L[ℝ] G} {a b : ℝ}
+    (hD : ContinuousOn D (Ioo a b))
+    (hW : ∀ t ∈ Ioo a b, HasDerivAt W (D t) t)
+    (hinj : ∀ t ∈ Ioo a b, Injective (W t))
+    (hrange : ∀ t ∈ Ioo a b, (D t).range ≤ (W t).range)
+    {s t : ℝ} (hs : s ∈ Ioo a b) (ht : t ∈ Ioo a b) :
+    (W s).range = (W t).range := by
+  have hlocal : IsLocallyConstant (fun u : Ioo a b => (W u).range) := by
+    rw [IsLocallyConstant.iff_eventually_eq]
+    intro u
+    let hleft :=
+      ContinuousLinearMap.HasLeftInverse.of_injective_of_finiteDimensional (hinj u u.property)
+    let L : G →L[ℝ] F := hleft.leftInverse
+    let B : ℝ → F →L[ℝ] F := fun τ => L.comp (W τ)
+    have hBu : B u = 1 := by
+      ext x
+      exact hleft.leftInverse_leftInverse x
+    have hB_cont : ContinuousAt B u := by
+      have hcomp : ContinuousAt (fun T : F →L[ℝ] G => L.comp T) (W u) :=
+        ((ContinuousLinearMap.compL ℝ F G F) L).continuous.continuousAt
+      change ContinuousAt ((fun T : F →L[ℝ] G => L.comp T) ∘ W) (u : ℝ)
+      exact hcomp.comp (hW u u.property).continuousAt
+    have hunit_nhds : {τ : ℝ | IsUnit (B τ)} ∈ 𝓝 (u : ℝ) := by
+      change B ⁻¹' {T : F →L[ℝ] F | IsUnit T} ∈ 𝓝 (u : ℝ)
+      apply hB_cont.preimage_mem_nhds
+      rw [hBu]
+      exact Units.isOpen.mem_nhds isUnit_one
+    have hgood : {τ : ℝ | IsUnit (B τ)} ∩ Ioo a b ∈ 𝓝 (u : ℝ) :=
+      inter_mem hunit_nhds (isOpen_Ioo.mem_nhds u.property)
+    obtain ⟨ε, hε, hball⟩ := Metric.mem_nhds_iff.mp hgood
+    have hinterval : Ioo ((u : ℝ) - ε) ((u : ℝ) + ε) ⊆
+        {τ : ℝ | IsUnit (B τ)} ∩ Ioo a b := by
+      simpa only [← Real.ball_eq_Ioo] using hball
+    let C : ℝ → F →L[ℝ] F := fun τ =>
+      Ring.inverse (B τ) * L.comp (D τ)
+    have hC : ContinuousOn C (Ioo ((u : ℝ) - ε) ((u : ℝ) + ε)) := by
+      intro τ hτ
+      have hτgood := hinterval hτ
+      have hBτ_cont : ContinuousAt B τ := by
+        have hcomp : ContinuousAt (fun T : F →L[ℝ] G => L.comp T) (W τ) :=
+          ((ContinuousLinearMap.compL ℝ F G F) L).continuous.continuousAt
+        change ContinuousAt ((fun T : F →L[ℝ] G => L.comp T) ∘ W) τ
+        exact hcomp.comp (hW τ hτgood.2).continuousAt
+      have hinv_cont : ContinuousAt Ring.inverse (B τ) := by
+        simpa only [hτgood.1.unit_spec] using
+          (NormedRing.inverse_continuousAt hτgood.1.unit)
+      have hLD_cont : ContinuousAt (fun q => L.comp (D q)) τ := by
+        have hcomp : ContinuousAt (fun T : F →L[ℝ] G => L.comp T) (D τ) :=
+          ((ContinuousLinearMap.compL ℝ F G F) L).continuous.continuousAt
+        exact hcomp.comp (hD.continuousAt (isOpen_Ioo.mem_nhds hτgood.2))
+      exact ((hinv_cont.comp hBτ_cont).mul hLD_cont).continuousWithinAt
+    have hfactor : ∀ τ ∈ Ioo ((u : ℝ) - ε) ((u : ℝ) + ε),
+        (W τ).comp (C τ) = D τ := by
+      intro τ hτ
+      have hτgood := hinterval hτ
+      ext y
+      obtain ⟨x, hx⟩ := hrange τ hτgood.2 ⟨y, rfl⟩
+      have hcancel : Ring.inverse (B τ) (B τ x) = x := by
+        have h := congrArg (fun T : F →L[ℝ] F => T x)
+          (Ring.inverse_mul_cancel (B τ) hτgood.1)
+        simpa only [mul_apply_eq_comp, one_apply_eq_self] using h
+      have hLD : L (D τ y) = B τ x := by
+        calc
+          L (D τ y) = L (W τ x) := congrArg L hx.symm
+          _ = B τ x := rfl
+      calc
+        (W τ).comp (C τ) y = W τ (Ring.inverse (B τ) (L (D τ y))) := by
+          rfl
+        _ = W τ (Ring.inverse (B τ) (B τ x)) := by rw [hLD]
+        _ = W τ x := by rw [hcancel]
+        _ = D τ y := hx
+    have hW_local : ∀ τ ∈ Ioo ((u : ℝ) - ε) ((u : ℝ) + ε),
+        HasDerivAt W ((W τ).comp (C τ)) τ := by
+      intro τ hτ
+      rw [hfactor τ hτ]
+      exact hW τ (hinterval hτ).2
+    have hu_local : (u : ℝ) ∈ Ioo ((u : ℝ) - ε) ((u : ℝ) + ε) := by
+      constructor <;> linarith
+    have hlocal_nhds : Subtype.val ⁻¹'
+        Ioo ((u : ℝ) - ε) ((u : ℝ) + ε) ∈ 𝓝 u :=
+      continuous_subtype_val.continuousAt.preimage_mem_nhds
+        (isOpen_Ioo.mem_nhds hu_local)
+    filter_upwards [hlocal_nhds] with v hv
+    exact ContinuousLinearMap.range_eq_on_Ioo_of_hasDerivAt_eq_comp hC hW_local hv hu_local
+  let hpre : PreconnectedSpace (Ioo a b) := Subtype.preconnectedSpace isPreconnected_Ioo
+  exact hlocal.apply_eq_of_isPreconnected (@isPreconnected_univ _ _ hpre)
+    (x := ⟨s, hs⟩) (y := ⟨t, ht⟩) trivial trivial
+
+theorem _root_.Submodule.span_range_eq_on_Ioo_of_hasDerivAt_of_linearIndependent_of_deriv_mem
+    {ι : Type*} [Finite ι] [FiniteDimensional ℝ G]
+    {w w' : ι → ℝ → G} {a b : ℝ}
+    (hw' : ∀ i, ContinuousOn (w' i) (Ioo a b))
+    (hw : ∀ i t, t ∈ Ioo a b → HasDerivAt (w i) (w' i t) t)
+    (hli : ∀ t ∈ Ioo a b, LinearIndependent ℝ (fun i => w i t))
+    (hmem : ∀ i t, t ∈ Ioo a b →
+      w' i t ∈ Submodule.span ℝ (Set.range fun j => w j t))
+    {s t : ℝ} (hs : s ∈ Ioo a b) (ht : t ∈ Ioo a b) :
+    Submodule.span ℝ (Set.range fun i => w i s) =
+      Submodule.span ℝ (Set.range fun i => w i t) := by
+  let _ := Fintype.ofFinite ι
+  let term : ι → G →L[ℝ] ((ι → ℝ) →L[ℝ] G) := fun i =>
+    (ContinuousLinearMap.smulRightL ℝ (ι → ℝ) G) (ContinuousLinearMap.proj i)
+  let W : ℝ → (ι → ℝ) →L[ℝ] G := fun τ => ∑ i, term i (w i τ)
+  let D : ℝ → (ι → ℝ) →L[ℝ] G := fun τ => ∑ i, term i (w' i τ)
+  have hD : ContinuousOn D (Ioo a b) := by
+    apply continuousOn_finsetSum
+    intro i hi
+    exact (term i).continuous.comp_continuousOn (hw' i)
+  have hW : ∀ τ ∈ Ioo a b, HasDerivAt W (D τ) τ := by
+    intro τ hτ
+    have hsum := HasDerivAt.sum (u := Finset.univ) (fun i _ => by
+      have hi := (term i).hasFDerivAt.comp_hasDerivAt τ (hw i τ hτ)
+      simpa only [Function.comp_apply] using hi)
+    change HasDerivAt (fun q => ∑ i, term i (w i q)) (∑ i, term i (w' i τ)) τ
+    have hfun : (∑ i, (term i : G → ((ι → ℝ) →L[ℝ] G)) ∘ w i) =
+        fun q => ∑ i, term i (w i q) := by
+      funext q
+      simp only [Finset.sum_apply, Function.comp_apply]
+    rw [← hfun]
+    exact hsum
+  have hW_apply (τ : ℝ) (c : ι → ℝ) :
+      W τ c = ∑ i, c i • w i τ := by
+    simp [W, term]
+  have hD_apply (τ : ℝ) (c : ι → ℝ) :
+      D τ c = ∑ i, c i • w' i τ := by
+    simp [D, term]
+  have hinj : ∀ τ ∈ Ioo a b, Injective (W τ) := by
+    intro τ hτ c d hcd
+    apply sub_eq_zero.mp
+    apply funext
+    intro i
+    have hsum : ∑ j, (c - d) j • w j τ = 0 := by
+      calc
+        ∑ j, (c - d) j • w j τ = W τ (c - d) := (hW_apply τ (c - d)).symm
+        _ = W τ c - W τ d := map_sub (W τ) c d
+        _ = 0 := sub_eq_zero.mpr hcd
+    exact (Fintype.linearIndependent_iff.mp (hli τ hτ)) (c - d) hsum i
+  have hW_range (τ : ℝ) :
+      (W τ).range = Submodule.span ℝ (Set.range fun i => w i τ) := by
+    rw [← Fintype.range_linearCombination]
+    congr 1
+    ext c
+    exact hW_apply τ c
+  have hD_range (τ : ℝ) :
+      (D τ).range = Submodule.span ℝ (Set.range fun i => w' i τ) := by
+    rw [← Fintype.range_linearCombination]
+    congr 1
+    ext c
+    exact hD_apply τ c
+  have hrange : ∀ τ ∈ Ioo a b, (D τ).range ≤ (W τ).range := by
+    intro τ hτ
+    rw [hD_range, hW_range, Submodule.span_le]
+    rintro _ ⟨i, rfl⟩
+    exact hmem i τ hτ
+  rw [← hW_range s, ← hW_range t]
+  exact ContinuousLinearMap.range_eq_on_Ioo_of_hasDerivAt_of_injective_of_deriv_range_le
+    hD hW hinj hrange hs ht
+
+theorem _root_.ContinuousLinearMap.ker_and_range_eq_on_Ioo_of_frame_ode
+    {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℝ H]
+    [FiniteDimensional ℝ H]
+    {A : ℝ → H →L[ℝ] H} {W : ℝ → F →L[ℝ] H}
+    {C : ℝ → F →L[ℝ] F} {a b : ℝ}
+    (hC : ContinuousOn C (Ioo a b))
+    (hW : ∀ t ∈ Ioo a b, HasDerivAt W ((W t).comp (C t)) t)
+    (hker : ∀ t ∈ Ioo a b, (W t).range = (A t).ker)
+    (hsymm : ∀ t ∈ Ioo a b, (A t).toLinearMap.IsSymmetric)
+    {s t : ℝ} (hs : s ∈ Ioo a b) (ht : t ∈ Ioo a b) :
+    (A s).ker = (A t).ker ∧ (A s).range = (A t).range := by
+  have hframe : (W s).range = (W t).range :=
+    ContinuousLinearMap.range_eq_on_Ioo_of_hasDerivAt_eq_comp hC hW hs ht
+  have hkernel : (A s).ker = (A t).ker := by
+    rw [← hker s hs, ← hker t ht]
+    exact hframe
+  refine ⟨hkernel, ?_⟩
+  have horth : (A s).rangeᗮ = (A t).rangeᗮ := by
+    rw [(hsymm s hs).orthogonal_range, (hsymm t ht).orthogonal_range]
+    exact hkernel
+  have horthorth := congrArg (fun K : Submodule ℝ H => Kᗮ) horth
+  simpa using horthorth
+
+theorem _root_.ContinuousLinearMap.ker_and_range_eq_on_Ioo_of_frame_deriv_range
+    {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℝ H]
+    [FiniteDimensional ℝ H]
+    {A : ℝ → H →L[ℝ] H} {W D : ℝ → F →L[ℝ] H} {a b : ℝ}
+    (hD : ContinuousOn D (Ioo a b))
+    (hW : ∀ t ∈ Ioo a b, HasDerivAt W (D t) t)
+    (hinj : ∀ t ∈ Ioo a b, Injective (W t))
+    (hderiv : ∀ t ∈ Ioo a b, (D t).range ≤ (W t).range)
+    (hker : ∀ t ∈ Ioo a b, (W t).range = (A t).ker)
+    (hsymm : ∀ t ∈ Ioo a b, (A t).toLinearMap.IsSymmetric)
+    {s t : ℝ} (hs : s ∈ Ioo a b) (ht : t ∈ Ioo a b) :
+    (A s).ker = (A t).ker ∧ (A s).range = (A t).range := by
+  have hframe : (W s).range = (W t).range :=
+    ContinuousLinearMap.range_eq_on_Ioo_of_hasDerivAt_of_injective_of_deriv_range_le
+      hD hW hinj hderiv hs ht
+  have hkernel : (A s).ker = (A t).ker := by
+    rw [← hker s hs, ← hker t ht]
+    exact hframe
+  refine ⟨hkernel, ?_⟩
+  have horth : (A s).rangeᗮ = (A t).rangeᗮ := by
+    rw [(hsymm s hs).orthogonal_range, (hsymm t ht).orthogonal_range]
+    exact hkernel
+  have horthorth := congrArg (fun K : Submodule ℝ H => Kᗮ) horth
+  simpa using horthorth
+
+theorem _root_.ContinuousLinearMap.ker_and_range_eq_on_Ioo_of_kernel_frame_deriv_annihilation
+    {ι H : Type*} [Finite ι]
+    [NormedAddCommGroup H] [InnerProductSpace ℝ H] [FiniteDimensional ℝ H]
+    {A A' : ℝ → H →L[ℝ] H} {w w' : ι → ℝ → H} {a b : ℝ}
+    (hw' : ∀ i, ContinuousOn (w' i) (Ioo a b))
+    (hA : ∀ t ∈ Ioo a b, HasDerivAt A (A' t) t)
+    (hw : ∀ i t, t ∈ Ioo a b → HasDerivAt (w i) (w' i t) t)
+    (hli : ∀ t ∈ Ioo a b, LinearIndependent ℝ (fun i => w i t))
+    (hker : ∀ t ∈ Ioo a b,
+      Submodule.span ℝ (Set.range fun i => w i t) = (A t).ker)
+    (hann : ∀ t ∈ Ioo a b, ∀ v, v ∈ (A t).ker → A' t v = 0)
+    (hsymm : ∀ t ∈ Ioo a b, (A t).toLinearMap.IsSymmetric)
+    {s t : ℝ} (hs : s ∈ Ioo a b) (ht : t ∈ Ioo a b) :
+    (A s).ker = (A t).ker ∧ (A s).range = (A t).range := by
+  have hderiv_mem : ∀ i τ, τ ∈ Ioo a b →
+      w' i τ ∈ Submodule.span ℝ (Set.range fun j => w j τ) := by
+    intro i τ hτ
+    have hwi : w i τ ∈ (A τ).ker := by
+      rw [← hker τ hτ]
+      exact Submodule.subset_span (Set.mem_range_self i)
+    have hprod := (hA τ hτ).clm_apply (hw i τ hτ)
+    have hevent : (fun q => A q (w i q)) =ᶠ[𝓝 τ]
+        (fun _ => (0 : H)) := by
+      filter_upwards [isOpen_Ioo.eventually_mem hτ] with q hq
+      apply LinearMap.mem_ker.mp
+      rw [← hker q hq]
+      exact Submodule.subset_span (Set.mem_range_self i)
+    have hzero : HasDerivAt (fun q => A q (w i q)) 0 τ :=
+      (hasDerivAt_const τ (0 : H)).congr_of_eventuallyEq hevent
+    have hsum : A' τ (w i τ) + A τ (w' i τ) = 0 := hprod.unique hzero
+    rw [hann τ hτ (w i τ) hwi, zero_add] at hsum
+    rw [hker τ hτ]
+    exact LinearMap.mem_ker.mpr hsum
+  have hkernel : (A s).ker = (A t).ker := by
+    rw [← hker s hs, ← hker t ht]
+    exact Submodule.span_range_eq_on_Ioo_of_hasDerivAt_of_linearIndependent_of_deriv_mem
+      hw' hw hli hderiv_mem hs ht
+  refine ⟨hkernel, ?_⟩
+  have horth : (A s).rangeᗮ = (A t).rangeᗮ := by
+    rw [(hsymm s hs).orthogonal_range, (hsymm t ht).orthogonal_range]
+    exact hkernel
+  have horthorth := congrArg (fun K : Submodule ℝ H => Kᗮ) horth
+  simpa using horthorth
+
+theorem _root_.ContinuousLinearMap.ker_and_range_eq_on_Ioo_of_contDiffOn_kernel_frame_deriv_annihilation
+    {ι H : Type*} [Finite ι]
+    [NormedAddCommGroup H] [InnerProductSpace ℝ H] [FiniteDimensional ℝ H]
+    {A : ℝ → H →L[ℝ] H} {w : ι → ℝ → H} {a b : ℝ}
+    (hA : ContDiffOn ℝ 1 A (Ioo a b))
+    (hw : ∀ i, ContDiffOn ℝ 1 (w i) (Ioo a b))
+    (hli : ∀ t ∈ Ioo a b, LinearIndependent ℝ (fun i => w i t))
+    (hker : ∀ t ∈ Ioo a b,
+      Submodule.span ℝ (Set.range fun i => w i t) = (A t).ker)
+    (hann : ∀ t ∈ Ioo a b, ∀ v, v ∈ (A t).ker → deriv A t v = 0)
+    (hsymm : ∀ t ∈ Ioo a b, (A t).toLinearMap.IsSymmetric)
+    {s t : ℝ} (hs : s ∈ Ioo a b) (ht : t ∈ Ioo a b) :
+    (A s).ker = (A t).ker ∧ (A s).range = (A t).range := by
+  apply ContinuousLinearMap.ker_and_range_eq_on_Ioo_of_kernel_frame_deriv_annihilation
+    (A' := deriv A) (w' := fun i => deriv (w i))
+  · intro i
+    exact (hw i).continuousOn_deriv_of_isOpen isOpen_Ioo (by norm_num)
+  · intro τ hτ
+    exact ((hA τ hτ).contDiffAt (isOpen_Ioo.mem_nhds hτ)).differentiableAt
+      (by norm_num) |>.hasDerivAt
+  · intro i τ hτ
+    exact (((hw i) τ hτ).contDiffAt (isOpen_Ioo.mem_nhds hτ)).differentiableAt
+      (by norm_num) |>.hasDerivAt
+  · exact hli
+  · exact hker
+  · exact hann
+  · exact hsymm
+  · exact hs
+  · exact ht
+
+end InvariantRange
 
 section SolutionOperator
 

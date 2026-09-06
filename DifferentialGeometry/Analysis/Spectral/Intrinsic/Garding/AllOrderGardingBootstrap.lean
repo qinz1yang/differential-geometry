@@ -63,6 +63,7 @@ def CurvatureCrossTermBound (g : SmoothRiemannianMetric I M) (Ccross : ℝ) : Pr
             tensorL2Norm (I := I) (M := M) g 0 (s + 1)
               (covGrad (I := I) (M := M) g 0 s S).toFun)
 
+omit [CompactSpace M] in
 theorem order2GardingFamily_of_curvatureCrossTermBound
     (g : SmoothRiemannianMetric I M) (Ccross : ℝ)
     (hcross : CurvatureCrossTermBound (I := I) (M := M) g Ccross) :
@@ -479,6 +480,7 @@ theorem order1Control_rank_two
     SmoothCcTensor.norm_def (I := I) (M := M) S]
   exact covGrad_l2NormSq_le_rawConnLap_mul_self (I := I) (M := M) g S
 
+omit [CompactSpace M] in
 theorem order1ControlFamily_holds (g : SmoothRiemannianMetric I M) :
     Order1ControlFamily (I := I) (M := M) g := by
   intro s S

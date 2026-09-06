@@ -18,6 +18,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 open DifferentialGeometry.Geometry.Riemannian.AlongCurve
 open DifferentialGeometry.Geometry.Riemannian.CovariantDerivativeAlong
 
+omit [NeZero (Module.finrank ℝ E)] in
 noncomputable def parallelTransportSectionOnIcc [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (γ : ℝ → M)
     (hγ : ContMDiff 𝓘(ℝ, ℝ) I (2 : ℕ∞) γ)
@@ -56,6 +57,53 @@ theorem parallelTransportSectionOnIcc_covDerivAlong [I.Boundaryless]
       (parallelTransportSectionOnIcc (I := I) g γ hγ hL v₀) t = 0 :=
   (Classical.choose_spec
     (exists_parallel_transport_on_Icc (I := I) g γ le_rfl hγ hL v₀)).2.2 t ht
+
+omit [NeZero (Module.finrank ℝ E)] in
+theorem parallelTransportSectionOnIcc_heq_of_eq [I.Boundaryless]
+    (g : SmoothRiemannianMetric I M) {γ δ : ℝ → M}
+    (hγδ : γ = δ)
+    (hγ : ContMDiff 𝓘(ℝ, ℝ) I (2 : ℕ∞) γ)
+    (hδ : ContMDiff 𝓘(ℝ, ℝ) I (2 : ℕ∞) δ)
+    {L K : ℝ} (hLK : L = K) (hL : 0 < L) (hK : 0 < K)
+    (v : TangentSpace I (γ 0)) (w : TangentSpace I (δ 0))
+    (hvw : HEq v w) {s t : ℝ} (hst : s = t) :
+    HEq (parallelTransportSectionOnIcc (I := I) g γ hγ hL v s)
+      (parallelTransportSectionOnIcc (I := I) g δ hδ hK w t) := by
+  subst δ
+  subst K
+  subst t
+  have hvw' : v = w := eq_of_heq hvw
+  subst w
+  rfl
+
+omit [NeZero (Module.finrank ℝ E)] in
+theorem parallelTransportSectionOnIcc_eq_of_mem [I.Boundaryless]
+    (g : SmoothRiemannianMetric I M) (γ : ℝ → M)
+    (hγ : ContMDiff 𝓘(ℝ, ℝ) I (2 : ℕ∞) γ)
+    {L K : ℝ} (hL : 0 < L) (hK : 0 < K)
+    (v₀ : TangentSpace I (γ 0)) {t : ℝ}
+    (htL : t ∈ Set.Icc (0 : ℝ) L) (htK : t ∈ Set.Icc (0 : ℝ) K) :
+    parallelTransportSectionOnIcc (I := I) g γ hγ hL v₀ t =
+      parallelTransportSectionOnIcc (I := I) g γ hγ hK v₀ t := by
+  let V := parallelTransportSectionOnIcc (I := I) g γ hγ hL v₀
+  let W := parallelTransportSectionOnIcc (I := I) g γ hγ hK v₀
+  apply parallel_transport_unique_of_eq_at_point (I := I) g γ le_rfl hγ V W
+      (lo := 0) (hi := t)
+  · intro s hs
+    exact parallelTransportSectionOnIcc_differentiableAt
+      (I := I) g γ hγ hL v₀ ⟨hs.1, hs.2.trans htL.2⟩
+  · intro s hs
+    exact parallelTransportSectionOnIcc_differentiableAt
+      (I := I) g γ hγ hK v₀ ⟨hs.1, hs.2.trans htK.2⟩
+  · intro s hs
+    exact parallelTransportSectionOnIcc_covDerivAlong
+      (I := I) g γ hγ hL v₀ ⟨hs.1, hs.2.trans htL.2⟩
+  · intro s hs
+    exact parallelTransportSectionOnIcc_covDerivAlong
+      (I := I) g γ hγ hK v₀ ⟨hs.1, hs.2.trans htK.2⟩
+  · exact ⟨le_rfl, htL.1⟩
+  · simp [V, W]
+  · exact ⟨htL.1, le_rfl⟩
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem parallelTransportSectionOnIcc_add [I.Boundaryless]
@@ -128,6 +176,7 @@ theorem parallelTransportSectionOnIcc_smul [I.Boundaryless]
   · exact ⟨le_rfl, le_of_lt hL⟩
   · simp [V, W, Vv]
 
+omit [NeZero (Module.finrank ℝ E)] in
 noncomputable def parallelTransportLinearMapOnIcc [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (γ : ℝ → M)
     (hγ : ContMDiff 𝓘(ℝ, ℝ) I (2 : ℕ∞) γ)
@@ -201,6 +250,7 @@ theorem parallelTransportLinearMapOnIcc_surjective [I.Boundaryless]
   rw [← LinearMap.injective_iff_surjective_of_finrank_eq_finrank (by rfl)]
   exact parallelTransportLinearMapOnIcc_injective (I := I) g γ hγ hL
 
+omit [NeZero (Module.finrank ℝ E)] in
 noncomputable def parallelTransportLinearEquivOnIcc [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (γ : ℝ → M)
     (hγ : ContMDiff 𝓘(ℝ, ℝ) I (2 : ℕ∞) γ)
@@ -230,6 +280,7 @@ theorem parallelTransportLinearEquivOnIcc_inner [I.Boundaryless]
       g.inner (γ 0) v w :=
   parallelTransportLinearMapOnIcc_inner (I := I) g γ hγ hL v w
 
+omit [NeZero (Module.finrank ℝ E)] in
 noncomputable def parallelTransportLinearEquivBetween [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (γ : ℝ → M)
     (hγ : ContMDiff 𝓘(ℝ, ℝ) I (2 : ℕ∞) γ)
@@ -239,6 +290,44 @@ noncomputable def parallelTransportLinearEquivBetween [I.Boundaryless]
     hγ.comp (contMDiff_id.add contMDiff_const)
   exact parallelTransportLinearEquivOnIcc (I := I) g (fun s ↦ γ (s + a))
     hshift (sub_pos.mpr hab)
+
+omit [NeZero (Module.finrank ℝ E)] in
+theorem parallelTransportLinearEquivBetween_zero_apply [I.Boundaryless]
+    (g : SmoothRiemannianMetric I M) (γ : ℝ → M)
+    (hγ : ContMDiff 𝓘(ℝ, ℝ) I (2 : ℕ∞) γ)
+    {t : ℝ} (ht : 0 < t) (v : TangentSpace I (γ 0)) :
+    parallelTransportLinearEquivBetween (I := I) g γ hγ ht v =
+      parallelTransportSectionOnIcc (I := I) g γ hγ ht v t := by
+  let δ : ℝ → M := fun s => γ (s + 0)
+  have hδ : ContMDiff 𝓘(ℝ, ℝ) I (2 : ℕ∞) δ :=
+    hγ.comp (contMDiff_id.add contMDiff_const)
+  have hδγ : δ = γ := by
+    funext s
+    simp [δ]
+  let w : TangentSpace I (δ 0) := v
+  have hvw : HEq w v := by
+    rfl
+  have hleft : HEq (parallelTransportLinearEquivBetween (I := I) g γ hγ ht v)
+      (parallelTransportSectionOnIcc (I := I) g δ hδ ht w t) := by
+    unfold parallelTransportLinearEquivBetween
+    have hshift : ContMDiff 𝓘(ℝ, ℝ) I (2 : ℕ∞) (fun s => γ (s + 0)) :=
+      hγ.comp (contMDiff_id.add contMDiff_const)
+    have hpos : 0 < t - 0 := sub_pos.mpr ht
+    have happly := parallelTransportLinearEquivOnIcc_apply
+      (I := I) g (fun s => γ (s + 0)) hshift hpos v
+    have hsec := parallelTransportSectionOnIcc_heq_of_eq
+      (I := I) g (γ := fun s => γ (s + 0)) (δ := δ)
+      rfl hshift hδ (sub_zero t) hpos ht v w (by rfl) (sub_zero t)
+    have happly_heq : HEq
+        ((parallelTransportLinearEquivOnIcc
+          (I := I) g (fun s => γ (s + 0)) hshift hpos) v)
+        (parallelTransportSectionOnIcc
+          (I := I) g (fun s => γ (s + 0)) hshift hpos v (t - 0)) := by
+      rw [happly]
+    exact happly_heq.trans hsec
+  have hright := parallelTransportSectionOnIcc_heq_of_eq
+    (I := I) g hδγ hδ hγ rfl ht ht w v hvw (s := t) (t := t) rfl
+  exact eq_of_heq (hleft.trans hright)
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem parallelTransportLinearEquivBetween_inner [I.Boundaryless]

@@ -7,6 +7,7 @@ import Mathlib.Geometry.Manifold.Diffeomorph
 import Mathlib.Analysis.Normed.Module.FiniteDimension
 import DifferentialGeometry.Bundle.Zero
 import Mathlib.Geometry.Manifold.VectorBundle.Basic
+import Mathlib.Geometry.Manifold.VectorBundle.Hom
 
 
 open Bundle
@@ -909,6 +910,30 @@ lemma contMDiffAt_clm_of_pointwise
   rw [this]
   exact g.contDiff.contMDiff.contMDiffAt.comp _ hEA
 
+lemma contMDiffWithinAt_clm_of_pointwise
+    {X : Type*} [TopologicalSpace X] [ChartedSpace HB X]
+    {A : X → (F₁ →L[𝕜] F₂)} {s : Set X} {x : X}
+    (h : ∀ v, ContMDiffWithinAt IB 𝓘(𝕜, F₂) n (fun q => A q v) s x) :
+    ContMDiffWithinAt IB 𝓘(𝕜, F₁ →L[𝕜] F₂) n A s x := by
+  have : FiniteDimensional 𝕜 (F₁ →L[𝕜] F₂) := ContinuousLinearMap.finiteDimensional
+  let bF₁ := Module.finBasis 𝕜 F₁
+  let evalBasis : (F₁ →L[𝕜] F₂) →L[𝕜] (Fin (Module.finrank 𝕜 F₁) → F₂) :=
+    ContinuousLinearMap.pi (fun i => ContinuousLinearMap.apply 𝕜 F₂ (bF₁ i))
+  have evalBasis_inj : Function.Injective evalBasis := fun L₁ L₂ heq => by
+    ext v; rw [← bF₁.sum_equivFun v]; simp only [map_sum, map_smul]
+    congr 1; ext i; exact congrArg _ (congrFun heq i)
+  have : FiniteDimensional 𝕜 (Fin (Module.finrank 𝕜 F₁) → F₂) := inferInstance
+  obtain ⟨gLM, hgLM⟩ := evalBasis.toLinearMap.exists_leftInverse_of_injective
+    (evalBasis.ker_eq_bot_of_injective evalBasis_inj)
+  let g : (Fin (Module.finrank 𝕜 F₁) → F₂) →L[𝕜] (F₁ →L[𝕜] F₂) :=
+    ⟨gLM, LinearMap.continuous_of_finiteDimensional _⟩
+  have hg : ∀ y, g (evalBasis y) = y := fun y => congr($(hgLM) y)
+  have hEA : ContMDiffWithinAt IB 𝓘(𝕜, Fin _ → F₂) n (evalBasis ∘ A) s x :=
+    contMDiffWithinAt_pi_space.mpr fun i => h (bF₁ i)
+  have hA : A = g ∘ evalBasis ∘ A := by funext q; exact (hg (A q)).symm
+  rw [hA]
+  exact g.contDiff.contMDiff.contMDiffAt.comp_contMDiffWithinAt _ hEA
+
 private lemma contMDiff_symm_of_fiberBijective'
     {Φ : TotalSpace F₁ E₁ → TotalSpace F₂ E₂}
     (hΦ_smooth : ContMDiff (IB.prod 𝓘(𝕜, F₁)) (IB.prod 𝓘(𝕜, F₂)) n Φ)
@@ -1169,3 +1194,102 @@ noncomputable def ContMDiffVectorBundleEquiv.ofFiberwiseLinearEquiv
 end FiberwiseEquiv
 
 end ToContMDiffVectorBundleEquiv
+
+section Inverse
+
+open Filter
+open scoped Topology
+
+variable {𝕜 : Type*} [NontriviallyNormedField 𝕜]
+  {E : Type*} [NormedAddCommGroup E] [NormedSpace 𝕜 E]
+  {H : Type*} [TopologicalSpace H] {I : ModelWithCorners 𝕜 E H}
+  {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
+  {EP : Type*} [NormedAddCommGroup EP] [NormedSpace 𝕜 EP]
+  {HP : Type*} [TopologicalSpace HP] {J : ModelWithCorners 𝕜 EP HP}
+  {P : Type*} [TopologicalSpace P] [ChartedSpace HP P]
+  {F₁ F₂ : Type*}
+  [NormedAddCommGroup F₁] [NormedSpace 𝕜 F₁] [CompleteSpace F₁]
+  [NormedAddCommGroup F₂] [NormedSpace 𝕜 F₂]
+  {n : WithTop ℕ∞}
+  {V₁ : M → Type*} [TopologicalSpace (TotalSpace F₁ V₁)]
+  [∀ x, AddCommGroup (V₁ x)] [∀ x, Module 𝕜 (V₁ x)]
+  [∀ x, TopologicalSpace (V₁ x)] [∀ x, IsTopologicalAddGroup (V₁ x)]
+  [∀ x, ContinuousSMul 𝕜 (V₁ x)] [FiberBundle F₁ V₁] [VectorBundle 𝕜 F₁ V₁]
+  {V₂ : M → Type*} [TopologicalSpace (TotalSpace F₂ V₂)]
+  [∀ x, AddCommGroup (V₂ x)] [∀ x, Module 𝕜 (V₂ x)]
+  [∀ x, TopologicalSpace (V₂ x)] [∀ x, IsTopologicalAddGroup (V₂ x)]
+  [∀ x, ContinuousSMul 𝕜 (V₂ x)] [FiberBundle F₂ V₂] [VectorBundle 𝕜 F₂ V₂]
+  {b : P → M} {φ : ∀ p : P, V₁ (b p) →L[𝕜] V₂ (b p)} {s : Set P} {p₀ : P}
+
+theorem ContMDiffWithinAt.clm_bundle_inverse
+    (hφ : ContMDiffWithinAt J (I.prod 𝓘(𝕜, F₁ →L[𝕜] F₂)) n
+      (fun p => (⟨b p, φ p⟩ : TotalSpace (F₁ →L[𝕜] F₂)
+        (fun x => V₁ x →L[𝕜] V₂ x))) s p₀)
+    (hinv : (φ p₀).IsInvertible) :
+    ContMDiffWithinAt J (I.prod 𝓘(𝕜, F₂ →L[𝕜] F₁)) n
+      (fun p => (⟨b p, (φ p).inverse⟩ : TotalSpace (F₂ →L[𝕜] F₁)
+        (fun x => V₂ x →L[𝕜] V₁ x))) s p₀ := by
+  rw [contMDiffWithinAt_hom_bundle] at hφ ⊢
+  refine ⟨hφ.1, ?_⟩
+  let e₁ := trivializationAt F₁ V₁ (b p₀)
+  let e₂ := trivializationAt F₂ V₂ (b p₀)
+  have hx₁ : b p₀ ∈ e₁.baseSet := mem_baseSet_trivializationAt F₁ V₁ (b p₀)
+  have hx₂ : b p₀ ∈ e₂.baseSet := mem_baseSet_trivializationAt F₂ V₂ (b p₀)
+  have hcoordInv : (ContinuousLinearMap.inCoordinates F₁ V₁ F₂ V₂
+      (b p₀) (b p₀) (b p₀) (b p₀) (φ p₀)).IsInvertible := by
+    rw [ContinuousLinearMap.inCoordinates_eq hx₁ hx₂]
+    simpa using hinv
+  have h : ContMDiffWithinAt J 𝓘(𝕜, F₂ →L[𝕜] F₁) n
+      (fun p => (ContinuousLinearMap.inCoordinates F₁ V₁ F₂ V₂
+        (b p₀) (b p) (b p₀) (b p) (φ p)).inverse) s p₀ :=
+    hcoordInv.contDiffAt_map_inverse.comp_contMDiffWithinAt
+      (f := fun p : P => ContinuousLinearMap.inCoordinates F₁ V₁ F₂ V₂
+        (b p₀) (b p) (b p₀) (b p) (φ p)) hφ.2
+  apply h.congr_of_eventuallyEq
+  · have hbase₁ : ∀ᶠ p in 𝓝[s] p₀, b p ∈ e₁.baseSet :=
+      hφ.1.continuousWithinAt (e₁.open_baseSet.mem_nhds hx₁)
+    have hbase₂ : ∀ᶠ p in 𝓝[s] p₀, b p ∈ e₂.baseSet :=
+      hφ.1.continuousWithinAt (e₂.open_baseSet.mem_nhds hx₂)
+    filter_upwards [hbase₁, hbase₂] with p hp₁ hp₂
+    rw [ContinuousLinearMap.inCoordinates_eq hp₁ hp₂,
+      ContinuousLinearMap.inCoordinates_eq hp₂ hp₁]
+    simp only [ContinuousLinearMap.inverse_equiv_comp,
+      ContinuousLinearMap.inverse_comp_equiv, ContinuousLinearEquiv.symm_symm,
+      ContinuousLinearMap.comp_assoc]
+  · rw [ContinuousLinearMap.inCoordinates_eq hx₁ hx₂,
+      ContinuousLinearMap.inCoordinates_eq hx₂ hx₁]
+    simp only [ContinuousLinearMap.inverse_equiv_comp,
+      ContinuousLinearMap.inverse_comp_equiv, ContinuousLinearEquiv.symm_symm,
+      ContinuousLinearMap.comp_assoc]
+
+theorem ContMDiffAt.clm_bundle_inverse
+    (hφ : ContMDiffAt J (I.prod 𝓘(𝕜, F₁ →L[𝕜] F₂)) n
+      (fun p => (⟨b p, φ p⟩ : TotalSpace (F₁ →L[𝕜] F₂)
+        (fun x => V₁ x →L[𝕜] V₂ x))) p₀)
+    (hinv : (φ p₀).IsInvertible) :
+    ContMDiffAt J (I.prod 𝓘(𝕜, F₂ →L[𝕜] F₁)) n
+      (fun p => (⟨b p, (φ p).inverse⟩ : TotalSpace (F₂ →L[𝕜] F₁)
+        (fun x => V₂ x →L[𝕜] V₁ x))) p₀ :=
+  ContMDiffWithinAt.clm_bundle_inverse hφ hinv
+
+theorem ContMDiffOn.clm_bundle_inverse
+    (hφ : ContMDiffOn J (I.prod 𝓘(𝕜, F₁ →L[𝕜] F₂)) n
+      (fun p => (⟨b p, φ p⟩ : TotalSpace (F₁ →L[𝕜] F₂)
+        (fun x => V₁ x →L[𝕜] V₂ x))) s)
+    (hinv : ∀ p ∈ s, (φ p).IsInvertible) :
+    ContMDiffOn J (I.prod 𝓘(𝕜, F₂ →L[𝕜] F₁)) n
+      (fun p => (⟨b p, (φ p).inverse⟩ : TotalSpace (F₂ →L[𝕜] F₁)
+        (fun x => V₂ x →L[𝕜] V₁ x))) s :=
+  fun p hp => (hφ p hp).clm_bundle_inverse (hinv p hp)
+
+theorem ContMDiff.clm_bundle_inverse
+    (hφ : ContMDiff J (I.prod 𝓘(𝕜, F₁ →L[𝕜] F₂)) n
+      (fun p => (⟨b p, φ p⟩ : TotalSpace (F₁ →L[𝕜] F₂)
+        (fun x => V₁ x →L[𝕜] V₂ x))))
+    (hinv : ∀ p, (φ p).IsInvertible) :
+    ContMDiff J (I.prod 𝓘(𝕜, F₂ →L[𝕜] F₁)) n
+      (fun p => (⟨b p, (φ p).inverse⟩ : TotalSpace (F₂ →L[𝕜] F₁)
+        (fun x => V₂ x →L[𝕜] V₁ x))) :=
+  fun p => (hφ p).clm_bundle_inverse (hinv p)
+
+end Inverse

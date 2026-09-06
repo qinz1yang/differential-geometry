@@ -2,6 +2,7 @@ import Mathlib.Topology.Order.IntermediateValue
 import DifferentialGeometry.Geometry.Metric.TensorInner.TangentNormDiamond
 import DifferentialGeometry.Geometry.Exponential.MinimizingGeodesic
 import DifferentialGeometry.Geometry.Metric.Completeness
+import DifferentialGeometry.Geometry.Metric.Exhaustion
 open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
@@ -323,6 +324,47 @@ theorem properSpace_riemMetric_of_complete_metric
     intro x v
     exact tensor0SBundle_enorm_eq_riemannianBundle_enorm (I := I) g x v
   exact properSpace_riemMetric (I := I) (M := M) hcomplete.complete g hEnorm
+
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+noncomputable def metricExhaustionOfCompleteMetric
+    (g : SmoothRiemannianMetric I M)
+    (hg : RiemannianMetricComplete (I := I) g)
+    (x₀ : M) :
+    letI : IsManifold I 1 M :=
+      IsManifold.of_le (I := I) (M := M) (n := (∞ : WithTop ℕ∞))
+        (by decide : (1 : WithTop ℕ∞) ≤ (∞ : WithTop ℕ∞))
+    letI : TopologicalSpace.MetrizableSpace M := Manifold.metrizableSpace I M
+    letI : T3Space M := inferInstance
+    letI : RiemannianBundle (fun x : M => TangentSpace I x) :=
+      ⟨g.toRiemannianMetric⟩
+    letI : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
+      ⟨⟨g.inner, g.contMDiff.continuous, by intro x v w; rfl⟩⟩
+    letI : EMetricSpace M := EMetricSpace.ofRiemannianMetric I M
+    letI : PseudoEMetricSpace M :=
+      (EMetricSpace.ofRiemannianMetric I M).toPseudoEMetricSpace
+    letI : CompleteSpace M := hg.complete
+    letI : MetricSpace M := riemMetricSpace (I := I) (M := M)
+    letI : ProperSpace M := by
+      exact properSpace_riemMetric_of_complete_metric (I := I) (M := M) g hg
+    MetricExhaustion M := by
+  let : IsManifold I 1 M :=
+    IsManifold.of_le (I := I) (M := M) (n := (∞ : WithTop ℕ∞))
+      (by decide : (1 : WithTop ℕ∞) ≤ (∞ : WithTop ℕ∞))
+  let : TopologicalSpace.MetrizableSpace M := Manifold.metrizableSpace I M
+  let : T3Space M := inferInstance
+  let : RiemannianBundle (fun x : M => TangentSpace I x) :=
+    ⟨g.toRiemannianMetric⟩
+  let : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
+    ⟨⟨g.inner, g.contMDiff.continuous, by intro x v w; rfl⟩⟩
+  let : EMetricSpace M := EMetricSpace.ofRiemannianMetric I M
+  let : PseudoEMetricSpace M :=
+    (EMetricSpace.ofRiemannianMetric I M).toPseudoEMetricSpace
+  let : CompleteSpace M := hg.complete
+  let : MetricSpace M := riemMetricSpace (I := I) (M := M)
+  let : ProperSpace M :=
+    properSpace_riemMetric_of_complete_metric (I := I) (M := M) g hg
+  exact MetricExhaustion.closedBall x₀
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in

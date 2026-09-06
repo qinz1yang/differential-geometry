@@ -15,7 +15,7 @@ attribute [local instance] normedSpaceTangentSpace
 variable {EM : Type*} [NormedAddCommGroup EM] [NormedSpace ℝ EM]
   {HM : Type*} [TopologicalSpace HM]
   {IM : ModelWithCorners ℝ EM HM}
-  {M : Type*} [TopologicalSpace M] [ChartedSpace HM M] [IsManifold IM ⊤ M]
+  {M : Type*} [TopologicalSpace M] [ChartedSpace HM M] [IsManifold IM ∞ M]
   {k : ℕ}
 
 def isClosed [BoundarylessManifold IM M] (α : DifferentialForm IM M k) : Prop :=

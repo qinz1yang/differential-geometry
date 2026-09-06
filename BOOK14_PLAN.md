@@ -16,6 +16,7 @@ Each inventory row must eventually identify the exact fully qualified Lean decla
 | Chapter 5 and shared foundations | dev1-clean | 752f3f97786839bb16def363233b55bcae672485 |
 | Chapters 6 and 7 | dev2 | a9a8b02f7dfc4a619eb4825e9ec1f362cc93e105 |
 | Chapter 9 historical worktree | dev3 | c189435223cd1d0cd767b13504edebfd895250bc |
+| Historical Dirichlet spectral foundations, not checked out | dev1-clean-latest | f29eb244e4af286367f99446ed2615710aac7f60 |
 | Local Dirichlet variants | codex/dev4 | 017599dd08a1f44cc28e3e2354533eefa0a16c23 |
 | Forward uniqueness variant | codex/dev5 | c54a1c36a76ee98f1587a2fcbd314ed07b067097 |
 | Whole-flow compatibility variant | codex/dev6 | 154a449c71c298e255753286e2d2915c160051d3 |
@@ -26,6 +27,8 @@ The uncommitted dev5 forward-uniqueness file is preserved in its worktree; its i
 ## Integration
 
 Work on `codex/book14-integration`, based on main. Integrate dev1 and dev2 in dependency-closed layers. Dev1 is a descendant of main but deletes 36 main files, including the Harnack development; those deletions are not approved integration outcomes. Preserve the Chapter 9 source and reconcile its dependencies explicitly. Deduplicate shared ODE, scalar maximum-principle, product-metric, radial-flat, and curvature-algebra APIs. Preserve the single flat root aggregate, and keep namespaces decoupled from directory paths.
+
+The additional local historical branches were inventoried after missing imports exposed their relevance. `dev1-clean-latest` and `dev1-clean-legacy` retain 19 source files missing from the original checked-out integration inputs: 18 Dirichlet analytic developments and the flow time-shift file also supplied by dev2. Their shared files are older variants of current canonical APIs; integrate useful missing mathematics and reconcile consumers explicitly, without reverting the canonical eigenvalue indexing or reintroducing deleted Harnack content. `dev1-clean-ch5` has no additional missing files.
 
 ## Shared dependency forest and order
 
@@ -51,11 +54,25 @@ Work on `codex/book14-integration`, based on main. Integrate dev1 and dev2 in de
 | Component curvature transport can assume the evolution or scalar-Laplacian bridge | Derive the intrinsic fixed-bundle equation and naturality from real curvature and connection constructions | Open |
 | Unrestricted complete three-shrinker classification lacks the localized nonnegativity route | Prove the exact complete localized Hamilton-Ivey estimate and its ancient/canonical-flow consequences | Open |
 | Surface classification via another proof route does not prove Kazdan-Warner | Track and prove the standalone identity stated in Chapter 7 | Open |
-| Dev1 snapshot removes existing Harnack source | Preserve all main Harnack content and reconcile changed dependencies | Open |
+| Dev1 snapshot removes existing Harnack source | Preserve all main Harnack content and reconcile changed dependencies | Repaired: byte-preserved source, fresh full build and all 23 module axiom/linter gates passed |
+| Dev1 has 31 unregistered new modules with no build artifacts | Register every imported new leaf, build the actual Dirichlet, volume-density and time-energy developments, and resolve any exposed source failures | Repaired: all leaves registered and the actual formerly unwired source rebuilt; canonical indexing and H1-density errors repaired |
 
 ## Parallel work and ownership
 
 One shared public contract and import DAG governs all work. The root integrator owns repository state, shared signatures, root aggregate, final acceptance, commits and pushes. Bounded subagents receive exclusive files or read-only searches. They do not independently weaken headlines, introduce theorem-conclusion packages, create duplicate public objects, edit shared roots, or publish commits. Each mathematical result is independently checked before acceptance. Reassign a slot when its bounded task finishes; do not keep a fixed agent-per-chapter hierarchy.
+
+## Integration acceptance queue
+
+| Layer | Exact source state | Verification available | Remaining integrated gate |
+| --- | --- | --- | --- |
+| Main Harnack preservation | All 36 deleted main files restored byte-for-byte; second Ricci derivative regularity reunited with dev1's Ricci-sharp regularity | Reunited regularity source compiled silently against dev1 imports; Harnack folder has zero diff from main | Passed full root and all preserved-module axiom/linter gates |
+| Pullback metric compatibility | New `Geometry/Connection/PullbackMetric.lean` | Exact source compile, applicable linters, approved axioms | Passed full root and all-module axiom/linter gates |
+| Closed-interval linear ODE | New `Analysis/ODE/Flow/ClosedInterval.lean`; Banach existence, uniqueness, joint parameter regularity, and produced smooth solutions | Exact source compile, applicable linters, all four approved axiom closures | Passed full root and all-module axiom/linter gates |
+| Direct rank propagation | Generalized local spatial barrier; continuous scalar drift pairing; three Ky Fan/rank propagation engines using actual evolution | Exact promoted ScalarStrong, MetricFamilyRegularity, InitialData and RankSpreading sources compiled in isolated overlay; applicable linters and all five approved axiom closures | Full dependent/root and all-module axiom/linter gates passed; actual-flow producers and minimal assumptions remain mathematical work |
+| Canonical soliton flow | New dev2 `Soliton/Solution.lean` with actual IsSolutionOn and completeness | Module build, applicable linters, four approved axiom closures, Gaussian interval consumer | Copy after dev2 integration, apply generic-constructor promotion, register, rebuild on unified source |
+| Dev2 source reconciliation | Seven prepared source resolutions outside repository, plus aggregate import union | Combined product, pointwise Laplacian, Strong, and ScalarStrong sources compiled against stable imports/isolated overlay | Apply with actual merge; resolve any additional source compatibility errors |
+
+Temporary regularity engines still expose spectral continuity and compact operator/reaction bounds; those inputs must be derived from genuine joint bundle regularity. Their nonzero base-dimension restriction and assumptions outside the controlled time interval are explicit generality review items, not accepted properties of the final classical theorem.
 
 ## Delivery gates
 
@@ -65,6 +82,30 @@ Final acceptance requires every coverage row and regression row to close; every 
 
 ## Current frontier
 
-- Integration branch created from main; original worktrees preserved.
-- Three bounded read-only reviews are examining Chapter 2/4 interfaces, the Dirichlet repair, and Chapter 6/7 acceptance.
-- Next: integrate dev1 while preserving all main Harnack modules, reconcile the dev2 overlap, then assign disjoint implementation files on the unified baseline.
+- The source contract is committed and pushed on the integration branch. The pending dev1 merge preserves the 36 deleted main files and the original worktrees, and registers all 31 previously unwired dev1 leaves.
+- Missing Dirichlet spectral roots, stale canonical eigen-index consumers and the genuine H1-density construction have been repaired. The 10045-job common-foundation build passed; the 12828-job full aggregate and all-declaration audit of 262 modules also passed with zero diagnostics.
+- The empty-domain contradiction is repaired by a nonempty connected-interior condition at the three affected interfaces. Genuine classical Dirichlet existence and actual-flow rank producers remain open, so the classical rank theorem is not yet accepted.
+- General connection forms, local ODE invariance, arbitrary-interval metric freezing, intrinsic Ky Fan continuity, curvature-reaction regularity, normal cones and the convex support engine with drift are integrated. The next geometric producer is actual parallel transport and its use to construct distance/support fields.
+- Exclusive continuation tasks are general-connection transport; actual Dirichlet coefficient operators and weak-solution regularity; and the independent Kazdan-Warner development. Root owns integration and the actual Ricci-flow metric-freezing interface.
+- Dev2 source reconciliation and the complete surface metric/potential classification are frozen for the next merge. Canonical soliton flow and conformal metric/vector-field APIs have passed their isolated gates.
+
+
+## Verified integrated foundation checkpoint
+
+The unified dev1 merge now registers every recovered leaf, preserves the main/dev3 Harnack developments, and has passed a 10045-job common-foundation build. The full `lake build DifferentialGeometry` gate passed 12828 jobs, including formerly unwired Dirichlet modules and the Matrix/Trace Harnack chain. After removing one duplicate root import and the unused completeness assumptions in TimeH1Energy, the final affected-dependent and aggregate gate again passed 12828 jobs with zero diagnostics.
+
+The current 237-module source review finds no proof debt, resource-budget overrides, linter suppressions or diagnostic commands; its only comment matches are required retained copyright headers. `git diff --check` is clean. All 262 targeted modules passed full public/private/generated-declaration linters (excluding only the two documentation-presence linters) and transitive-axiom checks allowing only propext, Classical.choice and Quot.sound. These cover all 237 changed/new leaf modules, all 23 preserved Harnack modules, RankOneSupport and SlabExhaustion. Exact source hashes were rechecked after the audits. Every changed leaf is registered exactly once. These gates certify this integration checkpoint; outstanding source correspondence and classical-producer rows remain open.
+
+New integrated mathematics includes the normal cone and unique metric projection/support theorem for complete convex subsets of arbitrary real inner-product spaces, the actual local-ODE inward-support lemma, arbitrary-interval metric freezing (including initial endpoints and singletons), general connection forms and their coordinate-change/regularity laws, intrinsic bundle Ky Fan continuity, uniform curvature-reaction Lipschitz bounds, and the support-form convex maximum-principle engine with drift and positive-time spatial smoothness. The weak maximum principle's actual parallel-transport support producer is still being constructed.
+
+The repaired Dirichlet chain keeps the canonical resolvent eigen-index representation and reconstructs a genuinely H1-dense smooth sequence before the L2 Gram-Schmidt procedure. It proves both H1 and L2 density, restoring real integrated weak existence and the nonautonomous abstract maximal-regularity assembly. It does not yet supply the classical local Dirichlet solution: coefficient-derived operator bounds, short-time perturbation control, reverse elliptic Sobolev embedding, pointwise representatives, boundary traces and positivity remain explicit dependencies. Historical `SmoothEmbedding` only proves interior-supported smooth functions belong to all spectral Dirichlet spaces; its name does not certify the needed reverse implication.
+
+The dev2 surface-classification layer is frozen with actual arbitrary-rate Euclidean, round-sphere and real-projective-plane metric/potential identifications and pairwise exclusivity. General conformal rescaling has also been proved. The independent Kazdan-Warner identity remains open. A candidate spectral route first proves the genuine two-dimensional Rellich identity and weighted eigenfunction-square cancellation, then requires a produced heat kernel, justified spectral/integral interchange and the uniform diagonal curvature coefficient with a controlled remainder. Those analytic inputs are still open. Uniformization is another possible route, not an assumed witness or a completed dependency.
+
+
+The Dirichlet continuation uses genuine H1-zero-boundary to H-minus-one and L2 to H-minus-one coefficient operators, and H2-intersect-H1-zero-boundary to L2 only where justified. Arbitrary moving metrics do not preserve every higher-order compatibility condition encoded by a fixed reference Dirichlet spectral scale. Classical smoothness will therefore use local parabolic regularity of the actual weak solution and a separate boundary-trace/barrier argument; an unconditional all-orders fixed-scale mapping assumption is forbidden.
+
+
+## Frozen continuation queue
+
+The next controlled integration window contains two dependency-closed Dirichlet layers (static spectral/energy identifications and genuine low-order coefficient operators), general covariant differentiation along curves, parameterized parallel transport and metric compatibility, the actual Ricci-flow gauge-velocity and regular-interval isometry producer, and the prepared dev2 merge. The latter includes the complete surface classification, canonical soliton flow, conformal metric/vector-field APIs and the genuine two-dimensional Rellich/eigenfunction cancellation. Each layer has isolated source, declaration-linter and axiom evidence and is still required to pass the unified gate after promotion.

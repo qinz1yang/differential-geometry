@@ -35,6 +35,7 @@ private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
 
+omit [CompactSpace M] in
 lemma covGrad_two_l2Inner_self_eq_neg_rawConnLap_three_inner
     (g : SmoothRiemannianMetric I M) (T₀ : SmoothCcTensor g 0 2) :
     tensorL2Inner (I := I) (M := M) g 0 (3 + 1)
@@ -51,6 +52,7 @@ lemma covGrad_two_l2Inner_self_eq_neg_rawConnLap_three_inner
     (covGrad (I := I) (M := M) g 0 2 T₀)
 
 
+omit [CompactSpace M] in
 theorem secondCovGrad_l2NormSq_le_rawConnLap_three_mul_covGrad
     (g : SmoothRiemannianMetric I M) (T₀ : SmoothCcTensor g 0 2) :
     tensorL2Norm (I := I) (M := M) g 0 (3 + 1)

@@ -577,6 +577,69 @@ theorem inner_def [InnerProductSpace ℝ X] (u w : timeH1 X T) :
 
 end timeH1
 
+theorem exists_timeH1_of_scalar_representatives
+    {X : Type*} [NormedAddCommGroup X] [InnerProductSpace ℝ X]
+    [CompleteSpace X] [TopologicalSpace.SeparableSpace X]
+    {T : ℝ} {p q : ℝ → X} (hq : MemLp q 2 (timeMeasure T)) (p₀ : X)
+    (hscalar : ∀ x : X, ∃ v : timeH1 ℝ T,
+      v.init = inner ℝ x p₀ ∧
+      (fun t => inner ℝ x (p t)) =ᵐ[timeMeasure T] v.toFun ∧
+      v.deriv =ᵐ[timeMeasure T] fun t => inner ℝ x (q t)) :
+    ∃ w : timeH1 X T,
+      w.init = p₀ ∧ p =ᵐ[timeMeasure T] w.toFun ∧
+        w.deriv =ᵐ[timeMeasure T] q := by
+  let qL2 : timeL2 X T := hq.toLp q
+  let w : timeH1 X T := timeH1.mk p₀ qL2
+  have hqrep : qL2 =ᵐ[timeMeasure T] q := hq.coeFn_toLp
+  let e : ℕ → X := TopologicalSpace.denseSeq X
+  have he : DenseRange e := TopologicalSpace.denseRange_denseSeq X
+  choose v hvinit hvrep hvderiv using fun i => hscalar (e i)
+  have hvw (i : ℕ) (t : ℝ) (ht : t ∈ Icc (0 : ℝ) T) :
+      (v i).toFun t = inner ℝ (e i) (w.toFun t) := by
+    have hsub : uIoc (0 : ℝ) t ⊆ Icc (0 : ℝ) T := by
+      intro r hr
+      rw [uIoc_of_le ht.1] at hr
+      exact ⟨le_of_lt hr.1, hr.2.trans ht.2⟩
+    have hvderiv' : (v i).deriv =ᵐ[volume.restrict (uIoc (0 : ℝ) t)]
+        fun r => inner ℝ (e i) (q r) := by
+      have htime : (v i).deriv =ᵐ[volume.restrict (Icc (0 : ℝ) T)]
+          fun r => inner ℝ (e i) (q r) := by
+        simpa only [timeMeasure] using hvderiv i
+      exact htime.filter_mono (ae_mono (Measure.restrict_mono hsub le_rfl))
+    have hqrep' : qL2 =ᵐ[volume.restrict (uIoc (0 : ℝ) t)] q := by
+      have htime : qL2 =ᵐ[volume.restrict (Icc (0 : ℝ) T)] q := by
+        simpa only [timeMeasure] using hqrep
+      exact htime.filter_mono (ae_mono (Measure.restrict_mono hsub le_rfl))
+    have hvint : (∫ r in (0 : ℝ)..t, (v i).deriv r) =
+        ∫ r in (0 : ℝ)..t, inner ℝ (e i) (q r) :=
+      intervalIntegral.integral_congr_ae (ae_imp_of_ae_restrict hvderiv')
+    have hqint :
+        (∫ r in (0 : ℝ)..t, inner ℝ (e i) (qL2 r)) =
+          ∫ r in (0 : ℝ)..t, inner ℝ (e i) (q r) :=
+      intervalIntegral.integral_congr_ae <|
+        (ae_imp_of_ae_restrict hqrep').mono fun r hr hrmem => by rw [hr hrmem]
+    have hqii : IntervalIntegrable (fun r => qL2 r) volume 0 t := by
+      apply MeasureTheory.IntegrableOn.intervalIntegrable
+      exact (TimeSobolev.integrableOn qL2).mono_set
+        (uIcc_subset_Icc ⟨le_rfl, ht.1.trans ht.2⟩ ht)
+    have hmap := (innerSL ℝ (e i)).intervalIntegral_comp_comm hqii
+    change (∫ r in (0 : ℝ)..t, inner ℝ (e i) (qL2 r)) =
+      inner ℝ (e i) (∫ r in (0 : ℝ)..t, qL2 r) at hmap
+    rw [timeH1.toFun_apply, timeH1.toFun_apply, hvinit i, hvint]
+    change inner ℝ (e i) p₀ + _ =
+      inner ℝ (e i) (p₀ + ∫ r in (0 : ℝ)..t, qL2 r)
+    rw [inner_add_right, ← hmap, hqint]
+  have hpair : ∀ᵐ t ∂(timeMeasure T), ∀ i,
+      inner ℝ (e i) (p t) = inner ℝ (e i) (w.toFun t) := by
+    rw [ae_all_iff]
+    intro i
+    filter_upwards [hvrep i, ae_restrict_mem measurableSet_Icc] with t ht htIcc
+    exact ht.trans (hvw i t htIcc)
+  refine ⟨w, rfl, ?_, ?_⟩
+  · filter_upwards [hpair] with t ht
+    exact he.eq_of_inner_right ℝ ht
+  · simpa only [w, timeH1.deriv_mk] using hqrep
+
 end TimeSobolev
 end Parabolic
 end Analysis

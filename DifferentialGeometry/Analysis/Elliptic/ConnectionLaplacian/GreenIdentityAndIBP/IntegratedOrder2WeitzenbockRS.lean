@@ -27,6 +27,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 
+omit [CompactSpace M] in
 lemma covGrad_l2Inner_self_eq_neg_rawTensorConnLap_inner_rs
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (S : SmoothCcTensor g r s) :
     tensorL2Inner (I := I) (M := M) g r (s + 1 + 1)
@@ -45,6 +46,7 @@ lemma covGrad_l2Inner_self_eq_neg_rawTensorConnLap_inner_rs
     (covGrad (I := I) (M := M) g r s S)
 
 
+omit [CompactSpace M] in
 lemma covGrad_rawTensorConnLap_l2Inner_covGrad_eq_neg_normSq_rs
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (S : SmoothCcTensor g r s) :
     tensorL2Inner (I := I) (M := M) g r (s + 1)
@@ -65,6 +67,7 @@ lemma covGrad_rawTensorConnLap_l2Inner_covGrad_eq_neg_normSq_rs
     (rawTensorConnLapSmooth (I := I) g r s S)]
 
 
+omit [CompactSpace M] in
 lemma rawTensorConnLap_l2Inner_covGrad_split_rs
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (S : SmoothCcTensor g r s) :
     tensorL2Inner (I := I) (M := M) g r (s + 1)
@@ -96,6 +99,7 @@ lemma rawTensorConnLap_l2Inner_covGrad_split_rs
   rw [covGrad_rawTensorConnLap_l2Inner_covGrad_eq_neg_normSq_rs (I := I) (M := M) g r s S]
 
 
+omit [CompactSpace M] in
 theorem weitzenbock_integrated_covGrad_l2_normSq_rs
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (S : SmoothCcTensor g r s) :
     tensorL2Norm (I := I) (M := M) g r (s + 1 + 1)

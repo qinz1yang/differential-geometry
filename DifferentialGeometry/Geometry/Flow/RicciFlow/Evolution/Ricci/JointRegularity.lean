@@ -3,6 +3,7 @@ import DifferentialGeometry.Geometry.Connection.Coordinates.CovariantDerivativeR
 import DifferentialGeometry.Geometry.Metric.Family.Continuity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.Basic
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.CovariantDerivativeCoordinates
+import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.RicciSharpChart
 import DifferentialGeometry.Geometry.Operator.MetricFamilyRegularity
 
 set_option autoImplicit false
@@ -20,7 +21,6 @@ open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Geometry.Connection
 open DifferentialGeometry.Tensor0SBundle
-open DifferentialGeometry.Tensor.Coordinates
 
 universe u uE uH
 
@@ -233,6 +233,111 @@ theorem nablaRicci_cont [I.Boundaryless]
   congr 1
   funext k
   fin_cases k <;> rfl
+
+omit [SigmaCompactSpace M] in
+theorem ricciSharp_family_contMDiffOn [I.Boundaryless]
+    {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D)
+    (hS : IsSolutionOn (I := I) S) :
+    ContMDiffOn (𝓘(Real, Real).prod I) (I.prod 𝓘(Real, E →L[Real] E)) ∞
+      (fun p : Real × M =>
+        (⟨p.2, ricciSharp (I := I) (S.family.metric p.1) p.2⟩ :
+          TotalSpace (E →L[Real] E)
+            (fun x : M => TangentSpace I x →L[Real] TangentSpace I x)))
+      (D.regular ×ˢ (univ : Set M)) := by
+  classical
+  intro p hp
+  apply ContMDiffAt.contMDiffWithinAt
+  rw [contMDiffAt_hom_bundle]
+  refine ⟨contMDiffAt_snd, ?_⟩
+  apply contMDiffAt_clm_of_pointwise
+  intro v
+  let α : M := p.2
+  let base : Real × M → Real × E := fun q => (q.1, extChartAt I α q.2)
+  have hbase : ContMDiffAt (𝓘(Real, Real).prod I)
+      (𝓘(Real, Real).prod 𝓘(Real, E)) ∞ base p :=
+    contMDiffAt_fst.prodMk
+      ((contMDiffAt_extChartAt (I := I) (x := α)).comp p contMDiffAt_snd)
+  have hbase' : ContMDiffAt (𝓘(Real, Real).prod I)
+      𝓘(Real, Real × E) ∞ base p := by
+    rw [modelWithCornersSelf_prod, ← chartedSpaceSelf_prod]
+    exact hbase
+  have hαsource : α ∈ (extChartAt I α).source := mem_extChartAt_source α
+  have hαtarget : extChartAt I α α ∈ interior (extChartAt I α).target :=
+    mem_interior_iff_mem_nhds.mpr ((isOpen_extChartAt_target (I := I) α).mem_nhds
+      ((extChartAt I α).map_source hαsource))
+  have hbase_mem : base p ∈ D.regular ×ˢ interior (extChartAt I α).target := by
+    exact ⟨hp.1, hαtarget⟩
+  have hopen : IsOpen (D.regular ×ˢ interior (extChartAt I α).target) :=
+    D.regular_isOpen.prod isOpen_interior
+  have hinv (i j : Fin (Module.finrank Real E)) :
+      ContMDiffAt (𝓘(Real, Real).prod I) 𝓘(Real, Real) ∞
+        (fun q : Real × M =>
+          chartInvGramOnE (I := I) (S.family.metric q.1) α i j
+            (extChartAt I α q.2)) p := by
+    have h := (MetricFamilySmoothOn.chartInvGramOnE_contDiffOn
+      (I := I) (G := S.family) hS.smoothMetric
+      (J := D.regular) (fun _ ht => ht) α i j).contDiffAt
+        (hopen.mem_nhds hbase_mem)
+    exact h.contMDiffAt.comp p hbase'
+  have hric (k j : Fin (Module.finrank Real E)) :
+      ContMDiffAt (𝓘(Real, Real).prod I) 𝓘(Real, Real) ∞
+        (fun q : Real × M =>
+          let x := (extChartAt I α).symm (extChartAt I α q.2)
+          S.ricciAt q.1 x
+            (vec2 (chartBasisVecFiber (I := I) α k x)
+              (chartBasisVecFiber (I := I) α j x))) p := by
+    have h := (chartRicci_joint (I := I) S hS α k j).contDiffAt
+      (hopen.mem_nhds hbase_mem)
+    exact h.contMDiffAt.comp p hbase'
+  let coord : Real × M → E := fun q =>
+    ∑ i : Fin (Module.finrank Real E),
+      (∑ j : Fin (Module.finrank Real E),
+        chartInvGramOnE (I := I) (S.family.metric q.1) α i j
+            (extChartAt I α q.2) *
+          ∑ k : Fin (Module.finrank Real E),
+            ((chartModelBasis E).repr v) k *
+              (let x := (extChartAt I α).symm (extChartAt I α q.2)
+               S.ricciAt q.1 x
+                 (vec2 (chartBasisVecFiber (I := I) α k x)
+                   (chartBasisVecFiber (I := I) α j x)))) •
+        chartModelBasis E i
+  have hcoord : ContMDiffAt (𝓘(Real, Real).prod I) 𝓘(Real, E) ∞ coord p := by
+    refine ContMDiffAt.sum fun i _ => ?_
+    refine (ContMDiffAt.sum fun j _ => (hinv i j).mul
+      (ContMDiffAt.sum fun k _ =>
+        (contMDiffAt_const (c := ((chartModelBasis E).repr v) k)).mul
+          (hric k j))).smul contMDiffAt_const
+  refine hcoord.congr_of_eventuallyEq ?_
+  have hsource : ∀ᶠ q : Real × M in 𝓝 p, q.2 ∈ (extChartAt I α).source :=
+    (continuous_snd.tendsto p).eventually
+      ((isOpen_extChartAt_source (I := I) α).mem_nhds hαsource)
+  filter_upwards [hsource] with q hq
+  have hleft : (extChartAt I α).symm (extChartAt I α q.2) = q.2 :=
+    (extChartAt I α).left_inv hq
+  have hbaseq : q.2 ∈ (trivializationAt E (TangentSpace I) α).baseSet := by
+    rw [trivializationAt_baseSet_eq_chartAt_source]
+    rwa [← extChartAt_source_eq_chartAt_source (I := I)]
+  change ContinuousLinearMap.inCoordinates E (TangentSpace I) E
+    (TangentSpace I) α q.2 α q.2
+      (ricciSharp (I := I) (S.family.metric q.1) q.2) v = coord q
+  rw [ContinuousLinearMap.inCoordinates_eq hbaseq hbaseq]
+  simp only [ContinuousLinearMap.coe_comp, ContinuousLinearEquiv.coe_coe,
+    Bundle.Trivialization.coe_continuousLinearEquivAt_eq,
+    Bundle.Trivialization.symm_continuousLinearEquivAt_eq]
+  change trivToE (I := I) α q.2
+    (ricciSharp (I := I) (S.family.metric q.1) q.2
+      (trivFromE (I := I) α q.2 v)) = coord q
+  rw [ricciSharp_chart (I := I) (S.family.metric q.1) α hbaseq]
+  simp only [coord, trivToE_trivFromE (I := I) α hbaseq]
+  simp_rw [chartInvGramOnE_def, hleft]
+  simp_rw [SolutionOn.ricciAt_eq, SolutionFamily.ricciAt,
+    metricRicciAt_apply_eq_ricciTensor]
+  simp only [SolutionOn.family]
+  conv_rhs => rw [hleft]
+
+section
+
+open DifferentialGeometry.Tensor.Coordinates
 
 omit [SigmaCompactSpace M] in
 private theorem totalNabla0S_apply_localFrameAt
@@ -670,5 +775,7 @@ theorem nabla2Ricci_cont [I.Boundaryless]
     fin_cases k <;> rfl
   simp only [Function.comp_apply, A]
   rw [hslots, hleft]
+
+end
 
 end DifferentialGeometry.PDE.RicciFlow

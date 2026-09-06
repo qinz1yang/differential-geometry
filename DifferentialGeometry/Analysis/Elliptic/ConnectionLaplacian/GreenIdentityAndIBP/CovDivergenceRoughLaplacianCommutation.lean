@@ -373,6 +373,7 @@ private theorem l2Inner_sub_right_cc (g : SmoothRiemannianMetric I M) (r s : ℕ
     tensorL2Inner_smul_right]
   ring
 
+omit [CompactSpace M] in
 theorem rawTensorConnLapSmooth_l2Inner_selfAdjoint (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (T v : SmoothCcTensor g r s) :
     tensorL2Inner (I := I) (M := M) g r s
@@ -391,6 +392,7 @@ theorem rawTensorConnLapSmooth_l2Inner_selfAdjoint (g : SmoothRiemannianMetric I
   rw [← hsymm2]
   linarith [hTv]
 
+omit [CompactSpace M] in
 theorem pointwiseTensorCurv_l2Inner_eq_covDivergence_commutator
     (g : SmoothRiemannianMetric I M) (s : ℕ)
     (X : SmoothCcTensor g 0 s) (Z : SmoothCcTensor g 0 (s + 1)) :

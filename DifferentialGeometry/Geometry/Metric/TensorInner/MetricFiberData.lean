@@ -1,8 +1,10 @@
 import DifferentialGeometry.Tensor.RSTensor.Defs
 import Mathlib.LinearAlgebra.Dual.Lemmas
 import Mathlib.LinearAlgebra.FiniteDimensional.Lemmas
+import Mathlib.LinearAlgebra.BilinearForm.Orthogonal
 import Mathlib.Analysis.InnerProductSpace.Defs
 import Mathlib.Analysis.InnerProductSpace.PiL2
+import Mathlib.Analysis.InnerProductSpace.Positive
 import Mathlib.Analysis.InnerProductSpace.Projection.FiniteDimensional
 import Mathlib.Geometry.Manifold.VectorBundle.Riemannian
 import Mathlib.Geometry.Manifold.VectorBundle.Tangent
@@ -127,6 +129,122 @@ theorem toCore_inner (D : MetricFiberData V) (v w : V) :
   change D.toCore.inner v w = D.inner v w
   rfl
 
+def orthogonal (D : MetricFiberData V) (W : Submodule Real V) : Submodule Real V :=
+  LinearMap.BilinForm.orthogonal D.flat.toLinearMap W
+
+@[simp] theorem mem_orthogonal
+    (D : MetricFiberData V) (W : Submodule Real V) (v : V) :
+    v ∈ D.orthogonal W ↔ ∀ w ∈ W, D.inner w v = 0 :=
+  Iff.rfl
+
+def IsSymmetric (D : MetricFiberData V) (A : V →ₗ[Real] V) : Prop :=
+  ∀ v w, D.inner (A v) w = D.inner v (A w)
+
+theorem trace_pos_of_isSymmetric_of_nonneg_of_ne_zero
+    (D : MetricFiberData V) (A : V →ₗ[Real] V)
+    (hAsymm : D.IsSymmetric A)
+    (hAnonneg : ∀ v : V, 0 ≤ D.inner (A v) v)
+    (hAne : A ≠ 0) :
+    0 < LinearMap.trace Real V A := by
+  let addV : AddCommGroup V := inferInstance
+  let modV : Module Real V := inferInstance
+  let _ : InnerProductSpace.Core Real V := D.toCore
+  let _ : NormedAddCommGroup V :=
+    @InnerProductSpace.Core.toNormedAddCommGroup Real V _ addV modV D.toCore
+  let _ : AddCommGroup V := addV
+  let _ : Module Real V := modV
+  let _ : InnerProductSpace Real V :=
+    @InnerProductSpace.ofCore Real V _ _ _ D.toCore.toCore
+  have hApos : A.IsPositive := by
+    rw [LinearMap.isPositive_iff]
+    constructor
+    · intro x y
+      rw [MetricFiberData.toCore_inner D, MetricFiberData.toCore_inner D]
+      exact hAsymm x y
+    · intro x
+      rw [MetricFiberData.toCore_inner D]
+      exact hAnonneg x
+  let B : OrthonormalBasis (Fin (Module.finrank Real V)) Real V :=
+    stdOrthonormalBasis Real V
+  let mat : Matrix (Fin (Module.finrank Real V)) (Fin (Module.finrank Real V)) Real :=
+    LinearMap.toMatrix B.toBasis B.toBasis A
+  have hmat : mat.PosSemidef := by
+    dsimp [mat]
+    exact (LinearMap.posSemidef_toMatrix_iff B).mpr hApos
+  have hmat_ne : mat ≠ 0 := by
+    intro hzero
+    apply hAne
+    apply (LinearMap.toMatrix B.toBasis B.toBasis).injective
+    simpa [mat] using hzero
+  have htrace_nonneg : 0 ≤ mat.trace := hmat.trace_nonneg
+  have htrace_ne : mat.trace ≠ 0 := by
+    intro hzero
+    exact hmat_ne (hmat.trace_eq_zero_iff.mp hzero)
+  have htrace_pos : 0 < mat.trace := lt_of_le_of_ne' htrace_nonneg htrace_ne
+  rw [LinearMap.trace_eq_matrix_trace Real B.toBasis A]
+  exact htrace_pos
+
+theorem IsSymmetric.range_eq_orthogonal_ker
+    {D : MetricFiberData V} {A : V →ₗ[Real] V} (hA : D.IsSymmetric A) :
+    A.range = D.orthogonal A.ker := by
+  let addV : AddCommGroup V := inferInstance
+  let modV : Module Real V := inferInstance
+  let : InnerProductSpace.Core Real V := D.toCore
+  let : NormedAddCommGroup V :=
+    @InnerProductSpace.Core.toNormedAddCommGroup Real V _ addV modV D.toCore
+  let : AddCommGroup V := addV
+  let : Module Real V := modV
+  let : InnerProductSpace Real V :=
+    @InnerProductSpace.ofCore Real V _ _ _ D.toCore.toCore
+  have hInner (v w : V) : (Inner.inner Real v w : Real) = D.inner v w := by
+    exact D.toCore_inner v w
+  have hSymmetric : A.IsSymmetric := by
+    intro v w
+    change D.inner (A v) w = D.inner v (A w)
+    exact hA v w
+  have hOrthogonal : D.orthogonal A.ker = Submodule.orthogonal A.ker := by
+    ext v
+    simp only [mem_orthogonal, Submodule.mem_orthogonal]
+    constructor
+    · intro hv w hw
+      rw [hInner]
+      exact hv w hw
+    · intro hv w hw
+      rw [← hInner]
+      exact hv w hw
+  rw [hOrthogonal, ← hSymmetric.orthogonal_range]
+  exact A.range.orthogonal_orthogonal.symm
+
+variable {W : Type*} [AddCommGroup W] [Module Real W] [FiniteDimensional Real W]
+
+theorem map_orthogonal_of_inner_eq
+    (DV : MetricFiberData V) (DW : MetricFiberData W)
+    (e : V ≃ₗ[Real] W)
+    (hinner : ∀ v w, DW.inner (e v) (e w) = DV.inner v w)
+    (K : Submodule Real V) :
+    Submodule.map e.toLinearMap (DV.orthogonal K) =
+      DW.orthogonal (Submodule.map e.toLinearMap K) := by
+  ext w
+  constructor
+  · rintro ⟨v, hv, rfl⟩
+    rw [mem_orthogonal]
+    rintro _ ⟨u, hu, rfl⟩
+    change DW.inner (e u) (e v) = 0
+    rw [hinner]
+    exact (mem_orthogonal DV K v).mp hv u hu
+  · intro hw
+    refine ⟨e.symm w, ?_, e.apply_symm_apply w⟩
+    change e.symm w ∈ DV.orthogonal K
+    rw [mem_orthogonal]
+    intro u hu
+    have hw' := (mem_orthogonal DW (Submodule.map e.toLinearMap K) w).mp hw
+      (e u) ⟨u, hu, rfl⟩
+    calc
+      DV.inner u (e.symm w) = DW.inner (e u) (e (e.symm w)) :=
+        (hinner u (e.symm w)).symm
+      _ = DW.inner (e u) w := by rw [e.apply_symm_apply]
+      _ = 0 := hw'
+
 noncomputable def submoduleProjection
     (D : MetricFiberData V) (W : Submodule Real V) : V →ₗ[Real] W := by
   let addV : AddCommGroup V := inferInstance
@@ -238,8 +356,6 @@ theorem exists_metric_cle
   exact eData.2 v w
 
 end MetricEquiv
-
-variable {W : Type*} [AddCommGroup W] [Module Real W] [FiniteDimensional Real W]
 
 def adjoint (DV : MetricFiberData V) (DW : MetricFiberData W)
     (A : V →ₗ[Real] W) : W →ₗ[Real] V :=

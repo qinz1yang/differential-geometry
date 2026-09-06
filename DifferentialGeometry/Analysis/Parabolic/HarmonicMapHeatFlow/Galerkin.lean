@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.ODE.GlobalLipschitzAffineExistence
+import DifferentialGeometry.Analysis.ODE.StateCoerciveMass
 import DifferentialGeometry.Analysis.Parabolic.HarmonicMapHeatFlow.WeakForm
 import DifferentialGeometry.Geometry.Metric.TensorInner.CoerciveBilinInverse
 import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.Smooth.EigenvectorSmoothToL2
@@ -25,90 +25,6 @@ open DifferentialGeometry.Analysis.ODE
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Integral.Measure
-
-theorem coerciveODE_exists
-    {V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
-    [CompleteSpace V]
-    {mass : ℝ → V →L[ℝ] V →L[ℝ] ℝ}
-    {resid : ℝ → V → (V →L[ℝ] ℝ)} {T c A : ℝ} {L : ℝ≥0}
-    (hT : 0 < T) (hc : 0 < c) (hA : 0 ≤ A)
-    (hmass : ContinuousOn mass (Icc (0 : ℝ) T))
-    (hcoer : ∀ t ∈ Icc (0 : ℝ) T, ∀ v : V,
-      c * ‖v‖ * ‖v‖ ≤ mass t v v)
-    (hlip : ∀ t ∈ Icc (0 : ℝ) T, LipschitzWith L (resid t))
-    (hcont : ∀ v : V, ContinuousOn (fun t => resid t v) (Icc (0 : ℝ) T))
-    (haff : ∀ t ∈ Icc (0 : ℝ) T, ∀ v : V,
-      ‖resid t v‖ ≤ A + (L : ℝ) * ‖v‖)
-    (v₀ : V) :
-    let hco : ∀ t ∈ Icc (0 : ℝ) T, IsCoercive (mass t) := fun t ht =>
-      ⟨c, hc, hcoer t ht⟩
-    ∃ γ : ℝ → V, γ 0 = v₀ ∧ ContinuousOn γ (Icc (0 : ℝ) T) ∧
-      ∀ t, (ht : t ∈ Ico (0 : ℝ) T) →
-        HasDerivWithinAt γ
-          ((hco t ⟨ht.1, le_of_lt ht.2⟩).sharpCLM (resid t (γ t)))
-          (Ici (0 : ℝ)) t := by
-  classical
-  dsimp only
-  let hco : ∀ t ∈ Icc (0 : ℝ) T, IsCoercive (mass t) := fun t ht =>
-    ⟨c, hc, hcoer t ht⟩
-  let cinv : ℝ≥0 := ⟨c⁻¹, inv_nonneg.mpr hc.le⟩
-  let K : ℝ≥0 := cinv * L
-  let f : ℝ → V → V := fun t v =>
-    if ht : t ∈ Icc (0 : ℝ) T then
-      (hco t ht).sharpCLM (resid t v)
-    else 0
-  have hsharp_norm : ∀ t (ht : t ∈ Icc (0 : ℝ) T),
-      ‖(hco t ht).sharpCLM‖ ≤ c⁻¹ := by
-    intro t ht
-    exact (hco t ht).sharpCLM_norm_le hc (hcoer t ht)
-  have hlip_f : ∀ t ∈ Icc (0 : ℝ) T, LipschitzWith K (f t) := by
-    intro t ht
-    have hsharp : LipschitzWith ‖(hco t ht).sharpCLM‖₊
-        (hco t ht).sharpCLM := (hco t ht).sharpCLM.lipschitz
-    have hcomp := hsharp.comp (hlip t ht)
-    have hnorm_nn : ‖(hco t ht).sharpCLM‖₊ ≤ cinv := by
-      exact_mod_cast hsharp_norm t ht
-    have hKL : ‖(hco t ht).sharpCLM‖₊ * L ≤ K := by
-      simpa only [K, mul_comm] using mul_le_mul_left hnorm_nn L
-    rw [show f t = (hco t ht).sharpCLM ∘ resid t by
-      funext v
-      simp only [f, dif_pos ht, Function.comp_apply]]
-    exact hcomp.weaken hKL
-  have hsharp_cont : Continuous
-      (fun t : Icc (0 : ℝ) T => (hco t t.2).sharpCLM) := by
-    exact IsCoercive.sharpCLM_cont_sub mass hmass hco
-  have hcont_f : ∀ v : V, ContinuousOn (fun t => f t v) (Icc (0 : ℝ) T) := by
-    intro v
-    rw [continuousOn_iff_continuous_domRestrict]
-    have hres : Continuous (fun t : Icc (0 : ℝ) T => resid t v) :=
-      (hcont v).domRestrict
-    have happ := hsharp_cont.clm_apply hres
-    convert happ using 1
-    ext t
-    simp only [f, Set.domRestrict_apply, dif_pos t.property]
-  have haff_f : ∀ t ∈ Icc (0 : ℝ) T, ∀ v : V,
-      ‖f t v‖ ≤ c⁻¹ * A + (K : ℝ) * ‖v‖ := by
-    intro t ht v
-    have hop := ContinuousLinearMap.le_opNorm
-      (hco t ht).sharpCLM (resid t v)
-    have hcnn : 0 ≤ c⁻¹ := inv_nonneg.mpr hc.le
-    calc
-      ‖f t v‖ = ‖(hco t ht).sharpCLM (resid t v)‖ := by
-        simp only [f, dif_pos ht]
-      _ ≤ ‖(hco t ht).sharpCLM‖ * ‖resid t v‖ := hop
-      _ ≤ c⁻¹ * (A + (L : ℝ) * ‖v‖) :=
-        mul_le_mul (hsharp_norm t ht) (haff t ht v) (norm_nonneg _) hcnn
-      _ = c⁻¹ * A + (K : ℝ) * ‖v‖ := by
-        simp only [K, NNReal.coe_mul]
-        rw [show (cinv : ℝ) = c⁻¹ from rfl, mul_add, mul_assoc]
-  have hA' : 0 ≤ c⁻¹ * A := mul_nonneg (inv_nonneg.mpr hc.le) hA
-  obtain ⟨γ, hγ0, hγcont, hγderiv⟩ :=
-    forward_solution_of_lipschitzWith_affineBound
-      (E := V) (f := f) hT hA' hlip_f hcont_f haff_f v₀
-  refine ⟨γ, hγ0, hγcont, ?_⟩
-  intro t ht
-  have ht' : t ∈ Icc (0 : ℝ) T := ⟨ht.1, le_of_lt ht.2⟩
-  simpa only [f, dif_pos ht'] using hγderiv t ht
 
 theorem retractResid_data
     {V W : Type*} [NormedAddCommGroup V] [NormedSpace ℝ V]
@@ -395,7 +311,7 @@ theorem hmfFin_exists
     exact hmfFinMass_lower (I := I) (M := M)
       q (g t) C hC0 hCtop (hvol t ht) J horth v
   simpa only [mass] using
-    (coerciveODE_exists (mass := mass) (resid := resid) hT (inv_pos.mpr hCr)
+    (coerciveMassODE_exists (mass := mass) (resid := resid) hT (inv_pos.mpr hCr)
       hA hmass hcoer hlip hres_cont haff v₀)
 
 end FiniteHilbert

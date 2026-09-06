@@ -21,10 +21,10 @@ namespace DifferentialGeometry
 variable {EM : Type*} [NormedAddCommGroup EM] [NormedSpace ℝ EM]
   {HM : Type*} [TopologicalSpace HM]
   (IM : ModelWithCorners ℝ EM HM)
-  (M : Type*) [TopologicalSpace M] [ChartedSpace HM M] [IsManifold IM ⊤ M]
+  (M : Type*) [TopologicalSpace M] [ChartedSpace HM M] [IsManifold IM ∞ M]
 
 abbrev DifferentialForm (k : ℕ) :=
-  ContMDiffSection IM (EM [⋀^Fin k]→L[ℝ] ℝ) ⊤
+  ContMDiffSection IM (EM [⋀^Fin k]→L[ℝ] ℝ) ∞
     (Bundle.continuousAlternatingMap ℝ (Fin k) EM (TangentSpace IM) ℝ (Bundle.Trivial M ℝ))
 
 namespace DifferentialForm
@@ -33,11 +33,11 @@ variable {IM M k}
 
 private lemma contMDiff_add_section {s t : (x : M) →
     Bundle.continuousAlternatingMap ℝ (Fin k) EM (TangentSpace IM) ℝ (Bundle.Trivial M ℝ) x}
-    (hs : ContMDiff IM (IM.prod 𝓘(ℝ, EM [⋀^Fin k]→L[ℝ] ℝ)) ⊤
+    (hs : ContMDiff IM (IM.prod 𝓘(ℝ, EM [⋀^Fin k]→L[ℝ] ℝ)) ∞
       (fun x => TotalSpace.mk' (EM [⋀^Fin k]→L[ℝ] ℝ) x (s x)))
-    (ht : ContMDiff IM (IM.prod 𝓘(ℝ, EM [⋀^Fin k]→L[ℝ] ℝ)) ⊤
+    (ht : ContMDiff IM (IM.prod 𝓘(ℝ, EM [⋀^Fin k]→L[ℝ] ℝ)) ∞
       (fun x => TotalSpace.mk' (EM [⋀^Fin k]→L[ℝ] ℝ) x (t x))) :
-    ContMDiff IM (IM.prod 𝓘(ℝ, EM [⋀^Fin k]→L[ℝ] ℝ)) ⊤
+    ContMDiff IM (IM.prod 𝓘(ℝ, EM [⋀^Fin k]→L[ℝ] ℝ)) ∞
       (fun x => TotalSpace.mk' (EM [⋀^Fin k]→L[ℝ] ℝ) x (s x + t x)) := by
   intro x₀
   let e := trivializationAt (EM [⋀^Fin k]→L[ℝ] ℝ)
@@ -45,13 +45,13 @@ private lemma contMDiff_add_section {s t : (x : M) →
   rw [Bundle.Trivialization.contMDiffAt_section_iff e
     (mem_baseSet_trivializationAt (EM [⋀^Fin k]→L[ℝ] ℝ)
       (Bundle.continuousAlternatingMap ℝ (Fin k) EM (TangentSpace IM) ℝ (Bundle.Trivial M ℝ)) x₀)]
-  have hs' : ContMDiffAt IM 𝓘(ℝ, EM [⋀^Fin k]→L[ℝ] ℝ) ⊤ (fun x => (e ⟨x, s x⟩).2) x₀ := by
+  have hs' : ContMDiffAt IM 𝓘(ℝ, EM [⋀^Fin k]→L[ℝ] ℝ) ∞ (fun x => (e ⟨x, s x⟩).2) x₀ := by
     exact (Bundle.Trivialization.contMDiffAt_section_iff e
       (mem_baseSet_trivializationAt (EM [⋀^Fin k]→L[ℝ] ℝ)
         (Bundle.continuousAlternatingMap ℝ (Fin k) EM (TangentSpace IM) ℝ
           (Bundle.Trivial M ℝ)) x₀)).mp
       (hs x₀)
-  have ht' : ContMDiffAt IM 𝓘(ℝ, EM [⋀^Fin k]→L[ℝ] ℝ) ⊤ (fun x => (e ⟨x, t x⟩).2) x₀ := by
+  have ht' : ContMDiffAt IM 𝓘(ℝ, EM [⋀^Fin k]→L[ℝ] ℝ) ∞ (fun x => (e ⟨x, t x⟩).2) x₀ := by
     exact (Bundle.Trivialization.contMDiffAt_section_iff e
       (mem_baseSet_trivializationAt (EM [⋀^Fin k]→L[ℝ] ℝ)
         (Bundle.continuousAlternatingMap ℝ (Fin k) EM (TangentSpace IM) ℝ
@@ -65,9 +65,9 @@ private lemma contMDiff_add_section {s t : (x : M) →
 
 private lemma contMDiff_smul_section (c : ℝ) {s : (x : M) →
     Bundle.continuousAlternatingMap ℝ (Fin k) EM (TangentSpace IM) ℝ (Bundle.Trivial M ℝ) x}
-    (hs : ContMDiff IM (IM.prod 𝓘(ℝ, EM [⋀^Fin k]→L[ℝ] ℝ)) ⊤
+    (hs : ContMDiff IM (IM.prod 𝓘(ℝ, EM [⋀^Fin k]→L[ℝ] ℝ)) ∞
       (fun x => TotalSpace.mk' (EM [⋀^Fin k]→L[ℝ] ℝ) x (s x))) :
-    ContMDiff IM (IM.prod 𝓘(ℝ, EM [⋀^Fin k]→L[ℝ] ℝ)) ⊤
+    ContMDiff IM (IM.prod 𝓘(ℝ, EM [⋀^Fin k]→L[ℝ] ℝ)) ∞
       (fun x => TotalSpace.mk' (EM [⋀^Fin k]→L[ℝ] ℝ) x (c • s x)) := by
   intro x₀
   let e := trivializationAt (EM [⋀^Fin k]→L[ℝ] ℝ)
@@ -75,21 +75,21 @@ private lemma contMDiff_smul_section (c : ℝ) {s : (x : M) →
   rw [Bundle.Trivialization.contMDiffAt_section_iff e
     (mem_baseSet_trivializationAt (EM [⋀^Fin k]→L[ℝ] ℝ)
       (Bundle.continuousAlternatingMap ℝ (Fin k) EM (TangentSpace IM) ℝ (Bundle.Trivial M ℝ)) x₀)]
-  have hs' : ContMDiffAt IM 𝓘(ℝ, EM [⋀^Fin k]→L[ℝ] ℝ) ⊤ (fun x => (e ⟨x, s x⟩).2) x₀ := by
+  have hs' : ContMDiffAt IM 𝓘(ℝ, EM [⋀^Fin k]→L[ℝ] ℝ) ∞ (fun x => (e ⟨x, s x⟩).2) x₀ := by
     exact (Bundle.Trivialization.contMDiffAt_section_iff e
       (mem_baseSet_trivializationAt (EM [⋀^Fin k]→L[ℝ] ℝ)
         (Bundle.continuousAlternatingMap ℝ (Fin k) EM (TangentSpace IM) ℝ
           (Bundle.Trivial M ℝ)) x₀)).mp
       (hs x₀)
   refine ((contMDiffAt_const : ContMDiffAt IM 𝓘(ℝ,
-    ℝ) ⊤ (fun _ : M => c) x₀).smul hs').congr_of_eventuallyEq ?_
+    ℝ) ∞ (fun _ : M => c) x₀).smul hs').congr_of_eventuallyEq ?_
   exact eventually_of_mem (e.open_baseSet.mem_nhds (mem_baseSet_trivializationAt (EM
     [⋀^Fin k]→L[ℝ] ℝ)
       (Bundle.continuousAlternatingMap ℝ (Fin k) EM (TangentSpace IM) ℝ (Bundle.Trivial M ℝ)) x₀))
     (fun x hx => (e.linear ℝ hx).map_smul c (s x))
 
 private lemma contMDiff_zero_section :
-    ContMDiff IM (IM.prod 𝓘(ℝ, EM [⋀^Fin k]→L[ℝ] ℝ)) ⊤
+    ContMDiff IM (IM.prod 𝓘(ℝ, EM [⋀^Fin k]→L[ℝ] ℝ)) ∞
       (fun x => TotalSpace.mk' (EM [⋀^Fin k]→L[ℝ] ℝ) x (0 : Bundle.continuousAlternatingMap ℝ
         (Fin k) EM
         (TangentSpace IM) ℝ (Bundle.Trivial M ℝ) x)) := by
@@ -175,7 +175,7 @@ noncomputable def wedge {k l : ℕ} (α : DifferentialForm IM M k)
       (mem_baseSet_trivializationAt (EM [⋀^Fin (k + l)]→L[ℝ] ℝ)
         (Bundle.continuousAlternatingMap ℝ (Fin (k + l)) EM (TangentSpace IM) ℝ
           (Bundle.Trivial M ℝ)) x₀)]
-    have hα : ContMDiffAt IM 𝓘(ℝ, EM [⋀^Fin k]→L[ℝ] ℝ) ⊤ (fun x =>
+    have hα : ContMDiffAt IM 𝓘(ℝ, EM [⋀^Fin k]→L[ℝ] ℝ) ∞ (fun x =>
         (trivializationAt (EM [⋀^Fin k]→L[ℝ] ℝ)
           (Bundle.continuousAlternatingMap ℝ (Fin k) EM (TangentSpace IM) ℝ
             (Bundle.Trivial M ℝ)) x₀ ⟨x, α x⟩).2) x₀ := by
@@ -186,7 +186,7 @@ noncomputable def wedge {k l : ℕ} (α : DifferentialForm IM M k)
         (mem_baseSet_trivializationAt (EM [⋀^Fin k]→L[ℝ] ℝ)
           (Bundle.continuousAlternatingMap ℝ (Fin k) EM (TangentSpace IM) ℝ
             (Bundle.Trivial M ℝ)) x₀)).mp (α.contMDiff_toFun x₀)
-    have hβ : ContMDiffAt IM 𝓘(ℝ, EM [⋀^Fin l]→L[ℝ] ℝ) ⊤ (fun x =>
+    have hβ : ContMDiffAt IM 𝓘(ℝ, EM [⋀^Fin l]→L[ℝ] ℝ) ∞ (fun x =>
         (trivializationAt (EM [⋀^Fin l]→L[ℝ] ℝ)
           (Bundle.continuousAlternatingMap ℝ (Fin l) EM (TangentSpace IM) ℝ
             (Bundle.Trivial M ℝ)) x₀ ⟨x, β x⟩).2) x₀ := by
@@ -196,12 +196,34 @@ noncomputable def wedge {k l : ℕ} (α : DifferentialForm IM M k)
             (Bundle.Trivial M ℝ)) x₀)
         (mem_baseSet_trivializationAt (EM [⋀^Fin l]→L[ℝ] ℝ)
           (Bundle.continuousAlternatingMap ℝ (Fin l) EM (TangentSpace IM) ℝ
-            (Bundle.Trivial M ℝ)) x₀)).mp (β.contMDiff_toFun x₀)
-    let W : (EM [⋀^Fin k]→L[ℝ] ℝ) →L[ℝ] (EM [⋀^Fin l]→L[ℝ] ℝ) →L[ℝ]
-        (EM [⋀^Fin (k + l)]→L[ℝ] ℝ) :=
-      wedgeProductL (ContinuousLinearMap.mul ℝ ℝ)
-    have hW : ContMDiffAt IM 𝓘(ℝ, (EM [⋀^Fin k]→L[ℝ] ℝ) →L[ℝ] (EM [⋀^Fin l]→L[ℝ] ℝ) →L[ℝ]
-        (EM [⋀^Fin (k + l)]→L[ℝ] ℝ)) ⊤ (fun _ : M => W) x₀ :=
+        (Bundle.Trivial M ℝ)) x₀)).mp (β.contMDiff_toFun x₀)
+    let dNorm : NormedAddCommGroup ((EM [⋀^Fin l]→L[ℝ] ℝ) →L[ℝ]
+        (EM [⋀^Fin (k + l)]→L[ℝ] ℝ)) :=
+      ContinuousLinearMap.toNormedAddCommGroup (𝕜 := ℝ) (𝕜₂ := ℝ)
+        (E := EM [⋀^Fin l]→L[ℝ] ℝ) (F := EM [⋀^Fin (k + l)]→L[ℝ] ℝ)
+        (σ₁₂ := RingHom.id ℝ)
+    let dSpace : NormedSpace ℝ ((EM [⋀^Fin l]→L[ℝ] ℝ) →L[ℝ]
+        (EM [⋀^Fin (k + l)]→L[ℝ] ℝ)) :=
+      ContinuousLinearMap.toNormedSpace (𝕜 := ℝ) (𝕜₂ := ℝ)
+        (E := EM [⋀^Fin l]→L[ℝ] ℝ) (F := EM [⋀^Fin (k + l)]→L[ℝ] ℝ)
+        (σ₁₂ := RingHom.id ℝ)
+    let oNorm : NormedAddCommGroup ((EM [⋀^Fin k]→L[ℝ] ℝ) →L[ℝ]
+        ((EM [⋀^Fin l]→L[ℝ] ℝ) →L[ℝ] (EM [⋀^Fin (k + l)]→L[ℝ] ℝ))) :=
+      ContinuousLinearMap.toNormedAddCommGroup (𝕜 := ℝ) (𝕜₂ := ℝ)
+        (E := EM [⋀^Fin k]→L[ℝ] ℝ)
+        (F := (EM [⋀^Fin l]→L[ℝ] ℝ) →L[ℝ] (EM [⋀^Fin (k + l)]→L[ℝ] ℝ))
+        (σ₁₂ := RingHom.id ℝ)
+    let oSpace : NormedSpace ℝ ((EM [⋀^Fin k]→L[ℝ] ℝ) →L[ℝ]
+        ((EM [⋀^Fin l]→L[ℝ] ℝ) →L[ℝ] (EM [⋀^Fin (k + l)]→L[ℝ] ℝ))) :=
+      ContinuousLinearMap.toNormedSpace (𝕜 := ℝ) (𝕜₂ := ℝ)
+        (E := EM [⋀^Fin k]→L[ℝ] ℝ)
+        (F := (EM [⋀^Fin l]→L[ℝ] ℝ) →L[ℝ] (EM [⋀^Fin (k + l)]→L[ℝ] ℝ))
+        (σ₁₂ := RingHom.id ℝ)
+    let W : (EM [⋀^Fin k]→L[ℝ] ℝ) →L[ℝ]
+        ((EM [⋀^Fin l]→L[ℝ] ℝ) →L[ℝ] (EM [⋀^Fin (k + l)]→L[ℝ] ℝ)) :=
+      wedgeProductL (M := EM) (m := k) (n := l) (ContinuousLinearMap.mul ℝ ℝ)
+    have hW : ContMDiffAt IM 𝓘(ℝ, (EM [⋀^Fin k]→L[ℝ] ℝ) →L[ℝ]
+        ((EM [⋀^Fin l]→L[ℝ] ℝ) →L[ℝ] (EM [⋀^Fin (k + l)]→L[ℝ] ℝ))) ∞ (fun _ : M => W) x₀ :=
       contMDiffAt_const
     refine ((hW.clm_apply hα).clm_apply hβ).congr_of_eventuallyEq ?_
     exact eventually_of_mem (e.open_baseSet.mem_nhds (mem_baseSet_trivializationAt
@@ -269,7 +291,7 @@ noncomputable def reindex {k l : ℕ} (e : Fin k ≃ Fin l) (α : DifferentialFo
       (mem_baseSet_trivializationAt (EM [⋀^Fin l]→L[ℝ] ℝ)
         (Bundle.continuousAlternatingMap ℝ (Fin l) EM (TangentSpace IM) ℝ
           (Bundle.Trivial M ℝ)) x₀)]
-    have hα : ContMDiffAt IM 𝓘(ℝ, EM [⋀^Fin k]→L[ℝ] ℝ) ⊤ (fun x =>
+    have hα : ContMDiffAt IM 𝓘(ℝ, EM [⋀^Fin k]→L[ℝ] ℝ) ∞ (fun x =>
         (trivializationAt (EM [⋀^Fin k]→L[ℝ] ℝ)
           (Bundle.continuousAlternatingMap ℝ (Fin k) EM (TangentSpace IM) ℝ
             (Bundle.Trivial M ℝ)) x₀ ⟨x, α x⟩).2) x₀ := by
@@ -280,7 +302,7 @@ noncomputable def reindex {k l : ℕ} (e : Fin k ≃ Fin l) (α : DifferentialFo
         (mem_baseSet_trivializationAt (EM [⋀^Fin k]→L[ℝ] ℝ)
           (Bundle.continuousAlternatingMap ℝ (Fin k) EM (TangentSpace IM) ℝ
             (Bundle.Trivial M ℝ)) x₀)).mp (α.contMDiff_toFun x₀)
-    have hL : ContMDiffAt IM 𝓘(ℝ, EM [⋀^Fin l]→L[ℝ] ℝ) ⊤ (fun x =>
+    have hL : ContMDiffAt IM 𝓘(ℝ, EM [⋀^Fin l]→L[ℝ] ℝ) ∞ (fun x =>
         (domDomCongrL e) ((trivializationAt (EM [⋀^Fin k]→L[ℝ] ℝ)
           (Bundle.continuousAlternatingMap ℝ (Fin k) EM (TangentSpace IM) ℝ
             (Bundle.Trivial M ℝ)) x₀ ⟨x, α x⟩).2)) x₀ := by

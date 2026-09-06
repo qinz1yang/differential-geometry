@@ -653,6 +653,7 @@ theorem exists_rawConnLapIter_covGrad_commutator_l2Norm_le
   have h := hbound 0 S
   simpa only [iteratedCovGrad_zero, Nat.add_zero] using h
 
+omit [CompactSpace M] in
 private theorem covGrad_norm_sq_le_rawConnLap_mul_self
     (g : SmoothRiemannianMetric I M) (s : ℕ) (S : SmoothCcTensor g 0 s) :
     ‖covGrad (I := I) (M := M) g 0 s S‖ ^ 2 ≤

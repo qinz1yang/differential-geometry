@@ -36,6 +36,7 @@ private local instance : BorelSpace E := ⟨rfl⟩
 private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
+omit [CompactSpace M] in
 theorem oneMinusConnLapSmooth_toL2_inner_eq_h1_general
     (g : SmoothRiemannianMetric I M) (s : ℕ)
     (hint : LoweringIntertwiner (I := I) (M := M) g s)
@@ -119,6 +120,7 @@ theorem oneMinusConnLapSmooth_toL2_inner_eq_h1_general
   rw [h_lhs, h_split, h_l2_Tv, h_dir, h_green]
   ring
 
+omit [CompactSpace M] in
 theorem inner_smoothToTensorH1Compl_eq_l2_oneMinusConnLap_of_green
     (g : SmoothRiemannianMetric I M) (s : ℕ)
     (hint : LoweringIntertwiner (I := I) (M := M) g s)
@@ -162,6 +164,7 @@ theorem inner_smoothToTensorH1Compl_eq_l2_oneMinusConnLap_of_green
   have h_AB : A = B := h_dense.equalizer hA_cont hB_cont h_eq_on
   exact congr_fun h_AB w
 
+omit [CompactSpace M] in
 theorem TensorH1ComplToTensorL2_injective_of_green
     (g : SmoothRiemannianMetric I M) (s : ℕ)
     (hint : LoweringIntertwiner (I := I) (M := M) g s) :
@@ -198,12 +201,14 @@ theorem TensorH1ComplToTensorL2_injective_of_green
   rw [hA] at this
   exact this
 
+omit [CompactSpace M] in
 theorem TensorH1ComplToTensorL2_injective_two
     (g : SmoothRiemannianMetric I M) :
     Function.Injective (TensorH1ComplToTensorL2 (I := I) (M := M) g 0 2) :=
   TensorH1ComplToTensorL2_injective_of_green (I := I) (M := M) g 2
     (loweringIntertwiner_two (I := I) (M := M) g)
 
+omit [CompactSpace M] in
 theorem TensorH1ComplToTensorL2_injective_three
     (g : SmoothRiemannianMetric I M) :
     Function.Injective (TensorH1ComplToTensorL2 (I := I) (M := M) g 0 3) :=

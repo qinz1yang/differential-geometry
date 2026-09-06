@@ -237,6 +237,18 @@ theorem contMDiffAt_isLocalDiffeomorphAt (hn : 1 ≤ n) (hn' : n ≠ ∞)
   exact isLocalDiffeomorphAt_of_contMDiffOn hn hn' hV_open hxV (hfW.mono hVW) hinv
 
 omit [CompleteSpace F] in
+theorem contMDiffAt_isLocalDiffeomorphAt_of_mfderiv (hn : 1 ≤ n) (hn' : n ≠ ∞)
+    (hf : ContMDiffAt I J n f x)
+    (hinv : (mfderiv I J f x).IsInvertible) :
+    IsLocalDiffeomorphAt I J n f x := by
+  have hmdiff : MDifferentiableAt I J f x := hf.mdifferentiableAt (by
+    exact ne_of_gt (zero_lt_one.trans_le hn))
+  have hderiv :
+      fderiv ℝ (writtenInExtChartAt I J x f) (extChartAt I x x) = mfderiv I J f x := by
+    rw [hmdiff.mfderiv, I.range_eq_univ, fderivWithin_univ]
+  exact contMDiffAt_isLocalDiffeomorphAt hn hn' hf (hderiv ▸ hinv)
+
+omit [CompleteSpace F] in
 theorem exists_partialDiffeomorph_of_contMDiffOn_infty
     [IsManifold I ∞ M] [IsManifold J ∞ N] {f : M → N} {U : Set M} (hU : IsOpen U)
     (hxU : x ∈ U) (hf : ContMDiffOn I J ∞ f U)

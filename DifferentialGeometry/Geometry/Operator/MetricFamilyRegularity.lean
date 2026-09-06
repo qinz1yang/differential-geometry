@@ -65,6 +65,44 @@ private theorem spatialJet_contDiffOn
     rfl
 
 omit [CompleteSpace E] in
+theorem chartGramMatrix_contDiffOn
+    {D : RealTimeInterval}
+    {G : MetricConnectionFamilyOn (I := I) (M := M) D}
+    (hG : MetricFamilySmoothOn (I := I) (M := M) D G.metric)
+    {J : Set Real} (hJ : J ⊆ D.regular) (α : M)
+    (i j : Fin (Module.finrank Real E)) :
+    ContMDiffOn (𝓘(Real, Real).prod I) 𝓘(Real, Real) ∞
+      (fun p : Real × M => chartGramMatrix (I := I) (G.metric p.1) α p.2 i j)
+      (J ×ˢ (trivializationAt E (TangentSpace I) α).baseSet) := by
+  classical
+  let e := trivializationAt E (TangentSpace I : M → Type _) α
+  let b := chartModelBasis E
+  have hframe : IsLocalFrameOn I E (∞ : WithTop ℕ∞) (e.localFrame b) e.baseSet :=
+    e.isLocalFrameOn_localFrame_baseSet I (∞ : WithTop ℕ∞) b
+  have hsmooth := (hG.frameCompSmooth (e.localFrame b) hframe i j).mono
+    (Set.prod_mono hJ Set.Subset.rfl)
+  refine hsmooth.congr ?_
+  intro p hp
+  rw [e.localFrame_apply_of_mem_baseSet b hp.2,
+    e.localFrame_apply_of_mem_baseSet b hp.2]
+  simp only [chartGramMatrix, Matrix.of_apply, chartBasisVecFiber,
+    Trivialization.basisAt, Module.Basis.map_apply, e, b,
+    Trivialization.linearEquivAt_symm_apply]
+  rw [Trivialization.symmL_apply _ hp.2, Trivialization.symmL_apply _ hp.2]
+
+omit [CompleteSpace E] in
+theorem chartGramMatrix_continuousOn
+    {D : RealTimeInterval}
+    {G : MetricConnectionFamilyOn (I := I) (M := M) D}
+    (hG : MetricFamilySmoothOn (I := I) (M := M) D G.metric)
+    {J : Set Real} (hJ : J ⊆ D.regular) (α : M)
+    (i j : Fin (Module.finrank Real E)) :
+    ContinuousOn
+      (fun p : Real × M => chartGramMatrix (I := I) (G.metric p.1) α p.2 i j)
+      (J ×ˢ (trivializationAt E (TangentSpace I) α).baseSet) :=
+  (chartGramMatrix_contDiffOn (I := I) hG hJ α i j).continuousOn
+
+omit [CompleteSpace E] in
 theorem chartGramOnE_contDiffOn
     {D : RealTimeInterval}
     {G : MetricConnectionFamilyOn (I := I) (M := M) D}
@@ -670,6 +708,33 @@ theorem heatOperatorWithDrift_continuousOn [I.Boundaryless] [T2Space M]
     laplacianAt (I := I) G p.1 ρ p.2 + driftTerm (I := I) G p.1 (X p.1) ρ p.2)
       (J ×ˢ (Set.univ : Set M)) at h
   exact h
+
+omit [CompleteSpace E] in
+theorem driftTerm_continuousOn [I.Boundaryless]
+    (G : MetricConnectionFamily (I := I) (M := M) ℝ)
+    {D : RealTimeInterval}
+    (hG : MetricFamilySmoothOn (I := I) (M := M) D G.metric)
+    {J : Set ℝ} (hJreg : J ⊆ D.regular)
+    (X : ℝ → (x : M) → TangentSpace I x)
+    (hX : ContinuousOn (fun p : ℝ × M =>
+      (TotalSpace.mk' E p.2 (X p.1 p.2) : TangentBundle I M))
+      (J ×ˢ (Set.univ : Set M)))
+    {rho : M → ℝ} (hrho : ContMDiff I 𝓘(ℝ, ℝ) ∞ rho) :
+    ContinuousOn (fun p : ℝ × M =>
+      driftTerm (I := I) G p.1 (X p.1) rho p.2)
+      (J ×ˢ (Set.univ : Set M)) := by
+  intro p hp
+  have hmetric := (hG.metricCLMSmoothAt (t := p.1) (x := p.2)
+    (D.regular_isOpen.mem_nhds (hJreg hp.1))).continuousAt.continuousWithinAt (s := J ×ˢ (Set.univ : Set M))
+  have hgrad := G.gradientAt_continuousOn hG hJreg hrho p hp
+  have hpair : ContinuousWithinAt
+      (fun q : ℝ × M => TotalSpace.mk' ℝ (E := Bundle.Trivial M ℝ) q.2
+        ((G.metric q.1).inner q.2 (X q.1 q.2)
+          (gradientAt (I := I) G q.1 rho q.2)))
+      (J ×ˢ (Set.univ : Set M)) p :=
+    hmetric.clm_bundle_apply₂ (F₁ := E) (F₂ := E) (hX p hp) hgrad
+  simp only [FiberBundle.continuousWithinAt_totalSpace] at hpair
+  exact hpair.2
 
 end MetricConnectionFamily
 

@@ -64,17 +64,74 @@ theorem IsIntegralCurve.mem_posTangentConeAt_of_mapsTo_Icc
   · have hlt' : h < b - a := hlt
     linarith
 
+theorem HasDerivWithinAt.mem_posTangentConeAt_of_eventually_mem_right
+    {γ : ℝ → E} {t : ℝ} {v : E} {C : Set E}
+    (hγ : HasDerivWithinAt γ v (Ici t) t)
+    (hC : ∀ᶠ s in 𝓝[>] t, γ s ∈ C) :
+    v ∈ posTangentConeAt C (γ t) := by
+  let c : ℝ → ℝ≥0 := fun s ↦ ⟨max (s - t)⁻¹ 0, le_max_right _ _⟩
+  let d : ℝ → E := fun s ↦ γ s - γ t
+  refine mem_tangentConeAt_of_seq (𝓝[>] t) c d ?_ ?_ ?_
+  · simpa only [sub_self] using
+      (hγ.continuousWithinAt.tendsto.mono_left
+        (nhdsWithin_mono t Ioi_subset_Ici_self)).sub_const (γ t)
+  · filter_upwards [hC] with s hs
+    simpa [d] using hs
+  · have hslope : Tendsto (slope γ t) (𝓝[>] t) (𝓝 v) := by
+      have heq : Ici t \ {t} = Ioi t := by
+        ext s
+        simp only [Set.mem_sdiff, mem_Ici, mem_singleton_iff, mem_Ioi]
+        constructor
+        · exact fun h => lt_of_le_of_ne h.1 (Ne.symm h.2)
+        · exact fun h => ⟨h.le, ne_of_gt h⟩
+      simpa only [heq] using (hasDerivWithinAt_iff_tendsto_slope.mp hγ)
+    apply Tendsto.congr' _ hslope
+    filter_upwards [self_mem_nhdsWithin] with s hs
+    have hst : 0 < s - t := sub_pos.mpr hs
+    rw [NNReal.smul_def]
+    simp [c, d, slope, max_eq_left (inv_nonneg.mpr hst.le)]
+    rfl
+
+theorem IsIntegralCurveOn.mem_posTangentConeAt_of_mapsTo_Icc
+    {f : ℝ → E → E} {γ : ℝ → E} {a b : ℝ} {C : Set E}
+    (hγ : IsIntegralCurveOn γ f (Icc a b)) (hab : a < b)
+    (hC : MapsTo γ (Icc a b) C) :
+    f a (γ a) ∈ posTangentConeAt C (γ a) := by
+  apply HasDerivWithinAt.mem_posTangentConeAt_of_eventually_mem_right
+    ((hγ a ⟨le_rfl, hab.le⟩).mono_of_mem_nhdsWithin
+      (Icc_mem_nhdsGE_of_mem (show a ∈ Ico a b from ⟨le_rfl, hab⟩)))
+  have hb : ∀ᶠ s in 𝓝[>] a, s < b :=
+    Filter.Eventually.filter_mono inf_le_left
+      (isOpen_Iio.mem_nhds (show a ∈ Iio b from hab))
+  filter_upwards [self_mem_nhdsWithin, hb] with s hsa hsb
+  exact hC ⟨hsa.le, hsb.le⟩
+
+theorem IsForwardInvariantForODE.vectorFieldTangentTo_of_exists_isIntegralCurveAt
+    {f : ℝ → E → E} {C : Set E} (hC : IsForwardInvariantForODE f C)
+    (hex : ∀ t x, x ∈ C → ∃ γ : ℝ → E, IsIntegralCurveAt γ f t ∧ γ t = x) :
+    VectorFieldTangentTo f C := by
+  intro t x hx
+  obtain ⟨γ, hγ, hγt⟩ := hex t x hx
+  obtain ⟨ε, hε, hγBall⟩ := isIntegralCurveAt_iff_exists_pos.mp hγ
+  have hinterval : Icc t (t + ε / 2) ⊆ Metric.ball t ε := by
+    intro s hs
+    rw [Metric.mem_ball, Real.dist_eq, abs_of_nonneg (sub_nonneg.mpr hs.1)]
+    linarith [hs.2]
+  have hγIcc := hγBall.mono hinterval
+  have hmap : MapsTo γ (Icc t (t + ε / 2)) C :=
+    hC t (t + ε / 2) (by linarith) γ hγIcc (hγt.symm ▸ hx)
+  simpa [hγt] using
+    IsIntegralCurveOn.mem_posTangentConeAt_of_mapsTo_Icc hγIcc (by linarith) hmap
+
+
 theorem IsForwardInvariantForODE.vectorFieldTangentTo_of_exists_isIntegralCurve
     {f : ℝ → E → E} {C : Set E} (hC : IsForwardInvariantForODE f C)
     (hex : ∀ t x, ∃ γ : ℝ → E, IsIntegralCurve γ f ∧ γ t = x) :
     VectorFieldTangentTo f C := by
-  intro t x hx
+  apply hC.vectorFieldTangentTo_of_exists_isIntegralCurveAt
+  intro t x _
   obtain ⟨γ, hγ, hγt⟩ := hex t x
-  have hmap : MapsTo γ (Icc t (t + 1)) C :=
-    hC t (t + 1) (by linarith) γ (hγ.isIntegralCurveOn _) (hγt.symm ▸ hx)
-  simpa [hγt] using
-    IsIntegralCurve.mem_posTangentConeAt_of_mapsTo_Icc hγ
-      (show t < t + 1 by linarith) hmap
+  exact ⟨γ, hγ.isIntegralCurveAt t, hγt⟩
 
 theorem IsForwardInvariantForODE.inter
     {f : ℝ → E → E} {C D : Set E}

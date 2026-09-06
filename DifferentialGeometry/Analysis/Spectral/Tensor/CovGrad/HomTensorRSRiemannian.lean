@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Connection.TensorNabla.SecondOrderHomBundle
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.SingleSlotOperatorFiberNormBound
 import DifferentialGeometry.Analysis.Spectral.Tensor.ChartTensor.Inner.TensorRSContRiemannianBundle
-import Mathlib.Topology.VectorBundle.Riemannian
+import DifferentialGeometry.Bundle.HomNorm
 import Mathlib.Topology.VectorBundle.Hom
 import Mathlib.Topology.Order.Compact
 open DifferentialGeometry.Analysis.Sobolev.IntrinsicSobolev.SmoothCcTensorHs
@@ -35,160 +35,6 @@ private local instance tensorRSRiemannianNormedAddCommGroup_local
     NormedAddCommGroup (TensorRSSpace r s I b) :=
   (h.g.toCore b).toNormedAddCommGroupOfTopology
     (h.g.continuousAt b) (h.g.isVonNBounded b)
-
-section GenericHomOpNorm
-
-private lemma exists_one_lt_mul_sq_lt {c L : ℝ} (h : c < L) :
-    ∃ r : ℝ, 1 < r ∧ c * r ^ 2 < L := by
-  have htend : Tendsto (fun r : ℝ => c * r ^ 2) (𝓝 1) (𝓝 c) := by
-    have h1 : Tendsto (fun r : ℝ => c * r ^ 2) (𝓝 1) (𝓝 (c * (1 : ℝ) ^ 2)) :=
-      tendsto_const_nhds.mul ((continuous_pow 2).tendsto 1)
-    simpa using h1
-  have hev : ∀ᶠ r in 𝓝 (1 : ℝ), c * r ^ 2 < L := htend.eventually (Iio_mem_nhds h)
-  have hev2 : ∀ᶠ r in 𝓝[>] (1 : ℝ), c * r ^ 2 < L := hev.filter_mono nhdsWithin_le_nhds
-  rcases (hev2.and self_mem_nhdsWithin).exists with ⟨r, hr2, hr1⟩
-  exact ⟨r, hr1, hr2⟩
-
-private lemma continuous_homBundle_opNorm_generic
-    {B : Type*} [TopologicalSpace B]
-    {F₁ : Type*} [NormedAddCommGroup F₁] [NormedSpace ℝ F₁]
-    {F₂ : Type*} [NormedAddCommGroup F₂] [NormedSpace ℝ F₂]
-    {E₁ : B → Type*} [TopologicalSpace (TotalSpace F₁ E₁)] [∀ x, NormedAddCommGroup (E₁ x)]
-      [∀ x, InnerProductSpace ℝ (E₁ x)]
-      [FiberBundle F₁ E₁] [VectorBundle ℝ F₁ E₁] [IsContinuousRiemannianBundle F₁ E₁]
-    {E₂ : B → Type*} [TopologicalSpace (TotalSpace F₂ E₂)] [∀ x, NormedAddCommGroup (E₂ x)]
-      [∀ x, InnerProductSpace ℝ (E₂ x)]
-      [FiberBundle F₂ E₂] [VectorBundle ℝ F₂ E₂] [IsContinuousRiemannianBundle F₂ E₂]
-    (Ψ : Π x : B, E₁ x →L[ℝ] E₂ x)
-    (hΨ : Continuous (fun x : B => TotalSpace.mk' (F₁ →L[ℝ] F₂)
-      (E := fun z : B => E₁ z →L[ℝ] E₂ z) x (Ψ x))) :
-    Continuous (fun x : B => ‖Ψ x‖) := by
-  rw [continuous_iff_continuousAt]
-  intro x₀
-  have hx₀a : x₀ ∈ (trivializationAt F₁ E₁ x₀).baseSet :=
-    FiberBundle.mem_baseSet_trivializationAt' x₀
-  have hx₀c : x₀ ∈ (trivializationAt F₂ E₂ x₀).baseSet :=
-    FiberBundle.mem_baseSet_trivializationAt' x₀
-  have hΦcont : ContinuousAt (fun y : B => ContinuousLinearMap.inCoordinates
-      F₁ E₁ F₂ E₂ x₀ y x₀ y (Ψ y)) x₀ := by
-    have hcont := hΨ.continuousAt (x := x₀)
-    rw [continuousAt_hom_bundle] at hcont
-    exact hcont.2
-  set Ψtil : B → (E₁ x₀ →L[ℝ] E₂ x₀) := fun y =>
-    (((trivializationAt F₂ E₂ x₀).symmL ℝ x₀).comp
-        ((trivializationAt F₂ E₂ x₀).continuousLinearMapAt ℝ y)).comp
-      ((Ψ y).comp (((trivializationAt F₁ E₁ x₀).symmL ℝ y).comp
-        ((trivializationAt F₁ E₁ x₀).continuousLinearMapAt ℝ x₀)))
-    with hΨtil_def
-  have hΨtilcont : ContinuousAt Ψtil x₀ := by
-    rw [hΨtil_def]
-    refine (ContinuousAt.clm_comp (g := fun _ : B => ((trivializationAt F₂ E₂ x₀).symmL ℝ x₀))
-      (f := fun y : B => (((ContinuousLinearMap.inCoordinates F₁ E₁ F₂ E₂ x₀ y x₀ y (Ψ y))).comp
-        ((trivializationAt F₁ E₁ x₀).continuousLinearMapAt ℝ x₀))) continuousAt_const
-      (ContinuousAt.clm_comp
-        (g := fun y : B => ContinuousLinearMap.inCoordinates F₁ E₁ F₂ E₂ x₀ y x₀ y (Ψ y))
-        (f := fun _ : B => (trivializationAt F₁ E₁ x₀).continuousLinearMapAt ℝ x₀)
-        hΦcont continuousAt_const)).congr ?_
-    filter_upwards with y
-    rw [ContinuousLinearMap.inCoordinates]
-    simp only [ContinuousLinearMap.comp_assoc]
-  have hnormtil : ContinuousAt (fun y => ‖Ψtil y‖) x₀ := hΨtilcont.norm
-  have hΨtil_x0 : Ψtil x₀ = Ψ x₀ := by
-    rw [hΨtil_def]
-    ext v
-    simp only [ContinuousLinearMap.comp_apply]
-    rw [(trivializationAt F₁ E₁ x₀).symmL_continuousLinearMapAt hx₀a,
-      (trivializationAt F₂ E₂ x₀).symmL_continuousLinearMapAt hx₀c]
-  have hnormtil_lim : Tendsto (fun y => ‖Ψtil y‖) (𝓝 x₀) (𝓝 ‖Ψ x₀‖) := by
-    have h0 : Tendsto (fun y => ‖Ψtil y‖) (𝓝 x₀) (𝓝 ‖Ψtil x₀‖) := hnormtil
-    rwa [hΨtil_x0] at h0
-  have hbasea : ∀ᶠ y in 𝓝 x₀, y ∈ (trivializationAt F₁ E₁ x₀).baseSet :=
-    (trivializationAt F₁ E₁ x₀).open_baseSet.mem_nhds hx₀a
-  have hbasec : ∀ᶠ y in 𝓝 x₀, y ∈ (trivializationAt F₂ E₂ x₀).baseSet :=
-    (trivializationAt F₂ E₂ x₀).open_baseSet.mem_nhds hx₀c
-  have hfwd : ∀ {r : ℝ}, 1 < r → ∀ᶠ y in 𝓝 x₀, ‖Ψtil y‖ ≤ r ^ 2 * ‖Ψ y‖ := by
-    intro r hr
-    have hSc := eventually_norm_symmL_trivializationAt_self_comp_lt F₂ E₂ x₀ hr
-    have hSa' := eventually_norm_symmL_trivializationAt_comp_self_lt F₁ E₁ x₀ hr
-    filter_upwards [hSc, hSa'] with y hyc hya
-    rw [hΨtil_def]
-    calc ‖(((trivializationAt F₂ E₂ x₀).symmL ℝ x₀).comp
-              ((trivializationAt F₂ E₂ x₀).continuousLinearMapAt ℝ y)).comp
-            ((Ψ y).comp (((trivializationAt F₁ E₁ x₀).symmL ℝ y).comp
-              ((trivializationAt F₁ E₁ x₀).continuousLinearMapAt ℝ x₀)))‖
-        ≤ ‖((trivializationAt F₂ E₂ x₀).symmL ℝ x₀).comp
-              ((trivializationAt F₂ E₂ x₀).continuousLinearMapAt ℝ y)‖ *
-            ‖(Ψ y).comp (((trivializationAt F₁ E₁ x₀).symmL ℝ y).comp
-              ((trivializationAt F₁ E₁ x₀).continuousLinearMapAt ℝ x₀))‖ :=
-          ContinuousLinearMap.opNorm_comp_le _ _
-      _ ≤ ‖((trivializationAt F₂ E₂ x₀).symmL ℝ x₀).comp
-              ((trivializationAt F₂ E₂ x₀).continuousLinearMapAt ℝ y)‖ *
-            (‖Ψ y‖ * ‖((trivializationAt F₁ E₁ x₀).symmL ℝ y).comp
-              ((trivializationAt F₁ E₁ x₀).continuousLinearMapAt ℝ x₀)‖) := by
-          gcongr
-          exact ContinuousLinearMap.opNorm_comp_le _ _
-      _ ≤ r * (‖Ψ y‖ * r) := by gcongr
-      _ = r ^ 2 * ‖Ψ y‖ := by ring
-  have hrev : ∀ {r : ℝ}, 1 < r → ∀ᶠ y in 𝓝 x₀, ‖Ψ y‖ ≤ r ^ 2 * ‖Ψtil y‖ := by
-    intro r hr
-    have hSc' := eventually_norm_symmL_trivializationAt_comp_self_lt F₂ E₂ x₀ hr
-    have hSa := eventually_norm_symmL_trivializationAt_self_comp_lt F₁ E₁ x₀ hr
-    filter_upwards [hSc', hSa, hbasea, hbasec] with y hyc hya hya_mem hyc_mem
-    have hid : Ψ y =
-        (((trivializationAt F₂ E₂ x₀).symmL ℝ y).comp
-            ((trivializationAt F₂ E₂ x₀).continuousLinearMapAt ℝ x₀)).comp
-          ((Ψtil y).comp (((trivializationAt F₁ E₁ x₀).symmL ℝ x₀).comp
-            ((trivializationAt F₁ E₁ x₀).continuousLinearMapAt ℝ y))) := by
-      rw [hΨtil_def]
-      ext v
-      simp only [ContinuousLinearMap.comp_apply]
-      rw [(trivializationAt F₁ E₁ x₀).continuousLinearMapAt_symmL hx₀a,
-        (trivializationAt F₁ E₁ x₀).symmL_continuousLinearMapAt hya_mem,
-        (trivializationAt F₂ E₂ x₀).continuousLinearMapAt_symmL hx₀c,
-        (trivializationAt F₂ E₂ x₀).symmL_continuousLinearMapAt hyc_mem]
-    rw [hid]
-    calc ‖(((trivializationAt F₂ E₂ x₀).symmL ℝ y).comp
-              ((trivializationAt F₂ E₂ x₀).continuousLinearMapAt ℝ x₀)).comp
-            ((Ψtil y).comp (((trivializationAt F₁ E₁ x₀).symmL ℝ x₀).comp
-              ((trivializationAt F₁ E₁ x₀).continuousLinearMapAt ℝ y)))‖
-        ≤ ‖((trivializationAt F₂ E₂ x₀).symmL ℝ y).comp
-              ((trivializationAt F₂ E₂ x₀).continuousLinearMapAt ℝ x₀)‖ *
-            ‖(Ψtil y).comp (((trivializationAt F₁ E₁ x₀).symmL ℝ x₀).comp
-              ((trivializationAt F₁ E₁ x₀).continuousLinearMapAt ℝ y))‖ :=
-          ContinuousLinearMap.opNorm_comp_le _ _
-      _ ≤ ‖((trivializationAt F₂ E₂ x₀).symmL ℝ y).comp
-              ((trivializationAt F₂ E₂ x₀).continuousLinearMapAt ℝ x₀)‖ *
-            (‖Ψtil y‖ * ‖((trivializationAt F₁ E₁ x₀).symmL ℝ x₀).comp
-              ((trivializationAt F₁ E₁ x₀).continuousLinearMapAt ℝ y)‖) := by
-          gcongr
-          exact ContinuousLinearMap.opNorm_comp_le _ _
-      _ ≤ r * (‖Ψtil y‖ * r) := by gcongr
-      _ = r ^ 2 * ‖Ψtil y‖ := by ring
-  change Tendsto (fun y => ‖Ψ y‖) (𝓝 x₀) (𝓝 ‖Ψ x₀‖)
-  rw [tendsto_order]
-  refine ⟨?_, ?_⟩
-  · intro c hc
-    obtain ⟨r, hr1, hrlt⟩ := exists_one_lt_mul_sq_lt hc
-    have hev1 : ∀ᶠ y in 𝓝 x₀, c * r ^ 2 < ‖Ψtil y‖ :=
-      hnormtil_lim.eventually (lt_mem_nhds hrlt)
-    filter_upwards [hev1, hfwd hr1] with y hy1 hy2
-    have hr2pos : (0 : ℝ) < r ^ 2 := by positivity
-    have hchain : c * r ^ 2 < ‖Ψ y‖ * r ^ 2 := by
-      calc c * r ^ 2 < ‖Ψtil y‖ := hy1
-        _ ≤ r ^ 2 * ‖Ψ y‖ := hy2
-        _ = ‖Ψ y‖ * r ^ 2 := by ring
-    exact lt_of_mul_lt_mul_right hchain (le_of_lt hr2pos)
-  · intro c hc
-    obtain ⟨r, hr1, hrlt⟩ := exists_one_lt_mul_sq_lt hc
-    have hlim2 : Tendsto (fun y => r ^ 2 * ‖Ψtil y‖) (𝓝 x₀) (𝓝 (r ^ 2 * ‖Ψ x₀‖)) :=
-      hnormtil_lim.const_mul _
-    have hlt2 : r ^ 2 * ‖Ψ x₀‖ < c := by rw [mul_comm]; exact hrlt
-    have hev1 : ∀ᶠ y in 𝓝 x₀, r ^ 2 * ‖Ψtil y‖ < c :=
-      hlim2.eventually (Iio_mem_nhds hlt2)
-    filter_upwards [hev1, hrev hr1] with y hy1 hy2
-    exact lt_of_le_of_lt hy2 hy1
-
-end GenericHomOpNorm
 
 section FibrewiseBound
 
@@ -244,10 +90,10 @@ theorem continuous_homTensorRS_opNorm
     Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g r a
   let instC : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r c I b) :=
     Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g r c
-  exact continuous_homBundle_opNorm_generic
+  exact Continuous.hom_bundle_opNorm
     (F₁ := TensorRSModel r a ℝ E) (F₂ := TensorRSModel r c ℝ E)
     (E₁ := fun z : M => TensorRSSpace r a I z) (E₂ := fun z : M => TensorRSSpace r c I z)
-    Ψ hΨ.continuous
+    hΨ.continuous
 
 attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
   Tensor0SBundle.tensorRSSpaceNormedSpace in

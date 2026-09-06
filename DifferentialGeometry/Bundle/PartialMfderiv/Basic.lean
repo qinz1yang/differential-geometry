@@ -365,13 +365,14 @@ theorem contMDiff_partial_deriv_fst_gen
 theorem timeDeriv_smoothAt
     {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners Real E H}
-    {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-    {F : Real × M -> Real} {p0 : Real × M} {m n : WithTop ℕ∞}
+    {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I 1 M]
+    {G : Type*} [NormedAddCommGroup G] [NormedSpace Real G]
+    {F : Real × M -> G} {p0 : Real × M} {m n : WithTop ℕ∞}
     (hF : ContMDiffAt ((modelWithCornersSelf Real Real).prod I)
-      (modelWithCornersSelf Real Real) n F p0)
+      (modelWithCornersSelf Real G) n F p0)
     (hmn : m + 1 ≤ n) :
     ContMDiffAt ((modelWithCornersSelf Real Real).prod I)
-      (modelWithCornersSelf Real Real) m
+      (modelWithCornersSelf Real G) m
       (fun p : Real × M => deriv (fun t => F (t, p.2)) p.1) p0 := by
   have harg :
       ContMDiffAt
@@ -384,13 +385,13 @@ theorem timeDeriv_smoothAt
       ContMDiffAt
         (((modelWithCornersSelf Real Real).prod I).prod
           (modelWithCornersSelf Real Real))
-        (modelWithCornersSelf Real Real) n
+        (modelWithCornersSelf Real G) n
         (fun q : (Real × M) × Real => F (q.2, q.1.2)) (p0, p0.1) :=
     hF.comp (p0, p0.1) harg
   have h_apply :=
     ContMDiffAt.mfderiv_apply
       (I := modelWithCornersSelf Real Real)
-      (I' := modelWithCornersSelf Real Real)
+      (I' := modelWithCornersSelf Real G)
       (f := fun (p : Real × M) (t : Real) => F (t, p.2))
       (g := fun p : Real × M => p.1)
       (g₁ := fun p : Real × M => p)
