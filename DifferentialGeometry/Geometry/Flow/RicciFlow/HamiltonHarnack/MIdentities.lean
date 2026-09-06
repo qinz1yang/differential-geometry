@@ -918,6 +918,34 @@ theorem hamiltonMAt_metricTrace_eq
   ring
 
 omit [SigmaCompactSpace M] in
+theorem hamiltonMAt_metricTrace_eq_laplacian_add
+    [I.Boundaryless]
+    {D : RealTimeInterval}
+    (S : SolutionOn (I := I) (M := M) D)
+    (hS : IsSolutionOn (I := I) S)
+    (clock : HarnackClock) (ht : clock.time ∈ D.regular) (x : M) :
+    metricTracePair0SAt (I := I) (S.family.metric clock.time)
+        (hamiltonMAt (I := I) clock (S.family.metric clock.time) x) =
+      (1 / 2 : Real) *
+          laplacianAt (I := I) (flowG (I := I) S) clock.time
+            (S.scalar clock.time) x +
+        normSq0S (I := I) (S.family.metric clock.time) x 2
+          (S.ricci clock.time x) +
+        S.scalar clock.time x / (2 * clock.elapsed) := by
+  rw [hamiltonMAt_metricTrace_eq (I := I) S hS clock ht x]
+  have hevolWithin := scalarEvolution_of_isSolution (I := I) S hS
+    (flowG (I := I) S) (fun _ => rfl) (fun _ => rfl) ⟨clock.time, ht⟩ x
+  have hevol := hevolWithin.hasDerivAt (D.regular_mem_nhds ht)
+  have hderiv :
+      deriv (fun s : Real => S.scalar s x) clock.time =
+        laplacianAt (I := I) (flowG (I := I) S) clock.time
+            (S.scalar clock.time) x +
+          2 * normSq0S (I := I) (S.family.metric clock.time) x 2
+            (S.ricci clock.time x) := hevol.deriv
+  rw [hderiv]
+  ring
+
+omit [SigmaCompactSpace M] in
 private theorem hamiltonRicciSquareAt_symm
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     (g : SmoothRiemannianMetric I M) {x : M}

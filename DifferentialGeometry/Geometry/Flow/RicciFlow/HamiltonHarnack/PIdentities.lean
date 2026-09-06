@@ -1,5 +1,6 @@
 import DifferentialGeometry.Geometry.Curvature.Metric
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HamiltonHarnack.Defs
+import DifferentialGeometry.Tensor.RSTensor.Pullback
 
 set_option autoImplicit false
 
@@ -40,6 +41,18 @@ omit [FiniteDimensional Real E] in
     funext q
     fin_cases q <;> rfl
   rw [hslots]
+
+theorem hamiltonP_tensor0SPullbackCLE
+    {x y : M}
+    (e : TangentSpace I x ≃ₗ[Real] TangentSpace I y)
+    (A : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 3 y) :
+    tensor0SPullbackCLE (I := I) (M := M) 3 e (hamiltonP (I := I) A) =
+      hamiltonP (I := I)
+        (tensor0SPullbackCLE (I := I) (M := M) 3 e A) := by
+  apply tensor0SSpace_ext 3 x
+  intro v
+  simp only [tensor0SPullbackCLE_apply, tensor0SPullbackCLM_apply]
+  rfl
 
 omit [FiniteDimensional Real E] in
 theorem hamiltonP_skew {x : M}

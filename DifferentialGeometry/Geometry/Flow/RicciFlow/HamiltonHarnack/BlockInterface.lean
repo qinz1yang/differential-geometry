@@ -163,6 +163,39 @@ theorem hamiltonBlockJ_eq_gram_reaction
   exact (DifferentialGeometry.Analysis.Spectral.hamiltonGram_reaction_eq_hamiltonReactionPolynomial
     Y X U W hY hU).symm
 
+theorem exists_hamiltonGram_square_factorization
+    {ι : Type*} [Fintype ι]
+    (K : ι -> ι -> ι -> ι -> Real)
+    (P : ι -> ι -> ι -> Real)
+    (M : ι -> ι -> Real)
+    (hKPair : ∀ a b c d, K a b c d = K c d a b)
+    (hKSkew : ∀ a b c d, K a b c d = -K b a c d)
+    (hPSkew : ∀ a b c, P a b c = -P b a c)
+    (hMSymm : ∀ a b, M a b = M b a)
+    (hQ : ∀ (U : ι -> ι -> Real) (W : ι -> Real),
+      0 ≤ hamiltonQuadraticForm K P M U W) :
+    ∃ (m : Nat) (Y : Fin m -> ι -> ι -> Real) (X : Fin m -> ι -> Real),
+      (∀ r a b, Y r a b = -Y r b a) ∧
+      (∀ (U : ι -> ι -> Real) (W : ι -> Real),
+        hamiltonQuadraticForm K P M U W =
+          ∑ r, ((∑ a, ∑ b, Y r a b * U a b) + ∑ c, X r c * W c) ^ 2) ∧
+      (∀ (U : ι -> ι -> Real) (W : ι -> Real),
+        (∀ a b, U a b = -U b a) ->
+        hamiltonBlockJ K P M U W =
+          ∑ r, ∑ s,
+            ((∑ a, ∑ c, Y r a c * X s c * W a) -
+              (∑ a, ∑ c, Y s a c * X r c * W a) -
+              2 * (∑ a, ∑ b, ∑ c, Y r a c * Y s b c * U a b)) ^ 2) := by
+  obtain ⟨m, Y, X, hY, hK, hP, hM⟩ :=
+    exists_hamiltonGram_factorization K P M hKPair hKSkew hPSkew hMSymm hQ
+  refine ⟨m, Y, X, hY, ?_, ?_⟩
+  · intro U W
+    rw [hK, hP, hM, ← hamiltonGram_quadratic_eq_hamiltonQuadraticForm]
+    rfl
+  · intro U W hU
+    rw [hK, hP, hM, hamiltonBlockJ_eq_gram_reaction Y X U W hY hU]
+    rfl
+
 theorem hamiltonBlockJ_nonneg_of_gram_quadratic_eq_zero
     {ι κ : Type*} [Fintype ι] [Fintype κ]
     (Y : κ -> ι -> ι -> Real) (X : κ -> ι -> Real)
@@ -271,6 +304,22 @@ theorem hamiltonBlock_exact_evolution_nonneg_of_psd
       (K := K) (P := P) (M := M) hKPair hKSkew hPSkew hMSymm).mp hPSD
   rw [hK, hP, hM]
   exact hamiltonBlock_exact_evolution_nonneg_of_gram Y X U W hY hU
+
+theorem hamiltonBlockJ_add_sigmaSquare_nonneg_of_psd
+    (K : Idx -> Idx -> Idx -> Idx -> Real)
+    (P : Idx -> Idx -> Idx -> Real)
+    (M : Idx -> Idx -> Real)
+    (U : Idx -> Idx -> Real) (W : Idx -> Real)
+    (hKPair : ∀ a b c d, K a b c d = K c d a b)
+    (hKSkew : ∀ a b c d, K a b c d = -K b a c d)
+    (hPSkew : ∀ a b c, P a b c = -P b a c)
+    (hMSymm : ∀ a b, M a b = M b a)
+    (hPSD : hamiltonBlockPSD K P M)
+    (hU : ∀ a b, U a b = -U b a) :
+    0 ≤ hamiltonBlockJ K P M U W + hamiltonBlockSigmaSquare K P U W := by
+  rw [← hamiltonBlock_exact_evolution_eq_j_add_sigma_square]
+  exact hamiltonBlock_exact_evolution_nonneg_of_psd K P M U W
+    hKPair hKSkew hPSkew hMSymm hPSD hU
 
 theorem hamiltonBlockSigma_eq_zero_of_psd_quadratic_eq_zero
     (K : Idx -> Idx -> Idx -> Idx -> Real)

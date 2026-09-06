@@ -2644,6 +2644,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.HamiltonHarnack.ConventionCh
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HamiltonHarnack.CurvatureBlock
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HamiltonHarnack.Defs
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HamiltonHarnack.MIdentities
+import DifferentialGeometry.Geometry.Flow.RicciFlow.HamiltonHarnack.UhlenbeckTrace
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HamiltonHarnack.PIdentities
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HamiltonHarnack.ActualEvolution
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HamiltonHarnack.TestJets
@@ -3178,6 +3179,7 @@ import DifferentialGeometry.Geometry.Operator.NormGradSq
 import DifferentialGeometry.Geometry.Operator.NormGradSqTime
 import DifferentialGeometry.Geometry.Operator.Operators
 import DifferentialGeometry.Geometry.Operator.RoughLaplacian
+import DifferentialGeometry.Geometry.Operator.MetricTracePullback
 import DifferentialGeometry.Geometry.Operator.Scaling
 import DifferentialGeometry.Geometry.Operator.TensorHeat
 import DifferentialGeometry.Geometry.Operator.TensorInnerLaplacian
@@ -4120,6 +4122,7 @@ import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.KernelNaturalit
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Smoothness
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureOperatorNormalization
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Uhlenbeck.BundleEquivalence
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Uhlenbeck.TensorNabla
 import DifferentialGeometry.Geometry.Metric.LieDerivative.Flow
 import DifferentialGeometry.Geometry.Operator.Divergence
 import DifferentialGeometry.Tensor.Alternating.Contraction
@@ -4274,6 +4277,7 @@ import DifferentialGeometry.Geometry.Connection.ParallelTransport.AffineReparam
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.CovariantDerivativeRegularity
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.HessianSupport
 import DifferentialGeometry.Geometry.Connection.TensorNabla.Pullback
+import DifferentialGeometry.Geometry.Connection.TensorNabla.TotalPullback
 import DifferentialGeometry.Geometry.Metric.BundleContinuity
 import DifferentialGeometry.Geometry.Metric.BundleLipschitz
 import DifferentialGeometry.Tensor.Alternating.BundleMaps
@@ -4377,3 +4381,5 @@ import DifferentialGeometry.Geometry.Connection.MetricCompatibility.AlternatingE
 import DifferentialGeometry.Geometry.Connection.MetricCompatibility.Trivial
 import DifferentialGeometry.Tensor.Alternating.BundleCompSmooth
 import DifferentialGeometry.Geometry.Connection.TensorNabla.AlternatingEndomorphismPullback
+import DifferentialGeometry.Geometry.Operator.HessianPullback
+import DifferentialGeometry.Geometry.Flow.RicciFlow.HamiltonHarnack.UhlenbeckScalarLaplacian
