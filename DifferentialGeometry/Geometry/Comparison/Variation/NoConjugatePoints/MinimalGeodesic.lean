@@ -227,9 +227,6 @@ theorem not_conj_of_min_len
     exact perpCoeff_zero (I := I) g e J 0 hJ0
   have hyc : y c = 0 := by
     exact perpCoeff_zero (I := I) g e J c hJc
-  have hderiv :
-      ∀ t ∈ Icc (0 : ℝ) L, deriv y t = v t :=
-    fun t ht => (hode t ht).1.deriv
   have hDJ0 : (DJ 0 : E) = z := by
     change (covDerivAlong (I := I) g γ J 0 : E) = z
     have hcurve_ev :
@@ -330,7 +327,7 @@ theorem not_conj_of_min_len
     · simpa only [Set.mem_compl_iff, Set.mem_singleton_iff] using htpos.ne'
   obtain ⟨W, hW_smooth, hW0, hWL, hWneg⟩ :=
     hsol.exists_smooth_neg_on hc hR_smooth.continuous.continuousOn
-      hR_symm hy_smooth hderiv hy0 hyc hne
+      hR_symm hy_smooth hy0 hyc hne
   let V : ℝ → E := fun t =>
     (perpFrameLift (I := I) e W t : E)
   have hV_bundle : ContMDiff 𝓘(ℝ, ℝ) I.tangent ∞

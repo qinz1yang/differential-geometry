@@ -1,6 +1,7 @@
 import DifferentialGeometry.Analysis.ODE.IndexForm.NegativeDirection
 import DifferentialGeometry.Analysis.Calculus.Cutoff.Profile
 import DifferentialGeometry.Analysis.Calculus.Cutoff.Compact
+import DifferentialGeometry.Analysis.Calculus.Cutoff.Clamp.Smooth
 import Mathlib.Analysis.Calculus.MeanValue
 
 set_option autoImplicit false
@@ -945,8 +946,7 @@ private theorem smooth_split_to
       rwa [← hindex]
     exact lt_of_mul_lt_mul_left (by simpa using hmul_neg) hL.le
 
-theorem IsJacobiFieldOn.exists_smooth_neg_on
-    [CompleteSpace F]
+private theorem exists_contDiff_indexForm_neg_zero
     {R : ℝ → F →L[ℝ] F} {L c : ℝ} {y v : ℝ → F}
     (hsol : IsJacobiFieldOn R 0 L y v)
     (hc : c ∈ Ioo (0 : ℝ) L)
@@ -961,7 +961,6 @@ theorem IsJacobiFieldOn.exists_smooth_neg_on
       W 0 = 0 ∧
       W L = 0 ∧
       indexForm R 0 L W (deriv W) W (deriv W) < 0 := by
-  let _ := (inferInstance : (CompleteSpace F))
   obtain ⟨s, hs⟩ :=
     hsol.exists_split_neg_on hc hR hSym hy0 hyc hne
   let Z : ℝ → F := indexTestFieldTo L (v c)
@@ -1029,15 +1028,130 @@ theorem IsJacobiFieldOn.exists_smooth_neg_on
     (hc.1.trans hc.2) hc hR hW₀Smooth hW₁Smooth
     hW₀_zero hW₁_zero hmatch hneg
 
+theorem IsJacobiFieldOn.exists_contDiff_indexForm_neg
+    {R : ℝ → F →L[ℝ] F} {a b c : ℝ} {y v : ℝ → F} {U : Set ℝ}
+    (hsol : IsJacobiFieldOn R a b y v)
+    (hc : c ∈ Ioo a b)
+    (hR : ContinuousOn R (Icc a b))
+    (hSym : ∀ t ∈ Icc a b, ∀ x x' : F, ⟪R t x, x'⟫ = ⟪x, R t x'⟫)
+    (hy : ContDiffOn ℝ ∞ y U) (hU : IsOpen U) (hsub : Icc a b ⊆ U)
+    (hya : y a = 0) (hyc : y c = 0)
+    (hne : ∃ t ∈ Icc a b, y t ≠ 0) :
+    ∃ W : ℝ → F, ContDiff ℝ ∞ W ∧ W a = 0 ∧ W b = 0 ∧
+      indexForm R a b W (deriv W) W (deriv W) < 0 := by
+  classical
+  have hab : a < b := hc.1.trans hc.2
+  obtain ⟨ρ, lo, hi, hlo, hhi, hρ, hρid, _, hρrange⟩ :=
+    DifferentialGeometry.exists_smooth_time_clamp_range_subset hU hab hsub
+  let Y : ℝ → F := y ∘ ρ
+  have hY : ContDiff ℝ ∞ Y := hy.comp_contDiff hρ hρrange
+  have hYeq : EqOn Y y (Icc a b) := by
+    intro t ht
+    change y (ρ t) = y t
+    rw [hρid ⟨hlo.le.trans ht.1, ht.2.trans hhi.le⟩]
+    rfl
+  have hYd (t : ℝ) (ht : t ∈ Icc a b) : HasDerivAt Y (v t) t := by
+    have hd : HasDerivAt Y (deriv Y t) t :=
+      (hY.differentiable (by simp)).differentiableAt.hasDerivAt
+    have hw : HasDerivWithinAt Y (v t) (Icc a b) t :=
+      (hsol.deriv_fst t ht).congr_of_mem hYeq ht
+    exact hd.congr_deriv ((hd.hasDerivWithinAt.derivWithin
+      (uniqueDiffOn_Icc hab t ht)).symm.trans
+        (hw.derivWithin (uniqueDiffOn_Icc hab t ht)))
+  let R₀ : ℝ → F →L[ℝ] F := fun t =>
+    if t ∈ Icc (0 : ℝ) (b - a) then R (t + a) else 0
+  let y₀ : ℝ → F := fun t => Y (t + a)
+  let v₀ : ℝ → F := fun t => v (t + a)
+  have hmap : MapsTo (fun t : ℝ => t + a) (Icc (0 : ℝ) (b - a)) (Icc a b) := by
+    intro t ht
+    constructor <;> linarith [ht.1, ht.2]
+  have hR₀eq (t : ℝ) (ht : t ∈ Icc (0 : ℝ) (b - a)) :
+      R₀ t = R (t + a) := if_pos ht
+  have hR₀ : ContinuousOn R₀ (Icc (0 : ℝ) (b - a)) :=
+    (hR.comp (continuous_id.add continuous_const).continuousOn hmap).congr hR₀eq
+  have hSym₀ (t : ℝ) (x x' : F) : ⟪R₀ t x, x'⟫ = ⟪x, R₀ t x'⟫ := by
+    by_cases ht : t ∈ Icc (0 : ℝ) (b - a)
+    · exact (congrArg (fun A : F →L[ℝ] F => ⟪A x, x'⟫) (hR₀eq t ht)).trans
+        ((hSym (t + a) (hmap ht) x x').trans
+          (congrArg (fun A : F →L[ℝ] F => ⟪x, A x'⟫) (hR₀eq t ht)).symm)
+    · simp only [R₀, if_neg ht, zero_apply, inner_zero_left, inner_zero_right]
+  have hy₀ : ContDiff ℝ ∞ y₀ :=
+    hY.comp (contDiff_id.add contDiff_const)
+  have hy₀d (t : ℝ) (ht : t ∈ Icc (0 : ℝ) (b - a)) :
+      HasDerivAt y₀ (v₀ t) t := by
+    simpa only [y₀, v₀, one_smul, Function.comp_def, id_eq] using
+      (hYd (t + a) (hmap ht)).scomp t ((hasDerivAt_id t).add_const a)
+  have hsol₀ : IsJacobiFieldOn R₀ 0 (b - a) y₀ v₀ := by
+    refine ⟨fun t ht => (hy₀d t ht).hasDerivWithinAt, fun t ht => ?_⟩
+    have hvd := (hsol.deriv_snd (t + a) (hmap ht)).scomp t
+      ((hasDerivAt_id t).add_const a).hasDerivWithinAt hmap
+    have hy₀eq : y₀ t = y (t + a) := hYeq (hmap ht)
+    simpa only [v₀, Function.comp_def, id_eq, one_smul, hR₀eq t ht, hy₀eq] using hvd
+  have hc₀ : c - a ∈ Ioo (0 : ℝ) (b - a) := by
+    constructor <;> linarith [hc.1, hc.2]
+  have hy₀zero : y₀ 0 = 0 := by
+    simpa only [y₀, zero_add] using (hYeq ⟨le_rfl, hab.le⟩).trans hya
+  have hy₀c : y₀ (c - a) = 0 := by
+    simpa only [y₀, sub_add_cancel] using
+      (hYeq ⟨hc.1.le, hc.2.le⟩).trans hyc
+  have hne₀ : ∃ t ∈ Icc (0 : ℝ) (b - a), y₀ t ≠ 0 := by
+    obtain ⟨t, ht, hyt⟩ := hne
+    refine ⟨t - a, ⟨by linarith [ht.1], by linarith [ht.2]⟩, ?_⟩
+    simpa only [y₀, sub_add_cancel, hYeq ht] using hyt
+  obtain ⟨W₀, hW₀, hW₀zero, hW₀end, hneg⟩ :=
+    exists_contDiff_indexForm_neg_zero hsol₀ hc₀ hR₀ hSym₀ hy₀
+      (fun t ht => (hy₀d t ht).deriv) hy₀zero hy₀c hne₀
+  let W : ℝ → F := fun t => W₀ (t - a)
+  have hW : ContDiff ℝ ∞ W := hW₀.comp (contDiff_id.sub contDiff_const)
+  have hWd (t : ℝ) : deriv W t = deriv W₀ (t - a) := by
+    have hd : HasDerivAt W₀ (deriv W₀ (t - a)) (t - a) :=
+      (hW₀.differentiable (by simp)).differentiableAt.hasDerivAt
+    exact (by simpa only [W, Function.comp_def, id_eq, one_smul] using
+      hd.scomp t ((hasDerivAt_id t).sub_const a) :
+        HasDerivAt W (deriv W₀ (t - a)) t).deriv
+  refine ⟨W, hW, ?_, hW₀end, ?_⟩
+  · simpa only [W, sub_self] using hW₀zero
+  · have heq : indexForm R a b W (deriv W) W (deriv W) =
+        indexForm R₀ 0 (b - a) W₀ (deriv W₀) W₀ (deriv W₀) := by
+      unfold indexForm
+      calc
+        ∫ t in a..b, indexIntegrand R W (deriv W) W (deriv W) t =
+            ∫ t in a..b, indexIntegrand R₀ W₀ (deriv W₀) W₀ (deriv W₀) (t - a) := by
+          apply intervalIntegral.integral_congr
+          intro t ht
+          rw [uIcc_of_le hab.le] at ht
+          have hshift : t - a ∈ Icc (0 : ℝ) (b - a) :=
+            ⟨by linarith [ht.1], by linarith [ht.2]⟩
+          simp only [indexIntegrand, W, hWd, hR₀eq (t - a) hshift, sub_add_cancel]
+        _ = ∫ t in 0..b - a, indexIntegrand R₀ W₀ (deriv W₀) W₀ (deriv W₀) t := by
+          simpa only [sub_self] using intervalIntegral.integral_comp_sub_right
+            (a := a) (b := b) (indexIntegrand R₀ W₀ (deriv W₀) W₀ (deriv W₀)) a
+    exact heq.trans_lt hneg
+
+theorem IsJacobiFieldOn.exists_smooth_neg_on
+    {R : ℝ → F →L[ℝ] F} {L c : ℝ} {y v : ℝ → F}
+    (hsol : IsJacobiFieldOn R 0 L y v)
+    (hc : c ∈ Ioo (0 : ℝ) L)
+    (hR : ContinuousOn R (Icc (0 : ℝ) L))
+    (hSym : ∀ t, ∀ x x' : F, ⟪R t x, x'⟫ = ⟪x, R t x'⟫)
+    (hySmooth : ContDiff ℝ ∞ y)
+    (hy0 : y 0 = 0) (hyc : y c = 0)
+    (hne : ∃ t ∈ Icc (0 : ℝ) L, y t ≠ 0) :
+    ∃ W : ℝ → F,
+      ContDiff ℝ ∞ W ∧
+      W 0 = 0 ∧
+      W L = 0 ∧
+      indexForm R 0 L W (deriv W) W (deriv W) < 0 :=
+  hsol.exists_contDiff_indexForm_neg hc hR (fun t _ => hSym t)
+    hySmooth.contDiffOn isOpen_univ (subset_univ _) hy0 hyc hne
+
 theorem IsJacobiFieldOn.exists_smooth_neg
-    [CompleteSpace F]
     {R : ℝ → F →L[ℝ] F} {c : ℝ} {y v : ℝ → F}
     (hsol : IsJacobiFieldOn R 0 1 y v)
     (hc : c ∈ Ioo (0 : ℝ) 1)
     (hR : ContinuousOn R (Icc (0 : ℝ) 1))
     (hSym : ∀ t, ∀ x x' : F, ⟪R t x, x'⟫ = ⟪x, R t x'⟫)
     (hySmooth : ContDiff ℝ ∞ y)
-    (hderiv : ∀ t ∈ Icc (0 : ℝ) 1, deriv y t = v t)
     (hy0 : y 0 = 0) (hyc : y c = 0)
     (hne : ∃ t ∈ Icc (0 : ℝ) 1, y t ≠ 0) :
     ∃ W : ℝ → F,
@@ -1045,6 +1159,6 @@ theorem IsJacobiFieldOn.exists_smooth_neg
       W 0 = 0 ∧
       W 1 = 0 ∧
       indexForm R 0 1 W (deriv W) W (deriv W) < 0 :=
-  hsol.exists_smooth_neg_on hc hR hSym hySmooth hderiv hy0 hyc hne
+  hsol.exists_smooth_neg_on hc hR hSym hySmooth hy0 hyc hne
 
 end DifferentialGeometry.Analysis.ODE
