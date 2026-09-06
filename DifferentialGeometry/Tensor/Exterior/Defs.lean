@@ -360,7 +360,7 @@ theorem reindex_comp {k l m : ℕ} (e : Fin k ≃ Fin l) (f : Fin l ≃ Fin m)
     reindex e.symm (reindex e α) = α := by
   rw [reindex_comp e e.symm α, Equiv.self_trans_symm, reindex_refl]
 
-notation:70 α " ∧ " β => DifferentialForm.wedge α β
+scoped notation:70 α " ∧ " β => DifferentialForm.wedge α β
 
 theorem add_wedge {k l : ℕ} (α β : DifferentialForm IM M k)
     (γ : DifferentialForm IM M l) :

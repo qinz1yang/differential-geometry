@@ -148,3 +148,49 @@ theorem ContMDiffWithinAt.fiberwise_time_contDiffWithinAt
     rw [← e.continuousLinearMapAt_apply_of_mem ℝ hx]
     exact (e.symmL_continuousLinearMapAt hx _).symm
   exact hback.congr (fun r _ => heq r) (heq t)
+
+variable {E' : Type*} [NormedAddCommGroup E'] [NormedSpace ℝ E']
+  {H' : Type*} [TopologicalSpace H'] {I' : ModelWithCorners ℝ E' H'}
+  {N : Type*} [TopologicalSpace N] [ChartedSpace H' N] [IsManifold I' 1 N]
+
+theorem ContMDiffOn.time_mfderivWithin {s : Set ℝ} {u : Set M}
+    {γ : ℝ → M → N}
+    (hγ : ContMDiffOn (𝓘(ℝ, ℝ).prod I) I' n (fun p : ℝ × M => γ p.1 p.2) (s ×ˢ u))
+    (hs : UniqueDiffOn ℝ s) (hmn : m + 1 ≤ n) :
+    ContMDiffOn (𝓘(ℝ, ℝ).prod I) (I'.prod 𝓘(ℝ, E')) m
+      (fun p : ℝ × M => (⟨γ p.1 p.2,
+        mfderivWithin 𝓘(ℝ, ℝ) I' (fun t => γ t p.2) s p.1
+          ((NormedSpace.fromTangentSpace p.1).symm 1)⟩ : TangentBundle I' N))
+      (s ×ˢ u) := by
+  intro p₀ hp₀
+  have harg : ContMDiffWithinAt ((𝓘(ℝ, ℝ).prod I).prod 𝓘(ℝ, ℝ))
+      (𝓘(ℝ, ℝ).prod I) n (fun q : (ℝ × M) × ℝ => (q.2, q.1.2))
+      ((s ×ˢ u) ×ˢ s) (p₀, p₀.1) :=
+    contMDiffWithinAt_snd.prodMk contMDiffWithinAt_fst.snd
+  have hC : ContMDiffWithinAt ((𝓘(ℝ, ℝ).prod I).prod 𝓘(ℝ, ℝ)) I' n
+      (fun q : (ℝ × M) × ℝ => γ q.2 q.1.2) ((s ×ˢ u) ×ˢ s) (p₀, p₀.1) :=
+    (hγ p₀ hp₀).comp (f := fun q : (ℝ × M) × ℝ => (q.2, q.1.2))
+      (g := fun p : ℝ × M => γ p.1 p.2) (p₀, p₀.1) harg
+      (fun _ hq => ⟨hq.2, hq.1.2⟩)
+  have hD := ContMDiffWithinAt.mfderivWithin
+    (I := 𝓘(ℝ, ℝ)) (I' := I')
+    (f := fun (p : ℝ × M) (t : ℝ) => γ t p.2) (g := fun p : ℝ × M => p.1)
+    hC contMDiffWithinAt_fst hp₀ (fun _ hp => hp.1) hmn hs.uniqueMDiffOn
+  have hv : ContMDiffWithinAt (𝓘(ℝ, ℝ).prod I) (𝓘(ℝ, ℝ).prod 𝓘(ℝ, ℝ)) m
+      (fun p : ℝ × M => (⟨p.1, (NormedSpace.fromTangentSpace p.1).symm 1⟩ :
+        TangentBundle 𝓘(ℝ, ℝ) ℝ)) (s ×ˢ u) p₀ := by
+    rw [contMDiffWithinAt_totalSpace]
+    refine ⟨contMDiffWithinAt_fst, ?_⟩
+    convert (contMDiffWithinAt_const (c := (1 : ℝ)) :
+      ContMDiffWithinAt (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ, ℝ) m
+        (fun _ : ℝ × M => (1 : ℝ)) (s ×ˢ u) p₀) using 1
+    funext p
+    simp only [TangentBundle.trivializationAt_apply, mfld_simps, chartAt_self_eq,
+      fderivWithin_univ, fderiv_id]
+    rfl
+  exact ContMDiffWithinAt.clm_apply_of_inCoordinates
+    (F₁ := ℝ) (E₁ := TangentSpace 𝓘(ℝ, ℝ))
+    (F₂ := E') (E₂ := TangentSpace I')
+    (b₁ := fun p : ℝ × M => p.1) (b₂ := fun p : ℝ × M => γ p.1 p.2)
+    (ϕ := fun p : ℝ × M => mfderivWithin 𝓘(ℝ, ℝ) I' (fun t => γ t p.2) s p.1)
+    hD hv ((hγ p₀ hp₀).of_le (le_self_add.trans hmn))

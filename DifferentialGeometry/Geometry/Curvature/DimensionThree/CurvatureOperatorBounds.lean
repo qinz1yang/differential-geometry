@@ -50,8 +50,7 @@ theorem curvatureOperatorLowerBoundAt_iff_le_leastCurvatureOperatorEigenvalueAt
     (A : algebraicCurvatureTensorSubmodule (I := I) (M := M) x) (K : Real) :
     curvatureOperatorLowerBoundAt (I := I) g x A K ↔
       -K ≤ leastCurvatureOperatorEigenvalueAt (I := I) g x A := by
-  rw [curvatureOperatorLowerBoundAt_iff_neg_sectionalMin_le (I := I) g x basis horth,
-    leastCurvatureOperatorEigenvalueAt_eq_sectionalMin (I := I) g x basis horth]
+  rw [curvatureOperatorLowerBoundAt_iff_neg_leastCurvatureOperatorEigenvalueAt_le basis horth]
   constructor <;> intro h <;> linarith
 
 theorem curvatureOperatorLowerBoundAt_sqrt_normSq0S

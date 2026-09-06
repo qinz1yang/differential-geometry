@@ -255,6 +255,17 @@ theorem smoothMulLp_apply_coeFn
   rw [smoothMulLp_apply]
   exact smoothMulLpFun_coeFn (I := I) (M := M) g φ f
 
+theorem norm_smoothMulLp_le_of_bound
+    (g : SmoothRiemannianMetric I M) (φ : C^∞⟮I, M; ℝ⟯)
+    {C : ℝ} (hC : 0 ≤ C) (hφ : ∀ x : M, |φ x| ≤ C) :
+    ‖smoothMulLp (I := I) (M := M) g φ‖ ≤ C := by
+  apply ContinuousLinearMap.opNorm_le_bound _ hC
+  intro f
+  apply Lp.norm_le_mul_norm_of_ae_le_mul
+  filter_upwards [smoothMulLp_apply_coeFn (I := I) (M := M) g φ f] with x hx
+  rw [hx, norm_mul, Real.norm_eq_abs]
+  exact mul_le_mul_of_nonneg_right (hφ x) (norm_nonneg _)
+
 private theorem dist_smoothMulLp_le_continuousMap_dist
     (g : SmoothRiemannianMetric I M) (φ ψ : C^∞⟮I, M; ℝ⟯) :
     dist (smoothMulLp (I := I) (M := M) g φ)

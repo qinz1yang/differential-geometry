@@ -111,12 +111,35 @@ lemma support_smoothSmul_subset
   exact hx hYx
 
 omit [Module.Finite ℝ E] in
+lemma support_smoothSmul_subset_left
+    {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ) ∞ f)
+    (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) :
+    Function.support ((smoothSmul (I := I) f hf X) : ∀ x, TangentSpace I x) ⊆
+      Function.support f := by
+  intro x hx
+  by_contra hne
+  have hzero : f x = 0 := Function.notMem_support.mp hne
+  apply hx
+  change f x • X x = 0
+  rw [hzero]
+  exact zero_smul ℝ (X x)
+
+omit [Module.Finite ℝ E] in
 lemma tsupport_smoothSmul_subset
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ) ∞ f)
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) :
     tsupport ((smoothSmul (I := I) f hf X) : ∀ x, TangentSpace I x) ⊆ tsupport X :=
   closure_minimal
     ((support_smoothSmul_subset (I := I) hf X).trans (subset_tsupport _))
+    (isClosed_tsupport _)
+
+omit [Module.Finite ℝ E] in
+lemma tsupport_smoothSmul_subset_left
+    {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ) ∞ f)
+    (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) :
+    tsupport ((smoothSmul (I := I) f hf X) : ∀ x, TangentSpace I x) ⊆ tsupport f :=
+  closure_minimal
+    ((support_smoothSmul_subset_left (I := I) hf X).trans (subset_tsupport f))
     (isClosed_tsupport _)
 
 omit [Module.Finite ℝ E] in
@@ -135,6 +158,103 @@ lemma tsupport_smoothSmul_subset_interior
     tsupport ((smoothSmul (I := I) f hf X) : ∀ x, TangentSpace I x) ⊆ I.interior M :=
   (tsupport_smoothSmul_subset (I := I) hf X).trans hX_int
 
+theorem integral_tangentSectionAction_eq_neg_integral_smul_divergence_with_boundary_of_integrable
+    [T2Space M] [SigmaCompactSpace M]
+    (g : SmoothRiemannianMetric I M)
+    {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ) ∞ f)
+    (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
+    (hprod : HasCompactSupport (smoothSmul (I := I) f hf X))
+    (hprod_int : tsupport (smoothSmul (I := I) f hf X) ⊆ I.interior M)
+    (hact_int : Integrable (tangentSectionAction (I := I) X f)
+      (riemannianVolumeMeasure (I := I) (M := M) g)) :
+    ∫ x, tangentSectionAction (I := I) X f x
+        ∂(riemannianVolumeMeasure (I := I) (M := M) g) =
+      -∫ x, f x * divergenceGWithBoundary (I := I) g X x
+        ∂(riemannianVolumeMeasure (I := I) (M := M) g) := by
+  let Y := smoothSmul (I := I) f hf X
+  have hdiv_zero :
+      ∫ x, divergenceGWithBoundary (I := I) g Y x
+          ∂(riemannianVolumeMeasure (I := I) (M := M) g) = 0 :=
+    integral_divergence_with_boundary_eq_zero_of_hasCompactSupport_of_interior_support
+      (I := I) g Y hprod hprod_int
+  have hdiv_supp : tsupport (divergenceGWithBoundary (I := I) g Y) ⊆
+      I.interior M :=
+    (tsupport_divergence_g_with_boundary_subset (I := I) g Y).trans hprod_int
+  have hdiv_cont : Continuous (divergenceGWithBoundary (I := I) g Y) := by
+    rw [continuous_iff_continuousAt]
+    intro x
+    by_cases hx : x ∈ tsupport (divergenceGWithBoundary (I := I) g Y)
+    · exact ((divergence_g_with_boundary_continuousOn_interior
+        (I := I) g Y) x (hdiv_supp hx)).continuousAt
+          (isOpen_interior_M.mem_nhds (hdiv_supp hx))
+    · have hopen : IsOpen (tsupport (divergenceGWithBoundary (I := I) g Y))ᶜ :=
+        (isClosed_tsupport _).isOpen_compl
+      have heq : divergenceGWithBoundary (I := I) g Y =ᶠ[𝓝 x]
+          (fun _ => (0 : ℝ)) := by
+        filter_upwards [hopen.mem_nhds hx] with y hy
+        exact Function.notMem_support.mp (fun h => hy (subset_tsupport _ h))
+      exact continuousAt_const.congr heq.symm
+  have hdiv_int : Integrable (divergenceGWithBoundary (I := I) g Y)
+      (riemannianVolumeMeasure (I := I) (M := M) g) :=
+    Continuous.integrable_of_hasCompactSupport_riemannianVolumeMeasure
+      (I := I) g hdiv_cont (hasCompactSupport_divergence_g_with_boundary
+        (I := I) g hprod)
+  have hmul_int : Integrable
+      (fun x : M => f x * divergenceGWithBoundary (I := I) g X x)
+      (riemannianVolumeMeasure (I := I) (M := M) g) := by
+    refine (hdiv_int.sub hact_int).congr (Filter.Eventually.of_forall fun x => ?_)
+    change divergenceGWithBoundary (I := I) g Y x -
+        tangentSectionAction (I := I) X f x = _
+    rw [show Y = smoothSmul (I := I) f hf X from rfl,
+      divergence_g_with_boundary_smoothSmul (I := I) g f hf X x]
+    ring
+  have hsplit :
+      ∫ x, divergenceGWithBoundary (I := I) g Y x
+          ∂(riemannianVolumeMeasure (I := I) (M := M) g) =
+        (∫ x, f x * divergenceGWithBoundary (I := I) g X x
+            ∂(riemannianVolumeMeasure (I := I) (M := M) g)) +
+          ∫ x, tangentSectionAction (I := I) X f x
+            ∂(riemannianVolumeMeasure (I := I) (M := M) g) := by
+    rw [show (fun x : M => divergenceGWithBoundary (I := I) g Y x) =
+        fun x => f x * divergenceGWithBoundary (I := I) g X x +
+          tangentSectionAction (I := I) X f x by
+      funext x
+      exact divergence_g_with_boundary_smoothSmul (I := I) g f hf X x]
+    exact integral_add hmul_int hact_int
+  rw [hdiv_zero] at hsplit
+  linarith
+
+theorem integral_tangentSectionAction_eq_neg_integral_smul_divergence_with_boundary_of_hasCompactSupport
+    [T2Space M] [SigmaCompactSpace M]
+    (g : SmoothRiemannianMetric I M)
+    {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ) ∞ f)
+    (hfc : HasCompactSupport f) (hf_int : tsupport f ⊆ I.interior M)
+    (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) :
+    ∫ x, tangentSectionAction (I := I) X f x
+        ∂(riemannianVolumeMeasure (I := I) (M := M) g) =
+      -∫ x, f x * divergenceGWithBoundary (I := I) g X x
+        ∂(riemannianVolumeMeasure (I := I) (M := M) g) := by
+  have haction_support : Function.support (tangentSectionAction (I := I) X f) ⊆
+      tsupport f := by
+    intro x hx
+    by_contra hne
+    have hopen : IsOpen (tsupport f)ᶜ := (isClosed_tsupport _).isOpen_compl
+    have heq : f =ᶠ[𝓝 x] (fun _ => (0 : ℝ)) := by
+      filter_upwards [hopen.mem_nhds hne] with y hy
+      exact Function.notMem_support.mp (fun h => hy (subset_tsupport _ h))
+    apply hx
+    change mfderiv I 𝓘(ℝ) f x (X x) = 0
+    rw [heq.mfderiv_eq, mfderiv_const]
+    rfl
+  apply integral_tangentSectionAction_eq_neg_integral_smul_divergence_with_boundary_of_integrable
+    (I := I) g hf X
+  · exact hfc.mono' ((support_smoothSmul_subset_left (I := I) hf X).trans
+      (subset_tsupport f))
+  · exact (tsupport_smoothSmul_subset_left (I := I) hf X).trans hf_int
+  · exact Continuous.integrable_of_hasCompactSupport_riemannianVolumeMeasure
+      (I := I) g (tangentSectionAction_continuous_of_interior_support
+        (I := I) X hf hf_int) (hfc.mono' haction_support)
+
 theorem integral_tangentSectionAction_eq_neg_integral_smul_divergence_with_boundary
     [T2Space M] [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M)
@@ -147,92 +267,13 @@ theorem integral_tangentSectionAction_eq_neg_integral_smul_divergence_with_bound
         ∂(riemannianVolumeMeasure (I := I) (M := M) g) =
       -∫ x, f x * divergenceGWithBoundary (I := I) g X x
         ∂(riemannianVolumeMeasure (I := I) (M := M) g) := by
-  classical
-  set Y : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯ :=
-    smoothSmul (I := I) f hf X with hY_def
-  have hY_cs : HasCompactSupport Y :=
-    hasCompactSupport_smoothSmul (I := I) hf X hX
-  have hY_int : tsupport (Y : ∀ x, TangentSpace I x) ⊆ I.interior M :=
-    tsupport_smoothSmul_subset_interior (I := I) hf X hX_int
-  have hY_div : ∀ x : M,
-      divergenceGWithBoundary (I := I) g Y x =
-        f x * divergenceGWithBoundary (I := I) g X x +
-          tangentSectionAction (I := I) X f x :=
-    divergence_g_with_boundary_smoothSmul (I := I) g f hf X
-  have hf_cont : Continuous f := hf.continuous
-  have hX_div_cont : Continuous (divergenceGWithBoundary (I := I) g X) := by
-    have hdiv_supp : tsupport (divergenceGWithBoundary (I := I) g X) ⊆ tsupport X :=
-      tsupport_divergence_g_with_boundary_subset
-        (I := I) g X
-    have hdiv_supp_int :
-        tsupport (divergenceGWithBoundary (I := I) g X) ⊆ I.interior M :=
-      hdiv_supp.trans hX_int
-    rw [continuous_iff_continuousAt]
-    intro x
-    by_cases hx_supp : x ∈ tsupport (divergenceGWithBoundary (I := I) g X)
-    · have hx_int : x ∈ I.interior M := hdiv_supp_int hx_supp
-      have hcont_int :
-          ContinuousOn (divergenceGWithBoundary (I := I) g X) (I.interior M) :=
-        divergence_g_with_boundary_continuousOn_interior (I := I) g X
-      exact (hcont_int x hx_int).continuousAt (isOpen_interior_M.mem_nhds hx_int)
-    · have h_open : IsOpen (tsupport (divergenceGWithBoundary (I := I) g X))ᶜ :=
-        (isClosed_tsupport _).isOpen_compl
-      have hev_zero : (divergenceGWithBoundary (I := I) g X) =ᶠ[𝓝 x]
-          (fun _ => (0 : ℝ)) := by
-        filter_upwards [h_open.mem_nhds hx_supp] with y hy
-        by_contra hne
-        exact hy (subset_tsupport _ hne)
-      exact (continuous_const.continuousAt.congr hev_zero.symm)
-  have hAct_cont : Continuous (tangentSectionAction (I := I) X f) :=
-    tangentSectionAction_continuous_of_interior_support (I := I) X hf hf_int
-  have hX_div_cs : HasCompactSupport (divergenceGWithBoundary (I := I) g X) :=
-    hasCompactSupport_divergence_g_with_boundary (I := I) g hX
-  have hAct_cs : HasCompactSupport (tangentSectionAction (I := I) X f) :=
-    hasCompactSupport_tangentSectionAction (I := I) hX f
-  have hMul_cont : Continuous (fun x : M => f x * divergenceGWithBoundary (I := I) g X x) :=
-    hf_cont.mul hX_div_cont
-  have hMul_cs : HasCompactSupport (fun x : M => f x * divergenceGWithBoundary (I := I) g X x) :=
-    hX_div_cs.mul_left
-  have h_div_Y_zero :
-      ∫ x, divergenceGWithBoundary (I := I) g Y x
-          ∂(riemannianVolumeMeasure (I := I) (M := M) g) = 0 :=
-    integral_divergence_with_boundary_eq_zero_of_hasCompactSupport_of_interior_support
-      (I := I) g Y hY_cs hY_int
-  have h_eq_pointwise : ∀ x : M, divergenceGWithBoundary (I := I) g Y x =
-      f x * divergenceGWithBoundary (I := I) g X x +
-        tangentSectionAction (I := I) X f x := hY_div
-  have h_div_Y_split :
-      ∫ x, divergenceGWithBoundary (I := I) g Y x
-          ∂(riemannianVolumeMeasure (I := I) (M := M) g) =
-        ∫ x, (f x * divergenceGWithBoundary (I := I) g X x +
-                tangentSectionAction (I := I) X f x)
-          ∂(riemannianVolumeMeasure (I := I) (M := M) g) := by
-    refine integral_congr_ae (Filter.Eventually.of_forall (fun x => ?_))
-    exact h_eq_pointwise x
-  have h_int_mul : Integrable (fun x : M => f x * divergenceGWithBoundary (I := I) g X x)
-      (riemannianVolumeMeasure (I := I) (M := M) g) :=
-    Continuous.integrable_of_hasCompactSupport_riemannianVolumeMeasure
-      (I := I) g hMul_cont hMul_cs
-  have h_int_act : Integrable (tangentSectionAction (I := I) X f)
-      (riemannianVolumeMeasure (I := I) (M := M) g) :=
-    Continuous.integrable_of_hasCompactSupport_riemannianVolumeMeasure
-      (I := I) g hAct_cont hAct_cs
-  have h_int_split :
-      ∫ x, (f x * divergenceGWithBoundary (I := I) g X x +
-              tangentSectionAction (I := I) X f x)
-          ∂(riemannianVolumeMeasure (I := I) (M := M) g) =
-        ∫ x, f x * divergenceGWithBoundary (I := I) g X x
-            ∂(riemannianVolumeMeasure (I := I) (M := M) g) +
-          ∫ x, tangentSectionAction (I := I) X f x
-            ∂(riemannianVolumeMeasure (I := I) (M := M) g) :=
-    integral_add h_int_mul h_int_act
-  have h_sum_zero :
-      ∫ x, f x * divergenceGWithBoundary (I := I) g X x
-          ∂(riemannianVolumeMeasure (I := I) (M := M) g) +
-        ∫ x, tangentSectionAction (I := I) X f x
-          ∂(riemannianVolumeMeasure (I := I) (M := M) g) = 0 := by
-    rw [← h_int_split, ← h_div_Y_split]; exact h_div_Y_zero
-  linarith [h_sum_zero]
+  apply integral_tangentSectionAction_eq_neg_integral_smul_divergence_with_boundary_of_integrable
+    (I := I) g hf X
+  · exact hasCompactSupport_smoothSmul (I := I) hf X hX
+  · exact tsupport_smoothSmul_subset_interior (I := I) hf X hX_int
+  · exact Continuous.integrable_of_hasCompactSupport_riemannianVolumeMeasure
+      (I := I) g (tangentSectionAction_continuous_of_interior_support
+        (I := I) X hf hf_int) (hasCompactSupport_tangentSectionAction (I := I) hX f)
 
 private lemma tsupport_mul_subset_left (f h : M → ℝ) :
     tsupport (fun x : M => f x * h x) ⊆ tsupport f := by

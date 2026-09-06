@@ -572,6 +572,12 @@ theorem tensor0SFiberNorm_sq_eq_normSq0S
     normSq0S (I := I) g x s A = inner0S (I := I) g x s A A := by
   rfl
 
+theorem normSq0S_eq_zero_iff
+    (g : SmoothMetric I M) (x : M) (s : Nat)
+    (A : Tensor0SSpace s I x) :
+    normSq0S (I := I) g x s A = 0 ↔ A = 0 :=
+  (tensor0SMetricData (I := I) g x s).inner_self_eq_zero_iff A
+
 theorem inner0S_sq_le_mul
     (g : SmoothMetric I M) (x : M) (s : Nat)
     (A B : Tensor0SSpace s I x) :

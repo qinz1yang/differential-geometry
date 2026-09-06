@@ -63,6 +63,33 @@ theorem sqrt_inner_smul
       real_inner_self_eq_norm_sq, Real.sqrt_sq_eq_abs, abs_norm]
   rw [hnorm, hnorm, norm_smul, Real.norm_eq_abs]
 
+theorem abs_inner_le_sqrt_mul_sqrt
+    (g : SmoothRiemannianMetric I M) (x : M)
+    (v w : TangentSpace I x) :
+    |g.inner x v w| ≤
+      Real.sqrt (g.inner x v v) * Real.sqrt (g.inner x w w) := by
+  let D := (tangentMetricDataGen (I := I) g x).metric
+  let : InnerProductSpace.Core Real (TangentSpace I x) := D.toCore
+  let : NormedAddCommGroup (TangentSpace I x) :=
+    @InnerProductSpace.Core.toNormedAddCommGroup Real (TangentSpace I x)
+      _ _ _ D.toCore
+  let : InnerProductSpace Real (TangentSpace I x) :=
+    @InnerProductSpace.ofCore Real (TangentSpace I x) _ _ _ D.toCore.toCore
+  have hnorm : ∀ z : TangentSpace I x,
+      Real.sqrt (g.inner x z z) = ‖z‖ := by
+    intro z
+    rw [← TangentMetricDataGen.inner_eq_gen
+      (tangentMetricDataGen (I := I) g x) z z]
+    change Real.sqrt (D.inner z z) = ‖z‖
+    rw [← MetricFiberData.toCore_inner D z z,
+      real_inner_self_eq_norm_sq, Real.sqrt_sq_eq_abs, abs_norm]
+  have hinner : g.inner x v w = inner Real v w := by
+    rw [← TangentMetricDataGen.inner_eq_gen
+      (tangentMetricDataGen (I := I) g x) v w]
+    exact MetricFiberData.toCore_inner D v w
+  rw [hinner, hnorm, hnorm]
+  exact abs_real_inner_le_norm v w
+
 omit [FiniteDimensional ℝ E] in
 theorem inner_sum_orthonormal (g : SmoothRiemannianMetric I M) (x : M)
     {ι : Type*} [Fintype ι] [DecidableEq ι] (v : ι → TangentSpace I x)

@@ -158,6 +158,33 @@ lemma chartRepAt_smulFun (γ : ℝ → M) (f : ℝ → ℝ) (V : ∀ t, TangentS
   funext s
   simp [chartRepAt, map_smul]
 
+omit [Module.Finite ℝ E] [NeZero (Module.finrank ℝ E)] in
+theorem chartRepAt_restrict_differentiableAt
+    {γ : ℝ → M} (hγ : ContMDiff 𝓘(ℝ, ℝ) I 1 γ)
+    (X : ∀ x : M, TangentSpace I x)
+    (hX : ContMDiff I (I.prod 𝓘(ℝ, E)) 1 (T% X)) (t : ℝ) :
+    DifferentiableAt ℝ
+      (chartRepAt (I := I) γ (fun s => X (γ s)) t) t := by
+  let α : M := γ t
+  let e := trivializationAt E (TangentSpace I) α
+  have hbase : α ∈ e.baseSet :=
+    FiberBundle.mem_baseSet_trivializationAt E (TangentSpace I) α
+  have hrepr : ContMDiffAt I 𝓘(ℝ, E) 1
+      (fun x => (e (TotalSpace.mk' E x (X x))).2) α :=
+    (e.contMDiffAt_section_iff hbase).mp hX.contMDiffAt
+  have hcomp : ContMDiffAt 𝓘(ℝ, ℝ) 𝓘(ℝ, E) 1
+      ((fun x => (e (TotalSpace.mk' E x (X x))).2) ∘ γ) t :=
+    hrepr.comp t hγ.contMDiffAt
+  have hbase_ev : ∀ᶠ s in 𝓝 t, γ s ∈ e.baseSet :=
+    hγ.continuous.continuousAt (e.open_baseSet.mem_nhds hbase)
+  have heq : chartRepAt (I := I) γ (fun s => X (γ s)) t =ᶠ[𝓝 t]
+      (fun s => (e (TotalSpace.mk' E (γ s) (X (γ s)))).2) := by
+    filter_upwards [hbase_ev] with s hs
+    rw [chartRepAt_apply, e.continuousLinearMapAt_apply (R := ℝ),
+      e.coe_linearMapAt_of_mem hs]
+  rw [heq.differentiableAt_iff]
+  exact (contMDiffAt_iff_contDiffAt.mp hcomp).differentiableAt one_ne_zero
+
 omit [NeZero (Module.finrank ℝ E)] in
 theorem covDerivAlong_add (g : SmoothRiemannianMetric I M) (γ : ℝ → M)
     (V W : ∀ t, TangentSpace I (γ t)) (t : ℝ)

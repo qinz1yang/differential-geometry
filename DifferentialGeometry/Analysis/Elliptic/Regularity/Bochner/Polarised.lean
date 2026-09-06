@@ -85,7 +85,8 @@ lemma gradFun_neg
   have h_neg : (fun y : M => -f y) = (-1 : ℝ) • f := by
     funext y; simp [Pi.smul_apply]
   rw [h_neg]
-  rw [gradFun_const_smul (I := I) g (-1 : ℝ) hf]
+  rw [DifferentialGeometry.Geometry.Operator.gradFun_const_smul
+    (I := I) g (-1 : ℝ) hf]
   rw [neg_smul, one_smul]
 
 omit [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in

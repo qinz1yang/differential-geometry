@@ -275,6 +275,15 @@ theorem dirichletLaplacianEigenvalue_nonneg
     (sub_nonneg.mpr (resolvent_eigenvalue_le_one g hu hune))
     (resolvent_eigenvalue_pos g i.1.property).le
 
+
+theorem one_add_dirichletLaplacianEigenvalue_eq_inv
+    {g : SmoothRiemannianMetric (I_half n) M}
+    (i : DirichletLaplacianEigenIndex g) :
+    1 + dirichletLaplacianEigenvalue i = i.1.1⁻¹ := by
+  unfold dirichletLaplacianEigenvalue
+  field_simp [ne_of_gt (resolvent_eigenvalue_pos g i.1.property)]
+  ring
+
 private lemma dirichletLaplacianEigenvector_mem
     (g : SmoothRiemannianMetric (I_half n) M)
     (i : DirichletLaplacianEigenIndex g) :

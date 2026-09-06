@@ -15,6 +15,9 @@ import DifferentialGeometry.Geometry.Connection.LeviCivita.Smooth.MetricCoord
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Smooth.Model
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Smooth.Christoffel
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Torsion
+import DifferentialGeometry.Geometry.Curvature.MetricLeviCivitaReconcile
+import DifferentialGeometry.Tensor.RSTensor.MetricTrace.Connection
+import DifferentialGeometry.Geometry.Operator.GradientRegularity
 
 
 open DifferentialGeometry.PDE.RicciFlow
@@ -840,3 +843,105 @@ theorem metricDerivAt
     (I := I) S hS t x X Y).hasDerivAt (D.regular_mem_nhds t.2)
 
 end DifferentialGeometry.PDE.RicciFlow
+
+section
+
+open DifferentialGeometry.Tensor.RSTensor
+open DifferentialGeometry.Geometry.Connection
+open Bundle
+open scoped Manifold ContDiff Topology
+
+namespace DifferentialGeometry
+namespace PDE
+namespace RicciFlow
+
+
+
+universe u uE uH
+
+variable {E : Type uE} [NormedAddCommGroup E] [NormedSpace Real E]
+variable [FiniteDimensional Real E] [CompleteSpace E]
+variable [NeZero (Module.finrank Real E)]
+variable {H : Type uH} [TopologicalSpace H]
+variable {I : ModelWithCorners Real E H}
+variable {M : Type u} [TopologicalSpace M] [ChartedSpace H M]
+variable [IsManifold I ∞ M] [SigmaCompactSpace M] [T2Space M]
+variable [BoundarylessManifold I M]
+variable [IsManifold I 1 M]
+
+omit [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
+theorem isSolutionOn_of_reg
+    {D : RealTimeInterval}
+    (g : Real -> SmoothRiemannianMetric I M)
+    (hsmooth : MetricFamilySmoothOn (I := I) (M := M) D
+      ({ base := { metric := g } } : SolutionOn (I := I) (M := M) D).family.metric)
+    (hpde : ∀ t ∈ D.regular, ∀ (x : M) (v w : TangentSpace I x),
+      HasDerivAt (fun s : Real => (g s).inner x v w)
+        ((-2 : Real) * ricciTensor (I := I) (g t) x v w) t)
+    (hscalarCont : ContinuousOn
+      (fun q : Real × M => metricScalarAt (I := I) (g q.1) q.2)
+      (D.carrier ×ˢ (Set.univ : Set M)))
+    (hscalarTime : ∀ t ∈ D.carrier, ∀ x : M,
+      DifferentiableWithinAt Real (fun s : Real => metricScalarAt (I := I) (g s) x)
+        D.carrier t)
+    (hricciCont : tensor0SFamilyContinuousOnSet (I := I) (M := M) 2 D.carrier
+      (fun t x => metricRicciAt (I := I) (g t) x))
+    (hrm04Cont : tensor0SFamilyContinuousOnSet (I := I) (M := M) 4 D.carrier
+      (fun t x => metricRm04At (I := I) (g t) x)) :
+    IsSolutionOn (I := I)
+      ({ base := { metric := g } } : SolutionOn (I := I) (M := M) D) := by
+  refine
+    { smoothMetric := hsmooth
+      smoothConnection := ?_
+      equation := ?_
+      scalarCont := ?_
+      scalarTime := ?_
+      ricciCont := ?_
+      rm04Cont := ?_
+      ricciNormSpace := ?_
+      ricciNormGrad := ?_ }
+  · intro t
+    simpa [SolutionOn.family, SolutionFamily.connection,
+      MetricConnectionFamilyOn.connectionAt]
+      using leviCivitaConnectionOfMetric_contMDiffCovariantDerivative (I := I)
+        (g (t : Real))
+  · intro t x X Y
+    have h : HasDerivWithinAt (fun s : Real => (g s).inner x X Y)
+        ((-2 : Real) * ricciTensor (I := I) (g (t : Real)) x X Y)
+        D.carrier (t : Real) :=
+      (hpde (t : Real) t.2 x X Y).hasDerivWithinAt
+    simpa [SolutionFamily.ricciAt, metricRicciAt_apply_eq_ricciTensor] using h
+  · exact hscalarCont.congr (fun q _ => rfl)
+  · intro K t htK hKsub x
+    exact (hscalarTime t (hKsub htK) x).mono hKsub
+  · refine tensor0SFamilyContinuousOnSet.congr hricciCont (fun t _ x => ?_)
+    simp only [SolutionOn.ricci, SolutionFamily.ricci_apply, SolutionFamily.ricciAt]
+  · refine tensor0SFamilyContinuousOnSet.congr hrm04Cont (fun t _ x => ?_)
+    simp only [SolutionFamily.rm04, metricRm04_apply]
+  · intro t ht x
+    have h := (normSq02_smooth (I := I) (M := M)
+      (g (t : Real)) (metricRicci (I := I) (M := M) (g (t : Real)))).mdifferentiableAt
+      (by simp) (x := x)
+    refine h.congr_of_eventuallyEq ?_
+    filter_upwards with y
+    simp only [ricciNorm, SolutionOn.ricci, SolutionOn.family,
+      SolutionFamily.ricci_apply, SolutionFamily.ricciAt, metricRicci_apply]
+  · intro t ht x
+    have hsm : ContMDiff I 𝓘(Real, Real) ∞
+        (ricciNorm (I := I)
+          ({ base := { metric := g } } : SolutionOn (I := I) (M := M) D)
+          (t : Real)) := by
+      refine (normSq02_smooth (I := I) (M := M)
+        (g (t : Real)) (metricRicci (I := I) (M := M) (g (t : Real)))).congr ?_
+      intro y
+      simp only [ricciNorm, SolutionOn.ricci, SolutionOn.family,
+        SolutionFamily.ricci_apply, SolutionFamily.ricciAt, metricRicci_apply]
+    exact gradientFun_mdiffAt (I := I) (g (t : Real)) hsm x
+
+end RicciFlow
+end PDE
+
+end DifferentialGeometry
+
+end

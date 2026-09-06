@@ -33,7 +33,7 @@ structure GradientLikeFlow (I : ModelWithCorners ℝ E H) (f : M → ℝ) (a b :
   contMDiffAt_t : ∀ x : M, ContMDiffAt 𝓘(ℝ, ℝ) I (⊤ : WithTop ℕ∞) (fun t : ℝ => flow t x) (0 : ℝ)
 
 noncomputable def unitSpeedFlowOfVectorField [T2Space M] (I : ModelWithCorners ℝ E H)
-    [I.Boundaryless] [IsManifold I (⊤ : WithTop ℕ∞) M] (a b : ℝ) (f : M → ℝ)
+    [I.Boundaryless] [IsManifold I (↑(⊤ : ℕ∞) : WithTop ℕ∞) M] (a b : ℝ) (f : M → ℝ)
     (hf : ContMDiff I 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞) f)
     (v : (x : M) → TangentSpace I x)
     (hv : CMDiff 1 (fun x : M => (⟨x, v x⟩ : TangentBundle I M)))
@@ -284,7 +284,7 @@ theorem UnitSpeedFlow.image_sublevels (Φ : UnitSpeedFlow f a b) (hab : a ≤ b)
         _ = y := Φ.flow_zero y
 
 theorem sublevel_transport_of_unitSpeedVectorField [T2Space M] (I : ModelWithCorners ℝ E H)
-    [I.Boundaryless] [IsManifold I (⊤ : WithTop ℕ∞) M] (a b : ℝ) (f : M → ℝ)
+    [I.Boundaryless] [IsManifold I (↑(⊤ : ℕ∞) : WithTop ℕ∞) M] (a b : ℝ) (f : M → ℝ)
     (hf : ContMDiff I 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞) f)
     (v : (x : M) → TangentSpace I x)
     (hv : CMDiff 1 (fun x : M => (⟨x, v x⟩ : TangentBundle I M)))
@@ -297,7 +297,7 @@ theorem sublevel_transport_of_unitSpeedVectorField [T2Space M] (I : ModelWithCor
     (unitSpeedFlowOfVectorField I a b f hf v hv hdf hcomplete) hab
 
 theorem sublevel_transport_of_stripUnitSpeedVectorField [I.Boundaryless]
-    [IsManifold I (⊤ : WithTop ℕ∞) M] [T2Space M]
+    [IsManifold I (↑(⊤ : ℕ∞) : WithTop ℕ∞) M] [T2Space M]
     (f : M → ℝ) (hf : ContMDiff I 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞) f) {a b : ℝ} (hab : a ≤ b)
     (v : (x : M) → TangentSpace I x)
     (hv : CMDiff 1 (fun x : M => (⟨x, v x⟩ : TangentBundle I M)))
@@ -393,7 +393,7 @@ theorem sublevel_transport_of_stripUnitSpeedVectorField [I.Boundaryless]
         _ = y := by dsimp [Φ]; exact curveAt_zero v hcomplete y
 
 theorem sublevel_transport_outside_of_unitSpeedVectorField [I.Boundaryless]
-    [IsManifold I (⊤ : WithTop ℕ∞) M] [T2Space M]
+    [IsManifold I (↑(⊤ : ℕ∞) : WithTop ℕ∞) M] [T2Space M]
     (f : M → ℝ) (hf : ContMDiff I 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞) f) {a b : ℝ} (hab : a ≤ b)
     (B : Set M)
     (v : (x : M) → TangentSpace I x)

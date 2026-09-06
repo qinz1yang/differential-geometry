@@ -45,6 +45,24 @@ lemma normGradSqFun_nonneg
   · change 0 ≤ g.inner x (gradFun (I := I) g f x) (gradFun (I := I) g f x)
     exact le_of_lt (g.pos x _ hgf)
 
+omit [NeZero (Module.finrank ℝ E)] in
+theorem normGradSqFun_eq_zero_iff
+    {g : SmoothRiemannianMetric I M} {f : M → ℝ} {x : M} :
+    normGradSqFun (I := I) g f x = 0 ↔
+      mfderiv I 𝓘(ℝ, ℝ) f x = 0 := by
+  constructor
+  · intro hzero
+    have hgrad : gradFun (I := I) g f x = 0 := by
+      by_contra hne
+      exact (ne_of_gt (g.pos x _ hne)) hzero
+    ext v
+    rw [← inner_gradFun (I := I) g f x v, hgrad]
+    rw [show g.inner x (0 : TangentSpace I x) = 0 from map_zero _]
+    rfl
+  · intro hzero
+    rw [normGradSqFun_def, gradFun_eq_zero_of_mfderiv_eq_zero g f hzero]
+    simp
+
 namespace BochnerInternal
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup

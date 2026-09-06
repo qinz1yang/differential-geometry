@@ -5074,6 +5074,76 @@ theorem fderiv_posPart_normSq_zero_direction {n k : ℕ} (hk : k ≤ n) (y : Mor
   rw [hw]
   simp
 
+theorem fderiv_morseNormalForm_apply {n k : ℕ} (hk : k ≤ n) (c : ℝ)
+    (y w : MorseModel n) :
+    fderiv ℝ (morseNormalForm hk c) y w =
+      (∑ j : Fin (n - k), posPart hk y j * posPart hk w j) -
+        ∑ i : Fin k, negPart hk y i * negPart hk w i := by
+  have hdiffPos : DifferentiableAt ℝ
+      (fun z : MorseModel n => ‖posPart hk z‖ ^ 2) y :=
+    (contDiff_posPart_normSq hk).differentiable (by
+      exact_mod_cast (ne_top_of_lt zero_lt_one).symm) |>.differentiableAt
+  have hdiffNeg : DifferentiableAt ℝ
+      (fun z : MorseModel n => ‖negPart hk z‖ ^ 2) y :=
+    (contDiff_negPart_normSq hk).differentiable (by
+      exact_mod_cast (ne_top_of_lt zero_lt_one).symm) |>.differentiableAt
+  have hfun : morseNormalForm hk c =
+      fun z : MorseModel n =>
+        c + (1 / 2 : ℝ) * (‖posPart hk z‖ ^ 2 - ‖negPart hk z‖ ^ 2) := by
+    funext z
+    exact morseNormalForm_split hk c z
+  have hsub : fderiv ℝ
+      (fun z : MorseModel n => ‖posPart hk z‖ ^ 2 - ‖negPart hk z‖ ^ 2) y =
+      fderiv ℝ (fun z : MorseModel n => ‖posPart hk z‖ ^ 2) y -
+        fderiv ℝ (fun z : MorseModel n => ‖negPart hk z‖ ^ 2) y := by
+    exact fderiv_sub hdiffPos hdiffNeg
+  rw [hfun, fderiv_const_add, fderiv_const_mul]
+  · rw [hsub, smul_apply, sub_apply,
+      fderiv_posPart_normSq, fderiv_negPart_normSq]
+    ring
+  · exact hdiffPos.sub hdiffNeg
+
+theorem fderiv_morseNormalForm_eq_zero_iff {n k : ℕ} (hk : k ≤ n) (c : ℝ)
+    (y : MorseModel n) :
+    fderiv ℝ (morseNormalForm hk c) y = 0 ↔ y = 0 := by
+  constructor
+  · intro hzero
+    have hposApply := congrArg
+      (fun L : MorseModel n →L[ℝ] ℝ =>
+        L (recombine hk (0 : EuclideanSpace ℝ (Fin k)) (posPart hk y))) hzero
+    have hnegApply := congrArg
+      (fun L : MorseModel n →L[ℝ] ℝ =>
+        L (recombine hk (negPart hk y) (0 : EuclideanSpace ℝ (Fin (n - k))))) hzero
+    rw [fderiv_morseNormalForm_apply] at hposApply hnegApply
+    rw [posPart_recombine, negPart_recombine] at hposApply
+    rw [posPart_recombine, negPart_recombine] at hnegApply
+    have hposApply' :
+        (∑ j : Fin (n - k), posPart hk y j * posPart hk y j) = 0 := by
+      simpa using hposApply
+    have hnegApply' :
+        (∑ i : Fin k, negPart hk y i * negPart hk y i) = 0 := by
+      simpa using hnegApply
+    have hposNorm : ‖posPart hk y‖ ^ 2 = 0 := by
+      rw [EuclideanSpace.real_norm_sq_eq]
+      simpa only [pow_two] using hposApply'
+    have hnegNorm : ‖negPart hk y‖ ^ 2 = 0 := by
+      rw [EuclideanSpace.real_norm_sq_eq]
+      simpa only [pow_two] using hnegApply'
+    have hpos : posPart hk y = 0 := norm_eq_zero.mp (sq_eq_zero_iff.mp hposNorm)
+    have hneg : negPart hk y = 0 := norm_eq_zero.mp (sq_eq_zero_iff.mp hnegNorm)
+    calc
+      y = recombine hk (negPart hk y) (posPart hk y) :=
+        (recombine_decompose hk y).symm
+      _ = 0 := by
+        rw [hpos, hneg]
+        ext i
+        simp [recombine]
+  · rintro rfl
+    apply ContinuousLinearMap.ext
+    intro w
+    rw [fderiv_morseNormalForm_apply]
+    simp [posPart, negPart]
+
 theorem fderiv_morseNormalForm_ne_zero_lower {n k : ℕ} (hk : k ≤ n) (c a : ℝ) (ha : 0 < a)
     (y : MorseModel n) (hy : morseNormalForm hk c y = c - a) :
     fderiv ℝ (morseNormalForm hk c) y ≠ 0 := by

@@ -1,4 +1,5 @@
 import DifferentialGeometry.Geometry.Metric.LocalIsometryRigidity
+import DifferentialGeometry.Geometry.Metric.LocalPullback
 import DifferentialGeometry.Geometry.Metric.Sphere.IsometryExtension
 import DifferentialGeometry.Topology.FiberBundleT2
 import Mathlib.Analysis.Normed.Module.Connected
@@ -33,9 +34,56 @@ private theorem sphereDiffeo_mul (e f : E ≃ₗᵢ[ℝ] E) :
   apply Subtype.ext
   rfl
 
+theorem exists_linearIsometryEquiv_of_localPullMetric_roundMetric_eq
+    (hn : 0 < n)
+    {f : sphere (0 : E) 1 → sphere (0 : E) 1}
+    (hf : IsLocalDiffeomorph (𝓡 n) (𝓡 n) ∞ f)
+    (hmetric : localPullMetric (roundMetric (E := E) (n := n)) f hf = roundMetric) :
+    ∃ e : E ≃ₗᵢ[ℝ] E,
+      (sphereDiffeo (n := n) e : sphere (0 : E) 1 → sphere (0 : E) 1) = f := by
+  classical
+  have hfr : 1 < finrank ℝ E := by
+    rw [show finrank ℝ E = n + 1 from Fact.out]
+    exact Nat.succ_lt_succ hn
+  let : Nontrivial E := Module.nontrivial_of_finrank_pos (lt_trans Nat.zero_lt_one hfr)
+  let : NeZero n := ⟨Nat.ne_of_gt hn⟩
+  let : NeZero (finrank ℝ (EuclideanSpace ℝ (Fin n))) := by
+    rw [finrank_euclideanSpace_fin]
+    infer_instance
+  let : PreconnectedSpace (sphere (0 : E) 1) :=
+    Subtype.preconnectedSpace
+      (isPreconnected_sphere
+        (Module.one_lt_rank_of_one_lt_finrank hfr) (0 : E) 1)
+  obtain ⟨x, hx⟩ := NormedSpace.sphere_nonempty (E := E).2 zero_le_one
+  let p : sphere (0 : E) 1 := ⟨x, hx⟩
+  have hpres (x : sphere (0 : E) 1) (v w : TangentSpace (𝓡 n) x) :
+      (roundMetric (E := E) (n := n)).inner x v w =
+        (roundMetric (E := E) (n := n)).inner (f x)
+          (mfderiv (𝓡 n) (𝓡 n) f x v) (mfderiv (𝓡 n) (𝓡 n) f x w) := by
+    have h := congrArg (fun g : SmoothRiemannianMetric (𝓡 n) (sphere (0 : E) 1) =>
+      g.inner x v w) hmetric
+    rw [localPullMetric_inner] at h
+    exact h.symm
+  let L : TangentSpace (𝓡 n) p ≃L[ℝ] TangentSpace (𝓡 n) (f p) :=
+    hf.mfderivToContinuousLinearEquiv (by decide) p
+  have hL : ∀ v w,
+      (roundMetric (E := E) (n := n)).inner (f p) (L v) (L w) =
+        (roundMetric (E := E) (n := n)).inner p v w := by
+    intro v w
+    exact (hpres p v w).symm
+  obtain ⟨e, hep, hde⟩ := ambient_iso_of_tan (E := E) (n := n) p (f p) L hL
+  refine ⟨e, ?_⟩
+  apply Riemannian.localIso_rigid
+    (roundMetric (E := E) (n := n)) (roundMetric (E := E) (n := n))
+    (sphereDiffeo (n := n) e).isLocalDiffeomorph hf
+    (fun x v w => (roundInner_sphereDiffeo e x v w).symm) hpres p
+  · apply Subtype.ext
+    simpa only [sphereDiffeo_coe] using hep
+  · ext v
+    with_unfolding_all exact hde v
+
 theorem orth_rep_of_iso
     {Γ : Type*} [Monoid Γ]
-    (p : sphere (0 : E) 1)
     (φ : Γ → sphere (0 : E) 1 ≃ₘ⟮𝓡 n, 𝓡 n⟯ sphere (0 : E) 1)
     (hn : 0 < n)
     (hone : ∀ x, φ 1 x = x)
@@ -48,46 +96,15 @@ theorem orth_rep_of_iso
     ∃ ρ : Γ →* (E ≃ₗᵢ[ℝ] E),
       ∀ γ, sphereDiffeo (n := n) (ρ γ) = φ γ := by
   classical
-  have hfr : 1 < finrank ℝ E := by
-    rw [show finrank ℝ E = n + 1 from Fact.out]
-    exact Nat.succ_lt_succ hn
-  let : NeZero n := ⟨Nat.ne_of_gt hn⟩
-  let : NeZero (finrank ℝ (EuclideanSpace ℝ (Fin n))) := by
-    rw [finrank_euclideanSpace_fin]
-    infer_instance
-  let : PreconnectedSpace (sphere (0 : E) 1) :=
-    Subtype.preconnectedSpace
-      (isPreconnected_sphere
-        (Module.one_lt_rank_of_one_lt_finrank hfr) (0 : E) 1)
   have hex (γ : Γ) :
       ∃ e : E ≃ₗᵢ[ℝ] E, sphereDiffeo (n := n) e = φ γ := by
-    let L : TangentSpace (𝓡 n) p ≃L[ℝ] TangentSpace (𝓡 n) (φ γ p) :=
-      (φ γ).mfderivToContinuousLinearEquiv (by decide) p
-    have hL : ∀ v w,
-        (roundMetric (E := E) (n := n)).inner (φ γ p) (L v) (L w) =
-          (roundMetric (E := E) (n := n)).inner p v w := by
-      intro v w
-      exact (hiso γ p v w).symm
-    obtain ⟨e, hep, hde⟩ :=
-      ambient_iso_of_tan (E := E) (n := n) p (φ γ p) L hL
-    refine ⟨e, ?_⟩
-    have hfun :
-        (fun x : sphere (0 : E) 1 => sphereDiffeo (n := n) e x) =
-          fun x => φ γ x := by
-      apply Riemannian.localIso_rigid
-        (roundMetric (E := E) (n := n))
-        (roundMetric (E := E) (n := n))
-        (sphereDiffeo (n := n) e).isLocalDiffeomorph
-        (φ γ).isLocalDiffeomorph
-        (fun x v w => (roundInner_sphereDiffeo e x v w).symm)
-        (hiso γ)
-        p
-      · apply Subtype.ext
-        simpa only [sphereDiffeo_coe] using hep
-      · ext v
-        with_unfolding_all exact hde v
-    apply Diffeomorph.ext
-    exact congrFun hfun
+    obtain ⟨e, he⟩ := exists_linearIsometryEquiv_of_localPullMetric_roundMetric_eq
+      hn (φ γ).isLocalDiffeomorph (by
+        apply SmoothRiemannianMetric.ext_inner
+        intro x v w
+        rw [localPullMetric_inner]
+        exact (hiso γ x v w).symm)
+    exact ⟨e, Diffeomorph.ext fun x => congrFun he x⟩
   choose e he using hex
   let ρ : Γ →* (E ≃ₗᵢ[ℝ] E) :=
     { toFun := e

@@ -217,6 +217,14 @@ theorem of_lower
   exact ⟨x, hx⟩
 
 omit [CompleteSpace E] in
+theorem scaleMetric
+    {g : SmoothRiemannianMetric I M}
+    (hg : RiemannianMetricComplete (I := I) g)
+    (c : Real) (hc : 0 < c) :
+    RiemannianMetricComplete (I := I) (scaleMetric (I := I) c hc g) := by
+  exact of_lower hg hc (fun x v => by rw [scaleMetric_inner])
+
+omit [CompleteSpace E] in
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 theorem of_uniformEquiv

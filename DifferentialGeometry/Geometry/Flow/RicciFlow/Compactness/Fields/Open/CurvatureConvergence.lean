@@ -26,6 +26,32 @@ variable (Φ : PointedCGHMaps (I := I) X P subseq)
 
 namespace OpenConvOut
 
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+theorem metric_conv
+    {R : letI : TopologicalSpace P.M := P.topology
+      letI : ChartedSpace H P.M := P.charted
+      letI : IsManifold I ∞ P.M := P.smooth
+      SmoothRiemannianMetric I P.M}
+    {bf : BumpFamily (I := I) Φ} {hsrc : SrcSigma Φ} {htgt : TgtSigma Φ}
+    {a b t₀ : Real} (ht₀ : t₀ ∈ Set.Ioo a b)
+    (hD : X.D = RealTimeInterval.openInterval a b t₀ ht₀)
+    (co : OpenConvOut (I := I) Φ R bf hsrc htgt a b t₀) :
+    MetricInnerPullbackTendsto (I := I) (Φ.compSubseq co.φ co.hφ) co.gInf := by
+  intro t ht x v w
+  have htOpen : t ∈ Set.Ioo a b := by
+    simpa only [hD, RealTimeInterval.openInterval] using ht
+  obtain ⟨n, hn⟩ := RealTimeInterval.exists_window_nhds ht₀ htOpen
+  have htWin : t ∈ RealTimeInterval.openWindow a b t₀ n :=
+    mem_of_mem_nhds hn
+  simp only [Function.comp_apply, PointedCGHMaps.compSubseq_map]
+  convert ConvOut.metric_conv_at (I := I) Φ R bf hsrc htgt
+    (RealTimeInterval.openWindowLeft a t₀ n)
+    (RealTimeInterval.openWindowRight b t₀ n)
+    (OpenConvOut.atWindow Φ co n) htWin x v w using 1
+  · funext k
+    rfl
+  · rfl
+
 theorem scalar_conv
     {R : letI : TopologicalSpace P.M := P.topology
       letI : ChartedSpace H P.M := P.charted
@@ -105,6 +131,59 @@ theorem scalar_conv
       (RealTimeInterval.openWindowRight b t₀ n) (cLow n) (hcLow n)
       (fun k s hs ↦ hbound n k s hs) (fun q ↦ hcovTail n q)
       (OpenConvOut.atWindow Φ co n) htWin x
+
+theorem ricci_conv
+    {R : letI : TopologicalSpace P.M := P.topology
+      letI : ChartedSpace H P.M := P.charted
+      letI : IsManifold I ∞ P.M := P.smooth
+      SmoothRiemannianMetric I P.M}
+    {bf : BumpFamily (I := I) Φ} {hsrc : SrcSigma Φ} {htgt : TgtSigma Φ}
+    {a b t₀ : Real} (ht₀ : t₀ ∈ Set.Ioo a b)
+    (hD : X.D = RealTimeInterval.openInterval a b t₀ ht₀)
+    (co : OpenConvOut (I := I) Φ R bf hsrc htgt a b t₀)
+    (cLow : Nat → Real) (hcLow : ∀ n, 0 < cLow n)
+    (hbound : letI : TopologicalSpace P.M := P.topology
+        letI : ChartedSpace H P.M := P.charted
+        letI : IsManifold I ∞ P.M := P.smooth
+      ∀ n k : Nat, ∀ t : Real,
+        t ∈ RealTimeInterval.openWindow a b t₀ n →
+        ∀ (y : SourceDomain (I := I) Φ k)
+          (v : letI : TopologicalSpace (SourceDomain (I := I) Φ k) :=
+                sourceDomTop (I := I) Φ k
+            letI : ChartedSpace H (SourceDomain (I := I) Φ k) :=
+                sourceDomCharted (I := I) Φ k
+            TangentSpace I y),
+          cLow n * R.inner (y : P.M) v v ≤
+            letI : TopologicalSpace (SourceDomain (I := I) Φ k) :=
+              sourceDomTop (I := I) Φ k
+            letI : ChartedSpace H (SourceDomain (I := I) Φ k) :=
+              sourceDomCharted (I := I) Φ k
+            letI : IsManifold I ∞ (SourceDomain (I := I) Φ k) :=
+              sourceDomSmooth (I := I) Φ k
+            (srcMetric (I := I) Φ hsrc htgt k t).inner y v v)
+    (hcovTail : letI : TopologicalSpace P.M := P.topology
+        letI : ChartedSpace H P.M := P.charted
+        letI : T2Space P.M := P.t2
+        letI : IsManifold I ∞ P.M := P.smooth
+        letI : SigmaCompactSpace P.M := P.sigmaCompact
+      ∀ n q : Nat, ∃ C : Real, ∀ (k : Nat) (t : Real),
+        t ∈ RealTimeInterval.openWindow a b t₀ n →
+        ∀ z : P.M, z ∈ bf.grow k →
+          metricCovDerivNorm (I := I) q
+            (gSeqExt (I := I) Φ R bf hsrc htgt k t) R z ≤ C) :
+    MetricRicciPullbackTendsto (I := I) (Φ.compSubseq co.φ co.hφ) co.gInf := by
+  intro t ht x v w
+  have htOpen : t ∈ Set.Ioo a b := by
+    simpa only [hD, RealTimeInterval.openInterval] using ht
+  obtain ⟨n, hn⟩ := RealTimeInterval.exists_window_nhds ht₀ htOpen
+  have htWin : t ∈ RealTimeInterval.openWindow a b t₀ n :=
+    mem_of_mem_nhds hn
+  simp only [Function.comp_apply, PointedCGHMaps.compSubseq_map]
+  exact ConvOut.ricci_conv_at (I := I) Φ R bf hsrc htgt
+    (RealTimeInterval.openWindowLeft a t₀ n)
+    (RealTimeInterval.openWindowRight b t₀ n) (cLow n) (hcLow n)
+    (fun k s hs ↦ hbound n k s hs) (fun q ↦ hcovTail n q)
+    (OpenConvOut.atWindow Φ co n) htWin x v w
 
 theorem ricNorm_conv
     {R : letI : TopologicalSpace P.M := P.topology

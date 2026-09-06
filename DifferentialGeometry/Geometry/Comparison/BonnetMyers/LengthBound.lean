@@ -2,6 +2,7 @@ import DifferentialGeometry.Geometry.Comparison.BonnetMyers.RicciBound
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.Existence
 import DifferentialGeometry.Geometry.Comparison.Variation.SecondVariation
 import DifferentialGeometry.Geometry.Comparison.Variation.SecondVariationMinimiser
+import DifferentialGeometry.Geometry.Comparison.Variation.RicciIntegral
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.RicciConnection
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Defs
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Defs
@@ -46,144 +47,8 @@ theorem ricci_eq_sum_sectional_curvature_of_orthonormal_perp_frame
     (∑ i : Fin (Module.finrank ℝ E - 1),
         g.inner x (riemannOp (LeviCivita (I := I) g) x (e i) X X) (e i))
       = ricciTensor (I := I) g x X X := by
-  classical
-  have hn_pos : 0 < Module.finrank ℝ E := Nat.pos_of_ne_zero (NeZero.ne _)
-  have hn_eq : Module.finrank ℝ E - 1 + 1 = Module.finrank ℝ E :=
-    Nat.succ_pred_eq_of_pos hn_pos
-  let B' : Fin (Module.finrank ℝ E - 1 + 1) → TangentSpace I x := Fin.cases X e
-  let B : Fin (Module.finrank ℝ E) → TangentSpace I x :=
-    fun i => B' (Fin.cast hn_eq.symm i)
-  have hB_zero : B (⟨0, hn_pos⟩ : Fin (Module.finrank ℝ E)) = X := by
-    change B' (Fin.cast hn_eq.symm ⟨0, hn_pos⟩) = X
-    have hcast_eq : Fin.cast hn_eq.symm (⟨0, hn_pos⟩ : Fin (Module.finrank ℝ E)) =
-        (0 : Fin (Module.finrank ℝ E - 1 + 1)) := by
-      apply Fin.ext
-      rfl
-    rw [hcast_eq]
-    rfl
-  have hσ_lt : ∀ i : Fin (Module.finrank ℝ E - 1), i.val + 1 < Module.finrank ℝ E := by
-    intro i
-    have hi : i.val < Module.finrank ℝ E - 1 := i.isLt
-    omega
-  let σ : Fin (Module.finrank ℝ E - 1) → Fin (Module.finrank ℝ E) :=
-    fun i => ⟨i.val + 1, hσ_lt i⟩
-  have hB_succ : ∀ i : Fin (Module.finrank ℝ E - 1), B (σ i) = e i := by
-    intro i
-    change B' (Fin.cast hn_eq.symm (σ i)) = e i
-    have hsucc_eq : Fin.cast hn_eq.symm (σ i) = Fin.succ i := by
-      apply Fin.ext
-      rfl
-    rw [hsucc_eq]
-    rfl
-  have hB_orth : ∀ i j : Fin (Module.finrank ℝ E),
-      g.inner x (B i) (B j) = if i = j then (1 : ℝ) else 0 := by
-    intro i j
-    by_cases hi : i.val = 0
-    · have hi_eq : i = ⟨0, hn_pos⟩ := Fin.ext hi
-      by_cases hj : j.val = 0
-      · have hj_eq : j = ⟨0, hn_pos⟩ := Fin.ext hj
-        rw [hi_eq, hj_eq, hB_zero, hUnit]
-        rw [if_pos rfl]
-      · have hj_pos : 0 < j.val := Nat.pos_of_ne_zero hj
-        let k : Fin (Module.finrank ℝ E - 1) :=
-          ⟨j.val - 1, by have := j.isLt; omega⟩
-        have hj_eq : j = σ k := by
-          apply Fin.ext
-          change j.val = (j.val - 1) + 1
-          omega
-        rw [hi_eq, hj_eq, hB_zero, hB_succ]
-        have h_inner : g.inner x X (e k) = 0 := by
-          rw [g.symm x X (e k)]
-          exact hPerp k
-        rw [h_inner]
-        rw [if_neg]
-        intro h
-        have hval := congrArg Fin.val h
-        change 0 = k.val + 1 at hval
-        omega
-    · have hi_pos : 0 < i.val := Nat.pos_of_ne_zero hi
-      let k : Fin (Module.finrank ℝ E - 1) :=
-        ⟨i.val - 1, by have := i.isLt; omega⟩
-      have hi_eq : i = σ k := by
-        apply Fin.ext
-        change i.val = (i.val - 1) + 1
-        omega
-      by_cases hj : j.val = 0
-      · have hj_eq : j = ⟨0, hn_pos⟩ := Fin.ext hj
-        rw [hi_eq, hj_eq, hB_succ, hB_zero]
-        have h_inner : g.inner x (e k) X = 0 := hPerp k
-        rw [h_inner]
-        rw [if_neg]
-        intro h
-        have hval := congrArg Fin.val h
-        change k.val + 1 = 0 at hval
-        omega
-      · have hj_pos : 0 < j.val := Nat.pos_of_ne_zero hj
-        let l : Fin (Module.finrank ℝ E - 1) :=
-          ⟨j.val - 1, by have := j.isLt; omega⟩
-        have hj_eq : j = σ l := by
-          apply Fin.ext
-          change j.val = (j.val - 1) + 1
-          omega
-        rw [hi_eq, hj_eq, hB_succ, hB_succ]
-        have h_inner : g.inner x (e k) (e l) = if k = l then (1 : ℝ) else 0 := hON k l
-        rw [h_inner]
-        by_cases hkl : k = l
-        · rw [hkl]
-          simp
-        · rw [if_neg hkl, if_neg]
-          intro hσ_eq
-          apply hkl
-          apply Fin.ext
-          have hval := congrArg Fin.val hσ_eq
-          change k.val + 1 = l.val + 1 at hval
-          omega
-  rw [ricciTensor_eq_orthonormal_trace (I := I) g x X X B hB_orth]
-  have hsum_split :
-      ∑ i : Fin (Module.finrank ℝ E),
-          g.inner x (riemannOp (LeviCivita (I := I) g) x (B i) X X) (B i) =
-        g.inner x (riemannOp (LeviCivita (I := I) g) x X X X) X +
-          ∑ i : Fin (Module.finrank ℝ E - 1),
-            g.inner x (riemannOp (LeviCivita (I := I) g) x (e i) X X) (e i) := by
-    have heq_sum :
-        ∑ i : Fin (Module.finrank ℝ E),
-          g.inner x (riemannOp (LeviCivita (I := I) g) x (B i) X X) (B i) =
-        ∑ j : Fin (Module.finrank ℝ E - 1 + 1),
-          g.inner x (riemannOp (LeviCivita (I := I) g) x (B (finCongr hn_eq j)) X X)
-            (B (finCongr hn_eq j)) :=
-      (Equiv.sum_comp (finCongr hn_eq)
-        (fun i => g.inner x (riemannOp (LeviCivita (I := I) g) x (B i) X X) (B i))).symm
-    rw [heq_sum]
-    rw [Fin.sum_univ_succ]
-    have h0 : (finCongr hn_eq (0 : Fin (Module.finrank ℝ E - 1 + 1)) :
-              Fin (Module.finrank ℝ E)) = ⟨0, hn_pos⟩ := by
-      apply Fin.ext
-      rfl
-    rw [h0, hB_zero]
-    refine congrArg (fun s : ℝ =>
-        g.inner x (riemannOp (LeviCivita (I := I) g) x X X X) X + s)
-      (Finset.sum_congr rfl ?_)
-    intro i _
-    have heq : finCongr hn_eq i.succ = σ i := by
-      apply Fin.ext
-      rfl
-    rw [heq, hB_succ]
-  rw [hsum_split]
-  have hR_self : riemannOp (LeviCivita (I := I) g) x X X X = 0 := by
-    have h := riemannOp_swap (LeviCivita (I := I) g) x X X X
-    have hsum : riemannOp (LeviCivita (I := I) g) x X X X +
-        riemannOp (LeviCivita (I := I) g) x X X X = 0 := by
-      rw [eq_neg_iff_add_eq_zero] at h
-      exact h
-    have h_two : (2 : ℝ) • riemannOp (LeviCivita (I := I) g) x X X X = 0 := by
-      rw [two_smul]; exact hsum
-    rcases smul_eq_zero.mp h_two with h2_zero | hv_zero
-    · exact absurd h2_zero (by norm_num)
-    · exact hv_zero
-  rw [hR_self]
-  rw [map_zero]
-  change _ = 0 + _
-  rw [zero_add]
+  exact Variation.ricci_eq_sum_sectional_curvature_of_orthonormal_perp_frame
+    (I := I) g x X hUnit e hON hPerp
 
 omit [SigmaCompactSpace M] in
 theorem ricci_eq_sum_perp

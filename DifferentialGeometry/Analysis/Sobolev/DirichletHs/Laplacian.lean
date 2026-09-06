@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Sobolev.DirichletHs.Defs
+import DifferentialGeometry.Analysis.Sobolev.DirichletHs.Inclusion
 
 noncomputable section
 
@@ -131,6 +131,19 @@ theorem dirichletHsLaplacian_opNorm_le_one :
   ContinuousLinearMap.opNorm_le_bound _ zero_le_one fun v => by
     rw [one_mul]
     exact dirichletHsLaplacian_norm_le v
+
+def dirichletHsOneSubLaplacian
+    (g : SmoothRiemannianMetric (I_half n) M) (σ : ℝ) :
+    DirichletHs g (σ + 2) →L[ℝ] DirichletHs g σ :=
+  dirichletHsInclusion (by linarith) - dirichletHsLaplacian g σ
+
+@[simp] theorem dirichletHsOneSubLaplacian_coeff
+    (v : DirichletHs g (σ + 2))
+    (i : DirichletLaplacianEigenIndex g) :
+    (dirichletHsOneSubLaplacian g σ v).coeff i =
+      (1 + dirichletLaplacianEigenvalue i) * v.coeff i := by
+  change v.coeff i - (-dirichletLaplacianEigenvalue i * v.coeff i) = _
+  ring
 
 end Hs
 end Sobolev

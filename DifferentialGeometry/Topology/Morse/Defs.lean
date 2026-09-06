@@ -37,6 +37,9 @@ noncomputable def sublevelInclusion {M : Type} [TopologicalSpace M] (f : M → �
 def IsCriticalPointAt (I : ModelWithCorners ℝ E H) (f : M → ℝ) (x : M) : Prop :=
   mfderiv I 𝓘(ℝ, ℝ) f x = 0
 
+def criticalPoints (I : ModelWithCorners ℝ E H) (f : M → ℝ) : Set M :=
+  {x | IsCriticalPointAt I f x}
+
 def chartHessianBilinAt (g : E → ℝ) (y : E) : LinearMap.BilinForm ℝ E :=
   { toFun := fun x => (fderiv ℝ (fderiv ℝ g) y x).toLinearMap
     map_add' := by

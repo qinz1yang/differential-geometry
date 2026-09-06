@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Metric.BumpExtend
 import DifferentialGeometry.Geometry.Metric.CompactMetricLowerBound
-import DifferentialGeometry.Geometry.Metric.Completeness
+import DifferentialGeometry.Geometry.Metric.Euclidean
 
 set_option autoImplicit false
 
@@ -18,12 +18,8 @@ namespace DifferentialGeometry
 noncomputable def flatModelMetric
     (E : Type uE) [NormedAddCommGroup E] [InnerProductSpace Real E]
     :
-    SmoothRiemannianMetric 𝓘(Real, E) E where
-  inner := (riemannianMetricVectorSpace E).inner
-  symm := (riemannianMetricVectorSpace E).symm
-  pos := (riemannianMetricVectorSpace E).pos
-  isVonNBounded := (riemannianMetricVectorSpace E).isVonNBounded
-  contMDiff := (riemannianMetricVectorSpace E).contMDiff.of_le le_top
+    SmoothRiemannianMetric 𝓘(Real, E) E :=
+  euclideanMetric
 
 namespace RiemannianMetricComplete
 
@@ -76,46 +72,9 @@ attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 theorem flatModel_complete
     {E : Type uE} [NormedAddCommGroup E] [InnerProductSpace Real E]
-    [FiniteDimensional Real E] [CompleteSpace E] :
+    [FiniteDimensional Real E] :
     RiemannianMetricComplete (I := 𝓘(Real, E)) (flatModelMetric E) := by
-  let sourceEMetric : EMetricSpace E := inferInstance
-  let sourceComplete :
-      @CompleteSpace E sourceEMetric.toPseudoEMetricSpace.toUniformSpace :=
-    inferInstance
-  let sourceEdist : E → E → ENNReal := fun x y => edist x y
-  have hsource : ∀ x y : E,
-      sourceEdist x y = riemannianEDist 𝓘(Real, E) x y := by
-    intro x y
-    exact IsRiemannianManifold.out (I := 𝓘(Real, E)) x y
-  refine ⟨?_⟩
-  let : RiemannianBundle
-      (fun x : E => TangentSpace 𝓘(Real, E) x) :=
-    ⟨(flatModelMetric E).toRiemannianMetric⟩
-  let : IsContinuousRiemannianBundle E
-      (fun x : E => TangentSpace 𝓘(Real, E) x) :=
-    ⟨(flatModelMetric E).inner,
-      (flatModelMetric E).contMDiff.continuous, by intro x v w; rfl⟩
-  let : EMetricSpace E :=
-    EMetricSpace.ofRiemannianMetric 𝓘(Real, E) E
-  have hed : ∀ x y : E, edist x y = sourceEdist x y := by
-    intro x y
-    rw [IsRiemannianManifold.out (I := 𝓘(Real, E)) x y]
-    exact (hsource x y).symm
-  refine EMetric.complete_of_cauchySeq_tendsto (α := E) fun s hs => ?_
-  have hsTarget : ∀ ε > (0 : ENNReal), ∃ N,
-      ∀ m, N ≤ m → ∀ n, N ≤ n → edist (s m) (s n) < ε :=
-    EMetric.cauchySeq_iff.mp hs
-  change ∃ x, Filter.Tendsto s Filter.atTop (𝓝 x)
-  let : EMetricSpace E := sourceEMetric
-  let : CompleteSpace E := sourceComplete
-  have hsSource : CauchySeq s := EMetric.cauchySeq_iff.mpr (by
-    intro ε hε
-    obtain ⟨N, hN⟩ := hsTarget ε hε
-    refine ⟨N, fun m hm n hn => ?_⟩
-    change sourceEdist (s m) (s n) < ε
-    rw [← hed]
-    exact hN m hm n hn)
-  exact cauchySeq_tendsto_of_complete hsSource
+  simpa only [flatModelMetric] using euclideanMetric_complete (E := E)
 
 end RiemannianMetricComplete
 end DifferentialGeometry

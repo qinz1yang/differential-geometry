@@ -108,7 +108,7 @@ theorem normalize_cutoff
     have hgrad_v : ∀ x : M, gradFun (I := I) g v x =
         c • gradFun (I := I) g φ x := by
       intro x
-      exact gradFun_const_smul (I := I) g c
+      exact Operator.gradFun_const_smul (I := I) g c
         (hφ.mdifferentiableAt (by norm_num))
     have henergy : ∀ x : M,
         g.inner x (gradFun (I := I) g v x) (gradFun (I := I) g v x) =
@@ -137,7 +137,7 @@ theorem normalize_cutoff
     have hgrad_v : ∀ x : M, gradFun (I := I) g v x =
         c • gradFun (I := I) g φ x := by
       intro x
-      exact gradFun_const_smul (I := I) g c
+      exact Operator.gradFun_const_smul (I := I) g c
         (hφ.mdifferentiableAt (by norm_num))
     have henergy : ∀ x : M,
         g.inner x (gradFun (I := I) g v x) (gradFun (I := I) g v x) =

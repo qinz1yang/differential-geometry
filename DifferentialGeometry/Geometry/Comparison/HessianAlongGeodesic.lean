@@ -31,30 +31,9 @@ variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [T2Space M] [SigmaCompactSpace M]
 
-omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)]
-  [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
-omit [FiniteDimensional ℝ E] in
-private theorem chartRep_sec_diff
-    {γ : ℝ → M} (hγ : ContMDiff 𝓘(ℝ, ℝ) I ∞ γ)
-    (X : ∀ x : M, TangentSpace I x)
-    (hX : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% X)) (t : ℝ) :
-    DifferentiableAt ℝ
-      (chartRepAt (I := I) γ (fun s => X (γ s)) t) t := by
-  let α : M := γ t
-  have hbase : α ∈ (trivializationAt E (TangentSpace I) α).baseSet :=
-    FiberBundle.mem_baseSet_trivializationAt E (TangentSpace I) α
-  have hrepr : ContMDiffAt I 𝓘(ℝ, E) ∞
-      (chartESectionRepr (I := I) α X) α :=
-    (contMDiffAt_section_iff_chartE I α X hbase).mp hX.contMDiffAt
-  have hcomp : ContMDiffAt 𝓘(ℝ, ℝ) 𝓘(ℝ, E) ∞
-      ((chartESectionRepr (I := I) α X) ∘ γ) t :=
-    hrepr.comp t hγ.contMDiffAt
-  change DifferentiableAt ℝ ((chartESectionRepr (I := I) α X) ∘ γ) t
-  exact (contMDiffAt_iff_contDiffAt.mp hcomp).differentiableAt (by simp)
-
 omit [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
 omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] in
-private theorem deriv_comp_grad
+theorem deriv_comp_eq_inner_grad_velocity
     (g : SmoothRiemannianMetric I M) {f : M → ℝ}
     (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f)
     {γ : ℝ → M} (hγ : ContMDiff 𝓘(ℝ, ℝ) I ∞ γ) (t : ℝ) :
@@ -98,13 +77,14 @@ theorem deriv2_comp_geo_at
   let W := fun s => (mfderiv 𝓘(ℝ, ℝ) I γ s : ℝ →L[ℝ] _) (1 : ℝ)
   have hfirst : deriv (f ∘ γ) = fun s => g.inner (γ s) (V s) (W s) := by
     funext s
-    exact deriv_comp_grad (I := I) g hf hγ s
+    exact deriv_comp_eq_inner_grad_velocity (I := I) g hf hγ s
   have hgrad : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞
       (T% fun x => gradFun (I := I) g f x) :=
     gradFun_contMDiff_total_section (I := I) g hf
   have hVdiff : DifferentiableAt ℝ (chartRepAt (I := I) γ V t) t := by
     simpa only [V] using
-      chartRep_sec_diff (I := I) hγ (fun x => gradFun (I := I) g f x) hgrad t
+      chartRepAt_restrict_differentiableAt (I := I) (hγ.of_le (by simp))
+        (fun x => gradFun (I := I) g f x) (hgrad.of_le (by simp)) t
   have hWdiff : DifferentiableAt ℝ (chartRepAt (I := I) γ W t) t := by
     simpa only [W] using velocity_chartRepAt_differentiableAt (I := I) γ hγ t
   have hinner := metric_compat_hasDerivAt_inner (I := I) (n := ∞)
