@@ -23,6 +23,22 @@ private abbrev I_half (n : ℕ) [NeZero n] :
     ModelWithCorners ℝ (EuclideanSpace ℝ (Fin n)) (EuclideanHalfSpace n) :=
   modelWithCornersEuclideanHalfSpace n
 
+private local instance smoothDualSeminormedAddCommGroup (q : SmoothRiemannianMetric (I_half n) M) :
+    SeminormedAddCommGroup (SmoothScalarDirichlet q →L[ℝ] ℝ) :=
+  ContinuousLinearMap.toSeminormedAddCommGroup (𝕜 := ℝ) (E := SmoothScalarDirichlet q) (F := ℝ)
+
+private local instance smoothBilinearNorm (q : SmoothRiemannianMetric (I_half n) M) :
+    Norm (SmoothScalarDirichlet q →L[ℝ] SmoothScalarDirichlet q →L[ℝ] ℝ) :=
+  ContinuousLinearMap.hasOpNorm (𝕜 := ℝ) (𝕜₂ := ℝ) (σ₁₂ := RingHom.id ℝ) (E := SmoothScalarDirichlet q) (F := SmoothScalarDirichlet q →L[ℝ] ℝ)
+
+private local instance completedDualSeminormedAddCommGroup (q : SmoothRiemannianMetric (I_half n) M) :
+    SeminormedAddCommGroup (H1ComplDirichlet q →L[ℝ] ℝ) :=
+  ContinuousLinearMap.toSeminormedAddCommGroup (𝕜 := ℝ) (E := H1ComplDirichlet q) (F := ℝ)
+
+private local instance completedBilinearNorm (q : SmoothRiemannianMetric (I_half n) M) :
+    Norm (H1ComplDirichlet q →L[ℝ] H1ComplDirichlet q →L[ℝ] ℝ) :=
+  ContinuousLinearMap.hasOpNorm (𝕜 := ℝ) (𝕜₂ := ℝ) (σ₁₂ := RingHom.id ℝ) (E := H1ComplDirichlet q) (F := H1ComplDirichlet q →L[ℝ] ℝ)
+
 noncomputable def dirichletMassLp
     {q : SmoothRiemannianMetric (I_half n) M}
     (h : SmoothRiemannianMetric (I_half n) M)

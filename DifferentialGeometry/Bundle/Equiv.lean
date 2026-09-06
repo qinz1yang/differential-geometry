@@ -886,54 +886,43 @@ variable {𝕜 : Type*} [NontriviallyNormedField 𝕜] [CompleteSpace 𝕜]
   [FiberBundle F₂ E₂] [VectorBundle 𝕜 F₂ E₂]
   [ContMDiffVectorBundle n F₂ E₂ IB]
 
+omit [FiniteDimensional 𝕜 F₂] in
 lemma contMDiffAt_clm_of_pointwise
     {X : Type*} [TopologicalSpace X] [ChartedSpace HB X]
     {A : X → (F₁ →L[𝕜] F₂)} {x : X}
     (h : ∀ v, ContMDiffAt IB 𝓘(𝕜, F₂) n (fun q => A q v) x) :
     ContMDiffAt IB 𝓘(𝕜, F₁ →L[𝕜] F₂) n A x := by
-  have : FiniteDimensional 𝕜 (F₁ →L[𝕜] F₂) := ContinuousLinearMap.finiteDimensional
-  let bF₁ := Module.finBasis 𝕜 F₁
-  let evalBasis : (F₁ →L[𝕜] F₂) →L[𝕜] (Fin (Module.finrank 𝕜 F₁) → F₂) :=
-    ContinuousLinearMap.pi (fun i => ContinuousLinearMap.apply 𝕜 F₂ (bF₁ i))
-  have evalBasis_inj : Function.Injective evalBasis := fun L₁ L₂ heq => by
-    ext v; rw [← bF₁.sum_equivFun v]; simp only [map_sum, map_smul]
-    congr 1; ext i; exact congrArg _ (congrFun heq i)
-  have : FiniteDimensional 𝕜 (Fin (Module.finrank 𝕜 F₁) → F₂) := inferInstance
-  obtain ⟨gLM, hgLM⟩ := evalBasis.toLinearMap.exists_leftInverse_of_injective
-    (evalBasis.ker_eq_bot_of_injective evalBasis_inj)
-  let g : (Fin (Module.finrank 𝕜 F₁) → F₂) →L[𝕜] (F₁ →L[𝕜] F₂) :=
-    ⟨gLM, LinearMap.continuous_of_finiteDimensional _⟩
-  have hg : ∀ x, g (evalBasis x) = x := fun x => congr($(hgLM) x)
-  have hEA : ContMDiffAt IB 𝓘(𝕜, Fin _ → F₂) n (evalBasis ∘ A) x :=
-    contMDiffAt_pi_space.mpr fun i => h (bF₁ i)
-  have : A = g ∘ evalBasis ∘ A := by funext q; exact (hg (A q)).symm
-  rw [this]
-  exact g.contDiff.contMDiff.contMDiffAt.comp _ hEA
+  let d := Module.finrank 𝕜 F₁
+  have hd : d = Module.finrank 𝕜 (Fin d → 𝕜) := (Module.finrank_fin_fun 𝕜).symm
+  let e₁ := ContinuousLinearEquiv.ofFinrankEq hd
+  let e₂ := (e₁.arrowCongr (1 : F₂ ≃L[𝕜] F₂)).trans (ContinuousLinearEquiv.piRing (Fin d))
+  have hEA : ContMDiffAt IB 𝓘(𝕜, Fin d → F₂) n (e₂ ∘ A) x :=
+    contMDiffAt_pi_space.mpr fun i => h _
+  have hA : A = e₂.symm ∘ e₂ ∘ A := by
+    funext q
+    exact (e₂.symm_apply_apply (A q)).symm
+  rw [hA]
+  exact e₂.symm.contDiff.contMDiff.contMDiffAt.comp x hEA
 
+omit [FiniteDimensional 𝕜 F₂] in
 lemma contMDiffWithinAt_clm_of_pointwise
     {X : Type*} [TopologicalSpace X] [ChartedSpace HB X]
     {A : X → (F₁ →L[𝕜] F₂)} {s : Set X} {x : X}
     (h : ∀ v, ContMDiffWithinAt IB 𝓘(𝕜, F₂) n (fun q => A q v) s x) :
     ContMDiffWithinAt IB 𝓘(𝕜, F₁ →L[𝕜] F₂) n A s x := by
-  have : FiniteDimensional 𝕜 (F₁ →L[𝕜] F₂) := ContinuousLinearMap.finiteDimensional
-  let bF₁ := Module.finBasis 𝕜 F₁
-  let evalBasis : (F₁ →L[𝕜] F₂) →L[𝕜] (Fin (Module.finrank 𝕜 F₁) → F₂) :=
-    ContinuousLinearMap.pi (fun i => ContinuousLinearMap.apply 𝕜 F₂ (bF₁ i))
-  have evalBasis_inj : Function.Injective evalBasis := fun L₁ L₂ heq => by
-    ext v; rw [← bF₁.sum_equivFun v]; simp only [map_sum, map_smul]
-    congr 1; ext i; exact congrArg _ (congrFun heq i)
-  have : FiniteDimensional 𝕜 (Fin (Module.finrank 𝕜 F₁) → F₂) := inferInstance
-  obtain ⟨gLM, hgLM⟩ := evalBasis.toLinearMap.exists_leftInverse_of_injective
-    (evalBasis.ker_eq_bot_of_injective evalBasis_inj)
-  let g : (Fin (Module.finrank 𝕜 F₁) → F₂) →L[𝕜] (F₁ →L[𝕜] F₂) :=
-    ⟨gLM, LinearMap.continuous_of_finiteDimensional _⟩
-  have hg : ∀ y, g (evalBasis y) = y := fun y => congr($(hgLM) y)
-  have hEA : ContMDiffWithinAt IB 𝓘(𝕜, Fin _ → F₂) n (evalBasis ∘ A) s x :=
-    contMDiffWithinAt_pi_space.mpr fun i => h (bF₁ i)
-  have hA : A = g ∘ evalBasis ∘ A := by funext q; exact (hg (A q)).symm
+  let d := Module.finrank 𝕜 F₁
+  have hd : d = Module.finrank 𝕜 (Fin d → 𝕜) := (Module.finrank_fin_fun 𝕜).symm
+  let e₁ := ContinuousLinearEquiv.ofFinrankEq hd
+  let e₂ := (e₁.arrowCongr (1 : F₂ ≃L[𝕜] F₂)).trans (ContinuousLinearEquiv.piRing (Fin d))
+  have hEA : ContMDiffWithinAt IB 𝓘(𝕜, Fin d → F₂) n (e₂ ∘ A) s x :=
+    contMDiffWithinAt_pi_space.mpr fun i => h _
+  have hA : A = e₂.symm ∘ e₂ ∘ A := by
+    funext q
+    exact (e₂.symm_apply_apply (A q)).symm
   rw [hA]
-  exact g.contDiff.contMDiff.contMDiffAt.comp_contMDiffWithinAt _ hEA
+  exact e₂.symm.contDiff.contMDiff.contMDiffAt.comp_contMDiffWithinAt x hEA
 
+omit [FiniteDimensional 𝕜 F₂] in
 private lemma contMDiff_symm_of_fiberBijective'
     {Φ : TotalSpace F₁ E₁ → TotalSpace F₂ E₂}
     (hΦ_smooth : ContMDiff (IB.prod 𝓘(𝕜, F₁)) (IB.prod 𝓘(𝕜, F₂)) n Φ)
@@ -1091,6 +1080,7 @@ variable {𝕜 : Type*} [NontriviallyNormedField 𝕜] [CompleteSpace 𝕜]
   [FiberBundle F₂ E₂] [VectorBundle 𝕜 F₂ E₂]
   [ContMDiffVectorBundle n F₂ E₂ IB]
 
+omit [FiniteDimensional 𝕜 F₂] in
 private lemma contMDiff_symm_of_fiberBijective
     {Φ : TotalSpace F₁ E₁ → TotalSpace F₂ E₂}
     (hΦ_smooth : ContMDiff (IB.prod 𝓘(𝕜, F₁)) (IB.prod 𝓘(𝕜, F₂)) n Φ)

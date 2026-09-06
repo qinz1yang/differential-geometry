@@ -50,6 +50,8 @@ private theorem contMDiff_scaleMetric_inner_section
           (E := fun y : M =>
             TangentSpace I y →L[Real] TangentSpace I y →L[Real] Real)
           y (c • g.inner y)) := by
+  let _ : ∀ x : M, ContinuousAdd (TangentSpace I x →L[ℝ] ℝ) :=
+    fun _ => inferInstance
   simpa only [Pi.smul_apply] using
     (g.contMDiff.const_smul_section (I := I)
       (F := E →L[Real] E →L[Real] Real)

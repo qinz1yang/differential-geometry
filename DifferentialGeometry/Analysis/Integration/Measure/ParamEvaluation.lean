@@ -21,7 +21,7 @@ private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
 def paramGramMatrix (g : SmoothRiemannianMetric I M)
-    (Ψ : PartialDiffeomorph 𝓘(ℝ, E) I E M 1) :
+    (Ψ : E → M) :
     E → Matrix (Fin (Module.finrank ℝ E)) (Fin (Module.finrank ℝ E)) ℝ :=
   fun w => Matrix.of fun i j =>
     g.inner (Ψ w)
@@ -30,7 +30,7 @@ def paramGramMatrix (g : SmoothRiemannianMetric I M)
 
 @[simp] lemma paramGramMatrix_apply
     (g : SmoothRiemannianMetric I M)
-    (Ψ : PartialDiffeomorph 𝓘(ℝ, E) I E M 1)
+    (Ψ : E → M)
     (w : E) (i j : Fin (Module.finrank ℝ E)) :
     paramGramMatrix (I := I) g Ψ w i j =
       g.inner (Ψ w)
@@ -38,12 +38,12 @@ def paramGramMatrix (g : SmoothRiemannianMetric I M)
         (mfderiv 𝓘(ℝ, E) I Ψ w ((chartModelBasis E) j)) := rfl
 
 def paramDensity (g : SmoothRiemannianMetric I M)
-    (Ψ : PartialDiffeomorph 𝓘(ℝ, E) I E M 1) : E → ℝ :=
+    (Ψ : E → M) : E → ℝ :=
   fun w => Real.sqrt (paramGramMatrix (I := I) g Ψ w).det
 
 @[simp] lemma paramDensity_apply
     (g : SmoothRiemannianMetric I M)
-    (Ψ : PartialDiffeomorph 𝓘(ℝ, E) I E M 1)
+    (Ψ : E → M)
     (w : E) :
     paramDensity (I := I) g Ψ w =
       Real.sqrt (paramGramMatrix (I := I) g Ψ w).det := rfl

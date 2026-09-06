@@ -41,7 +41,7 @@ def dirichletMass
   ∫ x, u.toFun x * v.toFun x
     ∂(riemannianVolumeMeasure (I := I_half n) (M := M) h)
 
-private lemma dirichletMass_integrable
+theorem dirichletMass_integrable
     {q : SmoothRiemannianMetric (I_half n) M}
     (h : SmoothRiemannianMetric (I_half n) M)
     (u v : SmoothScalarDirichlet q) :
@@ -108,7 +108,7 @@ def dirichletEnergy
       (gradFun (I := I_half n) h v.toFun x)
     ∂(riemannianVolumeMeasure (I := I_half n) (M := M) h)
 
-private lemma dirichletEnergy_integrable
+theorem dirichletEnergy_integrable
     {q : SmoothRiemannianMetric (I_half n) M}
     (h : SmoothRiemannianMetric (I_half n) M)
     (u v : SmoothScalarDirichlet q) :
@@ -210,7 +210,7 @@ def dirichletDrift
   ∫ x, h.inner x (X x) (gradFun (I := I_half n) h u.toFun x) * v.toFun x
     ∂(riemannianVolumeMeasure (I := I_half n) (M := M) h)
 
-private lemma dirichletDrift_integrable
+theorem dirichletDrift_integrable
     {q : SmoothRiemannianMetric (I_half n) M}
     (h : SmoothRiemannianMetric (I_half n) M)
     (X : Cₛ^∞⟮I_half n; EuclideanSpace ℝ (Fin n),

@@ -992,6 +992,8 @@ theorem riemannOp_section_contMDiff (g : SmoothRiemannianMetric I M) :
             TangentSpace I x)
         b (riemannOp (LeviCivita (I := I) g) b)) := by
   classical
+  let _ : ∀ x : M, ContinuousAdd (TangentSpace I x →L[ℝ] TangentSpace I x) :=
+    fun _ => inferInstance
   apply cotangentCov_clmSection_smooth_aux
     (V₂ := fun x : M =>
       TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] TangentSpace I x)

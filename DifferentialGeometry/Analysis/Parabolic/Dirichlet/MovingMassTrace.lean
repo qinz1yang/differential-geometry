@@ -471,19 +471,185 @@ theorem dirichletMassLp_riesz_eq_resolvent_smoothMul_volumeDensity
     resolventDirichlet_inner_eq_lpFunctional]
 
 private theorem smoothMulLp_volumeDensity_swap_apply
-    (q h : SmoothRiemannianMetric (I_half n) M)
+    (q h k : SmoothRiemannianMetric (I_half n) M)
     (f : Lp ℝ 2
       (riemannianVolumeMeasure (I := I_half n) (M := M) q)) :
-    smoothMulLp q (riemannianVolumeDensitySmoothMap h q)
-        (smoothMulLp q (riemannianVolumeDensitySmoothMap q h) f) = f := by
+    smoothMulLp q (riemannianVolumeDensitySmoothMap h k)
+        (smoothMulLp q (riemannianVolumeDensitySmoothMap k h) f) = f := by
   rw [← ContinuousLinearMap.comp_apply, smoothMulLp_mul]
-  have hmul : riemannianVolumeDensitySmoothMap h q *
-      riemannianVolumeDensitySmoothMap q h = 1 := by
+  have hmul : riemannianVolumeDensitySmoothMap h k *
+      riemannianVolumeDensitySmoothMap k h = 1 := by
     ext x
-    change riemannianVolumeDensity h q x *
-      riemannianVolumeDensity q h x = 1
-    exact riemannianVolumeDensity_mul_swap h q x
+    change riemannianVolumeDensity h k x *
+      riemannianVolumeDensity k h x = 1
+    exact riemannianVolumeDensity_mul_swap h k x
   rw [hmul, smoothMulLp_one, ContinuousLinearMap.id_apply]
+
+theorem exists_continuous_l2_representative_of_volumeDensity_mass_timeH1
+    {q : SmoothRiemannianMetric (I_half n) M}
+    {D : RealTimeInterval}
+    {G : MetricConnectionFamilyOn (I := I_half n) (M := M) D}
+    (hG : MetricFamilySmoothOn (I := I_half n) (M := M) D G.metric)
+    {T : ℝ} (hT : 0 ≤ T) (hreg : Icc (0 : ℝ) T ⊆ D.regular)
+    (u : timeL2 (H1ComplDirichlet q) T)
+    (w : timeH1 (H1ComplDirichlet q) T)
+    (f₀ : Lp ℝ 2
+      (riemannianVolumeMeasure (I := I_half n) (M := M) q))
+    (hmass : (fun t => resolventDirichlet q
+      (H1ComplDirichletToLp q
+        (smoothMulH1ComplDirichlet q
+          (riemannianVolumeDensitySmoothMap q (G.metric t)) (u t))))
+      =ᵐ[timeMeasure T] w.toFun)
+    (hinit : w.init = resolventDirichlet q
+      (smoothMulLp q (riemannianVolumeDensitySmoothMap q (G.metric 0)) f₀)) :
+    ∃ U : ℝ → Lp ℝ 2
+        (riemannianVolumeMeasure (I := I_half n) (M := M) q),
+      ContinuousOn U (Icc (0 : ℝ) T) ∧
+      (U =ᵐ[timeMeasure T] fun t => H1ComplDirichletToLp q (u t)) ∧
+      U 0 = f₀ ∧
+      ∀ a b, a ∈ Icc (0 : ℝ) T → b ∈ Icc (0 : ℝ) T →
+        ‖smoothMulLp q (riemannianVolumeDensitySmoothMap q (G.metric b))
+          (U b)‖ ^ 2 -
+        ‖smoothMulLp q (riemannianVolumeDensitySmoothMap q (G.metric a))
+          (U a)‖ ^ 2 =
+          ∫ t in a..b, 2 * inner ℝ
+            (smoothMulH1ComplDirichlet q
+              (riemannianVolumeDensitySmoothMap q (G.metric t)) (u t))
+            (w.deriv t) := by
+  obtain ⟨z, hz⟩ :=
+    exists_timeL2_smoothMulH1ComplDirichlet_volumeDensity hG hreg u
+  have hmassz : (fun t => resolventDirichlet q
+      (H1ComplDirichletToLp q (z t))) =ᵐ[timeMeasure T] w.toFun := by
+    filter_upwards [hz, hmass] with t hzt ht
+    simpa only [hzt] using ht
+  obtain ⟨V, hVcont, hVae, hVzero, hVenergy⟩ :=
+    exists_continuous_l2_representative_of_mass_timeH1
+      q hT z w
+        (smoothMulLp q
+          (riemannianVolumeDensitySmoothMap q (G.metric 0)) f₀)
+        hmassz hinit
+  let σ : ℝ → C^∞⟮I_half n, M; ℝ⟯ := fun t =>
+    riemannianVolumeDensitySmoothMap (G.metric t) q
+  let U : ℝ → Lp ℝ 2
+      (riemannianVolumeMeasure (I := I_half n) (M := M) q) := fun t =>
+    smoothMulLp q (σ t) (V t)
+  have hσ : ContinuousOn (fun p : ℝ × M => σ p.1 p.2)
+      (Icc (0 : ℝ) T ×ˢ (Set.univ : Set M)) := by
+    exact
+      (riemannianVolumeDensity_swap_contMDiffOn_of_metricFamilySmoothOn
+        hG q).continuousOn.mono (Set.prod_mono hreg Set.Subset.rfl)
+  have hUcont : ContinuousOn U (Icc (0 : ℝ) T) :=
+    continuousOn_smoothMulLp_apply q σ hσ hVcont
+  have hUae : U =ᵐ[timeMeasure T]
+      fun t => H1ComplDirichletToLp q (u t) := by
+    filter_upwards [hVae, hz] with t hVt hzt
+    dsimp only [U, σ]
+    rw [hVt, hzt, H1ComplDirichletToLp_smoothMulH1ComplDirichlet]
+    exact smoothMulLp_volumeDensity_swap_apply q (G.metric t) q
+      (H1ComplDirichletToLp q (u t))
+  have hUzero : U 0 = f₀ := by
+    dsimp only [U, σ]
+    rw [hVzero]
+    exact smoothMulLp_volumeDensity_swap_apply q (G.metric 0) q f₀
+  refine ⟨U, hUcont, hUae, hUzero, fun a b ha hb => ?_⟩
+  have hρU (t : ℝ) :
+      smoothMulLp q (riemannianVolumeDensitySmoothMap q (G.metric t))
+        (U t) = V t :=
+    smoothMulLp_volumeDensity_swap_apply q q (G.metric t) (V t)
+  rw [hρU a, hρU b, hVenergy a b ha hb]
+  apply intervalIntegral.integral_congr_ae_restrict
+  have hsub : uIoc a b ⊆ Icc (0 : ℝ) T :=
+    uIoc_subset_uIcc.trans (uIcc_subset_Icc ha hb)
+  have hzi := hz.filter_mono
+    (ae_mono (Measure.restrict_mono hsub le_rfl))
+  filter_upwards [hzi] with t ht
+  rw [ht]
+
+theorem IsWeakEvolutionSolution.exists_continuous_l2_representative_with_mass_energy
+    {q : SmoothRiemannianMetric (I_half n) M}
+    {D : RealTimeInterval}
+    {G : MetricConnectionFamilyOn (I := I_half n) (M := M) D}
+    {hG : MetricFamilySmoothOn (I := I_half n) (M := M) D G.metric}
+    {T : ℝ} {hT : 0 ≤ T} {hreg : Icc (0 : ℝ) T ⊆ D.regular}
+    {X : ℝ → Cₛ^∞⟮I_half n; EuclideanSpace ℝ (Fin n),
+      (TangentSpace (I_half n) : M → Type _)⟯}
+    (hXcont : ContinuousOn
+      (fun p : ℝ × M =>
+        (TotalSpace.mk' (EuclideanSpace ℝ (Fin n)) p.2 (X p.1 p.2) :
+          TangentBundle (I_half n) M))
+      (Icc (0 : ℝ) T ×ˢ (Set.univ : Set M)))
+    {a : ℝ → ℝ} (hacont : ContinuousOn a (Icc (0 : ℝ) T))
+    {Bx Bv : ℝ}
+    {hX : ∀ t ∈ Ico (0 : ℝ) T, ∀ x : M,
+      (G.metric t).inner x (X t x) (X t x) ≤ Bx}
+    {htrace : ∀ t ∈ Ico (0 : ℝ) T, ∀ x : M,
+      |traceTimeDerivMetric (I := I_half n) G.metric t x| ≤ Bv}
+    {f₀ : Lp ℝ 2
+      (riemannianVolumeMeasure (I := I_half n) (M := M) q)}
+    {u : timeL2 (H1ComplDirichlet q) T}
+    (hu : IsWeakEvolutionSolution hG hT hreg X a Bx Bv
+      hX htrace f₀ u) :
+    ∃ Cg : ℝ, ∃ Cv : ℝ≥0∞,
+      ∃ hCg : 1 ≤ Cg,
+      ∃ hequiv : ∀ t ∈ Icc (0 : ℝ) T, ∀ x : M,
+        ∀ v : TangentSpace (I_half n) x,
+          Cg⁻¹ * q.inner x v v ≤ (G.metric t).inner x v v ∧
+            (G.metric t).inner x v v ≤ Cg * q.inner x v v,
+      ∃ hCv0 : Cv ≠ 0, ∃ hCvtop : Cv ≠ ⊤,
+      ∃ hvol : ∀ t ∈ Icc (0 : ℝ) T,
+        riemannianVolumeMeasure (I := I_half n) (M := M) (G.metric t) ≤
+          Cv • riemannianVolumeMeasure (I := I_half n) (M := M) q,
+      ∃ U : ℝ → Lp ℝ 2
+          (riemannianVolumeMeasure (I := I_half n) (M := M) q),
+        ContinuousOn U (Icc (0 : ℝ) T) ∧
+        (U =ᵐ[timeMeasure T] fun t => H1ComplDirichletToLp q (u t)) ∧
+        U 0 = f₀ ∧
+        ∀ r s, r ∈ Icc (0 : ℝ) T → s ∈ Icc (0 : ℝ) T →
+          ‖smoothMulLp q (riemannianVolumeDensitySmoothMap q (G.metric s))
+            (U s)‖ ^ 2 -
+          ‖smoothMulLp q (riemannianVolumeDensitySmoothMap q (G.metric r))
+            (U r)‖ ^ 2 =
+            ∫ t in r..s, 2 * (
+              dirichletMassVariationComplOnIco hG hreg Bv htrace
+                hCg hequiv Cv hCv0 hCvtop hvol t (u t)
+                (smoothMulH1ComplDirichlet q
+                  (riemannianVolumeDensitySmoothMap q (G.metric t)) (u t)) +
+              dirichletWeakFormComplOnIco G.metric X a Bx hX
+                hCg hequiv Cv hCv0 hCvtop hvol t (u t)
+                (smoothMulH1ComplDirichlet q
+                  (riemannianVolumeDensitySmoothMap q (G.metric t)) (u t))) := by
+  obtain ⟨Cg, Cv, hCg, hequiv, hCv0, hCvtop, hvol,
+      w, hwinit, hwmass, hwderiv⟩ := hu.exists_mass_timeH1 hXcont hacont
+  have hzero : (0 : ℝ) ∈ Icc (0 : ℝ) T := ⟨le_rfl, hT⟩
+  have hmass : (fun t => resolventDirichlet q
+      (H1ComplDirichletToLp q
+        (smoothMulH1ComplDirichlet q
+          (riemannianVolumeDensitySmoothMap q (G.metric t)) (u t))))
+      =ᵐ[timeMeasure T] w.toFun := by
+    filter_upwards [hwmass, ae_restrict_mem measurableSet_Icc]
+      with t hwt ht
+    exact (dirichletMassComplOnIcc_riesz_eq_resolvent_smoothMul_volumeDensity
+      G.metric hCg hequiv Cv hCv0 hCvtop hvol ht (u t)).symm.trans hwt
+  have hinit : w.init = resolventDirichlet q
+      (smoothMulLp q
+        (riemannianVolumeDensitySmoothMap q (G.metric 0)) f₀) :=
+    hwinit.trans (dirichletMassLp_riesz_eq_resolvent_smoothMul_volumeDensity
+      Cv hCvtop (hvol 0 hzero) f₀)
+  obtain ⟨U, hUcont, hUae, hUzero, henergy⟩ :=
+    exists_continuous_l2_representative_of_volumeDensity_mass_timeH1
+      hG hT hreg u w f₀ hmass hinit
+  refine ⟨Cg, Cv, hCg, hequiv, hCv0, hCvtop, hvol,
+    U, hUcont, hUae, hUzero, fun r s hr hs => ?_⟩
+  rw [henergy r s hr hs]
+  apply intervalIntegral.integral_congr_ae_restrict
+  have hsub : uIoc r s ⊆ Icc (0 : ℝ) T :=
+    uIoc_subset_uIcc.trans (uIcc_subset_Icc hr hs)
+  have hwi := hwderiv.filter_mono
+    (ae_mono (Measure.restrict_mono hsub le_rfl))
+  filter_upwards [hwi] with t ht
+  rw [ht, real_inner_comm, InnerProductSpace.toDual_symm_apply]
+  rfl
+
 
 theorem IsWeakEvolutionSolution.exists_continuous_l2_representative
     {q : SmoothRiemannianMetric (I_half n) M}
@@ -514,52 +680,8 @@ theorem IsWeakEvolutionSolution.exists_continuous_l2_representative
       ContinuousOn U (Icc (0 : ℝ) T) ∧
       (U =ᵐ[timeMeasure T] fun t => H1ComplDirichletToLp q (u t)) ∧
       U 0 = f₀ := by
-  obtain ⟨Cg, Cv, hCg, hequiv, hCv0, hCvtop, hvol,
-      w, hwinit, hwmass, _⟩ := hu.exists_mass_timeH1 hXcont hacont
-  obtain ⟨z, hz⟩ :=
-    exists_timeL2_smoothMulH1ComplDirichlet_volumeDensity hG hreg u
-  have hzero : (0 : ℝ) ∈ Icc (0 : ℝ) T := ⟨le_rfl, hT⟩
-  have hmass : (fun t => resolventDirichlet q
-      (H1ComplDirichletToLp q (z t))) =ᵐ[timeMeasure T] w.toFun := by
-    filter_upwards [hz, hwmass, ae_restrict_mem measurableSet_Icc]
-      with t hzt hwt ht
-    rw [hzt]
-    exact (dirichletMassComplOnIcc_riesz_eq_resolvent_smoothMul_volumeDensity
-      G.metric hCg hequiv Cv hCv0 hCvtop hvol ht (u t)).symm.trans hwt
-  have hinit : w.init = resolventDirichlet q
-      (smoothMulLp q
-        (riemannianVolumeDensitySmoothMap q (G.metric 0)) f₀) :=
-    hwinit.trans (dirichletMassLp_riesz_eq_resolvent_smoothMul_volumeDensity
-      Cv hCvtop (hvol 0 hzero) f₀)
-  obtain ⟨V, hVcont, hVae, hVzero, _⟩ :=
-    exists_continuous_l2_representative_of_mass_timeH1
-      q hT z w
-        (smoothMulLp q
-          (riemannianVolumeDensitySmoothMap q (G.metric 0)) f₀)
-        hmass hinit
-  let σ : ℝ → C^∞⟮I_half n, M; ℝ⟯ := fun t =>
-    riemannianVolumeDensitySmoothMap (G.metric t) q
-  let U : ℝ → Lp ℝ 2
-      (riemannianVolumeMeasure (I := I_half n) (M := M) q) := fun t =>
-    smoothMulLp q (σ t) (V t)
-  have hσ : ContinuousOn (fun p : ℝ × M => σ p.1 p.2)
-      (Icc (0 : ℝ) T ×ˢ (Set.univ : Set M)) := by
-    exact
-      (riemannianVolumeDensity_swap_contMDiffOn_of_metricFamilySmoothOn
-        hG q).continuousOn.mono (Set.prod_mono hreg Set.Subset.rfl)
-  have hUcont : ContinuousOn U (Icc (0 : ℝ) T) :=
-    continuousOn_smoothMulLp_apply q σ hσ hVcont
-  have hUae : U =ᵐ[timeMeasure T]
-      fun t => H1ComplDirichletToLp q (u t) := by
-    filter_upwards [hVae, hz] with t hVt hzt
-    dsimp only [U, σ]
-    rw [hVt, hzt, H1ComplDirichletToLp_smoothMulH1ComplDirichlet]
-    exact smoothMulLp_volumeDensity_swap_apply q (G.metric t)
-      (H1ComplDirichletToLp q (u t))
-  have hUzero : U 0 = f₀ := by
-    dsimp only [U, σ]
-    rw [hVzero]
-    exact smoothMulLp_volumeDensity_swap_apply q (G.metric 0) f₀
+  obtain ⟨_, _, _, _, _, _, _, U, hUcont, hUae, hUzero, _⟩ :=
+    hu.exists_continuous_l2_representative_with_mass_energy hXcont hacont
   exact ⟨U, hUcont, hUae, hUzero⟩
 
 end DifferentialGeometry.Analysis.Parabolic.Dirichlet

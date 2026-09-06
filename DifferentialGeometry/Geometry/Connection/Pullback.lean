@@ -182,6 +182,7 @@ local instance covHomV₂VectorBundle :
   Bundle.ContinuousLinearMap.vectorBundle (RingHom.id ℝ)
     E (TangentSpace I) F₂ V₂
 
+omit [FiniteDimensional ℝ F₁] in
 theorem ContMDiffCovariantDerivative.pullbackFiberwiseLinearEquiv
     (φ : ∀ x, V₁ x ≃ₗ[ℝ] V₂ x)
     (hφ : ContMDiff (I.prod 𝓘(ℝ, F₁)) (I.prod 𝓘(ℝ, F₂)) ∞

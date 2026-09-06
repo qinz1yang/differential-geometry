@@ -48,6 +48,11 @@ private theorem curvature_contraction_contMDiffAt
       (fun s => (⟨γ s, ((riemannOp (LeviCivita g) (γ s)).flip (Y s)).flip (Z s)⟩ :
         TotalSpace (E →L[ℝ] E) (fun x => TangentSpace I x →L[ℝ] TangentSpace I x))) t := by
   let : CompleteSpace E := FiniteDimensional.complete ℝ E
+  let _ : NormedAddCommGroup (E →L[ℝ] E →L[ℝ] E) := ContinuousLinearMap.toNormedAddCommGroup
+  let _ : NormedSpace ℝ (E →L[ℝ] E →L[ℝ] E) := ContinuousLinearMap.toNormedSpace
+  let _ : NormedAddCommGroup (E →L[ℝ] E →L[ℝ] E →L[ℝ] E) :=
+    ContinuousLinearMap.toNormedAddCommGroup
+  let _ : NormedSpace ℝ (E →L[ℝ] E →L[ℝ] E →L[ℝ] E) := ContinuousLinearMap.toNormedSpace
   let e := trivializationAt E (TangentSpace I) (γ t)
   have he : γ t ∈ e.baseSet := FiberBundle.mem_baseSet_trivializationAt E _ _
   have hpre : ∀ᶠ s in 𝓝 t, γ s ∈ e.baseSet :=
@@ -121,6 +126,10 @@ theorem jacobi_second_covariant_derivative_eq_zero
     (J : ∀ t, TangentSpace I (γ t)) {t : ℝ}
     (hJac : IsJacobiAt g γ J t) (hJ : J t = 0) :
     covDerivAlong g γ (fun s => covDerivAlong g γ J s) t = 0 := by
+  let _ : NormedAddCommGroup (E →L[ℝ] E →L[ℝ] E) := ContinuousLinearMap.toNormedAddCommGroup
+  let _ : SeminormedAddCommGroup
+      (TangentSpace I (γ t) →L[ℝ] TangentSpace I (γ t) →L[ℝ] TangentSpace I (γ t)) :=
+    (inferInstance : NormedAddCommGroup (E →L[ℝ] E →L[ℝ] E)).toSeminormedAddCommGroup
   rw [jacobi_d2_eq g γ J hJac, hJ, map_zero, zero_apply, zero_apply, neg_zero]
 
 theorem jacobi_third_covariant_derivative_of_eq_zero

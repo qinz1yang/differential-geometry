@@ -1,3 +1,4 @@
+import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletSmoothMul
 import DifferentialGeometry.Analysis.Elliptic.MetricBounds
 import DifferentialGeometry.Analysis.Integration.Measure.FamilyLocal
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.Galerkin
@@ -459,6 +460,46 @@ theorem hasDerivWithinAt_dirichletGalerkin_mass
     simpa only [dirichletFinMass_apply, dirichletFinWeakForm_apply] using heval
   rw [heval']
 
+theorem abs_dirichletMassVariation_smoothScalarDirichletMul_le
+    {q : SmoothRiemannianMetric (I_half n) M}
+    (g : ℝ → SmoothRiemannianMetric (I_half n) M) (t B : ℝ)
+    (htrace : ∀ x : M, |traceTimeDerivMetric (I := I_half n) g t x| ≤ B)
+    (φ : C^∞⟮I_half n, M; ℝ⟯) {Cφ : ℝ}
+    (hφ : ∀ x : M, |φ x| ≤ Cφ)
+    (u : SmoothScalarDirichlet q) :
+    |dirichletMassVariation g t u (smoothScalarDirichletMul q φ u)| ≤
+      ((1 / 2) * B * Cφ) * dirichletMass (g t) u u := by
+  let μ := riemannianVolumeMeasure (I := I_half n) (M := M) (g t)
+  have hright : Integrable
+      (fun x : M => ((1 / 2) * B * Cφ) * (u.toFun x * u.toFun x)) μ :=
+    (dirichletMass_integrable (g t) u u).const_mul _
+  have hpoint (x : M) :
+      |(1 / 2 : ℝ) * traceTimeDerivMetric (I := I_half n) g t x *
+          (u.toFun x * (smoothScalarDirichletMul q φ u).toFun x)| ≤
+        ((1 / 2) * B * Cφ) * (u.toFun x * u.toFun x) := by
+    rw [smoothScalarDirichletMul_toFun]
+    rw [show u.toFun x * (φ x * u.toFun x) =
+      φ x * (u.toFun x * u.toFun x) by ring]
+    rw [abs_mul, abs_mul, abs_mul, abs_mul_self,
+      abs_of_nonneg (by norm_num : (0 : ℝ) ≤ 1 / 2)]
+    have hB := (abs_nonneg _).trans (htrace x)
+    have hbound := mul_le_mul (htrace x) (hφ x) (abs_nonneg _) hB
+    have hmul := mul_le_mul_of_nonneg_right hbound (mul_self_nonneg (u.toFun x))
+    nlinarith
+  unfold dirichletMassVariation dirichletMass
+  change |∫ x, (1 / 2 : ℝ) * traceTimeDerivMetric (I := I_half n) g t x *
+      (u.toFun x * (smoothScalarDirichletMul q φ u).toFun x) ∂μ| ≤
+    ((1 / 2) * B * Cφ) * ∫ x, u.toFun x * u.toFun x ∂μ
+  calc
+    _ ≤ ∫ x, |(1 / 2 : ℝ) * traceTimeDerivMetric (I := I_half n) g t x *
+        (u.toFun x * (smoothScalarDirichletMul q φ u).toFun x)| ∂μ :=
+      abs_integral_le_integral_abs
+    _ ≤ ∫ x, ((1 / 2) * B * Cφ) * (u.toFun x * u.toFun x) ∂μ :=
+      integral_mono_of_nonneg
+        (Filter.Eventually.of_forall fun _ => abs_nonneg _)
+        hright (Filter.Eventually.of_forall hpoint)
+    _ = _ := by rw [integral_const_mul]
+
 theorem abs_dirichletMassVariation_self_le
     {q : SmoothRiemannianMetric (I_half n) M}
     (g : ℝ → SmoothRiemannianMetric (I_half n) M) (t B : ℝ)
@@ -466,36 +507,14 @@ theorem abs_dirichletMassVariation_self_le
     (u : SmoothScalarDirichlet q) :
     |dirichletMassVariation g t u u| ≤
       (1 / 2) * B * dirichletMass (g t) u u := by
-  let μ := riemannianVolumeMeasure (I := I_half n) (M := M) (g t)
-  let _ : IsFiniteMeasure μ :=
-    riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace
-      (I := I_half n) (M := M) (g t)
-  have hright : Integrable
-      (fun x : M => (1 / 2) * B * (u.toFun x * u.toFun x)) μ :=
-    (continuous_const.mul (u.smooth.continuous.mul u.smooth.continuous))
-      |>.integrable_of_hasCompactSupport (HasCompactSupport.of_compactSpace _)
-  have hpoint : ∀ x : M,
-      |(1 / 2 : ℝ) * traceTimeDerivMetric (I := I_half n) g t x *
-          (u.toFun x * u.toFun x)| ≤
-        (1 / 2) * B * (u.toFun x * u.toFun x) := by
-    intro x
-    rw [abs_mul, abs_mul, abs_of_nonneg (by norm_num : (0 : ℝ) ≤ 1 / 2),
-      abs_mul_self]
-    have hmul := mul_le_mul_of_nonneg_right (htrace x)
-      (mul_self_nonneg (u.toFun x))
-    nlinarith
-  unfold dirichletMassVariation dirichletMass
-  change |∫ x, (1 / 2 : ℝ) * traceTimeDerivMetric (I := I_half n) g t x *
-      (u.toFun x * u.toFun x) ∂μ| ≤
-    (1 / 2) * B * ∫ x, u.toFun x * u.toFun x ∂μ
-  calc
-    _ ≤ ∫ x, |(1 / 2 : ℝ) * traceTimeDerivMetric (I := I_half n) g t x *
-        (u.toFun x * u.toFun x)| ∂μ := abs_integral_le_integral_abs
-    _ ≤ ∫ x, (1 / 2) * B * (u.toFun x * u.toFun x) ∂μ :=
-      integral_mono_of_nonneg
-        (Filter.Eventually.of_forall fun _ => abs_nonneg _)
-        hright (Filter.Eventually.of_forall hpoint)
-    _ = _ := by rw [integral_const_mul]
+  have hmul : smoothScalarDirichletMul q (1 : C^∞⟮I_half n, M; ℝ⟯) u = u := by
+    ext x
+    change (1 : ℝ) * u.toFun x = u.toFun x
+    exact one_mul _
+  have hbound := abs_dirichletMassVariation_smoothScalarDirichletMul_le
+    g t B htrace (1 : C^∞⟮I_half n, M; ℝ⟯) (Cφ := 1)
+      (fun x => by change |(1 : ℝ)| ≤ 1; norm_num) u
+  simpa only [hmul, mul_one] using hbound
 
 omit [T2Space M] [CompactSpace M] in
 private theorem abs_two_mul_metric_inner_le

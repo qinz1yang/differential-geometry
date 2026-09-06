@@ -4358,3 +4358,15 @@ import DifferentialGeometry.Geometry.Exponential.NormalChartCompatibility
 import DifferentialGeometry.Geometry.LieGroup.Orthogonal
 import DifferentialGeometry.Geometry.Metric.OrthonormalFrame.Smooth
 import DifferentialGeometry.Topology.Manifold.Atlas
+import DifferentialGeometry.Analysis.Heat.Parametrix.CoordinateCompatibility
+import DifferentialGeometry.Analysis.Integration.Measure.ParamDensityCongruence
+import DifferentialGeometry.Analysis.Integration.Measure.ParamDensityJointSmoothness
+import DifferentialGeometry.Analysis.Parabolic.Dirichlet.WeightedEnergy
+import DifferentialGeometry.Bundle.Hom.Regularity
+import DifferentialGeometry.Bundle.PartialMfderiv.Composition
+import DifferentialGeometry.Bundle.PartialMfderiv.Parameter
+import DifferentialGeometry.Geometry.Comparison.Volume.NormalJacobianCompatibility
+import DifferentialGeometry.Geometry.Connection.Connector
+import DifferentialGeometry.Geometry.Connection.MetricCompatibility.Connector
+import DifferentialGeometry.Geometry.Metric.BundleMultilinear
+import DifferentialGeometry.Geometry.Metric.BundlePullbackSmooth
