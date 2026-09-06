@@ -4343,3 +4343,10 @@ import DifferentialGeometry.Geometry.Metric.OrthonormalFrame.LocalTrivialization
 import DifferentialGeometry.Geometry.Metric.OrthonormalFrame.Principal
 import DifferentialGeometry.Geometry.Operator.LaplacianRegularity
 import DifferentialGeometry.Geometry.Operator.TimeLaplacian
+import DifferentialGeometry.Analysis.Heat.Parametrix.Finite
+import DifferentialGeometry.Analysis.InnerProductSpace.Cayley
+import DifferentialGeometry.Analysis.Parabolic.Dirichlet.SmoothTimeTest
+import DifferentialGeometry.Bundle.Hom.Pointwise
+import DifferentialGeometry.Geometry.Operator.LaplacianExponential
+import DifferentialGeometry.Geometry.Operator.LaplacianLinearity
+import DifferentialGeometry.Geometry.Operator.WithBoundary.TimeLaplacian

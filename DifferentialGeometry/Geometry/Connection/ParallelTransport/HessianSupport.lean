@@ -144,4 +144,52 @@ theorem IsParallelSet.inner_rawBundleConnLap_nonpos_of_fiberInfDist_localMax
     hK.inner_hessian_nonpos_of_fiberInfDist_localMax hcov hmetric (LeviCivita g) hx hσ p ν hν hνnorm
       hcontact hmax _)
 
+
+theorem IsParallelSet.exists_projection_support_of_fiberInfDist_localMax
+    {cov : CovariantDerivative I F V} {K : Set (TotalSpace F V)}
+    (hK : cov.IsParallelSet K) (hcov : ContMDiffCovariantDerivative cov ∞)
+    (hmetric : cov.IsMetricCompatible)
+    {σ : ∀ x, V x} {x : M} (hx : I.IsInteriorPoint x)
+    (hσ : ContMDiffAt I (I.prod 𝓘(ℝ, F)) 2 (T% σ) x)
+    (hclosed : IsClosed {v : V x | (⟨x, v⟩ : TotalSpace F V) ∈ K})
+    (hconvex : Convex ℝ {v : V x | (⟨x, v⟩ : TotalSpace F V) ∈ K})
+    (hpos : 0 < fiberInfDist K (⟨x, σ x⟩ : TotalSpace F V))
+    (hmax : IsLocalMax (fun y => fiberInfDist K (⟨y, σ y⟩ : TotalSpace F V)) x) :
+    ∃ p : V x, (⟨x, p⟩ : TotalSpace F V) ∈ K ∧
+      ‖σ x - p‖ = fiberInfDist K (⟨x, σ x⟩ : TotalSpace F V) ∧
+      let ν := (fiberInfDist K (⟨x, σ x⟩ : TotalSpace F V))⁻¹ • (σ x - p)
+      (∀ v : TangentSpace I x, inner ℝ ν (cov σ x v) = 0) ∧
+      (∀ base : CovariantDerivative I E (TangentSpace I : M → Type _),
+        ∀ v : TangentSpace I x, inner ℝ ν (cov.hessian base σ x v v) ≤ 0) ∧
+      ∀ g : SmoothRiemannianMetric I M, inner ℝ ν (rawBundleConnLap g cov σ x) ≤ 0 := by
+  have hne : {v : V x | (⟨x, v⟩ : TotalSpace F V) ∈ K}.Nonempty := by
+    by_contra h
+    have hz : fiberInfDist K (⟨x, σ x⟩ : TotalSpace F V) = 0 := by
+      rw [fiberInfDist, not_nonempty_iff_eq_empty.mp h, Metric.infDist_empty]
+    exact hpos.ne' hz
+  let _ : FiniteDimensional ℝ (V x) := VectorBundle.finiteDimensional ℝ F V x
+  let _ : CompleteSpace (V x) := FiniteDimensional.complete ℝ (V x)
+  obtain ⟨p, ⟨hp, hmin⟩, _⟩ :=
+    existsUnique_norm_sub_eq_infDist hne hclosed.isComplete hconvex (σ x)
+  let r := fiberInfDist K (⟨x, σ x⟩ : TotalSpace F V)
+  let ν := r⁻¹ • (σ x - p)
+  change ‖σ x - p‖ = r at hmin
+  change 0 < r at hpos
+  have hnormal : ν ∈ normalCone {v : V x | (⟨x, v⟩ : TotalSpace F V) ∈ K} p :=
+    smul_mem_normalCone (inv_nonneg.mpr hpos.le) ((sub_mem_normalCone_iff hconvex hp).mpr hmin)
+  have hunit : ‖ν‖ = 1 := by
+    rw [norm_smul, Real.norm_of_nonneg (inv_nonneg.mpr hpos.le), hmin, inv_mul_cancel₀ hpos.ne']
+  have hcontact : inner ℝ ν (σ x - p) = r := by
+    rw [real_inner_smul_left, real_inner_self_eq_norm_sq, hmin, pow_two,
+      ← mul_assoc, inv_mul_cancel₀ hpos.ne', one_mul]
+  refine ⟨p, hp, hmin, ?_, ?_, ?_⟩
+  · exact hK.inner_covariantDerivative_eq_zero_of_fiberInfDist_localMax hcov hmetric hx
+      (hσ.mdifferentiableAt (by simp)) p ν hnormal hunit.le hcontact hmax
+  · intro base
+    exact hK.inner_hessian_nonpos_of_fiberInfDist_localMax hcov hmetric base hx hσ p ν
+      hnormal hunit.le hcontact hmax
+  · intro g
+    exact hK.inner_rawBundleConnLap_nonpos_of_fiberInfDist_localMax hcov hmetric g hx hσ p ν
+      hnormal hunit.le hcontact hmax
+
 end CovariantDerivative

@@ -1,4 +1,5 @@
 import DifferentialGeometry.Bundle.OrthonormalFrame
+import DifferentialGeometry.Bundle.Hom.Pointwise
 import Mathlib.Topology.VectorBundle.FiniteDimensional
 
 noncomputable section
@@ -150,6 +151,48 @@ theorem exists_contMDiff_coframe (x₀ : B) (p₀ : V x₀ ≃ₗᵢ[ℝ] F) :
       ContMDiffOn.sum_section (s := Finset.univ)
         (fun i _ => (contMDiffOn_const (c := b.repr w i)).smul_section (he i))
     exact h.congr (fun x hx => TotalSpace.mk_inj.mpr (hq x hx w))
+
+omit [ContMDiffVectorBundle n F V I] in
+theorem contMDiffOn_coframe {U : Set B} {q : ∀ x, V x ≃ₗᵢ[ℝ] F}
+    (hq : ∀ w : F, ContMDiffOn I (I.prod 𝓘(ℝ, F)) n
+      (fun x => (⟨x, (q x).symm w⟩ : TotalSpace F V)) U) :
+    ContMDiffOn (I.prod 𝓘(ℝ, F)) (I.prod 𝓘(ℝ, F)) n
+      (fun v : TotalSpace F V => (v.proj, q v.proj v.2)) (TotalSpace.proj ⁻¹' U) := by
+  classical
+  let b := stdOrthonormalBasis ℝ F
+  have he (i) : ContMDiffOn (I.prod 𝓘(ℝ, F)) (I.prod 𝓘(ℝ, F)) n
+      (fun v : TotalSpace F V => (⟨v.proj, (q v.proj).symm (b i)⟩ : TotalSpace F V))
+      (TotalSpace.proj ⁻¹' U) :=
+    (hq (b i)).comp (Bundle.contMDiffOn_proj V) (fun _ hv => hv)
+  have hv : ContMDiffOn (I.prod 𝓘(ℝ, F)) 𝓘(ℝ, F) n
+      (fun v : TotalSpace F V => ∑ i, inner ℝ ((q v.proj).symm (b i)) v.2 • b i)
+      (TotalSpace.proj ⁻¹' U) := by
+    intro v hv
+    apply ContMDiffWithinAt.sum
+    intro i _
+    exact ((he i v hv).inner_bundle contMDiffWithinAt_id).smul contMDiffWithinAt_const
+  have heq (v : TotalSpace F V) : q v.proj v.2 =
+      ∑ i, inner ℝ ((q v.proj).symm (b i)) v.2 • b i := by
+    rw [← b.sum_repr (q v.proj v.2)]
+    apply Finset.sum_congr rfl
+    intro i _
+    rw [b.repr_apply_apply]
+    congr 1
+    simpa only [apply_symm_apply] using
+      (q v.proj).inner_map_map ((q v.proj).symm (b i)) v.2
+  exact (Bundle.contMDiffOn_proj V).prodMk (hv.congr (fun v _ => heq v))
+
+theorem exists_contMDiff_coframe_trivialization (x₀ : B) (p₀ : V x₀ ≃ₗᵢ[ℝ] F) :
+    ∃ U : Set B, IsOpen U ∧ x₀ ∈ U ∧ ∃ q : ∀ x, V x ≃ₗᵢ[ℝ] F,
+      q x₀ = p₀ ∧
+      ContMDiffOn (I.prod 𝓘(ℝ, F)) (I.prod 𝓘(ℝ, F)) n
+        (fun z : B × F => (⟨z.1, (q z.1).symm z.2⟩ : TotalSpace F V)) (U ×ˢ univ) ∧
+      ContMDiffOn (I.prod 𝓘(ℝ, F)) (I.prod 𝓘(ℝ, F)) n
+        (fun v : TotalSpace F V => (v.proj, q v.proj v.2)) (TotalSpace.proj ⁻¹' U) := by
+  obtain ⟨U, hU, hx₀, q, hq₀, hq⟩ := exists_contMDiff_coframe (I := I) (n := n) x₀ p₀
+  refine ⟨U, hU, hx₀, q, hq₀, ?_, contMDiffOn_coframe hq⟩
+  exact ContinuousLinearMap.contMDiffOn_bundle_apply_of_pointwise
+    (φ := fun x => (q x).symm.toContinuousLinearEquiv.toContinuousLinearMap) hq
 
 end Smooth
 

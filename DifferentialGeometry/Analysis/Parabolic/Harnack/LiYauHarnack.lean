@@ -26,144 +26,6 @@ variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 variable [I.Boundaryless] [T2Space M]
 
-omit [T2Space M] in
-private theorem chartLaplacianValue_jointContDiffAt
-    {D : RealTimeInterval}
-    (g : SmoothRiemannianMetric I M)
-    (f : ℝ → M → ℝ)
-    (hf : ContMDiffOn (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ, ℝ) ∞ (fun p : ℝ × M => f p.1 p.2)
-      (D.regular ×ˢ univ))
-    {t₀ : ℝ} (ht₀ : t₀ ∈ D.regular) (x₀ : M) :
-    ∀ α : M, x₀ ∈ (chartAt H α).source →
-      ContDiffAt ℝ ∞ (fun p : ℝ × E =>
-        (∑ i : Fin (Module.finrank ℝ E),
-          partialDeriv (E := E) i (chartVossWeylIntegrand (I := I) g α (f p.1) i) p.2) /
-          chartDensityOnE (I := I) g α p.2)
-        (t₀, (extChartAt I α) x₀) := by
-  classical
-  intro α hxsrc
-  have hxextsrc : x₀ ∈ (extChartAt I α).source := by
-    rw [extChartAt_source_eq_chartAt_source (I := I) α]
-    exact hxsrc
-  have hxtarget : (extChartAt I α) x₀ ∈ (extChartAt I α).target :=
-    (extChartAt I α).map_source hxextsrc
-  have hΦ : ∀ y : E, y ∈ (extChartAt I α).target →
-      ContDiffAt ℝ ∞
-        (fun r : ℝ × E => scalarOnE (I := I) α (f r.1) r.2) (t₀, y) :=
-    fun y hy => scalarOnE_jointContDiffAt (I := I) (M := M) (D := D) f hf α ht₀ hy
-  have hpd : ∀ (i : Fin (Module.finrank ℝ E)) (y : E),
-      y ∈ (extChartAt I α).target →
-      ContDiffAt ℝ ∞
-        (fun p : ℝ × E => partialDeriv (E := E) i
-          (fun z : E => scalarOnE (I := I) α (f p.1) z) p.2)
-        (t₀, y) := by
-    intro i y hy
-    have hproj : ContDiffAt ℝ ∞ (fun q : (ℝ × E) × E => (q.1.1, q.2)) ((t₀, y), y) := by
-      exact contDiffAt_fst.fst.prodMk contDiffAt_snd
-    have hf' : ContDiffAt ℝ ∞ (Function.uncurry
-        (fun (p : ℝ × E) => fun (z : E) => scalarOnE (I := I) α (f p.1) z))
-        ((t₀, y), y) := by
-      exact (hΦ y hy).comp ((t₀, y), y) hproj
-    have hg : ContDiffAt ℝ ∞ (fun p : ℝ × E => p.2) (t₀, y) := contDiffAt_snd
-    have hfd := ContDiffAt.fderiv
-      (f := fun (p : ℝ × E) => fun (z : E) => scalarOnE (I := I) α (f p.1) z)
-      (g := fun p : ℝ × E => p.2) hf' hg (by simp)
-    have hcomp :=
-      (ContinuousLinearMap.apply ℝ ℝ (chartModelBasis E i)).contDiff.contDiffAt.comp
-        (t₀, y) hfd
-    unfold partialDeriv
-    refine hcomp.congr_of_eventuallyEq ?_
-    exact Filter.Eventually.of_forall fun _ => rfl
-  have hgram : ∀ (i j : Fin (Module.finrank ℝ E)) (y : E),
-      y ∈ (extChartAt I α).target →
-      ContDiffAt ℝ ∞ (fun p : ℝ × E => chartInvGramOnE (I := I) g α i j p.2) (t₀, y) := by
-    intro i j y hy
-    change ContDiffAt ℝ ∞
-      ((fun z : E => chartInvGramOnE (I := I) g α i j z) ∘ (fun p : ℝ × E => p.2)) (t₀, y)
-    refine ContDiffAt.comp (t₀, y) ?_ ?_
-    · exact (chartInvGramOnE_contDiffOn (I := I) g α i j).contDiffAt
-        ((isOpen_extChartAt_target (I := I) α).mem_nhds hy)
-    · exact (contDiffAt_snd : ContDiffAt ℝ ∞ (fun p : ℝ × E => p.2) (t₀, y))
-  have hgradCoeff : ∀ (i : Fin (Module.finrank ℝ E)) (y : E),
-      y ∈ (extChartAt I α).target →
-      ContDiffAt ℝ ∞
-        (fun p : ℝ × E => gradChartCoeffOnE (I := I) g α (f p.1) i p.2) (t₀, y) := by
-    intro i y hy
-    have hsum_cd : ContDiffAt ℝ ∞
-        (fun p : ℝ × E => ∑ j : Fin (Module.finrank ℝ E),
-          chartInvGramOnE (I := I) g α i j p.2 *
-            partialDeriv (E := E) j (fun z : E => scalarOnE (I := I) α (f p.1) z) p.2)
-        (t₀, y) := by
-      exact ContDiffAt.sum (s := Finset.univ) (fun j _ => (hgram i j y hy).mul (hpd j y hy))
-    refine hsum_cd.congr_of_eventuallyEq ?_
-    exact Filter.Eventually.of_forall fun p => by
-      change gradChartCoeffOnE (I := I) g α (f p.1) i p.2 =
-        ∑ j, chartInvGramOnE (I := I) g α i j p.2 *
-          partialDeriv (E := E) j (scalarOnE (I := I) α (f p.1)) p.2
-      exact gradChartCoeffOnE_def (I := I) g α (f p.1) i p.2
-  have hρ : ∀ y : E, y ∈ (extChartAt I α).target →
-      ContDiffAt ℝ ∞ (fun p : ℝ × E => chartDensityOnE (I := I) g α p.2) (t₀, y) := by
-    intro y hy
-    change ContDiffAt ℝ ∞
-      ((fun z : E => chartDensityOnE (I := I) g α z) ∘ (fun p : ℝ × E => p.2)) (t₀, y)
-    refine ContDiffAt.comp (t₀, y) ?_ ?_
-    · exact (chartDensityOnE_contDiffOn (I := I) g α).contDiffAt
-        ((isOpen_extChartAt_target (I := I) α).mem_nhds hy)
-    · exact (contDiffAt_snd : ContDiffAt ℝ ∞ (fun p : ℝ × E => p.2) (t₀, y))
-  have hintegrand : ∀ (i : Fin (Module.finrank ℝ E)) (y : E),
-      y ∈ (extChartAt I α).target →
-      ContDiffAt ℝ ∞
-        (fun p : ℝ × E => chartVossWeylIntegrand (I := I) g α (f p.1) i p.2) (t₀, y) := by
-    intro i y hy
-    simpa [chartVossWeylIntegrand_def] using (hgradCoeff i y hy).mul (hρ y hy)
-  have hpdI : ∀ (i : Fin (Module.finrank ℝ E)) (y : E),
-      y ∈ (extChartAt I α).target →
-      ContDiffAt ℝ ∞
-        (fun p : ℝ × E => partialDeriv (E := E) i
-          (fun z : E => chartVossWeylIntegrand (I := I) g α (f p.1) i z) p.2) (t₀, y) := by
-    intro i y hy
-    have hproj : ContDiffAt ℝ ∞ (fun q : (ℝ × E) × E => (q.1.1, q.2)) ((t₀, y), y) := by
-      exact contDiffAt_fst.fst.prodMk contDiffAt_snd
-    have hf' : ContDiffAt ℝ ∞ (Function.uncurry
-        (fun (p : ℝ × E) => fun (z : E) => chartVossWeylIntegrand (I := I) g α (f p.1) i z))
-        ((t₀, y), y) := by
-      exact (hintegrand i y hy).comp ((t₀, y), y) hproj
-    have hg : ContDiffAt ℝ ∞ (fun p : ℝ × E => p.2) (t₀, y) := contDiffAt_snd
-    have hfd := ContDiffAt.fderiv
-      (f := fun (p : ℝ × E) => fun (z : E) => chartVossWeylIntegrand (I := I) g α (f p.1) i z)
-      (g := fun p : ℝ × E => p.2) hf' hg (by simp)
-    have hcomp :=
-      (ContinuousLinearMap.apply ℝ ℝ (chartModelBasis E i)).contDiff.contDiffAt.comp
-        (t₀, y) hfd
-    unfold partialDeriv
-    refine hcomp.congr_of_eventuallyEq ?_
-    exact Filter.Eventually.of_forall fun _ => rfl
-  have hsum : ContDiffAt ℝ ∞
-      (fun p : ℝ × E =>
-        (∑ i : Fin (Module.finrank ℝ E),
-          partialDeriv (E := E) i (chartVossWeylIntegrand (I := I) g α (f p.1) i) p.2) /
-          chartDensityOnE (I := I) g α p.2)
-      (t₀, (extChartAt I α) x₀) := by
-    have hsum0 : ContDiffAt ℝ ∞
-        (fun p : ℝ × E =>
-          ∑ i : Fin (Module.finrank ℝ E),
-            partialDeriv (E := E) i (chartVossWeylIntegrand (I := I) g α (f p.1) i) p.2)
-        (t₀, (extChartAt I α) x₀) := by
-      exact ContDiffAt.sum (s := Finset.univ) (fun i _ => hpdI i ((extChartAt I α) x₀) hxtarget)
-    have hdens : ContDiffAt ℝ ∞
-        (fun p : ℝ × E => chartDensityOnE (I := I) g α p.2) (t₀, (extChartAt I α) x₀) :=
-      hρ ((extChartAt I α) x₀) hxtarget
-    have hxbase : x₀ ∈ (trivializationAt E (TangentSpace I) α).baseSet := by
-      rw [trivializationAt_baseSet_eq_chartAt_source (I := I) α]
-      exact hxsrc
-    have hpos : 0 < chartDensity (I := I) g α x₀ := chartDensity_pos (I := I) g α hxbase
-    have hdens_ne : chartDensityOnE (I := I) g α ((extChartAt I α) x₀) ≠ 0 := by
-      rw [chartDensityOnE]
-      rw [(extChartAt I α).left_inv hxextsrc]
-      exact ne_of_gt hpos
-    exact hsum0.div hdens hdens_ne
-  exact hsum
-
 private theorem laplacianAt_time_contDiffAt_on
     {D : RealTimeInterval}
     (g : SmoothRiemannianMetric I M)
@@ -190,7 +52,16 @@ private theorem laplacianAt_time_contDiffAt_on
           partialDeriv (E := E) i (chartVossWeylIntegrand (I := I) g α (u p.1) i) p.2) /
           chartDensityOnE (I := I) g α p.2)
       (t₀, (extChartAt I α) x) :=
-    chartLaplacianValue_jointContDiffAt (I := I) (M := M) (D := D) g u hu ht₀ x α hxsrc
+    by
+      have hy : extChartAt I α x ∈ interior (extChartAt I α).target := by
+        rwa [(isOpen_extChartAt_target (I := I) α).interior_eq]
+      have h := (scalarOnE_chartVossWeylLaplacian_contDiffOn_prod g u
+        D.regular_isOpen hu α).contDiffAt (x := (t₀, extChartAt I α x))
+          ((D.regular_isOpen.prod isOpen_interior).mem_nhds ⟨ht₀, hy⟩)
+      apply h.congr_of_eventuallyEq
+      filter_upwards [continuousAt_snd.eventually (isOpen_interior.mem_nhds hy)] with p hp
+      simp only [scalarOnE_def, chartVossWeylLaplacian_def, chartDensityOnE,
+        (extChartAt I α).right_inv (interior_subset hp)]
   have hsliceAt : ContDiffAt ℝ ∞
       (fun t : ℝ =>
         (∑ i : Fin (Module.finrank ℝ E),

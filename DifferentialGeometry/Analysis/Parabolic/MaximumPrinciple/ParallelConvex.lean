@@ -3,6 +3,7 @@ import DifferentialGeometry.Geometry.Metric.BundleLipschitz
 import DifferentialGeometry.Geometry.Metric.BundleContinuity
 import DifferentialGeometry.Bundle.Fiberwise
 import DifferentialGeometry.Analysis.ODE.InvariantSetLocal
+import DifferentialGeometry.Analysis.ODE.MaximalSolution
 import DifferentialGeometry.Analysis.Calculus.Extrema
 
 noncomputable section
@@ -262,5 +263,35 @@ theorem hamilton_weak_maximum_principle_of_contMDiffOn
     hu.comp (contMDiff_const.prodMk contMDiff_id).contMDiffOn
       (fun y _ => ⟨⟨ht.1.le, ht.2⟩, mem_univ y⟩)
   exact hslice.contMDiffAt univ_mem
+
+theorem hamilton_weak_maximum_principle_of_maximal_ode
+    (g : ℝ → SmoothRiemannianMetric I M) (cov : ℝ → CovariantDerivative I F V)
+    (X : ℝ → ∀ x : M, TangentSpace I x) (reaction : ℝ → ∀ x : M, V x → V x)
+    {a b : ℝ} {K : Set (TotalSpace F V)} {u : ℝ → ∀ x : M, V x}
+    (hcov : ∀ t ∈ Ico a b, ContMDiffCovariantDerivative (cov t) ∞)
+    (hmetric : ∀ t ∈ Ico a b, (cov t).IsMetricCompatible)
+    (hK : ∀ t ∈ Ico a b, (cov t).IsParallelSet K)
+    (hclosed : ∀ x, IsClosed {v : V x | (⟨x, v⟩ : TotalSpace F V) ∈ K})
+    (hconvex : ∀ x, Convex ℝ {v : V x | (⟨x, v⟩ : TotalSpace F V) ∈ K})
+    (hreaction : ContMDiffOn (𝓘(ℝ, ℝ).prod (I.prod 𝓘(ℝ, F))) (I.prod 𝓘(ℝ, F)) 1
+      (fun q : ℝ × TotalSpace F V =>
+        (⟨q.2.proj, reaction q.1 q.2.proj q.2.2⟩ : TotalSpace F V)) (Ico a b ×ˢ univ))
+    (hinvariant : ∀ x, ∀ t₀ ∈ Ico a b, ∀ v₀ : V x,
+      (⟨x, v₀⟩ : TotalSpace F V) ∈ K → ∃ J : Set ℝ, ∃ γ : ℝ → V x,
+        t₀ ∈ J ∧ γ t₀ = v₀ ∧
+          IsMaximalIntegralCurveOn γ (fun t v => reaction t x v) J (Ico a b) ∧
+            MapsTo γ (J ∩ Ici t₀) {v : V x | (⟨x, v⟩ : TotalSpace F V) ∈ K})
+    (hu : ContMDiffOn (𝓘(ℝ, ℝ).prod I) (I.prod 𝓘(ℝ, F)) 2
+      (fun q : ℝ × M => (⟨q.2, u q.1 q.2⟩ : TotalSpace F V)) (Ico a b ×ˢ univ))
+    (hequation : ∀ t ∈ Ioo a b, ∀ x, HasDerivAt (fun s => u s x)
+      (rawBundleConnLap (g t) (cov t) (u t) x + (cov t) (u t) x (X t x) +
+        reaction t x (u t x)) t)
+    (hinitial : ∀ x, (⟨x, u a x⟩ : TotalSpace F V) ∈ K) :
+    ∀ t ∈ Ico a b, ∀ x, (⟨x, u t x⟩ : TotalSpace F V) ∈ K := by
+  apply hamilton_weak_maximum_principle_of_contMDiffOn g cov X reaction hcov hmetric hK
+    hclosed hconvex hreaction _ hu hequation hinitial
+  intro x
+  exact (isForwardInvariantForODEOn_iff_exists_maximal_of_contDiffOn ordConnected_Ico
+    (hreaction.contDiffOn_fiberwise x)).mpr (hinvariant x)
 
 end DifferentialGeometry.Analysis.Parabolic

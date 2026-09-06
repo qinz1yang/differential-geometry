@@ -1,4 +1,5 @@
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.SemilinearConvex
+import DifferentialGeometry.Geometry.Operator.LaplacianLinearity
 
 set_option autoImplicit false
 
@@ -45,36 +46,11 @@ private lemma laplacianAt_finset_sum_real
     (hsmooth : ∀ i ∈ s, ContMDiff I 𝓘(Real, Real) ∞ (f i)) :
     laplacianAt (I := I) G t (fun x : M => ∑ i ∈ s, f i x) =
       fun x : M => ∑ i ∈ s, laplacianAt (I := I) G t (f i) x := by
-  classical
-  induction s using Finset.induction with
-  | empty =>
-      funext x
-      simp only [Finset.sum_empty]
-      change laplacian (I := I) (G.connection t) (G.metric t) (fun _ : M => (0 : ℝ)) x = 0
-      exact laplacian_const (I := I) (G.connection t) (G.metric t) (0 : ℝ) x
-  | insert i s hi ih =>
-      have hsmooth_i : ContMDiff I 𝓘(Real, Real) ∞ (f i) :=
-        hsmooth i (Finset.mem_insert_self i s)
-      have hsmooth_s : ∀ j ∈ s, ContMDiff I 𝓘(Real, Real) ∞ (f j) :=
-        fun j hj => hsmooth j (Finset.mem_insert_of_mem hj)
-      have hsum_smooth : ContMDiff I 𝓘(Real, Real) ∞ (fun x : M => ∑ j ∈ s, f j x) :=
-        contMDiff_finsetSum_real hsmooth_s
-      have hsum_lap := ih hsmooth_s
-      funext x
-      have hlap_add := laplacianAt_add (I := I) G (t := t)
-        (f := f i) (h := fun x : M => ∑ j ∈ s, f j x) (x := x)
-        (hsmooth_i.mdifferentiable (by simp))
-        (hsum_smooth.mdifferentiable (by simp))
-        (gradientFun_mdiffAt (I := I) (G.metric t) hsmooth_i x)
-        (gradientFun_mdiffAt (I := I) (G.metric t) hsum_smooth x)
-      have hsum_insert : (fun x : M => ∑ j ∈ insert i s, f j x) =
-          fun x : M => f i x + ∑ j ∈ s, f j x := by
-        funext y
-        simp [Finset.sum_insert hi]
-      rw [hsum_insert]
-      rw [hlap_add]
-      rw [hsum_lap]
-      simp [Finset.sum_insert hi]
+  funext x
+  exact laplacian_finset_sum_at (G.connection t) (G.metric t) s
+    (fun i hi => Filter.Eventually.of_forall fun y =>
+      (hsmooth i hi).contMDiffAt.mdifferentiableAt (by simp))
+    (fun i hi => gradientFun_mdiffAt (G.metric t) (hsmooth i hi) x)
 
 omit [CompleteSpace E] in
 theorem innerProductHeatReactionOn_of_componentwise
