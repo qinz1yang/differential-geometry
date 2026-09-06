@@ -1,5 +1,6 @@
 import DifferentialGeometry.Geometry.Exponential.Variation.Radial
 import DifferentialGeometry.Geometry.Comparison.Variation.SecondVariation.NegativeDirection
+import DifferentialGeometry.Geometry.Comparison.Variation.Curve.PathLength
 
 set_option autoImplicit false
 
@@ -124,5 +125,105 @@ theorem injective_mfderiv_expMap_of_minimising_geodesic
       (hηL.trans (hγeq L ⟨hL.le, le_rfl⟩).eq_of_nhds)
   exact jacobi_field_ne_zero_of_minimising_geodesic (I := I) g γ J hγ
     hJ.contMDiffOn isOpen_univ (subset_univ _) hgeo hJac hunit0 hminγ hc hJ0 hDJ0 hJc
+
+section ENorm
+
+variable [(y : M) → ENorm (TangentSpace I y)]
+
+theorem injective_mfderiv_expMap_of_le_riemannianEDist
+    (g : SmoothRiemannianMetric I M)
+    (hEnorm : ∀ (y : M) (v : TangentSpace I y),
+      ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner y v v)))
+    (p : M) (x : E)
+    (hx : (show TangentSpace I p from x) ∈ expDomain (I := I) g p)
+    (hmin : ENNReal.ofReal (Real.sqrt (g.inner p x x)) ≤
+      riemannianEDist I p (expMap (I := I) g p (show TangentSpace I p from x)))
+    {t : ℝ} (ht : t ∈ Ico (0 : ℝ) 1) :
+    Function.Injective (mfderiv 𝓘(ℝ, E) I
+      (fun v : E => expMap (I := I) g p (show TangentSpace I p from v)) (t • x)) := by
+  classical
+  have hzero : Function.Injective (mfderiv 𝓘(ℝ, E) I
+      (fun v : E => expMap (I := I) g p (show TangentSpace I p from v)) 0) := by
+    rw [mfderiv_expMap_at_zero (I := I) g p]
+    exact Function.injective_id
+  by_cases hx0 : x = 0
+  · have heq : t • x = (0 : E) := by rw [hx0, smul_zero]
+    exact (congrArg (fun y : E => Function.Injective (mfderiv 𝓘(ℝ, E) I
+      (fun v : E => expMap (I := I) g p (show TangentSpace I p from v)) y)) heq).mpr hzero
+  by_cases ht0 : t = 0
+  · have heq : t • x = (0 : E) := by rw [ht0, zero_smul]
+    exact (congrArg (fun y : E => Function.Injective (mfderiv 𝓘(ℝ, E) I
+      (fun v : E => expMap (I := I) g p (show TangentSpace I p from v)) y)) heq).mpr hzero
+  let : (y : M) → ENormSMulClass ℝ (TangentSpace I y) := fun y => ⟨fun r v => by
+    rw [hEnorm, hEnorm, Real.enorm_eq_ofReal_abs]
+    have hscale : g.inner y (r • v) (r • v) = r ^ 2 * g.inner y v v := by
+      rw [(g.inner y).map_smul, _root_.smul_apply, (g.inner y v).map_smul]
+      simp only [smul_eq_mul]
+      ring
+    rw [hscale, Real.sqrt_mul (sq_nonneg r), Real.sqrt_sq_eq_abs,
+      ENNReal.ofReal_mul (abs_nonneg r)]⟩
+  let ℓ : ℝ := Real.sqrt (g.inner p x x)
+  have hℓ : 0 < ℓ := Real.sqrt_pos.mpr (g.pos p x hx0)
+  have hℓne : ℓ ≠ 0 := hℓ.ne'
+  let u : E := ℓ⁻¹ • x
+  have hunit : g.inner p u u = 1 := by
+    let G : E →L[ℝ] E →L[ℝ] ℝ := g.inner p
+    change G (ℓ⁻¹ • x) (ℓ⁻¹ • x) = 1
+    rw [G.map_smul, _root_.smul_apply, (G x).map_smul]
+    simp only [smul_eq_mul]
+    have hsq : G x x = ℓ ^ 2 := (Real.sq_sqrt (g.pos p x hx0).le).symm
+    rw [hsq]
+    field_simp
+  have hlu : ℓ • u = x := by
+    simp only [u, smul_smul, mul_inv_cancel₀ hℓne, one_smul]
+  have hdom : (show TangentSpace I p from ℓ • u) ∈ expDomain (I := I) g p := by
+    simpa only [hlu] using! hx
+  have hseg s (hs : s ∈ Icc (0 : ℝ) ℓ) :
+      (show TangentSpace I p from s • u) ∈ expDomain (I := I) g p := by
+    have hs' : s / ℓ ∈ Icc (0 : ℝ) 1 :=
+      ⟨div_nonneg hs.1 hℓ.le, (div_le_one hℓ).mpr hs.2⟩
+    have heq : (s / ℓ) • x = s • u := by
+      simp only [u, smul_smul, div_eq_mul_inv]
+    exact (congrArg (fun v : E => (show TangentSpace I p from v) ∈ expDomain g p)
+      heq).mp (smul_mem_expDomain hx hs')
+  have hlen : arcLength (I := I) g
+      (fun s => expMap (I := I) g p (show TangentSpace I p from s • u)) 0 ℓ = ℓ := by
+    unfold arcLength
+    calc
+      _ = ∫ _s in (0 : ℝ)..ℓ, (1 : ℝ) := by
+        apply intervalIntegral.integral_congr
+        intro s hs
+        have hs' : s ∈ Icc (0 : ℝ) ℓ := by
+          simpa only [uIcc_of_le hℓ.le] using hs
+        exact (congrArg Real.sqrt
+          (inner_curveVelocity_expMap_smul (I := I) g p u (hseg s hs'))).trans
+            ((congrArg Real.sqrt hunit).trans Real.sqrt_one)
+      _ = ℓ := by simp
+  have hminimal : ∀ η : ℝ → M, ContMDiffOn 𝓘(ℝ, ℝ) I 1 η (Icc 0 ℓ) →
+      η 0 = p → η ℓ = expMap (I := I) g p (show TangentSpace I p from ℓ • u) →
+      arcLength (I := I) g
+        (fun s => expMap (I := I) g p (show TangentSpace I p from s • u)) 0 ℓ ≤
+          arcLength (I := I) g η 0 ℓ := by
+    intro η hη hη0 hηℓ
+    rw [hlen]
+    have hd := riemannianEDist_le_arcLength_of_enorm_eq (I := I) g hℓ.le hη
+      (fun s _ => hEnorm (η s) (mfderiv 𝓘(ℝ, ℝ) I η s (1 : ℝ)))
+    have hd' : riemannianEDist I p (expMap (I := I) g p (show TangentSpace I p from x)) ≤
+        ENNReal.ofReal (arcLength (I := I) g η 0 ℓ) := by
+      simpa only [hη0, hηℓ, hlu] using! hd
+    have hn : 0 ≤ arcLength (I := I) g η 0 ℓ := by
+      exact intervalIntegral.integral_nonneg hℓ.le (fun _ _ => Real.sqrt_nonneg _)
+    exact (ENNReal.ofReal_le_ofReal_iff hn).mp (hmin.trans hd')
+  have hc : t * ℓ ∈ Ioo (0 : ℝ) ℓ := by
+    constructor
+    · exact mul_pos (lt_of_le_of_ne ht.1 (Ne.symm ht0)) hℓ
+    · simpa only [one_mul] using mul_lt_mul_of_pos_right ht.2 hℓ
+  have hinj := injective_mfderiv_expMap_of_minimising_geodesic
+    (I := I) g p u hunit hdom hminimal hc
+  have heq : (t * ℓ) • u = t • x := by rw [mul_smul, hlu]
+  exact (congrArg (fun y : E => Function.Injective (mfderiv 𝓘(ℝ, E) I
+    (fun v : E => expMap (I := I) g p (show TangentSpace I p from v)) y)) heq).mp hinj
+
+end ENorm
 
 end DifferentialGeometry.Geometry.Riemannian.Exponential

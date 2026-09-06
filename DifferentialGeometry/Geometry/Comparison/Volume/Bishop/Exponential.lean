@@ -1,5 +1,6 @@
 import DifferentialGeometry.Geometry.Comparison.Volume.Bishop.Radial
 import DifferentialGeometry.Geometry.Exponential.VolumeDensity
+import DifferentialGeometry.Geometry.Exponential.ConjugatePoint.MinimizingGeodesic
 
 noncomputable section
 
@@ -119,5 +120,57 @@ theorem paramDensity_expMap_le_of_ricci_nonneg
   have h := paramDensity_expMap_le_mul_hyperbolicDensity
     (I := I) g p x hx 0 le_rfl hinj (fun t ht => by simpa using! hRic t ht)
   simpa [hyperbolicDensity, hyperbolicSn] using! h
+
+section ENorm
+
+variable [(y : M) → ENorm (TangentSpace I y)]
+
+theorem paramDensity_expMap_le_mul_hyperbolicDensity_of_le_riemannianEDist
+    (g : SmoothRiemannianMetric I M)
+    (hEnorm : ∀ (y : M) (v : TangentSpace I y),
+      ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner y v v)))
+    (p : M) (x : E)
+    (hx : (show TangentSpace I p from x) ∈ expDomain (I := I) g p)
+    (hmin : ENNReal.ofReal (Real.sqrt (g.inner p x x)) ≤
+      Manifold.riemannianEDist I p (expMap (I := I) g p (show TangentSpace I p from x)))
+    (q : ℝ) (hq : 0 ≤ q)
+    (hRic : ∀ t ∈ Ioo (0 : ℝ) 1,
+      -(((Module.finrank ℝ E - 1 : ℕ) : ℝ) * q ^ 2) *
+          g.inner (radialCurve (I := I) g p x t)
+            (curveVelocity (I := I) (radialCurve (I := I) g p x) t)
+            (curveVelocity (I := I) (radialCurve (I := I) g p x) t) ≤
+        ricciTensor (I := I) g (radialCurve (I := I) g p x t)
+          (curveVelocity (I := I) (radialCurve (I := I) g p x) t)
+          (curveVelocity (I := I) (radialCurve (I := I) g p x) t)) :
+    paramDensity (I := I) g
+        (fun v : E => expMap (I := I) g p (show TangentSpace I p from v)) x ≤
+      paramDensity (I := I) g
+          (fun v : E => expMap (I := I) g p (show TangentSpace I p from v)) 0 *
+        hyperbolicDensity (q * Real.sqrt (g.inner p x x)) (Module.finrank ℝ E - 1) 1 := by
+  exact paramDensity_expMap_le_mul_hyperbolicDensity (I := I) g p x hx q hq
+    (fun _ ht => injective_mfderiv_expMap_of_le_riemannianEDist
+      (I := I) g hEnorm p x hx hmin ⟨ht.1.le, ht.2⟩) hRic
+
+theorem paramDensity_expMap_le_of_ricci_nonneg_of_le_riemannianEDist
+    (g : SmoothRiemannianMetric I M)
+    (hEnorm : ∀ (y : M) (v : TangentSpace I y),
+      ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner y v v)))
+    (p : M) (x : E)
+    (hx : (show TangentSpace I p from x) ∈ expDomain (I := I) g p)
+    (hmin : ENNReal.ofReal (Real.sqrt (g.inner p x x)) ≤
+      Manifold.riemannianEDist I p (expMap (I := I) g p (show TangentSpace I p from x)))
+    (hRic : ∀ t ∈ Ioo (0 : ℝ) 1,
+      0 ≤ ricciTensor (I := I) g (radialCurve (I := I) g p x t)
+        (curveVelocity (I := I) (radialCurve (I := I) g p x) t)
+        (curveVelocity (I := I) (radialCurve (I := I) g p x) t)) :
+    paramDensity (I := I) g
+        (fun v : E => expMap (I := I) g p (show TangentSpace I p from v)) x ≤
+      paramDensity (I := I) g
+        (fun v : E => expMap (I := I) g p (show TangentSpace I p from v)) 0 := by
+  have h := paramDensity_expMap_le_mul_hyperbolicDensity_of_le_riemannianEDist
+    (I := I) g hEnorm p x hx hmin 0 le_rfl (fun t ht => by simpa using! hRic t ht)
+  simpa [hyperbolicDensity, hyperbolicSn] using! h
+
+end ENorm
 
 end DifferentialGeometry.Geometry.Riemannian.VolumeComparison
