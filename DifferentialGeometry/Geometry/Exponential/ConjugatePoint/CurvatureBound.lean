@@ -145,7 +145,7 @@ theorem radialJacobiField_ne_zero_of_curvature_bound
     (radialJacobiField (I := I) g p x w) hK zero_lt_one
     hpar hON hFdiff (fun t ht => (hreg t ht).1)
     (fun t ht => (hreg t ht).2) hODE
-    (radialJacobi_zero (I := I) g p x w) hDJ0
+    (radialJacobiField_zero (I := I) g p x w) hDJ0
   rw [hγ0]
   exact hsmall'
 

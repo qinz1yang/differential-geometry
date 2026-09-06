@@ -92,15 +92,6 @@ lemma normalGram_contAt
         Set.inter_subset_left (fun w hw => hw.2)
   exact hcont.continuousAt (hUopen.mem_nhds hzeroU)
 
-omit [T2Space M] [SigmaCompactSpace M] in
-omit [CompleteSpace E] in
-omit [NeZero (Module.finrank ℝ E)] in
-lemma radialJacobi_zero
-    (g : SmoothRiemannianMetric I M) (p : M) (x w : E) :
-    radialJacobiField (I := I) g p x w 0 = 0 := by
-  rw [radialJacobiField_eq (I := I)]
-  exact DifferentialGeometry.Geometry.Riemannian.radial_jacobi_zero (I := I) g p x w
-
 omit [SigmaCompactSpace M] [NeZero (Module.finrank ℝ E)] in
 theorem exists_radialJacobi_radius
     (g : SmoothRiemannianMetric I M) (p : M) :

@@ -13,6 +13,7 @@ import DifferentialGeometry.Geometry.Exponential.ChartFlow.Rescaling.Lift
 import DifferentialGeometry.Geometry.Exponential.ChartFlow.Orbit.UniformExistence
 import DifferentialGeometry.Analysis.Integration.Measure.Chart.Density
 import DifferentialGeometry.Geometry.Comparison.Variation.SecondVariation.Basic
+import DifferentialGeometry.Geometry.Comparison.Variation.Jacobi.Basic
 import Mathlib.Geometry.Manifold.Riemannian.PathELength
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
@@ -1450,6 +1451,53 @@ theorem gauss_lemma
     rw [htvel1, hsvar1, hbase1]
   rw [hφ1eval, hcollapse] at hφ1
   exact hφ1
+
+omit [NeZero (Module.finrank ℝ E)] [CompleteSpace E] in
+theorem gauss_lemma_smul
+    (g : SmoothRiemannianMetric I M) (p : M) (x w : E) {t : ℝ}
+    (ht : (show TangentSpace I p from t • x) ∈ expDomain (I := I) g p) :
+    g.inner (expMap (I := I) g p (show TangentSpace I p from t • x))
+      (mfderiv 𝓘(ℝ, E) I
+        (fun v : E => expMap (I := I) g p (show TangentSpace I p from v)) (t • x) x)
+      (mfderiv 𝓘(ℝ, E) I
+        (fun v : E => expMap (I := I) g p (show TangentSpace I p from v)) (t • x) w) =
+      g.inner p x w := by
+  let A : E →L[ℝ] E := mfderiv 𝓘(ℝ, E) I
+    (fun v : E => expMap (I := I) g p (show TangentSpace I p from v)) (t • x)
+  by_cases ht0 : t = 0
+  · subst t
+    have hA : A = ContinuousLinearMap.id ℝ E := by
+      dsimp only [A]
+      rw [zero_smul]
+      exact mfderiv_expMap_at_zero (I := I) g p
+    have hp : expMap (I := I) g p (show TangentSpace I p from (0 : ℝ) • x) = p :=
+      (congrArg (fun v : E => expMap (I := I) g p (show TangentSpace I p from v))
+        (zero_smul ℝ x)).trans (expMap_zero (I := I) g p)
+    change g.inner _ (A x) (A w) = _
+    rw [hA, hp]
+    rfl
+  · have hg : g.inner (expMap (I := I) g p (show TangentSpace I p from t • x))
+        (A (t • x)) (A w) = g.inner p (t • x) w :=
+      gauss_lemma (I := I) g p (w := w) ht
+    let G : E →L[ℝ] E →L[ℝ] ℝ :=
+      g.inner (expMap (I := I) g p (show TangentSpace I p from t • x))
+    let G0 : E →L[ℝ] E →L[ℝ] ℝ := g.inner p
+    have hg' : G (A (t • x)) (A w) = G0 (t • x) w := hg
+    have hmul : t * G (A x) (A w) = t * G0 x w := by
+      simpa only [A.map_smul, map_smul, _root_.smul_apply, smul_eq_mul] using hg'
+    exact mul_left_cancel₀ ht0 hmul
+
+omit [NeZero (Module.finrank ℝ E)] [CompleteSpace E] in
+theorem inner_curveVelocity_expMap_smul
+    (g : SmoothRiemannianMetric I M) (p : M) (x : E) {t : ℝ}
+    (ht : (show TangentSpace I p from t • x) ∈ expDomain (I := I) g p) :
+    let γ : ℝ → M := fun r => expMap (I := I) g p (show TangentSpace I p from r • x)
+    g.inner (γ t) (curveVelocity (I := I) γ t) (curveVelocity (I := I) γ t) =
+      g.inner p x x := by
+  have hv := mfderiv_expMap_smul (I := I) g p x t ht
+  exact (congrArg₂ (fun v w : E => g.inner
+    (expMap (I := I) g p (show TangentSpace I p from t • x)) v w) hv hv).trans
+      (gauss_lemma_smul (I := I) g p x x ht)
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem gauss_lemma_pullback

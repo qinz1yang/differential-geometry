@@ -487,6 +487,7 @@ theorem ode_Ico_of_Ioo_zero
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
+omit [T2Space (TangentBundle I M)] in
 theorem ode_Ico_of_Ioo_d2
     (g : SmoothRiemannianMetric I M) (p : M) (x w : E) {K b : ℝ}
     (hJacobian : ∀ t ∈ Ioo (0 : ℝ) b,
@@ -525,7 +526,7 @@ theorem ode_Ico_of_Ioo_d2
         (radialJacobiField (I := I) g p x w t)
         (radialJacobiField (I := I) g p x w t) := by
   refine ode_Ico_of_Ioo_zero (I := I) g p x w hJacobian hcurv ?_
-  rw [hD2, radialJacobi_zero]
+  rw [hD2, radialJacobiField_zero]
   change
     g.inner (radialCurve (I := I) g p x 0)
         (0 : TangentSpace I (radialCurve (I := I) g p x 0))
@@ -543,6 +544,7 @@ theorem ode_Ico_of_Ioo_d2
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
+omit [T2Space (TangentBundle I M)] in
 theorem d2_zero_of_jacobian0
     (g : SmoothRiemannianMetric I M) (p : M) (x w : E)
     (hJacobian0 : IsJacobiAt (I := I) g (radialCurve (I := I) g p x)
@@ -551,7 +553,7 @@ theorem d2_zero_of_jacobian0
       (fun s => covDerivAlong (I := I) g (radialCurve (I := I) g p x)
         (radialJacobiField (I := I) g p x w) s) 0 = 0 := by
   unfold IsJacobiAt at hJacobian0
-  rw [radialJacobi_zero] at hJacobian0
+  rw [radialJacobiField_zero] at hJacobian0
   set D : TangentSpace I (radialCurve (I := I) g p x 0) :=
     covDerivAlong (I := I) g (radialCurve (I := I) g p x)
       (fun s => covDerivAlong (I := I) g (radialCurve (I := I) g p x)
@@ -1565,7 +1567,7 @@ theorem exists_ode_rm04_d2
   refine ⟨r, hr, ?_⟩
   intro x w hx hw K R Vb b hK hVb hb hlaunch hKbound hRm hD2
   refine hODE x w hx hw hK hVb hb hlaunch hKbound hRm ?_
-  rw [hD2, radialJacobi_zero]
+  rw [hD2, radialJacobiField_zero]
   change
     g.inner (radialCurve (I := I) g p x 0)
         (0 : TangentSpace I (radialCurve (I := I) g p x 0))

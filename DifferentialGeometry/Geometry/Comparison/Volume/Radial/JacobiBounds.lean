@@ -299,6 +299,7 @@ theorem exists_dirInitial_ge
 
 omit [T2Space M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
+omit [T2Space (TangentBundle I M)] in
 theorem radialJacobi_bounds_at
     (g : SmoothRiemannianMetric I M) (p : M) (x w : E)
     {K b : ℝ} (hK : 0 ≤ K) (hb : 0 ≤ b)
@@ -368,10 +369,11 @@ theorem radialJacobi_bounds_at
   simpa [radialCurve] using
     covGronwall_bounds_at (I := I) g (radialCurve (I := I) g p x) hγ hcard F
       (radialJacobiField (I := I) g p x w) hK hb hpar hON hFdiff hJdiff
-      hDJdiff hODE (radialJacobi_zero (I := I) g p x w) rfl
+      hDJdiff hODE (radialJacobiField_zero (I := I) g p x w) rfl
 
 omit [T2Space M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
+omit [T2Space (TangentBundle I M)] in
 theorem radialJacobi_bounds
     (g : SmoothRiemannianMetric I M) (p : M) (x w : E)
     {K b : ℝ} (hK : 0 ≤ K) (hb : 0 ≤ b)
@@ -443,6 +445,7 @@ theorem radialJacobi_bounds
 
 omit [T2Space M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
+omit [T2Space (TangentBundle I M)] in
 theorem radialJacobi_one_bounds_at
     (g : SmoothRiemannianMetric I M) (p : M) (x w : E)
     {K b : ℝ} (hK : 0 ≤ K) (hb : 0 ≤ b) (h1b : (1 : ℝ) ≤ b)
@@ -516,6 +519,7 @@ theorem radialJacobi_one_bounds_at
 
 omit [T2Space M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
+omit [T2Space (TangentBundle I M)] in
 theorem radialJacobi_one_bounds
     (g : SmoothRiemannianMetric I M) (p : M) (x w : E)
     {K b : ℝ} (hK : 0 ≤ K) (hb : 0 ≤ b) (h1b : (1 : ℝ) ≤ b)
@@ -586,6 +590,7 @@ theorem radialJacobi_one_bounds
 
 omit [T2Space M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
+omit [T2Space (TangentBundle I M)] in
 theorem radialJacobi_one_le_at
     (g : SmoothRiemannianMetric I M) (p : M) (x w : E)
     {K b B : ℝ} (hK : 0 ≤ K) (hb : 0 ≤ b) (h1b : (1 : ℝ) ≤ b)
@@ -660,6 +665,7 @@ theorem radialJacobi_one_le_at
 
 omit [T2Space M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
+omit [T2Space (TangentBundle I M)] in
 theorem radialJacobi_one_le
     (g : SmoothRiemannianMetric I M) (p : M) (x w : E)
     {K b B : ℝ} (hK : 0 ≤ K) (hb : 0 ≤ b) (h1b : (1 : ℝ) ≤ b)
@@ -734,6 +740,7 @@ theorem radialJacobi_one_le
 
 omit [T2Space M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
+omit [T2Space (TangentBundle I M)] in
 theorem radialJacobi_one_ge_at
     (g : SmoothRiemannianMetric I M) (p : M) (x w : E)
     {K b B : ℝ} (hK : 0 ≤ K) (hb : 0 ≤ b) (h1b : (1 : ℝ) ≤ b)
@@ -808,6 +815,7 @@ theorem radialJacobi_one_ge_at
 
 omit [T2Space M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
+omit [T2Space (TangentBundle I M)] in
 theorem radialJacobi_one_ge
     (g : SmoothRiemannianMetric I M) (p : M) (x w : E)
     {K b B : ℝ} (hK : 0 ≤ K) (hb : 0 ≤ b) (h1b : (1 : ℝ) ≤ b)
@@ -882,6 +890,7 @@ theorem radialJacobi_one_ge
 
 omit [T2Space M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
+omit [T2Space (TangentBundle I M)] in
 theorem radialJacobi_sq_ge_at
     (g : SmoothRiemannianMetric I M) (p : M) (x w : E)
     {K b B : ℝ} (hB_nonneg : 0 ≤ B)
@@ -952,6 +961,7 @@ theorem radialJacobi_sq_ge_at
 
 omit [T2Space M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
+omit [T2Space (TangentBundle I M)] in
 theorem radialJacobi_sq_ge
     (g : SmoothRiemannianMetric I M) (p : M) (x w : E)
     {K b B : ℝ} (hB_nonneg : 0 ≤ B)
@@ -1022,6 +1032,7 @@ theorem radialJacobi_sq_ge
 
 omit [T2Space M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
+omit [T2Space (TangentBundle I M)] in
 theorem radialJacobi_dir_ge_at
     (g : SmoothRiemannianMetric I M) (p : M) (x : E)
     {K b B : ℝ} (hB_nonneg : 0 ≤ B)
@@ -1097,6 +1108,7 @@ theorem radialJacobi_dir_ge_at
 
 omit [T2Space M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
+omit [T2Space (TangentBundle I M)] in
 theorem radialJacobi_dir_ge
     (g : SmoothRiemannianMetric I M) (p : M) (x : E)
     {K b B : ℝ} (hB_nonneg : 0 ≤ B)
@@ -1172,6 +1184,7 @@ theorem radialJacobi_dir_ge
 
 omit [T2Space M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
+omit [T2Space (TangentBundle I M)] in
 theorem radialJacobi_fin_le_at
     (g : SmoothRiemannianMetric I M) (p : M) (x : E)
     {K b B : ℝ} (hK : 0 ≤ K) (hb : 0 ≤ b) (h1b : (1 : ℝ) ≤ b)
@@ -1231,6 +1244,7 @@ theorem radialJacobi_fin_le_at
 
 omit [T2Space M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
+omit [T2Space (TangentBundle I M)] in
 theorem radialJacobi_fin_le
     (g : SmoothRiemannianMetric I M) (p : M) (x : E)
     {K b B : ℝ} (hK : 0 ≤ K) (hb : 0 ≤ b) (h1b : (1 : ℝ) ≤ b)
@@ -1290,6 +1304,7 @@ theorem radialJacobi_fin_le
 
 omit [T2Space M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
+omit [T2Space (TangentBundle I M)] in
 theorem radialJacobi_fin_le_of_initial_bound_at
     (g : SmoothRiemannianMetric I M) (p : M) (x : E)
     {K b A B : ℝ} (hK : 0 ≤ K) (hb : 0 ≤ b) (h1b : (1 : ℝ) ≤ b)
@@ -1366,6 +1381,7 @@ theorem radialJacobi_fin_le_of_initial_bound_at
 
 omit [T2Space M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
+omit [T2Space (TangentBundle I M)] in
 theorem radialJacobi_fin_le_of_initial_bound
     (g : SmoothRiemannianMetric I M) (p : M) (x : E)
     {K b A B : ℝ} (hK : 0 ≤ K) (hb : 0 ≤ b) (h1b : (1 : ℝ) ≤ b)

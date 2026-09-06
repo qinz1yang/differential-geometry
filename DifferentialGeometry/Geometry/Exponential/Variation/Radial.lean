@@ -53,6 +53,24 @@ lemma radialJacobiField_eq
     module
   rw [hbase]
 
+omit [I.Boundaryless] [T2Space M] in
+theorem radialJacobiField_zero
+    (g : SmoothRiemannianMetric I M) (p : M) (x w : E) :
+    radialJacobiField (I := I) g p x w 0 = 0 := by
+  rw [radialJacobiField_eq]
+  have hcurve : (fun s : ℝ => expMap (I := I) g p
+      (show TangentSpace I p from (0 : ℝ) • (x + s • w))) =
+      (fun _ : ℝ => expMap (I := I) g p (0 : TangentSpace I p)) := by
+    funext s
+    exact congrArg (fun v : E => expMap (I := I) g p (show TangentSpace I p from v))
+      (zero_smul ℝ (x + s • w))
+  have hmf : (mfderiv 𝓘(ℝ, ℝ) I
+      (fun s : ℝ => expMap (I := I) g p (show TangentSpace I p from (0 : ℝ) • (x + s • w)))
+      0 : ℝ →L[ℝ] E) = 0 := by
+    rw [hcurve]
+    exact mfderiv_const
+  exact congrArg (fun A : ℝ →L[ℝ] E => A (1 : ℝ)) hmf
+
 omit [FiniteDimensional ℝ E] in
 private theorem exists_dom_clamps
     (U : Set E) (hU : IsOpen U) (x w : E) (t₀ : ℝ) (hx : t₀ • x ∈ U) :
@@ -451,5 +469,92 @@ theorem linearIndependent_radialJacobiField
     exact radialJacobiField_eq_mfderiv_expMap (I := I) g p x (v i) t hdom
   rw [hfield]
   exact hmapped
+
+omit [T2Space M] in
+theorem inner_curveVelocity_radialJacobiField
+    (g : SmoothRiemannianMetric I M) (p : M) (x w : E) {t : ℝ}
+    (ht : (show TangentSpace I p from t • x) ∈ expDomain (I := I) g p) :
+    let γ : ℝ → M := fun r => expMap (I := I) g p (show TangentSpace I p from r • x)
+    g.inner (γ t) (curveVelocity (I := I) γ t) (radialJacobiField (I := I) g p x w t) =
+      t * g.inner p x w := by
+  let A : E →L[ℝ] E := mfderiv 𝓘(ℝ, E) I
+    (fun v : E => expMap (I := I) g p (show TangentSpace I p from v)) (t • x)
+  let G : E →L[ℝ] E →L[ℝ] ℝ :=
+    g.inner (expMap (I := I) g p (show TangentSpace I p from t • x))
+  have hv := mfderiv_expMap_smul (I := I) g p x t ht
+  have hJ := radialJacobiField_eq_mfderiv_expMap (I := I) g p x w t ht
+  have hg : G (A x) (A w) = g.inner p x w := gauss_lemma_smul (I := I) g p x w ht
+  have hscaled : G (A x) (A (t • w)) = t * g.inner p x w := by
+    rw [A.map_smul, map_smul, smul_eq_mul, hg]
+  exact (congrArg₂ (fun v w : E => G v w) hv hJ).trans hscaled
+
+omit [T2Space M] in
+theorem inner_curveVelocity_covDerivAlong_radialJacobiField
+    (g : SmoothRiemannianMetric I M) (p : M) (x w : E) {t : ℝ}
+    (ht : (show TangentSpace I p from t • x) ∈ expDomain (I := I) g p) :
+    let γ : ℝ → M := fun r => expMap (I := I) g p (show TangentSpace I p from r • x)
+    g.inner (γ t) (curveVelocity (I := I) γ t)
+      (covDerivAlong (I := I) g γ (radialJacobiField (I := I) g p x w) t) =
+      g.inner p x w := by
+  let γ : ℝ → M := fun r => expMap (I := I) g p (show TangentSpace I p from r • x)
+  let J := radialJacobiField (I := I) g p x w
+  have hγ : ContMDiffAt 𝓘(ℝ, ℝ) I 2 γ t :=
+    ((contMDiffAt_expMap (I := I) g p ht).comp t
+      (contMDiff_id.smul (contMDiff_const : ContMDiff 𝓘(ℝ, ℝ) 𝓘(ℝ, E) ∞
+        (fun _ : ℝ => x))).contMDiffAt).of_le (WithTop.coe_le_coe.mpr le_top)
+  have hd := inner_deriv_at (I := I) (n := 2) (by norm_num) g γ
+    (curveVelocity (I := I) γ) J t hγ (differentiableAt_chartRepAt_curveVelocity hγ)
+    (differentiableAt_chartRep_radialJacobiField (I := I) g p x w ht)
+  have hpar := covDerivAlong_velocity_eq_zero_of_hasGeodesicEquationAt_C2 (I := I) g γ t hγ
+    (hasGeodesicEquationAt_expMap_smul (I := I) g p x ht)
+  change covDerivAlong (I := I) g γ (curveVelocity (I := I) γ) t = 0 at hpar
+  rw [hpar, map_zero, zero_apply, zero_add] at hd
+  have hU : IsOpen {r : ℝ | (show TangentSpace I p from r • x) ∈ expDomain (I := I) g p} := by
+    have hUE : IsOpen {v : E | (show TangentSpace I p from v) ∈ expDomain (I := I) g p} :=
+      isOpen_expDomain (I := I) g p
+    exact hUE.preimage (continuous_id.smul (continuous_const : Continuous (fun _ : ℝ => x)))
+  have heq : (fun r => g.inner (γ r) (curveVelocity (I := I) γ r) (J r)) =ᶠ[𝓝 t]
+      (fun r => r * g.inner p x w) := by
+    filter_upwards [hU.mem_nhds ht] with r hr
+    exact inner_curveVelocity_radialJacobiField (I := I) g p x w hr
+  exact hd.unique ((hasDerivAt_mul_const (g.inner p x w)).congr_of_eventuallyEq heq)
+
+omit [T2Space M] in
+theorem jacobiWronskian_radialJacobiField_eq_zero
+    (g : SmoothRiemannianMetric I M) (p : M) (x w z : E) {t : ℝ}
+    (ht : (show TangentSpace I p from t • x) ∈ expDomain (I := I) g p) :
+    jacobiWronskian (I := I) g
+      (fun r => expMap (I := I) g p (show TangentSpace I p from r • x))
+      (radialJacobiField (I := I) g p x w) (radialJacobiField (I := I) g p x z) t = 0 := by
+  have : T2Space M := gauss_t2Space_base (I := I)
+  obtain ⟨η, S, hS, hconn, h0S, htS, hη⟩ := smul_mem_expDomain_iff.mp ht
+  have hdom r (hr : r ∈ uIcc (0 : ℝ) t) :
+      (show TangentSpace I p from r • x) ∈ expDomain (I := I) g p :=
+    smul_mem_expDomain_iff.mpr
+      ⟨η, S, hS, hconn, h0S, hconn.ordConnected.uIcc_subset h0S htS hr, hη⟩
+  let γ : ℝ → M := fun r => expMap (I := I) g p (show TangentSpace I p from r • x)
+  have hγ r (hr : r ∈ uIcc (0 : ℝ) t) : ContMDiffAt 𝓘(ℝ, ℝ) I 1 γ r :=
+    ((contMDiffAt_expMap (I := I) g p (hdom r hr)).comp r
+      (contMDiff_id.smul (contMDiff_const : ContMDiff 𝓘(ℝ, ℝ) 𝓘(ℝ, E) ∞
+        (fun _ : ℝ => x))).contMDiffAt).of_le (WithTop.coe_le_coe.mpr le_top)
+  have hJ (v : E) r (hr : r ∈ uIcc (0 : ℝ) t) :
+      MDifferentiableAt 𝓘(ℝ, ℝ) I.tangent
+        (fun s => (Bundle.TotalSpace.mk' E (γ s) (radialJacobiField (I := I) g p x v s) :
+          TangentBundle I M)) r :=
+    (contMDiffAt_radialJacobiField (I := I) g p x v (hdom r hr)).mdifferentiableAt (by simp)
+  have hDJ (v : E) r (hr : r ∈ uIcc (0 : ℝ) t) :
+      MDifferentiableAt 𝓘(ℝ, ℝ) I.tangent
+        (fun s => (Bundle.TotalSpace.mk' E (γ s)
+          (covDerivAlong (I := I) g γ (radialJacobiField (I := I) g p x v) s) :
+            TangentBundle I M)) r :=
+    (contMDiffAt_covDerivAlong (I := I) g (m := ⊤) (n := ⊤) (by simp)
+      (contMDiffAt_radialJacobiField (I := I) g p x v (hdom r hr))).mdifferentiableAt (by simp)
+  exact jacobiWronskian_eq_zero_of_isJacobiAt (I := I) g γ
+    (radialJacobiField (I := I) g p x w) (radialJacobiField (I := I) g p x z)
+    (convex_Icc _ _) hγ (hJ w) (hJ z) (hDJ w) (hDJ z)
+    (fun r hr => isJacobiAt_radialJacobiField (I := I) g p x w (hdom r (interior_subset hr)))
+    (fun r hr => isJacobiAt_radialJacobiField (I := I) g p x z (hdom r (interior_subset hr)))
+    left_mem_uIcc right_mem_uIcc (radialJacobiField_zero (I := I) g p x w)
+      (radialJacobiField_zero (I := I) g p x z)
 
 end DifferentialGeometry.Geometry.Riemannian.VolumeComparison

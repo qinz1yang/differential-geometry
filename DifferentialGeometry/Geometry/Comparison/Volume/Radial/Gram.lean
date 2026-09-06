@@ -134,8 +134,8 @@ theorem radial_wronsk_zero
     (radialJacobiField (I := I) g p x z)
     (radialCurve_contMDiffAt_Icc (I := I) g p x hb1 hxe)
     hJdiff hKdiff hDJdiff hDKdiff hJacobianJ hJacobianK
-    (radialJacobi_zero (I := I) g p x w)
-    (radialJacobi_zero (I := I) g p x z) t ht
+    (radialJacobiField_zero (I := I) g p x w)
+    (radialJacobiField_zero (I := I) g p x z) t ht
 
 end Radial
 

@@ -89,14 +89,8 @@ theorem injective_mfderiv_expMap_of_minimising_geodesic
       (curveVelocity (I := I) γ 0) = 1 := by
     rw [hvel0, hγ0]
     exact hunit
-  have hJ0 : J 0 = 0 := by
-    let A : E →L[ℝ] E := mfderiv 𝓘(ℝ, E) I
-      (fun v : E => expMap (I := I) g p (show TangentSpace I p from v)) ((0 : ℝ) • u)
-    have hr : (Jr 0 : E) = A ((0 : ℝ) • z) :=
-      radialJacobiField_eq_mfderiv_expMap (I := I) g p u z 0 (hseg' h0)
-    have hA : A ((0 : ℝ) • z) = 0 :=
-      (congrArg A (zero_smul ℝ z)).trans A.map_zero
-    exact (hJeq 0 h0).eq_of_nhds.trans (hr.trans hA)
+  have hJ0 : J 0 = 0 :=
+    (hJeq 0 h0).eq_of_nhds.trans (radialJacobiField_zero (I := I) g p u z)
   have hJc : J c = 0 := by
     let A : E →L[ℝ] E := mfderiv 𝓘(ℝ, E) I
       (fun v : E => expMap (I := I) g p (show TangentSpace I p from v)) (c • u)
