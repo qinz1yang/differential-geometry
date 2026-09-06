@@ -39,6 +39,185 @@ noncomputable def reciprocalPotentialBarrier
         (contMDiff_rpow_of_pos (I := I) (p := (-2 : Real)) hpos))⟩
 
 omit [NeZero (Module.finrank Real E)] in
+theorem normalizedGradientRicciSoliton_weightedLaplacian_rpow_at
+    {g : SmoothRiemannianMetric I M} {f : C^∞⟮I, M; Real⟯}
+    (h : normalizedGradientRicciSoliton (I := I) g f)
+    (p : Real) {x : M} (hx : 0 < f x) :
+    laplacian (I := I) (LeviCivita (I := I) g) g (fun y => f y ^ p) x -
+        g.inner x (gradientFun (I := I) g f x)
+          (gradientFun (I := I) g (fun y => f y ^ p) x) =
+      (p * f x ^ (p - 1)) * ((Module.finrank Real E : Real) / 2 - f x) +
+        (p * (p - 1) * f x ^ (p - 2)) *
+          g.inner x (gradientFun (I := I) g f x)
+            (gradientFun (I := I) g f x) := by
+  have hf : ∀ y : M, MDifferentiableAt I 𝓘(Real, Real) (f : M → Real) y :=
+    fun y => (f.contMDiff y).mdifferentiableAt (by simp)
+  have hgrad : MDiffAt (T% fun y : M => gradientFun (I := I) g f y) x :=
+    (gradientFun_contMDiffAt (I := I) g (f.contMDiff x)).mdifferentiableAt (by simp)
+  have hpotential := normalizedGradientRicciSoliton_weightedLaplacian_potential h x
+  have hbridge : laplacian (I := I) (LeviCivita (I := I) g) g f x = ΔG g f x :=
+    laplacian_levi_eq (I := I) g f.contMDiff x
+  rw [weightedLaplacian_apply, ← hbridge,
+    ← Connection.gradient_eq_gradFun] at hpotential
+  rw [laplacian_rpow_at (I := I) (LeviCivita (I := I) g) g p
+      (Filter.Eventually.of_forall hf) hx hgrad,
+    gradientFun_rpow (I := I) g p (hf x) hx]
+  simp only [map_smul, smul_eq_mul]
+  rw [← hpotential]
+  ring
+
+omit [NeZero (Module.finrank Real E)] in
+theorem normalizedGradientRicciSoliton_weightedLaplacian_inv_at
+    {g : SmoothRiemannianMetric I M} {f : C^∞⟮I, M; Real⟯}
+    (h : normalizedGradientRicciSoliton (I := I) g f)
+    {x : M} (hx : 0 < f x) :
+    laplacian (I := I) (LeviCivita (I := I) g) g
+        (fun y => f y ^ (-1 : Real)) x -
+        g.inner x (gradientFun (I := I) g f x)
+          (gradientFun (I := I) g (fun y => f y ^ (-1 : Real)) x) =
+      f x ^ (-1 : Real) - (Module.finrank Real E : Real) / 2 * f x ^ (-2 : Real) +
+        2 * g.inner x (gradFun (I := I) g f x) (gradFun (I := I) g f x) *
+          f x ^ (-3 : Real) := by
+  rw [normalizedGradientRicciSoliton_weightedLaplacian_rpow_at h (-1) hx]
+  have hpow : f x ^ (-2 : Real) * f x = f x ^ (-1 : Real) := by
+    calc
+      f x ^ (-2 : Real) * f x = f x ^ (-2 : Real) * f x ^ (1 : Real) := by
+        rw [Real.rpow_one]
+      _ = f x ^ ((-2 : Real) + 1) := (Real.rpow_add hx _ _).symm
+      _ = f x ^ (-1 : Real) := by norm_num
+  rw [Connection.gradient_eq_gradFun]
+  norm_num only [show (-1 : Real) - 1 = -2 by norm_num,
+    show (-1 : Real) - 2 = -3 by norm_num]
+  nlinarith [hpow]
+
+omit [NeZero (Module.finrank Real E)] in
+theorem normalizedGradientRicciSoliton_weightedLaplacian_inv_sq_at
+    {g : SmoothRiemannianMetric I M} {f : C^∞⟮I, M; Real⟯}
+    (h : normalizedGradientRicciSoliton (I := I) g f)
+    {x : M} (hx : 0 < f x) :
+    laplacian (I := I) (LeviCivita (I := I) g) g
+        (fun y => f y ^ (-2 : Real)) x -
+        g.inner x (gradientFun (I := I) g f x)
+          (gradientFun (I := I) g (fun y => f y ^ (-2 : Real)) x) =
+      2 * f x ^ (-2 : Real) - (Module.finrank Real E : Real) * f x ^ (-3 : Real) +
+        6 * g.inner x (gradFun (I := I) g f x) (gradFun (I := I) g f x) *
+          f x ^ (-4 : Real) := by
+  rw [normalizedGradientRicciSoliton_weightedLaplacian_rpow_at h (-2) hx]
+  have hpow : f x ^ (-3 : Real) * f x = f x ^ (-2 : Real) := by
+    calc
+      f x ^ (-3 : Real) * f x = f x ^ (-3 : Real) * f x ^ (1 : Real) := by
+        rw [Real.rpow_one]
+      _ = f x ^ ((-3 : Real) + 1) := (Real.rpow_add hx _ _).symm
+      _ = f x ^ (-2 : Real) := by norm_num
+  rw [Connection.gradient_eq_gradFun]
+  norm_num only [show (-2 : Real) - 1 = -3 by norm_num,
+    show (-2 : Real) - 2 = -4 by norm_num]
+  nlinarith [hpow]
+
+omit [NeZero (Module.finrank Real E)] in
+theorem normalizedGradientRicciSoliton_weightedLaplacian_reciprocalPotentialBarrier_at
+    {g : SmoothRiemannianMetric I M} {f : C^∞⟮I, M; Real⟯}
+    (h : normalizedGradientRicciSoliton (I := I) g f)
+    {x : M} (hx : 0 < f x) :
+    let B : M → Real := fun y =>
+      f y ^ (-1 : Real) + (Module.finrank Real E : Real) * f y ^ (-2 : Real)
+    laplacian (I := I) (LeviCivita (I := I) g) g B x -
+        g.inner x (gradientFun (I := I) g f x) (gradientFun (I := I) g B x) =
+      B x + (Module.finrank Real E : Real) * f x ^ (-3 : Real) *
+          (f x / 2 - (Module.finrank Real E : Real)) +
+        2 * g.inner x (gradFun (I := I) g f x)
+            (gradFun (I := I) g f x) * f x ^ (-3 : Real) +
+        6 * (Module.finrank Real E : Real) *
+          g.inner x (gradFun (I := I) g f x)
+            (gradFun (I := I) g f x) * f x ^ (-4 : Real) := by
+  let u : M → Real := fun y => f y ^ (-1 : Real)
+  let v : M → Real := fun y => f y ^ (-2 : Real)
+  let n : Real := Module.finrank Real E
+  have hnear : ∀ᶠ y in nhds x, 0 < f y :=
+    f.contMDiff.continuous.continuousAt.eventually (lt_mem_nhds hx)
+  have hu : ∀ᶠ y in nhds x, MDifferentiableAt I 𝓘(Real, Real) u y := by
+    filter_upwards [hnear] with y hy
+    exact mdifferentiableAt_rpow (I := I) (-1)
+      ((f.contMDiff y).mdifferentiableAt (by simp)) hy
+  have hv : ∀ᶠ y in nhds x, MDifferentiableAt I 𝓘(Real, Real) v y := by
+    filter_upwards [hnear] with y hy
+    exact mdifferentiableAt_rpow (I := I) (-2)
+      ((f.contMDiff y).mdifferentiableAt (by simp)) hy
+  have hw : ∀ᶠ y in nhds x,
+      MDifferentiableAt I 𝓘(Real, Real) (n • v) y := by
+    filter_upwards [hv] with y hy
+    exact mdifferentiableAt_const.mul hy
+  have hus : ContMDiffAt I 𝓘(Real, Real) ∞ u x :=
+    (Real.contDiffAt_rpow_const_of_ne (p := (-1 : Real)) hx.ne').comp_contMDiffAt
+      f.contMDiff.contMDiffAt
+  have hvs : ContMDiffAt I 𝓘(Real, Real) ∞ v x :=
+    (Real.contDiffAt_rpow_const_of_ne (p := (-2 : Real)) hx.ne').comp_contMDiffAt
+      f.contMDiff.contMDiffAt
+  have hgu : MDiffAt (T% fun y => gradientFun (I := I) g u y) x :=
+    (gradientFun_contMDiffAt (I := I) g hus).mdifferentiableAt (by simp)
+  have hgv : MDiffAt (T% fun y => gradientFun (I := I) g v y) x :=
+    (gradientFun_contMDiffAt (I := I) g hvs).mdifferentiableAt (by simp)
+  have hgw : MDiffAt (T% fun y => gradientFun (I := I) g (n • v) y) x :=
+    (gradientFun_contMDiffAt (I := I) g (contMDiffAt_const.mul hvs)).mdifferentiableAt
+      (by simp)
+  have hlinear :
+      laplacian (I := I) (LeviCivita (I := I) g) g (fun y => u y + (n • v) y) x -
+          g.inner x (gradientFun (I := I) g f x)
+            (gradientFun (I := I) g (fun y => u y + (n • v) y) x) =
+        (laplacian (I := I) (LeviCivita (I := I) g) g u x -
+          g.inner x (gradientFun (I := I) g f x) (gradientFun (I := I) g u x)) +
+        n * (laplacian (I := I) (LeviCivita (I := I) g) g v x -
+          g.inner x (gradientFun (I := I) g f x) (gradientFun (I := I) g v x)) := by
+    rw [laplacian_add_at (I := I) (LeviCivita (I := I) g) g hu hw hgu hgw,
+      laplacian_smul_at (I := I) (LeviCivita (I := I) g) g n hv hgv,
+      gradientFun_add (I := I) g hu.self_of_nhds hw.self_of_nhds,
+      gradientFun_const_smul (I := I) g n hv.self_of_nhds]
+    simp only [map_add, map_smul, smul_eq_mul]
+    ring
+  change laplacian (I := I) (LeviCivita (I := I) g) g (fun y => u y + (n • v) y) x -
+    g.inner x (gradientFun (I := I) g f x)
+      (gradientFun (I := I) g (fun y => u y + (n • v) y) x) = _
+  rw [hlinear,
+    normalizedGradientRicciSoliton_weightedLaplacian_inv_at h hx,
+    normalizedGradientRicciSoliton_weightedLaplacian_inv_sq_at h hx]
+  have hpow : f x ^ (-3 : Real) * f x = f x ^ (-2 : Real) := by
+    calc
+      f x ^ (-3 : Real) * f x = f x ^ (-3 : Real) * f x ^ (1 : Real) := by
+        rw [Real.rpow_one]
+      _ = f x ^ ((-3 : Real) + 1) := (Real.rpow_add hx _ _).symm
+      _ = f x ^ (-2 : Real) := by norm_num
+  dsimp only [u, v, n]
+  nlinarith [congrArg (fun r : Real => (Module.finrank Real E : Real) * r) hpow]
+
+omit [NeZero (Module.finrank Real E)] in
+theorem normalizedGradientRicciSoliton_weightedLaplacian_reciprocalPotentialBarrier_ge_at
+    {g : SmoothRiemannianMetric I M} {f : C^∞⟮I, M; Real⟯}
+    (h : normalizedGradientRicciSoliton (I := I) g f)
+    {x : M} (hx : 0 < f x) (hlarge : 2 * (Module.finrank Real E : Real) ≤ f x) :
+    let B : M → Real := fun y =>
+      f y ^ (-1 : Real) + (Module.finrank Real E : Real) * f y ^ (-2 : Real)
+    B x ≤ laplacian (I := I) (LeviCivita (I := I) g) g B x -
+      g.inner x (gradientFun (I := I) g f x) (gradientFun (I := I) g B x) := by
+  change _ ≤ _
+  rw [normalizedGradientRicciSoliton_weightedLaplacian_reciprocalPotentialBarrier_at h hx]
+  have hn : 0 ≤ (Module.finrank Real E : Real) := by positivity
+  have hf : 0 ≤ f x / 2 - (Module.finrank Real E : Real) := by linarith
+  have hgrad : 0 ≤ g.inner x (gradFun (I := I) g f x)
+      (gradFun (I := I) g f x) := by
+    simpa only [normGradSqFun_def] using
+      normGradSqFun_nonneg (I := I) g (f : M → Real) x
+  have hp3 : 0 ≤ f x ^ (-3 : Real) := (Real.rpow_pos_of_pos hx _).le
+  have hp4 : 0 ≤ f x ^ (-4 : Real) := (Real.rpow_pos_of_pos hx _).le
+  have hterm1 : 0 ≤ (Module.finrank Real E : Real) *
+      f x ^ (-3 : Real) * (f x / 2 - (Module.finrank Real E : Real)) := by positivity
+  have hterm2 : 0 ≤ 2 * g.inner x (gradFun (I := I) g f x)
+      (gradFun (I := I) g f x) * f x ^ (-3 : Real) := by positivity
+  have hterm3 : 0 ≤ 6 * (Module.finrank Real E : Real) *
+      g.inner x (gradFun (I := I) g f x)
+        (gradFun (I := I) g f x) * f x ^ (-4 : Real) := by positivity
+  linarith
+
+omit [NeZero (Module.finrank Real E)] in
 theorem normalizedGradientRicciSoliton_weightedLaplacian_inv
     {g : SmoothRiemannianMetric I M} {f : C^∞⟮I, M; Real⟯}
     (h : normalizedGradientRicciSoliton (I := I) g f)
@@ -52,82 +231,11 @@ theorem normalizedGradientRicciSoliton_weightedLaplacian_inv
   let u : C^∞⟮I, M; 𝓘(Real, Real), Real⟯ :=
     ⟨fun y : M => f y ^ (-1 : Real), contMDiff_rpow_of_pos (I := I) hpos⟩
   change weightedLaplacian (I := I) g f u x = _
-  have hf : ∀ y : M, MDifferentiableAt I 𝓘(Real, Real) (f : M → Real) y :=
-    fun y => (f.contMDiff y).mdifferentiableAt (by simp)
-  have hgrad : MDiffAt (T% fun y : M => gradientFun (I := I) g f y) x :=
-    (gradientFun_contMDiffAt (I := I) g (f.contMDiff x)).mdifferentiableAt (by simp)
-  have hpow := laplacian_rpow (I := I) (LeviCivita (I := I) g) g
-    (-1 : Real) hf hpos hgrad
-  have hpow' :
-      ΔG (I := I) g u x =
-        (-1 : Real) * f x ^ (-2 : Real) * ΔG (I := I) g f x +
-          (-1 : Real) * (-2 : Real) * f x ^ (-3 : Real) *
-            g.inner x (gradientFun (I := I) g f x)
-              (gradientFun (I := I) g f x) := by
-    have hu' :
-        ΔG (I := I) g u x =
-          laplacian (I := I) (LeviCivita (I := I) g) g
-            (u : M → Real) x := by
-      exact (laplacian_levi_eq (I := I) g u.contMDiff x).symm
-    have hf' :
-        ΔG (I := I) g f x =
-          laplacian (I := I) (LeviCivita (I := I) g) g
-            (f : M → Real) x := by
-      exact (laplacian_levi_eq (I := I) g f.contMDiff x).symm
-    rw [hu', hf']
-    change laplacian (I := I) (LeviCivita (I := I) g) g
-      (fun y : M => f y ^ (-1 : Real)) x = _
-    convert hpow using 1
-    all_goals ring_nf
-  have hgradpow :
-      gradFun (I := I) g u x =
-        ((-1 : Real) * f x ^ (-2 : Real)) •
-          gradFun (I := I) g f x := by
-    change gradientFun (I := I) g (u : M → Real) x =
-      ((-1 : Real) * f x ^ (-2 : Real)) • gradientFun (I := I) g f x
-    rw [show (u : M → Real) = (fun y : M => f y ^ (-1 : Real)) by rfl]
-    convert gradientFun_rpow (I := I) g (-1 : Real) (hf x) (hpos x) using 1
-    all_goals ring_nf
-  have htrace := gradientRicciSoliton_trace (I := I) h.2.1 x
-  have hham := normalizedGradientRicciSoliton_potential_equation (I := I) h x
-  have hfg : gradFun (I := I) g f x = gradientFun (I := I) g f x := by
-    exact (Connection.gradient_eq_gradFun (I := I) g f x).symm
-  rw [hfg] at hham hgradpow
-  have hΔ :
-      ΔG (I := I) g f x =
-        (Module.finrank Real E : Real) / 2 - f x +
-          g.inner x (gradientFun (I := I) g f x) (gradientFun (I := I) g f x) := by
-    change metricScalarAt (I := I) g x + ΔG (I := I) g f x =
-      (Module.finrank Real E : Real) * 1 / 2 at htrace
-    linarith [htrace, hham]
-  rw [weightedLaplacian_apply, hfg, hpow', hgradpow]
-  rw [show g.inner x (gradientFun (I := I) g f x)
-      (((-1 : Real) * f x ^ (-2 : Real)) •
-        gradientFun (I := I) g f x) =
-      (-1 : Real) * f x ^ (-2 : Real) *
-        g.inner x (gradientFun (I := I) g f x)
-          (gradientFun (I := I) g f x) by
-    simp only [map_smul, smul_eq_mul]]
-  rw [hΔ]
-  have hpow12 : f x ^ (-2 : Real) * f x = f x ^ (-1 : Real) := by
-    calc
-      f x ^ (-2 : Real) * f x = f x ^ (-2 : Real) * f x ^ (1 : Real) := by
-        rw [Real.rpow_one]
-      _ = f x ^ ((-2 : Real) + 1) := (Real.rpow_add (hpos x) _ _).symm
-      _ = f x ^ (-1 : Real) := by norm_num
-  calc
-    _ = -1 * f x ^ (-2 : Real) *
-          ((Module.finrank Real E : Real) / 2 +
-            g.inner x (gradientFun (I := I) g f x)
-              (gradientFun (I := I) g f x)) +
-          f x ^ (-2 : Real) * f x +
-          (-1 : Real) * (-2 : Real) * f x ^ (-3 : Real) *
-            g.inner x (gradientFun (I := I) g f x)
-              (gradientFun (I := I) g f x) -
-          (-1 : Real) * f x ^ (-2 : Real) *
-            g.inner x (gradientFun (I := I) g f x)
-              (gradientFun (I := I) g f x) := by ring
-    _ = _ := by rw [hpow12]; ring
+  have hbridge : laplacian (I := I) (LeviCivita (I := I) g) g u x = ΔG g u x :=
+    laplacian_levi_eq (I := I) g u.contMDiff x
+  rw [weightedLaplacian_apply, ← hbridge]
+  simpa only [u, ContMDiffMap.coeFn_mk, Connection.gradient_eq_gradFun] using
+    normalizedGradientRicciSoliton_weightedLaplacian_inv_at h (hpos x)
 
 omit [NeZero (Module.finrank Real E)] in
 theorem normalizedGradientRicciSoliton_weightedLaplacian_inv_sq
@@ -143,92 +251,11 @@ theorem normalizedGradientRicciSoliton_weightedLaplacian_inv_sq
   let u : C^∞⟮I, M; 𝓘(Real, Real), Real⟯ :=
     ⟨fun y : M => f y ^ (-2 : Real), contMDiff_rpow_of_pos (I := I) hpos⟩
   change weightedLaplacian (I := I) g f u x = _
-  have hf : ∀ y : M, MDifferentiableAt I 𝓘(Real, Real) (f : M → Real) y :=
-    fun y => (f.contMDiff y).mdifferentiableAt (by simp)
-  have hgrad : MDiffAt (T% fun y : M => gradientFun (I := I) g f y) x :=
-    (gradientFun_contMDiffAt (I := I) g (f.contMDiff x)).mdifferentiableAt (by simp)
-  have hpow := laplacian_rpow (I := I) (LeviCivita (I := I) g) g
-    (-2 : Real) hf hpos hgrad
-  have hpow' :
-      ΔG (I := I) g u x =
-        (-2 : Real) * f x ^ (-3 : Real) * ΔG (I := I) g f x +
-          (-2 : Real) * (-3 : Real) * f x ^ (-4 : Real) *
-            g.inner x (gradientFun (I := I) g f x)
-              (gradientFun (I := I) g f x) := by
-    have hu' :
-        ΔG (I := I) g u x =
-          laplacian (I := I) (LeviCivita (I := I) g) g
-            (u : M → Real) x := by
-      exact (laplacian_levi_eq (I := I) g u.contMDiff x).symm
-    have hf' :
-        ΔG (I := I) g f x =
-          laplacian (I := I) (LeviCivita (I := I) g) g
-            (f : M → Real) x := by
-      exact (laplacian_levi_eq (I := I) g f.contMDiff x).symm
-    rw [hu', hf']
-    change laplacian (I := I) (LeviCivita (I := I) g) g
-      (fun y : M => f y ^ (-2 : Real)) x =
-        -2 * f x ^ (-3 : Real) *
-            laplacian (I := I) (LeviCivita (I := I) g) g (f : M → Real) x + _
-    convert hpow using 1
-    all_goals ring_nf
-  have hgradpow :
-      gradFun (I := I) g u x =
-        ((-2 : Real) * f x ^ (-3 : Real)) •
-          gradFun (I := I) g f x := by
-    change gradientFun (I := I) g (u : M → Real) x =
-      ((-2 : Real) * f x ^ (-3 : Real)) • gradientFun (I := I) g f x
-    rw [show (u : M → Real) = (fun y : M => f y ^ (-2 : Real)) by rfl]
-    convert gradientFun_rpow (I := I) g (-2 : Real) (hf x) (hpos x) using 1
-    all_goals ring_nf
-  have htrace := gradientRicciSoliton_trace (I := I) h.2.1 x
-  have hham := normalizedGradientRicciSoliton_potential_equation (I := I) h x
-  have hfg : gradFun (I := I) g f x = gradientFun (I := I) g f x := by
-    exact (Connection.gradient_eq_gradFun (I := I) g f x).symm
-  rw [hfg] at hham hgradpow
-  have hΔ :
-      ΔG (I := I) g f x =
-        (Module.finrank Real E : Real) / 2 - f x +
-          g.inner x (gradientFun (I := I) g f x) (gradientFun (I := I) g f x) := by
-    change metricScalarAt (I := I) g x + ΔG (I := I) g f x =
-      (Module.finrank Real E : Real) * 1 / 2 at htrace
-    linarith [htrace, hham]
-  rw [weightedLaplacian_apply, hfg, hpow', hgradpow]
-  rw [show g.inner x (gradientFun (I := I) g f x)
-      (((-2 : Real) * f x ^ (-3 : Real)) •
-        gradientFun (I := I) g f x) =
-      (-2 : Real) * f x ^ (-3 : Real) *
-        g.inner x (gradientFun (I := I) g f x)
-          (gradientFun (I := I) g f x) by
-    simp only [map_smul, smul_eq_mul]]
-  rw [hΔ]
-  have hpow23 : f x ^ (-3 : Real) * f x = f x ^ (-2 : Real) := by
-    calc
-      f x ^ (-3 : Real) * f x = f x ^ (-3 : Real) * f x ^ (1 : Real) := by
-        rw [Real.rpow_one]
-      _ = f x ^ ((-3 : Real) + 1) := (Real.rpow_add (hpos x) _ _).symm
-      _ = f x ^ (-2 : Real) := by norm_num
-  calc
-    _ = (-2 : Real) * f x ^ (-3 : Real) *
-          ((Module.finrank Real E : Real) / 2 +
-            g.inner x (gradientFun (I := I) g f x)
-              (gradientFun (I := I) g f x)) +
-          2 * f x ^ (-3 : Real) * f x +
-          (-2 : Real) * (-3 : Real) * f x ^ (-4 : Real) *
-            g.inner x (gradientFun (I := I) g f x)
-              (gradientFun (I := I) g f x) -
-          (-2 : Real) * f x ^ (-3 : Real) *
-            g.inner x (gradientFun (I := I) g f x)
-              (gradientFun (I := I) g f x) := by ring
-    _ = _ := by
-      have hmul : 2 * f x ^ (-3 : Real) * f x =
-          2 * f x ^ (-2 : Real) := by
-        calc
-          2 * f x ^ (-3 : Real) * f x =
-              2 * (f x ^ (-3 : Real) * f x) := by ring
-          _ = 2 * f x ^ (-2 : Real) := by rw [hpow23]
-      rw [hmul]
-      ring
+  have hbridge : laplacian (I := I) (LeviCivita (I := I) g) g u x = ΔG g u x :=
+    laplacian_levi_eq (I := I) g u.contMDiff x
+  rw [weightedLaplacian_apply, ← hbridge]
+  simpa only [u, ContMDiffMap.coeFn_mk, Connection.gradient_eq_gradFun] using
+    normalizedGradientRicciSoliton_weightedLaplacian_inv_sq_at h (hpos x)
 
 omit [NeZero (Module.finrank Real E)] in
 theorem normalizedGradientRicciSoliton_weightedLaplacian_reciprocalPotentialBarrier
@@ -245,56 +272,15 @@ theorem normalizedGradientRicciSoliton_weightedLaplacian_reciprocalPotentialBarr
         6 * (Module.finrank Real E : Real) *
           g.inner x (gradFun (I := I) g f x)
             (gradFun (I := I) g f x) * f x ^ (-4 : Real) := by
-  let u : C^∞⟮I, M; Real⟯ :=
-    ⟨fun y : M => f y ^ (-1 : Real),
-      contMDiff_rpow_of_pos (I := I) hpos⟩
-  let v : C^∞⟮I, M; Real⟯ :=
-    ⟨fun y : M => f y ^ (-2 : Real),
-      contMDiff_rpow_of_pos (I := I) hpos⟩
-  let n : Real := Module.finrank Real E
-  have hbarrier : reciprocalPotentialBarrier (I := I) f hpos = u + n • v := by
-    apply ContMDiffMap.ext
-    intro y
-    rfl
-  rw [hbarrier, weightedLaplacian_add,
-    weightedLaplacian_const_smul]
-  rw [normalizedGradientRicciSoliton_weightedLaplacian_inv
-      (I := I) h hpos x,
-    normalizedGradientRicciSoliton_weightedLaplacian_inv_sq
-      (I := I) h hpos x]
-  change f x ^ (-1 : Real) - n / 2 * f x ^ (-2 : Real) +
-        2 * g.inner x (gradFun (I := I) g f x)
-          (gradFun (I := I) g f x) * f x ^ (-3 : Real) +
-      n * (2 * f x ^ (-2 : Real) - n * f x ^ (-3 : Real) +
-        6 * g.inner x (gradFun (I := I) g f x)
-          (gradFun (I := I) g f x) * f x ^ (-4 : Real)) =
-    (f x ^ (-1 : Real) + n * f x ^ (-2 : Real)) +
-      n * f x ^ (-3 : Real) * (f x / 2 - n) +
-      2 * g.inner x (gradFun (I := I) g f x)
-        (gradFun (I := I) g f x) * f x ^ (-3 : Real) +
-      6 * n * g.inner x (gradFun (I := I) g f x)
-        (gradFun (I := I) g f x) * f x ^ (-4 : Real)
-  have hpow : f x ^ (-3 : Real) * f x = f x ^ (-2 : Real) := by
-    calc
-      f x ^ (-3 : Real) * f x =
-          f x ^ (-3 : Real) * f x ^ (1 : Real) := by rw [Real.rpow_one]
-      _ = f x ^ ((-3 : Real) + 1) :=
-        (Real.rpow_add (hpos x) _ _).symm
-      _ = f x ^ (-2 : Real) := by norm_num
-  have hhalf :
-      n * f x ^ (-3 : Real) * (f x / 2) =
-        n / 2 * f x ^ (-2 : Real) := by
-    calc
-      n * f x ^ (-3 : Real) * (f x / 2) =
-          n / 2 * (f x ^ (-3 : Real) * f x) := by ring
-      _ = n / 2 * f x ^ (-2 : Real) := by rw [hpow]
-  have hbarrierTerm :
-      n * f x ^ (-3 : Real) * (f x / 2 - n) =
-        n / 2 * f x ^ (-2 : Real) - n ^ 2 * f x ^ (-3 : Real) := by
-    rw [mul_sub, hhalf]
-    ring
-  rw [hbarrierTerm]
-  ring
+  have hbridge :
+      laplacian (I := I) (LeviCivita (I := I) g) g
+          (reciprocalPotentialBarrier (I := I) f hpos) x =
+        ΔG g (reciprocalPotentialBarrier (I := I) f hpos) x :=
+    laplacian_levi_eq (I := I) g (reciprocalPotentialBarrier (I := I) f hpos).contMDiff x
+  rw [weightedLaplacian_apply, ← hbridge]
+  simpa only [reciprocalPotentialBarrier, ContMDiffMap.coeFn_mk,
+    Connection.gradient_eq_gradFun] using
+    normalizedGradientRicciSoliton_weightedLaplacian_reciprocalPotentialBarrier_at h (hpos x)
 
 omit [NeZero (Module.finrank Real E)] in
 theorem normalizedGradientRicciSoliton_weightedLaplacian_reciprocalPotentialBarrier_ge
@@ -305,26 +291,15 @@ theorem normalizedGradientRicciSoliton_weightedLaplacian_reciprocalPotentialBarr
     reciprocalPotentialBarrier (I := I) f hpos x ≤
       weightedLaplacian (I := I) g f
         (reciprocalPotentialBarrier (I := I) f hpos) x := by
-  rw [normalizedGradientRicciSoliton_weightedLaplacian_reciprocalPotentialBarrier
-    (I := I) h hpos x]
-  have hn : 0 ≤ (Module.finrank Real E : Real) := by positivity
-  have hf : 0 ≤ f x / 2 - (Module.finrank Real E : Real) := by linarith
-  have hgrad : 0 ≤ g.inner x (gradFun (I := I) g f x)
-      (gradFun (I := I) g f x) := by
-    simpa only [normGradSqFun_def] using
-      normGradSqFun_nonneg (I := I) g (f : M → Real) x
-  have hp3 : 0 ≤ f x ^ (-3 : Real) :=
-    (Real.rpow_pos_of_pos (hpos x) _).le
-  have hp4 : 0 ≤ f x ^ (-4 : Real) :=
-    (Real.rpow_pos_of_pos (hpos x) _).le
-  have hterm1 : 0 ≤ (Module.finrank Real E : Real) *
-      f x ^ (-3 : Real) *
-        (f x / 2 - (Module.finrank Real E : Real)) := by positivity
-  have hterm2 : 0 ≤ 2 * g.inner x (gradFun (I := I) g f x)
-      (gradFun (I := I) g f x) * f x ^ (-3 : Real) := by positivity
-  have hterm3 : 0 ≤ 6 * (Module.finrank Real E : Real) *
-      g.inner x (gradFun (I := I) g f x)
-        (gradFun (I := I) g f x) * f x ^ (-4 : Real) := by positivity
-  linarith
+  have hbridge :
+      laplacian (I := I) (LeviCivita (I := I) g) g
+          (reciprocalPotentialBarrier (I := I) f hpos) x =
+        ΔG g (reciprocalPotentialBarrier (I := I) f hpos) x :=
+    laplacian_levi_eq (I := I) g (reciprocalPotentialBarrier (I := I) f hpos).contMDiff x
+  rw [weightedLaplacian_apply, ← hbridge]
+  simpa only [reciprocalPotentialBarrier, ContMDiffMap.coeFn_mk,
+    Connection.gradient_eq_gradFun] using
+    normalizedGradientRicciSoliton_weightedLaplacian_reciprocalPotentialBarrier_ge_at
+      h (hpos x) hx
 
 end DifferentialGeometry.Geometry

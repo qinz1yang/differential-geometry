@@ -1187,25 +1187,28 @@ theorem laplacian_mul_at
         (gradientFun (I := I) g f x)]
       ring
 
-theorem laplacian_rpow
+theorem laplacian_rpow_at
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (g : SmoothRiemannianMetric I M)
     {f : M -> Real} {x : M} (p : Real)
-    (hf : forall y : M, MDifferentiableAt I 𝓘(Real, Real) f y)
-    (hpos : forall y : M, 0 < f y)
+    (hf : ∀ᶠ y in nhds x, MDifferentiableAt I 𝓘(Real, Real) f y)
+    (hpos : 0 < f x)
     (hgrad : MDiffAt (T% fun y : M => gradientFun (I := I) g f y) x) :
     laplacian (I := I) cov g (fun y : M => f y ^ p) x =
       (p * f x ^ (p - 1)) * laplacian (I := I) cov g f x +
         (p * (p - 1) * f x ^ (p - 2)) *
           g.inner x (gradientFun (I := I) g f x)
             (gradientFun (I := I) g f x) := by
+  have hfx := hf.self_of_nhds
+  have hpos_near : ∀ᶠ y in nhds x, 0 < f y :=
+    hfx.continuousAt.eventually (lt_mem_nhds hpos)
   let coeffFun : M -> Real := fun y => p * f y ^ (p - 1)
   have hcoeff :
       MDifferentiableAt I 𝓘(Real, Real) coeffFun x := by
     have hrpow :
         MDifferentiableAt I 𝓘(Real, Real)
           (fun y : M => f y ^ (p - 1)) x :=
-      mdifferentiableAt_rpow (I := I) (p - 1) (hf x) (hpos x)
+      mdifferentiableAt_rpow (I := I) (p - 1) hfx hpos
     change MDifferentiableAt I 𝓘(Real, Real)
       ((fun _ : M => p) * fun y : M => f y ^ (p - 1)) x
     exact mdifferentiableAt_const.mul hrpow
@@ -1214,10 +1217,25 @@ theorem laplacian_rpow
         (T% (coeffFun • fun y : M => gradientFun (I := I) g f y)) x := by
     exact hcoeff.smul_section hgrad
   have hgrad_eq :
-      gradientFun (I := I) g (fun y : M => f y ^ p) =
-        coeffFun • fun y : M => gradientFun (I := I) g f y := by
-    funext y
-    simpa [coeffFun] using gradientFun_rpow (I := I) g p (hf y) (hpos y)
+      (fun y : M => gradientFun (I := I) g (fun z => f z ^ p) y) =ᶠ[nhds x]
+        (fun y : M => coeffFun y • gradientFun (I := I) g f y) := by
+    filter_upwards [hf, hpos_near] with y hfy hpy
+    change gradientFun (I := I) g (fun z => f z ^ p) y =
+      (p * f y ^ (p - 1)) • gradientFun (I := I) g f y
+    exact gradientFun_rpow (I := I) g p hfy hpy
+  have hgrad_total :
+      (T% fun y : M => gradientFun (I := I) g (fun z => f z ^ p) y) =ᶠ[nhds x]
+        (T% (coeffFun • fun y : M => gradientFun (I := I) g f y)) := by
+    filter_upwards [hgrad_eq] with y hy
+    exact congrArg (TotalSpace.mk' E y) hy
+  have hgrad_pow : MDiffAt
+      (T% fun y : M => gradientFun (I := I) g (fun z => f z ^ p) y) x :=
+    hcoeffgrad.congr_of_eventuallyEq hgrad_total
+  have hcov :
+      cov (fun y : M => gradientFun (I := I) g (fun z => f z ^ p) y) x =
+        cov (coeffFun • fun y : M => gradientFun (I := I) g f y) x :=
+    cov.isCovariantDerivativeOnUniv.congr_of_eventuallyEq
+      hgrad_pow hcoeffgrad Filter.univ_mem hgrad_eq
   have hcoeff_ext :
       mvfderiv (I := I) coeffFun x (gradientFun (I := I) g f x) =
         (p * (p - 1) * f x ^ (p - 2)) *
@@ -1225,11 +1243,11 @@ theorem laplacian_rpow
             (gradientFun (I := I) g f x) := by
     have hrpow :=
       mvfderiv_rpow (I := I) (f := f) (p - 1)
-        (gradientFun (I := I) g f x) (hf x) (hpos x)
+        (gradientFun (I := I) g f x) hfx hpos
     have hrpow_diff :
         MDifferentiableAt I 𝓘(Real, Real)
           (fun y : M => f y ^ (p - 1)) x :=
-      mdifferentiableAt_rpow (I := I) (p - 1) (hf x) (hpos x)
+      mdifferentiableAt_rpow (I := I) (p - 1) hfx hpos
     have hconst :=
       mvfderiv_const_mul_apply (I := I) p
         (f := fun y : M => f y ^ (p - 1))
@@ -1258,7 +1276,8 @@ theorem laplacian_rpow
     laplacian (I := I) cov g (fun y : M => f y ^ p) x =
         divergence (I := I) cov
           (coeffFun • fun y : M => gradientFun (I := I) g f y) x := by
-          simp [laplacian, hgrad_eq]
+          unfold laplacian divergence
+          rw [hcov]
     _ =
         coeffFun x * laplacian (I := I) cov g f x +
           mvfderiv (I := I) coeffFun x
@@ -1274,6 +1293,20 @@ theorem laplacian_rpow
             g.inner x (gradientFun (I := I) g f x)
               (gradientFun (I := I) g f x) := by
           rw [hcoeff_ext]
+
+theorem laplacian_rpow
+    (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
+    (g : SmoothRiemannianMetric I M)
+    {f : M -> Real} {x : M} (p : Real)
+    (hf : forall y : M, MDifferentiableAt I 𝓘(Real, Real) f y)
+    (hpos : forall y : M, 0 < f y)
+    (hgrad : MDiffAt (T% fun y : M => gradientFun (I := I) g f y) x) :
+    laplacian (I := I) cov g (fun y : M => f y ^ p) x =
+      (p * f x ^ (p - 1)) * laplacian (I := I) cov g f x +
+        (p * (p - 1) * f x ^ (p - 2)) *
+          g.inner x (gradientFun (I := I) g f x)
+            (gradientFun (I := I) g f x) :=
+  laplacian_rpow_at cov g p (Filter.Eventually.of_forall hf) (hpos x) hgrad
 
 theorem laplacian_log
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
