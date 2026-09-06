@@ -4281,3 +4281,13 @@ import DifferentialGeometry.Tensor.Multilinear.BundleComp
 import DifferentialGeometry.Topology.FiberBundle.Separation
 import DifferentialGeometry.Topology.Manifold.Curve
 import DifferentialGeometry.Topology.VectorBundle.Compactness
+import DifferentialGeometry.Analysis.Calculus.IteratedDeriv.Power
+import DifferentialGeometry.Analysis.Parabolic.Dirichlet.WeakEquationLocal
+import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.ParallelConvex
+import DifferentialGeometry.Geometry.Comparison.Volume.NormalGramJets
+import DifferentialGeometry.Geometry.Comparison.Volume.RadialGramJets
+import DifferentialGeometry.Geometry.Connection.MetricCompatibility.AlongCurveJets
+import DifferentialGeometry.Geometry.Connection.MetricCompatibility.Dual
+import DifferentialGeometry.Geometry.Metric.BundleMusical
+import DifferentialGeometry.Tensor.Alternating.BundleComp
+import DifferentialGeometry.Topology.Manifold.ExtChartAt

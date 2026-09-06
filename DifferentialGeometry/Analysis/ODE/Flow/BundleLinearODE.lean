@@ -1,5 +1,6 @@
 import DifferentialGeometry.Analysis.ODE.Flow.Interval
 import DifferentialGeometry.Bundle.ClmSectionSmooth
+import DifferentialGeometry.Topology.Manifold.ExtChartAt
 
 set_option autoImplicit false
 
@@ -13,9 +14,9 @@ namespace DifferentialGeometry.Analysis.ODE.Flow
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E]
 variable {H : Type*} [TopologicalSpace H]
-variable {I : ModelWithCorners ℝ E H} [I.Boundaryless]
+variable {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
-  [IsManifold I ∞ M]
+  [IsManifold I ∞ M] [BoundarylessManifold I M]
 variable {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
   [FiniteDimensional ℝ F]
 variable {V : M → Type*} [TopologicalSpace (TotalSpace F V)]
@@ -98,7 +99,7 @@ theorem fiberwise_linear_ode_solution_contMDiffOn
   let U : Set E := c.target ∩ c.symm ⁻¹' e.baseSet
   have hU_open : IsOpen U := by
     exact (contMDiffOn_extChartAt_symm (I := I) (n := ∞) x₀).continuousOn.isOpen_inter_preimage
-      (isOpen_extChartAt_target (I := I) x₀) e.open_baseSet
+      (isOpen_extChartAt_target_of_boundarylessManifold (I := I) x₀) e.open_baseSet
   have hx₀_source : x₀ ∈ c.source := mem_extChartAt_source x₀
   have hcx₀_target : c x₀ ∈ c.target := c.map_source hx₀_source
   have hx₀_e : x₀ ∈ e.baseSet := mem_baseSet_trivializationAt F V x₀
@@ -313,7 +314,7 @@ theorem fiberwise_linear_ode_solution_contMDiff
   let U : Set E := c.target ∩ c.symm ⁻¹' e.baseSet
   have hU_open : IsOpen U := by
     exact (contMDiffOn_extChartAt_symm (I := I) (n := ∞) x₀).continuousOn.isOpen_inter_preimage
-      (isOpen_extChartAt_target (I := I) x₀) e.open_baseSet
+      (isOpen_extChartAt_target_of_boundarylessManifold (I := I) x₀) e.open_baseSet
   have hx₀_source : x₀ ∈ c.source := mem_extChartAt_source x₀
   have hcx₀_target : c x₀ ∈ c.target := c.map_source hx₀_source
   have hx₀_e : x₀ ∈ e.baseSet := mem_baseSet_trivializationAt F V x₀
@@ -448,7 +449,7 @@ theorem fiberwise_linear_ode_solution_contMDiff_right
   let U : Set E := c.target ∩ c.symm ⁻¹' e.baseSet
   have hU_open : IsOpen U := by
     exact (contMDiffOn_extChartAt_symm (I := I) (n := ∞) x₀).continuousOn.isOpen_inter_preimage
-      (isOpen_extChartAt_target (I := I) x₀) e.open_baseSet
+      (isOpen_extChartAt_target_of_boundarylessManifold (I := I) x₀) e.open_baseSet
   have hx₀_source : x₀ ∈ c.source := mem_extChartAt_source x₀
   have hcx₀_target : c x₀ ∈ c.target := c.map_source hx₀_source
   have hx₀_e : x₀ ∈ e.baseSet := mem_baseSet_trivializationAt F V x₀
@@ -823,7 +824,7 @@ private theorem fiberwise_linear_ode_contMDiffOn_closed_interval
   let U : Set E := c.target ∩ c.symm ⁻¹' e.baseSet
   have hU_open : IsOpen U := by
     exact (contMDiffOn_extChartAt_symm (I := I) (n := ∞) x₀).continuousOn.isOpen_inter_preimage
-      (isOpen_extChartAt_target (I := I) x₀) e.open_baseSet
+      (isOpen_extChartAt_target_of_boundarylessManifold (I := I) x₀) e.open_baseSet
   have hx₀_source : x₀ ∈ c.source := mem_extChartAt_source x₀
   have hcx₀_target : c x₀ ∈ c.target := c.map_source hx₀_source
   have hx₀_e : x₀ ∈ e.baseSet := mem_baseSet_trivializationAt F V x₀

@@ -139,6 +139,33 @@ private lemma extChartAt_symm_mapsTo_baseSet (α : M) :
   rw [extChartAt_source_eq_chartAt_source (I := I)] at hsource
   exact hsource
 
+theorem localDivergence_eq_sum_fderiv
+    (g : SmoothRiemannianMetric I M) (α : M)
+    (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
+    {y : E} (hy : y ∈ (extChartAt I α).target) :
+    localDivergence (I := I) g α X ((extChartAt I α).symm y) =
+      (∑ i : Fin (Module.finrank ℝ E),
+        fderiv ℝ (fun z : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)) =>
+          chartCoeffOnE (I := I) α X i ((toEuclidean (E := E)).symm z) *
+            chartDensityOnE (I := I) g α ((toEuclidean (E := E)).symm z))
+          (toEuclidean (E := E) y) (EuclideanSpace.single i 1)) /
+        chartDensityOnE (I := I) g α y := by
+  rw [localDivergence, (extChartAt I α).right_inv hy]
+  congr 1
+  apply Finset.sum_congr rfl
+  intro i _
+  let F : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)) → ℝ := fun z =>
+    chartCoeffOnE (I := I) α X i ((toEuclidean (E := E)).symm z) *
+      chartDensityOnE (I := I) g α ((toEuclidean (E := E)).symm z)
+  have heq : (fun y => chartCoeffOnE (I := I) α X i y *
+      chartDensityOnE (I := I) g α y) = F ∘ toEuclidean (E := E) := by
+    ext z
+    simp only [Function.comp_apply, F, ContinuousLinearEquiv.symm_apply_apply]
+  rw [partialDeriv, heq, (toEuclidean (E := E)).comp_right_fderiv,
+    ContinuousLinearMap.comp_apply, chartModelBasis_apply]
+  simp only [ContinuousLinearEquiv.coe_coe, ContinuousLinearEquiv.apply_symm_apply]
+  rfl
+
 lemma chartCoeffOnE_contDiffOn (α : M)
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
     (i : Fin (Module.finrank ℝ E)) :

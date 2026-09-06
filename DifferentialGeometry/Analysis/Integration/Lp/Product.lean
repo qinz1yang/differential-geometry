@@ -286,4 +286,13 @@ theorem Lp.uncurry_coeFn (hp : p ≠ (⊤ : ℝ≥0∞)) (f : Lp (Lp E p ν) p �
   rw [heq]
   exact (MemLp.coeFn_toLp ha₃).symm
 
+theorem Lp.uncurry_compLpL_coeFn {𝕜 : Type*} [NontriviallyNormedField 𝕜] [NormedSpace 𝕜 E]
+    {F : Type*} [NormedAddCommGroup F] [NormedSpace 𝕜 F]
+    (hp : p ≠ ⊤) (L : F →L[𝕜] Lp E p ν) (f : Lp F p μ) :
+    ∀ᵐ a ∂μ, (fun b => Lp.uncurry (μ := μ) (ν := ν) (E := E) 𝕜 hp (L.compLpL p μ f) (a, b)) =ᵐ[ν] (L (f a) : B → E) := by
+  filter_upwards [Lp.uncurry_coeFn (μ := μ) (ν := ν) (E := E) (𝕜 := 𝕜) hp (L.compLpL p μ f), L.coeFn_compLpL f]
+    with a ha₁ ha₂
+  rw [ha₂] at ha₁
+  exact ha₁
+
 end MeasureTheory

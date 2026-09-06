@@ -1,3 +1,4 @@
+import DifferentialGeometry.Tensor.Alternating.BundleComp
 import DifferentialGeometry.Tensor.Alternating.BundleMaps
 import DifferentialGeometry.Geometry.Connection.TensorNabla.Pullback
 import DifferentialGeometry.Geometry.Connection.TensorNabla.Tensor0SNabla
@@ -216,6 +217,71 @@ theorem alternating_pullbackFiberwiseLinearEquiv
       (fun y => ((a y).toContinuousMultilinearMap).compContinuousLinearMap
         (fun _ => (φ y).toContinuousLinearMap)) x X) = _
   rw [h, ContinuousMultilinearMap.alternatizationCLM_compContinuousLinearMap]
+
+theorem alternating_secondCovDeriv_pullbackFiberwiseLinearEquiv
+    (φ : ∀ x, V₁ x ≃L[ℝ] V₂ x)
+    (hφ : ContMDiff I (I.prod 𝓘(ℝ, F₁ →L[ℝ] F₂)) 1
+      (fun x => (⟨x, (φ x).toContinuousLinearMap⟩ : TotalSpace (F₁ →L[ℝ] F₂)
+        (fun x => V₁ x →L[ℝ] V₂ x))))
+    (cov : CovariantDerivative I F₂ V₂) [ContMDiffCovariantDerivative cov ∞]
+    (base : CovariantDerivative I E (TangentSpace I : M → Type _)) (k : ℕ)
+    {T : ∀ x, V₂ x [⋀^Fin k]→L[ℝ] ℝ} {x : M}
+    (hT : ContMDiffAt I
+      (I.prod 𝓘(ℝ, F₂ [⋀^Fin k]→L[ℝ] ℝ)) 2
+      (fun y => (⟨y, T y⟩ : TotalSpace
+        (F₂ [⋀^Fin k]→L[ℝ] ℝ)
+        (Bundle.continuousAlternatingMap ℝ (Fin k) F₂ V₂ ℝ (Bundle.Trivial M ℝ)))) x)
+    {Y : ∀ y, TangentSpace I y}
+    (hY : MDifferentiableAt I (I.prod 𝓘(ℝ, E)) (T% Y) x)
+    (X : TangentSpace I x) :
+    let D := alternating
+      (pullbackFiberwiseLinearEquiv (fun y => (φ y).toLinearEquiv) hφ.clm_bundle_map cov) k
+    let U := fun y => (T y).compContinuousLinearMap (φ y).toContinuousLinearMap
+    D (fun y => D U y (Y y)) x X - D U x (base Y x X) =
+      (alternating cov k (fun y => alternating cov k T y (Y y)) x X -
+        alternating cov k T x (base Y x X)).compContinuousLinearMap
+          (φ x).toContinuousLinearMap := by
+  let _ : FiniteDimensional ℝ (F₂ [⋀^Fin k]→L[ℝ] ℝ) :=
+    (ContinuousAlternatingMap.elementaryCovectorBasis (k := k)
+      (Module.finBasis ℝ F₂)).finiteDimensional_of_finite
+  let D := alternating
+    (pullbackFiberwiseLinearEquiv (fun y => (φ y).toLinearEquiv) hφ.clm_bundle_map cov) k
+  let U := fun y => (T y).compContinuousLinearMap (φ y).toContinuousLinearMap
+  let W := fun y => alternating cov k T y (Y y)
+  have hTc := (inferInstance : ContMDiffCovariantDerivative (alternating cov k) ∞).contMDiffAt
+    (m := 1) hT (by norm_num)
+  have hW := (hTc.mdifferentiableAt (by norm_num)).clm_bundle_apply hY
+  have hφx := (hφ x).mdifferentiableAt (by norm_num)
+  have hPW := hW.alternating_bundle_comp hφx
+  have hTnear : ∀ᶠ y in 𝓝 x, MDifferentiableAt I
+      (I.prod 𝓘(ℝ, F₂ [⋀^Fin k]→L[ℝ] ℝ))
+      (fun z => (⟨z, T z⟩ : TotalSpace
+        (F₂ [⋀^Fin k]→L[ℝ] ℝ)
+        (Bundle.continuousAlternatingMap ℝ (Fin k) F₂ V₂ ℝ (Bundle.Trivial M ℝ)))) y :=
+    ((contMDiffAt_iff_contMDiffAt_nhds (n := 1) (by simp)).mp
+      (hT.of_le (by norm_num))).mono (fun _ hy => hy.mdifferentiableAt (by simp))
+  have heq : ∀ᶠ y in 𝓝 x, D U y (Y y) =
+      (W y).compContinuousLinearMap (φ y).toContinuousLinearMap := by
+    filter_upwards [hTnear] with y hy
+    exact alternating_pullbackFiberwiseLinearEquiv φ hφ cov k hy (Y y)
+  have hleft : MDifferentiableAt I
+      (I.prod 𝓘(ℝ, F₁ [⋀^Fin k]→L[ℝ] ℝ))
+      (fun y => (⟨y, D U y (Y y)⟩ : TotalSpace
+        (F₁ [⋀^Fin k]→L[ℝ] ℝ)
+        (Bundle.continuousAlternatingMap ℝ (Fin k) F₁ V₁ ℝ (Bundle.Trivial M ℝ)))) x := by
+    apply hPW.congr_of_eventuallyEq
+    filter_upwards [heq] with y hy
+    exact congrArg (fun v => (⟨y, v⟩ : TotalSpace
+      (F₁ [⋀^Fin k]→L[ℝ] ℝ)
+      (Bundle.continuousAlternatingMap ℝ (Fin k) F₁ V₁ ℝ (Bundle.Trivial M ℝ)))) hy
+  have houter := D.isCovariantDerivativeOnUniv.congr_of_eventuallyEq
+    hleft hPW Filter.univ_mem heq
+  change D (fun y => D U y (Y y)) x X - D U x (base Y x X) = _
+  rw [houter, alternating_pullbackFiberwiseLinearEquiv φ hφ cov k hW X,
+    alternating_pullbackFiberwiseLinearEquiv φ hφ cov k
+      (hT.mdifferentiableAt (by norm_num)) (base Y x X)]
+  rfl
+
 
 end CovariantDerivative
 

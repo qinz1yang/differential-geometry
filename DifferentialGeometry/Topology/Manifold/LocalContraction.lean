@@ -3,16 +3,18 @@ import Mathlib.Geometry.Manifold.ContMDiff.NormedSpace
 import Mathlib.Geometry.Manifold.Algebra.SMul
 import Mathlib.Geometry.Manifold.Algebra.LieGroup
 import Mathlib.Analysis.Normed.Module.Convex
+import Mathlib.Geometry.Manifold.IsManifold.InteriorBoundary
 
-open Set
-open scoped Manifold ContDiff
+open Set Filter
+open scoped Manifold ContDiff Topology
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
-  {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
+  {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
   {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   {n : ℕ∞ω} [IsManifold I n M]
 
-theorem exists_contMDiff_local_contraction (x₀ : M) :
+theorem exists_contMDiff_local_contraction_of_isInteriorPoint
+    {x₀ : M} (hx : I.IsInteriorPoint x₀) :
     ∃ (U : TopologicalSpace.Opens M) (hx₀ : x₀ ∈ U) (Γ : ℝ → U → M),
       ContMDiffOn (𝓘(ℝ, ℝ).prod I) I n
         (fun q : ℝ × U => Γ q.1 q.2) (Icc (0 : ℝ) 1 ×ˢ univ) ∧
@@ -20,7 +22,9 @@ theorem exists_contMDiff_local_contraction (x₀ : M) :
       (∀ t : ℝ, Γ t ⟨x₀, hx₀⟩ = x₀) ∧
       ∀ t ∈ Icc (0 : ℝ) 1, ∀ x : U, Γ t x ∈ U := by
   let e := extChartAt I x₀
-  obtain ⟨r, hr, hball⟩ := Metric.mem_nhds_iff.mp (extChartAt_target_mem_nhds (I := I) x₀)
+  have htarget : e.target ∈ 𝓝 (e x₀) :=
+    mem_of_superset (isOpen_interior.mem_nhds (I.isInteriorPoint_iff.mp hx)) interior_subset
+  obtain ⟨r, hr, hball⟩ := Metric.mem_nhds_iff.mp htarget
   let U : TopologicalSpace.Opens M :=
     ⟨e.source ∩ e ⁻¹' Metric.ball (e x₀) r,
       isOpen_extChartAt_preimage' (I := I) x₀ Metric.isOpen_ball⟩
@@ -62,3 +66,12 @@ theorem exists_contMDiff_local_contraction (x₀ : M) :
     change e (e.symm (c t x)) ∈ Metric.ball (e x₀) r
     rw [e.right_inv hct]
     exact hcball t ht x
+
+theorem exists_contMDiff_local_contraction [BoundarylessManifold I M] (x₀ : M) :
+    ∃ (U : TopologicalSpace.Opens M) (hx₀ : x₀ ∈ U) (Γ : ℝ → U → M),
+      ContMDiffOn (𝓘(ℝ, ℝ).prod I) I n
+        (fun q : ℝ × U => Γ q.1 q.2) (Icc (0 : ℝ) 1 ×ˢ univ) ∧
+      (∀ x : U, Γ 0 x = x₀) ∧ (∀ x : U, Γ 1 x = x) ∧
+      (∀ t : ℝ, Γ t ⟨x₀, hx₀⟩ = x₀) ∧
+      ∀ t ∈ Icc (0 : ℝ) 1, ∀ x : U, Γ t x ∈ U :=
+  exists_contMDiff_local_contraction_of_isInteriorPoint BoundarylessManifold.isInteriorPoint

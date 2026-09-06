@@ -11,22 +11,23 @@ namespace CovariantDerivative
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E]
-  {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
+  {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
   {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M] [T2Space M]
+  [BoundarylessManifold I M]
   {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F] [FiniteDimensional ℝ F]
   {V : M → Type*} [TopologicalSpace (TotalSpace F V)]
   [∀ x, NormedAddCommGroup (V x)] [∀ x, NormedSpace ℝ (V x)]
   [FiberBundle F V] [VectorBundle ℝ F V]
   [ContMDiffVectorBundle ∞ F V I]
 
-omit [FiniteDimensional ℝ E] [I.Boundaryless] [IsManifold I ∞ M] [T2Space M]
+omit [FiniteDimensional ℝ E] [BoundarylessManifold I M] [IsManifold I ∞ M] [T2Space M]
   [FiniteDimensional ℝ F] [FiberBundle F V] [VectorBundle ℝ F V]
   [ContMDiffVectorBundle ∞ F V I] in
 private def fiberIsometry {x y : M} (h : x = y) : V x ≃ₗᵢ[ℝ] V y := by
   subst y
   exact LinearIsometryEquiv.refl ℝ (V x)
 
-omit [FiniteDimensional ℝ E] [I.Boundaryless] [IsManifold I ∞ M] [T2Space M]
+omit [FiniteDimensional ℝ E] [BoundarylessManifold I M] [IsManifold I ∞ M] [T2Space M]
   [FiniteDimensional ℝ F] [FiberBundle F V] [VectorBundle ℝ F V]
   [ContMDiffVectorBundle ∞ F V I] in
 omit [TopologicalSpace M] [NormedAddCommGroup F] [NormedSpace ℝ F]
@@ -36,7 +37,7 @@ private theorem mk_fiberIsometry {x y : M} (h : x = y) (v : V x) :
   subst y
   rfl
 
-omit [FiniteDimensional ℝ E] [I.Boundaryless] [IsManifold I ∞ M] [T2Space M]
+omit [FiniteDimensional ℝ E] [BoundarylessManifold I M] [IsManifold I ∞ M] [T2Space M]
   [FiniteDimensional ℝ F]
   [ContMDiffVectorBundle ∞ F V I] in
 private theorem contMDiffOn_fixed_fiber {EP : Type*} [NormedAddCommGroup EP]
@@ -54,7 +55,7 @@ private theorem contMDiffOn_fixed_fiber {EP : Type*} [NormedAddCommGroup EP]
   have h := (e.symmL ℝ x).contMDiff.comp_contMDiffOn hc
   simpa only [Function.comp_def, e.symmL_continuousLinearMapAt he] using h
 
-omit [FiniteDimensional ℝ E] [I.Boundaryless] [IsManifold I ∞ M] [T2Space M]
+omit [FiniteDimensional ℝ E] [BoundarylessManifold I M] [IsManifold I ∞ M] [T2Space M]
   [FiniteDimensional ℝ F]
   [ContMDiffVectorBundle ∞ F V I] in
 private theorem symmL_eq_fiberIsometry
@@ -64,7 +65,7 @@ private theorem symmL_eq_fiberIsometry
   subst y
   exact e.symmL_continuousLinearMapAt hy v
 
-omit [FiniteDimensional ℝ E] [I.Boundaryless] [IsManifold I ∞ M] [T2Space M]
+omit [FiniteDimensional ℝ E] [BoundarylessManifold I M] [IsManifold I ∞ M] [T2Space M]
   [FiniteDimensional ℝ F]
   [ContMDiffVectorBundle ∞ F V I] in
 private theorem symmL_fiberIsometry
@@ -74,7 +75,7 @@ private theorem symmL_fiberIsometry
   subst y
   rfl
 
-omit [FiniteDimensional ℝ E] [I.Boundaryless] [IsManifold I ∞ M] [T2Space M] in
+omit [FiniteDimensional ℝ E] [BoundarylessManifold I M] [IsManifold I ∞ M] [T2Space M] in
 private theorem local_trivialization_of_parallel_transport
     (cov : CovariantDerivative I F V) (U : TopologicalSpace.Opens M) (x₀ : M)
     (Γ : ℝ → U → M)
@@ -182,7 +183,7 @@ private theorem local_trivialization_of_parallel_transport
       exact (hmem ((Q x).symm v)).mp
         (by simpa only [(Q x).apply_symm_apply, mem_ofPred_eq] using hv)
 
-omit [FiniteDimensional ℝ E] [I.Boundaryless] [IsManifold I ∞ M] [T2Space M]
+omit [FiniteDimensional ℝ E] [BoundarylessManifold I M] [IsManifold I ∞ M] [T2Space M]
   [FiniteDimensional ℝ F] in
 private theorem contMDiff_inverse_local_trivialization
     (U : TopologicalSpace.Opens M) (x₀ : M)
@@ -274,8 +275,9 @@ namespace CovariantDerivative
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E]
-  {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
+  {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
   {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M] [T2Space M]
+  [BoundarylessManifold I M]
   {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F] [FiniteDimensional ℝ F]
   {V : M → Type*} [TopologicalSpace (TotalSpace F V)]
   [∀ x, NormedAddCommGroup (V x)] [∀ x, InnerProductSpace ℝ (V x)]

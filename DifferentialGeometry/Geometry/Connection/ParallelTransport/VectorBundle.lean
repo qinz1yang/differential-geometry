@@ -23,8 +23,9 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [ContMDiffVectorBundle ∞ F V I]
   {EP : Type*} [NormedAddCommGroup EP] [NormedSpace ℝ EP]
   [FiniteDimensional ℝ EP]
-  {HP : Type*} [TopologicalSpace HP] {IP : ModelWithCorners ℝ EP HP} [IP.Boundaryless]
+  {HP : Type*} [TopologicalSpace HP] {IP : ModelWithCorners ℝ EP HP}
   {P : Type*} [TopologicalSpace P] [ChartedSpace HP P] [IsManifold IP ∞ P]
+  [BoundarylessManifold IP P]
 
 private theorem exists_parallel_transport_in_trivialization_on_Icc_of_lt
     (cov : CovariantDerivative I F V) (hcov : ContMDiffCovariantDerivative cov ∞)
@@ -575,8 +576,9 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [ContMDiffVectorBundle ∞ F V I]
   {EP : Type*} [NormedAddCommGroup EP] [NormedSpace ℝ EP]
   [FiniteDimensional ℝ EP]
-  {HP : Type*} [TopologicalSpace HP] {IP : ModelWithCorners ℝ EP HP} [IP.Boundaryless]
+  {HP : Type*} [TopologicalSpace HP] {IP : ModelWithCorners ℝ EP HP}
   {P : Type*} [TopologicalSpace P] [ChartedSpace HP P] [IsManifold IP ∞ P]
+  [BoundarylessManifold IP P]
 
 private theorem contMDiffOn_parallel_section_in_trivialization
     (cov : CovariantDerivative I F V) (hcov : ContMDiffCovariantDerivative cov ∞)
@@ -1157,8 +1159,9 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [ContMDiffVectorBundle ∞ F V I]
   {EP : Type*} [NormedAddCommGroup EP] [NormedSpace ℝ EP]
   [FiniteDimensional ℝ EP]
-  {HP : Type*} [TopologicalSpace HP] {IP : ModelWithCorners ℝ EP HP} [IP.Boundaryless]
+  {HP : Type*} [TopologicalSpace HP] {IP : ModelWithCorners ℝ EP HP}
   {P : Type*} [TopologicalSpace P] [ChartedSpace HP P] [IsManifold IP ∞ P]
+  [BoundarylessManifold IP P]
 
 theorem IsMetricCompatible.exists_parallel_transport_on_interval
     {cov : CovariantDerivative I F V} (hmetric : cov.IsMetricCompatible)

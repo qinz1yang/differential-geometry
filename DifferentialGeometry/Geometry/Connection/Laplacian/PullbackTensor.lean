@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Connection.TensorNabla.Alternating
 import DifferentialGeometry.Geometry.Connection.TensorNabla.Pullback
 import DifferentialGeometry.Geometry.Connection.Laplacian.VectorBundle
 
@@ -51,6 +52,36 @@ theorem rawBundleConnLap_multilinear_pullbackFiberwiseLinearEquiv
   let _ : NeZero (Module.finrank ℝ E) :=
     ⟨Nat.ne_of_gt (lt_of_le_of_lt (Nat.zero_le i.val) i.isLt)⟩
   exact multilinear_secondCovDeriv_pullbackFiberwiseLinearEquiv φ hφ cov (LeviCivita g) k hT
+    ((smoothOrthoFrame_smooth g x i).mdifferentiableAt (by simp)) (smoothOrthoFrame g x i x)
+
+theorem rawBundleConnLap_alternating_pullbackFiberwiseLinearEquiv
+    (φ : ∀ x, V₁ x ≃L[ℝ] V₂ x)
+    (hφ : ContMDiff I (I.prod 𝓘(ℝ, F₁ →L[ℝ] F₂)) 1
+      (fun x => (⟨x, (φ x).toContinuousLinearMap⟩ : TotalSpace (F₁ →L[ℝ] F₂)
+        (fun x => V₁ x →L[ℝ] V₂ x))))
+    (g : SmoothRiemannianMetric I M)
+    (cov : CovariantDerivative I F₂ V₂) [ContMDiffCovariantDerivative cov ∞] (k : ℕ)
+    {T : ∀ x, V₂ x [⋀^Fin k]→L[ℝ] ℝ} {x : M}
+    (hT : ContMDiffAt I
+      (I.prod 𝓘(ℝ, F₂ [⋀^Fin k]→L[ℝ] ℝ)) 2
+      (fun y => (⟨y, T y⟩ : TotalSpace
+        (F₂ [⋀^Fin k]→L[ℝ] ℝ)
+        (Bundle.continuousAlternatingMap ℝ (Fin k) F₂ V₂ ℝ (Bundle.Trivial M ℝ)))) x) :
+    rawBundleConnLap g
+      (alternating
+        (pullbackFiberwiseLinearEquiv (fun y => (φ y).toLinearEquiv) hφ.clm_bundle_map cov) k)
+      (fun y => (T y).compContinuousLinearMap (φ y).toContinuousLinearMap) x =
+      (rawBundleConnLap g (alternating cov k) T x).compContinuousLinearMap
+        (φ x).toContinuousLinearMap := by
+  let L := ContinuousAlternatingMap.compContinuousLinearMapCLM
+    (F := ℝ) (ι := Fin k) (φ x).toContinuousLinearMap
+  change _ = L (rawBundleConnLap g (alternating cov k) T x)
+  simp only [rawBundleConnLap_def, map_sum]
+  apply Finset.sum_congr rfl
+  intro i hi
+  let _ : NeZero (Module.finrank ℝ E) :=
+    ⟨Nat.ne_of_gt (lt_of_le_of_lt (Nat.zero_le i.val) i.isLt)⟩
+  exact alternating_secondCovDeriv_pullbackFiberwiseLinearEquiv φ hφ cov (LeviCivita g) k hT
     ((smoothOrthoFrame_smooth g x i).mdifferentiableAt (by simp)) (smoothOrthoFrame g x i x)
 
 end DifferentialGeometry.Geometry.Connection

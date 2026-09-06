@@ -13,7 +13,7 @@ open scoped Manifold ContDiff Topology NNReal
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E]
-  {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
+  {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
   {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I 1 M]
   {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F] [ProperSpace F]
   {V : M → Type*} [TopologicalSpace (TotalSpace F V)]
@@ -28,7 +28,7 @@ private theorem exists_local_fiberwise_lipschitzOnWith
     (hA : ContMDiffOn (𝓘(ℝ, P).prod (I.prod 𝓘(ℝ, F))) (I.prod 𝓘(ℝ, F)) 1
       (fun q : P × TotalSpace F V =>
         (⟨q.2.proj, A q.1 q.2.proj q.2.2⟩ : TotalSpace F V)) (S ×ˢ univ))
-    (R : ℝ) (x₀ : M) :
+    (R : ℝ) {x₀ : M} (hx₀ : I.IsInteriorPoint x₀) :
     ∃ U ∈ 𝓝 x₀, ∃ L : ℝ≥0, ∀ p ∈ S, ∀ x ∈ U,
       LipschitzOnWith L (A p x) (Metric.closedBall 0 R) := by
   let e := trivializationAt F V x₀
@@ -44,14 +44,14 @@ by
   have hcinv : ContMDiffAt 𝓘(ℝ, E) I 1 c.symm (c x₀) :=
     (contMDiffOn_extChartAt_symm x₀).contMDiffAt
       (mem_of_superset (isOpen_interior.mem_nhds
-        (I.isInteriorPoint_iff.mp BoundarylessManifold.isInteriorPoint)) interior_subset)
+        (I.isInteriorPoint_iff.mp hx₀)) interior_subset)
   have hcinv₀ : c.symm (c x₀) = x₀ := c.left_inv (mem_extChartAt_source x₀)
   have hnear : ∀ᶠ y in 𝓝 (c x₀), y ∈ c.target ∧
       c.symm y ∈ e.baseSet ∧ ‖e.continuousLinearMapAt ℝ (c.symm y)‖ < C₁ ∧
         ‖e.symmL ℝ (c.symm y)‖ < C₂ := by
     have ht : c.target ∈ 𝓝 (c x₀) :=
       mem_of_superset (isOpen_interior.mem_nhds
-        (I.isInteriorPoint_iff.mp BoundarylessManifold.isInteriorPoint)) interior_subset
+        (I.isInteriorPoint_iff.mp hx₀)) interior_subset
     have hc : Tendsto c.symm (𝓝 (c x₀)) (𝓝 x₀) := by
       have h : Tendsto c.symm (𝓝 (c x₀)) (𝓝 (c.symm (c x₀))) := hcinv.continuousAt
       rwa [hcinv₀] at h
@@ -151,19 +151,32 @@ by
         (mul_le_mul_of_nonneg_right hxprop.2.2.1.le (norm_nonneg _))
     _ = C₂ * ↑L * C₁ * ‖v - w‖ := by ring
 
-theorem ContMDiffOn.exists_fiberwise_lipschitzOnWith
+theorem ContMDiffOn.exists_fiberwise_lipschitzOnWith_of_isInteriorPoint
+    {A : P → ∀ x : M, V x → V x} {S : Set P}
+    (hA : ContMDiffOn (𝓘(ℝ, P).prod (I.prod 𝓘(ℝ, F))) (I.prod 𝓘(ℝ, F)) 1
+      (fun q : P × TotalSpace F V =>
+        (⟨q.2.proj, A q.1 q.2.proj q.2.2⟩ : TotalSpace F V)) (S ×ˢ univ))
+    (hS : IsCompact S) (hSconvex : Convex ℝ S) {C : Set M} (hC : IsCompact C)
+    (hinterior : ∀ x ∈ C, I.IsInteriorPoint x) (R : ℝ) :
+    ∃ L : ℝ≥0, ∀ p ∈ S, ∀ x ∈ C,
+      LipschitzOnWith L (A p x) (Metric.closedBall 0 R) := by
+  classical
+  choose U hU L hL using fun x : C =>
+    exists_local_fiberwise_lipschitzOnWith hS hSconvex hA R (hinterior x x.property)
+  obtain ⟨s, hs⟩ := hC.elim_nhds_subcover' (fun x hx => U ⟨x, hx⟩) (fun x hx => hU ⟨x, hx⟩)
+  refine ⟨∑ x ∈ s, L x, ?_⟩
+  intro p hp x hx
+  obtain ⟨y, hys, hxy⟩ := mem_iUnion₂.mp (hs hx)
+  exact (hL y p hp x hxy).weaken
+    (Finset.single_le_sum (fun z _ => (show 0 ≤ L z from zero_le)) hys)
+
+theorem ContMDiffOn.exists_fiberwise_lipschitzOnWith [BoundarylessManifold I M]
     {A : P → ∀ x : M, V x → V x} {S : Set P}
     (hA : ContMDiffOn (𝓘(ℝ, P).prod (I.prod 𝓘(ℝ, F))) (I.prod 𝓘(ℝ, F)) 1
       (fun q : P × TotalSpace F V =>
         (⟨q.2.proj, A q.1 q.2.proj q.2.2⟩ : TotalSpace F V)) (S ×ˢ univ))
     (hS : IsCompact S) (hSconvex : Convex ℝ S) {C : Set M} (hC : IsCompact C) (R : ℝ) :
     ∃ L : ℝ≥0, ∀ p ∈ S, ∀ x ∈ C,
-      LipschitzOnWith L (A p x) (Metric.closedBall 0 R) := by
-  classical
-  choose U hU L hL using exists_local_fiberwise_lipschitzOnWith hS hSconvex hA R
-  obtain ⟨s, _, hs⟩ := hC.elim_nhds_subcover U (fun x _ => hU x)
-  refine ⟨∑ x ∈ s, L x, ?_⟩
-  intro p hp x hx
-  obtain ⟨y, hys, hxy⟩ := mem_iUnion₂.mp (hs hx)
-  exact (hL y p hp x hxy).weaken
-    (Finset.single_le_sum (fun z _ => (show 0 ≤ L z from zero_le)) hys)
+      LipschitzOnWith L (A p x) (Metric.closedBall 0 R) :=
+  hA.exists_fiberwise_lipschitzOnWith_of_isInteriorPoint hS hSconvex hC
+    (fun _ _ => BoundarylessManifold.isInteriorPoint) R
