@@ -33,6 +33,24 @@ omit [Module.Finite ℝ E] [NeZero (Module.finrank ℝ E)] in
       (trivializationAt E (TangentSpace I) (γ t)).continuousLinearMapAt ℝ (γ s) (V s) := rfl
 
 omit [Module.Finite ℝ E] [NeZero (Module.finrank ℝ E)] in
+private theorem trivialization_eventuallyEq_chartRepAt
+    {γ : ℝ → M} {V : ∀ t, TangentSpace I (γ t)} {t : ℝ}
+    (hγ : ContinuousAt γ t) :
+    (fun s => ((trivializationAt E (TangentSpace I) (γ t))
+      (TotalSpace.mk' E (E := (TangentSpace I : M → Type _)) (γ s) (V s))).2)
+      =ᶠ[𝓝 t] chartRepAt (I := I) γ V t := by
+  have hmem : γ t ∈ (trivializationAt E (TangentSpace I) (γ t)).baseSet :=
+    FiberBundle.mem_baseSet_trivializationAt E (TangentSpace I) (γ t)
+  have hpre : γ ⁻¹' (trivializationAt E (TangentSpace I) (γ t)).baseSet ∈ 𝓝 t :=
+    hγ.preimage_mem_nhds
+      ((trivializationAt E (TangentSpace I) (γ t)).open_baseSet.mem_nhds hmem)
+  filter_upwards [hpre] with s hs
+  rw [chartRepAt_apply]
+  simp only [TotalSpace.mk']
+  rw [(trivializationAt E (TangentSpace I) (γ t)).continuousLinearMapAt_apply (R := ℝ)]
+  rw [(trivializationAt E (TangentSpace I) (γ t)).coe_linearMapAt_of_mem hs]
+
+omit [Module.Finite ℝ E] [NeZero (Module.finrank ℝ E)] in
 theorem mdifferentiableAt_tangentField_iff
     {γ : ℝ → M} {V : ∀ t, TangentSpace I (γ t)} {t : ℝ} :
     MDifferentiableAt 𝓘(ℝ, ℝ) I.tangent
@@ -48,20 +66,29 @@ theorem mdifferentiableAt_tangentField_iff
       (fun s => ((trivializationAt E (TangentSpace I) (γ t)) (F s)).2) t ↔ _
   apply and_congr_right
   intro hγ
-  have hmem : γ t ∈ (trivializationAt E (TangentSpace I) (γ t)).baseSet :=
-    FiberBundle.mem_baseSet_trivializationAt E (TangentSpace I) (γ t)
-  have hpre : γ ⁻¹' (trivializationAt E (TangentSpace I) (γ t)).baseSet ∈ 𝓝 t :=
-    hγ.continuousAt.preimage_mem_nhds
-      ((trivializationAt E (TangentSpace I) (γ t)).open_baseSet.mem_nhds hmem)
-  have heq : (fun s => ((trivializationAt E (TangentSpace I) (γ t)) (F s)).2)
-      =ᶠ[𝓝 t] chartRepAt (I := I) γ V t := by
-    filter_upwards [hpre] with s hs
-    rw [chartRepAt_apply]
-    simp only [F, TotalSpace.mk']
-    rw [(trivializationAt E (TangentSpace I) (γ t)).continuousLinearMapAt_apply (R := ℝ)]
-    rw [(trivializationAt E (TangentSpace I) (γ t)).coe_linearMapAt_of_mem hs]
   rw [mdifferentiableAt_iff_differentiableAt]
-  exact heq.differentiableAt_iff
+  exact (trivialization_eventuallyEq_chartRepAt (V := V) hγ.continuousAt).differentiableAt_iff
+
+omit [Module.Finite ℝ E] [NeZero (Module.finrank ℝ E)] in
+theorem contMDiffAt_tangentField_iff
+    {n : ℕ∞} {γ : ℝ → M} {V : ∀ t, TangentSpace I (γ t)} {t : ℝ} :
+    ContMDiffAt 𝓘(ℝ, ℝ) I.tangent n
+      (fun s => (TotalSpace.mk' E (E := (TangentSpace I : M → Type _))
+        (γ s) (V s) : TangentBundle I M)) t ↔
+      ContMDiffAt 𝓘(ℝ, ℝ) I n γ t ∧
+        ContDiffAt ℝ n (chartRepAt (I := I) γ V t) t := by
+  let F : ℝ → TangentBundle I M := fun s =>
+    TotalSpace.mk' E (E := (TangentSpace I : M → Type _)) (γ s) (V s)
+  rw [Bundle.contMDiffAt_totalSpace]
+  change ContMDiffAt 𝓘(ℝ, ℝ) I n γ t ∧
+    ContMDiffAt 𝓘(ℝ, ℝ) 𝓘(ℝ, E) n
+      (fun s => ((trivializationAt E (TangentSpace I) (γ t)) (F s)).2) t ↔ _
+  apply and_congr_right
+  intro hγ
+  have heq := trivialization_eventuallyEq_chartRepAt (V := V) hγ.continuousAt
+  rw [contMDiffAt_iff_contDiffAt]
+  exact ⟨fun h => h.congr_of_eventuallyEq heq.symm,
+    fun h => h.congr_of_eventuallyEq heq⟩
 
 omit [Module.Finite ℝ E] [NeZero (Module.finrank ℝ E)] in
 theorem differentiableAt_chartRepAt_curveVelocity
@@ -948,6 +975,83 @@ theorem covDerivAlong_expand {ι : Type*} (g : SmoothRiemannianMetric I M) (γ :
   refine Finset.sum_congr rfl fun i hi => ?_
   rw [covDerivAlong_smulFun g γ (y i) (F i) t (hy i hi) (hF i hi), hpar i hi,
     smul_zero, add_zero]
+
+open DifferentialGeometry.Geometry.Operator (chartChristoffel chartChristoffel_contDiffOn_interior) in
+open DifferentialGeometry.Integral.DivergenceTheorem in
+omit [NeZero (Module.finrank ℝ E)] in
+theorem contMDiffAt_covDerivAlong
+    [I.Boundaryless]
+    (g : SmoothRiemannianMetric I M)
+    {m n : ℕ∞} (hmn : m + 1 ≤ n)
+    {γ : ℝ → M} {V : ∀ t, TangentSpace I (γ t)} {t : ℝ}
+    (hV : ContMDiffAt 𝓘(ℝ, ℝ) I.tangent n
+      (fun s => (TotalSpace.mk' E (E := (TangentSpace I : M → Type _))
+        (γ s) (V s) : TangentBundle I M)) t) :
+    ContMDiffAt 𝓘(ℝ, ℝ) I.tangent m
+      (fun s => (TotalSpace.mk' E (E := (TangentSpace I : M → Type _))
+        (γ s) (covDerivAlong (I := I) g γ V s) : TangentBundle I M)) t := by
+  classical
+  have h1n : (1 : ℕ∞) ≤ n :=
+    (le_add_of_nonneg_left (show (0 : ℕ∞) ≤ m from zero_le)).trans hmn
+  have hmn₀ : m ≤ n :=
+    (le_add_of_nonneg_right (show (0 : ℕ∞) ≤ 1 from zero_le)).trans hmn
+  have hmn' : (m : WithTop ℕ∞) + 1 ≤ n := by exact_mod_cast hmn
+  have hγ : ContMDiffAt 𝓘(ℝ, ℝ) I n γ t :=
+    (contMDiffAt_tangentField_iff.mp hV).1
+  let Y : ℝ → E := chartRepAt (I := I) γ V t
+  let u : ℝ → E := chartCurve (I := I) (γ t) γ
+  have hY : ContDiffAt ℝ n Y t := (contMDiffAt_tangentField_iff.mp hV).2
+  have hu : ContDiffAt ℝ n u t :=
+    (contMDiffAt_iff_target.mp hγ).2.contDiffAt
+  have hDY : ContDiffAt ℝ m (deriv Y) t := hY.derivWithin hmn'
+  have hDu : ContDiffAt ℝ m (deriv u) t := hu.derivWithin hmn'
+  have hnear : ∀ᶠ s in 𝓝 t, ContMDiffAt 𝓘(ℝ, ℝ) I.tangent 1
+      (fun r => (TotalSpace.mk' E (E := (TangentSpace I : M → Type _))
+        (γ r) (V r) : TangentBundle I M)) s :=
+    (contMDiffAt_iff_contMDiffAt_nhds (n := 1) (by decide)).mp
+      (hV.of_le (WithTop.coe_le_coe.mpr h1n))
+  have hsrc : ∀ᶠ s in 𝓝 t, γ s ∈ (chartAt H (γ t)).source :=
+    hγ.continuousAt.preimage_mem_nhds
+      ((chartAt H (γ t)).open_source.mem_nhds (mem_chart_source H (γ t)))
+  have heq : chartRepAt (I := I) γ (fun s => covDerivAlong (I := I) g γ V s) t
+      =ᶠ[𝓝 t] (fun s => chartCovDerivAlong (I := I) g (γ t) γ Y s) := by
+    filter_upwards [hnear, hsrc] with s hs hssrc
+    have hdiff := mdifferentiableAt_tangentField_iff.mp (hs.mdifferentiableAt one_ne_zero)
+    rw [chartRepAt_apply, ← covDeriv_chartAt (I := I) g γ V s (γ t)
+      hdiff.1 hssrc hdiff.2]
+    have hmem : γ s ∈ (trivializationAt E (TangentSpace I) (γ t)).baseSet := by
+      rw [TangentBundle.trivializationAt_baseSet]
+      exact hssrc
+    rw [(trivializationAt E (TangentSpace I) (γ t)).continuousLinearMapAt_symmL
+      (R := ℝ) hmem]
+    rfl
+  have hΓ (i j k : Fin (Module.finrank ℝ E)) :
+      ContDiffAt ℝ m (chartChristoffel (I := I) g (γ t) i j k) (u t) := by
+    have htarget : extChartAt I (γ t) (γ t) ∈
+        interior (extChartAt I (γ t)).target :=
+      extChartAt_target_subset_interior_of_boundaryless (I := I) (γ t)
+        ((extChartAt I (γ t)).map_source (mem_extChartAt_source (I := I) (γ t)))
+    exact ((chartChristoffel_contDiffOn_interior (I := I) g (γ t) i j k).contDiffAt
+      (isOpen_interior.mem_nhds htarget)).of_le (WithTop.coe_le_coe.mpr le_top)
+  have hcoord (i : Fin (Module.finrank ℝ E)) :
+      ContDiff ℝ m (chartCoord (E := E) i) :=
+    ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).coord i).toContinuousLinearMap.contDiff
+  have hcov : ContDiffAt ℝ m
+      (fun s => chartCovDerivAlong (I := I) g (γ t) γ Y s) t := by
+    change ContDiffAt ℝ m
+      (fun s => deriv Y s + chartChristoffelContraction (I := I) g (γ t)
+        (deriv u s) (Y s) (u s)) t
+    refine hDY.add ?_
+    unfold chartChristoffelContraction
+    refine ContDiffAt.sum fun k _ => ?_
+    apply ContDiffAt.smul_const
+    refine ContDiffAt.sum fun i _ => ?_
+    refine ContDiffAt.sum fun j _ => ?_
+    exact (((hΓ i j k).comp t (hu.of_le (WithTop.coe_le_coe.mpr hmn₀))).mul
+      ((hcoord i).contDiffAt.comp t hDu)).mul
+        ((hcoord j).contDiffAt.comp t (hY.of_le (WithTop.coe_le_coe.mpr hmn₀)))
+  exact contMDiffAt_tangentField_iff.mpr
+    ⟨hγ.of_le (WithTop.coe_le_coe.mpr hmn₀), hcov.congr_of_eventuallyEq heq⟩
 
 end CovariantDerivativeAlong
 
