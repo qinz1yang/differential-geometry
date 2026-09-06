@@ -470,6 +470,26 @@ theorem tendsto_curveDensity_radialJacobiField_div_hyperbolicDensity
 omit [CompleteSpace E] [T2Space M] [SigmaCompactSpace M]
     [NeZero (Module.finrank ℝ E)] in
 open Filter in
+theorem exists_pos_eventually_le_curveDensity_radialJacobiField_div_hyperbolicDensity
+    (g : SmoothRiemannianMetric I M) (p : M) (u : E)
+    (v : ι → E) (q : ℝ) (hv : LinearIndependent ℝ v) :
+    ∃ C : ℝ, 0 < C ∧
+      ∀ᶠ t in 𝓝[>] (0 : ℝ),
+        C ≤ curveDensity (I := I) g (radialCurve (I := I) g p u)
+            (fun i => radialJacobiField (I := I) g p u (v i)) t /
+          hyperbolicDensity q (Fintype.card ι) t := by
+  let D : ℝ := curveDensity (I := I) g (fun _ : ℝ => p)
+    (fun i (_ : ℝ) => (show TangentSpace I p from v i)) 0
+  have hD : 0 < D := curveDensity_pos (I := I) g (fun _ : ℝ => p)
+    (fun i (_ : ℝ) => (show TangentSpace I p from v i)) 0 hv
+  refine ⟨D / 2, half_pos hD, ?_⟩
+  filter_upwards [(tendsto_curveDensity_radialJacobiField_div_hyperbolicDensity
+    (I := I) g p u v q).eventually (Ioi_mem_nhds (half_lt_self hD))] with t ht
+  exact le_of_lt ht
+
+omit [CompleteSpace E] [T2Space M] [SigmaCompactSpace M]
+    [NeZero (Module.finrank ℝ E)] in
+open Filter in
 theorem tendsto_curveDensity_radialJacobiField_div_abs_pow_of_orthonormal
     (g : SmoothRiemannianMetric I M) (p : M) (u : E)
     (v : ι → E)

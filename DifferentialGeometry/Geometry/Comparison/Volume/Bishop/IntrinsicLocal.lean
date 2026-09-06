@@ -271,8 +271,8 @@ theorem exists_intrMean_on
           C ≤ curveDensity (I := I) g γ V t /
             hyperbolicDensity (q * ell) d t := by
       obtain ⟨C, hC, hraw⟩ :=
-        radialRatio_auto (I := I) g p (u : E) (fun i => (v i : E))
-          (q * ell) (mul_nonneg hq hell.le) hv
+        exists_pos_eventually_le_curveDensity_radialJacobiField_div_hyperbolicDensity (I := I)
+          g p (u : E) (fun i => (v i : E)) (q * ell) hv
       have hcurve :
           ∀ᶠ t in 𝓝[>] (0 : Real),
             γ t = radialCurve (I := I) g p (u : E) t := by

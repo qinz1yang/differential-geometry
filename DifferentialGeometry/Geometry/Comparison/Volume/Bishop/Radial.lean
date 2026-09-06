@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Comparison.Volume.Bishop.Jacobi
+import DifferentialGeometry.Geometry.Comparison.Volume.Bishop.JacobiLocal
 import DifferentialGeometry.Geometry.Comparison.Volume.Radial.Gram
 open DifferentialGeometry.Geometry.Curvature
 
@@ -662,19 +662,179 @@ theorem radialRatio_basis
             (∑ i, c i • v i) 1) := by rfl
   exact radialRatio_ge (I := I) g p x v q (δ * B) hq (mul_pos hδ hB) hv hone
 
-omit [T2Space M]
-  [SigmaCompactSpace M] in
-theorem radialRatio_auto
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M]
+    [T2Space (TangentBundle I M)] in
+theorem curveMean_radialJacobiField_le_hyperbolicMeanCurv
     {ι : Type*} [Fintype ι] [DecidableEq ι]
-    (g : SmoothRiemannianMetric I M) (p : M) (x : E) (v : ι → E)
-    (q : ℝ) (hq : 0 ≤ q) (hv : LinearIndependent ℝ v) :
-    ∃ C : ℝ, 0 < C ∧
+    (g : SmoothRiemannianMetric I M) (p : M) (u : E) (hu : u ≠ 0)
+    (v : ι → E) (hv : LinearIndependent ℝ v)
+    (hperp : ∀ i, g.inner p u (v i) = 0)
+    (hcard : Fintype.card ι = Module.finrank ℝ E - 1)
+    (q L : ℝ) (hq : 0 ≤ q)
+    (hdom : ∀ t ∈ Ioo (0 : ℝ) L,
+      (show TangentSpace I p from t • u) ∈ expDomain (I := I) g p)
+    (hinj : ∀ t ∈ Ioo (0 : ℝ) L,
+      Function.Injective (mfderiv 𝓘(ℝ, E) I
+        (fun x : E => expMap (I := I) g p (show TangentSpace I p from x)) (t • u)))
+    (hRic : ∀ t ∈ Ioo (0 : ℝ) L,
+      -(((Module.finrank ℝ E - 1 : ℕ) : ℝ) * q ^ 2) *
+          g.inner (radialCurve (I := I) g p u t)
+            (curveVelocity (I := I) (radialCurve (I := I) g p u) t)
+            (curveVelocity (I := I) (radialCurve (I := I) g p u) t) ≤
+        ricciTensor (I := I) g (radialCurve (I := I) g p u t)
+          (curveVelocity (I := I) (radialCurve (I := I) g p u) t)
+          (curveVelocity (I := I) (radialCurve (I := I) g p u) t)) :
+    ∀ t ∈ Ioo (0 : ℝ) L,
+      curveMean (I := I) g (radialCurve (I := I) g p u)
+        (fun i => radialJacobiField (I := I) g p u (v i)) t ≤
+      hyperbolicMeanCurv (q * Real.sqrt (g.inner p u u)) (Module.finrank ℝ E - 1) t := by
+  by_cases hd0 : Module.finrank ℝ E - 1 = 0
+  · have : IsEmpty ι := Fintype.card_eq_zero_iff.mp (hcard.trans hd0)
+    intro t ht
+    simp [curveMean, Matrix.trace, hyperbolicMeanCurv, hd0]
+  have hd : 0 < Module.finrank ℝ E - 1 := Nat.pos_of_ne_zero hd0
+  have : NeZero (Module.finrank ℝ E) := ⟨by omega⟩
+  let γ := radialCurve (I := I) g p u
+  let V : ι → ∀ t, TangentSpace I (γ t) := fun i => radialJacobiField (I := I) g p u (v i)
+  let a : ℝ := Real.sqrt (g.inner p u u)
+  have ha : 0 < a := Real.sqrt_pos.mpr (g.pos p u hu)
+  have hγ t (ht : t ∈ Ioo (0 : ℝ) L) : ContMDiffAt 𝓘(ℝ, ℝ) I 1 γ t :=
+    ((contMDiffAt_expMap (I := I) g p (hdom t ht)).comp t
+      (contMDiff_id.smul (contMDiff_const : ContMDiff 𝓘(ℝ, ℝ) 𝓘(ℝ, E) ∞
+        (fun _ : ℝ => u))).contMDiffAt).of_le (WithTop.coe_le_coe.mpr le_top)
+  have hspeed t (ht : t ∈ Ioo (0 : ℝ) L) :
+      g.inner (γ t) (curveVelocity (I := I) γ t) (curveVelocity (I := I) γ t) = a ^ 2 :=
+    (inner_curveVelocity_expMap_smul (I := I) g p u (hdom t ht)).trans
+      (Real.sq_sqrt (g.pos p u hu).le).symm
+  have hVperp t (ht : t ∈ Ioo (0 : ℝ) L) i :
+      g.inner (γ t) (curveVelocity (I := I) γ t) (V i t) = 0 := by
+    have h := inner_curveVelocity_radialJacobiField (I := I) g p u (v i) (hdom t ht)
+    dsimp only at h
+    rw [hperp i, mul_zero] at h
+    exact h
+  have hDVperp t (ht : t ∈ Ioo (0 : ℝ) L) i :
+      g.inner (γ t) (curveVelocity (I := I) γ t) (covDerivAlong (I := I) g γ (V i) t) = 0 :=
+    (inner_curveVelocity_covDerivAlong_radialJacobiField (I := I) g p u (v i)
+      (hdom t ht)).trans (hperp i)
+  have hVdiff t (ht : t ∈ Ioo (0 : ℝ) L) i :
+      DifferentiableAt ℝ (chartRepAt (I := I) γ (V i) t) t :=
+    differentiableAt_chartRep_radialJacobiField (I := I) g p u (v i) (hdom t ht)
+  have hDVdiff t (ht : t ∈ Ioo (0 : ℝ) L) i :
+      DifferentiableAt ℝ (chartRepAt (I := I) γ (covDerivAlong (I := I) g γ (V i)) t) t :=
+    differentiableAt_chartRep_covDerivAlong_radialJacobiField (I := I) g p u (v i) (hdom t ht)
+  have hLI t (ht : t ∈ Ioo (0 : ℝ) L) : LinearIndependent ℝ (fun i => V i t) :=
+    linearIndependent_radialJacobiField (I := I) g p u hv ht.1.ne' (hdom t ht) (hinj t ht)
+  have hW t (ht : t ∈ Ioo (0 : ℝ) L) i j :
+      jacobiWronskian (I := I) g γ (V i) (V j) t = 0 :=
+    jacobiWronskian_radialJacobiField_eq_zero (I := I) g p u (v i) (v j) (hdom t ht)
+  have hJ t (ht : t ∈ Ioo (0 : ℝ) L) i : IsJacobiAt (I := I) g γ (V i) t :=
+    isJacobiAt_radialJacobiField (I := I) g p u (v i) (hdom t ht)
+  have hRatioLower : ∃ C : ℝ, 0 < C ∧
       ∀ᶠ t in 𝓝[>] (0 : ℝ),
-        C ≤ curveDensity (I := I) g (radialCurve (I := I) g p x)
-            (fun i => radialJacobiField (I := I) g p x (v i)) t /
-          hyperbolicDensity q (Fintype.card ι) t := by
-  obtain ⟨B, hB, hbase⟩ := exists_radial_base (I := I) g p x
-  exact radialRatio_basis (I := I) g p x v q B hq hB hv hbase
+        C ≤ curveDensity (I := I) g γ V t /
+          hyperbolicDensity (q * a) (Module.finrank ℝ E - 1) t := by
+    simpa only [hcard] using!
+      (exists_pos_eventually_le_curveDensity_radialJacobiField_div_hyperbolicDensity (I := I)
+        g p u v (q * a) hv)
+  exact curveMean_le_on (I := I) (n := 1) le_rfl g γ V q a L hq ha hcard hd hγ hspeed
+    hVperp hDVperp hVdiff hDVdiff hLI hW hJ hRic hRatioLower
+
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M]
+    [T2Space (TangentBundle I M)] in
+theorem antitoneOn_curveDensity_radialJacobiField_div_hyperbolicDensity
+    {ι : Type*} [Fintype ι] [DecidableEq ι]
+    (g : SmoothRiemannianMetric I M) (p : M) (u : E) (hu : u ≠ 0)
+    (v : ι → E) (hv : LinearIndependent ℝ v)
+    (hperp : ∀ i, g.inner p u (v i) = 0)
+    (hcard : Fintype.card ι = Module.finrank ℝ E - 1)
+    (q L : ℝ) (hq : 0 ≤ q)
+    (hdom : ∀ t ∈ Ioo (0 : ℝ) L,
+      (show TangentSpace I p from t • u) ∈ expDomain (I := I) g p)
+    (hinj : ∀ t ∈ Ioo (0 : ℝ) L,
+      Function.Injective (mfderiv 𝓘(ℝ, E) I
+        (fun x : E => expMap (I := I) g p (show TangentSpace I p from x)) (t • u)))
+    (hRic : ∀ t ∈ Ioo (0 : ℝ) L,
+      -(((Module.finrank ℝ E - 1 : ℕ) : ℝ) * q ^ 2) *
+          g.inner (radialCurve (I := I) g p u t)
+            (curveVelocity (I := I) (radialCurve (I := I) g p u) t)
+            (curveVelocity (I := I) (radialCurve (I := I) g p u) t) ≤
+        ricciTensor (I := I) g (radialCurve (I := I) g p u t)
+          (curveVelocity (I := I) (radialCurve (I := I) g p u) t)
+          (curveVelocity (I := I) (radialCurve (I := I) g p u) t)) :
+    AntitoneOn
+      (fun t => curveDensity (I := I) g (radialCurve (I := I) g p u)
+        (fun i => radialJacobiField (I := I) g p u (v i)) t /
+          hyperbolicDensity (q * Real.sqrt (g.inner p u u)) (Module.finrank ℝ E - 1) t)
+      (Ioo (0 : ℝ) L) := by
+  let γ := radialCurve (I := I) g p u
+  let V : ι → ∀ t, TangentSpace I (γ t) := fun i => radialJacobiField (I := I) g p u (v i)
+  have hγ t (ht : t ∈ Ioo (0 : ℝ) L) : ContMDiffAt 𝓘(ℝ, ℝ) I 1 γ t :=
+    ((contMDiffAt_expMap (I := I) g p (hdom t ht)).comp t
+      (contMDiff_id.smul (contMDiff_const : ContMDiff 𝓘(ℝ, ℝ) 𝓘(ℝ, E) ∞
+        (fun _ : ℝ => u))).contMDiffAt).of_le (WithTop.coe_le_coe.mpr le_top)
+  have hVdiff t (ht : t ∈ Ioo (0 : ℝ) L) i :
+      DifferentiableAt ℝ (chartRepAt (I := I) γ (V i) t) t :=
+    differentiableAt_chartRep_radialJacobiField (I := I) g p u (v i) (hdom t ht)
+  have hLI t (ht : t ∈ Ioo (0 : ℝ) L) : LinearIndependent ℝ (fun i => V i t) :=
+    linearIndependent_radialJacobiField (I := I) g p u hv ht.1.ne' (hdom t ht) (hinj t ht)
+  have hW t (ht : t ∈ Ioo (0 : ℝ) L) i j :
+      jacobiWronskian (I := I) g γ (V i) (V j) t = 0 :=
+    jacobiWronskian_radialJacobiField_eq_zero (I := I) g p u (v i) (v j) (hdom t ht)
+  exact curveRatio_anti (I := I) (n := 1) le_rfl g γ V
+    (q * Real.sqrt (g.inner p u u)) L (Module.finrank ℝ E - 1)
+    (mul_nonneg hq (Real.sqrt_nonneg _)) hγ hVdiff hLI hW
+    (curveMean_radialJacobiField_le_hyperbolicMeanCurv (I := I) g p u hu v hv hperp
+      hcard q L hq hdom hinj hRic)
+
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M]
+    [T2Space (TangentBundle I M)] in
+theorem curveDensity_radialJacobiField_le_mul_hyperbolicDensity
+    {ι : Type*} [Fintype ι] [DecidableEq ι]
+    (g : SmoothRiemannianMetric I M) (p : M) (u : E) (hu : u ≠ 0)
+    (v : ι → E) (hv : LinearIndependent ℝ v)
+    (hperp : ∀ i, g.inner p u (v i) = 0)
+    (hcard : Fintype.card ι = Module.finrank ℝ E - 1)
+    (q L : ℝ) (hq : 0 ≤ q)
+    (hdom : ∀ t ∈ Ioo (0 : ℝ) L,
+      (show TangentSpace I p from t • u) ∈ expDomain (I := I) g p)
+    (hinj : ∀ t ∈ Ioo (0 : ℝ) L,
+      Function.Injective (mfderiv 𝓘(ℝ, E) I
+        (fun x : E => expMap (I := I) g p (show TangentSpace I p from x)) (t • u)))
+    (hRic : ∀ t ∈ Ioo (0 : ℝ) L,
+      -(((Module.finrank ℝ E - 1 : ℕ) : ℝ) * q ^ 2) *
+          g.inner (radialCurve (I := I) g p u t)
+            (curveVelocity (I := I) (radialCurve (I := I) g p u) t)
+            (curveVelocity (I := I) (radialCurve (I := I) g p u) t) ≤
+        ricciTensor (I := I) g (radialCurve (I := I) g p u t)
+          (curveVelocity (I := I) (radialCurve (I := I) g p u) t)
+          (curveVelocity (I := I) (radialCurve (I := I) g p u) t)) :
+    ∀ t ∈ Ioo (0 : ℝ) L,
+      curveDensity (I := I) g (radialCurve (I := I) g p u)
+        (fun i => radialJacobiField (I := I) g p u (v i)) t ≤
+      curveDensity (I := I) g (fun _ : ℝ => p)
+        (fun i (_ : ℝ) => (show TangentSpace I p from v i)) 0 *
+      hyperbolicDensity (q * Real.sqrt (g.inner p u u)) (Module.finrank ℝ E - 1) t := by
+  let γ := radialCurve (I := I) g p u
+  let V : ι → ∀ t, TangentSpace I (γ t) := fun i => radialJacobiField (I := I) g p u (v i)
+  let R : ℝ → ℝ := fun t => curveDensity (I := I) g γ V t /
+    hyperbolicDensity (q * Real.sqrt (g.inner p u u)) (Module.finrank ℝ E - 1) t
+  let D : ℝ := curveDensity (I := I) g (fun _ : ℝ => p)
+    (fun i (_ : ℝ) => (show TangentSpace I p from v i)) 0
+  have hlim : Tendsto R (𝓝[>] (0 : ℝ)) (𝓝 D) := by
+    simpa only [hcard] using!
+      (tendsto_curveDensity_radialJacobiField_div_hyperbolicDensity
+        (I := I) g p u v (q * Real.sqrt (g.inner p u u)))
+  have hanti : AntitoneOn R (Ioo (0 : ℝ) L) :=
+    antitoneOn_curveDensity_radialJacobiField_div_hyperbolicDensity (I := I)
+      g p u hu v hv hperp hcard q L hq hdom hinj hRic
+  intro t ht
+  have hupper : ∀ᶠ s in 𝓝[>] (0 : ℝ), R t ≤ R s := by
+    filter_upwards [self_mem_nhdsWithin, (eventually_lt_nhds ht.1).filter_mono inf_le_left]
+      with s hs hst
+    exact hanti ⟨hs, hst.trans ht.2⟩ ht hst.le
+  have hle : R t ≤ D := ge_of_tendsto hlim hupper
+  exact (div_le_iff₀ (hyperbolicDensity_pos
+    (mul_nonneg hq (Real.sqrt_nonneg _)) ht.1)).mp hle
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
@@ -817,7 +977,8 @@ theorem exists_radial_cmp
               (fun i => radialJacobiField (I := I) g p x (v i)) t /
             hyperbolicDensity (q * a) (Module.finrank ℝ E - 1) t := by
     obtain ⟨C, hC, hratio⟩ :=
-      radialRatio_auto (I := I) g p x v (q * a) (mul_nonneg hq ha.le) hv
+      exists_pos_eventually_le_curveDensity_radialJacobiField_div_hyperbolicDensity (I := I)
+        g p x v (q * a) hv
     refine ⟨C, hC, ?_⟩
     simpa only [hcard] using hratio
   have hmean := curveMean_le_hyperbolic (I := I) (n := (2 : WithTop ℕ∞)) (by norm_num)
