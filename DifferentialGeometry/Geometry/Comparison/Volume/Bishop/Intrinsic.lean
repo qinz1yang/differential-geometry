@@ -38,6 +38,7 @@ variable [RiemannianBundle (fun x : M ↦ TangentSpace I x)]
 variable [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
   [IsContinuousRiemannianBundle E (fun x : M ↦ TangentSpace I x)]
 
+omit [T2Space (TangentBundle I M)] in
 theorem intrinsic_geodesic_and_jacobi_eventually_eq_radial
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
@@ -50,47 +51,10 @@ theorem intrinsic_geodesic_and_jacobi_eventually_eq_radial
           (show TangentSpace I p from u)
           (show TangentSpace I p from w) t : E) =
         (radialJacobiField (I := I) g p u w t : E) := by
-  have htend :
-      Tendsto (fun t : Real => t • u) (𝓝[>] (0 : Real)) (𝓝 (0 : E)) := by
-    have hcont : Continuous fun t : Real => t • u :=
-      continuous_id.smul continuous_const
-    have hzero :
-        Tendsto (fun t : Real => t • u) (𝓝 (0 : Real)) (𝓝 (0 : E)) := by
-      simpa using (hcont.continuousAt (x := (0 : Real))).tendsto
-    exact hzero.mono_left inf_le_left
-  have hsmall : ∀ᶠ t in 𝓝[>] (0 : Real),
-      ‖t • u‖ < expMapC2Radius (I := I) g p := by
-    have hball := htend.eventually
-      (Metric.ball_mem_nhds (0 : E) (expMapC2Radius_pos (I := I) g p))
-    filter_upwards [hball] with t ht
-    simpa only [Metric.mem_ball, dist_zero_right] using ht
-  filter_upwards [hsmall] with t ht
-  constructor
-  · calc
-      intrinsicGeodesic (I := I) g hEnorm p
-          (show TangentSpace I p from u) t =
-          intrinsicGeodesic (I := I) g hEnorm p
-            (show TangentSpace I p from t • u) 1 :=
-        (intrinsicGeodesic_smul (I := I) g hEnorm p
-          (show TangentSpace I p from u) t).symm
-      _ = expMapIntrinsic (I := I) g hEnorm p
-          (show TangentSpace I p from t • u) := rfl
-      _ = expMap (I := I) g p
-          (show TangentSpace I p from t • u) :=
-        (exp_eq_intr_of_c2 (I := I) g hEnorm p ht).symm
-      _ = radialCurve (I := I) g p u t := rfl
-  · have hgerm :=
-      exp_germ_eq_intr (I := I) g hEnorm p ht
-    have hmf := Filter.EventuallyEq.mfderiv_eq
-      (I := 𝓘(Real, E)) (I' := I) hgerm
-    have happ :=
-      congrArg (fun L : E →L[Real] E => L (t • w)) hmf
-    have hraw :=
-      radialJacobi_at (I := I) g p u w t ht
-    have hintr :=
-      intrinsic_jacobi_at (I := I) g hEnorm p u w t
-    rw [hraw]
-    exact hintr.trans happ.symm
+  filter_upwards [] with t
+  exact ⟨(congrFun (radialCurve_eq_intrinsicGeodesic (I := I) g hEnorm p u) t).symm,
+    congrArg (fun z : TangentBundle I M => (z.snd : E))
+      (congrFun (intrinsicJacobi_eq_radialJacobiField (I := I) g hEnorm p u w) t)⟩
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M]
   [SigmaCompactSpace M] [T2Space (TangentBundle I M)] [PseudoEMetricSpace M]

@@ -232,24 +232,6 @@ theorem branchLap_eq_mean
   change metricTracePair0SAt (I := I) g Hess = _
   simpa only [G, A, hradial, mul_zero, zero_add, hmean] using hsplit
 
-omit [SigmaCompactSpace M]
-  [RiemannianBundle (fun x : M ↦ TangentSpace I x)] [PseudoEMetricSpace M]
-  [IsRiemannianManifold I M] [CompleteSpace M]
-  [IsContinuousRiemannianBundle E (fun x : M ↦ TangentSpace I x)] in
-omit [NeZero (Module.finrank ℝ E)] in
-private theorem smul_c2_eventually
-    (g : SmoothRiemannianMetric I M) (p : M) (x : E) {t : Real}
-    (htx : ‖t • x‖ < expMapC2Radius (I := I) g p) :
-    ∀ᶠ s in 𝓝 t, ‖s • x‖ < expMapC2Radius (I := I) g p := by
-  have hmap : Continuous fun s : Real => s • x :=
-    continuous_id.smul continuous_const
-  have hmem :
-      t • x ∈ Metric.ball (0 : E) (expMapC2Radius (I := I) g p) := by
-    simpa only [Metric.mem_ball, dist_zero_right] using htx
-  have hev :=
-    hmap.continuousAt.eventually (Metric.isOpen_ball.mem_nhds hmem)
-  simpa only [Metric.mem_ball, dist_zero_right] using hev
-
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M]
   [SigmaCompactSpace M] [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
   [IsContinuousRiemannianBundle E (fun x : M ↦ TangentSpace I x)]
@@ -289,100 +271,6 @@ private lemma metric_smul_right
         (c • (show TangentSpace I p from y)) =
       _
   rw [map_smul (g.inner p (show TangentSpace I p from v)), smul_eq_mul]
-
-private theorem radialCurve_eq_intr
-    (g : SmoothRiemannianMetric I M)
-    (hEnorm : IsMetricNorm (I := I) (M := M) g)
-    (p : M) (x : E) {t : Real}
-    (htx : ‖t • x‖ < expMapC2Radius (I := I) g p) :
-    radialCurve (I := I) g p x =ᶠ[𝓝 t]
-      intrinsicGeodesic (I := I) g hEnorm p
-        (show TangentSpace I p from x) := by
-  filter_upwards [smul_c2_eventually (I := I) g p x htx] with s hs
-  rw [radialCurve, exp_eq_intr_of_c2 (I := I) g hEnorm p hs]
-  calc
-    expMapIntrinsic (I := I) g hEnorm p
-        (show TangentSpace I p from s • x) =
-      intrinsicGeodesic (I := I) g hEnorm p
-        (show TangentSpace I p from s • x) 1 :=
-      expMapIntrinsic_def (I := I) g hEnorm p
-        (show TangentSpace I p from s • x)
-    _ = intrinsicGeodesic (I := I) g hEnorm p
-        (show TangentSpace I p from x) s :=
-      intrinsicGeodesic_smul (I := I) g hEnorm p
-        (show TangentSpace I p from x) s
-
-private theorem radialJacobi_eq_intr
-    (g : SmoothRiemannianMetric I M)
-    (hEnorm : IsMetricNorm (I := I) (M := M) g)
-    (p : M) (x w : E) {t : Real}
-    (htx : ‖t • x‖ < expMapC2Radius (I := I) g p) :
-    ∀ᶠ s in 𝓝 t,
-      (radialJacobiField (I := I) g p x w s : E) =
-        intrinsicJacobi (I := I) g hEnorm p
-          (show TangentSpace I p from x)
-          (show TangentSpace I p from w) s := by
-  filter_upwards [smul_c2_eventually (I := I) g p x htx] with s hs
-  have hparam :
-      Tendsto (fun r : Real => s • (x + r • w))
-        (𝓝 (0 : Real)) (𝓝 (s • x)) := by
-    have hcont : ContinuousAt (fun r : Real => s • (x + r • w)) 0 :=
-      continuousAt_const.smul
-        (continuousAt_const.add (continuousAt_id.smul continuousAt_const))
-    simpa only [ContinuousAt, zero_smul, add_zero] using hcont
-  have hraw :
-      (fun r : Real =>
-        expMap (I := I) g p
-          (show TangentSpace I p from s • (x + r • w))) =ᶠ[𝓝 (0 : Real)]
-        fun r : Real =>
-          expMapIntrinsic (I := I) g hEnorm p
-            (show TangentSpace I p from s • (x + r • w)) :=
-    hparam.eventually (exp_germ_eq_intr (I := I) g hEnorm p hs)
-  have hscale :
-      (fun r : Real =>
-        expMapIntrinsic (I := I) g hEnorm p
-          (show TangentSpace I p from s • (x + r • w))) =
-        fun r : Real =>
-          intrinsicGeodesic (I := I) g hEnorm p
-            (show TangentSpace I p from x + r • w) s := by
-    funext r
-    calc
-      expMapIntrinsic (I := I) g hEnorm p
-          (show TangentSpace I p from s • (x + r • w)) =
-        intrinsicGeodesic (I := I) g hEnorm p
-          (show TangentSpace I p from s • (x + r • w)) 1 :=
-        expMapIntrinsic_def (I := I) g hEnorm p
-          (show TangentSpace I p from s • (x + r • w))
-      _ = intrinsicGeodesic (I := I) g hEnorm p
-          (show TangentSpace I p from x + r • w) s :=
-        intrinsicGeodesic_smul (I := I) g hEnorm p
-          (show TangentSpace I p from x + r • w) s
-  have hagree :
-      (fun r : Real =>
-        expMap (I := I) g p
-          (show TangentSpace I p from s • (x + r • w))) =ᶠ[𝓝 (0 : Real)]
-        fun r : Real =>
-          intrinsicGeodesic (I := I) g hEnorm p
-            (show TangentSpace I p from x + r • w) s := by
-    exact hraw.trans (Filter.Eventually.of_forall (fun r => congrFun hscale r))
-  have hmf :=
-    Filter.EventuallyEq.mfderiv_eq
-      (I := 𝓘(Real, Real)) (I' := I) hagree
-  have happ := congrArg (fun L => L (1 : Real)) hmf
-  have hpoint :
-      expMap (I := I) g p
-          (show TangentSpace I p from s • (x + (0 : Real) • w)) =
-        expMap (I := I) g p (show TangentSpace I p from s • x) := by
-    rw [zero_smul, add_zero]
-  rw [← hpoint]
-  change
-    (mfderiv 𝓘(Real, Real) I
-        (fun r : Real ↦ expMap (I := I) g p
-          (show TangentSpace I p from s • (x + r • w))) 0) 1 =
-      (mfderiv 𝓘(Real, Real) I
-        (fun r : Real ↦ intrinsicGeodesic (I := I) g hEnorm p
-          (show TangentSpace I p from x + r • w) s) 0) 1
-  exact happ
 
 private theorem intrinsicJacobi_smul
     (g : SmoothRiemannianMetric I M)
@@ -441,8 +329,6 @@ theorem radialLap_eq_mean
     (ht : 0 < t)
     (hx_pos : 0 < g.inner p x x)
     (hsrc : t • x ∈ B.hom.source)
-    (hC2 :
-      ‖t • x‖ < expMapC2Radius (I := I) g p)
     (hv : LinearIndependent Real v)
     (hperp : ∀ i, g.inner p x (v i) = 0)
     (hcard :
@@ -474,12 +360,16 @@ theorem radialLap_eq_mean
       (show TangentSpace I p from t • x)
       (show TangentSpace I p from t • v i)
   have hγRI : γR =ᶠ[𝓝 t] γI := by
-    simpa only [γR, γI] using
-      radialCurve_eq_intr (I := I) g hEnorm p x hC2
+    simpa only [γR, γI] using!
+      Filter.Eventually.of_forall (fun s =>
+        congrFun (radialCurve_eq_intrinsicGeodesic (I := I) g hEnorm p x) s)
   have hVRI (i : ι) :
       ∀ᶠ s in 𝓝 t, (VR i s : E) = (VI i s : E) := by
-    simpa only [VR, VI] using
-      radialJacobi_eq_intr (I := I) g hEnorm p x (v i) hC2
+    simpa only [VR, VI] using!
+      Filter.Eventually.of_forall (fun s =>
+        (congrArg (fun z : TangentBundle I M => (z.snd : E))
+          (congrFun (intrinsicJacobi_eq_radialJacobiField (I := I)
+            g hEnorm p x (v i)) s)).symm)
   have hGramRI :
       curveGram (I := I) g γR VR t =
         curveGram (I := I) g γI VI t := by
@@ -609,7 +499,7 @@ theorem radialLap_eq_mean
         (show TangentSpace I p from t • x) =
       intrinsicGeodesic (I := I) g hEnorm p
         (show TangentSpace I p from t • x) 1
-    exact (exp_eq_intr_of_c2 (I := I) g hEnorm p hC2).trans
+    exact (congrFun (expMap_eq_expMapIntrinsic (I := I) g hEnorm p) (t • x)).trans
       (expMapIntrinsic_def (I := I) g hEnorm p
         (show TangentSpace I p from t • x))
   have hinnerT :

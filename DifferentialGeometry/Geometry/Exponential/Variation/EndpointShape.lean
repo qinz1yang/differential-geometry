@@ -1,5 +1,6 @@
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tangent.NormDiamond
 import DifferentialGeometry.Geometry.Exponential.Inverse.Radius
+import DifferentialGeometry.Geometry.Exponential.Intrinsic.Agreement
 import DifferentialGeometry.Geometry.Exponential.Intrinsic.GaussLemma
 import DifferentialGeometry.Geometry.Exponential.Variation.Jacobi
 import DifferentialGeometry.Geometry.Connection.ChartBridge.Scalar.Hessian
@@ -98,6 +99,31 @@ noncomputable def intrinsicJacobi
   unfold intrinsicJacobi
   rw [hconst, mfderiv_const]
   rfl
+
+open VolumeComparison in
+theorem intrinsicJacobi_eq_radialJacobiField
+    (g : SmoothRiemannianMetric I M)
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
+    (p : M) (u w : TangentSpace I p) :
+    (fun t => (⟨intrinsicGeodesic (I := I) g hEnorm p u t,
+      intrinsicJacobi (I := I) g hEnorm p u w t⟩ : TangentBundle I M)) =
+    (fun t => (⟨radialCurve (I := I) g p u t,
+      radialJacobiField (I := I) g p u w t⟩ : TangentBundle I M)) := by
+  funext t
+  apply TotalSpace.ext (congrFun
+    (radialCurve_eq_intrinsicGeodesic (I := I) g hEnorm p u) t).symm
+  apply heq_of_eq
+  have hvar :
+      (fun s : ℝ => intrinsicGeodesic (I := I) g hEnorm p (u + s • w) t) =
+      (fun s : ℝ => expMap (I := I) g p
+        (show TangentSpace I p from t • ((u : E) + s • (w : E)))) := by
+    funext s
+    exact (congrFun (radialCurve_eq_intrinsicGeodesic (I := I) g hEnorm p
+      (u + s • w)) t).symm
+  change (intrinsicJacobi (I := I) g hEnorm p u w t : E) =
+    (radialJacobiField (I := I) g p u w t : E)
+  exact (congrArg (fun f : ℝ → M => (mfderiv 𝓘(ℝ, ℝ) I f 0 1 : E)) hvar).trans
+    (radialJacobiField_eq (I := I) g p (u : E) (w : E) t).symm
 
 theorem intrinsicJacobi_diff
     (g : SmoothRiemannianMetric I M)
