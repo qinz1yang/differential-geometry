@@ -10,7 +10,7 @@ noncomputable section
 namespace DifferentialGeometry.Geometry.Curvature.DimensionThree
 
 open DifferentialGeometry.Analysis.InnerProductSpace
-open scoped BigOperators
+open scoped BigOperators RealInnerProductSpace
 
 def curvatureOperatorReaction3
     (A : Matrix (Fin 3) (Fin 3) Real) : Matrix (Fin 3) (Fin 3) Real :=
@@ -25,6 +25,23 @@ def curvatureOperatorReactionEndomorphism3
       (((LinearMap.trace Real V A) ^ 2 - LinearMap.trace Real V (A.comp A)) / (2 : Real)) •
         LinearMap.id
 
+theorem curvatureOperatorReactionEndomorphism3_smul_id
+    {V : Type*} [AddCommGroup V] [Module ℝ V] [FiniteDimensional ℝ V]
+    (hdim : Module.finrank ℝ V = 3) (r : ℝ) :
+    curvatureOperatorReactionEndomorphism3 (r • (LinearMap.id : V →ₗ[ℝ] V)) =
+      (2 * r ^ 2) • LinearMap.id := by
+  have hsq : (r • (LinearMap.id : V →ₗ[ℝ] V)).comp (r • LinearMap.id) =
+      (r * r) • LinearMap.id := by
+    ext v
+    simp [smul_smul]
+  unfold curvatureOperatorReactionEndomorphism3
+  rw [hsq]
+  simp only [map_smul, LinearMap.trace_id, hdim, Nat.cast_ofNat]
+  rw [smul_smul, smul_smul, ← sub_smul, ← add_smul]
+  congr 1
+  ring
+
+
 theorem curvatureOperatorReactionEndomorphism3_conj
     {W W' : Type*} [AddCommGroup W] [Module ℝ W] [FiniteDimensional ℝ W]
     [AddCommGroup W'] [Module ℝ W'] [FiniteDimensional ℝ W']
@@ -35,6 +52,34 @@ theorem curvatureOperatorReactionEndomorphism3_conj
   rw [← e.conj_comp, LinearMap.trace_conj', LinearMap.trace_conj']
   simp only [map_add, map_sub, map_smul, e.conj_comp, e.conj_id]
 
+
+section
+
+variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
+  [FiniteDimensional ℝ E]
+
+theorem curvatureOperatorReactionEndomorphism3_isSymmetric
+    (A : E →ₗ[ℝ] E) (hA : A.IsSymmetric) :
+    (curvatureOperatorReactionEndomorphism3 A).IsSymmetric := by
+  have hsq : (A.comp A).IsSymmetric := by
+    intro x y
+    change ⟪A (A x), y⟫ = ⟪x, A (A y)⟫
+    rw [hA, hA]
+  exact ((hsq.smul (by simp)).sub (hA.smul (by simp))).add
+    (LinearMap.IsSymmetric.id.smul (by simp))
+
+def curvatureOperatorReactionSelfAdjoint3 (A : selfAdjoint (E →L[ℝ] E)) :
+    selfAdjoint (E →L[ℝ] E) :=
+  ⟨(curvatureOperatorReactionEndomorphism3 (A : E →L[ℝ] E).toLinearMap).toContinuousLinearMap,
+    ContinuousLinearMap.isSelfAdjoint_iff_isSymmetric.mpr
+      (curvatureOperatorReactionEndomorphism3_isSymmetric _
+        (ContinuousLinearMap.isSelfAdjoint_iff_isSymmetric.mp A.property))⟩
+
+theorem curvatureOperatorReactionSelfAdjoint3_coe (A : selfAdjoint (E →L[ℝ] E)) :
+    (curvatureOperatorReactionSelfAdjoint3 A : E →L[ℝ] E) =
+      (curvatureOperatorReactionEndomorphism3 (A : E →L[ℝ] E).toLinearMap).toContinuousLinearMap := rfl
+
+end
 
 private theorem curvatureOperatorReaction3_eq_trace_polynomial
     (A : Matrix (Fin 3) (Fin 3) Real) :

@@ -85,4 +85,41 @@ theorem inner_traceNormalizedCurvatureEndomorphism_ιMulti
   have h := hT.anti_last (v 0) (v 1) (w 0) (w 1)
   linarith
 
+def traceNormalizedCurvatureSelfAdjoint
+    (T : ContinuousMultilinearMap ℝ (fun _ : Fin 4 => E) ℝ)
+    (hT : IsAlgCurvForm (fun a b c d => T ![a, b, c, d])) :
+    selfAdjoint ((⋀[ℝ]^2 E) →L[ℝ] ⋀[ℝ]^2 E) :=
+  ⟨traceNormalizedCurvatureEndomorphism T hT,
+    ContinuousLinearMap.isSelfAdjoint_iff_isSymmetric.mpr
+      (traceNormalizedCurvatureEndomorphism_isSymmetric T hT)⟩
+
+theorem traceNormalizedCurvatureSelfAdjoint_coe
+    (T : ContinuousMultilinearMap ℝ (fun _ : Fin 4 => E) ℝ)
+    (hT : IsAlgCurvForm (fun a b c d => T ![a, b, c, d])) :
+    (traceNormalizedCurvatureSelfAdjoint T hT : (⋀[ℝ]^2 E) →L[ℝ] ⋀[ℝ]^2 E) =
+      traceNormalizedCurvatureEndomorphism T hT := rfl
+
+theorem traceNormalizedCurvatureEndomorphism_eq_smul_id_of_constant_curvature
+    (T : ContinuousMultilinearMap ℝ (fun _ : Fin 4 => E) ℝ)
+    (hT : IsAlgCurvForm (fun x y z w => T ![x, y, z, w])) (k : ℝ)
+    (hk : ∀ a b c d, T ![a, b, c, d] =
+      k * (⟪a, d⟫ * ⟪b, c⟫ - ⟪a, c⟫ * ⟪b, d⟫)) :
+    traceNormalizedCurvatureEndomorphism T hT = (2 * k) • ContinuousLinearMap.id ℝ (⋀[ℝ]^2 E) := by
+  apply endomorphismTensor_injective 2
+  ext v
+  rw [endomorphismTensor_traceNormalizedCurvatureEndomorphism]
+  have hv : v = ![v 0, v 1, v 2, v 3] := by
+    ext i
+    fin_cases i <;> rfl
+  have happ : v = Fin.append ![v 0, v 1] ![v 2, v 3] := by
+    ext i
+    fin_cases i <;> rfl
+  rw [smul_apply, smul_eq_mul]
+  conv_lhs => rw [hv, hk]
+  conv_rhs => rw [happ]
+  rw [endomorphismTensor_apply_append, smul_apply,
+    ContinuousLinearMap.id_apply, real_inner_smul_left, inner_ιMulti_ιMulti, Matrix.det_fin_two]
+  simp only [Matrix.of_apply, Matrix.cons_val_zero, Matrix.cons_val_one]
+  ring
+
 end exteriorPower

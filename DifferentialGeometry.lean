@@ -4507,3 +4507,4 @@ import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.WithBoundary.
 import DifferentialGeometry.Analysis.Parabolic.SelfAdjointEvolution
 import DifferentialGeometry.Analysis.Parabolic.ExteriorSelfAdjointEvolution
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.SublevelDivergence
+import DifferentialGeometry.Analysis.Parabolic.CurvatureOperatorEvolution

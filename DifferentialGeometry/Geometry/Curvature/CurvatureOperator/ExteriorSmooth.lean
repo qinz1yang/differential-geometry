@@ -79,9 +79,7 @@ def traceNormalizedCurvatureSelfAdjointSection
   let := S.totalSpaceTopology
   let := S.fiberBundle
   let A : ∀ x, S.fiber x := fun x =>
-    ⟨exteriorPower.traceNormalizedCurvatureEndomorphism (T x) (hT x),
-      ContinuousLinearMap.isSelfAdjoint_iff_isSymmetric.mpr
-        (exteriorPower.traceNormalizedCurvatureEndomorphism_isSymmetric (T x) (hT x))⟩
+    exteriorPower.traceNormalizedCurvatureSelfAdjoint (T x) (hT x)
   refine ⟨A, ?_⟩
   rw [← contMDiffOn_univ]
   apply (S.contMDiffOn_section_iff Set.univ isOpen_univ A).mpr

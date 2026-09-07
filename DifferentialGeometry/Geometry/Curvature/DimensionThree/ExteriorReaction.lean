@@ -107,16 +107,6 @@ theorem curvatureOperatorReactionEndomorphism3_traceNormalizedCurvatureEndomorph
           b (bivectorIndex3 j).2, b (bivectorIndex3 j).1]) := by
   rw [curvatureOperatorReactionEndomorphism3_toMatrix, traceNormalizedCurvatureEndomorphism_toMatrix]
 
-theorem curvatureOperatorReactionEndomorphism3_isSymmetric
-    (A : E →ₗ[ℝ] E) (hA : A.IsSymmetric) :
-    (curvatureOperatorReactionEndomorphism3 A).IsSymmetric := by
-  have hsq : (A.comp A).IsSymmetric := by
-    intro x y
-    change ⟪A (A x), y⟫ = ⟪x, A (A y)⟫
-    rw [hA, hA]
-  exact ((hsq.smul (by simp)).sub (hA.smul (by simp))).add
-    (LinearMap.IsSymmetric.id.smul (by simp))
-
 theorem curvatureOperatorReactionEndomorphism3_traceNormalizedCurvatureEndomorphism_apply_eq_negative_b_comp
     (b : OrthonormalBasis (Fin 3) ℝ E)
     (T : ContinuousMultilinearMap ℝ (fun _ : Fin 4 => E) ℝ)
