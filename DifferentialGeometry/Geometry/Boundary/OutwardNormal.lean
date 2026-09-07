@@ -457,21 +457,40 @@ theorem outwardNormal_norm_one :
   rw [hsq_sq]
   exact div_self hq_ne
 omit [FiniteDimensional ℝ E] in
+theorem outwardNormal_inner_inwardCoord_eq_neg_sqrt :
+    g.inner (x : M) (outwardNormal (M := M) g x) (inwardCoord (M := M) x) =
+      -Real.sqrt (g.inner (x : M) (outwardDir (M := M) g x) (outwardDir (M := M) g x)) := by
+  have hq : 0 < g.inner (x : M) (outwardDir (M := M) g x) (outwardDir (M := M) g x) :=
+    g_inner_outwardDir_pos g x
+  have hin : g.inner (x : M) (outwardDir (M := M) g x) (inwardCoord (M := M) x) =
+      -g.inner (x : M) (outwardDir (M := M) g x) (outwardDir (M := M) g x) := by
+    rw [g_inner_outwardDir_inwardCoord, g_inner_outwardDir_outwardDir]
+    ring
+  rw [outwardNormal_eq, map_smul, smul_apply, smul_eq_mul, hin, mul_neg]
+  congr 1
+  exact (inv_mul_eq_iff_eq_mul₀ (ne_of_gt (Real.sqrt_pos.mpr hq))).mpr
+    (Real.mul_self_sqrt hq.le).symm
+
+omit [FiniteDimensional ℝ E] in
+theorem outwardNormal_inner_eq_neg_sqrt_mul_of_sub_mem_range
+    (v : TangentSpace I (x : M)) (c : ℝ)
+    (hv : v - c • inwardCoord (M := M) x ∈
+      LinearMap.range (boundaryInclusionMfderiv (M := M) x).toLinearMap) :
+    g.inner (x : M) (outwardNormal (M := M) g x) v =
+      -Real.sqrt (g.inner (x : M) (outwardDir (M := M) g x) (outwardDir (M := M) g x)) * c := by
+  rcases hv with ⟨w, hw⟩
+  have hzero := outwardNormal_orthogonal_to_boundary g x w
+  change g.inner (x : M) (outwardNormal (M := M) g x)
+    ((boundaryInclusionMfderiv (M := M) x).toLinearMap w) = 0 at hzero
+  rw [hw, map_sub, map_smul, smul_eq_mul, outwardNormal_inner_inwardCoord_eq_neg_sqrt] at hzero
+  rw [← sub_eq_zero] at ⊢
+  simpa only [mul_comm c] using hzero
+
+omit [FiniteDimensional ℝ E] in
 theorem outwardNormal_inner_inwardCoord_neg :
     g.inner (x : M) (outwardNormal (M := M) g x) (inwardCoord (M := M) x) < 0 := by
-  rw [outwardNormal_eq (M := M) g x]
-  rw [ContinuousLinearMap.map_smul, smul_apply, smul_eq_mul]
-  have hq_pos : 0 < g.inner (x : M) (outwardDir (M := M) g x) (outwardDir (M := M) g x) :=
-    g_inner_outwardDir_pos (M := M) g x
-  have hsq_pos : 0 < Real.sqrt
-      (g.inner (x : M) (outwardDir (M := M) g x) (outwardDir (M := M) g x)) :=
-    Real.sqrt_pos.mpr hq_pos
-  have hsq_inv_pos : 0 < (Real.sqrt
-      (g.inner (x : M) (outwardDir (M := M) g x) (outwardDir (M := M) g x)))⁻¹ :=
-    inv_pos.mpr hsq_pos
-  have hneg : g.inner (x : M) (outwardDir (M := M) g x) (inwardCoord (M := M) x) < 0 :=
-    g_inner_outwardDir_inwardCoord_neg (M := M) g x
-  exact mul_neg_of_pos_of_neg hsq_inv_pos hneg
+  rw [outwardNormal_inner_inwardCoord_eq_neg_sqrt]
+  exact neg_neg_of_pos (Real.sqrt_pos.mpr (g_inner_outwardDir_pos g x))
 
 def boundaryFunOfInwardAt (g : SmoothRiemannianMetric I M)
     (α₀ x : BoundaryManifold I M) : TangentSpace hI.boundaryI x →ₗ[ℝ] ℝ where
