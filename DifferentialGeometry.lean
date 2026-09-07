@@ -1985,6 +1985,8 @@ import DifferentialGeometry.Geometry.Comparison.BusemannLaplacian
 import DifferentialGeometry.Geometry.Comparison.BusemannLine
 import DifferentialGeometry.Geometry.Comparison.BusemannLineEnergy
 import DifferentialGeometry.Geometry.Comparison.BusemannLineLaplacian
+import DifferentialGeometry.Geometry.Comparison.BusemannLineMinimum
+import DifferentialGeometry.Geometry.Comparison.BusemannLineSolution
 import DifferentialGeometry.Geometry.CenterOfMass.Basic
 import DifferentialGeometry.Geometry.Comparison.HopfRinow.ChartVelocityConvergence
 import DifferentialGeometry.Geometry.Comparison.Convexity.Balls
