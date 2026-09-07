@@ -71,6 +71,26 @@ theorem isCompact_minimizingDomain_inter
   · rintro ⟨w, hw, rfl⟩
     exact ⟨hw, w.property⟩
 
+theorem isSigmaCompact_minimizingDomain
+    (g : SmoothRiemannianMetric I M) (p : M) :
+    IsSigmaCompact (minimizingDomain (I := I) g p) := by
+  have hopen : IsOpen (show Set E from expDomain (I := I) g p) :=
+    isOpen_expDomain (I := I) g p
+  let : LocallyCompactSpace (show Set E from expDomain (I := I) g p) :=
+    hopen.locallyCompactSpace
+  have hsig : IsSigmaCompact (Subtype.val ⁻¹' minimizingDomain (I := I) g p :
+      Set (show Set E from expDomain (I := I) g p)) :=
+    isSigmaCompact_univ.of_isClosed_subset
+      (isClosed_preimage_minimizingDomain (I := I) g p) (subset_univ _)
+  have himage := hsig.image continuous_subtype_val
+  convert himage using 1
+  ext v
+  constructor
+  · intro hv
+    exact ⟨⟨v, minimizingDomain_subset_expDomain (I := I) g p hv⟩, hv, rfl⟩
+  · rintro ⟨w, hw, rfl⟩
+    exact hw
+
 variable [MeasurableSpace E] [BorelSpace E]
 
 theorem measurableSet_minimizingDomain

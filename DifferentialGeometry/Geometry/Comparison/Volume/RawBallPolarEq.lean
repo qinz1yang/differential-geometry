@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Exponential.MinimizingDomain.Injectivity
-import DifferentialGeometry.Geometry.Exponential.MinimizingDomain.Topology
+import DifferentialGeometry.Geometry.Exponential.MinimizingDomain.Measure
 import DifferentialGeometry.Geometry.Exponential.Radial
 import DifferentialGeometry.Geometry.Exponential.CompactBall
 import DifferentialGeometry.Geometry.Exponential.VolumeDensity
@@ -213,39 +213,6 @@ private theorem rawSegEnd_ray_sub
     rw [smul_smul, div_mul_cancel₀ a hb_pos.ne']
     exact haD
 
-theorem rawSegEnd_null
-    [PseudoEMetricSpace M] [IsRiemannianManifold I M]
-    [IsContinuousRiemannianBundle E (fun x : M ↦ TangentSpace I x)]
-    (g : SmoothRiemannianMetric I M)
-    (hEnorm : IsMetricNorm (I := I) (M := M) g)
-    (p : M) {R R₀ : ℝ} (hRR₀ : R < R₀)
-    (hcpt : @IsCompact M PseudoEMetricSpace.toUniformSpace.toTopologicalSpace
-      (Metric.closedEBall p (ENNReal.ofReal R₀))) :
-    (modelHaar (E := E))
-        ((minimizingDomain (I := I) g p \ extendibleMinimizingDomain (I := I) g p) ∩
-          closedGBall (I := I) g p R) = 0 := by
-  let _ : Measure.IsAddHaarMeasure (modelHaar (E := E)) := modelHaar_isAddHaarMeasure
-  let K : Set E := minimizingDomain (I := I) g p ∩ closedGBall (I := I) g p R
-  have hK : IsCompact K := isCompact_rawSeg (I := I) g hEnorm p hRR₀ hcpt
-  apply measure_mono_null ?_ (hK.measure_setOf_forall_smul_notMem (modelHaar (E := E)))
-  rintro v ⟨⟨hv, hvnot⟩, hvball⟩
-  refine ⟨⟨hv, hvball⟩, ?_⟩
-  intro c hc hcv
-  exact hvnot ⟨c, hc, hcv.1⟩
-
-private theorem rawSegEnd_nullMeas
-    [PseudoEMetricSpace M] [IsRiemannianManifold I M]
-    [IsContinuousRiemannianBundle E (fun x : M ↦ TangentSpace I x)]
-    (g : SmoothRiemannianMetric I M)
-    (hEnorm : IsMetricNorm (I := I) (M := M) g)
-    (p : M) {R R₀ : ℝ} (hRR₀ : R < R₀)
-    (hcpt : @IsCompact M PseudoEMetricSpace.toUniformSpace.toTopologicalSpace
-      (Metric.closedEBall p (ENNReal.ofReal R₀))) :
-    NullMeasurableSet
-      ((minimizingDomain (I := I) g p \ extendibleMinimizingDomain (I := I) g p) ∩
-        closedGBall (I := I) g p R)
-      (modelHaar (E := E)) :=
-  NullMeasurableSet.of_null (rawSegEnd_null (I := I) g hEnorm p hRR₀ hcpt)
 
 omit [I.Boundaryless] [T2Space M] [T2Space (TangentBundle I M)]
   [SigmaCompactSpace M] in
@@ -439,7 +406,10 @@ theorem rawBall_integral_eq
   have hdiff : (modelHaar (E := E)) (L \ K) = 0 := by
     apply measure_mono_null hdiff_sub
     apply measure_union_null
-    · simpa only [L] using rawSegEnd_null (I := I) g hEnorm p hRR₀ hcpt
+    · let _ : Measure.IsAddHaarMeasure (modelHaar (E := E)) := modelHaar_isAddHaarMeasure
+      exact measure_mono_null inter_subset_left
+        (measure_minimizingDomain_sdiff_extendibleMinimizingDomain
+          (I := I) g p (modelHaar (E := E)))
     · exact gSphere_null (I := I) (E := E) g p R
   have hLKae : L =ᵐ[modelHaar (E := E)] K := by
     rw [ae_eq_set]

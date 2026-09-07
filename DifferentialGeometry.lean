@@ -2474,6 +2474,7 @@ import DifferentialGeometry.Geometry.Exponential.MinimizingDomain.Defs
 import DifferentialGeometry.Geometry.Exponential.MinimizingDomain.Basic
 import DifferentialGeometry.Geometry.Exponential.MinimizingDomain.Injectivity
 import DifferentialGeometry.Geometry.Exponential.MinimizingDomain.Topology
+import DifferentialGeometry.Geometry.Exponential.MinimizingDomain.Measure
 import DifferentialGeometry.Geometry.Exponential.Radial
 import DifferentialGeometry.Geometry.Exponential.CompactBall
 import DifferentialGeometry.Geometry.Exponential.Smoothness.Domain

@@ -119,7 +119,8 @@ private theorem measure_sdiff_iUnion_compact_smul_eq_zero [Nontrivial E]
           lintegral_indicator_one hA
         _ = 0 := hAzero
 
-theorem IsCompact.measure_setOf_forall_smul_notMem {K : Set E} (hK : IsCompact K) :
+private theorem measure_setOf_forall_smul_notMem_of_isCompact
+    {K : Set E} (hK : IsCompact K) :
     μ {x | x ∈ K ∧ ∀ t : ℝ, 1 < t → t • x ∉ K} = 0 := by
   classical
   cases subsingleton_or_nontrivial E with
@@ -148,3 +149,19 @@ theorem IsCompact.measure_setOf_forall_smul_notMem {K : Set E} (hK : IsCompact K
       rw [← hzx]
       change (1 / z.1) • (z.1 • z.2) ∈ K
       simpa only [smul_smul, div_mul_cancel₀ 1 hz0, one_smul] using hzK
+
+theorem IsSigmaCompact.measure_setOf_forall_smul_notMem {S : Set E} (hS : IsSigmaCompact S) :
+    μ {x | x ∈ S ∧ ∀ t : ℝ, 1 < t → t • x ∉ S} = 0 := by
+  obtain ⟨K, hK, hKS⟩ := hS
+  have hnull : μ (⋃ n : ℕ, {x | x ∈ K n ∧ ∀ t : ℝ, 1 < t → t • x ∉ K n}) = 0 :=
+    measure_iUnion_null fun n => measure_setOf_forall_smul_notMem_of_isCompact μ (hK n)
+  apply measure_mono_null ?_ hnull
+  rintro x ⟨hx, hxt⟩
+  obtain ⟨n, hxn⟩ := mem_iUnion.mp (hKS.symm ▸ hx)
+  refine mem_iUnion.mpr ⟨n, hxn, ?_⟩
+  intro t ht htx
+  exact hxt t ht (hKS ▸ mem_iUnion.mpr ⟨n, htx⟩)
+
+theorem IsCompact.measure_setOf_forall_smul_notMem {K : Set E} (hK : IsCompact K) :
+    μ {x | x ∈ K ∧ ∀ t : ℝ, 1 < t → t • x ∉ K} = 0 :=
+  hK.isSigmaCompact.measure_setOf_forall_smul_notMem μ
