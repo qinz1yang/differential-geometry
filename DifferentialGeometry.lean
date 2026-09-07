@@ -1926,6 +1926,7 @@ import DifferentialGeometry.External.DeGiorgi.SobolevPoincare
 import DifferentialGeometry.External.DeGiorgi.SobolevSpace
 import DifferentialGeometry.External.DeGiorgi.SobolevSpace.Approximation
 import DifferentialGeometry.External.DeGiorgi.SobolevSpace.PositivePartPrelude
+import DifferentialGeometry.External.DeGiorgi.SobolevSpace.PositiveTestDensity
 import DifferentialGeometry.External.DeGiorgi.SobolevSpace.WeakDerivatives
 import DifferentialGeometry.External.DeGiorgi.SobolevSpace.Witnesses
 import DifferentialGeometry.External.DeGiorgi.StampacchiaTruncation

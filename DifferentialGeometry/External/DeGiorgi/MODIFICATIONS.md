@@ -538,3 +538,13 @@ statements and proof bodies are unchanged.
 declaration name identifies the `smoothUnitBallExtensionGradCandidate` on its right-hand side.
 Also removed the redundant `generic` suffix from a private norm-bound helper. The theorem
 statements and proofs are unchanged.
+
+### 2026-09-07 — positive-test density extension
+
+**Files**:
+- `SobolevSpace/PositiveTestDensity.lean`
+
+**Change**: added the nonnegative smooth density theorem for pointwise nonnegative `H₀¹`
+functions and adapted its proof to Mathlib 4.33 elaboration and indicator APIs. The construction
+uses exact-support smooth positive-part regularizations and preserves the limit witness's weak
+gradient.
