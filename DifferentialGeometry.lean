@@ -4496,3 +4496,4 @@ import DifferentialGeometry.Analysis.Integration.Measure.OpenSubtype
 import DifferentialGeometry.Analysis.Integration.Measure.SublevelVolume
 import DifferentialGeometry.Topology.Manifold.ChartPartialDiffeomorph
 import DifferentialGeometry.Analysis.Integration.Measure.NullImage
+import DifferentialGeometry.Geometry.Curvature.DimensionThree.ExteriorReaction
