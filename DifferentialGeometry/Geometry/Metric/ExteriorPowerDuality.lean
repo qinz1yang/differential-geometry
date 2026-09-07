@@ -1,4 +1,6 @@
 import DifferentialGeometry.Geometry.Metric.ExteriorPowerBundle
+import DifferentialGeometry.Geometry.Metric.BundleAlternating
+import DifferentialGeometry.Analysis.InnerProductSpace.HilbertSchmidt
 import DifferentialGeometry.Tensor.Alternating.Bundle
 import DifferentialGeometry.Bundle.Hom.Regularity
 
@@ -63,3 +65,77 @@ theorem alternatingDualEquiv_map_apply
   exact LinearMap.congr_fun h u
 
 end exteriorPower
+
+namespace Bundle
+
+variable {B : Type*} [TopologicalSpace B]
+  {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F] [FiniteDimensional ℝ F]
+  (V : B → Type*) [TopologicalSpace (TotalSpace F V)]
+  [∀ x, NormedAddCommGroup (V x)] [∀ x, InnerProductSpace ℝ (V x)]
+  [FiberBundle F V] [VectorBundle ℝ F V]
+
+theorem alternatingRiemannianMetric_musicalEquiv_left (k : ℕ) (x : B)
+    (u : ⋀[ℝ]^k (V x)) (a : V x [⋀^Fin k]→L[ℝ] ℝ) :
+    letI : FiniteDimensional ℝ (V x) := VectorBundle.finiteDimensional ℝ F V x
+    (alternatingRiemannianMetric (F := F) V k).inner x (exteriorPower.musicalEquiv k u) a =
+      (k.factorial : ℝ) * exteriorPower.alternatingDualEquiv k u a := by
+  let : FiniteDimensional ℝ (V x) := VectorBundle.finiteDimensional ℝ F V x
+  rw [alternatingRiemannianMetric_inner_eq_factorial_mul_exterior_inner,
+    ContinuousLinearEquiv.symm_apply_apply]
+  congr 1
+  rw [real_inner_comm, exteriorPower.alternatingDualEquiv_apply]
+  have h := exteriorPower.alternatingMapLinearEquiv_musicalEquiv k
+    ((exteriorPower.musicalEquiv k).symm a) u
+  simpa only [ContinuousLinearEquiv.apply_symm_apply] using h.symm
+
+
+theorem hilbertSchmidtInner_musicalEquiv_conjugate (k : ℕ) (x : B) :
+    letI : ∀ y, FiniteDimensional ℝ (V y) := fun y => VectorBundle.finiteDimensional ℝ F V y
+    letI : RiemannianBundle
+        (Bundle.continuousAlternatingMap ℝ (Fin k) F V ℝ (Bundle.Trivial B ℝ)) :=
+      ⟨alternatingRiemannianMetric (F := F) V k⟩
+    letI alternatingNorm : ∀ y, NormedAddCommGroup (V y [⋀^Fin k]→L[ℝ] ℝ) :=
+      fun y => Bundle.instNormedAddCommGroupOfRiemannianBundleOfIsTopologicalAddGroupOfContinuousConstSMulReal
+        (E := Bundle.continuousAlternatingMap ℝ (Fin k) F V ℝ (Bundle.Trivial B ℝ)) y
+    letI : ∀ y, SeminormedAddCommGroup (V y [⋀^Fin k]→L[ℝ] ℝ) :=
+      fun y => (alternatingNorm y).toSeminormedAddCommGroup
+    letI : ∀ y, InnerProductSpace ℝ (V y [⋀^Fin k]→L[ℝ] ℝ) :=
+      fun y => Bundle.instInnerProductSpaceReal
+        (E := Bundle.continuousAlternatingMap ℝ (Fin k) F V ℝ (Bundle.Trivial B ℝ)) y
+    let e := exteriorPower.musicalEquiv (E := V x) k
+    ∀ A C : (⋀[ℝ]^k (V x)) →L[ℝ] ⋀[ℝ]^k (V x),
+      @ContinuousLinearMap.hilbertSchmidtInner _ _ (alternatingNorm x) _ _ (alternatingNorm x) _
+          (e.toContinuousLinearMap.comp (A.comp e.symm.toContinuousLinearMap))
+          (e.toContinuousLinearMap.comp (C.comp e.symm.toContinuousLinearMap)) =
+        ContinuousLinearMap.hilbertSchmidtInner A C := by
+  let : ∀ y, FiniteDimensional ℝ (V y) := fun y => VectorBundle.finiteDimensional ℝ F V y
+  let : RiemannianBundle
+      (Bundle.continuousAlternatingMap ℝ (Fin k) F V ℝ (Bundle.Trivial B ℝ)) :=
+    ⟨alternatingRiemannianMetric (F := F) V k⟩
+  let alternatingNorm : ∀ y, NormedAddCommGroup (V y [⋀^Fin k]→L[ℝ] ℝ) :=
+    fun y => Bundle.instNormedAddCommGroupOfRiemannianBundleOfIsTopologicalAddGroupOfContinuousConstSMulReal
+      (E := Bundle.continuousAlternatingMap ℝ (Fin k) F V ℝ (Bundle.Trivial B ℝ)) y
+  let : ∀ y, SeminormedAddCommGroup (V y [⋀^Fin k]→L[ℝ] ℝ) :=
+    fun y => (alternatingNorm y).toSeminormedAddCommGroup
+  let : ∀ y, InnerProductSpace ℝ (V y [⋀^Fin k]→L[ℝ] ℝ) :=
+    fun y => Bundle.instInnerProductSpaceReal
+      (E := Bundle.continuousAlternatingMap ℝ (Fin k) F V ℝ (Bundle.Trivial B ℝ)) y
+  let : FiniteDimensional ℝ (V x [⋀^Fin k]→L[ℝ] ℝ) :=
+    (ContinuousAlternatingMap.elementaryCovectorBasis (k := k)
+      (Module.finBasis ℝ (V x))).finiteDimensional_of_finite
+  dsimp only
+  intro A C
+  have hinner (u v : ⋀[ℝ]^k (V x)) :
+      @inner ℝ _ (by infer_instance : Inner ℝ (V x [⋀^Fin k]→L[ℝ] ℝ))
+        (exteriorPower.musicalEquiv k u) (exteriorPower.musicalEquiv k v) =
+        (k.factorial : ℝ) * inner ℝ u v := by
+    change (alternatingRiemannianMetric (F := F) V k).inner x
+      (exteriorPower.musicalEquiv k u) (exteriorPower.musicalEquiv k v) = _
+    rw [alternatingRiemannianMetric_inner_eq_factorial_mul_exterior_inner,
+      ContinuousLinearEquiv.symm_apply_apply, ContinuousLinearEquiv.symm_apply_apply]
+  exact @ContinuousLinearMap.hilbertSchmidtInner_conjugate_of_inner_eq_mul
+    (⋀[ℝ]^k (V x)) (V x [⋀^Fin k]→L[ℝ] ℝ) _ _ _ (alternatingNorm x) _ _
+    (exteriorPower.musicalEquiv k) (k.factorial : ℝ) (Nat.cast_pos.mpr k.factorial_pos)
+    hinner A C
+
+end Bundle

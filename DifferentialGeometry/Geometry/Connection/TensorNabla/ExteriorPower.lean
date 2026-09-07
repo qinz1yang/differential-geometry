@@ -117,4 +117,38 @@ theorem exteriorPower_ιMulti (cov : CovariantDerivative I F V) (k : ℕ)
         ∑ i, A x (Function.update (fun j => Y j x) i (cov (Y i) x (Z x)))) = _
   abel
 
+theorem exteriorPower_alternatingDualEquiv_apply
+    (cov : CovariantDerivative I F V) (k : ℕ)
+    (u : ∀ x, ⋀[ℝ]^k (V x)) (a : ∀ x, V x [⋀^Fin k]→L[ℝ] ℝ)
+    (x : M) (X : TangentSpace I x)
+    (ha : MDifferentiableAt I (I.prod 𝓘(ℝ, F [⋀^Fin k]→L[ℝ] ℝ))
+      (fun y => (⟨y, a y⟩ : TotalSpace (F [⋀^Fin k]→L[ℝ] ℝ)
+        (Bundle.continuousAlternatingMap ℝ (Fin k) F V ℝ (Bundle.Trivial M ℝ)))) x) :
+    letI : ∀ x, FiniteDimensional ℝ (V x) := fun x => VectorBundle.finiteDimensional ℝ F V x
+    letI := Bundle.ExteriorPower.totalSpaceTopology F V k
+    letI := Bundle.ExteriorPower.fiberBundle F V k
+    letI := Bundle.ExteriorPower.vector_bundle F V k
+    MDifferentiableAt I (I.prod 𝓘(ℝ, ⋀[ℝ]^k F))
+      (fun y => (⟨y, u y⟩ : TotalSpace (⋀[ℝ]^k F) (fun z => ⋀[ℝ]^k (V z)))) x →
+      _root_.exteriorPower.alternatingDualEquiv k (cov.exteriorPower k u x X) (a x) =
+        mvfderiv (I := I)
+          (fun y => _root_.exteriorPower.alternatingDualEquiv k (u y) (a y)) x X -
+            _root_.exteriorPower.alternatingDualEquiv k (u x)
+              (CovariantDerivative.alternating cov k a x X) := by
+  let : ∀ x, FiniteDimensional ℝ (V x) := fun x => VectorBundle.finiteDimensional ℝ F V x
+  let := Bundle.ExteriorPower.totalSpaceTopology F V k
+  let := Bundle.ExteriorPower.fiberBundle F V k
+  let := Bundle.ExteriorPower.vector_bundle F V k
+  intro hu
+  have heval := Bundle.ExteriorPower.contMDiff_alternatingDualEquiv_map (IB := I) F V k 1
+  have heu := (heval.mdifferentiableAt one_ne_zero).comp x hu
+  obtain ⟨Z, hZ⟩ := ContMDiffSection.exists_eq_at (I := I) (F := E)
+    (V := TangentSpace I) (n := (⊤ : ℕ∞)) x X
+  rw [← hZ, exteriorPower_apply, ContinuousLinearEquiv.apply_symm_apply]
+  exact DifferentialGeometry.HomConnectionGen.homBundleCovariantDerivativeGen_apply_of_mdifferentiableAt
+    I M (F [⋀^Fin k]→L[ℝ] ℝ)
+    (Bundle.continuousAlternatingMap ℝ (Fin k) F V ℝ (Bundle.Trivial M ℝ))
+    ℝ (Bundle.Trivial M ℝ) (CovariantDerivative.alternating cov k) (trivial I M ℝ)
+    _ heu Z.mdifferentiableAt ha
+
 end CovariantDerivative
