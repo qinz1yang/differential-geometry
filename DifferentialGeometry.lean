@@ -4424,3 +4424,5 @@ import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.HalfSpace
 import DifferentialGeometry.Analysis.Integration.Measure.ModelHaar
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.EuclideanHalfSpace
 import DifferentialGeometry.Analysis.Calculus.Trace
+import DifferentialGeometry.Tensor.BilinearForm
+import DifferentialGeometry.Analysis.Integration.Measure.BoundaryDensity
