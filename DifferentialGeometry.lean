@@ -378,6 +378,7 @@ import DifferentialGeometry.Analysis.Elliptic.WithBoundary.Neumann.Unrestricted.
 import DifferentialGeometry.Analysis.Elliptic.WithBoundary.Neumann.Unrestricted.SmoothScalar
 import DifferentialGeometry.Analysis.Elliptic.WithBoundary.Neumann.H1Compl
 import DifferentialGeometry.Analysis.Elliptic.WithBoundary.Neumann.Reilly
+import DifferentialGeometry.Analysis.Elliptic.WeakLaplacian
 import DifferentialGeometry.Analysis.Heat.MaximumPrinciple
 import DifferentialGeometry.Analysis.Heat.Semigroup.Defs
 import DifferentialGeometry.Analysis.Heat.Semigroup.Solution.Duhamel
