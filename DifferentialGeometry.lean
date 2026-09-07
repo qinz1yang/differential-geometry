@@ -4480,3 +4480,11 @@ import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.RegularSublev
 import DifferentialGeometry.Bundle.PartialMfderiv.Interior
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Variation.MetricDerivative
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Connection.Intrinsic
+import DifferentialGeometry.Tensor.Alternating.Block
+import DifferentialGeometry.Geometry.Metric.ExteriorEndomorphism
+import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.ExteriorRepresentation
+import DifferentialGeometry.Geometry.Metric.ExteriorEndomorphismBundle
+import DifferentialGeometry.Geometry.Connection.MetricCompatibility.ExteriorEndomorphism
+import DifferentialGeometry.Geometry.Connection.Hessian.Map
+import DifferentialGeometry.Geometry.Connection.Laplacian.Map
+import DifferentialGeometry.Geometry.Connection.Laplacian.ExteriorEndomorphism
