@@ -1982,6 +1982,9 @@ import DifferentialGeometry.Geometry.Comparison.BonnetMyers.LengthBound
 import DifferentialGeometry.Geometry.Comparison.BonnetMyers.RicciBound
 import DifferentialGeometry.Geometry.Comparison.Busemann
 import DifferentialGeometry.Geometry.Comparison.BusemannLaplacian
+import DifferentialGeometry.Geometry.Comparison.BusemannLine
+import DifferentialGeometry.Geometry.Comparison.BusemannLineEnergy
+import DifferentialGeometry.Geometry.Comparison.BusemannLineLaplacian
 import DifferentialGeometry.Geometry.CenterOfMass.Basic
 import DifferentialGeometry.Geometry.Comparison.HopfRinow.ChartVelocityConvergence
 import DifferentialGeometry.Geometry.Comparison.Convexity.Balls
@@ -2003,6 +2006,7 @@ import DifferentialGeometry.Geometry.Comparison.InjectivityRadius.Basic
 import DifferentialGeometry.Geometry.Comparison.HopfRinow.LocalGeodesicSeed
 import DifferentialGeometry.Geometry.Comparison.NormalCoordinates.Basic
 import DifferentialGeometry.Geometry.Comparison.Laplacian.Radial
+import DifferentialGeometry.Geometry.Comparison.MinimizingLine
 import DifferentialGeometry.Geometry.Comparison.MinimizingRay
 import DifferentialGeometry.Geometry.Comparison.HopfRinow.RadialSurjectivity
 import DifferentialGeometry.Geometry.Comparison.Distance.Continuity
