@@ -346,4 +346,52 @@ theorem integral_mul_trace_fderiv_add_fderiv_half_space_of_hasCompactSupport
     fderivWithin_half_space_eq_fderiv_ae (u := phi) (mu := mu) a] with p hp hq
   rw [hp, hq]
 
+omit [SFinite mu] in
+theorem integral_mul_trace_fderivWithin_add_fderivWithin_withDensity_half_space_of_hasCompactSupport
+    [FiniteDimensional Real E] [mu.IsAddHaarMeasure]
+    {phi rho : E × Real → Real} {u : E × Real → E × Real} {a : Real}
+    (hphi : ContDiffOn Real 1 phi (univ ×ˢ Ici a))
+    (hrho : AEMeasurable rho (mu.prod (volume.restrict (Ioi a))))
+    (hu : ContDiffOn Real 1 (fun p => rho p • u p) (univ ×ˢ Ici a))
+    (hpos : ∀ᵐ p ∂(mu.prod (volume.restrict (Ioi a))), 0 < rho p)
+    (hcs : HasCompactSupport (fun p => phi p • (rho p • u p))) :
+    ∫ p, phi p * (LinearMap.trace Real (E × Real)
+          (fderivWithin Real (fun q => rho q • u q) (univ ×ˢ Ici a) p).toLinearMap / rho p) +
+        fderivWithin Real phi (univ ×ˢ Ici a) p (u p)
+        ∂(mu.prod (volume.restrict (Ioi a))).withDensity (fun p => ENNReal.ofReal (rho p)) =
+      -∫ x, phi (x, a) * rho (x, a) * (u (x, a)).2 ∂mu := by
+  have h := integral_mul_trace_fderivWithin_add_fderivWithin_half_space_of_hasCompactSupport
+    (mu := mu) hphi hu hcs
+  rw [integral_withDensity_eq_integral_toReal_smul₀
+    hrho.ennreal_ofReal
+    (by filter_upwards with p; exact ENNReal.ofReal_lt_top) _]
+  calc
+    _ = ∫ p, phi p * LinearMap.trace Real (E × Real)
+          (fderivWithin Real (fun q => rho q • u q) (univ ×ˢ Ici a) p).toLinearMap +
+        fderivWithin Real phi (univ ×ˢ Ici a) p (rho p • u p)
+        ∂(mu.prod (volume.restrict (Ioi a))) := by
+      apply integral_congr_ae
+      filter_upwards [hpos] with p hp
+      rw [ENNReal.toReal_ofReal hp.le, smul_eq_mul, map_smul, smul_eq_mul, mul_add]
+      congr 1
+      rw [mul_left_comm, mul_div_cancel₀ _ hp.ne']
+    _ = _ := by simpa only [Pi.smul_apply, Prod.smul_snd, smul_eq_mul, mul_assoc] using h
+
+omit [SFinite mu] in
+theorem integral_trace_fderivWithin_withDensity_half_space_of_hasCompactSupport
+    [FiniteDimensional Real E] [mu.IsAddHaarMeasure]
+    {rho : E × Real → Real} {u : E × Real → E × Real} {a : Real}
+    (hrho : AEMeasurable rho (mu.prod (volume.restrict (Ioi a))))
+    (hu : ContDiffOn Real 1 (fun p => rho p • u p) (univ ×ˢ Ici a))
+    (hpos : ∀ᵐ p ∂(mu.prod (volume.restrict (Ioi a))), 0 < rho p)
+    (hcs : HasCompactSupport (fun p => rho p • u p)) :
+    ∫ p, LinearMap.trace Real (E × Real)
+          (fderivWithin Real (fun q => rho q • u q) (univ ×ˢ Ici a) p).toLinearMap / rho p
+        ∂(mu.prod (volume.restrict (Ioi a))).withDensity (fun p => ENNReal.ofReal (rho p)) =
+      -∫ x, rho (x, a) * (u (x, a)).2 ∂mu := by
+  have h := integral_mul_trace_fderivWithin_add_fderivWithin_withDensity_half_space_of_hasCompactSupport
+    (mu := mu) (phi := fun _ => 1) contDiffOn_const hrho hu hpos
+    (by simpa only [one_smul] using hcs)
+  simpa using h
+
 end DifferentialGeometry.Analysis
