@@ -85,21 +85,30 @@ theorem modelHaar_addHaarScalarFactor_eq_abs_det
     Real.coe_toNNReal _ (abs_nonneg _)]
 
 theorem modelHaarScalarFactor_mul_sqrt_det_toMatrix
-    {V : Type*} [NormedAddCommGroup V] [InnerProductSpace Real V] [FiniteDimensional Real V]
-    (B : LinearMap.BilinForm Real V)
-    (b : OrthonormalBasis (Fin (Module.finrank Real V)) Real V) :
+    {V i : Type*} [NormedAddCommGroup V] [InnerProductSpace Real V] [FiniteDimensional Real V]
+    [Fintype i] [DecidableEq i]
+    (B : LinearMap.BilinForm Real V) (b : OrthonormalBasis i Real V) :
     (MeasureTheory.Measure.addHaarScalarFactor (modelHaar (E := V)) volume : Real) *
         Real.sqrt (LinearMap.BilinForm.toMatrix (chartModelBasis V) B).det =
       Real.sqrt (LinearMap.BilinForm.toMatrix b.toBasis B).det := by
-  rw [modelHaar_addHaarScalarFactor_eq_abs_det b]
-  exact (B.sqrt_det_toMatrix_basis_change (chartModelBasis V) b.toBasis).symm
+  let e : i ≃ Fin (Module.finrank Real V) :=
+    Fintype.equivFinOfCardEq (Module.finrank_eq_card_basis b.toBasis).symm
+  have h := (B.sqrt_det_toMatrix_basis_change (chartModelBasis V) (b.reindex e).toBasis).symm
+  rw [← modelHaar_addHaarScalarFactor_eq_abs_det (b.reindex e)] at h
+  have hmatrix : LinearMap.BilinForm.toMatrix (b.reindex e).toBasis B =
+      (LinearMap.BilinForm.toMatrix b.toBasis B).submatrix e.symm e.symm := by
+    ext j k
+    simp only [LinearMap.BilinForm.toMatrix_apply, OrthonormalBasis.reindex_toBasis,
+      Module.Basis.reindex_apply, Matrix.submatrix_apply]
+  rw [hmatrix, Matrix.det_submatrix_equiv_self] at h
+  exact h
 
 theorem modelHaarScalarFactor_mul_chartDensity
-    {E : Type*} [NormedAddCommGroup E] [InnerProductSpace Real E] [FiniteDimensional Real E]
+    {E i : Type*} [NormedAddCommGroup E] [InnerProductSpace Real E] [FiniteDimensional Real E]
+    [Fintype i] [DecidableEq i]
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners Real E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-    (g : SmoothRiemannianMetric I M) (alpha x : M)
-    (b : OrthonormalBasis (Fin (Module.finrank Real E)) Real E) :
+    (g : SmoothRiemannianMetric I M) (alpha x : M) (b : OrthonormalBasis i Real E) :
     (MeasureTheory.Measure.addHaarScalarFactor (modelHaar (E := E)) volume : Real) *
         chartDensity g alpha x =
       Real.sqrt (Matrix.of fun i j => g.inner x
@@ -121,6 +130,34 @@ theorem modelHaarScalarFactor_mul_chartDensity
     rfl
   rw [horth] at h
   exact h
+
+section
+
+private local instance euclideanIndexMeasurableSpace (i : Type*) :
+    MeasurableSpace (EuclideanSpace Real i) := borel _
+private local instance euclideanIndexBorelSpace (i : Type*) :
+    BorelSpace (EuclideanSpace Real i) := ⟨rfl⟩
+
+theorem modelHaarScalarFactor_mul_chartDensity_self_euclideanSpace
+    {i : Type*} [Fintype i] [DecidableEq i]
+    {H : Type*} [TopologicalSpace H] {I : ModelWithCorners Real (EuclideanSpace Real i) H}
+    {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+    (g : SmoothRiemannianMetric I M) (x : M) :
+    (MeasureTheory.Measure.addHaarScalarFactor
+        (modelHaar (E := EuclideanSpace Real i)) volume : Real) * chartDensity g x x =
+      Real.sqrt (Matrix.of fun j k => g.inner x
+        ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (EuclideanSpace.single j 1))
+        ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (EuclideanSpace.single k 1))).det := by
+  have h := modelHaarScalarFactor_mul_chartDensity g x x (EuclideanSpace.basisFun i Real)
+  rw [TangentBundle.symmL_trivializationAt (mem_chart_source H x),
+    mfderivWithin_range_extChartAt_symm] at h
+  convert h using 1
+  congr 2
+  ext j k
+  simp only [Matrix.of_apply, EuclideanSpace.basisFun_apply]
+  rfl
+
+end
 
 theorem map_tail_prod_head_modelHaar (n : Nat) :
     MeasureTheory.Measure.map
