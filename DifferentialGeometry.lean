@@ -1990,6 +1990,8 @@ import DifferentialGeometry.Geometry.Comparison.BonnetMyers.FundamentalGroup
 import DifferentialGeometry.Geometry.Comparison.BonnetMyers.LengthBound
 import DifferentialGeometry.Geometry.Comparison.BonnetMyers.RicciBound
 import DifferentialGeometry.Geometry.Comparison.Busemann.Basic
+import DifferentialGeometry.Geometry.Comparison.Busemann.Asymptotic
+import DifferentialGeometry.Geometry.Comparison.Busemann.Eikonal
 import DifferentialGeometry.Geometry.Comparison.Busemann.Laplacian
 import DifferentialGeometry.Geometry.Comparison.Busemann.Line.Basic
 import DifferentialGeometry.Geometry.Comparison.Busemann.Line.Sobolev
