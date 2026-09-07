@@ -1,6 +1,7 @@
 import Mathlib.Analysis.InnerProductSpace.Adjoint
 import Mathlib.Analysis.InnerProductSpace.CanonicalTensor
 import Mathlib.Analysis.Normed.Module.FiniteDimension
+import Mathlib.Analysis.SpecialFunctions.Sqrt
 
 noncomputable section
 
@@ -130,5 +131,57 @@ theorem hilbertSchmidtInner_comp_add_eq_zero (A C : U →L[ℝ] V) (K : U →L[�
   rw [hilbertSchmidtInner_comp_right, hK, comp_neg]
   rw [← hilbertSchmidtInnerSL_apply, ← hilbertSchmidtInnerSL_apply, map_neg]
   exact neg_add_cancel _
+
+end ContinuousLinearMap
+
+open scoped RealInnerProductSpace
+
+namespace ContinuousLinearMap
+
+variable {E F : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
+  [FiniteDimensional ℝ E] [NormedAddCommGroup F] [InnerProductSpace ℝ F]
+  [FiniteDimensional ℝ F]
+
+theorem hilbertSchmidtInner_conjugate_of_inner_eq_mul (e : E ≃L[ℝ] F)
+    (c : ℝ) (hc : 0 < c) (hinner : ∀ u v, ⟪e u, e v⟫ = c * ⟪u, v⟫)
+    (A C : E →L[ℝ] E) :
+    hilbertSchmidtInner
+        (e.toContinuousLinearMap.comp (A.comp e.symm.toContinuousLinearMap))
+        (e.toContinuousLinearMap.comp (C.comp e.symm.toContinuousLinearMap)) =
+      hilbertSchmidtInner A C := by
+  let s := Real.sqrt c
+  have hs : s ≠ 0 := (Real.sqrt_pos.mpr hc).ne'
+  have hsq : s ^ 2 = c := Real.sq_sqrt hc.le
+  have hcoeff : s⁻¹ * s⁻¹ * c = 1 := by
+    rw [← hsq]
+    field_simp
+  let e₀ : E ≃ₗᵢ[ℝ] F :=
+    (Units.mk0 s⁻¹ (inv_ne_zero hs) • e.toLinearEquiv).isometryOfInner (by
+      intro u v
+      simp only [LinearEquiv.smul_apply, Units.val_mk0, ContinuousLinearEquiv.coe_toLinearEquiv,
+        real_inner_smul_left, real_inner_smul_right, hinner]
+      calc
+        s⁻¹ * (s⁻¹ * (c * ⟪u, v⟫)) = (s⁻¹ * s⁻¹ * c) * ⟪u, v⟫ := by ring
+        _ = ⟪u, v⟫ := by rw [hcoeff, one_mul])
+  have he₀ (u : E) : e₀ u = s⁻¹ • e u := rfl
+  have he₀inv (v : F) : e₀.symm v = s • e.symm v := by
+    apply e₀.injective
+    rw [e₀.apply_symm_apply, he₀, map_smul, e.apply_symm_apply, smul_smul,
+      inv_mul_cancel₀ hs, one_smul]
+  have hconj (L : E →L[ℝ] E) :
+      e₀.toContinuousLinearEquiv.toContinuousLinearMap.comp
+          (L.comp e₀.symm.toContinuousLinearEquiv.toContinuousLinearMap) =
+        e.toContinuousLinearMap.comp (L.comp e.symm.toContinuousLinearMap) := by
+    apply ContinuousLinearMap.ext
+    intro v
+    change e₀ (L (e₀.symm v)) = e (L (e.symm v))
+    rw [he₀inv, he₀, map_smul, map_smul, smul_smul, inv_mul_cancel₀ hs, one_smul]
+  have h := hilbertSchmidtInner_congr e₀ e₀.toLinearIsometry A C
+  change hilbertSchmidtInner
+      (e₀.toContinuousLinearEquiv.toContinuousLinearMap.comp
+        (A.comp e₀.symm.toContinuousLinearEquiv.toContinuousLinearMap))
+      (e₀.toContinuousLinearEquiv.toContinuousLinearMap.comp
+        (C.comp e₀.symm.toContinuousLinearEquiv.toContinuousLinearMap)) = _ at h
+  simpa only [hconj] using h
 
 end ContinuousLinearMap

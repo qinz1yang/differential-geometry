@@ -26,6 +26,47 @@ variable {V₂ : M → Type*} [TopologicalSpace (TotalSpace F₂ V₂)]
   [FiberBundle F₂ V₂] [VectorBundle ℝ F₂ V₂]
   [ContMDiffVectorBundle 1 F₂ V₂ I] [IsContMDiffRiemannianBundle I 1 F₂ V₂]
 
+theorem IsMetricCompatible.pullbackFiberwiseLinearEquiv_of_inner_eq_mul
+    {cov : CovariantDerivative I F₂ V₂} (hcov : cov.IsMetricCompatible)
+    (φ : ∀ x, V₁ x ≃ₗ[ℝ] V₂ x)
+    (hφ : ContMDiff (I.prod 𝓘(ℝ, F₁)) (I.prod 𝓘(ℝ, F₂)) 1
+      (fun p : TotalSpace F₁ V₁ => (⟨p.1, φ p.1 p.2⟩ : TotalSpace F₂ V₂)))
+    (c : ℝ) (hc : c ≠ 0)
+    (hinner : ∀ x v w, inner ℝ (φ x v) (φ x w) = c * inner ℝ v w) :
+    (CovariantDerivative.pullbackFiberwiseLinearEquiv φ hφ cov).IsMetricCompatible := by
+  classical
+  unfold IsMetricCompatible
+  funext x
+  ext v w X
+  rw [derivMetricTensor_apply_eq_extend]
+  let σ := FiberBundle.extend F₁ v
+  let τ := FiberBundle.extend F₁ w
+  have hσ : MDifferentiableAt I (I.prod 𝓘(ℝ, F₁)) (T% σ) x :=
+    FiberBundle.mdifferentiableAt_extend I F₁ v
+  have hτ : MDifferentiableAt I (I.prod 𝓘(ℝ, F₁)) (T% τ) x :=
+    FiberBundle.mdifferentiableAt_extend I F₁ w
+  have hφσ : MDifferentiableAt I (I.prod 𝓘(ℝ, F₂)) (T% (fun y => φ y (σ y))) x :=
+    (hφ.mdifferentiableAt one_ne_zero).comp x hσ
+  have hφτ : MDifferentiableAt I (I.prod 𝓘(ℝ, F₂)) (T% (fun y => φ y (τ y))) x :=
+    (hφ.mdifferentiableAt one_ne_zero).comp x hτ
+  have hmetric := hcov.mvfderiv_inner_eq
+    (Function.update (fun y => (0 : TangentSpace I y)) x X) hφσ hφτ
+  simp only [Function.update_self] at hmetric
+  rw [← map_pullbackFiberwiseLinearEquiv_apply φ hφ cov σ x X,
+    ← map_pullbackFiberwiseLinearEquiv_apply φ hφ cov τ x X] at hmetric
+  simp_rw [hinner] at hmetric
+  have hd := mvfderiv_smul (I := I) (a := fun _ : M => c)
+    (mdifferentiableAt_const (c := c)) (hσ.inner_bundle hτ)
+  simp only [mvfderiv_const, ContinuousLinearMap.zero_smulRight, add_zero] at hd
+  change mvfderiv (I := I) (fun y => c * inner ℝ (σ y) (τ y)) x =
+    c • mvfderiv (I := I) (fun y => inner ℝ (σ y) (τ y)) x at hd
+  rw [hd, smul_apply, smul_eq_mul, ← mul_add] at hmetric
+  have hcancel := mul_left_cancel₀ hc hmetric
+  simp only [σ, τ, FiberBundle.extend_apply_self] at hcancel
+  simp only [Pi.zero_apply, zero_apply]
+  linarith
+
+
 theorem IsMetricCompatible.pullbackFiberwiseLinearEquiv
     {cov : CovariantDerivative I F₂ V₂} (hcov : cov.IsMetricCompatible)
     (φ : ∀ x, V₁ x ≃ₗ[ℝ] V₂ x)
@@ -33,27 +74,8 @@ theorem IsMetricCompatible.pullbackFiberwiseLinearEquiv
       (fun p : TotalSpace F₁ V₁ => (⟨p.1, φ p.1 p.2⟩ : TotalSpace F₂ V₂)))
     (hφinner : ∀ x v w, inner ℝ (φ x v) (φ x w) = inner ℝ v w) :
     (CovariantDerivative.pullbackFiberwiseLinearEquiv φ hφ cov).IsMetricCompatible := by
-  classical
-  unfold CovariantDerivative.IsMetricCompatible
-  funext x
-  ext v w X
-  rw [derivMetricTensor_apply_eq_extend]
-  let σ := FiberBundle.extend F₁ v
-  let τ := FiberBundle.extend F₁ w
-  have hσ : MDiffAt (T% σ) x := FiberBundle.mdifferentiableAt_extend I F₁ v
-  have hτ : MDiffAt (T% τ) x := FiberBundle.mdifferentiableAt_extend I F₁ w
-  have hφσ : MDiffAt (T% (fun y => φ y (σ y))) x :=
-    (hφ.mdifferentiableAt one_ne_zero).comp x hσ
-  have hφτ : MDiffAt (T% (fun y => φ y (τ y))) x :=
-    (hφ.mdifferentiableAt one_ne_zero).comp x hτ
-  have hmetric := hcov.mvfderiv_inner_eq
-    (Function.update (fun y => (0 : TangentSpace I y)) x X) hφσ hφτ
-  simp only [Function.update_self] at hmetric
-  rw [← map_pullbackFiberwiseLinearEquiv_apply φ hφ cov σ x X,
-    ← map_pullbackFiberwiseLinearEquiv_apply φ hφ cov τ x X] at hmetric
-  simp_rw [hφinner] at hmetric
-  simp only [σ, τ, FiberBundle.extend_apply_self] at hmetric
-  simp only [Pi.zero_apply, zero_apply]
-  linarith [hmetric]
+  apply hcov.pullbackFiberwiseLinearEquiv_of_inner_eq_mul φ hφ 1 one_ne_zero
+  intro x v w
+  simpa only [one_mul] using hφinner x v w
 
 end CovariantDerivative

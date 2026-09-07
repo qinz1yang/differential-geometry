@@ -4409,5 +4409,8 @@ import DifferentialGeometry.Geometry.Metric.BilinearTrace
 import DifferentialGeometry.Geometry.Connection.Laplacian.VectorBundleTrace
 import DifferentialGeometry.Geometry.Metric.ExteriorPowerRiemannian
 import DifferentialGeometry.Geometry.Metric.ExteriorPowerMusicalBundle
+import DifferentialGeometry.Geometry.Metric.ExteriorPowerDuality
+import DifferentialGeometry.Geometry.Metric.ExteriorPowerDualityBundle
+import DifferentialGeometry.Geometry.Connection.TensorNabla.ExteriorPower
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.HalfSpace
 import DifferentialGeometry.Analysis.Calculus.Trace
