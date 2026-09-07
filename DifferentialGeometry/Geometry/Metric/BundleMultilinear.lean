@@ -3,6 +3,7 @@ import DifferentialGeometry.Geometry.Metric.BundlePullbackSmooth
 import DifferentialGeometry.Bundle.Hom.Regularity
 import DifferentialGeometry.Tensor.Multilinear.BundleCurry
 import DifferentialGeometry.Tensor.Multilinear.Fiber
+import DifferentialGeometry.Tensor.Multilinear.Dual
 import Mathlib.Topology.VectorBundle.FiniteDimensional
 
 noncomputable section
@@ -87,6 +88,23 @@ theorem multilinearRiemannianMetric_inner_eq_sum {ι : Type*} [Fintype ι]
     intro j
     simp only [Fin.consEquiv_apply]
     congr 2 <;> funext i <;> refine Fin.cases ?_ (fun i => ?_) i <;> rfl
+
+theorem multilinearRiemannianMetric_inner_tensorOfDualLinearForms (k : ℕ) (x : B)
+    (α β : Fin k → V x →L[ℝ] ℝ) :
+    letI : FiniteDimensional ℝ (V x) := VectorBundle.finiteDimensional ℝ F V x
+    (multilinearRiemannianMetric (F := F) V k).inner x
+      (ContinuousMultilinearMap.tensorOfDualLinearForms ℝ (V x) k α)
+      (ContinuousMultilinearMap.tensorOfDualLinearForms ℝ (V x) k β) =
+      ∏ i, ContinuousLinearMap.hilbertSchmidtInner (α i) (β i) := by
+  let _ : FiniteDimensional ℝ (V x) := VectorBundle.finiteDimensional ℝ F V x
+  let b := stdOrthonormalBasis ℝ (V x)
+  rw [multilinearRiemannianMetric_inner_eq_sum V k x b]
+  simp only [ContinuousMultilinearMap.tensorOfDualLinearForms_apply,
+    ContinuousLinearMap.hilbertSchmidtInner_eq_sum b, Real.inner_apply]
+  rw [Fintype.prod_sum]
+  apply Finset.sum_congr rfl
+  intro j _
+  rw [Finset.prod_mul_distrib]
 
 end Bundle
 

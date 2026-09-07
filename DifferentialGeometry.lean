@@ -4435,3 +4435,5 @@ import DifferentialGeometry.Geometry.Connection.SelfAdjointConjugate
 import DifferentialGeometry.Geometry.Connection.Laplacian.SelfAdjointConjugate
 import DifferentialGeometry.Geometry.Boundary.EuclideanHalfSpaceOrientation
 import DifferentialGeometry.Geometry.Connection.TensorNabla.MultilinearDual
+import DifferentialGeometry.Geometry.Connection.Laplacian.ExteriorPowerSelfAdjointPullback
+import DifferentialGeometry.Tensor.Mixed.Multilinear
