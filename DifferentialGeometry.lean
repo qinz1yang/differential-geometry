@@ -4453,3 +4453,7 @@ import DifferentialGeometry.Geometry.Curvature.RicciAction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Connection.CoordinateEvolution
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.ThreeQuadratic
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.Tensor
+import DifferentialGeometry.Geometry.Operator.CovariantTensor
+import DifferentialGeometry.Geometry.Connection.TensorNabla.TotalHessian
+import DifferentialGeometry.Geometry.Operator.MetricTraceOrthonormalFrame
+import DifferentialGeometry.Geometry.Connection.Laplacian.CovariantTensor
