@@ -6,7 +6,6 @@ import DifferentialGeometry.Analysis.Integration.Measure.Chart.HaarBasis
 import DifferentialGeometry.Analysis.Integration.Measure.Chart.Density
 import DifferentialGeometry.Analysis.Integration.Measure.Parametric.AreaFormula
 import DifferentialGeometry.Analysis.Integration.Measure.Polar.Evaluation
-import DifferentialGeometry.Geometry.Comparison.Volume.BishopRawDensity
 import DifferentialGeometry.Geometry.Comparison.Volume.Segment.Polar.Area
 import DifferentialGeometry.Geometry.Comparison.Volume.Segment.Polar.Basic
 import DifferentialGeometry.Geometry.Comparison.Volume.Segment.Polar.Density
@@ -69,7 +68,6 @@ def rawSeg (g : SmoothRiemannianMetric I M) (p : M) : Set E :=
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M]
   [T2Space (TangentBundle I M)] [SigmaCompactSpace M] in
 theorem rawSeg_mem_dom
-    [PseudoEMetricSpace M] [IsRiemannianManifold I M]
     (g : SmoothRiemannianMetric I M) (p : M) {v : E}
     (hv : v ∈ rawSeg (I := I) g p) :
     (show TangentSpace I p from v) ∈ expDomain (I := I) g p := by
@@ -95,7 +93,6 @@ theorem rawSeg_mem_dom
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M]
   [T2Space (TangentBundle I M)] [SigmaCompactSpace M] in
 private theorem rawSeg_same_len
-    [PseudoEMetricSpace M] [IsRiemannianManifold I M]
     (g : SmoothRiemannianMetric I M) (p : M) {v w : E}
     (hv : v ∈ rawSeg (I := I) g p) (hw : w ∈ rawSeg (I := I) g p)
     (hvw : expMap (I := I) g p (show TangentSpace I p from v) =
@@ -133,7 +130,6 @@ def rawSegInt (g : SmoothRiemannianMetric I M) (p : M) : Set E :=
 
 omit [NeZero (Module.finrank ℝ E)] [T2Space M] [SigmaCompactSpace M] in
 private theorem rawSegInt_geo
-    [PseudoEMetricSpace M] [IsRiemannianManifold I M]
     (g : SmoothRiemannianMetric I M) (p : M) {v : E}
     (hv : v ∈ rawSegInt (I := I) g p) :
     ∃ (c : ℝ) (γ : ℝ → M) (J : Set ℝ), 1 < c ∧
@@ -173,7 +169,6 @@ private theorem rawSegInt_geo
 
 omit [NeZero (Module.finrank ℝ E)] [T2Space M] [SigmaCompactSpace M] in
 private theorem rawSegInt_ext
-    [PseudoEMetricSpace M] [IsRiemannianManifold I M]
     (g : SmoothRiemannianMetric I M) (p : M) {v : E}
     (hv : v ∈ rawSegInt (I := I) g p) :
     ∃ (c : ℝ) (γ : ℝ → M), 1 < c ∧ c • v ∈ rawSeg (I := I) g p ∧
@@ -205,8 +200,6 @@ private theorem rawSegInt_ext
 
 omit [NeZero (Module.finrank ℝ E)] [T2Space M] [SigmaCompactSpace M] in
 theorem rawSegInt_sub
-    [PseudoEMetricSpace M] [IsRiemannianManifold I M]
-    [IsContinuousRiemannianBundle E (fun x : M ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M) (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) {v : E}
     (hv : v ∈ rawSegInt (I := I) g p) :
@@ -254,8 +247,13 @@ theorem rawSegInt_sub
         (Variation.curveVelocity (I := I) (radialCurve (I := I) g p v) t)
         (Variation.curveVelocity (I := I) (radialCurve (I := I) g p v) t))) ≤
       ENNReal.ofReal L
-    rw [rawSpeed_sq (I := I) g p v t ht.1
-      (fun s hs => hdom s ⟨hs.1, hs.2.trans ht.2⟩)]
+    have hspeed : g.inner (radialCurve (I := I) g p v t)
+        (Variation.curveVelocity (I := I) (radialCurve (I := I) g p v) t)
+        (Variation.curveVelocity (I := I) (radialCurve (I := I) g p v) t) =
+        g.inner p v v := by
+      simpa only [radialCurve] using!
+        inner_curveVelocity_expMap_smul (I := I) g p v (hdom t ht)
+    rw [hspeed]
   have h01 := HopfRinow.curve_edist_le_speed_mul_time (I := I)
     (γ := γ) (s := (0 : ℝ)) (t := (1 : ℝ)) (c := L)
     hLnn zero_le_one
@@ -360,9 +358,9 @@ private theorem mfderiv_shift
   simp
 
 omit [NeZero (Module.finrank ℝ E)] [T2Space M]
-  [T2Space (TangentBundle I M)] [SigmaCompactSpace M] in
+  [T2Space (TangentBundle I M)] [SigmaCompactSpace M]
+  [RiemannianBundle (fun x : M ↦ TangentSpace I x)] in
 private theorem geo_init_vel
-    [PseudoEMetricSpace M] [IsRiemannianManifold I M]
     (g : SmoothRiemannianMetric I M) {γ : ℝ → M} {J : Set ℝ}
     {p : M} {v : TangentSpace I p} (hJ : IsOpen J) (h0J : (0 : ℝ) ∈ J)
     (hγ : Geodesic.IsGeodesicOnWithInitial (I := I) g γ J p v) :
@@ -392,7 +390,6 @@ private theorem geo_init_vel
 
 omit [NeZero (Module.finrank ℝ E)] [T2Space M] [SigmaCompactSpace M] in
 private theorem rawExp_inj_seg
-    [PseudoEMetricSpace M] [IsRiemannianManifold I M]
     [IsContinuousRiemannianBundle E (fun x : M ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M) (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) :
@@ -545,8 +542,13 @@ private theorem rawExp_inj_seg
     change g.inner (radialCurve (I := I) g p u t)
       (Variation.curveVelocity (I := I) (radialCurve (I := I) g p u) t)
       (Variation.curveVelocity (I := I) (radialCurve (I := I) g p u) t) = 1
-    rw [rawSpeed_sq (I := I) g p u t ht.1
-      (fun s hs => hdomu s ⟨hs.1, hs.2.trans ht.2⟩)]
+    have hspeed : g.inner (radialCurve (I := I) g p u t)
+        (Variation.curveVelocity (I := I) (radialCurve (I := I) g p u) t)
+        (Variation.curveVelocity (I := I) (radialCurve (I := I) g p u) t) =
+        g.inner p u u := by
+      simpa only [radialCurve] using!
+        inner_curveVelocity_expMap_smul (I := I) g p u (hdomu t ht)
+    rw [hspeed]
     exact huunit
   have hγwgunit : ∀ t ∈ Icc (0 : ℝ) D,
       g.inner (γwg t) (mfderiv 𝓘(ℝ, ℝ) I γwg t (1 : ℝ))
@@ -557,8 +559,13 @@ private theorem rawExp_inj_seg
     change g.inner (radialCurve (I := I) g p z t)
       (Variation.curveVelocity (I := I) (radialCurve (I := I) g p z) t)
       (Variation.curveVelocity (I := I) (radialCurve (I := I) g p z) t) = 1
-    rw [rawSpeed_sq (I := I) g p z t ht.1
-      (fun s hs => hdomz s ⟨hs.1, hs.2.trans ht.2⟩)]
+    have hspeed : g.inner (radialCurve (I := I) g p z t)
+        (Variation.curveVelocity (I := I) (radialCurve (I := I) g p z) t)
+        (Variation.curveVelocity (I := I) (radialCurve (I := I) g p z) t) =
+        g.inner p z z := by
+      simpa only [radialCurve] using!
+        inner_curveVelocity_expMap_smul (I := I) g p z (hdomz t ht)
+    rw [hspeed]
     exact hzunit
   have hLC : L < C := by
     dsimp only [C]
@@ -1349,10 +1356,9 @@ private theorem gSphere_null
       hlevel_map, smul_zero]
   simpa only [level, q] using hlevel_zero
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)]
+  [RiemannianBundle (fun x : M ↦ TangentSpace I x)] in
 private theorem riemVol_rawExp_le
-    [PseudoEMetricSpace M] [IsRiemannianManifold I M]
-    [IsContinuousRiemannianBundle E (fun x : M ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M) (p : M) {K : Set E}
     (hK : IsCompact K)
     (hKdom : K ⊆ expDomain (I := I) g p) :

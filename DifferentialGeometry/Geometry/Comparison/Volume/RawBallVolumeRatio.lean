@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Exponential.Radial
-import DifferentialGeometry.Geometry.Comparison.Volume.BishopRawDensity
+import DifferentialGeometry.Geometry.Exponential.ConjugatePoint.MinimizingGeodesic
 import DifferentialGeometry.Geometry.Comparison.Volume.Bishop.Ball
 import DifferentialGeometry.Geometry.Comparison.Volume.Bishop.PolarFramed
 import DifferentialGeometry.Geometry.Comparison.Volume.RawBallPolarEq
@@ -100,10 +100,7 @@ private lemma rawSegInt_down
 
 omit [NeZero (Module.finrank ℝ E)] [T2Space M] [SigmaCompactSpace M] in
 private lemma raw_min_seg
-    [PseudoEMetricSpace M]
     [RiemannianBundle (fun x : M => TangentSpace I x)]
-    [IsRiemannianManifold I M]
-    [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (u : E) (hunit : g.inner p u u = 1)
@@ -131,8 +128,12 @@ private lemma raw_min_seg
             intro t ht
             have ht' : t ∈ Icc (0 : ℝ) L := by
               simpa only [uIcc_of_le hL.le] using ht
-            have hspeed := rawSpeed_sq (I := I) g p u t ht'.1
-              (fun s hs => hdom s ⟨hs.1, hs.2.trans ht'.2⟩)
+            have hspeed : g.inner (radialCurve (I := I) g p u t)
+                (curveVelocity (I := I) (radialCurve (I := I) g p u) t)
+                (curveVelocity (I := I) (radialCurve (I := I) g p u) t) =
+                g.inner p u u := by
+              simpa only [radialCurve] using!
+                inner_curveVelocity_expMap_smul (I := I) g p u (hdom t ht')
             change Real.sqrt
                 (g.inner (radialCurve (I := I) g p u t)
                   (curveVelocity (I := I) (radialCurve (I := I) g p u) t)
@@ -174,10 +175,7 @@ private lemma raw_min_seg
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem raw_ratio_anti_q
-    [PseudoEMetricSpace M]
     [RiemannianBundle (fun x : M => TangentSpace I x)]
-    [IsRiemannianManifold I M]
-    [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M) (p : M) (u : E)
     (q a : ℝ) (hq : 0 ≤ q) (ha : 0 < a)
     (L : ℝ) (hL : 0 < L)
@@ -238,10 +236,7 @@ theorem raw_ratio_anti_q
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 private lemma raw_ratio_ray
-    [PseudoEMetricSpace M]
     [RiemannianBundle (fun x : M => TangentSpace I x)]
-    [IsRiemannianManifold I M]
-    [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (u : E) (q L : ℝ)
@@ -281,8 +276,13 @@ private lemma raw_ratio_ray
         (curveVelocity (I := I) (radialCurve (I := I) g p u) t)
         (curveVelocity (I := I) (radialCurve (I := I) g p u) t) = 1 ^ 2 := by
     intro t ht
-    rw [rawSpeed_sq (I := I) g p u t ht.1.le
-      (fun s hs => hdom s ⟨hs.1, hs.2.trans ht.2.le⟩), hunit]
+    have heq : g.inner (radialCurve (I := I) g p u t)
+        (curveVelocity (I := I) (radialCurve (I := I) g p u) t)
+        (curveVelocity (I := I) (radialCurve (I := I) g p u) t) =
+        g.inner p u u := by
+      simpa only [radialCurve] using!
+        inner_curveVelocity_expMap_smul (I := I) g p u (hdom t ⟨ht.1.le, ht.2.le⟩)
+    rw [heq, hunit]
     norm_num
   have hmin := raw_min_seg (I := I) g hEnorm p u hunit L hL hdom hraw
   simpa only [mul_one] using
@@ -293,10 +293,6 @@ private lemma raw_ratio_ray
 
 omit [NeZero (Module.finrank ℝ E)] [T2Space M] [SigmaCompactSpace M] in
 private lemma rawDn_cont
-    [PseudoEMetricSpace M]
-    [RiemannianBundle (fun x : M => TangentSpace I x)]
-    [IsRiemannianManifold I M]
-    [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
     (p : M) (T : Set E)
     (hTdom : ∀ w ∈ T,
@@ -453,10 +449,7 @@ private lemma rawBall_normal
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M]
   [T2Space (TangentBundle I M)] [SigmaCompactSpace M] in
 private lemma rawSegInt_ray_down
-    [PseudoEMetricSpace M]
     [RiemannianBundle (fun x : M => TangentSpace I x)]
-    [IsRiemannianManifold I M]
-    [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
     (p : M) (A : ℝ)
     (u : Metric.sphere (0 : E) 1) {a b : Set.Ioi (0 : ℝ)}
@@ -846,18 +839,6 @@ theorem rawBall_vol_rel
         simpa only [uT] using hu_inner u
       have huT_pos : 0 < g.inner p uT uT := by
         simpa only [huT_one] using one_pos
-      have huT0 : uT ≠ 0 := by
-        intro huT0
-        have hframe0 : normalFrame (I := I) (E := E) g p u.1 = 0 := by
-          with_unfolding_all exact huT0
-        have hu0 : u.1 = 0 := by
-          apply (normalFrame (I := I) (E := E) g p).injective
-          exact hframe0.trans
-            (normalFrame (I := I) (E := E) g p).map_zero.symm
-        have hunorm : ‖u.1‖ = 1 := by
-          simpa only [mem_sphere_zero_iff_norm] using u.2
-        rw [hu0, norm_zero] at hunorm
-        norm_num at hunorm
       have hrawIntB : b.1 • uT ∈ rawSegInt (I := I) g p := by
         have hLb : L (b.1 • u.1) = b.1 • uT := by
           exact (normalFrame (I := I) (E := E) g p).map_smul b.1 u.1
@@ -948,7 +929,8 @@ theorem rawBall_vol_rel
             (show TangentSpace I p from t • uT) ∈ expDomain (I := I) g p :=
           fun t ht => hdomB t ⟨ht.1, ht.2.trans hab⟩
         let C : ℝ := |(chartModelBasis E).det B|
-        let N : ℝ := normalChartDensity (I := I) g p 0
+        let N : ℝ := paramDensity (I := I) g
+          (fun x : E => expMap (I := I) g p (show TangentSpace I p from x)) 0
         have hCN : 0 ≤ C * N := by
           dsimp only [C, N]
           exact mul_nonneg (abs_nonneg _) (Real.sqrt_nonneg _)
@@ -976,7 +958,11 @@ theorem rawBall_vol_rel
                   (show TangentSpace I p from B i) := by
               with_unfolding_all rfl
             simpa only [hBval, B, C] using hbasis
-          have hfac := rawDens_eq_trans (I := I) g p huT0 r hr hdom v hON hperp
+          have hrdom := hdom r ⟨hr.le, le_rfl⟩
+          have hfac := paramDensity_expMap_smul_mul_pow_of_orthonormal
+            (I := I) g p uT v hON hperp r hrdom
+          rw [paramDensity_expMap_eq_curveDensity (I := I) g p (r • uT) hrdom,
+            abs_of_pos hr] at hfac
           calc
             r ^ d * Dn (r • u.1) = C *
                 (curveDensity (I := I) g (radialCurve (I := I) g p (r • uT))
@@ -1038,7 +1024,8 @@ theorem rawBall_vol_rel
             (show TangentSpace I p from t • uT) ∈ expDomain (I := I) g p :=
           fun t ht => hdomB t ⟨ht.1, ht.2.trans hab⟩
         let C : ℝ := |(chartModelBasis E).det B|
-        let N : ℝ := normalChartDensity (I := I) g p 0
+        let N : ℝ := paramDensity (I := I) g
+          (fun x : E => expMap (I := I) g p (show TangentSpace I p from x)) 0
         have hscale (r : ℝ) (hr : 0 < r)
             (hdom : ∀ t ∈ Set.Icc (0 : ℝ) r,
               (show TangentSpace I p from t • uT) ∈ expDomain (I := I) g p) :
@@ -1063,7 +1050,11 @@ theorem rawBall_vol_rel
                   (show TangentSpace I p from B i) := by
               with_unfolding_all rfl
             simpa only [hBval, B, C] using hbasis
-          have hfac := rawDens_eq_trans (I := I) g p huT0 r hr hdom v hON hperp
+          have hrdom := hdom r ⟨hr.le, le_rfl⟩
+          have hfac := paramDensity_expMap_smul_mul_pow_of_orthonormal
+            (I := I) g p uT v hON hperp r hrdom
+          rw [paramDensity_expMap_eq_curveDensity (I := I) g p (r • uT) hrdom,
+            abs_of_pos hr] at hfac
           calc
             r ^ d * Dn (r • u.1) = C *
                 (curveDensity (I := I) g (radialCurve (I := I) g p (r • uT))
