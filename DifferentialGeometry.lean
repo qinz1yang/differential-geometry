@@ -4439,3 +4439,6 @@ import DifferentialGeometry.Geometry.Connection.Laplacian.ExteriorPowerSelfAdjoi
 import DifferentialGeometry.Tensor.Mixed.Multilinear
 import DifferentialGeometry.Analysis.Integration.Measure.ChartIntegral
 import DifferentialGeometry.Analysis.Integration.Measure.SurfaceFlux
+import DifferentialGeometry.Geometry.Curvature.QuadraticContraction
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Connection.CoordinateEvolution
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.ThreeQuadratic
