@@ -4533,3 +4533,6 @@ import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.SublevelDiver
 import DifferentialGeometry.Analysis.Parabolic.CurvatureOperatorEvolution
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.SublevelFlux
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.HamiltonIvey.SelfAdjointRegion
+import DifferentialGeometry.Topology.Covering.QuotientDiffeomorph
+import DifferentialGeometry.Topology.Covering.QuotientDeckGroup
+import DifferentialGeometry.Geometry.Metric.RicciSoliton.ModelCoverQuotient
