@@ -178,6 +178,7 @@ import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Bounds.Uniform.
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Bounds.Uniform.OperatorNorm
 import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.SlotCurry.Bound
 import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.SlotCurry.Defs
+import DifferentialGeometry.Analysis.Elliptic.DistributionalSupersolution
 import DifferentialGeometry.Analysis.Elliptic.Euclidean.WeakHarnack
 import DifferentialGeometry.Analysis.Elliptic.Lichnerowicz
 import DifferentialGeometry.Analysis.Elliptic.LichnerowiczSpectral
