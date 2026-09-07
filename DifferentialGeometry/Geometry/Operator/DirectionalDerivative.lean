@@ -38,6 +38,23 @@ def tangentSectionAction
   fun x => mfderiv I 𝓘(ℝ) f x (X x)
 
 omit [Module.Finite ℝ E] in
+lemma tsupport_tangentSectionAction_subset_right
+    (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (f : M → ℝ) :
+    tsupport (tangentSectionAction (I := I) X f) ⊆ tsupport f := by
+  refine closure_minimal ?_ (isClosed_tsupport f)
+  intro x hx
+  by_contra hnot
+  have hev : f =ᶠ[𝓝 x] (fun _ : M => (0 : ℝ)) :=
+    notMem_tsupport_iff_eventuallyEq.mp hnot
+  have hmfderiv : mfderiv I 𝓘(ℝ) f x = 0 := by
+    rw [Filter.EventuallyEq.mfderiv_eq hev, mfderiv_const]
+    rfl
+  apply hx
+  unfold tangentSectionAction
+  rw [hmfderiv]
+  rfl
+
+omit [Module.Finite ℝ E] in
 @[simp] lemma tangentSectionAction_def
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (f : M → ℝ) (x : M) :
     tangentSectionAction (I := I) X f x = mfderiv I 𝓘(ℝ) f x (X x) := rfl

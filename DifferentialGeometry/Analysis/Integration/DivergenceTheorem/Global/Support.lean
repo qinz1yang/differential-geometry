@@ -177,7 +177,7 @@ lemma hasCompactSupport_tangentSectionAction
   hX.mono' ((support_tangentSectionAction_subset (I := I) X f).trans
     (subset_tsupport (X : ∀ x, TangentSpace I x)))
 
-private lemma integrable_chartLocalMeasure_of_compactSupport_subset_chartSource
+lemma _root_.DifferentialGeometry.Integral.Measure.integrable_chartLocalMeasure_of_compactSupport_subset_chartSource
     [T2Space M]
     (g : SmoothRiemannianMetric I M) (α : M)
     {f : M → ℝ} (hf_cont : Continuous f) (hf_cs : HasCompactSupport f)
@@ -302,6 +302,118 @@ private lemma riemannianVolumeMeasure_restrict_eq_finset_sum
     rw [show f α = ((chartLocalMeasure (I := I) g α).withDensity
         (fun x : M => ENNReal.ofReal (ρ α x))).restrict K from rfl]
     rw [ih, ← Measure.restrict_add]
+
+theorem _root_.DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure_restrict_eq_chartLocalMeasure_restrict
+    [T2Space M] [SigmaCompactSpace M]
+    (g : SmoothRiemannianMetric I M) (α₀ : M)
+    {K : Set M} (hK : IsCompact K)
+    (hKα : K ⊆ (chartAt H α₀).source) :
+    (riemannianVolumeMeasure (I := I) (M := M) g).restrict K =
+      (chartLocalMeasure (I := I) g α₀).restrict K := by
+  classical
+  let ρ : SmoothPartitionOfUnity M I M (univ : Set M) := chartAtlasPOU I M
+  let S : Finset M := (pouFinset_for_compactSet (I := I) (M := M) hK).toFinset
+  have hρsub : ρ.IsSubordinate (fun α : M => (chartAt H α).source) := by
+    simpa only [ρ] using chartAtlasPOU_isSubordinate I M
+  have hSmem : ∀ {α : M}, α ∈ S ↔
+      (tsupport ((chartAtlasPOU I M) α) ∩ K).Nonempty := fun {α} =>
+    Set.Finite.mem_toFinset _
+  have hKmeas : MeasurableSet K := hK.isClosed.measurableSet
+  rw [riemannianVolumeMeasure_restrict_eq_finset_sum (I := I) (M := M) g hK]
+  ext A hA
+  rw [Measure.restrict_apply hA, Measure.restrict_apply hA]
+  rw [Measure.finsetSum_apply]
+  have hAKmeas : MeasurableSet (A ∩ K) := hA.inter hKmeas
+  simp_rw [withDensity_apply _ hAKmeas]
+  have hchange : ∀ α ∈ S,
+      ∫⁻ x in A ∩ K, ENNReal.ofReal ((ρ α : M → ℝ) x)
+          ∂(chartLocalMeasure (I := I) g α) =
+        ∫⁻ x in A ∩ K, ENNReal.ofReal ((ρ α : M → ℝ) x)
+          ∂(chartLocalMeasure (I := I) g α₀) := by
+    intro α _
+    rw [← lintegral_indicator hAKmeas, ← lintegral_indicator hAKmeas]
+    refine chartLocalMeasure_lintegral_eq_of_support_in_overlap
+      (I := I) g α α₀ ?_ ?_
+    · exact (measurable_ofReal_pou_weight ρ α).indicator hAKmeas
+    · intro x hx
+      by_cases hxAK : x ∈ A ∩ K
+      · rw [Set.indicator_of_mem hxAK]
+        have hxα₀ : x ∈ (chartAt H α₀).source := hKα hxAK.2
+        have hxα : x ∉ (chartAt H α).source := fun hxα' => hx ⟨hxα', hxα₀⟩
+        have hxnot : x ∉ tsupport (ρ α : M → ℝ) := fun hxt => hxα (hρsub α hxt)
+        have hρzero : (ρ α : M → ℝ) x = 0 := by
+          by_contra hne
+          exact hxnot (subset_tsupport _ hne)
+        rw [hρzero, ENNReal.ofReal_zero]
+      · rw [Set.indicator_of_notMem hxAK]
+  rw [Finset.sum_congr rfl hchange]
+  have hmeas (α : M) : Measurable
+      ((A ∩ K).indicator (fun x => ENNReal.ofReal ((ρ α : M → ℝ) x))) :=
+    (measurable_ofReal_pou_weight ρ α).indicator hAKmeas
+  calc
+    ∑ α ∈ S, ∫⁻ x in A ∩ K, ENNReal.ofReal ((ρ α : M → ℝ) x)
+          ∂(chartLocalMeasure (I := I) g α₀) =
+        ∑ α ∈ S, ∫⁻ x,
+          (A ∩ K).indicator (fun y => ENNReal.ofReal ((ρ α : M → ℝ) y)) x
+            ∂(chartLocalMeasure (I := I) g α₀) := by
+      refine Finset.sum_congr rfl ?_
+      intro α _
+      rw [lintegral_indicator hAKmeas]
+    _ = ∫⁻ x, ∑ α ∈ S,
+          (A ∩ K).indicator (fun y => ENNReal.ofReal ((ρ α : M → ℝ) y)) x
+            ∂(chartLocalMeasure (I := I) g α₀) := by
+      rw [lintegral_finsetSum S (fun α _ => hmeas α)]
+    _ = ∫⁻ x in A ∩ K, (1 : ENNReal)
+          ∂(chartLocalMeasure (I := I) g α₀) := by
+      rw [← lintegral_indicator hAKmeas]
+      refine lintegral_congr (fun x => ?_)
+      by_cases hxAK : x ∈ A ∩ K
+      · simp only [Set.indicator_of_mem hxAK]
+        have hfins : ρ.finsupport x ⊆ S := by
+          intro α hα
+          rw [hSmem]
+          rw [ρ.mem_finsupport] at hα
+          exact ⟨x, subset_tsupport _ hα, hxAK.2⟩
+        have hone : ∑ α ∈ S, (ρ α : M → ℝ) x = 1 :=
+          ρ.sum_finsupport' x (Set.mem_univ x) hfins
+        rw [← ENNReal.ofReal_sum_of_nonneg (fun α _ => ρ.nonneg α x), hone]
+        simp
+      · simp only [Set.indicator_of_notMem hxAK, Finset.sum_const_zero]
+    _ = (chartLocalMeasure (I := I) g α₀) (A ∩ K) := setLIntegral_one _
+
+theorem _root_.DifferentialGeometry.Integral.Measure.integrable_riemannianVolumeMeasure_and_integral_eq_chartLocalMeasure
+    [T2Space M] [SigmaCompactSpace M]
+    (g : SmoothRiemannianMetric I M) (α : M)
+    {f : M → ℝ}
+    (hf : Integrable f (chartLocalMeasure (I := I) g α))
+    (hf_cs : HasCompactSupport f)
+    (hf_supp : tsupport f ⊆ (chartAt H α).source) :
+    Integrable f (riemannianVolumeMeasure (I := I) (M := M) g) ∧
+      ∫ x, f x ∂(riemannianVolumeMeasure (I := I) (M := M) g) =
+        ∫ x, f x ∂(chartLocalMeasure (I := I) g α) := by
+  have hrestrict :=
+    riemannianVolumeMeasure_restrict_eq_chartLocalMeasure_restrict
+      (I := I) (M := M) g α hf_cs hf_supp
+  have hzero : ∀ x, x ∉ tsupport f → f x = 0 := by
+    intro x hx
+    by_contra hne
+    exact hx (subset_tsupport _ hne)
+  have hglobal_on : IntegrableOn f (tsupport f)
+      (riemannianVolumeMeasure (I := I) (M := M) g) := by
+    change Integrable f
+      ((riemannianVolumeMeasure (I := I) (M := M) g).restrict (tsupport f))
+    rw [hrestrict]
+    exact hf.integrableOn
+  refine ⟨hglobal_on.integrable_of_forall_notMem_eq_zero hzero, ?_⟩
+  calc
+    ∫ x, f x ∂(riemannianVolumeMeasure (I := I) (M := M) g) =
+        ∫ x in tsupport f, f x
+          ∂(riemannianVolumeMeasure (I := I) (M := M) g) :=
+      (setIntegral_eq_integral_of_forall_compl_eq_zero hzero).symm
+    _ = ∫ x in tsupport f, f x ∂(chartLocalMeasure (I := I) g α) := by
+      rw [hrestrict]
+    _ = ∫ x, f x ∂(chartLocalMeasure (I := I) g α) :=
+      setIntegral_eq_integral_of_forall_compl_eq_zero hzero
 
 private lemma integral_riemannianVolumeMeasure_of_compactSupport_eq_finset_sum
     [T2Space M] [SigmaCompactSpace M]
