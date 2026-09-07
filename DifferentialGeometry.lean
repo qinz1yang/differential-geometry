@@ -4041,3 +4041,6 @@ import DifferentialGeometry.Topology.Manifold.CurveChart.InitialSegment
 import DifferentialGeometry.Topology.Manifold.CurveChart.Subdivision
 import DifferentialGeometry.Topology.UniformConvergence
 import DifferentialGeometry.Topology.FiniteSubdivision
+import DifferentialGeometry.Geometry.Comparison.Volume.BishopRawDensity
+import DifferentialGeometry.Geometry.Comparison.Volume.RawBallPolarEq
+import DifferentialGeometry.Geometry.Comparison.Volume.RawBallVolumeRatio

@@ -1901,7 +1901,7 @@ private lemma expMapIntrinsic_injective_early
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [T2Space (TangentBundle I M)] in
-private lemma intrinsicGeodesic_smul_apply
+lemma intrinsicGeodesic_smul_apply
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
@@ -2154,6 +2154,24 @@ private lemma expJacobianDensity_radial_scaled
                   (fun i => intrinsicJacobi (I := I) g hEnorm x u (w i)) r := by
                   rw [hmult, one_mul]
 
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+theorem expJac_radial
+    [ConnectedSpace M] [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
+    [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
+    (g : SmoothRiemannianMetric I M)
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
+    (x : M) {u : TangentSpace I x} (hu : u ≠ 0)
+    (w : Fin (Module.finrank ℝ E - 1) → TangentSpace I x)
+    (hON : ∀ i j, g.inner x (w i) (w j) = if i = j then 1 else 0)
+    (hperp : ∀ i, g.inner x u (w i) = 0)
+    (r : ℝ) (hr : 0 < r) :
+    expJacobianDensity (I := I) g hEnorm x ((r • u) : E) * r ^ (Module.finrank ℝ E - 1) =
+      normalChartDensity (I := I) g x 0 *
+        curveDensity (I := I) g (intrinsicGeodesic (I := I) g hEnorm x u)
+          (fun i => intrinsicJacobi (I := I) g hEnorm x u (w i)) r := by
+  exact expJacobianDensity_radial_scaled (I := I) g hEnorm x hu w hON hperp r hr
+
 end DifferentialGeometry.Geometry.Riemannian.VolumeComparison
 
 end
@@ -2384,6 +2402,62 @@ theorem segmentBall_area_eq [ConnectedSpace M] [PseudoEMetricSpace M]
       _ ≤ riemannianVolumeMeasure (I := I) (M := M) g
           {y : M | riemannianEDist I x y < ENNReal.ofReal R} :=
         measure_mono hKi_image
+
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+theorem segBall_reg_zero [ConnectedSpace M] [PseudoEMetricSpace M]
+    [IsRiemannianManifold I M] [CompleteSpace M]
+    [IsContinuousRiemannianBundle E (fun y : M ↦ TangentSpace I y)]
+    (g : SmoothRiemannianMetric I M)
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
+    (x : M) {R : ℝ} (hR : 0 < R) :
+    riemannianVolumeMeasure (I := I) (M := M) g
+        ({y : M | riemannianEDist I x y < ENNReal.ofReal R} \
+          (fun v : E => expMapIntrinsic (I := I) g hEnorm x
+            (show TangentSpace I x from v)) ''
+            (SegmentInt (I := I) g hEnorm x ∩ gBall (I := I) g x R)) = 0 := by
+  classical
+  let _ : MeasurableSpace M := borel M
+  let _ : BorelSpace M := ⟨rfl⟩
+  let F : E → M := fun v => expMapIntrinsic (I := I) g hEnorm x
+    (show TangentSpace I x from v)
+  let K : Set E := SegmentInt (I := I) g hEnorm x ∩ gBall (I := I) g x R
+  let A : Set M := {y : M | riemannianEDist I x y < ENNReal.ofReal R}
+  have hK : MeasurableSet K :=
+    (measurableSet_segmentInt (I := I) g hEnorm x).inter
+      (measurableSet_gBall (I := I) g x R)
+  have hinj : Set.InjOn F K :=
+    (exp_inj_segmentInt (I := I) g hEnorm x).mono inter_subset_left
+  have hF_cont : Continuous F :=
+    (intrinsicFiber_smooth (I := I) g hEnorm x).continuous
+  have hFK_meas : MeasurableSet (F '' K) :=
+    hK.image_of_continuousOn_injOn hF_cont.continuousOn hinj
+  have hsub : F '' K ⊆ A := by
+    rintro _ ⟨v, hv, rfl⟩
+    have hvD : v ∈ SegmentDom (I := I) g hEnorm x :=
+      segmentInt_subset (I := I) g hEnorm x hv.1
+    have hfin : riemannianEDist I x (F v) ≠ ⊤ :=
+      riemannianEDist_ne_top (I := I) x _
+    change riemannianEDist I x (F v) < ENNReal.ofReal R
+    rw [← ENNReal.ofReal_toReal hfin, ← (mem_segmentDom (I := I)).mp hvD]
+    exact (ENNReal.ofReal_lt_ofReal_iff hR).2 hv.2
+  have hmeasure :
+      riemannianVolumeMeasure (I := I) (M := M) g A =
+        riemannianVolumeMeasure (I := I) (M := M) g (F '' K) := by
+    calc
+      _ = ∫⁻ v in K, ENNReal.ofReal
+          (expJacobianDensity (I := I) g hEnorm x v) ∂(modelHaar (E := E)) := by
+        simpa only [A, K] using segmentBall_area_eq (I := I) g hEnorm x hR
+      _ = _ := by
+        simpa only [F] using
+          (riemVol_exp_image_eq (I := I) g hEnorm x hK hinj).symm
+  have hFK_fin :
+      riemannianVolumeMeasure (I := I) (M := M) g (F '' K) ≠ ⊤ :=
+    ne_of_lt (lt_of_le_of_lt (measure_mono hsub)
+      (segmentBall_vol_fin (I := I) g hEnorm x))
+  change riemannianVolumeMeasure (I := I) (M := M) g (A \ F '' K) = 0
+  rw [measure_sdiff hsub hFK_meas.nullMeasurableSet hFK_fin, hmeasure,
+    tsub_self]
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in

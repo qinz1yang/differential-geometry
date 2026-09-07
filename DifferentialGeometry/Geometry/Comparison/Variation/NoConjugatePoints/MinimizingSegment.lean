@@ -72,7 +72,7 @@ omit [CompleteSpace E] in
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [T2Space (TangentBundle I M)] in
-private theorem tailCurve_eq
+theorem tailCurve_eq
     [RiemannianBundle (fun y : M => TangentSpace I y)]
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun y : M => TangentSpace I y)]
@@ -229,7 +229,7 @@ theorem minSegment_edist
 omit [CompleteSpace E] [T2Space (TangentBundle I M)] in
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-private theorem minTail_edist
+theorem minSegment_tail_edist
     [RiemannianBundle (fun y : M => TangentSpace I y)]
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun y : M => TangentSpace I y)]
@@ -499,7 +499,7 @@ theorem tail_no_conj
   have htail_dist :
       riemannianEDist I z.proj x = ENNReal.ofReal ell := by
     simpa only [z, DifferentialGeometry.Geometry.Riemannian.Exponential.velocityLift_proj, ell, r] using
-      minTail_edist (I := I) g hEnorm v hexp hlen rfl hfin hs₀_closed
+      minSegment_tail_edist (I := I) g hEnorm v hexp hlen rfl hfin hs₀_closed
   have htail_curve :
       intrinsicGeodesic (I := I) g hEnorm z.proj uTail =
         fun t => γ ((1 - s₀) * t + s₀) := by
