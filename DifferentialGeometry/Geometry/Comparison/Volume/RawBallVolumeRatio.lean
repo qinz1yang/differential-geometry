@@ -2,7 +2,9 @@ import DifferentialGeometry.Geometry.Exponential.Radial
 import DifferentialGeometry.Geometry.Exponential.ConjugatePoint.MinimizingGeodesic
 import DifferentialGeometry.Geometry.Comparison.Volume.Bishop.Ball
 import DifferentialGeometry.Geometry.Comparison.Volume.Bishop.PolarFramed
-import DifferentialGeometry.Geometry.Comparison.Volume.RawBallPolarEq
+import DifferentialGeometry.Geometry.Comparison.Volume.Segment.Polar.CompactBall
+import DifferentialGeometry.Geometry.Comparison.Volume.Segment.Polar.Pole
+import DifferentialGeometry.Geometry.Exponential.VolumeDensity
 import DifferentialGeometry.Geometry.Comparison.Volume.RatioIntegral
 import DifferentialGeometry.Geometry.Comparison.Volume.Segment.Ball.Measure
 
@@ -328,6 +330,7 @@ private lemma rawDn_cont
         (show E from L w) (B i)) 1) T
   exact hcont.congr heq
 
+omit [NeZero (Module.finrank ℝ E)] in
 private lemma rawBall_normal
     [PseudoEMetricSpace M]
     [RiemannianBundle (fun x : M => TangentSpace I x)]
@@ -365,69 +368,21 @@ private lemma rawBall_normal
     rw [hK] at hv
     exact minimizingDomain_subset_expDomain (I := I) g p
       (extendibleMinimizingDomain_subset_minimizingDomain (I := I) g hEnorm p hv.1)
-  have hjac (v : E) (hv : v ∈ K) :
-      paramDensity (I := I) g F v =
-        curveDensity (I := I) g
-          (fun t : ℝ => expMap (I := I) g p
-            (show TangentSpace I p from t • v))
-          (fun (i : Fin (Module.finrank ℝ E)) (t : ℝ) =>
-            mfderiv 𝓘(ℝ, ℝ) I (fun s : ℝ =>
-              expMap (I := I) g p
-                (show TangentSpace I p from
-                  t • (v + s • (chartModelBasis E) i))) 0 (1 : ℝ)) 1 := by
-    rw [paramDensity_expMap_eq_curveDensity (I := I) g p v (hKdom hv)]
-    unfold curveDensity curveGram
-    apply congrArg Real.sqrt
-    apply congrArg Matrix.det
-    ext i j
-    simp only [Matrix.of_apply]
-    rw [radialJacobiField_eq, radialJacobiField_eq]
-    rfl
-  have hint :
-      (∫⁻ v in K, ENNReal.ofReal (paramDensity (I := I) g F v)
-          ∂(modelHaar (E := E))) =
-        ∫⁻ v in K, ENNReal.ofReal
-          (curveDensity (I := I) g
-            (fun t : ℝ => expMap (I := I) g p
-              (show TangentSpace I p from t • v))
-            (fun (i : Fin (Module.finrank ℝ E)) (t : ℝ) =>
-              mfderiv 𝓘(ℝ, ℝ) I (fun s : ℝ =>
-                expMap (I := I) g p
-                  (show TangentSpace I p from
-                    t • (v + s • (chartModelBasis E) i))) 0 (1 : ℝ)) 1)
-          ∂(modelHaar (E := E)) := by
-    refine setLIntegral_congr_fun hKmeas (fun v hv => ?_)
-    exact congrArg ENNReal.ofReal (hjac v hv)
-  have hball := rawBall_integral_eq (I := I) g hEnorm p hRR₀ hcpt
-  rw [← hK] at hball
+  have hcptR : @IsCompact M PseudoEMetricSpace.toUniformSpace.toTopologicalSpace
+      (Metric.closedEBall p (ENNReal.ofReal R)) := by
+    let : TopologicalSpace M := PseudoEMetricSpace.toUniformSpace.toTopologicalSpace
+    exact hcpt.of_isClosed_subset Metric.isClosed_closedEBall
+      (Metric.closedEBall_subset_closedEBall (ENNReal.ofReal_mono hRR₀.le))
   calc
     riemannianVolumeMeasure (I := I) (M := M) g
         {q : M | riemannianEDist I p q < ENNReal.ofReal R} =
-        ∫⁻ v in K, ENNReal.ofReal
-          (curveDensity (I := I) g
-            (fun t : ℝ => expMap (I := I) g p
-              (show TangentSpace I p from t • v))
-            (fun (i : Fin (Module.finrank ℝ E)) (t : ℝ) =>
-              mfderiv 𝓘(ℝ, ℝ) I (fun s : ℝ =>
-                expMap (I := I) g p
-                  (show TangentSpace I p from
-                    t • (v + s • (chartModelBasis E) i))) 0 (1 : ℝ)) 1)
+        ∫⁻ v in K, ENNReal.ofReal (paramDensity (I := I) g F v)
           ∂(modelHaar (E := E)) := by
-      exact hball
-    _ = ∫⁻ v in K, ENNReal.ofReal (paramDensity (I := I) g F v)
-        ∂(modelHaar (E := E)) := hint.symm
-    _ = ∫⁻ w in (normalFrame (I := I) (E := E) g p) ⁻¹' K,
-        ENNReal.ofReal
-          (curveDensity (I := I) g
-            (radialCurve (I := I) g p
-              (normalFrame (I := I) (E := E) g p w))
-            (fun i => radialJacobiField (I := I) g p
-              (normalFrame (I := I) (E := E) g p w)
-              (normalBasis (I := I) g p i)) 1)
-        ∂(volume : Measure E) :=
-      lintegral_paramDensity_expMap_eq_lintegral_curveDensity
-        (I := I) g p hKmeas hKdom
-    _ = _ := by rfl
+      rw [hK]
+      exact riemannianVolumeMeasure_ball_eq_lintegral_paramDensity_expMap
+        (I := I) g hEnorm p R hcptR
+    _ = _ := lintegral_paramDensity_expMap_eq_lintegral_curveDensity
+      (I := I) g p hKmeas hKdom
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M]
   [T2Space (TangentBundle I M)] [SigmaCompactSpace M] in
