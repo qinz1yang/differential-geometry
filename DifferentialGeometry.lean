@@ -185,6 +185,7 @@ import DifferentialGeometry.Analysis.Elliptic.Euclidean.Restriction
 import DifferentialGeometry.Analysis.Elliptic.Euclidean.Regularity.CoefficientDerivative
 import DifferentialGeometry.Analysis.Elliptic.Euclidean.Regularity.Differentiation
 import DifferentialGeometry.Analysis.Elliptic.Euclidean.Regularity.DifferenceQuotient
+import DifferentialGeometry.Analysis.Elliptic.Euclidean.Regularity.HigherOrder
 import DifferentialGeometry.Analysis.Elliptic.Euclidean.Regularity.SecondOrder
 import DifferentialGeometry.Analysis.Elliptic.Lichnerowicz
 import DifferentialGeometry.Analysis.Elliptic.LichnerowiczSpectral
