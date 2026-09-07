@@ -1,4 +1,7 @@
 import DifferentialGeometry.Geometry.Curvature.Riemann.Defs
+import DifferentialGeometry.Geometry.Curvature.CoordRm04Bridge
+import DifferentialGeometry.Geometry.Curvature.PullbackNaturality
+import DifferentialGeometry.Geometry.Curvature.Scaling
 open DifferentialGeometry.Geometry.Operator
 
 noncomputable section
@@ -454,6 +457,99 @@ theorem sectionalCurvature_symm_of_chartRiemannLower_second_pair_antisymm
   rw [sectionalCurvatureNumerator_symm_of_chartRiemannLower_second_pair_antisymm
         (I := I) g p h_pair v w,
       sectionalCurvatureDenominator_symm (I := I) g p v w]
+
+variable [I.Boundaryless] [T2Space M]
+
+omit [NeZero (Module.finrank ℝ E)] in
+theorem sectionalCurvatureNumerator_eq_metricRm04StdAt
+    (g : SmoothRiemannianMetric I M) (x : M) (v w : TangentSpace I x) :
+    sectionalCurvatureNumerator (I := I) g x v w =
+      Curvature.metricRm04StdAt (I := I) g x v w w v := by
+  let _ : CompleteSpace E := FiniteDimensional.complete Real E
+  have hbas (i : Fin (Module.finrank Real E)) :
+      chartBasisVecFiber (I := I) x i x = centeredChartTangentBasis (I := I) x i := by
+    change (trivializationAt E (TangentSpace I) x).symmL Real x (chartModelBasis E i) =
+      (centeredChartTangentEquiv (I := I) x).symm (chartModelBasis E i)
+    exact (congrFun ((trivializationAt E (TangentSpace I) x).symm_continuousLinearEquivAt_eq
+      (FiberBundle.mem_baseSet_trivializationAt' x)) (chartModelBasis E i)).symm
+  have hrepr (z : TangentSpace I x) :
+      (centeredChartTangentBasis (I := I) x).repr z = (chartModelBasis E).repr z := by
+    rw [centeredChartTangentBasis_repr, centeredChartTangentEquiv_apply,
+      tangentSpaceModelContinuousLinearEquiv_apply]
+  have hgram (i j : Fin (Module.finrank Real E)) :
+      chartGramOnE (I := I) g x i j (extChartAt I x x) =
+        g.inner x (centeredChartTangentBasis (I := I) x i)
+          (centeredChartTangentBasis (I := I) x j) := by
+    rw [chartGramOnE_def, (extChartAt I x).left_inv (mem_extChartAt_source x),
+      chartGramMatrix_apply, hbas, hbas]
+  have hinner (j : Fin (Module.finrank Real E)) :
+      g.inner x v (centeredChartTangentBasis (I := I) x j) =
+      ∑ l : Fin (Module.finrank Real E), (chartModelBasis E).repr v l *
+        chartGramOnE (I := I) g x l j (extChartAt I x x) := by
+    have hv := (centeredChartTangentBasis (I := I) x).sum_repr v
+    have hv' := congrArg (fun z : TangentSpace I x =>
+      g.inner x z (centeredChartTangentBasis (I := I) x j)) hv
+    simpa only [map_sum, map_smul, _root_.sum_apply, smul_apply, smul_eq_mul, hrepr, hgram]
+      using hv'.symm
+  rw [metricRm04StdAt_eq_chartRiemannCLM, Connection.chartRiemannCLM_apply]
+  simp only [map_sum, map_smul, smul_eq_mul, hrepr, hinner]
+  rw [sectionalCurvatureNumerator_def]
+  simp only [chartRiemannLower, Finset.mul_sum]
+  apply Finset.sum_congr rfl
+  intro i _
+  apply Finset.sum_congr rfl
+  intro j _
+  apply Finset.sum_congr rfl
+  intro k _
+  rw [Finset.sum_comm]
+  apply Finset.sum_congr rfl
+  intro l _
+  apply Finset.sum_congr rfl
+  intro m _
+  ring
+
+omit [NeZero (Module.finrank ℝ E)] in
+theorem sectionalCurvature_eq_metricRm04StdAt_div
+    (g : SmoothRiemannianMetric I M) (x : M) (v w : TangentSpace I x) :
+    sectionalCurvature (I := I) g x v w =
+      Curvature.metricRm04StdAt (I := I) g x v w w v /
+        (g.inner x v v * g.inner x w w - (g.inner x v w) ^ 2) := by
+  rw [sectionalCurvature_def, sectionalCurvatureNumerator_eq_metricRm04StdAt,
+    sectionalCurvatureDenominator_def]
+
+omit [NeZero (Module.finrank ℝ E)] in
+theorem sectionalCurvature_scaleMetric
+    (c : Real) (hc : 0 < c) (g : SmoothRiemannianMetric I M)
+    (x : M) (v w : TangentSpace I x) :
+    sectionalCurvature (I := I) (scaleMetric (I := I) c hc g) x v w =
+      c⁻¹ * sectionalCurvature (I := I) g x v w := by
+  let _ : CompleteSpace E := FiniteDimensional.complete Real E
+  let _ : IsManifold I 1 M := IsManifold.of_le (by decide : (1 : WithTop ℕ∞) ≤ ∞)
+  have hd : sectionalCurvatureDenominator (I := I) (scaleMetric (I := I) c hc g) x v w =
+      c ^ 2 * sectionalCurvatureDenominator (I := I) g x v w := by
+    simp only [sectionalCurvatureDenominator_def, scaleMetric_inner]
+    ring
+  rw [sectionalCurvature_def, sectionalCurvature_def,
+    sectionalCurvatureNumerator_eq_metricRm04StdAt,
+    sectionalCurvatureNumerator_eq_metricRm04StdAt, Curvature.metricRmStd_scale, hd]
+  by_cases hden : sectionalCurvatureDenominator (I := I) g x v w = 0
+  · simp only [hden, mul_zero, div_zero]
+  · field_simp [hc.ne', hden]
+
+omit [NeZero (Module.finrank ℝ E)] in
+theorem sectionalCurvature_pullback
+    {N : Type*} [TopologicalSpace N] [ChartedSpace H N] [IsManifold I ∞ N] [T2Space N]
+    (g : SmoothRiemannianMetric I N) (Φ : M ≃ₘ⟮I, I⟯ N)
+    (x : M) (v w : TangentSpace I x) :
+    sectionalCurvature (I := I) (Diffeomorph.pullbackMetric g Φ) x v w =
+      sectionalCurvature (I := I) g (Φ x)
+        (mfderiv I I (Φ : M → N) x v) (mfderiv I I (Φ : M → N) x w) := by
+  let _ : CompleteSpace E := FiniteDimensional.complete Real E
+  let _ : IsManifold I 1 M := IsManifold.of_le (by decide : (1 : WithTop ℕ∞) ≤ ∞)
+  let _ : IsManifold I 1 N := IsManifold.of_le (by decide : (1 : WithTop ℕ∞) ≤ ∞)
+  simp only [sectionalCurvature_def, sectionalCurvatureNumerator_eq_metricRm04StdAt,
+    Curvature.metricRm04Std_pullback, sectionalCurvatureDenominator_def,
+    Diffeomorph.pullbackMetric_inner]
 
 end Riemannian
 end Geometry

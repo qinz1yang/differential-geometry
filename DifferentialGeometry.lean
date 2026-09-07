@@ -4396,3 +4396,4 @@ import DifferentialGeometry.Geometry.Operator.HessianPullback
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HamiltonHarnack.UhlenbeckScalarLaplacian
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Soliton.Gaussian
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Soliton.Volume
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Soliton.CanonicalCurvature
