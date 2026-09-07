@@ -180,6 +180,7 @@ import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.SlotCurry.Boun
 import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.SlotCurry.Defs
 import DifferentialGeometry.Analysis.Elliptic.DistributionalSupersolution
 import DifferentialGeometry.Analysis.Elliptic.Euclidean.WeakHarnack
+import DifferentialGeometry.Analysis.Elliptic.Euclidean.WeakFormulation
 import DifferentialGeometry.Analysis.Elliptic.Euclidean.Restriction
 import DifferentialGeometry.Analysis.Elliptic.Euclidean.Regularity.CoefficientDerivative
 import DifferentialGeometry.Analysis.Elliptic.Euclidean.Regularity.DifferenceQuotient
