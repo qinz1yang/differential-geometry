@@ -685,6 +685,7 @@ private theorem endpointExponentialWeight_second_deriv_integral_le
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
+omit [NeZero (Module.finrank Real E)] in
 theorem normalizedGradientRicciSoliton_potential_le_sq_distance
     {g : SmoothRiemannianMetric I M} {f : C^∞⟮I, M; Real⟯}
     (h : normalizedGradientRicciSoliton (I := I) g f) (p x : M) :
@@ -1237,6 +1238,7 @@ theorem normalizedGradientRicciSoliton_potential_le_finrank_div_two_of_isLocalMi
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
+omit [NeZero (Module.finrank Real E)] in
 theorem normalizedGradientRicciSoliton_potential_le_sq_distance_of_isMinOn
     {g : SmoothRiemannianMetric I M} {f : C^∞⟮I, M; Real⟯}
     (h : normalizedGradientRicciSoliton (I := I) g f) {o : M}

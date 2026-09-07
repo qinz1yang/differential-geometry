@@ -20,7 +20,7 @@ open DifferentialGeometry.Geometry.Riemannian
 section Normed
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
-  [FiniteDimensional Real E] [NeZero (Module.finrank Real E)]
+  [FiniteDimensional Real E]
 variable {H : Type*} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
@@ -254,7 +254,7 @@ end Normed
 section InnerProduct
 
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace Real E]
-  [FiniteDimensional Real E] [NeZero (Module.finrank Real E)]
+  [FiniteDimensional Real E]
 variable {H : Type*} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]

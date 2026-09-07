@@ -16,7 +16,7 @@ open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Integral.Measure
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
-  [FiniteDimensional Real E] [NeZero (Module.finrank Real E)]
+  [FiniteDimensional Real E]
 variable {H : Type*} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
@@ -28,7 +28,7 @@ private theorem canonical_time_domain_open (sigma : Real) :
   isOpen_lt continuous_const
     (continuous_const.sub (continuous_const.mul continuous_id))
 
-omit [FiniteDimensional Real E] [NeZero (Module.finrank Real E)] [I.Boundaryless]
+omit [FiniteDimensional Real E] [I.Boundaryless]
   [T2Space M] [T2Space (TangentBundle I M)] [SigmaCompactSpace M] [ConnectedSpace M] in
 private theorem spatial_lift_contMDiffOn
     (Y : (x : M) → TangentSpace I x) {u : Set M} (K : Set Real)
@@ -52,7 +52,7 @@ private theorem spatial_lift_contMDiffOn
     (I := 𝓘(Real, Real)) (I' := I) (M := Real) (M' := M)
     (n := (∞ : WithTop ℕ∞))).comp_contMDiffOn (hzero.prodMk hv)
 
-omit [FiniteDimensional Real E] [NeZero (Module.finrank Real E)] [I.Boundaryless]
+omit [FiniteDimensional Real E] [I.Boundaryless]
   [T2Space M] [T2Space (TangentBundle I M)] [SigmaCompactSpace M] [ConnectedSpace M] in
 private theorem spatial_pushforward_contMDiffOn
     (Phi : Real × M → M) (U : Set Real) (hU : IsOpen U)

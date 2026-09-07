@@ -22,7 +22,7 @@ open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Integral.Measure
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
-  [FiniteDimensional Real E] [NeZero (Module.finrank Real E)]
+  [FiniteDimensional Real E]
 variable {H : Type*} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
@@ -256,7 +256,7 @@ theorem canonicalConjugateHeatDensity_conjugateHeat
         (-ΔG (I := I) G F x + normGradSqFun (I := I) G F x)) +
         metricScalarAt (I := I) G x * (base ^ p * Real.exp (-F x)) := by ring
 
-omit [FiniteDimensional Real E] [NeZero (Module.finrank Real E)]
+omit [FiniteDimensional Real E]
   [I.Boundaryless] [IsManifold I ∞ M] [T2Space M]
   [T2Space (TangentBundle I M)] [SigmaCompactSpace M] [ConnectedSpace M] in
 private theorem conjugateHeat_scale_factor

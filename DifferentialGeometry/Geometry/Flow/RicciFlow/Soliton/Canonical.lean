@@ -30,7 +30,7 @@ open DifferentialGeometry.PDE.RicciFlow.Pullback
     lie_derivative_metric_pullback_natural_under_diffeomorphism_pointwise)
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
-  [FiniteDimensional Real E] [NeZero (Module.finrank Real E)]
+  [FiniteDimensional Real E]
 variable {H : Type*} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
@@ -441,7 +441,7 @@ theorem canonicalFlowDiffeomorph_hasMFDerivAt
   rw [canonicalFlowDiffeomorph_apply]
   exact h
 
-omit [NeZero (Module.finrank Real E)] [T2Space (TangentBundle I M)]
+omit [T2Space (TangentBundle I M)]
   [SigmaCompactSpace M] [ConnectedSpace M] in
 private theorem lieDerivMetric_gradFun
     (g : SmoothRiemannianMetric I M) (f : C^∞⟮I, M; Real⟯)
@@ -466,7 +466,7 @@ private theorem lieDerivMetric_gradFun
   rw [hessFun_symm_of_boundaryless (I := I) g f.contMDiff x w v]
   ring
 
-omit [NeZero (Module.finrank Real E)] [T2Space (TangentBundle I M)]
+omit [T2Space (TangentBundle I M)]
   [SigmaCompactSpace M] [ConnectedSpace M] in
 private theorem lieDerivMetric_scaleMetric
     (c : Real) (hc : 0 < c) (g : SmoothRiemannianMetric I M)
@@ -1157,7 +1157,7 @@ theorem canonicalMetricFamily_metricRm04
   rw [canonicalMetricFamily_eq (I := I) g f sigma hcomplete hsol ht]
   exact canonicalMetric_metricRm04 (I := I) g f sigma hcomplete hsol ht x slots
 
-omit [NeZero (Module.finrank Real E)] [T2Space (TangentBundle I M)]
+omit [T2Space (TangentBundle I M)]
   [SigmaCompactSpace M] [ConnectedSpace M] in
 private theorem pullbackMetric_family_hasDerivAt
     (J : Set Real) (hJopen : IsOpen J)
@@ -1283,7 +1283,7 @@ private theorem pullbackMetric_family_hasDerivAt
   rw [hfun] at hback'
   exact hback'
 
-omit [NeZero (Module.finrank Real E)] [T2Space (TangentBundle I M)]
+omit [T2Space (TangentBundle I M)]
   [SigmaCompactSpace M] [ConnectedSpace M] in
 theorem selfSimilarRicciFlow_slice_equation
     (J : Set Real) (hJopen : IsOpen J)
@@ -1360,7 +1360,7 @@ theorem selfSimilarRicciFlow_slice_equation
     _ = (-(deriv c t) / (2 * c t)) * (g t).inner x v w := by
       rw [hmetricValue]
 
-omit [NeZero (Module.finrank Real E)] [T2Space (TangentBundle I M)]
+omit [T2Space (TangentBundle I M)]
   [SigmaCompactSpace M] [ConnectedSpace M] in
 theorem selfSimilarRicciFlow_slice_gradientRicciSoliton
     (J : Set Real) (hJopen : IsOpen J)

@@ -29,7 +29,7 @@ open Riemannian.Geodesic
 open Riemannian.Variation
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
-  [FiniteDimensional Real E] [NeZero (Module.finrank Real E)]
+  [FiniteDimensional Real E]
 variable {H : Type*} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
@@ -38,7 +38,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-omit [FiniteDimensional Real E] [NeZero (Module.finrank Real E)]
+omit [FiniteDimensional Real E]
   [I.Boundaryless] [IsManifold I ∞ M] [SigmaCompactSpace M]
   [T2Space M] [ConnectedSpace M] in
 private theorem mfderiv_comp_add_apply
@@ -402,6 +402,7 @@ theorem normalizedGradientRicciSoliton_riemannOp_velocity_eq_zero_along_geodesic
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 theorem normalizedGradientRicciSoliton_expMapIntrinsic_mfderiv_inner_of_scalar_eq_zero
+    [NeZero (Module.finrank Real E)]
     [RiemannianBundle (fun x : M ↦ TangentSpace I x)]
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun x : M ↦ TangentSpace I x)]

@@ -4,6 +4,10 @@ import DifferentialGeometry.Geometry.Comparison.HopfRinowProper
 import DifferentialGeometry.Geometry.Comparison.BonnetMyers.RicciPointwise
 import DifferentialGeometry.Geometry.Comparison.Volume.JacobiRiccati
 import DifferentialGeometry.Geometry.Curvature.RicciOperatorNormBound
+import DifferentialGeometry.Geometry.Curvature.ScalarNormBound
+import DifferentialGeometry.Geometry.Curvature.PullbackNaturalityLocalCross
+import DifferentialGeometry.Geometry.Metric.Completeness
+import DifferentialGeometry.Geometry.Operator.Pullback
 import DifferentialGeometry.Geometry.Metric.InnerExpansion
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.Identities
 import DifferentialGeometry.Geometry.Operator.LaplacianMinimum
@@ -1858,7 +1862,7 @@ private theorem scalar_quadratic_mono
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-theorem gradientRicciSoliton_scalar_lower_bound
+private theorem gradientRicciSoliton_scalar_lower_bound_of_connected
     [ConnectedSpace M]
     (g : SmoothRiemannianMetric I M) (f : C^∞⟮I, M; Real⟯)
     (sigma : Real) (hcomplete : RiemannianMetricComplete (I := I) g)
@@ -2015,5 +2019,41 @@ theorem gradientRicciSoliton_scalar_lower_bound
       sigma * a - 2 * a ^ 2 / n < -epsilon * B := by
     linarith
   exact (not_lt_of_ge hchain) hstrict
+
+omit [NeZero (Module.finrank Real E)] [T2Space (TangentBundle I M)] in
+theorem gradientRicciSoliton_scalar_lower_bound
+    (g : SmoothRiemannianMetric I M) (f : C^∞⟮I, M; ℝ⟯) (σ : ℝ)
+    (hcomplete : RiemannianMetricComplete (I := I) g)
+    (hsol : gradientRicciSoliton (I := I) g f σ) (x : M) :
+    min 0 ((Module.finrank ℝ E : ℝ) * σ / 2) ≤ metricScalarAt (I := I) g x := by
+  by_cases hE : Module.finrank ℝ E = 0
+  · rw [metricScalarAt_eq_zero_of_finrank_eq_zero g hE, hE]
+    simp
+  let : NeZero (Module.finrank ℝ E) := ⟨hE⟩
+  let : LocallyConnectedSpace H := I.toHomeomorph.locallyConnectedSpace
+  let : LocallyConnectedSpace M := ChartedSpace.locallyConnectedSpace H M
+  let U : TopologicalSpace.Opens M := ⟨connectedComponent x, isOpen_connectedComponent⟩
+  let : SigmaCompactSpace U := isClosed_connectedComponent.sigmaCompactSpace
+  let : ConnectedSpace U := Subtype.connectedSpace isConnected_connectedComponent
+  let φ : U → M := Subtype.val
+  let hφ : IsLocalDiffeomorph I I ∞ φ := isLocalDiffeomorph_subtype_val U
+  let gU := localPullMetric g φ hφ
+  let fU : C^∞⟮I, U; ℝ⟯ := ⟨fun y => f y.1,
+    f.contMDiff.comp (contMDiff_subtype_val (I := I) (U := U))⟩
+  have hgU : gU = g.restrictOpen U := localPullMetric_subtype_val g U
+  have hcompleteU : RiemannianMetricComplete (I := I) gU := by
+    rw [hgU]
+    exact RiemannianMetricComplete.restrictOpen_of_isClosed g hcomplete U isClosed_connectedComponent
+  have hsolU : gradientRicciSoliton (I := I) gU fU σ := by
+    intro y v w
+    change ricciTensor (localPullMetric g φ hφ) y v w +
+      hessFun (localPullMetric g φ hφ) (f ∘ φ) y v w = _
+    rw [ricciTensor_localPull, hessFun_localPull, localPullMetric_inner]
+    exact hsol (φ y) _ _
+  have hxU : x ∈ U := mem_connectedComponent
+  have hbound := gradientRicciSoliton_scalar_lower_bound_of_connected
+    gU fU σ hcompleteU hsolU ⟨x, hxU⟩
+  rw [metricScalarAt_localPull] at hbound
+  exact hbound
 
 end DifferentialGeometry.Geometry

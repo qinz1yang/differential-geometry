@@ -133,7 +133,6 @@ theorem normalizedGradientRicciSoliton_potential_eq_metricScalarAt_of_gradient_e
   simpa using hpotential.symm
 
 theorem normalizedGradientRicciSoliton_scalar_nonneg
-    [NeZero (Module.finrank Real E)] [ConnectedSpace M]
     {g : SmoothRiemannianMetric I M} {f : C^∞⟮I, M; Real⟯}
     (h : normalizedGradientRicciSoliton (I := I) g f) (x : M) :
     0 ≤ metricScalarAt (I := I) g x := by
@@ -144,13 +143,24 @@ theorem normalizedGradientRicciSoliton_scalar_nonneg
   exact hR
 
 theorem normalizedGradientRicciSoliton_potential_nonneg
-    [NeZero (Module.finrank Real E)] [ConnectedSpace M]
     {g : SmoothRiemannianMetric I M} {f : C^∞⟮I, M; Real⟯}
     (h : normalizedGradientRicciSoliton (I := I) g f) (x : M) :
     0 ≤ f x := by
   have hR := normalizedGradientRicciSoliton_scalar_nonneg (I := I) h x
   have hgrad := normGradSqFun_nonneg (I := I) g (f : M → Real) x
   linarith [h.2.2 x]
+
+theorem normalizedGradientRicciSoliton_isCompact_sublevel_of_isProperMap
+    {g : SmoothRiemannianMetric I M} {f : C^∞⟮I, M; ℝ⟯}
+    (h : normalizedGradientRicciSoliton (I := I) g f)
+    (hproper : IsProperMap (f : M → ℝ)) (a : ℝ) :
+    IsCompact {x : M | f x ≤ a} := by
+  have heq : {x : M | f x ≤ a} = (f : M → ℝ) ⁻¹' Set.Icc 0 a := by
+    ext x
+    simp only [Set.mem_ofPred_eq, Set.mem_preimage, Set.mem_Icc]
+    exact (and_iff_right (normalizedGradientRicciSoliton_potential_nonneg h x)).symm
+  rw [heq]
+  exact hproper.isCompact_preimage isCompact_Icc
 
 theorem normalizedGradientRicciSoliton_hamilton_normalized
     {g : SmoothRiemannianMetric I M} {f : C^∞⟮I, M; Real⟯}

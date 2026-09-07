@@ -55,7 +55,7 @@ theorem gradientRicciSoliton_scalar_comp_integralCurve_monotone_of_ricci_nonneg
   intro t
   exact mul_nonneg (by norm_num) (hRic (γ t) (gradFun (I := I) g f (γ t)))
 
-variable [NeZero (Module.finrank Real E)] [SigmaCompactSpace M] [ConnectedSpace M]
+variable [SigmaCompactSpace M]
 
 theorem normalizedGradientRicciSoliton_exp_neg_mul_potential_comp_integralCurve_antitone
     {g : SmoothRiemannianMetric I M} {f : C^∞⟮I, M; Real⟯}

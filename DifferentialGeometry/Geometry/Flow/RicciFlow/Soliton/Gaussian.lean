@@ -17,7 +17,7 @@ open DifferentialGeometry.Analysis.ODE
   (curveAt_integralCurve integralCurve_eq_of_agree_zero)
 
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace Real E]
-  [FiniteDimensional Real E] [NeZero (Module.finrank Real E)]
+  [FiniteDimensional Real E]
 
 theorem canonicalFlowMap_gaussian (s : Real) (x : E) :
     canonicalFlowMap (euclideanMetric (E := E)) gaussianPotential 1
