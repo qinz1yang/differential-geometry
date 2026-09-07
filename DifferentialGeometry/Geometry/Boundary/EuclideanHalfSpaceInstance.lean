@@ -570,6 +570,77 @@ instance instHasOrientableBoundary_self_EuclideanHalfSpace
 
 end EuclideanHalfSpaceInstance
 
+open Bundle Manifold
+
+variable {n : Nat} [NeZero n] {M : Type*} [TopologicalSpace M]
+  [ChartedSpace (EuclideanHalfSpace n) M]
+  [IsManifold (modelWithCornersEuclideanHalfSpace n) ∞ M]
+
+theorem boundaryInclusionMfderiv_model_euclideanHalfSpace
+    (x : BoundaryManifold (modelWithCornersEuclideanHalfSpace n) M) :
+    (tangentSpaceModelContinuousLinearEquiv
+      (I := (EuclideanHalfSpaceInstance.instHasSmoothBoundary n).boundaryI) x).arrowCongr
+        (tangentSpaceModelContinuousLinearEquiv (I := modelWithCornersEuclideanHalfSpace n) (x : M))
+        (boundaryInclusionMfderiv x) = EuclideanHalfSpaceInstance.inclEuclideanCLM n := by
+  rw [boundaryInclusionMfderiv_model_eq_fderiv]
+  change fderiv Real (modelWithCornersEuclideanHalfSpace n ∘
+      EuclideanHalfSpaceInstance.inclH n ∘ (modelWithCornersSelf Real
+        (EuclideanSpace Real (Fin (n - 1)))).symm) _ = _
+  rw [EuclideanHalfSpaceInstance.comp_modelWithCornersEuclideanHalfSpace_inclH_self_symm]
+  exact (EuclideanHalfSpaceInstance.inclEuclideanCLM n).fderiv
+
+theorem boundaryInclusionMfderiv_euclideanHalfSpace_apply
+    (x : BoundaryManifold (modelWithCornersEuclideanHalfSpace n) M)
+    (w : TangentSpace (EuclideanHalfSpaceInstance.instHasSmoothBoundary n).boundaryI x) :
+    tangentSpaceModelContinuousLinearEquiv (I := modelWithCornersEuclideanHalfSpace n) (x : M)
+        (boundaryInclusionMfderiv x w) = EuclideanHalfSpaceInstance.inclEuclideanCLM n
+      (tangentSpaceModelContinuousLinearEquiv
+        (I := (EuclideanHalfSpaceInstance.instHasSmoothBoundary n).boundaryI) x w) := by
+  have h := congrArg (fun L => L (tangentSpaceModelContinuousLinearEquiv
+    (I := (EuclideanHalfSpaceInstance.instHasSmoothBoundary n).boundaryI) x w))
+    (boundaryInclusionMfderiv_model_euclideanHalfSpace x)
+  simpa only [ContinuousLinearEquiv.arrowCongr_apply, ContinuousLinearEquiv.symm_apply_apply] using h
+
+theorem sub_head_smul_inwardCoord_mem_range_boundaryInclusionMfderiv
+    (x : BoundaryManifold (modelWithCornersEuclideanHalfSpace n) M)
+    (v : TangentSpace (modelWithCornersEuclideanHalfSpace n) (x : M)) :
+    v - (tangentSpaceModelContinuousLinearEquiv
+      (I := modelWithCornersEuclideanHalfSpace n) (x : M) v) 0 • inwardCoord (M := M) x ∈
+      LinearMap.range (boundaryInclusionMfderiv (M := M) x).toLinearMap := by
+  let e := tangentSpaceModelContinuousLinearEquiv
+    (I := modelWithCornersEuclideanHalfSpace n) (x : M)
+  let b := tangentSpaceModelContinuousLinearEquiv
+    (I := (EuclideanHalfSpaceInstance.instHasSmoothBoundary n).boundaryI) x
+  have hzero : e (v - (e v) 0 • inwardCoord (M := M) x) 0 = 0 := by
+    rw [map_sub, map_smul]
+    have hin : e (inwardCoord (M := M) x) = EuclideanSpace.single (0 : Fin n) (1 : Real) :=
+      inwardCoord_eq x
+    rw [hin]
+    simp
+  have hmem : e (v - (e v) 0 • inwardCoord (M := M) x) ∈
+      Set.range (EuclideanHalfSpaceInstance.inclEuclidean n) := by
+    rw [EuclideanHalfSpaceInstance.range_inclEuclidean]
+    exact hzero
+  rcases hmem with ⟨z, hz⟩
+  refine ⟨b.symm z, ?_⟩
+  apply e.injective
+  change e (boundaryInclusionMfderiv x (b.symm z)) = _
+  rw [boundaryInclusionMfderiv_euclideanHalfSpace_apply]
+  change EuclideanHalfSpaceInstance.inclEuclideanCLM n (b (b.symm z)) = _
+  rw [b.apply_symm_apply]
+  exact hz
+
+theorem outwardNormal_inner_euclideanHalfSpace_eq_neg_sqrt_mul_head
+    (g : SmoothRiemannianMetric (modelWithCornersEuclideanHalfSpace n) M)
+    (x : BoundaryManifold (modelWithCornersEuclideanHalfSpace n) M)
+    (v : TangentSpace (modelWithCornersEuclideanHalfSpace n) (x : M)) :
+    g.inner (x : M) (outwardNormal (M := M) g x) v =
+      -Real.sqrt (g.inner (x : M) (outwardDir (M := M) g x) (outwardDir (M := M) g x)) *
+        (tangentSpaceModelContinuousLinearEquiv
+          (I := modelWithCornersEuclideanHalfSpace n) (x : M) v) 0 :=
+  outwardNormal_inner_eq_neg_sqrt_mul_of_sub_mem_range g x v _
+    (sub_head_smul_inwardCoord_mem_range_boundaryInclusionMfderiv x v)
+
 end WithBoundary
 end DivergenceTheorem
 end Integral
