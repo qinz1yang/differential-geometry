@@ -4375,6 +4375,7 @@ import DifferentialGeometry.Geometry.Connection.Connector
 import DifferentialGeometry.Geometry.Connection.MetricCompatibility.Connector
 import DifferentialGeometry.Geometry.Metric.BundleMultilinear
 import DifferentialGeometry.Geometry.Metric.BundleAlternating
+import DifferentialGeometry.Geometry.Metric.ExteriorPower
 import DifferentialGeometry.Geometry.Metric.BundlePullbackSmooth
 import DifferentialGeometry.Analysis.Calculus.FiniteDimension
 import DifferentialGeometry.Analysis.Integration.Measure.ParamDensityComposition

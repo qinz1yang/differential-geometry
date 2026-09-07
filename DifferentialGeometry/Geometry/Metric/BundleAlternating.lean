@@ -1,4 +1,5 @@
 import DifferentialGeometry.Geometry.Metric.BundleMultilinear
+import DifferentialGeometry.Geometry.Metric.ExteriorPower
 import DifferentialGeometry.Tensor.Alternating.BundleMaps
 import DifferentialGeometry.Tensor.Alternating.Basis
 
@@ -56,6 +57,16 @@ theorem alternatingRiemannianMetric_inner_eq_sum {ι : Type*} [Fintype ι]
     (alternatingRiemannianMetric (F := F) V k).inner x a b =
       ∑ j : Fin k → ι, a (fun i => e (j i)) * b (fun i => e (j i)) :=
   multilinearRiemannianMetric_inner_eq_sum V k x e _ _
+
+theorem alternatingRiemannianMetric_inner_eq_factorial_mul_exterior_inner
+    (k : ℕ) (x : B) (a b : V x [⋀^Fin k]→L[ℝ] ℝ) :
+    letI : FiniteDimensional ℝ (V x) := VectorBundle.finiteDimensional ℝ F V x
+    (alternatingRiemannianMetric (F := F) V k).inner x a b =
+      (k.factorial : ℝ) * inner ℝ ((exteriorPower.musicalEquiv k).symm a)
+        ((exteriorPower.musicalEquiv k).symm b) := by
+  let : FiniteDimensional ℝ (V x) := VectorBundle.finiteDimensional ℝ F V x
+  rw [alternatingRiemannianMetric_inner_eq_sum V k x (stdOrthonormalBasis ℝ (V x))]
+  exact exteriorPower.sum_mul_eq_factorial_mul_inner k (stdOrthonormalBasis ℝ (V x)) a b
 
 variable {EB : Type*} [NormedAddCommGroup EB] [NormedSpace ℝ EB]
   {HB : Type*} [TopologicalSpace HB] {IB : ModelWithCorners ℝ EB HB}
