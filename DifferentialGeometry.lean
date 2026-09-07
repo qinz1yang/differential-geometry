@@ -4433,3 +4433,5 @@ import DifferentialGeometry.Geometry.Connection.Laplacian.ExteriorPowerEndomorph
 import DifferentialGeometry.Geometry.Metric.SelfAdjointConjugate
 import DifferentialGeometry.Geometry.Connection.SelfAdjointConjugate
 import DifferentialGeometry.Geometry.Connection.Laplacian.SelfAdjointConjugate
+import DifferentialGeometry.Geometry.Boundary.EuclideanHalfSpaceOrientation
+import DifferentialGeometry.Geometry.Connection.TensorNabla.MultilinearDual
