@@ -545,6 +545,6 @@ statements and proofs are unchanged.
 - `SobolevSpace/PositiveTestDensity.lean`
 
 **Change**: added the nonnegative smooth density theorem for pointwise nonnegative `H₀¹`
-functions and adapted its proof to Mathlib 4.33 elaboration and indicator APIs. The construction
-uses exact-support smooth positive-part regularizations and preserves the limit witness's weak
-gradient.
+functions and the resulting smooth-test criterion for weak supersolutions, and adapted their
+proofs to Mathlib 4.33 elaboration and indicator APIs. The density construction uses exact-support
+smooth positive-part regularizations and preserves the limit witness's weak gradient.

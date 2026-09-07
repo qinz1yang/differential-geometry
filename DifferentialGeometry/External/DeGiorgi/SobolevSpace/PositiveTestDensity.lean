@@ -1,5 +1,6 @@
 -- Modified 2026-09-07: Mathlib 4.33 elaboration compatibility
 import DifferentialGeometry.External.DeGiorgi.PositivePart
+import DifferentialGeometry.External.DeGiorgi.WeakFormulation.CoefficientOperator
 
 /-!
 # Nonnegative smooth density in `H₀¹`
@@ -552,5 +553,168 @@ theorem nonneg_approx
       tendsto_const_nhds hupper (fun _ => bot_le) hbound
 
 end MemH01
+
+theorem IsSupersolution.of_nonnegative_smooth_tests
+    {Omega : Set E}
+    (hOmega : IsOpen Omega)
+    (A : EllipticCoeff d Omega)
+    {v : E → ℝ}
+    (hv : MemW1p 2 v Omega)
+    (hsmooth : ∀ (hwv : MemW1pWitness 2 v Omega)
+      {psi : E → ℝ}
+      (hpsi : IsSmoothTestOn Omega psi),
+      (∀ x, 0 ≤ psi x) →
+      0 ≤ bilinFormOfCoeff A hwv (smoothTestWitness hOmega hpsi)) :
+    IsSupersolution A v := by
+  classical
+  refine ⟨hv, ?_⟩
+  intro hwv phi hphi hphiw hphi_nonneg
+  obtain ⟨hw, psi, hpsi_smooth, hpsi_compact, hpsi_sub,
+      hpsi_nonneg, _hpsi_fun, hpsi_grad⟩ :=
+    hphi.nonneg_approx hOmega hphi_nonneg
+  let hpsi_test : ∀ n : ℕ, IsSmoothTestOn Omega (psi n) :=
+    fun n => ⟨hpsi_smooth n, hpsi_compact n, hpsi_sub n⟩
+  let hpsiw : ∀ n : ℕ, MemW1pWitness 2 (psi n) Omega :=
+    fun n => smoothTestWitness hOmega (hpsi_test n)
+  let haddiff : ∀ n : ℕ,
+      MemW1pWitness 2 (fun x => psi n x + (-1) * phi x) Omega :=
+    fun n => (hpsiw n).add (hw.smul (-1))
+  let hdiff : ∀ n : ℕ,
+      MemW1pWitness 2 (fun x => psi n x - phi x) Omega := fun n =>
+    { memLp := by
+        simpa [sub_eq_add_neg, Pi.smul_apply] using (haddiff n).memLp
+      weakGrad := (haddiff n).weakGrad
+      weakGrad_component_memLp := by
+        intro i
+        simpa [sub_eq_add_neg, Pi.smul_apply] using
+          (haddiff n).weakGrad_component_memLp i
+      isWeakGrad := by
+        intro i
+        simpa [sub_eq_add_neg, Pi.smul_apply] using (haddiff n).isWeakGrad i }
+  let mu : Measure E := volume.restrict Omega
+  have hgrad_vec :
+      Tendsto
+        (fun n => eLpNorm
+          (fun x => smoothGradField (psi n) x - hw.weakGrad x) 2 mu)
+        atTop (nhds 0) := by
+    exact tendsto_eLpNorm_vector_of_componentwise
+      (fun n i => by
+        exact MemLp.ae_eq (Eventually.of_forall fun x => by
+          change ((hpsiw n).weakGrad x).ofLp i - (hw.weakGrad x).ofLp i =
+            (smoothGradField (psi n) x).ofLp i - (hw.weakGrad x).ofLp i
+          rfl) (((hpsiw n).weakGrad_component_memLp i).sub
+            (hw.weakGrad_component_memLp i)))
+      (fun i => by
+        refine Tendsto.congr' (Eventually.of_forall fun n => ?_) (hpsi_grad i)
+        apply eLpNorm_congr_ae
+        exact Eventually.of_forall fun x => by
+          simp only [smoothGradField, PiLp.toLp_apply])
+  have hdiff_grad :
+      Tendsto (fun n => gradLpOfWitness (hdiff n)) atTop (nhds 0) := by
+    let hzero : MemLp (fun _ : E => (0 : E)) 2 mu := MemLp.zero'
+    have haddiff_norm :
+        Tendsto (fun n => eLpNorm (fun x => (haddiff n).weakGrad x) 2 mu)
+          atTop (nhds 0) := by
+      refine Tendsto.congr' (Eventually.of_forall ?_) hgrad_vec
+      intro n
+      have hweak_eq :
+          (fun x => (haddiff n).weakGrad x) =
+            fun x => smoothGradField (psi n) x - hw.weakGrad x := by
+        funext x
+        simp [haddiff, hpsiw, smoothTestWitness, smoothGradField,
+          MemW1pWitness.add, MemW1pWitness.smul, sub_eq_add_neg]
+      simp [hweak_eq]
+    have haddiff_norm' :
+        Tendsto
+          (fun n => eLpNorm
+            (fun x => (haddiff n).weakGrad x - (0 : E)) 2 mu)
+          atTop (nhds 0) := by
+      simpa [sub_eq_add_neg] using haddiff_norm
+    have hLp :
+        Tendsto
+          (fun n => ((haddiff n).weakGrad_memLp).toLp ((haddiff n).weakGrad))
+          atTop (nhds (hzero.toLp (fun _ => (0 : E)))) := by
+      exact
+        (Lp.tendsto_Lp_iff_tendsto_eLpNorm''
+          (f := fun n => (haddiff n).weakGrad)
+          (f_ℒp := fun n => (haddiff n).weakGrad_memLp)
+          (f_lim := fun _ => (0 : E))
+          (f_lim_ℒp := hzero)).2 haddiff_norm'
+    have hzero_eq : hzero.toLp (fun _ : E => (0 : E)) = 0 :=
+      MemLp.toLp_zero hzero
+    rw [hzero_eq] at hLp
+    exact Tendsto.congr' (Eventually.of_forall fun n => by rfl) hLp
+  have hseminorm :
+      Tendsto
+        (fun n =>
+          (∫ x, ‖(hdiff n).weakGrad x‖ ^ (2 : ℝ) ∂mu) ^ (1 / (2 : ℝ)))
+        atTop (nhds 0) := by
+    have hnorm :
+        Tendsto (fun n => ‖gradLpOfWitness (hdiff n)‖) atTop (nhds 0) := by
+      have h :=
+        (continuous_norm.tendsto (0 : MeasureTheory.Lp E 2 mu)).comp hdiff_grad
+      rw [norm_zero] at h
+      exact Tendsto.congr' (Eventually.of_forall fun _ => rfl) h
+    refine Tendsto.congr' (Eventually.of_forall ?_) hnorm
+    intro n
+    exact norm_gradLpOfWitness_eq (hdiff n)
+  let semidiff : ℕ → ℝ := fun n =>
+    (∫ x, ‖(hdiff n).weakGrad x‖ ^ (2 : ℝ) ∂mu) ^ (1 / (2 : ℝ))
+  let semiv : ℝ :=
+    (∫ x, ‖hwv.weakGrad x‖ ^ (2 : ℝ) ∂mu) ^ (1 / (2 : ℝ))
+  have hbilin_diff :
+      Tendsto
+        (fun n => bilinFormOfCoeff A hwv (hpsiw n) -
+          bilinFormOfCoeff A hwv hw)
+        atTop (nhds 0) := by
+    have hbound : ∀ n,
+        |bilinFormOfCoeff A hwv (hpsiw n) - bilinFormOfCoeff A hwv hw| ≤
+          A.Λ * semiv * semidiff n := by
+      intro n
+      have hsplit :
+          bilinFormOfCoeff A hwv (hdiff n) =
+            bilinFormOfCoeff A hwv (hpsiw n) - bilinFormOfCoeff A hwv hw := by
+        calc
+          bilinFormOfCoeff A hwv (hdiff n) =
+              bilinFormOfCoeff A hwv (haddiff n) := by
+                unfold bilinFormOfCoeff
+                apply integral_congr_ae
+                filter_upwards with x
+                simp [bilinFormIntegrandOfCoeff, hdiff, haddiff]
+          _ = bilinFormOfCoeff A hwv (hpsiw n) +
+              bilinFormOfCoeff A hwv (hw.smul (-1)) := by
+                rw [show haddiff n = (hpsiw n).add (hw.smul (-1)) by
+                  simp [haddiff]]
+                rw [bilinFormOfCoeff_add_right]
+          _ = bilinFormOfCoeff A hwv (hpsiw n) +
+              (-1) * bilinFormOfCoeff A hwv hw := by
+                rw [bilinFormOfCoeff_smul_right]
+          _ = _ := by ring
+      have hb := bilinForm_bound A hwv (hdiff n)
+      rw [hsplit] at hb
+      simpa [semiv, semidiff, mu, mul_assoc] using hb
+    have hupper :
+        Tendsto (fun n => A.Λ * semiv * semidiff n) atTop (nhds 0) := by
+      simpa [semidiff, mul_assoc] using Tendsto.const_mul (A.Λ * semiv) hseminorm
+    have habs :
+        Tendsto
+          (fun n => |bilinFormOfCoeff A hwv (hpsiw n) - bilinFormOfCoeff A hwv hw|)
+          atTop (nhds 0) :=
+      squeeze_zero (fun _ => abs_nonneg _) hbound hupper
+    exact (tendsto_zero_iff_abs_tendsto_zero _).2 habs
+  have hbilin :
+      Tendsto (fun n => bilinFormOfCoeff A hwv (hpsiw n))
+        atTop (nhds (bilinFormOfCoeff A hwv hw)) := by
+    convert hbilin_diff.add tendsto_const_nhds using 1
+    · ext n
+      ring_nf
+    · ring_nf
+  have hchosen : 0 ≤ bilinFormOfCoeff A hwv hw :=
+    ge_of_tendsto hbilin <|
+      Eventually.of_forall fun n => hsmooth hwv (hpsi_test n) (hpsi_nonneg n)
+  calc
+    0 ≤ bilinFormOfCoeff A hwv hw := hchosen
+    _ = bilinFormOfCoeff A hwv hphiw :=
+      bilinFormOfCoeff_eq_right hOmega A hwv hw hphiw
 
 end DeGiorgi
