@@ -674,7 +674,7 @@ theorem integral_divergence_with_boundary_eq_zero_of_compact_of_interior_support
     by_cases hxα : x ∈ (chartAt H α).source
     · by_cases hx_int : x ∈ I.interior M
       · simp only [voss_weyl_divergence_with_boundary_formula
-            (I := I) g α X hxα hx_int]
+            (I := I) g α X hxα]
       · have hxnotin : x ∉ tsupport χ := fun h => hx_int (hχ_supp_int h)
         have hχ_zero : χ x = 0 := by
           by_contra hne
@@ -963,7 +963,7 @@ theorem integral_divergence_with_boundary_eq_zero_of_hasCompactSupport_of_interi
     by_cases hxα : x ∈ (chartAt H α).source
     · by_cases hx_int : x ∈ I.interior M
       · simp only [voss_weyl_divergence_with_boundary_formula
-            (I := I) g α X hxα hx_int]
+            (I := I) g α X hxα]
       · have hxnotin : x ∉ tsupport χ := fun h => hx_int (hχ_supp_int h)
         have hχ_zero : χ x = 0 := by
           by_contra hne

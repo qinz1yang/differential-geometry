@@ -4366,6 +4366,9 @@ import DifferentialGeometry.Geometry.Exponential.NormalChartCompatibility
 import DifferentialGeometry.Geometry.LieGroup.Orthogonal
 import DifferentialGeometry.Geometry.Metric.OrthonormalFrame.Smooth
 import DifferentialGeometry.Topology.Manifold.Atlas
+import DifferentialGeometry.Topology.Manifold.InteriorBoundary
+import DifferentialGeometry.Topology.Manifold.PartitionOfUnity
+import DifferentialGeometry.Topology.PartitionOfUnity
 import DifferentialGeometry.Analysis.Heat.Parametrix.CoordinateCompatibility
 import DifferentialGeometry.Analysis.Integration.Measure.ParamDensityCongruence
 import DifferentialGeometry.Analysis.Integration.Measure.ParamDensityJointSmoothness

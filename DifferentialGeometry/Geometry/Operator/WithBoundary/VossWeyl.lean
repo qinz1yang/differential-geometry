@@ -58,7 +58,7 @@ theorem voss_weyl_laplacian_with_boundary_formula
       chartVossWeylLaplacian (I := I) g α f x := by
   rw [Δ_g_with_boundary_def,
     voss_weyl_divergence_with_boundary_formula (I := I) g α
-      (gradGWithBoundarySection (I := I) g hf hf_int) hx hx_int,
+      (gradGWithBoundarySection (I := I) g hf hf_int) hx,
     localDivergenceWithin_eq_localDivergence_of_isInteriorPoint (I := I) g α
       (gradGWithBoundarySection (I := I) g hf hf_int) hx hx_int,
     localDivergence_def, chartVossWeylLaplacian_def]

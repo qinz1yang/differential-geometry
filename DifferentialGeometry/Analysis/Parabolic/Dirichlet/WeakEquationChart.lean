@@ -128,7 +128,7 @@ theorem integral_adjoint_test_eq_integral_chart
       localDivergence (I := I_hs) h α X ((extChartAt I_hs α).symm y) := by
     rw [← divergence_g_eq_leviCivita_divergence_of_isInteriorPoint (I := I_hs) h X hi,
       ← divergence_g_with_boundary_eq_divergence_g_of_isInteriorPoint h X hi,
-      voss_weyl_divergence_with_boundary_formula h α X hsrc hi,
+      voss_weyl_divergence_with_boundary_formula h α X hsrc,
       localDivergenceWithin_eq_localDivergence_of_isInteriorPoint h α X hsrc hi]
   dsimp only [b]
   rw [voss_weyl_laplacian_with_boundary_formula h α v.smooth v.interior_support hsrc hi,

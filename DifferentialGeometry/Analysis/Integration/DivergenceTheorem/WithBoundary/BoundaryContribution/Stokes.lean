@@ -230,7 +230,7 @@ private lemma divergence_g_with_boundary_eq_localDivergenceWithin_ae_chartLocal
   · exfalso
     apply hx_neq
     exact voss_weyl_divergence_with_boundary_formula (I := I) g α X
-      hx_chart hx_int
+      hx_chart
   · refine ⟨hx_chart, ?_⟩
     rw [← I.compl_interior]
     exact hx_int

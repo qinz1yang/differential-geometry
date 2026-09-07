@@ -1,4 +1,5 @@
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.WithBoundary.Divergence.LocalFormula
+import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.WithBoundary.Divergence.Global
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.EuclideanHalfSpace
 import DifferentialGeometry.Analysis.Integration.Measure.Boundary
 import DifferentialGeometry.Geometry.Boundary.EuclideanHalfSpaceInstance
@@ -194,5 +195,24 @@ theorem integral_mul_localDivergenceWithin_add_tangentSectionAction_eq_surfaceMe
     g (alpha : M) X hf hc hs]
   exact (integral_surfaceMeasure_flux_eq_neg_integral_chartPullZero
     g alpha X hf.continuous hc hs).symm
+
+theorem integral_mul_divergence_g_with_boundary_add_tangentSectionAction_eq_surfaceMeasure_flux_of_tsupport_subset
+    (g : SmoothRiemannianMetric J M) (alpha : BoundaryManifold J M)
+    (X : Cₛ^∞⟮J; V, (TangentSpace J : M → Type _)⟯)
+    {f : M → Real} (hf : ContMDiff J 𝓘(Real) ∞ f) (hc : HasCompactSupport f)
+    (hs : tsupport f ⊆ (chartAt (EuclideanHalfSpace (n + 1)) (alpha : M)).source) :
+    ∫ x, f x * divergenceGWithBoundary g X x + tangentSectionAction X f x
+        ∂riemannianVolumeMeasure (I := J) (M := M) g =
+      ∫ x, f (x : M) * g.inner (x : M) (outwardNormal (M := M) g x) (X (x : M))
+        ∂surfaceMeasure g := by
+  rw [← integral_mul_localDivergenceWithin_add_tangentSectionAction_eq_surfaceMeasure_flux
+    g alpha X hf hc hs]
+  apply integral_congr_ae
+  filter_upwards with x
+  by_cases hx : f x = 0
+  · simp only [hx, zero_mul]
+  · rw [voss_weyl_divergence_with_boundary_formula g (alpha : M) X
+      (hs (subset_tsupport f hx))]
+
 
 end DifferentialGeometry.Integral.DivergenceTheorem.WithBoundary

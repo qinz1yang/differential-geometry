@@ -131,7 +131,7 @@ private lemma divergence_g_with_boundary_mul_pou_chart_local_ae
       have hd_eq : divergenceGWithBoundary (I := I_half n) g X x =
           localDivergenceWithin (I := I_half n) g α X x :=
         voss_weyl_divergence_with_boundary_formula
-          (I := I_half n) g α X hx_chart hx_int
+          (I := I_half n) g α X hx_chart
       rw [hd_eq]
     · refine ⟨hx_chart, ?_⟩
       rw [← (I_half n).compl_interior]
@@ -225,7 +225,7 @@ lemma divergence_g_with_boundary_ae_pou
                 divergenceGWithBoundary (I := I_half n) g X x =
                   localDivergenceWithin (I := I_half n) g β X x :=
               voss_weyl_divergence_with_boundary_formula
-                (I := I_half n) g β X hx_chart_β hx_int
+                (I := I_half n) g β X hx_chart_β
             rw [hd_eq]
         rw [Finset.sum_congr rfl h_each]
         rw [← Finset.mul_sum]
