@@ -4457,3 +4457,6 @@ import DifferentialGeometry.Geometry.Operator.CovariantTensor
 import DifferentialGeometry.Geometry.Connection.TensorNabla.TotalHessian
 import DifferentialGeometry.Geometry.Operator.MetricTraceOrthonormalFrame
 import DifferentialGeometry.Geometry.Connection.Laplacian.CovariantTensor
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Uhlenbeck.CurvatureDerivative
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Uhlenbeck.PulledCurvatureEvolution
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Uhlenbeck.NormalizedCurvatureEvolution
