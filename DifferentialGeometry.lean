@@ -1277,6 +1277,8 @@ import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.TraceHessJetL2Summed
 import DifferentialGeometry.Analysis.Sobolev.Tools.ArzelaAscoli
 import DifferentialGeometry.Analysis.Sobolev.Tools.Convolution
 import DifferentialGeometry.Analysis.Sobolev.Tools.DiffQuotFKNonSmooth
+import DifferentialGeometry.Analysis.Sobolev.Tools.DiffQuotLocal
+import DifferentialGeometry.Analysis.Sobolev.Tools.DifferenceQuotientProduct
 import DifferentialGeometry.Analysis.Sobolev.Tools.DifferenceQuotient
 import DifferentialGeometry.Analysis.Sobolev.Tools.DifferenceQuotientWeakLimit
 import DifferentialGeometry.Analysis.Sobolev.Tools.DifferenceQuotientWeakLimitLoc
