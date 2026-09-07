@@ -4398,3 +4398,4 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Soliton.Gaussian
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Soliton.Volume
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Soliton.CanonicalCurvature
 import DifferentialGeometry.Geometry.Metric.ExteriorPowerSmooth
+import DifferentialGeometry.Bundle.SmoothSubbundle.LocalFrame
