@@ -149,4 +149,48 @@ theorem map_homBundleCovariantDerivativeGen_exteriorPower_conjugate
   exact hl.symm.trans
     ((congrArg (fun s => homBundleCovariantDerivativeGen I M _ _ _ _ D C s x X) heq).trans hr)
 
+theorem homBundleCovariantDerivativeGen_exteriorPower_conjugate
+    (φ : ∀ x, V₁ x ≃L[ℝ] V₂ x)
+    (hφ : ContMDiff I (I.prod 𝓘(ℝ, F₁ →L[ℝ] F₂)) 1
+      (fun x => (⟨x, (φ x).toContinuousLinearMap⟩ : Bundle.TotalSpace (F₁ →L[ℝ] F₂)
+        (fun y => V₁ y →L[ℝ] V₂ y))))
+    (cov : CovariantDerivative I F₂ V₂) (k : ℕ) :
+    letI : ∀ z, FiniteDimensional ℝ (V₁ z) := fun z => VectorBundle.finiteDimensional ℝ F₁ V₁ z
+    letI : ∀ z, FiniteDimensional ℝ (V₂ z) := fun z => VectorBundle.finiteDimensional ℝ F₂ V₂ z
+    letI := Bundle.ExteriorPower.totalSpaceTopology F₁ V₁ k
+    letI := Bundle.ExteriorPower.fiberBundle F₁ V₁ k
+    letI := Bundle.ExteriorPower.vector_bundle F₁ V₁ k
+    letI := Bundle.ExteriorPower.contMDiffVectorBundle (IB := I) (n := ∞) F₁ V₁ k
+    letI := Bundle.ExteriorPower.totalSpaceTopology F₂ V₂ k
+    letI := Bundle.ExteriorPower.fiberBundle F₂ V₂ k
+    letI := Bundle.ExteriorPower.vector_bundle F₂ V₂ k
+    letI := Bundle.ExteriorPower.contMDiffVectorBundle (IB := I) (n := ∞) F₂ V₂ k
+    ∀ (A : ∀ y, (⋀[ℝ]^k (V₂ y)) →L[ℝ] ⋀[ℝ]^k (V₂ y)) (x : M),
+      MDifferentiableAt I (I.prod 𝓘(ℝ, (⋀[ℝ]^k F₂) →L[ℝ] ⋀[ℝ]^k F₂))
+        (fun y => (⟨y, A y⟩ : Bundle.TotalSpace ((⋀[ℝ]^k F₂) →L[ℝ] ⋀[ℝ]^k F₂)
+          (fun z => (⋀[ℝ]^k (V₂ z)) →L[ℝ] ⋀[ℝ]^k (V₂ z)))) x →
+      ∀ X : TangentSpace I x,
+      let Q := fun y => _root_.exteriorPower.mapContinuousLinearEquiv k (φ y)
+      let D := (pullbackFiberwiseLinearEquiv (fun y => (φ y).toLinearEquiv) hφ.clm_bundle_map cov).exteriorPower k
+      let C := cov.exteriorPower k
+      homBundleCovariantDerivativeGen I M _ _ _ _ D D
+          (fun y => (Q y).symm.toContinuousLinearMap.comp
+            ((A y).comp (Q y).toContinuousLinearMap)) x X =
+        (Q x).symm.toContinuousLinearMap.comp
+          ((homBundleCovariantDerivativeGen I M _ _ _ _ C C A x X).comp
+            (Q x).toContinuousLinearMap) := by
+  let : ∀ z, FiniteDimensional ℝ (V₁ z) := fun z => VectorBundle.finiteDimensional ℝ F₁ V₁ z
+  let : ∀ z, FiniteDimensional ℝ (V₂ z) := fun z => VectorBundle.finiteDimensional ℝ F₂ V₂ z
+  let := Bundle.ExteriorPower.totalSpaceTopology F₁ V₁ k
+  let := Bundle.ExteriorPower.fiberBundle F₁ V₁ k
+  let := Bundle.ExteriorPower.vector_bundle F₁ V₁ k
+  let := Bundle.ExteriorPower.contMDiffVectorBundle (IB := I) (n := ∞) F₁ V₁ k
+  let := Bundle.ExteriorPower.totalSpaceTopology F₂ V₂ k
+  let := Bundle.ExteriorPower.fiberBundle F₂ V₂ k
+  let := Bundle.ExteriorPower.vector_bundle F₂ V₂ k
+  let := Bundle.ExteriorPower.contMDiffVectorBundle (IB := I) (n := ∞) F₂ V₂ k
+  intro A x hA X
+  exact (ContinuousLinearEquiv.eq_toContinuousLinearMap_symm_comp _ _).mpr
+    (map_homBundleCovariantDerivativeGen_exteriorPower_conjugate φ hφ cov k A x hA X)
+
 end DifferentialGeometry.HomConnectionGen

@@ -4429,3 +4429,4 @@ import DifferentialGeometry.Analysis.Integration.Measure.BoundaryDensity
 import DifferentialGeometry.Geometry.Metric.ExteriorPowerBundleMaps
 import DifferentialGeometry.Geometry.Connection.TensorNabla.ExteriorPowerPullback
 import DifferentialGeometry.Geometry.Connection.TensorNabla.ExteriorPowerEndomorphismPullback
+import DifferentialGeometry.Geometry.Connection.Laplacian.ExteriorPowerEndomorphismPullback
