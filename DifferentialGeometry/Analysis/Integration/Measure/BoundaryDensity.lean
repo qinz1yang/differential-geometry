@@ -1,5 +1,7 @@
 import DifferentialGeometry.Analysis.Integration.Measure.BasisHaar
+import DifferentialGeometry.Analysis.Integration.Measure.ModelHaar
 import DifferentialGeometry.Geometry.Boundary.BoundaryGramMatrix
+import DifferentialGeometry.Geometry.Boundary.EuclideanHalfSpaceInstance
 
 open MeasureTheory
 
@@ -9,6 +11,8 @@ open scoped Manifold ContDiff
 namespace DifferentialGeometry.Integral.DivergenceTheorem.WithBoundary
 
 open DifferentialGeometry.Integral.Measure
+
+section
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
   {H : Type*} [TopologicalSpace H] {I : ModelWithCorners Real E H}
@@ -98,5 +102,59 @@ theorem chartLocalMeasure_inducedMetric_eq_map_withDensity_boundaryGramMatrix
     ENNReal.ofReal_mul (abs_nonneg _)]
   rfl
 
-end DifferentialGeometry.Integral.DivergenceTheorem.WithBoundary
+end
 
+section
+
+private local instance euclideanMeasurableSpace (i : Type*) :
+    MeasurableSpace (EuclideanSpace Real i) := borel _
+private local instance euclideanBorelSpace (i : Type*) :
+    BorelSpace (EuclideanSpace Real i) := ⟨rfl⟩
+
+variable {n : Nat} {M : Type*} [TopologicalSpace M]
+  [ChartedSpace (EuclideanHalfSpace (n + 1)) M]
+  [IsManifold (modelWithCornersEuclideanHalfSpace (n + 1)) ∞ M]
+
+theorem modelHaarScalarFactor_mul_chartDensity_euclideanHalfSpace_eq_normal_mul_induced
+    (g : SmoothRiemannianMetric (modelWithCornersEuclideanHalfSpace (n + 1)) M)
+    (x : BoundaryManifold (modelWithCornersEuclideanHalfSpace (n + 1)) M) :
+    (MeasureTheory.Measure.addHaarScalarFactor
+        (modelHaar (E := EuclideanSpace Real (Fin (n + 1)))) volume : Real) *
+        chartDensity g (x : M) (x : M) =
+      Real.sqrt (g.inner (x : M) (outwardDir (M := M) g x) (outwardDir (M := M) g x)) *
+        ((MeasureTheory.Measure.addHaarScalarFactor
+          (modelHaar (E := EuclideanSpace Real (Fin n))) volume : Real) *
+          chartDensity (inducedMetric g) x x) := by
+  let : IsManifold (EuclideanHalfSpaceInstance.instHasSmoothBoundary (n + 1)).boundaryI ∞
+      (BoundaryManifold (modelWithCornersEuclideanHalfSpace (n + 1)) M) :=
+    BoundaryManifold.isManifold
+  have hboundary := modelHaarScalarFactor_mul_chartDensity_self_euclideanSpace
+    (I := (EuclideanHalfSpaceInstance.instHasSmoothBoundary (n + 1)).boundaryI)
+    (M := BoundaryManifold (modelWithCornersEuclideanHalfSpace (n + 1)) M)
+    (inducedMetric g) x
+  rw [modelHaarScalarFactor_mul_chartDensity_self_euclideanSpace,
+    det_gram_euclideanHalfSpace_eq_normal_sq_mul_det_induced,
+    Real.sqrt_mul (g_inner_outwardDir_pos g x).le]
+  congr 1
+  exact hboundary.symm
+
+theorem modelHaarScalarFactor_mul_inducedDensity_mul_outwardNormal_inner_euclideanHalfSpace
+    (g : SmoothRiemannianMetric (modelWithCornersEuclideanHalfSpace (n + 1)) M)
+    (x : BoundaryManifold (modelWithCornersEuclideanHalfSpace (n + 1)) M)
+    (v : TangentSpace (modelWithCornersEuclideanHalfSpace (n + 1)) (x : M)) :
+    ((MeasureTheory.Measure.addHaarScalarFactor
+        (modelHaar (E := EuclideanSpace Real (Fin n))) volume : Real) *
+        chartDensity (inducedMetric g) x x) *
+        g.inner (x : M) (outwardNormal (M := M) g x) v =
+      -(((MeasureTheory.Measure.addHaarScalarFactor
+          (modelHaar (E := EuclideanSpace Real (Fin (n + 1)))) volume : Real) *
+          chartDensity g (x : M) (x : M)) *
+        (tangentSpaceModelContinuousLinearEquiv
+          (I := modelWithCornersEuclideanHalfSpace (n + 1)) (x : M) v) 0) := by
+  rw [modelHaarScalarFactor_mul_chartDensity_euclideanHalfSpace_eq_normal_mul_induced,
+    outwardNormal_inner_euclideanHalfSpace_eq_neg_sqrt_mul_head]
+  ring
+
+end
+
+end DifferentialGeometry.Integral.DivergenceTheorem.WithBoundary
