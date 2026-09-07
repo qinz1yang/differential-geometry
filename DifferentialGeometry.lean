@@ -2004,6 +2004,7 @@ import DifferentialGeometry.Geometry.Comparison.Busemann.Line.Sobolev
 import DifferentialGeometry.Geometry.Comparison.Busemann.Line.Laplacian
 import DifferentialGeometry.Geometry.Comparison.Busemann.Line.Vanishing
 import DifferentialGeometry.Geometry.Comparison.Busemann.Line.WeakSolution
+import DifferentialGeometry.Geometry.Comparison.Busemann.Line.HigherSobolev
 import DifferentialGeometry.Geometry.CenterOfMass.Basic
 import DifferentialGeometry.Geometry.Comparison.HopfRinow.ChartVelocityConvergence
 import DifferentialGeometry.Geometry.Comparison.Convexity.Balls
