@@ -98,7 +98,6 @@ theorem locallyIntegrable_dist [ConnectedSpace M]
 
 omit [I.Boundaryless] in
 theorem locallyIntegrableOn_inv_dist [ConnectedSpace M]
-    [PseudoEMetricSpace M] [IsRiemannianManifold I M]
     [IsContinuousRiemannianBundle E (fun x : M ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M) (p : M) (c : Real) :
     LocallyIntegrableOn
@@ -123,8 +122,7 @@ theorem locallyIntegrableOn_inv_dist [ConnectedSpace M]
   exact hcont.locallyIntegrableOn isClosed_singleton.measurableSet.compl
 
 theorem dist_green_identity
-    [ConnectedSpace M] [PseudoEMetricSpace M]
-    [IsRiemannianManifold I M]
+    [ConnectedSpace M]
     [IsContinuousRiemannianBundle E (fun x : M ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
@@ -171,8 +169,7 @@ theorem dist_green_identity
 
 omit [I.Boundaryless] in
 theorem exists_dist_bounds_on_tsupport
-    [ConnectedSpace M] [PseudoEMetricSpace M]
-    [IsRiemannianManifold I M]
+    [ConnectedSpace M]
     [IsContinuousRiemannianBundle E (fun x : M ↦ TangentSpace I x)]
     (p : M) (φ : C^∞⟮I, M; Real⟯)
     (hφ : φ ∈ compactlySupportedSmoothFunctions I M)

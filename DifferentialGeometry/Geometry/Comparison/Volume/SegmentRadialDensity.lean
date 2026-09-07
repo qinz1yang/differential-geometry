@@ -106,7 +106,8 @@ private theorem segRadial_deriv_le
     have hfalse : (0 : Real) < 0 := by
       simpa only [map_zero, zero_apply] using hu
     exact (lt_irrefl 0) hfalse
-  have hexp := expJac_radial (I := I) g hEnorm p hu0 v hON hperp t ht.1
+  have hexp := expJacobianDensity_smul_mul_pow_of_orthonormal (I := I)
+    g hEnorm p hu0 v hON hperp t ht.1
   refine ⟨hJ, hderiv, ?_⟩
   simpa only [J, γ, V] using hexp
 

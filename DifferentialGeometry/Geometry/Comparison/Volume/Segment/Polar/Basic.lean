@@ -2042,7 +2042,7 @@ private lemma curveDensity_congr_eval
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-private lemma expJacobianDensity_radial_scaled
+theorem expJacobianDensity_smul_mul_pow_of_orthonormal
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
@@ -2153,24 +2153,6 @@ private lemma expJacobianDensity_radial_scaled
             _ = curveDensity (I := I) g (intrinsicGeodesic (I := I) g hEnorm x u)
                   (fun i => intrinsicJacobi (I := I) g hEnorm x u (w i)) r := by
                   rw [hmult, one_mul]
-
-attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
-  Tensor0SBundle.tangentSpaceNormedSpace in
-theorem expJac_radial
-    [ConnectedSpace M] [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
-    [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
-    (g : SmoothRiemannianMetric I M)
-    (hEnorm : IsMetricNorm (I := I) (M := M) g)
-    (x : M) {u : TangentSpace I x} (hu : u ≠ 0)
-    (w : Fin (Module.finrank ℝ E - 1) → TangentSpace I x)
-    (hON : ∀ i j, g.inner x (w i) (w j) = if i = j then 1 else 0)
-    (hperp : ∀ i, g.inner x u (w i) = 0)
-    (r : ℝ) (hr : 0 < r) :
-    expJacobianDensity (I := I) g hEnorm x ((r • u) : E) * r ^ (Module.finrank ℝ E - 1) =
-      normalChartDensity (I := I) g x 0 *
-        curveDensity (I := I) g (intrinsicGeodesic (I := I) g hEnorm x u)
-          (fun i => intrinsicJacobi (I := I) g hEnorm x u (w i)) r := by
-  exact expJacobianDensity_radial_scaled (I := I) g hEnorm x hu w hON hperp r hr
 
 end DifferentialGeometry.Geometry.Riemannian.VolumeComparison
 

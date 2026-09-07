@@ -94,7 +94,7 @@ private lemma chartTest_partial_eq [I.Boundaryless]
   rw [partial_comp_euclid (E := E)]
   rw [euclidPartial_def, euclidPartial_def, h_raw.fderiv_eq]
 
-private lemma vossFlux_eventuallyEq [I.Boundaryless] [T2Space M]
+private lemma vossFlux_eventuallyEq [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (α : M) (ψ : EuclN → ℝ)
     (i : Fin (Module.finrank ℝ E)) {y : EuclN}
     (hy : y ∈ chartTargetEuclid (I := I) (M := M) α) :
@@ -120,7 +120,7 @@ private lemma vossFlux_eventuallyEq [I.Boundaryless] [T2Space M]
   ring
 
 theorem laplacian_chart_divergence
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+    [I.Boundaryless] [T2Space M]
     (g : SmoothRiemannianMetric I M) (α : M)
     {ψ : EuclN → ℝ} (hψ : ContDiff ℝ (⊤ : ℕ∞) ψ)
     (hψ_cs : HasCompactSupport ψ)

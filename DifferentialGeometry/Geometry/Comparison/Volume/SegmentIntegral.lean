@@ -34,10 +34,8 @@ private local instance : BorelSpace M := ⟨rfl⟩
 omit [T2Space (TangentBundle I M)] in
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-/-- On a measurable set where the exponential map is injective, its Jacobian-
-weighted source measure pushes forward to Riemannian volume on the image. -/
-theorem expJac_map_eq
-    [ConnectedSpace M] [PseudoEMetricSpace M]
+theorem map_expMapIntrinsic_withDensity_expJacobianDensity
+    [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun x : M ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
@@ -85,10 +83,8 @@ theorem expJac_map_eq
 omit [T2Space (TangentBundle I M)] in
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-/-- Weighted change of variables for the exponential map on an injective
-measurable set. -/
 theorem expJac_lintegral
-    [ConnectedSpace M] [PseudoEMetricSpace M]
+    [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun x : M ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
@@ -118,7 +114,8 @@ theorem expJac_lintegral
   have hJ_meas : Measurable J :=
     ENNReal.measurable_ofReal.comp
       (expJacobianDensity_continuous (I := I) g hEnorm x).measurable
-  have hmap := expJac_map_eq (I := I) g hEnorm x hK hinj
+  have hmap := map_expMapIntrinsic_withDensity_expJacobianDensity (I := I)
+    g hEnorm x hK hinj
   change (∫⁻ y, f y ∂
       (riemannianVolumeMeasure (I := I) (M := M) g).restrict (F '' K)) = _
   rw [← hmap]
@@ -141,10 +138,8 @@ theorem expJac_lintegral
 omit [T2Space (TangentBundle I M)] in
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-/-- Integrability transported through exponential change of variables on an
-injective measurable set. -/
 theorem expJac_integrable
-    [ConnectedSpace M] [PseudoEMetricSpace M]
+    [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun x : M ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
@@ -175,7 +170,8 @@ theorem expJac_integrable
   have hJ_meas : Measurable J :=
     ENNReal.measurable_ofReal.comp
       (expJacobianDensity_continuous (I := I) g hEnorm x).measurable
-  have hmap := expJac_map_eq (I := I) g hEnorm x hK hinj
+  have hmap := map_expMapIntrinsic_withDensity_expJacobianDensity (I := I)
+    g hEnorm x hK hinj
   have hfmap : Integrable f (Measure.map F (μK.withDensity J)) := by
     rw [hmap]
     exact hf
@@ -196,10 +192,8 @@ theorem expJac_integrable
 omit [T2Space (TangentBundle I M)] in
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-/-- Signed change of variables for the exponential map on an injective
-measurable set. -/
 theorem expJac_integral
-    [ConnectedSpace M] [PseudoEMetricSpace M]
+    [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun x : M ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
@@ -233,7 +227,8 @@ theorem expJac_integral
   have hJ_meas : Measurable J :=
     ENNReal.measurable_ofReal.comp
       (expJacobianDensity_continuous (I := I) g hEnorm x).measurable
-  have hmap := expJac_map_eq (I := I) g hEnorm x hK hinj
+  have hmap := map_expMapIntrinsic_withDensity_expJacobianDensity (I := I)
+    g hEnorm x hK hinj
   have hfmap : AEStronglyMeasurable f
       (Measure.map F
         ((modelHaar (E := E)).restrict K |>.withDensity J)) := by
@@ -274,7 +269,6 @@ private local instance : BorelSpace M := ⟨rfl⟩
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [T2Space (TangentBundle I M)] in
-/-- Weighted polar integration on the interior minimizing-segment domain. -/
 theorem segInt_lintegral
     [ConnectedSpace M] [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
@@ -299,8 +293,6 @@ theorem segInt_lintegral
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [T2Space (TangentBundle I M)] in
-/-- Signed exponential change of variables on the interior minimizing-segment
-domain. -/
 theorem segInt_integral
     [ConnectedSpace M] [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
@@ -330,8 +322,6 @@ theorem segInt_integral
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [T2Space (TangentBundle I M)] in
-/-- Signed polar-coordinate change of variables on the interior
-minimizing-segment domain. -/
 theorem segInt_int_polar
     [ConnectedSpace M] [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
@@ -380,8 +370,6 @@ theorem segInt_int_polar
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [T2Space (TangentBundle I M)] in
-/-- Signed polar-coordinate change of variables on the part of the interior
-minimizing-segment domain lying in a metric tangent ball. -/
 theorem segBall_int_polar
     [ConnectedSpace M] [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
@@ -434,8 +422,6 @@ theorem segBall_int_polar
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [T2Space (TangentBundle I M)] in
-/-- Polar-coordinate form of exponential change of variables on the interior
-minimizing-segment domain. -/
 theorem segInt_polar
     [ConnectedSpace M] [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]

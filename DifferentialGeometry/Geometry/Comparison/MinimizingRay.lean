@@ -1,3 +1,4 @@
+import DifferentialGeometry.Bundle.FiberBundleHausdorff
 import DifferentialGeometry.Geometry.Comparison.HopfRinow.Proper
 
 open DifferentialGeometry.Geometry.Curvature
@@ -191,6 +192,7 @@ private theorem pair_eq_of_radial
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
+omit [T2Space (TangentBundle I M)] in
 theorem exists_minimizing_ray
     [RiemannianBundle (fun x : M ↦ TangentSpace I x)]
     [ConnectedSpace M] [NoncompactSpace M]

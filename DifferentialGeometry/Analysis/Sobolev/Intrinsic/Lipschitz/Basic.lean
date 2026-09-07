@@ -35,7 +35,6 @@ private local instance : BorelSpace E := ⟨rfl⟩
 
 omit [FiniteDimensional ℝ E] in
 private lemma mdiff_of_pull
-    [I.Boundaryless]
     (α : M) {f : M → ℝ} {x : M}
     (hx : x ∈ (chartAt H α).source)
     (hf : DifferentiableAt ℝ (chartPullZero (I := I) α f)
@@ -59,7 +58,6 @@ private lemma mdiff_of_pull
   exact (scalarOnE_extChartAt (I := I) α f hy_ext).symm
 
 private lemma chart_lip_ae_mdiff
-    [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (α : M)
     {φ : M → ℝ} {C : NNReal}
     (hφ : LipschitzWith C (chartPullZero (I := I) α φ)) :

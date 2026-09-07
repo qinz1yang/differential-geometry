@@ -79,7 +79,6 @@ private theorem locInt_mul_test
 omit [NeZero (Module.finrank Real E)] [CompleteSpace E] [I.Boundaryless]
   [T2Space (TangentBundle I M)] in
 private theorem dist_rhs_int
-    [PseudoEMetricSpace M] [IsRiemannianManifold I M]
     [IsContinuousRiemannianBundle E (fun x : M ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M) (p : M)
     (φ : C^∞⟮I, M; Real⟯)
@@ -95,7 +94,6 @@ private theorem dist_rhs_int
 omit [NeZero (Module.finrank Real E)] [CompleteSpace E] [T2Space M]
   [SigmaCompactSpace M] [T2Space (TangentBundle I M)] in
 private theorem pair_support_ball
-    [PseudoEMetricSpace M] [IsRiemannianManifold I M]
     [IsContinuousRiemannianBundle E (fun x : M ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M) (p : M)
     (φ : C^∞⟮I, M; Real⟯) (d R : Real) (hR : 0 < R)

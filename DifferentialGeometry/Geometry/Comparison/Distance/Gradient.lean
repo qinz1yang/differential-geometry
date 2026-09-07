@@ -60,7 +60,6 @@ private theorem hasMFDerivAt_of_le
     {H : Type*} [TopologicalSpace H]
     {I : ModelWithCorners Real E H} [I.Boundaryless]
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
-    [IsManifold I 1 M]
     {l f u : M → Real} {x : M}
     {D : TangentSpace I x →L[Real] Real}
     (hl : HasMFDerivAt I 𝓘(Real, Real) l x D)
