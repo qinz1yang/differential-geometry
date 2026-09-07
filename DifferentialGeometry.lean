@@ -3798,6 +3798,7 @@ import DifferentialGeometry.Tensor.Multilinear.Polarization
 import DifferentialGeometry.Tensor.RSTensor.Tensor0SRiemannian.FrozenSlot
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.CurvatureCoefficientDifferenceJetTower.PairTraceIdentity
 import DifferentialGeometry.Geometry.Comparison.Volume.SegmentBallEuclideanUpper
+import DifferentialGeometry.Analysis.Calculus.Multilinear
 import DifferentialGeometry.Analysis.Calculus.MultilinearZero
 import DifferentialGeometry.Analysis.Calculus.PuncturedDerivative
 import DifferentialGeometry.Analysis.Integration.Measure.ChartNull
