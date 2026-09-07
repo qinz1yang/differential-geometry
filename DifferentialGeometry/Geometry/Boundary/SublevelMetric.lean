@@ -2,6 +2,8 @@ import DifferentialGeometry.Topology.Morse.SublevelBoundaryDiffeomorph
 import DifferentialGeometry.Topology.Morse.LevelSetInclusion
 import DifferentialGeometry.Geometry.Metric.Pullback.Immersion
 import DifferentialGeometry.Geometry.Boundary.InducedMetric
+import DifferentialGeometry.Geometry.Metric.ModelChange
+import DifferentialGeometry.Topology.Morse.CriticalPoints
 
 namespace DifferentialGeometry.Topology.Morse
 
@@ -134,6 +136,53 @@ theorem inducedMetric_sublevelMetric_eq_pullback [T2Space M] (g : SmoothRiemanni
   let := manifoldLevelSetIsManifold I f a hf hreg
   apply SmoothRiemannianMetric.ext_inner
   exact inducedMetric_sublevelMetric_inner I g f a hf hreg
+
+end
+
+noncomputable section
+
+variable {E : Type} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  {H : Type} [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
+  {M : Type} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M] [T2Space M]
+
+theorem levelSetMetric_transContinuousLinearEquiv_inner
+    (g : SmoothRiemannianMetric I M) {m : ℕ} (e : E ≃L[ℝ] MorseModel (m + 1))
+    (f : M → ℝ) (a : ℝ) (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f)
+    (hreg : ∀ x : M, f x = a → ¬ IsCriticalPointAt I f x) :
+    let J := I.transContinuousLinearEquiv e
+    let hfJ : ContMDiff J 𝓘(ℝ, ℝ) ∞ f :=
+      (e.contMDiff_transContinuousLinearEquiv_left).mpr hf
+    let hregJ : ∀ x : M, f x = a → ¬ IsCriticalPointAt J f x := fun x hx hc =>
+      hreg x hx ((isCriticalPointAt_transContinuousLinearEquiv_iff e x
+        (hf.mdifferentiableAt (by simp))).mp hc)
+    letI := manifoldLevelSetChartedSpace J f a hfJ hregJ
+    letI := manifoldLevelSetIsManifold J f a hfJ hregJ
+    ∀ (x : LevelSetSpace f a) (v w : TangentSpace 𝓘(ℝ, MorseModel m) x),
+      (levelSetMetric J (g.transContinuousLinearEquiv e) f a hfJ hregJ).inner x v w =
+        g.inner x.1 (mfderiv 𝓘(ℝ, MorseModel m) I (Subtype.val : LevelSetSpace f a → M) x v)
+          (mfderiv 𝓘(ℝ, MorseModel m) I (Subtype.val : LevelSetSpace f a → M) x w) := by
+  let J := I.transContinuousLinearEquiv e
+  let hfJ : ContMDiff J 𝓘(ℝ, ℝ) ∞ f :=
+    (e.contMDiff_transContinuousLinearEquiv_left).mpr hf
+  let hregJ : ∀ x : M, f x = a → ¬ IsCriticalPointAt J f x := fun x hx hc =>
+    hreg x hx ((isCriticalPointAt_transContinuousLinearEquiv_iff e x
+      (hf.mdifferentiableAt (by simp))).mp hc)
+  let := manifoldLevelSetChartedSpace J f a hfJ hregJ
+  let := manifoldLevelSetIsManifold J f a hfJ hregJ
+  change ∀ (x : LevelSetSpace f a) (v w : TangentSpace 𝓘(ℝ, MorseModel m) x),
+    (levelSetMetric J (g.transContinuousLinearEquiv e) f a hfJ hregJ).inner x v w =
+      g.inner x.1 (mfderiv 𝓘(ℝ, MorseModel m) I (Subtype.val : LevelSetSpace f a → M) x v)
+        (mfderiv 𝓘(ℝ, MorseModel m) I (Subtype.val : LevelSetSpace f a → M) x w)
+  intro x v w
+  have hid : MDifferentiableAt J I id x.1 :=
+    (ContinuousLinearEquiv.toTransContinuousLinearEquiv (n := ∞) I M e).symm.contMDiff.mdifferentiableAt
+      (by simp)
+  have hi := (contMDiff_levelSetInclusion J f a hfJ hregJ).mdifferentiableAt (x := x) (by simp)
+  have hD (z : TangentSpace 𝓘(ℝ, MorseModel m) x) :
+      mfderiv J I id x.1 (mfderiv 𝓘(ℝ, MorseModel m) J (Subtype.val : LevelSetSpace f a → M) x z) =
+        mfderiv 𝓘(ℝ, MorseModel m) I (Subtype.val : LevelSetSpace f a → M) x z :=
+    (mfderiv_comp_apply x hid hi z).symm
+  rw [levelSetMetric_inner, SmoothRiemannianMetric.transContinuousLinearEquiv_inner, hD, hD]
 
 end
 

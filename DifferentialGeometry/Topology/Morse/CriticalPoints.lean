@@ -4,6 +4,7 @@ import Mathlib.LinearAlgebra.Dual.Lemmas
 import Mathlib.LinearAlgebra.FiniteDimensional.Lemmas
 import Mathlib.Topology.Compactness.Compact
 import Mathlib.Topology.DiscreteSubset
+import Mathlib.Geometry.Manifold.LocalDiffeomorph
 
 open scoped Topology
 
@@ -12,6 +13,50 @@ namespace DifferentialGeometry.Topology.Morse
 open Filter Manifold Set
 
 noncomputable section
+
+section Naturality
+
+open scoped Manifold ContDiff
+
+variable {E : Type} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  {F : Type} [NormedAddCommGroup F] [NormedSpace ℝ F]
+  {H : Type} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+  {G : Type} [TopologicalSpace G] {J : ModelWithCorners ℝ F G}
+  {M : Type} [TopologicalSpace M] [ChartedSpace H M]
+  {N : Type} [TopologicalSpace N] [ChartedSpace G N]
+
+theorem isCriticalPointAt_comp_iff
+    {φ : M → N} {f : N → ℝ} {x : M}
+    (hφ : MDifferentiableAt I J φ x)
+    (hf : MDifferentiableAt J 𝓘(ℝ, ℝ) f (φ x))
+    (hsurj : Function.Surjective (mfderiv I J φ x)) :
+    IsCriticalPointAt I (f ∘ φ) x ↔ IsCriticalPointAt J f (φ x) := by
+  unfold IsCriticalPointAt
+  rw [mfderiv_comp x hf hφ]
+  constructor
+  · intro h
+    ext v
+    obtain ⟨w, rfl⟩ := hsurj v
+    exact congrArg (fun L => L w) h
+  · intro h
+    rw [h, ContinuousLinearMap.zero_comp]
+
+theorem isCriticalPointAt_comp_diffeomorph_iff
+    (Φ : M ≃ₘ⟮I, J⟯ N) {f : N → ℝ} (x : M)
+    (hf : MDifferentiableAt J 𝓘(ℝ, ℝ) f (Φ x)) :
+    IsCriticalPointAt I (f ∘ Φ) x ↔ IsCriticalPointAt J f (Φ x) := by
+  apply isCriticalPointAt_comp_iff (Φ.contMDiff.mdifferentiableAt (by simp)) hf
+  change Function.Surjective (Φ.mfderivToContinuousLinearEquiv (by simp) x)
+  exact (Φ.mfderivToContinuousLinearEquiv (by simp) x).surjective
+
+theorem isCriticalPointAt_transContinuousLinearEquiv_iff
+    (e : E ≃L[ℝ] F) {f : M → ℝ} (x : M)
+    (hf : MDifferentiableAt I 𝓘(ℝ, ℝ) f x) :
+    IsCriticalPointAt (I.transContinuousLinearEquiv e) f x ↔ IsCriticalPointAt I f x :=
+  isCriticalPointAt_comp_diffeomorph_iff
+    (ContinuousLinearEquiv.toTransContinuousLinearEquiv (n := ∞) I M e).symm x hf
+
+end Naturality
 
 variable {E : Type} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E]

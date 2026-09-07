@@ -2202,6 +2202,7 @@ import DifferentialGeometry.Geometry.Coordinates.ConnectionCoefficients
 import DifferentialGeometry.Geometry.Coordinates.CoordinateFrame
 import DifferentialGeometry.Topology.Manifold.InverseFunctionTheorem
 import DifferentialGeometry.Topology.Manifold.LocalDiffeomorphOpen
+import DifferentialGeometry.Topology.Manifold.ModelWithCorners
 import DifferentialGeometry.Geometry.Coordinates.MetricCompatibility.Coordinate
 import DifferentialGeometry.Geometry.Coordinates.MetricCompatibility.Covariant
 import DifferentialGeometry.Geometry.Coordinates.MetricCompatibility.Inverse
@@ -3070,6 +3071,7 @@ import DifferentialGeometry.Geometry.Metric.Pullback.Completeness
 import DifferentialGeometry.Geometry.Metric.Pullback.DerivativeDecomposition
 import DifferentialGeometry.Geometry.Metric.Pullback.EvaluationDerivative
 import DifferentialGeometry.Geometry.Metric.PullbackCross
+import DifferentialGeometry.Geometry.Metric.ModelChange
 import DifferentialGeometry.Geometry.Metric.Quotient
 import DifferentialGeometry.Geometry.Metric.RiemannianMetric
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.Defs
@@ -3579,6 +3581,7 @@ import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.PointwiseCurvat
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.SlotFreeCurvatureOperatorDerivative
 import DifferentialGeometry.Geometry.Curvature.FiberNormParseval.BareSlot0CurryParseval
 import DifferentialGeometry.Geometry.Curvature.PullbackNaturalityLocalCross
+import DifferentialGeometry.Geometry.Curvature.ModelChange
 import DifferentialGeometry.Geometry.Curvature.MetricPerturbationPathCurvatureJetBound
 import DifferentialGeometry.Geometry.Curvature.Rm04OperatorBound
 import DifferentialGeometry.Geometry.Exponential.IntrinsicBallChart
@@ -4225,6 +4228,7 @@ import DifferentialGeometry.Geometry.Metric.Sphere.FreeOrthogonalAction
 import DifferentialGeometry.Geometry.Metric.Sphere.TwoDimensionalQuotient
 import DifferentialGeometry.Geometry.Operator.NormGradSqScaling
 import DifferentialGeometry.Geometry.Operator.Pullback
+import DifferentialGeometry.Geometry.Operator.ModelChange
 import DifferentialGeometry.Geometry.Operator.WeightedLaplacian
 import DifferentialGeometry.Geometry.Operator.WeightedLaplacianRicci
 import DifferentialGeometry.Geometry.Operator.WeightedLaplacianTensorNorm
@@ -4472,6 +4476,7 @@ import DifferentialGeometry.Geometry.Boundary.Corestrict
 import DifferentialGeometry.Topology.Morse.SublevelEuclidean
 import DifferentialGeometry.Topology.Morse.SublevelBoundaryDiffeomorph
 import DifferentialGeometry.Analysis.Integration.Measure.PullbackCross
+import DifferentialGeometry.Analysis.Integration.Measure.ModelChange
 import DifferentialGeometry.Topology.Morse.LevelSetInclusion
 import DifferentialGeometry.Geometry.Boundary.SublevelMetric
 import DifferentialGeometry.Analysis.Integration.Measure.SublevelSurface

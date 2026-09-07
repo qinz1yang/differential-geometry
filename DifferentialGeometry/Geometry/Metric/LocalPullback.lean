@@ -272,4 +272,13 @@ theorem localPullMetric_subtype_val
   rw [localPullMetric_inner, SmoothRiemannianMetric.restrictOpen_inner,
     mfderiv_subtype_val_apply, mfderiv_subtype_val_apply]
 
+omit [FiniteDimensional ℝ F] in
+theorem Diffeomorph.pullbackMetricCross_eq_localPullMetric
+    [T2Space M]
+    (g : SmoothRiemannianMetric J N) (Φ : M ≃ₘ⟮I, J⟯ N) :
+    Diffeomorph.pullbackMetricCross g Φ = localPullMetric g Φ Φ.isLocalDiffeomorph := by
+  apply SmoothRiemannianMetric.ext_inner
+  intro x v w
+  rw [Diffeomorph.pullbackMetricCross_inner, localPullMetric_inner]
+
 end DifferentialGeometry
