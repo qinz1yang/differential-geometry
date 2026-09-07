@@ -4452,3 +4452,4 @@ import DifferentialGeometry.Geometry.Curvature.QuadraticTensor
 import DifferentialGeometry.Geometry.Curvature.RicciAction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Connection.CoordinateEvolution
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.ThreeQuadratic
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.Tensor
