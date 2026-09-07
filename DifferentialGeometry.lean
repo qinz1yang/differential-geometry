@@ -4539,3 +4539,6 @@ import DifferentialGeometry.Geometry.Metric.RicciSoliton.ModelCoverQuotient
 import DifferentialGeometry.Analysis.Sobolev.Nirenberg.TestFunction.Sobolev
 import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletNirenbergTest
 import DifferentialGeometry.Analysis.InnerProductSpace.SpectralBounds
+import DifferentialGeometry.Geometry.Metric.Sphere.DeckGroup
+import DifferentialGeometry.Topology.Covering.FiniteDeckGroup
+import DifferentialGeometry.Geometry.Metric.RicciSoliton.ModelCoverRoundThreeSphere
