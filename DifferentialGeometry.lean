@@ -4536,3 +4536,5 @@ import DifferentialGeometry.Geometry.Curvature.DimensionThree.HamiltonIvey.SelfA
 import DifferentialGeometry.Topology.Covering.QuotientDiffeomorph
 import DifferentialGeometry.Topology.Covering.QuotientDeckGroup
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.ModelCoverQuotient
+import DifferentialGeometry.Analysis.Sobolev.Nirenberg.TestFunction.Sobolev
+import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletNirenbergTest
