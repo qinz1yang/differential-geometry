@@ -34,6 +34,14 @@ end Module.Basis
 
 namespace LinearMap.BilinForm
 
+theorem sqrt_det_gram_eq_abs_det_mul_sqrt_det_toMatrix
+    {V i : Type*} [AddCommGroup V] [Module Real V]
+    [Fintype i] [DecidableEq i] (B : LinearMap.BilinForm Real V) (b : Module.Basis i Real V)
+    (v : i → V) :
+    Real.sqrt (Matrix.of fun i j => B (v i) (v j)).det =
+      |b.det v| * Real.sqrt (toMatrix b B).det := by
+  rw [B.det_gram_eq_sq_mul_det_toMatrix b v, Real.sqrt_mul (sq_nonneg _), Real.sqrt_sq_eq_abs]
+
 theorem sqrt_det_toMatrix_basis_change
     {E i : Type*} [AddCommGroup E] [Module Real E]
     [Fintype i] [DecidableEq i] (B : LinearMap.BilinForm Real E) (b c : Module.Basis i Real E) :

@@ -3,13 +3,32 @@ import Mathlib.LinearAlgebra.Matrix.BilinearForm
 
 namespace LinearMap.BilinForm
 
+theorem det_gram_eq_sq_mul_det_toMatrix
+    {R V i : Type*} [CommRing R] [AddCommGroup V] [Module R V]
+    [Fintype i] [DecidableEq i] (B : LinearMap.BilinForm R V) (b : Module.Basis i R V)
+    (v : i → V) :
+    (Matrix.of fun i j => B (v i) (v j)).det = b.det v ^ 2 * (toMatrix b B).det := by
+  let L := b.constr R v
+  have hgram : Matrix.of (fun i j => B (v i) (v j)) = toMatrix b (B.comp L L) := by
+    ext i j
+    simp only [Matrix.of_apply, toMatrix_apply, LinearMap.BilinForm.comp_apply, L,
+      Module.Basis.constr_basis]
+  rw [hgram, B.toMatrix_comp b b, Matrix.det_mul, Matrix.det_mul, Matrix.det_transpose]
+  have hmat : LinearMap.toMatrix b b L = b.toMatrix v := by
+    ext i j
+    simp [L, LinearMap.toMatrix_apply, Module.Basis.toMatrix_apply]
+  rw [hmat, Module.Basis.det_apply]
+  ring
+
 theorem det_toMatrix_basis_change
     {R E i : Type*} [CommRing R] [AddCommGroup E] [Module R E]
     [Fintype i] [DecidableEq i] (B : LinearMap.BilinForm R E) (b c : Module.Basis i R E) :
     (toMatrix c B).det = b.det c ^ 2 * (toMatrix b B).det := by
-  rw [← B.toMatrix_mul_basis_toMatrix b c, Matrix.det_mul, Matrix.det_mul,
-    Matrix.det_transpose, Module.Basis.det_apply]
-  ring
+  have h : toMatrix c B = Matrix.of (fun i j => B (c i) (c j)) := by
+    ext i j
+    exact toMatrix_apply c B i j
+  rw [h]
+  exact B.det_gram_eq_sq_mul_det_toMatrix b c
 
 theorem det_gram_cons_eq_mul_of_orthogonal
     {R V : Type*} [CommRing R] [AddCommGroup V] [Module R V]

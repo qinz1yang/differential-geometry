@@ -149,6 +149,16 @@ private theorem inclEuclideanCLM_apply_coord (n : ℕ) [NeZero n]
   rw [consZeroCLM_apply]
   rfl
 
+theorem inclEuclideanCLM_succ_apply (n : Nat) (x : EuclideanSpace Real (Fin n)) :
+    inclEuclideanCLM (n + 1) x = WithLp.toLp 2 (Fin.cons (α := fun _ => Real) 0 x) := by
+  ext i
+  rw [inclEuclideanCLM_apply_coord]
+  refine Fin.cases ?_ (fun j => ?_) i
+  · exact consZeroFun_zero (n + 1) x
+  · have hj : j.succ = succIndex (n + 1) j := Fin.ext rfl
+    change consZeroFun (n + 1) x j.succ = x j
+    rw [hj, consZeroFun_succIndex]
+
 private theorem projEuclideanCLM_apply_coord (n : ℕ) [NeZero n]
     (y : EuclideanSpace ℝ (Fin n)) (j : Fin (n - 1)) :
     (projEuclideanCLM n y) j = tailFun n y j := by
