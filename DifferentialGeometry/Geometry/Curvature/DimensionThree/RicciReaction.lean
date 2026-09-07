@@ -1,4 +1,5 @@
 import DifferentialGeometry.Geometry.Curvature.CurvatureRicciContraction
+import DifferentialGeometry.Geometry.Curvature.DimensionThree.ExteriorReaction
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.RicciControlsRm
 
 set_option autoImplicit false
@@ -555,3 +556,117 @@ theorem metricRm04StdAt_eq_scalar_div_six_of_finrank_eq_three_of_einstein
   exact rm04Std_ein3_at (I := I) horth hcurv hRic hScalar hEinComp X Y
 
 end DifferentialGeometry.Geometry.Curvature
+
+namespace DifferentialGeometry.Geometry.Curvature.DimensionThree
+
+open DifferentialGeometry.Dim3Reaction
+open scoped RealInnerProductSpace
+
+private theorem trace_reaction_matrix (A : Matrix (Fin 3) (Fin 3) ℝ) :
+    (curvatureOperatorReaction3 A).trace = (A.trace ^ 2 + (A * A).trace) / 2 := by
+  rw [curvatureOperatorReaction3, Matrix.trace_add, Matrix.adjugate_fin_three]
+  simp [Matrix.trace, Matrix.diag, Matrix.mul_apply, Fin.sum_univ_three]
+  ring
+
+private theorem trace_normalized_reaction_matrix
+    (R : Fin 3 → Fin 3 → ℝ) (hR : ∀ i j, R i j = R j i) :
+    (curvatureOperatorReaction3
+      (traceNormalizedCurvatureOperatorMatrix3 (curvatureOperatorMatrixOfRicci R))).trace =
+        2 * normSq R := by
+  rw [trace_reaction_matrix]
+  simp [traceNormalizedCurvatureOperatorMatrix3, curvatureOperatorMatrixOfRicci,
+    Matrix.trace, Matrix.diag, Matrix.mul_apply, Fin.sum_univ_three,
+    bivectorIndex3, rm, kd, sc, normSq, hR 1 0, hR 2 0, hR 2 1]
+  ring
+
+private theorem trace_reaction_curvature_matrix
+    (R : Fin 3 → Fin 3 → Fin 3 → Fin 3 → ℝ)
+    (hR : AlgebraicCurvatureSymmetries3 R) :
+    (curvatureOperatorReaction3 (fun i j =>
+      2 * R (bivectorIndex3 i).1 (bivectorIndex3 i).2
+        (bivectorIndex3 j).2 (bivectorIndex3 j).1)).trace =
+      2 * normSq (stdRicci3 R) := by
+  let Ric := fun i j => -stdRicci3 R i j
+  have hRic : ∀ i j, Ric i j = Ric j i := by
+    intro i j
+    dsimp [Ric, stdRicci3]
+    rw [hR.block_symm 0 j 0 i, hR.block_symm 1 j 1 i, hR.block_symm 2 j 2 i]
+  have hrep : R = rm Ric := by
+    funext a b c d
+    rw [stdRiemannFromRicci3D_of_algebraic_curvature_symmetries hR]
+    dsimp [stdRiemannFromRicciRhs3, rm, Ric, kd, delta3, sc, stdScalar3]
+    ring
+  have h := trace_normalized_reaction_matrix Ric hRic
+  change (curvatureOperatorReaction3 (fun i j =>
+    2 * rm Ric (bivectorIndex3 i).1 (bivectorIndex3 i).2
+      (bivectorIndex3 j).2 (bivectorIndex3 j).1)).trace = _ at h
+  rw [← hrep] at h
+  simpa [Ric, normSq] using h
+
+section Metric
+
+open Tensor0SBundle
+
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+  {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+  {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M] [T2Space M]
+
+private theorem trace_reaction_metric_matrix
+    (g : SmoothRiemannianMetric I M) (x : M)
+    (basis : Module.Basis (Fin 3) ℝ (TangentSpace I x))
+    (horth : OrthonormalBasisAt g x basis) :
+    (curvatureOperatorReaction3
+      (traceNormalizedMetricCurvatureOperatorMatrixAt g x basis)).trace =
+        2 * normSq0S g x 2 (metricRicciAt g x) := by
+  let R := standardRmCompAt basis (metricRm04At g x)
+  have htrace := metricRiemannFromRicci3DTraceDataAt g x basis horth
+  have h := trace_reaction_curvature_matrix R htrace.curvature_symmetries
+  change (curvatureOperatorReaction3
+    (traceNormalizedMetricCurvatureOperatorMatrixAt g x basis)).trace = _ at h
+  rw [h]
+  congr 1
+  have hinv := orthonormal_invBasis3 g basis horth
+  rw [normSq0S_two_eq_coord g x basis delta3 hinv]
+  have hric (i j : Fin 3) : stdRicci3 R i j =
+      -metricRicciAt g x (fun a : Fin 2 => if a = 0 then basis i else basis j) := by
+    simpa [ricciCompAt, slots2, apply_ite] using (htrace.ricci_trace i j).symm
+  simp only [normSq, hric, neg_mul_neg, delta3]
+  simp
+
+theorem trace_curvatureOperatorReactionEndomorphism3_metricRm04At
+    (g : SmoothRiemannianMetric I M) (x : M)
+    (hdim : Module.finrank ℝ (TangentSpace I x) = 3) :
+    let T : ContinuousMultilinearMap ℝ (fun _ : Fin 4 => TangentSpace I x) ℝ := metricRm04At g x
+    let hT : IsAlgCurvForm (fun a b c d => T ![a, b, c, d]) := by
+      exact mem_algebraicCurvatureTensorSubmodule.mp
+        (metricRm04At_mem_algebraicCurvatureTensorSubmodule g x)
+    letI : RiemannianBundle (TangentSpace I : M → Type _) := ⟨g.toRiemannianMetric⟩
+    letI targetNorm : ∀ y : M, NormedAddCommGroup (TangentSpace I y) := fun y =>
+      Bundle.instNormedAddCommGroupOfRiemannianBundleOfIsTopologicalAddGroupOfContinuousConstSMulReal y
+    letI : ∀ y : M, SeminormedAddCommGroup (TangentSpace I y) :=
+      fun y => (targetNorm y).toSeminormedAddCommGroup
+    letI : ∀ y : M, InnerProductSpace ℝ (TangentSpace I y) :=
+      fun y => Bundle.instInnerProductSpaceReal y
+    LinearMap.trace ℝ (⋀[ℝ]^2 (TangentSpace I x))
+      (curvatureOperatorReactionEndomorphism3
+        (exteriorPower.traceNormalizedCurvatureEndomorphism T hT).toLinearMap) =
+      2 * normSq0S g x 2 (metricRicciAt g x) := by
+  intro T hT
+  let _ : RiemannianBundle (TangentSpace I : M → Type _) := ⟨g.toRiemannianMetric⟩
+  let targetNorm : ∀ y : M, NormedAddCommGroup (TangentSpace I y) := fun y =>
+    Bundle.instNormedAddCommGroupOfRiemannianBundleOfIsTopologicalAddGroupOfContinuousConstSMulReal y
+  let _ : ∀ y : M, SeminormedAddCommGroup (TangentSpace I y) :=
+    fun y => (targetNorm y).toSeminormedAddCommGroup
+  let _ : ∀ y : M, InnerProductSpace ℝ (TangentSpace I y) :=
+    fun y => Bundle.instInnerProductSpaceReal y
+  let b := (stdOrthonormalBasis ℝ (TangentSpace I x)).reindex (finCongr hdim)
+  have horth : OrthonormalBasisAt g x b.toBasis := by
+    intro i j
+    exact b.inner_eq_ite i j
+  rw [LinearMap.trace_eq_matrix_trace ℝ (curvatureBivectorBasis b).toBasis,
+    curvatureOperatorReactionEndomorphism3_traceNormalizedCurvatureEndomorphism_toMatrix]
+  exact trace_reaction_metric_matrix g x b.toBasis horth
+
+end Metric
+
+end DifferentialGeometry.Geometry.Curvature.DimensionThree
