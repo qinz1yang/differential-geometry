@@ -4309,6 +4309,9 @@ import DifferentialGeometry.Geometry.Comparison.Volume.NormalChartJets
 import DifferentialGeometry.Geometry.Metric.MetricFiberData.Defs
 import DifferentialGeometry.Geometry.Metric.MetricFiberData.Hom
 import DifferentialGeometry.Geometry.Metric.MetricFiberData.Topology
+import DifferentialGeometry.Geometry.Metric.BundleModelNorm
+import DifferentialGeometry.Geometry.Metric.HomModelNorm
+import DifferentialGeometry.Geometry.Connection.ModelNorm
 import DifferentialGeometry.Analysis.InnerProductSpace.HilbertSchmidt
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.LocalCoefficients
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.WeakEquationProduct
