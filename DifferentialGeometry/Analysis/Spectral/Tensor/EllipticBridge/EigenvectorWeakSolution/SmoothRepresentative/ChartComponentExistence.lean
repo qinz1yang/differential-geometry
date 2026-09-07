@@ -65,7 +65,7 @@ theorem exists_smooth_eigenvectorChartComponent_representative
       MemWkp (d := Module.finrank ℝ E) k 2 u Ω := fun k =>
     eigenvector_chartComponent_memWkp_arbitrary g r s i k α P₀
   obtain ⟨u₀, hu₀_cdiff, hu_ae_u₀⟩ :=
-    contDiffOn_of_forall_memWkp_two (d := Module.finrank ℝ E) hΩ_open hu_memWkp
+    exists_contDiffOn_ae_eq_of_forall_memWkp_two (d := Module.finrank ℝ E) hΩ_open hu_memWkp
   obtain ⟨δ, η, hδ_pos, _hδ_subset, hη_cdiff, hη_compact, _hη_range,
       hη_one_cthick, hη_tsupp⟩ :=
     exists_smooth_cutoff_with_neighborhood (d := Module.finrank ℝ E)

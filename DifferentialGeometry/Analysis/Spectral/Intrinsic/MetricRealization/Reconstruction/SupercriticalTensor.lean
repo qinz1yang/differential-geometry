@@ -40,7 +40,7 @@ open DifferentialGeometry.Analysis.Laplacian.TensorRegularity
 open DifferentialGeometry.Analysis.Laplacian.MetricExtension hiding chartTargetEuclid
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
-  [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
+  [FiniteDimensional ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
@@ -54,7 +54,6 @@ local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
-omit [NeZero (Module.finrank ℝ E)] in
 private lemma chartTargetEuclid_sdiff_chartPouKernel_isOpen' (α : M) :
     IsOpen (chartTargetEuclid (I := I) (M := M) α \
       chartPouKernel (I := I) (M := M) α) :=
@@ -62,14 +61,13 @@ private lemma chartTargetEuclid_sdiff_chartPouKernel_isOpen' (α : M) :
     (I := I) (M := M) α).sdiff
     (chartPouKernel_isCompact (I := I) (M := M) α).isClosed
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
+omit [CompactSpace M] [I.Boundaryless] in
 private lemma chartTargetEuclid_sdiff_chartPouKernel_subset' (α : M) :
     chartTargetEuclid (I := I) (M := M) α \
         chartPouKernel (I := I) (M := M) α ⊆
       chartTargetEuclid (I := I) (M := M) α :=
   Set.sdiff_subset
 
-omit [NeZero (Module.finrank ℝ E)] in
 private lemma superCriticalChartComponent_ae_zero_off_kernel
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (w : TensorL2 r s g) (α : M)
@@ -150,7 +148,7 @@ theorem exists_smooth_supercritical_chart_component_representative
     exact MemWkp.le_of_le (d := Module.finrank ℝ E)
       (by omega : k ≤ 2 * k) (h_all k)
   obtain ⟨u₀, hu₀_cdiff, hu_ae_u₀⟩ :=
-    contDiffOn_of_forall_memWkp_two (d := Module.finrank ℝ E) hΩ_open hu_memWkp
+    exists_contDiffOn_ae_eq_of_forall_memWkp_two (d := Module.finrank ℝ E) hΩ_open hu_memWkp
   obtain ⟨δ, η, hδ_pos, _hδ_subset, hη_cdiff, hη_compact, _hη_range,
       hη_one_cthick, hη_tsupp⟩ :=
     exists_smooth_cutoff_with_neighborhood (d := Module.finrank ℝ E)
@@ -377,7 +375,7 @@ private lemma wSmooth_eq (w : TensorL2 r s g)
       ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
         wSmoothChart (I := I) (M := M) g r s w h_all α := rfl
 
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+omit [I.Boundaryless] in
 private lemma transportChartCenters_subset_chartAtlasPOU_finset' (β : M) :
     transportChartCenters (I := I) (M := M) β ⊆
       chartAtlasPOUFinset (I := I) (M := M) := by
@@ -549,7 +547,7 @@ private def chartKernelCutoffPushed (γ : M) : EuclN → ℝ :=
   chartPushedRaw (I := I) (M := M) γ
     (fun x => ((chartKernelCutoff (I := I) (M := M) γ : C^∞⟮I, M; ℝ⟯) : M → ℝ) x)
 
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+omit [I.Boundaryless] in
 private lemma chartKernelCutoffPushed_eq_one_on_chartPouKernel
     (γ : M) {y : EuclN}
     (hy : y ∈ chartPouKernel (I := I) (M := M) γ) :
@@ -571,7 +569,7 @@ private lemma chartKernelCutoffPushed_eq_one_on_chartPouKernel
   rw [chartPushedRaw_apply_of_mem (I := I) (M := M) γ _ hy_target, hsymm]
   exact chartKernelCutoff_eqOn_one (I := I) (M := M) γ hw_support
 
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+omit [I.Boundaryless] in
 private lemma chartKernelCutoffPushed_toEuclidean_extChartAt
     (γ : M) {z : M} (hz : z ∈ (chartAt H γ).source) :
     chartKernelCutoffPushed (I := I) (M := M) γ
@@ -582,7 +580,7 @@ private lemma chartKernelCutoffPushed_toEuclidean_extChartAt
       (toEuclidean_extChartAt_mem_chartTargetEuclid (I := I) (M := M) γ hz),
     symm_toEuclidean_symm_toEuclidean_extChartAt (I := I) (M := M) γ hz]
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
+omit [CompactSpace M] [I.Boundaryless] in
 private lemma chartPushedPouWeight_toEuclidean_extChartAt'
     (α : M) {z : M} (hz : z ∈ (chartAt H α).source) :
     chartPushedPouWeight (I := I) (M := M) α
@@ -593,7 +591,6 @@ private lemma chartPushedPouWeight_toEuclidean_extChartAt'
       (toEuclidean_extChartAt_mem_chartTargetEuclid (I := I) (M := M) α hz),
     symm_toEuclidean_symm_toEuclidean_extChartAt (I := I) (M := M) α hz]
 
-omit [NeZero (Module.finrank ℝ E)] in
 private lemma wChartComp_ae_eq_chartKernelCutoffPushed_mul (w : TensorL2 r s g)
     (γ : M) (Q : TensorCompIdx (E := E) r s) :
     wChartComp (I := I) (M := M) g r s w γ Q
@@ -674,7 +671,6 @@ private lemma chosenComp_w_comp_chartTransition_ae_eq (w : TensorL2 r s g)
       (chartOverlapEuclid_subset_chartTarget (I := I) (M := M) γ β)) h_target
   exact chartTransitionEuclid_comp_ae_eq_restrict (I := I) (M := M) β γ h_overlap
 
-omit [NeZero (Module.finrank ℝ E)] in
 private lemma wChartComp_comp_chartTransition_ae_eq_cutoff_mul (w : TensorL2 r s g)
     (β γ : M) (Q : TensorCompIdx (E := E) r s) :
     (fun y => wChartComp (I := I) (M := M) g r s w γ Q
@@ -962,7 +958,6 @@ private lemma wSmoothChart_tensorL2ChartComponent_eq_transport_sum
   funext y
   rw [Finset.mul_sum]
 
-omit [NeZero (Module.finrank ℝ E)] in
 private lemma wChartComp_ite_chartPushedPouWeight_zero_ae_zero (w : TensorL2 r s g)
     (α : M) (Q : TensorCompIdx (E := E) r s) :
     (fun y => if chartPushedPouWeight (I := I) (M := M) α y = 0 then
@@ -988,7 +983,6 @@ private lemma wChartComp_ite_chartPushedPouWeight_zero_ae_zero (w : TensorL2 r s
   · rw [if_pos hw]; exact hy hw
   · rw [if_neg hw]
 
-omit [NeZero (Module.finrank ℝ E)] in
 private lemma chartTransitionTransportCLM_w_ae_zero_of_notMem (w : TensorL2 r s g)
     (α β : M) (P₀ Q : TensorCompIdx (E := E) r s)
     (hα : α ∉ transportChartCenters (I := I) (M := M) β) :
@@ -1117,7 +1111,6 @@ private lemma chartTransitionTransportCLM_w_ae_zero_of_notMem (w : TensorL2 r s 
         zero_mul]
   exact ae_eq_of_ae_eq_restrict_of_eqOn_compl' hΩ_meas h_on_overlap h_off_overlap
 
-omit [NeZero (Module.finrank ℝ E)] in
 private lemma transportSum_w_ae_zero_of_notMem (w : TensorL2 r s g)
     (α β : M) (P₀ : TensorCompIdx (E := E) r s)
     (hα : α ∉ transportChartCenters (I := I) (M := M) β) :

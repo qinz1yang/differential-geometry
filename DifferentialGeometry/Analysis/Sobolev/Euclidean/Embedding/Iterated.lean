@@ -308,7 +308,7 @@ private theorem exists_contDiffOn_top_rep_nhd
   exact ⟨R / 2, by linarith, fun y hy => hball_subset (by
     rw [Metric.mem_ball] at hy ⊢; linarith), f, hf_cdiff, hf_ae⟩
 
-theorem contDiffOn_of_forall_memWkp_two
+private theorem exists_contDiffOn_ae_eq_of_forall_memWkp_two_of_neZero
     {u : EuN → ℝ} {Ω : Set EuN} (hΩ : IsOpen Ω)
     (hu : ∀ k : ℕ, MemWkp (d := d) k 2 u Ω) :
     ∃ u_smooth : EuN → ℝ,
@@ -384,6 +384,27 @@ theorem contDiffOn_of_forall_memWkp_two
         hae_each
     exact hae_biUnion.filter_mono
       (MeasureTheory.ae_mono (Measure.restrict_mono hΩ_sub_biUnion le_rfl))
+
+omit [NeZero d] in
+theorem exists_contDiffOn_ae_eq_of_forall_memWkp_two
+    {u : EuN → ℝ} {Ω : Set EuN} (hΩ : IsOpen Ω)
+    (hu : ∀ k : ℕ, MemWkp (d := d) k 2 u Ω) :
+    ∃ v : EuN → ℝ, ContDiffOn ℝ (∞ : WithTop ℕ∞) v Ω ∧
+      u =ᵐ[volume.restrict Ω] v := by
+  by_cases hd : d = 0
+  · subst d
+    have heq : u = fun _ => u 0 := funext fun x => congrArg u (Subsingleton.elim x 0)
+    exact ⟨u, heq ▸ contDiffOn_const, EventuallyEq.rfl⟩
+  · let : NeZero d := ⟨hd⟩
+    exact exists_contDiffOn_ae_eq_of_forall_memWkp_two_of_neZero hΩ hu
+
+omit [NeZero d] in
+theorem contDiffOn_of_continuousOn_of_forall_memWkp_two
+    {u : EuN → ℝ} {Ω : Set EuN} (hΩ : IsOpen Ω) (hu_cont : ContinuousOn u Ω)
+    (hu : ∀ k : ℕ, MemWkp (d := d) k 2 u Ω) :
+    ContDiffOn ℝ (∞ : WithTop ℕ∞) u Ω := by
+  obtain ⟨v, hv, huv⟩ := exists_contDiffOn_ae_eq_of_forall_memWkp_two hΩ hu
+  exact hv.congr (Measure.eqOn_open_of_ae_eq huv hΩ hu_cont hv.continuousOn)
 
 end EuclideanIteratedEmbedding
 end Sobolev
