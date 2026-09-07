@@ -1,4 +1,5 @@
-import DifferentialGeometry.Geometry.Comparison.MinimizingRay
+import DifferentialGeometry.Geometry.Geodesic.Minimizing.Ray
+import DifferentialGeometry.Geometry.Exponential.MinimizingGeodesic
 import Mathlib.Topology.Order.MonotoneConvergence
 
 set_option autoImplicit false
@@ -144,7 +145,7 @@ theorem busemann_le_approx
 
 omit [NeZero (Module.finrank Real E)] [I.Boundaryless] [T2Space M]
     [SigmaCompactSpace M] [PseudoEMetricSpace M] [IsRiemannianManifold I M] in
-theorem busemann_tendsto
+theorem tendsto_busemannApprox
     {g : SmoothRiemannianMetric I M} {p : M} {γ : Real → M}
     (hray : IsMinimizingRay (I := I) g p γ) (x : M) :
     Tendsto (fun n : ℕ => busemannApprox (I := I) γ n x) atTop
@@ -180,15 +181,15 @@ theorem busemann_sub_le
         (fun n : ℕ => busemannApprox (I := I) γ n x -
           busemannApprox (I := I) γ n y) atTop
         (nhds (busemann (I := I) γ x - busemann (I := I) γ y)) :=
-    (busemann_tendsto (I := I) hray x).sub
-      (busemann_tendsto (I := I) hray y)
+    (tendsto_busemannApprox (I := I) hray x).sub
+      (tendsto_busemannApprox (I := I) hray y)
   apply le_of_tendsto hlim
   exact Eventually.of_forall fun n =>
     (abs_le.mp (busemannApprox_dist_le (I := I) γ n x y)).2
 
 omit [NeZero (Module.finrank Real E)] [I.Boundaryless] [T2Space M]
     [SigmaCompactSpace M] [PseudoEMetricSpace M] [IsRiemannianManifold I M] in
-theorem busemann_dist
+theorem busemann_dist_le
     {g : SmoothRiemannianMetric I M} {p : M} {γ : Real → M}
     (hray : IsMinimizingRay (I := I) g p γ) (x y : M) :
     |busemann (I := I) γ x - busemann (I := I) γ y| ≤
@@ -202,7 +203,32 @@ theorem busemann_dist
 
 omit [NeZero (Module.finrank Real E)] [I.Boundaryless] [T2Space M]
     [SigmaCompactSpace M] [PseudoEMetricSpace M] [IsRiemannianManifold I M] in
-theorem busemann_ray
+theorem edist_busemann_le_riemannianEDist
+    {g : SmoothRiemannianMetric I M} {p : M} {γ : Real → M}
+    (hray : IsMinimizingRay (I := I) g p γ) (x y : M) :
+    edist (busemann (I := I) γ x) (busemann (I := I) γ y) ≤
+      riemannianEDist I x y := by
+  rw [edist_dist, Real.dist_eq,
+    ← ENNReal.ofReal_toReal (riemannianEDist_ne_top (I := I) x y)]
+  exact ENNReal.ofReal_le_ofReal (busemann_dist_le (I := I) hray x y)
+
+omit [NeZero (Module.finrank Real E)] [I.Boundaryless] [T2Space M]
+    [SigmaCompactSpace M] [PseudoEMetricSpace M] [IsRiemannianManifold I M] in
+theorem continuous_busemann
+    {g : SmoothRiemannianMetric I M} {p : M} {γ : Real → M}
+    (hray : IsMinimizingRay (I := I) g p γ) :
+    Continuous (busemann (I := I) γ) := by
+  apply continuous_iff_continuousAt.mpr
+  intro x
+  rw [ContinuousAt, EMetric.tendsto_nhds]
+  intro ε hε
+  filter_upwards [eventually_riemannianEDist_lt I x hε] with y hy
+  exact (edist_busemann_le_riemannianEDist (I := I) hray y x).trans_lt
+    (by rwa [riemannianEDist_comm])
+
+omit [NeZero (Module.finrank Real E)] [I.Boundaryless] [T2Space M]
+    [SigmaCompactSpace M] [PseudoEMetricSpace M] [IsRiemannianManifold I M] in
+theorem busemann_apply_ray
     {g : SmoothRiemannianMetric I M} {p : M} {γ : Real → M}
     (hray : IsMinimizingRay (I := I) g p γ) {s : Real} (hs : 0 ≤ s) :
     busemann (I := I) γ (γ s) = -s := by
@@ -222,7 +248,7 @@ theorem busemann_ray
     unfold busemannApprox
     rw [hdist]
     ring
-  exact tendsto_nhds_unique (busemann_tendsto (I := I) hray (γ s)) hconst
+  exact tendsto_nhds_unique (tendsto_busemannApprox (I := I) hray (γ s)) hconst
 
 end BusemannMetricCore
 

@@ -1,5 +1,5 @@
 import DifferentialGeometry.External.DeGiorgi.Localization
-import DifferentialGeometry.Geometry.Comparison.BusemannLineMinimum
+import DifferentialGeometry.Geometry.Comparison.Busemann.Line.Vanishing
 
 set_option autoImplicit false
 
@@ -65,13 +65,10 @@ theorem IsMinimizingLine.exists_busemann_chartPushedRaw_isSolution_on_ball_with_
       (1 : ENNReal) * riemannianEDistOf (I := I) g x y := by
     intro x y
     dsimp only [bp]
-    rw [one_mul, riemannianEDistOf_eq_riemannianEDist
-      (I := I) g hEnorm, edist_dist, Real.dist_eq]
-    rw [← ENNReal.ofReal_toReal
-      (Exponential.riemannianEDist_ne_top (I := I) x y)]
-    exact ENNReal.ofReal_le_ofReal (busemann_dist (I := I) hγ.positive_ray x y)
+    rw [one_mul, riemannianEDistOf_eq_riemannianEDist (I := I) g hEnorm]
+    exact edist_busemann_le_riemannianEDist (I := I) hγ.positive_ray x y
   have hpos_cont : Continuous bp :=
-    intrinsic_lip_cont (I := I) g hpos_lip
+    continuous_busemann (I := I) hγ.positive_ray
   have hpair (x : M) : bp x + bn x = 0 := by
     simpa only [bp, bn] using
       hγ.busemann_add_reverse_eq_zero (I := I) hEnorm hd hRic x

@@ -1,5 +1,5 @@
-import DifferentialGeometry.Geometry.Comparison.Busemann
-import DifferentialGeometry.Geometry.Comparison.MinimizingLine
+import DifferentialGeometry.Geometry.Comparison.Busemann.Basic
+import DifferentialGeometry.Geometry.Geodesic.Minimizing.Line
 
 set_option autoImplicit false
 
@@ -73,8 +73,8 @@ theorem busemann_add_reverse_nonneg
       atTop
       (nhds (busemann (I := I) γ x +
         busemann (I := I) (fun t : ℝ ↦ γ (-t)) x)) :=
-    (busemann_tendsto (I := I) hγ.positive_ray x).add
-      (busemann_tendsto (I := I) hγ.negative_ray x)
+    (tendsto_busemannApprox (I := I) hγ.positive_ray x).add
+      (tendsto_busemannApprox (I := I) hγ.negative_ray x)
   apply ge_of_tendsto' hlim
   intro n
   have hn : (0 : ℝ) ≤ (n : ℝ) := Nat.cast_nonneg n
@@ -101,9 +101,9 @@ theorem busemann_add_reverse_at_zero
     busemann (I := I) γ (γ 0) +
       busemann (I := I) (fun t : ℝ ↦ γ (-t)) (γ 0) = 0 := by
   have hpos : busemann (I := I) γ (γ 0) = 0 := by
-    simpa using busemann_ray (I := I) hγ.positive_ray (s := 0) (le_refl 0)
+    simpa using busemann_apply_ray (I := I) hγ.positive_ray (s := 0) (le_refl 0)
   have hneg : busemann (I := I) (fun t : ℝ ↦ γ (-t)) (γ 0) = 0 := by
-    simpa using busemann_ray (I := I) hγ.negative_ray (s := 0) (le_refl 0)
+    simpa using busemann_apply_ray (I := I) hγ.negative_ray (s := 0) (le_refl 0)
   rw [hpos, hneg, add_zero]
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M]
@@ -115,10 +115,10 @@ theorem busemann_add_reverse_on_line
       busemann (I := I) (fun s : ℝ ↦ γ (-s)) (γ t) = 0 := by
   by_cases ht : 0 ≤ t
   · have hpos : busemann (I := I) γ (γ t) = -t :=
-      busemann_ray (I := I) hγ.positive_ray ht
+      busemann_apply_ray (I := I) hγ.positive_ray ht
     have hneg_zero :
         busemann (I := I) (fun s : ℝ ↦ γ (-s)) (γ 0) = 0 := by
-      simpa using busemann_ray (I := I) hγ.negative_ray (s := 0) (le_refl 0)
+      simpa using busemann_apply_ray (I := I) hγ.negative_ray (s := 0) (le_refl 0)
     have hdist : (riemannianEDist I (γ t) (γ 0)).toReal = t := by
       rw [Manifold.riemannianEDist_comm]
       simpa only [sub_zero] using line_dist_real (I := I) hγ ht
@@ -131,9 +131,9 @@ theorem busemann_add_reverse_on_line
     have hneg :
         busemann (I := I) (fun s : ℝ ↦ γ (-s)) (γ t) = t := by
       simpa using
-        busemann_ray (I := I) hγ.negative_ray (s := -t) (neg_nonneg.mpr ht')
+        busemann_apply_ray (I := I) hγ.negative_ray (s := -t) (neg_nonneg.mpr ht')
     have hpos_zero : busemann (I := I) γ (γ 0) = 0 := by
-      simpa using busemann_ray (I := I) hγ.positive_ray (s := 0) (le_refl 0)
+      simpa using busemann_apply_ray (I := I) hγ.positive_ray (s := 0) (le_refl 0)
     have hdist : (riemannianEDist I (γ t) (γ 0)).toReal = -t := by
       simpa only [zero_sub] using line_dist_real (I := I) hγ ht'
     have hupper := busemann_sub_le (I := I) hγ.positive_ray (γ t) (γ 0)

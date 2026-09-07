@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Sobolev.Manifold.Lipschitz
-import DifferentialGeometry.Geometry.Comparison.BusemannLine
+import DifferentialGeometry.Geometry.Comparison.Busemann.Line.Basic
 
 set_option autoImplicit false
 
@@ -48,18 +48,14 @@ theorem IsMinimizingLine.exists_busemann_add_reverse_chartPushedRaw_memW1p_on_ba
       (busemann (I := I) gamma y) ≤
       (1 : ENNReal) * riemannianEDistOf (I := I) g x y := by
     intro x y
-    rw [one_mul, riemannianEDistOf_eq_riemannianEDist
-      (I := I) g hEnorm, edist_dist, Real.dist_eq]
-    rw [← ENNReal.ofReal_toReal (Exponential.riemannianEDist_ne_top (I := I) x y)]
-    exact ENNReal.ofReal_le_ofReal (busemann_dist (I := I) hgamma.positive_ray x y)
+    rw [one_mul, riemannianEDistOf_eq_riemannianEDist (I := I) g hEnorm]
+    exact edist_busemann_le_riemannianEDist (I := I) hgamma.positive_ray x y
   have hneg : ∀ x y, edist (busemann (I := I) (fun t : ℝ ↦ gamma (-t)) x)
       (busemann (I := I) (fun t : ℝ ↦ gamma (-t)) y) ≤
       (1 : ENNReal) * riemannianEDistOf (I := I) g x y := by
     intro x y
-    rw [one_mul, riemannianEDistOf_eq_riemannianEDist
-      (I := I) g hEnorm, edist_dist, Real.dist_eq]
-    rw [← ENNReal.ofReal_toReal (Exponential.riemannianEDist_ne_top (I := I) x y)]
-    exact ENNReal.ofReal_le_ofReal (busemann_dist (I := I) hgamma.negative_ray x y)
+    rw [one_mul, riemannianEDistOf_eq_riemannianEDist (I := I) g hEnorm]
+    exact edist_busemann_le_riemannianEDist (I := I) hgamma.negative_ray x y
   have hu : ∀ x y, edist (u x) (u y) ≤
       (2 : ENNReal) * riemannianEDistOf (I := I) g x y := by
     intro x y

@@ -1,5 +1,5 @@
-import DifferentialGeometry.Geometry.Comparison.BusemannLaplacian
-import DifferentialGeometry.Geometry.Comparison.BusemannLine
+import DifferentialGeometry.Geometry.Comparison.Busemann.Laplacian
+import DifferentialGeometry.Geometry.Comparison.Busemann.Line.Basic
 
 set_option autoImplicit false
 

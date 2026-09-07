@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Comparison.MinimizingRay
+import DifferentialGeometry.Geometry.Geodesic.Minimizing.Ray
 
 set_option autoImplicit false
 

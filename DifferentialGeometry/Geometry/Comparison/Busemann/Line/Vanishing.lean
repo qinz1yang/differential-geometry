@@ -1,7 +1,7 @@
 import DifferentialGeometry.Analysis.Elliptic.DistributionalSupersolution
 import DifferentialGeometry.External.DeGiorgi.StrongMinimum
-import DifferentialGeometry.Geometry.Comparison.BusemannLineEnergy
-import DifferentialGeometry.Geometry.Comparison.BusemannLineLaplacian
+import DifferentialGeometry.Geometry.Comparison.Busemann.Line.Sobolev
+import DifferentialGeometry.Geometry.Comparison.Busemann.Line.Laplacian
 
 set_option autoImplicit false
 
@@ -15,7 +15,6 @@ namespace DifferentialGeometry.Geometry.Riemannian
 open Analysis.Laplacian.DistributionalSupersolution
 open Analysis.Laplacian.MetricExtension
 open Analysis.Sobolev
-open Analysis.Sobolev.IntrinsicLp
 open Geometry.Operator
 open BonnetMyers
 
@@ -47,29 +46,10 @@ theorem IsMinimizingLine.busemann_add_reverse_eq_zero
   let u : M → ℝ := fun y ↦
     busemann (I := I) γ y +
       busemann (I := I) (fun t : ℝ ↦ γ (-t)) y
-  have hpos_lip : ∀ y z, edist (busemann (I := I) γ y)
-      (busemann (I := I) γ z) ≤
-      (1 : ENNReal) * riemannianEDistOf (I := I) g y z := by
-    intro y z
-    rw [one_mul, riemannianEDistOf_eq_riemannianEDist
-      (I := I) g hEnorm, edist_dist, Real.dist_eq]
-    rw [← ENNReal.ofReal_toReal
-      (Exponential.riemannianEDist_ne_top (I := I) y z)]
-    exact ENNReal.ofReal_le_ofReal (busemann_dist (I := I) hγ.positive_ray y z)
-  have hneg_lip : ∀ y z,
-      edist (busemann (I := I) (fun t : ℝ ↦ γ (-t)) y)
-        (busemann (I := I) (fun t : ℝ ↦ γ (-t)) z) ≤
-      (1 : ENNReal) * riemannianEDistOf (I := I) g y z := by
-    intro y z
-    rw [one_mul, riemannianEDistOf_eq_riemannianEDist
-      (I := I) g hEnorm, edist_dist, Real.dist_eq]
-    rw [← ENNReal.ofReal_toReal
-      (Exponential.riemannianEDist_ne_top (I := I) y z)]
-    exact ENNReal.ofReal_le_ofReal (busemann_dist (I := I) hγ.negative_ray y z)
   have hpos_cont : Continuous (busemann (I := I) γ) :=
-    intrinsic_lip_cont (I := I) g hpos_lip
+    continuous_busemann (I := I) hγ.positive_ray
   have hneg_cont : Continuous (busemann (I := I) (fun t : ℝ ↦ γ (-t))) :=
-    intrinsic_lip_cont (I := I) g hneg_lip
+    continuous_busemann (I := I) hγ.negative_ray
   have hu_cont : Continuous u := by
     dsimp only [u]
     exact hpos_cont.add hneg_cont

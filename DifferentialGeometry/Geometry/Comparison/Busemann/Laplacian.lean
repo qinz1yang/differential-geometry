@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Comparison.Busemann
+import DifferentialGeometry.Geometry.Comparison.Busemann.Basic
 import DifferentialGeometry.Geometry.Comparison.Distance.RadialIntegral
 
 set_option autoImplicit false
@@ -10,7 +10,6 @@ open scoped ContDiff ENNReal Manifold Topology
 
 namespace DifferentialGeometry.Geometry.Riemannian
 
-open Analysis.Sobolev.IntrinsicLp
 open Geometry.Curvature
 open Geometry.Operator
 open Geometry.Riemannian.BonnetMyers
@@ -113,7 +112,7 @@ private theorem buse_lhs_tendsto
     exact mul_le_mul_of_nonneg_right habs (abs_nonneg _)
   have hlim (x : M) : Tendsto (fun n ↦ A n x) atTop
       (nhds (busemann (I := I) γ x * ΔG (I := I) g φ x)) := by
-    simpa only [A] using (busemann_tendsto (I := I) hray x).mul_const
+    simpa only [A] using (tendsto_busemannApprox (I := I) hray x).mul_const
       (ΔG (I := I) g φ x)
   simpa only [A, μ] using int_tendsto_compact μ hA_cont hbound_cont
     hbound_cs hbound hlim
@@ -317,16 +316,8 @@ theorem busemann_isLaplacianLEDistributionalOn
   let d : Nat := Module.finrank Real E - 1
   let _ : IsLocallyFiniteMeasure μ :=
     riemannianVolumeMeasure_isLocallyFiniteMeasure (I := I) (M := M) g
-  have hB_lip : ∀ x y, edist (busemann (I := I) γ x)
-      (busemann (I := I) γ y) ≤
-      (1 : ENNReal) * riemannianEDistOf (I := I) g x y := by
-    intro x y
-    rw [one_mul, riemannianEDistOf_eq_riemannianEDist
-      (I := I) g hEnorm, edist_dist, Real.dist_eq]
-    rw [← ENNReal.ofReal_toReal (riemannianEDist_ne_top (I := I) x y)]
-    exact ENNReal.ofReal_le_ofReal (busemann_dist (I := I) hray x y)
   have hB_cont : Continuous (busemann (I := I) γ) :=
-    intrinsic_lip_cont (I := I) g hB_lip
+    continuous_busemann (I := I) hray
   refine ⟨isOpen_univ,
     hB_cont.locallyIntegrable.locallyIntegrableOn univ,
     continuous_const.locallyIntegrable.locallyIntegrableOn univ, ?_⟩
