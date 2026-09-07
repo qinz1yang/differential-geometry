@@ -3140,6 +3140,7 @@ import DifferentialGeometry.Topology.Covering.SemilocallySimplyConnected
 import DifferentialGeometry.Topology.SigmaCompactOpen
 import DifferentialGeometry.Topology.StandardModel
 import DifferentialGeometry.Topology.ThreeManifold.Closed
+import DifferentialGeometry.Topology.Diffeomorph.Graph
 import DifferentialGeometry.Topology.Embedding.Diffeomorph
 import DifferentialGeometry.Topology.Embedding.Sphere
 import DifferentialGeometry.Topology.Handle.Embedding
@@ -3172,6 +3173,7 @@ import DifferentialGeometry.Topology.Homotopy.DeformationRetract
 import DifferentialGeometry.Topology.Homotopy.EquivUnder
 import DifferentialGeometry.Topology.Homotopy.Interval
 import DifferentialGeometry.Topology.Morse.CellAttachment
+import DifferentialGeometry.Topology.Morse.CriticalSet
 import DifferentialGeometry.Topology.Morse.Defs
 import DifferentialGeometry.Topology.Morse.Flow
 import DifferentialGeometry.Topology.Morse.HandleAttachment
