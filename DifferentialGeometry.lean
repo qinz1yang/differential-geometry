@@ -4426,3 +4426,6 @@ import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.EuclideanHalf
 import DifferentialGeometry.Analysis.Calculus.Trace
 import DifferentialGeometry.Tensor.BilinearForm
 import DifferentialGeometry.Analysis.Integration.Measure.BoundaryDensity
+import DifferentialGeometry.Geometry.Metric.ExteriorPowerBundleMaps
+import DifferentialGeometry.Geometry.Connection.TensorNabla.ExteriorPowerPullback
+import DifferentialGeometry.Geometry.Connection.TensorNabla.ExteriorPowerEndomorphismPullback

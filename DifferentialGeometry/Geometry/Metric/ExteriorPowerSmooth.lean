@@ -97,4 +97,43 @@ theorem contDiff_mapContinuousLinearMap_apply (k : ℕ) (n : ℕ∞ω) :
       mapContinuousLinearMap k p.1 p.2) :=
   ((contDiff_mapContinuousLinearMap k n).comp contDiff_fst).clm_apply contDiff_snd
 
+def mapContinuousLinearEquiv (k : ℕ) (φ : E ≃L[ℝ] F) : (⋀[ℝ]^k E) ≃L[ℝ] ⋀[ℝ]^k F :=
+  ContinuousLinearEquiv.equivOfInverse (mapContinuousLinearMap k φ.toContinuousLinearMap)
+    (mapContinuousLinearMap k φ.symm.toContinuousLinearMap)
+    (by
+      intro u
+      change map k φ.symm.toLinearEquiv.toLinearMap (map k φ.toLinearEquiv.toLinearMap u) = u
+      rw [← LinearMap.comp_apply, ← map_comp]
+      have h : φ.symm.toLinearEquiv.toLinearMap.comp φ.toLinearEquiv.toLinearMap = LinearMap.id := by
+        ext v
+        exact φ.symm_apply_apply v
+      rw [h, map_id]
+      rfl)
+    (by
+      intro u
+      change map k φ.toLinearEquiv.toLinearMap (map k φ.symm.toLinearEquiv.toLinearMap u) = u
+      rw [← LinearMap.comp_apply, ← map_comp]
+      have h : φ.toLinearEquiv.toLinearMap.comp φ.symm.toLinearEquiv.toLinearMap = LinearMap.id := by
+        ext v
+        exact φ.apply_symm_apply v
+      rw [h, map_id]
+      rfl)
+
+@[simp]
+theorem mapContinuousLinearEquiv_apply (k : ℕ) (φ : E ≃L[ℝ] F) (u : ⋀[ℝ]^k E) :
+    mapContinuousLinearEquiv k φ u = map k φ.toLinearEquiv.toLinearMap u := rfl
+
+@[simp]
+theorem mapContinuousLinearEquiv_symm_apply (k : ℕ) (φ : E ≃L[ℝ] F) (u : ⋀[ℝ]^k F) :
+    (mapContinuousLinearEquiv k φ).symm u = map k φ.symm.toLinearEquiv.toLinearMap u := rfl
+
+@[simp]
+theorem mapContinuousLinearEquiv_toContinuousLinearMap (k : ℕ) (φ : E ≃L[ℝ] F) :
+    (mapContinuousLinearEquiv k φ).toContinuousLinearMap =
+      mapContinuousLinearMap k φ.toContinuousLinearMap := rfl
+
+@[simp]
+theorem mapContinuousLinearEquiv_symm (k : ℕ) (φ : E ≃L[ℝ] F) :
+    (mapContinuousLinearEquiv k φ).symm = mapContinuousLinearEquiv k φ.symm := rfl
+
 end exteriorPower
