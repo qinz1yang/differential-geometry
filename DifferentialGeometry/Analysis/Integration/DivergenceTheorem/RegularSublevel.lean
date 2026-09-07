@@ -3,6 +3,7 @@ import DifferentialGeometry.Analysis.Integration.Measure.SublevelVolume
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.SublevelDivergence
 import DifferentialGeometry.Geometry.Boundary.SublevelNormal
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.WithBoundary.BoundaryContribution.WeightedStokes
+import DifferentialGeometry.Geometry.Operator.Laplacian
 
 namespace DifferentialGeometry.Topology.Morse
 
@@ -117,6 +118,98 @@ theorem integral_sublevel_mul_divergence_add_tangentSectionAction_eq_levelSet_fl
   apply integral_congr_ae
   filter_upwards with y
   rw [mfderiv_sublevelTangentSection I f a hf hreg X]
+
+theorem integral_sublevel_divergence_eq_levelSet_flux_of_isCompact
+    (g : SmoothRiemannianMetric I M) (f : M → ℝ) (a : ℝ)
+    (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f)
+    (hreg : ∀ x : M, f x = a → ¬ IsCriticalPointAt I f x)
+    (hcompact : IsCompact {x : M | f x ≤ a})
+    (X : Cₛ^∞⟮I; MorseModel (m + 1), (TangentSpace I : M → Type)⟯) :
+    letI := manifoldLevelSetChartedSpace I f a hf hreg
+    letI := manifoldLevelSetIsManifold I f a hf hreg
+    letI : SigmaCompactSpace (LevelSetSpace f a) :=
+      (isClosed_eq hf.continuous continuous_const).sigmaCompactSpace
+    (∫ x in {x | f x ≤ a}, divergenceG g X x
+      ∂(Integral.Measure.riemannianVolumeMeasure (I := I) (M := M) g)) =
+      ∫ y : LevelSetSpace f a, (Real.sqrt (normGradSqFun g f y.1))⁻¹ * mvfderiv I f y.1 (X y.1)
+        ∂(Integral.Measure.riemannianVolumeMeasure (I := 𝓘(ℝ, MorseModel m))
+          (M := LevelSetSpace f a) (levelSetMetric I g f a hf hreg)) := by
+  let := manifoldLevelSetChartedSpace I f a hf hreg
+  let := manifoldLevelSetIsManifold I f a hf hreg
+  let : CompactSpace (SublevelSpace f a) := isCompact_iff_compactSpace.mp hcompact
+  let : SigmaCompactSpace (LevelSetSpace f a) :=
+    (isClosed_eq hf.continuous continuous_const).sigmaCompactSpace
+  have hs := integral_sublevel_mul_divergence_add_tangentSectionAction_eq_levelSet_flux
+    I g f a hf hreg X (fun _ => 1) contMDiff_const (HasCompactSupport.of_compactSpace _)
+  simpa only [one_mul, tangentSectionAction_const, add_zero] using hs
+
+theorem integral_sublevel_laplacian_eq_levelSet_normGrad_of_isCompact
+    (g : SmoothRiemannianMetric I M) (f : C^∞⟮I, M; ℝ⟯) (a : ℝ)
+    (hreg : ∀ x : M, f x = a → ¬ IsCriticalPointAt I f x)
+    (hcompact : IsCompact {x : M | f x ≤ a}) :
+    letI := manifoldLevelSetChartedSpace I f a f.contMDiff hreg
+    letI := manifoldLevelSetIsManifold I f a f.contMDiff hreg
+    letI : SigmaCompactSpace (LevelSetSpace f a) :=
+      (isClosed_eq f.contMDiff.continuous continuous_const).sigmaCompactSpace
+    (∫ x in {x | f x ≤ a}, ΔG g f x
+      ∂(Integral.Measure.riemannianVolumeMeasure (I := I) (M := M) g)) =
+      ∫ y : LevelSetSpace f a, Real.sqrt (normGradSqFun g f y.1)
+        ∂(Integral.Measure.riemannianVolumeMeasure (I := 𝓘(ℝ, MorseModel m))
+          (M := LevelSetSpace f a) (levelSetMetric I g f a f.contMDiff hreg)) := by
+  let := manifoldLevelSetChartedSpace I f a f.contMDiff hreg
+  let := manifoldLevelSetIsManifold I f a f.contMDiff hreg
+  let : SigmaCompactSpace (LevelSetSpace f a) :=
+    (isClosed_eq f.contMDiff.continuous continuous_const).sigmaCompactSpace
+  have hs := integral_sublevel_divergence_eq_levelSet_flux_of_isCompact I g f a f.contMDiff hreg hcompact (gradG g f)
+  refine hs.trans ?_
+  apply integral_congr_ae
+  filter_upwards with y
+  have hgrad : mvfderiv I f y.1 (gradG g f y.1) = normGradSqFun g f y.1 := by
+    change mvfderiv I f y.1 (gradientFun g f y.1) = _
+    exact (inner_gradientFun g f y.1 (gradientFun g f y.1)).symm
+  rw [hgrad]
+  have hn := normGradSqFun_nonneg g f y.1
+  calc
+    _ = (Real.sqrt (normGradSqFun g f y.1))⁻¹ *
+        (Real.sqrt (normGradSqFun g f y.1) * Real.sqrt (normGradSqFun g f y.1)) :=
+      congrArg (fun z => (Real.sqrt (normGradSqFun g f y.1))⁻¹ * z)
+        (Real.mul_self_sqrt hn).symm
+    _ = _ := by
+      by_cases hzero : Real.sqrt (normGradSqFun g f y.1) = 0
+      · simp only [hzero, inv_zero, mul_zero]
+      · rw [← mul_assoc, inv_mul_cancel₀ hzero, one_mul]
+
+
+theorem integral_lt_sublevel_laplacian_eq_levelSet_normGrad_of_isCompact
+    (g : SmoothRiemannianMetric I M) (f : C^∞⟮I, M; ℝ⟯) (a : ℝ)
+    (hreg : ∀ x : M, f x = a → ¬ IsCriticalPointAt I f x)
+    (hcompact : IsCompact {x : M | f x ≤ a}) :
+    letI := manifoldLevelSetChartedSpace I f a f.contMDiff hreg
+    letI := manifoldLevelSetIsManifold I f a f.contMDiff hreg
+    letI : SigmaCompactSpace (LevelSetSpace f a) :=
+      (isClosed_eq f.contMDiff.continuous continuous_const).sigmaCompactSpace
+    (∫ x in {x | f x < a}, ΔG g f x
+      ∂(Integral.Measure.riemannianVolumeMeasure (I := I) (M := M) g)) =
+      ∫ y : LevelSetSpace f a, Real.sqrt (normGradSqFun g f y.1)
+        ∂(Integral.Measure.riemannianVolumeMeasure (I := 𝓘(ℝ, MorseModel m))
+          (M := LevelSetSpace f a) (levelSetMetric I g f a f.contMDiff hreg)) := by
+  let := manifoldLevelSetChartedSpace I f a f.contMDiff hreg
+  let := manifoldLevelSetIsManifold I f a f.contMDiff hreg
+  let : SigmaCompactSpace (LevelSetSpace f a) :=
+    (isClosed_eq f.contMDiff.continuous continuous_const).sigmaCompactSpace
+  have hμ : (Integral.Measure.riemannianVolumeMeasure (I := I) (M := M) g).restrict
+      {x | f x < a} =
+      (Integral.Measure.riemannianVolumeMeasure (I := I) (M := M) g).restrict {x | f x ≤ a} := by
+    apply Measure.restrict_congr_set
+    have hae := measure_eq_zero_iff_ae_notMem.mp
+      (riemannianVolumeMeasure_levelSet_eq_zero I g f a f.contMDiff hreg)
+    filter_upwards [hae] with x hx
+    apply propext
+    change (f x < a) ↔ f x ≤ a
+    exact ⟨le_of_lt, fun h => lt_of_le_of_ne h hx⟩
+  rw [hμ]
+  exact integral_sublevel_laplacian_eq_levelSet_normGrad_of_isCompact I g f a hreg hcompact
+
 
 end
 
