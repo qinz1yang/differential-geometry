@@ -272,6 +272,39 @@ theorem coeff_mono_apply
 variable [CompleteSpace 𝕜] [FiniteDimensional 𝕜 F]
 variable [VectorBundle 𝕜 F V] [ContMDiffVectorBundle n F V I]
 
+theorem exists_contMDiffOn_coeff_extension [Fintype ι]
+    (hs : IsSubbundleFrameOn (I := I) (F := F) (n := n) S s W)
+    (hW : IsOpen W) {x₀ : M} (hx₀ : x₀ ∈ W) :
+    let e := trivializationAt F V x₀
+    ∃ (U : Set M) (B : M → F →L[𝕜] (ι → 𝕜)),
+      IsOpen U ∧ x₀ ∈ U ∧ U ⊆ W ∩ e.baseSet ∧
+      ContMDiffOn I 𝓘(𝕜, F →L[𝕜] (ι → 𝕜)) n B U ∧
+      ∀ x ∈ U, ∀ v : S x,
+        B x ((e (TotalSpace.mk' F x (v : V x))).2) = fun i => hs.coeff i x v := by
+  let e := trivializationAt F V x₀
+  let W' : Set M := W ∩ e.baseSet
+  have hW' : IsOpen W' := hW.inter e.open_baseSet
+  have hx₀W' : x₀ ∈ W' := ⟨hx₀, mem_baseSet_trivializationAt F V x₀⟩
+  let t : ι → M → F := fun i x => (e (TotalSpace.mk' F x (s i x))).2
+  have ht : ∀ i, ContMDiffOn I 𝓘(𝕜, F) n (t i) W' := by
+    intro i
+    exact (e.contMDiffOn_section_iff hW' inter_subset_right).mp
+      ((hs.contMDiffOn i).mono inter_subset_left)
+  have htx₀ : LinearIndependent 𝕜 (t · x₀) := by
+    let ex : V x₀ ≃ₗ[𝕜] F := e.linearEquivAt 𝕜 x₀ hx₀W'.2
+    exact (hs.linearIndependent hx₀).map' ex.toLinearMap
+      (LinearMap.ker_eq_bot_of_injective ex.injective)
+  obtain ⟨U, B, hU, hx₀U, hUW', hB, hBt⟩ :=
+    exists_contMDiffOn_frame_leftInverse t W' hW' ht x₀ hx₀W' htx₀
+  refine ⟨U, B, hU, hx₀U, hUW', hB, ?_⟩
+  intro x hx v
+  have heq := congrArg (e.linearMapAt 𝕜 x) (hs.coeff_sum_eq (hUW' hx).1 v)
+  have hcoord : (e (TotalSpace.mk' F x (v : V x))).2 =
+      ∑ i, hs.coeff i x v • t i x := by
+    simpa only [map_sum, map_smul, e.coe_linearMapAt_of_mem (hUW' hx).2] using heq
+  rw [hcoord]
+  exact hBt x hx (fun i => hs.coeff i x v)
+
 theorem contMDiffOn_coeff [Finite ι]
     (hs : IsSubbundleFrameOn (I := I) (F := F) (n := n) S s W)
     (hW : IsOpen W) (σ : (x : M) → S x)

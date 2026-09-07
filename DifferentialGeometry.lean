@@ -4400,3 +4400,4 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Soliton.CanonicalCurvature
 import DifferentialGeometry.Geometry.Metric.ExteriorPowerSmooth
 import DifferentialGeometry.Bundle.SmoothSubbundle.LocalFrame
 import DifferentialGeometry.Geometry.Metric.ExteriorPowerBundle
+import DifferentialGeometry.Bundle.SmoothSubbundle.VectorBundle
