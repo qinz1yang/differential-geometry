@@ -4049,3 +4049,6 @@ import DifferentialGeometry.Geometry.Comparison.Volume.SegmentRadialDensity
 import DifferentialGeometry.Geometry.Comparison.Distance.Gradient
 import DifferentialGeometry.Geometry.Comparison.Distance.RadialPairing
 import DifferentialGeometry.Geometry.Comparison.Distance.EndpointRate
+import DifferentialGeometry.Geometry.Operator.Laplacian.Barrier
+import DifferentialGeometry.Geometry.Operator.Laplacian.Viscosity
+import DifferentialGeometry.Geometry.Comparison.Distance.Laplacian

@@ -170,6 +170,72 @@ theorem laplacian_congr_of_eventuallyEq
   unfold laplacian divergence
   rw [hcov]
 
+theorem laplacian_sub_at
+    (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
+    (g : SmoothRiemannianMetric I M)
+    {f h : M → Real} {x : M}
+    (hf : ContMDiffAt I 𝓘(Real, Real) ∞ f x)
+    (hh : ContMDiffAt I 𝓘(Real, Real) ∞ h x) :
+    laplacian (I := I) cov g (fun y : M ↦ f y - h y) x =
+      laplacian (I := I) cov g f x - laplacian (I := I) cov g h x := by
+  have hf_one : ContMDiffAt I 𝓘(Real, Real) 1 f x :=
+    hf.of_le (WithTop.coe_le_coe.mpr (le_top : (1 : ℕ∞) ≤ ⊤))
+  have hh_one : ContMDiffAt I 𝓘(Real, Real) 1 h x :=
+    hh.of_le (WithTop.coe_le_coe.mpr (le_top : (1 : ℕ∞) ≤ ⊤))
+  have hf_mdiff : ∀ᶠ y in nhds x,
+      MDifferentiableAt I 𝓘(Real, Real) f y := by
+    have hf_near : ∀ᶠ y in nhds x,
+        ContMDiffAt I 𝓘(Real, Real) 1 f y :=
+      (contMDiffAt_iff_contMDiffAt_nhds (n := 1) (by decide)).mp hf_one
+    filter_upwards [hf_near] with y hy
+    exact hy.mdifferentiableAt (by decide)
+  have hh_mdiff : ∀ᶠ y in nhds x,
+      MDifferentiableAt I 𝓘(Real, Real) h y := by
+    have hh_near : ∀ᶠ y in nhds x,
+        ContMDiffAt I 𝓘(Real, Real) 1 h y :=
+      (contMDiffAt_iff_contMDiffAt_nhds (n := 1) (by decide)).mp hh_one
+    filter_upwards [hh_near] with y hy
+    exact hy.mdifferentiableAt (by decide)
+  have hgrad_eq :
+      (fun y : M ↦ gradientFun (I := I) g (fun z : M ↦ f z - h z) y) =ᶠ[nhds x]
+        (fun y : M ↦
+          gradientFun (I := I) g f y - gradientFun (I := I) g h y) := by
+    filter_upwards [hf_mdiff, hh_mdiff] with y hfy hhy
+    exact gradientFun_sub (I := I) g hfy hhy
+  have hgrad_f : MDiffAt
+      (T% fun y : M ↦ gradientFun (I := I) g f y) x :=
+    (gradientFun_contMDiffAt (I := I) g hf).mdifferentiableAt (by simp)
+  have hgrad_h : MDiffAt
+      (T% fun y : M ↦ gradientFun (I := I) g h y) x :=
+    (gradientFun_contMDiffAt (I := I) g hh).mdifferentiableAt (by simp)
+  have hgrad_sub : MDiffAt
+      (T% fun y : M ↦
+        gradientFun (I := I) g f y - gradientFun (I := I) g h y) x :=
+    mdifferentiableAt_sub_section hgrad_f hgrad_h
+  have hgrad_f_sub_h : MDiffAt
+      (T% fun y : M ↦ gradientFun (I := I) g (fun z : M ↦ f z - h z) y) x :=
+    (gradientFun_contMDiffAt (I := I) g (hf.sub hh)).mdifferentiableAt (by simp)
+  have hcov :
+      cov (fun y : M ↦ gradientFun (I := I) g (fun z : M ↦ f z - h z) y) x =
+        cov (fun y : M ↦
+          gradientFun (I := I) g f y - gradientFun (I := I) g h y) x :=
+    cov.isCovariantDerivativeOnUniv.congr_of_eventuallyEq
+      hgrad_f_sub_h hgrad_sub Filter.univ_mem hgrad_eq
+  calc
+    laplacian (I := I) cov g (fun y : M ↦ f y - h y) x =
+        divergence (I := I) cov
+          (fun y : M ↦
+            gradientFun (I := I) g f y - gradientFun (I := I) g h y) x := by
+      unfold laplacian divergence
+      rw [hcov]
+    _ = laplacian (I := I) cov g f x - laplacian (I := I) cov g h x := by
+      change divergence (I := I) cov
+          ((fun y : M ↦ gradientFun (I := I) g f y) -
+            fun y : M ↦ gradientFun (I := I) g h y) x =
+        divergence (I := I) cov (gradientFun (I := I) g f) x -
+          divergence (I := I) cov (gradientFun (I := I) g h) x
+      exact divergence_sub (I := I) cov hgrad_f hgrad_h
+
 theorem grad_comp_mdiffAt
     [VectorBundle Real E (TangentSpace I : M → Type _)]
     (g : SmoothRiemannianMetric I M)
