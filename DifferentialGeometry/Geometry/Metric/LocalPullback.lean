@@ -1,4 +1,6 @@
 import DifferentialGeometry.Geometry.Metric.PullbackCross
+import DifferentialGeometry.Geometry.Metric.OpenSubtype
+import DifferentialGeometry.Topology.Manifold.LocalDiffeomorphOpen
 import Mathlib.Geometry.Manifold.Riemannian.PathELength
 
 set_option autoImplicit false
@@ -260,5 +262,14 @@ theorem localPull_pathLen
   rw [hcomp]
   exact localPull_enorm (I := I) (J := J) g hEnorm f hf (γ t)
     (mfderiv 𝓘(Real, Real) I γ t 1)
+
+theorem localPullMetric_subtype_val
+    (g : SmoothRiemannianMetric I M) (U : TopologicalSpace.Opens M) [T2Space U] :
+    localPullMetric g (Subtype.val : U → M) (isLocalDiffeomorph_subtype_val U) =
+      g.restrictOpen U := by
+  apply SmoothRiemannianMetric.ext_inner
+  intro x v w
+  rw [localPullMetric_inner, SmoothRiemannianMetric.restrictOpen_inner,
+    mfderiv_subtype_val_apply, mfderiv_subtype_val_apply]
 
 end DifferentialGeometry

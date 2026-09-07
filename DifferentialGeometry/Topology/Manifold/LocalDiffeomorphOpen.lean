@@ -80,6 +80,12 @@ theorem isLocalDiffeomorph_restrict_open
     change f y = Φ y
     exact hΦeq hyΦ
 
+omit [IsManifold I ∞ M] in
+theorem isLocalDiffeomorph_subtype_val (U : Opens M) :
+    IsLocalDiffeomorph I I ∞ (Subtype.val : U → M) :=
+  isLocalDiffeomorph_restrict_open U
+    ((Diffeomorph.refl I M ∞).isLocalDiffeomorph.isLocalDiffeomorphOn U)
+
 variable {G : Type*} [NormedAddCommGroup G] [NormedSpace Real G]
 variable {H'' : Type*} [TopologicalSpace H'']
   {K : ModelWithCorners Real G H''}

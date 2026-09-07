@@ -66,4 +66,12 @@ theorem scalar_abs_le_rm (g : SmoothRiemannianMetric I M) (x : M) :
       rw [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul]
       ring
 
+omit [SigmaCompactSpace M] in
+theorem metricScalarAt_eq_zero_of_finrank_eq_zero
+    (g : SmoothRiemannianMetric I M) (hE : Module.finrank ℝ E = 0) (x : M) :
+    metricScalarAt (I := I) g x = 0 := by
+  have h := scalar_abs_le_rm g x
+  change |metricScalarAt (I := I) g x| ≤ (Module.finrank ℝ E : ℝ) ^ 2 * _ at h
+  simpa only [hE, Nat.cast_zero, zero_pow (by decide : 2 ≠ 0), zero_mul, abs_nonpos_iff] using h
+
 end DifferentialGeometry.Geometry.Curvature
