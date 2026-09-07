@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Exponential.MinimizingDomain.Basic
 import DifferentialGeometry.Geometry.Exponential.Radial
 import DifferentialGeometry.Geometry.Exponential.CompactBall
 import DifferentialGeometry.Geometry.Exponential.VolumeDensity
@@ -58,82 +59,12 @@ private local instance tangentSpaceNormedSpace
 private local instance : MeasurableSpace E := borel E
 private local instance : BorelSpace E := ⟨rfl⟩
 
-def rawSeg (g : SmoothRiemannianMetric I M) (p : M) : Set E :=
-  {v | ENNReal.ofReal (Real.sqrt
-      (g.inner p (show TangentSpace I p from v)
-        (show TangentSpace I p from v))) =
-    riemannianEDist I p
-      (expMap (I := I) g p (show TangentSpace I p from v))}
-
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M]
-  [T2Space (TangentBundle I M)] [SigmaCompactSpace M] in
-theorem rawSeg_mem_dom
-    (g : SmoothRiemannianMetric I M) (p : M) {v : E}
-    (hv : v ∈ rawSeg (I := I) g p) :
-    (show TangentSpace I p from v) ∈ expDomain (I := I) g p := by
-  let _ : CompleteSpace E := FiniteDimensional.complete ℝ E
-  by_contra hdom
-  have hexp : expMap (I := I) g p (show TangentSpace I p from v) = p :=
-    expMap_of_not_mem_expDomain (I := I) hdom
-  by_cases hv0 : v = 0
-  · subst v
-    exact hdom (zero_mem_expDomain (I := I) g p)
-  · have hpos : 0 < Real.sqrt
-        (g.inner p (show TangentSpace I p from v)
-          (show TangentSpace I p from v)) :=
-      Real.sqrt_pos.mpr (g.pos p v hv0)
-    change ENNReal.ofReal (Real.sqrt
-        (g.inner p (show TangentSpace I p from v)
-          (show TangentSpace I p from v))) =
-      riemannianEDist I p
-        (expMap (I := I) g p (show TangentSpace I p from v)) at hv
-    rw [hexp, riemannianEDist_self] at hv
-    exact (ENNReal.ofReal_pos.mpr hpos).ne' hv
-
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M]
-  [T2Space (TangentBundle I M)] [SigmaCompactSpace M] in
-private theorem rawSeg_same_len
-    (g : SmoothRiemannianMetric I M) (p : M) {v w : E}
-    (hv : v ∈ rawSeg (I := I) g p) (hw : w ∈ rawSeg (I := I) g p)
-    (hvw : expMap (I := I) g p (show TangentSpace I p from v) =
-      expMap (I := I) g p (show TangentSpace I p from w)) :
-    Real.sqrt (g.inner p (show TangentSpace I p from v)
-      (show TangentSpace I p from v)) =
-      Real.sqrt (g.inner p (show TangentSpace I p from w)
-        (show TangentSpace I p from w)) := by
-  change ENNReal.ofReal (Real.sqrt
-    (g.inner p (show TangentSpace I p from v)
-      (show TangentSpace I p from v))) =
-    riemannianEDist I p
-      (expMap (I := I) g p (show TangentSpace I p from v)) at hv
-  change ENNReal.ofReal (Real.sqrt
-    (g.inner p (show TangentSpace I p from w)
-      (show TangentSpace I p from w))) =
-    riemannianEDist I p
-      (expMap (I := I) g p (show TangentSpace I p from w)) at hw
-  apply (ENNReal.ofReal_eq_ofReal_iff (Real.sqrt_nonneg _)
-    (Real.sqrt_nonneg _)).mp
-  calc
-    ENNReal.ofReal (Real.sqrt
-        (g.inner p (show TangentSpace I p from v)
-          (show TangentSpace I p from v))) =
-        riemannianEDist I p
-          (expMap (I := I) g p (show TangentSpace I p from v)) := hv
-    _ = riemannianEDist I p
-          (expMap (I := I) g p (show TangentSpace I p from w)) := by rw [hvw]
-    _ = ENNReal.ofReal (Real.sqrt
-        (g.inner p (show TangentSpace I p from w)
-          (show TangentSpace I p from w))) := hw.symm
-
-def rawSegInt (g : SmoothRiemannianMetric I M) (p : M) : Set E :=
-  {v | ∃ c : ℝ, 1 < c ∧ c • v ∈ rawSeg (I := I) g p}
-
 omit [NeZero (Module.finrank ℝ E)] [T2Space M] [SigmaCompactSpace M] in
 private theorem rawSegInt_geo
     (g : SmoothRiemannianMetric I M) (p : M) {v : E}
-    (hv : v ∈ rawSegInt (I := I) g p) :
+    (hv : v ∈ extendibleMinimizingDomain (I := I) g p) :
     ∃ (c : ℝ) (γ : ℝ → M) (J : Set ℝ), 1 < c ∧
-      c • v ∈ rawSeg (I := I) g p ∧ IsOpen J ∧ IsPreconnected J ∧
+      c • v ∈ minimizingDomain (I := I) g p ∧ IsOpen J ∧ IsPreconnected J ∧
       Icc (0 : ℝ) c ⊆ J ∧
       Geodesic.IsGeodesicOnWithInitial (I := I) g γ J p
         (show TangentSpace I p from v) ∧
@@ -147,7 +78,7 @@ private theorem rawSegInt_geo
   rcases hv with ⟨c, hc, hcraw⟩
   have hcpos : 0 < c := one_pos.trans hc
   have hcdom : (show TangentSpace I p from c • v) ∈ expDomain (I := I) g p :=
-    rawSeg_mem_dom (I := I) g p hcraw
+    minimizingDomain_subset_expDomain (I := I) g p hcraw
   obtain ⟨γ, J, hJopen, hJconn, hsegment, hγ, hγeq⟩ :=
     Exponential.exists_isGeodesicOnWithInitial_eqOn_expMap
       (v := show TangentSpace I p from v) hcdom
@@ -170,8 +101,8 @@ private theorem rawSegInt_geo
 omit [NeZero (Module.finrank ℝ E)] [T2Space M] [SigmaCompactSpace M] in
 private theorem rawSegInt_ext
     (g : SmoothRiemannianMetric I M) (p : M) {v : E}
-    (hv : v ∈ rawSegInt (I := I) g p) :
-    ∃ (c : ℝ) (γ : ℝ → M), 1 < c ∧ c • v ∈ rawSeg (I := I) g p ∧
+    (hv : v ∈ extendibleMinimizingDomain (I := I) g p) :
+    ∃ (c : ℝ) (γ : ℝ → M), 1 < c ∧ c • v ∈ minimizingDomain (I := I) g p ∧
       ContMDiff 𝓘(ℝ, ℝ) I ((⊤ : ℕ∞) : WithTop ℕ∞) γ ∧
       Geodesic.IsGeodesicOn (I := I) g γ (Icc (0 : ℝ) c) ∧
       ∀ t ∈ Icc (0 : ℝ) c, γ =ᶠ[𝓝 t]
@@ -181,7 +112,7 @@ private theorem rawSegInt_ext
     _hγc⟩ := rawSegInt_geo (I := I) g p hv
   have hcpos : 0 < c := one_pos.trans hc
   have hcdom : (show TangentSpace I p from c • v) ∈ expDomain (I := I) g p :=
-    rawSeg_mem_dom (I := I) g p hcraw
+    minimizingDomain_subset_expDomain (I := I) g p hcraw
   obtain ⟨γg, hγgsmooth, hγgerm⟩ :=
     exists_contMDiff_extension_expMap_smul (I := I) g p v hcdom
   rw [uIcc_of_le hcpos.le] at hγgerm
@@ -197,138 +128,6 @@ private theorem rawSegInt_ext
     exact Geodesic.HasGeodesicEquationAt.congr_of_eventuallyEq_at (I := I) (g := g)
       heq.eq_of_nhds heq (hγgeo t (hIcc ht))
   exact ⟨c, γg, hc, hcraw, hγgsmooth, hγggeo, hγgerm⟩
-
-omit [NeZero (Module.finrank ℝ E)] [T2Space M] [SigmaCompactSpace M] in
-theorem rawSegInt_sub
-    (g : SmoothRiemannianMetric I M) (hEnorm : IsMetricNorm (I := I) (M := M) g)
-    (p : M) {v : E}
-    (hv : v ∈ rawSegInt (I := I) g p) :
-    v ∈ rawSeg (I := I) g p := by
-  let _ : CompleteSpace E := FiniteDimensional.complete ℝ E
-  obtain ⟨c, hc, hcraw⟩ := hv
-  have hcpos : 0 < c := one_pos.trans hc
-  have hcdom : (show TangentSpace I p from c • v) ∈ expDomain (I := I) g p :=
-    rawSeg_mem_dom (I := I) g p hcraw
-  have hdom : ∀ t ∈ Icc (0 : ℝ) c,
-      (show TangentSpace I p from t • v) ∈ expDomain (I := I) g p := by
-    intro t ht
-    have ht_div : t / c ∈ Icc (0 : ℝ) 1 :=
-      ⟨div_nonneg ht.1 hcpos.le, (div_le_one hcpos).mpr ht.2⟩
-    have hscale := Exponential.smul_mem_expDomain (I := I) (g := g) (p := p)
-      (v := show TangentSpace I p from c • v) hcdom ht_div
-    change (show TangentSpace I p from (t / c) • (c • v)) ∈
-      expDomain (I := I) g p at hscale
-    simpa only [smul_smul, div_mul_cancel₀ t hcpos.ne', one_smul] using hscale
-  let γ : ℝ → M := radialCurve (I := I) g p v
-  let L : ℝ := Real.sqrt (g.inner p (show TangentSpace I p from v)
-    (show TangentSpace I p from v))
-  have hLnn : 0 ≤ L := Real.sqrt_nonneg _
-  have hγsmooth : ContMDiffOn 𝓘(ℝ, ℝ) I 1 γ (Icc (0 : ℝ) c) := by
-    intro t ht
-    have hline : ContMDiffAt 𝓘(ℝ, ℝ) 𝓘(ℝ, E) ((⊤ : ℕ∞) : WithTop ℕ∞)
-        (fun s : ℝ => s • v) t :=
-      (contMDiff_id.smul contMDiff_const).contMDiffAt
-    have hexp := contMDiffAt_expMap (I := I) g p (hdom t ht)
-    have hcurve : radialCurve (I := I) g p v =
-        fun s : ℝ => expMap (I := I) g p
-          (show TangentSpace I p from s • v) := by
-      funext s
-      rfl
-    dsimp only [γ]
-    rw [hcurve]
-    exact ((hexp.comp t hline).of_le
-      (by decide : (1 : WithTop ℕ∞) ≤ ((⊤ : ℕ∞) : WithTop ℕ∞))).contMDiffWithinAt
-  have hspeed : ∀ t ∈ Icc (0 : ℝ) c,
-      ‖mfderiv 𝓘(ℝ, ℝ) I γ t (1 : ℝ)‖ₑ ≤ ENNReal.ofReal L := by
-    intro t ht
-    rw [hEnorm]
-    change ENNReal.ofReal (Real.sqrt
-      (g.inner (radialCurve (I := I) g p v t)
-        (Variation.curveVelocity (I := I) (radialCurve (I := I) g p v) t)
-        (Variation.curveVelocity (I := I) (radialCurve (I := I) g p v) t))) ≤
-      ENNReal.ofReal L
-    have hspeed : g.inner (radialCurve (I := I) g p v t)
-        (Variation.curveVelocity (I := I) (radialCurve (I := I) g p v) t)
-        (Variation.curveVelocity (I := I) (radialCurve (I := I) g p v) t) =
-        g.inner p v v := by
-      simpa only [radialCurve] using!
-        inner_curveVelocity_expMap_smul (I := I) g p v (hdom t ht)
-    rw [hspeed]
-  have h01 := HopfRinow.curve_edist_le_speed_mul_time (I := I)
-    (γ := γ) (s := (0 : ℝ)) (t := (1 : ℝ)) (c := L)
-    hLnn zero_le_one
-    (hγsmooth.mono (Icc_subset_Icc le_rfl hc.le))
-    (fun t ht => hspeed t ⟨ht.1, ht.2.trans hc.le⟩)
-  have hupper : riemannianEDist I p
-      (expMap (I := I) g p (show TangentSpace I p from v)) ≤ ENNReal.ofReal L := by
-    dsimp only [γ, radialCurve] at h01
-    rw [zero_smul, one_smul] at h01
-    change riemannianEDist I
-      (expMap (I := I) g p (show TangentSpace I p from (0 : E)))
-      (expMap (I := I) g p (show TangentSpace I p from v)) ≤
-        ENNReal.ofReal (L * (1 - 0)) at h01
-    rw [show expMap (I := I) g p (show TangentSpace I p from (0 : E)) = p from
-      expMap_zero (I := I) g p] at h01
-    simpa only [sub_zero, mul_one] using h01
-  have h1c := HopfRinow.curve_edist_le_speed_mul_time (I := I)
-    (γ := γ) (s := (1 : ℝ)) (t := c) (c := L)
-    hLnn hc.le
-    (hγsmooth.mono (Icc_subset_Icc zero_le_one le_rfl))
-    (fun t ht => hspeed t ⟨zero_le_one.trans ht.1, ht.2⟩)
-  have htail : riemannianEDist I
-      (expMap (I := I) g p (show TangentSpace I p from v))
-      (expMap (I := I) g p (show TangentSpace I p from c • v)) ≤
-      ENNReal.ofReal (L * (c - 1)) := by
-    simpa only [γ, radialCurve, one_smul] using h1c
-  simp only [rawSeg, Set.mem_ofPred_eq] at hcraw
-  have hcLen : Real.sqrt
-      (g.inner p (show TangentSpace I p from c • v)
-        (show TangentSpace I p from c • v)) = c * L := by
-    change Real.sqrt (g.inner p (show TangentSpace I p from c • v)
-      (show TangentSpace I p from c • v)) = c *
-        Real.sqrt (g.inner p (show TangentSpace I p from v)
-          (show TangentSpace I p from v))
-    exact sqrt_gInner_smul_self (I := I) g p hcpos.le
-      (show TangentSpace I p from v)
-  rw [hcLen] at hcraw
-  have htailnn : 0 ≤ L * (c - 1) :=
-    mul_nonneg hLnn (sub_nonneg.mpr hc.le)
-  have hsplit : ENNReal.ofReal (c * L) =
-      ENNReal.ofReal L + ENNReal.ofReal (L * (c - 1)) := by
-    rw [← ENNReal.ofReal_add hLnn htailnn]
-    congr 1
-    ring
-  have htri : riemannianEDist I p
-      (expMap (I := I) g p (show TangentSpace I p from c • v)) ≤
-      riemannianEDist I p
-        (expMap (I := I) g p (show TangentSpace I p from v)) +
-      riemannianEDist I
-        (expMap (I := I) g p (show TangentSpace I p from v))
-        (expMap (I := I) g p (show TangentSpace I p from c • v)) :=
-    riemannianEDist_triangle
-  have hlow : ENNReal.ofReal L ≤ riemannianEDist I p
-      (expMap (I := I) g p (show TangentSpace I p from v)) := by
-    have hchain : ENNReal.ofReal L + ENNReal.ofReal (L * (c - 1)) ≤
-        riemannianEDist I p
-          (expMap (I := I) g p (show TangentSpace I p from v)) +
-        ENNReal.ofReal (L * (c - 1)) := by
-      calc
-        ENNReal.ofReal L + ENNReal.ofReal (L * (c - 1)) =
-            ENNReal.ofReal (c * L) := hsplit.symm
-        _ = riemannianEDist I p
-            (expMap (I := I) g p (show TangentSpace I p from c • v)) := hcraw
-        _ ≤ riemannianEDist I p
-            (expMap (I := I) g p (show TangentSpace I p from v)) +
-            riemannianEDist I
-              (expMap (I := I) g p (show TangentSpace I p from v))
-              (expMap (I := I) g p (show TangentSpace I p from c • v)) := htri
-        _ ≤ riemannianEDist I p
-            (expMap (I := I) g p (show TangentSpace I p from v)) +
-            ENNReal.ofReal (L * (c - 1)) := add_le_add le_rfl htail
-    exact (ENNReal.add_le_add_iff_right ENNReal.ofReal_ne_top).mp hchain
-  change ENNReal.ofReal L = riemannianEDist I p
-    (expMap (I := I) g p (show TangentSpace I p from v))
-  exact le_antisymm hlow hupper
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
@@ -394,12 +193,12 @@ private theorem rawExp_inj_seg
     (g : SmoothRiemannianMetric I M) (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) :
     Set.InjOn (fun v : E => expMap (I := I) g p
-      (show TangentSpace I p from v)) (rawSegInt (I := I) g p) := by
+      (show TangentSpace I p from v)) (extendibleMinimizingDomain (I := I) g p) := by
   intro v hv w hw heq
   let _ : CompleteSpace E := FiniteDimensional.complete ℝ E
-  have hvraw : v ∈ rawSeg (I := I) g p := rawSegInt_sub (I := I) g hEnorm p hv
-  have hwraw : w ∈ rawSeg (I := I) g p := rawSegInt_sub (I := I) g hEnorm p hw
-  have hlen := rawSeg_same_len (I := I) g p hvraw hwraw heq
+  have hvraw : v ∈ minimizingDomain (I := I) g p := extendibleMinimizingDomain_subset_minimizingDomain (I := I) g hEnorm p hv
+  have hwraw : w ∈ minimizingDomain (I := I) g p := extendibleMinimizingDomain_subset_minimizingDomain (I := I) g hEnorm p hw
+  have hlen := sqrt_inner_self_eq_of_mem_minimizingDomain_of_expMap_eq (I := I) g p hvraw hwraw heq
   by_cases hv0 : v = 0
   · subst v
     have hw0 : w = 0 := by
@@ -462,9 +261,9 @@ private theorem rawExp_inj_seg
     dsimp only [C, ell]
     ring
   have hcvdom : (show TangentSpace I p from c • v) ∈ expDomain (I := I) g p :=
-    rawSeg_mem_dom (I := I) g p hcv
+    minimizingDomain_subset_expDomain (I := I) g p hcv
   have hdwdom : (show TangentSpace I p from d • w) ∈ expDomain (I := I) g p :=
-    rawSeg_mem_dom (I := I) g p hdw
+    minimizingDomain_subset_expDomain (I := I) g p hdw
   have hCu : C • u = c • v := by
     dsimp only [C, u]
     rw [smul_smul, show c * L * L⁻¹ = c by field_simp [hLne]]
@@ -648,7 +447,7 @@ private theorem rawExp_inj_seg
         congrArg (expMap (I := I) g p) hCuT
   have hdistc : riemannianEDist I p
       (expMap (I := I) g p (show TangentSpace I p from c • v)) = ENNReal.ofReal C := by
-    simp only [rawSeg, Set.mem_ofPred_eq] at hcv
+    simp only [minimizingDomain, Set.mem_ofPred_eq] at hcv
     have hcLen : Real.sqrt
         (g.inner p (show TangentSpace I p from c • v)
           (show TangentSpace I p from c • v)) = C := by
@@ -850,7 +649,7 @@ private theorem isCompact_rawSeg
     (p : M) {R R₀ : ℝ} (hRR₀ : R < R₀)
     (hcpt : @IsCompact M PseudoEMetricSpace.toUniformSpace.toTopologicalSpace
       (Metric.closedEBall p (ENNReal.ofReal R₀))) :
-    IsCompact (rawSeg (I := I) g p ∩ closedGBall (I := I) g p R) := by
+    IsCompact (minimizingDomain (I := I) g p ∩ closedGBall (I := I) g p R) := by
   classical
   let S : Set E := closedGBall (I := I) g p R
   have hS : IsCompact S := by
@@ -938,7 +737,7 @@ private theorem isCompact_rawSeg
   have himage : IsCompact ((fun v : S => (v : E)) '' A) :=
     hA.image continuous_subtype_val
   have heq : (fun v : S => (v : E)) '' A =
-      rawSeg (I := I) g p ∩ S := by
+      minimizingDomain (I := I) g p ∩ S := by
     ext v
     constructor
     · rintro ⟨w, hw, rfl⟩
@@ -958,10 +757,10 @@ theorem rawSegInt_ball_meas
     (hcpt : @IsCompact M PseudoEMetricSpace.toUniformSpace.toTopologicalSpace
       (Metric.closedEBall p (ENNReal.ofReal R₀))) :
     MeasurableSet
-      (rawSegInt (I := I) g p ∩ gBall (I := I) g p R) := by
+      (extendibleMinimizingDomain (I := I) g p ∩ gBall (I := I) g p R) := by
   classical
   let S : ℝ := (R + R₀) / 2
-  let K : Set E := rawSeg (I := I) g p ∩ closedGBall (I := I) g p S
+  let K : Set E := minimizingDomain (I := I) g p ∩ closedGBall (I := I) g p S
   let Q : Set ℚ := {q | (1 : ℝ) < (q : ℝ) ∧ (q : ℝ) < S / R}
   let A : ℚ → Set E := fun q =>
     (fun v : E => (q : ℝ) • v) ⁻¹' K ∩ gBall (I := I) g p R
@@ -980,7 +779,7 @@ theorem rawSegInt_ball_meas
     exact (hK.measurableSet.preimage
       (continuous_const_smul (q : ℝ)).measurable).inter
         (measurableSet_gBall (I := I) g p R)
-  have hEq : rawSegInt (I := I) g p ∩ gBall (I := I) g p R =
+  have hEq : extendibleMinimizingDomain (I := I) g p ∩ gBall (I := I) g p R =
       ⋃ q ∈ Q, A q := by
     ext v
     constructor
@@ -991,8 +790,8 @@ theorem rawSegInt_ball_meas
       have hqc : (q : ℝ) < c := hqlim.trans_le (min_le_left _ _)
       have hqS : (q : ℝ) < S / R := hqlim.trans_le (min_le_right _ _)
       have hqpos : 0 < (q : ℝ) := lt_trans zero_lt_one hq1
-      have hqraw : (q : ℝ) • v ∈ rawSeg (I := I) g p := by
-        apply rawSegInt_sub (I := I) g hEnorm p
+      have hqraw : (q : ℝ) • v ∈ minimizingDomain (I := I) g p := by
+        apply extendibleMinimizingDomain_subset_minimizingDomain (I := I) g hEnorm p
         refine ⟨c / (q : ℝ), (one_lt_div hqpos).2 hqc, ?_⟩
         simpa only [smul_smul, div_mul_cancel₀ _ hqpos.ne'] using hcv
       have hqR : (q : ℝ) * R < S := (lt_div_iff₀ hR).mp hqS
@@ -1025,8 +824,8 @@ private theorem rawSegInt_image_eq
     riemannianVolumeMeasure (I := I) (M := M) g
         ((fun v : E => expMap (I := I) g p
           (show TangentSpace I p from v)) ''
-          (rawSegInt (I := I) g p ∩ gBall (I := I) g p R)) =
-      ∫⁻ v in rawSegInt (I := I) g p ∩ gBall (I := I) g p R,
+          (extendibleMinimizingDomain (I := I) g p ∩ gBall (I := I) g p R)) =
+      ∫⁻ v in extendibleMinimizingDomain (I := I) g p ∩ gBall (I := I) g p R,
         ENNReal.ofReal
           (curveDensity (I := I) g
             (fun t : ℝ => expMap (I := I) g p
@@ -1037,7 +836,7 @@ private theorem rawSegInt_image_eq
                   (show TangentSpace I p from
                     t • (v + s • (chartModelBasis E) i))) 0 (1 : ℝ)) 1)
         ∂(modelHaar (E := E)) := by
-  let K : Set E := rawSegInt (I := I) g p ∩ gBall (I := I) g p R
+  let K : Set E := extendibleMinimizingDomain (I := I) g p ∩ gBall (I := I) g p R
   let F : E → M := fun v => expMap (I := I) g p
     (show TangentSpace I p from v)
   let U : Set E := {v : E | (show TangentSpace I p from v) ∈
@@ -1046,9 +845,9 @@ private theorem rawSegInt_image_eq
     simpa only [K] using rawSegInt_ball_meas (I := I) g hEnorm p hR hRR₀ hcpt
   have hKdom : K ⊆ expDomain (I := I) g p := by
     intro v hv
-    change v ∈ rawSegInt (I := I) g p ∩ gBall (I := I) g p R at hv
-    exact rawSeg_mem_dom (I := I) g p
-      (rawSegInt_sub (I := I) g hEnorm p hv.1)
+    change v ∈ extendibleMinimizingDomain (I := I) g p ∩ gBall (I := I) g p R at hv
+    exact minimizingDomain_subset_expDomain (I := I) g p
+      (extendibleMinimizingDomain_subset_minimizingDomain (I := I) g hEnorm p hv.1)
   have hU : IsOpen U := by
     exact isOpen_expDomain (I := I) g p
   have hKU : K ⊆ U := by
@@ -1098,7 +897,7 @@ omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M]
 private theorem rawSegEnd_ray_sub
     (g : SmoothRiemannianMetric I M) (p : M) (u : E) :
     ({r : Ioi (0 : ℝ) |
-      r.1 • u ∈ rawSeg (I := I) g p \ rawSegInt (I := I) g p} :
+      r.1 • u ∈ minimizingDomain (I := I) g p \ extendibleMinimizingDomain (I := I) g p} :
       Set (Ioi (0 : ℝ))).Subsingleton := by
   rintro ⟨a, ha0⟩ ⟨haD, haI⟩ ⟨b, hb0⟩ ⟨hbD, hbI⟩
   have ha_pos : 0 < a := ha0
@@ -1237,10 +1036,10 @@ theorem rawSegEnd_null
     (hcpt : @IsCompact M PseudoEMetricSpace.toUniformSpace.toTopologicalSpace
       (Metric.closedEBall p (ENNReal.ofReal R₀))) :
     (modelHaar (E := E))
-        ((rawSeg (I := I) g p \ rawSegInt (I := I) g p) ∩
+        ((minimizingDomain (I := I) g p \ extendibleMinimizingDomain (I := I) g p) ∩
           closedGBall (I := I) g p R) = 0 := by
   classical
-  let K : Set E := rawSeg (I := I) g p ∩ closedGBall (I := I) g p R
+  let K : Set E := minimizingDomain (I := I) g p ∩ closedGBall (I := I) g p R
   let C : ℕ → Set E := fun n => K ∩
     (fun z : ℝ × E => z.1 • z.2) ''
       (Icc (0 : ℝ) ((n : ℝ) / (n + 1)) ×ˢ K)
@@ -1264,7 +1063,7 @@ theorem rawSegEnd_null
       calc
         v = (fun z : ℝ × E => z.1 • z.2) z := hzv.symm
         _ = 0 := by simp only [ht0, zero_smul]
-    have hraw0 : (0 : E) ∈ rawSeg (I := I) g p := by
+    have hraw0 : (0 : E) ∈ minimizingDomain (I := I) g p := by
       change ENNReal.ofReal
           (Real.sqrt (g.inner p (0 : TangentSpace I p) 0)) =
         riemannianEDist I p
@@ -1280,7 +1079,7 @@ theorem rawSegEnd_null
     have htlt : z.1 < 1 := lt_of_le_of_lt ht.2 hnlt
     refine ⟨1 / z.1, (one_lt_div htpos).2 htlt, ?_⟩
     rw [← hzv]
-    change (1 / z.1) • (z.1 • z.2) ∈ rawSeg (I := I) g p
+    change (1 / z.1) • (z.1 • z.2) ∈ minimizingDomain (I := I) g p
     rw [smul_smul, div_mul_cancel₀ 1 ht0, one_smul]
     exact hwK.1
 
@@ -1293,7 +1092,7 @@ private theorem rawSegEnd_nullMeas
     (hcpt : @IsCompact M PseudoEMetricSpace.toUniformSpace.toTopologicalSpace
       (Metric.closedEBall p (ENNReal.ofReal R₀))) :
     NullMeasurableSet
-      ((rawSeg (I := I) g p \ rawSegInt (I := I) g p) ∩
+      ((minimizingDomain (I := I) g p \ extendibleMinimizingDomain (I := I) g p) ∩
         closedGBall (I := I) g p R)
       (modelHaar (E := E)) :=
   NullMeasurableSet.of_null (rawSegEnd_null (I := I) g hEnorm p hRR₀ hcpt)
@@ -1397,7 +1196,7 @@ private theorem ball_sub_rawSeg
     {q : M | riemannianEDist I p q < ENNReal.ofReal R} ⊆
       (fun v : E => expMap (I := I) g p
         (show TangentSpace I p from v)) ''
-        (rawSeg (I := I) g p ∩ closedGBall (I := I) g p R) := by
+        (minimizingDomain (I := I) g p ∩ closedGBall (I := I) g p R) := by
   intro q hq
   have hqR₀ : riemannianEDist I p q < ENNReal.ofReal R₀ :=
     hq.trans_le (ENNReal.ofReal_mono hRR₀)
@@ -1420,7 +1219,7 @@ theorem rawBall_integral_eq
       (Metric.closedEBall p (ENNReal.ofReal R₀))) :
     riemannianVolumeMeasure (I := I) (M := M) g
         {q : M | riemannianEDist I p q < ENNReal.ofReal R} =
-      ∫⁻ v in rawSegInt (I := I) g p ∩ gBall (I := I) g p R,
+      ∫⁻ v in extendibleMinimizingDomain (I := I) g p ∩ gBall (I := I) g p R,
         ENNReal.ofReal
           (curveDensity (I := I) g
             (fun t : ℝ => expMap (I := I) g p
@@ -1433,8 +1232,8 @@ theorem rawBall_integral_eq
         ∂(modelHaar (E := E)) := by
   classical
   let B : Set M := {q : M | riemannianEDist I p q < ENNReal.ofReal R}
-  let K : Set E := rawSegInt (I := I) g p ∩ gBall (I := I) g p R
-  let L : Set E := rawSeg (I := I) g p ∩ closedGBall (I := I) g p R
+  let K : Set E := extendibleMinimizingDomain (I := I) g p ∩ gBall (I := I) g p R
+  let L : Set E := minimizingDomain (I := I) g p ∩ closedGBall (I := I) g p R
   let F : E → M := fun v => expMap (I := I) g p
     (show TangentSpace I p from v)
   let D : E → ENNReal := fun v => ENNReal.ofReal
@@ -1450,12 +1249,12 @@ theorem rawBall_integral_eq
     simpa only [L] using isCompact_rawSeg (I := I) g hEnorm p hRR₀ hcpt
   have hLdom : L ⊆ expDomain (I := I) g p := by
     intro v hv
-    change v ∈ rawSeg (I := I) g p ∩ closedGBall (I := I) g p R at hv
-    exact rawSeg_mem_dom (I := I) g p hv.1
+    change v ∈ minimizingDomain (I := I) g p ∩ closedGBall (I := I) g p R at hv
+    exact minimizingDomain_subset_expDomain (I := I) g p hv.1
   have hKsubL : K ⊆ L := by
     intro v hv
-    change v ∈ rawSegInt (I := I) g p ∩ gBall (I := I) g p R at hv
-    refine ⟨rawSegInt_sub (I := I) g hEnorm p hv.1, ?_⟩
+    change v ∈ extendibleMinimizingDomain (I := I) g p ∩ gBall (I := I) g p R at hv
+    refine ⟨extendibleMinimizingDomain_subset_minimizingDomain (I := I) g hEnorm p hv.1, ?_⟩
     change Real.sqrt
       (g.inner p (show TangentSpace I p from v)
         (show TangentSpace I p from v)) ≤ R
@@ -1466,16 +1265,16 @@ theorem rawBall_integral_eq
     exact le_of_lt hvball
   have hdiff_sub :
       L \ K ⊆
-        ((rawSeg (I := I) g p \ rawSegInt (I := I) g p) ∩
+        ((minimizingDomain (I := I) g p \ extendibleMinimizingDomain (I := I) g p) ∩
           closedGBall (I := I) g p R) ∪
           {v : E | Real.sqrt
             (g.inner p (show TangentSpace I p from v)
               (show TangentSpace I p from v)) = R} := by
     rintro v ⟨hvL, hvK⟩
-    change v ∈ rawSeg (I := I) g p ∩ closedGBall (I := I) g p R at hvL
-    change v ∉ rawSegInt (I := I) g p ∩ gBall (I := I) g p R at hvK
+    change v ∈ minimizingDomain (I := I) g p ∩ closedGBall (I := I) g p R at hvL
+    change v ∉ extendibleMinimizingDomain (I := I) g p ∩ gBall (I := I) g p R at hvK
     rcases hvL with ⟨hvraw, hvclosed⟩
-    by_cases hvint : v ∈ rawSegInt (I := I) g p
+    by_cases hvint : v ∈ extendibleMinimizingDomain (I := I) g p
     · right
       change Real.sqrt
         (g.inner p (show TangentSpace I p from v)
@@ -1530,11 +1329,11 @@ theorem rawBall_integral_eq
       _ = ∫⁻ v in K, D v ∂(modelHaar (E := E)) := hInt
   have hFKsub : F '' K ⊆ B := by
     rintro q ⟨v, hvK, rfl⟩
-    change v ∈ rawSegInt (I := I) g p ∩ gBall (I := I) g p R at hvK
+    change v ∈ extendibleMinimizingDomain (I := I) g p ∩ gBall (I := I) g p R at hvK
     change riemannianEDist I p
       (expMap (I := I) g p (show TangentSpace I p from v)) < ENNReal.ofReal R
-    have hvraw : v ∈ rawSeg (I := I) g p :=
-      rawSegInt_sub (I := I) g hEnorm p hvK.1
+    have hvraw : v ∈ minimizingDomain (I := I) g p :=
+      extendibleMinimizingDomain_subset_minimizingDomain (I := I) g hEnorm p hvK.1
     change ENNReal.ofReal
       (Real.sqrt (g.inner p (show TangentSpace I p from v)
         (show TangentSpace I p from v))) =

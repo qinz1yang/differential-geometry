@@ -80,24 +80,6 @@ private lemma gON_li
     exact congrFun hev i] at hliE'
   exact hliE'
 
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M]
-  [T2Space (TangentBundle I M)] [SigmaCompactSpace M] in
-private lemma rawSegInt_down
-    [RiemannianBundle (fun x : M => TangentSpace I x)]
-    (g : SmoothRiemannianMetric I M) (p : M) {u : E} {a b : ℝ}
-    (ha : 0 < a) (hb : 0 < b) (hab : a ≤ b)
-    (hraw : b • u ∈ rawSegInt (I := I) g p) :
-    a • u ∈ rawSegInt (I := I) g p := by
-  rcases hraw with ⟨c, hc, hcraw⟩
-  refine ⟨c * b / a, ?_, ?_⟩
-  · apply (lt_div_iff₀ ha).mpr
-    have hcb : b < c * b := by
-      simpa only [one_mul, mul_one, mul_comm] using
-        (mul_lt_mul_of_pos_right hc hb)
-    nlinarith
-  · rw [smul_smul, div_mul_cancel₀ (c * b) ha.ne']
-    simpa only [smul_smul] using hcraw
-
 omit [NeZero (Module.finrank ℝ E)] [T2Space M] [SigmaCompactSpace M] in
 private lemma raw_min_seg
     [RiemannianBundle (fun x : M => TangentSpace I x)]
@@ -107,7 +89,7 @@ private lemma raw_min_seg
     (L : ℝ) (hL : 0 < L)
     (hdom : ∀ t ∈ Icc (0 : ℝ) L,
       (show TangentSpace I p from t • u) ∈ expDomain (I := I) g p)
-    (hraw : L • u ∈ rawSeg (I := I) g p) :
+    (hraw : L • u ∈ minimizingDomain (I := I) g p) :
     ∀ η : ℝ → M,
       ContMDiffOn 𝓘(ℝ, ℝ) I 1 η (Icc 0 L) →
       η 0 = p →
@@ -242,7 +224,7 @@ private lemma raw_ratio_ray
     (p : M) (u : E) (q L : ℝ)
     (hq : 0 ≤ q) (hL : 0 < L)
     (hunit : g.inner p u u = 1)
-    (hraw : L • u ∈ rawSeg (I := I) g p)
+    (hraw : L • u ∈ minimizingDomain (I := I) g p)
     (v : Fin (Module.finrank ℝ E - 1) → E)
     (hON : ∀ i j, g.inner p (v i) (v j) = if i = j then 1 else 0)
     (hperp : ∀ i, g.inner p u (v i) = 0)
@@ -260,7 +242,7 @@ private lemma raw_ratio_ray
         hyperbolicDensity q (Module.finrank ℝ E - 1) t)
       (Ioo (0 : ℝ) L) := by
   have hLdom : (show TangentSpace I p from L • u) ∈ expDomain (I := I) g p :=
-    rawSeg_mem_dom (I := I) g p hraw
+    minimizingDomain_subset_expDomain (I := I) g p hraw
   have hdom : ∀ t ∈ Icc (0 : ℝ) L,
       (show TangentSpace I p from t • u) ∈ expDomain (I := I) g p := by
     intro t ht
@@ -357,7 +339,7 @@ private lemma rawBall_normal
     (hcpt : @IsCompact M PseudoEMetricSpace.toUniformSpace.toTopologicalSpace
       (Metric.closedEBall p (ENNReal.ofReal R₀)))
     (K : Set E)
-    (hK : K = rawSegInt (I := I) g p ∩
+    (hK : K = extendibleMinimizingDomain (I := I) g p ∩
       (show Set E from gBall (I := I) g p R)) :
     riemannianVolumeMeasure (I := I) (M := M) g
         {q : M | riemannianEDist I p q < ENNReal.ofReal R} =
@@ -380,8 +362,8 @@ private lemma rawBall_normal
   have hKdom : K ⊆ expDomain (I := I) g p := by
     intro v hv
     rw [hK] at hv
-    exact rawSeg_mem_dom (I := I) g p
-      (rawSegInt_sub (I := I) g hEnorm p hv.1)
+    exact minimizingDomain_subset_expDomain (I := I) g p
+      (extendibleMinimizingDomain_subset_minimizingDomain (I := I) g hEnorm p hv.1)
   have hjac (v : E) (hv : v ∈ K) :
       paramDensity (I := I) g F v =
         curveDensity (I := I) g
@@ -455,9 +437,9 @@ private lemma rawSegInt_ray_down
     (u : Metric.sphere (0 : E) 1) {a b : Set.Ioi (0 : ℝ)}
     (hab : a ≤ b)
     (hb : (show E from normalFrame (I := I) (E := E) g p (b.1 • u.1)) ∈
-      rawSegInt (I := I) g p ∩ (show Set E from gBall (I := I) g p A)) :
+      extendibleMinimizingDomain (I := I) g p ∩ (show Set E from gBall (I := I) g p A)) :
     (show E from normalFrame (I := I) (E := E) g p (a.1 • u.1)) ∈
-      rawSegInt (I := I) g p ∩ (show Set E from gBall (I := I) g p A) := by
+      extendibleMinimizingDomain (I := I) g p ∩ (show Set E from gBall (I := I) g p A) := by
   let L : E ≃L[ℝ] TangentSpace I p := normalFrame (I := I) (E := E) g p
   let uT : E := show E from L u.1
   have hunorm : ‖u.1‖ = 1 := by
@@ -466,10 +448,10 @@ private lemma rawSegInt_ray_down
     exact L.map_smul a.1 u.1
   have hLb : (show E from L (b.1 • u.1)) = b.1 • uT := by
     exact L.map_smul b.1 u.1
-  have hbInt : (show E from L (b.1 • u.1)) ∈ rawSegInt (I := I) g p := hb.1
-  have hInt : (show E from L (a.1 • u.1)) ∈ rawSegInt (I := I) g p := by
+  have hbInt : (show E from L (b.1 • u.1)) ∈ extendibleMinimizingDomain (I := I) g p := hb.1
+  have hInt : (show E from L (a.1 • u.1)) ∈ extendibleMinimizingDomain (I := I) g p := by
     rw [hLa]
-    exact rawSegInt_down (I := I) g p a.2 b.2 hab (hLb ▸ hbInt)
+    exact smul_mem_extendibleMinimizingDomain_of_pos_of_le (I := I) g p a.2 hab (hLb ▸ hbInt)
   have hbA : b.1 < A := by
     have hbBall := hb.2
     change Real.sqrt (g.inner p
@@ -504,7 +486,7 @@ private lemma rawBall_polar
       (fun i => radialJacobiField (I := I) g p
         (normalFrame (I := I) (E := E) g p w)
         (normalBasis (I := I) g p i)) 1
-  let T : Set E := L ⁻¹' (rawSegInt (I := I) g p ∩
+  let T : Set E := L ⁻¹' (extendibleMinimizingDomain (I := I) g p ∩
     (show Set E from gBall (I := I) g p A))
   let S : Metric.sphere (0 : E) 1 → Set (Set.Ioi (0 : ℝ)) := fun u =>
     {r | r.1 • u.1 ∈ T}
@@ -529,9 +511,9 @@ private lemma rawBall_polar
       (fun i => radialJacobiField (I := I) g p
         (normalFrame (I := I) (E := E) g p w)
         (normalBasis (I := I) g p i)) 1
-  let Kt : Set E := rawSegInt (I := I) g p ∩
+  let Kt : Set E := extendibleMinimizingDomain (I := I) g p ∩
     (show Set E from gBall (I := I) g p t)
-  let Ka : Set E := rawSegInt (I := I) g p ∩
+  let Ka : Set E := extendibleMinimizingDomain (I := I) g p ∩
     (show Set E from gBall (I := I) g p A)
   let T : Set E := L ⁻¹' Ka
   let S : Metric.sphere (0 : E) 1 → Set (Set.Ioi (0 : ℝ)) := fun u =>
@@ -548,10 +530,10 @@ private lemma rawBall_polar
   have hTdom : ∀ w ∈ T,
       normalFrame (I := I) (E := E) g p w ∈ expDomain (I := I) g p := by
     intro w hw
-    change L w ∈ rawSegInt (I := I) g p ∩
+    change L w ∈ extendibleMinimizingDomain (I := I) g p ∩
       (show Set E from gBall (I := I) g p A) at hw
-    exact rawSeg_mem_dom (I := I) g p
-      (rawSegInt_sub (I := I) g hEnorm p hw.1)
+    exact minimizingDomain_subset_expDomain (I := I) g p
+      (extendibleMinimizingDomain_subset_minimizingDomain (I := I) g hEnorm p hw.1)
   have hDn : ContinuousOn Dn T := by
     simpa only [Dn] using rawDn_cont (I := I) g p T hTdom
   have hS (u : Metric.sphere (0 : E) 1) : MeasurableSet (S u) :=
@@ -590,10 +572,10 @@ private lemma rawBall_polar
         L w ∈ (show Set E from gBall (I := I) g p A) ↔
           w ∈ Metric.ball (0 : E) A := Set.ext_iff.mp hLA w
     change ((show E from normalFrame (I := I) (E := E) g p w) ∈
-          rawSegInt (I := I) g p ∧
+          extendibleMinimizingDomain (I := I) g p ∧
         (show E from normalFrame (I := I) (E := E) g p w) ∈
           (show Set E from gBall (I := I) g p t)) ↔
-      ((L w ∈ rawSegInt (I := I) g p ∧
+      ((L w ∈ extendibleMinimizingDomain (I := I) g p ∧
           L w ∈ (show Set E from gBall (I := I) g p A)) ∧
         w ∈ Metric.ball (0 : E) t)
     constructor
@@ -717,7 +699,7 @@ theorem rawBall_vol_rel
       (fun i => radialJacobiField (I := I) g p
         (normalFrame (I := I) (E := E) g p w)
         (normalBasis (I := I) g p i)) 1
-  let T : Set E := L ⁻¹' (rawSegInt (I := I) g p ∩
+  let T : Set E := L ⁻¹' (extendibleMinimizingDomain (I := I) g p ∩
     (show Set E from gBall (I := I) g p A))
   let S : Metric.sphere (0 : E) 1 → Set (Set.Ioi (0 : ℝ)) := fun u =>
     {r | r.1 • u.1 ∈ T}
@@ -736,7 +718,7 @@ theorem rawBall_vol_rel
     dsimp only [A]
     linarith
   have hsA : s < A := hsR.trans_lt hRA
-  have hK : MeasurableSet (rawSegInt (I := I) g p ∩
+  have hK : MeasurableSet (extendibleMinimizingDomain (I := I) g p ∩
       (show Set E from gBall (I := I) g p A)) :=
     rawSegInt_ball_meas (I := I) g hEnorm p hA hAA₀ hcpt
   have hL : Continuous L :=
@@ -745,10 +727,10 @@ theorem rawBall_vol_rel
   have hTdom : ∀ w ∈ T,
       normalFrame (I := I) (E := E) g p w ∈ expDomain (I := I) g p := by
     intro w hw
-    change L w ∈ rawSegInt (I := I) g p ∩
+    change L w ∈ extendibleMinimizingDomain (I := I) g p ∩
       (show Set E from gBall (I := I) g p A) at hw
-    exact rawSeg_mem_dom (I := I) g p
-      (rawSegInt_sub (I := I) g hEnorm p hw.1)
+    exact minimizingDomain_subset_expDomain (I := I) g p
+      (extendibleMinimizingDomain_subset_minimizingDomain (I := I) g hEnorm p hw.1)
   have hDn_cont : ContinuousOn Dn T := by
     simpa only [Dn] using rawDn_cont (I := I) g p T hTdom
   have hDn_nonneg (w : E) : 0 ≤ Dn w := by
@@ -782,9 +764,9 @@ theorem rawBall_vol_rel
         (measurable_subtype_coe.pow_const d))
   have hS_down (u : Metric.sphere (0 : E) 1)
       {a b : Set.Ioi (0 : ℝ)} (hab : a ≤ b) (hb : b ∈ S u) : a ∈ S u := by
-    change L (b.1 • u.1) ∈ rawSegInt (I := I) g p ∩
+    change L (b.1 • u.1) ∈ extendibleMinimizingDomain (I := I) g p ∩
       (show Set E from gBall (I := I) g p A) at hb
-    change L (a.1 • u.1) ∈ rawSegInt (I := I) g p ∩
+    change L (a.1 • u.1) ∈ extendibleMinimizingDomain (I := I) g p ∩
       (show Set E from gBall (I := I) g p A)
     simpa only [L] using rawSegInt_ray_down (I := I) g p A u hab hb
   have hu_inner (u : Metric.sphere (0 : E) 1) :
@@ -832,14 +814,14 @@ theorem rawBall_vol_rel
     by_cases hbS : b ∈ S u
     · have haS : a ∈ S u := hS_down u hab hbS
       have hbS' := hbS
-      change L (b.1 • u.1) ∈ rawSegInt (I := I) g p ∩
+      change L (b.1 • u.1) ∈ extendibleMinimizingDomain (I := I) g p ∩
         (show Set E from gBall (I := I) g p A) at hbS'
       let uT : E := L u.1
       have huT_one : g.inner p uT uT = 1 := by
         simpa only [uT] using hu_inner u
       have huT_pos : 0 < g.inner p uT uT := by
         simpa only [huT_one] using one_pos
-      have hrawIntB : b.1 • uT ∈ rawSegInt (I := I) g p := by
+      have hrawIntB : b.1 • uT ∈ extendibleMinimizingDomain (I := I) g p := by
         have hLb : L (b.1 • u.1) = b.1 • uT := by
           exact (normalFrame (I := I) (E := E) g p).map_smul b.1 u.1
         rw [← hLb]
@@ -858,12 +840,12 @@ theorem rawBall_vol_rel
         calc
           ell ≤ (c * b.1 + b.1) / 2 := min_le_left _ _
           _ < c * b.1 := by nlinarith
-      have hrawIntL : ell • uT ∈ rawSegInt (I := I) g p := by
+      have hrawIntL : ell • uT ∈ extendibleMinimizingDomain (I := I) g p := by
         refine ⟨c * b.1 / ell, (lt_div_iff₀ hellpos).mpr (by
           simpa only [one_mul] using hellcb), ?_⟩
         simpa only [smul_smul, div_mul_cancel₀ (c * b.1) hellpos.ne'] using hcraw
-      have hrawL : ell • uT ∈ rawSeg (I := I) g p :=
-        rawSegInt_sub (I := I) g hEnorm p hrawIntL
+      have hrawL : ell • uT ∈ minimizingDomain (I := I) g p :=
+        extendibleMinimizingDomain_subset_minimizingDomain (I := I) g hEnorm p hrawIntL
       have hdomB : ∀ t ∈ Set.Icc (0 : ℝ) b.1,
           (show TangentSpace I p from t • uT) ∈ expDomain (I := I) g p := by
         intro t ht
@@ -871,7 +853,7 @@ theorem rawBall_vol_rel
           ⟨div_nonneg ht.1 hellpos.le, (div_le_one hellpos).mpr (ht.2.trans hbell.le)⟩
         have hscale := Exponential.smul_mem_expDomain (I := I) (g := g) (p := p)
           (v := show TangentSpace I p from ell • uT)
-          (rawSeg_mem_dom (I := I) g p hrawL) hfrac
+          (minimizingDomain_subset_expDomain (I := I) g p hrawL) hfrac
         change (show TangentSpace I p from (t / ell) • (ell • uT)) ∈
           expDomain (I := I) g p at hscale
         simpa only [smul_smul, div_mul_cancel₀ t hellpos.ne', one_smul] using hscale
@@ -884,9 +866,9 @@ theorem rawBall_vol_rel
               (curveVelocity (I := I) (radialCurve (I := I) g p uT) t)
               (curveVelocity (I := I) (radialCurve (I := I) g p uT) t) := by
         intro t ht
-        have hrawIntT : t • uT ∈ rawSegInt (I := I) g p :=
-          rawSegInt_down (I := I) g p ht.1 hellpos ht.2.le hrawIntL
-        have hrawT := rawSegInt_sub (I := I) g hEnorm p hrawIntT
+        have hrawIntT : t • uT ∈ extendibleMinimizingDomain (I := I) g p :=
+          smul_mem_extendibleMinimizingDomain_of_pos_of_le (I := I) g p ht.1 ht.2.le hrawIntL
+        have hrawT := extendibleMinimizingDomain_subset_minimizingDomain (I := I) g hEnorm p hrawIntT
         have hnormT : Real.sqrt (g.inner p (t • uT) (t • uT)) = t := by
           calc
             Real.sqrt (g.inner p (t • uT) (t • uT)) =
