@@ -1287,6 +1287,7 @@ import DifferentialGeometry.Analysis.Sobolev.Tools.ArzelaAscoli
 import DifferentialGeometry.Analysis.Sobolev.Tools.Convolution
 import DifferentialGeometry.Analysis.Sobolev.Tools.DifferenceQuotient
 import DifferentialGeometry.Analysis.Sobolev.Tools.DifferenceQuotient.LocalWeakLimit
+import DifferentialGeometry.Analysis.Sobolev.Tools.DifferenceQuotient.IntegrationByParts
 import DifferentialGeometry.Analysis.Sobolev.Tools.DifferenceQuotient.SmoothRegularity
 import DifferentialGeometry.Analysis.Sobolev.Tools.DifferenceQuotient.Support
 import DifferentialGeometry.Analysis.Sobolev.Tools.DifferenceQuotient.WeakDerivative
