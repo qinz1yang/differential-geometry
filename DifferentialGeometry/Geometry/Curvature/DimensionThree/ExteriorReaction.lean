@@ -398,51 +398,9 @@ theorem endomorphismTensor_curvatureOperatorReactionEndomorphism3_pullback
         ).toContinuousLinearMap =
       (4 : ℝ) • (curvatureQuadraticCombination g A x).compContinuousLinearMap
         (fun _ => ι.toContinuousLinearMap) := by
-  let b := (stdOrthonormalBasis ℝ F).reindex (finCongr hdim)
-  let T := (A x).compContinuousLinearMap (fun _ => ι.toContinuousLinearMap)
-  have hT : IsAlgCurvForm (fun a c d e : F => T ![a, c, d, e]) := by
-    convert hA using 1
-    ext a c d e
-    change A x (fun q => ι (![a, c, d, e] q)) = _
-    congr 1
-    ext q
-    fin_cases q <;> rfl
-  apply (Tensor.Multilinear.continuousMultilinearMapBasis b.toBasis 4).repr.injective
-  ext m
-  rw [Tensor.Multilinear.continuousMultilinearMap_basis_repr,
-    Tensor.Multilinear.continuousMultilinearMap_basis_repr]
-  have hvec : (fun q : Fin 4 => b (m q)) = ![b (m 0), b (m 1), b (m 2), b (m 3)] := by
-    ext q
-    fin_cases q <;> rfl
-  simp only [OrthonormalBasis.coe_toBasis, hvec, smul_apply, smul_eq_mul]
-  have hl := endomorphismTensor_curvatureOperatorReactionEndomorphism3_basis
-    b T hT (m 0) (m 1) (m 2) (m 3)
-  have hinv : ∀ i j,
-      (∑ k, delta3 i k * ⟪b k, b j⟫) = (if i = j then 1 else 0) ∧
-      (∑ k, ⟪b i, b k⟫ * delta3 k j) = (if i = j then 1 else 0) := by
-    intro i j
-    simp [delta3, b.inner_eq_ite]
-  have hr := curvatureQuadraticCombination_apply_isometry_basis g x ι
-    (innerSL ℝ : F →L[ℝ] F →L[ℝ] ℝ) hι b.toBasis delta3 hinv A m
-  simp only [OrthonormalBasis.coe_toBasis] at hr
-  have heval : ((curvatureQuadraticCombination g A x).compContinuousLinearMap
-      (fun _ => ι.toContinuousLinearMap)) ![b (m 0), b (m 1), b (m 2), b (m 3)] =
-      curvatureQuadraticCombination g A x (fun q => ι (b (m q))) := by
-    change curvatureQuadraticCombination g A x (fun q =>
-      ι (![b (m 0), b (m 1), b (m 2), b (m 3)] q)) = _
-    congr 1
-    ext q
-    fin_cases q <;> rfl
-  rw [heval, hr]
-  have hR : (fun a c d e : Fin 3 => T ![b a, b c, b d, b e]) =
-      (fun a c d e : Fin 3 => A x (vec4 (ι (b a)) (ι (b c)) (ι (b d)) (ι (b e)))) := by
-    funext a c d e
-    change A x (fun q => ι (![b a, b c, b d, b e] q)) = _
-    congr 1
-    ext q
-    fin_cases q <;> rfl
-  dsimp only at hl
-  rw [hR] at hl
-  exact hl
+  rw [← traceNormalizedCurvatureEndomorphism_curvatureQuadraticReactionTensor hdim,
+    exteriorPower.endomorphismTensor_traceNormalizedCurvatureEndomorphism,
+    curvatureQuadraticReactionTensor_compContinuousLinearMap g x ι hι A, smul_smul]
+  norm_num
 
 end DifferentialGeometry.Geometry.Curvature.DimensionThree

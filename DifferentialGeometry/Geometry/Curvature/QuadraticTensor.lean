@@ -1,5 +1,7 @@
 import DifferentialGeometry.Tensor.RSTensor.MetricTrace.NablaTraceGen
 import DifferentialGeometry.Geometry.Curvature.QuadraticContraction
+import DifferentialGeometry.Geometry.Curvature.EuclideanQuadratic
+import Mathlib.LinearAlgebra.Multilinear.Basis
 
 noncomputable section
 
@@ -470,3 +472,138 @@ theorem curvatureQuadraticCombination_apply_isometry_basis
   exact hcomp
 
 end DifferentialGeometry.PDE.RicciFlow
+
+namespace DifferentialGeometry.Geometry.Curvature
+
+open Bundle
+open PDE.RicciFlow
+open Tensor0SBundle
+open scoped Manifold ContDiff BigOperators RealInnerProductSpace
+
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+variable {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [FiniteDimensional ℝ F]
+
+omit [FiniteDimensional ℝ F] in
+theorem curvatureQuadraticContraction_compContinuousLinearMap
+    {Idx : Type*} [Fintype Idx] (b : OrthonormalBasis Idx ℝ F)
+    (g : SmoothRiemannianMetric I M) (x : M)
+    (ι : F ≃L[ℝ] TangentSpace I x)
+    (hι : ∀ v w, g.inner x (ι v) (ι w) = ⟪v, w⟫)
+    (A : Tensor0SField (𝕜 := ℝ) (I := I) (M := M) (n := ∞) 4) :
+    curvatureQuadraticContraction b
+        ((A x).compContinuousLinearMap (fun _ => ι.toContinuousLinearMap)) =
+      -((curvatureQuadraticPairing g curvatureQuadraticPairingPermutationZeroOneTwoThree A A x).compContinuousLinearMap
+        (fun _ => ι.toContinuousLinearMap)) := by
+  classical
+  let basis := b.toBasis.map ι.toLinearEquiv
+  let δ : Idx → Idx → ℝ := fun i j => if i = j then 1 else 0
+  have hb (i : Idx) : basis i = ι (b i) := rfl
+  have hinv : MetricInverseInBasisGen g x basis δ := by
+    intro i j
+    change (∑ k, δ i k * g.inner x (basis k) (basis j)) = _ ∧
+      (∑ k, g.inner x (basis i) (basis k) * δ k j) = _
+    simp only [hb, hι]
+    simp [δ, b.inner_eq_ite]
+  apply ContinuousMultilinearMap.toMultilinearMap_injective
+  apply Module.Basis.ext_multilinear (fun _ : Fin 4 => b.toBasis)
+  intro m
+  change curvatureQuadraticContraction b _ (fun q => b (m q)) =
+    -((curvatureQuadraticPairing g curvatureQuadraticPairingPermutationZeroOneTwoThree A A x).compContinuousLinearMap
+      (fun _ => ι.toContinuousLinearMap)) (fun q => b (m q))
+  have hvec : (fun q : Fin 4 => b (m q)) = ![b (m 0), b (m 1), b (m 2), b (m 3)] := by
+    ext q
+    fin_cases q <;> rfl
+  rw [hvec, curvatureQuadraticContraction_apply]
+  have hcomp := curvatureQuadraticPairing_zero_one_two_three_component
+    g basis δ hinv A A m
+  have heval (a c d e : F) :
+      ((A x).compContinuousLinearMap (fun _ => ι.toContinuousLinearMap)) ![a, c, d, e] =
+        A x ![ι a, ι c, ι d, ι e] := by
+    change A x _ = _
+    congr 1
+    ext q
+    fin_cases q <;> rfl
+  simp only [heval]
+  have hc : ∀ a c d e : Idx,
+      component0S basis (A x) ![a, c, d, e] = A x ![ι (b a), ι (b c), ι (b d), ι (b e)] := by
+    intro a c d e
+    change A x _ = _
+    congr 1
+    ext q
+    fin_cases q <;> rfl
+  simp only [hc] at hcomp
+  have hsum :
+      (curvatureQuadraticPairing g curvatureQuadraticPairingPermutationZeroOneTwoThree A A x)
+        (fun q => basis (m q)) =
+      ∑ f, ∑ e, A x ![ι (b (m 0)), ι (b e), ι (b (m 1)), ι (b f)] *
+        A x ![ι (b (m 2)), ι (b e), ι (b (m 3)), ι (b f)] := by
+    simpa [δ] using hcomp
+  change _ = -(curvatureQuadraticPairing g
+    curvatureQuadraticPairingPermutationZeroOneTwoThree A A x)
+      (fun q => ι (![b (m 0), b (m 1), b (m 2), b (m 3)] q))
+  have harg : (fun q : Fin 4 => ι (![b (m 0), b (m 1), b (m 2), b (m 3)] q)) =
+      fun q => basis (m q) := by
+    ext q
+    fin_cases q <;> rfl
+  rw [harg, hsum]
+  congr 1
+  exact Finset.sum_comm
+
+theorem curvatureQuadraticReactionTensor_compContinuousLinearMap
+    (g : SmoothRiemannianMetric I M) (x : M)
+    (ι : F ≃L[ℝ] TangentSpace I x)
+    (hι : ∀ v w, g.inner x (ι v) (ι w) = ⟪v, w⟫)
+    (A : Tensor0SField (𝕜 := ℝ) (I := I) (M := M) (n := ∞) 4) :
+    curvatureQuadraticReactionTensor
+        ((A x).compContinuousLinearMap (fun _ => ι.toContinuousLinearMap)) =
+      (-2 : ℝ) • (curvatureQuadraticCombination g A x).compContinuousLinearMap
+        (fun _ => ι.toContinuousLinearMap) := by
+  classical
+  let b := stdOrthonormalBasis ℝ F
+  let δ : Fin (Module.finrank ℝ F) → Fin (Module.finrank ℝ F) → ℝ :=
+    fun i j => if i = j then 1 else 0
+  let T := (A x).compContinuousLinearMap (fun _ => ι.toContinuousLinearMap)
+  apply ContinuousMultilinearMap.toMultilinearMap_injective
+  apply Module.Basis.ext_multilinear (fun _ : Fin 4 => b.toBasis)
+  intro m
+  change curvatureQuadraticReactionTensor T (fun q => b (m q)) =
+    (-2 : ℝ) * ((curvatureQuadraticCombination g A x).compContinuousLinearMap
+      (fun _ => ι.toContinuousLinearMap)) (fun q => b (m q))
+  have hvec : (fun q : Fin 4 => b (m q)) = ![b (m 0), b (m 1), b (m 2), b (m 3)] := by
+    ext q
+    fin_cases q <;> rfl
+  rw [hvec, curvatureQuadraticReactionTensor_eq_of_orthonormalBasis b,
+    curvatureQuadraticReaction_apply]
+  have hinv : ∀ i j,
+      (∑ k, δ i k * ⟪b k, b j⟫) = (if i = j then 1 else 0) ∧
+      (∑ k, ⟪b i, b k⟫ * δ k j) = (if i = j then 1 else 0) := by
+    intro i j
+    simp [δ, b.inner_eq_ite]
+  have hr := curvatureQuadraticCombination_apply_isometry_basis g x ι
+    (innerSL ℝ : F →L[ℝ] F →L[ℝ] ℝ) hι b.toBasis δ hinv A m
+  simp only [OrthonormalBasis.coe_toBasis] at hr
+  have heval : ((curvatureQuadraticCombination g A x).compContinuousLinearMap
+      (fun _ => ι.toContinuousLinearMap)) ![b (m 0), b (m 1), b (m 2), b (m 3)] =
+      curvatureQuadraticCombination g A x (fun q => ι (b (m q))) := by
+    change curvatureQuadraticCombination g A x _ = _
+    congr 1
+    ext q
+    fin_cases q <;> rfl
+  rw [heval, hr]
+  have hB (a c d e : Fin (Module.finrank ℝ F)) :
+      curvatureQuadraticContraction b T ![b a, b c, b d, b e] =
+        -bComp δ (fun a c d e => A x (vec4 (ι (b a)) (ι (b c)) (ι (b d)) (ι (b e))))
+          a c d e := by
+    have heval (a c d e : F) : T ![a, c, d, e] = A x (vec4 (ι a) (ι c) (ι d) (ι e)) := by
+      change A x _ = A x _
+      congr 1
+      ext q
+      fin_cases q <;> rfl
+    simp [curvatureQuadraticContraction_apply, bComp, δ, heval]
+  dsimp only
+  rw [hB, hB, hB, hB]
+  ring
+
+end DifferentialGeometry.Geometry.Curvature
