@@ -4047,7 +4047,9 @@ import DifferentialGeometry.Geometry.Comparison.Volume.RawBallPolarEq
 import DifferentialGeometry.Geometry.Comparison.Volume.RawBallVolumeRatio
 import DifferentialGeometry.Geometry.Comparison.Volume.SegmentBallIntegral
 import DifferentialGeometry.Geometry.Comparison.Volume.SegmentRadialDensity
+import DifferentialGeometry.Geometry.Comparison.Distance.Distribution
 import DifferentialGeometry.Geometry.Comparison.Distance.Gradient
+import DifferentialGeometry.Geometry.Comparison.Distance.RadialIntegral
 import DifferentialGeometry.Geometry.Comparison.Distance.RadialPairing
 import DifferentialGeometry.Geometry.Comparison.Distance.EndpointRate
 import DifferentialGeometry.Geometry.Operator.Laplacian.Barrier
