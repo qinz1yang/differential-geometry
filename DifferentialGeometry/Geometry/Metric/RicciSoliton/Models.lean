@@ -4,7 +4,9 @@ import DifferentialGeometry.Geometry.Metric.RicciSoliton.Normalized
 import DifferentialGeometry.Geometry.Metric.Scaling
 import DifferentialGeometry.Geometry.Connection.ChartBridge.RiemannBasisIdentity
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.RicciNaturalityCross
+import DifferentialGeometry.Geometry.Curvature.CoordRm04Bridge
 import DifferentialGeometry.Geometry.Curvature.MetricLeviCivitaReconcile
+import DifferentialGeometry.Geometry.Curvature.Scaling
 import DifferentialGeometry.Geometry.Curvature.Sphere.ConstCurvature
 import Mathlib.Analysis.InnerProductSpace.Calculus
 import Mathlib.Analysis.Real.Sqrt
@@ -66,6 +68,21 @@ private lemma euclideanMetric_chartRiemannTensor
   rw [chartRiemannTensor_def]
   simp_rw [euclideanMetric_chartChristoffel]
   simp [partialDeriv]
+
+theorem euclideanMetric_metricRm04At_eq_zero (x : E) :
+    metricRm04At (I := 𝓘(Real, E)) (euclideanMetric (E := E)) x = 0 := by
+  let _ : CompleteSpace E := FiniteDimensional.complete Real E
+  ext v
+  have hv : v = vec4 (I := 𝓘(Real, E)) (v 0) (v 1) (v 2) (v 3) := by
+    ext i
+    fin_cases i <;> rfl
+  rw [hv]
+  change metricRm04StdAt (I := 𝓘(Real, E)) (euclideanMetric (E := E)) x
+    (v 0) (v 1) (v 2) (v 3) = 0
+  rw [DifferentialGeometry.metricRm04StdAt_eq_chartRiemannCLM,
+    chartRiemannCLM_apply]
+  simp only [euclideanMetric_chartRiemannTensor, Pi.zero_apply, mul_zero, zero_smul,
+    Finset.sum_const_zero, map_zero]
 
 theorem euclideanMetric_ricciTensor
     (x : E) (v w : TangentSpace 𝓘(Real, E) x) :
@@ -753,6 +770,26 @@ theorem isGaussianGradientRicciSoliton_euclidean :
     intro x
     change gaussianPotential x + 0 = gaussianPotential x
     ring
+
+theorem isGaussianGradientRicciSoliton_metricRm04At_eq_zero
+    {g : SmoothRiemannianMetric I M} {f : C^∞⟮I, M; Real⟯} {sigma : Real}
+    (hGaussian : isGaussianGradientRicciSoliton (E := E) g f sigma) (x : M) :
+    metricRm04At (I := I) g x = 0 := by
+  let _ : CompleteSpace E := FiniteDimensional.complete Real E
+  obtain ⟨hsigma, Ψ, b, hmetric, hpotential⟩ := hGaussian
+  ext v
+  have hv : v = vec4 (I := I) (v 0) (v 1) (v 2) (v 3) := by
+    ext i
+    fin_cases i <;> rfl
+  rw [hv]
+  change metricRm04StdAt (I := I) g x (v 0) (v 1) (v 2) (v 3) = 0
+  have hpull := metricRm04Std_pullbackCross (I := I) (J := 𝓘(Real, E))
+    (euclideanMetric (E := E)) Ψ x (v 0) (v 1) (v 2) (v 3)
+  rw [hmetric, metricRmStd_scale] at hpull
+  simp only [metricRm04StdAt_apply, euclideanMetric_metricRm04At_eq_zero] at hpull
+  have hprod : sigma * metricRm04StdAt (I := I) g x
+      (v 0) (v 1) (v 2) (v 3) = 0 := hpull
+  exact (mul_eq_zero.mp hprod).resolve_left hsigma.ne'
 
 theorem isGaussianGradientRicciSoliton_ricciTensor_eq_zero
     [I.Boundaryless]

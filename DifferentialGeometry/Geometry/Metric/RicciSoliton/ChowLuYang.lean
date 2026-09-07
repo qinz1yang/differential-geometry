@@ -413,4 +413,25 @@ theorem gradientRicciSoliton_isGaussian_of_scalar_eq_zero_of_pos
   exact (isGaussianGradientRicciSoliton_scaleMetric (I := I) hsigma).mp
     hGaussianShift
 
+theorem gradientRicciSoliton_isGaussian_iff_metricRm04At_eq_zero
+    {g : SmoothRiemannianMetric I M} {f : C^∞⟮I, M; Real⟯} {sigma : Real}
+    (hcomplete : RiemannianMetricComplete (I := I) g)
+    (hsol : gradientRicciSoliton (I := I) g f sigma) (hsigma : 0 < sigma) :
+    isGaussianGradientRicciSoliton (E := E) g f sigma ↔
+      ∀ x : M, metricRm04At (I := I) g x = 0 := by
+  constructor
+  · exact isGaussianGradientRicciSoliton_metricRm04At_eq_zero
+  · intro hRm
+    let x : M := Classical.choice (inferInstance : Nonempty M)
+    exact gradientRicciSoliton_isGaussian_of_scalar_eq_zero_of_pos
+      hcomplete hsol hsigma
+      (metricScalarAt_eq_zero_of_metricRm04At_eq_zero g x (hRm x))
+
+theorem normalizedGradientRicciSoliton_isGaussian_iff_metricRm04At_eq_zero
+    {g : SmoothRiemannianMetric I M} {f : C^∞⟮I, M; Real⟯}
+    (h : normalizedGradientRicciSoliton (I := I) g f) :
+    isGaussianGradientRicciSoliton (E := E) g f 1 ↔
+      ∀ x : M, metricRm04At (I := I) g x = 0 :=
+  gradientRicciSoliton_isGaussian_iff_metricRm04At_eq_zero h.1 h.2.1 zero_lt_one
+
 end DifferentialGeometry.Geometry

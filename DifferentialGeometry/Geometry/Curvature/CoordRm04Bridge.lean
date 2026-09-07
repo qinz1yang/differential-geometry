@@ -47,3 +47,38 @@ theorem rm04_eq_inner_riem
     riemannOp_eq_chartRiemannCLM_apply]
 
 end DifferentialGeometry
+
+namespace DifferentialGeometry.Geometry.Curvature
+
+open Bundle Manifold
+open scoped Manifold ContDiff
+
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
+  [FiniteDimensional Real E]
+variable {H : Type*} [TopologicalSpace H]
+variable {I : ModelWithCorners Real E H} [I.Boundaryless]
+variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
+  [IsManifold I ∞ M] [T2Space M]
+
+theorem metricScalarAt_eq_zero_of_metricRm04At_eq_zero
+    (g : SmoothRiemannianMetric I M) (x : M)
+    (hRm : metricRm04At (I := I) g x = 0) :
+    metricScalarAt (I := I) g x = 0 := by
+  let _ : CompleteSpace E := FiniteDimensional.complete Real E
+  have hOp (u v w : TangentSpace I x) :
+      riemannOp (LeviCivita (I := I) g) x u v w = 0 := by
+    let R := riemannOp (LeviCivita (I := I) g) x u v w
+    have hinner : g.inner x R R = 0 := by
+      rw [← DifferentialGeometry.rm04_eq_inner_riem (I := I) g x u v w R]
+      rw [metricRm04StdAt_apply, hRm]
+      rfl
+    by_contra hR
+    exact (ne_of_gt (g.pos x R hR)) hinner
+  apply metricScalarAt_eq_zero_of_ricciTensor_eq_zero (I := I) g x
+  intro v w
+  have hEndo : ricciEndo (I := I) g x v w = 0 := by
+    ext u
+    exact hOp u v w
+  rw [ricciTensor_apply, hEndo, map_zero]
+
+end DifferentialGeometry.Geometry.Curvature
