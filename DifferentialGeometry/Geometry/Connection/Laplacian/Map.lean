@@ -58,3 +58,33 @@ theorem rawBundleConnLap_map
   rfl
 
 end CovariantDerivative
+
+namespace DifferentialGeometry.Geometry.Connection
+
+theorem rawBundleConnLap_const_smul
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+    {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+    {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M] [T2Space M]
+    {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F] [FiniteDimensional ℝ F]
+    {V : M → Type*} [TopologicalSpace (TotalSpace F V)]
+    [∀ x, AddCommGroup (V x)] [∀ x, Module ℝ (V x)]
+    [∀ x, TopologicalSpace (V x)] [∀ x, IsTopologicalAddGroup (V x)]
+    [∀ x, ContinuousSMul ℝ (V x)]
+    [FiberBundle F V] [VectorBundle ℝ F V] [ContMDiffVectorBundle ∞ F V I]
+    (g : SmoothRiemannianMetric I M)
+    (D : CovariantDerivative I F V) (hD : CovariantDerivative.ContMDiffCovariantDerivative D ∞)
+    (R : ∀ x, V x)
+    (hR : ContMDiff I (I.prod 𝓘(ℝ, F)) 2 (fun x => TotalSpace.mk' F x (R x)))
+    (a : ℝ) (x : M) : rawBundleConnLap g D (fun y => a • R y) x =
+      a • rawBundleConnLap g D R x := by
+  let φ : ∀ y, V y →ₗ[ℝ] V y := fun _ => a • LinearMap.id
+  have hmap (S : ∀ y, V y)
+      (hS : ContMDiff I (I.prod 𝓘(ℝ, F)) 1 (fun y => TotalSpace.mk' F y (S y)))
+      (y : M) (X : TangentSpace I y) : D (fun z => φ z (S z)) y X = φ y (D S y X) := by
+    change D (fun z => a • S z) y X = a • D S y X
+    exact congrArg (fun L => L X) (D.isCovariantDerivativeOnUniv.smul_const a
+      ((hS y).mdifferentiableAt one_ne_zero))
+  exact CovariantDerivative.rawBundleConnLap_map (F := F) (V := V) (G := F) (W := V)
+    D hD D φ hmap g R hR x
+
+end DifferentialGeometry.Geometry.Connection

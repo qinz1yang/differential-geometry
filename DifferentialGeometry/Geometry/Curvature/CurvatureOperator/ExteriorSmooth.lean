@@ -1,5 +1,7 @@
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.ExteriorRepresentation
 import DifferentialGeometry.Geometry.Metric.ExteriorEndomorphismRegularity
+import DifferentialGeometry.Geometry.Metric.SelfAdjointSubbundle
+import DifferentialGeometry.Bundle.SmoothSubbundle.VectorBundle
 
 set_option autoImplicit false
 
@@ -45,5 +47,63 @@ theorem contMDiff_traceNormalizedCurvatureEndomorphism (n : ℕ∞ω) (hn : n �
   funext x
   congr 1
   exact exteriorPower.endomorphismTensor_traceNormalizedCurvatureEndomorphism (T x) (hT x)
+
+def traceNormalizedCurvatureSelfAdjointSection
+    (T : ∀ x, Bundle.continuousMultilinearMap ℝ 4 F V x)
+    (hT : ∀ x, IsAlgCurvForm (fun a b c d => T x ![a, b, c, d]))
+    (hTsmooth : ContMDiff I
+      (I.prod 𝓘(ℝ, ContinuousMultilinearMap ℝ (fun _ : Fin 4 => F) ℝ)) ∞
+      (fun x => TotalSpace.mk'
+        (ContinuousMultilinearMap ℝ (fun _ : Fin 4 => F) ℝ)
+        (E := Bundle.continuousMultilinearMap ℝ 4 F V) x (T x))) :
+    letI : ∀ x, FiniteDimensional ℝ (V x) := fun x => VectorBundle.finiteDimensional ℝ F V x
+    letI := totalSpaceTopology F V 2
+    letI := fiberBundle F V 2
+    letI := vector_bundle F V 2
+    letI := contMDiffVectorBundle (IB := I) (n := ∞) F V 2
+    letI := isContMDiffRiemannianBundle (IB := I) (n := ∞) F V 2
+    let S := selfAdjointSubbundle (I := I) (F := ⋀[ℝ]^2 F)
+      (V := fun x => ⋀[ℝ]^2 (V x)) (n := ∞)
+    letI := S.totalSpaceTopology
+    letI := S.fiberBundle
+    Cₛ^∞⟮I; Fin S.rank → ℝ, fun x => S.fiber x⟯ := by
+  dsimp only
+  let : ∀ x, FiniteDimensional ℝ (V x) := fun x => VectorBundle.finiteDimensional ℝ F V x
+  let := totalSpaceTopology F V 2
+  let := fiberBundle F V 2
+  let := vector_bundle F V 2
+  let := contMDiffVectorBundle (IB := I) (n := ∞) F V 2
+  let := isContMDiffRiemannianBundle (IB := I) (n := ∞) F V 2
+  let S := selfAdjointSubbundle (I := I) (F := ⋀[ℝ]^2 F)
+    (V := fun x => ⋀[ℝ]^2 (V x)) (n := ∞)
+  let := S.totalSpaceTopology
+  let := S.fiberBundle
+  let A : ∀ x, S.fiber x := fun x =>
+    ⟨exteriorPower.traceNormalizedCurvatureEndomorphism (T x) (hT x),
+      ContinuousLinearMap.isSelfAdjoint_iff_isSymmetric.mpr
+        (exteriorPower.traceNormalizedCurvatureEndomorphism_isSymmetric (T x) (hT x))⟩
+  refine ⟨A, ?_⟩
+  rw [← contMDiffOn_univ]
+  apply (S.contMDiffOn_section_iff Set.univ isOpen_univ A).mpr
+  exact (contMDiff_traceNormalizedCurvatureEndomorphism F V ∞ le_rfl T hT hTsmooth).contMDiffOn
+
+theorem traceNormalizedCurvatureSelfAdjointSection_coe
+    (T : ∀ x, Bundle.continuousMultilinearMap ℝ 4 F V x)
+    (hT : ∀ x, IsAlgCurvForm (fun a b c d => T x ![a, b, c, d]))
+    (hTsmooth : ContMDiff I
+      (I.prod 𝓘(ℝ, ContinuousMultilinearMap ℝ (fun _ : Fin 4 => F) ℝ)) ∞
+      (fun x => TotalSpace.mk'
+        (ContinuousMultilinearMap ℝ (fun _ : Fin 4 => F) ℝ)
+        (E := Bundle.continuousMultilinearMap ℝ 4 F V) x (T x)))
+    (x : M) :
+    letI : ∀ y, FiniteDimensional ℝ (V y) := fun y => VectorBundle.finiteDimensional ℝ F V y
+    letI := totalSpaceTopology F V 2
+    letI := fiberBundle F V 2
+    letI := vector_bundle F V 2
+    letI := contMDiffVectorBundle (IB := I) (n := ∞) F V 2
+    letI := isContMDiffRiemannianBundle (IB := I) (n := ∞) F V 2
+    ((traceNormalizedCurvatureSelfAdjointSection F V T hT hTsmooth x) :
+        (⋀[ℝ]^2 (V x)) →L[ℝ] ⋀[ℝ]^2 (V x)) =
+      exteriorPower.traceNormalizedCurvatureEndomorphism (T x) (hT x) := rfl
 
 end Bundle.ExteriorPower
