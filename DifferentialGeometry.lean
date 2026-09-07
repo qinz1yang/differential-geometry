@@ -1077,6 +1077,7 @@ import DifferentialGeometry.Analysis.Sobolev.Euclidean.SupportAndDomain.Iterated
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.SupportAndDomain.IteratedSobolevSigmaCompactPatch
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.SupportAndDomain.IteratedSobolevSupportPromotion
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.WeakDerivative.Basic
+import DifferentialGeometry.Analysis.Sobolev.Euclidean.WeakDerivative.Commutation
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.WeakDerivative.Distribution
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.WeakDerivative.FiniteSum
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.WeakDerivative.Closedness
