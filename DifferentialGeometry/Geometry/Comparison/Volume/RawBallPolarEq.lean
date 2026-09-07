@@ -7,6 +7,7 @@ import DifferentialGeometry.Analysis.Integration.Measure.Chart.HaarBasis
 import DifferentialGeometry.Analysis.Integration.Measure.Chart.Density
 import DifferentialGeometry.Analysis.Integration.Measure.Parametric.AreaFormula
 import DifferentialGeometry.Analysis.Integration.Measure.Polar.Evaluation
+import DifferentialGeometry.Analysis.Integration.Measure.Polar.NullSets
 import DifferentialGeometry.Geometry.Comparison.Volume.Segment.Polar.Area
 import DifferentialGeometry.Geometry.Comparison.Volume.Segment.Polar.Basic
 import DifferentialGeometry.Geometry.Comparison.Volume.Segment.Polar.Density
@@ -916,117 +917,6 @@ private theorem rawSegEnd_ray_sub
     rw [smul_smul, div_mul_cancel₀ a hb_pos.ne']
     exact haD
 
-private theorem compactRayEnd_null
-    (K : Set E) (hK : IsCompact K) :
-    (modelHaar (E := E))
-        (K \ ⋃ n : ℕ, K ∩
-          (fun z : ℝ × E => z.1 • z.2) ''
-            (Icc (0 : ℝ) ((n : ℝ) / (n + 1)) ×ˢ K)) = 0 := by
-  classical
-  let _ : Nontrivial E := Module.nontrivial_of_finrank_pos
-    (show 0 < Module.finrank ℝ E from NeZero.pos _)
-  let _ : Measure.IsAddHaarMeasure (modelHaar (E := E)) :=
-    modelHaar_isAddHaarMeasure
-  let C : ℕ → Set E := fun n => K ∩
-    (fun z : ℝ × E => z.1 • z.2) ''
-      (Icc (0 : ℝ) ((n : ℝ) / (n + 1)) ×ˢ K)
-  let B : Set E := K \ ⋃ n : ℕ, C n
-  let f : E → ℝ≥0∞ := B.indicator fun _ => 1
-  have hCcompact : ∀ n : ℕ, IsCompact (C n) := by
-    intro n
-    apply hK.inter
-    exact (isCompact_Icc.prod hK).image
-      (continuous_fst.smul continuous_snd)
-  have hCmeas : ∀ n : ℕ, MeasurableSet (C n) :=
-    fun n => (hCcompact n).measurableSet
-  have hB : MeasurableSet B :=
-    hK.measurableSet.diff (MeasurableSet.iUnion hCmeas)
-  have hf : Measurable f :=
-    measurable_const.indicator hB
-  change (modelHaar (E := E)) B = 0
-  calc
-    (modelHaar (E := E)) B = ∫⁻ z : E, f z ∂modelHaar (E := E) :=
-      (lintegral_indicator_one hB).symm
-    _ = ∫⁻ u : Metric.sphere (0 : E) 1,
-          ∫⁻ r : Ioi (0 : ℝ), f (r.1 • u.1)
-            ∂(Measure.volumeIoiPow (Module.finrank ℝ E - 1))
-          ∂(modelHaar (E := E)).toSphere :=
-      lintegral_polar (modelHaar (E := E)) f hf.aemeasurable
-    _ = 0 := by
-      apply lintegral_eq_zero_of_ae_eq_zero
-      filter_upwards with u
-      let A : Set (Ioi (0 : ℝ)) := {r | r.1 • u.1 ∈ B}
-      have hA : MeasurableSet A := by
-        exact hB.preimage (continuous_subtype_val.smul continuous_const).measurable
-      have hAsub : A.Subsingleton := by
-        rintro ⟨a, ha0⟩ ha ⟨b, hb0⟩ hb
-        change a • u.1 ∈ B at ha
-        change b • u.1 ∈ B at hb
-        rcases ha with ⟨haK, haB⟩
-        rcases hb with ⟨hbK, hbB⟩
-        apply Subtype.ext
-        rcases lt_trichotomy a b with hab | hab | hab
-        · exfalso
-          have ha_pos : 0 < a := ha0
-          have hb_pos : 0 < b := hb0
-          have hdiff : 0 < b - a := sub_pos.mpr hab
-          obtain ⟨n, hn⟩ := exists_nat_gt (a / (b - a))
-          have hn_pos : 0 < (n : ℝ) + 1 := by positivity
-          have hfrac : a / b ≤ (n : ℝ) / ((n : ℝ) + 1) := by
-            rw [div_le_div_iff₀ hb_pos hn_pos]
-            have hn' : a < (n : ℝ) * (b - a) :=
-              (div_lt_iff₀ hdiff).mp hn
-            nlinarith
-          apply haB
-          refine mem_iUnion.2 ⟨n, ?_⟩
-          refine ⟨haK, ?_⟩
-          refine ⟨(a / b, b • u.1), ⟨⟨?_, hbK⟩, ?_⟩⟩
-          · exact ⟨div_nonneg ha_pos.le hb_pos.le, hfrac⟩
-          · change (a / b) • (b • u.1) = a • u.1
-            rw [smul_smul, div_mul_cancel₀ a hb_pos.ne']
-        · exact hab
-        · exfalso
-          have ha_pos : 0 < a := ha0
-          have hb_pos : 0 < b := hb0
-          have hdiff : 0 < a - b := sub_pos.mpr hab
-          obtain ⟨n, hn⟩ := exists_nat_gt (b / (a - b))
-          have hn_pos : 0 < (n : ℝ) + 1 := by positivity
-          have hfrac : b / a ≤ (n : ℝ) / ((n : ℝ) + 1) := by
-            rw [div_le_div_iff₀ ha_pos hn_pos]
-            have hn' : b < (n : ℝ) * (a - b) :=
-              (div_lt_iff₀ hdiff).mp hn
-            nlinarith
-          apply hbB
-          refine mem_iUnion.2 ⟨n, ?_⟩
-          refine ⟨hbK, ?_⟩
-          refine ⟨(b / a, a • u.1), ⟨⟨?_, haK⟩, ?_⟩⟩
-          · exact ⟨div_nonneg hb_pos.le ha_pos.le, hfrac⟩
-          · change (b / a) • (a • u.1) = b • u.1
-            rw [smul_smul, div_mul_cancel₀ b ha_pos.ne']
-      have hbase :
-          (Measure.comap ((↑) : Ioi (0 : ℝ) → ℝ) volume) A = 0 := by
-        rw [comap_subtype_coe_apply measurableSet_Ioi]
-        exact (hAsub.image ((↑) : Ioi (0 : ℝ) → ℝ)).measure_zero volume
-      have hAzero :
-          (Measure.volumeIoiPow (Module.finrank ℝ E - 1)) A = 0 := by
-        rw [Measure.volumeIoiPow]
-        exact withDensity_absolutelyContinuous _ _ hbase
-      calc
-        ∫⁻ r : Ioi (0 : ℝ), f (r.1 • u.1)
-            ∂(Measure.volumeIoiPow (Module.finrank ℝ E - 1)) =
-            ∫⁻ r : Ioi (0 : ℝ), A.indicator (fun _ => 1) r
-              ∂(Measure.volumeIoiPow (Module.finrank ℝ E - 1)) := by
-          apply lintegral_congr
-          intro r
-          by_cases hr : r.1 • u.1 ∈ B
-          · have hrA : r ∈ A := hr
-            simp only [f, Set.indicator_of_mem hr, Set.indicator_of_mem hrA]
-          · have hrA : r ∉ A := hr
-            simp only [f, Set.indicator_of_notMem hr, Set.indicator_of_notMem hrA]
-        _ = (Measure.volumeIoiPow (Module.finrank ℝ E - 1)) A :=
-          lintegral_indicator_one hA
-        _ = 0 := hAzero
-
 theorem rawSegEnd_null
     [PseudoEMetricSpace M] [IsRiemannianManifold I M]
     [IsContinuousRiemannianBundle E (fun x : M ↦ TangentSpace I x)]
@@ -1038,50 +928,14 @@ theorem rawSegEnd_null
     (modelHaar (E := E))
         ((minimizingDomain (I := I) g p \ extendibleMinimizingDomain (I := I) g p) ∩
           closedGBall (I := I) g p R) = 0 := by
-  classical
+  let _ : Measure.IsAddHaarMeasure (modelHaar (E := E)) := modelHaar_isAddHaarMeasure
   let K : Set E := minimizingDomain (I := I) g p ∩ closedGBall (I := I) g p R
-  let C : ℕ → Set E := fun n => K ∩
-    (fun z : ℝ × E => z.1 • z.2) ''
-      (Icc (0 : ℝ) ((n : ℝ) / (n + 1)) ×ˢ K)
-  let B : Set E := K \ ⋃ n : ℕ, C n
-  have hK : IsCompact K := by
-    simpa only [K] using isCompact_rawSeg (I := I) g hEnorm p hRR₀ hcpt
-  have hBzero : (modelHaar (E := E)) B = 0 := by
-    simpa only [B, C] using compactRayEnd_null (E := E) K hK
-  apply measure_mono_null ?_ hBzero
-  rintro v ⟨⟨hvraw, hvnot⟩, hvball⟩
-  refine ⟨⟨hvraw, hvball⟩, ?_⟩
-  intro hvB
-  change v ∈ ⋃ n : ℕ, C n at hvB
-  rcases mem_iUnion.1 hvB with ⟨n, hvC⟩
-  rcases hvC.2 with ⟨z, hz, hzv⟩
-  rcases hz with ⟨ht, hwK⟩
-  by_cases ht0 : z.1 = 0
-  · apply hvnot
-    refine ⟨2, by norm_num, ?_⟩
-    have hv0 : v = 0 := by
-      calc
-        v = (fun z : ℝ × E => z.1 • z.2) z := hzv.symm
-        _ = 0 := by simp only [ht0, zero_smul]
-    have hraw0 : (0 : E) ∈ minimizingDomain (I := I) g p := by
-      change ENNReal.ofReal
-          (Real.sqrt (g.inner p (0 : TangentSpace I p) 0)) =
-        riemannianEDist I p
-          (expMap (I := I) g p (0 : TangentSpace I p))
-      rw [expMap_zero (I := I) g p, riemannianEDist_self]
-      simp
-    simpa only [hv0, smul_zero] using hraw0
-  · apply hvnot
-    have htpos : 0 < z.1 := lt_of_le_of_ne ht.1 (Ne.symm ht0)
-    have hnpos : 0 < (n : ℝ) + 1 := by positivity
-    have hnlt : (n : ℝ) / ((n : ℝ) + 1) < 1 :=
-      (div_lt_one₀ hnpos).2 (by linarith)
-    have htlt : z.1 < 1 := lt_of_le_of_lt ht.2 hnlt
-    refine ⟨1 / z.1, (one_lt_div htpos).2 htlt, ?_⟩
-    rw [← hzv]
-    change (1 / z.1) • (z.1 • z.2) ∈ minimizingDomain (I := I) g p
-    rw [smul_smul, div_mul_cancel₀ 1 ht0, one_smul]
-    exact hwK.1
+  have hK : IsCompact K := isCompact_rawSeg (I := I) g hEnorm p hRR₀ hcpt
+  apply measure_mono_null ?_ (hK.measure_setOf_forall_smul_notMem (modelHaar (E := E)))
+  rintro v ⟨⟨hv, hvnot⟩, hvball⟩
+  refine ⟨⟨hv, hvball⟩, ?_⟩
+  intro c hc hcv
+  exact hvnot ⟨c, hc, hcv.1⟩
 
 private theorem rawSegEnd_nullMeas
     [PseudoEMetricSpace M] [IsRiemannianManifold I M]
