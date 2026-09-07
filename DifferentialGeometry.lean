@@ -4397,3 +4397,4 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.HamiltonHarnack.UhlenbeckSca
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Soliton.Gaussian
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Soliton.Volume
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Soliton.CanonicalCurvature
+import DifferentialGeometry.Geometry.Metric.ExteriorPowerSmooth
