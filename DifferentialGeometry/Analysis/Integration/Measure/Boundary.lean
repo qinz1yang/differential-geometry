@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Integration.Measure.ChartNull
+import DifferentialGeometry.Analysis.Integration.Measure.Invariance
 import DifferentialGeometry.Geometry.Boundary.ModelBoundary
 
 noncomputable section
@@ -31,45 +31,42 @@ theorem modelHaar_frontier_range_eq_zero [HasSmoothBoundary E H I] :
     Measure.absolutelyContinuous_isAddHaarMeasure (modelHaar (E := E)) μ
   exact hac hμ
 
+theorem chartLocalMeasure_boundary_eq_zero [HasSmoothBoundary E H I]
+    (g : SmoothRiemannianMetric I M) (α : M) : chartLocalMeasure g α (I.boundary M) = 0 := by
+  have hb : MeasurableSet (I.boundary M) := (I.isClosed_boundary (by simp : (∞ : WithTop ℕ∞) ≠ 0)).measurableSet
+  rw [chartLocalMeasure_def, Measure.map_apply_of_aemeasurable
+    ((aemeasurable_extChartAt_symm_restrict_target α).mono_ac
+      (withDensity_absolutelyContinuous _ _)) hb]
+  apply withDensity_absolutelyContinuous _ _
+  rw [Measure.restrict_apply' (measurableSet_extChartAt_target α)]
+  have hsub : (extChartAt I α).symm ⁻¹' I.boundary M ∩ (extChartAt I α).target ⊆
+      frontier (range I) := by
+    intro z hz
+    have hs := (extChartAt I α).map_target hz.2
+    have hf := (I.isBoundaryPoint_iff_of_mem_atlas (n := ∞) (by simp)
+      (chart_mem_atlas H α) (by simpa only [extChartAt_source] using hs)).mp hz.1
+    change (extChartAt I α) ((extChartAt I α).symm z) ∈ frontier (extChartAt I α).target at hf
+    rw [(extChartAt I α).right_inv hz.2] at hf
+    rw [mem_frontier_iff_notMem_interior (extChartAt_target_subset_range α hz.2)]
+    intro hint
+    have hchart : (chartAt H α) ((extChartAt I α).symm z) ∈ (chartAt H α).target :=
+      (chartAt H α).map_source (by simpa only [extChartAt_source] using hs)
+    have hval : I ((chartAt H α) ((extChartAt I α).symm z)) = z :=
+      (extChartAt I α).right_inv hz.2
+    have hint' := (chartAt H α).mem_interior_extend_target hchart (hval.symm ▸ hint)
+    rw [hval] at hint'
+    exact (mem_frontier_iff_notMem_interior hz.2).mp hf hint'
+  exact measure_mono_null hsub (modelHaar_frontier_range_eq_zero (I := I))
+
 theorem riemannianVolumeMeasure_boundary_eq_zero
-    [T2Space M] [CompactSpace M] [HasSmoothBoundary E H I]
+    [T2Space M] [SigmaCompactSpace M] [HasSmoothBoundary E H I]
     (g : SmoothRiemannianMetric I M) :
     riemannianVolumeMeasure (I := I) (M := M) g (I.boundary M) = 0 := by
-  classical
-  obtain ⟨s, hs⟩ := finite_chart_cover (H := H) (M := M)
-  apply null_of_chart_cover (H := H)
-    (riemannianVolumeMeasure (I := I) (M := M) g) (I.boundary M) s
-  · rw [hs]
-    exact subset_univ _
-  · intro x hx
-    have hchart := chart_model_null (I := I) (M := M) g x
-      (measure_mono_null inter_subset_left
-        (modelHaar_frontier_range_eq_zero (I := I)))
-    apply measure_mono_null _ hchart
-    intro y hy
-    constructor
-    · exact hy.2
-    change (extChartAt I x) y ∈ frontier (Set.range I)
-    have hy_boundary : I.IsBoundaryPoint y := hy.1
-    have hy_frontier :
-        (extChartAt I x) y ∈ frontier (extChartAt I x).target :=
-      (I.isBoundaryPoint_iff_of_mem_atlas (n := ∞) (by simp)
-        (chart_mem_atlas H x) hy.2).mp hy_boundary
-    have hy_source : y ∈ (extChartAt I x).source := by
-      rw [extChartAt_source]
-      exact hy.2
-    have hy_target : (extChartAt I x) y ∈ (extChartAt I x).target :=
-      (extChartAt I x).map_source hy_source
-    rw [mem_frontier_iff_notMem_interior
-      (OpenPartialHomeomorph.extend_target_subset_range (chartAt H x) hy_target)]
-    intro hy_interior
-    have hy_chart_target : (chartAt H x) y ∈ (chartAt H x).target :=
-      (chartAt H x).map_source hy.2
-    have hy_extend_interior :
-        (extChartAt I x) y ∈ interior (extChartAt I x).target := by
-      change I ((chartAt H x) y) ∈ interior ((chartAt H x).extend I).target
-      exact (chartAt H x).mem_interior_extend_target hy_chart_target hy_interior
-    exact (mem_frontier_iff_notMem_interior hy_target).mp hy_frontier hy_extend_interior
+  rw [riemannianVolumeMeasure_def, riemannianMeasure_def, Measure.sum_apply]
+  · apply ENNReal.tsum_eq_zero.mpr
+    intro α
+    exact withDensity_absolutelyContinuous _ _ (chartLocalMeasure_boundary_eq_zero g α)
+  · exact (I.isClosed_boundary (by simp : (∞ : WithTop ℕ∞) ≠ 0)).measurableSet
 
 end Measure
 end Integral
