@@ -1,4 +1,6 @@
 import DifferentialGeometry.Geometry.Boundary.InducedMetric
+import DifferentialGeometry.Geometry.Boundary.BoundaryGramMatrix
+import DifferentialGeometry.Tensor.BilinearForm
 import DifferentialGeometry.Geometry.Operator.Gradient
 import Mathlib.Analysis.InnerProductSpace.Basic
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
@@ -236,6 +238,44 @@ theorem outwardDir_mem_normalSubspace :
   rw [h1]
   rw [inducedMetricInner_boundaryComponentOfInward (M := M) g x w]
   ring
+omit [FiniteDimensional ℝ E] in
+theorem det_gram_inwardCoord_boundaryChartBasis :
+    (Matrix.of fun i j : Fin (Module.finrank Real hI.boundaryE + 1) =>
+      g.inner (x : M)
+        (Fin.cons (α := fun _ => TangentSpace I (x : M)) (inwardCoord (M := M) x)
+          (fun k => boundaryInclusionMfderiv x (boundaryChartBasisVecFiber x k x)) i)
+        (Fin.cons (α := fun _ => TangentSpace I (x : M)) (inwardCoord (M := M) x)
+          (fun k => boundaryInclusionMfderiv x (boundaryChartBasisVecFiber x k x)) j)).det =
+      g.inner (x : M) (outwardDir (M := M) g x) (outwardDir (M := M) g x) *
+        (boundaryGramMatrix g x x).det := by
+  let b := boundaryChartBasisFamily (M := M) x
+    (mem_baseSet_trivializationAt hI.boundaryE (TangentSpace hI.boundaryI) x)
+  let c : Fin (Module.finrank Real hI.boundaryE) → Real :=
+    fun i => b.repr (boundaryComponentOfInward (M := M) g x) i
+  let v : Fin (Module.finrank Real hI.boundaryE) → TangentSpace I (x : M) :=
+    fun i => boundaryInclusionMfderiv x (boundaryChartBasisVecFiber x i x)
+  have hsum : (∑ i, c i • v i) = inwardTangentialPart (M := M) g x := by
+    rw [inwardTangentialPart_def, ← b.sum_repr (boundaryComponentOfInward (M := M) g x), map_sum]
+    apply Finset.sum_congr rfl
+    intro i _
+    rw [map_smul]
+    congr 1
+  have hw : (∑ i, c i • v i) - inwardCoord (M := M) x = outwardDir (M := M) g x := by
+    rw [hsum, outwardDir_def]
+  have h := (g.inner (x : M)).toBilinForm.det_gram_cons_eq_mul_of_orthogonal
+    (inwardCoord (M := M) x) v c (by
+      intro i
+      rw [hw]
+      exact outwardDir_mem_normalSubspace g x (boundaryChartBasisVecFiber x i x))
+  rw [hw] at h
+  have hgram : (Matrix.of fun i j => (g.inner (x : M)).toBilinForm (v i) (v j)) =
+      boundaryGramMatrix g x x := by
+    ext i j
+    exact (inducedMetricInner_apply g x (boundaryChartBasisVecFiber x i x)
+      (boundaryChartBasisVecFiber x j x)).symm
+  rw [hgram] at h
+  exact h
+
 omit [FiniteDimensional ℝ E] in
 lemma g_inner_outwardDir_inwardCoord :
     g.inner (x : M) (outwardDir (M := M) g x) (inwardCoord (M := M) x) =
