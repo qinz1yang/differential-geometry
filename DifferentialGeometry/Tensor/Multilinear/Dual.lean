@@ -3,6 +3,7 @@ Authors: Jack McCarthy
 -/
 import DifferentialGeometry.Tensor.Auxiliary.PredualBasis
 import DifferentialGeometry.Tensor.Multilinear.Basis
+import DifferentialGeometry.Tensor.Multilinear.BundleComp
 import DifferentialGeometry.Tensor.Multilinear.Fiber
 import DifferentialGeometry.Tensor.Multilinear.Field
 import DifferentialGeometry.Bundle.Dual
@@ -989,5 +990,139 @@ theorem toDualBundleSection_smulByFun {r : ℕ}
   map_smul _ (φ x) (α x)
 
 end DifferentialGeometry.MultilinearSection
+
+end
+
+section
+
+open Bundle
+open scoped Manifold ContDiff
+
+variable {𝕜 : Type*} [NontriviallyNormedField 𝕜]
+  {E : Type*} [NormedAddCommGroup E] [NormedSpace 𝕜 E]
+  {H : Type*} [TopologicalSpace H] {I : ModelWithCorners 𝕜 E H}
+  {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
+  {F : Type*} [NormedAddCommGroup F] [NormedSpace 𝕜 F]
+  {V : M → Type*} [TopologicalSpace (TotalSpace F V)]
+  [∀ x, NormedAddCommGroup (V x)] [∀ x, NormedSpace 𝕜 (V x)]
+  [FiberBundle F V] [VectorBundle 𝕜 F V]
+
+private theorem contMDiff_mkPiAlgebra_bundle (k : ℕ) (n : WithTop ℕ∞) :
+    ContMDiff I (I.prod 𝓘(𝕜, ContinuousMultilinearMap 𝕜 (fun _ : Fin k => 𝕜) 𝕜)) n
+      (fun y => (⟨y, ContinuousMultilinearMap.mkPiAlgebra 𝕜 (Fin k) 𝕜⟩ :
+        TotalSpace (ContinuousMultilinearMap 𝕜 (fun _ : Fin k => 𝕜) 𝕜)
+          (Bundle.continuousMultilinearMap 𝕜 k 𝕜 (Bundle.Trivial M 𝕜)))) := by
+  intro x
+  have hT : ContMDiffAt I
+      (I.prod 𝓘(𝕜, ContinuousMultilinearMap 𝕜 (fun _ : Fin k => 𝕜) 𝕜)) n
+      (fun y => (⟨y, ContinuousMultilinearMap.mkPiAlgebra 𝕜 (Fin k) 𝕜⟩ :
+        TotalSpace (ContinuousMultilinearMap 𝕜 (fun _ : Fin k => 𝕜) 𝕜)
+          (Bundle.continuousMultilinearMap 𝕜 k 𝕜 (Bundle.Trivial M 𝕜)))) x := by
+    rw [contMDiffAt_totalSpace]
+    refine ⟨contMDiffAt_id, ?_⟩
+    have heq : (fun y => (trivializationAt
+        (ContinuousMultilinearMap 𝕜 (fun _ : Fin k => 𝕜) 𝕜)
+        (Bundle.continuousMultilinearMap 𝕜 k 𝕜 (Bundle.Trivial M 𝕜)) x
+          (⟨y, ContinuousMultilinearMap.mkPiAlgebra 𝕜 (Fin k) 𝕜⟩ : TotalSpace
+            (ContinuousMultilinearMap 𝕜 (fun _ : Fin k => 𝕜) 𝕜)
+            (Bundle.continuousMultilinearMap 𝕜 k 𝕜 (Bundle.Trivial M 𝕜)))).2) =
+        (fun _ => ContinuousMultilinearMap.mkPiAlgebra 𝕜 (Fin k) 𝕜) := by
+      funext y
+      apply ContinuousMultilinearMap.ext
+      intro v
+      change (ContinuousMultilinearMap.mkPiAlgebra 𝕜 (Fin k) 𝕜)
+        (fun i => (trivializationAt 𝕜 (Bundle.Trivial M 𝕜) x).symmL 𝕜 y (v i)) = _
+      congr 1
+      funext i
+      rw [Bundle.Trivialization.symmL_apply _ (by simp)]
+      simp
+    rw [heq]
+    exact contMDiffAt_const
+  exact hT
+
+
+theorem ContMDiffWithinAt.tensorOfDualLinearForms_bundle (k : ℕ)
+    (α : Fin k → ∀ x, V x →L[𝕜] 𝕜) {n : WithTop ℕ∞} {s : Set M} {x : M}
+    (hα : ∀ i, ContMDiffWithinAt I (I.prod 𝓘(𝕜, F →L[𝕜] 𝕜)) n
+      (fun y => (⟨y, α i y⟩ : TotalSpace (F →L[𝕜] 𝕜) (Bundle.dual 𝕜 V))) s x) :
+    ContMDiffWithinAt I (I.prod 𝓘(𝕜, ContinuousMultilinearMap 𝕜 (fun _ : Fin k => F) 𝕜)) n
+      (fun y => (⟨y, ContinuousMultilinearMap.tensorOfDualLinearForms 𝕜 (V y) k (fun i => α i y)⟩ :
+        TotalSpace (ContinuousMultilinearMap 𝕜 (fun _ : Fin k => F) 𝕜)
+          (Bundle.continuousMultilinearMap 𝕜 k F V))) s x := by
+  exact (contMDiff_mkPiAlgebra_bundle (I := I) k n).contMDiffAt.contMDiffWithinAt
+    |>.multilinear_bundle_comp hα
+
+theorem ContMDiffAt.tensorOfDualLinearForms_bundle (k : ℕ)
+    (α : Fin k → ∀ x, V x →L[𝕜] 𝕜) {n : WithTop ℕ∞} {x : M}
+    (hα : ∀ i, ContMDiffAt I (I.prod 𝓘(𝕜, F →L[𝕜] 𝕜)) n
+      (fun y => (⟨y, α i y⟩ : TotalSpace (F →L[𝕜] 𝕜) (Bundle.dual 𝕜 V))) x) :
+    ContMDiffAt I (I.prod 𝓘(𝕜, ContinuousMultilinearMap 𝕜 (fun _ : Fin k => F) 𝕜)) n
+      (fun y => (⟨y, ContinuousMultilinearMap.tensorOfDualLinearForms 𝕜 (V y) k (fun i => α i y)⟩ :
+        TotalSpace (ContinuousMultilinearMap 𝕜 (fun _ : Fin k => F) 𝕜)
+          (Bundle.continuousMultilinearMap 𝕜 k F V))) x := by
+  exact (contMDiff_mkPiAlgebra_bundle (I := I) k n).contMDiffAt.multilinear_bundle_comp hα
+
+theorem ContMDiffOn.tensorOfDualLinearForms_bundle (k : ℕ)
+    (α : Fin k → ∀ x, V x →L[𝕜] 𝕜) {n : WithTop ℕ∞} {s : Set M}
+    (hα : ∀ i, ContMDiffOn I (I.prod 𝓘(𝕜, F →L[𝕜] 𝕜)) n
+      (fun y => (⟨y, α i y⟩ : TotalSpace (F →L[𝕜] 𝕜) (Bundle.dual 𝕜 V))) s) :
+    ContMDiffOn I (I.prod 𝓘(𝕜, ContinuousMultilinearMap 𝕜 (fun _ : Fin k => F) 𝕜)) n
+      (fun y => (⟨y, ContinuousMultilinearMap.tensorOfDualLinearForms 𝕜 (V y) k (fun i => α i y)⟩ :
+        TotalSpace (ContinuousMultilinearMap 𝕜 (fun _ : Fin k => F) 𝕜)
+          (Bundle.continuousMultilinearMap 𝕜 k F V))) s := by
+  exact (contMDiff_mkPiAlgebra_bundle (I := I) k n).contMDiffOn.multilinear_bundle_comp hα
+
+theorem ContMDiff.tensorOfDualLinearForms_bundle (k : ℕ)
+    (α : Fin k → ∀ x, V x →L[𝕜] 𝕜) {n : WithTop ℕ∞}
+    (hα : ∀ i, ContMDiff I (I.prod 𝓘(𝕜, F →L[𝕜] 𝕜)) n
+      (fun y => (⟨y, α i y⟩ : TotalSpace (F →L[𝕜] 𝕜) (Bundle.dual 𝕜 V)))) :
+    ContMDiff I (I.prod 𝓘(𝕜, ContinuousMultilinearMap 𝕜 (fun _ : Fin k => F) 𝕜)) n
+      (fun y => (⟨y, ContinuousMultilinearMap.tensorOfDualLinearForms 𝕜 (V y) k (fun i => α i y)⟩ :
+        TotalSpace (ContinuousMultilinearMap 𝕜 (fun _ : Fin k => F) 𝕜)
+          (Bundle.continuousMultilinearMap 𝕜 k F V))) := by
+  exact (contMDiff_mkPiAlgebra_bundle (I := I) k n).multilinear_bundle_comp hα
+
+theorem MDifferentiableWithinAt.tensorOfDualLinearForms_bundle (k : ℕ)
+    (α : Fin k → ∀ x, V x →L[𝕜] 𝕜) {s : Set M} {x : M}
+    (hα : ∀ i, MDifferentiableWithinAt I (I.prod 𝓘(𝕜, F →L[𝕜] 𝕜))
+      (fun y => (⟨y, α i y⟩ : TotalSpace (F →L[𝕜] 𝕜) (Bundle.dual 𝕜 V))) s x) :
+    MDifferentiableWithinAt I (I.prod 𝓘(𝕜, ContinuousMultilinearMap 𝕜 (fun _ : Fin k => F) 𝕜))
+      (fun y => (⟨y, ContinuousMultilinearMap.tensorOfDualLinearForms 𝕜 (V y) k (fun i => α i y)⟩ :
+        TotalSpace (ContinuousMultilinearMap 𝕜 (fun _ : Fin k => F) 𝕜)
+          (Bundle.continuousMultilinearMap 𝕜 k F V))) s x := by
+  have h := (contMDiff_mkPiAlgebra_bundle (I := I) (M := M) k 1).mdifferentiable one_ne_zero
+  exact h.mdifferentiableAt.mdifferentiableWithinAt.multilinear_bundle_comp hα
+
+theorem MDifferentiableAt.tensorOfDualLinearForms_bundle (k : ℕ)
+    (α : Fin k → ∀ x, V x →L[𝕜] 𝕜) {x : M}
+    (hα : ∀ i, MDifferentiableAt I (I.prod 𝓘(𝕜, F →L[𝕜] 𝕜))
+      (fun y => (⟨y, α i y⟩ : TotalSpace (F →L[𝕜] 𝕜) (Bundle.dual 𝕜 V))) x) :
+    MDifferentiableAt I (I.prod 𝓘(𝕜, ContinuousMultilinearMap 𝕜 (fun _ : Fin k => F) 𝕜))
+      (fun y => (⟨y, ContinuousMultilinearMap.tensorOfDualLinearForms 𝕜 (V y) k (fun i => α i y)⟩ :
+        TotalSpace (ContinuousMultilinearMap 𝕜 (fun _ : Fin k => F) 𝕜)
+          (Bundle.continuousMultilinearMap 𝕜 k F V))) x := by
+  have h := (contMDiff_mkPiAlgebra_bundle (I := I) (M := M) k 1).mdifferentiable one_ne_zero
+  exact h.mdifferentiableAt.multilinear_bundle_comp hα
+
+theorem MDifferentiableOn.tensorOfDualLinearForms_bundle (k : ℕ)
+    (α : Fin k → ∀ x, V x →L[𝕜] 𝕜) {s : Set M}
+    (hα : ∀ i, MDifferentiableOn I (I.prod 𝓘(𝕜, F →L[𝕜] 𝕜))
+      (fun y => (⟨y, α i y⟩ : TotalSpace (F →L[𝕜] 𝕜) (Bundle.dual 𝕜 V))) s) :
+    MDifferentiableOn I (I.prod 𝓘(𝕜, ContinuousMultilinearMap 𝕜 (fun _ : Fin k => F) 𝕜))
+      (fun y => (⟨y, ContinuousMultilinearMap.tensorOfDualLinearForms 𝕜 (V y) k (fun i => α i y)⟩ :
+        TotalSpace (ContinuousMultilinearMap 𝕜 (fun _ : Fin k => F) 𝕜)
+          (Bundle.continuousMultilinearMap 𝕜 k F V))) s := by
+  have h := (contMDiff_mkPiAlgebra_bundle (I := I) (M := M) k 1).mdifferentiable one_ne_zero
+  exact h.mdifferentiableOn.multilinear_bundle_comp hα
+
+theorem MDifferentiable.tensorOfDualLinearForms_bundle (k : ℕ)
+    (α : Fin k → ∀ x, V x →L[𝕜] 𝕜)
+    (hα : ∀ i, MDifferentiable I (I.prod 𝓘(𝕜, F →L[𝕜] 𝕜))
+      (fun y => (⟨y, α i y⟩ : TotalSpace (F →L[𝕜] 𝕜) (Bundle.dual 𝕜 V)))) :
+    MDifferentiable I (I.prod 𝓘(𝕜, ContinuousMultilinearMap 𝕜 (fun _ : Fin k => F) 𝕜))
+      (fun y => (⟨y, ContinuousMultilinearMap.tensorOfDualLinearForms 𝕜 (V y) k (fun i => α i y)⟩ :
+        TotalSpace (ContinuousMultilinearMap 𝕜 (fun _ : Fin k => F) 𝕜)
+          (Bundle.continuousMultilinearMap 𝕜 k F V))) := by
+  exact ((contMDiff_mkPiAlgebra_bundle (I := I) k 1).mdifferentiable one_ne_zero).multilinear_bundle_comp hα
 
 end
