@@ -4420,4 +4420,6 @@ import DifferentialGeometry.Geometry.Metric.ExteriorPowerDuality
 import DifferentialGeometry.Geometry.Metric.ExteriorPowerDualityBundle
 import DifferentialGeometry.Geometry.Connection.TensorNabla.ExteriorPower
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.HalfSpace
+import DifferentialGeometry.Analysis.Integration.Measure.ModelHaar
+import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.EuclideanHalfSpace
 import DifferentialGeometry.Analysis.Calculus.Trace

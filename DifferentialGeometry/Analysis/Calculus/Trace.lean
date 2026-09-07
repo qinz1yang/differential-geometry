@@ -1,4 +1,5 @@
 import Mathlib.Analysis.Calculus.FDeriv.Comp
+import Mathlib.Analysis.Calculus.FDeriv.Equiv
 import Mathlib.Analysis.Calculus.FDeriv.Linear
 import Mathlib.Analysis.Normed.Module.FiniteDimension
 import Mathlib.LinearAlgebra.Trace
@@ -34,5 +35,26 @@ theorem trace_fderiv_eq_sum
       ∑ i, fderiv K (fun y => b.repr (u y) i) x (b i) := by
   simpa only [fderivWithin_univ] using
     trace_fderivWithin_eq_sum b uniqueDiffWithinAt_univ hu.differentiableWithinAt
+
+theorem trace_fderivWithin_conj
+    {K V W : Type*} [NontriviallyNormedField K]
+    [NormedAddCommGroup V] [NormedSpace K V]
+    [NormedAddCommGroup W] [NormedSpace K W]
+    (e : V ≃L[K] W) {u : V → V} {s : Set V} {x : W}
+    (hs : UniqueDiffWithinAt K (e.symm ⁻¹' s) x) :
+    LinearMap.trace K W (fderivWithin K (e ∘ u ∘ e.symm) (e.symm ⁻¹' s) x).toLinearMap =
+      LinearMap.trace K V (fderivWithin K u s (e.symm x)).toLinearMap := by
+  rw [e.comp_fderivWithin hs, e.symm.comp_right_fderivWithin hs]
+  exact LinearMap.trace_conj' (fderivWithin K u s (e.symm x)).toLinearMap e.toLinearEquiv
+
+theorem trace_fderiv_conj
+    {K V W : Type*} [NontriviallyNormedField K]
+    [NormedAddCommGroup V] [NormedSpace K V]
+    [NormedAddCommGroup W] [NormedSpace K W]
+    (e : V ≃L[K] W) (u : V → V) (x : W) :
+    LinearMap.trace K W (fderiv K (e ∘ u ∘ e.symm) x).toLinearMap =
+      LinearMap.trace K V (fderiv K u (e.symm x)).toLinearMap := by
+  simpa only [preimage_univ, fderivWithin_univ] using
+    trace_fderivWithin_conj (s := univ) (u := u) e uniqueDiffWithinAt_univ
 
 end DifferentialGeometry.Analysis
