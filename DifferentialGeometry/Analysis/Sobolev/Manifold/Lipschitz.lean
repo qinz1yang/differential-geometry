@@ -1,10 +1,14 @@
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.LipschitzW1
 import DifferentialGeometry.Analysis.Sobolev.Manifold.Embedding.Iterated
 import DifferentialGeometry.Analysis.Integration.Measure.Family.Decomposition
+import DifferentialGeometry.Analysis.Integration.Measure.Chart.MeasureComparison
+import DifferentialGeometry.Geometry.Operator.DirectionalDerivative
+import DifferentialGeometry.Geometry.Coordinates.Fields.Scalar
 import DifferentialGeometry.Geometry.Comparison.Distance.Continuity
 import DifferentialGeometry.Geometry.Metric.Comparison.DistanceScaling
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
+open DifferentialGeometry.Integral.DivergenceTheorem
 
 
 noncomputable section
@@ -258,7 +262,276 @@ theorem chart_pou_lip
   simpa only [v, ρ] using
     (DifferentialGeometry.Analysis.Sobolev.Euclidean.lip_of_local_comp
       hv_local hv_compact hv_amp)
+omit [IsManifold I ∞ M] in
+private lemma chart_raw_zero
+    (α : M) {a : M → ℝ}
+    {y : EuclideanSpace ℝ (Fin (Module.finrank ℝ E))}
+    (hy : y ∉ toEuclidean '' ((extChartAt I α) '' tsupport a)) :
+    chartPushedRaw (I := I) (M := M) α a y = 0 := by
+  by_cases hy_target : y ∈ chartTargetEuclid (I := I) (M := M) α
+  · exact chartPushedRaw_eq_zero_off_image_tsupport
+      (I := I) (M := M) α hy_target hy
+  · exact chartPushedRaw_apply_of_notMem
+      (I := I) (M := M) α a hy_target
 
+omit [IsManifold I ∞ M] in
+private lemma chart_raw_comp
+    (α : M) {a : M → ℝ}
+    (ha_cs : HasCompactSupport a)
+    (ha_supp : tsupport a ⊆ (chartAt H α).source) :
+    IsCompact (toEuclidean '' ((extChartAt I α) '' tsupport a)) := by
+  have hsource : tsupport a ⊆ (extChartAt I α).source := by
+    intro x hx
+    rw [extChartAt_source]
+    exact ha_supp hx
+  have hcont : ContinuousOn (extChartAt I α) (tsupport a) :=
+    (continuousOn_extChartAt α).mono hsource
+  exact (ha_cs.image_of_continuousOn hcont).image
+    (toEuclidean (E := E)).continuous
+
+private lemma chart_raw_smooth
+    [I.Boundaryless]
+    (α : M) {a : M → ℝ}
+    (ha : ContMDiff I 𝓘(ℝ) ∞ a)
+    (ha_cs : HasCompactSupport a)
+    (ha_supp : tsupport a ⊆ (chartAt H α).source) :
+    ContDiff ℝ ∞ (chartPushedRaw (I := I) (M := M) α a) := by
+  classical
+  let K : Set (EuclideanSpace ℝ (Fin (Module.finrank ℝ E))) :=
+    toEuclidean '' ((extChartAt I α) '' tsupport a)
+  have hK_compact : IsCompact K := by
+    simpa only [K] using chart_raw_comp (I := I) (M := M) α ha_cs ha_supp
+  have hK_target : K ⊆ chartTargetEuclid (I := I) (M := M) α := by
+    simpa only [K] using
+      image_toEuclidean_extChartAt_tsupport_subset_chartTargetEuclid
+        (I := I) (M := M) (u := a) (α := α) ha_supp
+  rw [contDiff_iff_contDiffAt]
+  intro y
+  by_cases hy_target : y ∈ chartTargetEuclid (I := I) (M := M) α
+  · have hyE : (toEuclidean (E := E)).symm y ∈ (extChartAt I α).target := by
+      simpa only [chartTargetEuclid_eq_preimage_symm, Set.mem_preimage] using hy_target
+    have hscalar : ContDiffAt ℝ ∞
+        (scalarOnE (I := I) α a) ((toEuclidean (E := E)).symm y) :=
+      (scalarOnE_contDiffWithinAt (I := I) α ha hyE).contDiffAt
+        ((isOpen_extChartAt_target (I := I) α).mem_nhds hyE)
+    have hformula : ContDiffAt ℝ ∞
+        (fun z : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)) =>
+          scalarOnE (I := I) α a ((toEuclidean (E := E)).symm z)) y :=
+      hscalar.comp y (toEuclidean (E := E)).symm.contDiff.contDiffAt
+    apply hformula.congr_of_eventuallyEq
+    filter_upwards [
+      (chartTargetEuclid_isOpen (I := I) (M := M) α).mem_nhds hy_target] with z hz
+    rw [chartPushedRaw_apply_of_mem (I := I) (M := M) α a hz]
+    rfl
+  · have hyK : y ∉ K := fun hy ↦ hy_target (hK_target hy)
+    apply ContDiffAt.congr_of_eventuallyEq
+      (f := fun _ : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)) => (0 : ℝ))
+      contDiffAt_const
+    filter_upwards [hK_compact.isClosed.isOpen_compl.mem_nhds hyK] with z hz
+    exact chart_raw_zero (I := I) (M := M) α hz
+
+omit [IsManifold I ∞ M] in
+private lemma chart_raw_cs
+    (α : M) {a : M → ℝ}
+    (ha_cs : HasCompactSupport a)
+    (ha_supp : tsupport a ⊆ (chartAt H α).source) :
+    HasCompactSupport (chartPushedRaw (I := I) (M := M) α a) := by
+  let K : Set (EuclideanSpace ℝ (Fin (Module.finrank ℝ E))) :=
+    toEuclidean '' ((extChartAt I α) '' tsupport a)
+  have hK_compact : IsCompact K := by
+    simpa only [K] using chart_raw_comp (I := I) (M := M) α ha_cs ha_supp
+  refine HasCompactSupport.of_support_subset_isCompact hK_compact ?_
+  intro y hy
+  by_contra hyK
+  exact hy (chart_raw_zero (I := I) (M := M) α hyK)
+
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+private lemma chart_raw_locLip
+    [T2Space M] [I.Boundaryless]
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
+    (α : M) {u : M → ℝ} {L : ℝ≥0}
+    (hu : ∀ x y, edist (u x) (u y) ≤ L *
+      DifferentialGeometry.riemannianEDistOf (I := I) g x y) :
+    LocallyLipschitzOn (chartTargetEuclid (I := I) (M := M) α)
+      (chartPushedRaw (I := I) (M := M) α u) := by
+  let _ : RiemannianBundle (fun (x : M) ↦ TangentSpace I x) :=
+    ⟨g.toRiemannianMetric⟩
+  let _ : IsContinuousRiemannianBundle E
+      (fun (x : M) ↦ TangentSpace I x) :=
+    ⟨g.inner, g.contMDiff.continuous, fun _ _ _ ↦ rfl⟩
+  intro y hy
+  have hyE : (toEuclidean (E := E)).symm y ∈ (extChartAt I α).target := by
+    simpa only [chartTargetEuclid_eq_preimage_symm, Set.mem_preimage] using hy
+  obtain ⟨C, s, hs, hC⟩ :=
+    DifferentialGeometry.Geometry.Riemannian.chart_inv_edist_le
+      (I := I) α hyE
+  obtain ⟨s₀, hs₀, hs₀s⟩ := mem_nhdsWithin_iff_exists_mem_nhds_inter.mp hs
+  have hs_full : s ∈ 𝓝 ((toEuclidean (E := E)).symm y) := by
+    exact mem_of_superset
+      (inter_mem hs₀ ((isOpen_extChartAt_target (I := I) α).mem_nhds hyE)) hs₀s
+  let S : Set (EuclideanSpace ℝ (Fin (Module.finrank ℝ E))) :=
+    (toEuclidean (E := E)).symm ⁻¹' s
+  have hS : S ∈ 𝓝 y :=
+    (toEuclidean (E := E)).symm.continuous.continuousAt.preimage_mem_nhds hs_full
+  let D : ℝ≥0 := ‖(toEuclidean (E := E)).symm.toContinuousLinearMap‖₊
+  have hto : LipschitzWith D (toEuclidean (E := E)).symm := by
+    simpa only [D] using (toEuclidean (E := E)).symm.lipschitz
+  refine ⟨L * C * D, S ∩ chartTargetEuclid (I := I) (M := M) α,
+    inter_mem (mem_nhdsWithin_of_mem_nhds hS) self_mem_nhdsWithin, ?_⟩
+  intro z hz w hw
+  rw [chartPushedRaw_apply_of_mem (I := I) (M := M) α u hz.2]
+  rw [chartPushedRaw_apply_of_mem (I := I) (M := M) α u hw.2]
+  have hCzw : DifferentialGeometry.riemannianEDistOf (I := I) g
+        ((extChartAt I α).symm ((toEuclidean (E := E)).symm z))
+        ((extChartAt I α).symm ((toEuclidean (E := E)).symm w)) ≤
+      C * edist ((toEuclidean (E := E)).symm z)
+        ((toEuclidean (E := E)).symm w) := by
+    simpa only [DifferentialGeometry.riemannianEDistOf] using
+      hC _ hz.1 _ hw.1
+  calc
+    _ ≤ L * DifferentialGeometry.riemannianEDistOf (I := I) g
+        ((extChartAt I α).symm ((toEuclidean (E := E)).symm z))
+        ((extChartAt I α).symm ((toEuclidean (E := E)).symm w)) := hu _ _
+    _ ≤ L * (C * edist ((toEuclidean (E := E)).symm z)
+        ((toEuclidean (E := E)).symm w)) := mul_le_mul_right hCzw L
+    _ ≤ L * (C * (D * edist z w)) :=
+      mul_le_mul_right (mul_le_mul_right (hto z w) C) L
+    _ = (L * C * D) * edist z w := by simp only [mul_assoc]
+
+theorem exists_lipschitzWith_chartPullZero_mul
+    [T2Space M] [I.Boundaryless]
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
+    (α : M) {a u : M → ℝ} {L : ℝ≥0}
+    (ha : ContMDiff I 𝓘(ℝ) ∞ a)
+    (ha_cs : HasCompactSupport a)
+    (ha_supp : tsupport a ⊆ (chartAt H α).source)
+    (hu : ∀ x y, edist (u x) (u y) ≤ L *
+      DifferentialGeometry.riemannianEDistOf (I := I) g x y) :
+    ∃ C : ℝ≥0, LipschitzWith C
+      (chartPullZero (I := I) α (fun x => a x * u x)) := by
+  classical
+  let rawA := chartPushedRaw (I := I) (M := M) α a
+  let rawU := chartPushedRaw (I := I) (M := M) α u
+  let raw := chartPushedRaw (I := I) (M := M) α (fun x => a x * u x)
+  have hraw_eq : raw = fun y => rawA y * rawU y := by
+    funext y
+    by_cases hy : y ∈ chartTargetEuclid (I := I) (M := M) α
+    · rw [show raw y = a ((extChartAt I α).symm
+          ((toEuclidean (E := E)).symm y)) *
+          u ((extChartAt I α).symm ((toEuclidean (E := E)).symm y)) by
+        exact chartPushedRaw_apply_of_mem (I := I) (M := M) α _ hy]
+      rw [show rawA y = a ((extChartAt I α).symm
+          ((toEuclidean (E := E)).symm y)) by
+        exact chartPushedRaw_apply_of_mem (I := I) (M := M) α _ hy]
+      rw [show rawU y = u ((extChartAt I α).symm
+          ((toEuclidean (E := E)).symm y)) by
+        exact chartPushedRaw_apply_of_mem (I := I) (M := M) α _ hy]
+    · rw [show raw y = 0 by
+        exact chartPushedRaw_apply_of_notMem (I := I) (M := M) α _ hy]
+      rw [show rawA y = 0 by
+        exact chartPushedRaw_apply_of_notMem (I := I) (M := M) α _ hy]
+      simp only [zero_mul]
+  have hrawA_smooth : ContDiff ℝ ∞ rawA := by
+    simpa only [rawA] using chart_raw_smooth (I := I) (M := M) α ha ha_cs ha_supp
+  have hrawA_cs : HasCompactSupport rawA := by
+    simpa only [rawA] using chart_raw_cs (I := I) (M := M) α ha_cs ha_supp
+  obtain ⟨K, hrawA_lip⟩ :=
+    ContDiff.lipschitzWith_of_hasCompactSupport hrawA_cs hrawA_smooth (by simp)
+  have hrawU_local := chart_raw_locLip (I := I) (M := M) g α hu
+  have hmul_local : LocallyLipschitz
+      (fun p : ℝ × ℝ => p.1 * p.2) := by
+    have hmul_smooth : ContDiff ℝ 1 (fun p : ℝ × ℝ => p.1 * p.2) :=
+      contDiff_fst.mul contDiff_snd
+    exact hmul_smooth.locallyLipschitz
+  have hprod_on : LocallyLipschitzOn
+      (chartTargetEuclid (I := I) (M := M) α) (fun y => rawA y * rawU y) := by
+    rw [locallyLipschitzOn_iff_restrict]
+    have hA : LocallyLipschitz
+        ((chartTargetEuclid (I := I) (M := M) α).domRestrict rawA) :=
+      locallyLipschitzOn_iff_restrict.mp hrawA_lip.locallyLipschitz.locallyLipschitzOn
+    have hU : LocallyLipschitz
+        ((chartTargetEuclid (I := I) (M := M) α).domRestrict rawU) :=
+      locallyLipschitzOn_iff_restrict.mp hrawU_local
+    exact hmul_local.comp (hA.prodMk hU)
+  have hrawA_tsupport : tsupport rawA ⊆
+      chartTargetEuclid (I := I) (M := M) α := by
+    let K₀ : Set (EuclideanSpace ℝ (Fin (Module.finrank ℝ E))) :=
+      toEuclidean '' ((extChartAt I α) '' tsupport a)
+    have hK₀_closed : IsClosed K₀ :=
+      (chart_raw_comp (I := I) (M := M) α ha_cs ha_supp).isClosed
+    have hsupp : Function.support rawA ⊆ K₀ := by
+      intro y hy
+      by_contra hyK
+      exact hy (chart_raw_zero (I := I) (M := M) α hyK)
+    have hts : tsupport rawA ⊆ K₀ := closure_minimal hsupp hK₀_closed
+    exact hts.trans (by
+      simpa only [K₀] using
+        image_toEuclidean_extChartAt_tsupport_subset_chartTargetEuclid
+          (I := I) (M := M) (u := a) (α := α) ha_supp)
+  have hraw_local : LocallyLipschitz raw := by
+    rw [hraw_eq]
+    intro y
+    by_cases hy : y ∈ chartTargetEuclid (I := I) (M := M) α
+    · obtain ⟨C, s, hs, hCs⟩ := hprod_on hy
+      obtain ⟨t, ht, hts⟩ := mem_nhdsWithin_iff_exists_mem_nhds_inter.mp hs
+      refine ⟨C, s, mem_of_superset
+        (inter_mem ht ((chartTargetEuclid_isOpen (I := I) (M := M) α).mem_nhds hy))
+        hts, hCs⟩
+    · have hyA : y ∉ tsupport rawA := fun h ↦ hy (hrawA_tsupport h)
+      obtain ⟨s, hs, hsA⟩ := Filter.eventually_iff_exists_mem.mp
+        (notMem_tsupport_iff_eventuallyEq.mp hyA)
+      refine ⟨0, s, hs, ?_⟩
+      intro z hz w hw
+      change edist (rawA z * rawU z) (rawA w * rawU w) ≤ _
+      have hzA : rawA z = 0 := by simpa using hsA z hz
+      have hwA : rawA w = 0 := by simpa using hsA w hw
+      rw [hzA, hwA, zero_mul, zero_mul, edist_self]
+      exact bot_le
+  have hraw_cs : HasCompactSupport raw := by
+    rw [hraw_eq]
+    exact hrawA_cs.mul_right
+  obtain ⟨B₀, hB₀⟩ := hraw_cs.exists_bound_of_continuous hraw_local.continuous
+  let B : ℝ≥0 := ⟨max B₀ 0, le_max_right _ _⟩
+  have hraw_amp : ∀ y, edist (raw y) 0 ≤ B := by
+    intro y
+    rw [edist_zero_right, enorm_eq_nnnorm, ENNReal.coe_le_coe]
+    exact_mod_cast (hB₀ y).trans (le_max_left _ _)
+  obtain ⟨C, hC⟩ :=
+    DifferentialGeometry.Analysis.Sobolev.Euclidean.lip_of_local_comp
+      hraw_local hraw_cs hraw_amp
+  have heq : chartPullZero (I := I) α (fun x => a x * u x) =
+      raw ∘ toEuclidean (E := E) := by
+    funext y
+    by_cases hy : y ∈ (extChartAt I α).target
+    · rw [chartPullZero_mem (I := I) α _ hy, Function.comp_apply]
+      rw [show raw (toEuclidean (E := E) y) =
+          (a * u) ((extChartAt I α).symm y) by
+        have hy' : toEuclidean (E := E) y ∈
+            chartTargetEuclid (I := I) (M := M) α := by
+          rw [chartTargetEuclid_eq_preimage_symm]
+          change (toEuclidean (E := E)).symm (toEuclidean (E := E) y) ∈
+            (extChartAt I α).target
+          simpa only [(toEuclidean (E := E)).symm_apply_apply] using hy
+        change chartPushedRaw (I := I) (M := M) α
+            (fun x => a x * u x) (toEuclidean (E := E) y) = _
+        rw [chartPushedRaw_apply_of_mem (I := I) (M := M) α _ hy']
+        simp only [(toEuclidean (E := E)).symm_apply_apply]
+        rfl]
+      rfl
+    · rw [chartPullZero_nmem (I := I) α _ hy, Function.comp_apply]
+      symm
+      exact chartPushedRaw_apply_of_notMem (I := I) (M := M) α _ (by
+        rw [chartTargetEuclid_eq_preimage_symm]
+        change (toEuclidean (E := E)).symm (toEuclidean (E := E) y) ∉
+          (extChartAt I α).target
+        simpa only [(toEuclidean (E := E)).symm_apply_apply] using hy)
+  refine ⟨C * ‖(toEuclidean (E := E)).toContinuousLinearMap‖₊, ?_⟩
+  rw [heq]
+  exact hC.comp (toEuclidean (E := E)).lipschitz
+
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 private lemma pou_ae_diff
     [T2Space M] [SigmaCompactSpace M] [CompactSpace M] [I.Boundaryless]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
