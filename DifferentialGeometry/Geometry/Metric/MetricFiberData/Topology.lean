@@ -65,6 +65,18 @@ theorem isVonNBounded_inner_self_lt (D : MetricFiberData V) (R : ℝ) :
   change D.inner v v ≤ R
   exact hv.le
 
+abbrev toNormedAddCommGroupOfTopology (D : MetricFiberData V) : NormedAddCommGroup V :=
+  D.toCore.toNormedAddCommGroupOfTopology
+    (D.continuous_inner.comp (continuous_id.prodMk continuous_id)).continuousAt
+    (D.isVonNBounded_inner_self_lt 1)
+
+abbrev toInnerProductSpaceOfTopology (D : MetricFiberData V) :
+    letI : NormedAddCommGroup V := D.toNormedAddCommGroupOfTopology
+    InnerProductSpace ℝ V :=
+  InnerProductSpace.ofCoreOfTopology D.toCore
+    (D.continuous_inner.comp (continuous_id.prodMk continuous_id)).continuousAt
+    (D.isVonNBounded_inner_self_lt 1)
+
 end Topological
 
 section Families

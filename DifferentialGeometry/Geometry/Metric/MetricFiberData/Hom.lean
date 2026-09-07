@@ -59,6 +59,12 @@ def pullback [AddCommGroup V] [Module Real V] [FiniteDimensional Real V]
     change 0 <= D.flat (e v) (e v)
     exact D.nonneg (e v)
 
+def ofFiniteDimensional (V : Type*) [AddCommGroup V] [Module ℝ V]
+    [FiniteDimensional ℝ V] : MetricFiberData V :=
+  let e := (Module.finBasis ℝ V).equivFun.trans
+    (WithLp.linearEquiv 2 ℝ (Fin (Module.finrank ℝ V) → ℝ)).symm
+  pullback e ofInnerProductSpace
+
 private def homFlatLinear [AddCommGroup V] [Module Real V] [FiniteDimensional Real V]
     [AddCommGroup W] [Module Real W] [FiniteDimensional Real W]
     (DV : MetricFiberData V) (DW : MetricFiberData W) :
