@@ -4517,6 +4517,10 @@ import DifferentialGeometry.Analysis.Integration.Measure.NullImage
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.ExteriorReaction
 import DifferentialGeometry.Geometry.Curvature.EuclideanQuadratic
 import DifferentialGeometry.Analysis.Calculus.InjectiveDerivative
+import DifferentialGeometry.Analysis.Sobolev.Euclidean.H1Energy
+import DifferentialGeometry.Analysis.Sobolev.Chart.ChartPullbackLp
+import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletChartPullback
+import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletWeakChartPullback
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Pullback
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Uhlenbeck.CurvatureOperatorEvolution
 import DifferentialGeometry.Bundle.TangentSectionPullback
