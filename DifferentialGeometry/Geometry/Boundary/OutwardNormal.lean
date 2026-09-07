@@ -37,74 +37,6 @@ open DifferentialGeometry.Integral.Measure
 
 abbrev inwardCoordE : E := hI.inwardCoordE
 
-private def PhiLocal (I : ModelWithCorners ℝ E H) [hI : HasSmoothBoundary E H I] :
-    hI.boundaryE → E :=
-  (I : H → E) ∘ hI.inclH ∘ hI.boundaryI.symm
-
-private lemma infty_ne_zero_withTopENat' : (∞ : WithTop ℕ∞) ≠ 0 := by
-  intro h
-  have h' : ((⊤ : ℕ∞) : WithTop ℕ∞) = ((0 : ℕ∞) : WithTop ℕ∞) := h
-  exact ENat.top_ne_zero (WithTop.coe_eq_coe.mp h')
-
-omit [FiniteDimensional ℝ E] in
-private noncomputable def boundaryInclusionModelMfderivLocal
-    (x : BoundaryManifold I M) : hI.boundaryE →L[ℝ] E :=
-  (tangentSpaceModelContinuousLinearEquiv (I := hI.boundaryI) x).arrowCongr
-    (tangentSpaceModelContinuousLinearEquiv (I := I) (x : M))
-    (boundaryInclusionMfderiv x)
-
-omit [FiniteDimensional ℝ E] in
-private lemma dincl_eq_fderiv_PhiLocal (x : BoundaryManifold I M)
-    [Nonempty hI.boundaryH] :
-    boundaryInclusionModelMfderivLocal (M := M) x =
-      fderiv ℝ (PhiLocal I) (extChartAt hI.boundaryI x x) := by
-  unfold boundaryInclusionModelMfderivLocal boundaryInclusionMfderiv
-  unfold tangentSpaceModelContinuousLinearEquiv
-  have h_diff : MDifferentiableAt hI.boundaryI I (boundaryInclusion I M) x :=
-    (boundaryInclusion_contMDiff (I := I) (M := M)).mdifferentiableAt
-      infty_ne_zero_withTopENat'
-  rw [h_diff.mfderiv]
-  have h_range : Set.range hI.boundaryI = Set.univ := hI.boundaryI.range_eq_univ
-  rw [h_range, fderivWithin_univ]
-  have h_chart_eq :
-      chartAt hI.boundaryH x = BoundaryManifold.boundaryChart (I := I) x := by
-    change BoundaryManifold.defaultBoundaryChart (I := I) x =
-      BoundaryManifold.boundaryChart (I := I) x
-    exact BoundaryManifold.defaultBoundaryChart_eq_boundaryChart (I := I) x
-  have h_eq : (writtenInExtChartAt hI.boundaryI I x (boundaryInclusion I M))
-      =ᶠ[𝓝 (extChartAt hI.boundaryI x x)] PhiLocal I := by
-    have h_target_mem : (extChartAt hI.boundaryI x).target ∈
-        𝓝 (extChartAt hI.boundaryI x x) :=
-      extChartAt_target_mem_nhds (I := hI.boundaryI) (M := BoundaryManifold I M) x
-    filter_upwards [h_target_mem] with e he
-    have he_target_chart : hI.boundaryI.symm e ∈ (chartAt hI.boundaryH x).target := by
-      rw [extChartAt_target] at he
-      exact he.1
-    rw [h_chart_eq] at he_target_chart
-    have h_extChart_symm_val :
-        (((extChartAt hI.boundaryI x).symm e : BoundaryManifold I M) : M) =
-          (chartAt H (x : M)).symm (hI.inclH (hI.boundaryI.symm e)) := by
-      change (((chartAt hI.boundaryH x).symm (hI.boundaryI.symm e) :
-          BoundaryManifold I M) : M) = _
-      rw [h_chart_eq]
-      exact BoundaryManifold.boundaryChartInvFun_val_of_mem_target
-        (I := I) x he_target_chart
-    change writtenInExtChartAt hI.boundaryI I x (boundaryInclusion I M) e =
-      PhiLocal I e
-    unfold writtenInExtChartAt
-    simp only [Function.comp_apply]
-    change extChartAt I (boundaryInclusion I M x)
-        (((extChartAt hI.boundaryI x).symm e : BoundaryManifold I M) : M) =
-      PhiLocal I e
-    rw [h_extChart_symm_val]
-    change I (chartAt H (x : M) ((chartAt H (x : M)).symm
-      (hI.inclH (hI.boundaryI.symm e)))) = PhiLocal I e
-    rw [(chartAt H (x : M)).right_inv he_target_chart]
-    rfl
-  rw [Filter.EventuallyEq.fderiv_eq h_eq]
-  ext v
-  rfl
-
 def inwardCoord (x : BoundaryManifold I M) : TangentSpace I (x : M) :=
   (trivializationAt E (TangentSpace I) (x : M)).symm (x : M) hI.inwardCoordE
 
@@ -352,8 +284,9 @@ theorem InwardCoordTransverse_of_HasSmoothBoundary
     rcases hmem with ⟨w, hw⟩
     apply hI.inwardCoordE_transverse (extChartAt hI.boundaryI x x)
     change hI.inwardCoordE ∈ Set.range
-      (fderiv ℝ (PhiLocal I) (extChartAt hI.boundaryI x x))
-    rw [← dincl_eq_fderiv_PhiLocal (I := I) (M := M) x]
+      (fderiv ℝ ((I : H → E) ∘ hI.inclH ∘ hI.boundaryI.symm)
+        (extChartAt hI.boundaryI x x))
+    rw [← boundaryInclusionMfderiv_model_eq_fderiv (I := I) (M := M) x]
     refine ⟨tangentSpaceModelContinuousLinearEquiv (I := hI.boundaryI) x w, ?_⟩
     change tangentSpaceModelContinuousLinearEquiv (I := I) (x : M)
         (boundaryInclusionMfderiv (M := M) x

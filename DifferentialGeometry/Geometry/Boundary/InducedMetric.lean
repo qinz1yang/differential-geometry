@@ -208,10 +208,14 @@ private lemma boundaryInclusion_mdifferentiableAt (x : BoundaryManifold I M) :
     infty_ne_zero_withTopENat
 
 omit [FiniteDimensional ℝ E] in
-private lemma dincl_eq_fderiv_Phi (x : BoundaryManifold I M)
-    [Nonempty hI.boundaryH] :
-    boundaryInclusionModelMfderiv x =
-      fderiv ℝ (Phi I) (extChartAt hI.boundaryI x x) := by
+theorem boundaryInclusionMfderiv_model_eq_fderiv (x : BoundaryManifold I M) :
+    (tangentSpaceModelContinuousLinearEquiv (I := hI.boundaryI) x).arrowCongr
+        (tangentSpaceModelContinuousLinearEquiv (I := I) (x : M))
+        (boundaryInclusionMfderiv x) =
+      fderiv ℝ ((I : H → E) ∘ hI.inclH ∘ hI.boundaryI.symm)
+        (extChartAt hI.boundaryI x x) := by
+  have : Nonempty hI.boundaryH := ⟨chartAt hI.boundaryH x x⟩
+  change boundaryInclusionModelMfderiv x = fderiv ℝ (Phi I) (extChartAt hI.boundaryI x x)
   unfold boundaryInclusionModelMfderiv boundaryInclusionMfderiv
   unfold tangentSpaceModelContinuousLinearEquiv
   rw [(boundaryInclusion_mdifferentiableAt (I := I) (M := M) x).mfderiv]
@@ -284,7 +288,11 @@ lemma dincl_injective (x : BoundaryManifold I M) :
   by_cases hN : Nonempty hI.boundaryH
   · have := hN
     have h_model : Function.Injective (boundaryInclusionModelMfderiv x) := by
-      rw [dincl_eq_fderiv_Phi (I := I) (M := M) x]
+      change Function.Injective
+        ((tangentSpaceModelContinuousLinearEquiv (I := hI.boundaryI) x).arrowCongr
+          (tangentSpaceModelContinuousLinearEquiv (I := I) (x : M))
+          (boundaryInclusionMfderiv x))
+      rw [boundaryInclusionMfderiv_model_eq_fderiv]
       exact fderiv_Phi_injective (extChartAt hI.boundaryI x x)
     intro v w hvw
     apply (tangentSpaceModelContinuousLinearEquiv (I := hI.boundaryI) x).injective
