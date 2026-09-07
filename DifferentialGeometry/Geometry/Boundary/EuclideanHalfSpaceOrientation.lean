@@ -8,6 +8,8 @@ open scoped Manifold ContDiff
 
 namespace DifferentialGeometry.Integral.DivergenceTheorem.WithBoundary
 
+section
+
 variable {n : Nat} [NeZero n] {M : Type*} [TopologicalSpace M]
   [ChartedSpace (EuclideanHalfSpace n) M]
   [IsManifold (modelWithCornersEuclideanHalfSpace n) ∞ M]
@@ -96,5 +98,30 @@ theorem EuclideanHalfSpaceInstance.instHasOrientableBoundary_self_EuclideanHalfS
     (n : ℕ) [NeZero n] : HasOrientableBoundary
       (I := modelWithCornersEuclideanHalfSpace n) (EuclideanHalfSpace n) :=
   instHasOrientableBoundaryEuclideanHalfSpace
+
+end
+
+section
+
+variable {n : Nat} {M : Type*} [TopologicalSpace M]
+  [ChartedSpace (EuclideanHalfSpace (n + 1)) M]
+  [IsManifold (modelWithCornersEuclideanHalfSpace (n + 1)) ∞ M]
+
+local notation "J" => modelWithCornersEuclideanHalfSpace (n + 1)
+
+theorem outwardNormal_inner_chart_euclideanHalfSpace_eq_neg_sqrt_mul_head
+    (g : SmoothRiemannianMetric J M) (alpha x : BoundaryManifold J M)
+    (hx : (x : M) ∈ (chartAt (EuclideanHalfSpace (n + 1)) (alpha : M)).source)
+    (v : TangentSpace J (x : M)) :
+    g.inner (x : M) (outwardNormal (M := M) g x) v =
+      -Real.sqrt (g.inner (x : M) (outwardDirAt (M := M) g alpha x)
+        (outwardDirAt (M := M) g alpha x)) *
+        ((trivializationAt (EuclideanSpace Real (Fin (n + 1))) (TangentSpace J)
+          (alpha : M)).continuousLinearMapAt Real (x : M) v) 0 := by
+  rw [← outwardNormalAt_eq_outwardNormal_on_chart g alpha hx]
+  exact outwardNormalAt_inner_eq_neg_sqrt_mul_of_sub_mem_range g alpha x v _
+    (sub_chart_head_smul_inwardCoordAt_mem_range_boundaryInclusionMfderiv alpha x hx v)
+
+end
 
 end DifferentialGeometry.Integral.DivergenceTheorem.WithBoundary

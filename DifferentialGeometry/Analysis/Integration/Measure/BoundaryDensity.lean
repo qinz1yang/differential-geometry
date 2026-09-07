@@ -2,6 +2,7 @@ import DifferentialGeometry.Analysis.Integration.Measure.BasisHaar
 import DifferentialGeometry.Analysis.Integration.Measure.ModelHaar
 import DifferentialGeometry.Geometry.Boundary.BoundaryGramMatrix
 import DifferentialGeometry.Geometry.Boundary.EuclideanHalfSpaceInstance
+import DifferentialGeometry.Geometry.Boundary.EuclideanHalfSpaceOrientation
 
 open MeasureTheory
 
@@ -115,6 +116,59 @@ variable {n : Nat} {M : Type*} [TopologicalSpace M]
   [ChartedSpace (EuclideanHalfSpace (n + 1)) M]
   [IsManifold (modelWithCornersEuclideanHalfSpace (n + 1)) ∞ M]
 
+local notation "J" => modelWithCornersEuclideanHalfSpace (n + 1)
+local notation "K" => HasSmoothBoundary.boundaryModel J
+local notation "EB" => HasSmoothBoundary.boundaryModelE J
+
+theorem modelHaarScalarFactor_mul_chartDensity_chart_euclideanHalfSpace_eq_normal_mul_induced
+    (g : SmoothRiemannianMetric J M) (alpha x : BoundaryManifold J M)
+    (hx : (x : M) ∈ (chartAt (EuclideanHalfSpace (n + 1)) (alpha : M)).source) :
+    (MeasureTheory.Measure.addHaarScalarFactor
+        (modelHaar (E := EuclideanSpace Real (Fin (n + 1)))) volume : Real) *
+        chartDensity g (alpha : M) (x : M) =
+      Real.sqrt (g.inner (x : M) (outwardDirAt (M := M) g alpha x)
+        (outwardDirAt (M := M) g alpha x)) *
+        ((MeasureTheory.Measure.addHaarScalarFactor
+          (modelHaar (E := EuclideanSpace Real (Fin n))) volume : Real) *
+          chartDensity (inducedMetric g) alpha x) := by
+  let : IsManifold K ∞ (BoundaryManifold J M) := BoundaryManifold.isManifold
+  have hnonneg : 0 ≤ g.inner (x : M) (outwardDirAt (M := M) g alpha x)
+      (outwardDirAt (M := M) g alpha x) := by
+    by_cases h : outwardDirAt (M := M) g alpha x = 0
+    · rw [h, map_zero]
+    · exact (g.pos (x : M) _ h).le
+  have ha := modelHaarScalarFactor_mul_chartDensity g (alpha : M) (x : M)
+    (EuclideanSpace.basisFun (Fin (n + 1)) Real)
+  have hb := modelHaarScalarFactor_mul_chartDensity (inducedMetric g) alpha x
+    (EuclideanSpace.basisFun (Fin n) Real)
+  simp only [EuclideanSpace.basisFun_apply] at ha hb
+  rw [ha, hb, det_gram_chart_euclideanHalfSpace_eq_normal_sq_mul_det_induced g alpha x hx,
+    Real.sqrt_mul hnonneg]
+  congr 3
+  ext i j
+  simp only [Matrix.of_apply]
+  congr 2
+  · exact congrArg ((trivializationAt EB (TangentSpace K) alpha).symmL Real x)
+      (EuclideanSpace.basisFun_apply (Fin n) Real i).symm
+  · exact (EuclideanSpace.basisFun_apply (Fin n) Real j).symm
+
+theorem modelHaarScalarFactor_mul_inducedDensity_mul_outwardNormal_inner_chart_euclideanHalfSpace
+    (g : SmoothRiemannianMetric J M) (alpha x : BoundaryManifold J M)
+    (hx : (x : M) ∈ (chartAt (EuclideanHalfSpace (n + 1)) (alpha : M)).source)
+    (v : TangentSpace J (x : M)) :
+    ((MeasureTheory.Measure.addHaarScalarFactor
+        (modelHaar (E := EuclideanSpace Real (Fin n))) volume : Real) *
+        chartDensity (inducedMetric g) alpha x) *
+        g.inner (x : M) (outwardNormal (M := M) g x) v =
+      -(((MeasureTheory.Measure.addHaarScalarFactor
+          (modelHaar (E := EuclideanSpace Real (Fin (n + 1)))) volume : Real) *
+          chartDensity g (alpha : M) (x : M)) *
+        ((trivializationAt (EuclideanSpace Real (Fin (n + 1))) (TangentSpace J)
+          (alpha : M)).continuousLinearMapAt Real (x : M) v) 0) := by
+  rw [modelHaarScalarFactor_mul_chartDensity_chart_euclideanHalfSpace_eq_normal_mul_induced g alpha x hx,
+    outwardNormal_inner_chart_euclideanHalfSpace_eq_neg_sqrt_mul_head g alpha x hx]
+  ring
+
 theorem modelHaarScalarFactor_mul_chartDensity_euclideanHalfSpace_eq_normal_mul_induced
     (g : SmoothRiemannianMetric (modelWithCornersEuclideanHalfSpace (n + 1)) M)
     (x : BoundaryManifold (modelWithCornersEuclideanHalfSpace (n + 1)) M) :
@@ -125,18 +179,9 @@ theorem modelHaarScalarFactor_mul_chartDensity_euclideanHalfSpace_eq_normal_mul_
         ((MeasureTheory.Measure.addHaarScalarFactor
           (modelHaar (E := EuclideanSpace Real (Fin n))) volume : Real) *
           chartDensity (inducedMetric g) x x) := by
-  let : IsManifold (EuclideanHalfSpaceInstance.instHasSmoothBoundary (n + 1)).boundaryI ∞
-      (BoundaryManifold (modelWithCornersEuclideanHalfSpace (n + 1)) M) :=
-    BoundaryManifold.isManifold
-  have hboundary := modelHaarScalarFactor_mul_chartDensity_self_euclideanSpace
-    (I := (EuclideanHalfSpaceInstance.instHasSmoothBoundary (n + 1)).boundaryI)
-    (M := BoundaryManifold (modelWithCornersEuclideanHalfSpace (n + 1)) M)
-    (inducedMetric g) x
-  rw [modelHaarScalarFactor_mul_chartDensity_self_euclideanSpace,
-    det_gram_euclideanHalfSpace_eq_normal_sq_mul_det_induced,
-    Real.sqrt_mul (g_inner_outwardDir_pos g x).le]
-  congr 1
-  exact hboundary.symm
+  simpa only [outwardDirAt_self] using
+    modelHaarScalarFactor_mul_chartDensity_chart_euclideanHalfSpace_eq_normal_mul_induced
+      g x x (mem_chart_source _ _)
 
 theorem modelHaarScalarFactor_mul_inducedDensity_mul_outwardNormal_inner_euclideanHalfSpace
     (g : SmoothRiemannianMetric (modelWithCornersEuclideanHalfSpace (n + 1)) M)
@@ -151,9 +196,16 @@ theorem modelHaarScalarFactor_mul_inducedDensity_mul_outwardNormal_inner_euclide
           chartDensity g (x : M) (x : M)) *
         (tangentSpaceModelContinuousLinearEquiv
           (I := modelWithCornersEuclideanHalfSpace (n + 1)) (x : M) v) 0) := by
-  rw [modelHaarScalarFactor_mul_chartDensity_euclideanHalfSpace_eq_normal_mul_induced,
-    outwardNormal_inner_euclideanHalfSpace_eq_neg_sqrt_mul_head]
-  ring
+  have h := modelHaarScalarFactor_mul_inducedDensity_mul_outwardNormal_inner_chart_euclideanHalfSpace
+    g x x (mem_chart_source _ _) v
+  have hchart : (trivializationAt (EuclideanSpace Real (Fin (n + 1)))
+      (TangentSpace J) (x : M)).continuousLinearMapAt Real (x : M) v =
+      tangentSpaceModelContinuousLinearEquiv (I := J) (x : M) v := by
+    rw [TangentBundle.continuousLinearMapAt_trivializationAt (mem_chart_source _ _),
+      mfderiv_extChartAt_self]
+    rfl
+  rw [hchart] at h
+  exact h
 
 end
 

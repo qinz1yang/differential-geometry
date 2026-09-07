@@ -669,6 +669,35 @@ theorem boundaryInclusionMfderiv_chart_symm_euclideanHalfSpace
     (trivializationAt (EuclideanSpace Real (Fin (n + 1))) (TangentSpace J) (alpha : M)) hx] at hw
   exact hw
 
+theorem sub_chart_head_smul_inwardCoordAt_mem_range_boundaryInclusionMfderiv
+    (alpha x : BoundaryManifold J M)
+    (hx : (x : M) ∈ (chartAt (EuclideanHalfSpace (n + 1)) (alpha : M)).source)
+    (v : TangentSpace J (x : M)) :
+    v - ((trivializationAt (EuclideanSpace Real (Fin (n + 1))) (TangentSpace J)
+      (alpha : M)).continuousLinearMapAt Real (x : M) v) 0 • inwardCoordAt (M := M) alpha x ∈
+      LinearMap.range (boundaryInclusionMfderiv (M := M) x).toLinearMap := by
+  let T := trivializationAt (EuclideanSpace Real (Fin (n + 1))) (TangentSpace J) (alpha : M)
+  let A := T.continuousLinearMapAt Real (x : M)
+  let L := T.symmL Real (x : M)
+  let u := A v - (A v) 0 • EuclideanSpace.single (0 : Fin (n + 1)) (1 : Real)
+  have hu : u 0 = 0 := by simp [u]
+  have hur : u ∈ Set.range (EuclideanHalfSpaceInstance.inclEuclidean (n + 1)) := by
+    rw [EuclideanHalfSpaceInstance.range_inclEuclidean]
+    exact hu
+  obtain ⟨w, hw⟩ := hur
+  refine ⟨(trivializationAt EB (TangentSpace K) alpha).symmL Real x w, ?_⟩
+  have h := congrArg (fun F => F w)
+    (boundaryInclusionMfderiv_chart_symm_euclideanHalfSpace alpha x hx)
+  change boundaryInclusionMfderiv x ((trivializationAt EB (TangentSpace K) alpha).symmL Real x w) =
+    L (EuclideanHalfSpaceInstance.inclEuclidean (n + 1) w) at h
+  rw [hw] at h
+  change boundaryInclusionMfderiv x ((trivializationAt EB (TangentSpace K) alpha).symmL Real x w) = _
+  rw [h]
+  have hin : L (EuclideanSpace.single 0 1) = inwardCoordAt (M := M) alpha x :=
+    Trivialization.symmL_apply (R := Real) T hx _
+  change L (A v - (A v) 0 • EuclideanSpace.single 0 1) = _
+  rw [map_sub, map_smul, hin, Trivialization.symmL_continuousLinearMapAt T hx]
+
 theorem det_gram_chart_euclideanHalfSpace_eq_normal_sq_mul_det_induced
     (g : SmoothRiemannianMetric J M) (alpha x : BoundaryManifold J M)
     (hx : (x : M) ∈ (chartAt (EuclideanHalfSpace (n + 1)) (alpha : M)).source) :
