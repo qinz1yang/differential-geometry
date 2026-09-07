@@ -181,6 +181,8 @@ import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.SlotCurry.Defs
 import DifferentialGeometry.Analysis.Elliptic.DistributionalSupersolution
 import DifferentialGeometry.Analysis.Elliptic.Euclidean.WeakHarnack
 import DifferentialGeometry.Analysis.Elliptic.Euclidean.Restriction
+import DifferentialGeometry.Analysis.Elliptic.Euclidean.Regularity.DifferenceQuotient
+import DifferentialGeometry.Analysis.Elliptic.Euclidean.Regularity.SecondOrder
 import DifferentialGeometry.Analysis.Elliptic.Lichnerowicz
 import DifferentialGeometry.Analysis.Elliptic.LichnerowiczSpectral
 import DifferentialGeometry.Geometry.Metric.PointwiseInner.Bounds
