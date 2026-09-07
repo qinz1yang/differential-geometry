@@ -2405,7 +2405,7 @@ theorem segmentBall_area_eq [ConnectedSpace M] [PseudoEMetricSpace M]
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-theorem segBall_reg_zero [ConnectedSpace M] [PseudoEMetricSpace M]
+theorem segmentBall_complement_volume_zero [ConnectedSpace M] [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun y : M ↦ TangentSpace I y)]
     (g : SmoothRiemannianMetric I M)

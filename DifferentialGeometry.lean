@@ -4044,3 +4044,5 @@ import DifferentialGeometry.Topology.FiniteSubdivision
 import DifferentialGeometry.Geometry.Comparison.Volume.BishopRawDensity
 import DifferentialGeometry.Geometry.Comparison.Volume.RawBallPolarEq
 import DifferentialGeometry.Geometry.Comparison.Volume.RawBallVolumeRatio
+import DifferentialGeometry.Geometry.Comparison.Volume.SegmentBallIntegral
+import DifferentialGeometry.Geometry.Comparison.Volume.SegmentRadialDensity
