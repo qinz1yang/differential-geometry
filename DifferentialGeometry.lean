@@ -4466,3 +4466,9 @@ import DifferentialGeometry.Topology.Morse.RegularSublevelBoundary
 import DifferentialGeometry.Topology.Morse.SublevelInclusion
 import DifferentialGeometry.Geometry.Metric.Pullback.Immersion
 import DifferentialGeometry.Geometry.Boundary.Corestrict
+import DifferentialGeometry.Topology.Morse.SublevelEuclidean
+import DifferentialGeometry.Topology.Morse.SublevelBoundaryDiffeomorph
+import DifferentialGeometry.Analysis.Integration.Measure.PullbackCross
+import DifferentialGeometry.Topology.Morse.LevelSetInclusion
+import DifferentialGeometry.Geometry.Boundary.SublevelMetric
+import DifferentialGeometry.Analysis.Integration.Measure.SublevelSurface
