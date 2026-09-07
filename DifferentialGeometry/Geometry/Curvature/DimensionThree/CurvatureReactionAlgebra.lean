@@ -25,6 +25,29 @@ def curvatureOperatorReactionEndomorphism3
       (((LinearMap.trace Real V A) ^ 2 - LinearMap.trace Real V (A.comp A)) / (2 : Real)) •
         LinearMap.id
 
+theorem curvatureOperatorReactionEndomorphism3_smul
+    {V : Type*} [AddCommGroup V] [Module ℝ V] [FiniteDimensional ℝ V]
+    (r : ℝ) (A : V →ₗ[ℝ] V) :
+    curvatureOperatorReactionEndomorphism3 (r • A) =
+      r ^ 2 • curvatureOperatorReactionEndomorphism3 A := by
+  have hsq : (r • A).comp (r • A) = r ^ 2 • A.comp A := by
+    ext v
+    simp only [LinearMap.comp_apply, LinearMap.smul_apply, map_smul, smul_smul, pow_two]
+  unfold curvatureOperatorReactionEndomorphism3
+  rw [hsq]
+  simp only [map_smul, smul_eq_mul, smul_add, smul_sub, smul_smul]
+  module
+
+theorem trace_curvatureOperatorReactionEndomorphism3
+    {V : Type*} [AddCommGroup V] [Module ℝ V] [FiniteDimensional ℝ V]
+    (hdim : Module.finrank ℝ V = 3) (A : V →ₗ[ℝ] V) :
+    LinearMap.trace ℝ V (curvatureOperatorReactionEndomorphism3 A) =
+      ((LinearMap.trace ℝ V A) ^ 2 + LinearMap.trace ℝ V (A.comp A)) / 2 := by
+  unfold curvatureOperatorReactionEndomorphism3
+  simp only [map_add, map_sub, map_smul, smul_eq_mul, LinearMap.trace_id, hdim,
+    Nat.cast_ofNat]
+  ring
+
 theorem curvatureOperatorReactionEndomorphism3_smul_id
     {V : Type*} [AddCommGroup V] [Module ℝ V] [FiniteDimensional ℝ V]
     (hdim : Module.finrank ℝ V = 3) (r : ℝ) :
@@ -78,6 +101,18 @@ def curvatureOperatorReactionSelfAdjoint3 (A : selfAdjoint (E →L[ℝ] E)) :
 theorem curvatureOperatorReactionSelfAdjoint3_coe (A : selfAdjoint (E →L[ℝ] E)) :
     (curvatureOperatorReactionSelfAdjoint3 A : E →L[ℝ] E) =
       (curvatureOperatorReactionEndomorphism3 (A : E →L[ℝ] E).toLinearMap).toContinuousLinearMap := rfl
+
+theorem curvatureOperatorReactionSelfAdjoint3_smul
+    (r : ℝ) (A : selfAdjoint (E →L[ℝ] E)) :
+    curvatureOperatorReactionSelfAdjoint3 (r • A) =
+      r ^ 2 • curvatureOperatorReactionSelfAdjoint3 A := by
+  apply Subtype.ext
+  change (curvatureOperatorReactionEndomorphism3
+    (r • (A : E →L[ℝ] E).toLinearMap)).toContinuousLinearMap =
+    r ^ 2 • (curvatureOperatorReactionEndomorphism3
+      (A : E →L[ℝ] E).toLinearMap).toContinuousLinearMap
+  rw [curvatureOperatorReactionEndomorphism3_smul]
+  rfl
 
 end
 
@@ -149,6 +184,30 @@ theorem curvatureOperatorReaction3_diagonal (l1 l2 l3 : Real) :
   fin_cases i <;> fin_cases j <;>
     simp [Matrix.diagonal, Matrix.mul_apply,
       diagProduct_erase_curvatureReaction3] <;> ring
+
+theorem trace_curvatureOperatorReactionEndomorphism3_eq_eigenvalues
+    {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]
+    (hdim : Module.finrank ℝ E = 3) (A : E →ₗ[ℝ] E) (hA : A.IsSymmetric) :
+    LinearMap.trace ℝ E (curvatureOperatorReactionEndomorphism3 A) =
+      (hA.eigenvalues hdim 0) ^ 2 + (hA.eigenvalues hdim 1) ^ 2 +
+      (hA.eigenvalues hdim 2) ^ 2 +
+      hA.eigenvalues hdim 0 * hA.eigenvalues hdim 1 +
+      hA.eigenvalues hdim 0 * hA.eigenvalues hdim 2 +
+      hA.eigenvalues hdim 1 * hA.eigenvalues hdim 2 := by
+  let b := (hA.eigenvectorBasis hdim).toBasis
+  have hdiag : LinearMap.toMatrix b b A =
+      Matrix.diagonal ![hA.eigenvalues hdim 0, hA.eigenvalues hdim 1,
+        hA.eigenvalues hdim 2] := by
+    rw [hA.toMatrix_eigenvectorBasis hdim]
+    congr 1
+    funext i
+    fin_cases i <;> rfl
+  rw [LinearMap.trace_eq_matrix_trace ℝ b, curvatureOperatorReactionEndomorphism3_toMatrix,
+    hdiag, curvatureOperatorReaction3_diagonal]
+  simp only [Matrix.trace, Matrix.diag_diagonal, Fin.sum_univ_three,
+    Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.cons_val_two,
+    Matrix.head_cons, Matrix.tail_cons]
+  ring
 
 theorem curvatureOperatorReaction3_orthogonal_conj
     (O A : Matrix (Fin 3) (Fin 3) Real) (hO : O * O.transpose = 1) :
