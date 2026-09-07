@@ -3140,6 +3140,10 @@ import DifferentialGeometry.Topology.Covering.SemilocallySimplyConnected
 import DifferentialGeometry.Topology.SigmaCompactOpen
 import DifferentialGeometry.Topology.StandardModel
 import DifferentialGeometry.Topology.ThreeManifold.Closed
+import DifferentialGeometry.Topology.Embedding.Diffeomorph
+import DifferentialGeometry.Topology.Embedding.Sphere
+import DifferentialGeometry.Topology.Handle.Embedding
+import DifferentialGeometry.Topology.ThreeManifold.schoenflies
 import DifferentialGeometry.Topology.Covering.Basic
 import DifferentialGeometry.Topology.Covering.CountablePi1
 import DifferentialGeometry.Topology.Covering.CoveringMap
