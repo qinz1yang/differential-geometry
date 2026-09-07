@@ -4472,3 +4472,8 @@ import DifferentialGeometry.Analysis.Integration.Measure.PullbackCross
 import DifferentialGeometry.Topology.Morse.LevelSetInclusion
 import DifferentialGeometry.Geometry.Boundary.SublevelMetric
 import DifferentialGeometry.Analysis.Integration.Measure.SublevelSurface
+import DifferentialGeometry.Geometry.Boundary.ExtremumNormal
+import DifferentialGeometry.Geometry.Operator.GradientPullback
+import DifferentialGeometry.Geometry.Boundary.PullbackNormal
+import DifferentialGeometry.Geometry.Boundary.SublevelNormal
+import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.RegularSublevel
