@@ -335,7 +335,7 @@ private lemma rawBall_normal
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
-    (p : M) {R R₀ : ℝ} (hR : 0 < R) (hRR₀ : R < R₀)
+    (p : M) {R R₀ : ℝ} (hRR₀ : R < R₀)
     (hcpt : @IsCompact M PseudoEMetricSpace.toUniformSpace.toTopologicalSpace
       (Metric.closedEBall p (ENNReal.ofReal R₀)))
     (K : Set E)
@@ -358,7 +358,8 @@ private lemma rawBall_normal
     (show TangentSpace I p from v)
   have hKmeas : MeasurableSet K := by
     rw [hK]
-    exact rawSegInt_ball_meas (I := I) g hEnorm p hR hRR₀ hcpt
+    exact ((measurableSet_extendibleMinimizingDomain (I := I) g hEnorm p).inter
+      (measurableSet_gBall (I := I) g p R))
   have hKdom : K ⊆ expDomain (I := I) g p := by
     intro v hv
     rw [hK] at hv
@@ -397,7 +398,7 @@ private lemma rawBall_normal
           ∂(modelHaar (E := E)) := by
     refine setLIntegral_congr_fun hKmeas (fun v hv => ?_)
     exact congrArg ENNReal.ofReal (hjac v hv)
-  have hball := rawBall_integral_eq (I := I) g hEnorm p hR hRR₀ hcpt
+  have hball := rawBall_integral_eq (I := I) g hEnorm p hRR₀ hcpt
   rw [← hK] at hball
   calc
     riemannianVolumeMeasure (I := I) (M := M) g
@@ -523,7 +524,8 @@ private lemma rawBall_polar
   have hA : 0 < A := ht.trans htA
   have htA₀ : t < A₀ := htA.trans hAA₀
   have hKa : MeasurableSet Ka := by
-    simpa only [Ka] using rawSegInt_ball_meas (I := I) g hEnorm p hA hAA₀ hcpt
+    simpa only [Ka] using ((measurableSet_extendibleMinimizingDomain (I := I) g hEnorm p).inter
+      (measurableSet_gBall (I := I) g p A))
   have hL : Continuous L :=
     (normalFrame (I := I) (E := E) g p).continuous
   have hT : MeasurableSet T := hKa.preimage hL.measurable
@@ -592,7 +594,7 @@ private lemma rawBall_polar
     apply (aemeasurable_indicator_iff hset).mpr
     apply ENNReal.measurable_ofReal.comp_aemeasurable
     exact (hDn.mono Set.inter_subset_left).aemeasurable hset
-  have hnormal := rawBall_normal (I := I) g hEnorm p ht htA₀ hcpt Kt rfl
+  have hnormal := rawBall_normal (I := I) g hEnorm p htA₀ hcpt Kt rfl
   have hpolar :
       riemannianVolumeMeasure (I := I) (M := M) g
           {q : M | riemannianEDist I p q < ENNReal.ofReal t} =
@@ -720,7 +722,8 @@ theorem rawBall_vol_rel
   have hsA : s < A := hsR.trans_lt hRA
   have hK : MeasurableSet (extendibleMinimizingDomain (I := I) g p ∩
       (show Set E from gBall (I := I) g p A)) :=
-    rawSegInt_ball_meas (I := I) g hEnorm p hA hAA₀ hcpt
+    ((measurableSet_extendibleMinimizingDomain (I := I) g hEnorm p).inter
+      (measurableSet_gBall (I := I) g p A))
   have hL : Continuous L :=
     (normalFrame (I := I) (E := E) g p).continuous
   have hT : MeasurableSet T := hK.preimage hL.measurable

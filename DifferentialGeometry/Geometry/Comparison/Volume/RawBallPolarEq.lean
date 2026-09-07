@@ -1,4 +1,5 @@
 import DifferentialGeometry.Geometry.Exponential.MinimizingDomain.Injectivity
+import DifferentialGeometry.Geometry.Exponential.MinimizingDomain.Topology
 import DifferentialGeometry.Geometry.Exponential.Radial
 import DifferentialGeometry.Geometry.Exponential.CompactBall
 import DifferentialGeometry.Geometry.Exponential.VolumeDensity
@@ -60,27 +61,6 @@ private local instance tangentSpaceNormedSpace
 private local instance : MeasurableSpace E := borel E
 private local instance : BorelSpace E := ⟨rfl⟩
 
-omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
-    [IsManifold I ((⊤ : ℕ∞) : WithTop ℕ∞) M] [T2Space M]
-    [T2Space (TangentBundle I M)]
-    [SigmaCompactSpace M]
-    [RiemannianBundle (fun x : M => TangentSpace I x)] in
-private lemma riemannianEDist_congr_enorm_local
-    (x y : M)
-    (A B : ∀ x : M, ENorm (TangentSpace I x))
-    (h : ∀ (x : M) (v : TangentSpace I x),
-      @enorm (TangentSpace I x) (A x) v = @enorm (TangentSpace I x) (B x) v) :
-    @riemannianEDist E _ _ H _ I M _ _ A x y =
-      @riemannianEDist E _ _ H _ I M _ _ B x y := by
-  rw [riemannianEDist_def, riemannianEDist_def]
-  apply iInf_congr
-  intro γ
-  apply iInf_congr
-  intro hγ
-  apply lintegral_congr
-  intro s
-  exact h (γ s) (mfderiv% γ s 1)
-
 omit [NeZero (Module.finrank ℝ E)] [T2Space M] [SigmaCompactSpace M]
     [RiemannianBundle (fun x : M => TangentSpace I x)] in
 private theorem raw_exp_density_local
@@ -126,177 +106,17 @@ private theorem isCompact_rawSeg
     (hcpt : @IsCompact M PseudoEMetricSpace.toUniformSpace.toTopologicalSpace
       (Metric.closedEBall p (ENNReal.ofReal R₀))) :
     IsCompact (minimizingDomain (I := I) g p ∩ closedGBall (I := I) g p R) := by
-  classical
-  let S : Set E := closedGBall (I := I) g p R
-  have hS : IsCompact S := by
-    simpa only [S] using isCompact_closedGBall (I := I) g p R
-  have hdom : S ⊆ expDomain (I := I) g p := by
-    intro v hv
-    change Real.sqrt
-      (g.inner p (show TangentSpace I p from v)
-        (show TangentSpace I p from v)) ≤ R at hv
-    apply mem_expDomain_of_isCompact_closedEBall (I := I) g hEnorm p
-      (show TangentSpace I p from v)
-    · exact lt_of_le_of_lt hv hRR₀
-    · exact hcpt
-  let A : Set S := {v | ENNReal.ofReal
-      (Real.sqrt (g.inner p (show TangentSpace I p from (v : E))
-        (show TangentSpace I p from (v : E)))) =
-      riemannianEDist I p
-        (expMap (I := I) g p (show TangentSpace I p from (v : E)))}
-  have hleft : Continuous (fun v : S => Real.sqrt
-      (g.inner p (show TangentSpace I p from (v : E))
-        (show TangentSpace I p from (v : E)))) := by
-    have hinner : Continuous (fun v : E => g.inner p
-        (show TangentSpace I p from v) (show TangentSpace I p from v)) := by
-      with_unfolding_all exact continuous_gInner_self (I := I) g p
-    exact Real.continuous_sqrt.comp (hinner.comp continuous_subtype_val)
-  have hexp : Continuous (fun v : S => expMap (I := I) g p
-      (show TangentSpace I p from (v : E))) := by
-    have hcont : ContinuousOn (fun v : E => expMap (I := I) g p
-        (show TangentSpace I p from v)) S :=
-      ((contMDiffOn_expMap (I := I) g p).continuousOn).mono hdom
-    exact hcont.domRestrict
-  have hright : Continuous (fun v : S => riemannianEDist I p
-      (expMap (I := I) g p (show TangentSpace I p from (v : E)))) := by
-    let AENorm : ∀ x : M, ENorm (TangentSpace I x) := fun x =>
-      (inferInstance : ContinuousENorm (TangentSpace I x)).toENorm
-    have hdist : Continuous (fun q : M => riemannianEDist I p q) := by
-      let _ : RiemannianBundle (fun x : M => TangentSpace I x) :=
-        ⟨g.toRiemannianMetric⟩
-      let RBNAG : ∀ x : M, NormedAddCommGroup (TangentSpace I x) :=
-        fun x => Bundle.instNormedAddCommGroupOfRiemannianBundleOfIsTopologicalAddGroupOfContinuousConstSMulReal
-          (E := fun x : M => TangentSpace I x) x
-      let RBENorm : ∀ x : M, ENorm (TangentSpace I x) := fun x =>
-        (@SeminormedAddGroup.toContinuousENorm (TangentSpace I x)
-          (@SeminormedAddCommGroup.toSeminormedAddGroup (TangentSpace I x)
-            (@NormedAddCommGroup.toSeminormedAddCommGroup (TangentSpace I x) (RBNAG x)))).toENorm
-      have hEnormRB : ∀ (x : M) (v : TangentSpace I x),
-          @enorm (TangentSpace I x) (RBENorm x) v =
-            ENNReal.ofReal (Real.sqrt (g.inner x v v)) := by
-        intro x v
-        have h₁ : @enorm (TangentSpace I x) (RBENorm x) v = ENNReal.ofReal ‖v‖ := by
-          change (‖v‖₊ : ℝ≥0∞) = ENNReal.ofReal ‖v‖
-          rw [ENNReal.ofReal_eq_coe_nnreal (norm_nonneg v)]
-          rfl
-        rw [h₁]
-        rw [norm_eq_sqrt_real_inner]
-        congr 1
-      have hnorm_eq : ∀ (x : M) (v : TangentSpace I x),
-          @enorm (TangentSpace I x) (AENorm x) v =
-            @enorm (TangentSpace I x) (RBENorm x) v := by
-        intro x v
-        rw [hEnorm x v, hEnormRB x v]
-      have hdist_eq (q : M) :
-          @riemannianEDist E _ _ H _ I M _ _ RBENorm p q =
-            @riemannianEDist E _ _ H _ I M _ _ AENorm p q := by
-        exact (riemannianEDist_congr_enorm_local (I := I) p q AENorm RBENorm hnorm_eq).symm
-      have hdistRB : Continuous (fun q : M =>
-          @riemannianEDist E _ _ H _ I M _ _ RBENorm p q) := by
-        let _ : IsContinuousRiemannianBundle E
-            (fun x : M => TangentSpace I x) :=
-          ⟨⟨g.inner, g.contMDiff.continuous, by intro x v w; rfl⟩⟩
-        simpa only [RBENorm, RBNAG] using
-          (continuous_riemannianEDist (I := I) g p)
-      apply Continuous.congr hdistRB
-      intro q
-      exact hdist_eq q
-    apply Continuous.congr (hdist.comp hexp)
-    intro v
-    simp only [Function.comp_apply]
-  have hAclosed : IsClosed A := by
-    apply isClosed_eq
-    · exact ENNReal.continuous_ofReal.comp hleft
-    · exact hright
-  let _ : CompactSpace S := isCompact_iff_compactSpace.mp hS
-  have hA : IsCompact A := hAclosed.isCompact
-  have himage : IsCompact ((fun v : S => (v : E)) '' A) :=
-    hA.image continuous_subtype_val
-  have heq : (fun v : S => (v : E)) '' A =
-      minimizingDomain (I := I) g p ∩ S := by
-    ext v
-    constructor
-    · rintro ⟨w, hw, rfl⟩
-      exact ⟨hw, w.property⟩
-    · intro hv
-      refine ⟨⟨v, hv.2⟩, ?_, rfl⟩
-      exact hv.1
-  rw [heq] at himage
-  simpa only [S] using himage
+  apply isCompact_minimizingDomain_inter (I := I) g p (isCompact_closedGBall (I := I) g p R)
+  intro v hv
+  exact mem_expDomain_of_isCompact_closedEBall (I := I) g hEnorm p
+    (show TangentSpace I p from v) (lt_of_le_of_lt hv hRR₀) hcpt
 
-theorem rawSegInt_ball_meas
-    [PseudoEMetricSpace M] [IsRiemannianManifold I M]
-    [IsContinuousRiemannianBundle E (fun x : M ↦ TangentSpace I x)]
-    (g : SmoothRiemannianMetric I M)
-    (hEnorm : IsMetricNorm (I := I) (M := M) g)
-    (p : M) {R R₀ : ℝ} (hR : 0 < R) (hRR₀ : R < R₀)
-    (hcpt : @IsCompact M PseudoEMetricSpace.toUniformSpace.toTopologicalSpace
-      (Metric.closedEBall p (ENNReal.ofReal R₀))) :
-    MeasurableSet
-      (extendibleMinimizingDomain (I := I) g p ∩ gBall (I := I) g p R) := by
-  classical
-  let S : ℝ := (R + R₀) / 2
-  let K : Set E := minimizingDomain (I := I) g p ∩ closedGBall (I := I) g p S
-  let Q : Set ℚ := {q | (1 : ℝ) < (q : ℝ) ∧ (q : ℝ) < S / R}
-  let A : ℚ → Set E := fun q =>
-    (fun v : E => (q : ℝ) • v) ⁻¹' K ∩ gBall (I := I) g p R
-  have hRS : R < S := by
-    dsimp only [S]
-    linarith
-  have hSR₀ : S < R₀ := by
-    dsimp only [S]
-    linarith
-  have hSdiv : 1 < S / R := by
-    rw [lt_div_iff₀ hR]
-    simpa only [one_mul] using hRS
-  have hK : IsCompact K := by
-    simpa only [K] using isCompact_rawSeg (I := I) g hEnorm p hSR₀ hcpt
-  have hA (q : ℚ) : MeasurableSet (A q) := by
-    exact (hK.measurableSet.preimage
-      (continuous_const_smul (q : ℝ)).measurable).inter
-        (measurableSet_gBall (I := I) g p R)
-  have hEq : extendibleMinimizingDomain (I := I) g p ∩ gBall (I := I) g p R =
-      ⋃ q ∈ Q, A q := by
-    ext v
-    constructor
-    · rintro ⟨hv, hvball⟩
-      obtain ⟨c, hc, hcv⟩ := hv
-      have hlim : 1 < min c (S / R) := lt_min hc hSdiv
-      obtain ⟨q : ℚ, hq1, hqlim⟩ := exists_rat_btwn hlim
-      have hqc : (q : ℝ) < c := hqlim.trans_le (min_le_left _ _)
-      have hqS : (q : ℝ) < S / R := hqlim.trans_le (min_le_right _ _)
-      have hqpos : 0 < (q : ℝ) := lt_trans zero_lt_one hq1
-      have hqraw : (q : ℝ) • v ∈ minimizingDomain (I := I) g p := by
-        apply extendibleMinimizingDomain_subset_minimizingDomain (I := I) g hEnorm p
-        refine ⟨c / (q : ℝ), (one_lt_div hqpos).2 hqc, ?_⟩
-        simpa only [smul_smul, div_mul_cancel₀ _ hqpos.ne'] using hcv
-      have hqR : (q : ℝ) * R < S := (lt_div_iff₀ hR).mp hqS
-      have hqball : (q : ℝ) • v ∈ closedGBall (I := I) g p S := by
-        change Real.sqrt
-          (g.inner p ((q : ℝ) • (show TangentSpace I p from v))
-            ((q : ℝ) • (show TangentSpace I p from v))) ≤ S
-        change Real.sqrt
-          (g.inner p (show TangentSpace I p from v)
-            (show TangentSpace I p from v)) < R at hvball
-        rw [sqrt_gInner_smul_self (I := I) g p hqpos.le]
-        exact le_of_lt
-          ((mul_le_mul_of_nonneg_left (le_of_lt hvball) hqpos.le).trans_lt hqR)
-      refine mem_iUnion₂.mpr ⟨q, ⟨hq1, hqS⟩, ?_⟩
-      exact ⟨⟨hqraw, hqball⟩, hvball⟩
-    · rintro hv
-      obtain ⟨q, hqQ, hqv⟩ := mem_iUnion₂.mp hv
-      exact ⟨⟨(q : ℝ), hqQ.1, hqv.1.1⟩, hqv.2⟩
-  rw [hEq]
-  exact MeasurableSet.biUnion (Set.to_countable Q) fun q _ => hA q
-
+omit [NeZero (Module.finrank ℝ E)] in
 private theorem rawSegInt_image_eq
-    [PseudoEMetricSpace M] [IsRiemannianManifold I M]
     [IsContinuousRiemannianBundle E (fun x : M ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
-    (p : M) {R R₀ : ℝ} (hR : 0 < R) (hRR₀ : R < R₀)
-    (hcpt : @IsCompact M PseudoEMetricSpace.toUniformSpace.toTopologicalSpace
-      (Metric.closedEBall p (ENNReal.ofReal R₀))) :
+    (p : M) (R : ℝ) :
     riemannianVolumeMeasure (I := I) (M := M) g
         ((fun v : E => expMap (I := I) g p
           (show TangentSpace I p from v)) ''
@@ -318,7 +138,8 @@ private theorem rawSegInt_image_eq
   let U : Set E := {v : E | (show TangentSpace I p from v) ∈
     expDomain (I := I) g p}
   have hK : MeasurableSet K := by
-    simpa only [K] using rawSegInt_ball_meas (I := I) g hEnorm p hR hRR₀ hcpt
+    simpa only [K] using ((measurableSet_extendibleMinimizingDomain (I := I) g hEnorm p).inter
+      (measurableSet_gBall (I := I) g p R))
   have hKdom : K ⊆ expDomain (I := I) g p := by
     intro v hv
     change v ∈ extendibleMinimizingDomain (I := I) g p ∩ gBall (I := I) g p R at hv
@@ -543,7 +364,7 @@ theorem rawBall_integral_eq
     [IsContinuousRiemannianBundle E (fun x : M ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
-    (p : M) {R R₀ : ℝ} (hR : 0 < R) (hRR₀ : R < R₀)
+    (p : M) {R R₀ : ℝ} (hRR₀ : R < R₀)
     (hcpt : @IsCompact M PseudoEMetricSpace.toUniformSpace.toTopologicalSpace
       (Metric.closedEBall p (ENNReal.ofReal R₀))) :
     riemannianVolumeMeasure (I := I) (M := M) g
@@ -677,7 +498,7 @@ theorem rawBall_integral_eq
   have himage : riemannianVolumeMeasure (I := I) (M := M) g (F '' K) =
       ∫⁻ v in K, D v ∂(modelHaar (E := E)) := by
     simpa only [F, K, D] using
-      rawSegInt_image_eq (I := I) g hEnorm p hR hRR₀ hcpt
+      rawSegInt_image_eq (I := I) g hEnorm p R
   apply le_antisymm hupper
   calc
     ∫⁻ v in K, D v ∂(modelHaar (E := E)) =
