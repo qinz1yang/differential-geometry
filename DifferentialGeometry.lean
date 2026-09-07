@@ -2401,6 +2401,7 @@ import DifferentialGeometry.Geometry.Metric.Family.ChartCurvature.ManifoldSmooth
 import DifferentialGeometry.Geometry.Metric.Family.ChartCurvature.MetricFamilySmoothOn
 import DifferentialGeometry.Geometry.Metric.Family.ChartCurvature.WithinSmoothness
 import DifferentialGeometry.Geometry.Metric.Family.Continuity
+import DifferentialGeometry.Geometry.Metric.Family.CurveDistance
 import DifferentialGeometry.Geometry.Metric.Family.Regularity.DifferentialOperator
 import DifferentialGeometry.Geometry.Metric.Family.InverseMetric.Regularity
 import DifferentialGeometry.Geometry.Metric.Family.InverseMetric.Smoothness
