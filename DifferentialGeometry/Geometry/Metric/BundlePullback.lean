@@ -95,4 +95,68 @@ theorem ofInnerProductSpace_inner (x : B) (v w : V x) :
 
 end InnerProduct
 
+section Isometry
+
+open scoped Bundle
+
+variable {B C : Type*} {V : B → Type*} {W : C → Type*}
+  [∀ x, AddCommGroup (V x)] [∀ x, Module ℝ (V x)] [∀ x, TopologicalSpace (V x)]
+  [∀ x, IsTopologicalAddGroup (V x)] [∀ x, ContinuousConstSMul ℝ (V x)]
+  [∀ x, AddCommGroup (W x)] [∀ x, Module ℝ (W x)] [∀ x, TopologicalSpace (W x)]
+  [∀ x, IsTopologicalAddGroup (W x)] [∀ x, ContinuousConstSMul ℝ (W x)]
+
+def toLinearIsometryEquiv (g : RiemannianMetric W) (h : RiemannianMetric V)
+    (f : B → C) (e : ∀ x, V x ≃L[ℝ] W (f x))
+    (he : ∀ x v w, g.inner (f x) (e x v) (e x w) = h.inner x v w) :
+    letI : RiemannianBundle V := ⟨h⟩
+    letI sourceNorm : ∀ x, NormedAddCommGroup (V x) := fun x =>
+      Bundle.instNormedAddCommGroupOfRiemannianBundleOfIsTopologicalAddGroupOfContinuousConstSMulReal x
+    letI : ∀ x, SeminormedAddCommGroup (V x) := fun x => (sourceNorm x).toSeminormedAddCommGroup
+    letI : ∀ x, InnerProductSpace ℝ (V x) := fun x => Bundle.instInnerProductSpaceReal x
+    letI : RiemannianBundle W := ⟨g⟩
+    letI targetNorm : ∀ x, NormedAddCommGroup (W x) := fun x =>
+      Bundle.instNormedAddCommGroupOfRiemannianBundleOfIsTopologicalAddGroupOfContinuousConstSMulReal x
+    letI : ∀ x, SeminormedAddCommGroup (W x) := fun x => (targetNorm x).toSeminormedAddCommGroup
+    letI : ∀ x, InnerProductSpace ℝ (W x) := fun x => Bundle.instInnerProductSpaceReal x
+    ∀ x, V x ≃ₗᵢ[ℝ] W (f x) := by
+  letI : RiemannianBundle V := ⟨h⟩
+  letI sourceNorm : ∀ x, NormedAddCommGroup (V x) := fun x =>
+    Bundle.instNormedAddCommGroupOfRiemannianBundleOfIsTopologicalAddGroupOfContinuousConstSMulReal x
+  letI : ∀ x, SeminormedAddCommGroup (V x) := fun x => (sourceNorm x).toSeminormedAddCommGroup
+  letI : ∀ x, InnerProductSpace ℝ (V x) := fun x => Bundle.instInnerProductSpaceReal x
+  letI : RiemannianBundle W := ⟨g⟩
+  letI targetNorm : ∀ x, NormedAddCommGroup (W x) := fun x =>
+    Bundle.instNormedAddCommGroupOfRiemannianBundleOfIsTopologicalAddGroupOfContinuousConstSMulReal x
+  letI : ∀ x, SeminormedAddCommGroup (W x) := fun x => (targetNorm x).toSeminormedAddCommGroup
+  letI : ∀ x, InnerProductSpace ℝ (W x) := fun x => Bundle.instInnerProductSpaceReal x
+  intro x
+  exact { (e x).toLinearEquiv with
+    norm_map' := (LinearMap.norm_map_iff_inner_map_map (e x).toLinearEquiv.toLinearMap).mpr (he x) }
+
+theorem toLinearIsometryEquiv_toLinearEquiv
+    (g : RiemannianMetric W) (h : RiemannianMetric V)
+    (f : B → C) (e : ∀ x, V x ≃L[ℝ] W (f x))
+    (he : ∀ x v w, g.inner (f x) (e x v) (e x w) = h.inner x v w) (x : B) :
+    letI : RiemannianBundle V := ⟨h⟩
+    letI : RiemannianBundle W := ⟨g⟩
+    (g.toLinearIsometryEquiv h f e he x).toLinearEquiv = (e x).toLinearEquiv := rfl
+
+theorem toLinearIsometryEquiv_apply
+    (g : RiemannianMetric W) (h : RiemannianMetric V)
+    (f : B → C) (e : ∀ x, V x ≃L[ℝ] W (f x))
+    (he : ∀ x v w, g.inner (f x) (e x v) (e x w) = h.inner x v w)
+    (x : B) (v : V x) :
+    g.toLinearIsometryEquiv h f e he x v = e x v := rfl
+
+theorem toLinearIsometryEquiv_symm_apply
+    (g : RiemannianMetric W) (h : RiemannianMetric V)
+    (f : B → C) (e : ∀ x, V x ≃L[ℝ] W (f x))
+    (he : ∀ x v w, g.inner (f x) (e x v) (e x w) = h.inner x v w)
+    (x : B) (w : W (f x)) :
+    letI : RiemannianBundle V := ⟨h⟩
+    letI : RiemannianBundle W := ⟨g⟩
+    (g.toLinearIsometryEquiv h f e he x).toLinearEquiv.symm w = (e x).symm w := rfl
+
+end Isometry
+
 end Bundle.RiemannianMetric
