@@ -180,6 +180,7 @@ import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.SlotCurry.Boun
 import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.SlotCurry.Defs
 import DifferentialGeometry.Analysis.Elliptic.DistributionalSupersolution
 import DifferentialGeometry.Analysis.Elliptic.Euclidean.WeakHarnack
+import DifferentialGeometry.Analysis.Elliptic.Euclidean.Restriction
 import DifferentialGeometry.Analysis.Elliptic.Lichnerowicz
 import DifferentialGeometry.Analysis.Elliptic.LichnerowiczSpectral
 import DifferentialGeometry.Geometry.Metric.PointwiseInner.Bounds
@@ -1072,6 +1073,7 @@ import DifferentialGeometry.Analysis.Sobolev.Euclidean.SupportAndDomain.Iterated
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.WeakDerivative.Basic
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.WeakDerivative.Distribution
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.WeakDerivative.Closedness
+import DifferentialGeometry.Analysis.Sobolev.Euclidean.ZeroExtension
 import DifferentialGeometry.Analysis.Sobolev.GagliardoNirenberg.FiberNorm.Basic
 import DifferentialGeometry.Analysis.Sobolev.GagliardoNirenberg.FiberNorm.DiscreteLogConvexity
 import DifferentialGeometry.Analysis.Sobolev.GagliardoNirenberg.FiberNorm.TensorRS
