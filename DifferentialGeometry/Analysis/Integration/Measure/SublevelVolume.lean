@@ -1,5 +1,6 @@
 import DifferentialGeometry.Analysis.Integration.Measure.OpenSubtype
 import DifferentialGeometry.Analysis.Integration.Measure.Boundary
+import DifferentialGeometry.Analysis.Integration.Measure.NullImage
 import DifferentialGeometry.Geometry.Boundary.SublevelMetric
 
 namespace DifferentialGeometry.Topology.Morse
@@ -9,6 +10,21 @@ open Integral.Measure Integral.DivergenceTheorem.WithBoundary
 open scoped Manifold ContDiff ENNReal
 
 noncomputable section
+
+private local instance (m : ℕ) : MeasurableSpace (MorseModel m) := borel (MorseModel m)
+private local instance (m : ℕ) : BorelSpace (MorseModel m) := ⟨rfl⟩
+
+private theorem modelHaar_frontier_morseHalfSpace_eq_zero (m : ℕ) :
+    modelHaar (E := MorseModel (m + 1)) (frontier (range (morseModelWithCornersHalfSpace m))) = 0 := by
+  rw [frontier_morseHalfSpace_range]
+  let L : MorseModel (m + 1) →ₗ[ℝ] ℝ := LinearMap.proj (Fin.last m)
+  change modelHaar (E := MorseModel (m + 1)) (LinearMap.ker L : Set (MorseModel (m + 1))) = 0
+  apply Measure.addHaar_submodule
+  intro htop
+  have h : (fun _ : Fin (m + 1) => (1 : ℝ)) ∈ LinearMap.ker L := by
+    rw [htop]
+    trivial
+  exact one_ne_zero h
 
 variable {m : ℕ} {H : Type} [TopologicalSpace H] {M : Type} [TopologicalSpace M]
   [ChartedSpace H M] (I : ModelWithCorners ℝ (MorseModel (m + 1)) H)
@@ -77,6 +93,28 @@ private local instance (f : M → ℝ) (a : ℝ) : MeasurableSpace (SublevelSpac
 private local instance (f : M → ℝ) (a : ℝ) : BorelSpace (SublevelSpace f a) := ⟨rfl⟩
 private local instance (U : TopologicalSpace.Opens M) : MeasurableSpace U := borel U
 private local instance (U : TopologicalSpace.Opens M) : BorelSpace U := ⟨rfl⟩
+
+theorem riemannianVolumeMeasure_levelSet_eq_zero [T2Space M] [SigmaCompactSpace M]
+    (g : SmoothRiemannianMetric I M) (f : M → ℝ) (a : ℝ)
+    (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f)
+    (hreg : ∀ x : M, f x = a → ¬ IsCriticalPointAt I f x) :
+    riemannianVolumeMeasure (I := I) (M := M) g {x | f x = a} = 0 := by
+  let := manifoldSublevelChartedSpace I f a hf hreg
+  let := manifoldSublevelIsManifold I f a hf hreg
+  let : SigmaCompactSpace (SublevelSpace f a) :=
+    (isClosed_le hf.continuous continuous_const).sigmaCompactSpace
+  have hvol := riemannianVolumeMeasure_image_boundary_eq_zero_of_modelHaar_frontier_eq_zero g
+    ((contMDiff_manifoldSublevelInclusion I f a hf hreg).mdifferentiable (by simp))
+    (modelHaar_frontier_morseHalfSpace_eq_zero m)
+  have he : (Subtype.val : SublevelSpace f a → M) ''
+      (morseModelWithCornersHalfSpace m).boundary (SublevelSpace f a) = {x | f x = a} := by
+    ext x
+    constructor
+    · rintro ⟨y, hy, rfl⟩
+      exact (manifoldSublevel_isBoundaryPoint_iff I f a hf hreg y).mp hy
+    · intro hx
+      exact ⟨⟨x, le_of_eq hx⟩, (manifoldSublevel_isBoundaryPoint_iff I f a hf hreg _).mpr hx, rfl⟩
+  rwa [he] at hvol
 
 theorem map_riemannianVolumeMeasure_sublevelMetric_eq_restrict_lt
     [T2Space M] [SigmaCompactSpace M]
@@ -175,6 +213,51 @@ theorem map_riemannianVolumeMeasure_sublevelMetric_eq_restrict_lt
     rw [hz, Measure.map_zero]
     exact (show (riemannianVolumeMeasure (I := I) (M := M) g).restrict {x | f x < a} = 0 by
       rw [hstrict, Measure.restrict_empty]).symm
+
+theorem map_riemannianVolumeMeasure_sublevelMetric [T2Space M] [SigmaCompactSpace M]
+    (g : SmoothRiemannianMetric I M) (f : M → ℝ) (a : ℝ)
+    (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f)
+    (hreg : ∀ x : M, f x = a → ¬ IsCriticalPointAt I f x) :
+    letI := manifoldSublevelEuclideanChartedSpace I f a hf hreg
+    letI := manifoldSublevelEuclidean_isManifold I f a hf hreg
+    letI : SigmaCompactSpace (SublevelSpace f a) :=
+      (isClosed_le hf.continuous continuous_const).sigmaCompactSpace
+    Measure.map (Subtype.val : SublevelSpace f a → M)
+      (riemannianVolumeMeasure (I := modelWithCornersEuclideanHalfSpace (m + 1))
+        (M := SublevelSpace f a) (sublevelMetric I g f a hf hreg)) =
+      (riemannianVolumeMeasure (I := I) (M := M) g).restrict {x | f x ≤ a} := by
+  let := manifoldSublevelEuclideanChartedSpace I f a hf hreg
+  let := manifoldSublevelEuclidean_isManifold I f a hf hreg
+  let : SigmaCompactSpace (SublevelSpace f a) :=
+    (isClosed_le hf.continuous continuous_const).sigmaCompactSpace
+  refine (map_riemannianVolumeMeasure_sublevelMetric_eq_restrict_lt I g f a hf hreg).trans ?_
+  apply Measure.restrict_congr_set
+  have hae := measure_eq_zero_iff_ae_notMem.mp (riemannianVolumeMeasure_levelSet_eq_zero I g f a hf hreg)
+  filter_upwards [hae] with x hx
+  apply propext
+  change (f x < a) ↔ f x ≤ a
+  exact ⟨le_of_lt, fun h => lt_of_le_of_ne h hx⟩
+
+theorem integral_sublevelMetric_eq_setIntegral [T2Space M] [SigmaCompactSpace M]
+    (g : SmoothRiemannianMetric I M) (f : M → ℝ) (a : ℝ)
+    (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f)
+    (hreg : ∀ x : M, f x = a → ¬ IsCriticalPointAt I f x)
+    {V : Type*} [NormedAddCommGroup V] [NormedSpace ℝ V] (u : M → V) :
+    letI := manifoldSublevelEuclideanChartedSpace I f a hf hreg
+    letI := manifoldSublevelEuclidean_isManifold I f a hf hreg
+    letI : SigmaCompactSpace (SublevelSpace f a) :=
+      (isClosed_le hf.continuous continuous_const).sigmaCompactSpace
+    (∫ x : SublevelSpace f a, u x.1
+      ∂(riemannianVolumeMeasure (I := modelWithCornersEuclideanHalfSpace (m + 1))
+        (M := SublevelSpace f a) (sublevelMetric I g f a hf hreg))) =
+      ∫ x in {x | f x ≤ a}, u x ∂(riemannianVolumeMeasure (I := I) (M := M) g) := by
+  let := manifoldSublevelEuclideanChartedSpace I f a hf hreg
+  let := manifoldSublevelEuclidean_isManifold I f a hf hreg
+  let : SigmaCompactSpace (SublevelSpace f a) :=
+    (isClosed_le hf.continuous continuous_const).sigmaCompactSpace
+  rw [← map_riemannianVolumeMeasure_sublevelMetric I g f a hf hreg]
+  have hc : IsClosed (sublevel f a) := isClosed_le hf.continuous continuous_const
+  exact (hc.isClosedEmbedding_subtypeVal.integral_map u).symm
 
 end
 

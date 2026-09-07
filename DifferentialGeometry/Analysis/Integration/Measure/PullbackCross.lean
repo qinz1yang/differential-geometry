@@ -1,5 +1,6 @@
 import DifferentialGeometry.Analysis.Integration.Measure.ParamEvaluation
 import DifferentialGeometry.Geometry.Metric.PullbackCross
+import DifferentialGeometry.Topology.Manifold.ChartPartialDiffeomorph
 import Mathlib.Tactic.NormNum
 
 namespace DifferentialGeometry.Integral.Measure
@@ -58,23 +59,6 @@ private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 private local instance : MeasurableSpace N := borel N
 private local instance : BorelSpace N := ⟨rfl⟩
-
-private def chartParam [I.Boundaryless] (x : M) :
-    PartialDiffeomorph 𝓘(ℝ, E) I E M 1 where
-  toFun := (extChartAt I x).symm
-  invFun := extChartAt I x
-  source := (extChartAt I x).target
-  target := (extChartAt I x).source
-  map_source' := fun {y} hy => (extChartAt I x).map_target hy
-  map_target' := fun {y} hy => (extChartAt I x).map_source hy
-  left_inv' := fun {y} hy => (extChartAt I x).right_inv hy
-  right_inv' := fun {y} hy => (extChartAt I x).left_inv hy
-  open_source := isOpen_extChartAt_target (I := I) x
-  open_target := isOpen_extChartAt_source (I := I) x
-  contMDiffOn_toFun := contMDiffOn_extChartAt_symm (I := I) (n := 1) x
-  contMDiffOn_invFun := by
-    simpa only [extChartAt_source] using
-      contMDiffOn_extChartAt (I := I) (n := 1) (x := x)
 
 private theorem paramDensity_partialIsometry
     (g : SmoothRiemannianMetric I M) (g' : SmoothRiemannianMetric J N)
@@ -149,10 +133,12 @@ private theorem volume_partialIsometry_image_of_subset_chart
     ((PartialDiffeomorph.isLocalDiffeomorphAt I J 1 Φ (hAs hx)).mfderivToContinuousLinearEquiv
       one_ne_zero).toLinearEquiv.finrank_eq
   let e := chartModelEquiv hdim
-  let Ψ : PartialDiffeomorph 𝓘(ℝ, E) I E M 1 := chartParam α
+  let Ψ : PartialDiffeomorph 𝓘(ℝ, E) I E M 1 := (extChartAtPartialDiffeomorph I 1 α).symm
   let Θ : PartialDiffeomorph 𝓘(ℝ, F) J F N 1 := ((linearEquivPartialOne e.symm).trans Ψ).trans Φ
   let B : Set E := Ψ.symm '' A
-  have hAt : A ⊆ Ψ.target := by simpa only [Ψ, chartParam, extChartAt_source] using hAc
+  have hAt : A ⊆ Ψ.target := by
+    change A ⊆ (extChartAt I α).source
+    simpa only [extChartAt_source] using hAc
   have hB : MeasurableSet B := measurableSet_symm_image_param Ψ hA hAt
   have hBs : B ⊆ Ψ.source := by
     rintro w ⟨x, hx, rfl⟩
