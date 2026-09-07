@@ -2,6 +2,7 @@ import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.Curve.C1Gluing
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.H1.Approximation.Density
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.H1.Approximation.Slice
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.H1.Approximation.Tent
+import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.H1.Regularity.C1Representative
 
 set_option autoImplicit false
 
@@ -13,28 +14,6 @@ open scoped ContDiff Topology
 namespace DifferentialGeometry.Analysis.Parabolic.TimeSobolev
 
 variable {X : Type*} [NormedAddCommGroup X] [CompleteSpace X]
-
-theorem deriv_ae_of_eqOn [NormedSpace ℝ X]
-    {T : ℝ} (hT : 0 < T) (u : timeH1 X T)
-    (f : ℝ → X) (hf : ContDiff ℝ 1 f)
-    (heq : EqOn u.toFun f (Icc (0 : ℝ) T)) :
-    u.deriv =ᵐ[timeMeasure T] _root_.deriv f := by
-  have hmem : ∀ᵐ t ∂timeMeasure T, t ∈ Ioo (0 : ℝ) T := by
-    unfold timeMeasure
-    rw [← restrict_Ioo_eq_restrict_Icc]
-    exact ae_restrict_mem measurableSet_Ioo
-  filter_upwards [u.ae_hasDerivWithinAt_toFun, hmem] with t hu ht
-  have htIcc : t ∈ Icc (0 : ℝ) T := ⟨ht.1.le, ht.2.le⟩
-  have huniq := (uniqueDiffOn_Icc hT).uniqueDiffWithinAt htIcc
-  have hfAt : HasDerivAt f (_root_.deriv f t) t :=
-    ((hf.differentiable (by norm_num)) t).hasDerivAt
-  calc
-    u.deriv t = derivWithin u.toFun (Icc (0 : ℝ) T) t :=
-      (hu.derivWithin huniq).symm
-    _ = derivWithin f (Icc (0 : ℝ) T) t :=
-      derivWithin_congr heq (heq htIcc)
-    _ = _root_.deriv f t :=
-      hfAt.hasDerivWithinAt.derivWithin huniq
 
 section Hilbert
 
