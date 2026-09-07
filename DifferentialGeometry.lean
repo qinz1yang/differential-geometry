@@ -933,6 +933,7 @@ import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.InteriorContinuousMem
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.MixedNorm
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.PointwiseDeriv
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.TimeH1
+import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.Steklov
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.TimeH1Modulus
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.TimeOperator
 import DifferentialGeometry.Analysis.ProjectedContractionFixedPoint

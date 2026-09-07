@@ -1,6 +1,7 @@
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.WeakFormIntegration
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.SmoothTimeTest
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.TimeH1IntegrationByParts
+import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.Steklov
 
 noncomputable section
 
@@ -256,5 +257,64 @@ theorem IsWeakEvolutionSolution.integral_smooth_time_test
     exact MemLp.coeFn_toLp (v' t).memLp_two
   · rw [hwi, H1ComplDirichletToLp_smoothToH1ComplDirichlet]
     exact MemLp.coeFn_toLp (v 0).memLp_two
+
+theorem IsWeakEvolutionSolution.integral_steklovAverage_test
+    {q : SmoothRiemannianMetric I_hs M}
+    {D : RealTimeInterval}
+    {G : MetricConnectionFamilyOn (I := I_hs) (M := M) D}
+    {hG : MetricFamilySmoothOn (I := I_hs) (M := M) D G.metric}
+    {T : ℝ} {hT : 0 ≤ T} {hreg : Icc (0 : ℝ) T ⊆ D.regular}
+    {X : ℝ → Cₛ^∞⟮I_hs; EuclideanSpace ℝ (Fin n),
+      (TangentSpace I_hs : M → Type _)⟯}
+    (hXcont : ContinuousOn
+      (fun p : ℝ × M =>
+        (TotalSpace.mk' (EuclideanSpace ℝ (Fin n)) p.2 (X p.1 p.2) :
+          TangentBundle I_hs M))
+      (Icc (0 : ℝ) T ×ˢ (Set.univ : Set M)))
+    {a : ℝ → ℝ} (hacont : ContinuousOn a (Icc (0 : ℝ) T))
+    {Bx Bv : ℝ}
+    {hX : ∀ t ∈ Ico (0 : ℝ) T, ∀ x : M,
+      (G.metric t).inner x (X t x) (X t x) ≤ Bx}
+    {htrace : ∀ t ∈ Ico (0 : ℝ) T, ∀ x : M,
+      |traceTimeDerivMetric (I := I_hs) G.metric t x| ≤ Bv}
+    {f₀ : Lp ℝ 2 (riemannianVolumeMeasure (I := I_hs) (M := M) q)}
+    {u : timeL2 (H1ComplDirichlet q) T}
+    (hu : IsWeakEvolutionSolution hG hT hreg X a Bx Bv hX htrace f₀ u)
+    (v : timeL2 (H1ComplDirichlet q) T) {h : ℝ} (hh : 0 ≤ h) :
+    let V := (Icc (0 : ℝ) T).indicator (fun t => v t)
+    ∃ Cg : ℝ, ∃ Cv : ℝ≥0∞,
+      ∃ hCg : 1 ≤ Cg,
+      ∃ hequiv : ∀ t ∈ Icc (0 : ℝ) T, ∀ x : M,
+        ∀ v : TangentSpace I_hs x,
+          Cg⁻¹ * q.inner x v v ≤ (G.metric t).inner x v v ∧
+            (G.metric t).inner x v v ≤ Cg * q.inner x v v,
+      ∃ hCv0 : Cv ≠ 0, ∃ hCvtop : Cv ≠ ⊤,
+      ∃ hvol : ∀ t ∈ Icc (0 : ℝ) T,
+        riemannianVolumeMeasure (I := I_hs) (M := M) (G.metric t) ≤
+          Cv • riemannianVolumeMeasure (I := I_hs) (M := M) q,
+      (∫ t, dirichletMassComplOnIcc G.metric hCg hequiv Cv hCv0 hCvtop hvol
+        t (u t) (h⁻¹ • (V (t + h) - V t)) ∂timeMeasure T) +
+      (∫ t, dirichletMassVariationComplOnIco hG hreg Bv htrace
+          hCg hequiv Cv hCv0 hCvtop hvol t (u t) (steklovAverage h V t) +
+        dirichletWeakFormComplOnIco G.metric X a Bx hX
+          hCg hequiv Cv hCv0 hCvtop hvol t (u t) (steklovAverage h V t) ∂timeMeasure T) =
+      -dirichletMassLp (G.metric 0) Cv hCvtop (hvol 0 ⟨le_rfl, hT⟩)
+        f₀ (H1ComplDirichletToLp q (steklovAverage h V 0)) := by
+  obtain ⟨w, hw, hwd, hwT⟩ := exists_timeH1_steklovAverage_timeL2_terminal_zero hT v hh
+  obtain ⟨Cg, Cv, hCg, hequiv, hCv0, hCvtop, hvol, htest⟩ :=
+    hu.integral_timeH1_test hXcont hacont
+  refine ⟨Cg, Cv, hCg, hequiv, hCv0, hCvtop, hvol, ?_⟩
+  have hid := htest w hwT
+  have hinit : w.init = steklovAverage h ((Icc (0 : ℝ) T).indicator v) 0 :=
+    w.toFun_zero.symm.trans (hw 0 ⟨le_rfl, hT⟩)
+  rw [hinit] at hid
+  rw [← hid]
+  apply congrArg₂ (fun a b : ℝ => a + b)
+  · apply integral_congr_ae
+    filter_upwards [hwd] with t ht
+    rw [ht]
+  · apply integral_congr_ae
+    filter_upwards [ae_restrict_mem measurableSet_Icc] with t ht
+    rw [hw t ht]
 
 end DifferentialGeometry.Analysis.Parabolic.Dirichlet
