@@ -4488,3 +4488,7 @@ import DifferentialGeometry.Geometry.Connection.MetricCompatibility.ExteriorEndo
 import DifferentialGeometry.Geometry.Connection.Hessian.Map
 import DifferentialGeometry.Geometry.Connection.Laplacian.Map
 import DifferentialGeometry.Geometry.Connection.Laplacian.ExteriorEndomorphism
+import DifferentialGeometry.Topology.Manifold.InjectiveRegularity
+import DifferentialGeometry.Bundle.Hom.InjectiveRegularity
+import DifferentialGeometry.Geometry.Metric.ExteriorEndomorphismRegularity
+import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.ExteriorSmooth
