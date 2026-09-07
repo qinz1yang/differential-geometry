@@ -1,4 +1,5 @@
 import DifferentialGeometry.Tensor.RSTensor.MetricTrace.NablaTraceGen
+import DifferentialGeometry.Geometry.Curvature.QuadraticContraction
 
 noncomputable section
 
@@ -401,5 +402,71 @@ theorem curvatureQuadraticCombination_component {Idx : Type*} [Fintype Idx] [Dec
   rw [h1, h2, h3, h4]
   simp only [component0S_apply]
   ring
+
+end DifferentialGeometry.PDE.RicciFlow
+
+namespace DifferentialGeometry.PDE.RicciFlow
+
+open Bundle
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Tensor0SBundle
+open scoped Manifold ContDiff BigOperators
+
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  [FiniteDimensional ℝ E]
+variable {H : Type*} [TopologicalSpace H]
+variable {I : ModelWithCorners ℝ E H}
+variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
+  [IsManifold I ∞ M]
+
+theorem curvatureQuadraticCombination_apply_isometry_basis
+    {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
+    {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
+    (g : SmoothRiemannianMetric I M) (x : M)
+    (ι : F ≃L[ℝ] TangentSpace I x) (h : F →L[ℝ] F →L[ℝ] ℝ)
+    (hι : ∀ v w, g.inner x (ι v) (ι w) = h v w)
+    (b : Module.Basis Idx ℝ F) (hInv : Idx → Idx → ℝ)
+    (hinv : ∀ i j,
+      (∑ k, hInv i k * h (b k) (b j)) = (if i = j then 1 else 0) ∧
+      (∑ k, h (b i) (b k) * hInv k j) = (if i = j then 1 else 0))
+    (A : Tensor0SField (𝕜 := ℝ) (I := I) (M := M) (n := ∞) 4)
+    (m : Fin 4 → Idx) :
+    curvatureQuadraticCombination g A x (fun q => ι (b (m q))) =
+      bComp hInv (fun a b' c d => A x (vec4 (ι (b a)) (ι (b b')) (ι (b c)) (ι (b d))))
+          (m 0) (m 1) (m 2) (m 3) -
+        bComp hInv (fun a b' c d => A x (vec4 (ι (b a)) (ι (b b')) (ι (b c)) (ι (b d))))
+          (m 0) (m 1) (m 3) (m 2) +
+        bComp hInv (fun a b' c d => A x (vec4 (ι (b a)) (ι (b b')) (ι (b c)) (ι (b d))))
+          (m 0) (m 2) (m 1) (m 3) -
+        bComp hInv (fun a b' c d => A x (vec4 (ι (b a)) (ι (b b')) (ι (b c)) (ι (b d))))
+          (m 0) (m 3) (m 1) (m 2) := by
+  let basis := b.map ι.toLinearEquiv
+  have hb (a : Idx) : basis a = ι (b a) := rfl
+  have hreal : MetricInverseInBasisGen (I := I) g x basis hInv := by
+    intro i j
+    change (∑ k, hInv i k * g.inner x (basis k) (basis j)) = _ ∧
+      (∑ k, g.inner x (basis i) (basis k) * hInv k j) = _
+    simpa only [hb, hι] using hinv i j
+  let R := fun a b' c d => A x (vec4 (ι (b a)) (ι (b b')) (ι (b c)) (ι (b d)))
+  have hRm (a b' c d : Idx) :
+      component0S (I := I) basis (A x) ![a, b', c, d] = R a b' c d := by
+    change A x _ = A x _
+    congr 1
+    funext q
+    fin_cases q <;> rfl
+  have hB (a b' c d : Idx) :
+      bComp hInv R a b' c d =
+        ∑ f, ∑ r, ∑ e, ∑ q, hInv f r * hInv e q * R a e b' f * R c q d r := by
+    unfold bComp
+    rw [DifferentialGeometry.Tensor.SlotAlgebra.sum_rotate4_two]
+    refine Finset.sum_congr rfl fun f _ => ?_
+    refine Finset.sum_congr rfl fun r _ => ?_
+    refine Finset.sum_congr rfl fun e _ => ?_
+    refine Finset.sum_congr rfl fun q _ => ?_
+    ring
+  have hcomp := curvatureQuadraticCombination_component g basis hInv hreal A m
+  simp only [hRm] at hcomp
+  rw [← hB, ← hB, ← hB, ← hB] at hcomp
+  exact hcomp
 
 end DifferentialGeometry.PDE.RicciFlow

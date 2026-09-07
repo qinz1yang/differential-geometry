@@ -2,6 +2,7 @@ import DifferentialGeometry.Geometry.Curvature.AlgebraicTensorMetric
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureOperatorLeastEigenvalue
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureReactionAlgebra
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.RicciControlsRm
+import DifferentialGeometry.Geometry.Curvature.QuadraticContraction
 
 set_option autoImplicit false
 
@@ -224,5 +225,54 @@ theorem curvatureOperatorReaction3_traceNormalizedCurvatureOperatorMatrix3
         norm_num [two_smul]
       rw [hham]
       norm_num [smul_smul]
+
+end DifferentialGeometry.Geometry.Curvature.DimensionThree
+
+namespace DifferentialGeometry.Geometry.Curvature.DimensionThree
+
+open DifferentialGeometry.Dim3Reaction
+open DifferentialGeometry.PDE.RicciFlow
+open scoped BigOperators
+
+theorem curvatureOperatorReaction3_apply_eq_negative_b_comp
+    (R : Fin 3 → Fin 3 → Fin 3 → Fin 3 → ℝ)
+    (hR : AlgebraicCurvatureSymmetries3 R) (i j : Fin 3) :
+    curvatureOperatorReaction3
+        (fun p q => 2 * R (bivectorIndex3 p).1 (bivectorIndex3 p).2
+          (bivectorIndex3 q).2 (bivectorIndex3 q).1) i j =
+      let a := (bivectorIndex3 i).1
+      let b := (bivectorIndex3 i).2
+      let c := (bivectorIndex3 j).2
+      let d := (bivectorIndex3 j).1
+      4 * ((-bComp delta3 R a b c d) - (-bComp delta3 R a b d c) +
+        (-bComp delta3 R a c b d) - (-bComp delta3 R a d b c)) := by
+  let Ric := fun p q => -stdRicci3 R p q
+  have hRic : ∀ p q, Ric p q = Ric q p := by
+    intro p q
+    dsimp [Ric, stdRicci3]
+    rw [hR.block_symm 0 q 0 p, hR.block_symm 1 q 1 p, hR.block_symm 2 q 2 p]
+  have hrep : R = rm Ric := by
+    funext a b c d
+    rw [stdRiemannFromRicci3D_of_algebraic_curvature_symmetries hR]
+    dsimp [stdRiemannFromRicciRhs3, rm, Ric, kd, delta3, sc, stdScalar3]
+    ring
+  have hB (a b c d : Fin 3) : bComp delta3 R a b c d = Bt Ric a b c d := by
+    rw [hrep]
+    simp [bComp, delta3, Bt]
+  have hnorm := congrFun (congrFun
+    (curvatureOperatorReaction3_traceNormalizedCurvatureOperatorMatrix3
+      (curvatureOperatorMatrixOfRicci Ric)) i) j
+  rw [← curvatureOperatorReactionMatrix_eq_hamiltonIveyMatrixReaction Ric hRic] at hnorm
+  change curvatureOperatorReaction3
+      (fun p q => 2 * rm Ric (bivectorIndex3 p).1 (bivectorIndex3 p).2
+        (bivectorIndex3 q).2 (bivectorIndex3 q).1) i j =
+    2 * (-2 * Bsharp Ric (bivectorIndex3 i).1 (bivectorIndex3 i).2
+      (bivectorIndex3 j).2 (bivectorIndex3 j).1) at hnorm
+  rw [← hrep] at hnorm
+  rw [hnorm]
+  dsimp only
+  rw [hB, hB, hB, hB]
+  unfold Bsharp
+  ring
 
 end DifferentialGeometry.Geometry.Curvature.DimensionThree

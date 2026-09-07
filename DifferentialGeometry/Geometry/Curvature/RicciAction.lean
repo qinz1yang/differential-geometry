@@ -427,3 +427,59 @@ theorem ricciDrift04_apply
 
 
 end DifferentialGeometry.PDE.RicciFlow
+
+namespace DifferentialGeometry.PDE.RicciFlow
+
+open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.Tensor0SBundle
+open scoped Manifold ContDiff BigOperators
+
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  [FiniteDimensional ℝ E]
+  {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+  {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
+  [IsManifold I ∞ M] [T2Space M] [BoundarylessManifold I M]
+
+theorem ricciSharp_conjugate_inner
+    {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
+    (g : SmoothRiemannianMetric I M) (x : M)
+    (ι : F ≃L[ℝ] TangentSpace I x)
+    (h : F →L[ℝ] F →L[ℝ] ℝ)
+    (hι : ∀ v w, g.inner x (ι v) (ι w) = h v w) (v w : F) :
+    h (ι.symm (ricciSharp (I := I) g x (ι v))) w =
+      ricciTensor (I := I) g x (ι v) (ι w) := by
+  rw [← hι, ContinuousLinearEquiv.apply_symm_apply, inner_ricciSharp]
+
+theorem ricciSharp_conjugate_apply_eq_sum
+    {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
+    {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
+    (g : SmoothRiemannianMetric I M) (x : M)
+    (ι : F ≃L[ℝ] TangentSpace I x) (h : F →L[ℝ] F →L[ℝ] ℝ)
+    (hι : ∀ v w, g.inner x (ι v) (ι w) = h v w)
+    (b : Module.Basis Idx ℝ F) (hInv : Idx → Idx → ℝ)
+    (hinv : ∀ i j,
+      (∑ k, hInv i k * h (b k) (b j)) = (if i = j then 1 else 0) ∧
+      (∑ k, h (b i) (b k) * hInv k j) = (if i = j then 1 else 0)) (a : Idx) :
+    ι.symm (ricciSharp (I := I) g x (ι (b a))) =
+      ∑ e, (∑ f, hInv e f * ricciTensor (I := I) g x (ι (b a)) (ι (b f))) • b e := by
+  let c := b.map ι.toLinearEquiv
+  have hc (a : Idx) : c a = ι (b a) := rfl
+  have hreal : MetricInverseInBasisGen (I := I) g x c hInv := by
+    intro i j
+    change (∑ k, hInv i k * g.inner x (c k) (c j)) = _ ∧
+      (∑ k, g.inner x (c i) (c k) * hInv k j) = _
+    simpa only [hc, hι] using hinv i j
+  have hcoord (e : Idx) :
+      c.repr (ricciSharp (I := I) g x (ι (b a))) e =
+      ∑ f, hInv e f * ricciTensor (I := I) g x (ι (b a)) (ι (b f)) := by
+    rw [basis_repr_eq_sum_inv_inner (I := I) g x c hInv hreal]
+    apply Finset.sum_congr rfl
+    intro f _
+    rw [inner_ricciSharp]
+    rfl
+  apply ι.injective
+  rw [ContinuousLinearEquiv.apply_symm_apply, map_sum]
+  simp only [map_smul]
+  have hexp := c.sum_repr (ricciSharp (I := I) g x (ι (b a)))
+  simpa only [hcoord, hc] using hexp.symm
+
+end DifferentialGeometry.PDE.RicciFlow
