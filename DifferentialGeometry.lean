@@ -1019,6 +1019,7 @@ import DifferentialGeometry.Analysis.Sobolev.Chart.CrossChartBounds.CrossChartBo
 import DifferentialGeometry.Analysis.Sobolev.Chart.CrossChartBounds.CrossChartIdentity
 import DifferentialGeometry.Analysis.Sobolev.Chart.CrossChartBounds.CrossChartTransfer
 import DifferentialGeometry.Analysis.Sobolev.Chart.Defs
+import DifferentialGeometry.Analysis.Sobolev.Chart.Regularity
 import DifferentialGeometry.Analysis.Sobolev.Chart.SmoothDensity.ChartSobolevDensity
 import DifferentialGeometry.Analysis.Sobolev.Chart.SmoothDensity.Defs
 import DifferentialGeometry.Analysis.Sobolev.Chart.SmoothDensity.FineChartCover
