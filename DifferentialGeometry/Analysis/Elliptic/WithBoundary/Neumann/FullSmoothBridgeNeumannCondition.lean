@@ -1,7 +1,6 @@
 import DifferentialGeometry.Analysis.Elliptic.WithBoundary.Neumann.FullH1Compl
 import DifferentialGeometry.Analysis.Elliptic.WithBoundary.Neumann.FullSmoothBridgeInteriorSupport
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.WithBoundary.BoundaryContribution.GreenFull
-import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.WithBoundary.BoundaryContribution.SurfaceIntegralIdentification
 open DifferentialGeometry.Geometry.Operator
 
 
@@ -324,23 +323,7 @@ theorem fullSmoothScalarH1Inner_eq_integral_oneSubLapClassical_mul_neumann
         (outwardNormal (I := I_half n) (M := M) g x :
           TangentSpace _ x.val)
         (gradFun (I := I_half n) g u.toFun x.val) = 0)
-    (h_chart_iden : ∀ α ∈ chartAtlasPOUFinset
-        (I := I_half n) (M := M),
-      chartFaceIntegralEqualsSurfaceIntegralOnChart (n := n) (M := M)
-        g α
-        (smoothSmul (I := I_half n) v.toFun v.smooth
-          (gradGFullSection (M := M) (n := n) g u.smooth))
-        ((chartAtlasPOU (I_half n) M) α : M → ℝ))
-    (h_int : Integrable
-      (fun b : BoundaryManifold (I_half n) M =>
-        g.inner b.val
-          (outwardNormal
-              (I := I_half n) (M := M) g b :
-            TangentSpace _ b.val)
-          ((smoothSmul (I := I_half n) v.toFun v.smooth
-              (gradGFullSection (M := M) (n := n) g u.smooth)) b.val))
-      (surfaceMeasure
-        (I := I_half n) (M := M) g)) :
+    :
     fullSmoothScalarH1Inner u v =
       ∫ x, (u.toFun x -
               ΔGClassical (M := M) (n := n) g u.smooth x) *
@@ -352,8 +335,7 @@ theorem fullSmoothScalarH1Inner_eq_integral_oneSubLapClassical_mul_neumann
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace
       (I := I_half n) (M := M) g
   have h_green :=
-    green_first_eq_boundary_surface_integral (M := M) (n := n) g v.smooth u.smooth h_chart_iden
-      h_int
+    green_first_eq_boundary_surface_integral (M := M) (n := n) g v.smooth u.smooth
   have h_bdy_zero : ∀ x : (I_half n).boundary M,
       v.toFun x.val *
         g.inner x.val
@@ -462,27 +444,11 @@ theorem fullSmoothScalarH1Inner_eq_lpInner_oneSubLapClassical_neumann
         (outwardNormal (I := I_half n) (M := M) g x :
           TangentSpace _ x.val)
         (gradFun (I := I_half n) g u.toFun x.val) = 0)
-    (h_chart_iden : ∀ α ∈ chartAtlasPOUFinset
-        (I := I_half n) (M := M),
-      chartFaceIntegralEqualsSurfaceIntegralOnChart (n := n) (M := M)
-        g α
-        (smoothSmul (I := I_half n) v.toFun v.smooth
-          (gradGFullSection (M := M) (n := n) g u.smooth))
-        ((chartAtlasPOU (I_half n) M) α : M → ℝ))
-    (h_int : Integrable
-      (fun b : BoundaryManifold (I_half n) M =>
-        g.inner b.val
-          (outwardNormal
-              (I := I_half n) (M := M) g b :
-            TangentSpace _ b.val)
-          ((smoothSmul (I := I_half n) v.toFun v.smooth
-              (gradGFullSection (M := M) (n := n) g u.smooth)) b.val))
-      (surfaceMeasure
-        (I := I_half n) (M := M) g)) :
+    :
     fullSmoothScalarH1Inner u v =
       ⟪u.oneSubLapClassicalLp, smoothToLpFullNeumann g v⟫_ℝ := by
   rw [fullSmoothScalarH1Inner_eq_integral_oneSubLapClassical_mul_neumann
-    (u := u) (v := v) h_neumann h_chart_iden h_int]
+    (u := u) (v := v) h_neumann]
   rw [MeasureTheory.L2.inner_def (𝕜 := ℝ)]
   have hae_lhs := u.oneSubLapClassicalLp_ae_oneSubLap
   have hae_rhs : (smoothToLpFullNeumann g v :
@@ -513,23 +479,7 @@ theorem fullSmoothScalar_bilin_eq_lpFunctional_smooth_neumann
         (outwardNormal (I := I_half n) (M := M) g x :
           TangentSpace _ x.val)
         (gradFun (I := I_half n) g u.toFun x.val) = 0)
-    (h_chart_iden : ∀ α ∈ chartAtlasPOUFinset
-        (I := I_half n) (M := M),
-      chartFaceIntegralEqualsSurfaceIntegralOnChart (n := n) (M := M)
-        g α
-        (smoothSmul (I := I_half n) v.toFun v.smooth
-          (gradGFullSection (M := M) (n := n) g u.smooth))
-        ((chartAtlasPOU (I_half n) M) α : M → ℝ))
-    (h_int : Integrable
-      (fun b : BoundaryManifold (I_half n) M =>
-        g.inner b.val
-          (outwardNormal
-              (I := I_half n) (M := M) g b :
-            TangentSpace _ b.val)
-          ((smoothSmul (I := I_half n) v.toFun v.smooth
-              (gradGFullSection (M := M) (n := n) g u.smooth)) b.val))
-      (surfaceMeasure
-        (I := I_half n) (M := M) g)) :
+    :
     H1ComplFullNeumannBilin g
         (smoothToH1ComplFullNeumann g u)
         (smoothToH1ComplFullNeumann g v) =
@@ -537,7 +487,7 @@ theorem fullSmoothScalar_bilin_eq_lpFunctional_smooth_neumann
         (smoothToH1ComplFullNeumann g v) := by
   rw [H1ComplFullNeumannBilin_smoothToH1ComplFullNeumann_smoothToH1ComplFullNeumann,
     fullSmoothScalarH1Inner_eq_lpInner_oneSubLapClassical_neumann
-      (u := u) (v := v) h_neumann h_chart_iden h_int]
+      (u := u) (v := v) h_neumann]
   rw [lpFunctionalCLMFullNeumann_apply,
     H1ComplFullNeumannToLp_smoothToH1ComplFullNeumann]
   exact real_inner_comm _ _
@@ -550,24 +500,6 @@ theorem smoothToH1ComplFullNeumann_bilin_eq_lpFunctional_neumann
         (outwardNormal (I := I_half n) (M := M) g x :
           TangentSpace _ x.val)
         (gradFun (I := I_half n) g u.toFun x.val) = 0)
-    (h_chart_iden : ∀ (v : FullSmoothScalar g),
-      ∀ α ∈ chartAtlasPOUFinset (I := I_half n) (M := M),
-      chartFaceIntegralEqualsSurfaceIntegralOnChart (n := n) (M := M)
-        g α
-        (smoothSmul (I := I_half n) v.toFun v.smooth
-          (gradGFullSection (M := M) (n := n) g u.smooth))
-        ((chartAtlasPOU (I_half n) M) α : M → ℝ))
-    (h_int : ∀ (v : FullSmoothScalar g),
-      Integrable
-        (fun b : BoundaryManifold (I_half n) M =>
-          g.inner b.val
-            (outwardNormal
-                (I := I_half n) (M := M) g b :
-              TangentSpace _ b.val)
-            ((smoothSmul (I := I_half n) v.toFun v.smooth
-                (gradGFullSection (M := M) (n := n) g u.smooth)) b.val))
-        (surfaceMeasure
-          (I := I_half n) (M := M) g))
     (w : H1ComplFullNeumann g) :
     H1ComplFullNeumannBilin g (smoothToH1ComplFullNeumann g u) w =
       lpFunctionalCLMFullNeumann g u.oneSubLapClassicalLp w := by
@@ -584,7 +516,7 @@ theorem smoothToH1ComplFullNeumann_bilin_eq_lpFunctional_neumann
       L ∘ (smoothToH1ComplFullNeumann g) = R ∘ (smoothToH1ComplFullNeumann g) := by
     funext v
     exact fullSmoothScalar_bilin_eq_lpFunctional_smooth_neumann
-      u v h_neumann (h_chart_iden v) (h_int v)
+      u v h_neumann
   exact congrFun
     ((denseRange_smoothToH1ComplFullNeumann g).equalizer hL_cont hR_cont
       hLR_smooth) w
@@ -597,24 +529,7 @@ theorem smoothToH1ComplFullNeumann_eq_resolventFullNeumann_oneSubLap_neumann
         (outwardNormal (I := I_half n) (M := M) g x :
           TangentSpace _ x.val)
         (gradFun (I := I_half n) g u.toFun x.val) = 0)
-    (h_chart_iden : ∀ (v : FullSmoothScalar g),
-      ∀ α ∈ chartAtlasPOUFinset (I := I_half n) (M := M),
-      chartFaceIntegralEqualsSurfaceIntegralOnChart (n := n) (M := M)
-        g α
-        (smoothSmul (I := I_half n) v.toFun v.smooth
-          (gradGFullSection (M := M) (n := n) g u.smooth))
-        ((chartAtlasPOU (I_half n) M) α : M → ℝ))
-    (h_int : ∀ (v : FullSmoothScalar g),
-      Integrable
-        (fun b : BoundaryManifold (I_half n) M =>
-          g.inner b.val
-            (outwardNormal
-                (I := I_half n) (M := M) g b :
-              TangentSpace _ b.val)
-            ((smoothSmul (I := I_half n) v.toFun v.smooth
-                (gradGFullSection (M := M) (n := n) g u.smooth)) b.val))
-        (surfaceMeasure
-          (I := I_half n) (M := M) g)) :
+    :
     smoothToH1ComplFullNeumann g u =
       resolventFullNeumann g u.oneSubLapClassicalLp := by
   apply ext_inner_right ℝ
@@ -622,7 +537,7 @@ theorem smoothToH1ComplFullNeumann_eq_resolventFullNeumann_oneSubLap_neumann
   rw [show ⟪smoothToH1ComplFullNeumann g u, w⟫_ℝ =
         H1ComplFullNeumannBilin g (smoothToH1ComplFullNeumann g u) w from rfl]
   rw [smoothToH1ComplFullNeumann_bilin_eq_lpFunctional_neumann
-    u h_neumann h_chart_iden h_int w]
+    u h_neumann w]
   rw [resolventFullNeumann_inner_eq_lpFunctional]
   rw [lpFunctionalCLMFullNeumann_apply]
 

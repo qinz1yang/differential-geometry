@@ -12,13 +12,13 @@ namespace DifferentialGeometry.Integral.DivergenceTheorem.WithBoundary
 
 open DifferentialGeometry.Integral.Measure
 
-variable {n : Nat} {M : Type*} [TopologicalSpace M]
-  [ChartedSpace (EuclideanHalfSpace (n + 1)) M]
-  [IsManifold (modelWithCornersEuclideanHalfSpace (n + 1)) ∞ M]
+variable {n : Nat} [NeZero n] {M : Type*} [TopologicalSpace M]
+  [ChartedSpace (EuclideanHalfSpace n) M]
+  [IsManifold (modelWithCornersEuclideanHalfSpace n) ∞ M]
   [T2Space M] [SigmaCompactSpace M]
 
-local notation "J" => modelWithCornersEuclideanHalfSpace (n + 1)
-local notation "V" => EuclideanSpace Real (Fin (n + 1))
+local notation "J" => modelWithCornersEuclideanHalfSpace n
+local notation "V" => EuclideanSpace Real (Fin n)
 
 private local instance : MeasurableSpace M := borel _
 private local instance : BorelSpace M := ⟨rfl⟩
@@ -64,7 +64,7 @@ private theorem integral_weighted_divergence_eq_zero_of_interior_support
     (g : SmoothRiemannianMetric J M)
     (X : Cₛ^∞⟮J; V, (TangentSpace J : M → Type _)⟯)
     {f : M → Real} (hf : ContMDiff J 𝓘(Real) ∞ f) (hc : HasCompactSupport f)
-    (hs : tsupport f ⊆ (modelWithCornersEuclideanHalfSpace (n + 1)).interior M) :
+    (hs : tsupport f ⊆ (modelWithCornersEuclideanHalfSpace n).interior M) :
     ∫ x, f x * divergenceGWithBoundary g X x + tangentSectionAction X f x
         ∂riemannianVolumeMeasure (I := J) (M := M) g =
       ∫ x, f (x : M) * g.inner (x : M) (outwardNormal (M := M) g x) (X (x : M))
@@ -88,7 +88,7 @@ private theorem integral_weighted_divergence_eq_zero_of_interior_support
   filter_upwards with x
   have hfx : f (x : M) = 0 := by
     by_contra hx
-    exact Set.disjoint_left.mp (modelWithCornersEuclideanHalfSpace (n + 1)).disjoint_interior_boundary
+    exact Set.disjoint_left.mp (modelWithCornersEuclideanHalfSpace n).disjoint_interior_boundary
       (hs (subset_tsupport f hx)) x.property
   rw [hfx, zero_mul]
   rfl
@@ -123,11 +123,12 @@ theorem integral_mul_divergence_g_with_boundary_add_tangentSectionAction_eq_surf
         ∂riemannianVolumeMeasure (I := J) (M := M) g) =
       ∫ x, w i (x : M) * g.inner (x : M) (outwardNormal (M := M) g x) (X (x : M))
         ∂surfaceMeasure g := by
-    rcases (modelWithCornersEuclideanHalfSpace (n + 1)).isInteriorPoint_or_isBoundaryPoint i with hi | hi
+    rcases (modelWithCornersEuclideanHalfSpace n).isInteriorPoint_or_isBoundaryPoint i with hi | hi
     · exact integral_weighted_divergence_eq_zero_of_interior_support g X (hw i) (hwc i)
         (tsupport_mul_subset_left.trans (hrhoint i hi))
-    · exact integral_mul_divergence_g_with_boundary_add_tangentSectionAction_eq_surfaceMeasure_flux_of_tsupport_subset
-        g (⟨i, hi⟩ : BoundaryManifold J M) X (hw i) (hwc i)
+    · obtain ⟨k, rfl⟩ := Nat.exists_eq_succ_of_ne_zero (NeZero.ne n)
+      exact integral_mul_divergence_g_with_boundary_add_tangentSectionAction_eq_surfaceMeasure_flux_of_tsupport_subset
+        g ⟨i, hi⟩ X (hw i) (hwc i)
         (tsupport_mul_subset_left.trans (hrho i))
   have hleft : (fun x => f x * divergenceGWithBoundary g X x + tangentSectionAction X f x) =
       fun x => ∑ i ∈ s, (w i x * divergenceGWithBoundary g X x + tangentSectionAction X (w i) x) := by
@@ -146,5 +147,15 @@ theorem integral_mul_divergence_g_with_boundary_add_tangentSectionAction_eq_surf
   rw [hleft, hright, integral_finsetSum s (fun i _ => integrable_weighted_divergence g X (hw i) (hwc i)),
     integral_finsetSum s (fun i _ => integrable_weighted_surface_flux g X (hw i).continuous (hwc i))]
   exact Finset.sum_congr rfl (fun i _ => hlocal i)
+
+theorem integral_divergence_g_with_boundary_eq_surfaceMeasure_flux [CompactSpace M]
+    (g : SmoothRiemannianMetric J M)
+    (X : Cₛ^∞⟮J; V, (TangentSpace J : M → Type _)⟯) :
+    ∫ x, divergenceGWithBoundary g X x ∂riemannianVolumeMeasure (I := J) (M := M) g =
+      ∫ x, g.inner (x : M) (outwardNormal (M := M) g x) (X (x : M))
+        ∂surfaceMeasure g := by
+  simpa only [one_mul, tangentSectionAction_const, add_zero] using
+    integral_mul_divergence_g_with_boundary_add_tangentSectionAction_eq_surfaceMeasure_flux
+      g X (f := fun _ => 1) contMDiff_const (HasCompactSupport.of_compactSpace _)
 
 end DifferentialGeometry.Integral.DivergenceTheorem.WithBoundary
