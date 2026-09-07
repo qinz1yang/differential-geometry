@@ -136,4 +136,18 @@ theorem mapContinuousLinearEquiv_toContinuousLinearMap (k : ℕ) (φ : E ≃L[�
 theorem mapContinuousLinearEquiv_symm (k : ℕ) (φ : E ≃L[ℝ] F) :
     (mapContinuousLinearEquiv k φ).symm = mapContinuousLinearEquiv k φ.symm := rfl
 
+def mapLinearIsometryEquiv (k : ℕ) (φ : E ≃ₗᵢ[ℝ] F) : (⋀[ℝ]^k E) ≃ₗᵢ[ℝ] ⋀[ℝ]^k F where
+  toLinearEquiv := (mapContinuousLinearEquiv k φ.toContinuousLinearEquiv).toLinearEquiv
+  norm_map' := (LinearMap.norm_map_iff_inner_map_map
+    (map k φ.toLinearIsometry.toLinearMap)).mpr (inner_map_linearIsometry k φ.toLinearIsometry)
+
+@[simp]
+theorem mapLinearIsometryEquiv_toContinuousLinearEquiv (k : ℕ) (φ : E ≃ₗᵢ[ℝ] F) :
+    (mapLinearIsometryEquiv k φ).toContinuousLinearEquiv =
+      mapContinuousLinearEquiv k φ.toContinuousLinearEquiv := rfl
+
+@[simp]
+theorem mapLinearIsometryEquiv_apply (k : ℕ) (φ : E ≃ₗᵢ[ℝ] F) (u : ⋀[ℝ]^k E) :
+    mapLinearIsometryEquiv k φ u = map k φ.toLinearIsometry.toLinearMap u := rfl
+
 end exteriorPower
