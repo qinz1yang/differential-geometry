@@ -2057,6 +2057,7 @@ import DifferentialGeometry.Geometry.Comparison.Variation.PerpendicularFrame.Ind
 import DifferentialGeometry.Geometry.Comparison.Variation.FirstVariation.RegularParameter
 import DifferentialGeometry.Geometry.Comparison.Variation.SecondVariation.Basic
 import DifferentialGeometry.Geometry.Comparison.Variation.SecondVariation.Minimizer
+import DifferentialGeometry.Geometry.Comparison.Variation.RicciIntegral
 import DifferentialGeometry.Geometry.Comparison.Variation.SecondVariation.NegativeDirection
 import DifferentialGeometry.Geometry.Comparison.Variation.Curve.SmoothCurveGerm
 import DifferentialGeometry.Geometry.Comparison.Variation.Curve.SpeedDerivative
