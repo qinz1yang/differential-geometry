@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Connection.AlongCurveHom
 import DifferentialGeometry.Bundle.PartialMfderiv.TimeDerivative
-import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Defs
+import DifferentialGeometry.Geometry.Connection.Subbundle
 
 noncomputable section
 
@@ -69,26 +69,20 @@ theorem hessian_mem_of_isCovariantlyInvariant
     (X Y : TangentSpace I x) : cov.hessian base s x X Y ∈ S x := by
   obtain ⟨Z, hZ⟩ := ContMDiffSection.exists_eq_at
     (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞)) x Y
+  have hcovs : ContMDiff I (I.prod 𝓘(ℝ, E →L[ℝ] F)) ∞
+      (fun y => (⟨y, cov s y⟩ : TotalSpace (E →L[ℝ] F)
+        (fun y => TangentSpace I y →L[ℝ] V y))) :=
+    contMDiffOn_univ.mp
+      (hcov.contMDiff.contMDiff (by simpa using s.contMDiff.contMDiffOn))
   let u : Cₛ^∞⟮I; F, V⟯ :=
-    ⟨DifferentialGeometry.Geometry.Curvature.covApply cov (fun y => Z y) (fun y => s y),
-      contMDiffOn_univ.mp (DifferentialGeometry.Geometry.Curvature.covApply_contMDiffOn
-        (cov := cov) Z.contMDiff (by simpa using s.contMDiff))⟩
-  have hu : ∀ y ∈ U, u y ∈ S y :=
-    fun y hy => by
-      change cov (fun z => s z) y (Z y) ∈ S y
-      exact DifferentialGeometry.Geometry.Connection.IsCovariantlyInvariantSubmoduleFamily.covariantDerivative_mem
-        hS s hU hs hy (Z y)
-  have hDs := (contMDiffOn_univ.mp
-    (hcov.contMDiff.contMDiff (by simpa using s.contMDiff.contMDiffOn))).mdifferentiableAt (x := x)
-      (by simp)
-  rw [← hZ, cov.hessian_apply base hDs Z.mdifferentiableAt]
+    ⟨fun y => cov s y (Z y), hcovs.clm_bundle_apply Z.contMDiff⟩
+  have hu : ∀ y ∈ U, u y ∈ S y := by
+    intro y hy
+    exact hS.covariantDerivative_mem s hU hs hy (Z y)
+  rw [← hZ, cov.hessian_apply base (hcovs.mdifferentiableAt (by simp)) Z.mdifferentiableAt]
   exact (S x).sub_mem
-    (by
-      change cov (fun y => cov (fun z => s z) y (Z y)) x X ∈ S x
-      exact DifferentialGeometry.Geometry.Connection.IsCovariantlyInvariantSubmoduleFamily.covariantDerivative_mem
-        hS u hU hu hxU X)
-    (DifferentialGeometry.Geometry.Connection.IsCovariantlyInvariantSubmoduleFamily.covariantDerivative_mem
-      hS s hU hs hxU (base Z x X))
+    (hS.covariantDerivative_mem u hU hu hxU X)
+    (hS.covariantDerivative_mem s hU hs hxU (base Z x X))
 
 theorem derivAlongWithin_derivAlongWithin_section
     (cov : CovariantDerivative I F V) (hcov : ContMDiffCovariantDerivative cov ∞)
@@ -140,3 +134,40 @@ theorem derivAlongWithin_derivAlongWithin_section
   rfl
 
 end CovariantDerivative
+
+namespace DifferentialGeometry.HomConnectionGen
+
+open CovariantDerivative
+
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  [FiniteDimensional ℝ E]
+  {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+  {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M] [T2Space M]
+  {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F] [FiniteDimensional ℝ F]
+  {V : M → Type*} [TopologicalSpace (TotalSpace F V)]
+  [∀ x, NormedAddCommGroup (V x)] [∀ x, InnerProductSpace ℝ (V x)]
+  [FiberBundle F V] [VectorBundle ℝ F V] [ContMDiffVectorBundle ∞ F V I]
+  [IsContMDiffRiemannianBundle I 1 F V]
+
+theorem homBundleCovariantDerivativeGen_hessian_isSymmetric_of_eventually
+    (cov : CovariantDerivative I F V) [ContMDiffCovariantDerivative cov ∞]
+    (hcov : cov.IsMetricCompatible)
+    (base : CovariantDerivative I E (TangentSpace I : M → Type _))
+    (A : Cₛ^∞⟮I; F →L[ℝ] F, (fun x : M => V x →L[ℝ] V x)⟯)
+    {x : M} (hA : ∀ᶠ y in 𝓝 x, (A y : V y →ₗ[ℝ] V y).IsSymmetric)
+    (X Y : TangentSpace I x) :
+    (((homBundleCovariantDerivativeGen I M F V F V cov cov).hessian base A x X Y :
+      V x →L[ℝ] V x) : V x →ₗ[ℝ] V x).IsSymmetric := by
+  let : ∀ y, FiniteDimensional ℝ (V y) :=
+    fun y => VectorBundle.finiteDimensional ℝ F V y
+  let : ∀ y, CompleteSpace (V y) := fun y => FiniteDimensional.complete ℝ (V y)
+  obtain ⟨U, hU, hUopen, hxU⟩ := mem_nhds_iff.mp hA
+  have h := CovariantDerivative.hessian_mem_of_isCovariantlyInvariant
+    (homBundleCovariantDerivativeGen I M F V F V cov cov) base
+    (fun y => selfAdjoint.submodule ℝ (V y →L[ℝ] V y))
+    (homBundleCovariantDerivativeGen_isCovariantlyInvariant_selfAdjoint cov hcov)
+    A hUopen hxU
+    (fun y hy => ContinuousLinearMap.isSelfAdjoint_iff_isSymmetric.mpr (hU hy)) X Y
+  exact ContinuousLinearMap.isSelfAdjoint_iff_isSymmetric.mp h
+
+end DifferentialGeometry.HomConnectionGen

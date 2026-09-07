@@ -281,6 +281,26 @@ variable {V : M → Type*} [TopologicalSpace (TotalSpace F V)]
   [ContMDiffVectorBundle ∞ F V I]
   [IsContMDiffRiemannianBundle I 1 F V]
 
+theorem rawBundleEndomorphismConnLap_isSymmetric_of_eventually
+    (g : SmoothRiemannianMetric I M)
+    (cov : CovariantDerivative I F V) [ContMDiffCovariantDerivative cov ∞]
+    (hcov : cov.IsMetricCompatible)
+    (A : Cₛ^∞⟮I; F →L[ℝ] F, (fun x : M => V x →L[ℝ] V x)⟯)
+    {x : M} (hA : ∀ᶠ y in 𝓝 x, (A y : V y →ₗ[ℝ] V y).IsSymmetric) :
+    ((rawBundleEndomorphismConnLap g cov A x :
+      V x →L[ℝ] V x) : V x →ₗ[ℝ] V x).IsSymmetric := by
+  let : ∀ y, FiniteDimensional ℝ (V y) :=
+    fun y => VectorBundle.finiteDimensional ℝ F V y
+  let : ∀ y, CompleteSpace (V y) := fun y => FiniteDimensional.complete ℝ (V y)
+  obtain ⟨U, hU, hUopen, hxU⟩ := mem_nhds_iff.mp hA
+  have h := rawBundleConnLap_mem_of_isCovariantlyInvariant g
+    (HomConnectionGen.homBundleCovariantDerivativeGen I M F V F V cov cov)
+    (fun y => selfAdjoint.submodule ℝ (V y →L[ℝ] V y))
+    (HomConnectionGen.homBundleCovariantDerivativeGen_isCovariantlyInvariant_selfAdjoint
+      cov hcov) A hUopen hxU
+    (fun y hy => ContinuousLinearMap.isSelfAdjoint_iff_isSymmetric.mpr (hU hy))
+  exact ContinuousLinearMap.isSelfAdjoint_iff_isSymmetric.mp h
+
 omit [IsContMDiffRiemannianBundle I 1 F V] in
 theorem rawBundleEndomorphismConnLap_apply_eq_zero_of_isCovariantlyInvariant
     (g : SmoothRiemannianMetric I M) (cov : CovariantDerivative I F V)

@@ -587,74 +587,6 @@ theorem inner_homBundleCovariantDerivativeGen_apply_of_eventually_mem_ker
   rw [hswap]
   rw [hw x hxU, inner_zero_right, neg_zero]
 
-theorem homBundleCovariantDerivativeGen_isSymmetric
-    (cov : CovariantDerivative I F V) (hcov : cov.IsMetricCompatible)
-    (A : Cₛ^∞⟮I; F →L[ℝ] F, (fun x : M => V x →L[ℝ] V x)⟯)
-    (hA : ∀ y, (A y : V y →ₗ[ℝ] V y).IsSymmetric)
-    (x : M) (v : TangentSpace I x) :
-    ((homBundleCovariantDerivativeGen I M F V F V cov cov A x v :
-      V x →L[ℝ] V x) : V x →ₗ[ℝ] V x).IsSymmetric := by
-  intro a b
-  obtain ⟨X, hXx⟩ := ContMDiffSection.exists_eq_at
-    (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞)) x v
-  obtain ⟨Y, hYx⟩ := ContMDiffSection.exists_eq_at
-    (I := I) (F := F) (V := V) (n := (⊤ : ℕ∞)) x a
-  obtain ⟨Z, hZx⟩ := ContMDiffSection.exists_eq_at
-    (I := I) (F := F) (V := V) (n := (⊤ : ℕ∞)) x b
-  let AY : Cₛ^∞⟮I; F, V⟯ :=
-    ⟨fun y => A y (Y y),
-      ContMDiff.clm_bundle_apply (b := id) A.contMDiff Y.contMDiff⟩
-  let AZ : Cₛ^∞⟮I; F, V⟯ :=
-    ⟨fun y => A y (Z y),
-      ContMDiff.clm_bundle_apply (b := id) A.contMDiff Z.contMDiff⟩
-  have hfun :
-      (fun y : M => inner ℝ (AY y) (Z y)) =
-        (fun y : M => inner ℝ (Y y) (AZ y)) := by
-    funext y
-    exact hA y (Y y) (Z y)
-  have hderiv :
-      d% (fun y : M => inner ℝ (AY y) (Z y)) x (X x) =
-        d% (fun y : M => inner ℝ (Y y) (AZ y)) x (X x) := by
-    rw [hfun]
-  have hleft := hcov.mvfderiv_inner_eq (x := x) (fun y => X y)
-    AY.mdifferentiableAt Z.mdifferentiableAt
-  have hright := hcov.mvfderiv_inner_eq (x := x) (fun y => X y)
-    Y.mdifferentiableAt AZ.mdifferentiableAt
-  rw [hleft, hright] at hderiv
-  rw [← hXx, ← hYx, ← hZx]
-  have hDY := homBundleCovariantDerivativeGen_apply
-    I M F V F V cov cov A Y x (X x)
-  have hDZ := homBundleCovariantDerivativeGen_apply
-    I M F V F V cov cov A Z x (X x)
-  have hcovY :
-      inner ℝ (A x (cov Y x (X x))) (Z x) =
-        inner ℝ (cov Y x (X x)) (A x (Z x)) :=
-    hA x _ _
-  have hcovZ :
-      inner ℝ (A x (Y x)) (cov Z x (X x)) =
-        inner ℝ (Y x) (A x (cov Z x (X x))) :=
-    hA x _ _
-  change
-    inner ℝ (cov (fun y => A y (Y y)) x (X x)) (Z x) +
-        inner ℝ (A x (Y x)) (cov Z x (X x)) =
-      inner ℝ (cov Y x (X x)) (A x (Z x)) +
-        inner ℝ (Y x) (cov (fun y => A y (Z y)) x (X x)) at hderiv
-  rw [hcovZ, ← hcovY] at hderiv
-  calc
-    inner ℝ
-        ((homBundleCovariantDerivativeGen I M F V F V cov cov A x (X x)) (Y x))
-        (Z x) =
-        inner ℝ
-          (cov (fun y => A y (Y y)) x (X x) - A x (cov Y x (X x)))
-          (Z x) := congrArg (fun q : V x => inner ℝ q (Z x)) hDY
-    _ = inner ℝ (Y x)
-        (cov (fun y => A y (Z y)) x (X x) - A x (cov Z x (X x))) := by
-      simp only [inner_sub_left, inner_sub_right]
-      linear_combination hderiv
-    _ = inner ℝ (Y x)
-        ((homBundleCovariantDerivativeGen I M F V F V cov cov A x (X x))
-          (Z x)) := congrArg (fun q : V x => inner ℝ (Y x) q) hDZ.symm
-
 theorem homBundleCovariantDerivativeGen_isSymmetric_of_eventually
     (cov : CovariantDerivative I F V) (hcov : cov.IsMetricCompatible)
     (A : Cₛ^∞⟮I; F →L[ℝ] F, (fun x : M => V x →L[ℝ] V x)⟯)
@@ -708,16 +640,28 @@ theorem homBundleCovariantDerivativeGen_isSymmetric_of_eventually
         ((homBundleCovariantDerivativeGen I M F V F V cov cov A x (X x)) (Z x)) :=
       congrArg (fun q : V x => inner ℝ (Y x) q) hDZ.symm
 
-theorem homBundleCovariantDerivativeGen_isCovariantlyInvariant_selfAdjoint
+theorem homBundleCovariantDerivativeGen_isSymmetric
     (cov : CovariantDerivative I F V) (hcov : cov.IsMetricCompatible)
-    [∀ x, CompleteSpace (V x)] :
+    (A : Cₛ^∞⟮I; F →L[ℝ] F, (fun x : M => V x →L[ℝ] V x)⟯)
+    (hA : ∀ y, (A y : V y →ₗ[ℝ] V y).IsSymmetric)
+    (x : M) (v : TangentSpace I x) :
+    ((homBundleCovariantDerivativeGen I M F V F V cov cov A x v :
+      V x →L[ℝ] V x) : V x →ₗ[ℝ] V x).IsSymmetric :=
+  homBundleCovariantDerivativeGen_isSymmetric_of_eventually cov hcov A
+    (Filter.Eventually.of_forall hA) v
+
+theorem homBundleCovariantDerivativeGen_isCovariantlyInvariant_selfAdjoint
+    (cov : CovariantDerivative I F V) (hcov : cov.IsMetricCompatible) :
+    letI : ∀ x, FiniteDimensional ℝ (V x) :=
+      fun x => VectorBundle.finiteDimensional ℝ F V x
+    letI : ∀ x, CompleteSpace (V x) := fun x => FiniteDimensional.complete ℝ (V x)
     Geometry.Connection.IsCovariantlyInvariantSubmoduleFamily
       (homBundleCovariantDerivativeGen I M F V F V cov cov)
       (fun x => selfAdjoint.submodule ℝ (V x →L[ℝ] V x)) := by
+  let : ∀ x, FiniteDimensional ℝ (V x) :=
+    fun x => VectorBundle.finiteDimensional ℝ F V x
+  let : ∀ x, CompleteSpace (V x) := fun x => FiniteDimensional.complete ℝ (V x)
   intro A U hU hA x hx v
-  let : ∀ y, FiniteDimensional ℝ (V y) :=
-    fun y => VectorBundle.finiteDimensional ℝ F V y
-  let : ∀ y, CompleteSpace (V y) := fun y => FiniteDimensional.complete ℝ (V y)
   change IsSelfAdjoint (homBundleCovariantDerivativeGen I M F V F V cov cov A x v)
   apply ContinuousLinearMap.isSelfAdjoint_iff_isSymmetric.mpr
   apply homBundleCovariantDerivativeGen_isSymmetric_of_eventually cov hcov A
