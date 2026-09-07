@@ -1,5 +1,4 @@
 import DifferentialGeometry.Geometry.Exponential.MinimizingDomain.Basic
-import Mathlib.Geometry.Manifold.Riemannian.Basic
 
 set_option autoImplicit false
 
@@ -45,11 +44,9 @@ theorem isClosed_preimage_minimizingDomain
   have hexp : Continuous (fun v : (show Set E from expDomain (I := I) g p) =>
       expMap (I := I) g p (show TangentSpace I p from (v : E))) :=
     (contMDiffOn_expMap (I := I) g p).continuousOn.domRestrict
-  have hdist : Continuous (fun q : M => riemannianEDist I p q) := by
-    let : LocallyCompactSpace M := Manifold.locallyCompact_of_finiteDimensional (M := M) I
-    let : RegularSpace M := inferInstance
-    let : PseudoEMetricSpace M := PseudoEMetricSpace.ofRiemannianMetric I M
-    exact continuous_const.edist continuous_id
+  have hdist : Continuous (fun q : M => riemannianEDist I p q) :=
+    (continuous_riemannianEDist_to (I := I) p).congr
+      (fun _ => Manifold.riemannianEDist_comm)
   exact isClosed_eq (hleft.comp continuous_subtype_val) (hdist.comp hexp)
 
 theorem isCompact_minimizingDomain_inter

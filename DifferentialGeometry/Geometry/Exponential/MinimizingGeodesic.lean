@@ -187,7 +187,8 @@ theorem intrinsicSphere_isCompact
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space (TangentBundle I M)] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space (TangentBundle I M)]
+    [SigmaCompactSpace M] in
 lemma continuous_riemannianEDist_to
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (q : M) :
