@@ -4402,4 +4402,5 @@ import DifferentialGeometry.Bundle.SmoothSubbundle.LocalFrame
 import DifferentialGeometry.Geometry.Metric.ExteriorPowerBundle
 import DifferentialGeometry.Bundle.SmoothSubbundle.VectorBundle
 import DifferentialGeometry.Geometry.Metric.ExteriorPowerRiemannian
+import DifferentialGeometry.Geometry.Metric.ExteriorPowerMusicalBundle
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.HalfSpace
