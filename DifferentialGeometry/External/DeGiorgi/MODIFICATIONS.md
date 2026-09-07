@@ -557,3 +557,31 @@ smooth positive-part regularizations and preserves the limit witness's weak grad
 **Change**: added the strong minimum principle on Euclidean balls from the weak Harnack
 inequality, migrated renamed definitions and coefficient-rescaling elaboration to Mathlib 4.33,
 and placed the two public conclusions in the `IsSupersolution` namespace with descriptive names.
+
+### 2026-09-07 — homogeneous weak-solution equivalence
+
+**Files**:
+- `WeakFormulation/ExistenceTheory.lean`
+
+**Change**: proved that a function which is simultaneously a weak subsolution and weak
+supersolution satisfies the equality-form homogeneous weak identity against arbitrary signed
+`H₀¹` tests. The proof decomposes smooth compactly supported tests into nonnegative tests and then
+uses the existing Sobolev approximation and bilinear-continuity argument. Exposed that shared
+extension as `bilinFormOfCoeff_eq_of_isSmoothTestOn`, the conversion in the `IsSolution` namespace,
+the equivalence of the two solution interfaces, and vanishing of the bilinear form on signed
+`H₀¹` tests. These additions migrate the source branch's smooth-test and homogeneous-solution
+APIs without changing the established existence and uniqueness conclusions.
+
+### 2026-09-07 — weak divergence pairing extension
+
+**Files**:
+- `WeakFormulation/BilinearForm.lean`
+- `WeakFormulation/WeakDivergence.lean`
+
+**Change**: added assembly of weak divergence from the componentwise weak partial derivatives
+and the equality of the divergence-form functional with its scalar `L²` pairing on `H₀¹` tests.
+Migrated finite-sum names and function-space elaboration to Mathlib 4.33, clarified the public
+declaration names, and removed the redundant supplied Sobolev witness from the pairing theorem.
+The witness-independence identity and the new pairing theorem hold in every finite dimension,
+including dimension zero; removed their unnecessary `NeZero` assumption. The weak gradient used
+in the proof remains the witness tied to the `H₀¹` approximation.

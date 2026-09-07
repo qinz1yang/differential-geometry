@@ -1959,6 +1959,7 @@ import DifferentialGeometry.External.DeGiorgi.WeakFormulation.CoefficientOperato
 import DifferentialGeometry.External.DeGiorgi.WeakFormulation.ExistenceTheory
 import DifferentialGeometry.External.DeGiorgi.WeakFormulation.SmoothTests
 import DifferentialGeometry.External.DeGiorgi.WeakFormulation.SolutionInterfaces
+import DifferentialGeometry.External.DeGiorgi.WeakFormulation.WeakDivergence
 import DifferentialGeometry.External.DeGiorgi.WeakFormulation.WeightedEstimates
 import DifferentialGeometry.External.DeGiorgi.WeakHarnack
 import DifferentialGeometry.External.DeGiorgi.WholeSpaceSobolev

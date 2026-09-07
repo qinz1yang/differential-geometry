@@ -497,13 +497,13 @@ noncomputable def weakProblemRHSOfField {Ω : Set E}
     else
       0
 
+omit [NeZero d] in
 /-- On `H₀¹(Ω)`, the raw-function RHS agrees with the witness-dependent
 divergence-form functional. -/
 theorem weakProblemRHSOfField_eq_of_memH01
     {Ω : Set E} (hΩ : IsOpen Ω) {F : E → E} {v : E → ℝ}
     (hv0 : MemH01 v Ω) (hv : MemW1pWitness 2 v Ω) :
     weakProblemRHSOfField (Ω := Ω) F v = divergenceRHSOfField F hv := by
-  let _ := (inferInstance : NeZero d)
   rw [weakProblemRHSOfField, dif_pos hv0]
   let hw0 : MemW1pWitness 2 v Ω :=
     DeGiorgi.MemW1p.someWitness (MemW01p.memW1p hv0)
