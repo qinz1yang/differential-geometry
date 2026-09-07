@@ -553,6 +553,83 @@ theorem outwardNormal_inner_euclideanHalfSpace_eq_neg_sqrt_mul_head
   outwardNormal_inner_eq_neg_sqrt_mul_of_sub_mem_range g x v _
     (sub_head_smul_inwardCoord_mem_range_boundaryInclusionMfderiv x v)
 
+local notation "J" => modelWithCornersEuclideanHalfSpace n
+local notation "K" => HasSmoothBoundary.boundaryModel J
+local notation "EB" => HasSmoothBoundary.boundaryModelE J
+local notation "HB" => HasSmoothBoundary.boundaryModelH J
+
+private local instance : Nonempty HB := ⟨(0 : EuclideanSpace Real (Fin (n - 1)))⟩
+
+private theorem boundaryChart_eq (alpha : BoundaryManifold J M) :
+    chartAt HB alpha = BoundaryManifold.boundaryChart (I := J) alpha :=
+  BoundaryManifold.defaultBoundaryChart_eq_boundaryChart (I := J) alpha
+
+theorem extChartAt_boundaryInclusion_extChartAt_symm_euclideanHalfSpace
+    (alpha : BoundaryManifold J M) {z : EuclideanSpace Real (Fin (n - 1))}
+    (hz : z ∈ (extChartAt K alpha).target) :
+    extChartAt J (alpha : M)
+        (boundaryInclusion J M ((extChartAt K alpha).symm z)) =
+      EuclideanHalfSpaceInstance.inclEuclideanCLM n z := by
+  have htarget : z ∈ (BoundaryManifold.boundaryChart (I := J) alpha).target := by
+    rw [extChartAt_target] at hz
+    have h := hz.1
+    change z ∈ (chartAt HB alpha).target at h
+    rwa [boundaryChart_eq] at h
+  have hinv : (((extChartAt K alpha).symm z : BoundaryManifold J M) : M) =
+      (chartAt (EuclideanHalfSpace n) (alpha : M)).symm
+        (EuclideanHalfSpaceInstance.inclH n z) := by
+    change (((chartAt HB alpha).symm z : BoundaryManifold J M) : M) = _
+    rw [boundaryChart_eq]
+    exact BoundaryManifold.boundaryChartInvFun_val_of_mem_target (I := J) alpha htarget
+  change J (chartAt (EuclideanHalfSpace n) (alpha : M)
+    (((extChartAt K alpha).symm z : BoundaryManifold J M) : M)) = _
+  have htarget' : EuclideanHalfSpaceInstance.inclH n z ∈
+      (chartAt (EuclideanHalfSpace n) (alpha : M)).target := htarget
+  rw [hinv, (chartAt (EuclideanHalfSpace n) (alpha : M)).right_inv htarget']
+  rfl
+
+theorem boundaryInclusionMfderiv_chart_euclideanHalfSpace
+    (alpha x : BoundaryManifold J M)
+    (hx : (x : M) ∈ (chartAt (EuclideanHalfSpace n) (alpha : M)).source) :
+    ((trivializationAt (EuclideanSpace Real (Fin n)) (TangentSpace J)
+        (alpha : M)).continuousLinearMapAt Real (x : M)).comp
+      ((boundaryInclusionMfderiv x).comp
+        ((trivializationAt EB (TangentSpace K) alpha).symmL Real x)) =
+      EuclideanHalfSpaceInstance.inclEuclideanCLM n := by
+  let : IsManifold K ∞ (BoundaryManifold J M) := BoundaryManifold.isManifold
+  have hxb : x ∈ (chartAt HB alpha).source := by
+    rw [boundaryChart_eq]
+    exact hx
+  have hxs : x ∈ (extChartAt K alpha).source := by rwa [extChartAt_source]
+  have hxt := (extChartAt K alpha).map_source hxs
+  let z := extChartAt K alpha x
+  have hinv : (extChartAt K alpha).symm z = x := (extChartAt K alpha).left_inv hxs
+  have hs := mdifferentiableWithinAt_extChartAt_symm (I := K) hxt
+  rw [ModelWithCorners.range_eq_univ, mdifferentiableWithinAt_univ] at hs
+  have hi := (boundaryInclusion_contMDiff (I := J) (M := M)).mdifferentiableAt
+    (show (∞ : WithTop ENat) ≠ 0 by simp) (x := x)
+  have he := mdifferentiableAt_extChartAt (I := J) hx
+  have hcomp1 := mfderiv_comp_of_eq hi hs hinv
+  have hcomp2 := mfderiv_comp_of_eq he (hi.comp_of_eq z hs hinv)
+    (show boundaryInclusion J M ((extChartAt K alpha).symm z) = (x : M) by rw [hinv]; rfl)
+  have heq : ((extChartAt J (alpha : M)) ∘ boundaryInclusion J M ∘ (extChartAt K alpha).symm)
+      =ᶠ[𝓝 z] EuclideanHalfSpaceInstance.inclEuclideanCLM n := by
+    filter_upwards [(isOpen_extChartAt_target alpha).mem_nhds hxt] with w hw
+    exact extChartAt_boundaryInclusion_extChartAt_symm_euclideanHalfSpace alpha hw
+  have hdiff := heq.fderiv_eq (𝕜 := Real)
+  rw [(EuclideanHalfSpaceInstance.inclEuclideanCLM n).fderiv] at hdiff
+  rw [TangentBundle.continuousLinearMapAt_trivializationAt hx,
+    TangentBundle.symmL_trivializationAt hxb, ModelWithCorners.range_eq_univ, mfderivWithin_univ]
+  rw [hcomp1] at hcomp2
+  rw [mfderiv_eq_fderiv] at hcomp2
+  have h := hcomp2.symm.trans hdiff
+  change (mfderiv J 𝓘(Real, EuclideanSpace Real (Fin n))
+      (extChartAt J (alpha : M)) (boundaryInclusion J M ((extChartAt K alpha).symm z))).comp
+      ((mfderiv K J (boundaryInclusion J M) ((extChartAt K alpha).symm z)).comp
+        (mfderiv 𝓘(Real, EB) K (extChartAt K alpha).symm z)) = _ at h
+  rw [hinv] at h
+  exact h
+
 end
 
 section

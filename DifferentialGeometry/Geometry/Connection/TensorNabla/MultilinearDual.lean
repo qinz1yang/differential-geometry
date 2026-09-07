@@ -110,4 +110,100 @@ theorem multilinear_tensorOfDualLinearForms
     Finset.prod_update_of_mem (Finset.mem_univ i), hdual, Finset.sdiff_singleton_eq_erase]
   ring
 
+theorem dualMultilinearFiberwiseEquiv_covariantDerivative
+    (cov : CovariantDerivative I F V) (k : ℕ)
+    (φ : ∀ y, Bundle.continuousMultilinearMap ℝ k F V y →L[ℝ] ℝ) {x : M}
+    (hφ : MDifferentiableAt I
+      (I.prod 𝓘(ℝ, ContinuousMultilinearMap ℝ (fun _ : Fin k => F) ℝ →L[ℝ] ℝ))
+      (fun y => (⟨y, φ y⟩ : TotalSpace
+        (ContinuousMultilinearMap ℝ (fun _ : Fin k => F) ℝ →L[ℝ] ℝ)
+        (Bundle.dual ℝ (Bundle.continuousMultilinearMap ℝ k F V)))) x)
+    (X : TangentSpace I x) :
+    Bundle.continuousMultilinearMap.dualMultilinearFiberwiseEquiv (F := F) (E := V) k x
+      (DifferentialGeometry.HomConnectionGen.homBundleCovariantDerivativeGen
+        I M (ContinuousMultilinearMap ℝ (fun _ : Fin k => F) ℝ)
+        (Bundle.continuousMultilinearMap ℝ k F V) ℝ (Bundle.Trivial M ℝ)
+        (cov.multilinear k) (trivial I M ℝ) φ x X) =
+      (DifferentialGeometry.HomConnectionGen.homBundleCovariantDerivativeGen
+        I M F V ℝ (Bundle.Trivial M ℝ) cov (trivial I M ℝ)).multilinear k
+          (fun y => Bundle.continuousMultilinearMap.dualMultilinearFiberwiseEquiv
+            (F := F) (E := V) k y (φ y)) x X := by
+  classical
+  let D := DifferentialGeometry.HomConnectionGen.homBundleCovariantDerivativeGen
+    I M F V ℝ (Bundle.Trivial M ℝ) cov (trivial I M ℝ)
+  let T := Bundle.continuousMultilinearMap ℝ k F V
+  let G := ContinuousMultilinearMap ℝ (fun _ : Fin k => F) ℝ
+  let Ψ := fun y => Bundle.continuousMultilinearMap.dualMultilinearFiberwiseEquiv
+    (F := F) (E := V) k y (φ y)
+  have hΨ : MDifferentiableAt I
+      (I.prod 𝓘(ℝ, ContinuousMultilinearMap ℝ (fun _ : Fin k => F →L[ℝ] ℝ) ℝ))
+      (fun y => (⟨y, Ψ y⟩ : TotalSpace
+        (ContinuousMultilinearMap ℝ (fun _ : Fin k => F →L[ℝ] ℝ) ℝ)
+        (Bundle.continuousMultilinearMap ℝ k (F →L[ℝ] ℝ) (Bundle.dual ℝ V)))) x :=
+    (Bundle.continuousMultilinearMap.dualMultilinearFiberwiseEquiv_smooth
+      (IB := I) (n := ∞) (F := F) (E := V) k).mdifferentiableAt (by simp) |>.comp x hφ
+  apply ContinuousMultilinearMap.ext
+  intro α
+  choose A hA using fun i => ContMDiffSection.exists_eq_at (I := I)
+    (F := F →L[ℝ] ℝ) (V := Bundle.dual ℝ V) (n := (⊤ : ℕ∞)) x (α i)
+  have hα : (fun i => A i x) = α := funext hA
+  rw [← hα]
+  rw [Bundle.continuousMultilinearMap.dualMultilinearFiberwiseEquiv_apply]
+  change DifferentialGeometry.HomConnectionGen.homBundleCovariantDerivativeGen
+    I M G T ℝ (Bundle.Trivial M ℝ) (cov.multilinear k) (trivial I M ℝ) φ x X
+      (ContinuousMultilinearMap.tensorOfDualLinearForms ℝ (V x) k (fun i => A i x)) =
+    D.multilinear k Ψ x X (fun i => A i x)
+  rw [D.multilinear_apply k (fun i y => A i y) hΨ (fun i => (A i).mdifferentiableAt) X]
+  obtain ⟨Z, hZ⟩ := ContMDiffSection.exists_eq_at (I := I) (F := E) (V := TangentSpace I)
+    (n := (⊤ : ℕ∞)) x X
+  have htensor := MDifferentiableAt.tensorOfDualLinearForms_bundle k
+    (fun i y => A i y) (fun i => (A i).mdifferentiableAt (x := x))
+  have hdual := DifferentialGeometry.HomConnectionGen.homBundleCovariantDerivativeGen_apply_of_mdifferentiableAt
+    I M G T ℝ (Bundle.Trivial M ℝ) (cov.multilinear k) (trivial I M ℝ) φ hφ
+    (Z.mdifferentiableAt (x := x)) htensor
+  rw [hZ] at hdual
+  change _ = mvfderiv (I := I)
+    (fun y => φ y (ContinuousMultilinearMap.tensorOfDualLinearForms ℝ (V y) k
+      (fun i => A i y))) x X -
+    φ x (cov.multilinear k
+      (fun y => ContinuousMultilinearMap.tensorOfDualLinearForms ℝ (V y) k
+        (fun i => A i y)) x X) at hdual
+  rw [hdual, cov.multilinear_tensorOfDualLinearForms k
+    (fun i y => A i y) (fun i => (A i).mdifferentiableAt) X, map_sum]
+  simp only [Ψ, Bundle.continuousMultilinearMap.dualMultilinearFiberwiseEquiv_apply]
+  rfl
+
+theorem dualMultilinearFiberwiseEquiv_symm_covariantDerivative
+    (cov : CovariantDerivative I F V) (k : ℕ)
+    (Ψ : ∀ y, Bundle.continuousMultilinearMap ℝ k (F →L[ℝ] ℝ) (Bundle.dual ℝ V) y) {x : M}
+    (hΨ : MDifferentiableAt I
+      (I.prod 𝓘(ℝ, ContinuousMultilinearMap ℝ (fun _ : Fin k => F →L[ℝ] ℝ) ℝ))
+      (fun y => (⟨y, Ψ y⟩ : TotalSpace
+        (ContinuousMultilinearMap ℝ (fun _ : Fin k => F →L[ℝ] ℝ) ℝ)
+        (Bundle.continuousMultilinearMap ℝ k (F →L[ℝ] ℝ) (Bundle.dual ℝ V)))) x)
+    (X : TangentSpace I x) :
+    (Bundle.continuousMultilinearMap.dualMultilinearFiberwiseEquiv (F := F) (E := V) k x).symm
+      ((DifferentialGeometry.HomConnectionGen.homBundleCovariantDerivativeGen
+        I M F V ℝ (Bundle.Trivial M ℝ) cov (trivial I M ℝ)).multilinear k Ψ x X) =
+      DifferentialGeometry.HomConnectionGen.homBundleCovariantDerivativeGen
+        I M (ContinuousMultilinearMap ℝ (fun _ : Fin k => F) ℝ)
+        (Bundle.continuousMultilinearMap ℝ k F V) ℝ (Bundle.Trivial M ℝ)
+        (cov.multilinear k) (trivial I M ℝ)
+        (fun y => (Bundle.continuousMultilinearMap.dualMultilinearFiberwiseEquiv
+          (F := F) (E := V) k y).symm (Ψ y)) x X := by
+  let φ := fun y => (Bundle.continuousMultilinearMap.dualMultilinearFiberwiseEquiv
+    (F := F) (E := V) k y).symm (Ψ y)
+  have hφ : MDifferentiableAt I
+      (I.prod 𝓘(ℝ, ContinuousMultilinearMap ℝ (fun _ : Fin k => F) ℝ →L[ℝ] ℝ))
+      (fun y => (⟨y, φ y⟩ : TotalSpace
+        (ContinuousMultilinearMap ℝ (fun _ : Fin k => F) ℝ →L[ℝ] ℝ)
+        (Bundle.dual ℝ (Bundle.continuousMultilinearMap ℝ k F V)))) x :=
+    (Bundle.continuousMultilinearMap.dualMultilinearFiberwiseEquiv_symm_smooth
+      (IB := I) (n := ∞) (F := F) (E := V) k).mdifferentiableAt (by simp) |>.comp x hΨ
+  apply (Bundle.continuousMultilinearMap.dualMultilinearFiberwiseEquiv
+    (F := F) (E := V) k x).injective
+  rw [LinearEquiv.apply_symm_apply]
+  have h := cov.dualMultilinearFiberwiseEquiv_covariantDerivative k φ hφ X
+  simpa only [φ, LinearEquiv.apply_symm_apply] using h.symm
+
 end CovariantDerivative
