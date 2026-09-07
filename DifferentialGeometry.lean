@@ -4499,3 +4499,6 @@ import DifferentialGeometry.Analysis.Integration.Measure.NullImage
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.ExteriorReaction
 import DifferentialGeometry.Analysis.Calculus.InjectiveDerivative
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Pullback
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Uhlenbeck.CurvatureOperatorEvolution
+import DifferentialGeometry.Analysis.Parabolic.SelfAdjointEvolution
+import DifferentialGeometry.Analysis.Parabolic.ExteriorSelfAdjointEvolution
