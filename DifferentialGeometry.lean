@@ -3867,6 +3867,7 @@ import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.H1.Approximation.Ramp
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.H1.Approximation.Slice
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.H1.Approximation.Tent
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.H1.Approximation.TentDensity
+import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.H1.Approximation.Trapezoid
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.Nonlinear.Action
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.Nonlinear.EulerLagrange
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.Operator.WeakConvergence
