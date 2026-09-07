@@ -1173,6 +1173,7 @@ import DifferentialGeometry.Analysis.Sobolev.Nirenberg.SubstitutionIdentity.Subs
 import DifferentialGeometry.Analysis.Sobolev.Nirenberg.TestFunction.Basic
 import DifferentialGeometry.Analysis.Sobolev.Nirenberg.TestFunction.CutoffDiffQuot
 import DifferentialGeometry.Analysis.Sobolev.Nirenberg.TestFunction.Defs
+import DifferentialGeometry.Analysis.Sobolev.Nirenberg.TestFunction.IntegralBound
 import DifferentialGeometry.Analysis.Sobolev.Nirenberg.TestFunction.SmoothRegularity
 import DifferentialGeometry.Analysis.Sobolev.Nirenberg.TestFunction.TranslatedCutoffDiffQuot
 import DifferentialGeometry.Analysis.Sobolev.Nirenberg.TestFunction.WeakRegularity
