@@ -279,6 +279,45 @@ theorem tangentSectionAction_finset_sum
     rw [ih_eq]
 
 omit [Module.Finite ℝ E] in
+theorem sum_tangentSectionAction_partitionOfUnity_eq_zero
+    {ι : Type*} {s : Set M}
+    (rho : SmoothPartitionOfUnity ι I M s)
+    (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
+    {x : M} (hx : x ∈ interior s) :
+    ∑ i ∈ rho.fintsupport x, tangentSectionAction X (rho i) x = 0 := by
+  have hd (i : ι) (_ : i ∈ rho.fintsupport x) : MDifferentiableAt I 𝓘(Real) (rho i) x :=
+    (rho i).contMDiff.mdifferentiableAt (by simp)
+  rw [← tangentSectionAction_finset_sum X (rho.fintsupport x) (fun i => (rho i : M → Real)) x hd]
+  have heq : (∑ i ∈ rho.fintsupport x, (rho i : M → Real)) =ᶠ[𝓝 x]
+      (fun _ : M => (1 : Real)) := by
+    filter_upwards [rho.eventually_finsupport_subset x, mem_interior_iff_mem_nhds.mp hx] with y hy hys
+    simpa only [Finset.sum_apply] using rho.sum_finsupport' y hys hy
+  change mfderiv I 𝓘(Real) (∑ i ∈ rho.fintsupport x, (rho i : M → Real)) x (X x) = 0
+  rw [heq.mfderiv_eq]
+  change mfderiv I 𝓘(Real) (fun _ : M => (1 : Real)) x (X x) = 0
+  rw [mfderiv_const]
+  rfl
+
+omit [Module.Finite ℝ E] in
+theorem tsum_tangentSectionAction_partitionOfUnity_eq_zero
+    {ι : Type*} {s : Set M}
+    (rho : SmoothPartitionOfUnity ι I M s)
+    (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
+    {x : M} (hx : x ∈ interior s) :
+    ∑' i, tangentSectionAction X (rho i) x = 0 := by
+  classical
+  rw [tsum_eq_sum (s := rho.fintsupport x)]
+  · exact sum_tangentSectionAction_partitionOfUnity_eq_zero rho X hx
+  · intro i hi
+    have hxi : x ∉ tsupport (rho i : M → Real) :=
+      fun h => hi ((rho.mem_fintsupport_iff x i).mpr h)
+    change mfderiv I 𝓘(Real) (rho i : M → Real) x (X x) = 0
+    rw [(notMem_tsupport_iff_eventuallyEq.mp hxi).mfderiv_eq]
+    change mfderiv I 𝓘(Real) (fun _ : M => (0 : Real)) x (X x) = 0
+    rw [mfderiv_const]
+    rfl
+
+omit [Module.Finite ℝ E] in
 theorem tangentSectionAction_const
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (c : ℝ) (x : M) :
     tangentSectionAction (I := I) X (fun _ => c) x = 0 := by
@@ -386,25 +425,9 @@ theorem divergence_g_pou_tsum [I.Boundaryless] (g : SmoothRiemannianMetric I M)
   rw [ρ.sum_finsupport' x (mem_univ x)
         (ρ.finsupport_subset_fintsupport x)]
   rw [one_mul]
-  have hsum_action : ∑ α ∈ S, tangentSectionAction (I := I) X (ρ α : M → ℝ) x = 0 := by
-    have hMDiff_each : ∀ α ∈ S,
-        MDifferentiableAt I 𝓘(ℝ) ((ρ α : M → ℝ)) x :=
-      fun α _ => (ρ α).contMDiff.mdifferentiable (by simp) x
-    have hcomm := tangentSectionAction_finset_sum (I := I) X S
-      (fun α => ((ρ α : M → ℝ))) x hMDiff_each
-    rw [← hcomm]
-    have h_finset_eq_one : (fun y : M => ∑ α ∈ S, (ρ α : M → ℝ) y) =ᶠ[𝓝 x]
-        (fun _ : M => (1 : ℝ)) := by
-      filter_upwards [ρ.eventually_finsupport_subset x] with y hy
-      exact ρ.sum_finsupport' y (mem_univ y) hy
-    unfold tangentSectionAction
-    have h_fun_eq : (∑ α ∈ S, (ρ α : M → ℝ)) = fun y : M => ∑ α ∈ S, (ρ α : M → ℝ) y := by
-      funext y
-      rw [Finset.sum_apply]
-    rw [h_fun_eq]
-    rw [Filter.EventuallyEq.mfderiv_eq h_finset_eq_one]
-    rw [mfderiv_const]
-    rfl
+  have hsum_action : ∑ α ∈ S,
+      tangentSectionAction (I := I) X (ρ α : M → ℝ) x = 0 :=
+    sum_tangentSectionAction_partitionOfUnity_eq_zero ρ X (by simp)
   rw [hsum_action]
   ring
 
