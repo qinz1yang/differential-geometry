@@ -1,5 +1,6 @@
 import DifferentialGeometry.Tensor.Multilinear.Basis
 import Mathlib.Analysis.Calculus.FDeriv.Analytic
+import Mathlib.Analysis.Calculus.Deriv.Prod
 
 open scoped BigOperators
 
@@ -37,6 +38,47 @@ theorem differentiableAt_of_basis_eval
       (fun y => f y (fun q => b (m q))) x) : DifferentiableAt 𝕜 f x := by
   rw [← differentiableWithinAt_univ]
   exact differentiableWithinAt_of_basis_eval b (fun m => (hf m).differentiableWithinAt)
+
+theorem hasDerivWithinAt_of_basis_eval
+    {𝕜 F : Type*} [NontriviallyNormedField 𝕜] [CompleteSpace 𝕜]
+    [NormedAddCommGroup F] [NormedSpace 𝕜 F]
+    {d n : ℕ} (b : Module.Basis (Fin d) 𝕜 F)
+    {f : 𝕜 → ContinuousMultilinearMap 𝕜 (fun _ : Fin n => F) 𝕜}
+    {f' : ContinuousMultilinearMap 𝕜 (fun _ : Fin n => F) 𝕜}
+    {s : Set 𝕜} {x : 𝕜}
+    (hf : ∀ m : Fin n → Fin d, HasDerivWithinAt
+      (fun y => f y (fun q => b (m q))) (f' (fun q => b (m q))) s x) :
+    HasDerivWithinAt f f' s x := by
+  let _ : FiniteDimensional 𝕜 F := b.finiteDimensional_of_finite
+  let _ : FiniteDimensional 𝕜 (ContinuousMultilinearMap 𝕜 (fun _ : Fin n => F) 𝕜) :=
+    DifferentialGeometry.Tensor.Multilinear.continuousMultilinearMap_finiteDimensional n
+  let e := (DifferentialGeometry.Tensor.Multilinear.continuousMultilinearMapBasis b n).equivFun
+    |>.toContinuousLinearEquiv
+  have he : HasDerivWithinAt (fun y => e (f y)) (e f') s x := by
+    apply hasDerivWithinAt_pi.mpr
+    intro m
+    change HasDerivWithinAt
+      (fun y => (DifferentialGeometry.Tensor.Multilinear.continuousMultilinearMapBasis b n).repr
+        (f y) m)
+      ((DifferentialGeometry.Tensor.Multilinear.continuousMultilinearMapBasis b n).repr f' m) s x
+    simpa only [DifferentialGeometry.Tensor.Multilinear.continuousMultilinearMap_basis_repr]
+      using hf m
+  have h := e.symm.toContinuousLinearMap.hasFDerivAt.comp_hasDerivWithinAt x he
+  simpa only [Function.comp_def, ContinuousLinearEquiv.coe_coe,
+    ContinuousLinearEquiv.symm_apply_apply] using h
+
+theorem hasDerivAt_of_basis_eval
+    {𝕜 F : Type*} [NontriviallyNormedField 𝕜] [CompleteSpace 𝕜]
+    [NormedAddCommGroup F] [NormedSpace 𝕜 F]
+    {d n : ℕ} (b : Module.Basis (Fin d) 𝕜 F)
+    {f : 𝕜 → ContinuousMultilinearMap 𝕜 (fun _ : Fin n => F) 𝕜}
+    {f' : ContinuousMultilinearMap 𝕜 (fun _ : Fin n => F) 𝕜} {x : 𝕜}
+    (hf : ∀ m : Fin n → Fin d, HasDerivAt
+      (fun y => f y (fun q => b (m q))) (f' (fun q => b (m q))) x) :
+    HasDerivAt f f' x := by
+  rw [← hasDerivWithinAt_univ]
+  exact hasDerivWithinAt_of_basis_eval b (fun m => (hf m).hasDerivWithinAt)
+
 
 end ContinuousMultilinearMap
 
