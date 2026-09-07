@@ -137,6 +137,21 @@ lemma chartTestPullback_contMDiffOn (α : M)
   refine hcompose.congr (fun x hx => ?_)
   exact chartTestPullback_apply_of_mem (I := I) α φ hx
 
+omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
+    [SigmaCompactSpace M] in
+theorem chartTestPullback_contMDiff (α : M)
+    {φ : EuclN → ℝ} (hφ : ContDiff ℝ (⊤ : ℕ∞) φ)
+    (hφ_cs : HasCompactSupport φ)
+    (hφ_support : tsupport φ ⊆ chartTargetEuclid (I := I) (M := M) α) :
+    ContMDiff I 𝓘(ℝ, ℝ) ∞ (chartTestPullback (I := I) (M := M) α φ) := by
+  refine contMDiff_of_tsupport fun x hx => ?_
+  have hx_source : x ∈ (chartAt H α).source :=
+    chartTestPullback_tsupport_subset_source
+      (I := I) (M := M) α hφ_cs hφ_support hx
+  exact (chartTestPullback_contMDiffOn
+    (I := I) (M := M) α hφ x hx_source).contMDiffAt
+      ((chartAt H α).open_source.mem_nhds hx_source)
+
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [CompactSpace M] [T2Space M]
     [SigmaCompactSpace M] in
 lemma contDiff_of_contDiffOn_chartTarget_zero_off
