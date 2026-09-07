@@ -1,5 +1,7 @@
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.LocalFormula
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.ChartCoeffPullback
+import DifferentialGeometry.Analysis.Calculus.ContDiff.Support
+import DifferentialGeometry.Bundle.PartialMfderiv.Basic
 import Mathlib.Geometry.Manifold.MFDeriv.Basic
 import Mathlib.Geometry.Manifold.MFDeriv.SpecificFunctions
 import Mathlib.Geometry.Manifold.MFDeriv.FDeriv
@@ -69,6 +71,68 @@ lemma chartPullZero_nmem (α : M) (f : M → ℝ) {y : E}
     (hy : y ∉ (extChartAt I α).target) :
     chartPullZero (I := I) α f y = 0 :=
   Set.indicator_of_notMem hy _
+
+omit [Module.Finite ℝ E] [IsManifold I ∞ M] in
+theorem tsupport_chartPullZero_subset_image
+    (alpha : M) {f : M → Real} (hc : HasCompactSupport f)
+    (hs : tsupport f ⊆ (chartAt H alpha).source) :
+    tsupport (chartPullZero (I := I) alpha f) ⊆ (extChartAt I alpha) '' tsupport f := by
+  have hcompact : IsCompact ((extChartAt I alpha) '' tsupport f) :=
+    hc.image_of_continuousOn ((continuousOn_extChartAt alpha).mono
+      (by simpa only [extChartAt_source] using hs))
+  apply closure_minimal _ hcompact.isClosed
+  intro y hy
+  by_cases hyt : y ∈ (extChartAt I alpha).target
+  · refine ⟨(extChartAt I alpha).symm y, ?_, (extChartAt I alpha).right_inv hyt⟩
+    apply subset_tsupport
+    simpa only [Function.mem_support, chartPullZero_mem alpha f hyt, scalarOnE_def] using hy
+  · exact (hy (chartPullZero_nmem alpha f hyt)).elim
+
+omit [Module.Finite ℝ E] [IsManifold I ∞ M] in
+theorem hasCompactSupport_chartPullZero
+    (alpha : M) {f : M → Real} (hc : HasCompactSupport f)
+    (hs : tsupport f ⊆ (chartAt H alpha).source) :
+    HasCompactSupport (chartPullZero (I := I) alpha f) := by
+  have hcompact : IsCompact ((extChartAt I alpha) '' tsupport f) :=
+    hc.image_of_continuousOn ((continuousOn_extChartAt alpha).mono
+      (by simpa only [extChartAt_source] using hs))
+  exact hcompact.of_isClosed_subset isClosed_closure (tsupport_chartPullZero_subset_image alpha hc hs)
+
+omit [Module.Finite ℝ E] [IsManifold I ∞ M] in
+theorem tsupport_chartPullZero_subset_target
+    (alpha : M) {f : M → Real} (hc : HasCompactSupport f)
+    (hs : tsupport f ⊆ (chartAt H alpha).source) :
+    tsupport (chartPullZero (I := I) alpha f) ⊆ (extChartAt I alpha).target := by
+  intro y hy
+  obtain ⟨x, hx, rfl⟩ := tsupport_chartPullZero_subset_image alpha hc hs hy
+  exact (extChartAt I alpha).map_source (by simpa only [extChartAt_source] using hs hx)
+
+omit [Module.Finite ℝ E] [IsManifold I ∞ M] in
+theorem chartPullZero_contDiffOn
+    {k : WithTop ℕ∞} [IsManifold I k M]
+    (alpha : M) {f : M → Real} (hf : ContMDiff I 𝓘(Real) k f) :
+    ContDiffOn Real k (chartPullZero (I := I) alpha f) (extChartAt I alpha).target := by
+  have hcomp : ContMDiffOn 𝓘(Real, E) 𝓘(Real) k
+      (f ∘ (extChartAt I alpha).symm) (extChartAt I alpha).target :=
+    (hf.contMDiffOn (s := univ)).comp
+      (contMDiffOn_extChartAt_symm alpha) (fun _ _ => mem_univ _)
+  exact hcomp.contDiffOn.congr (fun y hy => chartPullZero_mem alpha f hy)
+
+omit [Module.Finite ℝ E] [IsManifold I ∞ M] in
+theorem chartPullZero_contDiffOn_range
+    {k : WithTop ℕ∞} [IsManifold I k M]
+    (alpha : M) {f : M → Real} (hf : ContMDiff I 𝓘(Real) k f)
+    (hc : HasCompactSupport f) (hs : tsupport f ⊆ (chartAt H alpha).source) :
+    ContDiffOn Real k (chartPullZero (I := I) alpha f) (Set.range I) := by
+  apply ContDiffOn.contDiffOn_of_tsupport_subset
+    (s := I.symm ⁻¹' (chartAt H alpha).target)
+  · simpa only [← extChartAt_target] using chartPullZero_contDiffOn alpha hf
+  · exact (chartAt H alpha).open_target.preimage I.continuous_symm
+  · intro y hy
+    have hyt := tsupport_chartPullZero_subset_target alpha hc hs hy.1
+    rw [extChartAt_target] at hyt
+    exact hyt.1
+
 omit [Module.Finite ℝ E] [IsManifold I ∞ M] in
 lemma scalarOnE_extChartAt (α : M) (f : M → ℝ) {x : M}
     (hx : x ∈ (extChartAt I α).source) :
@@ -426,17 +490,54 @@ theorem tangentSectionAction_contMDiffOn_baseSet [I.Boundaryless]
     · congr 1
       exact (isOpen_extChartAt_target (I := I) α).interior_eq
 
-theorem tangentSectionAction_contMDiff [I.Boundaryless]
+omit [Module.Finite ℝ E] in
+theorem tangentSectionAction_contMDiff
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ) ∞ f) :
-    ContMDiff I 𝓘(ℝ) ∞ (tangentSectionAction (I := I) X f) := by
-  intro x
-  have hx_src : x ∈ (chartAt H x).source := mem_chart_source H x
-  have hsrc_open : IsOpen ((chartAt H x).source) := (chartAt H x).open_source
-  have hsmooth : ContMDiffOn I 𝓘(ℝ) ∞ (tangentSectionAction (I := I) X f)
-      (chartAt H x).source :=
-    tangentSectionAction_contMDiffOn_baseSet (I := I) x X hf
-  exact (hsmooth x hx_src).contMDiffAt (hsrc_open.mem_nhds hx_src)
+    ContMDiff I 𝓘(ℝ) ∞ (tangentSectionAction (I := I) X f) :=
+  mvfderiv_apply_contMDiff I f hf X
+
+omit [Module.Finite ℝ E] in
+theorem mfderiv_eq_fderivWithin_scalarOnE
+    (alpha : M) {f : M → Real} {x : M}
+    (hx : x ∈ (chartAt H alpha).source) (hf : MDifferentiableAt I 𝓘(Real) f x)
+    (v : TangentSpace I x) :
+    mfderiv I 𝓘(Real) f x v =
+      fderivWithin Real (scalarOnE (I := I) alpha f) (extChartAt I alpha).target (extChartAt I alpha x)
+        ((trivializationAt E (TangentSpace I) alpha).continuousLinearMapAt Real x v) := by
+  have hxs : x ∈ (extChartAt I alpha).source := by rwa [extChartAt_source]
+  have hxt := (extChartAt I alpha).map_source hxs
+  have hinv := (extChartAt I alpha).left_inv hxs
+  have hs := mdifferentiableWithinAt_extChartAt_symm (I := I) hxt
+  have hchain := mfderiv_comp_mfderivWithin_of_eq hf hs
+    (I.uniqueMDiffOn (extChartAt I alpha x) (extChartAt_target_subset_range alpha hxt)) hinv
+  rw [mfderivWithin_eq_fderivWithin] at hchain
+  rw [fderivWithin_congr_set (extChartAt_target_eventuallyEq_of_mem hxt)]
+  change mfderiv I 𝓘(Real) f x v =
+    fderivWithin Real (f ∘ (extChartAt I alpha).symm) (Set.range I) (extChartAt I alpha x)
+      ((trivializationAt E (TangentSpace I) alpha).continuousLinearMapAt Real x v)
+  rw [hchain]
+  change mfderiv I 𝓘(Real) f x v = mfderiv I 𝓘(Real) f x
+    (mfderivWithin 𝓘(Real, E) I (extChartAt I alpha).symm (Set.range I) (extChartAt I alpha x)
+      ((trivializationAt E (TangentSpace I) alpha).continuousLinearMapAt Real x v))
+  have hsymm := congrArg
+    (fun L : E →L[Real] TangentSpace I x => L
+      ((trivializationAt E (TangentSpace I) alpha).continuousLinearMapAt Real x v))
+    (TangentBundle.symmL_trivializationAt (I := I) hx)
+  have hcancel := Trivialization.symmL_continuousLinearMapAt
+    (R := Real) (trivializationAt E (TangentSpace I) alpha) hx v
+  apply congrArg (mfderiv I 𝓘(Real) f x)
+  exact hcancel.symm.trans hsymm
+
+omit [Module.Finite ℝ E] in
+theorem tangentSectionAction_eq_fderivWithin_scalarOnE
+    (alpha : M) (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
+    {f : M → Real} {x : M} (hx : x ∈ (chartAt H alpha).source)
+    (hf : MDifferentiableAt I 𝓘(Real) f x) :
+    tangentSectionAction X f x =
+      fderivWithin Real (scalarOnE (I := I) alpha f) (extChartAt I alpha).target (extChartAt I alpha x)
+        ((trivializationAt E (TangentSpace I) alpha).continuousLinearMapAt Real x (X x)) :=
+  mfderiv_eq_fderivWithin_scalarOnE alpha hx hf (X x)
 
 end DivergenceTheorem
 end Integral
