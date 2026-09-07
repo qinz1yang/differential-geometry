@@ -1,4 +1,5 @@
 import DifferentialGeometry.Geometry.Operator.HessianTraceRealization
+import DifferentialGeometry.Topology.Manifold.LocalExtrema
 import DifferentialGeometry.Tensor.RSTensor.Derivation.NablaOnTensors
 import Mathlib.Geometry.Manifold.VectorBundle.MDifferentiable
 import Mathlib.Geometry.Manifold.VectorBundle.Tangent
@@ -286,35 +287,8 @@ theorem mfderiv_eq_zero_at_spatial_min_of_isInteriorPoint
     (hx : I.IsInteriorPoint x)
     (hf : MDifferentiableAt I 𝓘(Real, Real) f x) :
     mfderiv I 𝓘(Real, Real) f x = 0 := by
-  have hmin_chart :
-      IsLocalMin (fun y : E => f ((extChartAt I x).symm y))
-        ((extChartAt I x) x) := by
-    have hmin' :
-        IsLocalMin f ((extChartAt I x).symm ((extChartAt I x) x)) := by
-      simpa only [mfld_simps] using hmin
-    change IsLocalMin (f ∘ (extChartAt I x).symm) ((extChartAt I x) x)
-    exact hmin'.comp_continuous (continuousAt_extChartAt_symm (I := I) x)
-  have hderiv_chart :
-      fderiv Real (fun y : E => f ((extChartAt I x).symm y))
-        ((extChartAt I x) x) = 0 :=
-    hmin_chart.fderiv_eq_zero
-  have hrange : Set.range I ∈ nhds ((extChartAt I x) x) := by
-    exact range_mem_nhds_isInteriorPoint hx
-  have hmvfderiv : mvfderiv (I := I) f x = 0 := by
-    apply ContinuousLinearMap.ext
-    intro v
-    rw [mvfderiv_apply_eq_fderivWithin_writtenInExtChartAt hf v]
-    rw [fderivWithin_of_mem_nhds hrange, writtenInExtChartAt_real_eq,
-      hderiv_chart]
-    rfl
-  apply ContinuousLinearMap.ext
-  intro v
-  apply (NormedSpace.fromTangentSpace (𝕜 := Real) (f x)).injective
-  change
-    (NormedSpace.fromTangentSpace (𝕜 := Real) (f x)).toContinuousLinearMap
-        (mfderiv I 𝓘(Real, Real) f x v) = 0
-  simpa only [mvfderiv, ContinuousLinearMap.comp_apply, zero_apply] using
-    congrArg (fun L : TangentSpace I x →L[Real] Real => L v) hmvfderiv
+  rw [hf.mfderiv, ← hf.mvfderiv, hmin.mvfderiv_eq_zero hx]
+  rfl
 
 
 omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] in

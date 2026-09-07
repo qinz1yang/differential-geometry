@@ -4285,6 +4285,7 @@ import DifferentialGeometry.Tensor.Alternating.BundleMaps
 import DifferentialGeometry.Tensor.Multilinear.BundleComp
 import DifferentialGeometry.Topology.FiberBundle.Separation
 import DifferentialGeometry.Topology.Manifold.Curve
+import DifferentialGeometry.Topology.Manifold.LocalExtrema
 import DifferentialGeometry.Topology.VectorBundle.Compactness
 import DifferentialGeometry.Analysis.Calculus.IteratedDeriv.Power
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.WeakEquationLocal
@@ -4405,6 +4406,9 @@ import DifferentialGeometry.Bundle.SmoothSubbundle.Hom
 import DifferentialGeometry.Geometry.Connection.SubbundleRestriction
 import DifferentialGeometry.Geometry.Metric.SelfAdjointSubbundle
 import DifferentialGeometry.Geometry.Connection.SelfAdjointRestriction
+import DifferentialGeometry.Geometry.Connection.Hessian.Restriction
+import DifferentialGeometry.Geometry.Connection.Laplacian.SubbundleRestriction
+import DifferentialGeometry.Geometry.Connection.Laplacian.SelfAdjointRestriction
 import DifferentialGeometry.Geometry.Metric.BilinearTrace
 import DifferentialGeometry.Geometry.Connection.Laplacian.VectorBundleTrace
 import DifferentialGeometry.Geometry.Metric.ExteriorPowerRiemannian
