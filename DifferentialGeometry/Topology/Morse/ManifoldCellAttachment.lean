@@ -142,7 +142,7 @@ structure MorseChart (n k : ℕ) (hk : k ≤ n) (c : ℝ)
 
 noncomputable def morseChart {n : ℕ} {H : Type} [TopologicalSpace H] {M : Type} [TopologicalSpace M]
     [ChartedSpace H M] (I : ModelWithCorners ℝ (MorseModel n) H) [I.Boundaryless]
-    [IsManifold I (⊤ : WithTop ℕ∞) M] (f : M → ℝ) (hf : ContMDiff I 𝓘(ℝ, ℝ) (⊤ : WithTop ℕ∞) f)
+    [IsManifold I (↑(⊤ : ℕ∞) : WithTop ℕ∞) M] (f : M → ℝ) (hf : ContMDiff I 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞) f)
     (p : M) (c : ℝ) (k : ℕ) (hk : k ≤ n)
     (hnd : IsNondegenerateCriticalPointAt I f p)
     (hindex : sigNeg (chartHessianAt (g := fun y => f ((extChartAt I p).symm y)) (extChartAt I p p)) = k)
@@ -11110,7 +11110,7 @@ theorem cocoreAttachingEmbedding_core_eq_cellAttachingMap {n k : ℕ} (hk : k �
 noncomputable def cellAdjunctionSpaceHomeomorphLowerUnion {n : ℕ} {H : Type}
     [TopologicalSpace H] {M : Type} [TopologicalSpace M]
     [ChartedSpace H M] [T2Space M] (I : ModelWithCorners ℝ (MorseModel n) H)
-    (f : M → ℝ) (hf : ContMDiff I 𝓘(ℝ, ℝ) (⊤ : WithTop ℕ∞) f)
+    (f : M → ℝ) (hf : Continuous f)
     (c : ℝ) (k : ℕ) (hk : k ≤ n)
     (data : MorseChart n k hk c I f) :
     CellAdjunctionSpace k (cellAttachingMap hk c data) ≃ₜ
@@ -11175,7 +11175,7 @@ noncomputable def cellAdjunctionSpaceHomeomorphLowerUnion {n : ℕ} {H : Type}
           exact Set.mem_range.mpr ⟨z, rfl⟩
         exact (Set.disjoint_left.mp (cellInterior_disjoint hk c data.ε data.hεpos)) hmem hn
       exact hnot (by rw [← hfz']; exact hfz)
-    · exact isClosed_Iic.preimage hf.continuous
+    · exact isClosed_Iic.preimage hf
   exact hAdj
 
 theorem range_handleEmbedding {m k : ℕ} (hk : k ≤ m + 1) (c ε r : ℝ)
@@ -11243,7 +11243,7 @@ theorem contMDiff_morseModifiedFunction {n k : ℕ} (hk : k ≤ n) (c ε δ R r�
     {H : Type} [TopologicalSpace H] {M : Type} [TopologicalSpace M] [ChartedSpace H M]
     (I : ModelWithCorners ℝ (MorseModel n) H)
     [T2Space M] (f : M → ℝ)
-    (hf : ContMDiff I 𝓘(ℝ, ℝ) (⊤ : WithTop ℕ∞) f)
+    (hf : ContMDiff I 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞) f)
     (χ : OpenPartialHomeomorph (MorseModel n) M)
     (hnorm : ∀ y : MorseModel n, morseNorm n y ≤ R → f (χ y) = morseNormalForm hk c y)
     (hχsrc : ∀ y : MorseModel n, morseNorm n y ≤ R → y ∈ χ.source)
@@ -11277,8 +11277,6 @@ theorem contMDiff_morseModifiedFunction {n k : ℕ} (hk : k ≤ n) (c ε δ R r�
     have hcont : ContinuousOn χ ball := χ.continuousOn_toFun.mono hχsrc
     exact (hballComp.image_of_continuousOn hcont).isClosed
   classical
-  have hfInfty : ContMDiff I 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞) f :=
-    hf.of_le (le_top : (↑(⊤ : ℕ∞) : WithTop ℕ∞) ≤ (⊤ : WithTop ℕ∞))
   intro x
   by_cases hx : x ∈ χ.target
   · by_cases hball : morseNorm n (χ.symm x) < min R rΦ
@@ -11358,7 +11356,7 @@ theorem contMDiff_morseModifiedFunction {n k : ℕ} (hk : k ≤ n) (c ε δ R r�
           rw [hmod]
           simpa [χ.right_inv hz.1] using (hnorm (χ.symm z) hle).symm
         · rw [if_neg hle]
-      exact (ContMDiffAt.congr_of_eventuallyEq (hfInfty x) hagree)
+      exact (ContMDiffAt.congr_of_eventuallyEq (hf x) hagree)
   · have houtside : {x : M | x ∉ χ '' ball} ∈ nhds x := by
       exact (isOpen_compl_iff.mpr hχballClosed).mem_nhds (by
         intro hxmem
@@ -11379,7 +11377,7 @@ theorem contMDiff_morseModifiedFunction {n k : ℕ} (hk : k ≤ n) (c ε δ R r�
           exact ⟨χ.symm z, hle, χ.right_inv hzt⟩
         rw [if_neg hle']
       · rw [if_neg hzt]
-    exact (ContMDiffAt.congr_of_eventuallyEq (hfInfty x) hagree)
+    exact (ContMDiffAt.congr_of_eventuallyEq (hf x) hagree)
 
 theorem sublevel_upper_identity_morseModifiedFunction {n k : ℕ} (hk : k ≤ n) (c ε δ R : ℝ)
     (hε : 0 < ε) (hδ : 0 < δ) (hδε : 9 * δ ^ 2 < 4 * ε)
