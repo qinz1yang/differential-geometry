@@ -4499,6 +4499,7 @@ import DifferentialGeometry.Geometry.Metric.ExteriorEndomorphismBundle
 import DifferentialGeometry.Geometry.Connection.MetricCompatibility.ExteriorEndomorphism
 import DifferentialGeometry.Geometry.Connection.Hessian.Map
 import DifferentialGeometry.Geometry.Connection.Hessian.PullbackTensor
+import DifferentialGeometry.Geometry.Connection.ParallelTransport.Hom
 import DifferentialGeometry.Geometry.Connection.Laplacian.Map
 import DifferentialGeometry.Geometry.Connection.Laplacian.ExteriorEndomorphism
 import DifferentialGeometry.Topology.Manifold.InjectiveRegularity
