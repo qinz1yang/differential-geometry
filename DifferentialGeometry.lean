@@ -4403,6 +4403,8 @@ import DifferentialGeometry.Geometry.Metric.ExteriorPowerBundle
 import DifferentialGeometry.Bundle.SmoothSubbundle.VectorBundle
 import DifferentialGeometry.Bundle.SmoothSubbundle.Hom
 import DifferentialGeometry.Geometry.Connection.SubbundleRestriction
+import DifferentialGeometry.Geometry.Metric.SelfAdjointSubbundle
+import DifferentialGeometry.Geometry.Connection.SelfAdjointRestriction
 import DifferentialGeometry.Geometry.Metric.BilinearTrace
 import DifferentialGeometry.Geometry.Connection.Laplacian.VectorBundleTrace
 import DifferentialGeometry.Geometry.Metric.ExteriorPowerRiemannian

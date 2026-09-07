@@ -116,55 +116,84 @@ theorem exists_continuous_coframe (x₀ : B) (p₀ : V x₀ ≃ₗᵢ[ℝ] F)
       (fun i _ => he i)
     exact h.congr (fun x hx => TotalSpace.mk_inj.mpr (hq x hx w))
 
+end LinearIsometryEquiv
 
+end
 
+noncomputable section
 
-section Smooth
+open Bundle Filter Set
+open scoped Topology BigOperators InnerProductSpace Manifold ContDiff
 
-variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
-  {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [ChartedSpace H B]
-  {n : ℕ∞ω} [IsContMDiffRiemannianBundle I n F V] [ContMDiffVectorBundle n F V I]
+namespace LinearIsometryEquiv
 
-theorem exists_contMDiff_coframe (x₀ : B) (p₀ : V x₀ ≃ₗᵢ[ℝ] F) :
+variable {B F G : Type*} [TopologicalSpace B]
+  [NormedAddCommGroup F] [NormedSpace ℝ F] [FiniteDimensional ℝ F]
+  [NormedAddCommGroup G] [InnerProductSpace ℝ G] [FiniteDimensional ℝ G]
+  {V : B → Type*} [∀ x, NormedAddCommGroup (V x)] [∀ x, InnerProductSpace ℝ (V x)]
+  [TopologicalSpace (TotalSpace F V)] [FiberBundle F V] [VectorBundle ℝ F V]
+  {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+  {n : ℕ∞ω} [ChartedSpace H B]
+  [IsContMDiffRiemannianBundle I n F V] [ContMDiffVectorBundle n F V I]
+
+theorem exists_contMDiff_coframe_to (x₀ : B) (p₀ : V x₀ ≃ₗᵢ[ℝ] G) :
     ∃ U : Set B, IsOpen U ∧ x₀ ∈ U ∧
-      ∃ q : ∀ x, V x ≃ₗᵢ[ℝ] F,
-        q x₀ = p₀ ∧ ∀ w : F,
+      ∃ q : ∀ x, V x ≃ₗᵢ[ℝ] G,
+        q x₀ = p₀ ∧ ∀ w : G,
           ContMDiffOn I (I.prod 𝓘(ℝ, F)) n
             (fun x => (⟨x, (q x).symm w⟩ : TotalSpace F V)) U := by
   classical
-  let b := stdOrthonormalBasis ℝ F
+  let _ : ∀ x, FiniteDimensional ℝ (V x) := fun x => VectorBundle.finiteDimensional ℝ F V x
+  have hdim (x : B) : Module.finrank ℝ (V x) = Module.finrank ℝ G :=
+    (VectorBundle.finrank_eq ℝ F V x).trans
+      ((VectorBundle.finrank_eq ℝ F V x₀).symm.trans p₀.toLinearEquiv.finrank_eq)
+  let b := stdOrthonormalBasis ℝ G
   obtain ⟨U, hU, hx₀, e, he, ho, hx⟩ :=
     exists_contMDiff_orthonormal_sections (F := F) (I := I) (m := n)
       x₀ (fun i => p₀.symm (b i))
       (p₀.symm.toLinearIsometry.orthonormal_comp_iff.mpr b.orthonormal)
-  obtain ⟨q, hq⟩ := exists_coframe_of_orthonormal_sections ho
+  have hsp (x : B) (hxU : x ∈ U) :
+      ⊤ ≤ Submodule.span ℝ (range (fun i => e i x)) :=
+    ((ho x hxU).linearIndependent.span_eq_top_of_card_eq_finrank'
+      ((Fintype.card_fin _).trans (hdim x).symm)).ge
+  let q : ∀ x, V x ≃ₗᵢ[ℝ] G := fun x =>
+    if hxU : x ∈ U then (OrthonormalBasis.mk (ho x hxU) (hsp x hxU)).repr.trans b.repr.symm
+    else ((stdOrthonormalBasis ℝ (V x)).reindex (finCongr (hdim x))).repr.trans b.repr.symm
+  have hq (x : B) (hxU : x ∈ U) (w : G) :
+      (q x).symm w = ∑ i, b.repr w i • e i x := by
+    dsimp only [q]
+    rw [dif_pos hxU]
+    change (OrthonormalBasis.mk (ho x hxU) (hsp x hxU)).repr.symm (b.repr w) = _
+    rw [← (OrthonormalBasis.mk (ho x hxU) (hsp x hxU)).sum_repr_symm]
+    simp only [OrthonormalBasis.coe_mk]
   refine ⟨U, hU, hx₀, q, ?_, ?_⟩
   · have hs : (q x₀).symm = p₀.symm := by
       ext w
       rw [hq x₀ hx₀]
       simp only [hx, ← map_smul, ← map_sum]
       exact congrArg p₀.symm (b.sum_repr w)
-    exact congrArg (fun p : F ≃ₗᵢ[ℝ] V x₀ => p.symm) hs
+    exact congrArg (fun p : G ≃ₗᵢ[ℝ] V x₀ => p.symm) hs
   · intro w
     have h : ContMDiffOn I (I.prod 𝓘(ℝ, F)) n
-        (fun x => (⟨x, ∑ i, b.repr w i • e i x⟩ : TotalSpace F V)) U :=
+        (fun x => TotalSpace.mk' F x (∑ i, b.repr w i • e i x)) U :=
       ContMDiffOn.sum_section (s := Finset.univ)
         (fun i _ => (contMDiffOn_const (c := b.repr w i)).smul_section (he i))
-    exact h.congr (fun x hx => TotalSpace.mk_inj.mpr (hq x hx w))
+    exact h.congr (fun x hxU => TotalSpace.mk_inj.mpr (hq x hxU w))
 
-omit [ContMDiffVectorBundle n F V I] in
-theorem contMDiffOn_coframe {U : Set B} {q : ∀ x, V x ≃ₗᵢ[ℝ] F}
-    (hq : ∀ w : F, ContMDiffOn I (I.prod 𝓘(ℝ, F)) n
+omit [FiniteDimensional ℝ F] [ContMDiffVectorBundle n F V I] in
+theorem contMDiffOn_coframe_to {U : Set B} {q : ∀ x, V x ≃ₗᵢ[ℝ] G}
+    (hq : ∀ w : G, ContMDiffOn I (I.prod 𝓘(ℝ, F)) n
       (fun x => (⟨x, (q x).symm w⟩ : TotalSpace F V)) U) :
-    ContMDiffOn (I.prod 𝓘(ℝ, F)) (I.prod 𝓘(ℝ, F)) n
+    ContMDiffOn (I.prod 𝓘(ℝ, F)) (I.prod 𝓘(ℝ, G)) n
       (fun v : TotalSpace F V => (v.proj, q v.proj v.2)) (TotalSpace.proj ⁻¹' U) := by
   classical
-  let b := stdOrthonormalBasis ℝ F
+  let b := stdOrthonormalBasis ℝ G
   have he (i) : ContMDiffOn (I.prod 𝓘(ℝ, F)) (I.prod 𝓘(ℝ, F)) n
       (fun v : TotalSpace F V => (⟨v.proj, (q v.proj).symm (b i)⟩ : TotalSpace F V))
       (TotalSpace.proj ⁻¹' U) :=
     (hq (b i)).comp (Bundle.contMDiffOn_proj V) (fun _ hv => hv)
-  have hv : ContMDiffOn (I.prod 𝓘(ℝ, F)) 𝓘(ℝ, F) n
+  have hv : ContMDiffOn (I.prod 𝓘(ℝ, F)) 𝓘(ℝ, G) n
       (fun v : TotalSpace F V => ∑ i, inner ℝ ((q v.proj).symm (b i)) v.2 • b i)
       (TotalSpace.proj ⁻¹' U) := by
     intro v hv
@@ -178,9 +207,57 @@ theorem contMDiffOn_coframe {U : Set B} {q : ∀ x, V x ≃ₗᵢ[ℝ] F}
     intro i _
     rw [b.repr_apply_apply]
     congr 1
-    simpa only [apply_symm_apply] using
+    simpa only [LinearIsometryEquiv.apply_symm_apply] using
       (q v.proj).inner_map_map ((q v.proj).symm (b i)) v.2
   exact (Bundle.contMDiffOn_proj V).prodMk (hv.congr (fun v _ => heq v))
+
+theorem exists_contMDiff_coframe_trivialization_to (x₀ : B) (p₀ : V x₀ ≃ₗᵢ[ℝ] G) :
+    ∃ U : Set B, IsOpen U ∧ x₀ ∈ U ∧ ∃ q : ∀ x, V x ≃ₗᵢ[ℝ] G,
+      q x₀ = p₀ ∧
+      ContMDiffOn (I.prod 𝓘(ℝ, G)) (I.prod 𝓘(ℝ, F)) n
+        (fun z : B × G => (⟨z.1, (q z.1).symm z.2⟩ : TotalSpace F V)) (U ×ˢ univ) ∧
+      ContMDiffOn (I.prod 𝓘(ℝ, F)) (I.prod 𝓘(ℝ, G)) n
+        (fun v : TotalSpace F V => (v.proj, q v.proj v.2)) (TotalSpace.proj ⁻¹' U) := by
+  obtain ⟨U, hU, hx₀, q, hq₀, hq⟩ :=
+    exists_contMDiff_coframe_to (I := I) (F := F) (n := n) x₀ p₀
+  refine ⟨U, hU, hx₀, q, hq₀, ?_, contMDiffOn_coframe_to hq⟩
+  exact ContinuousLinearMap.contMDiffOn_bundle_apply_of_pointwise
+    (φ := fun x => (q x).symm.toContinuousLinearEquiv.toContinuousLinearMap) hq
+
+end LinearIsometryEquiv
+
+end
+
+noncomputable section
+
+namespace LinearIsometryEquiv
+
+open Bundle Filter Set
+open scoped Topology BigOperators InnerProductSpace Manifold ContDiff
+
+variable {B F : Type*} [TopologicalSpace B]
+  [NormedAddCommGroup F] [InnerProductSpace ℝ F] [FiniteDimensional ℝ F]
+  {V : B → Type*} [∀ x, NormedAddCommGroup (V x)] [∀ x, InnerProductSpace ℝ (V x)]
+  [TopologicalSpace (TotalSpace F V)] [FiberBundle F V] [VectorBundle ℝ F V]
+  {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [ChartedSpace H B]
+  {n : ℕ∞ω} [IsContMDiffRiemannianBundle I n F V] [ContMDiffVectorBundle n F V I]
+
+theorem exists_contMDiff_coframe (x₀ : B) (p₀ : V x₀ ≃ₗᵢ[ℝ] F) :
+    ∃ U : Set B, IsOpen U ∧ x₀ ∈ U ∧
+      ∃ q : ∀ x, V x ≃ₗᵢ[ℝ] F,
+        q x₀ = p₀ ∧ ∀ w : F,
+          ContMDiffOn I (I.prod 𝓘(ℝ, F)) n
+            (fun x => (⟨x, (q x).symm w⟩ : TotalSpace F V)) U :=
+  exists_contMDiff_coframe_to x₀ p₀
+
+omit [ContMDiffVectorBundle n F V I] in
+theorem contMDiffOn_coframe {U : Set B} {q : ∀ x, V x ≃ₗᵢ[ℝ] F}
+    (hq : ∀ w : F, ContMDiffOn I (I.prod 𝓘(ℝ, F)) n
+      (fun x => (⟨x, (q x).symm w⟩ : TotalSpace F V)) U) :
+    ContMDiffOn (I.prod 𝓘(ℝ, F)) (I.prod 𝓘(ℝ, F)) n
+      (fun v : TotalSpace F V => (v.proj, q v.proj v.2)) (TotalSpace.proj ⁻¹' U) :=
+  contMDiffOn_coframe_to hq
 
 theorem exists_contMDiff_coframe_trivialization (x₀ : B) (p₀ : V x₀ ≃ₗᵢ[ℝ] F) :
     ∃ U : Set B, IsOpen U ∧ x₀ ∈ U ∧ ∃ q : ∀ x, V x ≃ₗᵢ[ℝ] F,
@@ -188,12 +265,9 @@ theorem exists_contMDiff_coframe_trivialization (x₀ : B) (p₀ : V x₀ ≃ₗ
       ContMDiffOn (I.prod 𝓘(ℝ, F)) (I.prod 𝓘(ℝ, F)) n
         (fun z : B × F => (⟨z.1, (q z.1).symm z.2⟩ : TotalSpace F V)) (U ×ˢ univ) ∧
       ContMDiffOn (I.prod 𝓘(ℝ, F)) (I.prod 𝓘(ℝ, F)) n
-        (fun v : TotalSpace F V => (v.proj, q v.proj v.2)) (TotalSpace.proj ⁻¹' U) := by
-  obtain ⟨U, hU, hx₀, q, hq₀, hq⟩ := exists_contMDiff_coframe (I := I) (n := n) x₀ p₀
-  refine ⟨U, hU, hx₀, q, hq₀, ?_, contMDiffOn_coframe hq⟩
-  exact ContinuousLinearMap.contMDiffOn_bundle_apply_of_pointwise
-    (φ := fun x => (q x).symm.toContinuousLinearEquiv.toContinuousLinearMap) hq
-
-end Smooth
+        (fun v : TotalSpace F V => (v.proj, q v.proj v.2)) (TotalSpace.proj ⁻¹' U) :=
+  exists_contMDiff_coframe_trivialization_to x₀ p₀
 
 end LinearIsometryEquiv
+
+end
