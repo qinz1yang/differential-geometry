@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Curvature.MetricPairing
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.CurvatureTimeDerivative
 
 set_option autoImplicit false
@@ -194,24 +195,6 @@ end Raise
 section Curvature
 
 variable {Idx : Type*} [Fintype Idx] {x : M}
-
-omit [SigmaCompactSpace M] in
-theorem metricRm04At_inner (g : SmoothRiemannianMetric I M) (x : M)
-    (X Y Z W : TangentSpace I x) :
-    metricRm04At (I := I) g x
-        (DifferentialGeometry.Geometry.Curvature.vec4 (I := I) X Y Z W) =
-      g.inner x
-        (DifferentialGeometry.Geometry.Curvature.riemannOp (metricCov (I := I) g) x X Y Z)
-        W := by
-  have h :=
-    DifferentialGeometry.Geometry.Curvature.CovariantDerivative.riemannCurvature04At_apply_const
-      (I := I) g (metricCov (I := I) g) (metricCov_smooth (I := I) g) X Y Z W
-  rw [DifferentialGeometry.riemannCurvatureAux_tangentConst_eq_riemannOp
-    (I := I) (metricCov (I := I) g) (metricCov_smooth (I := I) g) x X Y Z] at h
-  rw [show metricRm04At (I := I) g x =
-      DifferentialGeometry.Geometry.Curvature.CovariantDerivative.riemannCurvature04At
-        (I := I) g (metricCov (I := I) g) (metricCov_smooth (I := I) g) x from rfl, h]
-  exact g.symm x W _
 
 omit [SigmaCompactSpace M] in
 theorem rmVec_deriv

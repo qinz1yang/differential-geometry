@@ -1,3 +1,4 @@
+import DifferentialGeometry.Tensor.RSTensor.OutputLowering
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.ConnectionTimeDerivative
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.CurvatureDifference
 import DifferentialGeometry.Geometry.Curvature.MetricLeviCivitaReconcile
@@ -22,139 +23,6 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 variable [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
 
-section Lowering
-
-variable {x : M}
-
-omit [FiniteDimensional ℝ E] [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
-private theorem tensor02_add_left
-    (q : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 2 x)
-    (u₁ u₂ Z : TangentSpace I x) :
-    Tensor0SSpace.eval q (fun a : Fin 2 => if a = 0 then u₁ + u₂ else Z) =
-      Tensor0SSpace.eval q (fun a : Fin 2 => if a = 0 then u₁ else Z) +
-        Tensor0SSpace.eval q (fun a : Fin 2 => if a = 0 then u₂ else Z) := by
-  classical
-  set m : Fin 2 -> TangentSpace I x := fun a => if a = 0 then u₁ else Z with hm
-  have hupd : ∀ u : TangentSpace I x,
-      Function.update m 0 u = (fun a : Fin 2 => if a = 0 then u else Z) := by
-    intro u
-    funext a
-    fin_cases a <;> simp [hm]
-  rw [Tensor0SSpace.eval_eq, Tensor0SSpace.eval_eq, Tensor0SSpace.eval_eq]
-  calc q (fun a : Fin 2 => if a = 0 then u₁ + u₂ else Z)
-      = q (Function.update m 0 (u₁ + u₂)) := by rw [hupd]
-    _ = q (Function.update m 0 u₁) + q (Function.update m 0 u₂) := q.map_update_add m 0 u₁ u₂
-    _ = q (fun a : Fin 2 => if a = 0 then u₁ else Z) +
-          q (fun a : Fin 2 => if a = 0 then u₂ else Z) := by rw [hupd, hupd]
-
-omit [FiniteDimensional ℝ E] [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
-private theorem tensor02_smul_left
-    (q : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 2 x)
-    (c : Real) (u Z : TangentSpace I x) :
-    Tensor0SSpace.eval q (fun a : Fin 2 => if a = 0 then c • u else Z) =
-      c * Tensor0SSpace.eval q (fun a : Fin 2 => if a = 0 then u else Z) := by
-  classical
-  set m : Fin 2 -> TangentSpace I x := fun a => if a = 0 then u else Z with hm
-  have hupd : ∀ u' : TangentSpace I x,
-      Function.update m 0 u' = (fun a : Fin 2 => if a = 0 then u' else Z) := by
-    intro u'
-    funext a
-    fin_cases a <;> simp [hm]
-  rw [Tensor0SSpace.eval_eq, Tensor0SSpace.eval_eq]
-  calc q (fun a : Fin 2 => if a = 0 then c • u else Z)
-      = q (Function.update m 0 (c • u)) := by rw [hupd]
-    _ = c • q (Function.update m 0 u) := q.map_update_smul m 0 c u
-    _ = c * q (fun a : Fin 2 => if a = 0 then u else Z) := by rw [hupd, smul_eq_mul]
-
-omit [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
-private theorem lowerBilin_add
-    (q : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 2 x)
-    (A B : TangentSpace I x →L[Real] TangentSpace I x →L[Real] TangentSpace I x) :
-    lowerBilin (I := I) q (A + B) =
-      lowerBilin (I := I) q A + lowerBilin (I := I) q B := by
-  apply (tensor0SSpaceFiberContinuousLinearEquiv (I := I) 3 x).injective
-  apply ContinuousMultilinearMap.ext
-  intro v
-  change Tensor0SSpace.eval (lowerBilin (I := I) q (A + B)) v =
-    Tensor0SSpace.eval (lowerBilin (I := I) q A + lowerBilin (I := I) q B) v
-  rw [Tensor0SSpace.eval_add, lowerBilin_apply, lowerBilin_apply, lowerBilin_apply]
-  have hAB : ((A + B) (v 1)) (v 0) = (A (v 1)) (v 0) + (B (v 1)) (v 0) := rfl
-  rw [hAB, tensor02_add_left]
-
-omit [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
-private theorem lowerBilin_smul
-    (q : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 2 x)
-    (c : Real)
-    (A : TangentSpace I x →L[Real] TangentSpace I x →L[Real] TangentSpace I x) :
-    lowerBilin (I := I) q (c • A) = c • lowerBilin (I := I) q A := by
-  apply (tensor0SSpaceFiberContinuousLinearEquiv (I := I) 3 x).injective
-  apply ContinuousMultilinearMap.ext
-  intro v
-  change Tensor0SSpace.eval (lowerBilin (I := I) q (c • A)) v =
-    Tensor0SSpace.eval (c • lowerBilin (I := I) q A) v
-  rw [Tensor0SSpace.eval_smul, lowerBilin_apply, lowerBilin_apply]
-  have hA : ((c • A) (v 1)) (v 0) = c • ((A (v 1)) (v 0)) := rfl
-  rw [hA, tensor02_smul_left, smul_eq_mul]
-
-private def lowerTriOut
-    (q : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 2 x)
-    (A : TangentSpace I x →L[Real] TangentSpace I x →L[Real] TangentSpace I x →L[Real]
-      TangentSpace I x) :
-    Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 4 x :=
-  ContinuousLinearMap.uncurryLeft (𝕜 := Real) (n := 3)
-    (Ei := fun _ : Fin 4 => TangentSpace I x) (G := Real)
-    (LinearMap.toContinuousLinearMap
-      { toFun := fun X =>
-          (lowerBilin (I := I) q (A X) :
-            ContinuousMultilinearMap Real (fun _ : Fin 3 => TangentSpace I x) Real)
-        map_add' := by
-          intro X₁ X₂
-          rw [map_add]
-          exact lowerBilin_add (I := I) q (A X₁) (A X₂)
-        map_smul' := by
-          intro c X
-          rw [map_smul]
-          exact lowerBilin_smul (I := I) q c (A X) })
-
-omit [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
-private theorem lowerTriOut_apply
-    (q : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 2 x)
-    (A : TangentSpace I x →L[Real] TangentSpace I x →L[Real] TangentSpace I x →L[Real]
-      TangentSpace I x)
-    (w : Fin 4 -> TangentSpace I x) :
-    Tensor0SSpace.eval (lowerTriOut (I := I) q A) w =
-      Tensor0SSpace.eval q
-        (fun a : Fin 2 => if a = 0 then ((A (w 0)) (w 2)) (w 1) else w 3) := by
-  have h : Tensor0SSpace.eval (lowerTriOut (I := I) q A) w =
-      Tensor0SSpace.eval (lowerBilin (I := I) q (A (w 0))) (Fin.tail w) := by
-    rfl
-  rw [h, lowerBilin_apply]
-  congr 1
-
-def lowerTri
-    (q : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 2 x)
-    (A : TangentSpace I x →L[Real] TangentSpace I x →L[Real] TangentSpace I x →L[Real]
-      TangentSpace I x) :
-    Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 4 x :=
-  ContinuousMultilinearMap.domDomCongr (Equiv.swap (1 : Fin 4) 2)
-    (lowerTriOut (I := I) q A)
-
-omit [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
-theorem lowerTri_apply
-    (q : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 2 x)
-    (A : TangentSpace I x →L[Real] TangentSpace I x →L[Real] TangentSpace I x →L[Real]
-      TangentSpace I x)
-    (v : Fin 4 -> TangentSpace I x) :
-    Tensor0SSpace.eval (lowerTri (I := I) q A) v =
-      Tensor0SSpace.eval q
-        (fun a : Fin 2 => if a = 0 then ((A (v 0)) (v 1)) (v 2) else v 3) := by
-  have h : Tensor0SSpace.eval (lowerTri (I := I) q A) v =
-      Tensor0SSpace.eval (lowerTriOut (I := I) q A)
-        (fun i : Fin 4 => v (Equiv.swap (1 : Fin 4) 2 i)) := rfl
-  rw [h, lowerTriOut_apply]
-  congr 1
-
-end Lowering
 section RaisedDifference
 
 variable {x : M}
@@ -166,9 +34,16 @@ private theorem tensor02_sub_left
     Tensor0SSpace.eval q (fun a : Fin 2 => if a = 0 then u₁ - u₂ else Z) =
       Tensor0SSpace.eval q (fun a : Fin 2 => if a = 0 then u₁ else Z) -
         Tensor0SSpace.eval q (fun a : Fin 2 => if a = 0 then u₂ else Z) := by
-  have h := tensor02_add_left (I := I) q (u₁ - u₂) u₂ Z
-  rw [sub_add_cancel] at h
-  exact eq_sub_of_add_eq h.symm
+  let m : Fin 2 → TangentSpace I x := fun _ => Z
+  have hu (u : TangentSpace I x) :
+      Function.update m 0 u = (fun a : Fin 2 => if a = 0 then u else Z) := by
+    funext a
+    fin_cases a <;> simp [m]
+  let R := tensor0SSpaceFiberContinuousLinearEquiv (I := I) 2 x q
+  change R (fun a : Fin 2 => if a = 0 then u₁ - u₂ else Z) =
+    R (fun a : Fin 2 => if a = 0 then u₁ else Z) -
+      R (fun a : Fin 2 => if a = 0 then u₂ else Z)
+  simpa only [hu] using R.map_update_sub m 0 u₁ u₂
 
 omit [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
 private theorem metricField_slot0 (g : SmoothRiemannianMetric I M) (x : M)

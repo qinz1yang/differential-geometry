@@ -4446,5 +4446,9 @@ import DifferentialGeometry.Tensor.Mixed.Multilinear
 import DifferentialGeometry.Analysis.Integration.Measure.ChartIntegral
 import DifferentialGeometry.Analysis.Integration.Measure.SurfaceFlux
 import DifferentialGeometry.Geometry.Curvature.QuadraticContraction
+import DifferentialGeometry.Tensor.RSTensor.OutputLowering
+import DifferentialGeometry.Geometry.Curvature.MetricPairing
+import DifferentialGeometry.Geometry.Curvature.QuadraticTensor
+import DifferentialGeometry.Geometry.Curvature.RicciAction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Connection.CoordinateEvolution
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.ThreeQuadratic
