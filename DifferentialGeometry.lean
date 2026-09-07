@@ -4409,6 +4409,9 @@ import DifferentialGeometry.Geometry.Connection.SelfAdjointRestriction
 import DifferentialGeometry.Geometry.Connection.Hessian.Restriction
 import DifferentialGeometry.Geometry.Connection.Laplacian.SubbundleRestriction
 import DifferentialGeometry.Geometry.Connection.Laplacian.SelfAdjointRestriction
+import DifferentialGeometry.Geometry.Metric.Subbundle
+import DifferentialGeometry.Geometry.Connection.MetricCompatibility.Subbundle
+import DifferentialGeometry.Geometry.Connection.MetricCompatibility.SelfAdjoint
 import DifferentialGeometry.Geometry.Metric.BilinearTrace
 import DifferentialGeometry.Geometry.Connection.Laplacian.VectorBundleTrace
 import DifferentialGeometry.Geometry.Metric.ExteriorPowerRiemannian
