@@ -32,28 +32,8 @@ private theorem riemann_pullback_isAlgCurvForm
       (S.base.rm04 t x).compContinuousLinearMap (fun _ => ι.toContinuousLinearMap) ![a, b, c, d]) := by
   have hT := mem_algebraicCurvatureTensorSubmodule.mp
     (metricRm04At_mem_algebraicCurvatureTensorSubmodule (I := I) (S.base.metric t) x)
-  have heq (a b c d : F) :
-      (S.base.rm04 t x).compContinuousLinearMap (fun _ => ι.toContinuousLinearMap) ![a, b, c, d] =
-      tensor04StdAt (S.base.rm04 t x) (ι a) (ι b) (ι c) (ι d) := by
-    change S.base.rm04 t x (fun i => ι (![a, b, c, d] i)) =
-      S.base.rm04 t x (vec4 (ι a) (ι b) (ι c) (ι d))
-    congr 1
-    funext i
-    fin_cases i <;> rfl
-  simp_rw [heq]
-  refine ⟨?_, ?_, ?_, ?_, ?_⟩
-  · intro a b c d e
-    rw [map_add]
-    exact hT.add_left _ _ _ _ _
-  · intro r a b c d
-    rw [map_smul]
-    exact hT.smul_left _ _ _ _ _
-  · intro a b c d
-    exact hT.anti_first _ _ _ _
-  · intro a b c d
-    exact hT.anti_last _ _ _ _
-  · intro a b c d
-    exact hT.bianchi _ _ _ _
+  change IsAlgCurvForm (fun a b c d => S.base.rm04 t x ![a, b, c, d]) at hT
+  exact hT.compContinuousLinearMap ι.toContinuousLinearMap
 
 variable {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [FiniteDimensional ℝ F]
   {V : M → Type*} [TopologicalSpace (TotalSpace F V)]

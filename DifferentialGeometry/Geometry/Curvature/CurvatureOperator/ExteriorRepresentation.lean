@@ -99,6 +99,38 @@ theorem traceNormalizedCurvatureSelfAdjoint_coe
     (traceNormalizedCurvatureSelfAdjoint T hT : (⋀[ℝ]^2 E) →L[ℝ] ⋀[ℝ]^2 E) =
       traceNormalizedCurvatureEndomorphism T hT := rfl
 
+theorem eq_traceNormalizedCurvatureEndomorphism_iff
+    (A : (⋀[ℝ]^2 E) →L[ℝ] ⋀[ℝ]^2 E)
+    (T : ContinuousMultilinearMap ℝ (fun _ : Fin 4 => E) ℝ)
+    (hT : IsAlgCurvForm (fun a b c d => T ![a, b, c, d])) :
+    A = traceNormalizedCurvatureEndomorphism T hT ↔
+      ∀ a b c d : E, ⟪A (ιMulti ℝ 2 ![a, b]), ιMulti ℝ 2 ![c, d]⟫ =
+        2 * T ![a, b, d, c] := by
+  constructor
+  · rintro rfl a b c d
+    exact inner_traceNormalizedCurvatureEndomorphism_ιMulti T hT ![a, b] ![c, d]
+  · intro h
+    apply endomorphismTensor_injective 2
+    ext v
+    have hv : v = Fin.append ![v 0, v 1] ![v 2, v 3] := by
+      ext i
+      fin_cases i <;> rfl
+    rw [hv, endomorphismTensor_apply_append, endomorphismTensor_apply_append,
+      inner_traceNormalizedCurvatureEndomorphism_ιMulti]
+    exact h _ _ _ _
+
+theorem existsUnique_traceNormalizedCurvatureSelfAdjoint
+    (T : ContinuousMultilinearMap ℝ (fun _ : Fin 4 => E) ℝ)
+    (hT : IsAlgCurvForm (fun a b c d => T ![a, b, c, d])) :
+    ∃! A : selfAdjoint ((⋀[ℝ]^2 E) →L[ℝ] ⋀[ℝ]^2 E),
+      ∀ a b c d : E, ⟪(A : (⋀[ℝ]^2 E) →L[ℝ] ⋀[ℝ]^2 E) (ιMulti ℝ 2 ![a, b]),
+        ιMulti ℝ 2 ![c, d]⟫ = 2 * T ![a, b, d, c] := by
+  refine ⟨traceNormalizedCurvatureSelfAdjoint T hT, ?_, ?_⟩
+  · exact (eq_traceNormalizedCurvatureEndomorphism_iff _ T hT).mp rfl
+  · intro A hA
+    apply Subtype.ext
+    exact (eq_traceNormalizedCurvatureEndomorphism_iff _ T hT).mpr hA
+
 theorem traceNormalizedCurvatureEndomorphism_eq_smul_id_of_constant_curvature
     (T : ContinuousMultilinearMap ℝ (fun _ : Fin 4 => E) ℝ)
     (hT : IsAlgCurvForm (fun x y z w => T ![x, y, z, w])) (k : ℝ)

@@ -1,5 +1,6 @@
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.ExteriorRepresentation
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureOperatorNormalization
+import DifferentialGeometry.Geometry.Curvature.EuclideanQuadratic
 import DifferentialGeometry.Geometry.Curvature.QuadraticTensor
 
 set_option autoImplicit false
@@ -258,6 +259,109 @@ theorem endomorphismTensor_curvatureOperatorReactionEndomorphism3_basis
     fin_cases q <;> rfl
   rw [hvec, exteriorPower.endomorphismTensor_apply_append]
   exact alternating_pairs_ext F Q hF1 hF2 hQ1 hQ2 hi a c d e
+
+theorem endomorphismTensor_curvatureOperatorReactionEndomorphism3_eq_curvatureQuadraticReaction
+    (b : OrthonormalBasis (Fin 3) ℝ E)
+    (T : ContinuousMultilinearMap ℝ (fun _ : Fin 4 => E) ℝ)
+    (hT : IsAlgCurvForm (fun a c d e => T ![a, c, d, e])) :
+    exteriorPower.endomorphismTensor 2
+      (curvatureOperatorReactionEndomorphism3
+        (exteriorPower.traceNormalizedCurvatureEndomorphism T hT).toLinearMap).toContinuousLinearMap =
+      (-2 : ℝ) • curvatureQuadraticReaction b T := by
+  apply (Tensor.Multilinear.continuousMultilinearMapBasis b.toBasis 4).repr.injective
+  ext m
+  rw [Tensor.Multilinear.continuousMultilinearMap_basis_repr,
+    Tensor.Multilinear.continuousMultilinearMap_basis_repr]
+  have hvec : (fun q : Fin 4 => b (m q)) = ![b (m 0), b (m 1), b (m 2), b (m 3)] := by
+    ext q
+    fin_cases q <;> rfl
+  simp only [OrthonormalBasis.coe_toBasis, hvec, smul_apply, smul_eq_mul]
+  rw [endomorphismTensor_curvatureOperatorReactionEndomorphism3_basis,
+    curvatureQuadraticReaction_apply]
+  have hB (a c d e : Fin 3) : curvatureQuadraticContraction b T ![b a, b c, b d, b e] =
+      -PDE.RicciFlow.bComp delta3 (fun a c d e => T ![b a, b c, b d, b e]) a c d e := by
+    simp [curvatureQuadraticContraction_apply, PDE.RicciFlow.bComp, delta3]
+  dsimp only
+  rw [hB, hB, hB, hB]
+  ring
+
+theorem traceNormalizedCurvatureEndomorphism_curvatureQuadraticReaction
+    (b : OrthonormalBasis (Fin 3) ℝ E)
+    (T : ContinuousMultilinearMap ℝ (fun _ : Fin 4 => E) ℝ)
+    (hT : IsAlgCurvForm (fun a c d e => T ![a, c, d, e])) :
+    exteriorPower.traceNormalizedCurvatureEndomorphism (curvatureQuadraticReaction b T)
+        (curvatureQuadraticReaction_isAlgCurvForm b T hT) =
+      (curvatureOperatorReactionEndomorphism3
+        (exteriorPower.traceNormalizedCurvatureEndomorphism T hT).toLinearMap).toContinuousLinearMap := by
+  apply exteriorPower.endomorphismTensor_injective 2
+  rw [exteriorPower.endomorphismTensor_traceNormalizedCurvatureEndomorphism,
+    endomorphismTensor_curvatureOperatorReactionEndomorphism3_eq_curvatureQuadraticReaction]
+
+theorem traceNormalizedCurvatureEndomorphism_curvatureQuadraticReactionTensor
+    (hdim : Module.finrank ℝ E = 3)
+    (T : ContinuousMultilinearMap ℝ (fun _ : Fin 4 => E) ℝ)
+    (hT : IsAlgCurvForm (fun a c d e => T ![a, c, d, e])) :
+    exteriorPower.traceNormalizedCurvatureEndomorphism (curvatureQuadraticReactionTensor T)
+        (curvatureQuadraticReactionTensor_isAlgCurvForm T hT) =
+      (curvatureOperatorReactionEndomorphism3
+        (exteriorPower.traceNormalizedCurvatureEndomorphism T hT).toLinearMap).toContinuousLinearMap := by
+  let b := (stdOrthonormalBasis ℝ E).reindex (finCongr hdim)
+  have h := traceNormalizedCurvatureEndomorphism_curvatureQuadraticReaction b T hT
+  simpa only [← curvatureQuadraticReactionTensor_eq_of_orthonormalBasis b T] using h
+
+theorem traceNormalizedCurvatureSelfAdjoint_curvatureQuadraticReactionTensor
+    (hdim : Module.finrank ℝ E = 3)
+    (T : ContinuousMultilinearMap ℝ (fun _ : Fin 4 => E) ℝ)
+    (hT : IsAlgCurvForm (fun a c d e => T ![a, c, d, e])) :
+    exteriorPower.traceNormalizedCurvatureSelfAdjoint (curvatureQuadraticReactionTensor T)
+        (curvatureQuadraticReactionTensor_isAlgCurvForm T hT) =
+      curvatureOperatorReactionSelfAdjoint3 (exteriorPower.traceNormalizedCurvatureSelfAdjoint T hT) := by
+  apply Subtype.ext
+  exact traceNormalizedCurvatureEndomorphism_curvatureQuadraticReactionTensor hdim T hT
+
+theorem eq_curvatureOperatorReactionSelfAdjoint3_iff
+    (hdim : Module.finrank ℝ E = 3)
+    (T : ContinuousMultilinearMap ℝ (fun _ : Fin 4 => E) ℝ)
+    (hT : IsAlgCurvForm (fun a c d e => T ![a, c, d, e]))
+    (B : selfAdjoint ((⋀[ℝ]^2 E) →L[ℝ] ⋀[ℝ]^2 E)) :
+    B = curvatureOperatorReactionSelfAdjoint3
+        (exteriorPower.traceNormalizedCurvatureSelfAdjoint T hT) ↔
+      ∀ a b c d : E,
+        ⟪(B : (⋀[ℝ]^2 E) →L[ℝ] ⋀[ℝ]^2 E) (exteriorPower.ιMulti ℝ 2 ![a, b]),
+          exteriorPower.ιMulti ℝ 2 ![c, d]⟫ =
+        2 * curvatureQuadraticReactionTensor T ![a, b, d, c] := by
+  rw [← traceNormalizedCurvatureSelfAdjoint_curvatureQuadraticReactionTensor hdim T hT]
+  exact Subtype.ext_iff.trans (exteriorPower.eq_traceNormalizedCurvatureEndomorphism_iff _
+    (curvatureQuadraticReactionTensor T) (curvatureQuadraticReactionTensor_isAlgCurvForm T hT))
+
+theorem curvatureOperatorReactionSelfAdjoint3_inner_wedge
+    (hdim : Module.finrank ℝ E = 3)
+    (T : ContinuousMultilinearMap ℝ (fun _ : Fin 4 => E) ℝ)
+    (hT : IsAlgCurvForm (fun a c d e => T ![a, c, d, e])) (a b c d : E) :
+    ⟪(curvatureOperatorReactionSelfAdjoint3 (exteriorPower.traceNormalizedCurvatureSelfAdjoint T hT) :
+        (⋀[ℝ]^2 E) →L[ℝ] ⋀[ℝ]^2 E) (exteriorPower.ιMulti ℝ 2 ![a, b]),
+      exteriorPower.ιMulti ℝ 2 ![c, d]⟫ =
+        2 * curvatureQuadraticReactionTensor T ![a, b, d, c] :=
+  (eq_curvatureOperatorReactionSelfAdjoint3_iff hdim T hT _).mp rfl a b c d
+
+theorem eq_curvatureOperatorReactionSelfAdjoint3_iff_of_inner_wedge
+    (hdim : Module.finrank ℝ E = 3)
+    (T : ContinuousMultilinearMap ℝ (fun _ : Fin 4 => E) ℝ)
+    (hT : IsAlgCurvForm (fun a c d e => T ![a, c, d, e]))
+    (A B : selfAdjoint ((⋀[ℝ]^2 E) →L[ℝ] ⋀[ℝ]^2 E))
+    (hA : ∀ a b c d : E,
+      ⟪(A : (⋀[ℝ]^2 E) →L[ℝ] ⋀[ℝ]^2 E) (exteriorPower.ιMulti ℝ 2 ![a, b]),
+        exteriorPower.ιMulti ℝ 2 ![c, d]⟫ = 2 * T ![a, b, d, c]) :
+    B = curvatureOperatorReactionSelfAdjoint3 A ↔
+      ∀ a b c d : E,
+        ⟪(B : (⋀[ℝ]^2 E) →L[ℝ] ⋀[ℝ]^2 E) (exteriorPower.ιMulti ℝ 2 ![a, b]),
+          exteriorPower.ιMulti ℝ 2 ![c, d]⟫ =
+        2 * curvatureQuadraticReactionTensor T ![a, b, d, c] := by
+  have hAe : A = exteriorPower.traceNormalizedCurvatureSelfAdjoint T hT := by
+    apply Subtype.ext
+    exact (exteriorPower.eq_traceNormalizedCurvatureEndomorphism_iff _ T hT).mpr hA
+  rw [hAe]
+  exact eq_curvatureOperatorReactionSelfAdjoint3_iff hdim T hT B
 
 end DifferentialGeometry.Geometry.Curvature.DimensionThree
 

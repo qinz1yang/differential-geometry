@@ -4486,6 +4486,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Connection.Intrins
 import DifferentialGeometry.Tensor.Alternating.Block
 import DifferentialGeometry.Geometry.Metric.ExteriorEndomorphism
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.ExteriorRepresentation
+import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.ExteriorConjugation
 import DifferentialGeometry.Geometry.Metric.ExteriorEndomorphismBundle
 import DifferentialGeometry.Geometry.Connection.MetricCompatibility.ExteriorEndomorphism
 import DifferentialGeometry.Geometry.Connection.Hessian.Map
@@ -4500,6 +4501,7 @@ import DifferentialGeometry.Analysis.Integration.Measure.SublevelVolume
 import DifferentialGeometry.Topology.Manifold.ChartPartialDiffeomorph
 import DifferentialGeometry.Analysis.Integration.Measure.NullImage
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.ExteriorReaction
+import DifferentialGeometry.Geometry.Curvature.EuclideanQuadratic
 import DifferentialGeometry.Analysis.Calculus.InjectiveDerivative
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Pullback
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Uhlenbeck.CurvatureOperatorEvolution
