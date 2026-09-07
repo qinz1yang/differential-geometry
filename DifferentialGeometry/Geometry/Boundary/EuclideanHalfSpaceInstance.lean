@@ -588,6 +588,21 @@ theorem extChartAt_boundaryInclusion_extChartAt_symm_euclideanHalfSpace
   rw [hinv, (chartAt (EuclideanHalfSpace n) (alpha : M)).right_inv htarget']
   rfl
 
+theorem extChartAt_symm_inclEuclideanCLM_eq_boundaryInclusion
+    (alpha : BoundaryManifold J M) {z : EuclideanSpace Real (Fin (n - 1))}
+    (hz : z ∈ (extChartAt K alpha).target) :
+    (extChartAt J (alpha : M)).symm (EuclideanHalfSpaceInstance.inclEuclideanCLM n z) =
+      boundaryInclusion J M ((extChartAt K alpha).symm z) := by
+  rw [← extChartAt_boundaryInclusion_extChartAt_symm_euclideanHalfSpace alpha hz]
+  apply (extChartAt J (alpha : M)).left_inv
+  rw [extChartAt_source]
+  have h := (extChartAt K alpha).map_target hz
+  rw [extChartAt_source] at h
+  change (extChartAt K alpha).symm z ∈
+    (BoundaryManifold.defaultBoundaryChart (I := J) alpha).source at h
+  rw [BoundaryManifold.defaultBoundaryChart_eq_boundaryChart] at h
+  exact h
+
 theorem boundaryInclusionMfderiv_chart_euclideanHalfSpace
     (alpha x : BoundaryManifold J M)
     (hx : (x : M) ∈ (chartAt (EuclideanHalfSpace n) (alpha : M)).source) :

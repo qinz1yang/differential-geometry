@@ -45,15 +45,6 @@ private local instance : NormedSpace ℝ (E →L[ℝ] E →L[ℝ] ℝ) :=
 private local instance (x : M) : ContinuousAdd (TangentSpace I x →L[ℝ] ℝ) :=
   (ContinuousLinearMap.topologicalAddGroup (𝕜₁ := ℝ) (𝕜₂ := ℝ)).toContinuousAdd
 
-def boundaryInclusion (I : ModelWithCorners ℝ E H) (M : Type*)
-    [TopologicalSpace M] [ChartedSpace H M] :
-    BoundaryManifold I M → M :=
-  Subtype.val
-
-omit [FiniteDimensional ℝ E] in
-@[simp] lemma boundaryInclusion_apply (x : BoundaryManifold I M) :
-    boundaryInclusion I M x = (x : M) := rfl
-
 private def Phi (I : ModelWithCorners ℝ E H) [hI : HasSmoothBoundary E H I] :
     hI.boundaryE → E :=
   (I : H → E) ∘ hI.inclH ∘ hI.boundaryI.symm

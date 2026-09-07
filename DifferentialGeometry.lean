@@ -4437,3 +4437,5 @@ import DifferentialGeometry.Geometry.Boundary.EuclideanHalfSpaceOrientation
 import DifferentialGeometry.Geometry.Connection.TensorNabla.MultilinearDual
 import DifferentialGeometry.Geometry.Connection.Laplacian.ExteriorPowerSelfAdjointPullback
 import DifferentialGeometry.Tensor.Mixed.Multilinear
+import DifferentialGeometry.Analysis.Integration.Measure.ChartIntegral
+import DifferentialGeometry.Analysis.Integration.Measure.SurfaceFlux
