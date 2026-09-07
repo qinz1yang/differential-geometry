@@ -778,6 +778,39 @@ noncomputable def dualMultilinearFiberwiseEquiv (r : ℕ) (x : B) :
       (continuousLinearEquivAt (𝕜 := 𝕜) (F := F →L[𝕜] 𝕜)
         (E := Bundle.dual 𝕜 E) r x).symm.toLinearEquiv)
 
+omit [ChartedSpace HB B] [ContMDiffVectorBundle n F E IB] in
+theorem dualMultilinearFiberwiseEquiv_apply (k : ℕ) (x : B)
+    (φ : Bundle.continuousMultilinearMap 𝕜 k F E x →L[𝕜] 𝕜)
+    (α : Fin k → E x →L[𝕜] 𝕜) :
+    dualMultilinearFiberwiseEquiv (F := F) (E := E) k x φ α =
+      φ (ContinuousMultilinearMap.tensorOfDualLinearForms 𝕜 (E x) k α) := by
+  change φ ((continuousLinearEquivAt (𝕜 := 𝕜) (F := F) (E := E) k x).symm
+    (ContinuousMultilinearMap.tensorOfDualLinearForms 𝕜 F k
+      (fun i => (trivializationAt (F →L[𝕜] 𝕜) (Bundle.dual 𝕜 E) x).continuousLinearMapAt
+        𝕜 x (α i)))) = _
+  congr 1
+  apply ContinuousMultilinearMap.ext
+  intro v
+  change (∏ i, (trivializationAt (F →L[𝕜] 𝕜) (Bundle.dual 𝕜 E) x).continuousLinearMapAt
+    𝕜 x (α i) ((trivializationAt F E x).continuousLinearMapAt 𝕜 x (v i))) = ∏ i, α i (v i)
+  apply Finset.prod_congr rfl
+  intro i _
+  have h := dualBundle_triv_symmL_eq_comp (𝕜 := 𝕜) (F := F) (E := E) x x
+    (mem_baseSet_trivializationAt F E x)
+    ((trivializationAt (F →L[𝕜] 𝕜) (Bundle.dual 𝕜 E) x).continuousLinearMapAt 𝕜 x (α i)) (v i)
+  have hcancel := (trivializationAt (F →L[𝕜] 𝕜) (Bundle.dual 𝕜 E) x).symmₗ_linearMapAt
+    (R := 𝕜) (mem_baseSet_trivializationAt (F →L[𝕜] 𝕜) (Bundle.dual 𝕜 E) x) (α i)
+  exact h.symm.trans (congrArg (fun a : E x →L[𝕜] 𝕜 => a (v i)) hcancel)
+
+omit [ChartedSpace HB B] [ContMDiffVectorBundle n F E IB] in
+theorem dualMultilinearFiberwiseEquiv_symm_apply_tensorOfDualLinearForms (k : ℕ) (x : B)
+    (T : Bundle.continuousMultilinearMap 𝕜 k (F →L[𝕜] 𝕜) (Bundle.dual 𝕜 E) x)
+    (α : Fin k → E x →L[𝕜] 𝕜) :
+    (dualMultilinearFiberwiseEquiv (F := F) (E := E) k x).symm T
+        (ContinuousMultilinearMap.tensorOfDualLinearForms 𝕜 (E x) k α) = T α := by
+  rw [← dualMultilinearFiberwiseEquiv_apply,
+    LinearEquiv.apply_symm_apply]
+
 omit [ContMDiffVectorBundle n F E IB] in
 theorem dualMultilinearFiberwiseEquiv_smooth (r : ℕ)
     [hE : ContMDiffVectorBundle n F E IB] :
