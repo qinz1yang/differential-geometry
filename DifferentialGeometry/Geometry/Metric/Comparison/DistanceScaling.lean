@@ -1,4 +1,5 @@
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tangent.NormDiamond
+import DifferentialGeometry.Geometry.Metric.Distance.Basic
 import DifferentialGeometry.Geometry.Metric.Scaling
 import Mathlib.Geometry.Manifold.Riemannian.Basic
 import Mathlib.Geometry.Manifold.Riemannian.PathELength
@@ -18,42 +19,6 @@ variable {H : Type*} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M]
-
-attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
-  Tensor0SBundle.tangentSpaceNormedSpace in
-noncomputable def riemannianEDistOf
-    (g : SmoothRiemannianMetric I M) (x y : M) : ℝ≥0∞ :=
-  letI : Bundle.RiemannianBundle (TangentSpace I : M → Type _) :=
-    ⟨g.toRiemannianMetric⟩
-  Manifold.riemannianEDist I x y
-
-attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
-  Tensor0SBundle.tangentSpaceNormedSpace in
-theorem riemannianEDistOf_self
-    (g : SmoothRiemannianMetric I M) (x : M) :
-    riemannianEDistOf (I := I) g x x = 0 := by
-  let : Bundle.RiemannianBundle (TangentSpace I : M → Type _) :=
-    ⟨g.toRiemannianMetric⟩
-  change Manifold.riemannianEDist I x x = 0
-  exact Manifold.riemannianEDist_self
-
-attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
-  Tensor0SBundle.tangentSpaceNormedSpace in
-theorem edistOf_iInf
-    (g : SmoothRiemannianMetric I M) (x y : M) :
-    riemannianEDistOf (I := I) g x y =
-      ⨅ (γ : Path x y) (_ : CMDiff 1 γ),
-        ∫⁻ t, ENNReal.ofReal (Real.sqrt
-          (g.inner (γ t) (mfderiv% γ t 1) (mfderiv% γ t 1))) := by
-  let : Bundle.RiemannianBundle (TangentSpace I : M → Type _) :=
-    ⟨g.toRiemannianMetric⟩
-  change Manifold.riemannianEDist I x y = _
-  rw [Manifold.riemannianEDist]
-  refine iInf_congr fun γ => ?_
-  refine iInf_congr fun hγ => ?_
-  refine lintegral_congr fun t => ?_
-  rw [← ofReal_norm, norm_eq_sqrt_real_inner]
-  congr 2
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in

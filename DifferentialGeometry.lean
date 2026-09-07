@@ -3134,6 +3134,8 @@ import DifferentialGeometry.Geometry.Metric.DeTurck.Smoothness
 import DifferentialGeometry.Geometry.Metric.DeTurck.Trace
 import DifferentialGeometry.Geometry.Metric.DeTurck.VectorField
 import DifferentialGeometry.Geometry.Metric.Comparison.DistanceScaling
+import DifferentialGeometry.Geometry.Metric.Distance.Basic
+import DifferentialGeometry.Geometry.Metric.Distance.Finiteness
 import DifferentialGeometry.Geometry.Metric.Comparison.CurveLength
 import DifferentialGeometry.Geometry.Metric.Comparison.DistanceTent
 import DifferentialGeometry.Geometry.Metric.Coordinates.FiberExpansion
