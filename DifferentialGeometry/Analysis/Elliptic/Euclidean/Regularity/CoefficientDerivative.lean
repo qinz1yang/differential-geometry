@@ -31,6 +31,37 @@ def coefficientDerivativeSource (p : ℝ≥0∞) (a : E → Matrix (Fin d) (Fin 
       (fderiv ℝ (fun y => a y i j) x) (EuclideanSpace.single l 1) *
         chosenWeakPartialOrZero p i (chosenWeakPartialOrZero p j u Omega) Omega x)
 
+theorem locallyIntegrable_coefficientDerivativeField_apply
+    {p : ℝ≥0∞} (hp : 1 ≤ p) {Omega : Set E}
+    {a : E → Matrix (Fin d) (Fin d) ℝ}
+    (ha : ∀ i j, ContDiff ℝ 1 (fun x => a x i j))
+    {u : E → ℝ} (hu : MemW1p p u Omega) (l i : Fin d) :
+    LocallyIntegrable (fun x => coefficientDerivativeField p a u Omega l x i)
+      (volume.restrict Omega) :=
+  locallyIntegrable_finsetSum Finset.univ (fun j _ =>
+    ((chosenWeakPartialOrZero_memLp_of_mem hu j).locallyIntegrable hp).continuous_mul
+      (((ha i j).continuous_fderiv one_ne_zero).clm_apply continuous_const))
+
+theorem locallyIntegrable_coefficientDerivativeSource
+    {p : ℝ≥0∞} (hp : 1 ≤ p) {Omega : Set E}
+    {a : E → Matrix (Fin d) (Fin d) ℝ}
+    (ha : ∀ i j, ContDiff ℝ 2 (fun x => a x i j))
+    {u : E → ℝ} (hu : MemWkp 2 p u Omega) (l : Fin d) :
+    LocallyIntegrable (coefficientDerivativeSource p a u Omega l) (volume.restrict Omega) := by
+  apply locallyIntegrable_finsetSum Finset.univ
+  intro i _
+  apply locallyIntegrable_finsetSum Finset.univ
+  intro j _
+  have hw : MemW1p p (chosenWeakPartialOrZero p j u Omega) Omega :=
+    MemWkp.one_iff_memW1p.mp (hu.chosenWeakPartial_mem j)
+  have hda : ContDiff ℝ 1
+      (fun x => (fderiv ℝ (fun y => a y i j) x) (EuclideanSpace.single l 1)) :=
+    ((ha i j).fderiv_right (by norm_num)).clm_apply contDiff_const
+  exact (((chosenWeakPartialOrZero_memLp_of_mem hu.memW1p j).locallyIntegrable hp).continuous_mul
+    ((hda.continuous_fderiv one_ne_zero).clm_apply continuous_const)).add
+    (((chosenWeakPartialOrZero_memLp_of_mem hw i).locallyIntegrable hp).continuous_mul
+      hda.continuous)
+
 private theorem memLp_continuous_mul
     {Omega : Set E} (hOmega : MeasurableSet Omega)
     (hcompact : IsCompact (closure Omega))
@@ -143,9 +174,8 @@ theorem hasWeakDiv_coefficientDerivativeField
   have hsum := hasWeakDiv_sum_of_hasWeakPartialDeriv
     (F := coefficientDerivativeField p a u Omega l)
     (G := fun i x => ∑ j, g i j x)
-    (fun i => by
-      simpa only [coefficientDerivativeField, PiLp.toLp_apply, c, w] using
-        locallyIntegrable_finsetSum Finset.univ (fun j _ => hfloc i j))
+    (locallyIntegrable_coefficientDerivativeField_apply hp
+      (fun i j => (ha i j).of_le (by norm_cast)) hu.memW1p l)
     (fun i => locallyIntegrable_finsetSum Finset.univ (fun j _ => hgloc i j))
     (fun i => by
       simpa only [coefficientDerivativeField, PiLp.toLp_apply, c, w] using
