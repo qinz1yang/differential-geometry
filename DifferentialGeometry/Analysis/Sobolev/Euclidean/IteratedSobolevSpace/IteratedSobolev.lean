@@ -220,6 +220,22 @@ theorem MemWkp_congr_ae
         have hae := chosenWeakPartialOrZero_ae_congr (d := d) hp hΩ huv.symm i
         exact (ih hae).mp (h.2 i)
 
+theorem MemWkp.of_weakGrad_memWkp
+    {k : ℕ} {p : ℝ≥0∞} (hp : 1 ≤ p) {Ω : Set E} (hΩ : IsOpen Ω)
+    {u : E → ℝ} (hu : DeGiorgi.MemW1pWitness p u Ω)
+    (hgrad : ∀ i : Fin d, MemWkp k p (fun x => hu.weakGrad x i) Ω) :
+    MemWkp (k + 1) p u Ω := by
+  rw [MemWkp_succ]
+  refine ⟨hu.memW1p, ?_⟩
+  intro i
+  have hae : chosenWeakPartialOrZero p i u Ω =ᵐ[volume.restrict Ω]
+      (fun x => hu.weakGrad x i) :=
+    DeGiorgi.HasWeakPartialDeriv.ae_eq hΩ
+      (chosenWeakPartialOrZero_isWeakPartial_of_mem hu.memW1p i) (hu.isWeakGrad i)
+      ((chosenWeakPartialOrZero_memLp_of_mem hu.memW1p i).locallyIntegrable hp)
+      ((hu.weakGrad_component_memLp i).locallyIntegrable hp)
+  exact (MemWkp_congr_ae hp hΩ hae).mpr (hgrad i)
+
 theorem chosenWeakPartialOrZero_ae_zero_of_ae_zero
     {p : ℝ≥0∞} (hp : 1 ≤ p) {Ω : Set E} (hΩ : IsOpen Ω)
     {u : E → ℝ} (hu_ae : u =ᵐ[volume.restrict Ω] (fun _ => 0))
