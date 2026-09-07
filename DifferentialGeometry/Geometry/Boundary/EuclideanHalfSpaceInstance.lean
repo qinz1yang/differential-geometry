@@ -564,6 +564,25 @@ private theorem boundaryChart_eq (alpha : BoundaryManifold J M) :
     chartAt HB alpha = BoundaryManifold.boundaryChart (I := J) alpha :=
   BoundaryManifold.defaultBoundaryChart_eq_boundaryChart (I := J) alpha
 
+theorem inclEuclideanCLM_mem_extChartAt_target_iff
+    (alpha : BoundaryManifold J M) (z : EuclideanSpace Real (Fin (n - 1))) :
+    EuclideanHalfSpaceInstance.inclEuclideanCLM n z ∈ (extChartAt J (alpha : M)).target ↔
+      z ∈ (extChartAt K alpha).target := by
+  have hmod : (modelWithCornersEuclideanHalfSpace n).symm
+      (EuclideanHalfSpaceInstance.inclEuclideanCLM n z) =
+      EuclideanHalfSpaceInstance.inclH n z :=
+    (modelWithCornersEuclideanHalfSpace n).left_inv (EuclideanHalfSpaceInstance.inclH n z)
+  have hrange : EuclideanHalfSpaceInstance.inclEuclideanCLM n z ∈ Set.range J :=
+    ⟨EuclideanHalfSpaceInstance.inclH n z, rfl⟩
+  rw [extChartAt_target, mem_inter_iff, mem_preimage, hmod, and_iff_left hrange]
+  rw [extChartAt_target]
+  change _ ↔ z ∈ (chartAt HB alpha).target ∧
+    z ∈ Set.range (modelWithCornersSelf Real (EuclideanSpace Real (Fin (n - 1))))
+  simp only [ModelWithCorners.range_eq_univ, Set.mem_univ, and_true]
+  change _ ↔ z ∈ (BoundaryManifold.defaultBoundaryChart (I := J) alpha).target
+  rw [BoundaryManifold.defaultBoundaryChart_eq_boundaryChart]
+  rfl
+
 theorem extChartAt_boundaryInclusion_extChartAt_symm_euclideanHalfSpace
     (alpha : BoundaryManifold J M) {z : EuclideanSpace Real (Fin (n - 1))}
     (hz : z ∈ (extChartAt K alpha).target) :
