@@ -548,3 +548,12 @@ statements and proofs are unchanged.
 functions and the resulting smooth-test criterion for weak supersolutions, and adapted their
 proofs to Mathlib 4.33 elaboration and indicator APIs. The density construction uses exact-support
 smooth positive-part regularizations and preserves the limit witness's weak gradient.
+
+### 2026-09-07 — strong minimum principle extension
+
+**Files**:
+- `StrongMinimum.lean`
+
+**Change**: added the strong minimum principle on Euclidean balls from the weak Harnack
+inequality, migrated renamed definitions and coefficient-rescaling elaboration to Mathlib 4.33,
+and placed the two public conclusions in the `IsSupersolution` namespace with descriptive names.

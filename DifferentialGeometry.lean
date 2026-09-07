@@ -1931,6 +1931,7 @@ import DifferentialGeometry.External.DeGiorgi.SobolevSpace.PositiveTestDensity
 import DifferentialGeometry.External.DeGiorgi.SobolevSpace.WeakDerivatives
 import DifferentialGeometry.External.DeGiorgi.SobolevSpace.Witnesses
 import DifferentialGeometry.External.DeGiorgi.StampacchiaTruncation
+import DifferentialGeometry.External.DeGiorgi.StrongMinimum
 import DifferentialGeometry.External.DeGiorgi.Supersolutions
 import DifferentialGeometry.External.DeGiorgi.Supersolutions.Caccioppoli
 import DifferentialGeometry.External.DeGiorgi.Supersolutions.ForwardIteration
