@@ -182,6 +182,7 @@ import DifferentialGeometry.Analysis.Elliptic.Euclidean.WeakHarnack
 import DifferentialGeometry.Analysis.Elliptic.Lichnerowicz
 import DifferentialGeometry.Analysis.Elliptic.LichnerowiczSpectral
 import DifferentialGeometry.Geometry.Metric.PointwiseInner.Bounds
+import DifferentialGeometry.Analysis.Elliptic.MetricEllipticCoeff
 import DifferentialGeometry.Analysis.Elliptic.MetricExtension
 import DifferentialGeometry.Analysis.Elliptic.MetricExtension.DensityBounds
 import DifferentialGeometry.Analysis.Elliptic.Operator.ChartLocalLaplacian
