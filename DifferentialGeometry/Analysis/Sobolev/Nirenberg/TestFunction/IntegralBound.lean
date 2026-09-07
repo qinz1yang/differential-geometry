@@ -14,43 +14,6 @@ variable {d : ℕ} [NeZero d]
 local notation "E" => EuclideanSpace ℝ (Fin d)
 
 omit [NeZero d] in
-private lemma memLp_diffQuot
-    (k : Fin d) (h : ℝ) {v : E → ℝ}
-    (hv : MemLp v 2 (volume : Measure E)) :
-    MemLp (diffQuot k h v) 2 (volume : Measure E) := by
-  by_cases hh : h = 0
-  · subst hh
-    rw [diffQuot_zero_h]
-    exact MemLp.zero
-  · have h_eq : diffQuot k h v =
-        fun x => h⁻¹ * translate k h v x + (-h⁻¹) * v x := by
-      funext x
-      rw [diffQuot_apply_of_ne (d := d) k hh v x]
-      change (v (x + h • EuclideanSpace.single k 1) - v x) / h =
-        h⁻¹ * v (x + h • EuclideanSpace.single k 1) + (-h⁻¹) * v x
-      field_simp
-      ring
-    rw [h_eq]
-    have h_translate : MemLp (translate k h v) 2 (volume : Measure E) :=
-      memLp_translate (d := d) (p := 2) k h hv
-    have h1 : MemLp (fun x : E => h⁻¹ * translate k h v x) 2
-        (volume : Measure E) := by
-      have hfun : (fun x : E => h⁻¹ * translate k h v x) =
-          h⁻¹ • translate k h v := by
-        funext x
-        rw [Pi.smul_apply, smul_eq_mul]
-      rw [hfun]
-      exact h_translate.const_smul h⁻¹
-    have h2 : MemLp (fun x : E => (-h⁻¹) * v x) 2
-        (volume : Measure E) := by
-      have hfun : (fun x : E => (-h⁻¹) * v x) = (-h⁻¹) • v := by
-        funext x
-        rw [Pi.smul_apply, smul_eq_mul]
-      rw [hfun]
-      exact hv.const_smul (-h⁻¹)
-    exact h1.add h2
-
-omit [NeZero d] in
 private lemma integral_indicator_mul
     {u : E → ℝ} (k : Fin d) (h : ℝ) (η : E → ℝ) (c : ℝ) :
     ∫ x, c * (Set.indicator (tsupport η) (fun _ : E => (1 : ℝ)) x) *

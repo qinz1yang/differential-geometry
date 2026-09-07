@@ -191,44 +191,11 @@ private theorem cross_1_pointwise_bound_nonsmooth
     linarith
 
 omit [NeZero d] in
-private lemma memLp_translate_two
-    (k : Fin d) (h : ℝ) {v : E → ℝ}
-    (hv : MemLp v 2 (volume : Measure E)) :
-    MemLp (translate k h v) 2 (volume : Measure E) :=
-  memLp_translate (d := d) (p := 2) k h hv
-
-omit [NeZero d] in
 lemma memLp_diffQuot_two
     (k : Fin d) (h : ℝ) {v : E → ℝ}
     (hv : MemLp v 2 (volume : Measure E)) :
-    MemLp (diffQuot k h v) 2 (volume : Measure E) := by
-  by_cases hh : h = 0
-  · subst hh
-    rw [diffQuot_zero_h]
-    exact MemLp.zero
-  · have h_eq : diffQuot k h v =
-        fun x => h⁻¹ * (translate k h v x) + (-h⁻¹) * v x := by
-      funext x
-      rw [diffQuot_apply_of_ne (d := d) k hh v x]
-      change (v (x + h • EuclideanSpace.single k 1) - v x) / h =
-        h⁻¹ * v (x + h • EuclideanSpace.single k 1) + (-h⁻¹) * v x
-      field_simp; ring
-    rw [h_eq]
-    have hτ_memLp : MemLp (translate k h v) 2 (volume : Measure E) :=
-      memLp_translate_two k h hv
-    have h1 : MemLp (fun x : E => h⁻¹ * translate k h v x) 2
-        (volume : Measure E) := by
-      have h_eq_smul : (fun x : E => h⁻¹ * translate k h v x) =
-          fun x => h⁻¹ • translate k h v x := by
-        funext x; rw [smul_eq_mul]
-      rw [h_eq_smul]
-      exact hτ_memLp.const_smul h⁻¹
-    have h2 : MemLp (fun x : E => (-h⁻¹) * v x) 2 (volume : Measure E) := by
-      have h_eq_smul : (fun x : E => (-h⁻¹) * v x) = fun x => (-h⁻¹) • v x := by
-        funext x; rw [smul_eq_mul]
-      rw [h_eq_smul]
-      exact hv.const_smul (-h⁻¹)
-    exact h1.add h2
+    MemLp (diffQuot k h v) 2 (volume : Measure E) :=
+  memLp_diffQuot k h hv
 
 omit [NeZero d] in
 lemma exists_bound_of_continuous_compactSupport

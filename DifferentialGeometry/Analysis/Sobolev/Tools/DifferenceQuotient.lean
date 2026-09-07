@@ -271,6 +271,19 @@ lemma memLp_translate
   rw [h_eq]; exact hv.eLpNorm_lt_top
 
 omit [NeZero d] in
+theorem memLp_diffQuot
+    {p : ℝ≥0∞} (i : Fin d) (h : ℝ) {v : E → ℝ}
+    (hv : MemLp v p volume) :
+    MemLp (diffQuot i h v) p volume := by
+  by_cases hh : h = 0
+  · subst h
+    rw [diffQuot_zero_h]
+    exact MemLp.zero
+  · rw [diffQuot_eq_translate_sub_div i hh]
+    simpa only [Pi.sub_apply, div_eq_mul_inv] using
+      ((memLp_translate i h hv).sub hv).mul_const h⁻¹
+
+omit [NeZero d] in
 lemma integrable_translate
     (i : Fin d) (h : ℝ) {v : E → ℝ}
     (hv : Integrable v volume) :
