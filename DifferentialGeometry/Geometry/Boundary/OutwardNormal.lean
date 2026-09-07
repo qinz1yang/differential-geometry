@@ -444,20 +444,6 @@ theorem outwardNormal_inner_inwardCoord_eq_neg_sqrt :
   exact (inv_mul_eq_iff_eq_mul₀ (ne_of_gt (Real.sqrt_pos.mpr hq))).mpr
     (Real.mul_self_sqrt hq.le).symm
 
-omit [FiniteDimensional ℝ E] in
-theorem outwardNormal_inner_eq_neg_sqrt_mul_of_sub_mem_range
-    (v : TangentSpace I (x : M)) (c : ℝ)
-    (hv : v - c • inwardCoord (M := M) x ∈
-      LinearMap.range (boundaryInclusionMfderiv (M := M) x).toLinearMap) :
-    g.inner (x : M) (outwardNormal (M := M) g x) v =
-      -Real.sqrt (g.inner (x : M) (outwardDir (M := M) g x) (outwardDir (M := M) g x)) * c := by
-  rcases hv with ⟨w, hw⟩
-  have hzero := outwardNormal_orthogonal_to_boundary g x w
-  change g.inner (x : M) (outwardNormal (M := M) g x)
-    ((boundaryInclusionMfderiv (M := M) x).toLinearMap w) = 0 at hzero
-  rw [hw, map_sub, map_smul, smul_eq_mul, outwardNormal_inner_inwardCoord_eq_neg_sqrt] at hzero
-  rw [← sub_eq_zero] at ⊢
-  simpa only [mul_comm c] using hzero
 
 omit [FiniteDimensional ℝ E] in
 theorem outwardNormal_inner_inwardCoord_neg :
@@ -620,6 +606,52 @@ omit [FiniteDimensional ℝ E] in
     outwardNormalAt (M := M) g x x = outwardNormal (M := M) g x := by
   unfold outwardNormalAt outwardNormal
   rw [outwardDirAt_self]
+
+omit [FiniteDimensional ℝ E] in
+theorem outwardNormalAt_inner_eq_neg_sqrt_mul_of_sub_mem_range
+    (g : SmoothRiemannianMetric I M) (alpha x : BoundaryManifold I M)
+    (v : TangentSpace I (x : M)) (c : Real)
+    (hv : v - c • inwardCoordAt (M := M) alpha x ∈
+      LinearMap.range (boundaryInclusionMfderiv (M := M) x).toLinearMap) :
+    g.inner (x : M) (outwardNormalAt (M := M) g alpha x) v =
+      -Real.sqrt (g.inner (x : M) (outwardDirAt (M := M) g alpha x)
+        (outwardDirAt (M := M) g alpha x)) * c := by
+  let q := g.inner (x : M) (outwardDirAt (M := M) g alpha x)
+    (outwardDirAt (M := M) g alpha x)
+  have hnormal : g.inner (x : M) (outwardDirAt (M := M) g alpha x)
+      (inwardCoordAt (M := M) alpha x) = -q := by
+    change g.inner (x : M) (outwardDirAt (M := M) g alpha x)
+      (inwardCoordAt (M := M) alpha x) = -g.inner (x : M) (outwardDirAt (M := M) g alpha x)
+        (outwardDirAt (M := M) g alpha x)
+    rw [g_inner_outwardDirAt_inwardCoordAt, g_inner_outwardDirAt_outwardDirAt]
+    ring
+  obtain ⟨w, hw⟩ := hv
+  change boundaryInclusionMfderiv x w = v - c • inwardCoordAt alpha x at hw
+  have hzero := outwardDirAt_mem_normalSubspace g alpha x w
+  rw [hw, map_sub, map_smul, smul_eq_mul, hnormal] at hzero
+  have hinner : g.inner (x : M) (outwardDirAt (M := M) g alpha x) v = -q * c := by
+    linarith
+  by_cases hq : 0 < q
+  · have hs : Real.sqrt q ≠ 0 := (Real.sqrt_pos.mpr hq).ne'
+    change g.inner (x : M) (outwardNormalAt g alpha x) v = -Real.sqrt q * c
+    rw [outwardNormalAt, dif_pos hq, map_smul, smul_apply, smul_eq_mul, hinner]
+    change (Real.sqrt q)⁻¹ * (-q * c) = -Real.sqrt q * c
+    field_simp
+    rw [Real.sq_sqrt hq.le]
+  · have hs : Real.sqrt q = 0 := Real.sqrt_eq_zero_of_nonpos (le_of_not_gt hq)
+    change g.inner (x : M) (outwardNormalAt g alpha x) v = -Real.sqrt q * c
+    rw [outwardNormalAt, dif_neg hq, map_zero, zero_apply, hs, neg_zero, zero_mul]
+
+omit [FiniteDimensional ℝ E] in
+theorem outwardNormal_inner_eq_neg_sqrt_mul_of_sub_mem_range
+    (v : TangentSpace I (x : M)) (c : ℝ)
+    (hv : v - c • inwardCoord (M := M) x ∈
+      LinearMap.range (boundaryInclusionMfderiv (M := M) x).toLinearMap) :
+    g.inner (x : M) (outwardNormal (M := M) g x) v =
+      -Real.sqrt (g.inner (x : M) (outwardDir (M := M) g x) (outwardDir (M := M) g x)) * c := by
+  simpa only [outwardNormalAt_self, outwardDirAt_self] using
+    outwardNormalAt_inner_eq_neg_sqrt_mul_of_sub_mem_range g x x v c
+      (by simpa only [inwardCoordAt_self] using hv)
 
 end Metric
 

@@ -638,34 +638,106 @@ variable {n : Nat} {M : Type*} [TopologicalSpace M]
   [ChartedSpace (EuclideanHalfSpace (n + 1)) M]
   [IsManifold (modelWithCornersEuclideanHalfSpace (n + 1)) ∞ M]
 
-private theorem inwardCoord_euclideanHalfSpace
-    (x : BoundaryManifold (modelWithCornersEuclideanHalfSpace (n + 1)) M) :
-    inwardCoord (M := M) x = (tangentSpaceModelContinuousLinearEquiv
-      (I := modelWithCornersEuclideanHalfSpace (n + 1)) (x : M)).symm
-        (EuclideanSpace.single (0 : Fin (n + 1)) (1 : Real)) := by
-  apply (tangentSpaceModelContinuousLinearEquiv
-    (I := modelWithCornersEuclideanHalfSpace (n + 1)) (x : M)).injective
-  rw [ContinuousLinearEquiv.apply_symm_apply]
-  exact inwardCoord_eq x
+local notation "J" => modelWithCornersEuclideanHalfSpace (n + 1)
+local notation "K" => HasSmoothBoundary.boundaryModel J
+local notation "EB" => HasSmoothBoundary.boundaryModelE J
+local notation "HB" => HasSmoothBoundary.boundaryModelH J
 
-private theorem boundaryInclusionMfderiv_euclideanHalfSpace_single
-    (x : BoundaryManifold (modelWithCornersEuclideanHalfSpace (n + 1)) M) (i : Fin n) :
-    boundaryInclusionMfderiv x
-        ((tangentSpaceModelContinuousLinearEquiv
-          (I := (EuclideanHalfSpaceInstance.instHasSmoothBoundary (n + 1)).boundaryI) x).symm
-          (EuclideanSpace.single i 1)) =
-      (tangentSpaceModelContinuousLinearEquiv
-        (I := modelWithCornersEuclideanHalfSpace (n + 1)) (x : M)).symm
-        (EuclideanSpace.single i.succ 1) := by
-  apply (tangentSpaceModelContinuousLinearEquiv
-    (I := modelWithCornersEuclideanHalfSpace (n + 1)) (x : M)).injective
-  rw [boundaryInclusionMfderiv_euclideanHalfSpace_apply,
-    ContinuousLinearEquiv.apply_symm_apply, ContinuousLinearEquiv.apply_symm_apply,
-    EuclideanHalfSpaceInstance.inclEuclideanCLM_succ_apply]
-  ext j
-  refine Fin.cases ?_ (fun k => ?_) j
-  · simp
-  · simp [PiLp.single_apply, Pi.single_apply]
+private local instance : Nonempty HB := ⟨(0 : EuclideanSpace Real (Fin n))⟩
+
+private theorem boundary_chart_source (alpha x : BoundaryManifold J M)
+    (hx : (x : M) ∈ (chartAt (EuclideanHalfSpace (n + 1)) (alpha : M)).source) :
+    x ∈ (chartAt HB alpha).source := by
+  change x ∈ (BoundaryManifold.defaultBoundaryChart (I := J) alpha).source
+  rw [BoundaryManifold.defaultBoundaryChart_eq_boundaryChart]
+  exact hx
+
+theorem boundaryInclusionMfderiv_chart_symm_euclideanHalfSpace
+    (alpha x : BoundaryManifold J M)
+    (hx : (x : M) ∈ (chartAt (EuclideanHalfSpace (n + 1)) (alpha : M)).source) :
+    (boundaryInclusionMfderiv x).comp
+        ((trivializationAt EB (TangentSpace K) alpha).symmL Real x) =
+      ((trivializationAt (EuclideanSpace Real (Fin (n + 1))) (TangentSpace J)
+        (alpha : M)).symmL Real (x : M)).comp
+          (EuclideanHalfSpaceInstance.inclEuclideanCLM (n + 1)) := by
+  have h := boundaryInclusionMfderiv_chart_euclideanHalfSpace alpha x hx
+  ext w
+  have hw := congrArg (fun L => (trivializationAt (EuclideanSpace Real (Fin (n + 1)))
+    (TangentSpace J) (alpha : M)).symmL Real (x : M) (L w)) h
+  simp only [ContinuousLinearMap.comp_apply] at hw
+  rw [Trivialization.symmL_continuousLinearMapAt
+    (trivializationAt (EuclideanSpace Real (Fin (n + 1))) (TangentSpace J) (alpha : M)) hx] at hw
+  exact hw
+
+theorem det_gram_chart_euclideanHalfSpace_eq_normal_sq_mul_det_induced
+    (g : SmoothRiemannianMetric J M) (alpha x : BoundaryManifold J M)
+    (hx : (x : M) ∈ (chartAt (EuclideanHalfSpace (n + 1)) (alpha : M)).source) :
+    (Matrix.of fun i j : Fin (n + 1) => g.inner (x : M)
+      ((trivializationAt (EuclideanSpace Real (Fin (n + 1))) (TangentSpace J)
+        (alpha : M)).symmL Real (x : M) (EuclideanSpace.single i 1))
+      ((trivializationAt (EuclideanSpace Real (Fin (n + 1))) (TangentSpace J)
+        (alpha : M)).symmL Real (x : M) (EuclideanSpace.single j 1))).det =
+      g.inner (x : M) (outwardDirAt (M := M) g alpha x) (outwardDirAt (M := M) g alpha x) *
+        (Matrix.of fun i j : Fin n => (inducedMetric g).inner x
+          ((trivializationAt EB (TangentSpace K) alpha).symmL Real x (EuclideanSpace.single i 1))
+          ((trivializationAt EB (TangentSpace K) alpha).symmL Real x (EuclideanSpace.single j 1))).det := by
+  let T := trivializationAt EB (TangentSpace K) alpha
+  let L := (trivializationAt (EuclideanSpace Real (Fin (n + 1))) (TangentSpace J)
+    (alpha : M)).symmL Real (x : M)
+  have hxb : x ∈ T.baseSet := boundary_chart_source alpha x hx
+  let b := (EuclideanSpace.basisFun (Fin n) Real).toBasis.map
+    (T.continuousLinearEquivAt Real x hxb).symm.toLinearEquiv
+  let c : Fin n → Real := fun i => b.repr (boundaryComponentOfInwardAt (M := M) g alpha x) i
+  let v : Fin n → TangentSpace J (x : M) := fun i => boundaryInclusionMfderiv x (b i)
+  have hb (i : Fin n) : b i = T.symmL Real x (EuclideanSpace.single i 1) := by
+    simp only [b, Module.Basis.map_apply, OrthonormalBasis.coe_toBasis,
+      EuclideanSpace.basisFun_apply, ContinuousLinearEquiv.coe_toLinearEquiv,
+      Trivialization.symm_continuousLinearEquivAt_eq]
+  have hsum : (∑ i, c i • v i) = inwardTangentialPartAt (M := M) g alpha x := by
+    rw [inwardTangentialPartAt_def,
+      ← b.sum_repr (boundaryComponentOfInwardAt (M := M) g alpha x), map_sum]
+    apply Finset.sum_congr rfl
+    intro i _
+    exact (map_smul _ _ _).symm
+  have hw : (∑ i, c i • v i) - inwardCoordAt (M := M) alpha x =
+      outwardDirAt (M := M) g alpha x := by rw [hsum, outwardDirAt_def]
+  have h := (g.inner (x : M)).toBilinForm.det_gram_cons_eq_mul_of_orthogonal
+    (inwardCoordAt (M := M) alpha x) v c (by
+      intro i
+      rw [hw]
+      exact outwardDirAt_mem_normalSubspace g alpha x (b i))
+  rw [hw] at h
+  have hframe : Fin.cons (α := fun _ => TangentSpace J (x : M))
+      (inwardCoordAt (M := M) alpha x) v = fun i => L (EuclideanSpace.single i 1) := by
+    funext i
+    refine Fin.cases ?_ (fun j => ?_) i
+    · change inwardCoordAt alpha x = L (EuclideanSpace.single 0 1)
+      unfold inwardCoordAt
+      exact (Trivialization.symmL_apply (R := Real) _ hx _).symm
+    · change boundaryInclusionMfderiv x (b j) = L (EuclideanSpace.single j.succ 1)
+      rw [hb]
+      have hinc := congrArg (fun F => F (EuclideanSpace.single j 1))
+        (boundaryInclusionMfderiv_chart_symm_euclideanHalfSpace alpha x hx)
+      change boundaryInclusionMfderiv x (T.symmL Real x (EuclideanSpace.single j 1)) =
+        L (EuclideanHalfSpaceInstance.inclEuclideanCLM (n + 1) (EuclideanSpace.single j 1)) at hinc
+      rw [hinc]
+      congr 1
+      rw [EuclideanHalfSpaceInstance.inclEuclideanCLM_succ_apply]
+      ext k
+      refine Fin.cases ?_ (fun l => ?_) k
+      · simp
+      · simp [PiLp.single_apply, Pi.single_apply]
+  rw [hframe] at h
+  have hgram : (Matrix.of fun i j => (g.inner (x : M)).toBilinForm (v i) (v j)) =
+      Matrix.of (fun i j : Fin n => (inducedMetric g).inner x
+        (T.symmL Real x (EuclideanSpace.single i 1))
+        (T.symmL Real x (EuclideanSpace.single j 1))) := by
+    ext i j
+    change g.inner (x : M) (boundaryInclusionMfderiv x (b i)) (boundaryInclusionMfderiv x (b j)) = _
+    rw [← inducedMetric_inner_apply, hb, hb]
+    rfl
+  rw [hgram] at h
+  exact h
 
 theorem det_gram_euclideanHalfSpace_eq_normal_sq_mul_det_induced
     (g : SmoothRiemannianMetric (modelWithCornersEuclideanHalfSpace (n + 1)) M)
@@ -683,50 +755,14 @@ theorem det_gram_euclideanHalfSpace_eq_normal_sq_mul_det_induced
           ((tangentSpaceModelContinuousLinearEquiv
             (I := (EuclideanHalfSpaceInstance.instHasSmoothBoundary (n + 1)).boundaryI) x).symm
             (EuclideanSpace.single j 1))).det := by
-  let b := (EuclideanSpace.basisFun (Fin n) Real).toBasis.map
-    (tangentSpaceModelContinuousLinearEquiv
-      (I := (EuclideanHalfSpaceInstance.instHasSmoothBoundary (n + 1)).boundaryI) x).symm.toLinearEquiv
-  let c : Fin n → Real := fun i => b.repr (boundaryComponentOfInward (M := M) g x) i
-  let v : Fin n → TangentSpace (modelWithCornersEuclideanHalfSpace (n + 1)) (x : M) :=
-    fun i => boundaryInclusionMfderiv x (b i)
-  have hsum : (∑ i, c i • v i) = inwardTangentialPart (M := M) g x := by
-    rw [inwardTangentialPart_def, ← b.sum_repr (boundaryComponentOfInward (M := M) g x), map_sum]
-    apply Finset.sum_congr rfl
-    intro i _
-    exact (map_smul _ _ _).symm
-  have hw : (∑ i, c i • v i) - inwardCoord (M := M) x = outwardDir (M := M) g x := by
-    rw [hsum, outwardDir_def]
-  have h := (g.inner (x : M)).toBilinForm.det_gram_cons_eq_mul_of_orthogonal
-    (inwardCoord (M := M) x) v c (by
-      intro i
-      rw [hw]
-      exact outwardDir_mem_normalSubspace g x (b i))
-  rw [hw] at h
-  have hframe : Fin.cons (α := fun _ => TangentSpace (modelWithCornersEuclideanHalfSpace (n + 1))
-      (x : M)) (inwardCoord (M := M) x) v =
-      fun i => (tangentSpaceModelContinuousLinearEquiv
-        (I := modelWithCornersEuclideanHalfSpace (n + 1)) (x : M)).symm (EuclideanSpace.single i 1) := by
-    funext i
-    refine Fin.cases ?_ (fun j => ?_) i
-    · exact inwardCoord_euclideanHalfSpace x
-    · simpa only [Fin.cons_succ, v, b, Module.Basis.map_apply, OrthonormalBasis.coe_toBasis,
-        EuclideanSpace.basisFun_apply, ContinuousLinearEquiv.coe_toLinearEquiv] using
-        boundaryInclusionMfderiv_euclideanHalfSpace_single x j
-  rw [hframe] at h
-  have hgram : (Matrix.of fun i j => (g.inner (x : M)).toBilinForm (v i) (v j)) =
-      Matrix.of (fun i j : Fin n => (inducedMetric g).inner x
-        ((tangentSpaceModelContinuousLinearEquiv
-          (I := (EuclideanHalfSpaceInstance.instHasSmoothBoundary (n + 1)).boundaryI) x).symm
-          (EuclideanSpace.single i 1))
-        ((tangentSpaceModelContinuousLinearEquiv
-          (I := (EuclideanHalfSpaceInstance.instHasSmoothBoundary (n + 1)).boundaryI) x).symm
-          (EuclideanSpace.single j 1))) := by
-    ext i j
-    simpa only [Matrix.of_apply, ContinuousLinearMap.toBilinForm_apply, v, b,
-      Module.Basis.map_apply, OrthonormalBasis.coe_toBasis, EuclideanSpace.basisFun_apply,
-      ContinuousLinearEquiv.coe_toLinearEquiv] using
-      (inducedMetric_inner_apply g x (b i) (b j)).symm
-  rw [hgram] at h
+  let : IsManifold (EuclideanHalfSpaceInstance.instHasSmoothBoundary (n + 1)).boundaryI ∞
+      (BoundaryManifold (modelWithCornersEuclideanHalfSpace (n + 1)) M) :=
+    BoundaryManifold.isManifold
+  have h := det_gram_chart_euclideanHalfSpace_eq_normal_sq_mul_det_induced g x x
+    (mem_chart_source _ _)
+  rw [outwardDirAt_self] at h
+  simp only [TangentBundle.symmL_trivializationAt (mem_chart_source _ _),
+    mfderivWithin_range_extChartAt_symm] at h
   exact h
 
 end
