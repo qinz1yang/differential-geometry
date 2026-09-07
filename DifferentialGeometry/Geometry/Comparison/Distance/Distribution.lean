@@ -71,8 +71,8 @@ private theorem dist_pole_lip [ConnectedSpace M]
   rw [abs_le]
   constructor <;> linarith
 
-include finiteE t2M sigmaM in
-omit [I.Boundaryless] in
+include finiteE t2M in
+omit [I.Boundaryless] [SigmaCompactSpace M] in
 private theorem dist_real_cont [ConnectedSpace M]
     [IsContinuousRiemannianBundle E (fun x : M ↦ TangentSpace I x)]
     (p : M) :

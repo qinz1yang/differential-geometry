@@ -34,7 +34,7 @@ attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace
 
 omit [NeZero (Module.finrank Real E)] [CompleteSpace E]
-    [I.Boundaryless] [T2Space (TangentBundle I M)] in
+    [I.Boundaryless] [T2Space (TangentBundle I M)] [SigmaCompactSpace M] in
 private theorem dist_real_cont
     [IsContinuousRiemannianBundle E (fun x : M ↦ TangentSpace I x)]
     (p : M) :
