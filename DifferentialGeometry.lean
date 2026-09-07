@@ -2093,6 +2093,7 @@ import DifferentialGeometry.Geometry.Comparison.Volume.Segment.Polar.Density
 import DifferentialGeometry.Geometry.Comparison.Volume.Segment.Domain.Basic
 import DifferentialGeometry.Geometry.Comparison.Volume.Segment.Polar.Gauss
 import DifferentialGeometry.Geometry.Comparison.Volume.Segment.Polar.Basic
+import DifferentialGeometry.Geometry.Comparison.Volume.Segment.Polar.CompactBall
 import DifferentialGeometry.Geometry.Comparison.Volume.Segment.Polar.Pole
 import DifferentialGeometry.Geometry.Comparison.Volume.SmallBall
 import DifferentialGeometry.Geometry.Connection.ChartBridge.Connection.Christoffel
@@ -2477,6 +2478,7 @@ import DifferentialGeometry.Geometry.Exponential.LocalDiffeomorphism
 import DifferentialGeometry.Geometry.Exponential.MinimizingGeodesic
 import DifferentialGeometry.Geometry.Exponential.MinimizingDomain.Defs
 import DifferentialGeometry.Geometry.Exponential.MinimizingDomain.Basic
+import DifferentialGeometry.Geometry.Exponential.MinimizingDomain.CompactBall
 import DifferentialGeometry.Geometry.Exponential.MinimizingDomain.Injectivity
 import DifferentialGeometry.Geometry.Exponential.MinimizingDomain.Topology
 import DifferentialGeometry.Geometry.Exponential.MinimizingDomain.Measure
