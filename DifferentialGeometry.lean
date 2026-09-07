@@ -4477,3 +4477,6 @@ import DifferentialGeometry.Geometry.Operator.GradientPullback
 import DifferentialGeometry.Geometry.Boundary.PullbackNormal
 import DifferentialGeometry.Geometry.Boundary.SublevelNormal
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.RegularSublevel
+import DifferentialGeometry.Bundle.PartialMfderiv.Interior
+import DifferentialGeometry.Geometry.Connection.LeviCivita.Variation.MetricDerivative
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Connection.Intrinsic
