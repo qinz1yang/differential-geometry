@@ -1,4 +1,6 @@
 import Mathlib.Analysis.Calculus.ContDiff.FiniteDimension
+import Mathlib.Analysis.Calculus.Deriv.Mul
+import Mathlib.Analysis.Calculus.Deriv.Prod
 import Mathlib.Analysis.Calculus.FDeriv.Pi
 
 open Function Module Set
@@ -34,3 +36,25 @@ theorem differentiable_clm_apply :
     Differentiable 𝕜 f ↔ ∀ y, Differentiable 𝕜 (fun z => f z y) := by
   simp only [Differentiable, differentiableAt_clm_apply]
   exact forall_comm
+
+theorem hasDerivWithinAt_clm_apply
+    {f : 𝕜 → E →L[𝕜] F} {f' : E →L[𝕜] F} {s : Set 𝕜} {x : 𝕜} :
+    HasDerivWithinAt f f' s x ↔
+      ∀ y, HasDerivWithinAt (fun t => f t y) (f' y) s x := by
+  refine ⟨?_, ?_⟩
+  · intro h y
+    simpa only [map_zero, add_zero] using h.clm_apply (hasDerivWithinAt_const x s y)
+  · intro h
+    let e : (E →L[𝕜] F) ≃L[𝕜] Fin (finrank 𝕜 E) → F :=
+      ((ContinuousLinearEquiv.ofFinrankEq (finrank_fin_fun 𝕜).symm).arrowCongr
+        (1 : F ≃L[𝕜] F)).trans (ContinuousLinearEquiv.piRing _)
+    have he : HasDerivWithinAt (fun t => e (f t)) (e f') s x :=
+      hasDerivWithinAt_pi.mpr fun _ => h _
+    have hback := e.symm.toContinuousLinearMap.hasFDerivAt.comp_hasDerivWithinAt x he
+    simpa only [Function.comp_def, ContinuousLinearEquiv.coe_coe,
+      ContinuousLinearEquiv.symm_apply_apply] using hback
+
+theorem hasDerivAt_clm_apply
+    {f : 𝕜 → E →L[𝕜] F} {f' : E →L[𝕜] F} {x : 𝕜} :
+    HasDerivAt f f' x ↔ ∀ y, HasDerivAt (fun t => f t y) (f' y) x := by
+  simp only [← hasDerivWithinAt_univ, hasDerivWithinAt_clm_apply]

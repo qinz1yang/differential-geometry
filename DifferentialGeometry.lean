@@ -2362,6 +2362,7 @@ import DifferentialGeometry.Geometry.Curvature.Sections.Trace
 import DifferentialGeometry.Geometry.Curvature.Sections.Connection
 import DifferentialGeometry.Geometry.Metric.Family.Basic
 import DifferentialGeometry.Geometry.Metric.Family.Continuity
+import DifferentialGeometry.Geometry.Metric.Family.JointSmoothness
 import DifferentialGeometry.Geometry.Metric.Family.PairSmoothness
 import DifferentialGeometry.Geometry.Metric.Family.Stationary
 import DifferentialGeometry.Geometry.Operator.MetricFamily
@@ -2645,6 +2646,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Uhlenbeck.Frame
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Uhlenbeck.CurvatureEvolution
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Uhlenbeck.CurvatureOperatorHeatReaction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Uhlenbeck.FrameExistence
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Uhlenbeck.GaugeCovariance
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Uhlenbeck.InverseMetric
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Uhlenbeck.Isometry
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HamiltonHarnack.ConventionChecks
@@ -2961,6 +2963,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Gauge.InverseFamily
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Gauge.ScaledHarmonicMap
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.Defs
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.Basic
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.JointRegularity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.Components
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.RicciNorm
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.Regularity
