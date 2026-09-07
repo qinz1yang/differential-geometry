@@ -4460,3 +4460,9 @@ import DifferentialGeometry.Geometry.Connection.Laplacian.CovariantTensor
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Uhlenbeck.CurvatureDerivative
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Uhlenbeck.PulledCurvatureEvolution
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Uhlenbeck.NormalizedCurvatureEvolution
+import DifferentialGeometry.Topology.Manifold.ModelHomeomorph
+import DifferentialGeometry.Topology.Morse.HalfSpaceModel
+import DifferentialGeometry.Topology.Morse.RegularSublevelBoundary
+import DifferentialGeometry.Topology.Morse.SublevelInclusion
+import DifferentialGeometry.Geometry.Metric.Pullback.Immersion
+import DifferentialGeometry.Geometry.Boundary.Corestrict
