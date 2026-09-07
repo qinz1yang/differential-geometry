@@ -348,7 +348,7 @@ private lemma chart_raw_cs
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 private lemma chart_raw_locLip
-    [T2Space M] [I.Boundaryless]
+    [I.Boundaryless]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (α : M) {u : M → ℝ} {L : ℝ≥0}
     (hu : ∀ x y, edist (u x) (u y) ≤ L *
@@ -400,7 +400,7 @@ private lemma chart_raw_locLip
     _ = (L * C * D) * edist z w := by simp only [mul_assoc]
 
 theorem exists_lipschitzWith_chartPullZero_mul
-    [T2Space M] [I.Boundaryless]
+    [I.Boundaryless]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (α : M) {a u : M → ℝ} {L : ℝ≥0}
     (ha : ContMDiff I 𝓘(ℝ) ∞ a)
@@ -529,6 +529,115 @@ theorem exists_lipschitzWith_chartPullZero_mul
   refine ⟨C * ‖(toEuclidean (E := E)).toContinuousLinearMap‖₊, ?_⟩
   rw [heq]
   exact hC.comp (toEuclidean (E := E)).lipschitz
+
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+theorem exists_chartPushedRaw_memW1p_on_ball_of_lipschitz
+    [T2Space M] [I.Boundaryless]
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
+    (α : M) {p : ℝ≥0∞} {u : M → ℝ} {L : ℝ≥0}
+    (hu : ∀ x y, edist (u x) (u y) ≤ L *
+      DifferentialGeometry.riemannianEDistOf (I := I) g x y) :
+    ∃ r : ℝ, 0 < r ∧
+      DeGiorgi.MemW1p p
+        (chartPushedRaw (I := I) (M := M) α u)
+        (Metric.ball
+          (toEuclidean (E := E) (extChartAt I α α)) r) := by
+  obtain ⟨χ, -, hχ_supp⟩ :=
+    (SmoothBumpFunction.nhds_basis_tsupport (I := I) α).mem_iff.mp
+      ((chartAt H α).open_source.mem_nhds (mem_chart_source H α))
+  let cut : M → ℝ := fun x ↦ χ x * u x
+  obtain ⟨C, hcut_pull⟩ := exists_lipschitzWith_chartPullZero_mul
+    (I := I) g α χ.contMDiff χ.hasCompactSupport hχ_supp hu
+  have hcut_pull' : LipschitzWith C
+      (chartPullZero (I := I) α cut) := by
+    simpa only [cut] using hcut_pull
+  let cutRaw : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)) → ℝ :=
+    chartPushedRaw (I := I) (M := M) α cut
+  have hraw_eq : cutRaw =
+      chartPullZero (I := I) α cut ∘ (toEuclidean (E := E)).symm := by
+    funext y
+    change chartPushedRaw (I := I) (M := M) α cut y = _
+    by_cases hy : (toEuclidean (E := E)).symm y ∈ (extChartAt I α).target
+    · have hy' : y ∈ chartTargetEuclid (I := I) (M := M) α := by
+        rw [chartTargetEuclid_eq_preimage_symm]
+        exact hy
+      rw [chartPushedRaw_apply_of_mem (I := I) (M := M) α cut hy',
+        Function.comp_apply, chartPullZero_mem (I := I) α cut hy,
+        scalarOnE_def]
+    · have hy' : y ∉ chartTargetEuclid (I := I) (M := M) α := by
+        rw [chartTargetEuclid_eq_preimage_symm]
+        exact hy
+      rw [chartPushedRaw_apply_of_notMem (I := I) (M := M) α cut hy',
+        Function.comp_apply, chartPullZero_nmem (I := I) α cut hy]
+  have hcutRaw : LipschitzWith
+      (C * ‖(toEuclidean (E := E)).symm.toContinuousLinearMap‖₊) cutRaw := by
+    rw [hraw_eq]
+    exact hcut_pull'.comp (toEuclidean (E := E)).symm.lipschitz
+  have hcut_support : Function.support cut ⊆ tsupport (χ : M → ℝ) := by
+    intro x hx
+    apply subset_tsupport
+    intro hχ
+    exact hx (by simp only [cut, hχ, zero_mul])
+  have hcut_cs : HasCompactSupport cut :=
+    HasCompactSupport.of_support_subset_isCompact χ.hasCompactSupport hcut_support
+  have hcut_supp : tsupport cut ⊆ (chartAt H α).source :=
+    (closure_minimal hcut_support (isClosed_tsupport _)).trans hχ_supp
+  have hcutRaw_cs : HasCompactSupport cutRaw := by
+    simpa only [cutRaw] using
+      chart_raw_cs (I := I) (M := M) α hcut_cs hcut_supp
+  let c : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)) :=
+    toEuclidean (E := E) (extChartAt I α α)
+  have hchart_tendsto : Tendsto
+      (fun y : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)) ↦
+        (extChartAt I α).symm ((toEuclidean (E := E)).symm y))
+      (nhds c) (nhds α) := by
+    have hto : Tendsto (toEuclidean (E := E)).symm (nhds c)
+        (nhds (extChartAt I α α)) := by
+      have hto' := (toEuclidean (E := E)).symm.continuousAt (x := c)
+      change Tendsto (toEuclidean (E := E)).symm (nhds c)
+        (nhds ((toEuclidean (E := E)).symm c)) at hto'
+      simpa only [c, (toEuclidean (E := E)).symm_apply_apply] using hto'
+    have hinv : Tendsto (extChartAt I α).symm
+        (nhds (extChartAt I α α)) (nhds α) := by
+      have hinv' := continuousAt_extChartAt_symm (I := I) α
+      change Tendsto (extChartAt I α).symm
+        (nhds (extChartAt I α α))
+        (nhds ((extChartAt I α).symm (extChartAt I α α))) at hinv'
+      rw [(extChartAt I α).left_inv
+        (mem_extChartAt_source (I := I) α)] at hinv'
+      exact hinv'
+    exact hinv.comp hto
+  have hχ_one :
+      (fun y : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)) ↦ χ
+        ((extChartAt I α).symm ((toEuclidean (E := E)).symm y))) =ᶠ[nhds c]
+        fun _ ↦ (1 : ℝ) :=
+    hchart_tendsto.eventually χ.eventuallyEq_one
+  have hone_nhds : {y : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)) | χ
+      ((extChartAt I α).symm ((toEuclidean (E := E)).symm y)) = 1} ∈ nhds c :=
+    hχ_one
+  obtain ⟨r, hr, hball⟩ := Metric.mem_nhds_iff.mp hone_nhds
+  refine ⟨r, hr, ?_⟩
+  have hcut_mem : DeGiorgi.MemW1p p cutRaw (Metric.ball c r) :=
+    DifferentialGeometry.Analysis.Sobolev.Euclidean.memW1p_of_lip
+      hcutRaw hcutRaw_cs
+  have hcut_eq : cutRaw =ᵐ[volume.restrict (Metric.ball c r)]
+      chartPushedRaw (I := I) (M := M) α u := by
+    filter_upwards [ae_restrict_mem measurableSet_ball] with y hy
+    change chartPushedRaw (I := I) (M := M) α cut y =
+      chartPushedRaw (I := I) (M := M) α u y
+    have hχ_y := hball hy
+    change χ ((extChartAt I α).symm
+      ((toEuclidean (E := E)).symm y)) = 1 at hχ_y
+    by_cases hy' : y ∈ chartTargetEuclid (I := I) (M := M) α
+    · rw [chartPushedRaw_apply_of_mem (I := I) (M := M) α cut hy']
+      rw [chartPushedRaw_apply_of_mem (I := I) (M := M) α u hy']
+      simp only [cut, hχ_y, one_mul]
+    · rw [chartPushedRaw_apply_of_notMem (I := I) (M := M) α cut hy']
+      rw [chartPushedRaw_apply_of_notMem (I := I) (M := M) α u hy']
+  exact
+    (DifferentialGeometry.Analysis.Sobolev.Euclidean.MemW1p_congr_ae
+      Metric.isOpen_ball hcut_eq).mp hcut_mem
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
