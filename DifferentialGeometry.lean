@@ -4408,3 +4408,4 @@ import DifferentialGeometry.Geometry.Connection.Laplacian.VectorBundleTrace
 import DifferentialGeometry.Geometry.Metric.ExteriorPowerRiemannian
 import DifferentialGeometry.Geometry.Metric.ExteriorPowerMusicalBundle
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.HalfSpace
+import DifferentialGeometry.Analysis.Calculus.Trace
