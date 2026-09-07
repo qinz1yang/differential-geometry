@@ -124,17 +124,17 @@ section StokesGlobal
 
 variable [hI : HasSmoothBoundary E H I]
 
-theorem stokes_compact_via_pou_family
+theorem integral_divergence_g_with_boundary_eq_sum_chartWeightedDivergenceIntegral_family
     [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
     (g_fam : ℝ → SmoothRiemannianMetric I M)
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (t : ℝ) :
     ∫ x, divergenceGWithBoundary (I := I) (g_fam t) X x
         ∂(riemannianMeasureFamily (I := I) (M := M) g_fam t) =
       ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
-        chartBoundaryFaceIntegral (I := I) (g_fam t) α X
+        chartWeightedDivergenceIntegral (I := I) (g_fam t) α X
           ((chartAtlasPOU I M) α) := by
   rw [riemannianMeasureFamily_def]
-  exact stokes_compact_via_pou (I := I) (g_fam t) X
+  exact integral_divergence_g_with_boundary_eq_sum_chartWeightedDivergenceIntegral (I := I) (g_fam t) X
 
 theorem integral_divergence_with_boundary_eq_boundaryFaceSum_family
     [T2Space M] [SigmaCompactSpace M] [CompactSpace M]

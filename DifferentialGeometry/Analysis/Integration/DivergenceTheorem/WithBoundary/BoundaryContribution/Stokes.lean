@@ -50,7 +50,7 @@ private lemma isOpen_interior_M : IsOpen (I.interior M) :=
   I.isOpen_interior (M := M) (n := ∞)
     (by exact (by decide : (∞ : WithTop ℕ∞) ≠ 0))
 
-noncomputable def chartBoundaryFaceIntegral
+noncomputable def chartWeightedDivergenceIntegral
     (g : SmoothRiemannianMetric I M)
     (α : M)
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
@@ -58,43 +58,35 @@ noncomputable def chartBoundaryFaceIntegral
   ∫ x, localDivergenceWithin (I := I) g α X x * f x
     ∂(chartLocalMeasure (I := I) g α)
 
-@[simp] lemma chartBoundaryFaceIntegral_def
+@[simp] lemma chartWeightedDivergenceIntegral_def
     (g : SmoothRiemannianMetric I M) (α : M)
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
     (f : M → ℝ) :
-    chartBoundaryFaceIntegral (I := I) g α X f =
+    chartWeightedDivergenceIntegral (I := I) g α X f =
       ∫ x, localDivergenceWithin (I := I) g α X x * f x
         ∂(chartLocalMeasure (I := I) g α) := rfl
 
-theorem chart_local_stokes_within
-    (g : SmoothRiemannianMetric I M) (α : M)
-    (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
-    (f : M → ℝ) :
-    ∫ x, localDivergenceWithin (I := I) g α X x * f x
-        ∂(chartLocalMeasure (I := I) g α) =
-      chartBoundaryFaceIntegral (I := I) g α X f := rfl
-
-theorem chartBoundaryFaceIntegral_zero_weight
+theorem chartWeightedDivergenceIntegral_zero_weight
     (g : SmoothRiemannianMetric I M) (α : M)
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) :
-    chartBoundaryFaceIntegral (I := I) g α X (fun _ => (0 : ℝ)) = 0 := by
-  rw [chartBoundaryFaceIntegral_def]
+    chartWeightedDivergenceIntegral (I := I) g α X (fun _ => (0 : ℝ)) = 0 := by
+  rw [chartWeightedDivergenceIntegral_def]
   have h : (fun x : M => localDivergenceWithin (I := I) g α X x * 0) =
       (fun _ : M => (0 : ℝ)) := by
     funext x; rw [mul_zero]
   rw [h, integral_zero]
 
-theorem chartBoundaryFaceIntegral_eq_neg_tangentSectionAction_of_interior_support
+theorem chartWeightedDivergenceIntegral_eq_neg_tangentSectionAction_of_interior_support
     (g : SmoothRiemannianMetric I M) (α : M)
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ) ∞ f)
     (hf_compactSupp : HasCompactSupport f)
     (hf_supp : tsupport f ⊆ (chartAt H α).source)
     (hf_int : tsupport f ⊆ I.interior M) :
-    chartBoundaryFaceIntegral (I := I) g α X f =
+    chartWeightedDivergenceIntegral (I := I) g α X f =
       -∫ x, tangentSectionAction (I := I) X f x
         ∂(chartLocalMeasure (I := I) g α) := by
-  rw [chartBoundaryFaceIntegral_def]
+  rw [chartWeightedDivergenceIntegral_def]
   exact chart_local_ibp_within (I := I) g α X hf hf_compactSupp hf_supp hf_int
 
 section StokesGlobal
@@ -325,14 +317,14 @@ private lemma integrable_chartLocalMeasure_of_cs_chartSource
           simp
     _ < ⊤ := ENNReal.mul_lt_top ENNReal.ofReal_lt_top hμ_supp
 
-theorem stokes_compact_via_pou
+theorem integral_divergence_g_with_boundary_eq_sum_chartWeightedDivergenceIntegral
     [T2Space M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M)
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) :
     ∫ x, divergenceGWithBoundary (I := I) g X x
         ∂(riemannianVolumeMeasure (I := I) (M := M) g) =
       ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
-        chartBoundaryFaceIntegral (I := I) g α X
+        chartWeightedDivergenceIntegral (I := I) g α X
           ((chartAtlasPOU I M) α) := by
   classical
   set ρ : SmoothPartitionOfUnity M I M (univ : Set M) := chartAtlasPOU I M with hρ_def
@@ -392,7 +384,7 @@ theorem stokes_compact_via_pou
     exact integrable_chartLocalMeasure_of_cs_chartSource (I := I) g α
       (hsummand_cont α) (hsumm_supp α)
   have hCBI_def : ∀ α : M,
-      chartBoundaryFaceIntegral (I := I) g α X (ρ α : M → ℝ) =
+      chartWeightedDivergenceIntegral (I := I) g α X (ρ α : M → ℝ) =
         ∫ x, localDivergenceWithin (I := I) g α X x * (ρ α : M → ℝ) x
           ∂(chartLocalMeasure (I := I) g α) := fun α => rfl
   have hae_eq : ∀ α : M,

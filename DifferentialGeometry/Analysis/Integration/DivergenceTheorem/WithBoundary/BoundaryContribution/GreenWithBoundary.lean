@@ -42,7 +42,7 @@ noncomputable def boundaryFaceSum
     (g : SmoothRiemannianMetric I M)
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) : ℝ :=
   ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
-    chartBoundaryFaceIntegral (I := I) g α X
+    chartWeightedDivergenceIntegral (I := I) g α X
       ((chartAtlasPOU I M) α : M → ℝ)
 
 @[simp] lemma boundaryFaceSum_def
@@ -51,7 +51,7 @@ noncomputable def boundaryFaceSum
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) :
     boundaryFaceSum (I := I) g X =
       ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
-        chartBoundaryFaceIntegral (I := I) g α X
+        chartWeightedDivergenceIntegral (I := I) g α X
           ((chartAtlasPOU I M) α : M → ℝ) := rfl
 
 section StokesGlobal
@@ -66,7 +66,7 @@ theorem integral_divergence_with_boundary_eq_boundaryFaceSum
         ∂(riemannianVolumeMeasure (I := I) (M := M) g) =
       boundaryFaceSum (I := I) g X := by
   rw [boundaryFaceSum_def]
-  exact stokes_compact_via_pou (I := I) g X
+  exact integral_divergence_g_with_boundary_eq_sum_chartWeightedDivergenceIntegral (I := I) g X
 
 omit hI in
 private lemma inner_grad_grad_continuous_of_interior_support
