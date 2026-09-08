@@ -1,5 +1,8 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Soliton.RankOneSplitting
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.ProductCover
+import DifferentialGeometry.Geometry.Curvature.ModelChange
+import DifferentialGeometry.Geometry.Operator.ModelChange
+import DifferentialGeometry.Geometry.Metric.PullbackCompleteness
 
 set_option autoImplicit false
 
@@ -18,7 +21,7 @@ variable {H : Type} [TopologicalSpace H]
   {M : Type} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [T2Space M] [SigmaCompactSpace M] [ConnectedSpace M] [Nonempty M]
 
-theorem exists_roundThreeCylinder_solitonModelCovering_of_rank_one
+private theorem cylinder_cover_of_rank_one_morseModel
     {g : SmoothRiemannianMetric I M} {f : C^∞⟮I, M; Real⟯}
     (h : normalizedGradientRicciSoliton (I := I) g f)
     {x₀ : M} (hrank : metricCurvatureOperatorRankAt g x₀
@@ -58,5 +61,77 @@ theorem exists_roundThreeCylinder_solitonModelCovering_of_rank_one
     (J := 𝓘(Real, DifferentialGeometry.Topology.Morse.MorseModel 2))
     (N := P.N) (g := g) (f := f) (k := k) (Phi := Phi)
     (h := h) (hk := P.completeN) (hpull := hpull) hdim hpos
+
+end DifferentialGeometry.Geometry
+
+namespace DifferentialGeometry.Geometry
+
+open Curvature Curvature.DimensionThree Operator
+
+variable {E : Type} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+  {H : Type} [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
+  {M : Type} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+  [SigmaCompactSpace M] [T2Space M] [ConnectedSpace M]
+
+omit [ConnectedSpace M] in
+private theorem normalized_model_change
+    {g : SmoothRiemannianMetric I M} {f : C^∞⟮I, M; ℝ⟯}
+    (h : normalizedGradientRicciSoliton (I := I) g f)
+    (L : E ≃L[ℝ] DifferentialGeometry.Topology.Morse.MorseModel 3) :
+    normalizedGradientRicciSoliton (g.transContinuousLinearEquiv L)
+      (f.comp (ContinuousLinearEquiv.toTransContinuousLinearEquiv I M L).symm.toContMDiffMap) := by
+  let Phi := (ContinuousLinearEquiv.toTransContinuousLinearEquiv (n := ∞) I M L).symm
+  refine ⟨RiemannianMetricComplete.pullbackCross g Phi h.1,
+    gradientRicciSoliton_pullbackCross h.2.1 Phi, ?_⟩
+  intro x
+  change metricScalarAt (g.transContinuousLinearEquiv L) x +
+    normGradSqFun (g.transContinuousLinearEquiv L) f x = f x
+  rw [metricScalarAt_transContinuousLinearEquiv,
+    normGradSqFun_transContinuousLinearEquiv g L f x (f.contMDiff.mdifferentiableAt (by simp))]
+  exact h.2.2 x
+
+theorem exists_roundThreeCylinder_solitonModelCovering_of_rank_one
+    {g : SmoothRiemannianMetric I M} {f : C^∞⟮I, M; ℝ⟯}
+    (h : normalizedGradientRicciSoliton (I := I) g f)
+    (hdim : Module.finrank ℝ E = 3) {x₀ : M}
+    (hrank : metricCurvatureOperatorRankAt g x₀ hdim = 1) :
+    ∃ cover : (Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1 × ℝ) → M,
+      solitonModelCovering roundThreeCylinderShrinkerMetric roundThreeCylinderShrinkerPotential g f cover := by
+  let _ : CompleteSpace E := FiniteDimensional.complete ℝ E
+  let L : E ≃L[ℝ] DifferentialGeometry.Topology.Morse.MorseModel 3 :=
+    (toEuclidean (E := E)).trans
+      ((LinearIsometryEquiv.piLpCongrLeft 2 ℝ ℝ (finCongr hdim)).toContinuousLinearEquiv.trans
+        (PiLp.continuousLinearEquiv 2 ℝ (fun _ : Fin 3 => ℝ)))
+  let J := I.transContinuousLinearEquiv L
+  let Phi : M ≃ₘ⟮I, J⟯ M := ContinuousLinearEquiv.toTransContinuousLinearEquiv I M L
+  let k : SmoothRiemannianMetric J M := g.transContinuousLinearEquiv L
+  let u : C^∞⟮J, M; ℝ⟯ := f.comp Phi.symm.toContMDiffMap
+  have hu : normalizedGradientRicciSoliton k u := normalized_model_change h L
+  have hrankk : metricCurvatureOperatorRankAt k x₀ (by
+      change Module.finrank ℝ (DifferentialGeometry.Topology.Morse.MorseModel 3) = 3
+      simp [DifferentialGeometry.Topology.Morse.MorseModel]) = 1 := by
+    change metricCurvatureOperatorRankAt (Diffeomorph.pullbackMetricCross g Phi.symm) x₀ _ = 1
+    rw [Diffeomorph.pullbackMetricCross_eq_localPullMetric,
+      metricCurvatureOperatorRankAt_localPull g Phi.symm Phi.symm.isLocalDiffeomorph x₀
+        (by change Module.finrank ℝ (DifferentialGeometry.Topology.Morse.MorseModel 3) = 3
+            simp [DifferentialGeometry.Topology.Morse.MorseModel]) hdim]
+    exact hrank
+  obtain ⟨cover, hcover⟩ := cylinder_cover_of_rank_one_morseModel hu hrankk
+  refine ⟨cover, hcover.1, h, ?_, hcover.2.2.2.1, hcover.2.2.2.2.1, ?_, ?_⟩
+  · change IsLocalDiffeomorph ((𝓡 2).prod 𝓘(ℝ, ℝ)) I ∞ ((Phi.symm : M → M) ∘ cover)
+    exact isLocalDiffeomorph_comp Phi.symm.isLocalDiffeomorph hcover.2.2.1
+  · intro x v w
+    have hm := solitonModelCovering_metric hcover x v w
+    rw [show k = g.transContinuousLinearEquiv L from rfl,
+      SmoothRiemannianMetric.transContinuousLinearEquiv_inner] at hm
+    have hchain := mfderiv_comp x
+      (Phi.symm.contMDiff.mdifferentiableAt (by simp))
+      ((solitonModelCovering_contMDiff hcover).mdifferentiableAt (by simp))
+    change mfderiv ((𝓡 2).prod 𝓘(ℝ, ℝ)) I cover x =
+      (mfderiv J I id (cover x)).comp (mfderiv ((𝓡 2).prod 𝓘(ℝ, ℝ)) J cover x) at hchain
+    rw [hchain]
+    exact hm
+  · intro x
+    exact solitonModelCovering_potential hcover x
 
 end DifferentialGeometry.Geometry

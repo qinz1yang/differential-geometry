@@ -4758,3 +4758,6 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Soliton.RankOneSplitting
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Soliton.RankOneModelCover
 import DifferentialGeometry.Geometry.LieGroup.Representation.SelfAdjoint
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.HamiltonIvey.AssociatedRegion
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Soliton.CurvatureRankModels
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Soliton.CylinderClassification
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Soliton.Classification
