@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Scalar.Weak
+import DifferentialGeometry.Analysis.Parabolic.Bernstein.Cutoff
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 open DifferentialGeometry.Geometry.Operator
@@ -55,33 +55,6 @@ structure ShiCutoffData
     ∀ n t, t ∈ Set.Icc 0 T → 0 < t → ∀ x,
       parabolicOperatorWithDrift (I := I) G T
         (fun _ y => (0 : TangentSpace I y)) (chi n) t x ≤ err n
-
-structure ShiCutoffLowerSupportAt
-    (G : MetricConnectionFamily (I := I) (M := M) Real)
-    (T ε : Real)
-    (χ : Real → M → Real)
-    (t : Real) (x : M) where
-  phi : Real → M → Real
-  eq_at : phi t x = χ t x
-  lower_nhds :
-    ∀ᶠ p in 𝓝[spacetimeSlab (M := M) T] (t, x),
-      0 ≤ phi p.1 p.2 ∧ phi p.1 p.2 ≤ χ p.1 p.2
-  time_diff :
-    DifferentiableWithinAt Real (fun s => phi s x) (Set.Icc 0 T) t
-  space_diff_nhds :
-    ∀ᶠ y in 𝓝 x, MDifferentiableAt I 𝓘(Real, Real) (phi t) y
-  grad_diff :
-    MDifferentiableAt I (I.prod 𝓘(Real, E))
-      (T% fun y : M =>
-        gradientFun (I := I) (G.metric t) (phi t) y) x
-  grad_sq_le :
-    (G.metric t).inner x
-        (gradientFun (I := I) (G.metric t) (phi t) x)
-        (gradientFun (I := I) (G.metric t) (phi t) x) ≤
-      ε * phi t x
-  parabolic_le :
-    parabolicOperatorWithDrift (I := I) G T
-      (fun _ y => (0 : TangentSpace I y)) phi t x ≤ ε
 
 structure ShiBarrierCutoffData
     (G : MetricConnectionFamily (I := I) (M := M) Real)
