@@ -94,7 +94,7 @@ theorem tail_ball_system_map_center_succ
           (Nat.le_succ n) =
         PartialDiffeomorph.opensMap
           (chainComp (I := I) (Mf := M) Ψ (j₀ + n) 1) (hmap n) := by
-    unfold tailBallSystem
+    unfold tailBallSystem chainBallSystem SmoothSeqSystem.ofPartialDiffeomorphs
     apply SmoothSeqSystem.ofSucc_map_succ
   rw [hF]
   apply Subtype.ext
@@ -247,7 +247,7 @@ theorem tail_ball_system_step_range_compact
         (tailBallSystem (I := I) b Ψ hbase g hnorm j₀ D₀).toSeqSystem.map
             (Nat.le_succ n) =
           PartialDiffeomorph.opensMap Φ (hmap n) := by
-      unfold tailBallSystem
+      unfold tailBallSystem chainBallSystem SmoothSeqSystem.ofPartialDiffeomorphs
       apply SmoothSeqSystem.ofSucc_map_succ
     rw [hF]
     rintro _ ⟨x, rfl⟩

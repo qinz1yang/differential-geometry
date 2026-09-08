@@ -1,6 +1,7 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Limit.DirectLimit.Defs
 import DifferentialGeometry.Geometry.Metric.Pullback.PartialDiffeomorph.Basic
 import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph.Composition
+import DifferentialGeometry.Topology.DirectLimit.PartialDiffeomorph
 import DifferentialGeometry.Topology.SigmaCompactOpen
 import Mathlib.Geometry.Manifold.Riemannian.PathELength
 open DifferentialGeometry.Geometry.Curvature
@@ -343,15 +344,9 @@ noncomputable def chainBallSystem
         M (j₀ + n) → M (j₀ + (n + 1))) '' (U n : Set (M (j₀ + n))) ⊆
         (U (n + 1) : Set (M (j₀ + (n + 1))))) :
     SmoothSeqSystem I (fun n => U n) :=
-  SmoothSeqSystem.ofSucc
-    (fun n => PartialDiffeomorph.opensMap
-      (chainComp (I := I) (Mf := M) Ψ (j₀ + n) 1) (hmap n))
-    (fun n => PartialDiffeomorph.opensMap_isOpenEmb
-      (chainComp (I := I) (Mf := M) Ψ (j₀ + n) 1) (hU n 1) (hmap n))
-    (fun n => PartialDiffeomorph.opensMap_contMDiff
-      (chainComp (I := I) (Mf := M) Ψ (j₀ + n) 1) (hU n 1) (hmap n))
-    (fun n => PartialDiffeomorph.opensMap_invFun_contMDiffOn
-      (chainComp (I := I) (Mf := M) Ψ (j₀ + n) 1) (hU n 1) (hmap n))
+  SmoothSeqSystem.ofPartialDiffeomorphs U
+    (fun n => chainComp (I := I) (Mf := M) Ψ (j₀ + n) 1)
+    (fun n => hU n 1) hmap
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [∀ (j : ℕ), SigmaCompactSpace (M j)]
     [∀ (j : ℕ), T2Space (M j)] [I.Boundaryless] in

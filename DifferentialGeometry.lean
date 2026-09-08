@@ -3296,6 +3296,7 @@ import DifferentialGeometry.Geometry.Operator.Laplacian.VossWeylFormula
 import DifferentialGeometry.Topology.Covering.SimplyConnected
 import DifferentialGeometry.Topology.DirectLimit.Basic
 import DifferentialGeometry.Topology.DirectLimit.Manifold
+import DifferentialGeometry.Topology.DirectLimit.PartialDiffeomorph
 import DifferentialGeometry.Topology.FiniteAtlasIndexOnCompact
 import DifferentialGeometry.Topology.NearIdentity
 import DifferentialGeometry.Topology.Covering.SemilocallySimplyConnected
