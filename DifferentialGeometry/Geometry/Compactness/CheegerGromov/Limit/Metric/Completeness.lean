@@ -327,7 +327,6 @@ theorem mem_core_of_edist
     (b : ∀ j, M j) (j₀ n : ℕ)
     [ProperSpace (M (j₀ + n))]
     [∀ m, Nonempty (tailBallOpen b j₀ m)]
-    [∀ m, SigmaCompactSpace (tailBallOpen b j₀ m)]
     (S : SmoothSeqSystem I (fun m => tailBallOpen b j₀ m))
     (gTail : ∀ m, SmoothRiemannianMetric I (tailBallOpen b j₀ m))
     (hgTail : S.MetricCocycle gTail)
@@ -344,7 +343,6 @@ theorem mem_core_of_edist
         (S.toSeqSystem.incl n (tailCenter b j₀ n)) q <
           ENNReal.ofReal ((2 : ℝ) ^ n / 4)) :
     q ∈ limitCore b j₀ S n := by
-  let _ := (inferInstance : (∀ (m : ℕ), SigmaCompactSpace ↥(DifferentialGeometry.CheegerGromovCompactness.tailBallOpen b j₀ m)))
   let _ : RiemannianBundle (fun z : S.toSeqSystem.Lim => TangentSpace I z) :=
     ⟨(S.limitMetric gTail hgTail).toRiemannianMetric⟩
   by_contra hqK
@@ -366,7 +364,6 @@ theorem base_range_exhausts
     [∀ j, ProperSpace (M j)]
     (b : ∀ j, M j) (j₀ : ℕ)
     [∀ m, Nonempty (tailBallOpen b j₀ m)]
-    [∀ m, SigmaCompactSpace (tailBallOpen b j₀ m)]
     (S : SmoothSeqSystem I (fun m => tailBallOpen b j₀ m))
     (gTail : ∀ m, SmoothRiemannianMetric I (tailBallOpen b j₀ m))
     (hgTail : S.MetricCocycle gTail)
@@ -418,7 +415,6 @@ theorem finite_range_exhausts
     [∀ j, ProperSpace (M j)]
     (b : ∀ j, M j) (j₀ : ℕ)
     [∀ m, Nonempty (tailBallOpen b j₀ m)]
-    [∀ m, SigmaCompactSpace (tailBallOpen b j₀ m)]
     (S : SmoothSeqSystem I (fun m => tailBallOpen b j₀ m))
     (gTail : ∀ m, SmoothRiemannianMetric I (tailBallOpen b j₀ m))
     (hgTail : S.MetricCocycle gTail)
