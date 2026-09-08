@@ -549,6 +549,7 @@ import DifferentialGeometry.Analysis.ODE.Flow.LinearODE.Variational
 import DifferentialGeometry.Analysis.ODE.Existence.ForwardVariationalFromZero
 import DifferentialGeometry.Analysis.ODE.Existence.GlobalLipschitzAffine
 import DifferentialGeometry.Analysis.ODE.IndexForm.Basic
+import DifferentialGeometry.Analysis.ODE.IndexForm.BoundaryValue
 import DifferentialGeometry.Analysis.ODE.IndexForm.NegativeDirection
 import DifferentialGeometry.Analysis.ODE.IndexForm.SmoothNegativeDirection
 import DifferentialGeometry.Analysis.ODE.IndexForm.Uniqueness
