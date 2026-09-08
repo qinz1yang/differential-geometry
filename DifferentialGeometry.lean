@@ -4114,6 +4114,7 @@ import DifferentialGeometry.Geometry.Connection.NormalSection
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.Kernel
 import DifferentialGeometry.Geometry.Connection.GlobalParallelLine
 import DifferentialGeometry.Geometry.Connection.GlobalParallelLineSplitting
+import DifferentialGeometry.Geometry.Connection.GlobalParallelLineFamily
 import DifferentialGeometry.Geometry.Connection.ParallelLineSplitting
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.ImageLine
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureOperatorKernel
@@ -4742,6 +4743,10 @@ import DifferentialGeometry.Analysis.Sobolev.Euclidean.SliceWkp
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.LocalCoefficientDerivativeBounds
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.SpatialCommutator
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.ImageLineFamily
+import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.GlobalImageLineFamily
+import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.GlobalCurvatureLine
+import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.GlobalCurvatureProduct
+import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.GlobalCurvatureSurface
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Restriction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Soliton.Curvature
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.CurvatureSurfaceTime
