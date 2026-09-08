@@ -4618,3 +4618,4 @@ import DifferentialGeometry.Geometry.Curvature.DimensionThree.ExteriorRank
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.CurvatureRank
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Distance.LengthVariation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Distance.Laplacian
+import DifferentialGeometry.Geometry.Flow.RicciFlow.HamiltonHarnack.UhlenbeckBlockEvolution
