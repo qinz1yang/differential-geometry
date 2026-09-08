@@ -4569,3 +4569,5 @@ import DifferentialGeometry.Geometry.Curvature.DimensionThree.ExteriorTrace
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.ExteriorTracePullback
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.ExteriorTraceLaplacian
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Uhlenbeck.ScalarEvolution
+import DifferentialGeometry.Geometry.Metric.Conformal.Curvature
+import DifferentialGeometry.Geometry.Metric.Conformal.Laplacian
