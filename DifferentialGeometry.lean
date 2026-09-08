@@ -3439,6 +3439,7 @@ import DifferentialGeometry.Tensor.RSTensor.Coordinates.Components
 import DifferentialGeometry.Tensor.RSTensor.Coordinates.CoordinateBasis
 import DifferentialGeometry.Tensor.RSTensor.Coordinates.Field
 import DifferentialGeometry.Geometry.Connection.TensorNabla.Naturality.OpenRestriction
+import DifferentialGeometry.Geometry.Connection.TensorNabla.Naturality.MetricRestriction
 import DifferentialGeometry.Tensor.RSTensor.Coordinates.BasisEvaluation
 import DifferentialGeometry.Geometry.Metric.TensorInner.Cotangent.InverseMetric
 import DifferentialGeometry.Geometry.Connection.RicciIdentity.Tensor0S.CurvatureAction
@@ -3508,6 +3509,7 @@ import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Coordinates.Exp
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Coordinates.KroneckerQuadraticForm
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Algebra.Product
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Scaling
+import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Restriction
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Calculus.CovariantDerivative
 import DifferentialGeometry.Geometry.Metric.TensorInner.TensorRS.Basic
 import DifferentialGeometry.Tensor.RSTensor.Norm.Operator
@@ -3697,6 +3699,7 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.Order
 import DifferentialGeometry.Topology.Manifold.LocalDiffeomorph.Lift
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.ConnectionDifference.DifferentiatedPalatini
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Derivatives.Norm
+import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Derivatives.Restriction
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Derivatives.Pointwise
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Derivatives.SlotFree
 import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.SlotCurry.Parseval

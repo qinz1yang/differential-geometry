@@ -50,7 +50,7 @@ private theorem ricNorm_restrict
     [IsManifold I ∞ M] [T2Space M]
     [BoundarylessManifold I M] [IsManifold I 1 M]
     (g : SmoothRiemannianMetric I M) (U : TopologicalSpace.Opens M)
-    [SigmaCompactSpace U] [T2Space U] [BoundarylessManifold I U]
+    [T2Space U] [BoundarylessManifold I U]
     [IsManifold I 1 U]
     (x : U) :
     normSq0S (I := I) (g.restrictOpen (I := I) U) x 2
@@ -227,7 +227,7 @@ theorem gSeqExt_ricci
         P.topology P.charted P.smooth P.t2
         (by infer_instance) (by infer_instance)
         (gSeqExt (I := I) Φ R bf hsrc htgt k t) (sourceOpen (I := I) Φ k)
-        sourceSigma sourceT2 (by infer_instance) (by infer_instance) xsrc
+        sourceT2 (by infer_instance) (by infer_instance) xsrc
         (show TangentSpace I xsrc from v) (show TangentSpace I xsrc from w)
     rw [mfderiv_subtype_val_apply, mfderiv_subtype_val_apply] at h
     exact h
@@ -397,7 +397,7 @@ theorem gSeqExt_scalar
       P.topology P.charted P.smooth P.t2
       (by infer_instance) (by infer_instance)
       (gSeqExt (I := I) Φ R bf hsrc htgt k t) (sourceOpen (I := I) Φ k)
-      sourceSigma sourceT2 (by infer_instance) (by infer_instance) xsrc
+      sourceT2 (by infer_instance) (by infer_instance) xsrc
   calc
     metricScalarAt (I := I) (gSeqExt (I := I) Φ R bf hsrc htgt k t) x =
         metricScalarAt (I := I) (sourceMetric (I := I) Φ hsrc htgt k t) xsrc :=

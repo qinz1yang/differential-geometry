@@ -1,4 +1,5 @@
 import DifferentialGeometry.Geometry.Metric.Convergence.Defs
+import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Restriction
 
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Algebra
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Bounds
@@ -243,50 +244,6 @@ theorem metricDiffCovDerivAt_restrictOpen_apply
     _ = (metricCovDeriv (I := I) gk gRef a (x : M) -
           metricCovDeriv (I := I) gInf gRef a (x : M)) slots :=
       (Tensor0SBundle.Tensor0SSpace.sub_apply (a + 2) (x : M) _ _ slots).symm
-
-omit [CompleteSpace E] [T2Space M] [SigmaCompactSpace M] in
-theorem normSq0S_restrictOpen_apply
-    (g : SmoothRiemannianMetric I M) (U : TopologicalSpace.Opens M)
-    [T2Space U] (s : Nat) (x : U)
-    (A : Tensor0SBundle.Tensor0SSpace (𝕜 := Real) (E := E) (H := H)
-      (I := I) (M := U) s x) :
-    Tensor0SBundle.normSq0S (I := I) (M := U) (g.restrictOpen (I := I) U) x s A =
-      Tensor0SBundle.normSq0S (I := I) (M := M) g (x : M) s A := by
-  classical
-  obtain ⟨basis, hON⟩ :=
-    DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis (I := I) (M := M) g (x : M)
-  have hONU :
-      ∀ i j,
-        (g.restrictOpen (I := I) U).inner x (basis i) (basis j) =
-          if i = j then (1 : Real) else 0 := by
-    intro i j
-    exact hON i j
-  have hinvU :
-      Tensor0SBundle.MetricInverseInBasis (I := I) (M := U)
-        (g.restrictOpen (I := I) U) x basis
-        (Tensor0SBundle.identityInvMetric
-          (Idx := Fin (Module.finrank Real (TangentSpace I x)))) := by
-    have h' :=
-      DifferentialGeometry.Tensor0SBundle.metricInverseInBasis_of_orthonormal
-        (I := I) (M := U) (g.restrictOpen (I := I) U) basis hONU
-    change Tensor0SBundle.MetricInverseInBasis (I := I) (M := U)
-      (g.restrictOpen (I := I) U) x basis
-        (fun a k => if a = k then (1 : Real) else 0)
-    exact h'
-  have hinvM :
-      Tensor0SBundle.MetricInverseInBasis (I := I) (M := M)
-        g (x : M) basis
-        (Tensor0SBundle.identityInvMetric
-          (Idx := Fin (Module.finrank Real (TangentSpace I x)))) := by
-    have h' := DifferentialGeometry.Tensor0SBundle.metricInverseInBasis_of_orthonormal (I := I) g basis hON
-    change Tensor0SBundle.MetricInverseInBasis (I := I) (M := M)
-      g (x : M) basis (fun a k => if a = k then (1 : Real) else 0)
-    exact h'
-  rw [Tensor0SBundle.normSq0S_identity_eq_sum_sq
-      (I := I) (M := U) (g.restrictOpen (I := I) U) x s basis hinvU A,
-    Tensor0SBundle.normSq0S_identity_eq_sum_sq
-      (I := I) (M := M) g (x : M) s basis hinvM A]
-  rfl
 
 omit [SigmaCompactSpace M] in
 theorem metricDerivNorm_restrictOpen

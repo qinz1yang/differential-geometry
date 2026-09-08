@@ -24,7 +24,7 @@ variable [T2Space M] [SigmaCompactSpace M]
 omit [SigmaCompactSpace M] in
 theorem connectionRiemannCurvatureField_restrictOpen
     (g : SmoothRiemannianMetric I M)
-    (U : TopologicalSpace.Opens M) [SigmaCompactSpace U] [T2Space U]
+    (U : TopologicalSpace.Opens M) [T2Space U]
     (Xs Ys Zs : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M → Type _))
     (x : U) :
     connectionRiemannCurvatureField (I := I)
@@ -34,7 +34,6 @@ theorem connectionRiemannCurvatureField_restrictOpen
         (restrictOpenTangentField (I := I) U (fun p : M => Zs p)) x =
       connectionRiemannCurvatureField (I := I) (metricCov (I := I) (M := M) g)
         (fun p : M => Xs p) (fun p : M => Ys p) (fun p : M => Zs p) (x : M) := by
-  let _ := (inferInstance : (SigmaCompactSpace ↥U))
   let ZYs : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M → Type _) :=
     ⟨fun p : M => (metricCov (I := I) (M := M) g (fun q : M => Zs q) p) (Ys p),
       cov_smooth_apply_contMDiffAt (I := I) (metricCov (I := I) (M := M) g)
@@ -84,7 +83,7 @@ theorem connectionRiemannCurvatureField_restrictOpen
 omit [SigmaCompactSpace M] in
 theorem metricRm04StandardAt_restrictOpen
     (g : SmoothRiemannianMetric I M)
-    (U : TopologicalSpace.Opens M) [SigmaCompactSpace U] [T2Space U]
+    (U : TopologicalSpace.Opens M) [T2Space U]
     [IsManifold I 1 U] (x : U) (X Y Z W : TangentSpace I x) :
     metricRm04StandardAt (I := I) (M := U) (g.restrictOpen (I := I) U) x X Y Z W =
       metricRm04StandardAt (I := I) (M := M) g (x : M)

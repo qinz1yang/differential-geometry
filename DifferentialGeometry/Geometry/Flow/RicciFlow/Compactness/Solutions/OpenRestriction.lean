@@ -53,7 +53,7 @@ omit [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
 theorem ricciTensor_restrictOpen
     (g : SmoothRiemannianMetric I M) (U : TopologicalSpace.Opens M)
-    [SigmaCompactSpace U] [T2Space U] [BoundarylessManifold I U]
+    [T2Space U] [BoundarylessManifold I U]
     [IsManifold I 1 U] (x : U) (v w : TangentSpace I x) :
     ricciTensor (I := I) (M := U) (g.restrictOpen (I := I) U) x v w
       = ricciTensor (I := I) (M := M) g (x : M)
@@ -127,7 +127,7 @@ omit [I.Boundaryless] [IsManifold I 2 M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem metricRicci_restrictOpen_eval
     (g : SmoothRiemannianMetric I M) (U : TopologicalSpace.Opens M)
-    [SigmaCompactSpace U] [T2Space U] [BoundarylessManifold I U]
+    [T2Space U] [BoundarylessManifold I U]
     [IsManifold I 1 U] (x : U) (slots : Fin 2 → TangentSpace I x) :
     metricRicci (I := I) (M := U) (g.restrictOpen (I := I) U) x slots
       = metricRicci (I := I) (M := M) g (x : M)
@@ -165,7 +165,7 @@ omit [I.Boundaryless] [IsManifold I 2 M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem metricScalarAt_restrictOpen
     (g : SmoothRiemannianMetric I M) (U : TopologicalSpace.Opens M)
-    [SigmaCompactSpace U] [T2Space U] [BoundarylessManifold I U]
+    [T2Space U] [BoundarylessManifold I U]
     [IsManifold I 1 U] (x : U) :
     metricScalarAt (I := I) (M := U) (g.restrictOpen (I := I) U) x
       = metricScalarAt (I := I) (M := M) g (x : M) := by
@@ -242,7 +242,7 @@ omit [I.Boundaryless] [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M]
 omit [SigmaCompactSpace M] in
 theorem metricRm04_restrictOpen_eval
     (g : SmoothRiemannianMetric I M) (U : TopologicalSpace.Opens M)
-    [SigmaCompactSpace U] [T2Space U] [IsManifold I 1 U] (x : U) (slots : Fin 4 → TangentSpace I x) :
+    [T2Space U] [IsManifold I 1 U] (x : U) (slots : Fin 4 → TangentSpace I x) :
     metricRm04 (I := I) (M := U) (g.restrictOpen (I := I) U) x slots
       = metricRm04 (I := I) (M := M) g (x : M)
           (fun q => mfderiv I I (Subtype.val : U → M) x (slots q)) := by

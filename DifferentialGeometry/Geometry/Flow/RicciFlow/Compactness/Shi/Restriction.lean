@@ -30,7 +30,7 @@ omit [IsManifold I 2 M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem ricciSection_restrictOpen
     (g : SmoothRiemannianMetric I M) (U : TopologicalSpace.Opens M)
-    [SigmaCompactSpace U] [T2Space U] [BoundarylessManifold I U]
+    [T2Space U] [BoundarylessManifold I U]
     [IsManifold I 1 U] [hManifoldU : IsManifold I ((∞ : WithTop ℕ∞) + 1) U]
     (x : U) (slots : Fin 2 → TangentSpace I x) :
     CovariantDerivative.ricciSection (I := I)
@@ -62,7 +62,7 @@ omit [I.Boundaryless] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem ricCovTower_restrictOpen
     (g : SmoothRiemannianMetric I M) (U : TopologicalSpace.Opens M)
-    [SigmaCompactSpace U] [T2Space U] [BoundarylessManifold I U]
+    [T2Space U] [BoundarylessManifold I U]
     [IsManifold I 1 U] [IsManifold I 2 U] [IsManifold I ((∞ : WithTop ℕ∞) + 1) U]
     (s : ℕ) (x : U) (slots : Fin (2 + s) → TangentSpace I x) :
     ricCovTower (I := I) (g.restrictOpen (I := I) U)
@@ -120,7 +120,7 @@ omit [I.Boundaryless] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem ricCovTower_normSq0S_restrictOpen
     (g : SmoothRiemannianMetric I M) (U : TopologicalSpace.Opens M)
-    [SigmaCompactSpace U] [T2Space U] [BoundarylessManifold I U]
+    [T2Space U] [BoundarylessManifold I U]
     [IsManifold I 1 U] [IsManifold I 2 U] [IsManifold I ((∞ : WithTop ℕ∞) + 1) U]
     (s : ℕ) (x : U) :
     Tensor0SBundle.normSq0S (I := I) (g.restrictOpen (I := I) U) x (2 + s)
@@ -142,7 +142,7 @@ omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
 theorem movingShiBoundOn_restrictOpen
     (gSeq : ℕ → ℝ → SmoothRiemannianMetric I M) (U : TopologicalSpace.Opens M)
-    [SigmaCompactSpace U] [T2Space U] [BoundarylessManifold I U]
+    [T2Space U] [BoundarylessManifold I U]
     [IsManifold I 1 U] [IsManifold I 2 U] [IsManifold I ((∞ : WithTop ℕ∞) + 1) U]
     (U₀ : Set M) (β ψ : ℝ) (Nord : ℕ) (KShi : ℝ) (V : Set U)
     (hV : ∀ x ∈ V, (x : M) ∈ U₀)
