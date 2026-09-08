@@ -647,6 +647,106 @@ theorem mul_le_lowerKyFanSum_on_compact_set_of_subsolution
     nlinarith
   exact hlimit
 
+theorem mul_le_lowerKyFanSum_on_compact_set_of_subsolution_on_Ioo
+    [VectorBundle Real E (TangentSpace I : M → Type _)]
+    [fiberFinite : ∀ y, FiniteDimensional Real (V y)]
+    (G : MetricConnectionFamily (I := I) (M := M) Real)
+    (cov : Real → CovariantDerivative I F V)
+    [∀ q, ContMDiffCovariantDerivative (cov q) ∞]
+    (hcov : ∀ q, (cov q).IsMetricCompatible)
+    {T : Real} (hT : 0 < T) {s t : Real}
+    (hs : 0 ≤ s) (ht : t ≤ T)
+    {k : Nat} (hkpos : 0 < k) (hk : k ≤ Module.finrank Real F)
+    {Kset : Set M} (hKset : IsCompact Kset)
+    (hKsetInterior : interior Kset ⊆ I.interior M)
+    (A : Real → Cₛ^∞⟮I; F →L[Real] F, (fun x : M ↦ V x →L[Real] V x)⟯)
+    (hAsymm : ∀ q y,
+      ((A q y : V y →L[Real] V y) : V y →ₗ[Real] V y).IsSymmetric)
+    (hApos : ∀ q ∈ Icc s t, ∀ y ∈ Kset, (A q y).IsPositive)
+    (hphiCont : ContinuousOn (fun p : Real × M ↦
+      (hAsymm p.1 p.2).lowerKyFanSum k) (Icc s t ×ˢ Kset))
+    {R : Real} (hR : ∀ q ∈ Icc s t, ∀ y ∈ Kset, ‖A q y‖ ≤ R)
+    (X : Real → (y : M) → TangentSpace I y)
+    (reaction : Real → (y : M) →
+      (V y →L[Real] V y) → V y →L[Real] V y)
+    (hreactionNull : ∀ q y,
+      satisfiesNullEigenvectorCondition (reaction q y))
+    {Klip : NNReal}
+    (hreactionLip : ∀ q ∈ Ioo s t, ∀ y ∈ interior Kset,
+      LipschitzOnWith Klip (reaction q y)
+        {B : V y →L[Real] V y | B.IsPositive ∧ ‖B‖ ≤ 2 * R})
+    (f : Real → M → Real)
+    (hfCont : ContinuousOn (fun p : Real × M ↦ f p.1 p.2)
+      (Icc s t ×ˢ Kset))
+    (hfInitial : ∀ y ∈ Kset,
+      (k : Real) * f s y ≤ (hAsymm s y).lowerKyFanSum k)
+    (hfBoundary : ∀ q ∈ Icc s t, ∀ y ∈ frontier Kset,
+      (k : Real) * f q y ≤ (hAsymm q y).lowerKyFanSum k)
+    (hfTime : ∀ q ∈ Ioo s t, ∀ y ∈ interior Kset,
+      DifferentiableAt Real (fun r ↦ f r y) q)
+    (hfSpace : ∀ q ∈ Ioo s t, ∀ y ∈ interior Kset,
+      MDifferentiableAt I 𝓘(Real, Real) (f q) y)
+    (hfGrad : ∀ q ∈ Ioo s t, ∀ y ∈ interior Kset,
+      MDiffAt (T% fun z : M ↦
+        gradientFun (I := I) (G.metric q) (f q) z) y)
+    {c : Real} (hc : (Klip : Real) < c)
+    (hfSubsolution : ∀ q ∈ Ioo s t, ∀ y ∈ interior Kset, 0 < f q y →
+      parabolicOperatorWithDrift (I := I) G T X f q y ≤ -c * f q y)
+    (hGconn : ∀ q ∈ Ioo s t,
+      G.connection q = LeviCivita (I := I) (G.metric q))
+    (hAt : ∀ q ∈ Ioo s t, ∀ y ∈ interior Kset,
+      DifferentiableAt Real (fun r ↦ A r y) q)
+    (hevolution : ∀ q ∈ Ioo s t, ∀ y ∈ interior Kset,
+      deriv (fun r ↦ A r y) q =
+        rawBundleEndomorphismConnLap (I := I) (G.metric q) (cov q)
+            (fun z ↦ A q z) y +
+          HomConnectionGen.homBundleCovariantDerivativeGen
+            I M F V F V (cov q) (cov q) (fun z ↦ A q z) y (X q y) +
+          reaction q y (A q y)) :
+    ∀ q ∈ Icc s t, ∀ y ∈ Kset,
+      (k : Real) * f q y ≤ (hAsymm q y).lowerKyFanSum k := by
+  intro q hq y hy
+  by_cases hst : s < t
+  · have hinner : ∀ r ∈ Ico s t,
+        (k : Real) * f r y ≤ (hAsymm r y).lowerKyFanSum k := by
+      intro r hr
+      have hsub : Icc s r ⊆ Icc s t :=
+        fun a ha => ⟨ha.1, ha.2.trans hr.2.le⟩
+      have hsubInterior : Ioc s r ⊆ Ioo s t :=
+        fun a ha => ⟨ha.1, ha.2.trans_lt hr.2⟩
+      exact mul_le_lowerKyFanSum_on_compact_set_of_subsolution
+        (I := I) G cov hcov hT hs (hr.2.le.trans ht) hkpos hk hKset hKsetInterior
+        A hAsymm (fun a ha => hApos a (hsub ha))
+        (hphiCont.mono fun p hp => ⟨hsub hp.1, hp.2⟩)
+        (fun a ha => hR a (hsub ha)) X reaction hreactionNull
+        (fun a ha => hreactionLip a (hsubInterior ha)) f
+        (hfCont.mono fun p hp => ⟨hsub hp.1, hp.2⟩) hfInitial
+        (fun a ha => hfBoundary a (hsub ha))
+        (fun a ha => hfTime a (hsubInterior ha))
+        (fun a ha => hfSpace a (hsubInterior ha))
+        (fun a ha => hfGrad a (hsubInterior ha)) hc
+        (fun a ha => hfSubsolution a (hsubInterior ha))
+        (fun a ha => hGconn a (hsubInterior ha))
+        (fun a ha => hAt a (hsubInterior ha))
+        (fun a ha => hevolution a (hsubInterior ha)) r ⟨hr.1, le_rfl⟩ y hy
+    have hfTimeCont : ContinuousOn (fun r => (k : Real) * f r y) (Icc s t) :=
+      continuousOn_const.mul (hfCont.comp
+        (continuous_id.prodMk continuous_const).continuousOn (fun r hr => ⟨hr, hy⟩))
+    have hmap : MapsTo (fun r : Real => (r, y)) (Icc s t)
+        (Icc s t ×ˢ Kset) := fun r hr => ⟨hr, hy⟩
+    have hpair : Continuous (fun r : Real => (r, y)) :=
+      continuous_id.prodMk continuous_const
+    have hphiTimeCont : ContinuousOn
+        (fun r => (hAsymm r y).lowerKyFanSum k) (Icc s t) := by
+      simpa only [Function.comp_apply] using
+        hphiCont.comp' hpair.continuousOn hmap
+    exact le_on_closure hinner
+      (by simpa only [closure_Ico hst.ne] using hfTimeCont)
+      (by simpa only [closure_Ico hst.ne] using hphiTimeCont)
+      (by simpa only [closure_Ico hst.ne] using hq)
+  · have hqs : q = s := by linarith [hq.1, hq.2]
+    simpa only [hqs] using hfInitial y hy
+
 theorem lowerKyFanSum_dirichlet_barrier_pos_on_compact_set
     [VectorBundle Real E (TangentSpace I : M → Type _)]
     [fiberFinite : ∀ y, FiniteDimensional Real (V y)]

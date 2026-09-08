@@ -56,19 +56,20 @@ variable {V : M → Type*} [TopologicalSpace (TotalSpace F V)]
   [IsContMDiffRiemannianBundle I ∞ F V]
 
 theorem kernel_rigidity_on_open_interval
+    {J : Set ℝ}
     (g : ℝ → SmoothRiemannianMetric I M)
     (cov : ℝ → CovariantDerivative I F V)
-    [∀ t, ContMDiffCovariantDerivative (cov t) ∞]
-    (hcov : ∀ t, (cov t).IsMetricCompatible)
+    (hcovsmooth : ∀ t ∈ J, ContMDiffCovariantDerivative (cov t) ∞)
+    (hcov : ∀ t ∈ J, (cov t).IsMetricCompatible)
     (A : ℝ → Cₛ^∞⟮I; F →L[ℝ] F, (fun x : M ↦ V x →L[ℝ] V x)⟯)
-    {J : Set ℝ} (hJopen : IsOpen J) (hJ : J.OrdConnected)
-    (hAspace : ContMDiffOnSpacetimeEndomorphism
-      (I := I) (F := F) (V := V) (n := ∞)
-      (fun t x ↦ A t x) (J ×ˢ (Set.univ : Set M)))
+    (hJopen : IsOpen J) (hJ : J.OrdConnected)
+    (hA : ContMDiffOn (𝓘(ℝ, ℝ).prod I)
+      (I.prod 𝓘(ℝ, F →L[ℝ] F)) ∞
+      (fun p : ℝ × M => TotalSpace.mk' (F →L[ℝ] F) p.2 (A p.1 p.2) :
+        ℝ × M → TotalSpace (F →L[ℝ] F) (fun x => V x →L[ℝ] V x))
+      (J ×ˢ (Set.univ : Set M)))
     (q : ℕ) (hrange : ∀ t ∈ J, ∀ x,
       Module.finrank ℝ (A t x).range = q)
-    (hAsymm : ∀ t ∈ J, ∀ x,
-      ((A t x : V x →L[ℝ] V x) : V x →ₗ[ℝ] V x).IsSymmetric)
     (hApos : ∀ t ∈ J, ∀ x, (A t x).IsPositive)
     (X : ℝ → (x : M) → TangentSpace I x)
     (reaction : ℝ → (x : M) →
@@ -115,6 +116,30 @@ theorem kernel_rigidity_on_open_interval
             deriv (fun s ↦ A s x) t (w (t, x)) =
               reaction t x (A t x) (w (t, x)) := by
   classical
+  by_cases hJempty : J = ∅
+  · subst J
+    simp
+  obtain ⟨t₀, ht₀⟩ := Set.nonempty_iff_ne_empty.mpr hJempty
+  let cov' : ℝ → CovariantDerivative I F V :=
+    fun t => if t ∈ J then cov t else cov t₀
+  let _ : ∀ t, ContMDiffCovariantDerivative (cov' t) ∞ := by
+    intro t
+    dsimp only [cov']
+    split_ifs with ht
+    · exact hcovsmooth t ht
+    · exact hcovsmooth t₀ ht₀
+  have hcov' : ∀ t, (cov' t).IsMetricCompatible := by
+    intro t
+    dsimp only [cov']
+    split_ifs with ht
+    · exact hcov t ht
+    · exact hcov t₀ ht₀
+  have heq : ∀ t ∈ J, cov' t = cov t := fun t ht => if_pos ht
+  have hAspace := contMDiffOnSpacetimeEndomorphism_of_contMDiffOn_hom_bundle
+    (I := I) (F := F) (V := V) (n := ∞) (A := fun t x => A t x) hA
+  have hAsymm : ∀ t ∈ J, ∀ x,
+      ((A t x : V x →L[ℝ] V x) : V x →ₗ[ℝ] V x).IsSymmetric :=
+    fun t ht x => (hApos t ht x).isSymmetric
   let reaction' : ℝ → (x : M) → (V x →L[ℝ] V x) → V x →L[ℝ] V x :=
     fun t x => if t ∈ J then reaction t x else fun _ => 0
   have hnull : ∀ t x, satisfiesNullEigenvectorCondition (reaction' t x) := by
@@ -125,15 +150,15 @@ theorem kernel_rigidity_on_open_interval
       simp only [reaction', if_neg ht, zero_apply, inner_zero_left, le_refl]
   have hevol : ∀ t ∈ J, ∀ x,
       deriv (fun s ↦ A s x) t =
-        rawBundleEndomorphismConnLap (I := I) (g t) (cov t)
+        rawBundleEndomorphismConnLap (I := I) (g t) (cov' t)
             (fun y ↦ A t y) x +
           HomConnectionGen.homBundleCovariantDerivativeGen
-            I M F V F V (cov t) (cov t) (fun y ↦ A t y) x (X t x) +
+            I M F V F V (cov' t) (cov' t) (fun y ↦ A t y) x (X t x) +
           reaction' t x (A t x) := by
     intro t ht x
-    simpa only [reaction', if_pos ht] using (hevolution t ht x).deriv
+    simpa only [reaction', if_pos ht, heq t ht] using (hevolution t ht x).deriv
   have hrig (a b : ℝ) (hsub : Ioo a b ⊆ J) :=
-    kernel_rigidity_of_constant_range_rank g cov hcov A
+    kernel_rigidity_of_constant_range_rank g cov' hcov' A
       (hAspace.mono (Set.prod_mono hsub Set.Subset.rfl)) q
       (fun u hu => hrange u (hsub hu)) (fun u hu => hAsymm u (hsub hu))
       (fun u hu => hApos u (hsub hu)) X reaction' hnull
@@ -147,7 +172,7 @@ theorem kernel_rigidity_on_open_interval
   · intro t ht
     obtain ⟨a, b, hat, _, hsub⟩ :=
       exists_Ioo_mem_subset_of_isOpen_ordConnected hJopen hJ ht ht
-    exact (hrig a b hsub).2.1 t hat
+    simpa only [heq t ht] using (hrig a b hsub).2.1 t hat
   · intro t ht
     obtain ⟨a, b, hat, _, hsub⟩ :=
       exists_Ioo_mem_subset_of_isOpen_ordConnected hJopen hJ ht ht
@@ -162,19 +187,20 @@ theorem kernel_rigidity_on_open_interval
     simpa only [reaction', if_pos ht] using (hrig a b hsub).2.2.2.2 t hat
 
 theorem exists_smooth_parallel_kernel_on_open_interval
+    {J : Set ℝ}
     (g : ℝ → SmoothRiemannianMetric I M)
     (cov : ℝ → CovariantDerivative I F V)
-    [∀ t, ContMDiffCovariantDerivative (cov t) ∞]
-    (hcov : ∀ t, (cov t).IsMetricCompatible)
+    (hcovsmooth : ∀ t ∈ J, ContMDiffCovariantDerivative (cov t) ∞)
+    (hcov : ∀ t ∈ J, (cov t).IsMetricCompatible)
     (A : ℝ → Cₛ^∞⟮I; F →L[ℝ] F, (fun x : M ↦ V x →L[ℝ] V x)⟯)
-    {J : Set ℝ} (hJopen : IsOpen J) (hJ : J.OrdConnected)
-    (hAspace : ContMDiffOnSpacetimeEndomorphism
-      (I := I) (F := F) (V := V) (n := ∞)
-      (fun t x ↦ A t x) (J ×ˢ (Set.univ : Set M)))
+    (hJopen : IsOpen J) (hJ : J.OrdConnected)
+    (hA : ContMDiffOn (𝓘(ℝ, ℝ).prod I)
+      (I.prod 𝓘(ℝ, F →L[ℝ] F)) ∞
+      (fun p : ℝ × M => TotalSpace.mk' (F →L[ℝ] F) p.2 (A p.1 p.2) :
+        ℝ × M → TotalSpace (F →L[ℝ] F) (fun x => V x →L[ℝ] V x))
+      (J ×ˢ (Set.univ : Set M)))
     (q : ℕ) (hrange : ∀ t ∈ J, ∀ x,
       Module.finrank ℝ (A t x).range = q)
-    (hAsymm : ∀ t ∈ J, ∀ x,
-      ((A t x : V x →L[ℝ] V x) : V x →ₗ[ℝ] V x).IsSymmetric)
     (hApos : ∀ t ∈ J, ∀ x, (A t x).IsPositive)
     (X : ℝ → (x : M) → TangentSpace I x)
     (reaction : ℝ → (x : M) →
@@ -196,9 +222,10 @@ theorem exists_smooth_parallel_kernel_on_open_interval
       (cov t).IsParallelSet {p : TotalSpace F V | p.2 ∈ K.fiber p.1} := by
   let _ : ∀ x, FiniteDimensional ℝ (V x) :=
     fun x => VectorBundle.finiteDimensional ℝ F V x
-  have hrig := kernel_rigidity_on_open_interval g cov hcov A hJopen hJ
-    hAspace q hrange hAsymm hApos X reaction hreactionNull hevolution
+  have hrig := kernel_rigidity_on_open_interval g cov hcovsmooth hcov A hJopen hJ
+    hA q hrange hApos X reaction hreactionNull hevolution
   intro t ht
+  let _ := hcovsmooth t ht
   have hker (x : M) : Module.finrank ℝ (A t x).ker = Module.finrank ℝ F - q := by
     have hd := VectorBundle.finrank_eq ℝ F V x
     have hr := hrange t ht x
@@ -213,22 +240,23 @@ theorem exists_smooth_parallel_kernel_on_open_interval
   refine ⟨K, hKrank, hK, ?_, hparallel,
     K.isParallelSet_of_covariantly_invariant (cov t) hparallel inferInstance⟩
   intro x
-  rw [hK x, ← (hAsymm t ht x).orthogonal_range, Submodule.orthogonal_orthogonal]
+  rw [hK x, ← (hApos t ht x).isSymmetric.orthogonal_range, Submodule.orthogonal_orthogonal]
 
 theorem kernel_time_constant_on_open_interval
+    {J : Set ℝ}
     (g : ℝ → SmoothRiemannianMetric I M)
     (cov : ℝ → CovariantDerivative I F V)
-    [∀ t, ContMDiffCovariantDerivative (cov t) ∞]
-    (hcov : ∀ t, (cov t).IsMetricCompatible)
+    (hcovsmooth : ∀ t ∈ J, ContMDiffCovariantDerivative (cov t) ∞)
+    (hcov : ∀ t ∈ J, (cov t).IsMetricCompatible)
     (A : ℝ → Cₛ^∞⟮I; F →L[ℝ] F, (fun x : M ↦ V x →L[ℝ] V x)⟯)
-    {J : Set ℝ} (hJopen : IsOpen J) (hJ : J.OrdConnected)
-    (hAspace : ContMDiffOnSpacetimeEndomorphism
-      (I := I) (F := F) (V := V) (n := ∞)
-      (fun t x ↦ A t x) (J ×ˢ (Set.univ : Set M)))
+    (hJopen : IsOpen J) (hJ : J.OrdConnected)
+    (hA : ContMDiffOn (𝓘(ℝ, ℝ).prod I)
+      (I.prod 𝓘(ℝ, F →L[ℝ] F)) ∞
+      (fun p : ℝ × M => TotalSpace.mk' (F →L[ℝ] F) p.2 (A p.1 p.2) :
+        ℝ × M → TotalSpace (F →L[ℝ] F) (fun x => V x →L[ℝ] V x))
+      (J ×ˢ (Set.univ : Set M)))
     (q : ℕ) (hrange : ∀ t ∈ J, ∀ x,
       Module.finrank ℝ (A t x).range = q)
-    (hAsymm : ∀ t ∈ J, ∀ x,
-      ((A t x : V x →L[ℝ] V x) : V x →ₗ[ℝ] V x).IsSymmetric)
     (hApos : ∀ t ∈ J, ∀ x, (A t x).IsPositive)
     (X : ℝ → (x : M) → TangentSpace I x)
     (reaction : ℝ → (x : M) →
@@ -247,6 +275,28 @@ theorem kernel_time_constant_on_open_interval
     {x : M} {s t : ℝ} (hs : s ∈ J) (ht : t ∈ J) :
     (A s x).ker = (A t x).ker ∧ (A s x).range = (A t x).range := by
   classical
+  let t₀ := s
+  have ht₀ : t₀ ∈ J := hs
+  let cov' : ℝ → CovariantDerivative I F V :=
+    fun t => if t ∈ J then cov t else cov t₀
+  let _ : ∀ t, ContMDiffCovariantDerivative (cov' t) ∞ := by
+    intro t
+    dsimp only [cov']
+    split_ifs with ht
+    · exact hcovsmooth t ht
+    · exact hcovsmooth t₀ ht₀
+  have hcov' : ∀ t, (cov' t).IsMetricCompatible := by
+    intro t
+    dsimp only [cov']
+    split_ifs with ht
+    · exact hcov t ht
+    · exact hcov t₀ ht₀
+  have heq : ∀ t ∈ J, cov' t = cov t := fun t ht => if_pos ht
+  have hAspace := contMDiffOnSpacetimeEndomorphism_of_contMDiffOn_hom_bundle
+    (I := I) (F := F) (V := V) (n := ∞) (A := fun t x => A t x) hA
+  have hAsymm : ∀ t ∈ J, ∀ x,
+      ((A t x : V x →L[ℝ] V x) : V x →ₗ[ℝ] V x).IsSymmetric :=
+    fun t ht x => (hApos t ht x).isSymmetric
   let reaction' : ℝ → (x : M) → (V x →L[ℝ] V x) → V x →L[ℝ] V x :=
     fun t x => if t ∈ J then reaction t x else fun _ => 0
   have hnull : ∀ t x, satisfiesNullEigenvectorCondition (reaction' t x) := by
@@ -257,13 +307,13 @@ theorem kernel_time_constant_on_open_interval
       simp only [reaction', if_neg ht, zero_apply, inner_zero_left, le_refl]
   have hevol : ∀ t ∈ J, ∀ x,
       deriv (fun s ↦ A s x) t =
-        rawBundleEndomorphismConnLap (I := I) (g t) (cov t)
+        rawBundleEndomorphismConnLap (I := I) (g t) (cov' t)
             (fun y ↦ A t y) x +
           HomConnectionGen.homBundleCovariantDerivativeGen
-            I M F V F V (cov t) (cov t) (fun y ↦ A t y) x (X t x) +
+            I M F V F V (cov' t) (cov' t) (fun y ↦ A t y) x (X t x) +
           reaction' t x (A t x) := by
     intro t ht x
-    simpa only [reaction', if_pos ht] using (hevolution t ht x).deriv
+    simpa only [reaction', if_pos ht, heq t ht] using (hevolution t ht x).deriv
   have hA_time (y : M) : ContDiffOn ℝ 1 (fun t ↦ A t y) J := by
     let _ : FiniteDimensional ℝ (V y) := VectorBundle.finiteDimensional ℝ F V y
     let c : C^∞⟮𝓘(ℝ, ℝ).prod I, ℝ × M; I, M⟯ := ContMDiffMap.snd
@@ -308,7 +358,7 @@ theorem kernel_time_constant_on_open_interval
     simpa only [hw] using htime.of_le (show (1 : WithTop ℕ∞) ≤ ∞ by simp)
   obtain ⟨a, b, has, hbt, hsub⟩ :=
     exists_Ioo_mem_subset_of_isOpen_ordConnected hJopen hJ hs ht
-  exact kernel_time_constant_of_constant_range_rank g cov hcov A
+  exact kernel_time_constant_of_constant_range_rank g cov' hcov' A
     (hAspace.mono (Set.prod_mono hsub Set.Subset.rfl))
     (fun y => (hA_time y).mono hsub) q (fun u hu => hrange u (hsub hu))
     (fun u hu => hAsymm u (hsub hu)) (fun u hu => hApos u (hsub hu))
@@ -341,19 +391,20 @@ variable {V : M → Type*} [TopologicalSpace (TotalSpace F V)]
   [ContMDiffVectorBundle ∞ F V I]
   [IsContMDiffRiemannianBundle I ∞ F V]
 theorem reaction_kernel_annihilation_of_isPositive_on_open_interval
+    {J : Set ℝ}
     (g : ℝ → SmoothRiemannianMetric I M)
     (cov : ℝ → CovariantDerivative I F V)
-    [∀ t, ContMDiffCovariantDerivative (cov t) ∞]
-    (hcov : ∀ t, (cov t).IsMetricCompatible)
+    (hcovsmooth : ∀ t ∈ J, ContMDiffCovariantDerivative (cov t) ∞)
+    (hcov : ∀ t ∈ J, (cov t).IsMetricCompatible)
     (A : ℝ → Cₛ^∞⟮I; F →L[ℝ] F, (fun x : M ↦ V x →L[ℝ] V x)⟯)
-    {J : Set ℝ} (hJopen : IsOpen J) (hJ : J.OrdConnected)
-    (hAspace : ContMDiffOnSpacetimeEndomorphism
-      (I := I) (F := F) (V := V) (n := ∞)
-      (fun t x ↦ A t x) (J ×ˢ (Set.univ : Set M)))
+    (hJopen : IsOpen J) (hJ : J.OrdConnected)
+    (hA : ContMDiffOn (𝓘(ℝ, ℝ).prod I)
+      (I.prod 𝓘(ℝ, F →L[ℝ] F)) ∞
+      (fun p : ℝ × M => TotalSpace.mk' (F →L[ℝ] F) p.2 (A p.1 p.2) :
+        ℝ × M → TotalSpace (F →L[ℝ] F) (fun x => V x →L[ℝ] V x))
+      (J ×ˢ (Set.univ : Set M)))
     (q : ℕ) (hrange : ∀ t ∈ J, ∀ x,
       Module.finrank ℝ (A t x).range = q)
-    (hAsymm : ∀ t ∈ J, ∀ x,
-      ((A t x : V x →L[ℝ] V x) : V x →ₗ[ℝ] V x).IsSymmetric)
     (hApos : ∀ t ∈ J, ∀ x, (A t x).IsPositive)
     (X : ℝ → (x : M) → TangentSpace I x)
     (reaction : ℝ → (x : M) →
@@ -370,8 +421,8 @@ theorem reaction_kernel_annihilation_of_isPositive_on_open_interval
             I M F V F V (cov t) (cov t) (fun y ↦ A t y) x (X t x) +
           reaction t x (A t x)) t) :
     ∀ t ∈ J, ∀ x v, A t x v = 0 → reaction t x (A t x) v = 0 := by
-  have hrig := kernel_rigidity_on_open_interval g cov hcov A hJopen hJ hAspace q hrange
-    hAsymm hApos X reaction hreactionNull hevolution
+  have hrig := kernel_rigidity_on_open_interval g cov hcovsmooth hcov A hJopen hJ hA q hrange
+    hApos X reaction hreactionNull hevolution
   intro t ht x v hv
   apply continuousLinearMap_kernel_annihilation_of_isPositive
     (A := A t x) (B := reaction t x (A t x)) (hreactionPos t ht x)
@@ -380,19 +431,20 @@ theorem reaction_kernel_annihilation_of_isPositive_on_open_interval
   · exact LinearMap.mem_ker.mpr hv
 
 theorem reaction_kernel_annihilation_of_commuting_on_open_interval
+    {J : Set ℝ}
     (g : ℝ → SmoothRiemannianMetric I M)
     (cov : ℝ → CovariantDerivative I F V)
-    [∀ t, ContMDiffCovariantDerivative (cov t) ∞]
-    (hcov : ∀ t, (cov t).IsMetricCompatible)
+    (hcovsmooth : ∀ t ∈ J, ContMDiffCovariantDerivative (cov t) ∞)
+    (hcov : ∀ t ∈ J, (cov t).IsMetricCompatible)
     (A : ℝ → Cₛ^∞⟮I; F →L[ℝ] F, (fun x : M ↦ V x →L[ℝ] V x)⟯)
-    {J : Set ℝ} (hJopen : IsOpen J) (hJ : J.OrdConnected)
-    (hAspace : ContMDiffOnSpacetimeEndomorphism
-      (I := I) (F := F) (V := V) (n := ∞)
-      (fun t x ↦ A t x) (J ×ˢ (Set.univ : Set M)))
+    (hJopen : IsOpen J) (hJ : J.OrdConnected)
+    (hA : ContMDiffOn (𝓘(ℝ, ℝ).prod I)
+      (I.prod 𝓘(ℝ, F →L[ℝ] F)) ∞
+      (fun p : ℝ × M => TotalSpace.mk' (F →L[ℝ] F) p.2 (A p.1 p.2) :
+        ℝ × M → TotalSpace (F →L[ℝ] F) (fun x => V x →L[ℝ] V x))
+      (J ×ˢ (Set.univ : Set M)))
     (q : ℕ) (hrange : ∀ t ∈ J, ∀ x,
       Module.finrank ℝ (A t x).range = q)
-    (hAsymm : ∀ t ∈ J, ∀ x,
-      ((A t x : V x →L[ℝ] V x) : V x →ₗ[ℝ] V x).IsSymmetric)
     (hApos : ∀ t ∈ J, ∀ x, (A t x).IsPositive)
     (X : ℝ → (x : M) → TangentSpace I x)
     (reaction : ℝ → (x : M) →
@@ -414,8 +466,8 @@ theorem reaction_kernel_annihilation_of_commuting_on_open_interval
             I M F V F V (cov t) (cov t) (fun y ↦ A t y) x (X t x) +
           reaction t x (A t x)) t) :
     ∀ t ∈ J, ∀ x v, A t x v = 0 → reaction t x (A t x) v = 0 := by
-  have hrig := kernel_rigidity_on_open_interval g cov hcov A hJopen hJ hAspace q hrange
-    hAsymm hApos X reaction hreactionNull hevolution
+  have hrig := kernel_rigidity_on_open_interval g cov hcovsmooth hcov A hJopen hJ hA q hrange
+    hApos X reaction hreactionNull hevolution
   intro t ht x v hv
   apply linearMap_kernel_annihilation_of_commuting
     (A := (A t x : V x →L[ℝ] V x).toLinearMap)

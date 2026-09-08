@@ -995,6 +995,339 @@ theorem finrank_range_spatially_constant_and_locally_constant_of_local_dirichlet
   · intro s t hs hst ht x y
     exact hspread hs hst ht x y
 
+theorem exists_pos_le_lowerKyFanSum_on_time_interval
+    [I.Boundaryless]
+    [VectorBundle ℝ EModel (TangentSpace I : M → Type _)]
+    [fiberFinite : ∀ z, FiniteDimensional ℝ (V z)]
+    (G : MetricConnectionFamily (I := I) (M := M) ℝ)
+    (cov : ℝ → CovariantDerivative I F V)
+    [∀ q, ContMDiffCovariantDerivative (cov q) ∞]
+    (hcov : ∀ q, (cov q).IsMetricCompatible)
+    {T : ℝ} (hT : 0 < T)
+    {k : ℕ} (hkpos : 0 < k) (hk : k ≤ Module.finrank ℝ F)
+    (A : ℝ → Cₛ^∞⟮I; F →L[ℝ] F, (fun z : M ↦ V z →L[ℝ] V z)⟯)
+    (hAsymm : ∀ q z,
+      ((A q z : V z →L[ℝ] V z) : V z →ₗ[ℝ] V z).IsSymmetric)
+    (hApos : ∀ q ∈ Icc 0 T, ∀ z, (A q z).IsPositive)
+    (hphiCont : ContinuousOn (fun p : ℝ × M ↦
+        (hAsymm p.1 p.2).lowerKyFanSum k)
+        (Icc 0 T ×ˢ (Set.univ : Set M)))
+    (hA_bound : ∀ {s t : ℝ}, 0 ≤ s → s < t → t ≤ T →
+      ∀ {Kset : Set M}, IsCompact Kset →
+        ∃ R, ∀ q ∈ Icc s t, ∀ z ∈ Kset, ‖A q z‖ ≤ R)
+    (X : ℝ → (z : M) → TangentSpace I z)
+    (reaction : ℝ → (z : M) →
+      (V z →L[ℝ] V z) → V z →L[ℝ] V z)
+    (hreactionNull : ∀ q z,
+      satisfiesNullEigenvectorCondition (reaction q z))
+    (hreactionLip : ∀ {s t : ℝ}, 0 ≤ s → s < t → t ≤ T →
+      ∀ {Kset : Set M}, IsCompact Kset → ∀ R,
+        ∃ Klip : NNReal, ∀ q ∈ Ioc s t, ∀ z ∈ Kset,
+          LipschitzOnWith Klip (reaction q z)
+            {B : V z →L[ℝ] V z | B.IsPositive ∧ ‖B‖ ≤ 2 * R})
+    (hgrad : ∀ (rho : M → ℝ), ContMDiff I 𝓘(ℝ, ℝ) ∞ rho →
+      ContinuousOn (fun p : ℝ × M =>
+        (G.metric p.1).inner p.2
+          (gradientFun (I := I) (G.metric p.1) rho p.2)
+          (gradientFun (I := I) (G.metric p.1) rho p.2))
+        (Icc 0 T ×ˢ (Set.univ : Set M)))
+    (hheat : ∀ (rho : M → ℝ), ContMDiff I 𝓘(ℝ, ℝ) ∞ rho →
+      ContinuousOn (fun p : ℝ × M =>
+        heatOperatorWithDrift (I := I) G p.1 (X p.1) rho p.2)
+        (Icc 0 T ×ˢ (Set.univ : Set M)))
+    (hGconn : ∀ q ∈ Ioo 0 T,
+      G.connection q = LeviCivita (I := I) (G.metric q))
+    (hAt : ∀ q ∈ Ioo 0 T, ∀ z,
+      DifferentiableAt ℝ (fun r ↦ A r z) q)
+    (hevolution : ∀ q ∈ Ioo 0 T, ∀ z,
+      deriv (fun r ↦ A r z) q =
+        rawBundleEndomorphismConnLap (I := I) (G.metric q) (cov q)
+            (fun w ↦ A q w) z +
+          HomConnectionGen.homBundleCovariantDerivativeGen
+            I M F V F V (cov q) (cov q) (fun w ↦ A q w) z (X q z) +
+          reaction q z (A q z))
+    {s t : ℝ} (hs : 0 ≤ s) (hst : s < t) (ht : t ≤ T)
+    (x : M) (hsource : 0 < (hAsymm s x).lowerKyFanSum k) :
+    ∃ η : ℝ, 0 < η ∧ ∀ q ∈ Icc s t, η ≤ (hAsymm q x).lowerKyFanSum k := by
+  let phi : ℝ → M → ℝ := fun q z => (hAsymm q z).lowerKyFanSum k
+  have hsT : s ∈ Icc 0 T := ⟨hs, hst.le.trans ht⟩
+  have hphiAt : ContinuousAt (phi s) x := by
+    have hcont := hphiCont.comp
+      (continuous_const.prodMk continuous_id).continuousOn
+      (fun z (_ : z ∈ (Set.univ : Set M)) => ⟨hsT, Set.mem_univ z⟩)
+    exact (continuousOn_univ.mp hcont).continuousAt
+  obtain ⟨U, hUopen, hxU, hUcompact, -, -⟩ :=
+    SmoothBumpFunction.exists_annulus_neighborhood (I := I) x
+      (show (Set.univ : Set M) ∈ 𝓝 x from univ_mem)
+  let Kset : Set M := closure U
+  have hxKset : x ∈ interior Kset := hUopen.subset_interior_closure hxU
+  let W : Set M := U ∩ (phi s) ⁻¹' Ioi (phi s x / 2)
+  have hW : W ∈ 𝓝 x :=
+    inter_mem (hUopen.mem_nhds hxU)
+      (hphiAt.preimage_mem_nhds (isOpen_Ioi.mem_nhds (half_lt_self hsource)))
+  have hkReal : 0 < (k : ℝ) := by exact_mod_cast hkpos
+  let epsilon : ℝ := phi s x / (2 * (k : ℝ))
+  have hepsilon : 0 < epsilon := div_pos hsource (mul_pos (by norm_num) hkReal)
+  have hkepsilon : (k : ℝ) * epsilon = phi s x / 2 := by
+    dsimp only [epsilon]
+    field_simp
+  obtain ⟨b, C, hb, hbx, hbeps, hbW, hC, hbheat⟩ :=
+    exists_spatial_barrier_positive_at (I := I) G hT X hgrad hheat hW hepsilon
+  obtain ⟨R, hR⟩ := hA_bound hs hst ht hUcompact
+  obtain ⟨Klip, hKlip⟩ := hreactionLip hs hst ht hUcompact R
+  let c : ℝ := (Klip : ℝ) + 1
+  have hc : (Klip : ℝ) < c := by dsimp only [c]; linarith
+  let f : ℝ → M → ℝ := fun q z => Real.exp (-(c + C) * (q - s)) * b z
+  have hfSmooth : ContMDiff (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ, ℝ) ∞
+      (fun p : ℝ × M => f p.1 p.2) := by
+    exact ((Real.contDiff_exp.contMDiff.comp
+      (contMDiff_const.mul (contMDiff_fst.sub contMDiff_const))).mul
+      (hb.comp contMDiff_snd))
+  have hApos' : ∀ q ∈ Icc s t, ∀ z ∈ Kset, (A q z).IsPositive := by
+    intro q hq z _
+    exact hApos q ⟨hs.trans hq.1, hq.2.trans ht⟩ z
+  have hphiNonneg : ∀ q ∈ Icc s t, ∀ z ∈ Kset, 0 ≤ phi q z := by
+    intro q hq z hz
+    exact LinearMap.IsSymmetric.lowerKyFanSum_nonneg
+      ((ContinuousLinearMap.isPositive_toLinearMap_iff (A q z)).mpr
+        (hApos' q hq z hz)) k
+  have hfInitial : ∀ z ∈ Kset, (k : ℝ) * f s z ≤ phi s z := by
+    intro z hz
+    simp only [f, sub_self, mul_zero, Real.exp_zero, one_mul]
+    by_cases hbz : 0 < b z
+    · have hzW := hbW z hbz
+      have hkb : (k : ℝ) * b z < phi s x / 2 := by
+        rw [← hkepsilon]
+        exact mul_lt_mul_of_pos_left (hbeps z) hkReal
+      exact (hkb.trans hzW.2).le
+    · exact (mul_nonpos_of_nonneg_of_nonpos hkReal.le (le_of_not_gt hbz)).trans
+        (hphiNonneg s ⟨le_rfl, hst.le⟩ z hz)
+  have hfBoundary : ∀ q ∈ Icc s t, ∀ z ∈ frontier Kset,
+      (k : ℝ) * f q z ≤ phi q z := by
+    intro q hq z hz
+    have hzKset : z ∈ Kset := by
+      simpa only [Kset, closure_closure] using frontier_subset_closure hz
+    have hbz : b z ≤ 0 := by
+      by_contra hneg
+      have hzU := (hbW z (lt_of_not_ge hneg)).1
+      exact hz.2 (hUopen.subset_interior_closure hzU)
+    exact (mul_nonpos_of_nonneg_of_nonpos hkReal.le
+      (mul_nonpos_of_nonneg_of_nonpos (Real.exp_pos _).le hbz)).trans
+      (hphiNonneg q hq z hzKset)
+  have hfSlice (q : ℝ) : ContMDiff I 𝓘(ℝ, ℝ) ∞ (f q) :=
+    contMDiff_const.mul hb
+  have hfSubsolution : ∀ q ∈ Ioo s t, ∀ z ∈ interior Kset, 0 < f q z →
+      parabolicOperatorWithDrift (I := I) G T X f q z ≤ -c * f q z := by
+    intro q hq z _ hfqz
+    have hqT : q ∈ Icc 0 T := ⟨(hs.trans_lt hq.1).le, hq.2.le.trans ht⟩
+    have huniq := (uniqueDiffOn_Icc hT).uniqueDiffWithinAt hqT
+    have hbz : 0 < b z := (mul_pos_iff_of_pos_left (Real.exp_pos _)).mp hfqz
+    have hderiv : HasDerivAt (fun r => f r z) (-(c + C) * f q z) q := by
+      have hd : HasDerivAt (fun r : ℝ => Real.exp (-(c + C) * (r - s)) * b z)
+          (Real.exp (-(c + C) * (q - s)) * (-(c + C)) * b z) q := by
+        simpa only [id_eq, mul_one] using
+          ((((hasDerivAt_id q).sub_const s).const_mul (-(c + C))).exp.mul_const (b z))
+      exact hd.congr_deriv (by dsimp only [f]; ring)
+    have hheatEq : heatOperatorWithDrift (I := I) G q (X q) (f q) z =
+        Real.exp (-(c + C) * (q - s)) *
+          heatOperatorWithDrift (I := I) G q (X q) b z :=
+      heatOperatorWithDrift_const_smul (I := I) G q (X q) _
+        (fun w => hb.mdifferentiable (by simp) w)
+        (gradientFun_mdiffAt (I := I) (G.metric q) hb z)
+    unfold parabolicOperatorWithDrift
+    rw [hderiv.hasDerivWithinAt.derivWithin huniq, hheatEq]
+    have hbound := mul_le_mul_of_nonneg_left (hbheat q hqT z hbz)
+      (Real.exp_pos (-(c + C) * (q - s))).le
+    dsimp only [f] at hbound ⊢
+    nlinarith
+  have hKsetInterior : interior Kset ⊆ I.interior M := by
+    rw [I.interior_eq_univ]
+    exact subset_univ _
+  have hcompare := mul_le_lowerKyFanSum_on_compact_set_of_subsolution_on_Ioo
+    (I := I) G cov hcov hT hs ht hkpos hk hUcompact hKsetInterior
+    A hAsymm hApos'
+    (hphiCont.mono fun p hp =>
+      ⟨⟨hs.trans hp.1.1, hp.1.2.trans ht⟩, Set.mem_univ p.2⟩)
+    hR X reaction hreactionNull
+    (fun q hq z hz => hKlip q ⟨hq.1, hq.2.le⟩ z (interior_subset hz))
+    f hfSmooth.continuous.continuousOn hfInitial hfBoundary
+    (fun q _ z _ => by dsimp only [f]; fun_prop)
+    (fun q _ z _ => (hfSlice q).mdifferentiable (by simp) z)
+    (fun q _ z _ => gradientFun_mdiffAt (I := I) (G.metric q) (hfSlice q) z)
+    hc hfSubsolution
+    (fun q hq => hGconn q ⟨hs.trans_lt hq.1, hq.2.trans_le ht⟩)
+    (fun q hq z _ => hAt q ⟨hs.trans_lt hq.1, hq.2.trans_le ht⟩ z)
+    (fun q hq z _ => hevolution q ⟨hs.trans_lt hq.1, hq.2.trans_le ht⟩ z)
+  let η : ℝ := (k : ℝ) * (Real.exp (-(c + C) * (t - s)) * b x)
+  refine ⟨η, mul_pos hkReal (mul_pos (Real.exp_pos _) hbx), ?_⟩
+  intro q hq
+  have hcc : 0 ≤ c + C := by dsimp only [c]; positivity
+  have hexp : Real.exp (-(c + C) * (t - s)) ≤
+      Real.exp (-(c + C) * (q - s)) := by
+    apply Real.exp_le_exp.mpr
+    nlinarith [hq.2]
+  have hle : η ≤ (k : ℝ) * f q x := by
+    dsimp only [η, f]
+    exact mul_le_mul_of_nonneg_left
+      (mul_le_mul_of_nonneg_right hexp hbx.le) hkReal.le
+  exact hle.trans (hcompare q hq x (interior_subset hxKset))
+
+theorem lowerKyFanSum_pos_at_later_time_of_interior_evolution
+    [I.Boundaryless] [ConnectedSpace M]
+    [VectorBundle ℝ EModel (TangentSpace I : M → Type _)]
+    [fiberFinite : ∀ z, FiniteDimensional ℝ (V z)]
+    (G : MetricConnectionFamily (I := I) (M := M) ℝ)
+    (cov : ℝ → CovariantDerivative I F V)
+    [∀ q, ContMDiffCovariantDerivative (cov q) ∞]
+    (hcov : ∀ q, (cov q).IsMetricCompatible)
+    {T : ℝ} (hT : 0 < T)
+    {k : ℕ} (hkpos : 0 < k) (hk : k ≤ Module.finrank ℝ F)
+    (A : ℝ → Cₛ^∞⟮I; F →L[ℝ] F, (fun z : M ↦ V z →L[ℝ] V z)⟯)
+    (hAsymm : ∀ q z,
+      ((A q z : V z →L[ℝ] V z) : V z →ₗ[ℝ] V z).IsSymmetric)
+    (hApos : ∀ q ∈ Icc 0 T, ∀ z, (A q z).IsPositive)
+    (hphiCont : ContinuousOn (fun p : ℝ × M ↦
+        (hAsymm p.1 p.2).lowerKyFanSum k)
+        (Icc 0 T ×ˢ (Set.univ : Set M)))
+    (hA_bound : ∀ {s t : ℝ}, 0 ≤ s → s < t → t ≤ T →
+      ∀ {Kset : Set M}, IsCompact Kset →
+        ∃ R, ∀ q ∈ Icc s t, ∀ z ∈ Kset, ‖A q z‖ ≤ R)
+    (X : ℝ → (z : M) → TangentSpace I z)
+    (reaction : ℝ → (z : M) →
+      (V z →L[ℝ] V z) → V z →L[ℝ] V z)
+    (hreactionNull : ∀ q z,
+      satisfiesNullEigenvectorCondition (reaction q z))
+    (hreactionLip : ∀ {s t : ℝ}, 0 ≤ s → s < t → t ≤ T →
+      ∀ {Kset : Set M}, IsCompact Kset → ∀ R,
+        ∃ Klip : NNReal, ∀ q ∈ Ioc s t, ∀ z ∈ Kset,
+          LipschitzOnWith Klip (reaction q z)
+            {B : V z →L[ℝ] V z | B.IsPositive ∧ ‖B‖ ≤ 2 * R})
+    (hgrad : ∀ (rho : M → ℝ), ContMDiff I 𝓘(ℝ, ℝ) ∞ rho →
+      ContinuousOn (fun p : ℝ × M =>
+        (G.metric p.1).inner p.2
+          (gradientFun (I := I) (G.metric p.1) rho p.2)
+          (gradientFun (I := I) (G.metric p.1) rho p.2))
+        (Icc 0 T ×ˢ (Set.univ : Set M)))
+    (hheat : ∀ (rho : M → ℝ), ContMDiff I 𝓘(ℝ, ℝ) ∞ rho →
+      ContinuousOn (fun p : ℝ × M =>
+        heatOperatorWithDrift (I := I) G p.1 (X p.1) rho p.2)
+        (Icc 0 T ×ˢ (Set.univ : Set M)))
+    (hGconn : ∀ q ∈ Ioo 0 T,
+      G.connection q = LeviCivita (I := I) (G.metric q))
+    (hAt : ∀ q ∈ Ioo 0 T, ∀ z,
+      DifferentiableAt ℝ (fun r ↦ A r z) q)
+    (hevolution : ∀ q ∈ Ioo 0 T, ∀ z,
+      deriv (fun r ↦ A r z) q =
+        rawBundleEndomorphismConnLap (I := I) (G.metric q) (cov q)
+            (fun w ↦ A q w) z +
+          HomConnectionGen.homBundleCovariantDerivativeGen
+            I M F V F V (cov q) (cov q) (fun w ↦ A q w) z (X q z) +
+          reaction q z (A q z))
+    {s t : ℝ} (hs : 0 ≤ s) (hst : s < t) (ht : t ≤ T)
+    (x y : M) (hsource : 0 < (hAsymm s x).lowerKyFanSum k) :
+    0 < (hAsymm t y).lowerKyFanSum k := by
+  let u : ℝ := (s + t) / 2
+  have hsu : s < u := by dsimp [u]; linarith
+  have hut : u < t := by dsimp [u]; linarith
+  have huT : u < T := hut.trans_le ht
+  obtain ⟨η, hη, hηbound⟩ := exists_pos_le_lowerKyFanSum_on_time_interval
+    G cov hcov hT hkpos hk A hAsymm hApos hphiCont hA_bound X reaction hreactionNull
+    hreactionLip hgrad hheat hGconn hAt hevolution hs hsu huT.le x hsource
+  have hxu : 0 < (hAsymm u x).lowerKyFanSum k :=
+    hη.trans_le (hηbound u ⟨hsu.le, le_rfl⟩)
+  have hyu : 0 < (hAsymm u y).lowerKyFanSum k := by
+    exact lowerKyFanSum_pos_on_preconnected_open_set (I := I) G cov hcov hs hsu huT.le
+      isOpen_univ (by rw [I.interior_eq_univ]) isPreconnected_univ hkpos hk A hAsymm
+      (fun q hq z _ => hApos q ⟨hs.trans hq.1, hq.2.trans huT.le⟩ z)
+      (hphiCont.mono fun p hp => ⟨⟨hs.trans hp.1.1, hp.1.2.trans huT.le⟩, hp.2⟩)
+      (fun hK _ => hA_bound hs hsu huT.le hK) X reaction hreactionNull
+      (fun hK _ B => hreactionLip hs hsu huT.le hK B)
+      (fun rho hrho => (hgrad rho hrho).mono fun p hp =>
+        ⟨⟨hs.trans hp.1.1, hp.1.2.trans huT.le⟩, hp.2⟩)
+      (fun rho hrho => (hheat rho hrho).mono fun p hp =>
+        ⟨⟨hs.trans hp.1.1, hp.1.2.trans huT.le⟩, hp.2⟩)
+      (fun q hq => hGconn q ⟨hs.trans_lt hq.1, hq.2.trans_lt huT⟩)
+      (fun q hq z _ => hAt q ⟨hs.trans_lt hq.1, hq.2.trans_lt huT⟩ z)
+      (fun q hq z _ => hevolution q ⟨hs.trans_lt hq.1, hq.2.trans_lt huT⟩ z)
+      (Set.mem_univ x) hxu y (Set.mem_univ y)
+  obtain ⟨δ, hδ, hδbound⟩ := exists_pos_le_lowerKyFanSum_on_time_interval
+    G cov hcov hT hkpos hk A hAsymm hApos hphiCont hA_bound X reaction hreactionNull
+    hreactionLip hgrad hheat hGconn hAt hevolution (hs.trans hsu.le) hut ht y hyu
+  exact hδ.trans_le (hδbound t ⟨hut.le, le_rfl⟩)
+
+theorem finrank_range_le_at_later_time_of_interior_evolution
+    [I.Boundaryless] [ConnectedSpace M]
+    [VectorBundle ℝ EModel (TangentSpace I : M → Type _)]
+    [fiberFinite : ∀ z, FiniteDimensional ℝ (V z)]
+    (G : MetricConnectionFamily (I := I) (M := M) ℝ)
+    (cov : ℝ → CovariantDerivative I F V)
+    [∀ q, ContMDiffCovariantDerivative (cov q) ∞]
+    (hcov : ∀ q, (cov q).IsMetricCompatible)
+    {T : ℝ} (hT : 0 < T)
+    (A : ℝ → Cₛ^∞⟮I; F →L[ℝ] F, (fun z : M ↦ V z →L[ℝ] V z)⟯)
+    (hAsymm : ∀ q z,
+      ((A q z : V z →L[ℝ] V z) : V z →ₗ[ℝ] V z).IsSymmetric)
+    (hApos : ∀ q ∈ Icc 0 T, ∀ z, (A q z).IsPositive)
+    (hphiCont : ∀ k, k ≤ Module.finrank ℝ F →
+      ContinuousOn (fun p : ℝ × M ↦
+        (hAsymm p.1 p.2).lowerKyFanSum k)
+        (Icc 0 T ×ˢ (Set.univ : Set M)))
+    (hA_bound : ∀ {s t : ℝ}, 0 ≤ s → s < t → t ≤ T →
+      ∀ {Kset : Set M}, IsCompact Kset →
+        ∃ R, ∀ q ∈ Icc s t, ∀ z ∈ Kset, ‖A q z‖ ≤ R)
+    (X : ℝ → (z : M) → TangentSpace I z)
+    (reaction : ℝ → (z : M) →
+      (V z →L[ℝ] V z) → V z →L[ℝ] V z)
+    (hreactionNull : ∀ q z,
+      satisfiesNullEigenvectorCondition (reaction q z))
+    (hreactionLip : ∀ {s t : ℝ}, 0 ≤ s → s < t → t ≤ T →
+      ∀ {Kset : Set M}, IsCompact Kset → ∀ R,
+        ∃ Klip : NNReal, ∀ q ∈ Ioc s t, ∀ z ∈ Kset,
+          LipschitzOnWith Klip (reaction q z)
+            {B : V z →L[ℝ] V z | B.IsPositive ∧ ‖B‖ ≤ 2 * R})
+    (hgrad : ∀ (rho : M → ℝ), ContMDiff I 𝓘(ℝ, ℝ) ∞ rho →
+      ContinuousOn (fun p : ℝ × M =>
+        (G.metric p.1).inner p.2
+          (gradientFun (I := I) (G.metric p.1) rho p.2)
+          (gradientFun (I := I) (G.metric p.1) rho p.2))
+        (Icc 0 T ×ˢ (Set.univ : Set M)))
+    (hheat : ∀ (rho : M → ℝ), ContMDiff I 𝓘(ℝ, ℝ) ∞ rho →
+      ContinuousOn (fun p : ℝ × M =>
+        heatOperatorWithDrift (I := I) G p.1 (X p.1) rho p.2)
+        (Icc 0 T ×ˢ (Set.univ : Set M)))
+    (hGconn : ∀ q ∈ Ioo 0 T,
+      G.connection q = LeviCivita (I := I) (G.metric q))
+    (hAt : ∀ q ∈ Ioo 0 T, ∀ z,
+      DifferentiableAt ℝ (fun r ↦ A r z) q)
+    (hevolution : ∀ q ∈ Ioo 0 T, ∀ z,
+      deriv (fun r ↦ A r z) q =
+        rawBundleEndomorphismConnLap (I := I) (G.metric q) (cov q)
+            (fun w ↦ A q w) z +
+          HomConnectionGen.homBundleCovariantDerivativeGen
+            I M F V F V (cov q) (cov q) (fun w ↦ A q w) z (X q z) +
+          reaction q z (A q z))
+    {s t : ℝ} (hs : 0 ≤ s) (hst : s < t) (ht : t ≤ T)
+    (x y : M) :
+    Module.finrank ℝ (A s x).range ≤ Module.finrank ℝ (A t y).range := by
+  let ex := (trivializationAt F V x).linearEquivAt ℝ x
+    (mem_baseSet_trivializationAt F V x)
+  let ey := (trivializationAt F V y).linearEquivAt ℝ y
+    (mem_baseSet_trivializationAt F V y)
+  have hfinrank : Module.finrank ℝ (V x) = Module.finrank ℝ (V y) :=
+    ex.finrank_eq.trans ey.finrank_eq.symm
+  apply finrank_range_le_of_lowerKyFanSum_pos_spreading_of_finrank_eq
+    (hApos s ⟨hs, hst.le.trans ht⟩ x)
+    (hApos t ⟨hs.trans hst.le, ht⟩ y) hfinrank
+  intro k hkpos hkx hsource
+  have hkF : k ≤ Module.finrank ℝ F := by
+    rw [← ex.finrank_eq]
+    exact hkx
+  exact lowerKyFanSum_pos_at_later_time_of_interior_evolution
+    (I := I) G cov hcov hT hkpos hkF A hAsymm hApos (hphiCont k hkF)
+    hA_bound X reaction hreactionNull hreactionLip hgrad hheat hGconn hAt
+    hevolution hs hst ht x y hsource
+
+
 theorem lowerKyFanSum_pos_at_later_time_of_metricFamilySmoothOn
     [I.Boundaryless] [ConnectedSpace M]
     [VectorBundle ℝ EModel (TangentSpace I : M → Type _)]
@@ -1045,140 +1378,16 @@ theorem lowerKyFanSum_pos_at_later_time_of_metricFamilySmoothOn
     {s t : ℝ} (hs : 0 ≤ s) (hst : s < t) (ht : t ≤ T)
     (x y : M) (hsource : 0 < (hAsymm s x).lowerKyFanSum k) :
     0 < (hAsymm t y).lowerKyFanSum k := by
-  have hgrad (rho : M → ℝ) (hrho : ContMDiff I 𝓘(ℝ, ℝ) ∞ rho) :=
-    G.gradient_norm_sq_continuousOn hG hreg hrho
-  have hheat (rho : M → ℝ) (hrho : ContMDiff I 𝓘(ℝ, ℝ) ∞ rho) :=
-    G.heatOperatorWithDrift_continuousOn hG hreg (uniqueDiffOn_Icc hT)
-      hGconnClosed X hrho (G.driftTerm_continuousOn hG hreg X hX hrho)
-  have hGconn : ∀ q ∈ Ioc 0 T,
-      G.connection q = LeviCivita (I := I) (G.metric q) :=
-    fun q hq => hGconnClosed q ⟨hq.1.le, hq.2⟩
-  let phi : ℝ → M → ℝ := fun q z => (hAsymm q z).lowerKyFanSum k
-  have hsT : s ∈ Icc 0 T := ⟨hs, hst.le.trans ht⟩
-  have hphiAt : ContinuousAt (phi s) x := by
-    have hcont := hphiCont.comp
-      (continuous_const.prodMk continuous_id).continuousOn
-      (fun z (_ : z ∈ (Set.univ : Set M)) => ⟨hsT, Set.mem_univ z⟩)
-    exact (continuousOn_univ.mp hcont).continuousAt
-  obtain ⟨U, hUopen, hxU, hUcompact, -, -⟩ :=
-    SmoothBumpFunction.exists_annulus_neighborhood (I := I) x
-      (show (Set.univ : Set M) ∈ 𝓝 x from univ_mem)
-  let Kset : Set M := closure U
-  have hxKset : x ∈ interior Kset := hUopen.subset_interior_closure hxU
-  let W : Set M := U ∩ (phi s) ⁻¹' Ioi (phi s x / 2)
-  have hW : W ∈ 𝓝 x :=
-    inter_mem (hUopen.mem_nhds hxU)
-      (hphiAt.preimage_mem_nhds (isOpen_Ioi.mem_nhds (half_lt_self hsource)))
-  have hkReal : 0 < (k : ℝ) := by exact_mod_cast hkpos
-  let epsilon : ℝ := phi s x / (2 * (k : ℝ))
-  have hepsilon : 0 < epsilon := div_pos hsource (mul_pos (by norm_num) hkReal)
-  have hkepsilon : (k : ℝ) * epsilon = phi s x / 2 := by
-    dsimp only [epsilon]
-    field_simp
-  obtain ⟨b, C, hb, hbx, hbeps, hbW, -, hbheat⟩ :=
-    exists_spatial_barrier_positive_at (I := I) G hT X hgrad hheat hW hepsilon
-  obtain ⟨R, hR⟩ := hA_bound hs hst ht hUcompact
-  obtain ⟨Klip, hKlip⟩ := hreactionLip hs hst ht hUcompact R
-  let c : ℝ := (Klip : ℝ) + 1
-  have hc : (Klip : ℝ) < c := by dsimp only [c]; linarith
-  let f : ℝ → M → ℝ := fun q z => Real.exp (-(c + C) * (q - s)) * b z
-  have hfSmooth : ContMDiff (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ, ℝ) ∞
-      (fun p : ℝ × M => f p.1 p.2) := by
-    exact ((Real.contDiff_exp.contMDiff.comp
-      (contMDiff_const.mul (contMDiff_fst.sub contMDiff_const))).mul
-      (hb.comp contMDiff_snd))
-  have hApos' : ∀ q ∈ Icc s t, ∀ z ∈ Kset, (A q z).IsPositive := by
-    intro q hq z _
-    exact hApos q ⟨hs.trans hq.1, hq.2.trans ht⟩ z
-  have hphiNonneg : ∀ q ∈ Icc s t, ∀ z ∈ Kset, 0 ≤ phi q z := by
-    intro q hq z hz
-    exact LinearMap.IsSymmetric.lowerKyFanSum_nonneg
-      ((ContinuousLinearMap.isPositive_toLinearMap_iff (A q z)).mpr
-        (hApos' q hq z hz)) k
-  have hfInitial : ∀ z ∈ Kset, (k : ℝ) * f s z ≤ phi s z := by
-    intro z hz
-    simp only [f, sub_self, mul_zero, Real.exp_zero, one_mul]
-    by_cases hbz : 0 < b z
-    · have hzW := hbW z hbz
-      have hkb : (k : ℝ) * b z < phi s x / 2 := by
-        rw [← hkepsilon]
-        exact mul_lt_mul_of_pos_left (hbeps z) hkReal
-      exact (hkb.trans hzW.2).le
-    · exact (mul_nonpos_of_nonneg_of_nonpos hkReal.le (le_of_not_gt hbz)).trans
-        (hphiNonneg s ⟨le_rfl, hst.le⟩ z hz)
-  have hfBoundary : ∀ q ∈ Icc s t, ∀ z ∈ frontier Kset,
-      (k : ℝ) * f q z ≤ phi q z := by
-    intro q hq z hz
-    have hzKset : z ∈ Kset := by
-      simpa only [Kset, closure_closure] using frontier_subset_closure hz
-    have hbz : b z ≤ 0 := by
-      by_contra hneg
-      have hzU := (hbW z (lt_of_not_ge hneg)).1
-      exact hz.2 (hUopen.subset_interior_closure hzU)
-    exact (mul_nonpos_of_nonneg_of_nonpos hkReal.le
-      (mul_nonpos_of_nonneg_of_nonpos (Real.exp_pos _).le hbz)).trans
-      (hphiNonneg q hq z hzKset)
-  have hfSlice (q : ℝ) : ContMDiff I 𝓘(ℝ, ℝ) ∞ (f q) :=
-    contMDiff_const.mul hb
-  have hfSubsolution : ∀ q ∈ Ioc s t, ∀ z ∈ interior Kset, 0 < f q z →
-      parabolicOperatorWithDrift (I := I) G T X f q z ≤ -c * f q z := by
-    intro q hq z _ hfqz
-    have hqT : q ∈ Icc 0 T := ⟨(hs.trans_lt hq.1).le, hq.2.trans ht⟩
-    have huniq := (uniqueDiffOn_Icc hT).uniqueDiffWithinAt hqT
-    have hbz : 0 < b z := (mul_pos_iff_of_pos_left (Real.exp_pos _)).mp hfqz
-    have hderiv : HasDerivAt (fun r => f r z) (-(c + C) * f q z) q := by
-      have hd : HasDerivAt (fun r : ℝ => Real.exp (-(c + C) * (r - s)) * b z)
-          (Real.exp (-(c + C) * (q - s)) * (-(c + C)) * b z) q := by
-        simpa only [id_eq, mul_one] using
-          ((((hasDerivAt_id q).sub_const s).const_mul (-(c + C))).exp.mul_const (b z))
-      exact hd.congr_deriv (by dsimp only [f]; ring)
-    have hheatEq : heatOperatorWithDrift (I := I) G q (X q) (f q) z =
-        Real.exp (-(c + C) * (q - s)) *
-          heatOperatorWithDrift (I := I) G q (X q) b z :=
-      heatOperatorWithDrift_const_smul (I := I) G q (X q) _
-        (fun w => hb.mdifferentiable (by simp) w)
-        (gradientFun_mdiffAt (I := I) (G.metric q) hb z)
-    unfold parabolicOperatorWithDrift
-    rw [hderiv.hasDerivWithinAt.derivWithin huniq, hheatEq]
-    have hbound := mul_le_mul_of_nonneg_left (hbheat q hqT z hbz)
-      (Real.exp_pos (-(c + C) * (q - s))).le
-    dsimp only [f] at hbound ⊢
-    nlinarith
-  have hKsetInterior : interior Kset ⊆ I.interior M := by
-    rw [I.interior_eq_univ]
-    exact subset_univ _
-  have hcompare := mul_le_lowerKyFanSum_on_compact_set_of_subsolution
-    (I := I) G cov hcov hT hs ht hkpos hk hUcompact hKsetInterior
-    A hAsymm hApos'
-    (hphiCont.mono fun p hp =>
-      ⟨⟨hs.trans hp.1.1, hp.1.2.trans ht⟩, Set.mem_univ p.2⟩)
-    hR X reaction hreactionNull
-    (fun q hq z hz => hKlip q hq z (interior_subset hz))
-    f hfSmooth.continuous.continuousOn hfInitial hfBoundary
-    (fun q _ z _ => by dsimp only [f]; fun_prop)
-    (fun q _ z _ => (hfSlice q).mdifferentiable (by simp) z)
-    (fun q _ z _ => gradientFun_mdiffAt (I := I) (G.metric q) (hfSlice q) z)
-    hc hfSubsolution
-    (fun q hq => hGconn q ⟨hs.trans_lt hq.1, hq.2.trans ht⟩)
-    (fun q hq z _ => hAt q ⟨hs.trans_lt hq.1, hq.2.trans ht⟩ z)
-    (fun q hq z _ => hevolution q ⟨hs.trans_lt hq.1, hq.2.trans ht⟩ z)
-  have hxt : 0 < (hAsymm t x).lowerKyFanSum k :=
-    (mul_pos hkReal (mul_pos (Real.exp_pos _) hbx)).trans_le
-      (hcompare t ⟨hst.le, le_rfl⟩ x (interior_subset hxKset))
-  exact lowerKyFanSum_pos_on_preconnected_open_set (I := I) G cov hcov hs hst ht
-    isOpen_univ (by rw [I.interior_eq_univ]) isPreconnected_univ hkpos hk A hAsymm
-    (fun q hq z _ => hApos q ⟨hs.trans hq.1, hq.2.trans ht⟩ z)
-    (hphiCont.mono fun p hp => ⟨⟨hs.trans hp.1.1, hp.1.2.trans ht⟩, hp.2⟩)
-    (fun hK _ => hA_bound hs hst ht hK) X reaction hreactionNull
-    (fun hK _ B => hreactionLip hs hst ht hK B)
-    (fun rho hrho => (hgrad rho hrho).mono fun p hp =>
-      ⟨⟨hs.trans hp.1.1, hp.1.2.trans ht⟩, hp.2⟩)
-    (fun rho hrho => (hheat rho hrho).mono fun p hp =>
-      ⟨⟨hs.trans hp.1.1, hp.1.2.trans ht⟩, hp.2⟩)
-    (fun q hq => hGconn q ⟨hs.trans_lt hq.1, hq.2.trans ht⟩)
-    (fun q hq z _ => hAt q ⟨hs.trans_lt hq.1, hq.2.trans ht⟩ z)
-    (fun q hq z _ => hevolution q ⟨hs.trans_lt hq.1, hq.2.trans ht⟩ z)
-    (Set.mem_univ x) hxt y (Set.mem_univ y)
+  exact lowerKyFanSum_pos_at_later_time_of_interior_evolution
+    G cov hcov hT hkpos hk A hAsymm hApos hphiCont hA_bound X reaction
+    hreactionNull hreactionLip
+    (fun rho hrho => G.gradient_norm_sq_continuousOn hG hreg hrho)
+    (fun rho hrho => G.heatOperatorWithDrift_continuousOn hG hreg
+      (uniqueDiffOn_Icc hT) hGconnClosed X hrho
+      (G.driftTerm_continuousOn hG hreg X hX hrho))
+    (fun q hq => hGconnClosed q ⟨hq.1.le, hq.2.le⟩)
+    (fun q hq => hAt q ⟨hq.1, hq.2.le⟩)
+    (fun q hq => hevolution q ⟨hq.1, hq.2.le⟩) hs hst ht x y hsource
 
 theorem finrank_range_le_at_later_time_of_metricFamilySmoothOn
     [I.Boundaryless] [ConnectedSpace M]
