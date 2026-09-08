@@ -106,6 +106,27 @@ theorem multilinearRiemannianMetric_inner_tensorOfDualLinearForms (k : ℕ) (x :
   intro j _
   rw [Finset.prod_mul_distrib]
 
+theorem multilinearRiemannianMetric_inner_tensorOfInnerSL (k : ℕ) (x : B)
+    (v : Fin k → V x) (T : Bundle.continuousMultilinearMap ℝ k F V x) :
+    (multilinearRiemannianMetric (F := F) V k).inner x
+      (ContinuousMultilinearMap.tensorOfDualLinearForms ℝ (V x) k
+        (fun i => innerSL ℝ (v i))) T = T v := by
+  classical
+  let _ : FiniteDimensional ℝ (V x) := VectorBundle.finiteDimensional ℝ F V x
+  let b := stdOrthonormalBasis ℝ (V x)
+  rw [multilinearRiemannianMetric_inner_eq_sum V k x b]
+  simp only [ContinuousMultilinearMap.tensorOfDualLinearForms_apply, innerSL_apply_apply]
+  conv_rhs => rw [show v = fun i => ∑ j, inner ℝ (b j) (v i) • b j from
+    funext fun i => (b.sum_repr' (v i)).symm]
+  rw [T.map_sum]
+  simp_rw [T.map_smul_univ, smul_eq_mul]
+  apply Finset.sum_congr rfl
+  intro j _
+  congr 1
+  apply Finset.prod_congr rfl
+  intro i _
+  exact real_inner_comm _ _
+
 end Bundle
 
 

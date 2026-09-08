@@ -4401,6 +4401,7 @@ import DifferentialGeometry.Geometry.Comparison.Volume.NormalJacobianCompatibili
 import DifferentialGeometry.Geometry.Connection.Connector
 import DifferentialGeometry.Geometry.Connection.MetricCompatibility.Connector
 import DifferentialGeometry.Geometry.Metric.BundleMultilinear
+import DifferentialGeometry.Geometry.Metric.BundleMixed
 import DifferentialGeometry.Geometry.Metric.BundleAlternating
 import DifferentialGeometry.Geometry.Metric.ExteriorPower
 import DifferentialGeometry.Geometry.Metric.BundlePullbackSmooth
@@ -4410,6 +4411,7 @@ import DifferentialGeometry.Analysis.Parabolic.Dirichlet.EnergyVariation
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.WeakUniqueness
 import DifferentialGeometry.Geometry.Comparison.Volume.ExponentialDensity
 import DifferentialGeometry.Geometry.Connection.MetricCompatibility.Multilinear
+import DifferentialGeometry.Geometry.Connection.MetricCompatibility.Mixed
 import DifferentialGeometry.Geometry.Connection.MetricCompatibility.Alternating
 import DifferentialGeometry.Geometry.Connection.MetricCompatibility.AlternatingEndomorphism
 import DifferentialGeometry.Geometry.Connection.MetricCompatibility.Trivial
