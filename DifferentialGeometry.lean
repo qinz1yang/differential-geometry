@@ -4763,3 +4763,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Soliton.CurvatureRankModels
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Soliton.CylinderClassification
 import DifferentialGeometry.Geometry.Metric.SelfAdjointAssociated
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Soliton.Classification
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Soliton.ConstantPotential
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Soliton.Product
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Soliton.Sphere
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Soliton.Cylinder
