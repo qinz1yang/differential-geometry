@@ -61,6 +61,75 @@ noncomputable def tailBallSystem
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
+omit [I.Boundaryless] [NeZero (Module.finrank ℝ E)] [∀ j, SigmaCompactSpace (M j)] in
+theorem tail_ball_system_map_apply
+    (b : ∀ j, M j)
+    (Ψ : ∀ j, PartialDiffeomorph I I (M j) (M (j + 1)) (∞ : WithTop ℕ∞))
+    (hbase : ∀ j, (Ψ j : M j → M (j + 1)) (b j) = b (j + 1))
+    (g : ∀ j, SmoothRiemannianMetric I (M j))
+    (hnorm : ∀ j (x : M j) (v : TangentSpace I x),
+      ‖v‖ₑ = ENNReal.ofReal (Real.sqrt ((g j).inner x v v)))
+    (j₀ : ℕ)
+    (D₀ : ∀ n k, PartialDiffeomorphMetricApproximation (I := I)
+      (Metric.closedBall (b (j₀ + n)) ((2 : ℝ) ^ (j₀ + n))) (1 / 2) 0
+      (chainComp (I := I) (Mf := M) Ψ (j₀ + n) k)
+      (g (j₀ + n)) (g ((j₀ + n) + k)))
+    (n k : ℕ) (x : tailBallOpen b j₀ n) :
+    letI : ∀ m, Nonempty (tailBallOpen b j₀ m) := fun m => tail_ball_nonempty b j₀ m
+    let S := tailBallSystem (I := I) b Ψ hbase g hnorm j₀ D₀
+    cast (congrArg M (Nat.add_assoc j₀ n k).symm)
+        ((S.toSeqSystem.map (Nat.le_add_right n k) x : tailBallOpen b j₀ (n + k)) :
+          M (j₀ + (n + k))) =
+      (chainComp (I := I) (Mf := M) Ψ (j₀ + n) k :
+        M (j₀ + n) → M ((j₀ + n) + k)) x := by
+  let : ∀ m, Nonempty (tailBallOpen b j₀ m) := fun m => tail_ball_nonempty b j₀ m
+  let hU := fun m => tail_ball_source (I := I) b Ψ g j₀ m (D₀ m)
+  let hmap : ∀ m,
+      (chainComp (I := I) (Mf := M) Ψ (j₀ + m) 1 :
+        M (j₀ + m) → M (j₀ + (m + 1))) ''
+          (tailBallOpen b j₀ m : Set (M (j₀ + m))) ⊆
+        (tailBallOpen b j₀ (m + 1) : Set (M (j₀ + (m + 1)))) := fun m => by
+    intro y hy
+    change y ∈ Metric.ball (b ((j₀ + m) + 1)) ((2 : ℝ) ^ (m + 1))
+    exact tail_ball_image (I := I) b Ψ hbase g hnorm j₀ m (D₀ m 1) hy
+  have hm := SmoothSeqSystem.ofPartialDiffeomorphs_map_apply
+    (tailBallOpen b j₀) (fun m => chainComp Ψ (j₀ + m) 1)
+    (fun m => hU m 1) hmap n k x
+  exact (congrArg (cast (congrArg M (Nat.add_assoc j₀ n k).symm)) hm).trans
+    (chainComp_shift_apply Ψ j₀ n k x)
+
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+omit [I.Boundaryless] [NeZero (Module.finrank ℝ E)] [∀ j, SigmaCompactSpace (M j)] in
+theorem tail_ball_system_invIncl_incl
+    (b : ∀ j, M j)
+    (Ψ : ∀ j, PartialDiffeomorph I I (M j) (M (j + 1)) (∞ : WithTop ℕ∞))
+    (hbase : ∀ j, (Ψ j : M j → M (j + 1)) (b j) = b (j + 1))
+    (g : ∀ j, SmoothRiemannianMetric I (M j))
+    (hnorm : ∀ j (x : M j) (v : TangentSpace I x),
+      ‖v‖ₑ = ENNReal.ofReal (Real.sqrt ((g j).inner x v v)))
+    (j₀ : ℕ)
+    (D₀ : ∀ n k, PartialDiffeomorphMetricApproximation (I := I)
+      (Metric.closedBall (b (j₀ + n)) ((2 : ℝ) ^ (j₀ + n))) (1 / 2) 0
+      (chainComp (I := I) (Mf := M) Ψ (j₀ + n) k)
+      (g (j₀ + n)) (g ((j₀ + n) + k)))
+    (n k : ℕ) (x : tailBallOpen b j₀ n) :
+    letI : ∀ m, Nonempty (tailBallOpen b j₀ m) := fun m => tail_ball_nonempty b j₀ m
+    let S := tailBallSystem (I := I) b Ψ hbase g hnorm j₀ D₀
+    cast (congrArg M (Nat.add_assoc j₀ n k).symm)
+        ((Function.invFun (S.toSeqSystem.incl (n + k))
+            (S.toSeqSystem.incl n x) : tailBallOpen b j₀ (n + k)) :
+          M (j₀ + (n + k))) =
+      (chainComp (I := I) (Mf := M) Ψ (j₀ + n) k :
+        M (j₀ + n) → M ((j₀ + n) + k)) x := by
+  let : ∀ m, Nonempty (tailBallOpen b j₀ m) := fun m => tail_ball_nonempty b j₀ m
+  let S := tailBallSystem (I := I) b Ψ hbase g hnorm j₀ D₀
+  have hv := congrArg Subtype.val (S.invIncl_incl_le (Nat.le_add_right n k) x)
+  exact (congrArg (cast (congrArg M (Nat.add_assoc j₀ n k).symm)) hv).trans
+    (tail_ball_system_map_apply b Ψ hbase g hnorm j₀ D₀ n k x)
+
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [I.Boundaryless] [NeZero (Module.finrank ℝ E)] in
 omit [∀ j, SigmaCompactSpace (M j)] in
 theorem tail_ball_system_map_center_succ

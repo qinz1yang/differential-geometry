@@ -59,6 +59,33 @@ theorem chainComp_apply_succ {Mf : ℕ → Type u} [∀ j, TopologicalSpace (Mf 
           ((chainComp (I := I) (Mf := Mf) Ψ j l : Mf j → Mf (j + l)) x) :=
   rfl
 
+theorem chainComp_shift_apply {Mf : ℕ → Type u} [∀ j, TopologicalSpace (Mf j)]
+    [∀ j, ChartedSpace H (Mf j)]
+    (Ψ : ∀ n, PartialDiffeomorph I I (Mf n) (Mf (n + 1)) (∞ : WithTop ℕ∞))
+    (j₀ n k : ℕ) (x : Mf (j₀ + n)) :
+    cast (congrArg Mf (Nat.add_assoc j₀ n k).symm)
+      (chainComp (Mf := fun m => Mf (j₀ + m))
+        (fun m => chainComp Ψ (j₀ + m) 1) n k x) =
+      chainComp Ψ (j₀ + n) k x := by
+  induction k with
+  | zero => rfl
+  | succ k ih =>
+      rw [chainComp_apply_succ, chainComp_apply_succ]
+      conv_rhs => rw [chainComp_apply_succ]
+      change cast (congrArg Mf (Nat.add_assoc j₀ n (k + 1)).symm)
+        ((Ψ (j₀ + (n + k))) (chainComp (Mf := fun m => Mf (j₀ + m))
+          (fun m => chainComp Ψ (j₀ + m) 1) n k x)) = _
+      rw [← ih]
+      have hcast : ∀ {a c : ℕ} (h : a = c) (y : Mf c),
+          cast (congrArg Mf (congrArg Nat.succ h).symm) ((Ψ c) y) =
+            (Ψ a) (cast (congrArg Mf h).symm y) := by
+        intro a c h y
+        cases h
+        rfl
+      exact hcast (Nat.add_assoc j₀ n k)
+        (chainComp (Mf := fun m => Mf (j₀ + m))
+          (fun m => chainComp Ψ (j₀ + m) 1) n k x)
+
 theorem chainComp_base {Mf : ℕ → Type u} [∀ j, TopologicalSpace (Mf j)]
     [∀ j, ChartedSpace H (Mf j)]
     (Ψ : ∀ j, PartialDiffeomorph I I (Mf j) (Mf (j + 1)) (∞ : WithTop ℕ∞))
