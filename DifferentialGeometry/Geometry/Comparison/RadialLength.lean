@@ -1,4 +1,5 @@
 import DifferentialGeometry.Analysis.Calculus.Seminorm.Radial
+import DifferentialGeometry.Analysis.ODE.Stability.Tube
 import Mathlib.Geometry.Manifold.ContMDiffMFDeriv
 import Mathlib.Geometry.Manifold.Riemannian.PathELength
 import Mathlib.Topology.VectorBundle.Riemannian
@@ -94,3 +95,40 @@ theorem Manifold.norm_sub_le_pathELength_comp_of_radial_bound
   filter_upwards with t ht
   rw [hφ_eq t ht]
   exact (hEnorm (γ t) (mfderiv 𝓘(ℝ, ℝ) J γ t 1)).symm.le
+
+theorem Manifold.mapsTo_ball_of_pathELength_comp_lt_of_radial_bound
+    [(x : N) → ENorm (TangentSpace J x)]
+    (g : Bundle.ContinuousRiemannianMetric E (TangentSpace J : N → Type _))
+    (hEnorm : ∀ (x : N) (v : TangentSpace J x),
+      ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x v v)))
+    (F : V → N) {η : ℝ → V} {a b R : ℝ}
+    (hab : a ≤ b) (hη : ContDiffOn ℝ 1 η (Icc a b))
+    (hF : ∀ x ∈ Metric.closedBall (0 : V) R, ContMDiffAt 𝓘(ℝ, V) J 1 F x)
+    (hrad : ∀ x ∈ Metric.closedBall (0 : V) R, ∀ v : V,
+      inner ℝ x v ≤ ‖x‖ * Real.sqrt
+        (g.inner (F x) (mfderiv 𝓘(ℝ, V) J F x v)
+          (mfderiv 𝓘(ℝ, V) J F x v)))
+    (hlen : Manifold.pathELength J (F ∘ η) a b <
+      ENNReal.ofReal (R - ‖η a‖)) :
+    MapsTo η (Icc a b) (Metric.ball (0 : V) R) := by
+  have hstart : ‖η a‖ < R := by
+    have hp : 0 < ENNReal.ofReal (R - ‖η a‖) := zero_le.trans_lt hlen
+    exact sub_pos.mp (ENNReal.ofReal_pos.mp hp)
+  intro t ht
+  rw [Metric.mem_ball, dist_zero_right]
+  by_contra hnot
+  obtain ⟨τ, hτ, hτeq, hbefore⟩ :=
+    DifferentialGeometry.Analysis.ODE.exists_first_hit_Icc
+      hab hη.continuousOn.norm hstart ⟨t, ht, not_lt.mp hnot⟩
+  have hstay (s : ℝ) (hs : s ∈ Icc a τ) :
+      η s ∈ Metric.closedBall (0 : V) R := by
+    simpa only [Metric.mem_closedBall, dist_zero_right] using hbefore s hs
+  have hnorm := Manifold.norm_sub_le_pathELength_comp_of_radial_bound
+    g hEnorm F hτ.1 (hη.mono (Icc_subset_Icc le_rfl hτ.2))
+    (fun s hs => hF (η s) (hstay s hs))
+    (fun s hs => hrad (η s) (hstay s (Ioo_subset_Icc_self hs)))
+  rw [hτeq] at hnorm
+  have hprefix : Manifold.pathELength J (F ∘ η) a τ ≤
+      Manifold.pathELength J (F ∘ η) a b :=
+    Manifold.pathELength_mono le_rfl hτ.2
+  exact (not_lt_of_ge (hnorm.trans hprefix)) hlen
