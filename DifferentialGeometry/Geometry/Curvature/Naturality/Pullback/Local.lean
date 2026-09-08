@@ -24,7 +24,7 @@ omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace N] in
 theorem metricRm04StandardAt_pullback_localDiffeo
     (g : SmoothRiemannianMetric I N)
-    (V : TopologicalSpace.Opens N) [SigmaCompactSpace V] [T2Space V]
+    (V : TopologicalSpace.Opens N) [T2Space V]
       [IsManifold I 1 V]
     (W : TopologicalSpace.Opens M) [T2Space W]
       [IsManifold I 1 W]
