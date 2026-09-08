@@ -45,7 +45,7 @@ private theorem exists_parallel_frame_of_contMDiff
   rw [hconst, hV0 i, hV0 j]
   exact hON0 i j
 
-theorem exists_parallel_frame_on_Icc
+private theorem exists_parallel_frame_on_Icc_zero
     (g : SmoothRiemannianMetric I M) (γ : ℝ → M) {U : Set ℝ} {L : ℝ}
     (hγ : ContMDiffOn 𝓘(ℝ, ℝ) I (2 : ℕ∞) γ U)
     (hU : IsOpen U) (hL : 0 ≤ L) (hseg : Icc (0 : ℝ) L ⊆ U)
@@ -97,6 +97,73 @@ theorem exists_parallel_frame_on_Icc
     rw [← hpoint]
     exact hFGON t (hsub ht) i j
 
+theorem exists_parallel_frame_on_Icc
+    (g : SmoothRiemannianMetric I M) (γ : ℝ → M) {U : Set ℝ} {a b : ℝ}
+    (hγ : ContMDiffOn 𝓘(ℝ, ℝ) I (2 : ℕ∞) γ U)
+    (hU : IsOpen U) (hab : a ≤ b) (hseg : Icc a b ⊆ U)
+    {ι : Type*} [DecidableEq ι] (v : ι → TangentSpace I (γ a))
+    (hON0 : ∀ i j, g.inner (γ a) (v i) (v j) = if i = j then (1 : ℝ) else 0) :
+    ∃ F : ι → ∀ t : ℝ, TangentSpace I (γ t),
+      (∀ i, F i a = v i) ∧
+      (∀ i, ∀ t ∈ Icc a b,
+        DifferentiableAt ℝ (chartRepAt (I := I) γ (F i) t) t) ∧
+      (∀ i, ∀ t ∈ Icc a b, covDerivAlong (I := I) g γ (F i) t = 0) ∧
+      (∀ t ∈ Icc a b, ∀ i j,
+        g.inner (γ t) (F i t) (F j t) = if i = j then (1 : ℝ) else 0) := by
+  let Γ : ℝ → M := fun s => γ (s + a)
+  let V : Set ℝ := (fun s : ℝ => s + a) ⁻¹' U
+  have hV : IsOpen V := hU.preimage (continuous_id.add continuous_const)
+  have hΓ : ContMDiffOn 𝓘(ℝ, ℝ) I (2 : ℕ∞) Γ V :=
+    hγ.comp ((contDiff_id.add contDiff_const).contMDiff.contMDiffOn) (fun _ h => h)
+  have hVseg : Icc (0 : ℝ) (b - a) ⊆ V := by
+    intro t ht
+    exact hseg ⟨by linarith [ht.1], by linarith [ht.2]⟩
+  let w : ι → TangentSpace I (Γ 0) := fun i => show E from v i
+  have hONw : ∀ i j, g.inner (Γ 0) (w i) (w j) = if i = j then (1 : ℝ) else 0 := by
+    intro i j
+    change g.inner (γ (0 + a)) (show TangentSpace I (γ (0 + a)) from (v i : E))
+      (show TangentSpace I (γ (0 + a)) from (v j : E)) = _
+    rw [zero_add]
+    exact hON0 i j
+  obtain ⟨FΓ, hFΓ0, hFΓdiff, hFΓpar, hFΓON⟩ :=
+    exists_parallel_frame_on_Icc_zero
+      g Γ hΓ hV (sub_nonneg.mpr hab) hVseg w hONw
+  let F : ι → ∀ t : ℝ, TangentSpace I (γ t) := fun i t => show E from FΓ i (t - a)
+  have htshift t (ht : t ∈ Icc a b) : t - a ∈ Icc (0 : ℝ) (b - a) :=
+    ⟨sub_nonneg.mpr ht.1, sub_le_sub_right ht.2 a⟩
+  have hcurve t : γ =ᶠ[𝓝 t] (fun s => Γ (s - a)) :=
+    Eventually.of_forall fun s => by simp only [Γ, sub_add_cancel]
+  have hfield i t : ∀ᶠ s in 𝓝 t, (F i s : E) = (FΓ i (s - a) : E) :=
+    Eventually.of_forall fun _ => rfl
+  refine ⟨F, ?_, ?_, ?_, ?_⟩
+  · intro i
+    change (FΓ i (a - a) : E) = (v i : E)
+    rw [sub_self]
+    exact hFΓ0 i
+  · intro i t ht
+    have hcomp := (hFΓdiff i (t - a) (htshift t ht)).comp t
+      (differentiableAt_id.sub_const a)
+    have hrep := chartRep_congr_curve (I := I) (F i) (fun s => FΓ i (s - a))
+      (hcurve t) (hfield i t)
+    apply hrep.differentiableAt_iff.mpr
+    exact hcomp
+  · intro i t ht
+    have htV : t - a ∈ V := hVseg (htshift t ht)
+    have hΓat : MDifferentiableAt 𝓘(ℝ, ℝ) I Γ (t - a) :=
+      ((hΓ (t - a) htV).contMDiffAt (hV.mem_nhds htV)).mdifferentiableAt (by norm_num)
+    have hcomp := covDerivAlong_comp g Γ (FΓ i) (fun s => s - a) t hΓat
+      (hFΓdiff i (t - a) (htshift t ht)) (differentiableAt_id.sub_const a)
+    rw [hFΓpar i (t - a) (htshift t ht), smul_zero] at hcomp
+    exact (covDerivAlong_congr_curve g (F i) (fun s => FΓ i (s - a))
+      (hcurve t) (hfield i t)).trans hcomp
+  · intro t ht i j
+    have h := hFΓON (t - a) (htshift t ht) i j
+    change g.inner (γ (t - a + a))
+      (show TangentSpace I (γ (t - a + a)) from (FΓ i (t - a) : E))
+      (show TangentSpace I (γ (t - a + a)) from (FΓ j (t - a) : E)) = _ at h
+    rw [sub_add_cancel] at h
+    exact h
+
 theorem exists_parallel_frame
     (g : SmoothRiemannianMetric I M) (γ : ℝ → M)
     {N : ℕ} (hN : 2 ≤ N) (hγ : ContMDiff 𝓘(ℝ, ℝ) I (N : ℕ∞) γ) {L : ℝ} (hL : 0 < L)
@@ -110,7 +177,7 @@ theorem exists_parallel_frame
         covDerivAlong (I := I) g γ (e i) t = 0) ∧
       (∀ t ∈ Set.Icc (0 : ℝ) L, ∀ i j,
         g.inner (γ t) (e i t) (e j t) = if i = j then 1 else 0) := by
-  exact exists_parallel_frame_on_Icc (I := I) g γ
+  exact exists_parallel_frame_on_Icc (I := I) (a := 0) (b := L) g γ
     (hγ.of_le (by exact_mod_cast hN)).contMDiffOn isOpen_univ hL.le
     (subset_univ _) v hON0
 

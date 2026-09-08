@@ -2068,6 +2068,7 @@ import DifferentialGeometry.Geometry.Comparison.Variation.FirstVariation.Basic
 import DifferentialGeometry.Geometry.Comparison.Variation.Coordinates.FixedChartIdentities
 import DifferentialGeometry.Geometry.Comparison.Variation.Jacobi.Coordinates
 import DifferentialGeometry.Geometry.Comparison.Variation.Jacobi.Basic
+import DifferentialGeometry.Geometry.Comparison.Variation.Jacobi.BoundaryValue
 import DifferentialGeometry.Geometry.Comparison.Variation.Jacobi.Orthogonality
 import DifferentialGeometry.Geometry.Comparison.Variation.Jacobi.Variation
 import DifferentialGeometry.Geometry.Comparison.Variation.Jacobi.Gram

@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Comparison.Variation.Jacobi.BoundaryValue
 import DifferentialGeometry.Analysis.Calculus.SmoothExtension.Curve
 import DifferentialGeometry.Geometry.Curvature.Naturality.MetricLocality
 import DifferentialGeometry.Geometry.Metric.Path.Composition
@@ -2004,7 +2005,6 @@ theorem intrinsicExt_not_conj_of_shortLaunch
   let DJ : Real → E := fun t =>
     CovariantDerivativeAlong.covDerivAlong
       (I := 𝓘(Real, E)) gExt γ J t
-  let f : Real → Real := fun t => gExt.inner (γ t) (J t) (J t)
   have hγ :
       ContMDiff 𝓘(Real, Real) 𝓘(Real, E) ∞ γ := by
     simpa only [γ] using
@@ -2104,392 +2104,56 @@ theorem intrinsicExt_not_conj_of_shortLaunch
     simpa only [γ, J] using
       (intrinsicJacobi_diff
         (I := 𝓘(Real, E)) gExt hExt x v w t).1
-  have hfderiv (t : Real) :
-      HasDerivAt f
-        (gExt.inner (γ t) (DJ t) (J t) +
-          gExt.inner (γ t) (J t) (DJ t)) t := by
-    simpa only [f, DJ] using
-      Variation.metric_compat_hasDerivAt_inner
-        (I := 𝓘(Real, E)) (n := ∞) (by simp)
-        gExt γ J J t hγ (hJdiff t) (hJdiff t)
-  have hfcont : Continuous f :=
-    continuous_iff_continuousAt.mpr fun t => (hfderiv t).continuousAt
-  obtain ⟨c, hc, hcmax⟩ :=
-    (isCompact_Icc (a := (0 : Real)) (b := 1)).exists_isMaxOn
-      (Set.nonempty_Icc.2 zero_le_one) hfcont.continuousOn
-  have hft0pos : 0 < f t0 :=
-    gExt.pos (γ t0) (J t0) hJt0
-  have hfcpos : 0 < f c :=
-    hft0pos.trans_le
-      (Filter.eventually_principal.mp hcmax t0
-        ⟨ht0.1.le, ht0.2.le⟩)
-  have hinner00 (z : E) :
-      gExt.inner z (0 : E) (0 : E) = 0 :=
-    (gExt.inner z (0 : E)).map_zero
-  have hc0 : c ≠ 0 := by
-    intro hc0
-    subst c
-    simp only [f, hJ0, hinner00] at hfcpos
-    exact lt_irrefl (0 : Real) hfcpos
-  have hc1 : c ≠ 1 := by
-    intro hc1
-    subst c
-    simp only [f, hJ1, hinner00] at hfcpos
-    exact lt_irrefl (0 : Real) hfcpos
-  have hcIoo : c ∈ Set.Ioo (0 : Real) 1 :=
-    ⟨lt_of_le_of_ne hc.1 (Ne.symm hc0),
-      lt_of_le_of_ne hc.2 hc1⟩
-  have hJc : J c ≠ 0 := by
-    intro hJc
-    simp only [f, hJc, hinner00] at hfcpos
-    exact lt_irrefl (0 : Real) hfcpos
-  have hlocal : IsLocalMax f c := by
-    filter_upwards [Icc_mem_nhds hcIoo.1 hcIoo.2] with t ht
-    exact Filter.eventually_principal.mp hcmax t ht
-  have hsum0 :
-      gExt.inner (γ c) (DJ c) (J c) +
-          gExt.inner (γ c) (J c) (DJ c) = 0 :=
-    hlocal.hasDerivAt_eq_zero (hfderiv c)
-  have hpair0 : gExt.inner (γ c) (DJ c) (J c) = 0 := by
-    rw [gExt.symm (γ c) (J c) (DJ c)] at hsum0
-    linarith
-  have hperp : gExt.inner x v w = 0 := by
-    have hp :=
-      intrinsicJacobi_perp
-        (I := 𝓘(Real, E)) gExt hExt x v w
-    have hJ1' :
-        intrinsicJacobi
-            (I := 𝓘(Real, E)) gExt hExt x v w 1 = 0 := by
-      apply tangent_eq_zero_of_model_self (E := E)
-      simpa only [J, tangentSpaceModelContinuousLinearEquiv_apply] using hJ1
-    rw [hJ1'] at hp
-    have hz :
-        gExt.inner
-            (intrinsicGeodesic
-              (I := 𝓘(Real, E)) gExt hExt x v 1)
-            (intrinsicVelocityLift
-              (I := 𝓘(Real, E)) gExt hExt x v 1).snd
-            (0 : E) = 0 :=
-      (gExt.inner
-        (intrinsicGeodesic
-          (I := 𝓘(Real, E)) gExt hExt x v 1)
-        (intrinsicVelocityLift
-          (I := 𝓘(Real, E)) gExt hExt x v 1).snd).map_zero
-    exact hp.symm.trans hz
-  let γc : Real → E :=
-    intrinsicGeodesic (I := 𝓘(Real, E)) gExt hExt x (c • v)
-  let Jc : Real → E :=
-    intrinsicJacobi
-      (I := 𝓘(Real, E)) gExt hExt x (c • v) (c • w)
-  have hGeoScale (t : Real) : γc t = γ (c * t) := by
-    dsimp only [γc, γ]
-    calc
-      intrinsicGeodesic
-          (I := 𝓘(Real, E)) gExt hExt x (c • v) t =
-        intrinsicGeodesic
-          (I := 𝓘(Real, E)) gExt hExt x (t • (c • v)) 1 :=
-        (intrinsicGeodesic_smul
-          (I := 𝓘(Real, E)) gExt hExt x (c • v) t).symm
-      _ = intrinsicGeodesic
-          (I := 𝓘(Real, E)) gExt hExt x ((c * t) • v) 1 := by
-        rw [smul_smul, mul_comm]
-      _ = intrinsicGeodesic
-          (I := 𝓘(Real, E)) gExt hExt x v (c * t) :=
-        intrinsicGeodesic_smul
-          (I := 𝓘(Real, E)) gExt hExt x v (c * t)
-  have hJacobianScale (t : Real) : Jc t = J (c * t) := by
-    have hleft :=
-      intrinsic_jacobi_at
-        (I := 𝓘(Real, E)) gExt hExt x
-        (c • (v : E)) (c • w) t
-    have hright :=
-      intrinsic_jacobi_at
-        (I := 𝓘(Real, E)) gExt hExt x
-        (v : E) w (c * t)
-    have hleft' :
-        Jc t =
-          mfderiv 𝓘(Real, E) 𝓘(Real, E)
-            (fun z : E =>
-              expMapIntrinsic (I := 𝓘(Real, E)) gExt hExt x
-                (show TangentSpace 𝓘(Real, E) x from z))
-            (t • (c • (v : E))) (t • (c • w)) := by
-      have hleftModel := congrArg (fun q => (q : E)) hleft
-      convert hleftModel using 1; rfl
-    have hright' :
-        J (c * t) =
-          mfderiv 𝓘(Real, E) 𝓘(Real, E)
-            (fun z : E =>
-              expMapIntrinsic (I := 𝓘(Real, E)) gExt hExt x
-                (show TangentSpace 𝓘(Real, E) x from z))
-            ((c * t) • (v : E)) ((c * t) • w) := by
-      have hrightModel := congrArg (fun q => (q : E)) hright
-      convert hrightModel using 1; rfl
-    have hbase :
-        t • (c • (v : E)) = (c * t) • (v : E) := by
-      module
-    have hdir : t • (c • w) = (c * t) • w := by
-      module
-    rw [hbase, hdir] at hleft'
-    exact hleft'.trans hright'.symm
-  have hγc :
-      ContMDiff 𝓘(Real, Real) 𝓘(Real, E) ∞ γc := by
-    simpa only [γc] using
-      intrinsicGeodesic_contMDiff
-        (I := 𝓘(Real, E)) gExt hExt x (c • v)
-  have hgeoc :
-      IsGeodesicOn (I := 𝓘(Real, E)) gExt γc
-        (Set.Icc (0 : Real) 1) := by
-    simpa only [γc] using
-      (intrinsicGeodesic_isGeodesic
-        (I := 𝓘(Real, E)) gExt hExt x (c • v)).isGeodesicOn
-          (Set.Icc (0 : Real) 1)
-  have hJcdiff (t : Real) :
-      DifferentiableAt Real
-        (CovariantDerivativeAlong.chartRepAt
-          (I := 𝓘(Real, E)) γc Jc t) t := by
-    simpa only [γc, Jc] using
-      (intrinsicJacobi_diff
-        (I := 𝓘(Real, E)) gExt hExt x
-        (c • v) (c • w) t).1
-  have hDJcdiff (t : Real) :
-      DifferentiableAt Real
-        (CovariantDerivativeAlong.chartRepAt
-          (I := 𝓘(Real, E)) γc
-          (fun s =>
-            CovariantDerivativeAlong.covDerivAlong
-              (I := 𝓘(Real, E)) gExt γc Jc s) t) t := by
-    simpa only [γc, Jc] using
-      (intrinsicJacobi_diff
-        (I := 𝓘(Real, E)) gExt hExt x
-        (c • v) (c • w) t).2
-  have hJacc :
-      Variation.IsJacobiAlong
-        (I := 𝓘(Real, E)) gExt γc Jc := by
-    exact intrinsic_jacobi
-      (I := 𝓘(Real, E)) gExt hExt x
-      (c • (v : E)) (c • w)
-  have hJc0 : Jc 0 = 0 := by
-    simpa only [Jc, tangentSpaceModelContinuousLinearEquiv_apply] using
-      tangent_eq_zero_model_self (E := E)
-        (intrinsicJacobi_zero
-          (I := 𝓘(Real, E)) gExt hExt x
-          (c • v) (c • w))
-  have hJc1 : Jc 1 ≠ 0 := by
-    intro hz
-    apply hJc
-    calc
-      J c = J (c * 1) := by rw [mul_one]
-      _ = Jc 1 := (hJacobianScale 1).symm
-      _ = 0 := hz
-  let wT : TangentSpace 𝓘(Real, E) x :=
-    (tangentSpaceModelContinuousLinearEquiv
-      (I := 𝓘(Real, E)) x).symm w
-  have hperpT : gExt.inner x v wT = 0 := by
-    simpa only [wT, tangentSpaceModelContinuousLinearEquiv_symm_apply] using hperp
-  have hscaledPerp :
-      gExt.inner x (c • v) (c • w) = 0 := by
-    change gExt.inner x (c • v) (c • wT) = 0
-    calc
-      gExt.inner x (c • v) (c • wT) =
-          c * gExt.inner x v (c • wT) := by
-        rw [map_smul (gExt.inner x), smul_apply,
-          smul_eq_mul]
-      _ = c * (c * gExt.inner x v wT) := by
-        exact congrArg (fun r : Real => c * r)
-          (by
-            simpa only [smul_eq_mul] using
-              (gExt.inner x v).map_smul c wT)
-      _ = 0 := by rw [hperpT]; ring
-  have hJperpc :
-      ∀ t ∈ Set.Icc (0 : Real) 1,
-        gExt.inner (γc t) (Jc t)
-          (Variation.curveVelocity (I := 𝓘(Real, E)) γc t) = 0 := by
-    intro t ht
-    by_cases ht0 : t = 0
-    · subst t
-      let J0T : TangentSpace 𝓘(Real, E) (γc 0) :=
-        (tangentSpaceModelContinuousLinearEquiv
-          (I := 𝓘(Real, E)) (γc 0)).symm (Jc 0)
-      have hJ0T : J0T = 0 := by
-        apply (tangentSpaceModelContinuousLinearEquiv
-          (I := 𝓘(Real, E)) (γc 0)).injective
-        simp only [J0T, hJc0, map_zero]
-      change gExt.inner (γc 0) J0T
-        (Variation.curveVelocity (I := 𝓘(Real, E)) γc 0) = 0
-      rw [hJ0T, gExt.symm]
-      exact
-        (gExt.inner (γc 0)
-          (Variation.curveVelocity (I := 𝓘(Real, E)) γc 0)).map_zero
-    · rw [gExt.symm]
-      exact intrinsicJacobi_perp_ne
-        (I := 𝓘(Real, E)) gExt hExt x
-        (c • v) (c • w) ht0 hscaledPerp
-  have hcvne : (c • v : E) ≠ 0 :=
-    smul_ne_zero hcIoo.1.ne' hvne
-  have hspeedc :
-      ∀ t ∈ Set.Icc (0 : Real) 1,
-        0 < gExt.inner (γc t)
-          (Variation.curveVelocity (I := 𝓘(Real, E)) γc t)
-          (Variation.curveVelocity (I := 𝓘(Real, E)) γc t) := by
-    intro t ht
-    change
-      0 < gExt.inner
-        (intrinsicGeodesic
-          (I := 𝓘(Real, E)) gExt hExt x (c • v) t)
-        (mfderiv 𝓘(Real, Real) 𝓘(Real, E)
-          (intrinsicGeodesic
-            (I := 𝓘(Real, E)) gExt hExt x (c • v)) t 1)
-        (mfderiv 𝓘(Real, Real) 𝓘(Real, E)
-          (intrinsicGeodesic
-            (I := 𝓘(Real, E)) gExt hExt x (c • v)) t 1)
-    rw [intrinsicGeodesic_speedSq_eq
-      (I := 𝓘(Real, E)) gExt hExt x (c • v) t]
-    exact gExt.pos x (c • v) hcvne
-  let ell : Real := Real.sqrt (gExt.inner x v v)
-  have hell0 : 0 ≤ ell := Real.sqrt_nonneg _
-  have hellL : ell ≤ L := by
-    simpa only [ell, gExt] using hv
-  have hL0 : 0 ≤ L := hell0.trans hellL
-  have hcell0 : 0 ≤ c * ell :=
-    mul_nonneg hcIoo.1.le hell0
-  have hcellL : c * ell ≤ L := by
-    calc
-      c * ell ≤ 1 * ell :=
-        mul_le_mul_of_nonneg_right hc.2 hell0
-      _ = ell := one_mul ell
-      _ ≤ L := hellL
-  have hsqLe : (c * ell) ^ 2 ≤ L ^ 2 := by
+  have hDJdiff (t : Real) : DifferentiableAt Real
+      (CovariantDerivativeAlong.chartRepAt
+        (I := 𝓘(Real, E)) γ DJ t) t := by
+    simpa only [γ, J, DJ] using
+      (intrinsicJacobi_diff (I := 𝓘(Real, E)) gExt hExt x v w t).2
+  have hJac : Variation.IsJacobiAlong (I := 𝓘(Real, E)) gExt γ J :=
+    intrinsic_jacobi (I := 𝓘(Real, E)) gExt hExt x (v : E) w
+  have hvnn : 0 ≤ gExt.inner x v v := (gExt.pos x v hvne).le
+  have hL0 : 0 ≤ L := (Real.sqrt_nonneg _).trans hv
+  have hvL : gExt.inner x v v ≤ L ^ 2 := by
+    have hsq := Real.sq_sqrt hvnn
+    have hv' : Real.sqrt (gExt.inner x v v) ≤ L := by simpa only [gExt] using hv
+    have hsqrt0 := Real.sqrt_nonneg (gExt.inner x v v)
     nlinarith
-  have hvnn : 0 ≤ gExt.inner x v v :=
-    (gExt.pos x v hvne).le
-  have hscaleSq :
-      gExt.inner x (c • v) (c • v) = (c * ell) ^ 2 := by
-    calc
-      gExt.inner x (c • v) (c • v) =
-          c * gExt.inner x v (c • v) := by
-        rw [map_smul (gExt.inner x), smul_apply,
-          smul_eq_mul]
-      _ = c * (c * gExt.inner x v v) := by
-        exact congrArg (fun r : Real => c * r)
-          (by
-            simpa only [smul_eq_mul] using
-              (gExt.inner x v).map_smul c v)
-      _ = (c * ell) ^ 2 := by
-        rw [← Real.sq_sqrt hvnn]
-        dsimp only [ell]
-        ring
-  let κ : Real := K * (c * ell) ^ 2
-  have hκ0 : 0 ≤ κ :=
-    mul_nonneg hK (sq_nonneg _)
-  have hκπ : κ < (Real.pi / 2) ^ 2 := by
-    exact
-      (mul_le_mul_of_nonneg_left hsqLe hK).trans_lt hsmall
-  have hfenceγ :
-      ∀ t ∈ Set.Icc (0 : Real) 1, ‖γ t‖ < 3 * R / 4 := by
+  have hcurv : ∀ t ∈ Set.Icc (0 : Real) 1,
+      gExt.inner (γ t)
+        (Geometry.Curvature.riemannOp
+          (Geometry.Connection.LeviCivita (I := 𝓘(Real, E)) gExt) (γ t) (J t)
+          (Variation.curveVelocity (I := 𝓘(Real, E)) γ t)
+          (Variation.curveVelocity (I := 𝓘(Real, E)) γ t)) (J t) ≤
+        (K * L ^ 2) * gExt.inner (γ t) (J t) (J t) := by
     intro t ht
-    simpa only [γ, gExt, hExt, intrinsicExtLaunch] using hfence t ht
-  have hcurvc :
-      ∀ t ∈ Set.Icc (0 : Real) 1,
-        gExt.inner (γc t)
-            (Geometry.Curvature.riemannOp
-              (Geometry.Connection.LeviCivita
-                (I := 𝓘(Real, E)) gExt)
-              (γc t) (Jc t)
-              (Variation.curveVelocity (I := 𝓘(Real, E)) γc t)
-              (Variation.curveVelocity (I := 𝓘(Real, E)) γc t))
-            (Jc t) ≤
-          κ * gExt.inner (γc t) (Jc t) (Jc t) := by
-    intro t ht
-    have hct : c * t ∈ Set.Icc (0 : Real) 1 :=
-      ⟨mul_nonneg hcIoo.1.le ht.1,
-        mul_le_one₀ hc.2 ht.1 ht.2⟩
-    have hz : ‖γc t‖ < 3 * R / 4 := by
-      rw [hGeoScale t]
-      exact hfenceγ (c * t) hct
-    have hquad :=
-      intrinsicExt_quad_le
-        (I := I) g hEnorm p hR hloc hz (hRm (γc t) hz)
-          (Jc t)
-          (Variation.curveVelocity (I := 𝓘(Real, E)) γc t)
-    have hspeedEq :
-        gExt.inner (γc t)
-            (Variation.curveVelocity (I := 𝓘(Real, E)) γc t)
-            (Variation.curveVelocity (I := 𝓘(Real, E)) γc t) =
-          gExt.inner x (c • v) (c • v) := by
-      change gExt.inner
-          (intrinsicGeodesic (I := 𝓘(Real, E)) gExt hExt x (c • v) t)
-          (mfderiv 𝓘(Real, Real) 𝓘(Real, E)
-            (intrinsicGeodesic (I := 𝓘(Real, E)) gExt hExt x (c • v)) t 1)
-          (mfderiv 𝓘(Real, Real) 𝓘(Real, E)
-            (intrinsicGeodesic (I := 𝓘(Real, E)) gExt hExt x (c • v)) t 1) =
-        gExt.inner x (c • v) (c • v)
-      convert intrinsicGeodesic_speedSq_eq
-        (I := 𝓘(Real, E)) gExt hExt x (c • v) t using 1
+    have hz : ‖γ t‖ < 3 * R / 4 := by
+      simpa only [γ, gExt, hExt, intrinsicExtLaunch] using hfence t ht
+    have hquad := intrinsicExt_quad_le (I := I) g hEnorm p hR hloc hz
+      (hRm (γ t) hz) (J t) (Variation.curveVelocity (I := 𝓘(Real, E)) γ t)
+    have hspeed : gExt.inner (γ t)
+        (Variation.curveVelocity (I := 𝓘(Real, E)) γ t)
+        (Variation.curveVelocity (I := 𝓘(Real, E)) γ t) = gExt.inner x v v := by
+      simpa only [γ, Variation.curveVelocity] using!
+        intrinsicGeodesic_speedSq_eq (I := 𝓘(Real, E)) gExt hExt x v t
+    have hJn : 0 ≤ gExt.inner (γ t) (J t) (J t) :=
+      metric_inner_self_nonneg gExt (γ t) (J t)
     calc
-      _ ≤ K * gExt.inner (γc t) (Jc t) (Jc t) *
-          gExt.inner (γc t)
-            (Variation.curveVelocity (I := 𝓘(Real, E)) γc t)
-            (Variation.curveVelocity (I := 𝓘(Real, E)) γc t) := by
+      _ ≤ K * gExt.inner (γ t) (J t) (J t) *
+          gExt.inner (γ t)
+            (Variation.curveVelocity (I := 𝓘(Real, E)) γ t)
+            (Variation.curveVelocity (I := 𝓘(Real, E)) γ t) := by
         simpa only [gExt] using hquad
-      _ = κ * gExt.inner (γc t) (Jc t) (Jc t) := by
-        rw [hspeedEq, hscaleSq]
-        dsimp only [κ]
-        ring
-  have hpos :=
-    Variation.jacobi_pair_pos
-      (I := 𝓘(Real, E)) gExt γc Jc hγc hgeoc
-      hJcdiff hDJcdiff
-      (fun t ht => hJacc t) hJc0 hJc1 hspeedc hJperpc
-      hκ0 hκπ hcurvc
-  have hγcfun :
-      γc = fun t : Real => γ (c * t + 0) := by
-    funext t
-    simpa only [add_zero] using hGeoScale t
-  have hJcfun :
-      Jc = fun t : Real => J (c * t + 0) := by
-    funext t
-    simpa only [add_zero] using hJacobianScale t
-  have hDscale :
-      CovariantDerivativeAlong.covDerivAlong
-          (I := 𝓘(Real, E)) gExt γc Jc 1 =
-        c • DJ c := by
-    rw [hγcfun, hJcfun]
-    change
-      CovariantDerivativeAlong.covDerivAlong
-          (I := 𝓘(Real, E)) gExt
-          (fun t : Real => γ (c * t + 0))
-          (fun t : Real => J (c * t + 0)) 1 =
-        c • CovariantDerivativeAlong.covDerivAlong
-          (I := 𝓘(Real, E)) gExt γ J c
-    have h := covDeriv_comp_affine
-      (I := 𝓘(Real, E)) gExt γ J c 0 1
-    have hc1 : c * 1 + 0 = c := by ring
-    rw [hc1] at h
-    exact h
-  have hγc1 : γc 1 = γ c := by
-    simpa only [mul_one] using hGeoScale 1
-  have hJc1eq : Jc 1 = J c := by
-    simpa only [mul_one] using hJacobianScale 1
-  have hpos' :
-      0 < c * gExt.inner (γ c) (DJ c) (J c) := by
-    calc
-      0 < gExt.inner (γc 1)
-          (CovariantDerivativeAlong.covDerivAlong
-            (I := 𝓘(Real, E)) gExt γc Jc 1)
-          (Jc 1) := hpos
-      _ = c * gExt.inner (γ c) (DJ c) (J c) := by
-        rw [hγc1, hDscale, hJc1eq]
-        calc
-          gExt.inner (γ c) (c • DJ c) (J c) =
-              (c • gExt.inner (γ c) (DJ c)) (J c) := by
-            exact congrArg (fun A : E →L[Real] Real => A (J c))
-              ((gExt.inner (γ c)).map_smul c (DJ c))
-          _ = c * gExt.inner (γ c) (DJ c) (J c) := by
-            rw [smul_apply, smul_eq_mul]
-  have hpairpos :
-      0 < gExt.inner (γ c) (DJ c) (J c) := by
-    nlinarith [hcIoo.1]
-  exact (ne_of_gt hpairpos) hpair0
+      _ = K * gExt.inner (γ t) (J t) (J t) * gExt.inner x v v := by rw [hspeed]
+      _ ≤ K * gExt.inner (γ t) (J t) (J t) * L ^ 2 :=
+        mul_le_mul_of_nonneg_left hvL (mul_nonneg hK hJn)
+      _ = (K * L ^ 2) * gExt.inner (γ t) (J t) (J t) := by ring
+  have hzeroJ := Variation.jacobi_eq_zero_of_endpoints_eq_zero
+    (I := 𝓘(Real, E)) (a := 0) (b := 1) gExt γ J zero_le_one isOpen_univ (subset_univ _)
+    (hγ.of_le (by decide : (2 : WithTop ℕ∞) ≤ ∞)).contMDiffOn
+    (fun t _ => hJdiff t) (fun t _ => hDJdiff t) (fun t _ => hJac t)
+    hJ0 hJ1 (by simpa only [sub_zero, one_pow, mul_one] using hsmall)
+    (fun t ht => hcurv t (Ioo_subset_Icc_self ht))
+  exact hJt0 (hzeroJ t0 ⟨ht0.1.le, ht0.2.le⟩)
 
 theorem intrinsicExt_pair_pos
     (g : SmoothRiemannianMetric I M)
