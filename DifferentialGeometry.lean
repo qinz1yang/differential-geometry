@@ -2071,6 +2071,7 @@ import DifferentialGeometry.Geometry.Comparison.Variation.Field.Smoothness
 import DifferentialGeometry.Geometry.Comparison.Volume.Ball.Basic
 import DifferentialGeometry.Geometry.Comparison.Volume.Ball.GlobalBounds
 import DifferentialGeometry.Geometry.Comparison.Volume.Bishop.Ball
+import DifferentialGeometry.Geometry.Comparison.Volume.Bishop.CompactBall
 import DifferentialGeometry.Geometry.Comparison.Volume.Bishop.Exponential
 import DifferentialGeometry.Geometry.Comparison.Volume.Bishop.Intrinsic
 import DifferentialGeometry.Geometry.Comparison.Volume.Bishop.Jacobi
