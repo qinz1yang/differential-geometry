@@ -160,7 +160,8 @@ attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
 
 omit [NeZero (Module.finrank ℝ E)]
   [I.Boundaryless]
-  [T2Space (TangentBundle I M)] in
+  [T2Space (TangentBundle I M)]
+  [SigmaCompactSpace M] in
 theorem edistBall_open
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (x : M) (R : ℝ) :
