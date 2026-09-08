@@ -1,5 +1,6 @@
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.HamiltonIvey.Reaction
 import Mathlib.Analysis.InnerProductSpace.Positive
+import Mathlib.Analysis.InnerProductSpace.Trace
 import Mathlib.LinearAlgebra.Trace
 import Mathlib.LinearAlgebra.Matrix.PosDef
 
@@ -396,5 +397,48 @@ theorem curvatureOperatorReaction3_posDef_of_rank_two
   rw [hrepr, curvatureOperatorReaction3_orthogonal_conj _ _ hU]
   simpa [Matrix.star_eq_conjTranspose] using
     (Matrix.PosDef.mul_mul_conjTranspose_same hRD hinj)
+
+section
+
+theorem curvatureOperatorReactionEndomorphism3_apply_of_eigenvector
+    {V : Type*} [AddCommGroup V] [Module ℝ V] [FiniteDimensional ℝ V]
+    (A : V →ₗ[ℝ] V) {v : V} {ν : ℝ} (hv : A v = ν • v) :
+    curvatureOperatorReactionEndomorphism3 A v =
+      (2 * ν ^ 2 - LinearMap.trace ℝ V A * ν +
+        ((LinearMap.trace ℝ V A) ^ 2 - LinearMap.trace ℝ V (A.comp A)) / 2) • v := by
+  unfold curvatureOperatorReactionEndomorphism3
+  simp only [LinearMap.add_apply, LinearMap.sub_apply, LinearMap.smul_apply,
+    LinearMap.comp_apply, LinearMap.id_apply, hv, map_smul, smul_smul]
+  module
+
+variable {V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
+  [FiniteDimensional ℝ V]
+
+private theorem trace_pair_eq_eigenvalues
+    {n : ℕ} (hdim : Module.finrank ℝ V = n) (A : V →ₗ[ℝ] V) (hA : A.IsSymmetric) :
+    LinearMap.trace ℝ V A = ∑ i, hA.eigenvalues hdim i ∧
+      LinearMap.trace ℝ V (A.comp A) = ∑ i, (hA.eigenvalues hdim i) ^ 2 := by
+  let b := (hA.eigenvectorBasis hdim).toBasis
+  have hd : LinearMap.toMatrix b b A = Matrix.diagonal (hA.eigenvalues hdim) :=
+    hA.toMatrix_eigenvectorBasis hdim
+  constructor
+  · exact hA.trace_eq_sum_eigenvalues hdim
+  · rw [LinearMap.trace_eq_matrix_trace ℝ b, LinearMap.toMatrix_comp b b b, hd,
+      Matrix.diagonal_mul_diagonal, Matrix.trace_diagonal]
+    simp only [pow_two]
+
+theorem curvatureOperatorReactionEndomorphism3_apply_of_eigenvalues_last
+    (hdim : Module.finrank ℝ V = 3) (A : V →ₗ[ℝ] V) (hA : A.IsSymmetric)
+    {v : V} (hv : A v = hA.eigenvalues hdim 2 • v) :
+    curvatureOperatorReactionEndomorphism3 A v =
+      ((hA.eigenvalues hdim 2) ^ 2 +
+        hA.eigenvalues hdim 0 * hA.eigenvalues hdim 1) • v := by
+  have ht := trace_pair_eq_eigenvalues hdim A hA
+  simp only [Fin.sum_univ_three] at ht
+  rw [curvatureOperatorReactionEndomorphism3_apply_of_eigenvector A hv, ht.1, ht.2]
+  congr 1
+  ring
+
+end
 
 end DifferentialGeometry.Geometry.Curvature.DimensionThree

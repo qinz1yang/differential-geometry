@@ -1,4 +1,5 @@
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.EndomorphismScalarization
+import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.FirstContact
 import DifferentialGeometry.Analysis.InnerProductSpace.SpectralBounds
 import DifferentialGeometry.Geometry.Connection.NormalSection
 
@@ -17,7 +18,6 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-
 
 variable [T2Space M]
 variable {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
@@ -45,7 +45,6 @@ private theorem exists_unit_minimum_eigenvector {W : Type*}
   refine ⟨v, (hA.eigenvectorBasis hn).orthonormal.norm_eq_one _, ?_⟩
   rw [hA.iInf_rayleighQuotient_eq_eigenvalues_last hn]
   exact hA.apply_eigenvectorBasis hn (Fin.last n)
-
 
 
 theorem exists_cutoff_negative_minimum_eigenvalue_lower_support
@@ -199,5 +198,89 @@ theorem exists_cutoff_negative_minimum_eigenvalue_lower_support
     change parabolicOperatorWithDrift (I := I) G T X ψ t x = _
     rw [hnegop]
     ring
+
+theorem exists_cutoff_negative_minimum_eigenvalue_parabolic_inequality_at_spacetime_max
+    [NeZero (Module.finrank ℝ E)]
+    [VectorBundle ℝ E (TangentSpace I : M → Type _)]
+    (G : MetricConnectionFamily (I := I) (M := M) ℝ)
+    (cov : CovariantDerivative I F V)
+    [ContMDiffCovariantDerivative cov ∞] (hcov : cov.IsMetricCompatible)
+    {t : ℝ} (ht : 0 < t)
+    (A : ℝ → Cₛ^∞⟮I; F →L[ℝ] F, (fun x : M => V x →L[ℝ] V x)⟯)
+    (x : M) (hx : I.IsInteriorPoint x)
+    (X : ℝ → (y : M) → TangentSpace I y)
+    (hGconn : G.connection t = LeviCivita (I := I) (G.metric t))
+    (hAt : DifferentiableWithinAt ℝ (fun q => A q x) (Icc 0 t) t)
+    (hA : (A t x).toLinearMap.IsSymmetric)
+    (hneg : (⨅ v : {v : V x // v ≠ 0}, (A t x).rayleighQuotient v) < 0)
+    (χ φ : ℝ → M → ℝ)
+    (hφχ : ∀ᶠ p in 𝓝[Icc 0 t ×ˢ (Set.univ : Set M)] (t, x),
+      0 ≤ φ p.1 p.2 ∧ φ p.1 p.2 ≤ χ p.1 p.2)
+    (hφeq : φ t x = χ t x)
+    (hφtime : DifferentiableWithinAt ℝ (fun q => φ q x) (Icc 0 t) t)
+    (hφspace : ∀ᶠ y in 𝓝 x, MDifferentiableAt I 𝓘(ℝ, ℝ) (φ t) y)
+    (hφgrad : MDiffAt (T% fun y : M => gradientFun (I := I) (G.metric t) (φ t) y) x)
+    (hmax : IsLocalMaxOn (fun p : ℝ × M => χ p.1 p.2 *
+      max (-(⨅ w : {w : V p.2 // w ≠ 0}, (A p.1 p.2).rayleighQuotient w)) 0)
+      (Icc 0 t ×ˢ (Set.univ : Set M)) (t, x)) :
+    ∃ v : Cₛ^∞⟮I; F, V⟯,
+      let ν := ⨅ w : {w : V x // w ≠ 0}, (A t x).rayleighQuotient w
+      cov v x = 0 ∧
+      (∀ᶠ y in 𝓝 x, ‖v y‖ = 1) ∧
+      A t x (v x) = ν • v x ∧
+      φ t x ^ 2 * inner ℝ
+          ((derivWithin (fun s => A s x) (Icc 0 t) t -
+            rawBundleEndomorphismConnLap (I := I) (G.metric t) cov (fun y => A t y) x -
+            HomConnectionGen.homBundleCovariantDerivativeGen I M F V F V cov cov
+              (fun y => A t y) x (X t x)) (v x)) (v x) +
+        ν * φ t x * parabolicOperatorWithDrift (I := I) G t X φ t x +
+        2 * ν * (G.metric t).inner x (gradientAt (I := I) G t (φ t) x)
+          (gradientAt (I := I) G t (φ t) x) ≤ 0 := by
+  obtain ⟨v, hnormal, hunit, heigen, hcontact, hsupport, htime, hspace, hgrad, hevol⟩ :=
+    exists_cutoff_negative_minimum_eigenvalue_lower_support
+      (I := I) G cov hcov ht ⟨ht.le, le_rfl⟩ A x hx X hGconn hAt hA hneg
+      χ φ hφχ hφeq hφtime hφspace hφgrad
+  let ν := ⨅ w : {w : V x // w ≠ 0}, (A t x).rayleighQuotient w
+  let q : ℝ → M → ℝ := fun s y => inner ℝ (A s y (v y)) (v y)
+  let ψ : ℝ → M → ℝ := fun s y => -(φ s y * q s y)
+  have hψmax : IsLocalMaxOn (fun p : ℝ × M => ψ p.1 p.2)
+      (Icc 0 t ×ˢ (Set.univ : Set M)) (t, x) := by
+    change ∀ᶠ p in 𝓝[Icc 0 t ×ˢ (Set.univ : Set M)] (t, x), ψ p.1 p.2 ≤ ψ t x
+    filter_upwards [hmax, hsupport] with p hp hsupp
+    exact hsupp.trans (hp.trans_eq hcontact.symm)
+  have hL := derivWithin_sub_heatOperatorWithDrift_nonneg_at_spacetime_max
+    (I := I) G X ht hψmax hx hspace hgrad
+  change 0 ≤ parabolicOperatorWithDrift (I := I) G t X ψ t x at hL
+  change parabolicOperatorWithDrift (I := I) G t X ψ t x = _ at hevol
+  rw [hevol] at hL
+  have hqx : q t x = ν := by
+    simp only [q, heigen, real_inner_smul_left, real_inner_self_eq_norm_sq,
+      hunit.self_of_nhds, one_pow, mul_one]
+    rfl
+  have hqspace : MDifferentiableAt I 𝓘(ℝ, ℝ) (q t) x :=
+    ((ContMDiff.clm_bundle_apply (b := id) (A t).contMDiff v.contMDiff).inner_bundle
+      v.contMDiff).mdifferentiableAt (by simp)
+  have hprodmin : IsLocalMin (fun y => φ t y * q t y) x := by
+    have hspacemax : IsLocalMax (ψ t) x := by
+      rw [← isLocalMaxOn_univ_iff]
+      exact hψmax.comp_continuousOn
+        (s := Set.univ) (g := fun y : M ↦ (t, y))
+        (by intro y hy; exact ⟨⟨ht.le, le_rfl⟩, hy⟩)
+        (continuous_const.prodMk continuous_id).continuousOn (Set.mem_univ x)
+    simpa only [ψ, neg_neg] using hspacemax.neg
+  have hzero := gradientFun_eq_zero_at_spatial_min_of_isInteriorPoint
+    (I := I) (G.metric t) hprodmin hx (hφspace.self_of_nhds.mul hqspace)
+  rw [gradientFun_mul (I := I) (G.metric t) hφspace.self_of_nhds hqspace, hqx] at hzero
+  have hcross := congrArg (fun w => (G.metric t).inner x
+    (gradientAt (I := I) G t (φ t) x) w) hzero
+  simp only [map_add, map_smul, map_zero, smul_eq_mul] at hcross
+  have hφnonneg := (hφχ.self_of_nhdsWithin ⟨⟨ht.le, le_rfl⟩, mem_univ x⟩).1
+  have hscaled := mul_nonneg hφnonneg hL
+  refine ⟨v, hnormal, hunit, heigen, ?_⟩
+  change φ t x * (G.metric t).inner x (gradientAt (I := I) G t (φ t) x)
+    (gradientAt (I := I) G t (q t) x) +
+    ν * (G.metric t).inner x (gradientAt (I := I) G t (φ t) x)
+      (gradientAt (I := I) G t (φ t) x) = 0 at hcross
+  nlinarith [hscaled]
 
 end DifferentialGeometry.Analysis.Parabolic
