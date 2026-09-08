@@ -38,6 +38,8 @@ The spherical-model covering source corollary is accepted. Its forward direction
 
 The orthonormal-frame connection form now has its connector formula, skew-adjointness, action equivariance, pullback law and endpoint-compatible curve formula. The actual interval horizontal-frame producer retains its prescribed initial frame, joint smoothness and the public connection-form-zero equation. Both modules pass named builds and independent full declaration-linter/ordinary-axiom audits. The smooth principal/associated connection headline remains open; the current named frame atlas has order one.
 
+The curvature-reaction rank engine now derives compact coefficient bounds and a uniform reaction Lipschitz bound from actual regularity, then proves rank spreading and left-local rank constancy. Its constant-rank kernel is spatially parallel and time independent; at every positive time the reaction annihilates the actual kernel without a supplied rank hypothesis. The dimension-three corollary gives ranks 0, 1 or 3. Both modules pass named builds and independent root declaration-linter/ordinary-axiom audits. The original Ricci-flow producer and endpoint kernel parallelism remain separate open steps.
+
 The principal open producers remain classical Dirichlet existence with regularity and boundary trace; actual-flow rank constancy, parallel kernel and fixed-time splitting; smooth principal/associated induced connections; unrestricted three-dimensional classification; the standalone Kazdan-Warner identity; orientation consequences; and one product identification for the whole controlled flow interval. Historical verification windows below describe their own snapshots, not the current completion state.
 
 ## Preserved source snapshots

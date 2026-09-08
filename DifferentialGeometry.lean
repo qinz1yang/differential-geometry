@@ -4544,3 +4544,5 @@ import DifferentialGeometry.Topology.Covering.FiniteDeckGroup
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.ModelCoverRoundThreeSphere
 import DifferentialGeometry.Geometry.Connection.OrthonormalFrame
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.FrameConnection
+import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureReactionPositivity
+import DifferentialGeometry.Analysis.Parabolic.CurvatureOperatorRank
