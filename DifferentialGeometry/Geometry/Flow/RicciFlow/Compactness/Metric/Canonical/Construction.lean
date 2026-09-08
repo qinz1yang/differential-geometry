@@ -9,7 +9,8 @@ import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Self
 
 
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Subsequence
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Solutions.WindowPullback
+import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Pullback
+import DifferentialGeometry.Geometry.Metric.Convergence.Metric.UniformEquivalence
 open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
@@ -489,32 +490,6 @@ noncomputable def tailMemberConvergence
 
 namespace CanonicalMetricCompactness
 
-omit [CompleteSpace E] [I.Boundaryless] [NeZero (Module.finrank ℝ E)] in
-theorem canonicalSource_isSigmaCompact
-    {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    {L : PointedRiemannianManifold.{u, uE, uH} (I := I)}
-    {subseq : Nat -> Nat}
-    (Phi : PointedRiemannianConvergenceMaps (I := I) X L subseq) (k : Nat) :
-    letI : TopologicalSpace L.M := L.topology
-    IsSigmaCompact (Phi.source k) := by
-  let : TopologicalSpace L.M := L.topology
-  let : ChartedSpace H L.M := L.charted
-  let : SigmaCompactSpace L.M := L.sigmaCompact
-  exact Geometry.isSigmaCompact_of_isOpen I (Phi.source_open k)
-
-omit [CompleteSpace E] [I.Boundaryless] [NeZero (Module.finrank ℝ E)] in
-theorem canonicalTargetSigmaCompact
-    {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-    {L : PointedRiemannianManifold.{u, uE, uH} (I := I)}
-    {subseq : Nat -> Nat}
-    (Phi : PointedRiemannianConvergenceMaps (I := I) X L subseq) (k : Nat) :
-    letI : TopologicalSpace (X.obj (subseq k)).M := (X.obj (subseq k)).topology
-    IsSigmaCompact (Phi.target k) := by
-  let : TopologicalSpace (X.obj (subseq k)).M := (X.obj (subseq k)).topology
-  let : ChartedSpace H (X.obj (subseq k)).M := (X.obj (subseq k)).charted
-  let : SigmaCompactSpace (X.obj (subseq k)).M := (X.obj (subseq k)).sigmaCompact
-  exact Geometry.isSigmaCompact_of_isOpen I (Phi.target_open k)
-
 noncomputable def canonicalReferenceMetric
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {L : PointedRiemannianManifold.{u, uE, uH} (I := I)}
@@ -541,7 +516,7 @@ noncomputable def canonicalReferenceMetric
   letI : IsManifold I ∞ (MetricSourceDomain (I := I) Phi k) :=
     metric_source_domain_smooth (I := I) Phi k
   letI : SigmaCompactSpace (MetricSourceDomain (I := I) Phi k) :=
-    metric_source_domain_sigma_compact (I := I) Phi k (canonicalSource_isSigmaCompact (I := I) Phi k)
+    metric_source_domain_sigma_compact (I := I) Phi k (PointedRiemannianConvergenceMaps.isSigmaCompact_source (I := I) Phi k)
   exact L.metric.restrictOpen (I := I) (metricSourceOpenSubset (I := I) Phi k)
 
 noncomputable def canonicalSourceData
@@ -551,7 +526,7 @@ noncomputable def canonicalSourceData
     (Phi : PointedRiemannianConvergenceMaps (I := I) X L subseq) (k : Nat) :
     MetricSourceData (I := I) Phi k :=
   MetricSourceData.ofRestrictPullback (I := I)
-    (Φ := Phi) (k := k) (canonicalSource_isSigmaCompact (I := I) Phi k)
+    (Φ := Phi) (k := k) (PointedRiemannianConvergenceMaps.isSigmaCompact_source (I := I) Phi k)
     (canonicalReferenceMetric (I := I) Phi k)
 
 end CanonicalMetricCompactness
@@ -604,7 +579,7 @@ private theorem chain_limit_metric_eq_pullback
   let : IsManifold I ∞ (MetricTargetDomain (I := I) Φ k) :=
     metric_target_domain_smooth (I := I) Φ k
   let : SigmaCompactSpace (MetricTargetDomain (I := I) Φ k) :=
-    metric_target_domain_sigma_compact (I := I) Φ k (CanonicalMetricCompactness.canonicalTargetSigmaCompact (I := I) Φ k)
+    metric_target_domain_sigma_compact (I := I) Φ k (PointedRiemannianConvergenceMaps.isSigmaCompact_target (I := I) Φ k)
   let F := metricSourceTargetDiffeomorph (I := I) Φ k
   have metric_ext : ∀ (g₁ g₂ : SmoothRiemannianMetric I
       (MetricSourceDomain (I := I) Φ k)),
@@ -1095,7 +1070,7 @@ private opaque connectedCanonicalMetricCompactness
         metric_target_domain_smooth (I := I) Φc k
       let : SigmaCompactSpace (MetricTargetDomain (I := I) Φc k) :=
         metric_target_domain_sigma_compact (I := I) Φc k
-          (CanonicalMetricCompactness.canonicalTargetSigmaCompact (I := I) Φc k)
+          (PointedRiemannianConvergenceMaps.isSigmaCompact_target (I := I) Φc k)
       let F := metricSourceTargetDiffeomorph (I := I) Φc k
       change MetricUniformEquivalentOn (I := I) Set.univ
         Dc.limitMetric Dc.pullbackMetric Crel
@@ -1136,7 +1111,7 @@ private opaque connectedCanonicalMetricCompactness
         metric_target_domain_smooth (I := I) Φc k
       let : SigmaCompactSpace (MetricTargetDomain (I := I) Φc k) :=
         metric_target_domain_sigma_compact (I := I) Φc k
-          (CanonicalMetricCompactness.canonicalTargetSigmaCompact (I := I) Φc k)
+          (PointedRiemannianConvergenceMaps.isSigmaCompact_target (I := I) Φc k)
       let F := metricSourceTargetDiffeomorph (I := I) Φc k
       change metricCovDerivNorm (I := I) q
         Dc.pullbackMetric Dc.limitMetric x ≤ Cq
@@ -1164,7 +1139,7 @@ private opaque connectedCanonicalMetricCompactness
           metric_source_domain_smooth (I := I) Φc k
         let : SigmaCompactSpace (MetricSourceDomain (I := I) Φc k) :=
           metric_source_domain_sigma_compact (I := I) Φc k
-            (CanonicalMetricCompactness.canonicalSource_isSigmaCompact
+            (PointedRiemannianConvergenceMaps.isSigmaCompact_source
               (I := I) Φc k)
         with_unfolding_all
           convert metricCovDerivNorm_pullback (I := I) q

@@ -1,6 +1,7 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Bounds.BoundedGeometry
 import DifferentialGeometry.Geometry.Metric.Convergence.Defs
 import DifferentialGeometry.Topology.Exhaustion
+import DifferentialGeometry.Topology.SigmaCompactOpen
 open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
@@ -139,6 +140,42 @@ theorem target_open
   let : ChartedSpace H (X.obj (subseq k)).M :=
     (X.obj (subseq k)).charted
   exact (Φ.partialDiffeomorph k).open_target
+
+section
+
+variable {E : Type uE} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  [FiniteDimensional ℝ E] [CompleteSpace E]
+variable {H : Type uH} [TopologicalSpace H]
+variable {I : ModelWithCorners ℝ E H}
+variable [I.Boundaryless] [NeZero (Module.finrank ℝ E)]
+
+omit [CompleteSpace E] [I.Boundaryless] [NeZero (Module.finrank ℝ E)] in
+theorem isSigmaCompact_source
+    {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
+    {L : PointedRiemannianManifold.{u, uE, uH} (I := I)}
+    {subseq : Nat -> Nat}
+    (Phi : PointedRiemannianConvergenceMaps (I := I) X L subseq) (k : Nat) :
+    letI : TopologicalSpace L.M := L.topology
+    IsSigmaCompact (Phi.source k) := by
+  let : TopologicalSpace L.M := L.topology
+  let : ChartedSpace H L.M := L.charted
+  let : SigmaCompactSpace L.M := L.sigmaCompact
+  exact Geometry.isSigmaCompact_of_isOpen I (Phi.source_open k)
+
+omit [CompleteSpace E] [I.Boundaryless] [NeZero (Module.finrank ℝ E)] in
+theorem isSigmaCompact_target
+    {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
+    {L : PointedRiemannianManifold.{u, uE, uH} (I := I)}
+    {subseq : Nat -> Nat}
+    (Phi : PointedRiemannianConvergenceMaps (I := I) X L subseq) (k : Nat) :
+    letI : TopologicalSpace (X.obj (subseq k)).M := (X.obj (subseq k)).topology
+    IsSigmaCompact (Phi.target k) := by
+  let : TopologicalSpace (X.obj (subseq k)).M := (X.obj (subseq k)).topology
+  let : ChartedSpace H (X.obj (subseq k)).M := (X.obj (subseq k)).charted
+  let : SigmaCompactSpace (X.obj (subseq k)).M := (X.obj (subseq k)).sigmaCompact
+  exact Geometry.isSigmaCompact_of_isOpen I (Phi.target_open k)
+
+end
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompleteSpace E] [I.Boundaryless] in
 theorem source_subset
