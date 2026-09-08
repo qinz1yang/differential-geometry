@@ -289,46 +289,9 @@ private lemma rawDn_cont
           (normalFrame (I := I) (E := E) g p w)
           (normalBasis (I := I) g p i)) 1)
   T := by
-  classical
-  let L : E ≃L[ℝ] TangentSpace I p := normalFrame (I := I) (E := E) g p
-  let B : Module.Basis (Fin (Module.finrank ℝ E)) ℝ E :=
-    normalBasis (I := I) g p
-  let F : E → M := fun v => expMap (I := I) g p
-    (show TangentSpace I p from v)
-  have hTLdom : ∀ w ∈ T, L w ∈ expDomain (I := I) g p := by
-    intro w hw
-    exact hTdom w hw
-  have hF : ContMDiffOn 𝓘(ℝ, E) I 1 F (expDomain (I := I) g p) := by
-    simpa only [F] using (contMDiffOn_expMap (I := I) g p).of_le (by norm_num)
-  have hmap : ContinuousOn (paramDensity (I := I) g F)
-      (expDomain (I := I) g p) :=
-    continuousOn_paramDensity (I := I) g (isOpen_expDomain (I := I) g p) hF
-  have hmapL : ContinuousOn
-      (fun w => paramDensity (I := I) g F (show E from L w)) T :=
-    hmap.comp L.continuous.continuousOn (fun w hw => hTLdom w hw)
-  have heq (w : E) (hw : w ∈ T) :
-      curveDensity (I := I) g
-          (radialCurve (I := I) g p (show E from L w))
-          (fun i => radialJacobiField (I := I) g p
-            (show E from L w) (B i)) 1 =
-        |(chartModelBasis E).det B| *
-          paramDensity (I := I) g F (show E from L w) := by
-    rw [curveDensity_radialJacobiField_basis (I := I) g p
-      (show E from L w) (hTLdom w hw) (chartModelBasis E) B]
-    congr 1
-    symm
-    exact paramDensity_expMap_eq_curveDensity (I := I) g p
-      (show E from L w) (hTLdom w hw)
-  have hcont : ContinuousOn (fun w : E =>
-      |(chartModelBasis E).det B| *
-        paramDensity (I := I) g F (show E from L w)) T :=
-    continuousOn_const.mul hmapL
-  change ContinuousOn (fun w : E =>
-    curveDensity (I := I) g
-      (radialCurve (I := I) g p (show E from L w))
-      (fun i => radialJacobiField (I := I) g p
-        (show E from L w) (B i)) 1) T
-  exact hcont.congr heq
+  exact (continuousOn_curveDensity_radialJacobiField_basis (I := I) g p
+    (normalBasis (I := I) g p)).comp
+      (normalFrame (I := I) (E := E) g p).continuous.continuousOn hTdom
 
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma rawBall_normal

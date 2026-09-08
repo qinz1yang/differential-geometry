@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Integration.Measure.Parametric.Defs
+import DifferentialGeometry.Analysis.Integration.Measure.Parametric.Density
 import DifferentialGeometry.Analysis.Integration.Measure.Chart.Density
 import DifferentialGeometry.Analysis.Integration.Measure.Chart.HaarBasis
 import DifferentialGeometry.Geometry.Exponential.Variation.Radial
@@ -353,6 +353,34 @@ theorem paramDensity_expMap_smul_mul_pow_of_orthonormal
     curveDensity_radialJacobiField_smul (I := I) g p x w t ht,
     Fintype.card_fin]
   ring
+
+theorem continuousOn_curveDensity_radialJacobiField_basis
+    {ι : Type*} [Fintype ι] [DecidableEq ι]
+    (g : SmoothRiemannianMetric I M) (p : M) (b : Module.Basis ι ℝ E) :
+    ContinuousOn (fun v : E =>
+      curveDensity (I := I) g (radialCurve (I := I) g p v)
+        (fun i => radialJacobiField (I := I) g p v (b i)) 1) (expDomain (I := I) g p) := by
+  let e : Fin (Module.finrank ℝ E) ≃ ι :=
+    Fintype.equivOfCardEq ((Fintype.card_fin _).trans (Module.finrank_eq_card_basis b))
+  let B := b.reindex e.symm
+  let F : E → M := fun v => expMap (I := I) g p (show TangentSpace I p from v)
+  have hparam : ContinuousOn (paramDensity (I := I) g F) (expDomain (I := I) g p) :=
+    continuousOn_paramDensity (I := I) g (isOpen_expDomain (I := I) g p)
+      ((contMDiffOn_expMap (I := I) g p).of_le (by norm_num))
+  have heq (v : E) (hv : v ∈ expDomain (I := I) g p) :
+      curveDensity (I := I) g (radialCurve (I := I) g p v)
+        (fun i => radialJacobiField (I := I) g p v (B i)) 1 =
+      |(chartModelBasis E).det B| * paramDensity (I := I) g F v := by
+    rw [curveDensity_radialJacobiField_basis (I := I) g p v hv (chartModelBasis E) B,
+      paramDensity_expMap_eq_curveDensity (I := I) g p v hv]
+  have hcont : ContinuousOn (fun v : E =>
+      curveDensity (I := I) g (radialCurve (I := I) g p v)
+        (fun i => radialJacobiField (I := I) g p v (B i)) 1) (expDomain (I := I) g p) :=
+    (continuousOn_const.mul hparam).congr heq
+  exact hcont.congr (fun v _ => by
+    simpa only [B, Module.Basis.reindex_apply, Equiv.symm_symm] using
+      (curveDensity_reindex (I := I) g (radialCurve (I := I) g p v)
+        (fun i => radialJacobiField (I := I) g p v (b i)) 1 e).symm)
 
 theorem lintegral_paramDensity_expMap_eq_lintegral_curveDensity_addHaar
     [MeasurableSpace E] [BorelSpace E]
