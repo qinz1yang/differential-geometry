@@ -183,3 +183,109 @@ theorem exists_metric_prod_eq_localPullMetric_of_partialDiffeomorph [T2Space N]
   exact congrArg₂ (fun a b : ℝ => a + b) (hinner x.1 u.1 v.1).symm hreal.symm
 
 end DifferentialGeometry
+
+namespace DifferentialGeometry
+
+open Set
+open scoped Manifold ContDiff Topology
+
+variable {T : Type*} [TopologicalSpace T]
+
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+  {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+variable {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F] [FiniteDimensional ℝ F]
+  {G : Type*} [TopologicalSpace G] {J : ModelWithCorners ℝ F G}
+  {N : Type*} [TopologicalSpace N] [ChartedSpace G N] [IsManifold J ∞ N] [T2Space N]
+variable {F' : Type*} [NormedAddCommGroup F'] [NormedSpace ℝ F'] [FiniteDimensional ℝ F']
+  {G' : Type*} [TopologicalSpace G'] {K : ModelWithCorners ℝ F' G'}
+  {P : Type*} [TopologicalSpace P] [ChartedSpace G' P] [IsManifold K ∞ P] [T2Space P]
+
+theorem localPullMetric_eq_prod_of_mem_closure
+    (g : T → SmoothRiemannianMetric I M)
+    (g₁ : T → SmoothRiemannianMetric J N) (g₂ : T → SmoothRiemannianMetric K P)
+    (Phi : N × P → M) (hPhi : IsLocalDiffeomorph (J.prod K) I ∞ Phi)
+    {A : Set T} {t : T} (ht : t ∈ closure A)
+    (hg : ∀ x (u v : TangentSpace I x), ContinuousWithinAt (fun a => (g a).inner x u v) A t)
+    (hg₁ : ∀ x (u v : TangentSpace J x), ContinuousWithinAt (fun a => (g₁ a).inner x u v) A t)
+    (hg₂ : ∀ x (u v : TangentSpace K x), ContinuousWithinAt (fun a => (g₂ a).inner x u v) A t)
+    (hprod : ∀ a ∈ A, localPullMetric (g a) Phi hPhi = (g₁ a).prod (g₂ a)) :
+    localPullMetric (g t) Phi hPhi = (g₁ t).prod (g₂ t) := by
+  apply SmoothRiemannianMetric.ext_inner
+  intro z u v
+  have hc : ContinuousWithinAt (fun a => (localPullMetric (g a) Phi hPhi).inner z u v -
+      ((g₁ a).prod (g₂ a)).inner z u v) A t := by
+    simp only [localPullMetric_inner, SmoothRiemannianMetric.prod_inner,
+      mfderiv_fst, mfderiv_snd]
+    exact (hg _ _ _).sub ((hg₁ _ _ _).add (hg₂ _ _ _))
+  apply sub_eq_zero.mp
+  apply hc.eq_const_of_mem_closure ht
+  intro a ha
+  rw [hprod a ha, sub_self]
+
+theorem exists_metric_prod_eq_on_closure_of_localPullMetric
+    (g : T → SmoothRiemannianMetric I M)
+    (g₁ : T → SmoothRiemannianMetric J N) (g₂ : T → SmoothRiemannianMetric K P)
+    (Phi : N × P → M) (hPhi : IsLocalDiffeomorph (J.prod K) I ∞ Phi) (y₀ : P)
+    {A B : Set T} (hB : B ⊆ closure A)
+    (hg : ∀ t ∈ B, ∀ x (u v : TangentSpace I x),
+      ContinuousWithinAt (fun a => (g a).inner x u v) A t)
+    (hg₂ : ∀ t ∈ B, ∀ x (u v : TangentSpace K x),
+      ContinuousWithinAt (fun a => (g₂ a).inner x u v) A t)
+    (hprod : ∀ a ∈ A, localPullMetric (g a) Phi hPhi = (g₁ a).prod (g₂ a)) :
+    ∃ h : T → SmoothRiemannianMetric J N,
+      (∀ a x (u v : TangentSpace J x), (h a).inner x u v =
+        (g a).inner (Phi (x, y₀))
+          (mfderiv J I (fun z => Phi (z, y₀)) x u)
+          (mfderiv J I (fun z => Phi (z, y₀)) x v)) ∧
+      (∀ a ∈ A, h a = g₁ a) ∧
+      ∀ a ∈ B, localPullMetric (g a) Phi hPhi = (h a).prod (g₂ a) := by
+  let Y : N → M := fun x => Phi (x, y₀)
+  have hY : ContMDiff J I ∞ Y :=
+    hPhi.contMDiff.comp (contMDiff_id.prodMk contMDiff_const)
+  have hYder x : mfderiv J I Y x = (mfderiv (J.prod K) I Phi (x, y₀)).comp
+      (ContinuousLinearMap.inl ℝ F F') := by
+    have hcomp := mfderiv_comp x ((hPhi (x, y₀)).contMDiffAt.mdifferentiableAt (by decide))
+      (mdifferentiableAt_id.prodMk mdifferentiableAt_const)
+    change mfderiv J I Y x = (mfderiv (J.prod K) I Phi (x, y₀)).comp
+      (mfderiv J (J.prod K) (fun z : N => (z, y₀)) x) at hcomp
+    rw [mfderiv_prod_left] at hcomp
+    exact hcomp
+  have himm : ∀ x, Function.Injective (mfderiv J I Y x) := by
+    intro x u v huv
+    rw [hYder] at huv
+    have hlocal := hPhi (x, y₀)
+    have hinj : Function.Injective (mfderiv (J.prod K) I Phi (x, y₀)) := by
+      rw [← hlocal.mfderivToContinuousLinearEquiv_coe (by decide)]
+      exact (hlocal.mfderivToContinuousLinearEquiv (by decide)).injective
+    exact congrArg Prod.fst (hinj huv)
+  let h : T → SmoothRiemannianMetric J N := fun a => (g a).pullback Y hY himm
+  have hinner a x (u v : TangentSpace J x) : (h a).inner x u v =
+      (g a).inner (Phi (x, y₀)) (mfderiv J I Y x u) (mfderiv J I Y x v) := rfl
+  have heq a (ha : a ∈ A) : h a = g₁ a := by
+    apply SmoothRiemannianMetric.ext_inner
+    intro x u v
+    rw [hinner, hYder]
+    let U : TangentSpace (J.prod K) (x, y₀) := (u, 0)
+    let V : TangentSpace (J.prod K) (x, y₀) := (v, 0)
+    have hh := congrArg (fun q : SmoothRiemannianMetric (J.prod K) (N × P) =>
+      q.inner (x, y₀) U V) (hprod a ha)
+    rw [localPullMetric_inner, SmoothRiemannianMetric.prod_inner,
+      mfderiv_fst, mfderiv_snd] at hh
+    change (g a).inner (Phi (x, y₀))
+      (mfderiv (J.prod K) I Phi (x, y₀) (u, 0))
+      (mfderiv (J.prod K) I Phi (x, y₀) (v, 0)) =
+        (g₁ a).inner x u v + (g₂ a).inner y₀ 0 0 at hh
+    rw [map_zero, add_zero] at hh
+    exact hh
+  refine ⟨h, hinner, heq, ?_⟩
+  intro a ha
+  apply localPullMetric_eq_prod_of_mem_closure g h g₂ Phi hPhi (hB ha) (hg a ha)
+  · intro x u v
+    exact hg a ha (Y x) (mfderiv J I Y x u) (mfderiv J I Y x v)
+  · exact hg₂ a ha
+  · intro b hb
+    rw [heq b hb]
+    exact hprod b hb
+
+end DifferentialGeometry

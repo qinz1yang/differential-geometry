@@ -1,3 +1,5 @@
+import DifferentialGeometry.Geometry.Metric.Family.PairSmoothness
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.JointRegularity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.Basic
 import DifferentialGeometry.Geometry.Curvature.PullbackNaturalityLocalCross
 import DifferentialGeometry.Geometry.Metric.Product
@@ -134,5 +136,78 @@ theorem metric_hasDerivAt_snd_of_local_product
       (-2 * ricciTensor (h t) y u v) t :=
   (metric_hasDerivWithinAt_snd_of_local_product S hS Phi hPhi g h
     (mem_of_mem_nhds hA) htD hprod x y u v).hasDerivAt hA
+
+end DifferentialGeometry.PDE.RicciFlow
+
+namespace DifferentialGeometry.PDE.RicciFlow
+
+open Bundle Set
+open DifferentialGeometry.Geometry.Curvature
+open scoped Manifold ContDiff Topology
+
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+  {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
+  {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M] [T2Space M]
+variable {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F] [FiniteDimensional ℝ F]
+  {G : Type*} [TopologicalSpace G] {J : ModelWithCorners ℝ F G} [J.Boundaryless]
+  {N : Type*} [TopologicalSpace N] [ChartedSpace G N] [IsManifold J ∞ N] [T2Space N]
+  [SigmaCompactSpace N]
+variable {F' : Type*} [NormedAddCommGroup F'] [NormedSpace ℝ F'] [FiniteDimensional ℝ F']
+  {G' : Type*} [TopologicalSpace G'] {K : ModelWithCorners ℝ F' G'} [K.Boundaryless]
+  {P : Type*} [TopologicalSpace P] [ChartedSpace G' P] [IsManifold K ∞ P] [T2Space P]
+  [SigmaCompactSpace P]
+
+theorem isSolutionOn_fst_of_local_product
+    {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn S)
+    (g : ℝ → SmoothRiemannianMetric J N) (h : ℝ → SmoothRiemannianMetric K P)
+    (Phi : N × P → M) (hPhi : IsLocalDiffeomorph (J.prod K) I ∞ Phi) (y₀ : P)
+    {α β a : ℝ} (ha : a ∈ Ioo α β) (hreg : Ioo α β ⊆ D.regular)
+    (hprod : ∀ t ∈ Ioo α β, localPullMetric (S.family.metric t) Phi hPhi = (g t).prod (h t)) :
+    IsSolutionOn ({ base := { metric := g } } :
+      SolutionOn (I := J) (M := N) (RealTimeInterval.openInterval α β a ha)) := by
+  let Y : N → M := fun x => Phi (x, y₀)
+  have hY : ContMDiff J I ∞ Y :=
+    hPhi.contMDiff.comp (contMDiff_id.prodMk contMDiff_const)
+  have hYder x : mfderiv J I Y x = (mfderiv (J.prod K) I Phi (x, y₀)).comp
+      (ContinuousLinearMap.inl ℝ F F') := by
+    have hcomp := mfderiv_comp x ((hPhi (x, y₀)).contMDiffAt.mdifferentiableAt (by decide))
+      (mdifferentiableAt_id.prodMk mdifferentiableAt_const)
+    change mfderiv J I Y x = (mfderiv (J.prod K) I Phi (x, y₀)).comp
+      (mfderiv J (J.prod K) (fun z : N => (z, y₀)) x) at hcomp
+    rw [mfderiv_prod_left] at hcomp
+    exact hcomp
+  have hinner t (ht : t ∈ Ioo α β) x (u v : TangentSpace J x) :
+      (g t).inner x u v = (S.family.metric t).inner (Y x)
+        (mfderiv J I Y x u) (mfderiv J I Y x v) := by
+    rw [hYder]
+    let U : TangentSpace (J.prod K) (x, y₀) := (u, 0)
+    let V : TangentSpace (J.prod K) (x, y₀) := (v, 0)
+    have hh := congrArg (fun q : SmoothRiemannianMetric (J.prod K) (N × P) =>
+      q.inner (x, y₀) U V) (hprod t ht)
+    rw [localPullMetric_inner, SmoothRiemannianMetric.prod_inner,
+      mfderiv_fst, mfderiv_snd] at hh
+    change (S.family.metric t).inner (Phi (x, y₀))
+      (mfderiv (J.prod K) I Phi (x, y₀) (u, 0))
+      (mfderiv (J.prod K) I Phi (x, y₀) (v, 0)) =
+        (g t).inner x u v + (h t).inner y₀ 0 0 at hh
+    rw [map_zero, add_zero] at hh
+    exact hh.symm
+  have hmetric : ContMDiffOn (𝓘(ℝ, ℝ).prod I)
+      (I.prod 𝓘(ℝ, E →L[ℝ] E →L[ℝ] ℝ)) ∞
+      (fun p : ℝ × M => (⟨p.2, (S.family.metric p.1).inner p.2⟩ :
+        TotalSpace (E →L[ℝ] E →L[ℝ] ℝ)
+          (fun y => TangentSpace I y →L[ℝ] TangentSpace I y →L[ℝ] ℝ)))
+      (Ioo α β ×ˢ (Set.univ : Set M)) := by
+    intro p hp
+    exact (hS.smoothMetric.metricCLMSmoothAt
+      (D.regular_isOpen.mem_nhds (hreg hp.1))).contMDiffWithinAt
+  have hgram := chartGramMatrix_joint_contMDiffOn_of_pullback
+    S.family.metric (Ioo α β) hmetric g Y hY hinner
+  have hjoint := metricCLMSection_jointContMDiffOn_of_chartGram_Ioo g α β hgram
+  apply isSolutionOn_of_joint_metric (RealTimeInterval.openInterval α β a ha)
+    isOpen_Ioo.uniqueDiffOn g hjoint
+  intro t ht x u v
+  exact metric_hasDerivWithinAt_fst_of_local_product S hS Phi hPhi g h
+    ht (hreg ht) hprod x y₀ u v
 
 end DifferentialGeometry.PDE.RicciFlow
