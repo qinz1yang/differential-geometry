@@ -1,4 +1,5 @@
 import DifferentialGeometry.Geometry.LieGroup.Orthogonal
+import DifferentialGeometry.Geometry.LieGroup.Representation
 import DifferentialGeometry.Bundle.TangentSpace
 import DifferentialGeometry.Bundle.PartialMfderiv.Composition
 import Mathlib.Geometry.Manifold.GroupLieAlgebra
@@ -88,5 +89,38 @@ theorem mvfderiv_symm_apply_one
       (fun g : E ≃ₗᵢ[ℝ] E => (g : E →L[ℝ] E)) 1 U w at hd
   rw [← h] at hd
   exact eq_neg_of_add_eq_zero_left hd.symm
+
+variable {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+
+theorem groupLieAlgebraEquiv_conj (g : F ≃ₗᵢ[ℝ] F)
+    (U : GroupLieAlgebra 𝓘(ℝ, skewAdjoint.submodule ℝ (F →L[ℝ] F)) (F ≃ₗᵢ[ℝ] F)) :
+    (groupLieAlgebraEquiv (mfderiv
+      𝓘(ℝ, skewAdjoint.submodule ℝ (F →L[ℝ] F))
+      𝓘(ℝ, skewAdjoint.submodule ℝ (F →L[ℝ] F))
+      (fun h => g * h * g⁻¹) 1 U) : F →L[ℝ] F) =
+      g.toContinuousLinearEquiv.toContinuousLinearMap.comp
+        ((groupLieAlgebraEquiv U : F →L[ℝ] F).comp
+          g.symm.toContinuousLinearEquiv.toContinuousLinearMap) := by
+  let O := 𝓘(ℝ, skewAdjoint.submodule ℝ (F →L[ℝ] F))
+  let ρ : ContRepresentation ℝ (F ≃ₗᵢ[ℝ] F) F := {
+    toMonoidHom := {
+      toFun := fun e => e.toContinuousLinearEquiv.toContinuousLinearMap
+      map_one' := rfl
+      map_mul' := fun _ _ => rfl }}
+  have hρ : MDifferentiableAt O 𝓘(ℝ, F →L[ℝ] F) (fun g => ρ g) 1 :=
+    (contMDiff_toContinuousLinearMap (E := F) (n := 1) 1).mdifferentiableAt (by simp)
+  apply ContinuousLinearMap.ext
+  intro w
+  have h := ρ.mvfderiv_conj_one_apply hρ g U w
+  change (mvfderiv O (fun p : F ≃ₗᵢ[ℝ] F => (p : F →L[ℝ] F)) 1
+    (mfderiv O O (fun h => g * h * g⁻¹) 1 U)) w =
+    g ((mvfderiv O (fun p : F ≃ₗᵢ[ℝ] F => (p : F →L[ℝ] F)) 1 U) (g.symm w)) at h
+  let U' : GroupLieAlgebra O (F ≃ₗᵢ[ℝ] F) :=
+    mfderiv O O (fun h => g * h * g⁻¹) 1 U
+  have h' : (mvfderiv O (fun p : F ≃ₗᵢ[ℝ] F => (p : F →L[ℝ] F)) 1 U') w =
+      g ((mvfderiv O (fun p : F ≃ₗᵢ[ℝ] F => (p : F →L[ℝ] F)) 1 U) (g.symm w)) := h
+  exact (congrArg (fun A : F →L[ℝ] F => A w) (coe_groupLieAlgebraEquiv U')).trans
+    (h'.trans (congrArg g ((congrArg (fun A : F →L[ℝ] F => A (g.symm w))
+      (coe_groupLieAlgebraEquiv U)).symm)))
 
 end LinearIsometryEquiv

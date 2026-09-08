@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.Associated
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.HamiltonIvey.SelfAdjointRegion
-import DifferentialGeometry.Geometry.LieGroup.Representation.SelfAdjoint
+import DifferentialGeometry.Geometry.Metric.SelfAdjointAssociated
 
 noncomputable section
 
@@ -61,5 +61,26 @@ theorem isParallelClosedConvexFamily_associated_hamiltonIveyRegion
     (convex_hamiltonIveyRegion hdim hK)
   intro g A hA
   exact (mem_hamiltonIveyRegion_conj_iff g A K).mpr hA
+
+section
+
+variable {V W : Type*} [NormedAddCommGroup V] [InnerProductSpace ℝ V] [FiniteDimensional ℝ V]
+  [NormedAddCommGroup W] [InnerProductSpace ℝ W] [FiniteDimensional ℝ W]
+  [Nonempty (V ≃ₗᵢ[ℝ] W)]
+
+theorem selfAdjointAssociatedEquiv_mem_hamiltonIveyRegion_iff
+    (A : selfAdjoint.submodule ℝ (V →L[ℝ] V)) (K : ℝ) :
+    LinearIsometryEquiv.selfAdjointAssociatedEquiv (W := W) A ∈
+      (ContRepresentation.selfAdjointConjugation (W := W)).toRepresentation.associatedSet
+        (V ≃ₗᵢ[ℝ] W) (hamiltonIveyRegion K) ↔ A ∈ hamiltonIveyRegion K := by
+  change (∀ p : V ≃ₗᵢ[ℝ] W, _ ∈ hamiltonIveyRegion K) ↔ _
+  constructor
+  · intro h
+    let p := Classical.choice (inferInstance : Nonempty (V ≃ₗᵢ[ℝ] W))
+    exact (mem_hamiltonIveyRegion_conj_iff p A K).mp (h p)
+  · intro h p
+    exact (mem_hamiltonIveyRegion_conj_iff p A K).mpr h
+
+end
 
 end DifferentialGeometry.Geometry.Curvature.DimensionThree

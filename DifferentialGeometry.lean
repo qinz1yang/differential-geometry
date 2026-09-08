@@ -4554,6 +4554,7 @@ import DifferentialGeometry.Geometry.Metric.Sphere.DeckGroup
 import DifferentialGeometry.Topology.Covering.FiniteDeckGroup
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.ModelCoverRoundThreeSphere
 import DifferentialGeometry.Geometry.Connection.OrthonormalFrame
+import DifferentialGeometry.Geometry.Connection.OrthonormalFrame.Principal
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.FrameConnection
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureReactionPositivity
 import DifferentialGeometry.Analysis.Parabolic.CurvatureOperatorRank
@@ -4760,4 +4761,5 @@ import DifferentialGeometry.Geometry.LieGroup.Representation.SelfAdjoint
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.HamiltonIvey.AssociatedRegion
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Soliton.CurvatureRankModels
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Soliton.CylinderClassification
+import DifferentialGeometry.Geometry.Metric.SelfAdjointAssociated
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Soliton.Classification

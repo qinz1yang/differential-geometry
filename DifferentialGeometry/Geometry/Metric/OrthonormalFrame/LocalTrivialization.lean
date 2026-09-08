@@ -211,6 +211,24 @@ theorem contMDiffOn_coframe_to {U : Set B} {q : ∀ x, V x ≃ₗᵢ[ℝ] G}
       (q v.proj).inner_map_map ((q v.proj).symm (b i)) v.2
   exact (Bundle.contMDiffOn_proj V).prodMk (hv.congr (fun v _ => heq v))
 
+omit [FiniteDimensional ℝ F] [ContMDiffVectorBundle n F V I] in
+theorem contMDiffOn_coframe_conjugate {U : Set B} {q : ∀ x, V x ≃ₗᵢ[ℝ] G}
+    (hq : ∀ w : G, ContMDiffOn I (I.prod 𝓘(ℝ, F)) n
+      (fun x => TotalSpace.mk' F x ((q x).symm w)) U)
+    {A : ∀ x, V x →L[ℝ] V x}
+    (hA : ContMDiffOn I (I.prod 𝓘(ℝ, F →L[ℝ] F)) n
+      (fun x => TotalSpace.mk' (F →L[ℝ] F) x (A x)) U) :
+    ContMDiffOn I 𝓘(ℝ, G →L[ℝ] G) n
+      (fun x => (q x).toContinuousLinearEquiv.toContinuousLinearMap.comp
+        ((A x).comp (q x).symm.toContinuousLinearEquiv.toContinuousLinearMap)) U := by
+  intro x hx
+  apply contMDiffWithinAt_clm_of_pointwise
+  intro w
+  have hv := hA.clm_bundle_apply (hq w)
+  have hqf := LinearIsometryEquiv.contMDiffOn_coframe_to hq
+  have h := hqf.comp hv (fun x hx => hx)
+  exact (h x hx).snd
+
 theorem exists_contMDiff_coframe_trivialization_to (x₀ : B) (p₀ : V x₀ ≃ₗᵢ[ℝ] G) :
     ∃ U : Set B, IsOpen U ∧ x₀ ∈ U ∧ ∃ q : ∀ x, V x ≃ₗᵢ[ℝ] G,
       q x₀ = p₀ ∧
