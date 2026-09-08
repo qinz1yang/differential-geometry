@@ -4747,6 +4747,7 @@ import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.GlobalImageLine
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.GlobalCurvatureLine
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.GlobalCurvatureProduct
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.GlobalCurvatureSurface
+import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.FlatPersistence
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Restriction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Soliton.Curvature
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.CurvatureSurfaceTime
