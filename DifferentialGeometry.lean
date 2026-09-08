@@ -3025,6 +3025,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Foundations.Wind
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Foundations.PointedMaps
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Foundations.PointedGlobal
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Defs
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Restriction
 import DifferentialGeometry.Geometry.Metric.Convergence.DerivativeNorm.Product
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Ricci.Tower
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Ricci.Intrinsic
