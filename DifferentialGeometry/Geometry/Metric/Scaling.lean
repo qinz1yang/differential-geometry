@@ -108,6 +108,18 @@ def scaleMetric (c : Real) (hc : 0 < c)
   rfl
 
 
+theorem scaleMetric_inner_inv_sqrt_smul
+    (c : ℝ) (hc : 0 < c) (g : SmoothRiemannianMetric I M) (x : M)
+    (v w : TangentSpace I x) :
+    (scaleMetric c hc g).inner x ((Real.sqrt c)⁻¹ • v) ((Real.sqrt c)⁻¹ • w) =
+      g.inner x v w := by
+  simp only [scaleMetric_inner, map_smul, smul_apply, smul_eq_mul]
+  have hsq := Real.sq_sqrt hc.le
+  have hn := ne_of_gt (Real.sqrt_pos.mpr hc)
+  field_simp
+  rw [hsq]
+
+
 theorem scaleMetric_one
     (g : SmoothRiemannianMetric I M) :
     (scaleMetric (I := I) (1 : Real) zero_lt_one g).inner = g.inner := by

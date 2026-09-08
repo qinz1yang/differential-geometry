@@ -4582,3 +4582,11 @@ import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.ExteriorPositiv
 import DifferentialGeometry.Geometry.LieGroup.Representation
 import DifferentialGeometry.Bundle.Principal.Smooth
 import DifferentialGeometry.Bundle.Associated.Smooth
+import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.ExteriorScaling
+import DifferentialGeometry.Geometry.Connection.Laplacian.Scaling
+import DifferentialGeometry.Geometry.Connection.PullbackScaling
+import DifferentialGeometry.Geometry.Connection.LeviCivita.PullbackScaling
+import DifferentialGeometry.Geometry.Connection.TensorNabla.Congruence
+import DifferentialGeometry.Geometry.Connection.Laplacian.Congruence
+import DifferentialGeometry.Geometry.Connection.Laplacian.SelfAdjointScaling
+import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.ExteriorLaplacianScaling

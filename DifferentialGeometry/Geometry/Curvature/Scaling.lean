@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Curvature.Metric
 import DifferentialGeometry.Geometry.Curvature.AlgebraicCurvatureOperatorConeMetric
-import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.RicciConnection
+import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.RicciIdentity
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Scaling
 import DifferentialGeometry.Geometry.Operator.Scaling
 open DifferentialGeometry.Geometry.Curvature
@@ -154,7 +154,7 @@ theorem metricScalarAt_scaleMetric
 
 section
 
-variable [T2Space M] [I.Boundaryless]
+variable [T2Space M] [BoundarylessManifold I M]
 
 theorem ricciTensor_scaleMetric
     (c : Real) (hc : 0 < c) (g : SmoothRiemannianMetric I M)
@@ -163,6 +163,40 @@ theorem ricciTensor_scaleMetric
       ricciTensor (I := I) g x v w := by
   let _ : CompleteSpace E := FiniteDimensional.complete Real E
   simp [ricciTensor_apply, ricciEndo, LeviCivita, lcConn_scaleMetric]
+
+theorem ricciSharp_scaleMetric
+    (c : ℝ) (hc : 0 < c) (g : SmoothRiemannianMetric I M) (x : M) :
+    ricciSharp (I := I) (scaleMetric c hc g) x = c⁻¹ • ricciSharp (I := I) g x := by
+  ext v
+  apply DifferentialGeometry.Geometry.Operator.metricFlatLinear_injective (I := I) (scaleMetric c hc g) x
+  ext w
+  change (scaleMetric c hc g).inner x (ricciSharp (scaleMetric c hc g) x v) w =
+    (scaleMetric c hc g).inner x (c⁻¹ • ricciSharp g x v) w
+  rw [inner_ricciSharp, ricciTensor_scaleMetric, scaleMetric_inner, map_smul,
+    smul_apply, smul_eq_mul, inner_ricciSharp]
+  field_simp
+
+
+omit [BoundarylessManifold I M] in
+theorem metricRm04At_scaleMetric_inv_sqrt_smul
+    (c : ℝ) (hc : 0 < c) (g : SmoothRiemannianMetric I M) (x : M)
+    (v : Fin 4 → TangentSpace I x) :
+    metricRm04At (scaleMetric c hc g) x (fun i => (Real.sqrt c)⁻¹ • v i) =
+      c⁻¹ * metricRm04At g x v := by
+  let _ : CompleteSpace E := FiniteDimensional.complete ℝ E
+  have heq : metricRm04At (scaleMetric c hc g) x = c • metricRm04At g x :=
+    metricRm_scale c hc g x
+  rw [heq, smul_apply]
+  have hs := (metricRm04At g x).map_smul_univ (fun _ => (Real.sqrt c)⁻¹) v
+  rw [hs]
+  simp only [Finset.prod_const, Finset.card_univ, Fintype.card_fin, smul_eq_mul]
+  have hfour : Real.sqrt c ^ 4 = c ^ 2 := by
+    rw [show (4 : ℕ) = 2 * 2 from rfl, pow_mul, Real.sq_sqrt hc.le]
+  have hw : c * ((Real.sqrt c)⁻¹) ^ 4 = c⁻¹ := by
+    rw [inv_pow, hfour]
+    field_simp
+  rw [← mul_assoc, hw]
+
 
 end
 
