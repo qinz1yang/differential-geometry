@@ -353,4 +353,43 @@ theorem mdifferentiableAt_gradientFun_finset_sum
           rw [Finset.sum_insert ha]]
       exact gradientFun_add (I := I) g hay hsy
 
+theorem mdifferentiableAt_gradientFun_mul
+    (g : SmoothRiemannianMetric I M) {u v : M → ℝ} {x : M}
+    (hus : ∀ᶠ y in 𝓝 x, MDifferentiableAt I 𝓘(ℝ, ℝ) u y)
+    (hvs : ∀ᶠ y in 𝓝 x, MDifferentiableAt I 𝓘(ℝ, ℝ) v y)
+    (hug : MDifferentiableAt I (I.prod 𝓘(ℝ, E)) (T% fun y : M => gradientFun g u y) x)
+    (hvg : MDifferentiableAt I (I.prod 𝓘(ℝ, E)) (T% fun y : M => gradientFun g v y) x) :
+    MDifferentiableAt I (I.prod 𝓘(ℝ, E))
+      (T% fun y : M => gradientFun g (fun z => u z * v z) y) x := by
+  have h := mdifferentiableAt_add_section
+    (hus.self_of_nhds.smul_section hvg) (hvs.self_of_nhds.smul_section hug)
+  refine h.congr_of_eventuallyEq ?_
+  filter_upwards [hus, hvs] with y huy hvy
+  exact congrArg (fun w => (⟨y, w⟩ : TotalSpace E (TangentSpace I : M → Type _)))
+    (gradientFun_mul g huy hvy)
+
+theorem mdifferentiableAt_gradientFun_const_mul
+    (g : SmoothRiemannianMetric I M) {u : M → ℝ} {x : M} (a : ℝ)
+    (hus : ∀ᶠ y in 𝓝 x, MDifferentiableAt I 𝓘(ℝ, ℝ) u y)
+    (hug : MDifferentiableAt I (I.prod 𝓘(ℝ, E)) (T% fun y : M => gradientFun g u y) x) :
+    MDifferentiableAt I (I.prod 𝓘(ℝ, E))
+      (T% fun y : M => gradientFun g (fun z => a * u z) y) x := by
+  refine (hug.smul_const_section (a := a)).congr_of_eventuallyEq ?_
+  filter_upwards [hus] with y hy
+  exact congrArg (fun w => (⟨y, w⟩ : TotalSpace E (TangentSpace I : M → Type _)))
+    (gradientFun_const_smul g a hy)
+
+theorem mdifferentiableAt_gradientFun_add
+    (g : SmoothRiemannianMetric I M) {u v : M → ℝ} {x : M}
+    (hus : ∀ᶠ y in 𝓝 x, MDifferentiableAt I 𝓘(ℝ, ℝ) u y)
+    (hvs : ∀ᶠ y in 𝓝 x, MDifferentiableAt I 𝓘(ℝ, ℝ) v y)
+    (hug : MDifferentiableAt I (I.prod 𝓘(ℝ, E)) (T% fun y : M => gradientFun g u y) x)
+    (hvg : MDifferentiableAt I (I.prod 𝓘(ℝ, E)) (T% fun y : M => gradientFun g v y) x) :
+    MDifferentiableAt I (I.prod 𝓘(ℝ, E))
+      (T% fun y : M => gradientFun g (fun z => u z + v z) y) x := by
+  refine (mdifferentiableAt_add_section hug hvg).congr_of_eventuallyEq ?_
+  filter_upwards [hus, hvs] with y huy hvy
+  exact congrArg (fun w => (⟨y, w⟩ : TotalSpace E (TangentSpace I : M → Type _)))
+    (gradientFun_add g huy hvy)
+
 end DifferentialGeometry.Geometry.Operator

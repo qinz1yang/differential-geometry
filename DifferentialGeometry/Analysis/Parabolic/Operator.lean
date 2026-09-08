@@ -379,4 +379,25 @@ theorem parabolic_pow_le_nhds
               simp only [Nat.succ_eq_add_one, Nat.cast_add, Nat.cast_one, pow_succ]
               ring
 
+theorem parabolic_time_mul_nhds
+    {G : MetricConnectionFamily (I := I) (M := M) ℝ}
+    (T : ℝ) (X : ℝ → (x : M) → TangentSpace I x)
+    (a : ℝ → ℝ) (u : ℝ → M → ℝ) (t : ℝ) (x : M)
+    (hat : DifferentiableWithinAt ℝ a (Icc 0 T) t)
+    (hut : DifferentiableWithinAt ℝ (fun s => u s x) (Icc 0 T) t)
+    (hus : ∀ᶠ y in 𝓝 x, MDifferentiableAt I 𝓘(ℝ, ℝ) (u t) y)
+    (hug : MDifferentiableAt I (I.prod 𝓘(ℝ, E)) (T% fun y : M =>
+      gradientFun (G.metric t) (u t) y) x) :
+    parabolicOperatorWithDrift G T X (fun s y => a s * u s y) t x =
+      derivWithin a (Icc 0 T) t * u t x + a t * parabolicOperatorWithDrift G T X u t x := by
+  have hlap := laplacian_smul_at (G.connection t) (G.metric t) (a t) hus hug
+  have hdrift := driftTerm_const_smul G t (X t) (a t) hus.self_of_nhds
+  change laplacian (G.connection t) (G.metric t) (fun y => a t * u t y) x =
+    a t * laplacian (G.connection t) (G.metric t) (u t) x at hlap
+  change driftTerm G t (X t) (fun y => a t * u t y) x =
+    a t * driftTerm G t (X t) (u t) x at hdrift
+  unfold parabolicOperatorWithDrift heatOperatorWithDrift laplacianAt
+  rw [derivWithin_fun_mul hat hut, hlap, hdrift]
+  ring
+
 end DifferentialGeometry.Analysis.Parabolic
