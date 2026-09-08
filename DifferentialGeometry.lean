@@ -4748,6 +4748,7 @@ import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.TimeWeakDual
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.DenseDual
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.SpatialGradientEquation
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.GradientH1
+import DifferentialGeometry.Analysis.Parabolic.Dirichlet.GradientSourceDual
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureOperatorRankScaling
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Soliton.CurvatureKernel
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Soliton.CurvatureRank
