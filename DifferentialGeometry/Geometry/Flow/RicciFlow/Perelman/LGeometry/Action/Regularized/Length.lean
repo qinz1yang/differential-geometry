@@ -58,26 +58,37 @@ theorem lLength_eq_lRegularizedAction_squareReparametrization_ae
 
 omit [InnerProductSpace Real E] [NeZero (Module.finrank Real E)]
   [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+theorem lLength_squareRootReparametrization_sq
+    (S : SolutionOn (I := I) (M := M) D) (T : Real)
+    (alpha : Real → M) (a b : Real) (ha : 0 ≤ a) (hb : 0 ≤ b) :
+    lLength S T (squareRootReparametrization alpha) (a ^ 2) (b ^ 2) =
+      lRegularizedAction S T alpha a b := by
+  have hsq := lLength_eq_lRegularizedAction_squareReparametrization_ae
+    (I := I) S T (squareRootReparametrization alpha)
+    (a ^ 2) (b ^ 2) (sq_nonneg a) (sq_nonneg b)
+  have hEq : Set.EqOn (squareReparametrization (squareRootReparametrization alpha))
+      alpha (Set.uIoo a b) := by
+    intro s hs
+    have hs0 : 0 ≤ s := (le_min ha hb).trans hs.1.le
+    simp only [squareReparametrization, squareRootReparametrization, Real.sqrt_sq hs0]
+  calc
+    _ = lRegularizedAction S T (squareReparametrization (squareRootReparametrization alpha))
+        a b := by
+      simpa only [Real.sqrt_sq ha, Real.sqrt_sq hb] using hsq
+    _ = lRegularizedAction S T alpha a b :=
+      lRegularizedAction_congr S T
+        (squareReparametrization (squareRootReparametrization alpha)) alpha a b hEq
+
+omit [InnerProductSpace Real E] [NeZero (Module.finrank Real E)]
+  [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
 theorem lLength_squareRootReparametrization_eq_lRegularizedAction
     (S : SolutionOn (I := I) (M := M) D) (T : Real)
     (alpha : Real → M) (tau : Real) (htau : 0 ≤ tau) :
     lLength S T (squareRootReparametrization alpha) 0 tau =
       lRegularizedAction S T alpha 0 (Real.sqrt tau) := by
-  have hsq := lLength_eq_lRegularizedAction_squareReparametrization_ae (I := I) S T (squareRootReparametrization alpha)
-    0 tau (by norm_num) htau
-  have hsq' : lLength S T (squareRootReparametrization alpha) 0 tau =
-      lRegularizedAction S T (squareReparametrization (squareRootReparametrization alpha)) 0
-        (Real.sqrt tau) := by
-    simpa only [Real.sqrt_zero] using hsq
-  have hEq : Set.EqOn (squareReparametrization (squareRootReparametrization alpha)) alpha
-      (Set.uIoo 0 (Real.sqrt tau)) := by
-    intro s hs
-    have hs' : s ∈ Set.Ioo 0 (Real.sqrt tau) := by
-      simpa only [Set.uIoo_of_le (Real.sqrt_nonneg tau)] using hs
-    simp only [squareReparametrization, squareRootReparametrization, Real.sqrt_sq hs'.1.le]
-  exact hsq'.trans
-    (lRegularizedAction_congr (I := I) S T
-      (squareReparametrization (squareRootReparametrization alpha)) alpha 0 (Real.sqrt tau) hEq)
+  simpa only [zero_pow two_ne_zero, Real.sq_sqrt htau] using
+    lLength_squareRootReparametrization_sq S T alpha 0 (Real.sqrt tau)
+      le_rfl (Real.sqrt_nonneg tau)
 
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman
