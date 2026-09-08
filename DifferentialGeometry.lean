@@ -4732,3 +4732,4 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.CurvatureSurf
 import DifferentialGeometry.Analysis.Sobolev.Chart.CutoffPullbackLp
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.PotentialCoefficientBounds
 import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletWeakChartCutoff
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Uhlenbeck.CurvatureOperatorParallel

@@ -20,7 +20,6 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimension
   {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M] [T2Space M]
 
 theorem exists_positive_surface_local_product_on_interval
-    [ConnectedSpace M]
     {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn S)
     (hdim : Module.finrank ℝ E = 3)
     {α β t₀ : ℝ} (ht₀ : t₀ ∈ Ioo α β) (hreg : Ioo α β ⊆ D.regular)
@@ -65,11 +64,7 @@ theorem exists_positive_surface_local_product_on_interval
         (fun y => curvatureOperatorKernelAt (S.family.metric r) y
           ⟨metricRm04At (S.family.metric r) y,
             metricRm04At_mem_algebraicCurvatureTensorSubmodule (S.family.metric r) y⟩) := by
-    have hsub : Icc ((α + r) / 2) r ⊆ Ioo α β := by
-      intro u hu
-      constructor <;> linarith [hr.1, hr.2, hu.1, hu.2]
-    exact curvatureOperatorKernelAt_parallel_at_later_time S hS hdim (by linarith [hr.1])
-      (hsub.trans hreg) (fun u hu => hR u (hsub hu))
+    exact curvatureOperatorKernelAt_parallel_of_constant_rank S hS hdim hr hreg hR 1 hrank
   obtain ⟨U, s, hU, hxU, hmem, hunit, hparallel, hdual⟩ :=
     exists_common_parallel_unit_section_of_curvatureOperatorImageAnnihilator_eq
       (fun r : Ioo α β => S.family.metric r.1) ⟨t₀, ht₀⟩ hdim
