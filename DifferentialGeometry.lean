@@ -4755,3 +4755,5 @@ import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.KernelParallel
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.ProductCover
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Soliton.RankOneSplitting
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Soliton.RankOneModelCover
+import DifferentialGeometry.Geometry.LieGroup.Representation.SelfAdjoint
+import DifferentialGeometry.Geometry.Curvature.DimensionThree.HamiltonIvey.AssociatedRegion
