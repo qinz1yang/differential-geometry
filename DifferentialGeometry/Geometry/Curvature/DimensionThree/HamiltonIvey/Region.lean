@@ -663,6 +663,51 @@ theorem pinchingRatioLog_reaction_derivative_ge
   have heq := pinchingRatioLog_reaction_derivative_eq l1 l2 l3
   nlinarith
 
+theorem two_lt_log_of_hamiltonIvey_violation
+    {r q : ℝ} (hq : 0 < q) (heigen : -3 * q ≤ r) (hscalar : -3 ≤ r)
+    (hviolation : r < q * (Real.log q - 3)) :
+    2 < Real.log q := by
+  have hone : 1 < q := by
+    by_contra! hq1
+    have hlog := Real.log_nonpos hq.le hq1
+    have hmul := mul_nonpos_of_nonneg_of_nonpos hq.le hlog
+    nlinarith
+  by_contra! hlog
+  have hupper : q < 3 := by
+    have hmul := mul_nonneg hq.le (sub_nonneg.mpr hlog)
+    nlinarith
+  have hlog' := Real.log_le_sub_one_of_pos hq
+  have hmul := mul_le_mul_of_nonneg_left hlog' hq.le
+  have hpoly := mul_nonpos_of_nonneg_of_nonpos (sub_nonneg.mpr hone.le)
+    (sub_nonpos.mpr hupper.le)
+  nlinarith
+
+theorem two_lt_log_mul_of_hamiltonIvey_violation
+    {t r q : ℝ} (ht : 0 < t) (hq : 0 < q)
+    (heigen : -3 * q ≤ r) (hscalar : -3 ≤ t * r)
+    (hviolation : r < q * (Real.log (t * q) - 3)) :
+    2 < Real.log (t * q) := by
+  apply two_lt_log_of_hamiltonIvey_violation (r := t * r) (mul_pos ht hq)
+  · have h := mul_le_mul_of_nonneg_left heigen ht.le
+    nlinarith
+  · linarith
+  · have h := mul_lt_mul_of_pos_left hviolation ht
+    nlinarith
+
+theorem hamilton_ivey_reaction_ge_at_logarithmic_boundary
+    {l1 l2 l3 c : ℝ} (h21 : l2 ≤ l1) (h32 : l3 ≤ l2) (hl3 : l3 < 0)
+    (hboundary : sectionalSum3 l1 l2 l3 = (-l3) * (c - 1)) :
+    2 * (-l3) ^ 2 ≤ reactionSectionalSum3 l1 l2 l3 - c * reactionPinchHeight3 l1 l2 l3 := by
+  have h := pinchingRatioLog_reaction_derivative_ge h21 h32 hl3
+  have hq : 0 < -l3 := neg_pos.mpr hl3
+  rw [hboundary] at h
+  have hmul : (2 * (-l3) ^ 2) * (-l3) ≤
+      (reactionSectionalSum3 l1 l2 l3 - c * reactionPinchHeight3 l1 l2 l3) * (-l3) := by
+    nlinarith
+  exact (mul_le_mul_iff_left₀ hq).mp hmul
+
+
+
 theorem hamiltonIveyBarrier_reaction_derivative_ge_on_boundary
     {l1 l2 l3 K τ : Real} (h21 : l2 ≤ l1) (h32 : l3 ≤ l2) (hl3 : l3 < 0)
     (hden : 0 < 1 + 2 * K * τ)
