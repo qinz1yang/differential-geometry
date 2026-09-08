@@ -662,7 +662,6 @@ theorem toModel_apply {s : ℕ} {x : M} (T : Tensor0SSpace s I x)
   rfl
 
 omit [FiniteDimensional 𝕜 E] in
-@[simp]
 theorem toModel_apply_tangent {s : ℕ} {x : M} (T : Tensor0SSpace s I x)
     (v : Fin s → TangentSpace I x) :
     toModel T (fun i => tangentSpaceModelContinuousLinearEquiv (I := I) x (v i)) =
