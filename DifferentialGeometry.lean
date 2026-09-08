@@ -2291,6 +2291,7 @@ import DifferentialGeometry.Geometry.Curvature.Algebraic.TensorMetric
 import DifferentialGeometry.Geometry.Curvature.Riemann.RawFields
 import DifferentialGeometry.Geometry.Curvature.Riemann.Bianchi
 import DifferentialGeometry.Geometry.Curvature.Bochner.Scalar.CoordinateFormula
+import DifferentialGeometry.Geometry.Curvature.Bochner.Scalar.Rigidity
 import DifferentialGeometry.Geometry.Curvature.Bochner.Tensor.Basic
 import DifferentialGeometry.Geometry.Curvature.Bochner.OrthonormalFrameTrace
 import DifferentialGeometry.Geometry.Curvature.Bochner.Tensor.Pointwise.Basic
