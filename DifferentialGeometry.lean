@@ -2894,6 +2894,7 @@ import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Covering.VolumeOv
 import DifferentialGeometry.Geometry.Metric.Convergence.Coordinates.Control
 import DifferentialGeometry.Geometry.Metric.Convergence.Coordinates.ConnectionComparison
 import DifferentialGeometry.Geometry.Metric.Convergence.Coordinates.InverseGram
+import DifferentialGeometry.Geometry.Metric.Convergence.Coordinates.JetBounds
 import DifferentialGeometry.Geometry.Metric.Convergence.Compactness.ComponentSubsequence
 import DifferentialGeometry.Geometry.Metric.Convergence.Compactness.Components
 import DifferentialGeometry.Geometry.Connection.Convergence.DifferenceDerivativeBound
