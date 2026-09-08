@@ -18,41 +18,6 @@ open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Integral.DivergenceTheorem
 open DifferentialGeometry.Integral.Measure
 
-private theorem integral_adjoint_test_restrict
-    {d : ℕ} {S Ω : Set (EuclideanSpace ℝ (Fin d))}
-    (hS : MeasurableSet S) (hΩ : Ω ⊆ S)
-    {ψ : EuclideanSpace ℝ (Fin d) → ℝ} (hψ : tsupport ψ ⊆ Ω)
-    (U ρ c a : EuclideanSpace ℝ (Fin d) → ℝ)
-    (A : Fin d → Fin d → EuclideanSpace ℝ (Fin d) → ℝ)
-    (B : Fin d → EuclideanSpace ℝ (Fin d) → ℝ) :
-    (∫ z in S, ρ z * U z *
-      ((∑ i, fderiv ℝ (fun y => (∑ j, A i j y *
-          fderiv ℝ ψ y (EuclideanSpace.single j 1)) * ρ y) z (EuclideanSpace.single i 1)) / ρ z -
-        (∑ i, B i z * fderiv ℝ ψ z (EuclideanSpace.single i 1)) - c z * ψ z - a z * ψ z)) =
-    (∫ z in Ω, ρ z * U z *
-      ((∑ i, fderiv ℝ (fun y => (∑ j, A i j y *
-          fderiv ℝ ψ y (EuclideanSpace.single j 1)) * ρ y) z (EuclideanSpace.single i 1)) / ρ z -
-        (∑ i, B i z * fderiv ℝ ψ z (EuclideanSpace.single i 1)) - c z * ψ z - a z * ψ z)) := by
-  apply setIntegral_eq_of_subset_of_forall_sdiff_eq_zero hS hΩ
-  intro z hz
-  have hzψ : z ∉ tsupport ψ := fun h => hz.2 (hψ h)
-  have hd (i : Fin d) : fderiv ℝ ψ z (EuclideanSpace.single i 1) = 0 :=
-    image_eq_zero_of_notMem_tsupport
-      (f := fun y => fderiv ℝ ψ y (EuclideanSpace.single i 1))
-      (fun h => hzψ (tsupport_fderiv_apply_subset ℝ (EuclideanSpace.single i 1) h))
-  have hF (i : Fin d) :
-      fderiv ℝ (fun y => (∑ j, A i j y *
-          fderiv ℝ ψ y (EuclideanSpace.single j 1)) * ρ y) z (EuclideanSpace.single i 1) = 0 := by
-    apply image_eq_zero_of_notMem_tsupport
-      (f := fun z => fderiv ℝ (fun y => (∑ j, A i j y *
-        fderiv ℝ ψ y (EuclideanSpace.single j 1)) * ρ y) z (EuclideanSpace.single i 1))
-    intro hzF
-    exact hzψ ((DifferentialGeometry.Analysis.Sobolev.Euclidean.tsupport_sum_mul_fderiv_subset
-      (A i) ψ) (tsupport_mul_subset_left (tsupport_fderiv_apply_subset ℝ
-        (EuclideanSpace.single i 1) hzF)))
-  simp only [hF, hd, image_eq_zero_of_notMem_tsupport hzψ, mul_zero,
-    Finset.sum_const_zero, zero_div, sub_zero]
-
 variable {n : ℕ} [NeZero n]
 variable {M : Type*} [TopologicalSpace M]
   [ChartedSpace (EuclideanHalfSpace n) M]
@@ -217,7 +182,7 @@ theorem IsWeakEvolutionSolution.exists_timeH1_integral_local_adjoint
             (EuclideanSpace.single i 1)) / ρ t z -
           (∑ i, B t i z * fderiv ℝ ψ z (EuclideanSpace.single i 1)) -
           localDivergence (I := I_hs) (G.metric t) α (X t) (x z) * ψ z - a t * ψ z) :=
-    integral_adjoint_test_restrict hS.measurableSet hΩs hψ_supp
+    Sobolev.Euclidean.integral_adjoint_eq_integral_of_tsupport_subset hS.measurableSet hΩs hψ_supp
       (fun z => H1ComplDirichletToLp q (u t) (x z)) (ρ t)
       (fun z => localDivergence (I := I_hs) (G.metric t) α (X t) (x z))
       (fun _ => a t) (A t) (B t)
@@ -514,7 +479,7 @@ theorem IsWeakEvolutionSolution.integral_local_adjoint_test
     · exact (hm (fun z => φ (t, z)) (hs Subset.rfl t) t
         (fun z => H1ComplDirichletToLp q (u t) (x z))
         (fun z => (1 / 2 : ℝ) * traceTimeDerivMetric (I := I_hs) G.metric t (x z))).symm
-    · exact (integral_adjoint_test_restrict hS.measurableSet hΩs (hs Subset.rfl t)
+    · exact (Sobolev.Euclidean.integral_adjoint_eq_integral_of_tsupport_subset hS.measurableSet hΩs (hs Subset.rfl t)
         (fun z => H1ComplDirichletToLp q (u t) (x z)) (ρ t)
         (fun z => localDivergence (I := I_hs) (G.metric t) α (X t) (x z))
         (fun _ => a t) (A t) (B t)).symm

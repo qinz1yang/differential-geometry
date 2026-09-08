@@ -168,4 +168,39 @@ theorem integral_mul_sum_fderiv_sub_mul_eq_neg_sum_integral
       rw [integral_mul_sum_fderiv_eq_neg_sum_integral hu hDu hF hFc hFs]
       simp_rw [hFeq]
 
+theorem integral_adjoint_eq_integral_of_tsupport_subset
+    {d : ℕ} {S Ω : Set (EuclideanSpace ℝ (Fin d))}
+    (hS : MeasurableSet S) (hΩ : Ω ⊆ S)
+    {ψ : EuclideanSpace ℝ (Fin d) → ℝ} (hψ : tsupport ψ ⊆ Ω)
+    (U ρ c a : EuclideanSpace ℝ (Fin d) → ℝ)
+    (A : Fin d → Fin d → EuclideanSpace ℝ (Fin d) → ℝ)
+    (B : Fin d → EuclideanSpace ℝ (Fin d) → ℝ) :
+    (∫ z in S, ρ z * U z *
+      ((∑ i, fderiv ℝ (fun y => (∑ j, A i j y *
+          fderiv ℝ ψ y (EuclideanSpace.single j 1)) * ρ y) z (EuclideanSpace.single i 1)) / ρ z -
+        (∑ i, B i z * fderiv ℝ ψ z (EuclideanSpace.single i 1)) - c z * ψ z - a z * ψ z)) =
+    (∫ z in Ω, ρ z * U z *
+      ((∑ i, fderiv ℝ (fun y => (∑ j, A i j y *
+          fderiv ℝ ψ y (EuclideanSpace.single j 1)) * ρ y) z (EuclideanSpace.single i 1)) / ρ z -
+        (∑ i, B i z * fderiv ℝ ψ z (EuclideanSpace.single i 1)) - c z * ψ z - a z * ψ z)) := by
+  apply setIntegral_eq_of_subset_of_forall_sdiff_eq_zero hS hΩ
+  intro z hz
+  have hzψ : z ∉ tsupport ψ := fun h => hz.2 (hψ h)
+  have hd (i : Fin d) : fderiv ℝ ψ z (EuclideanSpace.single i 1) = 0 :=
+    image_eq_zero_of_notMem_tsupport
+      (f := fun y => fderiv ℝ ψ y (EuclideanSpace.single i 1))
+      (fun h => hzψ (tsupport_fderiv_apply_subset ℝ (EuclideanSpace.single i 1) h))
+  have hF (i : Fin d) :
+      fderiv ℝ (fun y => (∑ j, A i j y *
+          fderiv ℝ ψ y (EuclideanSpace.single j 1)) * ρ y) z (EuclideanSpace.single i 1) = 0 := by
+    apply image_eq_zero_of_notMem_tsupport
+      (f := fun z => fderiv ℝ (fun y => (∑ j, A i j y *
+        fderiv ℝ ψ y (EuclideanSpace.single j 1)) * ρ y) z (EuclideanSpace.single i 1))
+    intro hzF
+    exact hzψ ((DifferentialGeometry.Analysis.Sobolev.Euclidean.tsupport_sum_mul_fderiv_subset
+      (A i) ψ) (tsupport_mul_subset_left (tsupport_fderiv_apply_subset ℝ
+        (EuclideanSpace.single i 1) hzF)))
+  simp only [hF, hd, image_eq_zero_of_notMem_tsupport hzψ, mul_zero,
+    Finset.sum_const_zero, zero_div, sub_zero]
+
 end DifferentialGeometry.Analysis.Sobolev.Euclidean

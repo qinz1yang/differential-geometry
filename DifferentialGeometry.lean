@@ -4263,6 +4263,7 @@ import DifferentialGeometry.Geometry.Connection.PullbackHom
 import DifferentialGeometry.Analysis.Calculus.LocalExtrema
 import DifferentialGeometry.Analysis.Integration.Measure.LocalRestriction
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.WeakEquationChart
+import DifferentialGeometry.Analysis.Parabolic.Dirichlet.WeakFormChart
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.WeakFormIntegration
 import DifferentialGeometry.Geometry.Comparison.Variation.JacobiJets
 import DifferentialGeometry.Geometry.Connection.AlongCurveHom
@@ -4280,6 +4281,7 @@ import DifferentialGeometry.Topology.Manifold.LocalContraction
 import DifferentialGeometry.Analysis.Calculus.ContDiff.Support
 import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletLocalSobolev
 import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletLocalWeakForm
+import DifferentialGeometry.Analysis.Integration.Lp.Pairing
 import DifferentialGeometry.Analysis.Integration.Lp.Product
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.WeakDerivative
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.WeakDivergence
