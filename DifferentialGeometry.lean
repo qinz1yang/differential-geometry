@@ -4785,3 +4785,8 @@ import DifferentialGeometry.Geometry.Curvature.DimensionThree.SurfaceProductComp
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Soliton.ClassificationScaling
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.ModelCoverScaling
 import DifferentialGeometry.Tensor.Exterior.Diffeomorph
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Soliton.NonnegativeCurvature
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Soliton.NonnegativeModelCovers
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Soliton.ClassificationNonnegative
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.SingularityModel.Classification
+import DifferentialGeometry.Analysis.Parabolic.Dirichlet.QuantitativeRegularity

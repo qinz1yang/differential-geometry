@@ -1,5 +1,6 @@
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.Multiplication.SmoothCoefWeakPartialIBP
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.WeakDerivativeProduct
+import DifferentialGeometry.Analysis.Sobolev.WeakDerivativeUniqueness
 import DifferentialGeometry.Analysis.Integration.Lp.Product
 
 noncomputable section
@@ -124,5 +125,78 @@ theorem exists_lp_divergence_of_weakPartials
         exact integral_finsetSum _ (fun j _ => hI i j)
       _ = _ := by simp_rw [heq, Finset.sum_neg_distrib]
 
+theorem ae_eq_product_weak_partial
+    {Z : Type*} [NormedAddCommGroup Z] [NormedSpace ℝ Z]
+    [FiniteDimensional ℝ Z] [MeasurableSpace Z] [BorelSpace Z]
+    {μ : Measure Z} [IsLocallyFiniteMeasure μ] {J : Set Z}
+    (hJ : IsOpen J) (hμJ : ∀ᵐ t ∂μ, t ∈ J)
+    {Ω : Set E} {p : ℝ≥0∞} (hp : 1 ≤ p) (hΩ : IsOpen Ω) (k : Fin d)
+    (u v : Lp ℝ p (μ.prod (volume.restrict Ω)))
+    {A : Z × E → ℝ}
+    (hA : MemLp A ∞ (μ.prod (volume.restrict Ω)))
+    (hDA : MemLp (fun q => fderiv ℝ (fun x => A (q.1, x)) q.2 (EuclideanSpace.single k 1))
+      ∞ (μ.prod (volume.restrict Ω)))
+    (hAsmooth : ∀ᵐ t ∂μ, ContDiffOn ℝ (⊤ : ℕ∞) (fun x => A (t, x)) Ω)
+    (hweak : ∀ᵐ t ∂μ, DeGiorgi.HasWeakPartialDeriv k
+      (fun x => v (t, x)) (fun x => u (t, x)) Ω)
+    {F : Lp ℝ p (μ.prod (volume.restrict Ω))}
+    (hF : ∀ (φ : Z × E → ℝ), ContDiff ℝ (⊤ : ℕ∞) φ → HasCompactSupport φ →
+      tsupport φ ⊆ J ×ˢ Ω →
+      (∫ q, A q * u q * fderiv ℝ φ q (0, EuclideanSpace.single k 1)
+        ∂μ.prod (volume.restrict Ω)) =
+        -∫ q, F q * φ q ∂μ.prod (volume.restrict Ω)) :
+    F =ᵐ[μ.prod (volume.restrict Ω)] fun q =>
+      A q * v q + fderiv ℝ (fun x => A (q.1, x)) q.2 (EuclideanSpace.single k 1) * u q := by
+  obtain ⟨F', hF', hF'weak⟩ := exists_lp_product_weakPartial hp hΩ k u v hA hDA hAsmooth hweak
+  have hmem : ∀ᵐ q ∂μ.prod (volume.restrict Ω), q ∈ J ×ˢ Ω := by
+    apply (Measure.ae_prod_iff_ae_ae (hJ.measurableSet.prod hΩ.measurableSet)).mpr
+    filter_upwards [hμJ] with t ht
+    exact (ae_restrict_mem hΩ.measurableSet).mono fun _ hx => ⟨ht, hx⟩
+  have heq : F = F' := by
+    apply lp_eq_of_integral_contDiff_mul_eq_on (hJ.prod hΩ) hmem hp
+    intro φ hφ hφc hφs
+    have hF'eq := integral_fderiv_prod_eq_neg_of_hasWeakPartialDeriv
+      (((Lp.memLp u).mul (r := p) hA).locallyIntegrable hp)
+      ((Lp.memLp F').locallyIntegrable hp) k hF'weak φ hφ hφc
+      (hφs.trans (prod_mono (subset_univ _) Subset.rfl))
+    exact neg_injective ((hF φ hφ hφc hφs).symm.trans hF'eq)
+  rwa [heq]
+
+theorem ae_eq_divergence_of_weak_partials
+    {Z : Type*} [NormedAddCommGroup Z] [NormedSpace ℝ Z]
+    [FiniteDimensional ℝ Z] [MeasurableSpace Z] [BorelSpace Z]
+    {μ : Measure Z} [IsLocallyFiniteMeasure μ] {J : Set Z}
+    (hJ : IsOpen J) (hμJ : ∀ᵐ t ∂μ, t ∈ J)
+    {Ω : Set E} {p : ℝ≥0∞} (hp : 1 ≤ p) (hΩ : IsOpen Ω)
+    (V : Fin d → Lp ℝ p (μ.prod (volume.restrict Ω)))
+    (DV : Fin d → Fin d → Lp ℝ p (μ.prod (volume.restrict Ω)))
+    {A : Fin d → Fin d → Z × E → ℝ}
+    (hA : ∀ i j, MemLp (A i j) ∞ (μ.prod (volume.restrict Ω)))
+    (hDA : ∀ i j, MemLp
+      (fun q => fderiv ℝ (fun x => A i j (q.1, x)) q.2 (EuclideanSpace.single j 1))
+      ∞ (μ.prod (volume.restrict Ω)))
+    (hAsmooth : ∀ i j, ∀ᵐ t ∂μ, ContDiffOn ℝ (⊤ : ℕ∞) (fun x => A i j (t, x)) Ω)
+    (hweak : ∀ i j, ∀ᵐ t ∂μ, DeGiorgi.HasWeakPartialDeriv j
+      (fun x => DV i j (t, x)) (fun x => V i (t, x)) Ω)
+    {F : Lp ℝ p (μ.prod (volume.restrict Ω))}
+    (hF : ∀ (φ : Z × E → ℝ), ContDiff ℝ (⊤ : ℕ∞) φ → HasCompactSupport φ →
+      tsupport φ ⊆ J ×ˢ Ω →
+      (∫ q, F q * φ q ∂μ.prod (volume.restrict Ω)) =
+        -∑ i, ∑ j, ∫ q, A i j q * V i q *
+          fderiv ℝ φ q (0, EuclideanSpace.single j 1) ∂μ.prod (volume.restrict Ω)) :
+    F =ᵐ[μ.prod (volume.restrict Ω)] fun q => ∑ i, ∑ j,
+      (A i j q * DV i j q +
+        fderiv ℝ (fun x => A i j (q.1, x)) q.2 (EuclideanSpace.single j 1) * V i q) := by
+  obtain ⟨F', hF', hF'eq⟩ := exists_lp_divergence_of_weakPartials hp hΩ V DV hA hDA
+    hAsmooth hweak
+  have hmem : ∀ᵐ q ∂μ.prod (volume.restrict Ω), q ∈ J ×ˢ Ω := by
+    apply (Measure.ae_prod_iff_ae_ae (hJ.measurableSet.prod hΩ.measurableSet)).mpr
+    filter_upwards [hμJ] with t ht
+    exact (ae_restrict_mem hΩ.measurableSet).mono fun _ hx => ⟨ht, hx⟩
+  have heq : F = F' := lp_eq_of_integral_contDiff_mul_eq_on
+    (hJ.prod hΩ) hmem hp fun φ hφ hφc hφs =>
+      (hF φ hφ hφc hφs).trans (hF'eq φ hφ hφc
+        (hφs.trans (prod_mono (subset_univ _) Subset.rfl))).symm
+  rwa [heq]
 
 end DifferentialGeometry.Analysis.Sobolev.Euclidean

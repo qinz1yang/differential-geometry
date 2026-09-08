@@ -121,7 +121,6 @@ private theorem positive_on_compact_slab_of_first_contact_impossible
   exact hfirst ⟨hstau, htau.2⟩ hzInterior hthetaNonneg hcontact
 
 theorem lowerKyFanSum_first_contact_impossible
-    [NeZero (Module.finrank Real E)]
     [VectorBundle Real E (TangentSpace I : M → Type _)]
     [fiberFinite : ∀ y, FiniteDimensional Real (V y)]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
@@ -378,7 +377,6 @@ theorem lowerKyFanSum_first_contact_impossible
   exact (not_lt_of_ge hcontact_global) hpositive
 
 private theorem lowerKyFanSum_barrier_pos_on_compact_set_of_subsolution
-    [NeZero (Module.finrank Real E)]
     [VectorBundle Real E (TangentSpace I : M → Type _)]
     [fiberFinite : ∀ y, FiniteDimensional Real (V y)]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
@@ -570,7 +568,6 @@ private theorem lowerKyFanSum_barrier_pos_on_compact_set_of_subsolution
   · simpa only [theta] using hcontact
 
 theorem mul_le_lowerKyFanSum_on_compact_set_of_subsolution
-    [NeZero (Module.finrank Real E)]
     [VectorBundle Real E (TangentSpace I : M → Type _)]
     [fiberFinite : ∀ y, FiniteDimensional Real (V y)]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
@@ -651,7 +648,6 @@ theorem mul_le_lowerKyFanSum_on_compact_set_of_subsolution
   exact hlimit
 
 theorem lowerKyFanSum_dirichlet_barrier_pos_on_compact_set
-    [NeZero (Module.finrank Real E)]
     [VectorBundle Real E (TangentSpace I : M → Type _)]
     [fiberFinite : ∀ y, FiniteDimensional Real (V y)]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
@@ -724,7 +720,6 @@ theorem lowerKyFanSum_dirichlet_barrier_pos_on_compact_set
     exact (hfEquation q hq y hy).le
 
 theorem lowerKyFanSum_pos_on_compact_set_of_dirichlet_solution
-    [NeZero (Module.finrank Real E)]
     [VectorBundle Real E (TangentSpace I : M → Type _)]
     [fiberFinite : ∀ y, FiniteDimensional Real (V y)]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
