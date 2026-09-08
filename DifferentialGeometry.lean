@@ -4821,3 +4821,4 @@ import DifferentialGeometry.Geometry.Metric.Conformal.Naturality
 import DifferentialGeometry.Analysis.Integration.Measure.PullbackGradient
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.WeakGradientSourceBound
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.QuantitativeGradientSource
+import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.TimeOperatorH1
