@@ -4679,3 +4679,4 @@ import DifferentialGeometry.Topology.CompactFamily
 import DifferentialGeometry.Geometry.Metric.Family.QuadraticBounds
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.DivergenceForm
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.TimeRegularity
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Solutions.Restriction
