@@ -4723,3 +4723,5 @@ import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.ImageAnnihilato
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Uhlenbeck.Nullity
 import DifferentialGeometry.Analysis.Integration.Lp.Lifting
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.SliceWkp
+import DifferentialGeometry.Analysis.Parabolic.Dirichlet.LocalCoefficientDerivativeBounds
+import DifferentialGeometry.Analysis.Parabolic.Dirichlet.SpatialCommutator
