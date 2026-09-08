@@ -305,4 +305,52 @@ theorem mdiffAt_const_mul_sub_const_smul_gradientFun
     exact gradientFun_mdiffAt (I := I) g hu y
   simpa [u] using scalar_mul_grad_mdiffAt (I := I) g hudiff hugrad
 
+theorem mdifferentiableAt_gradientFun_finset_sum
+    (g : SmoothRiemannianMetric I M) {κ : Type*}
+    (s : Finset κ) (u : κ → M → ℝ) (x : M)
+    (hu : ∀ i ∈ s, ∀ᶠ y in 𝓝 x, MDifferentiableAt I 𝓘(ℝ, ℝ) (u i) y)
+    (hgrad : ∀ i ∈ s, MDifferentiableAt I (I.prod 𝓘(ℝ, E))
+      (T% fun y : M => gradientFun (I := I) g (u i) y) x) :
+    MDifferentiableAt I (I.prod 𝓘(ℝ, E))
+      (T% fun y : M => gradientFun (I := I) g (fun z => ∑ i ∈ s, u i z) y) x := by
+  classical
+  induction s using Finset.induction_on with
+  | empty =>
+      rw [show (T% fun y : M => gradientFun (I := I) g
+          (fun z => ∑ i ∈ (∅ : Finset κ), u i z) y) =
+          (T% fun y : M => (0 : TangentSpace I y)) by
+        funext y
+        simp only [Finset.sum_empty, gradientFun_const]]
+      exact mdifferentiableAt_zeroSection (𝕜 := ℝ) (F := E)
+        (E := (TangentSpace I : M → Type _)) (x := x)
+  | @insert a s ha ih =>
+      have hsa := hu a (Finset.mem_insert_self a s)
+      have hss : ∀ i ∈ s, ∀ᶠ y in 𝓝 x,
+          MDifferentiableAt I 𝓘(ℝ, ℝ) (u i) y :=
+        fun i hi => hu i (Finset.mem_insert_of_mem hi)
+      have hgs := ih hss (fun i hi => hgrad i (Finset.mem_insert_of_mem hi))
+      have hs : ∀ᶠ y in 𝓝 x,
+          MDifferentiableAt I 𝓘(ℝ, ℝ) (fun z => ∑ i ∈ s, u i z) y := by
+        filter_upwards [(Filter.eventually_all_finset s).mpr hss] with y hy
+        clear hss hgs hsa hu hgrad ih ha
+        induction s using Finset.induction_on with
+        | empty => simpa only [Finset.sum_empty] using mdifferentiableAt_const
+        | @insert i s hi ih =>
+            have hhead := hy i (Finset.mem_insert_self i s)
+            have htail := ih (fun j hj => hy j (Finset.mem_insert_of_mem hj))
+            rw [show (fun z => ∑ j ∈ insert i s, u j z) =
+                u i + (fun z => ∑ j ∈ s, u j z) by
+              funext z
+              simp only [Finset.sum_insert hi, Pi.add_apply]]
+            exact hhead.add htail
+      refine (mdifferentiableAt_add_section
+        (hgrad a (Finset.mem_insert_self a s)) hgs).congr_of_eventuallyEq ?_
+      filter_upwards [hsa, hs] with y hay hsy
+      apply congrArg (fun v => (⟨y, v⟩ : TotalSpace E (TangentSpace I : M → Type _)))
+      rw [show (fun z => ∑ i ∈ insert a s, u i z) =
+        (fun z => u a z + ∑ i ∈ s, u i z) by
+          funext z
+          rw [Finset.sum_insert ha]]
+      exact gradientFun_add (I := I) g hay hsy
+
 end DifferentialGeometry.Geometry.Operator
