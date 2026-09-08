@@ -41,6 +41,8 @@ import DifferentialGeometry.Analysis.Calculus.SmoothExtension.JetGlueParam
 import DifferentialGeometry.Analysis.Calculus.SmoothExtension.JetPartialDeriv
 import DifferentialGeometry.Analysis.Calculus.SmoothExtension.Local
 import DifferentialGeometry.Analysis.Calculus.SmoothExtension.SmoothJetGlue
+import DifferentialGeometry.Analysis.Calculus.CriticalPointPerturbation
+import DifferentialGeometry.Analysis.Calculus.SmoothMax
 import DifferentialGeometry.Analysis.Calculus.SmoothTransition
 import DifferentialGeometry.Analysis.Calculus.SpaceJet
 import DifferentialGeometry.Analysis.Calculus.SpectralEigenSeriesJointGramProjectionJetBound
@@ -3179,6 +3181,7 @@ import DifferentialGeometry.Topology.Homotopy.DeformationRetract
 import DifferentialGeometry.Topology.Homotopy.EquivUnder
 import DifferentialGeometry.Topology.Homotopy.Interval
 import DifferentialGeometry.Topology.Morse.CellAttachment
+import DifferentialGeometry.Topology.Morse.BoundaryPerturbation
 import DifferentialGeometry.Topology.Morse.CriticalSet
 import DifferentialGeometry.Topology.Morse.Defs
 import DifferentialGeometry.Topology.Morse.Flow
@@ -3187,6 +3190,7 @@ import DifferentialGeometry.Topology.Morse.LevelSet
 import DifferentialGeometry.Topology.Morse.LocalNormalForm
 import DifferentialGeometry.Topology.Morse.Manifold
 import DifferentialGeometry.Topology.Morse.ManifoldCellAttachment
+import DifferentialGeometry.Topology.Morse.HandleCollar
 import DifferentialGeometry.Topology.Morse.HandleEmbedding
 import DifferentialGeometry.Topology.Morse.ModifiedFunction
 import DifferentialGeometry.Topology.Morse.MorseLemma
@@ -3194,6 +3198,7 @@ import DifferentialGeometry.Topology.Morse.NoCriticalValues
 import DifferentialGeometry.Topology.Morse.RegularSublevel
 import DifferentialGeometry.Topology.Morse.RegularIsotopy
 import DifferentialGeometry.Topology.Morse.RegularVectorField
+import DifferentialGeometry.Topology.Morse.Separable
 import DifferentialGeometry.Topology.Morse.SmoothHandleAttachment
 import DifferentialGeometry.Topology.Morse.SublevelTransport
 import DifferentialGeometry.Tensor.Alternating.Basis
