@@ -4089,6 +4089,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.Noncollapsing.Curva
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Scaling.DerivativeNorm
 import DifferentialGeometry.Geometry.Metric.Comparison.CurveEnergy
 import DifferentialGeometry.Geometry.Operator.Family.Gram.Basic
+import DifferentialGeometry.Geometry.Operator.Family.Gram.Convergence
 import DifferentialGeometry.Geometry.Operator.Family.Gram.Christoffel
 import DifferentialGeometry.Geometry.Operator.Family.Gram.Inverse
 import DifferentialGeometry.Geometry.Operator.Family.Gram.Smoothness
