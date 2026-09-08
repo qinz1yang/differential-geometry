@@ -1,6 +1,7 @@
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.ModelCoverRoundThreeCylinder
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.ModelCoverCylinderQuotient
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.CylinderQuotientDiffeomorph
+import DifferentialGeometry.Geometry.Metric.RicciSoliton.CylinderOrientation
 import DifferentialGeometry.Topology.Covering.QuotientDiffeomorph
 
 set_option autoImplicit false
@@ -215,5 +216,42 @@ theorem solitonModelCovering_roundThreeCylinder_target_isometry_trichotomy
     have hpres := solitonModelCovering_factorization_preserves_metric_potential hπ
       solitonModelCovering_cylinderDiagonalQuotient d hd
     exact ⟨hgroup, e, he, hpres⟩
+
+
+theorem solitonModelCovering_roundThreeCylinder_target_isometry_dichotomy_of_exists_nonvanishing_top_form
+    {g : SmoothRiemannianMetric J N} {f : C^∞⟮J, N; Real⟯}
+    {cover : Metric.sphere (0 : EuclideanSpace Real (Fin 3)) 1 × Real → N}
+    (hπ : solitonModelCovering roundThreeCylinderShrinkerMetric
+      roundThreeCylinderShrinkerPotential g f cover)
+    (hΩ : ∃ Ω : DifferentialForm J N 3, ∀ x, Ω x ≠ 0) :
+    (coveringDeckGroup cover = ⊥ ∧
+      ∃ e : (Metric.sphere (0 : EuclideanSpace Real (Fin 3)) 1 × Real) ≃ₘ⟮
+          (𝓡 2).prod 𝓘(Real, Real), J⟯ N,
+        (∀ x, e x = cover x) ∧
+        Diffeomorph.pullbackMetricCross g e = roundThreeCylinderShrinkerMetric ∧
+        ∀ x, f (e x) = 1 + x.2 ^ 2 / 4) ∨
+    (coveringDeckGroup cover = cylinderDiagonalGroup ∧
+      ∃ e : PuncturedRealProjectiveThreeSpace ≃ₘ⟮𝓡 3, J⟯ N,
+        (∀ x, e (cylinderDiagonalQuotientDiffeomorph
+          (cylinderDiagonalQuotientMap x)) = cover x) ∧
+        Diffeomorph.pullbackMetricCross g
+          (cylinderDiagonalQuotientDiffeomorph.trans e) = cylinderDiagonalQuotientMetric ∧
+        ∀ x, f (e (cylinderDiagonalQuotientDiffeomorph x)) =
+          cylinderDiagonalQuotientPotential x) := by
+  rcases solitonModelCovering_roundThreeCylinder_target_isometry_trichotomy hπ with
+    htrivial | hantipodal | hdiagonal
+  · exact Or.inl htrivial
+  · exfalso
+    rcases hΩ with ⟨Ω, hΩ⟩
+    have hpull : ∃ β : DifferentialForm ((𝓡 2).prod 𝓘(Real, Real))
+        (RealProjectivePlane × Real) 3, ∀ x, β x ≠ 0 := by
+      refine ⟨DifferentialForm.pullback hantipodal.2.choose
+        hantipodal.2.choose.contMDiff Ω, ?_⟩
+      intro x
+      exact DifferentialForm.pullback_ne_zero Ω hantipodal.2.choose
+        hantipodal.2.choose.contMDiff x (hΩ _)
+          (hantipodal.2.choose.mfderivToContinuousLinearEquiv (by simp) x).surjective
+    exact not_exists_nonvanishing_realProjectivePlane_prod_real_top_form hpull
+  · exact Or.inr hdiagonal
 
 end DifferentialGeometry.Geometry
