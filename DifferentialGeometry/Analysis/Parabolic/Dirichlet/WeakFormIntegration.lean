@@ -1,5 +1,6 @@
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.WeakEvolution
 import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletWeakDerivative
+import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletSmoothMul
 import DifferentialGeometry.Analysis.Integration.Measure.VolumeDensity
 
 noncomputable section
@@ -10,6 +11,7 @@ open scoped ContDiff ENNReal InnerProductSpace Manifold RealInnerProductSpace To
 namespace DifferentialGeometry.Analysis.Parabolic.Dirichlet
 
 open DifferentialGeometry.Analysis.Laplacian.WithBoundary.Dirichlet
+open DifferentialGeometry.Analysis.Laplacian
 open DifferentialGeometry.Analysis.Parabolic.TimeSobolev
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
@@ -273,6 +275,36 @@ theorem dirichletMassCompl_apply_eq_integral
     rw [dirichletMassCompl_apply_smooth, H1ComplDirichletToLp_smoothToH1ComplDirichlet,
       H1ComplDirichletToLp_smoothToH1ComplDirichlet, dirichletMassLp_apply_smooth]
   rw [heq, dirichletMassLp_apply_eq_integral]
+
+theorem dirichletMassCompl_smoothMul_volumeDensity_swap
+    {q : SmoothRiemannianMetric (I_half n) M}
+    (h : SmoothRiemannianMetric (I_half n) M)
+    {Cg : ℝ} (hCg : 1 ≤ Cg)
+    (hequiv : ∀ x : M, ∀ w : TangentSpace (I_half n) x,
+      Cg⁻¹ * q.inner x w w ≤ h.inner x w w ∧
+        h.inner x w w ≤ Cg * q.inner x w w)
+    (Cv : ℝ≥0∞) (hCv0 : Cv ≠ 0) (hCvtop : Cv ≠ ⊤)
+    (hvol : riemannianVolumeMeasure (I := I_half n) (M := M) h ≤
+      Cv • riemannianVolumeMeasure (I := I_half n) (M := M) q)
+    (u v : H1ComplDirichlet q) :
+    dirichletMassCompl h hCg hequiv Cv hCv0 hCvtop hvol u
+      (smoothMulH1ComplDirichlet q (riemannianVolumeDensitySmoothMap h q) v) =
+        inner ℝ (H1ComplDirichletToLp q u) (H1ComplDirichletToLp q v) := by
+  rw [dirichletMassCompl_apply_eq_integral,
+    H1ComplDirichletToLp_smoothMulH1ComplDirichlet,
+    integral_riemannianVolumeMeasure_eq_integral_volumeDensity_smul q h,
+    MeasureTheory.L2.inner_def]
+  apply integral_congr_ae
+  filter_upwards [smoothMulLp_apply_coeFn q (riemannianVolumeDensitySmoothMap h q)
+    (H1ComplDirichletToLp q v)] with x hx
+  rw [hx]
+  change riemannianVolumeDensity q h x * (H1ComplDirichletToLp q u x *
+    (riemannianVolumeDensity h q x * H1ComplDirichletToLp q v x)) = _
+  simp only [RCLike.inner_apply, conj_trivial]
+  calc
+    _ = (riemannianVolumeDensity q h x * riemannianVolumeDensity h q x) *
+        (H1ComplDirichletToLp q u x * H1ComplDirichletToLp q v x) := by ring
+    _ = _ := by rw [riemannianVolumeDensity_mul_swap, one_mul]; ring
 
 omit [T2Space M] [CompactSpace M] in
 private theorem traceTimeDerivMetric_continuous

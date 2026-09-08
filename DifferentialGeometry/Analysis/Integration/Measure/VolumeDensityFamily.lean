@@ -1,4 +1,5 @@
 import DifferentialGeometry.Analysis.Integration.Measure.VolumeDensity
+import DifferentialGeometry.Analysis.Integration.Measure.Family
 import DifferentialGeometry.Geometry.Operator.MetricFamilyRegularity
 
 set_option autoImplicit false
@@ -131,6 +132,38 @@ theorem riemannianVolumeDensity_swap_contMDiffOn_of_metricFamilySmoothOn
   intro p _
   exact eq_inv_of_mul_eq_one_right
     (riemannianVolumeDensity_mul_swap q (G.metric p.1) p.2)
+
+theorem hasDerivAt_riemannianVolumeDensity
+    (q : SmoothRiemannianMetric I M) {g : ℝ → SmoothRiemannianMetric I M} {t : ℝ}
+    (hreg : MetricFamilyRegularAt (I := I) g t) (x : M) :
+    HasDerivAt (fun s => riemannianVolumeDensity q (g s) x)
+      ((1 / 2) * traceTimeDerivMetric (I := I) g t x * riemannianVolumeDensity q (g t) x) t := by
+  have hx : x ∈ (trivializationAt E (TangentSpace I) x).baseSet :=
+    mem_baseSet_trivializationAt E (TangentSpace I : M → Type _) x
+  have hd := per_chart_integrand_hasDerivAt hreg x hx (fun _ _ => (1 : ℝ)) (fun _ => (1 : ℝ))
+    (by simpa using hasDerivAt_const t (1 : ℝ))
+  simp only [deriv_const, one_mul, mul_one, zero_add] at hd
+  have hdq := hd.div_const (chartDensity q x x)
+  have heq (s : ℝ) : riemannianVolumeDensity q (g s) x =
+      chartDensity (g s) x x / chartDensity q x x :=
+    riemannianVolumeDensity_apply_of_mem_chart_source q (g s) x (mem_chart_source H x)
+  simp only [heq]
+  exact hdq.congr_deriv (by ring)
+
+theorem hasDerivAt_riemannianVolumeDensity_swap
+    (q : SmoothRiemannianMetric I M) {g : ℝ → SmoothRiemannianMetric I M} {t : ℝ}
+    (hreg : MetricFamilyRegularAt (I := I) g t) (x : M) :
+    HasDerivAt (fun s => riemannianVolumeDensity (g s) q x)
+      (-(1 / 2) * traceTimeDerivMetric (I := I) g t x * riemannianVolumeDensity (g t) q x) t := by
+  have hd := (hasDerivAt_riemannianVolumeDensity q hreg x).inv
+    (ne_of_gt (riemannianVolumeDensity_pos q (g t) x))
+  have heq (s : ℝ) : riemannianVolumeDensity (g s) q x =
+      (riemannianVolumeDensity q (g s) x)⁻¹ :=
+    eq_inv_of_mul_eq_one_right (riemannianVolumeDensity_mul_swap q (g s) x)
+  simp only [heq]
+  exact hd.congr_deriv (by
+    have hn := ne_of_gt (riemannianVolumeDensity_pos q (g t) x)
+    field_simp)
 
 end Measure
 end Integral

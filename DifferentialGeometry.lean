@@ -4590,3 +4590,5 @@ import DifferentialGeometry.Geometry.Connection.TensorNabla.Congruence
 import DifferentialGeometry.Geometry.Connection.Laplacian.Congruence
 import DifferentialGeometry.Geometry.Connection.Laplacian.SelfAdjointScaling
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.ExteriorLaplacianScaling
+import DifferentialGeometry.Analysis.Sobolev.Chart.ChartDensityCutoff
+import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletNirenbergIntegration

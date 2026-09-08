@@ -1,4 +1,5 @@
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.TimeH1
+import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.TimeH1Multiplication
 import Mathlib.MeasureTheory.Function.LpSeminorm.Indicator
 
 noncomputable section
@@ -148,5 +149,33 @@ theorem ae_tendsto_steklovAverage_timeL2 [CompleteSpace X]
     (ae_tendsto_steklovAverage (hu.locallyIntegrable (by norm_num)))
   filter_upwards [hlim, ae_restrict_mem measurableSet_Icc] with t ht htmem
   simpa only [indicator_of_mem htmem] using ht
+
+theorem exists_timeH1_cutoff_steklovAverage_timeL2 [CompleteSpace X]
+    {T : ℝ}
+    (hT : 0 ≤ T) (u : timeL2 X T) (h : ℝ) {ζ : ℝ → ℝ}
+    (hζ : ContDiffOn ℝ 1 ζ (Icc (0 : ℝ) T)) (hζ0 : ζ 0 = 0) (hζT : ζ T = 0) :
+    ∃ w : timeH1 X T,
+      w.init = 0 ∧
+      (∀ t ∈ Icc (0 : ℝ) T,
+        w.toFun t = ζ t • steklovAverage h ((Icc (0 : ℝ) T).indicator u) t) ∧
+      w.deriv =ᵐ[timeMeasure T] (fun t =>
+        _root_.deriv ζ t • steklovAverage h ((Icc (0 : ℝ) T).indicator u) t +
+          ζ t • (h⁻¹ • ((Icc (0 : ℝ) T).indicator u (t + h) -
+            (Icc (0 : ℝ) T).indicator u t))) ∧
+      w.toFun T = 0 := by
+  obtain ⟨v, hv, hvd⟩ := exists_timeH1_steklovAverage_timeL2 u h
+  let z := timeH1.ofContDiffOn hT ζ hζ
+  have hz : ∀ t ∈ Icc (0 : ℝ) T, z.toFun t = ζ t := timeH1.toFun_ofContDiffOn hT ζ hζ
+  have hzd : z.deriv =ᵐ[timeMeasure T] _root_.deriv ζ := timeH1.deriv_ofContDiffOn hT ζ hζ
+  obtain ⟨w, hwi, hw, hwd⟩ := exists_timeH1_smul z v
+  refine ⟨w, ?_, ?_, ?_, ?_⟩
+  · rw [hwi]
+    change ζ 0 • v.init = 0
+    rw [hζ0, zero_smul]
+  · intro t ht
+    rw [hw t ht, hz t ht, hv t ht]
+  · filter_upwards [hwd, hzd, hvd, ae_restrict_mem measurableSet_Icc] with t hwt hzt hvdt ht
+    rw [hwt, hzt, hvdt, hz t ht, hv t ht]
+  · rw [hw T ⟨hT, le_rfl⟩, hz T ⟨hT, le_rfl⟩, hζT, zero_smul]
 
 end DifferentialGeometry.Analysis.Parabolic.TimeSobolev
