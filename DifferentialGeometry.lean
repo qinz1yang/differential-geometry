@@ -4731,3 +4731,4 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Soliton.Curvature
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.CurvatureSurfaceTime
 import DifferentialGeometry.Analysis.Sobolev.Chart.CutoffPullbackLp
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.PotentialCoefficientBounds
+import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletWeakChartCutoff
