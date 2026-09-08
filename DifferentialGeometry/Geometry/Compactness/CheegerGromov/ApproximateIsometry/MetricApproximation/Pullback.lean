@@ -5,7 +5,6 @@ import DifferentialGeometry.Geometry.Metric.Convergence.DerivativeNorm.Flat
 import DifferentialGeometry.Geometry.Metric.Convergence.Metric.UniformEquivalence
 import DifferentialGeometry.Geometry.Metric.Pullback.PartialDiffeomorph.Basic
 import DifferentialGeometry.Geometry.Metric.Pullback.CovariantDerivative
-import DifferentialGeometry.Topology.SigmaCompactOpen
 
 open DifferentialGeometry.Geometry.Curvature
 
@@ -75,7 +74,6 @@ theorem pullback_metric_cov_deriv_norm_le
   exact D.cov_deriv_small q hq1 hqp (x : M) (hUK x.2)
 
 theorem trans_pullback_metric_cov_deriv_norm_le
-    [SigmaCompactSpace M] [SigmaCompactSpace N]
     (Φ : PartialDiffeomorph I I M N (∞ : WithTop ℕ∞))
     (Θ : PartialDiffeomorph I I N P (∞ : WithTop ℕ∞))
     {K : Set N} (U : Opens M) (hU : (U : Set M) ⊆ Φ.source)
@@ -85,20 +83,14 @@ theorem trans_pullback_metric_cov_deriv_norm_le
     {ε : ℝ} {p q : ℕ}
     (D : MapMetricApproximationOn (I := I) K ε p (Θ : N → P) gMid g)
     (hq1 : 1 ≤ q) (hqp : q ≤ p) (x : U) :
-    letI : SigmaCompactSpace U := isSigmaCompact_iff_sigmaCompactSpace.mp
-      (Geometry.isSigmaCompact_of_isOpen I U.isOpen)
     metricCovDerivNorm (I := I) q
         (PartialDiffeomorph.pullbackMetricOn
           (_root_.PartialDiffeomorph.trans (I := I) Φ Θ) U
           (PartialDiffeomorph.subset_trans_source Φ Θ U hU hnext) g)
         (PartialDiffeomorph.pullbackMetricOn Φ U hU gMid) x ≤ ε := by
-  let _ : SigmaCompactSpace U := isSigmaCompact_iff_sigmaCompactSpace.mp
-    (Geometry.isSigmaCompact_of_isOpen I U.isOpen)
   rw [PartialDiffeomorph.pullbackMetricOn_trans]
   · let W : Opens N :=
       ⟨(Φ : M → N) '' (U : Set M), image_opens_isOpen Φ hU⟩
-    let _ : SigmaCompactSpace W := isSigmaCompact_iff_sigmaCompactSpace.mp
-      (Geometry.isSigmaCompact_of_isOpen I W.isOpen)
     let F : Diffeomorph I I U W (∞ : WithTop ℕ∞) :=
       PartialDiffeomorph.toOpensDiffeo Φ hU
     change metricCovDerivNorm (I := I) q
@@ -185,7 +177,6 @@ theorem pullback_metric_zero_cov_deriv_norm_le
   · nlinarith
 
 theorem trans_pullback_metric_zero_cov_deriv_norm_le
-    [SigmaCompactSpace M] [SigmaCompactSpace N]
     (Φ : PartialDiffeomorph I I M N (∞ : WithTop ℕ∞))
     (Θ : PartialDiffeomorph I I N P (∞ : WithTop ℕ∞))
     {K : Set N} (U : Opens M) (hU : (U : Set M) ⊆ Φ.source)
@@ -195,21 +186,15 @@ theorem trans_pullback_metric_zero_cov_deriv_norm_le
     {ε : ℝ} {p : ℕ}
     (D : MapMetricApproximationOn (I := I) K ε p (Θ : N → P) gMid g)
     (hε : ε ≤ 1 / 2) (x : U) :
-    letI : SigmaCompactSpace U := isSigmaCompact_iff_sigmaCompactSpace.mp
-      (Geometry.isSigmaCompact_of_isOpen I U.isOpen)
     metricCovDerivNorm (I := I) 0
         (PartialDiffeomorph.pullbackMetricOn
           (_root_.PartialDiffeomorph.trans (I := I) Φ Θ) U
           (PartialDiffeomorph.subset_trans_source Φ Θ U hU hnext) g)
         (PartialDiffeomorph.pullbackMetricOn Φ U hU gMid) x ≤
       2 * Real.sqrt (Module.finrank ℝ E : ℝ) := by
-  let _ : SigmaCompactSpace U := isSigmaCompact_iff_sigmaCompactSpace.mp
-    (Geometry.isSigmaCompact_of_isOpen I U.isOpen)
   rw [PartialDiffeomorph.pullbackMetricOn_trans]
   · let W : Opens N :=
       ⟨(Φ : M → N) '' (U : Set M), image_opens_isOpen Φ hU⟩
-    let _ : SigmaCompactSpace W := isSigmaCompact_iff_sigmaCompactSpace.mp
-      (Geometry.isSigmaCompact_of_isOpen I W.isOpen)
     let F : Diffeomorph I I U W (∞ : WithTop ℕ∞) :=
       PartialDiffeomorph.toOpensDiffeo Φ hU
     change metricCovDerivNorm (I := I) 0
