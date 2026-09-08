@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Comparison.Busemann.Basic
-import DifferentialGeometry.Geometry.Geodesic.Minimizing.Line
+import DifferentialGeometry.Geometry.Geodesic.Minimizing.Line.Basic
 
 set_option autoImplicit false
 

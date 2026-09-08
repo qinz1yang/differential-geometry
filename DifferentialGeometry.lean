@@ -2037,7 +2037,8 @@ import DifferentialGeometry.Geometry.Comparison.InjectivityRadius.Basic
 import DifferentialGeometry.Geometry.Comparison.HopfRinow.LocalGeodesicSeed
 import DifferentialGeometry.Geometry.Comparison.NormalCoordinates.Basic
 import DifferentialGeometry.Geometry.Comparison.Laplacian.Radial
-import DifferentialGeometry.Geometry.Geodesic.Minimizing.Line
+import DifferentialGeometry.Geometry.Geodesic.Minimizing.Line.Basic
+import DifferentialGeometry.Geometry.Geodesic.Minimizing.Line.Regularity
 import DifferentialGeometry.Geometry.Geodesic.Minimizing.Ray
 import DifferentialGeometry.Geometry.Comparison.HopfRinow.MinimizingRay
 import DifferentialGeometry.Geometry.Comparison.HopfRinow.RadialSurjectivity
