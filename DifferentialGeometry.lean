@@ -3135,6 +3135,7 @@ import DifferentialGeometry.Geometry.Metric.DirectLimit.Distance
 import DifferentialGeometry.Geometry.Metric.DirectLimit.Properness
 import DifferentialGeometry.Geometry.Metric.Construction.BumpExtension
 import DifferentialGeometry.Geometry.Metric.Coordinates.ChartGram
+import DifferentialGeometry.Geometry.Metric.Coordinates.QuadraticBounds
 import DifferentialGeometry.Geometry.Metric.Comparison.CompactLowerBound
 import DifferentialGeometry.Geometry.Metric.Completeness
 import DifferentialGeometry.Geometry.Metric.Construction.ConvexCombination

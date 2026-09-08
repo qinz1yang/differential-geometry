@@ -1,4 +1,5 @@
 import DifferentialGeometry.Geometry.Connection.ChartBridge.Curvature.BasisIdentityOffCenter
+import DifferentialGeometry.Geometry.Metric.Coordinates.QuadraticBounds
 import DifferentialGeometry.Analysis.Spectral.Tensor.UniformChartBounds.Curvature.RiemannTensor
 import DifferentialGeometry.Analysis.Spectral.Tensor.UniformChartBounds.Metric.GramUpperBound
 import DifferentialGeometry.Analysis.Spectral.Tensor.ChartTensor.ChartGeometry.GoodSetMeasure
@@ -54,7 +55,7 @@ private lemma pouTsupport_subset_goodSet (α : M) :
   rw [heq]
   exact chartAtlasPOU_isSubordinate I M α hb
 
-omit [BoundarylessManifold I M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] in
 theorem exists_chartGramMatrix_quadForm_lower_bound_on_pouTsupport
     (g : SmoothRiemannianMetric I M) (α : M) :
     ∃ c : ℝ, 0 < c ∧
@@ -65,173 +66,13 @@ theorem exists_chartGramMatrix_quadForm_lower_bound_on_pouTsupport
             ∑ i : Fin (Module.finrank ℝ E),
               ∑ j : Fin (Module.finrank ℝ E),
                 DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α b i j * ξ i * ξ j := by
-  classical
-  set Kα : Set M := tsupport (fun x : M =>
-      ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x) with hKα_def
-  have hKα_compact : IsCompact Kα :=
-    DifferentialGeometry.Analysis.Parabolic.TensorSpectral.pouTsupport_isCompact (I := I) (M := M) α
-  have hKα_sub_baseSet : Kα ⊆ (trivializationAt E (TangentSpace I) α).baseSet := by
-    intro b hb
-    exact chartLeviCivitaGoodSet_mem_baseSet (I := I) (pouTsupport_subset_goodSet (I := I) α hb)
-  set Q : M × (Fin (Module.finrank ℝ E) → ℝ) → ℝ := fun p =>
-    ∑ i : Fin (Module.finrank ℝ E),
-      ∑ j : Fin (Module.finrank ℝ E),
-        DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α p.1 i j * p.2 i * p.2 j
-    with hQ_def
-  have hQ_pos_baseSet : ∀ b ∈ (trivializationAt E (TangentSpace I) α).baseSet,
-      ∀ ξ : Fin (Module.finrank ℝ E) → ℝ, ξ ≠ 0 →
-        0 < ∑ i : Fin (Module.finrank ℝ E),
-              ∑ j : Fin (Module.finrank ℝ E),
-                DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α b i j * ξ i * ξ j := by
-    intro b hb ξ hξ
-    have hG_pd : (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α b).PosDef :=
-      DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_posDef (I := I) g α hb
-    have hdot_pos :
-        0 < star ξ ⬝ᵥ DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α b *ᵥ ξ :=
-      hG_pd.dotProduct_mulVec_pos hξ
-    have hexp :
-        star ξ ⬝ᵥ DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α b *ᵥ ξ =
-          ∑ i : Fin (Module.finrank ℝ E),
-            ∑ j : Fin (Module.finrank ℝ E),
-              DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α b i j * ξ i * ξ j := by
-      simp only [dotProduct, Matrix.mulVec, Pi.star_apply, star_trivial]
-      refine Finset.sum_congr rfl (fun i _ => ?_)
-      rw [Finset.mul_sum]
-      refine Finset.sum_congr rfl (fun j _ => ?_)
-      ring
-    rw [← hexp]; exact hdot_pos
-  have hQ_cont : ContinuousOn Q
-      ((trivializationAt E (TangentSpace I) α).baseSet ×ˢ
-        (Set.univ : Set (Fin (Module.finrank ℝ E) → ℝ))) := by
-    refine continuousOn_finsetSum _ (fun i _ => ?_)
-    refine continuousOn_finsetSum _ (fun j _ => ?_)
-    refine ContinuousOn.mul ?_ ?_
-    · refine ContinuousOn.mul ?_ ?_
-      · have hentry := (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_entry_contMDiffOn
-          (I := I) g α i j).continuousOn
-        exact hentry.comp continuous_fst.continuousOn (fun p hp => hp.1)
-      · exact ((continuous_apply i).comp continuous_snd).continuousOn
-    · exact ((continuous_apply j).comp continuous_snd).continuousOn
-  set Sph : Set (Fin (Module.finrank ℝ E) → ℝ) :=
-    {ξ | ∑ i : Fin (Module.finrank ℝ E), ξ i ^ 2 = 1} with hSph_def
-  have hSph_compact : IsCompact Sph := by
-    have hcont : Continuous
-        (fun ξ : Fin (Module.finrank ℝ E) → ℝ =>
-          ∑ i : Fin (Module.finrank ℝ E), ξ i ^ 2) :=
-      continuous_finsetSum _ (fun i _ => (continuous_apply i).pow 2)
-    have hclosed : IsClosed Sph := isClosed_eq hcont continuous_const
-    have hbdd : Bornology.IsBounded Sph := by
-      refine (Metric.isBounded_iff_subset_closedBall (0 : _)).mpr ⟨1, ?_⟩
-      intro ξ hξ
-      rw [Metric.mem_closedBall, dist_zero_right]
-      refine (pi_norm_le_iff_of_nonneg zero_le_one).mpr ?_
-      intro i
-      have hle : ξ i ^ 2 ≤ ∑ j : Fin (Module.finrank ℝ E), ξ j ^ 2 := by
-        refine Finset.single_le_sum (s := Finset.univ)
-          (f := fun j : Fin (Module.finrank ℝ E) => ξ j ^ 2) (fun j _ => sq_nonneg _)
-          (Finset.mem_univ i)
-      rw [show ∑ j : Fin (Module.finrank ℝ E), ξ j ^ 2 = 1 from hξ] at hle
-      have habs : |ξ i| ≤ 1 := by
-        have h_abs_sq : |ξ i| ^ 2 ≤ 1 := by rw [sq_abs]; exact hle
-        nlinarith [abs_nonneg (ξ i), h_abs_sq]
-      exact (Real.norm_eq_abs _).symm ▸ habs
-    exact Metric.isCompact_of_isClosed_isBounded hclosed hbdd
-  set Kprod : Set (M × (Fin (Module.finrank ℝ E) → ℝ)) := Kα ×ˢ Sph with hKprod_def
-  have hKprod_compact : IsCompact Kprod := hKα_compact.prod hSph_compact
-  have hKprod_sub_baseSet :
-      Kprod ⊆ (trivializationAt E (TangentSpace I) α).baseSet ×ˢ Set.univ :=
-    fun p hp => ⟨hKα_sub_baseSet hp.1, mem_univ _⟩
-  have hQ_cont_K : ContinuousOn Q Kprod := hQ_cont.mono hKprod_sub_baseSet
-  have hSph_ne_zero : ∀ ξ ∈ Sph, ξ ≠ 0 := by
-    intro ξ hξ hξ0
-    have : (1 : ℝ) = 0 := by
-      rw [show (1 : ℝ) = ∑ i : Fin (Module.finrank ℝ E), ξ i ^ 2 from hξ.symm, hξ0]; simp
-    exact one_ne_zero this
-  by_cases hK_ne : Kprod.Nonempty
-  · obtain ⟨p₀, hp₀_mem, hp₀_min⟩ :=
-      hKprod_compact.exists_isMinOn hK_ne hQ_cont_K
-    have hp₀_base : p₀.1 ∈ (trivializationAt E (TangentSpace I) α).baseSet :=
-      hKα_sub_baseSet hp₀_mem.1
-    have hp₀_pos : 0 < Q p₀ :=
-      hQ_pos_baseSet p₀.1 hp₀_base p₀.2 (hSph_ne_zero p₀.2 hp₀_mem.2)
-    refine ⟨Q p₀, hp₀_pos, ?_⟩
-    intro b hb ξ
-    by_cases hξ_eq : (∑ i : Fin (Module.finrank ℝ E), ξ i ^ 2) = 0
-    · have hξzero : ∀ i, ξ i = 0 := by
-        intro i
-        have hle : ξ i ^ 2 ≤ ∑ j : Fin (Module.finrank ℝ E), ξ j ^ 2 :=
-          Finset.single_le_sum (s := Finset.univ)
-            (f := fun j : Fin (Module.finrank ℝ E) => ξ j ^ 2)
-            (fun j _ => sq_nonneg _) (Finset.mem_univ i)
-        rw [hξ_eq] at hle
-        have hsqz : ξ i ^ 2 = 0 := le_antisymm hle (sq_nonneg _)
-        exact pow_eq_zero_iff (n := 2) (by norm_num) |>.mp hsqz
-      have hQzero :
-          (∑ i : Fin (Module.finrank ℝ E),
-            ∑ j : Fin (Module.finrank ℝ E),
-              DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α b i j * ξ i * ξ j) = 0 := by
-        refine Finset.sum_eq_zero (fun i _ => ?_)
-        refine Finset.sum_eq_zero (fun j _ => ?_)
-        rw [hξzero i, mul_zero, zero_mul]
-      rw [hξ_eq, mul_zero, hQzero]
-    · have hξ_pos : 0 < ∑ i : Fin (Module.finrank ℝ E), ξ i ^ 2 :=
-        lt_of_le_of_ne (Finset.sum_nonneg (fun i _ => sq_nonneg _)) (Ne.symm hξ_eq)
-      set rr : ℝ := Real.sqrt (∑ i : Fin (Module.finrank ℝ E), ξ i ^ 2) with hrr_def
-      have hrr_pos : 0 < rr := Real.sqrt_pos.mpr hξ_pos
-      have hrr_sq : rr ^ 2 = ∑ i, ξ i ^ 2 := by
-        rw [hrr_def, sq, Real.mul_self_sqrt (le_of_lt hξ_pos)]
-      set η : Fin (Module.finrank ℝ E) → ℝ := fun i => ξ i / rr with hη_def
-      have hη_sph : η ∈ Sph := by
-        rw [hSph_def]
-        change ∑ i : Fin (Module.finrank ℝ E), η i ^ 2 = 1
-        have hcalc : ∑ i : Fin (Module.finrank ℝ E), η i ^ 2 =
-            (∑ i, ξ i ^ 2) / rr ^ 2 := by
-          rw [Finset.sum_div]
-          refine Finset.sum_congr rfl (fun i _ => ?_)
-          rw [hη_def, div_pow]
-        rw [hcalc, hrr_sq, div_self (ne_of_gt hξ_pos)]
-      have hηmem : (b, η) ∈ Kprod := ⟨hb, hη_sph⟩
-      have hmin : Q p₀ ≤ Q (b, η) := hp₀_min hηmem
-      have hQη_eq : Q (b, η) =
-          (∑ i : Fin (Module.finrank ℝ E),
-            ∑ j : Fin (Module.finrank ℝ E),
-              DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α b i j * ξ i * ξ j) / rr ^ 2 := by
-        change (∑ i : Fin (Module.finrank ℝ E),
-              ∑ j : Fin (Module.finrank ℝ E),
-                DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α b i j * η i * η j) =
-            (∑ i : Fin (Module.finrank ℝ E),
-              ∑ j : Fin (Module.finrank ℝ E),
-                DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α b i j * ξ i * ξ j) / rr ^ 2
-        rw [Finset.sum_div]
-        refine Finset.sum_congr rfl (fun i _ => ?_)
-        rw [Finset.sum_div]
-        refine Finset.sum_congr rfl (fun j _ => ?_)
-        rw [hη_def]
-        field_simp
-      rw [hQη_eq] at hmin
-      have hrrsq_pos : 0 < rr ^ 2 := by rw [hrr_sq]; exact hξ_pos
-      have hmul : Q p₀ * rr ^ 2 ≤
-          ∑ i : Fin (Module.finrank ℝ E),
-            ∑ j : Fin (Module.finrank ℝ E),
-              DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α b i j * ξ i * ξ j :=
-        (le_div_iff₀ hrrsq_pos).mp hmin
-      have hgoal_eq : Q p₀ * (∑ i : Fin (Module.finrank ℝ E), ξ i ^ 2)
-          = Q p₀ * rr ^ 2 := by rw [hrr_sq]
-      rw [hgoal_eq]
-      exact hmul
-  · refine ⟨1, one_pos, ?_⟩
-    intro b hb
-    have hSph_ne : Sph.Nonempty := by
-      refine ⟨fun i => if i = ⟨0, Nat.pos_of_ne_zero (NeZero.ne _)⟩ then 1 else 0, ?_⟩
-      change ∑ i : Fin (Module.finrank ℝ E),
-          (if i = ⟨0, Nat.pos_of_ne_zero (NeZero.ne _)⟩ then (1 : ℝ) else 0) ^ 2 = 1
-      rw [Finset.sum_eq_single ⟨0, Nat.pos_of_ne_zero (NeZero.ne _)⟩]
-      · simp
-      · intro j _ hj; rw [if_neg hj]; ring
-      · intro hj; exact absurd (Finset.mem_univ _) hj
-    obtain ⟨ξ₀, hξ₀⟩ := hSph_ne
-    exact absurd ⟨(b, ξ₀), hb, hξ₀⟩ hK_ne
-
+  obtain ⟨c, hc, hbound⟩ :=
+    DifferentialGeometry.Tensor.Coordinates.exists_pos_mul_dotProduct_le_chartGramMatrix g α
+      (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.pouTsupport_isCompact (I := I) α)
+      (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.pouTsupport_subset_baseSet (I := I) α)
+  refine ⟨c, hc, fun b hb ξ => ?_⟩
+  simpa only [dotProduct, Matrix.mulVec, Finset.mul_sum, sq, mul_comm, mul_left_comm,
+    mul_assoc] using hbound b hb ξ
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
