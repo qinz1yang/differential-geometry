@@ -64,6 +64,27 @@ private def exteriorSelfAdjointConnection (k : ℕ)
       (fun x => (exteriorSelfAdjoint (I := I) (F := F) (V := V) k).fiber x) :=
   (cov.exteriorPower k).selfAdjoint (hcov.exteriorPower k)
 
+def CovariantDerivative.exteriorPowerSelfAdjointLaplacian (k : ℕ)
+    (cov : CovariantDerivative I F V) (hcov : cov.IsMetricCompatible)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
+    (A : ∀ x, _root_.selfAdjoint ((⋀[ℝ]^k (V x)) →L[ℝ] ⋀[ℝ]^k (V x)))
+    (x : M) : _root_.selfAdjoint ((⋀[ℝ]^k (V x)) →L[ℝ] ⋀[ℝ]^k (V x)) :=
+  DifferentialGeometry.Geometry.Connection.rawBundleConnLap g
+    (exteriorSelfAdjointConnection k cov hcov) A x
+
+theorem CovariantDerivative.exteriorPowerSelfAdjointLaplacian_eq (k : ℕ)
+    (cov : CovariantDerivative I F V) (hcov : cov.IsMetricCompatible)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
+    (A : ∀ x, _root_.selfAdjoint ((⋀[ℝ]^k (V x)) →L[ℝ] ⋀[ℝ]^k (V x)))
+    (x : M) :
+    let P := selfAdjointSubbundle (I := I) (F := ⋀[ℝ]^k F)
+      (V := fun y => ⋀[ℝ]^k (V y)) (n := ∞)
+    letI := P.totalSpaceTopology
+    letI := P.fiberBundle
+    cov.exteriorPowerSelfAdjointLaplacian k hcov g A x =
+      DifferentialGeometry.Geometry.Connection.rawBundleConnLap g
+        ((cov.exteriorPower k).selfAdjoint (hcov.exteriorPower k)) A x := rfl
+
 private def exteriorSelfAdjointHessian (k : ℕ)
     (cov : CovariantDerivative I F V) (hcov : cov.IsMetricCompatible)
     (base : CovariantDerivative I E (TangentSpace I : M → Type _))

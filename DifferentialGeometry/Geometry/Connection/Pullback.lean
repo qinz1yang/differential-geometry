@@ -87,6 +87,28 @@ theorem pullbackFiberwiseLinearEquiv_apply
     rfl
   rw [hmap]
 
+theorem pullbackFiberwiseLinearEquiv_trans
+    {F₃ : Type*} [NormedAddCommGroup F₃] [NormedSpace 𝕜 F₃]
+    [FiniteDimensional 𝕜 F₃]
+    {V₃ : M → Type*} [TopologicalSpace (TotalSpace F₃ V₃)]
+    [∀ x, AddCommGroup (V₃ x)] [∀ x, Module 𝕜 (V₃ x)]
+    [∀ x, TopologicalSpace (V₃ x)] [∀ x, IsTopologicalAddGroup (V₃ x)]
+    [∀ x, ContinuousSMul 𝕜 (V₃ x)] [∀ x, T2Space (V₃ x)]
+    [FiberBundle F₃ V₃] [VectorBundle 𝕜 F₃ V₃]
+    (φ : ∀ x, V₁ x ≃ₗ[𝕜] V₂ x)
+    (hφ : ContMDiff (I.prod 𝓘(𝕜, F₁)) (I.prod 𝓘(𝕜, F₂)) 1
+      (fun p : TotalSpace F₁ V₁ => (⟨p.1, φ p.1 p.2⟩ : TotalSpace F₂ V₂)))
+    (ψ : ∀ x, V₂ x ≃ₗ[𝕜] V₃ x)
+    (hψ : ContMDiff (I.prod 𝓘(𝕜, F₂)) (I.prod 𝓘(𝕜, F₃)) 1
+      (fun p : TotalSpace F₂ V₂ => (⟨p.1, ψ p.1 p.2⟩ : TotalSpace F₃ V₃)))
+    (cov : CovariantDerivative I F₃ V₃) :
+    pullbackFiberwiseLinearEquiv (fun x => (φ x).trans (ψ x)) (hψ.comp hφ) cov =
+      pullbackFiberwiseLinearEquiv φ hφ
+        (pullbackFiberwiseLinearEquiv ψ hψ cov) := by
+  ext σ x X
+  change (φ x).symm ((ψ x).symm (cov (fun y => ψ y (φ y (σ y))) x X)) = _
+  rfl
+
 theorem map_pullbackFiberwiseLinearEquiv_apply
     (φ : ∀ x, V₁ x ≃ₗ[𝕜] V₂ x)
     (hφ : ContMDiff (I.prod 𝓘(𝕜, F₁)) (I.prod 𝓘(𝕜, F₂)) 1

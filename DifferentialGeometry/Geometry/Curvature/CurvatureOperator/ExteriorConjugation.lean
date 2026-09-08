@@ -69,4 +69,32 @@ theorem traceNormalizedCurvatureEndomorphism_conjugate_isSelfAdjoint
   exact ContinuousLinearMap.isSelfAdjoint_iff_isSymmetric.mpr
     (traceNormalizedCurvatureEndomorphism_isSymmetric _ _)
 
+theorem traceNormalizedCurvatureEndomorphism_pullback_conjugate
+    {P Q Z : Type*} [NormedAddCommGroup P] [InnerProductSpace ℝ P] [FiniteDimensional ℝ P]
+    [NormedAddCommGroup Q] [InnerProductSpace ℝ Q] [FiniteDimensional ℝ Q]
+    [NormedAddCommGroup Z] [NormedSpace ℝ Z]
+    (T : ContinuousMultilinearMap ℝ (fun _ : Fin 4 => Z) ℝ)
+    (hT : IsAlgCurvForm (fun a b c d => T ![a, b, c, d]))
+    (ι : Q ≃L[ℝ] Z) (κ : P ≃L[ℝ] Z) (φ : P ≃ₗᵢ[ℝ] Q)
+    (heq : κ = φ.toContinuousLinearEquiv.trans ι) :
+    exteriorPower.traceNormalizedCurvatureEndomorphism
+        (T.compContinuousLinearMap (fun _ => κ.toContinuousLinearMap))
+        (hT.compContinuousLinearMap κ.toContinuousLinearMap) =
+      (exteriorPower.mapLinearIsometryEquiv 2 φ).symm.toContinuousLinearEquiv.toContinuousLinearMap.comp
+        ((exteriorPower.traceNormalizedCurvatureEndomorphism
+          (T.compContinuousLinearMap (fun _ => ι.toContinuousLinearMap))
+          (hT.compContinuousLinearMap ι.toContinuousLinearMap)).comp
+          (exteriorPower.mapLinearIsometryEquiv 2 φ).toContinuousLinearEquiv.toContinuousLinearMap) := by
+  have hcomp : T.compContinuousLinearMap (fun _ => κ.toContinuousLinearMap) =
+      (T.compContinuousLinearMap (fun _ => ι.toContinuousLinearMap)).compContinuousLinearMap
+        (fun _ => φ.toContinuousLinearEquiv.toContinuousLinearMap) := by
+    ext v
+    change T (fun i => κ (v i)) = T (fun i => ι (φ (v i)))
+    simp only [heq, ContinuousLinearEquiv.trans_apply]
+    rfl
+  refine Eq.trans ?_ (exteriorPower.traceNormalizedCurvatureEndomorphism_pullback_eq_conjugate
+    φ (T.compContinuousLinearMap (fun _ => ι.toContinuousLinearMap))
+    (hT.compContinuousLinearMap ι.toContinuousLinearMap))
+  congr 1
+
 end exteriorPower

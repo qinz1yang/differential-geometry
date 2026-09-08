@@ -45,4 +45,42 @@ theorem isMetricCompatible_pullback_leviCivita
     exact (LeviCivita_isMetricCompatible g).apply hσ hτ (X x)
   exact hc.pullbackFiberwiseLinearEquiv (fun x => (ι x).toLinearEquiv) hι.clm_bundle_map hmetric
 
+section
+
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+  {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+  {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+  {F G : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F] [FiniteDimensional ℝ F]
+  [NormedAddCommGroup G] [NormedSpace ℝ G]
+  {V : M → Type*} [TopologicalSpace (TotalSpace F V)]
+  [∀ x, NormedAddCommGroup (V x)] [∀ x, NormedSpace ℝ (V x)]
+  [FiberBundle F V] [VectorBundle ℝ F V]
+  {W : M → Type*} [TopologicalSpace (TotalSpace G W)]
+  [∀ x, NormedAddCommGroup (W x)] [∀ x, NormedSpace ℝ (W x)]
+  [FiberBundle G W] [VectorBundle ℝ G W]
+
+theorem pullback_leviCivita_conjugate
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
+    (ι : ∀ x, V x ≃L[ℝ] TangentSpace I x)
+    (κ : ∀ x, W x ≃L[ℝ] TangentSpace I x)
+    (U : ∀ x, W x ≃L[ℝ] V x)
+    (hι : ContMDiff I (I.prod 𝓘(ℝ, F →L[ℝ] E)) 1
+      (fun x => TotalSpace.mk' (F →L[ℝ] E) x (ι x).toContinuousLinearMap))
+    (hκ : ContMDiff I (I.prod 𝓘(ℝ, G →L[ℝ] E)) 1
+      (fun x => TotalSpace.mk' (G →L[ℝ] E) x (κ x).toContinuousLinearMap))
+    (hU : ContMDiff I (I.prod 𝓘(ℝ, G →L[ℝ] F)) 1
+      (fun x => TotalSpace.mk' (G →L[ℝ] F) x (U x).toContinuousLinearMap))
+    (heq : ∀ x, κ x = (U x).trans (ι x)) :
+    pullbackFiberwiseLinearEquiv (fun y => (κ y).toLinearEquiv) hκ.clm_bundle_map (LeviCivita g) =
+      pullbackFiberwiseLinearEquiv (fun y => (U y).toLinearEquiv) hU.clm_bundle_map
+        (pullbackFiberwiseLinearEquiv (fun y => (ι y).toLinearEquiv) hι.clm_bundle_map
+          (LeviCivita g)) := by
+  have hk : κ = fun y => (U y).trans (ι y) := funext heq
+  subst κ
+  exact pullbackFiberwiseLinearEquiv_trans (fun y => (U y).toLinearEquiv) hU.clm_bundle_map
+    (fun y => (ι y).toLinearEquiv) hι.clm_bundle_map (LeviCivita g)
+
+
+end
+
 end CovariantDerivative
