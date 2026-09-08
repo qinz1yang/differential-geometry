@@ -731,3 +731,67 @@ end MetricExtension
 end Laplacian
 end Analysis
 end DifferentialGeometry
+
+namespace DifferentialGeometry.Analysis.Laplacian.MetricExtension
+
+open DifferentialGeometry.Integral.DivergenceTheorem
+
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+
+local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
+
+lemma chartCoeffOnE_comp_toEuclidean_symm_contDiffOn
+    (α : M) {Ω : Set EuclN} (hΩs : Ω ⊆ chartTargetEuclid (I := I) α)
+    (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (i : Fin (Module.finrank ℝ E)) :
+    ContDiffOn ℝ (⊤ : ℕ∞) (fun z => chartCoeffOnE (I := I) α X i
+      ((toEuclidean (E := E)).symm z)) Ω := by
+  apply (chartCoeffOnE_contDiffOn (I := I) α X i).comp
+    (toEuclidean (E := E)).symm.contDiff.contDiffOn
+  intro z hz
+  exact toEuclidean_symm_mem_target (hΩs hz)
+
+
+end DifferentialGeometry.Analysis.Laplacian.MetricExtension
+
+namespace DifferentialGeometry.Analysis.Laplacian.MetricExtension
+
+variable {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F] [FiniteDimensional ℝ F]
+variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ F H}
+variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+
+local notation "EuclF" => EuclideanSpace ℝ (Fin (Module.finrank ℝ F))
+
+lemma exists_uniform_inv_gram_lower_bound_on_compact
+    (g : SmoothRiemannianMetric I M) (α : M) {K : Set EuclF}
+    (hK : IsCompact K) (hKs : K ⊆ chartTargetEuclid (I := I) α) :
+    ∃ lam : ℝ, 0 < lam ∧ ∀ y ∈ K, ∀ ξ : Fin (Module.finrank ℝ F) → ℝ,
+      lam * ∑ i, (ξ i)^2 ≤ ∑ i, ∑ j, invGramOnEuclid g α i j y * ξ i * ξ j := by
+  obtain ⟨lam, hlam, hbound⟩ := Schauder.exists_uniform_matrix_quadratic_lower_bound hK
+    (fun y => Matrix.of (fun i j : Fin (Module.finrank ℝ F) => invGramOnEuclid g α i j y))
+    (fun i j => (invGramOnEuclid_contDiffOn g α i j).continuousOn.mono hKs)
+    (fun y hy => invGramOnEuclid_posDef g α (hKs hy))
+  refine ⟨lam, hlam, ?_⟩
+  intro y hy ξ
+  have hb := hbound y hy (WithLp.toLp 2 ξ)
+  have hnorm : ‖(WithLp.toLp 2 ξ : EuclF)‖ ^ 2 = ∑ i, (ξ i)^2 := by
+    rw [EuclideanSpace.norm_sq_eq]
+    apply Finset.sum_congr rfl
+    intro i _
+    change ‖ξ i‖^2 = (ξ i)^2
+    simp only [Real.norm_eq_abs, sq_abs]
+  have hquad : dotProduct (star (WithLp.toLp 2 ξ : EuclF))
+      ((Matrix.of (fun i j => invGramOnEuclid g α i j y)).mulVec (WithLp.toLp 2 ξ)) =
+      ∑ i, ∑ j, invGramOnEuclid g α i j y * ξ i * ξ j := by
+    simp only [Matrix.mulVec, dotProduct, Pi.star_apply, star_trivial, Matrix.of_apply,
+      Finset.mul_sum]
+    apply Finset.sum_congr rfl
+    intro i _
+    apply Finset.sum_congr rfl
+    intro j _
+    change ξ i * (invGramOnEuclid g α i j y * ξ j) = _
+    ring
+  rwa [hnorm, hquad] at hb
+
+end DifferentialGeometry.Analysis.Laplacian.MetricExtension

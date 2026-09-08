@@ -218,3 +218,28 @@ theorem integral_riemannianVolumeMeasure_eq_integral_volumeDensity_smul
 end Measure
 end Integral
 end DifferentialGeometry
+
+namespace DifferentialGeometry.Integral.Measure
+
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+  [T2Space M] [SigmaCompactSpace M]
+
+lemma chartDensity_mul_riemannianVolumeDensity
+    (q h : SmoothRiemannianMetric I M) (α : M) {x : M}
+    (hx : x ∈ (chartAt H α).source) :
+    chartDensity h α x * riemannianVolumeDensity h q x = chartDensity q α x := by
+  rw [riemannianVolumeDensity_apply_of_mem_chart_source h q α hx]
+  exact mul_div_cancel₀ _ (ne_of_gt (chartDensity_pos h α hx))
+
+lemma riemannianVolumeDensity_mul_eq_inv_chartDensity
+    (q h : SmoothRiemannianMetric I M) (α : M) {x : M}
+    (hx : x ∈ (chartAt H α).source) {r : ℝ}
+    (hr : chartDensity q α x * r = 1) :
+    riemannianVolumeDensity h q x * r = (chartDensity h α x)⁻¹ := by
+  apply (mul_left_cancel₀ (ne_of_gt (chartDensity_pos h α hx)))
+  rw [← mul_assoc, chartDensity_mul_riemannianVolumeDensity q h α hx, hr,
+    mul_inv_cancel₀ (ne_of_gt (chartDensity_pos h α hx))]
+
+end DifferentialGeometry.Integral.Measure

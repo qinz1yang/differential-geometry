@@ -4652,3 +4652,8 @@ import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletWeakFormChar
 import DifferentialGeometry.Geometry.Metric.SmoothSubbundle
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.ImagePlane
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.CurvaturePlane
+import DifferentialGeometry.Analysis.Elliptic.MetricDensity
+import DifferentialGeometry.Analysis.Sobolev.Nirenberg.TestFunction.FluxBounds
+import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletSmoothMulDerivative
+import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletNirenbergForm
+import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletNirenbergCoercivity
