@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Comparison.DistanceFamily
+import DifferentialGeometry.Geometry.Comparison.DistanceCutoff
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Distance.Laplacian
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Distance.Barrier
 import DifferentialGeometry.Analysis.Calculus.CutoffProfile
@@ -585,5 +585,61 @@ theorem exists_distance_cutoff_lower_support_at
       hS.smoothMetric.metricTensor_cont hJ hcomplete O x hfin ha hinner
     exact hconst 1 hone.self_of_nhds.symm zero_le_one
       (hone.mono (fun _ hp => hp.ge))
+
+theorem distance_cutoff_lower_support_with_gradient_ratio
+    {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D)
+    (hS : IsSolutionOn (I := I) S) {t R K : ℝ} (ht : t ∈ D.regular) (htpos : 0 < t)
+    (hcomplete : RiemannianMetricComplete (I := I) (S.base.metric t))
+    (O : M) (hR : 0 < R) (hK : 0 ≤ K)
+    (hRic : ∀ y : M, riemannianEDistOf (I := I) (S.base.metric t) O y < ENNReal.ofReal R →
+      ∀ v : TangentSpace I y, ricciTensor (I := I) (S.base.metric t) y v v ≤
+        K * (S.base.metric t).inner y v v)
+    {a C : ℝ} (ha : 0 ≤ a) (haR : a * R < 1)
+    (hC : ∀ s : ℝ, (deriv Analysis.CutoffProfile.value s) ^ 2 ≤ C * Analysis.CutoffProfile.value s)
+    (x : M) :
+    let χ := fun s y => Analysis.CutoffProfile.evalue
+      (ENNReal.ofReal a * riemannianEDistOf (I := I) (S.base.metric s) O y)
+    ∃ φ : ℝ → M → ℝ,
+      φ t x = χ t x ∧
+      (∀ᶠ p in 𝓝[Icc 0 t ×ˢ (Set.univ : Set M)] (t, x), φ p.1 p.2 ≤ χ p.1 p.2) ∧
+      DifferentiableWithinAt ℝ (fun s => φ s x) (Icc 0 t) t ∧
+      (∀ᶠ y in 𝓝 x, MDifferentiableAt I 𝓘(ℝ, ℝ) (φ t) y) ∧
+      MDiffAt (T% fun y => gradientFun (I := I) (S.base.metric t) (φ t) y) x ∧
+      parabolicOperatorWithDrift (I := I) (flowG (I := I) S) t
+        (fun _ y => (0 : TangentSpace I y)) φ t x ≤
+        Analysis.CutoffProfile.derivBound *
+          (a * (2 * (Module.finrank ℝ E - 1 : ℝ) * Analysis.CutoffProfile.derivBound ^ 2 / R +
+            K * R) + a ^ 2) ∧
+      (S.base.metric t).inner x (gradientFun (I := I) (S.base.metric t) (φ t) x)
+        (gradientFun (I := I) (S.base.metric t) (φ t) x) ≤ (C * a ^ 2) * φ t x := by
+  let d := riemannianEDistOf (I := I) (S.base.metric t) O x
+  obtain ⟨φ, hφeq, hφχ, hφtime, hφspace, hφgrad, hφg, hφP⟩ :=
+    exists_distance_cutoff_lower_support_at S hS ht hcomplete O hR hK hRic a ha haR x
+  refine ⟨φ, hφeq, (hφχ.mono fun p hp => hp.2).filter_mono nhdsWithin_le_nhds,
+    hφtime.differentiableWithinAt, hφspace, hφgrad, ?_, ?_⟩
+  · unfold parabolicOperatorWithDrift heatOperatorWithDrift
+    rw [hφtime.hasDerivAt.hasDerivWithinAt.derivWithin ((uniqueDiffOn_Icc htpos) t ⟨htpos.le, le_rfl⟩)]
+    simpa only [laplacianAt, flowG, driftTerm, SolutionFamily.connection,
+      LeviCivita_eq_leviCivitaConnectionOfMetric, map_zero, Pi.zero_apply,
+      zero_apply, add_zero] using hφP
+  · rw [hφeq]
+    change _ ≤ C * a ^ 2 * Analysis.CutoffProfile.evalue (ENNReal.ofReal a * d)
+    by_cases ha0 : a = 0
+    · simpa only [ha0, zero_pow (by norm_num : (2 : ℕ) ≠ 0), mul_zero, zero_mul] using hφg
+    by_cases hd : d = ⊤
+    · have ha0' : ENNReal.ofReal a ≠ 0 := ENNReal.ofReal_ne_zero_iff.mpr (lt_of_le_of_ne ha (Ne.symm ha0))
+      change _ ≤ (deriv Analysis.CutoffProfile.value (a * d.toReal)) ^ 2 * a ^ 2 at hφg
+      rw [hd, ENNReal.toReal_top, mul_zero,
+        Analysis.CutoffProfile.deriv_zero_of_le (by norm_num : (0 : ℝ) ≤ 1),
+        zero_pow (by norm_num : (2 : ℕ) ≠ 0), zero_mul] at hφg
+      simpa only [hd, ENNReal.mul_top ha0', Analysis.CutoffProfile.evalue_top, mul_zero] using hφg
+    have hvalue : Analysis.CutoffProfile.evalue (ENNReal.ofReal a * d) =
+        Analysis.CutoffProfile.value (a * d.toReal) := by
+      rw [Analysis.CutoffProfile.evalue_eq_value (ENNReal.mul_ne_top ENNReal.ofReal_ne_top hd),
+        ENNReal.toReal_mul, ENNReal.toReal_ofReal ha]
+    have hscaled := mul_le_mul_of_nonneg_right (hC (a * d.toReal)) (sq_nonneg a)
+    rw [hvalue]
+    change _ ≤ (deriv Analysis.CutoffProfile.value (a * d.toReal)) ^ 2 * a ^ 2 at hφg
+    nlinarith only [hφg, hscaled]
 
 end DifferentialGeometry.PDE.RicciFlow

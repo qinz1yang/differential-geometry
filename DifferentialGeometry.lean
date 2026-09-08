@@ -4684,3 +4684,7 @@ import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.LogarithmicBarri
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.TraceScalarization
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.HamiltonIvey.EndomorphismReaction
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.HamiltonIvey
+import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Scalar.Localized
+import DifferentialGeometry.Geometry.Comparison.DistanceCutoff
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Distance.LocalRicciBound
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.ScalarLowerBound
