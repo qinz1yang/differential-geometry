@@ -255,9 +255,6 @@ theorem exists_riemannianEDistOf_le_of_lRegularizedAction_le
     (htime : Set.Icc t0 t1 ⊆ D.carrier)
     (hback : ∀ s ∈ Set.Icc a b, T - s ^ 2 ∈ Set.Icc t0 t1)
     (halpha : ContMDiffOn 𝓘(Real, Real) I 1 alpha (Set.Icc a b))
-    (hE : IntegrableOn
-      (fun s => gRef.inner (alpha s) (lVelocity (I := I) alpha s)
-        (lVelocity (I := I) alpha s)) (Set.Icc a b))
     (hLag : IntervalIntegrable (lRegularizedLagrangian S T alpha) volume a b)
     (hA : lRegularizedAction S T alpha a b ≤ A) :
     ∃ c C : Real, 0 < c ∧
@@ -267,6 +264,11 @@ theorem exists_riemannianEDistOf_le_of_lRegularizedAction_le
           ENNReal.ofReal
             (Real.sqrt (t - s) *
               Real.sqrt ((2 / c) * (A - C * (b - a)))) := by
+  have hE : IntegrableOn
+      (fun s => gRef.inner (alpha s) (lVelocity (I := I) alpha s)
+        (lVelocity (I := I) alpha s)) (Set.Icc a b) :=
+    DifferentialGeometry.Geometry.Riemannian.integrableOn_inner_mfderiv_self_of_contMDiffOn
+      gRef halpha
   have href : IntervalIntegrable
       (fun s => gRef.inner (alpha s) (lVelocity (I := I) alpha s)
         (lVelocity (I := I) alpha s)) volume a b := by
