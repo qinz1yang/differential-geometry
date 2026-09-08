@@ -1,5 +1,6 @@
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.ExteriorReaction
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureOperatorKernel
+import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureOperatorRank
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Endomorphism
 import Mathlib.LinearAlgebra.Matrix.Rank
 
@@ -42,6 +43,20 @@ theorem curvatureOperatorImageAt_finrank_eq_traceNormalized_matrix_rank
     b.dualBasis b
   rw [Matrix.toLin_toMatrix] at hmatrixRank
   rw [← hmatrixRank, hmatrix, Matrix.rank_transpose]
+
+theorem metricCurvatureOperatorRankAt_eq_curvatureOperatorImageAt_finrank
+    (g : SmoothRiemannianMetric I M) (x : M)
+    (hdim : Module.finrank ℝ (TangentSpace I x) = 3) :
+    DimensionThree.metricCurvatureOperatorRankAt g x hdim =
+      Module.finrank ℝ (curvatureOperatorImageAt g x
+        ⟨metricRm04At g x, metricRm04At_mem_algebraicCurvatureTensorSubmodule g x⟩) := by
+  obtain ⟨basis, horth⟩ := exists_orthonormalBasisAt g x hdim
+  rw [DimensionThree.metricCurvatureOperatorRankAt_eq_matrix_rank_of_orthonormal g x hdim basis horth,
+    curvatureOperatorImageAt_finrank_eq_traceNormalized_matrix_rank g x basis horth]
+  symm
+  exact Matrix.rank_smul_of_mem_nonZeroDivisors _
+    (mem_nonZeroDivisors_of_ne_zero (by norm_num : (2 : ℝ) ≠ 0))
+
 
 omit [T2Space M] in
 theorem traceNormalizedCurvatureEndomorphism_pullback_finrank_range
