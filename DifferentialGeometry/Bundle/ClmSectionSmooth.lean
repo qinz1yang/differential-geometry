@@ -98,28 +98,27 @@ theorem cotangentCov_clmSection_smooth_aux
     e₂.coe_linearMapAt_of_mem hx₂]
 
 omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] in
-theorem contMDiff_linearMap_trace
+theorem contMDiffAt_linearMap_trace
     {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F] [FiniteDimensional ℝ F]
     {V : M → Type*} [∀ x, AddCommGroup (V x)] [∀ x, Module ℝ (V x)]
     [TopologicalSpace (TotalSpace F V)] [∀ x, TopologicalSpace (V x)]
     [FiberBundle F V] [VectorBundle ℝ F V]
     [∀ x, IsTopologicalAddGroup (V x)] [∀ x, ContinuousSMul ℝ (V x)]
-    (A : ∀ x : M, V x →L[ℝ] V x)
-    (hA : ContMDiff I (I.prod 𝓘(ℝ, F →L[ℝ] F)) ∞
+    {n : ℕ∞ω} (A : ∀ x : M, V x →L[ℝ] V x) {x : M}
+    (hA : ContMDiffAt I (I.prod 𝓘(ℝ, F →L[ℝ] F)) n
       (fun x : M => (⟨x, A x⟩ : TotalSpace (F →L[ℝ] F)
-        (fun y : M => V y →L[ℝ] V y)))) :
-    ContMDiff I 𝓘(ℝ) ∞
-      (fun x : M => LinearMap.trace ℝ (V x) (A x).toLinearMap) := by
-  intro x
+        (fun y : M => V y →L[ℝ] V y))) x) :
+    ContMDiffAt I 𝓘(ℝ) n
+      (fun y : M => LinearMap.trace ℝ (V y) (A y).toLinearMap) x := by
   have hcoord := (contMDiffAt_hom_bundle
     (f := fun y : M => (⟨y, A y⟩ : TotalSpace (F →L[ℝ] F)
-      (fun z : M => V z →L[ℝ] V z)))).mp (hA x)
+      (fun z : M => V z →L[ℝ] V z)))).mp hA
   let tr : (F →L[ℝ] F) →L[ℝ] ℝ :=
     LinearMap.toContinuousLinearMap
       ((LinearMap.trace ℝ F).comp
         (LinearMap.toContinuousLinearMap :
           (F →ₗ[ℝ] F) ≃ₗ[ℝ] F →L[ℝ] F).symm.toLinearMap)
-  have hsmooth : ContMDiffAt I 𝓘(ℝ) ∞
+  have hsmooth : ContMDiffAt I 𝓘(ℝ) n
       (fun y : M => tr (ContinuousLinearMap.inCoordinates
         F V F V x y x y (A y))) x :=
     tr.contMDiff.contMDiffAt.comp x hcoord.2
@@ -133,5 +132,21 @@ theorem contMDiff_linearMap_trace
   rw [ContinuousLinearMap.inCoordinates_eq hy hy]
   let e := (trivializationAt F V x).continuousLinearEquivAt ℝ y hy
   exact (LinearMap.trace_conj' (A y).toLinearMap e.toLinearEquiv).symm
+
+
+omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] in
+theorem contMDiff_linearMap_trace
+    {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F] [FiniteDimensional ℝ F]
+    {V : M → Type*} [∀ x, AddCommGroup (V x)] [∀ x, Module ℝ (V x)]
+    [TopologicalSpace (TotalSpace F V)] [∀ x, TopologicalSpace (V x)]
+    [FiberBundle F V] [VectorBundle ℝ F V]
+    [∀ x, IsTopologicalAddGroup (V x)] [∀ x, ContinuousSMul ℝ (V x)]
+    {n : ℕ∞ω} (A : ∀ x : M, V x →L[ℝ] V x)
+    (hA : ContMDiff I (I.prod 𝓘(ℝ, F →L[ℝ] F)) n
+      (fun x : M => (⟨x, A x⟩ : TotalSpace (F →L[ℝ] F)
+        (fun y : M => V y →L[ℝ] V y)))) :
+    ContMDiff I 𝓘(ℝ) n
+      (fun x : M => LinearMap.trace ℝ (V x) (A x).toLinearMap) :=
+  fun x => contMDiffAt_linearMap_trace A (hA x)
 
 end DifferentialGeometry

@@ -16,7 +16,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimension
   {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M] [T2Space M]
 
 theorem rawBundleConnLap_trivial_eq_laplacian [BoundarylessManifold I M]
-    (g : SmoothRiemannianMetric I M) {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ) ∞ f) (x : M) :
+    (g : SmoothRiemannianMetric I M) {f : M → ℝ} {x : M} (hf : ContMDiffAt I 𝓘(ℝ) 2 f x) :
     rawBundleConnLap g (CovariantDerivative.trivial I M ℝ) f x =
       laplacian (LeviCivita g) g f x := by
   let _ : RiemannianBundle (TangentSpace I : M → Type _) := ⟨g.toRiemannianMetric⟩
@@ -41,13 +41,19 @@ theorem rawBundleConnLap_trivial_eq_laplacian [BoundarylessManifold I M]
   intro i _
   let _ : NeZero (Module.finrank ℝ E) := ⟨Nat.ne_of_gt (lt_of_le_of_lt (Nat.zero_le i.val) i.isLt)⟩
   have hX := (smoothOrthoFrame_smooth g x i).mdifferentiableAt (x := x) (by simp)
-  have hθ := ((cotangentCov_mvfderiv_smooth (I := I) hf) x).mdifferentiableAt (by simp)
+  have hfSection : ContMDiffAt I (I.prod 𝓘(ℝ, ℝ)) 2 (T% f) x :=
+    (contMDiffAt_section (F := ℝ) (E := Bundle.Trivial M ℝ) x).mpr hf
+  have hθ := ((CovariantDerivative.trivial_contMDiff I M ℝ ∞).contMDiffAt
+    (m := 1) hfSection (by norm_num)).mdifferentiableAt one_ne_zero
+  change MDifferentiableAt I (I.prod 𝓘(ℝ, E →L[ℝ] ℝ))
+    (fun y => (⟨y, mvfderiv I f y⟩ : TotalSpace (E →L[ℝ] ℝ)
+      (fun y => TangentSpace I y →L[ℝ] ℝ))) x at hθ
   have hpair := cotangentCov_dualPairing (LeviCivita g) hθ hX (frame i)
   have hflat : metricFlat g (gradientFun g f) = mvfderiv I f := by
     funext y
     ext v
     exact inner_gradientFun g f y v
-  have hdual := cotangentCov_metricDuality g ((gradientFun_smooth g hf).mdifferentiableAt (by simp))
+  have hdual := cotangentCov_metricDuality g ((gradientFun_contMDiffAt_one g hf).mdifferentiableAt one_ne_zero)
     (frame i) (frame i)
   rw [hflat] at hdual
   change mvfderiv I (fun y => mvfderiv I f y (smoothOrthoFrame g x i y)) x (frame i) -

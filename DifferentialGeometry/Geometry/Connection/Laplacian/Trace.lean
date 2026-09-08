@@ -51,14 +51,13 @@ theorem trace_rawBundleEndomorphismConnLap_eq_laplacian_of_isMetricCompatible
     (g : SmoothRiemannianMetric I M) (cov : CovariantDerivative I F V)
     (hcov : cov.IsMetricCompatible) (hsmooth : cov.ContMDiffCovariantDerivative ∞)
     (A : ∀ y, V y →L[ℝ] V y)
-    (hA : ContMDiff I (I.prod 𝓘(ℝ, F →L[ℝ] F)) ∞
+    (hA : ContMDiff I (I.prod 𝓘(ℝ, F →L[ℝ] F)) 2
       (fun y => (⟨y, A y⟩ : TotalSpace (F →L[ℝ] F) (fun y => V y →L[ℝ] V y))))
     (x : M) :
     LinearMap.trace ℝ (V x) (rawBundleEndomorphismConnLap g cov A x).toLinearMap =
       laplacian (LeviCivita g) g
         (fun y => LinearMap.trace ℝ (V y) (A y).toLinearMap) x := by
-  rw [trace_rawBundleEndomorphismConnLap_of_isMetricCompatible g cov hcov hsmooth A
-    (hA.of_le (by norm_cast)) x]
-  exact rawBundleConnLap_trivial_eq_laplacian g (contMDiff_linearMap_trace A hA) x
+  rw [trace_rawBundleEndomorphismConnLap_of_isMetricCompatible g cov hcov hsmooth A hA x]
+  exact rawBundleConnLap_trivial_eq_laplacian g (contMDiffAt_linearMap_trace A (hA x))
 
 end DifferentialGeometry.Geometry.Connection

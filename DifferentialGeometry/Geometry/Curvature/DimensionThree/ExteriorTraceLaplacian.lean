@@ -86,6 +86,6 @@ theorem trace_rawBundleEndomorphismConnLap_metric_pullback
       ((VectorBundle.finrank_eq ℝ F V y).trans hdim)
   change LinearMap.trace ℝ _ (rawBundleEndomorphismConnLap g (cov.exteriorPower 2) R x).toLinearMap = _
   rw [trace_rawBundleEndomorphismConnLap_eq_laplacian_of_isMetricCompatible g
-    (cov.exteriorPower 2) (hc.exteriorPower 2) inferInstance R hRsmooth x, htrace]
+    (cov.exteriorPower 2) (hc.exteriorPower 2) inferInstance R (hRsmooth.of_le (by norm_cast)) x, htrace]
 
 end DifferentialGeometry.Geometry.Curvature.DimensionThree
