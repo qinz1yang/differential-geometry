@@ -4631,3 +4631,7 @@ import DifferentialGeometry.Geometry.Connection.SubbundlePullback
 import DifferentialGeometry.Geometry.Connection.MetricCompatibility.ExteriorSubmodule
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.ExteriorKernel
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.CurvatureKernel
+import DifferentialGeometry.Bundle.TotalSpace
+import DifferentialGeometry.Geometry.Connection.Associated
+import DifferentialGeometry.Geometry.Connection.MetricCompatibility.Associated
+import DifferentialGeometry.Geometry.Connection.Principal
