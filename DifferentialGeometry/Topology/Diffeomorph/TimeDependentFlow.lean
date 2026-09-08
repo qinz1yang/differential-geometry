@@ -165,27 +165,29 @@ theorem isIntegralCurve_timeDependentFlow (s : ℝ) (x : E) :
   change HasDerivAt (fun u => (γ (u - s)).2) (V (t, (γ (t - s)).2)) t
   simpa only [Function.comp_def, id_eq, one_smul] using hshift
 
+theorem timeDependentFlow_apply_eq_of_isIntegralCurve {γ : ℝ → E}
+    (hγ : IsIntegralCurve γ (fun t x => V (t, x))) (s t : ℝ) :
+    timeDependentFlow V hV hs s t (γ s) = γ t := by
+  obtain ⟨K, hK⟩ := ContDiff.lipschitzWith_of_hasCompactSupport hs hV (by simp)
+  have hslice (u : ℝ) : LipschitzWith K (fun x : E => V (u, x)) := by
+    refine LipschitzWith.of_dist_le_mul (fun x y => ?_)
+    simpa only [Prod.dist_eq, dist_self, max_eq_right dist_nonneg] using
+      hK.dist_le_mul (u, x) (u, y)
+  have hflow := isIntegralCurve_timeDependentFlow V hV hs s (γ s)
+  have heq := ODE_solution_unique_univ (s := fun _ => Set.univ)
+    (fun u => (hslice u).lipschitzOnWith)
+    (fun u => ⟨hflow u, Set.mem_univ _⟩)
+    (fun u => ⟨hγ u, Set.mem_univ _⟩)
+    (t₀ := s) (by simp only [timeDependentFlow_refl, Diffeomorph.coe_refl, id_eq])
+  exact congrFun heq t
+
 theorem timeDependentFlow_apply_eq_self_of_forall_eq_zero {x : E}
     (hx : ∀ t : ℝ, V (t, x) = 0) (s t : ℝ) : timeDependentFlow V hV hs s t x = x := by
-  let : CompleteSpace E := FiniteDimensional.complete ℝ E
-  let hc := suspension_complete V (hV.of_le (by simp)) hs
-  let W : (p : ℝ × E) → TangentSpace 𝓘(ℝ, ℝ × E) p := fun q => (1, V q)
-  have hW : ContMDiff 𝓘(ℝ, ℝ × E) (𝓘(ℝ, ℝ × E)).tangent 1
-      (fun p : ℝ × E => (⟨p, W p⟩ : TangentBundle 𝓘(ℝ, ℝ × E) (ℝ × E))) :=
-    contMDiff_vectorSpace_iff_contDiff.mpr (contDiff_const.prodMk (hV.of_le (by simp)))
-  have hline : IsMIntegralCurve (I := 𝓘(ℝ, ℝ × E)) (fun u : ℝ => (s + u, x)) W := by
-    intro u
-    have hd : HasDerivAt (fun u : ℝ => (s + u, x)) (1, 0) u := by
-      convert ((hasDerivAt_const u s).add (hasDerivAt_id u)).prodMk
-        (hasDerivAt_const u x) using 1 <;> first | rfl | simp only [zero_add]
-    have hz : W (s + u, x) = (1, 0) := by
-      change (1, V (s + u, x)) = (1, 0)
-      rw [hx]
-    rw [hz]
-    exact hd.hasFDerivAt.hasMFDerivAt
-  have heq := integralCurve_eq_of_agree (I := 𝓘(ℝ, ℝ × E)) (t₀ := 0) W hW
-    (curveAt_integralCurve W hc (s, x)) hline (by simp only [curveAt_zero, add_zero])
-  exact congrArg Prod.snd (congrFun heq (t - s))
+  apply timeDependentFlow_apply_eq_of_isIntegralCurve V hV hs (γ := fun _ => x) ?_ s t
+  intro u
+  change HasDerivAt (fun _ : ℝ => x) (V (u, x)) u
+  rw [hx]
+  exact hasDerivAt_const u x
 
 theorem timeDependentFlow_eqOn_compl_image_tsupport (s t : ℝ) :
     Set.EqOn (timeDependentFlow V hV hs s t) id (Prod.snd '' tsupport V)ᶜ ∧

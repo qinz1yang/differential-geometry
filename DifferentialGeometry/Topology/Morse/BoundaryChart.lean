@@ -101,4 +101,86 @@ theorem exists_diffeomorph_image_boundaryMorsePerturbation_sublevels_in_chart
   · rintro _ ⟨y, hy, rfl⟩
     exact (c.symm y).property
 
+theorem exists_diffeomorph_image_sublevels_of_boundaryMorseChart
+    {n : ℕ} {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+    {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [T2Space M]
+    {U : TopologicalSpace.Opens M} {V : TopologicalSpace.Opens (Fin (n + 1) → ℝ)}
+    (c : Diffeomorph I 𝓘(ℝ, Fin (n + 1) → ℝ) U V ∞)
+    (d : Fin n → ℝ) (hd : ∀ i, d i ≠ 0) (b : ContDiffBump (0 : Fin n → ℝ))
+    (D : Set M) (hD : ∀ x : U, (x : M) ∈ D ↔ 0 ≤ (c x).val 0)
+    (f : M → ℝ)
+    (hf : ∀ x : U, (x : M) ∈ D → f x = (∑ i : Fin n, d i * (c x).val i.succ ^ 2) + (c x).val 0)
+    {lower upper : ℝ} (hlower : lower < 0) (hupper : 0 < upper) :
+    ∃ δ > 0, ∀ a ∈ Set.Ioc 0 δ,
+      {z : Fin (n + 1) → ℝ | 0 ≤ z 0 ∧ z 0 ≤ a ∧ ‖Fin.tail z‖ ≤ b.rOut} ⊆ V →
+      ∀ g : M → ℝ, (∀ x : U, (x : M) ∈ D → g x = boundaryMorsePerturbation d b a (c x)) →
+      Set.EqOn g f ((U : Set M)ᶜ ∩ D) →
+      ∃ Φ : Diffeomorph I I M M ∞,
+        Φ '' D = D ∧
+        (∀ r ∈ ({lower, upper} : Set ℝ),
+          Φ '' {x | x ∈ D ∧ f x ≤ r} = {x | x ∈ D ∧ g x ≤ r}) ∧
+        ∃ K : Set M, IsCompact K ∧ K ⊆ U ∧
+          Set.EqOn Φ id Kᶜ ∧ Set.EqOn Φ.symm id Kᶜ := by
+  obtain ⟨δ, hδ, h⟩ :=
+    exists_diffeomorph_image_boundaryMorsePerturbation_sublevels_in_chart c d hd b hlower hupper
+  refine ⟨δ, hδ, ?_⟩
+  intro a ha hbox g hg hgf
+  obtain ⟨Φ, hΦU, hboundary, hside, houter, hlevels, K, hK, hKU, hfix, hfixi⟩ := h a ha hbox
+  have hfixU : Set.EqOn Φ id (U : Set M)ᶜ := by
+    intro x hx
+    exact hfix (fun hxK => hx (hKU hxK))
+  have hglue (S T : Set M) (hlocal : Φ '' ((U : Set M) ∩ S) = (U : Set M) ∩ T)
+      (hout : (U : Set M)ᶜ ∩ S = (U : Set M)ᶜ ∩ T) : Φ '' S = T := by
+    have hS : S = ((U : Set M) ∩ S) ∪ ((U : Set M)ᶜ ∩ S) := by
+      rw [← Set.union_inter_distrib_right, Set.union_compl_self, Set.univ_inter]
+    have hT : T = ((U : Set M) ∩ T) ∪ ((U : Set M)ᶜ ∩ T) := by
+      rw [← Set.union_inter_distrib_right, Set.union_compl_self, Set.univ_inter]
+    calc
+      Φ '' S = Φ '' ((U : Set M) ∩ S) ∪ Φ '' ((U : Set M)ᶜ ∩ S) := by
+        rw [← Set.image_union]
+        exact congrArg (fun A : Set M => Φ '' A) hS
+      _ = ((U : Set M) ∩ T) ∪ ((U : Set M)ᶜ ∩ T) := by
+        rw [hlocal, (hfixU.mono Set.inter_subset_left).image_eq_self, hout]
+      _ = T := hT.symm
+  have hdomain : (U : Set M) ∩ D = Subtype.val '' {x : U | 0 ≤ (c x).val 0} := by
+    ext x
+    constructor
+    · intro hx
+      exact ⟨⟨x, hx.1⟩, (hD ⟨x, hx.1⟩).mp hx.2, rfl⟩
+    · rintro ⟨y, hy, rfl⟩
+      exact ⟨y.property, (hD y).mpr hy⟩
+  refine ⟨Φ, hglue D D (by simpa only [hdomain] using hside) rfl, ?_,
+    K, hK, hKU, hfix, hfixi⟩
+  intro r hr
+  apply hglue
+  · have hsource : (U : Set M) ∩ {x | x ∈ D ∧ f x ≤ r} =
+        Subtype.val '' {x : U | 0 ≤ (c x).val 0 ∧
+          ((∑ i : Fin n, d i * (c x).val i.succ ^ 2) + (c x).val 0) ≤ r} := by
+      ext x
+      constructor
+      · intro hx
+        exact ⟨⟨x, hx.1⟩, ⟨(hD ⟨x, hx.1⟩).mp hx.2.1,
+          (hf ⟨x, hx.1⟩ hx.2.1) ▸ hx.2.2⟩, rfl⟩
+      · rintro ⟨y, hy, rfl⟩
+        exact ⟨y.property, (hD y).mpr hy.1, (hf y ((hD y).mpr hy.1)).symm ▸ hy.2⟩
+    have htarget : (U : Set M) ∩ {x | x ∈ D ∧ g x ≤ r} =
+        Subtype.val '' {x : U | 0 ≤ (c x).val 0 ∧
+          boundaryMorsePerturbation d b a (c x) ≤ r} := by
+      ext x
+      constructor
+      · intro hx
+        exact ⟨⟨x, hx.1⟩, ⟨(hD ⟨x, hx.1⟩).mp hx.2.1,
+          (hg ⟨x, hx.1⟩ hx.2.1) ▸ hx.2.2⟩, rfl⟩
+      · rintro ⟨y, hy, rfl⟩
+        exact ⟨y.property, (hD y).mpr hy.1, (hg y ((hD y).mpr hy.1)).symm ▸ hy.2⟩
+    rw [hsource, htarget]
+    exact hlevels r hr
+  · ext x
+    constructor
+    · intro hx
+      exact ⟨hx.1, hx.2.1, (hgf ⟨hx.1, hx.2.1⟩).symm ▸ hx.2.2⟩
+    · intro hx
+      exact ⟨hx.1, hx.2.1, (hgf ⟨hx.1, hx.2.1⟩) ▸ hx.2.2⟩
+
 end DifferentialGeometry.Topology.Morse
