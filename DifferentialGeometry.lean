@@ -4822,3 +4822,5 @@ import DifferentialGeometry.Analysis.Integration.Measure.PullbackGradient
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.WeakGradientSourceBound
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.QuantitativeGradientSource
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.TimeOperatorH1
+import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.TimeDerivativeEquation
+import DifferentialGeometry.Analysis.Parabolic.Dirichlet.MaximalRegularity.TimeDerivative
