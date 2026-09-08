@@ -3008,6 +3008,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Uniform.C
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Solutions.WindowPullback
 import DifferentialGeometry.Geometry.Metric.Convergence.Time.Lipschitz
 import DifferentialGeometry.Geometry.Metric.Convergence.Metric.UniformEquivalence
+import DifferentialGeometry.Geometry.Metric.Convergence.Metric.Evaluation
 import DifferentialGeometry.Geometry.Metric.Convergence.Window.Bounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DeTurck.Pullback
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DeTurck.PullbackFlat
