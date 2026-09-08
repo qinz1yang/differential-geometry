@@ -3211,6 +3211,7 @@ import DifferentialGeometry.Geometry.Metric.SmoothMapLipschitz
 import DifferentialGeometry.Geometry.Metric.Distance.Topology
 import DifferentialGeometry.Geometry.Metric.Product
 import DifferentialGeometry.Geometry.Metric.WarpedProduct
+import DifferentialGeometry.Geometry.Metric.RoundCylindrical
 import DifferentialGeometry.Geometry.Curvature.WarpedProduct
 import DifferentialGeometry.Geometry.Metric.Pullback.Basic
 import DifferentialGeometry.Geometry.Metric.ParallelFlow
