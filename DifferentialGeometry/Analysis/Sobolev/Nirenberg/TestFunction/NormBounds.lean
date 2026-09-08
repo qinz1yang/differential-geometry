@@ -255,4 +255,3 @@ theorem standardNirenbergTest_smul (k : Fin d) (h c : ℝ) (η u : E → ℝ) :
   rw [heq, diffQuot_smul]
 
 end DifferentialGeometry.Analysis.Sobolev.NirenbergStandardTest
-

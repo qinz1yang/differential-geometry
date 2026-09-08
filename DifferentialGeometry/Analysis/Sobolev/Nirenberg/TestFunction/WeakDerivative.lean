@@ -135,4 +135,3 @@ theorem memLp_standardNirenbergTest_partial_local
   exact memLp_diffQuot_two k (-h) (hfirst.add hsecond)
 
 end DifferentialGeometry.Analysis.Sobolev.NirenbergStandardTest
-
