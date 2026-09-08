@@ -3657,6 +3657,7 @@ import DifferentialGeometry.Geometry.Comparison.CheegerGromovTaylor.Fiber.Basic
 import DifferentialGeometry.Geometry.Comparison.CheegerGromovTaylor.Fiber.Iteration
 import DifferentialGeometry.Geometry.Comparison.CheegerGromovTaylor.Paths.ExponentialLift
 import DifferentialGeometry.Geometry.Metric.Path.Length
+import DifferentialGeometry.Geometry.Metric.Path.Composition
 import DifferentialGeometry.Geometry.Metric.Path.Homotopy
 import DifferentialGeometry.Geometry.Metric.Path.Reparametrization
 import DifferentialGeometry.Geometry.Comparison.CheegerGromovTaylor.Paths.HomotopyLift

@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Metric.Path.Composition
 import DifferentialGeometry.Analysis.ODE.Stability.Tube
 import DifferentialGeometry.Geometry.Comparison.CheegerGromovTaylor.Core.Geometry
 import DifferentialGeometry.Geometry.Comparison.Convexity.Geodesic
@@ -336,81 +337,59 @@ theorem intrinsicExt_pathLen
       Manifold.pathELength I
         ((intrinsicFramedExp (I := I) g hEnorm p) ∘ γ) a b := by
   let gExt := intrinsicExtMetric (I := I) g hEnorm p hR hloc
-  let _ : RiemannianBundle
-      (fun z : E ↦ TangentSpace 𝓘(Real, E) z) :=
+  let : RiemannianBundle (fun z : E ↦ TangentSpace 𝓘(Real, E) z) :=
     ⟨gExt.toRiemannianMetric⟩
   change Manifold.pathELength 𝓘(Real, E) γ a b =
-    Manifold.pathELength I
-      ((intrinsicFramedExp (I := I) g hEnorm p) ∘ γ) a b
-  rw [Manifold.pathELength_eq_lintegral_mfderiv_Ioo,
-    Manifold.pathELength_eq_lintegral_mfderiv_Ioo]
-  apply MeasureTheory.setLIntegral_congr_fun measurableSet_Ioo
-  intro t ht
-  have hγt : MDifferentiableAt 𝓘(Real, Real) 𝓘(Real, E) γ t :=
-    ((hγ.mdifferentiableOn one_ne_zero) t
-      ⟨ht.1.le, ht.2.le⟩).mdifferentiableAt
-        (Icc_mem_nhds ht.1 ht.2)
-  have hFt : MDifferentiableAt 𝓘(Real, E) I
-      (intrinsicFramedExp (I := I) g hEnorm p) (γ t) :=
-    (intrinsicFrame_smooth (I := I) g hEnorm p).mdifferentiableAt
-      (by decide)
-  have hcomp :
-      mfderiv 𝓘(Real, Real) I
-          ((intrinsicFramedExp (I := I) g hEnorm p) ∘ γ) t =
-        (mfderiv 𝓘(Real, E) I
-          (intrinsicFramedExp (I := I) g hEnorm p) (γ t)).comp
-          (mfderiv 𝓘(Real, Real) 𝓘(Real, E) γ t) :=
-    mfderiv_comp t hFt hγt
-  change
-    ‖mfderiv 𝓘(Real, Real) 𝓘(Real, E) γ t 1‖ₑ =
-      ‖mfderiv 𝓘(Real, Real) I
-        ((intrinsicFramedExp (I := I) g hEnorm p) ∘ γ) t 1‖ₑ
-  rw [hcomp]
-  change
-    ‖mfderiv 𝓘(Real, Real) 𝓘(Real, E) γ t 1‖ₑ =
-      ‖mfderiv 𝓘(Real, E) I
-        (intrinsicFramedExp (I := I) g hEnorm p) (γ t)
-          (mfderiv 𝓘(Real, Real) 𝓘(Real, E) γ t 1)‖ₑ
-  let v : TangentSpace 𝓘(Real, E) (γ t) :=
-    mfderiv 𝓘(Real, Real) 𝓘(Real, E) γ t 1
-  have hExtNorm :
-      ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (gExt.inner (γ t) v v)) := by
-    exact enorm_eq_sqrt_inner_self (E := E) gExt (γ t) v
-  have hBaseNorm :
-      ‖mfderiv 𝓘(Real, E) I
-          (intrinsicFramedExp (I := I) g hEnorm p) (γ t) v‖ₑ =
-        ENNReal.ofReal (Real.sqrt
-          (g.inner (intrinsicFramedExp (I := I) g hEnorm p (γ t))
-            (mfderiv 𝓘(Real, E) I
-              (intrinsicFramedExp (I := I) g hEnorm p) (γ t) v)
-            (mfderiv 𝓘(Real, E) I
-              (intrinsicFramedExp (I := I) g hEnorm p) (γ t) v))) :=
-    hEnorm _ _
-  change ‖v‖ₑ = ‖mfderiv 𝓘(Real, E) I
-    (intrinsicFramedExp (I := I) g hEnorm p) (γ t) v‖ₑ
-  rw [hExtNorm, hBaseNorm]
-  congr 2
-  calc
-    gExt.inner (γ t) v v =
-        (intrinsicPullMetric (I := I) g hEnorm p hloc).inner
-          ⟨γ t, intrinsicClosed_subset (E := E) R hR
-            (hstay t ⟨ht.1.le, ht.2.le⟩)⟩ v v :=
-      intrinsicExt_inner (I := I) g hEnorm p hR hloc
-        (hstay t ⟨ht.1.le, ht.2.le⟩) v v
-    _ = intrinsicFrameMetric (I := I) g hEnorm p (γ t) v v :=
-      intrinsicPullMetric_inner (I := I) g hEnorm p hloc _ v v
-    _ = g.inner
-        (intrinsicFramedExp (I := I) g hEnorm p (γ t))
-        (mfderiv 𝓘(Real, E) I
-          (intrinsicFramedExp (I := I) g hEnorm p) (γ t) v)
-        (mfderiv 𝓘(Real, E) I
-          (intrinsicFramedExp (I := I) g hEnorm p) (γ t) v) := by
-      simpa only [tangentSpaceModelContinuousLinearEquiv_apply] using
-        intrinsicFrameMetric_apply (I := I) g hEnorm p (γ t)
-          (tangentSpaceModelContinuousLinearEquiv
-            (I := 𝓘(Real, E)) (γ t) v)
-          (tangentSpaceModelContinuousLinearEquiv
-            (I := 𝓘(Real, E)) (γ t) v)
+    Manifold.pathELength I ((intrinsicFramedExp (I := I) g hEnorm p) ∘ γ) a b
+  symm
+  apply Manifold.pathELength_comp_eq_of_enorm_mfderiv_eq (intrinsicFramedExp g hEnorm p)
+  · filter_upwards [MeasureTheory.ae_restrict_mem measurableSet_Ioo] with t ht
+    exact ((hγ.mdifferentiableOn one_ne_zero) t ⟨ht.1.le, ht.2.le⟩).mdifferentiableAt
+      (Icc_mem_nhds ht.1 ht.2)
+  · exact Filter.Eventually.of_forall
+      (fun _ => (intrinsicFrame_smooth g hEnorm p).mdifferentiableAt (by decide))
+  · filter_upwards [MeasureTheory.ae_restrict_mem measurableSet_Ioo] with t ht
+    symm
+    let v : TangentSpace 𝓘(Real, E) (γ t) :=
+      mfderiv 𝓘(Real, Real) 𝓘(Real, E) γ t 1
+    have hExtNorm :
+        ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (gExt.inner (γ t) v v)) := by
+      exact enorm_eq_sqrt_inner_self (E := E) gExt (γ t) v
+    have hBaseNorm :
+        ‖mfderiv 𝓘(Real, E) I
+            (intrinsicFramedExp (I := I) g hEnorm p) (γ t) v‖ₑ =
+          ENNReal.ofReal (Real.sqrt
+            (g.inner (intrinsicFramedExp (I := I) g hEnorm p (γ t))
+              (mfderiv 𝓘(Real, E) I
+                (intrinsicFramedExp (I := I) g hEnorm p) (γ t) v)
+              (mfderiv 𝓘(Real, E) I
+                (intrinsicFramedExp (I := I) g hEnorm p) (γ t) v))) :=
+      hEnorm _ _
+    change ‖v‖ₑ = ‖mfderiv 𝓘(Real, E) I
+      (intrinsicFramedExp (I := I) g hEnorm p) (γ t) v‖ₑ
+    rw [hExtNorm, hBaseNorm]
+    congr 2
+    calc
+      gExt.inner (γ t) v v =
+          (intrinsicPullMetric (I := I) g hEnorm p hloc).inner
+            ⟨γ t, intrinsicClosed_subset (E := E) R hR
+              (hstay t ⟨ht.1.le, ht.2.le⟩)⟩ v v :=
+        intrinsicExt_inner (I := I) g hEnorm p hR hloc
+          (hstay t ⟨ht.1.le, ht.2.le⟩) v v
+      _ = intrinsicFrameMetric (I := I) g hEnorm p (γ t) v v :=
+        intrinsicPullMetric_inner (I := I) g hEnorm p hloc _ v v
+      _ = g.inner
+          (intrinsicFramedExp (I := I) g hEnorm p (γ t))
+          (mfderiv 𝓘(Real, E) I
+            (intrinsicFramedExp (I := I) g hEnorm p) (γ t) v)
+          (mfderiv 𝓘(Real, E) I
+            (intrinsicFramedExp (I := I) g hEnorm p) (γ t) v) := by
+        simpa only [tangentSpaceModelContinuousLinearEquiv_apply] using
+          intrinsicFrameMetric_apply (I := I) g hEnorm p (γ t)
+            (tangentSpaceModelContinuousLinearEquiv
+              (I := 𝓘(Real, E)) (γ t) v)
+            (tangentSpaceModelContinuousLinearEquiv
+              (I := 𝓘(Real, E)) (γ t) v)
 
 theorem intrinsicExt_radial_len
     (g : SmoothRiemannianMetric I M)

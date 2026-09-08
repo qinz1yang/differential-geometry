@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Metric.Pullback.Cross
 import DifferentialGeometry.Geometry.Metric.Construction.Existence
-import Mathlib.Geometry.Manifold.Riemannian.PathELength
+import DifferentialGeometry.Geometry.Metric.Path.Composition
 
 set_option autoImplicit false
 
@@ -271,29 +271,15 @@ theorem localPull_pathLen
       ⟨(localPullMetric (I := I) (J := J) g f hf).toRiemannianMetric⟩
     Manifold.pathELength J (f ∘ γ) a b =
       Manifold.pathELength I γ a b := by
-  let : RiemannianBundle
-      (fun y : M ↦ TangentSpace I y) :=
+  let : RiemannianBundle (fun y : M ↦ TangentSpace I y) :=
     ⟨(localPullMetric (I := I) (J := J) g f hf).toRiemannianMetric⟩
-  rw [Manifold.pathELength_eq_lintegral_mfderiv_Ioo,
-    Manifold.pathELength_eq_lintegral_mfderiv_Ioo]
-  apply MeasureTheory.setLIntegral_congr_fun measurableSet_Ioo
-  intro t ht
-  have hγt : MDifferentiableAt 𝓘(Real, Real) I γ t :=
-    ((hγ.mdifferentiableOn one_ne_zero) t
-      ⟨ht.1.le, ht.2.le⟩).mdifferentiableAt
-        (Icc_mem_nhds ht.1 ht.2)
-  have hft : MDifferentiableAt I J f (γ t) :=
-    hf.contMDiff.mdifferentiableAt (by decide)
-  have hcomp :
-      mfderiv 𝓘(Real, Real) J (f ∘ γ) t =
-        (mfderiv I J f (γ t)).comp
-          (mfderiv 𝓘(Real, Real) I γ t) :=
-    mfderiv_comp t hft hγt
-  change
-    ‖mfderiv 𝓘(Real, Real) J (f ∘ γ) t 1‖ₑ =
-      ‖mfderiv 𝓘(Real, Real) I γ t 1‖ₑ
-  rw [hcomp]
-  exact localPull_enorm (I := I) (J := J) g hEnorm f hf (γ t)
-    (mfderiv 𝓘(Real, Real) I γ t 1)
+  apply Manifold.pathELength_comp_eq_of_enorm_mfderiv_eq f
+  · filter_upwards [MeasureTheory.ae_restrict_mem measurableSet_Ioo] with t ht
+    exact ((hγ.mdifferentiableOn one_ne_zero) t ⟨ht.1.le, ht.2.le⟩).mdifferentiableAt
+      (Icc_mem_nhds ht.1 ht.2)
+  · exact Filter.Eventually.of_forall
+      (fun _ => hf.contMDiff.mdifferentiableAt (by decide))
+  · exact Filter.Eventually.of_forall
+      (fun t => localPull_enorm g hEnorm f hf (γ t) _)
 
 end DifferentialGeometry
