@@ -627,3 +627,37 @@ end TimeSobolev
 end Parabolic
 end Analysis
 end DifferentialGeometry
+
+namespace DifferentialGeometry.Analysis.Parabolic.TimeSobolev
+
+variable {X : Type*} [NormedAddCommGroup X] [NormedSpace ℝ X]
+
+theorem integrable_bilinear_clm_apply_right
+    {T : ℝ} (F : ℝ → X →L[ℝ] X →L[ℝ] ℝ)
+    (hF : ∀ x y, AEStronglyMeasurable (fun t => F t x y) (timeMeasure T))
+    {C : ℝ} (hC : ∀ᵐ t ∂timeMeasure T, ‖F t‖ ≤ C)
+    (S : ℝ → X →L[ℝ] X) (hS : ContinuousOn S (Icc (0 : ℝ) T))
+    (L : X →L[ℝ] X) (u v : timeL2 X T) :
+    Integrable (fun t => F t (u t) (S t (L (v t)))) (timeMeasure T) := by
+  let A : ℝ → X →L[ℝ] X →L[ℝ] ℝ := fun t =>
+    (F t).bilinearComp (ContinuousLinearMap.id ℝ X) ((S t).comp L)
+  have hA : ∀ x y, AEStronglyMeasurable (fun t => A t x y) (timeMeasure T) := by
+    intro x y
+    apply AEStronglyMeasurable.clm_apply_of_apply_aestronglyMeasurable
+      (fun t => F t x) (hF x) (fun t => S t (L y))
+    exact (memLp_of_continuousOn (hS.clm_apply continuousOn_const)).aestronglyMeasurable
+  obtain ⟨CS, hCS⟩ := isCompact_Icc.exists_bound_of_continuousOn hS
+  have hb : ∀ᵐ t ∂timeMeasure T, ‖A t‖ ≤ max C 0 * (max CS 0 * ‖L‖) := by
+    filter_upwards [hC, ae_restrict_mem measurableSet_Icc] with t hFt ht
+    dsimp only [A]
+    rw [ContinuousLinearMap.bilinearComp, ContinuousLinearMap.comp_id, ContinuousLinearMap.opNorm_flip]
+    calc
+      _ ≤ ‖(F t).flip‖ * ‖(S t).comp L‖ := ((F t).flip).opNorm_comp_le _
+      _ = ‖F t‖ * ‖(S t).comp L‖ := by rw [ContinuousLinearMap.opNorm_flip]
+      _ ≤ max C 0 * (max CS 0 * ‖L‖) := by
+        apply mul_le_mul (hFt.trans (le_max_left _ _)) _ (norm_nonneg _) (le_max_right _ _)
+        exact ((S t).opNorm_comp_le L).trans
+          (mul_le_mul_of_nonneg_right ((hCS t ht).trans (le_max_left _ _)) (norm_nonneg _))
+  exact MeasureTheory.integrable_bilinear_of_apply_aestronglyMeasurable A hA hb (Lp.memLp u) (Lp.memLp v)
+
+end DifferentialGeometry.Analysis.Parabolic.TimeSobolev

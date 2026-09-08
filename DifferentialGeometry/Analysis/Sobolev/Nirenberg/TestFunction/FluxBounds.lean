@@ -265,7 +265,7 @@ theorem integral_shifted_principal_ge_local
   let C := fun i j => (tsupport η).indicator (translate k h (A i j))
   have hv (i) : MemLp (v i) 2 volume := memLp_cutoff_mul_diffQuot_local hΩ (hg i) hη hηc k h hηs
   have hC (i j) : MemLp (C i j) ∞ volume := memLp_indicator_translate_coeff hηc (hA i j) k h hηs
-  have hpoint (x : E) : lam * ∑ i, (v i x)^2 ≤ ∑ i, ∑ j, C i j x * v i x * v j x := by
+  have hpoint (x : E) : lam * ∑ i, (v i x) ^ 2 ≤ ∑ i, ∑ j, C i j x * v i x * v j x := by
     by_cases hx : η x = 0
     · simp [v, hx]
     have hxs : x ∈ tsupport η := subset_tsupport η hx
@@ -275,7 +275,7 @@ theorem integral_shifted_principal_ge_local
       rw [mem_closedBall, dist_eq_norm, add_sub_cancel_left, norm_smul]
       simp only [PiLp.norm_single, norm_one, mul_one, Real.norm_eq_abs, le_refl]
     simpa only [C, indicator_of_mem hxs, translate] using hcoer _ hshift (fun i => v i x)
-  have heq1 : (fun x => ∑ i, (v i x)^2) = fun x => (η x)^2 * ∑ i, (diffQuot k h (g i) x)^2 := by
+  have heq1 : (fun x => ∑ i, (v i x) ^ 2) = fun x => (η x)^2 * ∑ i, (diffQuot k h (g i) x)^2 := by
     funext x
     simp only [v, mul_pow, Finset.mul_sum]
   have heq2 (i j) : (fun x => C i j x * v i x * v j x) =
@@ -286,23 +286,6 @@ theorem integral_shifted_principal_ge_local
     · simp only [C, indicator_of_mem (subset_tsupport η hx), v]
       ring
   simpa only [heq1, heq2] using integral_sum_quadratic_ge volume C v hv hC hpoint
-
-private theorem memLp_diffQuot_restrict_local
-    {Ω K : Set E} (hΩ : MeasurableSet Ω) (hK : MeasurableSet K) {u : E → ℝ}
-    (hu : MemLp u 2 (volume.restrict Ω)) (k : Fin d) (s : ℝ)
-    (hKΩ : cthickening |s| K ⊆ Ω) : MemLp (diffQuot k s u) 2 (volume.restrict K) := by
-  have hu0 := (memLp_indicator_iff_restrict hΩ).mpr hu
-  apply ((memLp_diffQuot_two k s hu0).restrict K).ae_eq
-  filter_upwards [ae_restrict_mem hK] with x hx
-  by_cases hs : s = 0
-  · simp [hs]
-  have hxΩ := hKΩ (self_subset_cthickening _ hx)
-  have hxshift : x + s • EuclideanSpace.single k (1 : ℝ) ∈ Ω := by
-    apply hKΩ
-    apply closedBall_subset_cthickening hx |s|
-    rw [mem_closedBall, dist_eq_norm, add_sub_cancel_left, norm_smul]
-    simp only [PiLp.norm_single, norm_one, mul_one, Real.norm_eq_abs, le_refl]
-  simp only [diffQuot_apply_of_ne k hs, indicator_of_mem hxΩ, indicator_of_mem hxshift]
 
 private theorem continuousOn_translate_diffQuot
     {Ω K : Set E} {c : E → ℝ} (hc : ContinuousOn c Ω)
@@ -360,7 +343,7 @@ theorem abs_integral_nirenberg_flux_sub_principal_le_local
   have hp := (memLp_cutoff_mul_diffQuot_local hΩ hg hη.continuous hηc k s hηs).restrict K
   have hq := (memLp_cutoff_mul_diffQuot_local hΩ hv hη.continuous hηc k s hηs).restrict K
   have hz := hg.mono_measure (Measure.restrict_mono_set _ hKΩ)
-  have hw := memLp_diffQuot_restrict_local hΩ hK hu k s hηs
+  have hw := memLp_diffQuot_restrict hΩ hK hu k s hηs
   have hi := abs_integral_flux_sub_integral_principal_le
     (hcont.1.aestronglyMeasurable hK) (hcont.2.aestronglyMeasurable hK)
     (hη.continuous.aestronglyMeasurable) (hDη.aestronglyMeasurable)
@@ -417,7 +400,7 @@ theorem abs_integral_nirenberg_lower_order_flux_le_local
   have hcont := continuousOn_translate_diffQuot hc k s hηs
   have hp := (memLp_cutoff_mul_diffQuot_local hΩ hg hη hηc k s hηs).restrict K
   have hz := hg.mono_measure (Measure.restrict_mono_set _ hKΩ)
-  have hw := memLp_diffQuot_restrict_local hΩ hK hu k s hηs
+  have hw := memLp_diffQuot_restrict hΩ hK hu k s hηs
   have hi := abs_integral_lower_order_flux_le
     (hcont.1.aestronglyMeasurable hK) (hcont.2.aestronglyMeasurable hK) hη.aestronglyMeasurable
     hp hz hw
@@ -455,7 +438,7 @@ private theorem integral_cutoff_diffQuot_sq_le_restrict
   rw [heq]
   refine ⟨integral_nonneg (fun x => sq_nonneg _), ?_⟩
   rw [← integral_sq_cutoff_diffQuot_eq_restrict]
-  have hm := memLp_diffQuot_restrict_local hΩ (isClosed_tsupport η).measurableSet hu k s hηs
+  have hm := memLp_diffQuot_restrict hΩ (isClosed_tsupport η).measurableSet hu k s hηs
   apply integral_mono ((memLp_cutoff_mul_diffQuot_local hΩ hu hη hηc k s hηs).restrict _).integrable_sq
     hm.integrable_sq
   intro x

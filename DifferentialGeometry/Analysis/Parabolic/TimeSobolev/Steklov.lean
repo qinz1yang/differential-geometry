@@ -1,3 +1,4 @@
+import DifferentialGeometry.Analysis.Integration.Lp.Steklov
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.TimeH1
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.TimeH1Multiplication
 import Mathlib.MeasureTheory.Function.LpSeminorm.Indicator
@@ -10,23 +11,6 @@ open scoped ENNReal Topology
 namespace DifferentialGeometry.Analysis.Parabolic.TimeSobolev
 
 variable {X : Type*} [NormedAddCommGroup X] [NormedSpace ℝ X]
-
-def steklovAverage (h : ℝ) (f : ℝ → X) (t : ℝ) : X :=
-  h⁻¹ • ∫ s in t..t + h, f s
-
-theorem steklovAverage_congr_ae
-    {f g : ℝ → X} (hfg : f =ᵐ[volume] g) (h t : ℝ) :
-    steklovAverage h f t = steklovAverage h g t := by
-  unfold steklovAverage
-  congr 1
-  exact intervalIntegral.integral_congr_ae (hfg.mono fun _ hx _ => hx)
-
-theorem steklovAverage_comp_continuousLinearMap {Y : Type*} [NormedAddCommGroup Y] [NormedSpace ℝ Y]
-    [CompleteSpace X] [CompleteSpace Y]
-    (L : X →L[ℝ] Y) {f : ℝ → X} {h t : ℝ}
-    (hf : IntervalIntegrable f volume t (t + h)) :
-    steklovAverage h (fun s => L (f s)) t = L (steklovAverage h f t) := by
-  simp only [steklovAverage, map_smul, L.intervalIntegral_comp_comm hf]
 
 theorem exists_timeH1_steklovAverage
     {f : ℝ → X} (hf : MemLp f 2 volume) (h T : ℝ) :
@@ -177,5 +161,113 @@ theorem exists_timeH1_cutoff_steklovAverage_timeL2 [CompleteSpace X]
   · filter_upwards [hwd, hzd, hvd, ae_restrict_mem measurableSet_Icc] with t hwt hzt hvdt ht
     rw [hwt, hzt, hvdt, hz t ht, hv t ht]
   · rw [hw T ⟨hT, le_rfl⟩, hz T ⟨hT, le_rfl⟩, hζT, zero_smul]
+
+end DifferentialGeometry.Analysis.Parabolic.TimeSobolev
+
+namespace DifferentialGeometry.Analysis.Parabolic.TimeSobolev
+
+variable {X : Type*} [NormedAddCommGroup X] {T : ℝ}
+
+def timeL2.zeroExtension (u : timeL2 X T) : Lp X 2 (volume : Measure ℝ) :=
+  ((memLp_indicator_iff_restrict (f := fun t => u t) measurableSet_Icc).mpr
+    (Lp.memLp u)).toLp _
+
+theorem timeL2.coeFn_zeroExtension (u : timeL2 X T) :
+    u.zeroExtension =ᵐ[volume] (Icc (0 : ℝ) T).indicator u := MemLp.coeFn_toLp _
+
+@[simp] theorem timeL2.norm_zeroExtension (u : timeL2 X T) :
+    ‖u.zeroExtension‖ = ‖u‖ := by
+  rw [timeL2.zeroExtension, Lp.norm_toLp, eLpNorm_indicator_eq_eLpNorm_restrict measurableSet_Icc]
+  rfl
+
+variable [NormedSpace ℝ X]
+
+@[simp] theorem timeL2.restrict_zeroExtension (u : timeL2 X T) :
+    LpToLpRestrictCLM ℝ X ℝ volume 2 (Icc (0 : ℝ) T) u.zeroExtension = u := by
+  apply Lp.ext
+  filter_upwards [LpToLpRestrictCLM_coeFn ℝ (Icc (0 : ℝ) T) u.zeroExtension,
+    ae_restrict_of_ae u.coeFn_zeroExtension, ae_restrict_mem measurableSet_Icc] with t h₁ h₂ ht
+  rw [h₁, h₂, indicator_of_mem ht]
+  rfl
+
+def timeL2.steklovAverage (h : ℝ) (u : timeL2 X T) : timeL2 X T :=
+  LpToLpRestrictCLM ℝ X ℝ volume 2 (Icc (0 : ℝ) T) (Lp.steklovAverage h u.zeroExtension)
+
+theorem timeL2.norm_steklovAverage_le (h : ℝ) (u : timeL2 X T) :
+    ‖u.steklovAverage h‖ ≤ ‖u‖ := by
+  calc
+    ‖u.steklovAverage h‖ ≤ ‖Lp.steklovAverage h u.zeroExtension‖ :=
+      norm_Lp_toLp_restrict_le _ _
+    _ ≤ ‖u.zeroExtension‖ := Lp.norm_steklovAverage_le h _
+    _ = ‖u‖ := u.norm_zeroExtension
+
+variable [CompleteSpace X]
+
+theorem timeL2.tendsto_steklovAverage (u : timeL2 X T) :
+    Tendsto (fun h => u.steklovAverage h) (𝓝[≠] 0) (𝓝 u) := by
+  have hc := (LpToLpRestrictCLM ℝ X ℝ volume 2 (Icc (0 : ℝ) T)).continuous.tendsto u.zeroExtension
+  have h := hc.comp (Lp.tendsto_steklovAverage u.zeroExtension)
+  rw [u.restrict_zeroExtension] at h
+  exact h
+
+end DifferentialGeometry.Analysis.Parabolic.TimeSobolev
+
+namespace DifferentialGeometry.Analysis.Parabolic.TimeSobolev
+
+variable {X : Type*} [NormedAddCommGroup X] [NormedSpace ℝ X] [CompleteSpace X] {T : ℝ}
+
+theorem timeL2.coeFn_steklovAverage (h : ℝ) (u : timeL2 X T) :
+    u.steklovAverage h =ᵐ[timeMeasure T]
+      fun t => DifferentialGeometry.Analysis.Parabolic.TimeSobolev.steklovAverage h ((Icc (0 : ℝ) T).indicator u) t := by
+  filter_upwards [LpToLpRestrictCLM_coeFn ℝ (Icc (0 : ℝ) T)
+    (Lp.steklovAverage h u.zeroExtension),
+    ae_restrict_of_ae (Lp.coeFn_steklovAverage h u.zeroExtension)] with t hrestrict havg
+  change (LpToLpRestrictCLM ℝ X ℝ volume 2 (Icc (0 : ℝ) T)
+    (Lp.steklovAverage h u.zeroExtension)) t = _
+  rw [hrestrict, havg]
+  exact steklovAverage_congr_ae u.coeFn_zeroExtension h t
+
+end DifferentialGeometry.Analysis.Parabolic.TimeSobolev
+
+namespace DifferentialGeometry.Analysis.Parabolic.TimeSobolev
+
+variable {X : Type*} [NormedAddCommGroup X] [NormedSpace ℝ X] [CompleteSpace X] {T h : ℝ}
+
+theorem timeH1.toFunL2_eq_steklovAverage (u : timeL2 X T) (w : timeH1 X T)
+    (hw : ∀ t ∈ Icc (0 : ℝ) T,
+      w.toFun t = steklovAverage h ((Icc (0 : ℝ) T).indicator u) t) :
+    w.toFunL2 = u.steklovAverage h := by
+  apply Lp.ext
+  filter_upwards [coeFn_ofContinuousOn w.continuousOn_toFun,
+    timeL2.coeFn_steklovAverage h u, ae_restrict_mem measurableSet_Icc] with t hwt hut ht
+  exact hwt.trans ((hw t ht).trans hut.symm)
+
+theorem timeH1.norm_toFunL2_le_of_steklovAverage (u : timeL2 X T) (w : timeH1 X T)
+    (hw : ∀ t ∈ Icc (0 : ℝ) T,
+      w.toFun t = steklovAverage h ((Icc (0 : ℝ) T).indicator u) t) :
+    ‖w.toFunL2‖ ≤ ‖u‖ := by
+  rw [w.toFunL2_eq_steklovAverage u hw]
+  exact u.norm_steklovAverage_le h
+
+theorem tendsto_toFunL2_steklovAverage (u : timeL2 X T) (w : ℝ → timeH1 X T)
+    (hw : ∀ h t, t ∈ Icc (0 : ℝ) T →
+      (w h).toFun t = steklovAverage h ((Icc (0 : ℝ) T).indicator u) t) :
+    Tendsto (fun h => (w h).toFunL2) (𝓝[≠] 0) (𝓝 u) := by
+  have heq : (fun h => (w h).toFunL2) = (fun h => u.steklovAverage h) :=
+    funext fun h => (w h).toFunL2_eq_steklovAverage u (hw h)
+  rw [heq]
+  exact u.tendsto_steklovAverage
+
+theorem exists_timeH1_steklovAverage_timeL2_tendsto (u : timeL2 X T) :
+    ∃ w : ℝ → timeH1 X T,
+      (∀ h t, t ∈ Icc (0 : ℝ) T →
+        (w h).toFun t = steklovAverage h ((Icc (0 : ℝ) T).indicator u) t) ∧
+      (∀ h, (w h).deriv =ᵐ[timeMeasure T] (fun t => h⁻¹ •
+        ((Icc (0 : ℝ) T).indicator u (t + h) - (Icc (0 : ℝ) T).indicator u t))) ∧
+      (∀ h, ‖(w h).toFunL2‖ ≤ ‖u‖) ∧
+      Tendsto (fun h => (w h).toFunL2) (𝓝[≠] 0) (𝓝 u) := by
+  choose w hw hwd using exists_timeH1_steklovAverage_timeL2 u
+  exact ⟨w, hw, hwd, fun h => (w h).norm_toFunL2_le_of_steklovAverage u (hw h),
+    tendsto_toFunL2_steklovAverage u w hw⟩
 
 end DifferentialGeometry.Analysis.Parabolic.TimeSobolev
