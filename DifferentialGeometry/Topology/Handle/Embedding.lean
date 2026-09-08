@@ -1,4 +1,7 @@
 import DifferentialGeometry.Topology.Handle.Manifold
+import DifferentialGeometry.Topology.Embedding.Diffeomorph
+import DifferentialGeometry.Topology.Embedding.LinearEquiv
+import DifferentialGeometry.Topology.Embedding.Sphere
 import Mathlib.Geometry.Manifold.Diffeomorph
 import Mathlib.Geometry.Manifold.SmoothEmbedding
 
@@ -224,6 +227,87 @@ theorem closedCellInclusion_isSmoothEmbedding :
   rw [hval]
   rw [(chartAt (EuclideanHalfSpace (m + 1)) x).right_inv htarget.1]
   exact congrArg Subtype.val (modelWithCornersEuclideanHalfSpace_symm_range y htarget.2)
+
+attribute [local instance] closedCellChartedSpace
+
+theorem exists_closedCellChart_extension (l : ℕ) [NeZero l] (x : ClosedCell l) :
+    ∃ b : OpenPartialHomeomorph (EuclideanSpace ℝ (Fin l))
+        (EuclideanSpace ℝ (Fin ((l - 1) + 1))),
+      ContDiffOn ℝ ∞ b b.source ∧ ContDiffOn ℝ ∞ b.symm b.target ∧
+      x.val ∈ b.source ∧
+      ∀ u : ClosedCell l, b u.val =
+        (chartAt (EuclideanHalfSpace ((l - 1) + 1)) x u).val := by
+  classical
+  let _ : ChartedSpace (EuclideanHalfSpace ((l - 1) + 1))
+      (ClosedCell ((l - 1) + 1)) := closedCellChartedSpaceSucc (l - 1)
+  let r := closedCellReindexHomeo l
+  let e := (closedCellReindex l).toContinuousLinearEquiv
+  obtain ⟨c, hc, hx, hval⟩ := closedCellChart_ambient_extension (l - 1) (r x)
+  let b := e.toHomeomorph.toOpenPartialHomeomorph.trans c
+  have hsource : b.source = e ⁻¹' c.source := by simp [b]
+  have htarget : b.target = c.target := by simp [b]
+  refine ⟨b, ?_, ?_, ?_, ?_⟩
+  · change ContDiffOn ℝ ∞ (c ∘ e) b.source
+    apply ((contMDiffOn_iff_contDiffOn).1
+      (contMDiffOn_of_mem_maximalAtlas hc)).comp e.contDiff.contDiffOn
+    intro y hy
+    simpa only [hsource, Set.mem_preimage] using hy
+  · change ContDiffOn ℝ ∞ (e.symm ∘ c.symm) b.target
+    rw [htarget]
+    exact e.symm.contDiff.comp_contDiffOn
+      ((contMDiffOn_iff_contDiffOn).1 (contMDiffOn_symm_of_mem_maximalAtlas hc))
+  · rw [hsource]
+    exact hx
+  · intro u
+    change c (r u).val =
+      (chartAt (EuclideanHalfSpace ((l - 1) + 1)) (r x) (r u)).val
+    exact hval (r u)
+
+theorem isSmoothEmbedding_coe_cellBoundary (k : ℕ) [NeZero k] :
+    Manifold.IsSmoothEmbedding (𝓡 (k - 1)) (𝓡 k) ∞
+      (Subtype.val : CellBoundary k → EuclideanSpace ℝ (Fin k)) := by
+  exact (isSmoothEmbedding_coe_sphere (E := EuclideanSpace ℝ (Fin k))
+    (n := k - 1)).comp_diffeomorph (cellBoundarySphereDiffeomorph k)
+
+theorem isSmoothEmbedding_coe_closedCell (l : ℕ) [NeZero l] :
+    Manifold.IsSmoothEmbedding (modelWithCornersEuclideanHalfSpace ((l - 1) + 1))
+      (𝓡 l) ∞ (Subtype.val : ClosedCell l → EuclideanSpace ℝ (Fin l)) := by
+  let _ : ChartedSpace (EuclideanHalfSpace ((l - 1) + 1))
+      (ClosedCell ((l - 1) + 1)) := closedCellChartedSpaceSucc (l - 1)
+  let _ : IsManifold (modelWithCornersEuclideanHalfSpace ((l - 1) + 1)) ∞
+      (ClosedCell ((l - 1) + 1)) := closedCellIsManifold (l - 1)
+  let _ : IsManifold (modelWithCornersEuclideanHalfSpace ((l - 1) + 1)) ∞
+      (ClosedCell l) := isManifoldOfHomeomorph
+        (modelWithCornersEuclideanHalfSpace ((l - 1) + 1)) (closedCellReindexHomeo l)
+  let r : Diffeomorph (modelWithCornersEuclideanHalfSpace ((l - 1) + 1))
+      (modelWithCornersEuclideanHalfSpace ((l - 1) + 1))
+      (ClosedCell l) (ClosedCell ((l - 1) + 1)) ∞ :=
+    { toEquiv := (closedCellReindexHomeo l).toEquiv
+      contMDiff_toFun := contMDiff_homeomorph_of_chartedSpaceOfHomeomorph
+        (closedCellReindexHomeo l) _ _
+      contMDiff_invFun := contMDiff_homeomorph_symm_of_chartedSpaceOfHomeomorph
+        (closedCellReindexHomeo l) _ _ }
+  have h := (closedCellInclusion_isSmoothEmbedding (l - 1)).comp_diffeomorph r
+  have h' := h.continuousLinearEquiv_comp (closedCellReindex l).symm.toContinuousLinearEquiv
+  refine ⟨h'.isImmersion.congr ?_, .subtypeVal⟩
+  funext x
+  exact (closedCellReindex l).symm_apply_apply x.val
+
+theorem attachingRegionInclusion_isSmoothEmbedding (k l : ℕ) [NeZero k] [NeZero l] :
+    Manifold.IsSmoothEmbedding
+      ((𝓡 (k - 1)).prod (modelWithCornersEuclideanHalfSpace ((l - 1) + 1)))
+      ((𝓡 k).prod (𝓡 l)) ∞
+      (fun p : AttachingRegion k l =>
+        ((p.1 : EuclideanSpace ℝ (Fin k)), (p.2 : EuclideanSpace ℝ (Fin l)))) := by
+  let _ : ChartedSpace (EuclideanHalfSpace ((l - 1) + 1))
+      (ClosedCell ((l - 1) + 1)) := closedCellChartedSpaceSucc (l - 1)
+  let _ : IsManifold (modelWithCornersEuclideanHalfSpace ((l - 1) + 1)) ∞
+      (ClosedCell ((l - 1) + 1)) := closedCellIsManifold (l - 1)
+  let _ : IsManifold (modelWithCornersEuclideanHalfSpace ((l - 1) + 1)) ∞
+      (ClosedCell l) := isManifoldOfHomeomorph
+        (modelWithCornersEuclideanHalfSpace ((l - 1) + 1)) (closedCellReindexHomeo l)
+  exact (isSmoothEmbedding_coe_cellBoundary k).prodMap
+    (isSmoothEmbedding_coe_closedCell l)
 
 end
 

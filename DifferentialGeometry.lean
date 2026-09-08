@@ -41,6 +41,7 @@ import DifferentialGeometry.Analysis.Calculus.SmoothExtension.JetGlueParam
 import DifferentialGeometry.Analysis.Calculus.SmoothExtension.JetPartialDeriv
 import DifferentialGeometry.Analysis.Calculus.SmoothExtension.Local
 import DifferentialGeometry.Analysis.Calculus.SmoothExtension.SmoothJetGlue
+import DifferentialGeometry.Analysis.Calculus.SmoothTransition
 import DifferentialGeometry.Analysis.Calculus.SpaceJet
 import DifferentialGeometry.Analysis.Calculus.SpectralEigenSeriesJointGramProjectionJetBound
 import DifferentialGeometry.Analysis.Calculus.Taylor
@@ -3140,8 +3141,13 @@ import DifferentialGeometry.Topology.Covering.SemilocallySimplyConnected
 import DifferentialGeometry.Topology.SigmaCompactOpen
 import DifferentialGeometry.Topology.StandardModel
 import DifferentialGeometry.Topology.ThreeManifold.Closed
+import DifferentialGeometry.Topology.Diffeomorph.Fiberwise
 import DifferentialGeometry.Topology.Diffeomorph.Graph
+import DifferentialGeometry.Topology.Diffeomorph.Perturbation
+import DifferentialGeometry.Topology.Diffeomorph.Radial
 import DifferentialGeometry.Topology.Embedding.Diffeomorph
+import DifferentialGeometry.Topology.Embedding.LinearEquiv
+import DifferentialGeometry.Topology.Embedding.LocalDiffeomorph
 import DifferentialGeometry.Topology.Embedding.Sphere
 import DifferentialGeometry.Topology.Handle.Embedding
 import DifferentialGeometry.Topology.ThreeManifold.schoenflies
@@ -3181,6 +3187,7 @@ import DifferentialGeometry.Topology.Morse.LevelSet
 import DifferentialGeometry.Topology.Morse.LocalNormalForm
 import DifferentialGeometry.Topology.Morse.Manifold
 import DifferentialGeometry.Topology.Morse.ManifoldCellAttachment
+import DifferentialGeometry.Topology.Morse.HandleEmbedding
 import DifferentialGeometry.Topology.Morse.ModifiedFunction
 import DifferentialGeometry.Topology.Morse.MorseLemma
 import DifferentialGeometry.Topology.Morse.NoCriticalValues
