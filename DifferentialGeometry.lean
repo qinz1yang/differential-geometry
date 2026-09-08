@@ -4810,3 +4810,7 @@ import DifferentialGeometry.Analysis.Sobolev.Euclidean.WeakPartialUniqueness
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.MaximalRegularity.Inclusion
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.TimeOperatorNaturality
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.WeakTimeDerivativeBound
+import DifferentialGeometry.Topology.PuncturedConnected
+import DifferentialGeometry.Topology.Manifold.PuncturedConnected
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.RicciFlat
+import DifferentialGeometry.Geometry.Comparison.SurfaceCurvatureDecay
