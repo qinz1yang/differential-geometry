@@ -19,7 +19,7 @@ open DifferentialGeometry.Tensor0SBundle
 
 variable {E : Type uE} [NormedAddCommGroup E] [NormedSpace Real E]
 variable [FiniteDimensional Real E]
-variable [NeZero (Module.finrank Real E)] [CompleteSpace E]
+variable [NeZero (Module.finrank Real E)]
 variable {H : Type uH} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 
@@ -29,7 +29,6 @@ omit [NeZero (Module.finrank ℝ E)] in
 omit [I.Boundaryless] in
 theorem tensor02CovDeriv_metric_eq_zero {M' : Type u} [TopologicalSpace M'] [ChartedSpace H M']
     [IsManifold I ∞ M'] [T2Space M']
-    [IsManifold I 1 M'] [IsManifold I ((∞ : WithTop ℕ∞) + 1) M']
     (g : SmoothRiemannianMetric I M') (a : ℕ) :
     tensor02CovDeriv (I := I) (Tensor0SBundle.metricTensorField (I := I) g) g (a + 1) = 0 := by
   rw [tensor02_cov_deriv_eq_cov_deriv_of_field, covDerivOfField_eq_iterCov, iterCov_metric_zero,
@@ -39,12 +38,10 @@ omit [NeZero (Module.finrank ℝ E)] in
 omit [I.Boundaryless] in
 theorem partial_diffeomorph_metric_approximation_bounds_refl
     {M' : Type u} [TopologicalSpace M'] [ChartedSpace H M']
-    [IsManifold I ∞ M'] [T2Space M'] [SigmaCompactSpace M']
-    [IsManifold I 1 M'] [IsManifold I ((∞ : WithTop ℕ∞) + 1) M']
+    [IsManifold I ∞ M'] [T2Space M']
     (K : Set M') (g : SmoothRiemannianMetric I M') (p : ℕ) :
     Nonempty (PartialDiffeomorphMetricApproximationBounds (I := I) K 0 0 p
       (PartialDiffeomorph.refl (I := I) M') g g) := by
-  let _ := (inferInstance : (SigmaCompactSpace M'))
   classical
   have hcoe : ∀ x : M', (PartialDiffeomorph.refl (I := I) M' : M' → M') x = x := fun _ => rfl
   have hmfd : ∀ x : M', mfderiv I I (PartialDiffeomorph.refl (I := I) M' : M' → M') x
@@ -113,8 +110,7 @@ omit [NeZero (Module.finrank ℝ E)] in
 omit [I.Boundaryless] in
 theorem partial_diffeomorph_metric_approximation_refl
     {M' : Type u} [TopologicalSpace M'] [ChartedSpace H M']
-    [IsManifold I ∞ M'] [T2Space M'] [SigmaCompactSpace M']
-    [IsManifold I 1 M'] [IsManifold I ((∞ : WithTop ℕ∞) + 1) M']
+    [IsManifold I ∞ M'] [T2Space M']
     (K : Set M') (g : SmoothRiemannianMetric I M') (ε : ℝ) (hε : 0 < ε) (hε1 : ε < 1) (p : ℕ) :
     Nonempty (PartialDiffeomorphMetricApproximation (I := I) K ε p
       (PartialDiffeomorph.refl (I := I) M') g g) := by
