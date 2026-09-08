@@ -225,7 +225,8 @@ private theorem hamilton_harnack_block_evolution_of_pulled_test_jets
     (horth : ∀ i j, gSource.inner x (basis i) (basis j) = if i = j then 1 else 0)
     (U : ℝ → Tensor0SField (I := I) (M := M) (n := ∞) 2)
     (W : ℝ → Tensor0SField (I := I) (M := M) (n := ∞) 1)
-    (hskew : ∀ r y X Y, U r y ![X, Y] = -U r y ![Y, X])
+    (hskew : ∀ X Y : TangentSpace I x,
+      U clock.time x ![X, Y] = -U clock.time x ![Y, X])
     (φ : ℝ → ∀ y, TangentSpace I y ≃L[ℝ] TangentSpace I y)
     (hφ : ContMDiff I (I.prod 𝓘(ℝ, E →L[ℝ] E)) 1
       (fun y => (⟨y, (φ clock.time y).toContinuousLinearMap⟩ :
@@ -307,14 +308,11 @@ private theorem hamilton_harnack_block_evolution_of_pulled_test_jets
   obtain ⟨hDW', hDU', hUt', hWt'⟩ := hamilton_test_jets_of_pullback gSource
     (S.family.metric clock.time) x clock.elapsed (metricRicci (S.family.metric clock.time) x)
     U W φ hφ hiso hode hDW hDU hUt hWt
-  let Ualt := fun r y => HamiltonHarnackTwoForm.ofTensor0S (I := I) (U r y) (hskew r y)
-  have hUalt : ∀ r y, (Ualt r y).toTensor0S = U r y := fun r y =>
-    HamiltonHarnackTwoForm.toTensor0S_ofTensor0S (I := I) (U r y) (hskew r y)
   let B := basis.map (φ clock.time x).toLinearEquiv
   have hB : ∀ i j, (S.base.metric clock.time).inner x (B i) (B j) = if i = j then 1 else 0 :=
     fun i j => (hiso (basis i) (basis j)).trans (horth i j)
-  exact hamilton_harnack_block_exact_evolution_of_test_jet S hS clock ht x B hB
-    Ualt U W hUalt hDW' hDU' hUt' hWt'
+  exact hamilton_harnack_block_exact_evolution_of_tensor_test_jet S hS clock ht x B hB
+    U W hskew hDW' hDU' hUt' hWt'
 
 private theorem hamilton_block_tensor_contraction_pullback {x y : M}
     (gSource gTarget : SmoothMetricGen I M)
@@ -349,7 +347,8 @@ theorem hamilton_harnack_block_evolution_pullback
     (horth : ∀ i j, gSource.inner x (basis i) (basis j) = if i = j then 1 else 0)
     (U : ℝ → Tensor0SField (I := I) (M := M) (n := ∞) 2)
     (W : ℝ → Tensor0SField (I := I) (M := M) (n := ∞) 1)
-    (hskew : ∀ r y X Y, U r y ![X, Y] = -U r y ![Y, X])
+    (hskew : ∀ X Y : TangentSpace I x,
+      U clock.time x ![X, Y] = -U clock.time x ![Y, X])
     (φ : ℝ → ∀ y, TangentSpace I y ≃L[ℝ] TangentSpace I y)
     (hφ : ContMDiff I (I.prod 𝓘(ℝ, E →L[ℝ] E)) 1
       (fun y => (⟨y, (φ clock.time y).toContinuousLinearMap⟩ :
@@ -633,13 +632,15 @@ theorem exists_uhlenbeck_isometry_with_hamilton_block_evolution [I.Boundaryless]
           (ι clock.time x v)) clock.time := by
     intro v
     simpa only [hRicEnd] using (hode x v clock.time ht).hasDerivAt hnhds
-  have horigSkew (r : ℝ) (y : M) (X Y : TangentSpace I y) : U r y ![X, Y] = -U r y ![Y, X] := by
-    have h := hskew r y ((ι r y).symm X) ((ι r y).symm Y)
+  have horigSkew (X Y : TangentSpace I x) :
+      U clock.time x ![X, Y] = -U clock.time x ![Y, X] := by
+    have h := hskew clock.time x ((ι clock.time x).symm X) ((ι clock.time x).symm Y)
     simp only [tensor0SPullbackCLE_apply, tensor0SPullbackCLM_apply] at h
-    have hv (A B : TangentSpace I y) :
-        (fun q => (ι r y).toLinearEquiv (![(ι r y).symm A, (ι r y).symm B] q)) = ![A, B] := by
+    have hv (A B : TangentSpace I x) :
+        (fun q => (ι clock.time x).toLinearEquiv
+          (![(ι clock.time x).symm A, (ι clock.time x).symm B] q)) = ![A, B] := by
       funext q
-      fin_cases q <;> exact (ι r y).apply_symm_apply _
+      fin_cases q <;> exact (ι clock.time x).apply_symm_apply _
     simpa only [hv] using h
   apply hamilton_harnack_block_evolution_pullback S hS clock (hJD ht) gSource hnhds
     x basis horth U W horigSkew ι hι hiso hRicODE hDW
@@ -651,5 +652,162 @@ theorem exists_uhlenbeck_isometry_with_hamilton_block_evolution [I.Boundaryless]
     exact (hUt v).hasDerivAt hnhds
   · intro v
     exact (hWt v).hasDerivAt hnhds
+
+theorem exists_uhlenbeck_isometry_with_hamilton_block_heat_nonneg [I.Boundaryless] [T2Space M]
+    {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D)
+    (hS : IsSolutionOn S)
+    {J : Set ℝ} {s : ℝ} (hJ : J.OrdConnected) (hs : s ∈ J)
+    (hJD : J ⊆ D.regular)
+    (gSource : SmoothRiemannianMetric I M)
+    (ι₀ : ∀ x : M, TangentSpace I x ≃L[ℝ] TangentSpace I x)
+    (hι₀ : ContMDiff I (I.prod 𝓘(ℝ, E →L[ℝ] E)) ∞
+      (fun x => (⟨x, (ι₀ x).toContinuousLinearMap⟩ :
+        TotalSpace (E →L[ℝ] E)
+          (fun x : M => TangentSpace I x →L[ℝ] TangentSpace I x))))
+    (h₀ : ∀ x v w, (S.family.metric s).inner x (ι₀ x v) (ι₀ x w) =
+      gSource.inner x v w) :
+    ∃ ι : ℝ → ∀ x : M, TangentSpace I x ≃L[ℝ] TangentSpace I x,
+      (∀ x, ι s x = ι₀ x) ∧
+      ContMDiffOn (𝓘(ℝ, ℝ).prod I) (I.prod 𝓘(ℝ, E →L[ℝ] E)) ∞
+        (fun p : ℝ × M => (⟨p.2, (ι p.1 p.2).toContinuousLinearMap⟩ :
+          TotalSpace (E →L[ℝ] E)
+            (fun x : M => TangentSpace I x →L[ℝ] TangentSpace I x)))
+        (J ×ˢ (Set.univ : Set M)) ∧
+      ContMDiffOn (𝓘(ℝ, ℝ).prod I) (I.prod 𝓘(ℝ, E →L[ℝ] E)) ∞
+        (fun p : ℝ × M => (⟨p.2, (ι p.1 p.2).symm.toContinuousLinearMap⟩ :
+          TotalSpace (E →L[ℝ] E)
+            (fun x : M => TangentSpace I x →L[ℝ] TangentSpace I x)))
+        (J ×ˢ (Set.univ : Set M)) ∧
+      (∀ x v, ∀ t ∈ J, HasDerivWithinAt (fun r => ι r x v)
+        (ricciSharp (S.family.metric t) x (ι t x v)) J t) ∧
+      (∀ t ∈ J, ∀ x v w,
+        (S.family.metric t).inner x (ι t x v) (ι t x w) = gSource.inner x v w) ∧
+      ∀ (clock : HarnackClock) (_ : clock.time ∈ J) (x : M)
+        (U₀ : HamiltonHarnackTwoForm (TangentSpace I x))
+        (W₀ : StrongDual ℝ (TangentSpace I x)),
+        ∃ (U : ℝ → Tensor0SField (I := I) (M := M) (n := ∞) 2)
+          (W : ℝ → Tensor0SField (I := I) (M := M) (n := ∞) 1)
+          (hι : ContMDiff I (I.prod 𝓘(ℝ, E →L[ℝ] E)) 1
+            (fun y => (⟨y, (ι clock.time y).toContinuousLinearMap⟩ :
+              TotalSpace (E →L[ℝ] E)
+                (fun y : M => TangentSpace I y →L[ℝ] TangentSpace I y)))),
+          let g := S.family.metric clock.time
+          let cov := CovariantDerivative.pullbackFiberwiseLinearEquiv
+            (fun y => (ι clock.time y).toLinearEquiv) hι.clm_bundle_map (LeviCivita g)
+          let fixedU := fun r y => tensor0SPullbackCLE 2 (ι r y).toLinearEquiv (U r y)
+          let fixedW := fun r y => tensor0SPullbackCLE 1 (ι r y).toLinearEquiv (W r y)
+          let fixedRic := tensor0SPullbackCLE 2 (ι clock.time x).toLinearEquiv (metricRicci g x)
+          ContMDiffOn (𝓘(ℝ, ℝ).prod I) (I.prod 𝓘(ℝ, Tensor0SModel 2 ℝ E)) ∞
+            (fun p : ℝ × M => (⟨p.2, fixedU p.1 p.2⟩ :
+              TotalSpace (Tensor0SModel 2 ℝ E) (fun y : M => Tensor0SSpace 2 I y)))
+            (J ×ˢ Set.univ) ∧
+          ContMDiffOn (𝓘(ℝ, ℝ).prod I) (I.prod 𝓘(ℝ, Tensor0SModel 1 ℝ E)) ∞
+            (fun p : ℝ × M => (⟨p.2, fixedW p.1 p.2⟩ :
+              TotalSpace (Tensor0SModel 1 ℝ E) (fun y : M => Tensor0SSpace 1 I y)))
+            (J ×ˢ Set.univ) ∧
+          (∀ r y X Y, fixedU r y ![X, Y] = -fixedU r y ![Y, X]) ∧
+          fixedU clock.time x = U₀.toTensor0S ∧
+          (∀ X, fixedW clock.time x (fun _ => X) = W₀ X) ∧
+          (∀ X Y,
+            cov.multilinear 1 (fixedW clock.time) x (ι clock.time x X) (fun _ => Y) = 0) ∧
+          (∀ X Y Z,
+            cov.multilinear 2 (fixedU clock.time) x (ι clock.time x X) (vec2 Y Z) =
+              (1 / 2 : ℝ) * (fixedRic ![X, Y] * W₀ Z - fixedRic ![X, Z] * W₀ Y) +
+              (1 / (4 * clock.elapsed) : ℝ) *
+                (gSource.inner x X Y * W₀ Z - gSource.inner x X Z * W₀ Y)) ∧
+          (∀ v, HasDerivWithinAt (fun r => fixedU r x v)
+            (rawBundleConnLap g (cov.multilinear 2) (fixedU clock.time) x v) J clock.time) ∧
+          (∀ v, HasDerivWithinAt (fun r => fixedW r x v)
+            (rawBundleConnLap g (cov.multilinear 1) (fixedW clock.time) x v +
+              (1 / clock.elapsed : ℝ) * fixedW clock.time x v) J clock.time) ∧
+          (J ∈ nhds clock.time →
+            ContMDiffAt (𝓘(ℝ, ℝ).prod I) (I.prod 𝓘(ℝ, Tensor0SModel 2 ℝ E)) ∞
+              (fun p : ℝ × M => (⟨p.2, fixedU p.1 p.2⟩ :
+                TotalSpace (Tensor0SModel 2 ℝ E) (fun y : M => Tensor0SSpace 2 I y)))
+              (clock.time, x) ∧
+            ContMDiffAt (𝓘(ℝ, ℝ).prod I) (I.prod 𝓘(ℝ, Tensor0SModel 1 ℝ E)) ∞
+              (fun p : ℝ × M => (⟨p.2, fixedW p.1 p.2⟩ :
+                TotalSpace (Tensor0SModel 1 ℝ E) (fun y : M => Tensor0SSpace 1 I y)))
+              (clock.time, x) ∧
+            (∀ v, HasDerivAt (fun r => fixedU r x v)
+              (rawBundleConnLap g (cov.multilinear 2) (fixedU clock.time) x v) clock.time) ∧
+            (∀ v, HasDerivAt (fun r => fixedW r x v)
+              (rawBundleConnLap g (cov.multilinear 1) (fixedW clock.time) x v +
+                (1 / clock.elapsed : ℝ) * fixedW clock.time x v) clock.time) ∧
+            (∀ v, deriv (fun r => fixedU r x v) clock.time -
+                rawBundleConnLap g (cov.multilinear 2) (fixedU clock.time) x v = 0) ∧
+            ∀ v, deriv (fun r => fixedW r x v) clock.time -
+                rawBundleConnLap g (cov.multilinear 1) (fixedW clock.time) x v =
+                  (1 / clock.elapsed : ℝ) * fixedW clock.time x v) ∧
+          (J ∈ nhds clock.time → ∀
+            (_ : ∀ (U : HamiltonHarnackTwoForm (TangentSpace I x))
+              (W : Tensor0SSpace 1 I x),
+              0 ≤ hamiltonHarnackQuadraticAt (I := I) S clock x U W),
+              let q := fun r y =>
+                inner0S gSource y 4
+                    (tensor0SPullbackCLE 4 (ι r y).toLinearEquiv
+                      (Tensor0SField.domDomCongr ∞ curvatureSlotSwap (S.base.rm04 r) y))
+                    ((tensor0SPullbackCLE 2 (ι r y).toLinearEquiv (U r y)).product
+                      (tensor0SPullbackCLE 2 (ι r y).toLinearEquiv (U r y))) +
+                  2 * inner0S gSource y 3
+                    (tensor0SPullbackCLE 3 (ι r y).toLinearEquiv (hamiltonPField (S.base.metric r) y))
+                    ((tensor0SPullbackCLE 2 (ι r y).toLinearEquiv (U r y)).product
+                      (tensor0SPullbackCLE 1 (ι r y).toLinearEquiv (W r y))) +
+                  inner0S gSource y 2
+                    (tensor0SPullbackCLE 2 (ι r y).toLinearEquiv
+                      (hamiltonMOriginField clock.origin r (S.base.metric r) y))
+                    ((tensor0SPullbackCLE 1 (ι r y).toLinearEquiv (W r y)).product
+                      (tensor0SPullbackCLE 1 (ι r y).toLinearEquiv (W r y)))
+              HasDerivAt (fun r : Real => q r x)
+                  (deriv (fun r : Real => q r x) clock.time) clock.time ∧
+                0 ≤ deriv (fun r : Real => q r x) clock.time -
+                  laplacianAt (I := I) (flowG (I := I) S) clock.time (q clock.time) x) := by
+  obtain ⟨ι, hinit, hjoint, hinv, hode, hiso, hjets⟩ :=
+    exists_uhlenbeck_isometry_with_hamilton_block_evolution
+      S hS hJ hs hJD gSource ι₀ hι₀ h₀
+  refine ⟨ι, hinit, hjoint, hinv, hode, hiso, ?_⟩
+  intro clock ht x U₀ W₀
+  obtain ⟨U, W, hι, hUjoint, hWjoint, hskew, hU, hW, hDW, hDU, hUt, hWt,
+      hlocal, hevo⟩ := hjets clock ht x U₀ W₀
+  refine ⟨U, W, hι, ?_⟩
+  dsimp only
+  refine ⟨hUjoint, hWjoint, hskew, hU, hW, hDW, hDU, hUt, hWt, hlocal, ?_⟩
+  intro hnhds hnonneg
+  classical
+  obtain ⟨basis, horth⟩ := exists_gOrthonormalBasis (I := I) gSource x
+  let n := Module.finrank ℝ (TangentSpace I x)
+  obtain ⟨hqd, hqheat⟩ := hevo hnhds n basis horth
+  refine ⟨hqd, ?_⟩
+  rw [hqheat]
+  let B := basis.map (ι clock.time x).toLinearEquiv
+  have hB : ∀ i j, (S.base.metric clock.time).inner x (B i) (B j) =
+      if i = j then 1 else 0 :=
+    fun i j => (hiso clock.time ht x (basis i) (basis j)).trans (horth i j)
+  have hM : hamiltonMOriginField clock.origin clock.time (S.base.metric clock.time) x =
+      hamiltonMAt clock (S.base.metric clock.time) x := by
+    rw [hamiltonMOriginField_apply]
+    exact (hamiltonMAt_eq_hamiltonDivPAt_add S hS clock (hJD ht) x).symm
+  have hUc (a b : Fin n) :
+      U clock.time x (vec2 (B a) (B b)) = -U clock.time x (vec2 (B b) (B a)) := by
+    have h := hskew clock.time x (basis a) (basis b)
+    simp only [tensor0SPullbackCLE_apply, tensor0SPullbackCLM_apply] at h
+    have hv (a b : Fin n) :
+        (fun q => (ι clock.time x).toLinearEquiv (![basis a, basis b] q)) =
+          vec2 (B a) (B b) := by
+      funext q
+      fin_cases q <;> rfl
+    simpa only [hv] using h
+  have hreaction := hamiltonBlockJ_add_sigmaSquare_nonneg_of_harnack_nonneg S clock (hJD ht) x
+    B hB hnonneg (fun a b => U clock.time x (vec2 (B a) (B b)))
+      (fun a => W clock.time x (fun _ : Fin 1 => B a)) hUc
+  have hv2 (X Y : TangentSpace I x) : vec2 X Y = ![X, Y] := by
+    funext q
+    fin_cases q <;> rfl
+  have hv3 (X Y Z : TangentSpace I x) : vec3 X Y Z = ![X, Y, Z] := by
+    funext q
+    fin_cases q <;> rfl
+  have hBapply (a : Fin n) : B a = ι clock.time x (basis a) := rfl
+  simpa only [hM, hamiltonPField_apply, tensor04StdAt_apply, hBapply,
+    hv2, hv3] using hreaction
 
 end DifferentialGeometry.PDE.RicciFlow

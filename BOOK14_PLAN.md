@@ -10,6 +10,8 @@ Each inventory row must eventually identify the exact fully qualified Lean decla
 
 ## Active continuation
 
+The intrinsic Harnack positivity hypothesis now yields nonnegativity of the actual fixed-metric scalar heat operator for the same produced Uhlenbeck family and realized tensor tests. Initial maps, joint forward/inverse regularity and all four test jets remain visible. The exact evolution primary needs skewness only at the contact point, and the established alternating-field interface is a corollary. Both modules pass the 11187-job affected named build, root complete declaration/foundational-axiom audits and a formal-import consumer. The general spacetime perturbed evolution source row remains open.
+
 The three-dimensional shrinker anisotropy source identity is accepted. The actual soliton equation and positive sectional curvature give the literal quotient drift identity, the true derivative-slot coupling and the normalized curvature reaction sum of squares. Independent formal consumers include repeated and distinct eigenvalues and the actual round shrinker. The 9511-job named build and root declaration/foundational-axiom audits pass silently.
 
 The logarithmic parabolic chain rules now retain within-time derivatives and local spatial regularity for the actual operator. Hamilton--Ivey violation together with the scalar lower bound gives log(tq) > 2 without scalar positivity; the reaction estimate holds at every logarithmic boundary slope. Both modules and the exact consumer pass root full declaration/foundational-axiom audits after the named build. These close local algebraic prerequisites, while the unrestricted complete Hamilton--Ivey estimate remains open.
