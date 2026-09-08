@@ -2201,6 +2201,7 @@ import DifferentialGeometry.Geometry.Coordinates.Christoffel
 import DifferentialGeometry.Geometry.Coordinates.ChristoffelTensor
 import DifferentialGeometry.Geometry.Coordinates.ConnectionCoefficients
 import DifferentialGeometry.Geometry.Coordinates.CoordinateFrame
+import DifferentialGeometry.Topology.Manifold.FunctionExtension
 import DifferentialGeometry.Topology.Manifold.InverseFunctionTheorem
 import DifferentialGeometry.Topology.Manifold.LocalDiffeomorphOpen
 import DifferentialGeometry.Geometry.Coordinates.MetricCompatibility.Coordinate
@@ -3193,6 +3194,7 @@ import DifferentialGeometry.Topology.Morse.CellAttachment
 import DifferentialGeometry.Topology.Morse.BoundaryGraph
 import DifferentialGeometry.Topology.Morse.BoundaryIsotopy
 import DifferentialGeometry.Topology.Morse.BoundaryChart
+import DifferentialGeometry.Topology.Morse.BoundaryModification
 import DifferentialGeometry.Topology.Morse.BoundaryPerturbation
 import DifferentialGeometry.Topology.Morse.BoundaryRegularVectorField
 import DifferentialGeometry.Topology.Morse.CriticalSet

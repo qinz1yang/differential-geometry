@@ -1,4 +1,5 @@
 import DifferentialGeometry.Topology.Morse.BoundaryIsotopy
+import DifferentialGeometry.Topology.Morse.BoundaryModification
 import DifferentialGeometry.Topology.Diffeomorph.Extension
 
 open scoped ContDiff Manifold Topology
@@ -182,5 +183,68 @@ theorem exists_diffeomorph_image_sublevels_of_boundaryMorseChart
       exact ⟨hx.1, hx.2.1, (hgf ⟨hx.1, hx.2.1⟩).symm ▸ hx.2.2⟩
     · intro hx
       exact ⟨hx.1, hx.2.1, (hgf ⟨hx.1, hx.2.1⟩) ▸ hx.2.2⟩
+
+theorem exists_boundaryMorsePerturbation_sublevel_diffeomorph_in_chart
+    {n : ℕ} {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+    {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [T2Space M]
+    {U : TopologicalSpace.Opens M} {V : TopologicalSpace.Opens (Fin (n + 1) → ℝ)}
+    (c : Diffeomorph I 𝓘(ℝ, Fin (n + 1) → ℝ) U V ∞)
+    (d : Fin n → ℝ) (hd : ∀ i, d i ≠ 0) (b : ContDiffBump (0 : Fin n → ℝ))
+    (D : Set M) (hD : ∀ x : U, (x : M) ∈ D ↔ 0 ≤ (c x).val 0)
+    (f : M → ℝ) (hf : ContMDiff I 𝓘(ℝ) ∞ f) (v : ℝ)
+    (hchart : ∀ x : U, (x : M) ∈ D →
+      f x = v + ((∑ i : Fin n, d i * (c x).val i.succ ^ 2) + (c x).val 0))
+    {lower upper : ℝ} (hlower : lower < v) (hupper : v < upper) :
+    ∃ δ > 0, ∀ a ∈ Set.Ioc 0 δ,
+      {z : Fin (n + 1) → ℝ | 0 ≤ z 0 ∧ z 0 ≤ a ∧ ‖Fin.tail z‖ ≤ b.rOut} ⊆ V →
+      ∃ g : M → ℝ, ∃ Φ : Diffeomorph I I M M ∞,
+        ContMDiff I 𝓘(ℝ) ∞ g ∧ HasCompactSupport (g - f) ∧
+        (∀ x : U, (x : M) ∈ D → g x = v + boundaryMorsePerturbation d b a (c x)) ∧
+        (∀ x ∈ D, g x - f x ∈ Set.Icc 0 (2 * a)) ∧
+        Φ '' D = D ∧
+        (∀ r ∈ ({lower, upper} : Set ℝ),
+          Φ '' {x | x ∈ D ∧ f x ≤ r} = {x | x ∈ D ∧ g x ≤ r}) ∧
+        ∃ K : Set M, IsCompact K ∧ K ⊆ U ∧
+          Set.EqOn g f Kᶜ ∧ Set.EqOn Φ id Kᶜ ∧ Set.EqOn Φ.symm id Kᶜ := by
+  have hchart0 (x : U) (hx : (x : M) ∈ D) :
+      f x - v = (∑ i : Fin n, d i * (c x).val i.succ ^ 2) + (c x).val 0 := by
+    rw [hchart x hx]
+    ring
+  obtain ⟨δ, hδ, htransport⟩ := exists_diffeomorph_image_sublevels_of_boundaryMorseChart
+    c d hd b D hD (fun x => f x - v) hchart0
+    (sub_neg.mpr hlower) (sub_pos.mpr hupper)
+  refine ⟨δ, hδ, ?_⟩
+  intro a ha hbox
+  obtain ⟨g, hg, hgs, hgU, hgchart, hgout, hgbound⟩ :=
+    exists_contMDiff_boundaryMorsePerturbation_in_chart c d b D hD f hf v hchart ha.1 hbox
+  have hgchart0 (x : U) (hx : (x : M) ∈ D) :
+      g x - v = boundaryMorsePerturbation d b a (c x) := by
+    rw [hgchart x hx]
+    ring
+  have hgout0 : Set.EqOn (fun x => g x - v) (fun x => f x - v) ((U : Set M)ᶜ ∩ D) := by
+    intro x hx
+    change g x - v = f x - v
+    rw [hgout hx.1]
+  obtain ⟨Φ, hΦD, hΦlevels, K, hK, hKU, hfix, hfixi⟩ :=
+    htransport a ha hbox (fun x => g x - v) hgchart0 hgout0
+  refine ⟨g, Φ, hg, hgs, hgchart, hgbound, hΦD, ?_,
+    K ∪ tsupport (g - f), hK.union hgs, Set.union_subset hKU hgU, ?_, ?_, ?_⟩
+  · intro r hr
+    have hr0 : r - v ∈ ({lower - v, upper - v} : Set ℝ) := by
+      rcases Set.mem_insert_iff.mp hr with rfl | hr
+      · exact Set.mem_insert _ _
+      · have heq : r = upper := Set.mem_singleton_iff.mp hr
+        rw [heq]
+        exact Set.mem_insert_of_mem _ (Set.mem_singleton _)
+    simpa only [sub_le_sub_iff_right] using hΦlevels (r - v) hr0
+  · intro x hx
+    have hzero : (g - f) x = 0 :=
+      image_eq_zero_of_notMem_tsupport (fun h => hx (Or.inr h))
+    exact sub_eq_zero.mp hzero
+  · intro x hx
+    exact hfix (fun h => hx (Or.inl h))
+  · intro x hx
+    exact hfixi (fun h => hx (Or.inl h))
 
 end DifferentialGeometry.Topology.Morse
