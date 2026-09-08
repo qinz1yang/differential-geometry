@@ -1,5 +1,6 @@
 import DifferentialGeometry.Geometry.Comparison.CheegerGromovTaylor.Pullback.Metric
 import DifferentialGeometry.Geometry.Comparison.CheegerGromovTaylor.Paths.Radial
+import DifferentialGeometry.Geometry.Exponential.NormalCoordinates.PullbackDistance
 import DifferentialGeometry.Geometry.Comparison.HalfSquaredDistance.Basic
 import DifferentialGeometry.Geometry.Comparison.Variation.Jacobi.EndpointPositivity
 import DifferentialGeometry.Geometry.Metric.Comparison.DistanceScaling
@@ -260,71 +261,28 @@ theorem intrinsicPull_dist_zero
         (intrinsicPullMetric (I := I) g hEnorm p hloc)
         (intrinsicZero (E := E) hR) z =
       ENNReal.ofReal ‖(z : E)‖ := by
-  let : SigmaCompactSpace (intrinsicPullBall (E := E) R) :=
-    isSigmaCompact_iff_sigmaCompactSpace.mp
-      (Geometry.isSigmaCompact_of_isOpen
-        𝓘(Real, E) (intrinsicPullBall (E := E) R).isOpen)
-  let : RiemannianBundle
-      (fun y : intrinsicPullBall (E := E) R ↦
-        TangentSpace 𝓘(Real, E) y) :=
-    ⟨(intrinsicPullMetric (I := I) g hEnorm p hloc).toRiemannianMetric⟩
-  change
-    Manifold.riemannianEDist 𝓘(Real, E)
-        (intrinsicZero (E := E) hR) z =
-      ENNReal.ofReal ‖(z : E)‖
-  apply le_antisymm
-  · have hradC1 :
-        ContMDiffOn 𝓘(Real, Real) 𝓘(Real, E) 1
-          (intrinsicRadial (E := E) z) (Set.Icc 0 1) :=
-      ((intrinsicRadial_smooth (E := E) z).of_le
-        (by norm_num)).contMDiffOn
-    have hdist :=
-      Manifold.riemannianEDist_le_pathELength
-        (I := 𝓘(Real, E)) (x := intrinsicZero (E := E) hR) (y := z)
-        hradC1 (intrinsicRadial_zero (E := E) hR z)
-        (intrinsicRadial_one (E := E) z) zero_le_one
-    rw [intrinsicRadial_len (I := I) g hEnorm p hloc z] at hdist
-    exact hdist
-  · by_contra hnot
-    have hlt :
-        Manifold.riemannianEDist 𝓘(Real, E)
-            (intrinsicZero (E := E) hR) z <
-          ENNReal.ofReal ‖(z : E)‖ :=
-      lt_of_not_ge hnot
-    obtain ⟨γ, hγ0, hγ1, hγC1, hγlen⟩ :=
-      Manifold.exists_lt_of_riemannianEDist_lt hlt
-    let η : Real → E := fun t => (γ t : E)
-    have hηm :
-        ContMDiffOn 𝓘(Real, Real) 𝓘(Real, E) 1 η (Set.Icc 0 1) := by
-      exact
-        ((contMDiff_subtype_val (n := (⊤ : WithTop ℕ∞))
-          (I := 𝓘(Real, E))
-          (U := intrinsicPullBall (E := E) R)).of_le
-            (show (1 : WithTop ℕ∞) ≤ (⊤ : WithTop ℕ∞) from le_top)
-          ).comp_contMDiffOn hγC1
-    have hη : ContDiffOn Real 1 η (Set.Icc 0 1) :=
-      contMDiffOn_iff_contDiffOn.mp hηm
-    have hη0 : η 0 = 0 := by
-      simp only [η, hγ0, intrinsicZero]
-    have hη1 : η 1 = (z : E) := by
-      simp only [η, hγ1]
-    have hlift :=
-      intrinsicLift_norm_le (J := I) g hEnorm p zero_le_one hη0 hη
-    have hlen :
-        Manifold.pathELength I
-            ((intrinsicFramedExp (I := I) g hEnorm p) ∘ η) 0 1 =
-          Manifold.pathELength 𝓘(Real, E) γ 0 1 := by
-      rw [show (intrinsicFramedExp (I := I) g hEnorm p) ∘ η =
-          intrinsicExpOn (I := I) g hEnorm p R ∘ γ by
-        funext t
-        rfl]
-      exact intrinsicPull_pathLen (I := I) g hEnorm p hloc hγC1
-    have hnorm_le :
-        ENNReal.ofReal ‖(z : E)‖ ≤
-          Manifold.pathELength 𝓘(Real, E) γ 0 1 := by
-      rw [← hη1, ← hlen]
-      exact hlift
-    exact (not_lt_of_ge hnorm_le) hγlen
+  have hagree : framedExpMap (I := I) g p = intrinsicFramedExp (I := I) g hEnorm p := by
+    funext w
+    rw [framedExpMap_apply, intrinsicFrame_apply, expMap_eq_expMapIntrinsic g hEnorm p]
+  have hdom : MapsTo (normalFrame g p) (intrinsicPullBall (E := E) R) (expDomain g p) := by
+    intro w _
+    rw [expDomain_eq_univ_of_completeSpace g hEnorm p]
+    exact mem_univ _
+  have hloc' : IsLocalDiffeomorphOn 𝓘(Real, E) I ∞
+      (framedExpMap g p) (intrinsicPullBall (E := E) R) := by
+    rw [hagree]
+    exact hloc
+  have h := riemannianEDistOf_pullback_zero g p (intrinsicPullBall (E := E) R)
+    ((convex_ball (0 : E) R).starConvex (Metric.mem_ball_self hR)) hloc' hdom z
+  have hf : intrinsicExpOn g hEnorm p R =
+      fun w : intrinsicPullBall (E := E) R => framedExpMap g p w := by
+    funext w
+    exact (congrFun hagree (w : E)).symm
+  change riemannianEDistOf (localPullMetric g (intrinsicExpOn g hEnorm p R)
+    (intrinsicExpOn_local g hEnorm p hloc))
+    (intrinsicZero hR) z = _
+  simp only [hf]
+  exact h
 
 theorem intrinsicPull_pair_pos
     (g : SmoothRiemannianMetric I M)
