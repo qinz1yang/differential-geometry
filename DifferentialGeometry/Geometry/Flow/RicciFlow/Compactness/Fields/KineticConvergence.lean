@@ -1,4 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.GramConvergence
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.PullbackCurve
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Defs
 import DifferentialGeometry.Geometry.Metric.Convergence.Metric.Evaluation
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.Quadratic.WeakConvergence
@@ -82,6 +83,96 @@ theorem FlowMetricConvergenceData.tendstoUniformlyOn_inner_lVelocity
       (gSeqExt (I := I) Φ R bf hsrc htgt (co.φ k) (T - s))
       (co.gInf (T - s)) R (alpha s) := Real.sqrt_nonneg _
   simpa only [Real.dist_eq, zero_sub, abs_neg, abs_of_nonneg hn] using h
+
+theorem FlowMetricConvergenceData.tendstoUniformlyOn_inner_lVelocity_map
+    {X : PointedFlowSeq.{u, uE, uH} (I := I)}
+    {P : PointedRiemannianManifold.{u, uE, uH} (I := I)}
+    {subseq : Nat → Nat}
+    (Phi : PointedCGHMaps (I := I) X P subseq)
+    (R : let : TopologicalSpace P.M := P.topology
+      let : ChartedSpace H P.M := P.charted
+      let : IsManifold I ∞ P.M := P.smooth
+      SmoothRiemannianMetric I P.M)
+    (bf : BumpFamily (I := I) Phi) (hsrc : SourceIsSigmaCompact Phi) (htgt : TargetIsSigmaCompact Phi)
+    (beta psi : Real) (co : FlowMetricConvergenceData (I := I) Phi R bf hsrc htgt beta psi)
+    (T a b : Real) (alpha : Real → P.M)
+    (halpha : let : TopologicalSpace P.M := P.topology
+      let : ChartedSpace H P.M := P.charted
+      let : IsManifold I ∞ P.M := P.smooth
+      ContMDiff 𝓘(Real, Real) I 1 alpha)
+    (hback : MapsTo (fun s ↦ T - s) (Icc a b) (Icc beta psi)) :
+    let : TopologicalSpace P.M := P.topology
+    let : ChartedSpace H P.M := P.charted
+    let : T2Space P.M := P.t2
+    let : IsManifold I ∞ P.M := P.smooth
+    let : SigmaCompactSpace P.M := P.sigmaCompact
+    TendstoUniformlyOn
+      (fun k s ↦
+        let : TopologicalSpace (X.term (subseq (co.φ k))).M :=
+          (X.term (subseq (co.φ k))).topology
+        let : ChartedSpace H (X.term (subseq (co.φ k))).M :=
+          (X.term (subseq (co.φ k))).charted
+        let : T2Space (X.term (subseq (co.φ k))).M :=
+          (X.term (subseq (co.φ k))).t2
+        let : IsManifold I ∞ (X.term (subseq (co.φ k))).M :=
+          (X.term (subseq (co.φ k))).smooth
+        let : SigmaCompactSpace (X.term (subseq (co.φ k))).M :=
+          (X.term (subseq (co.φ k))).sigmaCompact
+        ((X.term (subseq (co.φ k))).S.family.metric (T - s)).inner
+          (Phi.map (co.φ k) (alpha s))
+          (lVelocity (I := I) (fun r ↦ Phi.map (co.φ k) (alpha r)) s)
+          (lVelocity (I := I) (fun r ↦ Phi.map (co.φ k) (alpha r)) s))
+      (fun s ↦
+        (co.gInf (T - s)).inner (alpha s)
+          (lVelocity (I := I) alpha s) (lVelocity (I := I) alpha s))
+      atTop (Icc a b) := by
+  let : TopologicalSpace P.M := P.topology
+  let : ChartedSpace H P.M := P.charted
+  let : T2Space P.M := P.t2
+  let : IsManifold I ∞ P.M := P.smooth
+  let : SigmaCompactSpace P.M := P.sigmaCompact
+  have hkin := FlowMetricConvergenceData.tendstoUniformlyOn_inner_lVelocity (I := I) Phi R bf hsrc htgt beta psi co
+    T a b alpha halpha hback
+  let K : Set P.M := alpha '' Icc a b
+  have hK : IsCompact K :=
+    isCompact_Icc.image_of_continuousOn halpha.continuous.continuousOn
+  obtain ⟨k0, hk0⟩ := bf.grow_cover K hK
+  apply hkin.congr
+  filter_upwards [Filter.eventually_ge_atTop k0] with k hk
+  intro s hs
+  have hphi : k0 ≤ co.φ k := hk.trans (co.strictMono.id_le k)
+  have hgrow : alpha s ∈ bf.grow (co.φ k) :=
+    hk0 (co.φ k) hphi ⟨s, hs, rfl⟩
+  have hsource : alpha s ∈ Phi.source (co.φ k) :=
+    bf.grow_subset (co.φ k) hgrow
+  obtain ⟨W, _hWopen, hgrowW, hWone⟩ := bf.chi_one (co.φ k)
+  have hchi : bf.chi (co.φ k) (alpha s) = 1 := hWone _ (hgrowW hgrow)
+  let : TopologicalSpace (SourceDomain (I := I) Phi (co.φ k)) :=
+    sourceDomTop (I := I) Phi (co.φ k)
+  let : ChartedSpace H (SourceDomain (I := I) Phi (co.φ k)) :=
+    sourceDomCharted (I := I) Phi (co.φ k)
+  let : IsManifold I ∞ (SourceDomain (I := I) Phi (co.φ k)) :=
+    sourceDomSmooth (I := I) Phi (co.φ k)
+  let : TopologicalSpace (X.term (subseq (co.φ k))).M :=
+    (X.term (subseq (co.φ k))).topology
+  let : ChartedSpace H (X.term (subseq (co.φ k))).M :=
+    (X.term (subseq (co.φ k))).charted
+  let : IsManifold I ∞ (X.term (subseq (co.φ k))).M :=
+    (X.term (subseq (co.φ k))).smooth
+  have hext :
+      (gSeqExt (I := I) Phi R bf hsrc htgt (co.φ k) (T - s)).inner
+          (alpha s) (lVelocity (I := I) alpha s) (lVelocity (I := I) alpha s) =
+        (sourceMetric (I := I) Phi hsrc htgt (co.φ k) (T - s)).inner
+          ⟨alpha s, hsource⟩
+          (lVelocity (I := I) alpha s) (lVelocity (I := I) alpha s) := by
+    rw [gSeqExt_inner_of_mem (I := I) Phi R bf hsrc htgt
+      (co.φ k) (T - s) (alpha s) hsource]
+    simp only [hchi, one_smul, sub_self, zero_smul, add_zero]
+  have hdiff : MDifferentiableAt 𝓘(Real, Real) I alpha s :=
+    halpha.contMDiffAt.mdifferentiableAt (by norm_num)
+  have hmap := Phi.sourceMetric_inner_lVelocity (I := I) hsrc htgt (co.φ k) (T - s)
+    alpha s hsource hdiff
+  simpa only [Function.comp_apply] using hext.trans hmap
 
 end Curve
 
