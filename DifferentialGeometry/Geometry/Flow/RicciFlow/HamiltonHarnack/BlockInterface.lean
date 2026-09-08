@@ -163,6 +163,41 @@ theorem hamiltonBlockJ_eq_gram_reaction
   exact (DifferentialGeometry.Analysis.Spectral.hamiltonGram_reaction_eq_hamiltonReactionPolynomial
     Y X U W hY hU).symm
 
+theorem exists_hamiltonGram_square_factorization_card_le
+    {ι : Type*} [Fintype ι]
+    (K : ι -> ι -> ι -> ι -> Real)
+    (P : ι -> ι -> ι -> Real)
+    (M : ι -> ι -> Real)
+    (hKPair : ∀ a b c d, K a b c d = K c d a b)
+    (hKSkew : ∀ a b c d, K a b c d = -K b a c d)
+    (hPSkew : ∀ a b c, P a b c = -P b a c)
+    (hMSymm : ∀ a b, M a b = M b a)
+    (hQ : ∀ (U : ι -> ι -> Real) (W : ι -> Real),
+      (∀ a b, U a b = -U b a) → 0 ≤ hamiltonQuadraticForm K P M U W) :
+    ∃ (m : Nat) (Y : Fin m -> ι -> ι -> Real) (X : Fin m -> ι -> Real),
+      m ≤ Fintype.card ι * (Fintype.card ι + 1) / 2 ∧
+      (∀ r a b, Y r a b = -Y r b a) ∧
+      (∀ (U : ι -> ι -> Real) (W : ι -> Real),
+        hamiltonQuadraticForm K P M U W =
+          ∑ r, ((∑ a, ∑ b, Y r a b * U a b) + ∑ c, X r c * W c) ^ 2) ∧
+      (∀ (U : ι -> ι -> Real) (W : ι -> Real),
+        (∀ a b, U a b = -U b a) ->
+        hamiltonBlockJ K P M U W =
+          ∑ r, ∑ s,
+            ((∑ a, ∑ c, Y r a c * X s c * W a) -
+              (∑ a, ∑ c, Y s a c * X r c * W a) -
+              2 * (∑ a, ∑ b, ∑ c, Y r a c * Y s b c * U a b)) ^ 2) := by
+  obtain ⟨m, Y, X, hm, hY, hK, hP, hM⟩ :=
+    exists_hamiltonGram_factorization_card_le K P M hKPair hKSkew hPSkew hMSymm hQ
+  refine ⟨m, Y, X, hm, hY, ?_, ?_⟩
+  · intro U W
+    rw [hK, hP, hM, ← hamiltonGram_quadratic_eq_hamiltonQuadraticForm]
+    rfl
+  · intro U W hU
+    rw [hK, hP, hM, hamiltonBlockJ_eq_gram_reaction Y X U W hY hU]
+    rfl
+
+
 theorem exists_hamiltonGram_square_factorization
     {ι : Type*} [Fintype ι]
     (K : ι -> ι -> ι -> ι -> Real)
@@ -186,15 +221,10 @@ theorem exists_hamiltonGram_square_factorization
             ((∑ a, ∑ c, Y r a c * X s c * W a) -
               (∑ a, ∑ c, Y s a c * X r c * W a) -
               2 * (∑ a, ∑ b, ∑ c, Y r a c * Y s b c * U a b)) ^ 2) := by
-  obtain ⟨m, Y, X, hY, hK, hP, hM⟩ :=
-    exists_hamiltonGram_factorization K P M hKPair hKSkew hPSkew hMSymm hQ
-  refine ⟨m, Y, X, hY, ?_, ?_⟩
-  · intro U W
-    rw [hK, hP, hM, ← hamiltonGram_quadratic_eq_hamiltonQuadraticForm]
-    rfl
-  · intro U W hU
-    rw [hK, hP, hM, hamiltonBlockJ_eq_gram_reaction Y X U W hY hU]
-    rfl
+  obtain ⟨m, Y, X, hm, hY, hq, hJ⟩ :=
+    exists_hamiltonGram_square_factorization_card_le K P M hKPair hKSkew hPSkew hMSymm
+      (fun U W _ => hQ U W)
+  exact ⟨m, Y, X, hY, hq, hJ⟩
 
 theorem hamiltonBlockJ_nonneg_of_gram_quadratic_eq_zero
     {ι κ : Type*} [Fintype ι] [Fintype κ]

@@ -1,4 +1,6 @@
 import Mathlib.Analysis.InnerProductSpace.Positive
+import Mathlib.Data.Fintype.Prod
+import Mathlib.LinearAlgebra.Dimension.Constructions
 
 set_option autoImplicit false
 
@@ -109,7 +111,7 @@ def hamiltonQuadraticForm {ι : Type*} [Fintype ι]
     2 * (∑ a, ∑ b, ∑ c, P a b c * U a b * W c) +
     ∑ a, ∑ b, M a b * W a * W b
 
-theorem exists_hamiltonGram_factorization
+private theorem exists_hamiltonGram_factorization_unbounded
     {ι : Type*} [Fintype ι]
     (K : ι → ι → ι → ι → Real)
     (P : ι → ι → ι → Real)
@@ -257,6 +259,197 @@ def hamiltonReactionPolynomial {ι : Type*} [Fintype ι]
       K a d c e * P d b e * U a b * W c +
     4 * ∑ a, ∑ b, ∑ c, ∑ d, ∑ e, ∑ f,
       K a e c f * K b e d f * U a b * U c d
+
+private theorem exists_hamiltonGram_compression
+    {ι κ : Type*} [Fintype ι] [Fintype κ]
+    (Y : κ → ι → ι → ℝ) (X : κ → ι → ℝ)
+    (hY : ∀ r a b, Y r a b = -Y r b a) :
+    ∃ (m : ℕ) (Y' : Fin m → ι → ι → ℝ) (X' : Fin m → ι → ℝ),
+      m ≤ Fintype.card ι * (Fintype.card ι + 1) / 2 ∧
+      (∀ r a b, Y' r a b = -Y' r b a) ∧
+      hamiltonGramK Y = hamiltonGramK Y' ∧
+      hamiltonGramP Y X = hamiltonGramP Y' X' ∧
+      hamiltonGramM X = hamiltonGramM X' := by
+  classical
+  let e := Fintype.equivFin ι
+  let : LinearOrder ι := LinearOrder.lift' e e.injective
+  let y (a b : ι) : EuclideanSpace ℝ κ := WithLp.toLp 2 (fun r => Y r a b)
+  let z (a : ι) : EuclideanSpace ℝ κ := WithLp.toLp 2 (fun r => X r a)
+  let η := {p : ι × ι // p.1 < p.2} ⊕ ι
+  let v : η → EuclideanSpace ℝ κ := Sum.elim (fun p => y p.1.1 p.1.2) z
+  let S := Submodule.span ℝ (Set.range v)
+  have hySkew (a b : ι) : y a b = -y b a := by
+    ext r
+    exact hY r a b
+  have hyDiag (a : ι) : y a a = 0 := by
+    ext r
+    change Y r a a = 0
+    linarith [hY r a a]
+  have hy (a b : ι) : y a b ∈ S := by
+    rcases lt_trichotomy a b with h | rfl | h
+    · exact Submodule.subset_span ⟨Sum.inl ⟨(a, b), h⟩, rfl⟩
+    · rw [hyDiag]
+      exact S.zero_mem
+    · rw [hySkew]
+      exact S.neg_mem (Submodule.subset_span ⟨Sum.inl ⟨(b, a), h⟩, rfl⟩)
+  have hz (a : ι) : z a ∈ S :=
+    Submodule.subset_span ⟨Sum.inr a, rfl⟩
+  let ys (a b : ι) : S := ⟨y a b, hy a b⟩
+  let zs (a : ι) : S := ⟨z a, hz a⟩
+  let b := stdOrthonormalBasis ℝ S
+  let Y' (r : Fin (Module.finrank ℝ S)) (a c : ι) : ℝ := inner ℝ (b r) (ys a c)
+  let X' (r : Fin (Module.finrank ℝ S)) (a : ι) : ℝ := inner ℝ (b r) (zs a)
+  have hdim : Module.finrank ℝ S ≤ Fintype.card ι * (Fintype.card ι + 1) / 2 := by
+    calc
+      Module.finrank ℝ S ≤ Fintype.card η := finrank_range_le_card v
+      _ = (Fintype.card ι).choose 2 + Fintype.card ι := by
+        simp only [η, Fintype.card_sum, Fintype.card_subtype,
+          Fintype.card_product_filter_lt]
+      _ = (Fintype.card ι + 1).choose 2 := by
+        rw [Nat.choose_succ_succ' (Fintype.card ι) 1, Nat.choose_one_right]
+        exact Nat.add_comm _ _
+      _ = Fintype.card ι * (Fintype.card ι + 1) / 2 := by
+        rw [Nat.choose_two_right]
+        simp only [Nat.add_sub_cancel]
+        rw [Nat.mul_comm]
+  have hinner (u w : S) :
+      (∑ r, inner ℝ (b r) u * inner ℝ (b r) w) = inner ℝ (u : EuclideanSpace ℝ κ) w := by
+    calc
+      _ = ∑ r, inner ℝ u (b r) * inner ℝ (b r) w := by
+        congr 1
+        funext r
+        rw [real_inner_comm u (b r)]
+      _ = inner ℝ u w := b.sum_inner_mul_inner u w
+      _ = inner ℝ (u : EuclideanSpace ℝ κ) w := Submodule.coe_inner S u w
+  refine ⟨Module.finrank ℝ S, Y', X', hdim, ?_, ?_, ?_, ?_⟩
+  · intro r a c
+    have hys : ys a c = -ys c a := Subtype.ext (hySkew a c)
+    change inner ℝ (b r) (ys a c) = -inner ℝ (b r) (ys c a)
+    rw [hys, inner_neg_right]
+  · funext a c d f
+    unfold hamiltonGramK
+    change (∑ r, Y r a c * Y r d f) =
+      ∑ r, inner ℝ (b r) (ys a c) * inner ℝ (b r) (ys d f)
+    rw [hinner]
+    simp only [ys, y, PiLp.inner_apply, Real.inner_apply]
+  · funext a c d
+    unfold hamiltonGramP
+    change (∑ r, Y r a c * X r d) =
+      ∑ r, inner ℝ (b r) (ys a c) * inner ℝ (b r) (zs d)
+    rw [hinner]
+    simp only [ys, zs, y, z, PiLp.inner_apply, Real.inner_apply]
+  · funext a c
+    unfold hamiltonGramM
+    change (∑ r, X r a * X r c) =
+      ∑ r, inner ℝ (b r) (zs a) * inner ℝ (b r) (zs c)
+    rw [hinner]
+    simp only [zs, z, PiLp.inner_apply, Real.inner_apply]
+
+private theorem sum_mul_skew_projection
+    {ι : Type*} [Fintype ι] (A U : ι → ι → ℝ)
+    (hA : ∀ a b, A a b = -A b a) :
+    (∑ a, ∑ b, A a b * U a b) =
+      ∑ a, ∑ b, A a b * ((U a b - U b a) / 2) := by
+  have hswap : (∑ a, ∑ b, A a b * U b a) = -(∑ a, ∑ b, A a b * U a b) := by
+    rw [Finset.sum_comm]
+    simp only [← Finset.sum_neg_distrib]
+    refine Finset.sum_congr rfl fun a _ => Finset.sum_congr rfl fun b _ => ?_
+    rw [hA b a, neg_mul]
+  simp_rw [← mul_div_assoc, mul_sub]
+  simp_rw [← Finset.sum_div]
+  simp only [Finset.sum_sub_distrib]
+  rw [hswap]
+  ring
+
+theorem hamiltonQuadraticForm_skew_projection
+    {ι : Type*} [Fintype ι]
+    (K : ι → ι → ι → ι → ℝ) (P : ι → ι → ι → ℝ) (M : ι → ι → ℝ)
+    (U : ι → ι → ℝ) (W : ι → ℝ)
+    (hKFirst : ∀ a b c d, K a b c d = -K b a c d)
+    (hKLast : ∀ a b c d, K a b c d = -K a b d c)
+    (hP : ∀ a b c, P a b c = -P b a c) :
+    hamiltonQuadraticForm K P M U W =
+      hamiltonQuadraticForm K P M (fun a b => (U a b - U b a) / 2) W := by
+  let V (a b : ι) := (U a b - U b a) / 2
+  have hlast :
+      (∑ a, ∑ b, ∑ c, ∑ d, K a b c d * U a b * U c d) =
+        ∑ a, ∑ b, ∑ c, ∑ d, K a b c d * U a b * V c d := by
+    refine Finset.sum_congr rfl fun a _ => Finset.sum_congr rfl fun b _ => ?_
+    apply sum_mul_skew_projection (fun c d => K a b c d * U a b) U
+    intro c d
+    rw [hKLast a b c d, neg_mul]
+  have hfirst :
+      (∑ a, ∑ b, ∑ c, ∑ d, K a b c d * U a b * V c d) =
+        ∑ a, ∑ b, ∑ c, ∑ d, K a b c d * V a b * V c d := by
+    have hcoeff (a b : ι) :
+        (∑ c, ∑ d, K a b c d * V c d) = -(∑ c, ∑ d, K b a c d * V c d) := by
+      simp_rw [hKFirst a b, neg_mul]
+      simp only [Finset.sum_neg_distrib]
+    have h := sum_mul_skew_projection (fun a b => ∑ c, ∑ d, K a b c d * V c d) U hcoeff
+    simpa only [Finset.sum_mul, mul_right_comm] using h
+  have hcross :
+      (∑ a, ∑ b, ∑ c, P a b c * U a b * W c) =
+        ∑ a, ∑ b, ∑ c, P a b c * V a b * W c := by
+    have hcoeff (a b : ι) :
+        (∑ c, P a b c * W c) = -(∑ c, P b a c * W c) := by
+      simp_rw [hP a b, neg_mul]
+      simp only [Finset.sum_neg_distrib]
+    have h := sum_mul_skew_projection (fun a b => ∑ c, P a b c * W c) U hcoeff
+    simpa only [Finset.sum_mul, mul_right_comm] using h
+  unfold hamiltonQuadraticForm
+  rw [hlast, hfirst, hcross]
+
+theorem exists_hamiltonGram_factorization_card_le
+    {ι : Type*} [Fintype ι]
+    (K : ι → ι → ι → ι → ℝ)
+    (P : ι → ι → ι → ℝ)
+    (M : ι → ι → ℝ)
+    (hKPair : ∀ a b c d, K a b c d = K c d a b)
+    (hKSkew : ∀ a b c d, K a b c d = -K b a c d)
+    (hPSkew : ∀ a b c, P a b c = -P b a c)
+    (hMSymm : ∀ a b, M a b = M b a)
+    (hQ : ∀ (U : ι → ι → ℝ) (W : ι → ℝ),
+      (∀ a b, U a b = -U b a) → 0 ≤ hamiltonQuadraticForm K P M U W) :
+    ∃ (m : ℕ) (Y : Fin m → ι → ι → ℝ) (X : Fin m → ι → ℝ),
+      m ≤ Fintype.card ι * (Fintype.card ι + 1) / 2 ∧
+      (∀ r a b, Y r a b = -Y r b a) ∧
+      K = hamiltonGramK Y ∧
+      P = hamiltonGramP Y X ∧
+      M = hamiltonGramM X := by
+  obtain ⟨m, Y, X, hY, hK, hP, hM⟩ :=
+    exists_hamiltonGram_factorization_unbounded K P M hKPair hKSkew hPSkew hMSymm (by
+      intro U W
+      have hKLast (a b c d : ι) : K a b c d = -K a b d c := by
+        rw [hKPair a b c d, hKSkew c d a b, hKPair d c a b]
+      rw [hamiltonQuadraticForm_skew_projection K P M U W hKSkew hKLast hPSkew]
+      apply hQ
+      intro a b
+      ring)
+  obtain ⟨m', Y', X', hm', hY', hK', hP', hM'⟩ :=
+    exists_hamiltonGram_compression Y X hY
+  exact ⟨m', Y', X', hm', hY', hK.trans hK', hP.trans hP', hM.trans hM'⟩
+
+
+theorem exists_hamiltonGram_factorization
+    {ι : Type*} [Fintype ι]
+    (K : ι → ι → ι → ι → Real)
+    (P : ι → ι → ι → Real)
+    (M : ι → ι → Real)
+    (hKPair : ∀ a b c d, K a b c d = K c d a b)
+    (hKSkew : ∀ a b c d, K a b c d = -K b a c d)
+    (hPSkew : ∀ a b c, P a b c = -P b a c)
+    (hMSymm : ∀ a b, M a b = M b a)
+    (hQ : ∀ (U : ι → ι → Real) (W : ι → Real),
+      0 ≤ hamiltonQuadraticForm K P M U W) :
+    ∃ (m : Nat) (Y : Fin m → ι → ι → Real) (X : Fin m → ι → Real),
+      (∀ r a b, Y r a b = -Y r b a) ∧
+      K = hamiltonGramK Y ∧
+      P = hamiltonGramP Y X ∧
+      M = hamiltonGramM X := by
+  obtain ⟨m, Y, X, hm, hY, hK, hP, hM⟩ :=
+    exists_hamiltonGram_factorization_card_le K P M hKPair hKSkew hPSkew hMSymm
+      (fun U W _ => hQ U W)
+  exact ⟨m, Y, X, hY, hK, hP, hM⟩
 
 theorem hamiltonGram_quadratic_eq_hamiltonQuadraticForm
     {ι κ : Type*} [Fintype ι] [Fintype κ]
