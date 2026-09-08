@@ -13,6 +13,7 @@ import DifferentialGeometry.Analysis.Calculus.Smoothness.Tsum
 import DifferentialGeometry.Analysis.Calculus.Derivative.Curve
 import DifferentialGeometry.Analysis.Calculus.Cutoff.Basic
 import DifferentialGeometry.Analysis.Calculus.Cutoff.Profile
+import DifferentialGeometry.Analysis.Calculus.Cutoff.SmoothTransition
 import DifferentialGeometry.Analysis.Calculus.DyadicScale
 import DifferentialGeometry.Analysis.Calculus.Derivative.HilbertBasis
 import DifferentialGeometry.Analysis.Calculus.IteratedDerivative.CompositionBounds
