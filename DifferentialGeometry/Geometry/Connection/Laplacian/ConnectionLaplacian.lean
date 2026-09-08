@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Connection.ChartFrame.RicciIdentitySmoothFrame
+import DifferentialGeometry.Geometry.Connection.ChartFrame.OrthonormalBasis
 import DifferentialGeometry.Geometry.Operator.Hessian.TraceFormula
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator
@@ -308,6 +308,36 @@ lemma frobeniusSq_grad_vector_nonneg
   by_cases hv : v = 0
   · simp [hv]
   · exact le_of_lt (g.pos x v hv)
+
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M]
+  [T2Space M] [SigmaCompactSpace M] in
+theorem frobeniusSqGradVector_eq_zero_iff
+    (g : SmoothRiemannianMetric I M)
+    (V : Π b : M, TangentSpace I b) (x : M) :
+    frobeniusSqGradVector (I := I) g V x = 0 ↔ (LeviCivita (I := I) g).toFun V x = 0 := by
+  classical
+  constructor
+  · intro hzero
+    let L := (LeviCivita (I := I) g).toFun V x
+    let b := smoothOrthoFrameBasis g x
+    have hsum : ∑ i : Fin (Module.finrank ℝ E), g.inner x (L (b i)) (L (b i)) = 0 := by
+      simpa only [b, smoothOrthoFrameBasis_apply, L, frobeniusSqGradVector] using hzero
+    have hnonneg (i : Fin (Module.finrank ℝ E)) : 0 ≤ g.inner x (L (b i)) (L (b i)) := by
+      by_cases hi : L (b i) = 0
+      · simp [hi]
+      · exact (g.pos x (L (b i)) hi).le
+    have hbzero (i : Fin (Module.finrank ℝ E)) : L (b i) = 0 := by
+      have hi : g.inner x (L (b i)) (L (b i)) = 0 :=
+        (Finset.sum_eq_zero_iff_of_nonneg (fun j _ => hnonneg j)).mp hsum i (Finset.mem_univ i)
+      by_contra hne
+      exact (g.pos x (L (b i)) hne).ne' hi
+    change L = 0
+    ext v
+    rw [← b.sum_repr v, map_sum]
+    simp only [map_smul, hbzero, smul_zero, Finset.sum_const_zero, zero_apply]
+  · intro hzero
+    simp only [frobeniusSqGradVector, hzero, zero_apply,
+      map_zero, Finset.sum_const_zero]
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 omit [T2Space M] [SigmaCompactSpace M] in

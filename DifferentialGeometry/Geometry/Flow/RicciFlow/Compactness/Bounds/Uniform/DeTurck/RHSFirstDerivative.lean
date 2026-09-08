@@ -8,6 +8,7 @@ import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckVectorField.Co
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Ricci.Trace
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.Commutation.OperatorFieldApplication
 import DifferentialGeometry.Geometry.Connection.MetricTrace.NormBound
+import DifferentialGeometry.Geometry.Connection.ChartFrame.OrthonormalBasis
 
 set_option autoImplicit false
 
@@ -51,59 +52,10 @@ private theorem centeredBasis
     ∃ basis : Module.Basis (Fin (Module.finrank ℝ E)) ℝ (TangentSpace I x),
       (∀ i, basis i = smoothOrthoFrame (I := I) g x i x) ∧
       ∀ i j, g.inner x (basis i) (basis j) = if i = j then (1 : ℝ) else 0 := by
-  classical
-  have horth : ∀ i j : Fin (Module.finrank ℝ E),
-      g.inner x (smoothOrthoFrame (I := I) g x i x)
-          (smoothOrthoFrame (I := I) g x j x) =
-        if i = j then (1 : ℝ) else 0 :=
-    fun i j => smoothOrthoFrame_orthonormal_at_center (I := I) g x i j
-  have hli : LinearIndependent ℝ
-      (fun i : Fin (Module.finrank ℝ E) => smoothOrthoFrame (I := I) g x i x) := by
-    rw [linearIndependent_iff']
-    intro fs c hsum k hk
-    have hzero : g.inner x (smoothOrthoFrame (I := I) g x k x)
-        (∑ j ∈ fs, c j • smoothOrthoFrame (I := I) g x j x) = 0 := by
-      rw [hsum]
-      simp
-    rw [map_sum] at hzero
-    have hpull : ∀ j ∈ fs,
-        g.inner x (smoothOrthoFrame (I := I) g x k x)
-            (c j • smoothOrthoFrame (I := I) g x j x) =
-          c j * g.inner x (smoothOrthoFrame (I := I) g x k x)
-            (smoothOrthoFrame (I := I) g x j x) := by
-      intro j _
-      rw [(g.inner x (smoothOrthoFrame (I := I) g x k x)).map_smul,
-        smul_eq_mul]
-    rw [Finset.sum_congr rfl hpull] at hzero
-    have hpull' : ∀ j ∈ fs,
-        c j * g.inner x (smoothOrthoFrame (I := I) g x k x)
-            (smoothOrthoFrame (I := I) g x j x) =
-          c j * (if k = j then (1 : ℝ) else 0) := by
-      intro j _
-      rw [horth k j]
-    rw [Finset.sum_congr rfl hpull'] at hzero
-    rw [Finset.sum_eq_single_of_mem k hk] at hzero
-    · simpa using hzero
-    · intro j _ hjk
-      rw [if_neg (fun h => hjk h.symm), mul_zero]
-  have hcard :
-      Fintype.card (Fin (Module.finrank ℝ E)) =
-        Module.finrank ℝ (TangentSpace I x) := by
-    rw [Fintype.card_fin]
-    rfl
-  let basis := basisOfLinearIndependentOfCardEqFinrank hli hcard
-  refine ⟨basis, ?_, ?_⟩
-  · intro i
-    dsimp [basis]
-    rw [coe_basisOfLinearIndependentOfCardEqFinrank]
-  · intro i j
-    rw [show basis i = smoothOrthoFrame (I := I) g x i x by
-        dsimp [basis]
-        rw [coe_basisOfLinearIndependentOfCardEqFinrank],
-      show basis j = smoothOrthoFrame (I := I) g x j x by
-        dsimp [basis]
-        rw [coe_basisOfLinearIndependentOfCardEqFinrank]]
-    exact horth i j
+  refine ⟨smoothOrthoFrameBasis g x, smoothOrthoFrameBasis_apply g x, ?_⟩
+  intro i j
+  rw [smoothOrthoFrameBasis_apply, smoothOrthoFrameBasis_apply]
+  exact smoothOrthoFrame_orthonormal_at_center g x i j
 
 omit [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
 private theorem cometricTrace_eq
