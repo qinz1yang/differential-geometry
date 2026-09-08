@@ -45,4 +45,40 @@ theorem exists_lp_chart_source_dual
       (hΩs.trans (image_mono interior_subset)) 2) (H1ComplDirichletToLp q v) p.2) = _
   rw [hp]
   simp only [Real.inner_apply, mul_assoc]
+theorem exists_lp_chart_divergence_dual
+    {q : SmoothRiemannianMetric I_hs M} (α : M) {Ω : Set EuStd}
+    (hΩ : IsOpen Ω) (hΩc : IsCompact (closure Ω))
+    (hΩs : closure Ω ⊆ toEuclidean (E := EuN) '' interior (extChartAt I_hs α).target)
+    {Z : Type*} [MeasurableSpace Z] {μ : Measure Z}
+    (F : Fin (Module.finrank ℝ EuN) → Lp ℝ 2 (μ.prod (volume.restrict Ω))) :
+    ∃ ℓ : Lp (H1ComplDirichlet q →L[ℝ] ℝ) 2 μ, ∀ η : Lp ℝ 2 μ, ∀ v : H1ComplDirichlet q,
+      (∫ t, η t * ℓ t v ∂μ) =
+        ∑ j, ∫ p, η p.1 * F j p *
+          dirichletLocalWeakPartialLp q α hΩ hΩc hΩs j v p.2 ∂μ.prod (volume.restrict Ω) := by
+  classical
+  have hparts (j : Fin (Module.finrank ℝ EuN)) :=
+    MeasureTheory.Lp.exists_lp_dual_integral_prod
+      (dirichletLocalWeakPartialLp q α hΩ hΩc hΩs j) (F j)
+  choose L hL using hparts
+  refine ⟨∑ j, L j, ?_⟩
+  intro η v
+  have hint (j : Fin (Module.finrank ℝ EuN)) : Integrable (fun t => η t * L j t v) μ := by
+    exact (Lp.memLp η).integrable_mul ((ContinuousLinearMap.apply ℝ ℝ v).comp_memLp (L j))
+  calc
+    (∫ t, η t * (∑ j, L j) t v ∂μ) = ∫ t, ∑ j, η t * L j t v ∂μ := by
+      apply integral_congr_ae
+      filter_upwards [Lp.coeFn_finsetSum Finset.univ L] with t ht
+      rw [ht]
+      simp only [Finset.sum_apply]
+      change η t * ((ContinuousLinearMap.apply ℝ ℝ v) (∑ j, L j t)) = _
+      rw [map_sum, Finset.mul_sum]
+      rfl
+    _ = ∑ j, ∫ t, η t * L j t v ∂μ := integral_finsetSum _ (fun j _ => hint j)
+    _ = _ := by
+      apply Finset.sum_congr rfl
+      intro j _
+      rw [hL j η v]
+      apply integral_congr_ae
+      filter_upwards with p
+      simp only [Real.inner_apply, mul_assoc]
 end DifferentialGeometry.Analysis.Laplacian.WithBoundary.Dirichlet
