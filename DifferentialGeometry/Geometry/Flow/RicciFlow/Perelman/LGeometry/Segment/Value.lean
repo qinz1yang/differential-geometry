@@ -112,6 +112,31 @@ def isLSegmentMinimizer
     gamma a = x ∧ gamma b = y ∧
       lSegmentValue S T Ω a b x y = (lLength S T gamma a b : WithTop ℝ)
 
+theorem lSegmentValue_congr_region
+    (S : SolutionOn (I := I) (M := M) D) (T : ℝ)
+    {Ω Ω' : Set (M × ℝ)} {a b : ℝ} (x y : M)
+    (hΩ : ∀ r ∈ Icc a b, ∀ z : M, (z, T - r) ∈ Ω ↔ (z, T - r) ∈ Ω') :
+    lSegmentValue S T Ω a b x y = lSegmentValue S T Ω' a b x y := by
+  have hcurve (gamma : ℝ → M) :=
+    isFiniteActionLCurve_congr_region S T gamma (fun r hr => hΩ r hr (gamma r))
+  unfold lSegmentValue
+  apply congrArg sInf
+  ext q
+  constructor
+  · rintro ⟨r, ⟨gamma, hgamma, hga, hgb, hr⟩, rfl⟩
+    exact ⟨r, ⟨gamma, (hcurve gamma).mp hgamma, hga, hgb, hr⟩, rfl⟩
+  · rintro ⟨r, ⟨gamma, hgamma, hga, hgb, hr⟩, rfl⟩
+    exact ⟨r, ⟨gamma, (hcurve gamma).mpr hgamma, hga, hgb, hr⟩, rfl⟩
+
+theorem isLSegmentMinimizer_congr_region
+    (S : SolutionOn (I := I) (M := M) D) (T : ℝ)
+    {Ω Ω' : Set (M × ℝ)} {a b : ℝ} (x y : M) (gamma : ℝ → M)
+    (hΩ : ∀ r ∈ Icc a b, ∀ z : M, (z, T - r) ∈ Ω ↔ (z, T - r) ∈ Ω') :
+    isLSegmentMinimizer S T Ω a b x y gamma ↔ isLSegmentMinimizer S T Ω' a b x y gamma := by
+  unfold isLSegmentMinimizer
+  rw [isFiniteActionLCurve_congr_region S T gamma (fun r hr => hΩ r hr (gamma r)),
+    lSegmentValue_congr_region S T x y hΩ]
+
 private theorem bddBelow_lSegmentCosts
     (S : SolutionOn (I := I) (M := M) D) (T K : ℝ)
     (Ω : Set (M × ℝ)) {a b : ℝ}
