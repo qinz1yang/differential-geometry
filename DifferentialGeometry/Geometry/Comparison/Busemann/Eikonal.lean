@@ -173,6 +173,25 @@ theorem normGradSqFun_busemann_eq_one
   change g.inner x v v = 1
   rw [← Real.sq_sqrt hnonneg, hsqrt, one_pow]
 
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+theorem mfderiv_busemann_ne_zero
+    [ConnectedSpace M]
+    [RiemannianBundle (fun x : M => TangentSpace I x)]
+    [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
+    (g : SmoothRiemannianMetric I M)
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
+    {p : M} {γ : ℝ → M} (hγ : IsMinimizingRay (I := I) g p γ) (x : M)
+    (hb : MDifferentiableAt I 𝓘(ℝ, ℝ) (busemann (I := I) γ) x) :
+    mfderiv I 𝓘(ℝ, ℝ) (busemann (I := I) γ) x ≠ 0 := by
+  let _ : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
+    hEnorm.isContinuousRiemannianBundle
+  have hunit := normGradSqFun_busemann_eq_one g hEnorm hγ x hb
+  intro hzero
+  have hgrad := gradFun_eq_zero_of_mfderiv_eq_zero g (busemann (I := I) γ) hzero
+  simp only [normGradSqFun, hgrad, map_zero] at hunit
+  exact zero_ne_one hunit
+
 end Riemannian
 end Geometry
 end DifferentialGeometry
