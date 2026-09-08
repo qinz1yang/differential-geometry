@@ -196,7 +196,7 @@ theorem intrinsicPull_rm04
     isSigmaCompact_iff_sigmaCompactSpace.mp
       (Geometry.isSigmaCompact_of_isOpen
         𝓘(Real, E) (intrinsicPullBall (E := E) R).isOpen)
-  rw [intrinsicPullMetric, Integral.Connection.rm04_localPull,
+  rw [intrinsicPullMetric, Geometry.Curvature.metricRm04StandardAt_localPullMetric,
     intrinsicExpOn_mfderiv, intrinsicExpOn_mfderiv, intrinsicExpOn_mfderiv,
     intrinsicExpOn_mfderiv]
   rfl

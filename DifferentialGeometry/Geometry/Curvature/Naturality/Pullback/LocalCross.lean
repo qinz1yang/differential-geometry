@@ -2,36 +2,29 @@ import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph.Opens
 import DifferentialGeometry.Geometry.Curvature.Naturality.Pullback.Cross
 import DifferentialGeometry.Geometry.Curvature.Naturality.OpenRestriction
 import DifferentialGeometry.Geometry.Metric.Pullback.Local
-import DifferentialGeometry.Topology.SigmaCompactOpen
-
 
 set_option autoImplicit false
 
 noncomputable section
 
-namespace DifferentialGeometry.Integral.Connection
+namespace DifferentialGeometry.Geometry.Curvature
 
 open DifferentialGeometry.Geometry.Connection
-open DifferentialGeometry.Geometry.Curvature
 open Set TopologicalSpace
 open scoped Manifold ContDiff Topology
 
-variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace Real E]
-  [FiniteDimensional Real E] [CompleteSpace E] [NeZero (Module.finrank Real E)]
-variable {F : Type*} [NormedAddCommGroup F] [InnerProductSpace Real F]
-  [FiniteDimensional Real F] [CompleteSpace F] [NeZero (Module.finrank Real F)]
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
+  [FiniteDimensional Real E]
+variable {F : Type*} [NormedAddCommGroup F] [NormedSpace Real F]
+  [FiniteDimensional Real F]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners Real E H}
 variable {G : Type*} [TopologicalSpace G] {J : ModelWithCorners Real F G}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
-  [IsManifold I ∞ M] [IsManifold I 1 M]
-  [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+  [IsManifold I ∞ M] [T2Space M]
 variable {N : Type*} [TopologicalSpace N] [ChartedSpace G N]
-  [IsManifold J ∞ N] [IsManifold J 1 N]
-  [T2Space N] [SigmaCompactSpace N] [J.Boundaryless]
+  [IsManifold J ∞ N] [T2Space N]
 
-omit [I.Boundaryless] [J.Boundaryless] in
-omit [NeZero (Module.finrank ℝ E)] [NeZero (Module.finrank ℝ F)] [SigmaCompactSpace N] in
-theorem rm04_localPull
+theorem metricRm04StandardAt_localPullMetric
     (g : SmoothRiemannianMetric J N) (f : M → N)
     (hf : IsLocalDiffeomorph I J ∞ f)
     (x : M) (X Y Z W : TangentSpace I x) :
@@ -43,13 +36,14 @@ theorem rm04_localPull
   let Φ : PartialDiffeomorph I J M N ∞ := Classical.choose (hf x)
   have hxΦ : x ∈ Φ.source := (hf x).choose_spec.1
   have hEq : Set.EqOn f (Φ : M → N) Φ.source := (hf x).choose_spec.2
-  let U : Opens M := ⟨Φ.source, Φ.open_source⟩
-  have hU : (U : Set M) ⊆ Φ.source := Set.Subset.rfl
+  let U : Opens M :=
+    ⟨Φ.source ∩ (chartAt H x).source, Φ.open_source.inter (chartAt H x).open_source⟩
+  have hU : (U : Set M) ⊆ Φ.source := fun _ hy => hy.1
   let V : Opens N :=
     ⟨(Φ : M → N) '' (U : Set M), image_opens_isOpen Φ hU⟩
   let Ψ : Diffeomorph I J U V ∞ :=
     DifferentialGeometry.PartialDiffeomorph.toOpensDiffeo Φ hU
-  let xu : U := ⟨x, hxΦ⟩
+  let xu : U := ⟨x, hxΦ, mem_chart_source H x⟩
   let toU (v : TangentSpace I x) : TangentSpace I xu :=
     (tangentSpaceModelContinuousLinearEquiv (I := I) xu).symm
       (tangentSpaceModelContinuousLinearEquiv (I := I) x v)
@@ -63,9 +57,14 @@ theorem rm04_localPull
       tangentSpaceModelContinuousLinearEquiv (I := I) x v
     rw [tangentSpaceModelContinuousLinearEquiv_symm_apply]
     exact tangentSpaceModelContinuousLinearEquiv_apply (I := I) x v
-  let _ : SigmaCompactSpace U :=
-    isSigmaCompact_iff_sigmaCompactSpace.mp
-      (Geometry.isSigmaCompact_of_isOpen I U.isOpen)
+  let _ : LocallyCompactSpace H := I.locallyCompactSpace
+  let _ : SecondCountableTopology H := I.secondCountableTopology
+  let _ : LocallyCompactSpace M := ChartedSpace.locallyCompactSpace H M
+  let _ : LocallyCompactSpace U := U.isOpen.locallyCompactSpace
+  let e : U ≃ₜ ((chartAt H x) '' (U : Set M)) :=
+    (chartAt H x).homeomorphOfImageSubsetSource (fun _ hy => hy.2) rfl
+  let _ : SecondCountableTopology U := e.secondCountableTopology
+  let _ : SigmaCompactSpace U := inferInstance
   let _ : SigmaCompactSpace V :=
     isSigmaCompact_iff_sigmaCompactSpace.mp
       (isSigmaCompact_iff_isSigmaCompact_univ.mpr (by
@@ -177,4 +176,4 @@ theorem rm04_localPull
           (mfderiv I J f x Z) (mfderiv I J f x W) = _
       rw [← hEq hxΦ]
 
-end DifferentialGeometry.Integral.Connection
+end DifferentialGeometry.Geometry.Curvature
