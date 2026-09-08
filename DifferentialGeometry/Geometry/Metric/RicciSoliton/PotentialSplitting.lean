@@ -482,7 +482,7 @@ private theorem potential_eq_slice_add_quadratic
 
 set_option backward.isDefEq.respectTransparency false in
 theorem gradientRicciSoliton_prod_real_line_potential_splitting
-    [CompleteSpace E] [ConnectedSpace M]
+    [ConnectedSpace M]
     {g : SmoothRiemannianMetric I M}
     {u : C^∞⟮I.prod (modelWithCornersSelf Real Real), M × Real; Real⟯}
     {sigma : Real}
@@ -494,6 +494,7 @@ theorem gradientRicciSoliton_prod_real_line_potential_splitting
       (∀ p : M × Real,
         u p = psi p.1 + (sigma / 4) * (p.2 - s0) ^ 2) ∧
       gradientRicciSoliton (I := I) g psi sigma := by
+  let _ : CompleteSpace E := FiniteDimensional.complete Real E
   obtain ⟨a, ha⟩ := verticalDerivative_eq_affine
     (I := I) g u sigma hs
   have hu := potential_eq_slice_add_quadratic (I := I) u sigma a ha
@@ -536,7 +537,7 @@ theorem gradientRicciSoliton_prod_real_line_potential_splitting
 
 set_option backward.isDefEq.respectTransparency false in
 theorem normalizedGradientRicciSoliton_prod_real_line_potential_splitting
-    [CompleteSpace E] [ConnectedSpace M] [SigmaCompactSpace M]
+    [ConnectedSpace M] [SigmaCompactSpace M]
     {g : SmoothRiemannianMetric I M}
     {u : C^∞⟮I.prod (modelWithCornersSelf Real Real), M × Real; Real⟯}
     (h : normalizedGradientRicciSoliton
@@ -546,6 +547,7 @@ theorem normalizedGradientRicciSoliton_prod_real_line_potential_splitting
       (∀ p : M × Real,
         u p = psi p.1 + (1 / 4 : Real) * (p.2 - s0) ^ 2) ∧
       normalizedGradientRicciSoliton (I := I) g psi := by
+  let _ : CompleteSpace E := FiniteDimensional.complete Real E
   obtain ⟨s0, psi, hsplit, hpsiSol⟩ :=
     gradientRicciSoliton_prod_real_line_potential_splitting
       (I := I) (g := g) (u := u) h.2.1 (by norm_num)
