@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Comparison.DistanceFamily
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Distance.Laplacian
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Distance.Barrier
 import DifferentialGeometry.Analysis.Calculus.CutoffProfile
@@ -461,5 +462,128 @@ theorem exists_distance_cutoff_lower_support_of_ricci_le_on_ball
       (Analysis.CutoffProfile.abs_deriv_le_derivBound (u t x))
       (Analysis.CutoffProfile.abs_deriv2_le_derivBound (u t x)) hB
     nlinarith
+
+omit [NeZero (Module.finrank ℝ E)] in
+private theorem eventually_distance_cutoff_eq_one
+    (g : ℝ → SmoothRiemannianMetric I M) {J : Set ℝ}
+    (hg : tensor0SFamilyContinuousOnSet (I := I) (M := M) 2 J
+      (fun t x => Tensor0SBundle.metricTensorField (I := I) (g t) x))
+    {t : ℝ} (ht : J ∈ nhds t)
+    (hcomplete : RiemannianMetricComplete (I := I) (g t))
+    (O x : M) (hfin : riemannianEDistOf (I := I) (g t) O x ≠ ⊤)
+    {a : ℝ} (ha : 0 ≤ a)
+    (hx : a * (riemannianEDistOf (I := I) (g t) O x).toReal < 1) :
+    ∀ᶠ p in nhds (t, x), DifferentialGeometry.Analysis.CutoffProfile.evalue
+      (ENNReal.ofReal a * riemannianEDistOf (I := I) (g p.1) O p.2) = 1 := by
+  obtain ⟨F, hF, hFx, hupper⟩ := exists_riemannianEDistOf_upper_support_continuousAt
+    (I := I) g hg ht hcomplete O x hfin
+  have hcenter : a * F (t, x) < 1 := by simpa [hFx] using hx
+  have hsmall : ∀ᶠ p in nhds (t, x), a * F p < 1 := by
+    exact (continuousAt_const.mul hF).eventually (Iio_mem_nhds hcenter)
+  filter_upwards [hsmall, hupper] with p hp hdist
+  apply DifferentialGeometry.Analysis.CutoffProfile.evalue_one_of_le
+  have hmul := mul_le_mul_right hdist (ENNReal.ofReal a)
+  rw [← ENNReal.ofReal_mul ha] at hmul
+  exact hmul.trans (by simpa only [ENNReal.ofReal_one] using ENNReal.ofReal_le_ofReal hp.le)
+
+
+theorem exists_distance_cutoff_lower_support_at
+    {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D)
+    (hS : IsSolutionOn (I := I) S) {t R K : ℝ} (ht : t ∈ D.regular)
+    (hcomplete : RiemannianMetricComplete (I := I) (S.base.metric t))
+    (O : M) (hR : 0 < R) (hK : 0 ≤ K)
+    (hRic : ∀ y : M, riemannianEDistOf (I := I) (S.base.metric t) O y < ENNReal.ofReal R →
+      ∀ v : TangentSpace I y, ricciTensor (I := I) (S.base.metric t) y v v ≤
+        K * (S.base.metric t).inner y v v)
+    (a : ℝ) (ha : 0 ≤ a) (haR : a * R < 1) (x : M) :
+    let r := (riemannianEDistOf (I := I) (S.base.metric t) O x).toReal
+    let χ := fun s y => Analysis.CutoffProfile.evalue
+      (ENNReal.ofReal a * riemannianEDistOf (I := I) (S.base.metric s) O y)
+    ∃ φ : ℝ → M → ℝ,
+      φ t x = χ t x ∧
+      (∀ᶠ p : ℝ × M in 𝓝 (t, x), 0 ≤ φ p.1 p.2 ∧ φ p.1 p.2 ≤ χ p.1 p.2) ∧
+      DifferentiableAt ℝ (fun s => φ s x) t ∧
+      (∀ᶠ y in 𝓝 x, MDifferentiableAt I 𝓘(ℝ, ℝ) (φ t) y) ∧
+      MDiffAt (T% fun y : M => gradientFun (I := I) (S.base.metric t) (φ t) y) x ∧
+      (S.base.metric t).inner x
+        (gradientFun (I := I) (S.base.metric t) (φ t) x)
+        (gradientFun (I := I) (S.base.metric t) (φ t) x) ≤
+          (deriv Analysis.CutoffProfile.value (a * r)) ^ 2 * a ^ 2 ∧
+      deriv (fun s => φ s x) t - laplacian (I := I)
+          (LeviCivita (I := I) (S.base.metric t)) (S.base.metric t) (φ t) x ≤
+        Analysis.CutoffProfile.derivBound *
+          (a * (2 * (Module.finrank ℝ E - 1 : ℝ) * Analysis.CutoffProfile.derivBound ^ 2 / R +
+            K * R) + a ^ 2) := by
+  let r := (riemannianEDistOf (I := I) (S.base.metric t) O x).toReal
+  let χ := fun s y => Analysis.CutoffProfile.evalue
+    (ENNReal.ofReal a * riemannianEDistOf (I := I) (S.base.metric s) O y)
+  dsimp only
+  have hgrad_nonneg : 0 ≤ (deriv Analysis.CutoffProfile.value (a * r)) ^ 2 * a ^ 2 :=
+    mul_nonneg (sq_nonneg _) (sq_nonneg _)
+  have hdim : (1 : ℝ) ≤ Module.finrank ℝ E := by
+    exact_mod_cast (Nat.one_le_iff_ne_zero.mpr (NeZero.ne (Module.finrank ℝ E)))
+  have hpar_nonneg : 0 ≤ Analysis.CutoffProfile.derivBound *
+      (a * (2 * (Module.finrank ℝ E - 1 : ℝ) * Analysis.CutoffProfile.derivBound ^ 2 / R +
+        K * R) + a ^ 2) := by
+    apply mul_nonneg Analysis.CutoffProfile.derivBound_nonneg
+    exact add_nonneg (mul_nonneg ha (add_nonneg
+      (div_nonneg (mul_nonneg (mul_nonneg (by norm_num) (sub_nonneg.mpr hdim)) (sq_nonneg _)) hR.le)
+      (mul_nonneg hK hR.le))) (sq_nonneg _)
+  have hconst (c : ℝ) (hc : c = χ t x) (hc0 : 0 ≤ c)
+      (hcl : ∀ᶠ p : ℝ × M in 𝓝 (t, x), c ≤ χ p.1 p.2) :
+      ∃ φ : ℝ → M → ℝ,
+        φ t x = χ t x ∧
+        (∀ᶠ p : ℝ × M in 𝓝 (t, x), 0 ≤ φ p.1 p.2 ∧ φ p.1 p.2 ≤ χ p.1 p.2) ∧
+        DifferentiableAt ℝ (fun s => φ s x) t ∧
+        (∀ᶠ y in 𝓝 x, MDifferentiableAt I 𝓘(ℝ, ℝ) (φ t) y) ∧
+        MDiffAt (T% fun y : M => gradientFun (I := I) (S.base.metric t) (φ t) y) x ∧
+        (S.base.metric t).inner x
+          (gradientFun (I := I) (S.base.metric t) (φ t) x)
+          (gradientFun (I := I) (S.base.metric t) (φ t) x) ≤
+            (deriv Analysis.CutoffProfile.value (a * r)) ^ 2 * a ^ 2 ∧
+        deriv (fun s => φ s x) t - laplacian (I := I)
+            (LeviCivita (I := I) (S.base.metric t)) (S.base.metric t) (φ t) x ≤
+          Analysis.CutoffProfile.derivBound *
+            (a * (2 * (Module.finrank ℝ E - 1 : ℝ) * Analysis.CutoffProfile.derivBound ^ 2 / R +
+              K * R) + a ^ 2) := by
+    refine ⟨fun _ _ => c, hc, hcl.mono (fun p hp => ⟨hc0, hp⟩),
+      differentiableAt_const c, Filter.Eventually.of_forall (fun _ => mdifferentiableAt_const), ?_, ?_, ?_⟩
+    · simpa only [gradientFun_const] using!
+        (contMDiff_zeroSection ℝ (TangentSpace I : M → Type _)).contMDiffAt.mdifferentiableAt one_ne_zero
+    · simpa only [gradientFun_const, map_zero] using hgrad_nonneg
+    · simpa only [deriv_const, laplacian_const, sub_zero] using hpar_nonneg
+  by_cases ha0 : a = 0
+  · have hχ : ∀ s y, χ s y = 1 := by
+      intro s y
+      apply Analysis.CutoffProfile.evalue_one_of_le
+      simp [ha0]
+    exact hconst 1 (hχ t x).symm zero_le_one
+      (Filter.Eventually.of_forall (fun p => (hχ p.1 p.2).ge))
+  by_cases hfin : riemannianEDistOf (I := I) (S.base.metric t) O x = ⊤
+  · have hχ : χ t x = 0 := by
+      dsimp only [χ]
+      rw [hfin, ENNReal.mul_top (ENNReal.ofReal_ne_zero_iff.mpr (lt_of_le_of_ne ha (Ne.symm ha0))),
+        Analysis.CutoffProfile.evalue_top]
+    exact hconst 0 hχ.symm le_rfl (Filter.Eventually.of_forall (fun p =>
+      (Analysis.CutoffProfile.evalue_mem_Icc _).1))
+  by_cases hx : R ≤ r
+  · obtain ⟨φ, heq, hlow, htime, hspace, hgrad, hgsq, hpar⟩ :=
+      exists_distance_cutoff_lower_support_of_ricci_le_on_ball
+        (I := I) S hS ht hcomplete O hR hK hRic a ha x hx
+    refine ⟨φ, heq, ?_, htime, hspace, hgrad, hgsq, hpar⟩
+    have hlow' : ∀ᶠ p : ℝ × M in nhds (t, x), ∀ s : ℝ,
+        0 ≤ φ s p.2 ∧ φ s p.2 ≤ χ s p.2 :=
+      (continuousAt_snd : ContinuousAt (fun p : ℝ × M => p.2) (t, x)).eventually hlow
+    exact hlow'.mono (fun p hp => hp p.1)
+  · have hinner : a * r < 1 :=
+      (mul_le_mul_of_nonneg_left (le_of_lt (lt_of_not_ge hx)) ha).trans_lt haR
+    have hJ : D.carrier ∈ nhds t := by
+      obtain ⟨α, β, ht', hwin⟩ := D.exists_Icc_regular ht
+      exact Filter.mem_of_superset (Icc_mem_nhds ht'.1 ht'.2)
+        (fun _ hs => D.regular_subset (hwin hs))
+    have hone := eventually_distance_cutoff_eq_one (I := I) S.base.metric
+      hS.smoothMetric.metricTensor_cont hJ hcomplete O x hfin ha hinner
+    exact hconst 1 hone.self_of_nhds.symm zero_le_one
+      (hone.mono (fun _ hp => hp.ge))
 
 end DifferentialGeometry.PDE.RicciFlow

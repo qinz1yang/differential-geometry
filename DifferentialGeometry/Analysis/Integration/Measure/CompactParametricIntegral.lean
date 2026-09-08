@@ -1,5 +1,6 @@
 import Mathlib.Analysis.Calculus.ParametricIntegral
 import Mathlib.Topology.MetricSpace.ProperSpace
+import Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic
 
 noncomputable section
 
@@ -49,6 +50,32 @@ theorem integral_contOn_cpt
     exact hx p hp
   exact tendsto_integral_filter_of_dominated_convergence
     (fun _ : X => C₀) hmeas hbound hCint hlim
+
+attribute [local instance] Measure.Subtype.measureSpace in
+theorem continuousOn_intervalIntegral_of_continuousOn_compact
+    {P W : Type*} [TopologicalSpace P] [FirstCountableTopology P]
+    [NormedAddCommGroup W] [NormedSpace ℝ W]
+    {K : Set P} (hK : IsCompact K) {a b : ℝ} (hab : a ≤ b)
+    {f : P → ℝ → W}
+    (hf : ContinuousOn (fun p : P × ℝ => f p.1 p.2) (K ×ˢ Icc a b)) :
+    ContinuousOn (fun p => ∫ q in a..b, f p q) K := by
+  let : CompactSpace (Icc a b) := isCompact_iff_compactSpace.mp isCompact_Icc
+  let : IsFiniteMeasure (volume : Measure (Icc a b)) :=
+    ⟨by
+      rw [Measure.Subtype.volume_univ measurableSet_Icc.nullMeasurableSet]
+      exact isCompact_Icc.measure_lt_top⟩
+  have hcont : ContinuousOn (fun p : P × Icc a b => f p.1 p.2.val)
+      (K ×ˢ (Set.univ : Set (Icc a b))) := by
+    exact hf.comp
+      (continuous_fst.prodMk (continuous_subtype_val.comp continuous_snd)).continuousOn
+      (fun p hp => ⟨hp.1, p.2.property⟩)
+  have h := integral_contOn_cpt (volume : Measure (Icc a b))
+    (fun p q => f p q) hK hcont
+  refine h.congr (fun p _hp => ?_)
+  change (∫ q in a..b, f p q) = ∫ q : Icc a b, f p q
+  rw [integral_subtype measurableSet_Icc, integral_Icc_eq_integral_Ioc]
+  exact intervalIntegral.integral_of_le hab
+
 end DifferentialGeometry.Integral.Measure
 
 end
