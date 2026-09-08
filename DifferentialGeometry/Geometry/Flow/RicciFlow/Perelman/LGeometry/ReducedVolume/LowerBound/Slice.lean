@@ -84,7 +84,8 @@ theorem redVolume_slice_low
     have htime : T - (T - a₀) = a₀ := by linarith
     rw [htime]
     exact hAvol
-  have hset := redVolume_set_low (I := I) S T x (T - a₀) K hAmeas hAlen
+  have hset := measure_mul_exp_le_redVolume (I := I) S T x (T - a₀) K A
+    (ae_restrict_of_forall_mem hAmeas hAlen)
   calc
     v₀ = v * ENNReal.ofReal c := rfl
     _ ≤ riemannianVolumeMeasure (I := I) (M := M)
