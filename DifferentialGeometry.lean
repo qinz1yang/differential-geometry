@@ -4747,3 +4747,4 @@ import DifferentialGeometry.Analysis.Parabolic.Dirichlet.SpatialGradientEquation
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.GradientH1
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureOperatorRankScaling
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Soliton.CurvatureRank
+import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.KernelParallel
