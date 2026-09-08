@@ -1174,6 +1174,77 @@ theorem intrinsicJacobi_li
   rw [hfield]
   exact hmapped
 
+theorem exists_intrinsicJacobi_one_eq
+    (g : SmoothRiemannianMetric I M)
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
+    (p : M) (B : ExpInvBranch (I := I) g hEnorm p)
+    {u : TangentSpace I p}
+    (hu : tangentSpaceModelContinuousLinearEquiv (I := I) p u ∈ B.hom.source)
+    (Y : TangentSpace I (intrinsicGeodesic (I := I) g hEnorm p u 1)) :
+    ∃ w : TangentSpace I p,
+      intrinsicJacobi (I := I) g hEnorm p u w 1 = Y := by
+  let eP : TangentSpace I p ≃L[Real] E :=
+    tangentSpaceModelContinuousLinearEquiv (I := I) p
+  let uE : E := eP u
+  let expf : E → M := fun v =>
+    expMapIntrinsic (I := I) g hEnorm p (eP.symm v)
+  let q : M := expf uE
+  let eU : TangentSpace 𝓘(Real, E) uE ≃L[Real] E :=
+    tangentSpaceModelContinuousLinearEquiv (I := 𝓘(Real, E)) uE
+  let eQ : TangentSpace I q ≃L[Real] E :=
+    tangentSpaceModelContinuousLinearEquiv (I := I) q
+  have hq : q ∈ B.dom := by
+    rw [show q = B.hom uE from B.hom_eq hu]
+    exact B.hom.map_source hu
+  have hinv : B.inv q = uE := by
+    simpa only [q, expf, uE, eP] using B.left_inv hu
+  let dInv : E := eU (mfderiv I 𝓘(Real, E) B.inv q Y)
+  let w : TangentSpace I p := eP.symm dInv
+  refine ⟨w, ?_⟩
+  have hexpInv := exp_inv_mfderiv (I := I) B hq Y
+  rw [hinv] at hexpInv
+  have hmodel :
+      eQ (mfderiv 𝓘(Real, E) I expf uE (eU.symm dInv)) = eQ Y := by
+    dsimp only [q, expf, uE, eP, eU, eQ, dInv] at hexpInv ⊢
+    exact hexpInv
+  have hexp :
+      mfderiv 𝓘(Real, E) I expf uE (eU.symm dInv) = Y :=
+    eQ.injective hmodel
+  let expOld : E → M := fun v =>
+    expMapIntrinsic (I := I) g hEnorm p
+      (show TangentSpace I p from v)
+  have hexpFun : expOld = expf := by
+    funext v
+    simp only [expOld, expf, eP,
+      tangentSpaceModelContinuousLinearEquiv_symm_apply]
+  have hcurve :
+      (fun s : Real => intrinsicGeodesic (I := I) g hEnorm p
+        (show TangentSpace I p from uE + s • dInv) 1) =
+        fun s => intrinsicGeodesic (I := I) g hEnorm p
+          (u + s • w) 1 := by
+    funext s
+    congr 2
+  have hj := intrinsic_jacobi_one (I := I) g hEnorm p uE dInv
+  change
+    mfderiv 𝓘(Real, Real) I
+        (fun s : Real => intrinsicGeodesic (I := I) g hEnorm p
+          (show TangentSpace I p from uE + s • dInv) 1)
+        0 (1 : Real) =
+      mfderiv 𝓘(Real, E) I expOld uE
+        (show TangentSpace 𝓘(Real, E) uE from dInv) at hj
+  rw [hexpFun] at hj
+  have hdir :
+      (show TangentSpace 𝓘(Real, E) uE from dInv) = eU.symm dInv := by
+    with_unfolding_all rfl
+  have hrhs :
+      mfderiv 𝓘(Real, E) I expf uE
+          (show TangentSpace 𝓘(Real, E) uE from dInv) = Y := by
+    rw [hdir]
+    exact hexp
+  rw [hrhs] at hj
+  rw [hcurve] at hj
+  with_unfolding_all exact hj
+
 end Exponential
 end Riemannian
 end Geometry

@@ -4607,3 +4607,6 @@ import DifferentialGeometry.Geometry.Metric.RicciSoliton.ModelCoverCylinderClass
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HamiltonHarnack.UhlenbeckTestJets
 import DifferentialGeometry.Geometry.Metric.Conformal.VectorFieldCurvature
 import DifferentialGeometry.Analysis.Integration.Measure.ConformalCurvature
+import DifferentialGeometry.Analysis.Calculus.CutoffIntegral
+import DifferentialGeometry.Geometry.Comparison.DistanceIndex
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Distance.LocalCutoff

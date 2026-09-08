@@ -181,7 +181,7 @@ theorem ricci_eq_sum_sectional_curvature_of_orthonormal_perp_frame
   rw [zero_add]
 
 omit [SigmaCompactSpace M] in
-private theorem weighted_ricci_integrand_sum
+theorem sum_indexIntegrand_eq_weighted_ricci
     (g : SmoothRiemannianMetric I M) (gamma : Real → M)
     (F : Fin (Module.finrank Real E - 1) →
       ∀ t : Real, TangentSpace I (gamma t))
@@ -393,7 +393,7 @@ private theorem weighted_ricci_integral_le_with_frame
           simpa [Set.uIcc_of_le hL.le] using ht
         simpa only [y, dy, basis,
           DifferentialGeometry.Analysis.ODE.indexIntegrand] using
-            weighted_ricci_integrand_sum (I := I) g gamma F t
+            sum_indexIntegrand_eq_weighted_ricci (I := I) g gamma F t
               (phi t) (deriv phi t)
               (hunit t htIcc) (hFON t htIcc) (hFperp t htIcc)
   have henergy_int : IntervalIntegrable
@@ -420,7 +420,7 @@ private theorem weighted_ricci_integral_le_with_frame
     have ht' : t ∈ Set.uIcc (0 : Real) L := Set.uIoc_subset_uIcc ht
     have htIcc : t ∈ Set.Icc (0 : Real) L := by
       simpa [Set.uIcc_of_le hL.le] using ht'
-    have hp := weighted_ricci_integrand_sum (I := I) g gamma F t
+    have hp := sum_indexIntegrand_eq_weighted_ricci (I := I) g gamma F t
       (phi t) (deriv phi t)
       (hunit t htIcc) (hFON t htIcc) (hFperp t htIcc)
     have hp' :

@@ -924,50 +924,12 @@ theorem divergence_smul_gradientFun_pair
   have hinner := inner_gradientFun (I := I) g f x (gradientFun (I := I) g h x)
   simpa [mvfderiv] using congrArg id hinner.symm
 
-theorem laplacian_comp
-    (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
-    (g : SmoothRiemannianMetric I M)
-    {φ : Real -> Real} {f : M -> Real} {x : M}
-    (hφ : Differentiable Real φ)
-    (hφ' : DifferentiableAt Real (deriv φ) (f x))
-    (hf : ∀ y : M, MDifferentiableAt I 𝓘(Real, Real) f y)
-    (hgrad : MDiffAt
-      (T% fun y : M => gradientFun (I := I) g f y) x) :
-    laplacian (I := I) cov g (fun y : M => φ (f y)) x =
-      deriv φ (f x) * laplacian (I := I) cov g f x +
-        deriv (deriv φ) (f x) *
-          g.inner x (gradientFun (I := I) g f x)
-            (gradientFun (I := I) g f x) := by
-  let coeffFun : M -> Real := fun y => deriv φ (f y)
-  have hcoeff :
-      MDifferentiableAt I 𝓘(Real, Real) coeffFun x := by
-    exact hφ'.mdifferentiableAt.comp x (hf x)
-  have hgrad_eq :
-      gradientFun (I := I) g (fun y : M => φ (f y)) =
-        coeffFun • fun y : M => gradientFun (I := I) g f y := by
-    funext y
-    exact gradientFun_comp (I := I) g (hφ (f y)) (hf y)
-  calc
-    laplacian (I := I) cov g (fun y : M => φ (f y)) x =
-        divergence (I := I) cov
-          (coeffFun • fun y : M => gradientFun (I := I) g f y) x := by
-      rw [laplacian, hgrad_eq]
-    _ = coeffFun x * laplacian (I := I) cov g f x +
-          g.inner x (gradientFun (I := I) g coeffFun x)
-            (gradientFun (I := I) g f x) := by
-      exact divergence_smul_gradientFun_pair (I := I) cov g hcoeff hgrad
-    _ = deriv φ (f x) * laplacian (I := I) cov g f x +
-          deriv (deriv φ) (f x) *
-            g.inner x (gradientFun (I := I) g f x)
-              (gradientFun (I := I) g f x) := by
-      rw [gradientFun_comp (I := I) g hφ' (hf x)]
-      simp [coeffFun]
-
-theorem laplacian_comp_at
+omit [VectorBundle ℝ E (TangentSpace I : M → Type _)] in
+theorem laplacian_comp_of_eventually_differentiable
     (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
     (g : SmoothRiemannianMetric I M)
     {phi : Real → Real} {f : M → Real} {x : M}
-    (hphi : Differentiable Real phi)
+    (hphi : ∀ᶠ z in nhds (f x), DifferentiableAt ℝ phi z)
     (hphi' : DifferentiableAt Real (deriv phi) (f x))
     (hf : ∀ᶠ y in nhds x,
       MDifferentiableAt I 𝓘(Real, Real) f y)
@@ -987,8 +949,8 @@ theorem laplacian_comp_at
       (fun y : M => gradientFun (I := I) g (fun z : M => phi (f z)) y) =ᶠ[nhds x]
         (fun y : M =>
           coeffFun y • gradientFun (I := I) g f y) := by
-    filter_upwards [hf] with y hfy
-    exact gradientFun_comp (I := I) g (hphi (f y)) hfy
+    filter_upwards [hf, hfx.continuousAt.eventually hphi] with y hfy hphiy
+    exact gradientFun_comp (I := I) g hphiy hfy
   have hscaled :
       MDiffAt
         (T% fun y : M => coeffFun y • gradientFun (I := I) g f y) x :=
@@ -1030,6 +992,43 @@ theorem laplacian_comp_at
               (gradientFun (I := I) g f x) := by
       rw [gradientFun_comp (I := I) g hphi' hfx]
       simp [coeffFun]
+
+omit [VectorBundle ℝ E (TangentSpace I : M → Type _)] in
+theorem laplacian_comp
+    (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
+    (g : SmoothRiemannianMetric I M)
+    {φ : Real -> Real} {f : M -> Real} {x : M}
+    (hφ : Differentiable Real φ)
+    (hφ' : DifferentiableAt Real (deriv φ) (f x))
+    (hf : ∀ y : M, MDifferentiableAt I 𝓘(Real, Real) f y)
+    (hgrad : MDiffAt
+      (T% fun y : M => gradientFun (I := I) g f y) x) :
+    laplacian (I := I) cov g (fun y : M => φ (f y)) x =
+      deriv φ (f x) * laplacian (I := I) cov g f x +
+        deriv (deriv φ) (f x) *
+          g.inner x (gradientFun (I := I) g f x)
+            (gradientFun (I := I) g f x) := by
+  exact laplacian_comp_of_eventually_differentiable (I := I) cov g
+    (Filter.Eventually.of_forall hφ) hφ' (Filter.Eventually.of_forall hf) hgrad
+
+omit [VectorBundle ℝ E (TangentSpace I : M → Type _)] in
+theorem laplacian_comp_at
+    (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
+    (g : SmoothRiemannianMetric I M)
+    {phi : Real → Real} {f : M → Real} {x : M}
+    (hphi : Differentiable Real phi)
+    (hphi' : DifferentiableAt Real (deriv phi) (f x))
+    (hf : ∀ᶠ y in nhds x,
+      MDifferentiableAt I 𝓘(Real, Real) f y)
+    (hgrad : MDiffAt
+      (T% fun y : M => gradientFun (I := I) g f y) x) :
+    laplacian (I := I) cov g (fun y : M => phi (f y)) x =
+      deriv phi (f x) * laplacian (I := I) cov g f x +
+        deriv (deriv phi) (f x) *
+          g.inner x (gradientFun (I := I) g f x)
+            (gradientFun (I := I) g f x) := by
+  exact laplacian_comp_of_eventually_differentiable (I := I) cov g
+    (Filter.Eventually.of_forall hphi) hphi' hf hgrad
 
 theorem laplacian_mul
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))

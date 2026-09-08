@@ -324,6 +324,7 @@ theorem laplacianAt_mul_of_scalarRegular
     ((hf x).smul_section (hgradh x))
     ((hh x).smul_section (hgradf x))
 
+omit [VectorBundle ℝ E (TangentSpace I : M → Type _)] in
 theorem heatDrift_comp
     (G : MetricConnectionFamily (I := I) (M := M) Time)
     (t : Time) (X : (x : M) -> TangentSpace I x)
