@@ -4221,6 +4221,7 @@ import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.CurvatureNullit
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.RicciNaturalityCross
 import DifferentialGeometry.Geometry.Curvature.CurvatureRicciContraction
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureOperatorRankNaturality
+import DifferentialGeometry.Geometry.Curvature.DimensionThree.RicciNullity
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.RicciReaction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Limits.CurvatureOperator
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Limits.HamiltonIvey
@@ -4714,6 +4715,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.ParallelLineSplitting
 import DifferentialGeometry.Analysis.Integration.Lp.ProductL2
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.TimeWeakDerivativeProduct
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Nullity
+import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.RicciNullity
 import DifferentialGeometry.Analysis.Sobolev.WeakDerivativeUniqueness
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.TimeWeakDerivativeUniqueness
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.TimeDerivativeUniqueness
