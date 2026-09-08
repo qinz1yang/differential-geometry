@@ -4627,3 +4627,7 @@ import DifferentialGeometry.Analysis.Integration.Lp.Bilinear
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.WeakEquationFixedMass
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.SteklovEnergy
 import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletNirenbergEstimate
+import DifferentialGeometry.Geometry.Connection.SubbundlePullback
+import DifferentialGeometry.Geometry.Connection.MetricCompatibility.ExteriorSubmodule
+import DifferentialGeometry.Geometry.Curvature.DimensionThree.ExteriorKernel
+import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.CurvatureKernel
