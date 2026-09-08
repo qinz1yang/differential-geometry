@@ -41,7 +41,6 @@ def MapMetricApproximationBoundsOn.mono
     le_trans (D.cov_small a h1 h2 x (hK hx)) hcov
 
 def PartialDiffeomorphMetricApproximationBounds.mono [T2Space N]
-    [hSigma : SigmaCompactSpace N]
     {K K' : Set M} {c0 c0' cov cov' : Real} {p : Nat}
     {Phi : PartialDiffeomorph I I M N (∞ : WithTop ℕ∞)}
     {g : SmoothRiemannianMetric I M} {h : SmoothRiemannianMetric I N}
@@ -50,7 +49,7 @@ def PartialDiffeomorphMetricApproximationBounds.mono [T2Space N]
     PartialDiffeomorphMetricApproximationBounds (I := I) K' c0' cov' p Phi g h where
   source_sub := fun _ hx => D.source_sub (hK hx)
   forward := D.forward.mono hK hc0 hcov
-  reverse := let _ := hSigma; D.reverse.mono (Set.image_mono hK) hc0 hcov
+  reverse := D.reverse.mono (Set.image_mono hK) hc0 hcov
 
 def MapMetricApproximationOn.mono
     {K K' : Set M} {ε ε' : ℝ} {p : ℕ}
@@ -68,7 +67,6 @@ def MapMetricApproximationOn.mono
     le_trans (D.cov_deriv_small a h1 h2 x (hK hx)) hε
 
 def PartialDiffeomorphMetricApproximation.mono [T2Space N]
-    [hSigma : SigmaCompactSpace N]
     {K K' : Set M} {ε ε' : ℝ} {p : ℕ}
     {Phi : PartialDiffeomorph I I M N (∞ : WithTop ℕ∞)}
     {g : SmoothRiemannianMetric I M} {h : SmoothRiemannianMetric I N}
@@ -77,7 +75,7 @@ def PartialDiffeomorphMetricApproximation.mono [T2Space N]
     PartialDiffeomorphMetricApproximation (I := I) K' ε' p Phi g h where
   source_sub := fun _ hx => D.source_sub (hK hx)
   forward := D.forward.mono hK hε hε1
-  reverse := let _ := hSigma; (D.reverse.mono (Set.image_mono hK) hε hε1 :)
+  reverse := (D.reverse.mono (Set.image_mono hK) hε hε1 :)
 
 def MapMetricApproximationOn.monoOrder
     {K : Set M} {ε : ℝ} {p p' : ℕ}
@@ -94,7 +92,6 @@ def MapMetricApproximationOn.monoOrder
     D.cov_deriv_small a h1 (le_trans h2 hp) x hx
 
 def PartialDiffeomorphMetricApproximation.monoOrder [T2Space N]
-    [hSigma : SigmaCompactSpace N]
     {K : Set M} {ε : ℝ} {p p' : ℕ}
     {Phi : PartialDiffeomorph I I M N (∞ : WithTop ℕ∞)}
     {g : SmoothRiemannianMetric I M} {h : SmoothRiemannianMetric I N}
@@ -102,7 +99,7 @@ def PartialDiffeomorphMetricApproximation.monoOrder [T2Space N]
     PartialDiffeomorphMetricApproximation (I := I) K ε p' Phi g h where
   source_sub := D.source_sub
   forward := D.forward.monoOrder hp
-  reverse := let _ := hSigma; D.reverse.monoOrder hp
+  reverse := D.reverse.monoOrder hp
 
 end DataMono
 
