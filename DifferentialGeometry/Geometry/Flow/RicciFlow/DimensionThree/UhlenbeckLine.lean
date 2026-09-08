@@ -40,11 +40,7 @@ theorem exists_uhlenbeck_isometry_with_rank_one_fixed_section
     (hrank : ∀ t ∈ Ioo a b, ∀ x,
       Module.finrank ℝ (curvatureOperatorImageAt (S.family.metric t) x
         ⟨metricRm04At (S.family.metric t) x,
-          metricRm04At_mem_algebraicCurvatureTensorSubmodule (S.family.metric t) x⟩) = 1)
-    (x : M) (v : V x)
-    (hv : ι₀ x v ∈ curvatureOperatorImageAnnihilatorAt (S.family.metric t₀) x
-      ⟨metricRm04At (S.family.metric t₀) x,
-        metricRm04At_mem_algebraicCurvatureTensorSubmodule (S.family.metric t₀) x⟩) :
+          metricRm04At_mem_algebraicCurvatureTensorSubmodule (S.family.metric t) x⟩) = 1) :
     ∃ ι : ℝ → ∀ x, V x ≃L[ℝ] TangentSpace I x,
       (∀ x, ι t₀ x = ι₀ x) ∧
       ContMDiffOn (𝓘(ℝ, ℝ).prod I) (I.prod 𝓘(ℝ, F →L[ℝ] E)) ∞
@@ -60,15 +56,21 @@ theorem exists_uhlenbeck_isometry_with_rank_one_fixed_section
           (ricciSharp (S.family.metric t) x (ι t x z)) (Ioo a b) t) ∧
       (∀ t ∈ Ioo a b, ∀ x z w,
         (S.family.metric t).inner x (ι t x z) (ι t x w) = ⟪z, w⟫) ∧
-      (∀ s ∈ Ioo a b, ∀ t ∈ Ioo a b, ι s x v = ι t x v) ∧
-      (∀ s ∈ Ioo a b, ∀ t ∈ Ioo a b, ∀ w : TangentSpace I x,
-        (S.family.metric s).inner x (ι s x v) w =
-          (S.family.metric t).inner x (ι t x v) w) := by
+      ∀ (x : M) (v : V x),
+        ι₀ x v ∈ curvatureOperatorImageAnnihilatorAt (S.family.metric t₀) x
+          ⟨metricRm04At (S.family.metric t₀) x,
+            metricRm04At_mem_algebraicCurvatureTensorSubmodule (S.family.metric t₀) x⟩ →
+        (∀ s ∈ Ioo a b, ∀ t ∈ Ioo a b, ι s x v = ι t x v) ∧
+        (∀ s ∈ Ioo a b, ∀ t ∈ Ioo a b, ∀ w : TangentSpace I x,
+          (S.family.metric s).inner x (ι s x v) w =
+            (S.family.metric t).inner x (ι t x v) w) := by
   let _ : ∀ y, FiniteDimensional ℝ (V y) := fun y => VectorBundle.finiteDimensional ℝ F V y
   obtain ⟨ι, hinit, hι, hinv, hode, hmetric, hfixed⟩ :=
     exists_uhlenbeck_isometry_with_constant_curvatureOperator_kernel_and_range
       (F := F) S hS hdim ht₀ hreg ι₀ hι₀ h₀ hR 1 hrank
   dsimp only at hfixed
+  refine ⟨ι, hinit, hι, hinv, hode, hmetric, ?_⟩
+  intro x v hv
   let R := fun r => exteriorPower.traceNormalizedCurvatureEndomorphism
     ((S.base.rm04 r x).compContinuousLinearMap (fun _ => (ι r x).toContinuousLinearMap))
     ((mem_algebraicCurvatureTensorSubmodule.mp
@@ -101,10 +103,8 @@ theorem exists_uhlenbeck_isometry_with_rank_one_fixed_section
       ricciSharp (S.family.metric r) x (ι r x v) = 0 :=
     ricciSharp_eq_zero_of_mem_curvatureOperatorImageAnnihilatorAt
       (S.family.metric r) x (hmem r hr)
-  have hc := uhlenbeck_section_eq_and_inner_eq_of_ricciSharp_eq_zero
+  exact uhlenbeck_section_eq_and_inner_eq_of_ricciSharp_eq_zero
     S hS ordConnected_Ioo hreg x (fun r => ι r x v)
     (fun r hr => hode r hr x v) hzero
-  refine ⟨ι, hinit, hι, hinv, (fun t ht x z => hode t ht x z),
-    (fun t ht x z w => hmetric t ht x z w), hc.1, hc.2⟩
 
 end DifferentialGeometry.PDE.RicciFlow
