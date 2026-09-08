@@ -4610,3 +4610,6 @@ import DifferentialGeometry.Analysis.Integration.Measure.ConformalCurvature
 import DifferentialGeometry.Analysis.Calculus.CutoffIntegral
 import DifferentialGeometry.Geometry.Comparison.DistanceIndex
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Distance.LocalCutoff
+import DifferentialGeometry.Topology.ProjectiveSpace.Projectivization
+import DifferentialGeometry.Bundle.ProjectiveSpace.Tautological
+import DifferentialGeometry.Geometry.Metric.RicciSoliton.CylinderQuotientTautological
