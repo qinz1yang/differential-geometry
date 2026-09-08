@@ -4816,3 +4816,8 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.RicciFlat
 import DifferentialGeometry.Geometry.Comparison.SurfaceCurvatureDecay
 import DifferentialGeometry.Geometry.Operator.MetricFamilyJointRegularity
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.SystemSource
+import DifferentialGeometry.Analysis.Heat.Kernel.Positivity
+import DifferentialGeometry.Geometry.Metric.Conformal.Naturality
+import DifferentialGeometry.Analysis.Integration.Measure.PullbackGradient
+import DifferentialGeometry.Analysis.Parabolic.Dirichlet.WeakGradientSourceBound
+import DifferentialGeometry.Analysis.Parabolic.Dirichlet.QuantitativeGradientSource
