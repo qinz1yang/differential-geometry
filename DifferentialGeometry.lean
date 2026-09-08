@@ -2292,6 +2292,7 @@ import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph.Opens
 import DifferentialGeometry.Topology.MetricBall
 import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph.Tangent
 import DifferentialGeometry.Topology.Manifold.Path.Regularity
+import DifferentialGeometry.Topology.Manifold.Path.Reparametrization
 import DifferentialGeometry.Geometry.Coordinates.Fields.Tensor
 import DifferentialGeometry.Geometry.Curvature.Algebraic.Form
 import DifferentialGeometry.Geometry.Curvature.Algebraic.CurvatureOperatorCone
@@ -3640,6 +3641,7 @@ import DifferentialGeometry.Geometry.Comparison.CheegerGromovTaylor.Fiber.Iterat
 import DifferentialGeometry.Geometry.Comparison.CheegerGromovTaylor.Paths.ExponentialLift
 import DifferentialGeometry.Geometry.Metric.Path.Length
 import DifferentialGeometry.Geometry.Metric.Path.Homotopy
+import DifferentialGeometry.Geometry.Metric.Path.Reparametrization
 import DifferentialGeometry.Geometry.Comparison.CheegerGromovTaylor.Paths.HomotopyLift
 import DifferentialGeometry.Geometry.Comparison.CheegerGromovTaylor.InjectivityRadius.Basic
 import DifferentialGeometry.Geometry.Comparison.CheegerGromovTaylor.Core.JensenConvexity
