@@ -4579,3 +4579,6 @@ import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.TimeH1Multiplication
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.JointRegularity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Uhlenbeck.CurvatureOperatorRegularity
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.ExteriorPositivity
+import DifferentialGeometry.Geometry.LieGroup.Representation
+import DifferentialGeometry.Bundle.Principal.Smooth
+import DifferentialGeometry.Bundle.Associated.Smooth
