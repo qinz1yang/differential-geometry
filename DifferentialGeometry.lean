@@ -4559,3 +4559,6 @@ import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletLocalSobolev
 import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletNirenbergOperator
 import DifferentialGeometry.Analysis.Sobolev.Nirenberg.TestFunction.WeakDerivative
 import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletNirenbergDerivative
+import DifferentialGeometry.Geometry.Curvature.RicciPullbackDerivative
+import DifferentialGeometry.Geometry.Flow.RicciFlow.HamiltonHarnack.UhlenbeckP
+import DifferentialGeometry.Geometry.Flow.RicciFlow.HamiltonHarnack.UhlenbeckDivergence
