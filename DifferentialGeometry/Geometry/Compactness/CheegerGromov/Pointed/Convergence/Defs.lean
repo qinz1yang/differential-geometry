@@ -22,7 +22,7 @@ variable [NeZero (Module.finrank Real E)] [CompleteSpace E]
 variable {I : ModelWithCorners Real E H}
 variable [I.Boundaryless]
 
-def MetricSourceConvergesOn
+def metricSourceConvergesOn
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {L : PointedRiemannianManifold.{u, uE, uH} (I := I)}
     {subseq : Nat -> Nat}
@@ -43,7 +43,7 @@ structure MetricConvergenceData
   converges :
     forall K : Set L.M,
       (letI : TopologicalSpace L.M := L.topology; IsCompact K) →
-      forall p : Nat, MetricSourceConvergesOn (I := I) Φ domain K p
+      forall p : Nat, metricSourceConvergesOn (I := I) Φ domain K p
 
 namespace MetricConvergenceData
 
