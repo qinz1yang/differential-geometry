@@ -1,3 +1,4 @@
+import DifferentialGeometry.Analysis.Sobolev.Tools.DiffQuotLocal
 import DifferentialGeometry.Analysis.Sobolev.Nirenberg.TestFunction.Sobolev
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.IteratedSobolevSpace.IteratedSobolevQuant
 
@@ -253,5 +254,66 @@ theorem standardNirenbergTest_smul (k : Fin d) (h c : ℝ) (η u : E → ℝ) :
     simp only [Pi.smul_apply, smul_eq_mul]
     ring
   rw [heq, diffQuot_smul]
+
+end DifferentialGeometry.Analysis.Sobolev.NirenbergStandardTest
+
+namespace DifferentialGeometry.Analysis.Sobolev.NirenbergStandardTest
+
+open Metric
+
+variable {d : ℕ}
+local notation "E" => EuclideanSpace ℝ (Fin d)
+
+theorem integral_cutoff_sq_diffQuot_le_eLpNorm_weakPartial_sq
+    {Ω Ω' Ω'' : Set E} (hΩ : IsOpen Ω) (hΩ' : IsOpen Ω') (hΩ'' : IsOpen Ω'')
+    (hΩ'c : IsCompact (closure Ω')) (hΩ'Ω : closure Ω' ⊆ Ω)
+    (hΩ''c : IsCompact (closure Ω''))
+    {u g η : E → ℝ} (hu : MemLp u 2 (volume.restrict Ω))
+    (hg : MemLp g 2 (volume.restrict Ω))
+    (hη : Continuous η) (hηc : HasCompactSupport η) (hηs : tsupport η ⊆ Ω'')
+    {A : ℝ} (hA : 0 ≤ A) (hηbound : ∀ x, |η x| ≤ A)
+    (k : Fin d) (hweak : DeGiorgi.HasWeakPartialDeriv k g u Ω)
+    {r : ℝ} (hr : 0 < r) (hroom : cthickening r (closure Ω'') ⊆ Ω')
+    {h : ℝ} (hh : |h| ≤ r) :
+    (∫ x, η x ^ 2 * (diffQuot k h u x) ^ 2) ≤
+      A ^ 2 * (eLpNorm g 2 (volume.restrict Ω')).toReal ^ 2 := by
+  have hηroom : cthickening |h| (tsupport η) ⊆ Ω :=
+    (cthickening_mono hh _).trans ((cthickening_subset_of_subset r
+      (hηs.trans subset_closure)).trans (hroom.trans (subset_closure.trans hΩ'Ω)))
+  have hηq := memLp_cutoff_mul_diffQuot_local hΩ.measurableSet hu hη hηc k h hηroom
+  have hdq := eLpNorm_diffQuot_le_eLpNorm_weakPartial_local hΩ hΩ' hΩ'' hΩ'c hΩ'Ω
+    hΩ''c hu hg k hweak hr hroom hh
+  have hnorm : eLpNorm (fun x => η x * diffQuot k h u x) 2 volume ≤
+      ENNReal.ofReal A * eLpNorm g 2 (volume.restrict Ω') := by
+    calc
+      _ ≤ eLpNorm (fun x => A * Ω''.indicator (diffQuot k h u) x) 2 volume := by
+        apply eLpNorm_mono_ae
+        filter_upwards [] with x
+        by_cases hx : x ∈ Ω''
+        · simp only [indicator_of_mem hx, norm_mul, Real.norm_eq_abs, abs_of_nonneg hA]
+          exact mul_le_mul_of_nonneg_right (hηbound x) (abs_nonneg _)
+        · have hzero : η x = 0 := image_eq_zero_of_notMem_tsupport (fun ht => hx (hηs ht))
+          simp only [hzero, zero_mul, norm_zero, norm_nonneg]
+      _ = ENNReal.ofReal A * eLpNorm (diffQuot k h u) 2 (volume.restrict Ω'') := by
+        change eLpNorm (A • Ω''.indicator (diffQuot k h u)) 2 volume = _
+        rw [eLpNorm_const_smul, Real.enorm_eq_ofReal_abs, abs_of_nonneg hA,
+          eLpNorm_indicator_eq_eLpNorm_restrict hΩ''.measurableSet]
+      _ ≤ _ := mul_le_mul' le_rfl hdq
+  have hg' : MemLp g 2 (volume.restrict Ω') :=
+    hg.mono_measure (Measure.restrict_mono (subset_closure.trans hΩ'Ω) le_rfl)
+  have hnormReal : (eLpNorm (fun x => η x * diffQuot k h u x) 2 volume).toReal ≤
+      A * (eLpNorm g 2 (volume.restrict Ω')).toReal := by
+    have h := ENNReal.toReal_mono (ENNReal.mul_ne_top ENNReal.ofReal_ne_top hg'.eLpNorm_ne_top) hnorm
+    simpa only [ENNReal.toReal_mul, ENNReal.toReal_ofReal hA] using h
+  have hid : (∫ x, η x ^ 2 * (diffQuot k h u x) ^ 2) =
+      (eLpNorm (fun x => η x * diffQuot k h u x) 2 volume).toReal ^ 2 := by
+    let v := hηq.toLp (fun x => η x * diffQuot k h u x)
+    rw [← Lp.norm_toLp _ hηq, ← real_inner_self_eq_norm_sq, L2.inner_def]
+    apply integral_congr_ae
+    filter_upwards [hηq.coeFn_toLp] with x hx
+    simp only [Real.inner_apply, hx]
+    ring
+  rw [hid, ← mul_pow]
+  exact pow_le_pow_left₀ ENNReal.toReal_nonneg hnormReal 2
 
 end DifferentialGeometry.Analysis.Sobolev.NirenbergStandardTest

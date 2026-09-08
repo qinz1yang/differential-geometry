@@ -2,6 +2,7 @@ import DifferentialGeometry.Analysis.Parabolic.Dirichlet.WeakEvolution
 import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletWeakDerivative
 import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletSmoothMul
 import DifferentialGeometry.Analysis.Integration.Measure.VolumeDensity
+import DifferentialGeometry.Analysis.Integration.Lp.Pairing
 
 noncomputable section
 
@@ -276,6 +277,29 @@ theorem dirichletMassCompl_apply_eq_integral
       H1ComplDirichletToLp_smoothToH1ComplDirichlet, dirichletMassLp_apply_smooth]
   rw [heq, dirichletMassLp_apply_eq_integral]
 
+theorem dirichletMassLp_smoothMul_volumeDensity_swap
+    {q : SmoothRiemannianMetric (I_half n) M}
+    (h : SmoothRiemannianMetric (I_half n) M)
+    (Cv : ℝ≥0∞) (hCvtop : Cv ≠ ⊤)
+    (hvol : riemannianVolumeMeasure (I := (I_half n)) (M := M) h ≤
+      Cv • riemannianVolumeMeasure (I := (I_half n)) (M := M) q)
+    (u v : Lp ℝ 2 (riemannianVolumeMeasure (I := (I_half n)) (M := M) q)) :
+    dirichletMassLp h Cv hCvtop hvol u
+      (smoothMulLp q (riemannianVolumeDensitySmoothMap h q) v) = inner ℝ u v := by
+  rw [dirichletMassLp_apply_eq_integral,
+    integral_riemannianVolumeMeasure_eq_integral_volumeDensity_smul q h, L2.inner_def]
+  apply integral_congr_ae
+  filter_upwards [smoothMulLp_apply_coeFn q (riemannianVolumeDensitySmoothMap h q) v]
+    with x hx
+  rw [hx]
+  change riemannianVolumeDensity q h x *
+    (u x * (riemannianVolumeDensity h q x * v x)) = _
+  simp only [Real.inner_apply]
+  calc
+    _ = (riemannianVolumeDensity q h x * riemannianVolumeDensity h q x) *
+      (v x * u x) := by ring
+    _ = _ := by rw [riemannianVolumeDensity_mul_swap, one_mul]; ring
+
 theorem dirichletMassCompl_smoothMul_volumeDensity_swap
     {q : SmoothRiemannianMetric (I_half n) M}
     (h : SmoothRiemannianMetric (I_half n) M)
@@ -291,20 +315,11 @@ theorem dirichletMassCompl_smoothMul_volumeDensity_swap
       (smoothMulH1ComplDirichlet q (riemannianVolumeDensitySmoothMap h q) v) =
         inner ℝ (H1ComplDirichletToLp q u) (H1ComplDirichletToLp q v) := by
   rw [dirichletMassCompl_apply_eq_integral,
-    H1ComplDirichletToLp_smoothMulH1ComplDirichlet,
-    integral_riemannianVolumeMeasure_eq_integral_volumeDensity_smul q h,
-    MeasureTheory.L2.inner_def]
-  apply integral_congr_ae
-  filter_upwards [smoothMulLp_apply_coeFn q (riemannianVolumeDensitySmoothMap h q)
-    (H1ComplDirichletToLp q v)] with x hx
-  rw [hx]
-  change riemannianVolumeDensity q h x * (H1ComplDirichletToLp q u x *
-    (riemannianVolumeDensity h q x * H1ComplDirichletToLp q v x)) = _
-  simp only [RCLike.inner_apply, conj_trivial]
-  calc
-    _ = (riemannianVolumeDensity q h x * riemannianVolumeDensity h q x) *
-        (H1ComplDirichletToLp q u x * H1ComplDirichletToLp q v x) := by ring
-    _ = _ := by rw [riemannianVolumeDensity_mul_swap, one_mul]; ring
+    H1ComplDirichletToLp_smoothMulH1ComplDirichlet]
+  have hp := dirichletMassLp_smoothMul_volumeDensity_swap h Cv hCvtop hvol
+    (H1ComplDirichletToLp q u) (H1ComplDirichletToLp q v)
+  rw [dirichletMassLp_apply_eq_integral] at hp
+  exact hp
 
 omit [T2Space M] [CompactSpace M] in
 private theorem traceTimeDerivMetric_continuous
@@ -462,5 +477,52 @@ theorem IsWeakEvolutionSolution.exists_timeH1_integral
       dirichletMassVariationCompl_apply_eq_integral,
       dirichletWeakFormComplOnIco, dif_pos htc,
       dirichletWeakFormCompl_apply_eq_integral_adjoint]
+
+theorem dirichletMassVariationCompl_apply_eq_integral_volumeDensity
+    {q : SmoothRiemannianMetric (I_half n) M}
+    {D : RealTimeInterval} {G : MetricConnectionFamilyOn (I := (I_half n)) (M := M) D}
+    (hG : MetricFamilySmoothOn (I := (I_half n)) (M := M) D G.metric)
+    {t : ℝ} (ht : t ∈ D.regular) (B : ℝ)
+    (htrace : ∀ x : M, |traceTimeDerivMetric (I := (I_half n)) G.metric t x| ≤ B)
+    {Cg : ℝ} (hCg : 1 ≤ Cg)
+    (hequiv : ∀ x : M, ∀ w : TangentSpace (I_half n) x,
+      Cg⁻¹ * q.inner x w w ≤ (G.metric t).inner x w w ∧
+        (G.metric t).inner x w w ≤ Cg * q.inner x w w)
+    (Cv : ℝ≥0∞) (hCv0 : Cv ≠ 0) (hCvtop : Cv ≠ ⊤)
+    (hvol : riemannianVolumeMeasure (I := (I_half n)) (M := M) (G.metric t) ≤
+      Cv • riemannianVolumeMeasure (I := (I_half n)) (M := M) q)
+    (u v : H1ComplDirichlet q) :
+    dirichletMassVariationCompl hG ht B htrace hCg hequiv Cv hCv0 hCvtop hvol u v =
+      ∫ x, H1ComplDirichletToLp q u x *
+        (riemannianVolumeDensity q (G.metric t) x * ((1 / 2) *
+          traceTimeDerivMetric (I := (I_half n)) G.metric t x)) * H1ComplDirichletToLp q v x
+        ∂(riemannianVolumeMeasure (I := (I_half n)) (M := M) q) := by
+  have htracej := continuousOn_traceTimeDerivMetric_of_chartGram_contMDiffOn
+    D.regular_isOpen (fun α i j => hG.chartGramMatrix_contDiffOn Subset.rfl α i j)
+  have htracec : Continuous (fun x : M => traceTimeDerivMetric (I := (I_half n)) G.metric t x) := by
+    simpa only [Function.comp_def] using htracej.comp_continuous
+      (f := fun x : M => (t, x)) (continuous_const.prodMk continuous_id)
+      (fun x => ⟨ht, mem_univ x⟩)
+  let c : M → ℝ := fun x => riemannianVolumeDensity q (G.metric t) x *
+    ((1 / 2) * traceTimeDerivMetric (I := (I_half n)) G.metric t x)
+  have hc : MemLp c ∞ (riemannianVolumeMeasure (I := (I_half n)) (M := M) q) :=
+    ((riemannianVolumeDensitySmoothMap q (G.metric t)).contMDiff.continuous.mul
+      ((continuous_const (y := (1 / 2 : ℝ))).mul htracec)).memLp_top_of_hasCompactSupport
+        (HasCompactSupport.of_compactSpace _) (riemannianVolumeMeasure (I := (I_half n)) (M := M) q)
+  refine (denseRange_smoothToH1ComplDirichlet q).induction_on v
+    (isClosed_eq (dirichletMassVariationCompl hG ht B htrace hCg hequiv Cv hCv0 hCvtop hvol u).continuous
+      ((continuous_integral_weight_mul_lp c hc (H1ComplDirichletToLp q u)).comp
+        (H1ComplDirichletToLp q).continuous)) ?_
+  intro v₀
+  rw [dirichletMassVariationCompl_apply_eq_integral,
+    integral_riemannianVolumeMeasure_eq_integral_volumeDensity_smul q (G.metric t),
+    H1ComplDirichletToLp_smoothToH1ComplDirichlet]
+  apply integral_congr_ae
+  have hv₀ : (smoothToLpDirichlet q v₀ : M → ℝ) =ᵐ[
+      riemannianVolumeMeasure (I := (I_half n)) (M := M) q] v₀.toFun := MemLp.coeFn_toLp v₀.memLp_two
+  filter_upwards [hv₀] with x hx
+  rw [hx, smul_eq_mul]
+  ring
+
 
 end DifferentialGeometry.Analysis.Parabolic.Dirichlet

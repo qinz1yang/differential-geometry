@@ -1,3 +1,4 @@
+import DifferentialGeometry.Analysis.Integration.Lp.Bilinear
 import Mathlib.MeasureTheory.Function.L2Space
 import Mathlib.Analysis.InnerProductSpace.l2Space
 import Mathlib.MeasureTheory.Function.LpSeminorm.CompareExp
@@ -225,48 +226,6 @@ theorem norm_ofContinuousOn_le_of_bound (hf : ContinuousOn f (Set.Icc (0 : ℝ) 
 
 end ContinuousEmbedding
 
-theorem AEStronglyMeasurable.clm_apply_of_apply_aestronglyMeasurable
-    {P X Y : Type*} [MeasurableSpace P]
-    [NormedAddCommGroup X] [NormedSpace ℝ X]
-    [NormedAddCommGroup Y] [NormedSpace ℝ Y]
-    {μ : Measure P} (A : P → X →L[ℝ] Y)
-    (hA : ∀ x, AEStronglyMeasurable (fun p => A p x) μ)
-    (u : P → X) (hu : AEStronglyMeasurable u μ) :
-    AEStronglyMeasurable (fun p => A p (u p)) μ := by
-  classical
-  let u' : P → X := hu.mk u
-  have hu' : StronglyMeasurable u' := hu.stronglyMeasurable_mk
-  let s : ℕ → SimpleFunc P X := hu'.approx
-  have hs (m : ℕ) : AEStronglyMeasurable (fun p => A p (s m p)) μ := by
-    let F : P → Y := fun p =>
-      ∑ x ∈ (s m).range, (s m ⁻¹' {x}).indicator (fun r => A r x) p
-    have hF : AEStronglyMeasurable F μ := by
-      let F' : P → Y :=
-        ∑ x ∈ (s m).range, (s m ⁻¹' {x}).indicator (fun r => A r x)
-      have hF' : AEStronglyMeasurable F' μ :=
-        Finset.aestronglyMeasurable_sum (s m).range (fun x _ =>
-          (hA x).indicator ((s m).measurableSet_fiber x))
-      have hFF' : F = F' := by
-        funext p
-        simp only [F, F', Finset.sum_apply]
-      exact hFF' ▸ hF'
-    refine hF.congr (Eventually.of_forall fun p => ?_)
-    dsimp only [F]
-    rw [Finset.sum_eq_single (s m p)]
-    · apply Set.indicator_of_mem
-      change (s m p) ∈ ({s m p} : Set X)
-      exact Set.mem_singleton _
-    · intro x hx hne
-      rw [Set.indicator_of_notMem]
-      exact fun hmem => hne hmem.symm
-    · exact fun hmem => (hmem ((s m).mem_range_self p)).elim
-  refine aestronglyMeasurable_of_tendsto_ae atTop hs ?_
-  filter_upwards [hu.ae_eq_mk] with p hup
-  have hs_tendsto : Tendsto (fun m => s m p) atTop (nhds (u' p)) :=
-    hu'.tendsto_approx p
-  have happly : Tendsto (fun m => A p (s m p)) atTop (nhds (A p (u' p))) :=
-    (A p).continuous.continuousAt.tendsto.comp hs_tendsto
-  simpa only [u', hup] using happly
 
 section HilbertDuality
 

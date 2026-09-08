@@ -182,4 +182,70 @@ theorem exists_smoothMap_integral_mul_dirichletNirenbergTest_eq
     q α hΩ hΩc hΩs hη hηc φ k h ((Metric.cthickening_mono hh _).trans hηs)
     (fun z hz => hφ z (Metric.cthickening_mono hh _ hz)) u v
 
+theorem exists_smoothMap_dirichletNirenbergTest_symmetric_nonpos
+    (q : SmoothRiemannianMetric I_hs M) (α : M) {Ω : Set EuStd}
+    (hΩ : IsOpen Ω) (hΩc : IsCompact (closure Ω))
+    (hΩs : closure Ω ⊆ toEuclidean (E := EuN) '' interior (extChartAt I_hs α).target)
+    {η : EuStd → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hηc : HasCompactSupport η)
+    (r : ℝ) (hηs : Metric.cthickening r (tsupport η) ⊆ Ω) :
+    ∃ φ : C^∞⟮I_hs, M; ℝ⟯, ∀ (k : Fin (Module.finrank ℝ EuN)) (h : ℝ)
+      (hh : |h| ≤ r),
+      let L := (smoothMulH1ComplDirichlet q φ).comp
+        (dirichletNirenbergTest q α hΩ hΩc hΩs hη hηc k h
+          ((Metric.cthickening_mono hh _).trans hηs))
+      let B := -(innerSL ℝ).bilinearComp (H1ComplDirichletToLp q)
+        ((H1ComplDirichletToLp q).comp L)
+      B.flip = B ∧ (∀ u, 0 ≤ B u u) ∧
+        (∀ u v,
+          let x := fun z => (extChartAt I_hs α).symm ((toEuclidean (E := EuN)).symm z)
+          B u v = ∫ z, η z ^ 2 *
+            DifferentialGeometry.Analysis.Sobolev.diffQuot k h
+              (fun z => H1ComplDirichletToLp q u (x z)) z *
+            DifferentialGeometry.Analysis.Sobolev.diffQuot k h
+              (fun z => H1ComplDirichletToLp q v (x z)) z) := by
+  obtain ⟨φ, hφ⟩ := exists_smoothMap_integral_mul_dirichletNirenbergTest_eq
+    q α hΩ hΩc hΩs hη hηc r hηs
+  refine ⟨φ, ?_⟩
+  intro k h hh
+  let L := (smoothMulH1ComplDirichlet q φ).comp
+    (dirichletNirenbergTest q α hΩ hΩc hΩs hη hηc k h
+      ((Metric.cthickening_mono hh _).trans hηs))
+  let B := -(innerSL ℝ).bilinearComp (H1ComplDirichletToLp q)
+    ((H1ComplDirichletToLp q).comp L)
+  let x := fun z => (extChartAt I_hs α).symm ((toEuclidean (E := EuN)).symm z)
+  have hpair (u v : H1ComplDirichlet q) :
+      B u v = ∫ z, η z ^ 2 *
+        DifferentialGeometry.Analysis.Sobolev.diffQuot k h
+          (fun z => H1ComplDirichletToLp q u (x z)) z *
+        DifferentialGeometry.Analysis.Sobolev.diffQuot k h
+          (fun z => H1ComplDirichletToLp q v (x z)) z := by
+    change -inner ℝ (H1ComplDirichletToLp q u) (H1ComplDirichletToLp q (L v)) = _
+    rw [L2.inner_def]
+    simp only [Real.inner_apply]
+    dsimp only [L, ContinuousLinearMap.comp_apply]
+    rw [hφ k h hh u v, neg_neg]
+    apply integral_congr_ae
+    filter_upwards [] with z
+    ring
+  change B.flip = B ∧ _
+  refine ⟨?_, ?_, hpair⟩
+  · ext u v
+    change B v u = B u v
+    rw [hpair, hpair]
+    apply integral_congr_ae
+    filter_upwards [] with z
+    ring
+  · intro u
+    rw [hpair]
+    apply integral_nonneg
+    intro z
+    change 0 ≤ η z ^ 2 *
+      DifferentialGeometry.Analysis.Sobolev.diffQuot k h
+        (fun z => H1ComplDirichletToLp q u (x z)) z *
+      DifferentialGeometry.Analysis.Sobolev.diffQuot k h
+        (fun z => H1ComplDirichletToLp q u (x z)) z
+    rw [mul_assoc, ← sq]
+    exact mul_nonneg (sq_nonneg _) (sq_nonneg _)
+
+
 end DifferentialGeometry.Analysis.Laplacian.WithBoundary.Dirichlet

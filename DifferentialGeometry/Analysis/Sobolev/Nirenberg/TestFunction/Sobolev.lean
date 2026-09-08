@@ -142,3 +142,42 @@ theorem memWkp_standardNirenbergTest_of_memWkp_local
   exact memWkp_standardNirenbergTest hvu hη hηc k h
 
 end DifferentialGeometry.Analysis.Sobolev.Euclidean
+
+namespace DifferentialGeometry.Analysis.Sobolev.NirenbergStandardTest
+
+open DifferentialGeometry.Analysis.Sobolev.NirenbergCrossBoundsNonSmooth
+
+variable {d : ℕ}
+local notation "E" => EuclideanSpace ℝ (Fin d)
+
+private theorem diffQuot_indicator_eq_on_support
+    {Ω : Set E} {η u : E → ℝ} (k : Fin d) (h : ℝ)
+    (hηs : cthickening |h| (tsupport η) ⊆ Ω) {x : E} (hx : η x ≠ 0) :
+    diffQuot k h (Ω.indicator u) x = diffQuot k h u x := by
+  by_cases hh : h = 0
+  · simp [hh]
+  have hxs : x ∈ tsupport η := subset_tsupport η hx
+  have hbase : x ∈ Ω := hηs (self_subset_cthickening _ hxs)
+  have hshift : x + h • EuclideanSpace.single k (1 : ℝ) ∈ Ω := by
+    apply hηs
+    apply closedBall_subset_cthickening hxs |h|
+    rw [mem_closedBall, dist_eq_norm, add_sub_cancel_left, norm_smul]
+    simp only [PiLp.norm_single, norm_one, mul_one, Real.norm_eq_abs, le_refl]
+  simp only [diffQuot_apply_of_ne k hh, indicator_of_mem hbase, indicator_of_mem hshift]
+
+theorem memLp_cutoff_mul_diffQuot_local
+    {Ω : Set E} (hΩ : MeasurableSet Ω) {η u : E → ℝ}
+    (hu : MemLp u 2 (volume.restrict Ω))
+    (hη : Continuous η) (hηc : HasCompactSupport η) (k : Fin d) (h : ℝ)
+    (hηs : cthickening |h| (tsupport η) ⊆ Ω) :
+    MemLp (fun x => η x * diffQuot k h u x) 2 volume := by
+  have hu0 : MemLp (Ω.indicator u) 2 volume := (memLp_indicator_iff_restrict hΩ).mpr hu
+  have h : MemLp (fun x => η x * diffQuot k h (Ω.indicator u) x) 2 volume := (memLp_diffQuot_two k h hu0).mul' (hη.memLp_of_hasCompactSupport hηc (p := ∞))
+  apply h.ae_eq
+  filter_upwards with x
+  by_cases hx : η x = 0
+  · simp [hx]
+  · rw [diffQuot_indicator_eq_on_support k _ hηs hx]
+
+
+end DifferentialGeometry.Analysis.Sobolev.NirenbergStandardTest

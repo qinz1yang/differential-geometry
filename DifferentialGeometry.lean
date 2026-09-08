@@ -4623,3 +4623,7 @@ import DifferentialGeometry.Tensor.Alternating.Determinant
 import DifferentialGeometry.Tensor.Exterior.Descent
 import DifferentialGeometry.Geometry.Metric.Cylinder.TangentFraming
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.CylinderOrientation
+import DifferentialGeometry.Analysis.Integration.Lp.Bilinear
+import DifferentialGeometry.Analysis.Parabolic.Dirichlet.WeakEquationFixedMass
+import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.SteklovEnergy
+import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletNirenbergEstimate
