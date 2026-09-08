@@ -4101,9 +4101,11 @@ import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.KernelTimeConsta
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.RankSpreading
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.PositiveSystem
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.OpenIntervalKernel
+import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.SystemRank
 import DifferentialGeometry.Bundle.SmoothSubbundle.Defs
 import DifferentialGeometry.Bundle.SmoothSubbundle.Basic
 import DifferentialGeometry.Bundle.SmoothSubbundle.Kernel
+import DifferentialGeometry.Bundle.SmoothSubbundle.KernelRestriction
 import DifferentialGeometry.Bundle.SmoothSubbundle.KernelAPI
 import DifferentialGeometry.Bundle.SmoothSubbundle.KernelMotion
 import DifferentialGeometry.Bundle.SmoothSubbundle.Map
@@ -4783,6 +4785,8 @@ import DifferentialGeometry.Analysis.Parabolic.Dirichlet.GradientFluxBound
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.SourceFormula
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.GradientMassPairing
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.GradientTensorEquation
+import DifferentialGeometry.Analysis.Parabolic.Dirichlet.GivenGradientCommutator
+import DifferentialGeometry.Analysis.Sobolev.Euclidean.WeakPartialLinearSource
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.GradientTimeDual
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.GradientTimeEquation
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureOperatorEigenvalues

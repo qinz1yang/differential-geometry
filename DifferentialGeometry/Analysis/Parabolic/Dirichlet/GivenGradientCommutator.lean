@@ -54,9 +54,6 @@ theorem IsWeakEvolutionSolution.given_lp_weak_gradient_commutator
     (hΩs : closure Ω ⊆ toEuclidean (E := EuclideanSpace ℝ (Fin n)) '' interior (extChartAt I_hs α).target)
     (hu : IsWeakEvolutionSolution hG hT hreg X a Bx Bv
       (fun t ht => hX t ⟨ht.1, ht.2.le⟩) htrace f₀ u)
-    (hXsmooth : ContMDiffOn (𝓘(ℝ, ℝ).prod I_hs) ((I_hs).prod 𝓘(ℝ, EuclideanSpace ℝ (Fin n))) ∞
-      (fun p : ℝ × M => Bundle.TotalSpace.mk' (EuclideanSpace ℝ (Fin n)) p.2 (X p.1 p.2))
-      (D.regular ×ˢ (trivializationAt (EuclideanSpace ℝ (Fin n)) (TangentSpace I_hs) α).baseSet))
     {t₀ t₁ : ℝ} (ht₀ : 0 < t₀) (ht₁ : t₁ < T)
     {Ω₀ : Set (EuclideanSpace ℝ (Fin (Module.finrank ℝ (EuclideanSpace ℝ (Fin n)))))}
     (hΩ₀ : IsOpen Ω₀) (hΩ₀Ω : closure Ω₀ ⊆ Ω) :
@@ -91,9 +88,7 @@ theorem IsWeakEvolutionSolution.given_lp_weak_gradient_commutator
           (∫ p, L p * fderiv ℝ φ p (0, EuclideanSpace.single k 1) ∂ν) +
           ∫ p, (fderiv ℝ ρ p (0, EuclideanSpace.single k 1) * R p +
             fderiv ℝ (fun y => fderiv ℝ ρ y (0, EuclideanSpace.single k 1)) p (1, 0) * U p) * φ p ∂ν := by
-  intro μ ν x ρ A B U V L R H hR hH hHsym
-  let _ := hXsmooth
-  intro k φ hφ hφc hφs
+  intro μ ν x ρ A B U V L R H hR hH hHsym k φ hφ hφc hφs
   have hsub : Ω₀ ⊆ Ω := subset_closure.trans hΩ₀Ω
   have hmeasure : ν ≤ (timeMeasure T).prod (volume.restrict Ω) :=
     Measure.prod_mono Measure.restrict_le_self (Measure.restrict_mono hsub le_rfl)
