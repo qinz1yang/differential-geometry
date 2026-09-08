@@ -4546,3 +4546,7 @@ import DifferentialGeometry.Geometry.Connection.OrthonormalFrame
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.FrameConnection
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureReactionPositivity
 import DifferentialGeometry.Analysis.Parabolic.CurvatureOperatorRank
+import DifferentialGeometry.Geometry.Metric.Conformal.Operators
+import DifferentialGeometry.Analysis.Integration.Measure.Conformal
+import DifferentialGeometry.Geometry.Metric.Conformal.LieDerivative
+import DifferentialGeometry.Geometry.Metric.Conformal.Connection
