@@ -226,26 +226,37 @@ theorem curvatureOperator_rank_three_iff_injective
       simpa [Matrix.rank] using (Matrix.mulVecLin A).finrank_range_add_finrank_ker
     omega
 
-theorem curvatureOperatorReaction3_mulVec_eq_zero_of_rank_ne_two
-    {A : Matrix (Fin 3) (Fin 3) Real} (hA : A.PosSemidef) (hrank : A.rank ≠ 2)
-    {v : Fin 3 → Real} (hv : Matrix.mulVec A v = 0) :
-    Matrix.mulVec (curvatureOperatorReaction3 A) v = 0 := by
-  have hle : A.rank ≤ 3 := Matrix.rank_le_height A
-  have hcases : A.rank = 0 ∨ A.rank = 1 ∨ A.rank = 3 := by
+private theorem adjugate_eq_zero_of_rank_lt
+    {R : Type*} [Field R] {n : ℕ}
+    (A : Matrix (Fin (n + 1)) (Fin (n + 1)) R) (hrank : A.rank < n) :
+    A.adjugate = 0 := by
+  ext i j
+  rw [Matrix.adjugate_fin_succ_eq_det_submatrix]
+  have hminor : (A.submatrix j.succAbove i.succAbove).det = 0 := by
+    by_contra hdet
+    have heq := Matrix.rank_of_det_ne_zero hdet
+    have hle := Matrix.rank_submatrix_le A j.succAbove i.succAbove
+    rw [heq, Fintype.card_fin] at hle
     omega
-  rcases hcases with hzero | hone | hthree
-  · have hAzero : A = 0 := curvatureOperator_rank_zero_iff.mp hzero
-    rw [hAzero]
-    simp [curvatureOperatorReaction3]
-  · exact curvatureOperatorReaction3_mulVec_eq_zero_of_rank_le_one hA hone.le hv
-  · have hinj : Function.Injective (Matrix.mulVecLin A) :=
-      curvatureOperator_rank_three_iff_injective.mp hthree
+  rw [hminor, mul_zero]
+  rfl
+
+theorem curvatureOperatorReaction3_mulVec_eq_zero_of_rank_ne_two
+    {A : Matrix (Fin 3) (Fin 3) ℝ} (hrank : A.rank ≠ 2)
+    {v : Fin 3 → ℝ} (hv : A.mulVec v = 0) :
+    (curvatureOperatorReaction3 A).mulVec v = 0 := by
+  have hle : A.rank ≤ 3 := Matrix.rank_le_height A
+  by_cases hthree : A.rank = 3
+  · have hinj := curvatureOperator_rank_three_iff_injective.mp hthree
     have hvzero : v = 0 := by
       apply hinj
-      change Matrix.mulVec A v = Matrix.mulVec A 0
+      change A.mulVec v = A.mulVec 0
       simpa using hv
-    rw [hvzero]
-    simp
+    rw [hvzero, Matrix.mulVec_zero]
+  · have hlow : A.rank < 2 := by omega
+    have hadj := adjugate_eq_zero_of_rank_lt A hlow
+    rw [curvatureOperatorReaction3, hadj, add_zero, ← Matrix.mulVec_mulVec, hv,
+      Matrix.mulVec_zero]
 
 theorem curvatureOperatorReaction3_kernel_annihilation_iff_rank_ne_two
     {A : Matrix (Fin 3) (Fin 3) Real} (hA : A.PosSemidef) :
@@ -257,7 +268,7 @@ theorem curvatureOperatorReaction3_kernel_annihilation_iff_rank_ne_two
   · intro hnull htwo
     exact curvatureOperator_rank_two_reaction_annihilation_impossible hA htwo hnull
   · intro hrank v hv
-    exact curvatureOperatorReaction3_mulVec_eq_zero_of_rank_ne_two hA hrank hv
+    exact curvatureOperatorReaction3_mulVec_eq_zero_of_rank_ne_two hrank hv
 
 theorem curvatureOperatorReaction3_kernel_annihilation_at_right_endpoint
     {A : Real → Matrix (Fin 3) (Fin 3) Real}
@@ -642,5 +653,27 @@ theorem curvatureOperatorImageAt_finrank_trichotomy_of_matrix_representation
             (I := I) g x A).range = 3
   exact curvatureOperator_finrank_range_trichotomy_of_matrix_representation
     (I := I) g x basis A hmatrix hpositive hnull
+
+theorem curvatureOperatorReactionEndomorphism3_eq_zero_of_mem_ker_of_finrank_range_ne_two
+    {V : Type*} [AddCommGroup V] [Module ℝ V] [FiniteDimensional ℝ V]
+    (hdim : Module.finrank ℝ V = 3) (A : V →ₗ[ℝ] V)
+    (hrank : Module.finrank ℝ A.range ≠ 2) {v : V} (hv : A v = 0) :
+    curvatureOperatorReactionEndomorphism3 A v = 0 := by
+  let b : Module.Basis (Fin 3) ℝ V := Module.finBasisOfFinrankEq ℝ V hdim
+  let B := LinearMap.toMatrix b b A
+  have hBrank : B.rank ≠ 2 := by
+    rw [Matrix.rank_eq_finrank_range_toLin B b b,
+      show Matrix.toLin b b B = A from Matrix.toLin_toMatrix _ _ _]
+    exact hrank
+  have hBv : B.mulVec (b.repr v) = 0 := by
+    rw [LinearMap.toMatrix_mulVec_repr, hv, map_zero, Finsupp.coe_zero]
+  have hR := curvatureOperatorReaction3_mulVec_eq_zero_of_rank_ne_two hBrank hBv
+  apply b.repr.injective
+  have hcoord := LinearMap.toMatrix_mulVec_repr b b
+    (curvatureOperatorReactionEndomorphism3 A) v
+  rw [curvatureOperatorReactionEndomorphism3_toMatrix] at hcoord
+  exact DFunLike.coe_injective (by
+    simpa only [map_zero, Finsupp.coe_zero] using hcoord.symm.trans hR)
+
 
 end DifferentialGeometry.Geometry.Curvature.DimensionThree

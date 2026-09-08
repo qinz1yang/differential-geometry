@@ -617,4 +617,99 @@ theorem curvatureOperator_finrank_range_trichotomy_at_positive_time
     G cov hcov hT A hAsymm hApos hAcont hAspace X hG hreg hX hGconn
     hevolution ht x v hv
 
+
+theorem curvatureOperator_smooth_parallel_kernel_at_right_endpoint
+    (g : ℝ → SmoothRiemannianMetric I M)
+    (cov : ℝ → CovariantDerivative I F V)
+    [∀ t, ContMDiffCovariantDerivative (cov t) ∞]
+    (hcov : ∀ t, (cov t).IsMetricCompatible)
+    (A : ℝ → Cₛ^∞⟮I; F →L[ℝ] F, (fun x : M ↦ V x →L[ℝ] V x)⟯)
+    {a b : ℝ} (hab : a < b)
+    (hAspace : ContMDiffOnSpacetimeEndomorphism
+      (I := I) (F := F) (V := V) (n := ∞)
+      (fun t x ↦ A t x) (Ioo a b ×ˢ (Set.univ : Set M)))
+    (q : ℕ) (hrange : ∀ t ∈ Ioc a b, ∀ x,
+      Module.finrank ℝ (A t x).range = q)
+    (hApos : ∀ t ∈ Ioc a b, ∀ x, (A t x).IsPositive)
+    (X : ℝ → (x : M) → TangentSpace I x)
+    (hevolution : ∀ t ∈ Ioc a b, ∀ x,
+      HasDerivAt (fun s ↦ A s x)
+        (rawBundleEndomorphismConnLap (I := I) (g t) (cov t)
+            (fun y ↦ A t y) x +
+          HomConnectionGen.homBundleCovariantDerivativeGen
+            I M F V F V (cov t) (cov t) (fun y ↦ A t y) x (X t x) +
+          Q x (A t x)) t) :
+    ∃ K : ContMDiffVectorSubbundle (I := I) (F := F) (V := V) (n := ∞),
+      (∀ x, K.fiber x = (A b x).ker) ∧
+      IsCovariantlyInvariantSubmoduleFamily (cov b) K.fiber ∧
+      ∀ x v, v ∈ K.fiber x → Q x (A b x) v = 0 := by
+  let _ : ∀ x, FiniteDimensional ℝ (V x) :=
+    fun x => VectorBundle.finiteDimensional ℝ F V x
+  let c := (a + b) / 2
+  have hc : c ∈ Ioo a b := ⟨by dsimp [c]; linarith, by dsimp [c]; linarith⟩
+  have hb : b ∈ Ioc a b := ⟨hab, le_rfl⟩
+  have hO : Ioo a b ⊆ Ioc a b := fun _ h => ⟨h.1, h.2.le⟩
+  have hpos := fun t (ht : t ∈ Ioo a b) => hApos t (hO ht)
+  have hevol := fun t (ht : t ∈ Ioo a b) => hevolution t (hO ht)
+  have hrank := fun t (ht : t ∈ Ioo a b) => hrange t (hO ht)
+  have hrigidity := curvatureOperator_kernel_parallel_and_reaction_annihilated_of_constant_rank
+    g cov hcov A hAspace q hrank hpos X hevol
+  have hK (x : M) : ∀ t ∈ Ioo a b, (A t x).ker = (A c x).ker := by
+    intro t ht
+    exact (curvatureOperator_kernel_and_range_eq_of_constant_rank
+      g cov hcov A hAspace q hrank hpos X hevol ht hc).1
+  have hfin (x : M) : Module.finrank ℝ (A c x).ker = Module.finrank ℝ (A b x).ker := by
+    have hcDim := (A c x).toLinearMap.finrank_range_add_finrank_ker
+    have hbDim := (A b x).toLinearMap.finrank_range_add_finrank_ker
+    have hcRank := hrange c (hO hc) x
+    have hbRank := hrange b hb x
+    omega
+  have hKb (x : M) := continuousLinearMap_kernel_eq_of_constant_on_left hab
+    (hevolution b hb x).differentiableAt.continuousAt (hK x) (hfin x)
+  have hQ (x : M) (v : V x) (hv : A b x v = 0) : Q x (A b x) v = 0 := by
+    have hcont := (hevolution b hb x).differentiableAt.continuousAt
+    exact continuousLinearMap_kernel_annihilation_of_constant_on_left hab hcont
+      (curvatureOperatorReactionEndomorphism3_contDiff.continuous.continuousAt.comp hcont)
+      (hK x) (hfin x)
+      (fun t ht v hv => hrigidity.2.1 t ht x v (LinearMap.mem_ker.mp hv))
+      v (LinearMap.mem_ker.mpr hv)
+  have hder (x : M) (v : V x) (hv : A b x v = 0) :
+      deriv (fun s => A s x) b v = 0 := by
+    have hvC : v ∈ (A c x).ker := (hKb x).symm ▸ LinearMap.mem_ker.mpr hv
+    have hzero : ∀ t ∈ Ioc a b, A t x v = 0 := by
+      intro t ht
+      rcases ht.2.eq_or_lt with rfl | htb
+      · exact hv
+      · apply LinearMap.mem_ker.mp
+        rw [hK x t ⟨ht.1, htb⟩]
+        exact hvC
+    have hdiff := ((hevolution b hb x).clm_apply (hasDerivAt_const b v)).hasDerivWithinAt (s := Ioc a b)
+    have hconst : HasDerivWithinAt (fun s => A s x v) 0 (Ioc a b) b :=
+      (hasDerivWithinAt_const b (Ioc a b) (0 : V x)).congr hzero hv
+    have hout := (hdiff.derivWithin (uniqueDiffOn_Ioc a b b hb)).symm.trans
+      (hconst.derivWithin (uniqueDiffOn_Ioc a b b hb))
+    rw [← (hevolution b hb x).deriv] at hout
+    simpa only [map_zero, add_zero] using hout
+  have hparallel := PositiveSystem.kernel_isCovariantlyInvariant_of_deriv_inner_eq_zero
+    (g b) (cov b) (hcov b) A (fun x => (hApos b hb x).toLinearMap.isSymmetric)
+    (hApos b hb) (X b) (fun x => Q x (A b x))
+    (fun x v hv => by rw [hder x v hv, inner_zero_left])
+    (fun x v _ => (curvatureOperatorReactionEndomorphism3_isPositive
+      (hApos b hb x).toLinearMap).inner_nonneg_left v)
+    (fun x => (hevolution b hb x).deriv)
+  have hker : ∀ x, Module.finrank ℝ (A b x).ker = Module.finrank ℝ F - q := by
+    intro x
+    have hsum := (A b x).toLinearMap.finrank_range_add_finrank_ker
+    have hdim := VectorBundle.finrank_eq ℝ F V x
+    have hrank := hrange b hb x
+    omega
+  obtain ⟨K, -, hKeq⟩ := ContMDiffVectorSubbundle.exists_smooth_kernel
+    (fun x => A b x) (A b).contMDiff (Module.finrank ℝ F - q) hker
+  refine ⟨K, hKeq, ?_, ?_⟩
+  · have heq : K.fiber = fun x => (A b x).ker := funext hKeq
+    rw [heq]
+    exact hparallel
+  · intro x v hv
+    exact hQ x v (LinearMap.mem_ker.mp (hKeq x ▸ hv))
+
 end DifferentialGeometry.Analysis.Parabolic

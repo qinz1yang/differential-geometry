@@ -26,7 +26,7 @@ noncomputable local instance scalarPositivityTwoFormFiniteDimensional
     (Module.finBasis Real (TangentSpace I x))).finiteDimensional_of_finite
 
 omit [T2Space M] in
-private theorem curvatureOperatorEndomorphismAt_inner_nonneg_of_mem_nonnegativeCone
+theorem curvatureOperatorEndomorphismAt_inner_nonneg_of_mem_nonnegativeCone
     (hdim : Module.finrank ℝ E = 3) (g : SmoothRiemannianMetric I M) (x : M)
     (A : algebraicCurvatureTensorSubmodule (I := I) (M := M) x)
     (hA : A ∈ algebraicCurvatureOperatorNonnegativeCone (I := I) (M := M))
