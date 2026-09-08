@@ -4736,7 +4736,11 @@ import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletWeakChartCut
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Uhlenbeck.CurvatureOperatorParallel
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.CylinderProduct
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.WeakDerivativeLift
+import DifferentialGeometry.Analysis.Integration.Lp.SpacetimeDual
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.SpatialLowerSource
+import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.ForcedTimeH1Energy
+import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.TimeWeakDual
+import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.DenseDual
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.SpatialGradientEquation
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.GradientH1
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureOperatorRankScaling

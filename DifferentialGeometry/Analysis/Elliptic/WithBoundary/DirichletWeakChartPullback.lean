@@ -373,6 +373,47 @@ theorem chartInverse_h1ComplDirichletChartPullback_coeFn
   rw [chartPullback_apply_of_mem α f hx, (extChartAt I_hs α).right_inv hy,
     ContinuousLinearEquiv.apply_symm_apply]
 
+
+theorem dirichletLocalWeakPartialLp_eq_ae_of_coeFn_eq_chartPullback
+    (q : SmoothRiemannianMetric I_hs M) (α : M) {Ω : Set EuStd}
+    (hΩ : IsOpen Ω) (hΩc : IsCompact (closure Ω))
+    (hΩs : closure Ω ⊆ toEuclidean (E := EuN) '' interior (extChartAt I_hs α).target)
+    (v : H1ComplDirichlet q) {f : EuStd → ℝ}
+    (hv : (H1ComplDirichletToLp q v : M → ℝ) =ᵐ[riemannianVolumeMeasure (I := I_hs) (M := M) q]
+      chartPullback I_hs α f)
+    (j : Fin (Module.finrank ℝ EuN)) {g : EuStd → ℝ}
+    (hg : LocallyIntegrable g (volume.restrict Ω))
+    (hweak : DeGiorgi.HasWeakPartialDeriv j g f Ω) :
+    (dirichletLocalWeakPartialLp q α hΩ hΩc hΩs j v : EuStd → ℝ)
+      =ᵐ[volume.restrict Ω] g := by
+  have hval : (fun z => H1ComplDirichletToLp q v
+      ((extChartAt I_hs α).symm ((toEuclidean (E := EuN)).symm z))) =ᵐ[
+      volume.restrict Ω] f := by
+    have h := ae_chartInverse_of_ae q α hΩ.measurableSet hΩc
+      (hΩs.trans (image_mono interior_subset)) hv
+    filter_upwards [h, ae_restrict_mem hΩ.measurableSet] with z hz hzΩ
+    rw [hz]
+    have hy : (toEuclidean (E := EuN)).symm z ∈ (extChartAt I_hs α).target := by
+      obtain ⟨y, hy, he⟩ := hΩs (subset_closure hzΩ)
+      rw [← he, ContinuousLinearEquiv.symm_apply_apply]
+      exact interior_subset hy
+    have hx := (extChartAt I_hs α).map_target hy
+    rw [extChartAt_source] at hx
+    rw [chartPullback_apply_of_mem α f hx, (extChartAt I_hs α).right_inv hy,
+      ContinuousLinearEquiv.apply_symm_apply]
+  have hvweak : DeGiorgi.HasWeakPartialDeriv j
+      (dirichletLocalWeakPartialLp q α hΩ hΩc hΩs j v) f Ω := by
+    intro ψ hψ hψc hψs
+    have hw := hasWeakPartialDeriv_dirichletLocalWeakPartialLp q α hΩ hΩc hΩs j v
+      ψ hψ hψc hψs
+    rw [← hw]
+    apply integral_congr_ae
+    filter_upwards [hval] with z hz
+    rw [hz]
+  exact DeGiorgi.HasWeakPartialDeriv.ae_eq hΩ hvweak hweak
+    ((Lp.memLp _).locallyIntegrable (by norm_num)) hg
+
+
 theorem dirichletLocalWeakPartialLp_h1ComplDirichletChartPullback_eq_ae
     (q : SmoothRiemannianMetric I_hs M) (α : M) {Ω : Set EuStd}
     (hΩ : IsOpen Ω) (hΩc : IsCompact (closure Ω))
@@ -460,5 +501,39 @@ theorem exists_smooth_tendsto_h1ComplDirichletChartPullback
     h1ComplDirichletChartPullback_eq_smoothToH1ComplDirichlet q α hΩ hΩc hΩs
       (hφ j) (hφc j) (hφs j)
   simpa only [heq] using ht
+
+
+open DifferentialGeometry.Analysis.Sobolev.Euclidean
+theorem dirichletLocalWeakPartialLp_eq_ae_of_chartPullback_mul
+    (q : SmoothRiemannianMetric I_hs M) (α : M) {Ω : Set EuStd}
+    (hΩ : IsOpen Ω) (hΩc : IsCompact (closure Ω))
+    (hΩs : closure Ω ⊆ toEuclidean (E := EuN) '' interior (extChartAt I_hs α).target)
+    (v : H1ComplDirichlet q) {P H η : EuStd → ℝ}
+    (hv : (H1ComplDirichletToLp q v : M → ℝ) =ᵐ[riemannianVolumeMeasure (I := I_hs) (M := M) q]
+      chartPullback I_hs α (fun z => η z * P z))
+    (hP : MemLp P 2 (volume.restrict Ω)) (hH : MemLp H 2 (volume.restrict Ω))
+    (j : Fin (Module.finrank ℝ EuN))
+    (hweak : DeGiorgi.HasWeakPartialDeriv (d := Module.finrank ℝ EuN) j H P Ω)
+    (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hηc : HasCompactSupport η) :
+    (dirichletLocalWeakPartialLp q α hΩ hΩc hΩs j v : EuStd → ℝ) =ᵐ[volume.restrict Ω]
+      (fun z => η z * H z + fderiv ℝ η z (EuclideanSpace.single j 1) * P z) := by
+  have hP' : LocallyIntegrable P (volume.restrict Ω) := hP.locallyIntegrable (by norm_num)
+  have hH' : LocallyIntegrable H (volume.restrict Ω) := hH.locallyIntegrable (by norm_num)
+  have hpj : DeGiorgi.HasWeakPartialDeriv j H P Ω := hweak
+  have hmul := hpj.mul_smooth hΩ hη hP' hH'
+  have hloc : LocallyIntegrable
+      (fun z => η z * H z + fderiv ℝ η z (EuclideanSpace.single j 1) * P z)
+      (volume.restrict Ω) := by
+    have hηm : MemLp η ∞ (volume.restrict Ω) :=
+      (hη.continuous.memLp_of_hasCompactSupport hηc).restrict Ω
+    have hdη : MemLp (fun z => fderiv ℝ η z (EuclideanSpace.single j 1)) ∞
+        (volume.restrict Ω) :=
+      ((hη.continuous_fderiv (by simp)).clm_apply continuous_const
+        |>.memLp_of_hasCompactSupport (hηc.fderiv_apply (𝕜 := ℝ)
+          (EuclideanSpace.single j 1)) : MemLp _ ∞ volume).restrict Ω
+    have hG : MemLp (fun z => η z * H z + fderiv ℝ η z (EuclideanSpace.single j 1) * P z) 2 (volume.restrict Ω) := (hH.mul' hηm).add (hP.mul' hdη)
+    exact hG.locallyIntegrable (by norm_num)
+  exact dirichletLocalWeakPartialLp_eq_ae_of_coeFn_eq_chartPullback q α hΩ hΩc hΩs v hv j hloc hmul
+
 
 end DifferentialGeometry.Analysis.Laplacian.WithBoundary.Dirichlet
