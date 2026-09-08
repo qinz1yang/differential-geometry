@@ -3632,7 +3632,7 @@ import DifferentialGeometry.Geometry.Comparison.CheegerGromovTaylor.Core.Geometr
 import DifferentialGeometry.Geometry.Comparison.CheegerGromovTaylor.Fiber.Basic
 import DifferentialGeometry.Geometry.Comparison.CheegerGromovTaylor.Fiber.Iteration
 import DifferentialGeometry.Geometry.Comparison.CheegerGromovTaylor.Paths.ExponentialLift
-import DifferentialGeometry.Geometry.Comparison.CheegerGromovTaylor.Paths.Flat
+import DifferentialGeometry.Geometry.Metric.Path.Flat
 import DifferentialGeometry.Geometry.Comparison.CheegerGromovTaylor.Paths.HomotopyLift
 import DifferentialGeometry.Geometry.Comparison.CheegerGromovTaylor.InjectivityRadius.Basic
 import DifferentialGeometry.Geometry.Comparison.CheegerGromovTaylor.Core.JensenConvexity
