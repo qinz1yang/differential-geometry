@@ -1,5 +1,5 @@
-import DifferentialGeometry.Geometry.Comparison.CheegerGromovTaylor.Paths.HomotopyLift
-import DifferentialGeometry.Geometry.Comparison.HalfSquaredDistance.Basic
+import DifferentialGeometry.Geometry.Comparison.CheegerGromovTaylor.Paths.ExponentialLift
+import DifferentialGeometry.Geometry.Exponential.RadialPath
 
 set_option autoImplicit false
 
@@ -13,7 +13,7 @@ namespace Geometry
 namespace Riemannian
 namespace CheegerGromovTaylor
 
-open Exponential NormalCoordinates Variation
+open Exponential NormalCoordinates
 
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace Real E]
   [FiniteDimensional Real E] [NeZero (Module.finrank Real E)]
@@ -38,35 +38,9 @@ private theorem flatTime_zero : flatTime 0 = 0 := by
 private theorem flatTime_one : flatTime 1 = 1 := by
   rw [flatTime, Real.smoothTransition.one_of_one_le (by norm_num)]
 
-private theorem flatTime_nonneg (t : Real) : 0 ≤ flatTime t :=
-  Real.smoothTransition.nonneg _
-
-private theorem flatTime_le_one (t : Real) : flatTime t ≤ 1 :=
-  Real.smoothTransition.le_one _
-
-private theorem flatTime_mono : Monotone flatTime := by
-  apply Real.smoothTransition.monotone.comp
-  intro a b hab
-  dsimp only [flatTime]
-  linarith
-
 private theorem flatTime_cd : ContDiff Real ∞ flatTime := by
   exact Real.smoothTransition.contDiff.comp
     (contDiff_const.mul contDiff_id |>.sub contDiff_const)
-
-private theorem flatTime_zero_nhds :
-    flatTime =ᶠ[𝓝 (0 : Real)] (fun _ => 0) := by
-  filter_upwards [eventually_lt_nhds (show (0 : Real) < 1 / 3 by norm_num)]
-    with t ht
-  rw [flatTime, Real.smoothTransition.zero_of_nonpos]
-  linarith
-
-private theorem flatTime_one_nhds :
-    flatTime =ᶠ[𝓝 (1 : Real)] (fun _ => 1) := by
-  filter_upwards [eventually_gt_nhds (show (2 / 3 : Real) < 1 by norm_num)]
-    with t ht
-  rw [flatTime, Real.smoothTransition.one_of_one_le]
-  linarith
 
 noncomputable def radialFlat
     (g : SmoothRiemannianMetric I M)
@@ -91,6 +65,28 @@ noncomputable def radialFlat
         intrinsicFramedExp (I := I) g hEnorm p u
     rw [flatTime_one, one_smul]
 
+private theorem radialFlat_extend_eq_radialPath
+    (g : SmoothRiemannianMetric I M)
+    (hEnorm : ∀ (y : M) (w : TangentSpace I y),
+      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner y w w)))
+    (p : M) (u : E) :
+    (radialFlat g hEnorm p u).extend =
+      (fun t : ℝ => (radialPath g p (normalFrame g p u) (by
+        rw [expDomain_eq_univ_of_completeSpace g hEnorm p]
+        trivial)).withSittingInstants.extend t) := by
+  have hco : (radialFlat g hEnorm p u : unitInterval → M) =
+      (radialPath g p (normalFrame g p u) (by
+        rw [expDomain_eq_univ_of_completeSpace g hEnorm p]
+        trivial)).withSittingInstants := by
+    funext t
+    change intrinsicFramedExp g hEnorm p (flatTime t • u) =
+      (radialPath g p (normalFrame g p u) (by
+        rw [expDomain_eq_univ_of_completeSpace g hEnorm p]
+        trivial)).withSittingInstants t
+    rw [Path.withSittingInstants_apply, radialPath_apply]
+    simp only [flatTime, intrinsicFrame_apply, map_smul, expMap_eq_expMapIntrinsic g hEnorm p]
+  exact congrArg (IccExtend zero_le_one) hco
+
 theorem radialFlat_extend
     (g : SmoothRiemannianMetric I M)
     (hEnorm : ∀ (y : M) (w : TangentSpace I y),
@@ -99,43 +95,27 @@ theorem radialFlat_extend
     (radialFlat (I := I) g hEnorm p u).extend =
       fun t : Real =>
         intrinsicFramedExp (I := I) g hEnorm p (flatTime t • u) := by
+  rw [radialFlat_extend_eq_radialPath, extend_radialPath_withSittingInstants]
   funext t
-  by_cases ht0 : t ≤ 0
-  · rw [(radialFlat (I := I) g hEnorm p u).extend_of_le_zero ht0,
-      flatTime, Real.smoothTransition.zero_of_nonpos]
-    · simpa only [zero_smul] using
-        (intrinsicFrame_zero (I := I) g hEnorm p).symm
-    · linarith
-  · have h0t : 0 ≤ t := (not_le.mp ht0).le
-    by_cases ht1 : t ≤ 1
-    · have ht : t ∈ Set.Icc (0 : Real) 1 := ⟨h0t, ht1⟩
-      rw [(radialFlat (I := I) g hEnorm p u).extend_apply ht]
-      rfl
-    · have h1t : 1 ≤ t := (not_le.mp ht1).le
-      rw [(radialFlat (I := I) g hEnorm p u).extend_of_one_le h1t,
-        flatTime, Real.smoothTransition.one_of_one_le]
-      · simp only [one_smul]
-      · linarith
+  simp only [flatTime, intrinsicFrame_apply, map_smul, expMap_eq_expMapIntrinsic g hEnorm p]
 
 theorem radialFlat_flat
     (g : SmoothRiemannianMetric I M)
     (hEnorm : ∀ (y : M) (w : TangentSpace I y),
       ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner y w w)))
     (p : M) (u : E) :
-    Path.IsContMDiffWithSittingInstants (I := I) 1 (radialFlat (I := I) g hEnorm p u) where
-  contMDiff := by
-    rw [radialFlat_extend]
-    apply (intrinsicFrame_smooth (I := I) g hEnorm p).of_le (by norm_num) |>.comp
-    rw [contMDiff_iff_contDiff]
-    exact (flatTime_cd.of_le (by norm_num)).smul contDiff_const
-  eventuallyEq_zero := by
-    rw [radialFlat_extend]
-    filter_upwards [flatTime_zero_nhds] with t ht
-    rw [ht, zero_smul, intrinsicFrame_zero]
-  eventuallyEq_one := by
-    rw [radialFlat_extend]
-    filter_upwards [flatTime_one_nhds] with t ht
-    rw [ht, one_smul]
+    Path.IsContMDiffWithSittingInstants (I := I) 1 (radialFlat (I := I) g hEnorm p u) := by
+  have hc := (radialPath g p (normalFrame g p u) (by
+        rw [expDomain_eq_univ_of_completeSpace g hEnorm p]
+        trivial)).isContMDiffWithSittingInstants_withSittingInstants
+    (contMDiffOn_extend_radialPath _ _ _ _)
+  refine ⟨?_, ?_, ?_⟩
+  · rw [radialFlat_extend_eq_radialPath]
+    exact hc.contMDiff.of_le (by norm_num)
+  · rw [radialFlat_extend_eq_radialPath]
+    exact hc.eventuallyEq_zero
+  · rw [radialFlat_extend_eq_radialPath]
+    simpa only [intrinsicFrame_apply, ← expMap_eq_expMapIntrinsic g hEnorm p] using hc.eventuallyEq_one
 
 theorem radialFlat_len
     (g : SmoothRiemannianMetric I M)
@@ -144,51 +124,13 @@ theorem radialFlat_len
     (p : M) (u : E) :
     Path.riemannianELength (I := I) (radialFlat (I := I) g hEnorm p u) =
       ENNReal.ofReal ‖u‖ := by
-  let v : TangentSpace I p := normalFrame (I := I) g p u
-  let γ : Real → M :=
-    fun t => intrinsicFramedExp (I := I) g hEnorm p (t • u)
-  have hγ :
-      γ = intrinsicGeodesic (I := I) g hEnorm p v := by
-    funext t
-    dsimp only [γ, v]
-    rw [intrinsicFrame_apply, map_smul]
-    change intrinsicGeodesic (I := I) g hEnorm p
-        (t • normalFrame (I := I) g p u) 1 =
-      intrinsicGeodesic (I := I) g hEnorm p
-        (normalFrame (I := I) g p u) t
-    exact intrinsicGeodesic_smul (I := I) g hEnorm p
-      (normalFrame (I := I) g p u) t
-  have hγC1 :
-      ContMDiffOn 𝓘(Real, Real) I 1 γ (Set.Icc 0 1) := by
-    rw [hγ]
-    exact
-      (intrinsicGeodesic_contMDiffOn (I := I) g hEnorm p v).mono
-        (Set.subset_univ _)
-  have hbase :
-      Manifold.pathELength I γ 0 1 = ENNReal.ofReal ‖u‖ := by
-    have hv :
-        Real.sqrt (g.inner p v v) = ‖u‖ := by
-      dsimp only [v]
-      exact normalFrame_sqrt (I := I) g p u
-    rw [Geodesic.pathELength_eq_arcLength_riemannianBundle (I := I) g zero_le_one
-      (Geodesic.speedSqrt_integrableOn_Icc_of_C1
-        (I := I) g zero_le_one hγC1)
-      (fun t _ => hEnorm (γ t)
-        (mfderiv 𝓘(Real, Real) I γ t (1 : Real))),
-      hγ, arcLength_radial (I := I) g hEnorm p v 0 1, hv]
-    norm_num
-  rw [Path.riemannianELength, radialFlat_extend]
-  change
-    Manifold.pathELength I (γ ∘ flatTime) 0 1 =
-      ENNReal.ofReal ‖u‖
-  rw [Manifold.pathELength_comp_of_monotoneOn
-    (I := I) (γ := γ) (f := flatTime) (a := 0) (b := 1)
-    zero_le_one (flatTime_mono.monotoneOn (s := Set.Icc 0 1))
-    (flatTime_cd.differentiable (by norm_num)).differentiableOn
-    (by
-      simpa only [flatTime_zero, flatTime_one] using
-        hγC1.mdifferentiableOn one_ne_zero)]
-  simpa only [flatTime_zero, flatTime_one] using hbase
+  rw [Path.riemannianELength, radialFlat_extend_eq_radialPath]
+  change (radialPath g p (normalFrame g p u) (by
+        rw [expDomain_eq_univ_of_completeSpace g hEnorm p]
+        trivial)).withSittingInstants.riemannianELength (I := I) = ENNReal.ofReal ‖u‖
+  rw [Path.riemannianELength_withSittingInstants _
+      ((contMDiffOn_extend_radialPath _ _ _ _).mdifferentiableOn (by norm_num)),
+    riemannianELength_radialPath g hEnorm, normalFrame_sqrt]
 
 noncomputable def radialFlatLift
     (g : SmoothRiemannianMetric I M)

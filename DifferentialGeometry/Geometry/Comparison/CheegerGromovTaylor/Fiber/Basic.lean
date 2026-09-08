@@ -1,4 +1,5 @@
 import DifferentialGeometry.Geometry.Comparison.CheegerGromovTaylor.Paths.Radial
+import DifferentialGeometry.Geometry.Comparison.CheegerGromovTaylor.Paths.HomotopyLift
 
 set_option autoImplicit false
 
