@@ -3183,6 +3183,7 @@ import DifferentialGeometry.Geometry.Metric.Coordinates.ChartGram
 import DifferentialGeometry.Geometry.Metric.Coordinates.QuadraticBounds
 import DifferentialGeometry.Geometry.Metric.Comparison.CompactLowerBound
 import DifferentialGeometry.Geometry.Metric.Completeness
+import DifferentialGeometry.Geometry.Metric.Restriction
 import DifferentialGeometry.Geometry.Metric.Construction.ConvexCombination
 import DifferentialGeometry.Geometry.Metric.DeTurck.ConnectionDifference.Identities
 import DifferentialGeometry.Geometry.Metric.DeTurck.Coordinates.Components
