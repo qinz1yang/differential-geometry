@@ -3,7 +3,6 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.Cutoff.Defs
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Ricci.Basic
 import DifferentialGeometry.Geometry.Metric.PointwiseInner.Bounds
 import Mathlib.Geometry.Manifold.Riemannian.Basic
-open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 open DifferentialGeometry.Geometry.Operator
@@ -30,218 +29,6 @@ variable [VectorBundle Real E (TangentSpace I : M → Type _)]
 omit [NeZero (Module.finrank Real E)] [CompleteSpace E] [SigmaCompactSpace M]
   [T2Space M] [I.Boundaryless]
   [VectorBundle Real E (TangentSpace I : M → Type _)] in
-private theorem parabolic_mul_nhds
-    {G : MetricConnectionFamily (I := I) (M := M) Real}
-    (T : Real) (X : Real → (x : M) → TangentSpace I x)
-    (u v : Real → M → Real) (t : Real) (x : M)
-    (hu_time : DifferentiableWithinAt Real
-      (fun s : Real => u s x) (Set.Icc 0 T) t)
-    (hv_time : DifferentiableWithinAt Real
-      (fun s : Real => v s x) (Set.Icc 0 T) t)
-    (hu_space : ∀ᶠ y in 𝓝 x,
-      MDifferentiableAt I 𝓘(Real, Real) (u t) y)
-    (hv_space : ∀ᶠ y in 𝓝 x,
-      MDifferentiableAt I 𝓘(Real, Real) (v t) y)
-    (hu_grad : MDifferentiableAt I (I.prod 𝓘(Real, E)) (T% fun y : M =>
-      gradientFun (I := I) (G.metric t) (u t) y) x)
-    (hv_grad : MDifferentiableAt I (I.prod 𝓘(Real, E)) (T% fun y : M =>
-      gradientFun (I := I) (G.metric t) (v t) y) x) :
-    parabolicOperatorWithDrift (I := I) G T X
-        (fun s y => u s y * v s y) t x =
-      u t x * parabolicOperatorWithDrift (I := I) G T X v t x +
-        v t x * parabolicOperatorWithDrift (I := I) G T X u t x -
-          2 * (G.metric t).inner x
-            (gradientAt (I := I) G t (u t) x)
-            (gradientAt (I := I) G t (v t) x) := by
-  have hgrad_eq :
-      (fun y : M =>
-          gradientFun (I := I) (G.metric t) (fun z => u t z * v t z) y) =ᶠ[𝓝 x]
-        (fun y : M =>
-          u t y • gradientFun (I := I) (G.metric t) (v t) y +
-            v t y • gradientFun (I := I) (G.metric t) (u t) y) := by
-    filter_upwards [hu_space, hv_space] with y huy hvy
-    exact gradientFun_mul (I := I) (G.metric t) huy hvy
-  have hsum_grad :
-      MDifferentiableAt I (I.prod 𝓘(Real, E)) (T% fun y : M =>
-        u t y • gradientFun (I := I) (G.metric t) (v t) y +
-          v t y • gradientFun (I := I) (G.metric t) (u t) y) x :=
-    mdifferentiableAt_add_section
-      (hu_space.self_of_nhds.smul_section hv_grad)
-      (hv_space.self_of_nhds.smul_section hu_grad)
-  have hprod_grad :
-      MDifferentiableAt I (I.prod 𝓘(Real, E)) (T% fun y : M =>
-        gradientFun (I := I) (G.metric t) (fun z => u t z * v t z) y) x :=
-    hsum_grad.congr_of_eventuallyEq (by
-      filter_upwards [hgrad_eq] with y hy
-      exact congrArg (fun a =>
-        (⟨y, a⟩ : TotalSpace E (TangentSpace I : M → Type _))) hy)
-  have hcov :
-      (G.connection t)
-          (fun y : M =>
-            gradientFun (I := I) (G.metric t) (fun z => u t z * v t z) y) x =
-        (G.connection t)
-          (fun y : M =>
-            u t y • gradientFun (I := I) (G.metric t) (v t) y +
-              v t y • gradientFun (I := I) (G.metric t) (u t) y) x :=
-    (G.connection t).isCovariantDerivativeOnUniv.congr_of_eventuallyEq
-      hprod_grad hsum_grad Filter.univ_mem hgrad_eq
-  have hlap :
-      laplacianAt (I := I) G t (fun y : M => u t y * v t y) x =
-        u t x * laplacianAt (I := I) G t (v t) x +
-          v t x * laplacianAt (I := I) G t (u t) x +
-            2 * (G.metric t).inner x
-              (gradientAt (I := I) G t (u t) x)
-              (gradientAt (I := I) G t (v t) x) := by
-    unfold laplacianAt laplacian divergence
-    rw [hcov]
-    rw [show (fun y : M =>
-        u t y • gradientFun (I := I) (G.metric t) (v t) y +
-          v t y • gradientFun (I := I) (G.metric t) (u t) y) =
-        u t • gradientFun (I := I) (G.metric t) (v t) +
-          v t • gradientFun (I := I) (G.metric t) (u t) by
-      rfl]
-    rw [(G.connection t).isCovariantDerivativeOnUniv.add
-      (hu_space.self_of_nhds.smul_section hv_grad)
-      (hv_space.self_of_nhds.smul_section hu_grad)]
-    rw [(G.connection t).isCovariantDerivativeOnUniv.leibniz
-      hv_grad hu_space.self_of_nhds]
-    rw [(G.connection t).isCovariantDerivativeOnUniv.leibniz
-      hu_grad hv_space.self_of_nhds]
-    simp only [ContinuousLinearMap.toLinearMap_add, map_add,
-      ContinuousLinearMap.toLinearMap_smul]
-    rw [map_smul, map_smul]
-    have htrace_u :
-        LinearMap.trace Real (TangentSpace I x)
-            ((mvfderiv (I := I) (u t) x).toLinearMap.smulRight
-              (gradientFun (I := I) (G.metric t) (v t) x)) =
-          mvfderiv (I := I) (u t) x
-            (gradientFun (I := I) (G.metric t) (v t) x) :=
-      LinearMap.trace_smulRight _ _
-    have htrace_v :
-        LinearMap.trace Real (TangentSpace I x)
-            ((mvfderiv (I := I) (v t) x).toLinearMap.smulRight
-              (gradientFun (I := I) (G.metric t) (u t) x)) =
-          mvfderiv (I := I) (v t) x
-            (gradientFun (I := I) (G.metric t) (u t) x) :=
-      LinearMap.trace_smulRight _ _
-    change
-      u t x • LinearMap.trace Real (TangentSpace I x)
-          (G.connection t (gradientFun (I := I) (G.metric t) (v t)) x).toLinearMap +
-          LinearMap.trace Real (TangentSpace I x)
-            ((mvfderiv (I := I) (u t) x).toLinearMap.smulRight
-              (gradientFun (I := I) (G.metric t) (v t) x)) +
-        (v t x • LinearMap.trace Real (TangentSpace I x)
-            (G.connection t (gradientFun (I := I) (G.metric t) (u t)) x).toLinearMap +
-          LinearMap.trace Real (TangentSpace I x)
-            ((mvfderiv (I := I) (v t) x).toLinearMap.smulRight
-              (gradientFun (I := I) (G.metric t) (u t) x))) = _
-    rw [htrace_u, htrace_v]
-    simp only [gradientAt]
-    have huv :
-        mvfderiv (I := I) (u t) x
-            (gradientFun (I := I) (G.metric t) (v t) x) =
-          (G.metric t).inner x
-            (gradientFun (I := I) (G.metric t) (u t) x)
-            (gradientFun (I := I) (G.metric t) (v t) x) := by
-      simpa [mvfderiv] using
-        (inner_gradientFun (I := I) (G.metric t) (u t) x
-          (gradientFun (I := I) (G.metric t) (v t) x)).symm
-    have hvu :
-        mvfderiv (I := I) (v t) x
-            (gradientFun (I := I) (G.metric t) (u t) x) =
-          (G.metric t).inner x
-            (gradientFun (I := I) (G.metric t) (v t) x)
-            (gradientFun (I := I) (G.metric t) (u t) x) := by
-      simpa [mvfderiv] using
-        (inner_gradientFun (I := I) (G.metric t) (v t) x
-          (gradientFun (I := I) (G.metric t) (u t) x)).symm
-    rw [huv, hvu]
-    rw [(G.metric t).symm x
-      (gradientFun (I := I) (G.metric t) (v t) x)
-      (gradientFun (I := I) (G.metric t) (u t) x)]
-    simp only [smul_eq_mul]
-    ring
-  have hdrift := driftTerm_mul (I := I) G t (X t)
-    hu_space.self_of_nhds hv_space.self_of_nhds
-  unfold parabolicOperatorWithDrift heatOperatorWithDrift
-  rw [derivWithin_fun_mul hu_time hv_time, hlap, hdrift]
-  ring
-
-omit [NeZero (Module.finrank Real E)] [CompleteSpace E] [SigmaCompactSpace M]
-  [T2Space M] [I.Boundaryless]
-  [VectorBundle Real E (TangentSpace I : M → Type _)] in
-private theorem parabolic_add_nhds
-    {G : MetricConnectionFamily (I := I) (M := M) Real}
-    (T : Real) (X : Real → (x : M) → TangentSpace I x)
-    (u v : Real → M → Real) (t : Real) (x : M)
-    (hu_time : DifferentiableWithinAt Real
-      (fun s : Real => u s x) (Set.Icc 0 T) t)
-    (hv_time : DifferentiableWithinAt Real
-      (fun s : Real => v s x) (Set.Icc 0 T) t)
-    (hu_space : ∀ᶠ y in 𝓝 x,
-      MDifferentiableAt I 𝓘(Real, Real) (u t) y)
-    (hv_space : ∀ᶠ y in 𝓝 x,
-      MDifferentiableAt I 𝓘(Real, Real) (v t) y)
-    (hu_grad : MDifferentiableAt I (I.prod 𝓘(Real, E)) (T% fun y : M =>
-      gradientFun (I := I) (G.metric t) (u t) y) x)
-    (hv_grad : MDifferentiableAt I (I.prod 𝓘(Real, E)) (T% fun y : M =>
-      gradientFun (I := I) (G.metric t) (v t) y) x) :
-    parabolicOperatorWithDrift (I := I) G T X
-        (fun s y => u s y + v s y) t x =
-      parabolicOperatorWithDrift (I := I) G T X u t x +
-        parabolicOperatorWithDrift (I := I) G T X v t x := by
-  have hgrad_eq :
-      (fun y : M =>
-          gradientFun (I := I) (G.metric t) (fun z => u t z + v t z) y) =ᶠ[𝓝 x]
-        (fun y : M =>
-          gradientFun (I := I) (G.metric t) (u t) y +
-            gradientFun (I := I) (G.metric t) (v t) y) := by
-    filter_upwards [hu_space, hv_space] with y huy hvy
-    exact gradientFun_add (I := I) (G.metric t) huy hvy
-  have hsum_grad :
-      MDifferentiableAt I (I.prod 𝓘(Real, E)) (T% fun y : M =>
-        gradientFun (I := I) (G.metric t) (u t) y +
-          gradientFun (I := I) (G.metric t) (v t) y) x :=
-    mdifferentiableAt_add_section hu_grad hv_grad
-  have hleft_grad :
-      MDifferentiableAt I (I.prod 𝓘(Real, E)) (T% fun y : M =>
-        gradientFun (I := I) (G.metric t) (fun z => u t z + v t z) y) x :=
-    hsum_grad.congr_of_eventuallyEq (by
-      filter_upwards [hgrad_eq] with y hy
-      exact congrArg (fun a =>
-        (⟨y, a⟩ : TotalSpace E (TangentSpace I : M → Type _))) hy)
-  have hcov :
-      (G.connection t)
-          (fun y : M =>
-            gradientFun (I := I) (G.metric t) (fun z => u t z + v t z) y) x =
-        (G.connection t)
-          (fun y : M =>
-            gradientFun (I := I) (G.metric t) (u t) y +
-              gradientFun (I := I) (G.metric t) (v t) y) x :=
-    (G.connection t).isCovariantDerivativeOnUniv.congr_of_eventuallyEq
-      hleft_grad hsum_grad Filter.univ_mem hgrad_eq
-  have hlap :
-      laplacianAt (I := I) G t (fun y : M => u t y + v t y) x =
-        laplacianAt (I := I) G t (u t) x +
-          laplacianAt (I := I) G t (v t) x := by
-    unfold laplacianAt laplacian divergence
-    rw [hcov]
-    rw [show (fun y : M =>
-        gradientFun (I := I) (G.metric t) (u t) y +
-          gradientFun (I := I) (G.metric t) (v t) y) =
-        gradientFun (I := I) (G.metric t) (u t) +
-          gradientFun (I := I) (G.metric t) (v t) by rfl]
-    rw [(G.connection t).isCovariantDerivativeOnUniv.add hu_grad hv_grad]
-    exact LinearMap.map_add
-      (LinearMap.trace Real (TangentSpace I x)) _ _
-  have hdrift := driftTerm_add (I := I) G t (X t)
-    hu_space.self_of_nhds hv_space.self_of_nhds
-  unfold parabolicOperatorWithDrift heatOperatorWithDrift
-  rw [derivWithin_fun_add hu_time hv_time, hlap, hdrift]
-  ring
-
-omit [NeZero (Module.finrank Real E)] [CompleteSpace E] [SigmaCompactSpace M]
-  [T2Space M] [I.Boundaryless] in
 private theorem sum_regularity_nhds
     {G : MetricConnectionFamily (I := I) (M := M) Real}
     {κ : Type*} (s : Finset κ)
@@ -261,305 +48,21 @@ private theorem sum_regularity_nhds
         gradientFun (I := I) (G.metric t)
           (fun z : M => ∑ i ∈ s, u i t z) y) x := by
   classical
+  refine ⟨DifferentiableWithinAt.fun_sum htime, ?_,
+    mdifferentiableAt_gradientFun_finset_sum (G.metric t) s
+      (fun i => u i t) x hspace hgrad⟩
+  filter_upwards [(Filter.eventually_all_finset s).mpr hspace] with y hy
+  clear htime hgrad hspace
   induction s using Finset.induction_on with
-  | empty =>
-      refine ⟨?_, ?_, ?_⟩
-      · simpa using
-          (differentiableWithinAt_const (c := (0 : Real))
-            (x := t) (s := Set.Icc 0 T))
-      · exact Filter.Eventually.of_forall fun _ => by
-          simpa using (mdifferentiableAt_const :
-            MDifferentiableAt I 𝓘(Real, Real) (fun _ : M => (0 : Real)) _)
-      · rw [show (T% fun y : M =>
-            gradientFun (I := I) (G.metric t)
-              (fun z : M => ∑ i ∈ (∅ : Finset κ), u i t z) y) =
-            (T% fun y : M => (0 : TangentSpace I y)) by
-          funext y
-          simp only [Finset.sum_empty, gradientFun_const]]
-        exact mdifferentiableAt_zeroSection
-          (𝕜 := Real) (F := E) (E := (TangentSpace I : M → Type _)) (x := x)
-  | @insert a s ha ih =>
-      have ih' := ih
-        (fun i hi => htime i (Finset.mem_insert_of_mem hi))
-        (fun i hi => hspace i (Finset.mem_insert_of_mem hi))
-        (fun i hi => hgrad i (Finset.mem_insert_of_mem hi))
-      have hatime := htime a (Finset.mem_insert_self a s)
-      have haspace := hspace a (Finset.mem_insert_self a s)
-      have hagrad := hgrad a (Finset.mem_insert_self a s)
-      refine ⟨?_, ?_, ?_⟩
-      · rw [show (fun r : Real => ∑ i ∈ insert a s, u i r x) =
-            (fun r : Real => u a r x + ∑ i ∈ s, u i r x) by
-          funext r
-          rw [Finset.sum_insert ha]]
-        exact hatime.add ih'.1
-      · filter_upwards [haspace, ih'.2.1] with y hay hsy
-        rw [show (fun z : M => ∑ i ∈ insert a s, u i t z) =
-            (fun z : M => u a t z + ∑ i ∈ s, u i t z) by
-          funext z
-          rw [Finset.sum_insert ha]]
-        exact hay.add hsy
-      · have hgrad_eq :
-            (fun y : M => gradientFun (I := I) (G.metric t)
-                (fun z : M => ∑ i ∈ insert a s, u i t z) y) =ᶠ[𝓝 x]
-              (fun y : M =>
-                gradientFun (I := I) (G.metric t) (u a t) y +
-                  gradientFun (I := I) (G.metric t)
-                    (fun z : M => ∑ i ∈ s, u i t z) y) := by
-          filter_upwards [haspace, ih'.2.1] with y hay hsy
-          rw [show (fun z : M => ∑ i ∈ insert a s, u i t z) =
-              (fun z : M => u a t z + ∑ i ∈ s, u i t z) by
-            funext z
-            rw [Finset.sum_insert ha]]
-          exact gradientFun_add (I := I) (G.metric t) hay hsy
-        have hsum_grad :
-            MDifferentiableAt I (I.prod 𝓘(Real, E)) (T% fun y : M =>
-              gradientFun (I := I) (G.metric t) (u a t) y +
-                gradientFun (I := I) (G.metric t)
-                  (fun z : M => ∑ i ∈ s, u i t z) y) x :=
-          mdifferentiableAt_add_section hagrad ih'.2.2
-        exact hsum_grad.congr_of_eventuallyEq (by
-          filter_upwards [hgrad_eq] with y hy
-          exact congrArg (fun b =>
-            (⟨y, b⟩ : TotalSpace E (TangentSpace I : M → Type _))) hy)
-
-omit [NeZero (Module.finrank Real E)] [CompleteSpace E] [SigmaCompactSpace M]
-  [T2Space M] [I.Boundaryless] in
-private theorem parabolic_sum_nhds
-    {G : MetricConnectionFamily (I := I) (M := M) Real}
-    {κ : Type*} (s : Finset κ)
-    (T : Real) (X : Real → (x : M) → TangentSpace I x)
-    (u : κ → Real → M → Real) (t : Real) (x : M)
-    (htime : ∀ i ∈ s, DifferentiableWithinAt Real
-      (fun a : Real => u i a x) (Set.Icc 0 T) t)
-    (hspace : ∀ i ∈ s, ∀ᶠ y in 𝓝 x,
-      MDifferentiableAt I 𝓘(Real, Real) (u i t) y)
-    (hgrad : ∀ i ∈ s,
-      MDifferentiableAt I (I.prod 𝓘(Real, E)) (T% fun y : M =>
-        gradientFun (I := I) (G.metric t) (u i t) y) x) :
-    parabolicOperatorWithDrift (I := I) G T X
-        (fun a y => ∑ i ∈ s, u i a y) t x =
-      ∑ i ∈ s, parabolicOperatorWithDrift (I := I) G T X (u i) t x := by
-  classical
-  induction s using Finset.induction_on with
-  | empty =>
-      simp only [Finset.sum_empty]
-      have hzero_time : DifferentiableWithinAt Real
-          (fun _ : Real => (0 : Real)) (Set.Icc 0 T) t :=
-        differentiableWithinAt_const 0
-      have hzero_space : ∀ᶠ y in 𝓝 x,
-          MDifferentiableAt I 𝓘(Real, Real) (fun _ : M => (0 : Real)) y :=
-        Filter.Eventually.of_forall fun _ => mdifferentiableAt_const
-      have hzero_grad :
-          MDifferentiableAt I (I.prod 𝓘(Real, E)) (T% fun y : M =>
-            gradientFun (I := I) (G.metric t) (fun _ : M => (0 : Real)) y) x := by
-        rw [show (T% fun y : M =>
-            gradientFun (I := I) (G.metric t) (fun _ : M => (0 : Real)) y) =
-            (T% fun y : M => (0 : TangentSpace I y)) by
-          funext y
-          simp only [gradientFun_const]]
-        exact mdifferentiableAt_zeroSection
-          (𝕜 := Real) (F := E) (E := (TangentSpace I : M → Type _)) (x := x)
-      have hadd := parabolic_add_nhds (I := I) T X
-        (fun _ _ => (0 : Real)) (fun _ _ => (0 : Real)) t x
-        hzero_time hzero_time hzero_space hzero_space hzero_grad hzero_grad
-      change parabolicOperatorWithDrift (I := I) G T X
-          (fun _ _ => (0 : Real)) t x = 0
-      have hadd' :
-          parabolicOperatorWithDrift (I := I) G T X
-              (fun _ _ => (0 : Real)) t x =
-            parabolicOperatorWithDrift (I := I) G T X
-                (fun _ _ => (0 : Real)) t x +
-              parabolicOperatorWithDrift (I := I) G T X
-                (fun _ _ => (0 : Real)) t x := by
-        simpa only [zero_add] using hadd
-      linarith
-  | @insert a s ha ih =>
-      have hatime := htime a (Finset.mem_insert_self a s)
-      have haspace := hspace a (Finset.mem_insert_self a s)
-      have hagrad := hgrad a (Finset.mem_insert_self a s)
-      have hsreg := sum_regularity_nhds (I := I) (G := G) s u T t x
-        (fun i hi => htime i (Finset.mem_insert_of_mem hi))
-        (fun i hi => hspace i (Finset.mem_insert_of_mem hi))
-        (fun i hi => hgrad i (Finset.mem_insert_of_mem hi))
-      rw [show (fun r y => ∑ i ∈ insert a s, u i r y) =
-          (fun r y => u a r y + ∑ i ∈ s, u i r y) by
-        funext r y
-        rw [Finset.sum_insert ha]]
-      rw [Finset.sum_insert ha]
-      rw [parabolic_add_nhds (I := I) T X (u a)
-        (fun r y => ∑ i ∈ s, u i r y) t x
-        hatime hsreg.1 haspace hsreg.2.1 hagrad hsreg.2.2]
-      rw [ih (fun i hi => htime i (Finset.mem_insert_of_mem hi))
-        (fun i hi => hspace i (Finset.mem_insert_of_mem hi))
-        (fun i hi => hgrad i (Finset.mem_insert_of_mem hi))]
-
-omit [NeZero (Module.finrank Real E)] [CompleteSpace E] [SigmaCompactSpace M]
-  [T2Space M] [I.Boundaryless] in
-private theorem parabolic_const_zero
-    {G : MetricConnectionFamily (I := I) (M := M) Real}
-    (T : Real) (X : Real → (x : M) → TangentSpace I x)
-    (a t : Real) (x : M)
-    (huniq : UniqueDiffWithinAt Real (Set.Icc 0 T) t) :
-    parabolicOperatorWithDrift (I := I) G T X
-        (fun _ _ => a) t x = 0 := by
-  unfold parabolicOperatorWithDrift heatOperatorWithDrift laplacianAt
-    laplacian divergence driftTerm gradientAt
-  rw [(hasDerivWithinAt_const
-    (x := t) (s := Set.Icc 0 T) (c := a)).derivWithin huniq]
-  rw [show gradientFun (I := I) (G.metric t) ((fun _ _ => a) t) =
-      (fun y : M => (0 : TangentSpace I y)) by
-    funext y
-    simp only [gradientFun_const]]
-  rw [show (fun y : M => (0 : TangentSpace I y)) = 0 by rfl]
-  rw [(G.connection t).isCovariantDerivativeOnUniv.zero (x := x)]
-  rw [show (↑(0 : TangentSpace I x →L[Real] TangentSpace I x) :
-      TangentSpace I x →ₗ[Real] TangentSpace I x) = 0 by rfl]
-  rw [map_zero, Pi.zero_apply, map_zero]
-  ring
-
-omit [NeZero (Module.finrank Real E)] [CompleteSpace E] [SigmaCompactSpace M]
-  [T2Space M] [I.Boundaryless]
-  [VectorBundle Real E (TangentSpace I : M → Type _)] in
-private theorem parabolic_smul_nhds
-    {G : MetricConnectionFamily (I := I) (M := M) Real}
-    (T : Real) (X : Real → (x : M) → TangentSpace I x)
-    (a : Real) (u : Real → M → Real) (t : Real) (x : M)
-    (hu_time : DifferentiableWithinAt Real
-      (fun s : Real => u s x) (Set.Icc 0 T) t)
-    (hu_space : ∀ᶠ y in 𝓝 x,
-      MDifferentiableAt I 𝓘(Real, Real) (u t) y)
-    (hu_grad : MDifferentiableAt I (I.prod 𝓘(Real, E)) (T% fun y : M =>
-      gradientFun (I := I) (G.metric t) (u t) y) x)
-    (huniq : UniqueDiffWithinAt Real (Set.Icc 0 T) t) :
-    parabolicOperatorWithDrift (I := I) G T X
-        (fun s y => a * u s y) t x =
-      a * parabolicOperatorWithDrift (I := I) G T X u t x := by
-  have ha_time : DifferentiableWithinAt Real
-      (fun _ : Real => a) (Set.Icc 0 T) t :=
-    differentiableWithinAt_const a
-  have ha_space : ∀ᶠ y in 𝓝 x,
-      MDifferentiableAt I 𝓘(Real, Real) (fun _ : M => a) y :=
-    Filter.Eventually.of_forall fun _ => mdifferentiableAt_const
-  have ha_grad :
-      MDifferentiableAt I (I.prod 𝓘(Real, E)) (T% fun y : M =>
-        gradientFun (I := I) (G.metric t) (fun _ : M => a) y) x := by
-    rw [show (T% fun y : M =>
-        gradientFun (I := I) (G.metric t) (fun _ : M => a) y) =
-        (T% fun y : M => (0 : TangentSpace I y)) by
-      funext y
-      simp only [gradientFun_const]]
-    exact mdifferentiableAt_zeroSection
-      (𝕜 := Real) (F := E) (E := (TangentSpace I : M → Type _)) (x := x)
-  have hmul := parabolic_mul_nhds (I := I) T X
-    (fun _ _ => a) u t x
-    ha_time hu_time ha_space hu_space ha_grad hu_grad
-  rw [parabolic_const_zero (I := I) T X a t x huniq] at hmul
-  have hzero :
-      gradientAt (I := I) G t (fun _ : M => a) x = 0 := by
-    unfold gradientAt
-    rw [gradientFun_const]
-  rw [hzero] at hmul
-  simpa using hmul
-
-omit [NeZero (Module.finrank Real E)] [CompleteSpace E] [SigmaCompactSpace M]
-  [T2Space M] [I.Boundaryless]
-  [VectorBundle Real E (TangentSpace I : M → Type _)] in
-private theorem parabolic_aff_nhds
-    {G : MetricConnectionFamily (I := I) (M := M) Real}
-    (T : Real) (X : Real → (x : M) → TangentSpace I x)
-    (F : Real → M → Real) (a b t : Real) (x : M)
-    (huniq : UniqueDiffWithinAt Real (Set.Icc 0 T) t)
-    (hFtime : DifferentiableWithinAt Real
-      (fun s : Real => F s x) (Set.Icc 0 T) t)
-    (hFspace : ∀ᶠ y in 𝓝 x,
-      MDifferentiableAt I 𝓘(Real, Real) (F t) y)
-    (hFgrad : MDifferentiableAt I (I.prod 𝓘(Real, E)) (T% fun y : M =>
-      gradientFun (I := I) (G.metric t) (F t) y) x) :
-    parabolicOperatorWithDrift (I := I) G T X
-        (fun s y => (a + b * s) - F s y) t x =
-      b - parabolicOperatorWithDrift (I := I) G T X F t x := by
-  let A : Real → M → Real := fun s _ => a + b * s
-  have hAtime : DifferentiableWithinAt Real
-      (fun s : Real => A s x) (Set.Icc 0 T) t :=
-    (differentiableWithinAt_const a).add
-      ((differentiableWithinAt_fun_id
-        (𝕜 := Real) (s := Set.Icc 0 T) (x := t)).const_mul b)
-  have hAspace : ∀ᶠ y in 𝓝 x,
-      MDifferentiableAt I 𝓘(Real, Real) (A t) y :=
-    Filter.Eventually.of_forall fun _ => mdifferentiableAt_const
-  have hAgrad :
-      MDifferentiableAt I (I.prod 𝓘(Real, E)) (T% fun y : M =>
-        gradientFun (I := I) (G.metric t) (A t) y) x := by
-    rw [show (T% fun y : M =>
-        gradientFun (I := I) (G.metric t) (A t) y) =
-        (T% fun y : M => (0 : TangentSpace I y)) by
-      funext y
-      simp only [A, gradientFun_const]]
-    exact mdifferentiableAt_zeroSection
-      (𝕜 := Real) (F := E) (E := (TangentSpace I : M → Type _)) (x := x)
-  have hnegtime : DifferentiableWithinAt Real
-      (fun s : Real => (-1 : Real) * F s x) (Set.Icc 0 T) t :=
-    hFtime.const_mul (-1)
-  have hnegspace : ∀ᶠ y in 𝓝 x,
-      MDifferentiableAt I 𝓘(Real, Real)
-        (fun z => (-1 : Real) * F t z) y := by
-    filter_upwards [hFspace] with y hy
-    exact hy.const_smul (-1)
-  have hneggrad :
-      MDifferentiableAt I (I.prod 𝓘(Real, E)) (T% fun y : M =>
-        gradientFun (I := I) (G.metric t)
-          (fun z => (-1 : Real) * F t z) y) x := by
-    refine (hFgrad.smul_const_section (a := (-1 : Real))).congr_of_eventuallyEq ?_
-    filter_upwards [hFspace] with y hy
-    exact congrArg (fun b =>
-      (⟨y, b⟩ : TotalSpace E (TangentSpace I : M → Type _)))
-      (by
-        rw [show (fun z => (-1 : Real) * F t z) = (-1 : Real) • F t by
-          funext z
-          rw [Pi.smul_apply, smul_eq_mul]]
-        exact gradientFun_const_smul (I := I) (G.metric t) (-1) hy)
-  have hadd := parabolic_add_nhds (I := I) T X A
-    (fun s y => (-1 : Real) * F s y) t x
-    hAtime hnegtime hAspace hnegspace hAgrad hneggrad
-  have hneg := parabolic_smul_nhds (I := I) T X (-1) F t x
-    hFtime hFspace hFgrad huniq
-  have hA :
-      parabolicOperatorWithDrift (I := I) G T X A t x = b := by
-    unfold parabolicOperatorWithDrift heatOperatorWithDrift laplacianAt
-      laplacian divergence driftTerm gradientAt
-    dsimp only [A]
-    have hda :
-        derivWithin (fun _ : Real => a) (Set.Icc 0 T) t = 0 :=
-      (hasDerivWithinAt_const
-        (x := t) (s := Set.Icc 0 T) (c := a)).derivWithin huniq
-    have hdb :
-        derivWithin (fun s : Real => b * s) (Set.Icc 0 T) t = b := by
-      have hdb' :=
-        ((hasDerivWithinAt_id t (Set.Icc 0 T)).const_mul b).derivWithin huniq
-      rw [show (fun y : Real => b * id y) = (fun s : Real => b * s) by
-        funext y
-        rw [id_eq]] at hdb'
-      simpa only [mul_one] using hdb'
-    rw [derivWithin_fun_add (differentiableWithinAt_const a)
-      ((differentiableWithinAt_fun_id
-        (𝕜 := Real) (s := Set.Icc 0 T) (x := t)).const_mul b),
-      hda, hdb]
-    rw [show gradientFun (I := I) (G.metric t) (fun _ : M => a + b * t) =
-        (fun y : M => (0 : TangentSpace I y)) by
-      funext y
-      simp only [gradientFun_const]]
-    rw [show (fun y : M => (0 : TangentSpace I y)) = 0 by rfl]
-    rw [(G.connection t).isCovariantDerivativeOnUniv.zero (x := x)]
-    rw [show (↑(0 : TangentSpace I x →L[Real] TangentSpace I x) :
-        TangentSpace I x →ₗ[Real] TangentSpace I x) = 0 by rfl]
-    rw [map_zero, Pi.zero_apply, map_zero]
-    ring
-  rw [show (fun s y => (a + b * s) - F s y) =
-      (fun s y => A s y + (-1 : Real) * F s y) by
-    funext s y
-    ring]
-  rw [hadd, hA, hneg]
-  ring
+  | empty => simpa only [Finset.sum_empty] using mdifferentiableAt_const
+  | @insert i s hi ih =>
+      have hhead := hy i (Finset.mem_insert_self i s)
+      have htail := ih (fun j hj => hy j (Finset.mem_insert_of_mem hj))
+      rw [show (fun z => ∑ j ∈ insert i s, u j t z) =
+          u i t + (fun z => ∑ j ∈ s, u j t z) by
+        funext z
+        simp only [Finset.sum_insert hi, Pi.add_apply]]
+      exact hhead.add htail
 
 def TowerNormGradUpTo
     {G : MetricConnectionFamily (I := I) (M := M) Real}
@@ -1574,8 +1077,6 @@ private theorem supportLevel_le
       simp [v, smul_eq_mul]]
     exact gradientFun_const_smul (I := I) (G.metric t) (t ^ i)
       (B.spatial_differentiable i t ht htpos x)
-  have huniq : UniqueDiffWithinAt Real (Set.Icc 0 B.T) t :=
-    (uniqueDiffOn_Icc B.time_pos).uniqueDiffWithinAt ht
   have hmul := parabolic_mul_nhds (I := I) B.T
     (fun _ y => (0 : TangentSpace I y)) qpow v t x
     hq_time hv_time hq_space (Filter.Eventually.of_forall hv_space)
@@ -1584,11 +1085,10 @@ private theorem supportLevel_le
     (fun _ y => (0 : TangentSpace I y))
     (BernsteinTower.Gcoef (I := I) B m i)
     (fun s y => qpow s y * v s y) t x
-    (hq_time.mul hv_time)
     (by
       filter_upwards [hq_space] with y hy
       exact hy.mul (hv_space y))
-    hprod_grad huniq
+    hprod_grad
   have hq_bound :
       parabolicOperatorWithDrift (I := I) G B.T
           (fun _ y => (0 : TangentSpace I y)) qpow t x ≤
@@ -2835,7 +2335,7 @@ theorem estimate_barrier_at
                       gradientFun (I := I) (G.metric s) (Fs s) z := by simp)
           · have huniq : UniqueDiffWithinAt Real (Set.Icc 0 B.T) s :=
               (uniqueDiffOn_Icc B.time_pos).uniqueDiffWithinAt hs
-            have hop := parabolic_aff_nhds (I := I) B.T
+            have hop := parabolic_affine_sub_nhds (I := I) B.T
               (fun _ z ↦ (0 : TangentSpace I z)) Fs aBar bBar s y
               huniq hrec.1 hrec.2.1 hrec.2.2.1
             rw [show v = (fun r z ↦ (aBar + bBar * r) - Fs r z) from rfl,
