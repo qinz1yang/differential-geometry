@@ -1,3 +1,4 @@
+import DifferentialGeometry.Analysis.Integration.Lp.ContinuousOn
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.LocalCoefficientRegularity
 import DifferentialGeometry.Analysis.Sobolev.Tools.DifferenceQuotientBounds
 
@@ -80,5 +81,26 @@ theorem exists_uniform_chart_coefficients_translate_diffQuot_bound
       hbound (Sum.inr (Sum.inl (i, j))) t ht k s hs z hz⟩
   · intro i
     exact hbound (Sum.inr (Sum.inr i)) t ht k s hs z hz
+
+
+omit [T2Space M] [SigmaCompactSpace M] in
+open MeasureTheory in
+open scoped ENNReal in
+theorem weightedInvGramOnEuclid_family_fderiv_memLp_top
+    {D : RealTimeInterval} {G : MetricConnectionFamilyOn (I := I) (M := M) D}
+    (hG : MetricFamilySmoothOn (I := I) (M := M) D G.metric)
+    {J : Set ℝ} (hJc : IsCompact J) (hJ : J ⊆ D.regular) (α : M)
+    {Ω : Set EuclN} (hΩ : MeasurableSet Ω) (hΩc : IsCompact (closure Ω))
+    (hΩs : closure Ω ⊆ toEuclidean (E := E) '' interior (extChartAt I α).target)
+    (i j k : Fin (Module.finrank ℝ E)) (μ : Measure (ℝ × EuclN)) :
+    MemLp (fun p : ℝ × EuclN => fderiv ℝ
+      (weightedInvGramOnEuclid (I := I) (G.metric p.1) α i j) p.2 (EuclideanSpace.single k 1))
+      ∞ (μ.restrict (J ×ˢ Ω)) := by
+  let U := toEuclidean (E := E) '' interior (extChartAt I α).target
+  have hU : IsOpen U := (toEuclidean (E := E)).isOpenMap _ isOpen_interior
+  have hc := (weightedInvGramOnEuclid_family_fderiv_contDiffOn hG hJ α hU Subset.rfl i j).clm_apply (contDiffOn_const (c := EuclideanSpace.single k 1))
+  exact (hc.continuousOn.mono (prod_mono Subset.rfl hΩs)).memLp_top_of_subset_isCompact (hJc.prod hΩc) (hJc.measurableSet.prod hΩ)
+      (prod_mono Subset.rfl subset_closure)
+
 
 end DifferentialGeometry.Analysis.Laplacian.MetricExtension

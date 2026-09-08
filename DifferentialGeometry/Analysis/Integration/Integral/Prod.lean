@@ -58,4 +58,33 @@ theorem Integrable.integral_prod {F : Type*} [NormedAddCommGroup F] [NormedSpace
     exact L.integral_comp_comm hx
   · simp only [integral_of_not_completeSpace hF]
 
+open Set in
+theorem integral_eq_integral_restrict_prod_of_support
+    {E : Type*}
+    [NormedAddCommGroup E] [NormedSpace ℝ E]
+    [SFinite μ] {s : Set α} {t : Set β}
+    {f : α × β → E}
+    (hfs : ∀ p, p ∉ s ×ˢ t → f p = 0) :
+    (∫ p, f p ∂μ.prod ν) = ∫ p, f p ∂(μ.restrict s).prod (ν.restrict t) := by
+  rw [Measure.prod_restrict]
+  symm
+  apply setIntegral_eq_integral_of_forall_compl_eq_zero
+  intro p hp
+  exact hfs p hp
+
+open Set in
+theorem integral_eq_integral_restrict_prod_of_support_subset
+    {E : Type*}
+    [NormedAddCommGroup E] [NormedSpace ℝ E]
+    [SFinite μ]
+    {s : Set α} {t t₀ : Set β} (ht : MeasurableSet t₀) (hsub : t₀ ⊆ t)
+    {f : α × β → E}
+    (hfs : ∀ p, p ∉ s ×ˢ t₀ → f p = 0) :
+    (∫ p, f p ∂μ.prod (ν.restrict t)) =
+      ∫ p, f p ∂(μ.restrict s).prod (ν.restrict t₀) := by
+  have h := integral_eq_integral_restrict_prod_of_support
+    (μ := μ) (ν := ν.restrict t) hfs
+  rwa [Measure.restrict_restrict ht, inter_eq_left.mpr hsub] at h
+
+
 end MeasureTheory

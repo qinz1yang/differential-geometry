@@ -4677,3 +4677,5 @@ import DifferentialGeometry.Geometry.Metric.Family.LocalEquivalence
 import DifferentialGeometry.Geometry.Comparison.LocalDistanceComparison
 import DifferentialGeometry.Topology.CompactFamily
 import DifferentialGeometry.Geometry.Metric.Family.QuadraticBounds
+import DifferentialGeometry.Analysis.Sobolev.Euclidean.DivergenceForm
+import DifferentialGeometry.Analysis.Parabolic.Dirichlet.TimeRegularity

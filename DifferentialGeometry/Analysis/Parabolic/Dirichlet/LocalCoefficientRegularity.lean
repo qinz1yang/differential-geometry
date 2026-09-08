@@ -206,4 +206,22 @@ theorem weightedInvGramOnEuclid_mul_fderiv_volumeDensity_family_fderiv_contDiffO
   exact (DifferentialGeometry.Analysis.spatialFDeriv_contDiffOn
     D.regular_isOpen.uniqueDiffOn hΩ hR).mono (prod_mono hJ Subset.rfl)
 
+
+omit [T2Space M] [SigmaCompactSpace M] in
+theorem weightedInvGramOnEuclid_family_fderiv_contDiffOn
+    {D : RealTimeInterval} {G : MetricConnectionFamilyOn (I := I) (M := M) D}
+    (hG : MetricFamilySmoothOn (I := I) (M := M) D G.metric)
+    {J : Set ℝ} (hJ : J ⊆ D.regular) (α : M)
+    {Ω : Set EuclN} (hΩ : IsOpen Ω)
+    (hΩs : Ω ⊆ toEuclidean (E := E) '' interior (extChartAt I α).target)
+    (i j : Fin (Module.finrank ℝ E)) :
+    ContDiffOn ℝ ∞ (fun p : ℝ × EuclN =>
+      fderiv ℝ (weightedInvGramOnEuclid (I := I) (G.metric p.1) α i j) p.2) (J ×ˢ Ω) := by
+  exact (DifferentialGeometry.Analysis.spatialFDeriv_contDiffOn
+    (G := fun t y => weightedInvGramOnEuclid (I := I) (G.metric t) α i j y)
+    D.regular_isOpen.uniqueDiffOn hΩ
+    (weightedInvGramOnEuclid_family_contDiffOn hG Subset.rfl α hΩs i j)).mono
+      (prod_mono hJ Subset.rfl)
+
+
 end DifferentialGeometry.Analysis.Laplacian.MetricExtension

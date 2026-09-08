@@ -29,7 +29,7 @@ theorem memWkp_two_of_hasWeakPartialDeriv
 
 theorem ae_memWkp_two_of_hasWeakPartialDeriv
     {Z : Type*} [MeasurableSpace Z] {μ : Measure Z}
-    {p : ℝ≥0∞} (hp : 1 ≤ p) (hptop : p ≠ ⊤)
+    {p : ℝ≥0∞} (hp : 1 ≤ p)
     {Ω : Set E} (hΩ : IsOpen Ω)
     {u : Z × E → ℝ} (hu : MemLp u p (μ.prod (volume.restrict Ω)))
     {g : Fin d → Z × E → ℝ} (hg : ∀ i, MemLp (g i) p (μ.prod (volume.restrict Ω)))
@@ -40,11 +40,17 @@ theorem ae_memWkp_two_of_hasWeakPartialDeriv
     (hsecond : ∀ i k, ∀ᵐ t ∂μ, DeGiorgi.HasWeakPartialDeriv k
       (fun x => v i k (t, x)) (fun x => g i (t, x)) Ω) :
     ∀ᵐ t ∂μ, MemWkp 2 p (fun x => u (t, x)) Ω := by
-  have hgLp := ae_all_iff.mpr (fun i => (hg i).prodMk_left hptop)
-  have hvLp := ae_all_iff.mpr (fun i => ae_all_iff.mpr (fun k => (hv i k).prodMk_left hptop))
+  have hslices {f : Z × E → ℝ} (hf : MemLp f p (μ.prod (volume.restrict Ω))) :
+      ∀ᵐ t ∂μ, MemLp (fun x => f (t, x)) p (volume.restrict Ω) := by
+    by_cases hptop : p = ⊤
+    · subst p
+      exact hf.prodMk_left_top
+    · exact hf.prodMk_left hptop
+  have hgLp := ae_all_iff.mpr (fun i => hslices (hg i))
+  have hvLp := ae_all_iff.mpr (fun i => ae_all_iff.mpr (fun k => hslices (hv i k)))
   have hfirst' := ae_all_iff.mpr hfirst
   have hsecond' := ae_all_iff.mpr (fun i => ae_all_iff.mpr (hsecond i))
-  filter_upwards [hu.prodMk_left hptop, hgLp, hvLp, hfirst', hsecond']
+  filter_upwards [hslices hu, hgLp, hvLp, hfirst', hsecond']
     with t hut hgt hvt hft hst
   apply memWkp_two_of_hasWeakPartialDeriv hp hΩ hut (g := fun i x => g i (t, x))
   · intro i

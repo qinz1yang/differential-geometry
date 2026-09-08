@@ -1,7 +1,7 @@
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.WeakEquationLocal
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.LocalCoefficients
 import Mathlib.MeasureTheory.Function.LpSeminorm.Prod
-import Mathlib.MeasureTheory.Integral.Prod
+import DifferentialGeometry.Analysis.Integration.Integral.Prod
 
 noncomputable section
 
@@ -341,5 +341,99 @@ theorem IsWeakEvolutionSolution.integral_spacetime_test
       integral_finsetSum Finset.univ (fun i _ => ht₂ i)]
   rw [integral_add hF₀ hR, integral_prod _ hF₀, hr]
   exact hu.integral_local_test hXcont hacont α hΩ hΩc hΩs hφ hφc hφi hφT
+
+private theorem fderiv_spatial_slice_apply
+    {d : ℕ} {φ : ℝ × EuclideanSpace ℝ (Fin d) → ℝ}
+    (hφ : Differentiable ℝ φ) (t : ℝ) (x v : EuclideanSpace ℝ (Fin d)) :
+    fderiv ℝ (fun y => φ (t, y)) x v = fderiv ℝ φ (t, x) (0, v) := by
+  have h := (hφ (t, x)).hasFDerivAt.comp x
+    ((hasFDerivAt_const t x).prodMk (hasFDerivAt_id x))
+  exact congrArg (fun L => L v) h.fderiv
+
+
+theorem IsWeakEvolutionSolution.integral_spacetime_test_interior
+    {q : SmoothRiemannianMetric I_hs M}
+    {D : RealTimeInterval}
+    {G : MetricConnectionFamilyOn (I := I_hs) (M := M) D}
+    {hG : MetricFamilySmoothOn (I := I_hs) (M := M) D G.metric}
+    {T : ℝ} {hT : 0 ≤ T} {hreg : Icc (0 : ℝ) T ⊆ D.regular}
+    {X : ℝ → Cₛ^∞⟮I_hs; EuclideanSpace ℝ (Fin n),
+      (TangentSpace I_hs : M → Type _)⟯}
+    (hXcont : ContinuousOn
+      (fun p : ℝ × M ↦
+        (TotalSpace.mk' (EuclideanSpace ℝ (Fin n)) p.2 (X p.1 p.2) :
+          TangentBundle I_hs M))
+      (Icc (0 : ℝ) T ×ˢ (Set.univ : Set M)))
+    {a : ℝ → ℝ} (hacont : ContinuousOn a (Icc (0 : ℝ) T))
+    {Bx Bv : ℝ}
+    {hX : ∀ t ∈ Ico (0 : ℝ) T, ∀ x : M,
+      (G.metric t).inner x (X t x) (X t x) ≤ Bx}
+    {htrace : ∀ t ∈ Ico (0 : ℝ) T, ∀ x : M,
+      |traceTimeDerivMetric (I := I_hs) G.metric t x| ≤ Bv}
+    {f₀ : Lp ℝ 2
+      (riemannianVolumeMeasure (I := I_hs) (M := M) q)}
+    {u : timeL2 (H1ComplDirichlet q) T}
+    (hu : IsWeakEvolutionSolution hG hT hreg X a Bx Bv
+      hX htrace f₀ u)
+    (α : M) {Ω : Set EuStd}
+    (hΩ : IsOpen Ω) (hΩc : IsCompact (closure Ω))
+    (hΩs : closure Ω ⊆ toEuclidean (E := EuN) '' interior (extChartAt I_hs α).target)
+    {φ : ℝ × EuStd → ℝ}
+    (hφ : ContDiff ℝ ∞ φ) (hφc : HasCompactSupport φ)
+    {Ω₀ : Set EuStd} (hΩ₀ : MeasurableSet Ω₀) (hΩ₀Ω : Ω₀ ⊆ Ω)
+    {t₀ t₁ : ℝ} (ht₀ : 0 < t₀) (ht₁ : t₁ < T)
+    (hφi : tsupport φ ⊆ Ioo t₀ t₁ ×ˢ Ω₀) :
+    let e := toEuclidean (E := EuN)
+    let x := fun z : EuStd => (extChartAt I_hs α).symm (e.symm z)
+    let ρ := fun t z => chartDensityOnE (I := I_hs) (G.metric t) α (e.symm z)
+    let A := fun t i j z => chartInvGramOnE (I := I_hs) (G.metric t) α i j (e.symm z)
+    let B := fun t i z => chartCoeffOnE (I := I_hs) α (X t) i (e.symm z)
+    let U := dirichletLocalSpacetimeLp q α hΩ.measurableSet hΩc
+      (hΩs.trans (image_mono interior_subset)) (timeMeasure T) u
+    let DU := fun i => dirichletLocalSpacetimeWeakPartialLp q α hΩ hΩc hΩs (timeMeasure T) i u
+    (∫ p, ρ p.1 p.2 * (U p * fderiv ℝ φ p (1, 0)) +
+      (ρ p.1 p.2 * ((1 / 2 : ℝ) * traceTimeDerivMetric (I := I_hs) G.metric p.1 (x p.2) *
+          (U p * φ p)) -
+        (∑ i : Fin (Module.finrank ℝ EuN), DU i p *
+          ((∑ j : Fin (Module.finrank ℝ EuN), A p.1 i j p.2 *
+            fderiv ℝ (fun y => φ (p.1, y)) p.2 (EuclideanSpace.single j 1)) * ρ p.1 p.2 -
+              B p.1 i p.2 * ρ p.1 p.2 * φ p)) -
+        ρ p.1 p.2 * U p * (a p.1 * φ p))
+      ∂(((timeMeasure T).restrict (Icc t₀ t₁)).prod (volume.restrict Ω₀))) = 0 := by
+  intro e x ρ A B U DU
+  have hφouter : tsupport φ ⊆ univ ×ˢ Ω :=
+    hφi.trans (Set.prod_mono (subset_univ _) hΩ₀Ω)
+  have hφ0 (z) : φ (0, z) = 0 := by
+    apply image_eq_zero_of_notMem_tsupport
+    intro h
+    exact (not_lt_of_ge ht₀.le) (hφi h).1.1
+  have hφT (z) : φ (T, z) = 0 := by
+    apply image_eq_zero_of_notMem_tsupport
+    intro h
+    exact (not_lt_of_ge ht₁.le) (hφi h).1.2
+  have hw := hu.integral_spacetime_test hXcont hacont α hΩ hΩc hΩs hφ hφc hφouter hφT
+  simp only [hφ0, mul_zero, integral_zero, neg_zero] at hw
+  let f := fun p : ℝ × EuStd => ρ p.1 p.2 * (U p * fderiv ℝ φ p (1, 0)) +
+      (ρ p.1 p.2 * ((1 / 2 : ℝ) * traceTimeDerivMetric (I := I_hs) G.metric p.1 (x p.2) *
+          (U p * φ p)) -
+        (∑ i : Fin (Module.finrank ℝ EuN), DU i p *
+          ((∑ j : Fin (Module.finrank ℝ EuN), A p.1 i j p.2 *
+            fderiv ℝ (fun y => φ (p.1, y)) p.2 (EuclideanSpace.single j 1)) * ρ p.1 p.2 -
+              B p.1 i p.2 * ρ p.1 p.2 * φ p)) -
+        ρ p.1 p.2 * U p * (a p.1 * φ p))
+  have hf : ∀ p, p ∉ Icc t₀ t₁ ×ˢ Ω₀ → f p = 0 := by
+    intro p hp
+    have hz : p ∉ tsupport φ := fun h => hp ⟨⟨(hφi h).1.1.le, (hφi h).1.2.le⟩, (hφi h).2⟩
+    have hφz : φ p = 0 := image_eq_zero_of_notMem_tsupport hz
+    have hdz (v : ℝ × EuStd) : fderiv ℝ φ p v = 0 :=
+      image_eq_zero_of_notMem_tsupport (f := fun q => fderiv ℝ φ q v)
+        (fun h => hz (tsupport_fderiv_apply_subset ℝ v h))
+    dsimp only [f]
+    simp only [fderiv_spatial_slice_apply (hφ.differentiable (by norm_num)), hφz, hdz,
+      mul_zero, zero_mul, Finset.sum_const_zero, sub_zero, add_zero]
+  have hloc := integral_eq_integral_restrict_prod_of_support_subset
+    (μ := timeMeasure T) (ν := volume) hΩ₀ hΩ₀Ω hf
+  exact hloc.symm.trans hw
+
 
 end DifferentialGeometry.Analysis.Parabolic.Dirichlet

@@ -56,6 +56,18 @@ theorem MemLp.prodMk_left {f : A × B → E}
   filter_upwards [hf.aestronglyMeasurable.prodMk_left, ae_lt_top' hmeas hfinite.ne] with a ha₁ ha₂
   exact ⟨ha₁, (ENNReal.rpow_lt_top_iff_of_pos (ENNReal.toReal_pos hp₀ hp)).mp ha₂⟩
 
+theorem MemLp.prodMk_left_top {f : A × B → E}
+    (hf : MemLp f ∞ (μ.prod ν)) :
+    ∀ᵐ a ∂μ, MemLp (fun b => f (a, b)) ∞ ν := by
+  have hfinite : eLpNormEssSup f (μ.prod ν) ≠ ∞ := hf.eLpNorm_ne_top
+  have hbound : ∀ᵐ z ∂μ.prod ν,
+      ‖f z‖ₑ ≤ (eLpNormEssSup f (μ.prod ν)).toNNReal := by
+    rw [ENNReal.coe_toNNReal hfinite]
+    exact ae_le_eLpNormEssSup
+  filter_upwards [hf.aestronglyMeasurable.prodMk_left,
+    Measure.ae_ae_of_ae_prod hbound] with a ha hb
+  exact memLp_top_of_bound_enorm ha _ hb
+
 theorem eLpNorm_eLpNorm_toReal {f : A × B → E}
     (hf : MemLp f p (μ.prod ν)) (hp : p ≠ (⊤ : ℝ≥0∞)) :
     eLpNorm (fun a => (eLpNorm (fun b => f (a, b)) p ν).toReal) p μ =
