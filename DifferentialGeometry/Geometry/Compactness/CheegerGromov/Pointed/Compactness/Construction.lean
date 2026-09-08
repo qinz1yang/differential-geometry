@@ -7,7 +7,6 @@ import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Boun
 import DifferentialGeometry.Geometry.Metric.Convergence.DerivativeNorm.Restriction
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Self
 
-
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Subsequence
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Pullback
 import DifferentialGeometry.Geometry.Metric.Convergence.Metric.UniformEquivalence

@@ -2907,7 +2907,7 @@ import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Basi
 import DifferentialGeometry.Geometry.Metric.Convergence.Defs
 import DifferentialGeometry.Topology.Exhaustion
 import DifferentialGeometry.Topology.FirstExit
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.Canonical.Construction
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Compactness.Construction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.Canonical.Compatibility
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.DirectedSubsequence.Existence
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.DirectedSubsequence.RadiusBounds
@@ -3749,8 +3749,8 @@ import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.StageCompa
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.Source.CageScale
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.CenterMap.Construction.ChartSolution
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.CenterMap.Indexing
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.Endpoint.HigherRegularity
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.Endpoint.BoundedGeometry
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Compactness.NormalCharts
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Compactness.BoundedGeometry
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.NormalCoordinates.ChartEquation
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.InverseChartConvergence.BoundedGeometry
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.MetricConvergence.BoundedGeometry

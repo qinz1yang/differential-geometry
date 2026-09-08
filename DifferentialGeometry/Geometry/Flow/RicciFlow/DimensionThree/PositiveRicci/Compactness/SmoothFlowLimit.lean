@@ -20,7 +20,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.Noncollapsing.Persi
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.Noncollapsing.Scale.Transfer
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.Canonical.Compatibility
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.Endpoint.Basic
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.Endpoint.BoundedGeometry
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Compactness.BoundedGeometry
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extension.Regularity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.Restriction
 

@@ -69,7 +69,7 @@ theorem hamilton_constant_positive_sectional_curvature_of_injectivity_radius_bou
   let hderiv : FlowCompactnessBounds (I := I) X :=
     hamiltonSourceCompactnessBounds (I := I) h0omega hM.1 P hD Q hsel hrm hwindow
   let seed : MetricCompactSeed (I := I) (X.atZero (I := I)) :=
-    metricSeedOfBG (I := I) (X.atZero (I := I))
+    metricCompactSeedOfBoundedGeometry (I := I) (X.atZero (I := I))
       hcpl hderiv.atZeroGeom hinj hconn
   have hd : Nonempty (BoundedGeometryNormalChartData (I := I) (X.atZero (I := I)) seed.decay) :=
     nonempty_bounded_geometry_normal_chart_data (I := I) (X.atZero (I := I))

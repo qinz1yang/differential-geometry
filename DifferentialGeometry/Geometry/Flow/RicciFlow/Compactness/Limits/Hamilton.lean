@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Limits.FlowConvergence
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.Endpoint.BoundedGeometry
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Compactness.BoundedGeometry
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.CanonicalCompatibility
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Foundations.InjectivityRadius
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Shi.Local
@@ -57,7 +57,7 @@ theorem compactnessSolution
     change @ConnectedSpace (X.term k).M (X.term k).topology
     exact hconn k
   let seed : MetricCompactSeed (I := I) (X.atZero (I := I)) :=
-    metricSeedOfBG (I := I) (X.atZero (I := I))
+    metricCompactSeedOfBoundedGeometry (I := I) (X.atZero (I := I))
       hcomplete0 hgeom0 hinj hconn0
   have hd : Nonempty (BoundedGeometryNormalChartData (I := I) (X.atZero (I := I)) seed.decay) :=
     nonempty_bounded_geometry_normal_chart_data (I := I) (X.atZero (I := I))

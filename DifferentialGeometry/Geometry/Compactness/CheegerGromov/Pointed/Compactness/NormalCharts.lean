@@ -1,8 +1,6 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.PairwiseApproximation.BoundedGeometry
 
-
-
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.Canonical.Construction
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Compactness.Construction
 
 set_option autoImplicit false
 
