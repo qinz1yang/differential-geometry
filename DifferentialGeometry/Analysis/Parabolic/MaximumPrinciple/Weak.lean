@@ -437,6 +437,31 @@ theorem parabolic_mul
   rw [heatDrift_mul (I := I) G t (X t) hu_space hv_space hu_grad hv_grad]
   ring
 
+theorem parabolic_mul_at
+    [VectorBundle ℝ E (TangentSpace I : M → Type _)]
+    (G : MetricConnectionFamily (I := I) (M := M) ℝ)
+    (T : ℝ) (X : ℝ → (x : M) → TangentSpace I x)
+    (u v : ℝ → M → ℝ) (t : ℝ) (x : M)
+    (hu_time : DifferentiableWithinAt ℝ (fun s => u s x) (Icc 0 T) t)
+    (hv_time : DifferentiableWithinAt ℝ (fun s => v s x) (Icc 0 T) t)
+    (hu_space : ∀ᶠ y in 𝓝 x, MDifferentiableAt I 𝓘(ℝ, ℝ) (u t) y)
+    (hv_space : ∀ᶠ y in 𝓝 x, MDifferentiableAt I 𝓘(ℝ, ℝ) (v t) y)
+    (hu_grad : MDiffAt (T% fun y : M => gradientFun (I := I) (G.metric t) (u t) y) x)
+    (hv_grad : MDiffAt (T% fun y : M => gradientFun (I := I) (G.metric t) (v t) y) x) :
+    parabolicOperatorWithDrift (I := I) G T X (fun s y => u s y * v s y) t x =
+      u t x * parabolicOperatorWithDrift (I := I) G T X v t x +
+        v t x * parabolicOperatorWithDrift (I := I) G T X u t x -
+          2 * (G.metric t).inner x
+            (gradientAt (I := I) G t (u t) x) (gradientAt (I := I) G t (v t) x) := by
+  unfold parabolicOperatorWithDrift heatOperatorWithDrift laplacianAt
+  rw [derivWithin_fun_mul hu_time hv_time,
+    laplacian_mul_at (I := I) (G.connection t) (G.metric t)
+      hu_space hv_space hu_grad hv_grad,
+    driftTerm_mul (I := I) G t (X t) hu_space.self_of_nhds hv_space.self_of_nhds]
+  dsimp only [gradientAt]
+  ring
+
+
 theorem parabolic_sub_at
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
     (G : MetricConnectionFamily (I := I) (M := M) Real)

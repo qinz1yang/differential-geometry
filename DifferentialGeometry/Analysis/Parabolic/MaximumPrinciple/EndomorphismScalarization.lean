@@ -27,6 +27,73 @@ variable {V : M → Type*} [TopologicalSpace (TotalSpace F V)]
   [ContMDiffVectorBundle ∞ F V I]
   [IsContMDiffRiemannianBundle I ∞ F V]
 
+theorem parabolicOperatorWithDrift_inner_endomorphism_apply_of_normal_eigenvector
+    [NeZero (Module.finrank Real E)]
+    (G : MetricConnectionFamily (I := I) (M := M) Real)
+    (cov : CovariantDerivative I F V)
+    [ContMDiffCovariantDerivative cov ∞] (hcov : cov.IsMetricCompatible)
+    {T : Real} (hT : 0 < T) {t : Real} (ht : t ∈ Icc 0 T)
+    (A : Real → Cₛ^∞⟮I; F →L[Real] F, (fun x : M ↦ V x →L[Real] V x)⟯)
+    (v : Cₛ^∞⟮I; F, V⟯) (x : M)
+    (hx : I.IsInteriorPoint x)
+    (X : Real → (y : M) → TangentSpace I y)
+    {eigenvalue : Real}
+    (hGconn : G.connection t = LeviCivita (I := I) (G.metric t))
+    (hAt : DifferentiableWithinAt Real (fun q ↦ A q x) (Icc 0 T) t)
+    (hA : ((A t x : V x →L[Real] V x) : V x →ₗ[Real] V x).IsSymmetric)
+    (heigen : A t x (v x) = eigenvalue • v x)
+    (hv : cov v x = 0)
+    (hunit : ∀ᶠ y in 𝓝 x, inner Real (v y) (v y) = 1) :
+    parabolicOperatorWithDrift (I := I) G T X
+        (fun q y ↦ inner Real (A q y (v y)) (v y)) t x =
+      inner Real
+        ((derivWithin (fun q ↦ A q x) (Icc 0 T) t -
+            rawBundleEndomorphismConnLap (I := I) (G.metric t) cov
+              (fun y ↦ A t y) x -
+            HomConnectionGen.homBundleCovariantDerivativeGen
+              I M F V F V cov cov (fun y ↦ A t y) x (X t x)) (v x))
+        (v x) := by
+  let q : C^∞⟮I, M; Real⟯ :=
+    ⟨fun y ↦ inner Real (A t y (v y)) (v y),
+      (ContMDiff.clm_bundle_apply (b := id) (A t).contMDiff v.contMDiff).inner_bundle
+        v.contMDiff⟩
+  have htime :
+      derivWithin (fun r ↦ inner Real (A r x (v x)) (v x)) (Icc 0 T) t =
+        inner Real (derivWithin (fun r ↦ A r x) (Icc 0 T) t (v x)) (v x) := by
+    have hc := (hasDerivWithinAt_const (x := t) (s := Icc 0 T) (c := v x))
+    have hder := (hAt.hasDerivWithinAt.clm_apply hc).inner Real hc
+    simpa only [add_zero, zero_add, map_zero, inner_zero_right] using
+      hder.derivWithin ((uniqueDiffOn_Icc hT).uniqueDiffWithinAt ht)
+  have hlap :
+      laplacianAt (I := I) G t (fun y ↦ inner Real (A t y (v y)) (v y)) x =
+        inner Real
+          (rawBundleEndomorphismConnLap (I := I) (G.metric t) cov
+            (fun y ↦ A t y) x (v x))
+          (v x) := by
+    change laplacianAt (I := I) G t q x = _
+    unfold laplacianAt
+    rw [hGconn]
+    exact laplacian_inner_endomorphism_apply_of_normal_eigenvector
+      (I := I) (G.metric t) cov hcov (A t) v x hx hA heigen hv hunit
+  have hdrift :
+      driftTerm (I := I) G t (X t)
+          (fun y ↦ inner Real (A t y (v y)) (v y)) x =
+        inner Real
+          ((HomConnectionGen.homBundleCovariantDerivativeGen
+            I M F V F V cov cov (fun y ↦ A t y) x (X t x)) (v x))
+          (v x) := by
+    unfold driftTerm gradientAt
+    rw [(G.metric t).symm]
+    rw [inner_gradientFun]
+    exact mvfderiv_inner_endomorphism_apply_of_cov_eq_zero
+      (I := I) cov hcov (A t) v x (X t x) hv
+  unfold parabolicOperatorWithDrift
+  rw [htime]
+  unfold heatOperatorWithDrift
+  rw [hlap, hdrift]
+  simp only [sub_apply, inner_sub_left]
+  ring
+
 theorem derivWithin_sub_heatOperatorWithDrift_inner_endomorphism_apply_of_normal_eigenvector
     [NeZero (Module.finrank Real E)]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
@@ -53,55 +120,11 @@ theorem derivWithin_sub_heatOperatorWithDrift_inner_endomorphism_apply_of_normal
             HomConnectionGen.homBundleCovariantDerivativeGen
               I M F V F V cov cov (fun y ↦ A t y) x (X t x)) (v x))
         (v x) := by
-  let q : C^∞⟮I, M; Real⟯ :=
-    ⟨fun y ↦ inner Real (A t y (v y)) (v y),
-      (ContMDiff.clm_bundle_apply (b := id) (A t).contMDiff v.contMDiff).inner_bundle
-        v.contMDiff⟩
-  have hAv : DifferentiableAt Real (fun r ↦ A r x (v x)) t :=
-    hAt.clm_apply (differentiableAt_const (c := v x))
-  have hqtime : DifferentiableAt Real
-      (fun r ↦ inner Real (A r x (v x)) (v x)) t :=
-    hAv.inner Real (differentiableAt_const (c := v x))
-  have htime :
-      deriv (fun r ↦ inner Real (A r x (v x)) (v x)) t =
-        inner Real (deriv (fun r ↦ A r x) t (v x)) (v x) := by
-    rw [deriv_inner_apply Real hAv (differentiableAt_const (c := v x)),
-      deriv_clm_apply hAt (differentiableAt_const (c := v x))]
-    simp
-  have htimeWithin :
-      derivWithin (fun r ↦ inner Real (A r x (v x)) (v x)) (Icc 0 T) t =
-        deriv (fun r ↦ inner Real (A r x (v x)) (v x)) t :=
-    hqtime.derivWithin
-      ((uniqueDiffOn_Icc hT).uniqueDiffWithinAt ht)
-  have hlap :
-      laplacianAt (I := I) G t (fun y ↦ inner Real (A t y (v y)) (v y)) x =
-        inner Real
-          (rawBundleEndomorphismConnLap (I := I) (G.metric t) cov
-            (fun y ↦ A t y) x (v x))
-          (v x) := by
-    change laplacianAt (I := I) G t q x = _
-    unfold laplacianAt
-    rw [hGconn]
-    exact laplacian_inner_endomorphism_apply_of_normal_eigenvector
-      (I := I) (G.metric t) cov hcov (A t) v x hx hA heigen hv hunit
-  have hdrift :
-      driftTerm (I := I) G t (X t)
-          (fun y ↦ inner Real (A t y (v y)) (v y)) x =
-        inner Real
-          ((HomConnectionGen.homBundleCovariantDerivativeGen
-            I M F V F V cov cov (fun y ↦ A t y) x (X t x)) (v x))
-          (v x) := by
-    unfold driftTerm gradientAt
-    rw [(G.metric t).symm]
-    rw [inner_gradientFun]
-    exact mvfderiv_inner_endomorphism_apply_of_cov_eq_zero
-      (I := I) cov hcov (A t) v x (X t x) hv
-  unfold parabolicOperatorWithDrift
-  rw [htimeWithin, htime]
-  unfold heatOperatorWithDrift
-  rw [hlap, hdrift]
-  simp only [sub_apply, inner_sub_left]
-  ring
+  have h := parabolicOperatorWithDrift_inner_endomorphism_apply_of_normal_eigenvector
+    (I := I) G cov hcov hT ht A v x hx X hGconn hAt.differentiableWithinAt
+    hA heigen hv hunit
+  rw [hAt.derivWithin ((uniqueDiffOn_Icc hT).uniqueDiffWithinAt ht)] at h
+  exact h
 
 theorem parabolicOperatorWithDrift_sum_inner_endomorphism_apply_of_normal_eigenframe
     [NeZero (Module.finrank Real E)]

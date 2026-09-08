@@ -4553,3 +4553,4 @@ import DifferentialGeometry.Geometry.Metric.Conformal.Connection
 import DifferentialGeometry.Analysis.Parabolic.CurvatureReactionConjugate
 import DifferentialGeometry.Analysis.Parabolic.CurvatureOperatorConjugate
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Uhlenbeck.GaugeEvolution
+import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.LocalizedEigenvalue
