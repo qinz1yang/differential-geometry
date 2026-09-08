@@ -2,6 +2,8 @@ import DifferentialGeometry.Analysis.Calculus.MatrixInverseSmooth
 import DifferentialGeometry.Analysis.ODE.Nagumo
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureReactionAlgebra
 import Mathlib.Analysis.SpecialFunctions.Log.Deriv
+import DifferentialGeometry.Geometry.Curvature.DimensionThree.HamiltonIvey.SelfAdjointRegion
+import Mathlib.Analysis.CStarAlgebra.Basic
 
 set_option autoImplicit false
 
@@ -11,7 +13,7 @@ namespace DifferentialGeometry.Geometry.Curvature.DimensionThree
 
 open DifferentialGeometry.Analysis.ODE
 open Filter Set
-open scoped Topology ContDiff Matrix.Norms.Elementwise
+open scoped Topology ContDiff NNReal Matrix.Norms.Elementwise
 
 theorem contDiff_curvatureOperatorReaction3 :
     ContDiff Real ∞ curvatureOperatorReaction3 := by
@@ -163,7 +165,6 @@ theorem deriv_pinchingRatioLog_ge_of_reaction
     exact div_nonneg (mul_nonneg hb hpi) hden
   linarith
 
-
 private def orderedDiagonalMatrices3 : Set (Matrix (Fin 3) (Fin 3) ℝ) :=
   {A | (∀ i j, i ≠ j → A i j = 0) ∧ A 1 1 ≤ A 0 0 ∧ A 2 2 ≤ A 1 1}
 
@@ -291,26 +292,196 @@ theorem diagonal_ordered_of_normalized_curvature_reaction_ode
   exact ⟨diagonal_eq_of_mem_orderedDiagonalMatrices3 hmem, hmem.2⟩
 
 theorem hasDerivWithinAt_diagonal_of_normalized_curvature_reaction_ode
-    {A : ℝ → Matrix (Fin 3) (Fin 3) ℝ} {J : Set ℝ} {t₀ : ℝ}
+    {A : ℝ → Matrix (Fin 3) (Fin 3) ℝ} {J : Set ℝ} {t : ℝ}
     (hA : IsIntegralCurveOn A (fun _ C => C + curvatureOperatorReaction3 C) J)
-    (hJ : J.OrdConnected) (ht₀ : t₀ ∈ J)
-    (hdiag : A t₀ = Matrix.diagonal ![A t₀ 0 0, A t₀ 1 1, A t₀ 2 2])
-    (h01 : A t₀ 1 1 ≤ A t₀ 0 0) (h12 : A t₀ 2 2 ≤ A t₀ 1 1) :
-    ∀ t ∈ J, ∀ i : Fin 3, HasDerivWithinAt (fun u => A u i i)
+    (ht : t ∈ J)
+    (hdiag : A t = Matrix.diagonal ![A t 0 0, A t 1 1, A t 2 2]) :
+    ∀ i : Fin 3, HasDerivWithinAt (fun u => A u i i)
       (![A t 0 0 + (A t 0 0) ^ 2 + A t 1 1 * A t 2 2,
         A t 1 1 + (A t 1 1) ^ 2 + A t 0 0 * A t 2 2,
         A t 2 2 + (A t 2 2) ^ 2 + A t 0 0 * A t 1 1] i) J t := by
-  intro t ht i
-  have hmain := diagonal_ordered_of_normalized_curvature_reaction_ode hA hJ ht₀ hdiag h01 h12 t ht
+  intro i
   have hval : A t + curvatureOperatorReaction3 (A t) = Matrix.diagonal
       ![A t 0 0 + (A t 0 0) ^ 2 + A t 1 1 * A t 2 2,
         A t 1 1 + (A t 1 1) ^ 2 + A t 0 0 * A t 2 2,
         A t 2 2 + (A t 2 2) ^ 2 + A t 0 0 * A t 1 1] :=
-    (congrArg (fun C => C + curvatureOperatorReaction3 C) hmain.1).trans
-      (normalized_curvature_reaction_diagonal _ _ _)
+    (congrArg (fun C => C + curvatureOperatorReaction3 C) hdiag).trans
+      (by rw [curvatureOperatorReaction3_diagonal]; ext i j
+          fin_cases i <;> fin_cases j <;> simp [Matrix.diagonal] <;> ring)
   have hd := hasDerivWithinAt_pi.mp (hasDerivWithinAt_pi.mp (hA t ht) i) i
   apply hd.congr_deriv
   simpa only [Matrix.diagonal_apply_eq] using congrArg (fun C => C i i) hval
 
+private theorem isIntegralCurveOn_linearMap
+    {E F : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    [NormedAddCommGroup F] [NormedSpace ℝ F]
+    {A : ℝ → E} {J : Set ℝ} {f : ℝ → E → E} {g : ℝ → F → F}
+    (hA : IsIntegralCurveOn A f J) (L : E →L[ℝ] F)
+    (hL : ∀ t C, L (f t C) = g t (L C)) :
+    IsIntegralCurveOn (fun t => L (A t)) g J := by
+  intro t ht
+  have hd := L.hasFDerivAt.comp_hasDerivWithinAt t (hA t ht)
+  simpa only [Function.comp_def, hL] using hd
+
+variable {W : Type*} [NormedAddCommGroup W] [InnerProductSpace ℝ W] [FiniteDimensional ℝ W]
+
+private def selfAdjointMatrixMap (b : OrthonormalBasis (Fin 3) ℝ W) :
+    selfAdjoint (W →L[ℝ] W) →ₗ[ℝ] Matrix (Fin 3) (Fin 3) ℝ :=
+  { toFun := fun A => LinearMap.toMatrix b.toBasis b.toBasis (A : W →L[ℝ] W).toLinearMap
+    map_add' := by intros; simp
+    map_smul' := by intros; simp }
+
+private theorem selfAdjointMatrixMap_continuous (b : OrthonormalBasis (Fin 3) ℝ W) :
+    Continuous (selfAdjointMatrixMap b) := by
+  change Continuous (fun A : selfAdjoint (W →L[ℝ] W) =>
+    LinearMap.toMatrix b.toBasis b.toBasis (A : W →L[ℝ] W).toLinearMap)
+  apply continuous_pi
+  intro i
+  apply continuous_pi
+  intro j
+  simpa only [LinearMap.toMatrix_apply,
+      OrthonormalBasis.coe_toBasis_repr_apply, OrthonormalBasis.coe_toBasis,
+      OrthonormalBasis.repr_apply_apply] using!
+    (continuous_const.inner (continuous_subtype_val.clm_apply continuous_const) :
+      Continuous (fun A : selfAdjoint (W →L[ℝ] W) =>
+        inner ℝ (b i) ((A : W →L[ℝ] W) (b j))))
+
+private theorem selfAdjointMatrixMap_reaction (b : OrthonormalBasis (Fin 3) ℝ W)
+    (A : selfAdjoint (W →L[ℝ] W)) :
+    selfAdjointMatrixMap b (curvatureOperatorReactionSelfAdjoint3 A) =
+      curvatureOperatorReaction3 (selfAdjointMatrixMap b A) := by
+  change LinearMap.toMatrix b.toBasis b.toBasis
+      (curvatureOperatorReactionEndomorphism3 (A : W →L[ℝ] W).toLinearMap) = _
+  exact curvatureOperatorReactionEndomorphism3_toMatrix b.toBasis _
+
+private theorem selfAdjointMatrixMap_region (b : OrthonormalBasis (Fin 3) ℝ W) (A : selfAdjoint (W →L[ℝ] W)) :
+    A ∈ hamiltonIveyRegion (W := W) 1 ↔
+      selfAdjointMatrixMap b A ∈ hamiltonIveyConvexMatrixRegion 1 0 := by
+  exact mem_hamiltonIveyRegion_iff_toMatrix b (K := 1) (by norm_num) A
+
+private theorem mem_posTangentConeAt_smul_nonneg
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    {C : Set E} {x v : E} {c : ℝ} (hc : 0 ≤ c)
+    (hv : v ∈ posTangentConeAt C x) : c • v ∈ posTangentConeAt C x := by
+  rcases exists_fun_of_mem_tangentConeAt hv with ⟨ι, l, hl, d, e, he₀, heC, hde⟩
+  let c' : ℝ≥0 := ⟨c, hc⟩
+  refine mem_tangentConeAt_of_seq l (fun n => c' * d n) e he₀ heC ?_
+  apply Tendsto.congr' _ (hde.const_smul c)
+  filter_upwards with n
+  change c • (d n : ℝ) • e n = ((c' * d n : ℝ≥0) : ℝ) • e n
+  rw [NNReal.coe_mul, smul_smul]
+  congr 1
+
+private theorem nonnegative_time_multiple_hamiltonIvey_matrix
+    {a : ℝ → ℝ} (ha : ContDiff ℝ 1 a) (hanonneg : ∀ t, 0 ≤ a t) :
+    IsForwardInvariantForODE
+      (fun t A => a t • (A + curvatureOperatorReaction3 A))
+      (hamiltonIveyConvexMatrixRegion 1 0) := by
+  apply nagumo_isForwardInvariantForODE_of_contDiff
+    (isClosed_hamiltonIveyConvexMatrixRegion (K := 1) (by norm_num))
+    (convex_hamiltonIveyConvexMatrixRegion (K := 1) (by norm_num) (by norm_num))
+  · intro t A hA
+    apply mem_posTangentConeAt_smul_nonneg (hanonneg t)
+    simpa only [one_smul] using!
+      smul_add_curvatureOperatorReaction3_mem_posTangentConeAt (K := 1) (by norm_num) hA
+  · change ContDiff ℝ 1 (Function.uncurry (fun t A => a t • (A + curvatureOperatorReaction3 A)))
+    have hQ : ContDiff ℝ 1 curvatureOperatorReaction3 :=
+      contDiff_curvatureOperatorReaction3.of_le (by norm_num)
+    exact (ha.comp contDiff_fst).smul (contDiff_snd.add (hQ.comp contDiff_snd))
+
+theorem isForwardInvariantForODE_hamiltonIveyRegion_smul
+    (hdim : Module.finrank ℝ W = 3)
+    {a : ℝ → ℝ} (ha : ContDiff ℝ 1 a) (hanonneg : ∀ t, 0 ≤ a t) :
+    IsForwardInvariantForODE
+      (fun t A => a t • (A + curvatureOperatorReactionSelfAdjoint3 A))
+      (hamiltonIveyRegion (W := W) 1) := by
+  let b := (stdOrthonormalBasis ℝ W).reindex (finCongr hdim)
+  let L : selfAdjoint (W →L[ℝ] W) →L[ℝ] Matrix (Fin 3) (Fin 3) ℝ :=
+    { toLinearMap := selfAdjointMatrixMap b
+      cont := selfAdjointMatrixMap_continuous b }
+  have hL : ∀ t ∈ (univ : Set ℝ), ∀ A : selfAdjoint (W →L[ℝ] W),
+      L (a t • (A + curvatureOperatorReactionSelfAdjoint3 A)) =
+        a t • (L A + curvatureOperatorReaction3 (L A)) := by
+    intro t _ A
+    rw [map_smul, map_add]
+    congr 2
+    exact selfAdjointMatrixMap_reaction b A
+  have hset : hamiltonIveyRegion (W := W) 1 =
+      L ⁻¹' hamiltonIveyConvexMatrixRegion 1 0 := by
+    ext A
+    exact selfAdjointMatrixMap_region b A
+  intro t u htu γ hγ hinit
+  have hmat := (isForwardInvariantForODEOn_univ.mpr
+      (nonnegative_time_multiple_hamiltonIvey_matrix ha hanonneg)).preimage L hL
+      t u htu (subset_univ _) γ hγ
+      ((hset ▸ hinit))
+  intro s hs
+  have hm := hmat hs
+  exact (selfAdjointMatrixMap_region b (γ s)).mpr hm
+
+theorem isForwardInvariantForODE_hamiltonIveyRegion_normalized
+    (hdim : Module.finrank ℝ W = 3) :
+    IsForwardInvariantForODE
+      (fun _ A => A + curvatureOperatorReactionSelfAdjoint3 A)
+      (hamiltonIveyRegion (W := W) 1) := by
+  simpa only [one_smul] using
+    (isForwardInvariantForODE_hamiltonIveyRegion_smul (W := W) hdim
+      (a := fun _ : ℝ => 1) contDiff_const (fun _ => by norm_num))
+
+theorem exists_orthonormalBasis_diagonal_of_normalized_curvature_reaction_ode
+    {A : ℝ → selfAdjoint (W →L[ℝ] W)} {J : Set ℝ} {t₀ : ℝ}
+    (hdim : Module.finrank ℝ W = 3)
+    (hA : IsIntegralCurveOn A
+      (fun _ C => C + curvatureOperatorReactionSelfAdjoint3 C) J)
+    (hJ : J.OrdConnected) (ht₀ : t₀ ∈ J) :
+    ∃ b : OrthonormalBasis (Fin 3) ℝ W, ∃ l m n : ℝ → ℝ,
+      ∀ t ∈ J,
+        LinearMap.toMatrix b.toBasis b.toBasis (A t : W →L[ℝ] W).toLinearMap =
+          Matrix.diagonal ![l t, m t, n t] ∧
+        m t ≤ l t ∧ n t ≤ m t ∧
+        HasDerivWithinAt l (l t + l t ^ 2 + m t * n t) J t ∧
+        HasDerivWithinAt m (m t + m t ^ 2 + l t * n t) J t ∧
+        HasDerivWithinAt n (n t + n t ^ 2 + l t * m t) J t := by
+  let hS := ContinuousLinearMap.isSelfAdjoint_iff_isSymmetric.mp (A t₀).property
+  let b := hS.eigenvectorBasis hdim
+  let L : selfAdjoint (W →L[ℝ] W) →L[ℝ] Matrix (Fin 3) (Fin 3) ℝ :=
+    { toLinearMap := selfAdjointMatrixMap b
+      cont := selfAdjointMatrixMap_continuous b }
+  have hL : ∀ C,
+      selfAdjointMatrixMap b (C + curvatureOperatorReactionSelfAdjoint3 C) =
+        selfAdjointMatrixMap b C + curvatureOperatorReaction3 (selfAdjointMatrixMap b C) := by
+    intro C
+    rw [map_add, selfAdjointMatrixMap_reaction]
+  have hcurve : IsIntegralCurveOn (fun t => selfAdjointMatrixMap b (A t))
+      (fun _ C => C + curvatureOperatorReaction3 C) J := by
+    exact isIntegralCurveOn_linearMap hA L (fun _ C => hL C)
+  have hinit : selfAdjointMatrixMap b (A t₀) = Matrix.diagonal (hS.eigenvalues hdim) :=
+    hS.toMatrix_eigenvectorBasis hdim
+  have hdiag : selfAdjointMatrixMap b (A t₀) =
+      Matrix.diagonal ![(selfAdjointMatrixMap b (A t₀)) 0 0,
+        (selfAdjointMatrixMap b (A t₀)) 1 1,
+        (selfAdjointMatrixMap b (A t₀)) 2 2] := by
+    rw [hinit]
+    congr 1
+    funext i
+    fin_cases i <;> simp
+  have h01 : selfAdjointMatrixMap b (A t₀) 1 1 ≤ selfAdjointMatrixMap b (A t₀) 0 0 := by
+    simpa only [hinit, Matrix.diagonal_apply_eq] using
+      hS.eigenvalues_antitone hdim (by decide : (0 : Fin 3) ≤ 1)
+  have h12 : selfAdjointMatrixMap b (A t₀) 2 2 ≤ selfAdjointMatrixMap b (A t₀) 1 1 := by
+    simpa only [hinit, Matrix.diagonal_apply_eq] using
+      hS.eigenvalues_antitone hdim (by decide : (1 : Fin 3) ≤ 2)
+  refine ⟨b, (fun t => selfAdjointMatrixMap b (A t) 0 0),
+    (fun t => selfAdjointMatrixMap b (A t) 1 1),
+    (fun t => selfAdjointMatrixMap b (A t) 2 2), ?_⟩
+  intro t ht
+  have horder := diagonal_ordered_of_normalized_curvature_reaction_ode
+    hcurve hJ ht₀ hdiag h01 h12 t ht
+  have hcoords := hasDerivWithinAt_diagonal_of_normalized_curvature_reaction_ode
+    hcurve ht horder.1
+  refine ⟨horder.1, horder.2.1, horder.2.2, ?_, ?_, ?_⟩
+  · exact hcoords 0
+  · exact hcoords 1
+  · exact hcoords 2
 
 end DifferentialGeometry.Geometry.Curvature.DimensionThree
