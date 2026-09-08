@@ -119,6 +119,7 @@ private lemma perDirDiv_continuous
   (perDirInner_continuous (I := I) (M := M) g T v α i).mul
     (divergence_g_contMDiff (I := I) g (frameVF (I := I) (M := M) g α i)).continuous
 
+omit [I.Boundaryless] in
 private lemma perDirWeight_continuous
     (g : SmoothRiemannianMetric I M)
     (T v : SmoothCcTensor g 0 2) (α : M)
