@@ -6,7 +6,7 @@ noncomputable section
 
 namespace DifferentialGeometry.PDE.RicciFlow.Perelman
 
-open Set
+open MeasureTheory Set
 open scoped Manifold ContDiff Topology
 
 open DifferentialGeometry.Geometry.Curvature
@@ -90,5 +90,39 @@ theorem lLength_squareRootReparametrization_eq_lRegularizedAction
     lLength_squareRootReparametrization_sq S T alpha 0 (Real.sqrt tau)
       le_rfl (Real.sqrt_nonneg tau)
 
+omit [InnerProductSpace Real E] [NeZero (Module.finrank Real E)]
+  [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+theorem intervalIntegrable_lDensity_squareRootReparametrization_sq_iff
+    (S : SolutionOn (I := I) (M := M) D) (T : ℝ) (alpha : ℝ → M)
+    (a b : ℝ) (ha : 0 ≤ a) (hb : 0 ≤ b) :
+    IntervalIntegrable (lDensity S T (squareRootReparametrization alpha)) volume (a ^ 2) (b ^ 2) ↔
+      IntervalIntegrable (lRegularizedLagrangian S T alpha) volume a b := by
+  let gamma := squareRootReparametrization alpha
+  have hChange := intervalIntegral.integrable_comp_mul_deriv_iff_of_deriv_nonneg
+    (g := lDensity S T gamma) (f := fun s : ℝ => s ^ 2) (f' := fun s : ℝ => 2 * s)
+    (a := a) (b := b) (continuous_id.pow 2).continuousOn
+    (by intro s _; simpa using hasDerivAt_pow 2 s)
+    (by intro s hs; exact mul_nonneg (by norm_num) ((le_min ha hb).trans hs.1.le))
+  have hEq (s : ℝ) (hs : s ∈ uIoc a b) :
+      (lDensity S T gamma ∘ fun r : ℝ => r ^ 2) s * (2 * s) =
+        lRegularizedLagrangian S T alpha s := by
+    have hsPos : 0 < s := (le_min ha hb).trans_lt hs.1
+    rw [Function.comp_apply, lDensity_squareReparametrization_of_pos S T gamma s hsPos,
+      lRegularizedDensity_eq_lRegularizedLagrangian_squareReparametrization]
+    have hev : squareReparametrization gamma =ᶠ[𝓝 s] alpha := by
+      filter_upwards [Ioi_mem_nhds hsPos] with r hr
+      simp only [squareReparametrization, gamma, squareRootReparametrization, Real.sqrt_sq hr.le]
+    have hval : squareReparametrization gamma s = alpha s := hev.self_of_nhds
+    have hmf := Filter.EventuallyEq.mfderiv_eq (I := 𝓘(ℝ, ℝ)) (I' := I) hev
+    have hvel : lVelocity (I := I) (squareReparametrization gamma) s =
+        lVelocity (I := I) alpha s := by
+      with_unfolding_all exact congrArg (fun L => L (1 : ℝ)) hmf
+    simp only [lRegularizedLagrangian]
+    rw [hval, hvel]
+  constructor
+  · intro h
+    exact (hChange.mpr h).congr hEq
+  · intro h
+    exact hChange.mp (h.congr (fun s hs => (hEq s hs).symm))
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman
