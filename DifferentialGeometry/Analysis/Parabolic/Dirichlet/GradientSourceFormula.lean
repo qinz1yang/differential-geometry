@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.SourceFormula
-import DifferentialGeometry.Analysis.Sobolev.Euclidean.DivergenceForm
+import DifferentialGeometry.Analysis.Sobolev.WeakDerivativeUniqueness
 
 noncomputable section
 open Filter MeasureTheory Set
