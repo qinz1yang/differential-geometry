@@ -12,7 +12,6 @@ namespace DifferentialGeometry.Analysis.Parabolic.TimeSobolev
 
 variable {X : Type*}
 variable [NormedAddCommGroup X] [InnerProductSpace ℝ X] [CompleteSpace X]
-  [FiniteDimensional ℝ X]
 variable {T : ℝ}
 
 theorem mom_primitive

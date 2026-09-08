@@ -1,6 +1,7 @@
 import DifferentialGeometry.External.DeGiorgi.StampacchiaTruncation
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.TimeH1
 import Mathlib.MeasureTheory.Integral.IntervalIntegral.AbsolutelyContinuousFun
+import Mathlib.MeasureTheory.Function.AEEqOfIntegral
 
 noncomputable section
 
@@ -13,7 +14,7 @@ namespace Parabolic
 namespace TimeSobolev
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
-  [FiniteDimensional ℝ E]
+  [CompleteSpace E]
 
 theorem weakDeriv_primitive
     {a b : ℝ} (hab : a < b) {p q : ℝ → E}
@@ -25,56 +26,127 @@ theorem weakDeriv_primitive
     ∃ c : E, p =ᵐ[volume.restrict (Ioo a b)]
       fun t ↦ c + ∫ r in a..t, q r := by
   classical
-  let B := Module.finBasis ℝ E
-  let L (i : Fin (Module.finrank ℝ E)) : E →L[ℝ] ℝ :=
-    LinearMap.toContinuousLinearMap (B.coord i)
-  have hp_coord (i : Fin (Module.finrank ℝ E)) :
-      IntegrableOn (fun t ↦ L i (p t)) (Ioo a b) volume :=
-    (L i).integrable_comp hp
-  have hq_coord (i : Fin (Module.finrank ℝ E)) :
-      IntegrableOn (fun t ↦ L i (q t)) (Ioo a b) volume :=
-    (L i).integrable_comp hq
-  have hweak_coord (i : Fin (Module.finrank ℝ E)) :
-      ∀ φ : ℝ → ℝ, ContDiff ℝ (⊤ : ℕ∞) φ → HasCompactSupport φ →
+  have hqIcc : IntegrableOn q (Icc a b) volume := by
+    rwa [IntegrableOn, ← Measure.restrict_congr_set Ioo_ae_eq_Icc]
+  let Q : ℝ → E := fun t ↦ ∫ r in a..t, q r
+  have hQcont : ContinuousOn Q (Icc a b) := by
+    have h := continuousOn_primitive_interval (show IntegrableOn q (uIcc a b) volume by
+      simpa only [uIcc_of_le hab.le] using hqIcc)
+    simpa only [Q, uIcc_of_le hab.le] using h
+  have hQ : IntegrableOn Q (Ioo a b) volume :=
+    (hQcont.integrableOn_Icc).mono_set Ioo_subset_Icc_self
+  let d : ℝ → E := fun t ↦ p t - Q t
+  have hd : IntegrableOn d (Ioo a b) volume := hp.sub hQ
+  let c : E := (b - a)⁻¹ • ∫ t in Ioo a b, d t
+  have hdual (L : StrongDual ℝ E) :
+      (fun t ↦ L (d t - c)) =ᵐ[volume.restrict (Ioo a b)] 0 := by
+    have hpL : IntegrableOn (fun t ↦ L (p t)) (Ioo a b) volume :=
+      L.integrable_comp hp
+    have hqL : IntegrableOn (fun t ↦ L (q t)) (Ioo a b) volume :=
+      L.integrable_comp hq
+    have hweakL : ∀ φ : ℝ → ℝ, ContDiff ℝ (⊤ : ℕ∞) φ → HasCompactSupport φ →
         tsupport φ ⊆ Ioo a b →
-        ∫ t in Ioo a b, L i (p t) * deriv φ t =
-          -∫ t in Ioo a b, L i (q t) * φ t := by
-    intro φ hφ hφ_comp hφ_supp
-    have hpφ : Integrable (fun t ↦ deriv φ t • p t)
-        (volume.restrict (Ioo a b)) :=
-      (show Integrable p (volume.restrict (Ioo a b)) from hp).locallyIntegrable
-        |>.integrable_smul_left_of_hasCompactSupport
-        (hφ.continuous_deriv (by norm_cast)) hφ_comp.deriv
-    have hqφ : Integrable (fun t ↦ φ t • q t)
-        (volume.restrict (Ioo a b)) :=
-      (show Integrable q (volume.restrict (Ioo a b)) from hq).locallyIntegrable
-        |>.integrable_smul_left_of_hasCompactSupport
-        hφ.continuous hφ_comp
-    have h := congrArg (L i) (hweak φ hφ hφ_comp hφ_supp)
-    rw [← (L i).integral_comp_comm hpφ, map_neg,
-      ← (L i).integral_comp_comm hqφ] at h
-    simpa only [map_smul, smul_eq_mul, mul_comm] using h
-  choose C hC using fun i ↦
-    DeGiorgi.w11_ae_eq_ac_representative hab (hp_coord i) (hq_coord i)
-      (hweak_coord i)
-  refine ⟨B.equivFun.symm C, ?_⟩
-  have hC_all : ∀ᵐ t ∂(volume.restrict (Ioo a b)), ∀ i,
-      L i (p t) = C i + ∫ r in a..t, L i (q r) :=
-    Filter.eventually_all.mpr hC
-  filter_upwards [hC_all, ae_restrict_mem measurableSet_Ioo] with t ht_coord ht
-  have hq_int : IntervalIntegrable q volume a t := by
-    apply MeasureTheory.IntegrableOn.intervalIntegrable
-    have hq_Icc : IntegrableOn q (Icc a b) volume := by
-      rwa [IntegrableOn, ← Measure.restrict_congr_set Ioo_ae_eq_Icc]
-    exact hq_Icc.mono_set
-      (uIcc_subset_Icc ⟨le_rfl, hab.le⟩ ⟨le_of_lt ht.1, le_of_lt ht.2⟩)
-  apply B.equivFun.injective
-  funext i
-  change L i (p t) = L i (B.equivFun.symm C + ∫ r in a..t, q r)
-  rw [map_add, show L i (B.equivFun.symm C) = C i by
-    exact B.coord_equivFun_symm i C,
-    ← (L i).intervalIntegral_comp_comm hq_int]
-  exact ht_coord i
+        ∫ t in Ioo a b, L (p t) * deriv φ t =
+          -∫ t in Ioo a b, L (q t) * φ t := by
+      intro φ hφ hφ_comp hφ_supp
+      have hpφ : Integrable (fun t ↦ deriv φ t • p t)
+          (volume.restrict (Ioo a b)) :=
+        (show Integrable p (volume.restrict (Ioo a b)) from hp).locallyIntegrable
+          |>.integrable_smul_left_of_hasCompactSupport
+          (hφ.continuous_deriv (by norm_cast)) hφ_comp.deriv
+      have hqφ : Integrable (fun t ↦ φ t • q t)
+          (volume.restrict (Ioo a b)) :=
+        (show Integrable q (volume.restrict (Ioo a b)) from hq).locallyIntegrable
+          |>.integrable_smul_left_of_hasCompactSupport hφ.continuous hφ_comp
+      have h := congrArg L (hweak φ hφ hφ_comp hφ_supp)
+      rw [← L.integral_comp_comm hpφ, map_neg, ← L.integral_comp_comm hqφ] at h
+      simpa only [map_smul, smul_eq_mul, mul_comm] using h
+    obtain ⟨C, hC⟩ := DeGiorgi.w11_ae_eq_ac_representative hab hpL hqL hweakL
+    have hdC : (fun t ↦ L (d t)) =ᵐ[volume.restrict (Ioo a b)] fun _ ↦ C := by
+      filter_upwards [hC, ae_restrict_mem measurableSet_Ioo] with t ht htmem
+      have hq_int : IntervalIntegrable q volume a t :=
+        (hqIcc.mono_set
+          (uIcc_subset_Icc ⟨le_rfl, hab.le⟩ ⟨htmem.1.le, htmem.2.le⟩)).intervalIntegrable
+      change L (p t - Q t) = C
+      rw [map_sub, show L (Q t) = ∫ r in a..t, L (q r) from
+        (L.intervalIntegral_comp_comm hq_int).symm, ht]
+      exact add_sub_cancel_right C _
+    have hLc : L c = C := by
+      change L ((b - a)⁻¹ • ∫ t in Ioo a b, d t) = C
+      rw [map_smul, ← L.integral_comp_comm hd, integral_congr_ae hdC,
+        setIntegral_const, Real.volume_real_Ioo_of_le hab.le, smul_eq_mul, smul_eq_mul]
+      exact inv_mul_cancel_left₀ (sub_ne_zero.mpr hab.ne') C
+    filter_upwards [hdC] with t ht
+    simp only [Pi.zero_apply, map_sub, ht, hLc, sub_self]
+  have hdsub : IntegrableOn (fun t ↦ d t - c) (Ioo a b) volume := hd.sub (integrable_const c)
+  obtain ⟨s, hs, hsmem⟩ := hdsub.aestronglyMeasurable.isSeparable_ae_range
+  have hzero := ae_eq_zero_of_forall_dual_of_isSeparable ℝ hs hdual hsmem
+  refine ⟨c, ?_⟩
+  filter_upwards [hzero] with t ht
+  change p t - Q t - c = 0 at ht
+  change p t = c + Q t
+  exact sub_eq_iff_eq_add.mp (sub_eq_zero.mp ht)
+
+theorem exists_timeH1_of_weak_deriv_on
+    {a b : ℝ} (hab : a < b) {p q : ℝ → E}
+    (hp : MemLp p 2 (volume.restrict (Icc a b)))
+    (hq : MemLp q 2 (volume.restrict (Icc a b)))
+    (hweak : ∀ φ : ℝ → ℝ, ContDiff ℝ (⊤ : ℕ∞) φ → HasCompactSupport φ →
+      tsupport φ ⊆ Ioo a b →
+      ∫ t in Ioo a b, deriv φ t • p t = -∫ t in Ioo a b, φ t • q t) :
+    ∃ w : timeH1 E (b - a),
+      (fun t ↦ p (a + t)) =ᵐ[timeMeasure (b - a)] w.toFun ∧
+      w.deriv =ᵐ[timeMeasure (b - a)] fun t ↦ q (a + t) := by
+  have hpIcc : IntegrableOn p (Icc a b) volume := hp.integrable (by norm_num)
+  have hqIcc : IntegrableOn q (Icc a b) volume := hq.integrable (by norm_num)
+  obtain ⟨c, hc⟩ := weakDeriv_primitive hab
+    (hpIcc.mono_set Ioo_subset_Icc_self) (hqIcc.mono_set Ioo_subset_Icc_self) hweak
+  have hcIcc : p =ᵐ[volume.restrict (Icc a b)]
+      fun t ↦ c + ∫ r in a..t, q r := by
+    simpa only [Measure.restrict_congr_set Ioo_ae_eq_Icc] using hc
+  have hshift : MeasurePreserving (fun t : ℝ ↦ a + t) (timeMeasure (b - a))
+      (volume.restrict (Icc a b)) := by
+    have h := (measurePreserving_add_right volume a).restrict_image_emb
+      (Homeomorph.addRight a).isClosedEmbedding.measurableEmbedding (Icc (0 : ℝ) (b - a))
+    simpa only [timeMeasure, image_add_const_Icc, zero_add, sub_add_cancel, add_comm a]
+      using h
+  let qL2 : timeL2 E (b - a) := (hq.comp_measurePreserving hshift).toLp
+    (fun t ↦ q (a + t))
+  let w : timeH1 E (b - a) := timeH1.mk c qL2
+  have hqrep : qL2 =ᵐ[timeMeasure (b - a)] fun t ↦ q (a + t) :=
+    MemLp.coeFn_toLp _
+  refine ⟨w, ?_, ?_⟩
+  · filter_upwards [hshift.quasiMeasurePreserving.ae_eq_comp hcIcc,
+      ae_restrict_mem measurableSet_Icc] with t hct ht
+    have hsub : uIoc (0 : ℝ) t ⊆ Icc (0 : ℝ) (b - a) := by
+      intro r hr
+      rw [uIoc_of_le ht.1] at hr
+      exact ⟨le_of_lt hr.1, hr.2.trans ht.2⟩
+    have hqInterval : qL2 =ᵐ[volume.restrict (uIoc (0 : ℝ) t)]
+        fun t ↦ q (a + t) :=
+      hqrep.filter_mono (ae_mono (Measure.restrict_mono hsub le_rfl))
+    have hint : (∫ r in (0 : ℝ)..t, qL2 r) = ∫ r in a..a + t, q r := by
+      rw [intervalIntegral.integral_congr_ae (ae_imp_of_ae_restrict hqInterval),
+        intervalIntegral.integral_comp_add_left, add_zero]
+    change p (a + t) = c + ∫ r in (0 : ℝ)..t, qL2 r
+    change p (a + t) = c + ∫ r in a..a + t, q r at hct
+    rw [hint]
+    exact hct
+  · simpa only [w, timeH1.deriv_mk] using hqrep
+
+theorem exists_timeH1_of_weak_deriv
+    {T : ℝ} (hT : 0 < T) {p q : ℝ → E}
+    (hp : MemLp p 2 (timeMeasure T))
+    (hq : MemLp q 2 (timeMeasure T))
+    (hweak : ∀ φ : ℝ → ℝ, ContDiff ℝ (⊤ : ℕ∞) φ → HasCompactSupport φ →
+      tsupport φ ⊆ Ioo (0 : ℝ) T →
+      ∫ t in Ioo (0 : ℝ) T, deriv φ t • p t =
+        -∫ t in Ioo (0 : ℝ) T, φ t • q t) :
+    ∃ w : timeH1 E T, p =ᵐ[timeMeasure T] w.toFun ∧
+      w.deriv =ᵐ[timeMeasure T] q := by
+  have h := exists_timeH1_of_weak_deriv_on hT hp hq hweak
+  rw [sub_zero] at h
+  simpa only [zero_add] using h
 
 theorem exists_timeH1_of_integrated_weak_deriv
     {T : ℝ} (hT : 0 < T) {p q : ℝ → ℝ}

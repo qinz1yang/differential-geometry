@@ -621,50 +621,49 @@ private theorem norm_sq_dirichletMassPartialTimeCurve_le
     (u : timeL2 (H1ComplDirichlet q) T)
     (w : timeH1 (H1ComplDirichlet q) T)
     (f₀ : DirichletL2 q)
+    (τ : ℝ) (hτ : τ ∈ Icc (0 : ℝ) T)
     (hmass : (fun t => resolventDirichlet q
       (H1ComplDirichletToLp q (u t))) =ᵐ[timeMeasure T] w.toFun)
-    (hinit : w.init = resolventDirichlet q f₀)
+    (htrace : w.toFun τ = resolventDirichlet q f₀)
     {t : ℝ} (ht : t ∈ Icc (0 : ℝ) T) :
     ‖(dirichletMassPartialTimeCurve q s w).toFun t‖ ^ 2 ≤
       ‖dirichletL2PartialSum q s f₀‖ ^ 2 +
         2 * ‖(dirichletH1PartialSum q s).compLpL 2
           (timeMeasure T) u‖ * ‖w.deriv‖ := by
-  have hzero : (0 : ℝ) ∈ Icc (0 : ℝ) T :=
-    ⟨le_rfl, ht.1.trans ht.2⟩
   have henergy := dirichletMassPartialTimeCurve_energy
-    q s u w hmass hzero ht
-  rw [timeH1.toFun_zero,
-    dirichletMassPartialTimeCurve_init q s w f₀ hinit] at henergy
+    q s u w hmass hτ ht
+  rw [dirichletMassPartialTimeCurve_toFun q s w hτ, htrace,
+    dirichletMassPartialSum_resolventDirichlet] at henergy
   have hproj := (dirichletH1PartialSum q s).coeFn_compLpL
     (p := 2) (μ := timeMeasure T) u
   have hintegral :
-      (∫ r in (0 : ℝ)..t,
+      (∫ r in τ..t,
           inner ℝ (dirichletH1PartialSum q s (u r)) (w.deriv r)) =
-        ∫ r in (0 : ℝ)..t,
+        ∫ r in τ..t,
           inner ℝ
             (((dirichletH1PartialSum q s).compLpL 2
               (timeMeasure T) u) r) (w.deriv r) := by
-    apply intervalIntegral_congr_ae_timeMeasure hzero ht
+    apply intervalIntegral_congr_ae_timeMeasure hτ ht
     filter_upwards [hproj] with r hr
     rw [hr]
   calc
     ‖(dirichletMassPartialTimeCurve q s w).toFun t‖ ^ 2 =
         ‖dirichletL2PartialSum q s f₀‖ ^ 2 +
-          ∫ r in (0 : ℝ)..t,
+          ∫ r in τ..t,
             2 * inner ℝ (dirichletH1PartialSum q s (u r))
               (w.deriv r) := by linarith
     _ = ‖dirichletL2PartialSum q s f₀‖ ^ 2 +
-        2 * ∫ r in (0 : ℝ)..t,
+        2 * ∫ r in τ..t,
           inner ℝ (dirichletH1PartialSum q s (u r))
             (w.deriv r) := by
       rw [intervalIntegral.integral_const_mul]
     _ = ‖dirichletL2PartialSum q s f₀‖ ^ 2 +
-        2 * ∫ r in (0 : ℝ)..t,
+        2 * ∫ r in τ..t,
           inner ℝ
             (((dirichletH1PartialSum q s).compLpL 2
               (timeMeasure T) u) r) (w.deriv r) := by rw [hintegral]
     _ ≤ ‖dirichletL2PartialSum q s f₀‖ ^ 2 +
-        2 * |∫ r in (0 : ℝ)..t,
+        2 * |∫ r in τ..t,
           inner ℝ
             (((dirichletH1PartialSum q s).compLpL 2
               (timeMeasure T) u) r) (w.deriv r)| := by
@@ -675,7 +674,7 @@ private theorem norm_sq_dirichletMassPartialTimeCurve_le
           (timeMeasure T) u‖ * ‖w.deriv‖ := by
       have hpair := abs_intervalIntegral_inner_le_norm
         ((dirichletH1PartialSum q s).compLpL 2 (timeMeasure T) u)
-          w.deriv hzero ht
+          w.deriv hτ ht
       nlinarith
 
 private theorem norm_sq_dirichletMassPartialTimeCurve_le_tails
@@ -685,9 +684,10 @@ private theorem norm_sq_dirichletMassPartialTimeCurve_le_tails
     (u : timeL2 (H1ComplDirichlet q) T)
     (w : timeH1 (H1ComplDirichlet q) T)
     (f₀ : DirichletL2 q)
+    (τ : ℝ) (hτ : τ ∈ Icc (0 : ℝ) T)
     (hmass : (fun t => resolventDirichlet q
       (H1ComplDirichletToLp q (u t))) =ᵐ[timeMeasure T] w.toFun)
-    (hinit : w.init = resolventDirichlet q f₀)
+    (htrace : w.toFun τ = resolventDirichlet q f₀)
     (hd : ∀ i ∈ d, i ∉ s)
     {t : ℝ} (ht : t ∈ Icc (0 : ℝ) T) :
     ‖(dirichletMassPartialTimeCurve q d w).toFun t‖ ^ 2 ≤
@@ -727,7 +727,7 @@ private theorem norm_sq_dirichletMassPartialTimeCurve_le_tails
     rw [← Real.sqrt_sq (norm_nonneg _)]
     exact Real.sqrt_le_sqrt huTailSq
   exact (norm_sq_dirichletMassPartialTimeCurve_le
-    q d u w f₀ hmass hinit ht).trans
+    q d u w f₀ τ hτ hmass htrace ht).trans
       (add_le_add hfTail
         (mul_le_mul_of_nonneg_right
           (mul_le_mul_of_nonneg_left huTail (by positivity))
@@ -738,9 +738,10 @@ private theorem exists_dirichletMassTrace_uniformLimit
     {T : ℝ} (u : timeL2 (H1ComplDirichlet q) T)
     (w : timeH1 (H1ComplDirichlet q) T)
     (f₀ : DirichletL2 q)
+    (τ : ℝ) (hτ : τ ∈ Icc (0 : ℝ) T)
     (hmass : (fun t => resolventDirichlet q
       (H1ComplDirichletToLp q (u t))) =ᵐ[timeMeasure T] w.toFun)
-    (hinit : w.init = resolventDirichlet q f₀) :
+    (htrace : w.toFun τ = resolventDirichlet q f₀) :
     ∃ U : ℝ → DirichletL2 q,
       TendstoUniformlyOn
         (fun s : Finset (DirichletLaplacianEigenIndex q) =>
@@ -783,7 +784,7 @@ private theorem exists_dirichletMassTrace_uniformLimit
       (hd : ∀ i ∈ d, i ∉ s) :
       ‖(dirichletMassPartialTimeCurve q d w).toFun t‖ < ε / 2 := by
     have hsqTail := norm_sq_dirichletMassPartialTimeCurve_le_tails
-      q s d u w f₀ hmass hinit hd ht
+      q s d u w f₀ τ hτ hmass htrace hd ht
     change ‖(dirichletMassPartialTimeCurve q d w).toFun t‖ ^ 2 ≤
       initialTail s + 2 * Real.sqrt (timeTail s) * ‖w.deriv‖ at hsqTail
     exact (sq_lt_sq₀ (norm_nonneg _)
@@ -959,6 +960,67 @@ private theorem dirichletMassTrace_zero
       rw [timeH1.toFun_zero,
         dirichletMassPartialTimeCurve_init q s w f₀ hinit])
 
+private theorem exists_continuous_l2_representative_of_mass_timeH1_of_pos
+    (q : SmoothRiemannianMetric (I_half n) M)
+    {T : ℝ} (hT : 0 < T)
+    (u : timeL2 (H1ComplDirichlet q) T)
+    (w : timeH1 (H1ComplDirichlet q) T)
+    (hmass : (fun t => resolventDirichlet q
+      (H1ComplDirichletToLp q (u t))) =ᵐ[timeMeasure T] w.toFun) :
+    ∃ U : ℝ → DirichletL2 q,
+      ContinuousOn U (Icc (0 : ℝ) T) ∧
+      (U =ᵐ[timeMeasure T] fun t => H1ComplDirichletToLp q (u t)) ∧
+      ∀ a b, a ∈ Icc (0 : ℝ) T → b ∈ Icc (0 : ℝ) T →
+        ‖U b‖ ^ 2 - ‖U a‖ ^ 2 =
+          ∫ t in a..b, 2 * inner ℝ (u t) (w.deriv t) := by
+  have : (ae (timeMeasure T)).NeBot := ae_neBot.mpr (timeMeasure_ne_zero hT)
+  have hex : ∀ᵐ τ ∂(timeMeasure T), τ ∈ Icc (0 : ℝ) T ∧
+      w.toFun τ = resolventDirichlet q (H1ComplDirichletToLp q (u τ)) := by
+    filter_upwards [hmass, ae_restrict_mem measurableSet_Icc] with τ hτ hmem
+    exact ⟨hmem, hτ.symm⟩
+  obtain ⟨τ, hτ, htrace⟩ := hex.exists
+  obtain ⟨U, hU⟩ := exists_dirichletMassTrace_uniformLimit
+    q u w (H1ComplDirichletToLp q (u τ)) τ hτ hmass htrace
+  have hcontinuous : ContinuousOn U (Icc (0 : ℝ) T) :=
+    hU.continuousOn ((Eventually.of_forall fun s =>
+      (dirichletMassPartialTimeCurve q s w).continuousOn_toFun).frequently)
+  have hae : U =ᵐ[timeMeasure T]
+      fun t => H1ComplDirichletToLp q (u t) :=
+    dirichletMassTrace_ae_eq q u w hmass U hU
+  exact ⟨U, hcontinuous, hae, fun a b ha hb =>
+    dirichletMassTrace_energy q u w hmass U hU ha hb⟩
+
+theorem exists_continuous_l2_representative_of_resolvent_timeH1
+    (q : SmoothRiemannianMetric (I_half n) M)
+    {T : ℝ}
+    (u : timeL2 (H1ComplDirichlet q) T)
+    (w : timeH1 (H1ComplDirichlet q) T)
+    (hmass : (fun t => resolventDirichlet q
+      (H1ComplDirichletToLp q (u t))) =ᵐ[timeMeasure T] w.toFun) :
+    ∃ U : ℝ → DirichletL2 q,
+      ContinuousOn U (Icc (0 : ℝ) T) ∧
+      (U =ᵐ[timeMeasure T] fun t => H1ComplDirichletToLp q (u t)) ∧
+      ∀ a b, a ∈ Icc (0 : ℝ) T → b ∈ Icc (0 : ℝ) T →
+        ‖U b‖ ^ 2 - ‖U a‖ ^ 2 =
+          ∫ t in a..b, 2 * inner ℝ (u t) (w.deriv t) := by
+  by_cases hT : 0 < T
+  · exact exists_continuous_l2_representative_of_mass_timeH1_of_pos q hT u w hmass
+  · have hT' : T ≤ 0 := le_of_not_gt hT
+    refine ⟨fun _ => 0, continuousOn_const, ?_, ?_⟩
+    · have hbot : ae (timeMeasure T) = ⊥ :=
+        MeasureTheory.ae_eq_bot.mpr (timeMeasure_eq_zero_of_nonpos hT')
+      change ∀ᶠ t in ae (timeMeasure T),
+        (0 : DirichletL2 q) = H1ComplDirichletToLp q (u t)
+      rw [hbot]
+      exact Filter.mem_bot
+    · intro a b ha hb
+      have hab : a = b := by
+        rcases ha with ⟨ha, haT⟩
+        rcases hb with ⟨hb, hbT⟩
+        linarith
+      subst b
+      simp only [sub_self, intervalIntegral.integral_same]
+
 theorem exists_continuous_l2_representative_of_mass_timeH1
     (q : SmoothRiemannianMetric (I_half n) M)
     {T : ℝ} (hT : 0 ≤ T)
@@ -976,7 +1038,7 @@ theorem exists_continuous_l2_representative_of_mass_timeH1
         ‖U b‖ ^ 2 - ‖U a‖ ^ 2 =
           ∫ t in a..b, 2 * inner ℝ (u t) (w.deriv t) := by
   obtain ⟨U, hU⟩ := exists_dirichletMassTrace_uniformLimit
-    q u w f₀ hmass hinit
+    q u w f₀ 0 ⟨le_rfl, hT⟩ hmass (by simpa only [timeH1.toFun_zero] using hinit)
   have hcontinuous : ContinuousOn U (Icc (0 : ℝ) T) :=
     hU.continuousOn ((Eventually.of_forall fun s =>
       (dirichletMassPartialTimeCurve q s w).continuousOn_toFun).frequently)

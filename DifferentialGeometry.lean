@@ -4689,3 +4689,11 @@ import DifferentialGeometry.Geometry.Comparison.DistanceCutoff
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Distance.LocalRicciBound
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.ScalarLowerBound
 import DifferentialGeometry.Bundle.Hom.Trace
+import DifferentialGeometry.Analysis.Integration.Lp.ProductL2
+import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.TimeWeakDerivativeProduct
+import DifferentialGeometry.Analysis.Sobolev.WeakDerivativeWeight
+import DifferentialGeometry.Analysis.Sobolev.WeakDerivativeUniqueness
+import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.TimeWeakDerivativeUniqueness
+import DifferentialGeometry.Analysis.Parabolic.Dirichlet.TimeDerivativeUniqueness
+import DifferentialGeometry.Analysis.Sobolev.WeakDerivativeCommutation
+import DifferentialGeometry.Analysis.Parabolic.Dirichlet.MixedWeakDerivative
