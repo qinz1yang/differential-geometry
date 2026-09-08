@@ -56,6 +56,43 @@ theorem timeQuad_eq_integral
   rw [ht]
 
 omit [CompleteSpace X] in
+theorem isBoundedUnder_norm_timeQuad {ι : Type*} {l : Filter ι}
+    (A : ι → ℝ → X →L[ℝ] X)
+    (hA : ∀ n, AEStronglyMeasurable (A n) (timeMeasure T))
+    (C : ι → NNReal)
+    (hC : ∀ n, ∀ᵐ t ∂timeMeasure T, ‖A n t‖ ≤ (C n : ℝ))
+    (B : NNReal) (hB : ∀ᶠ n in l, ∀ᵐ t ∂timeMeasure T, ‖A n t‖ ≤ (B : ℝ))
+    (u : ι → timeL2 X T)
+    (hu : IsBoundedUnder (· ≤ ·) l (fun n ↦ ‖u n‖)) :
+    IsBoundedUnder (· ≤ ·) l
+      (fun n ↦ ‖timeQuad (A n) (hA n) (C n) (hC n) (u n)‖) := by
+  obtain ⟨D₀, hD₀⟩ := hu
+  let D : ℝ := max D₀ 0
+  have hD : 0 ≤ D := le_max_right _ _
+  have hnorm : ∀ᶠ n in l, ‖u n‖ ≤ D :=
+    hD₀.mono fun _ hn ↦ hn.trans (le_max_left _ _)
+  refine ⟨(B : ℝ) * D * D, ?_⟩
+  change ∀ᶠ n in l, ‖timeQuad (A n) (hA n) (C n) (hC n) (u n)‖ ≤ _
+  filter_upwards [hB, hnorm] with n hn hun
+  have hop : timeOp (A n) (hA n) (C n) (hC n) = timeOp (A n) (hA n) B hn := by
+    ext f
+    filter_upwards [timeOp_apply_ae (A n) (hA n) (C n) (hC n) f,
+      timeOp_apply_ae (A n) (hA n) B hn f] with t ht ht'
+    exact ht.trans ht'.symm
+  rw [timeQuad, hop]
+  calc
+    ‖inner ℝ (timeOp (A n) (hA n) B hn (u n)) (u n)‖ ≤
+        ‖timeOp (A n) (hA n) B hn (u n)‖ * ‖u n‖ := norm_inner_le_norm _ _
+    _ ≤ ((B : ℝ) * ‖u n‖) * ‖u n‖ := by
+      exact mul_le_mul_of_nonneg_right
+        (((timeOp (A n) (hA n) B hn).le_opNorm (u n)).trans
+          (mul_le_mul_of_nonneg_right (timeOp_norm_le _ _ _ _) (norm_nonneg _)))
+        (norm_nonneg _)
+    _ ≤ (B : ℝ) * D * D :=
+      mul_le_mul (mul_le_mul_of_nonneg_left hun B.coe_nonneg) hun
+        (norm_nonneg _) (mul_nonneg B.coe_nonneg hD)
+
+omit [CompleteSpace X] in
 private theorem timeOp_nonneg
     (A : ℝ → X →L[ℝ] X)
     (hA : AEStronglyMeasurable A (timeMeasure T))

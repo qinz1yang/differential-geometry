@@ -16,6 +16,50 @@ variable {X : Type*}
 variable [NormedAddCommGroup X] [InnerProductSpace ℝ X] [CompleteSpace X]
 variable {T : ℝ}
 
+open scoped Interval ENNReal in
+theorem isBoundedUnder_norm_integral_inner_of_tendstoUniformlyOn
+    (A : ℕ → ℝ → X →L[ℝ] X) (ALim : ℝ → X →L[ℝ] X)
+    (hA : ∀ n, ContinuousOn (A n) (Icc (0 : ℝ) T))
+    (hALim : ContinuousOn ALim (Icc (0 : ℝ) T))
+    (hconv : TendstoUniformlyOn A ALim atTop (Icc (0 : ℝ) T))
+    (hT : 0 ≤ T) (u : ℕ → timeL2 X T) (uLim : timeL2 X T)
+    (hu : ∀ z, Tendsto (fun n ↦ inner ℝ (u n) z) atTop (nhds (inner ℝ uLim z))) :
+    IsBoundedUnder (· ≤ ·) atTop
+      (fun n ↦ ‖∫ t in (0 : ℝ)..T, inner ℝ (A n t (u n t)) (u n t)‖) := by
+  have hALp : ∀ n, MemLp (A n) ∞ (timeMeasure T) := by
+    intro n
+    obtain ⟨C, hC⟩ := isCompact_Icc.bddAbove_image (hA n).norm
+    apply memLp_top_of_bound ((hA n).aestronglyMeasurable measurableSet_Icc) C
+    filter_upwards [ae_restrict_mem measurableSet_Icc] with t ht
+    exact hC ⟨t, ht, rfl⟩
+  let C : ℕ → NNReal := fun n => (lpNorm (A n) ∞ (timeMeasure T)).toNNReal
+  have hC : ∀ n, ∀ᵐ t ∂timeMeasure T, ‖A n t‖ ≤ (C n : ℝ) := fun n =>
+    (ae_le_lpNorm_exponent_top (hALp n)).mono fun _ ht =>
+      ht.trans (Real.le_coe_toNNReal _)
+  obtain ⟨D, hD⟩ := isCompact_Icc.bddAbove_image hALim.norm
+  let B : NNReal := (1 + D).toNNReal
+  have hB : ∀ᶠ n in atTop, ∀ᵐ t ∂timeMeasure T, ‖A n t‖ ≤ (B : ℝ) := by
+    filter_upwards [(Metric.tendstoUniformlyOn_iff.mp hconv) 1 zero_lt_one] with n hn
+    filter_upwards [ae_restrict_mem measurableSet_Icc] with t ht
+    calc
+      ‖A n t‖ ≤ ‖A n t - ALim t‖ + ‖ALim t‖ := norm_le_norm_sub_add _ _
+      _ ≤ 1 + D := add_le_add (by
+        simpa only [dist_eq_norm, norm_sub_rev] using (hn t ht).le)
+        (hD ⟨t, ht, rfl⟩)
+      _ ≤ (B : ℝ) := Real.le_coe_toNNReal _
+  obtain ⟨D, huD⟩ := banach_steinhaus (g := fun n ↦ innerSL ℝ (u n)) fun z ↦ by
+    simpa only [innerSL_apply_apply, forall_mem_range] using
+      (isBounded_iff_forall_norm_le.1
+        (Metric.isBounded_range_of_tendsto (fun n ↦ inner ℝ (u n) z) (hu z)))
+  have hnorm : IsBoundedUnder (· ≤ ·) atTop (fun n ↦ ‖u n‖) := by
+    refine ⟨D, ?_⟩
+    change ∀ᶠ n in atTop, ‖u n‖ ≤ D
+    refine Eventually.of_forall fun n ↦ ?_
+    simpa only [innerSL_apply_norm] using huD n
+  have hb := isBoundedUnder_norm_timeQuad A
+    (fun n => (hALp n).aestronglyMeasurable) C hC B hB u hnorm
+  simpa only [timeQuad_eq_integral _ _ _ _ hT] using hb
+
 private theorem timeOp_pos
     (A : ℝ → X →L[ℝ] X)
     (hA : AEStronglyMeasurable A (timeMeasure T))
@@ -218,50 +262,24 @@ theorem timeQuad_weak_uniform
     simpa only [innerSL_apply_apply, forall_mem_range] using
       (isBounded_iff_forall_norm_le.1
         (Metric.isBounded_range_of_tendsto (fun n ↦ inner ℝ (u n) z) (hu z)))
-  have hu_norm (n : ℕ) : ‖u n‖ ≤ D := by
+  have hnorm : IsBoundedUnder (· ≤ ·) atTop (fun n ↦ ‖u n‖) := by
+    refine ⟨D, ?_⟩
+    change ∀ᶠ n in atTop, ‖u n‖ ≤ D
+    refine Eventually.of_forall fun n ↦ ?_
     simpa only [innerSL_apply_norm] using huD n
-  have hD : 0 ≤ D := (norm_nonneg (u 0)).trans (hu_norm 0)
-  have hLn_norm : ∀ᶠ n in atTop, ‖Ln n‖ ≤ 1 + (C_lim : ℝ) := by
+  have hbound : ∀ᶠ n in atTop, ∀ᵐ t ∂timeMeasure T,
+      ‖A n t‖ ≤ ((1 + C_lim : NNReal) : ℝ) := by
     filter_upwards [hconv 1 zero_lt_one] with n hn
-    have hop : ‖Ln n - L‖ ≤ 1 := by
-      have heq : Ln n - L = timeOp (fun t ↦ A n t - A_lim t)
-          ((hA n).sub hA_lim) 1 hn := by
-        ext f
-        filter_upwards [Lp.coeFn_sub (Ln n f) (L f),
-          timeOp_apply_ae (A n) (hA n) (C n) (hC n) f,
-          timeOp_apply_ae A_lim hA_lim C_lim hC_lim f,
-          timeOp_apply_ae (fun t ↦ A n t - A_lim t)
-            ((hA n).sub hA_lim) 1 hn f]
-          with t hsub hAn hAlim hdiff
-        change ((Ln n f - L f : timeL2 X T) : ℝ → X) t =
-          (timeOp (fun t ↦ A n t - A_lim t) ((hA n).sub hA_lim)
-            1 hn f : ℝ → X) t
-        rw [hsub, Pi.sub_apply, hAn, hAlim, hdiff,
-          sub_apply]
-      rw [heq]
-      simpa using timeOp_norm_le (fun t ↦ A n t - A_lim t)
-        ((hA n).sub hA_lim) 1 hn
+    filter_upwards [hn, hC_lim] with t ht ht'
     calc
-      ‖Ln n‖ ≤ ‖Ln n - L‖ + ‖L‖ := by
-        simpa only [sub_add_cancel] using norm_add_le (Ln n - L) L
-      _ ≤ 1 + (C_lim : ℝ) := add_le_add hop (timeOp_norm_le _ _ _ _)
-  have hOp : 0 ≤ 1 + (C_lim : ℝ) := by positivity
-  have hq_upper : ∀ᶠ n in atTop, q n ≤ (1 + (C_lim : ℝ)) * D * D := by
-    filter_upwards [hLn_norm] with n hn
-    calc
-      q n ≤ |inner ℝ (Ln n (u n)) (u n)| := le_abs_self _
-      _ ≤ ‖Ln n (u n)‖ * ‖u n‖ := abs_real_inner_le_norm _ _
-      _ ≤ (‖Ln n‖ * ‖u n‖) * ‖u n‖ := by
-        gcongr
-        exact (Ln n).le_opNorm (u n)
-      _ ≤ ((1 + (C_lim : ℝ)) * ‖u n‖) * ‖u n‖ :=
-        mul_le_mul_of_nonneg_right
-          (mul_le_mul_of_nonneg_right hn (norm_nonneg _)) (norm_nonneg _)
-      _ ≤ ((1 + (C_lim : ℝ)) * D) * ‖u n‖ :=
-        mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left (hu_norm n) hOp)
-          (norm_nonneg _)
-      _ ≤ ((1 + (C_lim : ℝ)) * D) * D := by
-        exact mul_le_mul_of_nonneg_left (hu_norm n) (mul_nonneg hOp hD)
+      ‖A n t‖ ≤ ‖A n t - A_lim t‖ + ‖A_lim t‖ := norm_le_norm_sub_add _ _
+      _ ≤ 1 + (C_lim : ℝ) := add_le_add ht ht'
+      _ = ((1 + C_lim : NNReal) : ℝ) := by simp only [NNReal.coe_add, NNReal.coe_one]
+  obtain ⟨B, hB⟩ := isBoundedUnder_norm_timeQuad A hA C hC (1 + C_lim) hbound u hnorm
+  have hq_upper : ∀ᶠ n in atTop, q n ≤ B := by
+    filter_upwards [hB] with n hn
+    change ‖q n‖ ≤ B at hn
+    exact (le_abs_self (q n)).trans (by simpa only [Real.norm_eq_abs] using hn)
   have hcob : IsCoboundedUnder (· ≥ ·) atTop q :=
     isCoboundedUnder_ge_of_eventually_le atTop hq_upper
   have hliminf : qlim ≤ liminf q atTop := by
