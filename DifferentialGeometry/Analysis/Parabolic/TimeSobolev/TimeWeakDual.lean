@@ -10,6 +10,33 @@ namespace DifferentialGeometry.Analysis.Parabolic.TimeSobolev
 
 variable {X : Type*} [NormedAddCommGroup X] [NormedSpace ℝ X]
 
+theorem exists_timeH1_dual_of_weak_deriv_on
+    {a b : ℝ} (hab : a < b) {p q : ℝ → X →L[ℝ] ℝ}
+    (hp : MemLp p 2 (volume.restrict (Icc a b)))
+    (hq : MemLp q 2 (volume.restrict (Icc a b)))
+    (hweak : ∀ (x : X) (φ : ℝ → ℝ), ContDiff ℝ (⊤ : ℕ∞) φ →
+      HasCompactSupport φ → tsupport φ ⊆ Ioo a b →
+      (∫ t in Ioo a b, deriv φ t * p t x) =
+        -∫ t in Ioo a b, φ t * q t x) :
+    ∃ w : timeH1 (X →L[ℝ] ℝ) (b - a),
+      (fun t ↦ p (a + t)) =ᵐ[timeMeasure (b - a)] w.toFun ∧
+      w.deriv =ᵐ[timeMeasure (b - a)] fun t ↦ q (a + t) := by
+  apply exists_timeH1_of_weak_deriv_on hab hp hq
+  intro φ hφ hφc hφs
+  have hpI : Integrable p (volume.restrict (Ioo a b)) :=
+    (hp.integrable (by norm_num)).mono_measure (Measure.restrict_mono Ioo_subset_Icc_self le_rfl)
+  have hqI : Integrable q (volume.restrict (Ioo a b)) :=
+    (hq.integrable (by norm_num)).mono_measure (Measure.restrict_mono Ioo_subset_Icc_self le_rfl)
+  have hdφp : Integrable (fun t => deriv φ t • p t) (volume.restrict (Ioo a b)) :=
+    hpI.locallyIntegrable.integrable_smul_left_of_hasCompactSupport
+      (hφ.continuous_deriv (by norm_cast)) hφc.deriv
+  have hφq : Integrable (fun t => φ t • q t) (volume.restrict (Ioo a b)) :=
+    hqI.locallyIntegrable.integrable_smul_left_of_hasCompactSupport hφ.continuous hφc
+  ext x
+  rw [ContinuousLinearMap.integral_apply hdφp, neg_apply,
+    ContinuousLinearMap.integral_apply hφq]
+  exact hweak x φ hφ hφc hφs
+
 theorem exists_timeH1_dual_of_weak_deriv
     {T : ℝ} (hT : 0 < T) {p q : ℝ → X →L[ℝ] ℝ}
     (hp : MemLp p 2 (timeMeasure T)) (hq : MemLp q 2 (timeMeasure T))
@@ -19,21 +46,9 @@ theorem exists_timeH1_dual_of_weak_deriv
         -∫ t in Ioo (0 : ℝ) T, φ t * q t x) :
     ∃ w : timeH1 (X →L[ℝ] ℝ) T, p =ᵐ[timeMeasure T] w.toFun ∧
       w.deriv =ᵐ[timeMeasure T] q := by
-  apply exists_timeH1_of_weak_deriv hT hp hq
-  intro φ hφ hφc hφs
-  have hpI : Integrable p (volume.restrict (Ioo (0 : ℝ) T)) :=
-    (hp.integrable (by norm_num)).mono_measure (Measure.restrict_mono Ioo_subset_Icc_self le_rfl)
-  have hqI : Integrable q (volume.restrict (Ioo (0 : ℝ) T)) :=
-    (hq.integrable (by norm_num)).mono_measure (Measure.restrict_mono Ioo_subset_Icc_self le_rfl)
-  have hdφp : Integrable (fun t => deriv φ t • p t) (volume.restrict (Ioo (0 : ℝ) T)) :=
-    hpI.locallyIntegrable.integrable_smul_left_of_hasCompactSupport
-      (hφ.continuous_deriv (by norm_cast)) hφc.deriv
-  have hφq : Integrable (fun t => φ t • q t) (volume.restrict (Ioo (0 : ℝ) T)) :=
-    hqI.locallyIntegrable.integrable_smul_left_of_hasCompactSupport hφ.continuous hφc
-  ext x
-  rw [ContinuousLinearMap.integral_apply hdφp, neg_apply,
-    ContinuousLinearMap.integral_apply hφq]
-  exact hweak x φ hφ hφc hφs
+  have h := exists_timeH1_dual_of_weak_deriv_on hT hp hq hweak
+  rw [sub_zero] at h
+  simpa only [zero_add] using h
 
 variable [CompleteSpace X]
 
@@ -64,6 +79,25 @@ theorem timeH1.integral_dual_deriv_add_deriv_dual
   rw [hzint, integral_add hright hleft] at h
   exact (add_comm _ _).trans h.symm
 
+theorem integral_timeH1_test_of_weak_dual_deriv_on
+    {a b : ℝ} (hab : a < b) {p q : ℝ → X →L[ℝ] ℝ}
+    (hp : MemLp p 2 (volume.restrict (Icc a b)))
+    (hq : MemLp q 2 (volume.restrict (Icc a b)))
+    (hweak : ∀ (x : X) (φ : ℝ → ℝ), ContDiff ℝ (⊤ : ℕ∞) φ →
+      HasCompactSupport φ → tsupport φ ⊆ Ioo a b →
+      (∫ t in Ioo a b, deriv φ t * p t x) =
+        -∫ t in Ioo a b, φ t * q t x)
+    (v : timeH1 X (b - a)) (hv0 : v.toFun 0 = 0) (hvT : v.toFun (b - a) = 0) :
+    (∫ t, p (a + t) (v.deriv t) ∂timeMeasure (b - a)) +
+      (∫ t, q (a + t) (v.toFun t) ∂timeMeasure (b - a)) = 0 := by
+  obtain ⟨w, hwp, hwq⟩ := exists_timeH1_dual_of_weak_deriv_on hab hp hq hweak
+  have h := timeH1.integral_dual_deriv_add_deriv_dual (sub_nonneg.mpr hab.le) w v
+  rw [hv0, hvT, map_zero, map_zero, sub_self] at h
+  refine Eq.trans ?_ h
+  apply congrArg₂ (fun a b : ℝ => a + b)
+  · exact integral_congr_ae (hwp.mono fun t ht => congrArg (fun L : X →L[ℝ] ℝ => L (v.deriv t)) ht)
+  · exact integral_congr_ae (hwq.mono fun t ht => congrArg (fun L : X →L[ℝ] ℝ => L (v.toFun t)) ht.symm)
+
 theorem integral_timeH1_test_of_weak_dual_deriv
     {T : ℝ} (hT : 0 < T) {p q : ℝ → X →L[ℝ] ℝ}
     (hp : MemLp p 2 (timeMeasure T)) (hq : MemLp q 2 (timeMeasure T))
@@ -74,12 +108,8 @@ theorem integral_timeH1_test_of_weak_dual_deriv
     (v : timeH1 X T) (hv0 : v.toFun 0 = 0) (hvT : v.toFun T = 0) :
     (∫ t, p t (v.deriv t) ∂timeMeasure T) +
       (∫ t, q t (v.toFun t) ∂timeMeasure T) = 0 := by
-  obtain ⟨w, hwp, hwq⟩ := exists_timeH1_dual_of_weak_deriv hT hp hq hweak
-  have h := timeH1.integral_dual_deriv_add_deriv_dual hT.le w v
-  rw [hv0, hvT, map_zero, map_zero, sub_self] at h
-  refine Eq.trans ?_ h
-  apply congrArg₂ (fun a b : ℝ => a + b)
-  · exact integral_congr_ae (hwp.mono fun t ht => congrArg (fun L : X →L[ℝ] ℝ => L (v.deriv t)) ht)
-  · exact integral_congr_ae (hwq.mono fun t ht => congrArg (fun L : X →L[ℝ] ℝ => L (v.toFun t)) ht.symm)
+  have h := integral_timeH1_test_of_weak_dual_deriv_on hT hp hq hweak
+  rw [sub_zero] at h
+  simpa only [zero_add] using h v hv0 hvT
 
 end DifferentialGeometry.Analysis.Parabolic.TimeSobolev
