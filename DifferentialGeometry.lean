@@ -9,6 +9,7 @@ import DifferentialGeometry.Analysis.Calculus.CLMNeumann
 import DifferentialGeometry.Analysis.Calculus.CompactCutoff
 import DifferentialGeometry.Analysis.Calculus.ContDiffExtendInterval
 import DifferentialGeometry.Analysis.Calculus.ContDiffOnTsum
+import DifferentialGeometry.Analysis.Calculus.ContinuousLinearMapDerivative
 import DifferentialGeometry.Analysis.Calculus.CurveDerivative
 import DifferentialGeometry.Analysis.Calculus.Cutoff
 import DifferentialGeometry.Analysis.Calculus.CutoffProfile
@@ -437,6 +438,7 @@ import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.WithBoundary.
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.WithBoundary.Divergence.POUReduction
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.WithBoundary.Divergence.PartialDerivWithin
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.WithBoundary.GradientLaplacian.Green
+import DifferentialGeometry.Analysis.Parabolic.Dirichlet.SmoothTimeMultiplier
 import DifferentialGeometry.Geometry.Operator.WithBoundary.BoundaryLaplacian
 import DifferentialGeometry.Geometry.Operator.WithBoundary.Gradient
 import DifferentialGeometry.Geometry.Operator.WithBoundary.GradientContinuity

@@ -1,5 +1,6 @@
 import DifferentialGeometry.Analysis.Integration.Measure.VolumeDensity
 import DifferentialGeometry.Analysis.Integration.Measure.Family
+import DifferentialGeometry.Analysis.Integration.Measure.FamilyLocal
 import DifferentialGeometry.Geometry.Operator.MetricFamilyRegularity
 
 set_option autoImplicit false
@@ -164,6 +165,40 @@ theorem hasDerivAt_riemannianVolumeDensity_swap
   exact hd.congr_deriv (by
     have hn := ne_of_gt (riemannianVolumeDensity_pos q (g t) x)
     field_simp)
+
+theorem hasDerivAt_riemannianVolumeDensity_of_chartGram_contMDiffOn
+    (q : SmoothRiemannianMetric I M) {g : ℝ → SmoothRiemannianMetric I M}
+    {J : Set ℝ} (hJ : IsOpen J)
+    (hg : ∀ (α : M) (i j : Fin (Module.finrank ℝ E)),
+      ContMDiffOn (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ, ℝ) ∞
+        (fun p : ℝ × M => chartGramMatrix (I := I) (g p.1) α p.2 i j)
+        (J ×ˢ (trivializationAt E (TangentSpace I) α).baseSet))
+    {t : ℝ} (ht : t ∈ J) (x : M) :
+    HasDerivAt (fun s => riemannianVolumeDensity q (g s) x)
+      ((1 / 2) * traceTimeDerivMetric (I := I) g t x * riemannianVolumeDensity q (g t) x) t := by
+  obtain ⟨g', hg', heq⟩ := exists_metricFamilyRegularAt_eventuallyEq hJ ht hg
+  have hd := hasDerivAt_riemannianVolumeDensity q hg' x
+  rw [traceTimeDerivMetric_eq_of_eventuallyEq heq x, heq.eq_of_nhds] at hd
+  apply hd.congr_of_eventuallyEq
+  filter_upwards [heq] with s hs
+  rw [hs]
+
+theorem hasDerivAt_riemannianVolumeDensity_swap_of_chartGram_contMDiffOn
+    (q : SmoothRiemannianMetric I M) {g : ℝ → SmoothRiemannianMetric I M}
+    {J : Set ℝ} (hJ : IsOpen J)
+    (hg : ∀ (α : M) (i j : Fin (Module.finrank ℝ E)),
+      ContMDiffOn (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ, ℝ) ∞
+        (fun p : ℝ × M => chartGramMatrix (I := I) (g p.1) α p.2 i j)
+        (J ×ˢ (trivializationAt E (TangentSpace I) α).baseSet))
+    {t : ℝ} (ht : t ∈ J) (x : M) :
+    HasDerivAt (fun s => riemannianVolumeDensity (g s) q x)
+      (-(1 / 2) * traceTimeDerivMetric (I := I) g t x * riemannianVolumeDensity (g t) q x) t := by
+  obtain ⟨g', hg', heq⟩ := exists_metricFamilyRegularAt_eventuallyEq hJ ht hg
+  have hd := hasDerivAt_riemannianVolumeDensity_swap q hg' x
+  rw [traceTimeDerivMetric_eq_of_eventuallyEq heq x, heq.eq_of_nhds] at hd
+  apply hd.congr_of_eventuallyEq
+  filter_upwards [heq] with s hs
+  rw [hs]
 
 end Measure
 end Integral
