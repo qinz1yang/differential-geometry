@@ -492,6 +492,7 @@ import DifferentialGeometry.Analysis.Integration.Measure.Parametric.FiniteIntegr
 import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.Invariance
 import DifferentialGeometry.Analysis.Integration.Measure.Jacobian.Derivative
 import DifferentialGeometry.Analysis.Integration.Measure.Jacobian.ImageIntegralBound
+import DifferentialGeometry.Analysis.Integration.Measure.Jacobian.UniformConvergence
 import DifferentialGeometry.Analysis.Integration.Measure.Estimates.LevelSetDecay
 import DifferentialGeometry.Analysis.Integration.Measure.Chart.L2TargetBound
 import DifferentialGeometry.Analysis.Integration.Measure.Chart.MeasureComparison
