@@ -4542,3 +4542,5 @@ import DifferentialGeometry.Analysis.InnerProductSpace.SpectralBounds
 import DifferentialGeometry.Geometry.Metric.Sphere.DeckGroup
 import DifferentialGeometry.Topology.Covering.FiniteDeckGroup
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.ModelCoverRoundThreeSphere
+import DifferentialGeometry.Geometry.Connection.OrthonormalFrame
+import DifferentialGeometry.Geometry.Connection.ParallelTransport.FrameConnection
