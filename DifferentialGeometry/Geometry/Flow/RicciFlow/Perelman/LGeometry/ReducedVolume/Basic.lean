@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ReducedVolume.Defs
 import DifferentialGeometry.Analysis.Integration.Measure.Parametric.Evaluation
 import DifferentialGeometry.Geometry.Metric.Path.Length
 import DifferentialGeometry.Geometry.Comparison.NormalCoordinates.ExponentialBallPartialDiffeomorph
@@ -33,14 +34,6 @@ private local instance : MeasurableSpace E := borel E
 private local instance : BorelSpace E := ⟨rfl⟩
 private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
-
-noncomputable def redDensity
-    (S : SolutionOn (I := I) (M := M) D) (T : Real) (x y : M)
-    (tau : Real) : Real :=
-  Real.exp
-    (-redLength S T x y tau -
-      ((Module.finrank Real E : Real) / 2) * Real.log tau -
-      ((Module.finrank Real E : Real) / 2) * Real.log (4 * Real.pi))
 
 noncomputable def redVolume
     (S : SolutionOn (I := I) (M := M) D) (T : Real) (x : M)

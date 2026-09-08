@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ReducedLength.Defs
 import DifferentialGeometry.Analysis.Integration.Measure.Differentiation.Rademacher
 import DifferentialGeometry.Geometry.Operator.Scalar.Calculus
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Cost.ChartLipschitz
@@ -556,11 +557,6 @@ theorem lCost_hess_le
       mul_le_mul_of_nonneg_left hJleW (by norm_num)
     _ = 2 * lRegularizedIndex S T (lRegularizedCurve S T x Z) W W
         0 (Real.sqrt tau) := rfl
-
-def redLength
-    (S : SolutionOn (I := I) (M := M) D) (T : Real) (x y : M)
-    (tau : Real) : Real :=
-  lCost S T x y tau / (2 * Real.sqrt tau)
 
 theorem redLength_smooth
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
