@@ -1,4 +1,5 @@
 import DifferentialGeometry.Geometry.Metric.Coordinates.InnerExpansion
+import DifferentialGeometry.Geometry.Metric.Pullback.PartialDiffeomorph.OpenSubtype
 
 set_option autoImplicit false
 
@@ -188,6 +189,11 @@ theorem normalFrame_sqrt (g : SmoothRiemannianMetric I M) (x : M) (v : E) :
           (normalFrame (I := I) g x v)) =
       ‖v‖ := by
   rw [normalFrame_normSq, Real.sqrt_sq (norm_nonneg v)]
+
+theorem normalFrame_restrictOpen
+    (g : SmoothRiemannianMetric I M) (U : TopologicalSpace.Opens M) [T2Space U]
+    (x : U) (v : E) :
+    (normalFrame (g.restrictOpen U) x v : E) = (normalFrame g (x : M) v : E) := rfl
 
 end NormalCoordinates
 end Riemannian

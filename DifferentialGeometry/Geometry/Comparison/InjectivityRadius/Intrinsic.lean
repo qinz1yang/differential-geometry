@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Exponential.Intrinsic.Framed.Coordinates
+import DifferentialGeometry.Geometry.Exponential.Intrinsic.Restriction
 import Mathlib.Data.ENNReal.Real
 
 set_option autoImplicit false
@@ -106,6 +106,41 @@ theorem intrinsicInjOn_ball
       (Metric.ball (0 : E) r) := by
   have h := intrinsicInjOn_eball (I := I) g hEnorm p hr
   rwa [Metric.eball_ofReal] at h
+
+omit [CompleteSpace E] [T2Space (TangentBundle I M)] [ConnectedSpace M] in
+theorem intrinsicInjRadiusSet_restrictOpen
+    (g : SmoothRiemannianMetric I M) (hEnorm : IsMetricNorm g)
+    (U : TopologicalSpace.Opens M) [SigmaCompactSpace U]
+    [RiemannianBundle (fun x : U => TangentSpace I x)]
+    [IsRiemannianManifold I U] [CompleteSpace U]
+    [IsContinuousRiemannianBundle E (fun x : U => TangentSpace I x)]
+    (hUEnorm : IsMetricNorm (g.restrictOpen U)) (x : U) :
+    intrinsicInjRadiusSet (g.restrictOpen U) hUEnorm x =
+      intrinsicInjRadiusSet g hEnorm (x : M) := by
+  ext r
+  change Set.InjOn (intrinsicFramedExp (g.restrictOpen U) hUEnorm x) (Metric.eball 0 r) ↔
+    Set.InjOn (intrinsicFramedExp g hEnorm (x : M)) (Metric.eball 0 r)
+  have heq (v : E) := intrinsicFramedExp_restrictOpen g hEnorm U hUEnorm x v
+  constructor
+  · intro hu v hv w hw hval
+    apply hu hv hw
+    apply Subtype.val_injective
+    exact (heq v).trans (hval.trans (heq w).symm)
+  · intro hm v hv w hw hval
+    apply hm hv hw
+    exact (heq v).symm.trans ((congrArg Subtype.val hval).trans (heq w))
+
+omit [CompleteSpace E] [T2Space (TangentBundle I M)] [ConnectedSpace M] in
+theorem intrinsicInjRadius_restrictOpen
+    (g : SmoothRiemannianMetric I M) (hEnorm : IsMetricNorm g)
+    (U : TopologicalSpace.Opens M) [SigmaCompactSpace U]
+    [RiemannianBundle (fun x : U => TangentSpace I x)]
+    [IsRiemannianManifold I U] [CompleteSpace U]
+    [IsContinuousRiemannianBundle E (fun x : U => TangentSpace I x)]
+    (hUEnorm : IsMetricNorm (g.restrictOpen U)) (x : U) :
+    intrinsicInjRadius (g.restrictOpen U) hUEnorm x = intrinsicInjRadius g hEnorm (x : M) := by
+  unfold intrinsicInjRadius
+  rw [intrinsicInjRadiusSet_restrictOpen g hEnorm U hUEnorm x]
 
 end NormalCoordinates
 end Riemannian

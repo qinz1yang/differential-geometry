@@ -2504,6 +2504,7 @@ import DifferentialGeometry.Geometry.Exponential.PathLifting
 import DifferentialGeometry.Geometry.Exponential.Intrinsic.Geodesic.Basic
 import DifferentialGeometry.Geometry.Exponential.Intrinsic.Geodesic.Continuity
 import DifferentialGeometry.Geometry.Exponential.Intrinsic.Framed.Coordinates
+import DifferentialGeometry.Geometry.Exponential.Intrinsic.Restriction
 import DifferentialGeometry.Geometry.Exponential.Intrinsic.GaussLemma
 import DifferentialGeometry.Geometry.Exponential.Intrinsic.Geodesic.Smoothness
 import DifferentialGeometry.Geometry.Exponential.Intrinsic.Geodesic.ParallelField
