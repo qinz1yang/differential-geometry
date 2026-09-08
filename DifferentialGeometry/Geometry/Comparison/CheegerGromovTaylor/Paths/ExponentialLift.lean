@@ -1,5 +1,6 @@
 import DifferentialGeometry.Geometry.Exponential.Intrinsic.GaussLemma
-import DifferentialGeometry.Topology.Manifold.LocalDiffeomorph.Lift
+import DifferentialGeometry.Geometry.Exponential.PathLifting
+import DifferentialGeometry.Geometry.Exponential.Intrinsic.Agreement
 
 set_option autoImplicit false
 
@@ -166,7 +167,6 @@ theorem exists_intr_lift
     (hab : a ≤ b)
     (hγ : ContMDiffOn 𝓘(Real, Real) I 1 γ (Set.Icc a b))
     (hγa : γ a = p)
-    (hR : 0 < R)
     (hlen :
       Manifold.pathELength I γ a b < ENNReal.ofReal R)
     (hloc :
@@ -174,68 +174,21 @@ theorem exists_intr_lift
         (intrinsicFramedExp (I := I) g hEnorm p)
         (Metric.ball (0 : E) R)) :
     Nonempty (IntrinsicFrameLift (I := I) g hEnorm p γ a b) := by
-  let ell : Real := (Manifold.pathELength I γ a b).toReal
-  have hfin : Manifold.pathELength I γ a b ≠ ⊤ := hlen.ne_top
-  have hellR : ell < R := by
-    exact (ENNReal.lt_ofReal_iff_toReal_lt hfin).mp hlen
-  have hK : IsCompact (Metric.closedBall (0 : E) ell) :=
-    isCompact_closedBall _ _
-  have hKU :
-      Metric.closedBall (0 : E) ell ⊆ Metric.ball (0 : E) R := by
-    intro z hz
-    rw [Metric.mem_closedBall, dist_zero_right] at hz
-    rw [Metric.mem_ball, dist_zero_right]
-    exact hz.trans_lt hellR
-  have hzero : (0 : E) ∈ Metric.ball (0 : E) R := by
-    simpa only [Metric.mem_ball, dist_self] using hR
-  have hstart :
-      intrinsicFramedExp (I := I) g hEnorm p 0 = γ a := by
-    rw [intrinsicFrame_zero, hγa]
-  have hfence :
-      ∀ {t : Real}, t ∈ Set.Icc a b →
-        ∀ {η : Real → E},
-          isLiftOn
-            (intrinsicFramedExp (I := I) g hEnorm p)
-            γ (Metric.ball (0 : E) R) 0 a t η →
-          η t ∈ Metric.closedBall (0 : E) ell := by
-    intro t ht η hη
-    have hsub : Set.Icc a t ⊆ Set.Icc a b :=
-      Set.Icc_subset_Icc le_rfl ht.2
-    have hηcd : ContDiffOn Real 1 η (Set.Icc a t) :=
-      hη.contDiffOn hloc (hγ.mono hsub)
-    have hrad :
-        ENNReal.ofReal ‖η t‖ ≤
-          Manifold.pathELength I
-            ((intrinsicFramedExp (I := I) g hEnorm p) ∘ η) a t :=
-      intrinsicLift_norm_le (J := I) g hEnorm p ht.1 hη.2.1 hηcd
-    have hlift :
-        Manifold.pathELength I
-            ((intrinsicFramedExp (I := I) g hEnorm p) ∘ η) a t =
-          Manifold.pathELength I γ a t := by
-      apply Manifold.pathELength_congr
-      intro s hs
-      exact (hη.2.2 s hs).2
-    have hmono :
-        Manifold.pathELength I γ a t ≤
-          Manifold.pathELength I γ a b :=
-      Manifold.pathELength_mono le_rfl ht.2
-    have hchain :
-        ENNReal.ofReal ‖η t‖ ≤
-          Manifold.pathELength I γ a b := by
-      calc
-        ENNReal.ofReal ‖η t‖
-            ≤ Manifold.pathELength I
-                ((intrinsicFramedExp (I := I) g hEnorm p) ∘ η) a t := hrad
-        _ = Manifold.pathELength I γ a t := hlift
-        _ ≤ Manifold.pathELength I γ a b := hmono
-    have hreal :=
-      (ENNReal.toReal_le_toReal ENNReal.ofReal_ne_top hfin).mpr hchain
-    rw [Metric.mem_closedBall, dist_zero_right]
-    simpa only [ell, ENNReal.toReal_ofReal (norm_nonneg _)] using hreal
-  obtain ⟨η, hη⟩ :=
-    isLiftOn.exists_of_compact hab (Metric.isOpen_ball)
-      hloc hγ.continuousOn hzero hstart hK hKU hfence
-  refine ⟨{
+  have hagree : framedExpMap (I := I) g p = intrinsicFramedExp (I := I) g hEnorm p := by
+    funext z
+    rw [framedExpMap_apply, intrinsicFrame_apply, expMap_eq_expMapIntrinsic g hEnorm p]
+  have hdom : ∀ z ∈ Metric.ball (0 : E) R,
+      normalFrame (I := I) g p z ∈ expDomain (I := I) g p := by
+    intro z _
+    rw [expDomain_eq_univ_of_completeSpace g hEnorm p]
+    exact mem_univ _
+  have hloc' : IsLocalDiffeomorphOn 𝓘(Real, E) I ∞
+      (framedExpMap (I := I) g p) (Metric.ball (0 : E) R) := by
+    rw [hagree]
+    exact hloc
+  obtain ⟨η, hη⟩ := exists_isLiftOn_framedExpMap g hEnorm p hab hγ hγa hlen hdom hloc'
+  rw [hagree] at hη
+  exact ⟨{
     toFun := η
     contDiff := hη.contDiffOn hloc hγ
     start := hη.2.1

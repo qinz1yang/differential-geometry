@@ -2479,6 +2479,7 @@ import DifferentialGeometry.Geometry.Exponential.NormalCoordinates.Framed
 import DifferentialGeometry.Geometry.Exponential.GaussLemma.Basic
 import DifferentialGeometry.Geometry.Exponential.GaussLemma.Pullback
 import DifferentialGeometry.Geometry.Exponential.GaussLemma.Framed
+import DifferentialGeometry.Geometry.Exponential.PathLifting
 import DifferentialGeometry.Geometry.Exponential.Intrinsic.Geodesic.Basic
 import DifferentialGeometry.Geometry.Exponential.Intrinsic.Geodesic.Continuity
 import DifferentialGeometry.Geometry.Exponential.Intrinsic.Framed.Coordinates

@@ -157,7 +157,7 @@ theorem exists_fiber_inj
         (IntrinsicFrameLift (I := I) g hEnorm p (path u).extend 0 1) :=
     exists_intr_lift (I := I) g hEnorm p zero_le_one
       (hpathFlat u).c1.contMDiffOn (by simp)
-      hR (hpathR u) hloc
+      (hpathR u) hloc
   let lift (u : intrinsicFiber (I := I) g hEnorm p p r₀) :
       IntrinsicFrameLift (I := I) g hEnorm p (path u).extend 0 1 :=
     Classical.choice (hex u)

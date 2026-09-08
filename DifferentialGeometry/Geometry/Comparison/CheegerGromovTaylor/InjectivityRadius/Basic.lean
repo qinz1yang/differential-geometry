@@ -448,7 +448,7 @@ private theorem collision_ge_cheeger_gromov_taylor_on
       Nonempty (IntrinsicFrameLift (I := I) g hEnorm p c.extend 0 1) :=
     exists_intr_lift (I := I) g hEnorm p zero_le_one
       hc.c1.contMDiffOn (by simp only [c, Path.extend_zero])
-      hR hcR hloc
+      hcR hloc
   let A : IntrinsicFrameLift (I := I) g hEnorm p c.extend 0 1 :=
     Classical.choice hex
   have hpuR :

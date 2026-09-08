@@ -74,7 +74,7 @@ theorem exists_lift_family
         (IntrinsicFrameLift (I := I) g hEnorm x
           (F.hom.eval t).extend 0 1) :=
     exists_intr_lift (I := I) g hEnorm x zero_le_one
-      (hcd t) (hstart t) hR (hlen t) hloc
+      (hcd t) (hstart t) (hlen t) hloc
   let lift :
       (t : unitInterval) →
         IntrinsicFrameLift (I := I) g hEnorm x

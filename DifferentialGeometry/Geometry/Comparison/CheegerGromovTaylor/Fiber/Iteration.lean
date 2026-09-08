@@ -107,7 +107,7 @@ theorem exists_loopLift
   exact exists_intr_lift (I := I) g hEnorm p zero_le_one
     (loopRadial_flat (I := I) g hEnorm p c hc (z : E)).c1.contMDiffOn
     (by simp only [Path.extend_zero, loopRadial])
-    hR hlenR hloc
+    hlenR hloc
 
 noncomputable def loopTransportLift
     (g : SmoothRiemannianMetric I M)
