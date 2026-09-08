@@ -323,9 +323,7 @@ theorem exists_metric_reference_change_delta (p : ℕ) {ε : ℝ} (hε : 0 < ε)
 omit [I.Boundaryless] in
 theorem metric_deriv_norm_reference_change_le
     {N : Type u} [TopologicalSpace N] [ChartedSpace H N]
-    [T2Space N] [IsManifold I ∞ N] [SigmaCompactSpace N]
-    [IsManifold I 1 N] [IsManifold I 2 N]
-    [IsManifold I ((∞ : WithTop ℕ∞) + 1) N]
+    [T2Space N] [IsManifold I ∞ N]
     {u : Set N} (hu : IsOpen u)
     (A gInf gBase : SmoothRiemannianMetric I N)
     (p : ℕ) {δ ε : ℝ} (hδ0 : 0 ≤ δ) (hδ1 : δ ≤ 1)
@@ -337,7 +335,6 @@ theorem metric_deriv_norm_reference_change_le
       metricDerivNorm (I := I) q gInf gBase gBase x ≤ δ)
     (x : N) (hx : x ∈ u) (q : ℕ) (hqp : q ≤ p) :
     metricDerivNorm (I := I) q A gInf gInf x ≤ ε := by
-  let _ := (inferInstance : (SigmaCompactSpace N))
   classical
   have hBaseNN (y : N) (v : TangentSpace I y) : 0 ≤ gBase.inner y v v := by
     by_cases hv : v = 0
