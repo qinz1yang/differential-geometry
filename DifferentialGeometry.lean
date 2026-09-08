@@ -3192,6 +3192,7 @@ import DifferentialGeometry.Topology.Homotopy.Interval
 import DifferentialGeometry.Topology.Morse.CellAttachment
 import DifferentialGeometry.Topology.Morse.BoundaryGraph
 import DifferentialGeometry.Topology.Morse.BoundaryIsotopy
+import DifferentialGeometry.Topology.Morse.BoundaryChart
 import DifferentialGeometry.Topology.Morse.BoundaryPerturbation
 import DifferentialGeometry.Topology.Morse.BoundaryRegularVectorField
 import DifferentialGeometry.Topology.Morse.CriticalSet
