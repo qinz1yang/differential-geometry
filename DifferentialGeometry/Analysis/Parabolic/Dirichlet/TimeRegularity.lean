@@ -18,73 +18,6 @@ open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
 
-private theorem fderiv_spatial_slice_apply
-    {d : ℕ} {φ : ℝ × EuclideanSpace ℝ (Fin d) → ℝ}
-    (hφ : Differentiable ℝ φ) (t : ℝ) (x v : EuclideanSpace ℝ (Fin d)) :
-    fderiv ℝ (fun y => φ (t, y)) x v = fderiv ℝ φ (t, x) (0, v) := by
-  have h := (hφ (t, x)).hasFDerivAt.comp x
-    ((hasFDerivAt_const t x).prodMk (hasFDerivAt_id x))
-  exact congrArg (fun L => L v) h.fderiv
-
-private theorem weak_form_integrand_eq
-    {ι κ : Type*} [Fintype ι] [Fintype κ]
-    (ρ U dtφ φ τ a : ℝ) (DU B : ι → ℝ) (A : ι → κ → ℝ) (dφ : κ → ℝ) :
-    ρ * (U * dtφ) +
-      (ρ * ((1 / 2 : ℝ) * τ * (U * φ)) -
-        (∑ i, DU i * ((∑ j, A i j * dφ j) * ρ - B i * ρ * φ)) -
-        ρ * U * (a * φ)) =
-    ρ * U * dtφ + ((∑ i, ρ * B i * DU i) + ρ * ((1 / 2 : ℝ) * τ - a) * U) * φ -
-      ∑ i, ∑ j, ρ * A i j * DU i * dφ j := by
-  have hq : (∑ i, DU i * (∑ j, A i j * dφ j) * ρ) =
-      ∑ i, ∑ j, ρ * A i j * DU i * dφ j := by
-    apply Finset.sum_congr rfl
-    intro i hi
-    rw [Finset.mul_sum, Finset.sum_mul]
-    apply Finset.sum_congr rfl
-    intro j hj
-    ring
-  have hb : (∑ i, DU i * (B i * ρ * φ)) = (∑ i, ρ * B i * DU i) * φ := by
-    rw [Finset.sum_mul]
-    apply Finset.sum_congr rfl
-    intro i hi
-    ring
-  simp only [mul_sub, Finset.sum_sub_distrib]
-  have hq' : (∑ i, DU i * ((∑ j, A i j * dφ j) * ρ)) =
-      ∑ i, ∑ j, ρ * A i j * DU i * dφ j := by
-    simpa only [mul_assoc] using hq
-  rw [hq', hb]
-  ring
-
-private theorem integral_eq_neg_integral_of_divergence
-    {P ι κ : Type*} [MeasurableSpace P] [Fintype ι] [Fintype κ]
-    {μ : Measure P} {f ℓ r g φ : P → ℝ} {Q : ι → κ → P → ℝ}
-    (hf : Integrable f μ) (hr : Integrable (fun p => r p * φ p) μ)
-    (hg : Integrable (fun p => g p * φ p) μ)
-    (hQ : ∀ i j, Integrable (Q i j) μ)
-    (hrg : r =ᵐ[μ] fun p => g p + ℓ p)
-    (hweak : (∫ p, f p + ℓ p * φ p - ∑ i, ∑ j, Q i j p ∂μ) = 0)
-    (hdiv : (∫ p, g p * φ p ∂μ) = -∑ i, ∑ j, ∫ p, Q i j p ∂μ) :
-    (∫ p, f p ∂μ) = -(∫ p, r p * φ p ∂μ) := by
-  have hsum (i) : Integrable (fun p => ∑ j, Q i j p) μ :=
-    integrable_finsetSum Finset.univ fun j _ => hQ i j
-  have hall : Integrable (fun p => ∑ i, ∑ j, Q i j p) μ :=
-    integrable_finsetSum Finset.univ fun i _ => hsum i
-  have hℓ : (fun p => ℓ p * φ p) =ᵐ[μ] fun p => r p * φ p - g p * φ p := by
-    filter_upwards [hrg] with p hp
-    rw [hp]
-    ring
-  have hℓint : Integrable (fun p => ℓ p * φ p) μ := (hr.sub hg).congr hℓ.symm
-  have hadd : Integrable (fun p => f p + ℓ p * φ p) μ := hf.add hℓint
-  rw [integral_sub hadd hall, integral_add hf hℓint,
-    integral_congr_ae hℓ, integral_sub hr hg,
-    integral_finsetSum Finset.univ (fun i _ => hsum i)] at hweak
-  have hs : (∑ i, ∫ p, ∑ j, Q i j p ∂μ) = ∑ i, ∑ j, ∫ p, Q i j p ∂μ := by
-    apply Finset.sum_congr rfl
-    intro i hi
-    exact integral_finsetSum Finset.univ (fun j _ => hQ i j)
-  rw [hs] at hweak
-  linarith
-
 variable {n : ℕ} [NeZero n]
 variable {M : Type*} [TopologicalSpace M]
   [ChartedSpace (EuclideanHalfSpace n) M]
@@ -246,60 +179,30 @@ theorem IsWeakEvolutionSolution.exists_lp_weak_time_deriv_density
     α hΩ hΩc hΩs hXsmooth ht₀ ht₁ hΩ₀ hΩ₀Ω
   refine ⟨R, ?_⟩
   intro φ hφ hφc hφs
-  have hsub : Ω₀ ⊆ Ω := subset_closure.trans hΩ₀Ω
-  have hΩ₀c : IsCompact (closure Ω₀) :=
-    hΩc.of_isClosed_subset isClosed_closure (hΩ₀Ω.trans subset_closure)
   let ν := μ.prod (volume.restrict Ω₀)
-  let : IsFiniteMeasure (volume.restrict Ω₀) := by
-    refine ⟨?_⟩
-    rw [Measure.restrict_apply MeasurableSet.univ, univ_inter]
-    exact (measure_mono subset_closure).trans_lt hΩ₀c.measure_lt_top
-  have hmeasure : ν ≤ (timeMeasure T).prod (volume.restrict Ω) :=
-    Measure.prod_mono Measure.restrict_le_self (Measure.restrict_mono hsub le_rfl)
-  have hρ : MemLp ρ ∞ ν := by
-    have h := MetricExtension.densityOnEuclid_family_memLp_top hG isCompact_Icc hreg α
-      hΩ.measurableSet hΩc (hΩs.trans (image_mono interior_subset)) (volume.prod volume)
-    rw [← Measure.prod_restrict] at h
-    exact h.mono_measure hmeasure
-  have hA (i j) : MemLp (A i j) ∞ ν := by
-    have h := MetricExtension.weightedInvGramOnEuclid_family_memLp_top hG isCompact_Icc hreg α
-      hΩ.measurableSet hΩc (hΩs.trans (image_mono interior_subset)) i j (volume.prod volume)
-    rw [← Measure.prod_restrict] at h
-    exact h.mono_measure hmeasure
-  have hU : MemLp U 2 ν := (Lp.memLp U).mono_measure hmeasure
-  have hV (i) : MemLp (V i) 2 ν := (Lp.memLp (V i)).mono_measure hmeasure
-  have hφLp : MemLp φ ∞ ν := hφ.continuous.memLp_top_of_hasCompactSupport hφc ν
-  have hdLp (v) : MemLp (fun p => fderiv ℝ φ p v) ∞ ν :=
-    ((hφ.continuous_fderiv (by norm_num)).clm_apply continuous_const).memLp_top_of_hasCompactSupport
-      (hφc.fderiv_apply ℝ v) ν
-  have htime : Integrable (fun p => ρ p * U p * fderiv ℝ φ p (1, 0)) ν :=
-    (((hdLp (1, 0)).mul (r := 2) (hU.mul (r := 2) hρ))).integrable (by norm_num)
-  have hRφ : Integrable (fun p => R p * φ p) ν :=
-    (hφLp.mul (r := 2) (Lp.memLp R)).integrable (by norm_num)
-  have hFφ : Integrable (fun p => F p * φ p) ν :=
-    (hφLp.mul (r := 2) (Lp.memLp F)).integrable (by norm_num)
-  have hQ (i j) : Integrable (fun p => A i j p * V i p *
-      fderiv ℝ φ p (0, EuclideanSpace.single j 1)) ν :=
-    ((hdLp (0, EuclideanSpace.single j 1)).mul (r := 2) ((hV i).mul (r := 2) (hA i j))).integrable
-      (by norm_num)
-  have hdiv := hF φ hφ hφc (hφs.trans (Set.prod_mono (subset_univ _) Subset.rfl))
-  let ℓ := fun p => (∑ i, ρ p * B i p * V i p) + ρ p *
+  let L := fun p => (∑ i, ρ p * B i p * V i p) + ρ p *
     ((1 / 2 : ℝ) * traceTimeDerivMetric (I := I_hs) G.metric p.1 (x p.2) - a p.1) * U p
-  have hRae : R =ᵐ[ν] fun p => F p + ℓ p := by
+  have hRφ : Integrable (fun p => R p * φ p) ν :=
+    ((Lp.memLp R).locallyIntegrable (by norm_num)).integrable_smul_right_of_hasCompactSupport
+      hφ.continuous hφc
+  have hFφ : Integrable (fun p => F p * φ p) ν :=
+    ((Lp.memLp F).locallyIntegrable (by norm_num)).integrable_smul_right_of_hasCompactSupport
+      hφ.continuous hφc
+  have hL : (fun p => L p * φ p) =ᵐ[ν] fun p => R p * φ p - F p * φ p := by
     filter_upwards [hR] with p hp
-    exact hp.trans (add_assoc _ _ _)
-  have hw := hu.integral_spacetime_test_interior hXcont hacont α hΩ hΩc hΩs hφ hφc
-    hΩ₀.measurableSet hsub ht₀ ht₁ hφs
-  have hweak : (∫ p, ρ p * U p * fderiv ℝ φ p (1, 0) + ℓ p * φ p -
-      ∑ i, ∑ j, A i j p * V i p * fderiv ℝ φ p (0, EuclideanSpace.single j 1) ∂ν) = 0 := by
-    convert hw using 1
-    apply integral_congr_ae
-    filter_upwards [] with p
-    dsimp only [ℓ, ρ, A, B, U, V, x]
-    rw [weak_form_integrand_eq]
-    simp only [fderiv_spatial_slice_apply (hφ.differentiable (by norm_num))]
-    rfl
-  exact integral_eq_neg_integral_of_divergence htime hRφ hFφ hQ hRae hweak hdiv
+    rw [hp]
+    dsimp only [L]
+    ring
+  have hLint : (∫ p, L p * φ p ∂ν) =
+      (∫ p, R p * φ p ∂ν) - ∫ p, F p * φ p ∂ν := by
+    rw [integral_congr_ae hL, integral_sub hRφ hFφ]
+  have hbase := hu.integral_spacetime_test_divergence hXcont hacont α hΩ hΩc hΩs hφ hφc
+    hΩ₀.measurableSet (subset_closure.trans hΩ₀Ω) ht₀ ht₁ hφs
+  change (∫ p, ρ p * U p * fderiv ℝ φ p (1, 0) ∂ν) =
+    (∑ i, ∑ j, ∫ p, A i j p * V i p *
+      fderiv ℝ φ p (0, EuclideanSpace.single j 1) ∂ν) - ∫ p, L p * φ p ∂ν at hbase
+  have hdiv := hF φ hφ hφc (hφs.trans (Set.prod_mono (subset_univ _) Subset.rfl))
+  linarith
 
 
 local notation "EuN" => EuclideanSpace ℝ (Fin n)

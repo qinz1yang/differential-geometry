@@ -4737,5 +4737,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Uhlenbeck.Curvatur
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.CylinderProduct
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.WeakDerivativeLift
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.SpatialLowerSource
+import DifferentialGeometry.Analysis.Parabolic.Dirichlet.SpatialGradientEquation
+import DifferentialGeometry.Analysis.Parabolic.Dirichlet.GradientH1
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureOperatorRankScaling
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Soliton.CurvatureRank

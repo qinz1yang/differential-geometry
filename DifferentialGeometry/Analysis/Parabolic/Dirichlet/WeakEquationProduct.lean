@@ -436,4 +436,142 @@ theorem IsWeakEvolutionSolution.integral_spacetime_test_interior
   exact hloc.symm.trans hw
 
 
+private theorem weak_form_integrand_eq
+    {ι κ : Type*} [Fintype ι] [Fintype κ]
+    (ρ U dtφ φ τ a : ℝ) (DU B : ι → ℝ) (A : ι → κ → ℝ) (dφ : κ → ℝ) :
+    ρ * (U * dtφ) +
+      (ρ * ((1 / 2 : ℝ) * τ * (U * φ)) -
+        (∑ i, DU i * ((∑ j, A i j * dφ j) * ρ - B i * ρ * φ)) -
+        ρ * U * (a * φ)) =
+    ρ * U * dtφ + ((∑ i, ρ * B i * DU i) + ρ * ((1 / 2 : ℝ) * τ - a) * U) * φ -
+      ∑ i, ∑ j, ρ * A i j * DU i * dφ j := by
+  have hq : (∑ i, DU i * (∑ j, A i j * dφ j) * ρ) =
+      ∑ i, ∑ j, ρ * A i j * DU i * dφ j := by
+    apply Finset.sum_congr rfl
+    intro i hi
+    rw [Finset.mul_sum, Finset.sum_mul]
+    apply Finset.sum_congr rfl
+    intro j hj
+    ring
+  have hb : (∑ i, DU i * (B i * ρ * φ)) = (∑ i, ρ * B i * DU i) * φ := by
+    rw [Finset.sum_mul]
+    apply Finset.sum_congr rfl
+    intro i hi
+    ring
+  simp only [mul_sub, Finset.sum_sub_distrib]
+  have hq' : (∑ i, DU i * ((∑ j, A i j * dφ j) * ρ)) =
+      ∑ i, ∑ j, ρ * A i j * DU i * dφ j := by
+    simpa only [mul_assoc] using hq
+  rw [hq', hb]
+  ring
+
+theorem IsWeakEvolutionSolution.integral_spacetime_test_divergence
+    {q : SmoothRiemannianMetric I_hs M}
+    {D : RealTimeInterval}
+    {G : MetricConnectionFamilyOn (I := I_hs) (M := M) D}
+    {hG : MetricFamilySmoothOn (I := I_hs) (M := M) D G.metric}
+    {T : ℝ} {hT : 0 ≤ T} {hreg : Icc (0 : ℝ) T ⊆ D.regular}
+    {X : ℝ → Cₛ^∞⟮I_hs; EuclideanSpace ℝ (Fin n),
+      (TangentSpace I_hs : M → Type _)⟯}
+    (hXcont : ContinuousOn
+      (fun p : ℝ × M ↦
+        (TotalSpace.mk' (EuclideanSpace ℝ (Fin n)) p.2 (X p.1 p.2) :
+          TangentBundle I_hs M))
+      (Icc (0 : ℝ) T ×ˢ (Set.univ : Set M)))
+    {a : ℝ → ℝ} (hacont : ContinuousOn a (Icc (0 : ℝ) T))
+    {Bx Bv : ℝ}
+    {hX : ∀ t ∈ Ico (0 : ℝ) T, ∀ x : M,
+      (G.metric t).inner x (X t x) (X t x) ≤ Bx}
+    {htrace : ∀ t ∈ Ico (0 : ℝ) T, ∀ x : M,
+      |traceTimeDerivMetric (I := I_hs) G.metric t x| ≤ Bv}
+    {f₀ : Lp ℝ 2
+      (riemannianVolumeMeasure (I := I_hs) (M := M) q)}
+    {u : timeL2 (H1ComplDirichlet q) T}
+    (hu : IsWeakEvolutionSolution hG hT hreg X a Bx Bv
+      hX htrace f₀ u)
+    (α : M) {Ω : Set EuStd}
+    (hΩ : IsOpen Ω) (hΩc : IsCompact (closure Ω))
+    (hΩs : closure Ω ⊆ toEuclidean (E := EuN) '' interior (extChartAt I_hs α).target)
+    {φ : ℝ × EuStd → ℝ}
+    (hφ : ContDiff ℝ ∞ φ) (hφc : HasCompactSupport φ)
+    {Ω₀ : Set EuStd} (hΩ₀ : MeasurableSet Ω₀) (hΩ₀Ω : Ω₀ ⊆ Ω)
+    {t₀ t₁ : ℝ} (ht₀ : 0 < t₀) (ht₁ : t₁ < T)
+    (hφi : tsupport φ ⊆ Ioo t₀ t₁ ×ˢ Ω₀) :
+    let x := fun z : EuStd => (extChartAt I_hs α).symm ((toEuclidean (E := EuN)).symm z)
+    let ρ := fun (p : ℝ × EuStd) => densityOnEuclid (I := I_hs) (G.metric p.1) α p.2
+    let A := fun i j (p : ℝ × EuStd) =>
+      weightedInvGramOnEuclid (I := I_hs) (G.metric p.1) α i j p.2
+    let B := fun i (p : ℝ × EuStd) =>
+      chartCoeffOnE (I := I_hs) α (X p.1) i ((toEuclidean (E := EuN)).symm p.2)
+    let U := dirichletLocalSpacetimeLp q α hΩ.measurableSet hΩc
+      (hΩs.trans (image_mono interior_subset)) (timeMeasure T) u
+    let V := fun i => dirichletLocalSpacetimeWeakPartialLp q α hΩ hΩc hΩs (timeMeasure T) i u
+    let L := fun p => (∑ i, ρ p * B i p * V i p) +
+      ρ p * ((1 / 2 : ℝ) * traceTimeDerivMetric (I := I_hs) G.metric p.1 (x p.2) - a p.1) * U p
+    let ν := (((timeMeasure T).restrict (Icc t₀ t₁)).prod (volume.restrict Ω₀))
+    (∫ p, ρ p * U p * fderiv ℝ φ p (1, 0) ∂ν) =
+      (∑ i, ∑ j, ∫ p, A i j p * V i p *
+        fderiv ℝ φ p (0, EuclideanSpace.single j 1) ∂ν) - ∫ p, L p * φ p ∂ν := by
+  intro x ρ A B U V L ν
+  let Q := fun i j p => A i j p * V i p * fderiv ℝ φ p (0, EuclideanSpace.single j 1)
+  let f := fun p : ℝ × EuStd => ρ p * (U p * fderiv ℝ φ p (1, 0)) +
+      (ρ p * ((1 / 2 : ℝ) * traceTimeDerivMetric (I := I_hs) G.metric p.1 (x p.2) *
+          (U p * φ p)) -
+        (∑ i : Fin (Module.finrank ℝ EuN), V i p *
+          ((∑ j : Fin (Module.finrank ℝ EuN), invGramOnEuclid (I := I_hs) (G.metric p.1) α i j p.2 *
+            fderiv ℝ (fun y => φ (p.1, y)) p.2 (EuclideanSpace.single j 1)) * ρ p -
+              B i p * ρ p * φ p)) -
+        ρ p * U p * (a p.1 * φ p))
+  have hmeasure : ν ≤ (timeMeasure T).prod (volume.restrict Ω) :=
+    Measure.prod_mono Measure.restrict_le_self (Measure.restrict_mono hΩ₀Ω le_rfl)
+  let : IsFiniteMeasure (volume.restrict Ω₀) := by
+    refine ⟨?_⟩
+    rw [Measure.restrict_apply MeasurableSet.univ, univ_inter]
+    exact (measure_mono (hΩ₀Ω.trans subset_closure)).trans_lt hΩc.measure_lt_top
+  obtain ⟨_, h₀, h₁, h₂, h₃⟩ := local_spacetime_weak_form_terms_memLp hG hreg X α
+    (hXcont.mono (Set.prod_mono Subset.rfl (subset_univ _))) hacont
+    hΩ.measurableSet hΩc (hΩs.trans (image_mono interior_subset)) φ
+    (hφ.of_le (by simp)) U V
+  have htime : Integrable (fun p => ρ p * U p * fderiv ℝ φ p (1, 0)) ν := by
+    simpa only [ρ, densityOnEuclid, chartDensityOnE, mul_assoc] using (h₀.mono_measure hmeasure).integrable (by norm_num)
+  have hf : Integrable f ν :=
+    ((h₀.add ((h₁.sub (memLp_finsetSum Finset.univ (fun i _ => h₂ i))).sub h₃)).mono_measure
+      hmeasure).integrable (by norm_num)
+  have hA (i j) : MemLp (A i j) ∞ ν := by
+    have hb := weightedInvGramOnEuclid_family_memLp_top hG isCompact_Icc hreg α
+      hΩ.measurableSet hΩc (hΩs.trans (image_mono interior_subset)) i j (volume.prod volume)
+    rw [← Measure.prod_restrict] at hb
+    exact hb.mono_measure hmeasure
+  have hQ (i j) : Integrable (Q i j) ν := by
+    have hd : MemLp (fun p => fderiv ℝ φ p (0, EuclideanSpace.single j 1)) ∞ ν :=
+      ((hφ.continuous_fderiv (by norm_num)).clm_apply continuous_const).memLp_top_of_hasCompactSupport
+        (hφc.fderiv_apply ℝ (0, EuclideanSpace.single j 1)) ν
+    exact (hd.mul (r := 2) (((Lp.memLp (V i)).mono_measure hmeasure).mul (r := 2) (hA i j))).integrable
+      (by norm_num)
+  have hQsum : Integrable (fun p => ∑ i, ∑ j, Q i j p) ν :=
+    integrable_finsetSum Finset.univ fun i _ => integrable_finsetSum Finset.univ fun j _ => hQ i j
+  have heq (p) : f p = ρ p * U p * fderiv ℝ φ p (1, 0) + L p * φ p - ∑ i, ∑ j, Q i j p := by
+    dsimp only [f, L, Q, ρ, A, B, U, V, x]
+    rw [weak_form_integrand_eq]
+    simp only [fderiv_spatial_slice_apply (hφ.differentiable (by norm_num))]
+    rfl
+  have hL : Integrable (fun p => L p * φ p) ν := by
+    refine ((hf.add hQsum).sub htime).congr (Filter.Eventually.of_forall fun p => ?_)
+    change f p + (∑ i, ∑ j, Q i j p) - ρ p * U p * fderiv ℝ φ p (1, 0) = L p * φ p
+    rw [heq]
+    ring
+  have hw := hu.integral_spacetime_test_interior hXcont hacont α hΩ hΩc hΩs hφ hφc
+    hΩ₀ hΩ₀Ω ht₀ ht₁ hφi
+  change (∫ p, f p ∂ν) = 0 at hw
+  simp_rw [heq] at hw
+  have htimeL : Integrable (fun p => ρ p * U p * fderiv ℝ φ p (1, 0) + L p * φ p) ν := htime.add hL
+  rw [integral_sub htimeL hQsum, integral_add htime hL,
+    integral_finsetSum Finset.univ (fun i _ => integrable_finsetSum Finset.univ (fun j _ => hQ i j))] at hw
+  have hsum : (∑ i, ∫ p, ∑ j, Q i j p ∂ν) = ∑ i, ∑ j, ∫ p, Q i j p ∂ν := by
+    apply Finset.sum_congr rfl
+    intro i hi
+    exact integral_finsetSum Finset.univ (fun j _ => hQ i j)
+  rw [hsum] at hw
+  linarith
+
 end DifferentialGeometry.Analysis.Parabolic.Dirichlet
