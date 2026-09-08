@@ -634,6 +634,7 @@ import DifferentialGeometry.Analysis.Parabolic.AbstractSemigroup.Spectral.Semigr
 import DifferentialGeometry.Analysis.Parabolic.AbstractSemigroup.Spectral.SemigroupContinuity
 import DifferentialGeometry.Analysis.Parabolic.AbstractSemigroup.Spectral.SemigroupLaw
 import DifferentialGeometry.Analysis.Parabolic.ConditionStability
+import DifferentialGeometry.Analysis.Parabolic.Operator
 import DifferentialGeometry.Analysis.Parabolic.DeTurckLinearization.PrincipalSymbol.Remainder
 import DifferentialGeometry.Analysis.Parabolic.DeTurckLinearization.PrincipalSymbol.SecondOrder
 import DifferentialGeometry.Analysis.Parabolic.DeTurckLinearization.PrincipalSymbol.Basic

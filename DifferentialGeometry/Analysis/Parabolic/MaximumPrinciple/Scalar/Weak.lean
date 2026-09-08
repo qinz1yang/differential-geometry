@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Operator.Family.Basic
+import DifferentialGeometry.Analysis.Parabolic.Operator
 import DifferentialGeometry.Analysis.Parabolic.ScalarHeat.TimeDependent
 import Mathlib.Analysis.Calculus.Deriv.Mul
 import Mathlib.Analysis.SpecialFunctions.ExpDeriv
@@ -27,23 +27,6 @@ noncomputable section
 
 def spacetimeSlab (T : Real) : Set (Real × M) :=
   Set.Icc 0 T ×ˢ Set.univ
-
-
-def parabolicOperatorWithDrift
-    (G : MetricConnectionFamily (I := I) (M := M) Real)
-    (T : Real) (X : Real -> (x : M) -> TangentSpace I x)
-    (u : Real -> M -> Real) (t : Real) (x : M) : Real :=
-  derivWithin (fun s : Real => u s x) (Set.Icc 0 T) t -
-    heatOperatorWithDrift (I := I) G t (X t) (u t) x
-
-@[simp] theorem parabolicOperatorWithDrift_eq
-    (G : MetricConnectionFamily (I := I) (M := M) Real)
-    (T : Real) (X : Real -> (x : M) -> TangentSpace I x)
-    (u : Real -> M -> Real) (t : Real) (x : M) :
-    parabolicOperatorWithDrift (I := I) G T X u t x =
-      derivWithin (fun s : Real => u s x) (Set.Icc 0 T) t -
-        heatOperatorWithDrift (I := I) G t (X t) (u t) x := by
-  rfl
 
 
 theorem parabolic_const_sub
@@ -271,122 +254,37 @@ theorem parabolic_sum
         (fun a y => ∑ i ∈ s, u i a y) t x =
       ∑ i ∈ s, parabolicOperatorWithDrift (I := I) G T X (u i) t x := by
   classical
-  have hgrad_sum : ∀ (r : Finset κ),
-      (∀ i ∈ r, ∀ y : M, MDifferentiableAt I 𝓘(Real, Real) (u i t) y) ->
-      (∀ i ∈ r, ∀ y : M, MDiffAt (T% fun z : M =>
-        gradientFun (I := I) (G.metric t) (u i t) z) y) ->
-      ∀ y : M, MDiffAt (T% fun z : M =>
-        gradientFun (I := I) (G.metric t)
-          (fun w : M => ∑ i ∈ r, u i t w) z) y := by
-    intro r hr_space hr_grad y
-    have hplain :
-        (fun z : M => gradientFun (I := I) (G.metric t)
-          (fun w : M => ∑ i ∈ r, u i t w) z) =
-        (fun z : M => ∑ i ∈ r,
-          gradientFun (I := I) (G.metric t) (u i t) z) := by
-      funext z
-      have hfunc :
-          (fun w : M => ∑ i ∈ r, u i t w) = ∑ i ∈ r, u i t := by
-        funext w
-        simp only [Finset.sum_apply]
-      rw [hfunc]
-      exact gradientFun_sum (I := I) (G.metric t) r
-        (f := fun i => u i t) (x := z)
-        (fun i hi => by simpa only using hr_space i hi z)
-    have hsection :
-        (T% fun z : M => gradientFun (I := I) (G.metric t)
-          (fun w : M => ∑ i ∈ r, u i t w) z) =
-        (T% fun z : M => ∑ i ∈ r,
-          gradientFun (I := I) (G.metric t) (u i t) z) := by
-      funext z
-      exact congrArg (fun v =>
-        (⟨z, v⟩ : TotalSpace E (TangentSpace I : M -> Type _)))
-        (congrFun hplain z)
-    rw [hsection]
-    clear hplain hsection
-    induction r using Finset.induction_on with
-    | empty =>
-        have h := mdifferentiableAt_zeroSection
-          (IB := I) (𝕜 := Real) (F := E)
-          (E := (TangentSpace I : M -> Type _)) (x := y)
-        change MDifferentiableAt I I.tangent
-          (fun z : M =>
-            (⟨z, (0 : TangentSpace I z)⟩ :
-              TotalSpace E (TangentSpace I : M → Type _))) y at h
-        exact h
-    | @insert a r ha ih =>
-        have ha_grad := hr_grad a (Finset.mem_insert_self a r) y
-        have htail := ih
-          (fun i hi => hr_space i (Finset.mem_insert_of_mem hi))
-          (fun i hi => hr_grad i (Finset.mem_insert_of_mem hi))
-        simpa [Finset.sum_insert ha] using
-          mdifferentiableAt_add_section ha_grad htail
   induction s using Finset.induction_on with
   | empty =>
-      have hheat_zero :
-          heatOperatorWithDrift (I := I) G t (X t)
-              (fun _ : M => (0 : Real)) x = 0 := by
-        unfold heatOperatorWithDrift laplacianAt laplacian driftTerm gradientAt
-        have hzero :
-            gradientFun (I := I) (G.metric t) (fun _ : M => (0 : Real)) = 0 := by
-          funext y
-          exact gradientFun_const (I := I) (G.metric t) 0 y
-        rw [hzero]
-        simp
-      change parabolicOperatorWithDrift (I := I) G T X
-        (fun _ _ => (0 : Real)) t x = 0
-      unfold parabolicOperatorWithDrift
-      rw [hheat_zero]
-      simp
-  | @insert a s ha ih =>
-      have ha_time := htime a (Finset.mem_insert_self a s)
-      have hs_time : DifferentiableWithinAt Real
-          (fun b : Real => ∑ i ∈ s, u i b x) (Set.Icc 0 T) t :=
-        DifferentiableWithinAt.fun_sum fun i hi =>
-          htime i (Finset.mem_insert_of_mem hi)
-      have ha_space : ∀ y : M,
-          MDifferentiableAt I 𝓘(Real, Real) (u a t) y :=
-        hspace a (Finset.mem_insert_self a s)
-      have hs_space : ∀ y : M, MDifferentiableAt I 𝓘(Real, Real)
-          (fun z : M => ∑ i ∈ s, u i t z) y := by
-        intro y
-        have hfunc :
-            (fun z : M => ∑ i ∈ s, u i t z) = ∑ i ∈ s, u i t := by
+      simpa only [Finset.sum_empty] using parabolic_const (G := G) T X 0 t x
+  | @insert i s hi ih =>
+      have htime_sum := DifferentiableWithinAt.fun_sum
+        (fun j hj => htime j (Finset.mem_insert_of_mem hj))
+      have hspace_sum (y : M) : MDifferentiableAt I 𝓘(Real, Real)
+          (fun z => ∑ j ∈ s, u j t z) y := by
+        rw [show (fun z => ∑ j ∈ s, u j t z) = ∑ j ∈ s, u j t by
           funext z
-          simp only [Finset.sum_apply]
-        rw [hfunc]
+          simp only [Finset.sum_apply]]
         exact MDifferentiableAt.sum (𝕜 := Real) (I := I) (E' := Real)
-          (t := s) (f := fun i => u i t) (z := y)
-          (fun i hi => by
-            simpa only using hspace i (Finset.mem_insert_of_mem hi) y)
-      have ha_grad := hgrad a (Finset.mem_insert_self a s) x
-      have hs_grad := hgrad_sum s
-        (fun i hi => hspace i (Finset.mem_insert_of_mem hi))
-        (fun i hi => hgrad i (Finset.mem_insert_of_mem hi)) x
-      calc
-        parabolicOperatorWithDrift (I := I) G T X
-            (fun b y => ∑ i ∈ insert a s, u i b y) t x =
-          parabolicOperatorWithDrift (I := I) G T X
-            (fun b y => u a b y + ∑ i ∈ s, u i b y) t x := by
-              congr 1
-              funext b y
-              rw [Finset.sum_insert ha]
-        _ = parabolicOperatorWithDrift (I := I) G T X (u a) t x +
-              parabolicOperatorWithDrift (I := I) G T X
-                (fun b y => ∑ i ∈ s, u i b y) t x :=
-          parabolic_add (I := I) G T X (u a)
-            (fun b y => ∑ i ∈ s, u i b y) t x
-            ha_time hs_time ha_space hs_space ha_grad hs_grad
-        _ = parabolicOperatorWithDrift (I := I) G T X (u a) t x +
-              ∑ i ∈ s,
-                parabolicOperatorWithDrift (I := I) G T X (u i) t x := by
-          rw [ih
-            (fun i hi => htime i (Finset.mem_insert_of_mem hi))
-            (fun i hi => hspace i (Finset.mem_insert_of_mem hi))
-            (fun i hi => hgrad i (Finset.mem_insert_of_mem hi))]
-        _ = ∑ i ∈ insert a s,
-              parabolicOperatorWithDrift (I := I) G T X (u i) t x := by
-          rw [Finset.sum_insert ha]
+          (t := s) (f := fun j => u j t) (z := y)
+          (fun j hj => hspace j (Finset.mem_insert_of_mem hj) y)
+      have hgrad_sum := mdifferentiableAt_gradientFun_finset_sum (G.metric t) s
+        (fun j => u j t) x
+        (fun j hj => Filter.Eventually.of_forall
+          (hspace j (Finset.mem_insert_of_mem hj)))
+        (fun j hj => hgrad j (Finset.mem_insert_of_mem hj) x)
+      rw [show (fun r y => ∑ j ∈ insert i s, u j r y) =
+          (fun r y => u i r y + ∑ j ∈ s, u j r y) by
+        funext r y
+        rw [Finset.sum_insert hi]]
+      rw [Finset.sum_insert hi]
+      rw [parabolic_add G T X (u i) (fun r y => ∑ j ∈ s, u j r y) t x
+        (htime i (Finset.mem_insert_self i s)) htime_sum
+        (hspace i (Finset.mem_insert_self i s)) hspace_sum
+        (hgrad i (Finset.mem_insert_self i s) x) hgrad_sum]
+      rw [ih (fun j hj => htime j (Finset.mem_insert_of_mem hj))
+        (fun j hj => hspace j (Finset.mem_insert_of_mem hj))
+        (fun j hj => hgrad j (Finset.mem_insert_of_mem hj))]
 
 theorem parabolic_mul
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
