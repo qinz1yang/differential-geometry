@@ -354,6 +354,48 @@ theorem paramDensity_expMap_smul_mul_pow_of_orthonormal
     Fintype.card_fin]
   ring
 
+theorem lintegral_paramDensity_expMap_eq_lintegral_curveDensity_addHaar
+    [MeasurableSpace E] [BorelSpace E]
+    {ι : Type*} [Fintype ι] [DecidableEq ι]
+    (g : SmoothRiemannianMetric I M) (p : M)
+    (b : Module.Basis ι ℝ E) {K : Set E}
+    (hK : MeasurableSet K) (hKdom : K ⊆ expDomain (I := I) g p) :
+    (∫⁻ v in K, ENNReal.ofReal (paramDensity (I := I) g
+      (fun v : E => expMap (I := I) g p (show TangentSpace I p from v)) v)
+      ∂(modelHaar (E := E))) =
+    ∫⁻ v in K, ENNReal.ofReal (curveDensity (I := I) g (radialCurve (I := I) g p v)
+      (fun i => radialJacobiField (I := I) g p v (b i)) 1) ∂b.addHaar := by
+  borelize E
+  let e : Fin (Module.finrank ℝ E) ≃ ι :=
+    Fintype.equivOfCardEq ((Fintype.card_fin _).trans (Module.finrank_eq_card_basis b))
+  let b₀ := (chartModelBasis E).reindex e
+  let F : E → M := fun v => expMap (I := I) g p (show TangentSpace I p from v)
+  let Dn : E → ℝ := fun v => curveDensity (I := I) g (radialCurve (I := I) g p v)
+    (fun i => radialJacobiField (I := I) g p v (b i)) 1
+  have hD (v : E) (hv : v ∈ K) :
+      ENNReal.ofReal |b₀.det b| * ENNReal.ofReal (paramDensity (I := I) g F v) =
+        ENNReal.ofReal (Dn v) := by
+    have hdensity : paramDensity (I := I) g F v =
+        curveDensity (I := I) g (radialCurve (I := I) g p v)
+          (fun i => radialJacobiField (I := I) g p v (b₀ i)) 1 := by
+      refine (paramDensity_expMap_eq_curveDensity (I := I) g p v (hKdom hv)).trans ?_
+      simpa only [b₀, Module.Basis.reindex_apply] using
+        (curveDensity_reindex (I := I) g (radialCurve (I := I) g p v)
+          (fun i => radialJacobiField (I := I) g p v (chartModelBasis E i)) 1 e.symm).symm
+    rw [← ENNReal.ofReal_mul (abs_nonneg (b₀.det b))]
+    congr 1
+    rw [hdensity]
+    exact (curveDensity_radialJacobiField_basis (I := I) g p v (hKdom hv) b₀ b).symm
+  calc
+    _ = ∫⁻ v in K, ENNReal.ofReal (paramDensity (I := I) g F v) ∂b₀.addHaar := by
+      simp only [b₀, Module.Basis.addHaar_reindex]
+      rfl
+    _ = ∫⁻ v in K, ENNReal.ofReal |b₀.det b| *
+        ENNReal.ofReal (paramDensity (I := I) g F v) ∂b.addHaar := by
+      rw [← Module.Basis.det_smul_addHaar b₀ b, setLIntegral_smul_measure]
+      exact (lintegral_const_mul' _ _ ENNReal.ofReal_ne_top).symm
+    _ = _ := setLIntegral_congr_fun hK hD
+
 end Normed
 
 section InnerProduct
@@ -387,47 +429,11 @@ theorem lintegral_paramDensity_expMap_eq_lintegral_curveDensity
               (normalBasis (I := I) g p i)) 1)
         ∂(volume : Measure E) := by
   classical
-  let b : Module.Basis (Fin (Module.finrank ℝ E)) ℝ E :=
-    chartModelBasis E
-  let b' : Module.Basis (Fin (Module.finrank ℝ E)) ℝ E :=
-    normalBasis (I := I) g p
+  let b' : Module.Basis (Fin (Module.finrank ℝ E)) ℝ E := normalBasis (I := I) g p
   let L : E ≃L[ℝ] E := normalFrame (I := I) (E := E) g p
-  let F : E → M := fun v =>
-    expMap (I := I) g p (show TangentSpace I p from v)
   let Dn : E → ℝ := fun v =>
     curveDensity (I := I) g (radialCurve (I := I) g p v)
       (fun i => radialJacobiField (I := I) g p v (b' i)) 1
-  have hD (v : E) (hv : v ∈ K) :
-      ENNReal.ofReal |b.det b'| *
-          ENNReal.ofReal (paramDensity (I := I) g F v) =
-        ENNReal.ofReal (Dn v) := by
-    have hdensity : paramDensity (I := I) g F v =
-        curveDensity (I := I) g (radialCurve (I := I) g p v)
-          (fun i => radialJacobiField (I := I) g p v (b i)) 1 := by
-      exact paramDensity_expMap_eq_curveDensity (I := I) g p v (hKdom hv)
-    rw [← ENNReal.ofReal_mul (abs_nonneg (b.det b'))]
-    congr 1
-    rw [hdensity]
-    exact (curveDensity_radialJacobiField_basis (I := I) g p v (hKdom hv) b b').symm
-  have hbasis :
-      (∫⁻ v in K,
-          ENNReal.ofReal (paramDensity (I := I) g F v)
-          ∂(modelHaar (E := E))) =
-        ∫⁻ v in K, ENNReal.ofReal (Dn v) ∂b'.addHaar := by
-    calc
-      _ = ∫⁻ v in K,
-          ENNReal.ofReal (paramDensity (I := I) g F v) ∂b.addHaar := by
-            rfl
-      _ = ∫⁻ v in K,
-          ENNReal.ofReal |b.det b'| *
-            ENNReal.ofReal (paramDensity (I := I) g F v)
-          ∂b'.addHaar := by
-            rw [← Module.Basis.det_smul_addHaar b b',
-              setLIntegral_smul_measure]
-            exact
-              (lintegral_const_mul' _ _ ENNReal.ofReal_ne_top).symm
-      _ = ∫⁻ v in K, ENNReal.ofReal (Dn v) ∂b'.addHaar := by
-            exact setLIntegral_congr_fun hK hD
   have hbmap :
       (stdOrthonormalBasis ℝ E).toBasis.map L.toLinearEquiv = b' := by
     ext i
@@ -443,7 +449,8 @@ theorem lintegral_paramDensity_expMap_eq_lintegral_curveDensity
       _ = b'.addHaar := congrArg Module.Basis.addHaar hbmap
   have hmp : MeasurePreserving L (volume : Measure E) b'.addHaar :=
     ⟨L.continuous.measurable, hmap⟩
-  rw [hbasis]
+  rw [lintegral_paramDensity_expMap_eq_lintegral_curveDensity_addHaar
+    (I := I) g p b' hK hKdom]
   exact
     (hmp.setLIntegral_comp_preimage_emb
       L.toHomeomorph.toMeasurableEquiv.measurableEmbedding
