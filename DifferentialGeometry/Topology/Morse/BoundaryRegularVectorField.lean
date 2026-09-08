@@ -252,18 +252,23 @@ theorem exists_contDiff_boundary_tangent_vector_field_near_compact
   · intro p hp
     simpa only [hUone p hp, neg_one_mul] using hVe p
 
-theorem exists_contDiff_boundary_tangent_vector_field_on_halfspace_levels
+theorem exists_contDiff_boundary_tangent_vector_field_on_halfspace_levels_with_tsupport_subset
     {F : ℝ × (Fin (n + 1) → ℝ) → ℝ} {L : Set ℝ}
+    {W : Set (ℝ × (Fin (n + 1) → ℝ))}
     (hF : ContDiff ℝ ∞ F)
     (hsupport : HasCompactSupport (fun p : ℝ × ((Fin n → ℝ) × Set.Ici (0 : ℝ)) =>
       deriv (fun t => F (t, Fin.cons (p.2.2 : ℝ) p.2.1)) p.1))
-    (hL : IsClosed L)
+    (hL : IsClosed L) (hW : IsOpen W)
+    (hKW : ((fun p : ℝ × ((Fin n → ℝ) × Set.Ici (0 : ℝ)) =>
+        (p.1, (Fin.cons (p.2.2 : ℝ) p.2.1 : Fin (n + 1) → ℝ))) ''
+      tsupport (fun p : ℝ × ((Fin n → ℝ) × Set.Ici (0 : ℝ)) =>
+        deriv (fun t => F (t, Fin.cons (p.2.2 : ℝ) p.2.1)) p.1)) ∩ F ⁻¹' L ⊆ W)
     (hregular : ∀ p : ℝ × (Fin (n + 1) → ℝ), 0 < p.2 0 → F p ∈ L →
       fderiv ℝ (fun z => F (p.1, z)) p.2 ≠ 0)
     (hboundary : ∀ p : ℝ × (Fin (n + 1) → ℝ), p.2 0 = 0 → F p ∈ L →
       fderiv ℝ (fun x => F (p.1, Fin.cons 0 x)) (Fin.tail p.2) ≠ 0) :
     ∃ V : ℝ × (Fin (n + 1) → ℝ) → (Fin (n + 1) → ℝ),
-      ContDiff ℝ ∞ V ∧ HasCompactSupport V ∧
+      ContDiff ℝ ∞ V ∧ HasCompactSupport V ∧ tsupport V ⊆ W ∧
       (∀ p, p.2 0 = 0 → V p 0 = 0) ∧
       (∀ p, deriv (fun t => F (t, p.2)) p.1 = 0 → V p = 0) ∧
       ∀ p, 0 ≤ p.2 0 → F p ∈ L →
@@ -287,10 +292,10 @@ theorem exists_contDiff_boundary_tangent_vector_field_on_halfspace_levels
     exact q.2.2.property
   obtain ⟨V, hV, hVc, hVs, hVb, hVz, U, hU, hKU, hUW, hVe⟩ :=
     exists_contDiff_boundary_tangent_vector_field_near_compact hF hK
-      isOpen_univ (Set.subset_univ K)
+      hW hKW
       (fun p hp hz => hregular p (lt_of_le_of_ne (hKhalf p hp) hz.symm) hp.2)
       (fun p hp hz => hboundary p hz hp.2)
-  refine ⟨V, hV, hVc, hVb, hVz, ?_⟩
+  refine ⟨V, hV, hVc, hVs, hVb, hVz, ?_⟩
   intro p hp hpL
   by_cases hdt : dt p = 0
   · rw [hVz p hdt]
@@ -307,5 +312,27 @@ theorem exists_contDiff_boundary_tangent_vector_field_on_halfspace_levels
     refine ⟨q, subset_tsupport (dt ∘ Φ) ?_, hq⟩
     change dt (Φ q) ≠ 0
     rwa [hq]
+
+theorem exists_contDiff_boundary_tangent_vector_field_on_halfspace_levels
+    {F : ℝ × (Fin (n + 1) → ℝ) → ℝ} {L : Set ℝ}
+    (hF : ContDiff ℝ ∞ F)
+    (hsupport : HasCompactSupport (fun p : ℝ × ((Fin n → ℝ) × Set.Ici (0 : ℝ)) =>
+      deriv (fun t => F (t, Fin.cons (p.2.2 : ℝ) p.2.1)) p.1))
+    (hL : IsClosed L)
+    (hregular : ∀ p : ℝ × (Fin (n + 1) → ℝ), 0 < p.2 0 → F p ∈ L →
+      fderiv ℝ (fun z => F (p.1, z)) p.2 ≠ 0)
+    (hboundary : ∀ p : ℝ × (Fin (n + 1) → ℝ), p.2 0 = 0 → F p ∈ L →
+      fderiv ℝ (fun x => F (p.1, Fin.cons 0 x)) (Fin.tail p.2) ≠ 0) :
+    ∃ V : ℝ × (Fin (n + 1) → ℝ) → (Fin (n + 1) → ℝ),
+      ContDiff ℝ ∞ V ∧ HasCompactSupport V ∧
+      (∀ p, p.2 0 = 0 → V p 0 = 0) ∧
+      (∀ p, deriv (fun t => F (t, p.2)) p.1 = 0 → V p = 0) ∧
+      ∀ p, 0 ≤ p.2 0 → F p ∈ L →
+        fderiv ℝ (fun z => F (p.1, z)) p.2 (V p) =
+          -deriv (fun t => F (t, p.2)) p.1 := by
+  obtain ⟨V, hV, hVc, hVs, hVb, hVz, hVe⟩ :=
+    exists_contDiff_boundary_tangent_vector_field_on_halfspace_levels_with_tsupport_subset
+      hF hsupport hL isOpen_univ (Set.subset_univ _) hregular hboundary
+  exact ⟨V, hV, hVc, hVb, hVz, hVe⟩
 
 end DifferentialGeometry.Topology.Morse

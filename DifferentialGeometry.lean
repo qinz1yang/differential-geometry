@@ -3152,6 +3152,8 @@ import DifferentialGeometry.Topology.Diffeomorph.Flow
 import DifferentialGeometry.Topology.Diffeomorph.Graph
 import DifferentialGeometry.Topology.Diffeomorph.LocalizedGraph
 import DifferentialGeometry.Topology.Diffeomorph.Perturbation
+import DifferentialGeometry.Topology.Diffeomorph.Restriction
+import DifferentialGeometry.Topology.Diffeomorph.TimeDependentFlow
 import DifferentialGeometry.Topology.Diffeomorph.Translation
 import DifferentialGeometry.Topology.Diffeomorph.Radial
 import DifferentialGeometry.Topology.Embedding.Diffeomorph
@@ -3188,6 +3190,8 @@ import DifferentialGeometry.Topology.Homotopy.DeformationRetract
 import DifferentialGeometry.Topology.Homotopy.EquivUnder
 import DifferentialGeometry.Topology.Homotopy.Interval
 import DifferentialGeometry.Topology.Morse.CellAttachment
+import DifferentialGeometry.Topology.Morse.BoundaryGraph
+import DifferentialGeometry.Topology.Morse.BoundaryIsotopy
 import DifferentialGeometry.Topology.Morse.BoundaryPerturbation
 import DifferentialGeometry.Topology.Morse.BoundaryRegularVectorField
 import DifferentialGeometry.Topology.Morse.CriticalSet
