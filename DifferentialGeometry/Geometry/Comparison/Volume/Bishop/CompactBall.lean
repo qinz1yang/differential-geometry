@@ -1,3 +1,5 @@
+import DifferentialGeometry.Bundle.FiberBundleHausdorff
+import DifferentialGeometry.Geometry.Comparison.Volume.Bishop.Exponential
 import DifferentialGeometry.Geometry.Exponential.Radial
 import DifferentialGeometry.Geometry.Exponential.ConjugatePoint.MinimizingGeodesic
 import DifferentialGeometry.Geometry.Comparison.Volume.Bishop.Ball
@@ -546,5 +548,138 @@ theorem bishop_gromov_of_isCompact_closedEBall
         ∫⁻ r : Set.Ioi (0 : ℝ) in Set.Iic (⟨s, hs⟩ : Set.Ioi (0 : ℝ)), F u r
           ∂Measure.volumeIoiPow d) ENNReal.ofReal_ne_top]
     exact lintegral_mono hdir
+
+section Absolute
+
+omit [SigmaCompactSpace M] [T2Space (TangentBundle I M)] in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+private theorem normal_basis_density_le
+    [(y : M) → ENorm (TangentSpace I y)]
+    (g : SmoothRiemannianMetric I M)
+    (hEnorm : ∀ (y : M) (v : TangentSpace I y),
+      ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner y v v)))
+    (p : M) (x : E)
+    (hx : (show TangentSpace I p from x) ∈ expDomain (I := I) g p)
+    (hmin : ENNReal.ofReal (Real.sqrt (g.inner p x x)) ≤
+      riemannianEDist I p (expMap (I := I) g p (show TangentSpace I p from x)))
+    (q : ℝ) (hq : 0 ≤ q)
+    (hRic : ∀ t ∈ Ioo (0 : ℝ) 1,
+      -(((Module.finrank ℝ E - 1 : ℕ) : ℝ) * q ^ 2) *
+          g.inner (radialCurve (I := I) g p x t)
+            (curveVelocity (I := I) (radialCurve (I := I) g p x) t)
+            (curveVelocity (I := I) (radialCurve (I := I) g p x) t) ≤
+        ricciTensor (I := I) g (radialCurve (I := I) g p x t)
+          (curveVelocity (I := I) (radialCurve (I := I) g p x) t)
+          (curveVelocity (I := I) (radialCurve (I := I) g p x) t)) :
+    curveDensity (I := I) g (radialCurve (I := I) g p x)
+        (fun i => radialJacobiField (I := I) g p x (normalBasis (I := I) g p i)) 1 ≤
+      hyperbolicDensity (q * Real.sqrt (g.inner p x x)) (Module.finrank ℝ E - 1) 1 := by
+  let B : Module.Basis (Fin (Module.finrank ℝ E)) ℝ E := normalBasis (I := I) g p
+  let C : ℝ := |(chartModelBasis E).det B|
+  have hnormal0 : curveDensity (I := I) g (fun _ : ℝ => p)
+      (fun i (_ : ℝ) => show TangentSpace I p from B i) 0 = 1 := by
+    have hG : curveGram (I := I) g (fun _ : ℝ => p)
+        (fun i (_ : ℝ) => show TangentSpace I p from B i) 0 = 1 := by
+      ext i j
+      exact normalBasis_inner g p i j
+    simp only [curveDensity, hG, Matrix.det_one, Real.sqrt_one]
+  have hC : C * paramDensity (I := I) g
+      (fun v : E => expMap (I := I) g p (show TangentSpace I p from v)) 0 = 1 := by
+    rw [paramDensity_expMap_zero]
+    have hchange := curveDensity_recomb (I := I) g (fun _ : ℝ => p)
+      (fun i (_ : ℝ) => show TangentSpace I p from chartModelBasis E i)
+      (fun i (_ : ℝ) => show TangentSpace I p from B i) 0
+      ((chartModelBasis E).toMatrix B) (fun i => by
+        change B i = ∑ j, ((chartModelBasis E).toMatrix B) j i • chartModelBasis E j
+        simpa only [Module.Basis.toMatrix_apply] using
+          ((chartModelBasis E).sum_repr (B i)).symm)
+    rw [hnormal0] at hchange
+    exact hchange.symm
+  have hbound := paramDensity_expMap_le_mul_hyperbolicDensity_of_le_riemannianEDist
+    g hEnorm p x hx hmin q hq hRic
+  change curveDensity (I := I) g (radialCurve (I := I) g p x)
+    (fun i => radialJacobiField (I := I) g p x (B i)) 1 ≤ _
+  rw [curveDensity_radialJacobiField_basis g p x hx (chartModelBasis E) B,
+    ← paramDensity_expMap_eq_curveDensity g p x hx]
+  exact (mul_le_mul_of_nonneg_left hbound (abs_nonneg _)).trans_eq
+    (by rw [← mul_assoc, hC, one_mul])
+
+omit [T2Space (TangentBundle I M)] in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+theorem riemannianVolumeMeasure_ball_le_hyperbolic_of_isCompact_closedEBall
+    [NeZero (Module.finrank ℝ E)]
+    [PseudoEMetricSpace M] [RiemannianBundle (fun x : M => TangentSpace I x)]
+    [IsRiemannianManifold I M]
+    [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
+    (g : SmoothRiemannianMetric I M) (hEnorm : IsMetricNorm (I := I) (M := M) g)
+    (p : M) {q R : ℝ} (hq : 0 ≤ q) (hR : 0 < R)
+    (hcpt : @IsCompact M PseudoEMetricSpace.toUniformSpace.toTopologicalSpace
+      (Metric.closedEBall p (ENNReal.ofReal R)))
+    (hRic : ∀ (y : M) (v : TangentSpace I y),
+      riemannianEDist I p y < ENNReal.ofReal R →
+        -(((Module.finrank ℝ E - 1 : ℕ) : ℝ) * q ^ 2) * g.inner y v v ≤
+          ricciTensor (I := I) g y v v) :
+    riemannianVolumeMeasure (I := I) (M := M) g
+        {y : M | riemannianEDist I p y < ENNReal.ofReal R} ≤
+      ((volume : Measure (EuclideanSpace ℝ (Fin (Module.finrank ℝ E)))).toSphere univ) *
+        ENNReal.ofReal (hyperbolicRadialVolume q (Module.finrank ℝ E - 1) R) := by
+  classical
+  let F := EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
+  let L : F ≃L[ℝ] E := euclideanNormalFrame (I := I) g p
+  let K : Set E := extendibleMinimizingDomain (I := I) g p ∩ gBall (I := I) g p R
+  let Dn : F → ℝ := fun w => curveDensity (I := I) g
+    (radialCurve (I := I) g p (L w))
+    (fun i => radialJacobiField (I := I) g p (L w) (normalBasis (I := I) g p i)) 1
+  let Dh : F → ENNReal := fun w =>
+    ENNReal.ofReal (hyperbolicDensity (q * ‖w‖) (Module.finrank ℝ E - 1) 1)
+  have hsqrt (w : F) : Real.sqrt (g.inner p (L w) (L w)) = ‖w‖ := by
+    with_unfolding_all exact euclideanNormalFrame_sqrt g p w
+  have hK : MeasurableSet K :=
+    (measurableSet_extendibleMinimizingDomain g hEnorm p).inter
+      (measurableSet_gBall g p R)
+  have hpreK : MeasurableSet (L ⁻¹' K) := hK.preimage L.continuous.measurable
+  have hball : L ⁻¹' K ⊆ Metric.ball (0 : F) R := by
+    intro w hw
+    have hb := hw.2
+    change Real.sqrt (g.inner p (L w) (L w)) < R at hb
+    simpa only [hsqrt, Metric.mem_ball, dist_zero_right] using hb
+  have hpoint (w : F) (hw : w ∈ L ⁻¹' K) : ENNReal.ofReal (Dn w) ≤ Dh w := by
+    have hmin := extendibleMinimizingDomain_subset_minimizingDomain g hEnorm p hw.1
+    have hd := normal_basis_density_le g hEnorm p (L w)
+      (minimizingDomain_subset_expDomain g p hmin) hmin.le q hq
+      (fun t ht => hRic _ _ (by
+        have hraw : (1 : ℝ) • L w ∈ extendibleMinimizingDomain (I := I) g p := by
+          simpa only [one_smul] using hw.1
+        have hrawt := smul_mem_extendibleMinimizingDomain_of_pos_of_le
+          g p ht.1 ht.2.le hraw
+        have hmint := extendibleMinimizingDomain_subset_minimizingDomain g hEnorm p hrawt
+        change ENNReal.ofReal (Real.sqrt (g.inner p (t • L w) (t • L w))) =
+          riemannianEDist I p (radialCurve (I := I) g p (L w) t) at hmint
+        rw [← hmint]
+        apply (ENNReal.ofReal_lt_ofReal_iff hR).mpr
+        have hscale : Real.sqrt (g.inner p (t • L w) (t • L w)) =
+            t * Real.sqrt (g.inner p (L w) (L w)) := by
+          with_unfolding_all exact sqrt_gInner_smul_self g p ht.1.le (L w)
+        rw [hscale]
+        exact (mul_le_of_le_one_left (Real.sqrt_nonneg _) ht.2.le).trans_lt hw.2))
+    apply ENNReal.ofReal_le_ofReal
+    simpa only [Dn, Dh, hsqrt] using hd
+  let _ : NeZero (Module.finrank ℝ F) := ⟨by simpa only [F, finrank_euclideanSpace, Fintype.card_fin] using
+    (NeZero.ne (Module.finrank ℝ E))⟩
+  calc
+    _ = ∫⁻ w in L ⁻¹' K, ENNReal.ofReal (Dn w) ∂(volume : Measure F) :=
+      riemannianVolumeMeasure_ball_eq_lintegral_curveDensity_euclideanNormalFrame
+        g hEnorm p R hcpt
+    _ ≤ ∫⁻ w in L ⁻¹' K, Dh w ∂(volume : Measure F) :=
+      setLIntegral_mono' hpreK hpoint
+    _ ≤ ∫⁻ w in Metric.ball (0 : F) R, Dh w ∂(volume : Measure F) :=
+      lintegral_mono_set hball
+    _ = _ := by
+      simpa only [F, Dh, finrank_euclideanSpace, Fintype.card_fin] using hyperbolicBall_lintegral
+        (E := F) q hq hR
+
+end Absolute
 
 end DifferentialGeometry.Geometry.Riemannian.VolumeComparison

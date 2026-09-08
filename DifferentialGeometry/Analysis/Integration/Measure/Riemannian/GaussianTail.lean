@@ -1,7 +1,7 @@
 import DifferentialGeometry.Analysis.Integration.Measure.Estimates.GaussianTail
 import DifferentialGeometry.Bundle.FiberBundleHausdorff
 import DifferentialGeometry.Geometry.Comparison.HopfRinow.Proper
-import DifferentialGeometry.Geometry.Comparison.Volume.Segment.Ball.EuclideanUpper
+import DifferentialGeometry.Geometry.Comparison.Volume.Bishop.CompactBall
 
 noncomputable section
 
@@ -17,7 +17,7 @@ open DifferentialGeometry.Geometry.Riemannian.VolumeComparison
 
 universe u uE uH
 
-variable {E : Type uE} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
+variable {E : Type uE} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type uH} [TopologicalSpace H]
 variable {I : ModelWithCorners ℝ E H} [I.Boundaryless]
@@ -85,8 +85,19 @@ theorem lintegral_gaussian_riemannianEDistOf_le [ConnectedSpace M]
         C * ENNReal.ofReal (r ^ n) := by
     intro r hr
     have hrpos : 0 < r := zero_lt_one.trans_le hr
-    have hvol := segmentBall_vol_le_euclidean (I := I) g hEnorm p
-      (q := 0) (R := r) (by positivity) hrpos (by simpa using hRic)
+    have hcpt : @IsCompact M PseudoEMetricSpace.toUniformSpace.toTopologicalSpace
+        (Metric.closedEBall p (ENNReal.ofReal r)) := by
+      have hc := RiemannianMetricComplete.closedEBall_isCompact (I := I) hcomplete p r
+      have hset : Metric.closedEBall p (ENNReal.ofReal r) =
+          {y | riemannianEDistOf (I := I) g p y ≤ ENNReal.ofReal r} := by
+        ext y
+        rw [Metric.mem_closedEBall', IsRiemannianManifold.out (I := I)]
+        simp only [mem_ofPred_eq, riemannianEDistOf_eq_riemannianEDist (I := I) g hEnorm]
+      rw [hset]
+      exact hc
+    have hvol := riemannianVolumeMeasure_ball_le_hyperbolic_of_isCompact_closedEBall (I := I) g hEnorm p
+      (q := 0) (R := r) (by positivity) hrpos hcpt
+      (fun y v _ => by simpa using hRic y v)
     have hset : Metric.ball p r =
         {y : M | riemannianEDist I p y < ENNReal.ofReal r} := by
       ext y
