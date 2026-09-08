@@ -1,5 +1,6 @@
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.ModelCover
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.Models
+import DifferentialGeometry.Geometry.Metric.PullbackCompleteness
 
 set_option autoImplicit false
 
@@ -128,6 +129,51 @@ theorem gaussianSolitonModelCoveringDiffeomorph_symm_potential
       ((gaussianSolitonModelCoveringDiffeomorph hπ).symm y)) at hpotential
   rw [(gaussianSolitonModelCoveringDiffeomorph hπ).apply_symm_apply] at hpotential
   exact hpotential.symm
+
+theorem solitonModelCovering_gaussian_of_isometry
+    {g : SmoothRiemannianMetric I M} {f : C^∞⟮I, M; ℝ⟯}
+    (e : M ≃ₘ⟮I, 𝓘(ℝ, V)⟯ V)
+    (hg : Diffeomorph.pullbackMetricCross (euclideanMetric (E := V)) e = g)
+    (hf : f = gaussianPotential.comp e.toContMDiffMap) :
+    solitonModelCovering (euclideanMetric (E := V))
+      (gaussianPotential (E := V)) g f e.symm := by
+  have hcomplete : RiemannianMetricComplete (I := I)
+      (localPullMetric (euclideanMetric (E := V)) e e.isLocalDiffeomorph) := by
+    rw [← Diffeomorph.pullbackMetricCross_eq_localPullMetric]
+    exact RiemannianMetricComplete.pullbackCross _ e normalizedGradientRicciSoliton_gaussian.1
+  have hsol := normalizedGradientRicciSoliton_localPullMetric
+    (normalizedGradientRicciSoliton_gaussian (E := V)) e.isLocalDiffeomorph hcomplete
+  rw [← Diffeomorph.pullbackMetricCross_eq_localPullMetric, hg] at hsol
+  change normalizedGradientRicciSoliton g (gaussianPotential.comp e.toContMDiffMap) at hsol
+  rw [← hf] at hsol
+  refine ⟨normalizedGradientRicciSoliton_gaussian, hsol, e.symm.isLocalDiffeomorph,
+    e.symm.surjective, ?_, ?_, ?_⟩
+  · exact (solitonModelCovering_isCoveringMap (solitonModelCovering_refl hsol)).comp_homeomorph
+      e.symm.toHomeomorph
+  · intro x v w
+    have h := congrArg (fun k : SmoothRiemannianMetric 𝓘(ℝ, V) V => k.inner x v w)
+      (Diffeomorph.pullbackMetricCross_symm_eq_iff.mp hg)
+    rw [Diffeomorph.pullbackMetricCross_inner] at h
+    exact h.symm
+  · intro x
+    rw [hf]
+    change gaussianPotential x = gaussianPotential (e (e.symm x))
+    rw [e.apply_symm_apply]
+
+theorem exists_solitonModelCovering_gaussian_iff
+    {g : SmoothRiemannianMetric I M} {f : C^∞⟮I, M; ℝ⟯} :
+    (∃ cover : V → M, solitonModelCovering (euclideanMetric (E := V))
+      (gaussianPotential (E := V)) g f cover) ↔
+    ∃ e : M ≃ₘ⟮I, 𝓘(ℝ, V)⟯ V,
+      Diffeomorph.pullbackMetricCross (euclideanMetric (E := V)) e = g ∧
+      f = gaussianPotential.comp e.toContMDiffMap := by
+  constructor
+  · rintro ⟨cover, hcover⟩
+    exact ⟨(gaussianSolitonModelCoveringDiffeomorph hcover).symm,
+      gaussianSolitonModelCoveringDiffeomorph_symm_pullbackMetric hcover,
+      gaussianSolitonModelCoveringDiffeomorph_symm_potential hcover⟩
+  · rintro ⟨e, hg, hf⟩
+    exact ⟨e.symm, solitonModelCovering_gaussian_of_isometry e hg hf⟩
 
 variable {L : Type*} [TopologicalSpace L]
 variable {K : ModelWithCorners Real V L} [K.Boundaryless]

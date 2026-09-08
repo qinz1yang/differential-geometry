@@ -283,4 +283,46 @@ theorem gradientRicciSoliton_exists_normalized
       _ = f x + C / sigma := by
         field_simp
 
+theorem gradientRicciSoliton_existsUnique_normalized
+    [ConnectedSpace M]
+    {g : SmoothRiemannianMetric I M} {f : C^∞⟮I, M; ℝ⟯} {sigma : ℝ}
+    (hcomplete : RiemannianMetricComplete (I := I) g)
+    (hsol : gradientRicciSoliton (I := I) g f sigma)
+    (hsigma : 0 < sigma) :
+    ∃! C : ℝ,
+      (∀ x : M, metricScalarAt (I := I) g x +
+        normGradSqFun (I := I) g f x - sigma * f x = C) ∧
+      normalizedGradientRicciSoliton (I := I)
+        (scaleMetric (I := I) sigma hsigma g)
+        (f + ContMDiffMap.const (I := I)
+          (I' := modelWithCornersSelf ℝ ℝ) (M := M) (n := ∞) (C / sigma)) := by
+  obtain ⟨C, hn⟩ := gradientRicciSoliton_exists_normalized hcomplete hsol hsigma
+  have hC (x : M) : metricScalarAt (I := I) g x +
+      normGradSqFun (I := I) g f x - sigma * f x = C := by
+    have hnormal := hn.2.2 x
+    rw [metricScalarAt_scaleMetric, normGradSqFun_scaleMetric] at hnormal
+    have hgradshift : normGradSqFun (I := I) g
+        ((f : M → ℝ) + (fun _ : M => C / sigma)) x =
+        normGradSqFun (I := I) g f x := by
+      simp only [normGradSqFun_def]
+      have hgrad : gradFun (I := I) g
+          ((f : M → ℝ) + (fun _ : M => C / sigma)) x =
+          gradFun (I := I) g f x := by
+        rw [Operator.gradFun_add (I := I) g
+          ((f.contMDiff x).mdifferentiableAt (by simp))
+          (mdifferentiableAt_const (c := C / sigma)), Operator.gradFun_const]
+        simp
+      rw [hgrad]
+    change sigma⁻¹ * metricScalarAt (I := I) g x +
+        sigma⁻¹ * normGradSqFun (I := I) g
+          ((f : M → ℝ) + (fun _ : M => C / sigma)) x =
+      f x + C / sigma at hnormal
+    rw [hgradshift] at hnormal
+    field_simp [ne_of_gt hsigma] at hnormal
+    linarith
+  refine ⟨C, ⟨hC, hn⟩, ?_⟩
+  intro D hD
+  let x : M := Classical.choice (inferInstance : Nonempty M)
+  exact (hD.1 x).symm.trans (hC x)
+
 end DifferentialGeometry.Geometry
