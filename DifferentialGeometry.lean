@@ -1874,6 +1874,7 @@ import DifferentialGeometry.Bundle.Equiv
 import DifferentialGeometry.Bundle.FiberBundleHausdorff
 import DifferentialGeometry.Bundle.Frame
 import DifferentialGeometry.Geometry.Connection.LocalFrameRegularity
+import DifferentialGeometry.Geometry.Connection.Flow
 import DifferentialGeometry.Bundle.PartialMfderiv.Basic
 import DifferentialGeometry.Bundle.PartialMfderiv.Regularity
 import DifferentialGeometry.Geometry.Coordinates.Calculus.FixedBaseDerivative
@@ -3177,6 +3178,7 @@ import DifferentialGeometry.Geometry.Metric.ChartLipschitz
 import DifferentialGeometry.Geometry.Metric.Product
 import DifferentialGeometry.Geometry.Curvature.WarpedProduct
 import DifferentialGeometry.Geometry.Metric.Pullback.Basic
+import DifferentialGeometry.Geometry.Metric.ParallelFlow
 import DifferentialGeometry.Geometry.Metric.Pullback.Evaluation.DerivativeDecomposition
 import DifferentialGeometry.Geometry.Metric.Pullback.Evaluation.Derivative
 import DifferentialGeometry.Geometry.Metric.Pullback.PartialDiffeomorph.Basic
