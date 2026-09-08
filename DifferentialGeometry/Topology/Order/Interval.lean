@@ -38,3 +38,20 @@ theorem Set.OrdConnected.exists_Icc_subset_mem_nhdsWithin
   obtain ⟨a, ha, ha₀, hat, hna⟩ := hlower
   obtain ⟨b, hb, hb₀, htb, hnb⟩ := hupper
   exact ⟨a, b, ⟨ha₀, hb₀⟩, ⟨hat, htb⟩, hJ.out ha hb, Filter.inter_mem hna hnb⟩
+
+theorem Set.OrdConnected.exists_Icc_mem_subset_of_mem_nhdsWithin
+    {α : Type*} [LinearOrder α] [TopologicalSpace α] [OrderTopology α]
+    {J U : Set α} {t : α} (hJ : J.OrdConnected) (ht : t ∈ J)
+    (hU : U ∈ 𝓝[J] t) :
+    ∃ a b, t ∈ Icc a b ∧ Icc a b ∈ 𝓝[J] t ∧ Icc a b ⊆ J ∩ U := by
+  obtain ⟨a, b, hat, _, hab, hn⟩ := hJ.exists_Icc_subset_mem_nhdsWithin ht ht
+  obtain ⟨V, hV, hVU⟩ := mem_nhdsWithin_iff_exists_mem_nhds_inter.mp hU
+  obtain ⟨c, d, hct, hcd, hcV⟩ := exists_Icc_mem_subset_of_mem_nhds hV
+  refine ⟨a ⊔ c, b ⊓ d, ?_, ?_, ?_⟩
+  · rw [← Icc_inter_Icc]
+    exact ⟨hat, hct⟩
+  · rw [← Icc_inter_Icc]
+    exact inter_mem hn (mem_nhdsWithin_of_mem_nhds hcd)
+  · rw [← Icc_inter_Icc]
+    intro x hx
+    exact ⟨hab hx.1, hVU ⟨hcV hx.2, hab hx.1⟩⟩

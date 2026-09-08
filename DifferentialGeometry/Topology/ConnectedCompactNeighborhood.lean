@@ -54,3 +54,13 @@ theorem exists_isOpen_isConnected_isCompact_closure
     (closure_mono (connectedComponentIn_subset V x))
 
 end DifferentialGeometry
+
+theorem IsPreconnected.iff_of_eventually_iff {X : Type*} [TopologicalSpace X]
+    {S : Set X} (hS : IsPreconnected S) (Q : X → Prop)
+    (hQ : ∀ x ∈ S, ∀ᶠ y in nhdsWithin x S, Q y ↔ Q x)
+    {x y : X} (hx : x ∈ S) (hy : y ∈ S) : Q x ↔ Q y := by
+  apply hS.induction₂ (fun a b => Q a ↔ Q b) ?_ ?_ ?_ hx hy
+  · intro a ha
+    exact (hQ a ha).mono fun _ h => h.symm
+  · exact fun _ _ _ _ _ _ hab hbc => hab.trans hbc
+  · exact fun _ _ _ _ hab => hab.symm

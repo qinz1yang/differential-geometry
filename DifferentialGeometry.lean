@@ -4636,3 +4636,6 @@ import DifferentialGeometry.Geometry.Connection.Associated
 import DifferentialGeometry.Geometry.Connection.MetricCompatibility.Associated
 import DifferentialGeometry.Geometry.Connection.Principal
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.SubbundleInvariance
+import DifferentialGeometry.Geometry.Connection.ParallelTransport.Associated
+import DifferentialGeometry.Geometry.LieGroup.Representation.InvariantSet
+import DifferentialGeometry.Analysis.ODE.AssociatedBundle

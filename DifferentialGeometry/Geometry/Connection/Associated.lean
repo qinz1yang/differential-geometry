@@ -503,4 +503,53 @@ theorem contMDiff_associatedCovariantDerivative
   exact ρ.contMDiff_associatedCovariantDerivativeOfLocalSections I IG IP hρ A hA e₀ he₀ hx₀ hP
     form.toFun form.apply_smul form.apply_fundamental form.contMDiff
 
+theorem associatedCovariantDerivativeOfLocalSections_eval_eq [ContMDiffMul IG 1 G]
+    (ρ : ContRepresentation k G W)
+    (hρ : ContMDiff IG 𝓘(k, W →L[k] W) 1 (fun g => ρ g))
+    (A : Set (Trivialization G (π G P)))
+    (hA : ∀ e ∈ A, MemTrivializationAtlas e)
+    (e₀ : B → Trivialization G (π G P)) (he₀ : ∀ x, e₀ x ∈ A)
+    (hx₀ : ∀ x, x ∈ (e₀ x).baseSet)
+    (hP : ∀ e ∈ A, ContMDiffOn IP (I.prod IG) 1 e e.source ∧
+      ContMDiffOn (I.prod IG) IP 1 e.toOpenPartialHomeomorph.symm e.target)
+    (form : ∀ p : TotalSpace G P, TangentSpace IP p →L[k] GroupLieAlgebra IG G)
+    (hform : ∀ (g : G) (p : TotalSpace G P) (X : TangentSpace IP p),
+      form (g • p) (mfderiv IP IP (fun q => g • q) p X) =
+        mfderiv IG IG (fun h => g * h * g⁻¹) 1 (form p X))
+    (hnorm : ∀ (p : TotalSpace G P) (U : GroupLieAlgebra IG G),
+      form p (mfderiv IG IP (fun g : G => g • p) 1 U) = U)
+    (σ : ∀ x, P x →ₑ[ρ.toRepresentation] W)
+    (e : Trivialization G (π G P)) (he : e ∈ A) {x : B} (hx : x ∈ e.baseSet)
+    (X : TangentSpace I x) :
+    let := (ρ.associatedVectorPrebundle (P := P) hρ.continuous).totalSpaceTopology
+    let := ρ.associatedFiberBundleOfAtlas hρ.continuous A hA e₀ he₀ hx₀
+    let := ρ.associated_vector_bundle_of_atlas hρ.continuous A hA e₀ he₀ hx₀
+    MDifferentiableAt I (I.prod 𝓘(k, W))
+      (fun y => (⟨y, σ y⟩ : TotalSpace W (fun z => P z →ₑ[ρ.toRepresentation] W))) x →
+    (ρ.associatedCovariantDerivativeOfLocalSections I IG IP hρ.continuous A hA e₀ he₀ hx₀ form
+      σ x X) (e.principalSection x) =
+      mvfderiv I (fun y => σ y (e.principalSection y)) x X -
+        mvfderiv IG (fun g => ρ g) 1
+          (form ⟨x, e.principalSection x⟩
+            (mfderiv I IP (fun y => (⟨y, e.principalSection y⟩ : TotalSpace G P)) x X))
+          (σ x (e.principalSection x)) := by
+  let := (ρ.associatedVectorPrebundle (P := P) hρ.continuous).totalSpaceTopology
+  let := ρ.associatedFiberBundleOfAtlas hρ.continuous A hA e₀ he₀ hx₀
+  let := ρ.associated_vector_bundle_of_atlas hρ.continuous A hA e₀ he₀ hx₀
+  dsimp only
+  intro hσ
+  let := hA e he
+  let f : TotalSpace G P → W := fun p => σ p.proj p.snd
+  let s : B → TotalSpace G P := fun y => ⟨y, e.principalSection y⟩
+  have hf : MDifferentiableAt IP 𝓘(k, W) f (s x) :=
+    ρ.mdifferentiableAt_associated_section_eval I IG IP hρ A hA e₀ he₀ hx₀
+      (fun q hq => (hP q hq).1) σ (p := s x) hσ
+  have hs : MDifferentiableAt I IP s x :=
+    ((e.contMDiffOn_principalSection (hP e he).2).contMDiffAt
+      (e.open_baseSet.mem_nhds hx)).mdifferentiableAt (by simp)
+  rw [ρ.associatedCovariantDerivativeOfLocalSections_eval_principalSection
+    I IG IP hρ A hA e₀ he₀ hx₀ hP form hform hnorm σ e he hx X hσ,
+    ρ.covariantDifferential_apply]
+  exact congrArg (fun z => z - _) (hf.mvfderiv_comp_apply hs X).symm
+
 end ContRepresentation

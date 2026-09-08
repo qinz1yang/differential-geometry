@@ -172,4 +172,17 @@ theorem isForwardInvariantForODE_pushForwardVectorField_iff
   simpa only [isForwardInvariantForODEOn_univ] using
     isForwardInvariantForODEOn_pushForwardVectorField_iff (J := univ) (f := f) (C := C) e
 
+theorem IsForwardInvariantForODEOn.preimage
+    {f : ℝ → F → F} {g : ℝ → E → E} {C : Set F} {J : Set ℝ}
+    (h : IsForwardInvariantForODEOn f C J) (L : E →L[ℝ] F)
+    (hL : ∀ t ∈ J, ∀ x, L (g t x) = f t (L x)) :
+    IsForwardInvariantForODEOn g (L ⁻¹' C) J := by
+  intro a b hab hJ γ hγ hinit
+  have hcurve : IsIntegralCurveOn (fun t => L (γ t)) f (Icc a b) := by
+    intro t ht
+    have hd := L.hasFDerivAt.comp_hasDerivWithinAt t (hγ t ht)
+    simpa only [Function.comp_def, hL t (hJ ht)] using hd
+  exact h a b hab hJ (fun t => L (γ t)) hcurve hinit
+
+
 end DifferentialGeometry.Analysis.ODE
