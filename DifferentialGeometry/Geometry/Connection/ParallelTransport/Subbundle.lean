@@ -52,7 +52,8 @@ omit [FiniteDimensional ℝ E] [T2Space M] in
 private theorem sectionAlongCurve_chartRepAt_differentiableAt
     [I.Boundaryless]
     (γ : ℝ → M) (hγ : ContMDiff 𝓘(ℝ, ℝ) I 1 γ)
-    (s : Cₛ^∞⟮I; E, TangentSpace I⟯) (t : ℝ) :
+    (s : ∀ y : M, TangentSpace I y) (t : ℝ)
+    (hs : MDifferentiableAt I (I.prod 𝓘(ℝ, E)) (T% s) (γ t)) :
     DifferentiableAt ℝ
       (DifferentialGeometry.Geometry.Riemannian.CovariantDerivativeAlong.chartRepAt
         (I := I) γ (fun r => s (γ r)) t) t := by
@@ -66,7 +67,7 @@ private theorem sectionAlongCurve_chartRepAt_differentiableAt
     self_mem_chartLeviCivitaGoodSet (I := I) α
   have hf : DifferentiableAt ℝ f (extChartAt I α (γ t)) :=
     differentiableAt_chartE_pullback_of_MDiff (I := I) α hgood
-      (s.contMDiff.mdifferentiableAt (by simp))
+      hs
   have hu : DifferentiableAt ℝ u t := by
     have hchart : MDifferentiableAt 𝓘(ℝ, ℝ) 𝓘(ℝ, E)
         (fun r => extChartAt I α (γ r)) t :=
@@ -90,7 +91,7 @@ private theorem sectionAlongCurve_chartRepAt_differentiableAt
     rfl
   exact hcomp.congr_of_eventuallyEq heq.symm
 
-theorem ContMDiffVectorSubbundle.covariantDerivative_eq_zero_of_unit_of_rank_eq_one
+theorem ContMDiffVectorSubbundle.covariantDerivative_eq_zero_on_of_unit_of_rank_eq_one
     [I.Boundaryless]
     (g : SmoothRiemannianMetric I M)
     (S : ContMDiffVectorSubbundle
@@ -98,7 +99,8 @@ theorem ContMDiffVectorSubbundle.covariantDerivative_eq_zero_of_unit_of_rank_eq_
     (hSrank : S.rank = 1)
     (hS : IsParallelSubmoduleFamily g S.fiber)
     (U : Set M) (hU : IsOpen U)
-    (s : Cₛ^∞⟮I; E, TangentSpace I⟯)
+    (s : ∀ y : M, TangentSpace I y)
+    (hs : MDifferentiableOn I (I.prod 𝓘(ℝ, E)) (T% s) U)
     (hs_mem : ∀ y ∈ U, s y ∈ S.fiber y)
     (hs_unit : ∀ y ∈ U, g.inner y (s y) (s y) = 1) :
     ∀ y ∈ U, ∀ v : TangentSpace I y,
@@ -138,6 +140,7 @@ theorem ContMDiffVectorSubbundle.covariantDerivative_eq_zero_of_unit_of_rank_eq_
         (I := I) eta (fun t => s (eta t)) 0) 0 :=
     sectionAlongCurve_chartRepAt_differentiableAt
       (I := I) eta (heta2.of_le (by norm_num)) s 0
+      ((hs (eta 0) (hetaU 0)).mdifferentiableAt (hU.mem_nhds (hetaU 0)))
   have hVdiff : DifferentiableAt ℝ
       (Riemannian.CovariantDerivativeAlong.chartRepAt (I := I) eta V 0) 0 :=
     Riemannian.Variation.parallelTransportSectionOnIcc_differentiableAt
@@ -219,7 +222,7 @@ theorem ContMDiffVectorSubbundle.covariantDerivative_eq_zero_of_unit_of_rank_eq_
       hderivEq, hrep0]
   have hbridge := Riemannian.CovariantDerivativeAlong.covDerivAlong_eq_leviCivita_of_eventuallyEq
     (I := I) g eta 0 ((heta2.of_le (by norm_num)).contMDiffAt)
-    (s.contMDiff.mdifferentiableAt (by simp)) (hV := by rfl)
+    ((hs (eta 0) (hetaU 0)).mdifferentiableAt (hU.mem_nhds (hetaU 0))) (hV := by rfl)
   have hLC :
       (LeviCivita (I := I) g) s (eta 0) v =
         Riemannian.CovariantDerivativeAlong.covDerivAlong
@@ -238,6 +241,23 @@ theorem ContMDiffVectorSubbundle.covariantDerivative_eq_zero_of_unit_of_rank_eq_
     _ = Riemannian.CovariantDerivativeAlong.covDerivAlong (I := I) g eta V 0 := hcovEq
     _ = 0 := Riemannian.Variation.parallelTransportSectionOnIcc_covDerivAlong
       (I := I) g eta heta2 h02 (s (eta 0)) ⟨le_rfl, by norm_num⟩
+
+theorem ContMDiffVectorSubbundle.covariantDerivative_eq_zero_of_unit_of_rank_eq_one
+    [I.Boundaryless]
+    (g : SmoothRiemannianMetric I M)
+    (S : ContMDiffVectorSubbundle
+      (I := I) (F := E) (V := TangentSpace I) (n := (∞ : WithTop ℕ∞)))
+    (hSrank : S.rank = 1)
+    (hS : IsParallelSubmoduleFamily g S.fiber)
+    (U : Set M) (hU : IsOpen U)
+    (s : Cₛ^∞⟮I; E, TangentSpace I⟯)
+    (hs_mem : ∀ y ∈ U, s y ∈ S.fiber y)
+    (hs_unit : ∀ y ∈ U, g.inner y (s y) (s y) = 1) :
+    ∀ y ∈ U, ∀ v : TangentSpace I y,
+      (LeviCivita (I := I) g) s y v = 0 := by
+  exact ContMDiffVectorSubbundle.covariantDerivative_eq_zero_on_of_unit_of_rank_eq_one
+    g S hSrank hS U hU s (s.contMDiff.mdifferentiable (by simp)).mdifferentiableOn
+    hs_mem hs_unit
 
 private theorem exists_local_unit_section_of_rank_eq_one
     (g : SmoothRiemannianMetric I M)
@@ -449,7 +469,7 @@ theorem ContMDiffVectorSubbundle.isParallelSubmoduleFamily_of_rank_eq_one
             fun y => c • chartRepAt (I := I) δ (fun x => s (δ x)) z y by
               simpa [W] using chartRepAt_smul (I := I) δ c (fun x => s (δ x)) z]
           exact (sectionAlongCurve_chartRepAt_differentiableAt
-            (I := I) δ (hδ.of_le (by norm_num)) s z).const_smul c
+            (I := I) δ (hδ.of_le (by norm_num)) s z s.mdifferentiableAt).const_smul c
         have hWpar : ∀ z ∈ Set.Icc (min (r₀ : ℝ) (r₁ : ℝ))
             (max (r₀ : ℝ) (r₁ : ℝ)), covDerivAlong (I := I) g δ W z = 0 := by
           intro z hz
