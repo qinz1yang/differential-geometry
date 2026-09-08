@@ -185,4 +185,109 @@ theorem curvatureOperatorImageAnnihilatorAt_eq_and_inner_eq_of_constant_rank
       (contMDiff_id : ContMDiff I I ∞ (fun y : M => y)).clm_bundle_id)
     (fun _ _ _ => rfl) hR q hrank s hs t ht x
 
+
+omit [I.Boundaryless] in
+private theorem tensor04StdAt_continuousAt_of_solution
+    {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn S)
+    {t : ℝ} (ht : t ∈ D.regular) (x : M) (a b v w : TangentSpace I x) :
+    ContinuousAt (fun r => tensor04StdAt (metricRm04At (S.family.metric r) x) a b v w) t := by
+  have hc : ContinuousOn
+      (fun r => tensor04StdAt (metricRm04At (S.family.metric r) x) a b v w) D.carrier := by
+    apply continuousOn_iff_continuous_domRestrict.mpr
+    exact hS.rm04Cont.eval_continuous (P := D.carrier) continuous_subtype_val
+      (fun r => r.property) continuous_const (fun _ => continuous_const)
+  exact (hc t (D.regular_subset ht)).continuousAt
+    (Filter.mem_of_superset (D.regular_isOpen.mem_nhds ht) D.regular_subset)
+
+private theorem curvature_nullity_fixed_between_endpoints
+    {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn S)
+    (hdim : Module.finrank ℝ E = 3)
+    {a b : ℝ} (hab : a < b) (hreg : Icc a b ⊆ D.regular)
+    (hR : ∀ r ∈ Icc a b, ∀ x,
+      (⟨metricRm04At (S.family.metric r) x,
+        metricRm04At_mem_algebraicCurvatureTensorSubmodule (S.family.metric r) x⟩ :
+          algebraicCurvatureTensorSubmodule (I := I) (M := M) x) ∈
+            algebraicCurvatureOperatorNonnegativeCone (I := I) (M := M))
+    (hrank : ∀ r ∈ Icc a b, ∀ x,
+      Module.finrank ℝ (curvatureOperatorImageAt (S.family.metric r) x
+        ⟨metricRm04At (S.family.metric r) x,
+          metricRm04At_mem_algebraicCurvatureTensorSubmodule (S.family.metric r) x⟩) = 1)
+    (x : M) :
+    let L := fun r => curvatureOperatorImageAnnihilatorAt (S.family.metric r) x
+      ⟨metricRm04At (S.family.metric r) x,
+        metricRm04At_mem_algebraicCurvatureTensorSubmodule (S.family.metric r) x⟩
+    L a = L b ∧ ∀ v ∈ L a, ∀ w,
+      (S.family.metric a).inner x v w = (S.family.metric b).inner x v w := by
+  let L := fun r => curvatureOperatorImageAnnihilatorAt (S.family.metric r) x
+    ⟨metricRm04At (S.family.metric r) x,
+      metricRm04At_mem_algebraicCurvatureTensorSubmodule (S.family.metric r) x⟩
+  obtain ⟨c, hac, hcb⟩ := exists_between hab
+  have hc : c ∈ Ioo a b := ⟨hac, hcb⟩
+  have hfixed (r : ℝ) (hr : r ∈ Ioo a b) : L c = L r ∧ ∀ v ∈ L c, ∀ w,
+      (S.family.metric c).inner x v w = (S.family.metric r).inner x v w :=
+    curvatureOperatorImageAnnihilatorAt_eq_and_inner_eq_of_constant_rank S hS hdim hc hr
+      (Ioo_subset_Icc_self.trans hreg) (fun r hr => hR r (Ioo_subset_Icc_self hr))
+      1 (fun r hr => hrank r (Ioo_subset_Icc_self hr)) x
+  have hmem_end (r : ℝ) (hr : r ∈ Icc a b) : L c ≤ L r := by
+    intro v hv
+    apply (mem_curvatureOperatorImageAnnihilatorAt_iff_tensor04StdAt_eq_zero
+      (S.family.metric r) x _ v).mpr
+    intro u w z
+    apply (tensor04StdAt_continuousAt_of_solution S hS (hreg hr) x u w v z).continuousWithinAt.eq_const_of_mem_closure
+    · rw [closure_Ioo hab.ne]
+      exact hr
+    · intro y hy
+      exact tensor04StdAt_eq_zero_of_mem_curvatureOperatorImageAnnihilatorAt
+        (S.family.metric y) x _ ((hfixed y hy).1 ▸ hv) u w z
+  have heq_end (r : ℝ) (hr : r ∈ Icc a b) : L c = L r :=
+    Submodule.eq_of_le_of_finrank_eq (hmem_end r hr)
+      ((curvatureOperatorImageAnnihilatorAt_finrank hdim (S.family.metric c) x _
+        (hrank c ⟨hac.le, hcb.le⟩ x)).trans
+          (curvatureOperatorImageAnnihilatorAt_finrank hdim (S.family.metric r) x _
+            (hrank r hr x)).symm)
+  have ha : a ∈ Icc a b := ⟨le_rfl, hab.le⟩
+  have hb : b ∈ Icc a b := ⟨hab.le, le_rfl⟩
+  refine ⟨(heq_end a ha).symm.trans (heq_end b hb), ?_⟩
+  intro v hv w
+  have hvc : v ∈ L c := (heq_end a ha).symm ▸ hv
+  have hinner_end (r : ℝ) (hr : r ∈ Icc a b) :
+      (S.family.metric r).inner x v w = (S.family.metric c).inner x v w := by
+    apply (metricDerivAt S hS ⟨r, hreg hr⟩ x v w).continuousAt.continuousWithinAt.eq_const_of_mem_closure
+    · rw [closure_Ioo hab.ne]
+      exact hr
+    · intro y hy
+      exact ((hfixed y hy).2 v hvc w).symm
+  exact (hinner_end a ha).trans (hinner_end b hb).symm
+
+theorem curvatureOperatorImageAnnihilatorAt_eq_and_inner_eq_of_rank_one_on_interval
+    {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn S)
+    (hdim : Module.finrank ℝ E = 3)
+    {J : Set ℝ} (hJ : J.OrdConnected) (hreg : J ⊆ D.regular)
+    (hR : ∀ r ∈ J, ∀ x,
+      (⟨metricRm04At (S.family.metric r) x,
+        metricRm04At_mem_algebraicCurvatureTensorSubmodule (S.family.metric r) x⟩ :
+          algebraicCurvatureTensorSubmodule (I := I) (M := M) x) ∈
+            algebraicCurvatureOperatorNonnegativeCone (I := I) (M := M))
+    (hrank : ∀ r ∈ J, ∀ x,
+      Module.finrank ℝ (curvatureOperatorImageAt (S.family.metric r) x
+        ⟨metricRm04At (S.family.metric r) x,
+          metricRm04At_mem_algebraicCurvatureTensorSubmodule (S.family.metric r) x⟩) = 1)
+    {s t : ℝ} (hs : s ∈ J) (ht : t ∈ J) (x : M) :
+    let L := fun r => curvatureOperatorImageAnnihilatorAt (S.family.metric r) x
+      ⟨metricRm04At (S.family.metric r) x,
+        metricRm04At_mem_algebraicCurvatureTensorSubmodule (S.family.metric r) x⟩
+    L s = L t ∧ ∀ v ∈ L s, ∀ w,
+      (S.family.metric s).inner x v w = (S.family.metric t).inner x v w := by
+  rcases lt_trichotomy s t with hst | rfl | hts
+  · have hsub := hJ.out hs ht
+    exact curvature_nullity_fixed_between_endpoints S hS hdim hst (hsub.trans hreg)
+      (fun r hr => hR r (hsub hr)) (fun r hr => hrank r (hsub hr)) x
+  · exact ⟨rfl, fun _ _ _ => rfl⟩
+  · have hsub := hJ.out ht hs
+    obtain ⟨heq, hinner⟩ := curvature_nullity_fixed_between_endpoints S hS hdim hts
+      (hsub.trans hreg) (fun r hr => hR r (hsub hr)) (fun r hr => hrank r (hsub hr)) x
+    refine ⟨heq.symm, ?_⟩
+    intro v hv w
+    exact (hinner v (heq.symm ▸ hv) w).symm
+
 end DifferentialGeometry.PDE.RicciFlow

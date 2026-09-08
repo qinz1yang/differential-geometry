@@ -4735,3 +4735,6 @@ import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletWeakChartCut
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Uhlenbeck.CurvatureOperatorParallel
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.CylinderProduct
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.WeakDerivativeLift
+import DifferentialGeometry.Analysis.Parabolic.Dirichlet.SpatialLowerSource
+import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureOperatorRankScaling
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Soliton.CurvatureRank

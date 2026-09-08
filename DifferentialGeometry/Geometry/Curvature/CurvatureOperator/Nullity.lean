@@ -107,6 +107,51 @@ theorem tensor04StdAt_eq_zero_of_mem_curvatureOperatorImageAnnihilatorAt
     funext k; fin_cases k <;> rfl
   simpa [tensor04StdAt, hvec] using h0
 
+theorem mem_curvatureOperatorImageAnnihilatorAt_iff_tensor04StdAt_eq_zero
+    (g : SmoothRiemannianMetric I M) (x : M)
+    (A : algebraicCurvatureTensorSubmodule (I := I) (M := M) x)
+    (v : TangentSpace I x) :
+    v ∈ curvatureOperatorImageAnnihilatorAt g x A ↔
+      ∀ a b w, tensor04StdAt (A : Tensor04At (I := I) (M := M) x) a b v w = 0 := by
+  constructor
+  · intro hv a b w
+    exact tensor04StdAt_eq_zero_of_mem_curvatureOperatorImageAnnihilatorAt g x A hv a b w
+  · intro hzero
+    obtain ⟨basis, horth⟩ : ∃ basis : Module.Basis
+        (Fin (Module.finrank ℝ (TangentSpace I x))) ℝ (TangentSpace I x),
+        ∀ i j, g.inner x (basis i) (basis j) = if i = j then (1 : ℝ) else 0 := by
+      let D := (tangentMetricData (I := I) g x).metric
+      let _ : InnerProductSpace.Core ℝ (TangentSpace I x) := D.toCore
+      let _ : NormedAddCommGroup (TangentSpace I x) :=
+        @InnerProductSpace.Core.toNormedAddCommGroup ℝ (TangentSpace I x) _ _ _ D.toCore
+      let _ : InnerProductSpace ℝ (TangentSpace I x) :=
+        @InnerProductSpace.ofCore ℝ (TangentSpace I x) _ _ _ D.toCore.toCore
+      let ob := stdOrthonormalBasis ℝ (TangentSpace I x)
+      refine ⟨ob.toBasis, ?_⟩
+      intro i j
+      change D.inner (ob i) (ob j) = if i = j then (1 : ℝ) else 0
+      rw [← D.toCore_inner]
+      exact ob.inner_eq_ite i j
+    apply ContinuousAlternatingMap.mem_contractionAnnihilator_iff.mpr
+    intro beta hbeta
+    rcases hbeta with ⟨α, hα⟩
+    apply ContinuousAlternatingMap.ext
+    intro w
+    have hw : w = ![w 0] := by ext i; fin_cases i; rfl
+    rw [hw]
+    rw [← hα]
+    change curvatureOperatorEndomorphismAt g x A α ![v, w 0] = 0
+    rw [curvatureOperatorEndomorphismAt_apply_orthonormal g x basis horth A]
+    have hz (i j) : (A : Tensor04At (I := I) (M := M) x) ![basis i, basis j, v, w 0] = 0 := by
+      have h := hzero (basis i) (basis j) (w 0)
+      unfold tensor04StdAt at h
+      have hvec : vec4 (I := I) (basis i) (basis j) v (w 0) =
+          ![basis i, basis j, v, w 0] := by
+        funext k
+        fin_cases k <;> rfl
+      rwa [hvec] at h
+    simp only [hz, zero_mul, Finset.sum_const_zero, mul_zero]
+
 variable [T2Space M] [BoundarylessManifold I M]
 
 theorem riemannOp_eq_zero_of_mem_curvatureOperatorImageAnnihilatorAt

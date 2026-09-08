@@ -26,7 +26,7 @@ variable {N : Type*} [TopologicalSpace N] [ChartedSpace G N]
   [SigmaCompactSpace N] [T2Space N] [J.Boundaryless]
 
 omit [NeZero (Module.finrank Real E)] [NeZero (Module.finrank Real F)]
-    [I.Boundaryless] [J.Boundaryless] in
+    [I.Boundaryless] [J.Boundaryless] [SigmaCompactSpace N] in
 theorem metricCurvatureOperatorRankAt_localPull
     (g : SmoothRiemannianMetric J N) (f : M → N)
     (hf : IsLocalDiffeomorph I J ∞ f) (x : M)

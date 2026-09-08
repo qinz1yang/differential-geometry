@@ -1,3 +1,6 @@
+import DifferentialGeometry.Analysis.Sobolev.Euclidean.WeakDerivativeLift
+import DifferentialGeometry.Analysis.Sobolev.Chart.CutoffPullbackLp
+import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletSeparability
 import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletWeakChartPullback
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.Multiplication.MultiplyQuant
 noncomputable section
@@ -97,5 +100,46 @@ theorem exists_norm_h1ComplDirichlet_lift_chartPullback_mul
   intro f hf
   obtain ⟨e, he, hne⟩ := hpb hf
   exact ⟨e, Lp.ext (he.trans (hL f).symm), hne⟩
+
+private theorem exists_chartPullback_mul_lift
+    (q : SmoothRiemannianMetric I_hs M) (α : M) {Ω : Set EuStd}
+    (hΩ : IsOpen Ω) (hΩc : IsCompact (closure Ω))
+    (hΩs : closure Ω ⊆ toEuclidean (E := EuN) '' interior (extChartAt I_hs α).target)
+    {η : EuStd → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hηc : HasCompactSupport η)
+    (hηs : tsupport η ⊆ Ω) :
+    ∃ L : Lp ℝ 2 (volume.restrict Ω) →L[ℝ]
+      Lp ℝ 2 (riemannianVolumeMeasure (I := I_hs) (M := M) q),
+      (∀ f, (L f : M → ℝ) =ᵐ[riemannianVolumeMeasure (I := I_hs) (M := M) q]
+        chartPullback I_hs α (fun z => η z * f z)) ∧
+      ∃ A : ℝ, ∀ f : Lp ℝ 2 (volume.restrict Ω), MemWkp 1 2 f Ω →
+        ∃ e : H1ComplDirichlet q, H1ComplDirichletToLp q e = L f ∧
+          ‖e‖ ≤ A * (iteratedWeakSobolevNorm 1 2 f Ω).toReal := by
+  obtain ⟨L, hL⟩ := exists_continuousLinearMap_chartPullback_mul q α hΩ.measurableSet hΩc
+    (hΩs.trans (image_mono interior_subset)) hη.continuous hηc hηs
+  obtain ⟨A, _, hA⟩ := exists_norm_h1ComplDirichlet_lift_chartPullback_mul q α hΩ hΩc hΩs hη hηs L hL
+  exact ⟨L, hL, A, hA⟩
+
+theorem exists_lp_h1ComplDirichlet_chartPullback_mul_of_weak_partials
+    {Z : Type*} [MeasurableSpace Z] {μ : Measure Z}
+    (q : SmoothRiemannianMetric I_hs M) (α : M) {Ω : Set EuStd}
+    (hΩ : IsOpen Ω) (hΩc : IsCompact (closure Ω))
+    (hΩs : closure Ω ⊆ toEuclidean (E := EuN) '' interior (extChartAt I_hs α).target)
+    {η : EuStd → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hηc : HasCompactSupport η)
+    (hηs : tsupport η ⊆ Ω)
+    (P : Lp (Lp ℝ 2 (volume.restrict Ω)) 2 μ)
+    (W : Fin (Module.finrank ℝ EuN) → Lp ℝ 2 (μ.prod (volume.restrict Ω)))
+    (hweak : ∀ i, ∀ᵐ t ∂μ, DeGiorgi.HasWeakPartialDeriv i (fun z => W i (t, z))
+      (P t : EuStd → ℝ) Ω) :
+    ∃ v : Lp (H1ComplDirichlet q) 2 μ, ∀ᵐ t ∂μ,
+      (H1ComplDirichletToLp q (v t) : M → ℝ) =ᵐ[riemannianVolumeMeasure (I := I_hs) (M := M) q]
+        chartPullback I_hs α (fun z => η z * P t z) := by
+  obtain ⟨L,hL,A,hA⟩ := exists_chartPullback_mul_lift q α hΩ hΩc hΩs hη hηc hηs
+  obtain ⟨v,hv⟩ := exists_lp_lift_of_weak_partials hΩ (H1ComplDirichletToLp q).continuous
+    (H1ComplDirichletToLp_injective q) L A hA P W hweak
+  refine ⟨v, ?_⟩
+  filter_upwards [hv] with t ht
+  have he : (H1ComplDirichletToLp q (v t) : M → ℝ) = (L (P t) : M → ℝ) :=
+    congrArg (fun f : Lp ℝ 2 (riemannianVolumeMeasure (I := I_hs) (M := M) q) => (f : M → ℝ)) ht
+  exact Filter.EventuallyEq.trans (Filter.Eventually.of_forall fun x => congrFun he x) (hL (P t))
 
 end DifferentialGeometry.Analysis.Laplacian.WithBoundary.Dirichlet
