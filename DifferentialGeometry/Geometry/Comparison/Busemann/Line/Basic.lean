@@ -142,6 +142,29 @@ theorem busemann_add_reverse_on_line
     rw [hpos_zero, hdist, sub_zero] at hupper
     linarith
 
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M]
+    [SigmaCompactSpace M] [ConnectedSpace M] [PseudoEMetricSpace M]
+    [IsRiemannianManifold I M]
+    [IsContinuousRiemannianBundle E (fun x : M ↦ TangentSpace I x)] in
+theorem busemann_apply_line
+    {g : SmoothRiemannianMetric I M} {γ : ℝ → M}
+    (hγ : IsMinimizingLine (I := I) g γ) (t : ℝ) :
+    busemann (I := I) γ (γ t) = -t := by
+  have hvalue (n : ℕ) (hn : t ≤ (n : ℝ)) : busemannApprox (I := I) γ n (γ t) = -t := by
+    rw [busemannApprox, riemannianEDist_comm, hγ.edist_eq hn,
+      ENNReal.toReal_ofReal (sub_nonneg.mpr hn)]
+    ring
+  apply IsLeast.csInf_eq
+  constructor
+  · obtain ⟨n, hn⟩ := exists_nat_ge t
+    exact ⟨n, hvalue n hn⟩
+  · rintro _ ⟨n, rfl⟩
+    rcases le_total t (n : ℝ) with hn | hn
+    · exact (hvalue n hn).symm.le
+    · change -t ≤ (riemannianEDist I (γ (n : ℝ)) (γ t)).toReal - (n : ℝ)
+      rw [hγ.edist_eq hn, ENNReal.toReal_ofReal (sub_nonneg.mpr hn)]
+      linarith
+
 end IsMinimizingLine
 
 end BusemannLine
