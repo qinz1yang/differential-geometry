@@ -15,7 +15,9 @@ namespace NormalCoordinates
 open Module DifferentialGeometry.Tensor0SBundle
 open scoped Manifold ContDiff RealInnerProductSpace
 
-variable {E : Type uE} [NormedAddCommGroup E] [InnerProductSpace Real E]
+section Normed
+
+variable {E : Type uE} [NormedAddCommGroup E] [NormedSpace Real E]
 variable [FiniteDimensional Real E]
 variable {H : Type uH} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H}
@@ -58,6 +60,16 @@ theorem normalBasis_inner (g : SmoothRiemannianMetric I M) (x : M)
   change D.inner (ob i) (ob j) = if i = j then (1 : Real) else 0
   rw [← hinner]
   exact hob
+
+end Normed
+
+variable {E : Type uE} [NormedAddCommGroup E] [InnerProductSpace Real E]
+variable [FiniteDimensional Real E]
+variable {H : Type uH} [TopologicalSpace H]
+variable {I : ModelWithCorners Real E H}
+variable {M : Type u} [TopologicalSpace M] [ChartedSpace H M]
+variable [IsManifold I ∞ M]
+
 
 noncomputable def normalFrame (g : SmoothRiemannianMetric I M) (x : M) :
     E ≃L[Real] TangentSpace I x := by
