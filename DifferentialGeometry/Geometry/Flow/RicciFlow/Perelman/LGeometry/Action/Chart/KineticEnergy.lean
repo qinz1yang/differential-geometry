@@ -1,7 +1,7 @@
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.H1.Approximation.Slice
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.Quadratic.Basic
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Defs
-import DifferentialGeometry.Geometry.Operator.Family.Gram.Basic
+import DifferentialGeometry.Geometry.Operator.Family.Gram.Curve
 import Mathlib.Analysis.Calculus.Deriv.Shift
 
 set_option autoImplicit false
@@ -15,8 +15,6 @@ open scoped ContDiff Manifold Topology Interval
 
 open DifferentialGeometry.Analysis.Parabolic.TimeSobolev
 open DifferentialGeometry.Geometry.Curvature
-open DifferentialGeometry.Geometry.Riemannian.MFDerivAlongCurve
-open DifferentialGeometry.Tensor.Tensor0SRiemannian
 
 universe u uE uH
 
@@ -68,26 +66,11 @@ private theorem lKinetic_ae
     rw [hL] at hrcc
     exact ⟨le_add_of_nonneg_right hrcc.1, by linarith [hrcc.2]⟩
   have hars : alpha (a + r) ∈ (chartAt H p).source := hsrc hrab
-  have hraw :=
-    raw_mfderiv_eq_symmL_apply_fderiv_of_mdifferentiableAt
-      (I := I) (M := M) hmdiff p hars
-  rw [hderiv] at hraw
-  have hinv : (extChartAt I p).symm (us.toFun r) = alpha (a + r) := by
-    rw [hslice hrcc]
-    exact (extChartAt I p).left_inv (by
-      rw [extChartAt_source]
-      exact hars)
-  rw [smul_apply, real_inner_smul_left,
-    chartGramOp_inner, hinv]
-  rw [add_comm r a]
-  change (1 / 2 : Real) *
-      (S.base.metric (T - (a + r) ^ 2)).inner (alpha (a + r))
-        ((mfderiv (modelWithCornersSelf Real Real) I alpha (a + r) :
-          Real →L[Real] _) (1 : Real))
-        ((mfderiv (modelWithCornersSelf Real Real) I alpha (a + r) :
-          Real →L[Real] _) (1 : Real)) = _
-  rw [hraw]
-  rfl
+  have hgram := chartGramOp_inner_deriv S.family p (T - (a + r) ^ 2) hmdiff hars
+  change deriv ((extChartAt I p) ∘ alpha) (a + r) = us.deriv r at hderiv
+  rw [hderiv] at hgram
+  rw [smul_apply, real_inner_smul_left, hslice hrcc, add_comm r a]
+  exact congrArg (fun z : Real ↦ (1 / 2 : Real) * z) hgram.symm
 
 theorem lKinetic_eq_chart_integral
     (S : SolutionOn (I := I) (M := M) D) (T : Real)

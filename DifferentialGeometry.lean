@@ -2,6 +2,7 @@ import DifferentialGeometry.Analysis.Calculus.Smoothness.AnisotropicJoint
 import DifferentialGeometry.Analysis.Calculus.AnalyticTransfer
 import DifferentialGeometry.Analysis.Calculus.ApproximatesLinearOn
 import DifferentialGeometry.Analysis.Calculus.AbsolutelyContinuous
+import DifferentialGeometry.Analysis.Calculus.Manifold.AbsolutelyContinuous
 import DifferentialGeometry.Analysis.Calculus.Compactness.ArzelaAscoli
 import DifferentialGeometry.Analysis.Calculus.Cutoff.Ball
 import DifferentialGeometry.Analysis.Calculus.Retraction.Ball
@@ -4146,6 +4147,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.Noncollapsing.Curva
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Scaling.DerivativeNorm
 import DifferentialGeometry.Geometry.Metric.Comparison.CurveEnergy
 import DifferentialGeometry.Geometry.Operator.Family.Gram.Basic
+import DifferentialGeometry.Geometry.Operator.Family.Gram.Curve
 import DifferentialGeometry.Geometry.Operator.Family.Gram.Convergence
 import DifferentialGeometry.Geometry.Operator.Family.Gram.Christoffel
 import DifferentialGeometry.Geometry.Operator.Family.Gram.Inverse
