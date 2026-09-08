@@ -43,6 +43,23 @@ private theorem derivWithin_nonpos_at_interval_right_min
   rw [hlin] at hnonneg
   exact nonpos_of_mul_nonneg_right hnonneg (sub_neg.mpr hst)
 
+theorem derivWithin_sub_heatOperatorWithDrift_nonpos_at_time_and_space_min
+    (G : MetricConnectionFamily (I := I) (M := M) ℝ)
+    (X : ℝ → (x : M) → TangentSpace I x)
+    {ψ : ℝ → M → ℝ} {s t : ℝ} (hst : s < t) {x : M}
+    (htime : IsLocalMinOn (fun q => ψ q x) (Icc s t) t)
+    (hspace : IsLocalMin (ψ t) x)
+    (hx : I.IsInteriorPoint x)
+    (hψ : ∀ᶠ y in 𝓝 x, MDifferentiableAt I 𝓘(ℝ, ℝ) (ψ t) y)
+    (hgrad : MDiffAt (T% fun y : M =>
+      gradientFun (I := I) (G.metric t) (ψ t) y) x) :
+    derivWithin (fun q => ψ q x) (Icc s t) t -
+      heatOperatorWithDrift (I := I) G t (X t) (ψ t) x ≤ 0 := by
+  have htime_nonpos := derivWithin_nonpos_at_interval_right_min hst htime
+  have hheat_nonneg := heatOperatorWithDrift_at_spatial_min_nonneg_of_isInteriorPoint
+    (I := I) G t (X t) hspace hx hψ.self_of_nhds hψ hgrad
+  linarith
+
 theorem derivWithin_sub_heatOperatorWithDrift_nonpos_at_spacetime_min
     (G : MetricConnectionFamily (I := I) (M := M) Real)
     (X : Real → (x : M) → TangentSpace I x)
