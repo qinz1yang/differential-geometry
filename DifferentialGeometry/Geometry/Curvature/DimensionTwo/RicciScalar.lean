@@ -357,4 +357,18 @@ theorem metricRm04StdAt_eq_scalar_div_two_of_finrank_eq_two
   simpa [metricRm04StdAt_apply,
     DifferentialGeometry.Geometry.Curvature.vec4] using happly
 
+
+theorem riemannOp_eq_scalar_div_two_of_finrank_eq_two
+    (g : SmoothRiemannianMetric I M) (hn : Module.finrank Real E = 2)
+    (x : M) (v w z : TangentSpace I x) :
+    riemannOp (LeviCivita g) x v w z =
+      (metricScalarAt g x / 2) • (g.inner x w z • v - g.inner x v z • w) := by
+  apply SmoothRiemannianMetric.eq_of_inner_eq g
+  intro u
+  rw [g.symm x (riemannOp (LeviCivita g) x v w z) u,
+    ← DifferentialGeometry.rm04_eq_inner_riem g x v w z u,
+    metricRm04StdAt_eq_scalar_div_two_of_finrank_eq_two g hn]
+  simp only [map_smul, map_sub, smul_apply, sub_apply, smul_eq_mul]
+  ring
+
 end DifferentialGeometry.Geometry.Curvature

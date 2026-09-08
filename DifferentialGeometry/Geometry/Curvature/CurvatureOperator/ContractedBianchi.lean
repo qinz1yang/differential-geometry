@@ -248,6 +248,19 @@ theorem metricScalar_eq_scal
   exact (metric_scalar_at_eq_chart_ricci_sum (I := I) g x).trans
     ((chart_ricci_sum_eq_smooth_orthonormal_sum (I := I) g x).trans rfl)
 
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
+theorem scalarCurv_contMDiff (g : SmoothRiemannianMetric I M) :
+    ContMDiff I 𝓘(Real) ∞ (scalarCurv g) := by
+  by_cases hn : Module.finrank Real E = 0
+  · have heq : scalarCurv g = 0 := by
+      funext x
+      let _ : IsEmpty (Fin (Module.finrank Real E)) := ⟨fun i => by have hi := i.isLt; omega⟩
+      simp [scalarCurv]
+    rw [heq]
+    exact contMDiff_const
+  · let _ : NeZero (Module.finrank Real E) := ⟨hn⟩
+    simpa only [metricScalar_eq_scal] using metricScalar_smooth g
+
 end ScalarCurv
 
 section TraceBridge

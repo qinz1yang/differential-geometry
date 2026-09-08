@@ -4605,3 +4605,5 @@ import DifferentialGeometry.Geometry.Metric.Cylinder.IsometryExtension
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.ModelCoverRoundThreeCylinder
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.ModelCoverCylinderClassification
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HamiltonHarnack.UhlenbeckTestJets
+import DifferentialGeometry.Geometry.Metric.Conformal.VectorFieldCurvature
+import DifferentialGeometry.Analysis.Integration.Measure.ConformalCurvature
