@@ -17,7 +17,7 @@ structure GlobalSurfaceProductSplitting
       (DifferentialGeometry.Topology.Morse.MorseModel 3) H}
     [I.Boundaryless]
     {M : Type} [TopologicalSpace M] [ChartedSpace H M]
-    [IsManifold I (⊤ : WithTop ℕ∞) M] [T2Space M]
+    [IsManifold I ∞ M] [T2Space M]
     [SigmaCompactSpace M] [ConnectedSpace M] [LocallyPathConnectedSpace M]
     [DifferentialGeometry.Geometry.Riemannian.Topology.SemilocallySimplyConnectedSpace M]
     [Inhabited M]
@@ -82,7 +82,7 @@ def HasGlobalSurfaceProductSplitting
       (DifferentialGeometry.Topology.Morse.MorseModel 3) H}
     [I.Boundaryless]
     {M : Type} [TopologicalSpace M] [ChartedSpace H M]
-    [IsManifold I (⊤ : WithTop ℕ∞) M] [T2Space M]
+    [IsManifold I ∞ M] [T2Space M]
     [SigmaCompactSpace M] [ConnectedSpace M] [Nonempty M]
     (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M) : Prop :=
   let _ : LocallyPathConnectedSpace H :=
@@ -100,7 +100,7 @@ theorem exists_global_product_diffeomorph_of_parallel_line
       (DifferentialGeometry.Topology.Morse.MorseModel (m + 1)) H}
     [I.Boundaryless]
     {M : Type} [TopologicalSpace M] [ChartedSpace H M]
-    [IsManifold I (⊤ : WithTop ℕ∞) M] [T2Space M]
+    [IsManifold I ∞ M] [T2Space M]
     [SigmaCompactSpace M] [ConnectedSpace M] [Nonempty M]
     (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
     (hg : DifferentialGeometry.RiemannianMetricComplete (I := I) g)
@@ -197,7 +197,7 @@ theorem hasGlobalSurfaceProductSplitting_of_parallel_line
       (DifferentialGeometry.Topology.Morse.MorseModel 3) H}
     [I.Boundaryless]
     {M : Type} [TopologicalSpace M] [ChartedSpace H M]
-    [IsManifold I (⊤ : WithTop ℕ∞) M] [T2Space M]
+    [IsManifold I ∞ M] [T2Space M]
     [SigmaCompactSpace M] [ConnectedSpace M] [Nonempty M]
     (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
     (hg : DifferentialGeometry.RiemannianMetricComplete (I := I) g)

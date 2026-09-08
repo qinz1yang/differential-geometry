@@ -246,7 +246,7 @@ inductive CurvatureTimeSliceGlobalAlternative
       (DifferentialGeometry.Topology.Morse.MorseModel 3) H}
     [I.Boundaryless]
     {M : Type} [TopologicalSpace M] [ChartedSpace H M]
-    [IsManifold I (⊤ : WithTop ℕ∞) M] [T2Space M]
+    [IsManifold I ∞ M] [T2Space M]
     [SigmaCompactSpace M] [ConnectedSpace M] [Nonempty M]
     (g : SmoothRiemannianMetric I M) : Prop where
   | flat
@@ -283,7 +283,7 @@ theorem curvature_time_slice_global_trichotomy_of_derived_data
       (DifferentialGeometry.Topology.Morse.MorseModel 3) H}
     [I.Boundaryless]
     {M : Type} [TopologicalSpace M] [ChartedSpace H M]
-    [IsManifold I (⊤ : WithTop ℕ∞) M] [T2Space M]
+    [IsManifold I ∞ M] [T2Space M]
     [SigmaCompactSpace M] [ConnectedSpace M] [Nonempty M]
     (g : SmoothRiemannianMetric I M)
     (hg : DifferentialGeometry.RiemannianMetricComplete (I := I) g)
@@ -334,7 +334,7 @@ theorem flow_time_slice_global_trichotomy_of_derived_data
       (DifferentialGeometry.Topology.Morse.MorseModel 3) H}
     [I.Boundaryless]
     {M : Type} [TopologicalSpace M] [ChartedSpace H M]
-    [IsManifold I (⊤ : WithTop ℕ∞) M] [T2Space M]
+    [IsManifold I ∞ M] [T2Space M]
     [SigmaCompactSpace M] [ConnectedSpace M] [Nonempty M]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : DifferentialGeometry.PDE.RicciFlow.SolutionOn (I := I) (M := M) D)
@@ -450,7 +450,7 @@ inductive WholeFlowCurvatureAlternative
       (DifferentialGeometry.Topology.Morse.MorseModel 3) H}
     [I.Boundaryless]
     {M : Type} [TopologicalSpace M] [ChartedSpace H M]
-    [IsManifold I (⊤ : WithTop ℕ∞) M] [T2Space M]
+    [IsManifold I ∞ M] [T2Space M]
     [SigmaCompactSpace M] [ConnectedSpace M] [Nonempty M]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : DifferentialGeometry.PDE.RicciFlow.SolutionOn (I := I) (M := M) D) : Prop where
@@ -484,7 +484,7 @@ theorem whole_flow_trichotomy_of_constant_rank_mode
       (DifferentialGeometry.Topology.Morse.MorseModel 3) H}
     [I.Boundaryless]
     {M : Type} [TopologicalSpace M] [ChartedSpace H M]
-    [IsManifold I (⊤ : WithTop ℕ∞) M] [T2Space M]
+    [IsManifold I ∞ M] [T2Space M]
     [SigmaCompactSpace M] [ConnectedSpace M] [Nonempty M]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : DifferentialGeometry.PDE.RicciFlow.SolutionOn (I := I) (M := M) D)
@@ -626,7 +626,7 @@ theorem ancient_curvature_trichotomy_of_constant_rank_mode
       (DifferentialGeometry.Topology.Morse.MorseModel 3) H}
     [I.Boundaryless]
     {M : Type} [TopologicalSpace M] [ChartedSpace H M]
-    [IsManifold I (⊤ : WithTop ℕ∞) M] [T2Space M]
+    [IsManifold I ∞ M] [T2Space M]
     [SigmaCompactSpace M] [ConnectedSpace M] [Nonempty M]
     {T : Real}
     (S : DifferentialGeometry.PDE.RicciFlow.SolutionOn (I := I) (M := M)

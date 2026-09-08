@@ -597,7 +597,7 @@ theorem exists_global_product_diffeomorph_with_potential_from_parallel_unit_sect
       (DifferentialGeometry.Topology.Morse.MorseModel (m + 1)) H}
     [I.Boundaryless]
     {M : Type} [TopologicalSpace M] [ChartedSpace H M]
-    [IsManifold I (⊤ : WithTop ℕ∞) M] [T2Space M]
+    [IsManifold I ∞ M] [T2Space M]
     [T2Space (TangentBundle I M)] [SigmaCompactSpace M]
     [ConnectedSpace M] [SimplyConnectedSpace M]
     (g : SmoothRiemannianMetric I M)
@@ -1004,7 +1004,7 @@ theorem exists_global_product_diffeomorph_from_parallel_unit_section
       (DifferentialGeometry.Topology.Morse.MorseModel (m + 1)) H}
     [I.Boundaryless]
     {M : Type} [TopologicalSpace M] [ChartedSpace H M]
-    [IsManifold I (⊤ : WithTop ℕ∞) M] [T2Space M]
+    [IsManifold I ∞ M] [T2Space M]
     [T2Space (TangentBundle I M)] [SigmaCompactSpace M]
     [ConnectedSpace M] [SimplyConnectedSpace M]
     (g : SmoothRiemannianMetric I M)
@@ -1084,7 +1084,7 @@ theorem ContMDiffVectorSubbundle.exists_global_product_diffeomorph_of_rank_eq_on
       (DifferentialGeometry.Topology.Morse.MorseModel (m + 1)) H}
     [I.Boundaryless]
     {M : Type} [TopologicalSpace M] [ChartedSpace H M]
-    [IsManifold I (⊤ : WithTop ℕ∞) M] [T2Space M]
+    [IsManifold I ∞ M] [T2Space M]
     [T2Space (TangentBundle I M)] [SigmaCompactSpace M]
     [ConnectedSpace M] [SimplyConnectedSpace M]
     (g : SmoothRiemannianMetric I M)

@@ -14,7 +14,7 @@ open DifferentialGeometry.Geometry.Curvature.DimensionThree
 open DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover
 variable {H : Type} [TopologicalSpace H]
   {I : ModelWithCorners Real (DifferentialGeometry.Topology.Morse.MorseModel 3) H} [I.Boundaryless]
-  {M : Type} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I (⊤ : WithTop ℕ∞) M]
+  {M : Type} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [T2Space M] [SigmaCompactSpace M] [ConnectedSpace M] [Nonempty M]
 
 theorem gradientRicciSoliton_hasCurvatureSurfaceProductSplitting_of_rank_one

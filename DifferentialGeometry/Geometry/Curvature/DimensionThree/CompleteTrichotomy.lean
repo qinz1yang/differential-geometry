@@ -27,7 +27,7 @@ variable {H : Type} [TopologicalSpace H]
 variable {I : ModelWithCorners ℝ
   (DifferentialGeometry.Topology.Morse.MorseModel 3) H}
 variable {M : Type} [TopologicalSpace M] [ChartedSpace H M]
-variable [I.Boundaryless] [IsManifold I (⊤ : WithTop ℕ∞) M] [T2Space M]
+variable [I.Boundaryless] [IsManifold I ∞ M] [T2Space M]
 variable [SigmaCompactSpace M] [ConnectedSpace M] [Nonempty M]
 
 noncomputable local instance completeTrichotomyTwoFormFiniteDimensional
@@ -127,7 +127,7 @@ theorem _root_.DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover.
       (DifferentialGeometry.Topology.Morse.MorseModel 3) H}
     [I.Boundaryless]
     {M : Type} [TopologicalSpace M] [ChartedSpace H M]
-    [IsManifold I (⊤ : WithTop ℕ∞) M] [T2Space M]
+    [IsManifold I ∞ M] [T2Space M]
     [SigmaCompactSpace M] [ConnectedSpace M]
     [LocallyPathConnectedSpace M]
     [DifferentialGeometry.Geometry.Riemannian.Topology.SemilocallySimplyConnectedSpace M]
