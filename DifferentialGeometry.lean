@@ -4071,6 +4071,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Jacobi.Un
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Jacobian.Basic
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Chart.Defs
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Chart.KineticEnergy
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Chart.Sobolev
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ReducedLength.LaplacianBound
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ReducedVolume.LowerBound.LocalBallLengthBound
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ReducedVolume.LowerBound.InteriorTime
@@ -4151,6 +4152,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Scaling.DerivativeNorm
 import DifferentialGeometry.Geometry.Metric.Comparison.CurveEnergy
 import DifferentialGeometry.Geometry.Operator.Family.Gram.Basic
 import DifferentialGeometry.Geometry.Operator.Family.Gram.Curve
+import DifferentialGeometry.Geometry.Operator.Family.Gram.Sobolev
 import DifferentialGeometry.Geometry.Operator.Family.Gram.Convergence
 import DifferentialGeometry.Geometry.Operator.Family.Gram.Christoffel
 import DifferentialGeometry.Geometry.Operator.Family.Gram.Inverse
