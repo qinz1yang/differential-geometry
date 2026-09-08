@@ -2921,6 +2921,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.Convergen
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.GramConvergence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.KineticConvergence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.ScalarConvergence
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.VolumeConvergence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.Equation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.MetricExtension
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.MetricLowerBound
