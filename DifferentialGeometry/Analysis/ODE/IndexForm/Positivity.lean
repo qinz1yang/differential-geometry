@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.ODE.IndexForm.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.ArctanDeriv
+import DifferentialGeometry.Analysis.Sobolev.Interval.Poincare
 
 set_option autoImplicit false
 
@@ -11,174 +11,6 @@ noncomputable section
 namespace DifferentialGeometry.Analysis.ODE
 
 variable {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F]
-
-private def endWeight (a d t : ℝ) : ℝ :=
-  a * Real.tan (Real.pi / 2 - a * (t + d))
-
-private theorem hasDerivAt_endWeight
-    {a d t : ℝ}
-    (hangle :
-      Real.pi / 2 - a * (t + d) ∈
-        Set.Ioo (-(Real.pi / 2)) (Real.pi / 2)) :
-    HasDerivAt (endWeight a d) (-a ^ 2 - (endWeight a d t) ^ 2) t := by
-  let θ : ℝ := Real.pi / 2 - a * (t + d)
-  have hcos : Real.cos θ ≠ 0 :=
-    (Real.cos_pos_of_mem_Ioo hangle).ne'
-  have hshift : HasDerivAt (fun s : ℝ => s + d) 1 t :=
-    (hasDerivAt_id t).add_const d
-  have harg :
-      HasDerivAt (fun s : ℝ => Real.pi / 2 - a * (s + d)) (-a) t := by
-    change HasDerivAt ((fun _ : ℝ => Real.pi / 2) - fun s => a * (s + d)) (-a) t
-    simpa only [zero_sub, mul_one] using
-      (hasDerivAt_const t (Real.pi / 2)).sub (hshift.const_mul a)
-  have htan :
-      HasDerivAt
-        (fun s : ℝ => Real.tan (Real.pi / 2 - a * (s + d)))
-        ((1 / Real.cos θ ^ 2) * (-a)) t := by
-    change HasDerivAt (Real.tan ∘ fun s : ℝ => Real.pi / 2 - a * (s + d))
-      ((1 / Real.cos θ ^ 2) * (-a)) t
-    exact (Real.hasDerivAt_tan hcos).comp t harg
-  have hscaled := htan.const_mul a
-  change HasDerivAt (fun y => a * Real.tan (Real.pi / 2 - a * (y + d)))
-    (-a ^ 2 - (endWeight a d t) ^ 2) t
-  apply hscaled.congr_deriv
-  rw [endWeight, Real.tan_eq_sin_div_cos]
-  change a * (1 / Real.cos θ ^ 2 * -a) =
-    -a ^ 2 - (a * (Real.sin θ / Real.cos θ)) ^ 2
-  field_simp [hcos]
-  nlinarith [Real.sin_sq_add_cos_sq θ]
-
-theorem weighted_poincare_lt_of_left_endpoint_eq_zero
-    {a : ℝ} (ha : 0 < a) (haπ : a < Real.pi / 2)
-    {y v : ℝ → F}
-    (hy : ∀ t ∈ Set.Icc (0 : ℝ) 1,
-      HasDerivWithinAt y (v t) (Set.Icc (0 : ℝ) 1) t)
-    (hv : ContinuousOn v (Set.Icc (0 : ℝ) 1))
-    (hy0 : y 0 = 0) (hy1 : y 1 ≠ 0) :
-    a ^ 2 * (∫ t in (0 : ℝ)..1, (⟪y t, y t⟫ : ℝ)) <
-      ∫ t in (0 : ℝ)..1, (⟪v t, v t⟫ : ℝ) := by
-  let d : ℝ := (Real.pi / 2 - a) / (2 * a)
-  let φ : ℝ → ℝ := endWeight a d
-  let Q : ℝ → ℝ := fun t => φ t * (⟪y t, y t⟫ : ℝ)
-  let dQ : ℝ → ℝ := fun t =>
-    (-a ^ 2 - (φ t) ^ 2) * (⟪y t, y t⟫ : ℝ) +
-      φ t * ((⟪v t, y t⟫ : ℝ) + (⟪y t, v t⟫ : ℝ))
-  let S : ℝ → ℝ := fun t =>
-    (⟪v t - φ t • y t, v t - φ t • y t⟫ : ℝ)
-  have hd : 0 < d := by
-    exact div_pos (sub_pos.mpr haπ) (mul_pos (by norm_num) ha)
-  have had : a * (1 + d) < Real.pi / 2 := by
-    have ha0 : a ≠ 0 := ha.ne'
-    have had_eq : a * d = (Real.pi / 2 - a) / 2 := by
-      dsimp only [d]
-      field_simp
-    calc
-      a * (1 + d) = a + a * d := by ring
-      _ = a + (Real.pi / 2 - a) / 2 := by rw [had_eq]
-      _ < Real.pi / 2 := by linarith
-  have hangle : ∀ t ∈ Set.Icc (0 : ℝ) 1,
-      Real.pi / 2 - a * (t + d) ∈
-        Set.Ioo (-(Real.pi / 2)) (Real.pi / 2) := by
-    intro t ht
-    have htd : 0 < t + d := add_pos_of_nonneg_of_pos ht.1 hd
-    have htd_le : t + d ≤ 1 + d := by
-      simpa only [add_comm] using add_le_add_right ht.2 d
-    have hmul_pos : 0 < a * (t + d) := mul_pos ha htd
-    have hmul_lt : a * (t + d) < Real.pi / 2 :=
-      (mul_le_mul_of_nonneg_left htd_le ha.le).trans_lt had
-    constructor <;> linarith [Real.pi_pos]
-  have hφderiv : ∀ t ∈ Set.Icc (0 : ℝ) 1,
-      HasDerivAt φ (-a ^ 2 - (φ t) ^ 2) t := by
-    intro t ht
-    exact hasDerivAt_endWeight (hangle t ht)
-  have hφcont : ContinuousOn φ (Set.Icc (0 : ℝ) 1) :=
-    fun t ht => (hφderiv t ht).continuousAt.continuousWithinAt
-  have hycont : ContinuousOn y (Set.Icc (0 : ℝ) 1) :=
-    fun t ht => (hy t ht).continuousWithinAt
-  have hQderiv : ∀ t ∈ Set.Icc (0 : ℝ) 1,
-      HasDerivWithinAt Q (dQ t) (Set.Icc (0 : ℝ) 1) t := by
-    intro t ht
-    have hinner := (hy t ht).inner ℝ (hy t ht)
-    have hprod := (hφderiv t ht).hasDerivWithinAt.mul hinner
-    change HasDerivWithinAt (φ * fun t => (⟪y t, y t⟫ : ℝ)) (dQ t)
-      (Set.Icc (0 : ℝ) 1) t
-    simpa only [dQ, real_inner_comm (y t) (v t)] using hprod
-  have hQcont : ContinuousOn Q (Set.Icc (0 : ℝ) 1) :=
-    hφcont.mul (hycont.inner hycont)
-  have hdQcont : ContinuousOn dQ (Set.Icc (0 : ℝ) 1) :=
-    ((continuousOn_const.sub (hφcont.pow 2)).mul (hycont.inner hycont)).add
-      (hφcont.mul ((hv.inner hycont).add (hycont.inner hv)))
-  have hdQint : IntervalIntegrable dQ volume (0 : ℝ) 1 :=
-    (by
-      have hcont : ContinuousOn dQ (Set.uIcc (0 : ℝ) 1) := by
-        simpa only [uIcc_of_le zero_le_one] using hdQcont
-      exact hcont.intervalIntegrable)
-  have hFTC :
-      (∫ t in (0 : ℝ)..1, dQ t) = Q 1 - Q 0 := by
-    apply intervalIntegral.integral_eq_sub_of_hasDeriv_right_of_le
-      zero_le_one hQcont
-    · intro t ht
-      exact
-        ((hQderiv t (Set.Ioo_subset_Icc_self ht)).hasDerivAt
-          (Icc_mem_nhds ht.1 ht.2)).hasDerivWithinAt
-    · exact hdQint
-  have hQ0 : Q 0 = 0 := by
-    simp only [Q, hy0, inner_zero_right, mul_zero]
-  have hφ1 : 0 < φ 1 := by
-    have hθ := hangle 1 ⟨zero_le_one, le_rfl⟩
-    exact mul_pos ha
-      (Real.tan_pos_of_pos_of_lt_pi_div_two (by linarith [hθ.1]) hθ.2)
-  have hQ1 : 0 < Q 1 :=
-    mul_pos hφ1 ((real_inner_self_pos).2 hy1)
-  have hSint : IntervalIntegrable S volume (0 : ℝ) 1 := by
-    have hcont : ContinuousOn S (Set.Icc (0 : ℝ) 1) :=
-      (hv.sub (hφcont.smul hycont)).inner
-        (hv.sub (hφcont.smul hycont))
-    have hcont' : ContinuousOn S (Set.uIcc (0 : ℝ) 1) := by
-      simpa only [uIcc_of_le zero_le_one] using hcont
-    exact hcont'.intervalIntegrable
-  have hSnonneg : 0 ≤ ∫ t in (0 : ℝ)..1, S t :=
-    intervalIntegral.integral_nonneg zero_le_one fun t _ =>
-      real_inner_self_nonneg
-  have hpoint : ∀ t ∈ Set.Icc (0 : ℝ) 1,
-      (⟪v t, v t⟫ : ℝ) - a ^ 2 * (⟪y t, y t⟫ : ℝ) =
-        S t + dQ t := by
-    intro t _
-    simp only [S, dQ, inner_sub_left, inner_sub_right,
-      real_inner_smul_left, real_inner_smul_right]
-    rw [real_inner_comm (y t) (v t)]
-    ring
-  have henergy :
-      (∫ t in (0 : ℝ)..1,
-          ((⟪v t, v t⟫ : ℝ) - a ^ 2 * (⟪y t, y t⟫ : ℝ))) =
-        (∫ t in (0 : ℝ)..1, S t) + ∫ t in (0 : ℝ)..1, dQ t := by
-    rw [intervalIntegral.integral_congr
-      (g := fun t => S t + dQ t)
-      (fun t ht => hpoint t (by
-        simpa only [uIcc_of_le zero_le_one] using ht))]
-    exact intervalIntegral.integral_add hSint hdQint
-  have henergy_pos :
-      0 < ∫ t in (0 : ℝ)..1,
-        ((⟪v t, v t⟫ : ℝ) - a ^ 2 * (⟪y t, y t⟫ : ℝ)) := by
-    rw [henergy, hFTC, hQ0, sub_zero]
-    exact add_pos_of_nonneg_of_pos hSnonneg hQ1
-  have hvint :
-      IntervalIntegrable (fun t => (⟪v t, v t⟫ : ℝ)) volume (0 : ℝ) 1 :=
-    (by
-      have hcont : ContinuousOn (fun t => (⟪v t, v t⟫ : ℝ))
-          (Set.uIcc (0 : ℝ) 1) := by
-        simpa only [uIcc_of_le zero_le_one] using hv.inner hv
-      exact hcont.intervalIntegrable)
-  have hyint :
-      IntervalIntegrable (fun t => (⟪y t, y t⟫ : ℝ)) volume (0 : ℝ) 1 :=
-    (by
-      have hcont : ContinuousOn (fun t => (⟪y t, y t⟫ : ℝ))
-          (Set.uIcc (0 : ℝ) 1) := by
-        simpa only [uIcc_of_le zero_le_one] using hycont.inner hycont
-      exact hcont.intervalIntegrable)
-  rw [intervalIntegral.integral_sub hvint (hyint.const_mul (a ^ 2)),
-    intervalIntegral.integral_const_mul] at henergy_pos
-  linarith
 
 theorem IsJacobiFieldOn.inner_velocity_position_at_right_pos
     {R : ℝ → F →L[ℝ] F} {y v : ℝ → F} {κ : ℝ}
@@ -211,7 +43,12 @@ theorem IsJacobiFieldOn.inner_velocity_position_at_right_pos
   have hpoincare :
       a ^ 2 * (∫ t in (0 : ℝ)..1, (⟪y t, y t⟫ : ℝ)) <
         ∫ t in (0 : ℝ)..1, (⟪v t, v t⟫ : ℝ) :=
-    weighted_poincare_lt_of_left_endpoint_eq_zero ha hap hsol.deriv_fst hsol.contOn_snd hy0 hy1
+    poincare_interval_lt_of_eq_zero_left zero_lt_one hsol.deriv_fst hsol.contOn_snd hy0
+      (by intro hz; exact hy1 (hz (by simp)))
+      (by
+        have hapi : a < Real.pi / 2 := hap
+        simpa only [sub_zero, one_pow, mul_one] using
+          (show a ^ 2 < (Real.pi / 2) ^ 2 from by nlinarith))
   have hyEnergy_nonneg :
       0 ≤ ∫ t in (0 : ℝ)..1, (⟪y t, y t⟫ : ℝ) :=
     intervalIntegral.integral_nonneg zero_le_one fun _ _ =>

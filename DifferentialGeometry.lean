@@ -1133,6 +1133,7 @@ import DifferentialGeometry.Analysis.Sobolev.Hs.HeatSemigroup.Basic
 import DifferentialGeometry.Analysis.Sobolev.Hs.HeatSemigroup.Extension
 import DifferentialGeometry.Analysis.Sobolev.Hs.Inclusion
 import DifferentialGeometry.Analysis.Sobolev.Hs.Defs
+import DifferentialGeometry.Analysis.Sobolev.Interval.Poincare
 import DifferentialGeometry.Analysis.Sobolev.Intrinsic.Defs
 import DifferentialGeometry.Analysis.Sobolev.Intrinsic.Equivalence.Basic
 import DifferentialGeometry.Analysis.Sobolev.Intrinsic.Equivalence.NormEquivalence
