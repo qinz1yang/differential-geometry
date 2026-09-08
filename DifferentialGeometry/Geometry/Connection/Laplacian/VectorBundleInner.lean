@@ -162,7 +162,6 @@ private theorem abstractHessian_eq_inner_cov_gradient
   rfl
 
 private theorem sum_abstractHessian_smoothOrthoFrame_eq_laplacian
-    [NeZero (Module.finrank Real E)]
     (g : SmoothRiemannianMetric I M)
     {f : M → Real} (hf : ContMDiff I 𝓘(Real, Real) ∞ f)
     (x : M) (hx : I.IsInteriorPoint x) :
@@ -185,6 +184,8 @@ private theorem sum_abstractHessian_smoothOrthoFrame_eq_laplacian
   have hframe : Orthonormal Real frame := by
     rw [orthonormal_iff_ite]
     intro i j
+    let _ : NeZero (Module.finrank Real E) :=
+      ⟨Nat.ne_of_gt (lt_of_le_of_lt (Nat.zero_le i.val) i.isLt)⟩
     change g.inner x (frame i) (frame j) = if i = j then 1 else 0
     exact smoothOrthoFrame_orthonormal_at_center (I := I) g x i j
   have hcard : Fintype.card (Fin (Module.finrank Real E)) =
@@ -192,8 +193,8 @@ private theorem sum_abstractHessian_smoothOrthoFrame_eq_laplacian
     simpa using (show Module.finrank Real E =
       Module.finrank Real (TangentSpace I x) from rfl)
   have hspan : ⊤ ≤ Submodule.span Real (Set.range frame) := by
-    have hbasis := (basisOfOrthonormalOfCardEqFinrank hframe hcard).span_eq
-    rw [coe_basisOfOrthonormalOfCardEqFinrank] at hbasis
+    have hbasis := (basisOfLinearIndependentOfCardEqFinrank' frame hframe.linearIndependent hcard).span_eq
+    rw [coe_basisOfLinearIndependentOfCardEqFinrank'] at hbasis
     exact hbasis.ge
   let basis : OrthonormalBasis (Fin (Module.finrank Real E)) Real
       (TangentSpace I x) := OrthonormalBasis.mk hframe hspan
@@ -242,7 +243,6 @@ theorem mvfderiv_inner_endomorphism_apply_of_cov_eq_zero
   simp only [hcovv, map_zero, sub_zero, inner_zero_right, add_zero]
 
 theorem laplacian_inner_bundle
-    [NeZero (Module.finrank Real E)]
     (g : SmoothRiemannianMetric I M) (cov : CovariantDerivative I F V)
     [ContMDiffCovariantDerivative cov ∞] (hcov : cov.IsMetricCompatible)
     (u v : Cₛ^∞⟮I; F, V⟯) (x : M) (hx : I.IsInteriorPoint x) :
@@ -263,6 +263,8 @@ theorem laplacian_inner_bundle
     (I := I) g hf x hx]
   rw [rawBundleConnLap_def, rawBundleConnLap_def]
   have hdir (i : Fin (Module.finrank Real E)) :=
+    let _ : NeZero (Module.finrank Real E) :=
+      ⟨Nat.ne_of_gt (lt_of_le_of_lt (Nat.zero_le i.val) i.isLt)⟩
     abstractHessian_inner_bundle_apply
       (I := I) g cov hcov u v
       (smoothOrthoFrame (I := I) g x i)
@@ -274,7 +276,6 @@ theorem laplacian_inner_bundle
   ring
 
 theorem laplacian_inner_bundle_of_cov_right_eq_zero
-    [NeZero (Module.finrank Real E)]
     (g : SmoothRiemannianMetric I M) (cov : CovariantDerivative I F V)
     [ContMDiffCovariantDerivative cov ∞] (hcov : cov.IsMetricCompatible)
     (u v : Cₛ^∞⟮I; F, V⟯) (x : M)
@@ -289,7 +290,6 @@ theorem laplacian_inner_bundle_of_cov_right_eq_zero
   simp [hv]
 
 theorem inner_rawBundleConnLap_self_eq_zero_of_eventually_unit
-    [NeZero (Module.finrank Real E)]
     (g : SmoothRiemannianMetric I M) (cov : CovariantDerivative I F V)
     [ContMDiffCovariantDerivative cov ∞] (hcov : cov.IsMetricCompatible)
     (v : Cₛ^∞⟮I; F, V⟯) (x : M)
@@ -319,7 +319,6 @@ theorem inner_rawBundleConnLap_self_eq_zero_of_eventually_unit
   linarith
 
 theorem laplacian_inner_endomorphism_apply_of_normal_eigenvector
-    [NeZero (Module.finrank Real E)]
     (g : SmoothRiemannianMetric I M) (cov : CovariantDerivative I F V)
     [ContMDiffCovariantDerivative cov ∞] (hcov : cov.IsMetricCompatible)
     (A : Cₛ^∞⟮I; F →L[Real] F, (fun x : M ↦ V x →L[Real] V x)⟯)

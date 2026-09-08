@@ -1810,4 +1810,23 @@ lemma continuousOn_hamiltonIveyConvexBarrier_time_nonneg
     exact ne_of_gt hpos
   · exact continuousOn_hamiltonIveyBarrier_nonneg_time hK
 
+
+theorem hamilton_ivey_perturbed_boundary_slope_pos
+    {r z η : ℝ} (hz : 0 < z) (hη : 0 < η)
+    (heigen : -3 * z ≤ r) (hscalar : -3 ≤ r)
+    (hboundary : r = z * (Real.log z - 3 - η)) :
+    3 < z ∧ 0 < Real.log z - 2 - η := by
+  have hviolation : r < z * (Real.log z - 3) := by
+    nlinarith [mul_pos hz hη]
+  have hlog := two_lt_log_of_hamiltonIvey_violation hz heigen hscalar hviolation
+  have hz3 : 3 < z := by linarith [Real.log_le_sub_one_of_pos hz]
+  have hprod : 0 < z * (Real.log z - 2 - η) := by nlinarith [hboundary]
+  exact ⟨hz3, (mul_pos_iff_of_pos_left hz).mp hprod⟩
+
+theorem hamilton_ivey_perturbed_defect_nonneg_of_le_one
+    {r z η : ℝ} (hz : 0 ≤ z) (hz1 : z ≤ 1) (hη : 0 ≤ η) (heigen : -3 * z ≤ r) :
+    0 ≤ r - z * (Real.log z - 3 - η) := by
+  have hlog := Real.log_nonpos hz hz1
+  nlinarith [mul_nonpos_of_nonneg_of_nonpos hz hlog, mul_nonneg hz hη]
+
 end DifferentialGeometry.Geometry.Curvature.DimensionThree

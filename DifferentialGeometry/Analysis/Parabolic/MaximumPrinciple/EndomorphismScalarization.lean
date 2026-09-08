@@ -28,7 +28,6 @@ variable {V : M → Type*} [TopologicalSpace (TotalSpace F V)]
   [IsContMDiffRiemannianBundle I ∞ F V]
 
 theorem parabolicOperatorWithDrift_inner_endomorphism_apply_of_normal_eigenvector
-    [NeZero (Module.finrank Real E)]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
     (cov : CovariantDerivative I F V)
     [ContMDiffCovariantDerivative cov ∞] (hcov : cov.IsMetricCompatible)
@@ -95,7 +94,6 @@ theorem parabolicOperatorWithDrift_inner_endomorphism_apply_of_normal_eigenvecto
   ring
 
 theorem derivWithin_sub_heatOperatorWithDrift_inner_endomorphism_apply_of_normal_eigenvector
-    [NeZero (Module.finrank Real E)]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
     (cov : CovariantDerivative I F V)
     [ContMDiffCovariantDerivative cov ∞] (hcov : cov.IsMetricCompatible)
@@ -127,7 +125,6 @@ theorem derivWithin_sub_heatOperatorWithDrift_inner_endomorphism_apply_of_normal
   exact h
 
 theorem parabolicOperatorWithDrift_sum_inner_endomorphism_apply_of_normal_eigenframe
-    [NeZero (Module.finrank Real E)]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
     (cov : CovariantDerivative I F V)
     [ContMDiffCovariantDerivative cov ∞] (hcov : cov.IsMetricCompatible)

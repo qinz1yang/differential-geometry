@@ -4680,3 +4680,7 @@ import DifferentialGeometry.Geometry.Metric.Family.QuadraticBounds
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.DivergenceForm
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.TimeRegularity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Solutions.Restriction
+import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.LogarithmicBarrier
+import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.TraceScalarization
+import DifferentialGeometry.Geometry.Curvature.DimensionThree.HamiltonIvey.EndomorphismReaction
+import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.HamiltonIvey

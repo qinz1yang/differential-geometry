@@ -3138,4 +3138,52 @@ theorem scalar_weak_maximum_principle_ode_compare_supersolution_autonomous_of_he
     hinit
     (fun t ht => by simpa using hF_lip t ht)
 
+theorem parabolic_sub_mul_log_add_time_at
+    [VectorBundle ℝ E (TangentSpace I : M → Type _)]
+    (G : MetricConnectionFamily (I := I) (M := M) ℝ)
+    (T : ℝ) (X : ℝ → (x : M) → TangentSpace I x)
+    (u v : ℝ → M → ℝ) (c : ℝ → ℝ) (t : ℝ) (x : M) (hv : v t x ≠ 0)
+    (hu_time : DifferentiableWithinAt ℝ (fun s => u s x) (Icc 0 T) t)
+    (hv_time : DifferentiableWithinAt ℝ (fun s => v s x) (Icc 0 T) t)
+    (hc_time : DifferentiableWithinAt ℝ c (Icc 0 T) t)
+    (hu_space : ∀ᶠ y in 𝓝 x, MDifferentiableAt I 𝓘(ℝ, ℝ) (u t) y)
+    (hv_space : ∀ᶠ y in 𝓝 x, MDifferentiableAt I 𝓘(ℝ, ℝ) (v t) y)
+    (hu_grad : MDiffAt (T% fun y : M => gradientFun (I := I) (G.metric t) (u t) y) x)
+    (hv_grad : MDiffAt (T% fun y : M => gradientFun (I := I) (G.metric t) (v t) y) x) :
+    parabolicOperatorWithDrift (I := I) G T X
+        (fun s y => u s y - v s y * (Real.log (v s y) + c s)) t x =
+      parabolicOperatorWithDrift (I := I) G T X u t x -
+        (Real.log (v t x) + c t + 1) * parabolicOperatorWithDrift (I := I) G T X v t x - derivWithin c (Icc 0 T) t * v t x +
+          (v t x)⁻¹ * (G.metric t).inner x
+            (gradientAt (I := I) G t (v t) x) (gradientAt (I := I) G t (v t) x) := by
+  have hnear : ∀ᶠ y in 𝓝 x, v t y ≠ 0 :=
+    hv_space.self_of_nhds.continuousAt.eventually_ne hv
+  have hlogspace : ∀ᶠ y in 𝓝 x,
+      MDifferentiableAt I 𝓘(ℝ, ℝ) (fun z => v t z * (Real.log (v t z) + c t)) y := by
+    filter_upwards [hv_space, hnear] with y hy hne
+    exact hy.mul (((Real.differentiableAt_log hne).mdifferentiableAt.comp y hy).add
+      mdifferentiableAt_const)
+  have hloggrad : MDiffAt (T% fun y : M =>
+      gradientFun (I := I) (G.metric t) (fun z => v t z * (Real.log (v t z) + c t)) y) x := by
+    have hc : MDifferentiableAt I 𝓘(ℝ, ℝ) (fun y => Real.log (v t y) + c t + 1) x :=
+      ((Real.differentiableAt_log hv).mdifferentiableAt.comp x
+        hv_space.self_of_nhds).add mdifferentiableAt_const |>.add mdifferentiableAt_const
+    refine (hc.smul_section hv_grad).congr_of_eventuallyEq ?_
+    filter_upwards [hv_space, hnear] with y hy hne
+    apply congrArg (fun w => (⟨y, w⟩ : TotalSpace E (TangentSpace I : M → Type _)))
+    have hd : HasDerivAt (fun z : ℝ => z * (Real.log z + c t))
+        (Real.log (v t y) + c t + 1) (v t y) := by
+      simpa only [id_eq, one_mul, mul_inv_cancel₀ hne] using!
+        (hasDerivAt_id (v t y)).mul ((Real.hasDerivAt_log hne).add_const (c t))
+    rw [gradientFun_comp (I := I) (G.metric t) hd.differentiableAt hy, hd.deriv]
+    rfl
+  have hlogtime : DifferentiableWithinAt ℝ
+      (fun s => v s x * (Real.log (v s x) + c s)) (Icc 0 T) t :=
+    hv_time.mul ((hv_time.log hv).add hc_time)
+  rw [parabolic_sub_at G T X u (fun s y => v s y * (Real.log (v s y) + c s)) t x
+    hu_time hlogtime
+    hu_space hlogspace hu_grad hloggrad,
+    parabolic_mul_log_add_time_at G T X v c t x hv hv_time hc_time hv_space hv_grad]
+  ring
+
 end DifferentialGeometry.Analysis.Parabolic

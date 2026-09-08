@@ -48,7 +48,6 @@ private theorem exists_unit_minimum_eigenvector {W : Type*}
 
 
 theorem exists_cutoff_negative_minimum_eigenvalue_lower_support
-    [NeZero (Module.finrank ℝ E)]
     [VectorBundle ℝ E (TangentSpace I : M → Type _)]
     (G : MetricConnectionFamily (I := I) (M := M) ℝ)
     (cov : CovariantDerivative I F V)
@@ -200,7 +199,6 @@ theorem exists_cutoff_negative_minimum_eigenvalue_lower_support
     ring
 
 theorem exists_cutoff_negative_minimum_eigenvalue_parabolic_inequality_at_spacetime_max
-    [NeZero (Module.finrank ℝ E)]
     [VectorBundle ℝ E (TangentSpace I : M → Type _)]
     (G : MetricConnectionFamily (I := I) (M := M) ℝ)
     (cov : CovariantDerivative I F V)

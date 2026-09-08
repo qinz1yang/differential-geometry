@@ -288,4 +288,19 @@ theorem mdiffAt_const_mul_sub_const_smul_gradientFun
     exact gradientFun_mdiffAt (I := I) g hu y
   simpa [u] using scalar_mul_grad_mdiffAt (I := I) g hudiff hugrad
 
+theorem gradientFun_mul_mdifferentiableAt
+    [VectorBundle ℝ E (TangentSpace I : M → Type _)]
+    (g : SmoothRiemannianMetric I M) {u v : M → ℝ} {x : M}
+    (hu : ∀ᶠ y in 𝓝 x, MDifferentiableAt I 𝓘(ℝ, ℝ) u y)
+    (hv : ∀ᶠ y in 𝓝 x, MDifferentiableAt I 𝓘(ℝ, ℝ) v y)
+    (hgu : MDiffAt (T% fun y => gradientFun (I := I) g u y) x)
+    (hgv : MDiffAt (T% fun y => gradientFun (I := I) g v y) x) :
+    MDiffAt (T% fun y => gradientFun (I := I) g (fun z => u z * v z) y) x := by
+  refine (mdifferentiableAt_add_section
+    (hu.self_of_nhds.smul_section hgv)
+    (hv.self_of_nhds.smul_section hgu)).congr_of_eventuallyEq ?_
+  filter_upwards [hu, hv] with y huy hvy
+  exact congrArg (fun w => (⟨y, w⟩ : TotalSpace E (TangentSpace I : M → Type _)))
+    (gradientFun_mul (I := I) g huy hvy)
+
 end DifferentialGeometry.Geometry.Operator
