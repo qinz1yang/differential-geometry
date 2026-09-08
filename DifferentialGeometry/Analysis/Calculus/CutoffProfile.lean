@@ -87,6 +87,15 @@ theorem continuous_evalue : Continuous evalue :=
   contDiff.continuous.comp
     (ENNReal.continuous_truncateToReal (by norm_num))
 
+theorem evalue_ofReal (q : ℝ) :
+    evalue (ENNReal.ofReal q) = value q := by
+  rw [evalue_eq_value ENNReal.ofReal_ne_top]
+  by_cases hq : 0 ≤ q
+  · rw [ENNReal.toReal_ofReal hq]
+  · rw [ENNReal.ofReal_of_nonpos (le_of_not_ge hq), ENNReal.toReal_zero,
+      one_of_le_one (by norm_num),
+      one_of_le_one (by linarith)]
+
 theorem evalue_mem_Icc (s : ENNReal) :
     evalue s ∈ Set.Icc (0 : Real) 1 :=
   mem_Icc _

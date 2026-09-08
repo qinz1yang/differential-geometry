@@ -64,88 +64,23 @@ theorem calabiDist_hess_support_on
     exists_calabiData (I := I) g hEnorm 0 le_rfl (by simpa using hRic) hOx hfin
   let rho : M → Real := fun y =>
     tail.left + branchRadius (I := I) g tail.branch y
-  have hrad_x :
-      branchRadius (I := I) g tail.branch x = tail.ell := by
-    calc
-      branchRadius (I := I) g tail.branch x =
-          branchRadius (I := I) g tail.branch
-            (expMapIntrinsic (I := I) g hEnorm tail.p tail.u) :=
-        congrArg (branchRadius (I := I) g tail.branch) tail.exp_eq.symm
-      _ = Real.sqrt (g.inner tail.p tail.u tail.u) :=
-        branchRadius_exp (I := I) tail.branch tail.source_mem
-      _ = tail.ell := tail.u_norm
-  have hpx_upper :
-      riemannianEDist I tail.p x ≤ ENNReal.ofReal tail.ell := by
-    have h := tail.branch.edist_le_radius tail.target_mem
-    rw [hrad_x] at h
-    exact h
-  have hfull : riemannianEDist I O x = ENNReal.ofReal r := by
-    dsimp only [r]
-    exact (ENNReal.ofReal_toReal hfin).symm
-  have hsplit :
-      ENNReal.ofReal r =
-        ENNReal.ofReal tail.left + ENNReal.ofReal tail.ell := by
-    rw [← ENNReal.ofReal_add tail.left_nonneg tail.ell_pos.le, tail.split]
-  have hpx_lower :
-      ENNReal.ofReal tail.ell ≤ riemannianEDist I tail.p x := by
-    apply (ENNReal.add_le_add_iff_left ENNReal.ofReal_ne_top).mp
-    calc
-      ENNReal.ofReal tail.left + ENNReal.ofReal tail.ell =
-          ENNReal.ofReal r := hsplit.symm
-      _ = riemannianEDist I O x := hfull.symm
-      _ ≤ riemannianEDist I O tail.p + riemannianEDist I tail.p x :=
-        riemannianEDist_triangle
-      _ = ENNReal.ofReal tail.left + riemannianEDist I tail.p x := by
-        rw [tail.left_edist]
-  have hpx :
-      riemannianEDist I tail.p x = ENNReal.ofReal tail.ell :=
-    le_antisymm hpx_upper hpx_lower
-  have hu_sq : g.inner tail.p tail.u tail.u = tail.ell ^ 2 := by
-    have hsq := Real.sq_sqrt
-      (gInner_self_nonneg (I := I) g tail.p tail.u)
-    rw [tail.u_norm] at hsq
-    exact hsq.symm
   let e : TangentSpace I tail.p := tail.ell⁻¹ • tail.u
-  have he_unit : g.inner tail.p e e = 1 := by
-    dsimp only [e]
-    rw [gInner_smul_self (I := I) g tail.p, hu_sq]
-    field_simp [tail.ell_pos.ne']
+  have he_unit : g.inner tail.p e e = 1 :=
+    tail.inner_normalized_tangent
   have hscale : tail.ell • e = tail.u := by
     dsimp only [e]
     rw [smul_smul, mul_inv_cancel₀ tail.ell_pos.ne', one_smul]
   let gamma : Real → M :=
     intrinsicGeodesic (I := I) g hEnorm tail.p e
-  have hend : gamma tail.ell = x := by
-    dsimp only [gamma]
-    rw [← intrinsicGeodesic_smul (I := I) g hEnorm tail.p e tail.ell,
-      hscale, ← expMapIntrinsic_def]
-    exact tail.exp_eq
+  have hend : gamma tail.ell = x :=
+    tail.intrinsicGeodesic_normalized_tangent_ell
   have hmin : ∀ eta : Real → M,
       ContMDiffOn 𝓘(Real, Real) I 1 eta (Set.Icc 0 tail.ell) →
       eta 0 = tail.p → eta tail.ell = gamma tail.ell →
       arcLength (I := I) g gamma 0 tail.ell ≤
         arcLength (I := I) g eta 0 tail.ell := by
     intro eta heta heta0 hetaell
-    have heta_end : eta tail.ell = x := hetaell.trans hend
-    have heta_nonneg : 0 ≤ arcLength (I := I) g eta 0 tail.ell := by
-      unfold arcLength
-      exact intervalIntegral.integral_nonneg tail.ell_pos.le
-        (fun _ _ => Real.sqrt_nonneg _)
-    have hed :
-        riemannianEDist I (eta 0) (eta tail.ell) ≤
-          ENNReal.ofReal (arcLength (I := I) g eta 0 tail.ell) :=
-      Geometry.Riemannian.Geodesic.riemannianEDist_le_arcLength
-        (I := I) g tail.ell_pos.le heta
-        (fun t _ => hEnorm (eta t) _)
-    have hreal := ENNReal.toReal_mono ENNReal.ofReal_ne_top hed
-    have hell_le : tail.ell ≤ arcLength (I := I) g eta 0 tail.ell := by
-      rw [heta0, heta_end, hpx, ENNReal.toReal_ofReal tail.ell_pos.le,
-        ENNReal.toReal_ofReal heta_nonneg] at hreal
-      exact hreal
-    dsimp only [gamma]
-    rw [arcLength_radial (I := I) g hEnorm tail.p e,
-      he_unit, Real.sqrt_one, sub_zero, mul_one]
-    exact hell_le
+    exact tail.arcLength_normalized_tangent_le rfl heta heta0 (hetaell.trans hend)
   have hsrc :
       tangentSpaceModelContinuousLinearEquiv (I := I) tail.p
           (tail.ell • e) ∈ tail.branch.hom.source := by

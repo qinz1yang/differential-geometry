@@ -4616,3 +4616,5 @@ import DifferentialGeometry.Geometry.Metric.RicciSoliton.CylinderQuotientTautolo
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Uhlenbeck.CurvatureOperatorRank
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.ExteriorRank
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.CurvatureRank
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Distance.LengthVariation
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Distance.Laplacian

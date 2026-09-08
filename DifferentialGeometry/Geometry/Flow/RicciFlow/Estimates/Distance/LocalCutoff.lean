@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Distance.Laplacian
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Distance.Barrier
 import DifferentialGeometry.Analysis.Calculus.CutoffProfile
 import DifferentialGeometry.Geometry.Operator.GradientRegularity
@@ -341,5 +342,124 @@ theorem exists_distance_cutoff_lower_support_of_ricci_bound_on_ball
       (Analysis.CutoffProfile.abs_deriv_le_derivBound (u t x))
       (Analysis.CutoffProfile.abs_deriv2_le_derivBound (u t x)) hB
     simpa only [mul_assoc, gradientAt, flowG] using hbound
+
+theorem exists_distance_cutoff_lower_support_of_ricci_le_on_ball
+    {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D)
+    (hS : IsSolutionOn (I := I) S) {t R K : ℝ} (ht : t ∈ D.regular)
+    (hcomplete : RiemannianMetricComplete (I := I) (S.base.metric t))
+    (O : M) (hR : 0 < R) (hK : 0 ≤ K)
+    (hRic : ∀ y : M, riemannianEDistOf (I := I) (S.base.metric t) O y < ENNReal.ofReal R →
+      ∀ v : TangentSpace I y, ricciTensor (I := I) (S.base.metric t) y v v ≤
+        K * (S.base.metric t).inner y v v)
+    (a : ℝ) (ha : 0 ≤ a)
+    (x : M) (hx : R ≤ (riemannianEDistOf (I := I) (S.base.metric t) O x).toReal) :
+    let r := (riemannianEDistOf (I := I) (S.base.metric t) O x).toReal
+    let χ := fun s y => Analysis.CutoffProfile.evalue
+      (ENNReal.ofReal a * riemannianEDistOf (I := I) (S.base.metric s) O y)
+    ∃ φ : ℝ → M → ℝ,
+      φ t x = χ t x ∧
+      (∀ᶠ y in 𝓝 x, ∀ s : ℝ, 0 ≤ φ s y ∧ φ s y ≤ χ s y) ∧
+      DifferentiableAt ℝ (fun s => φ s x) t ∧
+      (∀ᶠ y in 𝓝 x, MDifferentiableAt I 𝓘(ℝ, ℝ) (φ t) y) ∧
+      MDiffAt (T% fun y : M => gradientFun (I := I) (S.base.metric t) (φ t) y) x ∧
+      (S.base.metric t).inner x
+        (gradientFun (I := I) (S.base.metric t) (φ t) x)
+        (gradientFun (I := I) (S.base.metric t) (φ t) x) ≤
+          (deriv Analysis.CutoffProfile.value (a * r)) ^ 2 * a ^ 2 ∧
+      deriv (fun s => φ s x) t - laplacian (I := I)
+          (LeviCivita (I := I) (S.base.metric t)) (S.base.metric t) (φ t) x ≤
+        Analysis.CutoffProfile.derivBound *
+          (a * (2 * (Module.finrank ℝ E - 1 : ℝ) * Analysis.CutoffProfile.derivBound ^ 2 / R +
+            K * R) + a ^ 2) := by
+  obtain ⟨ρ, hρeq, hρupper, hρtime, hρspace, hρgrad, hρsq, hρpar⟩ :=
+    exists_distance_upper_support_of_ricci_le_on_ball
+      (I := I) S hS ht hcomplete O hR hK hRic x hx
+  let u : ℝ → M → ℝ := fun s y => a * ρ s y
+  let φ : ℝ → M → ℝ := fun s y => Analysis.CutoffProfile.value (u s y)
+  have hvalue : Differentiable ℝ Analysis.CutoffProfile.value :=
+    Analysis.CutoffProfile.contDiff.differentiable (by simp)
+  have hvalueC2 : ContDiff ℝ 2 Analysis.CutoffProfile.value :=
+    Analysis.CutoffProfile.contDiff.of_le (by decide : (2 : WithTop ℕ∞) ≤ (∞ : WithTop ℕ∞))
+  have hvalue' : Differentiable ℝ (deriv Analysis.CutoffProfile.value) :=
+    (hvalueC2.deriv' (n := 1)).differentiable (by simp)
+  have hlin : Differentiable ℝ (fun q : ℝ => a * q) := fun q =>
+    (hasDerivAt_const_mul (x := q) a).differentiableAt
+  have hlin' : Differentiable ℝ (deriv fun q : ℝ => a * q) := by
+    have hder : (deriv fun q : ℝ => a * q) = fun _ => a :=
+      funext fun q => (hasDerivAt_const_mul (x := q) a).deriv
+    rw [hder]
+    exact differentiable_const a
+  have hutime : DifferentiableAt ℝ (fun s => u s x) t := hρtime.const_mul a
+  have huspace : ∀ᶠ y in 𝓝 x, MDifferentiableAt I 𝓘(ℝ, ℝ) (u t) y := by
+    filter_upwards [hρspace] with y hy
+    exact hy.const_smul a
+  have hugrad : MDiffAt (T% fun y : M => gradientFun (I := I) (S.base.metric t) (u t) y) x :=
+    grad_comp_mdiffAt (I := I) (S.base.metric t) hlin (hlin' (ρ t x)) hρspace hρgrad
+  have hftime : DifferentiableAt ℝ (fun s => φ s x) t := by
+    with_unfolding_all exact (hvalue (u t x)).comp t hutime
+  have hfspace : ∀ᶠ y in 𝓝 x, MDifferentiableAt I 𝓘(ℝ, ℝ) (φ t) y := by
+    filter_upwards [huspace] with y hy
+    exact (hvalue (u t y)).mdifferentiableAt.comp y hy
+  have hfgrad : MDiffAt (T% fun y : M => gradientFun (I := I) (S.base.metric t) (φ t) y) x :=
+    grad_comp_mdiffAt (I := I) (S.base.metric t) hvalue (hvalue' (u t x)) huspace hugrad
+  have hfin : riemannianEDistOf (I := I) (S.base.metric t) O x ≠ ⊤ :=
+    ne_top_of_le_ne_top ENNReal.ofReal_ne_top (hρupper.self_of_nhds t)
+  have heq : φ t x = Analysis.CutoffProfile.evalue
+      (ENNReal.ofReal a * riemannianEDistOf (I := I) (S.base.metric t) O x) := by
+    rw [Analysis.CutoffProfile.evalue_eq_value
+      (ENNReal.mul_ne_top ENNReal.ofReal_ne_top hfin),
+      ENNReal.toReal_mul, ENNReal.toReal_ofReal ha]
+    change Analysis.CutoffProfile.value (a * ρ t x) = _
+    rw [hρeq]
+  have hlower : ∀ᶠ y in 𝓝 x, ∀ s : ℝ,
+      0 ≤ φ s y ∧ φ s y ≤ Analysis.CutoffProfile.evalue
+        (ENNReal.ofReal a * riemannianEDistOf (I := I) (S.base.metric s) O y) := by
+    filter_upwards [hρupper] with y hy s
+    refine ⟨(Analysis.CutoffProfile.mem_Icc _).1, ?_⟩
+    have h := Analysis.CutoffProfile.antitone_evalue
+      (mul_le_mul_right (hy s) (ENNReal.ofReal a))
+    rw [← ENNReal.ofReal_mul ha, Analysis.CutoffProfile.evalue_ofReal] at h
+    exact h
+  have hgu : gradientFun (I := I) (S.base.metric t) (u t) x =
+      a • gradientFun (I := I) (S.base.metric t) (ρ t) x :=
+    gradientFun_const_smul (I := I) (S.base.metric t) a hρspace.self_of_nhds
+  have hgf : gradientFun (I := I) (S.base.metric t) (φ t) x =
+      deriv Analysis.CutoffProfile.value (u t x) • gradientFun (I := I) (S.base.metric t) (u t) x :=
+    gradientFun_comp (I := I) (S.base.metric t) (hvalue (u t x)) huspace.self_of_nhds
+  have husq : (S.base.metric t).inner x
+      (gradientFun (I := I) (S.base.metric t) (u t) x)
+      (gradientFun (I := I) (S.base.metric t) (u t) x) = a ^ 2 := by
+    rw [hgu, gInner_smul_self, hρsq, mul_one]
+  have huz : u t x = a * (riemannianEDistOf (I := I) (S.base.metric t) O x).toReal := by
+    dsimp only [u]
+    rw [hρeq]
+  refine ⟨φ, heq, hlower, hftime, hfspace, hfgrad, ?_, ?_⟩
+  · rw [hgf, gInner_smul_self, husq, huz]
+  · have hd : deriv (fun s => φ s x) t =
+        deriv Analysis.CutoffProfile.value (u t x) * (a * deriv (fun s => ρ s x) t) := by
+      with_unfolding_all exact
+        ((hvalue (u t x)).hasDerivAt.comp t (hρtime.hasDerivAt.const_mul a)).deriv
+    have hlap := laplacian_comp_of_eventually_differentiable (I := I)
+      (LeviCivita (I := I) (S.base.metric t)) (S.base.metric t)
+      (Filter.Eventually.of_forall hvalue) (hvalue' (u t x)) huspace hugrad
+    have hscale := laplacian_smul_at (I := I)
+      (LeviCivita (I := I) (S.base.metric t)) (S.base.metric t) a hρspace hρgrad
+    change laplacian (I := I) _ _ (φ t) x = _ at hlap
+    change laplacian (I := I) _ _ (u t) x = _ at hscale
+    rw [hd, hlap, hscale]
+    have hdimen : 0 ≤ (Module.finrank ℝ E : ℝ) - 1 := by
+      have hdim : 1 ≤ Module.finrank ℝ E := Nat.pos_of_ne_zero (NeZero.ne _)
+      have hdimR : (1 : ℝ) ≤ Module.finrank ℝ E := by exact_mod_cast hdim
+      linarith
+    have hB : 0 ≤ 2 * (Module.finrank ℝ E - 1 : ℝ) * Analysis.CutoffProfile.derivBound ^ 2 / R +
+        K * R := by positivity
+    have hbound := cutoff_parabolic_bound ha Analysis.CutoffProfile.derivBound_nonneg
+      (show 0 ≤ (S.base.metric t).inner x
+        (gradientFun (I := I) (S.base.metric t) (u t) x)
+        (gradientFun (I := I) (S.base.metric t) (u t) x) by rw [husq]; positivity)
+      husq.le hρpar (Analysis.CutoffProfile.deriv_nonpos (u t x))
+      (Analysis.CutoffProfile.abs_deriv_le_derivBound (u t x))
+      (Analysis.CutoffProfile.abs_deriv2_le_derivBound (u t x)) hB
+    nlinarith
 
 end DifferentialGeometry.PDE.RicciFlow

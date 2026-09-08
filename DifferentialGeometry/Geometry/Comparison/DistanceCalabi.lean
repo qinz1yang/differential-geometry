@@ -96,6 +96,108 @@ theorem CalabiTailData.target_mem
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
+theorem CalabiTailData.right_edist
+    [RiemannianBundle (fun y : M => TangentSpace I y)]
+    [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
+    [IsContinuousRiemannianBundle E (fun y : M => TangentSpace I y)]
+    {g : SmoothRiemannianMetric I M}
+    {hEnorm : IsMetricNorm (I := I) (M := M) g}
+    {O x : M} {r : Real}
+    (tail : CalabiTailData (I := I) g hEnorm O x r)
+    (hr : r = (riemannianEDist I O x).toReal) :
+    riemannianEDist I tail.p x = ENNReal.ofReal tail.ell := by
+  have hrpos : 0 < r := by linarith [tail.left_pos, tail.ell_pos, tail.split]
+  have hfin : riemannianEDist I O x ≠ (⊤ : ENNReal) := by
+    intro htop
+    rw [htop, ENNReal.toReal_top] at hr
+    linarith
+  have hrE : riemannianEDist I O x = ENNReal.ofReal r := by
+    rw [hr, ENNReal.ofReal_toReal hfin]
+  have hupper := intrinsicGeodesic_riemannianEDist_le (I := I) g hEnorm tail.p tail.u
+    (s := (0 : Real)) (t := 1) zero_le_one
+  rw [intrinsicGeodesic_zero, ← expMapIntrinsic_def, tail.exp_eq, tail.u_norm,
+    sub_zero, mul_one] at hupper
+  refine le_antisymm hupper ?_
+  have htri : riemannianEDist I O x ≤
+      riemannianEDist I O tail.p + riemannianEDist I tail.p x :=
+    Manifold.riemannianEDist_triangle
+  rw [hrE, tail.left_edist] at htri
+  have hsplitE : ENNReal.ofReal r = ENNReal.ofReal tail.left + ENNReal.ofReal tail.ell := by
+    rw [← ENNReal.ofReal_add tail.left_nonneg tail.ell_pos.le, tail.split]
+  rw [hsplitE] at htri
+  exact (ENNReal.add_le_add_iff_left ENNReal.ofReal_ne_top).mp htri
+
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+theorem CalabiTailData.inner_normalized_tangent
+    [RiemannianBundle (fun y : M => TangentSpace I y)]
+    [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
+    [IsContinuousRiemannianBundle E (fun y : M => TangentSpace I y)]
+    {g : SmoothRiemannianMetric I M}
+    {hEnorm : IsMetricNorm (I := I) (M := M) g}
+    {O x : M} {r : Real}
+    (tail : CalabiTailData (I := I) g hEnorm O x r) :
+    g.inner tail.p (tail.ell⁻¹ • tail.u) (tail.ell⁻¹ • tail.u) = 1 := by
+  have hu_sq : g.inner tail.p tail.u tail.u = tail.ell ^ 2 := by
+    have hsq := Real.sq_sqrt
+      (gInner_self_nonneg (I := I) g tail.p tail.u)
+    rw [tail.u_norm] at hsq
+    exact hsq.symm
+  rw [gInner_smul_self (I := I) g tail.p, hu_sq]
+  field_simp [tail.ell_pos.ne']
+
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+theorem CalabiTailData.intrinsicGeodesic_normalized_tangent_ell
+    [RiemannianBundle (fun y : M => TangentSpace I y)]
+    [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
+    [IsContinuousRiemannianBundle E (fun y : M => TangentSpace I y)]
+    {g : SmoothRiemannianMetric I M}
+    {hEnorm : IsMetricNorm (I := I) (M := M) g}
+    {O x : M} {r : Real}
+    (tail : CalabiTailData (I := I) g hEnorm O x r) :
+    intrinsicGeodesic (I := I) g hEnorm tail.p (tail.ell⁻¹ • tail.u) tail.ell = x := by
+  rw [← intrinsicGeodesic_smul (I := I) g hEnorm tail.p
+    (tail.ell⁻¹ • tail.u) tail.ell, smul_smul,
+    mul_inv_cancel₀ tail.ell_pos.ne', one_smul, ← expMapIntrinsic_def]
+  exact tail.exp_eq
+
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+theorem CalabiTailData.arcLength_normalized_tangent_le
+    [RiemannianBundle (fun y : M => TangentSpace I y)]
+    [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
+    [IsContinuousRiemannianBundle E (fun y : M => TangentSpace I y)]
+    {g : SmoothRiemannianMetric I M}
+    {hEnorm : IsMetricNorm (I := I) (M := M) g}
+    {O x : M} {r : Real}
+    (tail : CalabiTailData (I := I) g hEnorm O x r)
+    (hr : r = (riemannianEDist I O x).toReal)
+    {eta : Real → M}
+    (heta : ContMDiffOn 𝓘(Real, Real) I 1 eta (Set.Icc 0 tail.ell))
+    (heta0 : eta 0 = tail.p) (hetaell : eta tail.ell = x) :
+    Geometry.Riemannian.Variation.arcLength (I := I) g
+        (intrinsicGeodesic (I := I) g hEnorm tail.p (tail.ell⁻¹ • tail.u))
+        0 tail.ell ≤ Geometry.Riemannian.Variation.arcLength (I := I) g eta 0 tail.ell := by
+  have heta_nonneg : 0 ≤ Geometry.Riemannian.Variation.arcLength (I := I) g eta 0 tail.ell := by
+    unfold Geometry.Riemannian.Variation.arcLength
+    exact intervalIntegral.integral_nonneg tail.ell_pos.le
+      (fun _ _ => Real.sqrt_nonneg _)
+  have hed : riemannianEDist I (eta 0) (eta tail.ell) ≤
+      ENNReal.ofReal (Geometry.Riemannian.Variation.arcLength (I := I) g eta 0 tail.ell) :=
+    Geometry.Riemannian.Geodesic.riemannianEDist_le_arcLength
+      (I := I) g tail.ell_pos.le heta
+      (fun t _ => hEnorm (eta t) _)
+  have hreal := ENNReal.toReal_mono ENNReal.ofReal_ne_top hed
+  rw [heta0, hetaell, tail.right_edist hr,
+    ENNReal.toReal_ofReal tail.ell_pos.le,
+    ENNReal.toReal_ofReal heta_nonneg] at hreal
+  rw [arcLength_radial (I := I) g hEnorm tail.p (tail.ell⁻¹ • tail.u),
+    tail.inner_normalized_tangent, Real.sqrt_one, sub_zero, mul_one]
+  exact hreal
+
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 def CalabiTailData.shrink
     [RiemannianBundle (fun y : M => TangentSpace I y)]
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
