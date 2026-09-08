@@ -4673,3 +4673,7 @@ import DifferentialGeometry.Analysis.Integration.Lp.ZeroExtension
 import DifferentialGeometry.Analysis.Sobolev.Tools.CutoffDiffQuotLp
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.InteriorRegularity
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.IteratedSobolevSpace.WeakPartial
+import DifferentialGeometry.Geometry.Metric.Family.LocalEquivalence
+import DifferentialGeometry.Geometry.Comparison.LocalDistanceComparison
+import DifferentialGeometry.Topology.CompactFamily
+import DifferentialGeometry.Geometry.Metric.Family.QuadraticBounds

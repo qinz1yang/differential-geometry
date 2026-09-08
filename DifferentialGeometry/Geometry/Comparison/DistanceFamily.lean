@@ -2,6 +2,13 @@ import DifferentialGeometry.Geometry.Comparison.Variation.ArcLengthContinuity
 import DifferentialGeometry.Geometry.Exponential.IntrinsicExpContinuity
 import DifferentialGeometry.Geometry.Comparison.DistanceCalabi
 import DifferentialGeometry.Geometry.Exponential.DiagInvFixed
+import DifferentialGeometry.Geometry.Metric.Family.LocalEquivalence
+import DifferentialGeometry.Geometry.Comparison.LocalDistanceComparison
+import DifferentialGeometry.Geometry.Comparison.HopfRinowProper
+import DifferentialGeometry.Topology.CompactFamily
+import DifferentialGeometry.Topology.Order.Interval
+import Mathlib.Topology.Order.ProjIcc
+import Mathlib.Topology.Semicontinuity.Basic
 
 set_option autoImplicit false
 
@@ -222,5 +229,252 @@ theorem exists_riemannianEDistOf_upper_support_continuousAt
   · let : NeZero (Module.finrank ℝ E) := ⟨hdim⟩
     exact exists_riemannianEDistOf_upper_support_continuousAt_of_nonzero
       g hg ht hcomplete O x hfin
+
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+private theorem exists_compact_eventually_riemannianEDistOf_le_of_nonzero
+    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+    [NeZero (Module.finrank ℝ E)]
+    (g : ℝ → SmoothRiemannianMetric I M)
+    {J : Set ℝ}
+    (hg : tensor0SFamilyContinuousOnSet (I := I) (M := M) 2 J
+      (fun t x => Tensor0SBundle.metricTensorField (I := I) (g t) x))
+    {t₀ : ℝ} (ht₀ : t₀ ∈ J)
+    (hcomplete : RiemannianMetricComplete (I := I) (g t₀))
+    (O : M) (r : ℝ) :
+    ∃ L : Set M, IsCompact L ∧ ∀ᶠ t in nhdsWithin t₀ J,
+      ∀ x : M, riemannianEDistOf (I := I) (g t) O x ≤ ENNReal.ofReal r → x ∈ L := by
+  let : TopologicalSpace.MetrizableSpace M := Manifold.metrizableSpace I M
+  let : T3Space M := inferInstance
+  let R : ℝ := 2 * (max r 0 + 1)
+  have hrR : max r 0 < (1 / 2 : ℝ) * R := by dsimp [R]; linarith
+  let K : Set M := {x : M |
+      riemannianEDistOf (I := I) (g t₀) O x ≤ ENNReal.ofReal R}
+  have hK : IsCompact K := RiemannianMetricComplete.closedEBall_isCompact
+    (I := I) (M := M) hcomplete O R
+  have hc : (0 : ℝ) < (1 / 2 : ℝ) := by norm_num
+  have hc1 : (1 / 2 : ℝ) ^ 2 < (1 : ℝ) := by norm_num
+  have hcomp := eventually_metric_comparison_on_compact
+    (I := I) (M := M) g hg ht₀ hK hc1 (show (1 : ℝ) < 2 by norm_num)
+  refine ⟨K, hK, ?_⟩
+  filter_upwards [hcomp] with t ht
+  intro x hx
+  have hlt : riemannianEDistOf (I := I) (g t) O x <
+      ENNReal.ofReal ((1 / 2 : ℝ) * R) := by
+    apply hx.trans_lt
+    exact (ENNReal.ofReal_le_ofReal (le_max_left r 0)).trans_lt
+      ((ENNReal.ofReal_lt_ofReal_iff_of_nonneg (le_max_right r 0)).2 hrR)
+  have hdist := riemannianEDistOf_le_of_metric_lower_on_ball
+    (I := I) (M := M) (g t₀) (g t) O x hc
+    (fun y hy v => (ht y hy v).1) hlt
+  have hreal : (riemannianEDistOf (I := I) (g t) O x).toReal < (1 / 2 : ℝ) * R :=
+    ENNReal.toReal_lt_of_lt_ofReal hlt
+  apply hdist.trans
+  apply ENNReal.ofReal_le_ofReal
+  exact ((div_lt_iff₀ hc).2 (by simpa only [mul_comm] using hreal)).le
+
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+theorem exists_compact_eventually_riemannianEDistOf_le
+    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+    (g : ℝ → SmoothRiemannianMetric I M)
+    {J : Set ℝ}
+    (hg : tensor0SFamilyContinuousOnSet (I := I) (M := M) 2 J
+      (fun t x => Tensor0SBundle.metricTensorField (I := I) (g t) x))
+    {t₀ : ℝ} (ht₀ : t₀ ∈ J)
+    (hcomplete : RiemannianMetricComplete (I := I) (g t₀))
+    (O : M) (r : ℝ) :
+    ∃ L : Set M, IsCompact L ∧ ∀ᶠ t in nhdsWithin t₀ J,
+      ∀ x : M, riemannianEDistOf (I := I) (g t) O x ≤ ENNReal.ofReal r → x ∈ L := by
+  by_cases hdim : Module.finrank ℝ E = 0
+  · let : Subsingleton E := Module.finrank_zero_iff.mp hdim
+    let : Subsingleton H := I.injective.subsingleton
+    let : DiscreteTopology M := ChartedSpace.discreteTopology H M
+    refine ⟨{O}, isCompact_singleton, Filter.Eventually.of_forall ?_⟩
+    intro t x hx
+    let : RiemannianBundle (fun y : M => TangentSpace I y) := ⟨(g t).toRiemannianMetric⟩
+    have hfin : Manifold.riemannianEDist I O x < ⊤ := hx.trans_lt ENNReal.ofReal_lt_top
+    obtain ⟨γ, hγ0, hγ1, hγ, _⟩ :=
+      Manifold.exists_lt_locally_constant_of_riemannianEDist_lt hfin zero_lt_one
+    have hOx : O = x := by
+      rw [← hγ0, ← hγ1]
+      exact TotallyDisconnectedSpace.eq_of_continuous γ hγ.continuous 0 1
+    exact hOx.symm
+  · let : NeZero (Module.finrank ℝ E) := ⟨hdim⟩
+    exact exists_compact_eventually_riemannianEDistOf_le_of_nonzero
+      g hg ht₀ hcomplete O r
+
+
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+theorem exists_compact_riemannianEDistOf_le_of_isCompact
+    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+    (g : ℝ → SmoothRiemannianMetric I M) {J : Set ℝ}
+    (hg : tensor0SFamilyContinuousOnSet (I := I) (M := M) 2 J
+      (fun t x => Tensor0SBundle.metricTensorField (I := I) (g t) x))
+    {K : Set ℝ} (hK : IsCompact K) (hKJ : K ⊆ J)
+    (hcomplete : ∀ t ∈ K, RiemannianMetricComplete (I := I) (g t)) (O : M) (r : ℝ) :
+    ∃ L : Set M, IsCompact L ∧ ∀ t ∈ K, ∀ x : M,
+      riemannianEDistOf (I := I) (g t) O x ≤ ENNReal.ofReal r → x ∈ L := by
+  apply hK.exists_compact_superset_of_eventually
+    (fun t => {x : M | riemannianEDistOf (I := I) (g t) O x ≤ ENNReal.ofReal r})
+  intro t ht
+  obtain ⟨L, hL, hnear⟩ := exists_compact_eventually_riemannianEDistOf_le
+    (I := I) (M := M) g hg (hKJ ht) (hcomplete t ht) O r
+  exact ⟨L, hL, hnear.filter_mono (nhdsWithin_mono t hKJ)⟩
+
+
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+theorem lowerSemicontinuousWithinAt_riemannianEDistOf
+    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+    (g : ℝ → SmoothRiemannianMetric I M) {J : Set ℝ}
+    (hg : tensor0SFamilyContinuousOnSet (I := I) (M := M) 2 J
+      (fun t x => Tensor0SBundle.metricTensorField (I := I) (g t) x))
+    {t₀ : ℝ} (ht₀ : t₀ ∈ J)
+    (hcomplete : RiemannianMetricComplete (I := I) (g t₀)) (O x : M) :
+    LowerSemicontinuousWithinAt (fun p : ℝ × M =>
+      riemannianEDistOf (I := I) (g p.1) O p.2) (J ×ˢ univ) (t₀, x) := by
+  let : TopologicalSpace.MetrizableSpace M := Manifold.metrizableSpace I M
+  let : T3Space M := inferInstance
+  have hgcont : Continuous (fun y => riemannianEDistOf (I := I) (g t₀) O y) := by
+    let : RiemannianBundle (fun y : M => TangentSpace I y) := ⟨(g t₀).toRiemannianMetric⟩
+    let : IsContinuousRiemannianBundle E (fun y : M => TangentSpace I y) :=
+      ⟨⟨(g t₀).inner, (g t₀).contMDiff.continuous, by intro y v w; rfl⟩⟩
+    have hc : Continuous (fun y : M => Manifold.riemannianEDist I O y) := by
+      simpa only [Manifold.riemannianEDist_comm] using
+        (Exponential.continuous_riemannianEDist_to (I := I) (M := M) O)
+    exact hc
+  intro a ha
+  obtain ⟨r, hrnn, har, hrd⟩ := ENNReal.lt_iff_exists_real_btwn.mp ha
+  obtain ⟨s, hsnn, hrs, hsd⟩ := ENNReal.lt_iff_exists_real_btwn.mp hrd
+  have hr : 0 < r := ENNReal.ofReal_pos.mp (bot_le.trans_lt har)
+  have hrsreal : r < s := (ENNReal.ofReal_lt_ofReal_iff_of_nonneg hrnn).mp hrs
+  have hs : 0 < s := hr.trans hrsreal
+  let c : ℝ := r / s
+  have hc : 0 < c := div_pos hr hs
+  have hc1 : c < 1 := (div_lt_one hs).2 hrsreal
+  have hcSq : c ^ 2 < 1 := by nlinarith
+  let R : ℝ := 2 * s
+  have hcR : c * R = 2 * r := by dsimp [c, R]; field_simp
+  have hrR : r < c * R := by rw [hcR]; linarith
+  obtain ⟨K, hK, hnearK⟩ := exists_compact_eventually_riemannianEDistOf_le
+    (I := I) (M := M) g hg ht₀ hcomplete O R
+  have hcover := hnearK.self_of_nhdsWithin ht₀
+  have hcomp := eventually_metric_comparison_on_compact
+    (I := I) (M := M) g hg ht₀ hK hcSq (show (1 : ℝ) < 2 by norm_num)
+  have hfst : Tendsto (fun p : ℝ × M => p.1) (nhdsWithin (t₀, x) (J ×ˢ univ))
+      (nhdsWithin t₀ J) :=
+    continuousAt_fst.continuousWithinAt.tendsto_nhdsWithin (fun _ hp => hp.1)
+  have hnear : ∀ᶠ p : ℝ × M in nhdsWithin (t₀, x) (J ×ˢ univ),
+      ENNReal.ofReal s < riemannianEDistOf (I := I) (g t₀) O p.2 :=
+    ((hgcont.comp continuous_snd).continuousAt.eventually (Ioi_mem_nhds hsd)).filter_mono
+      nhdsWithin_le_nhds
+  filter_upwards [hfst hcomp, hnear] with p hp hps
+  apply har.trans_le
+  by_contra hn
+  have hdr : riemannianEDistOf (I := I) (g p.1) O p.2 < ENNReal.ofReal r :=
+    lt_of_not_ge hn
+  have hdR := hdr.trans ((ENNReal.ofReal_lt_ofReal_iff_of_nonneg hrnn).2 hrR)
+  have hdist := riemannianEDistOf_le_of_metric_lower_on_ball
+    (I := I) (M := M) (g t₀) (g p.1) O p.2 hc
+    (fun y hy v => (hp y (hcover y hy) v).1) hdR
+  have hdrreal : (riemannianEDistOf (I := I) (g p.1) O p.2).toReal < r :=
+    ENNReal.toReal_lt_of_lt_ofReal hdr
+  have hrsdiv : r / c = s := by dsimp [c]; field_simp
+  have hddiv : (riemannianEDistOf (I := I) (g p.1) O p.2).toReal / c ≤ s := by
+    rw [← hrsdiv]
+    exact (div_le_div_of_nonneg_right hdrreal.le hc.le)
+  have hle := hdist.trans (ENNReal.ofReal_le_ofReal hddiv)
+  exact (not_lt_of_ge hle) hps
+
+
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+theorem continuousAt_riemannianEDistOf
+    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+    (g : ℝ → SmoothRiemannianMetric I M) {J : Set ℝ}
+    (hg : tensor0SFamilyContinuousOnSet (I := I) (M := M) 2 J
+      (fun t x => Tensor0SBundle.metricTensorField (I := I) (g t) x))
+    {t₀ : ℝ} (ht₀ : J ∈ nhds t₀)
+    (hcomplete : RiemannianMetricComplete (I := I) (g t₀)) (O x : M) :
+    ContinuousAt (fun p : ℝ × M => riemannianEDistOf (I := I) (g p.1) O p.2) (t₀, x) := by
+  apply continuousAt_iff_lower_upperSemicontinuousAt.2
+  constructor
+  · have hlower := lowerSemicontinuousWithinAt_riemannianEDistOf
+      (I := I) (M := M) g hg (mem_of_mem_nhds ht₀) hcomplete O x
+    have hJn : J ×ˢ (univ : Set M) ∈ nhds (t₀, x) := prod_mem_nhds ht₀ univ_mem
+    simpa only [lowerSemicontinuousWithinAt_iff, lowerSemicontinuousAt_iff,
+      (nhdsWithin_eq_nhds.mpr hJn)] using hlower
+  · by_cases hfin : riemannianEDistOf (I := I) (g t₀) O x = ⊤
+    · intro b hb
+      simp only [hfin, not_top_lt] at hb
+    obtain ⟨F, hF, hFeq, hupper⟩ := exists_riemannianEDistOf_upper_support_continuousAt
+      (I := I) (M := M) g hg ht₀ hcomplete O x hfin
+    have hEF : ContinuousAt (fun p => ENNReal.ofReal (F p)) (t₀, x) :=
+      ENNReal.continuous_ofReal.continuousAt.comp hF
+    have hEFeq : ENNReal.ofReal (F (t₀, x)) = riemannianEDistOf (I := I) (g t₀) O x := by
+      rw [hFeq, ENNReal.ofReal_toReal hfin]
+    intro b hb
+    have hnear : ∀ᶠ p in nhds (t₀, x), ENNReal.ofReal (F p) < b :=
+      hEF.eventually (Iio_mem_nhds (by
+        change ENNReal.ofReal (F (t₀, x)) < b
+        rwa [hEFeq]))
+    filter_upwards [hupper, hnear] with p hp hpF
+    exact hp.trans_lt hpF
+
+
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+private theorem continuousOn_riemannianEDistOf_icc
+    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+    (g : ℝ → SmoothRiemannianMetric I M) {a b : ℝ}
+    (hg : tensor0SFamilyContinuousOnSet (I := I) (M := M) 2 (Icc a b)
+      (fun t x => Tensor0SBundle.metricTensorField (I := I) (g t) x))
+    (hcomplete : ∀ t ∈ Icc a b, RiemannianMetricComplete (I := I) (g t)) (O : M) :
+    ContinuousOn (fun p : ℝ × M => riemannianEDistOf (I := I) (g p.1) O p.2)
+      (Icc a b ×ˢ univ) := by
+  by_cases hab : a ≤ b
+  · let φ : ℝ → ℝ := fun t => (Set.projIcc a b hab t : ℝ)
+    have hφ : Continuous φ := continuous_subtype_val.comp continuous_projIcc
+    have hφmem : ∀ t : ℝ, φ t ∈ Icc a b := fun t => (Set.projIcc a b hab t).property
+    have hφeq : ∀ t ∈ Icc a b, φ t = t := by
+      intro t ht
+      simp only [φ, Set.projIcc_of_mem hab ht]
+    have hgφ : tensor0SFamilyContinuousOnSet (I := I) (M := M) 2 univ
+        (fun t x => Tensor0SBundle.metricTensorField (I := I) (g (φ t)) x) :=
+      tensor0SFamilyContinuousOnSet.comp_time hg hφ (fun t _ => hφmem t)
+    have hext : Continuous (fun p : ℝ × M => riemannianEDistOf (I := I) (g (φ p.1)) O p.2) := by
+      rw [continuous_iff_continuousAt]
+      intro p
+      exact continuousAt_riemannianEDistOf (I := I) (M := M) (fun t => g (φ t)) hgφ
+        univ_mem (hcomplete (φ p.1) (hφmem p.1)) O p.2
+    apply hext.continuousOn.congr
+    intro p hp
+    dsimp only
+    rw [hφeq p.1 hp.1]
+  · simp only [Icc_eq_empty_of_lt (lt_of_not_ge hab), empty_prod]
+    exact continuousOn_empty _
+
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+theorem continuousOn_riemannianEDistOf
+    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+    (g : ℝ → SmoothRiemannianMetric I M) {J : Set ℝ} (hJ : J.OrdConnected)
+    (hg : tensor0SFamilyContinuousOnSet (I := I) (M := M) 2 J
+      (fun t x => Tensor0SBundle.metricTensorField (I := I) (g t) x))
+    (hcomplete : ∀ t ∈ J, RiemannianMetricComplete (I := I) (g t)) (O : M) :
+    ContinuousOn (fun p : ℝ × M => riemannianEDistOf (I := I) (g p.1) O p.2)
+      (J ×ˢ univ) := by
+  intro p hp
+  obtain ⟨a, b, hpa, _, habJ, hnear⟩ := hJ.exists_Icc_subset_mem_nhdsWithin hp.1 hp.1
+  have hc := continuousOn_riemannianEDistOf_icc (I := I) (M := M) g
+    (hg.mono habJ) (fun t ht => hcomplete t (habJ ht)) O p ⟨hpa, mem_univ _⟩
+  apply hc.mono_of_mem_nhdsWithin
+  have hfst : Tendsto (fun q : ℝ × M => q.1) (nhdsWithin p (J ×ˢ univ))
+      (nhdsWithin p.1 J) :=
+    continuousAt_fst.continuousWithinAt.tendsto_nhdsWithin (fun _ hq => hq.1)
+  filter_upwards [hfst hnear] with q hq
+  exact ⟨hq, mem_univ _⟩
 
 end DifferentialGeometry.Geometry.Riemannian
