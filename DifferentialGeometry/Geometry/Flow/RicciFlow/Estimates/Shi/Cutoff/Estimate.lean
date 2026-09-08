@@ -364,81 +364,6 @@ theorem cutErr_small
 end ShiCutoffData
 
 omit [NeZero (Module.finrank Real E)] [CompleteSpace E] [SigmaCompactSpace M]
-  [T2Space M] [I.Boundaryless] in
-private theorem support_pow_parabolic
-    {G : MetricConnectionFamily (I := I) (M := M) Real} {T eps t : Real}
-    {chi : Real → M → Real} {x : M}
-    (support : ShiCutoffLowerSupportAt (I := I) G T eps chi t x)
-    (ht : t ∈ Set.Icc 0 T) (p : Nat) :
-    parabolicOperatorWithDrift (I := I) G T
-        (fun _ y => (0 : TangentSpace I y))
-        (fun s y => (support.phi s y) ^ (p + 1)) t x ≤
-      (((p + 1 : Nat) : Real) * eps) * (support.phi t x) ^ p := by
-  have hphi0 : 0 ≤ support.phi t x :=
-    (support.lower_nhds.self_of_nhdsWithin
-      (show (t, x) ∈ spacetimeSlab (M := M) T from ⟨ht, Set.mem_univ x⟩)).1
-  induction p with
-  | zero => simpa using support.parabolic_le
-  | succ p ih =>
-      let qpow : Real → M → Real := fun s y => support.phi s y ^ (p + 1)
-      have hqtime := support.time_diff.pow (p + 1)
-      have hqspace : ∀ᶠ y in 𝓝 x,
-          MDifferentiableAt I 𝓘(Real, Real) (qpow t) y := by
-        filter_upwards [support.space_diff_nhds] with y hy
-        exact hy.pow (p + 1)
-      have hqgrad :
-          MDifferentiableAt I (I.prod 𝓘(Real, E)) (T% fun y : M =>
-            gradientFun (I := I) (G.metric t) (qpow t) y) x := by
-        have hrhs :
-            MDifferentiableAt I (I.prod 𝓘(Real, E)) (T% fun y : M =>
-              (((p + 1 : Nat) : Real) * support.phi t y ^ p) •
-                gradientFun (I := I) (G.metric t) (support.phi t) y) x :=
-          (((support.space_diff_nhds.self_of_nhds.pow p).const_smul
-            (((p + 1 : Nat) : Real))).smul_section support.grad_diff)
-        refine hrhs.congr_of_eventuallyEq ?_
-        filter_upwards [support.space_diff_nhds] with y hy
-        exact congrArg (fun b =>
-          (⟨y, b⟩ : TotalSpace E (TangentSpace I : M → Type _)))
-          (gradientFun_pow (I := I) (G.metric t) p hy)
-      have hmul := parabolic_mul_nhds (I := I) T
-        (fun _ y => (0 : TangentSpace I y)) qpow support.phi t x
-        hqtime support.time_diff hqspace support.space_diff_nhds
-        hqgrad support.grad_diff
-      have hgrad := gradientFun_pow (I := I) (G.metric t) p
-        support.space_diff_nhds.self_of_nhds
-      have hinner : 0 ≤ (G.metric t).inner x
-          (gradientAt (I := I) G t (qpow t) x)
-          (gradientAt (I := I) G t (support.phi t) x) := by
-        dsimp only [qpow]
-        simp only [gradientAt_eq, hgrad, map_smul,
-          smul_apply, smul_eq_mul]
-        exact mul_nonneg
-          (mul_nonneg (Nat.cast_nonneg _) (pow_nonneg hphi0 p))
-          (DifferentialGeometry.metric_inner_self_nonneg
-            (I := I) (M := M) (G.metric t) x
-              (gradientFun (I := I) (G.metric t) (support.phi t) x))
-      have hphi_mul := mul_le_mul_of_nonneg_left ih hphi0
-      have hcut_mul := mul_le_mul_of_nonneg_left support.parabolic_le
-        (pow_nonneg hphi0 (p + 1))
-      calc
-        parabolicOperatorWithDrift (I := I) G T
-            (fun _ y => (0 : TangentSpace I y))
-            (fun s y => support.phi s y ^ (Nat.succ p + 1)) t x =
-            parabolicOperatorWithDrift (I := I) G T
-              (fun _ y => (0 : TangentSpace I y))
-              (fun s y => qpow s y * support.phi s y) t x := by
-                congr 1
-        _ ≤ support.phi t x ^ (p + 1) * eps +
-            support.phi t x *
-              ((((p + 1 : Nat) : Real) * eps) * support.phi t x ^ p) := by
-              rw [hmul]
-              linarith
-        _ = (((Nat.succ p + 1 : Nat) : Real) * eps) *
-            support.phi t x ^ Nat.succ p := by
-              simp only [Nat.succ_eq_add_one, Nat.cast_add, Nat.cast_one, pow_succ]
-              ring
-
-omit [NeZero (Module.finrank Real E)] [CompleteSpace E] [SigmaCompactSpace M]
   [T2Space M] in
 private theorem support_pow_cross
     {G : MetricConnectionFamily (I := I) (M := M) Real}
@@ -1096,7 +1021,11 @@ private theorem supportLevel_le
     change parabolicOperatorWithDrift (I := I) G B.T
         (fun _ y => (0 : TangentSpace I y))
         (fun s y => support.phi s y ^ (i + 1)) t x ≤ _
-    exact support_pow_parabolic (I := I) support ht i
+    exact parabolic_pow_le_nhds (I := I) B.T
+      (fun _ y => (0 : TangentSpace I y)) support.phi t x eps
+      (support.lower_nhds.self_of_nhdsWithin
+        (show (t, x) ∈ spacetimeSlab (M := M) B.T from ⟨ht, Set.mem_univ x⟩)).1
+      support.time_diff support.space_diff_nhds support.grad_diff support.parabolic_le i
   have hcross := support_pow_cross (I := I) B (m := m) (k := i) (p := i)
     hgrad hi support ht htpos heps
   have hcoef0 : 0 ≤ BernsteinTower.Gcoef (I := I) B m i :=

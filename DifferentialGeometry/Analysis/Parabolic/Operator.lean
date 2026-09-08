@@ -305,4 +305,78 @@ theorem parabolic_affine_sub_nhds
   rw [hadd, hA, hneg]
   ring
 
+theorem parabolic_pow_le_nhds
+    {G : MetricConnectionFamily (I := I) (M := M) ℝ}
+    (T : ℝ) (X : ℝ → (x : M) → TangentSpace I x)
+    (u : ℝ → M → ℝ) (t : ℝ) (x : M) (b : ℝ)
+    (hu_nonneg : 0 ≤ u t x)
+    (hu_time : DifferentiableWithinAt ℝ (fun s => u s x) (Icc 0 T) t)
+    (hu_space : ∀ᶠ y in 𝓝 x, MDifferentiableAt I 𝓘(ℝ, ℝ) (u t) y)
+    (hu_grad : MDifferentiableAt I (I.prod 𝓘(ℝ, E)) (T% fun y : M =>
+      gradientFun (I := I) (G.metric t) (u t) y) x)
+    (hop : parabolicOperatorWithDrift (I := I) G T X u t x ≤ b) (p : ℕ) :
+    parabolicOperatorWithDrift (I := I) G T X
+      (fun s y => u s y ^ (p + 1)) t x ≤
+        ((p + 1 : ℕ) : ℝ) * b * u t x ^ p := by
+  induction p with
+  | zero => simpa using hop
+  | succ p ih =>
+      let qpow : Real → M → Real := fun s y => u s y ^ (p + 1)
+      have hqtime := hu_time.pow (p + 1)
+      have hqspace : ∀ᶠ y in 𝓝 x,
+          MDifferentiableAt I 𝓘(Real, Real) (qpow t) y := by
+        filter_upwards [hu_space] with y hy
+        exact hy.pow (p + 1)
+      have hqgrad :
+          MDifferentiableAt I (I.prod 𝓘(Real, E)) (T% fun y : M =>
+            gradientFun (I := I) (G.metric t) (qpow t) y) x := by
+        have hrhs :
+            MDifferentiableAt I (I.prod 𝓘(Real, E)) (T% fun y : M =>
+              (((p + 1 : Nat) : Real) * u t y ^ p) •
+                gradientFun (I := I) (G.metric t) (u t) y) x :=
+          (((hu_space.self_of_nhds.pow p).const_smul
+            (((p + 1 : Nat) : Real))).smul_section hu_grad)
+        refine hrhs.congr_of_eventuallyEq ?_
+        filter_upwards [hu_space] with y hy
+        exact congrArg (fun b =>
+          (⟨y, b⟩ : TotalSpace E (TangentSpace I : M → Type _)))
+          (gradientFun_pow (I := I) (G.metric t) p hy)
+      have hmul := parabolic_mul_nhds (I := I) T
+        X qpow u t x
+        hqtime hu_time hqspace hu_space
+        hqgrad hu_grad
+      have hgrad := gradientFun_pow (I := I) (G.metric t) p
+        hu_space.self_of_nhds
+      have hinner : 0 ≤ (G.metric t).inner x
+          (gradientAt (I := I) G t (qpow t) x)
+          (gradientAt (I := I) G t (u t) x) := by
+        dsimp only [qpow]
+        simp only [gradientAt_eq, hgrad, map_smul,
+          smul_apply, smul_eq_mul]
+        exact mul_nonneg
+          (mul_nonneg (Nat.cast_nonneg _) (pow_nonneg hu_nonneg p))
+          (DifferentialGeometry.metric_inner_self_nonneg
+            (I := I) (M := M) (G.metric t) x
+              (gradientFun (I := I) (G.metric t) (u t) x))
+      have hu_mul := mul_le_mul_of_nonneg_left ih hu_nonneg
+      have hbound_mul := mul_le_mul_of_nonneg_left hop
+        (pow_nonneg hu_nonneg (p + 1))
+      calc
+        parabolicOperatorWithDrift (I := I) G T
+            X
+            (fun s y => u s y ^ (Nat.succ p + 1)) t x =
+            parabolicOperatorWithDrift (I := I) G T
+              X
+              (fun s y => qpow s y * u s y) t x := by
+                congr 1
+        _ ≤ u t x ^ (p + 1) * b +
+            u t x *
+              ((((p + 1 : Nat) : Real) * b) * u t x ^ p) := by
+              rw [hmul]
+              linarith
+        _ = (((Nat.succ p + 1 : Nat) : Real) * b) *
+            u t x ^ Nat.succ p := by
+              simp only [Nat.succ_eq_add_one, Nat.cast_add, Nat.cast_one, pow_succ]
+              ring
+
 end DifferentialGeometry.Analysis.Parabolic
