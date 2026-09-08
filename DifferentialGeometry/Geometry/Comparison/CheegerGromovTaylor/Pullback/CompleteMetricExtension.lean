@@ -1,3 +1,4 @@
+import DifferentialGeometry.Analysis.Calculus.SmoothExtension.Curve
 import DifferentialGeometry.Geometry.Metric.Path.Composition
 import DifferentialGeometry.Analysis.ODE.Stability.Tube
 import DifferentialGeometry.Geometry.Comparison.CheegerGromovTaylor.Core.Geometry
@@ -1029,130 +1030,37 @@ private theorem exists_join_curve
   have hγfence' : ∀ t ∈ Set.Icc (0 : Real) 1,
       ‖γ t‖ < 3 * R / 4 := by
     simpa only [γ] using hγfence
-  have hγ0_ball : γ 0 ∈ Metric.ball (0 : E) R := by
-    have hx := x.property
-    change (x : E) ∈ Metric.ball (0 : E) R at hx
-    rw [show γ 0 = (x : E) by
-      exact intrinsicExtJoin_zero (I := I) g hEnorm p hR hloc x y]
-    exact hx
-  have hγ1_ball : γ 1 ∈ Metric.ball (0 : E) R := by
-    have hy := y.property
-    change (y : E) ∈ Metric.ball (0 : E) R at hy
-    rw [show γ 1 = (y : E) by
-      exact intrinsicExtJoin_one (I := I) g hEnorm p hR hloc x y]
-    exact hy
-  have hpre0 : γ ⁻¹' Metric.ball (0 : E) R ∈ 𝓝 (0 : Real) :=
-    hγinf.continuous.continuousAt.preimage_mem_nhds
-      (Metric.isOpen_ball.mem_nhds hγ0_ball)
-  have hpre1 : γ ⁻¹' Metric.ball (0 : E) R ∈ 𝓝 (1 : Real) :=
-    hγinf.continuous.continuousAt.preimage_mem_nhds
-      (Metric.isOpen_ball.mem_nhds hγ1_ball)
-  obtain ⟨ε0, hε0, hε0sub⟩ := Metric.mem_nhds_iff.mp hpre0
-  obtain ⟨ε1, hε1, hε1sub⟩ := Metric.mem_nhds_iff.mp hpre1
-  let ε : Real := min ε0 ε1
-  have hε : 0 < ε := by
-    simpa only [ε] using lt_min hε0 hε1
-  have hε_le0 : ε ≤ ε0 := by
-    exact min_le_left ε0 ε1
-  have hε_le1 : ε ≤ ε1 := by
-    exact min_le_right ε0 ε1
-  have hstayExt : ∀ t ∈ Set.Icc (-ε / 2) (1 + ε / 2),
-      γ t ∈ Metric.ball (0 : E) R := by
+  let U := intrinsicPullBall (E := E) R
+  let η : ℝ → U := fun t => if ht : γ t ∈ U then ⟨γ t, ht⟩ else x
+  have hV : IsOpen (γ ⁻¹' (U : Set E)) := U.isOpen.preimage hγinf.continuous
+  have hηEq (t : ℝ) (ht : γ t ∈ U) : (Subtype.val ∘ η) =ᶠ[𝓝 t] γ := by
+    filter_upwards [hV.mem_nhds ht] with s hs
+    change γ s ∈ U at hs
+    simp only [η, Function.comp_apply, dif_pos hs]
+  have hη : ContMDiffOn 𝓘(ℝ, ℝ) 𝓘(ℝ, E) ∞ η (γ ⁻¹' (U : Set E)) := by
     intro t ht
-    by_cases ht0 : t < 0
-    · apply hε0sub
-      rw [Metric.mem_ball, Real.dist_eq, sub_zero, abs_of_neg ht0]
-      have hhalf : ε / 2 < ε0 := by
-        linarith [hε, hε_le0]
-      linarith [ht.1, hhalf]
-    · have ht0' : 0 ≤ t := le_of_not_gt ht0
-      by_cases ht1 : t ≤ 1
-      · rw [Metric.mem_ball, dist_zero_right]
-        exact (hγfence' t ⟨ht0', ht1⟩).trans (by linarith)
-      · have ht1' : 1 < t := lt_of_not_ge ht1
-        apply hε1sub
-        rw [Metric.mem_ball, Real.dist_eq, abs_of_pos (sub_pos.mpr ht1')]
-        have hhalf : ε / 2 < ε1 := by
-          linarith [hε, hε_le1]
-        linarith [ht.2, hhalf]
-  let c : Real := 1 / 2
-  let lam : Real := 1 / 2 + ε / 2
-  let clipLeft : Real := -1 / 2 - ε / 4
-  let clipRight : Real := 1 / 2 + ε / 4
-  have hlam : 0 < lam := by
-    dsimp only [lam]
-    linarith
-  have hclipLeft : -lam < clipLeft := by
-    dsimp only [lam, clipLeft]
-    linarith
-  have hclipRight : clipRight < lam := by
-    dsimp only [lam, clipRight]
-    linarith
-  obtain ⟨σ, hσinf, hσid, hσrange⟩ :=
-    DifferentialGeometry.Geometry.Riemannian.exists_time_window_clip
-      hlam hclipLeft hclipRight
-  let τ : Real → Real := fun t => c + σ (t - c)
-  have hτinf : ContDiff Real (∞ : WithTop ℕ∞) τ := by
-    dsimp only [τ]
-    exact contDiff_const.add
-      (hσinf.comp (contDiff_id.sub contDiff_const))
-  have hτrange : ∀ t, τ t ∈ Set.Icc (-ε / 2) (1 + ε / 2) := by
-    intro t
-    have hσbounds := (abs_le.mp (hσrange (t - c)))
-    dsimp only [τ, c, lam] at hσbounds ⊢
-    constructor <;> linarith
-  have hτid :
-      Set.EqOn τ id (Set.Icc (-ε / 4) (1 + ε / 4)) := by
+    have hval : ContMDiffAt 𝓘(ℝ, ℝ) 𝓘(ℝ, E) ∞ (Subtype.val ∘ η) t :=
+      hγinf.contMDiffAt.congr_of_eventuallyEq (hηEq t ht)
+    exact ((ContMDiffAt.subtypeVal_comp_iff U η t).mp hval).contMDiffWithinAt
+  have hstay : MapsTo γ (uIcc (0 : ℝ) 1) U := by
     intro t ht
-    have htClip : t - c ∈ Set.Icc clipLeft clipRight := by
-      dsimp only [c, clipLeft, clipRight]
-      constructor <;> linarith [ht.1, ht.2]
-    have hσ := hσid htClip
-    change σ (t - c) = t - c at hσ
-    dsimp only [τ]
-    rw [hσ]
-    dsimp only [c, id]
-    ring
-  let γU : Real → intrinsicPullBall (E := E) R := fun t =>
-    ⟨γ (τ t), hstayExt (τ t) (hτrange t)⟩
-  have hγUinf :
-      ContMDiff 𝓘(Real, Real) 𝓘(Real, E) ∞ γU := by
-    have hcomp :
-        ContMDiff 𝓘(Real, Real) 𝓘(Real, E) ∞ (fun t => γ (τ t)) := by
-      apply hγinf.comp
-      rw [contMDiff_iff_contDiff]
-      exact hτinf
-    intro t
-    exact codRestr_contMDiffAt
-      (V := intrinsicPullBall (E := E) R)
-      (fun s => hstayExt (τ s) (hτrange s)) (hcomp t)
-  have hEqLarge :
-      Set.EqOn
-        (fun t => ((γU t : intrinsicPullBall (E := E) R) : E)) γ
-        (Set.Icc (-ε / 4) (1 + ε / 4)) := by
-    intro t ht
-    change γ (τ t) = γ t
-    rw [hτid ht]
-    rfl
-  have hEq :
-      Set.EqOn
-        (fun t => ((γU t : intrinsicPullBall (E := E) R) : E)) γ
-        (Set.Icc (0 : Real) 1) := by
-    intro t ht
-    exact hEqLarge ⟨by linarith [ht.1, hε], by linarith [ht.2, hε]⟩
+    rw [uIcc_of_le zero_le_one] at ht
+    change γ t ∈ Metric.ball (0 : E) R
+    rw [Metric.mem_ball, dist_zero_right]
+    exact (hγfence' t ht).trans (by linarith)
+  obtain ⟨γU, hγUinf, hGerm⟩ := hη.exists_extension_uIcc hV hstay
+  have hGermVal (t : ℝ) (ht : t ∈ Icc (0 : ℝ) 1) :
+      (Subtype.val ∘ γU) =ᶠ[𝓝 t] γ := by
+    exact ((hGerm t (by rwa [uIcc_of_le zero_le_one])).fun_comp Subtype.val).trans
+      (hηEq t (hstay (by rwa [uIcc_of_le zero_le_one])))
+  have hEq : EqOn (fun t => (γU t : E)) γ (Icc (0 : ℝ) 1) :=
+    fun t ht => (hGermVal t ht).eq_of_nhds
   have hγUgeoExt :
       IsGeodesicOn (I := 𝓘(Real, E))
         (intrinsicExtMetric (I := I) g hEnorm p hR hloc)
-        (fun t => ((γU t : intrinsicPullBall (E := E) R) : E))
-        (Set.Icc (0 : Real) 1) := by
+        (fun t => (γU t : E)) (Icc (0 : ℝ) 1) := by
     intro t ht
-    have hlarge_nhds :
-        Set.Icc (-ε / 4) (1 + ε / 4) ∈ 𝓝 t :=
-      Icc_mem_nhds (by linarith [ht.1, hε])
-        (by linarith [ht.2, hε])
-    have heq :
-        (fun s => ((γU s : intrinsicPullBall (E := E) R) : E)) =ᶠ[𝓝 t] γ :=
-      hEqLarge.eventuallyEq_of_mem hlarge_nhds
+    have heq := hGermVal t ht
     exact Geodesic.HasGeodesicEquationAt.congr_of_eventuallyEq_at
       heq.eq_of_nhds heq (hγgeo t)
   have hγUfence : ∀ t ∈ Set.Icc (0 : Real) 1,
