@@ -1,6 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Compactness.GlobalLowerSemicontinuity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Regularized.Integrability
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Compactness.ActionDensity
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Cost.Defs
 
 set_option autoImplicit false
 
@@ -60,26 +61,6 @@ private theorem c1_ref_int
       (w := fun s ↦ lVelocity (I := I) alpha s) hv.continuous hv.continuous
     exact hinner.congr fun _ ↦ rfl
   exact hq.continuousOn.integrableOn_compact isCompact_Icc
-
-def lRegularizedCostC1
-    (S : SolutionOn (I := I) (M := M) D) (T a b : Real) (x y : M) : Real :=
-  sInf {r : Real | ∃ alpha : Real → M,
-    ContMDiff (modelWithCornersSelf Real Real) I 1 alpha ∧
-      alpha a = x ∧ alpha b = y ∧ lRegularizedAction S T alpha a b = r}
-
-omit [NeZero (Module.finrank Real E)] [I.Boundaryless] [T2Space M]
-  [CompactSpace M] in
-theorem lRegularizedCostC1_le_bdd
-    (S : SolutionOn (I := I) (M := M) D) (T a b : Real) (x y : M)
-    (hbdd : BddBelow {r : Real | ∃ alpha : Real → M,
-      ContMDiff (modelWithCornersSelf Real Real) I 1 alpha ∧
-        alpha a = x ∧ alpha b = y ∧ lRegularizedAction S T alpha a b = r})
-    (alpha : Real → M)
-    (halpha : ContMDiff (modelWithCornersSelf Real Real) I 1 alpha)
-    (hxa : alpha a = x) (hyb : alpha b = y) :
-    lRegularizedCostC1 S T a b x y ≤ lRegularizedAction S T alpha a b := by
-  unfold lRegularizedCostC1
-  exact csInf_le hbdd ⟨alpha, halpha, hxa, hyb, rfl⟩
 
 omit [NeZero (Module.finrank Real E)] in
 theorem exists_lRegularizedMinC1
