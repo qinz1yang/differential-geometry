@@ -26,7 +26,7 @@ variable {M : Type*} [TopologicalSpace M]
 
 local notation "I_hs" => modelWithCornersEuclideanHalfSpace n
 
-private theorem IsWeakEvolutionSolution.exists_lp_localEvolutionSource
+theorem IsWeakEvolutionSolution.exists_lp_local_evolution_source
     {q : SmoothRiemannianMetric I_hs M}
     {D : RealTimeInterval}
     {G : MetricConnectionFamilyOn (I := I_hs) (M := M) D}
@@ -175,7 +175,7 @@ theorem IsWeakEvolutionSolution.exists_lp_weak_time_deriv_density
   let B := fun i (p : ℝ × EuclideanSpace ℝ (Fin (Module.finrank ℝ (EuclideanSpace ℝ (Fin n))))) =>
       chartCoeffOnE (I := I_hs) α (X p.1) i ((toEuclidean (E := EuclideanSpace ℝ (Fin n))).symm p.2)
   let V := fun i => dirichletLocalSpacetimeWeakPartialLp q α hΩ hΩc hΩs (timeMeasure T) i u
-  obtain ⟨F, R, hR, hF⟩ := hu.exists_lp_localEvolutionSource hXcont hacont
+  obtain ⟨F, R, hR, hF⟩ := hu.exists_lp_local_evolution_source hXcont hacont
     α hΩ hΩc hΩs hXsmooth ht₀ ht₁ hΩ₀ hΩ₀Ω
   refine ⟨R, ?_⟩
   intro φ hφ hφc hφs

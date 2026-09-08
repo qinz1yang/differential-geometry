@@ -4806,3 +4806,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Soliton.NonnegativeModelCove
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Soliton.ClassificationNonnegative
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.SingularityModel.Classification
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.QuantitativeRegularity
+import DifferentialGeometry.Analysis.Sobolev.Euclidean.WeakPartialUniqueness
+import DifferentialGeometry.Analysis.Parabolic.Dirichlet.MaximalRegularity.Inclusion
+import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.TimeOperatorNaturality
+import DifferentialGeometry.Analysis.Parabolic.Dirichlet.WeakTimeDerivativeBound
