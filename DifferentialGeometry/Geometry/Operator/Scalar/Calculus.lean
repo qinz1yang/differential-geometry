@@ -1116,6 +1116,72 @@ theorem half_laplacian_mul_self
 
 end AlgebraicRules
 
+open Filter
+open scoped Topology
+
+theorem laplacian_add_at
+    (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
+    (g : SmoothRiemannianMetric I M) {f h : M → ℝ} {x : M}
+    (hf : ∀ᶠ y in 𝓝 x, MDifferentiableAt I 𝓘(ℝ, ℝ) f y)
+    (hh : ∀ᶠ y in 𝓝 x, MDifferentiableAt I 𝓘(ℝ, ℝ) h y)
+    (hgradf : MDifferentiableAt I (I.prod 𝓘(ℝ, E)) (T% fun y => gradientFun g f y) x)
+    (hgradh : MDifferentiableAt I (I.prod 𝓘(ℝ, E)) (T% fun y => gradientFun g h y) x) :
+    laplacian cov g (fun y => f y + h y) x =
+      laplacian cov g f x + laplacian cov g h x := by
+  have heq : gradientFun g (fun y => f y + h y) =ᶠ[𝓝 x]
+      (gradientFun g f + gradientFun g h) := by
+    filter_upwards [hf, hh] with y hfy hhy
+    exact gradientFun_add g hfy hhy
+  have hsum := mdifferentiableAt_add_section hgradf hgradh
+  have hleft : MDifferentiableAt I (I.prod 𝓘(ℝ, E))
+      (T% fun y => gradientFun g (fun z => f z + h z) y) x := by
+    refine hsum.congr_of_eventuallyEq ?_
+    filter_upwards [heq] with y hy
+    exact congrArg (fun v => (⟨y, v⟩ : TotalSpace E (TangentSpace I))) hy
+  have hcov := cov.isCovariantDerivativeOnUniv.congr_of_eventuallyEq
+    hleft hsum Filter.univ_mem heq
+  unfold laplacian divergence
+  rw [hcov, cov.isCovariantDerivativeOnUniv.add hgradf hgradh]
+  exact LinearMap.map_add (LinearMap.trace ℝ (TangentSpace I x)) _ _
+
+theorem laplacian_mul_at
+    (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
+    (g : SmoothRiemannianMetric I M) {f h : M → ℝ} {x : M}
+    (hf : ∀ᶠ y in 𝓝 x, MDifferentiableAt I 𝓘(ℝ, ℝ) f y)
+    (hh : ∀ᶠ y in 𝓝 x, MDifferentiableAt I 𝓘(ℝ, ℝ) h y)
+    (hgradf : MDifferentiableAt I (I.prod 𝓘(ℝ, E)) (T% fun y => gradientFun g f y) x)
+    (hgradh : MDifferentiableAt I (I.prod 𝓘(ℝ, E)) (T% fun y => gradientFun g h y) x) :
+    laplacian cov g (fun y => f y * h y) x =
+      f x * laplacian cov g h x + h x * laplacian cov g f x +
+        2 * g.inner x (gradientFun g f x) (gradientFun g h x) := by
+  have heq : gradientFun g (fun y => f y * h y) =ᶠ[𝓝 x]
+      (f • gradientFun g h + h • gradientFun g f) := by
+    filter_upwards [hf, hh] with y hfy hhy
+    exact gradientFun_mul g hfy hhy
+  have hfgradh := hf.self_of_nhds.smul_section hgradh
+  have hhgradf := hh.self_of_nhds.smul_section hgradf
+  have hsum := mdifferentiableAt_add_section hfgradh hhgradf
+  have hleft : MDifferentiableAt I (I.prod 𝓘(ℝ, E))
+      (T% fun y => gradientFun g (fun z => f z * h z) y) x := by
+    refine hsum.congr_of_eventuallyEq ?_
+    filter_upwards [heq] with y hy
+    exact congrArg (fun v => (⟨y, v⟩ : TotalSpace E (TangentSpace I))) hy
+  have hcov := cov.isCovariantDerivativeOnUniv.congr_of_eventuallyEq
+    hleft hsum Filter.univ_mem heq
+  calc
+    laplacian cov g (fun y => f y * h y) x =
+        divergence cov (f • gradientFun g h + h • gradientFun g f) x := by
+      unfold laplacian divergence
+      rw [hcov]
+    _ = divergence cov (f • gradientFun g h) x +
+        divergence cov (h • gradientFun g f) x :=
+      divergence_add cov inferInstance hfgradh hhgradf
+    _ = _ := by
+      rw [divergence_smul_gradientFun_pair cov g hf.self_of_nhds hgradh,
+        divergence_smul_gradientFun_pair cov g hh.self_of_nhds hgradf,
+        g.symm x (gradientFun g h x) (gradientFun g f x)]
+      ring
+
 end
 
 end DifferentialGeometry.Geometry.Operator
