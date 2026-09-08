@@ -2297,6 +2297,7 @@ import DifferentialGeometry.Topology.MetricBall
 import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph.Tangent
 import DifferentialGeometry.Topology.Manifold.Path.Regularity
 import DifferentialGeometry.Topology.Manifold.Path.Reparametrization
+import DifferentialGeometry.Topology.Manifold.Path.Segment
 import DifferentialGeometry.Geometry.Coordinates.Fields.Tensor
 import DifferentialGeometry.Geometry.Curvature.Algebraic.Form
 import DifferentialGeometry.Geometry.Curvature.Algebraic.CurvatureOperatorCone
