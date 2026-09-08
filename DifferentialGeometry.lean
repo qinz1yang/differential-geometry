@@ -4767,3 +4767,4 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Soliton.ConstantPotential
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Soliton.Product
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Soliton.Sphere
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Soliton.Cylinder
+import DifferentialGeometry.Topology.MonotoneStratification
