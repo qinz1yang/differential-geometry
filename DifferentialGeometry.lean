@@ -2449,6 +2449,7 @@ import DifferentialGeometry.Geometry.Metric.Family.Stationary
 import DifferentialGeometry.Geometry.Operator.Family.Basic
 import DifferentialGeometry.Analysis.TimeInterval
 import DifferentialGeometry.Geometry.Curvature.Naturality.OpenRestriction
+import DifferentialGeometry.Geometry.Curvature.Naturality.MetricLocality
 import DifferentialGeometry.Geometry.Curvature.Bounds.RicciOperatorNorm
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Ricci.QuadraticForm
 import DifferentialGeometry.Geometry.Curvature.Riemann.Basic.Field

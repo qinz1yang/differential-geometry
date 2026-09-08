@@ -1,4 +1,5 @@
 import DifferentialGeometry.Analysis.Calculus.SmoothExtension.Curve
+import DifferentialGeometry.Geometry.Curvature.Naturality.MetricLocality
 import DifferentialGeometry.Geometry.Metric.Path.Composition
 import DifferentialGeometry.Analysis.ODE.Stability.Tube
 import DifferentialGeometry.Geometry.Comparison.CheegerGromovTaylor.Core.Geometry
@@ -1831,7 +1832,6 @@ private theorem intrinsicExt_quad_le
         J ≤
       K * gExt.inner z J J * gExt.inner z V V := by
   let U := intrinsicPullBall (E := E) R
-  let Vopen := intrinsicAgree (E := E) R
   let gExt := intrinsicExtMetric (I := I) g hEnorm p hR hloc
   let gPull := intrinsicPullMetric (I := I) g hEnorm p hloc
   have hzBall : z ∈ Metric.ball (0 : E) (3 * R / 4) := by
@@ -1839,99 +1839,51 @@ private theorem intrinsicExt_quad_le
   have hzClosed : z ∈ Metric.closedBall (0 : E) (3 * R / 4) :=
     Metric.ball_subset_closedBall hzBall
   let zU : U := ⟨z, intrinsicInner_subset (E := E) R hR hzBall⟩
-  let zV : Vopen := ⟨zU, hzBall⟩
-  have hmetric :
-      ((gExt.restrictOpen (I := 𝓘(Real, E)) U).restrictOpen
-          (I := 𝓘(Real, E)) Vopen) =
-        gPull.restrictOpen (I := 𝓘(Real, E)) Vopen := by
-    simpa only [U, Vopen, gExt, gPull] using
-      intrinsicExt_restrict (I := I) g hEnorm p hR hloc
-  have hquad :=
-    intrinsicPull_quad_le (I := I) g hEnorm p hloc zU hRm J V
-  dsimp only at hquad
-  calc
-    gExt.inner z
-          (Geometry.Curvature.riemannOp
-            (Geometry.Connection.LeviCivita (I := 𝓘(Real, E)) gExt)
-            z J V V)
-          J =
-        gExt.inner z J
-          (Geometry.Curvature.riemannOp
-            (Geometry.Connection.LeviCivita (I := 𝓘(Real, E)) gExt)
-            z J V V) := gExt.symm _ _ _
-    _ = Geometry.Curvature.metricRm04StandardAt
-          (I := 𝓘(Real, E)) (M := E) gExt z J V V J := by
-      exact (DifferentialGeometry.Geometry.Curvature.rm04_eq_inner
-        (I := 𝓘(Real, E)) gExt z J V J).symm
-    _ = Geometry.Curvature.metricRm04StandardAt
-          (I := 𝓘(Real, E)) (M := U)
-          (gExt.restrictOpen (I := 𝓘(Real, E)) U) zU J V V J :=
-      by
-        have h := Geometry.Curvature.metricRm04StandardAt_restrictOpen
-          (I := 𝓘(Real, E)) gExt U zU
-          ((tangentSpaceModelContinuousLinearEquiv
-            (I := 𝓘(Real, E)) zU).symm J)
-          ((tangentSpaceModelContinuousLinearEquiv
-            (I := 𝓘(Real, E)) zU).symm V)
-          ((tangentSpaceModelContinuousLinearEquiv
-            (I := 𝓘(Real, E)) zU).symm V)
-          ((tangentSpaceModelContinuousLinearEquiv
-            (I := 𝓘(Real, E)) zU).symm J)
-        simp only [mfderiv_subtype_val_apply] at h
-        simpa only [tangentSpaceModelContinuousLinearEquiv_symm_apply] using h.symm
-    _ = Geometry.Curvature.metricRm04StandardAt
-          (I := 𝓘(Real, E)) (M := Vopen)
-          ((gExt.restrictOpen (I := 𝓘(Real, E)) U).restrictOpen
-            (I := 𝓘(Real, E)) Vopen) zV J V V J :=
-      by
-        have h := Geometry.Curvature.metricRm04StandardAt_restrictOpen
-          (I := 𝓘(Real, E))
-          (gExt.restrictOpen (I := 𝓘(Real, E)) U)
-          Vopen zV
-          ((tangentSpaceModelContinuousLinearEquiv
-            (I := 𝓘(Real, E)) zV).symm J)
-          ((tangentSpaceModelContinuousLinearEquiv
-            (I := 𝓘(Real, E)) zV).symm V)
-          ((tangentSpaceModelContinuousLinearEquiv
-            (I := 𝓘(Real, E)) zV).symm V)
-          ((tangentSpaceModelContinuousLinearEquiv
-            (I := 𝓘(Real, E)) zV).symm J)
-        simp only [mfderiv_subtype_val_apply] at h
-        simpa only [tangentSpaceModelContinuousLinearEquiv_symm_apply] using h.symm
-    _ = Geometry.Curvature.metricRm04StandardAt
-          (I := 𝓘(Real, E)) (M := Vopen)
-          (gPull.restrictOpen (I := 𝓘(Real, E)) Vopen)
-          zV J V V J := by rw [hmetric]
-    _ = Geometry.Curvature.metricRm04StandardAt
-          (I := 𝓘(Real, E)) (M := U) gPull zU J V V J :=
-      by
-        have h := Geometry.Curvature.metricRm04StandardAt_restrictOpen
-          (I := 𝓘(Real, E)) gPull Vopen zV
-          ((tangentSpaceModelContinuousLinearEquiv
-            (I := 𝓘(Real, E)) zV).symm J)
-          ((tangentSpaceModelContinuousLinearEquiv
-            (I := 𝓘(Real, E)) zV).symm V)
-          ((tangentSpaceModelContinuousLinearEquiv
-            (I := 𝓘(Real, E)) zV).symm V)
-          ((tangentSpaceModelContinuousLinearEquiv
-            (I := 𝓘(Real, E)) zV).symm J)
-        simp only [mfderiv_subtype_val_apply] at h
-        simpa only [tangentSpaceModelContinuousLinearEquiv_symm_apply] using h
-    _ = gPull.inner zU J
-          (Geometry.Curvature.riemannOp
-            (Geometry.Connection.LeviCivita (I := 𝓘(Real, E)) gPull)
-            zU J V V) := by
-      exact DifferentialGeometry.Geometry.Curvature.rm04_eq_inner
-        (I := 𝓘(Real, E)) gPull zU J V J
-    _ = gPull.inner zU
-          (Geometry.Curvature.riemannOp
-            (Geometry.Connection.LeviCivita (I := 𝓘(Real, E)) gPull)
-            zU J V V)
-          J := gPull.symm _ _ _
-    _ ≤ K * gPull.inner zU J J * gPull.inner zU V V := hquad
-    _ = K * gExt.inner z J J * gExt.inner z V V := by
-      rw [intrinsicExt_inner (I := I) g hEnorm p hR hloc hzClosed J J,
-        intrinsicExt_inner (I := I) g hEnorm p hR hloc hzClosed V V]
+  have hmetric : ∀ᶠ y in 𝓝 zU, ∀ v w : TangentSpace 𝓘(Real, E) y,
+      (gExt.restrictOpen U).inner y v w = gPull.inner y v w := by
+    have hnear : ∀ᶠ y : U in 𝓝 zU, (y : E) ∈ Metric.ball (0 : E) (3 * R / 4) :=
+      (continuous_subtype_val.continuousAt.tendsto)
+        (Metric.isOpen_ball.mem_nhds hzBall)
+    filter_upwards [hnear] with y hy v w
+    exact intrinsicExt_inner g hEnorm p hR hloc
+      (Metric.ball_subset_closedBall hy) v w
+  have hcurv := Geometry.Curvature.metricRm04At_eq_of_metric_eventuallyEq
+    (gExt.restrictOpen U) gPull zU hmetric
+  have hcurv' := congrArg (fun T => T (Geometry.Curvature.vec4 J V V J)) hcurv
+  have hrest := Geometry.Curvature.metricRm04StandardAt_restrictOpen
+    gExt U zU
+    ((tangentSpaceModelContinuousLinearEquiv (I := 𝓘(Real, E)) zU).symm J)
+    ((tangentSpaceModelContinuousLinearEquiv (I := 𝓘(Real, E)) zU).symm V)
+    ((tangentSpaceModelContinuousLinearEquiv (I := 𝓘(Real, E)) zU).symm V)
+    ((tangentSpaceModelContinuousLinearEquiv (I := 𝓘(Real, E)) zU).symm J)
+  simp only [mfderiv_subtype_val_apply] at hrest
+  have hcurvEq : Geometry.Curvature.metricRm04StandardAt gExt z J V V J =
+      Geometry.Curvature.metricRm04StandardAt gPull zU J V V J := by
+    have hrest' : Geometry.Curvature.metricRm04StandardAt
+        (gExt.restrictOpen U) zU J V V J =
+        Geometry.Curvature.metricRm04StandardAt gExt z J V V J := by
+      simpa only [tangentSpaceModelContinuousLinearEquiv_symm_apply] using hrest
+    exact hrest'.symm.trans hcurv'
+  have hquad : gPull.inner zU
+      (Geometry.Curvature.riemannOp (Geometry.Connection.LeviCivita gPull) zU J V V) J ≤
+      K * gPull.inner zU J J * gPull.inner zU V V := by
+    simpa only [tangentSpaceModelContinuousLinearEquiv_symm_apply] using!
+      intrinsicPull_quad_le g hEnorm p hloc zU hRm J V
+  have hinner : gExt.inner z
+      (Geometry.Curvature.riemannOp
+        (Geometry.Connection.LeviCivita gExt) z J V V) J =
+      gPull.inner zU
+        (Geometry.Curvature.riemannOp
+          (Geometry.Connection.LeviCivita gPull) zU J V V) J := by
+    exact (gExt.symm z _ _).trans
+      ((Geometry.Curvature.rm04_eq_inner gExt z J V J).symm.trans
+        (hcurvEq.trans ((Geometry.Curvature.rm04_eq_inner gPull zU J V J).trans
+          (gPull.symm zU _ _))))
+  change gExt.inner z _ J ≤ _
+  rw [hinner]
+  exact hquad.trans_eq (by
+    rw [intrinsicExt_inner g hEnorm p hR hloc hzClosed J J,
+      intrinsicExt_inner g hEnorm p hR hloc hzClosed V V])
 
 theorem intrinsicExt_not_conj_of_shortLaunch
     (g : SmoothRiemannianMetric I M)
