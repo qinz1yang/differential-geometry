@@ -4613,3 +4613,6 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Distance.LocalCuto
 import DifferentialGeometry.Topology.ProjectiveSpace.Projectivization
 import DifferentialGeometry.Bundle.ProjectiveSpace.Tautological
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.CylinderQuotientTautological
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Uhlenbeck.CurvatureOperatorRank
+import DifferentialGeometry.Geometry.Curvature.DimensionThree.ExteriorRank
+import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.CurvatureRank
