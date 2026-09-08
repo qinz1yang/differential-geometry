@@ -62,6 +62,32 @@ theorem isMetricNorm_of_riemannianBundle (g : SmoothRiemannianMetric I M) :
     IsMetricNorm (I := I) (M := M) g :=
   fun x v => tensor0SBundle_enorm_eq_riemannianBundle_enorm (I := I) g x v
 
+omit [Module.Finite ℝ E] [NeZero (Module.finrank ℝ E)] in
+theorem IsMetricNorm.inner_eq
+    [RiemannianBundle (fun x : M => TangentSpace I x)]
+    {g : SmoothRiemannianMetric I M} (hEnorm : IsMetricNorm (I := I) g)
+    (x : M) (v w : TangentSpace I x) : inner ℝ v w = g.inner x v w := by
+  have hdiag (z : TangentSpace I x) : inner ℝ z z = g.inner x z z := by
+    have hn : ‖z‖ = Real.sqrt (g.inner x z z) := by
+      have h := hEnorm x z
+      rw [← ofReal_norm] at h
+      have ht := congrArg ENNReal.toReal h
+      simpa only [ENNReal.toReal_ofReal (norm_nonneg z),
+        ENNReal.toReal_ofReal (Real.sqrt_nonneg _)] using ht
+    rw [real_inner_self_eq_norm_sq, hn,
+      Real.sq_sqrt (metric_inner_self_nonneg (I := I) g x z)]
+  have h := hdiag (v + w)
+  simp only [inner_add_left, inner_add_right, map_add, add_apply] at h
+  rw [hdiag v, hdiag w, g.symm x w v] at h
+  linarith [real_inner_comm v w]
+
+omit [Module.Finite ℝ E] [NeZero (Module.finrank ℝ E)] in
+theorem IsMetricNorm.isContinuousRiemannianBundle
+    [RiemannianBundle (fun x : M => TangentSpace I x)]
+    {g : SmoothRiemannianMetric I M} (hEnorm : IsMetricNorm (I := I) g) :
+    IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
+  ⟨g.inner, g.contMDiff.continuous, hEnorm.inner_eq⟩
+
 end MetricNorm
 
 end DifferentialGeometry.Geometry.Riemannian
