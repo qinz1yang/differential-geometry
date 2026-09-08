@@ -4619,3 +4619,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.CurvatureRank
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Distance.LengthVariation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Distance.Laplacian
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HamiltonHarnack.UhlenbeckBlockEvolution
+import DifferentialGeometry.Tensor.Alternating.Determinant
+import DifferentialGeometry.Tensor.Exterior.Descent
+import DifferentialGeometry.Geometry.Metric.Cylinder.TangentFraming
+import DifferentialGeometry.Geometry.Metric.RicciSoliton.CylinderOrientation
