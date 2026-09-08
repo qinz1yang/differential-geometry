@@ -57,6 +57,15 @@ theorem riemannianEDistOf_triangle
   let : RiemannianBundle (TangentSpace I : M → Type _) := ⟨g.toRiemannianMetric⟩
   exact Manifold.riemannianEDist_triangle
 
+theorem riemannianEDistOf_toReal_triangle
+    (g : SmoothRiemannianMetric I M) (x y z : M)
+    (hxy : riemannianEDistOf g x y ≠ ⊤) (hyz : riemannianEDistOf g y z ≠ ⊤) :
+    (riemannianEDistOf g x z).toReal ≤
+      (riemannianEDistOf g x y).toReal + (riemannianEDistOf g y z).toReal := by
+  have hreal := ENNReal.toReal_mono (ENNReal.add_ne_top.mpr ⟨hxy, hyz⟩)
+    (riemannianEDistOf_triangle g x y z)
+  rwa [ENNReal.toReal_add hxy hyz] at hreal
+
 end DifferentialGeometry
 
 end
