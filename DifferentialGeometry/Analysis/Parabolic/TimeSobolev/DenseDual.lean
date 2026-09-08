@@ -6,7 +6,7 @@ open scoped ENNReal Topology
 namespace DifferentialGeometry.Analysis.Parabolic.TimeSobolev
 
 variable {X S : Type*} [NormedAddCommGroup X] [NormedSpace ℝ X]
-  [NormedAddCommGroup S] [NormedSpace ℝ S]
+  [SeminormedAddCommGroup S] [NormedSpace ℝ S]
 
 theorem extend_scalar_weak_deriv_of_denseRange_on
     {a b : ℝ} (ι : S →L[ℝ] X) (hdense : DenseRange ι)

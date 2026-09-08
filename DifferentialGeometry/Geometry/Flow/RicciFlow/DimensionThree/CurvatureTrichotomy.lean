@@ -1,6 +1,9 @@
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.PositiveSystem
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.CompleteTrichotomy
+import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureOperatorEigenvalues
+import DifferentialGeometry.Geometry.Curvature.DimensionThree.SectionalCurvature
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.CurvatureKernel
+import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.CurvatureSurface
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Uhlenbeck.CurvatureOperatorKernel
 
 set_option autoImplicit false
@@ -748,5 +751,331 @@ theorem flow_time_slice_global_trichotomy_exclusive_at_later_time
     have h1' := h1.1 x₀
     have h3' := h3.1 x₀
     omega
+
+theorem flow_time_slice_trichotomy_exclusive_at_later_time
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
+    [FiniteDimensional Real E]
+    {H : Type*} [TopologicalSpace H] {I : ModelWithCorners Real E H} [I.Boundaryless]
+    {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+    [T2Space M] [ConnectedSpace M]
+    {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn S)
+    (hdim : Module.finrank Real E = 3)
+    {s t : Real} (hst : s < t) (hreg : Icc s t ⊆ D.regular)
+    (hR : ∀ r ∈ Icc s t, ∀ x,
+      (⟨metricRm04At (S.family.metric r) x,
+        metricRm04At_mem_algebraicCurvatureTensorSubmodule (S.family.metric r) x⟩ :
+          algebraicCurvatureTensorSubmodule (I := I) (M := M) x) ∈
+            algebraicCurvatureOperatorNonnegativeCone (I := I) (M := M)) :
+    let g := S.family.metric t
+    let flat := ∀ x, curvatureOperatorEndomorphismAt g x
+      ⟨metricRm04At g x, metricRm04At_mem_algebraicCurvatureTensorSubmodule g x⟩ = 0
+    let rankOne := (∀ x, Module.finrank Real (curvatureOperatorImageAt g x
+      ⟨metricRm04At g x, metricRm04At_mem_algebraicCurvatureTensorSubmodule g x⟩) = 1) ∧
+      (∀ (x : M) (basis : Module.Basis (Fin 3) Real (TangentSpace I x)),
+        OrthonormalBasisAt g x basis →
+        let d := (traceNormalizedCurvatureOperatorMatrixAt_isHermitian x basis
+          ⟨metricRm04At g x, metricRm04At_mem_algebraicCurvatureTensorSubmodule g x⟩).eigenvalues₀
+        0 < d 0 ∧ d 1 = 0 ∧ d 2 = 0) ∧
+      ∀ x,
+    ∃ (e : TangentSpace I x) (K : TopologicalSpace.Opens (perpSpace g x e))
+      (O : TopologicalSpace.Opens ℝ)
+      (phi : PartialDiffeomorph ((perpModel g x e).prod 𝓘(ℝ, ℝ)) I
+        (perpSpace g x e × ℝ) M ∞)
+      (hPhi : IsLocalDiffeomorph ((perpModel g x e).prod 𝓘(ℝ, ℝ)) I ∞
+        (fun y : K × O => phi (y.1.1, y.2.1)))
+      (h : SmoothRiemannianMetric (perpModel g x e) K),
+      e ∈ curvatureOperatorImageAnnihilatorAt g x
+        ⟨metricRm04At g x,
+          metricRm04At_mem_algebraicCurvatureTensorSubmodule g x⟩ ∧
+      g.inner x e e = 1 ∧
+      Module.finrank ℝ (perpSpace g x e) = 2 ∧
+      (0 : perpSpace g x e) ∈ K ∧ (0 : ℝ) ∈ O ∧
+      IsPreconnected (O : Set ℝ) ∧ phi.source = (K : Set _) ×ˢ (O : Set ℝ) ∧
+      phi (0, 0) = x ∧
+      (localPullMetric g
+        (fun y : K × O => phi (y.1.1, y.2.1)) hPhi =
+          h.prod ((euclideanMetric (E := ℝ)).restrictOpen O)) ∧
+      (∀ k : K, 0 < metricScalarAt h k) ∧
+      (∀ (k : K) (v w : TangentSpace (perpModel g x e) k),
+        LinearIndependent ℝ ![v, w] → 0 < Geometry.Riemannian.sectionalCurvature h k v w) ∧
+      ∀ k ∈ K, ∀ r ∈ O, ∀ v : TangentSpace I (phi (k, r)),
+        (v ∈ curvatureOperatorImageAnnihilatorAt g (phi (k, r))
+          ⟨metricRm04At g (phi (k, r)),
+            metricRm04At_mem_algebraicCurvatureTensorSubmodule g (phi (k, r))⟩ ↔
+          ∃ q : ℝ, mfderiv ((perpModel g x e).prod 𝓘(ℝ, ℝ)) I
+            (fun z : perpSpace g x e × ℝ => phi z) (k, r) (0, q) = v) ∧
+        ((∀ w ∈ curvatureOperatorImageAnnihilatorAt g (phi (k, r))
+          ⟨metricRm04At g (phi (k, r)),
+            metricRm04At_mem_algebraicCurvatureTensorSubmodule g (phi (k, r))⟩,
+          g.inner (phi (k, r)) w v = 0) ↔
+          ∃ u : TangentSpace (perpModel g x e) k,
+            mfderiv ((perpModel g x e).prod 𝓘(ℝ, ℝ)) I
+              (fun z : perpSpace g x e × ℝ => phi z) (k, r) (u, 0) = v)
+    let positive := (∀ x, Module.finrank Real (curvatureOperatorImageAt g x
+      ⟨metricRm04At g x, metricRm04At_mem_algebraicCurvatureTensorSubmodule g x⟩) = 3) ∧
+      (∀ x, ∀ a : TangentSpace I x [⋀^Fin 2]→L[Real] Real, a ≠ 0 →
+        0 < (twoFormMetricData g x).inner (curvatureOperatorEndomorphismAt g x
+          ⟨metricRm04At g x, metricRm04At_mem_algebraicCurvatureTensorSubmodule g x⟩ a) a) ∧
+      (∀ (x : M) (basis : Module.Basis (Fin 3) Real (TangentSpace I x)),
+        OrthonormalBasisAt g x basis →
+        let d := (traceNormalizedCurvatureOperatorMatrixAt_isHermitian x basis
+          ⟨metricRm04At g x, metricRm04At_mem_algebraicCurvatureTensorSubmodule g x⟩).eigenvalues₀
+        d 1 ≤ d 0 ∧ d 2 ≤ d 1 ∧ 0 < d 2)
+    (flat ∨ rankOne ∨ positive) ∧
+      ¬(flat ∧ rankOne) ∧ ¬(flat ∧ positive) ∧ ¬(rankOne ∧ positive) := by
+  intro g flat rankOne positive
+  let _ : CompleteSpace E := FiniteDimensional.complete Real E
+  have hnonneg := fun x => curvatureOperatorEndomorphismAt_inner_nonneg_of_mem_nonnegativeCone
+    hdim g x _ (hR t ⟨hst.le, le_rfl⟩ x)
+  have hnull : ∀ x, ∀ a : TangentSpace I x [⋀^Fin 2]→L[Real] Real,
+      curvatureOperatorEndomorphismAt g x
+        ⟨metricRm04At g x, metricRm04At_mem_algebraicCurvatureTensorSubmodule g x⟩ a = 0 →
+      curvatureOperatorReactionEndomorphism3 (curvatureOperatorEndomorphismAt g x
+        ⟨metricRm04At g x, metricRm04At_mem_algebraicCurvatureTensorSubmodule g x⟩).toLinearMap a = 0 := by
+    intro x a ha
+    let _ : FiniteDimensional Real (TangentSpace I x [⋀^Fin 2]→L[Real] Real) :=
+      (ContinuousAlternatingMap.elementaryCovectorBasis (k := 2)
+        (Module.finBasis Real (TangentSpace I x))).finiteDimensional_of_finite
+    have htwoform : Module.finrank Real (TangentSpace I x [⋀^Fin 2]→L[Real] Real) = 3 := by
+      rw [ContinuousAlternatingMap.finrank_continuousAlternatingMap]
+      change (Module.finrank Real E).choose 2 = 3
+      rw [hdim]
+      norm_num
+    apply curvatureOperatorReactionEndomorphism3_eq_zero_of_mem_ker_of_finrank_range_ne_two
+      htwoform _ _ ha
+    have htri := curvatureOperatorImageAt_finrank_trichotomy_at_later_time S hS hdim hst hreg hR x
+    change Module.finrank Real (curvatureOperatorImageAt g x
+      ⟨metricRm04At g x, metricRm04At_mem_algebraicCurvatureTensorSubmodule g x⟩) ≠ 2
+    change Module.finrank Real (curvatureOperatorImageAt g x
+        ⟨metricRm04At g x, metricRm04At_mem_algebraicCurvatureTensorSubmodule g x⟩) = 0 ∨
+      Module.finrank Real (curvatureOperatorImageAt g x
+        ⟨metricRm04At g x, metricRm04At_mem_algebraicCurvatureTensorSubmodule g x⟩) = 1 ∨
+      Module.finrank Real (curvatureOperatorImageAt g x
+        ⟨metricRm04At g x, metricRm04At_mem_algebraicCurvatureTensorSubmodule g x⟩) = 3 at htri
+    rcases htri with hzero | hone | hthree
+    · rw [hzero]
+      decide
+    · rw [hone]
+      decide
+    · rw [hthree]
+      decide
+  have halts : flat ∨ rankOne ∨ positive := by
+    rcases curvature_time_slice_trichotomy_of_derived_data hdim g hnonneg hnull
+      (curvatureOperatorImageAt_finrank_eq_at_later_time S hS hdim hst hreg hR)
+      (curvatureOperatorKernelAt_parallel_at_later_time S hS hdim hst hreg hR) with
+      hflat | ⟨hrank, _⟩ | hpositive
+    · exact Or.inl hflat
+    · refine Or.inr (Or.inl ⟨hrank, ?_, ?_⟩)
+      · intro x basis horth
+        exact traceNormalizedCurvatureOperatorMatrixAt_eigenvalues_of_image_finrank_eq_one
+          g x basis horth _ (hR t ⟨hst.le, le_rfl⟩ x) (hrank x)
+      · intro x
+        exact exists_positive_surface_local_product_at_later_time S hS hdim hst hreg hR
+          (hrank x) x
+    · refine Or.inr (Or.inr ⟨hpositive.1, hpositive.2, ?_⟩)
+      intro x basis horth
+      refine ⟨Matrix.IsHermitian.eigenvalues₀_antitone _ (by decide),
+        Matrix.IsHermitian.eigenvalues₀_antitone _ (by decide), ?_⟩
+      exact traceNormalizedCurvatureOperatorMatrixAt_eigenvalues_pos_of_image_finrank_eq_three
+        g x basis horth _ (hR t ⟨hst.le, le_rfl⟩ x) (hpositive.1 x) 2
+  let x₀ : M := Classical.choice (inferInstance : Nonempty M)
+  have hzero (hf : flat) : Module.finrank Real (curvatureOperatorImageAt g x₀
+      ⟨metricRm04At g x₀, metricRm04At_mem_algebraicCurvatureTensorSubmodule g x₀⟩) = 0 := by
+    have hrange : curvatureOperatorImageAt g x₀
+        ⟨metricRm04At g x₀, metricRm04At_mem_algebraicCurvatureTensorSubmodule g x₀⟩ = ⊥ := by
+      change (curvatureOperatorEndomorphismAt g x₀
+        ⟨metricRm04At g x₀, metricRm04At_mem_algebraicCurvatureTensorSubmodule g x₀⟩).range = ⊥
+      rw [hf x₀]
+      exact LinearMap.range_zero
+    rw [hrange]
+    exact finrank_bot Real _
+  refine ⟨halts, ?_, ?_, ?_⟩
+  · rintro ⟨hf, h1⟩
+    have h0 := hzero hf
+    have h1' := h1.1 x₀
+    omega
+  · rintro ⟨hf, h3⟩
+    have h0 := hzero hf
+    have h3' := h3.1 x₀
+    omega
+  · rintro ⟨h1, h3⟩
+    have h1' := h1.1 x₀
+    have h3' := h3.1 x₀
+    omega
+
+theorem flow_time_slice_dichotomy_of_least_eigenvalue_eq_zero_at_later_time
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
+    [FiniteDimensional Real E]
+    {H : Type*} [TopologicalSpace H] {I : ModelWithCorners Real E H} [I.Boundaryless]
+    {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+    [T2Space M] [ConnectedSpace M]
+    {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn S)
+    (hdim : Module.finrank Real E = 3)
+    {s t : Real} (hst : s < t) (hreg : Icc s t ⊆ D.regular)
+    (hR : ∀ r ∈ Icc s t, ∀ x,
+      (⟨metricRm04At (S.family.metric r) x,
+        metricRm04At_mem_algebraicCurvatureTensorSubmodule (S.family.metric r) x⟩ :
+          algebraicCurvatureTensorSubmodule (I := I) (M := M) x) ∈
+            algebraicCurvatureOperatorNonnegativeCone (I := I) (M := M))
+    {x₀ : M} (hzero : leastCurvatureOperatorEigenvalueAt (S.family.metric t) x₀
+      ⟨metricRm04At (S.family.metric t) x₀,
+        metricRm04At_mem_algebraicCurvatureTensorSubmodule (S.family.metric t) x₀⟩ = 0) :
+    let g := S.family.metric t
+    let flat := metricScalarAt g x₀ = 0 ∧ ∀ x, curvatureOperatorEndomorphismAt g x
+      ⟨metricRm04At g x, metricRm04At_mem_algebraicCurvatureTensorSubmodule g x⟩ = 0
+    let rankOne := 0 < metricScalarAt g x₀ ∧ ∀ x, Module.finrank Real
+      (curvatureOperatorImageAt g x
+        ⟨metricRm04At g x, metricRm04At_mem_algebraicCurvatureTensorSubmodule g x⟩) = 1
+    (flat ∨ rankOne) ∧ ¬(flat ∧ rankOne) := by
+  intro g flat rankOne
+  have hrank : ∀ x,
+      Module.finrank Real (curvatureOperatorImageAt g x
+        ⟨metricRm04At g x, metricRm04At_mem_algebraicCurvatureTensorSubmodule g x⟩) =
+      Module.finrank Real (curvatureOperatorImageAt g x₀
+        ⟨metricRm04At g x₀, metricRm04At_mem_algebraicCurvatureTensorSubmodule g x₀⟩) :=
+    fun x => curvatureOperatorImageAt_finrank_eq_at_later_time S hS hdim hst hreg hR x x₀
+  have halts : flat ∨ rankOne := by
+    have htri := curvatureOperatorImageAt_finrank_trichotomy_at_later_time
+      S hS hdim hst hreg hR x₀
+    change Module.finrank Real (curvatureOperatorImageAt g x₀
+        ⟨metricRm04At g x₀, metricRm04At_mem_algebraicCurvatureTensorSubmodule g x₀⟩) = 0 ∨
+      Module.finrank Real (curvatureOperatorImageAt g x₀
+        ⟨metricRm04At g x₀, metricRm04At_mem_algebraicCurvatureTensorSubmodule g x₀⟩) = 1 ∨
+      Module.finrank Real (curvatureOperatorImageAt g x₀
+        ⟨metricRm04At g x₀, metricRm04At_mem_algebraicCurvatureTensorSubmodule g x₀⟩) = 3 at htri
+    rcases htri with hflat | hone | hthree
+    · have hflat' : ∀ x, curvatureOperatorEndomorphismAt g x
+          ⟨metricRm04At g x, metricRm04At_mem_algebraicCurvatureTensorSubmodule g x⟩ = 0 := by
+        intro x
+        let _ : FiniteDimensional Real (TangentSpace I x [⋀^Fin 2]→L[Real] Real) :=
+          (ContinuousAlternatingMap.elementaryCovectorBasis (k := 2)
+            (Module.finBasis Real (TangentSpace I x))).finiteDimensional_of_finite
+        have hz := (hrank x).trans hflat
+        have hrange : curvatureOperatorImageAt g x
+            ⟨metricRm04At g x, metricRm04At_mem_algebraicCurvatureTensorSubmodule g x⟩ = ⊥ :=
+          Submodule.finrank_eq_zero.mp hz
+        apply ContinuousLinearMap.ext
+        intro a
+        have ha := LinearMap.mem_range_self
+          (curvatureOperatorEndomorphismAt g x
+            ⟨metricRm04At g x, metricRm04At_mem_algebraicCurvatureTensorSubmodule g x⟩).toLinearMap a
+        change curvatureOperatorEndomorphismAt g x
+            ⟨metricRm04At g x, metricRm04At_mem_algebraicCurvatureTensorSubmodule g x⟩ a ∈
+          curvatureOperatorImageAt g x
+            ⟨metricRm04At g x, metricRm04At_mem_algebraicCurvatureTensorSubmodule g x⟩ at ha
+        rw [hrange] at ha
+        exact ha
+      exact Or.inl ⟨metricScalarAt_eq_zero_of_curvatureOperatorEndomorphismAt_eq_zero
+        g x₀ (hflat' x₀), hflat'⟩
+    · exact Or.inr ⟨metricScalarAt_pos_of_mem_nonnegativeCone_of_curvatureOperator_rank_one
+        hdim g x₀ (hR t ⟨hst.le, le_rfl⟩ x₀) hone,
+        fun x => (hrank x).trans hone⟩
+    · have hpos := leastCurvatureOperatorEigenvalueAt_pos_of_image_finrank_eq_three
+        g x₀ hdim _ (hR t ⟨hst.le, le_rfl⟩ x₀) hthree
+      exact False.elim ((ne_of_gt hpos) hzero)
+  refine ⟨halts, ?_⟩
+  rintro ⟨⟨hflat, _⟩, ⟨hpos, _⟩⟩
+  exact (ne_of_gt hpos) hflat
+
+theorem flow_time_slice_global_dichotomy_of_least_eigenvalue_eq_zero_at_later_time
+    {H : Type} [TopologicalSpace H]
+    {I : ModelWithCorners ℝ (DifferentialGeometry.Topology.Morse.MorseModel 3) H}
+    [I.Boundaryless]
+    {M : Type} [TopologicalSpace M] [ChartedSpace H M]
+    [IsManifold I ∞ M] [T2Space M] [SigmaCompactSpace M] [ConnectedSpace M]
+    {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn S)
+    {s t : ℝ} (hst : s < t) (hreg : Icc s t ⊆ D.regular)
+    (hR : ∀ r ∈ Icc s t, ∀ x,
+      (⟨metricRm04At (S.family.metric r) x,
+        metricRm04At_mem_algebraicCurvatureTensorSubmodule (S.family.metric r) x⟩ :
+          algebraicCurvatureTensorSubmodule (I := I) (M := M) x) ∈
+            algebraicCurvatureOperatorNonnegativeCone (I := I) (M := M))
+    (hcomplete : RiemannianMetricComplete (S.family.metric t))
+    {x₀ : M} (hzero : leastCurvatureOperatorEigenvalueAt (S.family.metric t) x₀
+      ⟨metricRm04At (S.family.metric t) x₀,
+        metricRm04At_mem_algebraicCurvatureTensorSubmodule (S.family.metric t) x₀⟩ = 0) :
+    let g := S.family.metric t
+    let flat := metricScalarAt g x₀ = 0 ∧
+      (∀ x, curvatureOperatorEndomorphismAt g x
+        ⟨metricRm04At g x, metricRm04At_mem_algebraicCurvatureTensorSubmodule g x⟩ = 0) ∧
+      Geometry.Riemannian.Topology.UniversalCover.HasEuclideanUniversalCover g
+    let rankOne := 0 < metricScalarAt g x₀ ∧
+      (∀ x, curvatureOperatorImageRank g x = 1) ∧ HasCurvatureSurfaceProductSplitting g
+    (flat ∨ rankOne) ∧ ¬(flat ∧ rankOne) := by
+  intro g flat rankOne
+  have hdim : Module.finrank ℝ (DifferentialGeometry.Topology.Morse.MorseModel 3) = 3 := by
+    simp [DifferentialGeometry.Topology.Morse.MorseModel]
+  have halts : flat ∨ rankOne := by
+    rcases flow_time_slice_global_trichotomy_at_later_time S hS hst hreg hR hcomplete with
+      ⟨hflat, hcover⟩ | ⟨hrank, hsplit⟩ | ⟨hrank, _⟩
+    · exact Or.inl ⟨metricScalarAt_eq_zero_of_curvatureOperatorEndomorphismAt_eq_zero
+        g x₀ (hflat x₀), hflat, hcover⟩
+    · exact Or.inr ⟨metricScalarAt_pos_of_mem_nonnegativeCone_of_curvatureOperator_rank_one
+        hdim g x₀ (hR t ⟨hst.le, le_rfl⟩ x₀) (hrank x₀), hrank, hsplit⟩
+    · have hpos := leastCurvatureOperatorEigenvalueAt_pos_of_image_finrank_eq_three
+        g x₀ hdim _ (hR t ⟨hst.le, le_rfl⟩ x₀) (hrank x₀)
+      exact False.elim ((ne_of_gt hpos) hzero)
+  refine ⟨halts, ?_⟩
+  rintro ⟨⟨hflat, _⟩, ⟨hpos, _⟩⟩
+  exact (ne_of_gt hpos) hflat
+
+theorem flow_time_slice_dichotomy_of_sectionalCurvature_eq_zero_at_later_time
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
+    [FiniteDimensional Real E]
+    {H : Type*} [TopologicalSpace H] {I : ModelWithCorners Real E H} [I.Boundaryless]
+    {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+    [T2Space M] [ConnectedSpace M]
+    {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn S)
+    (hdim : Module.finrank Real E = 3)
+    {s t : Real} (hst : s < t) (hreg : Icc s t ⊆ D.regular)
+    (hR : ∀ r ∈ Icc s t, ∀ x,
+      (⟨metricRm04At (S.family.metric r) x,
+        metricRm04At_mem_algebraicCurvatureTensorSubmodule (S.family.metric r) x⟩ :
+          algebraicCurvatureTensorSubmodule (I := I) (M := M) x) ∈
+            algebraicCurvatureOperatorNonnegativeCone (I := I) (M := M))
+    {x₀ : M} (v w : TangentSpace I x₀) (hvw : LinearIndependent Real ![v, w])
+    (hzero : Geometry.Riemannian.sectionalCurvature (S.family.metric t) x₀ v w = 0) :
+    let g := S.family.metric t
+    let flat := metricScalarAt g x₀ = 0 ∧ ∀ x, curvatureOperatorEndomorphismAt g x
+      ⟨metricRm04At g x, metricRm04At_mem_algebraicCurvatureTensorSubmodule g x⟩ = 0
+    let rankOne := 0 < metricScalarAt g x₀ ∧ ∀ x, Module.finrank Real
+      (curvatureOperatorImageAt g x
+        ⟨metricRm04At g x, metricRm04At_mem_algebraicCurvatureTensorSubmodule g x⟩) = 1
+    (flat ∨ rankOne) ∧ ¬(flat ∧ rankOne) := by
+  exact flow_time_slice_dichotomy_of_least_eigenvalue_eq_zero_at_later_time
+    S hS hdim hst hreg hR
+    (leastCurvatureOperatorEigenvalueAt_eq_zero_of_sectionalCurvature_eq_zero
+      (S.family.metric t) x₀ hdim (hR t ⟨hst.le, le_rfl⟩ x₀) v w hvw hzero)
+
+theorem flow_time_slice_global_dichotomy_of_sectionalCurvature_eq_zero_at_later_time
+    {H : Type} [TopologicalSpace H]
+    {I : ModelWithCorners ℝ (DifferentialGeometry.Topology.Morse.MorseModel 3) H}
+    [I.Boundaryless]
+    {M : Type} [TopologicalSpace M] [ChartedSpace H M]
+    [IsManifold I ∞ M] [T2Space M] [SigmaCompactSpace M] [ConnectedSpace M]
+    {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn S)
+    {s t : ℝ} (hst : s < t) (hreg : Icc s t ⊆ D.regular)
+    (hR : ∀ r ∈ Icc s t, ∀ x,
+      (⟨metricRm04At (S.family.metric r) x,
+        metricRm04At_mem_algebraicCurvatureTensorSubmodule (S.family.metric r) x⟩ :
+          algebraicCurvatureTensorSubmodule (I := I) (M := M) x) ∈
+            algebraicCurvatureOperatorNonnegativeCone (I := I) (M := M))
+    (hcomplete : RiemannianMetricComplete (S.family.metric t))
+    {x₀ : M} (v w : TangentSpace I x₀) (hvw : LinearIndependent Real ![v, w])
+    (hzero : Geometry.Riemannian.sectionalCurvature (S.family.metric t) x₀ v w = 0) :
+    let g := S.family.metric t
+    let flat := metricScalarAt g x₀ = 0 ∧
+      (∀ x, curvatureOperatorEndomorphismAt g x
+        ⟨metricRm04At g x, metricRm04At_mem_algebraicCurvatureTensorSubmodule g x⟩ = 0) ∧
+      Geometry.Riemannian.Topology.UniversalCover.HasEuclideanUniversalCover g
+    let rankOne := 0 < metricScalarAt g x₀ ∧
+      (∀ x, curvatureOperatorImageRank g x = 1) ∧ HasCurvatureSurfaceProductSplitting g
+    (flat ∨ rankOne) ∧ ¬(flat ∧ rankOne) := by
+  have hdim : Module.finrank ℝ (DifferentialGeometry.Topology.Morse.MorseModel 3) = 3 := by
+    simp [DifferentialGeometry.Topology.Morse.MorseModel]
+  exact flow_time_slice_global_dichotomy_of_least_eigenvalue_eq_zero_at_later_time
+    S hS hst hreg hR hcomplete
+    (leastCurvatureOperatorEigenvalueAt_eq_zero_of_sectionalCurvature_eq_zero
+      (S.family.metric t) x₀ hdim (hR t ⟨hst.le, le_rfl⟩ x₀) v w hvw hzero)
 
 end DifferentialGeometry.PDE.RicciFlow.DimensionThree

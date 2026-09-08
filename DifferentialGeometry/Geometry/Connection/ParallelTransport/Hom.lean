@@ -195,3 +195,63 @@ theorem IsParallelSet.image
   exact ⟨⟨γ t, T t v⟩, hvK, TotalSpace.mk_inj.mpr hEq⟩
 
 end CovariantDerivative
+
+namespace CovariantDerivative
+
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  [FiniteDimensional ℝ E]
+  {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+  {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M] [T2Space M]
+  {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F] [FiniteDimensional ℝ F]
+  {V : M → Type*} [TopologicalSpace (TotalSpace F V)]
+  [∀ x, NormedAddCommGroup (V x)] [∀ x, InnerProductSpace ℝ (V x)]
+  [FiberBundle F V] [VectorBundle ℝ F V]
+  [IsContMDiffRiemannianBundle I 1 F V] [ContMDiffVectorBundle ∞ F V I]
+
+theorem exists_linearIsometryEquiv_conj_of_parallel_endomorphism
+    {cov : CovariantDerivative I F V} (hmetric : cov.IsMetricCompatible)
+    (hcov : ContMDiffCovariantDerivative cov ∞)
+    {γ : ℝ → M} {A : ∀ t, V (γ t) →L[ℝ] V (γ t)}
+    {a b t₀ t : ℝ} (ht₀ : t₀ ∈ Icc a b) (ht : t ∈ Icc a b)
+    (hγ : ContMDiffOn 𝓘(ℝ, ℝ) I ∞ γ (Icc a b))
+    (hA : MDifferentiableOn 𝓘(ℝ, ℝ) (I.prod 𝓘(ℝ, F →L[ℝ] F))
+      (fun s => (⟨γ s, A s⟩ : TotalSpace (F →L[ℝ] F)
+        (fun x => V x →L[ℝ] V x))) (Icc a b))
+    (hApar : ∀ s ∈ Icc a b,
+      (DifferentialGeometry.HomConnectionGen.homBundleCovariantDerivativeGen
+        I M F V F V cov cov).derivAlongWithin γ A (Icc a b) s = 0) :
+    ∃ e : V (γ t₀) ≃ₗᵢ[ℝ] V (γ t),
+      e.toContinuousLinearEquiv.conj (A t₀) = A t := by
+  have hγparam : ContMDiffOn (𝓘(ℝ, ℝ).prod 𝓘(ℝ, ℝ)) I ∞
+      (fun q : ℝ × ℝ => γ q.1) (Icc a b ×ˢ univ) :=
+    hγ.comp contMDiffOn_fst (fun _ hq => hq.1)
+  obtain ⟨T, hT₀, hTf, _, hTp, hTm⟩ :=
+    hmetric.exists_parallel_transport_on_Icc (IP := 𝓘(ℝ, ℝ))
+      (γ := fun t (_ : ℝ) => γ t) hcov ht₀ hγparam
+  have hsmooth (v : V (γ t₀)) :
+      ContMDiffOn 𝓘(ℝ, ℝ) (I.prod 𝓘(ℝ, F)) ∞
+        (fun t => (⟨γ t, T t 0 v⟩ : TotalSpace F V)) (Icc a b) := by
+    let e := trivializationAt F V (γ t₀)
+    have he : γ t₀ ∈ e.baseSet := mem_baseSet_trivializationAt F V (γ t₀)
+    have harg : ContMDiff 𝓘(ℝ, ℝ)
+        ((𝓘(ℝ, ℝ).prod 𝓘(ℝ, ℝ)).prod 𝓘(ℝ, F)) ∞
+        (fun t : ℝ => ((t, (0 : ℝ)), e.continuousLinearMapAt ℝ (γ t₀) v)) :=
+      (contMDiff_id.prodMk contMDiff_const).prodMk contMDiff_const
+    have h := (hTf e).comp harg.contMDiffOn (fun _ ht => ⟨ht, he⟩)
+    simpa only [Function.comp_def, e.symmL_continuousLinearMapAt he] using h
+  have hdiff (v : V (γ t₀)) := (hsmooth v).mdifferentiableOn (by simp)
+  have hcomm (v : V (γ t₀)) : A t (T t 0 v) = T t 0 (A t₀ v) := by
+    apply cov.parallel_section_eq_on_Icc hcov ht₀ (hγ.of_le (by simp))
+      (fun s hs => (hA s hs).clm_bundle_apply (hdiff v s hs)) (hdiff (A t₀ v))
+      ?_ (hTp 0 (A t₀ v)) (by rw [hT₀, hT₀]) t ht
+    intro s hs
+    rw [derivAlongWithin_clm_apply cov cov γ A (fun r => T r 0 v)
+      (hA s hs) (hdiff v s hs), hApar s hs, hTp 0 v s hs]
+    simp only [zero_apply, map_zero, add_zero]
+  let e := (T t 0).toLinearEquiv.isometryOfInner (hTm t ht 0)
+  refine ⟨e, ?_⟩
+  ext v
+  change T t 0 (A t₀ ((T t 0).symm v)) = A t v
+  rw [← hcomm, (T t 0).apply_symm_apply]
+
+end CovariantDerivative

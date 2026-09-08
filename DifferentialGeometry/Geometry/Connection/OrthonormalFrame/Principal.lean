@@ -112,4 +112,31 @@ theorem orthonormalFramePrincipalConnectionForm_apply (cov : CovariantDerivative
   exact congrArg Subtype.val
     (LinearIsometryEquiv.groupLieAlgebraEquiv.apply_symm_apply _)
 
+theorem orthonormalFramePrincipalConnectionForm_comp_apply
+    (cov : CovariantDerivative I F V)
+    (hcov : cov.IsMetricCompatible) (hsmooth : ContMDiffCovariantDerivative cov ∞)
+    (q : ∀ x, V x ≃ₗᵢ[ℝ] F) {x : M}
+    (hq : ∀ w : F, ContMDiffAt I (I.prod 𝓘(ℝ, F)) 1
+      (fun y => TotalSpace.mk' F y ((q y).symm w)) x) :
+    letI : IsContinuousRiemannianBundle F V :=
+      IsContMDiffRiemannianBundle.isContinuousRiemannianBundle (I := I) (n := ∞)
+    letI : ∀ x, Nonempty (V x ≃ₗᵢ[ℝ] F) := fun x => ⟨FiberBundle.linearIsometryEquivAt (F := F) V x⟩
+    letI := (FiberBundle.orthonormalFramePrebundle (F := F) V).totalSpaceTopology
+    letI := (FiberBundle.orthonormalFramePrebundle (F := F) V).toFiberBundle
+    letI := FiberBundle.orthonormalFrameChartedSpace (F := F) V I ∞
+    letI := FiberBundle.orthonormalFrame_isPrincipalBundle (F := F) V
+    letI := FiberBundle.orthonormalFrame_isManifold (F := F) V I ∞
+    ∀ X : TangentSpace I x,
+      (LinearIsometryEquiv.groupLieAlgebraEquiv
+        ((cov.orthonormalFramePrincipalConnectionForm hcov hsmooth).toFun
+          (⟨x, q x⟩ : TotalSpace (F ≃ₗᵢ[ℝ] F) (fun y => V y ≃ₗᵢ[ℝ] F))
+          (mfderiv I (I.prod 𝓘(ℝ, skewAdjoint.submodule ℝ (F →L[ℝ] F)))
+            (fun y => (⟨y, q y⟩ : TotalSpace (F ≃ₗᵢ[ℝ] F)
+              (fun z => V z ≃ₗᵢ[ℝ] F))) x X)) : F →L[ℝ] F) =
+        cov.coframeConnectionForm q x X := by
+  intro X
+  rw [cov.orthonormalFramePrincipalConnectionForm_apply hcov hsmooth]
+  ext w
+  exact cov.orthonormalFrameConnectionForm_comp_apply (by simp) q hq X w
+
 end CovariantDerivative

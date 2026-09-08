@@ -5,6 +5,7 @@ import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.InitialData
 import DifferentialGeometry.Geometry.Operator.MetricFamilyRegularity
 import DifferentialGeometry.Analysis.FiniteDimensional.Rank
 import DifferentialGeometry.Topology.ConnectedCompactNeighborhood
+import DifferentialGeometry.Topology.MonotoneStratification
 import Mathlib.Geometry.Manifold.BumpFunction
 import Mathlib.Order.Lattice.Nat
 import Mathlib.Tactic.Linarith
@@ -131,6 +132,77 @@ theorem rank_spatially_constant_and_locally_constant_from_left_of_spreading
     exact rank_monotoneOn_of_spreading hspread x
   · intro t ht x
     exact rank_eq_on_left_interval_of_spreading hlower hspread ht x
+
+theorem exists_positive_time_rank_function_of_spreading
+    [Nonempty X] {rank : ℝ → X → ℕ} {T : ℝ} (hT : 0 < T)
+    (hlower : ∀ t ∈ Ioc 0 T, ∀ x,
+      ∀ᶠ s in 𝓝[Icc 0 T] t, rank t x ≤ rank s x)
+    (hspread : ∀ {s t : ℝ}, 0 ≤ s → s < t → t ≤ T →
+      ∀ x y, rank s x ≤ rank t y) :
+    ∃ ρ : ℝ → ℕ,
+      (∀ t ∈ Ioc 0 T, ∀ x, rank t x = ρ t) ∧
+      MonotoneOn ρ (Ioc 0 T) ∧
+      (∀ t ∈ Ioc 0 T, ∃ ε ∈ Ioc 0 t,
+        ∀ s ∈ Ioc (t - ε) t, ρ s = ρ t) ∧
+      (∃ δ ∈ Ioc 0 T, ∀ t ∈ Ioc 0 δ, ρ t = ρ δ) ∧
+      (ρ '' Ioc 0 T).Finite := by
+  classical
+  let x : X := Classical.choice inferInstance
+  let ρ : ℝ → ℕ := fun t => rank t x
+  obtain ⟨hspace, hmono, hleft, δ, hδ, q, hinit⟩ :=
+    rank_spatially_constant_and_locally_constant_from_left_of_spreading hT hlower hspread
+  refine ⟨ρ, (fun t ht y => hspace t ht y x), hmono x,
+    (fun t ht => hleft t ht x), ?_, ?_⟩
+  · exact ⟨δ, hδ, fun t ht => (hinit t ht x).trans (hinit δ ⟨hδ.1, le_rfl⟩ x).symm⟩
+  · apply (finite_Iic (ρ T)).subset
+    rintro _ ⟨t, ht, rfl⟩
+    exact hmono x ht ⟨hT, le_rfl⟩ ht.2
+
+theorem rank_finite_interval_partition_of_spreading
+    [Nonempty X] {rank : ℝ → X → ℕ} {T : ℝ} (hT : 0 < T)
+    (hlower : ∀ t ∈ Ioc 0 T, ∀ x,
+      ∀ᶠ s in 𝓝[Icc 0 T] t, rank t x ≤ rank s x)
+    (hspread : ∀ {s t : ℝ}, 0 ≤ s → s < t → t ≤ T →
+      ∀ x y, rank s x ≤ rank t y)
+    {a b : ℝ} (ha : 0 < a) (hab : a ≤ b) (hb : b ≤ T) :
+    ∃ Q : Finset ℕ,
+      Icc a b = ⋃ q ∈ Q, {t | t ∈ Icc a b ∧ ∀ x, rank t x = q} ∧
+      (Q : Set ℕ).PairwiseDisjoint
+        (fun q => {t | t ∈ Icc a b ∧ ∀ x, rank t x = q}) ∧
+      ∀ q ∈ Q, {t | t ∈ Icc a b ∧ ∀ x, rank t x = q}.Nonempty ∧
+        ∃ l u : ℝ, a ≤ l ∧ l ≤ u ∧ u ≤ b ∧
+          ({t | t ∈ Icc a b ∧ ∀ x, rank t x = q} = Icc a u ∧
+              (∀ x, rank a x = q) ∨
+            {t | t ∈ Icc a b ∧ ∀ x, rank t x = q} = Ioc l u ∧
+              ¬ ∀ x, rank a x = q) := by
+  obtain ⟨ρ, hspace, hmono, hleft, -, hfinite⟩ :=
+    exists_positive_time_rank_function_of_spreading hT hlower hspread
+  have hsub : Icc a b ⊆ Ioc 0 T := by
+    intro t ht
+    exact ⟨ha.trans_le ht.1, ht.2.trans hb⟩
+  have hfiber (q : ℕ) :
+      {t | t ∈ Icc a b ∧ ∀ x, rank t x = q} =
+        {t | t ∈ Icc a b ∧ ρ t = q} := by
+    ext t
+    constructor
+    · intro ht
+      exact ⟨ht.1, (hspace t (hsub ht.1) (Classical.choice inferInstance)).symm.trans
+        (ht.2 (Classical.choice inferInstance))⟩
+    · intro ht
+      exact ⟨ht.1, fun x => (hspace t (hsub ht.1) x).trans ht.2⟩
+  have hqa (q : ℕ) : (∀ x, rank a x = q) ↔ ρ a = q := by
+    constructor
+    · intro hq
+      exact (hspace a (hsub ⟨le_rfl, hab⟩) (Classical.choice inferInstance)).symm.trans
+        (hq (Classical.choice inferInstance))
+    · intro hq x
+      exact (hspace a (hsub ⟨le_rfl, hab⟩) x).trans hq
+  have hparts := exists_finite_level_set_partition_of_monotoneOn_left_constant
+    (hfinite.subset (image_mono hsub)) (hmono.mono hsub) (by
+      intro t ht
+      obtain ⟨ε, hε, hconst⟩ := hleft t (hsub ⟨ht.1.le, ht.2⟩)
+      exact ⟨ε, hε.1, fun s _ hs hst => hconst s ⟨hs, hst⟩⟩)
+  simpa only [hfiber, hqa] using hparts
 
 universe v
 
@@ -602,7 +674,6 @@ theorem lowerKyFanSum_pos_on_preconnected_open_set
 
 
 theorem lowerKyFanSum_pos_at_of_local_dirichlet_solution_exists
-    [NeZero (Module.finrank ℝ EModel)]
     [VectorBundle ℝ EModel (TangentSpace I : M → Type _)]
     [fiberFinite : ∀ z, FiniteDimensional ℝ (V z)]
     (G : MetricConnectionFamily (I := I) (M := M) ℝ)
@@ -688,7 +759,6 @@ theorem lowerKyFanSum_pos_at_of_local_dirichlet_solution_exists
       hfEquation hGconn hAt hevolution t ⟨hst, le_rfl⟩ y hyKset
 
 theorem finrank_range_le_at_of_local_dirichlet_solution_exists
-    [NeZero (Module.finrank ℝ EModel)]
     [VectorBundle ℝ EModel (TangentSpace I : M → Type _)]
     [fiberFinite : ∀ z, FiniteDimensional ℝ (V z)]
     (G : MetricConnectionFamily (I := I) (M := M) ℝ)
@@ -753,7 +823,6 @@ theorem finrank_range_le_at_of_local_dirichlet_solution_exists
 
 theorem finrank_range_le_of_local_dirichlet_solution_exists
     [I.Boundaryless] [ConnectedSpace M]
-    [NeZero (Module.finrank ℝ EModel)]
     [VectorBundle ℝ EModel (TangentSpace I : M → Type _)]
     [fiberFinite : ∀ z, FiniteDimensional ℝ (V z)]
     (G : MetricConnectionFamily (I := I) (M := M) ℝ)
@@ -856,7 +925,6 @@ theorem finrank_range_le_of_local_dirichlet_solution_exists
 
 theorem finrank_range_spatially_constant_and_locally_constant_of_local_dirichlet_solution_exists
     [I.Boundaryless] [ConnectedSpace M] [Nonempty M]
-    [NeZero (Module.finrank ℝ EModel)]
     [VectorBundle ℝ EModel (TangentSpace I : M → Type _)]
     [fiberFinite : ∀ z, FiniteDimensional ℝ (V z)]
     (G : MetricConnectionFamily (I := I) (M := M) ℝ)
@@ -929,7 +997,6 @@ theorem finrank_range_spatially_constant_and_locally_constant_of_local_dirichlet
 
 theorem lowerKyFanSum_pos_at_later_time_of_metricFamilySmoothOn
     [I.Boundaryless] [ConnectedSpace M]
-    [NeZero (Module.finrank ℝ EModel)]
     [VectorBundle ℝ EModel (TangentSpace I : M → Type _)]
     [fiberFinite : ∀ z, FiniteDimensional ℝ (V z)]
     (G : MetricConnectionFamily (I := I) (M := M) ℝ)
@@ -1115,7 +1182,6 @@ theorem lowerKyFanSum_pos_at_later_time_of_metricFamilySmoothOn
 
 theorem finrank_range_le_at_later_time_of_metricFamilySmoothOn
     [I.Boundaryless] [ConnectedSpace M]
-    [NeZero (Module.finrank ℝ EModel)]
     [VectorBundle ℝ EModel (TangentSpace I : M → Type _)]
     [fiberFinite : ∀ z, FiniteDimensional ℝ (V z)]
     (G : MetricConnectionFamily (I := I) (M := M) ℝ)
@@ -1184,7 +1250,6 @@ theorem finrank_range_le_at_later_time_of_metricFamilySmoothOn
 
 theorem finrank_range_spatially_constant_and_locally_constant_of_metricFamilySmoothOn
     [I.Boundaryless] [ConnectedSpace M]
-    [NeZero (Module.finrank ℝ EModel)]
     [VectorBundle ℝ EModel (TangentSpace I : M → Type _)]
     [fiberFinite : ∀ z, FiniteDimensional ℝ (V z)]
     (G : MetricConnectionFamily (I := I) (M := M) ℝ)

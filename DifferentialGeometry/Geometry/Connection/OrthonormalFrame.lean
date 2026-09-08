@@ -104,6 +104,89 @@ theorem coframeConnectionForm_comp_apply (cov : CovariantDerivative I F V)
   exact congrArg (fun L => L U) (mfderiv_comp x
     ((hq w).mdifferentiableAt (by simp)) (hf.mdifferentiableAt (by simp)))
 
+theorem coframe_covariantDerivative
+    (cov : CovariantDerivative I F V)
+    (q : ∀ x, V x ≃ₗᵢ[ℝ] F) {x : M}
+    (hq : ∀ w : F, ContMDiffAt I (I.prod 𝓘(ℝ, F)) 1
+      (fun y => (⟨y, (q y).symm w⟩ : TotalSpace F V)) x)
+    {Z : ∀ y, V y}
+    (hZ : MDifferentiableAt I (I.prod 𝓘(ℝ, F))
+      (fun y => (⟨y, Z y⟩ : TotalSpace F V)) x) (X : TangentSpace I x) :
+    q x (cov Z x X) = mvfderiv I (fun y => q y (Z y)) x X -
+      cov.coframeConnectionForm q x X (q x (Z x)) := by
+  let e := trivializationAt F V x
+  have he : x ∈ e.baseSet := mem_baseSet_trivializationAt F V x
+  let A : M → F →L[ℝ] F := fun y =>
+    (e.continuousLinearMapAt ℝ y).comp (q y).symm.toContinuousLinearEquiv.toContinuousLinearMap
+  have hA : ContMDiffAt I 𝓘(ℝ, F →L[ℝ] F) 1 A x := by
+    apply contMDiffAt_clm_of_pointwise
+    intro w
+    have h := (e.contMDiffAt_iff (IB := I) (e.mem_source.mpr he)).mp (hq w)
+    apply h.2.congr_of_eventuallyEq
+    filter_upwards [e.open_baseSet.mem_nhds he] with y hy
+    exact e.continuousLinearMapAt_apply_of_mem ℝ hy ((q y).symm w)
+  have hinv : (A x).IsInvertible := by
+    refine ⟨(q x).symm.toContinuousLinearEquiv.trans (e.continuousLinearEquivAt ℝ x he), ?_⟩
+    apply ContinuousLinearMap.ext
+    intro w
+    change e.continuousLinearEquivAt ℝ x he ((q x).symm w) =
+      e.continuousLinearMapAt ℝ x ((q x).symm w)
+    rw [e.coe_continuousLinearEquivAt_eq]
+  have hAi := hinv.contDiffAt_map_inverse.comp_contMDiffAt hA
+  have hz : MDifferentiableAt I 𝓘(ℝ, F)
+      (fun y => e.continuousLinearMapAt ℝ y (Z y)) x := by
+    apply ((e.mdifferentiableAt_section_iff I Z he).mp hZ).congr_of_eventuallyEq
+    filter_upwards [e.open_baseSet.mem_nhds he] with y hy
+    exact e.continuousLinearMapAt_apply_of_mem ℝ hy (Z y)
+  have hqZ : MDifferentiableAt I 𝓘(ℝ, F) (fun y => q y (Z y)) x := by
+    have hh := (hAi.mdifferentiableAt (by simp)).clm_apply hz
+    apply hh.congr_of_eventuallyEq
+    filter_upwards [e.open_baseSet.mem_nhds he] with y hy
+    have hAe : A y = ((q y).symm.toContinuousLinearEquiv.trans
+        (e.continuousLinearEquivAt ℝ y hy)).toContinuousLinearMap := by
+      apply ContinuousLinearMap.ext
+      intro w
+      change e.continuousLinearMapAt ℝ y ((q y).symm w) =
+        e.continuousLinearEquivAt ℝ y hy ((q y).symm w)
+      rw [e.coe_continuousLinearEquivAt_eq]
+    dsimp only [Function.comp_def]
+    rw [hAe, ContinuousLinearMap.inverse_equiv]
+    change q y (Z y) = q y ((e.continuousLinearEquivAt ℝ y hy).symm
+      (e.continuousLinearMapAt ℝ y (Z y)))
+    rw [e.symm_continuousLinearEquivAt_eq, e.symmL_continuousLinearMapAt hy]
+  have hA := hA.mdifferentiableAt (by simp)
+  have hd := congrArg (fun L => L X) (hA.mvfderiv_clm_apply hqZ)
+  have hwder := congrArg (fun L => L X)
+    (hA.mvfderiv_clm_apply (mdifferentiableAt_const (c := q x (Z x))))
+  simp only [mvfderiv_const, ContinuousLinearMap.comp_zero, zero_add,
+    ContinuousLinearMap.comp_apply, ContinuousLinearMap.apply_apply] at hwder
+  have hfun : (fun y => A y (q y (Z y))) = fun y => e.continuousLinearMapAt ℝ y (Z y) := by
+    funext y
+    dsimp only [A, ContinuousLinearMap.comp_apply, ContinuousLinearEquiv.coe_coe,
+      LinearIsometryEquiv.coe_toContinuousLinearEquiv]
+    rw [LinearIsometryEquiv.symm_apply_apply]
+  rw [hfun] at hd
+  simp only [ContinuousLinearMap.comp_apply, ContinuousLinearMap.apply_apply, add_apply] at hd
+  have hcZ := cov.covariant_derivative_coord e he hZ X
+  have hcW := cov.covariant_derivative_coord e he
+    ((hq (q x (Z x))).mdifferentiableAt (by simp)) X
+  have hw := cov.coframeConnectionForm_apply q hq X (q x (Z x))
+  rw [cov.connector_mfderiv_section ((hq (q x (Z x))).mdifferentiableAt (by simp))] at hw
+  have hfunW : (fun y => e.continuousLinearMapAt ℝ y ((q y).symm (q x (Z x)))) =
+      fun y => A y (q x (Z x)) := rfl
+  rw [hfunW, hwder, (q x).symm_apply_apply] at hcW
+  rw [hd] at hcZ
+  have hmain : e.continuousLinearMapAt ℝ x (cov Z x X) =
+      e.continuousLinearMapAt ℝ x ((q x).symm (mvfderiv I (fun y => q y (Z y)) x X)) +
+        e.continuousLinearMapAt ℝ x (cov (fun y => (q y).symm (q x (Z x))) x X) := by
+    rw [hcZ, hcW]
+    exact add_assoc _ _ _
+  have hm := congrArg (fun v => q x (e.symmL ℝ x v)) hmain
+  simp only [map_add, e.symmL_continuousLinearMapAt he,
+    LinearIsometryEquiv.apply_symm_apply] at hm
+  rw [hw, sub_neg_eq_add]
+  exact hm
+
 private theorem connector_mfderiv_const_base (cov : CovariantDerivative I F V)
     {x : M} {Z : P → V x} {p : P}
     (hZ : ContMDiffAt IP 𝓘(ℝ, V x) 1 Z p) (U : TangentSpace IP p) :

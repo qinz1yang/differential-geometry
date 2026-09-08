@@ -139,4 +139,23 @@ theorem metricScalarAt_pos_of_curvatureOperator_rank_pos
   rw [LinearMap.range_zero, finrank_bot] at hrank
   exact (lt_irrefl 0) hrank
 
+theorem metricScalarAt_eq_zero_of_curvatureOperatorEndomorphismAt_eq_zero
+    (g : SmoothRiemannianMetric I M) (x : M)
+    (hzero : curvatureOperatorEndomorphismAt (I := I) g x
+      ⟨metricRm04 (I := I) g x,
+        metricRm04At_mem_algebraicCurvatureTensorSubmodule (I := I) g x⟩ = 0) :
+    metricScalarAt (I := I) g x = 0 := by
+  have htrace := trace_curvatureOperatorEndomorphismAt_eq_half_metricScalarAt g x
+  have htrzero : LinearMap.trace Real (TangentSpace I x [⋀^Fin 2]→L[Real] Real)
+      (curvatureOperatorEndomorphismAt (I := I) g x
+        ⟨metricRm04 (I := I) g x,
+          metricRm04At_mem_algebraicCurvatureTensorSubmodule (I := I) g x⟩).toLinearMap = 0 := by
+    rw [hzero]
+    change LinearMap.trace Real (TangentSpace I x [⋀^Fin 2]→L[Real] Real)
+      (0 : (TangentSpace I x [⋀^Fin 2]→L[Real] Real) →ₗ[Real]
+        (TangentSpace I x [⋀^Fin 2]→L[Real] Real)) = 0
+    exact map_zero _
+  rw [htrace] at htrzero
+  linarith
+
 end DifferentialGeometry.Geometry.Curvature

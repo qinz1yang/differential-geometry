@@ -1,4 +1,5 @@
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.TimeWeakFTC
+import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.DenseDual
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.TimeH1Multiplication
 
 noncomputable section
@@ -49,6 +50,68 @@ theorem exists_timeH1_dual_of_weak_deriv
   have h := exists_timeH1_dual_of_weak_deriv_on hT hp hq hweak
   rw [sub_zero] at h
   simpa only [zero_add] using h
+
+variable [CompleteSpace X] in
+theorem timeH1.deriv_eq_of_toFun_ae_eq
+    {T : ℝ} {u v : timeH1 X T}
+    (huv : u.toFun =ᵐ[timeMeasure T] v.toFun) : u.deriv = v.deriv := by
+  by_cases hT : 0 < T
+  swap
+  · apply Lp.ext
+    have hbot : ae (timeMeasure T) = ⊥ :=
+      MeasureTheory.ae_eq_bot.mpr (timeMeasure_eq_zero_of_nonpos (le_of_not_gt hT))
+    change ∀ᶠ t in ae (timeMeasure T), _
+    rw [hbot]
+    exact Filter.mem_bot
+  have hval : EqOn u.toFun v.toFun (Icc (0 : ℝ) T) :=
+    Measure.eqOn_Icc_of_ae_eq (μ := volume) hT.ne huv
+      u.continuousOn_toFun v.continuousOn_toFun
+  have hmem : ∀ᵐ t ∂timeMeasure T, t ∈ Ioo (0 : ℝ) T := by
+    unfold timeMeasure
+    rw [← restrict_Ioo_eq_restrict_Icc]
+    exact ae_restrict_mem measurableSet_Ioo
+  apply Lp.ext
+  filter_upwards [u.ae_hasDerivWithinAt_toFun,
+    v.ae_hasDerivWithinAt_toFun, hmem] with t hut hvt ht
+  have hIcc : Icc (0 : ℝ) T ∈ 𝓝 t := Icc_mem_nhds ht.1 ht.2
+  have hut' : HasDerivAt u.toFun (u.deriv t) t := hut.hasDerivAt hIcc
+  have hvt' : HasDerivAt v.toFun (v.deriv t) t := hvt.hasDerivAt hIcc
+  have heq : u.toFun =ᶠ[𝓝 t] v.toFun := by
+    filter_upwards [hIcc] with r hr
+    exact hval hr
+  exact hut'.unique (hvt'.congr_of_eventuallyEq heq)
+
+theorem timeH1.deriv_ae_eq_of_weak_dual_deriv_on
+    {a b : ℝ} (hab : a < b) (w : timeH1 (X →L[ℝ] ℝ) (b - a))
+    {p q : ℝ → X →L[ℝ] ℝ}
+    (hp : MemLp p 2 (volume.restrict (Icc a b)))
+    (hq : MemLp q 2 (volume.restrict (Icc a b)))
+    (hrep : (fun t ↦ p (a + t)) =ᵐ[timeMeasure (b - a)] w.toFun)
+    (hweak : ∀ (x : X) (φ : ℝ → ℝ), ContDiff ℝ (⊤ : ℕ∞) φ →
+      HasCompactSupport φ → tsupport φ ⊆ Ioo a b →
+      (∫ t in Ioo a b, _root_.deriv φ t * p t x) =
+        -∫ t in Ioo a b, φ t * q t x) :
+    w.deriv =ᵐ[timeMeasure (b - a)] fun t ↦ q (a + t) := by
+  obtain ⟨v, hvp, hvq⟩ := exists_timeH1_dual_of_weak_deriv_on hab hp hq hweak
+  have hderiv : w.deriv = v.deriv :=
+    timeH1.deriv_eq_of_toFun_ae_eq (hrep.symm.trans hvp)
+  exact hderiv ▸ hvq
+
+variable {S : Type*} [SeminormedAddCommGroup S] [NormedSpace ℝ S] in
+theorem timeH1.deriv_ae_eq_of_dense_weak_dual_deriv_on
+    {a b : ℝ} (hab : a < b) (ι : S →L[ℝ] X) (hdense : DenseRange ι)
+    (w : timeH1 (X →L[ℝ] ℝ) (b - a))
+    {p q : ℝ → X →L[ℝ] ℝ}
+    (hp : MemLp p 2 (volume.restrict (Icc a b)))
+    (hq : MemLp q 2 (volume.restrict (Icc a b)))
+    (hrep : (fun t ↦ p (a + t)) =ᵐ[timeMeasure (b - a)] w.toFun)
+    (hweak : ∀ (x : S) (φ : ℝ → ℝ), ContDiff ℝ (⊤ : ℕ∞) φ →
+      HasCompactSupport φ → tsupport φ ⊆ Ioo a b →
+      (∫ t in Ioo a b, _root_.deriv φ t * p t (ι x)) =
+        -∫ t in Ioo a b, φ t * q t (ι x)) :
+    w.deriv =ᵐ[timeMeasure (b - a)] fun t ↦ q (a + t) :=
+  timeH1.deriv_ae_eq_of_weak_dual_deriv_on hab w hp hq hrep
+    (extend_scalar_weak_deriv_of_denseRange_on ι hdense hp hq hweak)
 
 variable [CompleteSpace X]
 

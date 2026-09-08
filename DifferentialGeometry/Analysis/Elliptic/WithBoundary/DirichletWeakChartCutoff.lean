@@ -133,13 +133,76 @@ theorem exists_lp_h1ComplDirichlet_chartPullback_mul_of_weak_partials
     ∃ v : Lp (H1ComplDirichlet q) 2 μ, ∀ᵐ t ∂μ,
       (H1ComplDirichletToLp q (v t) : M → ℝ) =ᵐ[riemannianVolumeMeasure (I := I_hs) (M := M) q]
         chartPullback I_hs α (fun z => η z * P t z) := by
-  obtain ⟨L,hL,A,hA⟩ := exists_chartPullback_mul_lift q α hΩ hΩc hΩs hη hηc hηs
-  obtain ⟨v,hv⟩ := exists_lp_lift_of_weak_partials hΩ (H1ComplDirichletToLp q).continuous
+  obtain ⟨L, hL, A, hA⟩ := exists_chartPullback_mul_lift q α hΩ hΩc hΩs hη hηc hηs
+  obtain ⟨v, hv⟩ := exists_lp_lift_of_weak_partials hΩ (H1ComplDirichletToLp q).continuous
     (H1ComplDirichletToLp_injective q) L A hA P W hweak
   refine ⟨v, ?_⟩
   filter_upwards [hv] with t ht
   have he : (H1ComplDirichletToLp q (v t) : M → ℝ) = (L (P t) : M → ℝ) :=
     congrArg (fun f : Lp ℝ 2 (riemannianVolumeMeasure (I := I_hs) (M := M) q) => (f : M → ℝ)) ht
   exact Filter.EventuallyEq.trans (Filter.Eventually.of_forall fun x => congrFun he x) (hL (P t))
+
+theorem ae_dirichletLocalWeakPartialLp_eq_of_chartPullback_mul_localWeakPartial
+    {Z : Type*} [MeasurableSpace Z] {μ : Measure Z}
+    (q : SmoothRiemannianMetric I_hs M) (α : M) {Ω Ω₀ : Set EuStd}
+    (hΩ : IsOpen Ω) (hΩc : IsCompact (closure Ω))
+    (hΩs : closure Ω ⊆ toEuclidean (E := EuN) '' interior (extChartAt I_hs α).target)
+    (hΩ₀ : IsOpen Ω₀) (hΩ₀c : IsCompact (closure Ω₀))
+    (hΩ₀s : closure Ω₀ ⊆ toEuclidean (E := EuN) '' interior (extChartAt I_hs α).target)
+    (hsub : Ω₀ ⊆ Ω) (u v : Z → H1ComplDirichlet q)
+    (k j : Fin (Module.finrank ℝ EuN))
+    (H : Lp ℝ 2 (μ.prod (volume.restrict Ω₀))) {η : EuStd → ℝ}
+    (hv : ∀ᵐ t ∂μ,
+      (H1ComplDirichletToLp q (v t) : M → ℝ) =ᵐ[riemannianVolumeMeasure (I := I_hs) (M := M) q]
+        chartPullback I_hs α
+          (fun z => η z * dirichletLocalWeakPartialLp q α hΩ₀ hΩ₀c hΩ₀s k (u t) z))
+    (hweak : ∀ᵐ t ∂μ, DeGiorgi.HasWeakPartialDeriv j (fun z => H (t, z))
+      (dirichletLocalWeakPartialLp q α hΩ hΩc hΩs k (u t)) Ω₀)
+    (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hηc : HasCompactSupport η) :
+    ∀ᵐ t ∂μ,
+      (dirichletLocalWeakPartialLp q α hΩ₀ hΩ₀c hΩ₀s j (v t) : EuStd → ℝ) =ᵐ[volume.restrict Ω₀]
+        (fun z => η z * H (t, z) + fderiv ℝ η z (EuclideanSpace.single j 1) *
+          dirichletLocalWeakPartialLp q α hΩ hΩc hΩs k (u t) z) := by
+  filter_upwards [hv, hweak, (Lp.memLp H).prodMk_left (by norm_num)] with t hvt hwt hHt
+  exact dirichletLocalWeakPartialLp_eq_ae_of_chartPullback_mul_localWeakPartial q α
+    hΩ hΩc hΩs hΩ₀ hΩ₀c hΩ₀s hsub (u t) (v t) k j hvt hHt hwt hη hηc
+
+theorem ae_cutoff_gradient_flux_eq
+    {Z : Type*} [MeasurableSpace Z] {μ : Measure Z}
+    (q : SmoothRiemannianMetric I_hs M) (α : M) {Ω Ω₀ : Set EuStd}
+    (hΩ : IsOpen Ω) (hΩc : IsCompact (closure Ω))
+    (hΩs : closure Ω ⊆ toEuclidean (E := EuN) '' interior (extChartAt I_hs α).target)
+    (hΩ₀ : IsOpen Ω₀) (hΩ₀c : IsCompact (closure Ω₀))
+    (hΩ₀s : closure Ω₀ ⊆ toEuclidean (E := EuN) '' interior (extChartAt I_hs α).target)
+    (hsub : Ω₀ ⊆ Ω) (u v : Z → H1ComplDirichlet q)
+    (k : Fin (Module.finrank ℝ EuN))
+    (H : Fin (Module.finrank ℝ EuN) → Lp ℝ 2 (μ.prod (volume.restrict Ω₀)))
+    (A : Fin (Module.finrank ℝ EuN) → Fin (Module.finrank ℝ EuN) → Z × EuStd → ℝ)
+    (r : Z × EuStd → ℝ) {η : EuStd → ℝ}
+    (hv : ∀ᵐ t ∂μ,
+      (H1ComplDirichletToLp q (v t) : M → ℝ) =ᵐ[riemannianVolumeMeasure (I := I_hs) (M := M) q]
+        chartPullback I_hs α
+          (fun z => η z * dirichletLocalWeakPartialLp q α hΩ₀ hΩ₀c hΩ₀s k (u t) z))
+    (hweak : ∀ i, ∀ᵐ t ∂μ, DeGiorgi.HasWeakPartialDeriv i (fun z => H i (t, z))
+      (dirichletLocalWeakPartialLp q α hΩ hΩc hΩs k (u t)) Ω₀)
+    (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hηc : HasCompactSupport η) :
+    ∀ j, ∀ᵐ t ∂μ, ∀ᵐ z ∂volume.restrict Ω₀,
+      (∑ i, (η z / r (t, z)) * A i j (t, z) * H i (t, z)) =
+        (∑ i, (A i j (t, z) / r (t, z)) *
+          dirichletLocalWeakPartialLp q α hΩ₀ hΩ₀c hΩ₀s i (v t) z) -
+        ∑ i, (A i j (t, z) / r (t, z)) * fderiv ℝ η z (EuclideanSpace.single i 1) *
+          dirichletLocalWeakPartialLp q α hΩ hΩc hΩs k (u t) z := by
+  classical
+  intro j
+  have hpartial (i) := ae_dirichletLocalWeakPartialLp_eq_of_chartPullback_mul_localWeakPartial
+    q α hΩ hΩc hΩs hΩ₀ hΩ₀c hΩ₀s hsub u v k i (H i) hv (hweak i) hη hηc
+  filter_upwards [ae_all_iff.mpr hpartial] with t ht
+  filter_upwards [ae_all_iff.mpr ht] with z hz
+  rw [← Finset.sum_sub_distrib]
+  apply Finset.sum_congr rfl
+  intro i _
+  rw [hz i]
+  simp only [div_eq_mul_inv]
+  ring
 
 end DifferentialGeometry.Analysis.Laplacian.WithBoundary.Dirichlet

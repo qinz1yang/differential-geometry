@@ -3,6 +3,7 @@ import DifferentialGeometry.Geometry.Metric.RicciSoliton.ModelCoverCylinderQuoti
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.CylinderQuotientDiffeomorph
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.CylinderOrientation
 import DifferentialGeometry.Topology.Covering.QuotientDiffeomorph
+import DifferentialGeometry.Tensor.Exterior.Diffeomorph
 
 set_option autoImplicit false
 noncomputable section
@@ -253,5 +254,47 @@ theorem solitonModelCovering_roundThreeCylinder_target_isometry_dichotomy_of_exi
           (hantipodal.2.choose.mfderivToContinuousLinearEquiv (by simp) x).surjective
     exact not_exists_nonvanishing_realProjectivePlane_prod_real_top_form hpull
   · exact Or.inr hdiagonal
+
+section Orientation
+
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E] [FiniteDimensional Real E]
+  {H : Type*} [TopologicalSpace H] {I : ModelWithCorners Real E H} [I.Boundaryless]
+  {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+  [SigmaCompactSpace M] [T2Space M]
+
+private theorem cylinder_exists_nonvanishing_top_form :
+    ∃ Ω : DifferentialForm ((𝓡 2).prod 𝓘(Real, Real))
+      (Metric.sphere (0 : EuclideanSpace Real (Fin 3)) 1 × Real) 3, ∀ x, Ω x ≠ 0 := by
+  obtain ⟨Ω, hΩ⟩ := exists_nonvanishing_cylinderDiagonalQuotient_top_form
+  refine ⟨DifferentialForm.pullback cylinderDiagonalQuotientMap
+    cylinderDiagonalQuotientMap_isLocalDiffeomorph.contMDiff Ω, fun x => ?_⟩
+  exact DifferentialForm.pullback_ne_zero Ω cylinderDiagonalQuotientMap
+    cylinderDiagonalQuotientMap_isLocalDiffeomorph.contMDiff x (hΩ _)
+    (cylinderDiagonalQuotientMap_isLocalDiffeomorph.mfderivToContinuousLinearEquiv (by simp) x).surjective
+
+
+theorem solitonModelCovering_roundThreeCylinder_exists_nonvanishing_top_form_iff
+    {g : SmoothRiemannianMetric I M} {f : C^∞⟮I, M; Real⟯}
+    {cover : Metric.sphere (0 : EuclideanSpace Real (Fin 3)) 1 × Real → M}
+    (hcover : solitonModelCovering roundThreeCylinderShrinkerMetric
+      roundThreeCylinderShrinkerPotential g f cover) :
+    (∃ Ω : DifferentialForm I M 3, ∀ x, Ω x ≠ 0) ↔
+      coveringDeckGroup cover ≠ cylinderAntipodalGroup := by
+  rcases solitonModelCovering_roundThreeCylinder_target_diffeomorph_trichotomy hcover with
+    ⟨hgroup, e, _⟩ | ⟨hgroup, e, _⟩ | ⟨hgroup, e, _⟩
+  · have horient := (e.exists_nonvanishing_differentialForm_iff 3).mp
+      cylinder_exists_nonvanishing_top_form
+    exact iff_of_true horient (hgroup ▸ cylinderAntipodalGroup_ne_bot.symm)
+  · have hnon : ¬ ∃ Ω : DifferentialForm I M 3, ∀ x, Ω x ≠ 0 := by
+      intro hΩ
+      exact not_exists_nonvanishing_realProjectivePlane_prod_real_top_form
+        ((e.exists_nonvanishing_differentialForm_iff 3).mpr hΩ)
+    exact iff_of_false hnon (by rw [hgroup]; simp)
+  · have horient := (e.exists_nonvanishing_differentialForm_iff 3).mp
+      exists_nonvanishing_puncturedRealProjectiveThreeSpace_top_form
+    exact iff_of_true horient (hgroup ▸ cylinderAntipodalGroup_ne_cylinderDiagonalGroup.symm)
+
+
+end Orientation
 
 end DifferentialGeometry.Geometry

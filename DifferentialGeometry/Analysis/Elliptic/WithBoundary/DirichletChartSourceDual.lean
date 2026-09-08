@@ -81,4 +81,228 @@ theorem exists_lp_chart_divergence_dual
       apply integral_congr_ae
       filter_upwards with p
       simp only [Real.inner_apply, mul_assoc]
+
+theorem exists_lp_chart_source_dual_integral
+    {Z : Type*} [MeasurableSpace Z] {μ : Measure Z} [SFinite μ]
+    {q : SmoothRiemannianMetric I_hs M} (α : M) {Ω : Set EuStd}
+    (hΩ : IsOpen Ω) (hΩc : IsCompact (closure Ω))
+    (hΩs : closure Ω ⊆ toEuclidean (E := EuN) '' interior (extChartAt I_hs α).target)
+    (F : Lp ℝ 2 (μ.prod (volume.restrict Ω))) :
+    ∃ ℓ : Lp (H1ComplDirichlet q →L[ℝ] ℝ) 2 μ,
+      (∀ τ : Lp ℝ 2 μ, ∀ z : H1ComplDirichlet q,
+        (∫ t, τ t * ℓ t z ∂μ) =
+          ∫ p, τ p.1 * F p * H1ComplDirichletToLp q z
+            ((extChartAt I_hs α).symm ((toEuclidean (E := EuN)).symm p.2))
+              ∂μ.prod (volume.restrict Ω)) ∧
+      (∀ z : Lp (H1ComplDirichlet q) 2 μ,
+        (∫ t, ℓ t (z t) ∂μ) =
+          ∫ p, F p * ((Lp.uncurry ℝ (by norm_num : (2 : ℝ≥0∞) ≠ ⊤)
+            (((chartRestrictionLp q α hΩ.measurableSet hΩc
+              (hΩs.trans (image_mono interior_subset)) 2).comp
+              (H1ComplDirichletToLp q)).compLpL 2 μ z)) p) ∂μ.prod (volume.restrict Ω)) ∧
+      ∀ z : Lp (H1ComplDirichlet q) 2 μ,
+        (∫ t, ℓ t (z t) ∂μ) =
+          ∫ t, (∫ x in Ω, F (t, x) * H1ComplDirichletToLp q (z t)
+            ((extChartAt I_hs α).symm ((toEuclidean (E := EuN)).symm x))) ∂μ := by
+  let J : H1ComplDirichlet q →L[ℝ] Lp ℝ 2 (volume.restrict Ω) :=
+    (chartRestrictionLp q α hΩ.measurableSet hΩc
+      (hΩs.trans (image_mono interior_subset)) 2).comp (H1ComplDirichletToLp q)
+  have hex := MeasureTheory.Lp.exists_lp_scalar_dual_integral_uncurry J F
+  let ℓ := Classical.choose hex
+  have hℓ := (Classical.choose_spec hex).1
+  have hvariable := (Classical.choose_spec hex).2
+  have hR (z : H1ComplDirichlet q) :
+      (J z : EuStd → ℝ) =ᵐ[volume.restrict Ω] fun x => H1ComplDirichletToLp q z
+        ((extChartAt I_hs α).symm ((toEuclidean (E := EuN)).symm x)) :=
+    chartRestrictionLp_coeFn q α hΩ.measurableSet hΩc
+      (hΩs.trans (image_mono interior_subset)) 2 (H1ComplDirichletToLp q z)
+  refine ⟨ℓ, ?_, ?_, ?_⟩
+  · intro τ z
+    apply (hℓ τ z).trans
+    apply integral_congr_ae
+    filter_upwards [(Measure.quasiMeasurePreserving_snd (μ := μ)
+      (ν := volume.restrict Ω)).ae (hR z)] with p hp
+    exact congrArg (fun r : ℝ => τ p.1 * F p * r) hp
+  · intro z
+    exact hvariable z
+  · intro z
+    apply (hvariable z).trans
+    have hscalar : (∫ p, F p * (Lp.uncurry ℝ (by norm_num : (2 : ℝ≥0∞) ≠ ⊤)
+        (J.compLpL 2 μ z)) p ∂μ.prod (volume.restrict Ω)) =
+        ∫ p, inner ℝ (F p) ((Lp.uncurry ℝ (by norm_num : (2 : ℝ≥0∞) ≠ ⊤)
+          (J.compLpL 2 μ z)) p) ∂μ.prod (volume.restrict Ω) :=
+      integral_congr_ae (Filter.Eventually.of_forall fun p => mul_comm _ _)
+    apply hscalar.trans
+    apply (MeasureTheory.Lp.integral_inner_uncurry_compLpL_eq_integral_integral
+      (A := Z) (B := EuStd) (E := ℝ) (V := H1ComplDirichlet q)
+      (μ := μ) (ν := volume.restrict Ω) J F z).trans
+    apply integral_congr_ae
+    filter_upwards with t
+    apply integral_congr_ae
+    filter_upwards [hR (z t)] with x hx
+    rw [hx]
+    exact mul_comm _ _
+
+theorem exists_lp_chart_divergence_dual_uncurry
+    {q : SmoothRiemannianMetric I_hs M} (α : M) {Ω : Set EuStd}
+    (hΩ : IsOpen Ω) (hΩc : IsCompact (closure Ω))
+    (hΩs : closure Ω ⊆ toEuclidean (E := EuN) '' interior (extChartAt I_hs α).target)
+    {Z : Type*} [MeasurableSpace Z] {μ : Measure Z}
+    (F : Fin (Module.finrank ℝ EuN) → Lp ℝ 2 (μ.prod (volume.restrict Ω))) :
+    ∃ ℓ : Lp (H1ComplDirichlet q →L[ℝ] ℝ) 2 μ,
+      (∀ η : Lp ℝ 2 μ, ∀ v : H1ComplDirichlet q,
+        (∫ t, η t * ℓ t v ∂μ) =
+          ∑ j, ∫ p, η p.1 * F j p *
+            dirichletLocalWeakPartialLp q α hΩ hΩc hΩs j v p.2
+              ∂μ.prod (volume.restrict Ω)) ∧
+      (∀ z : Lp (H1ComplDirichlet q) 2 μ,
+        (∫ t, ℓ t (z t) ∂μ) =
+          ∑ j, ∫ p, F j p * (Lp.uncurry ℝ (by norm_num : (2 : ℝ≥0∞) ≠ ⊤)
+            ((dirichletLocalWeakPartialLp q α hΩ hΩc hΩs j).compLpL 2 μ z)) p
+              ∂μ.prod (volume.restrict Ω)) := by
+  classical
+  have hparts (j : Fin (Module.finrank ℝ EuN)) :=
+    MeasureTheory.Lp.exists_lp_dual_integral_uncurry
+      (dirichletLocalWeakPartialLp q α hΩ hΩc hΩs j) (F j)
+  choose L hL hLv using hparts
+  refine ⟨∑ j, L j, ?_, ?_⟩
+  · intro η v
+    have hint (j : Fin (Module.finrank ℝ EuN)) : Integrable (fun t => η t * L j t v) μ := by
+      exact (Lp.memLp η).integrable_mul ((ContinuousLinearMap.apply ℝ ℝ v).comp_memLp (L j))
+    calc
+      (∫ t, η t * (∑ j, L j) t v ∂μ) = ∫ t, ∑ j, η t * L j t v ∂μ := by
+        apply integral_congr_ae
+        filter_upwards [Lp.coeFn_finsetSum Finset.univ L] with t ht
+        rw [ht]
+        simp only [Finset.sum_apply]
+        change η t * ((ContinuousLinearMap.apply ℝ ℝ v) (∑ j, L j t)) = _
+        rw [map_sum, Finset.mul_sum]
+        rfl
+      _ = ∑ j, ∫ t, η t * L j t v ∂μ := integral_finsetSum _ (fun j _ => hint j)
+      _ = _ := by
+        apply Finset.sum_congr rfl
+        intro j _
+        rw [hL j η v]
+        apply integral_congr_ae
+        filter_upwards with p
+        simp only [Real.inner_apply, mul_assoc]
+  · intro z
+    have hint (j : Fin (Module.finrank ℝ EuN)) : Integrable (fun t => L j t (z t)) μ := by
+      apply ((Lp.memLp (L j)).norm.integrable_mul (Lp.memLp z).norm).mono'
+      · exact (ContinuousLinearMap.apply ℝ ℝ).aestronglyMeasurable_comp₂
+          (Lp.aestronglyMeasurable z) (Lp.aestronglyMeasurable (L j))
+      · exact Eventually.of_forall fun t => (L j t).le_opNorm (z t)
+    calc
+      (∫ t, (∑ j, L j) t (z t) ∂μ) = ∫ t, ∑ j, L j t (z t) ∂μ := by
+        apply integral_congr_ae
+        filter_upwards [Lp.coeFn_finsetSum Finset.univ L] with t ht
+        rw [ht]
+        simp only [Finset.sum_apply]
+        change ((ContinuousLinearMap.apply ℝ ℝ (z t)) (∑ j, L j t)) = _
+        rw [map_sum]
+        rfl
+      _ = ∑ j, ∫ t, L j t (z t) ∂μ := integral_finsetSum _ (fun j _ => hint j)
+      _ = _ := by
+        apply Finset.sum_congr rfl
+        intro j _
+        exact (hLv j z).trans (integral_congr_ae
+          (Eventually.of_forall fun p => by
+            exact mul_comm _ _))
+
+theorem exists_lp_chart_divergence_dual_integral_integral
+    {q : SmoothRiemannianMetric I_hs M} (α : M) {Ω : Set EuStd}
+    (hΩ : IsOpen Ω) (hΩc : IsCompact (closure Ω))
+    (hΩs : closure Ω ⊆ toEuclidean (E := EuN) '' interior (extChartAt I_hs α).target)
+    {Z : Type*} [MeasurableSpace Z] {μ : Measure Z} [SFinite μ]
+    (F : Fin (Module.finrank ℝ EuN) → Lp ℝ 2 (μ.prod (volume.restrict Ω))) :
+    ∃ ℓ : Lp (H1ComplDirichlet q →L[ℝ] ℝ) 2 μ,
+      (∀ η : Lp ℝ 2 μ, ∀ v : H1ComplDirichlet q,
+        (∫ t, η t * ℓ t v ∂μ) =
+          ∑ j, ∫ p, η p.1 * F j p *
+            dirichletLocalWeakPartialLp q α hΩ hΩc hΩs j v p.2
+              ∂μ.prod (volume.restrict Ω)) ∧
+      (∀ z : Lp (H1ComplDirichlet q) 2 μ,
+        (∫ t, ℓ t (z t) ∂μ) =
+          ∑ j, ∫ p, F j p * (Lp.uncurry ℝ (by norm_num : (2 : ℝ≥0∞) ≠ ⊤)
+            ((dirichletLocalWeakPartialLp q α hΩ hΩc hΩs j).compLpL 2 μ z)) p
+              ∂μ.prod (volume.restrict Ω)) ∧
+      (∀ z : Lp (H1ComplDirichlet q) 2 μ,
+        (∫ t, ℓ t (z t) ∂μ) =
+          ∑ j, ∫ t, ∫ x, F j (t, x) *
+            dirichletLocalWeakPartialLp q α hΩ hΩc hΩs j (z t) x
+              ∂volume.restrict Ω ∂μ) := by
+  classical
+  have hparts (j : Fin (Module.finrank ℝ EuN)) :=
+    MeasureTheory.Lp.exists_lp_dual_integral_uncurry
+      (dirichletLocalWeakPartialLp q α hΩ hΩc hΩs j) (F j)
+  choose L hL hLv using hparts
+  refine ⟨∑ j, L j, ?_, ?_, ?_⟩
+  · intro η v
+    have hint (j : Fin (Module.finrank ℝ EuN)) : Integrable (fun t => η t * L j t v) μ := by
+      exact (Lp.memLp η).integrable_mul ((ContinuousLinearMap.apply ℝ ℝ v).comp_memLp (L j))
+    calc
+      (∫ t, η t * (∑ j, L j) t v ∂μ) = ∫ t, ∑ j, η t * L j t v ∂μ := by
+        apply integral_congr_ae
+        filter_upwards [Lp.coeFn_finsetSum Finset.univ L] with t ht
+        rw [ht]
+        simp only [Finset.sum_apply]
+        change η t * ((ContinuousLinearMap.apply ℝ ℝ v) (∑ j, L j t)) = _
+        rw [map_sum, Finset.mul_sum]
+        rfl
+      _ = ∑ j, ∫ t, η t * L j t v ∂μ := integral_finsetSum _ (fun j _ => hint j)
+      _ = _ := by
+        apply Finset.sum_congr rfl
+        intro j _
+        rw [hL j η v]
+        apply integral_congr_ae
+        filter_upwards with p
+        simp only [Real.inner_apply, mul_assoc]
+  · intro z
+    have hint (j : Fin (Module.finrank ℝ EuN)) : Integrable (fun t => L j t (z t)) μ := by
+      apply ((Lp.memLp (L j)).norm.integrable_mul (Lp.memLp z).norm).mono'
+      · exact (ContinuousLinearMap.apply ℝ ℝ).aestronglyMeasurable_comp₂
+          (Lp.aestronglyMeasurable z) (Lp.aestronglyMeasurable (L j))
+      · exact Eventually.of_forall fun t => (L j t).le_opNorm (z t)
+    calc
+      (∫ t, (∑ j, L j) t (z t) ∂μ) = ∫ t, ∑ j, L j t (z t) ∂μ := by
+        apply integral_congr_ae
+        filter_upwards [Lp.coeFn_finsetSum Finset.univ L] with t ht
+        rw [ht]
+        simp only [Finset.sum_apply]
+        change ((ContinuousLinearMap.apply ℝ ℝ (z t)) (∑ j, L j t)) = _
+        rw [map_sum]
+        rfl
+      _ = ∑ j, ∫ t, L j t (z t) ∂μ := integral_finsetSum _ (fun j _ => hint j)
+      _ = _ := by
+        apply Finset.sum_congr rfl
+        intro j _
+        exact (hLv j z).trans (integral_congr_ae
+          (Eventually.of_forall fun p => by
+            exact mul_comm _ _))
+  · intro z
+    have hint (j : Fin (Module.finrank ℝ EuN)) : Integrable (fun t => L j t (z t)) μ := by
+      apply ((Lp.memLp (L j)).norm.integrable_mul (Lp.memLp z).norm).mono'
+      · exact (ContinuousLinearMap.apply ℝ ℝ).aestronglyMeasurable_comp₂
+          (Lp.aestronglyMeasurable z) (Lp.aestronglyMeasurable (L j))
+      · exact Eventually.of_forall fun t => (L j t).le_opNorm (z t)
+    calc
+      (∫ t, (∑ j, L j) t (z t) ∂μ) = ∫ t, ∑ j, L j t (z t) ∂μ := by
+        apply integral_congr_ae
+        filter_upwards [Lp.coeFn_finsetSum Finset.univ L] with t ht
+        rw [ht]
+        simp only [Finset.sum_apply]
+        change ((ContinuousLinearMap.apply ℝ ℝ (z t)) (∑ j, L j t)) = _
+        rw [map_sum]
+        rfl
+      _ = ∑ j, ∫ t, L j t (z t) ∂μ := integral_finsetSum _ (fun j _ => hint j)
+      _ = _ := by
+        apply Finset.sum_congr rfl
+        intro j _
+        have hid := (hLv j z).trans
+          (MeasureTheory.Lp.integral_inner_uncurry_compLpL_eq_integral_integral
+            (dirichletLocalWeakPartialLp q α hΩ hΩc hΩs j) (F j) z)
+        exact hid.trans (integral_congr_ae (Eventually.of_forall fun t =>
+          integral_congr_ae (Eventually.of_forall fun x => mul_comm _ _)))
+
+
 end DifferentialGeometry.Analysis.Laplacian.WithBoundary.Dirichlet

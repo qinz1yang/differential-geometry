@@ -1,6 +1,8 @@
 import Mathlib.MeasureTheory.Function.L2Space
+import Mathlib.MeasureTheory.Function.AEEqOfIntegral
+import Mathlib.MeasureTheory.Function.LpSpace.Indicator
 
-open MeasureTheory
+open MeasureTheory Filter Set
 open scoped ENNReal
 
 namespace MeasureTheory
@@ -29,5 +31,37 @@ theorem integrable_weight_mul_lp (c : α → ℝ) (hc : MemLp c ∞ μ)
   have hfc : MemLp (fun z => f z * c z) 2 μ := by
     simpa only [mul_comm] using (Lp.memLp f).mul' hc
   exact hfc.integrable_mul (Lp.memLp g)
+
+private theorem integral_indicatorConstLp_mul
+    {A : Type*} [MeasurableSpace A] {μ : Measure A} {s : Set A}
+    (hs : MeasurableSet s) (hμs : μ s ≠ ∞) (f : A → ℝ) :
+    (∫ t, indicatorConstLp 2 hs hμs (1 : ℝ) t * f t ∂μ) = ∫ t in s, f t ∂μ := by
+  rw [← integral_indicator hs]
+  apply integral_congr_ae
+  filter_upwards [indicatorConstLp_coeFn (p := 2) (hs := hs) (hμs := hμs) (c := (1 : ℝ))] with t ht
+  rw [ht]
+  by_cases hts : t ∈ s <;> simp [hts]
+
+theorem Lp.eq_of_integral_mul_dual_eq
+    {A X : Type*} [MeasurableSpace A] {μ : Measure A}
+    [NormedAddCommGroup X] [NormedSpace ℝ X]
+    (L₁ L₂ : Lp (X →L[ℝ] ℝ) 2 μ)
+    (h : ∀ (τ : Lp ℝ 2 μ) (x : X),
+      (∫ t, τ t * L₁ t x ∂μ) = ∫ t, τ t * L₂ t x ∂μ) : L₁ = L₂ := by
+  have hint (L : Lp (X →L[ℝ] ℝ) 2 μ) (s : Set A) (hs : MeasurableSet s) (hμs : μ s < ∞) :
+      IntegrableOn (fun t => L t) s μ := by
+    let : IsFiniteMeasure (μ.restrict s) := ⟨by simpa using hμs⟩
+    exact ((Lp.memLp L).restrict s).integrable (by norm_num)
+  apply Lp.ext
+  apply Lp.ae_eq_of_forall_setIntegral_eq L₁ L₂ (by norm_num) (by norm_num)
+    (hint L₁) (hint L₂)
+  intro s hs hμs
+  apply ContinuousLinearMap.ext
+  intro x
+  rw [ContinuousLinearMap.integral_apply (hint L₁ s hs hμs),
+    ContinuousLinearMap.integral_apply (hint L₂ s hs hμs)]
+  simpa only [integral_indicatorConstLp_mul hs hμs.ne] using
+    h (indicatorConstLp 2 hs hμs.ne (1 : ℝ)) x
+
 
 end MeasureTheory
