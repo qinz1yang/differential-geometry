@@ -30,7 +30,7 @@ variable {N : Type*} [TopologicalSpace N] [ChartedSpace G N]
   [T2Space N] [SigmaCompactSpace N] [J.Boundaryless]
 
 omit [I.Boundaryless] [J.Boundaryless] in
-omit [NeZero (Module.finrank ℝ E)] [NeZero (Module.finrank ℝ F)] in
+omit [NeZero (Module.finrank ℝ E)] [NeZero (Module.finrank ℝ F)] [SigmaCompactSpace N] in
 theorem rm04_localPull
     (g : SmoothRiemannianMetric J N) (f : M → N)
     (hf : IsLocalDiffeomorph I J ∞ f)
@@ -68,7 +68,8 @@ theorem rm04_localPull
       (Geometry.isSigmaCompact_of_isOpen I U.isOpen)
   let _ : SigmaCompactSpace V :=
     isSigmaCompact_iff_sigmaCompactSpace.mp
-      (Geometry.isSigmaCompact_of_isOpen J V.isOpen)
+      (isSigmaCompact_iff_isSigmaCompact_univ.mpr (by
+        simpa using isSigmaCompact_univ.image Ψ.toHomeomorph.continuous))
   have hEqNhds : f =ᶠ[𝓝 x] (Φ : M → N) :=
     Filter.eventuallyEq_of_mem (Φ.open_source.mem_nhds hxΦ) hEq
   have hdf : mfderiv I J f x = mfderiv I J (Φ : M → N) x :=
