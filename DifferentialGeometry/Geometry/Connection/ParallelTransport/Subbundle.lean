@@ -90,7 +90,7 @@ private theorem sectionAlongCurve_chartRepAt_differentiableAt
     rfl
   exact hcomp.congr_of_eventuallyEq heq.symm
 
-private theorem local_unit_section_parallel_of_isParallelSubmoduleFamily
+theorem ContMDiffVectorSubbundle.covariantDerivative_eq_zero_of_unit_of_rank_eq_one
     [I.Boundaryless]
     (g : SmoothRiemannianMetric I M)
     (S : ContMDiffVectorSubbundle
@@ -371,7 +371,7 @@ theorem ContMDiffVectorSubbundle.exists_local_parallel_unit_section_of_rank_eq_o
   obtain ⟨U, s, hUopen, hxU, hs_mem, hs_unit⟩ :=
     exists_local_unit_section_of_rank_eq_one g S hSrank x
   exact ⟨U, s, hUopen, hxU, hs_mem, hs_unit,
-    local_unit_section_parallel_of_isParallelSubmoduleFamily
+    ContMDiffVectorSubbundle.covariantDerivative_eq_zero_of_unit_of_rank_eq_one
       (I := I) g S hSrank hS U hUopen s hs_mem hs_unit⟩
 
 theorem ContMDiffVectorSubbundle.isParallelSubmoduleFamily_of_rank_eq_one

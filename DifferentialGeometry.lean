@@ -4725,3 +4725,7 @@ import DifferentialGeometry.Analysis.Integration.Lp.Lifting
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.SliceWkp
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.LocalCoefficientDerivativeBounds
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.SpatialCommutator
+import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.ImageLineFamily
+import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Restriction
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Soliton.Curvature
+import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.CurvatureSurfaceTime
