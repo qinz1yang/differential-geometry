@@ -10,7 +10,7 @@ set_option autoImplicit false
 
 noncomputable section
 
-open Bundle Set CovariantDerivative
+open Bundle Set CovariantDerivative Filter
 open scoped Manifold ContDiff Topology InnerProductSpace
 
 namespace DifferentialGeometry.Analysis.Parabolic
@@ -99,6 +99,32 @@ private theorem spacetime_endomorphism_contDiffOn_time
     (isOpen_Ioo.prod isOpen_univ) happ
     (x := x) (fun t (ht : t ∈ Ioo a b) => ⟨ht, mem_univ x⟩)
   simpa only [hw] using htime.of_le (show (1 : WithTop ℕ∞) ≤ ∞ by simp)
+
+private theorem deriv_apply_eq_zero_of_left_kernel
+    {W : Type*} [NormedAddCommGroup W] [NormedSpace ℝ W]
+    {A : ℝ → W →L[ℝ] W} {a b : ℝ} (hab : a < b)
+    (hA : DifferentiableAt ℝ A b) (v : W)
+    (hv : ∀ s ∈ Ioo a b, A s v = 0) :
+    deriv A b v = 0 := by
+  have h := hA.hasDerivAt.clm_apply (hasDerivAt_const b v)
+  simp only [map_zero, add_zero] at h
+  have hb : A b v = 0 := by
+    have hlim : Filter.Tendsto (fun s => A s v) (nhdsWithin b (Ioo a b)) (nhds (A b v)) :=
+      (hA.continuousAt.clm_apply continuousAt_const).continuousWithinAt.tendsto
+    let _ : (nhdsWithin b (Ioo a b)).NeBot := right_nhdsWithin_Ioo_neBot hab
+    exact isClosed_singleton.mem_of_tendsto hlim (by
+      filter_upwards [self_mem_nhdsWithin] with s hs
+      exact hv s hs)
+  have hz : HasDerivWithinAt (fun s => A s v) 0 (Ioc a b) b := by
+    apply (hasDerivWithinAt_const b (Ioc a b) (0 : W)).congr ?_ hb
+    intro s hs
+    rcases hs.2.eq_or_lt with rfl | hsb
+    · exact hb
+    · exact hv s ⟨hs.1, hsb⟩
+  exact (h.hasDerivWithinAt.derivWithin (uniqueDiffOn_Ioc a b b ⟨hab, le_rfl⟩)).symm.trans
+    (hz.derivWithin (uniqueDiffOn_Ioc a b b ⟨hab, le_rfl⟩))
+
+
 
 theorem curvatureOperator_kernel_parallel_and_reaction_annihilated_of_constant_rank
     (g : ℝ → SmoothRiemannianMetric I M)
@@ -297,6 +323,183 @@ theorem curvatureOperator_rank_spatially_constant_and_locally_constant_from_left
       hAcont X hG hreg hX hGconn hevolution hs hst ht x y
 
 
+theorem curvatureOperator_kernel_and_range_locally_constant_from_left
+    [I.Boundaryless] [ConnectedSpace M]
+    [NeZero (Module.finrank ℝ E)]
+    (G : MetricConnectionFamily (I := I) (M := M) ℝ)
+    (cov : ℝ → CovariantDerivative I F V)
+    [∀ t, ContMDiffCovariantDerivative (cov t) ∞]
+    (hcov : ∀ t, (cov t).IsMetricCompatible)
+    {T : ℝ} (hT : 0 < T)
+    (A : ℝ → Cₛ^∞⟮I; F →L[ℝ] F, (fun x : M ↦ V x →L[ℝ] V x)⟯)
+    (hAsymm : ∀ t x, (A t x).IsSymmetric)
+    (hApos : ∀ t ∈ Icc 0 T, ∀ x, (A t x).IsPositive)
+    (hAcont : ContinuousOn (fun p : ℝ × M =>
+      TotalSpace.mk' (F →L[ℝ] F) p.2 (A p.1 p.2) :
+        ℝ × M → TotalSpace (F →L[ℝ] F) (fun x => V x →L[ℝ] V x))
+      (Icc 0 T ×ˢ (Set.univ : Set M)))
+    (hAspace : ContMDiffOnSpacetimeEndomorphism
+      (I := I) (F := F) (V := V) (n := ∞)
+      (fun t x ↦ A t x) (Ioo 0 T ×ˢ (Set.univ : Set M)))
+    (X : ℝ → (x : M) → TangentSpace I x)
+    {D : RealTimeInterval}
+    (hG : MetricFamilySmoothOn (I := I) (M := M) D G.metric)
+    (hreg : Icc 0 T ⊆ D.regular)
+    (hX : ContinuousOn (fun p : ℝ × M =>
+      (TotalSpace.mk' E p.2 (X p.1 p.2) : TangentBundle I M))
+      (Icc 0 T ×ˢ (Set.univ : Set M)))
+    (hGconn : ∀ t ∈ Icc 0 T,
+      G.connection t = LeviCivita (I := I) (G.metric t))
+    (hevolution : ∀ t ∈ Ioc 0 T, ∀ x,
+      HasDerivAt (fun s ↦ A s x)
+        (rawBundleEndomorphismConnLap (I := I) (G.metric t) (cov t)
+            (fun y ↦ A t y) x +
+          HomConnectionGen.homBundleCovariantDerivativeGen
+            I M F V F V (cov t) (cov t) (fun y ↦ A t y) x (X t x) +
+          Q x (A t x)) t)
+    {t : ℝ} (ht : t ∈ Ioc 0 T) :
+    ∃ ε ∈ Ioc 0 t, ∀ s ∈ Ioc (t - ε) t, ∀ x,
+      (A s x).ker = (A t x).ker ∧ (A s x).range = (A t x).range := by
+  let _ : ∀ x, FiniteDimensional ℝ (V x) :=
+    fun x => VectorBundle.finiteDimensional ℝ F V x
+  have hrank := curvatureOperator_rank_spatially_constant_and_locally_constant_from_left
+    G cov hcov hT A hAsymm hApos hAcont X hG hreg hX hGconn hevolution
+  obtain ⟨x₀⟩ := (inferInstance : Nonempty M)
+  obtain ⟨ε, hε, hrankε⟩ := hrank.2.2.1 t ht x₀
+  have hεsub : Ioo (t - ε) t ⊆ Ioo 0 T := by
+    intro s hs
+    exact ⟨by linarith [hε.2, hs.1], hs.2.trans_le ht.2⟩
+  have hεT : Ioo (t - ε) t ⊆ Ioc 0 T :=
+    fun _ hs => ⟨(hεsub hs).1, (hεsub hs).2.le⟩
+  have hspace := hAspace.mono (Set.prod_mono hεsub Set.Subset.rfl)
+  let q := Module.finrank ℝ (A t x₀).range
+  have hrange : ∀ s ∈ Ioo (t - ε) t, ∀ y,
+      Module.finrank ℝ (A s y).range = q := by
+    intro s hs y
+    exact (hrank.1 s (hεT hs) y x₀).trans (hrankε s ⟨hs.1, hs.2.le⟩)
+  have hpos : ∀ s ∈ Ioo (t - ε) t, ∀ y, (A s y).IsPositive :=
+    fun s hs y => hApos s ⟨(hεT hs).1.le, (hεT hs).2⟩ y
+  have hevol := fun s (hs : s ∈ Ioo (t - ε) t) y => hevolution s (hεT hs) y
+  refine ⟨ε, hε, ?_⟩
+  intro s hs x
+  rcases hs.2.eq_or_lt with rfl | hst
+  · exact ⟨rfl, rfl⟩
+  have hs' : s ∈ Ioo (t - ε) t := ⟨hs.1, hst⟩
+  have hK : ∀ r ∈ Ioo (t - ε) t, (A r x).ker = (A s x).ker := by
+    intro r hr
+    exact (curvatureOperator_kernel_and_range_eq_of_constant_rank
+      G.metric cov hcov A hspace q hrange hpos X hevol hr hs').1
+  have hfin : Module.finrank ℝ (A s x).ker = Module.finrank ℝ (A t x).ker := by
+    have hsums := (A s x).toLinearMap.finrank_range_add_finrank_ker
+    have hsumt := (A t x).toLinearMap.finrank_range_add_finrank_ker
+    have hranks := hrange s hs' x
+    have hrankt := hrank.1 t ht x x₀
+    dsimp only [q] at hranks
+    omega
+  have hk := continuousLinearMap_kernel_eq_of_constant_on_left
+    (show t - ε < t by linarith [hε.1])
+    (hevolution t ht x).differentiableAt.continuousAt hK hfin
+  refine ⟨hk, ?_⟩
+  have horth : (A s x).rangeᗮ = (A t x).rangeᗮ := by
+    rw [(hAsymm s x).orthogonal_range,
+      (hAsymm t x).orthogonal_range]
+    exact hk
+  have horthorth := congrArg (fun K : Submodule ℝ (V x) => Kᗮ) horth
+  simpa using horthorth
+
+theorem curvatureOperator_deriv_annihilates_kernel_at_positive_time
+    [I.Boundaryless] [ConnectedSpace M]
+    [NeZero (Module.finrank ℝ E)]
+    (G : MetricConnectionFamily (I := I) (M := M) ℝ)
+    (cov : ℝ → CovariantDerivative I F V)
+    [∀ t, ContMDiffCovariantDerivative (cov t) ∞]
+    (hcov : ∀ t, (cov t).IsMetricCompatible)
+    {T : ℝ} (hT : 0 < T)
+    (A : ℝ → Cₛ^∞⟮I; F →L[ℝ] F, (fun x : M ↦ V x →L[ℝ] V x)⟯)
+    (hAsymm : ∀ t x, (A t x).IsSymmetric)
+    (hApos : ∀ t ∈ Icc 0 T, ∀ x, (A t x).IsPositive)
+    (hAcont : ContinuousOn (fun p : ℝ × M =>
+      TotalSpace.mk' (F →L[ℝ] F) p.2 (A p.1 p.2) :
+        ℝ × M → TotalSpace (F →L[ℝ] F) (fun x => V x →L[ℝ] V x))
+      (Icc 0 T ×ˢ (Set.univ : Set M)))
+    (hAspace : ContMDiffOnSpacetimeEndomorphism
+      (I := I) (F := F) (V := V) (n := ∞)
+      (fun t x ↦ A t x) (Ioo 0 T ×ˢ (Set.univ : Set M)))
+    (X : ℝ → (x : M) → TangentSpace I x)
+    {D : RealTimeInterval}
+    (hG : MetricFamilySmoothOn (I := I) (M := M) D G.metric)
+    (hreg : Icc 0 T ⊆ D.regular)
+    (hX : ContinuousOn (fun p : ℝ × M =>
+      (TotalSpace.mk' E p.2 (X p.1 p.2) : TangentBundle I M))
+      (Icc 0 T ×ˢ (Set.univ : Set M)))
+    (hGconn : ∀ t ∈ Icc 0 T,
+      G.connection t = LeviCivita (I := I) (G.metric t))
+    (hevolution : ∀ t ∈ Ioc 0 T, ∀ x,
+      HasDerivAt (fun s ↦ A s x)
+        (rawBundleEndomorphismConnLap (I := I) (G.metric t) (cov t)
+            (fun y ↦ A t y) x +
+          HomConnectionGen.homBundleCovariantDerivativeGen
+            I M F V F V (cov t) (cov t) (fun y ↦ A t y) x (X t x) +
+          Q x (A t x)) t)
+    {t : ℝ} (ht : t ∈ Ioc 0 T) (x : M) (v : V x) (hv : A t x v = 0) :
+    deriv (fun s => A s x) t v = 0 := by
+  obtain ⟨ε, hε, hker⟩ := curvatureOperator_kernel_and_range_locally_constant_from_left
+    G cov hcov hT A hAsymm hApos hAcont hAspace X hG hreg hX hGconn hevolution ht
+  apply deriv_apply_eq_zero_of_left_kernel (show t - ε < t by linarith [hε.1])
+    (hevolution t ht x).differentiableAt v
+  intro s hs
+  apply LinearMap.mem_ker.mp
+  rw [(hker s ⟨hs.1, hs.2.le⟩ x).1]
+  exact LinearMap.mem_ker.mpr hv
+
+theorem curvatureOperator_kernel_parallel_at_positive_time
+    [I.Boundaryless] [ConnectedSpace M]
+    [NeZero (Module.finrank ℝ E)]
+    (G : MetricConnectionFamily (I := I) (M := M) ℝ)
+    (cov : ℝ → CovariantDerivative I F V)
+    [∀ t, ContMDiffCovariantDerivative (cov t) ∞]
+    (hcov : ∀ t, (cov t).IsMetricCompatible)
+    {T : ℝ} (hT : 0 < T)
+    (A : ℝ → Cₛ^∞⟮I; F →L[ℝ] F, (fun x : M ↦ V x →L[ℝ] V x)⟯)
+    (hAsymm : ∀ t x, (A t x).IsSymmetric)
+    (hApos : ∀ t ∈ Icc 0 T, ∀ x, (A t x).IsPositive)
+    (hAcont : ContinuousOn (fun p : ℝ × M =>
+      TotalSpace.mk' (F →L[ℝ] F) p.2 (A p.1 p.2) :
+        ℝ × M → TotalSpace (F →L[ℝ] F) (fun x => V x →L[ℝ] V x))
+      (Icc 0 T ×ˢ (Set.univ : Set M)))
+    (hAspace : ContMDiffOnSpacetimeEndomorphism
+      (I := I) (F := F) (V := V) (n := ∞)
+      (fun t x ↦ A t x) (Ioo 0 T ×ˢ (Set.univ : Set M)))
+    (X : ℝ → (x : M) → TangentSpace I x)
+    {D : RealTimeInterval}
+    (hG : MetricFamilySmoothOn (I := I) (M := M) D G.metric)
+    (hreg : Icc 0 T ⊆ D.regular)
+    (hX : ContinuousOn (fun p : ℝ × M =>
+      (TotalSpace.mk' E p.2 (X p.1 p.2) : TangentBundle I M))
+      (Icc 0 T ×ˢ (Set.univ : Set M)))
+    (hGconn : ∀ t ∈ Icc 0 T,
+      G.connection t = LeviCivita (I := I) (G.metric t))
+    (hevolution : ∀ t ∈ Ioc 0 T, ∀ x,
+      HasDerivAt (fun s ↦ A s x)
+        (rawBundleEndomorphismConnLap (I := I) (G.metric t) (cov t)
+            (fun y ↦ A t y) x +
+          HomConnectionGen.homBundleCovariantDerivativeGen
+            I M F V F V (cov t) (cov t) (fun y ↦ A t y) x (X t x) +
+          Q x (A t x)) t)
+    {t : ℝ} (ht : t ∈ Ioc 0 T) :
+    IsCovariantlyInvariantSubmoduleFamily (cov t) (fun x => (A t x).ker) := by
+  let _ : ∀ x, FiniteDimensional ℝ (V x) :=
+    fun x => VectorBundle.finiteDimensional ℝ F V x
+  apply PositiveSystem.kernel_isCovariantlyInvariant_of_deriv_inner_eq_zero
+    (G.metric t) (cov t) (hcov t) A (hAsymm t) (hApos t ⟨ht.1.le, ht.2⟩)
+    (X t) (fun x => Q x (A t x)) ?_ ?_ (fun x => (hevolution t ht x).deriv)
+  · intro x v hv
+    rw [curvatureOperator_deriv_annihilates_kernel_at_positive_time
+      G cov hcov hT A hAsymm hApos hAcont hAspace X hG hreg hX hGconn hevolution
+      ht x v hv, inner_zero_left]
+  · intro x v hv
+    exact reaction_null (A t x) (hApos t ⟨ht.1.le, ht.2⟩ x) v hv
+
 theorem curvatureOperator_reaction_annihilates_kernel_at_positive_time
     [I.Boundaryless] [ConnectedSpace M]
     [NeZero (Module.finrank ℝ E)]
@@ -335,48 +538,35 @@ theorem curvatureOperator_reaction_annihilates_kernel_at_positive_time
     Q x (A t x) v = 0 := by
   let _ : ∀ x, FiniteDimensional ℝ (V x) :=
     fun x => VectorBundle.finiteDimensional ℝ F V x
-  have hrank := curvatureOperator_rank_spatially_constant_and_locally_constant_from_left
-    G cov hcov hT A hAsymm hApos hAcont X hG hreg hX hGconn hevolution
-  obtain ⟨ε, hε, hrankε⟩ := hrank.2.2.1 t ht x
+  obtain ⟨ε, hε, hker⟩ := curvatureOperator_kernel_and_range_locally_constant_from_left
+    G cov hcov hT A hAsymm hApos hAcont hAspace X hG hreg hX hGconn hevolution ht
   have hεsub : Ioo (t - ε) t ⊆ Ioo 0 T := by
     intro s hs
     exact ⟨by linarith [hε.2, hs.1], hs.2.trans_le ht.2⟩
   have hεT : Ioo (t - ε) t ⊆ Ioc 0 T :=
     fun _ hs => ⟨(hεsub hs).1, (hεsub hs).2.le⟩
-  have hspace := hAspace.mono (Set.prod_mono hεsub Set.Subset.rfl)
+  have hrank := curvatureOperator_rank_spatially_constant_and_locally_constant_from_left
+    G cov hcov hT A hAsymm hApos hAcont X hG hreg hX hGconn hevolution
   let q := Module.finrank ℝ (A t x).range
   have hrange : ∀ s ∈ Ioo (t - ε) t, ∀ y,
       Module.finrank ℝ (A s y).range = q := by
     intro s hs y
-    exact (hrank.1 s (hεT hs) y x).trans (hrankε s ⟨hs.1, hs.2.le⟩)
+    change Module.finrank ℝ (A s y).range = Module.finrank ℝ (A t x).range
+    rw [(hker s ⟨hs.1, hs.2.le⟩ y).2]
+    exact hrank.1 t ht y x
   have hpos : ∀ s ∈ Ioo (t - ε) t, ∀ y, (A s y).IsPositive :=
     fun s hs y => hApos s ⟨(hεT hs).1.le, (hεT hs).2⟩ y
-  have hevol := fun s (hs : s ∈ Ioo (t - ε) t) y => hevolution s (hεT hs) y
   have hrigidity := curvatureOperator_kernel_parallel_and_reaction_annihilated_of_constant_rank
-    G.metric cov hcov A hspace q hrange hpos X hevol
-  let r := t - ε / 2
-  have hr : r ∈ Ioo (t - ε) t := by
-    dsimp only [r]
-    constructor <;> linarith [hε.1]
-  let K := (A r x).ker
-  have hK : ∀ s ∈ Ioo (t - ε) t, (A s x).ker = K := by
-    intro s hs
-    exact (curvatureOperator_kernel_and_range_eq_of_constant_rank
-      G.metric cov hcov A hspace q hrange hpos X hevol hs hr).1
-  have hfin : Module.finrank ℝ K = Module.finrank ℝ (A t x).ker := by
-    have hsumr := (A r x).toLinearMap.finrank_range_add_finrank_ker
-    have hsumt := (A t x).toLinearMap.finrank_range_add_finrank_ker
-    have hrankr := hrankε r ⟨hr.1, hr.2.le⟩
-    dsimp only [K]
-    omega
+    G.metric cov hcov A (hAspace.mono (Set.prod_mono hεsub Set.Subset.rfl)) q hrange hpos X
+    (fun s hs y => hevolution s (hεT hs) y)
   have hcont := (hevolution t ht x).differentiableAt.continuousAt
   have hQcont : ContinuousAt (fun s => Q x (A s x)) t :=
     curvatureOperatorReactionEndomorphism3_contDiff.continuous.continuousAt.comp hcont
   exact continuousLinearMap_kernel_annihilation_of_constant_on_left
-    (show t - ε < t by linarith [hε.1]) hcont hQcont hK hfin
+    (show t - ε < t by linarith [hε.1]) hcont hQcont
+    (fun s hs => (hker s ⟨hs.1, hs.2.le⟩ x).1) rfl
     (fun s hs w hw => hrigidity.2.1 s hs x w (LinearMap.mem_ker.mp hw)) v
     (LinearMap.mem_ker.mpr hv)
-
 
 theorem curvatureOperator_finrank_range_trichotomy_at_positive_time
     [I.Boundaryless] [ConnectedSpace M]

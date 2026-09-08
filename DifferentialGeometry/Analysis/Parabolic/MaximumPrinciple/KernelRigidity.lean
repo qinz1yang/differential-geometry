@@ -36,13 +36,9 @@ private theorem kernel_covariantDerivatives_mem_and_reaction_inner_eq_zero
     (hApos : (A t x).IsPositive)
     (Z : TangentSpace I x) (w : Cₛ^∞⟮I; F, V⟯)
     (B : V x →L[ℝ] V x) (hB : 0 ≤ inner ℝ (B (w x)) (w x))
-    (v : ℝ → V x) {U : Set M}
-    (hU : IsOpen U) (hxU : x ∈ U)
+    {U : Set M} (hU : IsOpen U) (hxU : x ∈ U)
     (hw : ∀ y ∈ U, A t y (w y) = 0)
-    (hAt : DifferentiableAt ℝ (fun s => A s x) t)
-    (hv : DifferentiableAt ℝ v t)
-    (hvker : ∀ᶠ s in 𝓝 t, A s x (v s) = 0)
-    (hv_eq : v t = w x)
+    (htime : inner ℝ (deriv (fun s => A s x) t (w x)) (w x) = 0)
     (hevolution :
       deriv (fun s => A s x) t =
         rawBundleEndomorphismConnLap (I := I) g cov (fun y => A t y) x +
@@ -52,9 +48,6 @@ private theorem kernel_covariantDerivatives_mem_and_reaction_inner_eq_zero
       cov (fun y => w y) x (smoothOrthoFrame (I := I) g x i x) ∈
         (A t x).ker) ∧
       inner ℝ (B (w x)) (w x) = 0 := by
-  have htime := inner_deriv_apply_eq_zero_of_eventually_mem_ker
-    hAt hv hvker (hA x)
-  rw [hv_eq] at htime
   have hdrift :
       inner ℝ
           ((HomConnectionGen.homBundleCovariantDerivativeGen
@@ -84,6 +77,47 @@ private theorem kernel_covariantDerivatives_mem_and_reaction_inner_eq_zero
     (fun i => cov (fun y => w y) x
       (smoothOrthoFrame (I := I) g x i x))
     (w x) hB hidentity
+
+theorem kernel_isCovariantlyInvariant_of_deriv_inner_eq_zero
+    (g : SmoothRiemannianMetric I M) (cov : CovariantDerivative I F V)
+    [ContMDiffCovariantDerivative cov ∞] (hcov : cov.IsMetricCompatible)
+    (A : ℝ → Cₛ^∞⟮I; F →L[ℝ] F, (fun x : M => V x →L[ℝ] V x)⟯)
+    {t : ℝ} (hA : ∀ x, (A t x).toLinearMap.IsSymmetric)
+    (hApos : ∀ x, (A t x).IsPositive)
+    (Z : ∀ x, TangentSpace I x) (B : ∀ x, V x →L[ℝ] V x)
+    (htime : ∀ x v, A t x v = 0 →
+      inner ℝ (deriv (fun s => A s x) t v) v = 0)
+    (hB : ∀ x v, A t x v = 0 → 0 ≤ inner ℝ (B x v) v)
+    (hevolution : ∀ x,
+      deriv (fun s => A s x) t =
+        rawBundleEndomorphismConnLap (I := I) g cov (fun y => A t y) x +
+          HomConnectionGen.homBundleCovariantDerivativeGen
+            I M F V F V cov cov (fun y => A t y) x (Z x) + B x) :
+    IsCovariantlyInvariantSubmoduleFamily cov (fun x => (A t x).ker) := by
+  intro w U hU hw x hx Y
+  have hwzero : ∀ y ∈ U, A t y (w y) = 0 :=
+    fun y hy => LinearMap.mem_ker.mp (hw y hy)
+  have hmain := kernel_covariantDerivatives_mem_and_reaction_inner_eq_zero
+    g cov hcov A hA (hApos x) (Z x) w (B x) (hB x _ (hwzero x hx))
+    hU hx hwzero (htime x _ (hwzero x hx)) (hevolution x)
+  by_cases hdim : Module.finrank ℝ E = 0
+  · have hY : Y = 0 :=
+      (finrank_zero_iff_forall_zero.mp (show
+        Module.finrank ℝ (TangentSpace I x) = 0 by exact hdim)) Y
+    rw [hY, map_zero]
+    exact Submodule.zero_mem _
+  let _ : NeZero (Module.finrank ℝ E) := ⟨hdim⟩
+  let e : Fin (Module.finrank ℝ E) → TangentSpace I x :=
+    fun i => smoothOrthoFrame (I := I) g x i x
+  let P : Submodule ℝ (TangentSpace I x) :=
+    (A t x).ker.comap (cov (fun y => w y) x).toLinearMap
+  have he : ⊤ ≤ Submodule.span ℝ (Set.range e) :=
+    (smoothOrtho_isLocal (I := I) g x).generating
+      (mem_smoothOrthoFrameNbhd_self (I := I) (M := M) x)
+  have hrange : Set.range e ⊆ P := by
+    rintro Z ⟨i, rfl⟩
+    exact hmain.1 i
+  exact (Submodule.span_le.mpr hrange) (he Submodule.mem_top)
 
 theorem local_kernel_section_covariantDerivative_mem_and_reaction_inner_eq_zero
     (g : SmoothRiemannianMetric I M) (cov : CovariantDerivative I F V)
@@ -148,10 +182,11 @@ theorem local_kernel_section_covariantDerivative_mem_and_reaction_inner_eq_zero
   have hv_eq : w (t, x) = w₀ x := (hw₀eq.self_of_nhds).symm
   have hB' : 0 ≤ inner ℝ (B (w₀ x)) (w₀ x) := by
     rwa [← hv_eq]
+  have htime := inner_deriv_apply_eq_zero_of_eventually_mem_ker
+    hAt hv hvker (hA x)
+  rw [hv_eq] at htime
   have hmain := kernel_covariantDerivatives_mem_and_reaction_inner_eq_zero
-    g cov hcov A hA hApos Z w₀ B hB'
-    (fun s : ℝ => (show V x from w (s, x))) hW hxW hw₀ker
-    hAt hv hvker hv_eq hevolution
+    g cov hcov A hA hApos Z w₀ B hB' hW hxW hw₀ker htime hevolution
   have hcovEq : cov (fun y => w₀ y) x = cov (fun y => w (t, y)) x := by
     have hlocalDiff : MDiffAt (T% fun y : M => w (t, y)) x :=
       ((hwslice x hxS).contMDiffAt (hS.mem_nhds hxS)).mdifferentiableAt (by simp)
