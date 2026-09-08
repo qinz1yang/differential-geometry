@@ -4164,6 +4164,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ReducedLe
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.Noncollapsing.Curvature.RicciBound
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Scaling.DerivativeNorm
 import DifferentialGeometry.Geometry.Metric.Comparison.CurveEnergy
+import DifferentialGeometry.Geometry.Metric.Comparison.CurveCompactness
 import DifferentialGeometry.Geometry.Operator.Family.Gram.Basic
 import DifferentialGeometry.Geometry.Operator.Family.Gram.Curve
 import DifferentialGeometry.Geometry.Operator.Family.Gram.Sobolev

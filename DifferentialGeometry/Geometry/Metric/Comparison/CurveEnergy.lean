@@ -1,5 +1,6 @@
 import DifferentialGeometry.Geometry.Geodesic.Maximal.Interval
 import DifferentialGeometry.Geometry.Metric.Comparison.DistanceScaling
+import Mathlib.Geometry.Manifold.ContMDiffMFDeriv
 import Mathlib.MeasureTheory.Function.L2Space
 import Mathlib.MeasureTheory.Integral.MeanInequalities
 
@@ -21,6 +22,42 @@ def curveEnergy (g : SmoothRiemannianMetric I M) (γ : ℝ → M) (a b : ℝ) : 
     g.inner (γ t)
       (mfderiv 𝓘(ℝ, ℝ) I γ t (1 : ℝ))
       (mfderiv 𝓘(ℝ, ℝ) I γ t (1 : ℝ))
+
+theorem integrableOn_inner_mfderiv_self_of_contMDiffOn
+    (g : SmoothRiemannianMetric I M) {gamma : ℝ → M} {a b : ℝ}
+    (hgamma : ContMDiffOn 𝓘(ℝ, ℝ) I 1 gamma (Icc a b)) :
+    IntegrableOn (fun s => g.inner (gamma s)
+      (mfderiv 𝓘(ℝ, ℝ) I gamma s (1 : ℝ))
+      (mfderiv 𝓘(ℝ, ℝ) I gamma s (1 : ℝ))) (Icc a b) := by
+  rcases lt_trichotomy a b with hab | rfl | hba
+  · let v (s : ℝ) : TangentSpace I (gamma s) :=
+      mfderivWithin 𝓘(ℝ, ℝ) I gamma (Icc a b) s (1 : ℝ)
+    have hu : UniqueMDiffOn 𝓘(ℝ, ℝ) (Icc a b) :=
+      (uniqueDiffOn_Icc hab).uniqueMDiffOn
+    have hone : Continuous (fun s : ℝ =>
+        (TotalSpace.mk' ℝ s (1 : ℝ) : TangentBundle 𝓘(ℝ, ℝ) ℝ)) :=
+      ((contMDiff_vectorSpace_iff_contDiff (V := fun _ : ℝ => (1 : ℝ))).mpr
+        (contDiff_const (n := 0))).continuous
+    have hv : ContinuousOn (fun s => TotalSpace.mk' E (gamma s) (v s)) (Icc a b) := by
+      exact (hgamma.continuousOn_tangentMapWithin le_rfl hu).comp hone.continuousOn
+        (fun s hs => hs)
+    have hq : ContinuousOn (fun s => g.inner (gamma s) (v s) (v s)) (Icc a b) := by
+      have hc : ContinuousOn (fun s =>
+          TotalSpace.mk' ℝ (E := Bundle.Trivial M ℝ) (gamma s)
+            (g.inner (gamma s) (v s) (v s))) (Icc a b) :=
+        (g.contMDiff.continuous.comp_continuousOn hgamma.continuousOn).clm_bundle_apply₂
+          (F₁ := E) (F₂ := E) hv hv
+      intro s hs
+      have hc' := hc s hs
+      rw [FiberBundle.continuousWithinAt_totalSpace] at hc'
+      exact hc'.2
+    apply hq.integrableOn_compact isCompact_Icc |>.congr
+    rw [← restrict_Ioo_eq_restrict_Icc]
+    filter_upwards [ae_restrict_mem measurableSet_Ioo] with s hs
+    dsimp only [v]
+    rw [mfderivWithin_of_mem_nhds (Icc_mem_nhds hs.1 hs.2)]
+  · simp
+  · simp [Icc_eq_empty_of_lt hba]
 
 theorem curveEnergy_mono (g : SmoothRiemannianMetric I M) {γ : ℝ → M}
     {a s t b : ℝ} (has : a ≤ s) (hst : s ≤ t) (htb : t ≤ b)
