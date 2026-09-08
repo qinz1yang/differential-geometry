@@ -76,6 +76,57 @@ theorem normalizedGradientRicciSoliton_solitonModelCovering_classification_of_no
   · exact Or.inr (Or.inl ⟨hs, fun hg => hgs ⟨hg, hs⟩, fun hc => hsc ⟨hs, hc⟩⟩)
   · exact Or.inr (Or.inr ⟨hc, fun hg => hgc ⟨hg, hc⟩, fun hs => hsc ⟨hs, hc⟩⟩)
 
+theorem gradientRicciSoliton_classification_of_nonnegative
+    {g : SmoothRiemannianMetric I M} {f : C^∞⟮I, M; ℝ⟯} {sigma : ℝ}
+    (hcomplete : RiemannianMetricComplete (I := I) g)
+    (hsol : gradientRicciSoliton (I := I) g f sigma)
+    (hsigma : 0 < sigma)
+    (hdim : Module.finrank ℝ E = 3)
+    (hcone : ∀ x : M, metricAlgebraicCurvatureTensorAt g x ∈
+      algebraicCurvatureOperatorNonnegativeCone (I := I) (M := M)) :
+    ∃! C : ℝ,
+      (∀ x : M, metricScalarAt g x +
+        Operator.normGradSqFun g f x - sigma * f x = C) ∧
+      let gnorm := scaleMetric (I := I) sigma hsigma g
+      let fnorm := f + ContMDiffMap.const (I := I)
+        (I' := modelWithCornersSelf ℝ ℝ) (M := M) (n := ∞) (C / sigma)
+      normalizedGradientRicciSoliton (I := I) gnorm fnorm ∧
+      let gaussian := ∃ e : M ≃ₘ⟮I, 𝓘(ℝ, EuclideanSpace ℝ (Fin 3))⟯ EuclideanSpace ℝ (Fin 3),
+        Diffeomorph.pullbackMetricCross (euclideanMetric (E := EuclideanSpace ℝ (Fin 3))) e = gnorm ∧
+        fnorm = gaussianPotential.comp e.toContMDiffMap
+      let sphere := ∃ cover : Metric.sphere (0 : EuclideanSpace ℝ (Fin 4)) 1 → M,
+        solitonModelCovering roundThreeSphereShrinkerMetric roundThreeSphereShrinkerPotential
+          gnorm fnorm cover
+      let cylinder := ∃ cover : (Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1 × ℝ) → M,
+        solitonModelCovering roundThreeCylinderShrinkerMetric roundThreeCylinderShrinkerPotential
+          gnorm fnorm cover
+      (gaussian ∧ ¬ sphere ∧ ¬ cylinder) ∨
+        (sphere ∧ ¬ gaussian ∧ ¬ cylinder) ∨
+        (cylinder ∧ ¬ gaussian ∧ ¬ sphere) := by
+  obtain ⟨C, ⟨hC, hn⟩, hu⟩ := gradientRicciSoliton_existsUnique_normalized hcomplete hsol hsigma
+  have hcone' : ∀ x : M, metricAlgebraicCurvatureTensorAt (scaleMetric sigma hsigma g) x ∈
+      algebraicCurvatureOperatorNonnegativeCone (I := I) (M := M) := by
+    let _ : CompleteSpace E := FiniteDimensional.complete ℝ E
+    intro x
+    rw [metricAlgebraicCurvatureTensorAt_scaleMetric]
+    exact algebraicCurvatureOperatorNonnegativeCone.smul_mem (hcone x) hsigma.le
+  refine ⟨C, ⟨hC, hn, ?_⟩, ?_⟩
+  · intro gaussian sphere cylinder
+    have hgaussian : (∃ cover : EuclideanSpace ℝ (Fin 3) → M,
+        solitonModelCovering (euclideanMetric (E := EuclideanSpace ℝ (Fin 3)))
+          (gaussianPotential (E := EuclideanSpace ℝ (Fin 3)))
+          (scaleMetric sigma hsigma g)
+          (f + ContMDiffMap.const (I := I) (I' := modelWithCornersSelf ℝ ℝ)
+            (M := M) (n := ∞) (C / sigma)) cover) ↔ gaussian :=
+      exists_solitonModelCovering_gaussian_iff
+    rcases normalizedGradientRicciSoliton_solitonModelCovering_classification_of_nonnegative
+      hn hdim hcone' with ⟨hg, hs, hc⟩ | ⟨hs, hg, hc⟩ | ⟨hc, hg, hs⟩
+    · exact Or.inl ⟨hgaussian.mp hg, hs, hc⟩
+    · exact Or.inr (Or.inl ⟨hs, fun hg' => hg (hgaussian.mpr hg'), hc⟩)
+    · exact Or.inr (Or.inr ⟨hc, fun hg' => hg (hgaussian.mpr hg'), hs⟩)
+  · intro D hD
+    exact hu D ⟨hD.1, hD.2.1⟩
+
 theorem normalizedGradientRicciSoliton_isometry_classification_of_nonnegative
     {g : SmoothRiemannianMetric I M} {f : C^∞⟮I, M; ℝ⟯}
     (h : normalizedGradientRicciSoliton (I := I) g f)
