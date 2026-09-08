@@ -3198,6 +3198,8 @@ import DifferentialGeometry.Geometry.Metric.PointwiseInner.MetricLowering
 import DifferentialGeometry.Geometry.Metric.PointwiseInner.SlotPermutation
 import DifferentialGeometry.Geometry.Metric.Polarization
 import DifferentialGeometry.Geometry.Metric.ChartLipschitz
+import DifferentialGeometry.Geometry.Metric.SmoothMapLipschitz
+import DifferentialGeometry.Geometry.Metric.Distance.Topology
 import DifferentialGeometry.Geometry.Metric.Product
 import DifferentialGeometry.Geometry.Curvature.WarpedProduct
 import DifferentialGeometry.Geometry.Metric.Pullback.Basic
