@@ -4814,3 +4814,4 @@ import DifferentialGeometry.Topology.PuncturedConnected
 import DifferentialGeometry.Topology.Manifold.PuncturedConnected
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.RicciFlat
 import DifferentialGeometry.Geometry.Comparison.SurfaceCurvatureDecay
+import DifferentialGeometry.Geometry.Operator.MetricFamilyJointRegularity
