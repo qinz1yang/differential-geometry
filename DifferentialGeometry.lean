@@ -2597,6 +2597,7 @@ import DifferentialGeometry.Geometry.Connection.Coordinates.CovariantDerivativeL
 import DifferentialGeometry.Geometry.Connection.Coordinates.CovariantDerivativeRealization
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.DeTurckWindow
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Distance.CalabiSupport
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Distance.UpperSupport
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extension.Endpoint.Metric
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extension.Endpoint.Ricci
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extension.Restart.Basic
