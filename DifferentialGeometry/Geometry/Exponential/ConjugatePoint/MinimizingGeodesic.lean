@@ -1,4 +1,5 @@
 import DifferentialGeometry.Geometry.Exponential.Variation.Radial
+import DifferentialGeometry.Geometry.Exponential.MinimizingDomain.Length
 import DifferentialGeometry.Geometry.Comparison.Variation.SecondVariation.NegativeDirection
 import DifferentialGeometry.Geometry.Comparison.Variation.Curve.PathLength
 
@@ -154,14 +155,6 @@ theorem injective_mfderiv_expMap_of_le_riemannianEDist
   · have heq : t • x = (0 : E) := by rw [ht0, zero_smul]
     exact (congrArg (fun y : E => Function.Injective (mfderiv 𝓘(ℝ, E) I
       (fun v : E => expMap (I := I) g p (show TangentSpace I p from v)) y)) heq).mpr hzero
-  let : (y : M) → ENormSMulClass ℝ (TangentSpace I y) := fun y => ⟨fun r v => by
-    rw [hEnorm, hEnorm, Real.enorm_eq_ofReal_abs]
-    have hscale : g.inner y (r • v) (r • v) = r ^ 2 * g.inner y v v := by
-      rw [(g.inner y).map_smul, _root_.smul_apply, (g.inner y v).map_smul]
-      simp only [smul_eq_mul]
-      ring
-    rw [hscale, Real.sqrt_mul (sq_nonneg r), Real.sqrt_sq_eq_abs,
-      ENNReal.ofReal_mul (abs_nonneg r)]⟩
   let ℓ : ℝ := Real.sqrt (g.inner p x x)
   have hℓ : 0 < ℓ := Real.sqrt_pos.mpr (g.pos p x hx0)
   have hℓne : ℓ ≠ 0 := hℓ.ne'
@@ -178,42 +171,14 @@ theorem injective_mfderiv_expMap_of_le_riemannianEDist
     simp only [u, smul_smul, mul_inv_cancel₀ hℓne, one_smul]
   have hdom : (show TangentSpace I p from ℓ • u) ∈ expDomain (I := I) g p := by
     simpa only [hlu] using! hx
-  have hseg s (hs : s ∈ Icc (0 : ℝ) ℓ) :
-      (show TangentSpace I p from s • u) ∈ expDomain (I := I) g p := by
-    have hs' : s / ℓ ∈ Icc (0 : ℝ) 1 :=
-      ⟨div_nonneg hs.1 hℓ.le, (div_le_one hℓ).mpr hs.2⟩
-    have heq : (s / ℓ) • x = s • u := by
-      simp only [u, smul_smul, div_eq_mul_inv]
-    exact (congrArg (fun v : E => (show TangentSpace I p from v) ∈ expDomain g p)
-      heq).mp (smul_mem_expDomain hx hs')
-  have hlen : arcLength (I := I) g
-      (fun s => expMap (I := I) g p (show TangentSpace I p from s • u)) 0 ℓ = ℓ := by
-    unfold arcLength
-    calc
-      _ = ∫ _s in (0 : ℝ)..ℓ, (1 : ℝ) := by
-        apply intervalIntegral.integral_congr
-        intro s hs
-        have hs' : s ∈ Icc (0 : ℝ) ℓ := by
-          simpa only [uIcc_of_le hℓ.le] using hs
-        exact (congrArg Real.sqrt
-          (inner_curveVelocity_expMap_smul (I := I) g p u (hseg s hs'))).trans
-            ((congrArg Real.sqrt hunit).trans Real.sqrt_one)
-      _ = ℓ := by simp
   have hminimal : ∀ η : ℝ → M, ContMDiffOn 𝓘(ℝ, ℝ) I 1 η (Icc 0 ℓ) →
       η 0 = p → η ℓ = expMap (I := I) g p (show TangentSpace I p from ℓ • u) →
       arcLength (I := I) g
         (fun s => expMap (I := I) g p (show TangentSpace I p from s • u)) 0 ℓ ≤
           arcLength (I := I) g η 0 ℓ := by
     intro η hη hη0 hηℓ
-    rw [hlen]
-    have hd := riemannianEDist_le_arcLength_of_enorm_eq (I := I) g hℓ.le hη
-      (fun s _ => hEnorm (η s) (mfderiv 𝓘(ℝ, ℝ) I η s (1 : ℝ)))
-    have hd' : riemannianEDist I p (expMap (I := I) g p (show TangentSpace I p from x)) ≤
-        ENNReal.ofReal (arcLength (I := I) g η 0 ℓ) := by
-      simpa only [hη0, hηℓ, hlu] using! hd
-    have hn : 0 ≤ arcLength (I := I) g η 0 ℓ := by
-      exact intervalIntegral.integral_nonneg hℓ.le (fun _ _ => Real.sqrt_nonneg _)
-    exact (ENNReal.ofReal_le_ofReal_iff hn).mp (hmin.trans hd')
+    exact arcLength_expMap_smul_le_of_le_riemannianEDist (I := I) g hEnorm p u hℓ.le hdom
+      (by simpa only [hlu] using! hmin) hη hη0 hηℓ
   have hc : t * ℓ ∈ Ioo (0 : ℝ) ℓ := by
     constructor
     · exact mul_pos (lt_of_le_of_ne ht.1 (Ne.symm ht0)) hℓ
