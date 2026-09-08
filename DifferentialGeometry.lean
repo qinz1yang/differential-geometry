@@ -3151,6 +3151,7 @@ import DifferentialGeometry.Geometry.Geodesic.Local.Existence
 import DifferentialGeometry.Geometry.Geodesic.Flow.FlatPhase
 import DifferentialGeometry.Geometry.Geodesic.Equation.FromIntegralCurve
 import DifferentialGeometry.Geometry.Geodesic.Naturality.GramPullback
+import DifferentialGeometry.Geometry.Geodesic.Naturality.MetricLocality
 import DifferentialGeometry.Geometry.Geodesic.Maximal.Homogeneity
 import DifferentialGeometry.Geometry.Geodesic.Naturality.LocalIsometry.Geodesic
 import DifferentialGeometry.Geometry.Geodesic.Maximal.Interval

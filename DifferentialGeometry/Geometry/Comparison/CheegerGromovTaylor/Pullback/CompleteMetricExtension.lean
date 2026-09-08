@@ -7,6 +7,7 @@ import DifferentialGeometry.Geometry.Exponential.Variation.EndpointShape
 import DifferentialGeometry.Geometry.Exponential.Intrinsic.Geodesic.Smoothness
 import DifferentialGeometry.Geometry.Geodesic.Naturality.LocalIsometry.Geodesic
 import DifferentialGeometry.Geometry.Geodesic.Naturality.OpenSubtype
+import DifferentialGeometry.Geometry.Geodesic.Naturality.MetricLocality
 import DifferentialGeometry.Geometry.Metric.Construction.CompactPerturbationCompleteness
 
 set_option autoImplicit false
@@ -239,6 +240,40 @@ theorem intrinsicExt_restrict
           (tangentSpaceModelContinuousLinearEquiv
             (I := 𝓘(Real, E)) z w)
 
+private theorem intrinsicExt_geodesicOn_iff
+    (g : SmoothRiemannianMetric I M)
+    (hEnorm : ∀ (x : M) (v : TangentSpace I x),
+      ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x v v)))
+    (p : M) {R : Real} (hR : 0 < R)
+    (hloc :
+      IsLocalDiffeomorphOn 𝓘(Real, E) I ∞
+        (intrinsicFramedExp (I := I) g hEnorm p)
+        (Metric.ball (0 : E) R))
+    (γ : Real → intrinsicPullBall (E := E) R) (s : Set Real)
+    (hstay : ∀ t ∈ s, ‖((γ t : intrinsicPullBall (E := E) R) : E)‖ <
+      3 * R / 4) :
+    IsGeodesicOn (I := 𝓘(Real, E))
+        (intrinsicExtMetric (I := I) g hEnorm p hR hloc)
+        (fun t => ((γ t : intrinsicPullBall (E := E) R) : E)) s ↔
+      IsGeodesicOn (I := 𝓘(Real, E))
+        (intrinsicPullMetric (I := I) g hEnorm p hloc) γ s := by
+  let U := intrinsicPullBall (E := E) R
+  let V := intrinsicAgree (E := E) R
+  let gExt := intrinsicExtMetric g hEnorm p hR hloc
+  let gPull := intrinsicPullMetric g hEnorm p hloc
+  have hiff : IsGeodesicOn (gExt.restrictOpen U) γ s ↔ IsGeodesicOn gPull γ s := by
+    apply isGeodesicOn_iff_of_metric_eventuallyEq
+    intro t ht
+    have hmem : γ t ∈ V := by
+      change (γ t : E) ∈ Metric.ball (0 : E) (3 * R / 4)
+      simpa only [Metric.mem_ball, dist_zero_right] using hstay t ht
+    filter_upwards [V.isOpen.mem_nhds hmem] with z hz
+    intro v w
+    exact congrArg
+      (fun metric : SmoothRiemannianMetric 𝓘(Real, E) V => metric.inner ⟨z, hz⟩ v w)
+      (intrinsicExt_restrict g hEnorm p hR hloc)
+  exact (geodesicOn_open_iff gExt U γ s).symm.trans hiff
+
 theorem intrinsicPull_geo_of_ext
     (g : SmoothRiemannianMetric I M)
     (hEnorm : ∀ (x : M) (v : TangentSpace I x),
@@ -249,7 +284,6 @@ theorem intrinsicPull_geo_of_ext
         (intrinsicFramedExp (I := I) g hEnorm p)
         (Metric.ball (0 : E) R))
     (γ : Real → intrinsicPullBall (E := E) R) (s : Set Real)
-    (hγ : ContMDiff 𝓘(Real, Real) 𝓘(Real, E) ∞ γ)
     (hstay : ∀ t ∈ s, ‖((γ t : intrinsicPullBall (E := E) R) : E)‖ <
       3 * R / 4)
     (hgeo :
@@ -258,66 +292,7 @@ theorem intrinsicPull_geo_of_ext
         (fun t => ((γ t : intrinsicPullBall (E := E) R) : E)) s) :
     IsGeodesicOn (I := 𝓘(Real, E))
       (intrinsicPullMetric (I := I) g hEnorm p hloc) γ s := by
-  classical
-  let U := intrinsicPullBall (E := E) R
-  let V := intrinsicAgree (E := E) R
-  let gExt := intrinsicExtMetric (I := I) g hEnorm p hR hloc
-  let gPull := intrinsicPullMetric (I := I) g hEnorm p hloc
-  let z₀ : V :=
-    ⟨intrinsicZero (E := E) hR, by
-      change (0 : E) ∈ Metric.ball (0 : E) (3 * R / 4)
-      simpa only [Metric.mem_ball, dist_self] using
-        (show 0 < 3 * R / 4 by positivity)⟩
-  let γV : Real → V := fun t =>
-    if ht : γ t ∈ V then ⟨γ t, ht⟩ else z₀
-  have hmem : ∀ t ∈ s, γ t ∈ V := by
-    intro t ht
-    change ((γ t : intrinsicPullBall (E := E) R) : E) ∈
-      Metric.ball (0 : E) (3 * R / 4)
-    simpa only [Metric.mem_ball, dist_zero_right] using hstay t ht
-  have heq : ∀ t ∈ s,
-      (fun r => ((γV r : V) : U)) =ᶠ[𝓝 t] γ := by
-    intro t ht
-    have hpre : γ ⁻¹' (V : Set U) ∈ 𝓝 t :=
-      hγ.continuous.continuousAt
-        (V.isOpen.mem_nhds (hmem t ht))
-    filter_upwards [hpre] with r hr
-    change γ r ∈ V at hr
-    simp only [γV, dif_pos hr]
-  have hgeoU :
-      IsGeodesicOn (I := 𝓘(Real, E))
-        (gExt.restrictOpen (I := 𝓘(Real, E)) U) γ s := by
-    exact (Geodesic.geodesicOn_open_iff
-      (I := 𝓘(Real, E)) gExt U γ s).2 hgeo
-  have hgeoUV :
-      IsGeodesicOn (I := 𝓘(Real, E))
-        (gExt.restrictOpen (I := 𝓘(Real, E)) U)
-        (fun t => ((γV t : V) : U)) s := by
-    intro t ht
-    exact Geodesic.HasGeodesicEquationAt.congr_of_eventuallyEq_at
-      (heq t ht).eq_of_nhds (heq t ht) (hgeoU t ht)
-  have hgeoV :
-      IsGeodesicOn (I := 𝓘(Real, E))
-        ((gExt.restrictOpen (I := 𝓘(Real, E)) U).restrictOpen
-          (I := 𝓘(Real, E)) V) γV s :=
-    (Geodesic.geodesicOn_open_iff
-      (I := 𝓘(Real, E))
-      (gExt.restrictOpen (I := 𝓘(Real, E)) U) V γV s).2 hgeoUV
-  have hgeoV' := hgeoV
-  rw [show
-    ((gExt.restrictOpen (I := 𝓘(Real, E)) U).restrictOpen
-        (I := 𝓘(Real, E)) V) =
-      gPull.restrictOpen (I := 𝓘(Real, E)) V by
-        simpa only [U, V, gExt, gPull] using
-          intrinsicExt_restrict (I := I) g hEnorm p hR hloc] at hgeoV'
-  have hgeoPullV :
-      IsGeodesicOn (I := 𝓘(Real, E)) gPull
-        (fun t => ((γV t : V) : U)) s :=
-    (Geodesic.geodesicOn_open_iff
-      (I := 𝓘(Real, E)) gPull V γV s).1 hgeoV'
-  intro t ht
-  exact Geodesic.HasGeodesicEquationAt.congr_of_eventuallyEq_at
-    (heq t ht).eq_of_nhds.symm (heq t ht).symm (hgeoPullV t ht)
+  exact (intrinsicExt_geodesicOn_iff g hEnorm p hR hloc γ s hstay).mp hgeo
 
 theorem intrinsicExt_geo_of_pull
     (g : SmoothRiemannianMetric I M)
@@ -329,7 +304,6 @@ theorem intrinsicExt_geo_of_pull
         (intrinsicFramedExp (I := I) g hEnorm p)
         (Metric.ball (0 : E) R))
     (γ : Real → intrinsicPullBall (E := E) R) (s : Set Real)
-    (hγ : ContMDiff 𝓘(Real, Real) 𝓘(Real, E) ∞ γ)
     (hstay : ∀ t ∈ s, ‖((γ t : intrinsicPullBall (E := E) R) : E)‖ <
       3 * R / 4)
     (hgeo :
@@ -338,70 +312,7 @@ theorem intrinsicExt_geo_of_pull
     IsGeodesicOn (I := 𝓘(Real, E))
       (intrinsicExtMetric (I := I) g hEnorm p hR hloc)
       (fun t => ((γ t : intrinsicPullBall (E := E) R) : E)) s := by
-  classical
-  let U := intrinsicPullBall (E := E) R
-  let V := intrinsicAgree (E := E) R
-  let gExt := intrinsicExtMetric (I := I) g hEnorm p hR hloc
-  let gPull := intrinsicPullMetric (I := I) g hEnorm p hloc
-  let z₀ : V :=
-    ⟨intrinsicZero (E := E) hR, by
-      change (0 : E) ∈ Metric.ball (0 : E) (3 * R / 4)
-      simpa only [Metric.mem_ball, dist_self] using
-        (show 0 < 3 * R / 4 by positivity)⟩
-  let γV : Real → V := fun t =>
-    if ht : γ t ∈ V then ⟨γ t, ht⟩ else z₀
-  have hmem : ∀ t ∈ s, γ t ∈ V := by
-    intro t ht
-    change ((γ t : intrinsicPullBall (E := E) R) : E) ∈
-      Metric.ball (0 : E) (3 * R / 4)
-    simpa only [Metric.mem_ball, dist_zero_right] using hstay t ht
-  have heq : ∀ t ∈ s,
-      (fun r => ((γV r : V) : U)) =ᶠ[𝓝 t] γ := by
-    intro t ht
-    have hpre : γ ⁻¹' (V : Set U) ∈ 𝓝 t :=
-      hγ.continuous.continuousAt
-        (V.isOpen.mem_nhds (hmem t ht))
-    filter_upwards [hpre] with r hr
-    change γ r ∈ V at hr
-    simp only [γV, dif_pos hr]
-  have hgeoPullV :
-      IsGeodesicOn (I := 𝓘(Real, E)) gPull
-        (fun t => ((γV t : V) : U)) s := by
-    intro t ht
-    exact Geodesic.HasGeodesicEquationAt.congr_of_eventuallyEq_at
-      (heq t ht).eq_of_nhds (heq t ht) (hgeo t ht)
-  have hgeoV :
-      IsGeodesicOn (I := 𝓘(Real, E))
-        (gPull.restrictOpen (I := 𝓘(Real, E)) V) γV s :=
-    (Geodesic.geodesicOn_open_iff
-      (I := 𝓘(Real, E)) gPull V γV s).2 hgeoPullV
-  have hgeoV' := hgeoV
-  rw [show
-    gPull.restrictOpen (I := 𝓘(Real, E)) V =
-      (gExt.restrictOpen (I := 𝓘(Real, E)) U).restrictOpen
-        (I := 𝓘(Real, E)) V by
-      simpa only [U, V, gExt, gPull] using
-        (intrinsicExt_restrict (I := I) g hEnorm p hR hloc).symm] at hgeoV'
-  have hgeoExtU :
-      IsGeodesicOn (I := 𝓘(Real, E))
-        (gExt.restrictOpen (I := 𝓘(Real, E)) U)
-        (fun t => ((γV t : V) : U)) s :=
-    (Geodesic.geodesicOn_open_iff
-      (I := 𝓘(Real, E))
-      (gExt.restrictOpen (I := 𝓘(Real, E)) U) V γV s).1 hgeoV'
-  have hgeoExt :
-      IsGeodesicOn (I := 𝓘(Real, E)) gExt
-        (fun t => (((γV t : V) : U) : E)) s :=
-    (Geodesic.geodesicOn_open_iff
-      (I := 𝓘(Real, E)) gExt U
-      (fun t => ((γV t : V) : U)) s).1 hgeoExtU
-  intro t ht
-  have heqE :
-      (fun r => (((γV r : V) : U) : E)) =ᶠ[𝓝 t]
-        (fun r => ((γ r : U) : E)) :=
-    (heq t ht).fun_comp (fun z : U => (z : E))
-  exact Geodesic.HasGeodesicEquationAt.congr_of_eventuallyEq_at
-    heqE.eq_of_nhds.symm heqE.symm (hgeoExt t ht)
+  exact (intrinsicExt_geodesicOn_iff g hEnorm p hR hloc γ s hstay).mpr hgeo
 
 theorem intrinsicExt_pathLen
     (g : SmoothRiemannianMetric I M)
@@ -1277,7 +1188,7 @@ private theorem exists_join_curve
         (intrinsicPullMetric (I := I) g hEnorm p hloc)
         γU (Set.Icc (0 : Real) 1) :=
     intrinsicPull_geo_of_ext (I := I) g hEnorm p hR hloc γU
-      (Set.Icc (0 : Real) 1) hγUinf hγUfence hγUgeoExt
+      (Set.Icc (0 : Real) 1) hγUfence hγUgeoExt
   refine ⟨γU, hγUinf, hγUgeo, ?_, ?_, hγUfence, ?_⟩
   · apply Subtype.ext
     simpa only [γ, intrinsicExtJoin_zero] using

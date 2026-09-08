@@ -701,7 +701,7 @@ private theorem intrinsicExt_radial_geo
         (fun t => ((γ t : intrinsicPullBall (E := E) R) : E))
         (Set.Ioo (-c) c) := by
     exact intrinsicExt_geo_of_pull (I := I) g hEnorm p hR hloc γ
-      (Set.Ioo (-c) c) hγ_smooth
+      (Set.Ioo (-c) c)
       (fun t _ht => by
         change ‖φ t • z‖ < 3 * R / 4
         simpa only [B] using hφ_bound t)
