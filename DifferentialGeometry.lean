@@ -3146,6 +3146,7 @@ import DifferentialGeometry.Topology.ThreeManifold.Closed
 import DifferentialGeometry.Topology.Diffeomorph.Fiberwise
 import DifferentialGeometry.Topology.Diffeomorph.Graph
 import DifferentialGeometry.Topology.Diffeomorph.Perturbation
+import DifferentialGeometry.Topology.Diffeomorph.Translation
 import DifferentialGeometry.Topology.Diffeomorph.Radial
 import DifferentialGeometry.Topology.Embedding.Diffeomorph
 import DifferentialGeometry.Topology.Embedding.LinearEquiv
