@@ -3,6 +3,7 @@ import DifferentialGeometry.Analysis.Calculus.Derivative.Curve
 import DifferentialGeometry.Analysis.Calculus.Inverse.MovingImplicit
 import DifferentialGeometry.Geometry.Comparison.CheegerGromovTaylor.Pullback.CompleteMetricExtension
 import DifferentialGeometry.Geometry.Comparison.Hessian.AlongGeodesic
+import DifferentialGeometry.Geometry.Exponential.MinimizingVector
 import Mathlib.Order.Filter.AtTopBot.CountablyGenerated
 
 set_option autoImplicit false
@@ -371,7 +372,6 @@ theorem intrinsicExt_minVec_mem
       ∀ᶠ z in 𝓝 q,
         (minimizingVec (I := 𝓘(Real, E)) gExt hExt pt z : E) ∈
           B.hom.source := by
-  classical
   let gExt := intrinsicExtMetric (I := I) g hEnorm p hR hloc
   let : RiemannianBundle
       (fun z : E ↦ TangentSpace 𝓘(Real, E) z) :=
@@ -392,132 +392,7 @@ theorem intrinsicExt_minVec_mem
         (I := 𝓘(Real, E)) gExt z v
   dsimp only
   intro B hu huniq
-  let mv : E → E := fun z =>
-    (minimizingVec (I := 𝓘(Real, E)) gExt hExt pt z : E)
-  let d : E → Real := fun z =>
-    (riemannianEDist 𝓘(Real, E) pt z).toReal
-  have hfinite :
-      {z : E |
-        riemannianEDist 𝓘(Real, E) pt z ≠ (⊤ : ENNReal)} = Set.univ := by
-    ext z
-    simp only [Set.mem_ofPred_eq, Set.mem_univ, iff_true]
-    exact riemannianEDist_ne_top (I := 𝓘(Real, E)) pt z
-  have hd : Continuous d := by
-    have hdOn :=
-      continuousOn_riemannianEDist_toReal_on_finite gExt pt
-    rw [hfinite] at hdOn
-    exact continuousOn_univ.mp hdOn
-  have hmv :
-      Filter.Tendsto mv (𝓝 q) (𝓝 u) := by
-    rw [Filter.tendsto_iff_seq_tendsto]
-    intro seq hseq
-    apply Filter.tendsto_of_subseq_tendsto
-    intro ns hns
-    have hz :
-        Filter.Tendsto (fun n => seq (ns n)) Filter.atTop (𝓝 q) :=
-      hseq.comp hns
-    have hdseq :
-        Filter.Tendsto (fun n => d (seq (ns n)))
-          Filter.atTop (𝓝 (d q)) :=
-      (hd.tendsto q).comp hz
-    have hdbdd :
-        Bornology.IsBounded (Set.range fun n => d (seq (ns n))) :=
-      Metric.isBounded_range_of_tendsto _ hdseq
-    rw [isBounded_iff_forall_norm_le] at hdbdd
-    obtain ⟨C, hC⟩ := hdbdd
-    let C₀ : Real := max 0 C
-    let K : Set E :=
-      {v : E | Real.sqrt (gExt.inner pt v v) ≤ C₀}
-    have hK : IsCompact K := by
-      simpa only [K] using
-        gLenBall_isCompact (I := 𝓘(Real, E)) gExt pt C₀
-    have hmvK : ∀ n, mv (seq (ns n)) ∈ K := by
-      intro n
-      have hdC : d (seq (ns n)) ≤ C := by
-        have hnorm := hC _ ⟨n, rfl⟩
-        rw [Real.norm_eq_abs, abs_of_nonneg ENNReal.toReal_nonneg] at hnorm
-        exact hnorm
-      have hdC₀ : d (seq (ns n)) ≤ C₀ :=
-        hdC.trans (le_max_right _ _)
-      change
-        Real.sqrt
-            (gExt.inner pt
-              (minimizingVec (I := 𝓘(Real, E)) gExt hExt pt (seq (ns n)))
-              (minimizingVec (I := 𝓘(Real, E)) gExt hExt pt (seq (ns n)))) ≤
-          C₀
-      rw [minimizingVec_len
-        (I := 𝓘(Real, E)) gExt hExt pt (seq (ns n))]
-      exact hdC₀
-    obtain ⟨v, _hvK, φ, hφ, hv⟩ :=
-      hK.tendsto_subseq hmvK
-    have hzφ :
-        Filter.Tendsto (fun n => seq (ns (φ n)))
-          Filter.atTop (𝓝 q) :=
-      hz.comp hφ.tendsto_atTop
-    have hexp_v :
-        Filter.Tendsto
-          (fun n =>
-            expMapIntrinsic (I := 𝓘(Real, E)) gExt hExt pt
-              (mv (seq (ns (φ n)))))
-          Filter.atTop
-          (𝓝 (expMapIntrinsic (I := 𝓘(Real, E)) gExt hExt pt v)) :=
-      by
-        convert ((expMapIntrinsic_continuous
-          (I := 𝓘(Real, E)) gExt hExt pt).tendsto v).comp hv using 1
-        all_goals rfl
-    have hexp_q :
-        Filter.Tendsto
-          (fun n =>
-            expMapIntrinsic (I := 𝓘(Real, E)) gExt hExt pt
-              (mv (seq (ns (φ n)))))
-          Filter.atTop (𝓝 q) := by
-      apply hzφ.congr'
-      exact Filter.Eventually.of_forall fun n => by
-        simpa only [mv] using
-          (minimizingVec_exp
-            (I := 𝓘(Real, E)) gExt hExt pt (seq (ns (φ n)))).symm
-    have hexp :
-        expMapIntrinsic (I := 𝓘(Real, E)) gExt hExt pt v = q :=
-      tendsto_nhds_unique hexp_v hexp_q
-    have hlen_v :
-        Filter.Tendsto
-          (fun n =>
-            Real.sqrt
-              (gExt.inner pt (mv (seq (ns (φ n))))
-                (mv (seq (ns (φ n))))))
-          Filter.atTop
-          (𝓝 (Real.sqrt (gExt.inner pt v v))) :=
-      by
-        convert ((continuous_sqrt_gInner_self
-          (I := 𝓘(Real, E)) gExt pt).tendsto v).comp hv using 1
-        all_goals rfl
-    have hdist_q :
-        Filter.Tendsto
-          (fun n =>
-            Real.sqrt
-              (gExt.inner pt (mv (seq (ns (φ n))))
-                (mv (seq (ns (φ n))))))
-          Filter.atTop (𝓝 (d q)) := by
-      have hdistφ :
-          Filter.Tendsto (fun n => d (seq (ns (φ n))))
-            Filter.atTop (𝓝 (d q)) :=
-        (hd.tendsto q).comp hzφ
-      apply hdistφ.congr'
-      exact Filter.Eventually.of_forall fun n => by
-        simpa only [mv, d] using
-          (minimizingVec_len
-            (I := 𝓘(Real, E)) gExt hExt pt (seq (ns (φ n)))).symm
-    have hlen :
-        Real.sqrt (gExt.inner pt v v) =
-          (riemannianEDist 𝓘(Real, E) pt q).toReal :=
-      tendsto_nhds_unique hlen_v hdist_q
-    refine ⟨φ, ?_⟩
-    rw [show v = u from huniq v hexp hlen] at hv
-    convert hv using 1
-    all_goals rfl
-  have hBopen : B.hom.source ∈ 𝓝 u :=
-    B.hom.open_source.mem_nhds hu
-  exact hmv hBopen
+  exact tendsto_minimizingVec_of_unique gExt hExt huniq (B.hom.open_source.mem_nhds hu)
 
 theorem branchEnergy_min_germ
     [ConnectedSpace M]

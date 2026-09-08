@@ -2507,6 +2507,7 @@ import DifferentialGeometry.Geometry.Exponential.AreaFormula
 import DifferentialGeometry.Geometry.Exponential.LocalAddition.Basic
 import DifferentialGeometry.Geometry.Exponential.LocalDiffeomorphism
 import DifferentialGeometry.Geometry.Exponential.MinimizingGeodesic
+import DifferentialGeometry.Geometry.Exponential.MinimizingVector
 import DifferentialGeometry.Geometry.Exponential.MinimizingDomain.Defs
 import DifferentialGeometry.Geometry.Exponential.MinimizingDomain.Basic
 import DifferentialGeometry.Geometry.Exponential.MinimizingDomain.Length
