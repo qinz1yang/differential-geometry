@@ -2415,6 +2415,7 @@ import DifferentialGeometry.Geometry.Curvature.Bounds.QuadraticForm
 import DifferentialGeometry.Geometry.Curvature.Sections.Trace
 import DifferentialGeometry.Geometry.Curvature.Sections.Connection
 import DifferentialGeometry.Geometry.Metric.Family.Basic
+import DifferentialGeometry.Geometry.Metric.Family.Comparison
 import DifferentialGeometry.Geometry.Metric.Family.ChartCurvature.JointSmoothness
 import DifferentialGeometry.Geometry.Metric.Family.ChartCurvature.ManifoldSmoothness
 import DifferentialGeometry.Geometry.Metric.Family.ChartCurvature.MetricFamilySmoothOn

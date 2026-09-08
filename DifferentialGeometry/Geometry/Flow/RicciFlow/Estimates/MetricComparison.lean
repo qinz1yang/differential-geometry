@@ -1,6 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Ricci.Estimate.QuadraticForm
 import DifferentialGeometry.Geometry.Metric.Completeness
 import DifferentialGeometry.Geometry.Comparison.Distance.Continuity
+import DifferentialGeometry.Geometry.Metric.Family.Comparison
 
 
 open DifferentialGeometry.PDE.RicciFlow
@@ -150,6 +151,58 @@ theorem exp_bounds_log
       fb = (fb / fa) * fa := by field_simp
       _ ≤ Real.exp R * fa := mul_le_mul_of_nonneg_right hratio hfa.le
 
+omit [NeZero (Module.finrank ℝ E)] [CompleteSpace E] [IsManifold I 1 M]
+  [SigmaCompactSpace M] in
+private theorem metric_deriv_bound
+    (g : ℝ → SmoothRiemannianMetric I M) {a b K : ℝ}
+    (hpde : ∀ r ∈ Set.Icc a b, ∀ x : M, ∀ v : TangentSpace I x,
+      HasDerivWithinAt (fun u => (g u).inner x v v)
+        (-2 * ricciTensor (g r) x v v) (Set.Icc a b) r)
+    (hric : ∀ r ∈ Set.Icc a b, ∀ x : M, ∀ v : TangentSpace I x,
+      |ricciTensor (g r) x v v| ≤ K * (g r).inner x v v) :
+    ∀ r ∈ Set.Icc a b, ∀ x : M, ∀ v : TangentSpace I x,
+      ∃ d : ℝ, HasDerivWithinAt (fun u => (g u).inner x v v) d (Set.Icc a b) r ∧
+        |d| ≤ (2 * K) * (g r).inner x v v := by
+  intro r hr x v
+  refine ⟨_, hpde r hr x v, ?_⟩
+  rw [abs_mul, abs_neg, abs_two]
+  calc
+    2 * |ricciTensor (g r) x v v| ≤ 2 * (K * (g r).inner x v v) :=
+      mul_le_mul_of_nonneg_left (hric r hr x v) (by norm_num)
+    _ = (2 * K) * (g r).inner x v v := by ring
+
+omit [NeZero (Module.finrank ℝ E)] [CompleteSpace E] [IsManifold I 1 M] [SigmaCompactSpace M] in
+private theorem metric_pair_Icc
+    (g : Real → SmoothRiemannianMetric I M)
+    {a b K s t : Real}
+    (hpde : ∀ r ∈ Set.Icc a b, ∀ x : M,
+      ∀ v w : TangentSpace I x,
+        HasDerivWithinAt (fun u : Real ↦ (g u).inner x v w)
+          ((-2 : Real) * ricciTensor (I := I) (g r) x v w)
+          (Set.Icc a b) r)
+    (hric : ∀ r ∈ Set.Icc a b, ∀ x : M,
+      ∀ v : TangentSpace I x,
+        |ricciTensor (I := I) (g r) x v v| ≤
+          K * (g r).inner x v v)
+    (hs : s ∈ Set.Icc a b) (ht : t ∈ Set.Icc a b)
+    (x : M) (v : TangentSpace I x) :
+    Real.exp (-(2 * K * |s - t|)) * (g t).inner x v v ≤
+        (g s).inner x v v ∧
+      (g s).inner x v v ≤
+        Real.exp (2 * K * |s - t|) * (g t).inner x v v := by
+  have hd := metric_deriv_bound g (fun r hr x v => hpde r hr x v v) hric
+  have hst := inner_le_exp_mul_inner_of_abs_deriv_le g hd hs ht x v
+  have hts := inner_le_exp_mul_inner_of_abs_deriv_le g hd ht hs x v
+  rw [abs_sub_comm t s] at hts
+  refine ⟨?_, hst⟩
+  calc
+    Real.exp (-(2 * K * |s - t|)) * (g t).inner x v v ≤
+        Real.exp (-(2 * K * |s - t|)) *
+          (Real.exp (2 * K * |s - t|) * (g s).inner x v v) :=
+      mul_le_mul_of_nonneg_left hts (Real.exp_pos _).le
+    _ = (g s).inner x v v := by
+      rw [← mul_assoc, ← Real.exp_add, neg_add_cancel, Real.exp_zero, one_mul]
+
 omit [NeZero (Module.finrank ℝ E)]
   [CompleteSpace E]
   [IsManifold I 1 M]
@@ -173,99 +226,39 @@ theorem metricEquiv_Icc
           (g s).inner x v v ≤
             Real.exp (2 * K * (s - a)) * (g a).inner x v v := by
   intro s hs x v
-  rcases eq_or_ne v 0 with rfl | hv
-  · simp
-  have hpos : ∀ t : Real, 0 < (g t).inner x v v :=
-    fun t ↦ (g t).pos x v hv
-  have hsub : Set.Icc a s ⊆ Set.Icc a b :=
-    fun _ ht ↦ ⟨ht.1, ht.2.trans hs.2⟩
-  have hderiv : ∀ t ∈ Set.Icc a s,
-      HasDerivWithinAt
-        (fun r : Real ↦ Real.log ((g r).inner x v v))
-        ((-2 : Real) * ricciTensor (I := I) (g t) x v v /
-          (g t).inner x v v)
-        (Set.Icc a s) t := by
-    intro t ht
-    exact ((hpde t (hsub ht) x v v).mono hsub).log (hpos t).ne'
-  have hbound : ∀ t ∈ Set.Icc a s,
-      ‖(-2 : Real) * ricciTensor (I := I) (g t) x v v /
-          (g t).inner x v v‖ ≤ 2 * K := by
-    intro t ht
-    have hden := hpos t
-    have hricT := hric t (hsub ht) x v
-    rw [Real.norm_eq_abs, abs_div, abs_of_pos hden, div_le_iff₀ hden]
-    rw [abs_mul]
-    norm_num
-    nlinarith
-  have hmvt := (convex_Icc a s).norm_image_sub_le_of_norm_hasDerivWithin_le
-    hderiv hbound (Set.left_mem_Icc.mpr hs.1) (Set.right_mem_Icc.mpr hs.1)
-  have hlog :
-      |Real.log ((g s).inner x v v) - Real.log ((g a).inner x v v)| ≤
-        2 * K * (s - a) := by
-    rw [Real.norm_eq_abs, Real.norm_eq_abs,
-      abs_of_nonneg (sub_nonneg.mpr hs.1)] at hmvt
-    exact hmvt
-  exact exp_bounds_log (hpos a) (hpos s) hlog
+  have ha : a ∈ Set.Icc a b := ⟨le_rfl, hs.1.trans hs.2⟩
+  simpa only [abs_of_nonneg (sub_nonneg.mpr hs.1)] using
+    metric_pair_Icc g hpde hric hs ha x v
 
-omit [NeZero (Module.finrank ℝ E)] [CompleteSpace E] [IsManifold I 1 M] [SigmaCompactSpace M] in
-private theorem metric_pair_Icc
-    (g : Real → SmoothRiemannianMetric I M)
-    {a b K s t : Real}
-    (hpde : ∀ r ∈ Set.Icc a b, ∀ x : M,
-      ∀ v w : TangentSpace I x,
-        HasDerivWithinAt (fun u : Real ↦ (g u).inner x v w)
-          ((-2 : Real) * ricciTensor (I := I) (g r) x v w)
-          (Set.Icc a b) r)
-    (hric : ∀ r ∈ Set.Icc a b, ∀ x : M,
-      ∀ v : TangentSpace I x,
-        |ricciTensor (I := I) (g r) x v v| ≤
-          K * (g r).inner x v v)
-    (hs : s ∈ Set.Icc a b) (ht : t ∈ Set.Icc a b)
-    (x : M) (v : TangentSpace I x) :
-    Real.exp (-(2 * K * |s - t|)) * (g t).inner x v v ≤
-        (g s).inner x v v ∧
-      (g s).inner x v v ≤
-        Real.exp (2 * K * |s - t|) * (g t).inner x v v := by
-  rcases le_total t s with hts | hst
-  · have hsub : Set.Icc t s ⊆ Set.Icc a b := by
-      intro r hr
-      exact ⟨ht.1.trans hr.1, hr.2.trans hs.2⟩
-    have hequiv := metricEquiv_Icc (I := I) g
-      (fun r hr y w z ↦ (hpde r (hsub hr) y w z).mono hsub)
-      (fun r hr y w ↦ hric r (hsub hr) y w)
-      s ⟨hts, le_rfl⟩ x v
-    simpa only [abs_of_nonneg (sub_nonneg.mpr hts)] using hequiv
-  · have hsub : Set.Icc s t ⊆ Set.Icc a b := by
-      intro r hr
-      exact ⟨hs.1.trans hr.1, hr.2.trans ht.2⟩
-    have hequiv := metricEquiv_Icc (I := I) g
-      (fun r hr y w z ↦ (hpde r (hsub hr) y w z).mono hsub)
-      (fun r hr y w ↦ hric r (hsub hr) y w)
-      t ⟨hst, le_rfl⟩ x v
-    have hleft :
-        Real.exp (-(2 * K * (t - s))) * (g t).inner x v v ≤
-          (g s).inner x v v := by
-      calc
-        Real.exp (-(2 * K * (t - s))) * (g t).inner x v v ≤
-            Real.exp (-(2 * K * (t - s))) *
-              (Real.exp (2 * K * (t - s)) * (g s).inner x v v) :=
-          mul_le_mul_of_nonneg_left hequiv.2 (Real.exp_pos _).le
-        _ = (g s).inner x v v := by
-          rw [← mul_assoc, ← Real.exp_add]
-          simp only [neg_add_cancel, Real.exp_zero, one_mul]
-    have hright :
-        (g s).inner x v v ≤
-          Real.exp (2 * K * (t - s)) * (g t).inner x v v := by
-      calc
-        (g s).inner x v v =
-            Real.exp (2 * K * (t - s)) *
-              (Real.exp (-(2 * K * (t - s))) * (g s).inner x v v) := by
-          rw [← mul_assoc, ← Real.exp_add]
-          simp only [add_neg_cancel, Real.exp_zero, one_mul]
-        _ ≤ Real.exp (2 * K * (t - s)) * (g t).inner x v v :=
-          mul_le_mul_of_nonneg_left hequiv.1 (Real.exp_pos _).le
-    simpa only [abs_of_nonpos (sub_nonpos.mpr hst), neg_sub] using
-      And.intro hleft hright
+omit [NeZero (Module.finrank ℝ E)] [CompleteSpace E] [IsManifold I 1 M]
+  [SigmaCompactSpace M] in
+theorem riemannianEDistOf_exp_bounds_of_abs_ricciTensor_le
+    (g : ℝ → SmoothRiemannianMetric I M) {a b K s t : ℝ}
+    (hpde : ∀ r ∈ Set.Icc a b, ∀ x : M, ∀ v : TangentSpace I x,
+      HasDerivWithinAt (fun u => (g u).inner x v v)
+        (-2 * ricciTensor (g r) x v v) (Set.Icc a b) r)
+    (hric : ∀ r ∈ Set.Icc a b, ∀ x : M, ∀ v : TangentSpace I x,
+      |ricciTensor (g r) x v v| ≤ K * (g r).inner x v v)
+    (hs : s ∈ Set.Icc a b) (ht : t ∈ Set.Icc a b) (x y : M) :
+    ENNReal.ofReal (Real.exp (-K * |s - t|)) * riemannianEDistOf (g t) x y ≤
+        riemannianEDistOf (g s) x y ∧
+      riemannianEDistOf (g s) x y ≤
+        ENNReal.ofReal (Real.exp (K * |s - t|)) * riemannianEDistOf (g t) x y := by
+  have hd := metric_deriv_bound g hpde hric
+  have hst := riemannianEDistOf_le_exp_mul_of_abs_deriv_le g hd hs ht x y
+  have hts := riemannianEDistOf_le_exp_mul_of_abs_deriv_le g hd ht hs x y
+  rw [show 2 * K / 2 = K by ring] at hst hts
+  rw [abs_sub_comm t s] at hts
+  refine ⟨?_, hst⟩
+  calc
+    ENNReal.ofReal (Real.exp (-K * |s - t|)) * riemannianEDistOf (g t) x y ≤
+        ENNReal.ofReal (Real.exp (-K * |s - t|)) *
+          (ENNReal.ofReal (Real.exp (K * |s - t|)) * riemannianEDistOf (g s) x y) :=
+      mul_le_mul' le_rfl hts
+    _ = riemannianEDistOf (g s) x y := by
+      rw [← mul_assoc, ← ENNReal.ofReal_mul (Real.exp_pos _).le, ← Real.exp_add,
+        show -K * |s - t| + K * |s - t| = 0 by ring,
+        Real.exp_zero, ENNReal.ofReal_one, one_mul]
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem edistCont_Icc
