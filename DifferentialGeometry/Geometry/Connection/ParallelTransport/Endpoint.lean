@@ -354,3 +354,27 @@ end Variation
 end Riemannian
 end Geometry
 end DifferentialGeometry
+
+
+namespace DifferentialGeometry.Geometry.Riemannian.Variation
+
+open CovariantDerivativeAlong
+
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  [FiniteDimensional ℝ E]
+  {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+  {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+
+theorem parallelTransportSectionOnIcc_mdifferentiableAt [I.Boundaryless]
+    (g : SmoothRiemannianMetric I M) (γ : ℝ → M)
+    (hγ : ContMDiff 𝓘(ℝ, ℝ) I (2 : ℕ∞) γ)
+    {L : ℝ} (hL : 0 < L) (v₀ : TangentSpace I (γ 0))
+    {t : ℝ} (ht : t ∈ Icc (0 : ℝ) L) :
+    MDifferentiableAt 𝓘(ℝ, ℝ) (I.prod 𝓘(ℝ, E))
+      (fun s => (⟨γ s, parallelTransportSectionOnIcc g γ hγ hL v₀ s⟩ : TangentBundle I M)) t :=
+  sectionAlongCurve_mdifferentiableAt_totalSpace γ _
+    (hγ.mdifferentiable (by norm_num) t)
+    (parallelTransportSectionOnIcc_differentiableAt g γ hγ hL v₀ ht)
+
+
+end DifferentialGeometry.Geometry.Riemannian.Variation

@@ -2154,6 +2154,7 @@ import DifferentialGeometry.Geometry.Connection.ParallelTransport.AlgebraicCurva
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.AlgebraicSectionalNonnegativeCone
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.CovariantDerivativeAlong
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.Endpoint
+import DifferentialGeometry.Geometry.Connection.ParallelTransport.Alternating
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.InvariantCone
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.MFDerivAlongCurve
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.ParallelLocalODE
@@ -4211,6 +4212,7 @@ import DifferentialGeometry.Analysis.Spectral.Scalar.Eigenfunction
 import DifferentialGeometry.Geometry.Comparison.Variation.RicciIntegral
 import DifferentialGeometry.Geometry.Comparison.Volume.InfiniteVolume
 import DifferentialGeometry.Geometry.Connection.AlongCurve
+import DifferentialGeometry.Geometry.Connection.AlongCurveAlternating
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Curvature.DifferentiatedContractedBianchi
 import DifferentialGeometry.Geometry.Connection.MetricCompatibility.AlongCurve
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.VectorBundle
@@ -4631,6 +4633,7 @@ import DifferentialGeometry.Geometry.Connection.SubbundlePullback
 import DifferentialGeometry.Geometry.Connection.MetricCompatibility.ExteriorSubmodule
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.ExteriorKernel
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.CurvatureKernel
+import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.CurvatureLine
 import DifferentialGeometry.Bundle.TotalSpace
 import DifferentialGeometry.Geometry.Connection.Associated
 import DifferentialGeometry.Geometry.Connection.MetricCompatibility.Associated
@@ -4646,3 +4649,6 @@ import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletFormBounds
 import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletFormCompletion
 import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletWeakFormIntegration
 import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletWeakFormChart
+import DifferentialGeometry.Geometry.Metric.SmoothSubbundle
+import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.ImagePlane
+import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.CurvaturePlane

@@ -1,6 +1,7 @@
 import DifferentialGeometry.Bundle.SmoothSubbundle.Range
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.InvariantCone
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.Endpoint
+import DifferentialGeometry.Geometry.Connection.ParallelTransport.Alternating
 import DifferentialGeometry.Geometry.Metric.TensorInner.MetricFiberData
 import DifferentialGeometry.Tensor.Alternating.Bundle
 import DifferentialGeometry.Tensor.Alternating.Contraction
@@ -549,3 +550,30 @@ theorem exists_smooth_parallel_contractionAnnihilator_range [I.Boundaryless]
 end LeviCivitaParallel
 
 end DifferentialGeometry.Geometry.Connection
+
+
+open Bundle Set
+open scoped Manifold ContDiff
+
+namespace ContMDiffVectorSubbundle
+
+open DifferentialGeometry (SmoothRiemannianMetric)
+open DifferentialGeometry.Geometry.Connection
+
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  [FiniteDimensional ℝ E]
+  {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+  {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M] [T2Space M]
+  [I.Boundaryless]
+
+theorem isParallelContinuousAlternatingSubmoduleFamily_of_covariantly_invariant
+    (S : ContMDiffVectorSubbundle (I := I) (F := E [⋀^Fin 2]→L[ℝ] ℝ)
+      (V := Bundle.continuousAlternatingMap ℝ (Fin 2) E (TangentSpace I : M → Type _) ℝ
+        (Bundle.Trivial M ℝ)) (n := ∞))
+    (g : SmoothRiemannianMetric I M)
+    (hS : IsCovariantlyInvariantSubmoduleFamily (CovariantDerivative.alternating (LeviCivita g) 2) S.fiber) :
+    IsParallelContinuousAlternatingSubmoduleFamily g S.fiber := by
+  intro γ hγ a b hab
+  exact S.map_parallelTransportLinearEquivBetween_alternating 2 g hS γ hγ hab
+
+end ContMDiffVectorSubbundle

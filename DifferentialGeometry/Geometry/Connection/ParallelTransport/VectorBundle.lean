@@ -294,6 +294,71 @@ private theorem continuousOn_connectionForm_curve
   exact hAprod.comp (continuousOn_id.prodMk (continuousOn_const (c := (0 : ℝ))))
     (fun _ ht => ⟨ht, mem_univ 0⟩)
 
+theorem exists_parallel_section_in_trivialization_on_Icc
+    (cov : CovariantDerivative I F V) (hcov : ContMDiffCovariantDerivative cov ∞)
+    (e : Trivialization F (TotalSpace.proj : TotalSpace F V → M))
+    [MemTrivializationAtlas e] {γ : ℝ → M} {a b t₀ : ℝ}
+    (ht₀ : t₀ ∈ Icc a b)
+    (hγ : ContMDiffOn 𝓘(ℝ, ℝ) I 1 γ (Icc a b))
+    (he : ∀ t ∈ Icc a b, γ t ∈ e.baseSet) (v₀ : V (γ t₀)) :
+    ∃ Z : ∀ t : ℝ, V (γ t), Z t₀ = v₀ ∧
+      MDifferentiableOn 𝓘(ℝ, ℝ) (I.prod 𝓘(ℝ, F))
+        (fun t => (⟨γ t, Z t⟩ : TotalSpace F V)) (Icc a b) ∧
+      ∀ t ∈ Icc a b, cov.derivAlongWithin γ Z (Icc a b) t = 0 := by
+  rcases lt_or_eq_of_le (ht₀.1.trans ht₀.2) with hab | hab
+  swap
+  · subst b
+    have ht : t₀ = a := le_antisymm ht₀.2 ht₀.1
+    subst t₀
+    let Z : ∀ t, V (γ t) := fun t =>
+      e.symmL ℝ (γ t) (e.continuousLinearMapAt ℝ (γ a) v₀)
+    refine ⟨Z, e.symmL_continuousLinearMapAt (he a (by simp)) v₀, ?_, ?_⟩
+    · intro t ht
+      simp only [Icc_self, mem_singleton_iff] at ht
+      subst t
+      apply (mdifferentiableWithinAt_const (c := (⟨γ a, Z a⟩ : TotalSpace F V))).congr
+      · intro s hs
+        have hs' : s = a := by simpa only [Icc_self, mem_singleton_iff] using hs
+        subst s
+        rfl
+      · rfl
+    · intro t ht
+      simp only [Icc_self, mem_singleton_iff] at ht
+      subst t
+      simpa only [Icc_self] using cov.derivAlongWithin_singleton γ Z a
+  let _ : CompleteSpace F := FiniteDimensional.complete ℝ F
+  let A : ℝ → F →L[ℝ] F := fun t => -cov.connectionForm e (γ t)
+    (mfderivWithin 𝓘(ℝ, ℝ) I γ (Icc a b) t ((NormedSpace.fromTangentSpace t).symm 1))
+  have hA : ContinuousOn A (Icc a b) :=
+    (continuousOn_connectionForm_curve cov hcov e (uniqueDiffOn_Icc hab) hγ he).neg
+  obtain ⟨Y, hY₀, hY⟩ := DifferentialGeometry.Analysis.ODE.Flow.exists_linear_ode_solution_on_interval
+    ordConnected_Icc ht₀ hA (e.continuousLinearMapAt ℝ (γ t₀) v₀)
+  let Z : ∀ t, V (γ t) := fun t => e.symmL ℝ (γ t) (Y t)
+  have hZ : MDifferentiableOn 𝓘(ℝ, ℝ) (I.prod 𝓘(ℝ, F))
+      (fun t => (⟨γ t, Z t⟩ : TotalSpace F V)) (Icc a b) := by
+    have hYdiff : MDifferentiableOn 𝓘(ℝ, ℝ) 𝓘(ℝ, F) Y (Icc a b) := by
+      intro t ht
+      rw [mdifferentiableWithinAt_iff_differentiableWithinAt]
+      exact (hY t ht).differentiableWithinAt
+    have h := (e.contMDiffOn_symm (n := ∞)).mdifferentiableOn (by simp) |>.comp
+      ((hγ.mdifferentiableOn (by simp)).prodMk hYdiff)
+      (fun t ht => e.mem_target.mpr (he t ht))
+    apply h.congr
+    intro t ht
+    dsimp only [Function.comp_apply, Z]
+    rw [e.symmL_apply (he t ht), e.mk_symm (he t ht)]
+  refine ⟨Z, ?_, hZ, ?_⟩
+  · change e.symmL ℝ (γ t₀) (Y t₀) = v₀
+    rw [hY₀, e.symmL_continuousLinearMapAt (he t₀ ht₀)]
+  · intro t ht
+    have hcoord (s : ℝ) (hs : s ∈ Icc a b) :
+        e.continuousLinearMapAt ℝ (γ s) (Z s) = Y s :=
+      e.continuousLinearMapAt_symmL (he s hs) (Y s)
+    have hD := (hY t ht).congr hcoord (hcoord t ht)
+    rw [cov.derivAlongWithin_eq e (he t ht) (hZ t ht),
+      hD.derivWithin (uniqueDiffOn_Icc hab t ht), hcoord t ht]
+    simp only [A, neg_apply, neg_add_cancel, map_zero]
+
 private theorem parallel_section_eq_in_trivialization_on_Icc
     (cov : CovariantDerivative I F V) (hcov : ContMDiffCovariantDerivative cov ∞)
     (e : Trivialization F (TotalSpace.proj : TotalSpace F V → M))

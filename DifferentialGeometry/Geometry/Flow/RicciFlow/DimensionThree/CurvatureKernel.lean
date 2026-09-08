@@ -1,4 +1,5 @@
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.SubbundleInvariance
+import DifferentialGeometry.Geometry.Connection.ParallelTransport.Kernel
 import DifferentialGeometry.Geometry.Connection.MetricCompatibility.ExteriorSubmodule
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Pullback
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.ExteriorKernel
@@ -239,5 +240,29 @@ theorem exists_parallel_curvatureOperatorKernelSubbundle_at_later_time
   refine ⟨K, hK, hcov, ?_⟩
   exact K.isParallelSet_of_covariantly_invariant
     (CovariantDerivative.alternating (LeviCivita (S.family.metric t)) 2) hcov inferInstance
+
+theorem curvatureOperatorKernelAt_parallel_at_later_time
+    [ConnectedSpace M]
+    {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn S)
+    (hdim : Module.finrank ℝ E = 3)
+    {s t : ℝ} (hst : s < t) (hreg : Set.Icc s t ⊆ D.regular)
+    (hR : ∀ r ∈ Set.Icc s t, ∀ x,
+      (⟨metricRm04At (S.family.metric r) x,
+        metricRm04At_mem_algebraicCurvatureTensorSubmodule (S.family.metric r) x⟩ :
+          algebraicCurvatureTensorSubmodule (I := I) (M := M) x) ∈
+            algebraicCurvatureOperatorNonnegativeCone (I := I) (M := M)) :
+    IsParallelContinuousAlternatingSubmoduleFamily (S.family.metric t)
+      (fun x => curvatureOperatorKernelAt (S.family.metric t) x
+        ⟨metricRm04At (S.family.metric t) x,
+          metricRm04At_mem_algebraicCurvatureTensorSubmodule (S.family.metric t) x⟩) := by
+  obtain ⟨K, hK, hcov⟩ := exists_covariantly_invariant_curvatureOperatorKernelSubbundle_at_later_time
+    S hS hdim hst hreg hR
+  have h := K.isParallelContinuousAlternatingSubmoduleFamily_of_covariantly_invariant
+    (S.family.metric t) hcov
+  have heq : K.fiber = fun x => curvatureOperatorKernelAt (S.family.metric t) x
+      ⟨metricRm04At (S.family.metric t) x,
+        metricRm04At_mem_algebraicCurvatureTensorSubmodule (S.family.metric t) x⟩ := funext hK
+  rw [heq] at h
+  exact h
 
 end DifferentialGeometry.PDE.RicciFlow

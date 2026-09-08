@@ -953,3 +953,30 @@ end Geometry
 end DifferentialGeometry
 
 end
+
+
+open Bundle Filter Set
+open scoped Manifold ContDiff Topology
+
+namespace DifferentialGeometry.Geometry.Riemannian.CovariantDerivativeAlong
+
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+  {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+
+theorem sectionAlongCurve_mdifferentiableAt_totalSpace
+    (γ : ℝ → M) (Z : ∀ r, TangentSpace I (γ r)) {t : ℝ}
+    (hγ : MDifferentiableAt 𝓘(ℝ, ℝ) I γ t)
+    (hZ : DifferentiableAt ℝ (chartRepAt (I := I) γ Z t) t) :
+    MDifferentiableAt 𝓘(ℝ, ℝ) (I.prod 𝓘(ℝ, E))
+      (fun s => (⟨γ s, Z s⟩ : TangentBundle I M)) t := by
+  rw [mdifferentiableAt_totalSpace]
+  refine ⟨hγ, ?_⟩
+  apply (mdifferentiableAt_iff_differentiableAt.mpr hZ).congr_of_eventuallyEq
+  filter_upwards [hγ.continuousAt
+    ((trivializationAt E (TangentSpace I) (γ t)).open_baseSet.mem_nhds
+      (mem_baseSet_trivializationAt E (TangentSpace I) (γ t)))] with s hs
+  exact ((trivializationAt E (TangentSpace I) (γ t)).continuousLinearMapAt_apply_of_mem
+    ℝ hs (Z s)).symm
+
+end DifferentialGeometry.Geometry.Riemannian.CovariantDerivativeAlong

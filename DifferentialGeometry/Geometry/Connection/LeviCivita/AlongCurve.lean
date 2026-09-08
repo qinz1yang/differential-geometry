@@ -133,3 +133,27 @@ theorem hessian_apply_velocity_of_hasGeodesicEquationAt
   exact h.symm
 
 end CovariantDerivative
+
+
+namespace DifferentialGeometry.Geometry.Connection
+
+open Riemannian.CovariantDerivativeAlong
+
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  [FiniteDimensional ℝ E]
+  {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+  {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M] [T2Space M]
+
+theorem derivAlongWithin_leviCivita_eq_covDerivAlong_of_mdifferentiableAt
+    (g : SmoothRiemannianMetric I M) (γ : ℝ → M)
+    (Z : ∀ r, TangentSpace I (γ r)) {J : Set ℝ} {t : ℝ}
+    (hJ : UniqueDiffWithinAt ℝ J t)
+    (hZ : MDifferentiableAt 𝓘(ℝ, ℝ) (I.prod 𝓘(ℝ, E))
+      (fun s => (⟨γ s, Z s⟩ : TangentBundle I M)) t)
+    (hint : I.IsInteriorPoint (γ t)) :
+    (LeviCivita g).derivAlongWithin γ Z J t = covDerivAlong g γ Z t := by
+  rw [(LeviCivita g).derivAlongWithin_mono hZ.mdifferentiableWithinAt hJ (subset_univ J)]
+  exact derivAlongWithin_leviCivita_eq_covDerivAlong g γ Z (by simp)
+    ((mdifferentiableAt_totalSpace I _).mp hZ).1 hint
+
+end DifferentialGeometry.Geometry.Connection
