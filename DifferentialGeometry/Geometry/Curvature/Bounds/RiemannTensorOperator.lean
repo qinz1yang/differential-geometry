@@ -12,7 +12,6 @@ namespace Curvature
 open scoped BigOperators Manifold ContDiff
 open DifferentialGeometry.Tensor0SBundle
 open DifferentialGeometry.Geometry.Connection
-open DifferentialGeometry.Geometry.Curvature
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
   [InnerProductSpace Real E] [FiniteDimensional Real E]
@@ -23,7 +22,8 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [T2Space M] [SigmaCompactSpace M]
 
 omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
-theorem rm04_eq_inner
+omit [I.Boundaryless] in
+theorem rm04_eq_inner [BoundarylessManifold I M]
     (g : SmoothRiemannianMetric I M) (q : M)
     (J V W : TangentSpace I q) :
     metricRm04StandardAt (I := I) (M := M) g q J V V W =
@@ -63,7 +63,8 @@ private theorem rm04_slot_prod_le
   exact le_rfl
 
 omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
-theorem riemann_quad_le
+omit [I.Boundaryless] in
+theorem riemann_quad_le [BoundarylessManifold I M]
     {Idx : Type*} [Finite Idx] [DecidableEq Idx]
     (g : SmoothRiemannianMetric I M) {q : M}
     (basis : Module.Basis Idx Real (TangentSpace I q))

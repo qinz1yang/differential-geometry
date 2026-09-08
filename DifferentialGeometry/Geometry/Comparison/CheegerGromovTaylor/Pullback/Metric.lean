@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Exponential.Intrinsic.Framed.Coordinates
 import DifferentialGeometry.Topology.Manifold.LocalDiffeomorph.Open
-import DifferentialGeometry.Geometry.Curvature.Bounds.RiemannTensorOperator
+import DifferentialGeometry.Geometry.Curvature.Bounds.Pullback
 import DifferentialGeometry.Geometry.Curvature.Naturality.Pullback.LocalCross
 import DifferentialGeometry.Geometry.Metric.Pullback.Local
 import DifferentialGeometry.Topology.SigmaCompactOpen
@@ -233,75 +233,11 @@ theorem intrinsicPull_quad_le
           z Jz Vz Vz)
         Jz ≤
       K * gPull.inner z Jz Jz * gPull.inner z Vz Vz := by
-  let _ : SigmaCompactSpace (intrinsicPullBall (E := E) R) :=
-    isSigmaCompact_iff_sigmaCompactSpace.mp
-      (Geometry.isSigmaCompact_of_isOpen
-        𝓘(Real, E) (intrinsicPullBall (E := E) R).isOpen)
-  let gPull := intrinsicPullMetric (I := I) g hEnorm p hloc
-  let Jz : TangentSpace 𝓘(Real, E) z :=
-    (tangentSpaceModelContinuousLinearEquiv (I := 𝓘(Real, E)) z).symm J
-  let Vz : TangentSpace 𝓘(Real, E) z :=
-    (tangentSpaceModelContinuousLinearEquiv (I := 𝓘(Real, E)) z).symm V
-  let F : E → M := intrinsicFramedExp (I := I) g hEnorm p
-  let q : M := F (z : E)
-  let dJ : TangentSpace I q :=
-    mfderiv 𝓘(Real, E) I F (z : E)
-      ((tangentSpaceModelContinuousLinearEquiv
-        (I := 𝓘(Real, E)) (z : E)).symm J)
-  let dV : TangentSpace I q :=
-    mfderiv 𝓘(Real, E) I F (z : E)
-      ((tangentSpaceModelContinuousLinearEquiv
-        (I := 𝓘(Real, E)) (z : E)).symm V)
-  have hRm' :
-      Real.sqrt (Tensor0SBundle.normSq0S (I := I) g q 4
-        (Geometry.Curvature.metricRm04At
-          (I := I) (M := M) g q)) ≤ K := by
-    simpa only [F, q] using hRm
-  obtain ⟨basis, hON⟩ :=
-    DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis (I := I) g q
-  have hquad :=
-    DifferentialGeometry.Geometry.Curvature.riemann_quad_le (I := I) g basis hON
-      hRm' dJ dV
-  have hJJ : gPull.inner z Jz Jz = g.inner q dJ dJ := by
-    simp only [gPull, Jz, F, q, dJ]
-    rw [intrinsicPullMetric_inner, intrinsicFrameMetric_apply]
-    with_unfolding_all rfl
-  have hVV : gPull.inner z Vz Vz = g.inner q dV dV := by
-    simp only [gPull, Vz, F, q, dV]
-    rw [intrinsicPullMetric_inner, intrinsicFrameMetric_apply]
-    with_unfolding_all rfl
-  calc
-    gPull.inner z
-          (Geometry.Curvature.riemannOp
-            (Geometry.Connection.LeviCivita (I := 𝓘(Real, E)) gPull)
-            z Jz Vz Vz)
-          Jz =
-        gPull.inner z Jz
-          (Geometry.Curvature.riemannOp
-            (Geometry.Connection.LeviCivita (I := 𝓘(Real, E)) gPull)
-            z Jz Vz Vz) := gPull.symm _ _ _
-    _ = Geometry.Curvature.metricRm04StandardAt
-          (I := 𝓘(Real, E)) (M := intrinsicPullBall (E := E) R)
-          gPull z Jz Vz Vz Jz := by
-      rw [DifferentialGeometry.Geometry.Curvature.rm04_eq_inner]
-    _ = Geometry.Curvature.metricRm04StandardAt
-          (I := I) (M := M) g q dJ dV dV dJ := by
-      simpa only [gPull, Jz, Vz, F, q, dJ, dV] using
-        intrinsicPull_rm04 (I := I) g hEnorm p hloc z J V V J
-    _ = g.inner q dJ
-          (Geometry.Curvature.riemannOp
-            (Geometry.Connection.LeviCivita (I := I) g)
-            q dJ dV dV) := by
-      rw [DifferentialGeometry.Geometry.Curvature.rm04_eq_inner]
-    _ = g.inner q
-          (Geometry.Curvature.riemannOp
-            (Geometry.Connection.LeviCivita (I := I) g)
-            q dJ dV dV)
-          dJ := g.symm _ _ _
-    _ ≤ K * g.inner q dJ dJ * g.inner q dV dV :=
-      hquad
-    _ = K * gPull.inner z Jz Jz * gPull.inner z Vz Vz := by
-      rw [hJJ, hVV]
+  simpa only [intrinsicPullMetric] using!
+    Geometry.Curvature.inner_riemannOp_localPullMetric_le (I := 𝓘(Real, E)) (J := I)
+      g (intrinsicExpOn g hEnorm p R) (intrinsicExpOn_local g hEnorm p hloc) z hRm
+      ((tangentSpaceModelContinuousLinearEquiv (I := 𝓘(Real, E)) z).symm J)
+      ((tangentSpaceModelContinuousLinearEquiv (I := 𝓘(Real, E)) z).symm V)
 
 end CheegerGromovTaylor
 end Riemannian

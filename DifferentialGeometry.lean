@@ -3683,6 +3683,7 @@ import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.SlotCurry.Pars
 import DifferentialGeometry.Geometry.Curvature.Naturality.Pullback.LocalCross
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.MetricPerturbationPath.CurvatureJetBounds
 import DifferentialGeometry.Geometry.Curvature.Bounds.RiemannTensorOperator
+import DifferentialGeometry.Geometry.Curvature.Bounds.Pullback
 import DifferentialGeometry.Geometry.Exponential.Intrinsic.Framed.BallChart
 import DifferentialGeometry.Geometry.Exponential.Intrinsic.Framed.Jacobi
 import DifferentialGeometry.Geometry.Exponential.Intrinsic.Framed.JacobiJets
