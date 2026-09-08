@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Parabolic.Dirichlet.InteriorRegularity
+import DifferentialGeometry.Analysis.Parabolic.Dirichlet.TimeRegularity
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.LocalCoefficientDerivativeBounds
 
 noncomputable section
@@ -127,5 +127,110 @@ theorem IsWeakEvolutionSolution.exists_lp_divergence_coefficient_fderiv_localWea
   apply integral_congr_ae
   filter_upwards [hW i] with p hp
   rw [hp]
+
+local notation "EuN" => EuclideanSpace ℝ (Fin n)
+local notation "EuStd" => EuclideanSpace ℝ (Fin (Module.finrank ℝ EuN))
+
+theorem IsWeakEvolutionSolution.exists_lp_spatial_commutator
+    {q : SmoothRiemannianMetric I_hs M}
+    {D : RealTimeInterval}
+    {G : MetricConnectionFamilyOn (I := I_hs) (M := M) D}
+    {hG : MetricFamilySmoothOn (I := I_hs) (M := M) D G.metric}
+    {T : ℝ} {hT : 0 ≤ T} {hreg : Icc (0 : ℝ) T ⊆ D.regular}
+    {X : ℝ → Cₛ^∞⟮I_hs; EuclideanSpace ℝ (Fin n),
+      (TangentSpace I_hs : M → Type _)⟯}
+    (hXcont : ContinuousOn
+      (fun p : ℝ × M ↦
+        (TotalSpace.mk' (EuclideanSpace ℝ (Fin n)) p.2 (X p.1 p.2) :
+          TangentBundle I_hs M))
+      (Icc (0 : ℝ) T ×ˢ (Set.univ : Set M)))
+    {a : ℝ → ℝ} (hacont : ContinuousOn a (Icc (0 : ℝ) T))
+    {Bx Bv : ℝ}
+    {hX : ∀ t ∈ Icc (0 : ℝ) T, ∀ x : M,
+      (G.metric t).inner x (X t x) (X t x) ≤ Bx}
+    {htrace : ∀ t ∈ Ico (0 : ℝ) T, ∀ x : M,
+      |traceTimeDerivMetric (I := I_hs) G.metric t x| ≤ Bv}
+    {f₀ : Lp ℝ 2
+      (riemannianVolumeMeasure (I := I_hs) (M := M) q)}
+    {u : timeL2 (H1ComplDirichlet q) T}
+    (α : M) {Ω : Set (EuclideanSpace ℝ (Fin (Module.finrank ℝ (EuclideanSpace ℝ (Fin n)))))}
+    (hΩ : IsOpen Ω) (hΩc : IsCompact (closure Ω))
+    (hΩs : closure Ω ⊆ toEuclidean (E := EuclideanSpace ℝ (Fin n)) '' interior (extChartAt I_hs α).target)
+    (hu : IsWeakEvolutionSolution hG hT hreg X a Bx Bv
+      (fun t ht => hX t ⟨ht.1, ht.2.le⟩) htrace f₀ u)
+    (hXsmooth : ContMDiffOn (𝓘(ℝ, ℝ).prod I_hs) ((I_hs).prod 𝓘(ℝ, EuclideanSpace ℝ (Fin n))) ∞
+      (fun p : ℝ × M => Bundle.TotalSpace.mk' (EuclideanSpace ℝ (Fin n)) p.2 (X p.1 p.2))
+      (D.regular ×ˢ (trivializationAt (EuclideanSpace ℝ (Fin n)) (TangentSpace I_hs) α).baseSet))
+    {t₀ t₁ : ℝ} (ht₀ : 0 < t₀) (ht₁ : t₁ < T)
+    {Ω₀ : Set (EuclideanSpace ℝ (Fin (Module.finrank ℝ (EuclideanSpace ℝ (Fin n)))))}
+    (hΩ₀ : IsOpen Ω₀) (hΩ₀Ω : closure Ω₀ ⊆ Ω)
+    (k : Fin (Module.finrank ℝ (EuclideanSpace ℝ (Fin n)))) :
+    let μ := (timeMeasure T).restrict (Icc t₀ t₁)
+    let ρ := fun (p : ℝ × EuStd) =>
+      MetricExtension.densityOnEuclid (I := I_hs) (G.metric p.1) α p.2
+    let B := fun i (p : ℝ × EuStd) =>
+      DifferentialGeometry.Integral.DivergenceTheorem.chartCoeffOnE (I := I_hs) α (X p.1) i ((toEuclidean (E := EuN)).symm p.2)
+    let Dρ := fun p : ℝ × EuStd =>
+      fderiv ℝ (fun z => ρ (p.1, z)) p.2 (EuclideanSpace.single k 1)
+    let DB := fun i (p : ℝ × EuStd) =>
+      fderiv ℝ (fun z => ρ (p.1, z) * B i (p.1, z)) p.2 (EuclideanSpace.single k 1)
+    let A := fun i j (p : ℝ × EuStd) =>
+      fderiv ℝ (MetricExtension.weightedInvGramOnEuclid (I := I_hs) (G.metric p.1) α i j)
+        p.2 (EuclideanSpace.single k 1)
+    let U := dirichletLocalSpacetimeLp q α hΩ.measurableSet hΩc
+      (hΩs.trans (image_mono interior_subset)) (timeMeasure T) u
+    let V := fun i => dirichletLocalSpacetimeWeakPartialLp q α hΩ hΩc hΩs (timeMeasure T) i u
+    ∃ R Fdiv F : Lp ℝ 2 (μ.prod (volume.restrict Ω₀)),
+      (∀ (φ : ℝ × EuStd → ℝ),
+        ContDiff ℝ (⊤ : ℕ∞) φ → HasCompactSupport φ → tsupport φ ⊆ Ioo t₀ t₁ ×ˢ Ω₀ →
+        (∫ p, U p * fderiv ℝ φ p (1, 0) ∂μ.prod (volume.restrict Ω₀)) =
+          -(∫ p, R p * φ p ∂μ.prod (volume.restrict Ω₀))) ∧
+      (∀ (φ : ℝ × EuStd → ℝ),
+        ContDiff ℝ (⊤ : ℕ∞) φ → HasCompactSupport φ → tsupport φ ⊆ univ ×ˢ Ω₀ →
+        (∫ p, Fdiv p * φ p ∂μ.prod (volume.restrict Ω₀)) =
+          -∑ i, ∑ j, ∫ p, A i j p * V i p * fderiv ℝ φ p (0, EuclideanSpace.single j 1)
+            ∂μ.prod (volume.restrict Ω₀)) ∧
+      F =ᵐ[μ.prod (volume.restrict Ω₀)] fun p =>
+        Fdiv p + (∑ i, DB i p * V i p) - a p.1 * Dρ p * U p - Dρ p * R p := by
+  intro μ ρ B Dρ DB A U V
+  obtain ⟨R, hR⟩ := hu.exists_lp_weak_time_deriv hXcont hacont
+    α hΩ hΩc hΩs hXsmooth ht₀ ht₁ hΩ₀ hΩ₀Ω
+  obtain ⟨Fdiv, hFdiv⟩ := hu.exists_lp_divergence_coefficient_fderiv_localWeakPartial hXcont hacont
+    α hΩ hΩc hΩs hXsmooth ht₀ ht₁ hΩ₀ hΩ₀Ω k
+  have hsub : Ω₀ ⊆ Ω := subset_closure.trans hΩ₀Ω
+  have hΩ₀c : IsCompact (closure Ω₀) :=
+    hΩc.of_isClosed_subset isClosed_closure (hΩ₀Ω.trans subset_closure)
+  have hΩ₀s := hΩ₀Ω.trans (subset_closure.trans hΩs)
+  have hmeasure : μ.prod (volume.restrict Ω₀) ≤
+      (timeMeasure T).prod (volume.restrict Ω) :=
+    Measure.prod_mono Measure.restrict_le_self (Measure.restrict_mono hsub le_rfl)
+  have hU : MemLp U 2 (μ.prod (volume.restrict Ω₀)) := (Lp.memLp U).mono_measure hmeasure
+  have hV (i) : MemLp (V i) 2 (μ.prod (volume.restrict Ω₀)) :=
+    (Lp.memLp (V i)).mono_measure hmeasure
+  have hDρ : MemLp Dρ ∞ (μ.prod (volume.restrict Ω₀)) := by
+    have hb := MetricExtension.densityOnEuclid_family_fderiv_memLp_top hG isCompact_Icc hreg α
+      hΩ₀.measurableSet hΩ₀c hΩ₀s (EuclideanSpace.single k 1) (volume.prod volume)
+    rw [← Measure.prod_restrict] at hb
+    exact hb.mono_measure (Measure.prod_mono Measure.restrict_le_self le_rfl)
+  have hDB (i) : MemLp (DB i) ∞ (μ.prod (volume.restrict Ω₀)) := by
+    have hb := MetricExtension.densityOnEuclid_mul_chartCoeffOnE_family_fderiv_memLp_top
+      hG isCompact_Icc hreg α X hXsmooth hΩ₀.measurableSet hΩ₀c hΩ₀s i
+      (EuclideanSpace.single k 1) (volume.prod volume)
+    rw [← Measure.prod_restrict] at hb
+    exact hb.mono_measure (Measure.prod_mono Measure.restrict_le_self le_rfl)
+  have ha : MemLp (fun p : ℝ × EuStd => a p.1) ∞ (μ.prod (volume.restrict Ω₀)) := by
+    have hc := hacont.comp continuousOn_fst (fun _ hp => hp.1 : MapsTo Prod.fst
+      (Icc (0 : ℝ) T ×ˢ closure Ω₀) (Icc (0 : ℝ) T))
+    have hb := hc.memLp_top_of_subset_isCompact (isCompact_Icc.prod hΩ₀c)
+      (measurableSet_Icc.prod hΩ₀.measurableSet) (prod_mono Subset.rfl subset_closure)
+      (μ := (volume : Measure ℝ).prod volume)
+    rw [← Measure.prod_restrict] at hb
+    exact hb.mono_measure (Measure.prod_mono Measure.restrict_le_self le_rfl)
+  let F : ℝ × EuStd → ℝ := fun p =>
+    Fdiv p + (∑ i, DB i p * V i p) - a p.1 * Dρ p * U p - Dρ p * R p
+  have hF : MemLp F 2 (μ.prod (volume.restrict Ω₀)) :=
+    (((Lp.memLp Fdiv).add (memLp_finsetSum Finset.univ fun i _ => (hV i).mul (hDB i))).sub
+      (hU.mul (hDρ.mul (r := ∞) ha))).sub ((Lp.memLp R).mul hDρ)
+  exact ⟨R, Fdiv, hF.toLp F, hR, hFdiv, hF.coeFn_toLp⟩
 
 end DifferentialGeometry.Analysis.Parabolic.Dirichlet

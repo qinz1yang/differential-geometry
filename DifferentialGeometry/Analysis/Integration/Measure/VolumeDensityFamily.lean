@@ -134,6 +134,37 @@ theorem riemannianVolumeDensity_swap_contMDiffOn_of_metricFamilySmoothOn
   exact eq_inv_of_mul_eq_one_right
     (riemannianVolumeDensity_mul_swap q (G.metric p.1) p.2)
 
+omit [T2Space M] [SigmaCompactSpace M] in
+theorem hasDerivAt_chartDensity
+    {g : ℝ → SmoothRiemannianMetric I M} {t : ℝ}
+    (hreg : MetricFamilyRegularAt (I := I) g t) (α : M) {x : M}
+    (hx : x ∈ (trivializationAt E (TangentSpace I) α).baseSet) :
+    HasDerivAt (fun s => chartDensity (I := I) (g s) α x)
+      ((1 / 2) * traceTimeDerivMetric (I := I) g t x * chartDensity (g t) α x) t := by
+  have hd := per_chart_integrand_hasDerivAt hreg α hx
+    (fun _ _ => (1 : ℝ)) (fun _ => (1 : ℝ))
+    (by simpa using hasDerivAt_const t (1 : ℝ))
+  simpa only [deriv_const, one_mul, mul_one, zero_add] using hd
+
+omit [T2Space M] [SigmaCompactSpace M] in
+theorem hasDerivAt_chartDensity_of_chartGram_contMDiffOn
+    {g : ℝ → SmoothRiemannianMetric I M}
+    {J : Set ℝ} (hJ : IsOpen J)
+    (hg : ∀ (α : M) (i j : Fin (Module.finrank ℝ E)),
+      ContMDiffOn (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ, ℝ) ∞
+        (fun p : ℝ × M => chartGramMatrix (I := I) (g p.1) α p.2 i j)
+        (J ×ˢ (trivializationAt E (TangentSpace I) α).baseSet))
+    {t : ℝ} (ht : t ∈ J) (α : M) {x : M}
+    (hx : x ∈ (trivializationAt E (TangentSpace I) α).baseSet) :
+    HasDerivAt (fun s => chartDensity (I := I) (g s) α x)
+      ((1 / 2) * traceTimeDerivMetric (I := I) g t x * chartDensity (g t) α x) t := by
+  obtain ⟨g', hg', heq⟩ := exists_metricFamilyRegularAt_eventuallyEq hJ ht hg
+  have hd := hasDerivAt_chartDensity hg' α hx
+  rw [traceTimeDerivMetric_eq_of_eventuallyEq heq x, heq.eq_of_nhds] at hd
+  apply hd.congr_of_eventuallyEq
+  filter_upwards [heq] with s hs
+  rw [hs]
+
 theorem hasDerivAt_riemannianVolumeDensity
     (q : SmoothRiemannianMetric I M) {g : ℝ → SmoothRiemannianMetric I M} {t : ℝ}
     (hreg : MetricFamilyRegularAt (I := I) g t) (x : M) :
@@ -141,9 +172,7 @@ theorem hasDerivAt_riemannianVolumeDensity
       ((1 / 2) * traceTimeDerivMetric (I := I) g t x * riemannianVolumeDensity q (g t) x) t := by
   have hx : x ∈ (trivializationAt E (TangentSpace I) x).baseSet :=
     mem_baseSet_trivializationAt E (TangentSpace I : M → Type _) x
-  have hd := per_chart_integrand_hasDerivAt hreg x hx (fun _ _ => (1 : ℝ)) (fun _ => (1 : ℝ))
-    (by simpa using hasDerivAt_const t (1 : ℝ))
-  simp only [deriv_const, one_mul, mul_one, zero_add] at hd
+  have hd := hasDerivAt_chartDensity hreg x hx
   have hdq := hd.div_const (chartDensity q x x)
   have heq (s : ℝ) : riemannianVolumeDensity q (g s) x =
       chartDensity (g s) x x / chartDensity q x x :=

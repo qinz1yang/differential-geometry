@@ -4729,3 +4729,5 @@ import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.ImageLineFamily
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Restriction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Soliton.Curvature
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.CurvatureSurfaceTime
+import DifferentialGeometry.Analysis.Sobolev.Chart.CutoffPullbackLp
+import DifferentialGeometry.Analysis.Parabolic.Dirichlet.PotentialCoefficientBounds

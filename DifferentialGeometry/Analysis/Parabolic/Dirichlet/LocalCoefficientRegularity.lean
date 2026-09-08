@@ -224,4 +224,72 @@ theorem weightedInvGramOnEuclid_family_fderiv_contDiffOn
       (prod_mono hJ Subset.rfl)
 
 
+omit [T2Space M] [SigmaCompactSpace M] in
+theorem hasDerivAt_densityOnEuclid
+    {D : RealTimeInterval} {G : MetricConnectionFamilyOn (I := I) (M := M) D}
+    (hG : MetricFamilySmoothOn (I := I) (M := M) D G.metric)
+    {t : ℝ} (ht : t ∈ D.regular) (α : M) {z : EuclN}
+    (hz : z ∈ chartTargetEuclid (I := I) α) :
+    HasDerivAt (fun s => densityOnEuclid (I := I) (G.metric s) α z)
+      ((1 / 2) * traceTimeDerivMetric (I := I) G.metric t
+        ((extChartAt I α).symm ((toEuclidean (E := E)).symm z)) *
+          densityOnEuclid (G.metric t) α z) t := by
+  exact hasDerivAt_chartDensity_of_chartGram_contMDiffOn D.regular_isOpen
+    (hG.chartGramMatrix_contDiffOn Subset.rfl) ht α (chartInverse_mem_baseSet α hz)
+
+omit [T2Space M] [SigmaCompactSpace M] in
+theorem densityOnEuclid_family_fderiv_time_eq
+    {D : RealTimeInterval} {G : MetricConnectionFamilyOn (I := I) (M := M) D}
+    (hG : MetricFamilySmoothOn (I := I) (M := M) D G.metric)
+    {t : ℝ} (ht : t ∈ D.regular) (α : M) {z : EuclN}
+    (hz : z ∈ toEuclidean (E := E) '' interior (extChartAt I α).target) :
+    fderiv ℝ (fun p : ℝ × EuclN => densityOnEuclid (I := I) (G.metric p.1) α p.2)
+      (t, z) (1, 0) =
+      (1 / 2) * traceTimeDerivMetric (I := I) G.metric t
+        ((extChartAt I α).symm ((toEuclidean (E := E)).symm z)) *
+          densityOnEuclid (G.metric t) α z := by
+  let U := toEuclidean (E := E) '' interior (extChartAt I α).target
+  have hU : IsOpen U := (toEuclidean (E := E)).isOpenMap _ isOpen_interior
+  have hc := (densityOnEuclid_family_contDiffOn hG Subset.rfl α).mono
+    (prod_mono Subset.rfl (image_mono interior_subset))
+  have hd := (hc.differentiableOn (by simp) (t, z) ⟨ht, hz⟩).differentiableAt
+    ((D.regular_isOpen.prod hU).mem_nhds ⟨ht, hz⟩)
+  have hs := hd.hasFDerivAt.comp t ((hasFDerivAt_id (𝕜 := ℝ) t).prodMk (hasFDerivAt_const (𝕜 := ℝ) z t))
+  have hderiv := (hs.hasDerivAt).deriv
+  have htderiv := (hasDerivAt_densityOnEuclid hG ht α ((image_mono interior_subset) hz)).deriv
+  simpa only [ContinuousLinearMap.comp_apply, ContinuousLinearMap.prod_apply,
+    ContinuousLinearMap.id_apply, zero_apply] using hderiv.symm.trans htderiv
+
+omit [T2Space M] [SigmaCompactSpace M] in
+theorem traceTimeDerivMetric_comp_chartInverse_contDiffOn
+    {D : RealTimeInterval} {G : MetricConnectionFamilyOn (I := I) (M := M) D}
+    (hG : MetricFamilySmoothOn (I := I) (M := M) D G.metric)
+    {J : Set ℝ} (hJ : J ⊆ D.regular) (α : M)
+    {Ω : Set EuclN}
+    (hΩs : Ω ⊆ toEuclidean (E := E) '' interior (extChartAt I α).target) :
+    ContDiffOn ℝ ∞ (fun p : ℝ × EuclN => traceTimeDerivMetric (I := I) G.metric p.1
+      ((extChartAt I α).symm ((toEuclidean (E := E)).symm p.2))) (J ×ˢ Ω) := by
+  let U := toEuclidean (E := E) '' interior (extChartAt I α).target
+  let ρ := fun p : ℝ × EuclN => densityOnEuclid (I := I) (G.metric p.1) α p.2
+  have hU : IsOpen U := (toEuclidean (E := E)).isOpenMap _ isOpen_interior
+  have hρ : ContDiffOn ℝ ∞ ρ (D.regular ×ˢ U) :=
+    (densityOnEuclid_family_contDiffOn hG Subset.rfl α).mono
+      (prod_mono Subset.rfl (image_mono interior_subset))
+  have hdρ : ContDiffOn ℝ ∞ (fun p => fderiv ℝ ρ p (1, 0)) (D.regular ×ˢ U) :=
+    (hρ.fderiv_of_isOpen (D.regular_isOpen.prod hU) (by simp)).clm_apply
+      (contDiffOn_const (c := ((1 : ℝ), (0 : EuclN))))
+  have hρne (p : ℝ × EuclN) (hp : p ∈ D.regular ×ˢ U) : ρ p ≠ 0 :=
+    ne_of_gt (densityOnEuclid_pos (G.metric p.1) α ((image_mono interior_subset) hp.2))
+  have hnum : ContDiffOn ℝ ∞ (fun p => (2 : ℝ) * fderiv ℝ ρ p (1, 0)) (D.regular ×ˢ U) :=
+    (contDiffOn_const (c := (2 : ℝ))).mul hdρ
+  have hc := hnum.div hρ hρne
+  apply (hc.mono (prod_mono hJ hΩs)).congr
+  intro p hp
+  change traceTimeDerivMetric (I := I) G.metric p.1 _ =
+    (2 : ℝ) * fderiv ℝ ρ p (1, 0) / ρ p
+  rw [densityOnEuclid_family_fderiv_time_eq hG (hJ hp.1) α (hΩs hp.2)]
+  have hn := hρne p ⟨hJ hp.1, hΩs hp.2⟩
+  dsimp only [ρ] at hn ⊢
+  field_simp
+
 end DifferentialGeometry.Analysis.Laplacian.MetricExtension

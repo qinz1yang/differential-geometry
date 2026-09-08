@@ -3,6 +3,7 @@ import Mathlib.Analysis.Calculus.ContDiff.Basic
 import Mathlib.Analysis.Calculus.ContDiff.Comp
 import Mathlib.MeasureTheory.Integral.Bochner.Basic
 import DifferentialGeometry.Analysis.Calculus.ContDiff.Support
+import DifferentialGeometry.Analysis.Sobolev.WeakDerivativeUniqueness
 import Mathlib.MeasureTheory.Function.LocallyIntegrable
 import Mathlib.Analysis.Calculus.ContDiff.Operations
 import Mathlib.Tactic.Linarith
@@ -191,5 +192,27 @@ theorem integral_weak_deriv_weighted_divergence
   have hb := hbase (fun x => fderiv ℝ φ x v) (hd v) (hdc v) (hds v)
   rw [hsum] at hb
   linarith
+
+omit [OpensMeasurableSpace E] in
+theorem ae_eq_of_weak_second_deriv_comm [FiniteDimensional ℝ E] [BorelSpace E]
+    (hΩ : IsOpen Ω) (hμΩ : ∀ᵐ x ∂μ, x ∈ Ω)
+    {U V W H K : E → ℝ} (v w : E)
+    (hUv : ∀ φ : E → ℝ, ContDiff ℝ (⊤ : ℕ∞) φ → HasCompactSupport φ →
+      tsupport φ ⊆ Ω → (∫ x, U x * fderiv ℝ φ x v ∂μ) = -∫ x, V x * φ x ∂μ)
+    (hUw : ∀ φ : E → ℝ, ContDiff ℝ (⊤ : ℕ∞) φ → HasCompactSupport φ →
+      tsupport φ ⊆ Ω → (∫ x, U x * fderiv ℝ φ x w ∂μ) = -∫ x, W x * φ x ∂μ)
+    (hVw : ∀ φ : E → ℝ, ContDiff ℝ (⊤ : ℕ∞) φ → HasCompactSupport φ →
+      tsupport φ ⊆ Ω → (∫ x, V x * fderiv ℝ φ x w ∂μ) = -∫ x, H x * φ x ∂μ)
+    (hWv : ∀ φ : E → ℝ, ContDiff ℝ (⊤ : ℕ∞) φ → HasCompactSupport φ →
+      tsupport φ ⊆ Ω → (∫ x, W x * fderiv ℝ φ x v ∂μ) = -∫ x, K x * φ x ∂μ)
+    (hH : LocallyIntegrable H μ) (hK : LocallyIntegrable K μ) :
+    H =ᵐ[μ] K := by
+  apply ae_eq_of_integral_contDiff_mul_eq_on hΩ hμΩ hH hK
+  intro φ hφ hφc hφs
+  have hc := integral_weak_deriv_fderiv_comm v w hUv hUw hφ hφc hφs
+  have hi := hVw φ hφ hφc hφs
+  have hk := hWv φ hφ hφc hφs
+  linarith
+
 
 end DifferentialGeometry.Analysis.Sobolev

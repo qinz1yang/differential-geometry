@@ -1,3 +1,4 @@
+import DifferentialGeometry.Analysis.Sobolev.WeakDerivativeCommutation
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.DivergenceForm
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.IteratedSobolevSpace.WeakPartial
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.NirenbergEnergy
@@ -642,6 +643,67 @@ theorem IsWeakEvolutionSolution.exists_lp_divergence_localWeakPartial
   apply integral_congr_ae
   filter_upwards [hW i] with p hp
   rw [hp]
+
+
+theorem IsWeakEvolutionSolution.exists_lp_symmetric_weak_second_deriv
+    {q : SmoothRiemannianMetric I_hs M}
+    {D : RealTimeInterval}
+    {G : MetricConnectionFamilyOn (I := I_hs) (M := M) D}
+    {hG : MetricFamilySmoothOn (I := I_hs) (M := M) D G.metric}
+    {T : ℝ} {hT : 0 ≤ T} {hreg : Icc (0 : ℝ) T ⊆ D.regular}
+    {X : ℝ → Cₛ^∞⟮I_hs; EuclideanSpace ℝ (Fin n),
+      (TangentSpace I_hs : M → Type _)⟯}
+    (hXcont : ContinuousOn
+      (fun p : ℝ × M ↦
+        (TotalSpace.mk' (EuclideanSpace ℝ (Fin n)) p.2 (X p.1 p.2) :
+          TangentBundle I_hs M))
+      (Icc (0 : ℝ) T ×ˢ (Set.univ : Set M)))
+    {a : ℝ → ℝ} (hacont : ContinuousOn a (Icc (0 : ℝ) T))
+    {Bx Bv : ℝ}
+    {hX : ∀ t ∈ Icc (0 : ℝ) T, ∀ x : M,
+      (G.metric t).inner x (X t x) (X t x) ≤ Bx}
+    {htrace : ∀ t ∈ Ico (0 : ℝ) T, ∀ x : M,
+      |traceTimeDerivMetric (I := I_hs) G.metric t x| ≤ Bv}
+    {f₀ : Lp ℝ 2
+      (riemannianVolumeMeasure (I := I_hs) (M := M) q)}
+    {u : timeL2 (H1ComplDirichlet q) T}
+    (α : M) {Ω : Set (EuclideanSpace ℝ (Fin (Module.finrank ℝ (EuclideanSpace ℝ (Fin n)))))}
+    (hΩ : IsOpen Ω) (hΩc : IsCompact (closure Ω))
+    (hΩs : closure Ω ⊆ toEuclidean (E := EuclideanSpace ℝ (Fin n)) '' interior (extChartAt I_hs α).target)
+    (hu : IsWeakEvolutionSolution hG hT hreg X a Bx Bv
+      (fun t ht => hX t ⟨ht.1, ht.2.le⟩) htrace f₀ u)
+    (hXsmooth : ContMDiffOn (𝓘(ℝ, ℝ).prod I_hs) ((I_hs).prod 𝓘(ℝ, EuclideanSpace ℝ (Fin n))) ∞
+      (fun p : ℝ × M => Bundle.TotalSpace.mk' (EuclideanSpace ℝ (Fin n)) p.2 (X p.1 p.2))
+      (D.regular ×ˢ (trivializationAt (EuclideanSpace ℝ (Fin n)) (TangentSpace I_hs) α).baseSet))
+    {t₀ t₁ : ℝ} (ht₀ : 0 < t₀) (ht₁ : t₁ < T)
+    {Ω₀ : Set (EuclideanSpace ℝ (Fin (Module.finrank ℝ (EuclideanSpace ℝ (Fin n)))))}
+    (hΩ₀ : IsOpen Ω₀) (hΩ₀Ω : closure Ω₀ ⊆ Ω) :
+    ∃ v : Fin (Module.finrank ℝ (EuclideanSpace ℝ (Fin n))) →
+        Fin (Module.finrank ℝ (EuclideanSpace ℝ (Fin n))) →
+        Lp ℝ 2 (((timeMeasure T).restrict (Icc t₀ t₁)).prod (volume.restrict Ω₀)),
+      (∀ i k, ∀ᵐ t ∂(timeMeasure T).restrict (Icc t₀ t₁), DeGiorgi.HasWeakPartialDeriv k
+        (fun z => v i k (t, z)) (dirichletLocalWeakPartialLp q α hΩ hΩc hΩs i (u t)) Ω₀) ∧
+      ∀ i k, v i k = v k i := by
+  classical
+  choose v hv using hu.exists_ae_hasWeakPartialDeriv_localWeakPartial_on hXcont hacont
+    α hΩ hΩc hΩs hXsmooth ht₀ ht₁ hΩ₀ hΩ₀Ω
+  refine ⟨v, hv, ?_⟩
+  intro i k
+  apply Lp.ext
+  apply (Measure.ae_prod_iff_ae_ae
+    (measurableSet_eq_fun (Lp.stronglyMeasurable (v i k)).measurable
+      (Lp.stronglyMeasurable (v k i)).measurable)).mpr
+  filter_upwards [hv i k, hv k i, (Lp.memLp (v i k)).prodMk_left (by norm_num),
+    (Lp.memLp (v k i)).prodMk_left (by norm_num)] with t hik hki hikLp hkiLp
+  have hsub : Ω₀ ⊆ Ω := subset_closure.trans hΩ₀Ω
+  have hi := DeGiorgi.HasWeakPartialDeriv.restrict hΩ₀ hsub
+    (hasWeakPartialDeriv_dirichletLocalWeakPartialLp q α hΩ hΩc hΩs i (u t))
+  have hk := DeGiorgi.HasWeakPartialDeriv.restrict hΩ₀ hsub
+    (hasWeakPartialDeriv_dirichletLocalWeakPartialLp q α hΩ hΩc hΩs k (u t))
+  exact DifferentialGeometry.Analysis.Sobolev.ae_eq_of_weak_second_deriv_comm hΩ₀
+    (ae_restrict_mem hΩ₀.measurableSet) (EuclideanSpace.single i 1) (EuclideanSpace.single k 1)
+    hi hk hik hki (hikLp.locallyIntegrable (by norm_num))
+      (hkiLp.locallyIntegrable (by norm_num))
 
 
 end DifferentialGeometry.Analysis.Parabolic.Dirichlet
