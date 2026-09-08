@@ -2097,7 +2097,7 @@ import DifferentialGeometry.Geometry.Comparison.Volume.Radial.Gronwall
 import DifferentialGeometry.Geometry.Comparison.Volume.Radial.JacobiBounds
 import DifferentialGeometry.Geometry.Comparison.Volume.Radial.JacobiScaling
 import DifferentialGeometry.Geometry.Comparison.Volume.Radial.Radius
-import DifferentialGeometry.Geometry.Comparison.Volume.RatioIntegral
+import DifferentialGeometry.Analysis.Integration.Measure.Lebesgue.RatioMonotonicity
 import DifferentialGeometry.Geometry.Comparison.Volume.Segment.Polar.Area
 import DifferentialGeometry.Geometry.Comparison.Volume.Segment.Count
 import DifferentialGeometry.Geometry.Comparison.Volume.Segment.Polar.Density

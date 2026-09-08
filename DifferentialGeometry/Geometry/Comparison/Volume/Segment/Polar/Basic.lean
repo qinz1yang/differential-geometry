@@ -7,7 +7,7 @@ import DifferentialGeometry.Geometry.Comparison.Volume.Segment.Polar.Gauss
 import DifferentialGeometry.Geometry.Comparison.Volume.Segment.Domain.Interior
 import DifferentialGeometry.Geometry.Comparison.Volume.Segment.Ball.Measure
 import DifferentialGeometry.Geometry.Comparison.Volume.Segment.Polar.FrameBound
-import DifferentialGeometry.Geometry.Comparison.Volume.RatioIntegral
+import DifferentialGeometry.Analysis.Integration.Measure.Lebesgue.RatioMonotonicity
 import DifferentialGeometry.Geometry.Comparison.Variation.NoConjugatePoints.MinimalGeodesic
 import DifferentialGeometry.Geometry.Comparison.Distance.Calabi
 import DifferentialGeometry.Geometry.Comparison.HalfSquaredDistance.Basic
@@ -2914,7 +2914,7 @@ theorem segmentBall_vol_rel
             ∂Measure.volumeIoiPow d) *
           ENNReal.ofReal (hyperbolicRadialVolume q d R) := by
     have h :=
-      lintegral_Iic_cross
+      MeasureTheory.setLIntegral_Iic_mul_setLIntegral_Iic_le
         (μ := Measure.volumeIoiPow d) (f := F u) (g := G)
         (hF_meas u).aemeasurable.restrict
         hG_meas.aemeasurable.restrict

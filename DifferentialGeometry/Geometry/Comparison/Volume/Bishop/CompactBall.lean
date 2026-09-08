@@ -3,7 +3,7 @@ import DifferentialGeometry.Geometry.Exponential.ConjugatePoint.MinimizingGeodes
 import DifferentialGeometry.Geometry.Comparison.Volume.Bishop.Ball
 import DifferentialGeometry.Geometry.Comparison.Volume.Segment.Polar.CompactBall
 import DifferentialGeometry.Geometry.Comparison.Volume.Segment.Polar.Pole
-import DifferentialGeometry.Geometry.Comparison.Volume.RatioIntegral
+import DifferentialGeometry.Analysis.Integration.Measure.Lebesgue.RatioMonotonicity
 
 set_option autoImplicit false
 
@@ -524,7 +524,7 @@ theorem bishop_gromov_of_isCompact_closedEBall
             ∂Measure.volumeIoiPow d) * ENNReal.ofReal (hyperbolicRadialVolume q d s) ≤
           (∫⁻ r : Set.Ioi (0 : ℝ) in Set.Iic (⟨s, hs⟩ : Set.Ioi (0 : ℝ)), F u r
             ∂Measure.volumeIoiPow d) * ENNReal.ofReal (hyperbolicRadialVolume q d R) := by
-      have h := lintegral_Iic_cross
+      have h := MeasureTheory.setLIntegral_Iic_mul_setLIntegral_Iic_le
         (μ := Measure.volumeIoiPow d) (f := F u) (g := G)
         (hF_meas u).restrict hG_meas.aemeasurable.restrict
         (fun {_a _b} hab _ => hcross u hab)
