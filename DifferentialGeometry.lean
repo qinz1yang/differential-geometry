@@ -1875,6 +1875,7 @@ import DifferentialGeometry.Bundle.FiberBundleHausdorff
 import DifferentialGeometry.Bundle.Frame
 import DifferentialGeometry.Geometry.Connection.LocalFrameRegularity
 import DifferentialGeometry.Bundle.PartialMfderiv.Basic
+import DifferentialGeometry.Bundle.PartialMfderiv.Regularity
 import DifferentialGeometry.Geometry.Coordinates.Calculus.FixedBaseDerivative
 import DifferentialGeometry.Bundle.PartialMfderiv.ModelMixed
 import DifferentialGeometry.Bundle.Section
