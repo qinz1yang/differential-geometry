@@ -172,14 +172,14 @@ theorem chain_pullback_metric_deriv_norm_sup_lt
             (gInf n) (gInf n) x ≤ ε) :
     ∀ ε : ℝ, 0 < ε → ∀ p : ℕ, ∃ n₀ : ℕ,
       ∀ n : ℕ, n₀ ≤ n →
-        ∀ l : ℕ, ∀ K : Set (U n), IsCompact K →
+        ∀ l : ℕ, ∀ K : Set (U n),
           metricDerivNormSupOn (I := I) K p
             (chainPullbackSeq (I := I) Ψ g (U n) (hU n) l)
             (gInf n) (gInf n) < ε := by
   intro ε hε p
   obtain ⟨n₀, hn₀⟩ := hclose (ε / 2) (by linarith) p
   refine ⟨n₀, fun n hn => ?_⟩
-  intro l K _hK
+  intro l K
   exact lt_of_le_of_lt
     (metricDerivNormSupOn_le_of_forall (I := I) K p
       (chainPullbackSeq (I := I) Ψ g (U n) (hU n) l)
@@ -222,7 +222,7 @@ theorem tail_metric_deriv_norm_sup_lt
         letI : SigmaCompactSpace (tailBallOpen b j₀ n) :=
           isSigmaCompact_iff_sigmaCompactSpace.mp
             (Geometry.isSigmaCompact_of_isOpen I (tailBallOpen b j₀ n).isOpen)
-        ∀ K : Set (tailBallOpen b j₀ n), IsCompact K →
+        ∀ K : Set (tailBallOpen b j₀ n),
           metricDerivNormSupOn (I := I) K p
             ((g (j₀ + n)).restrictOpen (I := I) (tailBallOpen b j₀ n))
             (tailMetric (I := I) b j₀ gInf n)
@@ -236,7 +236,7 @@ theorem tail_metric_deriv_norm_sup_lt
     (Geometry.isSigmaCompact_of_isOpen I U.isOpen)
   let _ : SigmaCompactSpace V := isSigmaCompact_iff_sigmaCompactSpace.mp
     (Geometry.isSigmaCompact_of_isOpen I V.isOpen)
-  intro K _hK
+  intro K
   refine lt_of_le_of_lt
     (metricDerivNormSupOn_le_of_forall (I := I) K p
       ((g (j₀ + n)).restrictOpen (I := I) V)

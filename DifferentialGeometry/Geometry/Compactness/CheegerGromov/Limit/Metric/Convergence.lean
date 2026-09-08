@@ -269,8 +269,8 @@ def chainPointedRiemannianConvergence
   intro ε hε p
   obtain ⟨n₀, hn₀⟩ := chain_pullback_metric_deriv_norm_sup_lt
     (I := I) j₀ U Ψ g hU gInf hclose ε hε p
-  refine ⟨n₀, fun n hn K hK => ?_⟩
-  simpa only [gSeq] using hn₀ n hn 0 K hK
+  refine ⟨n₀, fun n hn K _ => ?_⟩
+  simpa only [gSeq] using hn₀ n hn 0 K
 
 omit [∀ j, RiemannianBundle (fun x : M j => TangentSpace I x)]
   [∀ j, IsRiemannianManifold I (M j)] in
@@ -316,9 +316,9 @@ def chainAmbientPointedRiemannianConvergence
   intro ε hε p
   obtain ⟨n₀, hn₀⟩ := chain_pullback_metric_deriv_norm_sup_lt
     (I := I) j₀ U Ψ g hU gInf hclose ε hε p
-  refine ⟨n₀, fun n hn K hK => ?_⟩
+  refine ⟨n₀, fun n hn K _ => ?_⟩
   rw [← chain_pullback_zero (I := I) Ψ g (U n) (hU n)]
-  exact hn₀ n hn 0 K hK
+  exact hn₀ n hn 0 K
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
@@ -391,7 +391,9 @@ def tailAmbientPointedRiemannianConvergence
     tail_ball_system_metric_cocycle (I := I) b Ψ hbase g hnorm j₀ D₀ hU hmap gInf hstep
   apply ambientPointedRiemannianConvergence (I := I) j₀ (tailBallOpen b j₀) S
     (tailCenter b j₀ 0) g gTail hgTail
-  exact tail_metric_deriv_norm_sup_lt (I := I) b j₀ Ψ g hU gInf hclose
+  intro ε hε p
+  obtain ⟨n₀, hn₀⟩ := tail_metric_deriv_norm_sup_lt (I := I) b j₀ Ψ g hU gInf hclose ε hε p
+  exact ⟨n₀, fun n hn K _ => hn₀ n hn K⟩
 
 
 end ApproxData
