@@ -476,6 +476,7 @@ import DifferentialGeometry.Analysis.Integration.Measure.BorelManifold.Defs
 import DifferentialGeometry.Analysis.Integration.Measure.BorelManifold.Derived
 import DifferentialGeometry.Analysis.Integration.Measure.BorelManifold.StandardInstances
 import DifferentialGeometry.Analysis.Integration.Measure.Chart.Density
+import DifferentialGeometry.Geometry.Measure.Chart.GramOperator
 import DifferentialGeometry.Analysis.Integration.Measure.Parametric.CompactIntegral
 import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.CompactVolumeEquivalence
 import DifferentialGeometry.Analysis.Integration.Measure.Estimates.ExponentialTail
