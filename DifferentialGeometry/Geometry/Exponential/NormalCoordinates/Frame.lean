@@ -61,6 +61,55 @@ theorem normalBasis_inner (g : SmoothRiemannianMetric I M) (x : M)
   rw [← hinner]
   exact hob
 
+noncomputable def euclideanNormalFrame (g : SmoothRiemannianMetric I M) (x : M) :
+    EuclideanSpace ℝ (Fin (Module.finrank ℝ E)) ≃L[ℝ] TangentSpace I x := by
+  let _ : T2Space (TangentSpace I x) := by
+    change T2Space E
+    infer_instance
+  exact ((EuclideanSpace.basisFun (Fin (Module.finrank ℝ E)) ℝ).toBasis.equiv
+    (normalBasis (I := I) g x) (Equiv.refl _)).toContinuousLinearEquiv
+
+@[simp] theorem euclideanNormalFrame_single (g : SmoothRiemannianMetric I M) (x : M)
+    (i : Fin (Module.finrank ℝ E)) :
+    euclideanNormalFrame g x (EuclideanSpace.single i 1) =
+      normalBasis g x i := by
+  rw [← EuclideanSpace.basisFun_apply]
+  simp only [euclideanNormalFrame, LinearEquiv.coe_toContinuousLinearEquiv']
+  exact Module.Basis.equiv_apply _ _ _ _
+
+theorem euclideanNormalFrame_inner (g : SmoothRiemannianMetric I M) (x : M)
+    (v w : EuclideanSpace ℝ (Fin (Module.finrank ℝ E))) :
+    g.inner x (euclideanNormalFrame g x v) (euclideanNormalFrame g x w) = inner ℝ v w := by
+  let F := EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
+  let L := (euclideanNormalFrame (I := I) g x).toContinuousLinearMap
+  let G : F →L[ℝ] F →L[ℝ] ℝ :=
+    (ContinuousLinearMap.precomp ℝ L).comp ((g.inner x).comp L)
+  have hG : G = (innerSL ℝ : F →L[ℝ] F →L[ℝ] ℝ) := by
+    let b := (EuclideanSpace.basisFun (Fin (Module.finrank ℝ E)) ℝ).toBasis
+    apply LinearMap.toLinearMap_injective
+    apply b.ext
+    intro i
+    apply LinearMap.toLinearMap_injective
+    apply b.ext
+    intro j
+    change g.inner x
+      (euclideanNormalFrame g x (EuclideanSpace.basisFun (Fin (Module.finrank ℝ E)) ℝ i))
+      (euclideanNormalFrame g x (EuclideanSpace.basisFun (Fin (Module.finrank ℝ E)) ℝ j)) =
+      inner ℝ (EuclideanSpace.basisFun (Fin (Module.finrank ℝ E)) ℝ i)
+        (EuclideanSpace.basisFun (Fin (Module.finrank ℝ E)) ℝ j)
+    have hb (k : Fin (Module.finrank ℝ E)) :
+        euclideanNormalFrame g x
+          (EuclideanSpace.basisFun (Fin (Module.finrank ℝ E)) ℝ k) = normalBasis g x k := by
+      simpa only [EuclideanSpace.basisFun_apply] using euclideanNormalFrame_single g x k
+    rw [hb i, hb j, normalBasis_inner]
+    exact ((EuclideanSpace.basisFun (Fin (Module.finrank ℝ E)) ℝ).inner_eq_ite i j).symm
+  exact congrArg (fun B : F →L[ℝ] F →L[ℝ] ℝ => B v w) hG
+
+theorem euclideanNormalFrame_sqrt (g : SmoothRiemannianMetric I M) (x : M)
+    (v : EuclideanSpace ℝ (Fin (Module.finrank ℝ E))) :
+    Real.sqrt (g.inner x (euclideanNormalFrame g x v) (euclideanNormalFrame g x v)) = ‖v‖ := by
+  rw [euclideanNormalFrame_inner, real_inner_self_eq_norm_sq, Real.sqrt_sq (norm_nonneg v)]
+
 end Normed
 
 variable {E : Type uE} [NormedAddCommGroup E] [InnerProductSpace Real E]
