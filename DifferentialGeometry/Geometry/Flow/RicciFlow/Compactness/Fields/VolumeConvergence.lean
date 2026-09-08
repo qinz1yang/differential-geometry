@@ -1,4 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.GramConvergence
+import DifferentialGeometry.Analysis.Integration.Measure.Chart.Convergence
 import DifferentialGeometry.Geometry.Measure.Chart.GramOperator
 import DifferentialGeometry.Geometry.Measure.Chart.Parametrization
 import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph.Basic
@@ -13,6 +14,57 @@ namespace DifferentialGeometry.CheegerGromovCompactness
 open Geometry.Curvature Geometry.Operator Integral.Measure Tensor.Coordinates
 
 universe u uE uH
+
+section Density
+
+variable {E : Type uE} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  [FiniteDimensional ℝ E]
+variable {H : Type uH} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+variable {X : PointedFlowSeq.{u, uE, uH} (I := I)}
+variable {P : PointedRiemannianManifold.{u, uE, uH} (I := I)}
+variable {subseq : ℕ → ℕ}
+
+theorem FlowMetricConvergenceData.tendstoUniformlyOn_chartDensity
+    (Φ : PointedCGHMaps (I := I) X P subseq)
+    (R : let : TopologicalSpace P.M := P.topology
+      let : ChartedSpace H P.M := P.charted
+      let : IsManifold I ∞ P.M := P.smooth
+      SmoothRiemannianMetric I P.M)
+    (bf : BumpFamily (I := I) Φ) (hsrc : SourceIsSigmaCompact Φ) (htgt : TargetIsSigmaCompact Φ)
+    (beta psi : ℝ) (co : FlowMetricConvergenceData (I := I) Φ R bf hsrc htgt beta psi)
+    (alpha : P.M) {K : Set E}
+    (hKchart : let : TopologicalSpace P.M := P.topology
+      let : ChartedSpace H P.M := P.charted
+      K ⊆ (extChartAt I alpha).target) (hKc : IsCompact K)
+    {t : ℝ} (ht : t ∈ Icc beta psi) :
+    let : TopologicalSpace P.M := P.topology
+    let : ChartedSpace H P.M := P.charted
+    let : IsManifold I ∞ P.M := P.smooth
+    TendstoUniformlyOn
+      (fun k z => chartDensity (gSeqExt (I := I) Φ R bf hsrc htgt (co.φ k) t)
+        alpha ((extChartAt I alpha).symm z))
+      (fun z => chartDensity (co.gInf t) alpha ((extChartAt I alpha).symm z)) atTop K := by
+  let : TopologicalSpace P.M := P.topology
+  let : ChartedSpace H P.M := P.charted
+  let : T2Space P.M := P.t2
+  let : IsManifold I ∞ P.M := P.smooth
+  apply Integral.Measure.tendstoUniformlyOn_chartDensity_of_metricDerivNorm
+    (fun k => gSeqExt (I := I) Φ R bf hsrc htgt (co.φ k) t) (co.gInf t) R alpha hKc hKchart
+  have hKbase : IsCompact ((extChartAt I alpha).symm '' K) :=
+    hKc.image_of_continuousOn
+      ((continuousOn_extChartAt_symm (I := I) alpha).mono hKchart)
+  rw [Metric.tendstoUniformlyOn_iff]
+  intro ε hε
+  obtain ⟨k₀, hk₀⟩ := co.convergencePt _ hKbase 0 ε hε
+  filter_upwards [eventually_ge_atTop k₀] with k hk
+  intro z hz
+  have h := hk₀ k hk t ht 0 le_rfl ((extChartAt I alpha).symm z) ⟨z, hz, rfl⟩
+  have hn : 0 ≤ metricDerivNorm 0
+      (gSeqExt (I := I) Φ R bf hsrc htgt (co.φ k) t)
+      (co.gInf t) R ((extChartAt I alpha).symm z) := Real.sqrt_nonneg _
+  simpa only [Real.dist_eq, zero_sub, abs_neg, abs_of_nonneg hn] using h
+
+end Density
 
 section Gram
 

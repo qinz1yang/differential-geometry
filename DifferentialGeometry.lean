@@ -478,6 +478,7 @@ import DifferentialGeometry.Analysis.Integration.LpNorm
 import DifferentialGeometry.Analysis.Integration.Measure.BorelManifold.Defs
 import DifferentialGeometry.Analysis.Integration.Measure.BorelManifold.Derived
 import DifferentialGeometry.Analysis.Integration.Measure.BorelManifold.StandardInstances
+import DifferentialGeometry.Analysis.Integration.Measure.Chart.Convergence
 import DifferentialGeometry.Analysis.Integration.Measure.Chart.Density
 import DifferentialGeometry.Geometry.Measure.Chart.GramOperator
 import DifferentialGeometry.Geometry.Measure.Chart.Parametrization
@@ -4123,6 +4124,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ReducedLe
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ReducedVolume.Basic
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ReducedVolume.Defs
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ReducedVolume.Convergence
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ReducedVolume.IntegralConvergence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Regularized.Basic
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Regularized.Coercivity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Regularized.Defs
