@@ -1,5 +1,6 @@
 import DifferentialGeometry.Geometry.Connection.MetricCompatibility.Connector
 import DifferentialGeometry.Geometry.Metric.OrthonormalFrame.Smooth
+import DifferentialGeometry.Geometry.LieGroup.Orthogonal.LieAlgebra
 
 noncomputable section
 
@@ -102,6 +103,70 @@ theorem coframeConnectionForm_comp_apply (cov : CovariantDerivative I F V)
   congr 3
   exact congrArg (fun L => L U) (mfderiv_comp x
     ((hq w).mdifferentiableAt (by simp)) (hf.mdifferentiableAt (by simp)))
+
+private theorem connector_mfderiv_const_base (cov : CovariantDerivative I F V)
+    {x : M} {Z : P → V x} {p : P}
+    (hZ : ContMDiffAt IP 𝓘(ℝ, V x) 1 Z p) (U : TangentSpace IP p) :
+    cov.connector (⟨x, Z p⟩ : TotalSpace F V)
+      (mfderiv IP (I.prod 𝓘(ℝ, F)) (fun q => (⟨x, Z q⟩ : TotalSpace F V)) p U) =
+      mvfderiv IP Z p U := by
+  let e := trivializationAt F V x
+  have he : x ∈ e.baseSet := mem_baseSet_trivializationAt F V x
+  have hz : ContMDiffAt IP (I.prod 𝓘(ℝ, F)) 1
+      (fun q => (⟨x, Z q⟩ : TotalSpace F V)) p := by
+    apply (e.contMDiffAt_iff (IB := I) (e.mem_source.mpr he)).mpr
+    refine ⟨contMDiffAt_const, ?_⟩
+    have h := (e.continuousLinearMapAt ℝ x).contMDiff.contMDiffAt.comp p hZ
+    exact h.congr_of_eventuallyEq (Filter.Eventually.of_forall
+      (fun q => (e.continuousLinearMapAt_apply_of_mem ℝ he (Z q)).symm))
+  rw [cov.connector_mfderiv_eq e he (hz.mdifferentiableAt (by simp)), mfderiv_const,
+    zero_apply, map_zero, zero_apply, add_zero]
+  have hd := congrArg (fun L => L U)
+    ((mdifferentiableAt_const (c := e.continuousLinearMapAt ℝ x)).mvfderiv_clm_apply
+      (hZ.mdifferentiableAt (by simp)))
+  simp only [mvfderiv_const, ContinuousLinearMap.comp_zero, add_zero,
+    ContinuousLinearMap.comp_apply] at hd
+  rw [hd, e.symmL_continuousLinearMapAt he]
+
+theorem coframeConnectionForm_smul_one_apply (cov : CovariantDerivative I F V)
+    {x : M} (q : V x ≃ₗᵢ[ℝ] F)
+    (U : GroupLieAlgebra 𝓘(ℝ, skewAdjoint.submodule ℝ (F →L[ℝ] F)) (F ≃ₗᵢ[ℝ] F))
+    (w : F) :
+    cov.coframeConnectionForm
+      (IP := 𝓘(ℝ, skewAdjoint.submodule ℝ (F →L[ℝ] F)))
+      (fun g : F ≃ₗᵢ[ℝ] F => g • q) 1 U w =
+        (LinearIsometryEquiv.groupLieAlgebraEquiv U : F →L[ℝ] F) w := by
+  let O := 𝓘(ℝ, skewAdjoint.submodule ℝ (F →L[ℝ] F))
+  have hi : ContMDiff O 𝓘(ℝ, F →L[ℝ] F) 1
+      (fun g : F ≃ₗᵢ[ℝ] F => (g.symm : F →L[ℝ] F)) :=
+    LinearIsometryEquiv.contMDiff_iff.mp contMDiff_id.inv
+  have hZ (v : F) : ContMDiff O 𝓘(ℝ, V x) 1
+      (fun g : F ≃ₗᵢ[ℝ] F => q.symm (g.symm v)) :=
+    q.symm.toContinuousLinearEquiv.toContinuousLinearMap.contMDiff.comp (hi.clm_apply (contMDiff_const (c := v)))
+  let e := trivializationAt F V x
+  have he : x ∈ e.baseSet := mem_baseSet_trivializationAt F V x
+  have hq (v : F) : ContMDiffAt O (I.prod 𝓘(ℝ, F)) 1
+      (fun g : F ≃ₗᵢ[ℝ] F => (⟨x, (g • q).symm v⟩ : TotalSpace F V)) 1 := by
+    apply (e.contMDiffAt_iff (IB := I) (e.mem_source.mpr he)).mpr
+    refine ⟨contMDiffAt_const, ?_⟩
+    have h := (e.continuousLinearMapAt ℝ x).contMDiff.contMDiffAt.comp 1 (hZ v 1)
+    exact h.congr_of_eventuallyEq (Filter.Eventually.of_forall
+      (fun g => (e.continuousLinearMapAt_apply_of_mem ℝ he (q.symm (g.symm v))).symm))
+  rw [cov.coframeConnectionForm_apply _ hq]
+  change -q (cov.connector _
+    (mfderiv O (I.prod 𝓘(ℝ, F))
+      (fun g : F ≃ₗᵢ[ℝ] F => (⟨x, q.symm (g.symm w)⟩ : TotalSpace F V)) 1 U)) = _
+  rw [cov.connector_mfderiv_const_base (hZ w 1) U]
+  have hd := congrArg (fun L => L U)
+    ((mdifferentiableAt_const (c := q.symm.toContinuousLinearEquiv.toContinuousLinearMap)).mvfderiv_clm_apply
+      ((hi.clm_apply (contMDiff_const (c := w)) 1).mdifferentiableAt (by simp)))
+  simp only [mvfderiv_const, ContinuousLinearMap.comp_zero, add_zero,
+    ContinuousLinearMap.comp_apply] at hd
+  change mvfderiv O (fun g : F ≃ₗᵢ[ℝ] F => q.symm (g.symm w)) 1 U =
+    q.symm (mvfderiv O (fun g : F ≃ₗᵢ[ℝ] F => g.symm w) 1 U) at hd
+  rw [hd, LinearIsometryEquiv.apply_symm_apply, LinearIsometryEquiv.mvfderiv_symm_apply_one,
+    neg_neg]
+
 
 variable [IsContMDiffRiemannianBundle I 1 F V]
 
@@ -217,47 +282,55 @@ end Smoothness
 
 section FrameBundle
 
-variable [IsManifold I 1 M]
+variable {n : ℕ∞ω} [ContMDiffVectorBundle n F V I]
+  [IsContMDiffRiemannianBundle I n F V] [IsManifold I n M]
 
-def orthonormalFrameConnectionForm (cov : CovariantDerivative I F V)
+omit [ContMDiffVectorBundle 1 F V I] [IsContMDiffRiemannianBundle I 1 F V] in
+def orthonormalFrameConnectionForm (cov : CovariantDerivative I F V) (hn : 1 ≤ n)
     (p : TotalSpace (F ≃ₗᵢ[ℝ] F) (fun x => V x ≃ₗᵢ[ℝ] F)) :
     let : IsContinuousRiemannianBundle F V :=
-      IsContMDiffRiemannianBundle.isContinuousRiemannianBundle (I := I) (n := 1)
+      IsContMDiffRiemannianBundle.isContinuousRiemannianBundle (I := I) (n := n)
     let := (FiberBundle.orthonormalFramePrebundle (F := F) V).totalSpaceTopology
-    let := FiberBundle.orthonormalFrameChartedSpace (F := F) V I 1
+    let := FiberBundle.orthonormalFrameChartedSpace (F := F) V I n
     TangentSpace (I.prod 𝓘(ℝ, skewAdjoint.submodule ℝ (F →L[ℝ] F))) p →L[ℝ]
       F →L[ℝ] F := by
   let : IsContinuousRiemannianBundle F V :=
-    IsContMDiffRiemannianBundle.isContinuousRiemannianBundle (I := I) (n := 1)
+    IsContMDiffRiemannianBundle.isContinuousRiemannianBundle (I := I) (n := n)
   let := (FiberBundle.orthonormalFramePrebundle (F := F) V).totalSpaceTopology
-  let := FiberBundle.orthonormalFrameChartedSpace (F := F) V I 1
+  let := FiberBundle.orthonormalFrameChartedSpace (F := F) V I n
+  let : ContMDiffVectorBundle 1 F V I := ContMDiffVectorBundle.of_le hn
   exact cov.coframeConnectionForm (fun z => z.snd) p
 
+omit [ContMDiffVectorBundle 1 F V I] [IsContMDiffRiemannianBundle I 1 F V] in
 private theorem contMDiff_orthonormalFrame_column (w : F) :
     let : IsContinuousRiemannianBundle F V :=
-      IsContMDiffRiemannianBundle.isContinuousRiemannianBundle (I := I) (n := 1)
+      IsContMDiffRiemannianBundle.isContinuousRiemannianBundle (I := I) (n := n)
     let := (FiberBundle.orthonormalFramePrebundle (F := F) V).totalSpaceTopology
-    let := FiberBundle.orthonormalFrameChartedSpace (F := F) V I 1
+    let := FiberBundle.orthonormalFrameChartedSpace (F := F) V I n
     ContMDiff (I.prod 𝓘(ℝ, skewAdjoint.submodule ℝ (F →L[ℝ] F)))
-      (I.prod 𝓘(ℝ, F)) 1
+      (I.prod 𝓘(ℝ, F)) n
       (fun p : TotalSpace (F ≃ₗᵢ[ℝ] F) (fun x => V x ≃ₗᵢ[ℝ] F) =>
         (⟨p.proj, p.snd.symm w⟩ : TotalSpace F V)) := by
   let : IsContinuousRiemannianBundle F V :=
-    IsContMDiffRiemannianBundle.isContinuousRiemannianBundle (I := I) (n := 1)
+    IsContMDiffRiemannianBundle.isContinuousRiemannianBundle (I := I) (n := n)
   let := (FiberBundle.orthonormalFramePrebundle (F := F) V).totalSpaceTopology
-  let := FiberBundle.orthonormalFrameChartedSpace (F := F) V I 1
-  exact (FiberBundle.contMDiff_orthonormalFrame_symm_apply (F := F) V I 1).comp
+  let := FiberBundle.orthonormalFrameChartedSpace (F := F) V I n
+  exact (FiberBundle.contMDiff_orthonormalFrame_symm_apply (F := F) V I n).comp
     (contMDiff_id.prodMk (contMDiff_const (c := w)))
 
 theorem IsMetricCompatible.orthonormalFrameConnectionForm_mem_skewAdjoint
-    {cov : CovariantDerivative I F V} (hcov : cov.IsMetricCompatible)
+    {cov : CovariantDerivative I F V} (hcov : cov.IsMetricCompatible) (hn : 1 ≤ n)
     (p : TotalSpace (F ≃ₗᵢ[ℝ] F) (fun x => V x ≃ₗᵢ[ℝ] F)) :
+    letI : ContMDiffVectorBundle 1 F V I := ContMDiffVectorBundle.of_le hn
+    letI : IsContMDiffRiemannianBundle I 1 F V := IsContMDiffRiemannianBundle.of_le hn
     let : IsContinuousRiemannianBundle F V :=
-      IsContMDiffRiemannianBundle.isContinuousRiemannianBundle (I := I) (n := 1)
+      IsContMDiffRiemannianBundle.isContinuousRiemannianBundle (I := I) (n := n)
     let := (FiberBundle.orthonormalFramePrebundle (F := F) V).totalSpaceTopology
-    let := FiberBundle.orthonormalFrameChartedSpace (F := F) V I 1
+    let := FiberBundle.orthonormalFrameChartedSpace (F := F) V I n
     ∀ U : TangentSpace (I.prod 𝓘(ℝ, skewAdjoint.submodule ℝ (F →L[ℝ] F))) p,
-      cov.orthonormalFrameConnectionForm p U ∈ skewAdjoint.submodule ℝ (F →L[ℝ] F) := by
+      cov.orthonormalFrameConnectionForm hn p U ∈ skewAdjoint.submodule ℝ (F →L[ℝ] F) := by
+  let : ContMDiffVectorBundle 1 F V I := ContMDiffVectorBundle.of_le hn
+  let : IsContMDiffRiemannianBundle I 1 F V := IsContMDiffRiemannianBundle.of_le hn
   intro hR htop hchart U
   change cov.coframeConnectionForm (IP := I.prod 𝓘(ℝ, skewAdjoint.submodule ℝ (F →L[ℝ] F)))
     (fun z : TotalSpace (F ≃ₗᵢ[ℝ] F) (fun x => V x ≃ₗᵢ[ℝ] F) => z.snd) p U ∈
@@ -265,114 +338,138 @@ theorem IsMetricCompatible.orthonormalFrameConnectionForm_mem_skewAdjoint
   exact hcov.coframeConnectionForm_mem_skewAdjoint
     (IP := I.prod 𝓘(ℝ, skewAdjoint.submodule ℝ (F →L[ℝ] F)))
     (fun z : TotalSpace (F ≃ₗᵢ[ℝ] F) (fun x => V x ≃ₗᵢ[ℝ] F) => z.snd)
-    (fun w => contMDiff_orthonormalFrame_column (I := I) w p) U
+    (fun w => (contMDiff_orthonormalFrame_column (I := I) (n := n) w p).of_le hn) U
 
+omit [ContMDiffVectorBundle 1 F V I] [IsContMDiffRiemannianBundle I 1 F V] in
 theorem orthonormalFrameConnectionForm_apply (cov : CovariantDerivative I F V)
+    (hn : 1 ≤ n)
     (p : TotalSpace (F ≃ₗᵢ[ℝ] F) (fun x => V x ≃ₗᵢ[ℝ] F)) :
+    letI : ContMDiffVectorBundle 1 F V I := ContMDiffVectorBundle.of_le hn
+    letI : IsContMDiffRiemannianBundle I 1 F V := IsContMDiffRiemannianBundle.of_le hn
     let : IsContinuousRiemannianBundle F V :=
-      IsContMDiffRiemannianBundle.isContinuousRiemannianBundle (I := I) (n := 1)
+      IsContMDiffRiemannianBundle.isContinuousRiemannianBundle (I := I) (n := n)
     let := (FiberBundle.orthonormalFramePrebundle (F := F) V).totalSpaceTopology
-    let := FiberBundle.orthonormalFrameChartedSpace (F := F) V I 1
+    let := FiberBundle.orthonormalFrameChartedSpace (F := F) V I n
     ∀ (U : TangentSpace (I.prod 𝓘(ℝ, skewAdjoint.submodule ℝ (F →L[ℝ] F))) p) (w : F),
-      cov.orthonormalFrameConnectionForm p U w =
+      cov.orthonormalFrameConnectionForm hn p U w =
         -p.snd (cov.connector (⟨p.proj, p.snd.symm w⟩ : TotalSpace F V)
           (mfderiv (I.prod 𝓘(ℝ, skewAdjoint.submodule ℝ (F →L[ℝ] F)))
             (I.prod 𝓘(ℝ, F))
             (fun z : TotalSpace (F ≃ₗᵢ[ℝ] F) (fun x => V x ≃ₗᵢ[ℝ] F) =>
               (⟨z.proj, z.snd.symm w⟩ : TotalSpace F V)) p U)) := by
+  let : ContMDiffVectorBundle 1 F V I := ContMDiffVectorBundle.of_le hn
+  let : IsContMDiffRiemannianBundle I 1 F V := IsContMDiffRiemannianBundle.of_le hn
   intro hR htop hchart U w
   exact cov.coframeConnectionForm_apply
     (IP := I.prod 𝓘(ℝ, skewAdjoint.submodule ℝ (F →L[ℝ] F)))
     (fun z : TotalSpace (F ≃ₗᵢ[ℝ] F) (fun x => V x ≃ₗᵢ[ℝ] F) => z.snd)
-    (fun v => contMDiff_orthonormalFrame_column (I := I) v p) U w
+    (fun v => (contMDiff_orthonormalFrame_column (I := I) (n := n) v p).of_le hn) U w
 
+omit [ContMDiffVectorBundle 1 F V I] [IsContMDiffRiemannianBundle I 1 F V] in
 theorem orthonormalFrameConnectionForm_comp_apply (cov : CovariantDerivative I F V)
+    (hn : 1 ≤ n)
     {b : P → M} (q : ∀ z, V (b z) ≃ₗᵢ[ℝ] F) {p : P}
     (hq : ∀ w : F, ContMDiffAt IP (I.prod 𝓘(ℝ, F)) 1
       (fun z => (⟨b z, (q z).symm w⟩ : TotalSpace F V)) p) :
+    letI : ContMDiffVectorBundle 1 F V I := ContMDiffVectorBundle.of_le hn
+    letI : IsContMDiffRiemannianBundle I 1 F V := IsContMDiffRiemannianBundle.of_le hn
     letI : IsContinuousRiemannianBundle F V :=
-      IsContMDiffRiemannianBundle.isContinuousRiemannianBundle (I := I) (n := 1)
+      IsContMDiffRiemannianBundle.isContinuousRiemannianBundle (I := I) (n := n)
     letI := (FiberBundle.orthonormalFramePrebundle (F := F) V).totalSpaceTopology
-    letI := FiberBundle.orthonormalFrameChartedSpace (F := F) V I 1
+    letI := FiberBundle.orthonormalFrameChartedSpace (F := F) V I n
     ∀ (U : TangentSpace IP p) (w : F),
-      cov.orthonormalFrameConnectionForm (⟨b p, q p⟩ : TotalSpace (F ≃ₗᵢ[ℝ] F)
+      cov.orthonormalFrameConnectionForm hn (⟨b p, q p⟩ : TotalSpace (F ≃ₗᵢ[ℝ] F)
         (fun x => V x ≃ₗᵢ[ℝ] F))
         (mfderiv IP (I.prod 𝓘(ℝ, skewAdjoint.submodule ℝ (F →L[ℝ] F)))
           (fun z => (⟨b z, q z⟩ : TotalSpace (F ≃ₗᵢ[ℝ] F)
             (fun x => V x ≃ₗᵢ[ℝ] F))) p U) w =
         cov.coframeConnectionForm q p U w := by
+  let : ContMDiffVectorBundle 1 F V I := ContMDiffVectorBundle.of_le hn
+  let : IsContMDiffRiemannianBundle I 1 F V := IsContMDiffRiemannianBundle.of_le hn
   let : IsContinuousRiemannianBundle F V :=
-    IsContMDiffRiemannianBundle.isContinuousRiemannianBundle (I := I) (n := 1)
+    IsContMDiffRiemannianBundle.isContinuousRiemannianBundle (I := I) (n := n)
   let := (FiberBundle.orthonormalFramePrebundle (F := F) V).totalSpaceTopology
-  let := FiberBundle.orthonormalFrameChartedSpace (F := F) V I 1
+  let := FiberBundle.orthonormalFrameChartedSpace (F := F) V I n
   intro U w
-  have hQ := FiberBundle.contMDiffAt_orthonormalFrame_of_symm (F := F) V I 1 hq
+  have hQ := FiberBundle.contMDiffAt_orthonormalFrame_of_symm_of_le (F := F) V I n hn hq
   exact (cov.coframeConnectionForm_comp_apply
     (IP := I.prod 𝓘(ℝ, skewAdjoint.submodule ℝ (F →L[ℝ] F)))
     (fun z : TotalSpace (F ≃ₗᵢ[ℝ] F) (fun x => V x ≃ₗᵢ[ℝ] F) => z.snd)
     (IQ := IP) (f := fun z => (⟨b z, q z⟩ : TotalSpace (F ≃ₗᵢ[ℝ] F)
       (fun x => V x ≃ₗᵢ[ℝ] F))) (x := p)
-    (fun v => contMDiff_orthonormalFrame_column (I := I) v
-      (⟨b p, q p⟩ : TotalSpace (F ≃ₗᵢ[ℝ] F) (fun x => V x ≃ₗᵢ[ℝ] F))) hQ U w).symm
+    (fun v => (contMDiff_orthonormalFrame_column (I := I) (n := n) v
+      (⟨b p, q p⟩ : TotalSpace (F ≃ₗᵢ[ℝ] F) (fun x => V x ≃ₗᵢ[ℝ] F))).of_le hn) hQ U w).symm
 
+omit [ContMDiffVectorBundle 1 F V I] [IsContMDiffRiemannianBundle I 1 F V] in
 theorem orthonormalFrameConnectionForm_smul_apply (cov : CovariantDerivative I F V)
+    (hn : 1 ≤ n)
     (g : F ≃ₗᵢ[ℝ] F)
     (p : TotalSpace (F ≃ₗᵢ[ℝ] F) (fun x => V x ≃ₗᵢ[ℝ] F)) :
+    letI : ContMDiffVectorBundle 1 F V I := ContMDiffVectorBundle.of_le hn
+    letI : IsContMDiffRiemannianBundle I 1 F V := IsContMDiffRiemannianBundle.of_le hn
     letI : IsContinuousRiemannianBundle F V :=
-      IsContMDiffRiemannianBundle.isContinuousRiemannianBundle (I := I) (n := 1)
+      IsContMDiffRiemannianBundle.isContinuousRiemannianBundle (I := I) (n := n)
     letI := (FiberBundle.orthonormalFramePrebundle (F := F) V).totalSpaceTopology
-    letI := FiberBundle.orthonormalFrameChartedSpace (F := F) V I 1
+    letI := FiberBundle.orthonormalFrameChartedSpace (F := F) V I n
     ∀ (U : TangentSpace (I.prod 𝓘(ℝ, skewAdjoint.submodule ℝ (F →L[ℝ] F))) p) (w : F),
-      cov.orthonormalFrameConnectionForm
+      cov.orthonormalFrameConnectionForm hn
         (⟨p.proj, g • p.snd⟩ : TotalSpace (F ≃ₗᵢ[ℝ] F) (fun x => V x ≃ₗᵢ[ℝ] F))
         (mfderiv (I.prod 𝓘(ℝ, skewAdjoint.submodule ℝ (F →L[ℝ] F)))
           (I.prod 𝓘(ℝ, skewAdjoint.submodule ℝ (F →L[ℝ] F)))
           (fun z : TotalSpace (F ≃ₗᵢ[ℝ] F) (fun x => V x ≃ₗᵢ[ℝ] F) =>
             (⟨z.proj, g • z.snd⟩ : TotalSpace (F ≃ₗᵢ[ℝ] F)
               (fun x => V x ≃ₗᵢ[ℝ] F))) p U) w =
-        g (cov.orthonormalFrameConnectionForm p U (g.symm w)) := by
+        g (cov.orthonormalFrameConnectionForm hn p U (g.symm w)) := by
+  let : ContMDiffVectorBundle 1 F V I := ContMDiffVectorBundle.of_le hn
+  let : IsContMDiffRiemannianBundle I 1 F V := IsContMDiffRiemannianBundle.of_le hn
   let : IsContinuousRiemannianBundle F V :=
-    IsContMDiffRiemannianBundle.isContinuousRiemannianBundle (I := I) (n := 1)
+    IsContMDiffRiemannianBundle.isContinuousRiemannianBundle (I := I) (n := n)
   let := (FiberBundle.orthonormalFramePrebundle (F := F) V).totalSpaceTopology
-  let := FiberBundle.orthonormalFrameChartedSpace (F := F) V I 1
+  let := FiberBundle.orthonormalFrameChartedSpace (F := F) V I n
   intro U w
   have hq (v : F) : ContMDiffAt
-      (I.prod 𝓘(ℝ, skewAdjoint.submodule ℝ (F →L[ℝ] F))) (I.prod 𝓘(ℝ, F)) 1
+      (I.prod 𝓘(ℝ, skewAdjoint.submodule ℝ (F →L[ℝ] F))) (I.prod 𝓘(ℝ, F)) n
       (fun z : TotalSpace (F ≃ₗᵢ[ℝ] F) (fun x => V x ≃ₗᵢ[ℝ] F) =>
         (⟨z.proj, (g • z.snd).symm v⟩ : TotalSpace F V)) p :=
     contMDiff_orthonormalFrame_column (I := I) (g.symm v) p
-  rw [cov.orthonormalFrameConnectionForm_comp_apply _ hq]
+  rw [cov.orthonormalFrameConnectionForm_comp_apply hn _ (fun v => (hq v).of_le hn)]
   exact cov.coframeConnectionForm_smul_apply
     (IP := I.prod 𝓘(ℝ, skewAdjoint.submodule ℝ (F →L[ℝ] F)))
     (fun z : TotalSpace (F ≃ₗᵢ[ℝ] F) (fun x => V x ≃ₗᵢ[ℝ] F) => z.snd)
-    (fun v => contMDiff_orthonormalFrame_column (I := I) v p) g U w
+    (fun v => (contMDiff_orthonormalFrame_column (I := I) (n := n) v p).of_le hn) g U w
 
+omit [ContMDiffVectorBundle 1 F V I] [IsContMDiffRiemannianBundle I 1 F V] in
 theorem orthonormalFrameConnectionForm_curveWithin_apply (cov : CovariantDerivative I F V)
+    (hn : 1 ≤ n)
     {γ : ℝ → M} (q : ∀ t, V (γ t) ≃ₗᵢ[ℝ] F) {J : Set ℝ} {t : ℝ}
     (hq : ∀ w : F, ContMDiffWithinAt 𝓘(ℝ, ℝ) (I.prod 𝓘(ℝ, F)) 1
       (fun s => (⟨γ s, (q s).symm w⟩ : TotalSpace F V)) J t) :
+    letI : ContMDiffVectorBundle 1 F V I := ContMDiffVectorBundle.of_le hn
+    letI : IsContMDiffRiemannianBundle I 1 F V := IsContMDiffRiemannianBundle.of_le hn
     letI : IsContinuousRiemannianBundle F V :=
-      IsContMDiffRiemannianBundle.isContinuousRiemannianBundle (I := I) (n := 1)
+      IsContMDiffRiemannianBundle.isContinuousRiemannianBundle (I := I) (n := n)
     letI := (FiberBundle.orthonormalFramePrebundle (F := F) V).totalSpaceTopology
-    letI := FiberBundle.orthonormalFrameChartedSpace (F := F) V I 1
+    letI := FiberBundle.orthonormalFrameChartedSpace (F := F) V I n
     ∀ w : F,
-      cov.orthonormalFrameConnectionForm
+      cov.orthonormalFrameConnectionForm hn
         (⟨γ t, q t⟩ : TotalSpace (F ≃ₗᵢ[ℝ] F) (fun x => V x ≃ₗᵢ[ℝ] F))
         (mfderivWithin 𝓘(ℝ, ℝ) (I.prod 𝓘(ℝ, skewAdjoint.submodule ℝ (F →L[ℝ] F)))
           (fun s => (⟨γ s, q s⟩ : TotalSpace (F ≃ₗᵢ[ℝ] F)
             (fun x => V x ≃ₗᵢ[ℝ] F))) J t ((NormedSpace.fromTangentSpace t).symm 1)) w =
         -q t (cov.derivAlongWithin γ (fun s => (q s).symm w) J t) := by
+  let : ContMDiffVectorBundle 1 F V I := ContMDiffVectorBundle.of_le hn
+  let : IsContMDiffRiemannianBundle I 1 F V := IsContMDiffRiemannianBundle.of_le hn
   let : IsContinuousRiemannianBundle F V :=
-    IsContMDiffRiemannianBundle.isContinuousRiemannianBundle (I := I) (n := 1)
+    IsContMDiffRiemannianBundle.isContinuousRiemannianBundle (I := I) (n := n)
   let := (FiberBundle.orthonormalFramePrebundle (F := F) V).totalSpaceTopology
-  let := FiberBundle.orthonormalFrameChartedSpace (F := F) V I 1
+  let := FiberBundle.orthonormalFrameChartedSpace (F := F) V I n
   intro w
   let Q := fun s => (⟨γ s, q s⟩ : TotalSpace (F ≃ₗᵢ[ℝ] F) (fun x => V x ≃ₗᵢ[ℝ] F))
-  have hQ := (FiberBundle.contMDiffWithinAt_orthonormalFrame_of_symm
-    (F := F) V I 1 hq).mdifferentiableWithinAt (by simp)
-  rw [cov.orthonormalFrameConnectionForm_apply]
+  have hQ := (FiberBundle.contMDiffWithinAt_orthonormalFrame_of_symm_of_le
+    (F := F) V I n hn hq).mdifferentiableWithinAt (by simp)
+  rw [cov.orthonormalFrameConnectionForm_apply hn]
   by_cases hJ : UniqueDiffWithinAt ℝ J t
-  · have hc := (contMDiff_orthonormalFrame_column (I := I) w (Q t)).mdifferentiableAt (by simp)
+  · have hc := ((contMDiff_orthonormalFrame_column (I := I) (n := n) w (Q t)).of_le hn).mdifferentiableAt (by simp)
     have hd := congrArg (fun L => L ((NormedSpace.fromTangentSpace t).symm 1))
       (mfderiv_comp_mfderivWithin t hc hQ hJ.uniqueMDiffWithinAt)
     change mfderivWithin 𝓘(ℝ, ℝ) (I.prod 𝓘(ℝ, F))
@@ -404,6 +501,127 @@ theorem orthonormalFrameConnectionForm_curveWithin_apply (cov : CovariantDerivat
       cov.derivAlongWithin_eq_zero_of_not_uniqueDiffWithinAt γ _ hJ]
 
 
+omit [ContMDiffVectorBundle 1 F V I] [IsContMDiffRiemannianBundle I 1 F V] in
+theorem orthonormalFrameConnectionForm_fundamental_apply (cov : CovariantDerivative I F V) (hn : 1 ≤ n)
+    (p : TotalSpace (F ≃ₗᵢ[ℝ] F) (fun x => V x ≃ₗᵢ[ℝ] F))
+    (U : GroupLieAlgebra 𝓘(ℝ, skewAdjoint.submodule ℝ (F →L[ℝ] F)) (F ≃ₗᵢ[ℝ] F)) :
+    letI : ContMDiffVectorBundle 1 F V I := ContMDiffVectorBundle.of_le hn
+    letI : IsContinuousRiemannianBundle F V :=
+      IsContMDiffRiemannianBundle.isContinuousRiemannianBundle (I := I) (n := n)
+    letI := (FiberBundle.orthonormalFramePrebundle (F := F) V).totalSpaceTopology
+    letI := FiberBundle.orthonormalFrameChartedSpace (F := F) V I n
+    ∀ w : F,
+      cov.orthonormalFrameConnectionForm hn p
+        (mfderiv 𝓘(ℝ, skewAdjoint.submodule ℝ (F →L[ℝ] F))
+          (I.prod 𝓘(ℝ, skewAdjoint.submodule ℝ (F →L[ℝ] F)))
+          (fun g : F ≃ₗᵢ[ℝ] F => (⟨p.proj, g • p.snd⟩ : TotalSpace (F ≃ₗᵢ[ℝ] F)
+            (fun x => V x ≃ₗᵢ[ℝ] F))) 1 U) w =
+        (LinearIsometryEquiv.groupLieAlgebraEquiv U : F →L[ℝ] F) w := by
+  let : ContMDiffVectorBundle 1 F V I := ContMDiffVectorBundle.of_le hn
+  let : IsContinuousRiemannianBundle F V :=
+    IsContMDiffRiemannianBundle.isContinuousRiemannianBundle (I := I) (n := n)
+  let := (FiberBundle.orthonormalFramePrebundle (F := F) V).totalSpaceTopology
+  let := FiberBundle.orthonormalFrameChartedSpace (F := F) V I n
+  intro w
+  let O := 𝓘(ℝ, skewAdjoint.submodule ℝ (F →L[ℝ] F))
+  have hi : ContMDiff O 𝓘(ℝ, F →L[ℝ] F) n
+      (fun g : F ≃ₗᵢ[ℝ] F => (g.symm : F →L[ℝ] F)) :=
+    LinearIsometryEquiv.contMDiff_iff.mp contMDiff_id.inv
+  have hZ (v : F) : ContMDiff O 𝓘(ℝ, V p.proj) n
+      (fun g : F ≃ₗᵢ[ℝ] F => p.snd.symm (g.symm v)) :=
+    p.snd.symm.toContinuousLinearEquiv.toContinuousLinearMap.contMDiff.comp
+      (hi.clm_apply (contMDiff_const (c := v)))
+  let e := trivializationAt F V p.proj
+  have he : p.proj ∈ e.baseSet := mem_baseSet_trivializationAt F V p.proj
+  have hq (v : F) : ContMDiffAt O (I.prod 𝓘(ℝ, F)) n
+      (fun g : F ≃ₗᵢ[ℝ] F => (⟨p.proj, (g • p.snd).symm v⟩ : TotalSpace F V)) 1 := by
+    apply (e.contMDiffAt_iff (IB := I) (e.mem_source.mpr he)).mpr
+    refine ⟨contMDiffAt_const, ?_⟩
+    have h := (e.continuousLinearMapAt ℝ p.proj).contMDiff.contMDiffAt.comp 1 (hZ v 1)
+    exact h.congr_of_eventuallyEq (Filter.Eventually.of_forall
+      (fun g => (e.continuousLinearMapAt_apply_of_mem ℝ he (p.snd.symm (g.symm v))).symm))
+  have h := cov.orthonormalFrameConnectionForm_comp_apply hn
+    (IP := O) (fun g : F ≃ₗᵢ[ℝ] F => g • p.snd) (p := 1) (fun v => (hq v).of_le hn) U w
+  exact h.trans (cov.coframeConnectionForm_smul_one_apply p.snd U w)
+
+omit [ContMDiffVectorBundle 1 F V I] [IsContMDiffRiemannianBundle I 1 F V] in
+theorem orthonormalFrameConnectionForm_atlasDiffeomorph_apply
+    (cov : CovariantDerivative I F V) (hn : 1 ≤ n)
+    (k : ℕ∞ω) [ContMDiffVectorBundle k F V I]
+    [IsContMDiffRiemannianBundle I k F V] [IsManifold I k M] (hk : 1 ≤ k)
+    (p : TotalSpace (F ≃ₗᵢ[ℝ] F) (fun x => V x ≃ₗᵢ[ℝ] F)) :
+    letI : IsContinuousRiemannianBundle F V :=
+      IsContMDiffRiemannianBundle.isContinuousRiemannianBundle (I := I) (n := n)
+    letI := (FiberBundle.orthonormalFramePrebundle (F := F) V).totalSpaceTopology
+    let cn := FiberBundle.orthonormalFrameChartedSpace (F := F) V I n
+    let ck := FiberBundle.orthonormalFrameChartedSpace (F := F) V I k
+    ∀ (U : @TangentSpace ℝ _ _ _ _ _ _ (I.prod 𝓘(ℝ, skewAdjoint.submodule ℝ (F →L[ℝ] F))) _ _ cn p)
+      (w : F),
+      cov.orthonormalFrameConnectionForm hk p
+        (@mfderiv ℝ _ _ _ _ _ _
+          (I.prod 𝓘(ℝ, skewAdjoint.submodule ℝ (F →L[ℝ] F))) _ _ cn _ _ _ _ _
+          (I.prod 𝓘(ℝ, skewAdjoint.submodule ℝ (F →L[ℝ] F))) _ _ ck
+          (FiberBundle.orthonormalFrameAtlasDiffeomorph V I n k hn hk) p U) w =
+        cov.orthonormalFrameConnectionForm hn p U w := by
+  let : ContMDiffVectorBundle 1 F V I := ContMDiffVectorBundle.of_le hn
+  let : IsContMDiffRiemannianBundle I 1 F V := IsContMDiffRiemannianBundle.of_le hn
+  let : IsContinuousRiemannianBundle F V :=
+    IsContMDiffRiemannianBundle.isContinuousRiemannianBundle (I := I) (n := n)
+  let := (FiberBundle.orthonormalFramePrebundle (F := F) V).totalSpaceTopology
+  let cn := FiberBundle.orthonormalFrameChartedSpace (F := F) V I n
+  let ck := FiberBundle.orthonormalFrameChartedSpace (F := F) V I k
+  dsimp only
+  intro U w
+  let := cn
+  have hq (v : F) : ContMDiffAt
+      (I.prod 𝓘(ℝ, skewAdjoint.submodule ℝ (F →L[ℝ] F))) (I.prod 𝓘(ℝ, F)) 1
+      (fun z : TotalSpace (F ≃ₗᵢ[ℝ] F) (fun x => V x ≃ₗᵢ[ℝ] F) =>
+        (⟨z.proj, z.snd.symm v⟩ : TotalSpace F V)) p :=
+    (contMDiff_orthonormalFrame_column (I := I) (n := n) v p).of_le hn
+  exact cov.orthonormalFrameConnectionForm_comp_apply
+    (IP := I.prod 𝓘(ℝ, skewAdjoint.submodule ℝ (F →L[ℝ] F))) hk
+    (fun z : TotalSpace (F ≃ₗᵢ[ℝ] F) (fun x => V x ≃ₗᵢ[ℝ] F) => z.snd) hq U w
+
 end FrameBundle
+
+end CovariantDerivative
+
+namespace CovariantDerivative
+
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+  {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+  {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M] [T2Space M]
+  {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [FiniteDimensional ℝ F]
+  {V : M → Type*} [TopologicalSpace (TotalSpace F V)]
+  [∀ x, NormedAddCommGroup (V x)] [∀ x, InnerProductSpace ℝ (V x)]
+  [FiberBundle F V] [VectorBundle ℝ F V] [IsContMDiffRiemannianBundle I ∞ F V]
+  [ContMDiffVectorBundle ∞ F V I]
+
+theorem contMDiff_orthonormalFrameConnectionForm (cov : CovariantDerivative I F V)
+    (hcov : ContMDiffCovariantDerivative cov ∞) :
+    letI : IsContinuousRiemannianBundle F V :=
+      IsContMDiffRiemannianBundle.isContinuousRiemannianBundle (I := I) (n := ∞)
+    letI := (FiberBundle.orthonormalFramePrebundle (F := F) V).totalSpaceTopology
+    letI := FiberBundle.orthonormalFrameChartedSpace (F := F) V I ∞
+    letI := FiberBundle.orthonormalFrame_isManifold (F := F) V I ∞
+    letI : ∀ p : TotalSpace (F ≃ₗᵢ[ℝ] F) (fun x => V x ≃ₗᵢ[ℝ] F),
+        TopologicalSpace (TangentSpace (I.prod 𝓘(ℝ, skewAdjoint.submodule ℝ (F →L[ℝ] F))) p) :=
+      fun _ => inferInstance
+    ContMDiff (I.prod 𝓘(ℝ, skewAdjoint.submodule ℝ (F →L[ℝ] F))).tangent
+      𝓘(ℝ, F →L[ℝ] F) ∞
+      (fun z : TangentBundle (I.prod 𝓘(ℝ, skewAdjoint.submodule ℝ (F →L[ℝ] F)))
+        (TotalSpace (F ≃ₗᵢ[ℝ] F) (fun x => V x ≃ₗᵢ[ℝ] F)) =>
+        cov.orthonormalFrameConnectionForm (n := ∞) (by simp) z.proj z.snd) := by
+  let : IsContinuousRiemannianBundle F V :=
+    IsContMDiffRiemannianBundle.isContinuousRiemannianBundle (I := I) (n := ∞)
+  let := (FiberBundle.orthonormalFramePrebundle (F := F) V).totalSpaceTopology
+  let := FiberBundle.orthonormalFrameChartedSpace (F := F) V I ∞
+  let := FiberBundle.orthonormalFrame_isManifold (F := F) V I ∞
+  apply cov.contMDiff_coframeConnectionForm
+    (IP := I.prod 𝓘(ℝ, skewAdjoint.submodule ℝ (F →L[ℝ] F))) hcov
+    (fun p : TotalSpace (F ≃ₗᵢ[ℝ] F) (fun x => V x ≃ₗᵢ[ℝ] F) => p.snd)
+  intro w
+  exact (FiberBundle.contMDiff_orthonormalFrame_symm_apply (F := F) V I ∞).comp
+    (contMDiff_id.prodMk (contMDiff_const (c := w)))
 
 end CovariantDerivative

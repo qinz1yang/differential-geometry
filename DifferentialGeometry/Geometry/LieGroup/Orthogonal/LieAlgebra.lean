@@ -1,5 +1,6 @@
 import DifferentialGeometry.Geometry.LieGroup.Orthogonal
 import DifferentialGeometry.Bundle.TangentSpace
+import DifferentialGeometry.Bundle.PartialMfderiv.Composition
 import Mathlib.Geometry.Manifold.GroupLieAlgebra
 
 noncomputable section
@@ -64,5 +65,28 @@ theorem coe_groupLieAlgebraEquiv
         (fun p : E ≃ₗᵢ[ℝ] E => (p : E →L[ℝ] E)) 1 v := by
   rw [mvfderiv_toContinuousLinearMap_one]
   rfl
+
+theorem mvfderiv_symm_apply_one
+    (U : GroupLieAlgebra 𝓘(ℝ, skewAdjoint.submodule ℝ (E →L[ℝ] E)) (E ≃ₗᵢ[ℝ] E))
+    (w : E) :
+    mvfderiv 𝓘(ℝ, skewAdjoint.submodule ℝ (E →L[ℝ] E))
+      (fun g : E ≃ₗᵢ[ℝ] E => g.symm w) 1 U = -(groupLieAlgebraEquiv U : E →L[ℝ] E) w := by
+  have hA := (contMDiff_toContinuousLinearMap (E := E) (n := 1) 1).mdifferentiableAt (by simp)
+  have hi : ContMDiff 𝓘(ℝ, skewAdjoint.submodule ℝ (E →L[ℝ] E)) 𝓘(ℝ, E →L[ℝ] E) 1
+      (fun g : E ≃ₗᵢ[ℝ] E => (g.symm : E →L[ℝ] E)) :=
+    contMDiff_iff.mp contMDiff_id.inv
+  have hv := (hi.clm_apply (contMDiff_const (c := w)) 1).mdifferentiableAt (by simp)
+  have hd := congrArg (fun L => L U) (hA.mvfderiv_clm_apply hv)
+  simp only [ContinuousLinearEquiv.coe_coe, LinearIsometryEquiv.coe_toContinuousLinearEquiv,
+    LinearIsometryEquiv.apply_symm_apply, mvfderiv_const, zero_apply] at hd
+  have heq := coe_groupLieAlgebraEquiv (E := E) U
+  have h := congrArg (fun L : E →L[ℝ] E => L w) heq
+  change (groupLieAlgebraEquiv U : E →L[ℝ] E) w = _ at h
+  change 0 = mvfderiv 𝓘(ℝ, skewAdjoint.submodule ℝ (E →L[ℝ] E))
+      (fun g : E ≃ₗᵢ[ℝ] E => g.symm w) 1 U +
+    mvfderiv 𝓘(ℝ, skewAdjoint.submodule ℝ (E →L[ℝ] E))
+      (fun g : E ≃ₗᵢ[ℝ] E => (g : E →L[ℝ] E)) 1 U w at hd
+  rw [← h] at hd
+  exact eq_neg_of_add_eq_zero_left hd.symm
 
 end LinearIsometryEquiv

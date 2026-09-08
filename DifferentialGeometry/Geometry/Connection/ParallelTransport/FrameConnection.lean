@@ -38,7 +38,7 @@ theorem IsMetricCompatible.exists_horizontal_orthonormalFrame_lift_on_interval
        ContMDiffOn 𝓘(ℝ, ℝ) (I.prod 𝓘(ℝ, skewAdjoint.submodule ℝ (F →L[ℝ] F))) 1
          (fun t => (⟨γ t, p t⟩ : TotalSpace (F ≃ₗᵢ[ℝ] F)
            (fun x => V x ≃ₗᵢ[ℝ] F))) J ∧
-       ∀ t ∈ J, cov.orthonormalFrameConnectionForm
+       ∀ t ∈ J, cov.orthonormalFrameConnectionForm (n := 1) le_rfl
          (⟨γ t, p t⟩ : TotalSpace (F ≃ₗᵢ[ℝ] F) (fun x => V x ≃ₗᵢ[ℝ] F))
          (mfderivWithin 𝓘(ℝ, ℝ) (I.prod 𝓘(ℝ, skewAdjoint.submodule ℝ (F →L[ℝ] F)))
            (fun s => (⟨γ s, p s⟩ : TotalSpace (F ≃ₗᵢ[ℝ] F)
@@ -58,7 +58,7 @@ theorem IsMetricCompatible.exists_horizontal_orthonormalFrame_lift_on_interval
   refine ⟨FiberBundle.contMDiffOn_orthonormalFrame_of_symm (F := F) V I 1 hpc, ?_⟩
   intro t ht
   ext w
-  rw [cov.orthonormalFrameConnectionForm_curveWithin_apply p (fun v => hpc v t ht),
+  rw [cov.orthonormalFrameConnectionForm_curveWithin_apply le_rfl p (fun v => hpc v t ht),
     (hph w).2 t ht, map_zero, neg_zero]
   rfl
 

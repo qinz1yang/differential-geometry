@@ -3,6 +3,7 @@ import DifferentialGeometry.Geometry.Metric.BundleContinuity
 import DifferentialGeometry.Geometry.Metric.OrthonormalFrame.Principal
 import DifferentialGeometry.Geometry.LieGroup.Orthogonal
 import DifferentialGeometry.Topology.Manifold.Atlas
+import Mathlib.Geometry.Manifold.Diffeomorph
 
 noncomputable section
 
@@ -346,5 +347,176 @@ theorem exists_contMDiff_orthonormalFrame_trivialization [ContMDiffVectorBundle 
   obtain ⟨U, hU, hx, q, hq₀, hq⟩ :=
     LinearIsometryEquiv.exists_contMDiff_coframe (I := I) (n := n) x₀ p₀
   exact ⟨U, hU, hx, q, hq₀, contMDiffOn_orthonormalFrame_trivialization V I n hU hq⟩
+
+end FiberBundle
+
+namespace FiberBundle
+
+variable {B F : Type*} [TopologicalSpace B]
+  [NormedAddCommGroup F] [InnerProductSpace ℝ F] [FiniteDimensional ℝ F]
+  (V : B → Type*) [∀ x, NormedAddCommGroup (V x)] [∀ x, InnerProductSpace ℝ (V x)]
+  [TopologicalSpace (TotalSpace F V)] [FiberBundle F V] [VectorBundle ℝ F V]
+  {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  {H : Type*} [TopologicalSpace H] (I : ModelWithCorners ℝ E H) [ChartedSpace H B]
+  (n : ℕ∞ω) [IsContMDiffRiemannianBundle I n F V]
+  [ContMDiffVectorBundle n F V I] [IsManifold I n B]
+  {EP : Type*} [NormedAddCommGroup EP] [NormedSpace ℝ EP]
+  {HP : Type*} [TopologicalSpace HP] {IP : ModelWithCorners ℝ EP HP}
+  {P : Type*} [TopologicalSpace P] [ChartedSpace HP P]
+  {b : P → B} {q : ∀ z, V (b z) ≃ₗᵢ[ℝ] F}
+
+theorem contMDiffWithinAt_orthonormalFrame_of_symm_of_le {m : ℕ∞ω} (hmn : m ≤ n)
+    {s : Set P} {z₀ : P}
+    (hq : ∀ w : F, ContMDiffWithinAt IP (I.prod 𝓘(ℝ, F)) m
+      (fun z => (⟨b z, (q z).symm w⟩ : TotalSpace F V)) s z₀) :
+    letI : IsContinuousRiemannianBundle F V :=
+      IsContMDiffRiemannianBundle.isContinuousRiemannianBundle (I := I) (n := n)
+    letI := (orthonormalFramePrebundle (F := F) V).totalSpaceTopology
+    letI := orthonormalFrameChartedSpace (F := F) V I n
+    ContMDiffWithinAt IP (I.prod 𝓘(ℝ, skewAdjoint.submodule ℝ (F →L[ℝ] F))) m
+      (fun z => (⟨b z, q z⟩ : TotalSpace (F ≃ₗᵢ[ℝ] F) (fun x => V x ≃ₗᵢ[ℝ] F))) s z₀ := by
+  let : IsContMDiffRiemannianBundle I m F V := IsContMDiffRiemannianBundle.of_le hmn
+  let : ContMDiffVectorBundle m F V I := ContMDiffVectorBundle.of_le hmn
+  let : IsManifold I m B := IsManifold.of_le hmn
+  let : IsContinuousRiemannianBundle F V :=
+    IsContMDiffRiemannianBundle.isContinuousRiemannianBundle (I := I) (n := n)
+  let := (orthonormalFramePrebundle (F := F) V).totalSpaceTopology
+  let := orthonormalFrameChartedSpace (F := F) V I n
+  have hb : ContMDiffWithinAt IP I m b s z₀ := by
+    have h := hq 0
+    rw [Bundle.contMDiffWithinAt_totalSpace] at h
+    exact h.1
+  obtain ⟨U, hU, hx, r, hr₀, hr⟩ :=
+    LinearIsometryEquiv.exists_contMDiff_coframe (I := I) (n := n) (b z₀) (q z₀)
+  have hi : ContMDiffWithinAt IP 𝓘(ℝ, skewAdjoint.submodule ℝ (F →L[ℝ] F)) m
+      (fun z => (q z).symm.trans (r (b z))) s z₀ := by
+    apply LinearIsometryEquiv.contMDiffWithinAt_iff.mpr
+    apply contMDiffWithinAt_clm_of_pointwise
+    intro w
+    have hf := (LinearIsometryEquiv.contMDiffOn_coframe (fun v => (hr v).of_le hmn)).contMDiffAt
+      (x := (⟨b z₀, (q z₀).symm w⟩ : TotalSpace F V))
+      ((hU.preimage (continuous_proj F V)).mem_nhds hx)
+    exact (hf.comp_contMDiffWithinAt z₀ (hq w)).snd
+  have hg : ContMDiffWithinAt IP 𝓘(ℝ, skewAdjoint.submodule ℝ (F →L[ℝ] F)) m
+      (fun z => (r (b z)).symm.trans (q z)) s z₀ := by
+    simpa only [LinearIsometryEquiv.inv_def, LinearIsometryEquiv.symm_trans,
+      LinearIsometryEquiv.symm_symm] using hi.inv
+  have hri := (contMDiffOn_orthonormalFrame_trivialization (F := F) V I n hU hr).2.of_le hmn
+  have h := (hri.contMDiffAt ((hU.prod isOpen_univ).mem_nhds ⟨hx, mem_univ _⟩)).comp_contMDiffWithinAt z₀
+    (hb.prodMk hg)
+  have heq (z : P) : (⟨b z, q z⟩ :
+      TotalSpace (F ≃ₗᵢ[ℝ] F) (fun x => V x ≃ₗᵢ[ℝ] F)) =
+        (⟨b z, (r (b z)).trans ((r (b z)).symm.trans (q z))⟩ :
+          TotalSpace (F ≃ₗᵢ[ℝ] F) (fun x => V x ≃ₗᵢ[ℝ] F)) := by
+    apply TotalSpace.mk_inj.mpr
+    ext w
+    change q z w = q z ((r (b z)).symm (r (b z) w))
+    rw [LinearIsometryEquiv.symm_apply_apply]
+  exact h.congr_of_eventuallyEq (Filter.Eventually.of_forall heq) (heq z₀)
+
+theorem contMDiffAt_orthonormalFrame_of_symm_of_le {m : ℕ∞ω} (hmn : m ≤ n)
+    {z₀ : P}
+    (hq : ∀ w : F, ContMDiffAt IP (I.prod 𝓘(ℝ, F)) m
+      (fun z => (⟨b z, (q z).symm w⟩ : TotalSpace F V)) z₀) :
+    letI : IsContinuousRiemannianBundle F V :=
+      IsContMDiffRiemannianBundle.isContinuousRiemannianBundle (I := I) (n := n)
+    letI := (orthonormalFramePrebundle (F := F) V).totalSpaceTopology
+    letI := orthonormalFrameChartedSpace (F := F) V I n
+    ContMDiffAt IP (I.prod 𝓘(ℝ, skewAdjoint.submodule ℝ (F →L[ℝ] F))) m
+      (fun z => (⟨b z, q z⟩ : TotalSpace (F ≃ₗᵢ[ℝ] F) (fun x => V x ≃ₗᵢ[ℝ] F))) z₀ :=
+  contMDiffWithinAt_orthonormalFrame_of_symm_of_le V I n hmn hq
+
+theorem contMDiffOn_orthonormalFrame_of_symm_of_le {m : ℕ∞ω} (hmn : m ≤ n)
+    {s : Set P}
+    (hq : ∀ w : F, ContMDiffOn IP (I.prod 𝓘(ℝ, F)) m
+      (fun z => (⟨b z, (q z).symm w⟩ : TotalSpace F V)) s) :
+    letI : IsContinuousRiemannianBundle F V :=
+      IsContMDiffRiemannianBundle.isContinuousRiemannianBundle (I := I) (n := n)
+    letI := (orthonormalFramePrebundle (F := F) V).totalSpaceTopology
+    letI := orthonormalFrameChartedSpace (F := F) V I n
+    ContMDiffOn IP (I.prod 𝓘(ℝ, skewAdjoint.submodule ℝ (F →L[ℝ] F))) m
+      (fun z => (⟨b z, q z⟩ : TotalSpace (F ≃ₗᵢ[ℝ] F) (fun x => V x ≃ₗᵢ[ℝ] F))) s :=
+  fun z hz => contMDiffWithinAt_orthonormalFrame_of_symm_of_le V I n hmn (fun w => hq w z hz)
+
+theorem contMDiff_orthonormalFrame_of_symm_of_le {m : ℕ∞ω} (hmn : m ≤ n)
+    (hq : ∀ w : F, ContMDiff IP (I.prod 𝓘(ℝ, F)) m
+      (fun z => (⟨b z, (q z).symm w⟩ : TotalSpace F V))) :
+    letI : IsContinuousRiemannianBundle F V :=
+      IsContMDiffRiemannianBundle.isContinuousRiemannianBundle (I := I) (n := n)
+    letI := (orthonormalFramePrebundle (F := F) V).totalSpaceTopology
+    letI := orthonormalFrameChartedSpace (F := F) V I n
+    ContMDiff IP (I.prod 𝓘(ℝ, skewAdjoint.submodule ℝ (F →L[ℝ] F))) m
+      (fun z => (⟨b z, q z⟩ : TotalSpace (F ≃ₗᵢ[ℝ] F) (fun x => V x ≃ₗᵢ[ℝ] F))) :=
+  fun z => contMDiffAt_orthonormalFrame_of_symm_of_le V I n hmn (fun w => hq w z)
+
+theorem contMDiff_id_orthonormalFrameChartedSpace
+    (k : ℕ∞ω) [IsContMDiffRiemannianBundle I k F V]
+    [ContMDiffVectorBundle k F V I] [IsManifold I k B]
+    {m : ℕ∞ω} (hmn : m ≤ n) (hmk : m ≤ k) :
+    letI : IsContinuousRiemannianBundle F V :=
+      IsContMDiffRiemannianBundle.isContinuousRiemannianBundle (I := I) (n := n)
+    letI := (orthonormalFramePrebundle (F := F) V).totalSpaceTopology
+    let cn := orthonormalFrameChartedSpace (F := F) V I n
+    let ck := orthonormalFrameChartedSpace (F := F) V I k
+    @ContMDiff ℝ _ _ _ _ _ _ (I.prod 𝓘(ℝ, skewAdjoint.submodule ℝ (F →L[ℝ] F))) _ _ cn
+      _ _ _ _ _ (I.prod 𝓘(ℝ, skewAdjoint.submodule ℝ (F →L[ℝ] F))) _ _ ck m id := by
+  let : IsContinuousRiemannianBundle F V :=
+    IsContMDiffRiemannianBundle.isContinuousRiemannianBundle (I := I) (n := n)
+  let := (orthonormalFramePrebundle (F := F) V).totalSpaceTopology
+  let := orthonormalFrameChartedSpace (F := F) V I n
+  have hcol (w : F) : ContMDiff
+      (I.prod 𝓘(ℝ, skewAdjoint.submodule ℝ (F →L[ℝ] F))) (I.prod 𝓘(ℝ, F)) m
+      (fun p : TotalSpace (F ≃ₗᵢ[ℝ] F) (fun x => V x ≃ₗᵢ[ℝ] F) =>
+        (⟨p.proj, p.snd.symm w⟩ : TotalSpace F V)) :=
+    ((contMDiff_orthonormalFrame_symm_apply (F := F) V I n).comp
+      (contMDiff_id.prodMk (contMDiff_const (c := w)))).of_le hmn
+  exact contMDiff_orthonormalFrame_of_symm_of_le V I k hmk hcol
+
+def orthonormalFrameAtlasDiffeomorph
+    (k : ℕ∞ω) [IsContMDiffRiemannianBundle I k F V]
+    [ContMDiffVectorBundle k F V I] [IsManifold I k B]
+    {m : ℕ∞ω} (hmn : m ≤ n) (hmk : m ≤ k) :
+    letI : IsContinuousRiemannianBundle F V :=
+      IsContMDiffRiemannianBundle.isContinuousRiemannianBundle (I := I) (n := n)
+    letI := (orthonormalFramePrebundle (F := F) V).totalSpaceTopology
+    let cn := orthonormalFrameChartedSpace (F := F) V I n
+    let ck := orthonormalFrameChartedSpace (F := F) V I k
+    @Diffeomorph ℝ _ _ _ _ _ _ _ _ _ _ _
+      (I.prod 𝓘(ℝ, skewAdjoint.submodule ℝ (F →L[ℝ] F)))
+      (I.prod 𝓘(ℝ, skewAdjoint.submodule ℝ (F →L[ℝ] F))) _ _ cn _ _ ck m := by
+  let : IsContinuousRiemannianBundle F V :=
+    IsContMDiffRiemannianBundle.isContinuousRiemannianBundle (I := I) (n := n)
+  let := (orthonormalFramePrebundle (F := F) V).totalSpaceTopology
+  let cn := orthonormalFrameChartedSpace (F := F) V I n
+  let ck := orthonormalFrameChartedSpace (F := F) V I k
+  refine @Diffeomorph.mk ℝ _ _ _ _ _ _ _ _ _ _ _
+    (I.prod 𝓘(ℝ, skewAdjoint.submodule ℝ (F →L[ℝ] F)))
+    (I.prod 𝓘(ℝ, skewAdjoint.submodule ℝ (F →L[ℝ] F))) _ _ cn _ _ ck m
+    (Equiv.refl _) ?_ ?_
+  · exact contMDiff_id_orthonormalFrameChartedSpace V I n k hmn hmk
+  · exact contMDiff_id_orthonormalFrameChartedSpace V I k n hmk hmn
+
+@[simp]
+theorem orthonormalFrameAtlasDiffeomorph_apply
+    (k : ℕ∞ω) [IsContMDiffRiemannianBundle I k F V]
+    [ContMDiffVectorBundle k F V I] [IsManifold I k B]
+    {m : ℕ∞ω} (hmn : m ≤ n) (hmk : m ≤ k)
+    (p : TotalSpace (F ≃ₗᵢ[ℝ] F) (fun x => V x ≃ₗᵢ[ℝ] F)) :
+    orthonormalFrameAtlasDiffeomorph V I n k hmn hmk p = p := rfl
+
+theorem orthonormalFrameAtlasDiffeomorph_symm_apply
+    (k : ℕ∞ω) [IsContMDiffRiemannianBundle I k F V]
+    [ContMDiffVectorBundle k F V I] [IsManifold I k B]
+    {m : ℕ∞ω} (hmn : m ≤ n) (hmk : m ≤ k)
+    (p : TotalSpace (F ≃ₗᵢ[ℝ] F) (fun x => V x ≃ₗᵢ[ℝ] F)) :
+    letI : IsContinuousRiemannianBundle F V :=
+      IsContMDiffRiemannianBundle.isContinuousRiemannianBundle (I := I) (n := n)
+    letI := (orthonormalFramePrebundle (F := F) V).totalSpaceTopology
+    let cn := orthonormalFrameChartedSpace (F := F) V I n
+    let ck := orthonormalFrameChartedSpace (F := F) V I k
+    (@Diffeomorph.symm ℝ _ _ _ _ _ _ _ _ _ _ _
+      (I.prod 𝓘(ℝ, skewAdjoint.submodule ℝ (F →L[ℝ] F)))
+      (I.prod 𝓘(ℝ, skewAdjoint.submodule ℝ (F →L[ℝ] F))) _ _ cn _ _ ck m
+      (orthonormalFrameAtlasDiffeomorph (F := F) V I n k hmn hmk)) p = p := rfl
 
 end FiberBundle
