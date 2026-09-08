@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.WeakEquationTimeTest
-import DifferentialGeometry.Analysis.Parabolic.Dirichlet.WeakFormChart
+import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletWeakFormChart
 
 noncomputable section
 

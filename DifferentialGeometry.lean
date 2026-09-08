@@ -4641,3 +4641,8 @@ import DifferentialGeometry.Geometry.Comparison.DistanceFamily
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.Associated
 import DifferentialGeometry.Geometry.LieGroup.Representation.InvariantSet
 import DifferentialGeometry.Analysis.ODE.AssociatedBundle
+import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletForms
+import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletFormBounds
+import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletFormCompletion
+import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletWeakFormIntegration
+import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletWeakFormChart

@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.GalerkinSequence
-import DifferentialGeometry.Analysis.Parabolic.Dirichlet.MetricComparison
+import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletFormBounds
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.BochnerL2
 import DifferentialGeometry.Geometry.Metric.Family.UniformEquivalence
 

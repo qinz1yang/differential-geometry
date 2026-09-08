@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Sobolev.DirichletHs.EnergyDuality
-import DifferentialGeometry.Analysis.Parabolic.Dirichlet.FormCompletion
+import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletFormCompletion
 import DifferentialGeometry.Analysis.Integration.Measure.CompactParametricIntegral
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.CometricDifferenceRaisedGreenPairing
 import DifferentialGeometry.Geometry.Connection.ChartBridge.Gradient
