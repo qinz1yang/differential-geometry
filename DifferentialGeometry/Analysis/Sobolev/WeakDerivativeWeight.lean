@@ -16,17 +16,18 @@ namespace DifferentialGeometry.Analysis.Sobolev
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [MeasurableSpace E] [OpensMeasurableSpace E]
 
-theorem integral_fderiv_eq_neg_of_weighted_identity
+theorem integral_fderiv_eq_of_weighted_identity
     {μ : Measure E} {S : Set E} (hS : IsOpen S)
     {U R ρ : E → ℝ} (v : E)
     (hU : LocallyIntegrable U μ) (hR : LocallyIntegrable R μ)
     (hρ : ContDiffOn ℝ (⊤ : ℕ∞) ρ S) (hρne : ∀ x ∈ S, ρ x ≠ 0)
+    (L : (E → ℝ) → ℝ)
     (hweak : ∀ φ : E → ℝ, ContDiff ℝ (⊤ : ℕ∞) φ → HasCompactSupport φ →
-      tsupport φ ⊆ S → (∫ x, ρ x * U x * fderiv ℝ φ x v ∂μ) = -∫ x, R x * φ x ∂μ)
+      tsupport φ ⊆ S → (∫ x, ρ x * U x * fderiv ℝ φ x v ∂μ) = L φ - ∫ x, R x * φ x ∂μ)
     {φ : E → ℝ} (hφ : ContDiff ℝ (⊤ : ℕ∞) φ) (hφc : HasCompactSupport φ)
     (hφs : tsupport φ ⊆ S) :
-    (∫ x, U x * fderiv ℝ φ x v ∂μ) =
-      -∫ x, ((ρ x)⁻¹ * R x - ((ρ x)⁻¹ * fderiv ℝ ρ x v) * U x) * φ x ∂μ := by
+    (∫ x, U x * fderiv ℝ φ x v ∂μ) = L (fun x => φ x / ρ x) -
+      ∫ x, ((ρ x)⁻¹ * R x - ((ρ x)⁻¹ * fderiv ℝ ρ x v) * U x) * φ x ∂μ := by
   let ψ := fun x => φ x / ρ x
   have hψs : tsupport ψ ⊆ S := by
     simpa only [ψ, div_eq_mul_inv] using
@@ -101,5 +102,21 @@ theorem integral_fderiv_eq_neg_of_weighted_identity
     exact integral_sub hK hJ
   rw [hc]
   linarith
+
+theorem integral_fderiv_eq_neg_of_weighted_identity
+    {μ : Measure E} {S : Set E} (hS : IsOpen S)
+    {U R ρ : E → ℝ} (v : E)
+    (hU : LocallyIntegrable U μ) (hR : LocallyIntegrable R μ)
+    (hρ : ContDiffOn ℝ (⊤ : ℕ∞) ρ S) (hρne : ∀ x ∈ S, ρ x ≠ 0)
+    (hweak : ∀ φ : E → ℝ, ContDiff ℝ (⊤ : ℕ∞) φ → HasCompactSupport φ →
+      tsupport φ ⊆ S → (∫ x, ρ x * U x * fderiv ℝ φ x v ∂μ) = -∫ x, R x * φ x ∂μ)
+    {φ : E → ℝ} (hφ : ContDiff ℝ (⊤ : ℕ∞) φ) (hφc : HasCompactSupport φ)
+    (hφs : tsupport φ ⊆ S) :
+    (∫ x, U x * fderiv ℝ φ x v ∂μ) =
+      -∫ x, ((ρ x)⁻¹ * R x - ((ρ x)⁻¹ * fderiv ℝ ρ x v) * U x) * φ x ∂μ := by
+  simpa only [zero_sub] using
+    integral_fderiv_eq_of_weighted_identity hS v hU hR hρ hρne (fun _ => 0)
+      (fun ψ hψ hψc hψs => by
+        simpa only [zero_sub] using hweak ψ hψ hψc hψs) hφ hφc hφs
 
 end DifferentialGeometry.Analysis.Sobolev
