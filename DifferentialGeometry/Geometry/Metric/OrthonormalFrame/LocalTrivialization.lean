@@ -212,22 +212,41 @@ theorem contMDiffOn_coframe_to {U : Set B} {q : ∀ x, V x ≃ₗᵢ[ℝ] G}
   exact (Bundle.contMDiffOn_proj V).prodMk (hv.congr (fun v _ => heq v))
 
 omit [FiniteDimensional ℝ F] [ContMDiffVectorBundle n F V I] in
-theorem contMDiffOn_coframe_conjugate {U : Set B} {q : ∀ x, V x ≃ₗᵢ[ℝ] G}
-    (hq : ∀ w : G, ContMDiffOn I (I.prod 𝓘(ℝ, F)) n
-      (fun x => TotalSpace.mk' F x ((q x).symm w)) U)
-    {A : ∀ x, V x →L[ℝ] V x}
-    (hA : ContMDiffOn I (I.prod 𝓘(ℝ, F →L[ℝ] F)) n
-      (fun x => TotalSpace.mk' (F →L[ℝ] F) x (A x)) U) :
-    ContMDiffOn I 𝓘(ℝ, G →L[ℝ] G) n
-      (fun x => (q x).toContinuousLinearEquiv.toContinuousLinearMap.comp
-        ((A x).comp (q x).symm.toContinuousLinearEquiv.toContinuousLinearMap)) U := by
-  intro x hx
+theorem contMDiffOn_coframe_conjugate
+    {EP : Type*} [NormedAddCommGroup EP] [NormedSpace ℝ EP]
+    {HP : Type*} [TopologicalSpace HP] {IP : ModelWithCorners ℝ EP HP}
+    {P : Type*} [TopologicalSpace P] [ChartedSpace HP P] {s : Set P} {b : P → B}
+    {q : ∀ p, V (b p) ≃ₗᵢ[ℝ] G}
+    (hq : ∀ w : G, ContMDiffOn IP (I.prod 𝓘(ℝ, F)) n
+      (fun p => TotalSpace.mk' F (b p) ((q p).symm w)) s)
+    {A : ∀ p, V (b p) →L[ℝ] V (b p)}
+    (hA : ContMDiffOn IP (I.prod 𝓘(ℝ, F →L[ℝ] F)) n
+      (fun p => (TotalSpace.mk' (F →L[ℝ] F) (b p) (A p) :
+        TotalSpace (F →L[ℝ] F) (fun x => V x →L[ℝ] V x))) s) :
+    ContMDiffOn IP 𝓘(ℝ, G →L[ℝ] G) n
+      (fun p => (q p).toContinuousLinearEquiv.toContinuousLinearMap.comp
+        ((A p).comp (q p).symm.toContinuousLinearEquiv.toContinuousLinearMap)) s := by
+  classical
+  intro p hp
   apply contMDiffWithinAt_clm_of_pointwise
   intro w
-  have hv := hA.clm_bundle_apply (hq w)
-  have hqf := LinearIsometryEquiv.contMDiffOn_coframe_to hq
-  have h := hqf.comp hv (fun x hx => hx)
-  exact (h x hx).snd
+  let e := stdOrthonormalBasis ℝ G
+  have hsum : ContMDiffWithinAt IP 𝓘(ℝ, G) n
+      (fun z => ∑ i, inner ℝ ((q z).symm (e i)) (A z ((q z).symm w)) • e i) s p := by
+    apply ContMDiffWithinAt.sum
+    intro i _
+    exact ((hq (e i) p hp).inner_bundle ((hA p hp).clm_bundle_apply (hq w p hp))).smul
+      contMDiffWithinAt_const
+  have heq (z : P) : q z (A z ((q z).symm w)) =
+      ∑ i, inner ℝ ((q z).symm (e i)) (A z ((q z).symm w)) • e i := by
+    rw [← e.sum_repr (q z (A z ((q z).symm w)))]
+    apply Finset.sum_congr rfl
+    intro i hi
+    congr 1
+    rw [e.repr_apply_apply]
+    simpa only [LinearIsometryEquiv.apply_symm_apply] using
+      (q z).inner_map_map ((q z).symm (e i)) (A z ((q z).symm w))
+  exact hsum.congr_of_eventuallyEq (Filter.Eventually.of_forall heq) (heq p)
 
 theorem exists_contMDiff_coframe_trivialization_to (x₀ : B) (p₀ : V x₀ ≃ₗᵢ[ℝ] G) :
     ∃ U : Set B, IsOpen U ∧ x₀ ∈ U ∧ ∃ q : ∀ x, V x ≃ₗᵢ[ℝ] G,
