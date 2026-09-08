@@ -4629,6 +4629,7 @@ import DifferentialGeometry.Geometry.Metric.RicciSoliton.CylinderQuotientTautolo
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Uhlenbeck.CurvatureOperatorRank
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.ExteriorRank
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.CurvatureRank
+import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.UhlenbeckLine
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Distance.LengthVariation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Distance.Laplacian
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HamiltonHarnack.UhlenbeckBlockEvolution
@@ -4786,6 +4787,7 @@ import DifferentialGeometry.Analysis.Parabolic.Dirichlet.SourceFormula
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.GradientMassPairing
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.GradientTensorEquation
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.GivenGradientCommutator
+import DifferentialGeometry.Analysis.Parabolic.Dirichlet.GradientSourceFormula
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.WeakPartialLinearSource
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.GradientTimeDual
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.GradientTimeEquation
