@@ -462,7 +462,7 @@ theorem segInt_polar
   rw [segInt_lintegral (I := I) g hEnorm x f hf]
   change (∫⁻ v in K, f (F v) * J v ∂(modelHaar (E := E))) = _
   exact MeasureTheory.setLIntegral_polar (modelHaar (E := E)) K hK
-    (fun v => f (F v) * J v) ((hf.comp hF).mul hJ).aemeasurable
+    (fun v => f (F v) * J v) ((hf.comp hF).mul hJ).aemeasurable.restrict
 
 end Interior
 

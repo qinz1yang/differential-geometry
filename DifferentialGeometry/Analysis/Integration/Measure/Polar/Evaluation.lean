@@ -192,13 +192,33 @@ theorem setIntegral_polar (s : Set E) (hs : MeasurableSet s)
 end Signed
 
 theorem setLIntegral_polar (s : Set E) (hs : MeasurableSet s)
-    (f : E → ℝ≥0∞) (hf : AEMeasurable f μ) :
+    (f : E → ℝ≥0∞) (hf : AEMeasurable f (μ.restrict s)) :
     (∫⁻ x in s, f x ∂μ) =
       ∫⁻ u : sphere (0 : E) 1,
         ∫⁻ r : Ioi (0 : ℝ), s.indicator f (r.1 • u.1)
           ∂(Measure.volumeIoiPow (Module.finrank ℝ E - 1)) ∂μ.toSphere := by
   rw [← lintegral_indicator hs]
-  exact lintegral_polar μ (s.indicator f) (hf.indicator hs)
+  exact lintegral_polar μ (s.indicator f) ((aemeasurable_indicator_iff hs).mpr hf)
+
+theorem setLIntegral_inter_ball_polar (s : Set E) (hs : MeasurableSet s)
+    (R : ℝ) (f : E → ℝ≥0∞)
+    (hf : AEMeasurable f (μ.restrict (s ∩ ball (0 : E) R))) :
+    (∫⁻ x in s ∩ ball (0 : E) R, f x ∂μ) =
+      ∫⁻ u : sphere (0 : E) 1,
+        ∫⁻ r : Ioi (0 : ℝ) in {r : Ioi (0 : ℝ) | r.1 < R},
+          s.indicator f (r.1 • u.1)
+          ∂(Measure.volumeIoiPow (Module.finrank ℝ E - 1)) ∂μ.toSphere := by
+  rw [setLIntegral_polar μ (s ∩ ball (0 : E) R) (hs.inter measurableSet_ball) f hf]
+  apply lintegral_congr
+  intro u
+  rw [← lintegral_indicator (measurableSet_lt measurable_subtype_coe measurable_const)]
+  apply lintegral_congr
+  intro r
+  have hu : ‖u.1‖ = 1 := mem_sphere_zero_iff_norm.mp u.2
+  have hball : r.1 • u.1 ∈ ball (0 : E) R ↔ r.1 < R := by
+    rw [mem_ball, dist_zero_right, norm_smul, Real.norm_of_nonneg r.2.le, hu, mul_one]
+  by_cases hsx : r.1 • u.1 ∈ s <;> by_cases hr : r.1 < R <;>
+    simp [hsx, hball, hr]
 
 end MeasureTheory
 
