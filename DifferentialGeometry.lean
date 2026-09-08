@@ -4774,7 +4774,9 @@ import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletLocalForm
 import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletWeakPartialDual
 import DifferentialGeometry.Analysis.InnerProductSpace.SpectralRank
 import DifferentialGeometry.Analysis.Integration.Lp.BilinearForm
+import DifferentialGeometry.Analysis.Integration.Lp.Multiplication
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.GradientEnergy
+import DifferentialGeometry.Analysis.Parabolic.Dirichlet.GradientFluxBound
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.GradientMassPairing
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.GradientTensorEquation
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.GradientTimeDual
