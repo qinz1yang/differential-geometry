@@ -677,6 +677,23 @@ def IsLocalScalarDirichletSolution
     ∀ q ∈ Set.Ioc s t, ∀ z ∈ interior Kset,
       parabolicOperatorWithDrift (I := I) G T X f q z = -c * f q z
 
+theorem IsLocalScalarDirichletSolution.nonnegative
+    {G : MetricConnectionFamily (I := I) (M := M) Real}
+    {T s t c : Real} {X : Real → (x : M) → TangentSpace I x}
+    {Kset : Set M} {f₀ : M → Real} {f : Real → M → Real}
+    (h : IsLocalScalarDirichletSolution (I := I) G T X s t c Kset f₀ f)
+    (hf₀ : ∀ x ∈ Kset, 0 ≤ f₀ x) :
+    ∀ q ∈ Set.Icc s t, ∀ x ∈ Kset, 0 ≤ f q x := by
+  intro q hq x hx
+  by_cases hqs : q = s
+  · subst q
+    rw [h.2.1 x hx]
+    exact hf₀ x hx
+  · by_cases hxi : x ∈ interior Kset
+    · exact (h.2.2.2.1 q ⟨lt_of_le_of_ne hq.1 (Ne.symm hqs), hq.2⟩ x hxi).le
+    · have hxf : x ∈ frontier Kset := ⟨subset_closure hx, hxi⟩
+      rw [h.2.2.1 q hq x hxf]
+
 theorem IsLocalScalarDirichletSolution.nonnegative_of_closure_interior
     (G : MetricConnectionFamily (I := I) (M := M) Real)
     {T s t c : Real}
