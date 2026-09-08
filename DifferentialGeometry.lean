@@ -513,6 +513,7 @@ import DifferentialGeometry.Analysis.Integration.Measure.Polar.Evaluation
 import DifferentialGeometry.Analysis.Integration.Measure.Polar.NullSets
 import DifferentialGeometry.Analysis.Integration.Measure.Chart.PartitionOfUnity.DensityBound
 import DifferentialGeometry.Analysis.Integration.Measure.Chart.PartitionOfUnity.DominatedCutoff
+import DifferentialGeometry.Analysis.Integration.Measure.Chart.PartitionOfUnity.Integral
 import DifferentialGeometry.Analysis.Integration.Measure.Chart.PartitionOfUnity.Thickening
 import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.Properties
 import DifferentialGeometry.Analysis.Integration.Measure.Family.Metric
