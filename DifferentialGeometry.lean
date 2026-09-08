@@ -4604,3 +4604,4 @@ import DifferentialGeometry.Geometry.Metric.RicciSoliton.CylinderQuotientDiffeom
 import DifferentialGeometry.Geometry.Metric.Cylinder.IsometryExtension
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.ModelCoverRoundThreeCylinder
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.ModelCoverCylinderClassification
+import DifferentialGeometry.Geometry.Flow.RicciFlow.HamiltonHarnack.UhlenbeckTestJets
