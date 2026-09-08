@@ -210,6 +210,27 @@ theorem timeDependentFlow_exists_isCompact_eqOn :
   ⟨Prod.snd '' tsupport V, hs.image continuous_snd,
     timeDependentFlow_eqOn_compl_image_tsupport V hV hs⟩
 
+theorem timeDependentFlow_eq_refl_of_eq_zero_on (s t : ℝ)
+    (hz : ∀ u ∈ Set.uIcc s t, ∀ x, V (u, x) = 0) :
+    timeDependentFlow V hV hs s t = Diffeomorph.refl 𝓘(ℝ, E) E ∞ := by
+  apply Diffeomorph.ext
+  intro x
+  let γ := fun u => timeDependentFlow V hV hs s u x
+  have hγ : IsIntegralCurve γ (fun u y => V (u, y)) :=
+    isIntegralCurve_timeDependentFlow V hV hs s x
+  have hcont : ContinuousOn γ (Set.Icc (min s t) (max s t)) :=
+    (continuous_iff_continuousAt.mpr (fun u => (hγ u).continuousAt)).continuousOn
+  have hconst := constant_of_has_deriv_right_zero hcont (fun u hu => by
+    have heq : V (u, γ u) = 0 := hz u ⟨hu.1, hu.2.le⟩ (γ u)
+    rw [← heq]
+    exact (hγ u).hasDerivWithinAt (s := Set.Ici u))
+  have ht := hconst t ⟨min_le_right _ _, le_max_right _ _⟩
+  have hstart := hconst s ⟨min_le_left _ _, le_max_left _ _⟩
+  change γ t = x
+  calc
+    γ t = γ s := ht.trans hstart.symm
+    _ = x := by simp only [γ, timeDependentFlow_refl, Diffeomorph.coe_refl, id_eq]
+
 end Diffeomorph
 
 end
