@@ -26,6 +26,16 @@ def curvatureOperatorReactionEndomorphism3
       (((LinearMap.trace Real V A) ^ 2 - LinearMap.trace Real V (A.comp A)) / (2 : Real)) •
         LinearMap.id
 
+theorem curvatureOperatorReactionEndomorphism3_commute
+    {V : Type*} [AddCommGroup V] [Module ℝ V] [FiniteDimensional ℝ V]
+    (A : V →ₗ[ℝ] V) :
+    Commute A (curvatureOperatorReactionEndomorphism3 A) := by
+  change A.comp (curvatureOperatorReactionEndomorphism3 A) =
+    (curvatureOperatorReactionEndomorphism3 A).comp A
+  unfold curvatureOperatorReactionEndomorphism3
+  ext v
+  simp
+
 theorem curvatureOperatorReactionEndomorphism3_smul
     {V : Type*} [AddCommGroup V] [Module ℝ V] [FiniteDimensional ℝ V]
     (r : ℝ) (A : V →ₗ[ℝ] V) :
