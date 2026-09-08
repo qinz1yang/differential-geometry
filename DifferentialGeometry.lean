@@ -4824,3 +4824,4 @@ import DifferentialGeometry.Analysis.Parabolic.Dirichlet.QuantitativeGradientSou
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.TimeOperatorH1
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.TimeDerivativeEquation
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.MaximalRegularity.TimeDerivative
+import DifferentialGeometry.Topology.Manifold.RegularDomain

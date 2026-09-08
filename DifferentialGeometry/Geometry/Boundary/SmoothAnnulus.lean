@@ -1,4 +1,5 @@
 import DifferentialGeometry.Geometry.Operator.Operators
+import Mathlib.Analysis.Convex.Topology
 import Mathlib.Analysis.InnerProductSpace.EuclideanDist
 import Mathlib.Geometry.Manifold.BumpFunction
 import Mathlib.Tactic.Linarith
@@ -215,6 +216,16 @@ private theorem chartRadiusSq_mfderiv_ne_zero
     positivity
   exact hpos.ne' happzero
 
+private theorem cutoffChartRadiusSq_mfderiv_ne_zero
+    {a c x : M} (b : SmoothBumpFunction I a) (hc : c ∈ (chartAt H a).source)
+    (hx : x ∈ (chartAt H a).source)
+    (hd : dist (extChartAt I a x) (extChartAt I a a) < b.rIn)
+    (hxc : x ≠ c) (Q : Real) :
+    mfderiv I 𝓘(Real, Real) (cutoffChartRadiusSq (I := I) b c Q) x ≠ 0 := by
+  have hev := cutoffChartRadiusSq_eventuallyEq (I := I) (c := c) b hx hd Q
+  rw [hev.mfderiv_eq]
+  exact chartRadiusSq_mfderiv_ne_zero (I := I) hc hx hxc
+
 theorem cutoffChartRadiusSq_gradient_ne_zero
     (g : SmoothRiemannianMetric I M) {a c x : M}
     (b : SmoothBumpFunction I a) (hc : c ∈ (chartAt H a).source)
@@ -222,13 +233,8 @@ theorem cutoffChartRadiusSq_gradient_ne_zero
     (hd : dist (extChartAt I a x) (extChartAt I a a) < b.rIn)
     (hxc : x ≠ c) (Q : Real) :
     gradientFun (I := I) g (cutoffChartRadiusSq (I := I) b c Q) x ≠ 0 := by
-  have hev := cutoffChartRadiusSq_eventuallyEq (I := I) (c := c) b hx hd Q
-  have hmf : mfderiv I 𝓘(Real, Real)
-      (cutoffChartRadiusSq (I := I) b c Q) x ≠ 0 := by
-    rw [hev.mfderiv_eq]
-    exact chartRadiusSq_mfderiv_ne_zero (I := I) hc hx hxc
   intro hgrad
-  apply hmf
+  apply cutoffChartRadiusSq_mfderiv_ne_zero b hc hx hd hxc Q
   apply ContinuousLinearMap.ext
   intro v
   have hinner := inner_gradientFun (I := I) g
@@ -478,5 +484,150 @@ theorem exists_annulus_neighborhood [T2Space M]
       rw [hrhoc] at hrc
       exact (not_le_of_gt hr) hrc
     exact cutoffChartRadiusSq_gradient_ne_zero g b hc.1 hzsource hzcore hzc Q
+
+omit [IsManifold I ∞ M] in
+private theorem isConnected_sublevel_cutoffChartRadiusSq [I.Boundaryless]
+    {a : M} (b : SmoothBumpFunction I a)
+    {Q R : Real} (hR : 0 < R) (hRQ : R < Q)
+    (hQ : Q ≤ (b.rIn / (2 * (‖(toEuclidean (E := E)).symm.toContinuousLinearMap‖ + 1))) ^ 2) :
+    IsConnected {x | cutoffChartRadiusSq (I := I) b a Q x < R} := by
+  let L := toEuclidean (E := E)
+  let C : Real := ‖L.symm.toContinuousLinearMap‖ + 1
+  let s : Real := b.rIn / (2 * C)
+  let p : EuclideanSpace Real (Fin (Module.finrank Real E)) → E :=
+    fun w => extChartAt I a a + L.symm w
+  have hC : 0 < C := by
+    dsimp [C]
+    linarith [norm_nonneg L.symm.toContinuousLinearMap]
+  have hs : 0 < s := div_pos b.rIn_pos (by positivity)
+  have hRs : Real.sqrt R < s := by
+    apply (Real.sqrt_lt hR.le hs.le).mpr
+    exact hRQ.trans_le hQ
+  have hpdist {w : EuclideanSpace Real (Fin (Module.finrank Real E))}
+      (hw : w ∈ Metric.ball 0 (Real.sqrt R)) :
+      dist (p w) (extChartAt I a a) < b.rIn := by
+    have hwnorm : ‖w‖ < s := by
+      have hw0 : ‖w‖ < Real.sqrt R := by simpa using hw
+      exact hw0.trans hRs
+    have hop := L.symm.toContinuousLinearMap.le_opNorm w
+    have hn : ‖L.symm w‖ < C * s := calc
+      ‖L.symm w‖ ≤ ‖L.symm.toContinuousLinearMap‖ * ‖w‖ := hop
+      _ < C * s := mul_lt_mul_of_le_of_lt_of_nonneg_of_pos
+        (by dsimp [C]; linarith) hwnorm (norm_nonneg _) hC
+    have hCs : C * s = b.rIn / 2 := by
+      dsimp [s]
+      field_simp
+    rw [hCs] at hn
+    have heq : dist (p w) (extChartAt I a a) = ‖L.symm w‖ := by
+      simp [p, dist_eq_norm]
+    rw [heq]
+    exact hn.trans (half_lt_self b.rIn_pos)
+  have hptarget {w : EuclideanSpace Real (Fin (Module.finrank Real E))}
+      (hw : w ∈ Metric.ball 0 (Real.sqrt R)) : p w ∈ (extChartAt I a).target := by
+    apply b.ball_subset
+    refine ⟨(hpdist hw).trans b.rIn_lt_rOut, ?_⟩
+    rw [I.range_eq_univ]
+    trivial
+  have heq : {x | cutoffChartRadiusSq (I := I) b a Q x < R} =
+      ((extChartAt I a).symm ∘ p) '' Metric.ball 0 (Real.sqrt R) := by
+    ext x
+    constructor
+    · intro hx
+      obtain ⟨hbx, hqx⟩ := pos_and_chartRadiusSq_lt_of_cutoffChartRadiusSq_lt b hRQ hx
+      have hxsource : x ∈ (chartAt H a).source :=
+        b.support_subset_source (by simpa [Function.mem_support] using hbx.ne')
+      have hdist : dist (extChartAt I a x) (extChartAt I a a) < b.rIn := by
+        apply dist_lt_rIn_of_chartRadiusSq_lt b (c := a)
+        · simpa using b.rIn_pos
+        · simpa only [dist_self, sub_zero] using hqx.trans_le hQ
+      have hbone : b x = 1 := b.one_of_dist_le hxsource hdist.le
+      have hqR : chartRadiusSq (I := I) a a x < R := by
+        simpa [cutoffChartRadiusSq, hbone] using hx
+      let w := L (extChartAt I a x - extChartAt I a a)
+      refine ⟨w, ?_, ?_⟩
+      · rw [Metric.mem_ball, dist_zero_right]
+        apply (sq_lt_sq₀ (norm_nonneg _) (Real.sqrt_nonneg _)).mp
+        rw [Real.sq_sqrt hR.le]
+        exact hqR
+      · have hpw : p w = extChartAt I a x := by simp [p, w]
+        change (extChartAt I a).symm (p w) = x
+        rw [hpw]
+        exact (extChartAt I a).left_inv (by simpa only [extChartAt_source] using hxsource)
+    · rintro ⟨w, hw, rfl⟩
+      have hy := (extChartAt I a).map_target (hptarget hw)
+      have hychart := (extChartAt I a).right_inv (hptarget hw)
+      have hbone : b ((extChartAt I a).symm (p w)) = 1 := by
+        apply b.one_of_dist_le (by simpa only [extChartAt_source] using hy)
+        rw [hychart]
+        exact (hpdist hw).le
+      change cutoffChartRadiusSq (I := I) b a Q ((extChartAt I a).symm (p w)) < R
+      rw [cutoffChartRadiusSq, hbone]
+      simp only [one_mul, sub_self, mul_zero, add_zero]
+      have hw' : ‖w‖ < Real.sqrt R := by simpa using hw
+      have hw2 := (sq_lt_sq₀ (norm_nonneg w) (Real.sqrt_nonneg R)).mpr hw'
+      rw [Real.sq_sqrt hR.le] at hw2
+      unfold chartRadiusSq
+      rw [hychart]
+      simpa only [p, L, add_sub_cancel_left, ContinuousLinearEquiv.apply_symm_apply] using hw2
+  rw [heq]
+  apply ((convex_ball (0 : EuclideanSpace Real (Fin (Module.finrank Real E))))
+    (Real.sqrt R)).isConnected (Metric.nonempty_ball.mpr (Real.sqrt_pos.mpr hR)) |>.image
+  apply (continuousOn_extChartAt_symm (I := I) a).comp
+  · exact (continuous_const.add L.symm.continuous).continuousOn
+  · exact fun w hw => hptarget hw
+
+theorem exists_regular_sublevel_subset [I.Boundaryless] [T2Space M]
+    (a : M) {V : Set M} (hV : V ∈ nhds a) :
+    ∃ (rho : M → Real) (R : Real),
+      ContMDiff I 𝓘(Real, Real) ∞ rho ∧ rho a = 0 ∧
+      (∀ x : M, 0 ≤ rho x) ∧ (∀ x : M, x ≠ a → 0 < rho x) ∧ 0 < R ∧
+      IsConnected {x : M | rho x < R} ∧
+      IsCompact {x : M | rho x ≤ R} ∧ {x : M | rho x ≤ R} ⊆ V ∧
+      ∀ x : M, 0 < rho x → rho x ≤ R →
+        mfderiv I 𝓘(Real, Real) rho x ≠ 0 := by
+  obtain ⟨b, -, hbV⟩ :=
+    (SmoothBumpFunction.nhds_basis_tsupport (I := I) a).mem_iff.mp hV
+  let C : Real := ‖(toEuclidean (E := E)).symm.toContinuousLinearMap‖ + 1
+  have hC : 0 < C := by
+    dsimp only [C]
+    linarith [norm_nonneg (toEuclidean (E := E)).symm.toContinuousLinearMap]
+  let scale : Real := b.rIn / (2 * C)
+  have hscale : 0 < scale := div_pos b.rIn_pos (by positivity)
+  let Q : Real := scale ^ 2
+  have hQ : 0 < Q := sq_pos_of_pos hscale
+  let rho : M → Real := cutoffChartRadiusSq (I := I) b a Q
+  let R : Real := Q / 2
+  have hrho : ContMDiff I 𝓘(Real, Real) ∞ rho := cutoffChartRadiusSq_contMDiff b Q
+  have hrhoa : rho a = 0 := by
+    simp [rho, cutoffChartRadiusSq, chartRadiusSq]
+  have hR : 0 < R := half_pos hQ
+  have hRQ : R < Q := half_lt_self hQ
+  have hrad {x : M} (hx : rho x ≤ R) :
+      0 < b x ∧ chartRadiusSq (I := I) a a x < Q := by
+    have hmidR : R < (R + Q) / 2 := by linarith only [hRQ]
+    have hmidQ : (R + Q) / 2 < Q := by linarith only [hRQ]
+    exact pos_and_chartRadiusSq_lt_of_cutoffChartRadiusSq_lt b hmidQ
+      (hx.trans_lt hmidR)
+  refine ⟨rho, R, hrho, hrhoa,
+    cutoffChartRadiusSq_nonneg b hQ.le,
+    fun x hx => cutoffChartRadiusSq_pos_of_ne b (mem_chart_source H a) hQ hx, hR,
+    isConnected_sublevel_cutoffChartRadiusSq b hR hRQ (le_refl Q),
+    isCompact_sublevel_cutoffChartRadiusSq b hRQ, ?_, ?_⟩
+  · intro x hx
+    exact hbV (subset_tsupport b (hrad hx).1.ne')
+  · intro x hxpos hxR
+    have hradx := hrad hxR
+    have hxsource : x ∈ (chartAt H a).source := b.support_subset_source hradx.1.ne'
+    have hxcore : dist (extChartAt I a x) (extChartAt I a a) < b.rIn := by
+      apply dist_lt_rIn_of_chartRadiusSq_lt (c := a) (x := x) b
+        (by simpa only [dist_self] using b.rIn_pos)
+      simpa only [Q, scale, C, dist_self, sub_zero] using hradx.2
+    have hxa : x ≠ a := by
+      intro heq
+      subst x
+      rw [hrhoa] at hxpos
+      exact (lt_irrefl 0) hxpos
+    exact cutoffChartRadiusSq_mfderiv_ne_zero b
+      (mem_chart_source H a) hxsource hxcore hxa Q
 
 end SmoothBumpFunction
