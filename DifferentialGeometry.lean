@@ -4592,3 +4592,5 @@ import DifferentialGeometry.Geometry.Connection.Laplacian.SelfAdjointScaling
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.ExteriorLaplacianScaling
 import DifferentialGeometry.Analysis.Sobolev.Chart.ChartDensityCutoff
 import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletNirenbergIntegration
+import DifferentialGeometry.Analysis.Calculus.MultilinearPullback
+import DifferentialGeometry.Geometry.Flow.RicciFlow.HamiltonHarnack.UhlenbeckEvolution
