@@ -87,3 +87,41 @@ theorem mfderiv_restrict_open (f : M → N) (U : TopologicalSpace.Opens M) (x : 
     rfl
 
 end DifferentialGeometry
+
+section
+variable {𝕜 : Type*} [NontriviallyNormedField 𝕜]
+  {E : Type*} [NormedAddCommGroup E] [NormedSpace 𝕜 E]
+  {H : Type*} [TopologicalSpace H] {I : ModelWithCorners 𝕜 E H}
+  {F : Type*} [NormedAddCommGroup F] [NormedSpace 𝕜 F]
+  {G : Type*} [TopologicalSpace G] {J : ModelWithCorners 𝕜 F G}
+  {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
+  {N : Type*} [TopologicalSpace N] [ChartedSpace G N]
+
+theorem MDifferentiableAt.subtypeVal_comp_iff {U : TopologicalSpace.Opens N}
+    (f : M → U) (x : M) :
+    MDifferentiableAt I J (fun y => (f y : N)) x ↔ MDifferentiableAt I J f x := by
+  rw [mdifferentiableAt_iff, mdifferentiableAt_iff]
+  constructor
+  · rintro ⟨hc, hd⟩
+    refine ⟨Topology.IsInducing.subtypeVal.continuousAt_iff.mpr hc, ?_⟩
+    exact hd
+  · rintro ⟨hc, hd⟩
+    exact ⟨continuous_subtype_val.continuousAt.comp hc, hd⟩
+
+theorem DifferentialGeometry.mfderiv_subtypeVal_comp {U : TopologicalSpace.Opens N}
+    (f : M → U) (x : M) :
+    mfderiv I J (fun y => (f y : N)) x = mfderiv I J f x := by
+  classical
+  change (if MDifferentiableAt I J (fun y => (f y : N)) x then
+      fderivWithin 𝕜 (writtenInExtChartAt I J x (fun y => (f y : N)))
+        (Set.range I) ((extChartAt I x) x) else (0 : E →L[𝕜] F)) =
+    (if MDifferentiableAt I J f x then
+      fderivWithin 𝕜 (writtenInExtChartAt I J x f)
+        (Set.range I) ((extChartAt I x) x) else (0 : E →L[𝕜] F))
+  by_cases hf : MDifferentiableAt I J f x
+  · have hc := (MDifferentiableAt.subtypeVal_comp_iff (I := I) (J := J) f x).mpr hf
+    rw [if_pos hc, if_pos hf]
+    rfl
+  · have hc := mt (MDifferentiableAt.subtypeVal_comp_iff (I := I) (J := J) f x).mp hf
+    rw [if_neg hc, if_neg hf]
+end
