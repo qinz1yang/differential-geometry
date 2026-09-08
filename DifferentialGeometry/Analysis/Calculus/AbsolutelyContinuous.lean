@@ -14,6 +14,20 @@ namespace AbsolutelyContinuousOnInterval
 
 variable {X : Type*} [PseudoMetricSpace X]
 
+theorem _root_.uniformContinuousOn_of_absolutelyContinuousOnInterval
+    {f : ℝ → X} {a b : ℝ} (hf : AbsolutelyContinuousOnInterval f a b) :
+    UniformContinuousOn f (uIcc a b) := by
+  simp only [UniformContinuousOn, Filter.tendsto_iff_comap, uniformity_eq_comap_totalLengthFilter]
+  simp only [AbsolutelyContinuousOnInterval, Filter.tendsto_iff_comap] at hf
+  convert! Filter.comap_mono hf
+  · simp only [comap_inf, comap_principal]
+    congr
+    ext p
+    simp only [disjWithin, Finset.mem_range, preimage_ofPred_eq, Nat.lt_one_iff,
+      forall_eq, mem_ofPred_eq, mem_prod]
+    simp
+  · simp [totalLengthFilter, comap_comap, Function.comp_def]
+
 theorem piecewise_Iic {f g : ℝ → X} {a b c : ℝ}
     (hab : a ≤ b) (hbc : b ≤ c)
     (hf : AbsolutelyContinuousOnInterval f a b)
