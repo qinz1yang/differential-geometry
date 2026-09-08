@@ -4,6 +4,7 @@ import DifferentialGeometry.Analysis.ODE.CompactSupportFlow
 import DifferentialGeometry.Analysis.Calculus.CurveDerivative
 import DifferentialGeometry.Geometry.Exponential.Smoothness.IntrinsicMfderivZero
 import DifferentialGeometry.Geometry.Metric.LieDerivative.Flow
+import DifferentialGeometry.Geometry.Metric.LocalProduct
 
 set_option autoImplicit false
 
@@ -65,6 +66,23 @@ omit [FiniteDimensional ℝ E] [I.Boundaryless] [T2Space M] in
 private instance perpModelBoundaryless (g : SmoothRiemannianMetric I M) (x : M)
     (e : TangentSpace I x) : (perpModel g x e).Boundaryless :=
   ⟨perpModel_range g x e⟩
+
+omit [I.Boundaryless] [T2Space M] in
+theorem finrank_perpSpace (g : SmoothRiemannianMetric I M) (x : M)
+    (e : TangentSpace I x) (he : e ≠ 0) :
+    Module.finrank ℝ (perpSpace g x e) = Module.finrank ℝ E - 1 := by
+  let f : E →ₗ[ℝ] ℝ := ((g.inner x e).comp
+    (tangentSpaceModelContinuousLinearEquiv (I := I) x).symm.toContinuousLinearMap).toLinearMap
+  have hf : f ≠ 0 := by
+    intro hz
+    have h := LinearMap.congr_fun hz (tangentSpaceModelContinuousLinearEquiv (I := I) x e)
+    change g.inner x e ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
+      (tangentSpaceModelContinuousLinearEquiv (I := I) x e)) = 0 at h
+    rw [ContinuousLinearEquiv.symm_apply_apply] at h
+    exact (ne_of_gt (g.pos x e he)) h
+  have hdim := Module.Dual.finrank_ker_add_one_of_ne_zero hf
+  change Module.finrank ℝ (LinearMap.ker f) = Module.finrank ℝ E - 1
+  omega
 
 private def perpProdLinearMap (g : SmoothRiemannianMetric I M) (x : M)
     (e : TangentSpace I x) :
@@ -1206,8 +1224,8 @@ private def RectangularCorrectedFlowMapData
     And (∀ k ∈ K, -f (adaptedBaseMap g x (s x) k) ∈ Metric.ball (0 : ℝ) delta) <|
     And (∀ k ∈ K, ∀ r ∈ Set.uIcc 0 (-f (adaptedBaseMap g x (s x) k)),
       globalFlowDiffeomorph X hX hXcompact r (adaptedBaseMap g x (s x) k) ∈ W) <|
-    ∀ k ∈ K, ∀ t ∈ J, ∀ r ∈ Set.uIcc 0 t,
-      globalFlowDiffeomorph X hX hXcompact r (phi (k, 0)) ∈ W
+    (∀ k ∈ K, ∀ t ∈ J, ∀ r ∈ Set.uIcc 0 t,
+      globalFlowDiffeomorph X hX hXcompact r (phi (k, 0)) ∈ W) ∧ IsPreconnected J
 
 private theorem exists_rectangular_correctedFlowMap
     (g : SmoothRiemannianMetric I M) (x : M) {U : Set M}
@@ -1324,8 +1342,14 @@ private theorem exists_rectangular_correctedFlowMap
         change -f (b 0) ∈ Metric.ball (0 : ℝ) delta
         rw [show b 0 = x by exact adaptedBaseMap_zero g x (s x), hfx]
         simpa only [Metric.mem_ball, neg_zero, dist_self] using hdelta⟩
-  obtain ⟨K, J, hKopen, hzeroK, hJopen, hzeroJ, hKJsub⟩ :=
+  obtain ⟨K, J₀, hKopen, hzeroK, hJ₀open, hzeroJ₀, hKJ₀sub⟩ :=
     mem_nhds_prod_iff'.mp (hGopen.mem_nhds hzeroG)
+  obtain ⟨ε, hε, hball⟩ := Metric.mem_nhds_iff.mp (hJ₀open.mem_nhds hzeroJ₀)
+  let J := Metric.ball (0 : ℝ) ε
+  have hJopen : IsOpen J := Metric.isOpen_ball
+  have hzeroJ : (0 : ℝ) ∈ J := Metric.mem_ball_self hε
+  have hJconnected : IsPreconnected J := (convex_ball (0 : ℝ) ε).isPreconnected
+  have hKJsub : K ×ˢ J ⊆ G := fun _ hq => hKJ₀sub ⟨hq.1, hball hq.2⟩
   let phi := restrictPartialDiffeomorphOpen psi (K ×ˢ J) (hKopen.prod hJopen)
   have hKJpsi : K ×ˢ J ⊆ psi.source :=
     fun q hq => (hKJsub hq).1.1.1.1.1
@@ -1338,7 +1362,7 @@ private theorem exists_rectangular_correctedFlowMap
     exact hEqPsi (hKJpsi hq)
   refine ⟨W, A, B, delta, K, J, phi, hWopen, hxW, hWU, hWEq,
     hAopen, hzeroA, hBopen, hxB, hdelta, hballA, hABsub,
-    hKopen, hzeroK, hJopen, hzeroJ, hphiSource, hEqPhi, ?_, ?_, ?_, ?_⟩
+    hKopen, hzeroK, hJopen, hzeroJ, hphiSource, hEqPhi, ?_, ?_, ?_, ?_, hJconnected⟩
   · intro k hk
     have hkzero : (k, (0 : ℝ)) ∈ K ×ˢ J := ⟨hk, hzeroJ⟩
     have hkG := hKJsub hkzero
@@ -1650,7 +1674,7 @@ private theorem globalFlow_mfderiv_pushforward
   simpa [phi] using hchainApply.symm
 
 private theorem globalFlow_inner_product_product_formula
-    (g : SmoothRiemannianMetric I M) (x : M) {U : Set M}
+    (g₀ g : SmoothRiemannianMetric I M) (x : M) {U : Set M}
     (hUopen : IsOpen U) (s : Cₛ^∞⟮I; E, TangentSpace I⟯) (f : M → ℝ)
     (hunit : ∀ y ∈ U, g.inner y (s y) (s y) = 1)
     (hf : ContMDiffOn I 𝓘(ℝ, ℝ) ∞ f U)
@@ -1664,27 +1688,27 @@ private theorem globalFlow_inner_product_product_formula
     (hWEq : Set.EqOn X (fun y => s y) W)
     (hXparallel : ∀ y ∈ W, ∀ q : TangentSpace I y,
       (LeviCivita (I := I) g) X y q = 0)
-    {K : Set (perpSpace g x (s x))} {J : Set ℝ}
+    {K : Set (perpSpace g₀ x (s x))} {J : Set ℝ}
     (hKopen : IsOpen K)
-    (Y : perpSpace g x (s x) → M)
-    (hY : ContMDiffOn (perpModel g x (s x)) I ∞ Y K)
+    (Y : perpSpace g₀ x (s x) → M)
+    (hY : ContMDiffOn (perpModel g₀ x (s x)) I ∞ Y K)
     (hYlevel : ∀ k ∈ K, f (Y k) = 0)
     (hflowPath : ∀ k ∈ K, ∀ t ∈ J, ∀ r ∈ Set.uIcc 0 t,
       globalFlowDiffeomorph X hX hXcompact r (Y k) ∈ W)
-    (k : perpSpace g x (s x)) (hk : k ∈ K) (t : ℝ)
+    (k : perpSpace g₀ x (s x)) (hk : k ∈ K) (t : ℝ)
     (ht : t ∈ J)
-    (u v : TangentSpace (perpModel g x (s x)) k) (r q : ℝ) :
+    (u v : TangentSpace (perpModel g₀ x (s x)) k) (r q : ℝ) :
     g.inner (globalFlowDiffeomorph X hX hXcompact t (Y k))
-        ((mfderiv ((perpModel g x (s x)).prod 𝓘(ℝ, ℝ)) I
-          (fun z : perpSpace g x (s x) × ℝ =>
+        ((mfderiv ((perpModel g₀ x (s x)).prod 𝓘(ℝ, ℝ)) I
+          (fun z : perpSpace g₀ x (s x) × ℝ =>
             globalFlowDiffeomorph X hX hXcompact z.2 (Y z.1)) (k, t))
-          (show TangentSpace ((perpModel g x (s x)).prod 𝓘(ℝ, ℝ)) (k, t) from (u, r)))
-        ((mfderiv ((perpModel g x (s x)).prod 𝓘(ℝ, ℝ)) I
-          (fun z : perpSpace g x (s x) × ℝ =>
+          (show TangentSpace ((perpModel g₀ x (s x)).prod 𝓘(ℝ, ℝ)) (k, t) from (u, r)))
+        ((mfderiv ((perpModel g₀ x (s x)).prod 𝓘(ℝ, ℝ)) I
+          (fun z : perpSpace g₀ x (s x) × ℝ =>
             globalFlowDiffeomorph X hX hXcompact z.2 (Y z.1)) (k, t))
-          (show TangentSpace ((perpModel g x (s x)).prod 𝓘(ℝ, ℝ)) (k, t) from (v, q))) =
-      g.inner (Y k) (mfderiv (perpModel g x (s x)) I Y k u)
-        (mfderiv (perpModel g x (s x)) I Y k v) + r * q := by
+          (show TangentSpace ((perpModel g₀ x (s x)).prod 𝓘(ℝ, ℝ)) (k, t) from (v, q))) =
+      g.inner (Y k) (mfderiv (perpModel g₀ x (s x)) I Y k u)
+        (mfderiv (perpModel g₀ x (s x)) I Y k v) + r * q := by
   have hYkW : Y k ∈ W := by
     have hz : (0 : ℝ) ∈ Set.uIcc 0 t := by simp
     have hzero : globalFlowDiffeomorph X hX hXcompact 0 (Y k) = Y k := by
@@ -1695,75 +1719,75 @@ private theorem globalFlow_inner_product_product_formula
     rw [← hzero]
     exact hflowPath k hk t ht 0 hz
   have hYkU : Y k ∈ U := hWU hYkW
-  have hYAt : ContMDiffAt (perpModel g x (s x)) I ∞ Y k :=
+  have hYAt : ContMDiffAt (perpModel g₀ x (s x)) I ∞ Y k :=
     (hY k hk).contMDiffAt (hKopen.mem_nhds hk)
-  have hYMD : MDifferentiableAt (perpModel g x (s x)) I Y k :=
+  have hYMD : MDifferentiableAt (perpModel g₀ x (s x)) I Y k :=
     hYAt.mdifferentiableAt (by simp)
   have hfAt : ContMDiffAt I 𝓘(ℝ, ℝ) ∞ f (Y k) :=
     (hf (Y k) hYkU).contMDiffAt (hUopen.mem_nhds hYkU)
   have hfMD : MDifferentiableAt I 𝓘(ℝ, ℝ) f (Y k) :=
     hfAt.mdifferentiableAt (by simp)
-  have hlevelEq : (fun z : perpSpace g x (s x) => f (Y z)) =ᶠ[𝓝 k]
+  have hlevelEq : (fun z : perpSpace g₀ x (s x) => f (Y z)) =ᶠ[𝓝 k]
       (fun _ => 0) := by
     filter_upwards [hKopen.mem_nhds hk] with z hz
     exact hYlevel z hz
-  have hlevelDeriv : mfderiv (perpModel g x (s x)) 𝓘(ℝ, ℝ)
-      (fun z : perpSpace g x (s x) => f (Y z)) k = 0 := by
+  have hlevelDeriv : mfderiv (perpModel g₀ x (s x)) 𝓘(ℝ, ℝ)
+      (fun z : perpSpace g₀ x (s x) => f (Y z)) k = 0 := by
     rw [hlevelEq.mfderiv_eq]
     rw [mfderiv_const]
     rfl
-  have hlevelApply (a : TangentSpace (perpModel g x (s x)) k) :
-      (mfderiv (perpModel g x (s x)) 𝓘(ℝ, ℝ)
-        (fun z : perpSpace g x (s x) => f (Y z)) k) a = 0 := by
+  have hlevelApply (a : TangentSpace (perpModel g₀ x (s x)) k) :
+      (mfderiv (perpModel g₀ x (s x)) 𝓘(ℝ, ℝ)
+        (fun z : perpSpace g₀ x (s x) => f (Y z)) k) a = 0 := by
     rw [hlevelDeriv]
     rfl
-  have horth : ∀ a : TangentSpace (perpModel g x (s x)) k,
-      g.inner (Y k) ((mfderiv (perpModel g x (s x)) I Y k) a)
+  have horth : ∀ a : TangentSpace (perpModel g₀ x (s x)) k,
+      g.inner (Y k) ((mfderiv (perpModel g₀ x (s x)) I Y k) a)
         (X (Y k)) = 0 := by
     intro a
     have hchain := mfderiv_comp k hfMD hYMD
     have hchainApply := congrArg (fun L => L a) hchain
     have hzero := hlevelApply a
-    change (mfderiv (perpModel g x (s x)) 𝓘(ℝ, ℝ) (f ∘ Y) k) a = 0 at hzero
+    change (mfderiv (perpModel g₀ x (s x)) 𝓘(ℝ, ℝ) (f ∘ Y) k) a = 0 at hzero
     rw [hchain] at hzero
     change (mfderiv I 𝓘(ℝ, ℝ) f (Y k))
-      ((mfderiv (perpModel g x (s x)) I Y k) a) = 0 at hzero
+      ((mfderiv (perpModel g₀ x (s x)) I Y k) a) = 0 at hzero
     change mvfderiv (I := I) f (Y k)
-      ((mfderiv (perpModel g x (s x)) I Y k) a) = 0 at hzero
+      ((mfderiv (perpModel g₀ x (s x)) I Y k) a) = 0 at hzero
     have hXs : X (Y k) = s (Y k) := hWEq hYkW
     rw [hdf (Y k) hYkU, ← hXs] at hzero
     rw [g.symm]
     exact hzero
-  have hpair (a b : TangentSpace (perpModel g x (s x)) k) :
+  have hpair (a b : TangentSpace (perpModel g₀ x (s x)) k) :
       g.inner (globalFlowDiffeomorph X hX hXcompact t (Y k))
           ((mfderiv I I (globalFlowDiffeomorph X hX hXcompact t : M → M) (Y k))
-            ((mfderiv (perpModel g x (s x)) I Y k) a))
+            ((mfderiv (perpModel g₀ x (s x)) I Y k) a))
           ((mfderiv I I (globalFlowDiffeomorph X hX hXcompact t : M → M) (Y k))
-            ((mfderiv (perpModel g x (s x)) I Y k) b)) =
-        g.inner (Y k) ((mfderiv (perpModel g x (s x)) I Y k) a)
-          ((mfderiv (perpModel g x (s x)) I Y k) b) := by
+            ((mfderiv (perpModel g₀ x (s x)) I Y k) b)) =
+        g.inner (Y k) ((mfderiv (perpModel g₀ x (s x)) I Y k) a)
+          ((mfderiv (perpModel g₀ x (s x)) I Y k) b) := by
     exact globalFlow_pairing_eq_zero_of_parallel_on_uIcc g X hX hXcompact
       hXparallel t (Y k)
-      ((mfderiv (perpModel g x (s x)) I Y k) a)
-      ((mfderiv (perpModel g x (s x)) I Y k) b)
+      ((mfderiv (perpModel g₀ x (s x)) I Y k) a)
+      ((mfderiv (perpModel g₀ x (s x)) I Y k) b)
       (hflowPath k hk t ht)
-  have hpairLeft (a : TangentSpace (perpModel g x (s x)) k) :
+  have hpairLeft (a : TangentSpace (perpModel g₀ x (s x)) k) :
       g.inner (globalFlowDiffeomorph X hX hXcompact t (Y k))
           ((mfderiv I I (globalFlowDiffeomorph X hX hXcompact t : M → M) (Y k))
-            ((mfderiv (perpModel g x (s x)) I Y k) a))
+            ((mfderiv (perpModel g₀ x (s x)) I Y k) a))
           (X (globalFlowDiffeomorph X hX hXcompact t (Y k))) = 0 := by
     have hp := globalFlow_pairing_eq_zero_of_parallel_on_uIcc g X hX hXcompact
       hXparallel t (Y k)
-      ((mfderiv (perpModel g x (s x)) I Y k) a) (X (Y k))
+      ((mfderiv (perpModel g₀ x (s x)) I Y k) a) (X (Y k))
       (hflowPath k hk t ht)
     rw [globalFlow_mfderiv_pushforward X hX hXcompact t (Y k)] at hp
     rw [horth a] at hp
     exact hp
-  have hpairRight (a : TangentSpace (perpModel g x (s x)) k) :
+  have hpairRight (a : TangentSpace (perpModel g₀ x (s x)) k) :
       g.inner (globalFlowDiffeomorph X hX hXcompact t (Y k))
           (X (globalFlowDiffeomorph X hX hXcompact t (Y k)))
           ((mfderiv I I (globalFlowDiffeomorph X hX hXcompact t : M → M) (Y k))
-            ((mfderiv (perpModel g x (s x)) I Y k) a)) = 0 := by
+            ((mfderiv (perpModel g₀ x (s x)) I Y k) a)) = 0 := by
     rw [g.symm]
     exact hpairLeft a
   have hunitFlow :
@@ -1774,19 +1798,19 @@ private theorem globalFlow_inner_product_product_formula
     have htU := hWU htW
     rw [hWEq htW]
     exact hunit _ htU
-  have hdu := globalFlow_mfderiv_product_decomposition g x s X hX hXcompact
+  have hdu := globalFlow_mfderiv_product_decomposition g₀ x s X hX hXcompact
     hKopen Y hY k hk t u r
-  have hdv := globalFlow_mfderiv_product_decomposition g x s X hX hXcompact
+  have hdv := globalFlow_mfderiv_product_decomposition g₀ x s X hX hXcompact
     hKopen Y hY k hk t v q
   rw [hdu, hdv]
   let z : TangentSpace I (globalFlowDiffeomorph X hX hXcompact t (Y k)) :=
     X (globalFlowDiffeomorph X hX hXcompact t (Y k))
   let A : TangentSpace I (globalFlowDiffeomorph X hX hXcompact t (Y k)) :=
     (mfderiv I I (globalFlowDiffeomorph X hX hXcompact t : M → M) (Y k))
-      ((mfderiv (perpModel g x (s x)) I Y k) u)
+      ((mfderiv (perpModel g₀ x (s x)) I Y k) u)
   let B : TangentSpace I (globalFlowDiffeomorph X hX hXcompact t (Y k)) :=
     (mfderiv I I (globalFlowDiffeomorph X hX hXcompact t : M → M) (Y k))
-      ((mfderiv (perpModel g x (s x)) I Y k) v)
+      ((mfderiv (perpModel g₀ x (s x)) I Y k) v)
   change g.inner (globalFlowDiffeomorph X hX hXcompact t (Y k)) (r • z + A) (q • z + B) = _
   have hexpand :
       g.inner (globalFlowDiffeomorph X hX hXcompact t (Y k)) (r • z + A) (q • z + B) =
@@ -1798,8 +1822,8 @@ private theorem globalFlow_inner_product_product_formula
     ring
   rw [hexpand, hunitFlow]
   have hAB : g.inner (globalFlowDiffeomorph X hX hXcompact t (Y k)) A B =
-      g.inner (Y k) ((mfderiv (perpModel g x (s x)) I Y k) u)
-        ((mfderiv (perpModel g x (s x)) I Y k) v) := by
+      g.inner (Y k) ((mfderiv (perpModel g₀ x (s x)) I Y k) u)
+        ((mfderiv (perpModel g₀ x (s x)) I Y k) v) := by
     simpa [A, B] using hpair u v
   have hAz : g.inner (globalFlowDiffeomorph X hX hXcompact t (Y k)) A z = 0 := by
     simpa [A, z] using hpairLeft u
@@ -1890,6 +1914,217 @@ def HasLocalRiemannianProductAt
                         (fun z : perpSpace g x e => phi (z, 0)) k) v) +
                     r * q))))))
 
+private theorem exists_local_product_chart_of_common_gradient_potential
+    {A : Type*} (g : A → SmoothRiemannianMetric I M) (a₀ : A) (x : M) {U : Set M}
+    (hUopen : IsOpen U) (hxU : x ∈ U)
+    (s : Cₛ^∞⟮I; E, TangentSpace I⟯) (hunit : ∀ a, ∀ y ∈ U,
+      (g a).inner y (s y) (s y) = 1)
+    (hparallel : ∀ a, ∀ y ∈ U, ∀ v : TangentSpace I y,
+      (LeviCivita (I := I) (g a)) s y v = 0)
+    (f : M → ℝ) (hfx : f x = 0)
+    (hf : ContMDiffOn I 𝓘(ℝ, ℝ) ∞ f U)
+    (hdf : ∀ a, ∀ y ∈ U, ∀ v : TangentSpace I y,
+      mvfderiv (I := I) f y v = (g a).inner y (s y) v) :
+  ∃ (K : Set (perpSpace (g a₀) x (s x))) (J : Set ℝ)
+      (phi : PartialDiffeomorph
+        ((perpModel (g a₀) x (s x)).prod 𝓘(ℝ, ℝ)) I
+        (perpSpace (g a₀) x (s x) × ℝ) M ∞),
+    And (IsOpen K)
+      (And ((0 : perpSpace (g a₀) x (s x)) ∈ K)
+        (And (IsOpen J)
+          (And ((0 : ℝ) ∈ J)
+            (And (phi.source = K ×ˢ J)
+              (And (phi (0, 0) = x)
+                (∀ a, ∀ (k : perpSpace (g a₀) x (s x)), k ∈ K → ∀ (t : ℝ), t ∈ J →
+                  ∀ (u v : TangentSpace (perpModel (g a₀) x (s x)) k), ∀ (r q : ℝ),
+                  (g a).inner (phi (k, t))
+                    ((mfderiv ((perpModel (g a₀) x (s x)).prod 𝓘(ℝ, ℝ)) I
+                      (fun z : perpSpace (g a₀) x (s x) × ℝ => phi z) (k, t))
+                      (show TangentSpace ((perpModel (g a₀) x (s x)).prod 𝓘(ℝ, ℝ))
+                        (k, t) from (u, r)))
+                    ((mfderiv ((perpModel (g a₀) x (s x)).prod 𝓘(ℝ, ℝ)) I
+                      (fun z : perpSpace (g a₀) x (s x) × ℝ => phi z) (k, t))
+                      (show TangentSpace ((perpModel (g a₀) x (s x)).prod 𝓘(ℝ, ℝ))
+                        (k, t) from (v, q))) =
+                    (g a).inner (phi (k, 0))
+                      ((mfderiv (perpModel (g a₀) x (s x)) I
+                        (fun z : perpSpace (g a₀) x (s x) => phi (z, 0)) k) u)
+                      ((mfderiv (perpModel (g a₀) x (s x)) I
+                        (fun z : perpSpace (g a₀) x (s x) => phi (z, 0)) k) v) +
+                    r * q)))))) ∧
+      IsPreconnected J ∧ phi.target ⊆ U ∧
+      ∀ k ∈ K, ∀ t ∈ J, ∀ r : ℝ,
+        (mfderiv ((perpModel (g a₀) x (s x)).prod 𝓘(ℝ, ℝ)) I
+          (fun z : perpSpace (g a₀) x (s x) × ℝ => phi z) (k, t))
+          (show TangentSpace ((perpModel (g a₀) x (s x)).prod 𝓘(ℝ, ℝ)) (k, t) from (0, r)) =
+        r • s (phi (k, t)) := by
+  obtain ⟨X, hX, hXcompact, hXeq⟩ :=
+    exists_compactlySupported_extension_eq_eventually hUopen hxU s
+  obtain ⟨W, A, B, delta, K, J, phi, hWopen, hxW, hWU, hWEq,
+      hAopen, hzeroA, hBopen, hxB, hdelta, hballA, hABsub,
+      hKopen, hzeroK, hJopen, hzeroJ, hphiSource, hEqPhi,
+      hbaseB, hbaseSmall, hbasePath, hflowPath, hJconnected⟩ :=
+    exists_rectangular_correctedFlowMap (g a₀) x hUopen hxU s f (hunit a₀) hfx hf (hdf a₀)
+      X hX hXcompact hXeq
+  let Y : perpSpace (g a₀) x (s x) → M := fun k => phi (k, 0)
+  have hY : ContMDiffOn (perpModel (g a₀) x (s x)) I ∞ Y K := by
+    intro k hk
+    have hsource : (k, (0 : ℝ)) ∈ phi.source := by
+      rw [hphiSource]
+      exact ⟨hk, hzeroJ⟩
+    have hphiAt : ContMDiffAt ((perpModel (g a₀) x (s x)).prod 𝓘(ℝ, ℝ)) I ∞
+        (fun z : perpSpace (g a₀) x (s x) × ℝ => phi z) (k, 0) :=
+      (phi.contMDiffOn_toFun (k, 0) hsource).contMDiffAt
+        (phi.open_source.mem_nhds hsource)
+    exact (hphiAt.comp k (contMDiffAt_id.prodMk contMDiffAt_const)).contMDiffWithinAt
+  have hYlevel : ∀ k ∈ K, f (Y k) = 0 := by
+    intro k hk
+    have hlevel := correctedFlowMap_zero_level_of_basePath (g a₀) x hUopen s f (hunit a₀) hf (hdf a₀)
+      X hX hXcompact hWU hWEq hbasePath k hk
+    change f (phi (k, (0 : ℝ))) = 0
+    rw [← hEqPhi ⟨hk, hzeroJ⟩]
+    exact hlevel
+  have hXparallel : ∀ a, ∀ y ∈ W, ∀ v : TangentSpace I y,
+      (LeviCivita (I := I) (g a)) X y v = 0 := by
+    intro a
+    exact leviCivita_parallel_of_eqOn (g a) s X hX hWopen hWEq
+      (fun y hy v => hparallel a y (hWU hy) v)
+  have hflowPath' : ∀ k ∈ K, ∀ t ∈ J, ∀ r ∈ Set.uIcc 0 t,
+      globalFlowDiffeomorph X hX hXcompact r (Y k) ∈ W := by
+    intro k hk t ht r hr
+    exact hflowPath k hk t ht r hr
+  have hflowEq : ∀ k ∈ K, ∀ t ∈ J,
+      globalFlowDiffeomorph X hX hXcompact t (Y k) = phi (k, t) := by
+    intro k hk t ht
+    calc
+      globalFlowDiffeomorph X hX hXcompact t (Y k) =
+          globalFlowDiffeomorph X hX hXcompact t
+            (correctedFlowMap X hX hXcompact (g a₀) x (s x) f (k, 0)) := by
+        rw [show Y k = phi (k, 0) by rfl, ← hEqPhi ⟨hk, hzeroJ⟩]
+      _ = correctedFlowMap X hX hXcompact (g a₀) x (s x) f (k, t) := by
+        exact (correctedFlowMap_eq_flow_of_base (g a₀) x s f X hX hXcompact k t).symm
+      _ = phi (k, t) := hEqPhi ⟨hk, ht⟩
+  have hphiZero : phi (0, 0) = x := by
+    calc
+      phi (0, 0) = correctedFlowMap X hX hXcompact (g a₀) x (s x) f (0, 0) :=
+        (hEqPhi ⟨hzeroK, hzeroJ⟩).symm
+      _ = x := by
+        change DifferentialGeometry.Analysis.ODE.curveAt X
+          (DifferentialGeometry.Analysis.ODE.exists_globalIntegralCurve_of_compactSupport
+            X hX hXcompact)
+          (adaptedBaseMap (g a₀) x (s x) 0)
+          (0 - f (adaptedBaseMap (g a₀) x (s x) 0)) = x
+        rw [adaptedBaseMap_zero, hfx, sub_zero]
+        exact DifferentialGeometry.Analysis.ODE.curveAt_zero X
+          (DifferentialGeometry.Analysis.ODE.exists_globalIntegralCurve_of_compactSupport
+            X hX hXcompact) x
+  have hderivEq (k : perpSpace (g a₀) x (s x)) (hk : k ∈ K) (t : ℝ) (ht : t ∈ J) :
+      mfderiv ((perpModel (g a₀) x (s x)).prod 𝓘(ℝ, ℝ)) I
+          (fun z : perpSpace (g a₀) x (s x) × ℝ =>
+            globalFlowDiffeomorph X hX hXcompact z.2 (Y z.1)) (k, t) =
+        mfderiv ((perpModel (g a₀) x (s x)).prod 𝓘(ℝ, ℝ)) I
+          (fun z : perpSpace (g a₀) x (s x) × ℝ => phi z) (k, t) := by
+    have hEqFlow :
+        (fun z : perpSpace (g a₀) x (s x) × ℝ =>
+          globalFlowDiffeomorph X hX hXcompact z.2 (Y z.1)) =ᶠ[
+            𝓝 (k, t)]
+          (fun z : perpSpace (g a₀) x (s x) × ℝ => phi z) := by
+      have hprod : K ×ˢ J ∈ 𝓝 (k, t) :=
+        prod_mem_nhds (hKopen.mem_nhds hk) (hJopen.mem_nhds ht)
+      filter_upwards [hprod] with z hz
+      calc
+        globalFlowDiffeomorph X hX hXcompact z.2 (Y z.1) =
+            globalFlowDiffeomorph X hX hXcompact z.2
+              (correctedFlowMap X hX hXcompact (g a₀) x (s x) f (z.1, 0)) := by
+          have hEqPhi0 : correctedFlowMap X hX hXcompact (g a₀) x (s x) f (z.1, 0) =
+              phi (z.1, 0) := hEqPhi (show (z.1, (0 : ℝ)) ∈ K ×ˢ J from
+                ⟨hz.1, hzeroJ⟩)
+          simpa [Y] using congrArg (globalFlowDiffeomorph X hX hXcompact z.2)
+            hEqPhi0.symm
+        _ = correctedFlowMap X hX hXcompact (g a₀) x (s x) f (z.1, z.2) := by
+          exact (correctedFlowMap_eq_flow_of_base (g a₀) x s f X hX hXcompact z.1 z.2).symm
+        _ = phi z := hEqPhi ⟨hz.1, hz.2⟩
+    exact hEqFlow.mfderiv_eq
+  have hformula a := globalFlow_inner_product_product_formula (g a₀) (g a) x hUopen s f
+    (hunit a) hf (hdf a) X hX hXcompact hWU hWEq (hXparallel a) hKopen Y hY hYlevel hflowPath'
+  have hphiW (k : perpSpace (g a₀) x (s x)) (hk : k ∈ K) (t : ℝ) (ht : t ∈ J) :
+      phi (k, t) ∈ W := by
+    rw [← hflowEq k hk t ht]
+    exact hflowPath' k hk t ht t Set.right_mem_uIcc
+  refine ⟨K, J, phi, ⟨hKopen, hzeroK, hJopen, hzeroJ, hphiSource, hphiZero, ?_⟩, hJconnected, ?_, ?_⟩
+  · intro a k hk t ht u v r q
+    have hformula' := hformula a k hk t ht u v r q
+    rw [hflowEq k hk t ht, hderivEq k hk t ht] at hformula'
+    simpa [Y, Function.comp_def] using hformula'
+  · intro y hy
+    have hySource := phi.map_target hy
+    rw [hphiSource] at hySource
+    have hyW := hphiW (phi.symm y).1 hySource.1 (phi.symm y).2 hySource.2
+    have hyU := hWU hyW
+    change phi (phi.symm y) ∈ U at hyU
+    have heq : phi (phi.symm y) = y := by
+      exact phi.right_inv' hy
+    exact heq ▸ hyU
+  · intro k hk t ht r
+    rw [← hderivEq k hk t ht]
+    have h := globalFlow_mfderiv_product_decomposition (g a₀) x s X hX hXcompact
+      hKopen Y hY k hk t (0 : TangentSpace (perpModel (g a₀) x (s x)) k) r
+    simp only [map_zero, add_zero] at h
+    change _ = r • X (globalFlowDiffeomorph X hX hXcompact t (Y k)) at h
+    rw [hflowEq k hk t ht, hWEq (hphiW k hk t ht)] at h
+    exact h
+
+theorem exists_local_product_chart_from_parallel_unit_section_of_gradient_potential
+    (g : SmoothRiemannianMetric I M) (x : M) {U : Set M}
+    (hUopen : IsOpen U) (hxU : x ∈ U)
+    (s : Cₛ^∞⟮I; E, TangentSpace I⟯) (hunit : ∀ y ∈ U,
+      g.inner y (s y) (s y) = 1)
+    (hparallel : ∀ y ∈ U, ∀ v : TangentSpace I y,
+      (LeviCivita (I := I) g) s y v = 0)
+    (f : M → ℝ) (hfx : f x = 0)
+    (hf : ContMDiffOn I 𝓘(ℝ, ℝ) ∞ f U)
+    (hdf : ∀ y ∈ U, ∀ v : TangentSpace I y,
+      mvfderiv (I := I) f y v = g.inner y (s y) v) :
+  ∃ (K : Set (perpSpace g x (s x))) (J : Set ℝ)
+      (phi : PartialDiffeomorph
+        ((perpModel g x (s x)).prod 𝓘(ℝ, ℝ)) I
+        (perpSpace g x (s x) × ℝ) M ∞),
+    And (IsOpen K)
+      (And ((0 : perpSpace g x (s x)) ∈ K)
+        (And (IsOpen J)
+          (And ((0 : ℝ) ∈ J)
+            (And (phi.source = K ×ˢ J)
+              (And (phi (0, 0) = x)
+                (∀ (k : perpSpace g x (s x)), k ∈ K → ∀ (t : ℝ), t ∈ J →
+                  ∀ (u v : TangentSpace (perpModel g x (s x)) k), ∀ (r q : ℝ),
+                  g.inner (phi (k, t))
+                    ((mfderiv ((perpModel g x (s x)).prod 𝓘(ℝ, ℝ)) I
+                      (fun z : perpSpace g x (s x) × ℝ => phi z) (k, t))
+                      (show TangentSpace ((perpModel g x (s x)).prod 𝓘(ℝ, ℝ))
+                        (k, t) from (u, r)))
+                    ((mfderiv ((perpModel g x (s x)).prod 𝓘(ℝ, ℝ)) I
+                      (fun z : perpSpace g x (s x) × ℝ => phi z) (k, t))
+                      (show TangentSpace ((perpModel g x (s x)).prod 𝓘(ℝ, ℝ))
+                        (k, t) from (v, q))) =
+                    g.inner (phi (k, 0))
+                      ((mfderiv (perpModel g x (s x)) I
+                        (fun z : perpSpace g x (s x) => phi (z, 0)) k) u)
+                      ((mfderiv (perpModel g x (s x)) I
+                        (fun z : perpSpace g x (s x) => phi (z, 0)) k) v) +
+                    r * q)))))) ∧
+      IsPreconnected J ∧ phi.target ⊆ U ∧
+      ∀ k ∈ K, ∀ t ∈ J, ∀ r : ℝ,
+        (mfderiv ((perpModel g x (s x)).prod 𝓘(ℝ, ℝ)) I
+          (fun z : perpSpace g x (s x) × ℝ => phi z) (k, t))
+          (show TangentSpace ((perpModel g x (s x)).prod 𝓘(ℝ, ℝ)) (k, t) from (0, r)) =
+        r • s (phi (k, t)) := by
+  obtain ⟨K, J, phi, ⟨hK, hK₀, hJ, hJ₀, hsource, hzero, hproduct⟩,
+      hconnected, htarget, hvertical⟩ :=
+    exists_local_product_chart_of_common_gradient_potential (fun _ : Unit => g) () x
+      hUopen hxU s (fun _ => hunit) (fun _ => hparallel) f hfx hf (fun _ => hdf)
+  exact ⟨K, J, phi, ⟨hK, hK₀, hJ, hJ₀, hsource, hzero, hproduct ()⟩,
+    hconnected, htarget, hvertical⟩
+
 theorem exists_local_product_from_parallel_unit_section_of_gradient_potential
     (g : SmoothRiemannianMetric I M) (x : M) {U : Set M}
     (hUopen : IsOpen U) (hxU : x ∈ U)
@@ -1902,101 +2137,156 @@ theorem exists_local_product_from_parallel_unit_section_of_gradient_potential
     (hdf : ∀ y ∈ U, ∀ v : TangentSpace I y,
       mvfderiv (I := I) f y v = g.inner y (s y) v) :
     HasLocalRiemannianProductAt (I := I) g x (s x) := by
-  obtain ⟨X, hX, hXcompact, hXeq⟩ :=
-    exists_compactlySupported_extension_eq_eventually hUopen hxU s
-  obtain ⟨W, A, B, delta, K, J, phi, hWopen, hxW, hWU, hWEq,
-      hAopen, hzeroA, hBopen, hxB, hdelta, hballA, hABsub,
-      hKopen, hzeroK, hJopen, hzeroJ, hphiSource, hEqPhi,
-      hbaseB, hbaseSmall, hbasePath, hflowPath⟩ :=
-    exists_rectangular_correctedFlowMap g x hUopen hxU s f hunit hfx hf hdf
-      X hX hXcompact hXeq
-  let Y : perpSpace g x (s x) → M := fun k => phi (k, 0)
-  have hY : ContMDiffOn (perpModel g x (s x)) I ∞ Y K := by
-    intro k hk
-    have hsource : (k, (0 : ℝ)) ∈ phi.source := by
-      rw [hphiSource]
-      exact ⟨hk, hzeroJ⟩
-    have hphiAt : ContMDiffAt ((perpModel g x (s x)).prod 𝓘(ℝ, ℝ)) I ∞
-        (fun z : perpSpace g x (s x) × ℝ => phi z) (k, 0) :=
-      (phi.contMDiffOn_toFun (k, 0) hsource).contMDiffAt
-        (phi.open_source.mem_nhds hsource)
-    exact (hphiAt.comp k (contMDiffAt_id.prodMk contMDiffAt_const)).contMDiffWithinAt
-  have hYlevel : ∀ k ∈ K, f (Y k) = 0 := by
-    intro k hk
-    have hlevel := correctedFlowMap_zero_level_of_basePath g x hUopen s f hunit hf hdf
-      X hX hXcompact hWU hWEq hbasePath k hk
-    change f (phi (k, (0 : ℝ))) = 0
-    rw [← hEqPhi ⟨hk, hzeroJ⟩]
-    exact hlevel
-  have hXparallel : ∀ y ∈ W, ∀ v : TangentSpace I y,
-      (LeviCivita (I := I) g) X y v = 0 := by
-    exact leviCivita_parallel_of_eqOn g s X hX hWopen hWEq
-      (fun y hy v => hparallel y (hWU hy) v)
-  have hflowPath' : ∀ k ∈ K, ∀ t ∈ J, ∀ r ∈ Set.uIcc 0 t,
-      globalFlowDiffeomorph X hX hXcompact r (Y k) ∈ W := by
-    intro k hk t ht r hr
-    exact hflowPath k hk t ht r hr
-  have hflowEq : ∀ k ∈ K, ∀ t ∈ J,
-      globalFlowDiffeomorph X hX hXcompact t (Y k) = phi (k, t) := by
-    intro k hk t ht
-    calc
-      globalFlowDiffeomorph X hX hXcompact t (Y k) =
-          globalFlowDiffeomorph X hX hXcompact t
-            (correctedFlowMap X hX hXcompact g x (s x) f (k, 0)) := by
-        rw [show Y k = phi (k, 0) by rfl, ← hEqPhi ⟨hk, hzeroJ⟩]
-      _ = correctedFlowMap X hX hXcompact g x (s x) f (k, t) := by
-        exact (correctedFlowMap_eq_flow_of_base g x s f X hX hXcompact k t).symm
-      _ = phi (k, t) := hEqPhi ⟨hk, ht⟩
-  have hphiZero : phi (0, 0) = x := by
-    calc
-      phi (0, 0) = correctedFlowMap X hX hXcompact g x (s x) f (0, 0) :=
-        (hEqPhi ⟨hzeroK, hzeroJ⟩).symm
-      _ = x := by
-        change DifferentialGeometry.Analysis.ODE.curveAt X
-          (DifferentialGeometry.Analysis.ODE.exists_globalIntegralCurve_of_compactSupport
-            X hX hXcompact)
-          (adaptedBaseMap g x (s x) 0)
-          (0 - f (adaptedBaseMap g x (s x) 0)) = x
-        rw [adaptedBaseMap_zero, hfx, sub_zero]
-        exact DifferentialGeometry.Analysis.ODE.curveAt_zero X
-          (DifferentialGeometry.Analysis.ODE.exists_globalIntegralCurve_of_compactSupport
-            X hX hXcompact) x
-  have hformula := globalFlow_inner_product_product_formula g x hUopen s f hunit hf hdf
-    X hX hXcompact hWU hWEq hXparallel hKopen Y hY hYlevel hflowPath'
-  refine ⟨K, J, phi, hKopen, hzeroK, hJopen, hzeroJ, hphiSource, hphiZero, ?_⟩
-  intro k hk t ht u v r q
-  let _ := hk
-  let _ := ht
-  have hEqFlow :
-      (fun z : perpSpace g x (s x) × ℝ =>
-        globalFlowDiffeomorph X hX hXcompact z.2 (Y z.1)) =ᶠ[
-          𝓝 (k, t)]
-        (fun z : perpSpace g x (s x) × ℝ => phi z) := by
-    have hprod : K ×ˢ J ∈ 𝓝 (k, t) :=
-      prod_mem_nhds (hKopen.mem_nhds hk) (hJopen.mem_nhds ht)
-    filter_upwards [hprod] with z hz
-    calc
-      globalFlowDiffeomorph X hX hXcompact z.2 (Y z.1) =
-          globalFlowDiffeomorph X hX hXcompact z.2
-            (correctedFlowMap X hX hXcompact g x (s x) f (z.1, 0)) := by
-        have hEqPhi0 : correctedFlowMap X hX hXcompact g x (s x) f (z.1, 0) =
-            phi (z.1, 0) := hEqPhi (show (z.1, (0 : ℝ)) ∈ K ×ˢ J from
-              ⟨hz.1, hzeroJ⟩)
-        simpa [Y] using congrArg (globalFlowDiffeomorph X hX hXcompact z.2)
-          hEqPhi0.symm
-      _ = correctedFlowMap X hX hXcompact g x (s x) f (z.1, z.2) := by
-        exact (correctedFlowMap_eq_flow_of_base g x s f X hX hXcompact z.1 z.2).symm
-      _ = phi z := hEqPhi ⟨hz.1, hz.2⟩
-  have hderivEq :
-      mfderiv ((perpModel g x (s x)).prod 𝓘(ℝ, ℝ)) I
-          (fun z : perpSpace g x (s x) × ℝ =>
-            globalFlowDiffeomorph X hX hXcompact z.2 (Y z.1)) (k, t) =
-        mfderiv ((perpModel g x (s x)).prod 𝓘(ℝ, ℝ)) I
-          (fun z : perpSpace g x (s x) × ℝ => phi z) (k, t) :=
-    hEqFlow.mfderiv_eq
-  have hformula' := hformula k hk t ht u v r q
-  rw [hflowEq k hk t ht, hderivEq] at hformula'
-  simpa [Y, Function.comp_def] using hformula'
+  obtain ⟨K, J, phi, hproduct, -, -, -⟩ :=
+    exists_local_product_chart_from_parallel_unit_section_of_gradient_potential
+      g x hUopen hxU s hunit hparallel f hfx hf hdf
+  exact ⟨K, J, phi, hproduct⟩
+
+theorem exists_local_product_chart_from_common_parallel_unit_section
+    {A : Type*} (g : A → SmoothRiemannianMetric I M) (a₀ : A) (x : M) {U : Set M}
+    (hUopen : IsOpen U) (hxU : x ∈ U)
+    (s : Cₛ^∞⟮I; E, TangentSpace I⟯) (hunit : ∀ y ∈ U,
+      (g a₀).inner y (s y) (s y) = 1)
+    (hparallel : ∀ a, ∀ y ∈ U, ∀ v : TangentSpace I y,
+      (LeviCivita (I := I) (g a)) s y v = 0)
+    (hdual : ∀ a y, y ∈ U → ∀ v : TangentSpace I y,
+      (g a).inner y (s y) v = (g a₀).inner y (s y) v) :
+  ∃ (K : Set (perpSpace (g a₀) x (s x))) (J : Set ℝ)
+      (phi : PartialDiffeomorph
+        ((perpModel (g a₀) x (s x)).prod 𝓘(ℝ, ℝ)) I
+        (perpSpace (g a₀) x (s x) × ℝ) M ∞),
+    And (IsOpen K)
+      (And ((0 : perpSpace (g a₀) x (s x)) ∈ K)
+        (And (IsOpen J)
+          (And ((0 : ℝ) ∈ J)
+            (And (phi.source = K ×ˢ J)
+              (And (phi (0, 0) = x)
+                (∀ a, ∀ (k : perpSpace (g a₀) x (s x)), k ∈ K → ∀ (t : ℝ), t ∈ J →
+                  ∀ (u v : TangentSpace (perpModel (g a₀) x (s x)) k), ∀ (r q : ℝ),
+                  (g a).inner (phi (k, t))
+                    ((mfderiv ((perpModel (g a₀) x (s x)).prod 𝓘(ℝ, ℝ)) I
+                      (fun z : perpSpace (g a₀) x (s x) × ℝ => phi z) (k, t))
+                      (show TangentSpace ((perpModel (g a₀) x (s x)).prod 𝓘(ℝ, ℝ))
+                        (k, t) from (u, r)))
+                    ((mfderiv ((perpModel (g a₀) x (s x)).prod 𝓘(ℝ, ℝ)) I
+                      (fun z : perpSpace (g a₀) x (s x) × ℝ => phi z) (k, t))
+                      (show TangentSpace ((perpModel (g a₀) x (s x)).prod 𝓘(ℝ, ℝ))
+                        (k, t) from (v, q))) =
+                    (g a).inner (phi (k, 0))
+                      ((mfderiv (perpModel (g a₀) x (s x)) I
+                        (fun z : perpSpace (g a₀) x (s x) => phi (z, 0)) k) u)
+                      ((mfderiv (perpModel (g a₀) x (s x)) I
+                        (fun z : perpSpace (g a₀) x (s x) => phi (z, 0)) k) v) +
+                    r * q)))))) ∧
+      IsPreconnected J ∧ phi.target ⊆ U ∧
+      ∀ k ∈ K, ∀ t ∈ J, ∀ r : ℝ,
+        (mfderiv ((perpModel (g a₀) x (s x)).prod 𝓘(ℝ, ℝ)) I
+          (fun z : perpSpace (g a₀) x (s x) × ℝ => phi z) (k, t))
+          (show TangentSpace ((perpModel (g a₀) x (s x)).prod 𝓘(ℝ, ℝ)) (k, t) from (0, r)) =
+        r • s (phi (k, t)) := by
+  obtain ⟨V, f, hVopen, hxV, hVU, hfx, hf, hdf⟩ :=
+    exists_local_gradient_potential_of_parallel_section (g a₀) hUopen hxU s (hparallel a₀)
+  obtain ⟨K, J, phi, hproduct, hJconnected, htarget, hvertical⟩ :=
+    exists_local_product_chart_of_common_gradient_potential g a₀ x hVopen hxV s
+      (fun a y hy => (hdual a y (hVU hy) (s y)).trans (hunit y (hVU hy)))
+      (fun a y hy v => hparallel a y (hVU hy) v)
+      f hfx hf (fun a y hy v => (hdf y hy v).trans (hdual a y (hVU hy) v).symm)
+  exact ⟨K, J, phi, hproduct, hJconnected, htarget.trans hVU, hvertical⟩
+
+theorem exists_local_product_metric_family_from_common_parallel_unit_section
+    {A : Type*} (g : A → SmoothRiemannianMetric I M) (a₀ : A) (x : M) {U : Set M}
+    (hUopen : IsOpen U) (hxU : x ∈ U)
+    (s : Cₛ^∞⟮I; E, TangentSpace I⟯) (hunit : ∀ y ∈ U,
+      (g a₀).inner y (s y) (s y) = 1)
+    (hparallel : ∀ a, ∀ y ∈ U, ∀ v : TangentSpace I y,
+      (LeviCivita (I := I) (g a)) s y v = 0)
+    (hdual : ∀ a y, y ∈ U → ∀ v : TangentSpace I y,
+      (g a).inner y (s y) v = (g a₀).inner y (s y) v) :
+    ∃ (K : TopologicalSpace.Opens (perpSpace (g a₀) x (s x)))
+      (O : TopologicalSpace.Opens ℝ)
+      (phi : PartialDiffeomorph ((perpModel (g a₀) x (s x)).prod 𝓘(ℝ, ℝ)) I
+        (perpSpace (g a₀) x (s x) × ℝ) M ∞)
+      (hPhi : IsLocalDiffeomorph ((perpModel (g a₀) x (s x)).prod 𝓘(ℝ, ℝ)) I ∞
+        (fun y : K × O => phi (y.1.1, y.2.1)))
+      (h : A → SmoothRiemannianMetric (perpModel (g a₀) x (s x)) K),
+      (0 : perpSpace (g a₀) x (s x)) ∈ K ∧ (0 : ℝ) ∈ O ∧
+      IsPreconnected (O : Set ℝ) ∧ phi.source = (K : Set _) ×ˢ (O : Set ℝ) ∧
+      phi (0, 0) = x ∧ phi.target ⊆ U ∧
+      (∀ a, localPullMetric (g a) (fun y : K × O => phi (y.1.1, y.2.1)) hPhi =
+        (h a).prod ((euclideanMetric (E := ℝ)).restrictOpen O)) ∧
+      (∀ a (k : K) (u v : TangentSpace (perpModel (g a₀) x (s x)) k),
+        (h a).inner k u v = (g a).inner (phi (k.1, 0))
+          (mfderiv (perpModel (g a₀) x (s x)) I
+            (fun y : perpSpace (g a₀) x (s x) => phi (y, 0)) k.1 u)
+          (mfderiv (perpModel (g a₀) x (s x)) I
+            (fun y : perpSpace (g a₀) x (s x) => phi (y, 0)) k.1 v)) ∧
+      ∀ k ∈ K, ∀ t ∈ O, ∀ r : ℝ,
+        mfderiv ((perpModel (g a₀) x (s x)).prod 𝓘(ℝ, ℝ)) I
+          (fun z : perpSpace (g a₀) x (s x) × ℝ => phi z) (k, t) (0, r) =
+        r • s (phi (k, t)) := by
+  obtain ⟨K, O, phi, ⟨hK, hK₀, hO, hO₀, hsource, hzero, hproduct⟩,
+      hconnected, htarget, hvertical⟩ :=
+    exists_local_product_chart_from_common_parallel_unit_section
+      g a₀ x hUopen hxU s hunit hparallel hdual
+  let K' : TopologicalSpace.Opens (perpSpace (g a₀) x (s x)) := ⟨K, hK⟩
+  let O' : TopologicalSpace.Opens ℝ := ⟨O, hO⟩
+  have hex a := exists_metric_prod_eq_localPullMetric_of_partialDiffeomorph
+    (g a) K' O' hO₀ phi (by rw [hsource]; exact Set.Subset.rfl) (hproduct a)
+  classical
+  choose hPhi h hinner hmetric using hex
+  refine ⟨K', O', phi, hPhi a₀, h, hK₀, hO₀, hconnected, hsource, hzero,
+    htarget, ?_, hinner, hvertical⟩
+  exact fun a => hmetric a
+
+theorem exists_local_product_chart_from_parallel_unit_section
+    (g : SmoothRiemannianMetric I M) (x : M) {U : Set M}
+    (hUopen : IsOpen U) (hxU : x ∈ U)
+    (s : Cₛ^∞⟮I; E, TangentSpace I⟯) (hunit : ∀ y ∈ U,
+      g.inner y (s y) (s y) = 1)
+    (hparallel : ∀ y ∈ U, ∀ v : TangentSpace I y,
+      (LeviCivita (I := I) g) s y v = 0) :
+  ∃ (K : Set (perpSpace g x (s x))) (J : Set ℝ)
+      (phi : PartialDiffeomorph
+        ((perpModel g x (s x)).prod 𝓘(ℝ, ℝ)) I
+        (perpSpace g x (s x) × ℝ) M ∞),
+    And (IsOpen K)
+      (And ((0 : perpSpace g x (s x)) ∈ K)
+        (And (IsOpen J)
+          (And ((0 : ℝ) ∈ J)
+            (And (phi.source = K ×ˢ J)
+              (And (phi (0, 0) = x)
+                (∀ (k : perpSpace g x (s x)), k ∈ K → ∀ (t : ℝ), t ∈ J →
+                  ∀ (u v : TangentSpace (perpModel g x (s x)) k), ∀ (r q : ℝ),
+                  g.inner (phi (k, t))
+                    ((mfderiv ((perpModel g x (s x)).prod 𝓘(ℝ, ℝ)) I
+                      (fun z : perpSpace g x (s x) × ℝ => phi z) (k, t))
+                      (show TangentSpace ((perpModel g x (s x)).prod 𝓘(ℝ, ℝ))
+                        (k, t) from (u, r)))
+                    ((mfderiv ((perpModel g x (s x)).prod 𝓘(ℝ, ℝ)) I
+                      (fun z : perpSpace g x (s x) × ℝ => phi z) (k, t))
+                      (show TangentSpace ((perpModel g x (s x)).prod 𝓘(ℝ, ℝ))
+                        (k, t) from (v, q))) =
+                    g.inner (phi (k, 0))
+                      ((mfderiv (perpModel g x (s x)) I
+                        (fun z : perpSpace g x (s x) => phi (z, 0)) k) u)
+                      ((mfderiv (perpModel g x (s x)) I
+                        (fun z : perpSpace g x (s x) => phi (z, 0)) k) v) +
+                    r * q)))))) ∧
+      IsPreconnected J ∧ phi.target ⊆ U ∧
+      ∀ k ∈ K, ∀ t ∈ J, ∀ r : ℝ,
+        (mfderiv ((perpModel g x (s x)).prod 𝓘(ℝ, ℝ)) I
+          (fun z : perpSpace g x (s x) × ℝ => phi z) (k, t))
+          (show TangentSpace ((perpModel g x (s x)).prod 𝓘(ℝ, ℝ)) (k, t) from (0, r)) =
+        r • s (phi (k, t)) := by
+  obtain ⟨V, f, hVopen, hxV, hVU, hfx, hf, hdf⟩ :=
+    exists_local_gradient_potential_of_parallel_section g hUopen hxU s hparallel
+  obtain ⟨K, J, phi, hproduct, hJconnected, htarget, hvertical⟩ :=
+    exists_local_product_chart_from_parallel_unit_section_of_gradient_potential
+      g x hVopen hxV s
+      (fun y hy => hunit y (hVU hy))
+      (fun y hy v => hparallel y (hVU hy) v)
+      f hfx hf hdf
+  exact ⟨K, J, phi, hproduct, hJconnected, htarget.trans hVU, hvertical⟩
 
 theorem exists_local_product_from_parallel_unit_section
     (g : SmoothRiemannianMetric I M) (x : M) {U : Set M}
@@ -2006,13 +2296,122 @@ theorem exists_local_product_from_parallel_unit_section
     (hparallel : ∀ y ∈ U, ∀ v : TangentSpace I y,
       (LeviCivita (I := I) g) s y v = 0) :
     HasLocalRiemannianProductAt (I := I) g x (s x) := by
-  obtain ⟨V, f, hVopen, hxV, hVU, hfx, hf, hdf⟩ :=
-    exists_local_gradient_potential_of_parallel_section g hUopen hxU s hparallel
-  exact exists_local_product_from_parallel_unit_section_of_gradient_potential
-    g x hVopen hxV s
-    (fun y hy => hunit y (hVU hy))
-    (fun y hy v => hparallel y (hVU hy) v)
-    f hfx hf hdf
+  obtain ⟨K, J, phi, hproduct, -, -, -⟩ :=
+    exists_local_product_chart_from_parallel_unit_section g x hUopen hxU s hunit hparallel
+  exact ⟨K, J, phi, hproduct⟩
+
+theorem ContMDiffVectorSubbundle.exists_local_product_chart_of_rank_eq_one
+    (g : SmoothRiemannianMetric I M)
+    (S : ContMDiffVectorSubbundle
+      (I := I) (F := E) (V := TangentSpace I) (n := (∞ : WithTop ℕ∞)))
+    (hSrank : S.rank = 1)
+    (hS : IsParallelSubmoduleFamily g S.fiber)
+    (x : M) :
+    ∃ (U : Set M) (s : Cₛ^∞⟮I; E, TangentSpace I⟯),
+      IsOpen U ∧ x ∈ U ∧
+      (∀ y ∈ U, s y ∈ S.fiber y) ∧
+      (∀ y ∈ U, g.inner y (s y) (s y) = 1) ∧
+      (∀ y ∈ U, ∀ v : TangentSpace I y, (LeviCivita (I := I) g) s y v = 0) ∧
+  ∃ (K : Set (perpSpace g x (s x))) (J : Set ℝ)
+      (phi : PartialDiffeomorph
+        ((perpModel g x (s x)).prod 𝓘(ℝ, ℝ)) I
+        (perpSpace g x (s x) × ℝ) M ∞),
+    And (IsOpen K)
+      (And ((0 : perpSpace g x (s x)) ∈ K)
+        (And (IsOpen J)
+          (And ((0 : ℝ) ∈ J)
+            (And (phi.source = K ×ˢ J)
+              (And (phi (0, 0) = x)
+                (∀ (k : perpSpace g x (s x)), k ∈ K → ∀ (t : ℝ), t ∈ J →
+                  ∀ (u v : TangentSpace (perpModel g x (s x)) k), ∀ (r q : ℝ),
+                  g.inner (phi (k, t))
+                    ((mfderiv ((perpModel g x (s x)).prod 𝓘(ℝ, ℝ)) I
+                      (fun z : perpSpace g x (s x) × ℝ => phi z) (k, t))
+                      (show TangentSpace ((perpModel g x (s x)).prod 𝓘(ℝ, ℝ))
+                        (k, t) from (u, r)))
+                    ((mfderiv ((perpModel g x (s x)).prod 𝓘(ℝ, ℝ)) I
+                      (fun z : perpSpace g x (s x) × ℝ => phi z) (k, t))
+                      (show TangentSpace ((perpModel g x (s x)).prod 𝓘(ℝ, ℝ))
+                        (k, t) from (v, q))) =
+                    g.inner (phi (k, 0))
+                      ((mfderiv (perpModel g x (s x)) I
+                        (fun z : perpSpace g x (s x) => phi (z, 0)) k) u)
+                      ((mfderiv (perpModel g x (s x)) I
+                        (fun z : perpSpace g x (s x) => phi (z, 0)) k) v) +
+                    r * q)))))) ∧
+      IsPreconnected J ∧ phi.target ⊆ U ∧
+      (∀ k ∈ K, ∀ t ∈ J, ∀ r : ℝ,
+        (mfderiv ((perpModel g x (s x)).prod 𝓘(ℝ, ℝ)) I
+          (fun z : perpSpace g x (s x) × ℝ => phi z) (k, t))
+          (show TangentSpace ((perpModel g x (s x)).prod 𝓘(ℝ, ℝ)) (k, t) from (0, r)) =
+        r • s (phi (k, t))) ∧
+      ∀ k ∈ K, ∀ t ∈ J, ∀ v : TangentSpace I (phi (k, t)),
+        (v ∈ S.fiber (phi (k, t)) ↔ ∃ r : ℝ,
+          mfderiv ((perpModel g x (s x)).prod 𝓘(ℝ, ℝ)) I
+            (fun z : perpSpace g x (s x) × ℝ => phi z) (k, t) (0, r) = v) ∧
+        ((∀ w ∈ S.fiber (phi (k, t)), g.inner (phi (k, t)) w v = 0) ↔
+          ∃ u : TangentSpace (perpModel g x (s x)) k,
+            mfderiv ((perpModel g x (s x)).prod 𝓘(ℝ, ℝ)) I
+              (fun z : perpSpace g x (s x) × ℝ => phi z) (k, t) (u, 0) = v) := by
+  obtain ⟨U, s, hUopen, hxU, hs_mem, hs_unit, hs_parallel⟩ :=
+    ContMDiffVectorSubbundle.exists_local_parallel_unit_section_of_rank_eq_one
+      g S hSrank hS x
+  obtain ⟨K, J, phi, hproduct, hJconnected, htarget, hvertical⟩ :=
+    exists_local_product_chart_from_parallel_unit_section g x hUopen hxU s hs_unit hs_parallel
+  refine ⟨U, s, hUopen, hxU, hs_mem, hs_unit, hs_parallel,
+    K, J, phi, hproduct, hJconnected, htarget, hvertical, ?_⟩
+  rcases hproduct with ⟨hKopen, hzeroK, hJopen, hzeroJ, hsource, hbase, hmetric⟩
+  intro k hk t ht v
+  have hkt : (k, t) ∈ phi.source := by rw [hsource]; exact ⟨hk, ht⟩
+  have hphiU : phi (k, t) ∈ U := htarget (phi.map_source hkt)
+  have hsne : s (phi (k, t)) ≠ 0 := by
+    intro hz
+    have hu := hs_unit (phi (k, t)) hphiU
+    rw [hz, map_zero] at hu
+    norm_num at hu
+  have hspan := eq_span_singleton_of_mem_of_finrank_eq_one
+    ((S.finrank_fiber (phi (k, t))).trans hSrank) (hs_mem (phi (k, t)) hphiU) hsne
+  have hline (w : TangentSpace I (phi (k, t))) :
+      w ∈ S.fiber (phi (k, t)) ↔ ∃ r : ℝ,
+        mfderiv ((perpModel g x (s x)).prod 𝓘(ℝ, ℝ)) I
+          (fun z : perpSpace g x (s x) × ℝ => phi z) (k, t) (0, r) = w := by
+    rw [hspan, Submodule.mem_span_singleton]
+    simp only [hvertical k hk t ht]
+  refine ⟨hline v, ?_⟩
+  let D : perpSpace g x (s x) × ℝ →L[ℝ] TangentSpace I (phi (k, t)) :=
+    mfderiv ((perpModel g x (s x)).prod 𝓘(ℝ, ℝ)) I
+      (fun z : perpSpace g x (s x) × ℝ => phi z) (k, t)
+  have hDvert (r : ℝ) : D (0, r) = r • s (phi (k, t)) := hvertical k hk t ht r
+  have hD1 : D (0, 1) = s (phi (k, t)) := by simpa only [one_smul] using hDvert 1
+  have hcross (u : perpSpace g x (s x)) :
+      g.inner (phi (k, t)) (s (phi (k, t))) (D (u, 0)) = 0 := by
+    have hm : g.inner (phi (k, t)) (D (0, 1)) (D (u, 0)) = 0 := by
+      have hm := hmetric k hk t ht 0 u 1 0
+      change g.inner (phi (k, t)) (D (0, 1)) (D (u, 0)) = _ at hm
+      simpa only [map_zero, zero_apply, mul_zero, add_zero] using hm
+    rwa [hD1] at hm
+  let B : (perpSpace g x (s x) × ℝ) ≃L[ℝ] TangentSpace I (phi (k, t)) :=
+    (phi.isLocalDiffeomorphAt _ _ _ hkt).mfderivToContinuousLinearEquiv (by decide)
+  constructor
+  · intro hv
+    obtain ⟨z, hz⟩ := B.surjective v
+    have hz' : D z = v := hz
+    have hdecomp : v = D (z.1, 0) + z.2 • s (phi (k, t)) := by
+      rw [← hz', ← hDvert, ← map_add]
+      simp only [Prod.mk_add_mk, add_zero, zero_add, Prod.mk.eta]
+    have hr := hv (s (phi (k, t))) (hs_mem (phi (k, t)) hphiU)
+    rw [hdecomp, map_add, hcross, map_smul, hs_unit (phi (k, t)) hphiU] at hr
+    have hz2 : z.2 = 0 := by simpa using hr
+    refine ⟨z.1, ?_⟩
+    change D (z.1, 0) = v
+    simpa only [hz2, zero_smul, add_zero] using hdecomp.symm
+  · rintro ⟨u, hu⟩ w hw
+    have hu' : D (u, 0) = v := hu
+    obtain ⟨r, hr⟩ := (hline w).mp hw
+    have hr' : D (0, r) = w := hr
+    rw [hDvert] at hr'
+    have hu0 : g.inner (phi (k, t)) (s (phi (k, t))) (D (u, 0)) = 0 := hcross u
+    rw [← hu', ← hr', map_smul, smul_apply, hu0, smul_zero]
 
 theorem ContMDiffVectorSubbundle.exists_local_product_of_rank_eq_one
     (g : SmoothRiemannianMetric I M)
@@ -2028,11 +2427,9 @@ theorem ContMDiffVectorSubbundle.exists_local_product_of_rank_eq_one
       And (∀ y ∈ U, ∀ v : TangentSpace I y,
         (LeviCivita (I := I) g) s y v = 0) <|
       HasLocalRiemannianProductAt (I := I) g x (s x) := by
-  obtain ⟨U, s, hUopen, hxU, hs_mem, hs_unit, hs_parallel⟩ :=
-    ContMDiffVectorSubbundle.exists_local_parallel_unit_section_of_rank_eq_one
-      g S hSrank hS x
-  refine ⟨U, s, hUopen, hxU, hs_mem, hs_unit, hs_parallel, ?_⟩
-  exact exists_local_product_from_parallel_unit_section
-    g x hUopen hxU s hs_unit hs_parallel
+  obtain ⟨U, s, hUopen, hxU, hs_mem, hs_unit, hs_parallel,
+      K, J, phi, hproduct, -, -, -, -⟩ :=
+    ContMDiffVectorSubbundle.exists_local_product_chart_of_rank_eq_one g S hSrank hS x
+  exact ⟨U, s, hUopen, hxU, hs_mem, hs_unit, hs_parallel, K, J, phi, hproduct⟩
 
 end DifferentialGeometry.Geometry.Connection

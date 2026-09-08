@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Curvature.DimensionOne.Flat
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckRemainderDefs
 import DifferentialGeometry.Analysis.Sobolev.MoserTameProduct
 import DifferentialGeometry.Analysis.Sobolev.GagliardoNirenbergProductTwoArm
@@ -194,46 +195,6 @@ lemma dim1_linearizedRicciConnectionDifferenceOrder0CoeffField_eq_zero
   rw [ContinuousLinearMap.zero_comp]
   rfl
 
-omit [CompactSpace M] [I.Boundaryless] in
-omit [NeZero (Module.finrank ℝ E)] in
-omit [SigmaCompactSpace M] in
-private lemma dim1_riemannOp_first_two_eq_zero (h1 : Module.finrank ℝ E = 1)
-    (g₁ : SmoothRiemannianMetric I M) (x : M) (v w u : TangentSpace I x)
-    (hw : w ≠ 0) :
-    DifferentialGeometry.Geometry.Curvature.riemannOp
-      (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g₁) x v w u = 0 := by
-  obtain ⟨c, hc⟩ := exists_smul_eq_of_finrank_eq_one (K := ℝ) (V := TangentSpace I x)
-    (show Module.finrank ℝ (TangentSpace I x) = 1 from h1) hw v
-  have hself : DifferentialGeometry.Geometry.Curvature.riemannOp
-      (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g₁) x w w u = 0 := by
-    have hsw := DifferentialGeometry.Geometry.Curvature.riemannOp_swap
-      (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g₁) x w w u
-    have h2 : (2 : ℝ) • (DifferentialGeometry.Geometry.Curvature.riemannOp
-        (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g₁) x w w u) = 0 := by
-      rw [two_smul]
-      nth_rewrite 1 [hsw]
-      abel
-    have h2ne : (2 : ℝ) ≠ 0 := two_ne_zero
-    exact (smul_eq_zero.mp h2).resolve_left h2ne
-  rw [← hc]
-  rw [(DifferentialGeometry.Geometry.Curvature.riemannOp
-    (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g₁) x).map_smul c w]
-  rw [smul_apply, smul_apply]
-  rw [hself, smul_zero]
-
-omit [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
-    [SigmaCompactSpace M] in
-private lemma dim1_smoothOrthoFrame_ne_zero (g₁ : SmoothRiemannianMetric I M) (x : M)
-    (a : Fin (Module.finrank ℝ E)) :
-    DifferentialGeometry.Geometry.Connection.smoothOrthoFrame (I := I) g₁ x a x ≠ 0 := by
-  intro h0
-  have horth := DifferentialGeometry.Geometry.Connection.smoothOrthoFrame_orthonormal_at_center
-    (I := I) g₁ x a a
-  rw [if_pos rfl] at horth
-  rw [h0] at horth
-  rw [map_zero] at horth
-  exact one_ne_zero horth.symm
-
 omit [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
 lemma dim1_ricciArmOrder0RiemannCoeff_eq_zero (h1 : Module.finrank ℝ E = 1)
@@ -270,9 +231,8 @@ lemma dim1_ricciArmOrder0RiemannCoeff_eq_zero (h1 : Module.finrank ℝ E = 1)
               (DifferentialGeometry.Geometry.Connection.smoothOrthoFrame
                 (I := I) g₁ x b x)] = 0 := by
       intro a b
-      rw [dim1_riemannOp_first_two_eq_zero (I := I) h1 g₁ x
-        ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 0)) _ _
-        (dim1_smoothOrthoFrame_ne_zero (I := I) g₁ x a)]
+      rw [riemannOp_eq_zero_of_finrank_le_one
+        (DifferentialGeometry.Geometry.Connection.LeviCivita g₁) h1.le]
       rw [map_zero, zero_apply, zero_mul]
     rw [Finset.sum_congr rfl (fun a _ => Finset.sum_congr rfl (fun b _ => hz a b))]
     rw [Finset.sum_const, Finset.sum_const]

@@ -106,4 +106,69 @@ theorem traceNormalizedCurvatureEndomorphism_pullback_continuousOn
     (fun q => riemann_pullback_isAlgCurvForm S q.1 q.2 (ι q.1 q.2))
     (hTpull p hp)).continuousWithinAt
 
+theorem exists_traceNormalizedCurvatureEndomorphism_pullback_sections
+    {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn S)
+    (ι : ℝ → ∀ x, V x ≃L[ℝ] TangentSpace I x)
+    {J : Set ℝ} (hJD : J ⊆ D.regular)
+    (hι : ContMDiffOn (𝓘(ℝ, ℝ).prod I) (I.prod 𝓘(ℝ, F →L[ℝ] E)) ∞
+      (fun p : ℝ × M => TotalSpace.mk' (F →L[ℝ] E) p.2
+        (E := fun x => V x →L[ℝ] TangentSpace I x)
+        (ι p.1 p.2).toContinuousLinearMap) (J ×ˢ (Set.univ : Set M))) :
+    letI : ∀ x, FiniteDimensional ℝ (V x) := fun x => VectorBundle.finiteDimensional ℝ F V x
+    letI := Bundle.ExteriorPower.totalSpaceTopology F V 2
+    letI := Bundle.ExteriorPower.fiberBundle F V 2
+    letI := Bundle.ExteriorPower.vector_bundle F V 2
+    letI := Bundle.ExteriorPower.contMDiffVectorBundle (IB := I) (n := ∞) F V 2
+    let R := fun t x => exteriorPower.traceNormalizedCurvatureEndomorphism
+      ((S.base.rm04 t x).compContinuousLinearMap (fun _ => (ι t x).toContinuousLinearMap))
+      (riemann_pullback_isAlgCurvForm S t x (ι t x))
+    ∃ A : ℝ → Cₛ^∞⟮I; (⋀[ℝ]^2 F) →L[ℝ] ⋀[ℝ]^2 F,
+        (fun x : M => (⋀[ℝ]^2 (V x)) →L[ℝ] ⋀[ℝ]^2 (V x))⟯,
+      (∀ t ∈ J, ∀ x, A t x = R t x) ∧
+      (∀ t x, (A t x).toLinearMap.IsSymmetric) ∧
+      ContMDiffOnSpacetimeEndomorphism (I := I) (F := ⋀[ℝ]^2 F)
+        (V := fun x => ⋀[ℝ]^2 (V x)) (n := ∞) (fun t x => A t x)
+        (J ×ˢ (Set.univ : Set M)) ∧
+      ContinuousOn (fun p : ℝ × M =>
+        TotalSpace.mk' ((⋀[ℝ]^2 F) →L[ℝ] ⋀[ℝ]^2 F)
+          (E := fun x => (⋀[ℝ]^2 (V x)) →L[ℝ] ⋀[ℝ]^2 (V x)) p.2 (A p.1 p.2))
+        (J ×ˢ (Set.univ : Set M)) := by
+  dsimp only
+  classical
+  let _ : ∀ x, FiniteDimensional ℝ (V x) := fun x => VectorBundle.finiteDimensional ℝ F V x
+  let _ := Bundle.ExteriorPower.totalSpaceTopology F V 2
+  let _ := Bundle.ExteriorPower.fiberBundle F V 2
+  let _ := Bundle.ExteriorPower.vector_bundle F V 2
+  let _ := Bundle.ExteriorPower.contMDiffVectorBundle (IB := I) (n := ∞) F V 2
+  let R := fun t x => exteriorPower.traceNormalizedCurvatureEndomorphism
+    ((S.base.rm04 t x).compContinuousLinearMap (fun _ => (ι t x).toContinuousLinearMap))
+    (riemann_pullback_isAlgCurvForm S t x (ι t x))
+  have hιslice (t : ℝ) (ht : t ∈ J) : ContMDiff I (I.prod 𝓘(ℝ, F →L[ℝ] E)) ∞
+      (fun x => TotalSpace.mk' (F →L[ℝ] E) x (ι t x).toContinuousLinearMap) :=
+    hι.comp_contMDiff (contMDiff_const.prodMk contMDiff_id) (fun x => ⟨ht, Set.mem_univ x⟩)
+  have hRslice (t : ℝ) (ht : t ∈ J) :
+      ContMDiff I (I.prod 𝓘(ℝ, (⋀[ℝ]^2 F) →L[ℝ] ⋀[ℝ]^2 F)) ∞
+        (fun x => TotalSpace.mk' ((⋀[ℝ]^2 F) →L[ℝ] ⋀[ℝ]^2 F) x (R t x)) := by
+    apply Bundle.ExteriorPower.contMDiff_traceNormalizedCurvatureEndomorphism F V ∞ le_rfl
+    exact (S.base.rm04 t).contMDiff.multilinear_bundle_comp (fun _ => hιslice t ht)
+  let A : ℝ → Cₛ^∞⟮I; (⋀[ℝ]^2 F) →L[ℝ] ⋀[ℝ]^2 F,
+      (fun x : M => (⋀[ℝ]^2 (V x)) →L[ℝ] ⋀[ℝ]^2 (V x))⟯ :=
+    fun t => if ht : t ∈ J then ⟨R t, hRslice t ht⟩ else 0
+  have hAeq (t : ℝ) (ht : t ∈ J) (x : M) : A t x = R t x := by
+    simp only [A, dif_pos ht, ContMDiffSection.coeFn_mk]
+  have hAsym (t : ℝ) (x : M) : (A t x).toLinearMap.IsSymmetric := by
+    by_cases ht : t ∈ J
+    · rw [hAeq t ht x]
+      exact exteriorPower.traceNormalizedCurvatureEndomorphism_isSymmetric _ _
+    · simp only [A, dif_neg ht, ContMDiffSection.coe_zero, Pi.zero_apply]
+      exact LinearMap.IsSymmetric.zero
+  have hRspace := traceNormalizedCurvatureEndomorphism_pullback_contMDiffOnSpacetimeEndomorphism
+    S hS ι hJD hι
+  have hRcont := traceNormalizedCurvatureEndomorphism_pullback_continuousOn
+    S hS ι (fun t ht => D.regular_subset (hJD ht)) hι.continuousOn
+  refine ⟨A, hAeq, hAsym, ?_, ?_⟩
+  · exact hRspace.congr (fun p hp => hAeq p.1 hp.1 p.2)
+  · exact hRcont.congr (fun p hp => congrArg
+      (TotalSpace.mk' ((⋀[ℝ]^2 F) →L[ℝ] ⋀[ℝ]^2 F) p.2) (hAeq p.1 hp.1 p.2))
+
 end DifferentialGeometry.PDE.RicciFlow

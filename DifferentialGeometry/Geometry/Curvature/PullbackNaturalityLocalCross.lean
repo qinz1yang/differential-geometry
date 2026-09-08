@@ -32,6 +32,7 @@ variable {N : Type*} [TopologicalSpace N] [ChartedSpace G N]
 
 omit [I.Boundaryless] [J.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] [NeZero (Module.finrank ℝ F)] in
+omit [SigmaCompactSpace N] in
 theorem rm04_localPull
     (g : SmoothRiemannianMetric J N) (f : M → N)
     (hf : IsLocalDiffeomorph I J ∞ f)
@@ -67,9 +68,9 @@ theorem rm04_localPull
   let _ : SigmaCompactSpace U :=
     isSigmaCompact_iff_sigmaCompactSpace.mp
       (Geometry.isSigmaCompact_of_isOpen I U.isOpen)
-  let _ : SigmaCompactSpace V :=
-    isSigmaCompact_iff_sigmaCompactSpace.mp
-      (Geometry.isSigmaCompact_of_isOpen J V.isOpen)
+  let _ : SigmaCompactSpace V := ⟨by
+    rw [← Set.range_eq_univ.mpr Ψ.surjective]
+    exact isSigmaCompact_range Ψ.continuous⟩
   have hEqNhds : f =ᶠ[𝓝 x] (Φ : M → N) :=
     Filter.eventuallyEq_of_mem (Φ.open_source.mem_nhds hxΦ) hEq
   have hdf : mfderiv I J f x = mfderiv I J (Φ : M → N) x :=
@@ -220,6 +221,7 @@ private theorem metricRm04StdAt_eq_inner_riemannOp_local
         riemannOp (cov := LeviCivita (I := I) g) x X Y Z from rfl]
 
 omit [NeZero (Module.finrank Real E)] [NeZero (Module.finrank Real F)] in
+omit [SigmaCompactSpace N] in
 theorem ricciTensor_localPull
     (g : SmoothRiemannianMetric J N) (Phi : M → N)
     (hPhi : IsLocalDiffeomorph I J ∞ Phi)
@@ -321,6 +323,7 @@ theorem metricScalarAt_eq_orthonormal_trace
     exact False.elim (hi (Finset.mem_univ i))
 
 omit [NeZero (Module.finrank Real E)] [NeZero (Module.finrank Real F)] in
+omit [SigmaCompactSpace N] in
 theorem metricScalarAt_localPull
     (g : SmoothRiemannianMetric J N) (Phi : M → N)
     (hPhi : IsLocalDiffeomorph I J ∞ Phi) (x : M) :

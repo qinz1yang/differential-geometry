@@ -169,6 +169,32 @@ theorem sectionalCurvatureDenominator_nonneg
   linarith [chart_metric_cauchy_schwarz (I := I) g p v w]
 
 omit [Module.Finite ℝ E] [NeZero (Module.finrank ℝ E)] in
+theorem sectionalCurvatureDenominator_pos_of_linearIndependent
+    (g : SmoothRiemannianMetric I M) (p : M)
+    (v w : TangentSpace I p) (hvw : LinearIndependent Real ![v, w]) :
+    0 < sectionalCurvatureDenominator (I := I) g p v w := by
+  have hw : w ≠ 0 := by simpa using hvw.ne_zero 1
+  have ha : 0 < g.inner p w w := g.pos p w hw
+  have hne : g.inner p w w • v - g.inner p v w • w ≠ 0 := by
+    intro hz
+    have hh := LinearIndependent.pair_iff.mp hvw
+      (g.inner p w w) (-g.inner p v w)
+      (by simpa [sub_eq_add_neg] using hz)
+    exact ha.ne' hh.1
+  have hp := g.pos p _ hne
+  have hexpand :
+      g.inner p (g.inner p w w • v - g.inner p v w • w)
+          (g.inner p w w • v - g.inner p v w • w) =
+        g.inner p w w *
+          (g.inner p v v * g.inner p w w - (g.inner p v w) ^ 2) := by
+    simp only [map_sub, map_smul, sub_apply, smul_apply, smul_eq_mul,
+      g.symm p w v]
+    ring
+  rw [hexpand] at hp
+  rw [sectionalCurvatureDenominator_def]
+  exact (mul_pos_iff_of_pos_left ha).mp hp
+
+omit [Module.Finite ℝ E] [NeZero (Module.finrank ℝ E)] in
 theorem sectionalCurvatureDenominator_eq_zero_of_left_smul
     (g : SmoothRiemannianMetric I M) (p : M) (c : ℝ)
     (v : TangentSpace I p) :

@@ -517,6 +517,58 @@ private theorem curvatureOperatorContractedFormAt_eq_endomorphism
     curvatureOperatorContractedTensorAt_pairing,
     twoFormMetricData_inner_curvatureOperatorEndomorphismAt]
 
+omit [CompleteSpace E] [T2Space M] in
+theorem curvatureOperatorEndomorphismAt_apply_orthonormal
+    {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
+    (g : SmoothRiemannianMetric I M) (x : M)
+    (basis : Module.Basis Idx Real (TangentSpace I x))
+    (horth : ∀ i j, g.inner x (basis i) (basis j) =
+      if i = j then (1 : Real) else 0)
+    (A : algebraicCurvatureTensorSubmodule (I := I) (M := M) x)
+    (a : TangentSpace I x [⋀^Fin 2]→L[Real] Real)
+    (v w : TangentSpace I x) :
+    curvatureOperatorEndomorphismAt (I := I) g x A a ![v, w] =
+      (-1 / 2 : Real) * ∑ i : Idx, ∑ j : Idx,
+        (A : Tensor0SSpace 4 I x) ![basis i, basis j, v, w] *
+          a ![basis i, basis j] := by
+  rw [← curvatureOperatorContractedFormAt_eq_endomorphism]
+  change curvatureOperatorContractedTensorAt (I := I) g x A a ![v, w] = _
+  exact curvatureOperatorContractedTensorAt_apply_orthonormal g x basis horth A a ![v, w]
+
+omit [CompleteSpace E] [T2Space M] in
+theorem curvatureOperatorEndomorphismAt_elementaryCovector_apply
+    {n : ℕ}
+    (g : SmoothRiemannianMetric I M) (x : M)
+    (basis : Module.Basis (Fin n) Real (TangentSpace I x))
+    (horth : ∀ i j, g.inner x (basis i) (basis j) = if i = j then (1 : Real) else 0)
+    (A : algebraicCurvatureTensorSubmodule (I := I) (M := M) x)
+    (i j : Fin n) (v w : TangentSpace I x) :
+    curvatureOperatorEndomorphismAt (I := I) g x A
+      (ContinuousAlternatingMap.elementaryCovector basis.cDualBasis ![i,j]) ![v,w] =
+      -(A : Tensor0SSpace 4 I x) ![basis i,basis j,v,w] := by
+  rw [curvatureOperatorEndomorphismAt_apply_orthonormal g x basis horth A]
+  have hbeta (p q : Fin n) :
+      ContinuousAlternatingMap.elementaryCovector basis.cDualBasis ![i, j]
+        ![basis p, basis q] =
+        (if i = p then 1 else 0) * (if j = q then 1 else 0) -
+          (if i = q then 1 else 0) * (if j = p then 1 else 0) := by
+    rw [ContinuousAlternatingMap.elementaryCovector_apply, Matrix.det_fin_two]
+    simp only [Matrix.cons_val_zero, Matrix.cons_val_one, Module.Basis.cDualBasis_apply_self]
+  simp only [hbeta, mul_sub, mul_ite, mul_one, mul_zero,
+    Finset.sum_sub_distrib, Finset.sum_ite_irrel, Finset.sum_ite_eq, Finset.sum_const_zero,
+    Finset.mem_univ, if_true]
+  have hfirst := (mem_algebraicCurvatureTensorSubmodule_iff_symmetries.mp A.property).1
+    (basis i) (basis j) v w
+  have hvec (a b c d : TangentSpace I x) :
+      tensor04StdAt (A : Tensor0SSpace 4 I x) a b c d =
+        (A : Tensor0SSpace 4 I x) ![a,b,c,d] := by
+    unfold tensor04StdAt
+    congr 1
+    funext q
+    fin_cases q <;> rfl
+  simp only [hvec] at hfirst
+  linarith
+
 noncomputable def curvatureOperatorEndomorphismField
     (g : SmoothRiemannianMetric I M)
     (A : Tensor0SField (I := I) (M := M) (∞ : WithTop ℕ∞) 4)

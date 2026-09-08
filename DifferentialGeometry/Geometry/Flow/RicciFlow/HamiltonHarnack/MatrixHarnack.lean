@@ -4716,6 +4716,540 @@ private theorem sum_inner0S_curry_three_eq_sum_sq_orthonormal
     funext i
     fin_cases i <;> rfl)).trans (hC e a b)
 
+end DifferentialGeometry.PDE.RicciFlow
+
+namespace DifferentialGeometry.PDE.RicciFlow
+
+open Bundle
+open DifferentialGeometry.Tensor0SBundle
+open DifferentialGeometry.Geometry.Connection
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Operator
+open DifferentialGeometry.Integral.Measure
+open DifferentialGeometry.Tensor.RSTensor
+open scoped Manifold ContDiff
+
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
+variable [FiniteDimensional Real E]
+variable {H : Type*} [TopologicalSpace H]
+variable {I : ModelWithCorners Real E H}
+variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
+variable [IsManifold I ∞ M]
+
+variable [T2Space M]
+
+theorem hamilton_perturbed_harnack_block_exact_evolution_within_of_tensor_test_jet
+    [I.Boundaryless]
+    {D : RealTimeInterval}
+    (S : SolutionOn (I := I) (M := M) D)
+    (hS : IsSolutionOn (I := I) S)
+    (clock : HarnackClock) (ht : clock.time ∈ D.regular)
+    (x : M) {T : Set Real} (hT : UniqueDiffWithinAt Real T clock.time) {n : Nat}
+    (basis : Module.Basis (Fin n) Real (TangentSpace I x))
+    (horth : ∀ i j,
+      (S.base.metric clock.time).inner x (basis i) (basis j) =
+        if i = j then (1 : Real) else 0)
+    (U_tensor : Real →
+      Tensor0SField (E := E) (H := H) (I := I) (M := M) ∞ 2)
+    (W : Real →
+      Tensor0SField (E := E) (H := H) (I := I) (M := M) ∞ 1)
+    (hskew : ∀ X Y : TangentSpace I x,
+      U_tensor clock.time x ![X, Y] = -U_tensor clock.time x ![Y, X])
+    (hDW : totalNabla0SFun (I := I) (M := M) 1
+      (metricCov (I := I) (M := M) (S.base.metric clock.time))
+      (W clock.time) x = 0)
+    (hDU : ∀ X Y Z : TangentSpace I x,
+      totalNabla0SFun (I := I) (M := M) 2
+          (metricCov (I := I) (M := M) (S.base.metric clock.time))
+          (U_tensor clock.time) x ![X, Y, Z] =
+        (1 / 2 : Real) *
+            (metricRicci (I := I) (M := M) (S.base.metric clock.time) x
+                ![X, Y] * W clock.time x (fun _ : Fin 1 => Z) -
+              metricRicci (I := I) (M := M) (S.base.metric clock.time) x
+                ![X, Z] * W clock.time x (fun _ : Fin 1 => Y)) +
+          (1 / (4 * clock.elapsed) : Real) *
+            ((S.base.metric clock.time).inner x X Y *
+                W clock.time x (fun _ : Fin 1 => Z) -
+              (S.base.metric clock.time).inner x X Z *
+                W clock.time x (fun _ : Fin 1 => Y)))
+    (hUtime : ∀ v : Fin 2 → TangentSpace I x,
+      HasDerivAt (fun r : Real => U_tensor r x v)
+        ((Geometry.Operator.roughLap0STensor (I := I)
+            (S.base.metric clock.time)
+            ((CanonicalSpatialDerivs0S.ofSmoothConnection
+              (I := I)
+              (metricCov (I := I) (M := M) (S.base.metric clock.time))
+              (metricCov_smooth (I := I) (M := M) (S.base.metric clock.time))
+              (U_tensor clock.time)).nabla2A x) -
+          covariantEndomorphismAction0S (I := I) (U_tensor clock.time x)
+            (ricciEndAt (I := I) (S.base.metric clock.time)
+              (metricRicci (I := I) (M := M)
+                (S.base.metric clock.time) x)).toContinuousLinearMap) v)
+        clock.time)
+    (hWtime : ∀ v : Fin 1 → TangentSpace I x,
+      HasDerivAt (fun r : Real => W r x v)
+        ((Geometry.Operator.roughLap0STensor (I := I)
+              (S.base.metric clock.time)
+              ((CanonicalSpatialDerivs0S.ofSmoothConnection
+                (I := I)
+                (metricCov (I := I) (M := M) (S.base.metric clock.time))
+                (metricCov_smooth (I := I) (M := M) (S.base.metric clock.time))
+                (W clock.time)).nabla2A x) +
+            (1 / clock.elapsed : Real) • W clock.time x -
+          covariantEndomorphismAction0S (I := I) (W clock.time x)
+            (ricciEndAt (I := I) (S.base.metric clock.time)
+              (metricRicci (I := I) (M := M)
+                (S.base.metric clock.time) x)).toContinuousLinearMap) v)
+        clock.time)
+    (phi : Real → M → Real) (psi : Real → Real) (phi' psi' : Real)
+    (hphi : HasDerivWithinAt (fun r => phi r x) phi' T clock.time)
+    (hpsi : HasDerivWithinAt psi psi' T clock.time)
+    (hh : ContMDiffAt I 𝓘(Real, Real) 2 (phi clock.time) x) :
+    let q := fun r y =>
+      inner0S (I := I) (S.base.metric r) y 4
+          (Tensor0SField.domDomCongr ∞ curvatureSlotSwap
+            (S.base.rm04 r) y)
+          ((U_tensor r y).product (U_tensor r y)) +
+        2 * inner0S (I := I) (S.base.metric r) y 3
+          (hamiltonPField (I := I) (S.base.metric r) y)
+          ((U_tensor r y).product (W r y)) +
+        inner0S (I := I) (S.base.metric r) y 2
+          (hamiltonMOriginField (I := I) clock.origin r
+            (S.base.metric r) y)
+          ((W r y).product (W r y)) +
+        (phi r y / (r - clock.origin)) *
+          normSq0S (I := I) (S.base.metric r) y 1 (W r y) +
+        psi r *
+          normSq0S (I := I) (S.base.metric r) y 2 (U_tensor r y)
+    HasDerivWithinAt (fun r : Real => q r x)
+        (derivWithin (fun r : Real => q r x) T clock.time) T clock.time ∧
+      derivWithin (fun r : Real => q r x) T clock.time -
+          laplacianAt (I := I) (flowG (I := I) S) clock.time
+            (q clock.time) x =
+        hamiltonBlockJ
+            (fun i j k l => S.base.rm04 clock.time x
+              (vec4 (I := I) (basis i) (basis j) (basis l) (basis k)))
+            (fun i j k => hamiltonPField (I := I)
+              (S.base.metric clock.time) x
+                (vec3 (I := I) (basis i) (basis j) (basis k)))
+            (fun i j => hamiltonMOriginField (I := I) clock.origin clock.time
+              (S.base.metric clock.time) x
+                (vec2 (I := I) (basis i) (basis j)))
+            (fun i j => U_tensor clock.time x
+              (vec2 (I := I) (basis i) (basis j)))
+            (fun i => W clock.time x (fun _ : Fin 1 => basis i)) +
+          hamiltonBlockSigmaSquare
+            (fun i j k l => S.base.rm04 clock.time x
+              (vec4 (I := I) (basis i) (basis j) (basis l) (basis k)))
+            (fun i j k => hamiltonPField (I := I)
+              (S.base.metric clock.time) x
+                (vec3 (I := I) (basis i) (basis j) (basis k)))
+            (fun i j => U_tensor clock.time x
+              (vec2 (I := I) (basis i) (basis j)))
+            (fun i => W clock.time x (fun _ : Fin 1 => basis i)) +
+          ((phi' -
+                laplacianAt (I := I) (flowG (I := I) S) clock.time (phi clock.time) x) /
+              clock.elapsed + phi clock.time x / clock.elapsed ^ 2) *
+            (∑ i : Fin n,
+              (W clock.time x (fun _ : Fin 1 => basis i)) ^ 2) +
+          psi' * (∑ i : Fin n, ∑ j : Fin n,
+            (U_tensor clock.time x
+              (vec2 (I := I) (basis i) (basis j))) ^ 2) -
+          2 * psi clock.time *
+            (∑ e : Fin n, ∑ i : Fin n, ∑ j : Fin n,
+              (hamiltonTestJetDU clock
+                (fun p q => metricRicci (I := I) (M := M)
+                  (S.base.metric clock.time) x
+                    (vec2 (I := I) (basis p) (basis q)))
+                (fun p q => if p = q then (1 : Real) else 0)
+                (fun p => W clock.time x (fun _ : Fin 1 => basis p))
+                e i j) ^ 2) := by
+  classical
+  dsimp only
+  let qBase := fun r y =>
+    inner0S (I := I) (S.base.metric r) y 4
+        (Tensor0SField.domDomCongr ∞ curvatureSlotSwap
+          (S.base.rm04 r) y)
+        ((U_tensor r y).product (U_tensor r y)) +
+      2 * inner0S (I := I) (S.base.metric r) y 3
+        (hamiltonPField (I := I) (S.base.metric r) y)
+        ((U_tensor r y).product (W r y)) +
+      inner0S (I := I) (S.base.metric r) y 2
+        (hamiltonMOriginField (I := I) clock.origin r
+          (S.base.metric r) y)
+        ((W r y).product (W r y))
+  let FW := fun r y =>
+    normSq0S (I := I) (S.base.metric r) y 1 (W r y)
+  let FU := fun r y =>
+    normSq0S (I := I) (S.base.metric r) y 2 (U_tensor r y)
+  let qW := fun r y => (phi r y / (r - clock.origin)) * FW r y
+  let qU := fun r y => psi r * FU r y
+  let q := fun r y => qBase r y + qW r y + qU r y
+  obtain ⟨hBaseTime, hBaseHeat⟩ :=
+    hamilton_harnack_block_exact_evolution_of_tensor_test_jet
+      (I := I) S hS clock ht x basis horth U_tensor W hskew hDW hDU
+        hUtime hWtime
+  obtain ⟨dW, hFWTime, hFWHeat⟩ :=
+    hamiltonTestW_normSq_evolution
+      (I := I) S hS clock ht x basis horth W hWtime hDW
+  obtain ⟨dU, hFUTime, hFUHeat⟩ :=
+    hamiltonTestU_normSq_evolution
+      (I := I) S hS clock ht x basis horth U_tensor hUtime
+  have hFWSmooth : ContMDiff I 𝓘(Real, Real) ∞ (FW clock.time) := by
+    simpa only [FW, flowG] using
+      normSq0S_smooth (I := I) (S.base.metric clock.time) (W clock.time)
+  have hFUSmooth : ContMDiff I 𝓘(Real, Real) ∞ (FU clock.time) := by
+    simpa only [FU, flowG] using
+      normSq0S_smooth (I := I) (S.base.metric clock.time) (U_tensor clock.time)
+  have hlocal {f : M → Real} (hf : ContMDiffAt I 𝓘(Real, Real) 2 f x) :
+      ∀ᶠ y in nhds x, MDifferentiableAt I 𝓘(Real, Real) f y :=
+    ((contMDiffAt_iff_contMDiffAt_nhds (by norm_num)).mp hf).mono
+      fun y hy => hy.mdifferentiableAt (by norm_num)
+  have hgrad {f : M → Real} (hf : ContMDiffAt I 𝓘(Real, Real) 2 f x) :
+      MDiffAt (T% fun y => gradientFun (I := I) ((flowG S).metric clock.time) f y) x :=
+    (gradientFun_contMDiffAt_one ((flowG S).metric clock.time) hf).mdifferentiableAt one_ne_zero
+  have hFW2 : ContMDiffAt I 𝓘(Real, Real) 2 (FW clock.time) x :=
+    hFWSmooth.contMDiffAt.of_le (WithTop.coe_le_coe.mpr le_top)
+  have hcRaw := hphi.div
+    ((hasDerivAt_id clock.time).sub_const clock.origin).hasDerivWithinAt
+    (sub_ne_zero.mpr (ne_of_gt clock.origin_lt_time))
+  have hc : HasDerivWithinAt (fun r => phi r x / (r - clock.origin))
+      (phi' / clock.elapsed - phi clock.time x / clock.elapsed ^ 2) T clock.time := by
+    apply (show HasDerivWithinAt (fun r => phi r x / (r - clock.origin))
+        ((phi' * (clock.time - clock.origin) - phi clock.time x) /
+          (clock.time - clock.origin) ^ 2) T clock.time by
+      convert hcRaw using 1 <;> first | rfl | simp only [id_eq, mul_one]).congr_deriv
+    simp only [HarnackClock.elapsed]
+    field_simp [sub_ne_zero.mpr (ne_of_gt clock.origin_lt_time)]
+  have hQWTime' : HasDerivWithinAt (fun r => qW r x)
+      ((phi' / clock.elapsed - phi clock.time x / clock.elapsed ^ 2) *
+        FW clock.time x + (phi clock.time x / clock.elapsed) * dW) T clock.time := by
+    convert hc.mul hFWTime.hasDerivWithinAt using 1 <;> rfl
+  have hcross : ((flowG S).metric clock.time).inner x
+      (gradientAt (I := I) (flowG S) clock.time (phi clock.time) x)
+      (gradientAt (I := I) (flowG S) clock.time (FW clock.time) x) = 0 := by
+    have hzero := hamiltonTestW_normSq_gradient_eq_zero (I := I) S clock x W hDW
+    change gradientFun (S.base.metric clock.time) (FW clock.time) x = 0 at hzero
+    simp only [gradientAt, flowG, hzero]
+    simp
+  have hlapProduct := laplacian_mul_at (I := I)
+    ((flowG S).connection clock.time) ((flowG S).metric clock.time)
+    (hlocal hh) (hlocal hFW2) (hgrad hh) (hgrad hFW2)
+  change laplacianAt (I := I) (flowG S) clock.time
+      (fun y => phi clock.time y * FW clock.time y) x = _ at hlapProduct
+  have hlapScale := laplacian_smul_at (I := I)
+    ((flowG S).connection clock.time) ((flowG S).metric clock.time) (1 / clock.elapsed)
+    (hlocal (hh.mul hFW2)) (hgrad (hh.mul hFW2))
+  change laplacianAt (I := I) (flowG S) clock.time
+      ((1 / clock.elapsed) • (phi clock.time * FW clock.time)) x =
+      (1 / clock.elapsed) * laplacianAt (I := I) (flowG S) clock.time
+        (phi clock.time * FW clock.time) x at hlapScale
+  have hLapW : laplacianAt (I := I) (flowG S) clock.time (qW clock.time) x =
+      (1 / clock.elapsed) *
+        (phi clock.time x * laplacianAt (I := I) (flowG S) clock.time (FW clock.time) x +
+          FW clock.time x * laplacianAt (I := I) (flowG S) clock.time (phi clock.time) x) := by
+    have hqW : qW clock.time =
+        (1 / clock.elapsed) • (fun y => phi clock.time y * FW clock.time y) := by
+      funext y
+      simp only [qW, Pi.smul_apply, smul_eq_mul, HarnackClock.elapsed]
+      ring
+    have hlapScale' : laplacianAt (I := I) (flowG S) clock.time
+        ((1 / clock.elapsed) • (fun y => phi clock.time y * FW clock.time y)) x =
+        (1 / clock.elapsed) * laplacianAt (I := I) (flowG S) clock.time
+          (fun y => phi clock.time y * FW clock.time y) x := by
+      convert hlapScale using 1 <;> rfl
+    rw [hqW, hlapScale', hlapProduct]
+    simp only [laplacianAt, gradientAt] at hcross ⊢
+    rw [hcross]
+    ring
+  have hQWHeat' :
+      ((phi' / clock.elapsed - phi clock.time x / clock.elapsed ^ 2) *
+        FW clock.time x + (phi clock.time x / clock.elapsed) * dW) -
+          laplacianAt (I := I) (flowG S) clock.time (qW clock.time) x =
+        ((phi' - laplacianAt (I := I) (flowG S) clock.time (phi clock.time) x) /
+            clock.elapsed + phi clock.time x / clock.elapsed ^ 2) * FW clock.time x := by
+    have hFWHeat' : dW - laplacianAt (I := I) (flowG S) clock.time
+        (FW clock.time) x = (2 / clock.elapsed) * FW clock.time x := by
+      simpa only [FW, flowG] using hFWHeat
+    rw [hLapW]
+    linear_combination (phi clock.time x / clock.elapsed) * hFWHeat'
+  have hQUTime : HasDerivWithinAt (fun r : Real => qU r x)
+      (psi' * FU clock.time x + psi clock.time * dU) T clock.time := by
+    convert hpsi.mul hFUTime.hasDerivWithinAt using 1 <;> rfl
+  have hLapURaw := laplacianAt_smul (I := I) (flowG (I := I) S)
+    clock.time (psi clock.time)
+    (hFUSmooth.mdifferentiable (by simp))
+    (gradientFun_mdiffAt (I := I) (S.base.metric clock.time) hFUSmooth x)
+  have hLapU : laplacianAt (I := I) (flowG (I := I) S) clock.time
+      (qU clock.time) x =
+        psi clock.time * laplacianAt (I := I) (flowG (I := I) S)
+          clock.time (FU clock.time) x := by
+    change laplacianAt (I := I) (flowG (I := I) S) clock.time
+      ((psi clock.time) • FU clock.time) x = _
+    exact hLapURaw
+  have hQUHeat :
+      (psi' * FU clock.time x + psi clock.time * dU) -
+          laplacianAt (I := I) (flowG (I := I) S) clock.time
+            (qU clock.time) x =
+        psi' * FU clock.time x -
+          2 * psi clock.time * ∑ e : Fin n,
+            inner0S (I := I) (S.base.metric clock.time) x 2
+              (tensor0SCurry (I := I) (M := M) 2 x
+                (hamiltonTestUNablaField (I := I) S clock.time U_tensor x)
+                (basis e))
+              (tensor0SCurry (I := I) (M := M) 2 x
+                (hamiltonTestUNablaField (I := I) S clock.time U_tensor x)
+                (basis e)) := by
+    have hFUHeat' : dU -
+        laplacianAt (I := I) (flowG (I := I) S) clock.time
+          (FU clock.time) x =
+        -2 * ∑ e : Fin n,
+          inner0S (I := I) (S.base.metric clock.time) x 2
+            (tensor0SCurry (I := I) (M := M) 2 x
+              (hamiltonTestUNablaField (I := I) S clock.time U_tensor x)
+              (basis e))
+            (tensor0SCurry (I := I) (M := M) 2 x
+              (hamiltonTestUNablaField (I := I) S clock.time U_tensor x)
+              (basis e)) := by
+      simpa only [FU, flowG] using hFUHeat
+    rw [hLapU]
+    linear_combination psi clock.time * hFUHeat'
+  have hBaseSmooth : ContMDiff I 𝓘(Real, Real) ∞ (qBase clock.time) := by
+    have hK : ContMDiff I 𝓘(Real, Real) ∞
+        (hamiltonKTestScalar (I := I) S U_tensor clock.time) := by
+      change ContMDiff I 𝓘(Real, Real) ∞ (fun y : M =>
+        inner0S (I := I) (S.base.metric clock.time) y 4
+          (hamiltonKField (I := I) S clock.time y)
+          ((U_tensor clock.time y).product (U_tensor clock.time y)))
+      simpa only [Nat.reduceAdd] using
+        (inner0S_product_contMDiff (I := I) (S.base.metric clock.time)
+          (hamiltonKField (I := I) S clock.time)
+          (U_tensor clock.time) (U_tensor clock.time))
+    have hP : ContMDiff I 𝓘(Real, Real) ∞
+        (hamiltonPTestScalar (I := I) S U_tensor W clock.time) := by
+      change ContMDiff I 𝓘(Real, Real) ∞ (fun y : M =>
+        inner0S (I := I) (S.base.metric clock.time) y 3
+          (hamiltonPField (I := I) (S.base.metric clock.time) y)
+          ((U_tensor clock.time y).product (W clock.time y)))
+      simpa only [Nat.reduceAdd] using
+        (inner0S_product_contMDiff (I := I) (S.base.metric clock.time)
+          (hamiltonPField (I := I) (S.base.metric clock.time))
+          (U_tensor clock.time) (W clock.time))
+    have hM : ContMDiff I 𝓘(Real, Real) ∞
+        (hamiltonMTestScalar (I := I) S clock W clock.time) := by
+      change ContMDiff I 𝓘(Real, Real) ∞ (fun y : M =>
+        inner0S (I := I) (S.base.metric clock.time) y 2
+          (hamiltonMOriginField (I := I) clock.origin clock.time
+            (S.base.metric clock.time) y)
+          ((W clock.time y).product (W clock.time y)))
+      simpa only [Nat.reduceAdd] using
+        (inner0S_product_contMDiff (I := I) (S.base.metric clock.time)
+          (hamiltonMOriginField (I := I) clock.origin clock.time
+            (S.base.metric clock.time))
+          (W clock.time) (W clock.time))
+    change ContMDiff I 𝓘(Real, Real) ∞ (fun y : M =>
+      hamiltonKTestScalar (I := I) S U_tensor clock.time y +
+        2 * hamiltonPTestScalar (I := I) S U_tensor W clock.time y +
+        hamiltonMTestScalar (I := I) S clock W clock.time y)
+    exact (hK.add (contMDiff_const.mul hP)).add hM
+  have hQWSmooth : ContMDiffAt I 𝓘(Real, Real) 2 (qW clock.time) x := by
+    exact (hh.div_const _).mul hFW2
+  have hQUSmooth : ContMDiff I 𝓘(Real, Real) ∞ (qU clock.time) := by
+    exact contMDiff_const.mul hFUSmooth
+  have hBase2 : ContMDiffAt I 𝓘(Real, Real) 2 (qBase clock.time) x :=
+    hBaseSmooth.contMDiffAt.of_le (WithTop.coe_le_coe.mpr le_top)
+  have hQU2 : ContMDiffAt I 𝓘(Real, Real) 2 (qU clock.time) x :=
+    hQUSmooth.contMDiffAt.of_le (WithTop.coe_le_coe.mpr le_top)
+  have hBaseQWSmooth : ContMDiffAt I 𝓘(Real, Real) 2
+      (fun y : M => qBase clock.time y + qW clock.time y) x :=
+    hBase2.add hQWSmooth
+  have hLapBaseQW := laplacian_add_at (I := I)
+    ((flowG S).connection clock.time) ((flowG S).metric clock.time)
+    (hlocal hBase2) (hlocal hQWSmooth) (hgrad hBase2) (hgrad hQWSmooth)
+  change laplacianAt (I := I) (flowG S) clock.time
+      (fun y => qBase clock.time y + qW clock.time y) x =
+      laplacianAt (I := I) (flowG S) clock.time (qBase clock.time) x +
+        laplacianAt (I := I) (flowG S) clock.time (qW clock.time) x at hLapBaseQW
+  have hLapQ := laplacian_add_at (I := I)
+    ((flowG S).connection clock.time) ((flowG S).metric clock.time)
+    (hlocal hBaseQWSmooth) (hlocal hQU2) (hgrad hBaseQWSmooth) (hgrad hQU2)
+  change laplacianAt (I := I) (flowG S) clock.time
+      (fun y => (qBase clock.time y + qW clock.time y) + qU clock.time y) x =
+      laplacianAt (I := I) (flowG S) clock.time
+          (fun y => qBase clock.time y + qW clock.time y) x +
+        laplacianAt (I := I) (flowG S) clock.time (qU clock.time) x at hLapQ
+  have hLap : laplacianAt (I := I) (flowG (I := I) S) clock.time
+      (q clock.time) x =
+        laplacianAt (I := I) (flowG (I := I) S) clock.time
+            (qBase clock.time) x +
+          laplacianAt (I := I) (flowG (I := I) S) clock.time
+            (qW clock.time) x +
+          laplacianAt (I := I) (flowG (I := I) S) clock.time
+            (qU clock.time) x := by
+    rw [show q clock.time = fun y : M =>
+      (qBase clock.time y + qW clock.time y) + qU clock.time y by rfl,
+      hLapQ]
+    rw [hLapBaseQW]
+  have hTimeRaw := (hBaseTime.hasDerivWithinAt.add hQWTime').add hQUTime
+  change HasDerivWithinAt (fun r : Real => q r x) _ T clock.time at hTimeRaw
+  have hTime : HasDerivWithinAt (fun r : Real => q r x)
+      (derivWithin (fun r : Real => q r x) T clock.time) T clock.time := by
+    exact hTimeRaw.congr_deriv (hTimeRaw.derivWithin hT).symm
+  have hCombined : derivWithin (fun r : Real => q r x) T clock.time -
+      laplacianAt (I := I) (flowG (I := I) S) clock.time
+        (q clock.time) x =
+      (hamiltonBlockJ
+          (fun i j k l => S.base.rm04 clock.time x
+            (vec4 (I := I) (basis i) (basis j) (basis l) (basis k)))
+          (fun i j k => hamiltonPField (I := I)
+            (S.base.metric clock.time) x
+              (vec3 (I := I) (basis i) (basis j) (basis k)))
+          (fun i j => hamiltonMOriginField (I := I) clock.origin clock.time
+            (S.base.metric clock.time) x
+              (vec2 (I := I) (basis i) (basis j)))
+          (fun i j => U_tensor clock.time x
+            (vec2 (I := I) (basis i) (basis j)))
+          (fun i => W clock.time x (fun _ : Fin 1 => basis i)) +
+        hamiltonBlockSigmaSquare
+          (fun i j k l => S.base.rm04 clock.time x
+            (vec4 (I := I) (basis i) (basis j) (basis l) (basis k)))
+          (fun i j k => hamiltonPField (I := I)
+            (S.base.metric clock.time) x
+              (vec3 (I := I) (basis i) (basis j) (basis k)))
+          (fun i j => U_tensor clock.time x
+            (vec2 (I := I) (basis i) (basis j)))
+          (fun i => W clock.time x (fun _ : Fin 1 => basis i))) +
+        ((phi' -
+              laplacianAt (I := I) (flowG (I := I) S) clock.time (phi clock.time) x) /
+            clock.elapsed + phi clock.time x / clock.elapsed ^ 2) *
+          FW clock.time x +
+        psi' * FU clock.time x -
+        2 * psi clock.time * ∑ e : Fin n,
+          inner0S (I := I) (S.base.metric clock.time) x 2
+            (tensor0SCurry (I := I) (M := M) 2 x
+              (hamiltonTestUNablaField (I := I) S clock.time U_tensor x)
+              (basis e))
+            (tensor0SCurry (I := I) (M := M) 2 x
+              (hamiltonTestUNablaField (I := I) S clock.time U_tensor x)
+              (basis e)) := by
+    rw [hTimeRaw.derivWithin hT, hLap]
+    linear_combination hBaseHeat + hQWHeat' + hQUHeat
+  let Ric : Fin n → Fin n → Real := fun p q =>
+    metricRicci (I := I) (M := M) (S.base.metric clock.time) x
+      (vec2 (I := I) (basis p) (basis q))
+  let Wc : Fin n → Real := fun p =>
+    W clock.time x (fun _ : Fin 1 => basis p)
+  have hDUcomp (e i j : Fin n) :
+      hamiltonTestUNablaField (I := I) S clock.time U_tensor x
+          (vec3 (I := I) (basis e) (basis i) (basis j)) =
+        hamiltonTestJetDU clock Ric
+          (fun p q => if p = q then (1 : Real) else 0) Wc e i j := by
+    change totalNabla0SFun (I := I) (M := M) 2
+        (metricCov (I := I) (M := M) (S.base.metric clock.time))
+        (U_tensor clock.time) x
+          (vec3 (I := I) (basis e) (basis i) (basis j)) = _
+    have hslots : vec3 (I := I) (basis e) (basis i) (basis j) =
+        ![basis e, basis i, basis j] := by
+      funext p
+      fin_cases p <;> rfl
+    rw [hslots, hDU]
+    simp only [hamiltonTestJetDU, Ric, Wc, horth]
+    have hslotsEI : vec2 (I := I) (basis e) (basis i) =
+        ![basis e, basis i] := by
+      funext p
+      fin_cases p <;> rfl
+    have hslotsEJ : vec2 (I := I) (basis e) (basis j) =
+        ![basis e, basis j] := by
+      funext p
+      fin_cases p <;> rfl
+    rw [← hslotsEI, ← hslotsEJ]
+  have hWCoord : FW clock.time x = ∑ i : Fin n, (Wc i) ^ 2 := by
+    simpa only [FW, Wc] using
+      normSq0S_one_eq_sum_orthonormal
+        (I := I) (S.base.metric clock.time) basis horth (W clock.time x)
+  have hUCoord : FU clock.time x = ∑ i : Fin n, ∑ j : Fin n,
+      (U_tensor clock.time x
+        (vec2 (I := I) (basis i) (basis j))) ^ 2 := by
+    simpa only [FU] using
+      normSq0S_two_eq_sum_orthonormal
+        (I := I) (S.base.metric clock.time) basis horth
+          (U_tensor clock.time x)
+  have hDUCoord :
+      (∑ e : Fin n,
+        inner0S (I := I) (S.base.metric clock.time) x 2
+          (tensor0SCurry (I := I) (M := M) 2 x
+            (hamiltonTestUNablaField (I := I) S clock.time U_tensor x)
+            (basis e))
+          (tensor0SCurry (I := I) (M := M) 2 x
+            (hamiltonTestUNablaField (I := I) S clock.time U_tensor x)
+            (basis e))) =
+        ∑ e : Fin n, ∑ i : Fin n, ∑ j : Fin n,
+          (hamiltonTestJetDU clock Ric
+            (fun p q => if p = q then (1 : Real) else 0) Wc e i j) ^ 2 := by
+    exact sum_inner0S_curry_three_eq_sum_sq_orthonormal
+      (I := I) (S.base.metric clock.time) basis horth
+      (hamiltonTestUNablaField (I := I) S clock.time U_tensor x)
+      (hamiltonTestJetDU clock Ric
+        (fun p q => if p = q then (1 : Real) else 0) Wc) hDUcomp
+  refine ⟨?_, ?_⟩
+  · exact hTime
+  · rw [show (fun r : Real =>
+        inner0S (I := I) (S.base.metric r) x 4
+            (Tensor0SField.domDomCongr ∞ curvatureSlotSwap
+              (S.base.rm04 r) x)
+            ((U_tensor r x).product (U_tensor r x)) +
+          2 * inner0S (I := I) (S.base.metric r) x 3
+            (hamiltonPField (I := I) (S.base.metric r) x)
+            ((U_tensor r x).product (W r x)) +
+          inner0S (I := I) (S.base.metric r) x 2
+            (hamiltonMOriginField (I := I) clock.origin r
+              (S.base.metric r) x)
+            ((W r x).product (W r x)) +
+          phi r x / (r - clock.origin) *
+            normSq0S (I := I) (S.base.metric r) x 1 (W r x) +
+          psi r * normSq0S (I := I) (S.base.metric r) x 2
+            (U_tensor r x)) = fun r : Real => q r x by rfl]
+    rw [show (fun y : M =>
+        inner0S (I := I) (S.base.metric clock.time) y 4
+            (Tensor0SField.domDomCongr ∞ curvatureSlotSwap
+              (S.base.rm04 clock.time) y)
+            ((U_tensor clock.time y).product (U_tensor clock.time y)) +
+          2 * inner0S (I := I) (S.base.metric clock.time) y 3
+            (hamiltonPField (I := I) (S.base.metric clock.time) y)
+            ((U_tensor clock.time y).product (W clock.time y)) +
+          inner0S (I := I) (S.base.metric clock.time) y 2
+            (hamiltonMOriginField (I := I) clock.origin clock.time
+              (S.base.metric clock.time) y)
+            ((W clock.time y).product (W clock.time y)) +
+          phi clock.time y / (clock.time - clock.origin) *
+            normSq0S (I := I) (S.base.metric clock.time) y 1
+              (W clock.time y) +
+          psi clock.time * normSq0S (I := I) (S.base.metric clock.time) y 2
+            (U_tensor clock.time y)) = q clock.time by rfl]
+    rw [hCombined, hWCoord, hUCoord, hDUCoord]
+
+end DifferentialGeometry.PDE.RicciFlow
+
+namespace DifferentialGeometry.PDE.RicciFlow
+
+open Bundle
+open DifferentialGeometry.Tensor0SBundle
+open DifferentialGeometry.Geometry.Connection
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Operator
+open DifferentialGeometry.Integral.Measure
+open DifferentialGeometry.Tensor.RSTensor
+open scoped Manifold ContDiff
+
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
+variable [FiniteDimensional Real E]
+variable {H : Type*} [TopologicalSpace H]
+variable {I : ModelWithCorners Real E H}
+variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
+variable [IsManifold I ∞ M]
+
+variable [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
+
 omit [SigmaCompactSpace M] in
 private theorem hamilton_perturbed_harnack_block_exact_evolution_of_test_jet
     [I.Boundaryless]
@@ -4844,368 +5378,34 @@ private theorem hamilton_perturbed_harnack_block_exact_evolution_of_test_jet
                 (fun p q => if p = q then (1 : Real) else 0)
                 (fun p => W clock.time x (fun _ : Fin 1 => basis p))
                 e i j) ^ 2) := by
-  classical
-  dsimp only
-  let qBase := fun r y =>
-    inner0S (I := I) (S.base.metric r) y 4
-        (Tensor0SField.domDomCongr ∞ curvatureSlotSwap
-          (S.base.rm04 r) y)
-        ((U_tensor r y).product (U_tensor r y)) +
-      2 * inner0S (I := I) (S.base.metric r) y 3
-        (hamiltonPField (I := I) (S.base.metric r) y)
-        ((U_tensor r y).product (W r y)) +
-      inner0S (I := I) (S.base.metric r) y 2
-        (hamiltonMOriginField (I := I) clock.origin r
-          (S.base.metric r) y)
-        ((W r y).product (W r y))
-  let FW := fun r y =>
-    normSq0S (I := I) (S.base.metric r) y 1 (W r y)
-  let FU := fun r y =>
-    normSq0S (I := I) (S.base.metric r) y 2 (U_tensor r y)
-  let c : Real → Real := a / fun r : Real => r - clock.origin
-  let qW := fun r y => c r * (h y * FW r y)
-  let qU := fun r y => psi r * FU r y
-  let q := fun r y => qBase r y + qW r y + qU r y
-  obtain ⟨hBaseTime, hBaseHeat⟩ :=
-    hamilton_harnack_block_exact_evolution_of_test_jet
-      (I := I) S hS clock ht x basis horth U U_tensor W hU_tensor hDW hDU
-        hUtime hWtime
-  obtain ⟨dW, hFWTime, hFWHeat⟩ :=
-    hamiltonTestW_normSq_evolution
-      (I := I) S hS clock ht x basis horth W hWtime hDW
-  obtain ⟨dU, hFUTime, hFUHeat⟩ :=
-    hamiltonTestU_normSq_evolution
-      (I := I) S hS clock ht x basis horth U_tensor hUtime
-  have hcRaw := ha.div
-    ((hasDerivAt_id clock.time).sub_const clock.origin)
-    (sub_ne_zero.mpr (ne_of_gt clock.origin_lt_time))
-  have hc : HasDerivAt c
-      (a' / clock.elapsed - a clock.time / clock.elapsed ^ 2) clock.time := by
-    apply (show HasDerivAt c
-        ((a' * (clock.time - clock.origin) - a clock.time) /
-          (clock.time - clock.origin) ^ 2) clock.time by
-      simpa only [c, id_eq, mul_one] using hcRaw).congr_deriv
-    simp only [HarnackClock.elapsed]
-    field_simp [sub_ne_zero.mpr (ne_of_gt clock.origin_lt_time)]
-  have hFWSmooth : ContMDiff I 𝓘(Real, Real) ∞ (FW clock.time) := by
-    simpa only [FW, flowG] using
-      normSq0S_smooth (I := I) (S.base.metric clock.time) (W clock.time)
-  have hFUSmooth : ContMDiff I 𝓘(Real, Real) ∞ (FU clock.time) := by
-    simpa only [FU, flowG] using
-      normSq0S_smooth (I := I) (S.base.metric clock.time) (U_tensor clock.time)
-  have hWCross : (S.base.metric clock.time).inner x
-      (gradientFun (I := I) (S.base.metric clock.time) h x)
-      (gradientFun (I := I) (S.base.metric clock.time) (FW clock.time) x) = 0 := by
-    rw [show gradientFun (I := I) (S.base.metric clock.time)
-        (FW clock.time) x = 0 by
-      simpa only [FW] using
-        hamiltonTestW_normSq_gradient_eq_zero (I := I) S clock x W hDW]
-    simp
-  obtain ⟨hQWTime, hQWHeat⟩ :=
-    scalar_time_space_product_evolution
-      (I := I) (G := flowG (I := I) S) c h FW
-      (a' / clock.elapsed - a clock.time / clock.elapsed ^ 2) dW
-      ((2 / clock.elapsed) * FW clock.time x)
-      hc hFWTime hh hFWSmooth hWCross hFWHeat
-  have hOneSmooth : ContMDiff I 𝓘(Real, Real) ∞ (fun _ : M => (1 : Real)) :=
-    contMDiff_const
-  have hUCross : (S.base.metric clock.time).inner x
-      (gradientFun (I := I) (S.base.metric clock.time)
-        (fun _ : M => (1 : Real)) x)
-      (gradientFun (I := I) (S.base.metric clock.time) (FU clock.time) x) = 0 := by
-    rw [gradientFun_const]
-    simp
-  obtain ⟨hQUTimeRaw, _⟩ :=
-    scalar_time_space_product_evolution
-      (I := I) (G := flowG (I := I) S) psi (fun _ : M => (1 : Real)) FU
-      psi' dU
-      (-2 * ∑ e : Fin n,
-        inner0S (I := I) (S.base.metric clock.time) x 2
-          (tensor0SCurry (I := I) (M := M) 2 x
-            (hamiltonTestUNablaField (I := I) S clock.time U_tensor x)
-            (basis e))
-          (tensor0SCurry (I := I) (M := M) 2 x
-            (hamiltonTestUNablaField (I := I) S clock.time U_tensor x)
-            (basis e)))
-      hpsi hFUTime hOneSmooth hFUSmooth hUCross hFUHeat
-  have hQUTerm : (fun r : Real => psi r * ((1 : Real) * FU r x)) =
-      fun r : Real => qU r x := by
-    funext r
-    simp [qU]
-  have hQUTime : HasDerivAt (fun r : Real => qU r x)
-      (psi' * FU clock.time x + psi clock.time * dU) clock.time := by
-    rw [← hQUTerm]
-    simpa using hQUTimeRaw
-  have hLapURaw := laplacianAt_smul (I := I) (flowG (I := I) S)
-    clock.time (psi clock.time)
-    (hFUSmooth.mdifferentiable (by simp))
-    (gradientFun_mdiffAt (I := I) (S.base.metric clock.time) hFUSmooth x)
-  have hLapU : laplacianAt (I := I) (flowG (I := I) S) clock.time
-      (qU clock.time) x =
-        psi clock.time * laplacianAt (I := I) (flowG (I := I) S)
-          clock.time (FU clock.time) x := by
-    change laplacianAt (I := I) (flowG (I := I) S) clock.time
-      ((psi clock.time) • FU clock.time) x = _
-    exact hLapURaw
-  have hQUHeat :
-      (psi' * FU clock.time x + psi clock.time * dU) -
-          laplacianAt (I := I) (flowG (I := I) S) clock.time
-            (qU clock.time) x =
-        psi' * FU clock.time x -
-          2 * psi clock.time * ∑ e : Fin n,
-            inner0S (I := I) (S.base.metric clock.time) x 2
-              (tensor0SCurry (I := I) (M := M) 2 x
-                (hamiltonTestUNablaField (I := I) S clock.time U_tensor x)
-                (basis e))
-              (tensor0SCurry (I := I) (M := M) 2 x
-                (hamiltonTestUNablaField (I := I) S clock.time U_tensor x)
-                (basis e)) := by
-    have hFUHeat' : dU -
-        laplacianAt (I := I) (flowG (I := I) S) clock.time
-          (FU clock.time) x =
-        -2 * ∑ e : Fin n,
-          inner0S (I := I) (S.base.metric clock.time) x 2
-            (tensor0SCurry (I := I) (M := M) 2 x
-              (hamiltonTestUNablaField (I := I) S clock.time U_tensor x)
-              (basis e))
-            (tensor0SCurry (I := I) (M := M) 2 x
-              (hamiltonTestUNablaField (I := I) S clock.time U_tensor x)
-              (basis e)) := by
-      simpa only [FU, flowG] using hFUHeat
-    rw [hLapU]
-    linear_combination psi clock.time * hFUHeat'
-  have hQWTerm :
-      (fun r : Real => c r * (h x * FW r x)) = fun r : Real => qW r x := rfl
-  have hQWTime' : HasDerivAt (fun r : Real => qW r x)
-      ((a' / clock.elapsed - a clock.time / clock.elapsed ^ 2) *
-          (h x * FW clock.time x) +
-        c clock.time * (h x * dW)) clock.time := by
-    rw [← hQWTerm]
-    exact hQWTime
-  have hQWHeat' :
-      ((a' / clock.elapsed - a clock.time / clock.elapsed ^ 2) *
-          (h x * FW clock.time x) + c clock.time * (h x * dW)) -
-          laplacianAt (I := I) (flowG (I := I) S) clock.time
-            (qW clock.time) x =
-        ((a' * h x - a clock.time *
-              laplacianAt (I := I) (flowG (I := I) S) clock.time h x) /
-            clock.elapsed + a clock.time * h x / clock.elapsed ^ 2) *
-          FW clock.time x := by
-    change ((a' / clock.elapsed - a clock.time / clock.elapsed ^ 2) *
-        (h x * FW clock.time x) + c clock.time * (h x * dW)) -
-        laplacianAt (I := I) (flowG (I := I) S) clock.time
-          (qW clock.time) x = _ at hQWHeat
-    have hcValue : c clock.time = a clock.time / clock.elapsed := by
-      simp only [c, Pi.div_apply, HarnackClock.elapsed]
-    rw [hcValue] at hQWHeat
-    rw [hcValue]
-    rw [hQWHeat]
-    field_simp [clock.elapsed_ne_zero]
-    ring
-  have hBaseSmooth : ContMDiff I 𝓘(Real, Real) ∞ (qBase clock.time) := by
-    have hK : ContMDiff I 𝓘(Real, Real) ∞
-        (hamiltonKTestScalar (I := I) S U_tensor clock.time) := by
-      change ContMDiff I 𝓘(Real, Real) ∞ (fun y : M =>
-        inner0S (I := I) (S.base.metric clock.time) y 4
-          (hamiltonKField (I := I) S clock.time y)
-          ((U_tensor clock.time y).product (U_tensor clock.time y)))
-      simpa only [Nat.reduceAdd] using
-        (inner0S_product_contMDiff (I := I) (S.base.metric clock.time)
-          (hamiltonKField (I := I) S clock.time)
-          (U_tensor clock.time) (U_tensor clock.time))
-    have hP : ContMDiff I 𝓘(Real, Real) ∞
-        (hamiltonPTestScalar (I := I) S U_tensor W clock.time) := by
-      change ContMDiff I 𝓘(Real, Real) ∞ (fun y : M =>
-        inner0S (I := I) (S.base.metric clock.time) y 3
-          (hamiltonPField (I := I) (S.base.metric clock.time) y)
-          ((U_tensor clock.time y).product (W clock.time y)))
-      simpa only [Nat.reduceAdd] using
-        (inner0S_product_contMDiff (I := I) (S.base.metric clock.time)
-          (hamiltonPField (I := I) (S.base.metric clock.time))
-          (U_tensor clock.time) (W clock.time))
-    have hM : ContMDiff I 𝓘(Real, Real) ∞
-        (hamiltonMTestScalar (I := I) S clock W clock.time) := by
-      change ContMDiff I 𝓘(Real, Real) ∞ (fun y : M =>
-        inner0S (I := I) (S.base.metric clock.time) y 2
-          (hamiltonMOriginField (I := I) clock.origin clock.time
-            (S.base.metric clock.time) y)
-          ((W clock.time y).product (W clock.time y)))
-      simpa only [Nat.reduceAdd] using
-        (inner0S_product_contMDiff (I := I) (S.base.metric clock.time)
-          (hamiltonMOriginField (I := I) clock.origin clock.time
-            (S.base.metric clock.time))
-          (W clock.time) (W clock.time))
-    change ContMDiff I 𝓘(Real, Real) ∞ (fun y : M =>
-      hamiltonKTestScalar (I := I) S U_tensor clock.time y +
-        2 * hamiltonPTestScalar (I := I) S U_tensor W clock.time y +
-        hamiltonMTestScalar (I := I) S clock W clock.time y)
-    exact (hK.add (contMDiff_const.mul hP)).add hM
-  have hQWSmooth : ContMDiff I 𝓘(Real, Real) ∞ (qW clock.time) := by
-    exact contMDiff_const.mul (hh.mul hFWSmooth)
-  have hQUSmooth : ContMDiff I 𝓘(Real, Real) ∞ (qU clock.time) := by
-    exact contMDiff_const.mul hFUSmooth
-  have hBaseQWSmooth : ContMDiff I 𝓘(Real, Real) ∞
-      (fun y : M => qBase clock.time y + qW clock.time y) :=
-    hBaseSmooth.add hQWSmooth
-  have hLapBaseQW := laplacianAt_add (I := I) (flowG (I := I) S) clock.time
-    (hBaseSmooth.mdifferentiable (by simp))
-    (hQWSmooth.mdifferentiable (by simp))
-    (gradientFun_mdiffAt (I := I) (S.base.metric clock.time) hBaseSmooth x)
-    (gradientFun_mdiffAt (I := I) (S.base.metric clock.time) hQWSmooth x)
-  have hLapQ := laplacianAt_add (I := I) (flowG (I := I) S) clock.time
-    (hBaseQWSmooth.mdifferentiable (by simp))
-    (hQUSmooth.mdifferentiable (by simp))
-    (gradientFun_mdiffAt (I := I) (S.base.metric clock.time) hBaseQWSmooth x)
-    (gradientFun_mdiffAt (I := I) (S.base.metric clock.time) hQUSmooth x)
-  have hLap : laplacianAt (I := I) (flowG (I := I) S) clock.time
-      (q clock.time) x =
-        laplacianAt (I := I) (flowG (I := I) S) clock.time
-            (qBase clock.time) x +
-          laplacianAt (I := I) (flowG (I := I) S) clock.time
-            (qW clock.time) x +
-          laplacianAt (I := I) (flowG (I := I) S) clock.time
-            (qU clock.time) x := by
-    rw [show q clock.time = fun y : M =>
-      (qBase clock.time y + qW clock.time y) + qU clock.time y by rfl,
-      hLapQ]
-    rw [hLapBaseQW]
-  have hTimeRaw := (hBaseTime.add hQWTime').add hQUTime
-  change HasDerivAt (fun r : Real => q r x) _ clock.time at hTimeRaw
-  have hTime : HasDerivAt (fun r : Real => q r x)
-      (deriv (fun r : Real => q r x) clock.time) clock.time := by
-    exact hTimeRaw.congr_deriv hTimeRaw.deriv.symm
-  have hCombined : deriv (fun r : Real => q r x) clock.time -
-      laplacianAt (I := I) (flowG (I := I) S) clock.time
-        (q clock.time) x =
-      (hamiltonBlockJ
-          (fun i j k l => S.base.rm04 clock.time x
-            (vec4 (I := I) (basis i) (basis j) (basis l) (basis k)))
-          (fun i j k => hamiltonPField (I := I)
-            (S.base.metric clock.time) x
-              (vec3 (I := I) (basis i) (basis j) (basis k)))
-          (fun i j => hamiltonMOriginField (I := I) clock.origin clock.time
-            (S.base.metric clock.time) x
-              (vec2 (I := I) (basis i) (basis j)))
-          (fun i j => U_tensor clock.time x
-            (vec2 (I := I) (basis i) (basis j)))
-          (fun i => W clock.time x (fun _ : Fin 1 => basis i)) +
-        hamiltonBlockSigmaSquare
-          (fun i j k l => S.base.rm04 clock.time x
-            (vec4 (I := I) (basis i) (basis j) (basis l) (basis k)))
-          (fun i j k => hamiltonPField (I := I)
-            (S.base.metric clock.time) x
-              (vec3 (I := I) (basis i) (basis j) (basis k)))
-          (fun i j => U_tensor clock.time x
-            (vec2 (I := I) (basis i) (basis j)))
-          (fun i => W clock.time x (fun _ : Fin 1 => basis i))) +
-        ((a' * h x - a clock.time *
-              laplacianAt (I := I) (flowG (I := I) S) clock.time h x) /
-            clock.elapsed + a clock.time * h x / clock.elapsed ^ 2) *
-          FW clock.time x +
-        psi' * FU clock.time x -
-        2 * psi clock.time * ∑ e : Fin n,
-          inner0S (I := I) (S.base.metric clock.time) x 2
-            (tensor0SCurry (I := I) (M := M) 2 x
-              (hamiltonTestUNablaField (I := I) S clock.time U_tensor x)
-              (basis e))
-            (tensor0SCurry (I := I) (M := M) 2 x
-              (hamiltonTestUNablaField (I := I) S clock.time U_tensor x)
-              (basis e)) := by
-    rw [hTimeRaw.deriv, hLap]
-    linear_combination hBaseHeat + hQWHeat' + hQUHeat
-  let Ric : Fin n → Fin n → Real := fun p q =>
-    metricRicci (I := I) (M := M) (S.base.metric clock.time) x
-      (vec2 (I := I) (basis p) (basis q))
-  let Wc : Fin n → Real := fun p =>
-    W clock.time x (fun _ : Fin 1 => basis p)
-  have hDUcomp (e i j : Fin n) :
-      hamiltonTestUNablaField (I := I) S clock.time U_tensor x
-          (vec3 (I := I) (basis e) (basis i) (basis j)) =
-        hamiltonTestJetDU clock Ric
-          (fun p q => if p = q then (1 : Real) else 0) Wc e i j := by
-    change totalNabla0SFun (I := I) (M := M) 2
-        (metricCov (I := I) (M := M) (S.base.metric clock.time))
-        (U_tensor clock.time) x
-          (vec3 (I := I) (basis e) (basis i) (basis j)) = _
-    have hslots : vec3 (I := I) (basis e) (basis i) (basis j) =
-        ![basis e, basis i, basis j] := by
-      funext p
-      fin_cases p <;> rfl
-    rw [hslots, hDU]
-    simp only [hamiltonTestJetDU, Ric, Wc, horth]
-    have hslotsEI : vec2 (I := I) (basis e) (basis i) =
-        ![basis e, basis i] := by
-      funext p
-      fin_cases p <;> rfl
-    have hslotsEJ : vec2 (I := I) (basis e) (basis j) =
-        ![basis e, basis j] := by
-      funext p
-      fin_cases p <;> rfl
-    rw [← hslotsEI, ← hslotsEJ]
-  have hWCoord : FW clock.time x = ∑ i : Fin n, (Wc i) ^ 2 := by
-    simpa only [FW, Wc] using
-      normSq0S_one_eq_sum_orthonormal
-        (I := I) (S.base.metric clock.time) basis horth (W clock.time x)
-  have hUCoord : FU clock.time x = ∑ i : Fin n, ∑ j : Fin n,
-      (U_tensor clock.time x
-        (vec2 (I := I) (basis i) (basis j))) ^ 2 := by
-    simpa only [FU] using
-      normSq0S_two_eq_sum_orthonormal
-        (I := I) (S.base.metric clock.time) basis horth
-          (U_tensor clock.time x)
-  have hDUCoord :
-      (∑ e : Fin n,
-        inner0S (I := I) (S.base.metric clock.time) x 2
-          (tensor0SCurry (I := I) (M := M) 2 x
-            (hamiltonTestUNablaField (I := I) S clock.time U_tensor x)
-            (basis e))
-          (tensor0SCurry (I := I) (M := M) 2 x
-            (hamiltonTestUNablaField (I := I) S clock.time U_tensor x)
-            (basis e))) =
-        ∑ e : Fin n, ∑ i : Fin n, ∑ j : Fin n,
-          (hamiltonTestJetDU clock Ric
-            (fun p q => if p = q then (1 : Real) else 0) Wc e i j) ^ 2 := by
-    exact sum_inner0S_curry_three_eq_sum_sq_orthonormal
-      (I := I) (S.base.metric clock.time) basis horth
-      (hamiltonTestUNablaField (I := I) S clock.time U_tensor x)
-      (hamiltonTestJetDU clock Ric
-        (fun p q => if p = q then (1 : Real) else 0) Wc) hDUcomp
-  refine ⟨?_, ?_⟩
-  · exact hTime
-  · rw [show (fun r : Real =>
-        inner0S (I := I) (S.base.metric r) x 4
-            (Tensor0SField.domDomCongr ∞ curvatureSlotSwap
-              (S.base.rm04 r) x)
-            ((U_tensor r x).product (U_tensor r x)) +
-          2 * inner0S (I := I) (S.base.metric r) x 3
-            (hamiltonPField (I := I) (S.base.metric r) x)
-            ((U_tensor r x).product (W r x)) +
-          inner0S (I := I) (S.base.metric r) x 2
-            (hamiltonMOriginField (I := I) clock.origin r
-              (S.base.metric r) x)
-            ((W r x).product (W r x)) +
-          a r / (r - clock.origin) * (h x *
-            normSq0S (I := I) (S.base.metric r) x 1 (W r x)) +
-          psi r * normSq0S (I := I) (S.base.metric r) x 2
-            (U_tensor r x)) = fun r : Real => q r x by rfl]
-    rw [show (fun y : M =>
-        inner0S (I := I) (S.base.metric clock.time) y 4
-            (Tensor0SField.domDomCongr ∞ curvatureSlotSwap
-              (S.base.rm04 clock.time) y)
-            ((U_tensor clock.time y).product (U_tensor clock.time y)) +
-          2 * inner0S (I := I) (S.base.metric clock.time) y 3
-            (hamiltonPField (I := I) (S.base.metric clock.time) y)
-            ((U_tensor clock.time y).product (W clock.time y)) +
-          inner0S (I := I) (S.base.metric clock.time) y 2
-            (hamiltonMOriginField (I := I) clock.origin clock.time
-              (S.base.metric clock.time) y)
-            ((W clock.time y).product (W clock.time y)) +
-          a clock.time / (clock.time - clock.origin) * (h y *
-            normSq0S (I := I) (S.base.metric clock.time) y 1
-              (W clock.time y)) +
-          psi clock.time * normSq0S (I := I) (S.base.metric clock.time) y 2
-            (U_tensor clock.time y)) = q clock.time by rfl]
-    rw [hCombined, hWCoord, hUCoord, hDUCoord]
+  have hskew : ∀ X Y : TangentSpace I x,
+      U_tensor clock.time x ![X, Y] = -U_tensor clock.time x ![Y, X] := by
+    intro X Y
+    rw [← hU_tensor clock.time x]
+    have hswap := (U clock.time x).map_swap (v := ![Y, X])
+      (i := (0 : Fin 2)) (j := 1) (by decide)
+    have hv : ![Y, X] ∘ Equiv.swap (0 : Fin 2) 1 = ![X, Y] := by
+      funext q
+      fin_cases q <;> simp
+    rw [hv] at hswap
+    exact hswap
+  have hphi : HasDerivWithinAt (fun r => a r * h x) (a' * h x)
+      Set.univ clock.time := (ha.mul_const (h x)).hasDerivWithinAt
+  have hphiSmooth : ContMDiffAt I 𝓘(Real, Real) 2
+      (fun y => a clock.time * h y) x :=
+    (contMDiff_const.mul hh).contMDiffAt.of_le (WithTop.coe_le_coe.mpr le_top)
+  have hresult := hamilton_perturbed_harnack_block_exact_evolution_within_of_tensor_test_jet
+    (I := I) S hS clock ht x (T := Set.univ) uniqueDiffWithinAt_univ basis horth
+    U_tensor W hskew hDW hDU hUtime hWtime
+    (fun r y => a r * h y) psi (a' * h x) psi' hphi hpsi.hasDerivWithinAt hphiSmooth
+  have hLapPhi : laplacianAt (I := I) (flowG S) clock.time
+      (fun y => a clock.time * h y) x =
+        a clock.time * laplacianAt (I := I) (flowG S) clock.time h x := by
+    convert laplacianAt_smul (I := I) (flowG S) clock.time (a clock.time)
+      (hh.mdifferentiable (by simp))
+      (gradientFun_mdiffAt (S.base.metric clock.time) hh x) using 1; rfl
+  simpa only [derivWithin_univ, hasDerivWithinAt_univ, hLapPhi,
+    mul_div_right_comm, mul_assoc] using hresult
 
 omit [SigmaCompactSpace M] in
 private theorem hamilton_perturbed_harnack_block_exact_evolution
@@ -6129,7 +6329,7 @@ private theorem hamiltonPerturbedBlockJ_nonneg_of_harnack_nonneg_of_null
       (fun a => W ![basis a]) hK.1 hK.2.1 hP hM hPSD hU hzeroBlock
 
 omit [SigmaCompactSpace M] in
-private theorem hamilton_perturbed_harnack_exact_rhs_pos_of_null
+private theorem hamilton_perturbed_harnack_reaction_lower_bound
     {D : RealTimeInterval} {n : Nat}
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S)
@@ -6157,50 +6357,33 @@ private theorem hamilton_perturbed_harnack_exact_rhs_pos_of_null
       (8 * B + 4) * (n : Real) ^ 4 + B * (n : Real) +
       2 * B * (n : Real) ^ 2 + 1 ≤ C)
     (hphi : 0 ≤ phi) (hpsi : 0 ≤ psi) (hpsi1 : psi ≤ 1)
-    (hnonneg : ∀
-      (U : HamiltonHarnackTwoForm (TangentSpace I x))
-      (W : Tensor0SSpace 1 I x),
-        0 ≤ hamiltonPerturbedHarnackQuadraticAt
-          (I := I) S clock phi psi x U W)
-    (U : HamiltonHarnackTwoForm (TangentSpace I x))
-    (W : Tensor0SSpace 1 I x)
-    (hzero : hamiltonPerturbedHarnackQuadraticAt
-      (I := I) S clock phi psi x U W = 0)
-    (hne : (U, W) ≠ 0)
-    (hWcoefficient : 0 < Lphi / clock.elapsed + phi / clock.elapsed ^ 2 -
-      C * psi / clock.elapsed ^ 2 - C * phi / clock.elapsed)
-    (hUcoefficient : 0 < psi' - C * psi) :
-    0 < hamiltonBlockJ
-          (fun i j k l => S.base.rm04 clock.time x
-            (vec4 (I := I) (basis i) (basis j) (basis l) (basis k)))
-          (fun i j k => hamiltonPField (I := I)
-            (S.base.metric clock.time) x
-              (vec3 (I := I) (basis i) (basis j) (basis k)))
-          (fun i j => hamiltonMOriginField (I := I)
-            clock.origin clock.time (S.base.metric clock.time) x
-              (vec2 (I := I) (basis i) (basis j)))
-          (fun i j => U ![basis i, basis j])
-          (fun i => W ![basis i]) +
-        hamiltonBlockSigmaSquare
-          (fun i j k l => S.base.rm04 clock.time x
-            (vec4 (I := I) (basis i) (basis j) (basis l) (basis k)))
-          (fun i j k => hamiltonPField (I := I)
-            (S.base.metric clock.time) x
-              (vec3 (I := I) (basis i) (basis j) (basis k)))
-          (fun i j => U ![basis i, basis j])
-          (fun i => W ![basis i]) +
-        (Lphi / clock.elapsed + phi / clock.elapsed ^ 2) *
-          (∑ i : Fin n, (W ![basis i]) ^ 2) +
-        psi' * (∑ i : Fin n, ∑ j : Fin n,
-          (U ![basis i, basis j]) ^ 2) -
-        2 * psi *
-          (∑ e : Fin n, ∑ i : Fin n, ∑ j : Fin n,
-            (hamiltonTestJetDU clock
-              (fun p q => metricRicci (I := I) (M := M)
-                (S.base.metric clock.time) x
-                  (vec2 (I := I) (basis p) (basis q)))
-              (fun p q => if p = q then (1 : Real) else 0)
-              (fun p => W ![basis p]) e i j) ^ 2) := by
+    (U : Fin n → Fin n → Real) (W : Fin n → Real)
+    (hU : ∀ a b, U a b = -U b a) :
+    let R : Fin n → Fin n → Fin n → Fin n → Real := fun a b c d =>
+      S.base.rm04 clock.time x
+        (vec4 (I := I) (basis a) (basis b) (basis d) (basis c))
+    let P : Fin n → Fin n → Fin n → Real := fun a b c =>
+      hamiltonPField (I := I) (S.base.metric clock.time) x
+        (vec3 (I := I) (basis a) (basis b) (basis c))
+    let Mbar : Fin n → Fin n → Real := fun a b =>
+      hamiltonMOriginField (I := I) clock.origin clock.time
+        (S.base.metric clock.time) x (vec2 (I := I) (basis a) (basis b))
+    let Ric : Fin n → Fin n → Real := fun a b =>
+      metricRicci (I := I) (M := M) (S.base.metric clock.time) x
+        (vec2 (I := I) (basis a) (basis b))
+    hamiltonBlockJ (hamiltonPerturbedCurvatureBlock R psi) P
+        (hamiltonPerturbedMBlock clock Mbar phi) U W +
+      hamiltonBlockSigmaSquare (hamiltonPerturbedCurvatureBlock R psi) P U W +
+      (Lphi / clock.elapsed + phi / clock.elapsed ^ 2 -
+          C * psi / clock.elapsed ^ 2 - C * phi / clock.elapsed) *
+        (∑ a, (W a) ^ 2) +
+      (psi' - C * psi) * (∑ a, ∑ b, (U a b) ^ 2) ≤
+    hamiltonBlockJ R P Mbar U W + hamiltonBlockSigmaSquare R P U W +
+      (Lphi / clock.elapsed + phi / clock.elapsed ^ 2) * (∑ a, (W a) ^ 2) +
+      psi' * (∑ a, ∑ b, (U a b) ^ 2) -
+      2 * psi * (∑ e, ∑ a, ∑ b,
+        (hamiltonTestJetDU clock Ric
+          (fun i j => if i = j then (1 : Real) else 0) W e a b) ^ 2) := by
   classical
   let R : Fin n → Fin n → Fin n → Fin n → Real := fun a b c d =>
     S.base.rm04 clock.time x
@@ -6219,21 +6402,8 @@ private theorem hamilton_perturbed_harnack_exact_rhs_pos_of_null
         (vec4 (I := I) (basis e) (basis a) (basis b) (basis c)) -
       metricNabla2Ric (I := I) (M := M) (S.base.metric clock.time) x
         (vec4 (I := I) (basis e) (basis b) (basis a) (basis c))
-  let Uc : Fin n → Fin n → Real := fun a b => U ![basis a, basis b]
-  let Wc : Fin n → Real := fun a => W ![basis a]
-  have hU : ∀ a b, Uc a b = -Uc b a := by
-    intro a b
-    dsimp only [Uc]
-    calc
-      U ![basis a, basis b] = U (fun i => basis (![a, b] i)) := by
-        exact congrArg U (by funext i; fin_cases i <;> rfl)
-      _ = -U (fun i => basis (![b, a] i)) := by
-        simpa only [HamiltonHarnackTwoForm.component, component0S_apply,
-          HamiltonHarnackTwoForm.toTensor0S_apply] using
-            HamiltonHarnackTwoForm.component_skew (I := I) basis U a b
-      _ = -U ![basis b, basis a] := by
-        congr 1
-        exact congrArg U (by funext i; fin_cases i <;> rfl)
+  let Uc := U
+  let Wc := W
   have hdiv : ∀ a b, (∑ e, nablaP e e a b) =
       hamiltonDivPAt (I := I) (S.base.metric clock.time) x
         (vec2 (I := I) (basis a) (basis b)) := by
@@ -6328,6 +6498,101 @@ private theorem hamilton_perturbed_harnack_exact_rhs_pos_of_null
     simp only [nablaRic, hamiltonPComponent, hamiltonPField_apply,
       hamiltonPAt_apply]
   rw [hPcomp, hMcomp] at hreaction
+  simpa only [R, Ric, Uc, Wc] using hreaction
+
+omit [SigmaCompactSpace M] in
+private theorem hamilton_perturbed_harnack_exact_rhs_pos_of_null
+    {D : RealTimeInterval} {n : Nat}
+    (S : SolutionOn (I := I) (M := M) D)
+    (hS : IsSolutionOn (I := I) S)
+    (clock : HarnackClock) (ht : clock.time ∈ D.regular) (x : M)
+    (basis : Module.Basis (Fin n) Real (TangentSpace I x))
+    (horth : ∀ i j,
+      (S.base.metric clock.time).inner x (basis i) (basis j) =
+        if i = j then (1 : Real) else 0)
+    (K S0 B C phi Lphi psi psi' : Real)
+    (hS0 : 0 ≤ S0) (helapsed : clock.elapsed ≤ S0)
+    (hderiv : ∀ k : Nat, k ≤ 2 →
+      nablaKRm04NormSqIntrinsic (I := I) S k clock.time x ≤ K)
+    (hB : B = Real.sqrt K + (n : Real) * Real.sqrt K +
+      (n : Real) * Real.sqrt K +
+      S0 * ((n : Real) ^ 2 * Real.sqrt K +
+        (n : Real) ^ 3 * (Real.sqrt K) ^ 2) +
+      (n : Real) * Real.sqrt K / 2)
+    (hCphi : 2 * (B + 1) * (n : Real) ^ 3 ≤ C)
+    (hCpsiW : 2 * B * S0 * (n : Real) ^ 3 +
+      4 * B * S0 ^ 2 * (n : Real) ^ 4 +
+      B * S0 ^ 2 * (n : Real) ^ 2 +
+      4 * B ^ 2 * S0 ^ 2 * (n : Real) ^ 2 +
+      (n : Real) ^ 2 ≤ C)
+    (hCpsiU : 4 * B * (n : Real) ^ 3 +
+      (8 * B + 4) * (n : Real) ^ 4 + B * (n : Real) +
+      2 * B * (n : Real) ^ 2 + 1 ≤ C)
+    (hphi : 0 ≤ phi) (hpsi : 0 ≤ psi) (hpsi1 : psi ≤ 1)
+    (hnonneg : ∀
+      (U : HamiltonHarnackTwoForm (TangentSpace I x))
+      (W : Tensor0SSpace 1 I x),
+        0 ≤ hamiltonPerturbedHarnackQuadraticAt
+          (I := I) S clock phi psi x U W)
+    (U : HamiltonHarnackTwoForm (TangentSpace I x))
+    (W : Tensor0SSpace 1 I x)
+    (hzero : hamiltonPerturbedHarnackQuadraticAt
+      (I := I) S clock phi psi x U W = 0)
+    (hne : (U, W) ≠ 0)
+    (hWcoefficient : 0 < Lphi / clock.elapsed + phi / clock.elapsed ^ 2 -
+      C * psi / clock.elapsed ^ 2 - C * phi / clock.elapsed)
+    (hUcoefficient : 0 < psi' - C * psi) :
+    0 < hamiltonBlockJ
+          (fun i j k l => S.base.rm04 clock.time x
+            (vec4 (I := I) (basis i) (basis j) (basis l) (basis k)))
+          (fun i j k => hamiltonPField (I := I)
+            (S.base.metric clock.time) x
+              (vec3 (I := I) (basis i) (basis j) (basis k)))
+          (fun i j => hamiltonMOriginField (I := I)
+            clock.origin clock.time (S.base.metric clock.time) x
+              (vec2 (I := I) (basis i) (basis j)))
+          (fun i j => U ![basis i, basis j])
+          (fun i => W ![basis i]) +
+        hamiltonBlockSigmaSquare
+          (fun i j k l => S.base.rm04 clock.time x
+            (vec4 (I := I) (basis i) (basis j) (basis l) (basis k)))
+          (fun i j k => hamiltonPField (I := I)
+            (S.base.metric clock.time) x
+              (vec3 (I := I) (basis i) (basis j) (basis k)))
+          (fun i j => U ![basis i, basis j])
+          (fun i => W ![basis i]) +
+        (Lphi / clock.elapsed + phi / clock.elapsed ^ 2) *
+          (∑ i : Fin n, (W ![basis i]) ^ 2) +
+        psi' * (∑ i : Fin n, ∑ j : Fin n,
+          (U ![basis i, basis j]) ^ 2) -
+        2 * psi *
+          (∑ e : Fin n, ∑ i : Fin n, ∑ j : Fin n,
+            (hamiltonTestJetDU clock
+              (fun p q => metricRicci (I := I) (M := M)
+                (S.base.metric clock.time) x
+                  (vec2 (I := I) (basis p) (basis q)))
+              (fun p q => if p = q then (1 : Real) else 0)
+              (fun p => W ![basis p]) e i j) ^ 2) := by
+  classical
+  let Uc : Fin n → Fin n → Real := fun a b => U ![basis a, basis b]
+  let Wc : Fin n → Real := fun a => W ![basis a]
+  have hU : ∀ a b, Uc a b = -Uc b a := by
+    intro a b
+    dsimp only [Uc]
+    calc
+      U ![basis a, basis b] = U (fun i => basis (![a, b] i)) := by
+        exact congrArg U (by funext i; fin_cases i <;> rfl)
+      _ = -U (fun i => basis (![b, a] i)) := by
+        simpa only [HamiltonHarnackTwoForm.component, component0S_apply,
+          HamiltonHarnackTwoForm.toTensor0S_apply] using
+            HamiltonHarnackTwoForm.component_skew (I := I) basis U a b
+      _ = -U ![basis b, basis a] := by
+        congr 1
+        exact congrArg U (by funext i; fin_cases i <;> rfl)
+  have hreaction := hamilton_perturbed_harnack_reaction_lower_bound
+    (I := I) S hS clock ht x basis horth K S0 B C phi Lphi psi psi'
+    hS0 helapsed hderiv hB hCphi hCpsiW hCpsiU hphi hpsi hpsi1 Uc Wc hU
+  dsimp only at hreaction
   have hinv : MetricInverseInBasisGen (I := I)
       (S.base.metric clock.time) x basis
       (identityInvMetric (Idx := Fin n)) :=
@@ -6494,7 +6759,7 @@ private theorem hamilton_perturbed_harnack_exact_rhs_pos_of_null
     simpa only [add_assoc] using
       add_pos_of_nonneg_of_pos hnonnegative hcarrier
   apply hlower.trans_le
-  simpa only [R, Ric, Uc, Wc, W2, U2] using hreaction
+  simpa only [Uc, Wc, W2, U2] using hreaction
 
 omit [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
 private theorem hamilton_weighted_two_mul_le
@@ -9801,5 +10066,233 @@ theorem hamiltonBlockJ_add_sigmaSquare_nonneg_of_harnack_nonneg [T2Space M]
   exact hamiltonBlockJ_add_sigmaSquare_nonneg_of_psd _ _ _ U W
     hK.1 hK.2.1 (hamiltonP_coordinates_skew (S.base.metric clock.time) x basis)
     hM hPSD hU
+
+end DifferentialGeometry.PDE.RicciFlow
+
+namespace DifferentialGeometry.PDE.RicciFlow
+
+open DifferentialGeometry.Tensor0SBundle
+open DifferentialGeometry.Geometry.Connection
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Operator
+open DifferentialGeometry.Integral.Measure
+open DifferentialGeometry.Tensor.RSTensor
+open scoped Manifold ContDiff BigOperators
+
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  [FiniteDimensional ℝ E] {H : Type*} [TopologicalSpace H]
+  {I : ModelWithCorners ℝ E H} {M : Type*} [TopologicalSpace M]
+  [ChartedSpace H M] [IsManifold I ∞ M]
+
+theorem exists_hamiltonPerturbedBlock_reaction_lower_bound [T2Space M]
+    (K S0 : Real) :
+    ∃ C : Real, 0 ≤ C ∧
+      ∀ {D : RealTimeInterval}
+        (S : SolutionOn (I := I) (M := M) D),
+        IsSolutionOn (I := I) S →
+        ∀ (clock : HarnackClock), clock.time ∈ D.regular →
+        ∀ (x : M) {n : Nat}
+        (basis : Module.Basis (Fin n) Real (TangentSpace I x)),
+        (∀ i j, (S.base.metric clock.time).inner x (basis i) (basis j) =
+          if i = j then (1 : Real) else 0) →
+        ∀ (phi Lphi psi psi' : Real)
+        (U : Fin n → Fin n → Real) (W : Fin n → Real),
+        (∀ k : Nat, k ≤ 2 → nablaKRm04NormSqIntrinsic (I := I) S k clock.time x ≤ K) →
+        clock.elapsed ≤ S0 → 0 ≤ phi → 0 ≤ psi → psi ≤ 1 →
+        (∀ a b, U a b = -U b a) →
+        let R : Fin n → Fin n → Fin n → Fin n → Real := fun a b c d =>
+          S.base.rm04 clock.time x
+            (vec4 (I := I) (basis a) (basis b) (basis d) (basis c))
+        let P : Fin n → Fin n → Fin n → Real := fun a b c =>
+          hamiltonPField (I := I) (S.base.metric clock.time) x
+            (vec3 (I := I) (basis a) (basis b) (basis c))
+        let Mbar : Fin n → Fin n → Real := fun a b =>
+          hamiltonMOriginField (I := I) clock.origin clock.time
+            (S.base.metric clock.time) x (vec2 (I := I) (basis a) (basis b))
+        let Ric : Fin n → Fin n → Real := fun a b =>
+          metricRicci (I := I) (M := M) (S.base.metric clock.time) x
+            (vec2 (I := I) (basis a) (basis b))
+        hamiltonBlockJ (hamiltonPerturbedCurvatureBlock R psi) P
+            (hamiltonPerturbedMBlock clock Mbar phi) U W +
+          hamiltonBlockSigmaSquare (hamiltonPerturbedCurvatureBlock R psi) P U W +
+          (Lphi / clock.elapsed + phi / clock.elapsed ^ 2 -
+              C * psi / clock.elapsed ^ 2 - C * phi / clock.elapsed) *
+            (∑ a, (W a) ^ 2) +
+          (psi' - C * psi) * (∑ a, ∑ b, (U a b) ^ 2) ≤
+        hamiltonBlockJ R P Mbar U W + hamiltonBlockSigmaSquare R P U W +
+          (Lphi / clock.elapsed + phi / clock.elapsed ^ 2) * (∑ a, (W a) ^ 2) +
+          psi' * (∑ a, ∑ b, (U a b) ^ 2) -
+          2 * psi * (∑ e, ∑ a, ∑ b,
+            (hamiltonTestJetDU clock Ric
+              (fun i j => if i = j then (1 : Real) else 0) W e a b) ^ 2) := by
+  classical
+  let : CompleteSpace E := FiniteDimensional.complete Real E
+  let N := Module.finrank Real E
+  let B := Real.sqrt K + (N : Real) * Real.sqrt K +
+    (N : Real) * Real.sqrt K +
+    S0 * ((N : Real) ^ 2 * Real.sqrt K +
+      (N : Real) ^ 3 * (Real.sqrt K) ^ 2) +
+    (N : Real) * Real.sqrt K / 2
+  obtain ⟨C, hC, hCphi, hCpsiW, hCpsiU⟩ :=
+    exists_hamiltonPerturbedBlock_control_constant (Idx := Fin N) B S0
+  simp only [Fintype.card_fin] at hCphi hCpsiW hCpsiU
+  refine ⟨C, hC, ?_⟩
+  intro D S hS clock ht x n basis horth phi Lphi psi psi' U W
+    hderiv helapsed hphi hpsi hpsi1 hU
+  have hn : n = N := by
+    have hdim : Module.finrank Real (TangentSpace I x) = Module.finrank Real E := rfl
+    dsimp only [N]
+    rw [← hdim]
+    simpa only [Fintype.card_fin] using (Module.finrank_eq_card_basis basis).symm
+  subst n
+  have hS0 : 0 ≤ S0 := clock.elapsed_pos.le.trans helapsed
+  have hB : B = Real.sqrt K + (N : Real) * Real.sqrt K +
+      (N : Real) * Real.sqrt K +
+      S0 * ((N : Real) ^ 2 * Real.sqrt K +
+        (N : Real) ^ 3 * (Real.sqrt K) ^ 2) +
+      (N : Real) * Real.sqrt K / 2 := rfl
+  exact hamilton_perturbed_harnack_reaction_lower_bound
+    (I := I) S hS clock ht x basis horth K S0 B C phi Lphi psi psi'
+    hS0 helapsed hderiv hB hCphi hCpsiW hCpsiU hphi hpsi hpsi1 U W hU
+
+theorem exists_hamilton_perturbed_harnack_block_evolution_lower_bound_within
+    [I.Boundaryless] [T2Space M] (K S0 : Real) :
+    ∃ C : Real, 0 ≤ C ∧ ∀
+    {D : RealTimeInterval}
+    (S : SolutionOn (I := I) (M := M) D)
+    (_ : IsSolutionOn (I := I) S)
+    (clock : HarnackClock) (_ : clock.time ∈ D.regular)
+    (x : M) {T : Set Real} (_ : UniqueDiffWithinAt Real T clock.time) {n : Nat}
+    (basis : Module.Basis (Fin n) Real (TangentSpace I x))
+    (_ : ∀ i j,
+      (S.base.metric clock.time).inner x (basis i) (basis j) =
+        if i = j then (1 : Real) else 0)
+    (U_tensor : Real →
+      Tensor0SField (E := E) (H := H) (I := I) (M := M) ∞ 2)
+    (W : Real →
+      Tensor0SField (E := E) (H := H) (I := I) (M := M) ∞ 1)
+    (_ : ∀ X Y : TangentSpace I x,
+      U_tensor clock.time x ![X, Y] = -U_tensor clock.time x ![Y, X])
+    (_ : totalNabla0SFun (I := I) (M := M) 1
+      (metricCov (I := I) (M := M) (S.base.metric clock.time))
+      (W clock.time) x = 0)
+    (_ : ∀ X Y Z : TangentSpace I x,
+      totalNabla0SFun (I := I) (M := M) 2
+          (metricCov (I := I) (M := M) (S.base.metric clock.time))
+          (U_tensor clock.time) x ![X, Y, Z] =
+        (1 / 2 : Real) *
+            (metricRicci (I := I) (M := M) (S.base.metric clock.time) x
+                ![X, Y] * W clock.time x (fun _ : Fin 1 => Z) -
+              metricRicci (I := I) (M := M) (S.base.metric clock.time) x
+                ![X, Z] * W clock.time x (fun _ : Fin 1 => Y)) +
+          (1 / (4 * clock.elapsed) : Real) *
+            ((S.base.metric clock.time).inner x X Y *
+                W clock.time x (fun _ : Fin 1 => Z) -
+              (S.base.metric clock.time).inner x X Z *
+                W clock.time x (fun _ : Fin 1 => Y)))
+    (_ : ∀ v : Fin 2 → TangentSpace I x,
+      HasDerivAt (fun r : Real => U_tensor r x v)
+        ((Geometry.Operator.roughLap0STensor (I := I)
+            (S.base.metric clock.time)
+            ((CanonicalSpatialDerivs0S.ofSmoothConnection
+              (I := I)
+              (metricCov (I := I) (M := M) (S.base.metric clock.time))
+              (metricCov_smooth (I := I) (M := M) (S.base.metric clock.time))
+              (U_tensor clock.time)).nabla2A x) -
+          covariantEndomorphismAction0S (I := I) (U_tensor clock.time x)
+            (ricciEndAt (I := I) (S.base.metric clock.time)
+              (metricRicci (I := I) (M := M)
+                (S.base.metric clock.time) x)).toContinuousLinearMap) v)
+        clock.time)
+    (_ : ∀ v : Fin 1 → TangentSpace I x,
+      HasDerivAt (fun r : Real => W r x v)
+        ((Geometry.Operator.roughLap0STensor (I := I)
+              (S.base.metric clock.time)
+              ((CanonicalSpatialDerivs0S.ofSmoothConnection
+                (I := I)
+                (metricCov (I := I) (M := M) (S.base.metric clock.time))
+                (metricCov_smooth (I := I) (M := M) (S.base.metric clock.time))
+                (W clock.time)).nabla2A x) +
+            (1 / clock.elapsed : Real) • W clock.time x -
+          covariantEndomorphismAction0S (I := I) (W clock.time x)
+            (ricciEndAt (I := I) (S.base.metric clock.time)
+              (metricRicci (I := I) (M := M)
+                (S.base.metric clock.time) x)).toContinuousLinearMap) v)
+        clock.time)
+    (phi : Real → M → Real) (psi : Real → Real) (phi' psi' : Real)
+    (_ : HasDerivWithinAt (fun r => phi r x) phi' T clock.time)
+    (_ : HasDerivWithinAt psi psi' T clock.time)
+    (_ : ContMDiffAt I 𝓘(Real, Real) 2 (phi clock.time) x)
+    (_ : ∀ k : Nat, k ≤ 2 →
+      nablaKRm04NormSqIntrinsic (I := I) S k clock.time x ≤ K)
+    (_ : clock.elapsed ≤ S0)
+    (_ : 0 ≤ phi clock.time x)
+    (_ : 0 ≤ psi clock.time) (_ : psi clock.time ≤ 1),
+    let q := fun r y =>
+      inner0S (I := I) (S.base.metric r) y 4
+          (Tensor0SField.domDomCongr ∞ curvatureSlotSwap
+            (S.base.rm04 r) y)
+          ((U_tensor r y).product (U_tensor r y)) +
+        2 * inner0S (I := I) (S.base.metric r) y 3
+          (hamiltonPField (I := I) (S.base.metric r) y)
+          ((U_tensor r y).product (W r y)) +
+        inner0S (I := I) (S.base.metric r) y 2
+          (hamiltonMOriginField (I := I) clock.origin r
+            (S.base.metric r) y)
+          ((W r y).product (W r y)) +
+        (phi r y / (r - clock.origin)) *
+          normSq0S (I := I) (S.base.metric r) y 1 (W r y) +
+        psi r *
+          normSq0S (I := I) (S.base.metric r) y 2 (U_tensor r y)
+    let R : Fin n → Fin n → Fin n → Fin n → Real := fun a b c d =>
+      S.base.rm04 clock.time x
+        (vec4 (I := I) (basis a) (basis b) (basis d) (basis c))
+    let P : Fin n → Fin n → Fin n → Real := fun a b c =>
+      hamiltonPField (I := I) (S.base.metric clock.time) x
+        (vec3 (I := I) (basis a) (basis b) (basis c))
+    let Mbar : Fin n → Fin n → Real := fun a b =>
+      hamiltonMOriginField (I := I) clock.origin clock.time
+        (S.base.metric clock.time) x (vec2 (I := I) (basis a) (basis b))
+    let Uc : Fin n → Fin n → Real := fun a b =>
+      U_tensor clock.time x (vec2 (I := I) (basis a) (basis b))
+    let Wc : Fin n → Real := fun a => W clock.time x (fun _ => basis a)
+    let Lphi := phi' - laplacianAt (I := I) (flowG (I := I) S)
+      clock.time (phi clock.time) x
+    HasDerivWithinAt (fun r : Real => q r x)
+        (derivWithin (fun r : Real => q r x) T clock.time) T clock.time ∧
+      hamiltonBlockJ (hamiltonPerturbedCurvatureBlock R (psi clock.time)) P
+          (hamiltonPerturbedMBlock clock Mbar (phi clock.time x)) Uc Wc +
+        hamiltonBlockSigmaSquare
+          (hamiltonPerturbedCurvatureBlock R (psi clock.time)) P Uc Wc +
+        (Lphi / clock.elapsed + phi clock.time x / clock.elapsed ^ 2 -
+            C * psi clock.time / clock.elapsed ^ 2 -
+            C * phi clock.time x / clock.elapsed) * (∑ a, (Wc a) ^ 2) +
+        (psi' - C * psi clock.time) * (∑ a, ∑ b, (Uc a b) ^ 2) ≤
+      derivWithin (fun r : Real => q r x) T clock.time -
+        laplacianAt (I := I) (flowG (I := I) S) clock.time (q clock.time) x := by
+  obtain ⟨C, hC, hbound⟩ := exists_hamiltonPerturbedBlock_reaction_lower_bound
+    (I := I) (M := M) K S0
+  refine ⟨C, hC, ?_⟩
+  intro D S hS clock ht x T hT n basis horth U_tensor W hskew hDW hDU
+    hUtime hWtime phi psi phi' psi' hphi hpsi hh hderiv helapsed
+    hphiNonneg hpsiNonneg hpsiOne
+  obtain ⟨hqd, hqe⟩ :=
+    hamilton_perturbed_harnack_block_exact_evolution_within_of_tensor_test_jet
+      (I := I) S hS clock ht x hT basis horth U_tensor W hskew hDW hDU
+      hUtime hWtime phi psi phi' psi' hphi hpsi hh
+  refine ⟨hqd, ?_⟩
+  dsimp only at hqe ⊢
+  rw [hqe]
+  exact hbound S hS clock ht x basis horth (phi clock.time x)
+    (phi' - laplacianAt (I := I) (flowG S) clock.time (phi clock.time) x)
+    (psi clock.time) psi'
+    (fun a b => U_tensor clock.time x (vec2 (I := I) (basis a) (basis b)))
+    (fun a => W clock.time x (fun _ => basis a))
+    hderiv helapsed hphiNonneg hpsiNonneg hpsiOne
+    (fun a b => by
+      have hv (X Y : TangentSpace I x) : vec2 (I := I) X Y = ![X, Y] := by
+        funext k
+        fin_cases k <;> rfl
+      simpa only [hv] using hskew (basis a) (basis b))
 
 end DifferentialGeometry.PDE.RicciFlow

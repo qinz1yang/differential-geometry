@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.HamiltonIvey.Complete
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.HamiltonIvey.MaximumPrinciple
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureOperatorBounds
 
@@ -103,33 +104,15 @@ theorem hamilton_ivey_pinching_positive_time
         (I := I) (S.base.metric t) x⟩
     nu < 0 → S.scalar t x ≥ (-nu) * (Real.log ((t - s) * (-nu)) - 3) := by
   intro nu hnu
-  obtain ⟨K, hK, hinit⟩ := exists_curvatureOperatorLowerBoundAt_metricRm04
-    (I := I) (S.base.metric s) hdim
-  have hpinch := (hamilton_ivey_pinching (I := I) S hS (sub_nonneg.mpr hst.le) hK
-    (by simpa only [add_sub_cancel] using hslab)
-    (by simpa only [add_sub_cancel] using hreg) hdim hinit).2
-  let k := leastCurvatureOperatorEigenvalueAt (I := I) (S.base.metric t) x
-    ⟨S.base.rm04 t x, metricRm04At_mem_algebraicCurvatureTensorSubmodule
-      (I := I) (S.base.metric t) x⟩
-  have hk : k < 0 := by change 2 * k < 0 at hnu; linarith
-  have h := hpinch t ⟨hst.le, by simp⟩ x hk
-  change 2 * (-k) *
-    (Real.log ((-k) / K) + Real.log (1 + 2 * K * (t - s)) - 3) ≤ _ at h
-  have htime : 0 < 1 + 2 * K * (t - s) := by
-    nlinarith [mul_pos hK (sub_pos.mpr hst)]
-  have harg : 0 < (t - s) * (-nu) := mul_pos (sub_pos.mpr hst) (neg_pos.mpr hnu)
-  have hargle : (t - s) * (-nu) ≤ ((-k) / K) * (1 + 2 * K * (t - s)) := by
-    change (t - s) * (-(2 * k)) ≤ _
-    have heq : ((-k) / K) * (1 + 2 * K * (t - s)) =
-        (-k) / K + (t - s) * (-(2 * k)) := by field_simp; ring
-    rw [heq]
-    linarith [div_pos (neg_pos.mpr hk) hK]
-  have hlog := Real.log_le_log harg hargle
-  rw [Real.log_mul (div_pos (neg_pos.mpr hk) hK).ne' htime.ne'] at hlog
-  have hmul := mul_le_mul_of_nonneg_left (sub_le_sub_right hlog 3) (neg_pos.mpr hnu).le
-  change -(2 * k) * _ ≤ -(2 * k) * _ at hmul
-  change -(2 * k) * _ ≤ _
-  nlinarith [h, hmul]
+  have hneg : leastCurvatureOperatorEigenvalueAt (I := I) (S.family.metric t) x
+      ⟨metricRm04At (S.family.metric t) x,
+        metricRm04At_mem_algebraicCurvatureTensorSubmodule (S.family.metric t) x⟩ < 0 := by
+    change 2 * leastCurvatureOperatorEigenvalueAt (I := I) (S.family.metric t) x
+      ⟨metricRm04At (S.family.metric t) x,
+        metricRm04At_mem_algebraicCurvatureTensorSubmodule (S.family.metric t) x⟩ < 0 at hnu
+    linarith only [hnu]
+  exact hamilton_ivey_inequality_on_interval_of_complete (I := I) (M := M) S hS hst hslab hreg
+    (fun r _ => RiemannianMetricComplete.of_compact (S.base.metric r)) hdim x hneg
 
 theorem curvatureOperatorNonnegative_of_ancient
     {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D)
@@ -140,42 +123,10 @@ theorem curvatureOperatorNonnegative_of_ancient
       (I := I) (S.base.metric t) x⟩ :
         algebraicCurvatureTensorSubmodule (I := I) (M := M) x) ∈
       algebraicCurvatureOperatorNonnegativeCone (I := I) (M := M) := by
-  let A : algebraicCurvatureTensorSubmodule (I := I) (M := M) x :=
-    ⟨S.base.rm04 t x, metricRm04At_mem_algebraicCurvatureTensorSubmodule
-      (I := I) (S.base.metric t) x⟩
-  have hnonneg : 0 ≤ leastCurvatureOperatorEigenvalueAt (I := I) (S.base.metric t) x A := by
-    by_contra h
-    have hneg := lt_of_not_ge h
-    let q := -(2 * leastCurvatureOperatorEigenvalueAt (I := I) (S.base.metric t) x A)
-    have hq : 0 < q := by dsimp [q]; linarith
-    let a := Real.exp (S.scalar t x / q + 4) / q
-    have ha : 0 < a := div_pos (Real.exp_pos _) hq
-    have hst : t - a < t := sub_lt_self _ ha
-    have hslab : Set.Icc (t - a) t ⊆ D.carrier := by
-      intro r hr
-      exact D.regular_subset (hancient (hr.2.trans_lt ht))
-    have hreg : Set.Ioo (t - a) t ⊆ D.regular := by
-      intro r hr
-      exact hancient (hr.2.trans ht)
-    have hpinch := hamilton_ivey_pinching_positive_time (I := I) S hS hst hslab hreg hdim x
-      (by change 2 * leastCurvatureOperatorEigenvalueAt (I := I) (S.base.metric t) x A < 0
-          linarith)
-    change q * (Real.log ((t - (t - a)) * q) - 3) ≤ S.scalar t x at hpinch
-    have harg : (t - (t - a)) * q = Real.exp (S.scalar t x / q + 4) := by
-      dsimp [a]
-      field_simp
-      ring
-    rw [harg, Real.log_exp] at hpinch
-    have hcancel : q * (S.scalar t x / q) = S.scalar t x :=
-      mul_div_cancel₀ _ hq.ne'
-    nlinarith [hpinch]
-  obtain ⟨basis, horth⟩ := exists_orthonormalBasisAt (I := I) (S.base.metric t) x hdim
-  have hbound : curvatureOperatorLowerBoundAt (I := I) (S.base.metric t) x A 0 := by
-    rw [curvatureOperatorLowerBoundAt_iff_le_leastCurvatureOperatorEigenvalueAt
-      (I := I) (S.base.metric t) x basis horth, neg_zero]
-    exact hnonneg
-  exact mem_algebraicCurvatureOperatorNonnegativeCone.mpr
-    (fun n c v w => by simpa only [zero_mul, add_zero] using hbound n c v w)
+  exact curvatureOperator_nonnegative_of_complete_ancient (I := I) (M := M) S hS
+    (fun r hr => D.regular_subset (hancient (hr.trans_lt ht)))
+    (fun r hr => hancient (hr.trans ht))
+    (fun r _ => RiemannianMetricComplete.of_compact (S.base.metric r)) hdim x
 
 theorem hamilton_ivey_negative_ratio_tendsto_zero
     {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D)
