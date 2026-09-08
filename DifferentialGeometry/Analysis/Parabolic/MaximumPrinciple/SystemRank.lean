@@ -340,4 +340,115 @@ theorem finrank_range_le_at_later_time_of_continuous_endomorphism_on_Ioo
   rw [hAeq s ⟨hs, hst.trans ht⟩, hAeq t ⟨htpos.le, ht⟩] at hmain
   exact hmain
 
+theorem finrank_range_spatially_constant_and_locally_constant_on_Ioo
+    [I.Boundaryless] [ConnectedSpace M]
+    [VectorBundle ℝ E (TangentSpace I : M → Type _)]
+    (G : MetricConnectionFamily (I := I) (M := M) ℝ)
+    (cov : ℝ → CovariantDerivative I F V)
+    {T : ℝ} (hT : 0 < T)
+    (hcovsmooth : ∀ q ∈ Ico 0 T, ContMDiffCovariantDerivative (cov q) ∞)
+    (hcov : ∀ q ∈ Ico 0 T, (cov q).IsMetricCompatible)
+    (A : ℝ → Cₛ^∞⟮I; F →L[ℝ] F, (fun z : M ↦ V z →L[ℝ] V z)⟯)
+    (hApos : ∀ q ∈ Ico 0 T, ∀ z, (A q z).IsPositive)
+    (hAcont : ContinuousOn (fun p : ℝ × M => TotalSpace.mk' (F →L[ℝ] F) p.2 (A p.1 p.2) : ℝ × M → TotalSpace (F →L[ℝ] F) (fun x => V x →L[ℝ] V x)) (Ico 0 T ×ˢ (Set.univ : Set M)))
+    (X : ℝ → (z : M) → TangentSpace I z)
+    (reaction : ℝ → (z : M) → (V z →L[ℝ] V z) → V z →L[ℝ] V z)
+    (hreactionNull : ∀ q ∈ Ico 0 T, ∀ z, satisfiesNullEigenvectorCondition (reaction q z))
+    (hreactionLip : ∀ {s t : ℝ}, 0 ≤ s → s < t → t < T → ∀ {Kset : Set M}, IsCompact Kset → ∀ R, ∃ Klip : NNReal, ∀ q ∈ Ioc s t, ∀ z ∈ Kset, LipschitzOnWith Klip (reaction q z) {B : V z →L[ℝ] V z | B.IsPositive ∧ ‖B‖ ≤ 2 * R})
+    {D : RealTimeInterval}
+    (hG : MetricFamilySmoothOn (I := I) (M := M) D G.metric)
+    (hreg : Ico 0 T ⊆ D.regular)
+    (hX : ContinuousOn (fun p : ℝ × M => (TotalSpace.mk' E p.2 (X p.1 p.2) : TangentBundle I M)) (Ico 0 T ×ˢ (Set.univ : Set M)))
+    (hGconnClosed : ∀ q ∈ Ico 0 T, G.connection q = LeviCivita (I := I) (G.metric q))
+    (hevolution : ∀ q ∈ Ioo 0 T, ∀ z, HasDerivAt (fun r ↦ A r z) (rawBundleEndomorphismConnLap (I := I) (G.metric q) (cov q) (fun w ↦ A q w) z + HomConnectionGen.homBundleCovariantDerivativeGen I M F V F V (cov q) (cov q) (fun w ↦ A q w) z (X q z) + reaction q z (A q z)) q)
+ :
+    (∀ t ∈ Ioo 0 T, ∀ x y,
+      Module.finrank ℝ (A t x).range = Module.finrank ℝ (A t y).range) ∧
+    (∀ x, MonotoneOn (fun t => Module.finrank ℝ (A t x).range) (Ioo 0 T)) ∧
+    (∀ t ∈ Ioo 0 T, ∀ x,
+      ∃ ε ∈ Ioc 0 t, ∀ s ∈ Ioc (t - ε) t,
+        Module.finrank ℝ (A s x).range = Module.finrank ℝ (A t x).range) ∧
+    ∃ δ ∈ Ioo 0 T, ∃ q : ℕ, ∀ t ∈ Ioc 0 δ, ∀ x,
+      Module.finrank ℝ (A t x).range = q := by
+  let _ : ∀ z, FiniteDimensional ℝ (V z) :=
+    fun z => VectorBundle.finiteDimensional ℝ F V z
+  have hspread : ∀ {s t : ℝ}, 0 ≤ s → s < t → t < T → ∀ x y,
+      Module.finrank ℝ (A s x).range ≤ Module.finrank ℝ (A t y).range := by
+    intro s t hs hst ht x y
+    exact finrank_range_le_at_later_time_of_continuous_endomorphism_on_Ioo
+      G cov hcovsmooth hcov A hApos hAcont X reaction hreactionNull hreactionLip
+      hG hreg hX hGconnClosed hevolution hs hst ht x y
+  have hrank {u : ℝ} (hu : u ∈ Ioo 0 T) :=
+    rank_spatially_constant_and_locally_constant_from_left_of_spreading
+      (rank := fun t x => Module.finrank ℝ (A t x).range) hu.1
+      (fun t ht x =>
+        (ContinuousAt.eventually_finrank_range_ge
+          (hevolution t ⟨ht.1, ht.2.trans_lt hu.2⟩ x).continuousAt).filter_mono inf_le_left)
+      (fun hs hst ht x y => hspread hs hst (ht.trans_lt hu.2) x y)
+  refine ⟨?_, ?_, ?_, ?_⟩
+  · intro t ht x y
+    exact (hrank ht).1 t ⟨ht.1, le_rfl⟩ x y
+  · intro x s hs t ht hst
+    rcases hst.eq_or_lt with rfl | hst
+    · exact le_rfl
+    · exact hspread hs.1.le hst ht.2 x x
+  · intro t ht x
+    exact (hrank ht).2.2.1 t ⟨ht.1, le_rfl⟩ x
+  · have hh : T / 2 ∈ Ioo 0 T := ⟨half_pos hT, half_lt_self hT⟩
+    obtain ⟨δ, hδ, q, hq⟩ := (hrank hh).2.2.2
+    exact ⟨δ, ⟨hδ.1, hδ.2.trans_lt hh.2⟩, q, hq⟩
+
+theorem rank_finite_interval_partition_on_Ioo
+    [I.Boundaryless] [ConnectedSpace M]
+    [VectorBundle ℝ E (TangentSpace I : M → Type _)]
+    (G : MetricConnectionFamily (I := I) (M := M) ℝ)
+    (cov : ℝ → CovariantDerivative I F V)
+    {T : ℝ}
+    (hcovsmooth : ∀ q ∈ Ico 0 T, ContMDiffCovariantDerivative (cov q) ∞)
+    (hcov : ∀ q ∈ Ico 0 T, (cov q).IsMetricCompatible)
+    (A : ℝ → Cₛ^∞⟮I; F →L[ℝ] F, (fun z : M ↦ V z →L[ℝ] V z)⟯)
+    (hApos : ∀ q ∈ Ico 0 T, ∀ z, (A q z).IsPositive)
+    (hAcont : ContinuousOn (fun p : ℝ × M => TotalSpace.mk' (F →L[ℝ] F) p.2 (A p.1 p.2) : ℝ × M → TotalSpace (F →L[ℝ] F) (fun x => V x →L[ℝ] V x)) (Ico 0 T ×ˢ (Set.univ : Set M)))
+    (X : ℝ → (z : M) → TangentSpace I z)
+    (reaction : ℝ → (z : M) → (V z →L[ℝ] V z) → V z →L[ℝ] V z)
+    (hreactionNull : ∀ q ∈ Ico 0 T, ∀ z, satisfiesNullEigenvectorCondition (reaction q z))
+    (hreactionLip : ∀ {s t : ℝ}, 0 ≤ s → s < t → t < T → ∀ {Kset : Set M}, IsCompact Kset → ∀ R, ∃ Klip : NNReal, ∀ q ∈ Ioc s t, ∀ z ∈ Kset, LipschitzOnWith Klip (reaction q z) {B : V z →L[ℝ] V z | B.IsPositive ∧ ‖B‖ ≤ 2 * R})
+    {D : RealTimeInterval}
+    (hG : MetricFamilySmoothOn (I := I) (M := M) D G.metric)
+    (hreg : Ico 0 T ⊆ D.regular)
+    (hX : ContinuousOn (fun p : ℝ × M => (TotalSpace.mk' E p.2 (X p.1 p.2) : TangentBundle I M)) (Ico 0 T ×ˢ (Set.univ : Set M)))
+    (hGconnClosed : ∀ q ∈ Ico 0 T, G.connection q = LeviCivita (I := I) (G.metric q))
+    (hevolution : ∀ q ∈ Ioo 0 T, ∀ z, HasDerivAt (fun r ↦ A r z) (rawBundleEndomorphismConnLap (I := I) (G.metric q) (cov q) (fun w ↦ A q w) z + HomConnectionGen.homBundleCovariantDerivativeGen I M F V F V (cov q) (cov q) (fun w ↦ A q w) z (X q z) + reaction q z (A q z)) q)
+    {a b : ℝ} (ha : 0 < a) (hab : a ≤ b) (hb : b < T) :
+    ∃ Q : Finset ℕ,
+      Icc a b = ⋃ q ∈ Q, {t | t ∈ Icc a b ∧ ∀ x,
+        Module.finrank ℝ (A t x).range = q} ∧
+      (Q : Set ℕ).PairwiseDisjoint
+        (fun q => {t | t ∈ Icc a b ∧ ∀ x,
+          Module.finrank ℝ (A t x).range = q}) ∧
+      ∀ q ∈ Q, {t | t ∈ Icc a b ∧ ∀ x,
+        Module.finrank ℝ (A t x).range = q}.Nonempty ∧
+        ∃ l u : ℝ, a ≤ l ∧ l ≤ u ∧ u ≤ b ∧
+          ({t | t ∈ Icc a b ∧ ∀ x,
+            Module.finrank ℝ (A t x).range = q} = Icc a u ∧
+              (∀ x, Module.finrank ℝ (A a x).range = q) ∨
+            {t | t ∈ Icc a b ∧ ∀ x,
+              Module.finrank ℝ (A t x).range = q} = Ioc l u ∧
+              ¬ ∀ x, Module.finrank ℝ (A a x).range = q) := by
+  let _ : ∀ z, FiniteDimensional ℝ (V z) :=
+    fun z => VectorBundle.finiteDimensional ℝ F V z
+  have hbpos : 0 < b := ha.trans_le hab
+  apply rank_finite_interval_partition_of_spreading
+    (rank := fun t x => Module.finrank ℝ (A t x).range) hbpos
+  · intro t ht x
+    exact (ContinuousAt.eventually_finrank_range_ge
+      (hevolution t ⟨ht.1, ht.2.trans_lt hb⟩ x).continuousAt).filter_mono inf_le_left
+  · intro s t hs hst ht x y
+    exact finrank_range_le_at_later_time_of_continuous_endomorphism_on_Ioo
+      G cov hcovsmooth hcov A hApos hAcont X reaction hreactionNull hreactionLip
+      hG hreg hX hGconnClosed hevolution hs hst (ht.trans_lt hb) x y
+  · exact ha
+  · exact hab
+  · exact le_rfl
+
 end PositiveSystem

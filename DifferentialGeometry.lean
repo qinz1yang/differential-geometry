@@ -4628,6 +4628,7 @@ import DifferentialGeometry.Topology.ProjectiveSpace.Projectivization
 import DifferentialGeometry.Bundle.ProjectiveSpace.Tautological
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.CylinderQuotientTautological
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Uhlenbeck.CurvatureOperatorRank
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Uhlenbeck.CurvatureOperatorEndpoint
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.ExteriorRank
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.CurvatureRank
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.AncientCurvatureRank
@@ -4790,6 +4791,7 @@ import DifferentialGeometry.Analysis.Parabolic.Dirichlet.GradientMassPairing
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.GradientTensorEquation
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.GivenGradientCommutator
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.GradientSourceFormula
+import DifferentialGeometry.Analysis.Parabolic.Dirichlet.WeakGradientSource
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.WeakPartialLinearSource
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.GradientTimeDual
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.GradientTimeEquation
