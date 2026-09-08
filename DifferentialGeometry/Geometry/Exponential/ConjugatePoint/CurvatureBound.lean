@@ -2,6 +2,7 @@ import DifferentialGeometry.Geometry.Comparison.Volume.Radial.Gronwall
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.Radial.Frame
 import DifferentialGeometry.Geometry.Exponential.Smoothness.Framed
 import DifferentialGeometry.Geometry.Exponential.Variation.Radial
+import DifferentialGeometry.Geometry.Comparison.Variation.Jacobi.BoundaryValue
 
 open Set
 open scoped Manifold ContDiff
@@ -13,6 +14,73 @@ section Normed
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [Module.Finite ℝ E]
   {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
   {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M] [T2Space M]
+
+namespace Exponential
+
+open AlongCurve CovariantDerivativeAlong Variation VolumeComparison
+
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+theorem injective_mfderiv_expMap_of_curvature_upper_bound
+    (g : SmoothRiemannianMetric I M) (p : M) (x : E)
+    (hx : (show TangentSpace I p from x) ∈ expDomain (I := I) g p)
+    {κ : ℝ} (hκ : κ < (Real.pi / 2) ^ 2)
+    (hcurv : ∀ t ∈ Ioo (0 : ℝ) 1,
+      ∀ v : TangentSpace I (radialCurve (I := I) g p x t),
+        g.inner (radialCurve (I := I) g p x t)
+          ((DifferentialGeometry.Geometry.Curvature.riemannOp
+            (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g)
+              (radialCurve (I := I) g p x t)) v
+            (curveVelocity (I := I) (radialCurve (I := I) g p x) t)
+            (curveVelocity (I := I) (radialCurve (I := I) g p x) t)) v ≤
+          κ * g.inner (radialCurve (I := I) g p x t) v v) :
+    Function.Injective
+      (mfderiv 𝓘(ℝ, E) I
+        (fun u : E => expMap (I := I) g p (show TangentSpace I p from u)) x) := by
+  classical
+  rw [injective_iff_map_eq_zero]
+  intro w hw
+  let γ := radialCurve (I := I) g p x
+  let J : ∀ t, TangentSpace I (γ t) := radialJacobiField (I := I) g p x w
+  let U : Set ℝ := {t | (show TangentSpace I p from t • x) ∈ expDomain (I := I) g p}
+  have hU : IsOpen U :=
+    (isOpen_expDomain (I := I) g p).preimage
+      (continuous_id.smul (continuous_const : Continuous (fun _ : ℝ => x)))
+  have hdom t (ht : t ∈ Icc (0 : ℝ) 1) := smul_mem_expDomain hx ht
+  have hγ : ContMDiffOn 𝓘(ℝ, ℝ) I (2 : ℕ∞) γ U := by
+    intro t ht
+    exact ((contMDiffAt_expMap (I := I) g p ht).comp t
+      (contMDiff_id.smul contMDiff_const).contMDiffAt).contMDiffWithinAt.of_le
+        (by decide : (2 : WithTop ℕ∞) ≤ ∞)
+  have hdiff t (ht : t ∈ Icc (0 : ℝ) 1) :
+      DifferentiableAt ℝ (chartRepAt (I := I) γ J t) t :=
+    differentiableAt_chartRep_radialJacobiField (I := I) g p x w (hdom t ht)
+  have hJ1 : J 1 = 0 :=
+    (radialJacobiField_one (I := I) g p x w hx).trans hw
+  have hzero := jacobi_eq_zero_of_endpoints_eq_zero (I := I) g γ J
+    (a := 0) (b := 1) zero_le_one hU (fun t ht => hdom t ht) hγ hdiff
+    (fun t ht => differentiableAt_chartRep_covDerivAlong_radialJacobiField
+      (I := I) g p x w (hdom t ht))
+    (fun t ht => isJacobiAt_radialJacobiField (I := I) g p x w (hdom t ht))
+    (radialJacobiField_zero (I := I) g p x w) hJ1
+    (κ := κ) (by simpa only [sub_zero, one_pow, mul_one] using hκ)
+    (fun t ht => hcurv t ht (J t))
+  have h0 : (0 : ℝ) ∈ Icc (0 : ℝ) 1 := ⟨le_rfl, zero_le_one⟩
+  have hrep : EqOn (chartRepAt (I := I) γ J 0) (fun _ => (0 : E)) (Icc 0 1) := by
+    intro t ht
+    simp only [chartRepAt_apply, hzero t ht, map_zero]
+  have hderiv : deriv (chartRepAt (I := I) γ J 0) 0 = 0 := by
+    have hc := (hasDerivWithinAt_const (0 : ℝ) (Icc (0 : ℝ) 1) (0 : E)).congr_of_mem
+      hrep h0
+    exact ((hdiff 0 h0).derivWithin (uniqueDiffOn_Icc zero_lt_one 0 h0)).symm.trans
+      (hc.derivWithin (uniqueDiffOn_Icc zero_lt_one 0 h0))
+  have hD : covDerivAlong (I := I) g γ J 0 = 0 := by
+    apply (covDerivAlong_eq_zero_iff (I := I) g γ J 0).mpr
+    rw [chartCovDerivAlong_def, hderiv, hrep h0]
+    rw [ChartChristoffel.contraction_zero_right, add_zero]
+  exact (covDerivAlong_radialJacobiField_zero (I := I) g p x w).symm.trans hD
+
+end Exponential
 
 namespace VolumeComparison
 
