@@ -1,5 +1,15 @@
 # DifferentialGeometry — Codex instructions
 
+## Mandatory repository skills
+
+Before beginning any task, every agent must follow the startup policy in
+[the parent AGENTS.md](../AGENTS.md). Read both skills under
+[`../skills/`](../skills/), their statement-audit and acceptance-gate references,
+and their agent metadata in full. This is mandatory even when this directory
+is opened as the workspace root. A parent agent's summary does not replace
+the receiving agent's own study. The parent's startup policy is canonical;
+the mathematical rules below remain binding.
+
 This is a Lean 4 / Mathlib library for differential geometry, geometric analysis, and the
 topology and Lie theory used by Ricci flow, Hamilton's theorem, and Perelman's Poincaré theorem.
 Reusable mathematics is the product; applications and flows are thin capstones.
@@ -162,5 +172,8 @@ A green build is necessary but not sufficient.
 - Do not claim a theorem proven from reading, a compiling decomposition, or a clean grep. A proof attempt
   certifies the leaf; compiled glue certifies assembly; the axiom closure certifies transitive completion.
 
-For a curated family of related classical results, use the `prove-theorem-suite` skill. Project
-standards in this file remain binding; the skill supplies the optional theorem-forest workflow.
+For the Schoenflies theorem suite, apply
+[`prove-theorem-suite`](../skills/prove-theorem-suite/SKILL.md) during development and
+[`audit-lean-theorem-suite`](../skills/audit-lean-theorem-suite/SKILL.md) for statement review
+and acceptance. Study of both skills and their reference files is mandatory for every agent
+before any task; apply their task-relevant requirements under the project standards above.

@@ -2,6 +2,40 @@
 
 An ongoing Lean 4 library for differential geometry and geometric analysis, currently focused on Ricci flow.
 
+## Local setup on this Mac
+
+This working copy uses Lean and Mathlib `4.33.1`, matching the downloaded
+release. Mathlib lives at `/Users/ayushkhaitan/mathlib4-v4.33.1`.
+The local path dependency and `.lake/packages` symlink reuse that checkout's
+compiled Mathlib and supporting packages without making additional copies.
+
+Open `differential-geometry-dev` as the Lean project folder. From the enclosing
+`differential-geometry-schoenflies` directory, run:
+
+```sh
+cd differential-geometry-dev
+LEAN_NUM_THREADS=1 lake --no-cache build DifferentialGeometry.Analysis.Estimates.ProductBounds
+```
+
+Use `LEAN_NUM_THREADS=1` for builds on this 8 GB RAM machine to reduce
+concurrent compilation. This does not cap an individual proof's memory usage.
+Prefer building the specific module you need; the full library has nearly
+4,000 source modules. The full build command is:
+
+```sh
+LEAN_NUM_THREADS=1 lake --no-cache build DifferentialGeometry
+```
+
+All 543 direct Mathlib imports have precompiled artifacts installed, including
+the 13 paths missing from the previous Mathlib version. The focused compilation
+check is recorded in `.lake/upgrade-build-check.log`; it is not a full-library
+verification.
+
+The old `mathlib-at-ICERM26-stieltjes` checkout is replaced by this installation.
+Its source and configuration backup is `.lake/mathlib-stieltjes-source-backup.tar.gz`
+(52 MB, excluding `.lake` build artifacts and `.git`). Original upstream project
+configuration is preserved in `.lake/upstream-config/`.
+
 ## How to use
 
 Use DifferentialGeometry as an upstream dependency and build on its geometric-analysis infrastructure:
