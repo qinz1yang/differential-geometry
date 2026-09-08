@@ -4050,6 +4050,7 @@ import DifferentialGeometry.Analysis.Integration.CompactExhaustionCutoff
 import DifferentialGeometry.Analysis.Integration.CompactExhaustionIntegral
 import DifferentialGeometry.Analysis.Integration.Measure.Boundary
 import DifferentialGeometry.Analysis.ODE.HamiltonIvey
+import DifferentialGeometry.Geometry.Curvature.DimensionThree.HamiltonIvey.RegionInvariant
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.EndomorphismScalarization
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.KyFanBarrier
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.HilbertBasis
