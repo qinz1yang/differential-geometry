@@ -178,8 +178,6 @@ private theorem lChartKin_bound
     (hsrc : ∀ n, MapsTo (alpha n) (Icc a b) (chartAt HF p).source)
     (hrep : ∀ n, EqOn (u n).toFun
       (fun r ↦ extChartAt J p (alpha n (a + r))) (Icc (0 : Real) (b - a)))
-    (hdiff : ∀ n, ∀ᵐ r ∂timeMeasure (b - a),
-      MDifferentiableAt (modelWithCornersSelf Real Real) J (alpha n) (a + r))
     {A : Real} (hact : ∀ n, lRegularizedAction S T (alpha n) a b ≤ A)
     (hreg : ∀ s ∈ Icc a b, T - s ^ 2 ∈ D'.regular) :
     ∃ B : Real, ∀ n,
@@ -202,7 +200,7 @@ private theorem lChartKin_bound
           (lVelocity (I := J) (alpha n) s)
           (lVelocity (I := J) (alpha n) s)) volume a b :=
     intervalIntegrable_lKinetic_of_chartH1 S hMet T (alpha n) p a b hab (u n)
-      (hsrc n) (hrep n) (hdiff n) hreg
+      (hsrc n) (hrep n) hreg
   have hpotInt (n : Nat) : IntervalIntegrable
       (fun s ↦ 2 * s ^ 2 * S.scalar (T - s ^ 2) (alpha n s)) volume a b :=
     lScalar_int (I := J) S hSc T a b (alpha n) (by
@@ -232,7 +230,7 @@ private theorem lChartKin_bound
         ((u n).deriv r)) = kin n := by
     simpa only [kin, smul_apply, real_inner_smul_left] using
       (lKinetic_eq_chart_integral S T (alpha n) p a b hab (u n)
-        (hsrc n) (hrep n) (hdiff n)).symm
+        (hsrc n) (hrep n)).symm
   rw [heq]
   exact hkinBound
 
@@ -246,8 +244,6 @@ theorem lChartH1_subseq
     (hsrc : ∀ n, MapsTo (alpha n) (Icc a b) (chartAt HF p).source)
     (hrep : ∀ n, EqOn (u n).toFun
       (fun r ↦ extChartAt J p (alpha n (a + r))) (Icc (0 : Real) (b - a)))
-    (hdiff : ∀ n, ∀ᵐ r ∂timeMeasure (b - a),
-      MDifferentiableAt (modelWithCornersSelf Real Real) J (alpha n) (a + r))
     {K : Set F} (hKc : IsCompact K)
     (hKchart : K ⊆ interior (extChartAt J p).target)
     (huK : ∀ n (r : Icc (0 : Real) (b - a)), (u n).toFun r.1 ∈ K)
@@ -262,7 +258,7 @@ theorem lChartH1_subseq
           (fun n (r : Icc (0 : Real) (b - a)) ↦ (u (phi n)).toFun r.1)
           (fun r ↦ uLim.toFun r.1) atTop := by
   obtain ⟨B, hchart⟩ := lChartKin_bound (J := J) S hMet hSc T a b hab
-    p alpha u hsrc hrep hdiff hact hreg
+    p alpha u hsrc hrep hact hreg
   have hba : 0 ≤ b - a := sub_nonneg.mpr hab
   have hτc : ContinuousOn (fun r : Real ↦ T - (a + r) ^ 2)
       (Icc (0 : Real) (b - a)) :=

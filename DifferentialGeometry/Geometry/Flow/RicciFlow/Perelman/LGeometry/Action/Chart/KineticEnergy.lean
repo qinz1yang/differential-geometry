@@ -1,8 +1,7 @@
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.H1.Approximation.Slice
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.Quadratic.Basic
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Defs
-import DifferentialGeometry.Geometry.Operator.Family.Gram.Curve
-import Mathlib.Analysis.Calculus.Deriv.Shift
+import DifferentialGeometry.Geometry.Operator.Family.Gram.KineticEnergy
 
 set_option autoImplicit false
 
@@ -26,61 +25,13 @@ variable {M : Type u} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M]
 variable {D : RealTimeInterval}
 
-private theorem lKinetic_ae
-    (S : SolutionOn (I := I) (M := M) D) (T : Real)
-    (alpha : Real → M) (p : M) {L : Real} (us : timeH1 E L)
-    (a b : Real) (hab : a ≤ b)
-    (hsrc : MapsTo alpha (Icc a b) (chartAt H p).source)
-    (hslice : EqOn us.toFun
-      (fun r ↦ extChartAt I p (alpha (a + r))) (Icc (0 : Real) L))
-    (hL : L = b - a)
-    (hdiff : ∀ᵐ r ∂timeMeasure L,
-      MDifferentiableAt (modelWithCornersSelf Real Real) I alpha (a + r)) :
-    (fun r ↦ (1 / 2 : Real) *
-      (S.base.metric (T - (r + a) ^ 2)).inner (alpha (r + a))
-        (lVelocity (I := I) alpha (r + a))
-        (lVelocity (I := I) alpha (r + a))) =ᵐ[timeMeasure L]
-      fun r ↦ inner Real
-        (((1 / 2 : Real) • chartGramOp (I := I) S.family p
-          (T - (a + r) ^ 2, us.toFun r)) (us.deriv r)) (us.deriv r) := by
-  have hL0 : 0 ≤ L := by rw [hL]; exact sub_nonneg.mpr hab
-  have hmem : ∀ᵐ r ∂timeMeasure L, r ∈ Ioo (0 : Real) L := by
-    unfold timeMeasure
-    rw [← restrict_Ioo_eq_restrict_Icc]
-    exact ae_restrict_mem measurableSet_Ioo
-  filter_upwards [us.ae_hasDerivWithinAt_toFun, hdiff, hmem] with r hu hmdiff hr
-  have hrcc : r ∈ Icc (0 : Real) L := ⟨hr.1.le, hr.2.le⟩
-  have hnhds : Icc (0 : Real) L ∈ nhds r := Icc_mem_nhds hr.1 hr.2
-  have hcoord : HasDerivAt
-      (fun q ↦ extChartAt I p (alpha (a + q))) (us.deriv r) r := by
-    apply hu.hasDerivAt hnhds |>.congr_of_eventuallyEq
-    filter_upwards [hnhds] with q hq
-    exact (hslice hq).symm
-  have hderiv :
-      (fderiv Real ((extChartAt I p) ∘ alpha) (a + r) : Real →L[Real] E) 1 =
-        us.deriv r := by
-    change deriv ((extChartAt I p) ∘ alpha) (a + r) = us.deriv r
-    rw [← deriv_comp_const_add]
-    simpa only [Function.comp_apply] using hcoord.deriv
-  have hrab : a + r ∈ Icc a b := by
-    rw [hL] at hrcc
-    exact ⟨le_add_of_nonneg_right hrcc.1, by linarith [hrcc.2]⟩
-  have hars : alpha (a + r) ∈ (chartAt H p).source := hsrc hrab
-  have hgram := chartGramOp_inner_deriv S.family p (T - (a + r) ^ 2) hmdiff hars
-  change deriv ((extChartAt I p) ∘ alpha) (a + r) = us.deriv r at hderiv
-  rw [hderiv] at hgram
-  rw [smul_apply, real_inner_smul_left, hslice hrcc, add_comm r a]
-  exact congrArg (fun z : Real ↦ (1 / 2 : Real) * z) hgram.symm
-
 theorem lKinetic_eq_chart_integral
     (S : SolutionOn (I := I) (M := M) D) (T : Real)
     (alpha : Real → M) (p : M) (a b : Real) (hab : a ≤ b)
     (us : timeH1 E (b - a))
     (hsrc : MapsTo alpha (Icc a b) (chartAt H p).source)
     (hslice : EqOn us.toFun
-      (fun r ↦ extChartAt I p (alpha (a + r))) (Icc (0 : Real) (b - a)))
-    (hdiff : ∀ᵐ r ∂timeMeasure (b - a),
-      MDifferentiableAt (modelWithCornersSelf Real Real) I alpha (a + r)) :
+      (fun r ↦ extChartAt I p (alpha (a + r))) (Icc (0 : Real) (b - a))) :
     (∫ s in a..b, (1 / 2 : Real) *
       (S.base.metric (T - s ^ 2)).inner (alpha s)
         (lVelocity (I := I) alpha s) (lVelocity (I := I) alpha s)) =
@@ -90,35 +41,16 @@ theorem lKinetic_eq_chart_integral
             chartGramOp (I := I) S.family p
               (T - (a + r) ^ 2, us.toFun r)) (us.deriv r))
           (us.deriv r) := by
-  have hba : 0 ≤ b - a := sub_nonneg.mpr hab
-  have hpoint := lKinetic_ae S T alpha p us a b hab hsrc hslice rfl hdiff
-  have hshift :
-      (∫ r in (0 : Real)..b - a, (1 / 2 : Real) *
-        (S.base.metric (T - (r + a) ^ 2)).inner (alpha (r + a))
-          (lVelocity (I := I) alpha (r + a))
-          (lVelocity (I := I) alpha (r + a))) =
-        ∫ s in a..b, (1 / 2 : Real) *
-          (S.base.metric (T - s ^ 2)).inner (alpha s)
-            (lVelocity (I := I) alpha s) (lVelocity (I := I) alpha s) := by
-    simpa only [zero_add, sub_add_cancel] using
-      (intervalIntegral.integral_comp_add_right
-        (fun s ↦ (1 / 2 : Real) *
-          (S.base.metric (T - s ^ 2)).inner (alpha s)
-            (lVelocity (I := I) alpha s) (lVelocity (I := I) alpha s))
-        (a := 0) (b := b - a) a)
-  rw [← hshift]
-  apply intervalIntegral.integral_congr_ae_restrict
-  simpa only [timeMeasure, uIoc_of_le hba,
-    restrict_Ioc_eq_restrict_Icc] using hpoint
+  simpa only [lVelocity, SolutionOn.family_metric, smul_apply, real_inner_smul_left] using
+    integral_mul_inner_mfderiv_eq_integral_chartGramOp_of_timeH1 S.family
+      (fun s => T - s ^ 2) (fun _ => (1 / 2 : ℝ)) alpha p a b hab us hsrc hslice
 
 theorem lKinetic_eq_chart_slice_integral
     (S : SolutionOn (I := I) (M := M) D) (T R : Real)
     (alpha : Real → M) (p : M) (u : timeH1 E R)
     (a b : Real) (ha : 0 ≤ a) (hab : a ≤ b) (hbR : b ≤ R)
     (hsrc : MapsTo alpha (Icc a b) (chartAt H p).source)
-    (hrep : EqOn u.toFun ((extChartAt I p) ∘ alpha) (Icc a b))
-    (hdiff : ∀ᵐ r ∂timeMeasure (b - a),
-      MDifferentiableAt (modelWithCornersSelf Real Real) I alpha (a + r)) :
+    (hrep : EqOn u.toFun ((extChartAt I p) ∘ alpha) (Icc a b)) :
     (∫ s in a..b, (1 / 2 : Real) *
       (S.base.metric (T - s ^ 2)).inner (alpha s)
         (lVelocity (I := I) alpha s) (lVelocity (I := I) alpha s)) =
@@ -136,7 +68,7 @@ theorem lKinetic_eq_chart_slice_integral
       timeH1.slice_toFun u a b ha hbR hr]
     exact hrep ⟨le_add_of_nonneg_right hr.1, by linarith [hr.2]⟩
   simpa only [us] using
-    lKinetic_eq_chart_integral S T alpha p a b hab us hsrc hslice hdiff
+    lKinetic_eq_chart_integral S T alpha p a b hab us hsrc hslice
 
 theorem intervalIntegrable_lKinetic_of_chartH1
     [I.Boundaryless]
@@ -147,8 +79,6 @@ theorem intervalIntegrable_lKinetic_of_chartH1
     (hsrc : MapsTo alpha (Icc a b) (chartAt H p).source)
     (hslice : EqOn us.toFun
       (fun r ↦ extChartAt I p (alpha (a + r))) (Icc (0 : Real) (b - a)))
-    (hdiff : ∀ᵐ r ∂timeMeasure (b - a),
-      MDifferentiableAt (modelWithCornersSelf Real Real) I alpha (a + r))
     (hreg : ∀ s ∈ Icc a b, T - s ^ 2 ∈ D.regular) :
     IntervalIntegrable (fun s ↦ (1 / 2 : Real) *
       (S.base.metric (T - s ^ 2)).inner (alpha s)
@@ -198,15 +128,20 @@ theorem intervalIntegrable_lKinetic_of_chartH1
       have hC0 := NNReal.coe_nonneg C
       linarith)
   have hquad := timeQuad_int A hA C hC hL us.deriv
-  have hpoint := lKinetic_ae S T alpha p us a b hab hsrc hslice rfl hdiff
+  have hpoint := chartGramOp_inner_deriv_ae_of_timeH1 S.family
+    (fun s => T - s ^ 2) alpha p a b us hsrc hslice
   have hpoint' :
       (fun r ↦ (1 / 2 : Real) *
         (S.base.metric (T - (r + a) ^ 2)).inner (alpha (r + a))
           (lVelocity (I := I) alpha (r + a))
           (lVelocity (I := I) alpha (r + a))) =ᵐ[volume.restrict (Ι (0 : Real) L)]
         fun r ↦ inner Real (A r (us.deriv r)) (us.deriv r) := by
-    simpa only [timeMeasure, uIoc_of_le hL, restrict_Ioc_eq_restrict_Icc,
-      A, τ] using hpoint
+    rw [uIoc_of_le hL, restrict_Ioc_eq_restrict_Icc]
+    filter_upwards [hpoint] with r hr
+    rw [add_comm r a]
+    simpa only [A, τ, lVelocity, SolutionOn.family_metric, smul_apply,
+      real_inner_smul_left] using
+        congrArg (fun x : ℝ => (1 / 2 : ℝ) * x) hr.symm
   have hshift : IntervalIntegrable (fun r ↦ (1 / 2 : Real) *
       (S.base.metric (T - (r + a) ^ 2)).inner (alpha (r + a))
         (lVelocity (I := I) alpha (r + a))
@@ -227,8 +162,6 @@ theorem intervalIntegrable_lKinetic_of_timeH1
     (a b : Real) (ha : 0 ≤ a) (hab : a ≤ b) (hbR : b ≤ R)
     (hsrc : MapsTo alpha (Icc a b) (chartAt H p).source)
     (hrep : EqOn u.toFun ((extChartAt I p) ∘ alpha) (Icc a b))
-    (hdiff : ∀ᵐ r ∂timeMeasure (b - a),
-      MDifferentiableAt (modelWithCornersSelf Real Real) I alpha (a + r))
     (hreg : ∀ s ∈ Icc a b, T - s ^ 2 ∈ D.regular) :
     IntervalIntegrable (fun s ↦ (1 / 2 : Real) *
       (S.base.metric (T - s ^ 2)).inner (alpha s)
@@ -241,6 +174,6 @@ theorem intervalIntegrable_lKinetic_of_timeH1
     rw [show us.toFun r = u.toFun (a + r) from
       timeH1.slice_toFun u a b ha hbR hr]
     exact hrep ⟨le_add_of_nonneg_right hr.1, by linarith [hr.2]⟩
-  exact intervalIntegrable_lKinetic_of_chartH1 S hS T alpha p a b hab us hsrc hslice hdiff hreg
+  exact intervalIntegrable_lKinetic_of_chartH1 S hS T alpha p a b hab us hsrc hslice hreg
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman

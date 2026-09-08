@@ -74,11 +74,8 @@ theorem intervalIntegrable_lRegularizedLagrangian_of_contMDiffOn_one
       with_unfolding_all
         exact chartTimeH1_toFun I (sub_nonneg.mpr (hseg n)) p
           (fun r : Real ↦ alpha ((t n : Real) + r)) hlocalMD hlocalSource
-    have hdiff : ∀ᵐ r ∂timeMeasure ((t (n + 1) : Real) - t n),
-        MDifferentiableAt (modelWithCornersSelf Real Real) I alpha ((t n : Real) + r) :=
-      curve_mdiff_local I p alpha us (hseg n) hsrc hrep
     exact intervalIntegrable_lKinetic_of_chartH1 S hMet T alpha p (t n) (t (n + 1))
-      (hseg n) us hsrc hrep hdiff fun s hs ↦
+      (hseg n) us hsrc hrep fun s hs ↦
         hreg s ⟨(t n).property.1.trans hs.1,
           hs.2.trans (t (n + 1)).property.2⟩
   have hkin : IntervalIntegrable

@@ -103,14 +103,12 @@ theorem lAction_chart_lsc
       gamma hgamma.continuousOn (fun i ↦ hgammaK i)
       (fun n ↦ alpha (phi0 n)) (fun n ↦ halpha (phi0 n)) hconvG
   let beta : Nat → Real → M := fun n ↦ alpha (phi0 (n + N))
-  have hbeta : ∀ n, ContMDiffOn 𝓘(Real, Real) I 1 (beta n) (Icc a b) :=
-    fun n ↦ halpha _
   have hLagBeta : ∀ n, IntervalIntegrable (lRegularizedLagrangian S T (beta n)) volume a b :=
     fun n ↦ hLag _
   have hactBeta : ∀ n, lRegularizedAction S T (beta n) a b ≤ A :=
     fun n ↦ hact _
   obtain ⟨psi, uLim, hpsi, hdu, hu⟩ :=
-    exists_chartH1_weakly_convergent_subsequence_of_lRegularizedAction_le S hMet hSc T a b t htmono ht0 htlast p beta hbeta hLagBeta
+    exists_chartH1_weakly_convergent_subsequence_of_lRegularizedAction_le S hMet hSc T a b t htmono ht0 htlast p beta hLagBeta
       u (fun i n ↦ by simpa only [beta, Nat.add_comm] using hsrc i n)
       (fun i n ↦ by simpa only [beta, Nat.add_comm] using hrep i n)
       K hKc' hKchart (fun i n r ↦ by
@@ -141,31 +139,6 @@ theorem lAction_chart_lsc
   have hgammaSource (i : Fin m) : MapsTo gamma
       (Icc (t i.castSucc) (t i.succ)) (chartAt H (p i)).source :=
     (hgammaK i).mono_right (interior_subset.trans (hKsrc i))
-  have hdiff (i : Fin m) (n : Nat) :
-      ∀ᵐ r ∂timeMeasure (partitionIntervalLength t i),
-        MDifferentiableAt (modelWithCornersSelf Real Real) I
-          (alpha (chi n)) (t i.castSucc + r) := by
-    have hseg : t i.castSucc ≤ t i.succ :=
-      htmono Fin.castSucc_lt_succ.le
-    have hleft : a ≤ t i.castSucc := by
-      rw [← ht0]
-      exact htmono (Fin.zero_le _)
-    have hright : t i.succ ≤ b := by
-      rw [← htlast]
-      exact htmono (Fin.le_last _)
-    have hmem : ∀ᵐ r ∂timeMeasure (partitionIntervalLength t i),
-        r ∈ Ioo (0 : Real) (partitionIntervalLength t i) := by
-      unfold timeMeasure
-      rw [← restrict_Ioo_eq_restrict_Icc]
-      exact ae_restrict_mem measurableSet_Ioo
-    filter_upwards [hmem] with r hr
-    change r ∈ Ioo (0 : Real) (t i.succ - t i.castSucc) at hr
-    have hsIoo : t i.castSucc + r ∈ Ioo a b := by
-      constructor <;> linarith [hr.1, hr.2, hleft, hright]
-    have hsWithin := halpha (chi n) (t i.castSucc + r)
-      ⟨hsIoo.1.le, hsIoo.2.le⟩
-    exact (hsWithin.contMDiffAt
-      (Icc_mem_nhds hsIoo.1 hsIoo.2)).mdifferentiableAt (by norm_num)
   have hlimRep (i : Fin m) : EqOn (uLim i).toFun
       (fun r ↦ extChartAt I (p i) (gamma (t i.castSucc + r)))
       (Icc (0 : Real) (partitionIntervalLength t i)) := by
@@ -208,7 +181,7 @@ theorem lAction_chart_lsc
     isBoundedUnder_of_eventually_le (Eventually.of_forall fun n ↦ hact (chi n))
   have hlsc := lRegularizedAction_fin_lsc S hMet hSc T a b t htmono ht0 htlast p
     (fun n ↦ alpha (chi n)) gamma (fun i n ↦ u i (psi n))
-    hsrc' hrep' hdiff K hKc' hKchart huK' uLim
+    hsrc' hrep' K hKc' hKchart huK' uLim
     (fun i ↦ by
       intro V hV
       exact (hu i V hV))

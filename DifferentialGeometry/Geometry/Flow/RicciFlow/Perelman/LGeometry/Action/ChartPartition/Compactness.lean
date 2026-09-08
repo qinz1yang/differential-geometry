@@ -157,7 +157,6 @@ theorem exists_chartH1_weakly_convergent_subsequence_of_lRegularizedAction_le
     (T a b : Real) {m : ℕ} (t : Fin (m + 1) → Real)
     (htmono : Monotone t) (ht0 : t 0 = a) (htlast : t (Fin.last m) = b)
     (p : Fin m → M) (alpha : ℕ → Real → M)
-    (halpha : ∀ n, ContMDiffOn 𝓘(Real, Real) I 1 (alpha n) (Icc a b))
     (hLag : ∀ n, IntervalIntegrable (lRegularizedLagrangian S T (alpha n)) volume a b)
     (u : (i : Fin m) → ℕ → timeH1 E (partitionIntervalLength t i))
     (hsrc : ∀ i n, MapsTo (alpha n) (Icc (t i.castSucc) (t i.succ))
@@ -193,10 +192,24 @@ theorem exists_chartH1_weakly_convergent_subsequence_of_lRegularizedAction_le
   have hcarrier : ∀ s ∈ uIcc a b, T - s ^ 2 ∈ D.carrier := by
     intro s hs
     exact D.regular_subset (hreg s (by simpa only [uIcc_of_le hab] using hs))
+  have hcont (n : ℕ) : ContinuousOn (alpha n) (Icc a b) := by
+    have hpiece (i : Fin m) :
+        ContinuousOn (alpha n) (Icc (t i.castSucc) (t i.succ)) :=
+      curve_cont_local I (p i) (alpha n) (u i n)
+        (htmono Fin.castSucc_lt_succ.le) (hsrc i n) (hrep i n)
+    have hprefix (i : Fin (m + 1)) :
+        ContinuousOn (alpha n) (Icc (t 0) (t i)) := by
+      induction i using Fin.induction with
+      | zero => simpa only [Icc_self] using continuousOn_singleton (alpha n) (t 0)
+      | succ i ih =>
+        have hunion := ih.union_of_isClosed (hpiece i) isClosed_Icc isClosed_Icc
+        rwa [Icc_union_Icc_eq_Icc (htmono (Fin.zero_le _))
+          (htmono Fin.castSucc_lt_succ.le)] at hunion
+    simpa only [ht0, htlast] using hprefix (Fin.last m)
   have hpotInt (n : ℕ) : IntervalIntegrable
       (fun s ↦ 2 * s ^ 2 * S.scalar (T - s ^ 2) (alpha n s)) volume a b :=
     lScalar_int (I := I) S hSc T a b (alpha n) hcarrier (by
-      simpa only [uIcc_of_le hab] using (halpha n).continuousOn)
+      simpa only [uIcc_of_le hab] using hcont n)
   have hkinInt (n : ℕ) : IntervalIntegrable
       (fun s ↦ (1 / 2 : Real) *
         (S.base.metric (T - s ^ 2)).inner (alpha n s)
@@ -241,22 +254,6 @@ theorem exists_chartH1_weakly_convergent_subsequence_of_lRegularizedAction_le
   have hright (i : Fin m) : t i.succ ≤ b := by
     rw [← htlast]
     exact htmono (Fin.le_last _)
-  have hdiff (i : Fin m) (n : ℕ) :
-      ∀ᵐ r ∂timeMeasure (partitionIntervalLength t i),
-        MDifferentiableAt (modelWithCornersSelf Real Real) I
-          (alpha n) (t i.castSucc + r) := by
-    have hmem : ∀ᵐ r ∂timeMeasure (partitionIntervalLength t i),
-        r ∈ Ioo (0 : Real) (partitionIntervalLength t i) := by
-      unfold timeMeasure
-      rw [← restrict_Ioo_eq_restrict_Icc]
-      exact ae_restrict_mem measurableSet_Ioo
-    filter_upwards [hmem] with r hr
-    change r ∈ Ioo (0 : Real) (t i.succ - t i.castSucc) at hr
-    have hsIoo : t i.castSucc + r ∈ Ioo a b := by
-      constructor <;> linarith [hr.1, hr.2, hleft i, hright i]
-    have hsWithin := halpha n (t i.castSucc + r) ⟨hsIoo.1.le, hsIoo.2.le⟩
-    exact (hsWithin.contMDiffAt
-      (Icc_mem_nhds hsIoo.1 hsIoo.2)).mdifferentiableAt (by norm_num)
   have hpiece (i : Fin m) (n : ℕ) :
       (∫ s in t i.castSucc..t i.succ, (1 / 2 : Real) *
         (S.base.metric (T - s ^ 2)).inner (alpha n s)
@@ -287,7 +284,7 @@ theorem exists_chartH1_weakly_convergent_subsequence_of_lRegularizedAction_le
               (lVelocity (I := I) (alpha n) s) := by
       simpa only [partitionIntervalLength, smul_apply, real_inner_smul_left] using
         (lKinetic_eq_chart_integral S T (alpha n) (p i) (t i.castSucc) (t i.succ)
-          (hseg i) (u i n) (hsrc i n) (hrep i n) (hdiff i n)).symm
+          (hseg i) (u i n) (hsrc i n) (hrep i n)).symm
     rw [heq]
     exact hpiece i n
   have hτc (i : Fin m) : ContinuousOn

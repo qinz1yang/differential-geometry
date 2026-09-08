@@ -4170,6 +4170,7 @@ import DifferentialGeometry.Geometry.Metric.Comparison.CurveEnergy
 import DifferentialGeometry.Geometry.Metric.Comparison.CurveCompactness
 import DifferentialGeometry.Geometry.Operator.Family.Gram.Basic
 import DifferentialGeometry.Geometry.Operator.Family.Gram.Curve
+import DifferentialGeometry.Geometry.Operator.Family.Gram.KineticEnergy
 import DifferentialGeometry.Geometry.Operator.Family.Gram.Sobolev
 import DifferentialGeometry.Geometry.Operator.Family.Gram.Convergence
 import DifferentialGeometry.Geometry.Operator.Family.Gram.Christoffel

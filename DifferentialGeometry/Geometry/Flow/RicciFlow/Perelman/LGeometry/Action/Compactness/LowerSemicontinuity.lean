@@ -75,8 +75,6 @@ theorem lKinetic_liminf
     (hsrc : ∀ n, MapsTo (alpha n) (Icc a b) (chartAt H p).source)
     (hrep : ∀ n, EqOn (u n).toFun
       (fun r ↦ extChartAt I p (alpha n (a + r))) (Icc (0 : Real) (b - a)))
-    (hdiff : ∀ n, ∀ᵐ r ∂timeMeasure (b - a),
-      MDifferentiableAt (modelWithCornersSelf Real Real) I (alpha n) (a + r))
     (uLim : timeH1 E (b - a)) {K : Set E} (hKc : IsCompact K)
     (hKchart : K ⊆ interior (extChartAt I p).target)
     (huK : ∀ n (r : Icc (0 : Real) (b - a)),
@@ -119,7 +117,7 @@ theorem lKinetic_liminf
     funext n
     simpa only [smul_apply, real_inner_smul_left] using
       (lKinetic_eq_chart_integral S T (alpha n) p a b hab (u n)
-        (hsrc n) (hrep n) (hdiff n)).symm
+        (hsrc n) (hrep n)).symm
   rw [hseq] at hlim
   exact hlim
 
@@ -138,8 +136,6 @@ theorem lRegularizedAction_lim_compact
     (hsrc : ∀ n, MapsTo (alpha n) (Icc a b) (chartAt H p).source)
     (hrep : ∀ n, EqOn (u n).toFun
       (fun r ↦ extChartAt I p (alpha n (a + r))) (Icc (0 : Real) (b - a)))
-    (hdiff : ∀ n, ∀ᵐ r ∂timeMeasure (b - a),
-      MDifferentiableAt (modelWithCornersSelf Real Real) I (alpha n) (a + r))
     (alphaLim : Real → N) (uLim : timeH1 E (b - a))
     (Q : Set N) (hQ : IsCompact Q)
     (hval : ∀ n s, s ∈ Icc a b → alpha n s ∈ Q)
@@ -178,7 +174,7 @@ theorem lRegularizedAction_lim_compact
   change kinLim + potLim ≤
     liminf (fun n ↦ lRegularizedAction S T (alpha n) a b) atTop
   have hkin : kinLim ≤ liminf kin atTop := by
-    exact lKinetic_liminf S hMet T a b hab p alpha u hsrc hrep hdiff
+    exact lKinetic_liminf S hMet T a b hab p alpha u hsrc hrep
       uLim hKc hKchart huK huLimK hu hdu hreg
   have hcont (n : ℕ) : ContinuousOn (alpha n) (Icc a b) :=
     curve_cont_local I p (alpha n) (u n) hab (hsrc n) (hrep n)
@@ -193,7 +189,7 @@ theorem lRegularizedAction_lim_compact
           (lVelocity (I := I) (alpha n) s)
           (lVelocity (I := I) (alpha n) s)) volume a b :=
     intervalIntegrable_lKinetic_of_chartH1 S hMet T (alpha n) p a b hab (u n)
-      (hsrc n) (hrep n) (hdiff n) hreg
+      (hsrc n) (hrep n) hreg
   have hpotInt (n : ℕ) : IntervalIntegrable
       (fun s ↦ 2 * s ^ 2 * S.scalar (T - s ^ 2) (alpha n s)) volume a b :=
     lScalar_int (I := I) S hSc T a b (alpha n) (by
@@ -208,7 +204,7 @@ theorem lRegularizedAction_lim_compact
       (S.base.metric (T - s ^ 2)).inner (alpha n s)
         (lVelocity (I := I) (alpha n) s) (lVelocity (I := I) (alpha n) s)
     rw [lKinetic_eq_chart_integral S T (alpha n) p a b hab (u n)
-      (hsrc n) (hrep n) (hdiff n)]
+      (hsrc n) (hrep n)]
     apply intervalIntegral.integral_nonneg (sub_nonneg.mpr hab)
     intro r _hr
     rw [smul_apply, real_inner_smul_left]
@@ -246,8 +242,6 @@ theorem lRegularizedAction_liminf
     (hsrc : ∀ n, MapsTo (alpha n) (Icc a b) (chartAt H p).source)
     (hrep : ∀ n, EqOn (u n).toFun
       (fun r ↦ extChartAt I p (alpha n (a + r))) (Icc (0 : Real) (b - a)))
-    (hdiff : ∀ n, ∀ᵐ r ∂timeMeasure (b - a),
-      MDifferentiableAt (modelWithCornersSelf Real Real) I (alpha n) (a + r))
     (alphaLim : Real → N) (uLim : timeH1 E (b - a))
     {K : Set E} (hKc : IsCompact K)
     (hKchart : K ⊆ interior (extChartAt I p).target)
@@ -271,7 +265,7 @@ theorem lRegularizedAction_liminf
         (uLim.deriv r)) +
       (∫ s in a..b, 2 * s ^ 2 * S.scalar (T - s ^ 2) (alphaLim s)) ≤
         liminf (fun n ↦ lRegularizedAction S T (alpha n) a b) atTop := by
-  exact lRegularizedAction_lim_compact S hMet hSc T a b hab p alpha u hsrc hrep hdiff
+  exact lRegularizedAction_lim_compact S hMet hSc T a b hab p alpha u hsrc hrep
     alphaLim uLim Set.univ isCompact_univ (fun _ _ _ ↦ Set.mem_univ _)
     hKc hKchart huK huLimK hu hdu halpha hact hreg
 
@@ -321,10 +315,6 @@ theorem lRegularizedAction_chart
     apply D.regular_subset
     apply hreg_i i s
     simpa only [uIcc_of_le (hseg i)] using hs
-  have hdiff (i : Fin m) : ∀ᵐ r ∂timeMeasure (partitionIntervalLength t i),
-      MDifferentiableAt (modelWithCornersSelf Real Real) I gamma
-        (t i.castSucc + r) := by
-    exact curve_mdiff_local I (p i) gamma (u i) (hseg i) (hsrc i) (hrep i)
   have hcont (i : Fin m) :
       ContinuousOn gamma (Icc (t i.castSucc) (t i.succ)) :=
     curve_cont_local I (p i) gamma (u i) (hseg i) (hsrc i) (hrep i)
@@ -334,7 +324,7 @@ theorem lRegularizedAction_chart
           (lVelocity (I := I) gamma s) (lVelocity (I := I) gamma s))
       volume (t i.castSucc) (t i.succ) :=
     intervalIntegrable_lKinetic_of_chartH1 S hMet T gamma (p i) (t i.castSucc) (t i.succ)
-      (hseg i) (u i) (hsrc i) (hrep i) (hdiff i) (hreg_i i)
+      (hseg i) (u i) (hsrc i) (hrep i) (hreg_i i)
   have hpotInt (i : Fin m) : IntervalIntegrable
       (fun s ↦ 2 * s ^ 2 * S.scalar (T - s ^ 2) (gamma s))
       volume (t i.castSucc) (t i.succ) :=
@@ -359,7 +349,7 @@ theorem lRegularizedAction_chart
         ((u i).deriv r) := by
     simpa only [kin, partitionIntervalLength, smul_apply, real_inner_smul_left] using
       lKinetic_eq_chart_integral S T gamma (p i) (t i.castSucc) (t i.succ)
-        (hseg i) (u i) (hsrc i) (hrep i) (hdiff i)
+        (hseg i) (u i) (hsrc i) (hrep i)
   have hLag (i : Fin m) : IntervalIntegrable (lRegularizedLagrangian S T gamma) volume
       (t i.castSucc) (t i.succ) := by
     with_unfolding_all exact (hkinInt i).add (hpotInt i)
@@ -416,9 +406,6 @@ theorem lRegularizedAction_fin_compact
     (hrep : ∀ i n, EqOn (u i n).toFun
       (fun r ↦ extChartAt I (p i) (alpha n (t i.castSucc + r)))
       (Icc (0 : Real) (partitionIntervalLength t i)))
-    (hdiff : ∀ i n, ∀ᵐ r ∂timeMeasure (partitionIntervalLength t i),
-      MDifferentiableAt (modelWithCornersSelf Real Real) I
-        (alpha n) (t i.castSucc + r))
     (K : Fin m → Set E) (hKc : ∀ i, IsCompact (K i))
     (hKchart : ∀ i, K i ⊆ interior (extChartAt I (p i)).target)
     (huK : ∀ i n (r : Icc (0 : Real) (partitionIntervalLength t i)),
@@ -480,7 +467,7 @@ theorem lRegularizedAction_fin_compact
           (lVelocity (I := I) (alpha n) s) (lVelocity (I := I) (alpha n) s))
       volume (t i.castSucc) (t i.succ) :=
     intervalIntegrable_lKinetic_of_chartH1 S hMet T (alpha n) (p i) (t i.castSucc) (t i.succ)
-      (hseg i) (u i n) (hsrc i n) (hrep i n) (hdiff i n) (hreg_i i)
+      (hseg i) (u i n) (hsrc i n) (hrep i n) (hreg_i i)
   have hpotInt (i : Fin m) (n : Nat) : IntervalIntegrable
       (fun s ↦ 2 * s ^ 2 * S.scalar (T - s ^ 2) (alpha n s))
       volume (t i.castSucc) (t i.succ) :=
@@ -507,7 +494,7 @@ theorem lRegularizedAction_fin_compact
       (S.base.metric (T - s ^ 2)).inner (alpha n s)
         (lVelocity (I := I) (alpha n) s) (lVelocity (I := I) (alpha n) s)
     rw [lKinetic_eq_chart_integral S T (alpha n) (p i) (t i.castSucc) (t i.succ)
-      (hseg i) (u i n) (hsrc i n) (hrep i n) (hdiff i n)]
+      (hseg i) (u i n) (hsrc i n) (hrep i n)]
     apply intervalIntegral.integral_nonneg (sub_nonneg.mpr (hseg i))
     intro r _hr
     rw [smul_apply, real_inner_smul_left]
@@ -589,7 +576,7 @@ theorem lRegularizedAction_fin_compact
       ⟨s.1, (hleft i).trans s.2.1, s.2.2.trans (hright i)⟩
     have halpha_i := halpha.comp inc
     apply lRegularizedAction_lim_compact S hMet hSc T (t i.castSucc) (t i.succ) (hseg i)
-      (p i) alpha (u i) (hsrc i) (hrep i) (hdiff i) gamma (uLim i) Q hQ
+      (p i) alpha (u i) (hsrc i) (hrep i) gamma (uLim i) Q hQ
       (fun n s hs ↦ hval n s
         ⟨(hleft i).trans hs.1, hs.2.trans (hright i)⟩)
       (hKc i) (hKchart i) (huK i) (huLimK i) (hu i) (hdu i)
@@ -640,9 +627,6 @@ theorem lRegularizedAction_fin_lsc
     (hrep : ∀ i n, EqOn (u i n).toFun
       (fun r ↦ extChartAt I (p i) (alpha n (t i.castSucc + r)))
       (Icc (0 : Real) (partitionIntervalLength t i)))
-    (hdiff : ∀ i n, ∀ᵐ r ∂timeMeasure (partitionIntervalLength t i),
-      MDifferentiableAt (modelWithCornersSelf Real Real) I
-        (alpha n) (t i.castSucc + r))
     (K : Fin m → Set E) (hKc : ∀ i, IsCompact (K i))
     (hKchart : ∀ i, K i ⊆ interior (extChartAt I (p i)).target)
     (huK : ∀ i n (r : Icc (0 : Real) (partitionIntervalLength t i)),
@@ -670,7 +654,7 @@ theorem lRegularizedAction_fin_lsc
         2 * s ^ 2 * S.scalar (T - s ^ 2) (gamma s)))) ≤
       liminf (fun n ↦ lRegularizedAction S T (alpha n) a b) atTop := by
   exact lRegularizedAction_fin_compact S hMet hSc T a b t htmono ht0 htlast p alpha gamma
-    Set.univ isCompact_univ (fun _ _ _ ↦ Set.mem_univ _) u hsrc hrep hdiff
+    Set.univ isCompact_univ (fun _ _ _ ↦ Set.mem_univ _) u hsrc hrep
     K hKc hKchart huK uLim hu hdu halpha hact hreg
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman
