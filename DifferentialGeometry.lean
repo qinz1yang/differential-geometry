@@ -4106,6 +4106,7 @@ import DifferentialGeometry.Bundle.SmoothSubbundle.Defs
 import DifferentialGeometry.Bundle.SmoothSubbundle.Basic
 import DifferentialGeometry.Bundle.SmoothSubbundle.Kernel
 import DifferentialGeometry.Bundle.SmoothSubbundle.KernelRestriction
+import DifferentialGeometry.Bundle.SmoothSubbundle.SpacetimeKernel
 import DifferentialGeometry.Bundle.SmoothSubbundle.KernelAPI
 import DifferentialGeometry.Bundle.SmoothSubbundle.KernelMotion
 import DifferentialGeometry.Bundle.SmoothSubbundle.Map
@@ -4629,6 +4630,7 @@ import DifferentialGeometry.Geometry.Metric.RicciSoliton.CylinderQuotientTautolo
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Uhlenbeck.CurvatureOperatorRank
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.ExteriorRank
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.CurvatureRank
+import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.AncientCurvatureRank
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.UhlenbeckLine
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Distance.LengthVariation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Distance.Laplacian
