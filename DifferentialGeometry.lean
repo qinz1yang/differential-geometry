@@ -4124,6 +4124,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Segment.D
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Segment.Regularity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Segment.Reparametrization
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Segment.Value
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Segment.Convergence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Segment.RegularizedComparison
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Segment.Minimizer
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Segment.Sobolev
