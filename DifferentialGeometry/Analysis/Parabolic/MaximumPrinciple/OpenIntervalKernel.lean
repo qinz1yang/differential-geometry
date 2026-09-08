@@ -317,3 +317,112 @@ theorem kernel_time_constant_on_open_interval
     (fun u hu x => (hevolution u (hsub hu) x).differentiableAt) (fun u hu => hevol u (hsub hu)) has hbt
 
 end PositiveSystem
+
+namespace PositiveSystem
+
+open DifferentialGeometry
+open DifferentialGeometry.Analysis.Parabolic
+open DifferentialGeometry.Geometry.Connection
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Operator
+
+universe u₁ v₁
+
+variable {E : Type u₁} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  [FiniteDimensional ℝ E]
+variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
+  [IsManifold I ∞ M] [T2Space M]
+variable {F : Type v₁} [NormedAddCommGroup F] [NormedSpace ℝ F]
+  [FiniteDimensional ℝ F]
+variable {V : M → Type*} [TopologicalSpace (TotalSpace F V)]
+  [∀ x, NormedAddCommGroup (V x)] [∀ x, InnerProductSpace ℝ (V x)]
+  [FiberBundle F V] [VectorBundle ℝ F V]
+  [ContMDiffVectorBundle ∞ F V I]
+  [IsContMDiffRiemannianBundle I ∞ F V]
+theorem reaction_kernel_annihilation_of_isPositive_on_open_interval
+    (g : ℝ → SmoothRiemannianMetric I M)
+    (cov : ℝ → CovariantDerivative I F V)
+    [∀ t, ContMDiffCovariantDerivative (cov t) ∞]
+    (hcov : ∀ t, (cov t).IsMetricCompatible)
+    (A : ℝ → Cₛ^∞⟮I; F →L[ℝ] F, (fun x : M ↦ V x →L[ℝ] V x)⟯)
+    {J : Set ℝ} (hJopen : IsOpen J) (hJ : J.OrdConnected)
+    (hAspace : ContMDiffOnSpacetimeEndomorphism
+      (I := I) (F := F) (V := V) (n := ∞)
+      (fun t x ↦ A t x) (J ×ˢ (Set.univ : Set M)))
+    (q : ℕ) (hrange : ∀ t ∈ J, ∀ x,
+      Module.finrank ℝ (A t x).range = q)
+    (hAsymm : ∀ t ∈ J, ∀ x,
+      ((A t x : V x →L[ℝ] V x) : V x →ₗ[ℝ] V x).IsSymmetric)
+    (hApos : ∀ t ∈ J, ∀ x, (A t x).IsPositive)
+    (X : ℝ → (x : M) → TangentSpace I x)
+    (reaction : ℝ → (x : M) →
+      (V x →L[ℝ] V x) → V x →L[ℝ] V x)
+    (hreactionNull : ∀ t ∈ J, ∀ x,
+      satisfiesNullEigenvectorCondition (reaction t x))
+    (hreactionPos : ∀ t ∈ J, ∀ x,
+      (reaction t x (A t x)).IsPositive)
+    (hevolution : ∀ t ∈ J, ∀ x,
+      HasDerivAt (fun s ↦ A s x)
+        (rawBundleEndomorphismConnLap (I := I) (g t) (cov t)
+            (fun y ↦ A t y) x +
+          HomConnectionGen.homBundleCovariantDerivativeGen
+            I M F V F V (cov t) (cov t) (fun y ↦ A t y) x (X t x) +
+          reaction t x (A t x)) t) :
+    ∀ t ∈ J, ∀ x v, A t x v = 0 → reaction t x (A t x) v = 0 := by
+  have hrig := kernel_rigidity_on_open_interval g cov hcov A hJopen hJ hAspace q hrange
+    hAsymm hApos X reaction hreactionNull hevolution
+  intro t ht x v hv
+  apply continuousLinearMap_kernel_annihilation_of_isPositive
+    (A := A t x) (B := reaction t x (A t x)) (hreactionPos t ht x)
+  · intro w hw
+    exact hrig.2.2.1 t ht x w (LinearMap.mem_ker.mp hw)
+  · exact LinearMap.mem_ker.mpr hv
+
+theorem reaction_kernel_annihilation_of_commuting_on_open_interval
+    (g : ℝ → SmoothRiemannianMetric I M)
+    (cov : ℝ → CovariantDerivative I F V)
+    [∀ t, ContMDiffCovariantDerivative (cov t) ∞]
+    (hcov : ∀ t, (cov t).IsMetricCompatible)
+    (A : ℝ → Cₛ^∞⟮I; F →L[ℝ] F, (fun x : M ↦ V x →L[ℝ] V x)⟯)
+    {J : Set ℝ} (hJopen : IsOpen J) (hJ : J.OrdConnected)
+    (hAspace : ContMDiffOnSpacetimeEndomorphism
+      (I := I) (F := F) (V := V) (n := ∞)
+      (fun t x ↦ A t x) (J ×ˢ (Set.univ : Set M)))
+    (q : ℕ) (hrange : ∀ t ∈ J, ∀ x,
+      Module.finrank ℝ (A t x).range = q)
+    (hAsymm : ∀ t ∈ J, ∀ x,
+      ((A t x : V x →L[ℝ] V x) : V x →ₗ[ℝ] V x).IsSymmetric)
+    (hApos : ∀ t ∈ J, ∀ x, (A t x).IsPositive)
+    (X : ℝ → (x : M) → TangentSpace I x)
+    (reaction : ℝ → (x : M) →
+      (V x →L[ℝ] V x) → V x →L[ℝ] V x)
+    (hreactionNull : ∀ t ∈ J, ∀ x,
+      satisfiesNullEigenvectorCondition (reaction t x))
+    (hreactionSymm : ∀ t ∈ J, ∀ x,
+      ((reaction t x (A t x) : V x →L[ℝ] V x) : V x →ₗ[ℝ] V x).IsSymmetric)
+    (hreactionComm : ∀ t ∈ J, ∀ x,
+      ((reaction t x (A t x) : V x →L[ℝ] V x) : V x →ₗ[ℝ] V x).comp
+          ((A t x : V x →L[ℝ] V x) : V x →ₗ[ℝ] V x) =
+        ((A t x : V x →L[ℝ] V x) : V x →ₗ[ℝ] V x).comp
+          ((reaction t x (A t x) : V x →L[ℝ] V x) : V x →ₗ[ℝ] V x))
+    (hevolution : ∀ t ∈ J, ∀ x,
+      HasDerivAt (fun s ↦ A s x)
+        (rawBundleEndomorphismConnLap (I := I) (g t) (cov t)
+            (fun y ↦ A t y) x +
+          HomConnectionGen.homBundleCovariantDerivativeGen
+            I M F V F V (cov t) (cov t) (fun y ↦ A t y) x (X t x) +
+          reaction t x (A t x)) t) :
+    ∀ t ∈ J, ∀ x v, A t x v = 0 → reaction t x (A t x) v = 0 := by
+  have hrig := kernel_rigidity_on_open_interval g cov hcov A hJopen hJ hAspace q hrange
+    hAsymm hApos X reaction hreactionNull hevolution
+  intro t ht x v hv
+  apply linearMap_kernel_annihilation_of_commuting
+    (A := (A t x : V x →L[ℝ] V x).toLinearMap)
+    (B := (reaction t x (A t x) : V x →L[ℝ] V x).toLinearMap)
+    (hreactionSymm t ht x) (hreactionComm t ht x)
+  · intro w hw
+    exact hrig.2.2.1 t ht x w (LinearMap.mem_ker.mp hw)
+  · exact LinearMap.mem_ker.mpr hv
+
+end PositiveSystem
