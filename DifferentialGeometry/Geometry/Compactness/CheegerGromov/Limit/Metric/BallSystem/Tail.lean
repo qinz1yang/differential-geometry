@@ -62,6 +62,7 @@ noncomputable def tailBallSystem
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [I.Boundaryless] [NeZero (Module.finrank ℝ E)] in
+omit [∀ j, SigmaCompactSpace (M j)] in
 theorem tail_ball_system_map_center_succ
     (b : ∀ j, M j)
     (Ψ : ∀ j, PartialDiffeomorph I I (M j) (M (j + 1)) (∞ : WithTop ℕ∞))
@@ -104,6 +105,7 @@ theorem tail_ball_system_map_center_succ
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [I.Boundaryless] [NeZero (Module.finrank ℝ E)] in
+omit [∀ j, SigmaCompactSpace (M j)] in
 theorem tail_ball_system_map_center
     (b : ∀ j, M j)
     (Ψ : ∀ j, PartialDiffeomorph I I (M j) (M (j + 1)) (∞ : WithTop ℕ∞))
@@ -142,6 +144,7 @@ theorem tail_ball_system_map_center
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [I.Boundaryless] [NeZero (Module.finrank ℝ E)] in
+omit [∀ j, SigmaCompactSpace (M j)] in
 theorem tail_ball_system_incl_center
     (b : ∀ j, M j)
     (Ψ : ∀ j, PartialDiffeomorph I I (M j) (M (j + 1)) (∞ : WithTop ℕ∞))
@@ -176,6 +179,7 @@ theorem tail_ball_system_incl_center
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [I.Boundaryless] [NeZero (Module.finrank ℝ E)] in
+omit [∀ j, SigmaCompactSpace (M j)] in
 theorem tail_ball_system_step_range_compact
     [∀ j, ProperSpace (M j)]
     (b : ∀ j, M j)

@@ -3190,6 +3190,7 @@ import DifferentialGeometry.Geometry.Metric.LieDerivative.Naturality
 import DifferentialGeometry.Geometry.Operator.Gradient.LipschitzBound
 import DifferentialGeometry.Geometry.Geodesic.Naturality.LocalIsometry.Rigidity
 import DifferentialGeometry.Geometry.Metric.Comparison.BallMonotonicity
+import DifferentialGeometry.Geometry.Metric.Comparison.BallImage
 import DifferentialGeometry.Geometry.Metric.Construction.Existence
 import DifferentialGeometry.Geometry.Metric.Pullback.PartialDiffeomorph.OpenSubtype
 import DifferentialGeometry.Geometry.Metric.OrthogonalComplement
