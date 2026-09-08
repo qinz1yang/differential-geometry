@@ -2981,6 +2981,7 @@ import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Self
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergence.Maps
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergence.MetricSource
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergence.Defs
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergence.Restriction
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Bounds.CurvatureOperator
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Subsequence
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Metric.Completeness
