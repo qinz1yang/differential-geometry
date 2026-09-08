@@ -12,7 +12,7 @@ namespace DifferentialGeometry.Geometry
 
 open Curvature Operator
 
-variable {E : Type} [NormedAddCommGroup E] [InnerProductSpace Real E]
+variable {E : Type} [NormedAddCommGroup E] [NormedSpace Real E]
   [FiniteDimensional Real E]
 variable {H : Type} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H} [I.Boundaryless]

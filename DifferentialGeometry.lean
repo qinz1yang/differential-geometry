@@ -4752,3 +4752,6 @@ import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureOperatorR
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Soliton.CurvatureKernel
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Soliton.CurvatureRank
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.KernelParallel
+import DifferentialGeometry.Geometry.Metric.RicciSoliton.ProductCover
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Soliton.RankOneSplitting
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Soliton.RankOneModelCover

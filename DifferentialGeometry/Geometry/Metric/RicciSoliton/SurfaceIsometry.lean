@@ -2,6 +2,8 @@ import DifferentialGeometry.Geometry.Metric.RicciSoliton.SurfaceClassification
 import DifferentialGeometry.Geometry.Metric.ProjectiveSpace
 import DifferentialGeometry.Geometry.Metric.PullbackScaling
 import DifferentialGeometry.Geometry.Metric.Sphere.IsometryRepresentation
+import DifferentialGeometry.Geometry.Metric.PullbackCompleteness
+import DifferentialGeometry.Geometry.Curvature.ModelChange
 
 set_option autoImplicit false
 
@@ -370,7 +372,7 @@ theorem gradientRicciSoliton_exists_gaussian_isometry_of_finrank_eq_two_of_nonco
       e.symm.toHomeomorph.compactSpace)
 
 omit [ConnectedSpace M] in
-theorem gradientRicciSoliton_exists_round_sphere_isometry_of_finrank_eq_two_of_simply_connected_of_nonflat
+private theorem round_sphere_isometry_of_innerProductSpace
     [SimplyConnectedSpace M]
     {g : SmoothRiemannianMetric I M} {f : C^∞⟮I, M; Real⟯} {sigma : Real}
     (hcomplete : RiemannianMetricComplete (I := I) g)
@@ -406,5 +408,66 @@ theorem gradientRicciSoliton_exists_round_sphere_isometry_of_finrank_eq_two_of_s
   · exact h
   · exact False.elim (not_simplyConnectedSpace_realProjectivePlane
       e.symm.toHomeomorph.toHomotopyEquiv.simplyConnectedSpace)
+
+end DifferentialGeometry.Geometry
+
+namespace DifferentialGeometry.Geometry
+
+open Curvature
+
+variable {E : Type} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  [FiniteDimensional ℝ E]
+variable {H : Type} [TopologicalSpace H]
+variable {I : ModelWithCorners ℝ E H} [I.Boundaryless]
+variable {M : Type} [TopologicalSpace M] [ChartedSpace H M]
+  [IsManifold I ∞ M] [SigmaCompactSpace M] [T2Space M] [SimplyConnectedSpace M]
+
+theorem gradientRicciSoliton_exists_round_sphere_isometry_of_finrank_eq_two_of_simply_connected_of_nonflat
+    {g : SmoothRiemannianMetric I M} {f : C^∞⟮I, M; ℝ⟯} {sigma : ℝ}
+    (hcomplete : RiemannianMetricComplete (I := I) g)
+    (hsol : gradientRicciSoliton (I := I) g f sigma)
+    (hsigma : 0 < sigma) (hdim : Module.finrank ℝ E = 2)
+    (hnonflat : ∃ x : M, metricRm04At (I := I) g x ≠ 0) :
+    ∃ e : M ≃ₘ⟮I, 𝓡 2⟯ Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1,
+      ∃ b : ℝ,
+        Diffeomorph.pullbackMetricCross
+          (scaleMetric (2 / sigma) (div_pos (by norm_num) hsigma)
+            (roundMetric (E := EuclideanSpace ℝ (Fin 3)) (n := 2))) e = g ∧
+          ∀ x, f x = b := by
+  let L : E ≃L[ℝ] EuclideanSpace ℝ (Fin 2) := (toEuclidean (E := E)).trans
+    (LinearIsometryEquiv.piLpCongrLeft 2 ℝ ℝ (finCongr hdim)).toContinuousLinearEquiv
+  let J := I.transContinuousLinearEquiv L
+  let Phi : M ≃ₘ⟮I, J⟯ M := ContinuousLinearEquiv.toTransContinuousLinearEquiv I M L
+  let k : SmoothRiemannianMetric J M := g.transContinuousLinearEquiv L
+  let u : C^∞⟮J, M; ℝ⟯ := f.comp Phi.symm.toContMDiffMap
+  have hk : RiemannianMetricComplete (I := J) k :=
+    RiemannianMetricComplete.pullbackCross g Phi.symm hcomplete
+  have hu : gradientRicciSoliton (I := J) k u sigma :=
+    gradientRicciSoliton_pullbackCross hsol Phi.symm
+  have hknonflat : ∃ x : M, metricRm04At (I := J) k x ≠ 0 := by
+    obtain ⟨x, hx⟩ := hnonflat
+    refine ⟨x, ?_⟩
+    intro hzero
+    apply hx
+    have hscalar : metricScalarAt (I := I) g x = 0 := by
+      have hz := metricScalarAt_eq_zero_of_metricRm04At_eq_zero k x hzero
+      exact (metricScalarAt_transContinuousLinearEquiv g L x).symm.trans hz
+    apply ContinuousMultilinearMap.ext
+    intro v
+    change metricRm04At (I := I) g x v = 0
+    have hvec : vec4 (v 0) (v 1) (v 2) (v 3) = v := by
+      funext i
+      fin_cases i <;> rfl
+    have hv := metricRm04StdAt_eq_scalar_div_two_of_finrank_eq_two
+      g hdim x (v 0) (v 1) (v 2) (v 3)
+    simpa only [metricRm04StdAt, tensor04StdAt, hvec, hscalar, zero_div, zero_mul] using hv
+  obtain ⟨Psi, b, hmetric, hpotential⟩ :=
+    round_sphere_isometry_of_innerProductSpace
+      hk hu hsigma (by simp) hknonflat
+  refine ⟨Phi.trans Psi, b, ?_, ?_⟩
+  · rw [← Diffeomorph.pullbackMetricCross_trans, hmetric]
+    exact SmoothRiemannianMetric.pullback_transContinuousLinearEquiv g L
+  · intro x
+    exact hpotential x
 
 end DifferentialGeometry.Geometry
