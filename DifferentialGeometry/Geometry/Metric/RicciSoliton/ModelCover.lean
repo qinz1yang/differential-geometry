@@ -354,4 +354,34 @@ theorem solitonModelCovering_refl
   · intro x
     rfl
 
+section Composition
+
+variable {K : Type*} [NormedAddCommGroup K] [NormedSpace Real K]
+  [FiniteDimensional Real K]
+variable {L : Type*} [TopologicalSpace L]
+variable {Kc : ModelWithCorners Real K L} [Kc.Boundaryless]
+variable {P : Type*} [TopologicalSpace P] [ChartedSpace L P]
+  [IsManifold Kc ∞ P] [SigmaCompactSpace P] [T2Space P]
+
+theorem solitonModelCovering_comp_diffeomorph
+    {h₁ : SmoothRiemannianMetric Kc P} {F₁ : C^∞⟮Kc, P; Real⟯}
+    {h₂ : SmoothRiemannianMetric J N} {F₂ : C^∞⟮J, N; Real⟯}
+    {h₃ : SmoothRiemannianMetric I M} {F₃ : C^∞⟮I, M; Real⟯}
+    (p : P ≃ₘ⟮Kc, J⟯ N) {q : N → M}
+    (hp : solitonModelCovering h₁ F₁ h₂ F₂ p)
+    (hq : solitonModelCovering h₂ F₂ h₃ F₃ q) :
+    solitonModelCovering h₁ F₁ h₃ F₃ (q ∘ p) := by
+  refine ⟨hp.1, hq.2.1, isLocalDiffeomorph_comp hq.2.2.1 hp.2.2.1,
+    hq.2.2.2.1.comp hp.2.2.2.1, hq.2.2.2.2.1.comp_homeomorph p.toHomeomorph, ?_, ?_⟩
+  · intro x v w
+    rw [mfderiv_comp x ((solitonModelCovering_contMDiff hq).mdifferentiableAt (by simp))
+      ((solitonModelCovering_contMDiff hp).mdifferentiableAt (by simp))]
+    rw [solitonModelCovering_metric hp, solitonModelCovering_metric hq]
+    rfl
+  · intro x
+    rw [solitonModelCovering_potential hp, solitonModelCovering_potential hq]
+    rfl
+
+end Composition
+
 end DifferentialGeometry.Geometry

@@ -3089,6 +3089,7 @@ import DifferentialGeometry.Geometry.Metric.RicciSoliton.Operations
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.PotentialCompleteness
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.ScalarLowerBound
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.Normalized
+import DifferentialGeometry.Geometry.Metric.RicciSoliton.UniversalCover
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.Reciprocal
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.Models
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.WeightedRicci

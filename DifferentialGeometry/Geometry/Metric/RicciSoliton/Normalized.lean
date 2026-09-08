@@ -75,6 +75,24 @@ variable {J : ModelWithCorners Real F G} [J.Boundaryless]
 variable {N : Type*} [TopologicalSpace N] [ChartedSpace G N]
   [IsManifold J ∞ N] [SigmaCompactSpace N] [T2Space N]
 
+theorem normalizedGradientRicciSoliton_localPullMetric
+    {g : SmoothRiemannianMetric J N} {f : C^∞⟮J, N; Real⟯}
+    {Phi : M → N}
+    (hsol : normalizedGradientRicciSoliton (I := J) g f)
+    (hPhi : IsLocalDiffeomorph I J ∞ Phi)
+    (hcomplete : RiemannianMetricComplete (I := I) (localPullMetric g Phi hPhi)) :
+    normalizedGradientRicciSoliton (I := I) (localPullMetric g Phi hPhi)
+      (f.comp ⟨Phi, hPhi.contMDiff⟩) := by
+  let _ : CompleteSpace E := FiniteDimensional.complete Real E
+  let _ : CompleteSpace F := FiniteDimensional.complete Real F
+  refine ⟨hcomplete, gradientRicciSoliton_localPullMetric hsol.2.1 hPhi, ?_⟩
+  intro x
+  change metricScalarAt (localPullMetric g Phi hPhi) x +
+      normGradSqFun (localPullMetric g Phi hPhi) (f ∘ Phi) x = f (Phi x)
+  rw [metricScalarAt_localPull, normGradSqFun_localPull g Phi hPhi f x
+    (f.contMDiff.mdifferentiableAt (by simp))]
+  exact hsol.2.2 (Phi x)
+
 theorem normalizedGradientRicciSoliton_of_surjective_localPullMetric
     {h : SmoothRiemannianMetric I M} {Fpot : C^∞⟮I, M; Real⟯}
     {g : SmoothRiemannianMetric J N} {f : C^∞⟮J, N; Real⟯}

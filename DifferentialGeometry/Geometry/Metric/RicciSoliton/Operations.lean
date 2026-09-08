@@ -65,6 +65,23 @@ theorem gradientRicciSoliton_pullbackCross
   exact h (Φ x) (mfderiv I J (Φ : M → N) x v)
     (mfderiv I J (Φ : M → N) x w)
 
+theorem gradientRicciSoliton_localPullMetric
+    [SigmaCompactSpace M] [SigmaCompactSpace N]
+    {g : SmoothRiemannianMetric J N} {f : C^∞⟮J, N; Real⟯}
+    {Phi : M → N} {sigma : Real}
+    (hsol : gradientRicciSoliton (I := J) g f sigma)
+    (hPhi : IsLocalDiffeomorph I J ∞ Phi) :
+    gradientRicciSoliton (I := I) (localPullMetric g Phi hPhi)
+      (f.comp ⟨Phi, hPhi.contMDiff⟩) sigma := by
+  let _ : CompleteSpace E := FiniteDimensional.complete Real E
+  let _ : CompleteSpace F := FiniteDimensional.complete Real F
+  intro x v w
+  change ricciTensor (localPullMetric g Phi hPhi) x v w +
+    hessFun (localPullMetric g Phi hPhi) (f ∘ Phi) x v w =
+      (sigma / 2) * (localPullMetric g Phi hPhi).inner x v w
+  rw [ricciTensor_localPull, hessFun_localPull, localPullMetric_inner]
+  exact hsol (Phi x) (mfderiv I J Phi x v) (mfderiv I J Phi x w)
+
 theorem gradientRicciSoliton_of_surjective_localPullMetric
     [SigmaCompactSpace M] [SigmaCompactSpace N]
     {h : SmoothRiemannianMetric I M} {Fpot : C^∞⟮I, M; Real⟯}
