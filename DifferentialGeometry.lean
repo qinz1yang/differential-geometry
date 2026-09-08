@@ -3197,6 +3197,7 @@ import DifferentialGeometry.Topology.Morse.BoundaryChart
 import DifferentialGeometry.Topology.Morse.BoundaryModification
 import DifferentialGeometry.Topology.Morse.BoundaryPerturbation
 import DifferentialGeometry.Topology.Morse.BoundaryRegularVectorField
+import DifferentialGeometry.Topology.Morse.CriticalPoint
 import DifferentialGeometry.Topology.Morse.CriticalSet
 import DifferentialGeometry.Topology.Morse.Defs
 import DifferentialGeometry.Topology.Morse.Flow

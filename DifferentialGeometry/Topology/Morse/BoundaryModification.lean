@@ -1,4 +1,5 @@
 import DifferentialGeometry.Topology.Morse.BoundaryPerturbation
+import DifferentialGeometry.Topology.Morse.CriticalPoint
 import DifferentialGeometry.Topology.Manifold.FunctionExtension
 import Mathlib.Geometry.Manifold.PartitionOfUnity
 
@@ -104,5 +105,48 @@ theorem exists_contMDiff_boundaryMorsePerturbation_in_chart
       ((hD ⟨x, hxU⟩).mp hx)
   · rw [hout hxU, sub_self]
     exact ⟨le_rfl, by positivity⟩
+
+theorem exists_pos_isCriticalPointAt_boundaryMorseChart_iff
+    {n : ℕ} {E : Type} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    {H : Type} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+    {M : Type} [TopologicalSpace M] [ChartedSpace H M]
+    {U : TopologicalSpace.Opens M} {V : TopologicalSpace.Opens (Fin (n + 1) → ℝ)}
+    {r : ℕ∞ω} (c : Diffeomorph I 𝓘(ℝ, Fin (n + 1) → ℝ) U V r) (hr : r ≠ 0)
+    (d : Fin n → ℝ) (hd : ∀ i, d i ≠ 0) (b : ContDiffBump (0 : Fin n → ℝ)) (v : ℝ) :
+    ∃ δ > 0, ∀ a ∈ Set.Ioc 0 δ, ∀ g : M → ℝ,
+      (∀ y : U, 0 ≤ (c y).val 0 → g y = v + boundaryMorsePerturbation d b a (c y)) →
+      ∀ x : U, 0 < (c x).val 0 →
+        (IsCriticalPointAt I g (x : M) ↔ (c x).val = Fin.cons (a / 2) 0) := by
+  obtain ⟨δ, hδ, hcritical⟩ := exists_pos_boundaryMorsePerturbation_critical d hd b
+  refine ⟨δ, hδ, ?_⟩
+  intro a ha g hmodel x hx
+  let F := fun z : V => g (c.symm z)
+  let G := fun z : V => v + boundaryMorsePerturbation d b a z
+  have heq : F =ᶠ[𝓝 (c x)] G := by
+    have ho : IsOpen {z : V | 0 < (z : Fin (n + 1) → ℝ) 0} :=
+      isOpen_lt continuous_const ((continuous_apply 0).comp continuous_subtype_val)
+    filter_upwards [ho.mem_nhds hx] with z hz
+    have hm := hmodel (c.symm z) (by simpa only [c.apply_symm_apply] using hz.le)
+    simpa only [F, G, c.apply_symm_apply] using hm
+  calc
+    IsCriticalPointAt I g (x : M) ↔ IsCriticalPointAt I (fun y : U => g y) x :=
+      (isCriticalPointAt_subtype_iff U (f := g) (x := x)).symm
+    _ ↔ IsCriticalPointAt 𝓘(ℝ, Fin (n + 1) → ℝ) F (c x) := by
+      simpa only [F, c.symm_apply_apply, Function.comp_def] using
+        (isCriticalPointAt_comp_diffeomorph_iff c.symm hr
+          (f := fun y : U => g y) (x := c x)).symm
+    _ ↔ IsCriticalPointAt 𝓘(ℝ, Fin (n + 1) → ℝ) G (c x) := by
+      unfold IsCriticalPointAt
+      rw [heq.mfderiv_eq]
+      exact Iff.rfl
+    _ ↔ IsCriticalPointAt 𝓘(ℝ, Fin (n + 1) → ℝ)
+        (fun z => v + boundaryMorsePerturbation d b a z) (c x).val :=
+      isCriticalPointAt_subtype_iff (I := 𝓘(ℝ, Fin (n + 1) → ℝ)) V
+        (f := fun z => v + boundaryMorsePerturbation d b a z) (x := c x)
+    _ ↔ IsCriticalPointAt 𝓘(ℝ, Fin (n + 1) → ℝ)
+        (boundaryMorsePerturbation d b a) (c x).val := by
+      simp only [IsCriticalPointAt, mfderiv_eq_fderiv, fderiv_const_add]
+      exact Iff.rfl
+    _ ↔ (c x).val = Fin.cons (a / 2) 0 := (hcritical a ha).1 (c x) hx.le
 
 end DifferentialGeometry.Topology.Morse
