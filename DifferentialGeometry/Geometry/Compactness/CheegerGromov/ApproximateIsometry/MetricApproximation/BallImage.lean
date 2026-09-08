@@ -1,6 +1,5 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.MetricApproximation.DistanceControl
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.MetricApproximation.Monotonicity
-import DifferentialGeometry.Topology.MetricBall
 import DifferentialGeometry.Geometry.Metric.Comparison.BallImage
 import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph.Basic
 
@@ -47,14 +46,14 @@ theorem MapMetricApproximationOn.image_metric_ball_subset
     (hsub : Metric.closedEBall O (ENNReal.ofReal r₂) ⊆ Φ.source) :
     (Φ : M → N) '' Metric.ball O r ⊆ Metric.ball ((Φ : M → N) O) R := by
   intro y hy
-  have hyE : y ∈ (Φ : M → N) '' Metric.eball O (ENNReal.ofReal r) :=
-    Set.image_mono (ball_subset_eball_ofReal O hr) hy
+  have hyE : y ∈ (Φ : M → N) '' Metric.eball O (ENNReal.ofReal r) := by
+    rwa [Metric.eball_ofReal]
   have hyClosed :
       y ∈ Metric.closedEBall ((Φ : M → N) O)
         (ENNReal.ofReal (Real.sqrt (1 + ε) * r)) :=
     hdata.image_eball_subset_closedEBall (I := I) Φ hgnorm hhnorm hrr₂ hε0 hsub hyE
-  exact closedEBall_ofReal_subset_ball ((Φ : M → N) O)
-    (mul_nonneg (Real.sqrt_nonneg _) hr.le) hR hyClosed
+  rw [Metric.closedEBall_ofReal (mul_nonneg (Real.sqrt_nonneg _) hr.le)] at hyClosed
+  exact Metric.closedBall_subset_ball hR hyClosed
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in

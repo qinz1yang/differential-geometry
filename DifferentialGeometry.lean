@@ -2296,7 +2296,6 @@ import DifferentialGeometry.Topology.Manifold.ConnectedComponent
 import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph.Opens
 import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph.Basic
 import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph.Chart
-import DifferentialGeometry.Topology.MetricBall
 import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph.Tangent
 import DifferentialGeometry.Topology.Manifold.Path.Regularity
 import DifferentialGeometry.Topology.Manifold.Path.Reparametrization

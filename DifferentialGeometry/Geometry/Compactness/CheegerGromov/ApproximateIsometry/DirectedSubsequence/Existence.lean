@@ -327,9 +327,9 @@ theorem exists_directed_approximate_isometry_subsequence (P : ∀ k, ProperMetri
           DstepF.forward.eps_lt_one).toSeparateBounds
       have hclosed_mid_sub :
           Metric.closedEBall ((X.obj (σ s)).basepoint) (ENNReal.ofReal Rmid) ⊆
-            Metric.ball ((X.obj (σ s)).basepoint) Rcur :=
-        closedEBall_ofReal_subset_ball ((X.obj (σ s)).basepoint)
-          (le_of_lt hRmid_pos) hRmid_lt_Rcur
+            Metric.ball ((X.obj (σ s)).basepoint) Rcur := by
+        rw [Metric.closedEBall_ofReal hRmid_pos.le]
+        exact Metric.closedBall_subset_ball hRmid_lt_Rcur
       have hdata_mid : MapMetricApproximationOn (I := I)
           (Metric.closedEBall ((X.obj (σ s)).basepoint) (ENNReal.ofReal Rmid)) (1 / 2) p
           (chainComp (I := I) (Mf := fun i => (X.obj (σ i)).M) Ψ s l :
