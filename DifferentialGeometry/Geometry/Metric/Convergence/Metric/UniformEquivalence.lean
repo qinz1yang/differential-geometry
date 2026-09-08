@@ -1,4 +1,5 @@
 import DifferentialGeometry.Geometry.Metric.Convergence.Window.Bounds
+import DifferentialGeometry.Geometry.Metric.Pullback.Basic
 import DifferentialGeometry.Geometry.Curvature.Bounds.QuadraticForm
 import DifferentialGeometry.Geometry.Curvature.Bounds.RicciOperatorNorm
 import DifferentialGeometry.Geometry.Curvature.Components.RicciTrace
@@ -477,6 +478,26 @@ theorem exists_uniform_equiv_of_metricCPConvergence [CompactSpace M]
       Finset.single_le_sum (fun j _ => hCfun_nonneg j) (Finset.mem_range.mpr hk)
     linarith
 
+section
+
+variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
+  [IsManifold I ∞ M] [T2Space M]
+variable {N : Type*} [TopologicalSpace N] [ChartedSpace H N] [IsManifold I ∞ N]
+
+omit [CompleteSpace E] in
+theorem metricUniformEquivalentOn_pullback
+    (K : Set N) (gRef h : SmoothRiemannianMetric I N) (C : ℝ)
+    (hequiv : MetricUniformEquivalentOn (I := I) K gRef h C)
+    (Φ : M ≃ₘ⟮I, I⟯ N) {V : Set M} (hV : ∀ x ∈ V, (Φ : M → N) x ∈ K) :
+    MetricUniformEquivalentOn (I := I) V
+      (Diffeomorph.pullbackMetric (I := I) gRef Φ)
+      (Diffeomorph.pullbackMetric (I := I) h Φ) C := by
+  obtain ⟨hC, hbound⟩ := hequiv
+  refine ⟨hC, fun x hx v => ?_⟩
+  rw [Diffeomorph.pullbackMetric_inner, Diffeomorph.pullbackMetric_inner]
+  exact hbound (Φ x) (hV x hx) (mfderiv I I (Φ : M → N) x v)
+
+end
 
 end CheegerGromovCompactness
 end DifferentialGeometry
