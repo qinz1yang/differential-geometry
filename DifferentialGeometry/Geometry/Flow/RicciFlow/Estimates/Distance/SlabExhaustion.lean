@@ -1,3 +1,5 @@
+import DifferentialGeometry.Geometry.Curvature.AlgebraicCurvatureOperatorCone
+import Mathlib.Topology.Connected.TotallyDisconnected
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.MetricFirstOrder
 import DifferentialGeometry.Geometry.Comparison.DistanceExhaustion
 import DifferentialGeometry.Geometry.Connection.Convergence.DifferenceDerivativeBound
@@ -273,5 +275,124 @@ theorem exists_proper_exhaustion_with_gradient_laplacian_bound_on_slab
       refine ⟨U, hU, hxU, hbar, hbarSmooth, hbarEq, hbarUpper, ?_, ?_⟩
       · exact (htransfer.1.trans hgradCh).trans hscale
       · exact (htransfer.2.trans hBCh).trans hscale
+
+end DifferentialGeometry.PDE.RicciFlow
+
+namespace DifferentialGeometry.PDE.RicciFlow
+
+open DifferentialGeometry.Tensor0SBundle
+open scoped Manifold ContDiff
+
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+variable [FiniteDimensional ℝ E]
+variable {H : Type*} [TopologicalSpace H]
+variable {I : ModelWithCorners ℝ E H} [I.Boundaryless]
+variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
+variable [IsManifold I ∞ M] [T2Space M]
+
+
+theorem exists_proper_exhaustion_with_gradient_laplacian_bound_on_compact_time_interval
+    [SigmaCompactSpace M] [ConnectedSpace M]
+    {D : RealTimeInterval}
+    (S : SolutionOn (I := I) (M := M) D)
+    (hS : IsSolutionOn (I := I) S)
+    (hcomplete : ∀ t ∈ D.regular,
+      RiemannianMetricComplete (I := I) (S.base.metric t))
+    (hcurv : ∀ a b : ℝ, Set.Icc a b ⊆ D.regular →
+      ∃ C : ℝ, ∀ t ∈ Set.Icc a b, ∀ x : M,
+        normSq0S (I := I) (S.base.metric t) x 4 (S.base.rm04 t x) ≤ C)
+    {alpha b : ℝ} (halphaB : alpha ≤ b)
+    (hslab : Set.Icc alpha b ⊆ D.regular)
+    (hsec : ∀ x : M, metricRm04At (I := I) (S.base.metric alpha) x ∈
+      tensor04SectionalNonnegativeCone (I := I) (M := M)) :
+    ∃ h : M → ℝ, Continuous h ∧ IsProperMap h ∧
+      (∀ x, 1 ≤ h x) ∧
+      ∃ Ch : ℝ, 1 ≤ Ch ∧ ∀ t ∈ Set.Icc alpha b, ∀ x : M,
+        ∃ U : Set M, IsOpen U ∧ x ∈ U ∧ ∃ hbar : M → ℝ,
+          ContMDiffOn I 𝓘(ℝ, ℝ) ∞ hbar U ∧
+          hbar x = h x ∧
+          (∀ᶠ y in nhds x, h y ≤ hbar y) ∧
+          Real.sqrt ((S.base.metric t).inner x
+              (gradientFun (I := I) (S.base.metric t) hbar x)
+              (gradientFun (I := I) (S.base.metric t) hbar x)) ≤ Ch * h x ∧
+          laplacian (I := I) (LeviCivita (I := I) (S.base.metric t))
+              (S.base.metric t) hbar x ≤ Ch * h x := by
+  by_cases hdim : Module.finrank ℝ E = 0
+  · let _ : Subsingleton E := Module.finrank_zero_iff.mp hdim
+    let _ : Subsingleton H := I.injective.subsingleton
+    let _ : DiscreteTopology M := ChartedSpace.discreteTopology H M
+    let _ : Subsingleton M := subsingleton_of_preconnected_totallyDisconnected
+    let _ : CompactSpace M := inferInstance
+    obtain ⟨h, _, hcont, hproper, hh, hsupport⟩ :=
+      exists_constant_proper_exhaustion_with_gradient_laplacian_bound
+        (fun t => S.base.metric t)
+    exact ⟨h, hcont, hproper, hh, 1, le_rfl, fun t _ x => hsupport t x⟩
+  · let _ : NeZero (Module.finrank ℝ E) := ⟨hdim⟩
+    let : CompleteSpace E := FiniteDimensional.complete ℝ E
+    let : IsManifold I 1 M := IsManifold.of_le
+      (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) (by decide)
+    let : IsManifold I 2 M := IsManifold.of_le
+      (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) (by decide)
+    have halpha : alpha ∈ D.regular := hslab ⟨le_rfl, halphaB⟩
+    have hb : b ∈ D.regular := hslab ⟨halphaB, le_rfl⟩
+    obtain ⟨alphaMinus, alphaUpper, halphaIoo, halphaRegular⟩ :=
+      D.exists_Icc_regular halpha
+    obtain ⟨bLower, stop, hbIoo, hbRegular⟩ := D.exists_Icc_regular hb
+    have hextended : Set.Icc alphaMinus stop ⊆ D.regular := by
+      intro t ht
+      by_cases hta : t ≤ alpha
+      · exact halphaRegular ⟨ht.1, hta.trans halphaIoo.2.le⟩
+      by_cases htb : t ≤ b
+      · exact hslab ⟨le_of_not_ge hta, htb⟩
+      · exact hbRegular ⟨hbIoo.1.le.trans (le_of_not_ge htb), ht.2⟩
+    have hbufferStop : alphaMinus ≤ stop :=
+      halphaIoo.1.le.trans (halphaB.trans hbIoo.2.le)
+    obtain ⟨C, hCbound⟩ := hcurv alphaMinus stop hextended
+    let x0 : M := Classical.ofNonempty
+    have hC : 0 ≤ C :=
+      (normSq0S_nonneg (I := I) (S.base.metric alphaMinus) x0 4
+        (S.base.rm04 alphaMinus x0)).trans (hCbound alphaMinus ⟨le_rfl, hbufferStop⟩ x0)
+    obtain ⟨h, hcont, hproper, hh, Ch, hCh, hsupport⟩ :=
+      exists_proper_exhaustion_with_gradient_laplacian_bound_on_slab
+        (I := I) S hS halphaIoo.1 (halphaB.trans_lt hbIoo.2)
+        (fun t ht => D.regular_subset (hextended ht))
+        (fun t ht => hextended ⟨ht.1.le, ht.2⟩)
+        (hcomplete alphaMinus (hextended ⟨le_rfl, hbufferStop⟩)) hC hCbound hsec
+    exact ⟨h, hcont, hproper, hh, Ch, hCh,
+      fun t ht x => hsupport t ⟨ht.1, ht.2.trans hbIoo.2.le⟩ x⟩
+
+
+theorem exists_proper_exhaustion_with_gradient_laplacian_bound_of_nonnegative_curvatureOperator
+    [SigmaCompactSpace M] [ConnectedSpace M]
+    {D : RealTimeInterval}
+    (S : SolutionOn (I := I) (M := M) D)
+    (hS : IsSolutionOn (I := I) S)
+    (hcomplete : ∀ t ∈ D.regular,
+      RiemannianMetricComplete (I := I) (S.base.metric t))
+    (hcurv : ∀ a b : ℝ, Set.Icc a b ⊆ D.regular →
+      ∃ C : ℝ, ∀ t ∈ Set.Icc a b, ∀ x : M,
+        normSq0S (I := I) (S.base.metric t) x 4 (S.base.rm04 t x) ≤ C)
+    (hR : ∀ t ∈ D.regular, ∀ x : M,
+      metricAlgebraicCurvatureTensorAt (I := I) (M := M) (S.base.metric t) x ∈
+        algebraicCurvatureOperatorNonnegativeCone (I := I) (M := M))
+    {alpha b : ℝ} (halphaB : alpha ≤ b)
+    (hslab : Set.Icc alpha b ⊆ D.regular) :
+    ∃ h : M → ℝ, Continuous h ∧ IsProperMap h ∧
+      (∀ x, 1 ≤ h x) ∧
+      ∃ Ch : ℝ, 1 ≤ Ch ∧ ∀ t ∈ Set.Icc alpha b, ∀ x : M,
+        ∃ U : Set M, IsOpen U ∧ x ∈ U ∧ ∃ hbar : M → ℝ,
+          ContMDiffOn I 𝓘(ℝ, ℝ) ∞ hbar U ∧
+          hbar x = h x ∧
+          (∀ᶠ y in nhds x, h y ≤ hbar y) ∧
+          Real.sqrt ((S.base.metric t).inner x
+              (gradientFun (I := I) (S.base.metric t) hbar x)
+              (gradientFun (I := I) (S.base.metric t) hbar x)) ≤ Ch * h x ∧
+          laplacian (I := I) (LeviCivita (I := I) (S.base.metric t))
+              (S.base.metric t) hbar x ≤ Ch * h x := by
+  apply exists_proper_exhaustion_with_gradient_laplacian_bound_on_compact_time_interval
+    S hS hcomplete hcurv halphaB hslab
+  intro x
+  exact algebraicCurvatureOperatorNonnegativeCone_le_sectionalNonnegativeCone
+    (hR alpha (hslab ⟨le_rfl, halphaB⟩) x)
 
 end DifferentialGeometry.PDE.RicciFlow

@@ -1,6 +1,12 @@
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Tensor.Basic
 import DifferentialGeometry.Geometry.Operator.LaplacianMinimum
 
+import DifferentialGeometry.Geometry.Connection.LeviCivita.KoszulFormula
+import DifferentialGeometry.Geometry.Connection.LeviCivita.Defs
+import DifferentialGeometry.Geometry.Operator.GradientRegularity
+import DifferentialGeometry.Topology.VectorBundle.Compactness
+import Mathlib.LinearAlgebra.QuadraticForm.Basic
+
 set_option autoImplicit false
 
 noncomputable section
@@ -368,5 +374,194 @@ theorem strict_rank_one_support
   by_cases hzK : z ∈ K
   · exact ⟨z, hzK, hz, fun hneg => hneg⟩
   · exact False.elim ((not_lt_of_ge hz) (hout t ht z hzK))
+
+private theorem exists_norm_eq_one_of_nonpos
+    {V₀ : Type*} [NormedAddCommGroup V₀] [NormedSpace ℝ V₀]
+    (Q : QuadraticForm ℝ V₀) (z : V₀) (hz : z ≠ 0) (hQ : Q z ≤ 0) :
+    ∃ w : V₀, ‖w‖ = 1 ∧ Q w ≤ 0 ∧ (Q z < 0 → Q w < 0) := by
+  have hn : 0 < ‖z‖ := norm_pos_iff.mpr hz
+  have hc : 0 < ‖z‖⁻¹ * ‖z‖⁻¹ := mul_pos (inv_pos.mpr hn) (inv_pos.mpr hn)
+  refine ⟨‖z‖⁻¹ • z, ?_, ?_, ?_⟩
+  · rw [norm_smul, Real.norm_of_nonneg (inv_nonneg.mpr hn.le)]
+    exact inv_mul_cancel₀ (ne_of_gt hn)
+  · rw [QuadraticMap.map_smul, smul_eq_mul]
+    exact mul_nonpos_of_nonneg_of_nonpos hc.le hQ
+  · intro h
+    rw [QuadraticMap.map_smul, smul_eq_mul]
+    exact mul_neg_of_pos_of_neg hc h
+
+
+variable {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F] [ProperSpace F]
+  {V : M → Type*} [TopologicalSpace (TotalSpace F V)]
+  [∀ x, NormedAddCommGroup (V x)] [∀ x, InnerProductSpace ℝ (V x)]
+  [FiberBundle F V] [VectorBundle ℝ F V] [IsContinuousRiemannianBundle F V]
+
+theorem strict_rank_one_support_quadraticForm
+    (G : ℝ → SmoothRiemannianMetric I M)
+    (Q : ℝ → ∀ x, QuadraticForm ℝ (V x))
+    (a b η : ℝ) (K : Set M) (hη : 0 < η) (hK : IsCompact K)
+    (hcont : ContinuousOn
+      (fun p : ℝ × TotalSpace F V => Q p.1 p.2.proj p.2.2)
+      (Icc (a + η) b ×ˢ {z | z.proj ∈ K ∧ ‖z.2‖ = 1}))
+    (hearly : ∀ t ∈ Ioc a (a + η), ∀ x z, z ≠ 0 → 0 < Q t x z)
+    (hout : ∀ t ∈ Icc (a + η) b, ∀ x, x ∉ K → ∀ z, z ≠ 0 → 0 < Q t x z)
+    (hsupport : ∀ t ∈ Ioc (a + η) b, (∀ x z, 0 ≤ Q t x z) →
+      ∀ x z, z ≠ 0 → Q t x z = 0 →
+      ∃ (extension : ℝ → ∀ y, V y) (f : ℝ → M → ℝ) (timeDeriv : ℝ),
+        extension t x = z ∧
+        ContinuousWithinAt
+          (fun p : ℝ × M => (⟨p.2, extension p.1 p.2⟩ : TotalSpace F V))
+          (Ioc a b ×ˢ univ) (t, x) ∧
+        f t x = 0 ∧
+        (∀ᶠ p in nhdsWithin (t, x) (Ioc a b ×ˢ univ),
+          Q p.1 p.2 (extension p.1 p.2) ≤ f p.1 p.2) ∧
+        HasDerivWithinAt (fun s => f s x) timeDeriv (Ioc a b) t ∧
+        MDifferentiableAt I 𝓘(ℝ, ℝ) (f t) x ∧
+        (∀ᶠ y in nhds x, MDifferentiableAt I 𝓘(ℝ, ℝ) (f t) y) ∧
+        MDiffAt (T% fun y : M => gradientFun (I := I) (G t) (f t) y) x ∧
+        0 < timeDeriv - laplacian (I := I) (LeviCivita (G t)) (G t) (f t) x) :
+    ∀ t ∈ Ioc a b, ∀ x z, z ≠ 0 → 0 < Q t x z := by
+  classical
+  let q : ℝ → ∀ x, V x → ℝ := fun t x z => if z = 0 then 1 else Q t x z
+  let C : Set (TotalSpace F V) := {z | z.proj ∈ K ∧ ‖z.2‖ = 1}
+  have hC : IsCompact C := hK.bundle_norm_eq (F := F) (V := V) 1
+  have hq (t : ℝ) (x : M) (z : V x) (hz : z ≠ 0) : q t x z = Q t x z := if_neg hz
+  have hncont : Continuous (fun z : TotalSpace F V => ‖z.2‖) := by
+    have hi : Continuous (fun z : TotalSpace F V => inner ℝ z.2 z.2) :=
+      continuous_id.inner_bundle continuous_id
+    simpa only [← norm_eq_sqrt_real_inner] using hi.sqrt
+  have hpos := strict_rank_one_support_of_compact_representatives
+    (ZModel := F) (Z := V) (fun t => LeviCivita (G t)) G q a b η C hη hC
+    (hcont.congr (by
+      intro p hp
+      apply hq
+      intro hz
+      have hn := hp.2.2
+      rw [hz, norm_zero] at hn
+      exact zero_ne_one hn))
+    (by
+      intro t ht x z
+      by_cases hz : z = 0
+      · simp only [q, hz, if_pos rfl, zero_lt_one]
+      · rw [hq t x z hz]
+        exact hearly t ht x z hz)
+    (by
+      intro t ht z hnonpos
+      have hz : z.2 ≠ 0 := by
+        intro hz
+        have hf : (1 : ℝ) ≤ 0 := by simpa only [q, hz, if_pos rfl] using hnonpos
+        linarith
+      rw [hq t z.proj z.2 hz] at hnonpos
+      have hx : z.proj ∈ K := by
+        by_contra hx
+        exact (not_lt_of_ge hnonpos) (hout t ht z.proj hx z.2 hz)
+      obtain ⟨w, hw, hwQ, hwneg⟩ := exists_norm_eq_one_of_nonpos (Q t z.proj) z.2 hz hnonpos
+      have hw0 : w ≠ 0 := by
+        intro hzero
+        rw [hzero, norm_zero] at hw
+        exact zero_ne_one hw
+      refine ⟨⟨z.proj, w⟩, ⟨hx, hw⟩, ?_, ?_⟩
+      · exact (hq t z.proj w hw0).symm ▸ hwQ
+      · intro hneg
+        rw [hq t z.proj w hw0]
+        exact hwneg ((hq t z.proj z.2 hz) ▸ hneg))
+    (fun t => leviCivitaConnectionOfMetric_isMetricCompatible (G t))
+    (by
+      intro t ht hnonneg x z hzero
+      have hz : z ≠ 0 := by
+        intro hz
+        simp only [q, hz, if_pos rfl, one_ne_zero] at hzero
+      have hQzero : Q t x z = 0 := (hq t x z hz) ▸ hzero
+      have hQnonneg : ∀ y w, 0 ≤ Q t y w := by
+        intro y w
+        by_cases hw : w = 0
+        · simp [hw]
+        · exact (hq t y w hw) ▸ hnonneg y w
+      obtain ⟨extension, f, dt, hext, hextcont, hfzero, hupper, hdt, hdiff, hdiffNear,
+        hgrad, hstrict⟩ := hsupport t ht hQnonneg x z hz hQzero
+      have hn : ContinuousWithinAt (fun p : ℝ × M => ‖extension p.1 p.2‖)
+          (Ioc a b ×ˢ univ) (t, x) := hncont.continuousAt.comp_continuousWithinAt hextcont
+      have hnormpos : 0 < ‖extension t x‖ := by rw [hext]; exact norm_pos_iff.mpr hz
+      have hnear : ∀ᶠ p in nhdsWithin (t, x) (Ioc a b ×ˢ univ), extension p.1 p.2 ≠ 0 := by
+        have hp := hn.preimage_mem_nhdsWithin (Ioi_mem_nhds hnormpos)
+        filter_upwards [hp] with p hp
+        exact norm_pos_iff.mp hp
+      refine ⟨extension, f, dt, hext, ?_, ?_, hdt, hdiff, hdiffNear, hgrad, hstrict⟩
+      · rw [hext, hq t x z hz, hQzero, hfzero]
+      · filter_upwards [hupper, hnear] with p hp hz
+        rw [hq p.1 p.2 _ hz]
+        exact hp)
+  intro t ht x z hz
+  exact (hq t x z hz) ▸ hpos t ht x z
+
+
+theorem strict_rank_one_support_bilinForm
+    (G : ℝ → SmoothRiemannianMetric I M)
+    (B : ℝ → ∀ x, LinearMap.BilinForm ℝ (V x))
+    (a b η : ℝ) (K : Set M) (hη : 0 < η) (hK : IsCompact K)
+    (hcont : ContinuousOn
+      (fun p : ℝ × TotalSpace F V => B p.1 p.2.proj p.2.2 p.2.2)
+      (Icc (a + η) b ×ˢ {z | z.proj ∈ K ∧ ‖z.2‖ = 1}))
+    (hearly : ∀ t ∈ Ioc a (a + η), ∀ x z, z ≠ 0 → 0 < B t x z z)
+    (hout : ∀ t ∈ Icc (a + η) b, ∀ x, x ∉ K → ∀ z, z ≠ 0 → 0 < B t x z z)
+    (hsupport : ∀ t ∈ Ioc (a + η) b, (∀ x z, 0 ≤ B t x z z) →
+      ∀ x z, z ≠ 0 → B t x z z = 0 →
+      ∃ (extension : ℝ → ∀ y, V y) (f : ℝ → M → ℝ) (timeDeriv : ℝ),
+        extension t x = z ∧
+        ContinuousWithinAt
+          (fun p : ℝ × M => (⟨p.2, extension p.1 p.2⟩ : TotalSpace F V))
+          (Ioc a b ×ˢ univ) (t, x) ∧
+        f t x = 0 ∧
+        (∀ᶠ p in nhdsWithin (t, x) (Ioc a b ×ˢ univ),
+          B p.1 p.2 (extension p.1 p.2) (extension p.1 p.2) ≤ f p.1 p.2) ∧
+        HasDerivWithinAt (fun s => f s x) timeDeriv (Ioc a b) t ∧
+        MDifferentiableAt I 𝓘(ℝ, ℝ) (f t) x ∧
+        (∀ᶠ y in nhds x, MDifferentiableAt I 𝓘(ℝ, ℝ) (f t) y) ∧
+        MDiffAt (T% fun y : M => gradientFun (I := I) (G t) (f t) y) x ∧
+        0 < timeDeriv - laplacian (I := I) (LeviCivita (G t)) (G t) (f t) x) :
+    ∀ t ∈ Ioc a b, ∀ x z, z ≠ 0 → 0 < B t x z z := by
+  exact strict_rank_one_support_quadraticForm G
+    (fun t x => (B t x).toQuadraticMap) a b η K hη hK hcont hearly hout hsupport
+
+
+theorem strict_rank_one_support_bilinForm_of_contMDiffAt
+    (G : ℝ → SmoothRiemannianMetric I M)
+    (B : ℝ → ∀ x, LinearMap.BilinForm ℝ (V x))
+    (a b η : ℝ) (K : Set M) (hη : 0 < η) (hK : IsCompact K)
+    (hcont : ContinuousOn
+      (fun p : ℝ × TotalSpace F V => B p.1 p.2.proj p.2.2 p.2.2)
+      (Icc (a + η) b ×ˢ {z | z.proj ∈ K ∧ ‖z.2‖ = 1}))
+    (hearly : ∀ t ∈ Ioc a (a + η), ∀ x z, z ≠ 0 → 0 < B t x z z)
+    (hout : ∀ t ∈ Icc (a + η) b, ∀ x, x ∉ K → ∀ z, z ≠ 0 → 0 < B t x z z)
+    (hsupport : ∀ t ∈ Ioc (a + η) b, (∀ x z, 0 ≤ B t x z z) →
+      ∀ x z, z ≠ 0 → B t x z z = 0 →
+      ∃ (extension : ℝ → ∀ y, V y) (f : ℝ → M → ℝ),
+        extension t x = z ∧
+        ContinuousWithinAt
+          (fun p : ℝ × M => (⟨p.2, extension p.1 p.2⟩ : TotalSpace F V))
+          (Ioc a b ×ˢ univ) (t, x) ∧
+        f t x = 0 ∧
+        (∀ᶠ p in nhdsWithin (t, x) (Ioc a b ×ˢ univ),
+          B p.1 p.2 (extension p.1 p.2) (extension p.1 p.2) ≤ f p.1 p.2) ∧
+        ContMDiffAt (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ, ℝ) 2
+          (fun p : ℝ × M => f p.1 p.2) (t, x) ∧
+        0 < deriv (fun s => f s x) t - laplacian (I := I) (LeviCivita (G t)) (G t) (f t) x) :
+    ∀ t ∈ Ioc a b, ∀ x z, z ≠ 0 → 0 < B t x z z := by
+  apply strict_rank_one_support_bilinForm G B a b η K hη hK hcont hearly hout
+  intro t ht hnonneg x z hz hzero
+  obtain ⟨extension, f, hext, hextcont, hfzero, hupper, hf, hstrict⟩ :=
+    hsupport t ht hnonneg x z hz hzero
+  have hfs : ContMDiffAt I 𝓘(ℝ, ℝ) 2 (f t) x :=
+    hf.comp x (contMDiffAt_const.prodMk contMDiffAt_id)
+  have hft : ContMDiffAt 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) 2 (fun s => f s x) t :=
+    hf.comp t (contMDiffAt_id.prodMk contMDiffAt_const)
+  have htime : DifferentiableAt ℝ (fun s => f s x) t :=
+    (contMDiffAt_iff_contDiffAt.mp hft).differentiableAt (by norm_num)
+  refine ⟨extension, f, deriv (fun s => f s x) t, hext, hextcont, hfzero, hupper,
+    htime.hasDerivAt.hasDerivWithinAt, hfs.mdifferentiableAt (by norm_num), ?_,
+    (gradientFun_contMDiffAt_one (G t) hfs).mdifferentiableAt one_ne_zero, hstrict⟩
+  have hnear := (contMDiffAt_iff_contMDiffAt_nhds (by norm_num : (2 : WithTop ℕ∞) ≠ ∞)).mp hfs
+  filter_upwards [hnear] with y hy
+  exact hy.mdifferentiableAt (by norm_num)
 
 end DifferentialGeometry.Analysis.Parabolic

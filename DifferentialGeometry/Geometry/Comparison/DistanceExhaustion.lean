@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Connection.LeviCivita.Defs
 import DifferentialGeometry.Geometry.Comparison.DistanceHessian
 import DifferentialGeometry.Geometry.Comparison.HopfRinowProper
 import DifferentialGeometry.Geometry.Connection.ChartBridge.Laplacian
@@ -808,6 +809,49 @@ theorem exists_proper_distance_exhaustion_with_hessian_bound
           exact hsum.trans
             (mul_le_mul_of_nonneg_right
               (le_trans (le_max_right _ _) (le_max_right _ _)) hqnonneg)
+
+end DifferentialGeometry
+
+end
+
+noncomputable section
+
+namespace DifferentialGeometry
+
+open scoped Manifold ContDiff
+
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+variable [FiniteDimensional ℝ E]
+variable {H : Type*} [TopologicalSpace H]
+variable {I : ModelWithCorners ℝ E H} [I.Boundaryless]
+variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
+variable [IsManifold I ∞ M] [T2Space M]
+
+
+omit [I.Boundaryless] [T2Space M] in
+theorem exists_constant_proper_exhaustion_with_gradient_laplacian_bound
+    [CompactSpace M]
+    (G : ℝ → SmoothRiemannianMetric I M) :
+    ∃ h : M → ℝ, h = (fun _ => 1) ∧ Continuous h ∧ IsProperMap h ∧
+      (∀ x, 1 ≤ h x) ∧
+      ∀ t : ℝ, ∀ x : M,
+        ∃ U : Set M, IsOpen U ∧ x ∈ U ∧ ∃ hbar : M → ℝ,
+          ContMDiffOn I 𝓘(ℝ, ℝ) ∞ hbar U ∧
+          hbar x = h x ∧
+          (∀ᶠ y in nhds x, h y ≤ hbar y) ∧
+          Real.sqrt ((G t).inner x
+            (gradientFun (I := I) (G t) hbar x)
+            (gradientFun (I := I) (G t) hbar x)) ≤ 1 * h x ∧
+          laplacian (I := I) (LeviCivita (I := I) (G t)) (G t) hbar x ≤ 1 * h x := by
+  refine ⟨fun _ => 1, rfl, continuous_const, isProperMap_const 1,
+    fun _ => le_rfl, ?_⟩
+  intro t x
+  refine ⟨Set.univ, isOpen_univ, Set.mem_univ x, fun _ => 1,
+    contMDiffOn_const, rfl, Filter.Eventually.of_forall (fun _ => le_rfl), ?_, ?_⟩
+  · rw [gradientFun_const]
+    simp
+  · rw [laplacian_const]
+    norm_num
 
 end DifferentialGeometry
 

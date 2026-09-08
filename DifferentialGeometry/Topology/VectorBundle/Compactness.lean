@@ -59,3 +59,15 @@ theorem IsCompact.bundle_norm_le {C : Set B} (hC : IsCompact C) (R : ℝ) :
   · simpa only [e.proj_symm_apply' heb] using hbC
   · exact (isClosed_le hncont continuous_const).mem_of_tendsto hw
       (Filter.mem_of_superset hf (fun _ h => h.2))
+
+theorem IsCompact.bundle_norm_eq {C : Set B} (hC : IsCompact C) (R : ℝ) :
+    IsCompact {z : TotalSpace F V | z.proj ∈ C ∧ ‖z.2‖ = R} := by
+  have hn : Continuous (fun z : TotalSpace F V => ‖z.2‖) := by
+    have hi : Continuous (fun z : TotalSpace F V => inner ℝ z.2 z.2) :=
+      continuous_id.inner_bundle continuous_id
+    simpa only [← norm_eq_sqrt_real_inner] using hi.sqrt
+  have h := (hC.bundle_norm_le (F := F) (V := V) R).inter_right (isClosed_eq hn (continuous_const (y := R)))
+  convert h using 1
+  ext z
+  simp only [mem_ofPred_eq, mem_inter_iff]
+  exact ⟨fun h => ⟨⟨h.1, h.2.le⟩, h.2⟩, fun h => ⟨h.1.1, h.2⟩⟩
