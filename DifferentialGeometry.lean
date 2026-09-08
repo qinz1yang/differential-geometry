@@ -2902,6 +2902,7 @@ import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Limit.Metric.Ball
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Limit.Metric.BallSystem.Estimates
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Limit.Metric.BallSystem.Images
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Limit.Metric.BallSystem.Tail
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Limit.Metric.BallSystem.BallCapture
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Limit.Metric.CompatibleChainLimits
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Limit.Metric.Completeness
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Limit.Metric.Convergence
