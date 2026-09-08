@@ -42,6 +42,7 @@ import DifferentialGeometry.Analysis.Calculus.SmoothExtension.JetPartialDeriv
 import DifferentialGeometry.Analysis.Calculus.SmoothExtension.Local
 import DifferentialGeometry.Analysis.Calculus.SmoothExtension.SmoothJetGlue
 import DifferentialGeometry.Analysis.Calculus.CriticalPointPerturbation
+import DifferentialGeometry.Analysis.Calculus.LevelPreservation
 import DifferentialGeometry.Analysis.Calculus.SmoothMax
 import DifferentialGeometry.Analysis.Calculus.SmoothTransition
 import DifferentialGeometry.Analysis.Calculus.SpaceJet
@@ -538,6 +539,7 @@ import DifferentialGeometry.Analysis.ODE.IntegralCurveTransport
 import DifferentialGeometry.Analysis.ODE.IntegralGronwall
 import DifferentialGeometry.Analysis.ODE.CompactSupportFlow
 import DifferentialGeometry.Analysis.ODE.InvariantHyperplane
+import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.LevelTransport
 import DifferentialGeometry.Analysis.ODE.InvariantSet
 import DifferentialGeometry.Analysis.ODE.InvariantSetEquiv
 import DifferentialGeometry.Analysis.ODE.Nagumo
@@ -3145,6 +3147,7 @@ import DifferentialGeometry.Topology.SigmaCompactOpen
 import DifferentialGeometry.Topology.StandardModel
 import DifferentialGeometry.Topology.ThreeManifold.Closed
 import DifferentialGeometry.Topology.Diffeomorph.Fiberwise
+import DifferentialGeometry.Topology.Diffeomorph.Flow
 import DifferentialGeometry.Topology.Diffeomorph.Graph
 import DifferentialGeometry.Topology.Diffeomorph.LocalizedGraph
 import DifferentialGeometry.Topology.Diffeomorph.Perturbation
@@ -3185,6 +3188,7 @@ import DifferentialGeometry.Topology.Homotopy.EquivUnder
 import DifferentialGeometry.Topology.Homotopy.Interval
 import DifferentialGeometry.Topology.Morse.CellAttachment
 import DifferentialGeometry.Topology.Morse.BoundaryPerturbation
+import DifferentialGeometry.Topology.Morse.BoundaryRegularVectorField
 import DifferentialGeometry.Topology.Morse.CriticalSet
 import DifferentialGeometry.Topology.Morse.Defs
 import DifferentialGeometry.Topology.Morse.Flow

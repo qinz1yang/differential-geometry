@@ -859,6 +859,15 @@ theorem contMDiff_globalFlow_joint_of_compactSupport [FiniteDimensional ℝ E] [
   rcases q with ⟨t₀, x₀⟩
   exact contMDiffAt_globalFlow_joint_of_compactSupport v hv hsupp t₀ x₀
 
+theorem curveAt_eq_self_of_eq_zero [IsManifold I 1 M] [BoundarylessManifold I M]
+    [T2Space M] (v : (x : M) → TangentSpace I x)
+    (hv : CMDiff 1 (fun x : M => (⟨x, v x⟩ : TangentBundle I M)))
+    (hcomplete : ∀ x : M, ∃ γ : ℝ → M, γ 0 = x ∧ IsMIntegralCurve γ v)
+    {x : M} (hvx : v x = 0) (t : ℝ) : curveAt v hcomplete x t = x := by
+  exact congrFun (isMIntegralCurve_Ioo_eq_of_contMDiff_boundaryless (t₀ := 0) hv
+    (curveAt_integralCurve v hcomplete x) (isMIntegralCurve_const hvx)
+    (curveAt_zero v hcomplete x)) t
+
 end DifferentialGeometry.Analysis.ODE
 
 end
