@@ -4572,3 +4572,5 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Uhlenbeck.ScalarEv
 import DifferentialGeometry.Geometry.Metric.Conformal.Curvature
 import DifferentialGeometry.Geometry.Metric.Conformal.Laplacian
 import DifferentialGeometry.Analysis.Parabolic.CurvatureOperatorLocalized
+import DifferentialGeometry.Analysis.InnerProductSpace.Trace
+import DifferentialGeometry.Analysis.ODE.CurvatureReaction
