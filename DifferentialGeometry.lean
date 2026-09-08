@@ -3301,6 +3301,7 @@ import DifferentialGeometry.Geometry.Operator.Laplacian.Minimum
 import DifferentialGeometry.Geometry.Operator.Gradient.MetricSharpSmoothness
 import DifferentialGeometry.Geometry.Operator.Gradient.NormSquared
 import DifferentialGeometry.Geometry.Operator.Gradient.NormSquaredTime
+import DifferentialGeometry.Geometry.Operator.Gradient.PowerBounds
 import DifferentialGeometry.Geometry.Operator.Scalar.Calculus
 import DifferentialGeometry.Geometry.Operator.Laplacian.Rough
 import DifferentialGeometry.Geometry.Operator.Scaling

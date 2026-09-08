@@ -2,6 +2,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.Derivatives.Hi
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.Cutoff.Defs
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Ricci.Basic
 import DifferentialGeometry.Geometry.Metric.PointwiseInner.Bounds
+import DifferentialGeometry.Geometry.Operator.Gradient.PowerBounds
 import Mathlib.Geometry.Manifold.Riemannian.Basic
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
@@ -379,63 +380,18 @@ private theorem support_pow_cross
       (1 / 2 : Real) * support.phi t x ^ (p + 1) * B.w (k + 1) t x +
         8 * (((p + 1 : Nat) : Real) ^ 2) * eps *
           support.phi t x ^ p * B.w k t x := by
-  let a := gradientFun (I := I) (G.metric t) (support.phi t) x
-  let b := gradientFun (I := I) (G.metric t) (B.w k t) x
-  let c₀ := (G.metric t).inner x a b
-  let c := (G.metric t).inner x
-    (gradientFun (I := I) (G.metric t)
-      (fun y : M => support.phi t y ^ (p + 1)) x) b
-  let r : Real := ((p + 1 : Nat) : Real) * support.phi t x ^ p
-  let q₁ : Real := (1 / 2 : Real) * support.phi t x ^ (p + 1) * B.w (k + 1) t x
-  let q₂ : Real := 8 * (((p + 1 : Nat) : Real) ^ 2) * eps *
-    support.phi t x ^ p * B.w k t x
   have hphi0 : 0 ≤ support.phi t x :=
     (support.lower_nhds.self_of_nhdsWithin
       (show (t, x) ∈ spacetimeSlab (M := M) B.T from ⟨ht, Set.mem_univ x⟩)).1
-  have hsq₀ : c₀ ^ 2 ≤
-      (eps * support.phi t x) * (4 * B.w k t x * B.w (k + 1) t x) := by
-    calc
-      c₀ ^ 2 ≤ (G.metric t).inner x a a * (G.metric t).inner x b b :=
-        DifferentialGeometry.Analysis.Laplacian.metric_inner_cauchy_schwarz_sq
-          (I := I) (M := M) (G.metric t) x a b
-      _ ≤ (eps * support.phi t x) *
-          (4 * B.w k t x * B.w (k + 1) t x) :=
-        mul_le_mul support.grad_sq_le (hgrad k hk t ht htpos x)
-          (DifferentialGeometry.metric_inner_self_nonneg
-            (I := I) (M := M) (G.metric t) x b)
-          (mul_nonneg heps hphi0)
-  have hc : c = r * c₀ := by
-    dsimp [c, r, c₀, a]
-    rw [gradientFun_pow (I := I) (G.metric t) p
-      support.space_diff_nhds.self_of_nhds]
-    simp only [map_smul, smul_apply, smul_eq_mul]
-  have hsq : c ^ 2 ≤ q₁ * q₂ := by
-    rw [hc]
-    calc
-      (r * c₀) ^ 2 = r ^ 2 * c₀ ^ 2 := by ring
-      _ ≤ r ^ 2 * ((eps * support.phi t x) *
-          (4 * B.w k t x * B.w (k + 1) t x)) :=
-        mul_le_mul_of_nonneg_left hsq₀ (sq_nonneg r)
-      _ = q₁ * q₂ := by
-        dsimp [r, q₁, q₂]
-        rw [pow_succ]
-        ring
-  have hq₁ : 0 ≤ q₁ := by
-    dsimp [q₁]
-    exact mul_nonneg
-      (mul_nonneg (by norm_num) (pow_nonneg hphi0 (p + 1)))
-      (B.quantity_nonneg (k + 1) t ht x)
-  have hq₂ : 0 ≤ q₂ := by
-    dsimp [q₂]
-    exact mul_nonneg (mul_nonneg (mul_nonneg (by positivity) heps)
-      (pow_nonneg hphi0 p)) (B.quantity_nonneg k t ht x)
-  have hhalf : q₁ * q₂ ≤ ((q₁ + q₂) / 2) ^ 2 := by
-    nlinarith [sq_nonneg (q₁ - q₂)]
-  have habs : |c| ≤ (q₁ + q₂) / 2 :=
-    abs_le_of_sq_le_sq (hsq.trans hhalf) (by positivity)
-  have hneg : -c ≤ (q₁ + q₂) / 2 := (neg_le_abs c).trans habs
-  dsimp [c, q₁, q₂, b] at hneg ⊢
-  linarith
+  have h := neg_two_mul_inner_gradient_pow_le (G.metric t)
+    (gradientFun (G.metric t) (B.w k t) x) p
+    (a := 4 * B.w k t x) (b := B.w (k + 1) t x) (ε := eps) (δ := 1 / 2)
+    support.space_diff_nhds.self_of_nhds hphi0
+    (mul_nonneg (by norm_num) (B.quantity_nonneg k t ht x))
+    (B.quantity_nonneg (k + 1) t ht x) heps (by norm_num)
+    support.grad_sq_le (hgrad k hk t ht htpos x)
+  convert h using 1
+  ring
 
 private noncomputable def GfunLocal
     {G : MetricConnectionFamily (I := I) (M := M) Real}
