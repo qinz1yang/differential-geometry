@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Connection.ParallelTransport.SubbundleInvariance
 import DifferentialGeometry.Geometry.Connection.MetricCompatibility.ExteriorSubmodule
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Pullback
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.ExteriorKernel
@@ -208,5 +209,35 @@ theorem exists_covariantly_invariant_curvatureOperatorKernelSubbundle_at_later_t
       ⟨metricRm04At g x, metricRm04At_mem_algebraicCurvatureTensorSubmodule g x⟩ := funext hKeq
   rw [hfun]
   exact hinv
+
+private instance twoFormModelFiniteDimensional : FiniteDimensional ℝ (E [⋀^Fin 2]→L[ℝ] ℝ) :=
+  (ContinuousAlternatingMap.elementaryCovectorBasis (k := 2) (Module.finBasis ℝ E)).finiteDimensional_of_finite
+
+theorem exists_parallel_curvatureOperatorKernelSubbundle_at_later_time
+    [ConnectedSpace M]
+    {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn S)
+    (hdim : Module.finrank ℝ E = 3)
+    {s t : ℝ} (hst : s < t) (hreg : Set.Icc s t ⊆ D.regular)
+    (hR : ∀ r ∈ Set.Icc s t, ∀ x,
+      (⟨metricRm04At (S.family.metric r) x,
+        metricRm04At_mem_algebraicCurvatureTensorSubmodule (S.family.metric r) x⟩ :
+          algebraicCurvatureTensorSubmodule (I := I) (M := M) x) ∈
+            algebraicCurvatureOperatorNonnegativeCone (I := I) (M := M)) :
+    ∃ K : ContMDiffVectorSubbundle (I := I) (F := E [⋀^Fin 2]→L[ℝ] ℝ)
+        (V := fun x : M => TangentSpace I x [⋀^Fin 2]→L[ℝ] ℝ) (n := ∞),
+      (∀ x, K.fiber x = curvatureOperatorKernelAt (S.family.metric t) x
+        ⟨metricRm04At (S.family.metric t) x,
+          metricRm04At_mem_algebraicCurvatureTensorSubmodule (S.family.metric t) x⟩) ∧
+      IsCovariantlyInvariantSubmoduleFamily
+        (CovariantDerivative.alternating (LeviCivita (S.family.metric t)) 2) K.fiber ∧
+      (CovariantDerivative.alternating (LeviCivita (S.family.metric t)) 2).IsParallelSet
+        {p : TotalSpace (E [⋀^Fin 2]→L[ℝ] ℝ)
+          (fun x : M => TangentSpace I x [⋀^Fin 2]→L[ℝ] ℝ) | p.2 ∈ K.fiber p.1} := by
+  obtain ⟨K, hK, hcov⟩ :=
+    exists_covariantly_invariant_curvatureOperatorKernelSubbundle_at_later_time
+      S hS hdim hst hreg hR
+  refine ⟨K, hK, hcov, ?_⟩
+  exact K.isParallelSet_of_covariantly_invariant
+    (CovariantDerivative.alternating (LeviCivita (S.family.metric t)) 2) hcov inferInstance
 
 end DifferentialGeometry.PDE.RicciFlow

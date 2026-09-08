@@ -166,4 +166,32 @@ theorem clm_apply_piecewise_parallel_transport
   exact piecewise_parallel_section_eq_on_Icc cov₂ hcov₂ ((hP v).map A hA hparallel)
     (hQ (A (γ t₀) v)) ht₀ (by rw [hP₀, hQ₀]) t ht
 
+theorem IsParallelSet.image
+    {cov₁ : CovariantDerivative I F₁ V₁} {cov₂ : CovariantDerivative I F₂ V₂}
+    {K : Set (TotalSpace F₁ V₁)} (hK : cov₁.IsParallelSet K)
+    (hcov₁ : ContMDiffCovariantDerivative cov₁ ∞)
+    (hcov₂ : ContMDiffCovariantDerivative cov₂ ∞)
+    (A : ∀ x, V₁ x →L[ℝ] V₂ x)
+    (hA : MDifferentiable I (I.prod 𝓘(ℝ, F₁ →L[ℝ] F₂))
+      (fun x => TotalSpace.mk' (F₁ →L[ℝ] F₂) x (A x)))
+    (hparallel : DifferentialGeometry.HomConnectionGen.homBundleCovariantDerivativeGen
+      I M F₁ V₁ F₂ V₂ cov₁ cov₂ A = 0) :
+    cov₂.IsParallelSet
+      ((fun p : TotalSpace F₁ V₁ => TotalSpace.mk' F₂ p.1 (A p.1 p.2)) '' K) := by
+  refine ⟨?_⟩
+  intro a b t₀ γ Z ht₀ hγ hZ hZpar hinit t ht
+  obtain ⟨⟨x, v⟩, hv, heq⟩ := hinit
+  have hx : x = γ t₀ := congrArg TotalSpace.proj heq
+  subst x
+  have hvZ : A (γ t₀) v = Z t₀ := TotalSpace.mk_inj.mp heq
+  obtain ⟨T, hT₀, hT⟩ := cov₁.exists_piecewise_parallel_transport_on_Icc
+    hcov₁ (.of_contMDiffOn hγ) ht₀
+  have hvK : (⟨γ t, T t v⟩ : TotalSpace F₁ V₁) ∈ K := by
+    apply (hK.mem_iff_of_piecewise_parallel (hT v) ht₀ ht).mpr
+    simpa only [hT₀] using hv
+  have hEq : A (γ t) (T t v) = Z t :=
+    cov₂.piecewise_parallel_section_eq_on_Icc hcov₂ ((hT v).map A hA hparallel)
+      (.of_parallel hγ hZ hZpar) ht₀ (by simpa only [hT₀] using hvZ) t ht
+  exact ⟨⟨γ t, T t v⟩, hvK, TotalSpace.mk_inj.mpr hEq⟩
+
 end CovariantDerivative

@@ -4635,3 +4635,4 @@ import DifferentialGeometry.Bundle.TotalSpace
 import DifferentialGeometry.Geometry.Connection.Associated
 import DifferentialGeometry.Geometry.Connection.MetricCompatibility.Associated
 import DifferentialGeometry.Geometry.Connection.Principal
+import DifferentialGeometry.Geometry.Connection.ParallelTransport.SubbundleInvariance
