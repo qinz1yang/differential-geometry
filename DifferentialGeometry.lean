@@ -4576,3 +4576,6 @@ import DifferentialGeometry.Analysis.InnerProductSpace.Trace
 import DifferentialGeometry.Analysis.ODE.CurvatureReaction
 import DifferentialGeometry.Analysis.Sobolev.Nirenberg.TestFunction.Integration
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.TimeH1Multiplication
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.JointRegularity
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Uhlenbeck.CurvatureOperatorRegularity
+import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.ExteriorPositivity

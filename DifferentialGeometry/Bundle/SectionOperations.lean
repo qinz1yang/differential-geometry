@@ -106,6 +106,54 @@ def ContMDiffOnSpacetimeEndomorphism
       ℝ × M → TotalSpace (F →L[ℝ] F)
         (fun p => V p.2 →L[ℝ] V p.2)) U
 
+theorem contMDiffOnSpacetimeEndomorphism_of_contMDiffOn_hom_bundle
+    {A : ℝ → (x : M) → V x →L[ℝ] V x} {U : Set (ℝ × M)}
+    (hA : ContMDiffOn (𝓘(ℝ, ℝ).prod I) (I.prod 𝓘(ℝ, F →L[ℝ] F)) n
+      (fun p : ℝ × M =>
+        (TotalSpace.mk' (F →L[ℝ] F) p.2 (A p.1 p.2) :
+          TotalSpace (F →L[ℝ] F) (fun x => V x →L[ℝ] V x))) U) :
+    ContMDiffOnSpacetimeEndomorphism (I := I) (F := F)
+      (V := V) (n := n) A U := by
+  let c : C^n⟮𝓘(ℝ, ℝ).prod I, ℝ × M; I, M⟯ := ContMDiffMap.snd
+  let _ : TopologicalSpace (TotalSpace F (fun p : ℝ × M => V p.2)) := by
+    change TopologicalSpace (TotalSpace F (c *ᵖ V)); infer_instance
+  let _ : FiberBundle F (fun p : ℝ × M => V p.2) := by
+    change FiberBundle F (c *ᵖ V); infer_instance
+  let _ : VectorBundle ℝ F (fun p : ℝ × M => V p.2) := by
+    change VectorBundle ℝ F (c *ᵖ V); infer_instance
+  let _ : ContMDiffVectorBundle n F (fun p : ℝ × M => V p.2)
+      (𝓘(ℝ, ℝ).prod I) := by
+    change ContMDiffVectorBundle n F (c *ᵖ V) (𝓘(ℝ, ℝ).prod I)
+    infer_instance
+  change ContMDiffOn (𝓘(ℝ, ℝ).prod I)
+    ((𝓘(ℝ, ℝ).prod I).prod 𝓘(ℝ, F →L[ℝ] F)) n
+    (fun p => TotalSpace.mk' (F →L[ℝ] F) p (A p.1 p.2) :
+      ℝ × M → TotalSpace (F →L[ℝ] F)
+        (fun p => V p.2 →L[ℝ] V p.2)) U
+  intro p hp
+  have hc := hA p hp
+  rw [contMDiffWithinAt_hom_bundle] at hc ⊢
+  refine ⟨contMDiffWithinAt_id, ?_⟩
+  convert hc.2 using 1
+  funext q
+  ext v
+  simp only [ContinuousLinearMap.inCoordinates, ContinuousLinearMap.comp_apply,
+    Trivialization.continuousLinearMapAt_apply]
+  change ((trivializationAt F V p.2).pullback c).linearMapAt ℝ q
+      (A q.1 q.2 (((trivializationAt F V p.2).pullback c).symmL ℝ q v)) =
+    (trivializationAt F V p.2).linearMapAt ℝ q.2
+      (A q.1 q.2 ((trivializationAt F V p.2).symmL ℝ q.2 v))
+  by_cases hq : q.2 ∈ (trivializationAt F V p.2).baseSet
+  · rw [Trivialization.symmL_apply _ hq,
+      Trivialization.symmL_apply _ (show q ∈ ((trivializationAt F V p.2).pullback c).baseSet from hq)]
+    rw [Trivialization.coe_linearMapAt_of_mem _ hq,
+      Trivialization.coe_linearMapAt_of_mem _ (show q ∈ ((trivializationAt F V p.2).pullback c).baseSet from hq)]
+    rw [Trivialization.symm_apply _ (show q ∈ ((trivializationAt F V p.2).pullback c).baseSet from hq)]
+    rfl
+  · rw [Trivialization.linearMapAt_def_of_notMem _ hq,
+      Trivialization.linearMapAt_def_of_notMem _ (show q ∉ ((trivializationAt F V p.2).pullback c).baseSet from hq)]
+    rfl
+
 theorem ContMDiffOnSpacetimeEndomorphism.mono
     {A : ℝ → (x : M) → V x →L[ℝ] V x} {U W : Set (ℝ × M)}
     (hA : ContMDiffOnSpacetimeEndomorphism (I := I) (F := F)
