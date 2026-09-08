@@ -70,25 +70,10 @@ theorem intrinsicExpOn_mfderiv
         (intrinsicFramedExp (I := I) g hEnorm p) (z : E)
           ((tangentSpaceModelContinuousLinearEquiv
             (I := 𝓘(Real, E)) (z : E)).symm v) := by
-  let _ : SigmaCompactSpace (intrinsicPullBall (E := E) R) :=
-    isSigmaCompact_iff_sigmaCompactSpace.mp
-      (Geometry.isSigmaCompact_of_isOpen
-        𝓘(Real, E) (intrinsicPullBall (E := E) R).isOpen)
-  have hF :
-      MDifferentiableAt 𝓘(Real, E) I
-        (intrinsicFramedExp (I := I) g hEnorm p) (z : E) :=
-    (intrinsicFrame_smooth (I := I) g hEnorm p).mdifferentiableAt (by decide)
-  have hval :
-      MDifferentiableAt 𝓘(Real, E) 𝓘(Real, E)
-        (Subtype.val : intrinsicPullBall (E := E) R → E) z :=
-    ((contMDiff_subtype_val (I := 𝓘(Real, E))).contMDiffAt).mdifferentiableAt
-      (by decide : (∞ : WithTop ℕ∞) ≠ 0)
   change mfderiv 𝓘(Real, E) I
-      ((intrinsicFramedExp (I := I) g hEnorm p) ∘
-        (Subtype.val : intrinsicPullBall (E := E) R → E)) z
-          ((tangentSpaceModelContinuousLinearEquiv
-            (I := 𝓘(Real, E)) z).symm v) = _
-  rw [mfderiv_comp_apply z hF hval, mfderiv_subtype_val_apply]
+      (fun y : intrinsicPullBall (E := E) R => intrinsicFramedExp (I := I) g hEnorm p y)
+      z _ = _
+  rw [mfderiv_restrict_open]
   with_unfolding_all rfl
 
 noncomputable def intrinsicPullMetric

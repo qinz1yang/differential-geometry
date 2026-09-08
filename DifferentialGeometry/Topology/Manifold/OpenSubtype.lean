@@ -67,4 +67,23 @@ theorem mfderiv_subtype_val_apply
     mfderiv_subtype_val (I := I) U (TopologicalSpace.Opens.inclusion hVU x)] at hcomp
   simpa using! hcomp.symm
 
+variable {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
+  {G : Type*} [TopologicalSpace G] {J : ModelWithCorners ℝ F G}
+  {N : Type*} [TopologicalSpace N] [ChartedSpace G N]
+
+theorem mdifferentiableAt_subtype_iff {U : TopologicalSpace.Opens M} {f : M → N} {x : U} :
+    MDifferentiableAt I J (fun y : U => f y) x ↔ MDifferentiableAt I J f (x : M) :=
+  (differentiableWithinAt_localInvariantProp.liftPropAt_iff_comp_subtype_val _ _).symm
+
+theorem mfderiv_restrict_open (f : M → N) (U : TopologicalSpace.Opens M) (x : U) :
+    mfderiv I J (fun y : U => f y) x = mfderiv I J f (x : M) := by
+  by_cases hf : MDifferentiableAt I J f (x : M)
+  · change mfderiv I J (f ∘ (Subtype.val : U → M)) x = _
+    rw [mfderiv_comp x hf (hasMFDerivAt_subtype_val U x).mdifferentiableAt,
+      mfderiv_subtype_val]
+    rfl
+  · rw [mfderiv_zero_of_not_mdifferentiableAt hf,
+      mfderiv_zero_of_not_mdifferentiableAt (mt mdifferentiableAt_subtype_iff.mp hf)]
+    rfl
+
 end DifferentialGeometry
