@@ -4688,3 +4688,4 @@ import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Scalar.Localized
 import DifferentialGeometry.Geometry.Comparison.DistanceCutoff
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Distance.LocalRicciBound
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.ScalarLowerBound
+import DifferentialGeometry.Bundle.Hom.Trace

@@ -1,4 +1,5 @@
 import DifferentialGeometry.Analysis.Spectral.LowerKyFan
+import DifferentialGeometry.Analysis.InnerProductSpace.SpectralBounds
 import DifferentialGeometry.Bundle.OrthonormalFrame
 import Mathlib.Analysis.Matrix.Hermitian
 
@@ -127,5 +128,90 @@ theorem ContinuousOn.lowerKyFanSum_bundle
     (mem_baseSet_trivializationAt F V (b z))
   exact (hA z hz).lowerKyFanSum_bundle hsymm
     (hk.trans_eq e.toLinearEquiv.finrank_eq.symm)
+
+theorem ContinuousWithinAt.iInf_rayleighQuotient_bundle
+    {Z : Type*} [TopologicalSpace Z] {b : Z → M} {s : Set Z} {z₀ : Z}
+    {A : ∀ z, V (b z) →L[ℝ] V (b z)}
+    (hA : ContinuousWithinAt (fun z =>
+      (TotalSpace.mk' (F →L[ℝ] F) (b z) (A z) :
+        TotalSpace (F →L[ℝ] F) (fun x => V x →L[ℝ] V x))) s z₀) :
+    ContinuousWithinAt (fun z => ⨅ v : {v : V (b z) // v ≠ 0},
+      (A z).rayleighQuotient v) s z₀ := by
+  classical
+  have hb : ContinuousWithinAt b s z₀ := by
+    rw [continuousWithinAt_hom_bundle] at hA
+    exact hA.1
+  let n := Module.finrank ℝ (V (b z₀))
+  let v := stdOrthonormalBasis ℝ (V (b z₀))
+  obtain ⟨U, hU, hbU, e, heCont, he, -⟩ :=
+    exists_continuous_orthonormal_sections (F := F) (b z₀) v v.orthonormal
+  let C : Z → Matrix (Fin n) (Fin n) ℝ :=
+    fun z i j => ⟪e i (b z), A z (e j (b z))⟫_ℝ
+  let B : Z → EuclideanSpace ℝ (Fin n) →L[ℝ] EuclideanSpace ℝ (Fin n) :=
+    fun z => matrixToCLM n (C z)
+  have hC : ContinuousWithinAt C s z₀ := by
+    apply continuousWithinAt_pi.2
+    intro i
+    apply continuousWithinAt_pi.2
+    intro j
+    have hei := ((heCont i).continuousAt (hU.mem_nhds hbU)).comp_continuousWithinAt hb
+    have hej := ((heCont j).continuousAt (hU.mem_nhds hbU)).comp_continuousWithinAt hb
+    exact hei.inner_bundle (hA.clm_bundle_apply hej)
+  have hB : ContinuousWithinAt B s z₀ :=
+    (continuous_matrixToCLM n).continuousAt.comp_continuousWithinAt hC
+  have hspec : ContinuousWithinAt (fun z => ⨅ v : {v : EuclideanSpace ℝ (Fin n) // v ≠ 0},
+      (B z).rayleighQuotient v) s z₀ :=
+    (ContinuousLinearMap.continuous_iInf_rayleighQuotient
+      (𝕜 := ℝ) (E := EuclideanSpace ℝ (Fin n))).continuousAt.comp_continuousWithinAt hB
+  have heq : ∀ z, b z ∈ U →
+      (⨅ v : {v : V (b z) // v ≠ 0}, (A z).rayleighQuotient v) =
+        ⨅ v : {v : EuclideanSpace ℝ (Fin n) // v ≠ 0}, (B z).rayleighQuotient v := by
+    intro z hz
+    have hdim : Module.finrank ℝ (V (b z)) = n := by
+      let ex := (trivializationAt F V (b z)).continuousLinearEquivAt ℝ (b z)
+        (mem_baseSet_trivializationAt F V (b z))
+      let ey := (trivializationAt F V (b z₀)).continuousLinearEquivAt ℝ (b z₀)
+        (mem_baseSet_trivializationAt F V (b z₀))
+      exact ex.toLinearEquiv.finrank_eq.trans ey.toLinearEquiv.finrank_eq.symm
+    let basis : OrthonormalBasis (Fin n) ℝ (V (b z)) :=
+      OrthonormalBasis.mk (he (b z) hz)
+        ((he (b z) hz).linearIndependent.span_eq_top_of_card_eq_finrank'
+          (by simp only [Fintype.card_fin, hdim]; rfl)).ge
+    have hmat : C z = LinearMap.toMatrix basis.toBasis basis.toBasis (A z).toLinearMap := by
+      ext i j
+      rw [LinearMap.toMatrix_apply, OrthonormalBasis.coe_toBasis_repr_apply,
+        OrthonormalBasis.repr_apply_apply, OrthonormalBasis.coe_toBasis]
+      simp only [C, basis, OrthonormalBasis.coe_mk]
+      rfl
+    have hcomm : ∀ x, B z (basis.repr x) = basis.repr (A z x) := by
+      intro x
+      change Matrix.toEuclideanLin (C z) (basis.repr x) = basis.repr (A z x)
+      rw [hmat]
+      exact toEuclideanLin_toMatrix_repr basis (A z).toLinearMap x
+    let en : {v : V (b z) // v ≠ 0} ≃
+        {v : EuclideanSpace ℝ (Fin n) // v ≠ 0} :=
+      basis.repr.toEquiv.subtypeEquiv (fun v => by
+        change v ≠ 0 ↔ basis.repr v ≠ 0
+        exact not_congr basis.repr.map_eq_zero_iff.symm)
+    apply en.iInf_congr
+    intro v
+    change (B z).rayleighQuotient (basis.repr v.1) = (A z).rayleighQuotient v.1
+    simp only [ContinuousLinearMap.rayleighQuotient, ContinuousLinearMap.reApplyInnerSelf_apply,
+      hcomm, LinearIsometryEquiv.inner_map_map, LinearIsometryEquiv.norm_map]
+  apply hspec.congr_of_eventuallyEq
+  · filter_upwards [hb.eventually (hU.mem_nhds hbU)] with z hz
+    exact heq z hz
+  · exact heq z₀ hbU
+
+theorem ContinuousOn.iInf_rayleighQuotient_bundle
+    {Z : Type*} [TopologicalSpace Z] {b : Z → M} {s : Set Z}
+    {A : ∀ z, V (b z) →L[ℝ] V (b z)}
+    (hA : ContinuousOn (fun z =>
+      (TotalSpace.mk' (F →L[ℝ] F) (b z) (A z) :
+        TotalSpace (F →L[ℝ] F) (fun x => V x →L[ℝ] V x))) s) :
+    ContinuousOn (fun z => ⨅ v : {v : V (b z) // v ≠ 0},
+      (A z).rayleighQuotient v) s :=
+  fun z hz => (hA z hz).iInf_rayleighQuotient_bundle
+
 
 end

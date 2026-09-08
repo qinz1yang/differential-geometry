@@ -184,6 +184,27 @@ theorem ContMDiffOnSpacetimeEndomorphism.mono
         (fun p => V p.2 →L[ℝ] V p.2)) W
   exact hA.mono hWU
 
+theorem ContMDiffOnSpacetimeEndomorphism.congr
+    {A B : ℝ → (x : M) → V x →L[ℝ] V x} {U : Set (ℝ × M)}
+    (hA : ContMDiffOnSpacetimeEndomorphism (I := I) (F := F)
+      (V := V) (n := n) A U)
+    (hBA : ∀ p ∈ U, B p.1 p.2 = A p.1 p.2) :
+    ContMDiffOnSpacetimeEndomorphism (I := I) (F := F)
+      (V := V) (n := n) B U := by
+  let c : C^n⟮𝓘(ℝ, ℝ).prod I, ℝ × M; I, M⟯ := ContMDiffMap.snd
+  let _ : TopologicalSpace (TotalSpace F (fun p : ℝ × M => V p.2)) := by
+    change TopologicalSpace (TotalSpace F (c *ᵖ V)); infer_instance
+  let _ : FiberBundle F (fun p : ℝ × M => V p.2) := by
+    change FiberBundle F (c *ᵖ V); infer_instance
+  let _ : VectorBundle ℝ F (fun p : ℝ × M => V p.2) := by
+    change VectorBundle ℝ F (c *ᵖ V); infer_instance
+  let _ : ContMDiffVectorBundle n F (fun p : ℝ × M => V p.2)
+      (𝓘(ℝ, ℝ).prod I) := by
+    change ContMDiffVectorBundle n F (c *ᵖ V) (𝓘(ℝ, ℝ).prod I)
+    infer_instance
+  unfold ContMDiffOnSpacetimeEndomorphism at hA ⊢
+  exact hA.congr (fun p hp => congrArg (TotalSpace.mk' (F →L[ℝ] F) p) (hBA p hp))
+
 theorem ContMDiffOnSpacetimeEndomorphism.continuousOn_hom_bundle
     {A : ℝ → (x : M) → V x →L[ℝ] V x} {U : Set (ℝ × M)}
     (hA : ContMDiffOnSpacetimeEndomorphism (I := I) (F := F)

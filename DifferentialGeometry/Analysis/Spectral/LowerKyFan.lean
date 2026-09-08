@@ -1,3 +1,4 @@
+import DifferentialGeometry.Analysis.InnerProductSpace.SpectralBounds
 import Mathlib.Analysis.InnerProductSpace.Trace
 import Mathlib.Analysis.InnerProductSpace.Positive
 
@@ -222,6 +223,41 @@ namespace LinearMap.IsSymmetric
 noncomputable def lowerKyFanSum {T : E →ₗ[ℝ] E} (hT : T.IsSymmetric) (k : ℕ) : ℝ :=
   ∑ i ∈ (Finset.univ.filter fun i : Fin (Module.finrank ℝ E) =>
     Module.finrank ℝ E - k ≤ i.1), hT.eigenvalues rfl i
+
+theorem lowerKyFanSum_finrank {A : E →ₗ[ℝ] E} (hA : A.IsSymmetric) :
+    hA.lowerKyFanSum (Module.finrank ℝ E) = LinearMap.trace ℝ E A := by
+  rw [lowerKyFanSum]
+  simp only [Nat.sub_self, Nat.zero_le, Finset.filter_true]
+  have h := hA.trace_eq_sum_eigenvalues rfl
+  simpa only [RCLike.ofReal_real_eq_id, id_eq] using h.symm
+
+theorem lowerKyFanSum_one_eq_iInf_rayleighQuotient
+    {A : E →L[ℝ] E} (hA : A.toLinearMap.IsSymmetric) :
+    hA.lowerKyFanSum 1 = ⨅ v : {v : E // v ≠ 0}, A.rayleighQuotient v := by
+  by_cases hn : Module.finrank ℝ E = 0
+  · let : Subsingleton E := Module.finrank_zero_iff.mp hn
+    let : IsEmpty {v : E // v ≠ 0} := ⟨fun v => v.2 (Subsingleton.elim _ _)⟩
+    rw [lowerKyFanSum]
+    have hi : IsEmpty (Fin (Module.finrank ℝ E)) := by rw [hn]; infer_instance
+    simp only [Finset.univ_eq_empty, Finset.filter_empty, Finset.sum_empty]
+    rw [iInf, Set.range_eq_empty, Real.sInf_empty]
+  · obtain ⟨n, hn'⟩ := Nat.exists_eq_succ_of_ne_zero hn
+    have hlast : (Finset.univ.filter fun i : Fin (Module.finrank ℝ E) =>
+        Module.finrank ℝ E - 1 ≤ i.1) = {⟨n, by omega⟩} := by
+      ext i
+      simp only [Finset.mem_filter, Finset.mem_univ, true_and, Finset.mem_singleton]
+      constructor
+      · intro hi; apply Fin.ext; dsimp; omega
+      · rintro rfl; dsimp; omega
+    rw [lowerKyFanSum, hlast, Finset.sum_singleton]
+    have hm := hA.iInf_rayleighQuotient_eq_eigenvalues_last hn'
+    rw [hm]
+    have htransport (m : ℕ) (hm : Module.finrank ℝ E = m)
+        (i : Fin (Module.finrank ℝ E)) :
+        hA.eigenvalues rfl i = hA.eigenvalues hm (Fin.cast hm i) := by
+      subst m; rfl
+    rw [htransport (n + 1) hn']
+    congr 1
 
 theorem lowerKyFanSum_le_frame {T : E →ₗ[ℝ] E} (hT : T.IsSymmetric)
     {k : ℕ} (hk : k ≤ Module.finrank ℝ E) {e : Fin k → E} (he : Orthonormal ℝ e) :
