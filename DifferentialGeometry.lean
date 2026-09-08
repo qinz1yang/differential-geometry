@@ -537,6 +537,7 @@ import DifferentialGeometry.Analysis.ODE.IndexFormUniqueness
 import DifferentialGeometry.Analysis.ODE.IntegralCurveTransport
 import DifferentialGeometry.Analysis.ODE.IntegralGronwall
 import DifferentialGeometry.Analysis.ODE.CompactSupportFlow
+import DifferentialGeometry.Analysis.ODE.InvariantHyperplane
 import DifferentialGeometry.Analysis.ODE.InvariantSet
 import DifferentialGeometry.Analysis.ODE.InvariantSetEquiv
 import DifferentialGeometry.Analysis.ODE.Nagumo
@@ -3145,6 +3146,7 @@ import DifferentialGeometry.Topology.StandardModel
 import DifferentialGeometry.Topology.ThreeManifold.Closed
 import DifferentialGeometry.Topology.Diffeomorph.Fiberwise
 import DifferentialGeometry.Topology.Diffeomorph.Graph
+import DifferentialGeometry.Topology.Diffeomorph.LocalizedGraph
 import DifferentialGeometry.Topology.Diffeomorph.Perturbation
 import DifferentialGeometry.Topology.Diffeomorph.Translation
 import DifferentialGeometry.Topology.Diffeomorph.Radial
