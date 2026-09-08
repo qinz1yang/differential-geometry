@@ -13,7 +13,7 @@ namespace DifferentialGeometry.Topology.Morse
 
 noncomputable section
 
-abbrev LevelSetSpace {M : Type} (f : M → ℝ) (a : ℝ) : Type := {x : M // f x = a}
+abbrev LevelSetSpace {M : Type*} (f : M → ℝ) (a : ℝ) : Type _ := {x : M // f x = a}
 
 noncomputable def levelSetReindex {m : ℕ} (e : Fin (m + 1) ≃ Fin (m + 1)) :
     MorseModel (m + 1) ≃ₗ[ℝ] MorseModel (m + 1) where

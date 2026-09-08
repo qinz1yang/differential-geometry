@@ -796,7 +796,7 @@ theorem morse_lemma_smooth {n : ℕ} {H : Type*} [TopologicalSpace H] {M : Type*
     _ = h 0 + (1 / 2) * ∑ i : Fin n, w i * y i * y i := hnorm
     _ = f p + (1 / 2) * ∑ i : Fin n, w i * y i * y i := by rw [h0]
 
-theorem morse_lemma_of_contMDiff {n : ℕ} {H : Type} [TopologicalSpace H] {M : Type}
+theorem morse_lemma_of_contMDiff {n : ℕ} {H : Type*} [TopologicalSpace H] {M : Type*}
     [TopologicalSpace M] [ChartedSpace H M] (I : ModelWithCorners ℝ (MorseModel n) H)
     [I.Boundaryless] [IsManifold I (⊤ : WithTop ℕ∞) M] (f : M → ℝ)
     (hf : ContMDiff I 𝓘(ℝ, ℝ) (⊤ : WithTop ℕ∞) f) (p : M)
@@ -842,7 +842,7 @@ theorem morse_lemma_of_contMDiff {n : ℕ} {H : Type} [TopologicalSpace H] {M : 
     rwa [← hrange]
   exact morse_lemma_smooth I f p hg hcrit hnd
 
-theorem isCriticalPointAt_iff_chart_fderiv {n : ℕ} {H : Type} [TopologicalSpace H] {M : Type}
+theorem isCriticalPointAt_iff_chart_fderiv {n : ℕ} {H : Type*} [TopologicalSpace H] {M : Type*}
     [TopologicalSpace M] [ChartedSpace H M] (I : ModelWithCorners ℝ (MorseModel n) H)
     [I.Boundaryless] [IsManifold I (⊤ : WithTop ℕ∞) M] (f : M → ℝ)
     (hf : ContMDiff I 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞) f) (p : M) :
@@ -900,8 +900,8 @@ theorem isCriticalPointAt_iff_chart_fderiv {n : ℕ} {H : Type} [TopologicalSpac
     rw [hzero]
     simp
 
-theorem isCriticalPointAt_iff_fderiv_of_localInverse {n : ℕ} {H : Type} [TopologicalSpace H]
-    {M : Type} [TopologicalSpace M] [ChartedSpace H M] (I : ModelWithCorners ℝ (MorseModel n) H)
+theorem isCriticalPointAt_iff_fderiv_of_localInverse {n : ℕ} {H : Type*} [TopologicalSpace H]
+    {M : Type*} [TopologicalSpace M] [ChartedSpace H M] (I : ModelWithCorners ℝ (MorseModel n) H)
     {x : M} {σ : M → MorseModel n} {τ : MorseModel n → M} {h : MorseModel n → ℝ}
     (hleft : (τ ∘ σ) =ᶠ[nhds x] id)
     (hright : (σ ∘ τ) =ᶠ[nhds (σ x)] id)
@@ -955,7 +955,7 @@ theorem isCriticalPointAt_iff_fderiv_of_localInverse {n : ℕ} {H : Type} [Topol
     rw [hfd]
     rfl
 
-theorem morse_lemma {n : ℕ} {H : Type} [TopologicalSpace H] {M : Type} [TopologicalSpace M]
+theorem morse_lemma {n : ℕ} {H : Type*} [TopologicalSpace H] {M : Type*} [TopologicalSpace M]
     [ChartedSpace H M] (I : ModelWithCorners ℝ (MorseModel n) H) [I.Boundaryless]
     [IsManifold I (⊤ : WithTop ℕ∞) M] (f : M → ℝ)
     (hf : ContMDiff I 𝓘(ℝ, ℝ) (⊤ : WithTop ℕ∞) f) (p : M) (k : ℕ) (hk : k ≤ n)

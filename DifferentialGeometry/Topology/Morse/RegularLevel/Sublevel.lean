@@ -13,10 +13,10 @@ open scoped Manifold _root_.Topology
 noncomputable section
 
 
-variable {m : ℕ} {H : Type} [TopologicalSpace H] {M : Type} [TopologicalSpace M] [ChartedSpace H M]
+variable {m : ℕ} {H : Type*} [TopologicalSpace H] {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
 variable (I : ModelWithCorners ℝ (MorseModel (m + 1)) H)
 
-theorem fderiv_sublevelPullback_ne_zero [I.Boundaryless] [IsManifold I (⊤ : WithTop ℕ∞) M]
+theorem fderiv_sublevelPullback_ne_zero [I.Boundaryless] [IsManifold I ((⊤ : ℕ∞) : WithTop ℕ∞) M]
     (f : M → ℝ) (hf : ContMDiff I 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞) f) (a : ℝ)
     (hreg : ∀ x : M, f x = a → ¬ IsCriticalPointAt I f x)
     {p : M} {y : MorseModel (m + 1)}
@@ -95,7 +95,7 @@ theorem fderiv_sublevelPullback_ne_zero [I.Boundaryless] [IsManifold I (⊤ : Wi
 noncomputable def sublevelPullback (f : M → ℝ) (p : M) : MorseModel (m + 1) → ℝ :=
   fun y => f ((extChartAt I p).symm y)
 
-theorem contDiffOn_sublevelPullback [IsManifold I (⊤ : WithTop ℕ∞) M]
+theorem contDiffOn_sublevelPullback [IsManifold I ((⊤ : ℕ∞) : WithTop ℕ∞) M]
     (f : M → ℝ) (hf : ContMDiff I 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞) f) (p : M) :
     ContDiffOn ℝ (⊤ : ℕ∞) (sublevelPullback I f p) (extChartAt I p).target := by
   have hcomp : ContMDiffOn 𝓘(ℝ, MorseModel (m + 1)) 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞)
@@ -160,7 +160,7 @@ theorem sublevelPullbackCutoff_eventuallyEq
   exact Filter.eventuallyEq_of_mem (Metric.ball_mem_nhds ((extChartAt I x) x) b.rIn_pos)
     (fun z hz => sublevelPullbackCutoff_eqOn I f x b hz)
 
-theorem contDiff_sublevelPullbackCutoff [I.Boundaryless] [IsManifold I (⊤ : WithTop ℕ∞) M]
+theorem contDiff_sublevelPullbackCutoff [I.Boundaryless] [IsManifold I ((⊤ : ℕ∞) : WithTop ℕ∞) M]
     (f : M → ℝ) (hf : ContMDiff I 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞) f) (x : M)
     (b : ContDiffBump ((extChartAt I x) x))
     (hb : Metric.closedBall ((extChartAt I x) x) b.rOut ⊆ (extChartAt I x).target) :
@@ -459,7 +459,7 @@ theorem isOpen_sublevelChartTransitionDomain [I.Boundaryless] (x₁ x₂ : M) :
   exact hcont.isOpen_inter_preimage (isOpen_extChartAt_target (I := I) x₁)
     (isOpen_extChartAt_source (I := I) x₂)
 
-theorem contDiffOn_sublevelChartTransition [IsManifold I (⊤ : WithTop ℕ∞) M]
+theorem contDiffOn_sublevelChartTransition [IsManifold I ((⊤ : ℕ∞) : WithTop ℕ∞) M]
     (x₁ x₂ : M) :
     ContDiffOn ℝ (⊤ : ℕ∞) (sublevelChartTransition I x₁ x₂)
       (sublevelChartTransitionDomain I x₁ x₂) := by
@@ -1266,7 +1266,7 @@ theorem levelSetPullbackCutoffPoint_value (f : M → ℝ) (a : ℝ) (x : LevelSe
   exact x.2
 
 theorem fderiv_levelSetPullbackCutoffPoint_ne_zero [I.Boundaryless]
-    [IsManifold I (⊤ : WithTop ℕ∞) M] (f : M → ℝ)
+    [IsManifold I ((⊤ : ℕ∞) : WithTop ℕ∞) M] (f : M → ℝ)
     (hf : ContMDiff I 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞) f) (a : ℝ)
     (hreg : ∀ x : M, f x = a → ¬ IsCriticalPointAt I f x) (x : LevelSetSpace f a)
     (b : ContDiffBump ((extChartAt I x.1) x.1)) :
@@ -1598,7 +1598,7 @@ private theorem levelSetPullbackChart_transition_w₁_mem_aux
   · rwa [← hw₁y]
 
 private theorem levelSetPullbackChart_transition_contDiffOn
-    [IsManifold I (⊤ : WithTop ℕ∞) M]
+    [IsManifold I ((⊤ : ℕ∞) : WithTop ℕ∞) M]
     (f : M → ℝ) (a : ℝ) (x₁ x₂ : LevelSetSpace f a)
     (b₁ : ContDiffBump ((extChartAt I x₁.1) x₁.1))
     (hb₁ : Metric.closedBall ((extChartAt I x₁.1) x₁.1) b₁.rOut ⊆ (extChartAt I x₁.1).target)
@@ -1658,7 +1658,7 @@ private theorem levelSetPullbackChart_transition_contDiffOn
       w₁ v₂ hW₁val hV₂val hy)
 
 noncomputable def manifoldLevelSetChart [I.Boundaryless]
-    [IsManifold I (⊤ : WithTop ℕ∞) M] (f : M → ℝ) (a : ℝ)
+    [IsManifold I ((⊤ : ℕ∞) : WithTop ℕ∞) M] (f : M → ℝ) (a : ℝ)
     (hf : ContMDiff I 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞) f)
     (hreg : ∀ x : M, f x = a → ¬ IsCriticalPointAt I f x) (x : LevelSetSpace f a) :
     OpenPartialHomeomorph (LevelSetSpace f a) (MorseModel m) :=
@@ -1672,7 +1672,7 @@ noncomputable def manifoldLevelSetChart [I.Boundaryless]
       (fderiv_levelSetPullbackCutoffPoint_ne_zero I f hf a hreg x b)
 
 theorem mem_manifoldLevelSetChart_source [I.Boundaryless]
-    [IsManifold I (⊤ : WithTop ℕ∞) M] (f : M → ℝ) (a : ℝ)
+    [IsManifold I ((⊤ : ℕ∞) : WithTop ℕ∞) M] (f : M → ℝ) (a : ℝ)
     (hf : ContMDiff I 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞) f)
     (hreg : ∀ x : M, f x = a → ¬ IsCriticalPointAt I f x) (x : LevelSetSpace f a) :
     x ∈ (manifoldLevelSetChart I f a hf hreg x).source := by
@@ -1697,7 +1697,7 @@ theorem mem_manifoldLevelSetChart_source [I.Boundaryless]
       (fderiv_levelSetPullbackCutoffPoint_ne_zero I f hf a hreg x b)
 
 theorem contDiffOn_manifoldLevelSet_transition [I.Boundaryless]
-    [IsManifold I (⊤ : WithTop ℕ∞) M] (f : M → ℝ) (a : ℝ)
+    [IsManifold I ((⊤ : ℕ∞) : WithTop ℕ∞) M] (f : M → ℝ) (a : ℝ)
     (hf : ContMDiff I 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞) f)
     (hreg : ∀ x : M, f x = a → ¬ IsCriticalPointAt I f x)
     (x₁ x₂ : LevelSetSpace f a) :
@@ -1753,7 +1753,7 @@ theorem contDiffOn_manifoldLevelSet_transition [I.Boundaryless]
 
 @[reducible]
 noncomputable def manifoldLevelSetChartedSpace [I.Boundaryless]
-    [IsManifold I (⊤ : WithTop ℕ∞) M] (f : M → ℝ) (a : ℝ)
+    [IsManifold I ((⊤ : ℕ∞) : WithTop ℕ∞) M] (f : M → ℝ) (a : ℝ)
     (hf : ContMDiff I 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞) f)
     (hreg : ∀ x : M, f x = a → ¬ IsCriticalPointAt I f x) :
     ChartedSpace (MorseModel m) (LevelSetSpace f a) where
@@ -1763,7 +1763,7 @@ noncomputable def manifoldLevelSetChartedSpace [I.Boundaryless]
   chart_mem_atlas := fun x => ⟨x, rfl⟩
 
 theorem manifoldLevelSetHasGroupoid [I.Boundaryless]
-    [IsManifold I (⊤ : WithTop ℕ∞) M] (f : M → ℝ) (a : ℝ)
+    [IsManifold I ((⊤ : ℕ∞) : WithTop ℕ∞) M] (f : M → ℝ) (a : ℝ)
     (hf : ContMDiff I 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞) f)
     (hreg : ∀ x : M, f x = a → ¬ IsCriticalPointAt I f x) :
     @HasGroupoid (MorseModel m) _ (LevelSetSpace f a) _
@@ -1803,7 +1803,7 @@ theorem manifoldLevelSetHasGroupoid [I.Boundaryless]
   exact contDiffOn_manifoldLevelSet_transition I f a hf hreg x₁ x₂
 
 theorem manifoldLevelSetIsManifold [I.Boundaryless]
-    [IsManifold I (⊤ : WithTop ℕ∞) M] (f : M → ℝ) (a : ℝ)
+    [IsManifold I ((⊤ : ℕ∞) : WithTop ℕ∞) M] (f : M → ℝ) (a : ℝ)
     (hf : ContMDiff I 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞) f)
     (hreg : ∀ x : M, f x = a → ¬ IsCriticalPointAt I f x) :
     @IsManifold ℝ _ (MorseModel m) _ _ (MorseModel m) _ (𝓘(ℝ, MorseModel m))
@@ -1907,7 +1907,7 @@ noncomputable def manifoldSublevelBoundaryEquiv (f : M → ℝ) (a : ℝ) :
       (fun y : LevelSetSpace f a => by
         simpa using y.2)
 
-theorem contMDiff_levelSetInclusion [I.Boundaryless] [IsManifold I (⊤ : WithTop ℕ∞) M]
+theorem contMDiff_levelSetInclusion [I.Boundaryless] [IsManifold I ((⊤ : ℕ∞) : WithTop ℕ∞) M]
     (f : M → ℝ) (a : ℝ) (hf : ContMDiff I 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞) f)
     (hreg : ∀ x : M, f x = a → ¬ IsCriticalPointAt I f x)
     (hcs : ChartedSpace (MorseModel m) (LevelSetSpace f a) :=
@@ -1994,12 +1994,12 @@ theorem contMDiff_levelSetInclusion [I.Boundaryless] [IsManifold I (⊤ : WithTo
       (Set.range (𝓘(ℝ, MorseModel m))) z₀
     exact hFAt.contDiffWithinAt.mono (Set.subset_univ _)
 
-theorem contMDiff_levelSet_factor [I.Boundaryless] [IsManifold I (⊤ : WithTop ℕ∞) M]
+theorem contMDiff_levelSet_factor [I.Boundaryless] [IsManifold I ((⊤ : ℕ∞) : WithTop ℕ∞) M]
     (f : M → ℝ) (a : ℝ) (hf : ContMDiff I 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞) f)
     (hreg : ∀ x : M, f x = a → ¬ IsCriticalPointAt I f x)
-    {E : Type} [NormedAddCommGroup E] [NormedSpace ℝ E]
-    {HX : Type} [TopologicalSpace HX] {IX : ModelWithCorners ℝ E HX}
-    {X : Type} [TopologicalSpace X] [ChartedSpace HX X]
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    {HX : Type*} [TopologicalSpace HX] {IX : ModelWithCorners ℝ E HX}
+    {X : Type*} [TopologicalSpace X] [ChartedSpace HX X]
     [IsManifold IX (⊤ : ℕ∞) X]
     (F : X → M) (hF : ContMDiff IX I (↑(⊤ : ℕ∞) : WithTop ℕ∞) F)
     (hFa : ∀ p : X, f (F p) = a)
@@ -2215,8 +2215,8 @@ noncomputable def levelSetCollarMap [I.Boundaryless] [IsManifold I (⊤ : WithTo
     LevelSetSpace f a × Set.Icc (0 : ℝ) (b - a) → M :=
   fun p => curveAt v (exists_globalIntegralCurve_of_compactSupport v hv hsupp) p.1.1 (-(p.2 : ℝ))
 
-theorem contMDiff_levelSetSublevelInclusion {m : ℕ} {H : Type} [TopologicalSpace H]
-    {M : Type} [TopologicalSpace M] [ChartedSpace H M]
+theorem contMDiff_levelSetSublevelInclusion {m : ℕ} {H : Type*} [TopologicalSpace H]
+    {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
     {I : ModelWithCorners ℝ (MorseModel (m + 1)) H} [I.Boundaryless]
     [IsManifold I (⊤ : WithTop ℕ∞) M]
     (f : M → ℝ) (a : ℝ) (hf : ContMDiff I 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞) f)
@@ -3607,8 +3607,8 @@ theorem contMDiff_manifoldSublevelMap_of_interior [I.Boundaryless]
 
 theorem contMDiffAt_sublevelCorestrictInterior [I.Boundaryless]
     [IsManifold I (⊤ : WithTop ℕ∞) M]
-    {E' H' : Type} [NormedAddCommGroup E'] [NormedSpace ℝ E'] [TopologicalSpace H']
-    {I' : ModelWithCorners ℝ E' H'} {X : Type} [TopologicalSpace X] [ChartedSpace H' X]
+    {E' : Type*} {H' : Type*} [NormedAddCommGroup E'] [NormedSpace ℝ E'] [TopologicalSpace H']
+    {I' : ModelWithCorners ℝ E' H'} {X : Type*} [TopologicalSpace X] [ChartedSpace H' X]
     (g : M → ℝ) (a : ℝ)
     (hg : ContMDiff I 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞) g)
     (hreg : ∀ x : M, g x = a → ¬ IsCriticalPointAt I g x)
@@ -3720,8 +3720,8 @@ theorem contMDiffAt_sublevelCorestrictInterior [I.Boundaryless]
 
 theorem contMDiffAt_sublevelCorestrictBoundary [I.Boundaryless]
     [IsManifold I (⊤ : WithTop ℕ∞) M]
-    {E' H' : Type} [NormedAddCommGroup E'] [NormedSpace ℝ E'] [TopologicalSpace H']
-    {I' : ModelWithCorners ℝ E' H'} {X : Type} [TopologicalSpace X] [ChartedSpace H' X]
+    {E' : Type*} {H' : Type*} [NormedAddCommGroup E'] [NormedSpace ℝ E'] [TopologicalSpace H']
+    {I' : ModelWithCorners ℝ E' H'} {X : Type*} [TopologicalSpace X] [ChartedSpace H' X]
     (g : M → ℝ) (a : ℝ)
     (hg : ContMDiff I 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞) g)
     (hreg : ∀ x : M, g x = a → ¬ IsCriticalPointAt I g x)
@@ -3817,8 +3817,8 @@ theorem contMDiffAt_sublevelCorestrictBoundary [I.Boundaryless]
 
 theorem contMDiff_sublevelCorestrict [I.Boundaryless]
     [IsManifold I (⊤ : WithTop ℕ∞) M]
-    {E' H' : Type} [NormedAddCommGroup E'] [NormedSpace ℝ E'] [TopologicalSpace H']
-    {I' : ModelWithCorners ℝ E' H'} {X : Type} [TopologicalSpace X] [ChartedSpace H' X]
+    {E' : Type*} {H' : Type*} [NormedAddCommGroup E'] [NormedSpace ℝ E'] [TopologicalSpace H']
+    {I' : ModelWithCorners ℝ E' H'} {X : Type*} [TopologicalSpace X] [ChartedSpace H' X]
     (g : M → ℝ) (a : ℝ)
     (hg : ContMDiff I 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞) g)
     (hreg : ∀ x : M, g x = a → ¬ IsCriticalPointAt I g x)
@@ -3903,7 +3903,7 @@ theorem manifoldSublevelDiffeomorphOfDiffeomorph [I.Boundaryless]
         (hchart₁ := hchart₂) (hchart₂ := hchart₁)
   exact ⟨d⟩
 
-theorem manifoldSublevelSetEq_boundary_imp_boundary {M : Type}
+theorem manifoldSublevelSetEq_boundary_imp_boundary {M : Type*}
     (g f : M → ℝ) (a : ℝ)
     (hset : {x : M | g x ≤ a} = {x : M | f x ≤ a})
     (hg_le : ∀ x : M, g x ≤ f x)
@@ -3917,8 +3917,8 @@ theorem manifoldSublevelSetEq_boundary_imp_boundary {M : Type}
     exact hg_le x
   exact le_antisymm hf_le hf_ge
 
-theorem isCriticalPointAt_of_fderiv_chartRep_eq_zero {m : ℕ} {H : Type} [TopologicalSpace H]
-    {M : Type} [TopologicalSpace M] [ChartedSpace H M]
+theorem isCriticalPointAt_of_fderiv_chartRep_eq_zero {m : ℕ} {H : Type*} [TopologicalSpace H]
+    {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
     (I : ModelWithCorners ℝ (MorseModel (m + 1)) H) [I.Boundaryless]
     [IsManifold I (⊤ : WithTop ℕ∞) M] (f : M → ℝ)
     (hf : ContMDiff I 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞) f) (x : M)
@@ -3988,8 +3988,8 @@ theorem isCriticalPointAt_of_fderiv_chartRep_eq_zero {m : ℕ} {H : Type} [Topol
       exact hzero)
   exact hcrit_eq.mp hcrit'
 
-theorem manifoldSublevelSetEq_boundary_imp_boundary_of_le {m : ℕ} {H : Type} [TopologicalSpace H]
-    {M : Type} [TopologicalSpace M] [ChartedSpace H M]
+theorem manifoldSublevelSetEq_boundary_imp_boundary_of_le {m : ℕ} {H : Type*} [TopologicalSpace H]
+    {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
     (I : ModelWithCorners ℝ (MorseModel (m + 1)) H) [I.Boundaryless]
     [IsManifold I (⊤ : WithTop ℕ∞) M]
     (g f : M → ℝ) (a : ℝ)
