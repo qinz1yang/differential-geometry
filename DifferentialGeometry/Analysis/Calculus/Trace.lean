@@ -1,3 +1,4 @@
+import Mathlib.Analysis.Calculus.Deriv.Comp
 import Mathlib.Analysis.Calculus.FDeriv.Comp
 import Mathlib.Analysis.Calculus.FDeriv.Equiv
 import Mathlib.Analysis.Calculus.FDeriv.Linear
@@ -7,6 +8,28 @@ import Mathlib.LinearAlgebra.Trace
 open Set
 
 namespace DifferentialGeometry.Analysis
+
+theorem hasDerivWithinAt_linearMap_trace
+    {K W : Type*} [NontriviallyNormedField K] [CompleteSpace K]
+    [NormedAddCommGroup W] [NormedSpace K W] [FiniteDimensional K W]
+    {A : K → (W →L[K] W)} {A' : W →L[K] W} {s : Set K} {t : K}
+    (hA : HasDerivWithinAt A A' s t) :
+    HasDerivWithinAt (fun r => LinearMap.trace K W (A r).toLinearMap)
+      (LinearMap.trace K W A'.toLinearMap) s t := by
+  let tr : (W →L[K] W) →L[K] K :=
+    LinearMap.toContinuousLinearMap ((LinearMap.trace K W).comp
+      (LinearMap.toContinuousLinearMap : (W →ₗ[K] W) ≃ₗ[K] (W →L[K] W)).symm.toLinearMap)
+  exact tr.hasFDerivAt.comp_hasDerivWithinAt t hA
+
+theorem hasDerivAt_linearMap_trace
+    {K W : Type*} [NontriviallyNormedField K] [CompleteSpace K]
+    [NormedAddCommGroup W] [NormedSpace K W] [FiniteDimensional K W]
+    {A : K → (W →L[K] W)} {A' : W →L[K] W} {t : K}
+    (hA : HasDerivAt A A' t) :
+    HasDerivAt (fun r => LinearMap.trace K W (A r).toLinearMap)
+      (LinearMap.trace K W A'.toLinearMap) t := by
+  exact (hasDerivWithinAt_linearMap_trace (s := univ) hA.hasDerivWithinAt).hasDerivAt
+    Filter.univ_mem
 
 theorem trace_fderivWithin_eq_sum
     {K E : Type*} [NontriviallyNormedField K] [CompleteSpace K]

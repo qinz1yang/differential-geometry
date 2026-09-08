@@ -4562,3 +4562,10 @@ import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletNirenbergDer
 import DifferentialGeometry.Geometry.Curvature.RicciPullbackDerivative
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HamiltonHarnack.UhlenbeckP
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HamiltonHarnack.UhlenbeckDivergence
+import DifferentialGeometry.Geometry.Connection.TensorNabla.HomTrace
+import DifferentialGeometry.Geometry.Connection.Laplacian.Trivial
+import DifferentialGeometry.Geometry.Connection.Laplacian.Trace
+import DifferentialGeometry.Geometry.Curvature.DimensionThree.ExteriorTrace
+import DifferentialGeometry.Geometry.Curvature.DimensionThree.ExteriorTracePullback
+import DifferentialGeometry.Geometry.Curvature.DimensionThree.ExteriorTraceLaplacian
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Uhlenbeck.ScalarEvolution
