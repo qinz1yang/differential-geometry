@@ -91,35 +91,37 @@ theorem chartGramOp_nonneg {D : RealTimeInterval}
       _ = (G.metric p.1).inner ((extChartAt I alpha).symm p.2) 0 0 := hzero.symm
   · exact ((G.metric p.1).pos ((extChartAt I alpha).symm p.2) w hw).le
 
+theorem continuousOn_chartGramOp {D : RealTimeInterval}
+    (G : MetricConnectionFamilyOn (I := I) (M := M) D) (alpha : M)
+    {S : Set (Real × E)}
+    (hentry : ∀ i j : Fin (Module.finrank Real E),
+      ContinuousOn
+        (fun p : Real × E => chartGramOnE (I := I) (G.metric p.1) alpha i j p.2) S) :
+    ContinuousOn (chartGramOp (I := I) G alpha) S := by
+  classical
+  have hbilin : ContinuousOn
+      (fun p : Real × E =>
+        chartGramBilin (E := E) (I := I) (M := M) (G.metric p.1) alpha
+          ((extChartAt I alpha).symm p.2)) S := by
+    change ContinuousOn
+      (fun p : Real × E =>
+        ∑ j : Fin (Module.finrank Real E), ∑ k : Fin (Module.finrank Real E),
+          chartGramOnE (I := I) (G.metric p.1) alpha j k p.2 •
+            (chartCoordCLM E j).smulRight (chartCoordCLM E k)) S
+    exact continuousOn_finsetSum _ fun j _ =>
+      continuousOn_finsetSum _ fun k _ => (hentry j k).smul continuousOn_const
+  exact (IsCoercive.gramCLM (F := E)).continuous.comp_continuousOn hbilin
+
 theorem chartGramOp_cont {D : RealTimeInterval}
     {G : MetricConnectionFamilyOn (I := I) (M := M) D}
     (hG : MetricFamilySmoothOn (I := I) (M := M) D G.metric)
     {J : Set Real} (hJ : J ⊆ D.regular) (alpha : M) {K : Set E}
     (hK : K ⊆ interior (extChartAt I alpha).target) :
     ContinuousOn (chartGramOp (I := I) G alpha) (J ×ˢ K) := by
-  classical
-  have hentry : ∀ i j : Fin (Module.finrank Real E),
-      ContinuousOn
-        (fun p : Real × E =>
-          chartGramOnE (I := I) (G.metric p.1) alpha i j p.2)
-        (J ×ˢ K) := by
-    intro i j
-    exact (hG.chartGramOnE_contDiffOn hJ alpha i j).continuousOn.mono
-      (prod_mono_right hK)
-  have hbilin : ContinuousOn
-      (fun p : Real × E =>
-        chartGramBilin (E := E) (I := I) (M := M) (G.metric p.1) alpha
-          ((extChartAt I alpha).symm p.2))
-      (J ×ˢ K) := by
-    change ContinuousOn
-      (fun p : Real × E =>
-        ∑ j : Fin (Module.finrank Real E), ∑ k : Fin (Module.finrank Real E),
-          chartGramOnE (I := I) (G.metric p.1) alpha j k p.2 •
-            (chartCoordCLM E j).smulRight (chartCoordCLM E k))
-      (J ×ˢ K)
-    exact continuousOn_finsetSum _ fun j _ =>
-      continuousOn_finsetSum _ fun k _ => (hentry j k).smul continuousOn_const
-  exact (IsCoercive.gramCLM (F := E)).continuous.comp_continuousOn hbilin
+  apply continuousOn_chartGramOp G alpha
+  intro i j
+  exact (hG.chartGramOnE_contDiffOn hJ alpha i j).continuousOn.mono
+    (prod_mono_right hK)
 
 theorem chartGramOp_uniform {D : RealTimeInterval}
     {G : MetricConnectionFamilyOn (I := I) (M := M) D}

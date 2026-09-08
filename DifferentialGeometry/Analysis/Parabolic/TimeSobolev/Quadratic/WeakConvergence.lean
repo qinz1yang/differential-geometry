@@ -2,6 +2,7 @@ import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.Operator.WeakConverge
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.Quadratic.Basic
 import Mathlib.Analysis.Normed.Operator.BanachSteinhaus
 import Mathlib.Topology.Algebra.Order.LiminfLimsup
+import Mathlib.MeasureTheory.Function.LpSeminorm.LpNorm
 
 set_option autoImplicit false
 
@@ -276,6 +277,65 @@ theorem timeQuad_weak_uniform
       hevR.mono fun n hn ↦ (le_of_lt hn).trans (hlower n)
     exact hrs.trans_le (le_liminf_of_le hcob hevQ)
   simpa only [q, qlim, timeQuad, Ln, L] using hliminf
+
+open scoped Interval ENNReal in
+theorem integral_inner_le_liminf
+    (A : ℕ → ℝ → X →L[ℝ] X) (A_lim : ℝ → X →L[ℝ] X)
+    (hA : ∀ n, MemLp (A n) ∞ (timeMeasure T))
+    (hA_lim : MemLp A_lim ∞ (timeMeasure T))
+    (hconv : ∀ δ : ℝ, 0 < δ → ∀ᶠ n in atTop,
+      ∀ᵐ t ∂timeMeasure T, ‖A n t - A_lim t‖ ≤ δ)
+    (hself : ∀ n, ∀ᵐ t ∂timeMeasure T, IsSelfAdjoint (A n t))
+    (hpos : ∀ n, ∀ᵐ t ∂timeMeasure T, ∀ x, 0 ≤ inner ℝ (A n t x) x)
+    (hT : 0 ≤ T) (u : ℕ → timeL2 X T) (u_lim : timeL2 X T)
+    (hu : ∀ z, Tendsto (fun n ↦ inner ℝ (u n) z) atTop
+      (nhds (inner ℝ u_lim z))) :
+    (∫ t in (0 : ℝ)..T, inner ℝ (A_lim t (u_lim t)) (u_lim t)) ≤
+      liminf (fun n ↦ ∫ t in (0 : ℝ)..T, inner ℝ (A n t (u n t)) (u n t)) atTop := by
+  let C : ℕ → NNReal := fun n => (lpNorm (A n) ∞ (timeMeasure T)).toNNReal
+  let C_lim : NNReal := (lpNorm A_lim ∞ (timeMeasure T)).toNNReal
+  have hC : ∀ n, ∀ᵐ t ∂timeMeasure T, ‖A n t‖ ≤ (C n : ℝ) := fun n =>
+    (ae_le_lpNorm_exponent_top (hA n)).mono fun _ ht => ht.trans (Real.le_coe_toNNReal _)
+  have hC_lim : ∀ᵐ t ∂timeMeasure T, ‖A_lim t‖ ≤ (C_lim : ℝ) :=
+    (ae_le_lpNorm_exponent_top hA_lim).mono fun _ ht => ht.trans (Real.le_coe_toNNReal _)
+  have hbound := timeQuad_weak_uniform A A_lim (fun n => (hA n).aestronglyMeasurable)
+    hA_lim.aestronglyMeasurable C C_lim hC hC_lim hconv hself hpos u u_lim hu
+  have hseq : (fun n => timeQuad (A n) (hA n).aestronglyMeasurable (C n) (hC n) (u n)) =
+      fun n => ∫ t in (0 : ℝ)..T, inner ℝ (A n t (u n t)) (u n t) :=
+    funext fun n => timeQuad_eq_integral (A n) (hA n).aestronglyMeasurable (C n) (hC n) hT (u n)
+  rw [timeQuad_eq_integral A_lim hA_lim.aestronglyMeasurable C_lim hC_lim hT u_lim,
+    hseq] at hbound
+  exact hbound
+
+open scoped Interval ENNReal in
+theorem integral_inner_le_liminf_of_tendstoUniformlyOn
+    (A : ℕ → ℝ → X →L[ℝ] X) (A_lim : ℝ → X →L[ℝ] X)
+    (hA : ∀ n, ContinuousOn (A n) (Icc (0 : ℝ) T))
+    (hA_lim : ContinuousOn A_lim (Icc (0 : ℝ) T))
+    (hconv : TendstoUniformlyOn A A_lim atTop (Icc (0 : ℝ) T))
+    (hself : ∀ n, ∀ᵐ t ∂timeMeasure T, IsSelfAdjoint (A n t))
+    (hpos : ∀ n, ∀ᵐ t ∂timeMeasure T, ∀ x, 0 ≤ inner ℝ (A n t x) x)
+    (hT : 0 ≤ T) (u : ℕ → timeL2 X T) (u_lim : timeL2 X T)
+    (hu : ∀ z, Tendsto (fun n ↦ inner ℝ (u n) z) atTop
+      (nhds (inner ℝ u_lim z))) :
+    (∫ t in (0 : ℝ)..T, inner ℝ (A_lim t (u_lim t)) (u_lim t)) ≤
+      liminf (fun n ↦ ∫ t in (0 : ℝ)..T, inner ℝ (A n t (u n t)) (u n t)) atTop := by
+  have hALp : ∀ n, MemLp (A n) ∞ (timeMeasure T) := by
+    intro n
+    obtain ⟨C, hC⟩ := isCompact_Icc.bddAbove_image (hA n).norm
+    apply memLp_top_of_bound ((hA n).aestronglyMeasurable measurableSet_Icc) C
+    filter_upwards [ae_restrict_mem measurableSet_Icc] with t ht
+    exact hC ⟨t, ht, rfl⟩
+  have hA_limLp : MemLp A_lim ∞ (timeMeasure T) := by
+    obtain ⟨C, hC⟩ := isCompact_Icc.bddAbove_image hA_lim.norm
+    apply memLp_top_of_bound (hA_lim.aestronglyMeasurable measurableSet_Icc) C
+    filter_upwards [ae_restrict_mem measurableSet_Icc] with t ht
+    exact hC ⟨t, ht, rfl⟩
+  apply integral_inner_le_liminf A A_lim hALp hA_limLp ?_ hself hpos hT u u_lim hu
+  intro δ hδ
+  filter_upwards [(Metric.tendstoUniformlyOn_iff.mp hconv) δ hδ] with n hn
+  filter_upwards [ae_restrict_mem measurableSet_Icc] with t ht
+  simpa only [dist_eq_norm, norm_sub_rev] using (hn t ht).le
 
 end DifferentialGeometry.Analysis.Parabolic.TimeSobolev
 
