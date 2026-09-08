@@ -47,19 +47,20 @@ theorem loopRadial_flat
     (g : SmoothRiemannianMetric I M)
     (hEnorm : ∀ (x : M) (v : TangentSpace I x),
       ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x v v)))
-    (p : M) (c : Path p p) (hc : IsFlatC1Path (I := I) c) (z : E) :
-    IsFlatC1Path (I := I) (loopRadial (I := I) g hEnorm p c z) :=
+    (p : M) (c : Path p p) (hc : Path.IsContMDiffWithSittingInstants (I := I) 1 c) (z : E) :
+    Path.IsContMDiffWithSittingInstants (I := I) 1 (loopRadial (I := I) g hEnorm p c z) :=
   hc.trans (radialFlat_flat (I := I) g hEnorm p z)
 
 theorem loopRadial_len
     (g : SmoothRiemannianMetric I M)
     (hEnorm : ∀ (x : M) (v : TangentSpace I x),
       ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x v v)))
-    (p : M) (c : Path p p) (hc : IsFlatC1Path (I := I) c) (z : E) :
-    pathLen (I := I) (loopRadial (I := I) g hEnorm p c z) =
-      pathLen (I := I) c + ENNReal.ofReal ‖z‖ := by
-  rw [loopRadial, pathLen_trans hc
-    (radialFlat_flat (I := I) g hEnorm p z),
+    (p : M) (c : Path p p) (hc : Path.IsContMDiffWithSittingInstants (I := I) 1 c) (z : E) :
+    Path.riemannianELength (I := I) (loopRadial (I := I) g hEnorm p c z) =
+      Path.riemannianELength (I := I) c + ENNReal.ofReal ‖z‖ := by
+  rw [loopRadial, Path.riemannianELength_trans
+    (hc.contMDiff.contMDiffOn.mdifferentiableOn one_ne_zero)
+    ((radialFlat_flat (I := I) g hEnorm p z).contMDiff.contMDiffOn.mdifferentiableOn one_ne_zero),
     radialFlat_len (I := I) g hEnorm p z]
 
 theorem loopRadial_len_lt
@@ -67,14 +68,14 @@ theorem loopRadial_len_lt
     (hEnorm : ∀ (x : M) (v : TangentSpace I x),
       ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x v v)))
     (p : M) {L a : Real} (hL : 0 ≤ L) (ha : 0 ≤ a)
-    (c : Path p p) (hc : IsFlatC1Path (I := I) c)
-    (hcLen : pathLen (I := I) c < ENNReal.ofReal L)
+    (c : Path p p) (hc : Path.IsContMDiffWithSittingInstants (I := I) 1 c)
+    (hcLen : Path.riemannianELength (I := I) c < ENNReal.ofReal L)
     {z : E} (hz : ‖z‖ ≤ a) :
-    pathLen (I := I) (loopRadial (I := I) g hEnorm p c z) <
+    Path.riemannianELength (I := I) (loopRadial (I := I) g hEnorm p c z) <
       ENNReal.ofReal (L + a) := by
   rw [loopRadial_len (I := I) g hEnorm p c hc z]
   calc
-    pathLen (I := I) c + ENNReal.ofReal ‖z‖ <
+    Path.riemannianELength (I := I) c + ENNReal.ofReal ‖z‖ <
         ENNReal.ofReal L + ENNReal.ofReal a :=
       ENNReal.add_lt_add_of_lt_of_le ENNReal.ofReal_ne_top
         hcLen (ENNReal.ofReal_le_ofReal hz)
@@ -90,8 +91,8 @@ theorem exists_loopLift
       IsLocalDiffeomorphOn 𝓘(Real, E) I ∞
         (intrinsicFramedExp (I := I) g hEnorm p)
         (Metric.ball (0 : E) R))
-    (c : Path p p) (hc : IsFlatC1Path (I := I) c)
-    (hcLen : pathLen (I := I) c < ENNReal.ofReal L)
+    (c : Path p p) (hc : Path.IsContMDiffWithSittingInstants (I := I) 1 c)
+    (hcLen : Path.riemannianELength (I := I) c < ENNReal.ofReal L)
     (z : intrinsicPullBall (E := E) R)
     (hz : z ∈ intrinsicCore (E := E) R a) :
     Nonempty
@@ -101,11 +102,11 @@ theorem exists_loopLift
   have hlenLa :=
     loopRadial_len_lt (I := I) g hEnorm p hL ha c hc hcLen hz
   have hlenR :
-      pathLen (I := I) (loopRadial (I := I) g hEnorm p c (z : E)) <
+      Path.riemannianELength (I := I) (loopRadial (I := I) g hEnorm p c (z : E)) <
         ENNReal.ofReal R :=
     hlenLa.trans ((ENNReal.ofReal_lt_ofReal_iff hR).2 hfit)
   exact exists_intr_lift (I := I) g hEnorm p zero_le_one
-    (loopRadial_flat (I := I) g hEnorm p c hc (z : E)).c1.contMDiffOn
+    (loopRadial_flat (I := I) g hEnorm p c hc (z : E)).contMDiff.contMDiffOn
     (by simp only [Path.extend_zero, loopRadial])
     hlenR hloc
 
@@ -119,8 +120,8 @@ noncomputable def loopTransportLift
       IsLocalDiffeomorphOn 𝓘(Real, E) I ∞
         (intrinsicFramedExp (I := I) g hEnorm p)
         (Metric.ball (0 : E) R))
-    (c : Path p p) (hc : IsFlatC1Path (I := I) c)
-    (hcLen : pathLen (I := I) c < ENNReal.ofReal L)
+    (c : Path p p) (hc : Path.IsContMDiffWithSittingInstants (I := I) 1 c)
+    (hcLen : Path.riemannianELength (I := I) c < ENNReal.ofReal L)
     (z : intrinsicPullBall (E := E) R)
     (hz : z ∈ intrinsicCore (E := E) R a) :
     IntrinsicFrameLift (I := I) g hEnorm p
@@ -138,8 +139,8 @@ noncomputable def loopTransport
       IsLocalDiffeomorphOn 𝓘(Real, E) I ∞
         (intrinsicFramedExp (I := I) g hEnorm p)
         (Metric.ball (0 : E) R))
-    (c : Path p p) (hc : IsFlatC1Path (I := I) c)
-    (hcLen : pathLen (I := I) c < ENNReal.ofReal L)
+    (c : Path p p) (hc : Path.IsContMDiffWithSittingInstants (I := I) 1 c)
+    (hcLen : Path.riemannianELength (I := I) c < ENNReal.ofReal L)
     (z : intrinsicPullBall (E := E) R)
     (hz : z ∈ intrinsicCore (E := E) R a) :
     intrinsicPullBall (E := E) R := by
@@ -151,7 +152,7 @@ noncomputable def loopTransport
   have hlenLa :=
     loopRadial_len_lt (I := I) g hEnorm p hL ha c hc hcLen hz
   have hlenR :
-      pathLen (I := I) (loopRadial (I := I) g hEnorm p c (z : E)) <
+      Path.riemannianELength (I := I) (loopRadial (I := I) g hEnorm p c (z : E)) <
         ENNReal.ofReal R :=
     hlenLa.trans ((ENNReal.ofReal_lt_ofReal_iff hR).2 hfit)
   simpa only [Metric.mem_ball, dist_zero_right] using
@@ -167,8 +168,8 @@ noncomputable def loopTransportExt
       IsLocalDiffeomorphOn 𝓘(Real, E) I ∞
         (intrinsicFramedExp (I := I) g hEnorm p)
         (Metric.ball (0 : E) R))
-    (c : Path p p) (hc : IsFlatC1Path (I := I) c)
-    (hcLen : pathLen (I := I) c < ENNReal.ofReal L)
+    (c : Path p p) (hc : Path.IsContMDiffWithSittingInstants (I := I) 1 c)
+    (hcLen : Path.riemannianELength (I := I) c < ENNReal.ofReal L)
     (z : intrinsicPullBall (E := E) R) :
     intrinsicPullBall (E := E) R := by
   classical
@@ -188,8 +189,8 @@ theorem loopTransportExt_eq
       IsLocalDiffeomorphOn 𝓘(Real, E) I ∞
         (intrinsicFramedExp (I := I) g hEnorm p)
         (Metric.ball (0 : E) R))
-    (c : Path p p) (hc : IsFlatC1Path (I := I) c)
-    (hcLen : pathLen (I := I) c < ENNReal.ofReal L)
+    (c : Path p p) (hc : Path.IsContMDiffWithSittingInstants (I := I) 1 c)
+    (hcLen : Path.riemannianELength (I := I) c < ENNReal.ofReal L)
     (z : intrinsicPullBall (E := E) R)
     (hz : z ∈ intrinsicCore (E := E) R a) :
     loopTransportExt (I := I) g hEnorm p hL ha hfit hloc
@@ -208,8 +209,8 @@ theorem loopTransport_exp
       IsLocalDiffeomorphOn 𝓘(Real, E) I ∞
         (intrinsicFramedExp (I := I) g hEnorm p)
         (Metric.ball (0 : E) R))
-    (c : Path p p) (hc : IsFlatC1Path (I := I) c)
-    (hcLen : pathLen (I := I) c < ENNReal.ofReal L)
+    (c : Path p p) (hc : Path.IsContMDiffWithSittingInstants (I := I) 1 c)
+    (hcLen : Path.riemannianELength (I := I) c < ENNReal.ofReal L)
     (z : intrinsicPullBall (E := E) R)
     (hz : z ∈ intrinsicCore (E := E) R a) :
     intrinsicFramedExp (I := I) g hEnorm p
@@ -232,8 +233,8 @@ theorem loopTransportExt_exp
       IsLocalDiffeomorphOn 𝓘(Real, E) I ∞
         (intrinsicFramedExp (I := I) g hEnorm p)
         (Metric.ball (0 : E) R))
-    (c : Path p p) (hc : IsFlatC1Path (I := I) c)
-    (hcLen : pathLen (I := I) c < ENNReal.ofReal L)
+    (c : Path p p) (hc : Path.IsContMDiffWithSittingInstants (I := I) 1 c)
+    (hcLen : Path.riemannianELength (I := I) c < ENNReal.ofReal L)
     (z : intrinsicPullBall (E := E) R) :
     intrinsicFramedExp (I := I) g hEnorm p
         (loopTransportExt (I := I) g hEnorm p hL ha hfit hloc
@@ -257,8 +258,8 @@ theorem loopIter_exp
       IsLocalDiffeomorphOn 𝓘(Real, E) I ∞
         (intrinsicFramedExp (I := I) g hEnorm p)
         (Metric.ball (0 : E) R))
-    (c : Path p p) (hc : IsFlatC1Path (I := I) c)
-    (hcLen : pathLen (I := I) c < ENNReal.ofReal L)
+    (c : Path p p) (hc : Path.IsContMDiffWithSittingInstants (I := I) 1 c)
+    (hcLen : Path.riemannianELength (I := I) c < ENNReal.ofReal L)
     (n : Nat) (z : intrinsicPullBall (E := E) R) :
     intrinsicFramedExp (I := I) g hEnorm p
         (((loopTransportExt (I := I) g hEnorm p hL ha hfit hloc
@@ -285,8 +286,8 @@ theorem intrinsicIter_exp
       IsLocalDiffeomorphOn 𝓘(Real, E) I ∞
         (intrinsicFramedExp (I := I) g hEnorm p)
         (Metric.ball (0 : E) R))
-    (c : Path p p) (hc : IsFlatC1Path (I := I) c)
-    (hcLen : pathLen (I := I) c < ENNReal.ofReal L)
+    (c : Path p p) (hc : Path.IsContMDiffWithSittingInstants (I := I) 1 c)
+    (hcLen : Path.riemannianELength (I := I) c < ENNReal.ofReal L)
     (n : Nat) :
     intrinsicFramedExp (I := I) g hEnorm p
         (((loopTransportExt (I := I) g hEnorm p hL ha hfit hloc
@@ -314,8 +315,8 @@ theorem loopTransport_norm
       IsLocalDiffeomorphOn 𝓘(Real, E) I ∞
         (intrinsicFramedExp (I := I) g hEnorm p)
         (Metric.ball (0 : E) R))
-    (c : Path p p) (hc : IsFlatC1Path (I := I) c)
-    (hcLen : pathLen (I := I) c < ENNReal.ofReal L)
+    (c : Path p p) (hc : Path.IsContMDiffWithSittingInstants (I := I) 1 c)
+    (hcLen : Path.riemannianELength (I := I) c < ENNReal.ofReal L)
     (z : intrinsicPullBall (E := E) R)
     (hz : z ∈ intrinsicCore (E := E) R a) :
     ‖(loopTransport (I := I) g hEnorm p hL ha hfit hloc
@@ -328,11 +329,11 @@ theorem loopTransport_norm
   have hsumPos : 0 < L + ‖(z : E)‖ :=
     lt_of_lt_of_le hLpos (le_add_of_nonneg_right (norm_nonneg _))
   have hlen :
-      pathLen (I := I) (loopRadial (I := I) g hEnorm p c (z : E)) <
+      Path.riemannianELength (I := I) (loopRadial (I := I) g hEnorm p c (z : E)) <
         ENNReal.ofReal (L + ‖(z : E)‖) := by
     rw [loopRadial_len (I := I) g hEnorm p c hc (z : E)]
     calc
-      pathLen (I := I) c + ENNReal.ofReal ‖(z : E)‖ <
+      Path.riemannianELength (I := I) c + ENNReal.ofReal ‖(z : E)‖ <
           ENNReal.ofReal L + ENNReal.ofReal ‖(z : E)‖ :=
         ENNReal.add_lt_add_right ENNReal.ofReal_ne_top hcLen
       _ = ENNReal.ofReal (L + ‖(z : E)‖) :=
@@ -351,8 +352,8 @@ theorem loopTransport_bound
       IsLocalDiffeomorphOn 𝓘(Real, E) I ∞
         (intrinsicFramedExp (I := I) g hEnorm p)
         (Metric.ball (0 : E) R))
-    (c : Path p p) (hc : IsFlatC1Path (I := I) c)
-    (hcLen : pathLen (I := I) c < ENNReal.ofReal L)
+    (c : Path p p) (hc : Path.IsContMDiffWithSittingInstants (I := I) 1 c)
+    (hcLen : Path.riemannianELength (I := I) c < ENNReal.ofReal L)
     (z : intrinsicPullBall (E := E) R)
     (hz : z ∈ intrinsicCore (E := E) R a) :
     ‖(loopTransport (I := I) g hEnorm p hL ha hfit hloc
@@ -379,8 +380,8 @@ theorem intrinsicIter_norm
       IsLocalDiffeomorphOn 𝓘(Real, E) I ∞
         (intrinsicFramedExp (I := I) g hEnorm p)
         (Metric.ball (0 : E) R))
-    (c : Path p p) (hc : IsFlatC1Path (I := I) c)
-    (hcLen : pathLen (I := I) c < ENNReal.ofReal L)
+    (c : Path p p) (hc : Path.IsContMDiffWithSittingInstants (I := I) 1 c)
+    (hcLen : Path.riemannianELength (I := I) c < ENNReal.ofReal L)
     (n : Nat) (hna : (n : Real) * L < a) :
     ‖(((loopTransportExt (I := I) g hEnorm p hL ha hfit hloc
       c hc hcLen)^[n]) (intrinsicZero (E := E) hR) : E)‖ ≤
@@ -438,8 +439,8 @@ theorem loopTransport_maps
       IsLocalDiffeomorphOn 𝓘(Real, E) I ∞
         (intrinsicFramedExp (I := I) g hEnorm p)
         (Metric.ball (0 : E) R))
-    (c : Path p p) (hc : IsFlatC1Path (I := I) c)
-    (hcLen : pathLen (I := I) c < ENNReal.ofReal L) :
+    (c : Path p p) (hc : Path.IsContMDiffWithSittingInstants (I := I) 1 c)
+    (hcLen : Path.riemannianELength (I := I) c < ENNReal.ofReal L) :
     MapsTo
       (fun z : {z : intrinsicPullBall (E := E) R //
           z ∈ intrinsicCore (E := E) R a} =>
@@ -461,8 +462,8 @@ theorem loopTransport_cont
       IsLocalDiffeomorphOn 𝓘(Real, E) I ∞
         (intrinsicFramedExp (I := I) g hEnorm p)
         (Metric.ball (0 : E) R))
-    (c : Path p p) (hc : IsFlatC1Path (I := I) c)
-    (hcLen : pathLen (I := I) c < ENNReal.ofReal L) :
+    (c : Path p p) (hc : Path.IsContMDiffWithSittingInstants (I := I) 1 c)
+    (hcLen : Path.riemannianELength (I := I) c < ENNReal.ofReal L) :
     Continuous
       (fun z : {z : intrinsicPullBall (E := E) R //
           z ∈ intrinsicCore (E := E) R a} =>
@@ -476,7 +477,7 @@ theorem loopTransport_cont
     fun z => intrinsicFramedExp (I := I) g hEnorm p (z : E)
   have hR : 0 < R := (add_nonneg hL ha).trans_lt hfit
   have hlenR (z : Core) :
-      pathLen (I := I)
+      Path.riemannianELength (I := I)
           (loopRadial (I := I) g hEnorm p c (z.1 : E)) <
         ENNReal.ofReal R := by
     exact
@@ -601,8 +602,8 @@ theorem loopTransport_curve
       IsLocalDiffeomorphOn 𝓘(Real, E) I ∞
         (intrinsicFramedExp (I := I) g hEnorm p)
         (Metric.ball (0 : E) R))
-    (c : Path p p) (hc : IsFlatC1Path (I := I) c)
-    (hcLen : pathLen (I := I) c < ENNReal.ofReal L)
+    (c : Path p p) (hc : Path.IsContMDiffWithSittingInstants (I := I) 1 c)
+    (hcLen : Path.riemannianELength (I := I) c < ENNReal.ofReal L)
     {γ : Real → intrinsicPullBall (E := E) R} {s t : Real}
     (hγ :
       ContMDiffOn 𝓘(Real, Real) 𝓘(Real, E) 1 γ (Set.Icc s t))
@@ -730,8 +731,8 @@ theorem loopTransport_len
       IsLocalDiffeomorphOn 𝓘(Real, E) I ∞
         (intrinsicFramedExp (I := I) g hEnorm p)
         (Metric.ball (0 : E) R))
-    (c : Path p p) (hc : IsFlatC1Path (I := I) c)
-    (hcLen : pathLen (I := I) c < ENNReal.ofReal L)
+    (c : Path p p) (hc : Path.IsContMDiffWithSittingInstants (I := I) 1 c)
+    (hcLen : Path.riemannianELength (I := I) c < ENNReal.ofReal L)
     {γ : Real → intrinsicPullBall (E := E) R} {s t : Real}
     (hγ :
       ContMDiffOn 𝓘(Real, Real) 𝓘(Real, E) 1 γ (Set.Icc s t))
@@ -768,8 +769,8 @@ theorem loopTransport_nonexp
           (Geometry.Curvature.metricRm04At
             (I := I) (M := M) g
             (intrinsicFramedExp (I := I) g hEnorm p z))) ≤ K)
-    (c : Path p p) (hc : IsFlatC1Path (I := I) c)
-    (hcLen : pathLen (I := I) c < ENNReal.ofReal L)
+    (c : Path p p) (hc : Path.IsContMDiffWithSittingInstants (I := I) 1 c)
+    (hcLen : Path.riemannianELength (I := I) c < ENNReal.ofReal L)
     {x y : intrinsicPullBall (E := E) R}
     (hx : x ∈ intrinsicCore (E := E) R a)
     (hy : y ∈ intrinsicCore (E := E) R a) :
@@ -940,8 +941,8 @@ theorem loopIter_nonexp
           (Geometry.Curvature.metricRm04At
             (I := I) (M := M) g
             (intrinsicFramedExp (I := I) g hEnorm p z))) ≤ K)
-    (c : Path p p) (hc : IsFlatC1Path (I := I) c)
-    (hcLen : pathLen (I := I) c < ENNReal.ofReal L)
+    (c : Path p p) (hc : Path.IsContMDiffWithSittingInstants (I := I) 1 c)
+    (hcLen : Path.riemannianELength (I := I) c < ENNReal.ofReal L)
     (n : Nat) {x y : intrinsicPullBall (E := E) R}
     (hx :
       ∀ k < n,
@@ -1027,8 +1028,8 @@ theorem loopTransport_ne
       IsLocalDiffeomorphOn 𝓘(Real, E) I ∞
         (intrinsicFramedExp (I := I) g hEnorm p)
         (Metric.ball (0 : E) R))
-    (c : Path p p) (hc : IsFlatC1Path (I := I) c)
-    (hcLen : pathLen (I := I) c < ENNReal.ofReal L)
+    (c : Path p p) (hc : Path.IsContMDiffWithSittingInstants (I := I) 1 c)
+    (hcLen : Path.riemannianELength (I := I) c < ENNReal.ofReal L)
     (A : IntrinsicFrameLift (I := I) g hEnorm p c.extend 0 1)
     (hA : A.toFun 1 ≠ 0)
     (z : intrinsicPullBall (E := E) R)
@@ -1045,17 +1046,17 @@ theorem loopTransport_ne
   have hR : 0 < R := (add_nonneg hL ha).trans_lt hfit
   have hLR : L < R := by linarith
   have haR : a < R := by linarith
-  have hcR : pathLen (I := I) c < ENNReal.ofReal R :=
+  have hcR : Path.riemannianELength (I := I) c < ENNReal.ofReal R :=
     hcLen.trans ((ENNReal.ofReal_lt_ofReal_iff hR).2 hLR)
   have hlenLa :=
     loopRadial_len_lt (I := I) g hEnorm p hL ha c hc hcLen hz
   have hfullR :
-      pathLen (I := I) (loopRadial (I := I) g hEnorm p c (z : E)) <
+      Path.riemannianELength (I := I) (loopRadial (I := I) g hEnorm p c (z : E)) <
         ENNReal.ofReal R :=
     hlenLa.trans ((ENNReal.ofReal_lt_ofReal_iff hR).2 hfit)
-  have hradR : pathLen (I := I) r < ENNReal.ofReal R := by
+  have hradR : Path.riemannianELength (I := I) r < ENNReal.ofReal R := by
     change
-      pathLen (I := I) (radialFlat (I := I) g hEnorm p (z : E)) <
+      Path.riemannianELength (I := I) (radialFlat (I := I) g hEnorm p (z : E)) <
         ENNReal.ofReal R
     rw [radialFlat_len (I := I) g hEnorm p (z : E)]
     exact (ENNReal.ofReal_le_ofReal hz).trans_lt
@@ -1375,8 +1376,8 @@ theorem intrinsicCycle_not_fin
           (Geometry.Curvature.metricRm04At
             (I := I) (M := M) g
             (intrinsicFramedExp (I := I) g hEnorm p z))) ≤ K)
-    (c : Path p p) (hc : IsFlatC1Path (I := I) c)
-    (hcLen : pathLen (I := I) c < ENNReal.ofReal L)
+    (c : Path p p) (hc : Path.IsContMDiffWithSittingInstants (I := I) 1 c)
+    (hcLen : Path.riemannianELength (I := I) c < ENNReal.ofReal L)
     (A : IntrinsicFrameLift (I := I) g hEnorm p c.extend 0 1)
     (hA : A.toFun 1 ≠ 0)
     {n : Nat} [NeZero n]
@@ -1475,8 +1476,8 @@ theorem intrinsicOrbit_not_finite
           (Geometry.Curvature.metricRm04At
             (I := I) (M := M) g
             (intrinsicFramedExp (I := I) g hEnorm p z))) ≤ K)
-    (c : Path p p) (hc : IsFlatC1Path (I := I) c)
-    (hcLen : pathLen (I := I) c < ENNReal.ofReal L)
+    (c : Path p p) (hc : Path.IsContMDiffWithSittingInstants (I := I) 1 c)
+    (hcLen : Path.riemannianELength (I := I) c < ENNReal.ofReal L)
     (A : IntrinsicFrameLift (I := I) g hEnorm p c.extend 0 1)
     (hA : A.toFun 1 ≠ 0)
     {ι : Type*} [Finite ι] [Nonempty ι]
@@ -1579,8 +1580,8 @@ theorem intrinsicIter_ne
           (Geometry.Curvature.metricRm04At
             (I := I) (M := M) g
             (intrinsicFramedExp (I := I) g hEnorm p z))) ≤ K)
-    (c : Path p p) (hc : IsFlatC1Path (I := I) c)
-    (hcLen : pathLen (I := I) c < ENNReal.ofReal L)
+    (c : Path p p) (hc : Path.IsContMDiffWithSittingInstants (I := I) 1 c)
+    (hcLen : Path.riemannianELength (I := I) c < ENNReal.ofReal L)
     (A : IntrinsicFrameLift (I := I) g hEnorm p c.extend 0 1)
     (hA : A.toFun 1 ≠ 0)
     {n : Nat} [NeZero n]
@@ -1668,8 +1669,8 @@ theorem intrinsicIter_ne_of_lt
           (Geometry.Curvature.metricRm04At
             (I := I) (M := M) g
             (intrinsicFramedExp (I := I) g hEnorm p z))) ≤ K)
-    (c : Path p p) (hc : IsFlatC1Path (I := I) c)
-    (hcLen : pathLen (I := I) c < ENNReal.ofReal L)
+    (c : Path p p) (hc : Path.IsContMDiffWithSittingInstants (I := I) 1 c)
+    (hcLen : Path.riemannianELength (I := I) c < ENNReal.ofReal L)
     (A : IntrinsicFrameLift (I := I) g hEnorm p c.extend 0 1)
     (hA : A.toFun 1 ≠ 0)
     {i j : Nat} (hij : i < j)
@@ -1726,8 +1727,8 @@ theorem intrinsicIter_injective
           (Geometry.Curvature.metricRm04At
             (I := I) (M := M) g
             (intrinsicFramedExp (I := I) g hEnorm p z))) ≤ K)
-    (c : Path p p) (hc : IsFlatC1Path (I := I) c)
-    (hcLen : pathLen (I := I) c < ENNReal.ofReal L)
+    (c : Path p p) (hc : Path.IsContMDiffWithSittingInstants (I := I) 1 c)
+    (hcLen : Path.riemannianELength (I := I) c < ENNReal.ofReal L)
     (A : IntrinsicFrameLift (I := I) g hEnorm p c.extend 0 1)
     (hA : A.toFun 1 ≠ 0)
     (N : Nat) (hr : 0 < r) (h2ra : 2 * r < a)
@@ -1791,8 +1792,8 @@ theorem intrinsicIter_injective_of_nonzero_frameLift
           (Geometry.Curvature.metricRm04At
             (I := I) (M := M) g
             (intrinsicFramedExp (I := I) g hEnorm p z))) ≤ K)
-    (c : Path p p) (hc : IsFlatC1Path (I := I) c)
-    (hcLen : pathLen (I := I) c < ENNReal.ofReal L)
+    (c : Path p p) (hc : Path.IsContMDiffWithSittingInstants (I := I) 1 c)
+    (hcLen : Path.riemannianELength (I := I) c < ENNReal.ofReal L)
     (A : IntrinsicFrameLift (I := I) g hEnorm p c.extend 0 1)
     (hA : A.toFun 1 ≠ 0)
     (N : Nat) (hNLa : (N : Real) * L < a) :
@@ -2005,8 +2006,8 @@ theorem intrinsicIter_family
           (Geometry.Curvature.metricRm04At
             (I := I) (M := M) g
             (intrinsicFramedExp (I := I) g hEnorm p z))) ≤ K)
-    (c : Path p p) (hc : IsFlatC1Path (I := I) c)
-    (hcLen : pathLen (I := I) c < ENNReal.ofReal L)
+    (c : Path p p) (hc : Path.IsContMDiffWithSittingInstants (I := I) 1 c)
+    (hcLen : Path.riemannianELength (I := I) c < ENNReal.ofReal L)
     (A : IntrinsicFrameLift (I := I) g hEnorm p c.extend 0 1)
     (hA : A.toFun 1 ≠ 0)
     (N : Nat) (hr : 0 < r) (h2ra : 2 * r < a)
@@ -2057,8 +2058,8 @@ theorem intrinsicIter_family_of_nonzero_frameLift
           (Geometry.Curvature.metricRm04At
             (I := I) (M := M) g
             (intrinsicFramedExp (I := I) g hEnorm p z))) ≤ K)
-    (c : Path p p) (hc : IsFlatC1Path (I := I) c)
-    (hcLen : pathLen (I := I) c < ENNReal.ofReal L)
+    (c : Path p p) (hc : Path.IsContMDiffWithSittingInstants (I := I) 1 c)
+    (hcLen : Path.riemannianELength (I := I) c < ENNReal.ofReal L)
     (A : IntrinsicFrameLift (I := I) g hEnorm p c.extend 0 1)
     (hA : A.toFun 1 ≠ 0)
     (N : Nat) (hNLa : (N : Real) * L < a) :
@@ -2104,8 +2105,8 @@ theorem intrinsicFiber_encard_ge_of_nonzero_frameLift
           (Geometry.Curvature.metricRm04At
             (I := I) (M := M) g
             (intrinsicFramedExp (I := I) g hEnorm p z))) ≤ K)
-    (c : Path p p) (hc : IsFlatC1Path (I := I) c)
-    (hcLen : pathLen (I := I) c < ENNReal.ofReal L)
+    (c : Path p p) (hc : Path.IsContMDiffWithSittingInstants (I := I) 1 c)
+    (hcLen : Path.riemannianELength (I := I) c < ENNReal.ofReal L)
     (A : IntrinsicFrameLift (I := I) g hEnorm p c.extend 0 1)
     (hA : A.toFun 1 ≠ 0)
     (N : Nat) (hNLa : (N : Real) * L < a) :
@@ -2168,8 +2169,8 @@ theorem intrinsicFiber_encard_ge_of_riemannianEDist_lt
           (Geometry.Curvature.metricRm04At
             (I := I) (M := M) g
             (intrinsicFramedExp (I := I) g hEnorm p z))) ≤ K)
-    (c : Path p p) (hc : IsFlatC1Path (I := I) c)
-    (hcLen : pathLen (I := I) c < ENNReal.ofReal L)
+    (c : Path p p) (hc : Path.IsContMDiffWithSittingInstants (I := I) 1 c)
+    (hcLen : Path.riemannianELength (I := I) c < ENNReal.ofReal L)
     (A : IntrinsicFrameLift (I := I) g hEnorm p c.extend 0 1)
     (hA : A.toFun 1 ≠ 0)
     (N : Nat) (hNLa : (N : Real) * L < a)
@@ -2207,8 +2208,8 @@ theorem intrinsicFiber_encard_ge
           (Geometry.Curvature.metricRm04At
             (I := I) (M := M) g
             (intrinsicFramedExp (I := I) g hEnorm p z))) ≤ K)
-    (c : Path p p) (hc : IsFlatC1Path (I := I) c)
-    (hcLen : pathLen (I := I) c < ENNReal.ofReal L)
+    (c : Path p p) (hc : Path.IsContMDiffWithSittingInstants (I := I) 1 c)
+    (hcLen : Path.riemannianELength (I := I) c < ENNReal.ofReal L)
     (A : IntrinsicFrameLift (I := I) g hEnorm p c.extend 0 1)
     (hA : A.toFun 1 ≠ 0)
     (N : Nat) (hr : 0 < r) (h2ra : 2 * r < a)
@@ -2272,8 +2273,8 @@ theorem intrinsicFiber_count_ge
           (Geometry.Curvature.metricRm04At
             (I := I) (M := M) g
             (intrinsicFramedExp (I := I) g hEnorm p z))) ≤ K)
-    (c : Path p p) (hc : IsFlatC1Path (I := I) c)
-    (hcLen : pathLen (I := I) c < ENNReal.ofReal L)
+    (c : Path p p) (hc : Path.IsContMDiffWithSittingInstants (I := I) 1 c)
+    (hcLen : Path.riemannianELength (I := I) c < ENNReal.ofReal L)
     (A : IntrinsicFrameLift (I := I) g hEnorm p c.extend 0 1)
     (hA : A.toFun 1 ≠ 0)
     (N : Nat) (hr : 0 < r) (h2ra : 2 * r < a)

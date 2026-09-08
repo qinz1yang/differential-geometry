@@ -125,13 +125,13 @@ private theorem exists_cost_curve
       (DifferentialGeometry.Geometry.Riemannian.Exponential.riemannianEDist_ne_top
         (I := I) x y)
   obtain ⟨p, hp, _hlen⟩ :=
-    DifferentialGeometry.Geometry.Riemannian.CheegerGromovTaylor.exists_flat_path
+    Manifold.exists_path_isContMDiffWithSittingInstants_of_riemannianEDist_lt
       (I := I) hxy
   let b : Real := Real.sqrt tau
   have hb : 0 < b := by simpa only [b] using Real.sqrt_pos.2 htau
   let alpha₀ : Real → M := fun s ↦ p.extend (s / b)
   have halpha₀ : ContMDiff (modelWithCornersSelf Real Real) I 1 alpha₀ := by
-    apply hp.c1.comp
+    apply hp.contMDiff.comp
     rw [contMDiff_iff_contDiff]
     fun_prop
   have ha₀ : alpha₀ 0 = x := by

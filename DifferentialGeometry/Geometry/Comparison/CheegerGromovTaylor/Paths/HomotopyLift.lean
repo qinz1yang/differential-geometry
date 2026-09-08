@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Comparison.CheegerGromovTaylor.Paths.ExponentialLift
-import DifferentialGeometry.Geometry.Metric.Path.Flat
+import DifferentialGeometry.Geometry.Metric.Path.Homotopy
 import Mathlib.Topology.Homotopy.Lifting
 
 set_option autoImplicit false
@@ -30,15 +30,15 @@ variable [RiemannianBundle (fun x : M ↦ TangentSpace I x)]
 variable [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
   [IsContinuousRiemannianBundle E (fun x : M ↦ TangentSpace I x)]
 
-namespace ShortHomotopy
+section
 
 variable {g : SmoothRiemannianMetric I M}
   {hEnorm : ∀ (x : M) (v : TangentSpace I x),
     ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x v v))}
   {L : ENNReal} {R : Real} {x y : M} {p q : Path x y}
 
-theorem exists_lift_family
-    (F : ShortHomotopy (I := I) L p q)
+theorem _root_.Path.LengthBoundedHomotopy.exists_lift_family
+    (F : Path.LengthBoundedHomotopy (I := I) L p q)
     (hLR : L < ENNReal.ofReal R)
     (hloc :
       IsLocalDiffeomorphOn 𝓘(Real, E) I ∞
@@ -59,7 +59,7 @@ theorem exists_lift_family
         ENNReal.ofReal R := by
     calc
       Manifold.pathELength I (F.hom.eval t).extend 0 1
-          = pathLen (I := I) (F.hom.eval t) := rfl
+          = Path.riemannianELength (I := I) (F.hom.eval t) := rfl
       _ ≤ L := F.length_le t
       _ < ENNReal.ofReal R := hLR
   have hstart (t : unitInterval) :
@@ -68,7 +68,7 @@ theorem exists_lift_family
   have hcd (t : unitInterval) :
       ContMDiffOn 𝓘(Real, Real) I 1
         (F.hom.eval t).extend (Set.Icc 0 1) :=
-    (F.flat t).c1.contMDiffOn
+    (F.isContMDiffWithSittingInstants t).contMDiff.contMDiffOn
   have hex (t : unitInterval) :
       Nonempty
         (IntrinsicFrameLift (I := I) g hEnorm x
@@ -126,8 +126,8 @@ theorem exists_lift_family
   refine ⟨lift, fun t => ?_⟩
   exact congrArg Subtype.val (hend t)
 
-theorem lift_end_eq
-    (F : ShortHomotopy (I := I) L p q)
+theorem _root_.Path.LengthBoundedHomotopy.lift_end_eq
+    (F : Path.LengthBoundedHomotopy (I := I) L p q)
     (hLR : L < ENNReal.ofReal R)
     (hloc :
       IsLocalDiffeomorphOn 𝓘(Real, E) I ∞
@@ -149,7 +149,7 @@ theorem lift_end_eq
         ENNReal.ofReal R := by
     calc
       Manifold.pathELength I (F.hom.eval t).extend 0 1
-          = pathLen (I := I) (F.hom.eval t) := rfl
+          = Path.riemannianELength (I := I) (F.hom.eval t) := rfl
       _ ≤ L := F.length_le t
       _ < ENNReal.ofReal R := hLR
   have hP :
@@ -163,7 +163,7 @@ theorem lift_end_eq
     _ = (lift 1).toFun 1 := (hend 1).symm
     _ = Q.toFun 1 := (hQ ⟨zero_le_one, le_rfl⟩).symm
 
-end ShortHomotopy
+end
 
 namespace IntrinsicFrameLift
 
@@ -179,8 +179,8 @@ theorem append_mid_eq
     (P :
       IntrinsicFrameLift (I := I) g hEnorm x (p.trans c).extend 0 1)
     (hR : 0 < R)
-    (hp : pathLen (I := I) p < ENNReal.ofReal R)
-    (hpc : pathLen (I := I) (p.trans c) < ENNReal.ofReal R)
+    (hp : Path.riemannianELength (I := I) p < ENNReal.ofReal R)
+    (hpc : Path.riemannianELength (I := I) (p.trans c) < ENNReal.ofReal R)
     (hloc :
       IsLocalDiffeomorphOn 𝓘(Real, E) I ∞
         (intrinsicFramedExp (I := I) g hEnorm x)
@@ -230,8 +230,8 @@ theorem cancel_right
     (Q :
       IntrinsicFrameLift (I := I) g hEnorm x (q.trans c).extend 0 1)
     (hR : 0 < R)
-    (hpc : pathLen (I := I) (p.trans c) < ENNReal.ofReal R)
-    (hqc : pathLen (I := I) (q.trans c) < ENNReal.ofReal R)
+    (hpc : Path.riemannianELength (I := I) (p.trans c) < ENNReal.ofReal R)
+    (hqc : Path.riemannianELength (I := I) (q.trans c) < ENNReal.ofReal R)
     (hloc :
       IsLocalDiffeomorphOn 𝓘(Real, E) I ∞
         (intrinsicFramedExp (I := I) g hEnorm x)
@@ -283,10 +283,10 @@ theorem end_eq_of_append
     (Q :
       IntrinsicFrameLift (I := I) g hEnorm x (q.trans c).extend 0 1)
     (hR : 0 < R)
-    (hp : pathLen (I := I) p < ENNReal.ofReal R)
-    (hq : pathLen (I := I) q < ENNReal.ofReal R)
-    (hpc : pathLen (I := I) (p.trans c) < ENNReal.ofReal R)
-    (hqc : pathLen (I := I) (q.trans c) < ENNReal.ofReal R)
+    (hp : Path.riemannianELength (I := I) p < ENNReal.ofReal R)
+    (hq : Path.riemannianELength (I := I) q < ENNReal.ofReal R)
+    (hpc : Path.riemannianELength (I := I) (p.trans c) < ENNReal.ofReal R)
+    (hqc : Path.riemannianELength (I := I) (q.trans c) < ENNReal.ofReal R)
     (hloc :
       IsLocalDiffeomorphOn 𝓘(Real, E) I ∞
         (intrinsicFramedExp (I := I) g hEnorm x)
@@ -303,19 +303,19 @@ theorem end_eq_of_append
 
 end IntrinsicFrameLift
 
-namespace ShortHomotopy
+section
 
 variable {g : SmoothRiemannianMetric I M}
   {hEnorm : ∀ (x : M) (v : TangentSpace I x),
     ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x v v))}
   {L : ENNReal} {R : Real} {x y : M} {p q : Path x y}
 
-theorem lift_end_cancel
+theorem _root_.Path.LengthBoundedHomotopy.lift_end_cancel
     {z : M} {c : Path y z}
-    (F : ShortHomotopy (I := I) L (p.trans c) (q.trans c))
+    (F : Path.LengthBoundedHomotopy (I := I) L (p.trans c) (q.trans c))
     (hLR : L < ENNReal.ofReal R)
-    (hpR : pathLen (I := I) p < ENNReal.ofReal R)
-    (hqR : pathLen (I := I) q < ENNReal.ofReal R)
+    (hpR : Path.riemannianELength (I := I) p < ENNReal.ofReal R)
+    (hqR : Path.riemannianELength (I := I) q < ENNReal.ofReal R)
     (hloc :
       IsLocalDiffeomorphOn 𝓘(Real, E) I ∞
         (intrinsicFramedExp (I := I) g hEnorm x)
@@ -343,15 +343,15 @@ theorem lift_end_cancel
   have hR : 0 < R := by
     exact ENNReal.ofReal_pos.mp (lt_of_le_of_lt bot_le hLR)
   have hpc :
-      pathLen (I := I) (p.trans c) < ENNReal.ofReal R := by
+      Path.riemannianELength (I := I) (p.trans c) < ENNReal.ofReal R := by
     have hle :
-        pathLen (I := I) (p.trans c) ≤ L := by
+        Path.riemannianELength (I := I) (p.trans c) ≤ L := by
       simpa using F.length_le (0 : unitInterval)
     exact hle.trans_lt hLR
   have hqc :
-      pathLen (I := I) (q.trans c) < ENNReal.ofReal R := by
+      Path.riemannianELength (I := I) (q.trans c) < ENNReal.ofReal R := by
     have hle :
-        pathLen (I := I) (q.trans c) ≤ L := by
+        Path.riemannianELength (I := I) (q.trans c) ≤ L := by
       simpa using F.length_le (1 : unitInterval)
     exact hle.trans_lt hLR
   have hTU : T.toFun 1 = U.toFun 1 := by
@@ -360,7 +360,7 @@ theorem lift_end_cancel
     IntrinsicFrameLift.end_eq_of_append P Q T U hR hpR hqR hpc hqc
       hloc hTU
 
-end ShortHomotopy
+end
 
 end CheegerGromovTaylor
 end Riemannian

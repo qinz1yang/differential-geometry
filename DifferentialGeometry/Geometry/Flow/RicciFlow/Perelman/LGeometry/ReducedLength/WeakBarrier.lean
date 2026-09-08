@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Metric.Path.Flat
+import DifferentialGeometry.Geometry.Metric.Path.Length
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Minimizer.CompleteManifoldExistence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Cost.UpperSupport.Action
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ReducedLength.HamiltonBound
@@ -151,11 +151,11 @@ theorem exists_redWeak_sup [ConnectedSpace M]
         (DifferentialGeometry.Geometry.Riemannian.Exponential.riemannianEDist_ne_top
           (I := I) x y)
     obtain ⟨path, hpath, _hlen⟩ :=
-      DifferentialGeometry.Geometry.Riemannian.CheegerGromovTaylor.exists_flat_path
+      Manifold.exists_path_isContMDiffWithSittingInstants_of_riemannianEDist_lt
         (I := I) hxy
     let alpha0 : Real → M := fun s ↦ path.extend (s / b)
     have halpha0 : ContMDiff 𝓘(Real, Real) I 1 alpha0 := by
-      apply hpath.c1.comp
+      apply hpath.contMDiff.comp
       rw [contMDiff_iff_contDiff]
       fun_prop
     refine ⟨alpha0, halpha0, ?_, ?_⟩

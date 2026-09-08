@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Integration.Measure.Parametric.Evaluation
-import DifferentialGeometry.Geometry.Metric.Path.Flat
+import DifferentialGeometry.Geometry.Metric.Path.Length
 import DifferentialGeometry.Geometry.Comparison.NormalCoordinates.ExponentialBallPartialDiffeomorph
 import DifferentialGeometry.Geometry.Exponential.MinimizingGeodesic
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.CutLocus.MeasureZero
@@ -206,14 +206,14 @@ private theorem exists_lMin_slab
       (DifferentialGeometry.Geometry.Riemannian.Exponential.riemannianEDist_ne_top
         (I := I) x y)
   obtain ⟨p, hp, _hlen⟩ :=
-    DifferentialGeometry.Geometry.Riemannian.CheegerGromovTaylor.exists_flat_path
+    Manifold.exists_path_isContMDiffWithSittingInstants_of_riemannianEDist_lt
       (I := I) hxy
   let b : Real := Real.sqrt tau
   have hb : 0 < b := by
     simpa only [b] using Real.sqrt_pos.2 htau
   let alpha : Real → M := fun s ↦ p.extend (s / b)
   have halpha : ContMDiff (modelWithCornersSelf Real Real) I 1 alpha := by
-    apply hp.c1.comp
+    apply hp.contMDiff.comp
     rw [contMDiff_iff_contDiff]
     fun_prop
   have ha0 : alpha 0 = x := by

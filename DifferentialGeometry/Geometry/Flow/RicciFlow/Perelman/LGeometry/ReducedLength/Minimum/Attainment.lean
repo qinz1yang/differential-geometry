@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Minimizer.CompleteManifoldExistence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ReducedLength.Basic
-import DifferentialGeometry.Geometry.Metric.Path.Flat
+import DifferentialGeometry.Geometry.Metric.Path.Length
 
 set_option autoImplicit false
 
@@ -472,11 +472,11 @@ theorem exists_redMin_rm [ConnectedSpace M]
         (DifferentialGeometry.Geometry.Riemannian.Exponential.riemannianEDist_ne_top
           (I := I) x z)
     obtain ⟨path, hpath, _hlen⟩ :=
-      DifferentialGeometry.Geometry.Riemannian.CheegerGromovTaylor.exists_flat_path
+      Manifold.exists_path_isContMDiffWithSittingInstants_of_riemannianEDist_lt
         (I := I) hxz
     let delta : Real → M := fun s ↦ path.extend (s / b)
     have hdelta : ContMDiff (modelWithCornersSelf Real Real) I 1 delta := by
-      apply hpath.c1.comp
+      apply hpath.contMDiff.comp
       rw [contMDiff_iff_contDiff]
       fun_prop
     refine ⟨lRegularizedAction S T delta 0 b, delta, hdelta, ?_, ?_, rfl⟩

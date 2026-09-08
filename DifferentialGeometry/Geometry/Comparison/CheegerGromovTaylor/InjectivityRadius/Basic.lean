@@ -186,9 +186,9 @@ private theorem flatLoop_ge_cheeger_gromov_taylor_on
         (ball (0 : E) R))
     (hr₀ : 0 < r₀) (hs : 0 < s)
     (hfit : r₀ + 2 * s < R) (hquarter : r₀ < R / 4)
-    (c : Path p p) (hc : IsFlatC1Path (I := I) c)
+    (c : Path p p) (hc : Path.IsContMDiffWithSittingInstants (I := I) 1 c)
     (hell : 0 < ell)
-    (hcLen : pathLen (I := I) c = ENNReal.ofReal (2 * ell))
+    (hcLen : Path.riemannianELength (I := I) c = ENNReal.ofReal (2 * ell))
     (A : IntrinsicFrameLift (I := I) g hEnorm p c.extend 0 1)
     (hA : A.toFun 1 ≠ 0) :
     ENNReal.ofReal (r₀ / 2) *
@@ -254,7 +254,7 @@ private theorem flatLoop_ge_cheeger_gromov_taylor_on
       exact (mul_lt_mul_of_pos_right hpredCast hL).trans_le hNmul
     have hfitL : L + r₀ < R := by
       linarith
-    have hcLenL : pathLen (I := I) c < ENNReal.ofReal L := by
+    have hcLenL : Path.riemannianELength (I := I) c < ENNReal.ofReal L := by
       rw [hcLen]
       exact
         (ENNReal.ofReal_lt_ofReal_iff (by linarith)).2 h2ellL
@@ -354,9 +354,9 @@ theorem flatLoop_ge_cheeger_gromov_taylor
         (ball (0 : E) R))
     (hr₀ : 0 < r₀) (hs : 0 < s)
     (hfit : r₀ + 2 * s < R) (hquarter : r₀ < R / 4)
-    (c : Path p p) (hc : IsFlatC1Path (I := I) c)
+    (c : Path p p) (hc : Path.IsContMDiffWithSittingInstants (I := I) 1 c)
     (hell : 0 < ell)
-    (hcLen : pathLen (I := I) c = ENNReal.ofReal (2 * ell))
+    (hcLen : Path.riemannianELength (I := I) c = ENNReal.ofReal (2 * ell))
     (A : IntrinsicFrameLift (I := I) g hEnorm p c.extend 0 1)
     (hA : A.toFun 1 ≠ 0) :
     ENNReal.ofReal (r₀ / 2) *
@@ -414,50 +414,53 @@ private theorem collision_ge_cheeger_gromov_taylor_on
       Path p (intrinsicFramedExp (I := I) g hEnorm p u) :=
     (radialFlat (I := I) g hEnorm p v).cast rfl hcollision
   let c : Path p p := pu.trans pv.symm
-  have hpu : IsFlatC1Path (I := I) pu := by
+  have hpu : Path.IsContMDiffWithSittingInstants (I := I) 1 pu := by
     simpa only [pu] using radialFlat_flat (I := I) g hEnorm p u
-  have hpv : IsFlatC1Path (I := I) pv := by
+  have hpv : Path.IsContMDiffWithSittingInstants (I := I) 1 pv := by
     have hflat := radialFlat_flat (I := I) g hEnorm p v
     refine {
-      c1 := ?_
-      flat_zero := ?_
-      flat_one := ?_ }
-    · simpa only [pv, Path.extend_cast] using hflat.c1
-    · simpa only [pv, Path.extend_cast] using hflat.flat_zero
-    · simpa only [pv, Path.extend_cast, hcollision] using hflat.flat_one
-  have hc : IsFlatC1Path (I := I) c := by
+      contMDiff := ?_
+      eventuallyEq_zero := ?_
+      eventuallyEq_one := ?_ }
+    · simpa only [pv, Path.extend_cast] using hflat.contMDiff
+    · simpa only [pv, Path.extend_cast] using hflat.eventuallyEq_zero
+    · simpa only [pv, Path.extend_cast, hcollision] using hflat.eventuallyEq_one
+  have hc : Path.IsContMDiffWithSittingInstants (I := I) 1 c := by
     exact hpu.trans hpv.symm
   have hpuLen :
-      pathLen (I := I) pu = ENNReal.ofReal ‖u‖ := by
+      Path.riemannianELength (I := I) pu = ENNReal.ofReal ‖u‖ := by
     simpa only [pu] using radialFlat_len (I := I) g hEnorm p u
   have hpvLen :
-      pathLen (I := I) pv = ENNReal.ofReal ‖v‖ := by
-    simpa only [pathLen, pv, Path.extend_cast] using
+      Path.riemannianELength (I := I) pv = ENNReal.ofReal ‖v‖ := by
+    simpa only [Path.riemannianELength, pv, Path.extend_cast] using
       radialFlat_len (I := I) g hEnorm p v
   have hcLen :
-      pathLen (I := I) c = ENNReal.ofReal (2 * ell) := by
-    change pathLen (I := I) (pu.trans pv.symm) = _
-    rw [pathLen_trans hpu hpv.symm, pathLen_symm hpv,
+      Path.riemannianELength (I := I) c = ENNReal.ofReal (2 * ell) := by
+    change Path.riemannianELength (I := I) (pu.trans pv.symm) = _
+    rw [Path.riemannianELength_trans
+      (hpu.contMDiff.contMDiffOn.mdifferentiableOn one_ne_zero)
+      (hpv.symm.contMDiff.contMDiffOn.mdifferentiableOn one_ne_zero),
+      Path.riemannianELength_symm (hpv.contMDiff.contMDiffOn.mdifferentiableOn one_ne_zero),
       hpuLen, hpvLen, ← ENNReal.ofReal_add (norm_nonneg u) (norm_nonneg v),
       hlen]
   have hcR :
-      pathLen (I := I) c < ENNReal.ofReal R := by
+      Path.riemannianELength (I := I) c < ENNReal.ofReal R := by
     rw [hcLen]
     exact (ENNReal.ofReal_lt_ofReal_iff hR).2 (by linarith)
   have hex :
       Nonempty (IntrinsicFrameLift (I := I) g hEnorm p c.extend 0 1) :=
     exists_intr_lift (I := I) g hEnorm p zero_le_one
-      hc.c1.contMDiffOn (by simp only [c, Path.extend_zero])
+      hc.contMDiff.contMDiffOn (by simp only [c, Path.extend_zero])
       hcR hloc
   let A : IntrinsicFrameLift (I := I) g hEnorm p c.extend 0 1 :=
     Classical.choice hex
   have hpuR :
-      pathLen (I := I) pu < ENNReal.ofReal R := by
+      Path.riemannianELength (I := I) pu < ENNReal.ofReal R := by
     rw [hpuLen]
     exact (ENNReal.ofReal_lt_ofReal_iff hR).2
       (lt_of_le_of_lt (by linarith [norm_nonneg v]) hshort)
   have hpvR :
-      pathLen (I := I)
+      Path.riemannianELength (I := I)
           (radialFlat (I := I) g hEnorm p v) <
         ENNReal.ofReal R := by
     rw [radialFlat_len]
@@ -586,18 +589,18 @@ theorem intrinsicLoop_ge_cheeger_gromov_taylor
       ≤ ENNReal.ofReal ell := by
   let c : Path p p :=
     (radialFlat (I := I) g hEnorm p u).cast rfl hloop.symm
-  have hc : IsFlatC1Path (I := I) c := by
+  have hc : Path.IsContMDiffWithSittingInstants (I := I) 1 c := by
     have hflat := radialFlat_flat (I := I) g hEnorm p u
     refine {
-      c1 := ?_
-      flat_zero := ?_
-      flat_one := ?_ }
-    · simpa only [c, Path.extend_cast] using hflat.c1
-    · simpa only [c, Path.extend_cast] using hflat.flat_zero
-    · simpa only [c, Path.extend_cast, hloop] using hflat.flat_one
+      contMDiff := ?_
+      eventuallyEq_zero := ?_
+      eventuallyEq_one := ?_ }
+    · simpa only [c, Path.extend_cast] using hflat.contMDiff
+    · simpa only [c, Path.extend_cast] using hflat.eventuallyEq_zero
+    · simpa only [c, Path.extend_cast, hloop] using hflat.eventuallyEq_one
   have hcLen :
-      pathLen (I := I) c = ENNReal.ofReal (2 * ell) := by
-    simpa only [pathLen, c, Path.extend_cast, hlen] using
+      Path.riemannianELength (I := I) c = ENNReal.ofReal (2 * ell) := by
+    simpa only [Path.riemannianELength, c, Path.extend_cast, hlen] using
       radialFlat_len (I := I) g hEnorm p u
   let A : IntrinsicFrameLift (I := I) g hEnorm p c.extend 0 1 := {
     toFun := (radialFlatLift (I := I) g hEnorm p u).toFun

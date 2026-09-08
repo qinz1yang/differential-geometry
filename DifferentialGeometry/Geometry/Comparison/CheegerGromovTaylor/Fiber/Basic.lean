@@ -53,15 +53,15 @@ private theorem radialLoop_flat
     (p : M) (u : E)
     (hu :
       intrinsicFramedExp (I := I) g hEnorm p u = p) :
-    IsFlatC1Path (I := I) (radialLoop (I := I) g hEnorm p u hu) := by
+    Path.IsContMDiffWithSittingInstants (I := I) 1 (radialLoop (I := I) g hEnorm p u hu) := by
   have h := radialFlat_flat (I := I) g hEnorm p u
   refine {
-    c1 := ?_
-    flat_zero := ?_
-    flat_one := ?_ }
-  · simpa only [radialLoop, Path.extend_cast] using h.c1
-  · simpa only [radialLoop, Path.extend_cast] using h.flat_zero
-  · simpa only [radialLoop, Path.extend_cast, hu] using h.flat_one
+    contMDiff := ?_
+    eventuallyEq_zero := ?_
+    eventuallyEq_one := ?_ }
+  · simpa only [radialLoop, Path.extend_cast] using h.contMDiff
+  · simpa only [radialLoop, Path.extend_cast] using h.eventuallyEq_zero
+  · simpa only [radialLoop, Path.extend_cast, hu] using h.eventuallyEq_one
 
 private theorem radialLoop_len
     (g : SmoothRiemannianMetric I M)
@@ -70,9 +70,9 @@ private theorem radialLoop_len
     (p : M) (u : E)
     (hu :
       intrinsicFramedExp (I := I) g hEnorm p u = p) :
-    pathLen (I := I) (radialLoop (I := I) g hEnorm p u hu) =
+    Path.riemannianELength (I := I) (radialLoop (I := I) g hEnorm p u hu) =
       ENNReal.ofReal ‖u‖ := by
-  simpa only [pathLen, radialLoop, Path.extend_cast] using
+  simpa only [Path.riemannianELength, radialLoop, Path.extend_cast] using
     radialFlat_len (I := I) g hEnorm p u
 
 private noncomputable def radialLoopLift
@@ -119,7 +119,7 @@ theorem exists_fiber_inj
           intrinsicFiber (I := I) g hEnorm p q (r₀ + s),
       Function.Injective f := by
   obtain ⟨c, hcFlat, hcLen⟩ :=
-    exists_flat_path (I := I) hqs
+    Manifold.exists_path_isContMDiffWithSittingInstants_of_riemannianEDist_lt (I := I) hqs
   have hR : 0 < R := lt_trans (add_pos hr₀ hs) hfit
   let loop :
       intrinsicFiber (I := I) g hEnorm p p r₀ → Path p p :=
@@ -128,35 +128,37 @@ theorem exists_fiber_inj
       intrinsicFiber (I := I) g hEnorm p p r₀ → Path p q :=
     fun u => (loop u).trans c
   have hloopFlat (u : intrinsicFiber (I := I) g hEnorm p p r₀) :
-      IsFlatC1Path (I := I) (loop u) :=
+      Path.IsContMDiffWithSittingInstants (I := I) 1 (loop u) :=
     radialLoop_flat (I := I) g hEnorm p u.1 u.2.2
   have hpathFlat (u : intrinsicFiber (I := I) g hEnorm p p r₀) :
-      IsFlatC1Path (I := I) (path u) :=
+      Path.IsContMDiffWithSittingInstants (I := I) 1 (path u) :=
     (hloopFlat u).trans hcFlat
   have huNorm (u : intrinsicFiber (I := I) g hEnorm p p r₀) :
       ‖u.1‖ < r₀ := by
     simpa only [intrinsicFiber, Metric.mem_ball, dist_zero_right] using u.2.1
   have hpathSmall (u : intrinsicFiber (I := I) g hEnorm p p r₀) :
-      pathLen (I := I) (path u) < ENNReal.ofReal (r₀ + s) := by
+      Path.riemannianELength (I := I) (path u) < ENNReal.ofReal (r₀ + s) := by
     dsimp only [path]
-    rw [pathLen_trans (hloopFlat u) hcFlat,
+    rw [Path.riemannianELength_trans
+      ((hloopFlat u).contMDiff.contMDiffOn.mdifferentiableOn one_ne_zero)
+      (hcFlat.contMDiff.contMDiffOn.mdifferentiableOn one_ne_zero),
       radialLoop_len (I := I) g hEnorm p u.1 u.2.2]
     calc
-      ENNReal.ofReal ‖u.1‖ + pathLen (I := I) c
+      ENNReal.ofReal ‖u.1‖ + Path.riemannianELength (I := I) c
           < ENNReal.ofReal r₀ + ENNReal.ofReal s :=
         ENNReal.add_lt_add
           ((ENNReal.ofReal_lt_ofReal_iff hr₀).2 (huNorm u)) hcLen
       _ = ENNReal.ofReal (r₀ + s) :=
         (ENNReal.ofReal_add hr₀.le hs.le).symm
   have hpathR (u : intrinsicFiber (I := I) g hEnorm p p r₀) :
-      pathLen (I := I) (path u) < ENNReal.ofReal R :=
+      Path.riemannianELength (I := I) (path u) < ENNReal.ofReal R :=
     (hpathSmall u).trans
       ((ENNReal.ofReal_lt_ofReal_iff hR).2 hfit)
   have hex (u : intrinsicFiber (I := I) g hEnorm p p r₀) :
       Nonempty
         (IntrinsicFrameLift (I := I) g hEnorm p (path u).extend 0 1) :=
     exists_intr_lift (I := I) g hEnorm p zero_le_one
-      (hpathFlat u).c1.contMDiffOn (by simp)
+      (hpathFlat u).contMDiff.contMDiffOn (by simp)
       (hpathR u) hloc
   let lift (u : intrinsicFiber (I := I) g hEnorm p p r₀) :
       IntrinsicFrameLift (I := I) g hEnorm p (path u).extend 0 1 :=
@@ -182,12 +184,12 @@ theorem exists_fiber_inj
       IntrinsicFrameLift (I := I) g hEnorm p (loop v).extend 0 1 :=
     radialLoopLift (I := I) g hEnorm p v.1 v.2.2
   have huR :
-      pathLen (I := I) (loop u) < ENNReal.ofReal R := by
+      Path.riemannianELength (I := I) (loop u) < ENNReal.ofReal R := by
     rw [radialLoop_len (I := I) g hEnorm p u.1 u.2.2]
     exact (ENNReal.ofReal_lt_ofReal_iff hR).2
       ((huNorm u).trans ((lt_add_of_pos_right r₀ hs).trans hfit))
   have hvR :
-      pathLen (I := I) (loop v) < ENNReal.ofReal R := by
+      Path.riemannianELength (I := I) (loop v) < ENNReal.ofReal R := by
     rw [radialLoop_len (I := I) g hEnorm p v.1 v.2.2]
     exact (ENNReal.ofReal_lt_ofReal_iff hR).2
       ((huNorm v).trans ((lt_add_of_pos_right r₀ hs).trans hfit))

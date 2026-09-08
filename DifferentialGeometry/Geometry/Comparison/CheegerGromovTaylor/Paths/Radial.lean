@@ -122,17 +122,17 @@ theorem radialFlat_flat
     (hEnorm : ∀ (y : M) (w : TangentSpace I y),
       ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner y w w)))
     (p : M) (u : E) :
-    IsFlatC1Path (I := I) (radialFlat (I := I) g hEnorm p u) where
-  c1 := by
+    Path.IsContMDiffWithSittingInstants (I := I) 1 (radialFlat (I := I) g hEnorm p u) where
+  contMDiff := by
     rw [radialFlat_extend]
     apply (intrinsicFrame_smooth (I := I) g hEnorm p).of_le (by norm_num) |>.comp
     rw [contMDiff_iff_contDiff]
     exact (flatTime_cd.of_le (by norm_num)).smul contDiff_const
-  flat_zero := by
+  eventuallyEq_zero := by
     rw [radialFlat_extend]
     filter_upwards [flatTime_zero_nhds] with t ht
     rw [ht, zero_smul, intrinsicFrame_zero]
-  flat_one := by
+  eventuallyEq_one := by
     rw [radialFlat_extend]
     filter_upwards [flatTime_one_nhds] with t ht
     rw [ht, one_smul]
@@ -142,7 +142,7 @@ theorem radialFlat_len
     (hEnorm : ∀ (y : M) (w : TangentSpace I y),
       ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner y w w)))
     (p : M) (u : E) :
-    pathLen (I := I) (radialFlat (I := I) g hEnorm p u) =
+    Path.riemannianELength (I := I) (radialFlat (I := I) g hEnorm p u) =
       ENNReal.ofReal ‖u‖ := by
   let v : TangentSpace I p := normalFrame (I := I) g p u
   let γ : Real → M :=
@@ -177,7 +177,7 @@ theorem radialFlat_len
         (mfderiv 𝓘(Real, Real) I γ t (1 : Real))),
       hγ, arcLength_radial (I := I) g hEnorm p v 0 1, hv]
     norm_num
-  rw [pathLen, radialFlat_extend]
+  rw [Path.riemannianELength, radialFlat_extend]
   change
     Manifold.pathELength I (γ ∘ flatTime) 0 1 =
       ENNReal.ofReal ‖u‖
