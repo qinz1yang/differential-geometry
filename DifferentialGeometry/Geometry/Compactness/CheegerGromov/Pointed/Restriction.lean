@@ -131,4 +131,18 @@ theorem hasInjRadiusAt_restrictOpen_iff
 
 end InnerProduct
 
+namespace PointedRiemannianSeq
+
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+  {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+  (S : PointedRiemannianSeq I)
+
+local instance (i : ℕ) : TopologicalSpace (S.obj i).M := (S.obj i).topology
+
+def restrictOpen (U : ∀ i, TopologicalSpace.Opens (S.obj i).M)
+    (hp : ∀ i, (S.obj i).basepoint ∈ U i) : PointedRiemannianSeq I where
+  obj i := (S.obj i).restrictOpen (U i) (hp i)
+
+end PointedRiemannianSeq
+
 end DifferentialGeometry.CheegerGromovCompactness
