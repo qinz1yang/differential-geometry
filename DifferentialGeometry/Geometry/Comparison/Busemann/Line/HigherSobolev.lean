@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Elliptic.Euclidean.Regularity.SecondOrder
+import DifferentialGeometry.Analysis.Elliptic.Euclidean.Regularity.HigherOrder
 import DifferentialGeometry.Geometry.Comparison.Busemann.Line.WeakSolution
 import Mathlib.Analysis.Normed.Module.Ball.Pointwise
 
@@ -28,7 +28,7 @@ local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-theorem IsMinimizingLine.exists_busemann_chartPushedRaw_memWkp_two_on_ball
+theorem IsMinimizingLine.exists_busemann_chartPushedRaw_memWkp_on_ball
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun x : M ↦ TangentSpace I x)]
     {g : SmoothRiemannianMetric I M} {γ : ℝ → M}
@@ -36,9 +36,9 @@ theorem IsMinimizingLine.exists_busemann_chartPushedRaw_memWkp_two_on_ball
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (hd : 2 < Module.finrank ℝ E)
     (hRic : RicciBoundedBelow (I := I) g 0) (α : M) :
-    ∃ ρ : ℝ, 0 < ρ ∧
+    ∃ ρ : ℝ, 0 < ρ ∧ ∀ k : ℕ,
       Analysis.Sobolev.Euclidean.MemWkp
-        (d := Module.finrank ℝ E) 2 2
+        (d := Module.finrank ℝ E) k 2
         (Chart.chartPushedRaw (I := I) (M := M) α
           (busemann (I := I) γ))
         (Metric.ball
@@ -69,9 +69,11 @@ theorem IsMinimizingLine.exists_busemann_chartPushedRaw_memWkp_two_on_ball
     (isCompact_singleton : IsCompact ({c} : Set EuclN)).exists_cthickening_subset_open
       hO_open hsingleton_O
   let K : Set EuclN := Metric.cthickening δ ({c} : Set EuclN)
+  have hK_eq : K = Metric.closedBall c δ := by
+    dsimp only [K]
+    exact Metric.cthickening_singleton c hδ.le
   have hK_compact : IsCompact K := by
-    change IsCompact (Metric.cthickening δ ({c} : Set EuclN))
-    rw [Metric.cthickening_singleton c hδ.le]
+    rw [hK_eq]
     exact isCompact_closedBall c δ
   have hK_ball : K ⊆ Metric.ball c r := fun x hx ↦ (hδ_sub hx).1
   have hK_target :
@@ -79,39 +81,64 @@ theorem IsMinimizingLine.exists_busemann_chartPushedRaw_memWkp_two_on_ball
     fun x hx ↦ (hδ_sub hx).2
   obtain ⟨_, _, _, _, _, B, hB, _⟩ :=
     exists_smooth_metric_extension (I := I) g α hK_compact hK_target
+  have hδ_half : 0 < δ / 2 := half_pos hδ
   have hδ_fourth : 0 < δ / 4 := by positivity
-  have hδ_half : 0 < δ / 2 := by positivity
-  have hcore_supp :
-      Metric.closedBall c (δ / 4) ⊆ Metric.ball c (δ / 2) := by
-    exact Metric.closedBall_subset_ball (by linarith)
-  obtain ⟨η, hη_smooth, hη_compact, hη_one, hη_supp, hη_range⟩ :=
-    Analysis.exists_bump_compact
-      (isCompact_closedBall c (δ / 4)) Metric.isOpen_ball hcore_supp
-  have hthick_K :
-      Metric.cthickening (δ / 4) (tsupport η) ⊆ K := by
-    calc
-      Metric.cthickening (δ / 4) (tsupport η) ⊆
-          Metric.cthickening (δ / 4) (Metric.ball c (δ / 2)) :=
-        Metric.cthickening_subset_of_subset _ hη_supp
-      _ = Metric.closedBall c (δ / 4 + δ / 2) :=
-        cthickening_ball hδ_fourth.le hδ_half c
-      _ ⊆ Metric.closedBall c δ :=
-        Metric.closedBall_subset_closedBall (by linarith)
-      _ = K := by
-        change Metric.closedBall c δ = Metric.cthickening δ ({c} : Set EuclN)
-        exact (Metric.cthickening_singleton c hδ.le).symm
-  have hthick_ball :
-      Metric.cthickening (δ / 4) (tsupport η) ⊆ Metric.ball c r :=
-    hthick_K.trans hK_ball
-  have hcoeff : ∀ x ∈ Metric.cthickening (δ / 4) (tsupport η),
+  have houter_K : Metric.closedBall c (δ / 2) ⊆ K := by
+    intro x hx
+    rw [hK_eq]
+    exact Metric.closedBall_subset_closedBall (by linarith) hx
+  have houter_original :
+      Metric.closedBall c (δ / 2) ⊆ Metric.ball c r :=
+    houter_K.trans hK_ball
+  have hinner_compact : IsCompact (closure (Metric.ball c (δ / 4))) :=
+    (isCompact_closedBall c (δ / 4)).of_isClosed_subset isClosed_closure
+      Metric.closure_ball_subset_closedBall
+  have hinner_outer :
+      closure (Metric.ball c (δ / 4)) ⊆ Metric.ball c (δ / 2) :=
+    Metric.closure_ball_subset_closedBall.trans
+      (Metric.closedBall_subset_ball (by linarith))
+  let Ahalf : DeGiorgi.EllipticCoeff (Module.finrank ℝ E)
+      (Metric.ball c (δ / 2)) :=
+    A.1.restrict (Metric.ball_subset_closedBall.trans houter_original)
+  have hsol_half : DeGiorgi.IsSolution Ahalf u := by
+    dsimp only [Ahalf]
+    exact hsol.restrict_ball (d := Module.finrank ℝ E)
+      Metric.isOpen_ball hδ_half houter_original
+  have hcoeff : ∀ x ∈ Metric.ball c (δ / 2),
       ∀ i j : Fin (Module.finrank ℝ E),
-        A.1.a x i j = s * B.a x i j := by
+        Ahalf.a x i j = s * B.a x i j := by
     intro x hx i j
-    rw [hA x (hthick_ball hx) i j, hB x (hthick_K hx) i j]
+    have hxK : x ∈ K :=
+      houter_K (Metric.ball_subset_closedBall hx)
+    change A.1.a x i j = s * B.a x i j
+    rw [hA x (hK_ball hxK) i j, hB x hxK i j]
+  have hall : ∀ k : ℕ,
+      Analysis.Sobolev.Euclidean.MemWkp
+        (d := Module.finrank ℝ E) k 2 u (Metric.ball c (δ / 4)) := fun k =>
+    hsol_half.memWkp k Metric.isOpen_ball Metric.isOpen_ball hinner_compact hinner_outer
+      B hs.ne' hcoeff
   refine ⟨δ / 4, hδ_fourth, ?_⟩
-  simpa only [u, c] using
-    (hsol.memWkp_two_of_cutoff Metric.isOpen_ball B hs.ne'
-      hη_smooth hη_compact hη_range hδ_fourth hthick_ball hcoeff Metric.isOpen_ball
-      (fun _ hx => hη_one.self_of_nhdsSet (Metric.ball_subset_closedBall hx)))
+  simpa only [u, c] using hall
+
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+theorem IsMinimizingLine.exists_busemann_chartPushedRaw_memWkp_two_on_ball
+    [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
+    [IsContinuousRiemannianBundle E (fun x : M ↦ TangentSpace I x)]
+    {g : SmoothRiemannianMetric I M} {γ : ℝ → M}
+    (hγ : IsMinimizingLine (I := I) g γ)
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
+    (hd : 2 < Module.finrank ℝ E)
+    (hRic : RicciBoundedBelow (I := I) g 0) (α : M) :
+    ∃ ρ : ℝ, 0 < ρ ∧
+      Analysis.Sobolev.Euclidean.MemWkp
+        (d := Module.finrank ℝ E) 2 2
+        (Chart.chartPushedRaw (I := I) (M := M) α
+          (busemann (I := I) γ))
+        (Metric.ball
+          (toEuclidean (E := E) (extChartAt I α α)) ρ) := by
+  obtain ⟨ρ, hρ, hreg⟩ :=
+    hγ.exists_busemann_chartPushedRaw_memWkp_on_ball (I := I) hEnorm hd hRic α
+  exact ⟨ρ, hρ, hreg 2⟩
 
 end DifferentialGeometry.Geometry.Riemannian
