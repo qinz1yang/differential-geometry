@@ -25,9 +25,10 @@ private theorem deriv_time_dependent_comp (hγ : IsIntegralCurve γ v)
   congr 1
   simp
 
-theorem level_eq_iff_of_transport (hγ : IsIntegralCurve γ v) (hF : Differentiable ℝ F)
+theorem level_eq_iff_of_transport_on (hγ : IsIntegralCurve γ v) (hF : Differentiable ℝ F)
+    {D : Set (ℝ × E)} (hstay : ∀ t, (t, γ t) ∈ D)
     {U : Set ℝ} (hU : IsOpen U)
-    (htransport : ∀ t x, F (t, x) ∈ U →
+    (htransport : ∀ t x, (t, x) ∈ D → F (t, x) ∈ U →
       fderiv ℝ (fun z => F (t, z)) x (v t x) = -deriv (fun s => F (s, x)) t)
     {r : ℝ} (hr : r ∈ U) (s t : ℝ) :
     F (s, γ s) = r ↔ F (t, γ t) = r := by
@@ -35,11 +36,12 @@ theorem level_eq_iff_of_transport (hγ : IsIntegralCurve γ v) (hF : Differentia
     hF.comp (differentiable_id.prodMk (fun u => (hγ u).differentiableAt))
   apply hdiff.continuous.eq_iff_eq_of_deriv_eq_zero_on_preimage hU hdiff.differentiableOn
     (fun u hu => ?_) hr s t
-  rw [hγ.deriv_time_dependent_comp hF, htransport u (γ u) hu, add_neg_cancel]
+  rw [hγ.deriv_time_dependent_comp hF, htransport u (γ u) (hstay u) hu, add_neg_cancel]
 
-theorem sublevel_lt_iff_of_transport (hγ : IsIntegralCurve γ v) (hF : Differentiable ℝ F)
+theorem sublevel_lt_iff_of_transport_on (hγ : IsIntegralCurve γ v) (hF : Differentiable ℝ F)
+    {D : Set (ℝ × E)} (hstay : ∀ t, (t, γ t) ∈ D)
     {U : Set ℝ} (hU : IsOpen U)
-    (htransport : ∀ t x, F (t, x) ∈ U →
+    (htransport : ∀ t x, (t, x) ∈ D → F (t, x) ∈ U →
       fderiv ℝ (fun z => F (t, z)) x (v t x) = -deriv (fun s => F (s, x)) t)
     {r : ℝ} (hr : r ∈ U) (s t : ℝ) :
     F (s, γ s) < r ↔ F (t, γ t) < r := by
@@ -47,16 +49,44 @@ theorem sublevel_lt_iff_of_transport (hγ : IsIntegralCurve γ v) (hF : Differen
     hF.comp (differentiable_id.prodMk (fun u => (hγ u).differentiableAt))
   apply hdiff.continuous.lt_iff_lt_of_deriv_eq_zero_on_preimage hU hdiff.differentiableOn
     (fun u hu => ?_) hr s t
-  rw [hγ.deriv_time_dependent_comp hF, htransport u (γ u) hu, add_neg_cancel]
+  rw [hγ.deriv_time_dependent_comp hF, htransport u (γ u) (hstay u) hu, add_neg_cancel]
+
+theorem sublevel_le_iff_of_transport_on (hγ : IsIntegralCurve γ v) (hF : Differentiable ℝ F)
+    {D : Set (ℝ × E)} (hstay : ∀ t, (t, γ t) ∈ D)
+    {U : Set ℝ} (hU : IsOpen U)
+    (htransport : ∀ t x, (t, x) ∈ D → F (t, x) ∈ U →
+      fderiv ℝ (fun z => F (t, z)) x (v t x) = -deriv (fun s => F (s, x)) t)
+    {r : ℝ} (hr : r ∈ U) (s t : ℝ) :
+    F (s, γ s) ≤ r ↔ F (t, γ t) ≤ r := by
+  rw [le_iff_eq_or_lt, le_iff_eq_or_lt]
+  exact or_congr (hγ.level_eq_iff_of_transport_on hF hstay hU htransport hr s t)
+    (hγ.sublevel_lt_iff_of_transport_on hF hstay hU htransport hr s t)
+
+theorem level_eq_iff_of_transport (hγ : IsIntegralCurve γ v) (hF : Differentiable ℝ F)
+    {U : Set ℝ} (hU : IsOpen U)
+    (htransport : ∀ t x, F (t, x) ∈ U →
+      fderiv ℝ (fun z => F (t, z)) x (v t x) = -deriv (fun s => F (s, x)) t)
+    {r : ℝ} (hr : r ∈ U) (s t : ℝ) :
+    F (s, γ s) = r ↔ F (t, γ t) = r :=
+  hγ.level_eq_iff_of_transport_on hF (D := Set.univ) (fun _ => Set.mem_univ _) hU
+    (fun t x _ => htransport t x) hr s t
+
+theorem sublevel_lt_iff_of_transport (hγ : IsIntegralCurve γ v) (hF : Differentiable ℝ F)
+    {U : Set ℝ} (hU : IsOpen U)
+    (htransport : ∀ t x, F (t, x) ∈ U →
+      fderiv ℝ (fun z => F (t, z)) x (v t x) = -deriv (fun s => F (s, x)) t)
+    {r : ℝ} (hr : r ∈ U) (s t : ℝ) :
+    F (s, γ s) < r ↔ F (t, γ t) < r :=
+  hγ.sublevel_lt_iff_of_transport_on hF (D := Set.univ) (fun _ => Set.mem_univ _) hU
+    (fun t x _ => htransport t x) hr s t
 
 theorem sublevel_le_iff_of_transport (hγ : IsIntegralCurve γ v) (hF : Differentiable ℝ F)
     {U : Set ℝ} (hU : IsOpen U)
     (htransport : ∀ t x, F (t, x) ∈ U →
       fderiv ℝ (fun z => F (t, z)) x (v t x) = -deriv (fun s => F (s, x)) t)
     {r : ℝ} (hr : r ∈ U) (s t : ℝ) :
-    F (s, γ s) ≤ r ↔ F (t, γ t) ≤ r := by
-  rw [le_iff_eq_or_lt, le_iff_eq_or_lt]
-  exact or_congr (hγ.level_eq_iff_of_transport hF hU htransport hr s t)
-    (hγ.sublevel_lt_iff_of_transport hF hU htransport hr s t)
+    F (s, γ s) ≤ r ↔ F (t, γ t) ≤ r :=
+  hγ.sublevel_le_iff_of_transport_on hF (D := Set.univ) (fun _ => Set.mem_univ _) hU
+    (fun t x _ => htransport t x) hr s t
 
 end IsIntegralCurve

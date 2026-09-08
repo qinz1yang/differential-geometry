@@ -594,4 +594,39 @@ theorem exists_pos_boundaryMorseInterpolation_regular_levels (c : Fin n → ℝ)
   · intro x heq hcrit
     exact hr (heq ▸ (hvalues a ha s hs).2 x hcrit)
 
+theorem hasDerivAt_boundaryMorseInterpolation_time (c : Fin n → ℝ)
+    (b : ContDiffBump (0 : Fin n → ℝ)) (a s : ℝ) (z : Fin (n + 1) → ℝ) :
+    HasDerivAt (fun t => boundaryMorseInterpolation c b a t z)
+      (boundaryMorsePerturbation c b a z - ((∑ i : Fin n, c i * z i.succ ^ 2) + z 0)) s := by
+  unfold boundaryMorseInterpolation
+  simpa only [one_mul, id_eq] using
+    ((hasDerivAt_id s).mul_const
+      (boundaryMorsePerturbation c b a z - ((∑ i : Fin n, c i * z i.succ ^ 2) + z 0))).const_add
+        ((∑ i : Fin n, c i * z i.succ ^ 2) + z 0)
+
+theorem hasCompactSupport_deriv_boundaryMorseInterpolation (c : Fin n → ℝ)
+    (b : ContDiffBump (0 : Fin n → ℝ)) {a : ℝ} (ha : 0 < a) :
+    HasCompactSupport (fun p : ℝ × ((Fin n → ℝ) × Set.Ici (0 : ℝ)) =>
+      deriv (fun t => boundaryMorseInterpolation c b a (Real.smoothTransition t)
+        (Fin.cons p.2.2.val p.2.1)) p.1) := by
+  let d := fun p : (Fin n → ℝ) × Set.Ici (0 : ℝ) =>
+    boundaryMorsePerturbation c b a (Fin.cons p.2.val p.1) -
+      ((∑ i : Fin n, c i * p.1 i ^ 2) + p.2.val)
+  have hd : HasCompactSupport d := hasCompactSupport_boundaryMorsePerturbation_sub c b ha
+  have hσ := Real.smoothTransition.hasCompactSupport_deriv
+  have heq (p : ℝ × ((Fin n → ℝ) × Set.Ici (0 : ℝ))) :
+      deriv (fun t => boundaryMorseInterpolation c b a (Real.smoothTransition t)
+        (Fin.cons p.2.2.val p.2.1)) p.1 = deriv Real.smoothTransition p.1 * d p.2 := by
+    have h := ((hasDerivAt_boundaryMorseInterpolation_time c b a (Real.smoothTransition p.1)
+      (Fin.cons p.2.2.val p.2.1)).comp p.1
+        (((Real.smoothTransition.contDiff : ContDiff ℝ ∞ Real.smoothTransition).differentiable (by simp)) p.1).hasDerivAt).deriv
+    simpa only [Function.comp_def, Fin.cons_succ, Fin.cons_zero, d, mul_comm] using h
+  apply HasCompactSupport.of_support_subset_isCompact (hσ.prod hd)
+  intro p hp
+  change deriv (fun t => boundaryMorseInterpolation c b a (Real.smoothTransition t)
+    (Fin.cons p.2.2.val p.2.1)) p.1 ≠ 0 at hp
+  rw [heq] at hp
+  have h := mul_ne_zero_iff.mp hp
+  exact ⟨subset_tsupport _ h.1, subset_tsupport _ h.2⟩
+
 end DifferentialGeometry.Topology.Morse

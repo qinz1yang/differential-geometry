@@ -1,3 +1,5 @@
+import Mathlib.Analysis.Calculus.BumpFunction.FiniteDimension
+import Mathlib.Topology.Order.Compact
 import Mathlib.Analysis.Calculus.ContDiff.Operations
 import Mathlib.Analysis.Calculus.FDeriv.Prod
 import Mathlib.LinearAlgebra.Pi
@@ -143,5 +145,167 @@ theorem exists_contDiff_boundary_tangent_vector_field
           dsimp [V, d]
           ring
         _ = -ρ p * dt p := div_mul_cancel₀ _ hQne
+
+theorem exists_contDiff_boundary_tangent_vector_field_near_compact
+    {F : ℝ × (Fin (n + 1) → ℝ) → ℝ} {K W : Set (ℝ × (Fin (n + 1) → ℝ))}
+    (hF : ContDiff ℝ ∞ F) (hK : IsCompact K) (hW : IsOpen W) (hKW : K ⊆ W)
+    (hregular : ∀ p ∈ K, p.2 0 ≠ 0 →
+      fderiv ℝ (fun z => F (p.1, z)) p.2 ≠ 0)
+    (hboundary : ∀ p ∈ K, p.2 0 = 0 →
+      fderiv ℝ (fun x => F (p.1, Fin.cons 0 x)) (Fin.tail p.2) ≠ 0) :
+    ∃ V : ℝ × (Fin (n + 1) → ℝ) → (Fin (n + 1) → ℝ),
+      ContDiff ℝ ∞ V ∧ HasCompactSupport V ∧ tsupport V ⊆ W ∧
+      (∀ p, p.2 0 = 0 → V p 0 = 0) ∧
+      (∀ p, deriv (fun t => F (t, p.2)) p.1 = 0 → V p = 0) ∧
+      ∃ U, IsOpen U ∧ K ⊆ U ∧ U ⊆ W ∧
+        ∀ p ∈ U, fderiv ℝ (fun z => F (p.1, z)) p.2 (V p) =
+          -deriv (fun t => F (t, p.2)) p.1 := by
+  let L := fun p : ℝ × (Fin (n + 1) → ℝ) => fderiv ℝ (fun z => F (p.1, z)) p.2
+  let B := fun p : ℝ × (Fin (n + 1) → ℝ) =>
+    fderiv ℝ (fun x => F (p.1, Fin.cons 0 x)) (Fin.tail p.2)
+  have hL : ContDiff ℝ ∞ L :=
+    (hF.comp (contDiff_fst.fst.prodMk contDiff_snd)).fderiv
+      (f := fun (p : ℝ × (Fin (n + 1) → ℝ)) z => F (p.1, z)) contDiff_snd (by simp)
+  have htail : ContDiff ℝ ∞ (fun p : ℝ × (Fin (n + 1) → ℝ) => Fin.tail p.2) :=
+    contDiff_pi.mpr (fun i => (contDiff_apply ℝ ℝ i.succ).comp contDiff_snd)
+  have hB : ContDiff ℝ ∞ B := by
+    have h := (hF.comp (contDiff_fst.fst.prodMk
+      (boundaryInclusion.contDiff.comp contDiff_snd))).fderiv
+        (f := fun (p : ℝ × (Fin (n + 1) → ℝ)) x => F (p.1, boundaryInclusion x))
+        htail (by simp)
+    simpa only [boundaryInclusion_apply] using h
+  have hboundary_full (p : ℝ × (Fin (n + 1) → ℝ)) (hz : p.2 0 = 0)
+      (hb : B p ≠ 0) : L p ≠ 0 := by
+    have hpoint : boundaryInclusion (Fin.tail p.2) = p.2 := by
+      rw [boundaryInclusion_apply, ← hz, Fin.cons_self_tail]
+    have hf : DifferentiableAt ℝ (fun z => F (p.1, z))
+        (boundaryInclusion (Fin.tail p.2)) :=
+      (hF.differentiable (by simp) _).comp _
+        ((differentiableAt_const p.1).prodMk differentiableAt_id)
+    have hderiv : B p = (L p).comp boundaryInclusion := by
+      have h := (hf.hasFDerivAt.comp (Fin.tail p.2) boundaryInclusion.hasFDerivAt).fderiv
+      rw [hpoint] at h
+      simpa only [Function.comp_def, boundaryInclusion_apply] using h
+    intro hzero
+    apply hb
+    rw [hderiv, hzero, ContinuousLinearMap.zero_comp]
+  let O := {p : ℝ × (Fin (n + 1) → ℝ) | L p ≠ 0 ∧ (p.2 0 ≠ 0 ∨ B p ≠ 0)}
+  have hO : IsOpen O :=
+    (isClosed_eq hL.continuous continuous_const).isOpen_compl.inter
+      (((isClosed_eq ((continuous_apply 0).comp continuous_snd) continuous_const).isOpen_compl).union
+        (isClosed_eq hB.continuous continuous_const).isOpen_compl)
+  have hKO : K ⊆ O := by
+    intro p hp
+    by_cases hz : p.2 0 = 0
+    · exact ⟨hboundary_full p hz (hboundary p hp hz), Or.inr (hboundary p hp hz)⟩
+    · exact ⟨hregular p hp hz, Or.inl hz⟩
+  obtain ⟨C, hC, hKC, hCsubset⟩ := exists_compact_between hK (hW.inter hO)
+    (Set.subset_inter hKW hKO)
+  obtain ⟨f, hf_support, hf, hf_range⟩ :=
+    (isOpen_interior (s := C)).exists_contDiff_support_eq (n := (⊤ : ℕ∞))
+  have hpos (p) (hp : p ∈ K) : 0 < f p := by
+    have hnonneg := (hf_range (Set.mem_range_self p)).1
+    have hne : f p ≠ 0 := by
+      change p ∈ Function.support f
+      rw [hf_support]
+      exact hKC hp
+    exact lt_of_le_of_ne hnonneg hne.symm
+  obtain ⟨μ, hμ, hμf⟩ := hK.exists_forall_le' hf.continuous.continuousOn hpos
+  let ρ := fun p => Real.smoothTransition (2 * f p / μ)
+  have hρ : ContDiff ℝ ∞ ρ :=
+    Real.smoothTransition.contDiff.comp ((contDiff_const.mul hf).div_const μ)
+  have hsupp : Function.support ρ ⊆ C := by
+    intro p hp
+    have hne : f p ≠ 0 := by
+      intro hz
+      apply hp
+      simp [ρ, hz]
+    have hmem : p ∈ Function.support f := hne
+    rw [hf_support] at hmem
+    exact interior_subset hmem
+  have htsupp : tsupport ρ ⊆ C := closure_minimal hsupp hC.isClosed
+  have hρc : HasCompactSupport ρ := HasCompactSupport.of_support_subset_isCompact hC hsupp
+  obtain ⟨V, hV, hVc, hVb, hVe, hVzero⟩ :=
+    exists_contDiff_boundary_tangent_vector_field hF hρ hρc
+      (fun p hp _ => (hCsubset (htsupp hp)).2.1)
+      (fun p hp hz => ((hCsubset (htsupp hp)).2.2).resolve_left (fun h => h hz))
+  have hsuppV : Function.support V ⊆ Function.support ρ := by
+    intro p hp hz
+    exact hp (hVzero p (Or.inl hz))
+  have htsuppV : tsupport V ⊆ C := (closure_mono hsuppV).trans htsupp
+  let U := {p | μ / 2 < f p}
+  have hUone (p) (hp : p ∈ U) : ρ p = 1 := by
+    apply Real.smoothTransition.one_of_one_le
+    apply (le_div_iff₀ hμ).mpr
+    dsimp [U] at hp
+    linarith
+  refine ⟨V, hV, hVc, htsuppV.trans (hCsubset.trans Set.inter_subset_left), hVb,
+    fun p hp => hVzero p (Or.inr hp), U, isOpen_lt continuous_const hf.continuous, ?_, ?_, ?_⟩
+  · intro p hp
+    change μ / 2 < f p
+    linarith [hμf p hp]
+  · intro p hp
+    apply (hCsubset (htsupp (subset_tsupport ρ ?_))).1
+    change ρ p ≠ 0
+    rw [hUone p hp]
+    exact one_ne_zero
+  · intro p hp
+    simpa only [hUone p hp, neg_one_mul] using hVe p
+
+theorem exists_contDiff_boundary_tangent_vector_field_on_halfspace_levels
+    {F : ℝ × (Fin (n + 1) → ℝ) → ℝ} {L : Set ℝ}
+    (hF : ContDiff ℝ ∞ F)
+    (hsupport : HasCompactSupport (fun p : ℝ × ((Fin n → ℝ) × Set.Ici (0 : ℝ)) =>
+      deriv (fun t => F (t, Fin.cons (p.2.2 : ℝ) p.2.1)) p.1))
+    (hL : IsClosed L)
+    (hregular : ∀ p : ℝ × (Fin (n + 1) → ℝ), 0 < p.2 0 → F p ∈ L →
+      fderiv ℝ (fun z => F (p.1, z)) p.2 ≠ 0)
+    (hboundary : ∀ p : ℝ × (Fin (n + 1) → ℝ), p.2 0 = 0 → F p ∈ L →
+      fderiv ℝ (fun x => F (p.1, Fin.cons 0 x)) (Fin.tail p.2) ≠ 0) :
+    ∃ V : ℝ × (Fin (n + 1) → ℝ) → (Fin (n + 1) → ℝ),
+      ContDiff ℝ ∞ V ∧ HasCompactSupport V ∧
+      (∀ p, p.2 0 = 0 → V p 0 = 0) ∧
+      (∀ p, deriv (fun t => F (t, p.2)) p.1 = 0 → V p = 0) ∧
+      ∀ p, 0 ≤ p.2 0 → F p ∈ L →
+        fderiv ℝ (fun z => F (p.1, z)) p.2 (V p) =
+          -deriv (fun t => F (t, p.2)) p.1 := by
+  let dt := fun p : ℝ × (Fin (n + 1) → ℝ) => deriv (fun t => F (t, p.2)) p.1
+  let Φ : ℝ × ((Fin n → ℝ) × Set.Ici (0 : ℝ)) → ℝ × (Fin (n + 1) → ℝ) :=
+    fun p => (p.1, Fin.cons (p.2.2 : ℝ) p.2.1)
+  have hΦ : Continuous Φ := by
+    apply continuous_fst.prodMk
+    apply continuous_pi
+    intro i
+    refine Fin.cases ?_ (fun j => ?_) i
+    · exact continuous_subtype_val.comp continuous_snd.snd
+    · exact (continuous_apply j).comp continuous_snd.fst
+  have hcompact : IsCompact (Φ '' tsupport (dt ∘ Φ)) := hsupport.isCompact.image hΦ
+  let K := (Φ '' tsupport (dt ∘ Φ)) ∩ F ⁻¹' L
+  have hK : IsCompact K := hcompact.inter_right (hL.preimage hF.continuous)
+  have hKhalf (p) (hp : p ∈ K) : 0 ≤ p.2 0 := by
+    obtain ⟨q, hq, rfl⟩ := hp.1
+    exact q.2.2.property
+  obtain ⟨V, hV, hVc, hVs, hVb, hVz, U, hU, hKU, hUW, hVe⟩ :=
+    exists_contDiff_boundary_tangent_vector_field_near_compact hF hK
+      isOpen_univ (Set.subset_univ K)
+      (fun p hp hz => hregular p (lt_of_le_of_ne (hKhalf p hp) hz.symm) hp.2)
+      (fun p hp hz => hboundary p hz hp.2)
+  refine ⟨V, hV, hVc, hVb, hVz, ?_⟩
+  intro p hp hpL
+  by_cases hdt : dt p = 0
+  · rw [hVz p hdt]
+    change (fderiv ℝ (fun z => F (p.1, z)) p.2) 0 = -dt p
+    simp [hdt]
+  · apply hVe p
+    apply hKU
+    refine ⟨?_, hpL⟩
+    let q : ℝ × ((Fin n → ℝ) × Set.Ici (0 : ℝ)) :=
+      (p.1, (Fin.tail p.2, ⟨p.2 0, hp⟩))
+    have hq : Φ q = p := by
+      change (p.1, Fin.cons (p.2 0) (Fin.tail p.2)) = p
+      rw [Fin.cons_self_tail]
+    refine ⟨q, subset_tsupport (dt ∘ Φ) ?_, hq⟩
+    change dt (Φ q) ≠ 0
+    rwa [hq]
 
 end DifferentialGeometry.Topology.Morse

@@ -70,6 +70,23 @@ theorem hasDerivAt_half : HasDerivAt Real.smoothTransition 2 ((2 : ℝ)⁻¹) :=
 @[simp] theorem deriv_half : deriv Real.smoothTransition ((2 : ℝ)⁻¹) = 2 :=
   hasDerivAt_half.deriv
 
+open scoped Topology
+
+theorem hasCompactSupport_deriv : HasCompactSupport (_root_.deriv Real.smoothTransition) := by
+  apply HasCompactSupport.of_support_subset_isCompact (K := Set.Icc (0 : ℝ) 1) isCompact_Icc
+  intro t ht
+  constructor
+  · by_contra h
+    have heq : Real.smoothTransition =ᶠ[nhds t] (fun _ : ℝ => (0 : ℝ)) := by
+      filter_upwards [gt_mem_nhds (not_le.mp h)] with u hu
+      exact Real.smoothTransition.zero_of_nonpos hu.le
+    exact ht (by simpa only [deriv_const] using heq.deriv_eq)
+  · by_contra h
+    have heq : Real.smoothTransition =ᶠ[nhds t] (fun _ : ℝ => (1 : ℝ)) := by
+      filter_upwards [lt_mem_nhds (not_le.mp h)] with u hu
+      exact Real.smoothTransition.one_of_one_le hu.le
+    exact ht (by simpa only [deriv_const] using heq.deriv_eq)
+
 end Real.smoothTransition
 
 namespace Real
