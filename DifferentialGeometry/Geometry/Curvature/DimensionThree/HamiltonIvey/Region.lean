@@ -594,52 +594,36 @@ theorem hamiltonIveyBarrier_le_sectionalSum_of_ordered_subregion
     exact le_max_right _ _
   exact hamiltonIveyBarrier_le_sectionalSum_of_subregion hS hK hden hX hsub
 
+theorem hamilton_ivey_algebraic_inequality
+    {R : Type*} [CommRing R] [LinearOrder R] [IsOrderedRing R]
+    {l m n : R} (hnl : n ≤ l) (hnm : n ≤ m) (hn : n ≤ 0) :
+    0 ≤ -n * (l ^ 2 + m ^ 2 + l * m) + (l + m) * l * m := by
+  have hquad : 0 ≤ l ^ 2 + m ^ 2 + l * m := by
+    rcases le_total 0 (l * m) with hprod | hprod
+    · exact add_nonneg (add_nonneg (sq_nonneg l) (sq_nonneg m)) hprod
+    · have heq : l ^ 2 + m ^ 2 + l * m = (l + m) ^ 2 - l * m := by ring
+      rw [heq]
+      exact sub_nonneg.mpr (hprod.trans (sq_nonneg (l + m)))
+  rcases le_total m 0 with hm | hm
+  · have heq : -n * (l ^ 2 + m ^ 2 + l * m) + (l + m) * l * m =
+        (m - n) * (l ^ 2 + m ^ 2 + l * m) + (-m) * m ^ 2 := by ring
+    rw [heq]
+    exact add_nonneg (mul_nonneg (sub_nonneg.mpr hnm) hquad)
+      (mul_nonneg (neg_nonneg.mpr hm) (sq_nonneg m))
+  · rcases le_total l 0 with hl | hl
+    · have heq : -n * (l ^ 2 + m ^ 2 + l * m) + (l + m) * l * m =
+          (l - n) * (l ^ 2 + m ^ 2 + l * m) + (-l) * l ^ 2 := by ring
+      rw [heq]
+      exact add_nonneg (mul_nonneg (sub_nonneg.mpr hnl) hquad)
+        (mul_nonneg (neg_nonneg.mpr hl) (sq_nonneg l))
+    · exact add_nonneg (mul_nonneg (neg_nonneg.mpr hn) hquad)
+        (mul_nonneg (mul_nonneg (add_nonneg hl hm) hl) hm)
+
 private theorem pinchingRatioLog_core_nonneg
     {l1 l2 l3 : Real} (h21 : l2 ≤ l1) (h32 : l3 ≤ l2) (hl3 : l3 < 0) :
     0 ≤ l1 * l2 * (l1 + l2 - l3) - l3 * (l1 ^ 2 + l2 ^ 2) := by
-  let X : Real := -l3
-  let a : Real := l1 - l3
-  let b : Real := l2 - l3
-  have hX : 0 ≤ X := by
-    dsimp [X]
-    exact neg_nonneg.mpr (le_of_lt hl3)
-  have ha : 0 ≤ a := by
-    dsimp [a]
-    linarith
-  have hb : 0 ≤ b := by
-    dsimp [b]
-    linarith
-  have hX3 : 0 ≤ X ^ 3 := pow_nonneg hX 3
-  have hp2 : 0 ≤ a ^ 2 * b := mul_nonneg (sq_nonneg a) hb
-  have hp3 : 0 ≤ a * b ^ 2 := mul_nonneg ha (sq_nonneg b)
-  have hsum : (3 : Real)⁻¹ + (3 : Real)⁻¹ + (3 : Real)⁻¹ = 1 := by norm_num
-  have hamgm := Real.geom_mean_le_arith_mean3_weighted
-    (w₁ := (3 : Real)⁻¹) (w₂ := (3 : Real)⁻¹) (w₃ := (3 : Real)⁻¹)
-    (p₁ := X ^ 3) (p₂ := a ^ 2 * b) (p₃ := a * b ^ 2)
-    (by norm_num) (by norm_num) (by norm_num) hX3 hp2 hp3 hsum
-  have hpow1 : (X ^ 3) ^ ((3 : Real)⁻¹) = X :=
-    Real.pow_rpow_inv_natCast hX (by norm_num : (3 : ℕ) ≠ 0)
-  have hpow2 : (a ^ 2 * b) ^ ((3 : Real)⁻¹) * (a * b ^ 2) ^ ((3 : Real)⁻¹) = a * b := by
-    rw [← Real.mul_rpow hp2 hp3]
-    rw [show a ^ 2 * b * (a * b ^ 2) = (a * b) ^ 3 by ring]
-    exact Real.pow_rpow_inv_natCast (mul_nonneg ha hb) (by norm_num : (3 : ℕ) ≠ 0)
-  have hle : X * (a * b) ≤ (3 : Real)⁻¹ * (X ^ 3 + a ^ 2 * b + a * b ^ 2) := by
-    have h1 := hamgm
-    rw [hpow1] at h1
-    rw [mul_assoc, hpow2] at h1
-    convert h1 using 1
-    ring
-  have h3 : 3 * X * (a * b) ≤ X ^ 3 + a ^ 2 * b + a * b ^ 2 := by
-    have hmul := mul_le_mul_of_nonneg_right hle (by norm_num : (0 : Real) ≤ 3)
-    nlinarith
-  have hcore : 0 ≤ X ^ 3 - 3 * a * b * X + a * b * (a + b) := by
-    nlinarith
-  have heq : l1 * l2 * (l1 + l2 - l3) - l3 * (l1 ^ 2 + l2 ^ 2) =
-      X ^ 3 - 3 * a * b * X + a * b * (a + b) := by
-    dsimp [X, a, b]
-    ring
-  rw [heq]
-  exact hcore
+  have h := hamilton_ivey_algebraic_inequality (R := Real) (h32.trans h21) h32 hl3.le
+  nlinarith only [h]
 
 theorem pinchingRatioLog_reaction_derivative_eq
     (l1 l2 l3 : Real) :

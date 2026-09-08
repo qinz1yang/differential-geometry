@@ -5,6 +5,9 @@ import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.ImageLineFamily
 import DifferentialGeometry.Geometry.Curvature.LocalProduct
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.ScalarPositivity
 import DifferentialGeometry.Geometry.Curvature.DimensionTwo.SectionalCurvature
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.JointRegularity
+import DifferentialGeometry.Geometry.Metric.Family.PairSmoothness
+import DifferentialGeometry.Geometry.Metric.Family.JointSmoothness
 
 noncomputable section
 
@@ -56,6 +59,9 @@ theorem exists_positive_surface_local_product_on_interval
       (∀ a ∈ Ioo α β, ∀ (k : K) (u v : TangentSpace (perpModel (S.family.metric t₀) x e) k),
         HasDerivWithinAt (fun b => (h b).inner k u v)
           (-2 * ricciTensor (h a) k u v) (Ioo α β) a) ∧
+      IsSolutionOn ({ base := { metric := h } } :
+        SolutionOn (I := perpModel (S.family.metric t₀) x e) (M := K)
+          (RealTimeInterval.openInterval α β t₀ ht₀)) ∧
       (∀ a ∈ Ioo α β, ∀ k : K, 0 < metricScalarAt (h a) k) ∧
       ∀ a ∈ Ioo α β, ∀ (k : K) (u v : TangentSpace (perpModel (S.family.metric t₀) x e) k),
         LinearIndependent ℝ ![u, v] → 0 < Geometry.Riemannian.sectionalCurvature (h a) k u v := by
@@ -104,8 +110,44 @@ theorem exists_positive_surface_local_product_on_interval
     rw [hn]
     exact DimensionThree.metricScalarAt_pos_of_mem_nonnegativeCone_of_curvatureOperator_rank_one
       hdim (S.family.metric r) _ (hR r hr _) (hrank r hr _)
+  let Y : K → M := fun k => phi (k.1, 0)
+  have hY : ContMDiff (perpModel (S.family.metric t₀) x (s x)) I ∞ Y :=
+    hPhi.contMDiff.comp (contMDiff_id.prodMk (contMDiff_const (c := (⟨0, hO₀⟩ : O))))
+  have hYder (k : K) : mfderiv (perpModel (S.family.metric t₀) x (s x)) I Y k =
+      mfderiv (perpModel (S.family.metric t₀) x (s x)) I
+        (fun y : perpSpace (S.family.metric t₀) x (s x) => phi (y, 0)) k.1 := by
+    have hraw : MDifferentiableAt (perpModel (S.family.metric t₀) x (s x)) I
+        (fun y : perpSpace (S.family.metric t₀) x (s x) => phi (y, 0)) k.1 :=
+      (phi.mdifferentiableAt (by decide : (∞ : WithTop ℕ∞) ≠ 0)
+        (by rw [hsource]; exact ⟨k.2, hO₀⟩)).comp k.1
+        (mdifferentiableAt_id.prodMk mdifferentiableAt_const)
+    have hh := mfderiv_comp k hraw
+      ((contMDiff_subtype_val (I := perpModel (S.family.metric t₀) x (s x)) (U := K)).contMDiffAt.mdifferentiableAt
+        (by decide : (∞ : WithTop ℕ∞) ≠ 0))
+    rw [mfderiv_subtype_val] at hh
+    exact hh
+  have hmetric : ContMDiffOn (𝓘(ℝ, ℝ).prod I)
+      (I.prod 𝓘(ℝ, E →L[ℝ] E →L[ℝ] ℝ)) ∞
+      (fun p : ℝ × M => (⟨p.2, (S.family.metric p.1).inner p.2⟩ :
+        TotalSpace (E →L[ℝ] E →L[ℝ] ℝ)
+          (fun y => TangentSpace I y →L[ℝ] TangentSpace I y →L[ℝ] ℝ)))
+      (Ioo α β ×ˢ (Set.univ : Set M)) := by
+    intro p hp
+    exact (hS.smoothMetric.metricCLMSmoothAt
+      (D.regular_isOpen.mem_nhds (hreg hp.1))).contMDiffWithinAt
+  have hgram := chartGramMatrix_joint_contMDiffOn_of_pullback
+    S.family.metric (Ioo α β) hmetric h Y hY (by
+      intro t ht k u v
+      rw [hYder]
+      exact hinner t ht k u v)
+  have hjoint := metricCLMSection_jointContMDiffOn_of_chartGram_Ioo h α β hgram
+  have hsol : IsSolutionOn ({ base := { metric := h } } :
+      SolutionOn (I := perpModel (S.family.metric t₀) x (s x)) (M := K)
+        (RealTimeInterval.openInterval α β t₀ ht₀)) :=
+    isSolutionOn_of_joint_metric (RealTimeInterval.openInterval α β t₀ ht₀)
+      isOpen_Ioo.uniqueDiffOn h hjoint hevol
   refine ⟨s x, K, O, phi, hPhi, h, hK₀, hO₀, hOconn, hsource, hbase,
-    hunit ⟨t₀, ht₀⟩ x hxU, hdimP, hprod, hinner, hevol, hpos, ?_⟩
+    hunit ⟨t₀, ht₀⟩ x hxU, hdimP, hprod, hinner, hevol, hsol, hpos, ?_⟩
   intro r hr k u v huv
   exact Geometry.Riemannian.sectionalCurvature_pos_of_metricScalarAt_pos_of_finrank_eq_two
     (h r) hdimP k (hpos r hr k) u v huv
