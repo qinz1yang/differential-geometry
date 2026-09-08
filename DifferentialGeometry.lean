@@ -2970,6 +2970,7 @@ import DifferentialGeometry.Geometry.Metric.Convergence.DerivativeNorm.Flat
 import DifferentialGeometry.Geometry.Metric.Convergence.DerivativeNorm.Restriction
 import DifferentialGeometry.Geometry.Metric.Convergence.Curvature.LaplacianDifference
 import DifferentialGeometry.Geometry.Metric.Convergence.Curvature.CoordinateBounds
+import DifferentialGeometry.Geometry.Metric.Convergence.Curvature.Scalar
 import DifferentialGeometry.Geometry.Metric.Convergence.Compactness.Precompactness
 import DifferentialGeometry.Geometry.Metric.Convergence.Compactness.Bridge
 import DifferentialGeometry.Geometry.Metric.Convergence.Compactness.Diagonal
