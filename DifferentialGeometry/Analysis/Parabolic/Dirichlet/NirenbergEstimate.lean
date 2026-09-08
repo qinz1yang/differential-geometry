@@ -31,7 +31,7 @@ private local instance : BorelSpace M := ⟨rfl⟩
 private local instance : MeasurableSpace EuStd :=
   WithLp.measurableSpace 2 ((i : Fin (Module.finrank ℝ EuN)) → ℝ)
 
-theorem exists_uniform_dirichletWeakFormCompl_nirenberg_lower_bound
+theorem exists_dirichletWeakFormCompl_nirenberg_lower_bound
     {T : RealTimeInterval} {G : MetricConnectionFamilyOn (I := I_hs) (M := M) T}
     (hG : MetricFamilySmoothOn (I := I_hs) (M := M) T G.metric)
     {J : Set ℝ} (hJc : IsCompact J) (hJ : J ⊆ T.regular)
@@ -44,13 +44,6 @@ theorem exists_uniform_dirichletWeakFormCompl_nirenberg_lower_bound
       (T.regular ×ˢ (trivializationAt EuN (TangentSpace I_hs) α).baseSet))
     (a : ℝ → ℝ) (ha : ContinuousOn a J)
     (Bx : ℝ) (hX : ∀ t ∈ J, ∀ x : M, (G.metric t).inner x (X t x) (X t x) ≤ Bx)
-    {Cg : ℝ} (hCg : 1 ≤ Cg)
-    (hequiv : ∀ t ∈ J, ∀ x : M, ∀ w : TangentSpace I_hs x,
-      Cg⁻¹ * q.inner x w w ≤ (G.metric t).inner x w w ∧
-      (G.metric t).inner x w w ≤ Cg * q.inner x w w)
-    (Cv : ℝ≥0∞) (hCv0 : Cv ≠ 0) (hCvtop : Cv ≠ ⊤)
-    (hvol : ∀ t ∈ J, riemannianVolumeMeasure (I := I_hs) (M := M) (G.metric t) ≤
-      Cv • riemannianVolumeMeasure (I := I_hs) (M := M) q)
     (φ : C^∞⟮I_hs, M; ℝ⟯)
     (hφ : ∀ z ∈ Ω, densityOnEuclid q α z *
       φ ((extChartAt I_hs α).symm ((toEuclidean (E := EuN)).symm z)) = 1)
@@ -62,6 +55,13 @@ theorem exists_uniform_dirichletWeakFormCompl_nirenberg_lower_bound
         invGramOnEuclid (I := I_hs) (G.metric t) α i j y * ξ i * ξ j) :
     ∃ δ : ℝ, 0 < δ ∧ ∃ C : ℝ, 0 ≤ C ∧
       ∃ hroom : Metric.cthickening δ (tsupport η) ⊆ Ω,
+      ∀ (Cg : ℝ) (hCg : 1 ≤ Cg)
+      (hequiv : ∀ t ∈ J, ∀ x : M, ∀ w : TangentSpace I_hs x,
+        Cg⁻¹ * q.inner x w w ≤ (G.metric t).inner x w w ∧
+        (G.metric t).inner x w w ≤ Cg * q.inner x w w)
+      (Cv : ℝ≥0∞) (hCv0 : Cv ≠ 0) (hCvtop : Cv ≠ ⊤)
+      (hvol : ∀ t ∈ J, riemannianVolumeMeasure (I := I_hs) (M := M) (G.metric t) ≤
+        Cv • riemannianVolumeMeasure (I := I_hs) (M := M) q),
       ∀ t (ht : t ∈ J) (k : Fin (Module.finrank ℝ EuN)) (s : ℝ) (hs : |s| ≤ δ)
         (u : H1ComplDirichlet q),
       lam / 2 * (∑ i, ∫ z, (η z * Sobolev.diffQuot k s
@@ -91,7 +91,7 @@ theorem exists_uniform_dirichletWeakFormCompl_nirenberg_lower_bound
     (cthickening_mono (min_le_left _ _) _).trans hroom₁
   refine ⟨min δ₁ δ₂, lt_min hδ₁ hδ₂, Cbar * C₀,
     mul_nonneg hCbar hC₀, hroom, ?_⟩
-  intro t ht k s hs u
+  intro Cg hCg hequiv Cv hCv0 hCvtop hvol t ht k s hs u
   have hs₁ : |s| ≤ δ₁ := hs.trans (min_le_left _ _)
   have hs₂ : |s| ≤ δ₂ := hs.trans (min_le_right _ _)
   have hηd (j) (z) (hz : z ∈ tsupport η) :
@@ -136,5 +136,50 @@ theorem exists_uniform_dirichletWeakFormCompl_nirenberg_lower_bound
       mul_le_mul_of_nonneg_right hCa herr0
     _ ≤ Cbar * (C₀ * ‖u‖^2) := mul_le_mul_of_nonneg_left herr hCbar
     _ = _ := (mul_assoc _ _ _).symm
+
+theorem exists_uniform_dirichletWeakFormCompl_nirenberg_lower_bound
+    {T : RealTimeInterval} {G : MetricConnectionFamilyOn (I := I_hs) (M := M) T}
+    (hG : MetricFamilySmoothOn (I := I_hs) (M := M) T G.metric)
+    {J : Set ℝ} (hJc : IsCompact J) (hJ : J ⊆ T.regular)
+    (q : SmoothRiemannianMetric I_hs M) (α : M) {Ω : Set EuStd}
+    (hΩ : IsOpen Ω) (hΩc : IsCompact (closure Ω))
+    (hΩs : closure Ω ⊆ toEuclidean (E := EuN) '' interior (extChartAt I_hs α).target)
+    (X : ℝ → Cₛ^∞⟮I_hs; EuN, (TangentSpace I_hs : M → Type _)⟯)
+    (hXsmooth : ContMDiffOn (𝓘(ℝ, ℝ).prod I_hs) ((I_hs).prod 𝓘(ℝ, EuN)) ∞
+      (fun p : ℝ × M => Bundle.TotalSpace.mk' EuN p.2 (X p.1 p.2))
+      (T.regular ×ˢ (trivializationAt EuN (TangentSpace I_hs) α).baseSet))
+    (a : ℝ → ℝ) (ha : ContinuousOn a J)
+    (Bx : ℝ) (hX : ∀ t ∈ J, ∀ x : M, (G.metric t).inner x (X t x) (X t x) ≤ Bx)
+    {Cg : ℝ} (hCg : 1 ≤ Cg)
+    (hequiv : ∀ t ∈ J, ∀ x : M, ∀ w : TangentSpace I_hs x,
+      Cg⁻¹ * q.inner x w w ≤ (G.metric t).inner x w w ∧
+      (G.metric t).inner x w w ≤ Cg * q.inner x w w)
+    (Cv : ℝ≥0∞) (hCv0 : Cv ≠ 0) (hCvtop : Cv ≠ ⊤)
+    (hvol : ∀ t ∈ J, riemannianVolumeMeasure (I := I_hs) (M := M) (G.metric t) ≤
+      Cv • riemannianVolumeMeasure (I := I_hs) (M := M) q)
+    (φ : C^∞⟮I_hs, M; ℝ⟯)
+    (hφ : ∀ z ∈ Ω, densityOnEuclid q α z *
+      φ ((extChartAt I_hs α).symm ((toEuclidean (E := EuN)).symm z)) = 1)
+    {η : EuStd → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hηc : HasCompactSupport η)
+    (hηs : tsupport η ⊆ Ω) (hηb : ∀ z, |η z| ≤ 1)
+    {lam : ℝ} (hlam : 0 < lam)
+    (hcoer : ∀ t ∈ J, ∀ y ∈ Ω, ∀ ξ : Fin (Module.finrank ℝ EuN) → ℝ,
+      lam * ∑ i, (ξ i)^2 ≤ ∑ i, ∑ j,
+        invGramOnEuclid (I := I_hs) (G.metric t) α i j y * ξ i * ξ j) :
+    ∃ δ : ℝ, 0 < δ ∧ ∃ C : ℝ, 0 ≤ C ∧
+      ∃ hroom : Metric.cthickening δ (tsupport η) ⊆ Ω,
+      ∀ t (ht : t ∈ J) (k : Fin (Module.finrank ℝ EuN)) (s : ℝ) (hs : |s| ≤ δ)
+        (u : H1ComplDirichlet q),
+      lam / 2 * (∑ i, ∫ z, (η z * Sobolev.diffQuot k s
+        (dirichletLocalWeakPartialLp q α hΩ hΩc hΩs i u) z)^2) ≤
+      dirichletWeakFormCompl (G.metric t) (X t) (a t) Bx (hX t ht) hCg (hequiv t ht)
+        Cv hCv0 hCvtop (hvol t ht) u
+        (smoothMulH1ComplDirichlet q (riemannianVolumeDensitySmoothMap (G.metric t) q * φ)
+          (dirichletNirenbergTest q α hΩ hΩc hΩs hη hηc k s
+            ((Metric.cthickening_mono hs (tsupport η)).trans hroom) u)) + C * ‖u‖^2 := by
+  obtain ⟨δ, hδ, C, hC, hroom, hbound⟩ :=
+    exists_dirichletWeakFormCompl_nirenberg_lower_bound hG hJc hJ q α hΩ hΩc hΩs
+      X hXsmooth a ha Bx hX φ hφ hη hηc hηs hηb hlam hcoer
+  exact ⟨δ, hδ, C, hC, hroom, hbound Cg hCg hequiv Cv hCv0 hCvtop hvol⟩
 
 end DifferentialGeometry.Analysis.Parabolic.Dirichlet

@@ -31,7 +31,7 @@ variable {M : Type*} [TopologicalSpace M]
 
 local notation "I_hs" => modelWithCornersEuclideanHalfSpace n
 
-theorem IsWeakEvolutionSolution.exists_integral_cutoff_diffQuot_weakPartial_le
+theorem exists_uniform_integral_cutoff_diffQuot_weakPartial_le
     {q : SmoothRiemannianMetric I_hs M}
     {D : RealTimeInterval}
     {G : MetricConnectionFamilyOn (I := I_hs) (M := M) D}
@@ -50,9 +50,6 @@ theorem IsWeakEvolutionSolution.exists_integral_cutoff_diffQuot_weakPartial_le
       (G.metric t).inner x (X t x) (X t x) ≤ Bx}
     {htrace : ∀ t ∈ Ico (0 : ℝ) T, ∀ x : M,
       |traceTimeDerivMetric (I := I_hs) G.metric t x| ≤ Bv}
-    {f₀ : Lp ℝ 2
-      (riemannianVolumeMeasure (I := I_hs) (M := M) q)}
-    {u : timeL2 (H1ComplDirichlet q) T}
     (α : M) {Ω Ω' Ω'' : Set (EuclideanSpace ℝ (Fin (Module.finrank ℝ (EuclideanSpace ℝ (Fin n)))))}
     (hΩ : IsOpen Ω) (hΩc : IsCompact (closure Ω))
     (hΩs : closure Ω ⊆ toEuclidean (E := EuclideanSpace ℝ (Fin n)) '' interior (extChartAt I_hs α).target)
@@ -67,8 +64,6 @@ theorem IsWeakEvolutionSolution.exists_integral_cutoff_diffQuot_weakPartial_le
     (hφ : ∀ z ∈ Ω, chartDensity (I := I_hs) q α
       ((extChartAt I_hs α).symm ((toEuclidean (E := EuclideanSpace ℝ (Fin n))).symm z)) *
         φ ((extChartAt I_hs α).symm ((toEuclidean (E := EuclideanSpace ℝ (Fin n))).symm z)) = 1)
-    (hu : IsWeakEvolutionSolution hG hT hreg X a Bx Bv
-      (fun t ht => hX t ⟨ht.1, ht.2.le⟩) htrace f₀ u)
     (hXsmooth : ContMDiffOn (𝓘(ℝ, ℝ).prod I_hs) ((I_hs).prod 𝓘(ℝ, EuclideanSpace ℝ (Fin n))) ∞
       (fun p : ℝ × M => Bundle.TotalSpace.mk' (EuclideanSpace ℝ (Fin n)) p.2 (X p.1 p.2))
       (D.regular ×ˢ (trivializationAt (EuclideanSpace ℝ (Fin n)) (TangentSpace I_hs) α).baseSet))
@@ -80,23 +75,33 @@ theorem IsWeakEvolutionSolution.exists_integral_cutoff_diffQuot_weakPartial_le
         DifferentialGeometry.Analysis.Laplacian.MetricExtension.invGramOnEuclid (I := I_hs)
           (G.metric t) α i j y * ξ i * ξ j) :
     ∃ δ : ℝ, 0 < δ ∧ ∃ C : ℝ, 0 ≤ C ∧
+      ∀
+      (f₀ : Lp ℝ 2
+      (riemannianVolumeMeasure (I := I_hs) (M := M) q))
+      (u : timeL2 (H1ComplDirichlet q) T), IsWeakEvolutionSolution hG hT hreg X a Bx Bv
+        (fun t ht => hX t ⟨ht.1, ht.2.le⟩) htrace f₀ u →
       ∀ (k : Fin (Module.finrank ℝ (EuclideanSpace ℝ (Fin n)))) (h : ℝ), |h| ≤ δ →
         ∀ (ζ : ℝ → ℝ) (K : ℝ≥0), ContDiff ℝ 1 ζ → MemLp ζ ∞ volume →
         (∀ t, 0 ≤ ζ t) → (∀ t, ζ t ≤ 1) → LipschitzWith K ζ → ζ 0 = 0 → ζ T = 0 →
         (∫ t, ζ t * (∑ i, ∫ z, (η z * DifferentialGeometry.Analysis.Sobolev.diffQuot k h
           (dirichletLocalWeakPartialLp q α hΩ hΩc hΩs i (u t)) z)^2) ∂timeMeasure T) ≤
           C * ((K : ℝ) + 1) * ∫ t, ‖u t‖ ^ 2 ∂timeMeasure T := by
-  obtain ⟨Cg, Cv, hCg, hequiv, hCv0, hCvtop, hvol, CE, hCE, hE⟩ :=
-    hu.exists_integral_cutoff_volumeDensity_nirenbergTest_le hXcont hacont α hΩ hΩc hΩs
-      hΩ' hΩ'' hΩ'c hΩ'Ω hΩ''c hη hηc hηs hr hroom φ hφ
+  obtain ⟨CE, hCE, hEnergy⟩ :=
+    exists_uniform_integral_cutoff_volumeDensity_nirenbergTest_le
+      (hG := hG) (hT := hT) (hreg := hreg)
+      (hX := fun t ht => hX t ⟨ht.1, ht.2.le⟩) (htrace := htrace)
+      hXcont hacont α hΩ hΩc hΩs hΩ' hΩ'' hΩ'c hΩ'Ω hΩ''c hη hηc hηs hr hroom φ hφ
   have hηΩ := hηs.trans (subset_closure.trans
     ((Metric.self_subset_cthickening (δ := r) (closure Ω'')).trans
       (hroom.trans (subset_closure.trans hΩ'Ω))))
   obtain ⟨δ, hδ, CF, hCF, hδroom, hpoint⟩ :=
-    exists_uniform_dirichletWeakFormCompl_nirenberg_lower_bound hG isCompact_Icc hreg q α
-      hΩ hΩc hΩs X hXsmooth a hacont Bx hX hCg hequiv Cv hCv0 hCvtop hvol
+    exists_dirichletWeakFormCompl_nirenberg_lower_bound hG isCompact_Icc hreg q α
+      hΩ hΩc hΩs X hXsmooth a hacont Bx hX
       φ hφ hη hηc hηΩ hηb hlam hcoer
   refine ⟨min δ r, lt_min hδ hr, 2 * (CE + CF) / lam, by positivity, ?_⟩
+  intro f₀ u hu
+  obtain ⟨Cg, Cv, hCg, hequiv, hCv0, hCvtop, hvol, hE⟩ := hEnergy f₀ u hu
+  have hpoint' := hpoint Cg hCg hequiv Cv hCv0 hCvtop hvol
   intro k h hh ζ K hζsmooth hζ hζpos hζone hζlip hζ0 hζT
   have hhδ := hh.trans (min_le_left _ _)
   have hhr := hh.trans (min_le_right _ _)
@@ -156,7 +161,7 @@ theorem IsWeakEvolutionSolution.exists_integral_cutoff_diffQuot_weakPartial_le
       rw [← restrict_Ico_eq_restrict_Icc]
       exact ae_restrict_mem measurableSet_Ico
     filter_upwards [hmem] with t ht
-    have hb := hpoint t ⟨ht.1, ht.2.le⟩ k h hhδ (u t)
+    have hb := hpoint' t ⟨ht.1, ht.2.le⟩ k h hhδ (u t)
     change lam / 2 * E t ≤ F₀ t (u t) (S t (L (u t))) + _
     rw [hpair]
     dsimp only [F₀]
@@ -188,6 +193,152 @@ theorem IsWeakEvolutionSolution.exists_integral_cutoff_diffQuot_weakPartial_le
     exact htarget
   convert hfinal using 1
   field_simp
+
+theorem IsWeakEvolutionSolution.exists_integral_cutoff_diffQuot_weakPartial_le
+    {q : SmoothRiemannianMetric I_hs M}
+    {D : RealTimeInterval}
+    {G : MetricConnectionFamilyOn (I := I_hs) (M := M) D}
+    {hG : MetricFamilySmoothOn (I := I_hs) (M := M) D G.metric}
+    {T : ℝ} {hT : 0 ≤ T} {hreg : Icc (0 : ℝ) T ⊆ D.regular}
+    {X : ℝ → Cₛ^∞⟮I_hs; EuclideanSpace ℝ (Fin n),
+      (TangentSpace I_hs : M → Type _)⟯}
+    (hXcont : ContinuousOn
+      (fun p : ℝ × M ↦
+        (TotalSpace.mk' (EuclideanSpace ℝ (Fin n)) p.2 (X p.1 p.2) :
+          TangentBundle I_hs M))
+      (Icc (0 : ℝ) T ×ˢ (Set.univ : Set M)))
+    {a : ℝ → ℝ} (hacont : ContinuousOn a (Icc (0 : ℝ) T))
+    {Bx Bv : ℝ}
+    {hX : ∀ t ∈ Icc (0 : ℝ) T, ∀ x : M,
+      (G.metric t).inner x (X t x) (X t x) ≤ Bx}
+    {htrace : ∀ t ∈ Ico (0 : ℝ) T, ∀ x : M,
+      |traceTimeDerivMetric (I := I_hs) G.metric t x| ≤ Bv}
+    {f₀ : Lp ℝ 2
+      (riemannianVolumeMeasure (I := I_hs) (M := M) q)}
+    {u : timeL2 (H1ComplDirichlet q) T}
+    (α : M) {Ω Ω' Ω'' : Set (EuclideanSpace ℝ (Fin (Module.finrank ℝ (EuclideanSpace ℝ (Fin n)))))}
+    (hΩ : IsOpen Ω) (hΩc : IsCompact (closure Ω))
+    (hΩs : closure Ω ⊆ toEuclidean (E := EuclideanSpace ℝ (Fin n)) '' interior (extChartAt I_hs α).target)
+    (hΩ' : IsOpen Ω') (hΩ'' : IsOpen Ω'')
+    (hΩ'c : IsCompact (closure Ω')) (hΩ'Ω : closure Ω' ⊆ Ω)
+    (hΩ''c : IsCompact (closure Ω''))
+    {η : EuclideanSpace ℝ (Fin (Module.finrank ℝ (EuclideanSpace ℝ (Fin n)))) → ℝ}
+    (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hηc : HasCompactSupport η)
+    (hηs : tsupport η ⊆ Ω'') {r : ℝ} (hr : 0 < r)
+    (hroom : Metric.cthickening r (closure Ω'') ⊆ Ω')
+    (φ : C^∞⟮I_hs, M; ℝ⟯)
+    (hφ : ∀ z ∈ Ω, chartDensity (I := I_hs) q α
+      ((extChartAt I_hs α).symm ((toEuclidean (E := EuclideanSpace ℝ (Fin n))).symm z)) *
+        φ ((extChartAt I_hs α).symm ((toEuclidean (E := EuclideanSpace ℝ (Fin n))).symm z)) = 1)
+    (hu : IsWeakEvolutionSolution hG hT hreg X a Bx Bv
+      (fun t ht => hX t ⟨ht.1, ht.2.le⟩) htrace f₀ u)
+    (hXsmooth : ContMDiffOn (𝓘(ℝ, ℝ).prod I_hs) ((I_hs).prod 𝓘(ℝ, EuclideanSpace ℝ (Fin n))) ∞
+      (fun p : ℝ × M => Bundle.TotalSpace.mk' (EuclideanSpace ℝ (Fin n)) p.2 (X p.1 p.2))
+      (D.regular ×ˢ (trivializationAt (EuclideanSpace ℝ (Fin n)) (TangentSpace I_hs) α).baseSet))
+    (hηb : ∀ z, |η z| ≤ 1)
+    {lam : ℝ} (hlam : 0 < lam)
+    (hcoer : ∀ t ∈ Icc (0 : ℝ) T, ∀ y ∈ Ω,
+      ∀ ξ : Fin (Module.finrank ℝ (EuclideanSpace ℝ (Fin n))) → ℝ,
+      lam * ∑ i, (ξ i)^2 ≤ ∑ i, ∑ j,
+        DifferentialGeometry.Analysis.Laplacian.MetricExtension.invGramOnEuclid (I := I_hs)
+          (G.metric t) α i j y * ξ i * ξ j) :
+    ∃ δ : ℝ, 0 < δ ∧ ∃ C : ℝ, 0 ≤ C ∧
+      ∀ (k : Fin (Module.finrank ℝ (EuclideanSpace ℝ (Fin n)))) (h : ℝ), |h| ≤ δ →
+        ∀ (ζ : ℝ → ℝ) (K : ℝ≥0), ContDiff ℝ 1 ζ → MemLp ζ ∞ volume →
+        (∀ t, 0 ≤ ζ t) → (∀ t, ζ t ≤ 1) → LipschitzWith K ζ → ζ 0 = 0 → ζ T = 0 →
+        (∫ t, ζ t * (∑ i, ∫ z, (η z * DifferentialGeometry.Analysis.Sobolev.diffQuot k h
+          (dirichletLocalWeakPartialLp q α hΩ hΩc hΩs i (u t)) z)^2) ∂timeMeasure T) ≤
+          C * ((K : ℝ) + 1) * ∫ t, ‖u t‖ ^ 2 ∂timeMeasure T := by
+  obtain ⟨δ, hδ, C, hC, hbound⟩ := exists_uniform_integral_cutoff_diffQuot_weakPartial_le
+    (hG := hG) (hT := hT) (hreg := hreg) (hX := hX) (htrace := htrace)
+    hXcont hacont α hΩ hΩc hΩs hΩ' hΩ'' hΩ'c hΩ'Ω hΩ''c
+      hη hηc hηs hr hroom φ hφ hXsmooth hηb hlam hcoer
+  exact ⟨δ, hδ, C, hC, hbound f₀ u hu⟩
+
+theorem exists_uniform_integral_Icc_diffQuot_weakPartial_le
+    {q : SmoothRiemannianMetric I_hs M}
+    {D : RealTimeInterval}
+    {G : MetricConnectionFamilyOn (I := I_hs) (M := M) D}
+    {hG : MetricFamilySmoothOn (I := I_hs) (M := M) D G.metric}
+    {T : ℝ} {hT : 0 ≤ T} {hreg : Icc (0 : ℝ) T ⊆ D.regular}
+    {X : ℝ → Cₛ^∞⟮I_hs; EuclideanSpace ℝ (Fin n),
+      (TangentSpace I_hs : M → Type _)⟯}
+    (hXcont : ContinuousOn
+      (fun p : ℝ × M ↦
+        (TotalSpace.mk' (EuclideanSpace ℝ (Fin n)) p.2 (X p.1 p.2) :
+          TangentBundle I_hs M))
+      (Icc (0 : ℝ) T ×ˢ (Set.univ : Set M)))
+    {a : ℝ → ℝ} (hacont : ContinuousOn a (Icc (0 : ℝ) T))
+    {Bx Bv : ℝ}
+    {hX : ∀ t ∈ Icc (0 : ℝ) T, ∀ x : M,
+      (G.metric t).inner x (X t x) (X t x) ≤ Bx}
+    {htrace : ∀ t ∈ Ico (0 : ℝ) T, ∀ x : M,
+      |traceTimeDerivMetric (I := I_hs) G.metric t x| ≤ Bv}
+    (α : M) {Ω Ω' Ω'' : Set (EuclideanSpace ℝ (Fin (Module.finrank ℝ (EuclideanSpace ℝ (Fin n)))))}
+    (hΩ : IsOpen Ω) (hΩc : IsCompact (closure Ω))
+    (hΩs : closure Ω ⊆ toEuclidean (E := EuclideanSpace ℝ (Fin n)) '' interior (extChartAt I_hs α).target)
+    (hΩ' : IsOpen Ω') (hΩ'' : IsOpen Ω'')
+    (hΩ'c : IsCompact (closure Ω')) (hΩ'Ω : closure Ω' ⊆ Ω)
+    (hΩ''c : IsCompact (closure Ω''))
+    {η : EuclideanSpace ℝ (Fin (Module.finrank ℝ (EuclideanSpace ℝ (Fin n)))) → ℝ}
+    (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hηc : HasCompactSupport η)
+    (hηs : tsupport η ⊆ Ω'') {r : ℝ} (hr : 0 < r)
+    (hroom : Metric.cthickening r (closure Ω'') ⊆ Ω')
+    (φ : C^∞⟮I_hs, M; ℝ⟯)
+    (hφ : ∀ z ∈ Ω, chartDensity (I := I_hs) q α
+      ((extChartAt I_hs α).symm ((toEuclidean (E := EuclideanSpace ℝ (Fin n))).symm z)) *
+        φ ((extChartAt I_hs α).symm ((toEuclidean (E := EuclideanSpace ℝ (Fin n))).symm z)) = 1)
+    (hXsmooth : ContMDiffOn (𝓘(ℝ, ℝ).prod I_hs) ((I_hs).prod 𝓘(ℝ, EuclideanSpace ℝ (Fin n))) ∞
+      (fun p : ℝ × M => Bundle.TotalSpace.mk' (EuclideanSpace ℝ (Fin n)) p.2 (X p.1 p.2))
+      (D.regular ×ˢ (trivializationAt (EuclideanSpace ℝ (Fin n)) (TangentSpace I_hs) α).baseSet))
+    (hηb : ∀ z, |η z| ≤ 1)
+    {lam : ℝ} (hlam : 0 < lam)
+    (hcoer : ∀ t ∈ Icc (0 : ℝ) T, ∀ y ∈ Ω,
+      ∀ ξ : Fin (Module.finrank ℝ (EuclideanSpace ℝ (Fin n))) → ℝ,
+      lam * ∑ i, (ξ i)^2 ≤ ∑ i, ∑ j,
+        DifferentialGeometry.Analysis.Laplacian.MetricExtension.invGramOnEuclid (I := I_hs)
+          (G.metric t) α i j y * ξ i * ξ j)
+    {t₀ t₁ : ℝ} (ht₀ : 0 < t₀) (ht₁ : t₁ < T) :
+    ∃ δ : ℝ, 0 < δ ∧ ∃ C : ℝ, 0 ≤ C ∧
+      ∀
+      (f₀ : Lp ℝ 2
+      (riemannianVolumeMeasure (I := I_hs) (M := M) q))
+      (u : timeL2 (H1ComplDirichlet q) T), IsWeakEvolutionSolution hG hT hreg X a Bx Bv
+        (fun t ht => hX t ⟨ht.1, ht.2.le⟩) htrace f₀ u →
+      ∀ (k : Fin (Module.finrank ℝ (EuclideanSpace ℝ (Fin n)))) (h : ℝ), |h| ≤ δ →
+        (∫ t in Icc t₀ t₁, (∑ i, ∫ z, (η z * DifferentialGeometry.Analysis.Sobolev.diffQuot k h
+          (dirichletLocalWeakPartialLp q α hΩ hΩc hΩs i (u t)) z)^2) ∂timeMeasure T) ≤
+          C * ∫ t, ‖u t‖ ^ 2 ∂timeMeasure T := by
+  obtain ⟨δ, hδ, C, hC, hbound⟩ :=
+    exists_uniform_integral_cutoff_diffQuot_weakPartial_le
+      (hG := hG) (hT := hT) (hreg := hreg) (hX := hX) (htrace := htrace) hXcont hacont α hΩ hΩc hΩs
+      hΩ' hΩ'' hΩ'c hΩ'Ω hΩ''c hη hηc hηs hr hroom φ hφ hXsmooth hηb hlam hcoer
+  obtain ⟨ζ, K, hζsmooth, hζc, hζpos, hζb, hζlip, hζ0, hζT, hζone⟩ :=
+    DifferentialGeometry.Analysis.Parabolic.Energy.exists_smooth_timeCutoff_eq_one_on_Icc ht₀ ht₁
+  have hζ : MemLp ζ ∞ volume := hζsmooth.continuous.memLp_of_hasCompactSupport hζc
+  refine ⟨min δ r, lt_min hδ hr, C * ((K : ℝ) + 1), by positivity, ?_⟩
+  intro f₀ u hu
+  have hbound' := hbound f₀ u hu
+  intro k h hh
+  have hhδ : |h| ≤ δ := hh.trans (min_le_left _ _)
+  have hhr : |h| ≤ r := hh.trans (min_le_right _ _)
+  have hroom' : Metric.cthickening |h| (tsupport η) ⊆ Ω :=
+    (Metric.cthickening_mono hhr _).trans
+      ((Metric.cthickening_subset_of_subset r (hηs.trans subset_closure)).trans
+        (hroom.trans (subset_closure.trans hΩ'Ω)))
+  let E := fun t => ∑ i, ∫ z, (η z * DifferentialGeometry.Analysis.Sobolev.diffQuot k h
+    (dirichletLocalWeakPartialLp q α hΩ hΩc hΩs i (u t)) z)^2
+  have hEI : Integrable E (timeMeasure T) := by
+    apply integrable_finsetSum _
+    intro i _
+    exact DifferentialGeometry.Analysis.Sobolev.integrable_integral_sq_cutoff_diffQuot_comp
+      hΩ.measurableSet (hη.continuous.memLp_of_hasCompactSupport hηc) k h hroom'
+      (dirichletLocalWeakPartialLp q α hΩ hΩc hΩs i) (Lp.memLp u)
+  have hEpos : ∀ t, 0 ≤ E t := fun _ => Finset.sum_nonneg fun _ _ =>
+    integral_nonneg fun _ => sq_nonneg _
+  exact (DifferentialGeometry.Analysis.Parabolic.Energy.integral_Icc_le_integral_mul_cutoff
+    hEI hEpos (hζ.restrict _) hζpos hζone).trans
+      (hbound' k h hhδ ζ K (hζsmooth.of_le (by simp)) hζ hζpos hζb hζlip hζ0 hζT)
 
 theorem IsWeakEvolutionSolution.exists_integral_Icc_diffQuot_weakPartial_le
     {q : SmoothRiemannianMetric I_hs M}
@@ -243,33 +394,11 @@ theorem IsWeakEvolutionSolution.exists_integral_Icc_diffQuot_weakPartial_le
         (∫ t in Icc t₀ t₁, (∑ i, ∫ z, (η z * DifferentialGeometry.Analysis.Sobolev.diffQuot k h
           (dirichletLocalWeakPartialLp q α hΩ hΩc hΩs i (u t)) z)^2) ∂timeMeasure T) ≤
           C * ∫ t, ‖u t‖ ^ 2 ∂timeMeasure T := by
-  obtain ⟨δ, hδ, C, hC, hbound⟩ :=
-    hu.exists_integral_cutoff_diffQuot_weakPartial_le hXcont hacont α hΩ hΩc hΩs
-      hΩ' hΩ'' hΩ'c hΩ'Ω hΩ''c hη hηc hηs hr hroom φ hφ hXsmooth hηb hlam hcoer
-  obtain ⟨ζ, K, hζsmooth, hζc, hζpos, hζb, hζlip, hζ0, hζT, hζone⟩ :=
-    DifferentialGeometry.Analysis.Parabolic.Energy.exists_smooth_timeCutoff_eq_one_on_Icc ht₀ ht₁
-  have hζ : MemLp ζ ∞ volume := hζsmooth.continuous.memLp_of_hasCompactSupport hζc
-  refine ⟨min δ r, lt_min hδ hr, C * ((K : ℝ) + 1), by positivity, ?_⟩
-  intro k h hh
-  have hhδ : |h| ≤ δ := hh.trans (min_le_left _ _)
-  have hhr : |h| ≤ r := hh.trans (min_le_right _ _)
-  have hroom' : Metric.cthickening |h| (tsupport η) ⊆ Ω :=
-    (Metric.cthickening_mono hhr _).trans
-      ((Metric.cthickening_subset_of_subset r (hηs.trans subset_closure)).trans
-        (hroom.trans (subset_closure.trans hΩ'Ω)))
-  let E := fun t => ∑ i, ∫ z, (η z * DifferentialGeometry.Analysis.Sobolev.diffQuot k h
-    (dirichletLocalWeakPartialLp q α hΩ hΩc hΩs i (u t)) z)^2
-  have hEI : Integrable E (timeMeasure T) := by
-    apply integrable_finsetSum _
-    intro i _
-    exact DifferentialGeometry.Analysis.Sobolev.integrable_integral_sq_cutoff_diffQuot_comp
-      hΩ.measurableSet (hη.continuous.memLp_of_hasCompactSupport hηc) k h hroom'
-      (dirichletLocalWeakPartialLp q α hΩ hΩc hΩs i) (Lp.memLp u)
-  have hEpos : ∀ t, 0 ≤ E t := fun _ => Finset.sum_nonneg fun _ _ =>
-    integral_nonneg fun _ => sq_nonneg _
-  exact (DifferentialGeometry.Analysis.Parabolic.Energy.integral_Icc_le_integral_mul_cutoff
-    hEI hEpos (hζ.restrict _) hζpos hζone).trans
-      (hbound k h hhδ ζ K (hζsmooth.of_le (by simp)) hζ hζpos hζb hζlip hζ0 hζT)
+  obtain ⟨δ, hδ, C, hC, hbound⟩ := exists_uniform_integral_Icc_diffQuot_weakPartial_le
+    (hG := hG) (hT := hT) (hreg := hreg) (hX := hX) (htrace := htrace)
+    hXcont hacont α hΩ hΩc hΩs hΩ' hΩ'' hΩ'c hΩ'Ω hΩ''c
+      hη hηc hηs hr hroom φ hφ hXsmooth hηb hlam hcoer ht₀ ht₁
+  exact ⟨δ, hδ, C, hC, hbound f₀ u hu⟩
 
 theorem IsWeakEvolutionSolution.exists_ae_hasWeakPartialDeriv_localWeakPartial
     {q : SmoothRiemannianMetric I_hs M}
