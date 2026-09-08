@@ -92,12 +92,11 @@ theorem lLength_squareRootReparametrization_eq_lRegularizedAction
 
 omit [InnerProductSpace Real E] [NeZero (Module.finrank Real E)]
   [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
-theorem intervalIntegrable_lDensity_squareRootReparametrization_sq_iff
-    (S : SolutionOn (I := I) (M := M) D) (T : ℝ) (alpha : ℝ → M)
+theorem intervalIntegrable_lRegularizedLagrangian_squareReparametrization_iff
+    (S : SolutionOn (I := I) (M := M) D) (T : ℝ) (gamma : ℝ → M)
     (a b : ℝ) (ha : 0 ≤ a) (hb : 0 ≤ b) :
-    IntervalIntegrable (lDensity S T (squareRootReparametrization alpha)) volume (a ^ 2) (b ^ 2) ↔
-      IntervalIntegrable (lRegularizedLagrangian S T alpha) volume a b := by
-  let gamma := squareRootReparametrization alpha
+    IntervalIntegrable (lRegularizedLagrangian S T (squareReparametrization gamma)) volume a b ↔
+      IntervalIntegrable (lDensity S T gamma) volume (a ^ 2) (b ^ 2) := by
   have hChange := intervalIntegral.integrable_comp_mul_deriv_iff_of_deriv_nonneg
     (g := lDensity S T gamma) (f := fun s : ℝ => s ^ 2) (f' := fun s : ℝ => 2 * s)
     (a := a) (b := b) (continuous_id.pow 2).continuousOn
@@ -105,10 +104,30 @@ theorem intervalIntegrable_lDensity_squareRootReparametrization_sq_iff
     (by intro s hs; exact mul_nonneg (by norm_num) ((le_min ha hb).trans hs.1.le))
   have hEq (s : ℝ) (hs : s ∈ uIoc a b) :
       (lDensity S T gamma ∘ fun r : ℝ => r ^ 2) s * (2 * s) =
+        lRegularizedLagrangian S T (squareReparametrization gamma) s := by
+    rw [Function.comp_apply,
+      lDensity_squareReparametrization_of_pos S T gamma s ((le_min ha hb).trans_lt hs.1),
+      lRegularizedDensity_eq_lRegularizedLagrangian_squareReparametrization]
+  constructor
+  · intro h
+    exact hChange.mp (h.congr (fun s hs => (hEq s hs).symm))
+  · intro h
+    exact (hChange.mpr h).congr hEq
+
+omit [InnerProductSpace Real E] [NeZero (Module.finrank Real E)]
+  [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+theorem intervalIntegrable_lDensity_squareRootReparametrization_sq_iff
+    (S : SolutionOn (I := I) (M := M) D) (T : ℝ) (alpha : ℝ → M)
+    (a b : ℝ) (ha : 0 ≤ a) (hb : 0 ≤ b) :
+    IntervalIntegrable (lDensity S T (squareRootReparametrization alpha)) volume (a ^ 2) (b ^ 2) ↔
+      IntervalIntegrable (lRegularizedLagrangian S T alpha) volume a b := by
+  let gamma := squareRootReparametrization alpha
+  have hChange := intervalIntegrable_lRegularizedLagrangian_squareReparametrization_iff
+    S T gamma a b ha hb
+  have hEq (s : ℝ) (hs : s ∈ uIoc a b) :
+      lRegularizedLagrangian S T (squareReparametrization gamma) s =
         lRegularizedLagrangian S T alpha s := by
     have hsPos : 0 < s := (le_min ha hb).trans_lt hs.1
-    rw [Function.comp_apply, lDensity_squareReparametrization_of_pos S T gamma s hsPos,
-      lRegularizedDensity_eq_lRegularizedLagrangian_squareReparametrization]
     have hev : squareReparametrization gamma =ᶠ[𝓝 s] alpha := by
       filter_upwards [Ioi_mem_nhds hsPos] with r hr
       simp only [squareReparametrization, gamma, squareRootReparametrization, Real.sqrt_sq hr.le]
