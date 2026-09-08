@@ -4574,3 +4574,5 @@ import DifferentialGeometry.Geometry.Metric.Conformal.Laplacian
 import DifferentialGeometry.Analysis.Parabolic.CurvatureOperatorLocalized
 import DifferentialGeometry.Analysis.InnerProductSpace.Trace
 import DifferentialGeometry.Analysis.ODE.CurvatureReaction
+import DifferentialGeometry.Analysis.Sobolev.Nirenberg.TestFunction.Integration
+import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.TimeH1Multiplication

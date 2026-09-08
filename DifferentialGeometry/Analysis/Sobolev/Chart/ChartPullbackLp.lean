@@ -124,5 +124,40 @@ theorem chartPullback_ae_eq_of_ae_eq
   · exact hx hxs
   · rw [chartPullback_apply_of_notMem α f hxs, chartPullback_apply_of_notMem α g hxs]
 
+theorem integral_mul_chartPullback_eq_integral_euclidean
+    [IsManifold I ∞ M] [T2Space M] [CompactSpace M]
+    (q : SmoothRiemannianMetric I M) (α : M) {u : M → ℝ} (hu : Measurable u)
+    {f : EuStd → ℝ} (hf : Measurable f)
+    (hfs : Function.support f ⊆ chartTargetEuclid (I := I) α) :
+    (∫ x, u x * chartPullback I α f x ∂(riemannianVolumeMeasure (I := I) (M := M) q)) =
+      ∫ z, chartDensity (I := I) q α ((extChartAt I α).symm ((toEuclidean (E := E)).symm z)) *
+        u ((extChartAt I α).symm ((toEuclidean (E := E)).symm z)) * f z := by
+  let e := toEuclidean (E := E)
+  have he : MeasurePreserving e (modelHaar (E := E)) volume :=
+    ⟨e.continuous.measurable, map_toEuclidean_modelHaar_eq_volume (E := E)⟩
+  rw [integral_eq_integral_chartDensity_of_support_in_chart (I := I) q α
+    (f := fun x => u x * chartPullback I α f x)
+    (hu.mul (measurable_chartPullback α hf)) (fun x hx => by
+      rw [chartPullback_apply_of_notMem α f hx, mul_zero])]
+  have hpoint {y : E} (hy : y ∈ (extChartAt I α).target) :
+      chartPullback I α f ((extChartAt I α).symm y) = f (e y) := by
+    have hs := (extChartAt I α).map_target hy
+    rw [extChartAt_source] at hs
+    rw [chartPullback_apply_of_mem α f hs, (extChartAt I α).right_inv hy]
+  calc
+    _ = ∫ y in (extChartAt I α).target,
+        chartDensity (I := I) q α ((extChartAt I α).symm y) * u ((extChartAt I α).symm y) * f (e y)
+        ∂(modelHaar (E := E)) := by
+      apply setIntegral_congr_fun (measurableSet_extChartAt_target (I := I) α)
+      intro y hy
+      dsimp only
+      rw [hpoint hy, mul_assoc]
+    _ = ∫ z in e '' (extChartAt I α).target,
+        chartDensity (I := I) q α ((extChartAt I α).symm (e.symm z)) *
+          u ((extChartAt I α).symm (e.symm z)) * f z := by
+      rw [he.setIntegral_image_emb e.toHomeomorph.measurableEmbedding]
+      simp only [ContinuousLinearEquiv.symm_apply_apply]
+    _ = _ := setIntegral_eq_integral_of_forall_compl_eq_zero (fun z hz => by
+      rw [Function.notMem_support.mp (fun hs => hz (hfs hs)), mul_zero])
 
 end DifferentialGeometry.Analysis.Sobolev.Chart

@@ -297,6 +297,28 @@ theorem h1ComplDirichletChartPullback_add
     h1ComplDirichletChartPullback_coeFn q α hΩ hΩc hΩs hg hgs] with x hx hfx hgx
   rw [hx, Pi.add_apply, hfx, hgx, chartPullback_add]
 
+theorem h1ComplDirichletChartPullback_sub
+    (q : SmoothRiemannianMetric I_hs M) (α : M) {Ω : Set EuStd}
+    (hΩ : IsOpen Ω) (hΩc : IsCompact (closure Ω))
+    (hΩs : closure Ω ⊆ toEuclidean (E := EuN) '' interior (extChartAt I_hs α).target)
+    {f g : EuStd → ℝ} (hf : MemWkp 1 2 f Ω) (hfs : tsupport f ⊆ Ω)
+    (hg : MemWkp 1 2 g Ω) (hgs : tsupport g ⊆ Ω) :
+    h1ComplDirichletChartPullback q α hΩ hΩc hΩs (hf.sub (by norm_num) hΩ hg)
+      ((tsupport_sub f g).trans (union_subset hfs hgs)) =
+      h1ComplDirichletChartPullback q α hΩ hΩc hΩs hf hfs -
+        h1ComplDirichletChartPullback q α hΩ hΩc hΩs hg hgs := by
+  symm
+  apply eq_h1ComplDirichletChartPullback_of_coeFn
+  rw [map_sub]
+  filter_upwards [Lp.coeFn_sub
+    (H1ComplDirichletToLp q (h1ComplDirichletChartPullback q α hΩ hΩc hΩs hf hfs))
+    (H1ComplDirichletToLp q (h1ComplDirichletChartPullback q α hΩ hΩc hΩs hg hgs)),
+    h1ComplDirichletChartPullback_coeFn q α hΩ hΩc hΩs hf hfs,
+    h1ComplDirichletChartPullback_coeFn q α hΩ hΩc hΩs hg hgs] with x hx hfx hgx
+  rw [hx, Pi.sub_apply, hfx, hgx]
+  simp only [chartPullback]
+  split_ifs <;> simp
+
 theorem h1ComplDirichletChartPullback_smul
     (q : SmoothRiemannianMetric I_hs M) (α : M) {Ω : Set EuStd}
     (hΩ : IsOpen Ω) (hΩc : IsCompact (closure Ω))
@@ -374,5 +396,69 @@ theorem dirichletLocalWeakPartialLp_h1ComplDirichletChartPullback_eq_ae
     rw [hz]
   exact DeGiorgi.HasWeakPartialDeriv.ae_eq hΩ hw hweak
     (Lp.memLp _ |>.locallyIntegrable (by norm_num)) hv
+
+theorem tendsto_h1ComplDirichletChartPullback
+    (q : SmoothRiemannianMetric I_hs M) (α : M) {Ω : Set EuStd}
+    (hΩ : IsOpen Ω) (hΩc : IsCompact (closure Ω))
+    (hΩs : closure Ω ⊆ toEuclidean (E := EuN) '' interior (extChartAt I_hs α).target)
+    {Z : Type*} {l : Filter Z} {f : Z → EuStd → ℝ} {g : EuStd → ℝ}
+    (hf : ∀ z, MemWkp 1 2 (f z) Ω) (hfs : ∀ z, tsupport (f z) ⊆ Ω)
+    (hg : MemWkp 1 2 g Ω) (hgs : tsupport g ⊆ Ω)
+    (hfg : Tendsto (fun z => iteratedWeakSobolevNorm 1 2 (fun x => f z x - g x) Ω)
+      l (𝓝 0)) :
+    Tendsto (fun z => h1ComplDirichletChartPullback q α hΩ hΩc hΩs (hf z) (hfs z)) l
+      (𝓝 (h1ComplDirichletChartPullback q α hΩ hΩc hΩs hg hgs)) := by
+  obtain ⟨C, hC, hbound⟩ := exists_norm_h1ComplDirichletChartPullback_le_wkpNorm q α hΩ hΩc hΩs
+  have ht : Tendsto (fun z => C * (iteratedWeakSobolevNorm 1 2
+      (fun x => f z x - g x) Ω).toReal) l (𝓝 0) := by
+    simpa only [ENNReal.toReal_zero, mul_zero, Function.comp_apply] using
+      ((ENNReal.tendsto_toReal ENNReal.zero_ne_top).comp hfg).const_mul C
+  apply tendsto_iff_norm_sub_tendsto_zero.mpr
+  apply squeeze_zero (fun _ => norm_nonneg _) _ ht
+  intro z
+  rw [← h1ComplDirichletChartPullback_sub q α hΩ hΩc hΩs (hf z) (hfs z) hg hgs]
+  exact hbound _ ((hf z).sub (by norm_num) hΩ hg)
+    ((tsupport_sub _ _).trans (union_subset (hfs z) hgs))
+
+theorem exists_smooth_tendsto_h1ComplDirichletChartPullback
+    (q : SmoothRiemannianMetric I_hs M) (α : M) {Ω : Set EuStd}
+    (hΩ : IsOpen Ω) (hΩc : IsCompact (closure Ω))
+    (hΩs : closure Ω ⊆ toEuclidean (E := EuN) '' interior (extChartAt I_hs α).target)
+    {f : EuStd → ℝ} (hf : MemWkp 1 2 f Ω) (hfs : tsupport f ⊆ Ω) :
+    ∃ (φ : ℕ → EuStd → ℝ) (hφ : ∀ j, ContDiff ℝ (⊤ : ℕ∞) (φ j))
+      (hφc : ∀ j, HasCompactSupport (φ j)) (hφs : ∀ j, tsupport (φ j) ⊆ Ω),
+      Tendsto (fun j => iteratedWeakSobolevNorm 1 2 (fun x => f x - φ j x) Ω)
+        atTop (𝓝 0) ∧
+      Tendsto (fun j => smoothToH1ComplDirichlet q (smoothScalarDirichletChartPullback q α
+        (hφ j) (hφc j) ((hφs j).trans (subset_closure.trans hΩs)))) atTop
+        (𝓝 (h1ComplDirichletChartPullback q α hΩ hΩc hΩs hf hfs)) := by
+  have hfc : HasCompactSupport f :=
+    hΩc.of_isClosed_subset (isClosed_tsupport _) (hfs.trans subset_closure)
+  let ε := fun j : ℕ => (1 : ℝ) / (j + 1)
+  have hε : ∀ j, 0 < ε j := fun j => by dsimp [ε]; positivity
+  have hεt : Tendsto ε atTop (𝓝 0) := tendsto_one_div_add_atTop_nhds_zero_nat
+  choose φ hφ hφc hφs herr using fun j =>
+    hf.exists_smooth_compactSupport_approx hΩ 1 2 (by norm_num) (by norm_num) hfc hfs (ε j) (hε j)
+  have hφW : ∀ j, MemWkp 1 2 (φ j) Ω := fun j =>
+    MemWkp_of_smooth_compactSupport hΩ (hφ j) (hφc j) (hφs j) (by norm_num) 1
+  have hnorm : Tendsto (fun j => iteratedWeakSobolevNorm 1 2 (fun x => f x - φ j x) Ω)
+      atTop (𝓝 0) := by
+    apply tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds
+      (by simpa only [ENNReal.ofReal_zero] using ENNReal.tendsto_ofReal hεt)
+      (fun _ => zero_le) herr
+  refine ⟨φ, hφ, hφc, hφs, hnorm, ?_⟩
+  have hcomm (j : ℕ) : iteratedWeakSobolevNorm 1 2 (fun x => φ j x - f x) Ω =
+      iteratedWeakSobolevNorm 1 2 (fun x => f x - φ j x) Ω := by
+    simpa only [neg_one_mul, neg_sub, enorm_neg, enorm_one, one_mul] using
+      wkpNorm_const_smul (by norm_num : (1 : ℝ≥0∞) ≤ 2) hΩ
+        (hf.sub (by norm_num) hΩ (hφW j)) (-1)
+  have ht := tendsto_h1ComplDirichletChartPullback q α hΩ hΩc hΩs hφW hφs hf hfs
+    (by simpa only [hcomm] using hnorm)
+  have heq (j : ℕ) : h1ComplDirichletChartPullback q α hΩ hΩc hΩs (hφW j) (hφs j) =
+      smoothToH1ComplDirichlet q (smoothScalarDirichletChartPullback q α
+        (hφ j) (hφc j) ((hφs j).trans (subset_closure.trans hΩs))) :=
+    h1ComplDirichletChartPullback_eq_smoothToH1ComplDirichlet q α hΩ hΩc hΩs
+      (hφ j) (hφc j) (hφs j)
+  simpa only [heq] using ht
 
 end DifferentialGeometry.Analysis.Laplacian.WithBoundary.Dirichlet

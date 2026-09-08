@@ -13,6 +13,20 @@ variable {X : Type*} [NormedAddCommGroup X] [NormedSpace ℝ X]
 def steklovAverage (h : ℝ) (f : ℝ → X) (t : ℝ) : X :=
   h⁻¹ • ∫ s in t..t + h, f s
 
+theorem steklovAverage_congr_ae
+    {f g : ℝ → X} (hfg : f =ᵐ[volume] g) (h t : ℝ) :
+    steklovAverage h f t = steklovAverage h g t := by
+  unfold steklovAverage
+  congr 1
+  exact intervalIntegral.integral_congr_ae (hfg.mono fun _ hx _ => hx)
+
+theorem steklovAverage_comp_continuousLinearMap {Y : Type*} [NormedAddCommGroup Y] [NormedSpace ℝ Y]
+    [CompleteSpace X] [CompleteSpace Y]
+    (L : X →L[ℝ] Y) {f : ℝ → X} {h t : ℝ}
+    (hf : IntervalIntegrable f volume t (t + h)) :
+    steklovAverage h (fun s => L (f s)) t = L (steklovAverage h f t) := by
+  simp only [steklovAverage, map_smul, L.intervalIntegral_comp_comm hf]
+
 theorem exists_timeH1_steklovAverage
     {f : ℝ → X} (hf : MemLp f 2 volume) (h T : ℝ) :
     ∃ w : timeH1 X T,
@@ -59,6 +73,27 @@ theorem exists_timeH1_steklovAverage_timeL2
   have hu : MemLp ((Icc (0 : ℝ) T).indicator (fun t => u t)) 2 volume :=
     (memLp_indicator_iff_restrict (f := fun t => u t) measurableSet_Icc).mpr (Lp.memLp u)
   exact exists_timeH1_steklovAverage hu h T
+
+theorem steklovAverage_compLpL_timeL2 {Y : Type*} [NormedAddCommGroup Y] [NormedSpace ℝ Y]
+    [CompleteSpace X] [CompleteSpace Y]
+    (L : X →L[ℝ] Y) {T : ℝ} (u : timeL2 X T) (h t : ℝ) :
+    steklovAverage h ((Icc (0 : ℝ) T).indicator (L.compLpL 2 (timeMeasure T) u)) t =
+      L (steklovAverage h ((Icc (0 : ℝ) T).indicator u) t) := by
+  have hu : MemLp ((Icc (0 : ℝ) T).indicator (fun s => u s)) 2 volume :=
+    (memLp_indicator_iff_restrict (f := fun s => u s) measurableSet_Icc).mpr (Lp.memLp u)
+  have hL : ((Icc (0 : ℝ) T).indicator (L.compLpL 2 (timeMeasure T) u)) =ᵐ[volume]
+      fun s => L ((Icc (0 : ℝ) T).indicator u s) := by
+    have heq := L.coeFn_compLpL u
+    change (L.compLpL 2 (timeMeasure T) u : ℝ → Y) =ᵐ[volume.restrict (Icc (0 : ℝ) T)]
+      (fun s => L (u s)) at heq
+    rw [Filter.EventuallyEq, ae_restrict_iff' measurableSet_Icc] at heq
+    filter_upwards [heq] with s hs
+    by_cases hsm : s ∈ Icc (0 : ℝ) T
+    · simpa only [indicator_of_mem hsm] using hs hsm
+    · simp only [indicator_of_notMem hsm, map_zero]
+  rw [steklovAverage_congr_ae hL h t]
+  exact steklovAverage_comp_continuousLinearMap L
+    ((hu.locallyIntegrable (by norm_num)).integrableOn_isCompact isCompact_uIcc).intervalIntegrable
 
 theorem steklovAverage_indicator_Icc_right_eq_zero
     (f : ℝ → X) (T : ℝ) {h : ℝ} (hh : 0 ≤ h) :
