@@ -4945,3 +4945,4 @@ import DifferentialGeometry.Analysis.Heat.Parametrix.BranchResidualBound
 import DifferentialGeometry.Analysis.Heat.Parametrix.BranchEvolution
 import DifferentialGeometry.Analysis.Heat.Parametrix.BranchApproximation
 import DifferentialGeometry.Analysis.Heat.Parametrix.BranchKernelComparison
+import DifferentialGeometry.Topology.Morse.MinimumSublevel
