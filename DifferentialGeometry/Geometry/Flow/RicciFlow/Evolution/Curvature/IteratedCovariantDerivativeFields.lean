@@ -274,3 +274,32 @@ theorem nablaKRm04_ricciIdentityAt
 end RicciIdentity
 
 end DifferentialGeometry.PDE.RicciFlow
+
+namespace DifferentialGeometry.PDE.RicciFlow
+open scoped Manifold ContDiff
+
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  [FiniteDimensional ℝ E]
+  {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+  {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+  [T2Space M]
+
+theorem nablaKRm04Field_eq_of_metric_eq
+    {D₁ D₂ : RealTimeInterval}
+    {S₁ : SolutionOn (I := I) (M := M) D₁}
+    {S₂ : SolutionOn (I := I) (M := M) D₂} {t₁ t₂ : ℝ}
+    (hmetric : S₁.base.metric t₁ = S₂.base.metric t₂) (k : ℕ) :
+    nablaKRm04Field S₁ t₁ k = nablaKRm04Field S₂ t₂ k := by
+  induction k with
+  | zero =>
+      change metricRm04 (S₁.base.metric t₁) = metricRm04 (S₂.base.metric t₂)
+      rw [hmetric]
+  | succ k ih =>
+      have hconn : S₁.family.connection t₁ = S₂.family.connection t₂ := by
+        change Geometry.Connection.LeviCivita (S₁.base.metric t₁) =
+          Geometry.Connection.LeviCivita (S₂.base.metric t₂)
+        rw [hmetric]
+      rw [nablaKRm04Field_succ, nablaKRm04Field_succ]
+      simp only [hconn, ih]
+
+end DifferentialGeometry.PDE.RicciFlow
