@@ -158,7 +158,7 @@ theorem intrinsicCore_minimizingVec_regular_unique
         exact (expMapIntrinsic_def
           (I := 𝓘(Real, E)) gExt hExt (pt : E) v).symm.trans hvEnd
     exact (intrinsicCore_short_inj
-      (I := I) g hEnorm p hR hloc hK hRm hsmallL h2aL hbudget
+      (I := I) g hEnorm p hR hloc hRm hsmallL h2aL hbudget
         (x := (pt : E)) (y := (q : E)) (u := u) (v := v)
         hpt hq huL hvL huEnd hvEnd').symm
 

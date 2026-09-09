@@ -2543,6 +2543,7 @@ import DifferentialGeometry.Geometry.Exponential.NormalCoordinates.Frame
 import DifferentialGeometry.Geometry.Exponential.NormalCoordinates.Integration
 import DifferentialGeometry.Geometry.Exponential.NormalCoordinates.PullbackDistance
 import DifferentialGeometry.Geometry.Exponential.NormalCoordinates.MetricExtension
+import DifferentialGeometry.Geometry.Exponential.NormalCoordinates.Convexity
 import DifferentialGeometry.Geometry.Exponential.Intrinsic.Agreement
 import DifferentialGeometry.Geometry.Exponential.Smoothness.AtZero.Smoothness
 import DifferentialGeometry.Geometry.Exponential.Smoothness.AtZero.VelocitySlice

@@ -1810,7 +1810,7 @@ theorem intrinsicExt_short_bound
       (by linarith) hend t ht
   nlinarith
 
-private theorem intrinsicExt_quad_le
+theorem intrinsicExtMetric_riemannOp_inner_le
     (g : SmoothRiemannianMetric I M)
     (hEnorm : ∀ (x : M) (v : TangentSpace I x),
       ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x v v)))
@@ -1988,7 +1988,7 @@ theorem intrinsicExt_not_conj_of_shortLaunch
     intro t ht W
     have hz : ‖γ t‖ < 3 * R / 4 := by
       simpa only [γ, gExt, hExt, intrinsicExtLaunch] using hfence t (Ioo_subset_Icc_self ht)
-    have hquad := intrinsicExt_quad_le (I := I) g hEnorm p hR hloc hz
+    have hquad := intrinsicExtMetric_riemannOp_inner_le (I := I) g hEnorm p hR hloc hz
       (hRm (γ t) hz) W (Variation.curveVelocity (I := 𝓘(ℝ, E)) γ t)
     have hspeed : gExt.inner (γ t)
         (Variation.curveVelocity (I := 𝓘(ℝ, E)) γ t)
@@ -2182,7 +2182,7 @@ theorem intrinsicExt_pair_pos
     have hz : ‖γ t‖ < 3 * R / 4 := by
       simpa only [γ, gExt, hExt, intrinsicExtLaunch] using hfence t ht
     have hquad :=
-      intrinsicExt_quad_le
+      intrinsicExtMetric_riemannOp_inner_le
         (I := I) g hEnorm p hR hloc hz (hRm (γ t) hz)
           (J t) (Variation.curveVelocity (I := 𝓘(Real, E)) γ t)
     have hspeedEq :
@@ -2414,7 +2414,7 @@ theorem intrinsicBranch_hess_pos
   intro t ht v
   have hz : ‖γ t‖ < 3 * R / 4 := by
     simpa only [γ, gExt, hExt, intrinsicExtLaunch] using hfence t (Ioo_subset_Icc_self ht)
-  have hquad := intrinsicExt_quad_le (I := I) g hEnorm p hR hloc hz (hRm (γ t) hz)
+  have hquad := intrinsicExtMetric_riemannOp_inner_le (I := I) g hEnorm p hR hloc hz (hRm (γ t) hz)
     v (curveVelocity (I := 𝓘(Real, E)) γ t)
   have hspeed : gExt.inner (γ t)
       (curveVelocity (I := 𝓘(Real, E)) γ t)

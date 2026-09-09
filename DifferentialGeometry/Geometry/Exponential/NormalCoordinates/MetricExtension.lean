@@ -63,6 +63,127 @@ end
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace
 
+section PullbackBounds
+
+open MeasureTheory
+
+variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
+  [FiniteDimensional ℝ E] {H : Type*} [TopologicalSpace H]
+  {I : ModelWithCorners ℝ E H} [I.Boundaryless]
+  {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
+  [IsManifold I ∞ M] [T2Space M]
+
+theorem mapsTo_ball_of_pathELength_lt_of_pullback_extension
+    (g : SmoothRiemannianMetric I M) (p : M)
+    (gExt : SmoothRiemannianMetric 𝓘(ℝ, E) E) {B a b : ℝ}
+    (hdom : MapsTo (normalFrame g p) (Metric.closedBall (0 : E) B) (expDomain g p))
+    (hmetric : ∀ z : E, ‖z‖ ≤ B → ∀ v w : E,
+      gExt.inner z v w = g.inner (framedExpMap g p z)
+        (mfderiv 𝓘(ℝ, E) I (framedExpMap g p) z v)
+        (mfderiv 𝓘(ℝ, E) I (framedExpMap g p) z w))
+    {γ : ℝ → E} (hab : a ≤ b) (hγ : ContDiffOn ℝ 1 γ (Icc a b))
+    (hlen : let : RiemannianBundle (TangentSpace 𝓘(ℝ, E) : E → Type _) :=
+        ⟨gExt.toRiemannianMetric⟩
+      Manifold.pathELength 𝓘(ℝ, E) γ a b < ENNReal.ofReal (B - ‖γ a‖)) :
+    MapsTo γ (Icc a b) (Metric.ball (0 : E) B) := by
+  let : RiemannianBundle (TangentSpace 𝓘(ℝ, E) : E → Type _) :=
+    ⟨gExt.toRiemannianMetric⟩
+  have hExt : ∀ (z : E) (v : TangentSpace 𝓘(ℝ, E) z),
+      ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (gExt.inner z v v)) := by
+    intro z v
+    rw [← ofReal_norm, norm_eq_sqrt_real_inner]
+    rfl
+  apply Manifold.mapsTo_ball_of_pathELength_comp_lt_of_radial_bound
+    gExt.toContinuousRiemannianMetric hExt id hab hγ (fun _ _ => contMDiffAt_id) ?_ hlen
+  intro z hz v
+  have hzNorm : ‖z‖ ≤ B := by
+    simpa only [Metric.mem_closedBall, dist_zero_right] using hz
+  have hrad : inner ℝ z v ≤ ‖z‖ * Real.sqrt (gExt.inner z v v) := by
+    rw [hmetric z hzNorm v v]
+    exact (le_abs_self _).trans (framedExpMap_radial_lower_bound g p v (hdom hz))
+  simpa only [id_eq, mfderiv_id, ContinuousLinearMap.id_apply] using! hrad
+
+theorem riemannianEDistOf_zero_le_norm_of_pullback_extension
+    (g : SmoothRiemannianMetric I M) (p : M)
+    (gExt : SmoothRiemannianMetric 𝓘(ℝ, E) E) {B : ℝ}
+    (hdom : MapsTo (normalFrame g p) (Metric.closedBall (0 : E) B) (expDomain g p))
+    (hmetric : ∀ z : E, ‖z‖ ≤ B → ∀ v w : E,
+      gExt.inner z v w = g.inner (framedExpMap g p z)
+        (mfderiv 𝓘(ℝ, E) I (framedExpMap g p) z v)
+        (mfderiv 𝓘(ℝ, E) I (framedExpMap g p) z w))
+    {z : E} (hz : ‖z‖ ≤ B) :
+    riemannianEDistOf gExt (0 : E) z ≤ ENNReal.ofReal ‖z‖ := by
+  let : T2Space (TangentBundle I M) := inferInstance
+  let : RiemannianBundle (TangentSpace 𝓘(ℝ, E) : E → Type _) :=
+    ⟨gExt.toRiemannianMetric⟩
+  let γ : ℝ → E := fun t => t • z
+  have hγ : ContMDiff 𝓘(ℝ, ℝ) 𝓘(ℝ, E) ∞ γ := contMDiff_id.smul contMDiff_const
+  have hd (t : ℝ) : mfderiv 𝓘(ℝ, ℝ) 𝓘(ℝ, E) γ t 1 = z := by
+    rw [mfderiv_eq_fderiv]
+    have hfd : HasFDerivAt γ (ContinuousLinearMap.smulRight (1 : ℝ →L[ℝ] ℝ) z) t := by
+      convert (hasFDerivAt_id t).smul_const z using 1
+      all_goals rfl
+    rw [hfd.fderiv]
+    exact one_smul ℝ z
+  have hinner (t : ℝ) (ht : t ∈ Icc (0 : ℝ) 1) :
+      gExt.inner (γ t) z z = ‖z‖ ^ 2 := by
+    have htz : ‖t • z‖ ≤ B := by
+      rw [norm_smul, Real.norm_eq_abs, abs_of_nonneg ht.1]
+      exact (mul_le_of_le_one_left (norm_nonneg z) ht.2).trans hz
+    have hdomt := hdom (by simpa only [Metric.mem_closedBall, dist_zero_right] using htz)
+    change gExt.inner (t • z) z z = _
+    rw [hmetric (t • z) htz z z, mfderiv_framedExpMap g p hdomt]
+    change g.inner (expMap g p (normalFrame g p (t • z)))
+      (mfderiv 𝓘(ℝ, E) I (fun v : E => expMap g p v)
+        (normalFrame g p (t • z)) (normalFrame g p z))
+      (mfderiv 𝓘(ℝ, E) I (fun v : E => expMap g p v)
+        (normalFrame g p (t • z)) (normalFrame g p z)) = _
+    rw [map_smul]
+    have ht' : (show TangentSpace I p from t • normalFrame g p z) ∈ expDomain g p := by
+      simpa only [map_smul] using hdomt
+    with_unfolding_all
+      exact (gauss_lemma_smul g p (normalFrame g p z) (normalFrame g p z) ht').trans
+        ((normalFrame_inner g p z z).trans (real_inner_self_eq_norm_sq z))
+  have hspd (t : ℝ) (ht : t ∈ Icc (0 : ℝ) 1) :
+      ‖mfderiv 𝓘(ℝ, ℝ) 𝓘(ℝ, E) γ t 1‖ₑ = ENNReal.ofReal ‖z‖ := by
+    rw [← ofReal_norm, norm_eq_sqrt_real_inner]
+    change ENNReal.ofReal (Real.sqrt (gExt.inner (γ t)
+      (mfderiv 𝓘(ℝ, ℝ) 𝓘(ℝ, E) γ t 1) (mfderiv 𝓘(ℝ, ℝ) 𝓘(ℝ, E) γ t 1))) = _
+    rw [hd, hinner t ht, Real.sqrt_sq (norm_nonneg z)]
+  calc
+    _ ≤ Manifold.pathELength 𝓘(ℝ, E) γ 0 1 :=
+      Manifold.riemannianEDist_le_pathELength
+        (hγ.of_le (by decide)).contMDiffOn (by simp [γ]) (by simp [γ]) zero_le_one
+    _ = ∫⁻ t in Icc (0 : ℝ) 1, ENNReal.ofReal ‖z‖ := by
+      rw [Manifold.pathELength_eq_lintegral_mfderiv_Icc]
+      exact setLIntegral_congr_fun measurableSet_Icc hspd
+    _ = _ := by
+      rw [setLIntegral_const, Real.volume_Icc]
+      norm_num
+
+theorem riemannianEDistOf_le_norm_add_norm_of_pullback_extension
+    (g : SmoothRiemannianMetric I M) (p : M)
+    (gExt : SmoothRiemannianMetric 𝓘(ℝ, E) E) {B : ℝ}
+    (hdom : MapsTo (normalFrame g p) (Metric.closedBall (0 : E) B) (expDomain g p))
+    (hmetric : ∀ z : E, ‖z‖ ≤ B → ∀ v w : E,
+      gExt.inner z v w = g.inner (framedExpMap g p z)
+        (mfderiv 𝓘(ℝ, E) I (framedExpMap g p) z v)
+        (mfderiv 𝓘(ℝ, E) I (framedExpMap g p) z w))
+    {x y : E} (hx : ‖x‖ ≤ B) (hy : ‖y‖ ≤ B) :
+    riemannianEDistOf gExt x y ≤ ENNReal.ofReal (‖x‖ + ‖y‖) := by
+  calc
+    _ ≤ riemannianEDistOf gExt x 0 + riemannianEDistOf gExt 0 y :=
+      riemannianEDistOf_triangle gExt x 0 y
+    _ = riemannianEDistOf gExt 0 x + riemannianEDistOf gExt 0 y := by
+      rw [riemannianEDistOf_comm gExt x 0]
+    _ ≤ ENNReal.ofReal ‖x‖ + ENNReal.ofReal ‖y‖ := add_le_add
+      (riemannianEDistOf_zero_le_norm_of_pullback_extension g p gExt hdom hmetric hx)
+      (riemannianEDistOf_zero_le_norm_of_pullback_extension g p gExt hdom hmetric hy)
+    _ = _ := (ENNReal.ofReal_add (norm_nonneg x) (norm_nonneg y)).symm
+
+
+end PullbackBounds
+
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
   [FiniteDimensional ℝ E] {H : Type*} [TopologicalSpace H]
   {I : ModelWithCorners ℝ E H} [I.Boundaryless]
@@ -126,25 +247,11 @@ private theorem curve_fenced
         ⟨gExt.toRiemannianMetric⟩
       Manifold.pathELength 𝓘(ℝ, E) γ 0 1 < ENNReal.ofReal (B - ‖γ 0‖)) :
     MapsTo γ (Icc (0 : ℝ) 1) (Metric.ball (0 : E) B) := by
-  let : RiemannianBundle (TangentSpace 𝓘(ℝ, E) : E → Type _) :=
-    ⟨gExt.toRiemannianMetric⟩
-  have hExt : ∀ (z : E) (v : TangentSpace 𝓘(ℝ, E) z),
-      ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (gExt.inner z v v)) := by
-    intro z v
-    rw [← ofReal_norm, norm_eq_sqrt_real_inner]
-    rfl
-  have hrad (z : E) (hz : z ∈ Metric.closedBall (0 : E) B) (v : E) :
-      inner ℝ z v ≤ ‖z‖ * Real.sqrt (gExt.inner z v v) := by
-    let zU : U := ⟨z, hball hz⟩
-    have hzNorm : ‖z‖ ≤ B := by
-      simpa only [Metric.mem_closedBall, dist_zero_right] using hz
-    rw [hmetric zU hzNorm v v]
-    exact (le_abs_self _).trans (framedExpMap_radial_lower_bound g p v (hdom hz))
-  apply Manifold.mapsTo_ball_of_pathELength_comp_lt_of_radial_bound
-    gExt.toContinuousRiemannianMetric hExt id zero_le_one hγ
-    (fun _ _ => contMDiffAt_id) ?_ hlen
-  intro z hz v
-  simpa only [id_eq, mfderiv_id, ContinuousLinearMap.id_apply] using! hrad z hz v
+  let : T2Space M := gauss_t2Space_base I
+  exact mapsTo_ball_of_pathELength_lt_of_pullback_extension g p gExt hdom
+    (fun z hz => hmetric ⟨z, hball (by
+      simpa only [Metric.mem_closedBall, dist_zero_right] using hz)⟩ hz)
+    zero_le_one hγ hlen
 
 theorem exists_geodesic_restriction_of_pullback_extension
     (g : SmoothRiemannianMetric I M) (p : M) (U : Opens E)
@@ -629,6 +736,91 @@ theorem hasGeodesicEquationAt_smul_of_framedExpMap_pullback
   have hgeoE := ((geodesicOn_open_iff gE V γ {t}).mp hgeoOn) t (mem_singleton t)
   exact HasGeodesicEquationAt.congr_of_eventuallyEq_at
     hEq.eq_of_nhds.symm hEq.symm hgeoE
+
+variable [NeZero (Module.finrank ℝ E)]
+
+theorem intrinsicGeodesic_zero_eq_smul_of_pullback_extension
+    (g : SmoothRiemannianMetric I M) (p : M)
+    (gExt : SmoothRiemannianMetric 𝓘(ℝ, E) E)
+    (hcomplete : RiemannianMetricComplete gExt) {B : ℝ}
+    (hdom : MapsTo (normalFrame g p) (Metric.closedBall (0 : E) B) (expDomain g p))
+    (hmetric : ∀ z : E, ‖z‖ ≤ B → ∀ v w : E,
+      gExt.inner z v w = g.inner (framedExpMap g p z)
+        (mfderiv 𝓘(ℝ, E) I (framedExpMap g p) z v)
+        (mfderiv 𝓘(ℝ, E) I (framedExpMap g p) z w))
+    {z : E} {t : ℝ} (ht : ‖t • z‖ < B) :
+  let : RiemannianBundle (TangentSpace 𝓘(ℝ, E) : E → Type _) :=
+    ⟨gExt.toRiemannianMetric⟩
+  let (x : E) : NormedAddCommGroup (TangentSpace 𝓘(ℝ, E) x) := inferInstance
+  let (x : E) : NormedSpace ℝ (TangentSpace 𝓘(ℝ, E) x) := inferInstance
+  let : ∀ x : E, ENormSMulClass ℝ (TangentSpace 𝓘(ℝ, E) x) :=
+    fun _ => inferInstance
+  let : IsContinuousRiemannianBundle E (TangentSpace 𝓘(ℝ, E) : E → Type _) :=
+    ⟨gExt.inner, gExt.contMDiff.continuous, by intro x v w; rfl⟩
+  let : EMetricSpace E := EMetricSpace.ofRiemannianMetric 𝓘(ℝ, E) E
+  let : IsRiemannianManifold 𝓘(ℝ, E) E := ⟨fun _ _ => rfl⟩
+  let : UniformSpace E := PseudoEMetricSpace.toUniformSpace
+  let : CompleteSpace E := hcomplete.complete
+  let hExt : IsMetricNorm gExt :=
+    fun x v => tensor0SBundle_enorm_eq_riemannianBundle_enorm gExt x v
+  intrinsicGeodesic gExt hExt (0 : E) z t = t • z := by
+  dsimp only
+  let : RiemannianBundle (TangentSpace 𝓘(ℝ, E) : E → Type _) :=
+    ⟨gExt.toRiemannianMetric⟩
+  let (x : E) : NormedAddCommGroup (TangentSpace 𝓘(ℝ, E) x) := inferInstance
+  let (x : E) : NormedSpace ℝ (TangentSpace 𝓘(ℝ, E) x) := inferInstance
+  let : ∀ x : E, ENormSMulClass ℝ (TangentSpace 𝓘(ℝ, E) x) :=
+    fun _ => inferInstance
+  let : IsContinuousRiemannianBundle E (TangentSpace 𝓘(ℝ, E) : E → Type _) :=
+    ⟨gExt.inner, gExt.contMDiff.continuous, by intro x v w; rfl⟩
+  let : EMetricSpace E := EMetricSpace.ofRiemannianMetric 𝓘(ℝ, E) E
+  let : IsRiemannianManifold 𝓘(ℝ, E) E := ⟨fun _ _ => rfl⟩
+  let : UniformSpace E := PseudoEMetricSpace.toUniformSpace
+  let : CompleteSpace E := hcomplete.complete
+  let hExt : IsMetricNorm gExt :=
+    fun x v => tensor0SBundle_enorm_eq_riemannianBundle_enorm gExt x v
+  let U : TopologicalSpace.Opens E := ⟨Metric.ball (0 : E) B, Metric.isOpen_ball⟩
+  let O : Set ℝ := (fun s : ℝ => s • z) ⁻¹' (U : Set E)
+  have hO : IsOpen O := U.isOpen.preimage (continuous_id.smul continuous_const)
+  have hOconv : Convex ℝ O := by
+    let F : ℝ →L[ℝ] E := ContinuousLinearMap.smulRight (1 : ℝ →L[ℝ] ℝ) z
+    exact (convex_ball (0 : E) B).linear_preimage F.toLinearMap
+  have h0O : (0 : ℝ) ∈ O := by
+    change (0 : ℝ) • z ∈ Metric.ball (0 : E) B
+    simpa only [zero_smul, Metric.mem_ball, dist_self] using
+      (norm_nonneg (t • z)).trans_lt ht
+  have hline : IsGeodesicOn gExt (fun s : ℝ => s • z) O := by
+    intro s hs
+    apply hasGeodesicEquationAt_smul_of_framedExpMap_pullback g p U gExt
+      (fun x hx => hmetric x (by
+        change x ∈ Metric.ball (0 : E) B at hx
+        exact (show ‖x‖ < B from by simpa only [Metric.mem_ball, dist_zero_right] using hx).le))
+      z s hs
+    exact hdom (Metric.ball_subset_closedBall hs)
+  let Γ : ℝ → E := intrinsicGeodesic gExt hExt (0 : E) z
+  have hΓ : IsGeodesicOn gExt Γ O := fun s _ =>
+    intrinsicGeodesic_isGeodesic gExt hExt (0 : E) z s
+  have hvel :
+      (mfderiv 𝓘(ℝ, ℝ) 𝓘(ℝ, E) Γ 0 (1 : ℝ) : E) =
+        mfderiv 𝓘(ℝ, ℝ) 𝓘(ℝ, E) (fun s : ℝ => s • z) 0 (1 : ℝ) := by
+    have hleft : (mfderiv 𝓘(ℝ, ℝ) 𝓘(ℝ, E) Γ 0 (1 : ℝ) : E) = z :=
+      intrinsicGeodesic_mfderiv_zero gExt hExt (0 : E) z
+    have hright : mfderiv 𝓘(ℝ, ℝ) 𝓘(ℝ, E) (fun s : ℝ => s • z) 0 (1 : ℝ) = z := by
+      rw [mfderiv_eq_fderiv]
+      have hfd : HasFDerivAt (fun s : ℝ => s • z)
+          (ContinuousLinearMap.smulRight (1 : ℝ →L[ℝ] ℝ) z) 0 := by
+        convert (hasFDerivAt_id (0 : ℝ)).smul_const z using 1
+        all_goals rfl
+      rw [hfd.fderiv]
+      exact one_smul ℝ z
+    exact hleft.trans hright.symm
+  have heq := geo_eqOn_of_initial gExt hO hOconv.isPreconnected h0O hΓ hline
+    (intrinsicGeodesic_continuous gExt hExt (0 : E) z).continuousOn
+    (continuous_id.smul continuous_const).continuousOn
+    (by simpa only [Γ, zero_smul] using intrinsicGeodesic_zero gExt hExt (0 : E) z) hvel
+  apply heq
+  change t • z ∈ Metric.ball (0 : E) B
+  simpa only [Metric.mem_ball, dist_zero_right] using ht
 
 end Radial
 

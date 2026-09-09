@@ -1,4 +1,5 @@
 import DifferentialGeometry.Bundle.FiberBundleHausdorff
+import DifferentialGeometry.Geometry.Exponential.Inverse.Radius
 import DifferentialGeometry.Geometry.Comparison.Convexity.Geodesic
 import Mathlib.Topology.Compactness.Compact
 
@@ -61,5 +62,24 @@ theorem tendsto_minimizingVec_of_unique
         funext (minimizingVec_len g hEnorm p)
       rw [heq] at hc
       exact eq_of_nhds_neBot (hc.clusterPt.mono hd.continuousAt)
+
+theorem Exponential.branchEnergy_min_germ
+    (g : SmoothRiemannianMetric I M) (hEnorm : IsMetricNorm g)
+    {pt q : M} (B : ExponentialInverseBranch g hEnorm pt)
+    (hmem : ∀ᶠ z in 𝓝 q, (minimizingVec g hEnorm pt z : E) ∈ B.hom.source) :
+    branchEnergy g B =ᶠ[𝓝 q]
+      (fun z => (1 / 2 : ℝ) * (riemannianEDist I pt z).toReal ^ 2) := by
+  filter_upwards [hmem] with z hz
+  let v : E := (minimizingVec g hEnorm pt z : E)
+  have hvexp : expMapIntrinsic g hEnorm pt v = z := minimizingVec_exp g hEnorm pt z
+  have henergy : branchEnergy g B z = (1 / 2 : ℝ) * g.inner pt v v := by
+    rw [← hvexp]
+    exact branchEnergy_exp B hz
+  have hlen : Real.sqrt (g.inner pt v v) = (riemannianEDist I pt z).toReal :=
+    minimizingVec_len g hEnorm pt z
+  rw [henergy, ← hlen]
+  congr 1
+  exact (Real.sq_sqrt (metric_inner_self_nonneg g pt v)).symm
+
 
 end DifferentialGeometry.Geometry.Riemannian
