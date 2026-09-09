@@ -4872,3 +4872,8 @@ import DifferentialGeometry.Analysis.Parabolic.Dirichlet.GradientScalarSource
 import DifferentialGeometry.Geometry.Metric.Family.Descent
 import DifferentialGeometry.Geometry.Metric.ProductIsometry
 import DifferentialGeometry.Topology.Diffeomorph.Product
+import DifferentialGeometry.Analysis.Calculus.SmoothExtension.Compact
+import DifferentialGeometry.Topology.Morse.Perturbation
+import DifferentialGeometry.Topology.Morse.Naturality
+import DifferentialGeometry.Topology.Morse.Stability
+import DifferentialGeometry.Topology.Morse.Existence
