@@ -3176,6 +3176,7 @@ import DifferentialGeometry.Geometry.Metric.UniversalCover.Coordinates
 import DifferentialGeometry.Geometry.Metric.UniversalCover.Curvature
 import DifferentialGeometry.Geometry.Metric.UniversalCover.DeckIsometry
 import DifferentialGeometry.Geometry.Metric.UniversalCover.DeckIsometryGlobal
+import DifferentialGeometry.Geometry.Metric.UniversalCover.DimensionOne
 import DifferentialGeometry.Geometry.Metric.UniversalCover.Metric
 import DifferentialGeometry.Geometry.Metric.UniversalCover.Smoothness
 import DifferentialGeometry.Geometry.Operator.CotangentSharpSmooth
@@ -4909,8 +4910,8 @@ import DifferentialGeometry.Analysis.Parabolic.Dirichlet.HigherOrderBootstrap
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.LocalSobolevTimeNorm
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.ThirdOrderTimeNorm
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.ThirdOrderRegularity
-import DifferentialGeometry.Analysis.Parabolic.Dirichlet.GradientSourceRegularity
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.WeakPartialSource
+import DifferentialGeometry.Analysis.Sobolev.Euclidean.TwoTermSource
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.FiniteSumReindex
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.TimeMeasureRestrict
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.ThirdWeakDerivative

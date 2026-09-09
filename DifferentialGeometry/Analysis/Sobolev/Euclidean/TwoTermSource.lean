@@ -5,9 +5,7 @@ noncomputable section
 open Filter MeasureTheory Set
 open scoped ContDiff ENNReal
 
-namespace DifferentialGeometry.Analysis.Parabolic.Dirichlet
-
-open DifferentialGeometry.Analysis.Sobolev.Euclidean
+namespace DifferentialGeometry.Analysis.Sobolev.Euclidean
 
 theorem exists_lp_two_term_source_spatial_derivative
     {Z : Type*} [MeasurableSpace Z] {d : ℕ}
@@ -88,4 +86,4 @@ theorem exists_lp_two_term_source_spatial_derivative
   simp only [A, Y, DY, Bool.false_eq_true, ↓reduceIte] at hp
   simpa [add_comm, add_left_comm, add_assoc] using hp
 
-end DifferentialGeometry.Analysis.Parabolic.Dirichlet
+end DifferentialGeometry.Analysis.Sobolev.Euclidean
