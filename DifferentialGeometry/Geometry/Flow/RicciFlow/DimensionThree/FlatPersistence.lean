@@ -128,4 +128,40 @@ theorem stationary_flat_of_curvatureOperatorImageAt_finrank_eq_zero_of_complete_
     (mem_curvatureOperatorImageAnnihilatorAt_of_finrank_eq_zero
       (S.family.metric s) x (hzeroPast s hs le_rfl x) w) u v
 
+
+omit [SigmaCompactSpace M] in
+theorem metric_eq_on_of_curvatureOperatorImageAt_finrank_eq_zero
+    {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn S)
+    {a b : ℝ} (hreg : Set.Ioo a b ⊆ D.regular)
+    (hzero : ∀ t ∈ Set.Ioo a b, ∀ x, Module.finrank ℝ (curvatureOperatorImageAt
+      (S.family.metric t) x ⟨metricRm04At (S.family.metric t) x,
+        metricRm04At_mem_algebraicCurvatureTensorSubmodule (S.family.metric t) x⟩) = 0)
+    {s t : ℝ} (hs : s ∈ Set.Ioo a b) (ht : t ∈ Set.Ioo a b) :
+    S.family.metric s = S.family.metric t := by
+  apply SmoothRiemannianMetric.ext_inner
+  intro x u v
+  have hderiv (r : ℝ) (hr : r ∈ Set.Ioo a b) :
+      HasDerivAt (fun z => (S.family.metric z).inner x u v) 0 r := by
+    let _ : FiniteDimensional ℝ (TangentSpace I x [⋀^Fin 2]→L[ℝ] ℝ) :=
+      (ContinuousAlternatingMap.elementaryCovectorBasis (k := 2)
+        (Module.finBasis ℝ (TangentSpace I x))).finiteDimensional_of_finite
+    have hnull : u ∈ curvatureOperatorImageAnnihilatorAt (S.family.metric r) x
+        ⟨metricRm04At (S.family.metric r) x,
+          metricRm04At_mem_algebraicCurvatureTensorSubmodule (S.family.metric r) x⟩ := by
+      apply ContinuousAlternatingMap.mem_contractionAnnihilator_iff.mpr
+      intro beta hbeta
+      rw [Submodule.finrank_eq_zero.mp (hzero r hr x)] at hbeta
+      simp only [Submodule.mem_bot] at hbeta
+      simp [hbeta]
+    have hricci := ricciTensor_eq_zero_of_mem_curvatureOperatorImageAnnihilatorAt
+      (S.family.metric r) x hnull v
+    have h := metricDerivAt S hS ⟨r, hreg hr⟩ x u v
+    change HasDerivAt (fun z => (S.family.metric z).inner x u v)
+      (-2 * metricRicciAt (S.family.metric r) x (vec2 u v)) r at h
+    rw [metricRicciAt_apply_eq_ricciTensor, hricci, mul_zero] at h
+    exact h
+  exact isOpen_Ioo.is_const_of_deriv_eq_zero isPreconnected_Ioo
+    (fun r hr => (hderiv r hr).differentiableAt.differentiableWithinAt)
+    (fun r hr => (hderiv r hr).deriv) hs ht
+
 end DifferentialGeometry.PDE.RicciFlow

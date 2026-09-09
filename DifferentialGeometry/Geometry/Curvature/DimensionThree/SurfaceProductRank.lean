@@ -1,4 +1,5 @@
 import DifferentialGeometry.Geometry.Curvature.Product
+import DifferentialGeometry.Geometry.Curvature.DimensionOne.Flat
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureNullityRank
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureOperatorRankNaturality
 
@@ -14,14 +15,16 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [T2Space M]
 
-theorem curvatureOperatorImageAt_finrank_prod_real_le_one
+theorem curvatureOperatorImageAt_finrank_prod_real
     [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (hdim : Module.finrank ℝ E = 2)
     (x : M × ℝ) :
     Module.finrank ℝ (curvatureOperatorImageAt (g.prod (euclideanMetric (E := ℝ))) x
       ⟨metricRm04At (g.prod (euclideanMetric (E := ℝ))) x,
         metricRm04At_mem_algebraicCurvatureTensorSubmodule
-          (g.prod (euclideanMetric (E := ℝ))) x⟩) ≤ 1 := by
+          (g.prod (euclideanMetric (E := ℝ))) x⟩) =
+      if metricScalarAt g x.1 = 0 then 0 else 1 := by
+  let _ : CompleteSpace E := FiniteDimensional.complete ℝ E
   have hdim3 : Module.finrank ℝ (E × ℝ) = 3 := by
     rw [Module.finrank_prod, hdim]
     norm_num
@@ -36,7 +39,31 @@ theorem curvatureOperatorImageAt_finrank_prod_real_le_one
   rw [curvatureOperatorImageAt_finrank_eq_of_unit_curvature_nullity _ x hdim3
     (show TangentSpace (I.prod 𝓘(ℝ, ℝ)) x from (0, 1))
     (prod_real_vertical_mem_curvatureOperatorImageAnnihilatorAt g x 1) hunit]
+  have heuc : metricScalarAt (euclideanMetric (E := ℝ)) x.2 = 0 :=
+    metricScalarAt_eq_zero_of_finrank_le_one (euclideanMetric (E := ℝ)) (by simp) x.2
+  rw [metricScalarAt_prod, heuc, add_zero]
+
+
+theorem curvatureOperatorImageAt_finrank_prod_real_le_one
+    [I.Boundaryless]
+    (g : SmoothRiemannianMetric I M) (hdim : Module.finrank ℝ E = 2)
+    (x : M × ℝ) :
+    Module.finrank ℝ (curvatureOperatorImageAt (g.prod (euclideanMetric (E := ℝ))) x
+      ⟨metricRm04At (g.prod (euclideanMetric (E := ℝ))) x,
+        metricRm04At_mem_algebraicCurvatureTensorSubmodule
+          (g.prod (euclideanMetric (E := ℝ))) x⟩) ≤ 1 := by
+  rw [curvatureOperatorImageAt_finrank_prod_real g hdim x]
   split <;> omega
+
+theorem curvatureOperatorImageAt_finrank_prod_real_eq_one_of_scalar_ne_zero
+    [I.Boundaryless]
+    (g : SmoothRiemannianMetric I M) (hdim : Module.finrank ℝ E = 2)
+    (x : M × ℝ) (hscalar : metricScalarAt g x.1 ≠ 0) :
+    Module.finrank ℝ (curvatureOperatorImageAt (g.prod (euclideanMetric (E := ℝ))) x
+      ⟨metricRm04At (g.prod (euclideanMetric (E := ℝ))) x,
+        metricRm04At_mem_algebraicCurvatureTensorSubmodule
+          (g.prod (euclideanMetric (E := ℝ))) x⟩) = 1 := by
+  rw [curvatureOperatorImageAt_finrank_prod_real g hdim x, if_neg hscalar]
 
 variable {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
   [FiniteDimensional ℝ F]
@@ -44,7 +71,7 @@ variable {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
   {N : Type*} [TopologicalSpace N] [ChartedSpace G N]
   [IsManifold J ∞ N] [T2Space N]
 
-theorem curvatureOperatorImageAt_finrank_pullback_prod_real_le_one
+theorem curvatureOperatorImageAt_finrank_pullback_prod_real
     [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric J N)
     (Φ : M ≃ₘ⟮I, J.prod 𝓘(ℝ, ℝ)⟯ (N × ℝ))
@@ -54,7 +81,8 @@ theorem curvatureOperatorImageAt_finrank_pullback_prod_real_le_one
       ⟨metricRm04At
           (Diffeomorph.pullbackMetricCross (g.prod (euclideanMetric (E := ℝ))) Φ) x,
         metricRm04At_mem_algebraicCurvatureTensorSubmodule
-          (Diffeomorph.pullbackMetricCross (g.prod (euclideanMetric (E := ℝ))) Φ) x⟩) ≤ 1 := by
+          (Diffeomorph.pullbackMetricCross (g.prod (euclideanMetric (E := ℝ))) Φ) x⟩) =
+      if metricScalarAt g (Φ x).1 = 0 then 0 else 1 := by
   let _ : CompleteSpace E := FiniteDimensional.complete ℝ E
   let _ : CompleteSpace F := FiniteDimensional.complete ℝ F
   have hdimprod : Module.finrank ℝ (TangentSpace (J.prod 𝓘(ℝ, ℝ)) (Φ x)) = 3 := by
@@ -68,6 +96,35 @@ theorem curvatureOperatorImageAt_finrank_pullback_prod_real_le_one
     metricCurvatureOperatorRankAt_localPull
       (g.prod (euclideanMetric (E := ℝ))) Φ Φ.isLocalDiffeomorph x hdimM hdimprod,
     metricCurvatureOperatorRankAt_eq_curvatureOperatorImageAt_finrank]
-  exact curvatureOperatorImageAt_finrank_prod_real_le_one g hdim (Φ x)
+  exact curvatureOperatorImageAt_finrank_prod_real g hdim (Φ x)
+
+
+theorem curvatureOperatorImageAt_finrank_pullback_prod_real_le_one
+    [SigmaCompactSpace M]
+    (g : SmoothRiemannianMetric J N)
+    (Φ : M ≃ₘ⟮I, J.prod 𝓘(ℝ, ℝ)⟯ (N × ℝ))
+    (hdim : Module.finrank ℝ F = 2) (x : M) :
+    Module.finrank ℝ (curvatureOperatorImageAt
+      (Diffeomorph.pullbackMetricCross (g.prod (euclideanMetric (E := ℝ))) Φ) x
+      ⟨metricRm04At
+          (Diffeomorph.pullbackMetricCross (g.prod (euclideanMetric (E := ℝ))) Φ) x,
+        metricRm04At_mem_algebraicCurvatureTensorSubmodule
+          (Diffeomorph.pullbackMetricCross (g.prod (euclideanMetric (E := ℝ))) Φ) x⟩) ≤ 1 := by
+  rw [curvatureOperatorImageAt_finrank_pullback_prod_real g Φ hdim x]
+  split <;> omega
+
+theorem curvatureOperatorImageAt_finrank_pullback_prod_real_eq_one_of_scalar_ne_zero
+    [SigmaCompactSpace M]
+    (g : SmoothRiemannianMetric J N)
+    (Φ : M ≃ₘ⟮I, J.prod 𝓘(ℝ, ℝ)⟯ (N × ℝ))
+    (hdim : Module.finrank ℝ F = 2) (x : M)
+    (hscalar : metricScalarAt g (Φ x).1 ≠ 0) :
+    Module.finrank ℝ (curvatureOperatorImageAt
+      (Diffeomorph.pullbackMetricCross (g.prod (euclideanMetric (E := ℝ))) Φ) x
+      ⟨metricRm04At
+          (Diffeomorph.pullbackMetricCross (g.prod (euclideanMetric (E := ℝ))) Φ) x,
+        metricRm04At_mem_algebraicCurvatureTensorSubmodule
+          (Diffeomorph.pullbackMetricCross (g.prod (euclideanMetric (E := ℝ))) Φ) x⟩) = 1 := by
+  rw [curvatureOperatorImageAt_finrank_pullback_prod_real g Φ hdim x, if_neg hscalar]
 
 end DifferentialGeometry.Geometry.Curvature.DimensionThree

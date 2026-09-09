@@ -21,6 +21,29 @@ variable {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
 variable [IsManifold I ∞ M] [IsManifold I 1 M]
 
+theorem tensor0SFamilyContinuousOnSet.of_locally
+    {s : Nat} {K : Set ℝ}
+    {A : (t : ℝ) -> (x : M) -> Tensor0SSpace s I x}
+    (hA : ∀ t ∈ K, ∃ U : Set ℝ, IsOpen U ∧ t ∈ U ∧
+      tensor0SFamilyContinuousOnSet (I := I) (M := M) s (K ∩ U) A) :
+    tensor0SFamilyContinuousOnSet (I := I) (M := M) s K A := by
+  unfold tensor0SFamilyContinuousOnSet
+  rw [continuous_iff_continuousAt]
+  intro q
+  rcases hA q.1.1 q.1.2 with ⟨U, hU, hqt, hcont⟩
+  let V : Set ({t : ℝ // t ∈ K} × M) := {q' | (q'.1 : ℝ) ∈ U}
+  have hVopen : IsOpen V := hU.preimage (continuous_subtype_val.comp continuous_fst)
+  have hVcont : ContinuousOn
+      (fun q' : {t : ℝ // t ∈ K} × M =>
+        TotalSpace.mk' (Tensor0SModel s ℝ E) q'.2 (A q'.1.1 q'.2)) V := by
+    rw [continuousOn_iff_continuous_domRestrict]
+    refine hcont.comp (f := fun w : V =>
+      ((⟨w.1.1.1, ⟨w.1.1.2, w.2⟩⟩ : {t : ℝ // t ∈ K ∩ U}), w.1.2)) ?_
+    exact (((continuous_subtype_val.comp continuous_fst).comp
+      continuous_subtype_val).subtype_mk _).prodMk
+        (continuous_snd.comp continuous_subtype_val)
+  exact hVcont.continuousAt (hVopen.mem_nhds hqt)
+
 theorem tensor0SFamilyContinuousOnSet_of_chartComp
     {s : Nat} {K : Set Real}
     (A : (t : Real) → (x : M) →

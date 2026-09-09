@@ -2628,6 +2628,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.Cutoff
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.CutoffData
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Preservation.PositiveRicciReaction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.Restriction
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.Locality
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.Derivatives.StarSum.Reaction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.Derivatives.StarSum.ProductLeibniz
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.Derivatives.StarSum.Residual
@@ -4853,4 +4854,9 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.RankPersisten
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Solutions.UniversalCover
 import DifferentialGeometry.Analysis.Heat.Kernel.DuhamelBound
 import DifferentialGeometry.Analysis.Heat.Kernel.PointwiseForcing
+import DifferentialGeometry.Analysis.Heat.Kernel.Approximation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.AncientRankPersistence
+import DifferentialGeometry.Analysis.Heat.Kernel.GaussianApproximation
+import DifferentialGeometry.Analysis.Parabolic.Dirichlet.Stability
+import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.UniversalCoverTrichotomy
+import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Rank

@@ -199,4 +199,59 @@ theorem ricciSharp_eq_zero_of_mem_curvatureOperatorImageAnnihilatorAt
     ricciTensor_eq_zero_of_mem_curvatureOperatorImageAnnihilatorAt g x hv w]
   simp
 
+
+theorem riemannOp_eq_zero_of_curvatureOperatorImageAt_finrank_eq_zero
+    (g : SmoothRiemannianMetric I M)
+    (hzero : ∀ x, Module.finrank ℝ (curvatureOperatorImageAt g x
+      ⟨metricRm04At g x,
+        metricRm04At_mem_algebraicCurvatureTensorSubmodule g x⟩) = 0) :
+    ∀ x (u v w : TangentSpace I x),
+      riemannOp (LeviCivita (I := I) g) x u v w = 0 := by
+  intro x u v w
+  let _ : FiniteDimensional ℝ (TangentSpace I x [⋀^Fin 2]→L[ℝ] ℝ) :=
+    (ContinuousAlternatingMap.elementaryCovectorBasis (k := 2)
+      (Module.finBasis ℝ (TangentSpace I x))).finiteDimensional_of_finite
+  have hz := hzero x
+  have hnull : w ∈ curvatureOperatorImageAnnihilatorAt g x
+      ⟨metricRm04At g x, metricRm04At_mem_algebraicCurvatureTensorSubmodule g x⟩ := by
+    apply ContinuousAlternatingMap.mem_contractionAnnihilator_iff.mpr
+    intro beta hbeta
+    rw [Submodule.finrank_eq_zero.mp hz] at hbeta
+    simp only [Submodule.mem_bot] at hbeta
+    simp [hbeta]
+  exact riemannOp_eq_zero_of_mem_curvatureOperatorImageAnnihilatorAt g x hnull u v
+
+theorem curvatureOperatorImageAt_finrank_eq_zero_of_riemannOp_eq_zero
+    (g : SmoothRiemannianMetric I M)
+    (hzero : ∀ x (u v w : TangentSpace I x),
+      riemannOp (LeviCivita (I := I) g) x u v w = 0) :
+    ∀ x, Module.finrank ℝ (curvatureOperatorImageAt g x
+      ⟨metricRm04At g x,
+        metricRm04At_mem_algebraicCurvatureTensorSubmodule g x⟩) = 0 := by
+  intro x
+  have hnull (v : TangentSpace I x) : v ∈ curvatureOperatorImageAnnihilatorAt g x
+      ⟨metricRm04At g x, metricRm04At_mem_algebraicCurvatureTensorSubmodule g x⟩ := by
+    apply (mem_curvatureOperatorImageAnnihilatorAt_iff_tensor04StdAt_eq_zero g x _ v).mpr
+    intro a b w
+    unfold tensor04StdAt
+    rw [DifferentialGeometry.PDE.RicciFlow.metricRm04At_inner]
+    change g.inner x (riemannOp (LeviCivita g) x a b v) w = 0
+    rw [hzero x a b v]
+    simp
+  have hrange : curvatureOperatorImageAt g x
+      ⟨metricRm04At g x, metricRm04At_mem_algebraicCurvatureTensorSubmodule g x⟩ = ⊥ := by
+    apply le_antisymm _ bot_le
+    intro a ha
+    change a = 0
+    apply ContinuousAlternatingMap.ext
+    intro c
+    have hc : c = ![c 0, c 1] := by ext i; fin_cases i <;> rfl
+    have hz := ContinuousAlternatingMap.mem_contractionAnnihilator_iff.mp (hnull (c 0)) a ha
+    have he := congrArg (fun f : TangentSpace I x [⋀^Fin 1]→L[ℝ] ℝ => f ![c 1]) hz
+    change a ![c 0, c 1] = 0 at he
+    rw [hc]
+    exact he
+  rw [hrange]
+  exact finrank_bot ℝ _
+
 end DifferentialGeometry.Geometry.Curvature

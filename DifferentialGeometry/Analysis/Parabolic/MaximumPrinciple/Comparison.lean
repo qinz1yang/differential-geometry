@@ -101,6 +101,26 @@ theorem heat_eq_of_initial_eq
   exact heat_pot_eq_of_initial_eq (I := I) G hT (fun _ _ => 0) u v hu hv 0
     (by simp) hinit
 
+omit [CompleteSpace E] in
+theorem heat_forced_eq_of_initial_eq
+    [I.Boundaryless] [CompactSpace M]
+    [VectorBundle ℝ E (TangentSpace I : M → Type _)]
+    (G : MetricConnectionFamily (I := I) (M := M) ℝ)
+    {T : ℝ} (hT : 0 ≤ T) (f u v : ℝ → M → ℝ)
+    (hu : IsHeatForcedOn (RealTimeInterval.closed 0 T hT) G f u)
+    (hv : IsHeatForcedOn (RealTimeInterval.closed 0 T hT) G f v)
+    (hinit : ∀ x : M, u 0 x = v 0 x) :
+    ∀ t ∈ Set.Icc 0 T, ∀ x : M, u t x = v t x := by
+  have hz : IsHeatOn (RealTimeInterval.closed 0 T hT) G (fun _ _ => 0) := by
+    refine ⟨contMDiffOn_const, continuousOn_const, fun _ _ => contMDiff_const, ?_⟩
+    intro t ht x
+    have hd : HasDerivAt (fun _ : ℝ => (0 : ℝ)) 0 t := hasDerivAt_const t 0
+    simpa only [laplacianAt, DifferentialGeometry.Geometry.Operator.laplacian_const, mul_zero, add_zero] using hd
+  have heq := heat_eq_of_initial_eq G hT (fun t x => u t x - v t x)
+    (fun _ _ => 0) (hu.sub_same hv) hz (fun x => sub_eq_zero.mpr (hinit x))
+  intro t ht x
+  exact sub_eq_zero.mp (heq t ht x)
+
 end
 
 end DifferentialGeometry.Analysis.Parabolic
