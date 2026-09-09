@@ -181,8 +181,6 @@ theorem lReducedJacobian_ball_le
   let A : Set E := U ∩
     {Z | Real.sqrt ((S.base.metric (time : Real)).inner B.center Z Z) ≤
       1 / (8 * Real.sqrt eps)}
-  let Ψ := lExpPartial S hS (time : Real) B.center tau
-    (mul_pos heps (sq_pos_of_pos B.radius_pos))
   have hepsD' : eps ≤ epsD := heps₀.trans (min_le_left epsD epsE)
   have hepsE' : eps ≤ epsE := heps₀.trans (min_le_right epsD epsE)
   have htau : 0 < tau := by
@@ -196,86 +194,12 @@ theorem lReducedJacobian_ball_le
       (1 / (8 * Real.sqrt eps))
   have hAmeas : MeasurableSet A := by
     exact (lInj_isOpen S hS (time : Real) B.center tau).measurableSet.inter hnormMeas
-  have hAsource : A ⊆ Ψ.source := by
-    dsimp only [Ψ]
-    rw [lExpPartial_source S hS (time : Real) B.center tau htau]
-    exact inter_subset_left
-  have hImageMeas : MeasurableSet (Ψ '' A) :=
-    measurableSet_image_param_global (I := I) Ψ hAmeas hAsource
-  have hImageBall : Ψ '' A ⊆ B.set := by
-    rintro y ⟨Z, hZA, rfl⟩
-    dsimp only [Ψ]
-    rw [lExpPartial_apply S hS (time : Real) B.center tau htau hZA.1]
+  apply lintegral_lReducedJacobian_mul_source_le
+    S hS (time : Real) B.center htau A B.set hAmeas inter_subset_left c
+  · intro Z hZA
     simpa only [tau] using hend eps heps hepsE' B hBrho hB Z hZA.2
-  have hImageDen : ∀ y ∈ Ψ '' A,
-      ENNReal.ofReal (redDensity S (time : Real) B.center y tau) ≤
-        ENNReal.ofReal c := by
-    rintro y ⟨Z, hZA, rfl⟩
-    dsimp only [Ψ]
-    rw [lExpPartial_apply S hS (time : Real) B.center tau htau hZA.1]
-    apply ENNReal.ofReal_le_ofReal
-    simpa only [c, tau] using
-      hden eps heps hepsD' B hBrho hB Z hZA.2 hZA.1
-  have hparam :
-      (∫⁻ y in Ψ '' A,
-          ENNReal.ofReal (redDensity S (time : Real) B.center y tau)
-          ∂riemannianVolumeMeasure (I := I) (M := M)
-            (S.base.metric ((time : Real) - tau))) =
-        ∫⁻ Z in A,
-          ENNReal.ofReal
-              (paramDensity (S.base.metric ((time : Real) - tau)) Ψ Z) *
-            ENNReal.ofReal (redDensity S (time : Real) B.center (Ψ Z) tau)
-          ∂modelHaar (E := E) :=
-    riemVol_param_lint (I := I) (S.base.metric ((time : Real) - tau)) Ψ
-      (fun y ↦ ENNReal.ofReal (redDensity S (time : Real) B.center y tau))
-      hAmeas hAsource
-  have hsmallEq :
-      (∫⁻ Z in A,
-          ENNReal.ofReal
-            (lReducedJacobian S (time : Real) B.center Z tau *
-              lSourceDensity S (time : Real) B.center)
-          ∂modelHaar (E := E)) =
-        ∫⁻ y in Ψ '' A,
-          ENNReal.ofReal (redDensity S (time : Real) B.center y tau)
-          ∂riemannianVolumeMeasure (I := I) (M := M)
-            (S.base.metric ((time : Real) - tau)) := by
-    rw [hparam]
-    refine MeasureTheory.setLIntegral_congr_fun hAmeas ?_
-    intro Z hZA
-    dsimp only [Ψ]
-    rw [lExpPartial_density S hS (time : Real) B.center tau htau hZA.1,
-      lExpPartial_apply S hS (time : Real) B.center tau htau hZA.1]
-    rw [← ENNReal.ofReal_mul (lExpDensity_pos S hS (time : Real)
-      B.center htau hZA.1).le]
-    exact congrArg ENNReal.ofReal
-      (lReducedJacobian_mul_source S hS (time : Real) B.center htau hZA.1)
-  change (∫⁻ Z in A,
-      ENNReal.ofReal
-        (lReducedJacobian S (time : Real) B.center Z tau *
-          lSourceDensity S (time : Real) B.center)
-      ∂modelHaar (E := E)) ≤ _
-  calc
-    (∫⁻ Z in A,
-        ENNReal.ofReal
-          (lReducedJacobian S (time : Real) B.center Z tau *
-            lSourceDensity S (time : Real) B.center)
-        ∂modelHaar (E := E)) =
-      ∫⁻ y in Ψ '' A,
-        ENNReal.ofReal (redDensity S (time : Real) B.center y tau)
-        ∂riemannianVolumeMeasure (I := I) (M := M)
-          (S.base.metric ((time : Real) - tau)) := hsmallEq
-    _ ≤ ∫⁻ _y in Ψ '' A, ENNReal.ofReal c
-        ∂riemannianVolumeMeasure (I := I) (M := M)
-          (S.base.metric ((time : Real) - tau)) :=
-      MeasureTheory.setLIntegral_mono' hImageMeas hImageDen
-    _ ≤ ∫⁻ _y in B.set, ENNReal.ofReal c
-        ∂riemannianVolumeMeasure (I := I) (M := M)
-          (S.base.metric ((time : Real) - tau)) :=
-      MeasureTheory.lintegral_mono_set hImageBall
-    _ = ENNReal.ofReal c *
-        riemannianVolumeMeasure (I := I) (M := M)
-          (S.base.metric ((time : Real) - tau)) B.set := by
-      rw [MeasureTheory.setLIntegral_const]
+  · intro Z hZA
+    simpa only [c, tau] using hden eps heps hepsD' B hBrho hB Z hZA.2 hZA.1
 
 omit [NeZero (Module.finrank Real E)] [I.Boundaryless] in
 theorem ballVol_move_le

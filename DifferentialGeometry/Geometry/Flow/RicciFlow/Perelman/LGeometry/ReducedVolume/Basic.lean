@@ -65,6 +65,7 @@ theorem redDensity_pos
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
+omit [NeZero (Module.finrank ℝ E)] in
 private theorem exists_lExpPartial
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) (T : Real) (x : M)
@@ -77,12 +78,18 @@ private theorem exists_lExpPartial
         (lInjDomain S T x tau) := by
   let f : E → M := fun Z ↦ lExp S T x Z tau
   let U : Set E := lInjDomain S T x tau
+  have hdomain : IsOpen U ∧ InjOn f U := by
+    by_cases hdim : Module.finrank ℝ E = 0
+    · let : Subsingleton E := Module.finrank_zero_iff.mp hdim
+      exact ⟨isOpen_discrete _, fun _ _ _ _ _ => Subsingleton.elim _ _⟩
+    · let : NeZero (Module.finrank ℝ E) := ⟨hdim⟩
+      exact ⟨lInj_isOpen S hS T x tau, lInj_inj S hS T x tau htau⟩
   have hlocal : IsLocalDiffeomorphOn (modelWithCornersSelf Real E) I ∞ f U := by
     rintro ⟨Z, hZ⟩
     exact lInj_local S hS T x tau htau hZ
   obtain ⟨Φ, hsource, htarget, hEq⟩ :=
     DifferentialGeometry.Geometry.Riemannian.exists_partial_diffeomorph_of_is_local_diffeomorph_on_inj_on
-      hlocal (lInj_isOpen S hS T x tau) (lInj_inj S hS T x tau htau)
+      hlocal hdomain.1 hdomain.2
   let Ψ : PartialDiffeomorph (modelWithCornersSelf Real E) I E M 1 :=
     { toPartialEquiv := Φ.toPartialEquiv
       open_source := Φ.open_source
@@ -94,6 +101,7 @@ private theorem exists_lExpPartial
   · simpa only [Ψ, f, U] using htarget
   · simpa only [Ψ, f, U] using hEq
 
+omit [NeZero (Module.finrank ℝ E)] in
 noncomputable def lExpPartial
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) (T : Real) (x : M)
@@ -101,6 +109,7 @@ noncomputable def lExpPartial
     PartialDiffeomorph (modelWithCornersSelf Real E) I E M 1 :=
   Classical.choose (exists_lExpPartial S hS T x tau htau)
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem lExpPartial_source
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) (T : Real) (x : M)
@@ -108,6 +117,7 @@ theorem lExpPartial_source
     (lExpPartial S hS T x tau htau).source = lInjDomain S T x tau :=
   (Classical.choose_spec (exists_lExpPartial S hS T x tau htau)).1
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem lExpPartial_target
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) (T : Real) (x : M)
@@ -116,6 +126,7 @@ theorem lExpPartial_target
       (fun Z : E ↦ lExp S T x Z tau) '' lInjDomain S T x tau :=
   (Classical.choose_spec (exists_lExpPartial S hS T x tau htau)).2.1
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem lExpPartial_apply
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) (T : Real) (x : M)
@@ -126,6 +137,7 @@ theorem lExpPartial_apply
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
+omit [NeZero (Module.finrank ℝ E)] in
 theorem lExpPartial_density
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) (T : Real) (x : M)
@@ -191,6 +203,69 @@ theorem lReducedJacobian_mul_source
         redDensity S T x (lExp S T x Z tau) tau := by
   rw [lReducedJacobian_eq S hS T x htau hZ, lExpJacobian]
   field_simp [ne_of_gt (lSourceDensity_pos S T x)]
+
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+omit [NeZero (Module.finrank ℝ E)] in
+theorem lintegral_lReducedJacobian_mul_source
+    (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn S)
+    (T : ℝ) (x : M) {tau : ℝ} (htau : 0 < tau)
+    {A : Set E} (hAmeas : MeasurableSet A) (hAinj : A ⊆ lInjDomain S T x tau) :
+    (∫⁻ Z in A, ENNReal.ofReal (lReducedJacobian S T x Z tau * lSourceDensity S T x)
+      ∂modelHaar (E := E)) =
+      ∫⁻ y in (fun Z : E => lExp S T x Z tau) '' A,
+        ENNReal.ofReal (redDensity S T x y tau)
+        ∂riemannianVolumeMeasure (I := I) (M := M) (S.base.metric (T - tau)) := by
+  let Ψ := lExpPartial S hS T x tau htau
+  have hAsource : A ⊆ Ψ.source := by
+    rw [lExpPartial_source S hS T x tau htau]
+    exact hAinj
+  have himage : Ψ '' A = (fun Z : E => lExp S T x Z tau) '' A :=
+    Set.image_congr fun Z hZ => lExpPartial_apply S hS T x tau htau (hAinj hZ)
+  rw [← himage, riemVol_param_lint (S.base.metric (T - tau)) Ψ
+    (fun y => ENNReal.ofReal (redDensity S T x y tau)) hAmeas hAsource]
+  apply setLIntegral_congr_fun hAmeas
+  intro Z hZ
+  dsimp only [Ψ]
+  rw [lExpPartial_density S hS T x tau htau (hAinj hZ),
+    lExpPartial_apply S hS T x tau htau (hAinj hZ),
+    ← ENNReal.ofReal_mul (lExpDensity_pos S hS T x htau (hAinj hZ)).le]
+  exact congrArg ENNReal.ofReal (lReducedJacobian_mul_source S hS T x htau (hAinj hZ))
+
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+omit [NeZero (Module.finrank ℝ E)] in
+theorem lintegral_lReducedJacobian_mul_source_le
+    (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn S)
+    (T : ℝ) (x : M) {tau : ℝ} (htau : 0 < tau)
+    (A : Set E) (K : Set M) (hAmeas : MeasurableSet A)
+    (hAinj : A ⊆ lInjDomain S T x tau) (c : ℝ)
+    (hImage : ∀ Z ∈ A, lExp S T x Z tau ∈ K)
+    (hden : ∀ Z ∈ A, redDensity S T x (lExp S T x Z tau) tau ≤ c) :
+    (∫⁻ Z in A, ENNReal.ofReal (lReducedJacobian S T x Z tau * lSourceDensity S T x)
+      ∂modelHaar (E := E)) ≤
+      ENNReal.ofReal c *
+        riemannianVolumeMeasure (I := I) (M := M) (S.base.metric (T - tau)) K := by
+  rw [lintegral_lReducedJacobian_mul_source S hS T x htau hAmeas hAinj]
+  have hmeas : MeasurableSet ((fun Z : E => lExp S T x Z tau) '' A) := by
+    let Ψ := lExpPartial S hS T x tau htau
+    have hAsource : A ⊆ Ψ.source := by
+      rw [lExpPartial_source S hS T x tau htau]
+      exact hAinj
+    have himage : Ψ '' A = (fun Z : E => lExp S T x Z tau) '' A :=
+      Set.image_congr fun Z hZ => lExpPartial_apply S hS T x tau htau (hAinj hZ)
+    rw [← himage]
+    exact measurableSet_image_param_global Ψ hAmeas hAsource
+  calc
+    _ ≤ ∫⁻ _y in (fun Z : E => lExp S T x Z tau) '' A, ENNReal.ofReal c
+        ∂riemannianVolumeMeasure (I := I) (M := M) (S.base.metric (T - tau)) := by
+      apply setLIntegral_mono' hmeas
+      rintro y ⟨Z, hZ, rfl⟩
+      exact ENNReal.ofReal_le_ofReal (hden Z hZ)
+    _ ≤ ∫⁻ _y in K, ENNReal.ofReal c
+        ∂riemannianVolumeMeasure (I := I) (M := M) (S.base.metric (T - tau)) :=
+      lintegral_mono_set (by rintro y ⟨Z, hZ, rfl⟩; exact hImage Z hZ)
+    _ = _ := setLIntegral_const _ _
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
@@ -286,15 +361,7 @@ theorem redVolume_lint
         ENNReal.ofReal (lReducedJacobian S T x Z tau * lSourceDensity S T x)
         ∂modelHaar (E := E) := by
   let U : Set E := lInjDomain S T x tau
-  let Ψ := lExpPartial S hS T x tau htau
-  have hUmeas : MeasurableSet U :=
-    (lInj_isOpen S hS T x tau).measurableSet
-  have hUsource : U ⊆ Ψ.source := by
-    rw [lExpPartial_source S hS T x tau htau]
-  have himage :
-      Ψ '' U = (fun Z : E ↦ lExp S T x Z tau) '' U := by
-    exact Set.image_congr fun Z hZ ↦
-      lExpPartial_apply S hS T x tau htau hZ
+  have hUmeas : MeasurableSet U := (lInj_isOpen S hS T x tau).measurableSet
   calc
     redVolume S T x tau =
         ∫⁻ y in (fun Z : E ↦ lExp S T x Z tau) '' U,
@@ -307,30 +374,10 @@ theorem redVolume_lint
           ∫⁻ y, ENNReal.ofReal (redDensity S T x y tau) ∂μ)
         (Measure.restrict_eq_self_of_ae_mem
           (lExp_inj_ae S hS T x tau htau hslab)).symm
-    _ = ∫⁻ Z in U,
-        ENNReal.ofReal
-            (paramDensity (S.base.metric (T - tau)) Ψ Z) *
-          ENNReal.ofReal (redDensity S T x (Ψ Z) tau)
-        ∂modelHaar (E := E) := by
-      rw [← himage]
-      exact riemVol_param_lint (I := I) (S.base.metric (T - tau)) Ψ
-        (fun y ↦ ENNReal.ofReal (redDensity S T x y tau))
-        hUmeas hUsource
-    _ = ∫⁻ Z in U,
-        ENNReal.ofReal (lReducedJacobian S T x Z tau * lSourceDensity S T x)
-        ∂modelHaar (E := E) := by
-      refine MeasureTheory.setLIntegral_congr_fun hUmeas ?_
-      intro Z hZ
-      dsimp only [Ψ, U] at hZ ⊢
-      rw [lExpPartial_density S hS T x tau htau hZ,
-        lExpPartial_apply S hS T x tau htau hZ]
-      rw [← ENNReal.ofReal_mul (lExpDensity_pos S hS T x htau hZ).le]
-      exact congrArg ENNReal.ofReal
-        (lReducedJacobian_mul_source S hS T x htau hZ).symm
     _ = ∫⁻ Z in lInjDomain S T x tau,
         ENNReal.ofReal (lReducedJacobian S T x Z tau * lSourceDensity S T x)
-        ∂modelHaar (E := E) := by
-      rfl
+        ∂modelHaar (E := E) :=
+      (lintegral_lReducedJacobian_mul_source S hS T x htau hUmeas Subset.rfl).symm
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
