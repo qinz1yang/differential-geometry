@@ -2,10 +2,100 @@ import DifferentialGeometry.Topology.Morse.BoundaryPerturbation
 import DifferentialGeometry.Topology.Morse.CriticalPoint
 import DifferentialGeometry.Topology.Manifold.FunctionExtension
 import Mathlib.Geometry.Manifold.PartitionOfUnity
+import Mathlib.Analysis.Calculus.TangentCone.Pi
+import Mathlib.Analysis.Calculus.TangentCone.Real
 
 open scoped ContDiff Manifold Topology
 
 namespace DifferentialGeometry.Topology.Morse
+
+open Set in
+private theorem mem_interior_iff_pos_of_halfspace_chart
+    {M : Type*} [TopologicalSpace M] {n : ℕ}
+    (U : TopologicalSpace.Opens M)
+    (V : TopologicalSpace.Opens (Fin (n + 1) → ℝ))
+    (c : U ≃ₜ V) (D : Set M)
+    (hD : ∀ x : U, (x : M) ∈ D ↔ 0 ≤ (c x).val 0) (x : U) :
+    (x : M) ∈ interior D ↔ 0 < (c x).val 0 := by
+  let q : U → ℝ := fun y => (c y).val 0
+  have hq : Continuous q :=
+    (continuous_apply 0).comp (continuous_subtype_val.comp c.continuous)
+  have ho : IsOpenMap q :=
+    (isOpenMap_eval 0).comp (V.isOpen.isOpenMap_subtype_val.comp c.isOpenMap)
+  have hset : (Subtype.val : U → M) ⁻¹' D = q ⁻¹' Ici 0 := by
+    ext y
+    exact hD y
+  change x ∈ (Subtype.val : U → M) ⁻¹' interior D ↔ x ∈ q ⁻¹' Ioi 0
+  have hU : (Subtype.val : U → M) ⁻¹' interior D =
+      interior ((Subtype.val : U → M) ⁻¹' D) :=
+    U.isOpen.isOpenMap_subtype_val.preimage_interior_eq_interior_preimage continuous_subtype_val D
+  rw [hU, hset,
+    ← ho.preimage_interior_eq_interior_preimage hq (Ici 0), interior_Ici]
+
+
+open Set in
+private theorem fderiv_eq_of_eqOn_halfspace
+    {n : ℕ} {F G : (Fin (n + 1) → ℝ) → ℝ}
+    {V : Set (Fin (n + 1) → ℝ)} {x : Fin (n + 1) → ℝ}
+    (hV : IsOpen V) (hxV : x ∈ V) (hx : 0 ≤ x 0)
+    (hF : DifferentiableAt ℝ F x) (hG : DifferentiableAt ℝ G x)
+    (heq : EqOn F G (V ∩ {z | 0 ≤ z 0})) :
+    fderiv ℝ F x = fderiv ℝ G x := by
+  have hu : UniqueDiffOn ℝ {z : Fin (n + 1) → ℝ | 0 ≤ z 0} := by
+    simpa only [Set.pi, mem_singleton_iff, forall_eq, mem_Ici] using
+      (UniqueDiffOn.pi (I := ({0} : Set (Fin (n + 1))))
+        (s := fun _ : Fin (n + 1) => Ici (0 : ℝ))
+        (fun _ _ => uniqueDiffOn_Ici 0))
+  have hs : UniqueDiffWithinAt ℝ (V ∩ {z | 0 ≤ z 0}) x := by
+    simpa only [inter_comm] using (hu x hx).inter (hV.mem_nhds hxV)
+  rw [← fderivWithin_eq_fderiv hs hF, ← fderivWithin_eq_fderiv hs hG]
+  exact fderivWithin_congr' heq ⟨hxV, hx⟩
+
+private theorem isCriticalPointAt_iff_of_halfspace_chart
+    {n : ℕ} {E : Type} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    {H : Type} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+    {M : Type} [TopologicalSpace M] [ChartedSpace H M]
+    {U : TopologicalSpace.Opens M} {V : TopologicalSpace.Opens (Fin (n + 1) → ℝ)}
+    (c : Diffeomorph I 𝓘(ℝ, Fin (n + 1) → ℝ) U V ∞)
+    (g : M → ℝ) (hg : ContMDiff I 𝓘(ℝ) ∞ g)
+    (F : (Fin (n + 1) → ℝ) → ℝ) (hF : ContDiff ℝ ∞ F)
+    (hmodel : ∀ y : U, 0 ≤ (c y).val 0 → g y = F (c y))
+    (x : U) (hx : 0 ≤ (c x).val 0) :
+    IsCriticalPointAt I g (x : M) ↔
+      IsCriticalPointAt 𝓘(ℝ, Fin (n + 1) → ℝ) F (c x).val := by
+  let f : V → ℝ := fun z => g (c.symm z)
+  have hf : ContMDiff 𝓘(ℝ, Fin (n + 1) → ℝ) 𝓘(ℝ) ∞ f :=
+    (hg.comp contMDiff_subtype_val).comp c.symm.contMDiff
+  let G : (Fin (n + 1) → ℝ) → ℝ := Subtype.val.extend f 0
+  have hGval (z : V) : G z = f z := Subtype.val_injective.extend_apply f 0 z
+  have hGeq : (fun z : V => G z) = f := funext hGval
+  have hGsm : ContMDiffAt 𝓘(ℝ, Fin (n + 1) → ℝ) 𝓘(ℝ) ∞ G (c x).val := by
+    apply (contMDiffAt_subtype_iff (I := 𝓘(ℝ, Fin (n + 1) → ℝ)) (x := c x)).mp
+    rw [hGeq]
+    exact hf.contMDiffAt
+  have hGdiff := (contMDiffAt_iff_contDiffAt.mp hGsm).differentiableAt (by simp)
+  have heq : Set.EqOn G F ((V : Set (Fin (n + 1) → ℝ)) ∩ {z | 0 ≤ z 0}) := by
+    intro z hz
+    rw [hGval ⟨z, hz.1⟩]
+    have hm := hmodel (c.symm ⟨z, hz.1⟩) (by
+      simpa only [c.apply_symm_apply, Set.mem_ofPred_eq] using hz.2)
+    simpa only [f, c.apply_symm_apply] using hm
+  have hder := fderiv_eq_of_eqOn_halfspace V.isOpen (c x).property hx hGdiff
+    (hF.differentiable (by simp) (c x).val) heq
+  calc
+    IsCriticalPointAt I g (x : M) ↔ IsCriticalPointAt I (fun y : U => g y) x :=
+      (isCriticalPointAt_subtype_iff U (f := g) (x := x)).symm
+    _ ↔ IsCriticalPointAt 𝓘(ℝ, Fin (n + 1) → ℝ) f (c x) := by
+      simpa only [f, c.symm_apply_apply, Function.comp_def] using
+        (isCriticalPointAt_comp_diffeomorph_iff c.symm (by simp)
+          (f := fun y : U => g y) (x := c x)).symm
+    _ ↔ IsCriticalPointAt 𝓘(ℝ, Fin (n + 1) → ℝ) G (c x).val := by
+      rw [← hGeq]
+      exact isCriticalPointAt_subtype_iff V
+    _ ↔ IsCriticalPointAt 𝓘(ℝ, Fin (n + 1) → ℝ) F (c x).val := by
+      simp only [IsCriticalPointAt, mfderiv_eq_fderiv, hder]
+      rfl
+
 
 private theorem exists_contDiff_boundaryMorsePerturbation_sub
     {n : ℕ} (d : Fin n → ℝ) (b : ContDiffBump (0 : Fin n → ℝ))
@@ -258,9 +348,11 @@ theorem exists_boundaryMorsePerturbation_with_criticalPoint_in_chart
           IsNondegenerateCriticalPointAt I g (p : M) ∧
           _root_.sigNeg (chartHessianAt (fun z => g ((extChartAt I (p : M)).symm z))
             (extChartAt I (p : M) (p : M))) = {i | d i < 0}.ncard ∧
-          ∀ x : U, 0 < (c x).val 0 → (IsCriticalPointAt I g (x : M) ↔ x = p) := by
+          (∀ x : U, 0 < (c x).val 0 → (IsCriticalPointAt I g (x : M) ↔ x = p)) ∧
+          ∀ x ∈ D, IsCriticalPointAt I g x ↔
+            x = (p : M) ∨ (x ∉ (U : Set M) ∧ IsCriticalPointAt I f x) := by
   obtain ⟨δ, hδ, hcritical⟩ :=
-    exists_pos_isCriticalPointAt_boundaryMorseChart_iff c (by simp) d hd b v
+    exists_pos_boundaryMorsePerturbation_critical d hd b
   refine ⟨δ, hδ, ?_⟩
   intro a ha hbox
   obtain ⟨g, hg, hgs, hgU, hmodel, hout, hbound⟩ :=
@@ -273,28 +365,44 @@ theorem exists_boundaryMorsePerturbation_with_criticalPoint_in_chart
   have hp : (c p).val = Fin.cons (a / 2) 0 :=
     congrArg Subtype.val (c.apply_symm_apply _)
   have hp0 : 0 < (c p).val 0 := by rw [hp]; exact half_pos ha.1
-  let S : Set U := {x | 0 < (c x).val 0}
-  have hS : IsOpen S := isOpen_lt continuous_const
-    ((continuous_apply 0).comp (continuous_subtype_val.comp c.continuous))
-  have hpD : (p : M) ∈ interior D := by
-    apply (interior_mono (show Subtype.val '' S ⊆ D from ?_))
-    · have ho : IsOpen ((Subtype.val : U → M) '' S) :=
-        U.isOpen.isOpenMap_subtype_val S hS
-      exact mem_interior_iff_mem_nhds.mpr (ho.mem_nhds ⟨p, hp0, rfl⟩)
-    · rintro _ ⟨x, hx, rfl⟩
-      exact (hD x).mpr hx.le
+  have hpD : (p : M) ∈ interior D :=
+    (mem_interior_iff_pos_of_halfspace_chart U V c.toHomeomorph D hD p).mpr hp0
   have hm (x : U) (hx : 0 ≤ (c x).val 0) :
       g x = v + boundaryMorsePerturbation d b a (c x) := hmodel x ((hD x).mpr hx)
   have hnd := isNondegenerateCriticalPointAt_and_sigNeg_boundaryMorseChart c
     (ENat.natCast_le_of_coe_top_le_withTop le_rfl 2) d hd b v ha.1 hm p hp
-  refine ⟨g, hg, hgs, hgU, hmodel, hout, hbound, p, hpD, hp, hnd.1, hnd.2, ?_⟩
-  intro x hx
-  rw [hcritical a ha g hm x hx]
-  constructor
-  · intro heq
-    apply c.injective
-    exact Subtype.ext (heq.trans hp.symm)
-  · rintro rfl
-    exact hp
+  have hlocal (x : U) (hx : 0 ≤ (c x).val 0) : IsCriticalPointAt I g (x : M) ↔ x = p := by
+    rw [isCriticalPointAt_iff_of_halfspace_chart c g hg
+      (fun z => v + boundaryMorsePerturbation d b a z)
+      (contDiff_const.add (contDiff_boundaryMorsePerturbation d b a)) hm x hx]
+    have heq : IsCriticalPointAt 𝓘(ℝ, Fin (n + 1) → ℝ)
+        (fun z => v + boundaryMorsePerturbation d b a z) (c x).val ↔
+        IsCriticalPointAt 𝓘(ℝ, Fin (n + 1) → ℝ) (boundaryMorsePerturbation d b a) (c x).val := by
+      simp only [IsCriticalPointAt, mfderiv_eq_fderiv, fderiv_const_add]
+      rfl
+    rw [heq, (hcritical a ha).1 (c x) hx]
+    constructor
+    · intro heq
+      apply c.injective
+      exact Subtype.ext (heq.trans hp.symm)
+    · rintro rfl
+      exact hp
+  refine ⟨g, hg, hgs, hgU, hmodel, hout, hbound, p, hpD, hp, hnd.1, hnd.2, fun x hx => hlocal x hx.le, ?_⟩
+  intro x hxD
+  by_cases hxU : x ∈ (U : Set M)
+  · have hxnonneg := (hD ⟨x, hxU⟩).mp hxD
+    rw [hlocal ⟨x, hxU⟩ hxnonneg]
+    simp only [hxU, not_true_eq_false, false_and, or_false, Subtype.ext_iff]
+  · have hxS : x ∉ tsupport (g - f) := fun hx => hxU (hgU hx)
+    have hgf : g =ᶠ[𝓝 x] f := by
+      filter_upwards [(isClosed_tsupport (g - f)).isOpen_compl.mem_nhds hxS] with y hy
+      have hy0 : (g - f) y = 0 := image_eq_zero_of_notMem_tsupport hy
+      exact sub_eq_zero.mp hy0
+    have hxp : x ≠ (p : M) := by
+      intro heq
+      exact hxU (heq.symm ▸ p.property)
+    simp only [IsCriticalPointAt, hgf.mfderiv_eq, hxp, false_or, hxU,
+      not_false_eq_true, true_and]
+    rfl
 
 end DifferentialGeometry.Topology.Morse
