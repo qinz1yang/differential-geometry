@@ -2,6 +2,8 @@ import DifferentialGeometry.Topology.Morse.ManifoldCellAttachment
 import DifferentialGeometry.Topology.Handle.Embedding
 import DifferentialGeometry.Topology.Embedding.LocalDiffeomorph
 import Mathlib.Topology.Connected.Clopen
+import Mathlib.Analysis.Normed.Module.RCLike.Real
+import Mathlib.Topology.OpenPartialHomeomorph.Composition
 
 open scoped ContDiff Manifold Topology
 
@@ -13,6 +15,40 @@ open DifferentialGeometry.Topology.Handle
 noncomputable section
 
 attribute [local instance] closedCellChartedSpace cellBoundaryChartedSpace
+
+private theorem interior_range_cell_chart
+    {n : ℕ} {E M : Type*} [TopologicalSpace E] [TopologicalSpace M]
+    (A : EuclideanSpace ℝ (Fin n) ≃ₜ E) (Φ : OpenPartialHomeomorph E M)
+    (hsource : ∀ x : ClosedCell n, A x.val ∈ Φ.source) :
+    interior (Set.range (fun x : ClosedCell n => Φ (A x.val))) =
+      Set.range ((fun x : ClosedCell n => Φ (A x.val)) ∘ cellInteriorInclusion n) := by
+  let Ξ := A.toOpenPartialHomeomorph.trans Φ
+  have hΞsource (x : ClosedCell n) : x.val ∈ Ξ.source := by
+    change x.val ∈ Set.univ ∩ A ⁻¹' Φ.source
+    exact ⟨Set.mem_univ _, hsource x⟩
+  have himage : Ξ.IsImage {x : EuclideanSpace ℝ (Fin n) | ‖x‖ ≤ 1}
+      (Set.range (fun x : ClosedCell n => Φ (A x.val))) := by
+    intro x hx
+    constructor
+    · rintro ⟨y, hy⟩
+      have hxy : y.val = x := Ξ.injOn (hΞsource y) hx hy
+      exact hxy ▸ y.property
+    · intro h
+      exact ⟨⟨x, h⟩, rfl⟩
+  have hunit : interior {x : EuclideanSpace ℝ (Fin n) | ‖x‖ ≤ 1} =
+      {x : EuclideanSpace ℝ (Fin n) | ‖x‖ < 1} := by
+    simpa only [Metric.closedBall, Metric.ball, dist_zero_right] using
+      (interior_closedBall (0 : EuclideanSpace ℝ (Fin n)) (one_ne_zero : (1 : ℝ) ≠ 0))
+  apply Set.Subset.antisymm
+  · intro y hy
+    obtain ⟨x, rfl⟩ := interior_subset hy
+    have hx := (himage.interior (hΞsource x)).mp hy
+    rw [hunit] at hx
+    exact ⟨⟨x.val, hx⟩, rfl⟩
+  · rintro y ⟨x, rfl⟩
+    apply (himage.interior (hΞsource (cellInteriorInclusion n x))).mpr
+    rw [hunit]
+    exact x.property
 
 private theorem morseNormalForm_zero_eq {n : ℕ} (c : ℝ) (y : MorseModel n) :
     morseNormalForm (Nat.zero_le n) c y = c + morseNorm n y ^ 2 / 2 := by
@@ -40,7 +76,8 @@ private theorem exists_smooth_ball_of_morseChart_zero
         Set.range e = U ∩ {y | f y ≤ c + r ^ 2 / 2} ∧
         Set.range (e ∘ cellBoundaryInclusion n) = U ∩ {y | f y = c + r ^ 2 / 2} ∧
         Set.range (e ∘ cellInteriorInclusion n) = U ∩ {y | f y < c + r ^ 2 / 2} ∧
-        Manifold.IsSmoothEmbedding (𝓡 (n - 1)) I ∞ (e ∘ cellBoundaryInclusion n) := by
+        Manifold.IsSmoothEmbedding (𝓡 (n - 1)) I ∞ (e ∘ cellBoundaryInclusion n) ∧
+        interior (Set.range e) = Set.range (e ∘ cellInteriorInclusion n) := by
   let L := EuclideanSpace.equiv (Fin n) ℝ
   let S : Set (MorseModel n) := {y | morseNorm n y < 2 * r}
   have hS : IsOpen S := isOpen_lt (L.symm.continuous.norm) continuous_const
@@ -91,6 +128,8 @@ private theorem exists_smooth_ball_of_morseChart_zero
   let e : ClosedCell n → M := fun x => Φ (j x)
   have he : Manifold.IsSmoothEmbedding (modelWithCornersEuclideanHalfSpace ((n - 1) + 1)) I ∞ e :=
     ⟨himm, Φ.isEmbedding_restrict.comp hj'⟩
+  have htopInterior : interior (Set.range e) = Set.range (e ∘ cellInteriorInclusion n) :=
+    interior_range_cell_chart A.toHomeomorph Φ hjS
   let jb : CellBoundary n → MorseModel n := fun x => A x.val
   have hjb : Manifold.IsSmoothEmbedding (𝓡 (n - 1)) 𝓘(ℝ, MorseModel n) ∞ jb :=
     (isSmoothEmbedding_coe_cellBoundary n).continuousLinearEquiv_comp A
@@ -197,7 +236,7 @@ private theorem exists_smooth_ball_of_morseChart_zero
     · rintro ⟨x, hx, rfl⟩
       exact Φ.map_source (hsource.symm ▸ hx)
   exact ⟨e, he, fun _ => rfl, hheight, hcenter, Φ.target, Φ.open_target,
-    hcenter ▸ Φ.map_source (hjS (closedCellCenter n)), htarget, hrange, hboundary, hinterior, hboundaryEmbedding⟩
+    hcenter ▸ Φ.map_source (hjS (closedCellCenter n)), htarget, hrange, hboundary, hinterior, hboundaryEmbedding, htopInterior⟩
 
 end
 
@@ -230,7 +269,8 @@ theorem IsNondegenerateCriticalPointAt.exists_smooth_ball_sublevel_of_index_zero
         Set.range e = U ∩ {y | f y ≤ f p + ε} ∧
         Set.range (e ∘ cellBoundaryInclusion n) = U ∩ {y | f y = f p + ε} ∧
         Set.range (e ∘ cellInteriorInclusion n) = U ∩ {y | f y < f p + ε} ∧
-        Manifold.IsSmoothEmbedding (𝓡 (n - 1)) I ∞ (e ∘ cellBoundaryInclusion n) := by
+        Manifold.IsSmoothEmbedding (𝓡 (n - 1)) I ∞ (e ∘ cellBoundaryInclusion n) ∧
+        interior (Set.range e) = Set.range (e ∘ cellInteriorInclusion n) := by
   let data := morseChart I f hf p (f p) 0 (Nat.zero_le n) hnd hindex rfl
   have hdata : data.p = p := by
     have hAnd {P Q : Prop} {α : Type} (F : P → Q → α) (h : P ∧ Q) :
@@ -255,10 +295,10 @@ theorem IsNondegenerateCriticalPointAt.exists_smooth_ball_sublevel_of_index_zero
     ((min_le_right _ _).trans (min_le_left _ _))
   have hrt : 2 * r < τ := h2r.trans_le
     ((min_le_right _ _).trans (min_le_right _ _))
-  obtain ⟨e, he, _, hheight, hcenter, U, hU, hpU, hUeq, hrange, hboundary, hinterior, hboundaryEmbedding⟩ :=
+  obtain ⟨e, he, _, hheight, hcenter, U, hU, hpU, hUeq, hrange, hboundary, hinterior, hboundaryEmbedding, htopInterior⟩ :=
     exists_smooth_ball_of_morseChart_zero data hr hR hR'
   refine ⟨r ^ 2 / 2, by positivity, e, he, hcenter.trans hdata, ?_,
-    U, hU, hdata ▸ hpU, ?_, hrange, hboundary, hinterior, hboundaryEmbedding⟩
+    U, hU, hdata ▸ hpU, ?_, hrange, hboundary, hinterior, hboundaryEmbedding, htopInterior⟩
   · intro x
     rw [hheight]
     ring
@@ -319,8 +359,10 @@ theorem IsNondegenerateCriticalPointAt.exists_smooth_ball_sublevel_component_of_
         connectedComponentIn {y | f y ≤ f p + ε} p ∩ {y | f y = f p + ε} ∧
       Set.range (e ∘ cellInteriorInclusion n) =
         connectedComponentIn {y | f y ≤ f p + ε} p ∩ {y | f y < f p + ε} ∧
-      Manifold.IsSmoothEmbedding (𝓡 (n - 1)) I ∞ (e ∘ cellBoundaryInclusion n) := by
-  obtain ⟨ε, hε, e, he, hcenter, hheight, U, hU, hpU, hUW, hrange, hboundary, hinterior, hboundaryEmbedding⟩ :=
+      Manifold.IsSmoothEmbedding (𝓡 (n - 1)) I ∞ (e ∘ cellBoundaryInclusion n) ∧
+      interior (Set.range e) = Set.range (e ∘ cellInteriorInclusion n) ∧
+      frontier (Set.range e) = Set.range (e ∘ cellBoundaryInclusion n) := by
+  obtain ⟨ε, hε, e, he, hcenter, hheight, U, hU, hpU, hUW, hrange, hboundary, hinterior, hboundaryEmbedding, htopInterior⟩ :=
     hnd.exists_smooth_ball_sublevel_of_index_zero hf hindex hW hpW
   have hconv : Convex ℝ ({x : EuclideanSpace ℝ (Fin n) | ‖x‖ ≤ 1} : Set _) := by
     simpa only [Metric.closedBall, dist_zero_right] using
@@ -329,9 +371,19 @@ theorem IsNondegenerateCriticalPointAt.exists_smooth_ball_sublevel_component_of_
   have hpre : IsPreconnected (Set.range e) := by
     simpa only [Set.image_univ] using isPreconnected_univ.image e he.isEmbedding.continuous.continuousOn
   have hcompact : IsCompact (Set.range e) := isCompact_range he.isEmbedding.continuous
+  have htopBoundary : frontier (Set.range e) = Set.range (e ∘ cellBoundaryInclusion n) := by
+    rw [hcompact.isClosed.frontier_eq, htopInterior, hrange, hinterior, hboundary]
+    ext y
+    constructor
+    · rintro ⟨⟨hyU, hyf⟩, hnot⟩
+      exact ⟨hyU, le_antisymm hyf (le_of_not_gt (fun hlt => hnot ⟨hyU, hlt⟩))⟩
+    · rintro ⟨hyU, hyf⟩
+      refine ⟨⟨hyU, hyf.le⟩, ?_⟩
+      rintro ⟨_, hlt⟩
+      exact (lt_irrefl (f p + ε)) (hyf ▸ hlt)
   have hp : p ∈ Set.range e := ⟨closedCellCenter n, hcenter⟩
   have hcomp := connectedComponentIn_eq_of_isCompact hcompact hpre hU hrange hp
-  refine ⟨ε, hε, e, he, hcenter, hheight, hcomp.symm, ?_, ?_, ?_, hboundaryEmbedding⟩
+  refine ⟨ε, hε, e, he, hcenter, hheight, hcomp.symm, ?_, ?_, ?_, hboundaryEmbedding, htopInterior, htopBoundary⟩
   · rw [hrange]
     exact Set.inter_subset_left.trans hUW
   · rw [hcomp, hrange, hboundary]
