@@ -4855,6 +4855,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Solutions.Univer
 import DifferentialGeometry.Analysis.Heat.Kernel.DuhamelBound
 import DifferentialGeometry.Analysis.Heat.Kernel.PointwiseForcing
 import DifferentialGeometry.Analysis.Heat.Kernel.Approximation
+import DifferentialGeometry.Analysis.Heat.Kernel.Representation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.AncientRankPersistence
 import DifferentialGeometry.Analysis.Heat.Kernel.GaussianApproximation
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.Stability
