@@ -4943,3 +4943,5 @@ import DifferentialGeometry.Analysis.Parabolic.Dirichlet.GradientSourceRegularit
 import DifferentialGeometry.Analysis.Heat.Parametrix.BranchCutoff
 import DifferentialGeometry.Analysis.Heat.Parametrix.BranchResidualBound
 import DifferentialGeometry.Analysis.Heat.Parametrix.BranchEvolution
+import DifferentialGeometry.Analysis.Heat.Parametrix.BranchApproximation
+import DifferentialGeometry.Analysis.Heat.Parametrix.BranchKernelComparison
