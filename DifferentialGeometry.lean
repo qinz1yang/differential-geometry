@@ -2456,6 +2456,7 @@ import DifferentialGeometry.Geometry.Metric.Family.InverseMetric.Regularity
 import DifferentialGeometry.Geometry.Metric.Family.InverseMetric.Smoothness
 import DifferentialGeometry.Geometry.Metric.Family.Regularity.Pair
 import DifferentialGeometry.Geometry.Metric.Family.Stationary
+import DifferentialGeometry.Geometry.Metric.Family.TensorNorm
 import DifferentialGeometry.Geometry.Operator.Family.Basic
 import DifferentialGeometry.Analysis.TimeInterval
 import DifferentialGeometry.Geometry.Curvature.Naturality.OpenRestriction
