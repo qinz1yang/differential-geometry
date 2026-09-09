@@ -4256,6 +4256,7 @@ import DifferentialGeometry.Geometry.Operator.WeightedOmoriYau
 import DifferentialGeometry.Tensor.RSTensor.QuadraticBounds.Compact
 import DifferentialGeometry.Topology.Covering.DeckDiffeomorph
 import DifferentialGeometry.Topology.Covering.DeckGroup
+import DifferentialGeometry.Topology.Covering.RealDeckCircle
 import DifferentialGeometry.Topology.ProjectiveSpace.Manifold
 import DifferentialGeometry.Topology.ProjectiveSpace.PuncturedThree
 import DifferentialGeometry.Topology.ProjectiveSpace.Real
