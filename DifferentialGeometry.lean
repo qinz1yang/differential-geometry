@@ -3178,6 +3178,7 @@ import DifferentialGeometry.Geometry.Metric.UniversalCover.DeckIsometry
 import DifferentialGeometry.Geometry.Metric.UniversalCover.DeckIsometryGlobal
 import DifferentialGeometry.Geometry.Metric.UniversalCover.DeckProductConjugation
 import DifferentialGeometry.Geometry.Metric.UniversalCover.DeckProductAction
+import DifferentialGeometry.Geometry.Metric.UniversalCover.DeckProductFamily
 import DifferentialGeometry.Geometry.Metric.UniversalCover.DimensionOne
 import DifferentialGeometry.Geometry.Metric.UniversalCover.Metric
 import DifferentialGeometry.Geometry.Metric.UniversalCover.Smoothness
@@ -4896,6 +4897,8 @@ import DifferentialGeometry.Geometry.Exponential.BranchEnergyBounds
 import DifferentialGeometry.Analysis.Heat.Parametrix.Approximation
 import DifferentialGeometry.Analysis.Heat.Parametrix.ResidualBound
 import DifferentialGeometry.Analysis.Heat.Parametrix.UniformBound
+import DifferentialGeometry.Analysis.Heat.Parametrix.WeightedDiagonalAsymptotics
+import DifferentialGeometry.Analysis.Heat.Parametrix.ParameterCoefficientRegularity
 import DifferentialGeometry.Analysis.Heat.Parametrix.DiagonalAsymptotics
 import DifferentialGeometry.Analysis.Integration.Measure.UniformPairing
 import DifferentialGeometry.Analysis.Heat.Parametrix.KernelComparison
@@ -4917,6 +4920,7 @@ import DifferentialGeometry.Analysis.Parabolic.Dirichlet.ThirdOrderRegularity
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.WeakPartialSource
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.WeakPartialWkpTwo
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.WeakPartialTree
+import DifferentialGeometry.Analysis.Sobolev.Euclidean.FiniteWeakPartialSource
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.TwoTermSource
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.FiniteSumReindex
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.TimeMeasureRestrict
@@ -4924,5 +4928,9 @@ import DifferentialGeometry.Analysis.Parabolic.Dirichlet.ThirdWeakDerivative
 import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletChartMassPairing
 import DifferentialGeometry.Analysis.Integration.Lp.Curry
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.MixedTimeSpatialRegularity
+import DifferentialGeometry.Analysis.Parabolic.Dirichlet.GradientTimeRegularity
+import DifferentialGeometry.Analysis.Parabolic.Dirichlet.GradientSourceExpansion
 import DifferentialGeometry.Analysis.Integration.RadialIntegralParameter
 import DifferentialGeometry.Geometry.Exponential.BranchTrivialization
+import DifferentialGeometry.Geometry.Comparison.Volume.BranchDensityTransport
+import DifferentialGeometry.Analysis.Integration.ConformalScalarCurvature
