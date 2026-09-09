@@ -161,7 +161,7 @@ variable [RiemannianBundle (fun x : M ↦ TangentSpace I x)]
   [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
   [IsContinuousRiemannianBundle E (fun x : M ↦ TangentSpace I x)]
 
-theorem exists_heatKernel_diagonal_sub_leading_local_bound
+private theorem exists_heatKernel_diagonal_sub_leading_local_bound_of_isMetricNorm
     (g : SmoothRiemannianMetric I M) (hEnorm : IsMetricNorm g)
     (hn : Module.finrank ℝ E = 2) (T : ℝ) (c : M) :
     ∃ U : Set M, IsOpen U ∧ c ∈ U ∧ ∃ C : ℝ, 0 ≤ C ∧
@@ -212,5 +212,34 @@ theorem exists_heatKernel_diagonal_sub_leading_local_bound
     _ ≤ t * (C * |T|) + t * (A / (4 * Real.pi)) :=
       add_le_add (by rwa [abs_sub_comm]) htail
     _ = t * (C * |T| + A / (4 * Real.pi)) := by ring
+
+end DifferentialGeometry.Analysis.HeatEquation
+
+namespace DifferentialGeometry.Analysis.HeatEquation
+
+open Geometry.Riemannian
+
+variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
+  [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
+  {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
+  {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+  [T2Space M] [CompactSpace M]
+
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace
+
+theorem exists_heatKernel_diagonal_sub_leading_local_bound
+    (g : SmoothRiemannianMetric I M) (hn : Module.finrank ℝ E = 2) (T : ℝ) (c : M) :
+    ∃ U : Set M, IsOpen U ∧ c ∈ U ∧ ∃ C : ℝ, 0 ≤ C ∧
+      ∀ t ∈ Ioc 0 T, ∀ p ∈ U,
+        |heatKernel g t p p - 1 / (4 * Real.pi * t) -
+          Geometry.Curvature.metricScalarAt g p / (24 * Real.pi)| ≤ t * C := by
+  let : RiemannianBundle (TangentSpace I : M → Type _) := ⟨g.toRiemannianMetric⟩
+  let : IsContinuousRiemannianBundle E (TangentSpace I : M → Type _) :=
+    ⟨⟨g.inner, g.contMDiff.continuous, by intro x v w; rfl⟩⟩
+  let : PseudoEMetricSpace M := PseudoEMetricSpace.ofRiemannianMetric I M
+  let : CompleteSpace M := inferInstance
+  have hEnorm : IsMetricNorm g := isMetricNorm_of_riemannianBundle g
+  exact exists_heatKernel_diagonal_sub_leading_local_bound_of_isMetricNorm g hEnorm hn T c
 
 end DifferentialGeometry.Analysis.HeatEquation

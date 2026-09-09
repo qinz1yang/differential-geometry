@@ -69,4 +69,16 @@ theorem integral_inner_gradientFun_metricScalarAt_eq_zero_of_conformal_of_local_
     simpa only [mul_comm] using hpair
   rw [hpair', neg_zero]
 
+omit [NeZero (Module.finrank ℝ E)] in
+theorem kazdan_warner
+    (g : SmoothRiemannianMetric I M) (hn : Module.finrank ℝ E = 2)
+    (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
+    (hX : Geometry.IsConformalVectorField g X) :
+    (∫ x, g.inner x (gradientFun g (Geometry.Curvature.metricScalarAt g) x) (X x)
+      ∂riemannianVolumeMeasure (I := I) (M := M) g) = 0 := by
+  let : NeZero (Module.finrank ℝ E) := ⟨by omega⟩
+  exact integral_inner_gradientFun_metricScalarAt_eq_zero_of_conformal_of_local_heatKernel_bound
+    g hn X hX (by norm_num : (0 : ℝ) < 1)
+    (exists_heatKernel_diagonal_sub_leading_local_bound g hn 1)
+
 end DifferentialGeometry.Integral
