@@ -1,4 +1,5 @@
 import DifferentialGeometry.Analysis.Calculus.CriticalPointPerturbation
+import DifferentialGeometry.Topology.Morse.Hessian
 import DifferentialGeometry.Topology.Morse.Separable
 import Mathlib.Analysis.Calculus.BumpFunction.FiniteDimension
 import Mathlib.Analysis.Convex.Deriv
@@ -88,23 +89,6 @@ private theorem fderiv_boundaryMorsePerturbation_ne_zero_of_eq_zero (c : Fin n �
   have hh := hzero.unique hone
   norm_num at hh
 
-private theorem chartHessianAt_congr_eventuallyEq {E : Type} [NormedAddCommGroup E]
-    [NormedSpace ℝ E] {f g : E → ℝ} {x : E} (h : f =ᶠ[𝓝 x] g) :
-    chartHessianAt f x = chartHessianAt g x := by
-  ext v
-  change fderiv ℝ (fderiv ℝ f) x v v = fderiv ℝ (fderiv ℝ g) x v v
-  rw [h.fderiv.fderiv_eq]
-
-private theorem isNondegenerateCriticalPointAt_congr_eventuallyEq {E : Type}
-    [NormedAddCommGroup E] [NormedSpace ℝ E] {f g : E → ℝ} {x : E}
-    (h : f =ᶠ[𝓝 x] g) :
-    IsNondegenerateCriticalPointAt 𝓘(ℝ, E) f x ↔
-      IsNondegenerateCriticalPointAt 𝓘(ℝ, E) g x := by
-  simp only [IsNondegenerateCriticalPointAt, IsCriticalPointAt, mfderiv_eq_fderiv,
-    extChartAt_model_space_eq_id, PartialEquiv.refl_coe, PartialEquiv.refl_symm, id_eq]
-  rw [h.fderiv_eq, chartHessianAt_congr_eventuallyEq h]
-  rfl
-
 theorem chartHessianAt_boundaryMorsePerturbation (c : Fin n → ℝ)
     (b : ContDiffBump (0 : Fin n → ℝ)) (a : ℝ) :
     chartHessianAt (boundaryMorsePerturbation c b a) (Fin.cons (a / 2) 0) =
@@ -122,6 +106,15 @@ theorem sigNeg_chartHessianAt_boundaryMorsePerturbation (c : Fin n → ℝ)
     (eventuallyEq_boundaryMorsePerturbation c b a (Fin.cons (a / 2) 0)
       (by simpa using b.rIn_pos))]
   exact sigNeg_chartHessianAt_sum_sq_add_smoothAbs c ha
+
+theorem isNondegenerateCriticalPointAt_boundaryMorsePerturbation (c : Fin n → ℝ)
+    (hc : ∀ i, c i ≠ 0) (b : ContDiffBump (0 : Fin n → ℝ)) {a : ℝ} (ha : a ≠ 0) :
+    IsNondegenerateCriticalPointAt 𝓘(ℝ, Fin (n + 1) → ℝ)
+      (boundaryMorsePerturbation c b a) (Fin.cons (a / 2) 0) := by
+  have heq := eventuallyEq_boundaryMorsePerturbation c b a (Fin.cons (a / 2) 0)
+    (by simpa using b.rIn_pos)
+  exact (isNondegenerateCriticalPointAt_congr_eventuallyEq heq).mpr
+    (isNondegenerateCriticalPointAt_sum_sq_add_smoothAbs c hc ha)
 
 theorem exists_pos_boundaryMorsePerturbation_critical (c : Fin n → ℝ) (hc : ∀ i, c i ≠ 0)
     (b : ContDiffBump (0 : Fin n → ℝ)) :
@@ -170,8 +163,6 @@ theorem exists_pos_boundaryMorsePerturbation_critical (c : Fin n → ℝ) (hc : 
     (fun x hx => b.contDiffAt) hregular
   refine ⟨δ, hδ, ?_⟩
   intro a ha
-  have hcenter := eventuallyEq_boundaryMorsePerturbation c b a (Fin.cons (a / 2) 0)
-    (by simpa using b.rIn_pos)
   have hF := contDiff_boundaryMorsePerturbation c b a
   refine ⟨?_, ?_, ?_⟩
   · intro z hzu
@@ -221,8 +212,7 @@ theorem exists_pos_boundaryMorsePerturbation_critical (c : Fin n → ℝ) (hc : 
         simp only [Fin.tail_cons, norm_zero] at hz
         exact hz (by linarith [b.rIn_pos])
       exact iff_of_false hnot hne
-  · exact (isNondegenerateCriticalPointAt_congr_eventuallyEq hcenter).mpr
-      (isNondegenerateCriticalPointAt_sum_sq_add_smoothAbs c hc ha.1.ne')
+  · exact isNondegenerateCriticalPointAt_boundaryMorsePerturbation c hc b ha.1.ne'
   · exact chartHessianAt_boundaryMorsePerturbation c b a
 
 theorem hasDerivAt_boundaryMorsePerturbation_normal (c : Fin n → ℝ)

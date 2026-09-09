@@ -3208,6 +3208,7 @@ import DifferentialGeometry.Topology.Morse.Manifold
 import DifferentialGeometry.Topology.Morse.ManifoldCellAttachment
 import DifferentialGeometry.Topology.Morse.HandleCollar
 import DifferentialGeometry.Topology.Morse.HandleEmbedding
+import DifferentialGeometry.Topology.Morse.Hessian
 import DifferentialGeometry.Topology.Morse.ModifiedFunction
 import DifferentialGeometry.Topology.Morse.MorseLemma
 import DifferentialGeometry.Topology.Morse.NoCriticalValues

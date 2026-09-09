@@ -149,4 +149,152 @@ theorem exists_pos_isCriticalPointAt_boundaryMorseChart_iff
       exact Iff.rfl
     _ ↔ (c x).val = Fin.cons (a / 2) 0 := (hcritical a ha).1 (c x) hx.le
 
+theorem isNondegenerateCriticalPointAt_and_sigNeg_boundaryMorseChart
+    {n : ℕ} {E : Type} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    {H : Type} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+    {M : Type} [TopologicalSpace M] [ChartedSpace H M] [I.Boundaryless]
+    {U : TopologicalSpace.Opens M} {V : TopologicalSpace.Opens (Fin (n + 1) → ℝ)}
+    {r : ℕ∞ω} (c : Diffeomorph I 𝓘(ℝ, Fin (n + 1) → ℝ) U V r) (hr : 2 ≤ r)
+    (d : Fin n → ℝ) (hd : ∀ i, d i ≠ 0) (b : ContDiffBump (0 : Fin n → ℝ)) (v : ℝ)
+    {a : ℝ} (ha : 0 < a) {g : M → ℝ}
+    (hmodel : ∀ y : U, 0 ≤ (c y).val 0 → g y = v + boundaryMorsePerturbation d b a (c y))
+    (x : U) (hx : (c x).val = Fin.cons (a / 2) 0) :
+    IsNondegenerateCriticalPointAt I g (x : M) ∧
+      _root_.sigNeg (chartHessianAt (fun z => g ((extChartAt I (x : M)).symm z))
+        (extChartAt I (x : M) (x : M))) = {i | d i < 0}.ncard := by
+  let B := fun z : Fin (n + 1) → ℝ => v + boundaryMorsePerturbation d b a z
+  let G := fun z : V => B z
+  have hB : ContDiff ℝ ∞ B :=
+    contDiff_const.add (contDiff_boundaryMorsePerturbation d b a)
+  have hG : ContMDiff 𝓘(ℝ, Fin (n + 1) → ℝ) 𝓘(ℝ) ∞ G :=
+    hB.contMDiff.comp contMDiff_subtype_val
+  have hG2 : ContMDiffAt 𝓘(ℝ, Fin (n + 1) → ℝ) 𝓘(ℝ) 2 G (c x) :=
+    hG.contMDiffAt.of_le (ENat.natCast_le_of_coe_top_le_withTop le_rfl 2)
+  have hBderiv : fderiv ℝ B = fderiv ℝ (boundaryMorsePerturbation d b a) := by
+    funext z
+    exact fderiv_const_add v
+  have hBH (z : Fin (n + 1) → ℝ) :
+      chartHessianAt B z = chartHessianAt (boundaryMorsePerturbation d b a) z := by
+    ext u
+    change fderiv ℝ (fderiv ℝ B) z u u =
+      fderiv ℝ (fderiv ℝ (boundaryMorsePerturbation d b a)) z u u
+    rw [hBderiv]
+  have hPnd : IsNondegenerateCriticalPointAt 𝓘(ℝ, Fin (n + 1) → ℝ)
+      (boundaryMorsePerturbation d b a) (c x).val := by
+    rw [hx]
+    exact isNondegenerateCriticalPointAt_boundaryMorsePerturbation d hd b ha.ne'
+  have hBcrit : IsCriticalPointAt 𝓘(ℝ, Fin (n + 1) → ℝ) B (c x).val := by
+    have hh := hPnd.1
+    rw [IsCriticalPointAt, mfderiv_eq_fderiv] at hh ⊢
+    change fderiv ℝ B (c x).val = 0
+    rw [hBderiv]
+    exact hh
+  have hBnd : IsNondegenerateCriticalPointAt 𝓘(ℝ, Fin (n + 1) → ℝ) B (c x).val := by
+    refine ⟨hBcrit, ?_⟩
+    simpa only [extChartAt_model_space_eq_id, PartialEquiv.refl_coe,
+      PartialEquiv.refl_symm, id_eq, hBH] using hPnd.2
+  have hGnd : IsNondegenerateCriticalPointAt 𝓘(ℝ, Fin (n + 1) → ℝ) G (c x) :=
+    (isNondegenerateCriticalPointAt_subtype_iff
+      (I := 𝓘(ℝ, Fin (n + 1) → ℝ)) V (f := B) (x := c x)).mpr hBnd
+  have hxpos : 0 < (c x).val 0 := by
+    rw [hx]
+    change 0 < a / 2
+    linarith [ha]
+  have heq : (fun y : U => g y) =ᶠ[𝓝 x] G ∘ c := by
+    have ho : IsOpen {y : U | 0 < (c y).val 0} :=
+      isOpen_lt continuous_const ((continuous_apply 0).comp
+        (continuous_subtype_val.comp c.continuous))
+    filter_upwards [ho.mem_nhds hxpos] with y hy
+    exact hmodel y hy.le
+  have hcomp : IsNondegenerateCriticalPointAt I (G ∘ c) x :=
+    (isNondegenerateCriticalPointAt_comp_diffeomorph_iff c hr hG2).mpr hGnd
+  have hgU : IsNondegenerateCriticalPointAt I (fun y : U => g y) x :=
+    (isNondegenerateCriticalPointAt_congr_eventuallyEq (I := I) heq).mpr hcomp
+  refine ⟨(isNondegenerateCriticalPointAt_subtype_iff (I := I) U).mp hgU, ?_⟩
+  have ht : Filter.Tendsto (extChartAt I x).symm
+      (𝓝 (extChartAt I x x)) (𝓝 x) := by
+    simpa only [ContinuousAt, extChartAt_to_inv] using
+      (continuousAt_extChartAt_symm (I := I) x)
+  have heqChart : (fun z => g (((extChartAt I x).symm z : U) : M))
+      =ᶠ[𝓝 (extChartAt I x x)] fun z => G (c ((extChartAt I x).symm z)) := by
+    simpa only [Function.comp_def] using heq.comp_tendsto ht
+  calc
+    _ = _root_.sigNeg (chartHessianAt
+        (fun z => g (((extChartAt I x).symm z : U) : M)) (extChartAt I x x)) :=
+      congrArg _root_.sigNeg (chartHessianAt_subtype (I := I) U g x).symm
+    _ = _root_.sigNeg (chartHessianAt (fun z => G (c ((extChartAt I x).symm z)))
+        (extChartAt I x x)) :=
+      congrArg _root_.sigNeg (chartHessianAt_congr_eventuallyEq heqChart)
+    _ = _root_.sigNeg (chartHessianAt (fun z => G ((extChartAt 𝓘(ℝ, Fin (n + 1) → ℝ)
+        (c x)).symm z)) (extChartAt 𝓘(ℝ, Fin (n + 1) → ℝ) (c x) (c x))) :=
+      sigNeg_chartHessianAt_comp_diffeomorph c hr hG2 hGnd.1
+    _ = _root_.sigNeg (chartHessianAt B (c x).val) := by
+      rw [chartHessianAt_subtype (I := 𝓘(ℝ, Fin (n + 1) → ℝ)) V B (c x)]
+      simp only [extChartAt_model_space_eq_id, PartialEquiv.refl_coe,
+        PartialEquiv.refl_symm, id_eq]
+    _ = _root_.sigNeg (chartHessianAt (boundaryMorsePerturbation d b a)
+        (Fin.cons (a / 2) 0)) := by rw [hBH, hx]
+    _ = {i | d i < 0}.ncard := sigNeg_chartHessianAt_boundaryMorsePerturbation d b ha.le
+
+theorem exists_boundaryMorsePerturbation_with_criticalPoint_in_chart
+    {n : ℕ} {E : Type} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    {H : Type} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+    {M : Type} [TopologicalSpace M] [ChartedSpace H M] [T2Space M] [I.Boundaryless]
+    {U : TopologicalSpace.Opens M} {V : TopologicalSpace.Opens (Fin (n + 1) → ℝ)}
+    (c : Diffeomorph I 𝓘(ℝ, Fin (n + 1) → ℝ) U V ∞)
+    (d : Fin n → ℝ) (hd : ∀ i, d i ≠ 0) (b : ContDiffBump (0 : Fin n → ℝ))
+    (D : Set M) (hD : ∀ x : U, (x : M) ∈ D ↔ 0 ≤ (c x).val 0)
+    (f : M → ℝ) (hf : ContMDiff I 𝓘(ℝ) ∞ f) (v : ℝ)
+    (hchart : ∀ x : U, (x : M) ∈ D →
+      f x = v + ((∑ i : Fin n, d i * (c x).val i.succ ^ 2) + (c x).val 0)) :
+    ∃ δ > 0, ∀ a ∈ Set.Ioc 0 δ,
+      {z : Fin (n + 1) → ℝ | 0 ≤ z 0 ∧ z 0 ≤ a ∧ ‖Fin.tail z‖ ≤ b.rOut} ⊆ V →
+      ∃ g : M → ℝ, ContMDiff I 𝓘(ℝ) ∞ g ∧ HasCompactSupport (g - f) ∧
+        tsupport (g - f) ⊆ U ∧
+        (∀ x : U, (x : M) ∈ D → g x = v + boundaryMorsePerturbation d b a (c x)) ∧
+        Set.EqOn g f (U : Set M)ᶜ ∧
+        (∀ x ∈ D, g x - f x ∈ Set.Icc 0 (2 * a)) ∧
+        ∃ p : U, (p : M) ∈ interior D ∧ (c p).val = Fin.cons (a / 2) 0 ∧
+          IsNondegenerateCriticalPointAt I g (p : M) ∧
+          _root_.sigNeg (chartHessianAt (fun z => g ((extChartAt I (p : M)).symm z))
+            (extChartAt I (p : M) (p : M))) = {i | d i < 0}.ncard ∧
+          ∀ x : U, 0 < (c x).val 0 → (IsCriticalPointAt I g (x : M) ↔ x = p) := by
+  obtain ⟨δ, hδ, hcritical⟩ :=
+    exists_pos_isCriticalPointAt_boundaryMorseChart_iff c (by simp) d hd b v
+  refine ⟨δ, hδ, ?_⟩
+  intro a ha hbox
+  obtain ⟨g, hg, hgs, hgU, hmodel, hout, hbound⟩ :=
+    exists_contMDiff_boundaryMorsePerturbation_in_chart c d b D hD f hf v hchart ha.1 hbox
+  have hcenter : Fin.cons (a / 2) (0 : Fin n → ℝ) ∈ V := by
+    apply hbox
+    simp only [Set.mem_ofPred_eq, Fin.cons_zero, Fin.tail_cons, norm_zero]
+    exact ⟨by linarith [ha.1], by linarith [ha.1], b.rOut_pos.le⟩
+  let p : U := c.symm ⟨Fin.cons (a / 2) 0, hcenter⟩
+  have hp : (c p).val = Fin.cons (a / 2) 0 :=
+    congrArg Subtype.val (c.apply_symm_apply _)
+  have hp0 : 0 < (c p).val 0 := by rw [hp]; exact half_pos ha.1
+  let S : Set U := {x | 0 < (c x).val 0}
+  have hS : IsOpen S := isOpen_lt continuous_const
+    ((continuous_apply 0).comp (continuous_subtype_val.comp c.continuous))
+  have hpD : (p : M) ∈ interior D := by
+    apply (interior_mono (show Subtype.val '' S ⊆ D from ?_))
+    · have ho : IsOpen ((Subtype.val : U → M) '' S) :=
+        U.isOpen.isOpenMap_subtype_val S hS
+      exact mem_interior_iff_mem_nhds.mpr (ho.mem_nhds ⟨p, hp0, rfl⟩)
+    · rintro _ ⟨x, hx, rfl⟩
+      exact (hD x).mpr hx.le
+  have hm (x : U) (hx : 0 ≤ (c x).val 0) :
+      g x = v + boundaryMorsePerturbation d b a (c x) := hmodel x ((hD x).mpr hx)
+  have hnd := isNondegenerateCriticalPointAt_and_sigNeg_boundaryMorseChart c
+    (ENat.natCast_le_of_coe_top_le_withTop le_rfl 2) d hd b v ha.1 hm p hp
+  refine ⟨g, hg, hgs, hgU, hmodel, hout, hbound, p, hpD, hp, hnd.1, hnd.2, ?_⟩
+  intro x hx
+  rw [hcritical a ha g hm x hx]
+  constructor
+  · intro heq
+    apply c.injective
+    exact Subtype.ext (heq.trans hp.symm)
+  · rintro rfl
+    exact hp
+
 end DifferentialGeometry.Topology.Morse
