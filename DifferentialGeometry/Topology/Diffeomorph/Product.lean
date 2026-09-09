@@ -184,3 +184,59 @@ theorem exists_prod_diffeomorph_of_mfderiv_off_diagonal_zero [I.Boundaryless]
     (fun y r => product_eq_of_mfderiv_off_diagonal_zero Φ hfst hsnd y y₀ r)
 
 end DifferentialGeometry
+
+namespace Diffeomorph
+
+variable {𝕜 : Type*} [NontriviallyNormedField 𝕜]
+  {E : Type*} [NormedAddCommGroup E] [NormedSpace 𝕜 E]
+  {E' : Type*} [NormedAddCommGroup E'] [NormedSpace 𝕜 E']
+  {F : Type*} [NormedAddCommGroup F] [NormedSpace 𝕜 F]
+  {F' : Type*} [NormedAddCommGroup F'] [NormedSpace 𝕜 F']
+  {H : Type*} [TopologicalSpace H] {I : ModelWithCorners 𝕜 E H}
+  {H' : Type*} [TopologicalSpace H'] {I' : ModelWithCorners 𝕜 E' H'}
+  {G : Type*} [TopologicalSpace G] {J : ModelWithCorners 𝕜 F G}
+  {G' : Type*} [TopologicalSpace G'] {J' : ModelWithCorners 𝕜 F' G'}
+  {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
+  {M' : Type*} [TopologicalSpace M'] [ChartedSpace H' M']
+  {N : Type*} [TopologicalSpace N] [ChartedSpace G N]
+  {N' : Type*} [TopologicalSpace N'] [ChartedSpace G' N']
+  {n : ℕ∞ω}
+
+def prodCongrCross (f : M ≃ₘ^n⟮I, I'⟯ M') (g : N ≃ₘ^n⟮J, J'⟯ N') :
+    (M × N) ≃ₘ^n⟮I.prod J, I'.prod J'⟯ (M' × N') where
+  toEquiv := f.toEquiv.prodCongr g.toEquiv
+  contMDiff_toFun := f.contMDiff.prodMap g.contMDiff
+  contMDiff_invFun := f.symm.contMDiff.prodMap g.symm.contMDiff
+
+@[simp]
+theorem coe_prodCongrCross (f : M ≃ₘ^n⟮I, I'⟯ M') (g : N ≃ₘ^n⟮J, J'⟯ N') :
+    ⇑(f.prodCongrCross g) = Prod.map f g := rfl
+
+@[simp]
+theorem prodCongrCross_symm (f : M ≃ₘ^n⟮I, I'⟯ M') (g : N ≃ₘ^n⟮J, J'⟯ N') :
+    (f.prodCongrCross g).symm = f.symm.prodCongrCross g.symm := rfl
+
+@[simp]
+theorem prodCongrCross_refl :
+    (Diffeomorph.refl I M n).prodCongrCross (Diffeomorph.refl J N n) =
+      Diffeomorph.refl (I.prod J) (M × N) n := rfl
+
+@[simp]
+theorem prodCongrCross_trans
+    {E'' : Type*} [NormedAddCommGroup E''] [NormedSpace 𝕜 E'']
+    {F'' : Type*} [NormedAddCommGroup F''] [NormedSpace 𝕜 F'']
+    {H'' : Type*} [TopologicalSpace H''] {I'' : ModelWithCorners 𝕜 E'' H''}
+    {G'' : Type*} [TopologicalSpace G''] {J'' : ModelWithCorners 𝕜 F'' G''}
+    {M'' : Type*} [TopologicalSpace M''] [ChartedSpace H'' M'']
+    {N'' : Type*} [TopologicalSpace N''] [ChartedSpace G'' N'']
+    (f : M ≃ₘ^n⟮I, I'⟯ M') (g : N ≃ₘ^n⟮J, J'⟯ N')
+    (f' : M' ≃ₘ^n⟮I', I''⟯ M'') (g' : N' ≃ₘ^n⟮J', J''⟯ N'') :
+    (f.prodCongrCross g).trans (f'.prodCongrCross g') =
+      (f.trans f').prodCongrCross (g.trans g') := rfl
+
+theorem prodCongrCross_eq_prodCongr
+    {J' : ModelWithCorners 𝕜 F G'}
+    (f : M ≃ₘ^n⟮I, I'⟯ M') (g : N ≃ₘ^n⟮J, J'⟯ N') :
+    f.prodCongrCross g = f.prodCongr g := rfl
+
+end Diffeomorph
