@@ -798,8 +798,8 @@ theorem morse_lemma_smooth {n : ℕ} {H : Type*} [TopologicalSpace H] {M : Type*
 
 theorem morse_lemma_of_contMDiff {n : ℕ} {H : Type} [TopologicalSpace H] {M : Type}
     [TopologicalSpace M] [ChartedSpace H M] (I : ModelWithCorners ℝ (MorseModel n) H)
-    [I.Boundaryless] [IsManifold I (⊤ : WithTop ℕ∞) M] (f : M → ℝ)
-    (hf : ContMDiff I 𝓘(ℝ, ℝ) (⊤ : WithTop ℕ∞) f) (p : M)
+    [I.Boundaryless] [IsManifold I (↑(⊤ : ℕ∞) : WithTop ℕ∞) M] (f : M → ℝ)
+    (hf : ContMDiff I 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞) f) (p : M)
     (hcrit : fderiv ℝ (fun y => f ((extChartAt I p).symm y)) (extChartAt I p p) = 0)
     (hnd : (QuadraticMap.associated (R := ℝ)
       (chartHessianAt (g := fun y => f ((extChartAt I p).symm y)) (extChartAt I p p))).SeparatingLeft) :
@@ -820,22 +820,22 @@ theorem morse_lemma_of_contMDiff {n : ℕ} {H : Type} [TopologicalSpace H] {M : 
               f p + (1 / 2) * ∑ i : Fin n, w i * y i * y i := by
   let gp : MorseModel n → ℝ := fun y => f ((extChartAt I p).symm y)
   have hg : ContDiffOn ℝ (↑(⊤ : ℕ∞) : WithTop ℕ∞) gp (extChartAt I p).target := by
-    have hc : ContMDiffOn I 𝓘(ℝ, ℝ) (⊤ : WithTop ℕ∞) f Set.univ := by
+    have hc : ContMDiffOn I 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞) f Set.univ := by
       intro x hx
       exact hf x
-    have hcsub : ContMDiffOn I 𝓘(ℝ, ℝ) (⊤ : WithTop ℕ∞) f (chartAt H p).source :=
+    have hcsub : ContMDiffOn I 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞) f (chartAt H p).source :=
       hc.mono (by intro x hx; trivial)
-    have hc' : ContMDiffOn 𝓘(ℝ, MorseModel n) 𝓘(ℝ, ℝ) (⊤ : WithTop ℕ∞)
+    have hc' : ContMDiffOn 𝓘(ℝ, MorseModel n) 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞)
         (f ∘ (extChartAt I p).symm) (extChartAt I p '' (chartAt H p).source) :=
       (contMDiffOn_iff_source_of_mem_maximalAtlas (I := I) (I' := 𝓘(ℝ, ℝ))
-      (n := (⊤ : WithTop ℕ∞)) (e := chartAt H p) (IsManifold.chart_mem_maximalAtlas p)
+      (n := (↑(⊤ : ℕ∞) : WithTop ℕ∞)) (e := chartAt H p) (IsManifold.chart_mem_maximalAtlas p)
       (s := (chartAt H p).source) (hs := by intro x hx; exact hx)).1 hcsub
-    have hcd : ContDiffOn ℝ (⊤ : WithTop ℕ∞) (f ∘ (extChartAt I p).symm)
+    have hcd : ContDiffOn ℝ (↑(⊤ : ℕ∞) : WithTop ℕ∞) (f ∘ (extChartAt I p).symm)
         (extChartAt I p '' (chartAt H p).source) :=
       (contMDiffOn_iff_contDiffOn).1 hc'
     have hcd' : ContDiffOn ℝ (↑(⊤ : ℕ∞) : WithTop ℕ∞) (f ∘ (extChartAt I p).symm)
         (extChartAt I p '' (chartAt H p).source) :=
-      hcd.of_le (by decide : (↑(⊤ : ℕ∞) : WithTop ℕ∞) ≤ (⊤ : WithTop ℕ∞))
+      hcd.of_le (by decide : (↑(⊤ : ℕ∞) : WithTop ℕ∞) ≤ (↑(⊤ : ℕ∞) : WithTop ℕ∞))
     have hrange : extChartAt I p '' (chartAt H p).source = (extChartAt I p).target := by
       exact (OpenPartialHomeomorph.extend_target_eq_image_source (f := chartAt H p) (I := I)).symm
     rw [show gp = f ∘ (extChartAt I p).symm by rfl]
@@ -958,8 +958,8 @@ theorem isCriticalPointAt_iff_fderiv_of_localInverse {H : Type} [TopologicalSpac
 
 theorem morse_lemma {n : ℕ} {H : Type} [TopologicalSpace H] {M : Type} [TopologicalSpace M]
     [ChartedSpace H M] (I : ModelWithCorners ℝ (MorseModel n) H) [I.Boundaryless]
-    [IsManifold I (⊤ : WithTop ℕ∞) M] (f : M → ℝ)
-    (hf : ContMDiff I 𝓘(ℝ, ℝ) (⊤ : WithTop ℕ∞) f) (p : M) (k : ℕ) (hk : k ≤ n)
+    [IsManifold I (↑(⊤ : ℕ∞) : WithTop ℕ∞) M] (f : M → ℝ)
+    (hf : ContMDiff I 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞) f) (p : M) (k : ℕ) (hk : k ≤ n)
     (hnd : IsNondegenerateCriticalPointAt I f p)
     (hindex : sigNeg (chartHessianAt (g := fun y => f ((extChartAt I p).symm y)) (extChartAt I p p)) = k) :
     ∃ R : ℝ, 0 < R ∧
@@ -975,7 +975,7 @@ theorem morse_lemma {n : ℕ} {H : Type} [TopologicalSpace H] {M : Type} [Topolo
   have hcrit : IsCriticalPointAt I f p := hnd.1
   have hcritChart : fderiv ℝ (fun y => f ((extChartAt I p).symm y)) (extChartAt I p p) = 0 :=
     (isCriticalPointAt_iff_chart_fderiv (I := I) (f := f)
-      (hf.of_le (le_top : (↑(⊤ : ℕ∞) : WithTop ℕ∞) ≤ (⊤ : WithTop ℕ∞))) (p := p)).1
+      (hf.of_le le_rfl) (p := p)).1
       hcrit
   have hndChart : (QuadraticMap.associated (R := ℝ)
       (chartHessianAt (g := fun y => f ((extChartAt I p).symm y)) (extChartAt I p p))).SeparatingLeft := hnd.2
@@ -1122,33 +1122,33 @@ theorem morse_lemma {n : ℕ} {H : Type} [TopologicalSpace H] {M : Type} [Topolo
     funext y
     rfl
   have hLh0 : Lh 0 = 0 := by dsimp [Lh]; exact L.symm.map_zero
-  have hTmd : ContMDiffAt 𝓘(ℝ, MorseModel n) 𝓘(ℝ, MorseModel n) (⊤ : WithTop ℕ∞)
+  have hTmd : ContMDiffAt 𝓘(ℝ, MorseModel n) 𝓘(ℝ, MorseModel n) (↑(⊤ : ℕ∞) : WithTop ℕ∞)
       (T : MorseModel n → MorseModel n) 0 := by
-    have hc : ContDiff ℝ (⊤ : WithTop ℕ∞) (T : MorseModel n → MorseModel n) := by
+    have hc : ContDiff ℝ (↑(⊤ : ℕ∞) : WithTop ℕ∞) (T : MorseModel n → MorseModel n) := by
       dsimp [T]
       apply contDiff_pi'
       intro i
-      change ContDiff ℝ (⊤ : WithTop ℕ∞) (fun y : MorseModel n => y (σe.symm i))
+      change ContDiff ℝ (↑(⊤ : ℕ∞) : WithTop ℕ∞) (fun y : MorseModel n => y (σe.symm i))
       rw [show (fun y : MorseModel n => y (σe.symm i)) =
         (ContinuousLinearMap.proj (σe.symm i) : MorseModel n →L[ℝ] ℝ) by rfl]
       exact (ContinuousLinearMap.proj (σe.symm i) : MorseModel n →L[ℝ] ℝ).contDiff
     exact hc.contDiffAt.contMDiffAt
-  have hLhmd : ContMDiffAt 𝓘(ℝ, MorseModel n) 𝓘(ℝ, MorseModel n) (⊤ : WithTop ℕ∞)
+  have hLhmd : ContMDiffAt 𝓘(ℝ, MorseModel n) 𝓘(ℝ, MorseModel n) (↑(⊤ : ℕ∞) : WithTop ℕ∞)
       (Lh : MorseModel n → MorseModel n) 0 := by
-    have hc : ContDiff ℝ (⊤ : WithTop ℕ∞) (fun z : MorseModel n => L.symm z) :=
+    have hc : ContDiff ℝ (↑(⊤ : ℕ∞) : WithTop ℕ∞) (fun z : MorseModel n => L.symm z) :=
       (L.symm.toContinuousLinearEquiv : MorseModel n →L[ℝ] MorseModel n).contDiff
     simpa [Lh] using hc.contDiffAt.contMDiffAt
-  have haddmd : ContMDiffAt 𝓘(ℝ, MorseModel n) 𝓘(ℝ, MorseModel n) (⊤ : WithTop ℕ∞)
+  have haddmd : ContMDiffAt 𝓘(ℝ, MorseModel n) 𝓘(ℝ, MorseModel n) (↑(⊤ : ℕ∞) : WithTop ℕ∞)
       (addHomeo n e₀ : MorseModel n → MorseModel n) 0 := by
-    have hc : ContDiff ℝ (⊤ : WithTop ℕ∞) (fun z : MorseModel n => e₀ + z) := by
-      exact (contDiff_const : ContDiff ℝ (⊤ : WithTop ℕ∞) (fun _ : MorseModel n => e₀)).add contDiff_id
+    have hc : ContDiff ℝ (↑(⊤ : ℕ∞) : WithTop ℕ∞) (fun z : MorseModel n => e₀ + z) := by
+      exact (contDiff_const : ContDiff ℝ (↑(⊤ : ℕ∞) : WithTop ℕ∞) (fun _ : MorseModel n => e₀)).add contDiff_id
     simpa [addHomeo] using hc.contDiffAt.contMDiffAt
-  have hchartmd : ContMDiffAt 𝓘(ℝ, MorseModel n) I (⊤ : WithTop ℕ∞)
+  have hchartmd : ContMDiffAt 𝓘(ℝ, MorseModel n) I (↑(⊤ : ℕ∞) : WithTop ℕ∞)
       (chart : MorseModel n → M) e₀ := by
     have he₀ : e₀ ∈ (extChartAt I p).target := by
       dsimp [e₀]
       exact (extChartAt I p).map_source (mem_extChartAt_source p)
-    have hc : ContMDiffAt 𝓘(ℝ, MorseModel n) I (⊤ : WithTop ℕ∞) (extChartAt I p).symm e₀ :=
+    have hc : ContMDiffAt 𝓘(ℝ, MorseModel n) I (↑(⊤ : ℕ∞) : WithTop ℕ∞) (extChartAt I p).symm e₀ :=
       (contMDiffOn_extChartAt_symm p).contMDiffAt (by
         exact (isOpen_extChartAt_target p).mem_nhds he₀)
     simpa [chart] using hc
@@ -1158,7 +1158,7 @@ theorem morse_lemma {n : ℕ} {H : Type} [TopologicalSpace H] {M : Type} [Topolo
       (κ : MorseModel n → M) 0 := by
     have hLh1 : ContMDiffAt 𝓘(ℝ, MorseModel n) 𝓘(ℝ, MorseModel n) (↑(⊤ : ℕ∞) : WithTop ℕ∞)
         (Lh : MorseModel n → MorseModel n) (ψ (0 : MorseModel n)) := by
-      simpa [hψ0] using (hLhmd.of_le (by decide : (↑(⊤ : ℕ∞) : WithTop ℕ∞) ≤ (⊤ : WithTop ℕ∞)))
+      simpa [hψ0] using (hLhmd.of_le (by decide : (↑(⊤ : ℕ∞) : WithTop ℕ∞) ≤ (↑(⊤ : ℕ∞) : WithTop ℕ∞)))
     have hψLh : ContMDiffAt 𝓘(ℝ, MorseModel n) 𝓘(ℝ, MorseModel n) (↑(⊤ : ℕ∞) : WithTop ℕ∞)
         (fun y : MorseModel n => Lh (ψ y)) 0 :=
       ContMDiffAt.comp (x := 0) (g := (Lh : MorseModel n → MorseModel n)) (f := ψ)
@@ -1166,7 +1166,7 @@ theorem morse_lemma {n : ℕ} {H : Type} [TopologicalSpace H] {M : Type} [Topolo
     have hψLh0 : Lh (ψ 0) = 0 := by simp [hψ0, hLh0]
     have hadd1 : ContMDiffAt 𝓘(ℝ, MorseModel n) 𝓘(ℝ, MorseModel n) (↑(⊤ : ℕ∞) : WithTop ℕ∞)
         (addHomeo n e₀ : MorseModel n → MorseModel n) (Lh (ψ (0 : MorseModel n))) := by
-      simpa [hψLh0] using (haddmd.of_le (by decide : (↑(⊤ : ℕ∞) : WithTop ℕ∞) ≤ (⊤ : WithTop ℕ∞)))
+      simpa [hψLh0] using (haddmd.of_le (by decide : (↑(⊤ : ℕ∞) : WithTop ℕ∞) ≤ (↑(⊤ : ℕ∞) : WithTop ℕ∞)))
     have hψLhadd : ContMDiffAt 𝓘(ℝ, MorseModel n) 𝓘(ℝ, MorseModel n) (↑(⊤ : ℕ∞) : WithTop ℕ∞)
         (fun y : MorseModel n => (addHomeo n e₀ : MorseModel n → MorseModel n) (Lh (ψ y))) 0 :=
       ContMDiffAt.comp (x := 0) (g := (addHomeo n e₀ : MorseModel n → MorseModel n))
@@ -1175,7 +1175,7 @@ theorem morse_lemma {n : ℕ} {H : Type} [TopologicalSpace H] {M : Type} [Topolo
       simp [hψLh0, addHomeo]
     have hchart1 : ContMDiffAt 𝓘(ℝ, MorseModel n) I (↑(⊤ : ℕ∞) : WithTop ℕ∞)
         (chart : MorseModel n → M) ((addHomeo n e₀ : MorseModel n → MorseModel n) (Lh (ψ (0 : MorseModel n)))) := by
-      simpa [hψLhadd0] using (hchartmd.of_le (by decide : (↑(⊤ : ℕ∞) : WithTop ℕ∞) ≤ (⊤ : WithTop ℕ∞)))
+      simpa [hψLhadd0] using (hchartmd.of_le (by decide : (↑(⊤ : ℕ∞) : WithTop ℕ∞) ≤ (↑(⊤ : ℕ∞) : WithTop ℕ∞)))
     have hκ0 : ContMDiffAt 𝓘(ℝ, MorseModel n) I (↑(⊤ : ℕ∞) : WithTop ℕ∞)
         (fun y : MorseModel n => chart ((addHomeo n e₀ : MorseModel n → MorseModel n) (Lh (ψ y)))) 0 :=
       ContMDiffAt.comp (x := 0) (g := (chart : MorseModel n → M))
@@ -1187,7 +1187,7 @@ theorem morse_lemma {n : ℕ} {H : Type} [TopologicalSpace H] {M : Type} [Topolo
       (Φ : MorseModel n → M) 0 := by
     have hT1 : ContMDiffAt 𝓘(ℝ, MorseModel n) 𝓘(ℝ, MorseModel n) (↑(⊤ : ℕ∞) : WithTop ℕ∞)
         (T : MorseModel n → MorseModel n) 0 :=
-      hTmd.of_le (by decide : (↑(⊤ : ℕ∞) : WithTop ℕ∞) ≤ (⊤ : WithTop ℕ∞))
+      hTmd.of_le (by decide : (↑(⊤ : ℕ∞) : WithTop ℕ∞) ≤ (↑(⊤ : ℕ∞) : WithTop ℕ∞))
     have hκT0 : ContMDiffAt 𝓘(ℝ, MorseModel n) I (↑(⊤ : ℕ∞) : WithTop ℕ∞)
         (κ : MorseModel n → M) (T (0 : MorseModel n)) := by
       simpa [hT0val] using hκmd
@@ -1213,38 +1213,38 @@ theorem morse_lemma {n : ℕ} {H : Type} [TopologicalSpace H] {M : Type} [Topolo
     have hchartInv0 : chart.symm p = e₀ := by
       change (extChartAt I p) p = e₀
       rfl
-    have hchartInvmd : ContMDiffAt I 𝓘(ℝ, MorseModel n) (⊤ : WithTop ℕ∞)
+    have hchartInvmd : ContMDiffAt I 𝓘(ℝ, MorseModel n) (↑(⊤ : ℕ∞) : WithTop ℕ∞)
         (chart.symm : M → MorseModel n) p := by
-      simpa [chart] using (contMDiffAt_extChartAt (n := (⊤ : WithTop ℕ∞)) (x := p))
-    have haddInvmd : ContMDiffAt 𝓘(ℝ, MorseModel n) 𝓘(ℝ, MorseModel n) (⊤ : WithTop ℕ∞)
+      simpa [chart] using (contMDiffAt_extChartAt (n := (↑(⊤ : ℕ∞) : WithTop ℕ∞)) (x := p))
+    have haddInvmd : ContMDiffAt 𝓘(ℝ, MorseModel n) 𝓘(ℝ, MorseModel n) (↑(⊤ : ℕ∞) : WithTop ℕ∞)
         ((addHomeo n e₀).symm : MorseModel n → MorseModel n) (chart.symm p) := by
-      have hc : ContDiff ℝ (⊤ : WithTop ℕ∞) (fun z : MorseModel n => z - e₀) :=
-        contDiff_id.sub (contDiff_const : ContDiff ℝ (⊤ : WithTop ℕ∞) (fun _ : MorseModel n => e₀))
+      have hc : ContDiff ℝ (↑(⊤ : ℕ∞) : WithTop ℕ∞) (fun z : MorseModel n => z - e₀) :=
+        contDiff_id.sub (contDiff_const : ContDiff ℝ (↑(⊤ : ℕ∞) : WithTop ℕ∞) (fun _ : MorseModel n => e₀))
       simpa [addHomeo, hchartInv0] using hc.contDiffAt.contMDiffAt
-    have hLhInvmd : ContMDiffAt 𝓘(ℝ, MorseModel n) 𝓘(ℝ, MorseModel n) (⊤ : WithTop ℕ∞)
+    have hLhInvmd : ContMDiffAt 𝓘(ℝ, MorseModel n) 𝓘(ℝ, MorseModel n) (↑(⊤ : ℕ∞) : WithTop ℕ∞)
         (Lh.symm : MorseModel n → MorseModel n) 0 := by
-      have hc : ContDiff ℝ (⊤ : WithTop ℕ∞) (fun z : MorseModel n => L z) :=
+      have hc : ContDiff ℝ (↑(⊤ : ℕ∞) : WithTop ℕ∞) (fun z : MorseModel n => L z) :=
         (L.toContinuousLinearEquiv : MorseModel n →L[ℝ] MorseModel n).contDiff
       simpa [Lh] using hc.contDiffAt.contMDiffAt
-    have hTInvmd : ContMDiffAt 𝓘(ℝ, MorseModel n) 𝓘(ℝ, MorseModel n) (⊤ : WithTop ℕ∞)
+    have hTInvmd : ContMDiffAt 𝓘(ℝ, MorseModel n) 𝓘(ℝ, MorseModel n) (↑(⊤ : ℕ∞) : WithTop ℕ∞)
         (T.symm : MorseModel n → MorseModel n) 0 := by
-      have hc : ContDiff ℝ (⊤ : WithTop ℕ∞) (T.symm : MorseModel n → MorseModel n) := by
+      have hc : ContDiff ℝ (↑(⊤ : ℕ∞) : WithTop ℕ∞) (T.symm : MorseModel n → MorseModel n) := by
         dsimp [T]
         apply contDiff_pi'
         intro i
-        change ContDiff ℝ (⊤ : WithTop ℕ∞) (fun y : MorseModel n => y (σe i))
+        change ContDiff ℝ (↑(⊤ : ℕ∞) : WithTop ℕ∞) (fun y : MorseModel n => y (σe i))
         rw [show (fun y : MorseModel n => y (σe i)) =
           (ContinuousLinearMap.proj (σe i) : MorseModel n →L[ℝ] ℝ) by rfl]
         exact (ContinuousLinearMap.proj (σe i) : MorseModel n →L[ℝ] ℝ).contDiff
       exact hc.contDiffAt.contMDiffAt
     have h1c : ContMDiffAt I 𝓘(ℝ, MorseModel n) (↑(⊤ : ℕ∞) : WithTop ℕ∞)
         (chart.symm : M → MorseModel n) p :=
-      hchartInvmd.of_le (by decide : (↑(⊤ : ℕ∞) : WithTop ℕ∞) ≤ (⊤ : WithTop ℕ∞))
+      hchartInvmd.of_le (by decide : (↑(⊤ : ℕ∞) : WithTop ℕ∞) ≤ (↑(⊤ : ℕ∞) : WithTop ℕ∞))
     have h1add : ContMDiffAt I 𝓘(ℝ, MorseModel n) (↑(⊤ : ℕ∞) : WithTop ℕ∞)
         (fun x : M => (addHomeo n e₀).symm (chart.symm x)) p :=
       ContMDiffAt.comp (x := p) (g := ((addHomeo n e₀).symm : MorseModel n → MorseModel n))
         (f := (chart.symm : M → MorseModel n))
-        (hg := (haddInvmd.of_le (by decide : (↑(⊤ : ℕ∞) : WithTop ℕ∞) ≤ (⊤ : WithTop ℕ∞)))) (hf := h1c)
+        (hg := (haddInvmd.of_le (by decide : (↑(⊤ : ℕ∞) : WithTop ℕ∞) ≤ (↑(⊤ : ℕ∞) : WithTop ℕ∞)))) (hf := h1c)
     have h1Lh : ContMDiffAt I 𝓘(ℝ, MorseModel n) (↑(⊤ : ℕ∞) : WithTop ℕ∞)
         (fun x : M => Lh.symm ((addHomeo n e₀).symm (chart.symm x))) p :=
       ContMDiffAt.comp (x := p) (g := (Lh.symm : MorseModel n → MorseModel n))
@@ -1252,7 +1252,7 @@ theorem morse_lemma {n : ℕ} {H : Type} [TopologicalSpace H] {M : Type} [Topolo
         (hg := by
           have hg0 : (addHomeo n e₀).symm (chart.symm p) = 0 := by
             simp [addHomeo, hchartInv0]
-          simpa [hg0] using (hLhInvmd.of_le (by decide : (↑(⊤ : ℕ∞) : WithTop ℕ∞) ≤ (⊤ : WithTop ℕ∞))))
+          simpa [hg0] using (hLhInvmd.of_le (by decide : (↑(⊤ : ℕ∞) : WithTop ℕ∞) ≤ (↑(⊤ : ℕ∞) : WithTop ℕ∞))))
         (hf := h1add)
     have h1ψ : ContMDiffAt I 𝓘(ℝ, MorseModel n) (↑(⊤ : ℕ∞) : WithTop ℕ∞)
         (fun x : M => ψ.symm (Lh.symm ((addHomeo n e₀).symm (chart.symm x)))) p :=
@@ -1277,7 +1277,7 @@ theorem morse_lemma {n : ℕ} {H : Type} [TopologicalSpace H] {M : Type} [Topolo
           have hg0 : κ.symm p = 0 := by
             rw [hκsymmfun]
             simp [Lh, addHomeo, hchartInv0, hψsymm0]
-          simpa [hg0] using (hTInvmd.of_le (by decide : (↑(⊤ : ℕ∞) : WithTop ℕ∞) ≤ (⊤ : WithTop ℕ∞))))
+          simpa [hg0] using (hTInvmd.of_le (by decide : (↑(⊤ : ℕ∞) : WithTop ℕ∞) ≤ (↑(⊤ : ℕ∞) : WithTop ℕ∞))))
         (hf := hκInv1)
     rw [hΦsymmfun]
     exact hTInv1
@@ -1298,16 +1298,16 @@ theorem morse_lemma {n : ℕ} {H : Type} [TopologicalSpace H] {M : Type} [Topolo
       (ψ '' Metric.ball (0 : MorseModel n) rψ) :=
     (contMDiffOn_iff_contDiffOn).2 hψsymmOn'
   have hLhOn : ContMDiffOn 𝓘(ℝ, MorseModel n) 𝓘(ℝ, MorseModel n)
-      (⊤ : WithTop ℕ∞) (Lh : MorseModel n → MorseModel n) Set.univ := by
-    have hc : ContDiff ℝ (⊤ : WithTop ℕ∞) (fun z : MorseModel n => L.symm z) :=
+      (↑(⊤ : ℕ∞) : WithTop ℕ∞) (Lh : MorseModel n → MorseModel n) Set.univ := by
+    have hc : ContDiff ℝ (↑(⊤ : ℕ∞) : WithTop ℕ∞) (fun z : MorseModel n => L.symm z) :=
       (L.symm.toContinuousLinearEquiv : MorseModel n →L[ℝ] MorseModel n).contDiff
     exact (contMDiffOn_iff_contDiffOn).2 (by simpa [Lh] using hc.contDiffOn)
   have haddOn : ContMDiffOn 𝓘(ℝ, MorseModel n) 𝓘(ℝ, MorseModel n)
-      (⊤ : WithTop ℕ∞) (addHomeo n e₀ : MorseModel n → MorseModel n) Set.univ := by
-    have hc : ContDiff ℝ (⊤ : WithTop ℕ∞) (fun z : MorseModel n => e₀ + z) :=
-      (contDiff_const : ContDiff ℝ (⊤ : WithTop ℕ∞) (fun _ : MorseModel n => e₀)).add contDiff_id
+      (↑(⊤ : ℕ∞) : WithTop ℕ∞) (addHomeo n e₀ : MorseModel n → MorseModel n) Set.univ := by
+    have hc : ContDiff ℝ (↑(⊤ : ℕ∞) : WithTop ℕ∞) (fun z : MorseModel n => e₀ + z) :=
+      (contDiff_const : ContDiff ℝ (↑(⊤ : ℕ∞) : WithTop ℕ∞) (fun _ : MorseModel n => e₀)).add contDiff_id
     exact (contMDiffOn_iff_contDiffOn).2 (by simpa [addHomeo] using hc.contDiffOn)
-  have hchartOn : ContMDiffOn 𝓘(ℝ, MorseModel n) I (⊤ : WithTop ℕ∞)
+  have hchartOn : ContMDiffOn 𝓘(ℝ, MorseModel n) I (↑(⊤ : ℕ∞) : WithTop ℕ∞)
       (chart : MorseModel n → M) chart.source := by
     simpa [chart] using (contMDiffOn_extChartAt_symm p)
   have hκpre : {y : MorseModel n | (addHomeo n e₀ : MorseModel n → MorseModel n) (Lh (ψ y)) ∈ chart.source} ∈
@@ -1344,24 +1344,24 @@ theorem morse_lemma {n : ℕ} {H : Type} [TopologicalSpace H] {M : Type} [Topolo
     have hψLh : ContMDiffOn 𝓘(ℝ, MorseModel n) 𝓘(ℝ, MorseModel n)
         (↑(⊤ : ℕ∞) : WithTop ℕ∞) (fun y : MorseModel n => Lh (ψ y))
         (Metric.ball (0 : MorseModel n) rκ) := by
-      have hLhOnκ : ContMDiffOn 𝓘(ℝ, MorseModel n) 𝓘(ℝ, MorseModel n) (⊤ : WithTop ℕ∞)
+      have hLhOnκ : ContMDiffOn 𝓘(ℝ, MorseModel n) 𝓘(ℝ, MorseModel n) (↑(⊤ : ℕ∞) : WithTop ℕ∞)
           (Lh : MorseModel n → MorseModel n) Set.univ := hLhOn
-      exact (hLhOnκ.of_le (by decide : (↑(⊤ : ℕ∞) : WithTop ℕ∞) ≤ (⊤ : WithTop ℕ∞))).comp hψOnκ
+      exact (hLhOnκ.of_le (by decide : (↑(⊤ : ℕ∞) : WithTop ℕ∞) ≤ (↑(⊤ : ℕ∞) : WithTop ℕ∞))).comp hψOnκ
         (by intro y hy; trivial)
     have hψLhadd : ContMDiffOn 𝓘(ℝ, MorseModel n) 𝓘(ℝ, MorseModel n)
         (↑(⊤ : ℕ∞) : WithTop ℕ∞) (fun y : MorseModel n =>
           (addHomeo n e₀ : MorseModel n → MorseModel n) (Lh (ψ y)))
         (Metric.ball (0 : MorseModel n) rκ) := by
-      have haddOnκ : ContMDiffOn 𝓘(ℝ, MorseModel n) 𝓘(ℝ, MorseModel n) (⊤ : WithTop ℕ∞)
+      have haddOnκ : ContMDiffOn 𝓘(ℝ, MorseModel n) 𝓘(ℝ, MorseModel n) (↑(⊤ : ℕ∞) : WithTop ℕ∞)
           (addHomeo n e₀ : MorseModel n → MorseModel n) Set.univ := haddOn
-      exact (haddOnκ.of_le (by decide : (↑(⊤ : ℕ∞) : WithTop ℕ∞) ≤ (⊤ : WithTop ℕ∞))).comp hψLh
+      exact (haddOnκ.of_le (by decide : (↑(⊤ : ℕ∞) : WithTop ℕ∞) ≤ (↑(⊤ : ℕ∞) : WithTop ℕ∞))).comp hψLh
         (by intro y hy; trivial)
     have hψLhaddChart : ContMDiffOn 𝓘(ℝ, MorseModel n) I (↑(⊤ : ℕ∞) : WithTop ℕ∞)
         (fun y : MorseModel n => chart ((addHomeo n e₀ : MorseModel n → MorseModel n) (Lh (ψ y))))
         (Metric.ball (0 : MorseModel n) rκ) := by
-      have hchartOnκ : ContMDiffOn 𝓘(ℝ, MorseModel n) I (⊤ : WithTop ℕ∞)
+      have hchartOnκ : ContMDiffOn 𝓘(ℝ, MorseModel n) I (↑(⊤ : ℕ∞) : WithTop ℕ∞)
           (chart : MorseModel n → M) chart.source := hchartOn
-      exact (hchartOnκ.of_le (by decide : (↑(⊤ : ℕ∞) : WithTop ℕ∞) ≤ (⊤ : WithTop ℕ∞))).comp hψLhadd
+      exact (hchartOnκ.of_le (by decide : (↑(⊤ : ℕ∞) : WithTop ℕ∞) ≤ (↑(⊤ : ℕ∞) : WithTop ℕ∞))).comp hψLhadd
         (by intro y hy; exact (hballκ hy).2)
     have hfun : (fun y : MorseModel n => κ y) =
         fun y => chart ((addHomeo n e₀ : MorseModel n → MorseModel n) (Lh (ψ y))) := by
@@ -1378,12 +1378,12 @@ theorem morse_lemma {n : ℕ} {H : Type} [TopologicalSpace H] {M : Type} [Topolo
   have hΦmdOn : ContMDiffOn 𝓘(ℝ, MorseModel n) I (↑(⊤ : ℕ∞) : WithTop ℕ∞)
       (Φ : MorseModel n → M) (Metric.ball (0 : MorseModel n) rΦ) := by
     have hTOn : ContMDiffOn 𝓘(ℝ, MorseModel n) 𝓘(ℝ, MorseModel n)
-        (⊤ : WithTop ℕ∞) (T : MorseModel n → MorseModel n) Set.univ := by
-      have hc : ContDiff ℝ (⊤ : WithTop ℕ∞) (T : MorseModel n → MorseModel n) := by
+        (↑(⊤ : ℕ∞) : WithTop ℕ∞) (T : MorseModel n → MorseModel n) Set.univ := by
+      have hc : ContDiff ℝ (↑(⊤ : ℕ∞) : WithTop ℕ∞) (T : MorseModel n → MorseModel n) := by
         dsimp [T]
         apply contDiff_pi'
         intro i
-        change ContDiff ℝ (⊤ : WithTop ℕ∞) (fun y : MorseModel n => y (σe.symm i))
+        change ContDiff ℝ (↑(⊤ : ℕ∞) : WithTop ℕ∞) (fun y : MorseModel n => y (σe.symm i))
         rw [show (fun y : MorseModel n => y (σe.symm i)) =
           (ContinuousLinearMap.proj (σe.symm i) : MorseModel n →L[ℝ] ℝ) by rfl]
         exact (ContinuousLinearMap.proj (σe.symm i) : MorseModel n →L[ℝ] ℝ).contDiff
@@ -1391,32 +1391,32 @@ theorem morse_lemma {n : ℕ} {H : Type} [TopologicalSpace H] {M : Type} [Topolo
     have hTOnΦ : ContMDiffOn 𝓘(ℝ, MorseModel n) 𝓘(ℝ, MorseModel n)
         (↑(⊤ : ℕ∞) : WithTop ℕ∞) (T : MorseModel n → MorseModel n)
         (Metric.ball (0 : MorseModel n) rΦ) :=
-      (hTOn.of_le (by decide : (↑(⊤ : ℕ∞) : WithTop ℕ∞) ≤ (⊤ : WithTop ℕ∞))).mono
+      (hTOn.of_le (by decide : (↑(⊤ : ℕ∞) : WithTop ℕ∞) ≤ (↑(⊤ : ℕ∞) : WithTop ℕ∞))).mono
         (by intro y hy; trivial)
     have hcomp := hκmdOn.comp hTOnΦ (by intro y hy; exact hballΦ hy)
     exact hcomp.congr (by intro y hy; rfl)
   refine ⟨R, hRpos, Φ, hΦsrc0, hΦtarget0, hΦ0, hΦsrc, hnormal', hΦmd, hΦsymm,
     rΦ, hrΦ, hΦmdOn, ?_⟩
-  have hchartInvOn : ContMDiffOn I 𝓘(ℝ, MorseModel n) (⊤ : WithTop ℕ∞)
+  have hchartInvOn : ContMDiffOn I 𝓘(ℝ, MorseModel n) (↑(⊤ : ℕ∞) : WithTop ℕ∞)
       (chart.symm : M → MorseModel n) chart.target := by
-    simpa [chart] using (contMDiffOn_extChartAt (n := (⊤ : WithTop ℕ∞)) (x := p))
-  have haddInvOn : ContMDiffOn 𝓘(ℝ, MorseModel n) 𝓘(ℝ, MorseModel n) (⊤ : WithTop ℕ∞)
+    simpa [chart] using (contMDiffOn_extChartAt (n := (↑(⊤ : ℕ∞) : WithTop ℕ∞)) (x := p))
+  have haddInvOn : ContMDiffOn 𝓘(ℝ, MorseModel n) 𝓘(ℝ, MorseModel n) (↑(⊤ : ℕ∞) : WithTop ℕ∞)
       ((addHomeo n e₀).symm : MorseModel n → MorseModel n) Set.univ := by
-    have hc : ContDiff ℝ (⊤ : WithTop ℕ∞) (fun z : MorseModel n => z - e₀) :=
-      contDiff_id.sub (contDiff_const : ContDiff ℝ (⊤ : WithTop ℕ∞) (fun _ : MorseModel n => e₀))
+    have hc : ContDiff ℝ (↑(⊤ : ℕ∞) : WithTop ℕ∞) (fun z : MorseModel n => z - e₀) :=
+      contDiff_id.sub (contDiff_const : ContDiff ℝ (↑(⊤ : ℕ∞) : WithTop ℕ∞) (fun _ : MorseModel n => e₀))
     exact (contMDiffOn_iff_contDiffOn).2 (by simpa [addHomeo] using hc.contDiffOn)
-  have hLhInvOn : ContMDiffOn 𝓘(ℝ, MorseModel n) 𝓘(ℝ, MorseModel n) (⊤ : WithTop ℕ∞)
+  have hLhInvOn : ContMDiffOn 𝓘(ℝ, MorseModel n) 𝓘(ℝ, MorseModel n) (↑(⊤ : ℕ∞) : WithTop ℕ∞)
       (Lh.symm : MorseModel n → MorseModel n) Set.univ := by
-    have hc : ContDiff ℝ (⊤ : WithTop ℕ∞) (fun z : MorseModel n => L z) :=
+    have hc : ContDiff ℝ (↑(⊤ : ℕ∞) : WithTop ℕ∞) (fun z : MorseModel n => L z) :=
       (L.toContinuousLinearEquiv : MorseModel n →L[ℝ] MorseModel n).contDiff
     exact (contMDiffOn_iff_contDiffOn).2 (by simpa [Lh] using hc.contDiffOn)
-  have hTInvOn : ContMDiffOn 𝓘(ℝ, MorseModel n) 𝓘(ℝ, MorseModel n) (⊤ : WithTop ℕ∞)
+  have hTInvOn : ContMDiffOn 𝓘(ℝ, MorseModel n) 𝓘(ℝ, MorseModel n) (↑(⊤ : ℕ∞) : WithTop ℕ∞)
       (T.symm : MorseModel n → MorseModel n) Set.univ := by
-    have hc : ContDiff ℝ (⊤ : WithTop ℕ∞) (T.symm : MorseModel n → MorseModel n) := by
+    have hc : ContDiff ℝ (↑(⊤ : ℕ∞) : WithTop ℕ∞) (T.symm : MorseModel n → MorseModel n) := by
       dsimp [T]
       apply contDiff_pi'
       intro i
-      change ContDiff ℝ (⊤ : WithTop ℕ∞) (fun y : MorseModel n => y (σe i))
+      change ContDiff ℝ (↑(⊤ : ℕ∞) : WithTop ℕ∞) (fun y : MorseModel n => y (σe i))
       rw [show (fun y : MorseModel n => y (σe i)) =
         (ContinuousLinearMap.proj (σe i) : MorseModel n →L[ℝ] ℝ) by rfl]
       exact (ContinuousLinearMap.proj (σe i) : MorseModel n →L[ℝ] ℝ).contDiff
@@ -1431,21 +1431,21 @@ theorem morse_lemma {n : ℕ} {H : Type} [TopologicalSpace H] {M : Type} [Topolo
         (fun x : M => (addHomeo n e₀).symm (chart.symm x)) (κ '' Metric.ball (0 : MorseModel n) rκ) := by
       have hchartInv : ContMDiffOn I 𝓘(ℝ, MorseModel n) (↑(⊤ : ℕ∞) : WithTop ℕ∞)
           (chart.symm : M → MorseModel n) chart.target :=
-        hchartInvOn.of_le (by decide : (↑(⊤ : ℕ∞) : WithTop ℕ∞) ≤ (⊤ : WithTop ℕ∞))
+        hchartInvOn.of_le (by decide : (↑(⊤ : ℕ∞) : WithTop ℕ∞) ≤ (↑(⊤ : ℕ∞) : WithTop ℕ∞))
       have h1' := hchartInv.comp
         (contMDiffOn_id : ContMDiffOn I I (↑(⊤ : ℕ∞) : WithTop ℕ∞) (id : M → M)
           (κ '' Metric.ball (0 : MorseModel n) rκ))
         (by intro x hx; exact hκimg_target hx)
       have haddInv : ContMDiffOn 𝓘(ℝ, MorseModel n) 𝓘(ℝ, MorseModel n) (↑(⊤ : ℕ∞) : WithTop ℕ∞)
           ((addHomeo n e₀).symm : MorseModel n → MorseModel n) Set.univ :=
-        haddInvOn.of_le (by decide : (↑(⊤ : ℕ∞) : WithTop ℕ∞) ≤ (⊤ : WithTop ℕ∞))
+        haddInvOn.of_le (by decide : (↑(⊤ : ℕ∞) : WithTop ℕ∞) ≤ (↑(⊤ : ℕ∞) : WithTop ℕ∞))
       simpa [Function.comp_def] using (haddInv.comp h1' (by intro x hx; trivial))
     have h2 : ContMDiffOn I 𝓘(ℝ, MorseModel n) (↑(⊤ : ℕ∞) : WithTop ℕ∞)
         (fun x : M => Lh.symm ((addHomeo n e₀).symm (chart.symm x)))
         (κ '' Metric.ball (0 : MorseModel n) rκ) := by
       have hLhInv : ContMDiffOn 𝓘(ℝ, MorseModel n) 𝓘(ℝ, MorseModel n) (↑(⊤ : ℕ∞) : WithTop ℕ∞)
           (Lh.symm : MorseModel n → MorseModel n) Set.univ :=
-        hLhInvOn.of_le (by decide : (↑(⊤ : ℕ∞) : WithTop ℕ∞) ≤ (⊤ : WithTop ℕ∞))
+        hLhInvOn.of_le (by decide : (↑(⊤ : ℕ∞) : WithTop ℕ∞) ≤ (↑(⊤ : ℕ∞) : WithTop ℕ∞))
       simpa [Function.comp_def] using (hLhInv.comp h1 (by intro x hx; trivial))
     have h2maps : Set.MapsTo (fun x : M => Lh.symm ((addHomeo n e₀).symm (chart.symm x)))
         (κ '' Metric.ball (0 : MorseModel n) rκ) (ψ '' Metric.ball (0 : MorseModel n) rψ) := by
