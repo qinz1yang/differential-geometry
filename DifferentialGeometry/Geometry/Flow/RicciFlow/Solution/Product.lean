@@ -26,6 +26,25 @@ def SolutionOn.prod {D : RealTimeInterval}
     SolutionOn (I := I.prod J) (M := M × N) D where
   base.metric := fun t => (S.family.metric t).prod (T.family.metric t)
 
+theorem hasDerivWithinAt_ricciFlow_prod
+    (g : ℝ → SmoothRiemannianMetric I M) (h : ℝ → SmoothRiemannianMetric J N)
+    {A : Set ℝ} {t : ℝ}
+    (hg : ∀ x : M, ∀ u v : TangentSpace I x,
+      HasDerivWithinAt (fun s => (g s).inner x u v)
+        (-2 * ricciTensor (g t) x u v) A t)
+    (hh : ∀ y : N, ∀ u v : TangentSpace J y,
+      HasDerivWithinAt (fun s => (h s).inner y u v)
+        (-2 * ricciTensor (h t) y u v) A t)
+    (x : M × N) (u v : TangentSpace (I.prod J) x) :
+    HasDerivWithinAt
+      (fun s => ((g s).prod (h s)).inner x u v)
+      (-2 * ricciTensor ((g t).prod (h t)) x u v) A t := by
+  have h₁ := hg x.1 u.1 v.1
+  have h₂ := hh x.2 u.2 v.2
+  simp only [SmoothRiemannianMetric.prod_inner, ricciTensor_prod,
+    mfderiv_fst, mfderiv_snd, mul_add]
+  exact h₁.add h₂
+
 theorem metric_hasDerivWithinAt_prod_of_isSolutionOn
     {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn S)
     (T : SolutionOn (I := J) (M := N) D) (hT : IsSolutionOn T)
@@ -35,19 +54,15 @@ theorem metric_hasDerivWithinAt_prod_of_isSolutionOn
       (fun s => ((S.family.metric s).prod (T.family.metric s)).inner x u v)
       (-2 * ricciTensor ((S.family.metric t).prod (T.family.metric t)) x u v)
       D.carrier t := by
-  have h₁ := metric_derivWithin_eq_neg_two_ricci S hS ⟨t, ht⟩ x.1 u.1 v.1
-  have h₂ := metric_derivWithin_eq_neg_two_ricci T hT ⟨t, ht⟩ x.2 u.2 v.2
-  have he₁ : S.ricciAt t x.1 (vec2 u.1 v.1) =
-      ricciTensor (S.family.metric t) x.1 u.1 v.1 := by
-    exact metricRicciAt_apply_eq_ricciTensor (S.family.metric t) x.1 u.1 v.1
-  have he₂ : T.ricciAt t x.2 (vec2 u.2 v.2) =
-      ricciTensor (T.family.metric t) x.2 u.2 v.2 := by
-    exact metricRicciAt_apply_eq_ricciTensor (T.family.metric t) x.2 u.2 v.2
-  rw [he₁] at h₁
-  rw [he₂] at h₂
-  simp only [SmoothRiemannianMetric.prod_inner, ricciTensor_prod,
-    mfderiv_fst, mfderiv_snd, mul_add]
-  exact h₁.add h₂
+  apply hasDerivWithinAt_ricciFlow_prod S.family.metric T.family.metric
+  · intro y a b
+    simpa only [SolutionOn.ricciAt, SolutionFamily.ricciAt,
+      metricRicciAt_apply_eq_ricciTensor, SolutionOn.family_metric] using
+      metric_derivWithin_eq_neg_two_ricci S hS ⟨t, ht⟩ y a b
+  · intro y a b
+    simpa only [SolutionOn.ricciAt, SolutionFamily.ricciAt,
+      metricRicciAt_apply_eq_ricciTensor, SolutionOn.family_metric] using
+      metric_derivWithin_eq_neg_two_ricci T hT ⟨t, ht⟩ y a b
 
 private theorem scalar_continuousOn_prod_of_isSolutionOn
     {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn S)

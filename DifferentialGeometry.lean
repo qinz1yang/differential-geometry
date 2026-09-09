@@ -4869,3 +4869,6 @@ import DifferentialGeometry.Analysis.Integration.Lp.SmoothPairing
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.CompactSource
 import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletChartSourceIdentification
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.GradientScalarSource
+import DifferentialGeometry.Geometry.Metric.Family.Descent
+import DifferentialGeometry.Geometry.Metric.ProductIsometry
+import DifferentialGeometry.Topology.Diffeomorph.Product

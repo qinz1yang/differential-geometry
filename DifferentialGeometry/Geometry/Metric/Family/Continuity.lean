@@ -235,6 +235,53 @@ private lemma inCoordinates_metric_eq_chartGram_sum
 end MetricCLMSectionAux
 
 omit [NeZero (Module.finrank ℝ E)] in
+theorem metricCLMSection_jointContMDiffOn_of_chartGram_on
+    (g : ℝ → SmoothRiemannianMetric I M) (A : Set ℝ)
+    (hgram : ∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)),
+      ContMDiffOn (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ) ∞
+        (fun p : ℝ × M => chartGramMatrix (I := I) (g p.1) x₀ p.2 i j)
+        (A ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet)) :
+    ContMDiffOn (𝓘(ℝ, ℝ).prod I) (I.prod 𝓘(ℝ, E →L[ℝ] E →L[ℝ] ℝ)) ∞
+      (fun p : ℝ × M => (⟨p.2, (g p.1).inner p.2⟩ :
+        TotalSpace (E →L[ℝ] E →L[ℝ] ℝ)
+          (fun x => TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ)))
+      (A ×ˢ (Set.univ : Set M)) := by
+  classical
+  intro q₀ hq₀
+  set α : M := q₀.2
+  have hbase0 : α ∈ (trivializationAt E (TangentSpace I) α).baseSet :=
+    FiberBundle.mem_baseSet_trivializationAt E (TangentSpace I) α
+  rw [contMDiffWithinAt_hom_bundle]
+  refine ⟨contMDiffWithinAt_snd, ?_⟩
+  apply contMDiffWithinAt_clm_of_pointwise (IB := 𝓘(ℝ, ℝ).prod I) (X := ℝ × M)
+  intro v
+  apply contMDiffWithinAt_clm_of_pointwise (IB := 𝓘(ℝ, ℝ).prod I) (X := ℝ × M)
+  intro w
+  have hpre : (fun p : ℝ × M => p.2) ⁻¹'
+      (trivializationAt E (TangentSpace I) α).baseSet ∈ nhds q₀ :=
+    continuous_snd.continuousAt.preimage_mem_nhds
+      ((trivializationAt E (TangentSpace I) α).open_baseSet.mem_nhds hbase0)
+  have hgram_at (i j : Fin (Module.finrank ℝ E)) :
+      ContMDiffWithinAt (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ) ∞
+        (fun p : ℝ × M => chartGramMatrix (I := I) (g p.1) α p.2 i j)
+        (A ×ˢ Set.univ) q₀ := by
+    have h := hgram α i j q₀ ⟨hq₀.1, hbase0⟩
+    apply h.mono_of_mem_nhdsWithin
+    filter_upwards [nhdsWithin_le_nhds hpre, self_mem_nhdsWithin] with p hp hq
+    exact ⟨hq.1, hp⟩
+  have hs : ContMDiffWithinAt (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ) ∞
+      (fun p : ℝ × M => ∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
+        ((chartModelBasis E).repr v) i * ((chartModelBasis E).repr w) j *
+          chartGramMatrix (I := I) (g p.1) α p.2 i j)
+      (A ×ˢ Set.univ) q₀ := by
+    refine ContMDiffWithinAt.sum (fun i _ => ContMDiffWithinAt.sum (fun j _ => ?_))
+    exact contMDiffWithinAt_const.mul (hgram_at i j)
+  apply hs.congr_of_eventuallyEq
+  · filter_upwards [nhdsWithin_le_nhds hpre] with p hp
+    exact MetricCLMSectionAux.inCoordinates_metric_eq_chartGram_sum (g p.1) α hp v w
+  · exact MetricCLMSectionAux.inCoordinates_metric_eq_chartGram_sum (g q₀.1) α hbase0 v w
+
+omit [NeZero (Module.finrank ℝ E)] in
 theorem metricCLMSection_jointContMDiffOn_of_chartGram
     (g_DT : ℝ → SmoothRiemannianMetric I M) (T : ℝ)
     (hgram_DT : ∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)),
@@ -247,52 +294,8 @@ theorem metricCLMSection_jointContMDiffOn_of_chartGram
       (fun q : ℝ × M => (TotalSpace.mk' (E →L[ℝ] E →L[ℝ] ℝ)
         (E := fun y => TangentSpace I y →L[ℝ] TangentSpace I y →L[ℝ] ℝ) q.2
         ((g_DT q.1).inner q.2)))
-      (Set.Ioo (0 : ℝ) T ×ˢ Set.univ) := by
-  classical
-  open MetricCLMSectionAux in
-  intro q₀ hq₀
-  refine (?_ : ContMDiffAt (𝓘(ℝ, ℝ).prod I) (I.prod 𝓘(ℝ, E →L[ℝ] E →L[ℝ] ℝ)) ∞
-    (fun q : ℝ × M => (TotalSpace.mk' (E →L[ℝ] E →L[ℝ] ℝ)
-      (E := fun y => TangentSpace I y →L[ℝ] TangentSpace I y →L[ℝ] ℝ) q.2
-      ((g_DT q.1).inner q.2))) q₀).contMDiffWithinAt
-  set α : M := q₀.2 with hα
-  have hbase0 : α ∈ (trivializationAt E (TangentSpace I) α).baseSet := by
-    rw [hα]; exact FiberBundle.mem_baseSet_trivializationAt E (TangentSpace I) α
-  rw [contMDiffAt_hom_bundle]
-  refine ⟨contMDiffAt_snd, ?_⟩
-  apply contMDiffAt_clm_of_pointwise (IB := 𝓘(ℝ, ℝ).prod I) (X := ℝ × M)
-  intro v
-  apply contMDiffAt_clm_of_pointwise (IB := 𝓘(ℝ, ℝ).prod I) (X := ℝ × M)
-  intro w
-  have hgram_sum : ∀ i j : Fin (Module.finrank ℝ E),
-      ContMDiffAt (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ) ∞
-        (fun p : ℝ × M =>
-          Integral.Measure.chartGramMatrix (I := I) (g_DT p.1) α p.2 i j) q₀ := by
-    intro i j
-    have hmem : q₀ ∈ Set.Ioo (0 : ℝ) T ×ˢ (trivializationAt E (TangentSpace I) α).baseSet := by
-      refine ⟨hq₀.1, ?_⟩
-      rw [hα]; exact FiberBundle.mem_baseSet_trivializationAt E (TangentSpace I) α
-    have hopen : IsOpen (Set.Ioo (0 : ℝ) T ×ˢ (trivializationAt E (TangentSpace I) α).baseSet) :=
-      isOpen_Ioo.prod (trivializationAt E (TangentSpace I) α).open_baseSet
-    exact ((hgram_DT α i j) q₀ hmem).contMDiffAt (hopen.mem_nhds hmem)
-  have hscalar : ContMDiffAt (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ) ∞
-      (fun p : ℝ × M => ∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
-        ((chartModelBasis E).repr v) i * ((chartModelBasis E).repr w) j *
-          Integral.Measure.chartGramMatrix (I := I) (g_DT p.1) α p.2 i j) q₀ := by
-    refine ContMDiffAt.sum (fun i _ => ?_)
-    refine ContMDiffAt.sum (fun j _ => ?_)
-    exact (contMDiffAt_const (c := ((chartModelBasis E).repr v i *
-      (chartModelBasis E).repr w j : ℝ))).mul (hgram_sum i j)
-  refine hscalar.congr_of_eventuallyEq ?_
-  have hnhds : (trivializationAt E (TangentSpace I) α).baseSet ∈ nhds q₀.2 :=
-    (trivializationAt E (TangentSpace I) α).open_baseSet.mem_nhds hbase0
-  have hpre : (fun q : ℝ × M => q.2) ⁻¹' (trivializationAt E (TangentSpace I) α).baseSet ∈ nhds
-    q₀ :=
-    (continuous_snd.continuousAt (x := q₀)).preimage_mem_nhds hnhds
-  filter_upwards [hpre] with p hp
-  change ((ContinuousLinearMap.inCoordinates E (TangentSpace I) (E →L[ℝ] ℝ)
-      (fun y : M => TangentSpace I y →L[ℝ] ℝ) α p.2 α p.2 ((g_DT p.1).inner p.2)) v) w = _
-  exact inCoordinates_metric_eq_chartGram_sum (I := I) (g_DT p.1) α hp v w
+      (Set.Ioo (0 : ℝ) T ×ˢ Set.univ) :=
+  metricCLMSection_jointContMDiffOn_of_chartGram_on g_DT (Set.Ioo 0 T) hgram_DT
 
 end MetricCLMSection
 

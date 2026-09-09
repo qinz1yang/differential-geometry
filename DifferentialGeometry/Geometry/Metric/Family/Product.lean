@@ -18,6 +18,92 @@ variable {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F] [FiniteDimension
   {G : Type*} [TopologicalSpace G] {J : ModelWithCorners ℝ F G}
   {N : Type*} [TopologicalSpace N] [ChartedSpace G N] [IsManifold J ∞ N]
 
+private theorem prod_frame_contMDiffOn_of_joint
+    {A : Set ℝ} {g : ℝ → SmoothRiemannianMetric I M}
+    {h : ℝ → SmoothRiemannianMetric J N}
+    (hmg : ContMDiffOn (𝓘(ℝ, ℝ).prod I) (I.prod 𝓘(ℝ, E →L[ℝ] E →L[ℝ] ℝ)) ∞
+      (fun p : ℝ × M => (⟨p.2, (g p.1).inner p.2⟩ : TotalSpace (E →L[ℝ] E →L[ℝ] ℝ)
+        (fun x => TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ)))
+      (A ×ˢ (Set.univ : Set M)))
+    (hmh : ContMDiffOn (𝓘(ℝ, ℝ).prod J) (J.prod 𝓘(ℝ, F →L[ℝ] F →L[ℝ] ℝ)) ∞
+      (fun p : ℝ × N => (⟨p.2, (h p.1).inner p.2⟩ : TotalSpace (F →L[ℝ] F →L[ℝ] ℝ)
+        (fun x => TangentSpace J x →L[ℝ] TangentSpace J x →L[ℝ] ℝ)))
+      (A ×ˢ (Set.univ : Set N)))
+    {Idx : Type}
+    (frame : Idx → (x : M × N) → TangentSpace (I.prod J) x) {u : Set (M × N)}
+    (hframe : ∀ k, ContMDiffOn (I.prod J) ((I.prod J).prod 𝓘(ℝ, E × F)) ∞
+      (fun x => TotalSpace.mk' (E × F) x (frame k x)) u) (i j : Idx) :
+    ContMDiffOn (𝓘(ℝ, ℝ).prod (I.prod J)) 𝓘(ℝ, ℝ) ∞
+      (fun p : ℝ × (M × N) => ((g p.1).prod (h p.1)).inner p.2 (frame i p.2) (frame j p.2))
+      (A ×ˢ u) := by
+  have hmapg : ContMDiff (𝓘(ℝ, ℝ).prod (I.prod J)) (𝓘(ℝ, ℝ).prod I) ∞
+      (fun p : ℝ × (M × N) => (p.1, p.2.1)) :=
+    contMDiff_fst.prodMk (contMDiff_fst.comp contMDiff_snd)
+  have hmaph : ContMDiff (𝓘(ℝ, ℝ).prod (I.prod J)) (𝓘(ℝ, ℝ).prod J) ∞
+      (fun p : ℝ × (M × N) => (p.1, p.2.2)) :=
+    contMDiff_fst.prodMk (contMDiff_snd.comp contMDiff_snd)
+  have hmg' := hmg.comp hmapg.contMDiffOn (fun p hp => ⟨hp.1, Set.mem_univ _⟩ :
+    Set.MapsTo (fun p : ℝ × (M × N) => (p.1, p.2.1)) (A ×ˢ u) (A ×ˢ Set.univ))
+  have hmh' := hmh.comp hmaph.contMDiffOn (fun p hp => ⟨hp.1, Set.mem_univ _⟩ :
+    Set.MapsTo (fun p : ℝ × (M × N) => (p.1, p.2.2)) (A ×ˢ u) (A ×ˢ Set.univ))
+  have hv (k : Idx) : ContMDiffOn (𝓘(ℝ, ℝ).prod (I.prod J)) ((I.prod J).prod 𝓘(ℝ, E × F)) ∞
+      (fun p : ℝ × (M × N) => TotalSpace.mk' (E × F) p.2 (frame k p.2)) (A ×ˢ u) :=
+    (hframe k).comp contMDiffOn_snd (fun p hp => hp.2)
+  have hvg (k : Idx) :=
+    (contMDiff_fst.contMDiff_tangentMap (m := (∞ : WithTop ℕ∞)) le_rfl).comp_contMDiffOn (hv k)
+  have hvh (k : Idx) :=
+    (contMDiff_snd.contMDiff_tangentMap (m := (∞ : WithTop ℕ∞)) le_rfl).comp_contMDiffOn (hv k)
+  have hpg := ContMDiffOn.clm_bundle_apply₂ (F₁ := E) (F₂ := E) (F₃ := ℝ)
+    (E₁ := TangentSpace I) (E₂ := TangentSpace I) (E₃ := Bundle.Trivial M ℝ)
+    (b := fun p : ℝ × (M × N) => p.2.1) hmg' (hvg i) (hvg j)
+  have hph := ContMDiffOn.clm_bundle_apply₂ (F₁ := F) (F₂ := F) (F₃ := ℝ)
+    (E₁ := TangentSpace J) (E₂ := TangentSpace J) (E₃ := Bundle.Trivial N ℝ)
+    (b := fun p : ℝ × (M × N) => p.2.2) hmh' (hvh i) (hvh j)
+  have hpgscalar : ContMDiffOn (𝓘(ℝ, ℝ).prod (I.prod J)) 𝓘(ℝ, ℝ) ∞
+      (fun p : ℝ × (M × N) => (g p.1).inner p.2.1
+        (mfderiv (I.prod J) I Prod.fst p.2 (frame i p.2))
+        (mfderiv (I.prod J) I Prod.fst p.2 (frame j p.2))) (A ×ˢ u) := by
+    intro p hp
+    have hs := hpg p hp
+    rw [Bundle.contMDiffWithinAt_totalSpace] at hs
+    exact hs.2
+  have hphscalar : ContMDiffOn (𝓘(ℝ, ℝ).prod (I.prod J)) 𝓘(ℝ, ℝ) ∞
+      (fun p : ℝ × (M × N) => (h p.1).inner p.2.2
+        (mfderiv (I.prod J) J Prod.snd p.2 (frame i p.2))
+        (mfderiv (I.prod J) J Prod.snd p.2 (frame j p.2))) (A ×ˢ u) := by
+    intro p hp
+    have hs := hph p hp
+    rw [Bundle.contMDiffWithinAt_totalSpace] at hs
+    exact hs.2
+  apply (hpgscalar.add hphscalar).congr
+  intro p hp
+  exact SmoothRiemannianMetric.prod_inner (g p.1) (h p.1) p.2 (frame i p.2) (frame j p.2)
+
+
+theorem metricCLMSection_jointContMDiffOn_prod
+    (g : ℝ → SmoothRiemannianMetric I M) (h : ℝ → SmoothRiemannianMetric J N)
+    (A : Set ℝ)
+    (hg : ContMDiffOn (𝓘(ℝ, ℝ).prod I) (I.prod 𝓘(ℝ, E →L[ℝ] E →L[ℝ] ℝ)) ∞
+      (fun p : ℝ × M => (⟨p.2, (g p.1).inner p.2⟩ : TotalSpace (E →L[ℝ] E →L[ℝ] ℝ)
+        (fun x => TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ)))
+      (A ×ˢ (Set.univ : Set M)))
+    (hh : ContMDiffOn (𝓘(ℝ, ℝ).prod J) (J.prod 𝓘(ℝ, F →L[ℝ] F →L[ℝ] ℝ)) ∞
+      (fun p : ℝ × N => (⟨p.2, (h p.1).inner p.2⟩ : TotalSpace (F →L[ℝ] F →L[ℝ] ℝ)
+        (fun x => TangentSpace J x →L[ℝ] TangentSpace J x →L[ℝ] ℝ)))
+      (A ×ˢ (Set.univ : Set N))) :
+    ContMDiffOn (𝓘(ℝ, ℝ).prod (I.prod J))
+      ((I.prod J).prod 𝓘(ℝ, (E × F) →L[ℝ] (E × F) →L[ℝ] ℝ)) ∞
+      (fun p : ℝ × (M × N) =>
+        (⟨p.2, ((g p.1).prod (h p.1)).inner p.2⟩ :
+          TotalSpace ((E × F) →L[ℝ] (E × F) →L[ℝ] ℝ)
+            (fun x => TangentSpace (I.prod J) x →L[ℝ]
+              TangentSpace (I.prod J) x →L[ℝ] ℝ)))
+      (A ×ˢ (Set.univ : Set (M × N))) := by
+  apply metricCLMSection_jointContMDiffOn_of_chartGram_on (fun t => (g t).prod (h t)) A
+  intro x₀ i j
+  exact prod_frame_contMDiffOn_of_joint hg hh (chartBasisVecFiber (I := I.prod J) x₀)
+    (chartBasisVec_contMDiffOn (I := I.prod J) x₀) i j
+
 private theorem prod_frame_contMDiffOn
     {D : RealTimeInterval} {g : ℝ → SmoothRiemannianMetric I M}
     {h : ℝ → SmoothRiemannianMetric J N}
@@ -40,48 +126,7 @@ private theorem prod_frame_contMDiffOn
       (D.regular ×ˢ (Set.univ : Set N)) := by
     intro p hp
     exact (hh.metricCLMSmoothAt (D.regular_isOpen.mem_nhds hp.1)).contMDiffWithinAt
-  have hmapg : ContMDiff (𝓘(ℝ, ℝ).prod (I.prod J)) (𝓘(ℝ, ℝ).prod I) ∞
-      (fun p : ℝ × (M × N) => (p.1, p.2.1)) :=
-    contMDiff_fst.prodMk (contMDiff_fst.comp contMDiff_snd)
-  have hmaph : ContMDiff (𝓘(ℝ, ℝ).prod (I.prod J)) (𝓘(ℝ, ℝ).prod J) ∞
-      (fun p : ℝ × (M × N) => (p.1, p.2.2)) :=
-    contMDiff_fst.prodMk (contMDiff_snd.comp contMDiff_snd)
-  have hmg' := hmg.comp hmapg.contMDiffOn (fun p hp => ⟨hp.1, Set.mem_univ _⟩ :
-    Set.MapsTo (fun p : ℝ × (M × N) => (p.1, p.2.1)) (D.regular ×ˢ u) (D.regular ×ˢ Set.univ))
-  have hmh' := hmh.comp hmaph.contMDiffOn (fun p hp => ⟨hp.1, Set.mem_univ _⟩ :
-    Set.MapsTo (fun p : ℝ × (M × N) => (p.1, p.2.2)) (D.regular ×ˢ u) (D.regular ×ˢ Set.univ))
-  have hv (k : Idx) : ContMDiffOn (𝓘(ℝ, ℝ).prod (I.prod J)) ((I.prod J).prod 𝓘(ℝ, E × F)) ∞
-      (fun p : ℝ × (M × N) => TotalSpace.mk' (E × F) p.2 (frame k p.2)) (D.regular ×ˢ u) :=
-    (hframe.contMDiffOn k).comp contMDiffOn_snd (fun p hp => hp.2)
-  have hvg (k : Idx) :=
-    (contMDiff_fst.contMDiff_tangentMap (m := (∞ : WithTop ℕ∞)) le_rfl).comp_contMDiffOn (hv k)
-  have hvh (k : Idx) :=
-    (contMDiff_snd.contMDiff_tangentMap (m := (∞ : WithTop ℕ∞)) le_rfl).comp_contMDiffOn (hv k)
-  have hpg := ContMDiffOn.clm_bundle_apply₂ (F₁ := E) (F₂ := E) (F₃ := ℝ)
-    (E₁ := TangentSpace I) (E₂ := TangentSpace I) (E₃ := Bundle.Trivial M ℝ)
-    (b := fun p : ℝ × (M × N) => p.2.1) hmg' (hvg i) (hvg j)
-  have hph := ContMDiffOn.clm_bundle_apply₂ (F₁ := F) (F₂ := F) (F₃ := ℝ)
-    (E₁ := TangentSpace J) (E₂ := TangentSpace J) (E₃ := Bundle.Trivial N ℝ)
-    (b := fun p : ℝ × (M × N) => p.2.2) hmh' (hvh i) (hvh j)
-  have hpgscalar : ContMDiffOn (𝓘(ℝ, ℝ).prod (I.prod J)) 𝓘(ℝ, ℝ) ∞
-      (fun p : ℝ × (M × N) => (g p.1).inner p.2.1
-        (mfderiv (I.prod J) I Prod.fst p.2 (frame i p.2))
-        (mfderiv (I.prod J) I Prod.fst p.2 (frame j p.2))) (D.regular ×ˢ u) := by
-    intro p hp
-    have hs := hpg p hp
-    rw [Bundle.contMDiffWithinAt_totalSpace] at hs
-    exact hs.2
-  have hphscalar : ContMDiffOn (𝓘(ℝ, ℝ).prod (I.prod J)) 𝓘(ℝ, ℝ) ∞
-      (fun p : ℝ × (M × N) => (h p.1).inner p.2.2
-        (mfderiv (I.prod J) J Prod.snd p.2 (frame i p.2))
-        (mfderiv (I.prod J) J Prod.snd p.2 (frame j p.2))) (D.regular ×ˢ u) := by
-    intro p hp
-    have hs := hph p hp
-    rw [Bundle.contMDiffWithinAt_totalSpace] at hs
-    exact hs.2
-  apply (hpgscalar.add hphscalar).congr
-  intro p hp
-  exact SmoothRiemannianMetric.prod_inner (g p.1) (h p.1) p.2 (frame i p.2) (frame j p.2)
+  exact prod_frame_contMDiffOn_of_joint hmg hmh frame hframe.contMDiffOn i j
 
 private theorem prod_metricTensor_cont
     {K : Set Real}

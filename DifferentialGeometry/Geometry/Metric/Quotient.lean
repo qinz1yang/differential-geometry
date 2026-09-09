@@ -4,6 +4,7 @@ import DifferentialGeometry.Geometry.Metric.SmoothMetricFromCoeff
 import DifferentialGeometry.Geometry.Metric.BumpExtend
 import DifferentialGeometry.Topology.Manifold.PartialDiffeomorphOpens
 import DifferentialGeometry.Topology.Manifold.Quotient
+import DifferentialGeometry.Topology.Covering.DeckDiffeomorph
 import Mathlib.Topology.Algebra.InfiniteSum.ENNReal
 import Mathlib.Topology.Homotopy.Lifting
 
@@ -89,6 +90,28 @@ def metricFiberCompatible
     (hf : IsLocalDiffeomorph I I ∞ f) : Prop :=
   ∀ (x y : M) (hxy : f x = f y),
     hxy ▸ localPushInner g f hf x = localPushInner g f hf y
+
+theorem pullbackMetric_localPullMetric_of_comp_eq
+    [T2Space M]
+    {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
+    {G : Type*} [TopologicalSpace G] {J : ModelWithCorners ℝ F G}
+    {P : Type*} [TopologicalSpace P] [ChartedSpace G P] [IsManifold J ∞ P]
+    (g : SmoothRiemannianMetric J P) (f : M → P)
+    (hf : IsLocalDiffeomorph I J ∞ f) (Φ : M ≃ₘ⟮I, I⟯ M)
+    (hcomp : f ∘ (Φ : M → M) = f) :
+    Diffeomorph.pullbackMetric (localPullMetric g f hf) Φ = localPullMetric g f hf := by
+  apply SmoothRiemannianMetric.ext_inner
+  intro x v w
+  rw [Diffeomorph.pullbackMetric_inner, localPullMetric_inner, localPullMetric_inner]
+  have hd := mfderiv_comp x
+    (hf.contMDiff.mdifferentiableAt (by simp))
+    (Φ.contMDiff.mdifferentiableAt (by simp))
+  have hv := ContinuousLinearMap.ext_iff.mp hd v
+  have hw := ContinuousLinearMap.ext_iff.mp hd w
+  simp only [ContinuousLinearMap.comp_apply] at hv hw
+  rw [← hv, ← hw]
+  exact congrArg (fun f : M → P =>
+    g.inner (f x) (mfderiv I J f x v) (mfderiv I J f x w)) hcomp
 
 private noncomputable def chosenPreimage
     {f : M → N} (hsurj : Function.Surjective f) (y : N) : M :=
@@ -191,6 +214,23 @@ theorem localPushInner_eq_of_fiber_preserving_isometry
     g.inner x (B.symm v) (B.symm w)
   rw [hinv, hinv]
   exact hisometry (B.symm v) (B.symm w)
+
+omit [IsManifold I ∞ N] in
+theorem metricFiberCompatible_of_coveringDeckGroup_invariant
+    [T2Space M] [SimplyConnectedSpace M] [LocallyPathConnectedSpace M]
+    (g : SmoothRiemannianMetric I M) (f : M → N)
+    (hf : IsLocalDiffeomorph I I ∞ f) (hcover : IsCoveringMap f)
+    (hinvariant : ∀ γ : coveringDeckGroup f,
+      Diffeomorph.pullbackMetric g (coveringDeckGroupDiffeomorph hf γ) = g) :
+    metricFiberCompatible g f hf := by
+  intro x y hxy
+  obtain ⟨γ, hγ⟩ := (coveringDeckGroup_apply_eq_iff hcover).mp hxy
+  subst x
+  let Φ := coveringDeckGroupDiffeomorph hf γ
+  have hcomp : f ∘ (Φ : M → M) = f := by
+    funext z
+    exact coveringDeckGroup_map γ z
+  exact localPushInner_eq_of_fiber_preserving_isometry g f hf Φ hcomp (hinvariant γ) y
 
 omit [TopologicalSpace N] [ChartedSpace H N] [IsManifold I ∞ N] in
 theorem metricFiberCompatible_quotientMk_of_invariant
