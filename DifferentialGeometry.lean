@@ -3177,6 +3177,7 @@ import DifferentialGeometry.Geometry.Metric.UniversalCover.Curvature
 import DifferentialGeometry.Geometry.Metric.UniversalCover.DeckIsometry
 import DifferentialGeometry.Geometry.Metric.UniversalCover.DeckIsometryGlobal
 import DifferentialGeometry.Geometry.Metric.UniversalCover.DeckProductConjugation
+import DifferentialGeometry.Geometry.Metric.UniversalCover.DeckProductAction
 import DifferentialGeometry.Geometry.Metric.UniversalCover.DimensionOne
 import DifferentialGeometry.Geometry.Metric.UniversalCover.Metric
 import DifferentialGeometry.Geometry.Metric.UniversalCover.Smoothness
@@ -4809,6 +4810,7 @@ import DifferentialGeometry.Analysis.Parabolic.Dirichlet.GradientTimeEquation
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureOperatorEigenvalues
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.SectionalCurvature
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.SurfaceProductCompactness
+import DifferentialGeometry.Geometry.Curvature.DimensionThree.SurfaceProductDeckAction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Soliton.ClassificationScaling
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.ModelCoverScaling
 import DifferentialGeometry.Tensor.Exterior.Diffeomorph
