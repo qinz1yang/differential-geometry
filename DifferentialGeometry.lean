@@ -3176,6 +3176,7 @@ import DifferentialGeometry.Geometry.Metric.UniversalCover.Coordinates
 import DifferentialGeometry.Geometry.Metric.UniversalCover.Curvature
 import DifferentialGeometry.Geometry.Metric.UniversalCover.DeckIsometry
 import DifferentialGeometry.Geometry.Metric.UniversalCover.DeckIsometryGlobal
+import DifferentialGeometry.Geometry.Metric.UniversalCover.DeckProductConjugation
 import DifferentialGeometry.Geometry.Metric.UniversalCover.DimensionOne
 import DifferentialGeometry.Geometry.Metric.UniversalCover.Metric
 import DifferentialGeometry.Geometry.Metric.UniversalCover.Smoothness
