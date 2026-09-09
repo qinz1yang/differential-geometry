@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Exponential.Smoothness.AtZero.IntrinsicDerivative
 import DifferentialGeometry.Geometry.Comparison.Variation.Jacobi.EndpointPositivity
 import DifferentialGeometry.Geometry.Exponential.Intrinsic.Geodesic.Smoothness
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tangent.NormDiamond
@@ -1238,6 +1239,81 @@ theorem branchEnergy_hess_pos
     g.inner (γ 1) (covDerivAlong (I := I) g γ J 1) (J 1) at hh
   rw [← hh] at hpos
   simpa only [hJw, γ, expMapIntrinsic_def] using! hpos
+
+theorem branchEnergy_hess_zero
+    (g : SmoothRiemannianMetric I M)
+    (hEnorm : IsMetricNorm (I := I) g)
+    (p : M) (B : ExponentialInverseBranch (I := I) g hEnorm p)
+    (hzero : (0 : E) ∈ B.hom.source) (Y Z : TangentSpace I p) :
+    hessFun (I := I) g (branchEnergy (I := I) g B) p Y Z =
+      g.inner p Y Z := by
+  classical
+  let γ : Real → M :=
+    intrinsicGeodesic (I := I) g hEnorm p (0 : TangentSpace I p)
+  let J : TangentSpace I p → ∀ t, TangentSpace I (γ t) := fun W =>
+    intrinsicJacobi (I := I) g hEnorm p (0 : TangentSpace I p) W
+  have hγ (t : Real) : γ t = p := by
+    have hs :=
+      intrinsicGeodesic_smul
+        (I := I) g hEnorm p (0 : TangentSpace I p) t
+    rw [smul_zero] at hs
+    have hzero :
+        intrinsicGeodesic (I := I) g hEnorm p
+            (0 : TangentSpace I p) 1 = p := by
+      simpa only [expMapIntrinsic_def] using!
+        expMapIntrinsic_zero (I := I) g hEnorm p
+    exact hs.symm.trans hzero
+  have hJ (W : TangentSpace I p) (t : Real) :
+      (J W t : E) = t • (W : E) := by
+    have hraw :=
+      intrinsic_jacobi_at
+        (I := I) g hEnorm p (0 : E) (W : E) t
+    rw [smul_zero] at hraw
+    change
+      (J W t : E) =
+        (mfderiv 𝓘(Real, E) I
+          (fun v : E =>
+            expMapIntrinsic (I := I) g hEnorm p
+              (show TangentSpace I p from v))
+          (0 : E)) (t • (W : E)) at hraw
+    rw [mfderiv_expMapIntrinsic_at_zero
+      (I := I) g hEnorm p] at hraw
+    simpa only [ContinuousLinearMap.id_apply] using! hraw
+  have hcurve :
+      γ =ᶠ[𝓝 (1 : Real)] fun _ : Real => p :=
+    Filter.Eventually.of_forall hγ
+  have hfield :
+      ∀ᶠ t in 𝓝 (1 : Real),
+        (J Y t : E) =
+          ((show TangentSpace I p from t • (Y : E)) : E) :=
+    Filter.Eventually.of_forall (hJ Y)
+  have hcongr :=
+    covDerivAlong_congr_curve
+      (I := I) g (J Y)
+        (fun t : Real => show TangentSpace I p from t • (Y : E))
+        hcurve hfield
+  have hline :
+      HasDerivAt (fun t : Real => t • (Y : E)) (Y : E) 1 := by
+    simpa only [one_smul, id_eq] using!
+      ((hasDerivAt_id (1 : Real)).smul_const (Y : E))
+  have hconst :=
+    covDerivAlong_const
+      (I := I) g p
+        (fun t : Real => show TangentSpace I p from t • (Y : E))
+        1 hline.differentiableAt
+  have hcov :
+      (covDerivAlong (I := I) g γ (J Y) 1 : E) = (Y : E) :=
+    hcongr.trans (hconst.trans hline.deriv)
+  have hh :=
+    branchEnergy_hess
+      (I := I) B (u := (0 : TangentSpace I p))
+        (w₁ := Y) (w₂ := Z) hzero
+  change
+    hessFun (I := I) g (branchEnergy (I := I) g B)
+        (γ 1) (J Y 1) (J Z 1) =
+      g.inner (γ 1) (covDerivAlong (I := I) g γ (J Y) 1) (J Z 1) at hh
+  rw [hγ 1, hJ Y 1, hJ Z 1, one_smul, one_smul, hcov] at hh
+  exact hh
 
 end Exponential
 end Riemannian

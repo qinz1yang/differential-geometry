@@ -2318,6 +2318,118 @@ theorem exists_fenced_min
         (x := x) (y := y) hx hy)
   simpa only [join, dif_pos hx, dif_pos hy] using hspec
 
+open DifferentialGeometry.Geometry.Operator (hessFun) in
+open DifferentialGeometry.Geometry.Riemannian.Variation (curveVelocity) in
+theorem intrinsicBranch_hess_pos
+    (g : SmoothRiemannianMetric I M)
+    (hEnorm : ∀ (x : M) (v : TangentSpace I x),
+      ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x v v)))
+    (p : M) {R K L : Real} (hR : 0 < R)
+    (hloc :
+      IsLocalDiffeomorphOn 𝓘(Real, E) I ∞
+        (intrinsicFramedExp (I := I) g hEnorm p)
+        (Metric.ball (0 : E) R))
+    (hK : 0 ≤ K)
+    (hRm :
+      ∀ z : E, ‖z‖ < 3 * R / 4 →
+        Real.sqrt (Tensor0SBundle.normSq0S (I := I) g
+          (intrinsicFramedExp (I := I) g hEnorm p z) 4
+          (Geometry.Curvature.metricRm04At
+            (I := I) (M := M) g
+            (intrinsicFramedExp (I := I) g hEnorm p z))) ≤ K)
+    (hsmall : K * L ^ 2 < (Real.pi / 2) ^ 2)
+    {x : E} (u : E)
+    (hfence :
+      ∀ t ∈ Set.Icc (0 : Real) 1,
+        ‖intrinsicExtLaunch (I := I) g hEnorm p hR hloc x u t‖ <
+          3 * R / 4)
+    (huL :
+      Real.sqrt
+          ((intrinsicExtMetric (I := I) g hEnorm p hR hloc).inner x u u) ≤
+        L) :
+    let gExt := intrinsicExtMetric (I := I) g hEnorm p hR hloc
+    letI : RiemannianBundle
+        (fun z : E ↦ TangentSpace 𝓘(Real, E) z) :=
+      ⟨gExt.toRiemannianMetric⟩
+    letI : IsContinuousRiemannianBundle E
+        (fun z : E ↦ TangentSpace 𝓘(Real, E) z) :=
+      ⟨gExt.inner, gExt.contMDiff.continuous, by intro z v w; rfl⟩
+    letI : EMetricSpace E :=
+      EMetricSpace.ofRiemannianMetric 𝓘(Real, E) E
+    letI : IsRiemannianManifold 𝓘(Real, E) E := ⟨fun _ _ => rfl⟩
+    letI : UniformSpace E := PseudoEMetricSpace.toUniformSpace
+    letI : CompleteSpace E :=
+      (intrinsicExt_complete (I := I) g hEnorm p hR hloc).complete
+    let hExt : ∀ (z : E) (v : TangentSpace 𝓘(Real, E) z),
+        ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (gExt.inner z v v)) :=
+      fun z v =>
+        tensor0SBundle_enorm_eq_riemannianBundle_enorm
+          (I := 𝓘(Real, E)) gExt z v
+    ∀ (B : ExponentialInverseBranch (I := 𝓘(Real, E)) gExt hExt x),
+      (u : E) ∈ B.hom.source →
+      ∀ {Y : E}, Y ≠ 0 →
+        0 < hessFun (I := 𝓘(Real, E)) gExt
+          (branchEnergy (I := 𝓘(Real, E)) gExt B)
+          (expMapIntrinsic (I := 𝓘(Real, E)) gExt hExt x u) Y Y := by
+  classical
+  let gExt := intrinsicExtMetric (I := I) g hEnorm p hR hloc
+  let : RiemannianBundle
+      (fun z : E ↦ TangentSpace 𝓘(Real, E) z) :=
+    ⟨gExt.toRiemannianMetric⟩
+  let : IsContinuousRiemannianBundle E
+      (fun z : E ↦ TangentSpace 𝓘(Real, E) z) :=
+    ⟨gExt.inner, gExt.contMDiff.continuous, by intro z v w; rfl⟩
+  let : EMetricSpace E :=
+    EMetricSpace.ofRiemannianMetric 𝓘(Real, E) E
+  let : IsRiemannianManifold 𝓘(Real, E) E := ⟨fun _ _ => rfl⟩
+  let : UniformSpace E := PseudoEMetricSpace.toUniformSpace
+  let : CompleteSpace E :=
+    (intrinsicExt_complete (I := I) g hEnorm p hR hloc).complete
+  let hExt : ∀ (z : E) (v : TangentSpace 𝓘(Real, E) z),
+      ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (gExt.inner z v v)) :=
+    fun z v =>
+        tensor0SBundle_enorm_eq_riemannianBundle_enorm
+          (I := 𝓘(Real, E)) gExt z v
+  change
+    ∀ (B : ExponentialInverseBranch (I := 𝓘(Real, E)) gExt hExt x),
+      u ∈ B.hom.source →
+      ∀ {Y : E}, Y ≠ 0 →
+        0 < hessFun (I := 𝓘(Real, E)) gExt
+          (branchEnergy (I := 𝓘(Real, E)) gExt B)
+          (expMapIntrinsic (I := 𝓘(Real, E)) gExt hExt x u) Y Y
+  intro B huB Y hY
+  let γ := intrinsicGeodesic (I := 𝓘(Real, E)) gExt hExt x u
+  let ell : Real := Real.sqrt (gExt.inner x u u)
+  have hell0 : 0 ≤ ell := Real.sqrt_nonneg _
+  have hellL : ell ≤ L := huL
+  have hL0 : 0 ≤ L := hell0.trans hellL
+  have hsqLe : ell ^ 2 ≤ L ^ 2 := by nlinarith
+  have hvnn : 0 ≤ gExt.inner x u u := metric_inner_self_nonneg gExt x u
+  have hellSq : gExt.inner x u u = ell ^ 2 := (Real.sq_sqrt hvnn).symm
+  let κ : Real := K * ell ^ 2
+  have hκ : κ < (Real.pi / 2) ^ 2 :=
+    (mul_le_mul_of_nonneg_left hsqLe hK).trans_lt hsmall
+  apply branchEnergy_hess_pos (I := 𝓘(Real, E)) B huB hκ ?_ Y hY
+  dsimp only
+  intro t ht v
+  have hz : ‖γ t‖ < 3 * R / 4 := by
+    simpa only [γ, gExt, hExt, intrinsicExtLaunch] using hfence t (Ioo_subset_Icc_self ht)
+  have hquad := intrinsicExt_quad_le (I := I) g hEnorm p hR hloc hz (hRm (γ t) hz)
+    v (curveVelocity (I := 𝓘(Real, E)) γ t)
+  have hspeed : gExt.inner (γ t)
+      (curveVelocity (I := 𝓘(Real, E)) γ t)
+      (curveVelocity (I := 𝓘(Real, E)) γ t) = gExt.inner x u u := by
+    simpa only [γ, curveVelocity] using!
+      intrinsicGeodesic_speedSq_eq (I := 𝓘(Real, E)) gExt hExt x u t
+  calc
+    _ ≤ K * gExt.inner (γ t) v v * gExt.inner (γ t)
+        (curveVelocity (I := 𝓘(Real, E)) γ t)
+        (curveVelocity (I := 𝓘(Real, E)) γ t) := hquad
+    _ = κ * gExt.inner (γ t) v v := by
+      rw [hspeed, hellSq]
+      dsimp only [κ]
+      ring
+
 end CheegerGromovTaylor
 end Riemannian
 end Geometry
