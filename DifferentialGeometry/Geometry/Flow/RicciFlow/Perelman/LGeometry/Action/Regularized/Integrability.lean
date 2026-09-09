@@ -3,6 +3,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Ch
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Regularized.Defs
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Compactness.Scalar
 import DifferentialGeometry.Topology.Manifold.CurveChart.Subdivision
+import DifferentialGeometry.Geometry.Metric.Comparison.CurveEnergy
 
 set_option autoImplicit false
 
@@ -140,7 +141,7 @@ end
 
 section
 
-variable {E : Type uE} [NormedAddCommGroup E] [InnerProductSpace Real E]
+variable {E : Type uE} [NormedAddCommGroup E] [NormedSpace Real E]
 variable {H : Type uH} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H}
 variable {M : Type u} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
@@ -153,35 +154,8 @@ theorem integrableOn_riemannianMetric_inner_lVelocity_self_of_contMDiff_one
     (a b : Real) :
     IntegrableOn
       (fun s ↦ g.inner (alpha s) (lVelocity (I := I) alpha s)
-        (lVelocity (I := I) alpha s)) (Icc a b) := by
-  have hv : ContMDiff (modelWithCornersSelf Real Real)
-      (I.prod (modelWithCornersSelf Real E)) 0
-      (fun s ↦ TotalSpace.mk' E (alpha s) (lVelocity (I := I) alpha s)) := by
-    have ht := halpha.contMDiff_tangentMap (m := 0) (by norm_num)
-    have hone : ContMDiff (modelWithCornersSelf Real Real)
-        (modelWithCornersSelf Real Real).tangent 0
-        (fun s : Real ↦
-          (⟨s, (1 : Real)⟩ : TangentBundle (modelWithCornersSelf Real Real) Real)) := by
-      exact (contMDiff_vectorSpace_iff_contDiff
-        (V := fun _ : Real ↦ (1 : Real))).mpr contDiff_const
-    have h := ht.comp hone
-    change ContMDiff (modelWithCornersSelf Real Real)
-      (I.prod (modelWithCornersSelf Real E)) 0
-      (fun s ↦ TotalSpace.mk' E (alpha s) (lVelocity (I := I) alpha s)) at h
-    exact h
-  let cg : ContinuousRiemannianMetric E
-      (TangentSpace I : M → Type _) := g.toContinuousRiemannianMetric
-  let rb : RiemannianBundle (TangentSpace I : M → Type _) :=
-    ⟨cg.toRiemannianMetric⟩
-  have hq : Continuous (fun s ↦
-      g.inner (alpha s) (lVelocity (I := I) alpha s)
-        (lVelocity (I := I) alpha s)) := by
-    have hinner := Continuous.inner_bundle (F := E) (B := M)
-      (E := (TangentSpace I : M → Type _))
-      (b := alpha) (v := fun s ↦ lVelocity (I := I) alpha s)
-      (w := fun s ↦ lVelocity (I := I) alpha s) hv.continuous hv.continuous
-    exact hinner.congr fun _ ↦ rfl
-  exact hq.continuousOn.integrableOn_compact isCompact_Icc
+        (lVelocity (I := I) alpha s)) (Icc a b) :=
+  Geometry.Riemannian.integrableOn_inner_mfderiv_self_of_contMDiffOn g halpha.contMDiffOn
 
 end
 

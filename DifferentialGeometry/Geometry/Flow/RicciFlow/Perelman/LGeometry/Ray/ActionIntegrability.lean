@@ -1,6 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Regularized.Defs
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Regularized.SpeedBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Ray.SmoothExtension
+import DifferentialGeometry.Geometry.Metric.Comparison.CurveEnergy
 
 set_option autoImplicit false
 
@@ -23,6 +24,25 @@ variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 variable {M : Type u} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [T2Space M] [SigmaCompactSpace M]
 variable {D : RealTimeInterval}
+
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+omit [InnerProductSpace Real E] [NeZero (Module.finrank Real E)]
+  [SigmaCompactSpace M] in
+theorem integrableOn_inner_lVelocity_lRegularizedCurve
+    (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
+    (T : Real) (x : M) (Z : TangentSpace I x) (g : SmoothRiemannianMetric I M)
+    {a b : Real} (hdom : Icc a b ⊆ lRegularizedDomain S T x Z) :
+    IntegrableOn (fun s ↦ g.inner (lRegularizedCurve S T x Z s)
+      (lVelocity (I := I) (lRegularizedCurve S T x Z) s)
+      (lVelocity (I := I) (lRegularizedCurve S T x Z) s)) (Icc a b) := by
+  apply Geometry.Riemannian.integrableOn_inner_mfderiv_self_of_contMDiffOn
+  intro s hs
+  have hpair : ContMDiffAt 𝓘(Real, Real) (𝓘(Real, E).prod 𝓘(Real, Real)) ∞
+      ((fun r : Real ↦ (Z, r)) : Real → E × Real) s :=
+    (contMDiff_const.prodMk contMDiff_id).contMDiffAt
+  exact (((lRegularizedCurve_smooth S hS T x (hdom hs)).comp s hpair).of_le
+    (by norm_num)).contMDiffWithinAt
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in

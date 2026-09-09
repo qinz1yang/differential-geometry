@@ -25,43 +25,6 @@ variable {M : Type u} [PseudoMetricSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [T2Space M] [CompactSpace M]
 variable {D : RealTimeInterval}
 
-attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
-  Tensor0SBundle.tangentSpaceNormedSpace in
-omit [FiniteDimensional Real E] [NeZero (Module.finrank Real E)]
-  [I.Boundaryless] [T2Space M] [CompactSpace M] in
-private theorem c1_ref_int
-    (gRef : SmoothRiemannianMetric I M) (alpha : Real → M)
-    (halpha : ContMDiff (modelWithCornersSelf Real Real) I 1 alpha)
-    (a b : Real) :
-    IntegrableOn
-      (fun s ↦ gRef.inner (alpha s) (lVelocity (I := I) alpha s)
-        (lVelocity (I := I) alpha s)) (Icc a b) := by
-  have hv : ContMDiff (modelWithCornersSelf Real Real)
-      (I.prod (modelWithCornersSelf Real E)) 0
-      (fun s ↦ TotalSpace.mk' E (alpha s) (lVelocity (I := I) alpha s)) := by
-    have ht := halpha.contMDiff_tangentMap (m := 0) (by norm_num)
-    have hone : ContMDiff (modelWithCornersSelf Real Real)
-        (modelWithCornersSelf Real Real).tangent 0
-        (fun s : Real ↦
-          (TotalSpace.mk' Real s (1 : Real) :
-            TangentBundle (modelWithCornersSelf Real Real) Real)) :=
-      (contMDiff_vectorSpace_iff_contDiff
-        (V := fun _ : Real ↦ (1 : Real))).mpr contDiff_const
-    exact (ht.comp hone).congr fun _ ↦ rfl
-  let cg : Bundle.ContinuousRiemannianMetric E
-      (TangentSpace I : M → Type _) := gRef.toContinuousRiemannianMetric
-  let rb : Bundle.RiemannianBundle (TangentSpace I : M → Type _) :=
-    ⟨cg.toRiemannianMetric⟩
-  have hq : Continuous (fun s ↦
-      gRef.inner (alpha s) (lVelocity (I := I) alpha s)
-        (lVelocity (I := I) alpha s)) := by
-    have hinner := Continuous.inner_bundle (F := E) (B := M)
-      (E := (TangentSpace I : M → Type _))
-      (b := alpha) (v := fun s ↦ lVelocity (I := I) alpha s)
-      (w := fun s ↦ lVelocity (I := I) alpha s) hv.continuous hv.continuous
-    exact hinner.congr fun _ ↦ rfl
-  exact hq.continuousOn.integrableOn_compact isCompact_Icc
-
 omit [NeZero (Module.finrank Real E)] in
 theorem exists_lRegularizedMinC1
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
@@ -118,7 +81,8 @@ theorem exists_lRegularizedMinC1
     refine ⟨C * (b - a), ?_⟩
     intro r hr
     obtain ⟨alpha, halpha, _ha, _hb, rfl⟩ := hr
-    have hE := c1_ref_int (I := I) gRef alpha halpha a b
+    have hE := integrableOn_riemannianMetric_inner_lVelocity_self_of_contMDiff_one
+      (I := I) gRef alpha halpha a b
     have href : IntervalIntegrable
         (fun s ↦ gRef.inner (alpha s) (lVelocity (I := I) alpha s)
           (lVelocity (I := I) alpha s)) volume a b := by
@@ -144,7 +108,8 @@ theorem exists_lRegularizedMinC1
   have hE (n : Nat) : IntegrableOn
       (fun s ↦ gRef.inner (alpha n s) (lVelocity (I := I) (alpha n) s)
         (lVelocity (I := I) (alpha n) s)) (Icc a b) :=
-    c1_ref_int (I := I) gRef (alpha n) (halpha n) a b
+    integrableOn_riemannianMetric_inner_lVelocity_self_of_contMDiff_one
+      (I := I) gRef (alpha n) (halpha n) a b
   have hLag (n : Nat) : IntervalIntegrable
       (lRegularizedLagrangian S T (alpha n)) volume a b :=
     intervalIntegrable_lRegularizedLagrangian_of_contMDiffOn_one (I := I) S hMet hSc T a b hab (alpha n)

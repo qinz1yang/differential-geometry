@@ -1,5 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Geodesic.ExponentialMap
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Estimates.CompactCurvature
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Ray.ActionIntegrability
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Ray.DomainContinuation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Jacobian.SourceGaussian
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.Noncollapsing.Defs
@@ -450,94 +451,6 @@ theorem lRegularizedSpeed_scale
   exact lRegularizedSpeed_fixed S hS time hrho hreg A hA hgrad heps heps32
     (by simpa only [C, n] using hsqrtC) B hBrho hB Z hZ hs hpoint
 
-attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
-  Tensor0SBundle.tangentSpaceNormedSpace in
-omit [FiniteDimensional Real E] [NeZero (Module.finrank Real E)]
-  [InnerProductSpace Real E] [I.Boundaryless] [T2Space M]
-  [SigmaCompactSpace M] in
-private theorem c1_ref_int
-    (g : SmoothRiemannianMetric I M) (alpha : Real → M)
-    (halpha : ContMDiff (modelWithCornersSelf Real Real) I 1 alpha)
-    (a b : Real) :
-    IntegrableOn (fun s ↦ g.inner (alpha s) (lVelocity (I := I) alpha s)
-      (lVelocity (I := I) alpha s)) (Icc a b) := by
-  have hv : ContMDiff (modelWithCornersSelf Real Real)
-      (I.prod (modelWithCornersSelf Real E)) 0
-      (fun s ↦ TotalSpace.mk' E (alpha s) (lVelocity (I := I) alpha s)) := by
-    have ht := halpha.contMDiff_tangentMap (m := 0) (by norm_num)
-    have hone : ContMDiff (modelWithCornersSelf Real Real)
-        (modelWithCornersSelf Real Real).tangent 0
-        (fun s : Real ↦
-          (TotalSpace.mk' Real s (1 : Real) :
-            TangentBundle (modelWithCornersSelf Real Real) Real)) :=
-      (contMDiff_vectorSpace_iff_contDiff
-        (V := fun _ : Real ↦ (1 : Real))).mpr contDiff_const
-    exact (ht.comp hone).congr fun _ ↦ rfl
-  let cg : Bundle.ContinuousRiemannianMetric E
-      (TangentSpace I : M → Type _) := g.toContinuousRiemannianMetric
-  let rb : Bundle.RiemannianBundle (TangentSpace I : M → Type _) :=
-    ⟨cg.toRiemannianMetric⟩
-  have hq : Continuous (fun s ↦
-      g.inner (alpha s) (lVelocity (I := I) alpha s)
-        (lVelocity (I := I) alpha s)) := by
-    have hinner := Continuous.inner_bundle (F := E) (B := M)
-      (E := (TangentSpace I : M → Type _))
-      (b := alpha) (v := fun s ↦ lVelocity (I := I) alpha s)
-      (w := fun s ↦ lVelocity (I := I) alpha s) hv.continuous hv.continuous
-    exact hinner.congr fun _ ↦ rfl
-  exact hq.continuousOn.integrableOn_compact isCompact_Icc
-
-attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
-  Tensor0SBundle.tangentSpaceNormedSpace in
-omit [InnerProductSpace Real E] [SigmaCompactSpace M] in
-omit [NeZero (Module.finrank ℝ E)] in
-private theorem lRegularizedTerm_int
-    (S : SolutionOn (I := I) (M := M) D)
-    (hS : IsSolutionOn (I := I) S) (T : Real)
-    (x : M) (Z : TangentSpace I x) {b : Real}
-    (hb0 : 0 < b) (hb : b ∈ lRegularizedDomain S T x Z) :
-    IntegrableOn (fun s ↦
-      (S.base.metric T).inner (lRegularizedCurve S T x Z s)
-        (lVelocity (I := I) (lRegularizedCurve S T x Z) s)
-        (lVelocity (I := I) (lRegularizedCurve S T x Z) s)) (Icc 0 b) := by
-  obtain ⟨rho, hrho, hrho_id, _hrho_deriv, hrho_range⟩ :=
-    exists_lRegularizedDomain_smoothClamp S T x Z hb0 hb
-  let z : E := Z
-  let gamma : Real → M := fun s ↦ lRegularizedCurve S T x Z (rho s)
-  have hrhoM : ContMDiff (modelWithCornersSelf Real Real)
-      (modelWithCornersSelf Real Real) ∞ rho :=
-    contMDiff_iff_contDiff.mpr hrho
-  have hpair : ContMDiff (modelWithCornersSelf Real Real)
-      ((modelWithCornersSelf Real E).prod
-        (modelWithCornersSelf Real Real)) ∞
-      (fun s : Real ↦ (z, rho s)) :=
-    contMDiff_const.prodMk hrhoM
-  have hgammaInf : ContMDiff (modelWithCornersSelf Real Real) I ∞ gamma := by
-    rw [← contMDiffOn_univ]
-    change ContMDiffOn (modelWithCornersSelf Real Real) I ∞
-      ((fun q : E × Real ↦ lRegularizedCurve S T x q.1 q.2) ∘
-        fun s : Real ↦ (z, rho s)) Set.univ
-    exact (lRegularizedCurve_smoothOn S hS T x).comp hpair.contMDiffOn
-      (fun s _hs ↦ by
-        change rho s ∈ lRegularizedDomain S T x Z
-        exact hrho_range s)
-  have hgamma : ContMDiff (modelWithCornersSelf Real Real) I 1 gamma :=
-    hgammaInf.of_le (by norm_num)
-  have hg := c1_ref_int (I := I) (S.base.metric T) gamma hgamma 0 b
-  apply hg.congr_fun_ae
-  rw [← Measure.restrict_congr_set Ioo_ae_eq_Icc]
-  filter_upwards [ae_restrict_mem measurableSet_Ioo] with s hs
-  have heq : gamma =ᶠ[nhds s] lRegularizedCurve S T x Z := by
-    filter_upwards [isOpen_Ioo.mem_nhds hs] with q hq
-    exact congrArg (lRegularizedCurve S T x Z)
-      (hrho_id ⟨hq.1.le, hq.2.le⟩)
-  have hvel := Filter.EventuallyEq.mfderiv_eq
-    (I := modelWithCornersSelf Real Real) (I' := I) heq
-  simp only [gamma, lVelocity]
-  rw [hvel, hrho_id ⟨hs.1.le, hs.2.le⟩]
-  simp only [id_eq]
-  rfl
-
 omit [InnerProductSpace Real E] [NeZero (Module.finrank Real E)]
   [I.Boundaryless] [SigmaCompactSpace M] in
 theorem lMetric_slab [CompactSpace M]
@@ -939,7 +852,9 @@ theorem lRegularizedRange_scale
           linarith [hq.1]
         · exact hq.2
       exact mem_lRegularizedDomain_of_time_slab S hS (time : Real) B.center Z t ht.1.le htslab
-    have hE := lRegularizedTerm_int (I := J) S hS (time : Real) B.center Z ht.1 htDom
+    have hE := integrableOn_inner_lVelocity_lRegularizedCurve (I := J)
+      S hS (time : Real) B.center Z (S.base.metric time) fun s hs ↦
+        lRegularizedDomain_segment S (time : Real) B.center Z htDom hs.1 hs.2
     have hterm : ∀ q ∈ Icc (0 : Real) t,
         (S.base.metric (time : Real)).inner (alpha q)
           (lVelocity (I := J) alpha q) (lVelocity (I := J) alpha q) ≤
