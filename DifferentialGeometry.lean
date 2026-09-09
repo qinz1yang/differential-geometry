@@ -2741,6 +2741,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Preservation.ScalarLowerBoun
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Scalar.RicciTrace
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.Cutoff.Basic
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.Cutoff.Curvature
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.Cutoff.FlowBall
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.Cutoff.Defs
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Preservation.PositiveRicciReaction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.Restriction
