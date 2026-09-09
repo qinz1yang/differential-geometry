@@ -3208,6 +3208,7 @@ import DifferentialGeometry.Topology.Morse.HandleAttachment
 import DifferentialGeometry.Topology.Morse.LevelSet
 import DifferentialGeometry.Topology.Morse.LocalNormalForm
 import DifferentialGeometry.Topology.Morse.Manifold
+import DifferentialGeometry.Topology.Morse.Minimum
 import DifferentialGeometry.Topology.Morse.ManifoldCellAttachment
 import DifferentialGeometry.Topology.Morse.HandleCollar
 import DifferentialGeometry.Topology.Morse.HandleIsotopy
