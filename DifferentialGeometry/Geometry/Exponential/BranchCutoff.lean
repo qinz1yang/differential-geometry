@@ -93,4 +93,27 @@ theorem DiagInvBranch.exists_cutoff_uniform_energy_gap
   · intro p hp q hq
     exact hgap (p, q) ⟨hp, hq⟩
 
+namespace DiagInvBranch
+
+theorem exists_branch_cutoff_in
+    {g : SmoothRiemannianMetric I M} {hEnorm : IsMetricNorm g} {p : M}
+    (B : ExpInvBranch g hEnorm p) (hB : (0 : E) ∈ B.hom.source)
+    {V : Set M} (hV : IsOpen V) (hpV : p ∈ V) :
+    ∃ χ : M → ℝ, ContMDiff I 𝓘(ℝ,ℝ) ∞ χ ∧ HasCompactSupport χ ∧
+      χ =ᶠ[nhds p] 1 ∧ tsupport χ ⊆ B.dom ∩ V ∧ Set.range χ ⊆ Set.Icc 0 1 := by
+  have hopen : IsOpen (B.dom ∩ V) := B.hom.open_target.inter hV
+  have hpdom : p ∈ B.dom := by
+    change p ∈ B.hom.target
+    have hz : B.hom 0 = p := by
+      rw [← B.hom_eq hB]
+      simp only [map_zero, expMapIntrinsic_zero]
+    simpa [hz] using B.hom.map_source hB
+  obtain ⟨χ, hχ, hc, h1, hs, hb⟩ := DifferentialGeometry.Analysis.exists_mfd_bump
+    (I := I) (K := {p}) isCompact_singleton hopen
+      (singleton_subset_iff.mpr ⟨hpdom, hpV⟩)
+  refine ⟨χ, hχ, hc, ?_, hs, hb⟩
+  simpa only [nhdsSet_singleton] using h1
+
+end DiagInvBranch
+
 end DifferentialGeometry.Geometry.Riemannian.Exponential
