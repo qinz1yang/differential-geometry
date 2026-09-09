@@ -11,6 +11,8 @@ open Set
 open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.Tensor0SBundle
 open scoped Manifold ContDiff
 
+section
+
 variable {H : Type} [TopologicalSpace H]
   {I : ModelWithCorners ℝ (DifferentialGeometry.Topology.Morse.MorseModel 3) H}
   [I.Boundaryless] {M : Type} [TopologicalSpace M] [ChartedSpace H M]
@@ -207,5 +209,61 @@ theorem exists_positive_surface_global_product_of_curvatureOperator_rank_one_of_
   exact ⟨N, htop, hcs, hman, ht2, hσ, h, F, hconn, hsimply,
     fun t ht => hcomp t ht (hcomplete t ht), hprod, hderiv, hsolution,
     hancient, hscalar, hsectional⟩
+
+end
+
+section Compact
+
+variable {H : Type} [TopologicalSpace H]
+  {I : ModelWithCorners ℝ (DifferentialGeometry.Topology.Morse.MorseModel 3) H} [I.Boundaryless]
+  {M : Type} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M] [T2Space M]
+  [CompactSpace M]
+
+theorem exists_curvatureOperatorImageAt_finrank_eq_on_ancient_of_compact
+    [ConnectedSpace M]
+    {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn S)
+    {T : ℝ} (hreg : Iio T ⊆ D.regular)
+    : ∃ q ∈ ({0, 1, 3} : Set ℕ), ∀ t < T, ∀ x : M,
+      Module.finrank ℝ (curvatureOperatorImageAt (S.family.metric t) x
+        ⟨metricRm04At (S.family.metric t) x,
+          metricRm04At_mem_algebraicCurvatureTensorSubmodule (S.family.metric t) x⟩) = q := by
+  have hdim : Module.finrank ℝ (DifferentialGeometry.Topology.Morse.MorseModel 3) = 3 := by
+    simp [DifferentialGeometry.Topology.Morse.MorseModel]
+  have hR : ∀ t < T, ∀ x,
+      (⟨metricRm04At (S.family.metric t) x,
+        metricRm04At_mem_algebraicCurvatureTensorSubmodule (S.family.metric t) x⟩ :
+          algebraicCurvatureTensorSubmodule (I := I) (M := M) x) ∈
+            algebraicCurvatureOperatorNonnegativeCone (I := I) (M := M) := by
+    intro t ht x
+    exact curvatureOperator_nonnegative_of_complete_ancient S hS
+      (fun r hr => D.regular_subset (hreg (hr.trans_lt ht)))
+      (fun r hr => hreg (hr.trans ht))
+      (fun r _ => RiemannianMetricComplete.of_compact (S.family.metric r)) hdim x
+  have hinterval (a b : ℝ) (hb : b < T) :
+      ∃ q ∈ ({0, 1, 3} : Set ℕ), ∀ t ∈ Ioo a b, ∀ x : M,
+        Module.finrank ℝ (curvatureOperatorImageAt (S.family.metric t) x
+          ⟨metricRm04At (S.family.metric t) x,
+            metricRm04At_mem_algebraicCurvatureTensorSubmodule (S.family.metric t) x⟩) = q := by
+    exact exists_curvatureOperatorImageAt_finrank_eq_on_interval_of_compact
+      S hS (fun t ht => hreg (ht.2.trans hb))
+      (fun t ht => hR t (ht.2.trans hb))
+  let s : ℝ := T - 1
+  have hs : s < T := by dsimp [s]; linarith
+  let x₀ : M := Classical.choice inferInstance
+  obtain ⟨b₀, hsb₀, hb₀⟩ := exists_between hs
+  obtain ⟨q, hq, hbase⟩ := hinterval (s - 1) b₀ hb₀
+  have hsbase : s ∈ Ioo (s - 1) b₀ := ⟨by linarith, hsb₀⟩
+  refine ⟨q, hq, ?_⟩
+  intro t ht x
+  obtain ⟨b, hmaxb, hb⟩ := exists_between (max_lt hs ht)
+  let a : ℝ := min s t - 1
+  have has : a < s := by dsimp [a]; linarith [min_le_left s t]
+  have hat : a < t := by dsimp [a]; linarith [min_le_right s t]
+  have hsb : s < b := (le_max_left s t).trans_lt hmaxb
+  have htb : t < b := (le_max_right s t).trans_lt hmaxb
+  obtain ⟨r, _, hr⟩ := hinterval a b hb
+  exact (hr t ⟨hat, htb⟩ x).trans ((hr s ⟨has, hsb⟩ x₀).symm.trans (hbase s hsbase x₀))
+
+end Compact
 
 end DifferentialGeometry.PDE.RicciFlow

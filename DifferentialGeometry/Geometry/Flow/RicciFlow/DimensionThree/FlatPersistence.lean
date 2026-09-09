@@ -1,4 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.RicciFlat
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.Compact
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.Stationary
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Nullity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.CurvatureRank
 
@@ -163,5 +165,71 @@ theorem metric_eq_on_of_curvatureOperatorImageAt_finrank_eq_zero
   exact isOpen_Ioo.is_const_of_deriv_eq_zero isPreconnected_Ioo
     (fun r hr => (hderiv r hr).differentiableAt.differentiableWithinAt)
     (fun r hr => (hderiv r hr).deriv) hs ht
+
+omit [SigmaCompactSpace M] in
+theorem stationary_flat_of_curvatureOperatorImageAt_finrank_eq_zero_of_compact
+    [CompactSpace M] [ConnectedSpace M]
+    {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn S)
+    (hdim : Module.finrank ℝ E = 3)
+    {a b s : ℝ} (hs : s ∈ Ioo a b) (hreg : Ioo a b ⊆ D.regular)
+    (hR : ∀ t ∈ Ioo a b, ∀ x,
+      (⟨metricRm04At (S.family.metric t) x,
+        metricRm04At_mem_algebraicCurvatureTensorSubmodule (S.family.metric t) x⟩ :
+        algebraicCurvatureTensorSubmodule (I := I) (M := M) x) ∈
+        algebraicCurvatureOperatorNonnegativeCone (I := I) (M := M))
+    (x₀ : M)
+    (hzero : Module.finrank ℝ (curvatureOperatorImageAt (S.family.metric s) x₀
+      ⟨metricRm04At (S.family.metric s) x₀,
+        metricRm04At_mem_algebraicCurvatureTensorSubmodule (S.family.metric s) x₀⟩) = 0) :
+    ∀ t ∈ Ioo a b, S.family.metric t = S.family.metric s ∧
+      ∀ (x : M) (u v w : TangentSpace I x),
+        riemannOp (LeviCivita (S.family.metric t))
+          x u v w = 0 := by
+  let _ : CompleteSpace E := FiniteDimensional.complete ℝ E
+  have hzeroPast (t : ℝ) (ht : t ∈ Ioo a b) (hts : t ≤ s) (x : M) :
+      Module.finrank ℝ (curvatureOperatorImageAt (S.family.metric t) x
+        ⟨metricRm04At (S.family.metric t) x,
+          metricRm04At_mem_algebraicCurvatureTensorSubmodule (S.family.metric t) x⟩) = 0 := by
+    rcases hts.eq_or_lt with rfl | hts
+    · obtain ⟨r, har, hrs⟩ := exists_between hs.1
+      have hsub : Icc r t ⊆ Ioo a b := fun q hq =>
+        ⟨har.trans_le hq.1, hq.2.trans_lt hs.2⟩
+      exact (curvatureOperatorImageAt_finrank_eq_at_later_time S hS hdim hrs
+        (hsub.trans hreg) (fun q hq => hR q (hsub hq)) x x₀).trans hzero
+    · have hsub : Icc t s ⊆ Ioo a b := fun q hq =>
+        ⟨ht.1.trans_le hq.1, hq.2.trans_lt hs.2⟩
+      have hle := curvatureOperatorImageAt_finrank_le_at_later_time S hS hdim hts
+        (hsub.trans hreg) (fun q hq => hR q (hsub hq)) x x₀
+      omega
+  have hforward (u v : ℝ) (hu : u ∈ Ioo a b) (hv : v ∈ Ioo a b) (huv : u ≤ v)
+      (hRicci : ∀ (x : M) (w z : TangentSpace I x),
+        ricciTensor (S.family.metric u) x w z = 0) :
+      S.family.metric v = S.family.metric u := by
+    obtain ⟨w, hvw, hwb⟩ := exists_between hv.2
+    have huw : u < w := huv.trans_lt hvw
+    have hsub : Ico u w ⊆ Ioo a b := fun q hq =>
+      ⟨hu.1.trans_le hq.1, hq.2.trans hwb⟩
+    have heq := metric_eq_on_Ico_of_initial_of_compact S hS
+      (SolutionOn.const (S.family.metric u) D)
+      (isSolutionOn_const_of_ricciTensor_eq_zero (S.family.metric u) hRicci D)
+      huw (hsub.trans hreg) (hsub.trans hreg) rfl
+    exact heq v ⟨huv, hvw⟩
+  intro t ht
+  have hmetric : S.family.metric t = S.family.metric s := by
+    rcases le_total s t with hst | hts
+    · exact hforward s t hs ht hst fun x w z =>
+        ricciTensor_eq_zero_of_mem_curvatureOperatorImageAnnihilatorAt (S.family.metric s) x
+          (mem_curvatureOperatorImageAnnihilatorAt_of_finrank_eq_zero
+            (S.family.metric s) x (hzeroPast s hs le_rfl x) w) z
+    · exact (hforward t s ht hs hts fun x w z =>
+        ricciTensor_eq_zero_of_mem_curvatureOperatorImageAnnihilatorAt (S.family.metric t) x
+          (mem_curvatureOperatorImageAnnihilatorAt_of_finrank_eq_zero
+            (S.family.metric t) x (hzeroPast t ht hts x) w) z).symm
+  refine ⟨hmetric, ?_⟩
+  intro x u v w
+  rw [hmetric]
+  exact riemannOp_eq_zero_of_mem_curvatureOperatorImageAnnihilatorAt (S.family.metric s) x
+    (mem_curvatureOperatorImageAnnihilatorAt_of_finrank_eq_zero
+      (S.family.metric s) x (hzeroPast s hs le_rfl x) w) u v
 
 end DifferentialGeometry.PDE.RicciFlow

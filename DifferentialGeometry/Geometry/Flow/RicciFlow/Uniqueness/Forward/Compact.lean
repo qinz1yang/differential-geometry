@@ -2,6 +2,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.SmoothSol
 import DifferentialGeometry.Geometry.Metric.Family.JointSmoothness
 import DifferentialGeometry.Geometry.Metric.Convergence.PullbackCross
 import DifferentialGeometry.Geometry.Metric.ModelChange
+import DifferentialGeometry.Geometry.Metric.Family.PairSmoothness
 
 noncomputable section
 
@@ -122,5 +123,29 @@ theorem ricci_flow_forward_unique_of_joint_contMDiffOn
     intro t ht
     have h := congrArg (fun g => Diffeomorph.pullbackMetricCross g Φ) (hunique t ht)
     simpa only [k₁, k₂, Φ, SmoothRiemannianMetric.pullback_transContinuousLinearEquiv] using h
+
+theorem metric_eq_on_Ico_of_initial_of_compact
+    {D₁ D₂ : RealTimeInterval} (S₁ : SolutionOn (I := I) (M := M) D₁)
+    (hS₁ : IsSolutionOn S₁) (S₂ : SolutionOn (I := I) (M := M) D₂)
+    (hS₂ : IsSolutionOn S₂) {a b : ℝ} (hab : a < b)
+    (hreg₁ : Ico a b ⊆ D₁.regular) (hreg₂ : Ico a b ⊆ D₂.regular)
+    (hinit : S₁.family.metric a = S₂.family.metric a) :
+    ∀ t ∈ Ico a b, S₁.family.metric t = S₂.family.metric t := by
+  apply ricci_flow_forward_unique_of_joint_contMDiffOn S₁.family.metric S₂.family.metric hab
+  · intro p hp
+    exact (hS₁.smoothMetric.metricCLMSmoothAt
+      (D₁.regular_isOpen.mem_nhds (hreg₁ hp.1))).contMDiffWithinAt
+  · intro p hp
+    exact (hS₂.smoothMetric.metricCLMSmoothAt
+      (D₂.regular_isOpen.mem_nhds (hreg₂ hp.1))).contMDiffWithinAt
+  · intro t ht x v w
+    simpa only [SolutionOn.ricciAt, SolutionFamily.ricciAt,
+      metricRicciAt_apply_eq_ricciTensor, SolutionOn.family_metric] using
+      (metricDerivAt S₁ hS₁ ⟨t, hreg₁ ht⟩ x v w).hasDerivWithinAt (s := Ici a)
+  · intro t ht x v w
+    simpa only [SolutionOn.ricciAt, SolutionFamily.ricciAt,
+      metricRicciAt_apply_eq_ricciTensor, SolutionOn.family_metric] using
+      (metricDerivAt S₂ hS₂ ⟨t, hreg₂ ht⟩ x v w).hasDerivWithinAt (s := Ici a)
+  · exact hinit
 
 end DifferentialGeometry.PDE.RicciFlow

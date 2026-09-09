@@ -4,6 +4,7 @@ import DifferentialGeometry.Geometry.Metric.Family.Product
 import DifferentialGeometry.Geometry.Metric.Family.JointSmoothness
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.Product
 import DifferentialGeometry.Geometry.Metric.Convergence.PullbackCross
+import DifferentialGeometry.Geometry.Metric.Family.PairSmoothness
 
 noncomputable section
 
@@ -34,6 +35,8 @@ open Bundle Set
 open DifferentialGeometry.Geometry.Curvature
 
 namespace DifferentialGeometry.PDE.RicciFlow
+
+section
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E]
@@ -113,10 +116,11 @@ private theorem metricFiberCompatible_prod_real_flow_of_initial_localPullMetric
   exact ricci_flow_prod_real_conjugate_pullback_eq_of_initial_isometry
     g hab hdim hscalar hjoint hpde F Γ hΓ t ht
 
-end DifferentialGeometry.PDE.RicciFlow
+end
+
+section
 
 open DifferentialGeometry.Geometry.Connection (LeviCivita)
-namespace DifferentialGeometry.PDE.RicciFlow
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
   {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
@@ -191,9 +195,9 @@ private theorem hasDerivWithinAt_ricciFlow_prod_real_pullback
   simpa only [Diffeomorph.pullbackMetricCross_inner,
     DifferentialGeometry.HCGCompactness.ricciTensor_cross] using hp
 
-end DifferentialGeometry.PDE.RicciFlow
+end
 
-namespace DifferentialGeometry.PDE.RicciFlow
+section
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E]
@@ -254,4 +258,67 @@ theorem exists_ricciFlow_of_prod_real_initial_localPullMetric
     h₀ f hf hsurj hinit
   exact metricFiberCompatible_prod_real_flow_of_initial_localPullMetric
     g hab hdim hscalar hjoint hpde F h₀ f hf hcover hinit
+end
+
+section CompactComparison
+
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+  {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
+  {N : Type*} [TopologicalSpace N] [ChartedSpace H N] [IsManifold I ∞ N]
+  [CompactSpace N] [T2Space N] [ConnectedSpace N]
+  {V : Type*} [NormedAddCommGroup V] [NormedSpace ℝ V] [FiniteDimensional ℝ V]
+  {G : Type*} [TopologicalSpace G] {J : ModelWithCorners ℝ V G} [J.Boundaryless]
+  {U : Type*} [TopologicalSpace U] [ChartedSpace G U] [IsManifold J ∞ U] [T2Space U]
+  [SimplyConnectedSpace U] [LocallyPathConnectedSpace U]
+  {B : Type*} [TopologicalSpace B] [ChartedSpace G B] [IsManifold J ∞ B]
+  [T2Space B] [CompactSpace B]
+
+omit [ConnectedSpace N] [LocallyPathConnectedSpace U] in
+theorem localPullMetric_eq_prod_real_of_initial_of_compact
+    {D : RealTimeInterval} (S : SolutionOn (I := J) (M := B) D) (hS : IsSolutionOn S)
+    (g : ℝ → SmoothRiemannianMetric I N) {a b : ℝ} (hab : a < b)
+    (hreg : Ico a b ⊆ D.regular)
+    (hdim : Module.finrank ℝ E = 2)
+    (hscalar : ∀ x, metricScalarAt (g a) x ≠ 0)
+    (hjoint : ContMDiffOn (𝓘(ℝ, ℝ).prod I) (I.prod 𝓘(ℝ, E →L[ℝ] E →L[ℝ] ℝ)) ∞
+      (fun p : ℝ × N => (⟨p.2, (g p.1).inner p.2⟩ :
+        TotalSpace (E →L[ℝ] E →L[ℝ] ℝ)
+          (fun x => TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ)))
+      (Ico a b ×ˢ (Set.univ : Set N)))
+    (hpde : ∀ t ∈ Ico a b, ∀ x : N, ∀ v w : TangentSpace I x,
+      HasDerivWithinAt (fun s : ℝ => (g s).inner x v w)
+        (-2 * ricciTensor (g t) x v w) (Ici a) t)
+    (F : (N × ℝ) ≃ₘ⟮I.prod 𝓘(ℝ, ℝ), J⟯ U)
+    (f : U → B) (hf : IsLocalDiffeomorph J J ∞ f)
+    (hcover : IsCoveringMap f) (hsurj : Function.Surjective f)
+    (hinit : localPullMetric (S.family.metric a) f hf =
+      Diffeomorph.pullbackMetricCross ((g a).prod (euclideanMetric (E := ℝ))) F.symm) :
+    ∀ t ∈ Ico a b, localPullMetric (S.family.metric t) f hf =
+      Diffeomorph.pullbackMetricCross ((g t).prod (euclideanMetric (E := ℝ))) F.symm := by
+  obtain ⟨h, hinit', hjoint', hpde', hpull⟩ :=
+    exists_ricciFlow_of_prod_real_initial_localPullMetric g hab hdim hscalar hjoint hpde
+      F (S.family.metric a) f hf hcover hsurj hinit
+  have hSjoint : ContMDiffOn (𝓘(ℝ, ℝ).prod J) (J.prod 𝓘(ℝ, V →L[ℝ] V →L[ℝ] ℝ)) ∞
+      (fun p : ℝ × B => (⟨p.2, (S.family.metric p.1).inner p.2⟩ :
+        TotalSpace (V →L[ℝ] V →L[ℝ] ℝ)
+          (fun x => TangentSpace J x →L[ℝ] TangentSpace J x →L[ℝ] ℝ)))
+      (Ico a b ×ˢ (Set.univ : Set B)) := by
+    intro p hp
+    exact (hS.smoothMetric.metricCLMSmoothAt
+      (D.regular_isOpen.mem_nhds (hreg hp.1))).contMDiffWithinAt
+  have hSpde : ∀ t ∈ Ico a b, ∀ x : B, ∀ v w : TangentSpace J x,
+      HasDerivWithinAt (fun s => (S.family.metric s).inner x v w)
+        (-2 * ricciTensor (S.family.metric t) x v w) (Ici a) t := by
+    intro t ht x v w
+    simpa only [SolutionOn.ricciAt, SolutionFamily.ricciAt,
+      metricRicciAt_apply_eq_ricciTensor, SolutionOn.family_metric] using
+      (metricDerivAt S hS ⟨t, hreg ht⟩ x v w).hasDerivWithinAt (s := Ici a)
+  have heq := ricci_flow_forward_unique_of_joint_contMDiffOn
+    h S.family.metric hab hjoint' hSjoint hpde' hSpde hinit'
+  intro t ht
+  rw [← heq t ht]
+  exact hpull t ht
+
+end CompactComparison
+
 end DifferentialGeometry.PDE.RicciFlow
