@@ -49,8 +49,8 @@ omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)]
   [CompleteSpace F] [NeZero (Module.finrank ℝ F)] in
 theorem geoEq_map_localIso
     [I.Boundaryless] [J.Boundaryless]
-    [sigmaCompactM : SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
-    [sigmaCompactN : SigmaCompactSpace N] [T2Space N] [BoundarylessManifold J N]
+    [T2Space M] [BoundarylessManifold I M]
+    [T2Space N] [BoundarylessManifold J N]
     (g : SmoothRiemannianMetric I M)
     (g' : SmoothRiemannianMetric J N)
     {f : M → N}
@@ -62,25 +62,32 @@ theorem geoEq_map_localIso
     (hγ : ContMDiffAt 𝓘(ℝ, ℝ) I ∞ γ t)
     (hgeo : HasGeodesicEquationAt (I := I) g γ t) :
     HasGeodesicEquationAt (I := J) g' (fun s => f (γ s)) t := by
-  let _ := sigmaCompactM
-  let _ := sigmaCompactN
   classical
   obtain ⟨Φ, htΦ, hfΦ⟩ := hld (γ t)
-  let U : Opens M := ⟨Φ.source, Φ.open_source⟩
-  have hUΦ : (U : Set M) ⊆ Φ.source := fun _ hx => hx
+  let U : Opens M :=
+    ⟨Φ.source ∩ (chartAt H (γ t)).source,
+      Φ.open_source.inter (chartAt H (γ t)).open_source⟩
+  have hUΦ : (U : Set M) ⊆ Φ.source := fun _ hx => hx.1
   let V : Opens N :=
     ⟨(Φ : M → N) '' (U : Set M), image_opens_isOpen Φ hUΦ⟩
-  let : SigmaCompactSpace U := isSigmaCompact_iff_sigmaCompactSpace.mp
-    (Geometry.isSigmaCompact_of_isOpen I U.isOpen)
-  let : SigmaCompactSpace V := isSigmaCompact_iff_sigmaCompactSpace.mp
-    (Geometry.isSigmaCompact_of_isOpen J V.isOpen)
   let Ψ : Diffeomorph I J U V ∞ :=
     PartialDiffeomorph.toOpensDiffeo Φ hUΦ
-  let γtU : U := ⟨γ t, htΦ⟩
+  let : LocallyCompactSpace H := I.locallyCompactSpace
+  let : SecondCountableTopology H := I.secondCountableTopology
+  let : LocallyCompactSpace M := ChartedSpace.locallyCompactSpace H M
+  let : LocallyCompactSpace U := U.isOpen.locallyCompactSpace
+  let e : U ≃ₜ ((chartAt H (γ t)) '' (U : Set M)) :=
+    (chartAt H (γ t)).homeomorphOfImageSubsetSource (fun _ hy => hy.2) rfl
+  let : SecondCountableTopology U := e.secondCountableTopology
+  let : SigmaCompactSpace U := inferInstance
+  let : SigmaCompactSpace V := isSigmaCompact_iff_sigmaCompactSpace.mp
+    (isSigmaCompact_iff_isSigmaCompact_univ.mpr (by
+      simpa using isSigmaCompact_univ.image Ψ.toHomeomorph.continuous))
+  let γtU : U := ⟨γ t, htΦ, mem_chart_source H (γ t)⟩
   let γU : ℝ → U := fun s =>
     if hs : γ s ∈ (U : Set M) then ⟨γ s, hs⟩ else γtU
   have hmem : ∀ᶠ s in 𝓝 t, γ s ∈ (U : Set M) :=
-    hγ.continuousAt.preimage_mem_nhds (Φ.open_source.mem_nhds htΦ)
+    hγ.continuousAt.preimage_mem_nhds (U.isOpen.mem_nhds γtU.property)
   have hγU_val : (fun s => ((γU s : U) : M)) =ᶠ[𝓝 t] γ := by
     filter_upwards [hmem] with s hs
     simp only [γU, dif_pos hs]
@@ -113,7 +120,7 @@ theorem geoEq_map_localIso
     intro x
     have heq : f =ᶠ[𝓝 (x : M)] (Φ : M → N) :=
       Filter.eventuallyEq_of_mem
-        (Φ.open_source.mem_nhds x.property) hfΦ
+        (Φ.open_source.mem_nhds x.property.1) hfΦ
     exact heq.mfderiv_eq.symm
   have hmetric :
       g.restrictOpen (I := I) U =
@@ -134,7 +141,7 @@ theorem geoEq_map_localIso
         (mfderiv I J f (x : M) w)
     have hval : ((Ψ x : V) : N) = f (x : M) := by
       change (Φ : M → N) (x : M) = f (x : M)
-      exact (hfΦ x.property).symm
+      exact (hfΦ x.property.1).symm
     rw [hval]
     exact hpres (x : M) v w
   have hgeo_pull :
@@ -170,7 +177,7 @@ theorem geoEq_map_localIso
     change f (γ s) =
       (Φ : M → N) ((γU s : U) : M)
     rw [hγUs]
-    exact hfΦ hs
+    exact hfΦ hs.1
   exact HasGeodesicEquationAt.congr_of_eventuallyEq_at
     (I := J) (g := g') hmap_eq.eq_of_nhds hmap_eq hgeo_target
 
@@ -178,8 +185,8 @@ omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)]
   [CompleteSpace F] [NeZero (Module.finrank ℝ F)] in
 theorem geoEq_of_map_localIso
     [I.Boundaryless] [J.Boundaryless]
-    [sigmaCompactM : SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
-    [sigmaCompactN : SigmaCompactSpace N] [T2Space N] [BoundarylessManifold J N]
+    [T2Space M] [BoundarylessManifold I M]
+    [T2Space N] [BoundarylessManifold J N]
     (g : SmoothRiemannianMetric I M)
     (g' : SmoothRiemannianMetric J N)
     {f : M → N}
@@ -191,25 +198,32 @@ theorem geoEq_of_map_localIso
     (hγ : ContMDiffAt 𝓘(ℝ, ℝ) I ∞ γ t)
     (hgeo : HasGeodesicEquationAt (I := J) g' (fun s => f (γ s)) t) :
     HasGeodesicEquationAt (I := I) g γ t := by
-  let _ := sigmaCompactM
-  let _ := sigmaCompactN
   classical
   obtain ⟨Φ, htΦ, hfΦ⟩ := hld (γ t)
-  let U : Opens M := ⟨Φ.source, Φ.open_source⟩
-  have hUΦ : (U : Set M) ⊆ Φ.source := fun _ hx => hx
+  let U : Opens M :=
+    ⟨Φ.source ∩ (chartAt H (γ t)).source,
+      Φ.open_source.inter (chartAt H (γ t)).open_source⟩
+  have hUΦ : (U : Set M) ⊆ Φ.source := fun _ hx => hx.1
   let V : Opens N :=
     ⟨(Φ : M → N) '' (U : Set M), image_opens_isOpen Φ hUΦ⟩
-  let : SigmaCompactSpace U := isSigmaCompact_iff_sigmaCompactSpace.mp
-    (Geometry.isSigmaCompact_of_isOpen I U.isOpen)
-  let : SigmaCompactSpace V := isSigmaCompact_iff_sigmaCompactSpace.mp
-    (Geometry.isSigmaCompact_of_isOpen J V.isOpen)
   let Ψ : Diffeomorph I J U V ∞ :=
     PartialDiffeomorph.toOpensDiffeo Φ hUΦ
-  let γtU : U := ⟨γ t, htΦ⟩
+  let : LocallyCompactSpace H := I.locallyCompactSpace
+  let : SecondCountableTopology H := I.secondCountableTopology
+  let : LocallyCompactSpace M := ChartedSpace.locallyCompactSpace H M
+  let : LocallyCompactSpace U := U.isOpen.locallyCompactSpace
+  let e : U ≃ₜ ((chartAt H (γ t)) '' (U : Set M)) :=
+    (chartAt H (γ t)).homeomorphOfImageSubsetSource (fun _ hy => hy.2) rfl
+  let : SecondCountableTopology U := e.secondCountableTopology
+  let : SigmaCompactSpace U := inferInstance
+  let : SigmaCompactSpace V := isSigmaCompact_iff_sigmaCompactSpace.mp
+    (isSigmaCompact_iff_isSigmaCompact_univ.mpr (by
+      simpa using isSigmaCompact_univ.image Ψ.toHomeomorph.continuous))
+  let γtU : U := ⟨γ t, htΦ, mem_chart_source H (γ t)⟩
   let γU : ℝ → U := fun s =>
     if hs : γ s ∈ (U : Set M) then ⟨γ s, hs⟩ else γtU
   have hmem : ∀ᶠ s in 𝓝 t, γ s ∈ (U : Set M) :=
-    hγ.continuousAt.preimage_mem_nhds (Φ.open_source.mem_nhds htΦ)
+    hγ.continuousAt.preimage_mem_nhds (U.isOpen.mem_nhds γtU.property)
   have hγU_val : (fun s => ((γU s : U) : M)) =ᶠ[𝓝 t] γ := by
     filter_upwards [hmem] with s hs
     simp only [γU, dif_pos hs]
@@ -229,7 +243,7 @@ theorem geoEq_of_map_localIso
     intro x
     have heq : f =ᶠ[𝓝 (x : M)] (Φ : M → N) :=
       Filter.eventuallyEq_of_mem
-        (Φ.open_source.mem_nhds x.property) hfΦ
+        (Φ.open_source.mem_nhds x.property.1) hfΦ
     exact heq.mfderiv_eq.symm
   have hmetric :
       g.restrictOpen (I := I) U =
@@ -250,7 +264,7 @@ theorem geoEq_of_map_localIso
         (mfderiv I J f (x : M) w)
     have hval : ((Ψ x : V) : N) = f (x : M) := by
       change (Φ : M → N) (x : M) = f (x : M)
-      exact (hfΦ x.property).symm
+      exact (hfΦ x.property.1).symm
     rw [hval]
     exact hpres (x : M) v w
   have hmap_eq :
@@ -262,7 +276,7 @@ theorem geoEq_of_map_localIso
       simp only [γU, dif_pos hs]
     change f (γ s) = (Φ : M → N) ((γU s : U) : M)
     rw [hγUs]
-    exact hfΦ hs
+    exact hfΦ hs.1
   have hgeo_target :
       HasGeodesicEquationAt (I := J) g'
         (fun s => ((Ψ (γU s) : V) : N)) t :=
@@ -307,8 +321,8 @@ omit [NeZero (Module.finrank ℝ E)] in
 omit [CompleteSpace E] [CompleteSpace F] [NeZero (Module.finrank ℝ F)] in
 theorem geoOn_map_localIso
     [I.Boundaryless] [J.Boundaryless]
-    [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
-    [SigmaCompactSpace N] [T2Space N] [BoundarylessManifold J N]
+    [T2Space M] [BoundarylessManifold I M]
+    [T2Space N] [BoundarylessManifold J N]
     (g : SmoothRiemannianMetric I M)
     (g' : SmoothRiemannianMetric J N)
     {f : M → N}
