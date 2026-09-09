@@ -4897,3 +4897,5 @@ import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletNirenbergSou
 import DifferentialGeometry.Analysis.Sobolev.Tools.RestrictedDiffQuotLp
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.FixedDensityCoefficientBounds
 import DifferentialGeometry.Topology.Morse.CriticalValues
+import DifferentialGeometry.Analysis.Parabolic.Dirichlet.LocalNirenbergEstimate
+import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletLocalSecondDerivative
