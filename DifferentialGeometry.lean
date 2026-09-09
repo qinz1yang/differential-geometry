@@ -4899,3 +4899,5 @@ import DifferentialGeometry.Analysis.Parabolic.Dirichlet.FixedDensityCoefficient
 import DifferentialGeometry.Topology.Morse.CriticalValues
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.LocalNirenbergEstimate
 import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletLocalSecondDerivative
+import DifferentialGeometry.Geometry.Exponential.BranchCutoff
+import DifferentialGeometry.Analysis.Parabolic.Dirichlet.LocalNirenbergTimeEnergy
