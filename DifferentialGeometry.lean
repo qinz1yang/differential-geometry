@@ -4947,3 +4947,4 @@ import DifferentialGeometry.Analysis.Heat.Parametrix.BranchApproximation
 import DifferentialGeometry.Analysis.Heat.Parametrix.BranchKernelComparison
 import DifferentialGeometry.Topology.Morse.MinimumSublevel
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.HessianEquation
+import DifferentialGeometry.Topology.Handle.SimplyConnected
