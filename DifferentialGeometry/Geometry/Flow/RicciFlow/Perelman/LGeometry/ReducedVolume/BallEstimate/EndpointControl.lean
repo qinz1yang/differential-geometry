@@ -99,7 +99,7 @@ theorem lRegularizedSpeed_ball [CompactSpace M]
     {alpha : Real → M} {J : Set Real}
     {Z : TangentSpace I B.center}
     (halpha : IsLRegularizedCurveOn S (time : Real) alpha J B.center Z)
-    (a b R : Real) (hR : 0 ≤ R) (hJ : uIcc a b ⊆ J)
+    (a b R : Real) (hJ : uIcc a b ⊆ J)
     (hsR : ∀ s ∈ uIcc a b, |s| ≤ R)
     (htime : ∀ s ∈ uIcc a b,
       (time : Real) - s ^ 2 ∈ Icc t₀ t₁ ∩
@@ -124,7 +124,7 @@ theorem lRegularizedSpeed_ball [CompactSpace M]
   have hC : 0 ≤ C := le_max_of_le_left hCgrad
   refine ⟨C, hC, ?_⟩
   apply lRegularizedSpeedSq_le_of_gradient_ricci_bounds (I := I) S hS (time : Real) halpha
-    a b C R hC hR hJ hsR
+    a b C C R hC hC hJ hsR
   · intro s hs
     have hgrad := hgradA B.radius B.radius_pos hBrho
       ((time : Real) - s ^ 2) (htime s hs).1 (alpha s)
@@ -137,85 +137,6 @@ theorem lRegularizedSpeed_ball [CompactSpace M]
     exact hric.trans (mul_le_mul_of_nonneg_right
       (le_max_right Cgrad Cric)
       (lRegularizedSpeedSq_nonneg (I := I) S (time : Real) alpha s))
-
-private theorem speedDeriv_two
-    {s R G K U P Q : Real} (hs : |s| ≤ R) (hR : 0 ≤ R)
-    (hG : 0 ≤ G) (hU : 0 ≤ U)
-    (hP : |P| ≤ G * Real.sqrt U) (hQ : |Q| ≤ K * U) :
-    |4 * s ^ 2 * P - 4 * s * Q| ≤
-      (1 + 2 * G * R ^ 2 + 4 * K * R) * U +
-        (1 + 2 * G * R ^ 2) := by
-  have hs0 : 0 ≤ |s| := abs_nonneg s
-  have hsSq : s ^ 2 ≤ R ^ 2 := by
-    simpa only [sq_abs] using (sq_le_sq₀ hs0 hR).2 hs
-  have hsqrt : 0 ≤ Real.sqrt U := Real.sqrt_nonneg U
-  have hsqrtSq : (Real.sqrt U) ^ 2 = U := Real.sq_sqrt hU
-  have hsqrtYoung : 2 * Real.sqrt U ≤ U + 1 := by
-    nlinarith [sq_nonneg (Real.sqrt U - 1)]
-  calc
-    |4 * s ^ 2 * P - 4 * s * Q| ≤
-        |4 * s ^ 2 * P| + |4 * s * Q| := abs_sub _ _
-    _ = 4 * s ^ 2 * |P| + 4 * |s| * |Q| := by
-      simp only [abs_mul, abs_of_nonneg (sq_nonneg s)]
-      norm_num
-    _ ≤ 4 * R ^ 2 * (G * Real.sqrt U) + 4 * R * (K * U) := by
-      gcongr
-    _ ≤ (1 + 2 * G * R ^ 2 + 4 * K * R) * U +
-        (1 + 2 * G * R ^ 2) := by
-      nlinarith [mul_nonneg hG (sq_nonneg R)]
-
-attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
-  Tensor0SBundle.tangentSpaceNormedSpace in
-omit [InnerProductSpace Real E] [NeZero (Module.finrank Real E)]
-  [SigmaCompactSpace M] in
-private theorem lRegularizedSpeed_two
-    (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
-    (T : Real) {alpha : Real → M} {J : Set Real} {x : M}
-    {Z : TangentSpace I x} (halpha : IsLRegularizedCurveOn S T alpha J x Z)
-    (a b G K R : Real) (hG : 0 ≤ G) (hK : 0 ≤ K) (hR : 0 ≤ R)
-    (hJ : Set.uIcc a b ⊆ J)
-    (hsR : ∀ s ∈ Set.uIcc a b, |s| ≤ R)
-    (hgrad : ∀ s ∈ Set.uIcc a b,
-      |(S.base.metric (T - s ^ 2)).inner (alpha s)
-          (gradientFun (I := I) (S.base.metric (T - s ^ 2))
-            (S.scalar (T - s ^ 2)) (alpha s))
-          (lVelocity (I := I) alpha s)| ≤
-        G * Real.sqrt (lRegularizedSpeedSq S T alpha s))
-    (hric : ∀ s ∈ Set.uIcc a b,
-      |S.ricciAt (T - s ^ 2) (alpha s)
-          (vec2 (lVelocity (I := I) alpha s)
-            (lVelocity (I := I) alpha s))| ≤
-        K * lRegularizedSpeedSq S T alpha s) :
-    lRegularizedSpeedSq S T alpha b ≤
-      Real.exp ((1 + 2 * G * R ^ 2 + 4 * K * R) * |b - a|) *
-        (lRegularizedSpeedSq S T alpha a +
-          (1 + 2 * G * R ^ 2) /
-            (1 + 2 * G * R ^ 2 + 4 * K * R)) := by
-  let U : Real → Real := lRegularizedSpeedSq S T alpha
-  let U' : Real → Real := fun s ↦
-    4 * s ^ 2 *
-        (S.base.metric (T - s ^ 2)).inner (alpha s)
-          (gradientFun (I := I) (S.base.metric (T - s ^ 2))
-            (S.scalar (T - s ^ 2)) (alpha s))
-          (lVelocity (I := I) alpha s) -
-      4 * s * S.ricciAt (T - s ^ 2) (alpha s)
-        (vec2 (lVelocity (I := I) alpha s)
-          (lVelocity (I := I) alpha s))
-  have hk : 0 < 1 + 2 * G * R ^ 2 + 4 * K * R := by
-    nlinarith [mul_nonneg hG (sq_nonneg R), mul_nonneg hK hR]
-  have hd : 0 < 1 + 2 * G * R ^ 2 := by
-    nlinarith [mul_nonneg hG (sq_nonneg R)]
-  apply DifferentialGeometry.CheegerGromovCompactness.affineGronwall_of_abs_deriv_le
-    U U' hk hd
-  · intro s hs
-    exact lRegularizedSpeedSq_nonneg (I := I) S T alpha s
-  · intro s hs
-    simpa only [U, U'] using
-      hasDerivAt_lRegularizedSpeedSq (I := I) S hS T halpha (hJ hs)
-  · intro s hs
-    apply speedDeriv_two (hsR s hs) hR hG
-      (lRegularizedSpeedSq_nonneg (I := I) S T alpha s)
-      (hgrad s hs) (hric s hs)
 
 private theorem scale_ric_eq (n : Nat) {r : Real} (hr : 0 < r) :
     r ^ 2 * ((n : Real) ^ 2 * Real.sqrt (1 / r ^ 4)) = (n : Real) ^ 2 := by
@@ -323,8 +244,8 @@ private theorem lRegularizedSpeed_fixed
       (sq_le_sq₀ hbpos.le hrho.le).2 hbRho
     exact ⟨⟨by linarith, by nlinarith [sq_nonneg q]⟩,
       ⟨by linarith, by nlinarith [sq_nonneg q]⟩⟩
-  have hgr := lRegularizedSpeed_two (I := J) S hS (time : Real) halpha
-    0 s a K b ha hK hbpos.le (fun _ hq ↦ hsub hq)
+  have hgr := lRegularizedSpeedSq_le_of_gradient_ricci_bounds (I := J) S hS (time : Real) halpha
+    0 s a K b ha hK (fun _ hq ↦ hsub hq)
     (fun q hq ↦ by
       have hqI := hsub hq
       rw [abs_of_nonneg hqI.1]
