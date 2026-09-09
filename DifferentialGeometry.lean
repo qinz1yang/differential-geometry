@@ -4861,3 +4861,5 @@ import DifferentialGeometry.Analysis.Heat.Kernel.GaussianApproximation
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.Stability
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.UniversalCoverTrichotomy
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Rank
+import DifferentialGeometry.Analysis.Heat.Parametrix.Cutoff
+import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.AncientUniversalCoverTrichotomy
