@@ -188,4 +188,41 @@ theorem exists_lp_spatial_weak_partials_of_ae_eq_finite_sum
     (by norm_num) (by norm_num) (Lp.memLp f) (fun k => Lp.memLp (Df k)) hDfweak
   exact ⟨Df, hDfweak, hDf, hnorm, hWkp.1, hWkp.2⟩
 
+theorem exists_lp_gradient_source_spatial_derivative_step
+    {Z ι : Type*} [Fintype ι] [MeasurableSpace Z]
+    {μ : Measure Z} {Ω : Set E} (hΩ : IsOpen Ω)
+    (F : Fin d → Lp ℝ 2 (μ.prod (volume.restrict Ω)))
+    (Y : Fin d → ι → Lp ℝ 2 (μ.prod (volume.restrict Ω)))
+    (DY : Fin d → ι → Fin d → Lp ℝ 2 (μ.prod (volume.restrict Ω)))
+    (A : Fin d → ι → Z × E → ℝ)
+    (hA : ∀ k i, MemLp (A k i) ∞ (μ.prod (volume.restrict Ω)))
+    (hDA : ∀ k i j, MemLp
+      (fun p => fderiv ℝ (fun x => A k i (p.1, x)) p.2
+        (EuclideanSpace.single j 1)) ∞ (μ.prod (volume.restrict Ω)))
+    (hAsmooth : ∀ k i, ∀ᵐ t ∂μ,
+      ContDiffOn ℝ (⊤ : ℕ∞) (fun x => A k i (t, x)) Ω)
+    (hYweak : ∀ k i j, ∀ᵐ t ∂μ,
+      DeGiorgi.HasWeakPartialDeriv j
+        (fun x => DY k i j (t, x)) (fun x => Y k i (t, x)) Ω)
+    (hF : ∀ k, F k =ᵐ[μ.prod (volume.restrict Ω)]
+      fun p => ∑ i, A k i p * Y k i p) :
+    ∃ DF : Fin d → Fin d → Lp ℝ 2 (μ.prod (volume.restrict Ω)),
+      (∀ k j, ∀ᵐ t ∂μ, DeGiorgi.HasWeakPartialDeriv j
+        (fun x => DF k j (t, x)) (fun x => F k (t, x)) Ω) ∧
+      (∀ k j, DF k j =ᵐ[μ.prod (volume.restrict Ω)] fun p => ∑ i,
+        (A k i p * DY k i j p +
+          fderiv ℝ (fun x => A k i (p.1, x)) p.2
+            (EuclideanSpace.single j 1) * Y k i p)) ∧
+      (∀ k j, ‖DF k j‖ ≤ ∑ i,
+        (lpNorm (A k i) ∞ (μ.prod (volume.restrict Ω)) * ‖DY k i j‖ +
+          lpNorm (fun p => fderiv ℝ (fun x => A k i (p.1, x)) p.2
+            (EuclideanSpace.single j 1)) ∞ (μ.prod (volume.restrict Ω)) * ‖Y k i‖)) := by
+  classical
+  choose DF hDF hDFformula hDFnorm using fun k =>
+    exists_lp_spatial_weak_partials_of_ae_eq_finite_sum hΩ (F k) (Y k) (DY k) (A k)
+      (fun i => hA k i) (fun i j => hDA k i j) (fun i => hAsmooth k i)
+      (fun i j => hYweak k i j) (hF k)
+  exact ⟨DF, (fun k j => hDF k j), (fun k j => hDFformula k j),
+    (fun k j => (hDFnorm k).1 j)⟩
+
 end DifferentialGeometry.Analysis.Sobolev.Euclidean
