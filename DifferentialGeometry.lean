@@ -4893,6 +4893,7 @@ import DifferentialGeometry.Geometry.Operator.CutoffSupport
 import DifferentialGeometry.Geometry.Exponential.BranchEnergyBounds
 import DifferentialGeometry.Analysis.Heat.Parametrix.Approximation
 import DifferentialGeometry.Analysis.Heat.Parametrix.ResidualBound
+import DifferentialGeometry.Analysis.Heat.Parametrix.UniformBound
 import DifferentialGeometry.Analysis.Heat.Parametrix.DiagonalAsymptotics
 import DifferentialGeometry.Analysis.Integration.Measure.UniformPairing
 import DifferentialGeometry.Analysis.Heat.Parametrix.KernelComparison
@@ -4913,6 +4914,7 @@ import DifferentialGeometry.Analysis.Parabolic.Dirichlet.ThirdOrderTimeNorm
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.ThirdOrderRegularity
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.WeakPartialSource
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.WeakPartialWkpTwo
+import DifferentialGeometry.Analysis.Sobolev.Euclidean.WeakPartialTree
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.TwoTermSource
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.FiniteSumReindex
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.TimeMeasureRestrict
