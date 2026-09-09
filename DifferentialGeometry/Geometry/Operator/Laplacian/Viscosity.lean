@@ -36,8 +36,6 @@ def IsLaplacianLEViscosityOn
 omit [NeZero (Module.finrank Real E)] [I.Boundaryless]
     [T2Space M] [SigmaCompactSpace M] in
 theorem IsLaplacianLEBarrierAt.to_viscosity
-    [VectorBundle Real E (TangentSpace I : M → Type _)]
-    [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I]
     {g : SmoothRiemannianMetric I M} {u : M → Real} {c : Real} {x : M}
     (h : IsLaplacianLEBarrierAt (I := I) g u c x)
     (hx : I.IsInteriorPoint x) :

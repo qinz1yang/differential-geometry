@@ -245,8 +245,8 @@ omit [NeZero (Module.finrank ℝ E)] in
 omit [CompleteSpace F] [NeZero (Module.finrank ℝ F)] in
 theorem localIso_eventually
     [I.Boundaryless] [J.Boundaryless]
-    [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
-    [SigmaCompactSpace N] [T2Space N] [BoundarylessManifold J N]
+    [T2Space M] [BoundarylessManifold I M]
+    [T2Space N] [BoundarylessManifold J N]
     [T2Space (TangentBundle I M)]
     (g : SmoothRiemannianMetric I M)
     (g' : SmoothRiemannianMetric J N)
@@ -354,8 +354,8 @@ omit [CompleteSpace F] [NeZero (Module.finrank ℝ F)] in
 theorem localIso_rigid
     [PreconnectedSpace M]
     [I.Boundaryless] [J.Boundaryless]
-    [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
-    [SigmaCompactSpace N] [T2Space N] [BoundarylessManifold J N]
+    [T2Space M] [BoundarylessManifold I M]
+    [T2Space N] [BoundarylessManifold J N]
     [T2Space (TangentBundle I M)] [T2Space (TangentBundle J N)]
     [hManifoldM : IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
     [hManifoldN : IsManifold J ((∞ : WithTop ℕ∞) + 1) N]
