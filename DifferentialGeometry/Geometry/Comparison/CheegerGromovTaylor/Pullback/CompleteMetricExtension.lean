@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Comparison.Variation.Jacobi.EndpointPositivity
 import DifferentialGeometry.Geometry.Exponential.ConjugatePoint.CurvatureBound
 import DifferentialGeometry.Geometry.Exponential.Intrinsic.Agreement
 import DifferentialGeometry.Analysis.Calculus.SmoothExtension.Curve
@@ -2040,9 +2041,7 @@ theorem intrinsicExt_pair_pos
       Real.sqrt
           ((intrinsicExtMetric (I := I) g hEnorm p hR hloc).inner x u u) ≤
         L)
-    (hune : (u : E) ≠ 0) (hwne : (w : E) ≠ 0)
-    (hperp :
-      (intrinsicExtMetric (I := I) g hEnorm p hR hloc).inner x u w = 0)
+    (hwne : (w : E) ≠ 0)
     (hK : 0 ≤ K)
     (hRm :
       ∀ z : E, ‖z‖ < 3 * R / 4 →
@@ -2128,13 +2127,6 @@ theorem intrinsicExt_pair_pos
     simpa only [γ] using
       intrinsicGeodesic_contMDiff
         (I := 𝓘(Real, E)) gExt hExt x u
-  have hgeo :
-      IsGeodesicOn (I := 𝓘(Real, E)) gExt γ
-        (Set.Icc (0 : Real) 1) := by
-    simpa only [γ] using
-      (intrinsicGeodesic_isGeodesic
-        (I := 𝓘(Real, E)) gExt hExt x u).isGeodesicOn
-          (Set.Icc (0 : Real) 1)
   have hJdiff (t : Real) :
       DifferentiableAt Real
         (CovariantDerivativeAlong.chartRepAt
@@ -2160,54 +2152,12 @@ theorem intrinsicExt_pair_pos
       tangent_eq_zero_model_self (E := E)
         (intrinsicJacobi_zero
           (I := 𝓘(Real, E)) gExt hExt x u w)
-  have hJperp :
-      ∀ t ∈ Set.Icc (0 : Real) 1,
-        gExt.inner (γ t) (J t)
-          (Variation.curveVelocity (I := 𝓘(Real, E)) γ t) = 0 := by
-    intro t ht
-    by_cases ht0 : t = 0
-    · subst t
-      let J0T : TangentSpace 𝓘(Real, E) (γ 0) :=
-        (tangentSpaceModelContinuousLinearEquiv
-          (I := 𝓘(Real, E)) (γ 0)).symm (J 0)
-      have hJ0T : J0T = 0 := by
-        apply (tangentSpaceModelContinuousLinearEquiv
-          (I := 𝓘(Real, E)) (γ 0)).injective
-        simp only [J0T, hJ0, map_zero]
-      change gExt.inner (γ 0) J0T
-        (Variation.curveVelocity (I := 𝓘(Real, E)) γ 0) = 0
-      rw [hJ0T, gExt.symm]
-      exact
-        (gExt.inner (γ 0)
-          (Variation.curveVelocity (I := 𝓘(Real, E)) γ 0)).map_zero
-    · rw [gExt.symm]
-      exact intrinsicJacobi_perp_ne
-        (I := 𝓘(Real, E)) gExt hExt x u w ht0 hperp
-  have hspeed :
-      ∀ t ∈ Set.Icc (0 : Real) 1,
-        0 < gExt.inner (γ t)
-          (Variation.curveVelocity (I := 𝓘(Real, E)) γ t)
-          (Variation.curveVelocity (I := 𝓘(Real, E)) γ t) := by
-    intro t _ht
-    change
-      0 < gExt.inner
-        (intrinsicGeodesic
-          (I := 𝓘(Real, E)) gExt hExt x u t)
-        (mfderiv 𝓘(Real, Real) 𝓘(Real, E)
-          (intrinsicGeodesic
-            (I := 𝓘(Real, E)) gExt hExt x u) t 1)
-        (mfderiv 𝓘(Real, Real) 𝓘(Real, E)
-          (intrinsicGeodesic
-            (I := 𝓘(Real, E)) gExt hExt x u) t 1)
-    rw [intrinsicGeodesic_speedSq_eq
-      (I := 𝓘(Real, E)) gExt hExt x u t]
-    exact gExt.pos x u hune
   let ell : Real := Real.sqrt (gExt.inner x u u)
   have hell0 : 0 ≤ ell := Real.sqrt_nonneg _
   have hellL : ell ≤ L := by
     simpa only [ell, gExt] using hu
   have hvnn : 0 ≤ gExt.inner x u u :=
-    (gExt.pos x u hune).le
+    metric_inner_self_nonneg gExt x u
   have hsqLe : ell ^ 2 ≤ L ^ 2 := by
     have hL0 : 0 ≤ L := hell0.trans hellL
     nlinarith
@@ -2215,7 +2165,6 @@ theorem intrinsicExt_pair_pos
     dsimp only [ell]
     exact (Real.sq_sqrt hvnn).symm
   let κ : Real := K * ell ^ 2
-  have hκ0 : 0 ≤ κ := mul_nonneg hK (sq_nonneg ell)
   have hκπ : κ < (Real.pi / 2) ^ 2 :=
     (mul_le_mul_of_nonneg_left hsqLe hK).trans_lt hsmall
   have hcurv :
@@ -2260,10 +2209,13 @@ theorem intrinsicExt_pair_pos
         rw [hspeedEq, hellSq]
         dsimp only [κ]
         ring
-  exact
-    Variation.jacobi_pair_pos
-      (I := 𝓘(Real, E)) gExt γ J hγ hgeo hJdiff hDJdiff
-      (fun t _ht => hJacobian t) hJ0 hJ1 hspeed hJperp hκ0 hκπ hcurv
+  exact Variation.jacobi_pair_pos
+    (I := 𝓘(Real, E)) gExt γ J zero_le_one isOpen_univ (subset_univ _)
+    (hγ.of_le (by decide : (2 : WithTop ℕ∞) ≤ ∞)).contMDiffOn
+    (fun t _ => hJdiff t) (fun t _ => hDJdiff t) (fun t _ => hJacobian t) hJ0
+    (fun hz => hJ1 (hz 1 (right_mem_Icc.mpr zero_le_one)))
+    (by simpa only [sub_zero, one_pow, mul_one] using hκπ)
+    (fun t ht => hcurv t (Ioo_subset_Icc_self ht))
 
 theorem exists_fenced_ext
     (g : SmoothRiemannianMetric I M)

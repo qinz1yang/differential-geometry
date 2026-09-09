@@ -1251,7 +1251,7 @@ theorem intrinsicOrigin_hess_pos
   · have hpair :=
       intrinsicExt_pair_pos
         (I := I) g hEnorm p hR hloc z W hfence hspeedLe
-          hz0 hW hperp hK hRm hsmall
+          hW hK hRm hsmall
     have hh :=
       branchEnergy_hess
         (I := 𝓘(Real, E)) B (u := z) (w₁ := W) (w₂ := W) hBsrc

@@ -293,7 +293,6 @@ theorem intrinsicPull_pair_pos
       IsLocalDiffeomorphOn 𝓘(Real, E) I ∞
         (intrinsicFramedExp (I := I) g hEnorm p)
         (Metric.ball (0 : E) R))
-    (hK : 0 ≤ K) (hL : 0 < L)
     (hKL : K * L ^ 2 < (Real.pi / 2) ^ 2)
     (γ : Real → intrinsicPullBall (E := E) R)
     (J : ∀ t : Real, TangentSpace 𝓘(Real, E) (γ t))
@@ -306,10 +305,6 @@ theorem intrinsicPull_pair_pos
           (intrinsicFramedExp (I := I) g hEnorm p
             ((γ t : intrinsicPullBall (E := E) R) : E)))) ≤ K)
     (hγ : ContMDiff 𝓘(Real, Real) 𝓘(Real, E) ∞ γ)
-    (hgeo :
-      IsGeodesicOn (I := 𝓘(Real, E))
-        (intrinsicPullMetric (I := I) g hEnorm p hloc) γ
-        (Set.Icc (0 : Real) 1))
     (hJdiff : ∀ t, DifferentiableAt Real
       (chartRepAt (I := 𝓘(Real, E)) γ J t) t)
     (hDJdiff : ∀ t, DifferentiableAt Real
@@ -324,53 +319,30 @@ theorem intrinsicPull_pair_pos
       (intrinsicPullMetric (I := I) g hEnorm p hloc).inner (γ t)
           (curveVelocity (I := 𝓘(Real, E)) γ t)
           (curveVelocity (I := 𝓘(Real, E)) γ t) =
-        L ^ 2)
-    (hJperp : ∀ t ∈ Set.Icc (0 : Real) 1,
-      (intrinsicPullMetric (I := I) g hEnorm p hloc).inner (γ t) (J t)
-          (curveVelocity (I := 𝓘(Real, E)) γ t) = 0) :
+        L ^ 2) :
     0 <
       (intrinsicPullMetric (I := I) g hEnorm p hloc).inner (γ 1)
         (covDerivAlong (I := 𝓘(Real, E))
           (intrinsicPullMetric (I := I) g hEnorm p hloc) γ J 1)
         (J 1) := by
-  let : SigmaCompactSpace (intrinsicPullBall (E := E) R) :=
-    isSigmaCompact_iff_sigmaCompactSpace.mp
-      (Geometry.isSigmaCompact_of_isOpen
-        𝓘(Real, E) (intrinsicPullBall (E := E) R).isOpen)
   let gPull := intrinsicPullMetric (I := I) g hEnorm p hloc
-  let : RiemannianBundle
-      (fun y : intrinsicPullBall (E := E) R ↦
-        TangentSpace 𝓘(Real, E) y) :=
-    ⟨gPull.toRiemannianMetric⟩
-  let : IsContinuousRiemannianBundle E
-      (fun y : intrinsicPullBall (E := E) R ↦
-        TangentSpace 𝓘(Real, E) y) :=
-    ⟨gPull.inner, gPull.contMDiff.continuous, by intro z v w; rfl⟩
-  let : PseudoEMetricSpace (intrinsicPullBall (E := E) R) :=
-    PseudoEMetricSpace.ofRiemannianMetric 𝓘(Real, E)
-      (intrinsicPullBall (E := E) R)
-  let : IsRiemannianManifold 𝓘(Real, E)
-      (intrinsicPullBall (E := E) R) :=
-    ⟨fun _ _ => rfl⟩
   apply Variation.jacobi_pair_pos
-    (I := 𝓘(Real, E)) gPull γ J hγ hgeo hJdiff hDJdiff hJacobian hJ0 hJ1
-  · intro t ht
-    rw [hspeed t ht]
-    positivity
-  · exact hJperp
-  · exact mul_nonneg hK (sq_nonneg L)
-  · exact hKL
-  · intro t ht
-    have hquad :=
-      intrinsicPull_quad_le (I := I) g hEnorm p hloc (γ t)
-        (hRm t ht)
-        (tangentSpaceModelContinuousLinearEquiv (I := 𝓘(Real, E)) (γ t) (J t))
-        (tangentSpaceModelContinuousLinearEquiv (I := 𝓘(Real, E)) (γ t)
-          (curveVelocity (I := 𝓘(Real, E)) γ t))
-    dsimp only at hquad
-    simp only [ContinuousLinearEquiv.symm_apply_apply] at hquad
-    rw [hspeed t ht] at hquad
-    simpa only [mul_assoc, mul_left_comm, mul_comm] using hquad
+    (I := 𝓘(Real, E)) gPull γ J zero_le_one isOpen_univ (subset_univ _)
+    (hγ.of_le (by decide : (2 : WithTop ℕ∞) ≤ ∞)).contMDiffOn
+    (fun t _ => hJdiff t) (fun t _ => hDJdiff t) hJacobian hJ0
+    (fun hz => hJ1 (hz 1 (right_mem_Icc.mpr zero_le_one)))
+    (by simpa only [sub_zero, one_pow, mul_one] using hKL)
+  intro t ht
+  have hquad :=
+    intrinsicPull_quad_le (I := I) g hEnorm p hloc (γ t)
+      (hRm t (Ioo_subset_Icc_self ht))
+      (tangentSpaceModelContinuousLinearEquiv (I := 𝓘(Real, E)) (γ t) (J t))
+      (tangentSpaceModelContinuousLinearEquiv (I := 𝓘(Real, E)) (γ t)
+        (curveVelocity (I := 𝓘(Real, E)) γ t))
+  dsimp only at hquad
+  simp only [ContinuousLinearEquiv.symm_apply_apply] at hquad
+  rw [hspeed t (Ioo_subset_Icc_self ht)] at hquad
+  simpa only [mul_assoc, mul_left_comm, mul_comm] using hquad
 
 theorem intrinsicCore_edist_lt
     (g : SmoothRiemannianMetric I M)

@@ -514,7 +514,7 @@ theorem intrinsicBranch_hess_pos
     · have hpair :=
         intrinsicExt_pair_pos
           (I := I) g hEnorm p hR hloc u W hfence huL
-            hu0 hW hperp hK hRm hsmall
+            hW hK hRm hsmall
       have hh :=
         branchEnergy_hess
           (I := 𝓘(Real, E)) B
