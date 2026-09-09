@@ -4948,3 +4948,4 @@ import DifferentialGeometry.Analysis.Heat.Parametrix.BranchKernelComparison
 import DifferentialGeometry.Topology.Morse.MinimumSublevel
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.HessianEquation
 import DifferentialGeometry.Topology.Handle.SimplyConnected
+import DifferentialGeometry.Topology.Handle.SimplyConnectedInterface
