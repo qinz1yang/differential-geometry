@@ -1,4 +1,6 @@
 import DifferentialGeometry.Geometry.Metric.QuadraticBounds.Unit
+import DifferentialGeometry.Analysis.FunctionalAnalysis.BilinearCoercivity
+import DifferentialGeometry.Geometry.Metric.Family.Regularity.Pair
 import DifferentialGeometry.Geometry.Connection.MetricCompatibility.Tensor.Metric
 
 set_option autoImplicit false
@@ -121,5 +123,85 @@ theorem metric_lower_bound_of_compact [CompactSpace M]
   obtain ⟨c, hc, hbound⟩ :=
     metric_lower_on (I := I) (M := M) isCompact_univ h gRef
   exact ⟨c, hc, fun x v => hbound x (Set.mem_univ x) v⟩
+
+namespace Geometry.Curvature
+
+open Bundle
+
+omit [T2Space M] [SigmaCompactSpace M] in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+theorem MetricFamilySmoothOn.exists_pos_mul_norm_sq_le_chart_inner
+    {D : RealTimeInterval} {g : ℝ → SmoothRiemannianMetric I M}
+    (hG : MetricFamilySmoothOn (I := I) (M := M) D g)
+    {J : Set ℝ} (hJ : J ⊆ D.regular) (hJc : IsCompact J)
+    (α : M) {K : Set E} (hK : K ⊆ (extChartAt I α).target)
+    (hKc : IsCompact K) :
+    ∃ c : ℝ, 0 < c ∧ ∀ p ∈ J ×ˢ K, ∀ v : E,
+      c * ‖v‖ ^ 2 ≤ (g p.1).inner ((extChartAt I α).symm p.2)
+        ((trivializationAt E (TangentSpace I) α).symmL ℝ ((extChartAt I α).symm p.2) v)
+        ((trivializationAt E (TangentSpace I) α).symmL ℝ ((extChartAt I α).symm p.2) v) := by
+  classical
+  let e := trivializationAt E (TangentSpace I) α
+  let b : ℝ × E → M := fun p => (extChartAt I α).symm p.2
+  let A : ℝ × E → E →L[ℝ] E →L[ℝ] ℝ := fun p =>
+    ContinuousLinearMap.inCoordinates E (TangentSpace I) (E →L[ℝ] ℝ)
+      (fun y : M => TangentSpace I y →L[ℝ] ℝ) α (b p) α (b p) ((g p.1).inner (b p))
+  have hb (p : ℝ × E) (hp : p ∈ J ×ˢ K) : b p ∈ e.baseSet := by
+    have hs := (extChartAt I α).map_target (hK hp.2)
+    rwa [extChartAt_source] at hs
+  have hAeval (p : ℝ × E) (hp : p ∈ J ×ˢ K) (v w : E) :
+      A p v w = (g p.1).inner (b p) (e.symmL ℝ (b p) v) (e.symmL ℝ (b p) w) := by
+    dsimp only [A]
+    have hR : b p ∈ (trivializationAt ℝ (Bundle.Trivial M ℝ) α).baseSet := mem_univ _
+    rw [inCoordinates_apply_eq₂ (𝕜 := ℝ)
+      (F₁ := E) (F₂ := E) (F₃ := ℝ)
+      (E₁ := TangentSpace I) (E₂ := TangentSpace I) (E₃ := Bundle.Trivial M ℝ)
+      (x₀ := α) (x := b p) (ϕ := (g p.1).inner (b p)) (v := v) (w := w)
+      (hb p hp) (hb p hp) hR]
+    rw [(trivializationAt ℝ (Bundle.Trivial M ℝ) α).coe_linearMapAt_of_mem hR]
+    simp only [Bundle.Trivial.fiberBundle_trivializationAt', Bundle.Trivial.trivialization_apply]
+    rw [← Bundle.Trivialization.symmL_apply (R := ℝ) e (hb p hp) v,
+      ← Bundle.Trivialization.symmL_apply (R := ℝ) e (hb p hp) w]
+  have hA : ContinuousOn A (J ×ˢ K) := by
+    intro p hp
+    let em := trivializationAt (E →L[ℝ] E →L[ℝ] ℝ)
+      (fun y : M => TangentSpace I y →L[ℝ] TangentSpace I y →L[ℝ] ℝ) α
+    have hbc : ContinuousWithinAt b (J ×ˢ K) p :=
+      ((continuousOn_extChartAt_symm (I := I) α).comp continuousOn_snd
+        (fun _ hq => hK hq.2)) p hp
+    have ht : D.regular ∈ 𝓝 p.1 := D.regular_isOpen.mem_nhds (hJ hp.1)
+    have hmc := (hG.metricCLMSmoothAt (x := b p) ht).continuousAt.comp_continuousWithinAt
+      (f := fun q : ℝ × E => (q.1, b q)) (continuousWithinAt_fst.prodMk hbc)
+    have hsrc : (TotalSpace.mk' (E →L[ℝ] E →L[ℝ] ℝ) (b p) ((g p.1).inner (b p))) ∈
+        em.source := by
+      simpa only [em, e, Trivialization.mem_source, hom_trivializationAt_baseSet,
+        TangentBundle.trivializationAt_baseSet, Bundle.Trivial.fiberBundle_trivializationAt',
+        Bundle.Trivial.trivialization_baseSet, mem_inter_iff, mem_univ, and_true, and_self]
+        using hb p hp
+    have hc := em.toOpenPartialHomeomorph.continuousAt hsrc
+    have hcoord : ContinuousWithinAt (fun q : ℝ × E => em
+        (TotalSpace.mk' (E →L[ℝ] E →L[ℝ] ℝ)
+          (E := fun y : M => TangentSpace I y →L[ℝ] TangentSpace I y →L[ℝ] ℝ)
+          (b q) ((g q.1).inner (b q)))) (J ×ˢ K) p :=
+      hc.comp_continuousWithinAt (f := fun q : ℝ × E =>
+        TotalSpace.mk' (E →L[ℝ] E →L[ℝ] ℝ)
+          (E := fun y : M => TangentSpace I y →L[ℝ] TangentSpace I y →L[ℝ] ℝ)
+          (b q) ((g q.1).inner (b q))) hmc
+    exact hcoord.snd
+  have hpos : ∀ p ∈ J ×ˢ K, ∀ v : E, v ≠ 0 → 0 < A p v v := by
+    intro p hp v hv
+    rw [hAeval p hp]
+    apply (g p.1).pos
+    intro hz
+    have hleft := e.continuousLinearMapAt_symmL (R := ℝ) (hb p hp) v
+    rw [hz, map_zero] at hleft
+    exact hv hleft.symm
+  obtain ⟨c, hc, hbound⟩ := exists_pos_mul_norm_sq_le_bilinear_of_isCompact (hJc.prod hKc) A hA hpos
+  refine ⟨c, hc, ?_⟩
+  intro p hp v
+  simpa only [hAeval p hp] using hbound p hp v
+
+end Geometry.Curvature
 
 end DifferentialGeometry

@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Estimates.CompactCurvature
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Ray.SmoothExtension
-import DifferentialGeometry.Geometry.Operator.Family.Gram.Basic
+import DifferentialGeometry.Geometry.Metric.Comparison.CompactLowerBound
 
 set_option autoImplicit false
 
@@ -16,6 +16,253 @@ open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator
 
 universe u uE uH
+
+section
+
+variable {E : Type uE} [NormedAddCommGroup E] [NormedSpace Real E]
+  [FiniteDimensional Real E]
+variable {H : Type uH} [TopologicalSpace H]
+variable {I : ModelWithCorners Real E H} [I.Boundaryless]
+variable {M : Type u} [TopologicalSpace M] [ChartedSpace H M]
+  [IsManifold I ∞ M] [T2Space M]
+variable {D : RealTimeInterval}
+
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+theorem mem_lRegularizedDomain_of_isCompact_range_of_speed_le
+    (S : SolutionOn (I := I) (M := M) D)
+    (hS : IsSolutionOn (I := I) S) (T : Real)
+    (x : M) (Z : TangentSpace I x) (B : Real)
+    (hB : 0 ≤ B) (hslab : Set.Icc (T - B ^ 2) T ⊆ D.regular)
+    (Kbase : Set M) (hKbase : IsCompact Kbase) (Q : Real)
+    (hrange : ∀ s ∈ Set.Icc (0 : Real) B,
+      s ∈ lRegularizedDomain S T x Z → lRegularizedCurve S T x Z s ∈ Kbase)
+    (hspeed : ∀ s ∈ Set.Icc (0 : Real) B,
+      s ∈ lRegularizedDomain S T x Z →
+        lRegularizedSpeedSq S T (lRegularizedCurve S T x Z) s ≤ Q) :
+    B ∈ lRegularizedDomain S T x Z := by
+  classical
+  let : FirstCountableTopology H := I.isClosedEmbedding.isEmbedding.firstCountableTopology
+  let : FirstCountableTopology M :=
+    ⟨fun y => by
+      rw [← (chartAt H y).symm_map_nhds_eq (mem_chart_source H y)]
+      infer_instance⟩
+  by_cases hB0 : B = 0
+  · subst B
+    apply zero_mem_lRegularizedDomain (I := I) S hS T x Z
+    apply hslab
+    simp
+  let U : Set Real := lRegularizedDomain S T x Z
+  have hUopen : IsOpen U := lRegularizedDomain_isOpen S T x Z
+  have h0U : (0 : Real) ∈ U := by
+    apply zero_mem_lRegularizedDomain (I := I) S hS T x Z
+    apply hslab
+    simpa only [zero_pow, sub_zero] using
+      (show T ∈ Set.Icc (T - B ^ 2) T from
+        ⟨sub_le_self T (sq_nonneg B), le_rfl⟩)
+  have hclosed : closure U ∩ Set.Icc (0 : Real) B ⊆ U := by
+    rintro s ⟨hscl, hsIcc⟩
+    by_cases hsU : s ∈ U
+    · exact hsU
+    have hspos : 0 < s := lt_of_le_of_ne hsIcc.1 (fun h ↦ hsU (h ▸ h0U))
+    obtain ⟨t, htU, htlim⟩ := mem_closure_iff_seq_limit.mp hscl
+    let gamma : Real → M := lRegularizedCurve S T x Z
+    have htlt : ∀ n, 0 ≤ t n → t n < s := by
+      intro n hn0
+      apply lt_of_not_ge
+      intro hst
+      have hnDom : t n ∈ lRegularizedDomain S T x Z := by
+        simpa only [U] using htU n
+      exact hsU (show s ∈ U from by
+        simpa only [U] using lRegularizedDomain_segment S T x Z hnDom hsIcc.1 hst)
+    have htpos : ∀ᶠ n in atTop, 0 < t n :=
+      Filter.Tendsto.eventually_const_lt hspos htlim
+    have htIcc : ∀ᶠ n in atTop, t n ∈ Set.Icc (0 : Real) B := by
+      filter_upwards [htpos] with n hn
+      exact ⟨hn.le, (htlt n hn.le).le.trans hsIcc.2⟩
+    obtain ⟨N, hN⟩ := (eventually_atTop.1 htIcc)
+    let ts : Nat → Real := fun n ↦ t (n + N)
+    have htsU : ∀ n, ts n ∈ U := fun n ↦ htU (n + N)
+    have htsIcc : ∀ n, ts n ∈ Set.Icc (0 : Real) B := by
+      intro n
+      exact hN (n + N) (Nat.le_add_left N n)
+    have htslim : Tendsto ts atTop (nhds s) := by
+      change Tendsto (t ∘ (fun n => n + N)) atTop (nhds s)
+      exact htlim.comp (tendsto_add_atTop_nat N)
+    obtain ⟨y, _hy, phi, hphi, hylim⟩ :=
+      hKbase.tendsto_subseq
+        (x := fun n ↦ gamma (ts n)) (fun n ↦
+          hrange (ts n) (htsIcc n) (htsU n))
+    let tn : Nat → Real := fun n ↦ ts (phi n)
+    have htnU : ∀ n, tn n ∈ U := fun n ↦ htsU (phi n)
+    have htnIcc : ∀ n, tn n ∈ Set.Icc (0 : Real) B :=
+      fun n ↦ htsIcc (phi n)
+    have htnlim : Tendsto tn atTop (nhds s) := by
+      change Tendsto (ts ∘ phi) atTop (nhds s)
+      exact htslim.comp hphi.tendsto_atTop
+    have hbaselim : Tendsto (fun n ↦ gamma (tn n)) atTop (nhds y) := by
+      change Tendsto ((fun n => gamma (ts n)) ∘ phi) atTop (nhds y)
+      exact hylim
+    have hySrc : y ∈ (chartAt H y).source := mem_chart_source H y
+    have hyExt : y ∈ (extChartAt I y).source := by
+      rw [extChartAt_source]
+      exact hySrc
+    have hyTarget : extChartAt I y y ∈ interior (extChartAt I y).target := by
+      rw [(isOpen_extChartAt_target (I := I) y).interior_eq]
+      exact (extChartAt I y).map_source hyExt
+    obtain ⟨rho, hrho, hrhoSub⟩ :=
+      Metric.isOpen_iff.mp isOpen_interior _ hyTarget
+    let K : Set E := Metric.closedBall (extChartAt I y y) (rho / 2)
+    have hKcompact : IsCompact K := isCompact_closedBall _ _
+    have hKchart : K ⊆ interior (extChartAt I y).target := by
+      intro z hz
+      apply hrhoSub
+      rw [Metric.mem_ball]
+      have hz' : dist z (extChartAt I y y) ≤ rho / 2 := by
+        simpa only [K, Metric.mem_closedBall, dist_comm] using hz
+      linarith
+    have hposlim : Tendsto (fun n ↦ extChartAt I y (gamma (tn n))) atTop
+        (nhds (extChartAt I y y)) :=
+      (continuousAt_extChartAt (I := I) y).tendsto.comp hbaselim
+    have hposK : ∀ᶠ n in atTop, extChartAt I y (gamma (tn n)) ∈ K := by
+      apply hposlim
+      exact Metric.closedBall_mem_nhds _ (half_pos hrho)
+    have hbaseSrc : ∀ᶠ n in atTop, gamma (tn n) ∈ (chartAt H y).source := by
+      exact hbaselim ((chartAt H y).open_source.mem_nhds hySrc)
+    have hmetricSmooth : MetricFamilySmoothOn (I := I) (M := M) D
+        S.family.metric := hS.smoothMetric
+    have htimeCompact : IsCompact (Set.Icc (T - B ^ 2) T) := isCompact_Icc
+    obtain ⟨c, hc, hcLower⟩ :=
+      hmetricSmooth.exists_pos_mul_norm_sq_le_chart_inner (J := Set.Icc (T - B ^ 2) T)
+        hslab htimeCompact y (K := K) (fun z hz => interior_subset (hKchart hz)) hKcompact
+    let R : Real := Real.sqrt (Q / c)
+    have hR : 0 ≤ R := Real.sqrt_nonneg _
+    let vel : Nat → E := fun n ↦
+      trivToE (I := I) y (gamma (tn n))
+        (lVelocity (I := I) gamma (tn n))
+    have hvelR : ∀ᶠ n in atTop, ‖vel n‖ ≤ R := by
+      filter_upwards [hposK, hbaseSrc] with n hpn hsrc
+      have hn := htnIcc n
+      have htime : T - tn n ^ 2 ∈ Set.Icc (T - B ^ 2) T := by
+        have hsq : tn n ^ 2 ≤ B ^ 2 :=
+          (sq_le_sq₀ hn.1 hB).2 hn.2
+        exact ⟨sub_le_sub_left hsq T, sub_le_self T (sq_nonneg (tn n))⟩
+      have hlow := hcLower
+        (T - tn n ^ 2, extChartAt I y (gamma (tn n))) ⟨htime, hpn⟩ (vel n)
+      have hbase : gamma (tn n) ∈
+          (trivializationAt E (TangentSpace I) y).baseSet := by
+        simpa only [TangentBundle.trivializationAt_baseSet] using hsrc
+      have hsrc' : gamma (tn n) ∈ (extChartAt I y).source := by
+        simpa only [extChartAt_source] using hsrc
+      have hsymm : (extChartAt I y).symm (extChartAt I y (gamma (tn n))) =
+          gamma (tn n) := (extChartAt I y).left_inv hsrc'
+      have htriv :
+          (trivializationAt E (TangentSpace I) y).symmL Real (gamma (tn n)) (vel n) =
+          lVelocity (I := I) gamma (tn n) := by
+        change trivFromE (I := I) y (gamma (tn n))
+          (trivToE (I := I) y (gamma (tn n))
+            (lVelocity (I := I) gamma (tn n))) = _
+        exact trivFromE_trivToE (I := I) y hbase _
+      have hmetric :
+          (S.family.metric (T - tn n ^ 2)).inner
+            ((extChartAt I y).symm (extChartAt I y (gamma (tn n))))
+            ((trivializationAt E (TangentSpace I) y).symmL Real
+              ((extChartAt I y).symm (extChartAt I y (gamma (tn n)))) (vel n))
+            ((trivializationAt E (TangentSpace I) y).symmL Real
+              ((extChartAt I y).symm (extChartAt I y (gamma (tn n)))) (vel n)) =
+          lRegularizedSpeedSq S T gamma (tn n) := by
+        rw [hsymm, htriv]
+        rfl
+      rw [hmetric] at hlow
+      have hsq : ‖vel n‖ ^ 2 ≤ Q / c := by
+        rw [le_div_iff₀ hc]
+        simpa only [mul_comm] using hlow.trans (hspeed (tn n) hn (htnU n))
+      have hsqrt := Real.sqrt_le_sqrt hsq
+      simpa only [R, Real.sqrt_sq (norm_nonneg (vel n))] using hsqrt
+    let C : Set (Real × (E × E)) :=
+      Set.Icc (0 : Real) B ×ˢ (K ×ˢ Metric.closedBall (0 : E) R)
+    have hCcompact : IsCompact C :=
+      isCompact_Icc.prod (hKcompact.prod (isCompact_closedBall _ _))
+    have hCreg : C ⊆ {p : Real × (E × E) |
+        T - p.1 ^ 2 ∈ D.regular ∧
+          p.2.1 ∈ interior (extChartAt I y).target} := by
+      rintro p ⟨hpTime, hpPos, _hpVel⟩
+      have hsq : p.1 ^ 2 ≤ B ^ 2 :=
+        (sq_le_sq₀ hpTime.1 hB).2 hpTime.2
+      exact ⟨hslab ⟨sub_le_sub_left hsq T,
+        sub_le_self T (sq_nonneg p.1)⟩, hKchart hpPos⟩
+    obtain ⟨epsilon, hepsilon, hflow⟩ :=
+      exists_lPhaseComp S hS T y hCcompact hCreg
+    have hseedC : ∀ᶠ n in atTop,
+        (tn n, extChartAt I y (gamma (tn n)), vel n) ∈ C := by
+      filter_upwards [hposK, hvelR] with n hp hv
+      have hn := htnIcc n
+      exact ⟨hn, hp, by simpa only [Metric.mem_closedBall, dist_zero_right] using hv⟩
+    have hnear : ∀ᶠ n in atTop, s ∈ Set.Ioo (tn n - epsilon) (tn n + epsilon) := by
+      have hnhds : Set.Ioo (s - epsilon) (s + epsilon) ∈ nhds s :=
+        Ioo_mem_nhds (sub_lt_self s hepsilon) (lt_add_of_pos_right s hepsilon)
+      filter_upwards [htnlim hnhds] with n hn
+      exact ⟨by linarith [hn.2], by linarith [hn.1]⟩
+    obtain ⟨n, hnC, hnNear, hnSrc⟩ :=
+      (hseedC.and (hnear.and hbaseSrc)).exists
+    let t0 : Real := tn n
+    have ht0U : t0 ∈ U := htnU n
+    obtain ⟨curve, J, hJopen, hJconn, h0J, ht0J, hcurve⟩ := ht0U
+    obtain ⟨V, hVopen, hZV, L, hLopen, hLconn, h0L, ht0L,
+      alpha, halpha, hcurves⟩ :=
+      lRegularizedFamily_extend (I := I) S hS T hJopen hJconn h0J ht0J hcurve
+    have hEq : Set.EqOn (lRegularizedCurve S T x Z) (fun r ↦ alpha (Z, r)) L :=
+      lRegularizedCurve_eqOn S hS T hLopen hLconn h0L (hcurves Z hZV)
+    have hpos : alpha (Z, t0) = gamma t0 := (hEq ht0L).symm
+    have heqGerm : (fun r ↦ alpha (Z, r)) =ᶠ[nhds t0] gamma :=
+      Filter.EventuallyEq.symm <| hEq.eventuallyEq_of_mem (hLopen.mem_nhds ht0L)
+    have hvel : lVelocity (I := I) (fun r ↦ alpha (Z, r)) t0 =
+        lVelocity (I := I) gamma t0 := by
+      unfold lVelocity
+      rw [heqGerm.mfderiv_eq (I := modelWithCornersSelf Real Real) (I' := I)]
+      rfl
+    have ht0src : alpha (Z, t0) ∈ (chartAt H y).source := by
+      rw [hpos]
+      exact hnSrc
+    have hseedEq :
+        (extChartAt I y (alpha (Z, t0)),
+          fderiv Real (fun r : Real ↦ extChartAt I y (alpha (Z, r))) t0
+            (1 : Real)) =
+        (extChartAt I y (gamma t0), vel n) := by
+      apply Prod.ext
+      · rw [hpos]
+      · have hseedVel := lPhaseSeed_velocity (I := I) y
+          ((hcurves Z hZV).2.2 t0 ht0L).2.1 ht0src
+        calc
+          fderiv Real (fun r : Real ↦ extChartAt I y (alpha (Z, r))) t0
+              (1 : Real) =
+            trivToE (I := I) y (alpha (Z, t0))
+              (lVelocity (I := I) (fun r ↦ alpha (Z, r)) t0) := hseedVel
+          _ = vel n := by rw [hpos, hvel]
+    obtain ⟨O, hOopen, hseedO, Phi, hPhi0, hPhiSmooth, hPhiDeriv, hPhiMap⟩ :=
+      hflow (tn n, extChartAt I y (gamma (tn n)), vel n) hnC
+    have hseedO' :
+        (extChartAt I y (alpha (Z, t0)),
+          fderiv Real (fun r : Real ↦ extChartAt I y (alpha (Z, r))) t0
+            (1 : Real)) ∈ O := by
+      rw [hseedEq]
+      exact hseedO
+    obtain ⟨W, hWopen, hZW, _hWV, beta, hbeta, hbetaCurves⟩ :=
+      lRegularizedFamily_step_of (I := I) S hS T x y hVopen hZV
+        hLopen hLconn h0L ht0L halpha hcurves ht0src epsilon hepsilon
+        hOopen hseedO' Phi hPhi0 hPhiSmooth hPhiDeriv hPhiMap
+    have ht0I : t0 ∈ Set.Ioo (t0 - epsilon) (t0 + epsilon) :=
+      ⟨by linarith, by linarith⟩
+    exact ⟨fun r ↦ beta (Z, r), L ∪ Set.Ioo (t0 - epsilon) (t0 + epsilon),
+      hLopen.union isOpen_Ioo,
+      hLconn.union t0 ht0L ht0I isPreconnected_Ioo,
+      Or.inl h0L, Or.inr hnNear, hbetaCurves Z hZW⟩
+  have hall : Set.Icc (0 : Real) B ⊆ U :=
+    isPreconnected_Icc.subset_of_closure_inter_subset hUopen
+      ⟨0, ⟨⟨le_rfl, hB⟩, h0U⟩⟩ hclosed
+  exact hall ⟨hB, le_rfl⟩
+
+end
 
 variable {E : Type uE} [NormedAddCommGroup E]
   [InnerProductSpace Real E] [FiniteDimensional Real E]
@@ -126,220 +373,13 @@ theorem mem_lRegularizedDomain_of_time_slab
     (x : M) (Z : TangentSpace I x) (B : Real)
     (hB : 0 ≤ B) (hslab : Set.Icc (T - B ^ 2) T ⊆ D.regular) :
     B ∈ lRegularizedDomain S T x Z := by
-  classical
   by_cases hB0 : B = 0
   · subst B
-    apply zero_mem_lRegularizedDomain (I := I) S hS T x Z
-    apply hslab
-    simp
+    exact zero_mem_lRegularizedDomain S hS T x Z (hslab (by simp))
   have hBpos : 0 < B := lt_of_le_of_ne hB (Ne.symm hB0)
-  let U : Set Real := lRegularizedDomain S T x Z
-  have hUopen : IsOpen U := lRegularizedDomain_isOpen S T x Z
-  have h0U : (0 : Real) ∈ U := by
-    apply zero_mem_lRegularizedDomain (I := I) S hS T x Z
-    apply hslab
-    simpa only [zero_pow, sub_zero] using
-      (show T ∈ Set.Icc (T - B ^ 2) T from
-        ⟨sub_le_self T (sq_nonneg B), le_rfl⟩)
-  obtain ⟨Q, hQ, hspeed⟩ :=
-    exists_uniform_lRegularizedSpeedSq_bound (I := I) S hS T x Z hBpos hslab
-  have hclosed : closure U ∩ Set.Icc (0 : Real) B ⊆ U := by
-    rintro s ⟨hscl, hsIcc⟩
-    by_cases hsU : s ∈ U
-    · exact hsU
-    have hspos : 0 < s := lt_of_le_of_ne hsIcc.1 (fun h ↦ hsU (h ▸ h0U))
-    obtain ⟨t, htU, htlim⟩ := mem_closure_iff_seq_limit.mp hscl
-    let gamma : Real → M := lRegularizedCurve S T x Z
-    obtain ⟨y, _hy, phi, hphi, hylim⟩ :=
-      (isCompact_univ : IsCompact (Set.univ : Set M)).tendsto_subseq
-        (x := fun n ↦ gamma (t n)) (fun _ ↦ Set.mem_univ _)
-    let tn : Nat → Real := fun n ↦ t (phi n)
-    have htnU : ∀ n, tn n ∈ U := fun n ↦ htU (phi n)
-    have htnlim : Tendsto tn atTop (nhds s) := by
-      change Tendsto (t ∘ phi) atTop (nhds s)
-      exact htlim.comp hphi.tendsto_atTop
-    have hbaselim : Tendsto (fun n ↦ gamma (tn n)) atTop (nhds y) := by
-      change Tendsto ((fun n ↦ gamma (t n)) ∘ phi) atTop (nhds y)
-      exact hylim
-    have htnlt : ∀ n, 0 ≤ tn n → tn n < s := by
-      intro n hn0
-      apply lt_of_not_ge
-      intro hst
-      have hnDom : tn n ∈ lRegularizedDomain S T x Z := by
-        simpa only [U] using htnU n
-      exact hsU (show s ∈ U from by
-        simpa only [U] using lRegularizedDomain_segment S T x Z hnDom hsIcc.1 hst)
-    have htnpos : ∀ᶠ n in atTop, 0 < tn n :=
-      Filter.Tendsto.eventually_const_lt hspos htnlim
-    have htnIcc : ∀ᶠ n in atTop, tn n ∈ Set.Icc (0 : Real) B := by
-      filter_upwards [htnpos] with n hn
-      exact ⟨hn.le, (htnlt n hn.le).le.trans hsIcc.2⟩
-    have hySource : y ∈ (chartAt H y).source := mem_chart_source H y
-    have hyExt : y ∈ (extChartAt I y).source := by
-      rw [extChartAt_source]
-      exact hySource
-    have hyTarget : extChartAt I y y ∈ interior (extChartAt I y).target := by
-      rw [(isOpen_extChartAt_target (I := I) y).interior_eq]
-      exact (extChartAt I y).map_source hyExt
-    obtain ⟨rho, hrho, hrhoSub⟩ :=
-      Metric.isOpen_iff.mp isOpen_interior _ hyTarget
-    let K : Set E := Metric.closedBall (extChartAt I y y) (rho / 2)
-    have hKcompact : IsCompact K := isCompact_closedBall _ _
-    have hKchart : K ⊆ interior (extChartAt I y).target := by
-      intro z hz
-      apply hrhoSub
-      rw [Metric.mem_ball]
-      have hz' : dist z (extChartAt I y y) ≤ rho / 2 := by
-        simpa only [K, Metric.mem_closedBall, dist_comm] using hz
-      linarith
-    have hposlim : Tendsto (fun n ↦ extChartAt I y (gamma (tn n))) atTop
-        (nhds (extChartAt I y y)) :=
-      (continuousAt_extChartAt (I := I) y).tendsto.comp hbaselim
-    have hposK : ∀ᶠ n in atTop, extChartAt I y (gamma (tn n)) ∈ K := by
-      apply hposlim
-      exact Metric.closedBall_mem_nhds _ (half_pos hrho)
-    have hbaseSource : ∀ᶠ n in atTop, gamma (tn n) ∈ (chartAt H y).source := by
-      exact hbaselim ((chartAt H y).open_source.mem_nhds hySource)
-    have hmetricSmooth : MetricFamilySmoothOn (I := I) (M := M) D
-        S.family.metric := hS.smoothMetric
-    have htimeCompact : IsCompact (Set.Icc (T - B ^ 2) T) := isCompact_Icc
-    obtain ⟨c, hc, hcLower⟩ :=
-      chartGramOp_lower (E := E) (I := I) (M := M) (D := D)
-        (G := S.family) hmetricSmooth (J := Set.Icc (T - B ^ 2) T)
-        hslab htimeCompact y (K := K) hKchart hKcompact
-    let R : Real := Real.sqrt (Q / c)
-    have hR : 0 ≤ R := Real.sqrt_nonneg _
-    let velocity : Nat → E := fun n ↦
-      trivToE (I := I) y (gamma (tn n))
-        (lVelocity (I := I) gamma (tn n))
-    have hvelR : ∀ᶠ n in atTop, ‖velocity n‖ ≤ R := by
-      filter_upwards [htnIcc, hposK, hbaseSource] with n hn hpn hsrc
-      have htime : T - tn n ^ 2 ∈ Set.Icc (T - B ^ 2) T := by
-        have hsq : tn n ^ 2 ≤ B ^ 2 :=
-          (sq_le_sq₀ hn.1 hB).2 hn.2
-        exact ⟨sub_le_sub_left hsq T, sub_le_self T (sq_nonneg (tn n))⟩
-      have hlow := hcLower
-        (T - tn n ^ 2, extChartAt I y (gamma (tn n))) ⟨htime, hpn⟩ (velocity n)
-      have hbase : gamma (tn n) ∈
-          (trivializationAt E (TangentSpace I) y).baseSet := by
-        simpa only [TangentBundle.trivializationAt_baseSet] using hsrc
-      have hsrc' : gamma (tn n) ∈ (extChartAt I y).source := by
-        simpa only [extChartAt_source] using hsrc
-      have hsymm : (extChartAt I y).symm (extChartAt I y (gamma (tn n))) =
-          gamma (tn n) := (extChartAt I y).left_inv hsrc'
-      have htriv :
-          Tensor.Tensor0SRiemannian.chartTrivializationLinearMapSymm
-            (I := I) (M := M) y (gamma (tn n)) (velocity n) =
-          lVelocity (I := I) gamma (tn n) := by
-        change trivFromE (I := I) y (gamma (tn n))
-          (trivToE (I := I) y (gamma (tn n))
-            (lVelocity (I := I) gamma (tn n))) = _
-        exact trivFromE_trivToE (I := I) y hbase _
-      have hmetric : inner Real
-          (chartGramOp (I := I) S.family y
-            (T - tn n ^ 2, extChartAt I y (gamma (tn n))) (velocity n)) (velocity n) =
-          lRegularizedSpeedSq S T gamma (tn n) := by
-        calc
-          _ = (S.family.metric (T - tn n ^ 2)).inner
-              ((extChartAt I y).symm (extChartAt I y (gamma (tn n))))
-              (Tensor.Tensor0SRiemannian.chartTrivializationLinearMapSymm
-                (I := I) (M := M) y
-                ((extChartAt I y).symm (extChartAt I y (gamma (tn n)))) (velocity n))
-              (Tensor.Tensor0SRiemannian.chartTrivializationLinearMapSymm
-                (I := I) (M := M) y
-                ((extChartAt I y).symm (extChartAt I y (gamma (tn n)))) (velocity n)) :=
-            chartGramOp_inner (I := I) S.family y _ _ _
-          _ = (S.family.metric (T - tn n ^ 2)).inner (gamma (tn n))
-              (lVelocity (I := I) gamma (tn n))
-              (lVelocity (I := I) gamma (tn n)) := by rw [hsymm, htriv]
-          _ = lRegularizedSpeedSq S T gamma (tn n) := by
-            simp only [lRegularizedSpeedSq, SolutionOn.family_metric]
-      rw [hmetric] at hlow
-      have hsq : ‖velocity n‖ ^ 2 ≤ Q / c := by
-        rw [le_div_iff₀ hc]
-        simpa only [mul_comm] using hlow.trans (hspeed (tn n) hn (htnU n))
-      have hsqrt := Real.sqrt_le_sqrt hsq
-      simpa only [R, Real.sqrt_sq (norm_nonneg (velocity n))] using hsqrt
-    let C : Set (Real × (E × E)) :=
-      Set.Icc (0 : Real) B ×ˢ (K ×ˢ Metric.closedBall (0 : E) R)
-    have hCcompact : IsCompact C :=
-      isCompact_Icc.prod (hKcompact.prod (isCompact_closedBall _ _))
-    have hCreg : C ⊆ {p : Real × (E × E) |
-        T - p.1 ^ 2 ∈ D.regular ∧
-          p.2.1 ∈ interior (extChartAt I y).target} := by
-      rintro p ⟨hpTime, hpPos, _hpVelocity⟩
-      have hsq : p.1 ^ 2 ≤ B ^ 2 :=
-        (sq_le_sq₀ hpTime.1 hB).2 hpTime.2
-      exact ⟨hslab ⟨sub_le_sub_left hsq T,
-        sub_le_self T (sq_nonneg p.1)⟩, hKchart hpPos⟩
-    obtain ⟨epsilon, hepsilon, hflow⟩ :=
-      exists_lPhaseComp S hS T y hCcompact hCreg
-    have hseedC : ∀ᶠ n in atTop,
-        (tn n, extChartAt I y (gamma (tn n)), velocity n) ∈ C := by
-      filter_upwards [htnIcc, hposK, hvelR] with n hn hp hv
-      exact ⟨hn, hp, by simpa only [Metric.mem_closedBall, dist_zero_right] using hv⟩
-    have hnear : ∀ᶠ n in atTop, s ∈ Set.Ioo (tn n - epsilon) (tn n + epsilon) := by
-      have hnhds : Set.Ioo (s - epsilon) (s + epsilon) ∈ nhds s :=
-        Ioo_mem_nhds (sub_lt_self s hepsilon) (lt_add_of_pos_right s hepsilon)
-      filter_upwards [htnlim hnhds] with n hn
-      exact ⟨by linarith [hn.2], by linarith [hn.1]⟩
-    obtain ⟨n, hnC, hnNear, hnSource⟩ :=
-      (hseedC.and (hnear.and hbaseSource)).exists
-    let t0 : Real := tn n
-    have ht0U : t0 ∈ U := htnU n
-    obtain ⟨curve, J, hJopen, hJconn, h0J, ht0J, hcurve⟩ := ht0U
-    obtain ⟨V, hVopen, hZV, L, hLopen, hLconn, h0L, ht0L,
-      alpha, halpha, hcurves⟩ :=
-      lRegularizedFamily_extend (I := I) S hS T hJopen hJconn h0J ht0J hcurve
-    have hEq : Set.EqOn (lRegularizedCurve S T x Z) (fun r ↦ alpha (Z, r)) L :=
-      lRegularizedCurve_eqOn S hS T hLopen hLconn h0L (hcurves Z hZV)
-    have hpos : alpha (Z, t0) = gamma t0 := (hEq ht0L).symm
-    have heqGerm : (fun r ↦ alpha (Z, r)) =ᶠ[nhds t0] gamma :=
-      Filter.EventuallyEq.symm <| hEq.eventuallyEq_of_mem (hLopen.mem_nhds ht0L)
-    have hvel : lVelocity (I := I) (fun r ↦ alpha (Z, r)) t0 =
-        lVelocity (I := I) gamma t0 := by
-      unfold lVelocity
-      rw [heqGerm.mfderiv_eq (I := modelWithCornersSelf Real Real) (I' := I)]
-      rfl
-    have ht0src : alpha (Z, t0) ∈ (chartAt H y).source := by
-      rw [hpos]
-      exact hnSource
-    have hseedEq :
-        (extChartAt I y (alpha (Z, t0)),
-          fderiv Real (fun r : Real ↦ extChartAt I y (alpha (Z, r))) t0
-            (1 : Real)) =
-        (extChartAt I y (gamma t0), velocity n) := by
-      apply Prod.ext
-      · rw [hpos]
-      · have hseedVelocity := lPhaseSeed_velocity (I := I) y
-          ((hcurves Z hZV).2.2 t0 ht0L).2.1 ht0src
-        calc
-          fderiv Real (fun r : Real ↦ extChartAt I y (alpha (Z, r))) t0
-              (1 : Real) =
-            trivToE (I := I) y (alpha (Z, t0))
-              (lVelocity (I := I) (fun r ↦ alpha (Z, r)) t0) := hseedVelocity
-          _ = velocity n := by rw [hpos, hvel]
-    obtain ⟨O, hOopen, hseedO, Phi, hPhi0, hPhiSmooth, hPhiDeriv, hPhiMap⟩ :=
-      hflow (tn n, extChartAt I y (gamma (tn n)), velocity n) hnC
-    have hseedO' :
-        (extChartAt I y (alpha (Z, t0)),
-          fderiv Real (fun r : Real ↦ extChartAt I y (alpha (Z, r))) t0
-            (1 : Real)) ∈ O := by
-      rw [hseedEq]
-      exact hseedO
-    obtain ⟨W, hWopen, hZW, _hWV, beta, hbeta, hbetaCurves⟩ :=
-      lRegularizedFamily_step_of (I := I) S hS T x y hVopen hZV
-        hLopen hLconn h0L ht0L halpha hcurves ht0src epsilon hepsilon
-        hOopen hseedO' Phi hPhi0 hPhiSmooth hPhiDeriv hPhiMap
-    have ht0I : t0 ∈ Set.Ioo (t0 - epsilon) (t0 + epsilon) :=
-      ⟨by linarith, by linarith⟩
-    exact ⟨fun r ↦ beta (Z, r), L ∪ Set.Ioo (t0 - epsilon) (t0 + epsilon),
-      hLopen.union isOpen_Ioo,
-      hLconn.union t0 ht0L ht0I isPreconnected_Ioo,
-      Or.inl h0L, Or.inr hnNear, hbetaCurves Z hZW⟩
-  have hall : Set.Icc (0 : Real) B ⊆ U :=
-    isPreconnected_Icc.subset_of_closure_inter_subset hUopen
-      ⟨0, ⟨⟨le_rfl, hB⟩, h0U⟩⟩ hclosed
-  exact hall ⟨hB, le_rfl⟩
+  obtain ⟨Q, _hQ, hspeed⟩ :=
+    exists_uniform_lRegularizedSpeedSq_bound S hS T x Z hBpos hslab
+  exact mem_lRegularizedDomain_of_isCompact_range_of_speed_le S hS T x Z B hB hslab univ
+    isCompact_univ Q (fun _ _ _ => mem_univ _) hspeed
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman
