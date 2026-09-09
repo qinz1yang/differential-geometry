@@ -614,6 +614,8 @@ The Dirichlet recurrence now has the generic `ae_memWkp_two_of_spatial_weak_part
 
 The universal-cover product layer now proves `exists_affine_product_conjugate_of_isometry`: any self-isometry of a two-dimensional surface product with `ℝ`, transported through a metric-identifying diffeomorphism, has affine line action with sign `±1`. The 4256-job module build and full declaration/axiom audit pass. This is the deck-action conjugation step for row 6223; identifying the surface factor remains open.
 
+The spatial source branch now adds `exists_lp_gradient_source_spatial_derivative`, a specialized eight-index producer that reuses the finite-sum weak-gradient API and requires only almost-everywhere time-slice spatial smoothness of coefficients. Its 9250-job strict build, declaration-linter check, and foundational axiom audit pass; it advances the differentiated Dirichlet recurrence without asserting the all-order classical producer.
+
 The product-conjugation interface was corrected so the target chart model has the genuine product dimension `E × ℝ`; the corrected source rebuilds and audits cleanly.
 
 The heat-kernel branch now has a genuine finite-cover gluing lemma, `exists_uniform_linear_time_bound_of_compact_cover`, which turns local linear-in-time residual bounds into one compact-set constant through a finite subcover. It uses no continuity assumption on the chosen exponential radius. The Sobolev branch also has `memWkp_of_weak_partial_tree` and its time-slice version, a natural arbitrary-order weak-jet induction from actual product-`Lp` witnesses and weak derivative equations. Both leaves pass targeted builds, declaration linters, and foundational axiom audits; they advance 8265 and 4655 respectively without closing the headlines.
