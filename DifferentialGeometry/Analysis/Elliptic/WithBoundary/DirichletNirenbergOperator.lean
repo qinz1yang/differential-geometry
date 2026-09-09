@@ -199,6 +199,35 @@ theorem dirichletNirenbergTest_coeFn
           ((extChartAt I_hs α).symm ((toEuclidean (E := EuN)).symm z)))) :=
   nirenbergTest_coeFn q α hΩ hΩc hΩs hη hηc k h hηs u
 
+theorem dirichletNirenbergTest_chartInverse_coeFn
+    (q : SmoothRiemannianMetric I_hs M) (α : M) {Ω : Set EuStd}
+    (hΩ : IsOpen Ω) (hΩc : IsCompact (closure Ω))
+    (hΩs : closure Ω ⊆ toEuclidean (E := EuN) '' interior (extChartAt I_hs α).target)
+    (v : H1ComplDirichlet q) {η : EuStd → ℝ}
+    (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hηc : HasCompactSupport η)
+    (k : Fin (Module.finrank ℝ EuN)) (h : ℝ) (hroom : Metric.cthickening |h| (tsupport η) ⊆ Ω) :
+    let x := fun z => (extChartAt I_hs α).symm ((toEuclidean (E := EuN)).symm z)
+    (fun z => H1ComplDirichletToLp q
+      (dirichletNirenbergTest q α hΩ hΩc hΩs hη hηc k h hroom v) (x z)) =ᵐ[volume.restrict Ω]
+        standardNirenbergTest k h η (fun z => H1ComplDirichletToLp q v (x z)) := by
+  intro x
+  have hraw := ae_chartInverse_of_ae q α hΩ.measurableSet hΩc
+    (hΩs.trans (image_mono interior_subset))
+    (dirichletNirenbergTest_coeFn q α hΩ hΩc hΩs hη hηc k h hroom v)
+  filter_upwards [hraw, ae_restrict_mem hΩ.measurableSet] with z hz hzΩ
+  change H1ComplDirichletToLp q
+    (dirichletNirenbergTest q α hΩ hΩc hΩs hη hηc k h hroom v) (x z) = _ at hz
+  rw [hz]
+  have hzt : (toEuclidean (E := EuN)).symm z ∈ (extChartAt I_hs α).target := by
+    obtain ⟨y, hy, hyz⟩ := hΩs (subset_closure hzΩ)
+    rw [← hyz, (toEuclidean (E := EuN)).symm_apply_apply]
+    exact interior_subset hy
+  have hxs := (extChartAt I_hs α).map_target hzt
+  rw [extChartAt_source] at hxs
+  dsimp only [x]
+  rw [chartPullback_apply_of_mem α _ hxs, (extChartAt I_hs α).right_inv hzt,
+    (toEuclidean (E := EuN)).apply_symm_apply]
+
 theorem dirichletLocalWeakPartialLp_dirichletNirenbergTest_coeFn
     (q : SmoothRiemannianMetric I_hs M) (α : M) {Ω : Set EuStd}
     (hΩ : IsOpen Ω) (hΩc : IsCompact (closure Ω))

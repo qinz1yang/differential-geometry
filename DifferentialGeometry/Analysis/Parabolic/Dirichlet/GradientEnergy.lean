@@ -90,19 +90,20 @@ private theorem integral_mul_sum_norm_sq_le_of_timeH1_mass_dual
     {CF : ℝ} (hCF : ∀ᵐ t ∂μ, ‖F t‖ ≤ CF)
     (J : X →L[ℝ] Y) (D : ι → X →L[ℝ] Z)
     (c : ℝ) (hc : ∀ t ∈ Icc a b, ∀ x, c * ∑ i, ‖D i x‖ ^ 2 ≤ F t x x)
-    (v : Lp X 2 μ) (ℓ Lm : Lp (X →L[ℝ] ℝ) 2 μ)
+    (v : Lp X 2 μ) (ℓ β : Lp (X →L[ℝ] ℝ) 2 μ)
     (w : timeH1 (X →L[ℝ] ℝ) (b - a))
     (hmass : ∀ᵐ s ∂timeMeasure (b - a), ∀ z,
       w.toFun s z = inner ℝ (J (v (a + s))) (J z))
     (hderiv : w.deriv =ᵐ[timeMeasure (b - a)] fun s => ℓ (a + s))
-    (hLm : ∀ z : Lp X 2 μ,
-      (∫ t, Lm t (z t) ∂μ) = ∫ t, F t (v t) (z t) ∂μ)
+    (hpair : ∀ z : Lp X 2 μ,
+      (∫ t, ℓ t (z t) ∂μ) = (∫ t, β t (z t) ∂μ) -
+        ∫ t, F t (v t) (z t) ∂μ)
     {ζ : ℝ → ℝ} (hζsmooth : ContDiff ℝ 1 ζ)
     (hζ : MemLp ζ ∞ volume) (hζpos : ∀ᵐ t ∂volume, 0 ≤ ζ t)
     {K : ℝ≥0} (hζlip : LipschitzWith K ζ) (hζ0 : ζ 0 = 0) (hζb : ζ (b - a) = 0) :
     c * (∫ s, ζ s * ∑ i, ‖D i (v (a + s))‖ ^ 2 ∂timeMeasure (b - a)) ≤
       (3 * (K : ℝ) / 2) * ∫ s, ‖J (v (a + s))‖ ^ 2 ∂timeMeasure (b - a) +
-        ∫ s, ζ s * (ℓ + Lm) (a + s) (v (a + s)) ∂timeMeasure (b - a) := by
+        ∫ s, ζ s * β (a + s) (v (a + s)) ∂timeMeasure (b - a) := by
   let B : X →L[ℝ] X →L[ℝ] ℝ := (innerSL ℝ).bilinearComp J J
   have hB (x y : X) : B x y = inner ℝ (J x) (J y) := rfl
   have hBsymm : B.flip = B := by
@@ -113,24 +114,8 @@ private theorem integral_mul_sum_norm_sq_le_of_timeH1_mass_dual
     filter_upwards [hmass] with s hs
     ext z
     exact hs z
-  have hpair (z : Lp X 2 μ) :
-      (∫ t, ℓ t (z t) ∂μ) = (∫ t, (ℓ + Lm) t (z t) ∂μ) -
-        ∫ t, F t (v t) (z t) ∂μ := by
-    have hint (L : Lp (X →L[ℝ] ℝ) 2 μ) : Integrable (fun t => L t (z t)) μ :=
-      MeasureTheory.integrable_bilinear_of_apply_aestronglyMeasurable
-        (fun _ => ContinuousLinearMap.id ℝ (X →L[ℝ] ℝ))
-        (fun _ _ => aestronglyMeasurable_const) (Eventually.of_forall fun _ => le_rfl)
-        (Lp.memLp L) (Lp.memLp z)
-    have heq : (∫ t, (ℓ + Lm) t (z t) ∂μ) =
-        (∫ t, ℓ t (z t) ∂μ) + ∫ t, Lm t (z t) ∂μ := by
-      rw [← integral_add (hint ℓ) (hint Lm)]
-      apply integral_congr_ae
-      filter_upwards [Lp.coeFn_add ℓ Lm] with t ht
-      exact congrArg (fun L : X →L[ℝ] ℝ => L (z t)) ht
-    rw [heq, hLm]
-    exact (add_sub_cancel_right _ _).symm
   have henergy := integral_mul_bilinear_le_of_timeH1_mass_dual_integral_on hab μ hμ F hF hCF
-    B hBsymm hBpos v ℓ (ℓ + Lm) w hwmass hderiv hpair
+    B hBsymm hBpos v ℓ β w hwmass hderiv hpair
     hζsmooth hζ hζpos hζlip hζ0 hζb
   have hmassnorm : (∫ s, B (v (a + s)) (v (a + s)) ∂timeMeasure (b - a)) =
       ∫ s, ‖J (v (a + s))‖ ^ 2 ∂timeMeasure (b - a) := by
@@ -438,6 +423,13 @@ private theorem exists_cutoff_gradient_energy_of_timeH1
               (∫ p, τ p.1 * B p * H1ComplDirichletToLp q z
                 ((extChartAt I_hs α).symm ((toEuclidean (E := EuN)).symm p.2)) ∂ν) +
               ∑ j, ∫ p, τ p.1 * E j p * dirichletLocalWeakPartialLp q α hΩ₀ hΩ₀c hΩ₀s j z p.2 ∂ν) ∧
+          (∀ z : Lp (H1ComplDirichlet q) 2 μ,
+            (∫ t, ℓ t (z t) ∂μ) = (∫ t, β t (z t) ∂μ) -
+              ∫ t, (∑ i, ∑ j, ∫ y in Ω₀,
+                dirichletLocalWeakPartialLp q α hΩ₀ hΩ₀c hΩ₀s i (v t) y *
+                  (MetricExtension.densityOnEuclid q α y *
+                    MetricExtension.invGramOnEuclid (G.metric t) α i j y) *
+                  dirichletLocalWeakPartialLp q α hΩ₀ hΩ₀c hΩ₀s j (z t) y) ∂μ) ∧
           ∀ (ζ : ℝ → ℝ) (K : ℝ≥0), ContDiff ℝ 1 ζ → MemLp ζ ∞ volume →
             (∀ᵐ s ∂volume, 0 ≤ ζ s) → LipschitzWith K ζ → ζ 0 = 0 → ζ (t₁ - t₀) = 0 →
             c * (∫ s, ζ s * ∑ i, ‖dirichletLocalWeakPartialLp q α hΩ₀ hΩ₀c hΩ₀s i (v (t₀ + s))‖ ^ 2 ∂timeMeasure (t₁ - t₀)) ≤
@@ -447,11 +439,30 @@ private theorem exists_cutoff_gradient_energy_of_timeH1
   obtain ⟨v, w, ℓ, hv, hw, hd, htest, hℓ⟩ := hpacket
   obtain ⟨Lm, hβ, hLm⟩ := exists_cutoff_gradient_forcing q hG isCompact_Icc hreg
     α hΩ₀ hΩ₀c hΩ₀s hμ.le V hV hη v ℓ form hform Q B hQ hℓ (hflux v hv)
-  refine ⟨v, w, ℓ, hv, hw, hd, htest, hℓ, ℓ + Lm, hβ, ?_⟩
+  have hpair (z : Lp (H1ComplDirichlet q) 2 μ) :
+      (∫ t, ℓ t (z t) ∂μ) = (∫ t, (ℓ + Lm) t (z t) ∂μ) -
+        ∫ t, form t (v t) (z t) ∂μ := by
+    have hint (L : Lp (H1ComplDirichlet q →L[ℝ] ℝ) 2 μ) :
+        Integrable (fun t => L t (z t)) μ :=
+      MeasureTheory.integrable_bilinear_of_apply_aestronglyMeasurable
+        (fun _ => ContinuousLinearMap.id ℝ (H1ComplDirichlet q →L[ℝ] ℝ))
+        (fun _ _ => aestronglyMeasurable_const) (Eventually.of_forall fun _ => le_rfl)
+        (Lp.memLp L) (Lp.memLp z)
+    have heq : (∫ t, (ℓ + Lm) t (z t) ∂μ) =
+        (∫ t, ℓ t (z t) ∂μ) + ∫ t, Lm t (z t) ∂μ := by
+      rw [← integral_add (hint ℓ) (hint Lm)]
+      apply integral_congr_ae
+      filter_upwards [Lp.coeFn_add ℓ Lm] with t ht
+      exact congrArg (fun L : H1ComplDirichlet q →L[ℝ] ℝ => L (z t)) ht
+    rw [heq, hLm]
+    exact (add_sub_cancel_right _ _).symm
+  refine ⟨v, w, ℓ, hv, hw, hd, htest, hℓ, ℓ + Lm, hβ, ?_, ?_⟩
+  · intro z
+    simpa only [hform] using hpair z
   intro ζ K hζsmooth hζ hζpos hζlip hζ0 hζ1
   exact integral_mul_sum_norm_sq_le_of_timeH1_mass_dual ht₀₁ μ hμ form hformm hCF
     (H1ComplDirichletToLp q) (dirichletLocalWeakPartialLp q α hΩ₀ hΩ₀c hΩ₀s)
-    c hcoerc v ℓ Lm w hw hd hLm hζsmooth hζ hζpos hζlip hζ0 hζ1
+    c hcoerc v ℓ (ℓ + Lm) w hw hd hpair hζsmooth hζ hζpos hζlip hζ0 hζ1
 
 theorem IsWeakEvolutionSolution.exists_timeH1_cutoff_gradient_energy
     {q : SmoothRiemannianMetric I_hs M}
@@ -560,6 +571,17 @@ theorem IsWeakEvolutionSolution.exists_timeH1_cutoff_gradient_energy
               ∑ j, ∫ p, τ p.1 * E k j p * dirichletLocalWeakPartialLp q α hΩ₀
                 (hΩc.of_isClosed_subset isClosed_closure (hΩ₀Ω.trans subset_closure))
                 (hΩ₀Ω.trans (subset_closure.trans hΩs)) j z p.2 ∂ν) ∧
+          (∀ z : Lp (H1ComplDirichlet q) 2 μ,
+            (∫ t, ℓ t (z t) ∂μ) = (∫ t, β t (z t) ∂μ) -
+              ∫ t, (∑ i, ∑ j, ∫ y in Ω₀,
+                dirichletLocalWeakPartialLp q α hΩ₀
+                  (hΩc.of_isClosed_subset isClosed_closure (hΩ₀Ω.trans subset_closure))
+                  (hΩ₀Ω.trans (subset_closure.trans hΩs)) i (v t) y *
+                  (MetricExtension.densityOnEuclid q α y *
+                    MetricExtension.invGramOnEuclid (G.metric t) α i j y) *
+                  dirichletLocalWeakPartialLp q α hΩ₀
+                    (hΩc.of_isClosed_subset isClosed_closure (hΩ₀Ω.trans subset_closure))
+                    (hΩ₀Ω.trans (subset_closure.trans hΩs)) j (z t) y) ∂μ) ∧
           ∀ (ζ : ℝ → ℝ) (K : ℝ≥0), ContDiff ℝ 1 ζ → MemLp ζ ∞ volume →
             (∀ᵐ s ∂volume, 0 ≤ ζ s) → LipschitzWith K ζ → ζ 0 = 0 → ζ (t₁ - t₀) = 0 →
             c * (∫ s, ζ s * ∑ i, ‖dirichletLocalWeakPartialLp q α hΩ₀
@@ -587,9 +609,18 @@ theorem IsWeakEvolutionSolution.exists_timeH1_cutoff_gradient_energy
   have hcoerc := (Classical.choose_spec hexCoerc).2
   intro μ ν ρ σ r A U V
   classical
-  obtain ⟨R, H, F, hR, hH, hHsym, hF, hfixed, hsource⟩ :=
-    hu.exists_timeH1_cutoff_gradient_dual_deriv hXcont hacont α hΩ hΩc hΩs hXsmooth
-      ht₀ ht₁ ht₀₁ hΩ₀ hΩ₀Ω hη hηc hηs
+  have hex := hu.exists_timeH1_cutoff_gradient_dual_deriv hXcont hacont α hΩ hΩc hΩs hXsmooth
+    ht₀ ht₁ ht₀₁ hΩ₀ hΩ₀Ω hη hηc hηs
+  let R := hex.choose
+  let H := hex.choose_spec.choose
+  let F := hex.choose_spec.choose_spec.choose
+  have hp := hex.choose_spec.choose_spec.choose_spec
+  have hR := hp.1
+  have hH := hp.2.1
+  have hHsym := hp.2.2.1
+  have hF := hp.2.2.2.1
+  have hfixed := hp.2.2.2.2.1
+  have hsource := hp.2.2.2.2.2
   refine ⟨R, H, F, hR, hH, hHsym, hF, hfixed, ?_⟩
   intro C Q B E
   obtain ⟨hQ, hB, htimeH1⟩ := hsource
@@ -600,13 +631,12 @@ theorem IsWeakEvolutionSolution.exists_timeH1_cutoff_gradient_energy
   have hsub : Ω₀ ⊆ Ω := subset_closure.trans hΩ₀Ω
   have hV : MemLp (V k) 2 ν := (Lp.memLp (V k)).mono_measure
     (Measure.prod_mono Measure.restrict_le_self (Measure.restrict_mono hsub le_rfl))
-  apply exists_cutoff_gradient_energy_of_timeH1 q hG ht₀₁.le μ hμ (htime.trans hreg)
+  refine exists_cutoff_gradient_energy_of_timeH1 q hG ht₀₁.le μ hμ (htime.trans hreg)
     α hΩ₀ hΩ₀c hΩ₀s u k (V k) hV hη form hform
     (fun x y => (hformm x y).mono_measure hμJ) (hCF.filter_mono (ae_mono hμJ))
-    c (fun t ht x => (hcoerc t ht x).trans_eq (hform t x x).symm) (Q k) (B k) (hQ k)
-  · intro v hv
-    exact ae_cutoff_gradient_flux_eq_fixed_density q G α hΩ hΩc hΩs
-      hΩ₀ hΩ₀c hΩ₀s hsub (μ := μ) Measure.restrict_le_self u v k (H k) hv (hH k) hη hηc
-  · exact htimeH1 k
+    c (fun t ht x => (hcoerc t ht x).trans_eq (hform t x x).symm) (Q k) (B k) (hQ k) ?_ (htimeH1 k)
+  intro v hv
+  exact ae_cutoff_gradient_flux_eq_fixed_density q G α hΩ hΩc hΩs
+    hΩ₀ hΩ₀c hΩ₀s hsub (μ := μ) Measure.restrict_le_self u v k (H k) hv (hH k) hη hηc
 
 end DifferentialGeometry.Analysis.Parabolic.Dirichlet

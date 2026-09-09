@@ -4892,3 +4892,7 @@ import DifferentialGeometry.Analysis.Heat.Parametrix.ResidualBound
 import DifferentialGeometry.Analysis.Heat.Parametrix.DiagonalAsymptotics
 import DifferentialGeometry.Analysis.Integration.Measure.UniformPairing
 import DifferentialGeometry.Analysis.Heat.Parametrix.KernelComparison
+import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletLocalNirenbergCoercivity
+import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletNirenbergSourceIntegral
+import DifferentialGeometry.Analysis.Sobolev.Tools.RestrictedDiffQuotLp
+import DifferentialGeometry.Analysis.Parabolic.Dirichlet.FixedDensityCoefficientBounds

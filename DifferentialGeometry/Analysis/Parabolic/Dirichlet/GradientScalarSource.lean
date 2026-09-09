@@ -263,13 +263,13 @@ private theorem exists_lp_scalar_source_of_cutoff_gradient_pairing
 
 private theorem exists_source_of_time_packet
     {A B C D E : Type*} {P : A → Prop} {Q : A → B → Prop} {R : B → C → Prop}
-    {S : A → C → Prop} {T : C → Prop} {U : D → Prop} {V : A → D → Prop} {W : D → E → Prop}
-    (h : ∃ a b c, P a ∧ Q a b ∧ R b c ∧ S a c ∧ T c ∧ ∃ d, U d ∧ V a d)
+    {S : A → C → Prop} {T : C → Prop} {U : D → Prop} {V : A → C → D → Prop} {Y : A → D → Prop} {W : D → E → Prop}
+    (h : ∃ a b c, P a ∧ Q a b ∧ R b c ∧ S a c ∧ T c ∧ ∃ d, U d ∧ V a c d ∧ Y a d)
     (hsource : ∀ d, U d → ∃ e, W d e) :
-    ∃ a b c d e, P a ∧ Q a b ∧ R b c ∧ T c ∧ U d ∧ W d e := by
-  obtain ⟨a, b, c, hp, hq, hr, _, ht, d, hu, _⟩ := h
+    ∃ a b c d e, P a ∧ Q a b ∧ R b c ∧ T c ∧ U d ∧ V a c d ∧ W d e := by
+  obtain ⟨a, b, c, hp, hq, hr, _, ht, d, hu, hv, _⟩ := h
   obtain ⟨e, he⟩ := hsource d hu
-  exact ⟨a, b, c, d, e, hp, hq, hr, ht, hu, he⟩
+  exact ⟨a, b, c, d, e, hp, hq, hr, ht, hu, hv, he⟩
 
 theorem IsWeakEvolutionSolution.exists_timeH1_cutoff_gradient_scalar_source
     {q : SmoothRiemannianMetric I_hs M}
@@ -356,6 +356,17 @@ theorem IsWeakEvolutionSolution.exists_timeH1_cutoff_gradient_scalar_source
             ∑ j, ∫ p, τ p.1 * E k j p * dirichletLocalWeakPartialLp q α hΩ₀
               (hΩc.of_isClosed_subset isClosed_closure (hΩ₀Ω.trans subset_closure))
               (hΩ₀Ω.trans (subset_closure.trans hΩs)) j z p.2 ∂ν) ∧
+        (∀ z : Lp (H1ComplDirichlet q) 2 μ,
+          (∫ t, ℓ t (z t) ∂μ) = (∫ t, β t (z t) ∂μ) -
+            ∫ t, (∑ i, ∑ j, ∫ y in Ω₀,
+              dirichletLocalWeakPartialLp q α hΩ₀
+                (hΩc.of_isClosed_subset isClosed_closure (hΩ₀Ω.trans subset_closure))
+                (hΩ₀Ω.trans (subset_closure.trans hΩs)) i (v t) y *
+                (MetricExtension.densityOnEuclid q α y *
+                  MetricExtension.invGramOnEuclid (G.metric t) α i j y) *
+                dirichletLocalWeakPartialLp q α hΩ₀
+                  (hΩc.of_isClosed_subset isClosed_closure (hΩ₀Ω.trans subset_closure))
+                  (hΩ₀Ω.trans (subset_closure.trans hΩs)) j (z t) y) ∂μ) ∧
         (f =ᵐ[ν] fun p => B k p - ∑ i, ∑ j,
           (P i j p * H k j p +
             fderiv ℝ (fun x => P i j (p.1, x)) p.2 (EuclideanSpace.single j 1) * V k p)) ∧
