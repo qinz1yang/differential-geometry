@@ -84,22 +84,35 @@ theorem lSourceGaussian_tail_tendsto_zero
   rw [heq] at ht'
   exact ht'
 
-omit [I.Boundaryless] [T2Space M]
+omit [NeZero (Module.finrank Real E)] [I.Boundaryless] [T2Space M]
   [SigmaCompactSpace M] in
 theorem lSourceGaussian_uniform_tail (eps : ENNReal) (heps : 0 < eps) :
     ∃ R : Real, 0 ≤ R ∧
-      ∀ (S : SolutionOn (I := I) (M := M) D) (T : Real) (x : M),
+      ∀ {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D)
+        (T : Real) (x : M),
         (∫⁻ Z : E in
             {Z | R < Real.sqrt ((S.base.metric T).inner x Z Z)},
             ENNReal.ofReal (lSourceGaussian S T x Z)
               ∂(modelHaar (E := E))) ≤ eps := by
   classical
+  by_cases hdim : Module.finrank Real E = 0
+  · let : Subsingleton E := Module.finrank_zero_iff.mp hdim
+    refine ⟨0, le_rfl, ?_⟩
+    intro D S T x
+    have hempty : {Z : E | 0 < Real.sqrt ((S.base.metric T).inner x Z Z)} = ∅ := by
+      ext Z
+      rw [Subsingleton.elim Z 0]
+      change (0 < Real.sqrt ((S.base.metric T).inner x
+        (0 : TangentSpace I x) 0)) ↔ False
+      simp
+    simpa only [hempty, Measure.restrict_empty, lintegral_zero_measure] using heps.le
+  let : NeZero (Module.finrank Real E) := ⟨hdim⟩
   let : Nonempty (Fin (Module.finrank Real E)) :=
     ⟨⟨0, Nat.pos_of_ne_zero (NeZero.ne (Module.finrank Real E))⟩⟩
   obtain ⟨R, hR, htail⟩ := gaussianPosDef_uniform_tail
     (n := Fin (Module.finrank Real E)) eps heps
   refine ⟨R, hR, ?_⟩
-  intro S T x
+  intro D S T x
   let A := lSourceGram S T x
   let e := toEuclidean (E := E)
   let sE : Set E :=

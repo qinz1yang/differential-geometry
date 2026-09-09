@@ -322,7 +322,7 @@ theorem redVolume_ball_eta [ConnectedSpace M]
   obtain ⟨epsV, hepsV, hmove⟩ :=
     ballVol_move_le (I := I) S hS time hrho hreg
   obtain ⟨R, hR, htail⟩ :=
-    lSourceGaussian_uniform_tail (E := E) (I := I) (M := M) (D := D)
+    lSourceGaussian_uniform_tail (E := E) (I := I) (M := M)
       eta heta
   let d : Real := 1 / (8 * (R + 1))
   have hRone : 0 < R + 1 := by linarith
