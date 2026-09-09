@@ -10,6 +10,95 @@ open scoped ENNReal Topology
 
 namespace DifferentialGeometry.Analysis.Parabolic.TimeSobolev
 
+private theorem scalar_weak_deriv_of_tensor_integrals
+    {X S E J : Type*} [NormedAddCommGroup X] [NormedSpace ℝ X]
+    [MeasurableSpace E] [Fintype J]
+    {ν : Measure E} {a b : ℝ}
+    (μ : Measure ℝ) (hμ : μ = volume.restrict (Icc a b))
+    (ι : S → X) {p q : ℝ → X →L[ℝ] ℝ}
+    {W B : ℝ × E → ℝ} {Q : J → ℝ × E → ℝ}
+    {R : S → E → ℝ} {D : S → J → E → ℝ}
+    (hmass : ∀ (τ : Lp ℝ 2 μ) (x : S),
+      (∫ t, τ t * p t (ι x) ∂μ) =
+        ∫ z, τ z.1 * W z * R x z.2 ∂μ.prod ν)
+    (hdual : ∀ (τ : Lp ℝ 2 μ) (x : S),
+      (∫ t, τ t * q t (ι x) ∂μ) =
+        (∫ z, τ z.1 * B z * R x z.2 ∂μ.prod ν) -
+          ∑ j, ∫ z, τ z.1 * Q j z * D x j z.2 ∂μ.prod ν)
+    (hweak : ∀ (x : S) (φ : ℝ → ℝ), ContDiff ℝ (⊤ : ℕ∞) φ → HasCompactSupport φ →
+      tsupport φ ⊆ Ioo a b →
+      (∫ z, deriv φ z.1 * W z * R x z.2 ∂μ.prod ν) =
+        (∑ j, ∫ z, φ z.1 * Q j z * D x j z.2 ∂μ.prod ν) -
+          ∫ z, φ z.1 * B z * R x z.2 ∂μ.prod ν) :
+    ∀ (x : S) (φ : ℝ → ℝ), ContDiff ℝ (⊤ : ℕ∞) φ → HasCompactSupport φ →
+      tsupport φ ⊆ Ioo a b →
+      (∫ t in Ioo a b, deriv φ t * p t (ι x)) = -∫ t in Ioo a b, φ t * q t (ι x) := by
+  subst μ
+  intro x φ hφ hφc hφs
+  let μ := volume.restrict (Icc a b)
+  have hφm : MemLp φ 2 μ := hφ.continuous.memLp_of_hasCompactSupport hφc
+  have hdφm : MemLp (deriv φ) 2 μ :=
+    (hφ.continuous_deriv (by simp)).memLp_of_hasCompactSupport hφc.deriv
+  have hτint (τ : ℝ → ℝ) (hτ : MemLp τ 2 μ) (L : ℝ → X →L[ℝ] ℝ) :
+      (∫ t in Icc a b, hτ.toLp τ t * L t (ι x)) =
+        ∫ t in Ioo a b, τ t * L t (ι x) := by
+    apply Eq.trans ?_ (setIntegral_congr_set Ioo_ae_eq_Icc).symm
+    apply integral_congr_ae
+    filter_upwards [hτ.coeFn_toLp] with t ht
+    rw [ht]
+  have hτprod (τ : ℝ → ℝ) (hτ : MemLp τ 2 μ) (F : ℝ × E → ℝ) (V : E → ℝ) :
+      (∫ z, hτ.toLp τ z.1 * F z * V z.2 ∂μ.prod ν) =
+        ∫ z, τ z.1 * F z * V z.2 ∂μ.prod ν := by
+    apply integral_congr_ae
+    filter_upwards [(Measure.quasiMeasurePreserving_fst (μ := μ) (ν := ν)).ae hτ.coeFn_toLp] with z hz
+    rw [hz]
+  have hM := hmass (hdφm.toLp (deriv φ)) x
+  rw [hτint, hτprod] at hM
+  have hQ := hdual (hφm.toLp φ) x
+  rw [hτint, hτprod] at hQ
+  have hsum : (∑ j, ∫ z, hφm.toLp φ z.1 * Q j z * D x j z.2 ∂(volume.restrict (Icc a b)).prod ν) =
+      ∑ j, ∫ z, φ z.1 * Q j z * D x j z.2 ∂(volume.restrict (Icc a b)).prod ν := by
+    apply Finset.sum_congr rfl
+    intro j _
+    exact hτprod φ hφm (Q j) (D x j)
+  rw [hsum] at hQ
+  have hW := hweak x φ hφ hφc hφs
+  exact hM.trans (hW.trans (by linarith only [hQ]))
+
+private theorem timeH1.deriv_ae_eq_of_tensor_mass_dual
+    {X S E J : Type*} [NormedAddCommGroup X] [NormedSpace ℝ X]
+    [SeminormedAddCommGroup S] [NormedSpace ℝ S]
+    [MeasurableSpace E] [Fintype J] {ν : Measure E}
+    {a b : ℝ} (hab : a < b) (μ : Measure ℝ) (hμ : μ = volume.restrict (Icc a b))
+    (ι : S →L[ℝ] X) (hdense : DenseRange ι)
+    (mass : X →L[ℝ] X →L[ℝ] ℝ) (v : Lp X 2 μ)
+    (w : timeH1 (X →L[ℝ] ℝ) (b - a)) (q : Lp (X →L[ℝ] ℝ) 2 μ)
+    (hw : ∀ᵐ s ∂timeMeasure (b - a), ∀ z : X, w.toFun s z = mass (v (a + s)) z)
+    {W B : ℝ × E → ℝ} {Q : J → ℝ × E → ℝ}
+    {R : S → E → ℝ} {D : S → J → E → ℝ}
+    (hmass : ∀ (τ : Lp ℝ 2 μ) (x : S),
+      (∫ t, τ t * mass (v t) (ι x) ∂μ) = ∫ z, τ z.1 * W z * R x z.2 ∂μ.prod ν)
+    (hdual : ∀ (τ : Lp ℝ 2 μ) (x : S),
+      (∫ t, τ t * q t (ι x) ∂μ) = (∫ z, τ z.1 * B z * R x z.2 ∂μ.prod ν) -
+        ∑ j, ∫ z, τ z.1 * Q j z * D x j z.2 ∂μ.prod ν)
+    (hweak : ∀ (x : S) (φ : ℝ → ℝ), ContDiff ℝ (⊤ : ℕ∞) φ → HasCompactSupport φ →
+      tsupport φ ⊆ Ioo a b →
+      (∫ z, _root_.deriv φ z.1 * W z * R x z.2 ∂μ.prod ν) =
+        (∑ j, ∫ z, φ z.1 * Q j z * D x j z.2 ∂μ.prod ν) -
+          ∫ z, φ z.1 * B z * R x z.2 ∂μ.prod ν) :
+    w.deriv =ᵐ[timeMeasure (b - a)] fun s => q (a + s) := by
+  have hp : MemLp (fun t => mass (v t)) 2 (volume.restrict (Icc a b)) := by
+    rw [← hμ]
+    exact mass.comp_memLp v
+  have hq : MemLp (fun t => q t) 2 (volume.restrict (Icc a b)) := by
+    rw [← hμ]
+    exact Lp.memLp q
+  have hrep : (fun s => mass (v (a + s))) =ᵐ[timeMeasure (b - a)] w.toFun := by
+    filter_upwards [hw] with s hs
+    exact ContinuousLinearMap.ext (fun z => (hs z).symm)
+  exact w.deriv_ae_eq_of_dense_weak_dual_deriv_on hab ι hdense hp hq hrep
+    (scalar_weak_deriv_of_tensor_integrals μ hμ ι hmass hdual hweak)
+
 private theorem integral_timeH1_test_of_mass_dual
     {X Y : Type*} [NormedAddCommGroup X] [NormedSpace ℝ X] [CompleteSpace X]
     [NormedAddCommGroup Y] [InnerProductSpace ℝ Y]
@@ -167,22 +256,15 @@ private theorem cutoff_gradient_dual_deriv
     (innerSL ℝ).bilinearComp (H1ComplDirichletToLp q) (H1ComplDirichletToLp q)
   have hμ : μ = volume.restrict (Icc t₀ t₁) :=
     Measure.restrict_restrict_of_subset (fun t ht => ⟨ht₀.trans ht.1, ht.2.trans ht₁⟩)
-  have hex := exists_timeH1_dual_of_tensor_integrals_on (ν := volume.restrict Ω₀)
+  refine timeH1.deriv_ae_eq_of_tensor_mass_dual (ν := volume.restrict Ω₀)
     (X := H1ComplDirichlet q) (S := SmoothScalarDirichlet q) ht₀₁ μ hμ
     (smoothToH1ComplDirichlet q) (denseRange_smoothToH1ComplDirichlet q)
-    (mass.comp_memLp v) (Lp.memLp ℓ)
-    (p := fun t => mass (v t)) (q := fun t => ℓ t)
+    mass v w ℓ hw
     (W := fun x => η x.2 * (σ x * V x)) (B := B) (Q := Q)
     (R := fun z x => H1ComplDirichletToLp q (smoothToH1ComplDirichlet q z)
       ((extChartAt I_hs α).symm ((toEuclidean (E := EuN)).symm x)))
-    (D := fun z j => dirichletLocalWeakPartialLp q α hΩ₀ hΩ₀c hΩ₀s j (smoothToH1ComplDirichlet q z))
-  have hmass : ∀ (τ : Lp ℝ 2 μ) (z : SmoothScalarDirichlet q),
-      (∫ t, τ t * mass (v t) (smoothToH1ComplDirichlet q z) ∂μ) =
-        ∫ x, τ x.1 * (η x.2 * (σ x * V x)) *
-          H1ComplDirichletToLp q (smoothToH1ComplDirichlet q z)
-            ((extChartAt I_hs α).symm ((toEuclidean (E := EuN)).symm x.2))
-          ∂μ.prod (volume.restrict Ω₀) := by
-    intro τ z
+    (D := fun z j => dirichletLocalWeakPartialLp q α hΩ₀ hΩ₀c hΩ₀s j (smoothToH1ComplDirichlet q z)) ?_ ?_ ?_
+  · intro τ z
     have h := integral_mass_inner_eq_integral_spacetime_weak_partial_of_subset q α hΩ hΩc hΩs
       hΩ₀ hΩ₀c hΩ₀s hsub hη hηc hηs u v k hv τ
       (smoothToH1ComplDirichlet q z)
@@ -191,14 +273,10 @@ private theorem cutoff_gradient_dual_deriv
     filter_upwards with x
     dsimp only [σ]
     ring
-  obtain ⟨w', hrep, hd⟩ := hex hmass (fun τ z => hℓ τ (smoothToH1ComplDirichlet q z))
-    (fun z τ hτ hτc hτs => canonical_gradient_tensor_test q α hΩ₀ hΩ₀c hΩ₀s μ z τ
-      (htensor z τ hτ hτc hτs))
-  have hrep' : (fun s => mass (v (t₀ + s))) =ᵐ[timeMeasure (t₁ - t₀)] w.toFun := by
-    filter_upwards [hw] with s hs
-    exact ContinuousLinearMap.ext (fun z => (hs z).symm)
-  have he := timeH1.deriv_eq_of_toFun_ae_eq (hrep'.symm.trans hrep)
-  exact he ▸ hd
+  · intro τ z
+    exact hℓ τ (smoothToH1ComplDirichlet q z)
+  · intro z τ hτ hτc hτs
+    exact canonical_gradient_tensor_test q α hΩ₀ hΩ₀c hΩ₀s μ z τ (htensor z τ hτ hτc hτs)
 
 theorem IsWeakEvolutionSolution.exists_timeH1_cutoff_gradient_dual_deriv
     {q : SmoothRiemannianMetric I_hs M}
