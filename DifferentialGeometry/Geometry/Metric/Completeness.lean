@@ -43,6 +43,14 @@ structure RiemannianMetricComplete
 namespace RiemannianMetricComplete
 
 omit [CompleteSpace E] in
+theorem of_compact {M : Type u} [TopologicalSpace M] [ChartedSpace H M]
+    [IsManifold I ∞ M] [T2Space M] [CompactSpace M]
+    (g : SmoothRiemannianMetric I M) :
+    RiemannianMetricComplete (I := I) g := by
+  constructor
+  infer_instance
+
+omit [CompleteSpace E] in
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 theorem of_lower
