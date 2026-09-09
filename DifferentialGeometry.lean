@@ -4937,3 +4937,4 @@ import DifferentialGeometry.Analysis.Integration.ConformalScalarCurvature
 import DifferentialGeometry.Analysis.Heat.Parametrix.ParameterCoefficientCompatibility
 import DifferentialGeometry.Analysis.Heat.Parametrix.BranchTransport
 import DifferentialGeometry.Geometry.Operator.GradientPairingRegularity
+import DifferentialGeometry.Analysis.Parabolic.Dirichlet.GradientSourceRegularity
