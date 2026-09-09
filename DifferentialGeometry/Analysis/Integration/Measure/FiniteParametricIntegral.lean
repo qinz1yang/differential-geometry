@@ -1,4 +1,7 @@
 import Mathlib.Analysis.Calculus.ParametricIntegral
+import Mathlib.Analysis.Calculus.ContDiff.Operations
+
+universe u v w
 
 noncomputable section
 
@@ -115,6 +118,78 @@ theorem continuous_fderiv_integral_compact
     exact fderiv_integral_compact μ F F' hF hF' hdiff u
   rw [hEq]
   exact hDdiff.continuous
+
+private theorem contDiffOn_integral_subtype_of_isCompact_nat
+    {V : Type u} {X : Type w} {F : Type (max u v)}
+    [NormedAddCommGroup V] [NormedSpace ℝ V]
+    [NormedAddCommGroup X] [NormedSpace ℝ X]
+    [MeasurableSpace X] [BorelSpace X]
+    [NormedAddCommGroup F] [NormedSpace ℝ F]
+    (n : ℕ) {K : Set X} (hK : IsCompact K)
+    (μ : Measure K) [IsFiniteMeasure μ] {U : Set V} {Ω : Set (V × X)}
+    (hU : IsOpen U) (hΩ : IsOpen Ω) (hsub : U ×ˢ K ⊆ Ω)
+    {f : V × X → F} (hf : ContDiffOn ℝ n f Ω) :
+    ContDiffOn ℝ n (fun v => ∫ s : K, f (v, s) ∂μ) U := by
+  let : CompactSpace K := isCompact_iff_compactSpace.mp hK
+  induction n generalizing F with
+  | zero =>
+    rw [Nat.cast_zero, contDiffOn_zero]
+    apply continuousOn_integral_of_compact_support (μ := μ)
+      (isCompact_univ : IsCompact (univ : Set K))
+    · exact hf.continuousOn.comp (by fun_prop) (fun p hp => hsub ⟨hp.1, p.2.property⟩)
+    · intro _ s _ hs
+      exact (hs (mem_univ s)).elim
+  | succ n ih =>
+    rw [Nat.cast_succ] at hf ⊢
+    let D : V × X → V →L[ℝ] F := fun z =>
+      (fderiv ℝ f z).comp (ContinuousLinearMap.inl ℝ V X)
+    have hD : ContDiffOn ℝ n D Ω :=
+      (hf.fderiv_of_isOpen hΩ le_rfl).clm_comp contDiffOn_const
+    have hd (v : V) (hv : v ∈ U) :
+        HasFDerivAt (fun v => ∫ s : K, f (v, s) ∂μ)
+          (∫ s : K, D (v, s) ∂μ) v := by
+      apply hasFDerivAt_integral_compactOn μ hU
+        (fun v (s : K) => f (v, s))
+        (fun v (s : K) => D (v, s))
+      · exact hf.continuousOn.comp (by fun_prop) (fun p hp => hsub ⟨hp.1, p.2.property⟩)
+      · exact hD.continuousOn.comp (by fun_prop) (fun p hp => hsub ⟨hp.1, p.2.property⟩)
+      · intro w hw s
+        have hdf := (hf.one_of_succ.differentiableOn one_ne_zero _
+          (hsub (show (w, (s : X)) ∈ U ×ˢ K from ⟨hw, s.property⟩))).differentiableAt
+          (hΩ.mem_nhds (hsub (show (w, (s : X)) ∈ U ×ˢ K from ⟨hw, s.property⟩)))
+        exact hdf.hasFDerivAt.comp w
+          ((hasFDerivAt_id w).prodMk (hasFDerivAt_const (s : X) w))
+      · exact hv
+    rw [contDiffOn_succ_iff_fderiv_of_isOpen hU]
+    refine ⟨fun v hv => (hd v hv).differentiableAt.differentiableWithinAt, by simp, ?_⟩
+    exact (ih hD).congr (fun v hv => (hd v hv).fderiv)
+
+theorem contDiffOn_integral_subtype_of_isCompact
+    {V : Type u} {X : Type w} {F : Type v}
+    [NormedAddCommGroup V] [NormedSpace ℝ V]
+    [NormedAddCommGroup X] [NormedSpace ℝ X]
+    [MeasurableSpace X] [BorelSpace X]
+    [NormedAddCommGroup F] [NormedSpace ℝ F]
+    (n : ℕ∞) {K : Set X} (hK : IsCompact K)
+    (μ : Measure K) [IsFiniteMeasure μ] {U : Set V} {Ω : Set (V × X)}
+    (hU : IsOpen U) (hΩ : IsOpen Ω)
+    (hsub : U ×ˢ K ⊆ Ω) {f : V × X → F}
+    (hf : ContDiffOn ℝ n f Ω) :
+    ContDiffOn ℝ n (fun v => ∫ s : K, f (v, s) ∂μ) U := by
+  suffices hnat : ∀ m : ℕ, (m : ℕ∞) ≤ n → ContDiffOn ℝ m
+      (fun v => ∫ s : K, f (v, s) ∂μ) U by
+    cases n using ENat.recTopCoe with
+    | top => exact contDiffOn_infty.mpr (fun m => hnat m le_top)
+    | coe m => exact hnat m le_rfl
+  intro m hm
+  let L : ULift.{u} F ≃L[ℝ] F := ContinuousLinearEquiv.ulift
+  have hlift : ContDiffOn ℝ m (fun z => L.symm (f z)) Ω :=
+    L.symm.contDiff.comp_contDiffOn (hf.of_le (by exact_mod_cast hm))
+  have hi := contDiffOn_integral_subtype_of_isCompact_nat m hK μ hU hΩ hsub hlift
+  have h := L.contDiff.comp_contDiffOn hi
+  apply h.congr
+  intro x _
+  simp only [Function.comp_apply, ← L.integral_comp_comm, L.apply_symm_apply]
 
 end DifferentialGeometry.Integral.Measure
 

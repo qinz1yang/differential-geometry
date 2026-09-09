@@ -1,5 +1,7 @@
 import DifferentialGeometry.Analysis.Integration.Lp.Product
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.IteratedSobolevSpace.IteratedSobolev
+import DifferentialGeometry.Analysis.Sobolev.Euclidean.IteratedSobolevSpace.WeakPartial
+import DifferentialGeometry.Analysis.Sobolev.Euclidean.Multiplication.MultiplyQuantK
 
 noncomputable section
 
@@ -114,5 +116,48 @@ theorem ae_memWkp_one_and_memLp_wkpNorm_of_lp_weak_partials
       exact wkpNorm_congr_ae (by norm_num) hΩ ht
     exact ⟨hnU.1.congr he, (eLpNorm_congr_ae he).symm.trans_lt hnU.2⟩
   exact ⟨hmP, hnP⟩
+
+theorem ae_memWkp_succ_and_memLp_wkpNorm_of_weak_partials
+    {Z : Type*} [MeasurableSpace Z] {μ : Measure Z}
+    {d m : ℕ} {Ω : Set (EuclideanSpace ℝ (Fin d))} (hΩ : IsOpen Ω)
+    {p : ℝ≥0∞} (hp : 1 ≤ p) (hpt : p ≠ ⊤)
+    {V : Z × EuclideanSpace ℝ (Fin d) → ℝ}
+    {W : Fin d → Z × EuclideanSpace ℝ (Fin d) → ℝ}
+    (hV : MemLp V p (μ.prod (volume.restrict Ω)))
+    (hW : ∀ i, ∀ᵐ t ∂μ, MemWkp m p (fun z => W i (t, z)) Ω)
+    (hWnorm : ∀ i, MemLp
+      (fun t => (iteratedWeakSobolevNorm m p (fun z => W i (t, z)) Ω).toReal) p μ)
+    (hweak : ∀ i, ∀ᵐ t ∂μ, DeGiorgi.HasWeakPartialDeriv i
+      (fun z => W i (t, z)) (fun z => V (t, z)) Ω) :
+    (∀ᵐ t ∂μ, MemWkp (m + 1) p (fun z => V (t, z)) Ω) ∧
+      MemLp (fun t => (iteratedWeakSobolevNorm (m + 1) p
+        (fun z => V (t, z)) Ω).toReal) p μ := by
+  classical
+  have hslice := hV.prodMk_left hpt
+  have hWall := ae_all_iff.mpr hW
+  have hweakall := ae_all_iff.mpr hweak
+  have hmem : ∀ᵐ t ∂μ, MemWkp (m + 1) p (fun z => V (t, z)) Ω := by
+    filter_upwards [hslice, hWall, hweakall] with t ht hwt hweak
+    exact memWkp_succ_of_hasWeakPartialDeriv hp hΩ ht hwt hweak
+  refine ⟨hmem, ?_⟩
+  have heq : (fun t => (iteratedWeakSobolevNorm (m + 1) p
+      (fun z => V (t, z)) Ω).toReal) =ᵐ[μ]
+      fun t => (eLpNorm (fun z => V (t, z)) p (volume.restrict Ω)).toReal +
+        ∑ i : Fin d, (iteratedWeakSobolevNorm m p (fun z => W i (t, z)) Ω).toReal := by
+    filter_upwards [hslice, hWall, hweakall, hmem] with t ht hwt hweak hmt
+    have he (i : Fin d) : chosenWeakPartial' p i (fun z => V (t, z)) Ω =ᵐ[volume.restrict Ω]
+        fun z => W i (t, z) :=
+      DeGiorgi.HasWeakPartialDeriv.ae_eq hΩ
+        (chosenWeakPartial'_isWeakPartial_of_mem hmt.memW1p i) (hweak i)
+        ((chosenWeakPartial'_memLp_of_mem hmt.memW1p i).locallyIntegrable hp)
+        ((hwt i).memLp.locallyIntegrable hp)
+    rw [wkpNorm_succ_eq_eLpNorm_add_sum_partial]
+    simp_rw [wkpNorm_congr_ae hp hΩ (he _)]
+    rw [ENNReal.toReal_add ht.2.ne
+      (ENNReal.sum_ne_top.mpr fun i _ => (wkpNorm_lt_top_of_memWkp (hwt i)).ne),
+      ENNReal.toReal_sum (fun i _ => (wkpNorm_lt_top_of_memWkp (hwt i)).ne)]
+  have hb := (hV.eLpNorm_toReal hpt).add
+    (memLp_finsetSum (Finset.univ : Finset (Fin d)) fun i _ => hWnorm i)
+  exact ⟨hb.1.congr heq.symm, (eLpNorm_congr_ae heq).trans_lt hb.2⟩
 
 end DifferentialGeometry.Analysis.Sobolev.Euclidean

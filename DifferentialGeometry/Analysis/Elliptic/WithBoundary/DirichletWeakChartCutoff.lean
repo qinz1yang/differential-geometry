@@ -1,8 +1,10 @@
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.WeakDerivativeLift
+import DifferentialGeometry.Analysis.Integration.Lp.Curry
 import DifferentialGeometry.Analysis.Sobolev.Chart.CutoffPullbackLp
 import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletSeparability
 import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletWeakChartPullback
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.Multiplication.MultiplyQuant
+import DifferentialGeometry.Analysis.Sobolev.Euclidean.IteratedSobolevSpace.WeakPartial
 noncomputable section
 
 open Bundle Filter Manifold MeasureTheory Set
@@ -142,6 +144,41 @@ theorem exists_lp_h1ComplDirichlet_chartPullback_mul_of_weak_partials
     congrArg (fun f : Lp ℝ 2 (riemannianVolumeMeasure (I := I_hs) (M := M) q) => (f : M → ℝ)) ht
   exact Filter.EventuallyEq.trans (Filter.Eventually.of_forall fun x => congrFun he x) (hL (P t))
 
+theorem exists_lp_h1ComplDirichlet_chartPullback_mul_of_joint_weak_partials
+    {Z : Type*} [MeasurableSpace Z] {μ : Measure Z}
+    (q : SmoothRiemannianMetric I_hs M) (α : M) {Ω : Set EuStd}
+    (hΩ : IsOpen Ω) (hΩc : IsCompact (closure Ω))
+    (hΩs : closure Ω ⊆ toEuclidean (E := EuN) '' interior (extChartAt I_hs α).target)
+    {η : EuStd → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hηc : HasCompactSupport η)
+    (hηs : tsupport η ⊆ Ω)
+    (H : Lp ℝ 2 (μ.prod (volume.restrict Ω)))
+    (K : Fin (Module.finrank ℝ EuN) → Lp ℝ 2 (μ.prod (volume.restrict Ω)))
+    (hweak : ∀ k, ∀ᵐ t ∂μ, DeGiorgi.HasWeakPartialDeriv k
+      (fun z => K k (t, z)) (fun z => H (t, z)) Ω) :
+    ∃ v : Lp (H1ComplDirichlet q) 2 μ, ∀ᵐ t ∂μ,
+      (H1ComplDirichletToLp q (v t) : M → ℝ) =ᵐ[
+        riemannianVolumeMeasure (I := I_hs) (M := M) q]
+        chartPullback I_hs α (fun z => η z * H (t, z)) := by
+  let : Fact ((2 : ℝ≥0∞) ≠ ⊤) := ⟨by norm_num⟩
+  let : SecondCountableTopology (Lp ℝ 2 (volume.restrict Ω)) := Lp.SecondCountableTopology
+  obtain ⟨P, hP, _⟩ := Lp.exists_curry (by norm_num : (2 : ℝ≥0∞) ≠ ⊤) H
+  have hw : ∀ k, ∀ᵐ t ∂μ, DeGiorgi.HasWeakPartialDeriv k
+      (fun z => K k (t, z)) (P t : EuStd → ℝ) Ω := by
+    intro k
+    filter_upwards [hweak k, hP] with t ht hp
+    exact hasWeakPartialDeriv_congr_ae hΩ k hp.symm ht
+  obtain ⟨v, hv⟩ := exists_lp_h1ComplDirichlet_chartPullback_mul_of_weak_partials
+    q α hΩ hΩc hΩs hη hηc hηs P K hw
+  refine ⟨v, ?_⟩
+  filter_upwards [hv, hP] with t ht hp
+  have hall := (ae_restrict_iff' hΩ.measurableSet).mp hp
+  apply ht.trans
+  apply chartPullback_ae_eq_of_ae_eq q α
+  filter_upwards [hall] with z hz
+  by_cases hz' : z ∈ tsupport η
+  · exact congrArg (fun r => η z * r) (hz (hηs hz'))
+  · simp only [image_eq_zero_of_notMem_tsupport hz', zero_mul]
+
 theorem ae_dirichletLocalWeakPartialLp_eq_of_chartPullback_mul_localWeakPartial
     {Z : Type*} [MeasurableSpace Z] {μ : Measure Z}
     (q : SmoothRiemannianMetric I_hs M) (α : M) {Ω Ω₀ : Set EuStd}
@@ -204,5 +241,44 @@ theorem ae_cutoff_gradient_flux_eq
   rw [hz i]
   simp only [div_eq_mul_inv]
   ring
+
+theorem memWkp_succ_chartInverse_of_cutoff_localWeakPartial
+    (q : SmoothRiemannianMetric I_hs M) (α : M) {Ω Ω' : Set EuStd}
+    (hΩ : IsOpen Ω) (hΩc : IsCompact (closure Ω))
+    (hΩs : closure Ω ⊆ toEuclidean (E := EuN) '' interior (extChartAt I_hs α).target)
+    (hΩ' : IsOpen Ω') (hsub : Ω' ⊆ Ω)
+    (u : H1ComplDirichlet q) (v : Fin (Module.finrank ℝ EuN) → M → ℝ)
+    {η : EuStd → ℝ} (hηone : ∀ z ∈ Ω', η z = 1)
+    (hv : ∀ i, v i =ᵐ[riemannianVolumeMeasure (I := I_hs) (M := M) q]
+      chartPullback I_hs α (fun z => η z * dirichletLocalWeakPartialLp q α hΩ hΩc hΩs i u z))
+    {m : ℕ} (hm : ∀ i, MemWkp m 2 (fun z => v i
+      ((extChartAt I_hs α).symm ((toEuclidean (E := EuN)).symm z))) Ω') :
+    MemWkp (m + 1) 2 (fun z => H1ComplDirichletToLp q u
+      ((extChartAt I_hs α).symm ((toEuclidean (E := EuN)).symm z))) Ω' := by
+  let x := fun z => (extChartAt I_hs α).symm ((toEuclidean (E := EuN)).symm z)
+  let g := fun i => dirichletLocalWeakPartialLp q α hΩ hΩc hΩs i u
+  have hg (i) : MemWkp m 2 (g i) Ω' := by
+    have heq := ae_chartInverse_of_ae q α hΩ.measurableSet hΩc
+      (hΩs.trans (image_mono interior_subset)) (hv i)
+    have heq' := heq.filter_mono (ae_mono (Measure.restrict_mono hsub le_rfl))
+    have hval : (fun z => v i (x z)) =ᵐ[volume.restrict Ω'] g i := by
+      filter_upwards [heq', ae_restrict_mem hΩ'.measurableSet] with z hz hzm
+      rw [hz]
+      have ht : (toEuclidean (E := EuN)).symm z ∈ (extChartAt I_hs α).target := by
+        obtain ⟨y, hy, he⟩ := hΩs (subset_closure (hsub hzm))
+        rw [← he, ContinuousLinearEquiv.symm_apply_apply]
+        exact interior_subset hy
+      have hx : x z ∈ (chartAt (EuclideanHalfSpace n) α).source := by
+        simpa only [x, extChartAt_source] using (extChartAt I_hs α).map_target ht
+      rw [chartPullback_apply_of_mem α _ hx, (extChartAt I_hs α).right_inv ht,
+        ContinuousLinearEquiv.apply_symm_apply, hηone z hzm, one_mul]
+    exact (MemWkp_congr_ae (by norm_num) hΩ' hval).mp (hm i)
+  apply memWkp_succ_of_hasWeakPartialDeriv (by norm_num) hΩ'
+    ((memWkp_chartInverse_H1ComplDirichletToLp q α hΩ hΩc hΩs u).memLp.mono_measure
+      (Measure.restrict_mono hsub le_rfl)) hg
+  intro i
+  exact DeGiorgi.HasWeakPartialDeriv.restrict hΩ' hsub
+    (hasWeakPartialDeriv_dirichletLocalWeakPartialLp q α hΩ hΩc hΩs i u)
+
 
 end DifferentialGeometry.Analysis.Laplacian.WithBoundary.Dirichlet

@@ -2,6 +2,7 @@ import DifferentialGeometry.Analysis.Parabolic.Dirichlet.TimeRegularity
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.GradientH1
 import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletWeakPartialDual
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.TimeH1Multiplication
+import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.TimeMeasureRestrict
 
 noncomputable section
 open MeasureTheory
@@ -181,14 +182,9 @@ theorem IsWeakEvolutionSolution.exists_timeH1_cutoff_gradient_mass_dual
   refine ⟨v, w, hv, ?_⟩
   have hI : Icc t₀ t₁ ⊆ Icc (0 : ℝ) T :=
     fun t ht => ⟨ht₀.le.trans ht.1, ht.2.trans ht₁.le⟩
-  have hμ : (timeMeasure T).restrict (Icc t₀ t₁) = volume.restrict (Icc t₀ t₁) :=
-    Measure.restrict_restrict_of_subset hI
   have hshift : MeasurePreserving (fun s : ℝ => t₀ + s) (timeMeasure (t₁ - t₀))
       ((timeMeasure T).restrict (Icc t₀ t₁)) := by
-    rw [hμ]
-    have h := (measurePreserving_add_right volume t₀).restrict_image_emb
-      (Homeomorph.addRight t₀).isClosedEmbedding.measurableEmbedding (Icc (0 : ℝ) (t₁ - t₀))
-    simpa only [timeMeasure, image_add_const_Icc, zero_add, sub_add_cancel, add_comm t₀] using h
+    exact measurePreserving_add_right_timeMeasure_restrict hI
   filter_upwards [hw, hshift.quasiMeasurePreserving.ae hv] with t ht hvt
   intro z
   exact (ht z).trans (inner_eq_integral_chartPullback_mul q α hΩ₀s hη hηs

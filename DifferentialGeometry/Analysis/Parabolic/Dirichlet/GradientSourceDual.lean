@@ -126,50 +126,6 @@ local notation "I_hs" => modelWithCornersEuclideanHalfSpace n
 local notation "EuN" => EuclideanSpace ℝ (Fin n)
 local notation "EuStd" => EuclideanSpace ℝ (Fin (Module.finrank ℝ EuN))
 
-private theorem exists_lp_chart_source_sub_divergence_dual
-    {q : SmoothRiemannianMetric I_hs M} (α : M) {Ω : Set EuStd}
-    (hΩ : IsOpen Ω) (hΩc : IsCompact (closure Ω))
-    (hΩs : closure Ω ⊆ toEuclidean (E := EuN) '' interior (extChartAt I_hs α).target)
-    {μ : Measure ℝ} {B : ℝ × EuStd → ℝ} {Q : Fin (Module.finrank ℝ EuN) → ℝ × EuStd → ℝ}
-    (hB : MemLp B 2 (μ.prod (volume.restrict Ω)))
-    (hQ : ∀ j, MemLp (Q j) 2 (μ.prod (volume.restrict Ω))) :
-    ∃ ℓ : Lp (H1ComplDirichlet q →L[ℝ] ℝ) 2 μ, ∀ τ : Lp ℝ 2 μ, ∀ v : H1ComplDirichlet q,
-      (∫ t, τ t * ℓ t v ∂μ) =
-        (∫ p, τ p.1 * B p * H1ComplDirichletToLp q v
-          ((extChartAt I_hs α).symm ((toEuclidean (E := EuN)).symm p.2)) ∂μ.prod (volume.restrict Ω)) -
-        ∑ j, ∫ p, τ p.1 * Q j p * dirichletLocalWeakPartialLp q α hΩ hΩc hΩs j v p.2
-          ∂μ.prod (volume.restrict Ω) := by
-  obtain ⟨Ls, hLs⟩ := exists_lp_chart_source_dual α hΩ hΩc hΩs (hB.toLp B)
-  obtain ⟨Ld, hLd⟩ := exists_lp_chart_divergence_dual α hΩ hΩc hΩs
-    (fun j => (hQ j).toLp (Q j))
-  refine ⟨Ls - Ld, ?_⟩
-  intro τ v
-  have hints : Integrable (fun t => τ t * Ls t v) μ :=
-    (Lp.memLp τ).integrable_mul ((ContinuousLinearMap.apply ℝ ℝ v).comp_memLp Ls)
-  have hintd : Integrable (fun t => τ t * Ld t v) μ :=
-    (Lp.memLp τ).integrable_mul ((ContinuousLinearMap.apply ℝ ℝ v).comp_memLp Ld)
-  calc
-    (∫ t, τ t * (Ls - Ld) t v ∂μ) =
-        (∫ t, τ t * Ls t v ∂μ) - ∫ t, τ t * Ld t v ∂μ := by
-      rw [← integral_sub hints hintd]
-      apply integral_congr_ae
-      filter_upwards [Lp.coeFn_sub Ls Ld] with t ht
-      rw [ht]
-      change τ t * (Ls t v - Ld t v) = _
-      ring
-    _ = _ := by
-      rw [hLs, hLd]
-      apply congrArg₂ (fun a b : ℝ => a - b)
-      · apply integral_congr_ae
-        filter_upwards [hB.coeFn_toLp] with p hp
-        rw [hp]
-      · apply Finset.sum_congr rfl
-        intro j _
-        apply integral_congr_ae
-        filter_upwards [(hQ j).coeFn_toLp] with p hp
-        rw [hp]
-
-
 theorem IsWeakEvolutionSolution.exists_lp_cutoff_gradient_source_dual
     {q : SmoothRiemannianMetric I_hs M}
     {D : RealTimeInterval}

@@ -112,3 +112,138 @@ theorem exists_contMDiffOn_paramDensity_ratio_expMapIntrinsic_trivialization
     exact hd.div₀ hden (fun z hz => (hpos (z.1, (0 : E)) (hmaps hz)).ne')
 
 end DifferentialGeometry.Geometry.Riemannian.Exponential
+
+namespace DifferentialGeometry.Geometry.Riemannian.Exponential.DiagInvBranch
+
+open DifferentialGeometry.Integral.Measure
+
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
+  {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
+  {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+  [T2Space M] [SigmaCompactSpace M]
+
+attribute [-instance] DifferentialGeometry.Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  DifferentialGeometry.Tensor0SBundle.tangentSpaceNormedSpace
+
+variable [RiemannianBundle (fun x : M ↦ TangentSpace I x)]
+  [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
+  [IsContinuousRiemannianBundle E (fun x : M ↦ TangentSpace I x)]
+
+private theorem exists_contMDiffOn_paramDensity_ratio_inv
+    {g : SmoothRiemannianMetric I M} {hEnorm : IsMetricNorm g} {c : M}
+    (B : DiagInvBranch g hEnorm c)
+    (e : Bundle.Trivialization E (π E (TangentSpace I : M → Type _))) [MemTrivializationAtlas e]
+    (hc : c ∈ e.baseSet) :
+    ∃ D : Set (M × M), IsOpen D ∧ (c, c) ∈ D ∧ D ⊆ B.dom ∧
+      (∀ z ∈ D, B.inv z ∈ e.source) ∧
+      (∀ z ∈ D, 0 < paramDensity g
+        (fun v : E => expMapIntrinsic g hEnorm z.1 (e.symmL ℝ z.1 v))
+          (e (B.inv z)).2 /
+        paramDensity g (fun v : E => expMapIntrinsic g hEnorm z.1 (e.symmL ℝ z.1 v)) 0) ∧
+      ContMDiffOn (I.prod I) 𝓘(ℝ, ℝ) ∞
+        (fun z : M × M => paramDensity g
+          (fun v : E => expMapIntrinsic g hEnorm z.1 (e.symmL ℝ z.1 v))
+            (e (B.inv z)).2 /
+          paramDensity g (fun v : E => expMapIntrinsic g hEnorm z.1 (e.symmL ℝ z.1 v)) 0) D := by
+  obtain ⟨U, hU, _, hUzero, hpos, hd⟩ :=
+    exists_contMDiffOn_paramDensity_ratio_expMapIntrinsic_trivialization g hEnorm e
+  let V := B.dom ∩ B.inv ⁻¹' e.source
+  have hV : IsOpen V :=
+    B.inv_inf.continuousOn.isOpen_inter_preimage B.hom.open_target e.open_source
+  have hinv : ContMDiffOn (I.prod I) I.tangent ∞ B.inv V :=
+    B.inv_inf.mono inter_subset_left
+  have hmap : MapsTo B.inv V e.source := fun _ hz => hz.2
+  have he : ContMDiffOn (I.prod I) (I.prod 𝓘(ℝ, E)) ∞
+      (fun z => e (B.inv z)) V := e.contMDiffOn.comp hinv hmap
+  let G : M × M → M × E := fun z => (z.1, (e (B.inv z)).2)
+  have hG : ContMDiffOn (I.prod I) (I.prod 𝓘(ℝ, E)) ∞ G V :=
+    contMDiffOn_fst.prodMk (contMDiff_snd.comp_contMDiffOn he)
+  let D := V ∩ G ⁻¹' U
+  have hD : IsOpen D := hG.continuousOn.isOpen_inter_preimage hV hU
+  have hzero : e (B.inv (c, c)) = (c, (0 : E)) := by
+    rw [B.center_inv, e.apply_eq_prod_continuousLinearEquivAt ℝ c hc, map_zero]
+  have hcV : (c, c) ∈ V := by
+    refine ⟨B.center_mem, ?_⟩
+    change B.inv (c, c) ∈ e.source
+    rw [B.center_inv, e.mem_source]
+    exact hc
+  have hcD : (c, c) ∈ D := by
+    refine ⟨hcV, ?_⟩
+    change (c, (e (B.inv (c, c))).2) ∈ U
+    rw [hzero]
+    exact hUzero c hc
+  refine ⟨D, hD, hcD, fun z hz => hz.1.1, fun z hz => hz.1.2, ?_, ?_⟩
+  · intro z hz
+    exact hpos (G z) hz.2
+  · change ContMDiffOn (I.prod I) 𝓘(ℝ, ℝ) ∞
+      ((fun z : M × E => paramDensity g
+        (fun v : E => expMapIntrinsic g hEnorm z.1 (e.symmL ℝ z.1 v)) z.2 /
+        paramDensity g (fun v : E => expMapIntrinsic g hEnorm z.1 (e.symmL ℝ z.1 v)) 0) ∘ G) D
+    exact hd.comp (hG.mono inter_subset_left) (fun _ hz => hz.2)
+
+private theorem paramDensity_ratio_inv_eq_fixed
+    {g : SmoothRiemannianMetric I M} {hEnorm : IsMetricNorm g} {c : M}
+    (B : DiagInvBranch g hEnorm c)
+    (e : Bundle.Trivialization E (π E (TangentSpace I : M → Type _))) [MemTrivializationAtlas e]
+    {z : M × M} (hz : z ∈ B.dom) (he : B.inv z ∈ e.source) :
+    paramDensity g (fun v : E => expMapIntrinsic g hEnorm z.1 (e.symmL ℝ z.1 v))
+        (e (B.inv z)).2 /
+      paramDensity g (fun v : E => expMapIntrinsic g hEnorm z.1 (e.symmL ℝ z.1 v)) 0 =
+    paramDensity g (B.fixed z.1).hom ((B.fixed z.1).inv z.2) /
+      paramDensity g (B.fixed z.1).hom 0 := by
+  have hp : z.1 ∈ e.baseSet := by
+    have hp := e.mem_source.mp he
+    rwa [B.proj_eq hz] at hp
+  let L : E ≃L[ℝ] E := (e.continuousLinearEquivAt ℝ z.1 hp).symm
+  have hexp : (fun v : E => expMapIntrinsic g hEnorm z.1 (e.symmL ℝ z.1 v)) =
+      (B.fixed z.1).hom ∘ L := by
+    funext v
+    exact congrArg (expMapIntrinsic g hEnorm z.1)
+      ((congrFun (e.symm_continuousLinearEquivAt_eq (R := ℝ) hp) v).symm)
+  have htotal : B.inv z = (⟨z.1, show TangentSpace I z.1 from (B.inv z).snd⟩ :
+      TangentBundle I M) := by
+    apply TotalSpace.ext (B.proj_eq hz)
+    exact heq_of_eq rfl
+  have hL : L (e (B.inv z)).2 = (B.fixed z.1).inv z.2 := by
+    rw [htotal, e.apply_eq_prod_continuousLinearEquivAt ℝ z.1 hp]
+    exact (e.continuousLinearEquivAt ℝ z.1 hp).symm_apply_apply _
+  have hΦ (v : E) : MDifferentiableAt 𝓘(ℝ, E) I (B.fixed z.1).hom v :=
+    ((intrinsicFiber_smooth g hEnorm z.1).contMDiffAt).mdifferentiableAt (by simp)
+  rw [hexp, paramDensity_ratio_comp_continuousLinearEquiv g L (hΦ _) (hΦ 0), hL]
+
+theorem exists_contMDiffOn_paramDensity_ratio_fixed
+    {g : SmoothRiemannianMetric I M} {hEnorm : IsMetricNorm g} {c : M}
+    (B : DiagInvBranch g hEnorm c) :
+    ∃ D : Set (M × M), IsOpen D ∧ (c, c) ∈ D ∧ D ⊆ B.dom ∧
+      (∀ z ∈ D, 0 < paramDensity g (B.fixed z.1).hom ((B.fixed z.1).inv z.2) /
+        paramDensity g (B.fixed z.1).hom 0) ∧
+      ContMDiffOn (I.prod I) 𝓘(ℝ, ℝ) ∞
+        (fun z : M × M => paramDensity g (B.fixed z.1).hom ((B.fixed z.1).inv z.2) /
+          paramDensity g (B.fixed z.1).hom 0) D := by
+  let e := trivializationAt E (TangentSpace I) c
+  have hc : c ∈ e.baseSet := by
+    rw [TangentBundle.trivializationAt_baseSet]
+    exact mem_chart_source H c
+  obtain ⟨D, hD, hcD, hBD, heD, hpos, hd⟩ := B.exists_contMDiffOn_paramDensity_ratio_inv e hc
+  refine ⟨D, hD, hcD, hBD, ?_, ?_⟩
+  · intro z hz
+    rw [← B.paramDensity_ratio_inv_eq_fixed e (hBD hz) (heD z hz)]
+    exact hpos z hz
+  · exact hd.congr fun z hz => (B.paramDensity_ratio_inv_eq_fixed e (hBD hz) (heD z hz)).symm
+
+theorem exists_contMDiffOn_paramDensity_ratio_fixed_inv_sqrt
+    {g : SmoothRiemannianMetric I M} {hEnorm : IsMetricNorm g} {c : M}
+    (B : DiagInvBranch g hEnorm c) :
+    ∃ D : Set (M × M), IsOpen D ∧ (c, c) ∈ D ∧ D ⊆ B.dom ∧
+      ContMDiffOn (I.prod I) 𝓘(ℝ, ℝ) ∞
+        (fun z : M × M => (Real.sqrt (paramDensity g (B.fixed z.1).hom
+          ((B.fixed z.1).inv z.2) / paramDensity g (B.fixed z.1).hom 0))⁻¹) D := by
+  obtain ⟨D, hD, hcD, hBD, hpos, hd⟩ := B.exists_contMDiffOn_paramDensity_ratio_fixed
+  refine ⟨D, hD, hcD, hBD, ?_⟩
+  intro z hz
+  have hsqrt := (Real.contDiffAt_sqrt (hpos z hz).ne').contMDiffAt.comp z
+    (hd.contMDiffAt (hD.mem_nhds hz))
+  exact (hsqrt.inv₀ (Real.sqrt_pos.mpr (hpos z hz)).ne').contMDiffWithinAt
+
+end DifferentialGeometry.Geometry.Riemannian.Exponential.DiagInvBranch

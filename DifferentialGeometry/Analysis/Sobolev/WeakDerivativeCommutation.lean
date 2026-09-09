@@ -54,6 +54,50 @@ theorem integral_weak_deriv_fderiv_comm
   rw [fderiv_fderiv_apply_comm hφ x w v]
 
 
+theorem integral_weak_deriv_divergence
+    {ι : Type*} (s : Finset ι)
+    (U W R DR : E → ℝ) (V H : ι → E → ℝ) (v w : E) (e : ι → E)
+    (hU : ∀ φ : E → ℝ, ContDiff ℝ (⊤ : ℕ∞) φ → HasCompactSupport φ →
+      tsupport φ ⊆ Ω → (∫ x, U x * fderiv ℝ φ x v ∂μ) = -∫ x, W x * φ x ∂μ)
+    (hV : ∀ i ∈ s, ∀ φ : E → ℝ, ContDiff ℝ (⊤ : ℕ∞) φ → HasCompactSupport φ →
+      tsupport φ ⊆ Ω → (∫ x, V i x * fderiv ℝ φ x v ∂μ) = -∫ x, H i x * φ x ∂μ)
+    (hR : ∀ φ : E → ℝ, ContDiff ℝ (⊤ : ℕ∞) φ → HasCompactSupport φ →
+      tsupport φ ⊆ Ω → (∫ x, R x * fderiv ℝ φ x v ∂μ) = -∫ x, DR x * φ x ∂μ)
+    (hbase : ∀ φ : E → ℝ, ContDiff ℝ (⊤ : ℕ∞) φ → HasCompactSupport φ →
+      tsupport φ ⊆ Ω → (∫ x, U x * fderiv ℝ φ x w ∂μ) =
+        (∑ i ∈ s, ∫ x, V i x * fderiv ℝ φ x (e i) ∂μ) - ∫ x, R x * φ x ∂μ)
+    {φ : E → ℝ} (hφ : ContDiff ℝ (⊤ : ℕ∞) φ) (hφc : HasCompactSupport φ)
+    (hφs : tsupport φ ⊆ Ω) :
+    (∫ x, W x * fderiv ℝ φ x w ∂μ) =
+      (∑ i ∈ s, ∫ x, H i x * fderiv ℝ φ x (e i) ∂μ) - ∫ x, DR x * φ x ∂μ := by
+  have hd (z : E) : ContDiff ℝ (⊤ : ℕ∞) (fun x => fderiv ℝ φ x z) :=
+    (hφ.contDiff_fderiv_apply (by simp)).comp (contDiff_id.prodMk contDiff_const)
+  have hc (z : E) : HasCompactSupport (fun x => fderiv ℝ φ x z) := hφc.fderiv_apply ℝ z
+  have hs (z : E) : tsupport (fun x => fderiv ℝ φ x z) ⊆ Ω :=
+    (tsupport_fderiv_apply_subset ℝ z).trans hφs
+  have hu := hU (fun x => fderiv ℝ φ x w) (hd w) (hc w) (hs w)
+  have hb := hbase (fun x => fderiv ℝ φ x v) (hd v) (hc v) (hs v)
+  have hr := hR φ hφ hφc hφs
+  have hucomm : (∫ x, U x * fderiv ℝ (fun y => fderiv ℝ φ y w) x v ∂μ) =
+      ∫ x, U x * fderiv ℝ (fun y => fderiv ℝ φ y v) x w ∂μ := by
+    apply integral_congr_ae
+    filter_upwards [] with x
+    rw [fderiv_fderiv_apply_comm hφ x w v]
+  have hflux (i : ι) (hi : i ∈ s) :
+      (∫ x, V i x * fderiv ℝ (fun y => fderiv ℝ φ y v) x (e i) ∂μ) =
+        -∫ x, H i x * fderiv ℝ φ x (e i) ∂μ := by
+    have hiw := hV i hi (fun x => fderiv ℝ φ x (e i)) (hd (e i)) (hc (e i)) (hs (e i))
+    convert hiw using 1
+    apply integral_congr_ae
+    filter_upwards [] with x
+    rw [fderiv_fderiv_apply_comm hφ x v (e i)]
+  have hsum : (∑ i ∈ s, ∫ x, V i x * fderiv ℝ (fun y => fderiv ℝ φ y v) x (e i) ∂μ) =
+      -(∑ i ∈ s, ∫ x, H i x * fderiv ℝ φ x (e i) ∂μ) := by
+    rw [← Finset.sum_neg_distrib]
+    exact Finset.sum_congr rfl hflux
+  rw [hucomm, hb, hsum, hr] at hu
+  linarith
+
 variable [OpensMeasurableSpace E]
 
 omit [NormedSpace ℝ E] in

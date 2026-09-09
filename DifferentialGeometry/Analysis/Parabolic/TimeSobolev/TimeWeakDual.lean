@@ -51,6 +51,93 @@ theorem exists_timeH1_dual_of_weak_deriv
   rw [sub_zero] at h
   simpa only [zero_add] using h
 
+private theorem scalar_weak_deriv_of_tensor_integrals_on
+    {X S E J : Type*} [NormedAddCommGroup X] [NormedSpace ℝ X]
+    [SeminormedAddCommGroup S] [NormedSpace ℝ S]
+    [MeasurableSpace E] [Fintype J] {ν : Measure E}
+    {a b : ℝ} (μ : Measure ℝ) (hμ : μ = volume.restrict (Icc a b))
+    (ι : S →L[ℝ] X) {p q : ℝ → X →L[ℝ] ℝ}
+    {W B : ℝ × E → ℝ} {Q : J → ℝ × E → ℝ}
+    {R : S → E → ℝ} {D : S → J → E → ℝ}
+    (hmass : ∀ (τ : Lp ℝ 2 μ) (x : S),
+      (∫ t, τ t * p t (ι x) ∂μ) =
+        ∫ z, τ z.1 * W z * R x z.2 ∂μ.prod ν)
+    (hdual : ∀ (τ : Lp ℝ 2 μ) (x : S),
+      (∫ t, τ t * q t (ι x) ∂μ) =
+        (∫ z, τ z.1 * B z * R x z.2 ∂μ.prod ν) -
+          ∑ j, ∫ z, τ z.1 * Q j z * D x j z.2 ∂μ.prod ν)
+    (hweak : ∀ (x : S) (φ : ℝ → ℝ), ContDiff ℝ (⊤ : ℕ∞) φ →
+      HasCompactSupport φ → tsupport φ ⊆ Ioo a b →
+      (∫ z, deriv φ z.1 * W z * R x z.2 ∂μ.prod ν) =
+        (∑ j, ∫ z, φ z.1 * Q j z * D x j z.2 ∂μ.prod ν) -
+          ∫ z, φ z.1 * B z * R x z.2 ∂μ.prod ν) :
+    ∀ (x : S) (φ : ℝ → ℝ), ContDiff ℝ (⊤ : ℕ∞) φ → HasCompactSupport φ →
+      tsupport φ ⊆ Ioo a b →
+      (∫ t in Ioo a b, deriv φ t * p t (ι x)) = -∫ t in Ioo a b, φ t * q t (ι x) := by
+  subst μ
+  intro x φ hφ hφc hφs
+  let μ := volume.restrict (Icc a b)
+  have hφm : MemLp φ 2 μ := hφ.continuous.memLp_of_hasCompactSupport hφc
+  have hdφm : MemLp (deriv φ) 2 μ :=
+    (hφ.continuous_deriv (by simp)).memLp_of_hasCompactSupport hφc.deriv
+  have hτint (τ : ℝ → ℝ) (hτ : MemLp τ 2 μ) (L : ℝ → X →L[ℝ] ℝ) :
+      (∫ t in Icc a b, hτ.toLp τ t * L t (ι x)) =
+        ∫ t in Ioo a b, τ t * L t (ι x) := by
+    apply Eq.trans ?_ (setIntegral_congr_set Ioo_ae_eq_Icc).symm
+    apply integral_congr_ae
+    filter_upwards [hτ.coeFn_toLp] with t ht
+    rw [ht]
+  have hτprod (τ : ℝ → ℝ) (hτ : MemLp τ 2 μ) (F : ℝ × E → ℝ) (V : E → ℝ) :
+      (∫ z, hτ.toLp τ z.1 * F z * V z.2 ∂μ.prod ν) =
+        ∫ z, τ z.1 * F z * V z.2 ∂μ.prod ν := by
+    apply integral_congr_ae
+    filter_upwards [(Measure.quasiMeasurePreserving_fst (μ := μ) (ν := ν)).ae hτ.coeFn_toLp] with z hz
+    rw [hz]
+  have hM := hmass (hdφm.toLp (deriv φ)) x
+  rw [hτint, hτprod] at hM
+  have hQ := hdual (hφm.toLp φ) x
+  rw [hτint, hτprod] at hQ
+  have hsum : (∑ j, ∫ z, hφm.toLp φ z.1 * Q j z * D x j z.2 ∂(volume.restrict (Icc a b)).prod ν) =
+      ∑ j, ∫ z, φ z.1 * Q j z * D x j z.2 ∂(volume.restrict (Icc a b)).prod ν := by
+    apply Finset.sum_congr rfl
+    intro j _
+    exact hτprod φ hφm (Q j) (D x j)
+  rw [hsum] at hQ
+  have hW := hweak x φ hφ hφc hφs
+  exact hM.trans (hW.trans (by linarith only [hQ]))
+
+theorem exists_timeH1_dual_of_tensor_integrals_on
+    {X S E J : Type*} [NormedAddCommGroup X] [NormedSpace ℝ X]
+    [SeminormedAddCommGroup S] [NormedSpace ℝ S]
+    [MeasurableSpace E] [Fintype J] {ν : Measure E}
+    {a b : ℝ} (hab : a < b) (μ : Measure ℝ)
+    (hμ : μ = volume.restrict (Icc a b))
+    (ι : S →L[ℝ] X) (hdense : DenseRange ι)
+    {p q : ℝ → X →L[ℝ] ℝ}
+    (hp : MemLp p 2 μ) (hq : MemLp q 2 μ)
+    {W B : ℝ × E → ℝ} {Q : J → ℝ × E → ℝ}
+    {R : S → E → ℝ} {D : S → J → E → ℝ}
+    (hmass : ∀ (τ : Lp ℝ 2 μ) (x : S),
+      (∫ t, τ t * p t (ι x) ∂μ) =
+        ∫ z, τ z.1 * W z * R x z.2 ∂μ.prod ν)
+    (hdual : ∀ (τ : Lp ℝ 2 μ) (x : S),
+      (∫ t, τ t * q t (ι x) ∂μ) =
+        (∫ z, τ z.1 * B z * R x z.2 ∂μ.prod ν) -
+          ∑ j, ∫ z, τ z.1 * Q j z * D x j z.2 ∂μ.prod ν)
+    (hweak : ∀ (x : S) (φ : ℝ → ℝ), ContDiff ℝ (⊤ : ℕ∞) φ →
+      HasCompactSupport φ → tsupport φ ⊆ Ioo a b →
+      (∫ z, deriv φ z.1 * W z * R x z.2 ∂μ.prod ν) =
+        (∑ j, ∫ z, φ z.1 * Q j z * D x j z.2 ∂μ.prod ν) -
+          ∫ z, φ z.1 * B z * R x z.2 ∂μ.prod ν) :
+    ∃ w : timeH1 (X →L[ℝ] ℝ) (b - a),
+      (fun t ↦ p (a + t)) =ᵐ[timeMeasure (b - a)] w.toFun ∧
+      w.deriv =ᵐ[timeMeasure (b - a)] fun t ↦ q (a + t) := by
+  have hp' : MemLp p 2 (volume.restrict (Icc a b)) := by rw [← hμ]; exact hp
+  have hq' : MemLp q 2 (volume.restrict (Icc a b)) := by rw [← hμ]; exact hq
+  have hscalar := extend_scalar_weak_deriv_of_denseRange_on ι hdense hp' hq'
+    (scalar_weak_deriv_of_tensor_integrals_on μ hμ ι hmass hdual hweak)
+  exact exists_timeH1_dual_of_weak_deriv_on hab hp' hq' hscalar
+
 variable [CompleteSpace X] in
 theorem timeH1.deriv_eq_of_toFun_ae_eq
     {T : ℝ} {u v : timeH1 X T}

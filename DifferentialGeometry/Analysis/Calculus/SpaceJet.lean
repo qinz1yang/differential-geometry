@@ -1,11 +1,12 @@
 import Mathlib.Analysis.Calculus.ContDiff.Comp
 import Mathlib.Analysis.Calculus.ContDiff.Operations
 import DifferentialGeometry.Analysis.Calculus.TimeJetEvolution
+import DifferentialGeometry.Analysis.Integration.Lp.ContinuousOn
 
 noncomputable section
 
-open Set
-open scoped ContDiff
+open MeasureTheory Set
+open scoped ContDiff ENNReal
 
 namespace DifferentialGeometry
 namespace Analysis
@@ -462,6 +463,22 @@ theorem jet2_contOn
         continuousMultilinearCurryRightEquiv_apply', iteratedFDeriv_two_apply]
       rfl
   simpa only [jet2] using hv.prodMk (hd₁.prodMk hd₂)
+
+section MemLpIteratedSpatialFDeriv
+
+variable [MeasurableSpace E] [OpensMeasurableSpace E]
+
+theorem memLp_iterated_spatial_fderiv_of_contDiffOn
+    {G : ℝ → E → F} {S : Set (ℝ × E)} {r : WithTop ℕ∞} (hS : IsOpen S)
+    (hG : ContDiffOn ℝ r (fun p : ℝ × E => G p.1 p.2) S)
+    {K : Set (ℝ × E)} (hK : IsCompact K) (hKS : K ⊆ S)
+    (N : ℕ) (hN : (N : WithTop ℕ∞) ≤ r) (μ : Measure (ℝ × E)) :
+    MemLp (fun p : ℝ × E => iteratedFDeriv ℝ N (fun y : E => G p.1 y) p.2)
+      ∞ (μ.restrict K) := by
+  have hcont := spaceJet_contOn hS hG N hN
+  exact (hcont.mono hKS).memLp_top_of_isCompact hK hK.measurableSet
+
+end MemLpIteratedSpatialFDeriv
 
 end Analysis
 end DifferentialGeometry

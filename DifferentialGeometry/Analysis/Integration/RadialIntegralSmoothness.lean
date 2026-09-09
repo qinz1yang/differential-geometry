@@ -87,24 +87,31 @@ theorem fderiv_radialIntegral (k : ℕ) {f : E → F} {U : Set E}
 
 end NormedDomain
 
-private theorem contDiffOn_radialIntegral_nat
-    {E : Type u} {F : Type (max u v)} [NormedAddCommGroup E] [NormedSpace ℝ E]
+theorem contDiffOn_radialIntegral_joint
+    {P E F : Type*}
+    [NormedAddCommGroup P] [NormedSpace ℝ P]
+    [NormedAddCommGroup E] [NormedSpace ℝ E]
     [NormedAddCommGroup F] [NormedSpace ℝ F]
-    (n k : ℕ) {f : E → F} {U : Set E} (hU : IsOpen U)
-    (hstar : StarConvex ℝ 0 U) (hf : ContDiffOn ℝ n f U) :
-    ContDiffOn ℝ n (radialIntegral k f) U := by
-  induction n generalizing F k with
-  | zero =>
-    rw [Nat.cast_zero, contDiffOn_zero] at hf ⊢
-    exact continuousOn_radialIntegral k hstar hf
-  | succ n ih =>
-    rw [Nat.cast_succ] at hf ⊢
-    have h1 := hf.one_of_succ
-    rw [contDiffOn_succ_iff_fderiv_of_isOpen hU]
-    refine ⟨fun x hx => (hasFDerivAt_radialIntegral k hU hstar h1 hx).differentiableAt.differentiableWithinAt,
-      by simp, ?_⟩
-    exact (ih (k + 1) (hf.fderiv_of_isOpen hU le_rfl)).congr
-      (fun x hx => fderiv_radialIntegral k hU hstar h1 hx)
+    (n : ℕ∞) (k : ℕ) {S : Set P} {U : Set E} (hS : IsOpen S) (hU : IsOpen U)
+    (hstar : StarConvex ℝ 0 U) {f : P → E → F}
+    (hf : ContDiffOn ℝ n (Function.uncurry f) (S ×ˢ U)) :
+    ContDiffOn ℝ n (fun p : P × E => radialIntegral k (f p.1) p.2) (S ×ˢ U) := by
+  let A : (P × E) × ℝ → P × E := fun z => (z.1.1, z.2 • z.1.2)
+  let Ω := A ⁻¹' (S ×ˢ U)
+  have hA : ContDiff ℝ n A := by fun_prop
+  have hΩ : IsOpen Ω := (hS.prod hU).preimage hA.continuous
+  have hsub : (S ×ˢ U) ×ˢ Icc (0 : ℝ) 1 ⊆ Ω := by
+    intro z hz
+    exact ⟨hz.1.1, hstar.smul_mem hz.1.2 hz.2.1 hz.2.2⟩
+  have hint : ContDiffOn ℝ n
+      (fun z : (P × E) × ℝ => z.2 ^ k • f z.1.1 (z.2 • z.1.2)) Ω := by
+    exact (contDiffOn_snd.pow k).smul (hf.comp hA.contDiffOn (fun _ hz => hz))
+  apply (DifferentialGeometry.Integral.Measure.contDiffOn_integral_subtype_of_isCompact n isCompact_Icc volume
+    (hS.prod hU) hΩ hsub hint).congr
+  intro z _
+  rw [radialIntegral, integral_subtype measurableSet_Icc
+    (fun s : ℝ => s ^ k • f z.1 (s • z.2)), integral_Icc_eq_integral_Ioc]
+  exact intervalIntegral.integral_of_le zero_le_one
 
 theorem contDiffOn_radialIntegral
     {E : Type u} {F : Type v} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -112,20 +119,9 @@ theorem contDiffOn_radialIntegral
     (n : ℕ∞) (k : ℕ) {f : E → F} {U : Set E} (hU : IsOpen U)
     (hstar : StarConvex ℝ 0 U) (hf : ContDiffOn ℝ n f U) :
     ContDiffOn ℝ n (radialIntegral k f) U := by
-  suffices hnat : ∀ m : ℕ, (m : ℕ∞) ≤ n → ContDiffOn ℝ m (radialIntegral k f) U by
-    cases n using ENat.recTopCoe with
-    | top => exact contDiffOn_infty.mpr (fun m => hnat m le_top)
-    | coe m => exact hnat m le_rfl
-  intro m hm
-  let L : ULift.{u} F ≃L[ℝ] F := ContinuousLinearEquiv.ulift
-  have hlift : ContDiffOn ℝ m (fun x => L.symm (f x)) U :=
-    L.symm.contDiff.comp_contDiffOn (hf.of_le (by exact_mod_cast hm))
-  have hi := contDiffOn_radialIntegral_nat m k hU hstar hlift
-  have h := L.contDiff.comp_contDiffOn hi
-  apply h.congr
-  intro x _
-  simp only [Function.comp_apply, radialIntegral_eq_integral_subtype]
-  rw [← L.integral_comp_comm]
-  congr 1
+  have hF : ContDiffOn ℝ n (Function.uncurry (fun (_ : ℝ) => f)) (univ ×ˢ U) :=
+    hf.comp contDiffOn_snd (fun _ hp => hp.2)
+  exact (contDiffOn_radialIntegral_joint n k isOpen_univ hU hstar hF).comp
+    (contDiffOn_const.prodMk contDiffOn_id) (fun x hx => ⟨mem_univ (0 : ℝ), hx⟩)
 
 end DifferentialGeometry.Integral
