@@ -4940,3 +4940,5 @@ import DifferentialGeometry.Geometry.Operator.GradientPairingRegularity
 import DifferentialGeometry.Analysis.Heat.Parametrix.ParameterCoefficientBounds
 import DifferentialGeometry.Analysis.Heat.Parametrix.BranchFinite
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.GradientSourceRegularity
+import DifferentialGeometry.Analysis.Heat.Parametrix.BranchCutoff
+import DifferentialGeometry.Analysis.Heat.Parametrix.BranchResidualBound
