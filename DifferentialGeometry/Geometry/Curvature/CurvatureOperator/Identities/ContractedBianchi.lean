@@ -963,6 +963,61 @@ theorem nablaCurvSec_bianchi_paired
 
 end NablaCurvSymmetries
 
+section Metric
+
+open DifferentialGeometry.Tensor0SBundle
+open scoped BigOperators
+
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  [FiniteDimensional ℝ E]
+variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
+  [IsManifold I ∞ M] [T2Space M]
+
+theorem contracted_bianchi_metric
+    (g : SmoothRiemannianMetric I M) (x : M) (v : TangentSpace I x) :
+    metricTraceFirstTwo0STensor (I := I) g
+        (totalNabla0SFun (I := I) 2 (metricCov (I := I) g)
+          (metricRicci (I := I) g) x) (fun _ ↦ v) =
+      (1 / 2 : ℝ) * g.inner x
+        (gradientFun (I := I) g (metricScalarAt (I := I) g) x) v := by
+  classical
+  obtain ⟨basis, hON⟩ := exists_orthonormal_basis (I := I) g x
+  let delta := identityInvMetric
+    (Idx := Fin (Module.finrank ℝ (TangentSpace I x)))
+  have hinv : MetricInverseInBasis (I := I) g x basis delta :=
+    metricInverseInBasis_of_orthonormal (I := I) g basis hON
+  obtain ⟨nRm, hsecond, hsymm, hric, hscalar⟩ :=
+    exists_levi_civita_bianchi_trace_identities (I := I) g basis delta hinv
+  have hinvSymm : ∀ i j, delta i j = delta j i :=
+    MetricInverseInBasis.symmetric (I := I) g x basis delta hinv
+  have hc := contracted_bianchi_of_second (I := I) basis delta nRm _ _
+    (contractOfSecond (I := I) basis delta nRm _ _ hsymm hric hscalar hinvSymm)
+    hsecond v
+  change (∑ i, ∑ j, delta i j *
+    totalNabla0SFun (I := I) 2 (metricCov (I := I) g)
+      (metricRicci (I := I) g) x (vec3 (basis i) (basis j) v)) =
+    (1 / 2 : ℝ) * differential1FormFun (I := I)
+      (fun y ↦ metricTracePair0SAt (I := I) g (metricRicci (I := I) g y))
+      x (fun _ ↦ v) at hc
+  have hscalarFn :
+      (fun y ↦ metricTracePair0SAt (I := I) g (metricRicci (I := I) g y)) =
+        metricScalarAt (I := I) g := by
+    funext y
+    rw [metricScalarAt_def, metricRicci_apply]
+  rw [hscalarFn, differential1FormFun_apply_eq_mvfderiv,
+    ← inner_gradientFun g (metricScalarAt (I := I) g) x v] at hc
+  rw [metricTraceFirstTwo0STensor_apply,
+    metricTraceFirstTwo0SAt_eq_sum_basis (I := I) g basis delta hinv]
+  have hslots (i j : Fin (Module.finrank ℝ (TangentSpace I x))) :
+      metricTraceInput (I := I) (basis i) (basis j) (fun _ : Fin 1 ↦ v) =
+        vec3 (basis i) (basis j) v := by
+    funext k
+    fin_cases k <;> rfl
+  simpa only [metricTrace0S2InBasis, hslots] using hc
+
+end Metric
+
 section ContractedBianchi
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -971,6 +1026,7 @@ variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
 
+open DifferentialGeometry.Tensor0SBundle in
 omit [SigmaCompactSpace M] in
 theorem contracted_second_bianchi
     (g : SmoothRiemannianMetric I M)
@@ -981,91 +1037,51 @@ theorem contracted_second_bianchi
           (smoothOrthoFrame (I := I) g x j) V x =
       (1 / 2 : ℝ) * nablaScalar (I := I) g V x := by
   classical
-  set cov := LeviCivita (I := I) g with hcov_def
-  set B : Fin (Module.finrank ℝ E) → Π b : M, TangentSpace I b :=
-    fun i => smoothOrthoFrame (I := I) g x i with hB_def
-  have hBsm : ∀ i, ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% (B i)) :=
-    fun i => smoothOrthoFrame_smooth (I := I) g x i
-  set NR : (Π b : M, TangentSpace I b) → (Π b : M, TangentSpace I b) →
-      (Π b : M, TangentSpace I b) → (Π b : M, TangentSpace I b) →
-      Fin (Module.finrank ℝ E) → ℝ :=
-    fun A C D F i => g.inner x (nablaCurvSec cov A C D F x) (B i x) with hNR_def
-  have hLHS : ∑ j, nablaRicci (I := I) g (B j) (B j) V x =
-      ∑ j, ∑ i, NR (B j) (B i) (B j) V i := by
-    refine Finset.sum_congr rfl ?_
-    intro j _
-    rw [nablaRicci_eq_frame_trace_nablaCurvSec (I := I) g (hBsm j) (hBsm j) hV]
-  have hRHS : nablaScalar (I := I) g V x = ∑ k, ∑ i, NR V (B i) (B k) (B k) i := by
-    rw [nablaScalar_eq_frame_trace_nablaRicci (I := I) g]
-    refine Finset.sum_congr rfl ?_
-    intro k _
-    rw [nablaRicci_eq_frame_trace_nablaCurvSec (I := I) g hV (hBsm k) (hBsm k)]
-  rw [hLHS, hRHS]
-  have hAB : ∀ j i, NR (B j) (B i) (B j) V i = - NR (B j) V (B i) (B j) i := by
-    intro j i
-    have hbi := nablaCurvSec_bianchi_paired (I := I) g (X := B j) (Y := B i) (Z := B j)
-      (W := V) (U := B i) (x := x) (hBsm j) (hBsm i) (hBsm j) hV
-    have hmidzero : nablaCurvSec cov (B i) (B j) (B j) V x = 0 := by
-      have h := nablaCurvSec_swap23 (I := I) g (X := B i) (Y := B j) (Z := B j) (W := V)
-        (x := x) (hBsm j) (hBsm j) hV
-      have : (2 : ℝ) • nablaCurvSec cov (B i) (B j) (B j) V x = 0 := by
-        rw [two_smul]; nth_rewrite 2 [h]; abel
-      simpa using this
-    have hmid : g.inner x (nablaCurvSec cov (B i) (B j) (B j) V x) (B i x) = 0 := by
-      rw [hmidzero]; simp
-    have hstep : NR (B j) (B i) (B j) V i = - NR (B j) (B j) (B i) V i := by
-      simp only [hNR_def] at hbi ⊢
-      rw [hmid] at hbi
-      linarith [hbi]
-    have hps : NR (B j) (B j) (B i) V i = NR (B j) V (B i) (B j) i := by
-      simp only [hNR_def]
-      exact nablaCurvSec_inner_pair_symm (I := I) g (X := B j) (Y := B j) (Z := B i)
-        (W := V) (U := B i) (hBsm j) (hBsm j) (hBsm i) hV (hBsm i)
-    rw [hstep, hps]
-  rw [Finset.sum_congr rfl (fun j _ => Finset.sum_congr rfl (fun i _ => hAB j i))]
-  set P : ℝ := ∑ j, ∑ i, NR (B j) V (B i) (B j) i with hP_def
-  rw [show (∑ j, ∑ i, - NR (B j) V (B i) (B j) i) = -P from by
-    rw [hP_def]; rw [← Finset.sum_neg_distrib]
-    refine Finset.sum_congr rfl ?_
-    intro j _
-    rw [← Finset.sum_neg_distrib]]
-  set Q : ℝ := ∑ k, ∑ i, NR V (B i) (B k) (B k) i with hQ_def
-  set R3 : ℝ := ∑ j, ∑ i, NR (B i) (B j) V (B j) i with hR3_def
-  have hC : P + Q + R3 = 0 := by
-    have hPQR : P + Q + R3 =
-        ∑ j, ∑ i, (NR (B j) V (B i) (B j) i + NR V (B i) (B j) (B j) i
-          + NR (B i) (B j) V (B j) i) := by
-      rw [hP_def, hQ_def, hR3_def]
-      rw [← Finset.sum_add_distrib, ← Finset.sum_add_distrib]
-      refine Finset.sum_congr rfl ?_
-      intro j _
-      rw [← Finset.sum_add_distrib, ← Finset.sum_add_distrib]
-    rw [hPQR]
-    apply Finset.sum_eq_zero
-    intro j _
-    apply Finset.sum_eq_zero
-    intro i _
-    have hbi := nablaCurvSec_bianchi_paired (I := I) g (X := B j) (Y := V) (Z := B i)
-      (W := B j) (U := B i) (x := x) (hBsm j) hV (hBsm i) (hBsm j)
-    simp only [hNR_def]
-    exact hbi
-  have hD : R3 = P := by
-    have hterm : ∀ j i, NR (B i) (B j) V (B j) i = NR (B i) V (B j) (B i) j := by
-      intro j i
-      have hs2 := nablaCurvSec_metric_skew45 (I := I) g (X := B i) (Y := B j) (Z := V)
-        (W := B j) (U := B i) (x := x) (hBsm i) (hBsm j) hV (hBsm j) (hBsm i)
-      have hs1 := nablaCurvSec_swap23 (I := I) g (X := B i) (Y := B j) (Z := V) (W := B i)
-        (x := x) (hBsm j) hV (hBsm i)
-      simp only [hNR_def]
-      rw [hs1] at hs2
-      simp only [map_neg, neg_apply] at hs2
-      linarith [hs2]
-    rw [hR3_def, hP_def]
-    rw [Finset.sum_congr rfl (fun j _ => Finset.sum_congr rfl (fun i _ => hterm j i))]
-    rw [Finset.sum_comm]
-  rw [hD] at hC
-  have : Q = -2 * P := by linarith [hC]
-  rw [this]; ring
+  let basis := smoothOrthoFrameBasis g x
+  have hON : ∀ i j, g.inner x (basis i) (basis j) = if i = j then 1 else 0 := by
+    intro i j
+    simpa only [basis, smoothOrthoFrameBasis_apply] using
+      smoothOrthoFrame_orthonormal_at_center (I := I) g x i j
+  have hinv := metricInverseInBasis_of_orthonormal (I := I) g basis hON
+  have h := contracted_bianchi_metric g x (V x)
+  rw [metricTraceFirstTwo0STensor_apply,
+    metricTraceFirstTwo0SAt_eq_sum_basis (I := I) g basis _ hinv] at h
+  have hslots (i j : Fin (Module.finrank ℝ E)) :
+      metricTraceInput (I := I) (basis i) (basis j) (fun _ : Fin 1 ↦ V x) =
+        vec3 (basis i) (basis j) (V x) := by
+    funext k
+    fin_cases k <;> rfl
+  simp only [metricTrace0S2InBasis, hslots] at h
+  simp only [identityInvMetric, diagonalInvMetric, ite_mul, one_mul, zero_mul,
+    Finset.sum_ite_eq, Finset.mem_univ, if_true] at h
+  have heval (j : Fin (Module.finrank ℝ E)) :
+      totalNabla0SFun (I := I) 2 (metricCov (I := I) g)
+          (metricRicci (I := I) g) x (vec3 (basis j) (basis j) (V x)) =
+        nablaRicci (I := I) g (smoothOrthoFrame (I := I) g x j)
+          (smoothOrthoFrame (I := I) g x j) V x := by
+    let B : ContMDiffSection I E ∞ (TangentSpace I : M → Type _) :=
+      ⟨smoothOrthoFrame (I := I) g x j, smoothOrthoFrame_smooth (I := I) g x j⟩
+    let A : ContMDiffSection I E ∞ (TangentSpace I : M → Type _) := ⟨V, hV⟩
+    have hs : Fin.cons (B x) (vec2 (B x) (A x)) =
+        vec3 (basis j) (basis j) (V x) := by
+      simp only [A, B, basis, smoothOrthoFrameBasis_apply, ContMDiffSection.coeFn_mk]
+      funext k
+      fin_cases k <;> rfl
+    rw [← hs, totalNabla0SFun_apply_section (I := I) 2 _ B,
+      nabla0S_two_apply (I := I) _ B B A]
+    unfold nablaRicci
+    have hfun : (fun p : M ↦ metricRicci (I := I) g p (vec2 (B p) (A p))) =
+        (fun p : M ↦ ricciTensor (I := I) g p (B p) (A p)) := by
+      funext p
+      rw [metricRicci_apply, metricRicciAt_apply_eq_ricciTensor]
+    rw [hfun]
+    simp only [metricRicci_apply, metricRicciAt_apply_eq_ricciTensor,
+      A, B, ContMDiffSection.coeFn_mk, metricCov, LeviCivita]
+  simp_rw [heval] at h
+  rw [inner_gradientFun] at h
+  have hscalar : metricScalarAt (I := I) g = scalarCurv (I := I) g :=
+    funext (metricScalar_eq_scal (I := I) g)
+  simpa only [hscalar, nablaScalar_def] using h
 
 end ContractedBianchi
 

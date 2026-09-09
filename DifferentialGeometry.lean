@@ -2469,6 +2469,7 @@ import DifferentialGeometry.Geometry.Curvature.Riemann.HigherOrder
 import DifferentialGeometry.Geometry.Curvature.Riemann.Ricci
 import DifferentialGeometry.Geometry.Curvature.Riemann.SectionalCurvature
 import DifferentialGeometry.Geometry.Curvature.Bounds.ScalarNorm
+import DifferentialGeometry.Geometry.Curvature.Bounds.ScalarGradient
 import DifferentialGeometry.Geometry.Curvature.Metric.Scaling
 import DifferentialGeometry.Geometry.Curvature.Sphere.ConstCurvature
 import DifferentialGeometry.Geometry.Curvature.Riemann.Tensor
