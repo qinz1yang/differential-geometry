@@ -720,7 +720,7 @@ def injectivityRadiusDecayOfBoundedGeometry
     simpa only [Vx, P, two_mul] using
       (intrinsicInjRadius_ge_cheeger_gromov_taylor (I := I) (K := K) (R := 5 * s)
         (r₀ := s) (s := s) Y.metric hEnorm x
-        hK hfivePos hfivePi hRm hlocalFive hs hs hfit hquarter)
+        hK hfivePos hfivePi hRm hlocalFive hs hfit hquarter)
   have hratio :
       ENNReal.ofReal ((s / 2) * low / den) ≤
         ENNReal.ofReal (s / 2) * Vx / (Vx + P) := by

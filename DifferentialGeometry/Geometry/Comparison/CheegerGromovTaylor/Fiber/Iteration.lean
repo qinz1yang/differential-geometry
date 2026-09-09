@@ -1,5 +1,7 @@
 import DifferentialGeometry.Geometry.Comparison.CheegerGromovTaylor.Core.JensenConvexity
 import DifferentialGeometry.Geometry.Comparison.CheegerGromovTaylor.Fiber.Basic
+import DifferentialGeometry.Geometry.Comparison.CheegerGromovTaylor.Paths.Radial
+import DifferentialGeometry.Geometry.Comparison.CheegerGromovTaylor.Paths.HomotopyLift
 
 set_option autoImplicit false
 
@@ -2174,20 +2176,16 @@ theorem intrinsicFiber_encard_ge_of_riemannianEDist_lt
     (A : IntrinsicFrameLift (I := I) g hEnorm p c.extend 0 1)
     (hA : A.toFun 1 ≠ 0)
     (N : Nat) (hNLa : (N : Real) * L < a)
-    {q : M} {s : Real} (hs : 0 < s)
+    {q : M} {s : Real}
     (has : a + s < R)
     (hqs : riemannianEDist I p q < ENNReal.ofReal s) :
     (N + 1 : ENat) ≤
       (intrinsicFiber (I := I) g hEnorm p q (a + s)).encard := by
-  have haPos : 0 < a := by
-    have hNLnonneg : 0 ≤ (N : Real) * L :=
-      mul_nonneg (Nat.cast_nonneg _) hL
-    linarith
   exact
     (intrinsicFiber_encard_ge_of_nonzero_frameLift (I := I) g hEnorm p hR h4aR
       hL ha hfit hloc hK hsmall hRm c hc hcLen A hA
       N hNLa).trans
-      (fiber_encard_le (I := I) g hEnorm haPos hs hqs has hloc)
+      (fiber_encard_le (I := I) g hEnorm hqs has hloc)
 
 theorem intrinsicFiber_encard_ge
     (g : SmoothRiemannianMetric I M)
@@ -2279,7 +2277,7 @@ theorem intrinsicFiber_count_ge
     (hA : A.toFun 1 ≠ 0)
     (N : Nat) (hr : 0 < r) (h2ra : 2 * r < a)
     (hNL : (N : Real) * L < r)
-    {q : M} {s : Real} (hs : 0 < s)
+    {q : M} {s : Real}
     (hrs : r + s < R)
     (hqs : riemannianEDist I p q < ENNReal.ofReal s) :
     (N + 1 : ENat) ≤
@@ -2287,7 +2285,7 @@ theorem intrinsicFiber_count_ge
   (intrinsicFiber_encard_ge (I := I) g hEnorm p hR h4aR
     hL ha hfit hloc hK hsmall hRm c hc hcLen A hA
     N hr h2ra hNL).trans
-    (fiber_encard_le (I := I) g hEnorm hr hs hqs hrs hloc)
+    (fiber_encard_le (I := I) g hEnorm hqs hrs hloc)
 
 attribute [-instance] Subtype.metricSpace Subtype.pseudoMetricSpace in
 theorem intrinsicCore_center_fix

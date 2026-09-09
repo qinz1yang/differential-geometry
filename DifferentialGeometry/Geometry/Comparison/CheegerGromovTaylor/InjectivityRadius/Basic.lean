@@ -184,7 +184,7 @@ private theorem flatLoop_ge_cheeger_gromov_taylor_on
         (↑(⊤ : ℕ∞) : WithTop ℕ∞)
         (intrinsicFramedExp (I := I) g hEnorm p)
         (ball (0 : E) R))
-    (hr₀ : 0 < r₀) (hs : 0 < s)
+    (hr₀ : 0 < r₀)
     (hfit : r₀ + 2 * s < R) (hquarter : r₀ < R / 4)
     (c : Path p p) (hc : Path.IsContMDiffWithSittingInstants (I := I) 1 c)
     (hell : 0 < ell)
@@ -284,7 +284,7 @@ private theorem flatLoop_ge_cheeger_gromov_taylor_on
       have hcount' :=
         CheegerGromovTaylor.intrinsicFiber_encard_ge_of_riemannianEDist_lt (I := I) g hEnorm p
           hR h4rR hL.le hr₀.le hfitL hloc hK.le hsmall hRm
-          c hc hcLenL A hA (N - 1) hpredMul hs has
+          c hc hcLenL A hA (N - 1) hpredMul has
           (q := y) (by simpa only [S, Set.mem_ofPred_eq] using hy)
       have hENat :
           ((N - 1 : Nat) : ENat) + 1 = (N : ENat) := by
@@ -352,7 +352,7 @@ theorem flatLoop_ge_cheeger_gromov_taylor
         (↑(⊤ : ℕ∞) : WithTop ℕ∞)
         (intrinsicFramedExp (I := I) g hEnorm p)
         (ball (0 : E) R))
-    (hr₀ : 0 < r₀) (hs : 0 < s)
+    (hr₀ : 0 < r₀)
     (hfit : r₀ + 2 * s < R) (hquarter : r₀ < R / 4)
     (c : Path p p) (hc : Path.IsContMDiffWithSittingInstants (I := I) 1 c)
     (hell : 0 < ell)
@@ -369,7 +369,7 @@ theorem flatLoop_ge_cheeger_gromov_taylor
   exact
     flatLoop_ge_cheeger_gromov_taylor_on (I := I) g hEnorm p hK hR hRpi
       (fun z _ ↦ hRm (intrinsicFramedExp (I := I) g hEnorm p z))
-      hloc hr₀ hs hfit hquarter c hc hell hcLen A hA
+      hloc hr₀ hfit hquarter c hc hell hcLen A hA
 
 omit [T2Space (TangentBundle I M)] in
 omit [ConnectedSpace M] in
@@ -392,7 +392,7 @@ private theorem collision_ge_cheeger_gromov_taylor_on
         (↑(⊤ : ℕ∞) : WithTop ℕ∞)
         (intrinsicFramedExp (I := I) g hEnorm p)
         (ball (0 : E) R))
-    (hr₀ : 0 < r₀) (hs : 0 < s)
+    (hr₀ : 0 < r₀)
     (hfit : r₀ + 2 * s < R) (hquarter : r₀ < R / 4)
     {u v : E} (huv : u ≠ v)
     (hcollision :
@@ -524,7 +524,7 @@ private theorem collision_ge_cheeger_gromov_taylor_on
       _ = v := hBv
   exact
     flatLoop_ge_cheeger_gromov_taylor_on (I := I) g hEnorm p hK hR hRpi hRm hloc
-      hr₀ hs hfit hquarter c hc hell hcLen A hA
+      hr₀ hfit hquarter c hc hell hcLen A hA
 
 omit [T2Space (TangentBundle I M)] in
 omit [ConnectedSpace M] in
@@ -541,7 +541,7 @@ theorem collision_ge_cheeger_gromov_taylor
         (↑(⊤ : ℕ∞) : WithTop ℕ∞)
         (intrinsicFramedExp (I := I) g hEnorm p)
         (ball (0 : E) R))
-    (hr₀ : 0 < r₀) (hs : 0 < s)
+    (hr₀ : 0 < r₀)
     (hfit : r₀ + 2 * s < R) (hquarter : r₀ < R / 4)
     {u v : E} (huv : u ≠ v)
     (hcollision :
@@ -559,7 +559,7 @@ theorem collision_ge_cheeger_gromov_taylor
   exact
     collision_ge_cheeger_gromov_taylor_on (I := I) g hEnorm p hK hR hRpi
       (fun z _ ↦ hRm (intrinsicFramedExp (I := I) g hEnorm p z))
-      hloc hr₀ hs hfit hquarter huv hcollision hell hlen hshort
+      hloc hr₀ hfit hquarter huv hcollision hell hlen hshort
 
 omit [T2Space (TangentBundle I M)] in
 omit [ConnectedSpace M] in
@@ -576,7 +576,7 @@ theorem intrinsicLoop_ge_cheeger_gromov_taylor
         (↑(⊤ : ℕ∞) : WithTop ℕ∞)
         (intrinsicFramedExp (I := I) g hEnorm p)
         (ball (0 : E) R))
-    (hr₀ : 0 < r₀) (hs : 0 < s)
+    (hr₀ : 0 < r₀)
     (hfit : r₀ + 2 * s < R) (hquarter : r₀ < R / 4)
     {u : E} (hell : 0 < ell) (hlen : ‖u‖ = 2 * ell)
     (hloop : intrinsicFramedExp (I := I) g hEnorm p u = p) :
@@ -619,7 +619,7 @@ theorem intrinsicLoop_ge_cheeger_gromov_taylor
     exact hAone.symm ▸ hu0
   exact
     flatLoop_ge_cheeger_gromov_taylor (I := I) g hEnorm p hK hR hRpi hRm hloc
-      hr₀ hs hfit hquarter c hc hell hcLen A hA
+      hr₀ hfit hquarter c hc hell hcLen A hA
 
 omit [T2Space (TangentBundle I M)] in
 omit [ConnectedSpace M] in
@@ -642,7 +642,7 @@ theorem intrinsicInjRadius_ge_cheeger_gromov_taylor_on
         (↑(⊤ : ℕ∞) : WithTop ℕ∞)
         (intrinsicFramedExp (I := I) g hEnorm p)
         (ball (0 : E) R))
-    (hr₀ : 0 < r₀) (hs : 0 < s)
+    (hr₀ : 0 < r₀)
     (hfit : r₀ + 2 * s < R) (hquarter : r₀ < R / 4) :
     ENNReal.ofReal (r₀ / 2) *
           riemannianVolumeMeasure (I := I) (M := M) g
@@ -710,7 +710,7 @@ theorem intrinsicInjRadius_ge_cheeger_gromov_taylor_on
       A₀ ≤ ENNReal.ofReal ell := by
     simpa only [A₀, V, P] using
       collision_ge_cheeger_gromov_taylor_on (I := I) g hEnorm p hK hR hRpi hRm hloc
-        hr₀ hs hfit hquarter huv hcollision hell hlen hshort
+        hr₀ hfit hquarter huv hcollision hell hlen hshort
   have hellReal : ell < A₀.toReal := by
     dsimp only [ell]
     linarith
@@ -733,7 +733,7 @@ theorem intrinsicInjRadius_ge_cheeger_gromov_taylor
         (↑(⊤ : ℕ∞) : WithTop ℕ∞)
         (intrinsicFramedExp (I := I) g hEnorm p)
         (ball (0 : E) R))
-    (hr₀ : 0 < r₀) (hs : 0 < s)
+    (hr₀ : 0 < r₀)
     (hfit : r₀ + 2 * s < R) (hquarter : r₀ < R / 4) :
     ENNReal.ofReal (r₀ / 2) *
           riemannianVolumeMeasure (I := I) (M := M) g
@@ -745,6 +745,6 @@ theorem intrinsicInjRadius_ge_cheeger_gromov_taylor
   exact
     intrinsicInjRadius_ge_cheeger_gromov_taylor_on (I := I) g hEnorm p hK hR hRpi
       (fun z _ ↦ hRm (intrinsicFramedExp (I := I) g hEnorm p z))
-      hloc hr₀ hs hfit hquarter
+      hloc hr₀ hfit hquarter
 
 end DifferentialGeometry.Geometry.Riemannian.VolumeComparison

@@ -499,7 +499,7 @@ noncomputable def flowInjOfVol
       (intrinsicInjRadius_ge_cheeger_gromov_taylor (I := I) (K := K) (R := 5 * s)
         (r₀ := s) (s := s) (Y.obj i).metric hEnorm
         (Y.obj i).basepoint hK (by positivity) hfivePi hRm hlocalFive
-        hs hs (cheeger_gromov_taylor_fit hs) (cheeger_gromov_taylor_quarter hs))
+        hs (cheeger_gromov_taylor_fit hs) (cheeger_gromov_taylor_quarter hs))
   have hratio :
       ENNReal.ofReal ρ ≤
         ENNReal.ofReal (s / 2) * Vx / (Vx + P) := by

@@ -131,7 +131,7 @@ theorem intrinsicInj_ge_vol
         intrinsicInjRadius (I := I) g hEnorm p := by
     simpa only [V, P] using
       (intrinsicInjRadius_ge_cheeger_gromov_taylor_on (I := I) (K := K) (R := R) (r₀ := r₀)
-        (s := s) g hEnorm p hK hR hRpi hRm hloc hr₀ hs hfit hquarter)
+        (s := s) g hEnorm p hK hR hRpi hRm hloc hr₀ hfit hquarter)
   change ENNReal.ofReal (r₀ / 2) * v / D ≤
     intrinsicInjRadius (I := I) g hEnorm p
   exact
