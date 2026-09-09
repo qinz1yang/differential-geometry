@@ -1963,6 +1963,43 @@ theorem lExp_smoothOn
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
+omit [InnerProductSpace Real E] [NeZero (Module.finrank Real E)]
+  [SigmaCompactSpace M] in
+theorem lExp_contMDiffAt_time
+    (S : SolutionOn (I := I) (M := M) D)
+    (hS : IsSolutionOn (I := I) S) (T : Real) (x : M)
+    {Z : TangentSpace I x} {tau : Real}
+    (hdom : (Z, tau) ∈ lExpPosDom S T x) :
+    ContMDiffAt 𝓘(Real, Real) I ∞
+      (fun r : Real ↦ lExp S T x Z r) tau := by
+  let z : E := Z
+  have hzdom : (z, tau) ∈ lExpPosDom S T x := hdom
+  have hpair : ContMDiffAt 𝓘(Real, Real)
+      (𝓘(Real, E).prod 𝓘(Real, Real)) ∞
+      (fun r : Real ↦ (z, r)) tau :=
+    (contMDiff_const.prodMk contMDiff_id).contMDiffAt
+  have hexp := ((lExp_smoothOn S hS T x) (z, tau) hzdom).contMDiffAt
+    ((lExpPosDom_open S hS T x).mem_nhds hzdom)
+  exact hexp.comp tau hpair
+
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+omit [InnerProductSpace Real E] [NeZero (Module.finrank Real E)]
+  [SigmaCompactSpace M] in
+theorem lExp_contMDiffOn_Icc
+    (S : SolutionOn (I := I) (M := M) D)
+    (hS : IsSolutionOn (I := I) S) (T : Real) (x : M)
+    {Z : TangentSpace I x} {a b tau : Real}
+    (hdom : (Z, tau) ∈ lExpPosDom S T x)
+    (ha : 0 < a) (hb : b ≤ tau) :
+    ContMDiffOn 𝓘(Real, Real) I ∞
+      (fun r : Real ↦ lExp S T x Z r) (Icc a b) := by
+  intro r hr
+  exact (lExp_contMDiffAt_time S hS T x
+    (lExpPosDom_down S T x Z hdom (ha.trans_le hr.1) (hr.2.trans hb))).contMDiffWithinAt
+
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [InnerProductSpace Real E] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem exists_lExpFamily
