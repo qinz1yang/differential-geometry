@@ -12,7 +12,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
   {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 
-private theorem laplacian_gradient_eq_zero_of_eventuallyEq_const
+theorem laplacian_gradient_eq_zero_of_eventuallyEq_const
     (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
     (g : SmoothRiemannianMetric I M) {χ : M → ℝ} {c : ℝ} {q : M}
     (he : χ =ᶠ[nhds q] fun _ => c) :
