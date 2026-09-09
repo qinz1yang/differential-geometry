@@ -1,5 +1,5 @@
-import DifferentialGeometry.Analysis.Heat.Parametrix.Cutoff
-import DifferentialGeometry.Analysis.Heat.Kernel.Basic
+import DifferentialGeometry.Analysis.Heat.Parametrix.KernelComparison
+import DifferentialGeometry.Geometry.Exponential.ExpInvBranch
 
 noncomputable section
 
@@ -96,5 +96,43 @@ theorem heatKernel_diagonal_sub_leading_tendsto_of_parametrix_error [CompactSpac
     Tendsto (fun t => heatKernel g t p p - 1 / (4 * Real.pi * t)) (𝓝[>] 0)
       (𝓝 (Geometry.Curvature.metricScalarAt g p / (24 * Real.pi))) :=
   tendsto_sub_cutoffHeatParametrix_of_error_le_mul hn B hB hχ hT hbound
+
+end DifferentialGeometry.Analysis.HeatEquation
+
+namespace DifferentialGeometry.Analysis.HeatEquation
+
+open Geometry.Riemannian (IsMetricNorm expMapC2Radius)
+open Geometry.Riemannian.Exponential Geometry.Riemannian.NormalCoordinates
+
+variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
+  [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
+  {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
+  {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+  [T2Space M] [T2Space (TangentBundle I M)] [CompactSpace M]
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace
+variable [RiemannianBundle (fun x : M ↦ TangentSpace I x)]
+  [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
+  [IsContinuousRiemannianBundle E (fun x : M ↦ TangentSpace I x)]
+
+theorem heatKernel_diagonal_sub_leading_tendsto_of_finrank_eq_two
+    {g : SmoothRiemannianMetric I M} (hEnorm : IsMetricNorm g)
+    (hn : Module.finrank ℝ E = 2) (p : M) :
+    Tendsto (fun t => heatKernel g t p p - 1 / (4 * Real.pi * t)) (𝓝[>] 0)
+      (𝓝 (Geometry.Curvature.metricScalarAt g p / (24 * Real.pi))) := by
+  obtain ⟨B, hB⟩ := exists_expInvBranch_zero_mem g hEnorm p
+  obtain ⟨χ, hχ, _, hp, hs, _⟩ := exists_heatParametrix_cutoff_in B hB isOpen_univ (mem_univ p)
+  have hsupport : tsupport χ ⊆ B.dom ∩ ((normalChartAt g p).source ∩
+      (normalChartAt g p) ⁻¹' Metric.ball (0 : E) (expMapC2Radius g p)) :=
+    fun q hq => (hs hq).1.1
+  have hsmall : ∀ q ∈ tsupport χ, ‖B.inv q‖ < expMapC2Radius g p := by
+    intro q hq
+    simpa only [mem_preimage, Metric.mem_ball, dist_zero_right] using (hs hq).1.2
+  obtain ⟨C, _, hC⟩ := exists_cutoffHeatParametrix_sub_heatKernel_bound_of_finrank_eq_two
+    hn B hχ hsupport hp hsmall 1
+  apply heatKernel_diagonal_sub_leading_tendsto_of_parametrix_error (C := C) hn B hB hp.eq_of_nhds
+    (by norm_num : (0 : ℝ) < 1)
+  intro t ht
+  simpa only [abs_sub_comm, mul_comm] using hC t ht p
 
 end DifferentialGeometry.Analysis.HeatEquation
