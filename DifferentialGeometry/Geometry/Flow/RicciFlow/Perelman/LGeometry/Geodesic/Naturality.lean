@@ -1,3 +1,4 @@
+import DifferentialGeometry.Topology.Manifold.Diffeomorph
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Geodesic.ExponentialMap
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Solutions.Pullback
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.Regularity
@@ -65,26 +66,9 @@ private theorem lVelocity_pull
     (Phi : M ≃ₘ⟮I, I⟯ N) (alpha : Real → M) (s : Real) :
     lVelocity (I := I) (fun r => Phi (alpha r)) s =
       mfderiv I I (Phi : M → N) (alpha s) (lVelocity (I := I) alpha s) := by
-  by_cases halpha : MDifferentiableAt 𝓘(Real, Real) I alpha s
-  · change mfderiv 𝓘(Real, Real) I ((Phi : M → N) ∘ alpha) s 1 =
-      mfderiv I I (Phi : M → N) (alpha s)
-        (mfderiv 𝓘(Real, Real) I alpha s 1)
-    exact mfderiv_comp_apply (I := 𝓘(Real, Real)) (I' := I) (I'' := I)
-      (x := s) (f := alpha) (g := (Phi : M → N))
-      (Phi.contMDiff.mdifferentiableAt infty_ne_zero_nat) halpha (1 : Real)
-  · have hmap : ¬MDifferentiableAt 𝓘(Real, Real) I
-        (fun r => Phi (alpha r)) s := by
-      intro h
-      have hback := (Phi.symm.contMDiff.mdifferentiableAt infty_ne_zero_nat).comp s h
-      have heq : (Phi.symm : N → M) ∘ (fun r => Phi (alpha r)) = alpha := by
-        funext r
-        exact Phi.symm_apply_apply (alpha r)
-      rw [heq] at hback
-      exact halpha hback
-    simp only [lVelocity, mfderiv_zero_of_not_mdifferentiableAt halpha,
-      mfderiv_zero_of_not_mdifferentiableAt hmap]
-    change (0 : E) = mfderiv I I (Phi : M → N) (alpha s) (0 : E)
-    exact (map_zero _).symm
+  change (mfderiv 𝓘(Real, Real) I (Phi ∘ alpha) s) (1 : Real) = _
+  rw [Phi.mfderiv_comp (by decide)]
+  rfl
 
 omit [InnerProductSpace Real E] [NeZero (Module.finrank Real E)] in
 omit [SigmaCompactSpace N] in

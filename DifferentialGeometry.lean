@@ -2302,6 +2302,7 @@ import DifferentialGeometry.Geometry.Coordinates.NablaComponents.TensorRS.ModelB
 import DifferentialGeometry.Geometry.Coordinates.NablaComponents.TensorRS.RankOneTwo
 import DifferentialGeometry.Geometry.Coordinates.NablaComponents.TwoTensor
 import DifferentialGeometry.Topology.Manifold.OpenSubtype
+import DifferentialGeometry.Topology.Manifold.Diffeomorph
 import DifferentialGeometry.Topology.Manifold.ConnectedComponent
 import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph.Opens
 import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph.Basic
@@ -4147,6 +4148,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Re
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Regularized.FirstVariation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Regularized.Length
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Concatenation
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Naturality
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Regularity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Convergence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Segment.Defs
