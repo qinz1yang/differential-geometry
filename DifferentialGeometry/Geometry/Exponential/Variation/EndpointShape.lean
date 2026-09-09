@@ -6,6 +6,7 @@ import DifferentialGeometry.Geometry.Exponential.Inverse.Radius
 import DifferentialGeometry.Geometry.Exponential.Intrinsic.Agreement
 import DifferentialGeometry.Geometry.Exponential.Intrinsic.GaussLemma
 import DifferentialGeometry.Geometry.Exponential.Variation.Jacobi
+import DifferentialGeometry.Geometry.Exponential.ConjugatePoint.Basic
 import DifferentialGeometry.Geometry.Connection.ChartBridge.Scalar.Hessian
 import DifferentialGeometry.Geometry.Comparison.Variation.Covariant.ChainRule
 open DifferentialGeometry.Geometry.Curvature
@@ -127,6 +128,32 @@ theorem intrinsicJacobi_eq_radialJacobiField
     (radialJacobiField (I := I) g p u w t : E)
   exact (congrArg (fun f : ℝ → M => (mfderiv 𝓘(ℝ, ℝ) I f 0 1 : E)) hvar).trans
     (radialJacobiField_eq (I := I) g p (u : E) (w : E) t).symm
+
+open VolumeComparison (linearIndependent_radialJacobiField radialJacobiField) in
+theorem linearIndependent_intrinsicJacobi_of_not_isConjVec
+    {ι : Type*}
+    (g : SmoothRiemannianMetric I M)
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
+    (p : M) (u : TangentSpace I p) (v : ι → TangentSpace I p)
+    (hv : LinearIndependent Real v) {t : Real} (ht : t ≠ 0)
+    (hno : ¬ IsConjVec (I := I) g hEnorm p (t • (u : E))) :
+    LinearIndependent Real fun i ↦
+      intrinsicJacobi (I := I) g hEnorm p u (v i) t := by
+  have hdom : (show TangentSpace I p from t • (u : E)) ∈ expDomain (I := I) g p := by
+    rw [expDomain_eq_univ_of_completeSpace g hEnorm p]
+    exact Set.mem_univ _
+  have hinj : Function.Injective (mfderiv 𝓘(ℝ, E) I
+      (fun x : E => expMap (I := I) g p x) (t • (u : E))) := by
+    rw [expMap_eq_expMapIntrinsic g hEnorm p]
+    exact Classical.not_not.mp hno
+  have hLI := linearIndependent_radialJacobiField (I := I) g p (u : E) hv ht hdom hinj
+  have heq : (fun i => (intrinsicJacobi (I := I) g hEnorm p u (v i) t : E)) =
+      fun i => (radialJacobiField (I := I) g p u (v i) t : E) := by
+    funext i
+    exact congrArg (fun z : TangentBundle I M => (z.snd : E))
+      (congrFun (intrinsicJacobi_eq_radialJacobiField g hEnorm p u (v i)) t)
+  rw [heq]
+  exact hLI
 
 theorem intrinsicJacobi_diff
     (g : SmoothRiemannianMetric I M)
@@ -1078,102 +1105,11 @@ theorem intrinsicJacobi_li
     (hv : LinearIndependent Real v) :
     LinearIndependent Real fun i =>
       intrinsicJacobi (I := I) g hEnorm p u (v i) 1 := by
-  let eP : TangentSpace I p ≃L[Real] E :=
-    tangentSpaceModelContinuousLinearEquiv (I := I) p
-  let uE : E := eP u
-  let expf : E → M := fun w =>
-    expMapIntrinsic (I := I) g hEnorm p (eP.symm w)
-  let eU : TangentSpace 𝓘(Real, E) uE ≃L[Real] E :=
-    tangentSpaceModelContinuousLinearEquiv (I := 𝓘(Real, E)) uE
-  let q : M := expf uE
-  let eQ : TangentSpace I q ≃L[Real] E :=
-    tangentSpaceModelContinuousLinearEquiv (I := I) q
-  let r : M := intrinsicGeodesic (I := I) g hEnorm p u 1
-  let eR : TangentSpace I r ≃L[Real] E :=
-    tangentSpaceModelContinuousLinearEquiv (I := I) r
-  let L : E →L[Real] E :=
-    eQ.toContinuousLinearMap.comp
-      ((mfderiv 𝓘(Real, E) I expf uE).comp
-        eU.symm.toContinuousLinearMap)
-  let invf : M → E := B.inv
-  let eInv : TangentSpace 𝓘(Real, E) (invf q) ≃L[Real] E :=
-    tangentSpaceModelContinuousLinearEquiv (I := 𝓘(Real, E)) (invf q)
-  let dInv : E → E := fun Y =>
-    eInv (mfderiv I 𝓘(Real, E) invf q (eQ.symm Y))
-  have hleft (w : E) : dInv (L w) = w := by
-    have hL :
-        L w = eQ (mfderiv 𝓘(Real, E) I expf uE (eU.symm w)) := by
-      rfl
-    rw [hL]
-    simp only [dInv, ContinuousLinearEquiv.symm_apply_apply]
-    simpa only [dInv, eInv, invf, q, expf, uE, eU, eP,
-      tangentSpaceModelContinuousLinearEquiv_symm_apply] using
-      inv_exp_mfderiv (I := I) B hu w
-  have hLinj : Function.Injective L := by
-    intro w₁ w₂ hw
-    calc
-      w₁ = dInv (L w₁) := (hleft w₁).symm
-      _ = dInv (L w₂) := congrArg dInv hw
-      _ = w₂ := hleft w₂
-  have hvE : LinearIndependent Real fun i => eP (v i) :=
-    hv.map' eP.toLinearMap (LinearMap.ker_eq_bot.mpr eP.injective)
-  have hmapped : LinearIndependent Real fun i => L (eP (v i)) :=
-    hvE.map' L.toLinearMap (LinearMap.ker_eq_bot.mpr hLinj)
-  have hfield :
-      (fun i => eR (intrinsicJacobi (I := I) g hEnorm p u (v i) 1)) =
-        fun i => L (eP (v i)) := by
-    funext i
-    let expOld : E → M := fun w =>
-      expMapIntrinsic (I := I) g hEnorm p
-        (show TangentSpace I p from w)
-    have hexp : expOld = expf := by
-      funext w
-      simp only [expOld, expf, eP,
-        tangentSpaceModelContinuousLinearEquiv_symm_apply]
-    have hcurve :
-        (fun s : Real => intrinsicGeodesic (I := I) g hEnorm p
-          (show TangentSpace I p from eP u + s • eP (v i)) 1) =
-          fun s => intrinsicGeodesic (I := I) g hEnorm p
-            (u + s • v i) 1 := by
-      funext s
-      congr 2
-    have h := intrinsic_jacobi_one (I := I) g hEnorm p (eP u) (eP (v i))
-    change
-      mfderiv 𝓘(Real, Real) I
-          (fun s : Real => intrinsicGeodesic (I := I) g hEnorm p
-            (show TangentSpace I p from eP u + s • eP (v i)) 1)
-          0 (1 : Real) =
-        mfderiv 𝓘(Real, E) I expOld (eP u)
-          (show TangentSpace 𝓘(Real, E) (eP u) from eP (v i)) at h
-    rw [hexp] at h
-    have hcurveDeriv := congrArg
-      (fun f : Real → M =>
-        mfderiv 𝓘(Real, Real) I f 0 (1 : Real)) hcurve
-    have hnew := hcurveDeriv.symm.trans h
-    have hE := congrArg (fun z => (z : E)) hnew
-    have hE' :
-        tangentSpaceModelContinuousLinearEquiv (I := I) r
-            (intrinsicJacobi (I := I) g hEnorm p u (v i) 1) =
-          tangentSpaceModelContinuousLinearEquiv (I := I) q
-            (mfderiv 𝓘(Real, E) I expf uE
-              (eU.symm (eP (v i)))) := by
-      rw [tangentSpaceModelContinuousLinearEquiv_apply,
-        tangentSpaceModelContinuousLinearEquiv_apply]
-      unfold intrinsicJacobi
-      convert hE using 1
-      rfl
-    have hL :
-        L (eP (v i)) =
-          eQ (mfderiv 𝓘(Real, E) I expf uE
-            (eU.symm (eP (v i)))) := by
-      rfl
-    rw [hL]
-    exact hE'
-  apply LinearIndependent.of_comp eR.toLinearMap
-  change LinearIndependent Real
-    (fun i => eR (intrinsicJacobi (I := I) g hEnorm p u (v i) 1))
-  rw [hfield]
-  exact hmapped
+  apply linearIndependent_intrinsicJacobi_of_not_isConjVec g hEnorm p u v hv one_ne_zero
+  simp only [one_smul]
+  intro hnot
+  apply hnot
+  exact Function.LeftInverse.injective (fun w : E => inv_exp_mfderiv B hu w)
 
 open Set in
 theorem branchEnergy_hess_pos

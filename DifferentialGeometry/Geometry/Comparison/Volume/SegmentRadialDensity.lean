@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Comparison.Volume.BishopIntrinsicDeriv
+import DifferentialGeometry.Geometry.Comparison.Volume.Bishop.Intrinsic
 import DifferentialGeometry.Geometry.Comparison.Volume.Segment.Polar.Basic
 import DifferentialGeometry.Geometry.Comparison.Variation.Field.Smoothness
 import Mathlib.MeasureTheory.Function.AbsolutelyContinuous
@@ -38,7 +38,6 @@ private theorem segRadial_deriv_le
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (u : TangentSpace I p) (b : Real)
-    (hd : 0 < Module.finrank Real E - 1)
     (hu : 0 < g.inner p u u)
     (v : Fin (Module.finrank Real E - 1) → TangentSpace I p)
     (hON : ∀ i j, g.inner p (v i) (v j) = if i = j then 1 else 0)
@@ -74,7 +73,8 @@ private theorem segRadial_deriv_le
       simpa only [smul_smul, div_mul_cancel₀ s hbpos.ne'] using hscaled
     exact segmentInt_no_conj (I := I) g hEnorm hsSeg
   have hden :=
-    intrDen_deriv_le (I := I) g hEnorm p u b hd hu v hON hperp hno hRic
+    curveDensity_intrinsicJacobi_deriv_le (I := I) g hEnorm p u b hu v
+      (linIndep_of_ortho (I := I) g p (fun i ↦ (v i : E)) hON) hperp hno hRic
   have hdenAt := hden t ht
   have hJ : HasDerivAt J
       (normalChartDensity (I := I) g p 0 *
@@ -115,7 +115,6 @@ theorem radialDensity_deriv_le_of_segmentInt
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (u : TangentSpace I p) (b : Real)
-    (hd : 0 < Module.finrank Real E - 1)
     (hu : 0 < g.inner p u u)
     (v : Fin (Module.finrank Real E - 1) → TangentSpace I p)
     (hON : ∀ i j, g.inner p (v i) (v j) = if i = j then 1 else 0)
@@ -146,7 +145,7 @@ theorem radialDensity_deriv_le_of_segmentInt
   have hcseg : (c • u : TangentSpace I p) ∈ SegmentInt (I := I) g hEnorm p :=
     hseg c ⟨hc0, hcb⟩
   simpa only [γ, V, J] using
-    segRadial_deriv_le (I := I) g hEnorm p u c hd hu v hON hperp
+    segRadial_deriv_le (I := I) g hEnorm p u c hu v hON hperp
       hcseg hRic t ⟨ht.1, htc⟩
 
 omit [ConnectedSpace M] in
@@ -217,7 +216,7 @@ theorem radialDensity_absolutelyContinuousOnInterval_of_segmentInt
     intro t ht
     have ht0 : t ≠ 0 := (ha.trans_le ht.1).ne'
     have hLI : LinearIndependent Real fun i ↦ V i t := by
-      simpa only [V] using intrJacobi_li (I := I) g hEnorm p u v hvLI ht0
+      simpa only [V] using linearIndependent_intrinsicJacobi_of_not_isConjVec (I := I) g hEnorm p u v hvLI ht0
         (segmentInt_no_conj (I := I) g hEnorm (hseg t ht))
     have hgram := curveGram_det_pos (I := I) g γ V t hLI
     exact pos_of_mul_pos_left (mul_pos hgram hu) hu.le

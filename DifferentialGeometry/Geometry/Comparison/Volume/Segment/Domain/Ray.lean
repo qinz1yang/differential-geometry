@@ -24,33 +24,41 @@ variable [RiemannianBundle (fun x : M ↦ TangentSpace I x)]
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [T2Space (TangentBundle I M)] in
-/-- Positive parameters whose radial vectors lie in the interior
-minimizing-segment domain. -/
-def segIntRay
+def segmentInteriorRay
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun y : M ↦ TangentSpace I y)]
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (x : M) (u : TangentSpace I x) : Set ℝ :=
-  {t : ℝ | 0 < t ∧ t • u ∈ SegmentInt (I := I) g (show ∀ (y : M) (w : TangentSpace I y), ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner y w w)) from hEnorm) x}
+  {t : ℝ | 0 < t ∧ t • u ∈ SegmentInt (I := I) g
+    (show ∀ (y : M) (w : TangentSpace I y),
+      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner y w w)) from hEnorm) x}
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [T2Space (TangentBundle I M)] in
-/-- The positive parameters for which a nonzero radial vector lies in the
-interior minimizing-segment domain form either a bounded open initial interval
-or the whole positive ray. -/
-theorem segIntRay_eq
+theorem segmentInteriorRay_eq_Ioo_or_Ioi
     [ConnectedSpace M] [PseudoEMetricSpace M] [IsRiemannianManifold I M]
     [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun y : M ↦ TangentSpace I y)]
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
-    (x : M) (u : TangentSpace I x) (hu : u ≠ 0) :
-    (∃ b : ℝ, 0 < b ∧ segIntRay (I := I) g hEnorm x u = Ioo 0 b) ∨
-      segIntRay (I := I) g hEnorm x u = Ioi 0 := by
+    (x : M) (u : TangentSpace I x) :
+    (∃ b : ℝ, 0 < b ∧ segmentInteriorRay (I := I) g hEnorm x u = Ioo 0 b) ∨
+      segmentInteriorRay (I := I) g hEnorm x u = Ioi 0 := by
   classical
-  let A : Set ℝ := segIntRay (I := I) g hEnorm x u
+  by_cases hu : u = 0
+  · subst u
+    right
+    ext t
+    change (0 < t ∧ t • (0 : TangentSpace I x) ∈ SegmentInt (I := I) g
+      (show ∀ (y : M) (w : TangentSpace I y),
+        ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner y w w)) from hEnorm) x) ↔ 0 < t
+    simp only [smul_zero, and_iff_left_iff_imp]
+    intro _
+    rw [mem_segmentInt (I := I)]
+    exact ⟨2, by norm_num, by simpa only [smul_zero] using segmentDom_zero g hEnorm x⟩
+  let A : Set ℝ := segmentInteriorRay (I := I) g hEnorm x u
   let L : ℝ := Real.sqrt (g.inner x u u)
   have hLpos : 0 < L := Real.sqrt_pos.mpr (g.pos x u hu)
   obtain ⟨ρ, hρpos, hsmall⟩ :=
@@ -121,7 +129,7 @@ theorem segIntRay_eq
     have hqpos : 0 < q := one_pos.trans hq1
     have hfactor : 1 < c / q := (one_lt_div hqpos).2 hqc
     have hmem : (q * t) • u ∈ SegmentInt (I := I) g (show ∀ (y : M) (w : TangentSpace I y), ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner y w w)) from hEnorm) x := by
-      rw [mem_segmentInt]
+      rw [mem_segmentInt (I := I)]
       refine ⟨c / q, hfactor, ?_⟩
       have hscalar : (c / q) * (q * t) = c * t := by
         field_simp [hqpos.ne']
@@ -162,9 +170,7 @@ theorem segIntRay_eq
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [T2Space (TangentBundle I M)] in
-/-- Intersecting a nondegenerate interior minimizing ray with a positive metric
-ball gives a bounded open initial interval. -/
-theorem segIntRay_gball_eq
+theorem segmentInteriorRay_inter_gBall_eq_Ioo
     [ConnectedSpace M] [PseudoEMetricSpace M] [IsRiemannianManifold I M]
     [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun y : M ↦ TangentSpace I y)]
@@ -175,12 +181,11 @@ theorem segIntRay_gball_eq
     ∃ b : ℝ, 0 < b ∧
       b ≤ R / Real.sqrt (g.inner x u u) ∧
       {t : ℝ | 0 < t ∧
-        t • u ∈ SegmentInt (I := I) g (show ∀ (y : M) (w : TangentSpace I y), ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner y w w)) from hEnorm) x ∩ gBall (I := I) g x R} =
+        t • u ∈ SegmentInt (I := I) g
+          (show ∀ (y : M) (w : TangentSpace I y),
+            ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner y w w)) from hEnorm) x ∩
+              gBall (I := I) g x R} =
           Ioo 0 b := by
-  have hu0 : u ≠ 0 := by
-    intro hu0
-    subst u
-    simp at hu
   let L : ℝ := Real.sqrt (g.inner x u u)
   have hLpos : 0 < L := Real.sqrt_pos.mpr hu
   have hcut : 0 < R / L := div_pos hR hLpos
@@ -189,7 +194,7 @@ theorem segIntRay_gball_eq
     change Real.sqrt (g.inner x (t • u) (t • u)) < R ↔ t < R / L
     rw [sqrt_gInner_smul_self (I := I) g x ht.le u,
       show Real.sqrt (g.inner x u u) = L from rfl, lt_div_iff₀ hLpos]
-  rcases segIntRay_eq (I := I) g hEnorm x u hu0 with
+  rcases segmentInteriorRay_eq_Ioo_or_Ioi (I := I) g hEnorm x u with
     ⟨b, hb, hseg⟩ | hseg
   · refine ⟨min b (R / L), lt_min hb hcut,
       min_le_right b (R / L), ?_⟩
@@ -197,13 +202,13 @@ theorem segIntRay_gball_eq
     simp only [Set.mem_ofPred_eq, mem_inter_iff, mem_Ioo]
     constructor
     · intro ht
-      have htRay : t ∈ segIntRay (I := I) g hEnorm x u := ⟨ht.1, ht.2.1⟩
+      have htRay : t ∈ segmentInteriorRay (I := I) g hEnorm x u := ⟨ht.1, ht.2.1⟩
       rw [hseg] at htRay
       exact ⟨ht.1, lt_min htRay.2 ((hball ht.1).mp ht.2.2)⟩
     · intro ht
       have htb : t < b := ht.2.trans_le (min_le_left b (R / L))
       have htR : t < R / L := ht.2.trans_le (min_le_right b (R / L))
-      have htRay : t ∈ segIntRay (I := I) g hEnorm x u := by
+      have htRay : t ∈ segmentInteriorRay (I := I) g hEnorm x u := by
         rw [hseg]
         exact ⟨ht.1, htb⟩
       exact ⟨ht.1, htRay.2, (hball ht.1).mpr htR⟩
@@ -214,7 +219,7 @@ theorem segIntRay_gball_eq
     · intro ht
       exact ⟨ht.1, (hball ht.1).mp ht.2.2⟩
     · intro ht
-      have htRay : t ∈ segIntRay (I := I) g hEnorm x u := by
+      have htRay : t ∈ segmentInteriorRay (I := I) g hEnorm x u := by
         rw [hseg]
         exact ht.1
       exact ⟨ht.1, htRay.2, (hball ht.1).mpr ht.2⟩
@@ -222,9 +227,7 @@ theorem segIntRay_gball_eq
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [T2Space (TangentBundle I M)] in
-/-- Intersecting an interior minimizing ray with a positive metric ball gives
-a bounded open initial interval. -/
-theorem segIntRay_ball_eq
+theorem segmentInteriorRay_inter_gBall_eq_Ioo_of_unit
     [ConnectedSpace M] [PseudoEMetricSpace M] [IsRiemannianManifold I M]
     [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun y : M ↦ TangentSpace I y)]
@@ -234,13 +237,16 @@ theorem segIntRay_ball_eq
     {R : ℝ} (hR : 0 < R) :
     ∃ b : ℝ, 0 < b ∧ b ≤ R ∧
       {t : ℝ | 0 < t ∧
-        t • u ∈ SegmentInt (I := I) g (show ∀ (y : M) (w : TangentSpace I y), ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner y w w)) from hEnorm) x ∩ gBall (I := I) g x R} =
+        t • u ∈ SegmentInt (I := I) g
+          (show ∀ (y : M) (w : TangentSpace I y),
+            ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner y w w)) from hEnorm) x ∩
+              gBall (I := I) g x R} =
           Ioo 0 b := by
   obtain ⟨b, hb, hbR, hset⟩ :=
-    segIntRay_gball_eq (I := I) g hEnorm x u (by simpa only [hu] using one_pos) hR
+    segmentInteriorRay_inter_gBall_eq_Ioo (I := I) g hEnorm x u
+      (by simpa only [hu] using one_pos) hR
   refine ⟨b, hb, ?_, hset⟩
   simpa only [hu, Real.sqrt_one, div_one] using hbR
-
 end DifferentialGeometry.Geometry.Riemannian.VolumeComparison
 
 end

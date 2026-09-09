@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Exponential.Variation.EndpointShape
 import DifferentialGeometry.Geometry.Comparison.Volume.Bishop.Radial
 import DifferentialGeometry.Geometry.Comparison.Laplacian.Radial
 import DifferentialGeometry.Geometry.Exponential.ConjugatePoint.Basic
@@ -431,36 +432,8 @@ private theorem intrinsicJacobi_li
     (hv : LinearIndependent Real v) {t : Real} (ht : t ≠ 0)
     (hno : ¬ IsConjVec (I := I) g hEnorm p (t • (u : E))) :
     LinearIndependent Real fun i =>
-      intrinsicJacobi (I := I) g hEnorm p u (v i) t := by
-  let L : E →L[Real] E :=
-    mfderiv 𝓘(Real, E) I
-      (fun z : E => expMapIntrinsic (I := I) g hEnorm p
-        (show TangentSpace I p from z))
-      (t • (u : E))
-  have hLinj : Function.Injective L := by
-    unfold IsConjVec at hno
-    exact Classical.not_not.mp hno
-  let a : Realˣ := Units.mk0 t ht
-  let as : ι → Realˣ := fun _ => a
-  have hscaled : LinearIndependent Real fun i => t • v i := by
-    have has : as • v = fun i => t • v i := by
-      funext i
-      rfl
-    rw [← has]
-    exact hv.units_smul as
-  have hmapped : LinearIndependent Real fun i => L (t • (v i : E)) :=
-    hscaled.map' L.toLinearMap (LinearMap.ker_eq_bot.mpr hLinj)
-  have hfield :
-      (fun i => intrinsicJacobi (I := I) g hEnorm p u (v i) t) =
-        fun i => L (t • (v i : E)) := by
-    funext i
-    unfold intrinsicJacobi
-    dsimp only [L]
-    apply eq_of_heq
-    exact heq_of_eq
-      (intrinsic_jacobi_at (I := I) g hEnorm p (u : E) (v i : E) t)
-  rw [hfield]
-  exact hmapped
+      intrinsicJacobi (I := I) g hEnorm p u (v i) t :=
+  linearIndependent_intrinsicJacobi_of_not_isConjVec g hEnorm p u v hv ht hno
 
 theorem exists_intrMean
     (g : SmoothRiemannianMetric I M)
@@ -954,6 +927,119 @@ theorem intrinsicRatioOfFrame
     hVperp hDVperp hVdiff hDVdiff hLI hW hJ hRic hRatio
   exact curveRatio_anti (I := I) (n := (2 : WithTop ℕ∞)) (by norm_num)
     g γ V (q * ell) b d (mul_nonneg hq hell.le) hγ hVdiff hLI hW hmean
+
+omit [T2Space (TangentBundle I M)] in
+theorem curveDensity_intrinsicJacobi_deriv_le
+    (g : SmoothRiemannianMetric I M)
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
+    (p : M) (u : TangentSpace I p) (b : Real)
+    (hu : 0 < g.inner p u u)
+    (v : Fin (Module.finrank Real E - 1) → TangentSpace I p)
+    (hv : LinearIndependent ℝ v)
+    (hperp : ∀ i, g.inner p u (v i) = 0)
+    (hno : ∀ t ∈ Ioo (0 : Real) b,
+      ¬ IsConjVec (I := I) g hEnorm p
+        ((t • u : TangentSpace I p) : E))
+    (hRic : RicciBoundedBelow (I := I) g 0) :
+    let γ := intrinsicGeodesic (I := I) g hEnorm p u
+    let V := fun i ↦ intrinsicJacobi (I := I) g hEnorm p u (v i)
+    ∀ t ∈ Ioo (0 : Real) b,
+      HasDerivAt (curveDensity (I := I) g γ V)
+          (curveMean (I := I) g γ V t *
+            curveDensity (I := I) g γ V t) t ∧
+        curveMean (I := I) g γ V t *
+            curveDensity (I := I) g γ V t ≤
+          ((Module.finrank Real E - 1 : Nat) : Real) / t *
+            curveDensity (I := I) g γ V t := by
+  classical
+  let d : Nat := Module.finrank Real E - 1
+  let γ : Real → M := intrinsicGeodesic (I := I) g hEnorm p u
+  let V : Fin d → ∀ t, TangentSpace I (γ t) := fun i ↦
+    intrinsicJacobi (I := I) g hEnorm p u (v i)
+  dsimp only
+  intro t ht
+  have hLI : LinearIndependent Real fun i ↦ V i t := by
+    simpa only [γ, V] using
+      linearIndependent_intrinsicJacobi_of_not_isConjVec (I := I) g hEnorm p u v hv ht.1.ne' (hno t ht)
+  have hγInf : ContMDiff 𝓘(Real, Real) I
+      ((⊤ : ℕ∞) : WithTop ℕ∞) γ := by
+    exact intrinsicGeodesic_contMDiff (I := I) g hEnorm p u
+  have hγ : ContMDiffAt 𝓘(Real, Real) I (2 : WithTop ℕ∞) γ t :=
+    hγInf.contMDiffAt.of_le
+      (WithTop.coe_le_coe.2 (le_top : (2 : ℕ∞) ≤ (⊤ : ℕ∞)))
+  have hVdiff : ∀ i,
+      DifferentiableAt Real (chartRepAt (I := I) γ (V i) t) t := by
+    intro i
+    simpa only [γ, V] using
+      (intrinsicJacobi_diff (I := I) g hEnorm p u (v i) t).1
+  have hW : ∀ i j, jacobiWronskian (I := I) g γ (V i) (V j) t = 0 := by
+    intro i j
+    exact wronskian_eq_zero (I := I) (n := (2 : WithTop ℕ∞)) (by norm_num)
+      g γ (V i) (V j)
+      (hγInf.of_le
+        (WithTop.coe_le_coe.2 (le_top : (2 : ℕ∞) ≤ (⊤ : ℕ∞))))
+      (fun s _ ↦ by simpa only [γ, V] using
+        (intrinsicJacobi_diff (I := I) g hEnorm p u (v i) s).1)
+      (fun s _ ↦ by simpa only [γ, V] using
+        (intrinsicJacobi_diff (I := I) g hEnorm p u (v j) s).1)
+      (fun s _ ↦ by simpa only [γ, V] using
+        (intrinsicJacobi_diff (I := I) g hEnorm p u (v i) s).2)
+      (fun s _ ↦ by simpa only [γ, V] using
+        (intrinsicJacobi_diff (I := I) g hEnorm p u (v j) s).2)
+      (fun s _ ↦ by
+        convert intrinsic_jacobi (I := I) g hEnorm p (u : E) (v i : E) s using 1
+        · funext r
+          rfl)
+      (fun s _ ↦ by
+        convert intrinsic_jacobi (I := I) g hEnorm p (u : E) (v j : E) s using 1
+        · funext r
+          rfl)
+      (by simp [V]) (by simp [V]) t ⟨ht.1.le, ht.2.le⟩
+  have hu0 : (u : E) ≠ 0 := by
+    intro h
+    rw [h] at hu
+    simp at hu
+  have hdom s (hs : s ∈ Ioo (0 : ℝ) b) :
+      (show TangentSpace I p from s • (u : E)) ∈ expDomain (I := I) g p := by
+    rw [expDomain_eq_univ_of_completeSpace g hEnorm p]
+    exact mem_univ _
+  have hinj s (hs : s ∈ Ioo (0 : ℝ) b) : Injective (mfderiv 𝓘(ℝ, E) I
+      (fun x : E => expMap (I := I) g p x) (s • (u : E))) := by
+    rw [expMap_eq_expMapIntrinsic g hEnorm p]
+    exact Classical.not_not.mp (hno s hs)
+  have hfields :
+      (fun i s => (radialJacobiField (I := I) g p u (v i) s : E)) =
+        fun i s => (intrinsicJacobi (I := I) g hEnorm p u (v i) s : E) := by
+    funext i s
+    exact (congrArg (fun z : TangentBundle I M => (z.snd : E))
+      (congrFun (intrinsicJacobi_eq_radialJacobiField g hEnorm p u (v i)) s)).symm
+  have hmeanModel :
+      curveMean (I := I) g γ V t ≤ hyperbolicMeanCurv 0 d t := by
+    have h := curveMean_radialJacobiField_le_hyperbolicMeanCurv
+      (I := I) g p (u : E) hu0 (fun i => (v i : E)) hv hperp
+      (Fintype.card_fin d) 0 b (by norm_num) hdom hinj
+      (fun s hs => by simpa using hRic _ (curveVelocity (I := I)
+        (radialCurve (I := I) g p u) s)) t ht
+    have hcurve : radialCurve (I := I) g p u =
+        intrinsicGeodesic (I := I) g hEnorm p u :=
+      radialCurve_eq_intrinsicGeodesic g hEnorm p u
+    rw [hcurve] at h
+    simpa only [zero_mul, hfields, γ, V, d] using h
+  have hmodel : hyperbolicMeanCurv 0 d t ≤ (d : Real) / t := by
+    simpa only [add_zero, mul_zero] using
+      hyperbolicMeanCurv_le (q := (0 : Real)) (r := t) d (by norm_num) ht.1
+  have hmean : curveMean (I := I) g γ V t ≤ (d : Real) / t :=
+    hmeanModel.trans hmodel
+  have hJderiv : HasDerivAt (curveDensity (I := I) g γ V)
+      (curveMean (I := I) g γ V t *
+        curveDensity (I := I) g γ V t) t := by
+    refine (hasDerivAt_symmDen (I := I) (n := (2 : WithTop ℕ∞)) (by norm_num)
+      g γ V t hγ hVdiff
+      (curveGram_det_pos (I := I) g γ V t hLI) hW).congr_deriv ?_
+    rw [curveMean, curveShape]
+  have hmul := mul_le_mul_of_nonneg_right hmean
+    (curveDensity_pos (I := I) g γ V t hLI).le
+  simpa only [γ, V, d] using And.intro hJderiv hmul
 
 end VolumeComparison
 end Riemannian

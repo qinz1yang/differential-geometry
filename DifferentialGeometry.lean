@@ -3716,6 +3716,7 @@ import DifferentialGeometry.Geometry.Comparison.Volume.Intrinsic.BallVolume
 import DifferentialGeometry.Geometry.Comparison.Volume.Intrinsic.Gronwall
 import DifferentialGeometry.Geometry.Comparison.Volume.Segment.Polar.FrameBound
 import DifferentialGeometry.Geometry.Comparison.Volume.Segment.Domain.Interior
+import DifferentialGeometry.Geometry.Comparison.Volume.Segment.Domain.Ray
 import DifferentialGeometry.Geometry.Comparison.Volume.Segment.Ball.Measure
 import DifferentialGeometry.Geometry.Comparison.Volume.Segment.Domain.NoConjugatePoints
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Christoffel.DifferenceKoszulSecondDerivative

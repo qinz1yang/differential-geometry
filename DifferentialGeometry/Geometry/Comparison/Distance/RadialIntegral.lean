@@ -3,7 +3,7 @@ import DifferentialGeometry.Analysis.Integration.WeightedIntegrationByParts
 import DifferentialGeometry.Geometry.Comparison.Distance.Distribution
 import DifferentialGeometry.Geometry.Comparison.Volume.SegmentBallIntegral
 import DifferentialGeometry.Geometry.Comparison.Volume.SegmentRadialDensity
-import DifferentialGeometry.Geometry.Comparison.Volume.SegmentRayInterval
+import DifferentialGeometry.Geometry.Comparison.Volume.Segment.Domain.Ray
 
 set_option autoImplicit false
 
@@ -131,7 +131,6 @@ private theorem radial_pairing_le
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (φ : C^∞⟮I, M; Real⟯)
-    (hd : 0 < Module.finrank Real E - 1)
     (hRic : RicciBoundedBelow (I := I) g 0)
     {a R : Real} (ha : 0 < a) (hR : 0 < R)
     (hφa : ∀ y ∈ tsupport (φ : M → Real),
@@ -198,7 +197,7 @@ private theorem radial_pairing_le
       {t : Real | 0 < t ∧
         (t • (u.1 : TangentSpace I p)) ∈ K} = Ioo 0 b := by
     obtain ⟨b, hb, hbR, hset⟩ :=
-      segIntRay_gball_eq (E := E) (I := I) (M := M) g hEnorm p
+      segmentInteriorRay_inter_gBall_eq_Ioo (E := E) (I := I) (M := M) g hEnorm p
         (u.1 : TangentSpace I p) hu (R := R) hR
     refine ⟨b, hb, hbR, ?_⟩
     change {t : Real | 0 < t ∧
@@ -258,7 +257,7 @@ private theorem radial_pairing_le
         D (t • u.1) * t ^ d = J t := by
     dsimp only [D, J, γ, V, d]
     exact radialDensity_deriv_le_of_segmentInt (I := I) g hEnorm p
-      (u.1 : TangentSpace I p) b hd hu v hON hperp
+      (u.1 : TangentSpace I p) b hu v hON hperp
       (fun t ht ↦ hseg ht) hRic
   let a₀ : Real := min (a / (2 * L)) (b / 2)
   have haL : 0 < a / (2 * L) := div_pos ha (mul_pos (by norm_num) hL)
@@ -552,7 +551,7 @@ theorem dist_gradient_pairing_le
         ∫ r : Ioi (0 : Real), K.indicator B (r.1 • u.1)
           ∂(Measure.volumeIoiPow d) := by
     filter_upwards [hPA.prod_right_ae, hPB.prod_right_ae] with u huA huB
-    have hr := radial_pairing_le (I := I) g hEnorm p φ hd hRic ha hS
+    have hr := radial_pairing_le (I := I) g hEnorm p φ hRic ha hS
       hφa hφ0 u
     dsimp only at hr
     exact hr huA huB
