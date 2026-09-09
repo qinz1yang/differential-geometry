@@ -13,10 +13,11 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 
 theorem inner_le_exp_mul_inner_of_abs_deriv_le
     (g : ℝ → SmoothRiemannianMetric I M) {a b K s t : ℝ}
-    (hderiv : ∀ r ∈ Icc a b, ∀ x : M, ∀ v : TangentSpace I x,
+    (x : M) (v : TangentSpace I x)
+    (hderiv : ∀ r ∈ Icc a b,
       ∃ d : ℝ, HasDerivWithinAt (fun u => (g u).inner x v v) d (Icc a b) r ∧
         |d| ≤ K * (g r).inner x v v)
-    (hs : s ∈ Icc a b) (ht : t ∈ Icc a b) (x : M) (v : TangentSpace I x) :
+    (hs : s ∈ Icc a b) (ht : t ∈ Icc a b) :
     (g s).inner x v v ≤ Real.exp (K * |s - t|) * (g t).inner x v v := by
   classical
   by_cases hst : s = t
@@ -25,7 +26,7 @@ theorem inner_le_exp_mul_inner_of_abs_deriv_le
   rcases eq_or_ne v 0 with rfl | hv
   · simp only [map_zero, mul_zero, le_refl]
   have hpos (r : ℝ) : 0 < (g r).inner x v v := (g r).pos x v hv
-  choose d hd hbound using fun r hr => hderiv r hr x v
+  choose d hd hbound using hderiv
   let f' : ℝ → ℝ := fun r => if hr : r ∈ Icc a b then d r hr / (g r).inner x v v else 0
   have hlogderiv (r : ℝ) (hr : r ∈ Icc a b) :
       HasDerivWithinAt (fun u => Real.log ((g u).inner x v v))
@@ -59,7 +60,8 @@ theorem riemannianEDistOf_le_exp_mul_of_abs_deriv_le
     riemannianEDistOf (g s) x y ≤
       ENNReal.ofReal (Real.exp ((K / 2) * |s - t|)) * riemannianEDistOf (g t) x y := by
   have h := edistOf_le_of_quad (g t) (g s) (Real.exp_pos (K * |s - t|))
-    (inner_le_exp_mul_inner_of_abs_deriv_le g hderiv hs ht) x y
+    (fun z v => inner_le_exp_mul_inner_of_abs_deriv_le g z v
+      (fun r hr => hderiv r hr z v) hs ht) x y
   rw [← Real.exp_half, show K * |s - t| / 2 = (K / 2) * |s - t| by ring] at h
   exact h
 

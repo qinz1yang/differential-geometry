@@ -191,8 +191,8 @@ private theorem metric_pair_Icc
       (g s).inner x v v ≤
         Real.exp (2 * K * |s - t|) * (g t).inner x v v := by
   have hd := metric_deriv_bound g (fun r hr x v => hpde r hr x v v) hric
-  have hst := inner_le_exp_mul_inner_of_abs_deriv_le g hd hs ht x v
-  have hts := inner_le_exp_mul_inner_of_abs_deriv_le g hd ht hs x v
+  have hst := inner_le_exp_mul_inner_of_abs_deriv_le g x v (fun r hr => hd r hr x v) hs ht
+  have hts := inner_le_exp_mul_inner_of_abs_deriv_le g x v (fun r hr => hd r hr x v) ht hs
   rw [abs_sub_comm t s] at hts
   refine ⟨?_, hst⟩
   calc
