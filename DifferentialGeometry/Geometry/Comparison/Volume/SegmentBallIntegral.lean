@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Comparison.Volume.SegmentIntegral
+import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.Exponential
 import DifferentialGeometry.Geometry.Comparison.Volume.Segment.Polar.Basic
 
 set_option autoImplicit false
@@ -122,7 +122,8 @@ theorem ball_integral_eq_segment_polar
           ∂(Measure.volumeIoiPow (Module.finrank ℝ E - 1))
         ∂(modelHaar (E := E)).toSphere := by
   rw [segBall_int_eq (I := I) g hEnorm x hR f]
-  exact segBall_int_polar (I := I) g hEnorm x R f
-    (hf.mono_set (segBall_image_sub (I := I) g hEnorm x hR))
+  simpa only [smul_eq_mul] using
+    integral_image_segmentInt_inter_gBall_eq_polar (I := I) g hEnorm x R f
+      (hf.mono_set (segBall_image_sub (I := I) g hEnorm x hR))
 
 end DifferentialGeometry.Geometry.Riemannian.VolumeComparison

@@ -1,4 +1,5 @@
 import DifferentialGeometry.Geometry.Comparison.Volume.Segment.Polar.Density
+import DifferentialGeometry.Geometry.Exponential.VolumeDensity
 import DifferentialGeometry.Analysis.Integration.Measure.Jacobian.ImageIntegralBound
 import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.Invariance
 
@@ -43,6 +44,33 @@ def expJacobianDensity
     (fun (i : Fin (Module.finrank ℝ E)) (t : ℝ) =>
       intrinsicJacobi g hEnorm x (show TangentSpace I x from v)
         (show TangentSpace I x from (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i)) t) 1
+
+omit [CompleteSpace E] [T2Space (TangentBundle I M)] in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+theorem expJacobianDensity_eq_paramDensity
+    [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
+    [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
+    (g : SmoothRiemannianMetric I M) (hEnorm : IsMetricNorm (I := I) g)
+    (p : M) (v : E) :
+    expJacobianDensity (I := I) g hEnorm p v =
+      paramDensity (I := I) g (fun w : E => expMapIntrinsic (I := I) g hEnorm p w) v := by
+  have hdom : (show TangentSpace I p from v) ∈ expDomain (I := I) g p := by
+    rw [expDomain_eq_univ_of_completeSpace g hEnorm p]
+    exact mem_univ _
+  have h := paramDensity_expMap_eq_curveDensity (I := I) g p v hdom
+  rw [expMap_eq_expMapIntrinsic g hEnorm p] at h
+  rw [h]
+  unfold expJacobianDensity
+  have hcurve : radialCurve (I := I) g p v =
+      intrinsicGeodesic (I := I) g hEnorm p v :=
+    radialCurve_eq_intrinsicGeodesic g hEnorm p v
+  rw [hcurve]
+  congr 1
+  funext i t
+  exact congrArg (fun z : TangentBundle I M => (z.snd : E))
+    (congrFun (intrinsicJacobi_eq_radialJacobiField g hEnorm p v (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i)) t)
+
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in

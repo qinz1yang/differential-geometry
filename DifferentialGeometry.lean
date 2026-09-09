@@ -486,6 +486,7 @@ import DifferentialGeometry.Geometry.Measure.Chart.GramOperator
 import DifferentialGeometry.Geometry.Measure.Chart.Parametrization
 import DifferentialGeometry.Analysis.Integration.Measure.Parametric.CompactIntegral
 import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.CompactVolumeEquivalence
+import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.Exponential
 import DifferentialGeometry.Analysis.Integration.Measure.Estimates.ExponentialTail
 import DifferentialGeometry.Analysis.Integration.Measure.Estimates.GaussianTail
 import DifferentialGeometry.Analysis.Integration.Measure.TightConvergence

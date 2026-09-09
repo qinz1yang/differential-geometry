@@ -498,13 +498,15 @@ theorem dist_gradient_pairing_le
   have hinj : Set.InjOn F K :=
     (exp_inj_segmentInt (I := I) g hEnorm p).mono inter_subset_left
   have hAon : IntegrableOn A K (modelHaar (E := E)) := by
-    simpa only [A, D, F] using
-      expJac_integrable (I := I) g hEnorm p hK hinj
-        (tangentSectionAction (I := I) X ρ) hA.integrableOn
+    simpa only [A, D, F, smul_eq_mul] using
+      (integrableOn_image_expMapIntrinsic_iff (I := I) g hEnorm p hK hinj
+        (tangentSectionAction (I := I) X ρ) hA.integrableOn.aestronglyMeasurable).mp
+          hA.integrableOn
   have hBon : IntegrableOn B K (modelHaar (E := E)) := by
-    simpa only [B, D, F] using
-      expJac_integrable (I := I) g hEnorm p hK hinj
-        (fun y : M ↦ ((d : Nat) : Real) / ρ y * φ y) hB.integrableOn
+    simpa only [B, D, F, smul_eq_mul] using
+      (integrableOn_image_expMapIntrinsic_iff (I := I) g hEnorm p hK hinj
+        (fun y : M ↦ ((d : Nat) : Real) / ρ y * φ y)
+        hB.integrableOn.aestronglyMeasurable).mp hB.integrableOn
   have hAI : Integrable (K.indicator A) (modelHaar (E := E)) :=
     hAon.integrable_indicator hK
   have hBI : Integrable (K.indicator B) (modelHaar (E := E)) :=
@@ -527,8 +529,9 @@ theorem dist_gradient_pairing_le
             (tangentSectionAction (I := I) X ρ) hsupp.1
       _ = _ := by
         dsimp only [K, A, D, F, d]
-        exact segBall_int_polar (I := I) g hEnorm p S
-          (tangentSectionAction (I := I) X ρ) hA.integrableOn
+        simpa only [d, smul_eq_mul] using!
+          integral_image_segmentInt_inter_gBall_eq_polar (I := I) g hEnorm p S
+            (tangentSectionAction (I := I) X ρ) hA.integrableOn
   have hpolarB :
       (∫ y, ((d : Nat) : Real) / ρ y * φ y
           ∂(riemannianVolumeMeasure (I := I) (M := M) g)) =
@@ -543,8 +546,9 @@ theorem dist_gradient_pairing_le
             (fun y : M ↦ ((d : Nat) : Real) / ρ y * φ y) hsupp.2
       _ = _ := by
         dsimp only [K, B, D, F, d]
-        exact segBall_int_polar (I := I) g hEnorm p S
-          (fun y : M ↦ ((d : Nat) : Real) / ρ y * φ y) hB.integrableOn
+        simpa only [d, smul_eq_mul] using!
+          integral_image_segmentInt_inter_gBall_eq_polar (I := I) g hEnorm p S
+            (fun y : M ↦ ((d : Nat) : Real) / ρ y * φ y) hB.integrableOn
   have hslices : ∀ᵐ u ∂(modelHaar (E := E)).toSphere,
       -(∫ r : Ioi (0 : Real), K.indicator A (r.1 • u.1)
           ∂(Measure.volumeIoiPow d)) ≤

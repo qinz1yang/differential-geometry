@@ -1,12 +1,12 @@
 import DifferentialGeometry.Geometry.Comparison.Volume.Segment.Polar.Area
 import DifferentialGeometry.Geometry.Comparison.Volume.Segment.Domain.Interior
-import Mathlib.MeasureTheory.Integral.Bochner.ContinuousLinearMap
+import DifferentialGeometry.Analysis.Integration.Measure.Parametric.Integration
 
 set_option autoImplicit false
 
 noncomputable section
 
-open Set Function Bundle Manifold MeasureTheory
+open Set Bundle Manifold MeasureTheory
 open scoped Topology Manifold ENNReal
 
 namespace DifferentialGeometry.Geometry.Riemannian.VolumeComparison
@@ -53,37 +53,15 @@ theorem map_expMapIntrinsic_withDensity_expJacobianDensity
       (riemannianVolumeMeasure (I := I) (M := M) g).restrict
         ((fun v : E => expMapIntrinsic (I := I) g hEnorm x
           (show TangentSpace I x from v)) '' K) := by
-  classical
-  let F : E → M := fun v =>
-    expMapIntrinsic (I := I) g hEnorm x
-      (show TangentSpace I x from v)
-  let J : E → ℝ≥0∞ := fun v =>
-    ENNReal.ofReal (expJacobianDensity (I := I) g hEnorm x v)
-  have hF_cont : Continuous F :=
-    (intrinsicFiber_smooth (I := I) g hEnorm x).continuous
-  have hF_meas : Measurable F := hF_cont.measurable
-  have hJ_meas : Measurable J :=
-    ENNReal.measurable_ofReal.comp
-      (expJacobianDensity_continuous (I := I) g hEnorm x).measurable
-  change Measure.map F ((modelHaar (E := E)).restrict K |>.withDensity J) =
-    (riemannianVolumeMeasure (I := I) (M := M) g).restrict (F '' K)
-  refine Measure.ext fun A hA => ?_
-  have hpre : MeasurableSet (F ⁻¹' A ∩ K) :=
-    (hA.preimage hF_meas).inter hK
-  have hinj' : Set.InjOn F (F ⁻¹' A ∩ K) :=
-    hinj.mono inter_subset_right
-  rw [Measure.map_apply hF_meas hA, Measure.restrict_apply hA,
-    withDensity_apply J (hA.preimage hF_meas),
-    Measure.restrict_restrict (hA.preimage hF_meas)]
-  rw [show A ∩ F '' K = F '' (F ⁻¹' A ∩ K) from
-    (Set.image_preimage_inter F K A).symm]
-  simpa only [F, J] using
-    (riemVol_exp_image_eq (I := I) g hEnorm x hpre hinj').symm
+  simpa only [← expJacobianDensity_eq_paramDensity g hEnorm x] using
+    map_withDensity_paramDensity (I := I) g isOpen_univ hK (subset_univ _)
+      ((intrinsicFiber_smooth (I := I) g hEnorm x).of_le
+        (by norm_num : (1 : WithTop ℕ∞) ≤ ((⊤ : ℕ∞) : WithTop ℕ∞))).contMDiffOn hinj
 
 omit [T2Space (TangentBundle I M)] in
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-theorem expJac_lintegral
+theorem lintegral_image_expMapIntrinsic
     [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun x : M ↦ TangentSpace I x)]
@@ -93,7 +71,10 @@ theorem expJac_lintegral
     (hinj : Set.InjOn
       (fun v : E => expMapIntrinsic (I := I) g hEnorm x
         (show TangentSpace I x from v)) K)
-    (f : M → ℝ≥0∞) (hf : Measurable f) :
+    (f : M → ℝ≥0∞) (hf : AEMeasurable f
+      ((riemannianVolumeMeasure (I := I) (M := M) g).restrict
+        ((fun v : E => expMapIntrinsic (I := I) g hEnorm x
+          (show TangentSpace I x from v)) '' K))) :
     (∫⁻ y in
         (fun v : E => expMapIntrinsic (I := I) g hEnorm x
           (show TangentSpace I x from v)) '' K,
@@ -103,42 +84,17 @@ theorem expJac_lintegral
           (show TangentSpace I x from v)) *
           ENNReal.ofReal (expJacobianDensity (I := I) g hEnorm x v)
         ∂(modelHaar (E := E)) := by
-  classical
-  let F : E → M := fun v =>
-    expMapIntrinsic (I := I) g hEnorm x
-      (show TangentSpace I x from v)
-  let J : E → ℝ≥0∞ := fun v =>
-    ENNReal.ofReal (expJacobianDensity (I := I) g hEnorm x v)
-  have hF_meas : Measurable F :=
-    (intrinsicFiber_smooth (I := I) g hEnorm x).continuous.measurable
-  have hJ_meas : Measurable J :=
-    ENNReal.measurable_ofReal.comp
-      (expJacobianDensity_continuous (I := I) g hEnorm x).measurable
-  have hmap := map_expMapIntrinsic_withDensity_expJacobianDensity (I := I)
-    g hEnorm x hK hinj
-  change (∫⁻ y, f y ∂
-      (riemannianVolumeMeasure (I := I) (M := M) g).restrict (F '' K)) = _
-  rw [← hmap]
-  rw [MeasureTheory.lintegral_map hf hF_meas]
-  change (∫⁻ a, f (F a) ∂
-      ((modelHaar (E := E)).restrict K).withDensity J) = _
-  have hwd :
-      (∫⁻ a, f (F a) ∂
-          ((modelHaar (E := E)).restrict K).withDensity J) =
-        ∫⁻ a, J a * f (F a) ∂(modelHaar (E := E)).restrict K := by
-    simpa only [Pi.mul_apply, Function.comp_apply] using
-      (MeasureTheory.lintegral_withDensity_eq_lintegral_mul
-        ((modelHaar (E := E)).restrict K) hJ_meas
-        (hf.comp hF_meas))
-  rw [hwd]
-  change (∫⁻ v in K, J v * f (F v) ∂(modelHaar (E := E))) = _
-  refine setLIntegral_congr_fun hK fun v _ => ?_
-  simp only [F, J, mul_comm]
+  simpa only [← expJacobianDensity_eq_paramDensity g hEnorm x, mul_comm] using
+    lintegral_image_eq_lintegral_paramDensity_mul (I := I) g isOpen_univ hK (subset_univ _)
+      ((intrinsicFiber_smooth (I := I) g hEnorm x).of_le
+        (by norm_num : (1 : WithTop ℕ∞) ≤ ((⊤ : ℕ∞) : WithTop ℕ∞))).contMDiffOn hinj f hf
+
+variable {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
 
 omit [T2Space (TangentBundle I M)] in
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-theorem expJac_integrable
+theorem integrableOn_image_expMapIntrinsic_iff
     [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun x : M ↦ TangentSpace I x)]
@@ -148,51 +104,29 @@ theorem expJac_integrable
     (hinj : Set.InjOn
       (fun v : E => expMapIntrinsic (I := I) g hEnorm x
         (show TangentSpace I x from v)) K)
-    (f : M → ℝ)
-    (hf : IntegrableOn f
+    (f : M → F)
+    (hf : AEStronglyMeasurable f
+      ((riemannianVolumeMeasure (I := I) (M := M) g).restrict
+        ((fun v : E => expMapIntrinsic (I := I) g hEnorm x
+          (show TangentSpace I x from v)) '' K))) :
+    IntegrableOn f
       ((fun v : E => expMapIntrinsic (I := I) g hEnorm x
         (show TangentSpace I x from v)) '' K)
-      (riemannianVolumeMeasure (I := I) (M := M) g)) :
+      (riemannianVolumeMeasure (I := I) (M := M) g) ↔
     IntegrableOn
-      (fun v : E => expJacobianDensity (I := I) g hEnorm x v *
+      (fun v : E => expJacobianDensity (I := I) g hEnorm x v •
         f (expMapIntrinsic (I := I) g hEnorm x
           (show TangentSpace I x from v)))
       K (modelHaar (E := E)) := by
-  classical
-  let F : E → M := fun v =>
-    expMapIntrinsic (I := I) g hEnorm x
-      (show TangentSpace I x from v)
-  let J : E → ℝ≥0∞ := fun v =>
-    ENNReal.ofReal (expJacobianDensity (I := I) g hEnorm x v)
-  let μK : Measure E := (modelHaar (E := E)).restrict K
-  have hF_meas : Measurable F :=
-    (intrinsicFiber_smooth (I := I) g hEnorm x).continuous.measurable
-  have hJ_meas : Measurable J :=
-    ENNReal.measurable_ofReal.comp
-      (expJacobianDensity_continuous (I := I) g hEnorm x).measurable
-  have hmap := map_expMapIntrinsic_withDensity_expJacobianDensity (I := I)
-    g hEnorm x hK hinj
-  have hfmap : Integrable f (Measure.map F (μK.withDensity J)) := by
-    rw [hmap]
-    exact hf
-  have hcomp : Integrable (f ∘ F) (μK.withDensity J) :=
-    (integrable_map_measure hfmap.aestronglyMeasurable
-      hF_meas.aemeasurable).mp hfmap
-  have hweighted : Integrable (fun v => f (F v) * (J v).toReal) μK :=
-    (integrable_withDensity_iff hJ_meas
-      (Filter.Eventually.of_forall fun _ => ENNReal.ofReal_lt_top)).mp hcomp
-  change Integrable
-    (fun v : E => expJacobianDensity (I := I) g hEnorm x v * f (F v)) μK
-  apply hweighted.congr
-  filter_upwards with v
-  simp only [J, ENNReal.toReal_ofReal
-    (show 0 ≤ expJacobianDensity (I := I) g hEnorm x v by
-      exact Real.sqrt_nonneg _), mul_comm]
+  simpa only [← expJacobianDensity_eq_paramDensity g hEnorm x] using
+    integrableOn_image_iff_paramDensity_smul (I := I) g isOpen_univ hK (subset_univ _)
+      ((intrinsicFiber_smooth (I := I) g hEnorm x).of_le
+        (by norm_num : (1 : WithTop ℕ∞) ≤ ((⊤ : ℕ∞) : WithTop ℕ∞))).contMDiffOn hinj f hf
 
 omit [T2Space (TangentBundle I M)] in
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-theorem expJac_integral
+theorem integral_image_expMapIntrinsic
     [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun x : M ↦ TangentSpace I x)]
@@ -202,7 +136,7 @@ theorem expJac_integral
     (hinj : Set.InjOn
       (fun v : E => expMapIntrinsic (I := I) g hEnorm x
         (show TangentSpace I x from v)) K)
-    (f : M → ℝ)
+    (f : M → F)
     (hf : AEStronglyMeasurable f
       ((riemannianVolumeMeasure (I := I) (M := M) g).restrict
         ((fun v : E => expMapIntrinsic (I := I) g hEnorm x
@@ -212,45 +146,45 @@ theorem expJac_integral
           (show TangentSpace I x from v)) '' K,
         f y ∂(riemannianVolumeMeasure (I := I) (M := M) g)) =
       ∫ v in K,
-        expJacobianDensity (I := I) g hEnorm x v *
+        expJacobianDensity (I := I) g hEnorm x v •
           f (expMapIntrinsic (I := I) g hEnorm x
             (show TangentSpace I x from v))
         ∂(modelHaar (E := E)) := by
-  classical
-  let F : E → M := fun v =>
-    expMapIntrinsic (I := I) g hEnorm x
-      (show TangentSpace I x from v)
-  let J : E → ℝ≥0∞ := fun v =>
-    ENNReal.ofReal (expJacobianDensity (I := I) g hEnorm x v)
-  have hF_meas : Measurable F :=
-    (intrinsicFiber_smooth (I := I) g hEnorm x).continuous.measurable
-  have hJ_meas : Measurable J :=
-    ENNReal.measurable_ofReal.comp
-      (expJacobianDensity_continuous (I := I) g hEnorm x).measurable
-  have hmap := map_expMapIntrinsic_withDensity_expJacobianDensity (I := I)
-    g hEnorm x hK hinj
-  have hfmap : AEStronglyMeasurable f
-      (Measure.map F
-        ((modelHaar (E := E)).restrict K |>.withDensity J)) := by
-    rw [hmap]
-    exact hf
-  change (∫ y, f y ∂
-      (riemannianVolumeMeasure (I := I) (M := M) g).restrict (F '' K)) = _
-  rw [← hmap]
-  rw [MeasureTheory.integral_map hF_meas.aemeasurable hfmap]
-  change (∫ v, f (F v) ∂
-      ((modelHaar (E := E)).restrict K).withDensity J) = _
-  rw [integral_withDensity_eq_integral_toReal_smul hJ_meas
-    (Filter.Eventually.of_forall fun _ => ENNReal.ofReal_lt_top)]
-  apply integral_congr_ae
-  filter_upwards [] with v
-  simp only [J, F, ENNReal.toReal_ofReal
-    (show 0 ≤ expJacobianDensity (I := I) g hEnorm x v by
-      exact Real.sqrt_nonneg _), smul_eq_mul]
+  simpa only [← expJacobianDensity_eq_paramDensity g hEnorm x] using
+    integral_image_eq_integral_paramDensity_smul (I := I) g isOpen_univ hK (subset_univ _)
+      ((intrinsicFiber_smooth (I := I) g hEnorm x).of_le
+        (by norm_num : (1 : WithTop ℕ∞) ≤ ((⊤ : ℕ∞) : WithTop ℕ∞))).contMDiffOn hinj f hf
+
+omit [T2Space (TangentBundle I M)] in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+private theorem integrableOn_expJacobianDensity_smul
+    [PseudoEMetricSpace M]
+    [IsRiemannianManifold I M] [CompleteSpace M]
+    [IsContinuousRiemannianBundle E (fun x : M ↦ TangentSpace I x)]
+    (g : SmoothRiemannianMetric I M)
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
+    (x : M) {K : Set E} (hK : MeasurableSet K)
+    (hinj : Set.InjOn
+      (fun v : E => expMapIntrinsic (I := I) g hEnorm x
+        (show TangentSpace I x from v)) K)
+    (f : M → F)
+    (hf : IntegrableOn f
+      ((fun v : E => expMapIntrinsic (I := I) g hEnorm x
+        (show TangentSpace I x from v)) '' K)
+      (riemannianVolumeMeasure (I := I) (M := M) g)) :
+    IntegrableOn
+      (fun v : E => expJacobianDensity (I := I) g hEnorm x v •
+        f (expMapIntrinsic (I := I) g hEnorm x
+          (show TangentSpace I x from v)))
+      K (modelHaar (E := E)) :=
+  (integrableOn_image_expMapIntrinsic_iff g hEnorm x hK hinj f hf.aestronglyMeasurable).mp hf
 
 end General
 
 section Interior
+
+variable {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
 
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
@@ -269,7 +203,7 @@ private local instance : BorelSpace M := ⟨rfl⟩
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [T2Space (TangentBundle I M)] in
-theorem segInt_lintegral
+theorem lintegral_image_segmentInt
     [ConnectedSpace M] [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun x : M ↦ TangentSpace I x)]
@@ -279,70 +213,70 @@ theorem segInt_lintegral
     (∫⁻ y in
         (fun v : E => expMapIntrinsic (I := I) g hEnorm x
           (show TangentSpace I x from v)) ''
-            (show Set E from SegmentInt (I := I) g (show ∀ (y : M) (w : TangentSpace I y), ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner y w w)) from hEnorm) x),
+            (show Set E from SegmentInt (I := I) g (show _ from hEnorm) x),
         f y ∂(riemannianVolumeMeasure (I := I) (M := M) g)) =
-      ∫⁻ v in (show Set E from SegmentInt (I := I) g (show ∀ (y : M) (w : TangentSpace I y), ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner y w w)) from hEnorm) x),
+      ∫⁻ v in (show Set E from SegmentInt (I := I) g (show _ from hEnorm) x),
         f (expMapIntrinsic (I := I) g hEnorm x
           (show TangentSpace I x from v)) *
           ENNReal.ofReal (expJacobianDensity (I := I) g hEnorm x v)
         ∂(modelHaar (E := E)) := by
-  exact expJac_lintegral (I := I) g hEnorm x
+  exact lintegral_image_expMapIntrinsic (I := I) g hEnorm x
     (measurableSet_segmentInt (I := I) g (show _ from hEnorm) x)
-    (exp_inj_segmentInt (I := I) g (show _ from hEnorm) x) f hf
+    (exp_inj_segmentInt (I := I) g (show _ from hEnorm) x) f hf.aemeasurable
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [T2Space (TangentBundle I M)] in
-theorem segInt_integral
+theorem integral_image_segmentInt
     [ConnectedSpace M] [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun x : M ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
-    (x : M) (f : M → ℝ)
+    (x : M) (f : M → F)
     (hf : AEStronglyMeasurable f
       ((riemannianVolumeMeasure (I := I) (M := M) g).restrict
         ((fun v : E => expMapIntrinsic (I := I) g hEnorm x
           (show TangentSpace I x from v)) ''
-            (show Set E from SegmentInt (I := I) g (show ∀ (y : M) (w : TangentSpace I y), ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner y w w)) from hEnorm) x)))) :
+            (show Set E from SegmentInt (I := I) g (show _ from hEnorm) x)))) :
     (∫ y in
         (fun v : E => expMapIntrinsic (I := I) g hEnorm x
           (show TangentSpace I x from v)) ''
-            (show Set E from SegmentInt (I := I) g (show ∀ (y : M) (w : TangentSpace I y), ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner y w w)) from hEnorm) x),
+            (show Set E from SegmentInt (I := I) g (show _ from hEnorm) x),
         f y ∂(riemannianVolumeMeasure (I := I) (M := M) g)) =
-      ∫ v in (show Set E from SegmentInt (I := I) g (show ∀ (y : M) (w : TangentSpace I y), ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner y w w)) from hEnorm) x),
-        expJacobianDensity (I := I) g hEnorm x v *
+      ∫ v in (show Set E from SegmentInt (I := I) g (show _ from hEnorm) x),
+        expJacobianDensity (I := I) g hEnorm x v •
           f (expMapIntrinsic (I := I) g hEnorm x
             (show TangentSpace I x from v))
         ∂(modelHaar (E := E)) := by
-  exact expJac_integral (I := I) g hEnorm x
+  exact integral_image_expMapIntrinsic (I := I) g hEnorm x
     (measurableSet_segmentInt (I := I) g (show _ from hEnorm) x)
     (exp_inj_segmentInt (I := I) g (show _ from hEnorm) x) f hf
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [T2Space (TangentBundle I M)] in
-theorem segInt_int_polar
+theorem integral_image_segmentInt_eq_polar
     [ConnectedSpace M] [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun x : M ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
-    (x : M) (f : M → ℝ)
+    (x : M) (f : M → F)
     (hf : IntegrableOn f
       ((fun v : E => expMapIntrinsic (I := I) g hEnorm x
         (show TangentSpace I x from v)) ''
-          (show Set E from SegmentInt (I := I) g (show ∀ (y : M) (w : TangentSpace I y), ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner y w w)) from hEnorm) x))
+          (show Set E from SegmentInt (I := I) g (show _ from hEnorm) x))
       (riemannianVolumeMeasure (I := I) (M := M) g)) :
     (∫ y in
         (fun v : E => expMapIntrinsic (I := I) g hEnorm x
           (show TangentSpace I x from v)) ''
-            (show Set E from SegmentInt (I := I) g (show ∀ (y : M) (w : TangentSpace I y), ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner y w w)) from hEnorm) x),
+            (show Set E from SegmentInt (I := I) g (show _ from hEnorm) x),
         f y ∂(riemannianVolumeMeasure (I := I) (M := M) g)) =
       ∫ u : Metric.sphere (0 : E) 1,
         ∫ r : Ioi (0 : ℝ),
-          (show Set E from SegmentInt (I := I) g (show ∀ (y : M) (w : TangentSpace I y), ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner y w w)) from hEnorm) x).indicator
-            (fun v : E => expJacobianDensity (I := I) g hEnorm x v *
+          (show Set E from SegmentInt (I := I) g (show _ from hEnorm) x).indicator
+            (fun v : E => expJacobianDensity (I := I) g hEnorm x v •
               f (expMapIntrinsic (I := I) g hEnorm x
                 (show TangentSpace I x from v)))
             (r.1 • u.1)
@@ -354,43 +288,43 @@ theorem segInt_int_polar
     expMapIntrinsic (I := I) g hEnorm x
       (show TangentSpace I x from v)
   let D : E → ℝ := fun v => expJacobianDensity (I := I) g hEnorm x v
-  let K : Set E := show Set E from SegmentInt (I := I) g (show ∀ (y : M) (w : TangentSpace I y), ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner y w w)) from hEnorm) x
+  let K : Set E := show Set E from SegmentInt (I := I) g (show _ from hEnorm) x
   have hK : MeasurableSet K :=
     measurableSet_segmentInt (I := I) g (show _ from hEnorm) x
-  have hsource : IntegrableOn (fun v => D v * f (F v)) K
+  have hsource : IntegrableOn (fun v => D v • f (F v)) K
       (modelHaar (E := E)) := by
     simpa only [D, F, K] using
-      expJac_integrable (I := I) g hEnorm x hK
+      integrableOn_expJacobianDensity_smul (I := I) g hEnorm x hK
         (exp_inj_segmentInt (I := I) g (show _ from hEnorm) x) f hf
-  rw [segInt_integral (I := I) g hEnorm x f hf.aestronglyMeasurable]
-  change (∫ v in K, D v * f (F v) ∂(modelHaar (E := E))) = _
+  rw [integral_image_segmentInt (I := I) g hEnorm x f hf.aestronglyMeasurable]
+  change (∫ v in K, D v • f (F v) ∂(modelHaar (E := E))) = _
   exact MeasureTheory.setIntegral_polar (modelHaar (E := E)) K hK
-    (fun v => D v * f (F v)) hsource
+    (fun v => D v • f (F v)) hsource
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [T2Space (TangentBundle I M)] in
-theorem segBall_int_polar
+theorem integral_image_segmentInt_inter_gBall_eq_polar
     [ConnectedSpace M] [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun x : M ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
-    (x : M) (R : ℝ) (f : M → ℝ)
+    (x : M) (R : ℝ) (f : M → F)
     (hf : IntegrableOn f
       ((fun v : E => expMapIntrinsic (I := I) g hEnorm x
         (show TangentSpace I x from v)) ''
-          (SegmentInt (I := I) g (show ∀ (y : M) (w : TangentSpace I y), ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner y w w)) from hEnorm) x ∩ gBall (I := I) g x R))
+          (SegmentInt (I := I) g (show _ from hEnorm) x ∩ gBall (I := I) g x R))
       (riemannianVolumeMeasure (I := I) (M := M) g)) :
     (∫ y in
         (fun v : E => expMapIntrinsic (I := I) g hEnorm x
           (show TangentSpace I x from v)) ''
-            (SegmentInt (I := I) g (show ∀ (y : M) (w : TangentSpace I y), ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner y w w)) from hEnorm) x ∩ gBall (I := I) g x R),
+            (SegmentInt (I := I) g (show _ from hEnorm) x ∩ gBall (I := I) g x R),
         f y ∂(riemannianVolumeMeasure (I := I) (M := M) g)) =
       ∫ u : Metric.sphere (0 : E) 1,
         ∫ r : Ioi (0 : ℝ),
-          (SegmentInt (I := I) g (show ∀ (y : M) (w : TangentSpace I y), ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner y w w)) from hEnorm) x ∩ gBall (I := I) g x R).indicator
-            (fun v : E => expJacobianDensity (I := I) g hEnorm x v *
+          (SegmentInt (I := I) g (show _ from hEnorm) x ∩ gBall (I := I) g x R).indicator
+            (fun v : E => expJacobianDensity (I := I) g hEnorm x v •
               f (expMapIntrinsic (I := I) g hEnorm x
                 (show TangentSpace I x from v)))
             (r.1 • u.1)
@@ -403,26 +337,26 @@ theorem segBall_int_polar
       (show TangentSpace I x from v)
   let D : E → ℝ := fun v => expJacobianDensity (I := I) g hEnorm x v
   let K : Set E :=
-    SegmentInt (I := I) g (show ∀ (y : M) (w : TangentSpace I y), ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner y w w)) from hEnorm) x ∩ gBall (I := I) g x R
+    SegmentInt (I := I) g (show _ from hEnorm) x ∩ gBall (I := I) g x R
   have hK : MeasurableSet K :=
     (measurableSet_segmentInt (I := I) g (show _ from hEnorm) x).inter
       (measurableSet_gBall (I := I) g x R)
   have hinj : Set.InjOn F K :=
     (exp_inj_segmentInt (I := I) g (show _ from hEnorm) x).mono inter_subset_left
-  have hsource : IntegrableOn (fun v => D v * f (F v)) K
+  have hsource : IntegrableOn (fun v => D v • f (F v)) K
       (modelHaar (E := E)) := by
     simpa only [D, F, K] using
-      expJac_integrable (I := I) g hEnorm x hK hinj f hf
-  rw [expJac_integral (I := I) g hEnorm x hK hinj f
+      integrableOn_expJacobianDensity_smul (I := I) g hEnorm x hK hinj f hf
+  rw [integral_image_expMapIntrinsic (I := I) g hEnorm x hK hinj f
     hf.aestronglyMeasurable]
-  change (∫ v in K, D v * f (F v) ∂(modelHaar (E := E))) = _
+  change (∫ v in K, D v • f (F v) ∂(modelHaar (E := E))) = _
   exact MeasureTheory.setIntegral_polar (modelHaar (E := E)) K hK
-    (fun v => D v * f (F v)) hsource
+    (fun v => D v • f (F v)) hsource
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [T2Space (TangentBundle I M)] in
-theorem segInt_polar
+theorem lintegral_image_segmentInt_eq_polar
     [ConnectedSpace M] [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun x : M ↦ TangentSpace I x)]
@@ -432,11 +366,11 @@ theorem segInt_polar
     (∫⁻ y in
         (fun v : E => expMapIntrinsic (I := I) g hEnorm x
           (show TangentSpace I x from v)) ''
-            (show Set E from SegmentInt (I := I) g (show ∀ (y : M) (w : TangentSpace I y), ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner y w w)) from hEnorm) x),
+            (show Set E from SegmentInt (I := I) g (show _ from hEnorm) x),
         f y ∂(riemannianVolumeMeasure (I := I) (M := M) g)) =
       ∫⁻ u : Metric.sphere (0 : E) 1,
         ∫⁻ r : Ioi (0 : ℝ),
-          (show Set E from SegmentInt (I := I) g (show ∀ (y : M) (w : TangentSpace I y), ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner y w w)) from hEnorm) x).indicator
+          (show Set E from SegmentInt (I := I) g (show _ from hEnorm) x).indicator
             (fun v : E =>
               f (expMapIntrinsic (I := I) g hEnorm x
                 (show TangentSpace I x from v)) *
@@ -451,7 +385,7 @@ theorem segInt_polar
       (show TangentSpace I x from v)
   let J : E → ℝ≥0∞ := fun v =>
     ENNReal.ofReal (expJacobianDensity (I := I) g hEnorm x v)
-  let K : Set E := show Set E from SegmentInt (I := I) g (show ∀ (y : M) (w : TangentSpace I y), ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner y w w)) from hEnorm) x
+  let K : Set E := show Set E from SegmentInt (I := I) g (show _ from hEnorm) x
   have hF : Measurable F :=
     (intrinsicFiber_smooth (I := I) g hEnorm x).continuous.measurable
   have hJ : Measurable J :=
@@ -459,7 +393,7 @@ theorem segInt_polar
       (expJacobianDensity_continuous (I := I) g hEnorm x).measurable
   have hK : MeasurableSet K :=
     measurableSet_segmentInt (I := I) g (show _ from hEnorm) x
-  rw [segInt_lintegral (I := I) g hEnorm x f hf]
+  rw [lintegral_image_segmentInt (I := I) g hEnorm x f hf]
   change (∫⁻ v in K, f (F v) * J v ∂(modelHaar (E := E))) = _
   exact MeasureTheory.setLIntegral_polar (modelHaar (E := E)) K hK
     (fun v => f (F v) * J v) ((hf.comp hF).mul hJ).aemeasurable.restrict

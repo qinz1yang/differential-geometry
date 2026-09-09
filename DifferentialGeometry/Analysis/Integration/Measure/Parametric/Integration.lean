@@ -3,8 +3,8 @@ import Mathlib.MeasureTheory.Integral.Bochner.ContinuousLinearMap
 
 noncomputable section
 
-open Set Filter Manifold MeasureTheory
-open scoped Topology Manifold ContDiff ENNReal
+open Set Filter MeasureTheory
+open scoped Manifold ContDiff ENNReal
 
 namespace DifferentialGeometry.Integral.Measure
 
