@@ -4852,3 +4852,5 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.RankOnePersis
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.RankPersistence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Solutions.UniversalCover
 import DifferentialGeometry.Analysis.Heat.Kernel.DuhamelBound
+import DifferentialGeometry.Analysis.Heat.Kernel.PointwiseForcing
+import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.AncientRankPersistence

@@ -102,6 +102,18 @@ theorem liftedMetric_inner_eq (g : SmoothRiemannianMetric I M)
         (liftedMetric (I := I) g).inner x' v w :=
   fun _ _ => rfl
 
+omit [FiniteDimensional ℝ E] [I.Boundaryless] [T2Space M]
+    [SigmaCompactSpace M] in
+theorem liftedMetric_injective :
+    Function.Injective (liftedMetric (I := I) (M := M)) := by
+  let _ : PathConnectedSpace M := PathConnectedSpace.of_locallyPathConnectedSpace
+  intro g h heq
+  apply DifferentialGeometry.SmoothRiemannianMetric.ext_inner
+  intro x v w
+  let x' : UniversalCover M := ⟨x, ⟦PathConnectedSpace.somePath default x⟧⟩
+  exact congrArg (fun k : DifferentialGeometry.SmoothRiemannianMetric I (UniversalCover M) =>
+    k.inner x' v w) heq
+
 end UniversalCover
 end Topology
 end Riemannian
