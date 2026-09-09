@@ -125,4 +125,72 @@ theorem isOpen_parameters_isNondegenerateCriticalPointAt_on_isCompact
   exact eventually_isNondegenerateCriticalPointAt_on_isCompact hK
     (fun _ _ => hf.contMDiffAt) ha
 
+omit [FiniteDimensional ℝ E] [IsManifold I 2 M] in
+theorem eventually_not_isCriticalPointAt_on_isCompact [IsManifold I 1 M]
+    {f : P → M → ℝ} {K : Set M} (hK : IsCompact K) {a : P}
+    (hf : ∀ x ∈ K, ContMDiffAt ((𝓘(ℝ, P)).prod I) 𝓘(ℝ, ℝ) 1
+      (Function.uncurry f) (a, x))
+    (ha : ∀ x ∈ K, ¬ IsCriticalPointAt I (f a) x) :
+    ∀ᶠ b in 𝓝 a, ∀ x ∈ K, ¬ IsCriticalPointAt I (f b) x := by
+  apply hK.eventually_forall_of_forall_eventually
+  intro x hx
+  let e := extChartAt I x
+  have hxs : x ∈ e.source := mem_extChartAt_source x
+  have hxt : e x ∈ e.target := e.map_source hxs
+  have hes : ContMDiffAt 𝓘(ℝ, E) I 1 e.symm (e x) :=
+    (contMDiffOn_extChartAt_symm x).contMDiffAt ((isOpen_extChartAt_target x).mem_nhds hxt)
+  let g : P → E → ℝ := fun b y => f b (e.symm y)
+  have hg : ContDiffAt ℝ 1 (Function.uncurry g) (a, e x) := by
+    have hfst : ContMDiffAt 𝓘(ℝ, P × E) 𝓘(ℝ, P) 1
+        (Prod.fst : P × E → P) (a, e x) := contDiffAt_fst.contMDiffAt
+    have hsnd : ContMDiffAt 𝓘(ℝ, P × E) I 1
+        (fun p : P × E => e.symm p.2) (a, e x) :=
+      hes.comp (a, e x) contDiffAt_snd.contMDiffAt
+    have hf' : ContMDiffAt ((𝓘(ℝ, P)).prod I) 𝓘(ℝ, ℝ) 1
+        (Function.uncurry f) (a, e.symm (e x)) := by
+      simpa only [e.left_inv hxs] using hf x hx
+    exact hf'.comp (a, e x) (hfst.prodMk hsnd) |>.contDiffAt
+  have hgrad : ContDiffAt ℝ 0
+      (fun p : P × E => fderiv ℝ (g p.1) p.2) (a, e x) := by
+    have hbase : ContDiffAt ℝ 1 (fun q : (P × E) × E => g q.1.1 q.2)
+        ((a, e x), e x) :=
+      hg.comp ((a, e x), e x) (contDiffAt_fst.fst.prodMk contDiffAt_snd)
+    exact hbase.fderiv contDiffAt_snd (by norm_num)
+  have hga : fderiv ℝ (g a) (e x) ≠ 0 := by
+    intro hz
+    apply ha x hx
+    have hfa : ContMDiffAt I 𝓘(ℝ, ℝ) 1 (f a) x :=
+      (hf x hx).comp x (contMDiffAt_const.prodMk contMDiffAt_id)
+    apply (isCriticalPointAt_iff_fixed_chart (hfa.mdifferentiableAt (by norm_num)) hxs).mpr
+    unfold IsCriticalPointAt
+    rw [mfderiv_eq_fderiv]
+    exact hz
+  have hne : ∀ᶠ p : P × E in 𝓝 (a, e x),
+      fderiv ℝ (g p.1) p.2 ≠ 0 :=
+    hgrad.continuousAt.eventually_ne hga
+  have hec : ContinuousAt e x := (continuousOn_extChartAt x).continuousAt
+    ((isOpen_extChartAt_source x).mem_nhds hxs)
+  have hmap : ContinuousAt (fun p : P × M => (p.1, e p.2)) (a, x) :=
+    continuousAt_fst.prodMk (hec.comp continuousAt_snd)
+  have hsource : ∀ᶠ p : P × M in 𝓝 (a, x), p.2 ∈ e.source :=
+    continuousAt_snd.preimage_mem_nhds ((isOpen_extChartAt_source x).mem_nhds hxs)
+  have hreg := hg.eventually (by norm_num)
+  filter_upwards [hmap.preimage_mem_nhds hne, hsource,
+    hmap.preimage_mem_nhds hreg] with p hp hps hgp hcrit
+  have hgp' : ContDiffAt ℝ 1 (Function.uncurry g) (p.1, e p.2) := hgp
+  have hgslice : ContDiffAt ℝ 1 (g p.1) (e p.2) :=
+    hgp'.comp (e p.2) (contDiffAt_const.prodMk contDiffAt_id)
+  have he : ContMDiffAt I 𝓘(ℝ, E) 1 e p.2 :=
+    contMDiffAt_extChartAt' (by simpa only [e, extChartAt_source] using hps)
+  have heq : f p.1 =ᶠ[𝓝 p.2] (g p.1 ∘ e) :=
+    Filter.eventuallyEq_of_mem ((isOpen_extChartAt_source x).mem_nhds hps)
+      (fun y hy => congrArg (f p.1) (e.left_inv hy).symm)
+  have hfslice : ContMDiffAt I 𝓘(ℝ, ℝ) 1 (f p.1) p.2 :=
+    (hgslice.contMDiffAt.comp p.2 he).congr_of_eventuallyEq heq
+  apply hp
+  have hc := (isCriticalPointAt_iff_fixed_chart (hfslice.mdifferentiableAt (by norm_num)) hps).mp hcrit
+  unfold IsCriticalPointAt at hc
+  rw [mfderiv_eq_fderiv] at hc
+  exact hc
+
 end DifferentialGeometry.Topology.Morse

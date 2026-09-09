@@ -243,6 +243,86 @@ theorem isCriticalPointAt_iff_fixed_chart [IsManifold I 1 M]
   have h := isCriticalPointAt_comp_iff hes hf' hsurj
   simpa only [e.left_inv hx] using h.symm
 
+omit [I.Boundaryless] [IsManifold I 2 M] in
+private theorem mfderiv_add_const (f : M → ℝ) (c : ℝ) (x : M) :
+    mfderiv I 𝓘(ℝ, ℝ) (fun y => f y + c) x = mfderiv I 𝓘(ℝ, ℝ) f x := by
+  by_cases hf : MDifferentiableAt I 𝓘(ℝ, ℝ) f x
+  · have hg : MDifferentiableAt I 𝓘(ℝ, ℝ) (fun y => f y + c) x :=
+      hf.add (mdifferentiableAt_const (c := c))
+    simp only [mfderiv, hf, hg, ↓reduceIte, writtenInExtChartAt,
+      extChartAt_model_space_eq_id, PartialEquiv.refl_coe, Function.comp_def, id_eq]
+    change fderivWithin ℝ (fun y => f ((extChartAt I x).symm y) + c) (Set.range I)
+      (extChartAt I x x) = fderivWithin ℝ (fun y => f ((extChartAt I x).symm y))
+      (Set.range I) (extChartAt I x x)
+    exact fderivWithin_add_const c
+  · have hg : ¬ MDifferentiableAt I 𝓘(ℝ, ℝ) (fun y => f y + c) x := by
+      intro hg
+      have hh := hg.sub (mdifferentiableAt_const (c := c))
+      have heq : ((fun y => f y + c) - (fun _ : M => c)) = f := by
+        funext y
+        exact add_sub_cancel_right (f y) c
+      rw [heq] at hh
+      exact hf hh
+    rw [mfderiv_zero_of_not_mdifferentiableAt hf,
+      mfderiv_zero_of_not_mdifferentiableAt hg]
+    rfl
+
+omit [I.Boundaryless] [IsManifold I 2 M] in
+theorem isCriticalPointAt_add_const_iff (f : M → ℝ) (c : ℝ) (x : M) :
+    IsCriticalPointAt I (fun y => f y + c) x ↔ IsCriticalPointAt I f x := by
+  unfold IsCriticalPointAt
+  rw [mfderiv_add_const]
+  rfl
+
+omit [I.Boundaryless] [IsManifold I 2 M] in
+theorem isNondegenerateCriticalPointAt_add_const_iff (f : M → ℝ) (c : ℝ) (x : M) :
+    IsNondegenerateCriticalPointAt I (fun y => f y + c) x ↔
+      IsNondegenerateCriticalPointAt I f x := by
+  have hD : fderiv ℝ (fun y => f ((extChartAt I x).symm y) + c) =
+      fderiv ℝ (fun y => f ((extChartAt I x).symm y)) := by
+    funext y
+    exact fderiv_add_const c
+  have hH : chartHessianAt (fun y => f ((extChartAt I x).symm y) + c) (extChartAt I x x) =
+      chartHessianAt (fun y => f ((extChartAt I x).symm y)) (extChartAt I x x) := by
+    apply congrArg LinearMap.BilinMap.toQuadraticMap
+    ext u v
+    change fderiv ℝ (fderiv ℝ (fun y => f ((extChartAt I x).symm y) + c))
+      (extChartAt I x x) u v = _
+    rw [hD]
+    rfl
+  unfold IsNondegenerateCriticalPointAt
+  rw [isCriticalPointAt_add_const_iff, hH]
+
+omit [I.Boundaryless] [IsManifold I 2 M] in
+theorem isCriticalPointAt_congr_of_eventuallyEq
+    {f g : M → ℝ} {x : M} (hfg : f =ᶠ[𝓝 x] g) :
+    IsCriticalPointAt I f x ↔ IsCriticalPointAt I g x := by
+  unfold IsCriticalPointAt
+  rw [hfg.mfderiv_eq]
+  rfl
+
+omit [I.Boundaryless] [IsManifold I 2 M] in
+theorem isCriticalPointAt_add_of_eventuallyEq_const
+    {f h : M → ℝ} {x : M} {c : ℝ} (hh : h =ᶠ[𝓝 x] fun _ => c) :
+    IsCriticalPointAt I (fun y => f y + h y) x ↔ IsCriticalPointAt I f x := by
+  have heq : (fun y => f y + h y) =ᶠ[𝓝 x] (fun y => f y + c) := by
+    filter_upwards [hh] with y hy
+    rw [hy]
+  exact (isCriticalPointAt_congr_of_eventuallyEq heq).trans
+    (isCriticalPointAt_add_const_iff f c x)
+
+omit [IsManifold I 2 M] in
+theorem isNondegenerateCriticalPointAt_add_of_eventuallyEq_const
+    {f h : M → ℝ} {x : M} {c : ℝ} (hh : h =ᶠ[𝓝 x] fun _ => c) :
+    IsNondegenerateCriticalPointAt I (fun y => f y + h y) x ↔
+      IsNondegenerateCriticalPointAt I f x := by
+  have heq : (fun y => f y + h y) =ᶠ[𝓝 x] (fun y => f y + c) := by
+    filter_upwards [hh] with y hy
+    rw [hy]
+  exact (isNondegenerateCriticalPointAt_congr_of_eventuallyEq heq).trans
+    (isNondegenerateCriticalPointAt_add_const_iff f c x)
+
+
 end Manifold
 
 end DifferentialGeometry.Topology.Morse

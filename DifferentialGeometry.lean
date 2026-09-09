@@ -4896,3 +4896,4 @@ import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletLocalNirenbe
 import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletNirenbergSourceIntegral
 import DifferentialGeometry.Analysis.Sobolev.Tools.RestrictedDiffQuotLp
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.FixedDensityCoefficientBounds
+import DifferentialGeometry.Topology.Morse.CriticalValues
