@@ -374,6 +374,55 @@ theorem exists_cutoffHeatParametrix_residual_bound_of_finrank_eq_two
       map_zero, zero_apply, neg_zero, zero_mul, mul_zero, sub_zero, abs_zero]
       using add_nonneg hCmain hCcomm
 
+theorem cutoffHeatParametrixResidual_at_center_finrank_eq_two
+    {g : SmoothRiemannianMetric I M} {hEnorm : IsMetricNorm g} {p : M}
+    (hn : Module.finrank ℝ E = 2)
+    (B : ExpInvBranch g hEnorm p) (hB0 : (0 : E) ∈ B.hom.source)
+    {χ : M → ℝ} (hχ : ContMDiff I 𝓘(ℝ, ℝ) ∞ χ)
+    (hχ0 : χ =ᶠ[nhds p] fun _ => 1)
+    {t : ℝ} (ht : 0 < t) :
+    cutoffHeatParametrixResidual g B χ 1 t p =
+      -(1 / (4 * Real.pi)) *
+        laplacian (LeviCivita g) g (heatParametrixCoefficient g p 1) p := by
+  have hχp : χ p = 1 := hχ0.eq_of_nhds
+  have hgrad : gradientFun g χ p = 0 := by
+    apply gradientFun_eq_zero_of_mfderiv_eq_zero
+    rw [hχ0.mfderiv_eq]
+    exact mfderiv_const
+  have hlap : laplacian (LeviCivita g) g χ p = 0 := by
+    calc
+      _ = laplacian (LeviCivita g) g (fun _ : M => (1 : ℝ)) p :=
+        laplacian_congr_of_eventuallyEq (LeviCivita g) g hχ.contMDiffAt
+          contMDiffAt_const hχ0
+      _ = 0 := laplacian_const (LeviCivita g) g 1 p
+  have henergy : branchEnergy g B p = 0 := branchEnergy_center B hB0
+  have hpi : (4 * Real.pi * t) ^ (-(Module.finrank ℝ E : ℝ) / 2) * t =
+      1 / (4 * Real.pi) := by
+    rw [hn]
+    norm_num only [Nat.cast_ofNat, show -(2 : ℝ) / 2 = -1 by norm_num,
+      Real.rpow_neg_one]
+    field_simp
+  dsimp only [cutoffHeatParametrixResidual]
+  simp only [hχp, henergy, neg_zero, zero_div, Real.exp_zero, pow_one,
+    hgrad, hlap, map_zero, zero_apply, mul_zero, sub_zero]
+  calc
+    _ = -((4 * Real.pi * t) ^ (-(Module.finrank ℝ E : ℝ) / 2) * t) *
+        laplacian (LeviCivita g) g (heatParametrixCoefficient g p 1) p := by ring
+    _ = _ := by rw [hpi]
+
+theorem cutoffHeatParametrixResidual_at_center_eq_of_zero_mem
+    {g : SmoothRiemannianMetric I M} {hEnorm : IsMetricNorm g} {p : M}
+    (hn : Module.finrank ℝ E = 2)
+    (B₁ B₂ : ExpInvBranch g hEnorm p)
+    (hB₁ : (0 : E) ∈ B₁.hom.source) (hB₂ : (0 : E) ∈ B₂.hom.source)
+    {χ : M → ℝ} (hχ : ContMDiff I 𝓘(ℝ, ℝ) ∞ χ)
+    (hχ0 : χ =ᶠ[nhds p] fun _ => 1)
+    {t : ℝ} (ht : 0 < t) :
+    cutoffHeatParametrixResidual g B₁ χ 1 t p =
+      cutoffHeatParametrixResidual g B₂ χ 1 t p := by
+  rw [cutoffHeatParametrixResidual_at_center_finrank_eq_two hn B₁ hB₁ hχ hχ0 ht,
+    cutoffHeatParametrixResidual_at_center_finrank_eq_two hn B₂ hB₂ hχ hχ0 ht]
+
 private theorem cutoffHeatParametrixResidual_eq_zero_of_notMem_tsupport
     {g : SmoothRiemannianMetric I M} {hEnorm : IsMetricNorm g} {p : M}
     (B : ExpInvBranch g hEnorm p) {χ : M → ℝ} {q : M} (hq : q ∉ tsupport χ)

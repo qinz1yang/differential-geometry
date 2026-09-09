@@ -4911,6 +4911,7 @@ import DifferentialGeometry.Analysis.Parabolic.Dirichlet.LocalSobolevTimeNorm
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.ThirdOrderTimeNorm
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.ThirdOrderRegularity
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.WeakPartialSource
+import DifferentialGeometry.Analysis.Sobolev.Euclidean.WeakPartialWkpTwo
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.TwoTermSource
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.FiniteSumReindex
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.TimeMeasureRestrict
