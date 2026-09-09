@@ -482,12 +482,12 @@ theorem nonempty_shi_barrier_cutoff_data_of_solution
       (ricci_quadratic_form_bound_of_solution_curvature_bound
         (I := I) S y v (hcurv0 s hs y))
   have hpde :=
-    metricPDE_Icc (I := I) S hS hT hslab hreg
+    metricPDE_Icc (I := I) S hS hslab (fun _ h => hreg ⟨h.1, h.2.le⟩)
   have hequiv :=
     metricEquiv_Icc (I := I) (fun s => S.base.metric s)
       hpde hricQuad
   have hedist :=
-    edistCont_Icc (I := I) S hS hT hslab hreg hricQuad O
+    edistCont_Icc (I := I) S hS hslab (fun _ h => hreg ⟨h.1, h.2.le⟩) hricQuad O
   obtain ⟨Csq, hCsq, hsq⟩ :=
     DifferentialGeometry.Analysis.CutoffProfile.exists_deriv_sq
   obtain ⟨Cη, hCη, hη₁, hη₂⟩ :=

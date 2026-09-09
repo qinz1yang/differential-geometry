@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Ricci.Estimate.Qua
 import DifferentialGeometry.Geometry.Metric.Completeness
 import DifferentialGeometry.Geometry.Comparison.Distance.Continuity
 import DifferentialGeometry.Geometry.Metric.Family.Comparison
-
+import DifferentialGeometry.Analysis.Calculus.SmoothExtension.BoundaryDerivLimit
 
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Geometry.Curvature
@@ -43,41 +43,20 @@ private theorem tensor_eval_cont
     (b := fun _ ↦ x) continuous_subtype_val (fun p ↦ p.2) continuous_const
     (v := fun i _ ↦ vec2 v w i) (fun _ ↦ continuous_const)
 
-private theorem deriv_Ici_start
-    {a b : Real} (hab : a < b) (f e : Real → Real)
-    (hcont : ContinuousOn f (Set.Icc a b))
-    (hecont : ContinuousWithinAt e (Set.Ioi a) a)
-    (hint : ∀ t ∈ Set.Ioo a b,
-      HasDerivWithinAt f (e t) (Set.Ici a) t) :
-    HasDerivWithinAt f (e a) (Set.Ici a) a := by
-  have hopen : IsOpen (Set.Ioo a b) := isOpen_Ioo
-  have hsub : Set.Ioo a b ⊆ Set.Ici a := fun _ ht ↦ ht.1.le
-  have hwithin : ∀ t ∈ Set.Ioo a b,
-      HasDerivWithinAt f (e t) (Set.Ioo a b) t :=
-    fun t ht ↦ (hint t ht).mono hsub
-  have hdiff : DifferentiableOn Real f (Set.Ioo a b) :=
-    fun t ht ↦ (hwithin t ht).differentiableWithinAt
-  have hderiv : ∀ t ∈ Set.Ioo a b, deriv f t = e t := by
-    intro t ht
-    rw [← derivWithin_of_isOpen hopen ht]
-    exact (hwithin t ht).derivWithin (hopen.uniqueDiffWithinAt ht)
-  refine hasDerivWithinAt_Ici_of_tendsto_deriv (s := Set.Ioo a b)
-    hdiff ?_ ?_ ?_
-  · exact (hcont.continuousWithinAt ⟨le_rfl, hab.le⟩).mono
-      Set.Ioo_subset_Icc_self
-  · exact Ioo_mem_nhdsGT hab
-  · exact hecont.tendsto.congr'
-      (Filter.eventuallyEq_of_mem (Ioo_mem_nhdsGT hab) hderiv).symm
+section
 
-omit [NeZero (Module.finrank ℝ E)]
-  [SigmaCompactSpace M] in
+variable {E : Type uE} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+variable {H : Type uH} [TopologicalSpace H]
+variable {I : ModelWithCorners ℝ E H} [I.Boundaryless]
+variable {M : Type u} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M] [T2Space M]
+
 theorem metricPDE_Icc
     {D : RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S)
-    {a b : Real} (hab : a < b)
+    {a b : Real}
     (hslab : Set.Icc a b ⊆ D.carrier)
-    (hreg : Set.Ioc a b ⊆ D.regular) :
+    (hreg : Set.Ioo a b ⊆ D.regular) :
     ∀ t ∈ Set.Icc a b, ∀ x : M, ∀ v w : TangentSpace I x,
       HasDerivWithinAt
         (fun s : Real ↦ (S.base.metric s).inner x v w)
@@ -101,34 +80,13 @@ theorem metricPDE_Icc
       SolutionFamily.ricciAt]
     exact (metricRicciAt_apply_eq_ricciTensor (S.base.metric s) x v w).symm
   intro t ht x v w
-  rcases eq_or_lt_of_le ht.1 with rfl | hat
-  · have hecont : ContinuousWithinAt
-        (fun s : Real ↦
-          (-2 : Real) * ricciTensor (I := I) (S.base.metric s) x v w)
-        (Set.Ioi a) a := by
-      have hmem : Set.Icc a b ∈ nhdsWithin a (Set.Ioi a) :=
-        Filter.mem_of_superset (Ioo_mem_nhdsGT hab)
-          (fun s hs ↦ ⟨hs.1.le, hs.2.le⟩)
-      exact ((hricCont x v w).continuousWithinAt ⟨le_rfl, hab.le⟩)
-        |>.mono_of_mem_nhdsWithin hmem
-    have hint : ∀ s ∈ Set.Ioo a b,
-        HasDerivWithinAt
-          (fun r : Real ↦ (S.base.metric r).inner x v w)
-          ((-2 : Real) * ricciTensor (I := I) (S.base.metric s) x v w)
-          (Set.Ici a) s := by
-      intro s hs
-      let τ : RealTimeInterval.RegularTime D :=
-        ⟨s, hreg ⟨hs.1, hs.2.le⟩⟩
-      have hraw := metricDerivAt (I := I) S hS τ x v w
-      simpa [SolutionFamily.ricciAt, metricRicciAt_apply_eq_ricciTensor,
-        DifferentialGeometry.ricciCurvatureAt_leviCivita_apply_eq_ricciTensor] using
-        hraw.hasDerivWithinAt
-    exact (deriv_Ici_start hab _ _ (hmetricCont x v w) hecont hint).mono
-      (fun _ hs ↦ hs.1)
-  · let τ : RealTimeInterval.RegularTime D :=
-      ⟨t, hreg ⟨hat, ht.2⟩⟩
-    have hraw := metricDerivAt (I := I) S hS τ x v w
-    simpa [SolutionFamily.ricciAt, metricRicciAt_apply_eq_ricciTensor] using hraw.hasDerivWithinAt
+  apply Analysis.Calculus.SmoothExtension.hasDerivWithinAt_Icc_of_hasDerivAt_Ioo
+    (hmetricCont x v w) (hricCont x v w) ?_ ht
+  intro s hs
+  have hraw := metricDerivAt (I := I) S hS (⟨s, hreg hs⟩ : RealTimeInterval.RegularTime D) x v w
+  simpa [SolutionFamily.ricciAt, metricRicciAt_apply_eq_ricciTensor] using hraw
+
+end
 
 theorem exp_bounds_log
     {fa fb R : Real} (hfa : 0 < fa) (hfb : 0 < fb)
@@ -260,14 +218,20 @@ theorem riemannianEDistOf_exp_bounds_of_abs_ricciTensor_le
         show -K * |s - t| + K * |s - t| = 0 by ring,
         Real.exp_zero, ENNReal.ofReal_one, one_mul]
 
-omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
+section
+
+variable {E : Type uE} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+variable {H : Type uH} [TopologicalSpace H]
+variable {I : ModelWithCorners ℝ E H} [I.Boundaryless]
+variable {M : Type u} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M] [T2Space M]
+
 theorem edistCont_Icc
     {D : RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S)
-    {a b K : Real} (hab : a < b)
+    {a b K : Real}
     (hslab : Set.Icc a b ⊆ D.carrier)
-    (hreg : Set.Ioc a b ⊆ D.regular)
+    (hreg : Set.Ioo a b ⊆ D.regular)
     (hric : ∀ t ∈ Set.Icc a b, ∀ x : M,
       ∀ v : TangentSpace I x,
         |ricciTensor (I := I) (S.base.metric t) x v v| ≤
@@ -277,7 +241,7 @@ theorem edistCont_Icc
       (fun p : Real × M ↦
         riemannianEDistOf (I := I) (S.base.metric p.1) O p.2)
       (Set.Icc a b ×ˢ (Set.univ : Set M)) := by
-  have hpde := metricPDE_Icc (I := I) S hS hab hslab hreg
+  have hpde := metricPDE_Icc (I := I) S hS hslab hreg
   intro p hp
   let A : Real × M → Real := fun q ↦ 2 * K * |q.1 - p.1|
   let d₀ : Real × M → ENNReal := fun q ↦
@@ -338,6 +302,8 @@ theorem edistCont_Icc
       (I := I) (S.base.metric p.1) (S.base.metric q.1)
       (Real.exp_pos _) (fun y v ↦ (hpair y v).2) O q.2
 
+end
+
 omit [NeZero (Module.finrank ℝ E)] in
 theorem complete_of_ricBound
     {D : RealTimeInterval}
@@ -360,7 +326,7 @@ theorem complete_of_ricBound
       fun _ ht ↦ hslab ⟨ht.1, ht.2.trans hs.2⟩
     have hreg' : Set.Ioc a s ⊆ D.regular :=
       fun _ ht ↦ hreg ⟨ht.1, ht.2.trans hs.2⟩
-    have hpde := metricPDE_Icc (I := I) S hS has hslab' hreg'
+    have hpde := metricPDE_Icc (I := I) S hS hslab' (fun _ h => hreg' ⟨h.1, h.2.le⟩)
     have hequiv := metricEquiv_Icc (I := I) (fun t ↦ S.base.metric t) hpde
       (fun t ht x v ↦ hric t ⟨ht.1, ht.2.trans hs.2⟩ x v)
       s ⟨has.le, le_rfl⟩
