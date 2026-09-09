@@ -2547,6 +2547,7 @@ import DifferentialGeometry.Geometry.Exponential.NormalCoordinates.MetricExtensi
 import DifferentialGeometry.Geometry.Exponential.NormalCoordinates.Convexity
 import DifferentialGeometry.Geometry.Exponential.NormalCoordinates.Jensen
 import DifferentialGeometry.Geometry.Exponential.NormalCoordinates.Fiber
+import DifferentialGeometry.Geometry.Exponential.NormalCoordinates.LoopTransport
 import DifferentialGeometry.Geometry.Exponential.Intrinsic.Agreement
 import DifferentialGeometry.Geometry.Exponential.Smoothness.AtZero.Smoothness
 import DifferentialGeometry.Geometry.Exponential.Smoothness.AtZero.VelocitySlice
