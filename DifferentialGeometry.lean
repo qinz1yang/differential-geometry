@@ -4829,6 +4829,8 @@ import DifferentialGeometry.Analysis.Parabolic.Dirichlet.WeakGradientSourceBound
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.QuantitativeGradientSource
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.EnergyEstimate
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.InteriorEstimate
+import DifferentialGeometry.Analysis.Parabolic.Dirichlet.TimeDerivativeEstimate
+import DifferentialGeometry.Analysis.Calculus.Sard
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.TimeOperatorH1
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.TimeDerivativeEquation
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.MaximalRegularity.TimeDerivative
@@ -4842,3 +4844,6 @@ import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureNullityRa
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.SurfaceProductRank
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.Product
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.Stationary
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.TimeRestriction
+import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.RankContinuity
+import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.RankOnePersistence

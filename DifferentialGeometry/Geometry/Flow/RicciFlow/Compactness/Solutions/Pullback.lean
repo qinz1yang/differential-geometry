@@ -238,6 +238,16 @@ def solutionOnPullback [hSigma : SigmaCompactSpace M] [T2Space M]
   let _ := hSigma
   exact { base := { metric := fun t => Diffeomorph.pullbackMetric (I := I) (S.base.metric t) Φ } }
 
+omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+theorem solutionOnPullback_eq_pullback
+    [hSigma : SigmaCompactSpace M] [T2Space M]
+    {D : RealTimeInterval}
+    (S : SolutionOn (I := I) (M := N) D) (Φ : M ≃ₘ⟮I, I⟯ N) :
+    solutionOnPullback S Φ = S.pullback Φ := by
+  let _ := hSigma
+  simp only [solutionOnPullback, SolutionOn.pullback,
+    Diffeomorph.pullbackMetricCross_eq_pullbackMetric]
+
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 private theorem pullback_coeff_eq
     [SigmaCompactSpace M] [T2Space M]
@@ -497,10 +507,7 @@ theorem isSolutionOn_pullback
     (S : SolutionOn (I := I) (M := N) D) (hS : IsSolutionOn (I := I) S)
     (Φ : M ≃ₘ⟮I, I⟯ N) :
     IsSolutionOn (I := I) (solutionOnPullback (I := I) S Φ) := by
-  have heq : solutionOnPullback S Φ = S.pullback Φ := by
-    simp only [solutionOnPullback, SolutionOn.pullback,
-      Diffeomorph.pullbackMetricCross_eq_pullbackMetric]
-  rw [heq]
+  rw [solutionOnPullback_eq_pullback]
   exact hS.pullback S Φ
 
 end RicciFlow
