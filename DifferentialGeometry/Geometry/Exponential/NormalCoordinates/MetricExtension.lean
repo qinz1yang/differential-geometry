@@ -1,4 +1,5 @@
 import DifferentialGeometry.Geometry.Exponential.ConjugatePoint.CurvatureBound
+import DifferentialGeometry.Geometry.Geodesic.Naturality.LocalIsometry.Geodesic
 import DifferentialGeometry.Geometry.Exponential.Intrinsic.Agreement
 import DifferentialGeometry.Bundle.FiberBundleHausdorff
 import DifferentialGeometry.Analysis.Calculus.SmoothExtension.Curve
@@ -551,5 +552,84 @@ theorem injective_mfderiv_expMap_minimizingVec_of_pullback_extension
       ring
 
 end MinimizingVector
+
+section Radial
+
+variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
+  [FiniteDimensional ℝ E] {H : Type*} [TopologicalSpace H]
+  {I : ModelWithCorners ℝ E H} [I.Boundaryless]
+  {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+  [T2Space M]
+
+theorem hasGeodesicEquationAt_smul_of_framedExpMap_pullback
+    (g : SmoothRiemannianMetric I M) (p : M) (U : Opens E)
+    (gE : SmoothRiemannianMetric 𝓘(ℝ, E) E)
+    (hmetric : ∀ x ∈ U, ∀ v w : E,
+      gE.inner x v w = g.inner (framedExpMap g p x)
+        (mfderiv 𝓘(ℝ, E) I (framedExpMap g p) x v)
+        (mfderiv 𝓘(ℝ, E) I (framedExpMap g p) x w))
+    (z : E) (t : ℝ) (ht : t • z ∈ U)
+    (hdom : normalFrame g p (t • z) ∈ expDomain g p) :
+    HasGeodesicEquationAt (I := 𝓘(ℝ, E)) gE (fun s => s • z) t := by
+  let V : Opens E := ⟨(U : Set E) ∩ (normalFrame g p) ⁻¹' expDomain g p,
+    U.isOpen.inter ((isOpen_expDomain g p).preimage (normalFrame g p).continuous)⟩
+  have htV : t • z ∈ V := ⟨ht, hdom⟩
+  have hloc : IsLocalDiffeomorphOn 𝓘(ℝ, E) I ∞ (framedExpMap g p) V := by
+    apply isLocalDiffeomorphOn_framedExpMap g p V.isOpen (fun x hx => hx.2)
+    intro x hx v w hvw
+    by_contra hne
+    have hpos := gE.pos x (v - w) (sub_ne_zero.mpr hne)
+    have heq := hmetric x hx.1 (v - w) (v - w)
+    have hD : mfderiv 𝓘(ℝ, E) I (framedExpMap g p) x (v - w) = 0 := by
+      rw [map_sub, hvw, sub_self]
+    rw [hD] at heq
+    have hzero : gE.inner x (v - w) (v - w) = 0 := by simpa using heq
+    exact (ne_of_gt hpos) hzero
+  classical
+  let fU : V → M := fun x => framedExpMap g p x
+  have hfU : IsLocalDiffeomorph 𝓘(ℝ, E) I ∞ fU :=
+    isLocalDiffeomorph_restrict_open V hloc
+  let γt : V := ⟨t • z, htV⟩
+  let γ : ℝ → V := fun s => if hs : s • z ∈ V then ⟨s • z, hs⟩ else γt
+  have hmem : ∀ᶠ s in 𝓝 t, s • z ∈ V :=
+    (continuous_id.smul continuous_const).continuousAt.preimage_mem_nhds (V.isOpen.mem_nhds htV)
+  have hEq : (fun s => (γ s : E)) =ᶠ[𝓝 t] (fun s => s • z) := by
+    filter_upwards [hmem] with s hs
+    simp only [γ, dif_pos hs]
+  have hγ : ContMDiffAt 𝓘(ℝ, ℝ) 𝓘(ℝ, E) ∞ γ t := by
+    have hval : ContMDiffAt 𝓘(ℝ, ℝ) 𝓘(ℝ, E) ∞ (fun s => (γ s : E)) t :=
+      (contMDiffAt_id.smul contMDiffAt_const).congr_of_eventuallyEq hEq
+    simpa only [Subtype.coe_eta] using
+      codRestr_contMDiffAt (I := 𝓘(ℝ, ℝ)) (J := 𝓘(ℝ, E))
+        (V := V) (f := fun s => (γ s : E)) (fun s => (γ s).property) hval
+  have hmap : (fun s => fU (γ s)) =ᶠ[𝓝 t]
+      (fun s => expMap g p (s • normalFrame g p z)) := by
+    filter_upwards [hEq] with s hs
+    change framedExpMap g p (γ s : E) = _
+    rw [hs, framedExpMap_apply, map_smul]
+  have hgeoMap : HasGeodesicEquationAt (I := I) g (fun s => fU (γ s)) t := by
+    apply HasGeodesicEquationAt.congr_of_eventuallyEq_at hmap.eq_of_nhds hmap
+    apply hasGeodesicEquationAt_expMap_smul
+    simpa only [map_smul] using hdom
+  have hgeoU : HasGeodesicEquationAt (I := 𝓘(ℝ, E)) (gE.restrictOpen V) γ t := by
+    apply geoEq_of_map_localIso
+      (gE.restrictOpen V) g hfU ?_ γ t hγ hgeoMap
+    intro x v w
+    rw [SmoothRiemannianMetric.restrictOpen_inner]
+    change gE.inner (x : E) v w = g.inner (fU x)
+      (mfderiv 𝓘(ℝ, E) I fU x v) (mfderiv 𝓘(ℝ, E) I fU x w)
+    have hdf : mfderiv 𝓘(ℝ, E) I fU x =
+        mfderiv 𝓘(ℝ, E) I (framedExpMap g p) (x : E) :=
+      mfderiv_restrict_open (framedExpMap g p) V x
+    rw [hdf]
+    exact hmetric x x.property.1 v w
+  have hgeoOn : IsGeodesicOn (I := 𝓘(ℝ, E)) (gE.restrictOpen V) γ {t} := by
+    intro s hs
+    simpa only [mem_singleton_iff] using hs ▸ hgeoU
+  have hgeoE := ((geodesicOn_open_iff gE V γ {t}).mp hgeoOn) t (mem_singleton t)
+  exact HasGeodesicEquationAt.congr_of_eventuallyEq_at
+    hEq.eq_of_nhds.symm hEq.symm hgeoE
+
+end Radial
 
 end DifferentialGeometry.Geometry.Riemannian.NormalCoordinates
