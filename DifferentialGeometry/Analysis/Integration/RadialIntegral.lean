@@ -17,6 +17,12 @@ variable {E F : Type*} [AddCommMonoid E] [Module ℝ E]
 def radialIntegral (k : ℕ) (f : E → F) (x : E) : F :=
   ∫ s in (0 : ℝ)..1, s ^ k • f (s • x)
 
+theorem radialIntegral_comp_linear
+    {G : Type*} [AddCommMonoid G] [Module ℝ G]
+    (k : ℕ) (f : G → F) (L : E →ₗ[ℝ] G) (x : E) :
+    radialIntegral k (fun v => f (L v)) x = radialIntegral k f (L x) := by
+  simp only [radialIntegral, map_smul]
+
 variable [CompleteSpace F]
 
 theorem radialIntegral_zero (k : ℕ) (f : E → F) :
