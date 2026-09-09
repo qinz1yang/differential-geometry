@@ -2618,6 +2618,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Extension.Limit.CurvatureBou
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.Cutoff.Estimate
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.Derivatives.First
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.Derivatives.Higher
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.Derivatives.Local
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.Solution.Basic
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.Solution.TimeTruncation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.RegularityHypotheses

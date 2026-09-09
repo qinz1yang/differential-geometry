@@ -53,7 +53,7 @@ def shiCutoffError
 
 omit [FiniteDimensional Real E] [I.Boundaryless] [T2Space M]
   [SigmaCompactSpace M] in
-private theorem riemannianEDistOf_lt_of_shiCutoff_pos
+theorem riemannianEDistOf_lt_of_shiCutoff_pos
     {S : SolutionOn (I := I) (M := M) D}
     {time : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.FlowTime D}
     (B : FlowMetricBall S time) {s : Real} (hs : 0 ≤ s) {y : M}
