@@ -83,6 +83,7 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.LieC
 import DifferentialGeometry.Analysis.Spectral.Tensor.UniformChartBounds.Curvature.RiemannTensor
 import DifferentialGeometry.Analysis.FunctionalAnalysis.BilinearCoercivity
 import DifferentialGeometry.Analysis.FunctionalAnalysis.BilinearOperatorNorm
+import DifferentialGeometry.Analysis.FunctionalAnalysis.SeminormBounds
 import DifferentialGeometry.Analysis.Spectral.Tensor.UniformChartBounds.Tensor.FiberFromModel
 import DifferentialGeometry.Analysis.Spectral.Tensor.UniformChartBounds.Tensor.FiberToModel
 import DifferentialGeometry.Analysis.Spectral.Tensor.UniformChartBounds.Tensor.IntrinsicDerivative
@@ -2451,6 +2452,7 @@ import DifferentialGeometry.Geometry.Metric.Family.Continuity
 import DifferentialGeometry.Geometry.Metric.Family.CurveDistance
 import DifferentialGeometry.Geometry.Metric.Family.MovingEndpoints
 import DifferentialGeometry.Geometry.Metric.Family.DistanceRegularity
+import DifferentialGeometry.Geometry.Metric.Family.DistanceContinuity
 import DifferentialGeometry.Geometry.Metric.Family.Regularity.DifferentialOperator
 import DifferentialGeometry.Geometry.Metric.Family.InverseMetric.Regularity
 import DifferentialGeometry.Geometry.Metric.Family.InverseMetric.Smoothness

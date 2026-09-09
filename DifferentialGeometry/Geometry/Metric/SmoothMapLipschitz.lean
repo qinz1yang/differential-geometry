@@ -103,3 +103,67 @@ theorem ContMDiff.locallyLipschitz {f : M → N} (hf : ContMDiff I J 1 f) :
     LocallyLipschitz f := fun _ => hf.contMDiffAt.exists_lipschitzOnWith
 
 end
+
+namespace DifferentialGeometry
+
+variable {E F : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  [NormedAddCommGroup F] [NormedSpace ℝ F]
+  {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+  {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
+  [RiemannianBundle (TangentSpace I : M → Type _)]
+
+open MeasureTheory in
+theorem riemannianEDist_le_of_mfderivWithin_le
+    {ψ : F → M} {s U : Set F} {L : ℝ}
+    (hψ : ContMDiffOn 𝓘(ℝ, F) I 1 ψ s)
+    (hU : U ⊆ s)
+    (hspd : ∀ w ∈ U, ∀ v : F,
+      ‖mfderivWithin 𝓘(ℝ, F) I ψ s w v‖ₑ ≤ ENNReal.ofReal (L * ‖v‖))
+    {u v : F} (hseg : segment ℝ u v ⊆ U) :
+    riemannianEDist I (ψ u) (ψ v) ≤ ENNReal.ofReal (L * dist u v) := by
+  let η := ContinuousAffineMap.lineMap (R := ℝ) u v
+  let γ : ℝ → M := ψ ∘ η
+  have hηU : MapsTo η (Icc (0 : ℝ) 1) U := by
+    intro t ht
+    apply hseg
+    rw [segment_eq_image_lineMap]
+    exact ⟨t, ht, rfl⟩
+  have hηs : MapsTo η (Icc (0 : ℝ) 1) s := fun _ ht => hU (hηU ht)
+  have hηsmooth : ContMDiffOn 𝓘(ℝ, ℝ) 𝓘(ℝ, F) 1 η (Icc (0 : ℝ) 1) := by
+    rw [contMDiffOn_iff_contDiffOn]
+    exact η.contDiff.contDiffOn
+  have hγsmooth := hψ.comp hηsmooth hηs
+  have hpoint : ∀ t ∈ Icc (0 : ℝ) 1,
+      ‖mfderivWithin 𝓘(ℝ, ℝ) I γ (Icc 0 1) t 1‖ₑ ≤
+        ENNReal.ofReal (L * dist u v) := by
+    intro t ht
+    have hu : UniqueMDiffWithinAt 𝓘(ℝ, ℝ) (Icc (0 : ℝ) 1) t := by
+      rw [uniqueMDiffWithinAt_iff_uniqueDiffWithinAt]
+      exact uniqueDiffOn_Icc zero_lt_one t ht
+    have hηdiff : MDifferentiableAt 𝓘(ℝ, ℝ) 𝓘(ℝ, F) η t := by
+      rw [mdifferentiableAt_iff_differentiableAt]
+      exact η.differentiableAt
+    have hchain := mfderivWithin_comp t (hψ.mdifferentiableOn one_ne_zero _ (hηs ht))
+      hηdiff.mdifferentiableWithinAt hηs hu
+    have hηderiv : mfderivWithin 𝓘(ℝ, ℝ) 𝓘(ℝ, F) η (Icc 0 1) t 1 = v - u := by
+      rw [mfderivWithin_eq_mfderiv hu hηdiff, mfderiv_eq_fderiv, η.fderiv]
+      change ((AffineMap.lineMap u v).linear : ℝ →ₗ[ℝ] F) 1 = v - u
+      rw [AffineMap.lineMap_linear]
+      simp
+    change ‖(mfderivWithin 𝓘(ℝ, ℝ) I (ψ ∘ η) (Icc 0 1) t) 1‖ₑ ≤ _
+    rw [hchain, ContinuousLinearMap.comp_apply, hηderiv]
+    simpa only [dist_eq_norm, norm_sub_rev] using hspd (η t) (hηU ht) (v - u)
+  calc
+    riemannianEDist I (ψ u) (ψ v) ≤ pathELength I γ 0 1 :=
+      riemannianEDist_le_pathELength hγsmooth
+        (by simp [γ, η, ContinuousAffineMap.coe_lineMap_eq])
+        (by simp [γ, η, ContinuousAffineMap.coe_lineMap_eq]) zero_le_one
+    _ = ∫⁻ t in Icc (0 : ℝ) 1, ‖mfderivWithin 𝓘(ℝ, ℝ) I γ (Icc 0 1) t 1‖ₑ :=
+      pathELength_eq_lintegral_mfderivWithin_Icc
+    _ ≤ ∫⁻ _ in Icc (0 : ℝ) 1, ENNReal.ofReal (L * dist u v) :=
+      setLIntegral_mono' measurableSet_Icc hpoint
+    _ = ENNReal.ofReal (L * dist u v) := by
+      rw [setLIntegral_const, Real.volume_Icc]
+      norm_num
+
+end DifferentialGeometry
