@@ -1,3 +1,4 @@
+import DifferentialGeometry.Topology.Manifold.LocalDiffeomorph.Lift
 import DifferentialGeometry.Geometry.Comparison.CheegerGromovTaylor.Paths.ExponentialLift
 import DifferentialGeometry.Geometry.Metric.Path.Homotopy
 import Mathlib.Topology.Homotopy.Lifting
@@ -186,43 +187,11 @@ theorem append_mid_eq
         (intrinsicFramedExp (I := I) g hEnorm x)
         (Metric.ball (0 : E) R)) :
     P.toFun (1 / 2) = A.toFun 1 := by
-  let F : E → M :=
-    intrinsicFramedExp (I := I) g hEnorm x
-  let γ : Real → M := fun t => p.extend (2 * t)
-  have hscale :
-      Set.MapsTo (fun t : Real => 2 * t)
-        (Set.Icc 0 (1 / 2)) (Set.Icc 0 1) := by
-    intro t ht
-    constructor <;> linarith [ht.1, ht.2]
-  have hA :
-      isLiftOn F γ (Metric.ball (0 : E) R) 0 0 (1 / 2)
-        (fun t => A.toFun (2 * t)) := by
-    refine ⟨A.contDiff.continuousOn.comp
-      (continuous_const.mul continuous_id).continuousOn hscale, ?_, ?_⟩
-    · simpa only [mul_zero] using A.start
-    · intro t ht
-      have ht' : 2 * t ∈ Set.Icc (0 : Real) 1 := hscale ht
-      exact ⟨A.maps_ball hR hp ht', A.lifts ht'⟩
-  have hP :
-      isLiftOn F γ (Metric.ball (0 : E) R) 0 0 (1 / 2) P.toFun := by
-    refine ⟨P.contDiff.continuousOn.mono ?_, P.start, ?_⟩
-    · intro t ht
-      exact ⟨ht.1, ht.2.trans (by norm_num)⟩
-    · intro t ht
-      have ht' : t ∈ Set.Icc (0 : Real) 1 :=
-        ⟨ht.1, ht.2.trans (by norm_num)⟩
-      refine ⟨P.maps_ball hR hpc ht', ?_⟩
-      change
-        intrinsicFramedExp (I := I) g hEnorm x (P.toFun t) =
-          p.extend (2 * t)
-      rw [← Path.extend_trans_of_le_half p c ht.2]
-      exact P.lifts ht'
-  have heq :
-      Set.EqOn P.toFun (fun t => A.toFun (2 * t))
-        (Set.Icc 0 (1 / 2)) :=
-    hP.eqOn (by norm_num) Metric.isOpen_ball hloc hA
-  convert heq ⟨by norm_num, le_rfl⟩ using 1
-  norm_num
+  exact isLiftOn.append_mid_eq Metric.isOpen_ball hloc
+    ⟨A.contDiff.continuousOn, A.start,
+      fun t ht => ⟨A.maps_ball hR hp ht, A.lifts ht⟩⟩
+    ⟨P.contDiff.continuousOn, P.start,
+      fun t ht => ⟨P.maps_ball hR hpc ht, P.lifts ht⟩⟩
 
 theorem cancel_right
     (P :
@@ -238,40 +207,11 @@ theorem cancel_right
         (Metric.ball (0 : E) R))
     (hend : P.toFun 1 = Q.toFun 1) :
     P.toFun (1 / 2) = Q.toFun (1 / 2) := by
-  let F : E → M :=
-    intrinsicFramedExp (I := I) g hEnorm x
-  let γ : Real → M := fun t => c.extend (2 * t - 1)
-  have hsub :
-      Set.Icc (1 / 2 : Real) 1 ⊆ Set.Icc (0 : Real) 1 := by
-    intro t ht
-    exact ⟨(by linarith [ht.1]), ht.2⟩
-  have hP :
-      isLiftOn F γ (Metric.ball (0 : E) R)
-        (P.toFun (1 / 2)) (1 / 2) 1 P.toFun := by
-    refine ⟨P.contDiff.continuousOn.mono hsub, rfl, ?_⟩
-    intro t ht
-    have ht' : t ∈ Set.Icc (0 : Real) 1 := hsub ht
-    refine ⟨P.maps_ball hR hpc ht', ?_⟩
-    change
-      intrinsicFramedExp (I := I) g hEnorm x (P.toFun t) =
-        c.extend (2 * t - 1)
-    rw [← Path.extend_trans_of_half_le p c ht.1]
-    exact P.lifts ht'
-  have hQ :
-      isLiftOn F γ (Metric.ball (0 : E) R)
-        (Q.toFun (1 / 2)) (1 / 2) 1 Q.toFun := by
-    refine ⟨Q.contDiff.continuousOn.mono hsub, rfl, ?_⟩
-    intro t ht
-    have ht' : t ∈ Set.Icc (0 : Real) 1 := hsub ht
-    refine ⟨Q.maps_ball hR hqc ht', ?_⟩
-    change
-      intrinsicFramedExp (I := I) g hEnorm x (Q.toFun t) =
-        c.extend (2 * t - 1)
-    rw [← Path.extend_trans_of_half_le q c ht.1]
-    exact Q.lifts ht'
-  exact
-    hP.eqOn_of_eq Metric.isOpen_ball hloc hQ
-      ⟨by norm_num, le_rfl⟩ hend ⟨le_rfl, by norm_num⟩
+  exact isLiftOn.cancel_right Metric.isOpen_ball hloc
+    ⟨P.contDiff.continuousOn, P.start,
+      fun t ht => ⟨P.maps_ball hR hpc ht, P.lifts ht⟩⟩
+    ⟨Q.contDiff.continuousOn, Q.start,
+      fun t ht => ⟨Q.maps_ball hR hqc ht, Q.lifts ht⟩⟩ hend
 
 theorem end_eq_of_append
     (A :

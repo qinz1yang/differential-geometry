@@ -1,4 +1,5 @@
 import DifferentialGeometry.Topology.Manifold.LocalDiffeomorph.Open
+import Mathlib.Topology.Path
 
 set_option autoImplicit false
 
@@ -348,6 +349,106 @@ theorem exists_of_compact
     exact (not_le.mpr ht₀u₁) (le_csSup hSbdd hu₁S)
   rw [← ht₀eq]
   exact ht₀S.2
+
+end isLiftOn
+
+namespace isLiftOn
+
+theorem append_mid_eq
+    {E₁ : Type*} [NormedAddCommGroup E₁] [NormedSpace Real E₁]
+    {H₁ : Type*} [TopologicalSpace H₁]
+    {J : ModelWithCorners Real E₁ H₁}
+    {M₁ : Type*} [TopologicalSpace M₁] [ChartedSpace H₁ M₁]
+    {F : E₁ → M₁} {U : Set E₁} {x y z : M₁}
+    {p : Path x y} {c : Path y z}
+    {A P : Real → E₁} {e₀ : E₁}
+    (hU : IsOpen U)
+    (hloc : IsLocalDiffeomorphOn 𝓘(Real, E₁) J ∞ F U)
+    (hA : isLiftOn F p.extend U e₀ 0 1 A)
+    (hP : isLiftOn F (p.trans c).extend U e₀ 0 1 P) :
+    P (1 / 2) = A 1 := by
+  let γp : Real → M₁ := fun t => p.extend (2 * t)
+  have hscale : Set.MapsTo (fun t : Real => 2 * t)
+      (Set.Icc 0 (1 / 2)) (Set.Icc 0 1) := by
+    intro t ht
+    constructor <;> linarith [ht.1, ht.2]
+  have hA' : isLiftOn F γp U e₀ 0 (1 / 2) (fun t => A (2 * t)) := by
+    refine ⟨hA.continuousOn.comp
+      (continuous_const.mul continuous_id).continuousOn hscale, ?_, ?_⟩
+    · simpa only [mul_zero] using hA.2.1
+    · intro t ht
+      have ht' : 2 * t ∈ Set.Icc (0 : Real) 1 := hscale ht
+      exact ⟨hA.mapsTo ht', hA.2.2 (2 * t) ht' |>.2⟩
+  have hPleft : isLiftOn F γp U e₀ 0 (1 / 2) P := by
+    refine ⟨hP.continuousOn.mono ?_, hP.2.1, ?_⟩
+    · intro t ht
+      exact ⟨ht.1, ht.2.trans (by norm_num)⟩
+    · intro t ht
+      have ht' : t ∈ Set.Icc (0 : Real) 1 :=
+        ⟨ht.1, ht.2.trans (by norm_num)⟩
+      refine ⟨hP.mapsTo ht', ?_⟩
+      change F (P t) = p.extend (2 * t)
+      rw [← Path.extend_trans_of_le_half p c ht.2]
+      exact hP.2.2 t ht' |>.2
+  have heq := hPleft.eqOn (by norm_num) hU hloc hA'
+  convert heq ⟨by norm_num, le_rfl⟩ using 1
+  all_goals norm_num
+
+theorem cancel_right
+    {E₁ : Type*} [NormedAddCommGroup E₁] [NormedSpace Real E₁]
+    {H₁ : Type*} [TopologicalSpace H₁]
+    {J : ModelWithCorners Real E₁ H₁}
+    {M₁ : Type*} [TopologicalSpace M₁] [ChartedSpace H₁ M₁]
+    {F : E₁ → M₁} {U : Set E₁} {x y z : M₁}
+    {p q : Path x y} {c : Path y z}
+    {P Q : Real → E₁} {e₀ e₁ : E₁}
+    (hU : IsOpen U)
+    (hloc : IsLocalDiffeomorphOn 𝓘(Real, E₁) J ∞ F U)
+    (hP : isLiftOn F (p.trans c).extend U e₀ 0 1 P)
+    (hQ : isLiftOn F (q.trans c).extend U e₁ 0 1 Q)
+    (hend : P 1 = Q 1) :
+    P (1 / 2) = Q (1 / 2) := by
+  let γc : Real → M₁ := fun t => c.extend (2 * t - 1)
+  have hsub : Set.Icc (1 / 2 : Real) 1 ⊆ Set.Icc (0 : Real) 1 := by
+    intro t ht
+    exact ⟨by linarith [ht.1], ht.2⟩
+  have hPright : isLiftOn F γc U (P (1 / 2)) (1 / 2) 1 P := by
+    refine ⟨hP.continuousOn.mono hsub, rfl, ?_⟩
+    intro t ht
+    have ht' : t ∈ Set.Icc (0 : Real) 1 := hsub ht
+    refine ⟨hP.mapsTo ht', ?_⟩
+    change F (P t) = c.extend (2 * t - 1)
+    rw [← Path.extend_trans_of_half_le p c ht.1]
+    exact hP.2.2 t ht' |>.2
+  have hQright : isLiftOn F γc U (Q (1 / 2)) (1 / 2) 1 Q := by
+    refine ⟨hQ.continuousOn.mono hsub, rfl, ?_⟩
+    intro t ht
+    have ht' : t ∈ Set.Icc (0 : Real) 1 := hsub ht
+    refine ⟨hQ.mapsTo ht', ?_⟩
+    change F (Q t) = c.extend (2 * t - 1)
+    rw [← Path.extend_trans_of_half_le q c ht.1]
+    exact hQ.2.2 t ht' |>.2
+  exact hPright.eqOn_of_eq hU hloc hQright
+    ⟨by norm_num, le_rfl⟩ hend ⟨le_rfl, by norm_num⟩
+
+theorem end_eq_of_append
+    {E₁ : Type*} [NormedAddCommGroup E₁] [NormedSpace Real E₁]
+    {H₁ : Type*} [TopologicalSpace H₁]
+    {J : ModelWithCorners Real E₁ H₁}
+    {M₁ : Type*} [TopologicalSpace M₁] [ChartedSpace H₁ M₁]
+    {F : E₁ → M₁} {U : Set E₁} {x y z : M₁}
+    {p q : Path x y} {c : Path y z}
+    {A B P Q : Real → E₁} {e₀ e₁ : E₁}
+    (hU : IsOpen U)
+    (hloc : IsLocalDiffeomorphOn 𝓘(Real, E₁) J ∞ F U)
+    (hA : isLiftOn F p.extend U e₀ 0 1 A)
+    (hB : isLiftOn F q.extend U e₁ 0 1 B)
+    (hP : isLiftOn F (p.trans c).extend U e₀ 0 1 P)
+    (hQ : isLiftOn F (q.trans c).extend U e₁ 0 1 Q)
+    (hend : P 1 = Q 1) :
+    A 1 = B 1 := by
+  exact (append_mid_eq hU hloc hA hP).symm.trans
+    ((cancel_right hU hloc hP hQ hend).trans (append_mid_eq hU hloc hB hQ))
 
 end isLiftOn
 
