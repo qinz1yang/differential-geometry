@@ -51,7 +51,7 @@ theorem integral_inner_gradientFun_metricScalarAt_eq_zero_of_conformal_of_local_
       integral_divergence_mul_heatKernel_diagonal_eq_zero_of_conformal hn g X hX ht,
       integral_divergence_eq_zero_of_compact g X, zero_mul, sub_zero]
   have hlim := tendsto_integral_mul_heatKernel_diagonal_sub_leading_of_local_bound
-    (g := g) (T := T) hT hlocal hdiv hn
+    (g := g) (T := T) hT hlocal hdiv
   have hzlim : Tendsto (fun t => ∫ x, divergenceG g X x *
       (heatKernel g t x x - 1 / (4 * Real.pi * t)) ∂μ) (𝓝[>] 0) (𝓝 0) := by
     apply tendsto_const_nhds.congr'

@@ -63,7 +63,6 @@ theorem exists_integral_mul_heatKernel_diagonal_sub_leading_bound_of_local_bound
       ∃ C : ℝ, 0 ≤ C ∧ ∀ t ∈ Ioc 0 T, ∀ x ∈ U,
         |heatKernel g t x x - 1 / (4 * Real.pi * t) -
           Geometry.Curvature.metricScalarAt g x / (24 * Real.pi)| ≤ t * C) :
-    Module.finrank ℝ E = 2 →
     ∃ C : ℝ, 0 ≤ C ∧ ∀ w : M → ℝ, Integrable w (riemannianVolumeMeasure (I := I) (M := M) g) →
       ∀ t ∈ Ioc 0 T,
         |(∫ x, w x * (heatKernel g t x x - 1 / (4 * Real.pi * t))
@@ -71,7 +70,6 @@ theorem exists_integral_mul_heatKernel_diagonal_sub_leading_bound_of_local_bound
             (∫ x, w x * Geometry.Curvature.metricScalarAt g x
               ∂riemannianVolumeMeasure (I := I) (M := M) g) / (24 * Real.pi)| ≤
           t * C * ∫ x, |w x| ∂riemannianVolumeMeasure (I := I) (M := M) g := by
-  intro hn
   classical
   choose U hU hp C hC hbound using hlocal
   have hcover : (univ : Set M) ⊆ ⋃ p ∈ (univ : Set M), U p := by
@@ -102,14 +100,12 @@ theorem tendsto_integral_mul_heatKernel_diagonal_sub_leading_of_local_bound
         |heatKernel g t x x - 1 / (4 * Real.pi * t) -
           Geometry.Curvature.metricScalarAt g x / (24 * Real.pi)| ≤ t * C)
     {w : M → ℝ} (hw : Integrable w (riemannianVolumeMeasure (I := I) (M := M) g)) :
-    Module.finrank ℝ E = 2 →
     Tendsto (fun t => ∫ x, w x * (heatKernel g t x x - 1 / (4 * Real.pi * t))
       ∂riemannianVolumeMeasure (I := I) (M := M) g) (𝓝[>] 0)
         (𝓝 ((∫ x, w x * Geometry.Curvature.metricScalarAt g x
           ∂riemannianVolumeMeasure (I := I) (M := M) g) / (24 * Real.pi))) := by
-  intro hn
   obtain ⟨C, _, hbound⟩ :=
-    (exists_integral_mul_heatKernel_diagonal_sub_leading_bound_of_local_bound g hlocal) hn
+    exists_integral_mul_heatKernel_diagonal_sub_leading_bound_of_local_bound g hlocal
   have hid : Tendsto (fun t : ℝ => t) (𝓝[>] 0) (𝓝 0) :=
     tendsto_id.mono_left nhdsWithin_le_nhds
   have hmajor := (hid.mul_const C).mul_const (∫ x, |w x| ∂riemannianVolumeMeasure (I := I) (M := M) g)

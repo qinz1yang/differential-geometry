@@ -24,6 +24,25 @@ def heatParametrixCoefficientInCoordinates (g : SmoothRiemannianMetric I M)
       radialIntegral k (fun v : E => Real.sqrt (J v) *
         laplacian (LeviCivita g) g (heatParametrixCoefficientInCoordinates g Φ Ψ J k) (Φ v)) (Ψ q)
 
+theorem heatParametrixCoefficientInCoordinates_comp_linearEquiv
+    (g : SmoothRiemannianMetric I M) (Φ : E → M) (Ψ : M → E) (J : E → ℝ)
+    (L : E ≃ₗ[ℝ] E) (k : ℕ) :
+    heatParametrixCoefficientInCoordinates g (Φ ∘ L) (L.symm ∘ Ψ) (J ∘ L) k =
+      heatParametrixCoefficientInCoordinates g Φ Ψ J k := by
+  induction k with
+  | zero =>
+      funext q
+      simp only [heatParametrixCoefficientInCoordinates, Function.comp_apply,
+        LinearEquiv.apply_symm_apply]
+  | succ k ih =>
+      funext q
+      simp only [heatParametrixCoefficientInCoordinates, ih, Function.comp_apply,
+        LinearEquiv.apply_symm_apply]
+      congr 1
+      exact (radialIntegral_comp_linear k (fun v => Real.sqrt (J v) *
+        laplacian (LeviCivita g) g (heatParametrixCoefficientInCoordinates g Φ Ψ J k) (Φ v))
+        L.toLinearMap (L.symm (Ψ q))).trans (congrArg _ (L.apply_symm_apply (Ψ q)))
+
 variable [I.Boundaryless] [T2Space M]
 
 theorem contMDiffOn_heatParametrixCoefficientInCoordinates

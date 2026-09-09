@@ -4930,7 +4930,6 @@ import DifferentialGeometry.Analysis.Integration.Lp.Curry
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.MixedTimeSpatialRegularity
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.GradientTimeRegularity
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.GradientSourceExpansion
-import DifferentialGeometry.Analysis.Parabolic.Dirichlet.GradientSourceDerivative
 import DifferentialGeometry.Analysis.Integration.RadialIntegralParameter
 import DifferentialGeometry.Geometry.Exponential.BranchTrivialization
 import DifferentialGeometry.Geometry.Comparison.Volume.BranchDensityTransport
