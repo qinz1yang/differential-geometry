@@ -3208,6 +3208,7 @@ import DifferentialGeometry.Geometry.Metric.Comparison.DistanceScaling
 import DifferentialGeometry.Geometry.Metric.Distance.Basic
 import DifferentialGeometry.Geometry.Metric.Distance.Finiteness
 import DifferentialGeometry.Geometry.Metric.Comparison.CurveLength
+import DifferentialGeometry.Geometry.Metric.Comparison.Finiteness
 import DifferentialGeometry.Geometry.Metric.Comparison.DistanceTent
 import DifferentialGeometry.Geometry.Metric.Coordinates.FiberExpansion
 import DifferentialGeometry.Geometry.Metric.Coordinates.InnerExpansion
