@@ -4863,3 +4863,9 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.UniversalCove
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Rank
 import DifferentialGeometry.Analysis.Heat.Parametrix.Cutoff
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.AncientUniversalCoverTrichotomy
+import DifferentialGeometry.Analysis.Sobolev.Nirenberg.TestFunction.SourceBounds
+import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletNirenbergSource
+import DifferentialGeometry.Analysis.Integration.Lp.SmoothPairing
+import DifferentialGeometry.Analysis.Sobolev.Euclidean.CompactSource
+import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletChartSourceIdentification
+import DifferentialGeometry.Analysis.Parabolic.Dirichlet.GradientScalarSource

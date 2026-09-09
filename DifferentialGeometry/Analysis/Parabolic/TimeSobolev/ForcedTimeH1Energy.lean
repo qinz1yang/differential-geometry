@@ -1,5 +1,6 @@
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.TimeWeakDual
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.SteklovEnergy
+import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.TimeOperatorH1
 
 noncomputable section
 
@@ -270,6 +271,189 @@ theorem integral_mul_bilinear_le_of_timeH1_mass_dual_integral_on
     filter_upwards [hP, hU] with s hs hu
     exact congrArg₂ (fun L x => ζ s * L x) hs hu
   rw [hleft, hmass, hsource] at h
+  exact h
+
+
+
+theorem timeL2.integral_mul_bilinear_comp_le_of_forced_timeH1_test_identity
+    {T : ℝ} (hT : 0 ≤ T) (F : ℝ → X →L[ℝ] X →L[ℝ] ℝ)
+    (hF : ∀ x y, AEStronglyMeasurable (fun t => F t x y) (timeMeasure T))
+    {CF : ℝ} (hCF : ∀ᵐ t ∂timeMeasure T, ‖F t‖ ≤ CF)
+    (B : X →L[ℝ] X →L[ℝ] ℝ)
+    (u : timeL2 X T) (ℓ : timeL2 (X →L[ℝ] ℝ) T)
+    (htest : ∀ w : timeH1 X T, w.init = 0 → w.toFun T = 0 →
+      (∫ t, B (u t) (w.deriv t) ∂timeMeasure T) +
+        (∫ t, F t (u t) (w.toFun t) ∂timeMeasure T) =
+          ∫ t, ℓ t (w.toFun t) ∂timeMeasure T)
+    (L : X →L[ℝ] X)
+    (hBL : (-(B.bilinearComp (ContinuousLinearMap.id ℝ X) L)).flip =
+      -(B.bilinearComp (ContinuousLinearMap.id ℝ X) L))
+    (hBLpos : ∀ x, 0 ≤ -(B x (L x)))
+    {ζ : ℝ → ℝ} (hζsmooth : ContDiff ℝ 1 ζ)
+    (hζ : MemLp ζ ∞ volume) (hζpos : ∀ᵐ t ∂volume, 0 ≤ ζ t)
+    {K : ℝ≥0} (hζlip : LipschitzWith K ζ) (hζ0 : ζ 0 = 0) (hζT : ζ T = 0) :
+    (∫ t, ζ t * F t (u t) (L (u t)) ∂timeMeasure T) ≤
+      (3 * (K : ℝ) / 2) * ∫ t, -(B (u t) (L (u t))) ∂timeMeasure T +
+        ∫ t, ζ t * ℓ t (L (u t)) ∂timeMeasure T := by
+  let FL : ℝ → X →L[ℝ] X →L[ℝ] ℝ := fun t =>
+    (F t).bilinearComp (ContinuousLinearMap.id ℝ X) L
+  let BL : X →L[ℝ] X →L[ℝ] ℝ :=
+    -(B.bilinearComp (ContinuousLinearMap.id ℝ X) L)
+  let precomp : (X →L[ℝ] ℝ) →L[ℝ] (X →L[ℝ] ℝ) :=
+    ContinuousLinearMap.precomp ℝ L
+  let ℓL := precomp.compLpL 2 (timeMeasure T) ℓ
+  have hℓL : ℓL =ᵐ[timeMeasure T] fun t => (ℓ t).comp L :=
+    precomp.coeFn_compLpL ℓ
+  have hFL : ∀ x y, AEStronglyMeasurable (fun t => FL t x y) (timeMeasure T) :=
+    fun x y => hF x (L y)
+  have hFLnorm : ∀ᵐ t ∂timeMeasure T, ‖FL t‖ ≤ max CF 0 * ‖L‖ := by
+    filter_upwards [hCF] with t ht
+    dsimp only [FL]
+    rw [ContinuousLinearMap.bilinearComp, ContinuousLinearMap.comp_id,
+      ContinuousLinearMap.opNorm_flip]
+    exact ((F t).flip.opNorm_comp_le L).trans (by
+      rw [ContinuousLinearMap.opNorm_flip]
+      exact mul_le_mul_of_nonneg_right (ht.trans (le_max_left _ _)) (norm_nonneg _))
+  have htestL : ∀ w : timeH1 X T, w.init = 0 → w.toFun T = 0 →
+      (∫ t, FL t (u t) (w.toFun t) ∂timeMeasure T) =
+        (∫ t, BL (u t) (w.deriv t) ∂timeMeasure T) +
+          ∫ t, ℓL t (w.toFun t) ∂timeMeasure T := by
+    intro w hw0 hwT
+    let v := timeOpH1 (fun _ : ℝ => L) contDiffOn_const w
+    have hv0 : v.init = 0 := by
+      rw [timeOpH1_init, hw0, map_zero]
+    have hvT : v.toFun T = 0 := by
+      rw [timeOpH1_toFun _ _ _ ⟨hT, le_rfl⟩, hwT, map_zero]
+    have hv : ∀ᵐ t ∂timeMeasure T, v.toFun t = L (w.toFun t) := by
+      filter_upwards [ae_restrict_mem measurableSet_Icc] with t ht
+      exact timeOpH1_toFun _ _ _ ht
+    have hvd : v.deriv =ᵐ[timeMeasure T] fun t => L (w.deriv t) := by
+      simpa only [deriv_const, zero_apply, zero_add] using
+        timeOpH1_deriv_ae (fun _ : ℝ => L) contDiffOn_const w
+    have h := htest v hv0 hvT
+    have hmass : (∫ t, B (u t) (v.deriv t) ∂timeMeasure T) =
+        -(∫ t, BL (u t) (w.deriv t) ∂timeMeasure T) := by
+      rw [← integral_neg]
+      apply integral_congr_ae
+      filter_upwards [hvd] with t ht
+      rw [ht]
+      simp only [BL, neg_apply, ContinuousLinearMap.bilinearComp_apply,
+        ContinuousLinearMap.id_apply, neg_neg]
+    have hform : (∫ t, F t (u t) (v.toFun t) ∂timeMeasure T) =
+        ∫ t, FL t (u t) (w.toFun t) ∂timeMeasure T := by
+      apply integral_congr_ae
+      filter_upwards [hv] with t ht
+      rw [ht]
+      rfl
+    have hsource : (∫ t, ℓ t (v.toFun t) ∂timeMeasure T) =
+        ∫ t, ℓL t (w.toFun t) ∂timeMeasure T := by
+      apply integral_congr_ae
+      filter_upwards [hv, hℓL] with t ht hℓt
+      rw [ht, hℓt]
+      rfl
+    rw [hmass, hform, hsource] at h
+    linarith only [h]
+  have henergy := u.integral_mul_bilinear_le_of_forced_timeH1_test_identity hT FL hFL
+    hFLnorm BL hBL hBLpos ℓL htestL hζsmooth hζ hζpos hζlip hζ0 hζT
+  have hsource : (∫ t, ζ t * ℓL t (u t) ∂timeMeasure T) =
+      ∫ t, ζ t * ℓ t (L (u t)) ∂timeMeasure T := by
+    apply integral_congr_ae
+    filter_upwards [hℓL] with t ht
+    rw [ht]
+    rfl
+  rw [hsource] at henergy
+  exact henergy
+
+
+theorem integral_neg_bilinear_comp_le_of_timeH1_mass_dual_integral_on
+    {a b : ℝ} (hab : a ≤ b) (μ : Measure ℝ) (hμ : μ = volume.restrict (Icc a b))
+    (F : ℝ → X →L[ℝ] X →L[ℝ] ℝ)
+    (hF : ∀ x y, AEStronglyMeasurable (fun t => F t x y) μ)
+    {CF : ℝ} (hCF : ∀ᵐ t ∂μ, ‖F t‖ ≤ CF)
+    (B : X →L[ℝ] X →L[ℝ] ℝ) (u : Lp X 2 μ)
+    (ℓ β : Lp (X →L[ℝ] ℝ) 2 μ)
+    (w : timeH1 (X →L[ℝ] ℝ) (b - a))
+    (hwmass : w.toFun =ᵐ[timeMeasure (b - a)] fun s => B (u (a + s)))
+    (hwderiv : w.deriv =ᵐ[timeMeasure (b - a)] fun s => ℓ (a + s))
+    (hpair : ∀ z : Lp X 2 μ,
+      (∫ t, ℓ t (z t) ∂μ) = (∫ t, β t (z t) ∂μ) -
+        ∫ t, F t (u t) (z t) ∂μ)
+    (L : X →L[ℝ] X)
+    (hBL : (-(B.bilinearComp (ContinuousLinearMap.id ℝ X) L)).flip =
+      -(B.bilinearComp (ContinuousLinearMap.id ℝ X) L))
+    (hBLpos : ∀ x, 0 ≤ -(B x (L x)))
+    {ζ : ℝ → ℝ} (hζsmooth : ContDiff ℝ 1 ζ)
+    (hζ : MemLp ζ ∞ volume) (hζpos : ∀ᵐ t ∂volume, 0 ≤ ζ t)
+    {K : ℝ≥0} (hζlip : LipschitzWith K ζ) (hζ0 : ζ 0 = 0) (hζb : ζ (b - a) = 0) :
+    (∫ s, ζ s * -(F (a + s) (u (a + s)) (L (u (a + s)))) ∂timeMeasure (b - a)) ≤
+      (3 * (K : ℝ) / 2) * ∫ s, -(B (u (a + s)) (L (u (a + s)))) ∂timeMeasure (b - a) +
+        ∫ s, ζ s * -(β (a + s) (L (u (a + s)))) ∂timeMeasure (b - a) := by
+  let P : (X →L[ℝ] ℝ) →L[ℝ] (X →L[ℝ] ℝ) := -(ContinuousLinearMap.precomp ℝ L)
+  let FL : ℝ → X →L[ℝ] X →L[ℝ] ℝ := fun t =>
+    -((F t).bilinearComp (ContinuousLinearMap.id ℝ X) L)
+  let BL : X →L[ℝ] X →L[ℝ] ℝ :=
+    -(B.bilinearComp (ContinuousLinearMap.id ℝ X) L)
+  let ℓL := P.compLpL 2 μ ℓ
+  let βL := P.compLpL 2 μ β
+  let wL := timeOpH1 (fun _ : ℝ => P) contDiffOn_const w
+  have hℓL : ℓL =ᵐ[μ] fun t => -((ℓ t).comp L) := P.coeFn_compLpL ℓ
+  have hβL : βL =ᵐ[μ] fun t => -((β t).comp L) := P.coeFn_compLpL β
+  have hFL : ∀ x y, AEStronglyMeasurable (fun t => FL t x y) μ :=
+    fun x y => (hF x (L y)).neg
+  have hFLnorm : ∀ᵐ t ∂μ, ‖FL t‖ ≤ max CF 0 * ‖L‖ := by
+    filter_upwards [hCF] with t ht
+    dsimp only [FL]
+    rw [ContinuousLinearMap.opNorm_neg, ContinuousLinearMap.bilinearComp, ContinuousLinearMap.comp_id,
+      ContinuousLinearMap.opNorm_flip]
+    exact ((F t).flip.opNorm_comp_le L).trans (by
+      rw [ContinuousLinearMap.opNorm_flip]
+      exact mul_le_mul_of_nonneg_right (ht.trans (le_max_left _ _)) (norm_nonneg _))
+  have hshift : MeasurePreserving (fun s : ℝ => a + s) (timeMeasure (b - a)) μ := by
+    rw [hμ]
+    have h := (measurePreserving_add_right volume a).restrict_image_emb
+      (Homeomorph.addRight a).isClosedEmbedding.measurableEmbedding (Icc (0 : ℝ) (b - a))
+    simpa only [timeMeasure, image_add_const_Icc, zero_add, sub_add_cancel, add_comm a] using h
+  have hwLmass : wL.toFun =ᵐ[timeMeasure (b - a)] fun s => BL (u (a + s)) := by
+    filter_upwards [hwmass, ae_restrict_mem measurableSet_Icc] with s hs hsmem
+    rw [timeOpH1_toFun _ _ _ hsmem, hs]
+    rfl
+  have hwLderiv : wL.deriv =ᵐ[timeMeasure (b - a)] fun s => ℓL (a + s) := by
+    have hd : wL.deriv =ᵐ[timeMeasure (b - a)] fun s => P (w.deriv s) := by
+      simpa only [deriv_const, zero_apply, zero_add] using
+        timeOpH1_deriv_ae (fun _ : ℝ => P) contDiffOn_const w
+    filter_upwards [hd, hwderiv, hshift.quasiMeasurePreserving.ae hℓL] with s hs hds hℓs
+    rw [hs, hds, hℓs]
+    rfl
+  have hpairL : ∀ z : Lp X 2 μ,
+      (∫ t, ℓL t (z t) ∂μ) = (∫ t, βL t (z t) ∂μ) -
+        ∫ t, FL t (u t) (z t) ∂μ := by
+    intro z
+    let zL := L.compLpL 2 μ z
+    have hzL : zL =ᵐ[μ] fun t => L (z t) := L.coeFn_compLpL z
+    have hp (ψ : Lp (X →L[ℝ] ℝ) 2 μ) :
+        (∫ t, (P.compLpL 2 μ ψ) t (z t) ∂μ) = -(∫ t, ψ t (zL t) ∂μ) := by
+      rw [← integral_neg]
+      apply integral_congr_ae
+      filter_upwards [P.coeFn_compLpL ψ, hzL] with t hpt hzt
+      rw [hpt, hzt]
+      rfl
+    have hf : (∫ t, FL t (u t) (z t) ∂μ) = -(∫ t, F t (u t) (zL t) ∂μ) := by
+      rw [← integral_neg]
+      apply integral_congr_ae
+      filter_upwards [hzL] with t hzt
+      rw [hzt]
+      rfl
+    rw [hp ℓ, hp β, hf, hpair zL]
+    ring
+  have h := integral_mul_bilinear_le_of_timeH1_mass_dual_integral_on hab μ hμ FL hFL hFLnorm
+    BL hBL hBLpos u ℓL βL wL hwLmass hwLderiv hpairL hζsmooth hζ hζpos hζlip hζ0 hζb
+  have hsource : (∫ s, ζ s * βL (a + s) (u (a + s)) ∂timeMeasure (b - a)) =
+      ∫ s, ζ s * -(β (a + s) (L (u (a + s)))) ∂timeMeasure (b - a) := by
+    apply integral_congr_ae
+    filter_upwards [hshift.quasiMeasurePreserving.ae hβL] with s hs
+    rw [hs]
+    rfl
+  rw [hsource] at h
   exact h
 
 
