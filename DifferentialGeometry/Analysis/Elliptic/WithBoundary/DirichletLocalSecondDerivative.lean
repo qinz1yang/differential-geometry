@@ -133,4 +133,53 @@ theorem exists_lp_second_weak_derivative_of_local_diffQuot_bound
     exact DeGiorgi.HasWeakPartialDeriv.restrict hΩ₀ hsub
       (hasWeakPartialDeriv_dirichletLocalWeakPartialLp q α hΩ hΩc hΩs i (v t))
 
+
+theorem exists_lp_second_weak_derivative_of_local_diffQuot_bound_restrict
+    (q : SmoothRiemannianMetric I_hs M) (α : M) {Ω Ω₀ : Set EuStd}
+    (hΩ : IsOpen Ω) (hΩc : IsCompact (closure Ω))
+    (hΩs : closure Ω ⊆ toEuclidean (E := EuN) '' interior (extChartAt I_hs α).target)
+    {μ : Measure ℝ} (S : Set ℝ) [IsLocallyFiniteMeasure (μ.restrict S)]
+    (v : Lp (H1ComplDirichlet q) 2 μ)
+    {η : EuStd → ℝ} (hη : ContDiff ℝ 1 η) (hηc : HasCompactSupport η)
+    (hΩ₀ : IsOpen Ω₀) (hηone : ∀ z ∈ Ω₀, η z = 1)
+    {δ C : ℝ} (hδ : 0 < δ) (hroom : cthickening δ (tsupport η) ⊆ Ω)
+    (hbound : ∀ k h, 0 < |h| → |h| ≤ δ →
+      (∫ t, (∑ i, ∫ z, (η z * diffQuot k h
+        (dirichletLocalWeakPartialLp q α hΩ hΩc hΩs i (v t)) z) ^ 2) ∂μ.restrict S) ≤ C) :
+    ∃ H : Fin (Module.finrank ℝ EuN) → Fin (Module.finrank ℝ EuN) →
+        Lp ℝ 2 ((μ.restrict S).prod (volume.restrict Ω₀)),
+      (∀ i k, ∀ᵐ t ∂μ.restrict S, DeGiorgi.HasWeakPartialDeriv k (fun z => H i k (t, z))
+        (dirichletLocalWeakPartialLp q α hΩ hΩc hΩs i (v t)) Ω₀) ∧
+      ∀ᵐ t ∂μ.restrict S, MemWkp 2 2
+        (fun z => H1ComplDirichletToLp q (v t)
+          ((extChartAt I_hs α).symm ((toEuclidean (E := EuN)).symm z))) Ω₀ := by
+  have hvS : MemLp (v : ℝ → H1ComplDirichlet q) 2 (μ.restrict S) :=
+    (Lp.memLp v).mono_measure Measure.restrict_le_self
+  let vS : Lp (H1ComplDirichlet q) 2 (μ.restrict S) := hvS.toLp v
+  have hvSeq : (vS : ℝ → H1ComplDirichlet q) =ᵐ[μ.restrict S] v := hvS.coeFn_toLp
+  have hboundS : ∀ k h, 0 < |h| → |h| ≤ δ →
+      (∫ t, (∑ i, ∫ z, (η z * diffQuot k h
+        (dirichletLocalWeakPartialLp q α hΩ hΩc hΩs i (vS t)) z) ^ 2)
+        ∂μ.restrict S) ≤ C := by
+    intro k h hhpos hh
+    have heq : (∫ t, (∑ i, ∫ z, (η z * diffQuot k h
+        (dirichletLocalWeakPartialLp q α hΩ hΩc hΩs i (vS t)) z) ^ 2)
+        ∂μ.restrict S) =
+        ∫ t, (∑ i, ∫ z, (η z * diffQuot k h
+          (dirichletLocalWeakPartialLp q α hΩ hΩc hΩs i (v t)) z) ^ 2)
+          ∂μ.restrict S := by
+      apply integral_congr_ae
+      filter_upwards [hvSeq] with t ht
+      rw [ht]
+    rw [heq]
+    exact hbound k h hhpos hh
+  obtain ⟨H, hH, hW⟩ := exists_lp_second_weak_derivative_of_local_diffQuot_bound
+    q α hΩ hΩc hΩs vS hη hηc hΩ₀ hηone hδ hroom hboundS
+  refine ⟨H, ?_, ?_⟩
+  · intro i k
+    filter_upwards [hH i k, hvSeq] with t ht hvt
+    simpa only [hvt] using ht
+  · filter_upwards [hW, hvSeq] with t ht hvt
+    simpa only [hvt] using ht
+
 end DifferentialGeometry.Analysis.Laplacian.WithBoundary.Dirichlet
