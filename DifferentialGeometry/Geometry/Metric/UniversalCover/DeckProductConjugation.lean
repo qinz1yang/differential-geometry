@@ -15,7 +15,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   {N : Type*} [TopologicalSpace N] [ChartedSpace H N]
   [IsManifold I ∞ N] [T2Space N]
   {K : Type*} [TopologicalSpace K]
-  {J : ModelWithCorners ℝ E K}
+  {J : ModelWithCorners ℝ (E × ℝ) K}
   {U : Type*} [TopologicalSpace U] [ChartedSpace K U]
   [IsManifold J ∞ U] [T2Space U]
 
