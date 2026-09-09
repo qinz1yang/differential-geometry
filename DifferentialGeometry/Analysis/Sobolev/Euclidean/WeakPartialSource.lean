@@ -258,16 +258,58 @@ theorem exists_lp_second_spatial_weak_partials_of_ae_eq_finite_sum
     : ∃ DF : Fin d → Fin d → Lp ℝ 2 (μ.prod (volume.restrict Ω)),
       (∀ k j, ∀ᵐ t ∂μ, DeGiorgi.HasWeakPartialDeriv j
         (fun x => DF k j (t, x)) (fun x => F k (t, x)) Ω) ∧
+      (∀ k j, DF k j =ᵐ[μ.prod (volume.restrict Ω)] fun p => ∑ i,
+        (A k i p * DY k i j p +
+          fderiv ℝ (fun x => A k i (p.1, x)) p.2
+            (EuclideanSpace.single j 1) * Y k i p)) ∧
+      (∀ k j, ‖DF k j‖ ≤ ∑ i,
+        (lpNorm (A k i) ∞ (μ.prod (volume.restrict Ω)) * ‖DY k i j‖ +
+          lpNorm (fun p => fderiv ℝ (fun x => A k i (p.1, x)) p.2
+            (EuclideanSpace.single j 1)) ∞ (μ.prod (volume.restrict Ω)) * ‖Y k i‖)) ∧
       ∃ DDF : Fin d → Fin d → Fin d → Lp ℝ 2 (μ.prod (volume.restrict Ω)),
         (∀ k l m, ∀ᵐ t ∂μ, DeGiorgi.HasWeakPartialDeriv m
-          (fun x => DDF k l m (t, x)) (fun x => DF k l (t, x)) Ω) := by
+          (fun x => DDF k l m (t, x)) (fun x => DF k l (t, x)) Ω) ∧
+        (∀ k l m, DDF k l m =ᵐ[μ.prod (volume.restrict Ω)] fun p => ∑ i,
+          (A k i p * DDY k i l m p +
+            fderiv ℝ (fun x => A k i (p.1, x)) p.2
+              (EuclideanSpace.single m 1) * DY k i l p +
+            fderiv ℝ (fun x => A k i (p.1, x)) p.2
+              (EuclideanSpace.single l 1) * DY k i m p +
+            fderiv ℝ (fun x => fderiv ℝ (fun y => A k i (p.1, y)) x
+              (EuclideanSpace.single l 1)) p.2 (EuclideanSpace.single m 1) * Y k i p)) ∧
+        (∀ k l m, ‖DDF k l m‖ ≤ ∑ i,
+          (lpNorm (A k i) ∞ (μ.prod (volume.restrict Ω)) * ‖DDY k i l m‖ +
+            lpNorm (fun p => fderiv ℝ (fun x => A k i (p.1, x)) p.2
+              (EuclideanSpace.single m 1)) ∞ (μ.prod (volume.restrict Ω)) * ‖DY k i l‖ +
+            lpNorm (fun p => fderiv ℝ (fun x => A k i (p.1, x)) p.2
+              (EuclideanSpace.single l 1)) ∞ (μ.prod (volume.restrict Ω)) * ‖DY k i m‖ +
+            lpNorm (fun p => fderiv ℝ (fun x => fderiv ℝ (fun y => A k i (p.1, y)) x
+                (EuclideanSpace.single l 1)) p.2 (EuclideanSpace.single m 1)) ∞
+              (μ.prod (volume.restrict Ω)) * ‖Y k i‖)) := by
   classical
-  obtain ⟨DF, hDF, hDFformula, _⟩ :=
+  obtain ⟨DF, hDF, hDFformula, hDFnorm⟩ :=
     exists_lp_gradient_source_spatial_derivative_step hΩ F Y DY A hA hDA hAsmooth hYweak hF
   let ι' := ι ⊕ ι
   have hex (k₀ : Fin d) : ∃ DDF : Fin d → Fin d → Lp ℝ 2 (μ.prod (volume.restrict Ω)),
-      ∀ l m, ∀ᵐ t ∂μ, DeGiorgi.HasWeakPartialDeriv m
-        (fun x => DDF l m (t, x)) (fun x => DF k₀ l (t, x)) Ω := by
+      (∀ l m, ∀ᵐ t ∂μ, DeGiorgi.HasWeakPartialDeriv m
+        (fun x => DDF l m (t, x)) (fun x => DF k₀ l (t, x)) Ω) ∧
+      (∀ l m, DDF l m =ᵐ[μ.prod (volume.restrict Ω)] fun p => ∑ i,
+        (A k₀ i p * DDY k₀ i l m p +
+          fderiv ℝ (fun x => A k₀ i (p.1, x)) p.2
+            (EuclideanSpace.single m 1) * DY k₀ i l p +
+          fderiv ℝ (fun x => A k₀ i (p.1, x)) p.2
+            (EuclideanSpace.single l 1) * DY k₀ i m p +
+          fderiv ℝ (fun x => fderiv ℝ (fun y => A k₀ i (p.1, y)) x
+            (EuclideanSpace.single l 1)) p.2 (EuclideanSpace.single m 1) * Y k₀ i p)) ∧
+      (∀ l m, ‖DDF l m‖ ≤ ∑ i,
+        (lpNorm (A k₀ i) ∞ (μ.prod (volume.restrict Ω)) * ‖DDY k₀ i l m‖ +
+          lpNorm (fun p => fderiv ℝ (fun x => A k₀ i (p.1, x)) p.2
+            (EuclideanSpace.single m 1)) ∞ (μ.prod (volume.restrict Ω)) * ‖DY k₀ i l‖ +
+          lpNorm (fun p => fderiv ℝ (fun x => A k₀ i (p.1, x)) p.2
+            (EuclideanSpace.single l 1)) ∞ (μ.prod (volume.restrict Ω)) * ‖DY k₀ i m‖ +
+          lpNorm (fun p => fderiv ℝ (fun x => fderiv ℝ (fun y => A k₀ i (p.1, y)) x
+              (EuclideanSpace.single l 1)) p.2 (EuclideanSpace.single m 1)) ∞
+            (μ.prod (volume.restrict Ω)) * ‖Y k₀ i‖)) := by
     let Y' : Fin d → ι' → Lp ℝ 2 (μ.prod (volume.restrict Ω)) := fun l s =>
       match s with
       | Sum.inl i => DY k₀ i l
@@ -307,10 +349,39 @@ theorem exists_lp_second_spatial_weak_partials_of_ae_eq_finite_sum
       rw [Fintype.sum_sum_type]
       simp only [A', Y']
       simp_rw [Finset.sum_add_distrib]
-    obtain ⟨DDF, hDDF, _, _⟩ :=
+    obtain ⟨DDF, hDDF, hDDFformula, hDDFnorm⟩ :=
       exists_lp_gradient_source_spatial_derivative_step hΩ (fun l => DF k₀ l) Y' DY' A'
         hA' hDA' hAsmooth' hYweak' hF'
-    exact ⟨DDF, hDDF⟩
-  choose DDF hDDF using hex
-  exact ⟨DF, hDF, DDF, hDDF⟩
+    have hformula : ∀ l m, DDF l m =ᵐ[μ.prod (volume.restrict Ω)] fun p => ∑ i,
+        (A k₀ i p * DDY k₀ i l m p +
+          fderiv ℝ (fun x => A k₀ i (p.1, x)) p.2
+            (EuclideanSpace.single m 1) * DY k₀ i l p +
+          fderiv ℝ (fun x => A k₀ i (p.1, x)) p.2
+            (EuclideanSpace.single l 1) * DY k₀ i m p +
+          fderiv ℝ (fun x => fderiv ℝ (fun y => A k₀ i (p.1, y)) x
+            (EuclideanSpace.single l 1)) p.2 (EuclideanSpace.single m 1) * Y k₀ i p) := by
+      intro l m
+      filter_upwards [hDDFformula l m] with p hp
+      rw [hp, Fintype.sum_sum_type]
+      simp only [A', Y', DY']
+      simp_rw [Finset.sum_add_distrib]
+      ring
+    have hnorm : ∀ l m, ‖DDF l m‖ ≤ ∑ i,
+        (lpNorm (A k₀ i) ∞ (μ.prod (volume.restrict Ω)) * ‖DDY k₀ i l m‖ +
+          lpNorm (fun p => fderiv ℝ (fun x => A k₀ i (p.1, x)) p.2
+            (EuclideanSpace.single m 1)) ∞ (μ.prod (volume.restrict Ω)) * ‖DY k₀ i l‖ +
+          lpNorm (fun p => fderiv ℝ (fun x => A k₀ i (p.1, x)) p.2
+            (EuclideanSpace.single l 1)) ∞ (μ.prod (volume.restrict Ω)) * ‖DY k₀ i m‖ +
+          lpNorm (fun p => fderiv ℝ (fun x => fderiv ℝ (fun y => A k₀ i (p.1, y)) x
+              (EuclideanSpace.single l 1)) p.2 (EuclideanSpace.single m 1)) ∞
+            (μ.prod (volume.restrict Ω)) * ‖Y k₀ i‖) := by
+      intro l m
+      have hn := hDDFnorm l m
+      rw [Fintype.sum_sum_type] at hn
+      simp only [A', Y', DY'] at hn
+      simp_rw [Finset.sum_add_distrib] at hn
+      simpa only [Finset.sum_add_distrib, add_assoc] using hn
+    exact ⟨DDF, hDDF, hformula, hnorm⟩
+  choose DDF hDDF hDDFformula hDDFnorm using hex
+  exact ⟨DF, hDF, hDFformula, hDFnorm, DDF, hDDF, hDDFformula, hDDFnorm⟩
 end DifferentialGeometry.Analysis.Sobolev.Euclidean
