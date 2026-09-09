@@ -613,3 +613,5 @@ The exponential branch API also exposes `branchEnergy_center`, the exact zero-en
 The Dirichlet recurrence now has the generic `ae_memWkp_two_of_spatial_weak_partials` adapter: two layers of actual spatial weak partials and the corresponding product-`Lp` witnesses yield almost-everywhere spatial `MemWkp 2 2`. Its 8739-job build and declaration/axiom audit are clean. This connects the second-source producer to higher Sobolev regularity while leaving the all-order classical and boundary-trace steps open.
 
 The universal-cover product layer now proves `exists_affine_product_conjugate_of_isometry`: any self-isometry of a two-dimensional surface product with `ℝ`, transported through a metric-identifying diffeomorphism, has affine line action with sign `±1`. The 4256-job module build and full declaration/axiom audit pass. This is the deck-action conjugation step for row 6223; identifying the surface factor remains open.
+
+The product-conjugation interface was corrected so the target chart model has the genuine product dimension `E × ℝ`; the corrected source rebuilds and audits cleanly.
