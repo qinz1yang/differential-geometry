@@ -1,3 +1,5 @@
+import DifferentialGeometry.Geometry.Comparison.Variation.Jacobi.EndpointPositivity
+import DifferentialGeometry.Geometry.Exponential.Intrinsic.Geodesic.Smoothness
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tangent.NormDiamond
 import DifferentialGeometry.Geometry.Exponential.Inverse.Radius
 import DifferentialGeometry.Geometry.Exponential.Intrinsic.Agreement
@@ -1171,6 +1173,71 @@ theorem intrinsicJacobi_li
     (fun i => eR (intrinsicJacobi (I := I) g hEnorm p u (v i) 1))
   rw [hfield]
   exact hmapped
+
+open Set in
+theorem branchEnergy_hess_pos
+    {g : SmoothRiemannianMetric I M} {hEnorm : IsMetricNorm (I := I) g} {p : M}
+    (B : ExponentialInverseBranch (I := I) g hEnorm p)
+    {u : TangentSpace I p}
+    (hu : tangentSpaceModelContinuousLinearEquiv (I := I) p u ∈ B.hom.source)
+    {κ : ℝ} (hκ : κ < (Real.pi / 2) ^ 2)
+    (hcurv : let γ := intrinsicGeodesic (I := I) g hEnorm p u
+      ∀ t ∈ Ioo (0 : ℝ) 1, ∀ v : TangentSpace I (γ t),
+        g.inner (γ t)
+          ((DifferentialGeometry.Geometry.Curvature.riemannOp
+            (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g) (γ t))
+            v (curveVelocity (I := I) γ t) (curveVelocity (I := I) γ t)) v ≤
+          κ * g.inner (γ t) v v)
+    (Y : TangentSpace I (expMapIntrinsic (I := I) g hEnorm p u)) (hY : Y ≠ 0) :
+    0 < hessFun (I := I) g (branchEnergy (I := I) g B)
+      (expMapIntrinsic (I := I) g hEnorm p u) Y Y := by
+  classical
+  let γ := intrinsicGeodesic (I := I) g hEnorm p u
+  let q := expMapIntrinsic (I := I) g hEnorm p u
+  let w : E := mfderiv I 𝓘(ℝ, E) B.inv q Y
+  let J := intrinsicJacobi (I := I) g hEnorm p u (show TangentSpace I p from w)
+  let expf : E → M := fun z => expMapIntrinsic (I := I) g hEnorm p
+    (show TangentSpace I p from z)
+  have hqDom : q ∈ B.dom := by
+    have he := B.hom_eq hu
+    dsimp only at he
+    rw [ContinuousLinearEquiv.symm_apply_apply] at he
+    rw [show q = B.hom (u : E) from he]
+    exact B.hom.map_source hu
+  have hinv : B.inv q = (u : E) := by
+    have he := B.left_inv hu
+    rw [ContinuousLinearEquiv.symm_apply_apply] at he
+    exact he
+  have hJw : J 1 = Y := by
+    have hright := exp_inv_mfderiv (I := I) B hqDom Y
+    simp only [tangentSpaceModelContinuousLinearEquiv_apply] at hright
+    change (mfderiv 𝓘(ℝ, E) I expf (B.inv q) w : E) = (Y : E) at hright
+    rw [hinv] at hright
+    have hj := intrinsic_jacobi_one (I := I) g hEnorm p (u : E) w
+    change (J 1 : E) = (mfderiv 𝓘(ℝ, E) I expf (u : E) w : E) at hj
+    exact hj.trans hright
+  have hJ_ne : ¬ ∀ t ∈ Icc (0 : ℝ) 1, J t = 0 := by
+    intro hz
+    exact hY (hJw.symm.trans (hz 1 (right_mem_Icc.mpr zero_le_one)))
+  have hγ : ContMDiff 𝓘(ℝ, ℝ) I ∞ γ :=
+    intrinsicGeodesic_contMDiff (I := I) g hEnorm p u
+  have hpos := jacobi_pair_pos g γ J zero_le_one isOpen_univ (subset_univ _)
+    (hγ.of_le (by decide : (2 : WithTop ℕ∞) ≤ ∞)).contMDiffOn
+    (fun t _ => (intrinsicJacobi_diff (I := I) g hEnorm p u
+      (show TangentSpace I p from w) t).1)
+    (fun t _ => (intrinsicJacobi_diff (I := I) g hEnorm p u
+      (show TangentSpace I p from w) t).2)
+    (fun t _ => intrinsic_jacobi (I := I) g hEnorm p (u : E) w t)
+    (intrinsicJacobi_zero (I := I) g hEnorm p u (show TangentSpace I p from w))
+    hJ_ne (by simpa only [sub_zero, one_pow, mul_one] using hκ)
+    (fun t ht => hcurv t ht (J t))
+  have hh := branchEnergy_hess (I := I) B
+    (u := u) (w₁ := (show TangentSpace I p from w))
+    (w₂ := (show TangentSpace I p from w)) hu
+  change hessFun (I := I) g (branchEnergy (I := I) g B) (γ 1) (J 1) (J 1) =
+    g.inner (γ 1) (covDerivAlong (I := I) g γ J 1) (J 1) at hh
+  rw [← hh] at hpos
+  simpa only [hJw, γ, expMapIntrinsic_def] using! hpos
 
 end Exponential
 end Riemannian
