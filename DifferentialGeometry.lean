@@ -3147,6 +3147,7 @@ import DifferentialGeometry.Topology.Covering.SemilocallySimplyConnected
 import DifferentialGeometry.Topology.SigmaCompactOpen
 import DifferentialGeometry.Topology.StandardModel
 import DifferentialGeometry.Topology.ThreeManifold.Closed
+import DifferentialGeometry.Topology.Diffeomorph.Collar
 import DifferentialGeometry.Topology.Diffeomorph.Extension
 import DifferentialGeometry.Topology.Diffeomorph.Fiberwise
 import DifferentialGeometry.Topology.Diffeomorph.Flow
@@ -3192,6 +3193,7 @@ import DifferentialGeometry.Topology.Homotopy.EquivUnder
 import DifferentialGeometry.Topology.Homotopy.Interval
 import DifferentialGeometry.Topology.Morse.CellAttachment
 import DifferentialGeometry.Topology.Morse.BoundaryGraph
+import DifferentialGeometry.Topology.Morse.BoundaryHandle
 import DifferentialGeometry.Topology.Morse.BoundaryIsotopy
 import DifferentialGeometry.Topology.Morse.BoundaryChart
 import DifferentialGeometry.Topology.Morse.BoundaryModification
@@ -3207,6 +3209,7 @@ import DifferentialGeometry.Topology.Morse.LocalNormalForm
 import DifferentialGeometry.Topology.Morse.Manifold
 import DifferentialGeometry.Topology.Morse.ManifoldCellAttachment
 import DifferentialGeometry.Topology.Morse.HandleCollar
+import DifferentialGeometry.Topology.Morse.HandleIsotopy
 import DifferentialGeometry.Topology.Morse.HandleEmbedding
 import DifferentialGeometry.Topology.Morse.Hessian
 import DifferentialGeometry.Topology.Morse.ModifiedFunction
