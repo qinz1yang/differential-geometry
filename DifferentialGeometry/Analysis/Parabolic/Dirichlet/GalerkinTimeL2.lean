@@ -186,7 +186,7 @@ private lemma exists_timeL2_trajectory_of_bounds
     ← intervalIntegral.integral_of_le hT]
   exact hbound
 
-theorem exists_dirichletGalerkin_timeL2_sequence
+theorem exists_uniform_dirichletGalerkin_timeL2_sequence
     {q : SmoothRiemannianMetric (I_half n) M}
     {D : RealTimeInterval}
     {G : MetricConnectionFamilyOn (I := I_half n) (M := M) D}
@@ -205,13 +205,14 @@ theorem exists_dirichletGalerkin_timeL2_sequence
       (G.metric t).inner x (X t x) (X t x) ≤ Bx)
     (htrace : ∀ t ∈ Ico (0 : ℝ) T, ∀ x : M,
       |traceTimeDerivMetric (I := I_half n) G.metric t x| ≤ Bv)
-    (ha : ∀ t ∈ Ico (0 : ℝ) T, 0 ≤ a t)
-    (f₀ : Lp ℝ 2 (riemannianVolumeMeasure (I := I_half n) (M := M) q)) :
+    (ha : ∀ t ∈ Ico (0 : ℝ) T, 0 ≤ a t) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀
+      (f₀ : Lp ℝ 2 (riemannianVolumeMeasure (I := I_half n) (M := M) q)),
     ∃ γ : (m : ℕ) → ℝ →
         EuclideanSpace ℝ (smoothDirichletBasisFinset q m),
       ∃ U : ℕ → DifferentialGeometry.Analysis.Parabolic.TimeSobolev.timeL2
           (H1ComplDirichlet q) T,
-        ∃ C : ℝ, 0 ≤ C ∧ ∀ m,
+        ∀ m,
           γ m 0 = smoothDirichletBasisCoordinates
               (smoothDirichletBasisFinset q m) f₀ ∧
           ContinuousOn (γ m) (Icc (0 : ℝ) T) ∧
@@ -230,8 +231,6 @@ theorem exists_dirichletGalerkin_timeL2_sequence
                 (smoothDirichletBasisFinset q m) (γ m t))) ∧
           ‖U m‖ ^ 2 ≤ C * ‖f₀‖ ^ 2 := by
   classical
-  obtain ⟨γ, hγ⟩ := exists_dirichletGalerkin_sequence hG hT hreg X hXcont
-    a hacont Bx Bv hX htrace ha f₀
   obtain ⟨Cg, hCg, hequiv⟩ :=
     exists_metric_equivalence_bound_on_icc_of_metricFamilySmoothOn
       G.metric hG (fun _ ht => D.regular_subset (hreg ht)) q
@@ -250,6 +249,10 @@ theorem exists_dirichletGalerkin_timeL2_sequence
   have hC : 0 ≤ C := by
     dsimp only [C]
     positivity
+  refine ⟨C, hC, ?_⟩
+  intro f₀
+  obtain ⟨γ, hγ⟩ := exists_dirichletGalerkin_sequence hG hT hreg X hXcont
+    a hacont Bx Bv hX htrace ha f₀
   have hU : ∀ m : ℕ,
       ∃ U : DifferentialGeometry.Analysis.Parabolic.TimeSobolev.timeL2
           (H1ComplDirichlet q) T,
@@ -305,9 +308,57 @@ theorem exists_dirichletGalerkin_timeL2_sequence
         dsimp only [C]
         ring
   choose U hU using hU
-  refine ⟨γ, U, C, hC, ?_⟩
+  refine ⟨γ, U, ?_⟩
   intro m
   exact ⟨(hγ m).1, (hγ m).2.1, (hγ m).2.2.1, (hU m).1, (hU m).2⟩
+
+theorem exists_dirichletGalerkin_timeL2_sequence
+    {q : SmoothRiemannianMetric (I_half n) M}
+    {D : RealTimeInterval}
+    {G : MetricConnectionFamilyOn (I := I_half n) (M := M) D}
+    (hG : MetricFamilySmoothOn (I := I_half n) (M := M) D G.metric)
+    {T : ℝ} (hT : 0 < T) (hreg : Icc (0 : ℝ) T ⊆ D.regular)
+    (X : ℝ → Cₛ^∞⟮I_half n; EuclideanSpace ℝ (Fin n),
+      (TangentSpace (I_half n) : M → Type _)⟯)
+    (hXcont : ContinuousOn
+      (fun p : ℝ × M =>
+        (TotalSpace.mk' (EuclideanSpace ℝ (Fin n)) p.2 (X p.1 p.2) :
+          TangentBundle (I_half n) M))
+      (Icc (0 : ℝ) T ×ˢ (Set.univ : Set M)))
+    (a : ℝ → ℝ) (hacont : ContinuousOn a (Icc (0 : ℝ) T))
+    (Bx Bv : ℝ)
+    (hX : ∀ t ∈ Ico (0 : ℝ) T, ∀ x : M,
+      (G.metric t).inner x (X t x) (X t x) ≤ Bx)
+    (htrace : ∀ t ∈ Ico (0 : ℝ) T, ∀ x : M,
+      |traceTimeDerivMetric (I := I_half n) G.metric t x| ≤ Bv)
+    (ha : ∀ t ∈ Ico (0 : ℝ) T, 0 ≤ a t)
+    (f₀ : Lp ℝ 2 (riemannianVolumeMeasure (I := I_half n) (M := M) q)) :
+    ∃ γ : (m : ℕ) → ℝ →
+        EuclideanSpace ℝ (smoothDirichletBasisFinset q m),
+      ∃ U : ℕ → DifferentialGeometry.Analysis.Parabolic.TimeSobolev.timeL2
+          (H1ComplDirichlet q) T,
+        ∃ C : ℝ, 0 ≤ C ∧ ∀ m,
+          γ m 0 = smoothDirichletBasisCoordinates
+              (smoothDirichletBasisFinset q m) f₀ ∧
+          ContinuousOn (γ m) (Icc (0 : ℝ) T) ∧
+          (∀ t, (ht : t ∈ Ico (0 : ℝ) T) →
+            ∃ v : EuclideanSpace ℝ (smoothDirichletBasisFinset q m),
+              HasDerivWithinAt (γ m) v (Ici (0 : ℝ)) t ∧
+              dirichletFinMass (G.metric t)
+                  (smoothDirichletBasisFinIncl
+                    (smoothDirichletBasisFinset q m)) v =
+                dirichletFinWeakForm (G.metric t) (X t) (a t)
+                  (smoothDirichletBasisFinIncl
+                    (smoothDirichletBasisFinset q m)) (γ m t)) ∧
+          U m =ᵐ[DifferentialGeometry.Analysis.Parabolic.TimeSobolev.timeMeasure T]
+            (fun t => smoothToH1ComplDirichlet q
+              (smoothDirichletBasisFinIncl
+                (smoothDirichletBasisFinset q m) (γ m t))) ∧
+          ‖U m‖ ^ 2 ≤ C * ‖f₀‖ ^ 2 := by
+  obtain ⟨C, hC, hsequence⟩ := exists_uniform_dirichletGalerkin_timeL2_sequence
+    hG hT hreg X hXcont a hacont Bx Bv hX htrace ha
+  obtain ⟨γ, U, hsequence⟩ := hsequence f₀
+  exact ⟨γ, U, C, hC, hsequence⟩
 
 end DifferentialGeometry.Analysis.Parabolic.Dirichlet
 

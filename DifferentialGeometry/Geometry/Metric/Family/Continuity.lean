@@ -275,17 +275,23 @@ end MetricCLMSection
 
 namespace tensor0SFamilyContinuousOnSet
 
-theorem pullback
+section Pullback
+
+variable {F : Type*} [NormedAddCommGroup F] [NormedSpace Real F]
+  [FiniteDimensional Real F]
+variable {H' : Type*} [TopologicalSpace H'] {J : ModelWithCorners Real F H'}
+variable {N : Type*} [TopologicalSpace N] [ChartedSpace H' N] [IsManifold J ∞ N]
+
+omit [IsManifold I 1 M] in
+theorem pullback_of_contMDiff
     {s : Nat} {K : Set Real}
-    {N : Type*} [TopologicalSpace N] [ChartedSpace H N]
-    [IsManifold I ∞ N] [IsManifold I 1 N]
     (A : (t : Real) → (x : N) →
-      Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := N) s x)
-    (hA : tensor0SFamilyContinuousOnSet (I := I) (M := N) s K A)
-    (Φ : M ≃ₘ⟮I, I⟯ N) :
+      Tensor0SSpace (𝕜 := Real) (E := F) (H := H') (I := J) (M := N) s x)
+    (hA : tensor0SFamilyContinuousOnSet (I := J) (M := N) s K A)
+    (Φ : M → N) (hΦ : ContMDiff I J 1 Φ) :
     tensor0SFamilyContinuousOnSet (I := I) (M := M) s K
       (fun t x => (A t (Φ x)).compContinuousLinearMap
-        (fun _ : Fin s => mfderiv I I (Φ : M → N) x)) := by
+        (fun _ : Fin s => mfderiv I J (Φ : M → N) x)) := by
   apply tensor0SFamilyContinuousOnSet_of_chartBasisComp
     (N := fun x₀ => (trivializationAt E (TangentSpace I) x₀).baseSet)
     (hN := fun x₀ => (Trivialization.open_baseSet _).mem_nhds
@@ -295,23 +301,23 @@ theorem pullback
   have hslot : ∀ k : Fin s, Continuous
       (fun p : {q : {t : Real // t ∈ K} × M //
             q.2 ∈ (trivializationAt E (TangentSpace I) x₀).baseSet} =>
-        TotalSpace.mk' E (E := fun y : N => TangentSpace I y) (Φ p.1.2)
-          (mfderiv I I (Φ : M → N) p.1.2
+        TotalSpace.mk' F (E := fun y : N => TangentSpace J y) (Φ p.1.2)
+          (mfderiv I J (Φ : M → N) p.1.2
             (DifferentialGeometry.Integral.Measure.chartBasisVecFiber (I := I) x₀ (idx k)
               p.1.2))) := by
     intro k
     have hcomp :
         (fun p : {q : {t : Real // t ∈ K} × M //
               q.2 ∈ (trivializationAt E (TangentSpace I) x₀).baseSet} =>
-          TotalSpace.mk' E (E := fun y : N => TangentSpace I y) (Φ p.1.2)
-            (mfderiv I I (Φ : M → N) p.1.2
+          TotalSpace.mk' F (E := fun y : N => TangentSpace J y) (Φ p.1.2)
+            (mfderiv I J (Φ : M → N) p.1.2
               (DifferentialGeometry.Integral.Measure.chartBasisVecFiber (I := I) x₀ (idx k) p.1.2)))
-          = (tangentMap I I (Φ : M → N)) ∘
+          = (tangentMap I J (Φ : M → N)) ∘
               (fun p => DifferentialGeometry.Integral.Measure.chartBasisVec (I := I) x₀ (idx k)
                 p.1.2) := by
       funext p; rfl
     rw [hcomp]
-    refine (Φ.contMDiff.continuous_tangentMap (by simp)).comp ?_
+    refine (hΦ.continuous_tangentMap (by simp)).comp ?_
     exact (DifferentialGeometry.Integral.Measure.chartBasisVec_contMDiffOn
         (I := I) x₀ (idx k)).continuousOn.comp_continuous
       (continuous_snd.comp continuous_subtype_val) (fun p => p.2)
@@ -321,11 +327,25 @@ theorem pullback
       (τ := fun p => p.1.1.1) (b := fun p => Φ p.1.2)
       (continuous_subtype_val.comp (continuous_fst.comp continuous_subtype_val))
       (fun p => p.1.1.2)
-      (Φ.continuous.comp (continuous_snd.comp continuous_subtype_val))
+      (hΦ.continuous.comp (continuous_snd.comp continuous_subtype_val))
       hslot
   refine hev.congr ?_
   intro p
   rfl
+
+omit [IsManifold I 1 M] in
+theorem pullback
+    {s : Nat} {K : Set Real}
+    (A : (t : Real) → (x : N) →
+      Tensor0SSpace (𝕜 := Real) (E := F) (H := H') (I := J) (M := N) s x)
+    (hA : tensor0SFamilyContinuousOnSet (I := J) (M := N) s K A)
+    (Φ : M ≃ₘ⟮I, J⟯ N) :
+    tensor0SFamilyContinuousOnSet (I := I) (M := M) s K
+      (fun t x => (A t (Φ x)).compContinuousLinearMap
+        (fun _ : Fin s => mfderiv I J (Φ : M → N) x)) :=
+  hA.pullback_of_contMDiff A Φ (Φ.contMDiff.of_le (by norm_num))
+
+end Pullback
 
 theorem restrictOpen
     {s : Nat} {K : Set Real}

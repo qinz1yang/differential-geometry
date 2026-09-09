@@ -526,7 +526,7 @@ private theorem dirichlet_weak_limit_identity_basis
   simpa only [massForm, variationForm, weakForm, initialForm, v,
     ContinuousLinearMap.flip_apply] using hidentity
 
-private theorem exists_dirichlet_integrated_weak_solution_aux
+private theorem exists_uniform_dirichlet_integrated_weak_solution_aux
     {q : SmoothRiemannianMetric (I_half n) M}
     {D : RealTimeInterval}
     {G : MetricConnectionFamilyOn (I := I_half n) (M := M) D}
@@ -545,9 +545,9 @@ private theorem exists_dirichlet_integrated_weak_solution_aux
       (G.metric t).inner x (X t x) (X t x) ≤ Bx)
     (htrace : ∀ t ∈ Ico (0 : ℝ) T, ∀ x : M,
       |traceTimeDerivMetric (I := I_half n) G.metric t x| ≤ Bv)
-    (ha : ∀ t ∈ Ico (0 : ℝ) T, 0 ≤ a t)
-    (f₀ : Lp ℝ 2
-      (riemannianVolumeMeasure (I := I_half n) (M := M) q)) :
+    (ha : ∀ t ∈ Ico (0 : ℝ) T, 0 ≤ a t) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀
+      (f₀ : Lp ℝ 2 (riemannianVolumeMeasure (I := I_half n) (M := M) q)),
     ∃ Cg : ℝ, ∃ Cv : ℝ≥0∞,
       ∃ hCg : 1 ≤ Cg,
       ∃ hequiv : ∀ t ∈ Icc (0 : ℝ) T, ∀ x : M,
@@ -558,7 +558,7 @@ private theorem exists_dirichlet_integrated_weak_solution_aux
       ∃ hvol : ∀ t ∈ Icc (0 : ℝ) T,
         riemannianVolumeMeasure (I := I_half n) (M := M) (G.metric t) ≤
           Cv • riemannianVolumeMeasure (I := I_half n) (M := M) q,
-      ∃ u : timeL2 (H1ComplDirichlet q) T,
+      ∃ u : timeL2 (H1ComplDirichlet q) T, ‖u‖ ^ 2 ≤ C * ‖f₀‖ ^ 2 ∧
       ∀ (η dη : ℝ → ℝ),
         ContinuousOn η (Icc (0 : ℝ) T) →
         ContinuousOn dη (Icc (0 : ℝ) T) →
@@ -577,6 +577,10 @@ private theorem exists_dirichlet_integrated_weak_solution_aux
             ∫ t in Icc (0 : ℝ) T,
               η t * dirichletWeakFormComplOnIco G.metric X a Bx hX
                 hCg hequiv Cv hCv0 hCvtop hvol t (u t) v := by
+  obtain ⟨C, hC, hsequence⟩ := exists_uniform_dirichletGalerkin_timeL2_sequence
+    hG hT hreg X hXcont a hacont Bx Bv hX htrace ha
+  refine ⟨C, hC, ?_⟩
+  intro f₀
   obtain ⟨Cg, hCg, hequiv⟩ :=
     exists_metric_equivalence_bound_on_icc_of_metricFamilySmoothOn
       G.metric hG (fun _ ht ↦ D.regular_subset (hreg ht)) q
@@ -587,15 +591,24 @@ private theorem exists_dirichlet_integrated_weak_solution_aux
       riemannianVolumeMeasure (I := I_half n) (M := M) (G.metric t) ≤
         Cv • riemannianVolumeMeasure (I := I_half n) (M := M) q :=
     fun t ht ↦ (hvolBoth t ht).1
-  obtain ⟨γ, U, C, hC, hseq⟩ :=
-    exists_dirichletGalerkin_timeL2_sequence hG hT hreg X hXcont a hacont
-      Bx Bv hX htrace ha f₀
+  obtain ⟨γ, U, hseq⟩ := hsequence f₀
   have hUnorm : ∀ m, ‖U m‖ ≤ Real.sqrt (C * ‖f₀‖ ^ 2) := by
     intro m
     rw [← Real.sqrt_sq (norm_nonneg (U m))]
     exact Real.sqrt_le_sqrt (hseq m).2.2.2.2
   obtain ⟨φ, u, hφ, hUweak⟩ :=
     exists_weakly_convergent_subsequence_timeL2_H1ComplDirichlet q U hUnorm
+  have hunorm : ‖u‖ ^ 2 ≤ C * ‖f₀‖ ^ 2 := by
+    have hs : ‖u‖ ^ 2 ≤ Real.sqrt (C * ‖f₀‖ ^ 2) * ‖u‖ := by
+      have hlim : Tendsto (fun m => inner ℝ (U (φ m)) u) atTop (𝓝 (‖u‖ ^ 2)) := by
+        simpa only [real_inner_self_eq_norm_sq] using hUweak u
+      apply le_of_tendsto hlim
+      exact Filter.Eventually.of_forall fun m => (real_inner_le_norm _ _).trans
+        (mul_le_mul_of_nonneg_right (hUnorm (φ m)) (norm_nonneg _))
+    have hr : 0 ≤ Real.sqrt (C * ‖f₀‖ ^ 2) := Real.sqrt_nonneg _
+    have hle : ‖u‖ ≤ Real.sqrt (C * ‖f₀‖ ^ 2) := by nlinarith [norm_nonneg u]
+    have hsq := (sq_le_sq₀ (norm_nonneg _) hr).2 hle
+    rwa [Real.sq_sqrt (mul_nonneg hC (sq_nonneg _))] at hsq
   obtain ⟨A, hAbound⟩ := isCompact_Icc.exists_bound_of_continuousOn hacont
   have hzero : (0 : ℝ) ∈ Icc (0 : ℝ) T := ⟨le_rfl, hT.le⟩
   have hA : 0 ≤ A := (norm_nonneg (a 0)).trans (hAbound 0 hzero)
@@ -603,7 +616,7 @@ private theorem exists_dirichlet_integrated_weak_solution_aux
     intro t ht
     rw [← Real.norm_eq_abs]
     exact hAbound t ⟨ht.1, ht.2.le⟩
-  refine ⟨Cg, Cv, hCg, hequiv, hCv0, hCvtop, hvol, u, ?_⟩
+  refine ⟨Cg, Cv, hCg, hequiv, hCv0, hCvtop, hvol, u, hunorm, ?_⟩
   intro η dη hηcont hdηcont hηderiv hηT v
   let massForm := dirichletMassComplOnIcc G.metric hCg hequiv
     Cv hCv0 hCvtop hvol
@@ -688,6 +701,38 @@ private theorem exists_dirichlet_integrated_weak_solution_aux
     smul_apply, ContinuousLinearMap.comp_apply,
     smul_eq_mul] using hall
 
+theorem exists_uniform_dirichlet_integrated_weak_solution_norm_sq_le
+    {q : SmoothRiemannianMetric (I_half n) M}
+    {D : RealTimeInterval}
+    {G : MetricConnectionFamilyOn (I := I_half n) (M := M) D}
+    (hG : MetricFamilySmoothOn (I := I_half n) (M := M) D G.metric)
+    {T : ℝ} (hT : 0 < T) (hreg : Icc (0 : ℝ) T ⊆ D.regular)
+    (X : ℝ → Cₛ^∞⟮I_half n; EuclideanSpace ℝ (Fin n),
+      (TangentSpace (I_half n) : M → Type _)⟯)
+    (hXcont : ContinuousOn
+      (fun p : ℝ × M ↦
+        (TotalSpace.mk' (EuclideanSpace ℝ (Fin n)) p.2 (X p.1 p.2) :
+          TangentBundle (I_half n) M))
+      (Icc (0 : ℝ) T ×ˢ (Set.univ : Set M)))
+    (a : ℝ → ℝ) (hacont : ContinuousOn a (Icc (0 : ℝ) T))
+    (Bx Bv : ℝ)
+    (hX : ∀ t ∈ Ico (0 : ℝ) T, ∀ x : M,
+      (G.metric t).inner x (X t x) (X t x) ≤ Bx)
+    (htrace : ∀ t ∈ Ico (0 : ℝ) T, ∀ x : M,
+      |traceTimeDerivMetric (I := I_half n) G.metric t x| ≤ Bv)
+    (ha : ∀ t ∈ Ico (0 : ℝ) T, 0 ≤ a t) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀
+      (f₀ : Lp ℝ 2 (riemannianVolumeMeasure (I := I_half n) (M := M) q)),
+    ∃ u : timeL2 (H1ComplDirichlet q) T,
+      IsIntegratedWeakSolution hG hT.le hreg X a Bx Bv hX htrace f₀ u ∧
+      ‖u‖ ^ 2 ≤ C * ‖f₀‖ ^ 2 := by
+  obtain ⟨C, hC, hsolution⟩ := exists_uniform_dirichlet_integrated_weak_solution_aux
+    hG hT hreg X hXcont a hacont Bx Bv hX htrace ha
+  refine ⟨C, hC, ?_⟩
+  intro f₀
+  obtain ⟨Cg, Cv, hCg, hequiv, hCv0, hCvtop, hvol, u, hubound, hu⟩ := hsolution f₀
+  exact ⟨u, ⟨Cg, Cv, hCg, hequiv, hCv0, hCvtop, hvol, hu⟩, hubound⟩
+
 theorem exists_dirichlet_integrated_weak_solution
     {q : SmoothRiemannianMetric (I_half n) M}
     {D : RealTimeInterval}
@@ -712,10 +757,10 @@ theorem exists_dirichlet_integrated_weak_solution
       (riemannianVolumeMeasure (I := I_half n) (M := M) q)) :
     ∃ u : timeL2 (H1ComplDirichlet q) T,
       IsIntegratedWeakSolution hG hT.le hreg X a Bx Bv hX htrace f₀ u := by
-  obtain ⟨Cg, Cv, hCg, hequiv, hCv0, hCvtop, hvol, u, hu⟩ :=
-    exists_dirichlet_integrated_weak_solution_aux hG hT hreg X hXcont
-      a hacont Bx Bv hX htrace ha f₀
-  exact ⟨u, Cg, Cv, hCg, hequiv, hCv0, hCvtop, hvol, hu⟩
+  obtain ⟨C, hC, hsolution⟩ := exists_uniform_dirichlet_integrated_weak_solution_norm_sq_le
+    hG hT hreg X hXcont a hacont Bx Bv hX htrace ha
+  obtain ⟨u, hu, _⟩ := hsolution f₀
+  exact ⟨u, hu⟩
 
 end DifferentialGeometry.Analysis.Parabolic.Dirichlet
 
