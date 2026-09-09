@@ -4839,11 +4839,16 @@ import DifferentialGeometry.Bundle.LocalFramePullback
 import DifferentialGeometry.Geometry.Metric.Family.Product
 import DifferentialGeometry.Geometry.Metric.Family.Pullback
 import DifferentialGeometry.Geometry.Curvature.Product
+import DifferentialGeometry.Geometry.Curvature.UniversalCover
 import DifferentialGeometry.Geometry.Curvature.SurfaceProductBounds
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureNullityRank
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.SurfaceProductRank
+import DifferentialGeometry.Geometry.Curvature.DimensionThree.UniversalCover
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.Product
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.Stationary
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.TimeRestriction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.RankContinuity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.RankOnePersistence
+import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.RankPersistence
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Solutions.UniversalCover
+import DifferentialGeometry.Analysis.Heat.Kernel.DuhamelBound
