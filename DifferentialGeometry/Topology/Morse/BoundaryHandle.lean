@@ -126,8 +126,8 @@ theorem exists_boundaryMorsePerturbation_with_cocore_collar_in_interior
           (∃ q : U, (q : M) ∈ frontier D ∧ (c q).val = 0 ∧
             mfderiv I 𝓘(ℝ) g (q : M)
               (mfderiv 𝓘(ℝ, Fin (n + 1) → ℝ) I c.symm (c q) (Fin.cons 1 0)) = -1) ∧
-          let O : TopologicalSpace.Opens M := ⟨interior D, isOpen_interior⟩
-          let pO : O := ⟨p.val, hpD⟩
+          let O : TopologicalSpace.Opens M := ⟨interior D ∩ (U : Set M), isOpen_interior.inter U.isOpen⟩
+          let pO : O := ⟨p.val, hpD, p.property⟩
           ∃ data : MorseChart (n + 1) k.val k.isLt.le (g p) I (fun x : O => g x),
             data.p = pO ∧
             ∃ ε : ℝ, ∃ hε : 0 < ε, ∃ r : ℝ, 0 < r ∧
@@ -176,8 +176,8 @@ theorem exists_boundaryMorsePerturbation_with_cocore_collar_in_interior
   have hindex' := hindex.trans hdindex
   refine ⟨g, hg, hgs, hgU, hmodel, hout, hbound, p, hpD, hp, hheight,
     hnd, hindex', hunique, hglobal, hboundary, ?_⟩
-  let O : TopologicalSpace.Opens M := ⟨interior D, isOpen_interior⟩
-  let pO : O := ⟨p.val, hpD⟩
+  let O : TopologicalSpace.Opens M := ⟨interior D ∩ (U : Set M), isOpen_interior.inter U.isOpen⟩
+  let pO : O := ⟨p.val, hpD, p.property⟩
   have hgO : ContMDiff I 𝓘(ℝ, ℝ) ∞ (fun x : O => g x) :=
     hg.comp (contMDiff_subtype_val (I := I) (U := O))
   have hndO : IsNondegenerateCriticalPointAt I (fun x : O => g x) pO :=
