@@ -225,4 +225,92 @@ theorem exists_lp_gradient_source_spatial_derivative_step
   exact ⟨DF, (fun k j => hDF k j), (fun k j => hDFformula k j),
     (fun k j => (hDFnorm k).1 j)⟩
 
+
+theorem exists_lp_second_spatial_weak_partials_of_ae_eq_finite_sum
+    {Z ι : Type*} [Fintype ι] [MeasurableSpace Z]
+    {μ : Measure Z} {Ω : Set E} (hΩ : IsOpen Ω)
+    (F : Fin d → Lp ℝ 2 (μ.prod (volume.restrict Ω)))
+    (Y : Fin d → ι → Lp ℝ 2 (μ.prod (volume.restrict Ω)))
+    (DY : Fin d → ι → Fin d → Lp ℝ 2 (μ.prod (volume.restrict Ω)))
+    (DDY : Fin d → ι → Fin d → Fin d → Lp ℝ 2 (μ.prod (volume.restrict Ω)))
+    (A : Fin d → ι → Z × E → ℝ)
+    (hA : ∀ k i, MemLp (A k i) ∞ (μ.prod (volume.restrict Ω)))
+    (hDA : ∀ k i j, MemLp
+      (fun p => fderiv ℝ (fun x => A k i (p.1, x)) p.2
+        (EuclideanSpace.single j 1)) ∞ (μ.prod (volume.restrict Ω)))
+    (hDDA : ∀ k i j l, MemLp
+      (fun p => fderiv ℝ (fun x => fderiv ℝ (fun y => A k i (p.1, y)) x
+        (EuclideanSpace.single j 1)) p.2 (EuclideanSpace.single l 1)) ∞
+          (μ.prod (volume.restrict Ω)))
+    (hAsmooth : ∀ k i, ∀ᵐ t ∂μ,
+      ContDiffOn ℝ (⊤ : ℕ∞) (fun x => A k i (t, x)) Ω)
+    (hDAsmooth : ∀ k i j, ∀ᵐ t ∂μ,
+      ContDiffOn ℝ (⊤ : ℕ∞)
+        (fun x => fderiv ℝ (fun y => A k i (t, y)) x (EuclideanSpace.single j 1)) Ω)
+    (hYweak : ∀ k i j, ∀ᵐ t ∂μ,
+      DeGiorgi.HasWeakPartialDeriv j
+        (fun x => DY k i j (t, x)) (fun x => Y k i (t, x)) Ω)
+    (hDYweak : ∀ k i j l, ∀ᵐ t ∂μ,
+      DeGiorgi.HasWeakPartialDeriv l
+        (fun x => DDY k i j l (t, x)) (fun x => DY k i j (t, x)) Ω)
+    (hF : ∀ k, F k =ᵐ[μ.prod (volume.restrict Ω)]
+      fun p => ∑ i, A k i p * Y k i p)
+    : ∃ DF : Fin d → Fin d → Lp ℝ 2 (μ.prod (volume.restrict Ω)),
+      (∀ k j, ∀ᵐ t ∂μ, DeGiorgi.HasWeakPartialDeriv j
+        (fun x => DF k j (t, x)) (fun x => F k (t, x)) Ω) ∧
+      ∃ DDF : Fin d → Fin d → Fin d → Lp ℝ 2 (μ.prod (volume.restrict Ω)),
+        (∀ k l m, ∀ᵐ t ∂μ, DeGiorgi.HasWeakPartialDeriv m
+          (fun x => DDF k l m (t, x)) (fun x => DF k l (t, x)) Ω) := by
+  classical
+  obtain ⟨DF, hDF, hDFformula, _⟩ :=
+    exists_lp_gradient_source_spatial_derivative_step hΩ F Y DY A hA hDA hAsmooth hYweak hF
+  let ι' := ι ⊕ ι
+  have hex (k₀ : Fin d) : ∃ DDF : Fin d → Fin d → Lp ℝ 2 (μ.prod (volume.restrict Ω)),
+      ∀ l m, ∀ᵐ t ∂μ, DeGiorgi.HasWeakPartialDeriv m
+        (fun x => DDF l m (t, x)) (fun x => DF k₀ l (t, x)) Ω := by
+    let Y' : Fin d → ι' → Lp ℝ 2 (μ.prod (volume.restrict Ω)) := fun l s =>
+      match s with
+      | Sum.inl i => DY k₀ i l
+      | Sum.inr i => Y k₀ i
+    let DY' : Fin d → ι' → Fin d → Lp ℝ 2 (μ.prod (volume.restrict Ω)) := fun l s m =>
+      match s with
+      | Sum.inl i => DDY k₀ i l m
+      | Sum.inr i => DY k₀ i m
+    let A' : Fin d → ι' → Z × E → ℝ := fun l s =>
+      match s with
+      | Sum.inl i => A k₀ i
+      | Sum.inr i => fun p => fderiv ℝ (fun x => A k₀ i (p.1, x)) p.2 (EuclideanSpace.single l 1)
+    have hA' : ∀ j s, MemLp (A' j s) ∞ (μ.prod (volume.restrict Ω)) := by
+      intro j s; rcases s with i | i
+      · exact hA k₀ i
+      · exact hDA k₀ i j
+    have hDA' : ∀ j s l, MemLp (fun p => fderiv ℝ (fun x => A' j s (p.1, x)) p.2
+        (EuclideanSpace.single l 1)) ∞ (μ.prod (volume.restrict Ω)) := by
+      intro j s l; rcases s with i | i
+      · exact hDA k₀ i l
+      · exact hDDA k₀ i j l
+    have hAsmooth' : ∀ j s, ∀ᵐ t ∂μ, ContDiffOn ℝ (⊤ : ℕ∞) (fun x => A' j s (t, x)) Ω := by
+      intro j s; rcases s with i | i
+      · exact hAsmooth k₀ i
+      · exact hDAsmooth k₀ i j
+    have hYweak' : ∀ j s l, ∀ᵐ t ∂μ, DeGiorgi.HasWeakPartialDeriv l
+        (fun x => DY' j s l (t, x)) (fun x => Y' j s (t, x)) Ω := by
+      intro j s l; rcases s with i | i
+      · exact hDYweak k₀ i j l
+      · exact hYweak k₀ i l
+    have hF' : ∀ l, DF k₀ l =ᵐ[μ.prod (volume.restrict Ω)]
+        fun p => ∑ s, A' l s p * Y' l s p := by
+      intro l
+      have hj := hDFformula k₀ l
+      filter_upwards [hj] with p hp
+      rw [hp]
+      rw [Fintype.sum_sum_type]
+      simp only [A', Y']
+      simp_rw [Finset.sum_add_distrib]
+    obtain ⟨DDF, hDDF, _, _⟩ :=
+      exists_lp_gradient_source_spatial_derivative_step hΩ (fun l => DF k₀ l) Y' DY' A'
+        hA' hDA' hAsmooth' hYweak' hF'
+    exact ⟨DDF, hDDF⟩
+  choose DDF hDDF using hex
+  exact ⟨DF, hDF, DDF, hDDF⟩
 end DifferentialGeometry.Analysis.Sobolev.Euclidean
