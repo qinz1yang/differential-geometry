@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.CompactVolumeEquivalence
+import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.Invariance
 import Mathlib.Analysis.Matrix.Order
 import Mathlib.Analysis.Matrix.PosDef
 
@@ -168,13 +168,94 @@ private local instance : BorelSpace E := ⟨rfl⟩
 private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
-theorem volumeMeasure_le
+lemma chart_setLIntegral_le
+    (q h : SmoothRiemannianMetric I M) (alpha : M) (C : ℝ) (hC : 0 ≤ C)
+    {s : Set M} (hs : MeasurableSet s)
+    (hdensity : ∀ x ∈ tsupport
+      (fun y : M => (chartAtlasPOU I M alpha : M → ℝ) y),
+      x ∈ s →
+      chartDensity (I := I) h alpha x ≤ C * chartDensity (I := I) q alpha x)
+    {F : M → ℝ≥0∞} (hF : Measurable F) :
+    ∫⁻ x in s, ENNReal.ofReal ((chartAtlasPOU I M alpha : M → ℝ) x) * F x
+        ∂(chartLocalMeasure (I := I) h alpha) ≤
+      ENNReal.ofReal C *
+        ∫⁻ x in s, ENNReal.ofReal ((chartAtlasPOU I M alpha : M → ℝ) x) * F x
+          ∂(chartLocalMeasure (I := I) q alpha) := by
+  let rho : M → ℝ := fun x => (chartAtlasPOU I M alpha : M → ℝ) x
+  have hrho_meas : Measurable (fun x : M => ENNReal.ofReal (rho x)) :=
+    ENNReal.measurable_ofReal.comp ((chartAtlasPOU I M alpha).contMDiff.continuous.measurable
+      )
+  have hprod_meas : Measurable (fun x : M => ENNReal.ofReal (rho x) * F x) :=
+    hrho_meas.mul hF
+  have hind_meas : Measurable
+      (s.indicator fun x : M => ENNReal.ofReal (rho x) * F x) :=
+    hprod_meas.indicator hs
+  rw [← lintegral_indicator hs, ← lintegral_indicator hs,
+    chartLocalMeasure_lintegral (I := I) h alpha hind_meas,
+    chartLocalMeasure_lintegral (I := I) q alpha hind_meas]
+  let target : Set E := (extChartAt I alpha).target
+  let symm : E → M := fun y => (extChartAt I alpha).symm y
+  calc
+    ∫⁻ y in target,
+        ENNReal.ofReal (chartDensity (I := I) h alpha (symm y)) *
+          s.indicator (fun x : M => ENNReal.ofReal (rho x) * F x) (symm y)
+        ∂(modelHaar (E := E)) ≤
+      ∫⁻ y in target, ENNReal.ofReal C *
+        (ENNReal.ofReal (chartDensity (I := I) q alpha (symm y)) *
+          s.indicator (fun x : M => ENNReal.ofReal (rho x) * F x) (symm y))
+        ∂(modelHaar (E := E)) := by
+          refine lintegral_mono fun y => ?_
+          by_cases hys : symm y ∈ s
+          · rw [Set.indicator_of_mem hys]
+            by_cases hrho : rho (symm y) = 0
+            · simp [hrho]
+            · have hsymm_tsupp : symm y ∈ tsupport rho :=
+                subset_tsupport rho hrho
+              have hd := hdensity (symm y) hsymm_tsupp hys
+              have hd_en :
+                  ENNReal.ofReal (chartDensity (I := I) h alpha (symm y)) ≤
+                    ENNReal.ofReal C *
+                      ENNReal.ofReal (chartDensity (I := I) q alpha (symm y)) := by
+                have := ENNReal.ofReal_le_ofReal hd
+                rw [ENNReal.ofReal_mul hC] at this
+                exact this
+              have hmul := mul_le_mul_left
+                hd_en (ENNReal.ofReal (rho (symm y)) * F (symm y))
+              simpa only [mul_assoc] using hmul
+          · rw [Set.indicator_of_notMem hys]
+            simp only [mul_zero, zero_le]
+    _ = ENNReal.ofReal C *
+        ∫⁻ y in target,
+          ENNReal.ofReal (chartDensity (I := I) q alpha (symm y)) *
+            s.indicator (fun x : M => ENNReal.ofReal (rho x) * F x) (symm y)
+          ∂(modelHaar (E := E)) := by
+        rw [MeasureTheory.lintegral_const_mul'
+          (μ := (modelHaar (E := E)).restrict target)
+          (ENNReal.ofReal C) _ ENNReal.ofReal_ne_top]
+
+lemma chart_lintegral_le
+    (q h : SmoothRiemannianMetric I M) (alpha : M) (C : ℝ) (hC : 0 ≤ C)
+    (hdensity : ∀ x ∈ tsupport
+      (fun y : M => (chartAtlasPOU I M alpha : M → ℝ) y),
+      chartDensity (I := I) h alpha x ≤ C * chartDensity (I := I) q alpha x)
+    {F : M → ℝ≥0∞} (hF : Measurable F) :
+    ∫⁻ x, ENNReal.ofReal ((chartAtlasPOU I M alpha : M → ℝ) x) * F x
+        ∂(chartLocalMeasure (I := I) h alpha) ≤
+      ENNReal.ofReal C *
+        ∫⁻ x, ENNReal.ofReal ((chartAtlasPOU I M alpha : M → ℝ) x) * F x
+          ∂(chartLocalMeasure (I := I) q alpha) := by
+  simpa only [Measure.restrict_univ] using
+    chart_setLIntegral_le (I := I) (M := M) q h alpha C hC MeasurableSet.univ
+      (fun x hx _ ↦ hdensity x hx) hF
+
+theorem volumeMeasure_restrict_le
     (g h : SmoothRiemannianMetric I M) {Q : Real} (hQ : 0 < Q)
-    (hcomp : ∀ x : M, ∀ v : TangentSpace I x,
+    {s : Set M} (hs : MeasurableSet s)
+    (hcomp : ∀ x ∈ s, ∀ v : TangentSpace I x,
       h.inner x v v ≤ Q * g.inner x v v) :
-    riemannianVolumeMeasure (I := I) (M := M) h ≤
+    (riemannianVolumeMeasure (I := I) (M := M) h).restrict s ≤
       ENNReal.ofReal (Real.sqrt (Q ^ Module.finrank Real E)) •
-        riemannianVolumeMeasure (I := I) (M := M) g := by
+        (riemannianVolumeMeasure (I := I) (M := M) g).restrict s := by
   classical
   have hbase : ∀ (x₀ : M), ∀ x ∈
       tsupport (fun y : M ↦ (chartAtlasPOU I M x₀ : M → Real) y),
@@ -183,37 +264,53 @@ theorem volumeMeasure_le
     rw [trivializationAt_baseSet_eq_chartAt_source]
     exact (chartAtlasPOU_isSubordinate I M) x₀ hx
   have hlin : ∀ (F : M → ℝ≥0∞), Measurable F →
-      (∫⁻ x, F x ∂(riemannianVolumeMeasure (I := I) (M := M) h)) ≤
+      (∫⁻ x, F x ∂(riemannianVolumeMeasure (I := I) (M := M) h).restrict s) ≤
         ENNReal.ofReal (Real.sqrt (Q ^ Module.finrank Real E)) *
-          ∫⁻ x, F x ∂(riemannianVolumeMeasure (I := I) (M := M) g) := by
+          ∫⁻ x, F x ∂(riemannianVolumeMeasure (I := I) (M := M) g).restrict s := by
     intro F hF
-    change (∫⁻ x, F x ∂riemannianMeasure (I := I) h (chartAtlasPOU I M)) ≤
+    change (∫⁻ x in s, F x ∂riemannianMeasure (I := I) h (chartAtlasPOU I M)) ≤
       ENNReal.ofReal (Real.sqrt (Q ^ Module.finrank Real E)) *
-        ∫⁻ x, F x ∂riemannianMeasure (I := I) g (chartAtlasPOU I M)
-    rw [
-      riemannianMeasure_lintegral_eq (I := I) h (chartAtlasPOU I M) hF,
-      riemannianMeasure_lintegral_eq (I := I) g (chartAtlasPOU I M) hF]
+        ∫⁻ x in s, F x ∂riemannianMeasure (I := I) g (chartAtlasPOU I M)
+    rw [← lintegral_indicator hs, ← lintegral_indicator hs,
+      riemannianMeasure_lintegral_eq (I := I) h (chartAtlasPOU I M)
+        (hF.indicator hs),
+      riemannianMeasure_lintegral_eq (I := I) g (chartAtlasPOU I M)
+        (hF.indicator hs)]
     calc
       (∑' x₀ : M, ∫⁻ x,
-          ENNReal.ofReal ((chartAtlasPOU I M x₀ : M → Real) x) * F x
+          ENNReal.ofReal ((chartAtlasPOU I M x₀ : M → Real) x) * s.indicator F x
             ∂(chartLocalMeasure (I := I) h x₀)) ≤
           ∑' x₀ : M, ENNReal.ofReal (Real.sqrt (Q ^ Module.finrank Real E)) *
-            ∫⁻ x, ENNReal.ofReal ((chartAtlasPOU I M x₀ : M → Real) x) * F x
+            ∫⁻ x, ENNReal.ofReal ((chartAtlasPOU I M x₀ : M → Real) x) *
+                s.indicator F x
               ∂(chartLocalMeasure (I := I) g x₀) := by
         refine ENNReal.tsum_le_tsum fun x₀ ↦ ?_
-        exact chart_lintegral_le (I := I) (M := M) g h x₀
+        have hlocal := chart_setLIntegral_le (I := I) (M := M) g h x₀
           (Real.sqrt (Q ^ Module.finrank Real E)) (Real.sqrt_nonneg _)
-          (fun x hx ↦ chartDensity_le (I := I) g h hQ x₀ (hbase x₀ x hx) (hcomp x)) hF
+          hs (fun x hx hxs ↦
+            chartDensity_le (I := I) g h hQ x₀ (hbase x₀ x hx) (hcomp x hxs)) hF
+        simpa only [← lintegral_indicator hs, indicator_mul_right] using hlocal
       _ = ENNReal.ofReal (Real.sqrt (Q ^ Module.finrank Real E)) *
           ∑' x₀ : M, ∫⁻ x,
-            ENNReal.ofReal ((chartAtlasPOU I M x₀ : M → Real) x) * F x
+            ENNReal.ofReal ((chartAtlasPOU I M x₀ : M → Real) x) * s.indicator F x
               ∂(chartLocalMeasure (I := I) g x₀) := ENNReal.tsum_mul_left
   rw [Measure.le_iff]
-  intro s hs
-  have h := hlin (Set.indicator s (1 : M → ℝ≥0∞))
-    (measurable_const.indicator hs)
-  rw [lintegral_indicator_one hs, lintegral_indicator_one hs] at h
+  intro t ht
+  have h := hlin (Set.indicator t (1 : M → ℝ≥0∞))
+    (measurable_const.indicator ht)
+  rw [lintegral_indicator_one ht, lintegral_indicator_one ht] at h
   simpa only [Measure.smul_apply, smul_eq_mul] using h
+
+theorem volumeMeasure_le
+    (g h : SmoothRiemannianMetric I M) {Q : Real} (hQ : 0 < Q)
+    (hcomp : ∀ x : M, ∀ v : TangentSpace I x,
+      h.inner x v v ≤ Q * g.inner x v v) :
+    riemannianVolumeMeasure (I := I) (M := M) h ≤
+      ENNReal.ofReal (Real.sqrt (Q ^ Module.finrank Real E)) •
+        riemannianVolumeMeasure (I := I) (M := M) g := by
+  simpa only [Measure.restrict_univ] using
+    volumeMeasure_restrict_le (I := I) (M := M) g h hQ MeasurableSet.univ
+      (fun x _ ↦ hcomp x)
 
 end VolumeMeasure
 

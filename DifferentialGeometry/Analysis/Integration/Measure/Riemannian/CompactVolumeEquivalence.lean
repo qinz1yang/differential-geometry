@@ -1,4 +1,5 @@
 import DifferentialGeometry.Analysis.Integration.Measure.Family.Decomposition
+import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.MetricComparison
 
 noncomputable section
 
@@ -167,61 +168,6 @@ theorem volume_density_bdd
   constructor
   · exact hforward.trans (mul_le_mul_of_nonneg_right hCalpha (Real.sqrt_nonneg _))
   · exact hreverse.trans (mul_le_mul_of_nonneg_right hCalpha (Real.sqrt_nonneg _))
-
-omit [CompactSpace M] in
-lemma chart_lintegral_le
-    (q h : SmoothRiemannianMetric I M) (alpha : M) (C : ℝ) (hC : 0 ≤ C)
-    (hdensity : ∀ x ∈ tsupport
-      (fun y : M => (chartAtlasPOU I M alpha : M → ℝ) y),
-      chartDensity (I := I) h alpha x ≤ C * chartDensity (I := I) q alpha x)
-    {F : M → ℝ≥0∞} (hF : Measurable F) :
-    ∫⁻ x, ENNReal.ofReal ((chartAtlasPOU I M alpha : M → ℝ) x) * F x
-        ∂(chartLocalMeasure (I := I) h alpha) ≤
-      ENNReal.ofReal C *
-        ∫⁻ x, ENNReal.ofReal ((chartAtlasPOU I M alpha : M → ℝ) x) * F x
-          ∂(chartLocalMeasure (I := I) q alpha) := by
-  let rho : M → ℝ := fun x => (chartAtlasPOU I M alpha : M → ℝ) x
-  have hrho_meas : Measurable (fun x : M => ENNReal.ofReal (rho x)) :=
-    ENNReal.measurable_ofReal.comp ((chartAtlasPOU I M alpha).contMDiff.continuous.measurable
-      )
-  have hprod_meas : Measurable (fun x : M => ENNReal.ofReal (rho x) * F x) :=
-    hrho_meas.mul hF
-  rw [chartLocalMeasure_lintegral (I := I) h alpha hprod_meas,
-    chartLocalMeasure_lintegral (I := I) q alpha hprod_meas]
-  let target : Set E := (extChartAt I alpha).target
-  let symm : E → M := fun y => (extChartAt I alpha).symm y
-  calc
-    ∫⁻ y in target,
-        ENNReal.ofReal (chartDensity (I := I) h alpha (symm y)) *
-          (ENNReal.ofReal (rho (symm y)) * F (symm y))
-        ∂(modelHaar (E := E)) ≤
-      ∫⁻ y in target, ENNReal.ofReal C *
-        (ENNReal.ofReal (chartDensity (I := I) q alpha (symm y)) *
-          (ENNReal.ofReal (rho (symm y)) * F (symm y)))
-        ∂(modelHaar (E := E)) := by
-          refine lintegral_mono fun y => ?_
-          by_cases hrho : rho (symm y) = 0
-          · simp [hrho]
-          · have hsymm_tsupp : symm y ∈ tsupport rho :=
-              subset_tsupport rho hrho
-            have hd := hdensity (symm y) hsymm_tsupp
-            have hd_en : ENNReal.ofReal (chartDensity (I := I) h alpha (symm y)) ≤
-                ENNReal.ofReal C *
-                  ENNReal.ofReal (chartDensity (I := I) q alpha (symm y)) := by
-              have := ENNReal.ofReal_le_ofReal hd
-              rw [ENNReal.ofReal_mul hC] at this
-              exact this
-            have hmul := mul_le_mul_left
-              hd_en (ENNReal.ofReal (rho (symm y)) * F (symm y))
-            simpa only [mul_assoc] using hmul
-    _ = ENNReal.ofReal C *
-        ∫⁻ y in target,
-          ENNReal.ofReal (chartDensity (I := I) q alpha (symm y)) *
-            (ENNReal.ofReal (rho (symm y)) * F (symm y))
-          ∂(modelHaar (E := E)) := by
-        rw [MeasureTheory.lintegral_const_mul'
-          (μ := (modelHaar (E := E)).restrict target)
-          (ENNReal.ofReal C) _ ENNReal.ofReal_ne_top]
 
 private lemma volume_tsum_eq_sum
     (g : SmoothRiemannianMetric I M) (F : M → ℝ≥0∞) :
