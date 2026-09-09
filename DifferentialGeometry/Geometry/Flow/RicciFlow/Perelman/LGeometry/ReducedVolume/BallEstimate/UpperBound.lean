@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.MetricComparison
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Regularized.Integrability
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ReducedLength.LowerBound
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ReducedVolume.BallEstimate.EndpointControl
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ReducedVolume.BallEstimate.SourceTailControl
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.Noncollapsing.Curvature.ScalarBound
@@ -75,123 +75,12 @@ theorem lRedLen_scale
   intro eps heps heps₀ B hBrho hB Z hZ hZinj
   have hepsR' : eps ≤ epsR := heps₀.trans (min_le_left epsR 1)
   have heps1 : eps ≤ 1 := heps₀.trans (min_le_right epsR 1)
-  let tau : Real := eps * B.radius ^ 2
-  let b : Real := Real.sqrt eps * B.radius
-  let n : Real := Module.finrank Real F
-  let K : Real := n ^ 2 * Real.sqrt (1 / B.radius ^ 4)
-  have htau : 0 < tau := mul_pos heps (sq_pos_of_pos B.radius_pos)
-  have hb : Real.sqrt tau = b := by
-    dsimp only [tau, b]
-    rw [Real.sqrt_mul heps.le, Real.sqrt_sq_eq_abs, abs_of_pos B.radius_pos]
-  have hbpos : 0 < b := by rw [← hb]; exact Real.sqrt_pos.2 htau
-  have hbSq : b ^ 2 = tau := by rw [← hb, Real.sq_sqrt htau.le]
-  have hK : 0 ≤ K := mul_nonneg (sq_nonneg n) (Real.sqrt_nonneg _)
-  have hrange' := hrange eps heps hepsR' B hBrho hB Z hZ
-  dsimp only at hrange'
-  obtain ⟨sigma, hsigma, hmin⟩ := hZinj
-  have hminTau : (Z, tau) ∈ lMinDomain S (time : Real) B.center := by
-    exact lMinDomain_down S hS (time : Real) B.center Z hmin htau
-      (by simpa only [tau] using hsigma.le)
-  have hdomTau : (Z, tau) ∈ lExpPosDom S (time : Real) B.center :=
-    ((mem_lMinDomain S (time : Real) B.center Z tau).1 hminTau).1
-  have hbdom : b ∈ lRegularizedDomain S (time : Real) B.center Z := by
-    rcases (mem_lExpPosDom S (time : Real) B.center Z tau).1 hdomTau with
-      ⟨_, _, hdom⟩
-    simpa only [hb] using hdom
-  let alpha : Real → N := lRegularizedCurve S (time : Real) B.center Z
-  have halpha : ContMDiffOn (modelWithCornersSelf Real Real) J 1 alpha
-      (Icc (0 : Real) b) := by
-    simpa only [alpha] using
-      lRegularizedCurve_c1On S hS (time : Real) B.center Z hbdom
-  have hregRay : ∀ s ∈ Icc (0 : Real) b,
-      (time : Real) - s ^ 2 ∈ D'.regular := by
-    intro s hs
-    exact lRegularizedDomain_regularity S (time : Real) B.center Z
-      (lRegularizedDomain_segment S (time : Real) B.center Z hbdom hs.1 hs.2)
-  have hLagInt : IntervalIntegrable (lRegularizedLagrangian S (time : Real) alpha) volume 0 b :=
-    intervalIntegrable_lRegularizedLagrangian_of_contMDiffOn_one S hS.smoothMetric ⟨hS.scalarCont⟩ (time : Real) 0 b
-      hbpos.le alpha halpha hregRay
-  have hconstInt : IntervalIntegrable (fun _ : Real ↦ -2 * b ^ 2 * K)
-      volume 0 b := intervalIntegrable_const
-  have hLagLower : ∀ s ∈ Icc (0 : Real) b,
-      -2 * b ^ 2 * K ≤ lRegularizedLagrangian S (time : Real) alpha s := by
-    intro s hs
-    have hsSq : s ^ 2 ≤ b ^ 2 :=
-      (sq_le_sq₀ hs.1 hbpos.le).2 hs.2
-    have hbRad : b ^ 2 ≤ B.radius ^ 2 := by
-      rw [hbSq]
-      dsimp only [tau]
-      nlinarith [sq_nonneg B.radius]
-    have htimeB : (time : Real) - s ^ 2 ∈
-        Icc ((time : Real) - B.radius ^ 2) (time : Real) :=
-      ⟨by linarith, by nlinarith [sq_nonneg s]⟩
-    have hsc : -K ≤ S.scalar ((time : Real) - s ^ 2) (alpha s) := by
-      have hsc' := scalar_ge_of_rm (I := J) B hB htimeB (hrange' s hs).2
-      rw [show Module.finrank Real (TangentSpace J (alpha s)) =
-        Module.finrank Real F from rfl] at hsc'
-      simpa only [K, n, alpha, SolutionOn.scalar, SolutionFamily.scalar] using hsc'
-    have hkin : 0 ≤ (1 / 2 : Real) *
-        (S.base.metric ((time : Real) - s ^ 2)).inner (alpha s)
-          (lVelocity (I := J) alpha s) (lVelocity (I := J) alpha s) := by
-      apply mul_nonneg (by norm_num)
-      by_cases hv : lVelocity (I := J) alpha s = 0
-      · rw [hv]
-        rw [((S.base.metric ((time : Real) - s ^ 2)).inner (alpha s)).map_zero,
-          zero_apply]
-      · exact ((S.base.metric ((time : Real) - s ^ 2)).pos
-          (alpha s) (lVelocity (I := J) alpha s) hv).le
-    have hscalar : -2 * b ^ 2 * K ≤
-        2 * s ^ 2 * S.scalar ((time : Real) - s ^ 2) (alpha s) := by
-      have h₁ : -2 * b ^ 2 * K ≤ -2 * s ^ 2 * K := by
-        nlinarith
-      have h₂ : -2 * s ^ 2 * K ≤
-          2 * s ^ 2 * S.scalar ((time : Real) - s ^ 2) (alpha s) := by
-        nlinarith [sq_nonneg s]
-      exact h₁.trans h₂
-    dsimp only [lRegularizedLagrangian]
-    linarith
-  have haction : -2 * b ^ 2 * K * b ≤
-      lRegularizedAction S (time : Real) alpha 0 b := by
-    change -2 * b ^ 2 * K * b ≤
-      ∫ u : Real in 0..b, lRegularizedLagrangian S (time : Real) alpha u
-    have hmono := intervalIntegral.integral_mono_on hbpos.le hconstInt hLagInt hLagLower
-    calc
-      -2 * b ^ 2 * K * b = b * (-2 * b ^ 2 * K) := by ring
-      _ ≤ ∫ u : Real in 0..b, lRegularizedLagrangian S (time : Real) alpha u := by
-        simpa only [intervalIntegral.integral_const, smul_eq_mul, sub_zero] using hmono
-  have hcost : lCost S (time : Real) B.center
-      (lExp S (time : Real) B.center Z tau) tau =
-        lRegularizedAction S (time : Real) alpha 0 b := by
-    have hlen : lLength S (time : Real)
-        (fun r : Real ↦ lExp S (time : Real) B.center Z r) 0 tau =
-          lRegularizedAction S (time : Real) alpha 0 b := by
-      change lLength S (time : Real) (squareRootReparametrization alpha) 0 tau =
-        lRegularizedAction S (time : Real) alpha 0 b
-      simpa only [hb] using
-        lLength_squareRootReparametrization_eq_lRegularizedAction (I := J) S (time : Real) alpha tau htau.le
-    exact (((mem_lMinDomain S (time : Real) B.center Z tau).1 hminTau).2.symm).trans hlen
-  have hscaleK : B.radius ^ 2 * K = n ^ 2 := by
-    dsimp only [K, n]
-    have hr2 : 0 < B.radius ^ 2 := sq_pos_of_pos B.radius_pos
-    rw [show B.radius ^ 4 = (B.radius ^ 2) ^ 2 by ring]
-    rw [show 1 / (B.radius ^ 2) ^ 2 = (1 / B.radius ^ 2) ^ 2 by field_simp]
-    rw [Real.sqrt_sq_eq_abs, abs_of_pos (one_div_pos.mpr hr2)]
-    field_simp [B.radius_pos.ne']
-  have hb2K : b ^ 2 * K = n ^ 2 * eps := by
-    rw [hbSq]
-    dsimp only [tau]
-    calc
-      eps * B.radius ^ 2 * K = eps * (B.radius ^ 2 * K) := by ring
-      _ = eps * n ^ 2 := by rw [hscaleK]
-      _ = n ^ 2 * eps := by ring
-  rw [redLength, hcost, hb]
-  have hden : 0 < 2 * b := mul_pos (by norm_num) hbpos
-  apply (le_div_iff₀ hden).2
-  calc
-    -(n ^ 2 * eps) * (2 * b) = -2 * (n ^ 2 * eps) * b := by ring
-    _ = -2 * (b ^ 2 * K) * b := by rw [hb2K]
-    _ = -2 * b ^ 2 * K * b := by ring
-    _ ≤ lRegularizedAction S (time : Real) alpha 0 b := haction
+  have h := redLength_lExp_ge_of_range_subset_flowMetricBall
+    S hS time heps heps1 B hB Z hZinj
+    (fun s hs => (hrange eps heps hepsR' B hBrho hB Z hZ s hs).2)
+  have hn : 0 ≤ (Module.finrank Real F : Real) ^ 2 * eps :=
+    mul_nonneg (sq_nonneg _) heps.le
+  linarith
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
@@ -226,10 +115,10 @@ theorem lRedDen_scale
     lRedLen_scale (J := J) S hS time hrho hreg
   refine ⟨eps₀, heps₀, ?_⟩
   intro eps heps heps₀ B hBrho hB Z hZ hZinj
-  have hlen' := hlen eps heps heps₀ B hBrho hB Z hZ hZinj
-  unfold redDensity
-  apply Real.exp_le_exp.mpr
-  linarith
+  exact redDensity_le_of_redLength_ge S (time : Real) B.center
+    (lExp S (time : Real) B.center Z (eps * B.radius ^ 2)) (eps * B.radius ^ 2)
+    ((Module.finrank Real F : Real) ^ 2 * eps)
+    (hlen eps heps heps₀ B hBrho hB Z hZ hZinj)
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M] [CompactSpace M] in
 private theorem source_norm_sublevel_measurable

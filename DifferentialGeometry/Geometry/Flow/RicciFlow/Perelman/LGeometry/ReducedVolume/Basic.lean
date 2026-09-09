@@ -12,6 +12,27 @@ noncomputable section
 
 namespace DifferentialGeometry.PDE.RicciFlow.Perelman
 
+section DensityBound
+
+open scoped ContDiff
+
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+  {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+  {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+  {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
+
+theorem redDensity_le_of_redLength_ge
+    (S : SolutionOn (I := I) (M := M) D) (T : ℝ) (x y : M) (tau C : ℝ)
+    (hlen : -C ≤ redLength S T x y tau) :
+    redDensity S T x y tau ≤ Real.exp
+      (C - ((Module.finrank ℝ E : ℝ) / 2) * Real.log tau -
+        ((Module.finrank ℝ E : ℝ) / 2) * Real.log (4 * Real.pi)) := by
+  unfold redDensity
+  apply Real.exp_le_exp.mpr
+  linarith
+
+end DensityBound
+
 open Bundle Set
 open scoped ContDiff Manifold Topology
 
