@@ -4,6 +4,7 @@ import DifferentialGeometry.Geometry.Comparison.Volume.Ball.Basic
 import DifferentialGeometry.Geometry.Comparison.Volume.Segment.Polar.FrameBound
 import DifferentialGeometry.Geometry.Comparison.Volume.Segment.Ball.Measure
 import DifferentialGeometry.Geometry.Comparison.CheegerGromovTaylor.Fiber.Iteration
+import DifferentialGeometry.Geometry.Comparison.CheegerGromovTaylor.Paths.HomotopyLift
 
 set_option autoImplicit false
 

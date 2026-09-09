@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Comparison.CheegerGromovTaylor.Core.JensenConvexity
 import DifferentialGeometry.Geometry.Comparison.CheegerGromovTaylor.Fiber.Basic
 import DifferentialGeometry.Geometry.Comparison.CheegerGromovTaylor.Paths.Radial
-import DifferentialGeometry.Geometry.Comparison.CheegerGromovTaylor.Paths.HomotopyLift
+import DifferentialGeometry.Geometry.Exponential.NormalCoordinates.LoopTransport
 
 set_option autoImplicit false
 
@@ -454,6 +454,137 @@ theorem loopTransport_maps
   exact (loopTransport_bound (I := I) g hEnorm p hL ha hfit hloc
     c hc hcLen z.1 z.2).le
 
+private theorem framed_exp_eq
+    (g : SmoothRiemannianMetric I M) (hEnorm : ∀ (x : M) (v : TangentSpace I x),
+      ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x v v))) (p : M) :
+    framedExpMap g p = intrinsicFramedExp g hEnorm p := by
+  funext z
+  rw [framedExpMap_apply, intrinsicFrame_apply, expMap_eq_expMapIntrinsic g hEnorm p]
+
+omit [NeZero (Module.finrank Real E)] in
+private theorem complete_domain
+    (g : SmoothRiemannianMetric I M) (hEnorm : ∀ (x : M) (v : TangentSpace I x),
+      ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x v v))) (p : M) (R : ℝ) :
+    MapsTo (normalFrame g p) (Metric.ball (0 : E) R) (expDomain g p) := by
+  rw [expDomain_eq_univ_of_completeSpace g hEnorm p]
+  exact mapsTo_univ _ _
+
+omit [FiniteDimensional Real E] [NeZero (Module.finrank Real E)] [I.Boundaryless]
+    [T2Space M] [SigmaCompactSpace M] [PseudoEMetricSpace M] [IsRiemannianManifold I M]
+    [CompleteSpace M] [IsContinuousRiemannianBundle E (fun x : M ↦ TangentSpace I x)] in
+private theorem length_eq_metric
+    (g : SmoothRiemannianMetric I M) (hEnorm : ∀ (x : M) (v : TangentSpace I x),
+      ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x v v))) (p : M)
+    (c : Path p p) (hc : c.IsContMDiffWithSittingInstants (I := I) 1) :
+    c.riemannianELength (I := I) =
+      (let : RiemannianBundle (TangentSpace I : M → Type _) := ⟨g.toRiemannianMetric⟩;
+        c.riemannianELength (I := I)) := by
+  have hint := Geodesic.speedSqrt_integrableOn_Icc_of_C1 g zero_le_one hc.contMDiff.contMDiffOn
+  have hOld := Geodesic.pathELength_eq_arcLength_of_enorm_eq g zero_le_one
+    (hint.mono_set Ioo_subset_Icc_self) (fun t _ => hEnorm (c.extend t) _)
+  let : RiemannianBundle (TangentSpace I : M → Type _) := ⟨g.toRiemannianMetric⟩
+  have hn : IsMetricNorm g := by
+    intro x v
+    rw [← ofReal_norm, norm_eq_sqrt_real_inner]
+    rfl
+  have hNew := Geodesic.pathELength_eq_arcLength_of_enorm_eq g zero_le_one
+    (hint.mono_set Ioo_subset_Icc_self) (fun t _ => hn (c.extend t) _)
+  exact hOld.trans hNew.symm
+
+omit [FiniteDimensional Real E] [NeZero (Module.finrank Real E)] [I.Boundaryless]
+    [T2Space M] [SigmaCompactSpace M] [PseudoEMetricSpace M] [IsRiemannianManifold I M]
+    [CompleteSpace M] [IsContinuousRiemannianBundle E (fun x : M ↦ TangentSpace I x)] in
+private theorem transport_budget
+    (g : SmoothRiemannianMetric I M) (hEnorm : ∀ (x : M) (v : TangentSpace I x),
+      ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x v v))) (p : M)
+    {R L a : ℝ} (hL : 0 ≤ L) (ha : 0 ≤ a) (hfit : L + a < R)
+    (c : Path p p) (hc : c.IsContMDiffWithSittingInstants (I := I) 1)
+    (hcLen : c.riemannianELength (I := I) < ENNReal.ofReal L)
+    (z : intrinsicPullBall (E := E) R) (hz : z ∈ intrinsicCore (E := E) R a) :
+    let : RiemannianBundle (TangentSpace I : M → Type _) := ⟨g.toRiemannianMetric⟩
+    c.riemannianELength (I := I) + ENNReal.ofReal ‖(z : E)‖ < ENNReal.ofReal R := by
+  change (let : RiemannianBundle (TangentSpace I : M → Type _) := ⟨g.toRiemannianMetric⟩;
+    c.riemannianELength (I := I)) + ENNReal.ofReal ‖(z : E)‖ < ENNReal.ofReal R
+  rw [← length_eq_metric g hEnorm p c hc]
+  calc
+    c.riemannianELength (I := I) + ENNReal.ofReal ‖(z : E)‖ <
+        ENNReal.ofReal L + ENNReal.ofReal a :=
+      ENNReal.add_lt_add_of_lt_of_le ENNReal.ofReal_ne_top hcLen
+        (ENNReal.ofReal_le_ofReal hz)
+    _ = ENNReal.ofReal (L + a) := (ENNReal.ofReal_add hL ha).symm
+    _ < ENNReal.ofReal R :=
+      (ENNReal.ofReal_lt_ofReal_iff ((add_nonneg hL ha).trans_lt hfit)).mpr hfit
+
+private theorem transport_eq
+    (g : SmoothRiemannianMetric I M) (hEnorm : ∀ (x : M) (v : TangentSpace I x),
+      ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x v v)))
+    (p : M) {R L a : ℝ} (hL : 0 ≤ L) (ha : 0 ≤ a) (hfit : L + a < R)
+    (hloc : IsLocalDiffeomorphOn 𝓘(ℝ, E) I ∞
+      (intrinsicFramedExp g hEnorm p) (Metric.ball (0 : E) R))
+    (c : Path p p) (hc : c.IsContMDiffWithSittingInstants (I := I) 1)
+    (hcLen : c.riemannianELength (I := I) < ENNReal.ofReal L)
+    (z : intrinsicPullBall (E := E) R) (hz : z ∈ intrinsicCore (E := E) R a) :
+    CheegerGromovTaylor.loopTransport g hEnorm p hL ha hfit hloc c hc hcLen z hz =
+      NormalCoordinates.loopTransport g p (complete_domain g hEnorm p R)
+        (by rw [framed_exp_eq g hEnorm p]; exact hloc) c hc z
+        (transport_budget g hEnorm p hL ha hfit c hc hcLen z hz) := by
+  let P := loopTransportLift g hEnorm p hL ha hfit hloc c hc hcLen z hz
+  have hR : 0 < R := (add_nonneg hL ha).trans_lt hfit
+  have hlen : (loopRadial g hEnorm p c (z : E)).riemannianELength (I := I) <
+      ENNReal.ofReal R :=
+    (loopRadial_len_lt g hEnorm p hL ha c hc hcLen hz).trans
+      ((ENNReal.ofReal_lt_ofReal_iff hR).mpr hfit)
+  apply Subtype.ext
+  unfold NormalCoordinates.loopTransport
+  dsimp only
+  generalize_proofs _ _ hLift
+  have hNew := Classical.choose_spec hLift
+  have hOld : isLiftOn (framedExpMap g p)
+      (loopRadial g hEnorm p c (z : E)).extend (Metric.ball (0 : E) R) 0 0 1 P.toFun := by
+    rw [framed_exp_eq g hEnorm p]
+    exact ⟨P.contDiff.continuousOn, P.start,
+      fun t ht => ⟨P.maps_ball hR hlen ht, P.lifts ht⟩⟩
+  have hpath : (loopRadial g hEnorm p c (z : E)).extend =
+      (c.trans (radialPath g p (normalFrame g p (z : E))
+        ((complete_domain g hEnorm p R) z.property)).withSittingInstants).extend := by
+    ext t
+    change (c.trans (radialFlat g hEnorm p (z : E))).extend t = _
+    by_cases ht : t ≤ 1 / 2
+    · rw [Path.extend_trans_of_le_half _ _ ht, Path.extend_trans_of_le_half _ _ ht]
+    · rw [Path.extend_trans_of_half_le _ _ (not_le.mp ht).le,
+        Path.extend_trans_of_half_le _ _ (not_le.mp ht).le, radialFlat_extend,
+        extend_radialPath_withSittingInstants]
+      simp only [intrinsicFrame_apply, map_smul, expMap_eq_expMapIntrinsic g hEnorm p]
+      rfl
+  have hOld' : isLiftOn (framedExpMap g p)
+      (c.trans (radialPath g p (normalFrame g p (z : E))
+        ((complete_domain g hEnorm p R) z.property)).withSittingInstants).extend
+      (Metric.ball (0 : E) R) 0 0 1 P.toFun :=
+    ⟨hOld.continuousOn, hOld.2.1, fun t ht =>
+      ⟨hOld.mapsTo ht, (hOld.2.2 t ht).2.trans (DFunLike.congr_fun hpath t)⟩⟩
+  exact hOld'.eqOn zero_le_one Metric.isOpen_ball
+    (by rw [framed_exp_eq g hEnorm p]; exact hloc) hNew ⟨zero_le_one, le_rfl⟩
+
+
+private theorem pull_metric_eq
+    (g : SmoothRiemannianMetric I M)
+    (hEnorm : ∀ (x : M) (v : TangentSpace I x),
+      ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x v v)))
+    (p : M) {R : ℝ}
+    (hloc : IsLocalDiffeomorphOn 𝓘(ℝ, E) I ∞
+      (intrinsicFramedExp g hEnorm p) (Metric.ball (0 : E) R)) :
+    intrinsicPullMetric g hEnorm p hloc =
+      localPullMetric g (fun z : intrinsicPullBall (E := E) R => framedExpMap g p z)
+        (isLocalDiffeomorph_restrict_open (intrinsicPullBall (E := E) R)
+          (by rw [framed_exp_eq g hEnorm p]; exact hloc)) := by
+  have hf : intrinsicExpOn g hEnorm p R =
+      fun z : intrinsicPullBall (E := E) R => framedExpMap g p z := by
+    funext z
+    exact (congrFun (framed_exp_eq g hEnorm p) (z : E)).symm
+  change localPullMetric g (intrinsicExpOn g hEnorm p R)
+    (intrinsicExpOn_local g hEnorm p hloc) = _
+  simp only [hf]
+
 theorem loopTransport_cont
     (g : SmoothRiemannianMetric I M)
     (hEnorm : ∀ (x : M) (v : TangentSpace I x),
@@ -471,128 +602,12 @@ theorem loopTransport_cont
           z ∈ intrinsicCore (E := E) R a} =>
         loopTransport (I := I) g hEnorm p hL ha hfit hloc
           c hc hcLen z.1 z.2) := by
-  let Core :=
-    {z : intrinsicPullBall (E := E) R // z ∈ intrinsicCore (E := E) R a}
-  let Uo : TopologicalSpace.Opens E :=
-    ⟨Metric.ball (0 : E) R, Metric.isOpen_ball⟩
-  let fU : Uo → M :=
-    fun z => intrinsicFramedExp (I := I) g hEnorm p (z : E)
-  have hR : 0 < R := (add_nonneg hL ha).trans_lt hfit
-  have hlenR (z : Core) :
-      Path.riemannianELength (I := I)
-          (loopRadial (I := I) g hEnorm p c (z.1 : E)) <
-        ENNReal.ofReal R := by
-    exact
-      (loopRadial_len_lt (I := I) g hEnorm p hL ha c hc hcLen z.2).trans
-        ((ENNReal.ofReal_lt_ofReal_iff hR).2 hfit)
-  have hlocU :
-      IsLocalDiffeomorph 𝓘(Real, E) I ∞ fU :=
-    isLocalDiffeomorph_restrict_open Uo hloc
-  let lift : unitInterval × Core → Uo :=
-    fun tz =>
-      ⟨(loopTransportLift (I := I) g hEnorm p hL ha hfit hloc
-          c hc hcLen tz.2.1 tz.2.2).toFun tz.1,
-        (loopTransportLift (I := I) g hEnorm p hL ha hfit hloc
-          c hc hcLen tz.2.1 tz.2.2).maps_ball
-            hR (hlenR tz.2) tz.1.property⟩
-  let base : unitInterval × Core → M :=
-    fun tz => loopRadial (I := I) g hEnorm p c (tz.2.1 : E) tz.1
-  have hrad :
-      Continuous
-        (fun zt : Core × unitInterval =>
-          radialFlat (I := I) g hEnorm p (zt.1.1 : E) zt.2) := by
-    change
-      Continuous
-        (fun zt : Core × unitInterval =>
-          intrinsicFramedExp (I := I) g hEnorm p
-            (Real.smoothTransition (3 * (zt.2 : Real) - 1) •
-              (zt.1.1 : E)))
-    apply (intrinsicFrame_smooth (I := I) g hEnorm p).continuous.comp
-    have ht :
-        Continuous
-          (fun zt : Core × unitInterval =>
-            Real.smoothTransition (3 * (zt.2 : Real) - 1)) :=
-      Real.smoothTransition.continuous.comp
-        ((continuous_const.mul
-          (continuous_subtype_val.comp continuous_snd)).sub continuous_const)
-    have hz :
-        Continuous (fun zt : Core × unitInterval => (zt.1.1 : E)) :=
-      continuous_subtype_val.comp
-        (continuous_subtype_val.comp continuous_fst)
-    exact ht.smul hz
-  have hloop :
-      Continuous (fun zt : Core × unitInterval => c zt.2) := by
-    fun_prop
-  have hfamily :
-      Continuous
-        (fun zt : Core × unitInterval =>
-          loopRadial (I := I) g hEnorm p c (zt.1.1 : E) zt.2) := by
-    simpa only [loopRadial, HasUncurry.uncurry] using
-      Path.trans_continuous_family
-        (fun _ : Core => c) hloop
-        (fun z : Core => radialFlat (I := I) g hEnorm p (z.1 : E)) hrad
-  have hbase : Continuous base := by
-    have hswap :
-        Continuous (fun tz : unitInterval × Core => (tz.2, tz.1)) := by
-      fun_prop
-    change Continuous (fun tz : unitInterval × Core =>
-      loopRadial (I := I) g hEnorm p c (tz.2.1 : E) tz.1)
-    have heq :
-        ((fun zt : Core × unitInterval =>
-          loopRadial (I := I) g hEnorm p c (zt.1.1 : E) zt.2) ∘
-            fun tz : unitInterval × Core => (tz.2, tz.1)) =
-          (fun tz : unitInterval × Core =>
-            loopRadial (I := I) g hEnorm p c (tz.2.1 : E) tz.1) := by
-      rfl
-    rw [← heq]
-    exact hfamily.comp hswap
-  let f : C(unitInterval × Core, M) := ⟨base, hbase⟩
-  have hlifts : fU ∘ lift = f := by
-    funext tz
-    let P :=
-      loopTransportLift (I := I) g hEnorm p hL ha hfit hloc
-        c hc hcLen tz.2.1 tz.2.2
-    have hP := P.lifts tz.1.property
-    rw [Function.comp_apply, Path.extend_apply _ tz.1.property] at hP
-    change
-      intrinsicFramedExp (I := I) g hEnorm p
-          (P.toFun tz.1) =
-        loopRadial (I := I) g hEnorm p c (tz.2.1 : E) tz.1
-    exact hP
-  have hstart : Continuous (fun z : Core => lift (0, z)) := by
-    let zeroU : Uo := ⟨0, Metric.mem_ball_self hR⟩
-    have hzero :
-        (fun z : Core => lift (0, z)) = fun _ : Core => zeroU := by
-      funext z
-      apply Subtype.ext
-      exact
-        (loopTransportLift (I := I) g hEnorm p hL ha hfit hloc
-          c hc hcLen z.1 z.2).start
-    rw [hzero]
-    exact continuous_const
-  have hpaths :
-      ∀ z : Core, Continuous (fun t : unitInterval => lift (t, z)) := by
-    intro z
-    let P :=
-      loopTransportLift (I := I) g hEnorm p hL ha hfit hloc
-        c hc hcLen z.1 z.2
-    have hP :
-        Continuous
-          (fun t : unitInterval =>
-            (⟨P.toFun t, P.maps_ball hR (hlenR z) t.property⟩ : Uo)) :=
-      (continuousOn_iff_continuous_domRestrict.mp
-        P.contDiff.continuousOn).codRestrict
-          (fun t => P.maps_ball hR (hlenR z) t.property)
-    exact hP
-  have hjoint : Continuous lift :=
-    hlocU.isLocalHomeomorph.continuous_lift
-      (T2Space.isSeparatedMap fU) f hlifts hstart hpaths
-  have hend : Continuous (fun z : Core => lift (1, z)) :=
-    hjoint.comp (continuous_const.prodMk continuous_id)
-  apply hend.congr
+  have hn := NormalCoordinates.continuous_loopTransport g p (complete_domain g hEnorm p R)
+    (by rw [framed_exp_eq g hEnorm p]; exact hloc) c hc (intrinsicCore (E := E) R a)
+    (fun z hz => transport_budget g hEnorm p hL ha hfit c hc hcLen z hz)
+  apply hn.congr
   intro z
-  apply Subtype.ext
-  rfl
+  exact (transport_eq g hEnorm p hL ha hfit hloc c hc hcLen z.1 z.2).symm
 
 theorem loopTransport_curve
     (g : SmoothRiemannianMetric I M)
@@ -621,107 +636,23 @@ theorem loopTransport_curve
     ContMDiffOn 𝓘(Real, Real) 𝓘(Real, E) 1 η (Set.Icc s t) ∧
       Manifold.pathELength 𝓘(Real, E) η s t =
         Manifold.pathELength 𝓘(Real, E) γ s t := by
-  let gPull := intrinsicPullMetric (I := I) g hEnorm p hloc
-  let : RiemannianBundle
-      (fun z : intrinsicPullBall (E := E) R ↦
-        TangentSpace 𝓘(Real, E) z) :=
-    ⟨gPull.toRiemannianMetric⟩
-  let pullNormedAdd (z : intrinsicPullBall (E := E) R) :
-      NormedAddCommGroup (TangentSpace 𝓘(Real, E) z) := inferInstance
-  let pullNormed (z : intrinsicPullBall (E := E) R) :
-      NormedSpace Real (TangentSpace 𝓘(Real, E) z) := inferInstance
-  let pullENormSmul : ∀ z : intrinsicPullBall (E := E) R,
-      ENormSMulClass Real (TangentSpace 𝓘(Real, E) z) :=
-    fun _ => inferInstance
-  let Core :=
-    {z : intrinsicPullBall (E := E) R // z ∈ intrinsicCore (E := E) R a}
-  let η : Real → intrinsicPullBall (E := E) R :=
-    fun u =>
-      loopTransport (I := I) g hEnorm p hL ha hfit hloc
-        c hc hcLen (γ u) (hγcore u)
-  let ηE : Real → E := fun u => (η u : E)
-  let γE : Real → E := fun u => (γ u : E)
-  let F : E → M := intrinsicFramedExp (I := I) g hEnorm p
-  let β : Real → M := F ∘ γE
-  have hγCore :
-      ContinuousOn
-        (fun u => (⟨γ u, hγcore u⟩ : Core)) (Set.Icc s t) :=
-    Topology.IsInducing.subtypeVal.continuousOn_iff.mpr (by
-      with_unfolding_all exact hγ.continuousOn)
-  have hT :
-      Continuous
-        (fun z : Core =>
-          (loopTransport (I := I) g hEnorm p hL ha hfit hloc
-            c hc hcLen z.1 z.2 : E)) :=
-    continuous_subtype_val.comp
-      (loopTransport_cont (I := I) g hEnorm p hL ha hfit hloc
-        c hc hcLen)
-  have hηcont : ContinuousOn ηE (Set.Icc s t) := by
-    simpa only [ηE, η] using hT.comp_continuousOn' hγCore
-  have hγE :
-      ContMDiffOn 𝓘(Real, Real) 𝓘(Real, E) 1 γE (Set.Icc s t) := by
-    exact
-      ((contMDiff_subtype_val (n := (⊤ : WithTop ℕ∞))
-        (I := 𝓘(Real, E))
-        (U := intrinsicPullBall (E := E) R)).of_le
-          (show (1 : WithTop ℕ∞) ≤ (⊤ : WithTop ℕ∞) from le_top)
-        ).comp_contMDiffOn hγ
-  have hβ :
-      ContMDiffOn 𝓘(Real, Real) I 1 β (Set.Icc s t) := by
-    exact
-      ((intrinsicFrame_smooth (I := I) g hEnorm p).of_le
-        (by norm_num)
-        ).comp_contMDiffOn hγE
-  have hηLift :
-      isLiftOn F β (Metric.ball (0 : E) R) (ηE s) s t ηE := by
-    refine ⟨hηcont, rfl, ?_⟩
-    intro u hu
-    refine ⟨(η u).property, ?_⟩
-    exact
-      loopTransport_exp (I := I) g hEnorm p hL ha hfit hloc
-        c hc hcLen (γ u) (hγcore u)
-  have hηE :
-      ContDiffOn Real 1 ηE (Set.Icc s t) :=
-    hηLift.contDiffOn hloc hβ
-  have hηEm :
-      ContMDiffOn 𝓘(Real, Real) 𝓘(Real, E) 1 ηE (Set.Icc s t) :=
-    hηE.contMDiffOn
-  have hη :
-      ContMDiffOn 𝓘(Real, Real) 𝓘(Real, E) 1 η (Set.Icc s t) := by
-    intro u hu
-    have hamb := hηEm u hu
-    rw [contMDiffWithinAt_iff] at hamb ⊢
-    obtain ⟨hcont, hdiff⟩ := hamb
-    refine
-      ⟨Topology.IsInducing.subtypeVal.continuousWithinAt_iff.mpr ?_, ?_⟩
-    · with_unfolding_all exact hcont
-    · convert hdiff using 2
-      with_unfolding_all rfl
-  have hηlen :=
-    intrinsicPull_pathLen (I := I) g hEnorm p hloc hη
-  have hγlen :=
-    intrinsicPull_pathLen (I := I) g hEnorm p hloc hγ
-  have hproj :
-      Set.EqOn
-        (intrinsicExpOn (I := I) g hEnorm p R ∘ η)
-        (intrinsicExpOn (I := I) g hEnorm p R ∘ γ)
-        (Set.Icc s t) := by
-    intro u hu
-    exact
-      loopTransport_exp (I := I) g hEnorm p hL ha hfit hloc
-        c hc hcLen (γ u) (hγcore u)
-  refine ⟨hη, ?_⟩
-  change
-    Manifold.pathELength 𝓘(Real, E) η s t =
-      Manifold.pathELength 𝓘(Real, E) γ s t
-  calc
-    Manifold.pathELength 𝓘(Real, E) η s t =
-        Manifold.pathELength I
-          (intrinsicExpOn (I := I) g hEnorm p R ∘ η) s t := hηlen.symm
-    _ = Manifold.pathELength I
-        (intrinsicExpOn (I := I) g hEnorm p R ∘ γ) s t :=
-      Manifold.pathELength_congr hproj
-    _ = Manifold.pathELength 𝓘(Real, E) γ s t := hγlen
+  have hcont := NormalCoordinates.contMDiffOn_loopTransport_comp g p
+    (complete_domain g hEnorm p R) (by rw [framed_exp_eq g hEnorm p]; exact hloc) c hc hγ
+    (fun u => transport_budget g hEnorm p hL ha hfit c hc hcLen (γ u) (hγcore u))
+  have hlen := NormalCoordinates.pathELength_loopTransport_comp g p
+    (complete_domain g hEnorm p R) (by rw [framed_exp_eq g hEnorm p]; exact hloc) c hc hγ
+    (fun u => transport_budget g hEnorm p hL ha hfit c hc hcLen (γ u) (hγcore u))
+  rw [pull_metric_eq g hEnorm p hloc]
+  dsimp only at hcont hlen ⊢
+  have heq : (fun u => CheegerGromovTaylor.loopTransport g hEnorm p hL ha hfit hloc
+      c hc hcLen (γ u) (hγcore u)) =
+      fun u => NormalCoordinates.loopTransport g p (complete_domain g hEnorm p R)
+        (by rw [framed_exp_eq g hEnorm p]; exact hloc) c hc (γ u)
+        (transport_budget g hEnorm p hL ha hfit c hc hcLen (γ u) (hγcore u)) := by
+    funext u
+    exact transport_eq g hEnorm p hL ha hfit hloc c hc hcLen (γ u) (hγcore u)
+  rw [heq]
+  exact ⟨hcont, hlen⟩
 
 theorem loopTransport_len
     (g : SmoothRiemannianMetric I M)
@@ -750,6 +681,94 @@ theorem loopTransport_len
       Manifold.pathELength 𝓘(Real, E) γ s t :=
   (loopTransport_curve (I := I) g hEnorm p hL ha hfit hloc
     c hc hcLen hγ hγcore).2
+
+private theorem transport_edist_le
+    (g : SmoothRiemannianMetric I M)
+    (hEnorm : ∀ (x : M) (v : TangentSpace I x),
+      ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x v v)))
+    (p : M) {R L a K : Real} (hR : 0 < R) (h4aR : 4 * a < R)
+    (hL : 0 ≤ L) (ha : 0 ≤ a) (hfit : L + a < R)
+    (hloc :
+      IsLocalDiffeomorphOn 𝓘(Real, E) I ∞
+        (intrinsicFramedExp (I := I) g hEnorm p)
+        (Metric.ball (0 : E) R))
+    (hK : 0 ≤ K)
+    (hsmall : K * (2 * a) ^ 2 < (Real.pi / 2) ^ 2)
+    (hRm :
+      ∀ z : E, ‖z‖ < 3 * R / 4 →
+        Real.sqrt (Tensor0SBundle.normSq0S (I := I) g
+          (intrinsicFramedExp (I := I) g hEnorm p z) 4
+          (Geometry.Curvature.metricRm04At
+            (I := I) (M := M) g
+            (intrinsicFramedExp (I := I) g hEnorm p z))) ≤ K)
+    (c : Path p p) (hc : Path.IsContMDiffWithSittingInstants (I := I) 1 c)
+    (hcLen : Path.riemannianELength (I := I) c < ENNReal.ofReal L)
+    {x y : intrinsicPullBall (E := E) R}
+    (hx : x ∈ intrinsicCore (E := E) R a)
+    (hy : y ∈ intrinsicCore (E := E) R a) :
+    riemannianEDistOf (intrinsicPullMetric g hEnorm p hloc)
+      (loopTransport g hEnorm p hL ha hfit hloc c hc hcLen x hx)
+      (loopTransport g hEnorm p hL ha hfit hloc c hc hcLen y hy) ≤
+      riemannianEDistOf (intrinsicPullMetric g hEnorm p hloc) x y := by
+  classical
+  let gPull := intrinsicPullMetric (I := I) g hEnorm p hloc
+  let : RiemannianBundle
+      (fun z : intrinsicPullBall (E := E) R ↦
+        TangentSpace 𝓘(Real, E) z) :=
+    ⟨gPull.toRiemannianMetric⟩
+  obtain ⟨join, hjoin, _⟩ :=
+    intrinsicCore_jensen_min (I := I) g hEnorm p hR h4aR hloc
+      hK hsmall hRm
+  have hspec := hjoin x hx y hy
+  let γp : Path x y := {
+    toFun := fun t => join x y t
+    continuous_toFun := hspec.1.continuous.comp continuous_subtype_val
+    source' := hspec.2.2.1
+    target' := hspec.2.2.2.1 }
+  let γ : Real → intrinsicPullBall (E := E) R := γp.extend
+  have hγC1 :
+      ContMDiffOn 𝓘(Real, Real) 𝓘(Real, E) 1 γ
+        (Set.Icc (0 : Real) 1) := by
+    refine (hspec.1.of_le (by decide)).contMDiffOn.congr ?_
+    intro t ht
+    with_unfolding_all exact γp.extend_apply ht
+  have hγcore :
+      ∀ t : Real, γ t ∈ intrinsicCore (E := E) R a := by
+    intro t
+    have htRange : γp.extend t ∈ Set.range γp.extend := ⟨t, rfl⟩
+    rw [γp.extend_range] at htRange
+    obtain ⟨u, hu⟩ := htRange
+    change γp.extend t ∈ intrinsicCore (E := E) R a
+    rw [← hu]
+    exact hspec.2.2.2.2.2.2 u u.property
+  have hjlen : γp.riemannianELength (I := 𝓘(Real, E)) =
+      riemannianEDistOf gPull x y := by
+    calc
+      γp.riemannianELength (I := 𝓘(Real, E)) =
+          Manifold.pathELength 𝓘(Real, E) (join x y) 0 1 := by
+        apply Manifold.pathELength_congr
+        intro t ht
+        exact γp.extend_apply ht
+      _ = riemannianEDistOf gPull x y :=
+        coreJoin_len g hEnorm p hR h4aR hloc hjoin hx hy
+  change riemannianEDistOf (intrinsicPullMetric g hEnorm p hloc)
+    (loopTransport g hEnorm p hL ha hfit hloc c hc hcLen x hx)
+    (loopTransport g hEnorm p hL ha hfit hloc c hc hcLen y hy) ≤
+    riemannianEDistOf (intrinsicPullMetric g hEnorm p hloc) x y
+  rw [transport_eq g hEnorm p hL ha hfit hloc c hc hcLen x hx,
+    transport_eq g hEnorm p hL ha hfit hloc c hc hcLen y hy,
+    pull_metric_eq g hEnorm p hloc]
+  refine NormalCoordinates.riemannianEDistOf_loopTransport_le_of_path g p
+    (complete_domain g hEnorm p R) (by rw [framed_exp_eq g hEnorm p]; exact hloc) c hc
+    γp ?_ (fun t => transport_budget g hEnorm p hL ha hfit c hc hcLen (γ t) (hγcore t)) ?_
+  · exact hγC1
+  · have h := congrArg (fun gm : SmoothRiemannianMetric 𝓘(Real, E)
+        (intrinsicPullBall (E := E) R) =>
+        let : RiemannianBundle (TangentSpace 𝓘(Real, E) :
+            intrinsicPullBall (E := E) R → Type _) := ⟨gm.toRiemannianMetric⟩
+        γp.riemannianELength (I := 𝓘(Real, E)) = riemannianEDistOf gm x y)
+      (pull_metric_eq g hEnorm p hloc)
+    exact h.mp hjlen
 
 attribute [-instance] Subtype.metricSpace Subtype.pseudoMetricSpace in
 theorem loopTransport_nonexp
@@ -802,13 +821,6 @@ theorem loopTransport_nonexp
       (fun z : intrinsicPullBall (E := E) R ↦
         TangentSpace 𝓘(Real, E) z) :=
     ⟨gPull.toRiemannianMetric⟩
-  let pullNormedAdd (z : intrinsicPullBall (E := E) R) :
-      NormedAddCommGroup (TangentSpace 𝓘(Real, E) z) := inferInstance
-  let pullNormed (z : intrinsicPullBall (E := E) R) :
-      NormedSpace Real (TangentSpace 𝓘(Real, E) z) := inferInstance
-  let pullENormSmul : ∀ z : intrinsicPullBall (E := E) R,
-      ENormSMulClass Real (TangentSpace 𝓘(Real, E) z) :=
-    fun _ => inferInstance
   let : IsContinuousRiemannianBundle E
       (fun z : intrinsicPullBall (E := E) R ↦
         TangentSpace 𝓘(Real, E) z) :=
@@ -818,84 +830,8 @@ theorem loopTransport_nonexp
   let : MetricSpace (intrinsicPullBall (E := E) R) :=
     HopfRinow.riemMetricSpace
       (I := 𝓘(Real, E)) (M := intrinsicPullBall (E := E) R)
-  obtain ⟨join, hjoin, _⟩ :=
-    intrinsicCore_jensen_min (I := I) g hEnorm p hR h4aR hloc
-      hK hsmall hRm
-  have hspec := hjoin x hx y hy
-  let γp : Path x y := {
-    toFun := fun t => join x y t
-    continuous_toFun := hspec.1.continuous.comp continuous_subtype_val
-    source' := hspec.2.2.1
-    target' := hspec.2.2.2.1 }
-  let γ : Real → intrinsicPullBall (E := E) R := γp.extend
-  have hγC1 :
-      ContMDiffOn 𝓘(Real, Real) 𝓘(Real, E) 1 γ
-        (Set.Icc (0 : Real) 1) := by
-    refine (hspec.1.of_le (by decide)).contMDiffOn.congr ?_
-    intro t ht
-    with_unfolding_all exact γp.extend_apply ht
-  have hγcore :
-      ∀ t : Real, γ t ∈ intrinsicCore (E := E) R a := by
-    intro t
-    have htRange : γp.extend t ∈ Set.range γp.extend := ⟨t, rfl⟩
-    rw [γp.extend_range] at htRange
-    obtain ⟨u, hu⟩ := htRange
-    change γp.extend t ∈ intrinsicCore (E := E) R a
-    rw [← hu]
-    exact hspec.2.2.2.2.2.2 u u.property
-  let η : Real → intrinsicPullBall (E := E) R :=
-    fun t =>
-      loopTransport (I := I) g hEnorm p hL ha hfit hloc
-        c hc hcLen (γ t) (hγcore t)
-  have hcurve :
-      ContMDiffOn 𝓘(Real, Real) 𝓘(Real, E) 1 η
-          (Set.Icc (0 : Real) 1) ∧
-        Manifold.pathELength 𝓘(Real, E) η 0 1 =
-          Manifold.pathELength 𝓘(Real, E) γ 0 1 := by
-    simpa only [η] using
-      (loopTransport_curve (I := I) g hEnorm p hL ha hfit hloc
-        c hc hcLen hγC1 hγcore)
-  have hη0 :
-      η 0 =
-        loopTransport (I := I) g hEnorm p hL ha hfit hloc
-          c hc hcLen x hx := by
-    simp only [η, γ, Path.extend_zero]
-  have hη1 :
-      η 1 =
-        loopTransport (I := I) g hEnorm p hL ha hfit hloc
-          c hc hcLen y hy := by
-    simp only [η, γ, Path.extend_one]
-  have hedPath :
-      riemannianEDist 𝓘(Real, E) (η 0) (η 1) ≤
-        Manifold.pathELength 𝓘(Real, E) η 0 1 :=
-    @Manifold.riemannianEDist_le_pathELength
-      E _ _ E _ 𝓘(Real, E) (intrinsicPullBall (E := E) R)
-      _ _ _ pullENormSmul (η 0) (η 1) 0 1 η
-      hcurve.1 rfl rfl zero_le_one
-  have hγlen :
-      Manifold.pathELength 𝓘(Real, E) γ 0 1 =
-        Manifold.pathELength 𝓘(Real, E) (join x y) 0 1 := by
-    apply Manifold.pathELength_congr
-    intro t ht
-    exact γp.extend_apply ht
-  have hjoinLen :=
-    coreJoin_len (I := I) g hEnorm p hR h4aR hloc hjoin hx hy
-  have hed :
-      riemannianEDist 𝓘(Real, E)
-          (loopTransport (I := I) g hEnorm p hL ha hfit hloc
-            c hc hcLen x hx)
-          (loopTransport (I := I) g hEnorm p hL ha hfit hloc
-            c hc hcLen y hy) ≤
-        riemannianEDist 𝓘(Real, E) x y := by
-    rw [← hη0, ← hη1]
-    calc
-      riemannianEDist 𝓘(Real, E) (η 0) (η 1) ≤
-          Manifold.pathELength 𝓘(Real, E) η 0 1 := hedPath
-      _ = Manifold.pathELength 𝓘(Real, E) γ 0 1 := hcurve.2
-      _ = Manifold.pathELength 𝓘(Real, E) (join x y) 0 1 := hγlen
-      _ = riemannianEDistOf
-            (I := 𝓘(Real, E)) gPull x y := hjoinLen
-      _ = riemannianEDist 𝓘(Real, E) x y := rfl
+  have hed := transport_edist_le g hEnorm p hR h4aR hL ha hfit hloc
+    hK hsmall hRm c hc hcLen hx hy
   have hedReal :
       (riemannianEDist 𝓘(Real, E)
         (loopTransport (I := I) g hEnorm p hL ha hfit hloc
@@ -1038,82 +974,15 @@ theorem loopTransport_ne
     (hz : z ∈ intrinsicCore (E := E) R a) :
     loopTransport (I := I) g hEnorm p hL ha hfit hloc
       c hc hcLen z hz ≠ z := by
-  intro hfix
-  let r : Path p (intrinsicFramedExp (I := I) g hEnorm p (z : E)) :=
-    radialFlat (I := I) g hEnorm p (z : E)
-  let P :=
-    loopTransportLift (I := I) g hEnorm p hL ha hfit hloc c hc hcLen z hz
-  let B : IntrinsicFrameLift (I := I) g hEnorm p r.extend 0 1 :=
-    radialFlatLift (I := I) g hEnorm p (z : E)
+  rw [transport_eq g hEnorm p hL ha hfit hloc c hc hcLen z hz]
   have hR : 0 < R := (add_nonneg hL ha).trans_lt hfit
-  have hLR : L < R := by linarith
-  have haR : a < R := by linarith
-  have hcR : Path.riemannianELength (I := I) c < ENNReal.ofReal R :=
-    hcLen.trans ((ENNReal.ofReal_lt_ofReal_iff hR).2 hLR)
-  have hlenLa :=
-    loopRadial_len_lt (I := I) g hEnorm p hL ha c hc hcLen hz
-  have hfullR :
-      Path.riemannianELength (I := I) (loopRadial (I := I) g hEnorm p c (z : E)) <
-        ENNReal.ofReal R :=
-    hlenLa.trans ((ENNReal.ofReal_lt_ofReal_iff hR).2 hfit)
-  have hradR : Path.riemannianELength (I := I) r < ENNReal.ofReal R := by
-    change
-      Path.riemannianELength (I := I) (radialFlat (I := I) g hEnorm p (z : E)) <
-        ENNReal.ofReal R
-    rw [radialFlat_len (I := I) g hEnorm p (z : E)]
-    exact (ENNReal.ofReal_le_ofReal hz).trans_lt
-      ((ENNReal.ofReal_lt_ofReal_iff hR).2 haR)
-  have hmid : P.toFun (1 / 2) = A.toFun 1 :=
-    A.append_mid_eq P hR hcR hfullR hloc
-  have hPend : P.toFun 1 = B.toFun 1 := by
-    have hval := congrArg Subtype.val hfix
-    simpa only [loopTransport, P, B, radialLift_one] using hval
-  let F : E → M := intrinsicFramedExp (I := I) g hEnorm p
-  let γ : Real → M := fun t => r.extend (2 * t - 1)
-  have hsub :
-      Set.Icc (1 / 2 : Real) 1 ⊆ Set.Icc (0 : Real) 1 := by
-    intro t ht
-    exact ⟨(by linarith [ht.1]), ht.2⟩
-  have hP :
-      isLiftOn F γ (Metric.ball (0 : E) R)
-        (P.toFun (1 / 2)) (1 / 2) 1 P.toFun := by
-    refine ⟨P.contDiff.continuousOn.mono hsub, rfl, ?_⟩
-    intro t ht
-    have ht' : t ∈ Set.Icc (0 : Real) 1 := hsub ht
-    refine ⟨P.maps_ball hR hfullR ht', ?_⟩
-    change
-      intrinsicFramedExp (I := I) g hEnorm p (P.toFun t) =
-        r.extend (2 * t - 1)
-    rw [← Path.extend_trans_of_half_le c r ht.1]
-    exact P.lifts ht'
-  have hscale :
-      Set.MapsTo (fun t : Real => 2 * t - 1)
-        (Set.Icc (1 / 2 : Real) 1) (Set.Icc (0 : Real) 1) := by
-    intro t ht
-    constructor <;> linarith [ht.1, ht.2]
-  have hB :
-      isLiftOn F γ (Metric.ball (0 : E) R)
-        0 (1 / 2) 1 (fun t => B.toFun (2 * t - 1)) := by
-    refine ⟨B.contDiff.continuousOn.comp
-      ((continuous_const.mul continuous_id).sub continuous_const).continuousOn
-        hscale, ?_, ?_⟩
-    · norm_num
-      exact B.start
-    · intro t ht
-      have ht' : 2 * t - 1 ∈ Set.Icc (0 : Real) 1 := hscale ht
-      exact ⟨B.maps_ball hR hradR ht', B.lifts ht'⟩
-  have hend :
-      P.toFun 1 = (fun t => B.toFun (2 * t - 1)) 1 := by
-    norm_num
-    exact hPend
-  have hhalf :
-      P.toFun (1 / 2) = (fun t => B.toFun (2 * t - 1)) (1 / 2) :=
-    hP.eqOn_of_eq Metric.isOpen_ball hloc hB
-      ⟨by norm_num, le_rfl⟩ hend ⟨le_rfl, by norm_num⟩
-  have hBhalf : (fun t => B.toFun (2 * t - 1)) (1 / 2) = 0 := by
-    norm_num
-    exact B.start
-  exact hA (hmid.symm.trans (hhalf.trans hBhalf))
+  have hcR : c.riemannianELength (I := I) < ENNReal.ofReal R :=
+    hcLen.trans ((ENNReal.ofReal_lt_ofReal_iff hR).mpr (by linarith))
+  apply NormalCoordinates.loopTransport_ne_of_lift_end_ne
+  · rw [framed_exp_eq g hEnorm p]
+    exact ⟨A.contDiff.continuousOn, A.start,
+      fun t ht => ⟨A.maps_ball hR hcR ht, A.lifts ht⟩⟩
+  · exact hA
 
 attribute [-instance] Subtype.metricSpace Subtype.pseudoMetricSpace in
 theorem intrinsicCore_center
