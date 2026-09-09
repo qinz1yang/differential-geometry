@@ -478,6 +478,22 @@ theorem memLp_iterated_spatial_fderiv_of_contDiffOn
   have hcont := spaceJet_contOn hS hG N hN
   exact (hcont.mono hKS).memLp_top_of_isCompact hK hK.measurableSet
 
+theorem memLp_iterated_spatial_fderiv_apply_of_contDiffOn
+    {G : ℝ → E → F} {S : Set (ℝ × E)} {r : WithTop ℕ∞} (hS : IsOpen S)
+    (hG : ContDiffOn ℝ r (fun p : ℝ × E => G p.1 p.2) S)
+    {K : Set (ℝ × E)} (hK : IsCompact K) (hKS : K ⊆ S)
+    (N : ℕ) (hN : (N : WithTop ℕ∞) ≤ r) (v : Fin N → E) (μ : Measure (ℝ × E)) :
+    MemLp (fun p : ℝ × E =>
+      iteratedFDeriv ℝ N (fun y : E => G p.1 y) p.2 v)
+      ∞ (μ.restrict K) := by
+  have hcont := spaceJet_contOn hS hG N hN
+  have happly : ContinuousOn (fun p : ℝ × E =>
+      iteratedFDeriv ℝ N (fun y : E => G p.1 y) p.2 v) S := by
+    have happly' :=
+      (ContinuousMultilinearMap.apply ℝ (fun _ : Fin N => E) F v).continuous.comp_continuousOn hcont
+    exact happly'.congr fun p _ => rfl
+  exact (happly.mono hKS).memLp_top_of_isCompact hK hK.measurableSet
+
 end MemLpIteratedSpatialFDeriv
 
 end Analysis
