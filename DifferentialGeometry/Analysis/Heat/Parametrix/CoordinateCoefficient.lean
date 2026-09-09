@@ -66,6 +66,48 @@ theorem contMDiffOn_heatParametrixCoefficientInCoordinates
     have hrad := contDiffOn_radialIntegral (⊤ : ℕ∞) k hU hstar hin
     exact hinv.mul (hrad.contMDiffOn.comp hΨ hΨU)
 
+theorem heatParametrixCoefficientInCoordinates_congrOn
+    (g : SmoothRiemannianMetric I M)
+    {Φ₁ Φ₂ : E → M} {Ψ₁ Ψ₂ : M → E} {J₁ J₂ : E → ℝ}
+    {U : Set E} {V : Set M} (hU : IsOpen U) (hstar : StarConvex ℝ 0 U) (hV : IsOpen V)
+    (hΦ : ContMDiffOn 𝓘(ℝ, E) I ∞ Φ₁ U) (hΨ : ContMDiffOn I 𝓘(ℝ, E) ∞ Ψ₁ V)
+    (hΦV : MapsTo Φ₁ U V) (hΨU : MapsTo Ψ₁ V U)
+    (hJ : ContDiffOn ℝ ∞ J₁ U) (hJpos : ∀ v ∈ U, 0 < J₁ v)
+    (hΦeq : EqOn Φ₁ Φ₂ U) (hΨeq : EqOn Ψ₁ Ψ₂ V) (hJeq : EqOn J₁ J₂ U)
+    (k : ℕ) :
+    EqOn (heatParametrixCoefficientInCoordinates g Φ₁ Ψ₁ J₁ k)
+      (heatParametrixCoefficientInCoordinates g Φ₂ Ψ₂ J₂ k) V := by
+  have hs (j : ℕ) := contMDiffOn_heatParametrixCoefficientInCoordinates g
+    hU hstar hV hΦ hΨ hΦV hΨU hJ hJpos j
+  induction k with
+  | zero =>
+    intro q hq
+    change (Real.sqrt (J₁ (Ψ₁ q)))⁻¹ = (Real.sqrt (J₂ (Ψ₂ q)))⁻¹
+    rw [hJeq (hΨU hq), hΨeq hq]
+  | succ k ih =>
+    have hΔ : EqOn
+        (laplacian (LeviCivita g) g (heatParametrixCoefficientInCoordinates g Φ₁ Ψ₁ J₁ k))
+        (laplacian (LeviCivita g) g (heatParametrixCoefficientInCoordinates g Φ₂ Ψ₂ J₂ k)) V := by
+      intro q hq
+      have heq : heatParametrixCoefficientInCoordinates g Φ₁ Ψ₁ J₁ k =ᶠ[nhds q]
+          heatParametrixCoefficientInCoordinates g Φ₂ Ψ₂ J₂ k :=
+        Filter.eventuallyEq_of_mem (hV.mem_nhds hq) ih
+      have h₁ := (hs k q hq).contMDiffAt (hV.mem_nhds hq)
+      exact laplacian_congr_of_eventuallyEq (LeviCivita g) g h₁
+        (h₁.congr_of_eventuallyEq heq.symm) heq
+    intro q hq
+    simp only [heatParametrixCoefficientInCoordinates]
+    rw [hJeq (hΨU hq), ← hΨeq hq]
+    congr 1
+    apply intervalIntegral.integral_congr
+    intro s hs
+    have hs01 : s ∈ Icc (0 : ℝ) 1 := by
+      simpa only [uIcc_of_le zero_le_one] using hs
+    have hx := hstar.smul_mem (hΨU hq) hs01.1 hs01.2
+    change s ^ k • (Real.sqrt (J₁ (s • Ψ₁ q)) * _) =
+      s ^ k • (Real.sqrt (J₂ (s • Ψ₁ q)) * _)
+    rw [hJeq hx, hΔ (hΦV hx), hΦeq hx]
+
 end DifferentialGeometry.Analysis.HeatEquation
 
 namespace DifferentialGeometry.Analysis.HeatEquation

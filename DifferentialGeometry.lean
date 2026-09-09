@@ -4934,3 +4934,6 @@ import DifferentialGeometry.Analysis.Integration.RadialIntegralParameter
 import DifferentialGeometry.Geometry.Exponential.BranchTrivialization
 import DifferentialGeometry.Geometry.Comparison.Volume.BranchDensityTransport
 import DifferentialGeometry.Analysis.Integration.ConformalScalarCurvature
+import DifferentialGeometry.Analysis.Heat.Parametrix.ParameterCoefficientCompatibility
+import DifferentialGeometry.Analysis.Heat.Parametrix.BranchTransport
+import DifferentialGeometry.Geometry.Operator.GradientPairingRegularity
