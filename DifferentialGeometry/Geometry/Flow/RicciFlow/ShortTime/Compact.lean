@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.Stationary
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.Existence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.NoncompactRicciFlat
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.UniformBounds
@@ -125,7 +126,7 @@ private theorem exists_compact_ricci_flow_from_time
 end InnerProductModel
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
-  [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
+  [FiniteDimensional ℝ E]
   {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
   {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [T2Space M]
@@ -147,38 +148,68 @@ theorem exists_completeBoundedCurvatureSolutionOn_from_time_of_compact
         (∀ t ∈ Ico s d, ∀ x : M, ∀ v w : TangentSpace I x,
           HasDerivWithinAt (fun r => (Q.solution.base.metric r).inner x v w)
             (-2 * ricciTensor (Q.solution.base.metric t) x v w) (Ici s) t) := by
-  let e : E ≃L[ℝ] EuclideanSpace ℝ (Fin (Module.finrank ℝ E)) :=
-    (Module.finBasis ℝ E).equivFun.toContinuousLinearEquiv.trans
-      (EuclideanSpace.equiv (Fin (Module.finrank ℝ E)) ℝ).symm
-  let J := I.transContinuousLinearEquiv e
-  let Φ := ContinuousLinearEquiv.toTransContinuousLinearEquiv (n := ∞) I M e
-  let k : SmoothRiemannianMetric J M := g₀.transContinuousLinearEquiv e
-  let _ : NeZero (Module.finrank ℝ (EuclideanSpace ℝ (Fin (Module.finrank ℝ E)))) :=
-    ⟨by simpa using (NeZero.ne (Module.finrank ℝ E))⟩
-  obtain ⟨d, hsd, P, hinit, ⟨C, hC, hbound⟩, hjoint, hpde⟩ := exists_compact_ricci_flow_from_time k s
-  let Q := P.pullback Φ
-  refine ⟨d, hsd, Q, ?_, ⟨C, hC, ?_⟩, ?_, ?_⟩
-  · change Diffeomorph.pullbackMetricCross (P.solution.base.metric s) Φ = g₀
-    rw [hinit]
-    exact SmoothRiemannianMetric.pullback_transContinuousLinearEquiv g₀ e
-  · intro t ht x
-    change normSq0S (Diffeomorph.pullbackMetricCross (P.solution.base.metric t) Φ) x 4
-      (metricRm04At (Diffeomorph.pullbackMetricCross (P.solution.base.metric t) Φ) x) ≤ C
-    rw [DifferentialGeometry.HCGCompactness.riemannNormSq_cross]
-    exact hbound t ht (Φ x)
-  · apply metricCLMSection_jointContMDiffOn_of_chartGram_on
-      Q.solution.base.metric (Ico s d)
-    exact chartGramMatrix_joint_contMDiffOn_of_pullback P.solution.base.metric (Ico s d)
-      hjoint Q.solution.base.metric Φ Φ.contMDiff
-      (fun t _ x v w => Diffeomorph.pullbackMetricCross_inner (P.solution.base.metric t) Φ x v w)
-  · intro t ht x v w
-    change HasDerivWithinAt
-      (fun r => (Diffeomorph.pullbackMetricCross (P.solution.base.metric r) Φ).inner x v w)
-      (-2 * ricciTensor (Diffeomorph.pullbackMetricCross (P.solution.base.metric t) Φ) x v w)
-      (Ici s) t
-    simpa only [Diffeomorph.pullbackMetricCross_inner,
-      DifferentialGeometry.HCGCompactness.ricciTensor_cross] using
-      hpde t ht (Φ x) (mfderiv I J Φ x v) (mfderiv I J Φ x w)
+  by_cases hE : Module.finrank ℝ E = 0
+  · let _ : Subsingleton E := Module.finrank_zero_iff.mp hE
+    have hric : ∀ x (v w : TangentSpace I x), ricciTensor g₀ x v w = 0 := by
+      intro x v w
+      let _ : Subsingleton (TangentSpace I x) := by unfold TangentSpace; infer_instance
+      have hv : v = 0 := Subsingleton.elim _ _
+      rw [hv]
+      simp
+    have hsd : s < s + 1 := by linarith
+    let D := RealTimeInterval.closedOpen s (s + 1) hsd
+    let Q : CompleteBoundedCurvatureSolutionOn (I := I) (M := M) (D := D) := {
+      solution := SolutionOn.const g₀ D
+      isSolution := isSolutionOn_const_of_ricciTensor_eq_zero g₀ hric D
+      complete := fun _ _ => RiemannianMetricComplete.of_compact g₀
+      curvatureBound := fun _ _ => ⟨0, le_rfl, fun x => by
+        change normSq0S g₀ x 4 (metricRm04At g₀ x) ≤ 0
+        rw [metricRm04At_eq_zero_of_finrank_le_one g₀ (by omega)]
+        exact ((normSq0S_eq_zero_iff g₀ x 4 0).mpr rfl).le⟩ }
+    refine ⟨s + 1, hsd, Q, rfl, ⟨0, le_rfl, ?_⟩, ?_, ?_⟩
+    · intro t ht x
+      change normSq0S g₀ x 4 (metricRm04At g₀ x) ≤ 0
+      rw [metricRm04At_eq_zero_of_finrank_le_one g₀ (by omega)]
+      exact ((normSq0S_eq_zero_iff g₀ x 4 0).mpr rfl).le
+    · exact (g₀.contMDiff.comp contMDiff_snd).contMDiffOn
+    · intro t ht x v w
+      change HasDerivWithinAt (fun _ : ℝ => g₀.inner x v w)
+        (-2 * ricciTensor g₀ x v w) (Ici s) t
+      rw [hric, mul_zero]
+      exact hasDerivWithinAt_const t (Ici s) (g₀.inner x v w)
+  · let _ : NeZero (Module.finrank ℝ E) := ⟨hE⟩
+    let e : E ≃L[ℝ] EuclideanSpace ℝ (Fin (Module.finrank ℝ E)) :=
+      (Module.finBasis ℝ E).equivFun.toContinuousLinearEquiv.trans
+        (EuclideanSpace.equiv (Fin (Module.finrank ℝ E)) ℝ).symm
+    let J := I.transContinuousLinearEquiv e
+    let Φ := ContinuousLinearEquiv.toTransContinuousLinearEquiv (n := ∞) I M e
+    let k : SmoothRiemannianMetric J M := g₀.transContinuousLinearEquiv e
+    let _ : NeZero (Module.finrank ℝ (EuclideanSpace ℝ (Fin (Module.finrank ℝ E)))) :=
+      ⟨by simpa using (NeZero.ne (Module.finrank ℝ E))⟩
+    obtain ⟨d, hsd, P, hinit, ⟨C, hC, hbound⟩, hjoint, hpde⟩ := exists_compact_ricci_flow_from_time k s
+    let Q := P.pullback Φ
+    refine ⟨d, hsd, Q, ?_, ⟨C, hC, ?_⟩, ?_, ?_⟩
+    · change Diffeomorph.pullbackMetricCross (P.solution.base.metric s) Φ = g₀
+      rw [hinit]
+      exact SmoothRiemannianMetric.pullback_transContinuousLinearEquiv g₀ e
+    · intro t ht x
+      change normSq0S (Diffeomorph.pullbackMetricCross (P.solution.base.metric t) Φ) x 4
+        (metricRm04At (Diffeomorph.pullbackMetricCross (P.solution.base.metric t) Φ) x) ≤ C
+      rw [DifferentialGeometry.HCGCompactness.riemannNormSq_cross]
+      exact hbound t ht (Φ x)
+    · apply metricCLMSection_jointContMDiffOn_of_chartGram_on
+        Q.solution.base.metric (Ico s d)
+      exact chartGramMatrix_joint_contMDiffOn_of_pullback P.solution.base.metric (Ico s d)
+        hjoint Q.solution.base.metric Φ Φ.contMDiff
+        (fun t _ x v w => Diffeomorph.pullbackMetricCross_inner (P.solution.base.metric t) Φ x v w)
+    · intro t ht x v w
+      change HasDerivWithinAt
+        (fun r => (Diffeomorph.pullbackMetricCross (P.solution.base.metric r) Φ).inner x v w)
+        (-2 * ricciTensor (Diffeomorph.pullbackMetricCross (P.solution.base.metric t) Φ) x v w)
+        (Ici s) t
+      simpa only [Diffeomorph.pullbackMetricCross_inner,
+        DifferentialGeometry.HCGCompactness.ricciTensor_cross] using
+        hpde t ht (Φ x) (mfderiv I J Φ x v) (mfderiv I J Φ x w)
 
 
 theorem exists_completeBoundedCurvatureSolutionOn_of_compact
