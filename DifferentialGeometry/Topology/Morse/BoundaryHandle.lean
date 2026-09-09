@@ -123,6 +123,9 @@ theorem exists_boundaryMorsePerturbation_with_cocore_collar_in_interior
           (∀ x : U, 0 < (c x).val 0 → (IsCriticalPointAt I g (x : M) ↔ x = p)) ∧
           (∀ x ∈ D, IsCriticalPointAt I g x ↔
             x = (p : M) ∨ (x ∉ (U : Set M) ∧ IsCriticalPointAt I f x)) ∧
+          (∃ q : U, (q : M) ∈ frontier D ∧ (c q).val = 0 ∧
+            mfderiv I 𝓘(ℝ) g (q : M)
+              (mfderiv 𝓘(ℝ, Fin (n + 1) → ℝ) I c.symm (c q) (Fin.cons 1 0)) = -1) ∧
           let O : TopologicalSpace.Opens M := ⟨interior D, isOpen_interior⟩
           let pO : O := ⟨p.val, hpD⟩
           ∃ data : MorseChart (n + 1) k.val k.isLt.le (g p) I (fun x : O => g x),
@@ -166,13 +169,13 @@ theorem exists_boundaryMorsePerturbation_with_cocore_collar_in_interior
     exists_boundaryMorsePerturbation_with_criticalPoint_in_chart c d hd b D hD f hf v hchart
   refine ⟨a₀, ha₀, ?_⟩
   intro a ha hbox
-  obtain ⟨g, hg, hgs, hgU, hmodel, hout, hbound, p, hpD, hp, hnd, hindex, hunique, hglobal⟩ :=
+  obtain ⟨g, hg, hgs, hgU, hmodel, hout, hbound, p, hpD, hp, hnd, hindex, hunique, hglobal, hboundary⟩ :=
     hconstruction a ha hbox
   have hheight : g p = v + boundaryMorsePerturbation d b a (Fin.cons (a / 2) 0) := by
     rw [hmodel p (interior_subset hpD), hp]
   have hindex' := hindex.trans hdindex
   refine ⟨g, hg, hgs, hgU, hmodel, hout, hbound, p, hpD, hp, hheight,
-    hnd, hindex', hunique, hglobal, ?_⟩
+    hnd, hindex', hunique, hglobal, hboundary, ?_⟩
   let O : TopologicalSpace.Opens M := ⟨interior D, isOpen_interior⟩
   let pO : O := ⟨p.val, hpD⟩
   have hgO : ContMDiff I 𝓘(ℝ, ℝ) ∞ (fun x : O => g x) :=
