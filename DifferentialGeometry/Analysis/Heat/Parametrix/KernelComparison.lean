@@ -2,7 +2,6 @@ import DifferentialGeometry.Analysis.Heat.Parametrix.Approximation
 import DifferentialGeometry.Analysis.Heat.Kernel.Representation
 import DifferentialGeometry.Analysis.Heat.Parametrix.ResidualBound
 import DifferentialGeometry.Analysis.Integration.Measure.UniformPairing
-import Mathlib.Topology.UniformSpace.HeineCantor
 
 noncomputable section
 
@@ -30,34 +29,6 @@ variable [RiemannianBundle (fun x : M ↦ TangentSpace I x)]
 
 private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
-
-omit [T2Space (TangentBundle I M)] [RiemannianBundle (fun x : M ↦ TangentSpace I x)]
-  [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
-  [IsContinuousRiemannianBundle E (fun x : M ↦ TangentSpace I x)] in
-private theorem tendstoUniformly_heatKernel_sub
-    (g : SmoothRiemannianMetric I M) {t : ℝ} (ht : 0 < t) (x : M) :
-    TendstoUniformly (fun s y => heatKernel g (t - s) x y) (heatKernel g t x)
-      (𝓝[>] (0 : ℝ)) := by
-  have hU : Iio t ∈ 𝓝 (0 : ℝ) := Iio_mem_nhds ht
-  have hmap : Continuous (fun z : ℝ × M => (t - z.1, (x, z.2))) := by
-    fun_prop
-  have hcont : ContinuousOn (fun z : ℝ × M => heatKernel g (t - z.1) x z.2)
-      (Iio t ×ˢ univ) := by
-    apply (continuousOn_heatKernel g).comp hmap.continuousOn
-    intro z hz
-    change 0 < t - z.1 ∧ True
-    exact ⟨sub_pos.mpr hz.1, trivial⟩
-  rw [Metric.tendstoUniformly_iff]
-  intro ε hε
-  obtain ⟨v, hv, hvu⟩ := isCompact_univ.mem_uniformity_of_prod
-    (f := fun s y => heatKernel g (t - s) x y)
-    (s := Iio t) (q := (0 : ℝ)) hcont (mem_Iio.mpr ht)
-    (Metric.dist_mem_uniformity (α := ℝ) hε)
-  have hv' : v ∈ 𝓝 (0 : ℝ) := by
-    rwa [nhdsWithin_eq_nhds.mpr hU] at hv
-  filter_upwards [mem_nhdsWithin_of_mem_nhds hv'] with s hs
-  intro y
-  simpa only [Set.mem_ofPred_eq, sub_zero, dist_comm] using hvu s hs y (mem_univ y)
 
 private theorem integrable_cutoffHeatParametrix
     {g : SmoothRiemannianMetric I M} {hEnorm : IsMetricNorm g} {p : M}

@@ -4,6 +4,7 @@ import DifferentialGeometry.Analysis.Spectral.HeatTrace
 import DifferentialGeometry.Analysis.Integration.Measure.Properties
 import Mathlib.Analysis.Normed.Group.FunctionSeries
 import Mathlib.MeasureTheory.Integral.DominatedConvergence
+import Mathlib.Topology.UniformSpace.HeineCantor
 
 set_option autoImplicit false
 
@@ -113,6 +114,33 @@ theorem continuousOn_heatKernel (g : SmoothRiemannianMetric I M) :
       exact half_lt_self (show 0 < q.1 from hq.1)
     · exact Set.mem_univ _
   exact (hcont.continuousAt ((isOpen_Ioi.prod isOpen_univ).mem_nhds hq')).continuousWithinAt
+
+open Filter Set in
+open scoped Topology in
+theorem tendstoUniformly_heatKernel_sub
+    (g : SmoothRiemannianMetric I M) {t : ℝ} (ht : 0 < t) (x : M) :
+    TendstoUniformly (fun s y => heatKernel g (t - s) x y) (heatKernel g t x)
+      (𝓝[>] (0 : ℝ)) := by
+  have hU : Iio t ∈ 𝓝 (0 : ℝ) := Iio_mem_nhds ht
+  have hmap : Continuous (fun z : ℝ × M => (t - z.1, (x, z.2))) := by
+    fun_prop
+  have hcont : ContinuousOn (fun z : ℝ × M => heatKernel g (t - z.1) x z.2)
+      (Iio t ×ˢ univ) := by
+    apply (continuousOn_heatKernel g).comp hmap.continuousOn
+    intro z hz
+    change 0 < t - z.1 ∧ True
+    exact ⟨sub_pos.mpr hz.1, trivial⟩
+  rw [Metric.tendstoUniformly_iff]
+  intro ε hε
+  obtain ⟨v, hv, hvu⟩ := isCompact_univ.mem_uniformity_of_prod
+    (f := fun s y => heatKernel g (t - s) x y)
+    (s := Iio t) (q := (0 : ℝ)) hcont (mem_Iio.mpr ht)
+    (Metric.dist_mem_uniformity (α := ℝ) hε)
+  have hv' : v ∈ 𝓝 (0 : ℝ) := by
+    rwa [nhdsWithin_eq_nhds.mpr hU] at hv
+  filter_upwards [mem_nhdsWithin_of_mem_nhds hv'] with s hs
+  intro y
+  simpa only [Set.mem_ofPred_eq, sub_zero, dist_comm] using hvu s hs y (mem_univ y)
 
 theorem integral_mul_heatKernel_diagonal (g : SmoothRiemannianMetric I M)
     {t : Real} (ht : 0 < t) {w : M → Real}
