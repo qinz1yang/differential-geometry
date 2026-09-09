@@ -54,4 +54,3 @@ theorem Differentiable.dense_regular_values_of_finrank_eq {f : E → F}
   · intro v
     obtain ⟨w, hw⟩ := hbij.2 (e v)
     exact ⟨w, e.injective hw⟩
-

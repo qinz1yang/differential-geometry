@@ -298,6 +298,47 @@ theorem heatDuhamel_eq_sub_integral_heatKernel_mul_of_continuous
   heatDuhamel_eq_sub_integral_heatKernel_mul g hat hu x
     (intervalIntegrable_integral_heatKernel_mul g hat.le x hf)
 
+theorem heatDuhamel_eq_sub_of_initial_pairing_tendsto
+    (g : SmoothRiemannianMetric I M) {D : RealTimeInterval}
+    {f u : ℝ → M → ℝ} (hu : Parabolic.IsHeatForcedOnStationary D g f u)
+    {a t L : ℝ} (hat : a < t)
+    (hreg : Ioo a t ⊆ D.regular) (ht : t ∈ D.carrier) (x : M)
+    (hint : IntervalIntegrable (fun s => ∫ y, heatKernel g (t - s) x y * f s y
+      ∂riemannianVolumeMeasure (I := I) (M := M) g) volume a t)
+    (hinit : Tendsto (fun s => ∫ y, heatKernel g (t - s) x y * u s y
+      ∂riemannianVolumeMeasure (I := I) (M := M) g) (𝓝[>] a) (𝓝 L)) :
+    heatDuhamel g f a t x = u t x - L := by
+  have hcar : Ioc a t ⊆ D.carrier := by
+    intro s hs
+    rcases hs.2.eq_or_lt with hst | hst
+    · exact hst ▸ ht
+    · exact D.regular_subset (hreg ⟨hs.1, hst⟩)
+  obtain ⟨b, hab, hbt⟩ := exists_between hat
+  have hright := tendsto_integral_heatKernel_mul_time_dependent_Icc g hbt
+    (hu.jointCont.mono (prod_mono ((Icc_subset_Ioc_left hab).trans hcar) Subset.rfl)) x
+  have hFTC := intervalIntegral.integral_eq_sub_of_hasDerivAt_of_tendsto hat
+    (fun s hs => hasDerivAt_integral_heatKernel_mul_forced g hu (hreg hs) hs.2 x)
+    hint hinit hright
+  simpa only [intervalIntegral.integral_of_le hat.le,
+    integral_Ioc_eq_integral_Ioo, heatDuhamel] using hFTC
+
+theorem norm_sub_heatKernel_le_of_initial_pairing_tendsto
+    (g : SmoothRiemannianMetric I M) {D : RealTimeInterval}
+    {f u : ℝ → M → ℝ} (hu : Parabolic.IsHeatForcedOnStationary D g f u)
+    {a t C : ℝ} (hat : a < t)
+    (hreg : Ioo a t ⊆ D.regular) (ht : t ∈ D.carrier)
+    (x p : M)
+    (hint : IntervalIntegrable (fun s => ∫ y, heatKernel g (t - s) x y * f s y
+      ∂riemannianVolumeMeasure (I := I) (M := M) g) volume a t)
+    (hbound : ∀ s ∈ Ioo a t, ∀ᵐ y ∂riemannianVolumeMeasure (I := I) (M := M) g,
+      ‖f s y‖ ≤ C)
+    (hinit : Tendsto (fun s => ∫ y, heatKernel g (t - s) x y * u s y
+      ∂riemannianVolumeMeasure (I := I) (M := M) g) (𝓝[>] a)
+        (𝓝 (heatKernel g (t - a) x p))) :
+    ‖u t x - heatKernel g (t - a) x p‖ ≤ (t - a) * C := by
+  rw [← heatDuhamel_eq_sub_of_initial_pairing_tendsto g hu hat hreg ht x hint hinit]
+  exact norm_heatDuhamel_le g hat.le x hbound
+
 end
 
 end DifferentialGeometry.Analysis.HeatEquation
