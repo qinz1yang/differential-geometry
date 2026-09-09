@@ -4884,3 +4884,11 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.ProductQuotient
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.Compact
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.Isometry
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.ProductIsometry
+import DifferentialGeometry.Analysis.Calculus.ExponentialAsymptotics
+import DifferentialGeometry.Geometry.Operator.CutoffSupport
+import DifferentialGeometry.Geometry.Exponential.BranchEnergyBounds
+import DifferentialGeometry.Analysis.Heat.Parametrix.Approximation
+import DifferentialGeometry.Analysis.Heat.Parametrix.ResidualBound
+import DifferentialGeometry.Analysis.Heat.Parametrix.DiagonalAsymptotics
+import DifferentialGeometry.Analysis.Integration.Measure.UniformPairing
+import DifferentialGeometry.Analysis.Heat.Parametrix.KernelComparison
