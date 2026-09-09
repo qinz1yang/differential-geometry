@@ -1,4 +1,5 @@
 import DifferentialGeometry.Topology.Morse.BoundaryRegularVectorField
+import DifferentialGeometry.Topology.Morse.BoundaryCollar
 import DifferentialGeometry.Topology.Morse.BoundaryPerturbation
 import DifferentialGeometry.Topology.Diffeomorph.TimeDependentFlow
 import DifferentialGeometry.Analysis.ODE.InvariantHyperplane
@@ -55,6 +56,72 @@ private theorem image_halfspace_eq_of_iff {n : ℕ}
     have hx : 0 ≤ e.symm y 0 := (hhalf (e.symm y)).mpr (by simpa using hy.1)
     exact ⟨e.symm y, ⟨hx, (h (e.symm y) hx).mpr (by simpa using hy.2)⟩,
       e.apply_symm_apply y⟩
+
+private theorem exists_pos_compactSupportFlow_height
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+    (Y : E → E) (hY : ContDiff ℝ ∞ Y) (hYc : HasCompactSupport Y)
+    (g : E → ℝ) {B U : Set E} (hB : IsCompact B) (hU : IsOpen U) (hBU : B ⊆ U)
+    (hrate : ∀ x ∈ U, fderiv ℝ g x (Y x) = 1) :
+    let H := Diffeomorph.compactSupportFlow Y
+      (contMDiff_vectorSpace_iff_contDiff.mpr hY) hYc
+    ∃ δ > 0, ∀ x ∈ B, ∀ t ∈ Set.Ioo (-δ) δ,
+      H t x ∈ U ∧ g (H t x) = g x + t := by
+  have hv : ContMDiff 𝓘(ℝ, E) (𝓘(ℝ, E).prod 𝓘(ℝ, E)) ∞
+      (fun x : E => (⟨x, Y x⟩ : TangentBundle 𝓘(ℝ, E) E)) :=
+    contMDiff_vectorSpace_iff_contDiff.mpr hY
+  let H := Diffeomorph.compactSupportFlow Y hv hYc
+  change ∃ δ > 0, ∀ x ∈ B, ∀ t ∈ Set.Ioo (-δ) δ,
+    H t x ∈ U ∧ g (H t x) = g x + t
+  have hH : Continuous (fun p : ℝ × E => H p.1 p.2) :=
+    (Diffeomorph.contMDiff_compactSupportFlow Y hv hYc).continuous
+  have hzero (x : E) : H 0 x = x :=
+    DFunLike.congr_fun (Diffeomorph.compactSupportFlow_zero Y hv hYc) x
+  have hslice : ({0} : Set ℝ) ×ˢ B ⊆ (fun p : ℝ × E => H p.1 p.2) ⁻¹' U := by
+    rintro ⟨t, x⟩ ⟨ht, hx⟩
+    have ht0 : t = 0 := Set.mem_singleton_iff.mp ht
+    subst t
+    change H 0 x ∈ U
+    rw [hzero]
+    exact hBU hx
+  obtain ⟨T, V, hT, _, h0T, hBV, hTV⟩ :=
+    generalized_tube_lemma isCompact_singleton hB (hU.preimage hH) hslice
+  obtain ⟨δ, hδ, hδT⟩ := Metric.isOpen_iff.mp hT 0 (h0T (by simp))
+  have hstay (x : E) (hx : x ∈ B) (t : ℝ) (ht : t ∈ Set.Ioo (-δ) δ) :
+      H t x ∈ U := by
+    have htT : t ∈ T := hδT (by
+      simpa only [Metric.mem_ball, dist_zero_right, Real.norm_eq_abs] using abs_lt.mpr ht)
+    exact hTV (show (t, x) ∈ T ×ˢ V from ⟨htT, hBV hx⟩)
+  have hcurve (x : E) (t : ℝ) :
+      HasDerivAt (fun s => H s x) (Y (H t x)) t := by
+    have hd : HasFDerivAt (fun s => H s x)
+        ((1 : ℝ →L[ℝ] ℝ).smulRight (Y (H t x))) t :=
+      (Diffeomorph.isMIntegralCurve_compactSupportFlow Y hv hYc x t).hasFDerivAt
+    simpa using hd.hasDerivAt
+  refine ⟨δ, hδ, ?_⟩
+  intro x hx t ht
+  refine ⟨hstay x hx t ht, ?_⟩
+  have hheight {s : ℝ} (hs : s ∈ Set.Ioo (-δ) δ) :
+      HasDerivAt (fun s => g (H s x)) 1 s := by
+    have hr := hrate (H s x) (hstay x hx s hs)
+    have hg : DifferentiableAt ℝ g (H s x) := by
+      by_contra hn
+      rw [fderiv_zero_of_not_differentiableAt hn, zero_apply] at hr
+      exact zero_ne_one hr
+    have hh : HasDerivAt (fun u => g (H u x))
+        (fderiv ℝ g (H s x) (Y (H s x))) s :=
+      hg.hasFDerivAt.comp_hasDerivAt s (hcurve x s)
+    rw [hr] at hh
+    exact hh
+  have hlinear (s : ℝ) : HasDerivAt (fun u : ℝ => g x + u) 1 s :=
+    (hasDerivAt_id s).const_add (g x)
+  have heq : Set.EqOn (fun s => g (H s x)) (fun s => g x + s) (Set.Ioo (-δ) δ) :=
+    isOpen_Ioo.eqOn_of_deriv_eq (convex_Ioo (-δ) δ).isPreconnected
+      (fun s hs => (hheight hs).differentiableAt.differentiableWithinAt)
+      (fun s _ => (hlinear s).differentiableAt.differentiableWithinAt)
+      (fun s hs => by rw [(hheight hs).deriv, (hlinear s).deriv])
+      (show (0 : ℝ) ∈ Set.Ioo (-δ) δ from ⟨by linarith, hδ⟩)
+      (by rw [hzero]; exact (add_zero (g x)).symm)
+  exact heq ht
 
 theorem exists_isotopy_halfspace_sublevel_with_support {n : ℕ}
     {F : ℝ × (Fin (n + 1) → ℝ) → ℝ} {L : Set ℝ}
@@ -383,5 +450,88 @@ theorem exists_diffeomorph_image_boundaryMorsePerturbation_sublevels {n : ℕ}
   obtain ⟨Φ, himages, hnormal, hfix, K, hK, hKO, hKfix⟩ :=
     h a ha Set.univ isOpen_univ (Set.subset_univ _)
   exact ⟨Φ, himages, hnormal, hfix, K, hK, hKfix⟩
+
+theorem exists_isotopy_eq_collar_preserving_halfspace
+    {n : ℕ} {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
+    {G : Type*} [TopologicalSpace G] {J : ModelWithCorners ℝ F G}
+    {N : Type*} [TopologicalSpace N] [ChartedSpace G N] [IsManifold J 1 N]
+    (Φ : OpenPartialHomeomorph (N × ℝ) (Fin (n + 1) → ℝ))
+    (hΦ : ContMDiffOn (J.prod 𝓘(ℝ)) 𝓘(ℝ, Fin (n + 1) → ℝ) ∞ Φ Φ.source)
+    (hi : ContMDiffOn 𝓘(ℝ, Fin (n + 1) → ℝ) (J.prod 𝓘(ℝ)) ∞ Φ.symm Φ.target)
+    {g : (Fin (n + 1) → ℝ) → ℝ} (hg : ContDiff ℝ ∞ g) {c : ℝ}
+    (hheight : ∀ q ∈ Φ.source, g (Φ q) = c + q.2)
+    {A : Set N} (hA : IsCompact A) {ε : ℝ} (hε : 0 < ε)
+    (hw : A ×ˢ Set.Icc (-ε) ε ⊆ Φ.source)
+    (hplane : ∀ x ∈ Φ '' (A ×ˢ Set.Icc (-ε) ε), x 0 ≠ 0)
+    {B W : Set (Fin (n + 1) → ℝ)}
+    (hB : IsCompact B) (hW : IsOpen W) (hBW : B ⊆ W)
+    (hTW : Φ '' (A ×ˢ Set.Icc (-ε) ε) ⊆ W)
+    (hregular : ∀ x ∈ B, x 0 ≠ 0 → fderiv ℝ g x ≠ 0)
+    (hboundary : ∀ x ∈ B, x 0 = 0 →
+      fderiv ℝ (fun z : Fin n → ℝ => g (Fin.cons 0 z)) (Fin.tail x) ≠ 0) :
+    ∃ H : ℝ → ((Fin (n + 1) → ℝ) ≃ₘ[ℝ] (Fin (n + 1) → ℝ)),
+      H 0 = Diffeomorph.refl 𝓘(ℝ, Fin (n + 1) → ℝ) _ ∞ ∧
+      ContMDiff (𝓘(ℝ).prod 𝓘(ℝ, Fin (n + 1) → ℝ)) 𝓘(ℝ, Fin (n + 1) → ℝ) ∞
+        (fun q : ℝ × (Fin (n + 1) → ℝ) => H q.1 q.2) ∧
+      ContMDiff (𝓘(ℝ).prod 𝓘(ℝ, Fin (n + 1) → ℝ)) 𝓘(ℝ, Fin (n + 1) → ℝ) ∞
+        (fun q : ℝ × (Fin (n + 1) → ℝ) => (H q.1).symm q.2) ∧
+      (∀ t x, (x 0 = 0 ↔ H t x 0 = 0) ∧ (0 ≤ x 0 ↔ 0 ≤ H t x 0)) ∧
+      ∃ K : Set (Fin (n + 1) → ℝ), IsCompact K ∧ K ⊆ W ∧
+        (∀ t, Set.EqOn (H t) id Kᶜ ∧ Set.EqOn (H t).symm id Kᶜ) ∧
+        (∀ p ∈ A, ∀ t ∈ Set.Ioo (-ε) ε, H t (Φ (p, 0)) = Φ (p, t)) ∧
+        ∃ δ > 0, ∀ x ∈ B, ∀ t ∈ Set.Ioo (-δ) δ,
+          g (H t x) = g x + t ∧ g ((H t).symm x) = g x - t := by
+  obtain ⟨Y, hY, hYc, hYs, hYb, U, P, hU, hBU, hUW, hrate, hP, hTP, hPU, hagree⟩ :=
+    exists_contDiff_boundary_tangent_vector_field_eq_collar_velocity Φ hΦ hi hg hheight hA hw
+      hplane hB hW hBW hTW hregular hboundary
+  have hv : ContMDiff 𝓘(ℝ, Fin (n + 1) → ℝ)
+      (𝓘(ℝ, Fin (n + 1) → ℝ).prod 𝓘(ℝ, Fin (n + 1) → ℝ)) ∞
+      (fun x : Fin (n + 1) → ℝ => (⟨x, Y x⟩ : TangentBundle 𝓘(ℝ, Fin (n + 1) → ℝ) _)) :=
+    contMDiff_vectorSpace_iff_contDiff.mpr hY
+  let H := Diffeomorph.compactSupportFlow Y hv hYc
+  have hzero : H 0 = Diffeomorph.refl 𝓘(ℝ, Fin (n + 1) → ℝ) _ ∞ :=
+    Diffeomorph.compactSupportFlow_zero Y hv hYc
+  have hγ (x : Fin (n + 1) → ℝ) : IsIntegralCurve (fun t => H t x) (fun _ z => Y z) := by
+    intro t
+    have hd : HasFDerivAt (fun s => H s x)
+        ((1 : ℝ →L[ℝ] ℝ).smulRight (Y (H t x))) t :=
+      (Diffeomorph.isMIntegralCurve_compactSupportFlow Y hv hYc x t).hasFDerivAt
+    simpa using hd.hasDerivAt
+  have hhalf (t : ℝ) (x : Fin (n + 1) → ℝ) :
+      (x 0 = 0 ↔ H t x 0 = 0) ∧ (0 ≤ x 0 ↔ 0 ≤ H t x 0) := by
+    have h := boundary_normal_invariant (hγ x)
+      ((hY.comp contDiff_snd).of_le (by simp)) (fun _ z hz => hYb z hz) 0 t
+    simpa only [hzero, Diffeomorph.coe_refl, id_eq] using h
+  obtain ⟨δ, hδ, hband⟩ := exists_pos_compactSupportFlow_height Y hY hYc g hB hU
+    (Set.subset_union_left.trans hBU) hrate
+  have hinverse (x) (hx : x ∈ B) (t) (ht : t ∈ Set.Ioo (-δ) δ) :
+      g ((H t).symm x) = g x - t := by
+    have he : (H t).symm = H (-t) := Diffeomorph.compactSupportFlow_symm Y hv hYc t
+    rw [he]
+    have hneg : -t ∈ Set.Ioo (-δ) δ := ⟨by linarith [ht.2], by linarith [ht.1]⟩
+    simpa only [sub_eq_add_neg] using (hband x hx (-t) hneg).2
+  refine ⟨H, hzero, Diffeomorph.contMDiff_compactSupportFlow Y hv hYc,
+    Diffeomorph.contMDiff_compactSupportFlow_symm Y hv hYc, hhalf, tsupport Y, hYc, hYs,
+    Diffeomorph.compactSupportFlow_eqOn_compl_tsupport Y hv hYc, ?_,
+    δ, hδ, fun x hx t ht => ⟨(hband x hx t ht).2, hinverse x hx t ht⟩⟩
+  intro p hp t ht
+  have hc : IsMIntegralCurveOn (I := 𝓘(ℝ, Fin (n + 1) → ℝ)) (fun s => Φ (p, s)) Y
+      (Set.Ioo (-ε) ε) := by
+    intro s hs
+    have hps : (p, s) ∈ Φ.source := hw ⟨hp, ⟨hs.1.le, hs.2.le⟩⟩
+    have hsm : ContMDiffAt 𝓘(ℝ) 𝓘(ℝ, Fin (n + 1) → ℝ) ∞ (fun s => Φ (p, s)) s :=
+      (hΦ.contMDiffAt (Φ.open_source.mem_nhds hps)).comp s
+        (contMDiffAt_const.prodMk contMDiffAt_id)
+    have hd := (contMDiffAt_iff_contDiffAt.mp hsm).differentiableAt (by simp)
+    have hy : Y (Φ (p, s)) = deriv (fun u => Φ (p, u)) s := by
+      simpa only [Φ.left_inv hps] using hagree (hTP ⟨(p, s), ⟨hp, ⟨hs.1.le, hs.2.le⟩⟩, rfl⟩)
+    rw [hy]
+    exact hd.hasDerivAt.hasFDerivAt.hasMFDerivAt.hasMFDerivWithinAt
+  have h0 : (0 : ℝ) ∈ Set.Ioo (-ε) ε := ⟨by linarith, hε⟩
+  have heq := isMIntegralCurveOn_Ioo_eqOn_of_contMDiff_boundaryless (t₀ := 0) h0
+    (hv.of_le (by simp))
+    ((Diffeomorph.isMIntegralCurve_compactSupportFlow Y hv hYc (Φ (p, 0))).isMIntegralCurveOn _)
+    hc (DFunLike.congr_fun hzero (Φ (p, 0)))
+  exact heq ht
 
 end DifferentialGeometry.Topology.Morse
