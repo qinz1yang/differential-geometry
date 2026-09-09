@@ -120,4 +120,16 @@ theorem contMDiffAt_heatParametrixCoefficientInCoordinates_centre
     (hV.mem_nhds hpV)).congr_of_eventuallyEq
       (B.heatParametrixCoefficientInCoordinates_eventuallyEq hB0 k)
 
+theorem heatParametrixCoefficientInCoordinates_eventuallyEq_of_zero_mem
+    {g : SmoothRiemannianMetric I M} {hEnorm : IsMetricNorm g} {p : M}
+    (B₁ B₂ : ExpInvBranch g hEnorm p)
+    (hB₁ : (0 : E) ∈ B₁.hom.source) (hB₂ : (0 : E) ∈ B₂.hom.source)
+    (k : ℕ) :
+    heatParametrixCoefficientInCoordinates g B₁.hom B₁.inv
+        (fun v => paramDensity g B₁.hom v / paramDensity g B₁.hom 0) k =ᶠ[𝓝 p]
+      heatParametrixCoefficientInCoordinates g B₂.hom B₂.inv
+        (fun v => paramDensity g B₂.hom v / paramDensity g B₂.hom 0) k := by
+  exact (B₁.heatParametrixCoefficientInCoordinates_eventuallyEq hB₁ k).trans
+    (B₂.heatParametrixCoefficientInCoordinates_eventuallyEq hB₂ k).symm
+
 end DifferentialGeometry.Geometry.Riemannian.Exponential.ExpInvBranch
