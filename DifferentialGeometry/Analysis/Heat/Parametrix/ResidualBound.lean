@@ -9,69 +9,6 @@ noncomputable section
 open Bundle Set
 open scoped Manifold ContDiff Topology BigOperators
 
-private theorem exists_gaussian_cutoff_commutator_bound (n T A : ℝ) {c : ℝ}
-    (hc : 0 < c) (hA : 0 ≤ A) :
-    ∃ C : ℝ, 0 ≤ C ∧ ∀ t ∈ Ioc 0 T, ∀ e a₀ a₁ b₀ b₁ d l : ℝ,
-      c ≤ e → |a₀| ≤ A → |a₁| ≤ A → |b₀| ≤ A → |b₁| ≤ A → |d| ≤ A → |l| ≤ A →
-      |(4 * Real.pi * t) ^ (-n / 2) * Real.exp (-e / (2 * t)) *
-          (a₀ + t * a₁) * l +
-        2 * ((4 * Real.pi * t) ^ (-n / 2) * Real.exp (-e / (2 * t)) *
-          (b₀ + t * b₁ - (a₀ + t * a₁) / (2 * t) * d))| ≤ C := by
-  let B := A + |T| * A
-  have hB : 0 ≤ B := add_nonneg hA (mul_nonneg (abs_nonneg T) hA)
-  obtain ⟨C₀, hC₀, h₀⟩ := Real.exists_rpow_mul_exp_neg_div_le_rpow (-n / 2) 0 T (half_pos hc)
-  obtain ⟨C₁, hC₁, h₁⟩ := Real.exists_rpow_mul_exp_neg_div_le_rpow (-n / 2 - 1) 0 T (half_pos hc)
-  let S := (4 * Real.pi) ^ (-n / 2)
-  have hS : 0 ≤ S := Real.rpow_nonneg (by positivity) _
-  refine ⟨S * C₀ * B * A + 2 * (S * C₀ * B + S * C₁ * B * A / 2), by positivity, ?_⟩
-  intro t ht e a₀ a₁ b₀ b₁ d l he ha₀ ha₁ hb₀ hb₁ hd hl
-  have hat : |t| ≤ |T| := by rw [abs_of_pos ht.1]; exact ht.2.trans (le_abs_self T)
-  have ha : |a₀ + t * a₁| ≤ B := by
-    calc
-      _ ≤ |a₀| + |t| * |a₁| := by simpa only [abs_mul] using abs_add_le a₀ (t * a₁)
-      _ ≤ A + |T| * A := by gcongr
-  have hb : |b₀ + t * b₁| ≤ B := by
-    calc
-      _ ≤ |b₀| + |t| * |b₁| := by simpa only [abs_mul] using abs_add_le b₀ (t * b₁)
-      _ ≤ A + |T| * A := by gcongr
-  let G := (4 * Real.pi * t) ^ (-n / 2) * Real.exp (-e / (2 * t))
-  have hG : 0 ≤ G := mul_nonneg (Real.rpow_nonneg (mul_nonneg (by positivity) ht.1.le) _) (Real.exp_pos _).le
-  have hG₀ : G ≤ S * C₀ := by
-    have hbound := h₀ t ht (e / 2) (by linarith)
-    simp only [Real.rpow_zero, mul_one] at hbound
-    dsimp only [G, S]
-    rw [Real.mul_rpow (by positivity) ht.1.le]
-    rw [show -e / (2 * t) = -(e / 2) / t by ring]
-    simpa only [mul_assoc] using mul_le_mul_of_nonneg_left hbound hS
-  have hG₁ : G / t ≤ S * C₁ := by
-    have hbound := h₁ t ht (e / 2) (by linarith)
-    simp only [Real.rpow_zero, mul_one] at hbound
-    dsimp only [G, S]
-    rw [Real.mul_rpow (by positivity) ht.1.le]
-    rw [show -e / (2 * t) = -(e / 2) / t by ring]
-    have heq : ((4 * Real.pi) ^ (-n / 2) * t ^ (-n / 2) * Real.exp (-(e / 2) / t)) / t =
-        (4 * Real.pi) ^ (-n / 2) * (t ^ (-n / 2 - 1) * Real.exp (-(e / 2) / t)) := by
-      rw [Real.rpow_sub_one ht.1.ne']
-      ring
-    rw [heq]
-    exact mul_le_mul_of_nonneg_left hbound hS
-  change |G * (a₀ + t * a₁) * l + 2 * (G * (b₀ + t * b₁ - (a₀ + t * a₁) / (2 * t) * d))| ≤ _
-  calc
-    _ ≤ G * |a₀ + t * a₁| * |l| + 2 *
-        (G * |b₀ + t * b₁| + G / t * |a₀ + t * a₁| * |d| / 2) := by
-      have htri := abs_add_le (G * (a₀ + t * a₁) * l)
-        (2 * (G * (b₀ + t * b₁ - (a₀ + t * a₁) / (2 * t) * d)))
-      have hin := abs_sub (b₀ + t * b₁) ((a₀ + t * a₁) / (2 * t) * d)
-      simp only [abs_mul, abs_of_nonneg hG, abs_of_pos ht.1,
-        abs_div, abs_two] at htri hin
-      calc
-        _ ≤ G * |a₀ + t * a₁| * |l| + 2 * (G *
-          (|b₀ + t * b₁| + |a₀ + t * a₁| / (2 * t) * |d|)) :=
-          htri.trans (add_le_add_right (mul_le_mul_of_nonneg_left
-            (mul_le_mul_of_nonneg_left hin hG) (show (0 : ℝ) ≤ 2 by norm_num)) _)
-        _ = _ := by ring
-    _ ≤ S * C₀ * B * A + 2 * (S * C₀ * B + S * C₁ * B * A / 2) := by gcongr
-
 namespace DifferentialGeometry.Geometry.Riemannian.Exponential
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -296,7 +233,7 @@ theorem exists_cutoffHeatParametrix_residual_bound_of_finrank_eq_two
   obtain ⟨A, hA, hcoeff⟩ := exists_cutoffHeatParametrix_coefficient_bound B hχ hcχ hs
   obtain ⟨K, _, hKs, _, c, hc, hKenergy, hKvanish⟩ :=
     exists_pos_le_branchEnergy_on_laplacian_gradient_support B hcχ (fun q hq => (hs hq).1) hp
-  obtain ⟨Ccomm, hCcomm, hcomm⟩ := exists_gaussian_cutoff_commutator_bound
+  obtain ⟨Ccomm, hCcomm, hcomm⟩ := Real.exists_gaussian_cutoff_commutator_bound
     (Module.finrank ℝ E) T A hc hA
   let Cmain : ℝ := A * A / (4 * Real.pi)
   have hCmain : 0 ≤ Cmain := by dsimp only [Cmain]; positivity

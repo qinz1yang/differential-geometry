@@ -151,4 +151,48 @@ theorem exists_ball_trivialization_domain
   exact ⟨S, hS, hcS, r, hr, V, hVopen, hcV, hVB, hT, hTB, hRe, hF, hR,
     fun z hz => mem_image_of_mem F hz, hVR, hleft, hright⟩
 
+theorem exists_starConvex_fixed_source_domain
+    {g : SmoothRiemannianMetric I M} {hEnorm : IsMetricNorm g} {c : M}
+    (B : DiagInvBranch g hEnorm c) :
+    ∃ V : Set (M × M), IsOpen V ∧ (c, c) ∈ V ∧ V ⊆ B.dom ∧
+      ∀ z ∈ V, ∃ U : Set E, IsOpen U ∧ StarConvex ℝ 0 U ∧
+        U ⊆ (B.fixed z.1).hom.source ∧ (B.fixed z.1).inv z.2 ∈ U := by
+  let e := trivializationAt E (TangentSpace I) c
+  have hc : c ∈ e.baseSet := mem_baseSet_trivializationAt E (TangentSpace I) c
+  obtain ⟨S, _, _, r, hr, V, hV, hcV, hVB, hT, hTB, _, _, _, _, hRT, _, _⟩ :=
+    B.exists_ball_trivialization_domain e hc isOpen_univ (mem_univ _)
+  refine ⟨V, hV, hcV, hVB, ?_⟩
+  intro z hz
+  have hpS : z.1 ∈ S := (hRT hz).1
+  have hp : z.1 ∈ e.baseSet := e.mem_target.mp
+    (hT (show (z.1, (0 : E)) ∈ S ×ˢ Metric.ball (0 : E) r from
+      ⟨hpS, Metric.mem_ball_self hr⟩)).2
+  let L : E ≃L[ℝ] E := (e.continuousLinearEquivAt ℝ z.1 hp).symm
+  let U := L '' Metric.ball (0 : E) r
+  have hU : IsOpen U := L.toHomeomorph.isOpenMap _ Metric.isOpen_ball
+  have hstar : StarConvex ℝ 0 U := by
+    have h := ((convex_ball (0 : E) r).starConvex (Metric.mem_ball_self hr)).linear_image
+      L.toLinearMap
+    change StarConvex ℝ (L (0 : E)) (L '' Metric.ball (0 : E) r) at h
+    simpa only [map_zero] using h
+  have hsub : U ⊆ (B.fixed z.1).hom.source := by
+    rintro v ⟨w, hw, rfl⟩
+    have he : e.toOpenPartialHomeomorph.symm (z.1, w) =
+        (⟨z.1, show TangentSpace I z.1 from L w⟩ : TangentBundle I M) := by
+      rw [← e.mk_symm hp, ← e.symmL_apply (R := ℝ) hp]
+      congr 1
+      exact (congrFun (e.symm_continuousLinearEquivAt_eq (R := ℝ) hp) w).symm
+    have h := hTB (show (z.1, w) ∈ S ×ˢ Metric.ball (0 : E) r from ⟨hpS, hw⟩)
+    rw [he] at h
+    exact h
+  refine ⟨U, hU, hstar, hsub, ?_⟩
+  refine ⟨(e (B.inv z)).2, (hRT hz).2, ?_⟩
+  have htotal : B.inv z =
+      (⟨z.1, show TangentSpace I z.1 from (B.inv z).snd⟩ : TangentBundle I M) := by
+    apply TotalSpace.ext (B.proj_eq (hVB hz))
+    exact heq_of_eq rfl
+  change L (e (B.inv z)).2 = (B.fixed z.1).inv z.2
+  rw [htotal, e.apply_eq_prod_continuousLinearEquivAt ℝ z.1 hp]
+  exact L.apply_symm_apply _
+
 end DifferentialGeometry.Geometry.Riemannian.Exponential.DiagInvBranch
