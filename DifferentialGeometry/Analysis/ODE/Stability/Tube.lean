@@ -1,3 +1,4 @@
+import Mathlib.Analysis.Calculus.Deriv.MeanValue
 import Mathlib.Analysis.ODE.Basic
 import Mathlib.Analysis.ODE.Gronwall
 import Mathlib.Topology.Order.Compact
@@ -54,6 +55,61 @@ theorem exists_first_hit_Icc
   have hst : s = τ := le_antisymm hs.2 hτs
   subst s
   exact (not_lt_of_ge hτeq.le) hrs
+
+theorem lt_on_Icc_of_deriv_nonpos_of_le
+    {f : ℝ → ℝ} {a b R : ℝ}
+    (hcont : ContinuousOn f (Icc a b)) (ha : f a < R)
+    (hderiv : ∀ x ∈ Ioo a b, f x ≤ R →
+      DifferentiableAt ℝ f x ∧ deriv f x ≤ 0) :
+    ∀ x ∈ Icc a b, f x < R := by
+  intro x hx
+  by_contra hnot
+  obtain ⟨q, hq, hqeq, hqbelow⟩ :=
+    DifferentialGeometry.Analysis.ODE.exists_first_hit_Icc
+      (hx.1.trans hx.2) hcont ha ⟨x, hx, le_of_not_gt hnot⟩
+  have hanti : AntitoneOn f (Icc a q) := by
+    apply antitoneOn_of_deriv_nonpos (convex_Icc a q)
+    · exact hcont.mono (fun r hr ↦ ⟨hr.1, hr.2.trans hq.2⟩)
+    · intro r hr
+      rw [interior_Icc] at hr
+      exact (hderiv r ⟨hr.1, hr.2.trans_le hq.2⟩
+        (hqbelow r ⟨hr.1.le, hr.2.le⟩)).1.differentiableWithinAt
+    · intro r hr
+      rw [interior_Icc] at hr
+      exact (hderiv r ⟨hr.1, hr.2.trans_le hq.2⟩
+        (hqbelow r ⟨hr.1.le, hr.2.le⟩)).2
+  have hle := hanti (left_mem_Icc.mpr hq.1) (right_mem_Icc.mpr hq.1) hq.1
+  rw [hqeq] at hle
+  exact (not_le_of_gt ha) hle
+
+theorem lt_on_Icc_of_deriv_nonneg_of_le
+    {f : ℝ → ℝ} {a b R : ℝ}
+    (hcont : ContinuousOn f (Icc a b)) (hb : f b < R)
+    (hderiv : ∀ x ∈ Ioo a b, f x ≤ R →
+      DifferentiableAt ℝ f x ∧ 0 ≤ deriv f x) :
+    ∀ x ∈ Icc a b, f x < R := by
+  let g : ℝ → ℝ := fun x ↦ f (a + b - x)
+  have hgcont : ContinuousOn g (Icc a b) := by
+    apply hcont.comp (continuous_const.sub continuous_id).continuousOn
+    intro x hx
+    change a ≤ a + b - x ∧ a + b - x ≤ b
+    constructor <;> linarith [hx.1, hx.2]
+  have hga : g a < R := by simpa only [g, add_sub_cancel_left] using hb
+  have hgderiv : ∀ x ∈ Ioo a b, g x ≤ R →
+      DifferentiableAt ℝ g x ∧ deriv g x ≤ 0 := by
+    intro x hx hle
+    have hx' : a + b - x ∈ Ioo a b := by
+      constructor <;> linarith [hx.1, hx.2]
+    obtain ⟨hd, hn⟩ := hderiv (a + b - x) hx' hle
+    have hgd : HasDerivAt g (-deriv f (a + b - x)) x := by
+      simpa only [g, Function.comp_def, mul_neg, mul_one, zero_sub] using
+        hd.hasDerivAt.comp x ((hasDerivAt_const x (a + b)).sub (hasDerivAt_id x))
+    exact ⟨hgd.differentiableAt, hgd.deriv.trans_le (neg_nonpos.mpr hn)⟩
+  intro x hx
+  have hx' : a + b - x ∈ Icc a b := by
+    constructor <;> linarith [hx.1, hx.2]
+  simpa only [g, sub_sub_cancel] using
+    lt_on_Icc_of_deriv_nonpos_of_le hgcont hga hgderiv (a + b - x) hx'
 
 theorem tendsto_gronwallBound_zero_zero (L T : ℝ) :
     Tendsto

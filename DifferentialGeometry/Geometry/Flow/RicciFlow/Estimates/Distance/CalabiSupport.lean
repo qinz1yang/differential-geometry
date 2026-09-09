@@ -249,9 +249,63 @@ theorem pathLength_timeDeriv_of_ricciFlow
   rw [← hderiv]
   simpa only [Variation.arcLength, F, G, Ric, v] using hkey.2
 
-omit [NeZero (Module.finrank ℝ E)]
-  [IsManifold I 2 M]
-  [SigmaCompactSpace M] in
+section
+
+variable {M : Type u} [TopologicalSpace M] [ChartedSpace H M]
+  [IsManifold I ∞ M] [T2Space M]
+
+omit [NeZero (Module.finrank ℝ E)] in
+theorem abs_deriv_arcLength_le_of_abs_ricciTensor_le
+    {D : RealTimeInterval}
+    (S : SolutionOn (I := I) (M := M) D)
+    (hS : IsSolutionOn (I := I) S)
+    {a b t A : Real}
+    (hab : a ≤ b)
+    (ht : t ∈ D.regular)
+    (gamma : Real → M)
+    (hgamma : ContMDiff 𝓘(Real, Real) I 1 gamma)
+    (hvel : ∀ u ∈ Set.Icc a b,
+      mfderiv 𝓘(Real, Real) I gamma u (1 : Real) ≠ 0)
+    (hRic : ∀ u ∈ Set.Icc a b,
+      |ricciTensor (I := I) (S.base.metric t) (gamma u)
+          (mfderiv 𝓘(Real, Real) I gamma u (1 : Real))
+          (mfderiv 𝓘(Real, Real) I gamma u (1 : Real))| ≤
+        A * (S.base.metric t).inner (gamma u)
+          (mfderiv 𝓘(Real, Real) I gamma u (1 : Real))
+          (mfderiv 𝓘(Real, Real) I gamma u (1 : Real))) :
+    |deriv
+        (fun s ↦ Variation.arcLength
+          (I := I) (S.base.metric s) gamma a b) t| ≤
+      A * Variation.arcLength
+        (I := I) (S.base.metric t) gamma a b := by
+  let v : (u : Real) → TangentSpace I (gamma u) :=
+    fun u ↦ mfderiv 𝓘(Real, Real) I gamma u (1 : Real)
+  let G : Real → Real :=
+    fun u ↦ (S.base.metric t).inner (gamma u) (v u) (v u)
+  let Ric : Real → Real :=
+    fun u ↦ ricciTensor (I := I) (S.base.metric t) (gamma u) (v u) (v u)
+  let Q : Real → Real := fun u ↦ -Ric u / Real.sqrt (G u)
+  have hspeedInt : IntervalIntegrable (fun u ↦ Real.sqrt (G u))
+      MeasureTheory.volume a b := by
+    apply MeasureTheory.IntegrableOn.intervalIntegrable
+    rw [uIcc_of_le hab]
+    exact Geodesic.speedSqrt_integrableOn_Icc_of_C1 (S.base.metric t) hab hgamma.contMDiffOn
+  have hpoint : ∀ u ∈ Set.Icc a b, ‖Q u‖ ≤ A * Real.sqrt (G u) := by
+    intro u hu
+    have hGpos : 0 < G u :=
+      (S.base.metric t).pos (gamma u) (v u) (hvel u hu)
+    dsimp only [Q]
+    rw [Real.norm_eq_abs, abs_div, abs_neg, abs_of_nonneg (Real.sqrt_nonneg _),
+      div_le_iff₀ (Real.sqrt_pos.2 hGpos), mul_assoc, Real.mul_self_sqrt hGpos.le]
+    exact hRic u hu
+  have hbound := intervalIntegral.norm_integral_le_of_norm_le hab
+    (MeasureTheory.ae_of_all _ fun u hu ↦ hpoint u ⟨hu.1.le, hu.2⟩)
+    (hspeedInt.const_mul A)
+  have hderiv := pathLength_timeDeriv_of_ricciFlow S hS hab ht gamma hgamma hvel
+  rw [hderiv.deriv, Variation.arcLength, ← intervalIntegral.integral_const_mul]
+  simpa only [Real.norm_eq_abs, Q, Ric, G, v] using hbound
+
+omit [NeZero (Module.finrank ℝ E)] in
 theorem pathLength_deriv_ge
     {D : RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
@@ -274,115 +328,11 @@ theorem pathLength_deriv_ge
       deriv
         (fun s => Variation.arcLength (I := I) (S.base.metric s) γ a b)
         t := by
-  classical
-  let v : (u : Real) → TangentSpace I (γ u) :=
-    fun u => mfderiv 𝓘(Real, Real) I γ u (1 : Real)
-  let G : Real → Real :=
-    fun u => (S.base.metric t).inner (γ u) (v u) (v u)
-  let Ric : Real → Real :=
-    fun u => ricciTensor (I := I) (S.base.metric t) (γ u) (v u) (v u)
-  let Q : Real → Real := fun u => -Ric u / Real.sqrt (G u)
-  have hvLift : Continuous (fun u : Real =>
-      TotalSpace.mk' E (E := fun y : M => TangentSpace I y) (γ u) (v u)) := by
-    have h :=
-      DifferentialGeometry.Geometry.Riemannian.MFDerivAlongCurve.continuous_tangentMap_unitLift
-        (I := I) (M := M) (γ := γ) (by norm_num) hγ
-    simpa only [v, tangentMap] using h
-  have hGcont : ContinuousOn G (Set.Icc a b) := by
-    rw [continuousOn_iff_continuous_domRestrict]
-    have hbase : Continuous (fun u : ↥(Set.Icc a b) => γ (u : Real)) :=
-      hγ.continuous.comp continuous_subtype_val
-    have hvec : ∀ _i : Fin 2, Continuous (fun u : ↥(Set.Icc a b) =>
-        TotalSpace.mk' E (E := fun y : M => TangentSpace I y)
-          (γ (u : Real)) (v (u : Real))) :=
-      fun _i => hvLift.comp continuous_subtype_val
-    have heval :=
-      hS.smoothMetric.metricTensor_cont.eval_continuous
-        (P := ↥(Set.Icc a b))
-        (τ := fun _u => t)
-        (b := fun u => γ (u : Real))
-        continuous_const
-        (fun _u => D.regular_subset ht)
-        hbase
-        (v := fun _i u => v (u : Real))
-        hvec
-    refine heval.congr (fun u => ?_)
-    rw [Tensor0SBundle.metricTensorField_apply]
-    rfl
-  have hRicAtCont :
-      ContinuousOn
-        (fun u =>
-          S.ricciAt t (γ u) (vec2 (I := I) (v u) (v u)))
-        (Set.Icc a b) := by
-    rw [continuousOn_iff_continuous_domRestrict]
-    have hbase : Continuous (fun u : ↥(Set.Icc a b) => γ (u : Real)) :=
-      hγ.continuous.comp continuous_subtype_val
-    have hvec : ∀ _i : Fin 2, Continuous (fun u : ↥(Set.Icc a b) =>
-        TotalSpace.mk' E (E := fun y : M => TangentSpace I y)
-          (γ (u : Real)) (v (u : Real))) :=
-      fun _i => hvLift.comp continuous_subtype_val
-    have heval :=
-      hS.ricciCont.eval_continuous
-        (P := ↥(Set.Icc a b))
-        (τ := fun _u => t)
-        (b := fun u => γ (u : Real))
-        continuous_const
-        (fun _u => D.regular_subset ht)
-        hbase
-        (v := fun _i u => v (u : Real))
-        hvec
-    refine heval.congr (fun u => ?_)
-    simp only [SolutionOn.ricci, SolutionFamily.ricci_apply,
-      SolutionFamily.ricciAt]
-    change
-      metricRicciAt (I := I) (S.base.metric t) (γ (u : Real))
-          (fun _i : Fin 2 => v (u : Real)) =
-        metricRicciAt (I := I) (S.base.metric t) (γ (u : Real))
-          (vec2 (I := I) (v (u : Real)) (v (u : Real)))
-    congr 1
-    funext i
-    fin_cases i <;> rfl
-  have hRicCont : ContinuousOn Ric (Set.Icc a b) := by
-    refine hRicAtCont.congr (fun u hu => ?_)
-    simpa only [Ric, SolutionOn.ricciAt, SolutionFamily.ricciAt] using
-      (metricRicciAt_apply_eq_ricciTensor
-        (I := I) (S.base.metric t) (γ u) (v u) (v u)).symm
-  have hspeedCont : ContinuousOn (fun u => Real.sqrt (G u)) (Set.Icc a b) :=
-    Real.continuous_sqrt.comp_continuousOn hGcont
-  have hQcont : ContinuousOn Q (Set.Icc a b) := by
-    change ContinuousOn (fun u => -Ric u / Real.sqrt (G u)) (Set.Icc a b)
-    apply ContinuousOn.div hRicCont.neg hspeedCont
-    intro u hu
-    exact ne_of_gt (Real.sqrt_pos.2
-      ((S.base.metric t).pos (γ u) (v u) (hvel u hu)))
-  have hleftInt :
-      IntervalIntegrable (fun u => -A * Real.sqrt (G u))
-        MeasureTheory.volume a b :=
-    (continuousOn_const.mul hspeedCont).intervalIntegrable_of_Icc hab
-  have hrightInt :
-      IntervalIntegrable Q MeasureTheory.volume a b :=
-    hQcont.intervalIntegrable_of_Icc hab
-  have hpoint : ∀ u ∈ Set.Icc a b,
-      -A * Real.sqrt (G u) ≤ Q u := by
-    intro u hu
-    have hGpos : 0 < G u :=
-      (S.base.metric t).pos (γ u) (v u) (hvel u hu)
-    have hRicLe : Ric u ≤ A * G u :=
-      (le_abs_self (Ric u)).trans (by simpa only [Ric, G, v] using hRic u hu)
-    dsimp only [Q]
-    rw [le_div_iff₀ (Real.sqrt_pos.2 hGpos)]
-    rw [mul_assoc, Real.mul_self_sqrt (le_of_lt hGpos)]
-    linarith
-  have hmono :
-      (∫ u in a..b, -A * Real.sqrt (G u)) ≤
-        ∫ u in a..b, Q u :=
-    intervalIntegral.integral_mono_on hab hleftInt hrightInt hpoint
-  have hderiv :=
-    pathLength_timeDeriv_of_ricciFlow
-      (I := I) S hS hab ht γ hγ hvel
-  rw [hderiv.deriv, Variation.arcLength,
-    ← intervalIntegral.integral_const_mul]
-  simpa only [Q, Ric, G, v] using hmono
+  simpa only [neg_mul] using
+    (neg_le_of_abs_le (abs_deriv_arcLength_le_of_abs_ricciTensor_le
+      S hS hab ht γ hγ hvel hRic))
+
+end
 
 omit [IsManifold I 2 M] in
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup

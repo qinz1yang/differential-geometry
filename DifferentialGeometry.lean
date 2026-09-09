@@ -4178,6 +4178,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Index.Bas
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Variation.Second.Formula
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Variation.Second.Regularity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.Noncollapsing.FlowBall.Calabi
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.Noncollapsing.FlowBall.DistanceComparison
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Ray.InitialVector.ScaledAction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ReducedVolume.LowerBound.SliceLengthBound
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ReducedVolume.LowerBound.Slice

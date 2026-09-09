@@ -49,6 +49,20 @@ def arcLength (g : SmoothRiemannianMetric I M) (η : ℝ → M) (a b : ℝ) : �
         (mfderiv (𝓘(ℝ, ℝ)) I η t (1 : ℝ))
         (mfderiv (𝓘(ℝ, ℝ)) I η t (1 : ℝ)))
 
+omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
+    [T2Space M] [SigmaCompactSpace M] in
+theorem arcLength_mono_interval
+    (g : SmoothRiemannianMetric I M) (γ : ℝ → M)
+    {a b c d : ℝ} (hca : c ≤ a) (hab : a ≤ b) (hbd : b ≤ d)
+    (hInt : IntervalIntegrable
+      (fun t : ℝ ↦ Real.sqrt (g.inner (γ t)
+        (mfderiv 𝓘(ℝ, ℝ) I γ t (1 : ℝ))
+        (mfderiv 𝓘(ℝ, ℝ) I γ t (1 : ℝ)))) volume c d) :
+    arcLength g γ a b ≤ arcLength g γ c d := by
+  unfold arcLength
+  exact intervalIntegral.integral_mono_interval hca hab hbd
+    (ae_of_all _ fun _ ↦ Real.sqrt_nonneg _) hInt
+
 def speedSq
     (g : SmoothRiemannianMetric I M) (f : ℝ → ℝ → M) (s t : ℝ) : ℝ :=
   g.inner (f s t)
