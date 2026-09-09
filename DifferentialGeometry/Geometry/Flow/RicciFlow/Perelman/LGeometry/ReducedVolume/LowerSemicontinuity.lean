@@ -1,4 +1,5 @@
 import DifferentialGeometry.Analysis.Integration.Measure.Family.Decomposition
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Cost.Approximation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Cost.Continuity.JointParameters
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ReducedVolume.Basic
 import Mathlib.MeasureTheory.Constructions.BorelSpace.Order
@@ -103,63 +104,6 @@ private theorem lscAt_of_seq
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [NeZero (Module.finrank Real E)] in
-private theorem exists_cost_curve
-    [ConnectedSpace M]
-    (S : SolutionOn (I := I) (M := M) D)
-    (hS : IsSolutionOn (I := I) S) (T : Real) (x y : M)
-    (tau : Real) (htau : 0 < tau)
-    (hslab : Icc (T - tau) T ⊆ D.regular)
-    (A : Real) (hA : lCost S T x y tau < A) :
-    ∃ alpha : Real → M,
-      ContMDiff (modelWithCornersSelf Real Real) I 1 alpha ∧
-        alpha 0 = x ∧ alpha (Real.sqrt tau) = y ∧
-          lRegularizedAction S T alpha 0 (Real.sqrt tau) < A := by
-  let g := S.base.metric T
-  let : RiemannianBundle (TangentSpace I : M → Type _) :=
-    ⟨g.toRiemannianMetric⟩
-  let : IsContinuousRiemannianBundle E
-      (TangentSpace I : M → Type _) :=
-    ⟨g.inner, g.contMDiff.continuous, fun _ _ _ ↦ rfl⟩
-  have hxy : Manifold.riemannianEDist I x y < (⊤ : ENNReal) :=
-    lt_of_le_of_ne le_top
-      (DifferentialGeometry.Geometry.Riemannian.Exponential.riemannianEDist_ne_top
-        (I := I) x y)
-  obtain ⟨p, hp, _hlen⟩ :=
-    Manifold.exists_path_isContMDiffWithSittingInstants_of_riemannianEDist_lt
-      (I := I) hxy
-  let b : Real := Real.sqrt tau
-  have hb : 0 < b := by simpa only [b] using Real.sqrt_pos.2 htau
-  let alpha₀ : Real → M := fun s ↦ p.extend (s / b)
-  have halpha₀ : ContMDiff (modelWithCornersSelf Real Real) I 1 alpha₀ := by
-    apply hp.contMDiff.comp
-    rw [contMDiff_iff_contDiff]
-    fun_prop
-  have ha₀ : alpha₀ 0 = x := by
-    simp only [alpha₀, zero_div, Path.extend_zero]
-  have hb₀ : alpha₀ b = y := by
-    simp only [alpha₀, div_self hb.ne', Path.extend_one]
-  have hback : ∀ s ∈ Icc (0 : Real) b,
-      T - s ^ 2 ∈ Icc (T - tau) T := by
-    simpa only [b] using sqrt_back_mem (T := T) htau.le
-  have htime : Icc (T - tau) T ⊆ D.carrier :=
-    fun _ hr ↦ D.regular_subset (hslab hr)
-  obtain ⟨gamma, _m, _t, _p, _uLim, beta, _u, _hgamma, _hga, _hgb,
-      heq, _hmin, _htmono, _ht0, _htlast, _hsrc, _hrep, hbeta,
-      hbetaa, hbetab, _hsrcBeta, _hrepBeta, _hu, _huniformBeta, hbetaAct⟩ :=
-    exists_lRegularizedMinC1 (I := I) S hS T (T - tau) T 0 b hb.le htime hback
-      x y alpha₀ halpha₀ ha₀ hb₀ (fun s hs ↦ hslab (hback s hs))
-  have hgammaA : lRegularizedAction S T gamma 0 b < A := by
-    rw [heq, ← lCost_eq_regularity (I := I) S T x y tau htau.le]
-    exact hA
-  have hev : ∀ᶠ n in atTop, lRegularizedAction S T (beta n) 0 b < A :=
-    hbetaAct.eventually (Iio_mem_nhds hgammaA)
-  obtain ⟨n, hn⟩ := hev.exists
-  exact ⟨beta n, hbeta n, hbetaa n, by simpa only [b] using hbetab n,
-    by simpa only [b] using hn⟩
-
-attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
-  Tensor0SBundle.tangentSpaceNormedSpace in
-omit [NeZero (Module.finrank Real E)] in
 private theorem lCost_param_usc
     [ConnectedSpace M]
     (S : SolutionOn (I := I) (M := M) D)
@@ -171,7 +115,7 @@ private theorem lCost_param_usc
   apply uscAt_of_seq
   intro q hq A hA
   obtain ⟨alpha, halpha, hstart, hend, halphaA⟩ :=
-    exists_cost_curve (I := I) S hS T x y tau htau hslab A hA
+    exists_lRegularizedAction_lt_of_lCost_lt_of_preconnected S T x y tau htau A hA
   have hT : Tendsto (fun n ↦ (q n).1) atTop (nhds T) := by
     simpa only [Function.comp_def] using continuous_fst.continuousAt.tendsto.comp hq
   have hx : Tendsto (fun n ↦ (q n).2) atTop (nhds x) := by
@@ -194,7 +138,7 @@ private theorem lCost_y_usc
   apply uscAt_of_seq
   intro q hq A hA
   obtain ⟨alpha, halpha, hstart, hend, halphaA⟩ :=
-    exists_cost_curve (I := I) S hS T x y tau htau hslab A hA
+    exists_lRegularizedAction_lt_of_lCost_lt_of_preconnected S T x y tau htau A hA
   exact lCost_lt_event (I := I) S hS T (T - tau) T tau htau
     (fun _ hr ↦ D.regular_subset (hslab hr))
     (sqrt_back_mem (T := T) htau.le) x y alpha halpha hstart hend
