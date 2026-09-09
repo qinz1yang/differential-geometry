@@ -1,3 +1,5 @@
+import DifferentialGeometry.Geometry.Exponential.ConjugatePoint.CurvatureBound
+import DifferentialGeometry.Geometry.Exponential.Intrinsic.Agreement
 import DifferentialGeometry.Bundle.FiberBundleHausdorff
 import DifferentialGeometry.Analysis.Calculus.SmoothExtension.Curve
 import DifferentialGeometry.Geometry.Comparison.Convexity.Geodesic
@@ -451,5 +453,103 @@ theorem riemannianEDistOf_eq_of_pullback_extension
       exact hmetricPull (γ t) hm.le
     exact (not_lt_of_ge
       ((Manifold.riemannianEDist_le_pathELength hη hη0 hη1 zero_le_one).trans_eq hlenEq)) hlen
+
+section MinimizingVector
+
+variable {V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
+  [FiniteDimensional ℝ V] [NeZero (Module.finrank ℝ V)]
+  {J : Type*} [TopologicalSpace J] {I' : ModelWithCorners ℝ V J} [I'.Boundaryless]
+  {N : Type*} [TopologicalSpace N] [ChartedSpace J N] [IsManifold I' ∞ N] [T2Space N]
+
+theorem injective_mfderiv_expMap_minimizingVec_of_pullback_extension
+    (g : SmoothRiemannianMetric I' N) (p : N)
+    (gExt : SmoothRiemannianMetric 𝓘(ℝ, V) V)
+    (hcomplete : RiemannianMetricComplete gExt) {B K : ℝ}
+    (hdom : MapsTo (normalFrame g p) (Metric.closedBall (0 : V) B) (expDomain g p))
+    (hmetric : ∀ z : V, ‖z‖ ≤ B → ∀ v w : V,
+      gExt.inner z v w = g.inner (framedExpMap g p z)
+        (mfderiv 𝓘(ℝ, V) I' (framedExpMap g p) z v)
+        (mfderiv 𝓘(ℝ, V) I' (framedExpMap g p) z w))
+    (x y : V)
+    (hbudget : ENNReal.ofReal ‖x‖ + riemannianEDistOf gExt x y < ENNReal.ofReal B)
+    (hsmall : K * (riemannianEDistOf gExt x y).toReal ^ 2 < (Real.pi / 2) ^ 2)
+    (hcurv : ∀ z : V, ‖z‖ < B → ∀ v w : TangentSpace 𝓘(ℝ, V) z,
+      gExt.inner z (Geometry.Curvature.riemannOp
+        (Geometry.Connection.LeviCivita gExt) z v w w) v ≤
+        K * gExt.inner z v v * gExt.inner z w w) :
+    let : RiemannianBundle (TangentSpace 𝓘(ℝ, V) : V → Type _) :=
+      ⟨gExt.toRiemannianMetric⟩
+    let : IsContinuousRiemannianBundle V (TangentSpace 𝓘(ℝ, V) : V → Type _) :=
+      ⟨gExt.inner, gExt.contMDiff.continuous, by intro z v w; rfl⟩
+    let : EMetricSpace V := EMetricSpace.ofRiemannianMetric 𝓘(ℝ, V) V
+    let : IsRiemannianManifold 𝓘(ℝ, V) V := ⟨fun _ _ => rfl⟩
+    let : UniformSpace V := PseudoEMetricSpace.toUniformSpace
+    let : CompleteSpace V := hcomplete.complete
+    let hExt : IsMetricNorm gExt :=
+      fun z v => tensor0SBundle_enorm_eq_riemannianBundle_enorm gExt z v
+    Function.Injective (mfderiv 𝓘(ℝ, V) 𝓘(ℝ, V)
+      (fun u : V => expMap gExt x (show TangentSpace 𝓘(ℝ, V) x from u))
+      (minimizingVec gExt hExt x y : V)) := by
+  let : RiemannianBundle (TangentSpace 𝓘(ℝ, V) : V → Type _) :=
+    ⟨gExt.toRiemannianMetric⟩
+  let : IsContinuousRiemannianBundle V (TangentSpace 𝓘(ℝ, V) : V → Type _) :=
+    ⟨gExt.inner, gExt.contMDiff.continuous, by intro z v w; rfl⟩
+  let : EMetricSpace V := EMetricSpace.ofRiemannianMetric 𝓘(ℝ, V) V
+  let : IsRiemannianManifold 𝓘(ℝ, V) V := ⟨fun _ _ => rfl⟩
+  let : UniformSpace V := PseudoEMetricSpace.toUniformSpace
+  let : CompleteSpace V := hcomplete.complete
+  let hExt : IsMetricNorm gExt :=
+    fun z v => tensor0SBundle_enorm_eq_riemannianBundle_enorm gExt z v
+  let u := minimizingVec gExt hExt x y
+  let γ := minJoin gExt hExt x y
+  have hγ : ContDiffOn ℝ 1 γ (Icc (0 : ℝ) 1) :=
+    ((contMDiff_iff_contDiff.mp
+      (intrinsicGeodesic_contMDiff gExt hExt x u)).of_le (by decide)).contDiffOn
+  have hstart : γ 0 = x := minJoin_zero gExt hExt x y
+  have hlen : Manifold.pathELength 𝓘(ℝ, V) γ 0 1 < ENNReal.ofReal (B - ‖γ 0‖) := by
+    rw [hstart, minJoin_pathLen]
+    change ENNReal.ofReal (riemannianEDistOf gExt x y).toReal < _
+    apply lt_of_le_of_lt ENNReal.ofReal_toReal_le
+    have hB : ‖x‖ < B := (ENNReal.ofReal_lt_ofReal_iff'.mp
+      ((le_add_of_nonneg_right (show (0 : ℝ≥0∞) ≤ riemannianEDistOf gExt x y from bot_le)).trans_lt
+        hbudget)).1
+    have hb : ENNReal.ofReal ‖x‖ + ENNReal.ofReal (B - ‖x‖) = ENNReal.ofReal B := by
+      rw [← ENNReal.ofReal_add (norm_nonneg x) (sub_nonneg.mpr hB.le)]
+      congr 1
+      ring
+    have h := hbudget
+    rw [← hb] at h
+    exact (ENNReal.add_lt_add_iff_left ENNReal.ofReal_ne_top).mp h
+  have hfence : MapsTo γ (Icc (0 : ℝ) 1) (Metric.ball (0 : V) B) :=
+    curve_fenced g p (⊤ : Opens V) gExt (subset_univ _) hdom
+      (fun z hz => hmetric z hz) hγ hlen
+  have hradial : VolumeComparison.radialCurve gExt x (u : V) = γ :=
+    radialCurve_eq_intrinsicGeodesic gExt hExt x u
+  have huSq : gExt.inner x u u = (riemannianEDistOf gExt x y).toReal ^ 2 := by
+    have huLen : Real.sqrt (gExt.inner x u u) = (riemannianEDistOf gExt x y).toReal := by
+      simpa only [riemannianEDistOf, u] using minimizingVec_len gExt hExt x y
+    rw [← huLen]
+    exact (Real.sq_sqrt (metric_inner_self_nonneg gExt x u)).symm
+  have hxdom : (show TangentSpace 𝓘(ℝ, V) x from (u : V)) ∈ expDomain gExt x := by
+    rw [expDomain_eq_univ_of_completeSpace gExt hExt x]
+    exact mem_univ _
+  apply injective_mfderiv_expMap_of_curvature_upper_bound gExt x (u : V) hxdom hsmall
+  intro t ht v
+  rw [hradial]
+  have hz : ‖γ t‖ < B := by
+    simpa only [Metric.mem_ball, dist_zero_right] using hfence (Ioo_subset_Icc_self ht)
+  have hspeed : gExt.inner (γ t)
+      (Variation.curveVelocity γ t) (Variation.curveVelocity γ t) = gExt.inner x u u := by
+    simpa only [γ, minJoin, Variation.curveVelocity] using!
+      intrinsicGeodesic_speedSq_eq gExt hExt x u t
+  calc
+    _ ≤ K * gExt.inner (γ t) v v * gExt.inner (γ t)
+        (Variation.curveVelocity γ t) (Variation.curveVelocity γ t) :=
+      hcurv (γ t) hz v (Variation.curveVelocity γ t)
+    _ = (K * (riemannianEDistOf gExt x y).toReal ^ 2) * gExt.inner (γ t) v v := by
+      rw [hspeed, huSq]
+      ring
+
+end MinimizingVector
 
 end DifferentialGeometry.Geometry.Riemannian.NormalCoordinates
