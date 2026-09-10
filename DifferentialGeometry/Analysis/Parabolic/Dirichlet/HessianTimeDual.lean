@@ -1,7 +1,6 @@
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.GradientTimeRegularity
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.HessianH1
-import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletWeakPartialDual
-import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.TimeH1Multiplication
+import DifferentialGeometry.Analysis.Parabolic.Dirichlet.WeakSpatialDerivative
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.TimeMeasureRestrict
 
 noncomputable section
@@ -81,44 +80,23 @@ theorem IsWeakEvolutionSolution.exists_timeH1_weighted_hessian_dual
     hΩc.of_isClosed_subset isClosed_closure (hΩ₀Ω.trans subset_closure)
   have hΩ₀s : closure Ω₀ ⊆ toEuclidean (E := EuN) '' interior (extChartAt I_hs α).target :=
     hΩ₀Ω.trans (subset_closure.trans hΩs)
-  let R : H1ComplDirichlet q →L[ℝ] Lp ℝ 2 (volume.restrict Ω₀) :=
-    (chartRestrictionLp q α hΩ₀.measurableSet hΩ₀c
-      (hΩ₀s.trans (image_mono interior_subset)) 2).comp (H1ComplDirichletToLp q)
-  obtain ⟨L, _, hL⟩ := exists_lp_dual_weak_partial_eq_integral
-    q α hΩ₀ hΩ₀c hΩ₀s hc hcs j
   obtain ⟨z, hz⟩ := hu.exists_timeH1_localWeakPartial hXcont hacont
     α hΩ hΩc hΩs hXsmooth ht₀ ht₁ ht₀₁ hΩ₀ hΩ₀Ω i
-  obtain ⟨w, _, hw, _⟩ := exists_timeH1_comp_clm
-    (X := Lp ℝ 2 (volume.restrict Ω₀)) (Y := H1ComplDirichlet q →L[ℝ] ℝ) L z
-  let : Fact ((2 : ℝ≥0∞) ≠ ⊤) := ⟨by norm_num⟩
-  let : SecondCountableTopology (Lp ℝ 2 (volume.restrict Ω₀)) := Lp.SecondCountableTopology
-  obtain ⟨Q, hQ, _⟩ := Lp.exists_curry (by norm_num : (2 : ℝ≥0∞) ≠ ⊤) (H i j)
   have hI : Icc t₀ t₁ ⊆ Icc (0 : ℝ) T :=
     fun t ht => ⟨ht₀.le.trans ht.1, ht.2.trans ht₁.le⟩
   have hshift : MeasurePreserving (fun s : ℝ => t₀ + s)
       (timeMeasure (t₁ - t₀)) μ := measurePreserving_add_right_timeMeasure_restrict hI
-  refine ⟨w, ?_⟩
-  filter_upwards [hz, hshift.quasiMeasurePreserving.ae (hH i j),
-    hshift.quasiMeasurePreserving.ae hQ, ae_restrict_mem measurableSet_Icc]
-    with s hzs hHs hQs hs
-  have hweak : DeGiorgi.HasWeakPartialDeriv j (Q (t₀ + s)) (z.toFun s) Ω₀ := by
+  have hweak : ∀ᵐ s ∂timeMeasure (t₁ - t₀), DeGiorgi.HasWeakPartialDeriv j
+      (fun x => H i j (t₀ + s, x)) (z.toFun s) Ω₀ := by
+    filter_upwards [hz, hshift.quasiMeasurePreserving.ae (hH i j)] with s hzs hHs
     intro φ hφ hφc hφs
-    refine Eq.trans (integral_congr_ae ?_) ((hHs φ hφ hφc hφs).trans ?_)
-    · filter_upwards [hzs] with x hx
-      exact congrArg (· * fderiv ℝ φ x (EuclideanSpace.single j 1)) hx
-    · congr 1
-      apply integral_congr_ae
-      filter_upwards [hQs] with x hx
-      exact congrArg (· * φ x) hx.symm
-  intro v
-  rw [hw s hs]
-  refine (hL (z.toFun s) (Q (t₀ + s)) hweak v).trans ?_
-  apply integral_congr_ae
-  filter_upwards [hQs, chartRestrictionLp_coeFn q α hΩ₀.measurableSet hΩ₀c
-    (hΩ₀s.trans (image_mono interior_subset)) 2 (H1ComplDirichletToLp q v)] with x hx hRx
-  change Q (t₀ + s) x * c x * R v x = _
-  rw [hx]
-  exact congrArg (fun y => H i j (t₀ + s, x) * c x * y) hRx
+    refine (integral_congr_ae ?_).trans (hHs φ hφ hφc hφs)
+    filter_upwards [hzs] with x hx
+    exact congrArg (· * fderiv ℝ φ x (EuclideanSpace.single j 1)) hx
+  obtain ⟨w, hw, _⟩ := exists_timeH1_weighted_weak_partial_dual q α hΩ₀ hΩ₀c hΩ₀s
+    hc hcs j z (fun p => H i j (t₀ + p.1, p.2))
+    (hshift.quasiMeasurePreserving.ae ((Lp.memLp (H i j)).prodMk_left (by norm_num))) hweak
+  exact ⟨w, hw⟩
 
 theorem IsWeakEvolutionSolution.exists_timeH1_cutoff_hessian_mass_dual
     {q : SmoothRiemannianMetric I_hs M}
