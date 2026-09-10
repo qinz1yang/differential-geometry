@@ -63,14 +63,15 @@ private theorem chart_weak_partial_ibp_smooth
     (hR : R = (chartRestrictionLp q α hΩ.measurableSet hΩc
       (hΩs.trans (image_mono interior_subset)) 2).comp (H1ComplDirichletToLp q))
     (hD : D = dirichletLocalWeakPartialLp q α hΩ hΩc hΩs k) :
-    ∀ (u : H1ComplDirichlet q) (v : SmoothScalarDirichlet q),
-      -(∫ z in Ω, R u z * fderiv ℝ c z (EuclideanSpace.single k 1) * R (smoothToH1ComplDirichlet q v) z) -
-        (∫ z in Ω, R u z * c z * D (smoothToH1ComplDirichlet q v) z) = ∫ z in Ω, D u z * c z * R (smoothToH1ComplDirichlet q v) z := by
+    ∀ (f H : Lp ℝ 2 (volume.restrict Ω)),
+      DeGiorgi.HasWeakPartialDeriv k H f Ω → ∀ (v : SmoothScalarDirichlet q),
+      -(∫ z in Ω, f z * fderiv ℝ c z (EuclideanSpace.single k 1) * R (smoothToH1ComplDirichlet q v) z) -
+        (∫ z in Ω, f z * c z * D (smoothToH1ComplDirichlet q v) z) = ∫ z in Ω, H z * c z * R (smoothToH1ComplDirichlet q v) z := by
   have hcm : MemLp c ∞ (volume.restrict Ω) := hc.continuous.memLp_top_of_hasCompactSupport hcc _
   have hdcm : MemLp (fun z => fderiv ℝ c z (EuclideanSpace.single k 1)) ∞ (volume.restrict Ω) :=
     ((hc.continuous_fderiv (by simp)).clm_apply continuous_const).memLp_top_of_hasCompactSupport
       (hcc.fderiv_apply ℝ (EuclideanSpace.single k 1)) _
-  intro u v
+  intro f H hweak v
   let V := fun z => v.toFun ((extChartAt I_hs α).symm ((toEuclidean (E := EuN)).symm z))
   have hV : ContDiffOn ℝ (⊤ : ℕ∞) V Ω := by
     apply (scalarOnE_contDiffOn α v.smooth).comp (toEuclidean (E := EuN)).symm.contDiff.contDiffOn
@@ -82,13 +83,7 @@ private theorem chart_weak_partial_ibp_smooth
   have hψ : ContDiff ℝ (⊤ : ℕ∞) ψ :=
     (hc.contDiffOn.mul hV).contDiff_of_tsupport_subset hΩ hψs
   have hψc : HasCompactSupport ψ := hcc.mul_right
-  have hw := hasWeakPartialDeriv_dirichletLocalWeakPartialLp q α hΩ hΩc hΩs k u ψ hψ hψc hψs
-  have hRu : (R u : EuStd → ℝ) =ᵐ[volume.restrict Ω] fun z => H1ComplDirichletToLp q u
-      ((extChartAt I_hs α).symm ((toEuclidean (E := EuN)).symm z)) :=
-    by
-    rw [hR]
-    exact DifferentialGeometry.Integral.Measure.chartRestrictionLp_coeFn q α hΩ.measurableSet hΩc
-      (hΩs.trans (image_mono interior_subset)) 2 (H1ComplDirichletToLp q u)
+  have hw := hweak ψ hψ hψc hψs
   have hRv : (R (smoothToH1ComplDirichlet q v) : EuStd → ℝ) =ᵐ[volume.restrict Ω] V := by
     rw [hR]
     filter_upwards [DifferentialGeometry.Integral.Measure.chartRestrictionLp_coeFn q α hΩ.measurableSet hΩc
@@ -101,24 +96,22 @@ private theorem chart_weak_partial_ibp_smooth
     exact hvz
   have hDv := dirichletLocalWeakPartialLp_smoothToH1ComplDirichlet_coeFn q α hΩ hΩc hΩs k v
   rw [← hD] at hDv
-  rw [← hD] at hw
-  have hint₀ := MeasureTheory.integrable_weight_mul_lp _ hdcm (R u) (R (smoothToH1ComplDirichlet q v))
-  have hint₁ := MeasureTheory.integrable_weight_mul_lp c hcm (R u) (D (smoothToH1ComplDirichlet q v))
-  have heleft : (∫ z in Ω, R u z * fderiv ℝ c z (EuclideanSpace.single k 1) * R (smoothToH1ComplDirichlet q v) z) +
-      (∫ z in Ω, R u z * c z * D (smoothToH1ComplDirichlet q v) z) =
-      ∫ z in Ω, H1ComplDirichletToLp q u ((extChartAt I_hs α).symm ((toEuclidean (E := EuN)).symm z)) *
-        fderiv ℝ ψ z (EuclideanSpace.single k 1) := by
+  have hint₀ := MeasureTheory.integrable_weight_mul_lp _ hdcm f (R (smoothToH1ComplDirichlet q v))
+  have hint₁ := MeasureTheory.integrable_weight_mul_lp c hcm f (D (smoothToH1ComplDirichlet q v))
+  have heleft : (∫ z in Ω, f z * fderiv ℝ c z (EuclideanSpace.single k 1) * R (smoothToH1ComplDirichlet q v) z) +
+      (∫ z in Ω, f z * c z * D (smoothToH1ComplDirichlet q v) z) =
+      ∫ z in Ω, f z * fderiv ℝ ψ z (EuclideanSpace.single k 1) := by
     rw [← integral_add hint₀ hint₁]
     apply integral_congr_ae
-    filter_upwards [hRu, hRv, hDv, ae_restrict_mem hΩ.measurableSet] with z hzu hzv hzd hzΩ
-    rw [hzu, hzv, hzd]
+    filter_upwards [hRv, hDv, ae_restrict_mem hΩ.measurableSet] with z hzv hzd hzΩ
+    rw [hzv, hzd]
     have hdV := (hV.contDiffAt (hΩ.mem_nhds hzΩ)).differentiableAt (by simp)
     rw [show fderiv ℝ ψ z = c z • fderiv ℝ V z + V z • fderiv ℝ c z from
       fderiv_fun_mul (hc.differentiable (by simp) z) hdV]
     simp only [add_apply, smul_apply, smul_eq_mul]
     ring
-  have heright : (∫ z in Ω, D u z * c z * R (smoothToH1ComplDirichlet q v) z) =
-      ∫ z in Ω, D u z * ψ z := by
+  have heright : (∫ z in Ω, H z * c z * R (smoothToH1ComplDirichlet q v) z) =
+      ∫ z in Ω, H z * ψ z := by
     apply integral_congr_ae
     filter_upwards [hRv] with z hz
     rw [hz]
@@ -139,25 +132,26 @@ private theorem exists_chart_weak_partial_dual
     (hR : R = (chartRestrictionLp q α hΩ.measurableSet hΩc
       (hΩs.trans (image_mono interior_subset)) 2).comp (H1ComplDirichletToLp q))
     (hD : D = dirichletLocalWeakPartialLp q α hΩ hΩc hΩs k) :
-    ∀ u v : H1ComplDirichlet q,
-      -(∫ z in Ω, R u z * fderiv ℝ c z (EuclideanSpace.single k 1) * R v z) -
-        (∫ z in Ω, R u z * c z * D v z) = ∫ z in Ω, D u z * c z * R v z := by
+    ∀ (f H : Lp ℝ 2 (volume.restrict Ω)),
+      DeGiorgi.HasWeakPartialDeriv k H f Ω → ∀ v : H1ComplDirichlet q,
+      -(∫ z in Ω, f z * fderiv ℝ c z (EuclideanSpace.single k 1) * R v z) -
+        (∫ z in Ω, f z * c z * D v z) = ∫ z in Ω, H z * c z * R v z := by
   have hcm : MemLp c ∞ (volume.restrict Ω) := hc.continuous.memLp_top_of_hasCompactSupport hcc _
   have hdcm : MemLp (fun z => fderiv ℝ c z (EuclideanSpace.single k 1)) ∞ (volume.restrict Ω) :=
     ((hc.continuous_fderiv (by simp)).clm_apply continuous_const).memLp_top_of_hasCompactSupport
       (hcc.fderiv_apply ℝ (EuclideanSpace.single k 1)) _
-  intro u
+  intro f H hweak
   have hcontl : Continuous (fun v : H1ComplDirichlet q =>
-      -(∫ z in Ω, R u z * fderiv ℝ c z (EuclideanSpace.single k 1) * R v z) -
-      ∫ z in Ω, R u z * c z * D v z) :=
-    ((MeasureTheory.continuous_integral_weight_mul_lp _ hdcm (R u)).comp R.continuous).neg.sub
-      ((MeasureTheory.continuous_integral_weight_mul_lp c hcm (R u)).comp D.continuous)
-  have hcontr : Continuous (fun v : H1ComplDirichlet q => ∫ z in Ω, D u z * c z * R v z) :=
-    (MeasureTheory.continuous_integral_weight_mul_lp c hcm (D u)).comp R.continuous
+      -(∫ z in Ω, f z * fderiv ℝ c z (EuclideanSpace.single k 1) * R v z) -
+      ∫ z in Ω, f z * c z * D v z) :=
+    ((MeasureTheory.continuous_integral_weight_mul_lp _ hdcm f).comp R.continuous).neg.sub
+      ((MeasureTheory.continuous_integral_weight_mul_lp c hcm f).comp D.continuous)
+  have hcontr : Continuous (fun v : H1ComplDirichlet q => ∫ z in Ω, H z * c z * R v z) :=
+    (MeasureTheory.continuous_integral_weight_mul_lp c hcm H).comp R.continuous
   apply funext_iff.mp
   apply DenseRange.equalizer (denseRange_smoothToH1ComplDirichlet q) hcontl hcontr
   funext v
-  exact chart_weak_partial_ibp_smooth q α hΩ hΩc hΩs hc hcc hcs k R D hR hD u v
+  exact chart_weak_partial_ibp_smooth q α hΩ hΩc hΩs hc hcc hcs k R D hR hD f H hweak v
 
 private theorem exists_chart_weak_partial_dual_map
     (q : SmoothRiemannianMetric I_hs M) (α : M) {Ω : Set EuStd}
@@ -174,7 +168,8 @@ private theorem exists_chart_weak_partial_dual_map
       (∀ (f : Lp ℝ 2 (volume.restrict Ω)) (v : H1ComplDirichlet q),
         L f v = -(∫ z in Ω, f z * fderiv ℝ c z (EuclideanSpace.single k 1) * R v z) -
           ∫ z in Ω, f z * c z * D v z) ∧
-      ∀ u v : H1ComplDirichlet q, L (R u) v = ∫ z in Ω, D u z * c z * R v z := by
+      ∀ (f H : Lp ℝ 2 (volume.restrict Ω)),
+      DeGiorgi.HasWeakPartialDeriv k H f Ω → ∀ v : H1ComplDirichlet q, L f v = ∫ z in Ω, H z * c z * R v z := by
   have hcm : MemLp c ∞ (volume.restrict Ω) := hc.continuous.memLp_top_of_hasCompactSupport hcc _
   have hdcm : MemLp (fun z => fderiv ℝ c z (EuclideanSpace.single k 1)) ∞ (volume.restrict Ω) :=
     ((hc.continuous_fderiv (by simp)).clm_apply continuous_const).memLp_top_of_hasCompactSupport
@@ -205,8 +200,8 @@ private theorem exists_chart_weak_partial_dual_map
     change -L₀ f v - L₁ f v = _
     exact congrArg₂ (fun a b : ℝ => -a - b) (hL₀ f v) (hL₁ f v)
   refine ⟨-L₀ - L₁, hL, ?_⟩
-  intro u v
-  exact (hL (R u) v).trans (exists_chart_weak_partial_dual q α hΩ hΩc hΩs hc hcc hcs k R D hR hD u v)
+  intro f H hweak v
+  exact (hL f v).trans (exists_chart_weak_partial_dual q α hΩ hΩc hΩs hc hcc hcs k R D hR hD f H hweak v)
 
 theorem inner_eq_integral_chartPullback_mul
     (q : SmoothRiemannianMetric I_hs M) (α : M) {Ω : Set EuStd}
@@ -245,6 +240,30 @@ theorem inner_eq_integral_chartPullback_mul
   ring
 
 
+theorem exists_lp_dual_weak_partial_eq_integral
+    (q : SmoothRiemannianMetric I_hs M) (α : M) {Ω : Set EuStd}
+    (hΩ : IsOpen Ω) (hΩc : IsCompact (closure Ω))
+    (hΩs : closure Ω ⊆ toEuclidean (E := EuN) '' interior (extChartAt I_hs α).target)
+    {c : EuStd → ℝ} (hc : ContDiff ℝ (⊤ : ℕ∞) c)
+    (hcs : tsupport c ⊆ Ω)
+    (k : Fin (Module.finrank ℝ EuN)) :
+    let R : H1ComplDirichlet q →L[ℝ] Lp ℝ 2 (volume.restrict Ω) :=
+      (chartRestrictionLp q α hΩ.measurableSet hΩc
+        (hΩs.trans (image_mono interior_subset)) 2).comp (H1ComplDirichletToLp q)
+    let D : H1ComplDirichlet q →L[ℝ] Lp ℝ 2 (volume.restrict Ω) :=
+      dirichletLocalWeakPartialLp q α hΩ hΩc hΩs k
+    ∃ L : Lp ℝ 2 (volume.restrict Ω) →L[ℝ] H1ComplDirichlet q →L[ℝ] ℝ,
+      (∀ (f : Lp ℝ 2 (volume.restrict Ω)) (v : H1ComplDirichlet q),
+        L f v = -(∫ z in Ω, f z * fderiv ℝ c z (EuclideanSpace.single k 1) * R v z) -
+          ∫ z in Ω, f z * c z * D v z) ∧
+      ∀ (f H : Lp ℝ 2 (volume.restrict Ω)),
+        DeGiorgi.HasWeakPartialDeriv k H f Ω →
+        ∀ v : H1ComplDirichlet q, L f v = ∫ z in Ω, H z * c z * R v z := by
+  intro R D
+  have hcc : HasCompactSupport c :=
+    hΩc.of_isClosed_subset (isClosed_tsupport c) (hcs.trans subset_closure)
+  exact exists_chart_weak_partial_dual_map q α hΩ hΩc hΩs hc hcc hcs k R D rfl rfl
+
 theorem exists_lp_dual_weak_partial
     (q : SmoothRiemannianMetric I_hs M) (α : M) {Ω : Set EuStd}
     (hΩ : IsOpen Ω) (hΩc : IsCompact (closure Ω))
@@ -263,6 +282,17 @@ theorem exists_lp_dual_weak_partial
           ∫ z in Ω, f z * c z * D v z) ∧
       ∀ u v : H1ComplDirichlet q, L (R u) v = ∫ z in Ω, D u z * c z * R v z := by
   intro R D
-  exact exists_chart_weak_partial_dual_map q α hΩ hΩc hΩs hc hcc hcs k R D rfl rfl
+  obtain ⟨L, hL, hweak⟩ :=
+    exists_chart_weak_partial_dual_map q α hΩ hΩc hΩs hc hcc hcs k R D rfl rfl
+  refine ⟨L, hL, ?_⟩
+  intro u v
+  apply hweak (R u) (D u) ?_ v
+  intro ψ hψ hψc hψs
+  have hw := hasWeakPartialDeriv_dirichletLocalWeakPartialLp q α hΩ hΩc hΩs k u ψ hψ hψc hψs
+  rw [← hw]
+  apply integral_congr_ae
+  filter_upwards [chartRestrictionLp_coeFn q α hΩ.measurableSet hΩc
+    (hΩs.trans (image_mono interior_subset)) 2 (H1ComplDirichletToLp q u)] with z hz
+  exact congrArg (· * fderiv ℝ ψ z (EuclideanSpace.single k 1)) hz
 
 end DifferentialGeometry.Analysis.Laplacian.WithBoundary.Dirichlet
