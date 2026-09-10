@@ -2201,6 +2201,7 @@ import DifferentialGeometry.Geometry.Coordinates.Christoffel
 import DifferentialGeometry.Geometry.Coordinates.ChristoffelTensor
 import DifferentialGeometry.Geometry.Coordinates.ConnectionCoefficients
 import DifferentialGeometry.Geometry.Coordinates.CoordinateFrame
+import DifferentialGeometry.Topology.Manifold.BoundaryVectorField
 import DifferentialGeometry.Topology.Manifold.FunctionExtension
 import DifferentialGeometry.Topology.Manifold.InverseFunctionTheorem
 import DifferentialGeometry.Topology.Manifold.LocalDiffeomorphOpen
