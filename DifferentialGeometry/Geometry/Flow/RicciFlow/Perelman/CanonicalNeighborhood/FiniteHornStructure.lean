@@ -161,6 +161,10 @@ structure _root_.DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborho
     dist (inclusion y) (inclusion z) = dist y z
   outer_frontier : Set ambient
   frontier_eq : outer_frontier = frontier (Set.range inclusion) \ {ambient_end}
+  inclusion_isOpenEmbedding : Topology.IsOpenEmbedding inclusion
+  frontier_far : ∃ δ : ℝ, 0 < δ ∧ ∀ z ∈ outer_frontier, δ ≤ dist z ambient_end
+  deep_capture : ∃ δ : ℝ, 0 < δ ∧ ∀ z : ambient, z ≠ ambient_end →
+    dist z ambient_end < δ → z ∈ Set.range inclusion
   nonnegative : SecLower g 0 Set.univ
   curvature_diverges : ∀ C : ℝ, ∃ i, ∀ x ∈ subend i, C < metricScalarAt g x
   curvature_distance_lower : ∃ c : ℝ, 0 < c ∧ ∀ x ∈ subend 0,

@@ -47,7 +47,7 @@ structure MetricComparisonOn
     (h : ℝ → SmoothRiemannianMetric J N) (g : ℝ → SmoothRiemannianMetric I3 M)
     (F : N → M) (U : Set N) (times : Set ℝ) (order : ℕ) (eps : ℝ) where
   pullback : ℝ → Tensor0SField (I := J) (M := N) (n := ∞) 2
-  pullback_eq : ∀ s y (v : Fin 2 → TangentSpace J y),
+  pullback_eq : ∀ s, ∀ y ∈ U, ∀ (v : Fin 2 → TangentSpace J y),
     pullback s y v = (g s).inner (F y)
       (mfderiv J I3 F y (v 0)) (mfderiv J I3 F y (v 1))
   jet : ℕ → ℝ → Tensor0SField (I := J) (M := N) (n := ∞) 2

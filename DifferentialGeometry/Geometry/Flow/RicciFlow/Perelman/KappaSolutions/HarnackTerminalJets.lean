@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.HarnackLocalGeometry
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.TerminalShi
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.Derivatives.TerminalFromJets
 
 set_option autoImplicit false
 
@@ -11,7 +11,7 @@ open Bundle Filter
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.CheegerGromovCompactness
 open CanonicalNeighborhood
-open scoped Manifold ContDiff Topology
+open scoped Manifold ContDiff _root_.Topology
 
 universe u uE uH
 
@@ -82,7 +82,7 @@ theorem terminalCurvatureNormalizedFlowSeq_curvDerivNorm_bound_on_past_slice
     let g : SmoothRiemannianMetric I F.M := G.S.base.metric (s - 1)
     change riemannianEDistOf (I := I) g y y ≤ _
     exact (riemannianEDistOf_self (I := I) g y).le.trans bot_le
-  have hb := shi_local_curvDerivNorm_terminal_inclusive G.S G.isSolution
+  have hb := shi_local_curvDerivNorm_terminal_of_solution_jets G.S G.isSolution
     (by omega) (a := s - 1) (b := s) (K := 4) (R := 1)
     (by linarith) (by norm_num) (by norm_num) hcarrier hregular y hball hcurv
     m s ⟨by linarith, le_rfl⟩ y hcenter

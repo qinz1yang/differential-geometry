@@ -136,6 +136,7 @@ theorem ancientKappa_fixed_cylinder_deck_fibres {kappa : ℝ}
             q = p ∨ q = (antipodal p.1, 2 * c - p.2)))) := by
   classical
   let _ : ConnectedSpace F.M := hF.connected
+  let _ : PathConnectedSpace F.M := PathConnectedSpace.of_locallyPathConnectedSpace
   obtain ⟨rho, hinjective, hdeck, hfree, hnoTranslation⟩ :=
     ancientKappa_exists_cylinderDeckRepresentation F hF hdim T hT Psi hproduct
   constructor

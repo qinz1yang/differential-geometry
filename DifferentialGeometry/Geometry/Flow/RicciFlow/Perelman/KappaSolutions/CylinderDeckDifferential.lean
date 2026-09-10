@@ -21,6 +21,18 @@ private local instance cylinderDeckDifferentialSphereDimension :
     Fact (Module.finrank ℝ (EuclideanSpace ℝ (Fin 3)) = 2 + 1) :=
   ⟨by norm_num [finrank_euclideanSpace_fin]⟩
 
+private theorem cylinderDeck_two_coefficients {T t₀ t₁ S B L Q : ℝ}
+    (hdifferent : t₀ ≠ t₁)
+    (h₀ : 2 * (T - t₀) * S + L = 2 * (T - t₀) * B + Q)
+    (h₁ : 2 * (T - t₁) * S + L = 2 * (T - t₁) * B + Q) :
+    S = B ∧ L = Q := by
+  have hfactor : (t₁ - t₀) * (S - B) = 0 := by nlinarith [h₀, h₁]
+  have htime : t₁ - t₀ ≠ 0 := sub_ne_zero.mpr hdifferent.symm
+  have hsphere := sub_eq_zero.mp ((mul_eq_zero.mp hfactor).resolve_left htime)
+  refine ⟨hsphere, ?_⟩
+  rw [hsphere] at h₀
+  exact add_left_cancel h₀
+
 variable (Phi : (SphereTwo × ℝ) ≃ₘ⟮CylinderI, CylinderI⟯ (SphereTwo × ℝ))
   {T t₀ t₁ : ℝ} (hdifferent : t₀ ≠ t₁)
   (hmetric : ∀ t : ℝ, t = t₀ ∨ t = t₁ →
@@ -42,19 +54,8 @@ theorem cylinderDeck_mfderiv_block_inner (p : SphereTwo × ℝ)
       (sphereMetric).inner p.1 v w ∧
     (mfderiv CylinderI CylinderI Phi p (v, a)).2 *
         (mfderiv CylinderI CylinderI Phi p (w, c)).2 = a * c := by
-  have h₀ := hmetric t₀ (Or.inl rfl) p v w a c
-  have h₁ := hmetric t₁ (Or.inr rfl) p v w a c
-  have hfactor : (t₁ - t₀) *
-      ((sphereMetric).inner (Phi p).1
-          (mfderiv CylinderI CylinderI Phi p (v, a)).1
-          (mfderiv CylinderI CylinderI Phi p (w, c)).1 -
-        (sphereMetric).inner p.1 v w) = 0 := by
-    nlinarith [h₀, h₁]
-  have htime : t₁ - t₀ ≠ 0 := sub_ne_zero.mpr hdifferent.symm
-  have hsphere := sub_eq_zero.mp ((mul_eq_zero.mp hfactor).resolve_left htime)
-  refine ⟨hsphere, ?_⟩
-  rw [hsphere] at h₀
-  exact add_left_cancel h₀
+  exact cylinderDeck_two_coefficients hdifferent
+    (hmetric t₀ (Or.inl rfl) p v w a c) (hmetric t₁ (Or.inr rfl) p v w a c)
 
 theorem cylinderDeck_mfderiv_preserves_factors (p : SphereTwo × ℝ)
     (v : TangentSpace (𝓡 2) p.1) (a : ℝ) :
@@ -120,7 +121,7 @@ theorem cylinderDeck_mfderiv_block_norms (p : SphereTwo × ℝ)
       (0 : TangentSpace (𝓡 2) p.1) a a
   refine ⟨congrArg Real.sqrt hhorizontal.1, ?_⟩
   apply (sq_eq_sq_iff_abs_eq_abs _ _).mp
-  simpa only [pow_two] using hvertical.2
+  convert hvertical.2 using 1 <;> simp only [pow_two]
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
 

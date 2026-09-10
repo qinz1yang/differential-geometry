@@ -371,7 +371,11 @@ structure ModelComparison (eps : Real)
   base_map : F p = x
   pullback : Real → Tensor0SBundle.Tensor0SField (𝕜 := Real) (E := E) (H := H)
     (I := I) (M := N) (n := (∞ : WithTop ℕ∞)) 2
-  pullback_apply : ∀ (s : Real) (y : N) (v : Fin 2 → TangentSpace I y),
+
+
+
+
+  pullback_apply : ∀ (s : Real) (y : N), y ∈ F.source → ∀ (v : Fin 2 → TangentSpace I y),
     pullback s y v =
       (ghat s).inner (F y)
         (mfderiv I I (F : N → M) y (v 0)) (mfderiv I I (F : N → M) y (v 1))

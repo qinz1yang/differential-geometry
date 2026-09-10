@@ -279,7 +279,9 @@ theorem witnessSourceBallCapture_on_window
         W.model.basepoint (modelRadius (1 / 4)) := by
       simpa only [modelRadius_quarter] using hy
     have hlower := (W.comparison.metric_equivalence s hswin y hywin v).1
-    rw [W.comparison.pullback_apply] at hlower
+    rw [W.comparison.pullback_apply s y (W.comparison.buffered_ball_subset
+      (riemannianClosedBallOf_mono (I := I) _ _ (by linarith) hywin))]
+      at hlower
     have hnonneg := inner_self_nonneg (I := I) (witnessGhat (I := I) W s)
       (W.embedding y) (mfderiv I I (W.embedding : W.model.M → M) y v)
     change (1 - (1 / 4 : ℝ)) * (W.model.S.base.metric s).inner y v v ≤

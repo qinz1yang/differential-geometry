@@ -345,7 +345,7 @@ private theorem chartNabla2RicComponent_eq [I.Boundaryless]
 open DifferentialGeometry.CheegerGromovCompactness
 
 omit [FiniteDimensional ℝ E] in
-private theorem mapCInfConvergence_scalar_binopOn {W : Set E} (hW : IsOpen W)
+theorem mapCInfConvergence_scalar_binopOn {W : Set E} (hW : IsOpen W)
     (B : ℝ × ℝ → ℝ) (hB : ContDiff ℝ ∞ B)
     {f h : ℕ → E → ℝ} {f₀ h₀ : E → ℝ}
     (hf : MapCInfConvergenceOnCompacts W f f₀) (hh : MapCInfConvergenceOnCompacts W h h₀)
@@ -359,7 +359,7 @@ private theorem mapCInfConvergence_scalar_binopOn {W : Set E} (hW : IsOpen W)
     (fun _ _ _ => Set.mem_univ _)
 
 omit [FiniteDimensional ℝ E] in
-private theorem mapCInfConvergence_sumOn {J : Type*} {W : Set E} (hW : IsOpen W) (s : Finset J)
+theorem mapCInfConvergence_sumOn {J : Type*} {W : Set E} (hW : IsOpen W) (s : Finset J)
     {f : J → ℕ → E → ℝ} {f₀ : J → E → ℝ}
     (hf : ∀ i, MapCInfConvergenceOnCompacts W (f i) (f₀ i))
     (hfc : ∀ i n, ContDiffOn ℝ ∞ (f i n) W) (hf₀c : ∀ i, ContDiffOn ℝ ∞ (f₀ i) W) :

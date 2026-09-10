@@ -1,4 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.MetricEvent
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryExtension
 
 noncomputable section
 
@@ -70,3 +71,125 @@ theorem extinct_trace {T : ℝ} (h : H.extinctAt T) : H.cutCapTrace.extinct := h
 end FiniteSurgeryHistory
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery
+
+noncomputable section
+open Set
+
+namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
+
+universe u
+
+
+
+abbrev FiniteSurgeryHistory :=
+  {H : ObservedHistory.{u} // 0 < H.eventCount ∧ H.horizon = H.time (Fin.last H.eventCount)}
+
+namespace ObservedHistory
+
+variable (H : ObservedHistory.{u})
+
+
+theorem restrict_last_eventCount :
+    (H.restrict (H.stageTime (Fin.last H.eventCount))).eventCount = H.eventCount := by
+  rw [restrict_eventCount, stageTime, activeStage_at_time]
+  rfl
+
+
+theorem eventCount_pos_of_final_empty [Nonempty (H.stage 0).Carrier]
+    [IsEmpty (H.stage (Fin.last H.eventCount)).Carrier] : 0 < H.eventCount := by
+  apply Nat.pos_of_ne_zero
+  intro hn
+  have he : Fin.last H.eventCount = (0 : Fin (H.eventCount + 1)) := Fin.ext hn
+  have hne : Nonempty (H.stage (Fin.last H.eventCount)).Carrier := he ▸ inferInstance
+  exact not_nonempty_iff.mpr inferInstance hne
+
+
+theorem last_time_pos (hn : 0 < H.eventCount) : 0 < H.time (Fin.last H.eventCount) := by
+  rw [← H.time_zero]
+  exact H.time_strictMono (by simpa only [Fin.lt_def, Fin.val_zero, Fin.val_last] using hn)
+
+
+
+def toFiniteHistory (hn : 0 < H.eventCount) : FiniteSurgeryHistory.{u} := by
+  let F := H.restrict (H.stageTime (Fin.last H.eventCount))
+  have hc : F.eventCount = H.eventCount := H.restrict_last_eventCount
+  refine ⟨F, hc ▸ hn, ?_⟩
+  change H.time (Fin.last H.eventCount) =
+    H.time (Fin.castLE _ (Fin.last F.eventCount))
+  congr 1
+  exact Fin.ext hc.symm
+
+
+@[simp] theorem toFiniteHistory_eventCount (hn : 0 < H.eventCount) :
+    (H.toFiniteHistory hn).1.eventCount = H.eventCount := H.restrict_last_eventCount
+
+
+@[simp] theorem toFiniteHistory_horizon (hn : 0 < H.eventCount) :
+    (H.toFiniteHistory hn).1.horizon = H.time (Fin.last H.eventCount) := rfl
+
+
+theorem toFiniteHistory_finalStage (hn : 0 < H.eventCount) :
+    (H.toFiniteHistory hn).1.stage (Fin.last (H.toFiniteHistory hn).1.eventCount) =
+      H.stage (Fin.last H.eventCount) := by
+  change H.stage (Fin.castLE _ (Fin.last (H.toFiniteHistory hn).1.eventCount)) = _
+  apply congrArg H.stage
+  exact Fin.ext (H.toFiniteHistory_eventCount hn)
+
+
+theorem toFiniteHistory_isPrefixOf (hn : 0 < H.eventCount) :
+    (H.toFiniteHistory hn).1.IsPrefixOf H := H.restrict_isPrefixOf _
+
+
+
+
+theorem toFiniteHistory_discards
+    (hn : 0 < H.eventCount) (D : OrientedThreeStage.{u} → Prop)
+    (hD : ∀ i : Fin H.eventCount, D (H.event i).discarded) :
+    ∀ i : Fin (H.toFiniteHistory hn).1.eventCount,
+      D ((H.toFiniteHistory hn).1.event i).discarded := by
+  intro i
+  exact hD (Fin.castLE _ i)
+
+
+
+theorem exists_extinct_finiteHistory [Nonempty (H.stage 0).Carrier]
+    [IsEmpty (H.stage (Fin.last H.eventCount)).Carrier] :
+    ∃ F : FiniteSurgeryHistory.{u},
+      F.1 = H.restrict (H.stageTime (Fin.last H.eventCount)) ∧
+      F.1.eventCount = H.eventCount ∧
+      F.1.horizon = H.time (Fin.last H.eventCount) ∧
+      0 < F.1.horizon ∧ F.1.horizon ≤ H.horizon ∧
+      IsEmpty (F.1.stage (Fin.last F.1.eventCount)).Carrier := by
+  let hn := H.eventCount_pos_of_final_empty
+  refine ⟨H.toFiniteHistory hn, rfl, H.toFiniteHistory_eventCount hn, rfl,
+    H.last_time_pos hn, H.time_le_horizon, ?_⟩
+  rw [H.toFiniteHistory_finalStage hn]
+  infer_instance
+
+end ObservedHistory
+
+namespace InitialIdentification
+
+variable {P : OrientedThreeStage.{u}} {g : P.Metric} {H : ObservedHistory.{u}}
+
+
+
+theorem initial_nonempty (A : InitialIdentification P g H) [Nonempty P.Carrier] :
+    Nonempty (H.stage 0).Carrier := Nonempty.map A.map inferInstance
+
+
+def toFiniteHistory (A : InitialIdentification P g H) (hn : 0 < H.eventCount) :
+    InitialIdentification P g (H.toFiniteHistory hn).1 := A.restrict _
+
+
+@[simp] theorem toFiniteHistory_map (A : InitialIdentification P g H)
+    (hn : 0 < H.eventCount) : (A.toFiniteHistory hn).map = A.map := rfl
+
+
+theorem toFiniteHistory_isPrefixOf (A : InitialIdentification P g H)
+    (hn : 0 < H.eventCount) : (A.toFiniteHistory hn).IsPrefixOf A :=
+  A.restrict_isPrefixOf _
+
+end InitialIdentification
+
+end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology

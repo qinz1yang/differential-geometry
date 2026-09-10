@@ -240,7 +240,7 @@ theorem modelComparison_metricUniformEquivalentOn
   have hpb : (witnessPullbackMetric (I := I) F ghat s).inner y v v =
       C.pullback s (y : N) (fun _ => v) := by
     rw [witnessPullbackMetric, openPullbackMetric_inner]
-    exact (C.pullback_apply s (y : N) (fun _ => v)).symm
+    exact (C.pullback_apply s (y : N) y.2 (fun _ => v)).symm
   have href : (witnessModelMetric (I := I) F h s).inner y v v =
       (h s).inner (y : N) v v := rfl
   have hnn : 0 ≤ (h s).inner (y : N) v v := metricSelfNonneg (I := I) (h s) (y : N) v
@@ -287,7 +287,7 @@ theorem modelComparison_metricCovDerivOrderBoundOn
         (ghat s).inner ((F : N → M) (z : N))
           (mfderiv I I (F : N → M) (z : N) (slots 0))
           (mfderiv I I (F : N → M) (z : N) (slots 1)) := fun z slots =>
-    C.pullback_apply s (z : N) slots
+    C.pullback_apply s (z : N) z.2 slots
   rw [witnessPullbackMetric, witnessModelMetric,
     openPullback_metricCovDerivNorm (I := I) F (sourceOpen (I := I) F)
       (sourceOpen_subset F) (h s) (ghat s) (C.pullback s) hP (b + 1) y]

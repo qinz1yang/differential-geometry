@@ -128,13 +128,13 @@ theorem collar_pathELength_bounds (C : CylinderReference)
     intro s hs v
     rw [Real.sq_sqrt (sub_nonneg.mpr heps1)]
     have hh := (cmp.equivalence 0 hzero (gamma s) (hU s ⟨hs.1.le, hs.2.le⟩) v).1
-    rwa [hmetric, cmp.pullback_eq] at hh
+    rwa [hmetric, cmp.pullback_eq 0 (gamma s) (hU s ⟨hs.1.le, hs.2.le⟩)] at hh
   · apply metricPathELength_map_le (C.metric 0) (g 0) (F : Cylinder → M)
       (Real.sqrt_nonneg _) hgamma hFd
     intro s hs v
     rw [Real.sq_sqrt (by linarith : 0 ≤ 1 + eps)]
     have hh := (cmp.equivalence 0 hzero (gamma s) (hU s ⟨hs.1.le, hs.2.le⟩) v).2
-    rwa [hmetric, cmp.pullback_eq] at hh
+    rwa [hmetric, cmp.pullback_eq 0 (gamma s) (hU s ⟨hs.1.le, hs.2.le⟩)] at hh
 
 theorem collar_crossing_length_lower (C : CylinderReference)
     (g : ℝ → SmoothRiemannianMetric I3 M) (F : PartialDiffeomorph IC I3 Cylinder M ∞)

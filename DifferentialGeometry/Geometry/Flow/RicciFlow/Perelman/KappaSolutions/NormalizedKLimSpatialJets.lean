@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.NormalizedKLimGeometry
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.TerminalShi
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.Derivatives.TerminalFromJets
 
 set_option autoImplicit false
 
@@ -11,7 +11,7 @@ open Bundle Filter Manifold
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.CheegerGromovCompactness
 open CanonicalNeighborhood
-open scoped Manifold ContDiff Topology ENNReal
+open scoped Manifold ContDiff _root_.Topology ENNReal
 
 universe u uE uH
 
@@ -91,7 +91,7 @@ theorem exists_normalized_klim_spatial_jet_constants
   have hcenter : riemannianEDistOf (I := I) (F.S.base.metric (s - 1)) y y ≤
       ENNReal.ofReal (Real.sqrt K / (2 * Real.sqrt K)) :=
     (riemannianEDistOf_self (I := I) (F.S.base.metric (s - 1)) y).le.trans bot_le
-  have hb := shi_local_curvDerivNorm_terminal_inclusive F.S F.isSolution
+  have hb := shi_local_curvDerivNorm_terminal_of_solution_jets F.S F.isSolution
     hK.dimension_ge_two (a := s - 1) (b := s) (K := K) (R := Real.sqrt K)
     (by linarith) hKpos hsqrt hcarrier hregular y hball hcurv
     m s ⟨by linarith, le_rfl⟩ y hcenter

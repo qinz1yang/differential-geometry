@@ -1,5 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.ModelWitness
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.ScalarNoncollapse
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.Noncollapsing.Parabolic
 import DifferentialGeometry.Geometry.Curvature.Metric.Defs
 import Mathlib.Data.EReal.Basic
 import DifferentialGeometry.Geometry.Exponential.NormalCoordinates.Framed
@@ -138,7 +139,7 @@ theorem local_metric_injectivity [I.Boundaryless] [NeZero (Module.finrank ℝ E)
 omit [CompleteSpace E] in
 theorem parabolic_noncollapse_of_spatial {D : RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D) {rho : ℝ}
-    (h : SpatialNoLocalCollapsing S rho) : NoLocalCollapsing S rho :=
-  noLocalCollapsing_of_spatial h
+    (h : SpatialNoLocalCollapsing S rho) : ParabolicNoLocalCollapsing S rho :=
+  parabolicNoLocalCollapsing_of_spatial h
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn

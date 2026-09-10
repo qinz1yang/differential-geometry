@@ -52,7 +52,7 @@ theorem collar_ball_subset_image (C : CylinderReference)
     (hball.trans (hslab.trans hsource)) ?_).trans (image_mono hball)
   intro y hy v
   have hlower := (cmp.equivalence 0 hzero y (hslab (hball hy)) v).1
-  rw [hmetric, cmp.pullback_eq] at hlower
+  rw [hmetric, cmp.pullback_eq 0 y (hslab (hball hy))] at hlower
   have hh := inner_self_nonneg (I := IC) (C.metric 0) y v
   have hg := inner_self_nonneg (I := I3) (g 0) (F y) (mfderiv IC I3 (F : Cylinder → M) y v)
   nlinarith [mul_nonneg (sub_nonneg.mpr heps) hh]

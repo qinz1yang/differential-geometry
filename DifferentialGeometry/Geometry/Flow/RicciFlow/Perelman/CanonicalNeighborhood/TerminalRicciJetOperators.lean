@@ -75,7 +75,7 @@ private theorem chartGram_jet2_det_ne (g : SmoothRiemannianMetric I M) (p : M)
   rw [heq]
   exact (chartGramMatrix_det_pos (I := I) g p hbase).ne'
 
-private theorem mapCInfConvergence_chartJetOperator
+theorem mapCInfConvergence_chartJetOperator
     (g : ℕ → SmoothRiemannianMetric I M) (ginf : SmoothRiemannianMetric I M)
     (p : M) {W : Set E} (hW : IsOpen W) (hWt : W ⊆ (extChartAt I p).target)
     (hgram : ∀ i j : Fin (Module.finrank ℝ E), MapCInfConvergenceOnCompacts W

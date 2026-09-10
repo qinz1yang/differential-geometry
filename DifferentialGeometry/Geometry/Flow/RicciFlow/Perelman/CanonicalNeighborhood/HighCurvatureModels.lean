@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.AncientExtension
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.EntropyBounds
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.ClosedBadPointSelection
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.SelectedCountersequenceAdapter
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.Reconstruction.RiemannFromRicci
 
 set_option autoImplicit false
@@ -53,52 +53,12 @@ theorem strict_model_witness_open (S : SolutionOn (I := I3) (M := M) D)
   sorry
 
 
-structure ClosedModelHypotheses (S : SolutionOn (I := I3) (M := M) D)
-    (kappa sigma : ℝ) (Phi : ℝ → ℝ) : Prop where
-  isSolution : IsSolutionOn S
-  complete : ∀ s ∈ D.carrier, RiemannianMetricComplete (S.base.metric s)
-  curvature : ∀ a b : ℝ, a ≤ b → Set.Icc a b ⊆ D.carrier →
-    ∃ C : ℝ, ∀ s ∈ Set.Icc a b, ∀ x, FlowMetricBall.rmNormSq S s x ≤ C
-  pinching : PhiAlmostNonnegative S D.carrier Phi
-  noncollapse : SpatiallyKappaNoncollapsedBelowScale S kappa sigma
-
-omit [T2Space M] [SigmaCompactSpace M] in
-theorem closed_bad_point_selection
-    (S : SolutionOn (I := I3) (M := M) D) (o : TangentOrientationSection M)
-    {eps kappa T K depth : ℝ} (hdepth : 0 ≤ depth)
-    (hwindow : Set.Icc 0 T ⊆ D.carrier)
-    (hK : ∀ y s, s ∈ Set.Icc 0 T → S.scalar s y ≤ K)
-    {xhat : M} {that : ℝ} (hthat : 1 ≤ that) (hthatT : that ≤ T)
-    (hQhat : 0 < S.scalar that xhat) (hdepthQ : depth ≤ S.scalar that xhat / 4)
-    (hbad : ¬ OrientedWitness S o eps kappa xhat that) :
-    ∃ x t, ¬ OrientedWitness S o eps kappa x t ∧
-      S.scalar that xhat ≤ S.scalar t x ∧ t ∈ Set.Icc (1 / 2) that ∧
-      depth / S.scalar t x ≤ 1 / 4 ∧
-      Set.Icc (t - depth / S.scalar t x) t ⊆ D.carrier ∧
-      ∀ y s, s ∈ Set.Icc (t - depth / S.scalar t x) t →
-        2 * S.scalar t x ≤ S.scalar s y → OrientedWitness S o eps kappa y s := by
-  exact exists_closed_window_bad_point S o hdepth hwindow hK hthat hthatT hQhat hdepthQ hbad
-
-def ModelRadiusWorksClosed (eps kappa sigma : ℝ) (Phi : ℝ → ℝ) (r : ℝ) : Prop :=
-  ∀ (M : Type u) [TopologicalSpace M] [ChartedSpace ThreeSpace M]
-    [IsManifold I3 ∞ M] [T2Space M] [SigmaCompactSpace M]
-    (o : TangentOrientationSection M) (T : ℝ) (hT : 1 ≤ T)
-    (S : SolutionOn (I := I3) (M := M) (RealTimeInterval.closed 0 T (by linarith))),
-    ClosedModelHypotheses S kappa sigma Phi → ∀ x t, t ∈ Set.Icc 1 T →
-      r⁻¹ ^ 2 ≤ S.scalar t x → OrientedWitness S o eps kappa x t
-
-
-structure SelectedCountersequence (eps kappa sigma : ℝ) (Phi : ℝ → ℝ)
-    extends NormalizedSequence.{u} eps kappa sigma Phi where
-  bad : ∀ i, ¬ OrientedWitness (term i).S (orientation i) eps kappa (term i).basepoint 0
-
 theorem selected_countersequence_of_radius_failure {eps small kappa sigma : ℝ} {Phi : ℝ → ℝ}
     (heps : 0 < eps) (heps1 : eps < 1) (hsmall : 0 < small) (hs : small ≤ eps)
-    (hkappa : 0 < kappa) (hsigma : 0 < sigma) (hPhi : AdmissiblePinchingFunction Phi)
     (failure : ∀ r : ℝ, 0 < r → r ≤ Real.sqrt eps →
       ¬ ModelRadiusWorksClosed.{u} eps kappa sigma Phi r) :
     Nonempty (SelectedCountersequence.{u} small kappa sigma Phi) := by
-  sorry
+  exact selected_countersequence_of_radius_failure' heps heps1 hsmall hs failure
 
 theorem witness_of_ancient_extension {eps kappa sigma : ℝ} {Phi : ℝ → ℝ}
     (heps : 0 < eps) (heps1 : eps < 1)
@@ -143,7 +103,7 @@ theorem abstract_model_theorem {eps kappa sigma : ℝ} {Phi : ℝ → ℝ}
   have hsmall : 0 < min eps e := lt_min heps he
   exact hno (min eps e) hsmall ((min_le_left _ _).trans_lt heps1) (min_le_right _ _)
     (selected_countersequence_of_radius_failure heps heps1 hsmall (min_le_left _ _)
-      hkappa hsigma hPhi failure)
+      failure)
 
 structure BlowupLimit (S : SolutionOn (I := I3) (M := M) D)
     (o : TangentOrientationSection M) (kappa : ℝ) (x : ℕ → M) (t : ℕ → ℝ) where
