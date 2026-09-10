@@ -3151,6 +3151,7 @@ import DifferentialGeometry.Topology.ThreeManifold.Closed
 import DifferentialGeometry.Topology.Diffeomorph.Collar
 import DifferentialGeometry.Topology.Diffeomorph.Extension
 import DifferentialGeometry.Topology.Diffeomorph.Fiberwise
+import DifferentialGeometry.Topology.Diffeomorph.BoundaryFlow
 import DifferentialGeometry.Topology.Diffeomorph.Flow
 import DifferentialGeometry.Topology.Diffeomorph.Graph
 import DifferentialGeometry.Topology.Diffeomorph.LocalizedGraph
