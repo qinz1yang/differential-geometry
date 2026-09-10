@@ -14,6 +14,7 @@ private theorem exists_contDiff_boundary_tangent_unit_field_near_compact
     ∃ Y : (Fin (n + 1) → ℝ) → (Fin (n + 1) → ℝ),
       ContDiff ℝ ∞ Y ∧ HasCompactSupport Y ∧ tsupport Y ⊆ W ∧
       (∀ z, z 0 = 0 → Y z 0 = 0) ∧
+      (∀ z, 0 ≤ fderiv ℝ g z (Y z) ∧ fderiv ℝ g z (Y z) ≤ 1) ∧
       ∃ N, IsOpen N ∧ B ⊆ N ∧ N ⊆ W ∧
         ∀ z ∈ N, fderiv ℝ g z (Y z) = 1 := by
   let F : ℝ × (Fin (n + 1) → ℝ) → ℝ := fun p => g p.2 - p.1
@@ -42,16 +43,42 @@ private theorem exists_contDiff_boundary_tangent_unit_field_near_compact
   have hYs : tsupport Y ⊆ W := by
     intro z hz
     exact hVs (tsupport_comp_subset_preimage V hι.continuous hz)
-  refine ⟨Y, hV.comp hι, hYc, hYs, ?_, ι ⁻¹' U, hU.preimage hι.continuous, ?_, ?_, ?_⟩
-  · intro z hz
-    exact hVb (ι z) hz
-  · intro z hz
-    exact hKU ⟨z, hz, rfl⟩
-  · intro z hz
-    exact hUW hz
-  · intro z hz
+  let N := ι ⁻¹' U
+  have hN : IsOpen N := hU.preimage hι.continuous
+  have hBN : B ⊆ N := fun z hz => hKU ⟨z, hz, rfl⟩
+  have hNW : N ⊆ W := fun _ hz => hUW hz
+  have hYrate : ∀ z ∈ N, fderiv ℝ g z (Y z) = 1 := by
+    intro z hz
     simpa only [Y, Function.comp_def, F, ι, sub_zero, deriv_const_sub_id, neg_neg] using
       hrate (ι z) hz
+  obtain ⟨C, _, hBC, hCN⟩ := exists_compact_between hB hN hBN
+  obtain ⟨ψ, hψone, hψzero, hψrange⟩ :=
+    exists_contMDiffMap_one_nhds_of_subset_interior 𝓘(ℝ, Fin (n + 1) → ℝ)
+      hB.isClosed hBC (n := ⊤)
+  obtain ⟨Q, hQ, hBQ, hQone⟩ := eventually_nhdsSet_iff_exists.mp hψone
+  let Z := fun z => ψ z • Y z
+  have hψ : ContDiff ℝ ∞ ψ := contMDiff_iff_contDiff.mp ψ.contMDiff
+  have hs : Function.support Z ⊆ Function.support Y := by
+    intro z hz hy
+    exact hz (by simp only [Z, hy, smul_zero])
+  have hZrate (z) : fderiv ℝ g z (Z z) = ψ z := by
+    by_cases hzero : ψ z = 0
+    · simp only [Z, hzero, zero_smul, map_zero]
+    · have hzC : z ∈ C := by
+        by_contra hn
+        exact hzero (hψzero z hn)
+      simp only [Z, map_smul, hYrate z (hCN hzC), smul_eq_mul, mul_one]
+  refine ⟨Z, hψ.smul (hV.comp hι), hYc.mono hs,
+    (closure_mono hs).trans hYs, ?_, ?_, Q ∩ N, hQ.inter hN,
+    Set.subset_inter hBQ hBN, (fun _ hz => hNW hz.2), ?_⟩
+  · intro z hz
+    change ψ z * V (ι z) 0 = 0
+    rw [hVb (ι z) hz, mul_zero]
+  · intro z
+    rw [hZrate]
+    exact hψrange z
+  · intro z hz
+    rw [hZrate, hQone z hz.1]
 
 
 private theorem fderiv_collar_velocity_eq_one
@@ -104,6 +131,7 @@ theorem exists_contDiff_boundary_tangent_vector_field_eq_collar_velocity
     ∃ Y : (Fin (n + 1) → ℝ) → (Fin (n + 1) → ℝ),
       ContDiff ℝ ∞ Y ∧ HasCompactSupport Y ∧ tsupport Y ⊆ W ∧
       (∀ x, x 0 = 0 → Y x 0 = 0) ∧
+      (∀ x, 0 ≤ fderiv ℝ g x (Y x) ∧ fderiv ℝ g x (Y x) ≤ 1) ∧
       ∃ U P : Set (Fin (n + 1) → ℝ), IsOpen U ∧
         B ∪ Φ '' (A ×ˢ Set.Icc (-ε) ε) ⊆ U ∧ U ⊆ W ∧
         (∀ x ∈ U, fderiv ℝ g x (Y x) = 1) ∧
@@ -131,7 +159,7 @@ theorem exists_contDiff_boundary_tangent_vector_field_eq_collar_velocity
     rcases hx with hx | hx
     · exact hboundary x hx hz
     · exact (hplane x hx hz).elim
-  obtain ⟨Y₀, hY₀, hY₀c, hY₀s, hY₀b, U, hU, hBTU, hUW, hY₀rate⟩ :=
+  obtain ⟨Y₀, hY₀, hY₀c, hY₀s, hY₀b, hY₀bound, U, hU, hBTU, hUW, hY₀rate⟩ :=
     exists_contDiff_boundary_tangent_unit_field_near_compact hg (hB.union hT) hW
       (Set.union_subset hBW hTW) hreg hbdy
   obtain ⟨V, hV, hVc, hVt, O, hO, hTO, hOt, hVO⟩ :=
@@ -155,17 +183,7 @@ theorem exists_contDiff_boundary_tangent_vector_field_eq_collar_velocity
     have hxC : x ∉ C := fun h => hn (Or.inl h)
     have hxY : x ∉ tsupport Y₀ := fun h => hn (Or.inr h)
     exact hx (by simp [Y, hχzero x hxC, image_eq_zero_of_notMem_tsupport hxY])
-  refine ⟨Y, (hχ.smul hV).add ((contDiff_const.sub hχ).smul hY₀),
-    (hC.union hY₀c.isCompact).of_isClosed_subset (isClosed_tsupport Y) hYC,
-    hYC.trans (Set.union_subset (fun _ hx => hUW (hCOU hx).2) hY₀s),
-    ?_, U, Q ∩ O ∩ U, hU, hBTU, hUW, ?_,
-    (hQ.inter hO).inter hU, Set.subset_inter (Set.subset_inter hTQ hTO) hTU,
-    (fun _ hx => ⟨hx.2, hOt hx.1.2⟩), ?_⟩
-  · intro x hx
-    have hxC : x ∉ C := fun h => (hCsub h).2 hx
-    simp only [Y, hχzero x hxC, zero_smul, sub_zero, one_smul, zero_add]
-    exact hY₀b x hx
-  · intro x hx
+  have hYrate (x) (hx : x ∈ U) : fderiv ℝ g x (Y x) = 1 := by
     by_cases hzero : χ x = 0
     · simpa only [Y, hzero, zero_smul, sub_zero, one_smul, zero_add] using hY₀rate x hx
     · have hxC : x ∈ C := by
@@ -176,6 +194,24 @@ theorem exists_contDiff_boundary_tangent_vector_field_eq_collar_velocity
         exact hXrate x (hOt (hCOU hxC).1)
       simp only [Y, map_add, map_smul, hrate, hY₀rate x hx, smul_eq_mul, mul_one]
       ring
+  refine ⟨Y, (hχ.smul hV).add ((contDiff_const.sub hχ).smul hY₀),
+    (hC.union hY₀c.isCompact).of_isClosed_subset (isClosed_tsupport Y) hYC,
+    hYC.trans (Set.union_subset (fun _ hx => hUW (hCOU hx).2) hY₀s),
+    ?_, ?_, U, Q ∩ O ∩ U, hU, hBTU, hUW, hYrate,
+    (hQ.inter hO).inter hU, Set.subset_inter (Set.subset_inter hTQ hTO) hTU,
+    (fun _ hx => ⟨hx.2, hOt hx.1.2⟩), ?_⟩
+  · intro x hx
+    have hxC : x ∉ C := fun h => (hCsub h).2 hx
+    simp only [Y, hχzero x hxC, zero_smul, sub_zero, one_smul, zero_add]
+    exact hY₀b x hx
+  · intro x
+    by_cases hzero : χ x = 0
+    · simpa only [Y, hzero, zero_smul, sub_zero, one_smul, zero_add] using hY₀bound x
+    · have hxC : x ∈ C := by
+        by_contra hn
+        exact hzero (hχzero x hn)
+      rw [hYrate x (hCOU hxC).2]
+      exact ⟨zero_le_one, le_rfl⟩
   · intro x hx
     simp only [Y, hQone x hx.1.1, one_smul, sub_self, zero_smul, add_zero]
     exact hVO hx.1.2
