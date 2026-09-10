@@ -9,6 +9,22 @@ namespace MeasureTheory
 
 variable {α : Type*} [MeasurableSpace α] {μ : Measure α}
 
+theorem Lp.integral_add_apply
+    {X Y : Type*} [NormedAddCommGroup X] [NormedSpace ℝ X]
+    [NormedAddCommGroup Y] [NormedSpace ℝ Y]
+    (L₁ L₂ : Lp (X →L[ℝ] Y) 2 μ) (u : Lp X 2 μ) :
+    (∫ t, (L₁ + L₂) t (u t) ∂μ) =
+      (∫ t, L₁ t (u t) ∂μ) + ∫ t, L₂ t (u t) ∂μ := by
+  have hint (L : Lp (X →L[ℝ] Y) 2 μ) : Integrable (fun t => L t (u t)) μ := by
+    apply ((Lp.memLp L).norm.integrable_mul (Lp.memLp u).norm).mono'
+    · exact (ContinuousLinearMap.apply ℝ Y).aestronglyMeasurable_comp₂
+        (Lp.aestronglyMeasurable u) (Lp.aestronglyMeasurable L)
+    · exact Eventually.of_forall fun t => (L t).le_opNorm (u t)
+  rw [← integral_add (hint L₁) (hint L₂)]
+  apply integral_congr_ae
+  filter_upwards [Lp.coeFn_add L₁ L₂] with t ht
+  exact congrArg (fun L : X →L[ℝ] Y => L (u t)) ht
+
 theorem continuous_integral_weight_mul_lp (c : α → ℝ) (hc : MemLp c ∞ μ)
     (f : Lp ℝ 2 μ) :
     Continuous (fun g : Lp ℝ 2 μ => ∫ z, f z * c z * g z ∂μ) := by

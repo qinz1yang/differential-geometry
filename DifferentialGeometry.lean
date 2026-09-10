@@ -4798,6 +4798,8 @@ import DifferentialGeometry.Analysis.InnerProductSpace.SpectralRank
 import DifferentialGeometry.Analysis.Integration.Lp.BilinearForm
 import DifferentialGeometry.Analysis.Integration.Lp.Multiplication
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.GradientEnergy
+import DifferentialGeometry.Analysis.Parabolic.Dirichlet.CutoffForcing
+import DifferentialGeometry.Analysis.Parabolic.Dirichlet.CutoffScalarSource
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.GradientFluxBound
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.SourceFormula
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.GradientMassPairing
@@ -4930,6 +4932,8 @@ import DifferentialGeometry.Analysis.Parabolic.Dirichlet.HessianH1
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.HessianTimeDual
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.HessianSourceDual
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.HessianTimeEquation
+import DifferentialGeometry.Analysis.Parabolic.Dirichlet.HessianScalarSource
+import DifferentialGeometry.Analysis.Parabolic.Dirichlet.FourthWeakDerivative
 import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletChartMassPairing
 import DifferentialGeometry.Analysis.Integration.Lp.Curry
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.MixedTimeSpatialRegularity

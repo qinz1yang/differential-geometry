@@ -133,7 +133,8 @@ theorem exists_lp_h1ComplDirichlet_chartPullback_mul_of_weak_partials
     (hweak : ∀ i, ∀ᵐ t ∂μ, DeGiorgi.HasWeakPartialDeriv i (fun z => W i (t, z))
       (P t : EuStd → ℝ) Ω) :
     ∃ v : Lp (H1ComplDirichlet q) 2 μ, ∀ᵐ t ∂μ,
-      (H1ComplDirichletToLp q (v t) : M → ℝ) =ᵐ[riemannianVolumeMeasure (I := I_hs) (M := M) q]
+      (H1ComplDirichletToLp q (v t) : M → ℝ) =ᵐ[
+        riemannianVolumeMeasure (I := I_hs) (M := M) q]
         chartPullback I_hs α (fun z => η z * P t z) := by
   obtain ⟨L, hL, A, hA⟩ := exists_chartPullback_mul_lift q α hΩ hΩc hΩs hη hηc hηs
   obtain ⟨v, hv⟩ := exists_lp_lift_of_weak_partials hΩ (H1ComplDirichletToLp q).continuous
@@ -156,8 +157,7 @@ theorem exists_lp_h1ComplDirichlet_chartPullback_mul_of_joint_weak_partials
     (hweak : ∀ k, ∀ᵐ t ∂μ, DeGiorgi.HasWeakPartialDeriv k
       (fun z => K k (t, z)) (fun z => H (t, z)) Ω) :
     ∃ v : Lp (H1ComplDirichlet q) 2 μ, ∀ᵐ t ∂μ,
-      (H1ComplDirichletToLp q (v t) : M → ℝ) =ᵐ[
-        riemannianVolumeMeasure (I := I_hs) (M := M) q]
+      (H1ComplDirichletToLp q (v t) : M → ℝ) =ᵐ[riemannianVolumeMeasure (I := I_hs) (M := M) q]
         chartPullback I_hs α (fun z => η z * H (t, z)) := by
   let : Fact ((2 : ℝ≥0∞) ≠ ⊤) := ⟨by norm_num⟩
   let : SecondCountableTopology (Lp ℝ 2 (volume.restrict Ω)) := Lp.SecondCountableTopology
@@ -178,6 +178,36 @@ theorem exists_lp_h1ComplDirichlet_chartPullback_mul_of_joint_weak_partials
   by_cases hz' : z ∈ tsupport η
   · exact congrArg (fun r => η z * r) (hz (hηs hz'))
   · simp only [image_eq_zero_of_notMem_tsupport hz', zero_mul]
+
+theorem ae_dirichletLocalWeakPartialLp_eq_of_chartPullback_mul
+    {Z : Type*} [MeasurableSpace Z] {μ : Measure Z}
+    (q : SmoothRiemannianMetric I_hs M) (α : M) {Ω : Set EuStd}
+    (hΩ : IsOpen Ω) (hΩc : IsCompact (closure Ω))
+    (hΩs : closure Ω ⊆ toEuclidean (E := EuN) '' interior (extChartAt I_hs α).target)
+    (v : Z → H1ComplDirichlet q) {H K : Z × EuStd → ℝ} {η : EuStd → ℝ}
+    (hv : ∀ᵐ t ∂μ,
+      (H1ComplDirichletToLp q (v t) : M → ℝ) =ᵐ[riemannianVolumeMeasure (I := I_hs) (M := M) q]
+        chartPullback I_hs α (fun z => η z * H (t, z)))
+    (hH : MemLp H 2 (μ.prod (volume.restrict Ω)))
+    (hK : MemLp K 2 (μ.prod (volume.restrict Ω)))
+    (j : Fin (Module.finrank ℝ EuN))
+    (hweak : ∀ᵐ t ∂μ, DeGiorgi.HasWeakPartialDeriv j
+      (fun z => K (t, z)) (fun z => H (t, z)) Ω)
+    (hη : ContDiff ℝ (⊤ : ℕ∞) η) :
+    ∀ᵐ t ∂μ,
+      (dirichletLocalWeakPartialLp q α hΩ hΩc hΩs j (v t) : EuStd → ℝ) =ᵐ[volume.restrict Ω]
+        fun z => η z * K (t, z) + fderiv ℝ η z (EuclideanSpace.single j 1) * H (t, z) := by
+  filter_upwards [hv, hweak, hH.prodMk_left (by norm_num), hK.prodMk_left (by norm_num)]
+    with t hvt hwt hHt hKt
+  have hHt' := hHt.locallyIntegrable (by norm_num : (1 : ℝ≥0∞) ≤ 2)
+  have hKt' := hKt.locallyIntegrable (by norm_num : (1 : ℝ≥0∞) ≤ 2)
+  have hdη : Continuous (fun z => fderiv ℝ η z (EuclideanSpace.single j 1)) :=
+    (hη.continuous_fderiv (by simp)).clm_apply continuous_const
+  exact dirichletLocalWeakPartialLp_eq_ae_of_coeFn_eq_chartPullback
+    q α hΩ hΩc hΩs (v t) hvt j
+    ((LocallyIntegrable.continuous_mul hη.continuous hKt').add
+      (LocallyIntegrable.continuous_mul hdη hHt'))
+    (hwt.mul_smooth hΩ hη hHt' hKt')
 
 theorem ae_dirichletLocalWeakPartialLp_eq_of_chartPullback_mul_localWeakPartial
     {Z : Type*} [MeasurableSpace Z] {μ : Measure Z}
