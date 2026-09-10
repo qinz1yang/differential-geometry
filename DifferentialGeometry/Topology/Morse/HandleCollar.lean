@@ -1,5 +1,6 @@
 import DifferentialGeometry.Topology.Morse.Attachment.ManifoldHandle
 import DifferentialGeometry.Topology.Handle.Embedding
+import DifferentialGeometry.Topology.Handle.Collar
 import DifferentialGeometry.Topology.Embedding.LocalDiffeomorph
 
 open scoped ContDiff Manifold Topology
@@ -290,6 +291,121 @@ private theorem exists_product_interval_subset {X : Type*}
       simpa only [Metric.mem_ball, dist_zero_right, Real.norm_eq_abs] using habs)
     exact hUV ⟨hU (Set.mem_univ p), htV⟩
 
+private theorem modelHandleRoundMap_eq_modelHandleMap_of_flat
+    {n k : ℕ} (hk : k ≤ n) {ε r δ θ : ℝ}
+    (hε : 0 < ε) (hδ : 0 < δ) (hθ : 0 < θ) (hr : 0 < r)
+    (p : StandardHandle k (n - k))
+    (hflatδ : ‖p.2.val‖ ^ 2 < 1 - δ / r ^ 2)
+    (hflatθ : ‖p.2.val‖ ^ 2 < 1 - θ / r ^ 2) :
+    modelHandleRoundMap hk ε r δ θ p = modelHandleMap hk ε r p := by
+  have hnorm : ‖p.1.val‖ ^ 2 ≤ 1 := by
+    have hneg : -1 ≤ ‖p.1.val‖ := by linarith [norm_nonneg p.1.val]
+    simpa using sq_le_sq' hneg p.1.property
+  have hq := modelRoundCapQ_eq_r2b_of_flat hε hδ hθ hr hnorm
+    (sq_nonneg ‖p.2.val‖) hflatδ hflatθ
+  have hpos : (Real.sqrt (modelRoundCapQ ε r δ θ (‖p.1.val‖ ^ 2) (‖p.2.val‖ ^ 2)) /
+      ‖p.2.val‖) • p.2.val = r • p.2.val := by
+    by_cases hv : p.2.val = 0
+    · simp [hv]
+    · have hne : ‖p.2.val‖ ≠ 0 := norm_ne_zero_iff.mpr hv
+      have hsqrt : Real.sqrt (r ^ 2 * ‖p.2.val‖ ^ 2) = r * ‖p.2.val‖ := by
+        rw [← mul_pow, Real.sqrt_sq (mul_nonneg hr.le (norm_nonneg _))]
+      rw [hq, hsqrt]
+      congr 1
+      exact mul_div_cancel_right₀ r hne
+  simp only [modelHandleRoundMap, modelHandleMap, hpos]
+
+private theorem flat_collar_time_mem {ε r Δ b : ℝ}
+    (hε : 0 < ε) (hΔ : 0 < Δ) (hb0 : 0 ≤ b) (hb1 : b ≤ 1)
+    (s : Set.Ico (0 : ℝ) 1) (hs : s.val < Δ / (2 * ε + r ^ 2)) :
+    (2 * ε + r ^ 2 * b) * (2 * s.val - s.val ^ 2) / 2 ∈ Set.Ioo (-Δ) Δ := by
+  let B := 2 * ε + r ^ 2 * b
+  let C := 2 * ε + r ^ 2
+  have hB : 0 < B := by dsimp [B]; positivity
+  have hC : 0 < C := by dsimp [C]; positivity
+  have hBC : B ≤ C := by
+    dsimp [B, C]
+    nlinarith [mul_le_mul_of_nonneg_left hb1 (sq_nonneg r)]
+  have hs0 : 0 ≤ s.val := s.property.1
+  have hs1 : s.val < 1 := s.property.2
+  have hCs : C * s.val < Δ := by
+    have h := (lt_div_iff₀ hC).mp hs
+    simpa only [mul_comm] using h
+  have hτ0 : 0 ≤ B * (2 * s.val - s.val ^ 2) / 2 := by
+    have hprod : 0 ≤ s.val * (2 - s.val) := mul_nonneg hs0 (by linarith)
+    exact div_nonneg (mul_nonneg hB.le (by nlinarith)) (by norm_num)
+  have hτs : B * (2 * s.val - s.val ^ 2) / 2 ≤ B * s.val := by
+    nlinarith [mul_nonneg hB.le (sq_nonneg s.val)]
+  have hBs : B * s.val ≤ C * s.val := mul_le_mul_of_nonneg_right hBC hs0
+  exact ⟨by change -Δ < B * (2 * s.val - s.val ^ 2) / 2; linarith,
+    lt_of_le_of_lt (hτs.trans hBs) hCs⟩
+
+private theorem flat_collar_parameter_inverse {ε r b : ℝ}
+    (hε : 0 < ε) (hb0 : 0 ≤ b) (s : Set.Ico (0 : ℝ) 1) :
+    1 - Real.sqrt (1 -
+      2 * ((2 * ε + r ^ 2 * b) * (2 * s.val - s.val ^ 2) / 2) /
+        (2 * ε + r ^ 2 * b)) = s.val := by
+  have hB : 2 * ε + r ^ 2 * b ≠ 0 := by positivity
+  have he : 1 -
+      2 * ((2 * ε + r ^ 2 * b) * (2 * s.val - s.val ^ 2) / 2) /
+        (2 * ε + r ^ 2 * b) = (1 - s.val) ^ 2 := by
+    field_simp [hB]
+    ring
+  rw [he, Real.sqrt_sq (by linarith [s.property.2] : 0 ≤ 1 - s.val)]
+  ring
+
+private theorem handleRoundEmbedding_attachingCollar_eq_cocore_collar_of_flat
+    {n k : ℕ} (hk : k ≤ n) (c ε r δ θ : ℝ)
+    {H : Type} [TopologicalSpace H] {M : Type} [TopologicalSpace M] [ChartedSpace H M]
+    {I : ModelWithCorners ℝ (MorseModel n) H} {f : M → ℝ}
+    (data : MorseChart n k hk c I f)
+    (hε : 0 < ε) (hδ : 0 < δ) (hθ : 0 < θ) (hr : 0 < r)
+    (Δ : ℝ) (hΔ : 0 < Δ)
+    (Φ : OpenPartialHomeomorph ((CellBoundary k × EuclideanSpace ℝ (Fin (n - k))) × ℝ) M)
+    (hformula : ∀ p, Φ p = data.χ (recombine hk
+      (Real.sqrt (2 * ε + r ^ 2 * ‖p.1.2‖ ^ 2 - 2 * p.2) • p.1.1.val) (r • p.1.2)))
+    (hwidth : ∀ (p : AttachingRegion k (n - k)) (t : ℝ), t ∈ Set.Ioo (-Δ) Δ →
+      ((p.1, p.2.val), t) ∈ Φ.source)
+    (hheight : ∀ p ∈ Φ.source, f (Φ p) = c - ε + p.2)
+    (p : AttachingRegion k (n - k)) (s : Set.Ico (0 : ℝ) 1)
+    (hflatδ : ‖p.2.val‖ ^ 2 < 1 - δ / r ^ 2)
+    (hflatθ : ‖p.2.val‖ ^ 2 < 1 - θ / r ^ 2)
+    (hs : s.val < Δ / (2 * ε + r ^ 2)) :
+    let τ := (2 * ε + r ^ 2 * ‖p.2.val‖ ^ 2) * (2 * s.val - s.val ^ 2) / 2
+    let q : StandardHandle k (n - k) := (Handle.attachingCollar k (n - k)) (p, s)
+    τ ∈ Set.Ioo (-Δ) Δ ∧
+      ((p.1, p.2.val), τ) ∈ Φ.source ∧
+      handleRoundEmbedding hk c ε r δ θ data q = Φ ((p.1, p.2.val), τ) ∧
+      Φ.symm (handleRoundEmbedding hk c ε r δ θ data q) = ((p.1, p.2.val), τ) ∧
+      f (handleRoundEmbedding hk c ε r δ θ data q) = c - ε + τ ∧
+      1 - Real.sqrt (1 - 2 * τ / (2 * ε + r ^ 2 * ‖p.2.val‖ ^ 2)) = s.val := by
+  let τ := (2 * ε + r ^ 2 * ‖p.2.val‖ ^ 2) * (2 * s.val - s.val ^ 2) / 2
+  let q : StandardHandle k (n - k) := (Handle.attachingCollar k (n - k)) (p, s)
+  have hq : q = (Homotopy.radialStep k (Homotopy.icoToI s)
+      (cellBoundaryInclusion k p.1), p.2) := Handle.attachingCollar_apply k (n - k) p s
+  have hq₁ : q.1.val = (1 - s.val) • p.1.val := by rw [hq]; rfl
+  have hq₂ : q.2 = p.2 := by rw [hq]
+  have hb1 : ‖p.2.val‖ ^ 2 ≤ 1 := by
+    have hneg : -1 ≤ ‖p.2.val‖ := by linarith [norm_nonneg p.2.val]
+    simpa using sq_le_sq' hneg p.2.property
+  have hτ := flat_collar_time_mem hε hΔ (sq_nonneg ‖p.2.val‖) hb1 s hs
+  have hsource := hwidth p τ hτ
+  have hB : 0 ≤ 2 * ε + r ^ 2 * ‖p.2.val‖ ^ 2 := by positivity
+  have hsqrt : Real.sqrt (2 * ε + r ^ 2 * ‖p.2.val‖ ^ 2 - 2 * τ) =
+      Real.sqrt (2 * ε + r ^ 2 * ‖p.2.val‖ ^ 2) * (1 - s.val) := by
+    have he : 2 * ε + r ^ 2 * ‖p.2.val‖ ^ 2 - 2 * τ =
+        (2 * ε + r ^ 2 * ‖p.2.val‖ ^ 2) * (1 - s.val) ^ 2 := by dsimp [τ]; ring
+    rw [he, Real.sqrt_mul hB, Real.sqrt_sq (by linarith [s.property.2])]
+  have hagree : handleRoundEmbedding hk c ε r δ θ data q = Φ ((p.1, p.2.val), τ) := by
+    rw [handleRoundEmbedding, modelHandleRoundMap_eq_modelHandleMap_of_flat hk hε hδ hθ hr q
+      (by simpa only [hq₂] using hflatδ) (by simpa only [hq₂] using hflatθ), hformula]
+    congr 1
+    dsimp only [modelHandleMap]
+    rw [hq₁, hq₂, smul_smul, hsqrt]
+  exact ⟨hτ, hsource, hagree, by rw [hagree, Φ.left_inv hsource],
+    by rw [hagree]; exact hheight _ hsource,
+    flat_collar_parameter_inverse hε (sq_nonneg ‖p.2.val‖) s⟩
+
 section Ambient
 
 variable {n k : ℕ} (hk : k ≤ n) (c ε r : ℝ)
@@ -411,12 +527,23 @@ theorem exists_cocore_collar (hr : r ≠ 0) (hε : 0 < ε)
         (∀ (p : AttachingRegion k (n - k)) (t : ℝ), t ∈ Set.Ioo (-δ) δ →
           ((p.1, p.2.val), t) ∈ Φ.source) ∧
         (∀ p : AttachingRegion k (n - k),
-          Φ ((p.1, p.2.val), 0) = (cocoreAttachingEmbedding hk c ε r data hε hR.le p).val) := by
+          Φ ((p.1, p.2.val), 0) = (cocoreAttachingEmbedding hk c ε r data hε hR.le p).val) ∧
+        (∀ (δ₁ θ : ℝ), 0 < δ₁ → 0 < θ → 0 < r →
+          ∀ (p : AttachingRegion k (n - k)) (s : Set.Ico (0 : ℝ) 1),
+            ‖p.2.val‖ ^ 2 < 1 - δ₁ / r ^ 2 →
+            ‖p.2.val‖ ^ 2 < 1 - θ / r ^ 2 → s.val < δ / (2 * ε + r ^ 2) →
+            let τ := (2 * ε + r ^ 2 * ‖p.2.val‖ ^ 2) * (2 * s.val - s.val ^ 2) / 2
+            let q : StandardHandle k (n - k) := (Handle.attachingCollar k (n - k)) (p, s)
+            τ ∈ Set.Ioo (-δ) δ ∧ ((p.1, p.2.val), τ) ∈ Φ.source ∧
+              handleRoundEmbedding hk c ε r δ₁ θ data q = Φ ((p.1, p.2.val), τ) ∧
+              Φ.symm (handleRoundEmbedding hk c ε r δ₁ θ data q) = ((p.1, p.2.val), τ) ∧
+              f (handleRoundEmbedding hk c ε r δ₁ θ data q) = c - ε + τ ∧
+              1 - Real.sqrt (1 - 2 * τ / (2 * ε + r ^ 2 * ‖p.2.val‖ ^ 2)) = s.val) := by
   obtain ⟨δ, hδ, hδε, hwidth⟩ := exists_collarAmbientChart_width hk c ε r data hr hε hR hR'
   refine ⟨δ, hδ, hδε, collarAmbientChart hk c ε r data hr,
     contMDiffOn_collarAmbientChart hk c ε r data hr,
     contMDiffOn_collarAmbientChart_symm hk c ε r data hr, ?_, ?_,
-    collarAmbientChart_height hk c ε r data hr, hwidth, ?_⟩
+    collarAmbientChart_height hk c ε r data hr, hwidth, ?_, ?_⟩
   · intro p
     rfl
   · intro x hx
@@ -425,6 +552,11 @@ theorem exists_cocore_collar (hr : r ≠ 0) (hε : 0 < ε)
   · intro p
     rw [collarAmbientChart_apply, collarModelPoint_zero]
     rfl
+  · intro δ₁ θ hδ₁ hθ hrpos p s hflatδ hflatθ hs
+    exact handleRoundEmbedding_attachingCollar_eq_cocore_collar_of_flat hk c ε r δ₁ θ data
+      hε hδ₁ hθ hrpos δ hδ (collarAmbientChart hk c ε r data hr)
+      (fun _ => rfl) hwidth (collarAmbientChart_height hk c ε r data hr)
+      p s hflatδ hflatθ hs
 
 section Closed
 
@@ -493,13 +625,24 @@ theorem exists_isSmoothEmbedding_cocore_collar (hr : r ≠ 0) (hε : 0 < ε)
           ((p.1, p.2.val), t) ∈ Φ.source) ∧
         (∀ p : AttachingRegion k (n - k),
           Φ ((p.1, p.2.val), 0) = (cocoreAttachingEmbedding hk c ε r data hε hR.le p).val) ∧
-        let T : TopologicalSpace.Opens ℝ := ⟨Set.Ioo (-δ) δ, isOpen_Ioo⟩
-        Manifold.IsSmoothEmbedding Iclosed I ∞
-          (fun p : AttachingRegion k (n - k) × T => Φ ((p.1.1, p.1.2.val), p.2.val)) := by
-  obtain ⟨δ, hδ, hδε, Φ, hΦ, hΦsymm, hformula, hinverse, hheight, hwidth, hzero⟩ :=
+        (let T : TopologicalSpace.Opens ℝ := ⟨Set.Ioo (-δ) δ, isOpen_Ioo⟩
+         Manifold.IsSmoothEmbedding Iclosed I ∞
+           (fun p : AttachingRegion k (n - k) × T => Φ ((p.1.1, p.1.2.val), p.2.val))) ∧
+        (∀ (δ₁ θ : ℝ), 0 < δ₁ → 0 < θ → 0 < r →
+          ∀ (p : AttachingRegion k (n - k)) (s : Set.Ico (0 : ℝ) 1),
+            ‖p.2.val‖ ^ 2 < 1 - δ₁ / r ^ 2 →
+            ‖p.2.val‖ ^ 2 < 1 - θ / r ^ 2 → s.val < δ / (2 * ε + r ^ 2) →
+            let τ := (2 * ε + r ^ 2 * ‖p.2.val‖ ^ 2) * (2 * s.val - s.val ^ 2) / 2
+            let q : StandardHandle k (n - k) := (Handle.attachingCollar k (n - k)) (p, s)
+            τ ∈ Set.Ioo (-δ) δ ∧ ((p.1, p.2.val), τ) ∈ Φ.source ∧
+              handleRoundEmbedding hk c ε r δ₁ θ data q = Φ ((p.1, p.2.val), τ) ∧
+              Φ.symm (handleRoundEmbedding hk c ε r δ₁ θ data q) = ((p.1, p.2.val), τ) ∧
+              f (handleRoundEmbedding hk c ε r δ₁ θ data q) = c - ε + τ ∧
+              1 - Real.sqrt (1 - 2 * τ / (2 * ε + r ^ 2 * ‖p.2.val‖ ^ 2)) = s.val) := by
+  obtain ⟨δ, hδ, hδε, Φ, hΦ, hΦsymm, hformula, hinverse, hheight, hwidth, hzero, hflat⟩ :=
     exists_cocore_collar hk c ε r data hr hε hR hR'
   exact ⟨δ, hδ, hδε, Φ, hΦ, hΦsymm, hformula, hinverse, hheight, hwidth, hzero,
-    isSmoothEmbedding_collar_restrict δ Φ hΦ hΦsymm hwidth⟩
+    isSmoothEmbedding_collar_restrict δ Φ hΦ hΦsymm hwidth, hflat⟩
 
 end Closed
 

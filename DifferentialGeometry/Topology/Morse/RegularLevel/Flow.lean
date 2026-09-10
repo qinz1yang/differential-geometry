@@ -9,7 +9,7 @@ open DifferentialGeometry.Analysis.ODE
 namespace DifferentialGeometry.Topology.Morse
 
 open Manifold Set
-open scoped Manifold
+open scoped Manifold ContDiff
 
 noncomputable section
 
@@ -296,6 +296,128 @@ theorem sublevel_transport_of_unitSpeedVectorField [T2Space M] (I : ModelWithCor
   UnitSpeedFlow.image_sublevels (a := a) (b := b)
     (unitSpeedFlowOfVectorField I a b f hf v hv hdf hcomplete) hab
 
+theorem sublevel_transport_on_set_of_stripUnitSpeedVectorField [I.Boundaryless]
+    [IsManifold I ∞ M] [T2Space M]
+    (f : M → ℝ) (hf : MDifferentiable I 𝓘(ℝ) f) {a b : ℝ} (hab : a ≤ b)
+    (v : (x : M) → TangentSpace I x)
+    (hv : CMDiff 1 (fun x : M => (⟨x, v x⟩ : TangentBundle I M)))
+    (D : Set M)
+    (hdfOn : ∀ x ∈ D ∩ f ⁻¹' Set.Icc a b,
+      (NormedSpace.fromTangentSpace (f x)) ((mfderiv I 𝓘(ℝ, ℝ) f x) (v x)) = -1)
+    (hrate : ∀ x ∈ D, -1 ≤ (NormedSpace.fromTangentSpace (f x)) ((mfderiv I 𝓘(ℝ, ℝ) f x) (v x)) ∧
+      (NormedSpace.fromTangentSpace (f x)) ((mfderiv I 𝓘(ℝ, ℝ) f x) (v x)) ≤ 0)
+    (hcomplete : ∀ x : M, ∃ γ : ℝ → M, γ 0 = x ∧ IsMIntegralCurve γ v)
+    (hpreserve : ∀ t : ℝ, Set.MapsTo (fun x => curveAt v hcomplete x t) D D) :
+    (fun x : M => curveAt v hcomplete x (a - b)) '' (D ∩ sublevel f a) = D ∩ sublevel f b := by
+  let t : ℝ := b - a
+  have ht_def : t = b - a := rfl
+  have ht : 0 ≤ t := by dsimp [t]; linarith
+  let Φ : ℝ → M → M := fun s x => curveAt v hcomplete x s
+  have hΦadd : ∀ s r : ℝ, ∀ x : M, Φ (s + r) x = Φ r (Φ s x) := by
+    intro s r x
+    exact curveAt_add v hv hcomplete x s r
+  have hrate_Φ : ∀ x ∈ D, ∀ s : ℝ, 0 ≤ s → f x - s ≤ f (Φ s x) ∧ f (Φ s x) ≤ f x := by
+    intro x hx s hs
+    have hrb := f_rate_bounds_of_integralCurve_on_set f hf v D hrate
+      (curveAt_integralCurve v hcomplete x) hs (fun u _ => hpreserve u hx)
+    simpa [Φ, curveAt_zero v hcomplete x] using hrb
+  have hstrip_Φ : ∀ x : M, ∀ s : ℝ, 0 ≤ s →
+      (∀ u ∈ Set.Icc (0 : ℝ) s, Φ u x ∈ D ∩ f ⁻¹' Set.Icc a b) →
+      f (Φ s x) = f x - s := by
+    intro x s hs hstay
+    have hd (u : ℝ) (hu : u ∈ Set.Icc (0 : ℝ) s) :
+        HasDerivAt (fun u => f (Φ u x) + u) 0 u := by
+      have hfd : HasFDerivAt (fun u => f (Φ u x))
+          ((mfderiv I 𝓘(ℝ, ℝ) f (Φ u x)).comp
+            ((1 : ℝ →L[ℝ] ℝ).smulRight (v (Φ u x)))) u :=
+        hasMFDerivAt_iff_hasFDerivAt.mp ((hf (Φ u x)).hasMFDerivAt.comp u
+          (curveAt_integralCurve v hcomplete x u))
+      have heq := hdfOn (Φ u x) (hstay u hu)
+      have hneg : HasDerivAt (fun u => f (Φ u x)) (-1) u := by
+        apply hasDerivAt_iff_hasFDerivAt.mpr
+        apply hfd.congr_fderiv
+        apply ContinuousLinearMap.ext
+        intro r
+        change (mfderiv I 𝓘(ℝ, ℝ) f (Φ u x)) (r • v (Φ u x)) = r • (-1 : ℝ)
+        rw [map_smul]
+        exact congrArg (fun z : ℝ => r • z) heq
+      simpa only [neg_add_cancel] using! hneg.add (hasDerivAt_id u)
+    have heq := intervalIntegral.integral_eq_sub_of_hasDerivAt
+      (a := 0) (b := s) (f := fun u => f (Φ u x) + u) (f' := fun _ => (0 : ℝ))
+      (fun u hu => hd u (by simpa only [Set.uIcc_of_le hs] using hu))
+      intervalIntegrable_const
+    simp only [intervalIntegral.integral_zero, Φ, curveAt_zero, add_zero] at heq
+    linarith
+  ext y
+  constructor
+  · rintro ⟨x, hx, hxy⟩
+    rw [← hxy]
+    refine ⟨hpreserve (a - b) hx.1, ?_⟩
+    change f (Φ (a - b) x) ≤ b
+    have hγ' : IsMIntegralCurve (fun s : ℝ => Φ (s - t) x) v := by
+      have hc := IsMIntegralCurve.comp_add (curveAt_integralCurve v hcomplete x) (-t)
+      have hfun : (curveAt v hcomplete x ∘ fun s : ℝ ↦ s + -t) =
+          fun s : ℝ ↦ Φ (s - t) x := by
+        funext s
+        rfl
+      rw [← hfun]
+      exact hc
+    have hrb := f_rate_bounds_of_integralCurve_on_set f hf v D hrate (hγ := hγ')
+      (t := t) ht (fun u _ => hpreserve (u - t) hx.1)
+    have hmain : f (Φ (-t) x) ≤ f x + t := by
+      have h1 : f (Φ (-t) x) - t ≤ f x := by
+        simpa [Φ, curveAt_zero v hcomplete x] using hrb.1
+      linarith
+    have hneg : a - b = -t := by dsimp [t]; ring
+    rw [hneg]
+    have hx' : f x ≤ a := by simpa [sublevel] using hx.2
+    linarith [ht_def]
+  · intro hy
+    have hflow : f (Φ t y) ≤ a := by
+      by_cases hst : a ≤ f y - t
+      · have hstay : ∀ s ∈ Set.Icc (0 : ℝ) t, Φ s y ∈ D ∩ f ⁻¹' Set.Icc a b := by
+          intro s hs
+          have hrb := hrate_Φ y hy.1 s hs.1
+          have hfy : f y ≤ b := by simpa [sublevel] using hy.2
+          refine ⟨hpreserve s hy.1, ?_⟩
+          constructor <;> linarith [hst, hrb.1, hrb.2, hs.2, hfy]
+        have heq := hstrip_Φ y t ht hstay
+        have hfy : f y ≤ b := by simpa [sublevel] using hy.2
+        linarith [heq, hfy, ht_def]
+      · by_cases hbelow : f y ≤ a
+        · exact (hrate_Φ y hy.1 t ht).2.trans hbelow
+        · have hafy : a < f y := lt_of_not_ge hbelow
+          let s₀ : ℝ := f y - a
+          have hs₀pos : 0 < s₀ := by dsimp [s₀]; linarith
+          have hs₀t : s₀ < t := by
+            dsimp [s₀]
+            linarith
+          have hstay₀ : ∀ s ∈ Set.Icc (0 : ℝ) s₀, Φ s y ∈ D ∩ f ⁻¹' Set.Icc a b := by
+            intro s hs
+            have hrb := hrate_Φ y hy.1 s hs.1
+            have hfy : f y ≤ b := by simpa [sublevel] using hy.2
+            refine ⟨hpreserve s hy.1, ?_⟩
+            constructor <;> linarith [hs.2, hrb.1, hrb.2, hfy]
+          have heq₀ := hstrip_Φ y s₀ (le_of_lt hs₀pos) hstay₀
+          have hval₀ : f (Φ s₀ y) = a := by
+            dsimp [s₀] at heq₀ ⊢
+            linarith
+          have hrb := hrate_Φ (Φ s₀ y) (hpreserve s₀ hy.1) (t - s₀) (by linarith)
+          have hflow' : Φ t y = Φ (t - s₀) (Φ s₀ y) := by
+            have hh := hΦadd s₀ (t - s₀) y
+            change Φ (s₀ + (t - s₀)) y = Φ (t - s₀) (Φ s₀ y) at hh
+            rwa [add_sub_cancel] at hh
+          rw [hflow']
+          linarith
+    refine ⟨Φ t y, ?_, ?_⟩
+    · exact ⟨hpreserve t hy.1, hflow⟩
+    · have hh := hΦadd t (a - b) y
+      have hz : t + (a - b) = 0 := by dsimp [t]; ring
+      calc
+        Φ (a - b) (Φ t y) = Φ (t + (a - b)) y := hh.symm
+        _ = Φ 0 y := by rw [hz]
+        _ = y := by dsimp [Φ]; exact curveAt_zero v hcomplete y
+
 theorem sublevel_transport_of_stripUnitSpeedVectorField [I.Boundaryless]
     [IsManifold I (⊤ : WithTop ℕ∞) M] [T2Space M]
     (f : M → ℝ) (hf : ContMDiff I 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞) f) {a b : ℝ} (hab : a ≤ b)
@@ -307,90 +429,11 @@ theorem sublevel_transport_of_stripUnitSpeedVectorField [I.Boundaryless]
       (NormedSpace.fromTangentSpace (f x)) ((mfderiv I 𝓘(ℝ, ℝ) f x) (v x)) ≤ 0)
     (hcomplete : ∀ x : M, ∃ γ : ℝ → M, γ 0 = x ∧ IsMIntegralCurve γ v) :
     (fun x : M => curveAt v hcomplete x (a - b)) '' sublevel f a = sublevel f b := by
-  let t : ℝ := b - a
-  have ht_def : t = b - a := rfl
-  have ht : 0 ≤ t := by dsimp [t]; linarith
-  let Φ : ℝ → M → M := fun s x => curveAt v hcomplete x s
-  have hΦadd : ∀ s r : ℝ, ∀ x : M, Φ (s + r) x = Φ r (Φ s x) := by
-    intro s r x
-    exact curveAt_add v hv hcomplete x s r
-  have hrate_Φ : ∀ x : M, ∀ s : ℝ, 0 ≤ s → f x - s ≤ f (Φ s x) ∧ f (Φ s x) ≤ f x := by
-    intro x s hs
-    have hrb := f_rate_bounds_of_integralCurve f hf v hrate (hγ := curveAt_integralCurve v hcomplete x) (t := s) hs
-    simpa [Φ, curveAt_zero v hcomplete x] using hrb
-  have hstrip_Φ : ∀ x : M, ∀ s : ℝ, 0 ≤ s →
-      (∀ u ∈ Set.Icc (0 : ℝ) s, Φ u x ∈ f ⁻¹' Set.Icc a b) →
-      f (Φ s x) = f x - s := by
-    intro x s hs hstay
-    have heq := f_eq_sub_of_integralCurve_on_strip f hf v hdfOn (hγ := curveAt_integralCurve v hcomplete x)
-      (t := s) hs (fun u hu => by simpa [Φ] using hstay u hu)
-    simpa [Φ, curveAt_zero v hcomplete x] using heq
-  ext y
-  constructor
-  · rintro ⟨x, hx, hxy⟩
-    rw [← hxy]
-    change f (Φ (a - b) x) ≤ b
-    have hγ' : IsMIntegralCurve (fun s : ℝ => Φ (s - t) x) v := by
-      have hc := IsMIntegralCurve.comp_add (curveAt_integralCurve v hcomplete x) (-t)
-      have hfun : (curveAt v hcomplete x ∘ fun s : ℝ ↦ s + -t) =
-          fun s : ℝ ↦ Φ (s - t) x := by
-        funext s
-        rfl
-      rw [← hfun]
-      exact hc
-    have hrb := f_rate_bounds_of_integralCurve f hf v hrate (hγ := hγ') (t := t) ht
-    have hmain : f (Φ (-t) x) ≤ f x + t := by
-      have h1 : f (Φ (-t) x) - t ≤ f x := by
-        simpa [Φ, curveAt_zero v hcomplete x] using hrb.1
-      linarith
-    have hneg : a - b = -t := by dsimp [t]; ring
-    rw [hneg]
-    have hx' : f x ≤ a := by simpa [sublevel] using hx
-    linarith [ht_def]
-  · intro hy
-    have hflow : f (Φ t y) ≤ a := by
-      by_cases hst : a ≤ f y - t
-      · have hstay : ∀ s ∈ Set.Icc (0 : ℝ) t, Φ s y ∈ f ⁻¹' Set.Icc a b := by
-          intro s hs
-          have hrb := hrate_Φ y s hs.1
-          have hfy : f y ≤ b := by simpa [sublevel] using hy
-          constructor <;> linarith [hst, hrb.1, hrb.2, hs.2, hfy]
-        have heq := hstrip_Φ y t ht hstay
-        have hfy : f y ≤ b := by simpa [sublevel] using hy
-        linarith [heq, hfy, ht_def]
-      · by_cases hbelow : f y ≤ a
-        · exact (hrate_Φ y t ht).2.trans hbelow
-        · have hafy : a < f y := lt_of_not_ge hbelow
-          let s₀ : ℝ := f y - a
-          have hs₀pos : 0 < s₀ := by dsimp [s₀]; linarith
-          have hs₀t : s₀ < t := by
-            dsimp [s₀]
-            linarith
-          have hstay₀ : ∀ s ∈ Set.Icc (0 : ℝ) s₀, Φ s y ∈ f ⁻¹' Set.Icc a b := by
-            intro s hs
-            have hrb := hrate_Φ y s hs.1
-            have hfy : f y ≤ b := by simpa [sublevel] using hy
-            constructor <;> linarith [hs.2, hrb.1, hrb.2, hfy]
-          have heq₀ := hstrip_Φ y s₀ (le_of_lt hs₀pos) hstay₀
-          have hval₀ : f (Φ s₀ y) = a := by
-            dsimp [s₀] at heq₀ ⊢
-            linarith
-          have hrb := hrate_Φ (Φ s₀ y) (t - s₀) (by linarith)
-          have hflow' : Φ t y = Φ (t - s₀) (Φ s₀ y) := by
-            have hh := hΦadd s₀ (t - s₀) y
-            change Φ (s₀ + (t - s₀)) y = Φ (t - s₀) (Φ s₀ y) at hh
-            rwa [add_sub_cancel] at hh
-          rw [hflow']
-          linarith
-    refine ⟨Φ t y, ?_, ?_⟩
-    · change f (Φ t y) ≤ a
-      exact hflow
-    · have hh := hΦadd t (a - b) y
-      have hz : t + (a - b) = 0 := by dsimp [t]; ring
-      calc
-        Φ (a - b) (Φ t y) = Φ (t + (a - b)) y := hh.symm
-        _ = Φ 0 y := by rw [hz]
-        _ = y := by dsimp [Φ]; exact curveAt_zero v hcomplete y
+  simpa only [Set.univ_inter] using
+    sublevel_transport_on_set_of_stripUnitSpeedVectorField f
+      (hf.mdifferentiable (by simp)) hab v hv Set.univ
+      (by simpa only [Set.univ_inter] using hdfOn) (fun x _ => hrate x)
+      hcomplete (fun _ _ _ => Set.mem_univ _)
 
 theorem sublevel_transport_outside_of_unitSpeedVectorField [I.Boundaryless]
     [IsManifold I (⊤ : WithTop ℕ∞) M] [T2Space M]
@@ -406,15 +449,9 @@ theorem sublevel_transport_outside_of_unitSpeedVectorField [I.Boundaryless]
       (NormedSpace.fromTangentSpace (f x)) ((mfderiv I 𝓘(ℝ, ℝ) f x) (v x)) ≤ 0)
     (hfix : ∀ x ∈ B, x ∉ tsupport v) :
     (fun x : M => curveAt v hcomplete x (a - b)) '' (sublevel f a \ B) = sublevel f b \ B := by
-  let t : ℝ := b - a
-  have ht_def : t = b - a := rfl
-  have ht : 0 ≤ t := by dsimp [t]; linarith
   let Φ : ℝ → M → M := fun s x => curveAt v hcomplete x s
   have hv1 : CMDiff 1 (fun x : M => (⟨x, v x⟩ : TangentBundle I M)) :=
     hv.of_le (by simp : (1 : WithTop ℕ∞) ≤ (↑(⊤ : ℕ∞) : WithTop ℕ∞))
-  have hΦadd : ∀ s r : ℝ, ∀ x : M, Φ (s + r) x = Φ r (Φ s x) := by
-    intro s r x
-    exact curveAt_add v hv1 hcomplete x s r
   have hfixΦ : ∀ x ∈ B, ∀ s : ℝ, Φ s x = x := by
     intro x hx s
     exact curveAt_eq_self_of_not_mem_tsupport v hv hcomplete (hfix x hx) s
@@ -427,88 +464,11 @@ theorem sublevel_transport_outside_of_unitSpeedVectorField [I.Boundaryless]
     have hfix2 : Φ s (Φ s x) = Φ s x := hfixΦ _ hmem s
     have hEq : Φ s x = x := hinj s hfix2
     rwa [← hEq]
-  have hrate_Φ : ∀ x : M, ∀ s : ℝ, 0 ≤ s → f x - s ≤ f (Φ s x) ∧ f (Φ s x) ≤ f x := by
-    intro x s hs
-    have hrb := f_rate_bounds_of_integralCurve f hf v hrate (hγ := curveAt_integralCurve v hcomplete x) (t := s) hs
-    simpa [Φ, curveAt_zero v hcomplete x] using hrb
-  have hstrip_Φ : ∀ x : M, ∀ s : ℝ, 0 ≤ s →
-      (∀ u ∈ Set.Icc (0 : ℝ) s, Φ u x ∈ f ⁻¹' Set.Icc a b \ B) →
-      f (Φ s x) = f x - s := by
-    intro x s hs hstay
-    have heq := f_eq_sub_of_integralCurve_on_set f hf v (f ⁻¹' Set.Icc a b \ B) hdfOn
-      (hγ := curveAt_integralCurve v hcomplete x) (t := s) hs (fun u hu => by simpa [Φ] using hstay u hu)
-    simpa [Φ, curveAt_zero v hcomplete x] using heq
-  ext y
-  constructor
-  · rintro ⟨x, hx, hxy⟩
-    rw [← hxy]
-    have hyB : Φ (a - b) x ∉ B := houtside x hx.2 (a - b)
-    constructor
-    · change f (Φ (a - b) x) ≤ b
-      have hγ' : IsMIntegralCurve (fun s : ℝ => Φ (s - t) x) v := by
-        have hc := IsMIntegralCurve.comp_add (curveAt_integralCurve v hcomplete x) (-t)
-        have hfun : (curveAt v hcomplete x ∘ fun s : ℝ ↦ s + -t) =
-            fun s : ℝ ↦ Φ (s - t) x := by
-          funext s
-          rfl
-        rw [← hfun]
-        exact hc
-      have hrb := f_rate_bounds_of_integralCurve f hf v hrate (hγ := hγ') (t := t) ht
-      have hmain : f (Φ (-t) x) ≤ f x + t := by
-        have h1 : f (Φ (-t) x) - t ≤ f x := by
-          simpa [Φ, curveAt_zero v hcomplete x] using hrb.1
-        linarith
-      have hneg : a - b = -t := by dsimp [t]; ring
-      rw [hneg]
-      have hx' : f x ≤ a := by simpa [sublevel] using hx.1
-      linarith [ht_def]
-    · exact hyB
-  · intro hy
-    have hflow : f (Φ t y) ≤ a := by
-      by_cases hst : a ≤ f y - t
-      · have hstay : ∀ s ∈ Set.Icc (0 : ℝ) t, Φ s y ∈ f ⁻¹' Set.Icc a b \ B := by
-          intro s hs
-          have hrb := hrate_Φ y s hs.1
-          have hfy : f y ≤ b := by simpa [sublevel] using hy.1
-          constructor
-          · constructor <;> linarith [hst, hrb.1, hrb.2, hs.2, hfy]
-          · exact houtside y hy.2 s
-        have heq := hstrip_Φ y t ht hstay
-        have hfy : f y ≤ b := by simpa [sublevel] using hy.1
-        linarith [heq, hfy, ht_def]
-      · by_cases hbelow : f y ≤ a
-        · exact (hrate_Φ y t ht).2.trans hbelow
-        · have hafy : a < f y := lt_of_not_ge hbelow
-          let s₀ : ℝ := f y - a
-          have hs₀pos : 0 < s₀ := by dsimp [s₀]; linarith
-          have hs₀t : s₀ < t := by
-            dsimp [s₀]
-            linarith
-          have hstay₀ : ∀ s ∈ Set.Icc (0 : ℝ) s₀, Φ s y ∈ f ⁻¹' Set.Icc a b \ B := by
-            intro s hs
-            have hrb := hrate_Φ y s hs.1
-            have hfy : f y ≤ b := by simpa [sublevel] using hy.1
-            constructor
-            · constructor <;> linarith [hs.2, hrb.1, hrb.2, hfy]
-            · exact houtside y hy.2 s
-          have heq₀ := hstrip_Φ y s₀ (le_of_lt hs₀pos) hstay₀
-          have hval₀ : f (Φ s₀ y) = a := by
-            dsimp [s₀] at heq₀ ⊢
-            linarith
-          have hrb := hrate_Φ (Φ s₀ y) (t - s₀) (by linarith)
-          have hflow' : Φ t y = Φ (t - s₀) (Φ s₀ y) := by
-            have hh := hΦadd s₀ (t - s₀) y
-            change Φ (s₀ + (t - s₀)) y = Φ (t - s₀) (Φ s₀ y) at hh
-            rwa [add_sub_cancel] at hh
-          rw [hflow']
-          linarith
-    refine ⟨Φ t y, ⟨hflow, houtside y hy.2 t⟩, ?_⟩
-    have hh := hΦadd t (a - b) y
-    have hz : t + (a - b) = 0 := by dsimp [t]; ring
-    calc
-      Φ (a - b) (Φ t y) = Φ (t + (a - b)) y := hh.symm
-      _ = Φ 0 y := by rw [hz]
-      _ = y := by dsimp [Φ]; exact curveAt_zero v hcomplete y
+  have h := sublevel_transport_on_set_of_stripUnitSpeedVectorField f
+    (hf.mdifferentiable (by simp)) hab v hv1 Bᶜ
+    (fun x hx => hdfOn x ⟨hx.2, hx.1⟩) (fun x _ => hrate x) hcomplete
+    (fun s x hx => houtside x hx s)
+  simpa only [Set.sdiff_eq, Set.inter_comm] using h
 
 theorem GradientLikeFlow.toDiffeomorph_image_sublevels (Φ : GradientLikeFlow I f a b) (hab : a ≤ b) :
     Φ.toDiffeomorph (a - b) '' sublevel f a = sublevel f b := by

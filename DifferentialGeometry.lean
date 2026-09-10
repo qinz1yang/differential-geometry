@@ -5410,6 +5410,7 @@ import DifferentialGeometry.Topology.Covering.TrivialFundamentalGroup
 import DifferentialGeometry.Topology.Covering.Truncation.Homotopy
 import DifferentialGeometry.Topology.Covering.Truncation.Lift
 import DifferentialGeometry.Topology.Covering.UniversalDeckGroup
+import DifferentialGeometry.Topology.Diffeomorph.BoundaryFlow
 import DifferentialGeometry.Topology.Diffeomorph.Collar
 import DifferentialGeometry.Topology.Diffeomorph.Extension
 import DifferentialGeometry.Topology.Diffeomorph.Fiberwise
@@ -5727,6 +5728,7 @@ import DifferentialGeometry.Topology.Manifold.BoundaryCollar.UnitSpeedField
 import DifferentialGeometry.Topology.Manifold.BoundaryExtrema
 import DifferentialGeometry.Topology.Manifold.BoundaryIntegralCurve
 import DifferentialGeometry.Topology.Manifold.BoundaryOrder
+import DifferentialGeometry.Topology.Manifold.BoundaryVectorField
 import DifferentialGeometry.Topology.Manifold.BufferedBumpCovering
 import DifferentialGeometry.Topology.Manifold.BufferedFunctionCutoff
 import DifferentialGeometry.Topology.Manifold.BumpPartitionDerivative
@@ -6000,6 +6002,7 @@ import DifferentialGeometry.Topology.Morse.RegularLevel.VectorField
 import DifferentialGeometry.Topology.Morse.RegularZeroAtlas
 import DifferentialGeometry.Topology.Morse.RegularZeroCoordinates
 import DifferentialGeometry.Topology.Morse.RegularZeroTangent
+import DifferentialGeometry.Topology.Morse.RelativeHandleAttachment
 import DifferentialGeometry.Topology.Morse.RelativePerturbation
 import DifferentialGeometry.Topology.Morse.RelativePerturbationAvoidance
 import DifferentialGeometry.Topology.Morse.RelativePerturbationChart
