@@ -12,7 +12,7 @@ import Mathlib.Tactic.Ring
 noncomputable section
 
 open MeasureTheory Set
-open scoped ContDiff
+open scoped ContDiff ENNReal
 
 namespace DifferentialGeometry.Analysis.Sobolev
 
@@ -236,6 +236,168 @@ theorem integral_weak_deriv_weighted_divergence
   have hb := hbase (fun x => fderiv ℝ φ x v) (hd v) (hdc v) (hds v)
   rw [hsum] at hb
   linarith
+
+theorem integral_weak_deriv_weighted_divergence_eq_source
+    {ι : Type*} (s : Finset ι) (hΩ : IsOpen Ω)
+    {U W R ρ F DF : E → ℝ} {V H J A : ι → E → ℝ} (v w : E) (e : ι → E)
+    (hU : LocallyIntegrable U μ) (hW : LocallyIntegrable W μ)
+    (hR : LocallyIntegrable R μ) (hDF : LocallyIntegrable DF μ)
+    (hV : ∀ i ∈ s, LocallyIntegrable (V i) μ)
+    (hH : ∀ i ∈ s, LocallyIntegrable (H i) μ)
+    (hJ : ∀ i ∈ s, LocallyIntegrable (J i) μ)
+    (hρ : ContDiffOn ℝ (⊤ : ℕ∞) ρ Ω)
+    (hA : ∀ i ∈ s, ContDiffOn ℝ (⊤ : ℕ∞) (A i) Ω)
+    (hspace : ∀ ψ : E → ℝ, ContDiff ℝ (⊤ : ℕ∞) ψ → HasCompactSupport ψ →
+      tsupport ψ ⊆ Ω → (∫ x, U x * fderiv ℝ ψ x v ∂μ) = -∫ x, W x * ψ x ∂μ)
+    (htime : ∀ ψ : E → ℝ, ContDiff ℝ (⊤ : ℕ∞) ψ → HasCompactSupport ψ →
+      tsupport ψ ⊆ Ω → (∫ x, U x * fderiv ℝ ψ x w ∂μ) = -∫ x, R x * ψ x ∂μ)
+    (hflux : ∀ i ∈ s, ∀ ψ : E → ℝ,
+      ContDiff ℝ (⊤ : ℕ∞) ψ → HasCompactSupport ψ → tsupport ψ ⊆ Ω →
+      (∫ x, V i x * fderiv ℝ ψ x v ∂μ) = -∫ x, H i x * ψ x ∂μ)
+    (hdiv : ∀ i ∈ s, ∀ ψ : E → ℝ,
+      ContDiff ℝ (⊤ : ℕ∞) ψ → HasCompactSupport ψ → tsupport ψ ⊆ Ω →
+      (∫ x, V i x * fderiv ℝ ψ x (e i) ∂μ) = -∫ x, J i x * ψ x ∂μ)
+    (hsource : ∀ ψ : E → ℝ, ContDiff ℝ (⊤ : ℕ∞) ψ → HasCompactSupport ψ →
+      tsupport ψ ⊆ Ω → (∫ x, F x * fderiv ℝ ψ x v ∂μ) = -∫ x, DF x * ψ x ∂μ)
+    (hbase : ∀ ψ : E → ℝ, ContDiff ℝ (⊤ : ℕ∞) ψ → HasCompactSupport ψ →
+      tsupport ψ ⊆ Ω → (∫ x, ρ x * U x * fderiv ℝ ψ x w ∂μ) =
+        (∑ i ∈ s, ∫ x, A i x * V i x * fderiv ℝ ψ x (e i) ∂μ) -
+          ∫ x, F x * ψ x ∂μ)
+    {φ : E → ℝ} (hφ : ContDiff ℝ (⊤ : ℕ∞) φ)
+    (hφc : HasCompactSupport φ) (hφs : tsupport φ ⊆ Ω) :
+    (∫ x, ρ x * W x * fderiv ℝ φ x w ∂μ) =
+      (∑ i ∈ s, ∫ x, A i x * H i x * fderiv ℝ φ x (e i) ∂μ) -
+        ∫ x, (DF x +
+          (∑ i ∈ s, (fderiv ℝ (A i) x v * J i x +
+            fderiv ℝ (fun y => fderiv ℝ (A i) y v) x (e i) * V i x)) -
+          (fderiv ℝ ρ x v * R x +
+            fderiv ℝ (fun y => fderiv ℝ ρ y v) x w * U x)) * φ x ∂μ := by
+  let DA := fun i x => fderiv ℝ (A i) x v
+  let DDA := fun i x => fderiv ℝ (DA i) x (e i)
+  let Dρ := fun x => fderiv ℝ ρ x v
+  let TDρ := fun x => fderiv ℝ Dρ x w
+  let B := fun i x => DA i x * J i x + DDA i x * V i x
+  let C := fun x => Dρ x * R x + TDρ x * U x
+  have hDA (i) (hi : i ∈ s) : ContDiffOn ℝ (⊤ : ℕ∞) (DA i) Ω :=
+    ((hA i hi).fderiv_of_isOpen hΩ (by simp)).clm_apply contDiffOn_const
+  have hDDA (i) (hi : i ∈ s) : ContDiffOn ℝ (⊤ : ℕ∞) (DDA i) Ω :=
+    ((hDA i hi).fderiv_of_isOpen hΩ (by simp)).clm_apply contDiffOn_const
+  have hDρ : ContDiffOn ℝ (⊤ : ℕ∞) Dρ Ω :=
+    (hρ.fderiv_of_isOpen hΩ (by simp)).clm_apply contDiffOn_const
+  have hTDρ : ContDiffOn ℝ (⊤ : ℕ∞) TDρ Ω :=
+    (hDρ.fderiv_of_isOpen hΩ (by simp)).clm_apply contDiffOn_const
+  have hint {f c : E → ℝ} (hf : LocallyIntegrable f μ) (hc : ContinuousOn c Ω) :
+      Integrable (fun x => c x * f x * φ x) μ :=
+    integrable_mul_continuousOn_mul_test hΩ hf hc hφ.continuous hφc hφs
+  have hB (i) (hi : i ∈ s) : Integrable (fun x => B i x * φ x) μ := by
+    simp only [B, add_mul]
+    exact (hint (hJ i hi) (hDA i hi).continuousOn).add
+      (hint (hV i hi) (hDDA i hi).continuousOn)
+  have hC : Integrable (fun x => C x * φ x) μ := by
+    simp only [C, add_mul]
+    exact (hint hR hDρ.continuousOn).add (hint hU hTDρ.continuousOn)
+  have hDFI : Integrable (fun x => DF x * φ x) μ :=
+    hDF.integrable_smul_right_of_hasCompactSupport hφ.continuous hφc
+  have hsplit (i) (hi : i ∈ s) :
+      (∫ x, (A i x * H i x + DA i x * V i x) * fderiv ℝ φ x (e i) ∂μ) =
+        (∫ x, A i x * H i x * fderiv ℝ φ x (e i) ∂μ) -
+          ∫ x, B i x * φ x ∂μ := by
+    have hp := integral_weak_product_deriv hΩ (e i) (hV i hi) (hJ i hi)
+      (hDA i hi) (hdiv i hi) hφ hφc hφs
+    have hd := (hφ.continuous_fderiv (by simp)).clm_apply (continuous_const (y := e i))
+    have hdc := hφc.fderiv_apply ℝ (e i)
+    have hds := (tsupport_fderiv_apply_subset ℝ (e i)).trans hφs
+    have hmain := integrable_mul_continuousOn_mul_test hΩ (hH i hi)
+      (hA i hi).continuousOn hd hdc hds
+    have herr := integrable_mul_continuousOn_mul_test hΩ (hV i hi)
+      (hDA i hi).continuousOn hd hdc hds
+    simp_rw [add_mul]
+    rw [integral_add hmain herr, hp]
+    rfl
+  have hsum : (∫ x, (∑ i ∈ s, B i x) * φ x ∂μ) =
+      ∑ i ∈ s, ∫ x, B i x * φ x ∂μ := by
+    simp_rw [Finset.sum_mul]
+    exact integral_finsetSum _ hB
+  have hsumI : Integrable (fun x => (∑ i ∈ s, B i x) * φ x) μ := by
+    simpa only [Finset.sum_mul] using integrable_finsetSum s hB
+  have hS : (∫ x, (DF x + (∑ i ∈ s, B i x) - C x) * φ x ∂μ) =
+      (∫ x, DF x * φ x ∂μ) + (∑ i ∈ s, ∫ x, B i x * φ x ∂μ) -
+        ∫ x, C x * φ x ∂μ := by
+    simp_rw [sub_mul, add_mul]
+    have hplus : Integrable (fun x => DF x * φ x + (∑ i ∈ s, B i x) * φ x) μ :=
+      hDFI.add hsumI
+    rw [integral_sub hplus hC, integral_add hDFI hsumI, hsum]
+  have hc := integral_weak_deriv_weighted_divergence s hΩ v w e hU hW hR hV hH
+    hρ hA hspace htime hflux hbase hφ hφc hφs
+  change _ = (∑ i ∈ s, ∫ x, (A i x * H i x + DA i x * V i x) *
+    fderiv ℝ φ x (e i) ∂μ) + _ + ∫ x, C x * φ x ∂μ at hc
+  rw [Finset.sum_congr rfl hsplit, Finset.sum_sub_distrib,
+    hsource φ hφ hφc hφs] at hc
+  change _ = _ - ∫ x, (DF x + (∑ i ∈ s, B i x) - C x) * φ x ∂μ
+  rw [hS]
+  linarith
+
+theorem exists_lp_weak_deriv_weighted_divergence [IsLocallyFiniteMeasure μ]
+    {ι : Type*} (s : Finset ι) (hΩ : IsOpen Ω) {p : ℝ≥0∞} (hp : 1 ≤ p)
+    {U W R ρ F DF : E → ℝ} {V H J A : ι → E → ℝ} (v w : E) (e : ι → E)
+    (hU : MemLp U p μ) (hW : LocallyIntegrable W μ)
+    (hR : MemLp R p μ) (hDF : MemLp DF p μ)
+    (hV : ∀ i ∈ s, MemLp (V i) p μ)
+    (hH : ∀ i ∈ s, LocallyIntegrable (H i) μ)
+    (hJ : ∀ i ∈ s, MemLp (J i) p μ)
+    (hρ : ContDiffOn ℝ (⊤ : ℕ∞) ρ Ω)
+    (hA : ∀ i ∈ s, ContDiffOn ℝ (⊤ : ℕ∞) (A i) Ω)
+    (hDA : ∀ i ∈ s, MemLp (fun x => fderiv ℝ (A i) x v) ∞ μ)
+    (hDDA : ∀ i ∈ s, MemLp (fun x =>
+      fderiv ℝ (fun y => fderiv ℝ (A i) y v) x (e i)) ∞ μ)
+    (hDρ : MemLp (fun x => fderiv ℝ ρ x v) ∞ μ)
+    (hTDρ : MemLp (fun x => fderiv ℝ (fun y => fderiv ℝ ρ y v) x w) ∞ μ)
+    (hspace : ∀ ψ : E → ℝ, ContDiff ℝ (⊤ : ℕ∞) ψ → HasCompactSupport ψ →
+      tsupport ψ ⊆ Ω → (∫ x, U x * fderiv ℝ ψ x v ∂μ) = -∫ x, W x * ψ x ∂μ)
+    (htime : ∀ ψ : E → ℝ, ContDiff ℝ (⊤ : ℕ∞) ψ → HasCompactSupport ψ →
+      tsupport ψ ⊆ Ω → (∫ x, U x * fderiv ℝ ψ x w ∂μ) = -∫ x, R x * ψ x ∂μ)
+    (hflux : ∀ i ∈ s, ∀ ψ : E → ℝ,
+      ContDiff ℝ (⊤ : ℕ∞) ψ → HasCompactSupport ψ → tsupport ψ ⊆ Ω →
+      (∫ x, V i x * fderiv ℝ ψ x v ∂μ) = -∫ x, H i x * ψ x ∂μ)
+    (hdiv : ∀ i ∈ s, ∀ ψ : E → ℝ,
+      ContDiff ℝ (⊤ : ℕ∞) ψ → HasCompactSupport ψ → tsupport ψ ⊆ Ω →
+      (∫ x, V i x * fderiv ℝ ψ x (e i) ∂μ) = -∫ x, J i x * ψ x ∂μ)
+    (hsource : ∀ ψ : E → ℝ, ContDiff ℝ (⊤ : ℕ∞) ψ → HasCompactSupport ψ →
+      tsupport ψ ⊆ Ω → (∫ x, F x * fderiv ℝ ψ x v ∂μ) = -∫ x, DF x * ψ x ∂μ)
+    (hbase : ∀ ψ : E → ℝ, ContDiff ℝ (⊤ : ℕ∞) ψ → HasCompactSupport ψ →
+      tsupport ψ ⊆ Ω → (∫ x, ρ x * U x * fderiv ℝ ψ x w ∂μ) =
+        (∑ i ∈ s, ∫ x, A i x * V i x * fderiv ℝ ψ x (e i) ∂μ) -
+          ∫ x, F x * ψ x ∂μ) :
+    ∃ S : Lp ℝ p μ,
+      (S =ᵐ[μ] fun x => DF x +
+        (∑ i ∈ s, (fderiv ℝ (A i) x v * J i x +
+          fderiv ℝ (fun y => fderiv ℝ (A i) y v) x (e i) * V i x)) -
+        (fderiv ℝ ρ x v * R x +
+          fderiv ℝ (fun y => fderiv ℝ ρ y v) x w * U x)) ∧
+      ∀ φ : E → ℝ, ContDiff ℝ (⊤ : ℕ∞) φ → HasCompactSupport φ → tsupport φ ⊆ Ω →
+        (∫ x, ρ x * W x * fderiv ℝ φ x w ∂μ) =
+          (∑ i ∈ s, ∫ x, A i x * H i x * fderiv ℝ φ x (e i) ∂μ) -
+            ∫ x, S x * φ x ∂μ := by
+  let S := fun x => DF x +
+    (∑ i ∈ s, (fderiv ℝ (A i) x v * J i x +
+      fderiv ℝ (fun y => fderiv ℝ (A i) y v) x (e i) * V i x)) -
+    (fderiv ℝ ρ x v * R x + fderiv ℝ (fun y => fderiv ℝ ρ y v) x w * U x)
+  have hS : MemLp S p μ :=
+    (hDF.add (memLp_finsetSum s fun i hi =>
+      ((hJ i hi).mul (hDA i hi)).add ((hV i hi).mul (hDDA i hi)))).sub
+      ((hR.mul hDρ).add (hU.mul hTDρ))
+  refine ⟨hS.toLp S, hS.coeFn_toLp, ?_⟩
+  intro φ hφ hφc hφs
+  have heq := integral_weak_deriv_weighted_divergence_eq_source s hΩ v w e
+    (hU.locallyIntegrable hp) hW (hR.locallyIntegrable hp) (hDF.locallyIntegrable hp)
+    (fun i hi => (hV i hi).locallyIntegrable hp) hH
+    (fun i hi => (hJ i hi).locallyIntegrable hp) hρ hA hspace htime hflux hdiv
+    hsource hbase hφ hφc hφs
+  refine heq.trans ?_
+  congr 1
+  apply integral_congr_ae
+  filter_upwards [hS.coeFn_toLp] with x hx
+  rw [hx]
 
 omit [OpensMeasurableSpace E] in
 theorem ae_eq_of_weak_second_deriv_comm [FiniteDimensional ℝ E] [BorelSpace E]

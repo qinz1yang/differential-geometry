@@ -56,96 +56,37 @@ private theorem exists_lp_differentiated_forcing
         (∫ p, ρ p * H l p * fderiv ℝ φ p (1, 0) ∂ν) =
           (∑ i, ∑ j, ∫ p, A i j p * K i l p *
             fderiv ℝ φ p (0, EuclideanSpace.single j 1) ∂ν) - ∫ p, S p * φ p ∂ν := by
-  classical
-  let DA := fun i j p => fderiv ℝ (A i j) p (0, EuclideanSpace.single l 1)
-  let DDA := fun i j p => fderiv ℝ (DA i j) p (0, EuclideanSpace.single j 1)
-  let Dρ := fun p => fderiv ℝ ρ p (0, EuclideanSpace.single l 1)
-  let TDρ := fun p => fderiv ℝ Dρ p (1, 0)
-  have hDA (i j) : ContDiffOn ℝ (⊤ : ℕ∞) (DA i j) O :=
+  have hDA (i j) : ContDiffOn ℝ (⊤ : ℕ∞)
+      (fun p => fderiv ℝ (A i j) p (0, EuclideanSpace.single l 1)) O :=
     ((hA i j).fderiv_of_isOpen hO (by simp)).clm_apply contDiffOn_const
-  have hDDA (i j) : ContDiffOn ℝ (⊤ : ℕ∞) (DDA i j) O :=
-    ((hDA i j).fderiv_of_isOpen hO (by simp)).clm_apply contDiffOn_const
-  have hDρ : ContDiffOn ℝ (⊤ : ℕ∞) Dρ O :=
+  have hDρ : ContDiffOn ℝ (⊤ : ℕ∞)
+      (fun p => fderiv ℝ ρ p (0, EuclideanSpace.single l 1)) O :=
     (hρ.fderiv_of_isOpen hO (by simp)).clm_apply contDiffOn_const
-  have hTDρ : ContDiffOn ℝ (⊤ : ℕ∞) TDρ O :=
+  have hDDA (i j) : ContDiffOn ℝ (⊤ : ℕ∞)
+      (fun p => fderiv ℝ (fun y => fderiv ℝ (A i j) y (0, EuclideanSpace.single l 1)) p
+        (0, EuclideanSpace.single j 1)) O :=
+    ((hDA i j).fderiv_of_isOpen hO (by simp)).clm_apply contDiffOn_const
+  have hTDρ : ContDiffOn ℝ (⊤ : ℕ∞)
+      (fun p => fderiv ℝ (fun y => fderiv ℝ ρ y (0, EuclideanSpace.single l 1)) p (1, 0)) O :=
     (hDρ.fderiv_of_isOpen hO (by simp)).clm_apply contDiffOn_const
-  let B := fun i j p => DA i j p * K i j p + DDA i j p * H i p
-  let C := fun p => Dρ p * R p + TDρ p * V p
-  have hB (i j) : MemLp (B i j) 2 ν :=
-    ((Lp.memLp (K i j)).mul (hbound _ (hDA i j).continuousOn)).add
-      ((Lp.memLp (H i)).mul (hbound _ (hDDA i j).continuousOn))
-  have hC : MemLp C 2 ν := ((Lp.memLp R).mul (hbound _ hDρ.continuousOn)).add
-    (hV.mul (hbound _ hTDρ.continuousOn))
-  let s := fun p => DF l p + (∑ i, ∑ j, B i j p) - C p
-  have hsum : MemLp (fun p => ∑ i, ∑ j, B i j p) 2 ν :=
-    by
-    exact memLp_finsetSum Finset.univ (fun i _ => memLp_finsetSum Finset.univ (fun j _ => hB i j))
-  have hs : MemLp s 2 ν := ((Lp.memLp (DF l)).add hsum).sub hC
-  refine ⟨hs.toLp s, hs.coeFn_toLp, ?_⟩
-  intro φ hφ hφc hφs
   have hbase' : ∀ ψ : ℝ × E → ℝ, ContDiff ℝ (⊤ : ℕ∞) ψ → HasCompactSupport ψ →
       tsupport ψ ⊆ P → (∫ p, ρ p * V p * fderiv ℝ ψ p (1, 0) ∂ν) =
         (∑ ij : Fin d × Fin d, ∫ p, A ij.1 ij.2 p * H ij.1 p *
           fderiv ℝ ψ p (0, EuclideanSpace.single ij.2 1) ∂ν) - ∫ p, F p * ψ p ∂ν := by
     simpa only [Fintype.sum_prod_type] using hbase
-  have hcomm := Sobolev.integral_weak_deriv_weighted_divergence Finset.univ hP
-    (0, EuclideanSpace.single l 1) (1, 0)
+  have hs := Sobolev.exists_lp_weak_deriv_weighted_divergence Finset.univ hP
+    (by norm_num : (1 : ℝ≥0∞) ≤ 2) (0, EuclideanSpace.single l 1) (1, 0)
     (fun ij : Fin d × Fin d => (0, EuclideanSpace.single ij.2 1))
-    (hV.locallyIntegrable (by norm_num)) ((Lp.memLp (H l)).locallyIntegrable (by norm_num))
-    ((Lp.memLp R).locallyIntegrable (by norm_num))
-    (fun ij _ => (Lp.memLp (H ij.1)).locallyIntegrable (by norm_num))
+    hV ((Lp.memLp (H l)).locallyIntegrable (by norm_num)) (Lp.memLp R) (Lp.memLp (DF l))
+    (fun ij _ => Lp.memLp (H ij.1))
     (fun ij _ => (Lp.memLp (K ij.1 l)).locallyIntegrable (by norm_num))
-    (hρ.mono hPO) (fun ij _ => (hA ij.1 ij.2).mono hPO) (hH l) hR
-    (fun ij _ => hK ij.1 l) hbase' hφ hφc hφs
-  simp only [Fintype.sum_prod_type] at hcomm
-  have hφLp : MemLp φ ∞ ν := hφ.continuous.memLp_top_of_hasCompactSupport hφc ν
-  have hint (f : ℝ × E → ℝ) (hf : MemLp f 2 ν) : Integrable (fun p => f p * φ p) ν :=
-    (hφLp.mul (r := 2) hf).integrable (by norm_num)
-  have hdmem (j) : MemLp (fun p => fderiv ℝ φ p (0, EuclideanSpace.single j 1)) ∞ ν :=
-    ((hφ.continuous_fderiv (by simp)).clm_apply continuous_const).memLp_top_of_hasCompactSupport
-      (hφc.fderiv_apply ℝ (0, EuclideanSpace.single j 1)) ν
-  have hmainI (i j) : Integrable (fun p => A i j p * K i l p *
-      fderiv ℝ φ p (0, EuclideanSpace.single j 1)) ν :=
-    ((hdmem j).mul (r := 2) ((Lp.memLp (K i l)).mul (r := 2)
-      (hbound _ (hA i j).continuousOn))).integrable (by norm_num)
-  have herrI (i j) : Integrable (fun p => DA i j p * H i p *
-      fderiv ℝ φ p (0, EuclideanSpace.single j 1)) ν :=
-    ((hdmem j).mul (r := 2) ((Lp.memLp (H i)).mul (r := 2)
-      (hbound _ (hDA i j).continuousOn))).integrable (by norm_num)
-  have hsplit (i j) : (∫ p, (A i j p * K i l p + DA i j p * H i p) *
-      fderiv ℝ φ p (0, EuclideanSpace.single j 1) ∂ν) =
-      (∫ p, A i j p * K i l p * fderiv ℝ φ p (0, EuclideanSpace.single j 1) ∂ν) -
-        ∫ p, B i j p * φ p ∂ν := by
-    have hp := Sobolev.integral_weak_product_deriv hP (0, EuclideanSpace.single j 1)
-      ((Lp.memLp (H i)).locallyIntegrable (by norm_num))
-      ((Lp.memLp (K i j)).locallyIntegrable (by norm_num)) ((hDA i j).mono hPO)
-      (hK i j) hφ hφc hφs
-    simp_rw [add_mul]
-    rw [integral_add (hmainI i j) (herrI i j), hp]
-    rfl
-  have hsumB : (∫ p, (∑ i, ∑ j, B i j p) * φ p ∂ν) =
-      ∑ i, ∑ j, ∫ p, B i j p * φ p ∂ν := by
-    simp_rw [Finset.sum_mul]
-    rw [integral_finsetSum _ (fun i _ => integrable_finsetSum _ (fun j _ => hint _ (hB i j)))]
-    exact Finset.sum_congr rfl fun i _ => integral_finsetSum _ (fun j _ => hint _ (hB i j))
-  have hseq : (∫ p, hs.toLp s p * φ p ∂ν) =
-      (∫ p, DF l p * φ p ∂ν) + (∑ i, ∑ j, ∫ p, B i j p * φ p ∂ν) - ∫ p, C p * φ p ∂ν := by
-    have heq : (∫ p, hs.toLp s p * φ p ∂ν) = ∫ p, s p * φ p ∂ν := by
-      apply integral_congr_ae
-      filter_upwards [hs.coeFn_toLp] with p hp
-      rw [hp]
-    rw [heq]
-    simp only [s, sub_mul, add_mul]
-    have hsumI : Integrable (fun p => DF l p * φ p + (∑ i, ∑ j, B i j p) * φ p) ν :=
-      (hint _ (Lp.memLp (DF l))).add (hint _ hsum)
-    rw [integral_sub hsumI (hint _ hC),
-      integral_add (hint _ (Lp.memLp (DF l))) (hint _ hsum), hsumB]
-  change (∫ p, ρ p * H l p * fderiv ℝ φ p (1, 0) ∂ν) = _
-  change _ = (∑ i, ∑ j, ∫ p, (A i j p * K i l p + DA i j p * H i p) *
-    fderiv ℝ φ p (0, EuclideanSpace.single j 1) ∂ν) + _ + ∫ p, C p * φ p ∂ν at hcomm
-  simp_rw [hsplit, Finset.sum_sub_distrib] at hcomm
-  rw [hDF l φ hφ hφc hφs] at hcomm
-  linarith
+    (fun ij _ => Lp.memLp (K ij.1 ij.2))
+    (hρ.mono hPO) (fun ij _ => (hA ij.1 ij.2).mono hPO)
+    (fun ij _ => hbound _ (hDA ij.1 ij.2).continuousOn)
+    (fun ij _ => hbound _ (hDDA ij.1 ij.2).continuousOn)
+    (hbound _ hDρ.continuousOn) (hbound _ hTDρ.continuousOn)
+    (hH l) hR (fun ij _ => hK ij.1 l) (fun ij _ => hK ij.1 ij.2) (hDF l) hbase'
+  simpa only [Fintype.sum_prod_type] using hs
 
 end
 
