@@ -182,7 +182,7 @@ end DifferentialGeometry.Analysis.Parabolic.TimeSobolev
 
 namespace DifferentialGeometry.Analysis.Parabolic.TimeSobolev
 
-private theorem exists_timeH1_comp_clm
+theorem exists_timeH1_comp_clm
     {X Y : Type*} [NormedAddCommGroup X] [NormedSpace ℝ X] [CompleteSpace X]
     [NormedAddCommGroup Y] [NormedSpace ℝ Y] [CompleteSpace Y] {T : ℝ}
     (L : X →L[ℝ] Y) (u : timeH1 X T) :

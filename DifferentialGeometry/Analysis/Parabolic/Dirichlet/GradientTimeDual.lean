@@ -5,25 +5,6 @@ import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.TimeH1Multiplication
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.TimeMeasureRestrict
 
 noncomputable section
-open MeasureTheory
-open scoped ENNReal
-
-namespace DifferentialGeometry.Analysis.Parabolic.TimeSobolev
-open Filter Set
-private theorem exists_timeH1_map_of_clm
-    {X Y : Type*} [NormedAddCommGroup X] [NormedSpace ℝ X] [CompleteSpace X]
-    [NormedAddCommGroup Y] [NormedSpace ℝ Y] [CompleteSpace Y]
-    {T : ℝ} (hT : 0 ≤ T) (L : X →L[ℝ] Y) (u : timeH1 X T) :
-    ∃ w : timeH1 Y T, (∀ t ∈ Icc (0 : ℝ) T, w.toFun t = L (u.toFun t)) ∧
-      w.deriv =ᵐ[timeMeasure T] (fun t => L (u.deriv t)) := by
-  obtain ⟨w, _, hw, hwd⟩ := exists_timeH1_clm_apply_of_contDiffOn hT
-    (contDiffOn_const (c := L)) u
-  refine ⟨w, hw, ?_⟩
-  filter_upwards [hwd] with t ht
-  simpa only [deriv_const, zero_apply, zero_add] using ht
-end DifferentialGeometry.Analysis.Parabolic.TimeSobolev
-
-noncomputable section
 
 open Bundle Filter Manifold MeasureTheory Set
 open scoped ContDiff ENNReal Manifold NNReal Topology
@@ -100,8 +81,8 @@ theorem IsWeakEvolutionSolution.exists_timeH1_weighted_gradient_dual
     dirichletLocalWeakPartialLp q α hΩ₀ hΩ₀c hΩ₀s k
   obtain ⟨L, _, hL⟩ := exists_lp_dual_weak_partial q α hΩ₀ hΩ₀c hΩ₀s hc hcc hcs k
   obtain ⟨z, hz⟩ := hu.exists_timeH1_chartInverse hXcont hacont α hΩ hΩc hΩs hXsmooth ht₀ ht₁ ht₀₁ hΩ₀ hΩ₀Ω
-  obtain ⟨w, hw, _⟩ := DifferentialGeometry.Analysis.Parabolic.TimeSobolev.exists_timeH1_map_of_clm
-    (X := Lp ℝ 2 (volume.restrict Ω₀)) (Y := H1ComplDirichlet q →L[ℝ] ℝ) (sub_nonneg.mpr ht₀₁.le) L z
+  obtain ⟨w, _, hw, _⟩ := exists_timeH1_comp_clm
+    (X := Lp ℝ 2 (volume.restrict Ω₀)) (Y := H1ComplDirichlet q →L[ℝ] ℝ) L z
   refine ⟨w, ?_⟩
   filter_upwards [hz, ae_restrict_mem measurableSet_Icc] with s hs hsI
   intro v
