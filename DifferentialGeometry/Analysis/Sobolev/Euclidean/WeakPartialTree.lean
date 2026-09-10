@@ -81,4 +81,71 @@ theorem ae_memWkp_of_weak_partial_tree
   intro k
   exact hnode k 0 (fun i : Fin 0 => Fin.elim0 i)
 
+theorem ae_memWkp_and_memLp_wkpNorm_of_finite_weak_partial_tree
+    {Z : Type*} [MeasurableSpace Z] {μ : Measure Z}
+    {p : ℝ≥0∞} (hp : 1 ≤ p) (hpt : p ≠ ⊤) {Ω : Set E} (hΩ : IsOpen Ω) (K : ℕ)
+    (u : ∀ n : ℕ, (Fin n → Fin d) → Z × E → ℝ)
+    (hLp : ∀ n ≤ K, ∀ α, MemLp (u n α) p (μ.prod (volume.restrict Ω)))
+    (hweak : ∀ n < K, ∀ α i, ∀ᵐ t ∂μ,
+      DeGiorgi.HasWeakPartialDeriv i
+        (fun x => u (n + 1) (Fin.cons i α) (t, x))
+        (fun x => u n α (t, x)) Ω) :
+    (∀ᵐ t ∂μ,
+      MemWkp K p
+        (fun x => u 0 (fun i : Fin 0 => Fin.elim0 i) (t, x)) Ω) ∧
+      MemLp
+        (fun t =>
+          (iteratedWeakSobolevNorm K p
+            (fun x => u 0 (fun i : Fin 0 => Fin.elim0 i) (t, x)) Ω).toReal) p μ := by
+  have hnode : ∀ k n α, n + k ≤ K → (∀ᵐ t ∂μ,
+      MemWkp k p (fun x => u n α (t, x)) Ω) ∧
+      MemLp
+        (fun t => (iteratedWeakSobolevNorm k p
+          (fun x => u n α (t, x)) Ω).toReal) p μ := by
+    intro k
+    induction k with
+    | zero =>
+        intro n α hn
+        have hslice := (hLp n (by omega) α).prodMk_left hpt
+        refine ⟨hslice, ?_⟩
+        simpa only [wkpNorm_zero] using (hLp n (by omega) α).eLpNorm_toReal hpt
+    | succ k ih =>
+        intro n α hn
+        let V : Z × E → ℝ := u n α
+        let W : Fin d → Z × E → ℝ := fun i => u (n + 1) (Fin.cons i α)
+        have hW : ∀ i, ∀ᵐ t ∂μ,
+            MemWkp k p (fun x => W i (t, x)) Ω := by
+          intro i
+          exact (ih (n + 1) (Fin.cons i α) (by omega)).1
+        have hWnorm : ∀ i, MemLp
+            (fun t => (iteratedWeakSobolevNorm k p
+              (fun x => W i (t, x)) Ω).toReal) p μ := by
+          intro i
+          exact (ih (n + 1) (Fin.cons i α) (by omega)).2
+        have hstep := ae_memWkp_succ_and_memLp_wkpNorm_of_weak_partials
+          hΩ hp hpt (V := V) (W := W) (hLp n (by omega) α) hW hWnorm
+          (hweak n (by omega) α)
+        simpa only [V, W] using hstep
+  exact hnode K 0 (fun i : Fin 0 => Fin.elim0 i) (by omega)
+
+theorem ae_memWkp_and_memLp_wkpNorm_of_weak_partial_tree
+    {Z : Type*} [MeasurableSpace Z] {μ : Measure Z}
+    {p : ℝ≥0∞} (hp : 1 ≤ p) (hpt : p ≠ ⊤) {Ω : Set E} (hΩ : IsOpen Ω)
+    (u : ∀ n : ℕ, (Fin n → Fin d) → Z × E → ℝ)
+    (hLp : ∀ n α, MemLp (u n α) p (μ.prod (volume.restrict Ω)))
+    (hweak : ∀ n α i, ∀ᵐ t ∂μ,
+      DeGiorgi.HasWeakPartialDeriv i
+        (fun x => u (n + 1) (Fin.cons i α) (t, x))
+        (fun x => u n α (t, x)) Ω) :
+    ∀ k, (∀ᵐ t ∂μ,
+      MemWkp k p
+        (fun x => u 0 (fun i : Fin 0 => Fin.elim0 i) (t, x)) Ω) ∧
+      MemLp
+        (fun t =>
+          (iteratedWeakSobolevNorm k p
+            (fun x => u 0 (fun i : Fin 0 => Fin.elim0 i) (t, x)) Ω).toReal) p μ := by
+  intro k
+  exact ae_memWkp_and_memLp_wkpNorm_of_finite_weak_partial_tree hp hpt hΩ k u
+    (fun n _ => hLp n) (fun n _ => hweak n)
+
 end DifferentialGeometry.Analysis.Sobolev.Euclidean
