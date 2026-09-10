@@ -6,12 +6,12 @@ noncomputable section
 open Set Filter Function Topology Manifold
 open scoped ContDiff
 
-namespace Poincare.Geometry.Boundary
+namespace DifferentialGeometry.Geometry.Boundary
 
 open DifferentialGeometry
 open DifferentialGeometry.Integral.DivergenceTheorem.WithBoundary
 open DifferentialGeometry.Integral.Measure
-open Poincare.Geometry.Gradient Poincare.Topology.Manifold
+open DifferentialGeometry.Geometry.Gradient DifferentialGeometry.Topology.Manifold
 
 variable {E H M : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
   [FiniteDimensional ℝ E] [TopologicalSpace H] [TopologicalSpace M] [ChartedSpace H M]
@@ -211,4 +211,4 @@ theorem exists_disjoint_adapted_endpoint_collars [CompactSpace M]
     rw [hcΦ₁]
     exact hinside₁ z.1.1 (hSU₁ (ht₁ z hz).1) _ ⟨ht, (ht₁ z hz).2.2⟩
 
-end Poincare.Geometry.Boundary
+end DifferentialGeometry.Geometry.Boundary

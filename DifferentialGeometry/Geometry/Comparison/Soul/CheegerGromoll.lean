@@ -1,4 +1,3 @@
-import Batteries.Tactic.Alias
 import DifferentialGeometry.Geometry.Comparison.Soul.Defs
 import DifferentialGeometry.Geometry.Submanifold.NormalBundle.Defs
 import DifferentialGeometry.Geometry.Curvature.Nonnegative
@@ -43,9 +42,3 @@ def cheegerGromollSoulTheorem {E H M : Type*}
                     ∀ x : S, Phi (Bundle.zeroSection F ν x) = (x : M)
 
 end DifferentialGeometry.Geometry
-
-namespace Poincare.Geometry
-
-@[reducible] alias cheegerGromollSoulTheorem := DifferentialGeometry.Geometry.cheegerGromollSoulTheorem
-
-end Poincare.Geometry

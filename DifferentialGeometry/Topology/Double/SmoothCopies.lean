@@ -6,7 +6,7 @@ set_option autoImplicit false
 noncomputable section
 open Set Function Manifold Topology TopologicalSpace
 open scoped ContDiff Topology
-namespace Poincare.Topology
+namespace DifferentialGeometry.Topology
 
 theorem contMDiff_double_copies_of_collar
     {M E H F G : Type*} [TopologicalSpace M] [CompactSpace M] [T2Space M]
@@ -45,7 +45,7 @@ theorem contMDiff_double_copies_of_collar
     change c (d.symm y).val = y.val
     rw [← hd, d.apply_symm_apply]
   have hplus : ContMDiffOn I 𝓘(ℝ, E) ∞ (doublePositive B) Y := by
-    apply Poincare.Manifold.contMDiffOn_of_contMDiff_open_restrict Y
+    apply DifferentialGeometry.Manifold.contMDiffOn_of_contMDiff_open_restrict Y
     intro y
     let b := (g y).1
     have hcomp : ContMDiff I 𝓘(ℝ, E) ∞
@@ -61,7 +61,7 @@ theorem contMDiff_double_copies_of_collar
     (contMDiff_fst.comp hg).prodMk (hneg.comp (contMDiff_snd.comp hg))
   have hg'small (y : Y) : |(g' y).2| < a := by simpa only [g', abs_neg] using hgsmall y
   have hminus : ContMDiffOn I 𝓘(ℝ, E) ∞ (doubleNegative B) Y := by
-    apply Poincare.Manifold.contMDiffOn_of_contMDiff_open_restrict Y
+    apply DifferentialGeometry.Manifold.contMDiffOn_of_contMDiff_open_restrict Y
     intro y
     let b := (g y).1
     have hcomp : ContMDiff I 𝓘(ℝ, E) ∞
@@ -95,4 +95,4 @@ theorem contMDiff_double_copies_of_collar
         exact (le_of_not_gt hx).trans_lt ha
       exact hminus.contMDiffAt (Y.isOpen.mem_nhds hxY)
 
-end Poincare.Topology
+end DifferentialGeometry.Topology

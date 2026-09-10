@@ -6,7 +6,7 @@ noncomputable section
 open scoped Manifold ContDiff RealInnerProductSpace
 open DifferentialGeometry DifferentialGeometry.Geometry
 
-namespace Poincare.Geometry.Metric
+namespace DifferentialGeometry.Geometry.Metric
 
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
   {n : ℕ} [Fact (Module.finrank ℝ E = n + 1)]
@@ -22,4 +22,4 @@ def roundCylinderMetric :
   rw [roundCylinderMetric, cylinderMetric_inner]
   exact congrArg (fun a : ℝ ↦ 2 * a + v.2 * w.2) (roundMetric_inner x.1 v.1 w.1)
 
-end Poincare.Geometry.Metric
+end DifferentialGeometry.Geometry.Metric

@@ -5,9 +5,9 @@ import DifferentialGeometry.Geometry.Metric.Cylinder
 noncomputable section
 open scoped Manifold ContDiff
 open DifferentialGeometry DifferentialGeometry.Geometry.Curvature
-open Poincare.Geometry.Metric
+open DifferentialGeometry.Geometry.Metric
 
-namespace Poincare.Geometry.Curvature
+namespace DifferentialGeometry.Geometry.Curvature
 
 theorem ricciTensor_cylinderMetric
     {E H M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
@@ -22,4 +22,4 @@ theorem ricciTensor_cylinderMetric
   exact (congrArg (fun a : ℝ ↦ ricciTensor g x.1 v.1 w.1 + a)
     (ricciTensor_line_eq_zero _ x.2 v.2 w.2)).trans (add_zero _)
 
-end Poincare.Geometry.Curvature
+end DifferentialGeometry.Geometry.Curvature

@@ -13,11 +13,11 @@ noncomputable section
 open Bundle Manifold Set
 open scoped ENNReal Manifold ContDiff Topology
 
-namespace Poincare.Toponogov
+namespace DifferentialGeometry.Toponogov
 
 open DifferentialGeometry
 open DifferentialGeometry.Geometry.Riemannian
-open Poincare.Geometry
+open DifferentialGeometry.Geometry
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [CompleteSpace E]
@@ -365,4 +365,4 @@ theorem riemannianComparisonAngle_shortening_of_complete
   · exact ht₁t₂
   · exact ht₂B
 
-end Poincare.Toponogov
+end DifferentialGeometry.Toponogov

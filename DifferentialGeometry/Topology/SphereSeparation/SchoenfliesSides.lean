@@ -7,7 +7,7 @@ noncomputable section
 open Set Metric Manifold
 open scoped ContDiff
 
-namespace Poincare.Topology.SphereSeparation
+namespace DifferentialGeometry.Topology.SphereSeparation
 
 theorem exists_global_diffeomorph_of_smoothSchoenflies
     (hSch : smoothSchoenfliesThree) (e : sphere (0 : EuclideanThree) 1 → EuclideanThree)
@@ -15,7 +15,7 @@ theorem exists_global_diffeomorph_of_smoothSchoenflies
     ∃ D : Diffeomorph (𝓡 3) (𝓡 3) EuclideanThree EuclideanThree ∞,
       D '' sphere 0 1 = range e := by
   obtain ⟨φ, hφ, hφS⟩ := hSch e he
-  obtain ⟨D, hD⟩ := Poincare.Topology.Manifold.exists_diffeomorph_eqOn_of_partialDiffeomorph_closedBall
+  obtain ⟨D, hD⟩ := DifferentialGeometry.Topology.Manifold.exists_diffeomorph_eqOn_of_partialDiffeomorph_closedBall
     φ zero_lt_one hφ
   exact ⟨D, ((hD.mono sphere_subset_closedBall).image_eq).trans hφS⟩
 
@@ -37,4 +37,4 @@ theorem exists_ball_sphereSides_of_smoothSchoenflies
   obtain ⟨d, hd, hdc⟩ := hside
   exact ⟨D, d, hDS, hd, hdc⟩
 
-end Poincare.Topology.SphereSeparation
+end DifferentialGeometry.Topology.SphereSeparation

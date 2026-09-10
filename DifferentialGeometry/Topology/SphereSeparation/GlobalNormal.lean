@@ -8,7 +8,7 @@ set_option autoImplicit false
 open Function Set
 open scoped ContDiff Manifold Topology
 
-namespace Poincare.Topology.SphereSeparation
+namespace DifferentialGeometry.Topology.SphereSeparation
 
 variable {e : SphereTwo → EuclideanThree} {x : SphereTwo}
 
@@ -220,4 +220,4 @@ theorem EmbeddedSphereNormalChart.contMDiffOn_normalCoordinate
     contDiff_snd.comp c.normalForm.equiv.symm.contDiff
   exact (hlinear.contDiffAt.contMDiffAt.comp y hcod).contMDiffWithinAt
 
-end Poincare.Topology.SphereSeparation
+end DifferentialGeometry.Topology.SphereSeparation

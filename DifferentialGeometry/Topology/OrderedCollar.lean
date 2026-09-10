@@ -5,7 +5,7 @@ import Mathlib.Topology.Order.Compact
 noncomputable section
 open Set
 
-namespace Poincare.Topology
+namespace DifferentialGeometry.Topology
 
 theorem exists_ordered_graph_band_of_fiberwise_bijective
     {N P L : Type*} [TopologicalSpace N] [CompactSpace N]
@@ -83,4 +83,4 @@ theorem exists_ordered_graph_band_of_fiberwise_bijective
   change range e = {x | h (x.1, (⊥ : Icc a b)) ≤ x.2 ∧ x.2 ≤ h (x.1, (⊤ : Icc a b))}
   simpa only [Icc_bot_top, univ_prod_univ, image_univ] using hsub ⊥ ⊤
 
-end Poincare.Topology
+end DifferentialGeometry.Topology

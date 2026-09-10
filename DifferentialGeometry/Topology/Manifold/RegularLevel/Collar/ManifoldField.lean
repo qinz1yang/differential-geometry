@@ -7,10 +7,10 @@ set_option autoImplicit false
 
 open Bundle Set Manifold
 open scoped Topology ContDiff
-open DifferentialGeometry.Topology.Morse Poincare.VectorField
+open DifferentialGeometry.Topology.Morse DifferentialGeometry.VectorField
 
 noncomputable section
-namespace Poincare.Manifold.RegularLevel
+namespace DifferentialGeometry.Manifold.RegularLevel
 
 variable {m : ℕ} {H : Type*} [TopologicalSpace H]
   {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
@@ -131,4 +131,4 @@ theorem exists_unitSpeed_near_compact_regularSet_manifold
   simp_rw [hterm]
   rw [Finset.sum_neg_distrib, hsum]
 
-end Poincare.Manifold.RegularLevel
+end DifferentialGeometry.Manifold.RegularLevel

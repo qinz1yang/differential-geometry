@@ -6,7 +6,7 @@ open DifferentialGeometry.Integral.DivergenceTheorem.WithBoundary
 open scoped ContDiff
 set_option autoImplicit false
 noncomputable section
-namespace Poincare.Manifold.BoundaryCollar
+namespace DifferentialGeometry.Manifold.BoundaryCollar
 
 private theorem time_le_of_boundary_flow_eq
     {n : ℕ} [NeZero n] {M : Type*} [TopologicalSpace M]
@@ -78,4 +78,4 @@ theorem boundary_flow_injective
       simpa only [hzero p (hKU p.2), hzero q (hKU q.2)] using heq ⟨le_rfl, htp.le⟩
   exact Prod.ext (Subtype.ext hpq) rfl
 
-end Poincare.Manifold.BoundaryCollar
+end DifferentialGeometry.Manifold.BoundaryCollar

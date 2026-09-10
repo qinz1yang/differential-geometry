@@ -6,7 +6,7 @@ noncomputable section
 open Set Filter Topology
 open scoped ContDiff Manifold
 
-namespace Poincare.Geometry.Boundary
+namespace DifferentialGeometry.Geometry.Boundary
 
 open DifferentialGeometry.Integral.DivergenceTheorem.WithBoundary
 
@@ -38,7 +38,7 @@ theorem exists_modelBoundary_inverse_of_one_sided
     have hh := hdr w' 0
     simp only [zero_smul, add_zero, hw', hvnormal] at hh
     exact hc.ne' hh
-  obtain ⟨e, hpe, heV, he, hi, heq⟩ := Poincare.Analysis.exists_localInverse_of_one_sided_transverse_family
+  obtain ⟨e, hpe, heV, he, hi, heq⟩ := DifferentialGeometry.Analysis.exists_localInverse_of_one_sided_transverse_family
     hV hp hρ hf hzero (injective_fderiv_modelBoundaryParam I p) hI.finrank_boundaryE_succ hderiv htrans
   have hezero : e (p, 0) = modelBoundaryParam I p := (heq _ hpe le_rfl).trans (hzero p hp)
   have hed : HasDerivWithinAt (fun t ↦ e (p, t)) v (Icc 0 ρ) 0 := by
@@ -120,4 +120,4 @@ theorem exists_modelBoundary_inverse_of_one_sided
     have hh : q z = q (z.1, 0) ↔ z.2 = 0 := (hmono z.1 hz.2.1).injOn.eq_iff hz.2.2 h0
     simpa only [hqzero z.1 hz.2.1] using hh
 
-end Poincare.Geometry.Boundary
+end DifferentialGeometry.Geometry.Boundary

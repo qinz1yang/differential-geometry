@@ -12,7 +12,7 @@ open CategoryTheory CategoryTheory.Limits DirectSum
 
 universe u
 
-namespace Poincare.SSet
+namespace DifferentialGeometry.SSet
 
 variable {k : Type u} [Field k] (X : _root_.SSet.{u}) (R : ModuleCat.{u} k)
 
@@ -45,7 +45,7 @@ theorem finiteDimensional_homology (n : ℕ)
     [Finite (X.nonDegenerate n)] [FiniteDimensional k R] :
     FiniteDimensional k (X.homology (C := ModuleCat.{u} k) R n) := by
   have := finiteDimensional_normalizedChainComplex_X X R n
-  have := Poincare.HomologicalComplex.finiteDimensional_homology (X.normalizedChainComplex R) n
+  have := DifferentialGeometry.HomologicalComplex.finiteDimensional_homology (X.normalizedChainComplex R) n
   exact (isoOfQuasiIsoAt (X.toNormalizedChainComplex R) n).symm.toLinearEquiv.finiteDimensional
 
 theorem homologyEulerChar_chainComplex_eq_normalizedChainComplex :
@@ -62,7 +62,7 @@ theorem eulerChar_normalizedChainComplex_eq_homologyEulerChar
   have : ∀ n : ℕ, FiniteDimensional k ((X.normalizedChainComplex R).X n) :=
     fun n => finiteDimensional_normalizedChainComplex_X X R n
   rw [homologyEulerChar_chainComplex_eq_normalizedChainComplex]
-  apply Poincare.HomologicalComplex.eulerChar_eq_homologyEulerChar
+  apply DifferentialGeometry.HomologicalComplex.eulerChar_eq_homologyEulerChar
   obtain ⟨d, _⟩ := X.hasDimensionLT_of_finite
   exact ⟨d, fun n hn => X.isZero_normalizedChainComplex_X_of_hasDimensionLT R n d hn.le⟩
 
@@ -106,4 +106,4 @@ theorem homologyEulerChar_eq_of_coefficients [X.Finite] (K : Type u) [Field K] :
   rw [homologyEulerChar_eq_finsum_card_nonDegenerate,
     homologyEulerChar_eq_finsum_card_nonDegenerate]
 
-end Poincare.SSet
+end DifferentialGeometry.SSet

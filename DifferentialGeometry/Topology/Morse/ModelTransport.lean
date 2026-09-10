@@ -8,7 +8,7 @@ noncomputable section
 open Set Filter Function
 open scoped Manifold ContDiff Topology
 open DifferentialGeometry.Topology.Morse
-namespace Poincare.Morse
+namespace DifferentialGeometry.Morse
 variable {E F : Type} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [NormedAddCommGroup F] [NormedSpace ℝ F]
   {H M : Type} [TopologicalSpace H] [TopologicalSpace M] [ChartedSpace H M]
@@ -21,7 +21,7 @@ theorem isCriticalPointAt_transContinuousLinearEquiv_iff {f : M → ℝ}
     IsCriticalPointAt (I.transContinuousLinearEquiv e) f x ↔ IsCriticalPointAt I f x := by
   change (show F →L[ℝ] ℝ from mfderiv (I.transContinuousLinearEquiv e) 𝓘(ℝ, ℝ) f x) = 0 ↔
     (show E →L[ℝ] ℝ from mfderiv I 𝓘(ℝ, ℝ) f x) = 0
-  erw [Poincare.Manifold.mfderiv_transContinuousLinearEquiv I e hf hx]
+  erw [DifferentialGeometry.Manifold.mfderiv_transContinuousLinearEquiv I e hf hx]
   constructor
   · intro h
     apply ContinuousLinearMap.ext
@@ -43,10 +43,10 @@ theorem chartHessianAt_transContinuousLinearEquiv {f : M → ℝ}
   let z := extChartAt I x x
   have hg : ContDiffAt ℝ 2 g (e.symm (e z)) := by
     simpa only [e.symm_apply_apply] using
-      (Poincare.Manifold.contDiffAt_comp_extChartAt_symm_of_isInteriorPoint I hf hx).of_le (show (2 : ℕ∞ω) ≤ ∞ from WithTop.coe_le_coe.mpr le_top)
+      (DifferentialGeometry.Manifold.contDiffAt_comp_extChartAt_symm_of_isInteriorPoint I hf hx).of_le (show (2 : ℕ∞ω) ≤ ∞ from WithTop.coe_le_coe.mpr le_top)
   have hz : fderiv ℝ g (e.symm (e z)) = 0 := by
     rw [e.symm_apply_apply]
-    have hd := Poincare.Manifold.mfderiv_eq_fderiv_extChartAt_of_isInteriorPoint
+    have hd := DifferentialGeometry.Manifold.mfderiv_eq_fderiv_extChartAt_of_isInteriorPoint
       I (hf.mdifferentiableAt (by simp)) hx
     exact hd.symm.trans hc
   have hd := fderiv_fderiv_comp_at_critical hg e.symm.contDiff.contDiffAt hz
@@ -90,4 +90,4 @@ theorem isNondegenerateCriticalPointAt_transContinuousLinearEquiv_iff {f : M →
         (chartHessianAt (fun y => f ((extChartAt I x).symm y)) (extChartAt I x x)))
       e.toLinearEquiv e.toLinearEquiv using 1
   · simp only [hc, false_and]
-end Poincare.Morse
+end DifferentialGeometry.Morse

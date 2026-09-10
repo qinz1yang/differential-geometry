@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Affine.LineAlignment
 import Mathlib.Algebra.Module.Defs
 
-namespace Poincare.Geometry.Affine
+namespace DifferentialGeometry.Geometry.Affine
 
 def finiteLineAffineAlignment {n : ℕ} (s c : Fin n → ℝ) (i : Fin (n + 1)) : ℝ × ℝ :=
   lineAffineAlignment (fun j ↦ if h : j < n then s ⟨j, h⟩ else 1)
@@ -52,4 +52,4 @@ theorem finiteLineAffineAlignment_smul_eq {n : ℕ} (s c : Fin n → ℝ)
   have hs' : s j * s j = 1 := by rcases hs with h | h <;> rw [h] <;> norm_num
   rw [mul_assoc, hs', mul_one]
 
-end Poincare.Geometry.Affine
+end DifferentialGeometry.Geometry.Affine

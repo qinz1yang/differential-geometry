@@ -7,7 +7,7 @@ noncomputable section
 open Set
 open scoped Manifold ContDiff BigOperators
 
-namespace Poincare.Topology.Manifold
+namespace DifferentialGeometry.Topology.Manifold
 
 private theorem sum_consecutive_sub {n : ℕ} (f : Fin (n + 2) → ℝ) :
     (∑ i : Fin (n + 1), (f i.castSucc - f i.succ)) = f 0 - f (Fin.last (n + 1)) := by
@@ -63,4 +63,4 @@ theorem sum_abs_mvfderiv_orderedStepPartition_le
   have hb := abs_nonneg (mvfderiv I (θ (Fin.last (n + 1))) x v)
   linarith only [hsum, hfirstSum, hlastSum, ha, hb]
 
-end Poincare.Topology.Manifold
+end DifferentialGeometry.Topology.Manifold

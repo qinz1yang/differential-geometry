@@ -13,7 +13,7 @@ open CategoryTheory Set
 
 universe u
 
-namespace Poincare.Topology.VanKampen
+namespace DifferentialGeometry.Topology.VanKampen
 
 theorem simplyConnectedSpace_iff_fundamentalGroup_subsingleton
     (Y : Type u) [TopologicalSpace Y] [PathConnectedSpace Y] (y₀ : Y) :
@@ -48,7 +48,7 @@ theorem simplyConnectedSpace_of_open_cover
     intro i
     cases i <;> simp only [fundamentalGroupFactor] <;> infer_instance
   have hP : Subsingleton (fundamentalGroupAmalgamatedProduct U V x₀ hx₀) :=
-    Poincare.Algebra.Group.pushoutI_subsingleton_of_factors
+    DifferentialGeometry.Algebra.Group.pushoutI_subsingleton_of_factors
       (fundamentalGroupFactor U V x₀ hx₀)
       (FundamentalGroup (↑(U ∩ V)) (overlapBasepoint U V x₀ hx₀))
       (fundamentalGroupAmalgamation U V x₀ hx₀)
@@ -78,4 +78,4 @@ theorem simplyConnected_coverMembers_of_union
   · exact (simplyConnectedSpace_iff_fundamentalGroup_subsingleton
       V (rightBasepoint V x₀ hx₀.2)).2 hright
 
-end Poincare.Topology.VanKampen
+end DifferentialGeometry.Topology.VanKampen

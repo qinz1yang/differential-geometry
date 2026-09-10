@@ -7,7 +7,7 @@ set_option autoImplicit false
 open Metric Set
 open scoped Manifold ContDiff Topology
 noncomputable section
-namespace Poincare.LocalDegree
+namespace DifferentialGeometry.LocalDegree
 variable {E F : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [NormedAddCommGroup F] [NormedSpace ℝ F]
 
@@ -106,4 +106,4 @@ theorem euclideanLocalDegree_comp_partialDiffeomorph_eq_sign_det {n : ℕ∞ω}
   change (SignType.sign (LinearMap.det A.toContinuousLinearMap.toLinearMap) : ℤ) * _ = _
   rw [hA]
 
-end Poincare.LocalDegree
+end DifferentialGeometry.LocalDegree

@@ -4,7 +4,7 @@ noncomputable section
 open Set Topology Manifold
 open scoped ContDiff
 
-namespace Poincare.Topology
+namespace DifferentialGeometry.Topology
 
 theorem exists_continuousMap_factor_of_range_subset
     {W M S : Type*} [TopologicalSpace W] [TopologicalSpace M] [TopologicalSpace S]
@@ -37,4 +37,4 @@ theorem exists_embedded_smooth_lift_of_simplyConnected
     IsEmbedding.of_comp g.continuous hps.contMDiff.continuous (heq ▸ hemb),
     injective_mfderiv_of_smooth_lift hps.contMDiff hinj hgs hpg⟩
 
-end Poincare.Topology
+end DifferentialGeometry.Topology

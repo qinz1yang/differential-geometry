@@ -16,7 +16,7 @@ open scoped RealInnerProductSpace
 
 universe u
 
-namespace Poincare.Topology
+namespace DifferentialGeometry.Topology
 
 variable {E : Type u} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
 
@@ -118,7 +118,7 @@ theorem simplyConnectedSpace_sphere_of_orthogonal_rank_gt_one
   let w₀ : ({0}ᶜ : Set ((ℝ ∙ v)ᗮ)) := Classical.choice inferInstance
   let x₀ : sphere (0 : E) 1 := (e.symm w₀).1
   have hx₀ : x₀ ∈ U ∩ V := (e.symm w₀).2
-  exact Poincare.Topology.VanKampen.simplyConnectedSpace_of_open_cover
+  exact DifferentialGeometry.Topology.VanKampen.simplyConnectedSpace_of_open_cover
     U V hU hV hcover x₀ hx₀
 
 abbrev SphereTwo := sphere (0 : EuclideanSpace ℝ (Fin 3)) 1
@@ -175,4 +175,4 @@ instance sphereThreeSimplyConnectedSpace : SimplyConnectedSpace SphereThree :=
 noncomputable def sphereThreeNorth : SphereThree :=
   ⟨sphereThreeNorthVector, by simp⟩
 
-end Poincare.Topology
+end DifferentialGeometry.Topology

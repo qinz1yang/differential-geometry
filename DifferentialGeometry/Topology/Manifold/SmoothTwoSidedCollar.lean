@@ -15,7 +15,7 @@ noncomputable section
 
 universe u v w x
 
-namespace Poincare.Topology
+namespace DifferentialGeometry.Topology
 
 def symmetricOpenInterval (a : ℝ) : TopologicalSpace.Opens ℝ :=
   ⟨Set.Ioo (-a) a, isOpen_Ioo⟩
@@ -99,4 +99,4 @@ theorem transAmbientModel_toFun {F' : Type*} [NormedAddCommGroup F'] [NormedSpac
 
 end SmoothTwoSidedCollar
 
-end Poincare.Topology
+end DifferentialGeometry.Topology

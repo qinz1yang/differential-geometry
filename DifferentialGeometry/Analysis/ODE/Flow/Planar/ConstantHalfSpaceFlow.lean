@@ -5,7 +5,7 @@ noncomputable section
 open Set Topology
 open scoped ContDiff
 
-namespace Poincare.Analysis
+namespace DifferentialGeometry.Analysis
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
 
@@ -103,4 +103,4 @@ theorem eq_of_integralCurve_constant_incoming_halfSpace_crossings
     (by simpa only [η, neg_neg, neg_apply, neg_inj] using ht)
   exact neg_injective he
 
-end Poincare.Analysis
+end DifferentialGeometry.Analysis

@@ -6,7 +6,7 @@ open Set Function Manifold Topology TopologicalSpace
 open scoped ContDiff
 set_option autoImplicit false
 noncomputable section
-namespace Poincare.Manifold.Interval
+namespace DifferentialGeometry.Manifold.Interval
 
 theorem exists_iccInteriorStrip_diffeomorph
     {E H B : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -29,15 +29,15 @@ theorem exists_iccInteriorStrip_diffeomorph
   have hgf (q : U) : g (f q) = q := rfl
   have hfg (y : V) : f (g y) = y := rfl
   have hf : ContMDiff (J.prod (𝓡∂ 1)) (J.prod 𝓘(ℝ, ℝ)) m f := by
-    apply (Poincare.Manifold.contMDiff_subtypeVal_comp_iff (n := m) V f).mp
+    apply (DifferentialGeometry.Manifold.contMDiff_subtypeVal_comp_iff (n := m) V f).mp
     exact (contMDiff_fst.comp contMDiff_subtype_val).prodMk
       (contMDiff_subtypeVal_Icc.comp (contMDiff_snd.comp contMDiff_subtype_val))
   have hg : ContMDiff (J.prod 𝓘(ℝ, ℝ)) (J.prod (𝓡∂ 1)) m g := by
-    apply (Poincare.Manifold.contMDiff_subtypeVal_comp_iff (n := m) U g).mp
+    apply (DifferentialGeometry.Manifold.contMDiff_subtypeVal_comp_iff (n := m) U g).mp
     apply ContMDiff.prodMk
     · exact contMDiff_fst.comp contMDiff_subtype_val
     · apply (contMDiff_iff_comp_subtypeVal_Icc (n := m)).mpr
       exact ⟨by fun_prop, contMDiff_snd.comp contMDiff_subtype_val⟩
   exact ⟨⟨⟨f, g, hgf, hfg⟩, hf, hg⟩, (fun _ => rfl), (fun _ => rfl)⟩
 
-end Poincare.Manifold.Interval
+end DifferentialGeometry.Manifold.Interval

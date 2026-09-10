@@ -6,7 +6,7 @@ import Mathlib.Topology.Category.TopCat.Limits.Products
 set_option autoImplicit false
 noncomputable section
 open CategoryTheory CategoryTheory.Limits Opposite
-namespace Poincare.TopCat
+namespace DifferentialGeometry.TopCat
 universe u
 variable {ι : Type u} (X : ι → TopCat.{u})
 
@@ -43,4 +43,4 @@ def singularSigmaCofanIsColimit : IsColimit (singularSigmaCofan X) := by
     change (ContinuousMap.sigmaMk (X := fun i => ↥(X i)) i).comp ((X i).toSSetObjEquiv n (((X i).toSSetObjEquiv n).symm g)) = _
     rw [Equiv.apply_symm_apply]
     exact hg.symm
-end Poincare.TopCat
+end DifferentialGeometry.TopCat

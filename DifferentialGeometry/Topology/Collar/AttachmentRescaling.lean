@@ -7,7 +7,7 @@ import Mathlib.Tactic.Ring
 open Set Function Topology
 set_option autoImplicit false
 noncomputable section
-namespace Poincare.Topology.Collar
+namespace DifferentialGeometry.Topology.Collar
 
 variable {B X : Type*} [TopologicalSpace B] [CompactSpace B]
   [TopologicalSpace X] [T2Space X]
@@ -107,4 +107,4 @@ theorem exists_attachment_homeomorph_of_rescaling
   exact ⟨mappingCylinderHomeomorphOfClosedCover f g j hseam hg hj hcross hcover,
     fun _ => rfl, fun _ => rfl⟩
 
-end Poincare.Topology.Collar
+end DifferentialGeometry.Topology.Collar

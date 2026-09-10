@@ -5,9 +5,9 @@ noncomputable section
 open Set Topology Manifold
 open scoped ContDiff
 
-namespace Poincare.Topology.Ehresmann
+namespace DifferentialGeometry.Topology.Ehresmann
 
-open Poincare.Geometry.Boundary
+open DifferentialGeometry.Geometry.Boundary
 open DifferentialGeometry.Integral.DivergenceTheorem.WithBoundary
 
 theorem exists_boundaryLevel_diffeomorph_of_interval_product
@@ -60,4 +60,4 @@ theorem exists_boundaryLevel_diffeomorph_of_interval_product
     exact D.apply_symm_apply x.1.1
   exact ⟨⟨⟨forward, back, hleft, hright⟩, hforward, hback⟩, fun _ ↦ rfl⟩
 
-end Poincare.Topology.Ehresmann
+end DifferentialGeometry.Topology.Ehresmann

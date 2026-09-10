@@ -6,7 +6,7 @@ noncomputable section
 open Set Filter Topology
 open scoped ContDiff Manifold
 
-namespace Poincare.Topology.Manifold
+namespace DifferentialGeometry.Topology.Manifold
 
 variable {E F H M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NormedAddCommGroup F] [NormedSpace ℝ F] [CompleteSpace F]
@@ -77,4 +77,4 @@ theorem exists_contMDiff_extension_on_Icc {h : M × ℝ → F} {ρ : ℝ} (hρ :
   have h := hg q
   simpa only [T, if_pos hq.2, mem_singleton_iff] using h
 
-end Poincare.Topology.Manifold
+end DifferentialGeometry.Topology.Manifold

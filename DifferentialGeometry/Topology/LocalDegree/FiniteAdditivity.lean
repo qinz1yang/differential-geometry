@@ -8,8 +8,8 @@ set_option autoImplicit false
 noncomputable section
 open CategoryTheory Set Metric Filter
 open scoped Topology
-namespace Poincare.LocalDegree
-open Poincare.Homology
+namespace DifferentialGeometry.LocalDegree
+open DifferentialGeometry.Homology
 section GlobalAux
 variable {d : ℕ} {a : EuclideanSpace ℝ (Fin (d + 1))} {r : ℝ}
   (hr : 0 < r) (f : C(EuclideanSpace ℝ (Fin (d + 1)), EuclideanSpace ℝ (Fin (d + 1))))
@@ -27,7 +27,7 @@ private theorem euclideanBallDegree_eq_finsum_of_finite_zeroSet :
   let A := ModuleCat.of ℤ ℤ
   let m : relativeHomology (TopCat.of E) Zᶜ A (d + 1) ⟶
       relativeHomology (TopCat.of E) ({0}ᶜ : Set E) A (d + 1) :=
-    Poincare.Homology.relativeHomologyMap A (X := TopCat.of E) (Y := TopCat.of E)
+    DifferentialGeometry.Homology.relativeHomologyMap A (X := TopCat.of E) (Y := TopCat.of E)
       (s := Zᶜ) (t := ({0}ᶜ : Set E)) (TopCat.ofHom f) (fun _ hx => hx) (d + 1)
   have hi : MapsTo (Subtype.val : closedBall a r → E)
       {y : closedBall a r | y.val ∈ sphere a r} Zᶜ := by
@@ -76,12 +76,12 @@ theorem euclideanBallDegree_eq_finsum_localDegrees :
   let E := EuclideanSpace ℝ (Fin (d + 1))
   let Z : Set E := {x ∈ closedBall a r | f x = 0}
   let F : C(closedBall a r,E) := ⟨fun y => f y.val,hf.domRestrict⟩
-  let G : C(E,E) := Poincare.Topology.ClosedBall.extension a hr.le F
+  let G : C(E,E) := DifferentialGeometry.Topology.ClosedBall.extension a hr.le F
   have hFb : ∀ y : closedBall a r, y.val ∈ sphere a r → F y ≠ 0 := fun y hy => hb y.val hy
   have hset : {x | G x = 0} = Z := by
     ext x
-    change Poincare.Topology.ClosedBall.extension a hr.le F x = 0 ↔ x ∈ closedBall a r ∧ f x = 0
-    rw [Poincare.Topology.ClosedBall.extension_eq_iff a hr.le F hFb x]
+    change DifferentialGeometry.Topology.ClosedBall.extension a hr.le F x = 0 ↔ x ∈ closedBall a r ∧ f x = 0
+    rw [DifferentialGeometry.Topology.ClosedBall.extension_eq_iff a hr.le F hFb x]
     exact ⟨fun ⟨hx,hz⟩ => ⟨hx,hz⟩,fun ⟨hx,hz⟩ => ⟨hx,hz⟩⟩
   have hGfinite : {x | G x = 0}.Finite := hset.symm ▸ hfinite
   have hGball : {x | G x = 0} ⊆ ball a r := by
@@ -89,7 +89,7 @@ theorem euclideanBallDegree_eq_finsum_localDegrees :
     have hxZ : x ∈ Z := hset ▸ hx
     exact closedBall_zeroSet_subset_ball hb hxZ
   have heq : G.restrict (closedBall a r) = F :=
-    Poincare.Topology.ClosedBall.extension_restrict a hr.le F
+    DifferentialGeometry.Topology.ClosedBall.extension_restrict a hr.le F
   have hsum := euclideanBallDegree_eq_finsum_of_finite_zeroSet hr G hGfinite hGball
   have hdegree : euclideanBallDegree hr F hFb =
       euclideanBallDegree hr (G.restrict (closedBall a r))
@@ -103,7 +103,7 @@ theorem euclideanBallDegree_eq_finsum_localDegrees :
       euclideanLocalDegree f (e p).val
         (isolatedZero_of_finite_closedBall_zeroSet hf hfinite hb (e p).property.1 (e p).property.2) := by
     apply euclideanLocalDegree_congr
-    exact Poincare.Topology.ClosedBall.extension_eventuallyEq_of_eventuallyEq a hr.le F
+    exact DifferentialGeometry.Topology.ClosedBall.extension_eventuallyEq_of_eventuallyEq a hr.le F
       (hGball p.property) (Filter.EventuallyEq.rfl)
   calc
     _ = ∑ᶠ p : {x | G x = 0}, euclideanLocalDegree f (e p).val
@@ -111,4 +111,4 @@ theorem euclideanBallDegree_eq_finsum_localDegrees :
       finsum_congr hlocal
     _ = _ := finsum_comp_equiv e (f := fun p : Z => euclideanLocalDegree f p.val
       (isolatedZero_of_finite_closedBall_zeroSet hf hfinite hb p.property.1 p.property.2))
-end Poincare.LocalDegree
+end DifferentialGeometry.LocalDegree

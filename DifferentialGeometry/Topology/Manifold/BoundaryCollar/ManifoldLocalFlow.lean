@@ -6,7 +6,7 @@ open scoped ContDiff
 set_option autoImplicit false
 noncomputable section
 
-namespace Poincare.Manifold.BoundaryCollar
+namespace DifferentialGeometry.Manifold.BoundaryCollar
 
 theorem exists_inward_manifold_localFlow
     {n : ℕ} {M : Type*} [TopologicalSpace M]
@@ -110,4 +110,4 @@ theorem exists_inward_manifold_localFlow
     change e.symm (A.symm (F (C (Φ (y, s)), t))) = e.symm (A.symm (F (C y, s + t)))
     rw [hc, hFadd]
 
-end Poincare.Manifold.BoundaryCollar
+end DifferentialGeometry.Manifold.BoundaryCollar

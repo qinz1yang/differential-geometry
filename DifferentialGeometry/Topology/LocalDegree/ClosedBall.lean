@@ -6,8 +6,8 @@ set_option autoImplicit false
 noncomputable section
 open CategoryTheory CategoryTheory.Limits Set Metric
 open scoped unitInterval
-namespace Poincare.LocalDegree
-open Poincare.Homology
+namespace DifferentialGeometry.LocalDegree
+open DifferentialGeometry.Homology
 universe u
 section Maps
 variable {E F : Type u} [PseudoMetricSpace E] [TopologicalSpace F] [Zero F]
@@ -18,7 +18,7 @@ def closedBallRelativeHomologyMap (f : C(closedBall a r, F))
     (hb : ∀ y : closedBall a r, y.val ∈ sphere a r → f y ≠ 0) (n : ℕ) :
     relativeHomology (TopCat.of (closedBall a r)) {y : closedBall a r | y.val ∈ sphere a r} A n ⟶
       relativeHomology (TopCat.of F) ({0}ᶜ : Set F) A n :=
-  Poincare.Homology.relativeHomologyMap A (X := TopCat.of (closedBall a r)) (Y := TopCat.of F)
+  DifferentialGeometry.Homology.relativeHomologyMap A (X := TopCat.of (closedBall a r)) (Y := TopCat.of F)
     (s := {y : closedBall a r | y.val ∈ sphere a r}) (t := ({0}ᶜ : Set F)) (TopCat.ofHom f) hb n
 end Maps
 
@@ -109,4 +109,4 @@ theorem euclideanBallDegree_eq_of_homotopy
   unfold euclideanBallDegree
   rw [closedBallRelativeHomologyMap_eq_of_homotopy hr (ModuleCat.of ℤ ℤ) hb hg H hH]
 end Degree
-end Poincare.LocalDegree
+end DifferentialGeometry.LocalDegree

@@ -8,9 +8,9 @@ open Bundle Manifold
 open scoped Manifold ContDiff
 open DifferentialGeometry
 open DifferentialGeometry.Topology.Manifold
-open Poincare.Geometry.Riemannian
+open DifferentialGeometry.Geometry.Riemannian
 
-namespace Poincare.Geometry
+namespace DifferentialGeometry.Geometry
 
 variable {n : ℕ} {E M : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
   [FiniteDimensional ℝ E] [TopologicalSpace M] [ChartedSpace E M]
@@ -53,4 +53,4 @@ theorem tangentOrientationMetric_sectional_quotient [SecondCountableTopology M]
   exact sectional_quotient_localPull g (tangentOrientationProjection hdim)
     (tangentOrientationProjection_isLocalDiffeomorph hdim) z v w
 
-end Poincare.Geometry
+end DifferentialGeometry.Geometry

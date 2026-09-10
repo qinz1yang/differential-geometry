@@ -12,7 +12,7 @@ set_option autoImplicit false
 open Set
 open scoped Manifold ContDiff Topology
 
-namespace Poincare.Topology.SphereSeparation
+namespace DifferentialGeometry.Topology.SphereSeparation
 
 def HasTwoComplementComponents (e : SphereTwo → EuclideanThree) : Prop :=
   Nonempty
@@ -148,4 +148,4 @@ theorem topologicalSphereSidesOfComponentCount_unique
     d = topologicalSphereSidesOfComponentCount e he hcount happroach :=
   SphereSides.unique _ _
 
-end Poincare.Topology.SphereSeparation
+end DifferentialGeometry.Topology.SphereSeparation

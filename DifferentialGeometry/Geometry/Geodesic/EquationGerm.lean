@@ -1,4 +1,3 @@
-import Batteries.Tactic.Alias
 import DifferentialGeometry.Geometry.Geodesic.Local
 import DifferentialGeometry.Geometry.Exponential.Intrinsic.Geodesic.Basic
 
@@ -54,9 +53,3 @@ theorem isGeodesicAt_of_isGeodesicOn
   simpa only [zero_sub, neg_neg, neg_add_cancel_right] using isGeodesicAt_comp_add hh (-t)
 
 end DifferentialGeometry.Geometry
-
-namespace Poincare.Geometry
-
-alias isGeodesicAt_of_isGeodesicOn := DifferentialGeometry.Geometry.isGeodesicAt_of_isGeodesicOn
-
-end Poincare.Geometry

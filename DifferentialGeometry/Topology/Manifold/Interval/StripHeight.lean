@@ -5,7 +5,7 @@ set_option autoImplicit false
 noncomputable section
 open Set Manifold
 open scoped ContDiff
-namespace Poincare.Manifold.Interval
+namespace DifferentialGeometry.Manifold.Interval
 variable {E H B : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [TopologicalSpace H] [TopologicalSpace B] [ChartedSpace H B]
   {J : ModelWithCorners ℝ E H}
@@ -35,4 +35,4 @@ theorem mfderiv_stripHeight_ne_zero (q : S) :
   change (0 : ℝ) = tangentCoordinateIcc q.val.2 ((tangentCoordinateIcc q.val.2).symm 1) at hh
   exact zero_ne_one (hh.trans ((tangentCoordinateIcc q.val.2).apply_symm_apply 1))
 
-end Poincare.Manifold.Interval
+end DifferentialGeometry.Manifold.Interval

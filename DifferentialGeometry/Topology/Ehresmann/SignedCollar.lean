@@ -5,7 +5,7 @@ import Mathlib.Tactic.Linarith
 noncomputable section
 open Set Topology
 
-namespace Poincare.Topology.Ehresmann
+namespace DifferentialGeometry.Topology.Ehresmann
 
 variable {B M : Type*} [TopologicalSpace B] [TopologicalSpace M]
 
@@ -170,4 +170,4 @@ theorem exists_upper_signed_collar
     change -(e.symm (H.symm q)).2.1 = q.1.1.2 - b
     linarith
 
-end Poincare.Topology.Ehresmann
+end DifferentialGeometry.Topology.Ehresmann

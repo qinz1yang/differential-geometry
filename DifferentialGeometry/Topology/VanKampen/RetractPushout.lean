@@ -11,7 +11,7 @@ open CategoryTheory
 
 universe u v
 
-namespace Poincare.Topology.VanKampen
+namespace DifferentialGeometry.Topology.VanKampen
 
 structure CommSqRetract {C : Type u} [Category.{v} C]
     {Z' X' Y' P' Z X Y P : C}
@@ -94,4 +94,4 @@ theorem CommSqRetract.isPushout {C : Type u} [Category.{v} C]
         _ = (R.iY ≫ R.rY) ≫ b := by simp
         _ = b := by rw [R.retract_y]; simp
 
-end Poincare.Topology.VanKampen
+end DifferentialGeometry.Topology.VanKampen

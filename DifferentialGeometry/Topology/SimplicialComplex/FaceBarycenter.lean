@@ -4,7 +4,7 @@ set_option autoImplicit false
 noncomputable section
 open Set Finset
 
-namespace Poincare.Topology.SimplicialComplex
+namespace DifferentialGeometry.Topology.SimplicialComplex
 
 universe u
 variable {E : Type u} [NormedAddCommGroup E] [NormedSpace ℝ E] [LinearOrder E]
@@ -26,7 +26,7 @@ theorem geometricFaceHomeomorphism_barycenter [Nonempty s] :
   rw [← Finset.centroid_univ ℝ s, Finset.centroid_def,
     Finset.affineCombination_eq_linear_combination _ _ _
       (Finset.sum_centroidWeights_eq_one_of_nonempty ℝ _ Finset.univ_nonempty)]
-  simp only [geometricFaceHomeomorphism_apply, Poincare.Simplex.vertexMap_apply,
+  simp only [geometricFaceHomeomorphism_apply, DifferentialGeometry.Simplex.vertexMap_apply,
     stdSimplex.barycenter_apply, Finset.centroidWeights_apply, Finset.card_univ]
 
 omit [LinearOrder E] in
@@ -64,7 +64,7 @@ theorem geometricFaceBarycenter_not_mem_costar :
   intro h
   rw [geometricFaceBarycenter_val, ← geometricFaceHomeomorphism_barycenter K s hs] at h
   have hb := (vertexMap_mem_geometricFaceCostar_iff K hs stdSimplex.barycenter).mp h
-  exact Poincare.Simplex.boundary_ne_barycenter hb rfl
+  exact DifferentialGeometry.Simplex.boundary_ne_barycenter hb rfl
 
 omit [LinearOrder E] in
 theorem geometricFaceBarycenter_mem_face_iff (t : Finset E) (ht : t ∈ K.faces) :
@@ -107,4 +107,4 @@ theorem geometricFaceBarycenter_eq_iff (t : Finset E) (ht : t ∈ K.faces) :
   · rintro rfl
     rfl
 
-end Poincare.Topology.SimplicialComplex
+end DifferentialGeometry.Topology.SimplicialComplex

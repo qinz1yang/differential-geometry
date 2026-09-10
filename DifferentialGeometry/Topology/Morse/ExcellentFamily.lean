@@ -7,7 +7,7 @@ noncomputable section
 open Set Filter Function
 open scoped Manifold ContDiff Topology
 open DifferentialGeometry.Topology.Morse
-namespace Poincare.Morse
+namespace DifferentialGeometry.Morse
 variable {E H M : Type} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [TopologicalSpace H] [TopologicalSpace M] [ChartedSpace H M]
   {I : ModelWithCorners ℝ E H}
@@ -39,7 +39,7 @@ theorem exists_critical_value_perturbation_family {f : M → ℝ}
       exact ((Fintype.equivFin C).symm i).property
     · intro hx
       exact ⟨(Fintype.equivFin C) ⟨x,hx⟩,by simp [e]⟩
-  obtain ⟨φ,hφ,hgerm⟩ := Poincare.Manifold.exists_finite_point_bumps (I := I) he hU
+  obtain ⟨φ,hφ,hgerm⟩ := DifferentialGeometry.Manifold.exists_finite_point_bumps (I := I) he hU
     (fun i => hCU ((Fintype.equivFin C).symm i).property)
   have hlocal : ∀ i, ∃ R : Set M, IsOpen R ∧ e i ∈ R ∧
       ∀ y ∈ R, ∀ j, φ j y = if j = i then 1 else 0 := by
@@ -97,4 +97,4 @@ theorem exists_critical_value_perturbation_family {f : M → ℝ}
         exact hfix p hy
       exact Iff.of_eq (congrArg (fun L : E →L[ℝ] ℝ => L = 0) hh.mfderiv_eq)
 
-end Poincare.Morse
+end DifferentialGeometry.Morse

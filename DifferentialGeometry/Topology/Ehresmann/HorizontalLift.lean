@@ -9,7 +9,7 @@ noncomputable section
 
 open scoped ContDiff Manifold Topology
 
-namespace Poincare.Topology.Ehresmann
+namespace DifferentialGeometry.Topology.Ehresmann
 
 variable {E E' : Type*}
   [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -119,4 +119,4 @@ theorem exists_smoothDerivativeLift_of_local
   intro hz
   exact hx ((hX x).2 hz)
 
-end Poincare.Topology.Ehresmann
+end DifferentialGeometry.Topology.Ehresmann

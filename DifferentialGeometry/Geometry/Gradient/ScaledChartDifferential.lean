@@ -5,7 +5,7 @@ import Mathlib.Geometry.Manifold.Algebra.Structures
 noncomputable section
 open scoped Manifold ContDiff
 
-namespace Poincare.Geometry.Gradient
+namespace DifferentialGeometry.Geometry.Gradient
 
 theorem mvfderiv_scaled_chart_coordinate
     {E F H H' M N : Type*}
@@ -36,4 +36,4 @@ theorem mvfderiv_scaled_chart_coordinate
   rw [map_smul, smul_eq_mul, ← hs, ← mul_assoc,
     mul_inv_cancel₀ (Real.sqrt_pos.mpr hc).ne', one_mul]
 
-end Poincare.Geometry.Gradient
+end DifferentialGeometry.Geometry.Gradient

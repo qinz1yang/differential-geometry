@@ -6,7 +6,7 @@ noncomputable section
 open Set Filter
 open scoped Manifold ContDiff Topology
 open DifferentialGeometry.Topology.Morse
-namespace Poincare.Morse
+namespace DifferentialGeometry.Morse
 variable {E : Type} [NormedAddCommGroup E] [NormedSpace ℝ E]
   {H M : Type} [TopologicalSpace H] [TopologicalSpace M] [ChartedSpace H M]
   (I : ModelWithCorners ℝ E H)
@@ -17,7 +17,7 @@ theorem isCriticalPointAt_openRestriction {U : TopologicalSpace.Opens M} {f : M 
     IsCriticalPointAt I (fun y : U => f y) x ↔ IsCriticalPointAt I f (x : M) := by
   change (show E →L[ℝ] ℝ from mfderiv I 𝓘(ℝ, ℝ) (fun y : U => f y) x) = 0 ↔
     (show E →L[ℝ] ℝ from mfderiv I 𝓘(ℝ, ℝ) f (x : M)) = 0
-  erw [Poincare.Manifold.mfderiv_openRestriction I hf x hx]
+  erw [DifferentialGeometry.Manifold.mfderiv_openRestriction I hf x hx]
 
 
 theorem chartHessianAt_openRestriction (U : TopologicalSpace.Opens M) (f : M → ℝ) (x : U) :
@@ -27,7 +27,7 @@ theorem chartHessianAt_openRestriction (U : TopologicalSpace.Opens M) (f : M →
       (extChartAt I (x : M) x) =
       fderiv ℝ (fderiv ℝ (fun y => f (((extChartAt I x).symm y : U) : M)))
         (extChartAt I (x : M) x) :=
-    ((Poincare.Manifold.extChartAt_subtype_val_symm_eventuallyEq I U x).fun_comp f).fderiv.fderiv_eq
+    ((DifferentialGeometry.Manifold.extChartAt_subtype_val_symm_eventuallyEq I U x).fun_comp f).fderiv.fderiv_eq
   ext v
   change (fderiv ℝ (fderiv ℝ (fun y => f (((extChartAt I x).symm y : U) : M)))
     (extChartAt I (x : M) x)) v v = _
@@ -48,16 +48,16 @@ variable [IsManifold I ∞ M] [BoundarylessManifold I M]
 
 theorem isCriticalPointAt_interiorAtlas {f : M → ℝ}
     (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) (x : M) :
-    let _ := Poincare.Manifold.interiorChartedSpace I ∞ (M := M)
+    let _ := DifferentialGeometry.Manifold.interiorChartedSpace I ∞ (M := M)
     IsCriticalPointAt 𝓘(ℝ, E) f x ↔ IsCriticalPointAt I f x := by
-  let _ := Poincare.Manifold.interiorChartedSpace I ∞ (M := M)
+  let _ := DifferentialGeometry.Manifold.interiorChartedSpace I ∞ (M := M)
   change (show E →L[ℝ] ℝ from mfderiv 𝓘(ℝ, E) 𝓘(ℝ, ℝ) f x) = 0 ↔
     (show E →L[ℝ] ℝ from mfderiv I 𝓘(ℝ, ℝ) f x) = 0
-  erw [Poincare.Manifold.mfderiv_interiorAtlas I hf x]
+  erw [DifferentialGeometry.Manifold.mfderiv_interiorAtlas I hf x]
 
 
 theorem chartHessianAt_interiorAtlas (f : M → ℝ) (x : M) :
-    let _ := Poincare.Manifold.interiorChartedSpace I ∞ (M := M)
+    let _ := DifferentialGeometry.Manifold.interiorChartedSpace I ∞ (M := M)
     chartHessianAt (fun y => f ((extChartAt 𝓘(ℝ, E) x).symm y))
       (extChartAt 𝓘(ℝ, E) x x) =
       chartHessianAt (fun y => f ((extChartAt I x).symm y)) (extChartAt I x x) := rfl
@@ -65,12 +65,12 @@ theorem chartHessianAt_interiorAtlas (f : M → ℝ) (x : M) :
 
 theorem isNondegenerateCriticalPointAt_interiorAtlas {f : M → ℝ}
     (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) (x : M) :
-    let _ := Poincare.Manifold.interiorChartedSpace I ∞ (M := M)
+    let _ := DifferentialGeometry.Manifold.interiorChartedSpace I ∞ (M := M)
     IsNondegenerateCriticalPointAt 𝓘(ℝ, E) f x ↔ IsNondegenerateCriticalPointAt I f x := by
-  let _ := Poincare.Manifold.interiorChartedSpace I ∞ (M := M)
+  let _ := DifferentialGeometry.Manifold.interiorChartedSpace I ∞ (M := M)
   change (IsCriticalPointAt 𝓘(ℝ, E) f x ∧ _) ↔ (IsCriticalPointAt I f x ∧ _)
   have hc : IsCriticalPointAt 𝓘(ℝ, E) f x ↔ IsCriticalPointAt I f x :=
     isCriticalPointAt_interiorAtlas I hf x
   rw [hc]
   rfl
-end Poincare.Morse
+end DifferentialGeometry.Morse

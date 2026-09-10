@@ -19,11 +19,11 @@ open Bundle Filter Function Manifold MeasureTheory Set
 open scoped ENNReal Manifold ContDiff Topology
 open DifferentialGeometry
 
-namespace Poincare.Toponogov
+namespace DifferentialGeometry.Toponogov
 
-open Poincare.Geometry
-open Poincare.Geometry.Riemannian
-open Poincare.Geometry.Riemannian.Variation
+open DifferentialGeometry.Geometry
+open DifferentialGeometry.Geometry.Riemannian
+open DifferentialGeometry.Geometry.Riemannian.Variation
 open DifferentialGeometry.Geometry.Riemannian
 open DifferentialGeometry.Geometry.Riemannian.Geodesic
 open DifferentialGeometry.Geometry.Riemannian.Variation
@@ -129,4 +129,4 @@ theorem exists_squaredDistanceLowerSupport_of_zero
   exact ⟨S, by simp [S, lowerSupportAt_sq_sub_sq_of_zero],
     by simp [S, lowerSupportAt_sq_sub_sq_of_zero], C, by simp [C], by simp [C]⟩
 
-end Poincare.Toponogov
+end DifferentialGeometry.Toponogov

@@ -2,7 +2,7 @@ import Mathlib.Topology.Connected.Basic
 
 open Set
 
-namespace Poincare.Topology
+namespace DifferentialGeometry.Topology
 
 theorem subset_or_subset_of_isPreconnected_of_isClosed
     {X : Type*} [TopologicalSpace X] {s u v : Set X}
@@ -55,4 +55,4 @@ theorem eq_or_eq_of_two_preconnected_closed_partitions
       have hxB₁ : x ∈ B₁ := (hcover.symm.subset (Or.inl hx)).elim (fun h ↦ h₀ h) (fun h ↦ h₁ h)
       exact False.elim (hd.notMem_of_mem_left hx hxB₁)
 
-end Poincare.Topology
+end DifferentialGeometry.Topology

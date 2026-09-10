@@ -12,7 +12,7 @@ open CategoryTheory
 open CategoryTheory.Limits
 open unitInterval
 
-namespace Poincare.Topology.SphereSeparation
+namespace DifferentialGeometry.Topology.SphereSeparation
 
 universe u v
 
@@ -1367,10 +1367,10 @@ noncomputable def circleArcExtendedMappingConeHomotopyEquiv
       (CochainComplex.mappingCone
         (HomologicalComplex.extendMap twoPointsToTwoPointsAttachingMap
           ComplexShape.embeddingDownNat)) := by
-  let eK := Poincare.Topology.SphereSeparation.HomotopyEquiv.extend
+  let eK := DifferentialGeometry.Topology.SphereSeparation.HomotopyEquiv.extend
     (circleArcOverlapChainsHomotopyEquivBool p q hpq)
     ComplexShape.embeddingDownNat
-  let eL := Poincare.Topology.SphereSeparation.HomotopyEquiv.extend
+  let eL := DifferentialGeometry.Topology.SphereSeparation.HomotopyEquiv.extend
     (circleArcPairChainsHomotopyEquivPUnit p q)
     ComplexShape.embeddingDownNat
   apply cochainMappingConeHomotopyEquivOfHomotopyEquivs eK eL
@@ -1407,7 +1407,7 @@ noncomputable def circleArcHomotopyCofiberHomotopyEquivTwoPoints
       (HomologicalComplex.homotopyCofiber (circleArcCoverAttachingMap p q))
       (HomologicalComplex.homotopyCofiber
         twoPointsToTwoPointsAttachingMap) := by
-  let e := Poincare.Topology.SphereSeparation.HomotopyEquiv.restrictionDownNat
+  let e := DifferentialGeometry.Topology.SphereSeparation.HomotopyEquiv.restrictionDownNat
     (circleArcExtendedMappingConeHomotopyEquiv p q hpq)
     (extendedHomotopyCofiberIsZeroOne
       (circleArcCoverAttachingMap p q))
@@ -1426,10 +1426,10 @@ noncomputable def twoPointsHomotopyCofiberHomotopyEquivCellularAttaching :
         twoPointsToTwoPointsAttachingMap)
       (HomologicalComplex.homotopyCofiber
         circleTwoPointCellularAttachingMap) := by
-  let eK := Poincare.Topology.SphereSeparation.HomotopyEquiv.extend
+  let eK := DifferentialGeometry.Topology.SphereSeparation.HomotopyEquiv.extend
     singularChainsBoolHomotopyEquivTwoSingleZero
     ComplexShape.embeddingDownNat
-  let eL := Poincare.Topology.SphereSeparation.HomotopyEquiv.extend
+  let eL := DifferentialGeometry.Topology.SphereSeparation.HomotopyEquiv.extend
     singularChainsPUnitPairHomotopyEquivTwoSingleZero
     ComplexShape.embeddingDownNat
   let eCone := cochainMappingConeHomotopyEquivOfHomotopyEquivs eK eL
@@ -1441,7 +1441,7 @@ noncomputable def twoPointsHomotopyCofiberHomotopyEquivCellularAttaching :
         (fun f ↦ HomologicalComplex.extendMap f
           ComplexShape.embeddingDownNat)
         twoPointsAttachingMap_cellular_square))
-  let e := Poincare.Topology.SphereSeparation.HomotopyEquiv.restrictionDownNat
+  let e := DifferentialGeometry.Topology.SphereSeparation.HomotopyEquiv.restrictionDownNat
     eCone
     (extendedHomotopyCofiberIsZeroOne
       twoPointsToTwoPointsAttachingMap)
@@ -1454,4 +1454,4 @@ noncomputable def twoPointsHomotopyCofiberHomotopyEquivCellularAttaching :
           (extendDownNatHomotopyCofiberRestrictionIso
             circleTwoPointCellularAttachingMap).symm)
 
-end Poincare.Topology.SphereSeparation
+end DifferentialGeometry.Topology.SphereSeparation

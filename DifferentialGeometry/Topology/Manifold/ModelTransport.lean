@@ -4,7 +4,7 @@ import Mathlib.Geometry.Manifold.HasGroupoid
 set_option autoImplicit false
 noncomputable section
 open Set
-namespace Poincare.Manifold
+namespace DifferentialGeometry.Manifold
 
 variable {H H' M : Type*} [TopologicalSpace H] [TopologicalSpace H']
   [TopologicalSpace M] [ChartedSpace H M]
@@ -57,4 +57,4 @@ theorem boundary_transHomeomorph :
     ModelWithCorners.isBoundaryPoint_iff_not_isInteriorPoint,
     isInteriorPoint_transHomeomorph_iff I J e L hcompat]
 
-end Poincare.Manifold
+end DifferentialGeometry.Manifold

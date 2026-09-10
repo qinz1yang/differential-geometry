@@ -6,9 +6,9 @@ open Set Topology
 open scoped Manifold ContDiff
 open DifferentialGeometry
 open DifferentialGeometry.Integral.DivergenceTheorem.WithBoundary
-open Poincare.Geometry.Affine Poincare.Geometry.Boundary
+open DifferentialGeometry.Geometry.Affine DifferentialGeometry.Geometry.Boundary
 
-namespace Poincare.Geometry.Neck
+namespace DifferentialGeometry.Geometry.Neck
 
 local notation "S²" => Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1
 private instance : Fact (Module.finrank ℝ (EuclideanSpace ℝ (Fin 3)) = 2 + 1) := ⟨by simp⟩
@@ -346,4 +346,4 @@ theorem separatingNeckChain.controlled_regions_and_inward_segment
   have hw := hm ⟨hP j hj.symm, hQ k hk.symm⟩
   exact hj ▸ hw
 
-end Poincare.Geometry.Neck
+end DifferentialGeometry.Geometry.Neck

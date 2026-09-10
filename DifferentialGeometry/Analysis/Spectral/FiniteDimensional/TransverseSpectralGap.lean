@@ -4,7 +4,7 @@ import Mathlib.Tactic.Linarith
 noncomputable section
 open scoped InnerProductSpace
 
-namespace Poincare.Analysis
+namespace DifferentialGeometry.Analysis
 
 theorem eigenvalue_eq_of_lt_transverse_lower_bound
     {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
@@ -48,4 +48,4 @@ theorem eigenvalue_eq_of_lt_transverse_lower_bound
   nlinarith [mul_pos (sub_pos.mpr hν) (sq_pos_of_ne_zero hα),
     mul_nonneg (sub_nonneg.mpr hμ.le) (sq_nonneg β)]
 
-end Poincare.Analysis
+end DifferentialGeometry.Analysis

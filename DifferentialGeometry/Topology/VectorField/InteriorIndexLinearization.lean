@@ -5,7 +5,7 @@ set_option autoImplicit false
 open Bundle Filter Set
 open scoped Manifold ContDiff Topology
 noncomputable section
-namespace Poincare.VectorField
+namespace DifferentialGeometry.VectorField
 
 variable {d : ℕ} {H M : Type*} [TopologicalSpace H] [TopologicalSpace M]
   [ChartedSpace H M] (I : ModelWithCorners ℝ (EuclideanSpace ℝ (Fin (d + 1))) H)
@@ -19,7 +19,7 @@ theorem interiorIndex_eq_sign_det_linearizationAtZero_in_model {n : ℕ∞ω}
     (hd : MDifferentiableAt I I.tangent (fun y => (⟨y, V y⟩ : TangentBundle I M)) (f a))
     (hdet : LinearMap.det (linearizationAtZero hd hV.zero).toLinearMap ≠ 0) :
     interiorIndex I V (f a) hV
-        (Poincare.Manifold.isInteriorPoint_of_model_partialDiffeomorph I n f
+        (DifferentialGeometry.Manifold.isInteriorPoint_of_model_partialDiffeomorph I n f
           (ne_of_gt (lt_of_lt_of_le (by norm_num) hn)) ha) =
       (SignType.sign (LinearMap.det (linearizationAtZero hd hV.zero).toLinearMap) : ℤ) := by
   let f₁ : PartialDiffeomorph 𝓘(ℝ, EuclideanSpace ℝ (Fin (d + 1))) I
@@ -33,7 +33,7 @@ theorem interiorIndex_eq_sign_det_linearizationAtZero_in_model {n : ℕ∞ω}
       (_root_.VectorField.mpullback 𝓘(ℝ, EuclideanSpace ℝ (Fin (d + 1))) I f V) a).toLinearMap ≠ 0 :=
     hdetEq ▸ hdet
   rw [interiorIndex_eq_localDegree I f₁ ha hV,
-    Poincare.LocalDegree.euclideanLocalDegree_eq_sign_det_fderiv _ hD hDdet, hdetEq]
+    DifferentialGeometry.LocalDegree.euclideanLocalDegree_eq_sign_det_fderiv _ hD hDdet, hdetEq]
 
 variable [IsManifold I 2 M]
 
@@ -44,8 +44,8 @@ theorem interiorIndex_eq_sign_det_linearizationAtZero
     (hdet : LinearMap.det (linearizationAtZero hd hV.zero).toLinearMap ≠ 0) :
     interiorIndex I V x hV hx =
       (SignType.sign (LinearMap.det (linearizationAtZero hd hV.zero).toLinearMap) : ℤ) := by
-  let c := Poincare.Manifold.interiorChart I 2 x
-  have hxc : x ∈ c.source := (Poincare.Manifold.mem_interiorChart_source_iff I 2 x).mpr hx
+  let c := DifferentialGeometry.Manifold.interiorChart I 2 x
+  have hxc : x ∈ c.source := (DifferentialGeometry.Manifold.mem_interiorChart_source_iff I 2 x).mpr hx
   have hcx : c.symm (c x) = x := c.left_inv hxc
   have hVc : HasContinuousIsolatedZero I V (c.symm (c x)) := hcx.symm ▸ hV
   have hdc : MDifferentiableAt I I.tangent
@@ -67,8 +67,8 @@ theorem hasContinuousIsolatedZero_of_isInteriorPoint_det_ne_zero
     (hd : MDifferentiableAt I I.tangent (fun y => (⟨y, V y⟩ : TangentBundle I M)) x)
     (hz : V x = 0) (hdet : LinearMap.det (linearizationAtZero hd hz).toLinearMap ≠ 0) :
     HasContinuousIsolatedZero I V x := by
-  let c := Poincare.Manifold.interiorChart I 2 x
-  have hxc : x ∈ c.source := (Poincare.Manifold.mem_interiorChart_source_iff I 2 x).mpr hx
+  let c := DifferentialGeometry.Manifold.interiorChart I 2 x
+  have hxc : x ∈ c.source := (DifferentialGeometry.Manifold.mem_interiorChart_source_iff I 2 x).mpr hx
   have hcx : c.symm (c x) = x := c.left_inv hxc
   have hcc : ∃ s ∈ 𝓝 (c.symm (c x)),
       ContinuousOn (fun y => (⟨y, V y⟩ : TangentBundle I M)) s := hcx.symm ▸ hc
@@ -108,4 +108,4 @@ theorem exists_interiorIndex_eq_sign_det_linearizationAtZero
   exact ⟨hV, interiorIndex_eq_sign_det_linearizationAtZero I hx hV
     (hC.mdifferentiableAt one_ne_zero) hdet⟩
 
-end Poincare.VectorField
+end DifferentialGeometry.VectorField

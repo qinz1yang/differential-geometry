@@ -8,10 +8,10 @@ noncomputable section
 open Manifold Topology
 open scoped ContDiff
 
-namespace Poincare.Geometry
+namespace DifferentialGeometry.Geometry
 
 open DifferentialGeometry DifferentialGeometry.Topology.ThreeManifold
-open Poincare.Topology
+open DifferentialGeometry.Topology
 
 theorem exists_standard_cover_of_ancient_spatial_splitting
     {M : Type*} [TopologicalSpace M] [T2Space M]
@@ -47,7 +47,7 @@ theorem exists_standard_cover_of_ancient_spatial_splitting
   · obtain ⟨c⟩ := hcover
     obtain ⟨p, hp, hs, hl⟩ := c.exists_euclidean_open_cover
     exact ⟨c.finite_fundamentalGroup,
-      Or.inr (Or.inr ⟨Poincare.Topology.Manifold.puncturedSpace (EuclideanSpace ℝ (Fin 3)),
+      Or.inr (Or.inr ⟨DifferentialGeometry.Topology.Manifold.puncturedSpace (EuclideanSpace ℝ (Fin 3)),
         p, hp, hs, hl⟩)⟩
 
-end Poincare.Geometry
+end DifferentialGeometry.Geometry

@@ -9,7 +9,7 @@ open DifferentialGeometry DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.Geometry.Connection DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Integral.Measure
 
-namespace Poincare.Geometry.Curvature
+namespace DifferentialGeometry.Geometry.Curvature
 
 theorem riemann_difference_bound_of_small_metric_derivatives
     {E H M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -118,4 +118,4 @@ theorem riemann_difference_bound_of_small_metric_derivatives
   dsimp only [N]
   ring
 
-end Poincare.Geometry.Curvature
+end DifferentialGeometry.Geometry.Curvature

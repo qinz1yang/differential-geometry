@@ -7,7 +7,7 @@ noncomputable section
 open Set Function Topology
 open scoped Manifold ContDiff
 
-namespace Poincare.Geometry.Boundary
+namespace DifferentialGeometry.Geometry.Boundary
 
 open DifferentialGeometry.Integral.DivergenceTheorem.WithBoundary
 
@@ -126,4 +126,4 @@ instance instHasSmoothBoundaryProductHalfSpace [FiniteDimensional ℝ E] :
     intro _
     simp
 
-end Poincare.Geometry.Boundary
+end DifferentialGeometry.Geometry.Boundary

@@ -13,7 +13,7 @@ open CategoryTheory Set
 
 universe u
 
-namespace Poincare.Topology.VanKampen
+namespace DifferentialGeometry.Topology.VanKampen
 
 abbrev fundamentalGroupFreeProduct {X : Type u} [TopologicalSpace X]
     (U V : Set X) (x₀ : X) (hx₀ : x₀ ∈ U ∩ V) :=
@@ -207,4 +207,4 @@ theorem fundamentalGroupEquivFreeProduct_comp_right
   exact congrArg GrpCat.Hom.hom
     (fundamentalGroupFreeProductRight_toFundamentalGroup U V x₀ hx₀)
 
-end Poincare.Topology.VanKampen
+end DifferentialGeometry.Topology.VanKampen

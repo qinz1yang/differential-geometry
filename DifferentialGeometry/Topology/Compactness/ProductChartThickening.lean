@@ -8,7 +8,7 @@ noncomputable section
 open Set
 open scoped ContinuousMap
 
-namespace Poincare.Topology.Compactness
+namespace DifferentialGeometry.Topology.Compactness
 
 theorem exists_larger_interval_subset_of_isOpen
     {a b : ℝ} (hab : a ≤ b) {V : Set ℝ} (hV : IsOpen V) (hsub : Icc a b ⊆ V) :
@@ -84,4 +84,4 @@ theorem exists_larger_product_chart_bands_preserving_disjointness
   exact ⟨a', b', fun i ↦ ⟨ha i, hb i⟩, hsrc,
     fun i j hij ↦ (hUd i j hij).mono (himg i) (himg j)⟩
 
-end Poincare.Topology.Compactness
+end DifferentialGeometry.Topology.Compactness

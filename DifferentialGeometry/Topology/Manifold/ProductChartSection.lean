@@ -6,7 +6,7 @@ noncomputable section
 open Set DifferentialGeometry
 open scoped Manifold ContDiff
 
-namespace Poincare.Topology.Manifold
+namespace DifferentialGeometry.Topology.Manifold
 
 theorem contMDiff_injective_and_injective_mfderiv_of_product_chart_section
     {E H N F H' P G H'' M : Type*}
@@ -54,4 +54,4 @@ theorem contMDiff_injective_and_injective_mfderiv_of_product_chart_section
   change w = (mfderiv K I back (f p) : G →L[ℝ] E) (mfderiv I K f p w) at hw
   exact hv.trans ((congrArg (mfderiv K I back (f p)) hvw).trans hw.symm)
 
-end Poincare.Topology.Manifold
+end DifferentialGeometry.Topology.Manifold

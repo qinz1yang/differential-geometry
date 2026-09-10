@@ -6,7 +6,7 @@ noncomputable section
 
 open Set
 
-namespace Poincare.Topology.ThreeManifold.TwoSidedCollar
+namespace DifferentialGeometry.Topology.ThreeManifold.TwoSidedCollar
 
 theorem exists_outward_collar_of_two_components
     {B C X : Type*} [TopologicalSpace B] [CompactSpace B] [ConnectedSpace B]
@@ -34,4 +34,4 @@ theorem exists_outward_collar_of_two_components
   · exact hcside (b, t)
   · exact hdside (b, t)
 
-end Poincare.Topology.ThreeManifold.TwoSidedCollar
+end DifferentialGeometry.Topology.ThreeManifold.TwoSidedCollar

@@ -7,7 +7,7 @@ open Set Filter Function Bundle
 open scoped Manifold ContDiff Topology
 open DifferentialGeometry.Topology.Morse
 open DifferentialGeometry.Integral.DivergenceTheorem.WithBoundary
-namespace Poincare.Morse
+namespace DifferentialGeometry.Morse
 variable {n : ℕ} [NeZero n] {M : Type} [TopologicalSpace M]
   [ChartedSpace (EuclideanHalfSpace n) M] [IsManifold (𝓡∂ n) ∞ M]
   [T2Space M] [CompactSpace M]
@@ -27,7 +27,7 @@ theorem exists_morse_boundary_definingFunction :
         ∀ y : BoundaryManifold (𝓡∂ n) M,
           0 < (EuclideanSpace.proj (𝕜 := ℝ) (0 : Fin n)) (V y) := by
   have hB : IsCompact ((𝓡∂ n).boundary M) := ((𝓡∂ n).isClosed_boundary (n := ∞) (by simp)).isCompact
-  obtain ⟨f,O,hf,hfn,hfzero,hfpos,hBO,V,hV,hVc,hunit,hVpos⟩ := Poincare.Manifold.Boundary.exists_global_boundary_definingFunction hB
+  obtain ⟨f,O,hf,hfn,hfzero,hfpos,hBO,V,hV,hVc,hunit,hVpos⟩ := DifferentialGeometry.Manifold.Boundary.exists_global_boundary_definingFunction hB
   have hKI : (O : Set M)ᶜ ⊆ (𝓡∂ n).interior M := by
     intro x hx
     exact ((𝓡∂ n).isInteriorPoint_iff_not_isBoundaryPoint x).mpr (fun hb => hx (hBO hb))
@@ -67,4 +67,4 @@ theorem exists_morse_boundary_definingFunction :
   have hd : mfderiv (𝓡∂ n) 𝓘(ℝ, ℝ) r y = mfderiv (𝓡∂ n) 𝓘(ℝ, ℝ) f y := hlocal.mfderiv_eq
   exact (congrArg (fun L : TangentSpace (𝓡∂ n) y →L[ℝ] ℝ => L (V y)) hd).trans (hunit y hy.1)
 
-end Poincare.Morse
+end DifferentialGeometry.Morse

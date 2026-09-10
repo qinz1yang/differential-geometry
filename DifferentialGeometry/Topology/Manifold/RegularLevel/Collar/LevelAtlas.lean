@@ -5,7 +5,7 @@ open Set Manifold
 open scoped Topology ContDiff
 open DifferentialGeometry.Topology.Morse
 noncomputable section
-namespace Poincare.Manifold.RegularLevel
+namespace DifferentialGeometry.Manifold.RegularLevel
 
 private def insertZero (m : ℕ) (z : MorseModel m) : MorseModel (m + 1) :=
   levelSetSplit m (z, 0)
@@ -217,4 +217,4 @@ theorem contMDiff_level_factor {f : M → ℝ} {a : ℝ}
   have hΦ := Φ.contMDiffOn.contMDiffAt (Φ.open_source.mem_nhds hx)
   exact (levelSetSplitFst m).contMDiff.contMDiffAt.comp x (hΦ.comp x (hF x))
 
-end Poincare.Manifold.RegularLevel
+end DifferentialGeometry.Manifold.RegularLevel

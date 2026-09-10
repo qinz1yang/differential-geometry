@@ -1,4 +1,3 @@
-import Batteries.Tactic.Alias
 import DifferentialGeometry.Geometry.Curvature.PositiveSectional
 import DifferentialGeometry.Geometry.Curvature.Bounds.RicciOperatorNorm
 import DifferentialGeometry.Geometry.Comparison.HopfRinow.Proper
@@ -368,34 +367,3 @@ theorem compact_curvature_margin
     exists_positive_curvature_lowerBound_on_compact hsec hdim hKcompact hKne⟩
 
 end DifferentialGeometry.Geometry
-
-namespace Poincare.Geometry
-
-@[reducible] alias TangentPairBundle := DifferentialGeometry.Geometry.TangentPairBundle
-@[reducible] alias MetricOrthonormalTwoFrameOn := DifferentialGeometry.Geometry.MetricOrthonormalTwoFrameOn
-end Poincare.Geometry
-
-namespace Poincare.Geometry.MetricOrthonormalTwoFrameOn
-
-@[reducible] alias base := DifferentialGeometry.Geometry.MetricOrthonormalTwoFrameOn.base
-@[reducible] alias first := DifferentialGeometry.Geometry.MetricOrthonormalTwoFrameOn.first
-@[reducible] alias second := DifferentialGeometry.Geometry.MetricOrthonormalTwoFrameOn.second
-alias base_mem := DifferentialGeometry.Geometry.MetricOrthonormalTwoFrameOn.base_mem
-alias first_unit := DifferentialGeometry.Geometry.MetricOrthonormalTwoFrameOn.first_unit
-alias second_unit := DifferentialGeometry.Geometry.MetricOrthonormalTwoFrameOn.second_unit
-alias orthogonal := DifferentialGeometry.Geometry.MetricOrthonormalTwoFrameOn.orthogonal
-alias isCompact_univ := DifferentialGeometry.Geometry.MetricOrthonormalTwoFrameOn.isCompact_univ
-alias nonempty := DifferentialGeometry.Geometry.MetricOrthonormalTwoFrameOn.nonempty
-alias linearIndependent := DifferentialGeometry.Geometry.MetricOrthonormalTwoFrameOn.linearIndependent
-@[reducible] alias curvature := DifferentialGeometry.Geometry.MetricOrthonormalTwoFrameOn.curvature
-alias continuous_curvature := DifferentialGeometry.Geometry.MetricOrthonormalTwoFrameOn.continuous_curvature
-end Poincare.Geometry.MetricOrthonormalTwoFrameOn
-
-namespace Poincare.Geometry
-
-alias exists_positive_curvature_lowerBound_on_compact := DifferentialGeometry.Geometry.exists_positive_curvature_lowerBound_on_compact
-alias compact_curvature_margin := DifferentialGeometry.Geometry.compact_curvature_margin
-
-@[reducible] alias metricOrthonormalTwoFrameOnTop := DifferentialGeometry.Geometry.metricOrthonormalTwoFrameOnTop
-
-end Poincare.Geometry

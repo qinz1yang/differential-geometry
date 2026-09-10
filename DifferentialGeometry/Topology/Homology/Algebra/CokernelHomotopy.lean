@@ -6,7 +6,7 @@ set_option autoImplicit false
 open CategoryTheory CategoryTheory.Limits
 noncomputable section
 universe u v
-namespace Poincare.HomologicalComplex
+namespace DifferentialGeometry.HomologicalComplex
 variable {k : Type u} [Ring k]
   {A K : ChainComplex (ModuleCat.{v} k) ℕ} (i : A ⟶ K)
 
@@ -89,4 +89,4 @@ def cokernelHomotopy : Homotopy (cokernelEndomorphism i a b hab) (𝟙 (cokernel
       simpa only [Preadditive.add_comp, Category.assoc, Category.id_comp] using
         congrArg (fun f ↦ f ≫ (cokernel.π i).f (n + 1)) hh
 
-end Poincare.HomologicalComplex
+end DifferentialGeometry.HomologicalComplex

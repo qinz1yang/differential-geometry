@@ -10,7 +10,7 @@ open DifferentialGeometry.Geometry.Riemannian.Geodesic
 open DifferentialGeometry.Geometry.Riemannian.Variation
 open DifferentialGeometry.Geometry.Riemannian.CovariantDerivativeAlong
 
-namespace Poincare.Geometry.Riemannian.Variation
+namespace DifferentialGeometry.Geometry.Riemannian.Variation
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
@@ -51,4 +51,4 @@ theorem exists_minimizer_excluding_positive_parallel_twisted_variations
     (secondVariation_curveEnergy_neg_of_parallel_geodesicEndpoints g (fun s t => f (s, t)) L
       hs hL hc h0 h1 hpar hpos)
 
-end Poincare.Geometry.Riemannian.Variation
+end DifferentialGeometry.Geometry.Riemannian.Variation

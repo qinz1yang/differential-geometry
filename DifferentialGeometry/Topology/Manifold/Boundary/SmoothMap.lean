@@ -5,7 +5,7 @@ open scoped ContDiff
 open DifferentialGeometry.Integral.DivergenceTheorem.WithBoundary
 set_option autoImplicit false
 noncomputable section
-namespace Poincare.Manifold.Boundary
+namespace DifferentialGeometry.Manifold.Boundary
 
 variable {E H M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [TopologicalSpace H] [TopologicalSpace M] [ChartedSpace H M]
@@ -62,4 +62,4 @@ theorem contMDiff_boundary_iff {k : ℕ∞ω} (hk : k ≤ ∞)
     ContMDiff J hI.boundaryI k f ↔ ContMDiff J I k (fun y => (f y : M)) := by
   exact forall_congr' fun _ => contMDiffAt_boundary_iff hk
 
-end Poincare.Manifold.Boundary
+end DifferentialGeometry.Manifold.Boundary

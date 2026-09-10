@@ -5,7 +5,7 @@ noncomputable section
 open Set Metric Manifold Module
 open scoped ContDiff
 
-namespace Poincare.Topology.Manifold
+namespace DifferentialGeometry.Topology.Manifold
 
 theorem exists_smooth_radial_chart
     {E F : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
@@ -62,4 +62,4 @@ theorem exists_smooth_radial_chart
       contMDiffOn_invFun := (hnorm.prodMk hchart).contMDiffOn }
   exact ⟨c, rfl, fun _ ↦ rfl, rfl, fun _ ↦ rfl⟩
 
-end Poincare.Topology.Manifold
+end DifferentialGeometry.Topology.Manifold

@@ -8,7 +8,7 @@ noncomputable section
 open Set Metric
 open scoped ContDiff Topology
 
-namespace Poincare.Analysis
+namespace DifferentialGeometry.Analysis
 
 theorem exists_smooth_planar_flowBox
     (φ : _root_.Flow ℝ ℂ) {v : ℂ → ℂ} (hv : ContDiff ℝ ∞ v)
@@ -61,4 +61,4 @@ theorem exists_smooth_planar_flowBox
   change e.source ∩ R = R
   exact inter_eq_right.mpr hsub
 
-end Poincare.Analysis
+end DifferentialGeometry.Analysis

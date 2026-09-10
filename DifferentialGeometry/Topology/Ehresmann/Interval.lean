@@ -9,7 +9,7 @@ open scoped ContDiff Manifold
 open DifferentialGeometry.Analysis.ODE
 open DifferentialGeometry.Topology.Morse
 
-namespace Poincare.Topology.Ehresmann
+namespace DifferentialGeometry.Topology.Ehresmann
 
 variable {m : ℕ}
 variable {H : Type} [TopologicalSpace H]
@@ -377,4 +377,4 @@ theorem standardCylinderTrivialization_upper_endpoint
 
 end StandardCylinder
 
-end Poincare.Topology.Ehresmann
+end DifferentialGeometry.Topology.Ehresmann

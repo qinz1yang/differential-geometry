@@ -7,7 +7,7 @@ noncomputable section
 open Set
 open DifferentialGeometry.Topology DifferentialGeometry.Topology.Morse
 open DifferentialGeometry.Topology.Homotopy
-namespace Poincare.Morse
+namespace DifferentialGeometry.Morse
 variable {M : Type} [TopologicalSpace M]
 
 
@@ -73,4 +73,4 @@ def cellAttachmentUnderSublevelRestriction (s : Set M) (f : M → ℝ) {a b : �
     rfl
   let hlow := HomotopyEquivUnder.ofHomeomorph (lower.comp ia) newLower eadj he
   exact (hup.trans hp rfl).trans hlow rfl
-end Poincare.Morse
+end DifferentialGeometry.Morse

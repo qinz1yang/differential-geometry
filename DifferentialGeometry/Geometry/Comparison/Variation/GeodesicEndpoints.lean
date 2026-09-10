@@ -12,7 +12,7 @@ open DifferentialGeometry.Geometry.Riemannian.CovariantDerivativeAlong
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 
-namespace Poincare.Geometry.Riemannian.Variation
+namespace DifferentialGeometry.Geometry.Riemannian.Variation
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
@@ -99,4 +99,4 @@ theorem secondVariation_curveEnergy_neg_of_parallel_geodesicEndpoints
     hcentral hinitial hterminal hparallel).deriv]
   linarith
 
-end Poincare.Geometry.Riemannian.Variation
+end DifferentialGeometry.Geometry.Riemannian.Variation

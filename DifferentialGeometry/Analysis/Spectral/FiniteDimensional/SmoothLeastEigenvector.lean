@@ -6,7 +6,7 @@ noncomputable section
 open Set
 open scoped ContDiff InnerProductSpace
 
-namespace Poincare.Analysis
+namespace DifferentialGeometry.Analysis
 
 theorem exists_smooth_least_eigenpair_of_axis_error
     {P E : Type*} [NormedAddCommGroup P] [NormedSpace ℝ P] [CompleteSpace P]
@@ -58,4 +58,4 @@ theorem exists_smooth_least_eigenpair_of_axis_error
   intro hz
   simp [hz] at hnorm
 
-end Poincare.Analysis
+end DifferentialGeometry.Analysis

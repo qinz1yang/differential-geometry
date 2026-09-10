@@ -8,7 +8,7 @@ open CategoryTheory Opposite Simplicial AlgebraicTopology
 
 universe u
 
-namespace Poincare.Homology
+namespace DifferentialGeometry.Homology
 
 variable (X : TopCat.{u}) (s : Set X)
 
@@ -99,4 +99,4 @@ theorem singularSubspaceChainIso_inv_inclusion :
       smallChainMap X (fun _ : Unit ↦ s) R := by
   rw [← singularSubspaceChainIso_hom_inclusion X s R, Iso.inv_hom_id_assoc]
 
-end Poincare.Homology
+end DifferentialGeometry.Homology

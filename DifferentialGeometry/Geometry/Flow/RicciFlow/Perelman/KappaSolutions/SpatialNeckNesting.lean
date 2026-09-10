@@ -73,7 +73,7 @@ private local instance nestingC1 : IsManifold I 1 N :=
 
 theorem minimum_mem_lower_zero (hEnorm : IsMetricNorm (I := I) h)
     (hsmall : epsilon ≤ spatialNeckControlEpsilon)
-    (hsec : Poincare.Geometry.HasNonnegativeSectionalCurvature (I := I) h)
+    (hsec : DifferentialGeometry.Geometry.HasNonnegativeSectionalCurvature (I := I) h)
     {c : ℝ≥0 → N} (hc : Isometry c) {q : N}
     (hmin : ∀ x : N, busemann c q ≤ busemann c x) (hnotcore : q ∉ W1.core) :
     q ∈ D1.lower 0 := by

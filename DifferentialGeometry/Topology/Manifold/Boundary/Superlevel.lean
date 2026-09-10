@@ -7,7 +7,7 @@ noncomputable section
 open Set Function Manifold Topology TopologicalSpace
 open scoped ContDiff
 open DifferentialGeometry.Integral.DivergenceTheorem.WithBoundary
-namespace Poincare.Manifold.Boundary
+namespace DifferentialGeometry.Manifold.Boundary
 
 
 theorem exists_small_superlevel_homeomorph
@@ -51,8 +51,8 @@ theorem exists_small_superlevel_homeomorph
     have hxr : r x ≤ ζ := (lt_of_not_ge hn).le.trans (ha.trans hηζ.le)
     have hw : x ∈ W := hsmall hxr
     exact hx (image_subset_range _ _ hw.1)
-  obtain ⟨h,_⟩ := Poincare.Topology.Collar.exists_homeomorph_superlevel_of_collar c hc.isEmbedding
+  obtain ⟨h,_⟩ := DifferentialGeometry.Topology.Collar.exists_homeomorph_superlevel_of_collar c hc.isEmbedding
     haδ hδε.le hopen hheight houtside
   exact ⟨h⟩
 
-end Poincare.Manifold.Boundary
+end DifferentialGeometry.Manifold.Boundary

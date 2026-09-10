@@ -9,7 +9,7 @@ noncomputable section
 open Set Metric Topology
 open scoped BigOperators
 
-namespace Poincare.Simplex
+namespace DifferentialGeometry.Simplex
 
 def coordinateSimplex (n : ℕ) : Set (Fin n → ℝ) :=
   {x | (∀ i, 0 ≤ x i) ∧ ∑ i, x i ≤ 1}
@@ -145,4 +145,4 @@ theorem mem_frontier_coordinateSimplex_iff (n : ℕ) (x : coordinateSimplex n) :
     · intro hi
       exact (hpos j).ne' hi
 
-end Poincare.Simplex
+end DifferentialGeometry.Simplex

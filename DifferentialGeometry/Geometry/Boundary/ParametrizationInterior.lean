@@ -5,7 +5,7 @@ noncomputable section
 open Set Topology Manifold
 open scoped ContDiff
 
-namespace Poincare.Geometry.Boundary
+namespace DifferentialGeometry.Geometry.Boundary
 
 open DifferentialGeometry.Integral.DivergenceTheorem.WithBoundary
 
@@ -23,7 +23,7 @@ theorem isPreconnected_interior_target_of_smooth_parametrization [PreconnectedSp
     (hdim : Module.finrank ℝ E = Module.finrank ℝ F) :
     IsPreconnected (interior e.target) := by
   obtain ⟨hemb, hinj⟩ :=
-    Poincare.Topology.Manifold.isEmbedding_and_injective_mfderiv_of_smooth_partialEquiv e hes he hei
+    DifferentialGeometry.Topology.Manifold.isEmbedding_and_injective_mfderiv_of_smooth_partialEquiv e hes he hei
   have hrange : range e = e.target := by
     rw [← image_univ, ← hes, e.image_source_eq_target]
   rw [← hrange]
@@ -35,11 +35,11 @@ theorem closure_interior_target_of_smooth_parametrization [CompactSpace P] [T2Sp
     (hdim : Module.finrank ℝ E = Module.finrank ℝ F) :
     closure (interior e.target) = e.target := by
   obtain ⟨hemb, hinj⟩ :=
-    Poincare.Topology.Manifold.isEmbedding_and_injective_mfderiv_of_smooth_partialEquiv e hes he hei
+    DifferentialGeometry.Topology.Manifold.isEmbedding_and_injective_mfderiv_of_smooth_partialEquiv e hes he hei
   have hrange : range e = e.target := by
     rw [← image_univ, ← hes, e.image_source_eq_target]
   rw [← hrange]
   exact closure_interior_range_of_fullRank_closedEmbedding e he
     (he.continuous.isClosedEmbedding hemb.injective) hinj hdim
 
-end Poincare.Geometry.Boundary
+end DifferentialGeometry.Geometry.Boundary

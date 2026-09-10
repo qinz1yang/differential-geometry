@@ -6,7 +6,7 @@ noncomputable section
 open Set Filter Topology
 open scoped ContDiff Manifold
 
-namespace Poincare.Analysis
+namespace DifferentialGeometry.Analysis
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
 
@@ -88,4 +88,4 @@ theorem exists_smoothFlow_of_globalIntegralCurves
     apply Diffeomorph.ext
     exact fun _ ↦ rfl
 
-end Poincare.Analysis
+end DifferentialGeometry.Analysis

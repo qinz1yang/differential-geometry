@@ -2,7 +2,7 @@ import DifferentialGeometry.Topology.SphereSeparation.Sides
 
 set_option autoImplicit false
 
-namespace Poincare.Topology.SphereSeparation
+namespace DifferentialGeometry.Topology.SphereSeparation
 
 open Set
 
@@ -149,4 +149,4 @@ theorem disjoint_sides_strictly_nested
 
 end SphereSides
 
-end Poincare.Topology.SphereSeparation
+end DifferentialGeometry.Topology.SphereSeparation

@@ -7,7 +7,7 @@ noncomputable section
 open Set Filter Topology
 open scoped Manifold ContDiff
 
-namespace Poincare.Topology.Ehresmann
+namespace DifferentialGeometry.Topology.Ehresmann
 
 theorem regularIntervalDatum_partition_sum_of_boundary_pieces
     {ι : Type*} {E H W : Type} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -30,10 +30,10 @@ theorem regularIntervalDatum_partition_sum_of_boundary_pieces
     simpa only [smul_eq_mul] using ρ.contMDiff_finsum_smul hq
   have hcoe (j : ι) (x : W) : ρ.toPartitionOfUnity j x = ρ j x := rfl
   have hlocal₀ : ∀ᶠ x in 𝓝ˢ S₀, u x = q i₀ x := by
-    simpa only [hcoe, smul_eq_mul] using Poincare.Topology.partition_patch_eq_near_of_disjoint_tsupport
+    simpa only [hcoe, smul_eq_mul] using DifferentialGeometry.Topology.partition_patch_eq_near_of_disjoint_tsupport
       ρ.toPartitionOfUnity q S₀ i₀ hdisj₀
   have hlocal₁ : ∀ᶠ x in 𝓝ˢ S₁, u x = q i₁ x := by
-    simpa only [hcoe, smul_eq_mul] using Poincare.Topology.partition_patch_eq_near_of_disjoint_tsupport
+    simpa only [hcoe, smul_eq_mul] using DifferentialGeometry.Topology.partition_patch_eq_near_of_disjoint_tsupport
       ρ.toPartitionOfUnity q S₁ i₁ hdisj₁
   have hval₀ (x) (hx : x ∈ S₀) : u x = a :=
     (subset_of_mem_nhdsSet hlocal₀ hx).trans (hq₀ x hx)
@@ -87,19 +87,19 @@ theorem regularIntervalDatum_partition_sum_of_inward_curve
   let u := fun x ↦ ∑ᶠ i, ρ i x * q i x
   have hcoe (j : ι) (x : W) : ρ.toPartitionOfUnity j x = ρ j x := rfl
   have hlocal₀ : ∀ᶠ x in 𝓝ˢ S₀, u x = q i₀ x := by
-    simpa only [hcoe, smul_eq_mul] using Poincare.Topology.partition_patch_eq_near_of_disjoint_tsupport
+    simpa only [hcoe, smul_eq_mul] using DifferentialGeometry.Topology.partition_patch_eq_near_of_disjoint_tsupport
       ρ.toPartitionOfUnity q S₀ i₀ hdisj₀
   have hlocal₁ : ∀ᶠ x in 𝓝ˢ S₁, u x = q i₁ x := by
-    simpa only [hcoe, smul_eq_mul] using Poincare.Topology.partition_patch_eq_near_of_disjoint_tsupport
+    simpa only [hcoe, smul_eq_mul] using DifferentialGeometry.Topology.partition_patch_eq_near_of_disjoint_tsupport
       ρ.toPartitionOfUnity q S₁ i₁ hdisj₁
   have hbdy (x) (hx : I.IsBoundaryPoint x) : u x = a ∨ u x = b := by
     have h : x ∈ S₀ ∪ S₁ := hboundary ▸ hx
     rcases h with hx | hx
     · exact Or.inl ((subset_of_mem_nhdsSet hlocal₀ hx).trans (hq₀ x hx))
     · exact Or.inr ((subset_of_mem_nhdsSet hlocal₁ hx).trans (hq₁ x hx))
-  have hab := Poincare.Topology.Manifold.boundary_value_lt_of_inward_coordinate
+  have hab := DifferentialGeometry.Topology.Manifold.boundary_value_lt_of_inward_coordinate
     hreg hbdy γ hγ (mem_nhdsSet_iff_forall.mp hlocal₀ _ hγ₀) hk hcoordinate
   exact ⟨hab, regularIntervalDatum_partition_sum_of_boundary_pieces
     ρ q hq hreg S₀ S₁ hS₀ hS₁ hboundary i₀ i₁ a b hab hq₀ hq₁ hdisj₀ hdisj₁⟩
 
-end Poincare.Topology.Ehresmann
+end DifferentialGeometry.Topology.Ehresmann

@@ -8,9 +8,9 @@ noncomputable section
 open Bundle
 open scoped Manifold ContDiff
 open DifferentialGeometry DifferentialGeometry.Geometry.Connection
-open Poincare.Geometry.Metric Poincare.Geometry.VectorField
+open DifferentialGeometry.Geometry.Metric DifferentialGeometry.Geometry.VectorField
 
-namespace Poincare.Geometry.Connection
+namespace DifferentialGeometry.Geometry.Connection
 
 variable {E H M F K N : Type*}
   [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
@@ -121,4 +121,4 @@ theorem leviCivita_productVectorField_apply
   rw [hv, hX, hX'] at he
   exact he
 
-end Poincare.Geometry.Connection
+end DifferentialGeometry.Geometry.Connection

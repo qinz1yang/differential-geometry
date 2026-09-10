@@ -7,7 +7,7 @@ import DifferentialGeometry.Topology.Flow.ReturnBoundary
 
 open Set Metric
 
-namespace Poincare.Topology.PlanarJordan
+namespace DifferentialGeometry.Topology.PlanarJordan
 
 theorem exists_trapped_disk_of_transverse_return
     (φ : _root_.Flow ℝ ℂ) (σ : ℝ →ᵃ[ℝ] ℂ) {ε a b T : ℝ}
@@ -54,7 +54,7 @@ theorem exists_trapped_disk_of_transverse_return
     intro p hp
     rw [hsource]
     exact ⟨hsmall ⟨hp.1.1.le, hp.1.2.le⟩, hp.2⟩
-  have hdisj := Poincare.Topology.Flow.disjoint_returnArc_flowBox_strip
+  have hdisj := DifferentialGeometry.Topology.Flow.disjoint_returnArc_flowBox_strip
     φ e hsource he ha hb hreturn havoid
   have hcurve (p : ℝ × ℝ) (hp : p ∈ Ioo (min a b) (max a b) ×ˢ Ioo (-ε) ε) :
       e p ∈ C ↔ p.2 = 0 := by
@@ -76,7 +76,7 @@ theorem exists_trapped_disk_of_transverse_return
   · simpa only [C, hseg] using hfrU
   rcases hsides with ⟨hpos, _⟩ | ⟨_, hneg⟩
   · apply Or.inl
-    apply Poincare.Topology.Flow.isForwardInvariant_of_returnArc_and_side
+    apply DifferentialGeometry.Topology.Flow.isForwardInvariant_of_returnArc_and_side
       φ hσ hab hε hreturn hfrU
     intro u hu t ht
     rw [← he (u, t)]
@@ -95,7 +95,7 @@ theorem exists_trapped_disk_of_transverse_return
       · exact ⟨T - t, ⟨by linarith [ht.2], by linarith [ht.1]⟩, (hrev t).symm⟩
       · refine ⟨T - t, ⟨by linarith [ht.2], by linarith [ht.1]⟩, ?_⟩
         simpa only [sub_sub_cancel] using hrev (T - t)
-    apply Poincare.Topology.Flow.isForwardInvariant_of_returnArc_and_side
+    apply DifferentialGeometry.Topology.Flow.isForwardInvariant_of_returnArc_and_side
       φ.reverse hσ hab.symm hε hrevreturn
       (by rw [hrevimage, uIcc_comm]; exact hfrU)
     intro u hu t ht
@@ -103,4 +103,4 @@ theorem exists_trapped_disk_of_transverse_return
     rw [φ.reverse_apply, ← he (u, -t)]
     exact hneg ⟨(u, -t), ⟨hu, by constructor <;> linarith [ht.1, ht.2]⟩, rfl⟩
 
-end Poincare.Topology.PlanarJordan
+end DifferentialGeometry.Topology.PlanarJordan

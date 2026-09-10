@@ -18,7 +18,7 @@ noncomputable section
 
 universe u v w x y z
 
-namespace Poincare.Topology
+namespace DifferentialGeometry.Topology
 
 namespace OpenPartialHomeomorph
 
@@ -380,4 +380,4 @@ theorem exists_contMDiff_transverseSection
 
 end CoorientedSmoothEmbeddingRealNormalAtlas
 
-end Poincare.Topology
+end DifferentialGeometry.Topology

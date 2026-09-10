@@ -6,7 +6,7 @@ open scoped Topology ContDiff
 set_option autoImplicit false
 noncomputable section
 
-namespace Poincare.Manifold.BoundaryCollar
+namespace DifferentialGeometry.Manifold.BoundaryCollar
 
 private theorem finite_positive_lower_bound {α : Type*} (a : Finset α) (f : α → ℝ)
     (hf : ∀ x, 0 < f x) : ∃ ε : ℝ, 0 < ε ∧ ∀ x ∈ a, ε ≤ f x := by
@@ -123,4 +123,4 @@ theorem exists_uniform_boundary_flow
       (fun s hs => hFint y hy s ⟨hs.1, hs.2.le.trans ht.2⟩) he
     simpa only [hFzero y hy, hFzero z hz] using heq ⟨le_rfl, htp.le⟩
 
-end Poincare.Manifold.BoundaryCollar
+end DifferentialGeometry.Manifold.BoundaryCollar

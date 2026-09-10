@@ -10,9 +10,9 @@ noncomputable section
 open Set Filter Topology Manifold
 open scoped ContDiff
 
-namespace Poincare.Topology.Ehresmann
+namespace DifferentialGeometry.Topology.Ehresmann
 
-open Poincare.Geometry.Boundary Poincare.Topology.Manifold
+open DifferentialGeometry.Geometry.Boundary DifferentialGeometry.Topology.Manifold
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem.WithBoundary
 
@@ -151,4 +151,4 @@ theorem exists_boundary_interval_trivialization
     exists_boundary_interval_trivialization_by_flow hab hu hreg hboundary ha hb
   exact ⟨Θ, hh, hz⟩
 
-end Poincare.Topology.Ehresmann
+end DifferentialGeometry.Topology.Ehresmann

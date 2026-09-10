@@ -5,7 +5,7 @@ set_option autoImplicit false
 open Bundle Set
 open scoped Manifold ContDiff Topology
 noncomputable section
-namespace Poincare.VectorField
+namespace DifferentialGeometry.VectorField
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
@@ -52,12 +52,12 @@ theorem patchOnOpen_eventuallyEq_mpullback (U : TopologicalSpace.Opens M)
     {x : M} (hx : x ∈ U) :
     (fun y ↦ (⟨y, patchOnOpen U V W y⟩ : TangentBundle I M)) =ᶠ[𝓝 x]
       (fun y ↦ (⟨y, _root_.VectorField.mpullback I I
-        (Poincare.Manifold.openSubtypePartialDiffeomorph I U ⟨⟨x, hx⟩⟩).symm W y⟩ :
+        (DifferentialGeometry.Manifold.openSubtypePartialDiffeomorph I U ⟨⟨x, hx⟩⟩).symm W y⟩ :
           TangentBundle I M)) := by
   filter_upwards [U.isOpen.mem_nhds hx] with y hy
   exact congrArg (fun v : TangentSpace I y ↦ (⟨y, v⟩ : TangentBundle I M))
     ((patchOnOpen_of_mem U V W hy).trans
-      (Poincare.Manifold.mpullback_openSubtype_symm I U ⟨⟨x, hx⟩⟩ W hy).symm)
+      (DifferentialGeometry.Manifold.mpullback_openSubtype_symm I U ⟨⟨x, hx⟩⟩ W hy).symm)
 
 theorem contMDiffAt_patchOnOpen_of_mem [IsManifold I 1 M]
     (U : TopologicalSpace.Opens M) (V : ∀ x : M, TangentSpace I x)
@@ -66,7 +66,7 @@ theorem contMDiffAt_patchOnOpen_of_mem [IsManifold I 1 M]
     {x : M} (hx : x ∈ U) :
     ContMDiffAt I I.tangent ∞
       (fun y ↦ (⟨y, patchOnOpen U V W y⟩ : TangentBundle I M)) x := by
-  let f := Poincare.Manifold.openSubtypePartialDiffeomorph I U ⟨⟨x, hx⟩⟩
+  let f := DifferentialGeometry.Manifold.openSubtypePartialDiffeomorph I U ⟨⟨x, hx⟩⟩
   have hxf : x ∈ f.symm.source := by simpa [f] using hx
   exact (contMDiffAt_mpullback_partialDiffeomorph f.symm (by simp) hxf hW.contMDiffAt).congr_of_eventuallyEq
     (patchOnOpen_eventuallyEq_mpullback U V W hx)
@@ -114,7 +114,7 @@ theorem patchOnOpen_isolated_iff (U : TopologicalSpace.Opens M)
     {x : M} (hx : x ∈ U) :
     (∀ᶠ y in 𝓝 x, patchOnOpen U V W y = 0 → y = x) ↔
       ∀ᶠ y : U in 𝓝 (⟨x, hx⟩ : U), W y = 0 → y = ⟨x, hx⟩ := by
-  let f := Poincare.Manifold.openSubtypePartialDiffeomorph I U ⟨⟨x, hx⟩⟩
+  let f := DifferentialGeometry.Manifold.openSubtypePartialDiffeomorph I U ⟨⟨x, hx⟩⟩
   have hxf : x ∈ f.symm.source := by simpa [f] using hx
   have heq : (∀ᶠ y in 𝓝 x, patchOnOpen U V W y = 0 → y = x) ↔
       ∀ᶠ y in 𝓝 x, _root_.VectorField.mpullback I I f.symm W y = 0 → y = x := by
@@ -125,8 +125,8 @@ theorem patchOnOpen_isolated_iff (U : TopologicalSpace.Opens M)
     rw [hh]
   have ht := mpullback_partialDiffeomorph_isolated_iff f.symm (by simp) W hxf
   have hv : f.symm x = (⟨x, hx⟩ : U) :=
-    Poincare.Manifold.openSubtypePartialDiffeomorph_symm_apply I U ⟨⟨x, hx⟩⟩ hx
+    DifferentialGeometry.Manifold.openSubtypePartialDiffeomorph_symm_apply I U ⟨⟨x, hx⟩⟩ hx
   rw [hv] at ht
   exact heq.trans ht
 
-end Poincare.VectorField
+end DifferentialGeometry.VectorField

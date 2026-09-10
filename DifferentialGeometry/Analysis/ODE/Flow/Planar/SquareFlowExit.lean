@@ -5,7 +5,7 @@ import DifferentialGeometry.Analysis.ODE.Flow.Planar.ConstantHalfSpaceFlow
 open Set Metric
 open scoped ContDiff
 
-namespace Poincare.Analysis
+namespace DifferentialGeometry.Analysis
 
 theorem exists_pos_rightEdge_crossing
     (φ : _root_.Flow ℝ ℂ) {v : ℂ → ℂ} (hv : ContDiff ℝ ∞ v)
@@ -62,4 +62,4 @@ theorem exists_pos_rightEdge_crossing
       (hderiv z) (by simpa only [φ.map_zero_apply, Complex.reCLM_apply] using hzre.2) hs, hs⟩
   · exact hboundary 1 hhi hone
 
-end Poincare.Analysis
+end DifferentialGeometry.Analysis

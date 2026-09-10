@@ -10,9 +10,9 @@ open DifferentialGeometry.Geometry.Riemannian
 open DifferentialGeometry.Geometry.Riemannian.Geodesic
 open DifferentialGeometry.Geometry.Riemannian.Variation
 open DifferentialGeometry.Geometry.Riemannian.CovariantDerivativeAlong
-open Poincare.Geometry
+open DifferentialGeometry.Geometry
 
-namespace Poincare.Geometry.Riemannian.Variation
+namespace DifferentialGeometry.Geometry.Riemannian.Variation
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
@@ -58,8 +58,6 @@ theorem exists_negative_twisted_variation_of_parallel_normal_field
     have hh := riemann_contraction_pos_of_orthonormal g hsec (γ t) (W t)
       (mfderiv 𝓘(ℝ, ℝ) I γ t 1) (hunit t ht) (hspeed t ht) ho
     unfold centralCurvatureDensity centralVariationField centralVelocity
-    unfold DifferentialGeometry.Geometry.Riemannian.Variation.centralVariationField
-      DifferentialGeometry.Geometry.Riemannian.Variation.centralVelocity
     dsimp only [Function.curry]
     erw [hc', hc, hv]
     exact hh
@@ -69,4 +67,4 @@ theorem exists_negative_twisted_variation_of_parallel_normal_field
     ((hrad L).isGeodesicOn univ 0 (mem_univ _)) hparf hpos
   constructor <;> linarith [hp.2.1, hp.2.2]
 
-end Poincare.Geometry.Riemannian.Variation
+end DifferentialGeometry.Geometry.Riemannian.Variation

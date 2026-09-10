@@ -6,9 +6,9 @@ open Set Bundle
 open scoped Manifold ContDiff
 open DifferentialGeometry DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.Geometry.Curvature
-open Poincare.Geometry.Metric
+open DifferentialGeometry.Geometry.Metric
 
-namespace Poincare.Geometry.Curvature
+namespace DifferentialGeometry.Geometry.Curvature
 
 theorem exists_smooth_least_ricci_field_on_restricted_roundCylinder
     {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
@@ -64,4 +64,4 @@ theorem exists_smooth_least_ricci_field_on_restricted_roundCylinder
   rw [hμeq x hx, hweq x hx]
   exact ⟨hv x hx, he x hx, hmin x hx, ha x hx, hs x hx, hp x hx, hd x hx⟩
 
-end Poincare.Geometry.Curvature
+end DifferentialGeometry.Geometry.Curvature

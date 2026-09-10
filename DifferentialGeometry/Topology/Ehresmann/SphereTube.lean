@@ -3,10 +3,10 @@ import DifferentialGeometry.Topology.Ehresmann.SphereBoundaryDegree
 noncomputable section
 open Set Topology Manifold
 open scoped ContDiff
-open Poincare.Geometry.Boundary Poincare.Topology.Manifold
+open DifferentialGeometry.Geometry.Boundary DifferentialGeometry.Topology.Manifold
 open DifferentialGeometry.Integral.DivergenceTheorem.WithBoundary
 
-namespace Poincare.Topology.Ehresmann
+namespace DifferentialGeometry.Topology.Ehresmann
 
 local notation "S²" => Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1
 
@@ -60,4 +60,4 @@ theorem exists_sphere_tube_with_boundary_matching
       Θ P hh hl hP η₀ η₁, exists_prescribed_sphere_boundary_matching_of_degree_one
         hab hu.continuous hboundary Θ P hh hl hP η₀ η₁⟩
 
-end Poincare.Topology.Ehresmann
+end DifferentialGeometry.Topology.Ehresmann

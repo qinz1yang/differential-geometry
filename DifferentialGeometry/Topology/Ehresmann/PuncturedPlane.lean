@@ -6,7 +6,7 @@ noncomputable section
 open Set Topology Manifold
 open scoped ContDiff
 
-namespace Poincare.Topology.Ehresmann
+namespace DifferentialGeometry.Topology.Ehresmann
 
 def puncturedPlane : TopologicalSpace.Opens (ℝ × ℝ) :=
   ⟨{0}ᶜ, isOpen_compl_singleton⟩
@@ -170,4 +170,4 @@ theorem not_isProperMap_puncturedPlaneProjection : ¬ IsProperMap puncturedPlane
   have : CompactSpace ℝ := e.surjective.compactSpace e.continuous
   exact noncompact_univ ℝ isCompact_univ
 
-end Poincare.Topology.Ehresmann
+end DifferentialGeometry.Topology.Ehresmann

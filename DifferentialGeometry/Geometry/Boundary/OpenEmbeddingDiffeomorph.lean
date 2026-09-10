@@ -6,7 +6,7 @@ noncomputable section
 open Set Topology
 open scoped Manifold ContDiff
 
-namespace Poincare.Geometry.Boundary
+namespace DifferentialGeometry.Geometry.Boundary
 
 open DifferentialGeometry.Integral.DivergenceTheorem.WithBoundary
 
@@ -57,4 +57,4 @@ theorem diffeomorphOfOpenSubsetRange_symm_apply_coe
   rw [← diffeomorphOfOpenSubsetRange_apply_coe ι hι hemb hinj hdim V hV,
     Diffeomorph.apply_symm_apply]
 
-end Poincare.Geometry.Boundary
+end DifferentialGeometry.Geometry.Boundary

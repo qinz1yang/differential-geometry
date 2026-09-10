@@ -2,7 +2,7 @@ import Mathlib.Analysis.Calculus.ContDiff.Defs
 
 set_option autoImplicit false
 
-namespace Poincare.Geometry.Riemannian.VolumeComparison
+namespace DifferentialGeometry.Geometry.Riemannian.VolumeComparison
 
 variable {E F : Type*} [AddCommGroup E] [Module ℝ E]
   [AddCommGroup F] [Module ℝ F]
@@ -30,4 +30,4 @@ theorem normalChristoffelFirstJet_repeated
   rw [hY]
   module
 
-end Poincare.Geometry.Riemannian.VolumeComparison
+end DifferentialGeometry.Geometry.Riemannian.VolumeComparison

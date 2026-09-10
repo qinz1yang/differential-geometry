@@ -4,7 +4,7 @@ import DifferentialGeometry.Topology.Homology.Local.Neighborhood
 set_option autoImplicit false
 noncomputable section
 open CategoryTheory CategoryTheory.Limits Set
-namespace Poincare.Homology
+namespace DifferentialGeometry.Homology
 universe u
 variable (X : TopCat.{u}) [T1Space X] [ContractibleSpace X]
   (U : Set X) [ContractibleSpace U] (x : X) (hx : x ∈ U) (hU : IsOpen U)
@@ -32,4 +32,4 @@ theorem reducedPuncturedNeighborhoodHomologyIso_hom (n : ℕ) :
   exact (relativeReducedConnectingIso_naturality R
     (TopCat.ofHom (⟨Subtype.val,continuous_subtype_val⟩ : C(U,X)))
     (puncturedNeighborhood_mapsTo X U x hx) n).symm
-end Poincare.Homology
+end DifferentialGeometry.Homology

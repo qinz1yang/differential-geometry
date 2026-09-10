@@ -10,7 +10,7 @@ set_option autoImplicit false
 
 universe u v w
 
-namespace Poincare.Algebra.Group
+namespace DifferentialGeometry.Algebra.Group
 
 theorem pushoutI_existsUnique_lift {ι : Type u} [Nonempty ι]
     (G : ι → Type v) (H : Type w) [∀ i, Group (G i)] [Group H]
@@ -84,4 +84,4 @@ theorem of_true_not_injective :
 
 end PushoutIdentities
 
-end Poincare.Algebra.Group
+end DifferentialGeometry.Algebra.Group

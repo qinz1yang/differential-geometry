@@ -4,7 +4,7 @@ import DifferentialGeometry.Topology.LocalDegree.Euclidean
 set_option autoImplicit false
 open Metric Set
 noncomputable section
-namespace Poincare.LocalDegree
+namespace DifferentialGeometry.LocalDegree
 variable {E F : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [NormedAddCommGroup F] [NormedSpace ℝ F]
 
@@ -44,4 +44,4 @@ theorem euclideanLocalDegree_neg {d : ℕ}
     euclideanLocalDegree_eq_sphereDegree _ hR r]
   rw [sphereMap_neg, euclideanSphereDegree_comp, euclideanSphereDegree_antipodal]
 
-end Poincare.LocalDegree
+end DifferentialGeometry.LocalDegree

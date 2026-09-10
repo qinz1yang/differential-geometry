@@ -5,7 +5,7 @@ set_option autoImplicit false
 open Metric Set
 open scoped Manifold ContDiff Topology
 noncomputable section
-namespace Poincare.LocalDegree
+namespace DifferentialGeometry.LocalDegree
 
 theorem isolatedZero_mpullback_partialDiffeomorph
     {E F : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -71,4 +71,4 @@ theorem euclideanLocalDegree_mpullback_partialDiffeomorph {n : ℕ∞ω}
       euclideanLocalDegree_congr ⟨R, hiG⟩ _ (Filter.Eventually.of_forall hGeq)
     _ = _ := euclideanLocalDegree_affineCoordinate A x (φ x) ⟨S, hS⟩
 
-end Poincare.LocalDegree
+end DifferentialGeometry.LocalDegree

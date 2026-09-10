@@ -6,7 +6,7 @@ import Mathlib.Topology.ContinuousMap.Basic
 set_option autoImplicit false
 noncomputable section
 open Finset
-namespace Poincare.Simplex
+namespace DifferentialGeometry.Simplex
 variable {ι κ E : Type*} [Fintype ι] [Fintype κ]
   [NormedAddCommGroup E] [NormedSpace ℝ E]
 
@@ -72,4 +72,4 @@ theorem vertexMap_injective {v : ι → E} (hv : AffineIndependent ℝ v) :
     Finset.affineCombination_eq_linear_combination _ _ _ y.prop.2]
   exact h
 
-end Poincare.Simplex
+end DifferentialGeometry.Simplex

@@ -6,9 +6,9 @@ noncomputable section
 open scoped Manifold ContDiff
 open DifferentialGeometry DifferentialGeometry.Geometry DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.Geometry.Curvature
-open Poincare.Geometry.Metric
+open DifferentialGeometry.Geometry.Metric
 
-namespace Poincare.Geometry.Curvature
+namespace DifferentialGeometry.Geometry.Curvature
 
 theorem ricciSharp_restricted_roundCylinder
     {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
@@ -77,4 +77,4 @@ theorem ricciSharp_restricted_roundCylinder_difference_bound
     (show 0 ≤ 1441 * ε * Real.sqrt (gRef.inner x v v) by positivity)
   nlinarith only [hb, hc]
 
-end Poincare.Geometry.Curvature
+end DifferentialGeometry.Geometry.Curvature

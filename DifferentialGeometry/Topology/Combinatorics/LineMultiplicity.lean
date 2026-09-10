@@ -2,7 +2,7 @@ import Mathlib.Data.Finset.Max
 import Mathlib.Order.Interval.Finset.Nat
 import Mathlib.Data.Fin.Basic
 
-namespace Poincare.Topology.Combinatorics
+namespace DifferentialGeometry.Topology.Combinatorics
 
 theorem card_le_two_of_pairwise_adjacent (s : Finset ℕ)
     (hs : ∀ i ∈ s, ∀ j ∈ s, i ≤ j + 1) : s.card ≤ 2 := by
@@ -48,4 +48,4 @@ theorem eq_or_adjacent_of_val_le_succ {n : ℕ} (i j : Fin (n + 1))
       change i.val = j.val + 1
       omega
 
-end Poincare.Topology.Combinatorics
+end DifferentialGeometry.Topology.Combinatorics

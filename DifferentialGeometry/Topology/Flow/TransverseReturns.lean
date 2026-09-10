@@ -4,7 +4,7 @@ import Mathlib.Topology.OpenPartialHomeomorph.Basic
 
 open Set
 
-namespace Poincare.Topology.Flow
+namespace DifferentialGeometry.Topology.Flow
 
 theorem exists_transverse_hit_after
     {X : Type*} [TopologicalSpace X] (φ : _root_.Flow ℝ X)
@@ -26,4 +26,4 @@ theorem exists_transverse_hit_after
     _ = φ (-p.2) (φ p.2 (σ p.1)) := congrArg (φ (-p.2)) horbit.symm
     _ = σ p.1 := by rw [← φ.map_add, neg_add_cancel, φ.map_zero_apply]
 
-end Poincare.Topology.Flow
+end DifferentialGeometry.Topology.Flow

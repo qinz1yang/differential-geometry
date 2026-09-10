@@ -4,8 +4,8 @@ import DifferentialGeometry.Topology.LocalDegree.ZeroSphere
 set_option autoImplicit false
 open CategoryTheory CategoryTheory.Limits
 noncomputable section
-namespace Poincare.LocalDegree
-open Poincare.Homology
+namespace DifferentialGeometry.LocalDegree
+open DifferentialGeometry.Homology
 
 
 abbrev EuclideanSphere (d : ℕ) := Metric.sphere (0 : EuclideanSpace ℝ (Fin (d + 1))) 1
@@ -140,4 +140,4 @@ theorem euclideanSphereTopGenerator_connecting (d : ℕ) :
   rw [← euclideanSphereTopReducedHomologyEquiv_succ]
   simp
 
-end Poincare.LocalDegree
+end DifferentialGeometry.LocalDegree

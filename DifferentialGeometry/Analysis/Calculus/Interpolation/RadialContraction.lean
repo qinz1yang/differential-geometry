@@ -8,7 +8,7 @@ noncomputable section
 open Set Metric Filter Topology
 open scoped ContDiff Manifold
 
-namespace Poincare.Analysis
+namespace DifferentialGeometry.Analysis
 
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
   [FiniteDimensional ℝ E]
@@ -84,4 +84,4 @@ theorem exists_compact_flow_contracting_closedBall_in_open {r : ℝ} (hr : 0 < r
     exists_compact_flow_contracting_closedBall (E := E) hr hrR
   exact ⟨D, hD, hDi, hzero, hrad, closedBall 0 R, isCompact_closedBall _ _, hRU, hfix⟩
 
-end Poincare.Analysis
+end DifferentialGeometry.Analysis

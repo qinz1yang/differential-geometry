@@ -10,7 +10,7 @@ open CategoryTheory CategoryTheory.Limits Topology
 
 universe u
 
-namespace Poincare.TopCat.Pushout
+namespace DifferentialGeometry.TopCat.Pushout
 
 variable {A D X P : TopCat.{u}} {f : A ⟶ D} {g : A ⟶ X}
   {r : D ⟶ P} {b : X ⟶ P} (h : IsPushout f g r b)
@@ -167,4 +167,4 @@ theorem isQuotientMap_sumElim : IsQuotientMap (Sum.elim r b) := by
     · exact ⟨Sum.inl d, hd⟩
     · exact ⟨Sum.inr x, hx⟩
 
-end Poincare.TopCat.Pushout
+end DifferentialGeometry.TopCat.Pushout

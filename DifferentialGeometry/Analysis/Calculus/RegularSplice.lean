@@ -4,7 +4,7 @@ set_option autoImplicit false
 noncomputable section
 open Set Metric Filter Function
 open scoped Topology ContDiff
-namespace Poincare.Calculus
+namespace DifferentialGeometry.Calculus
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 
 
@@ -108,4 +108,4 @@ theorem exists_regular_ball_splice_preserving_germs {f g : E → E} (a : E) {r R
   filter_upwards [hQ.mem_nhds (hAQ hx)] with y hy
   exact hfixed ⟨subset_closure hy, (hQO (subset_closure hy)).1⟩
 
-end Poincare.Calculus
+end DifferentialGeometry.Calculus

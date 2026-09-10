@@ -9,7 +9,7 @@ noncomputable section
 open Set Filter Topology
 open scoped ContDiff Manifold
 
-namespace Poincare.Topology.Manifold
+namespace DifferentialGeometry.Topology.Manifold
 
 variable {E H M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [TopologicalSpace H] [TopologicalSpace M] [ChartedSpace H M]
@@ -62,7 +62,7 @@ theorem exists_smooth_nonvanishing_homotopy_of_compactMulSupport
   have hd : 1 < Module.rank ℝ ℂ := by
     rw [← Module.finrank_eq_rank]
     norm_num
-  have hU := (Poincare.Topology.isPathConnected_compl_closedBall hd (0 : ℂ) r).isConnected
+  have hU := (DifferentialGeometry.Topology.isPathConnected_compl_closedBall hd (0 : ℂ) r).isConnected
   have hfixed (z : ℂ) (hz : z ∈ (Metric.closedBall (0 : ℂ) r)ᶜ) : f z = 1 :=
     image_eq_one_of_notMem_mulTSupport (fun hs ↦ hz (hsupport hs))
   obtain ⟨Φ, hΦ, hnonzero, hzero, hone, hout⟩ :=
@@ -76,4 +76,4 @@ theorem exists_smooth_nonvanishing_homotopy_of_compactMulSupport
   by_contra hzball
   exact hz (hout t z hzball)
 
-end Poincare.Topology.Manifold
+end DifferentialGeometry.Topology.Manifold

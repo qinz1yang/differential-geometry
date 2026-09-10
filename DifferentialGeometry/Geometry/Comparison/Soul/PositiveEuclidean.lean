@@ -26,7 +26,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 
 theorem eq_singleton_of_positiveSectionalCurvature
     (g : SmoothRiemannianMetric I M) (hEnorm : IsMetricNorm (I := I) g)
-    (hsec : Poincare.Geometry.HasPositiveSectionalCurvature (I := I) g)
+    (hsec : DifferentialGeometry.Geometry.HasPositiveSectionalCurvature (I := I) g)
     (hdim : 2 ≤ Module.finrank ℝ E)
     {S : Set M} (hne : S.Nonempty) (hcompact : IsCompact S)
     (hconv : IsTotallyConvex (I := I) g S) (hB : relBoundary I S = ∅) :
@@ -37,7 +37,7 @@ theorem eq_singleton_of_positiveSectionalCurvature
 
 theorem exists_diffeomorph_euclidean_of_positiveSectionalCurvature
     (g : SmoothRiemannianMetric I M) (hEnorm : IsMetricNorm (I := I) g)
-    (hsec : Poincare.Geometry.HasPositiveSectionalCurvature (I := I) g)
+    (hsec : DifferentialGeometry.Geometry.HasPositiveSectionalCurvature (I := I) g)
     {n : ℕ} (hdim : Module.finrank ℝ E = n) :
     ∃ p : M, ∃ e : M ≃ₘ⟮I, 𝓘(ℝ, EuclideanSpace ℝ (Fin n))⟯
         EuclideanSpace ℝ (Fin n), e p = 0 := by
@@ -53,7 +53,7 @@ theorem exists_diffeomorph_euclidean_of_positiveSectionalCurvature
 
 theorem exists_diffeomorph_euclidean_three_of_positiveSectionalCurvature
     (g : SmoothRiemannianMetric I M) (hEnorm : IsMetricNorm (I := I) g)
-    (hsec : Poincare.Geometry.HasPositiveSectionalCurvature (I := I) g)
+    (hsec : DifferentialGeometry.Geometry.HasPositiveSectionalCurvature (I := I) g)
     (hdim : Module.finrank ℝ E = 3) :
     ∃ p : M, ∃ e : M ≃ₘ⟮I, 𝓘(ℝ, EuclideanSpace ℝ (Fin 3))⟯
         EuclideanSpace ℝ (Fin 3), e p = 0 :=

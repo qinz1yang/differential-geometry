@@ -7,10 +7,10 @@ noncomputable section
 open Set Topology Manifold
 open scoped ContDiff
 
-namespace Poincare.Geometry.Neck
+namespace DifferentialGeometry.Geometry.Neck
 
 open DifferentialGeometry DifferentialGeometry.Integral.DivergenceTheorem.WithBoundary
-open Poincare.Topology Poincare.Topology.SphereSeparation Poincare.Topology.Ehresmann
+open DifferentialGeometry.Topology DifferentialGeometry.Topology.SphereSeparation DifferentialGeometry.Topology.Ehresmann
 
 theorem sphereAnnulusWithBoundaryMatching_of_ancient_cylindrical_chain
     {E H W M : Type} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]
@@ -46,7 +46,7 @@ theorem sphereAnnulusWithBoundaryMatching_of_ancient_cylindrical_chain
       ∀ Ψ : Diffeomorph ((𝓡 2).prod (𝓡∂ 1)) I (SphereTwo × unitInterval) W ∞,
         range (ι ∘ Ψ) ⊆ ⋃ i, e i '' ((univ : Set SphereTwo) ×ˢ Icc (a i) (b i)) := by
   let : LocallyPathConnectedSpace W :=
-    Poincare.Topology.Manifold.locallyPathConnectedSpace_of_modelWithCorners I
+    DifferentialGeometry.Topology.Manifold.locallyPathConnectedSpace_of_modelWithCorners I
   let : PathConnectedSpace W := PathConnectedSpace.of_locallyPathConnectedSpace
   obtain ⟨hfinite, hmodels⟩ := exists_standard_cover_of_ancient_spatial_splitting hcomplete hsplit hCG
   let : Finite (FundamentalGroup M (ι w₀)) := hfinite (ι w₀)
@@ -64,4 +64,4 @@ theorem sphereAnnulusWithBoundaryMatching_of_ancient_cylindrical_chain
   obtain ⟨q, rfl⟩ := hy
   exact hcover (mem_range_self (Ψ q))
 
-end Poincare.Geometry.Neck
+end DifferentialGeometry.Geometry.Neck

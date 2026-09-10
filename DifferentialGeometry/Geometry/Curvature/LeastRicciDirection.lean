@@ -7,7 +7,7 @@ open scoped Manifold ContDiff InnerProductSpace
 open DifferentialGeometry DifferentialGeometry.Tensor0SBundle
 open DifferentialGeometry.Geometry.Curvature
 
-namespace Poincare.Geometry.Curvature
+namespace DifferentialGeometry.Geometry.Curvature
 
 theorem exists_least_ricci_direction_of_axis_error
     {E H M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
@@ -52,7 +52,7 @@ theorem exists_least_ricci_direction_of_axis_error
     rw [hn, hn, hi]
     exact herror z
   obtain ⟨μ, w, hw, heig, hmin, hμ, hpos, hdist, hspace⟩ :=
-    Poincare.Analysis.exists_least_eigenvector_close_to_axis A hA v hvn hκ hε he
+    DifferentialGeometry.Analysis.exists_least_eigenvector_close_to_axis A hA v hvn hκ hε he
   have hwg : g.inner x w w = 1 := by
     rw [← hi, real_inner_self_eq_norm_sq, hw]
     norm_num
@@ -65,4 +65,4 @@ theorem exists_least_ricci_direction_of_axis_error
   · rwa [hi] at hpos
   · rwa [hn] at hdist
 
-end Poincare.Geometry.Curvature
+end DifferentialGeometry.Geometry.Curvature

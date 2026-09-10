@@ -5,7 +5,7 @@ set_option autoImplicit false
 
 open scoped Manifold ContDiff
 
-namespace Poincare.Topology.SphereSeparation
+namespace DifferentialGeometry.Topology.SphereSeparation
 
 theorem sphereTwoSumPUnitH2IsInt_of_cellularComparison
     (comparison : HomotopyEquiv
@@ -27,4 +27,4 @@ theorem hasAlexanderDualityH0Certificate_of_specializedDuality_and_cellularCompa
   hasAlexanderDualityH0Certificate_of_specializedDuality e he hduality
     (sphereTwoSumPUnitH2IsInt_of_cellularComparison comparison)
 
-end Poincare.Topology.SphereSeparation
+end DifferentialGeometry.Topology.SphereSeparation

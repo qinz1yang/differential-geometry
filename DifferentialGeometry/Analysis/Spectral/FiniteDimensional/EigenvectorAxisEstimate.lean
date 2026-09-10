@@ -5,7 +5,7 @@ noncomputable section
 open Set Metric
 open scoped InnerProductSpace
 
-namespace Poincare.Analysis
+namespace DifferentialGeometry.Analysis
 
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
 
@@ -148,4 +148,4 @@ theorem exists_least_eigenvector_close_to_axis
     ‖w - v‖ ≤ 2 * (2 * ε / κ) := hd.trans (mul_le_mul_of_nonneg_left hb (by norm_num))
     _ = 4 * ε / κ := by ring
 
-end Poincare.Analysis
+end DifferentialGeometry.Analysis

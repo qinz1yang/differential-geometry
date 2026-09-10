@@ -8,7 +8,7 @@ open scoped Manifold ContDiff Topology
 
 noncomputable section
 
-namespace Poincare.VectorField
+namespace DifferentialGeometry.VectorField
 
 variable {𝕜 : Type*} [NontriviallyNormedField 𝕜]
   {E : Type*} [NormedAddCommGroup E] [NormedSpace 𝕜 E]
@@ -203,4 +203,4 @@ theorem fromTangentSpace_linearizationAtZero {V : E → E} {x : E}
   ext v
   rfl
 
-end Poincare.VectorField
+end DifferentialGeometry.VectorField

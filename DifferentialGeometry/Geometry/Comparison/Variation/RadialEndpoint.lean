@@ -1,4 +1,3 @@
-import Batteries.Tactic.Alias
 import DifferentialGeometry.Geometry.Comparison.Variation.EndpointParallel
 import DifferentialGeometry.Geometry.Comparison.Variation.ExponentialEndpoint
 import DifferentialGeometry.Geometry.Comparison.Variation.RadialIndex
@@ -211,36 +210,3 @@ end Variation
 end Riemannian
 end Geometry
 end DifferentialGeometry
-
-namespace Poincare.Geometry.Riemannian.Variation
-
-@[reducible] alias RadialEndpointVariation := DifferentialGeometry.Geometry.Riemannian.Variation.RadialEndpointVariation
-alias exists_radialEndpointVariation := DifferentialGeometry.Geometry.Riemannian.Variation.exists_radialEndpointVariation
-end Poincare.Geometry.Riemannian.Variation
-
-namespace Poincare.Geometry.Riemannian.Variation.RadialEndpointVariation
-
-alias secondVariation_half_energy_le_inv := DifferentialGeometry.Geometry.Riemannian.Variation.RadialEndpointVariation.secondVariation_half_energy_le_inv
-@[reducible] alias mk := DifferentialGeometry.Geometry.Riemannian.Variation.RadialEndpointVariation.mk
-alias baseCurve := DifferentialGeometry.Geometry.Riemannian.Variation.RadialEndpointVariation.baseCurve
-alias parallelField := DifferentialGeometry.Geometry.Riemannian.Variation.RadialEndpointVariation.parallelField
-alias radialField := DifferentialGeometry.Geometry.Riemannian.Variation.RadialEndpointVariation.radialField
-alias variation := DifferentialGeometry.Geometry.Riemannian.Variation.RadialEndpointVariation.variation
-alias smooth := DifferentialGeometry.Geometry.Riemannian.Variation.RadialEndpointVariation.smooth
-alias central := DifferentialGeometry.Geometry.Riemannian.Variation.RadialEndpointVariation.central
-alias agrees := DifferentialGeometry.Geometry.Riemannian.Variation.RadialEndpointVariation.agrees
-alias agreesGerm := DifferentialGeometry.Geometry.Riemannian.Variation.RadialEndpointVariation.agreesGerm
-alias parallelDifferentiable := DifferentialGeometry.Geometry.Riemannian.Variation.RadialEndpointVariation.parallelDifferentiable
-alias parallelCovDeriv := DifferentialGeometry.Geometry.Riemannian.Variation.RadialEndpointVariation.parallelCovDeriv
-alias parallelTerminalVelocity := DifferentialGeometry.Geometry.Riemannian.Variation.RadialEndpointVariation.parallelTerminalVelocity
-alias centralGeodesic := DifferentialGeometry.Geometry.Riemannian.Variation.RadialEndpointVariation.centralGeodesic
-alias centralUnitSpeed := DifferentialGeometry.Geometry.Riemannian.Variation.RadialEndpointVariation.centralUnitSpeed
-alias fixedInitial := DifferentialGeometry.Geometry.Riemannian.Variation.RadialEndpointVariation.fixedInitial
-alias terminalGerm := DifferentialGeometry.Geometry.Riemannian.Variation.RadialEndpointVariation.terminalGerm
-alias terminalGeodesic := DifferentialGeometry.Geometry.Riemannian.Variation.RadialEndpointVariation.terminalGeodesic
-alias centralField := DifferentialGeometry.Geometry.Riemannian.Variation.RadialEndpointVariation.centralField
-alias radialValue := DifferentialGeometry.Geometry.Riemannian.Variation.RadialEndpointVariation.radialValue
-alias radialCovDeriv := DifferentialGeometry.Geometry.Riemannian.Variation.RadialEndpointVariation.radialCovDeriv
-alias parallelUnit := DifferentialGeometry.Geometry.Riemannian.Variation.RadialEndpointVariation.parallelUnit
-
-end Poincare.Geometry.Riemannian.Variation.RadialEndpointVariation

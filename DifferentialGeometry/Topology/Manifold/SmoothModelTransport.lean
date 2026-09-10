@@ -5,7 +5,7 @@ set_option autoImplicit false
 noncomputable section
 open Set Function
 open scoped Manifold ContDiff
-namespace Poincare.Manifold
+namespace DifferentialGeometry.Manifold
 
 theorem isManifold_transHomeomorph
     {𝕜 E F H H' M : Type*} [NontriviallyNormedField 𝕜]
@@ -50,4 +50,4 @@ theorem isManifold_transHomeomorph
     L (I (g (f.symm (I.symm (L.symm x)))))
   rw [he, hc]
 
-end Poincare.Manifold
+end DifferentialGeometry.Manifold

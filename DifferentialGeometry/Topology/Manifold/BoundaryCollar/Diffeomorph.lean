@@ -8,7 +8,7 @@ open scoped ContDiff
 open DifferentialGeometry.Integral.DivergenceTheorem.WithBoundary
 set_option autoImplicit false
 noncomputable section
-namespace Poincare.Manifold.BoundaryCollar
+namespace DifferentialGeometry.Manifold.BoundaryCollar
 
 theorem exists_boundary_flow_collar_diffeomorph
     {n : ℕ} {M : Type*} [TopologicalSpace M]
@@ -51,13 +51,13 @@ theorem exists_boundary_flow_collar_diffeomorph
     change F (p.val, 0) ∈ N
     rw [hzero p.val (hKU p.2)]
     exact hKN p.2
-  obtain ⟨δ, hδ, hδε, hsmall⟩ := Poincare.Topology.exists_shorter_strip_image_subset hε
+  obtain ⟨δ, hδ, hδε, hsmall⟩ := DifferentialGeometry.Topology.exists_shorter_strip_image_subset hε
     (continuous_id : Continuous (id : B × Icc (0 : ℝ) ε → B × Icc (0 : ℝ) ε))
     (Ω.isOpen.inter (N.isOpen.preimage hc.continuous)) hzeroN
   let S : Opens (B × Icc (0 : ℝ) ε) :=
     ⟨{q | (q.2 : ℝ) < δ}, isOpen_lt (continuous_subtype_val.comp continuous_snd) continuous_const⟩
   have hSΩ : S ≤ Ω := fun q hq => (hsmall ⟨q, hq, rfl⟩).1
-  obtain ⟨Y, _, _, d, hd, _⟩ := Poincare.Manifold.Diffeomorph.exists_restrict_opens e S hSΩ
+  obtain ⟨Y, _, _, d, hd, _⟩ := DifferentialGeometry.Manifold.Diffeomorph.exists_restrict_opens e S hSΩ
   have hdF (q : S) : (d q : M) = c q.val := (hd q).trans (he _)
   have hd0 (p : B) : (d ⟨(p, ⟨0, ⟨le_rfl, hε.le⟩⟩), hδ⟩ : M) = p.val := by
     rw [hdF]
@@ -105,4 +105,4 @@ theorem exists_boundary_collar_diffeomorph
     rw [hd]
     exact hi q.val.1.val (hKU q.val.1.2) q.val.2.val ⟨hq, q.val.2.property.2⟩
 
-end Poincare.Manifold.BoundaryCollar
+end DifferentialGeometry.Manifold.BoundaryCollar

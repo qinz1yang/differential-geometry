@@ -6,7 +6,7 @@ noncomputable section
 open Set
 open scoped ContDiff Manifold
 
-namespace Poincare.Topology.Manifold
+namespace DifferentialGeometry.Topology.Manifold
 
 theorem exists_contMDiff_bilinear_normalized_eigenpair
     {P H M E : Type*} [NormedAddCommGroup P] [NormedSpace ℝ P] [CompleteSpace P]
@@ -44,7 +44,7 @@ theorem exists_contMDiff_bilinear_normalized_eigenpair
   have hci : ContMDiffOn 𝓘(ℝ, P) I ∞ c.symm D :=
     (contMDiffOn_extChartAt_symm (I := I) p₀).mono inter_subset_left
   obtain ⟨W, hWo, hpW, hWD, μ, w, hμ, hw, hμ₀, hw₀', heq⟩ :=
-    Poincare.Analysis.exists_smooth_bilinear_normalized_eigenpair
+    DifferentialGeometry.Analysis.exists_smooth_bilinear_normalized_eigenpair
       (A ∘ c.symm) (B ∘ c.symm) hD
       (hA.comp hci (fun _ hz ↦ hz.2)).contDiffOn
       (hB.comp hci (fun _ hz ↦ hz.2)).contDiffOn hpD
@@ -64,4 +64,4 @@ theorem exists_contMDiff_bilinear_normalized_eigenpair
   · intro z hz
     simpa only [Function.comp_apply, c.left_inv hz.1] using heq (c z) hz.2
 
-end Poincare.Topology.Manifold
+end DifferentialGeometry.Topology.Manifold

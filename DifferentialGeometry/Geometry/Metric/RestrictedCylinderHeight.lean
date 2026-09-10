@@ -7,7 +7,7 @@ open scoped Manifold ContDiff
 open DifferentialGeometry DifferentialGeometry.Geometry DifferentialGeometry.Geometry.Riemannian
 open DifferentialGeometry.Analysis.Laplacian
 
-namespace Poincare.Geometry.Metric
+namespace DifferentialGeometry.Geometry.Metric
 
 theorem restricted_roundCylinder_height_differential_bound
     {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
@@ -28,4 +28,4 @@ theorem restricted_roundCylinder_height_differential_bound
     restrictedCylinderAxis_inner gS O x w
   rwa [he] at h
 
-end Poincare.Geometry.Metric
+end DifferentialGeometry.Geometry.Metric

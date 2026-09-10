@@ -3,7 +3,7 @@ import DifferentialGeometry.Topology.Compactness.Strip
 open Set Function Topology Filter
 set_option autoImplicit false
 
-namespace Poincare.Manifold.BoundaryCollar
+namespace DifferentialGeometry.Manifold.BoundaryCollar
 
 theorem exists_open_shorter_strip
     {B M : Type*} [TopologicalSpace B] [CompactSpace B] [TopologicalSpace M]
@@ -19,7 +19,7 @@ theorem exists_open_shorter_strip
   have hWrange : W ⊆ range c := interior_subset
   have hzW (b : B) : c (b, zero) ∈ W := mem_interior_iff_mem_nhds.mpr (hzero b)
   obtain ⟨δ, hδ, hδε, hsmall⟩ :=
-    Poincare.Topology.exists_shorter_strip_image_subset hε hc.continuous hW hzW
+    DifferentialGeometry.Topology.exists_shorter_strip_image_subset hε hc.continuous hW hzW
   have hopen : IsOpen {q : B × Icc (0 : ℝ) ε | (q.2 : ℝ) < δ} :=
     isOpen_lt (continuous_subtype_val.comp continuous_snd) continuous_const
   obtain ⟨O, hO, hOeq⟩ := hc.isInducing.image_eq_isOpen_inter_range hopen
@@ -34,4 +34,4 @@ theorem exists_open_shorter_strip
   intro b
   exact ⟨(b, zero), hδ, rfl⟩
 
-end Poincare.Manifold.BoundaryCollar
+end DifferentialGeometry.Manifold.BoundaryCollar

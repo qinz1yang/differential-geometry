@@ -6,7 +6,7 @@ noncomputable section
 open Set Metric
 open scoped ContDiff Manifold
 
-namespace Poincare.Analysis
+namespace DifferentialGeometry.Analysis
 
 theorem exists_compact_isotopy_moving_point
     {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
@@ -52,4 +52,4 @@ theorem exists_compact_isotopy_moving_point
   apply (D p).injective
   exact ((D p).apply_symm_apply x).trans (hfix p x hx).symm
 
-end Poincare.Analysis
+end DifferentialGeometry.Analysis

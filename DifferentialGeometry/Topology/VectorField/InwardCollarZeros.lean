@@ -4,7 +4,7 @@ set_option autoImplicit false
 noncomputable section
 open Set Bundle Filter Manifold TopologicalSpace
 open scoped ContDiff Topology
-namespace Poincare.VectorField
+namespace DifferentialGeometry.VectorField
 variable {E H B : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [TopologicalSpace H] [TopologicalSpace B] [ChartedSpace H B]
   {J : ModelWithCorners ℝ E H} {ε δ a : ℝ} [Fact ((0 : ℝ) < ε)]
@@ -62,4 +62,4 @@ theorem finite_inwardCollar_zeroSet (haδ : a < δ) (haε : a ≤ ε)
   (inwardCollar_zeroSet_proj_bijOn S hS T b G hboundary hzero ha haδ haε).finite_iff_finite.mpr
     (hfinite.subset (fun _ h => h.1))
 
-end Poincare.VectorField
+end DifferentialGeometry.VectorField

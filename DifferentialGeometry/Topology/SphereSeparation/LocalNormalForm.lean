@@ -8,7 +8,7 @@ set_option autoImplicit false
 open Function Set
 open scoped ContDiff Manifold Topology
 
-namespace Poincare.Topology.SphereSeparation
+namespace DifferentialGeometry.Topology.SphereSeparation
 
 variable {N : Type*} [TopologicalSpace N]
 
@@ -546,4 +546,4 @@ theorem exists_embeddedSphereNormalChart_connected_halves
     · simpa [c, ball, h] using hballTarget
     · rfl
 
-end Poincare.Topology.SphereSeparation
+end DifferentialGeometry.Topology.SphereSeparation

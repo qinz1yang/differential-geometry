@@ -6,7 +6,7 @@ set_option autoImplicit false
 noncomputable section
 open Set Metric Filter
 open scoped Manifold ContDiff Topology
-namespace Poincare.Manifold
+namespace DifferentialGeometry.Manifold
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   {H M : Type*} [TopologicalSpace H] [TopologicalSpace M] [ChartedSpace H M]
   (I : ModelWithCorners ℝ E H) [IsManifold I ∞ M]
@@ -63,4 +63,4 @@ theorem exists_pairwise_disjoint_interiorChart_closedBalls {A : Set M}
       exact (interiorChart I ∞ p.val).left_inv
         ((mem_interiorChart_source_iff I ∞ p.val).mpr (hAI p p.property))
 
-end Poincare.Manifold
+end DifferentialGeometry.Manifold

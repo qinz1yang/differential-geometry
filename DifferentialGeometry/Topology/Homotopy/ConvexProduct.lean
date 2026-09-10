@@ -3,7 +3,7 @@ import Mathlib.Analysis.Convex.Contractible
 set_option autoImplicit false
 noncomputable section
 open Set ContinuousMap
-namespace Poincare.HomotopyEquiv
+namespace DifferentialGeometry.HomotopyEquiv
 variable (X : Type*) [TopologicalSpace X]
   {E : Type*} [AddCommGroup E] [Module ℝ E] [TopologicalSpace E]
   [ContinuousAdd E] [ContinuousSMul ℝ E] {s : Set E}
@@ -31,4 +31,4 @@ theorem productConvex_apply (hs : Convex ℝ s) (c : s) (p : X × s) :
 theorem productConvex_symm_apply (hs : Convex ℝ s) (c : s) (x : X) :
     (productConvex X hs c).symm x = (x, c) := rfl
 
-end Poincare.HomotopyEquiv
+end DifferentialGeometry.HomotopyEquiv

@@ -10,7 +10,7 @@ open DifferentialGeometry
 open DifferentialGeometry.Geometry.Riemannian
 open DifferentialGeometry.Geometry.Riemannian.Geodesic
 
-namespace Poincare.Geometry.Riemannian
+namespace DifferentialGeometry.Geometry.Riemannian
 
 
 def IsTwistedPath {M : Type*} (F : M → M) (L : ℝ) (c : ℝ → M) : Prop :=
@@ -116,7 +116,7 @@ theorem exists_minimal_twisted_geodesic_with_derivative_test
     rw [hcenter, hE]
     exact hmin _ (smoothNearInterval_slice hU hsub hf hs) (htw s hs)
   have hsmooth := Variation.curveEnergy_contDiffOn_of_smooth_near_strip g f hL.le hU hsub hf
-  exact ⟨hlocal.deriv_eq_zero, Poincare.Analysis.second_deriv_nonneg_of_isLocalMin
+  exact ⟨hlocal.deriv_eq_zero, DifferentialGeometry.Analysis.second_deriv_nonneg_of_isLocalMin
     hlocal (hsmooth.contDiffAt hnb).continuousAt⟩
 
-end Poincare.Geometry.Riemannian
+end DifferentialGeometry.Geometry.Riemannian

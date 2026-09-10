@@ -6,7 +6,7 @@ open Set Filter Function Bundle
 open scoped Manifold ContDiff Topology
 open DifferentialGeometry.Topology.Morse
 open DifferentialGeometry.Integral.DivergenceTheorem.WithBoundary
-namespace Poincare.Morse
+namespace DifferentialGeometry.Morse
 variable {n : ℕ} {M : Type} [TopologicalSpace M]
   [ChartedSpace (EuclideanHalfSpace (n + 1)) M] [IsManifold (𝓡∂ (n + 1)) ∞ M]
   [T2Space M] [CompactSpace M]
@@ -33,11 +33,11 @@ theorem exists_relative_excellent_morse_sublevel_homeomorph (b : ℝ) :
   obtain ⟨f, a, t, c₀, W, hf, hreg, hi, d, hat, htc, hcb, hbound, hempty,
     hlevel, hBW, hband, hcrit, hfinite, hinj, _, _, _, V, hV, hVc, hunit, hVpos⟩ :=
     exists_relative_excellent_morse_sublevel_diffeomorph (M := M) (n := n) b
-  let _ := Poincare.Manifold.RegularLevel.interiorSublevelChartedSpace (𝓡∂ (n + 1))
+  let _ := DifferentialGeometry.Manifold.RegularLevel.interiorSublevelChartedSpace (𝓡∂ (n + 1))
     (EuclideanSpace.equiv (Fin (n + 1)) ℝ) hf hreg hi
   refine ⟨f, a, c₀, W, hf, hat.trans htc, hcb, hbound, hempty, hlevel, hBW, hband,
     ?_, hreg, hfinite, hinj, (fun x hx => hi hx), ⟨d.toHomeomorph⟩, V, hV, hVc, hunit, hVpos⟩
   intro x hx
   exact ⟨(hcrit x hx).1, (hcrit x hx).2.1, (hcrit x hx).2.2.trans htc⟩
 
-end Poincare.Morse
+end DifferentialGeometry.Morse

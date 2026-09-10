@@ -5,7 +5,7 @@ import Mathlib.Analysis.Normed.Operator.LinearIsometry
 set_option autoImplicit false
 open Metric Set
 noncomputable section
-namespace Poincare.LocalDegree
+namespace DifferentialGeometry.LocalDegree
 variable {E F : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [NormedAddCommGroup F] [NormedSpace ℝ F]
 
@@ -46,4 +46,4 @@ theorem sphereMap_isometry_conjugate (A : E ≃ₗᵢ[ℝ] F)
     sphereMap_apply, map_smul, A.apply_symm_apply, A.symm.norm_map,
     ContinuousMap.comp_apply, sphereMap_apply, hv, map_add, map_smul]
 
-end Poincare.LocalDegree
+end DifferentialGeometry.LocalDegree

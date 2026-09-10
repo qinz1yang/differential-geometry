@@ -5,7 +5,7 @@ import Mathlib.LinearAlgebra.FiniteDimensional.Basic
 
 noncomputable section
 
-namespace Poincare.Analysis
+namespace DifferentialGeometry.Analysis
 
 theorem bijective_fderiv_bilinear_normalized_eigenpair
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
@@ -63,4 +63,4 @@ theorem bijective_fderiv_bilinear_normalized_eigenpair
   rw [(hf.prodMk hg).fderiv]
   exact hbij
 
-end Poincare.Analysis
+end DifferentialGeometry.Analysis

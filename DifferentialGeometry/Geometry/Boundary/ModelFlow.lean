@@ -7,7 +7,7 @@ noncomputable section
 open Set Filter Topology
 open scoped ContDiff Manifold
 
-namespace Poincare.Geometry.Boundary
+namespace DifferentialGeometry.Geometry.Boundary
 
 open DifferentialGeometry.Integral.DivergenceTheorem.WithBoundary
 
@@ -96,4 +96,4 @@ theorem exists_inward_localFlow_of_model
     rw [hzero z hz.1] at hlt
     exact lt_of_le_of_lt ((hρrange z (hVΩ hz.1).1.1).1 hz.2) hlt
 
-end Poincare.Geometry.Boundary
+end DifferentialGeometry.Geometry.Boundary

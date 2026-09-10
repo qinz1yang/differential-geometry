@@ -7,7 +7,7 @@ open Set Function Topology Filter Manifold
 open scoped ContDiff
 set_option autoImplicit false
 noncomputable section
-namespace Poincare.Manifold.BoundaryCollar
+namespace DifferentialGeometry.Manifold.BoundaryCollar
 
 theorem exists_smooth_boundary_flow_rightInverse
     {n : ℕ} {M : Type*} [TopologicalSpace M]
@@ -102,7 +102,7 @@ theorem exists_smooth_boundary_flow_rightInverse
     rw [heq]
     exact (hΦ.comp ((contDiff_const.prodMk contDiff_snd).prodMk contDiff_fst)).contDiffOn
   have hDon : ContMDiffOn I 𝓘(ℝ, ℝ × EuclideanSpace ℝ (Fin n)) ∞ D O :=
-    (Poincare.Manifold.PartialDiffeomorph.contDiffOn_symm_of_partialDiffeomorph e heforward).contMDiffOn.comp hCon
+    (DifferentialGeometry.Manifold.PartialDiffeomorph.contDiffOn_symm_of_partialDiffeomorph e heforward).contMDiffOn.comp hCon
       (fun y hy => (hOg hy).2.2.2)
   have hDon' : ContMDiffOn I (𝓘(ℝ, ℝ).prod 𝓘(ℝ, EuclideanSpace ℝ (Fin n))) ∞ D O := by
     rw [← modelWithCornersSelf_prod, chartedSpaceSelf_prod]
@@ -172,4 +172,4 @@ theorem exists_smooth_boundary_flow_rightInverse
       ((hzero _ hyU).trans hγzero.symm)
     exact (heflow ⟨ht, le_rfl⟩).trans hγt
 
-end Poincare.Manifold.BoundaryCollar
+end DifferentialGeometry.Manifold.BoundaryCollar

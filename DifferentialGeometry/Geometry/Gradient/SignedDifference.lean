@@ -6,7 +6,7 @@ open scoped Manifold ContDiff
 open DifferentialGeometry DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Analysis.Laplacian
 
-namespace Poincare.Geometry.Gradient
+namespace DifferentialGeometry.Geometry.Gradient
 
 theorem abs_mvfderiv_signed_difference_le_gradient_norm
     {E H M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
@@ -25,4 +25,4 @@ theorem abs_mvfderiv_signed_difference_le_gradient_norm
     rfl
   rwa [he] at h
 
-end Poincare.Geometry.Gradient
+end DifferentialGeometry.Geometry.Gradient

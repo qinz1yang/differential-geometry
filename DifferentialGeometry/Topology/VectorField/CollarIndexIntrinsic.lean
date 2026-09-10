@@ -4,7 +4,7 @@ import DifferentialGeometry.Topology.VectorField.IndexModel
 set_option autoImplicit false
 open scoped Manifold
 noncomputable section
-namespace Poincare.VectorField
+namespace DifferentialGeometry.VectorField
 variable {d : ℕ}
 
 theorem HasContinuousIsolatedZero.euclideanCollarExtension
@@ -17,7 +17,7 @@ theorem HasContinuousIsolatedZero.euclideanCollarExtension
       T b collarTransition (x, t) = 0) :
     HasContinuousIsolatedZero 𝓘(ℝ, EuclideanSpace ℝ (Fin (d + 2)))
       (euclideanCollarExtension T b collarTransition)
-      (Poincare.LocalDegree.euclideanProductPoint d x t) :=
+      (DifferentialGeometry.LocalDegree.euclideanProductPoint d x t) :=
   hasContinuousIsolatedZero_model_iff.mpr
     (isolatedZero_euclideanCollarExtension (hasContinuousIsolatedZero_model_iff.mp hT) hb hb0 hz)
 
@@ -31,10 +31,10 @@ theorem index_euclideanCollarExtension
       T b collarTransition (x, t) = 0) :
     index 𝓘(ℝ, EuclideanSpace ℝ (Fin (d + 2)))
         (euclideanCollarExtension T b collarTransition)
-        (Poincare.LocalDegree.euclideanProductPoint d x t)
+        (DifferentialGeometry.LocalDegree.euclideanProductPoint d x t)
         (hT.euclideanCollarExtension hb hb0 hz) =
       index 𝓘(ℝ, EuclideanSpace ℝ (Fin (d + 1))) T x hT := by
   rw [index_model_eq_localDegree, index_model_eq_localDegree]
   exact euclideanLocalDegree_collarExtension (hasContinuousIsolatedZero_model_iff.mp hT) hb hb0 hz
 
-end Poincare.VectorField
+end DifferentialGeometry.VectorField

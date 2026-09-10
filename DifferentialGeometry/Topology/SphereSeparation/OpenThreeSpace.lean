@@ -8,7 +8,7 @@ set_option autoImplicit false
 open Function Set
 open scoped Manifold ContDiff Topology
 
-namespace Poincare.Topology.SphereSeparation
+namespace DifferentialGeometry.Topology.SphereSeparation
 
 private theorem range_equiv_comp
     {X Y Z : Type*} (h : Y ≃ Z) (f : X → Y) :
@@ -119,4 +119,4 @@ theorem topologicalSphereSidesOpenThreeSpace_unique
     d = topologicalSphereSidesOpenThreeSpace e he ψ hcount happroach :=
   SphereSides.unique _ _
 
-end Poincare.Topology.SphereSeparation
+end DifferentialGeometry.Topology.SphereSeparation

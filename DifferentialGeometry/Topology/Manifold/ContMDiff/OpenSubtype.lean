@@ -3,7 +3,7 @@ import Mathlib.Geometry.Manifold.ContMDiff.Basic
 open Set Function Manifold TopologicalSpace
 open scoped ContDiff
 set_option autoImplicit false
-namespace Poincare.Manifold
+namespace DifferentialGeometry.Manifold
 
 variable {𝕜 : Type*} [NontriviallyNormedField 𝕜]
   {E H M : Type*} [NormedAddCommGroup E] [NormedSpace 𝕜 E]
@@ -32,4 +32,4 @@ theorem contMDiff_subtypeVal_comp_iff (U : Opens N) (f : M → U) :
     ContMDiff I J n (Subtype.val ∘ f) ↔ ContMDiff I J n f := by
   simp only [ContMDiff, contMDiffAt_subtypeVal_comp_iff]
 
-end Poincare.Manifold
+end DifferentialGeometry.Manifold

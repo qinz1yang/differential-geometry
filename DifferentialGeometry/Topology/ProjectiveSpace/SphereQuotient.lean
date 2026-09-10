@@ -11,7 +11,7 @@ noncomputable section
 
 open Metric Topology
 
-namespace Poincare.ProjectiveSpace
+namespace DifferentialGeometry.ProjectiveSpace
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 
@@ -156,4 +156,4 @@ theorem compactSpace_of_compact_sphere [CompactSpace (sphere (0 : E) 1)] :
 instance compactSpace [FiniteDimensional ℝ E] : CompactSpace (Projectivization ℝ E) :=
   compactSpace_of_compact_sphere
 
-end Poincare.ProjectiveSpace
+end DifferentialGeometry.ProjectiveSpace

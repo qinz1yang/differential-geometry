@@ -4,7 +4,7 @@ import Mathlib.Topology.Instances.Real.Lemmas
 
 open Set Metric
 
-namespace Poincare.Topology.Flow
+namespace DifferentialGeometry.Topology.Flow
 
 theorem isForwardInvariant_of_frontier
     {X : Type*} [TopologicalSpace X] (φ : _root_.Flow ℝ X)
@@ -39,4 +39,4 @@ theorem isForwardInvariant_of_frontier
   rw [φ.map_add]
   exact hstay δ ⟨hδ.le, hδε⟩
 
-end Poincare.Topology.Flow
+end DifferentialGeometry.Topology.Flow

@@ -6,7 +6,7 @@ import Mathlib.Topology.Algebra.Module.LocallyConvex
 noncomputable section
 open Set Metric
 
-namespace Poincare.Topology.FixedPoint
+namespace DifferentialGeometry.Topology.FixedPoint
 
 theorem exists_zero_of_pos_radial_boundary
     (f : C(closedBall (0 : ℂ) 1, ℂ))
@@ -33,7 +33,7 @@ theorem exists_zero_of_pos_radial_boundary
   have hqpos (z : _root_.Circle) : 0 < (q z).re := hboundary (ι z) z.norm_coe
   have hqslit (z : _root_.Circle) : q z ∈ Complex.slitPlane :=
     Complex.mem_slitPlane_iff.mpr (Or.inl (hqpos z))
-  apply Poincare.Topology.Circle.not_exists_continuous_logarithm
+  apply DifferentialGeometry.Topology.Circle.not_exists_continuous_logarithm
   refine ⟨⟨fun z ↦ g (ι z) - Complex.log (q z),
     (g.continuous.comp ι.continuous).sub (hq.clog hqslit)⟩, fun z ↦ ?_⟩
   change Complex.exp (g (ι z) - Complex.log (q z)) = (z : ℂ)
@@ -107,4 +107,4 @@ theorem exists_fixedPoint_closed_unitDisk
     (f : C(closedBall (0 : ℂ) 1, closedBall (0 : ℂ) 1)) : ∃ z, f z = z :=
   exists_fixedPoint_closedBall 0 zero_le_one f
 
-end Poincare.Topology.FixedPoint
+end DifferentialGeometry.Topology.FixedPoint

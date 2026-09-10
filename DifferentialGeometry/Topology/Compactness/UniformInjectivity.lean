@@ -4,7 +4,7 @@ import Mathlib.Topology.MetricSpace.Pseudo.Lemmas
 
 open Set Filter Topology
 
-namespace Poincare.Topology.Compactness
+namespace DifferentialGeometry.Topology.Compactness
 
 theorem exists_injOn_prod_nhds
     {X Y Z : Type*} [TopologicalSpace X] [CompactSpace X]
@@ -80,4 +80,4 @@ theorem exists_isClosedEmbedding_on_Icc
   exact Prod.ext (Prod.mk.inj heq').1
     (Subtype.ext (congrArg (fun y : Icc (0 : ℝ) ρ ↦ y.1) (Prod.mk.inj heq').2))
 
-end Poincare.Topology.Compactness
+end DifferentialGeometry.Topology.Compactness

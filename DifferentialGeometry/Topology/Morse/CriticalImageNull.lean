@@ -6,7 +6,7 @@ set_option autoImplicit false
 noncomputable section
 open Set Filter Function MeasureTheory MeasureTheory.Measure
 open scoped Manifold ContDiff Topology
-namespace Poincare.Morse
+namespace DifferentialGeometry.Morse
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
   [MeasurableSpace E] [BorelSpace E]
   {H M : Type*} [TopologicalSpace H] [TopologicalSpace M] [ChartedSpace H M]
@@ -76,4 +76,4 @@ theorem ae_regular_values [SecondCountableTopology M]
   by_contra hc
   exact hz ⟨x,hc,hx⟩
 
-end Poincare.Morse
+end DifferentialGeometry.Morse

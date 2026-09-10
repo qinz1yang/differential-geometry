@@ -2,7 +2,7 @@ import Mathlib.Topology.Connected.Basic
 
 open Set Topology
 
-namespace Poincare.Topology
+namespace DifferentialGeometry.Topology
 
 private theorem subset_left_of_closed_disjoint_cover
     {X : Type*} [TopologicalSpace X] {A P Q : Set X}
@@ -87,4 +87,4 @@ theorem ordered_exteriors_of_disjoint_separating_collars
       exact mem_univ y
     exact hycover.resolve_right hy
 
-end Poincare.Topology
+end DifferentialGeometry.Topology

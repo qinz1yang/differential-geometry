@@ -4,7 +4,7 @@ noncomputable section
 open Set Metric Manifold Module
 open scoped ContDiff
 
-namespace Poincare.Topology.Manifold
+namespace DifferentialGeometry.Topology.Manifold
 
 theorem sphereDiffeomorphDegree_eq_of_cylinder
     (Ψ : Diffeomorph ((𝓡 2).prod (𝓡∂ 1)) ((𝓡 2).prod (𝓡∂ 1))
@@ -32,4 +32,4 @@ theorem sphereDiffeomorphDegree_eq_of_cylinder
     (hdegree.trans (sphereDiffeomorphDegree_eq_one_iff f₁ v))
   simp only [sphereDiffeomorphDegree_eq_sign _ v, hsign]
 
-end Poincare.Topology.Manifold
+end DifferentialGeometry.Topology.Manifold

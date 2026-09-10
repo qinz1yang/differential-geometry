@@ -6,9 +6,9 @@ open Set Topology
 open scoped Manifold ContDiff
 open DifferentialGeometry DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Integral.DivergenceTheorem.WithBoundary
-open Poincare.Geometry.Affine
+open DifferentialGeometry.Geometry.Affine
 
-namespace Poincare.Geometry.Neck
+namespace DifferentialGeometry.Geometry.Neck
 
 local notation "S²" => Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1
 
@@ -134,4 +134,4 @@ theorem exists_uniform_collar_graphs_of_separating_chain (Cₒ : ℝ) (hCₒ : 0
       he (p, ⟨(D.collar j).upper, by linarith only [(D.collar j).width], le_rfl⟩))))
   · exact himage.symm.trans (congrArg range (funext he))
 
-end Poincare.Geometry.Neck
+end DifferentialGeometry.Geometry.Neck

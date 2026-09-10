@@ -5,7 +5,7 @@ set_option autoImplicit false
 noncomputable section
 open DifferentialGeometry.Topology.Morse
 open scoped Manifold ContDiff
-namespace Poincare.Manifold
+namespace DifferentialGeometry.Manifold
 
 theorem not_morseBoundary_homeomorphic_projectivePlane
     {M : Type} [TopologicalSpace M] [ChartedSpace (MorseHalfSpace 2) M]
@@ -18,4 +18,4 @@ theorem not_morseBoundary_homeomorphic_projectivePlane
   apply not_boundary_homeomorphic_projectivePlane (M := M)
   exact ⟨(Homeomorph.setCongr (morseHalfSpaceEuclidean_boundary 2 M)).trans h⟩
 
-end Poincare.Manifold
+end DifferentialGeometry.Manifold

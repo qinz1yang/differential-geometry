@@ -6,7 +6,7 @@ noncomputable section
 open Set Metric Manifold
 open scoped ContDiff
 
-namespace Poincare.Topology.Manifold
+namespace DifferentialGeometry.Topology.Manifold
 
 theorem exists_smooth_punctured_sphere_chart (n : ℕ)
     (v : sphere (0 : EuclideanSpace ℝ (Fin (n + 1))) 1) :
@@ -27,4 +27,4 @@ theorem exists_smooth_punctured_sphere_chart (n : ℕ)
       contMDiffOn_invFun := contMDiffOn_symm_of_mem_maximalAtlas hs }
   exact ⟨e, stereographic'_source v, stereographic'_target v⟩
 
-end Poincare.Topology.Manifold
+end DifferentialGeometry.Topology.Manifold

@@ -11,7 +11,7 @@ open Manifold Set Topology
 open scoped Manifold ContDiff
 noncomputable section
 
-namespace Poincare.Topology.PartialDiffeomorph
+namespace DifferentialGeometry.Topology.PartialDiffeomorph
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
@@ -61,4 +61,4 @@ def prod (φ : _root_.PartialDiffeomorph I J M N ∞)
   contMDiffOn_toFun := φ.contMDiffOn_toFun.prodMap ψ.contMDiffOn_toFun
   contMDiffOn_invFun := φ.contMDiffOn_invFun.prodMap ψ.contMDiffOn_invFun
 
-end Poincare.Topology.PartialDiffeomorph
+end DifferentialGeometry.Topology.PartialDiffeomorph

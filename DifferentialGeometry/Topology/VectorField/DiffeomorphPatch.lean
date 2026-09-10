@@ -5,7 +5,7 @@ set_option autoImplicit false
 noncomputable section
 open Bundle Set Filter
 open scoped Manifold ContDiff Topology
-namespace Poincare.VectorField
+namespace DifferentialGeometry.VectorField
 
 variable {E F H H' M N : Type*}
   [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -98,4 +98,4 @@ theorem patchThroughDiffeomorph_zeroSet :
     erw [e.symm_apply_apply]
     exact hq
 
-end Poincare.VectorField
+end DifferentialGeometry.VectorField

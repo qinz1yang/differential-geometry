@@ -5,7 +5,7 @@ noncomputable section
 open Set Filter Topology
 open scoped ContDiff Manifold
 
-namespace Poincare.Geometry.Boundary
+namespace DifferentialGeometry.Geometry.Boundary
 
 open DifferentialGeometry.Integral.DivergenceTheorem.WithBoundary
 
@@ -68,4 +68,4 @@ theorem exists_modelBoundary_definingFunction (p : hI.boundaryE) :
   · intro w c
     exact congrArg (fun L : hI.boundaryE × ℝ →L[ℝ] ℝ ↦ L (w, c)) hchain
 
-end Poincare.Geometry.Boundary
+end DifferentialGeometry.Geometry.Boundary

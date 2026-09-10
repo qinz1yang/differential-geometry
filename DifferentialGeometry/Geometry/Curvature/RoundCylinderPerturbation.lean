@@ -9,9 +9,9 @@ open scoped Manifold ContDiff
 open DifferentialGeometry DifferentialGeometry.Geometry
 open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.Tensor0SBundle
 open DifferentialGeometry.CheegerGromovCompactness
-open Poincare.Geometry.Metric
+open DifferentialGeometry.Geometry.Metric
 
-namespace Poincare.Geometry.Curvature
+namespace DifferentialGeometry.Geometry.Curvature
 
 theorem ricciSharp_roundCylinder_norm_le
     {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
@@ -118,4 +118,4 @@ theorem ricciSharp_roundCylinder_difference_bound
     (show 0 ≤ 1441 * ε * Real.sqrt (gRef.inner x v v) by positivity)
   nlinarith
 
-end Poincare.Geometry.Curvature
+end DifferentialGeometry.Geometry.Curvature

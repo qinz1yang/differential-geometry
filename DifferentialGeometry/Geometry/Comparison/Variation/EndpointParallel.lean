@@ -1,4 +1,3 @@
-import Batteries.Tactic.Alias
 import DifferentialGeometry.Analysis.Calculus.Cutoff.Clamp.Smooth
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.Construction.Endpoint
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.Construction.Smoothness
@@ -314,19 +313,3 @@ end Variation
 end Riemannian
 end Geometry
 end DifferentialGeometry
-
-namespace Poincare.Geometry.Riemannian.Variation
-
-alias chartRepAt_differentiableAt_of_total_contMDiffAt := DifferentialGeometry.Geometry.Riemannian.Variation.chartRepAt_differentiableAt_of_total_contMDiffAt
-end Poincare.Geometry.Riemannian.Variation
-
-namespace Poincare.Geometry.Riemannian.Variation.ContMDiffAt
-
-alias smul_tangentBundleAlong := DifferentialGeometry.Geometry.Riemannian.Variation.ContMDiffAt.smul_tangentBundleAlong
-end Poincare.Geometry.Riemannian.Variation.ContMDiffAt
-
-namespace Poincare.Geometry.Riemannian.Variation
-
-alias exists_smooth_parallel_unit_field_with_terminal := DifferentialGeometry.Geometry.Riemannian.Variation.exists_smooth_parallel_unit_field_with_terminal
-
-end Poincare.Geometry.Riemannian.Variation

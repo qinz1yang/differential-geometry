@@ -8,7 +8,7 @@ open CategoryTheory CategoryTheory.Limits Opposite Simplicial
 
 universe u
 
-namespace Poincare.Homology
+namespace DifferentialGeometry.Homology
 
 
 def BarycentricFlag (n : ℕ) : Type :=
@@ -91,4 +91,4 @@ theorem affineSubdivisionMap_pieces (n : ℕ) (v : Fin (n + 1) → E) :
     rw [← mul_smul, singularSimplexVertices_affineSingularSimplex]
     rfl
 
-end Poincare.Homology
+end DifferentialGeometry.Homology

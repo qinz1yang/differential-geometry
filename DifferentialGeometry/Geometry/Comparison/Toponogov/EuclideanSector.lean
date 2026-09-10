@@ -8,7 +8,7 @@ open scoped RealInnerProductSpace
 
 noncomputable section
 
-namespace Poincare.Toponogov
+namespace DifferentialGeometry.Toponogov
 
 
 abbrev EuclideanPlane := EuclideanSpace ℝ (Fin 2)
@@ -129,4 +129,4 @@ theorem exists_euclideanSector_interpolation {A B : ℝ} (hA : 0 ≤ A) (hB : 0 
         rw [InnerProductGeometry.angle_smul_left_of_pos _ _ hradius]
         exact angle_unitRay_add hB hB_pi
 
-end Poincare.Toponogov
+end DifferentialGeometry.Toponogov

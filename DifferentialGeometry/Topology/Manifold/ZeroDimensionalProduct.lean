@@ -6,8 +6,8 @@ set_option autoImplicit false
 noncomputable section
 open Set Function Manifold
 open scoped ContDiff Topology
-namespace Poincare.Manifold
-open Poincare.LocalDegree
+namespace DifferentialGeometry.Manifold
+open DifferentialGeometry.LocalDegree
 variable {E H B : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [Subsingleton E]
   [TopologicalSpace H] [TopologicalSpace B] [ChartedSpace H B]
   (J : ModelWithCorners ℝ E H)
@@ -56,4 +56,4 @@ theorem mfderiv_zeroDimensionalProductChart (p : B) (x v : EuclideanSpace ℝ (F
     mfderiv_const, mfderiv_eq_fderiv, ContinuousLinearEquiv.fderiv]
   rfl
 
-end Poincare.Manifold
+end DifferentialGeometry.Manifold

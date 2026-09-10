@@ -15,7 +15,7 @@ set_option autoImplicit false
 open CategoryTheory Cardinal Function
 open CategoryTheory.Limits
 
-namespace Poincare.Topology.SphereSeparation
+namespace DifferentialGeometry.Topology.SphereSeparation
 
 noncomputable def reducedSingularH0 (X : TopCat) : ModuleCat ℤ :=
   kernel (X.singularHomology₀ε (ModuleCat.of ℤ ℤ))
@@ -110,4 +110,4 @@ theorem connectedComponents_equiv_fin_two_of_reducedSingularH0_iso_int
     zerothHomotopy_equiv_fin_two_of_reducedSingularH0_iso_int X h
   exact ⟨connectedComponentsEquivZerothHomotopy.trans e⟩
 
-end Poincare.Topology.SphereSeparation
+end DifferentialGeometry.Topology.SphereSeparation

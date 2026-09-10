@@ -7,8 +7,8 @@ noncomputable section
 open Set Bundle Filter Manifold
 open scoped ContDiff Topology
 open DifferentialGeometry.Integral.DivergenceTheorem.WithBoundary
-open Poincare.VectorField
-namespace Poincare.Homology
+open DifferentialGeometry.VectorField
+namespace DifferentialGeometry.Homology
 
 theorem eulerChar_intrinsicBoundary_eq_of_dimension_ge_two
     {d : ℕ} {M : Type} [TopologicalSpace M]
@@ -63,4 +63,4 @@ theorem eulerChar_intrinsicBoundary_eq_of_dimension_ge_two
   exact eulerChar_collar_base_of_outward_components J hδ hδε Y hY e hi G hG hGout
     hGf hGi hGI hGn T hT hcomp hTf hTi K
 
-end Poincare.Homology
+end DifferentialGeometry.Homology

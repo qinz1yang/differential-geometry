@@ -5,9 +5,9 @@ noncomputable section
 open Set Metric Manifold
 open scoped ContDiff
 
-namespace Poincare.Topology.Ehresmann
+namespace DifferentialGeometry.Topology.Ehresmann
 
-open Poincare.Geometry.Boundary Poincare.Topology.Manifold
+open DifferentialGeometry.Geometry.Boundary DifferentialGeometry.Topology.Manifold
 open DifferentialGeometry.Integral.DivergenceTheorem.WithBoundary
 
 theorem exists_prescribed_sphere_boundary_matching_of_degree_one
@@ -154,4 +154,4 @@ theorem prescribed_sphere_boundary_matching_iff_degree_one
       exists_prescribed_sphere_boundary_matching_of_degree_one hab hu hboundary Θ P hh hl hP η₀ η₁ hdegree
     exact ⟨Ψ, hzero, hone⟩
 
-end Poincare.Topology.Ehresmann
+end DifferentialGeometry.Topology.Ehresmann

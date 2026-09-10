@@ -34,7 +34,7 @@ theorem exists_outward_spatialNeck_subsequence
     (D : ∀ i : ℕ, SpatialNeckSideData (W i))
     (hEnorm : IsMetricNorm (I := I) h)
     (hsmall : epsilon ≤ spatialNeckControlEpsilon)
-    (hsec : Poincare.Geometry.HasNonnegativeSectionalCurvature (I := I) h)
+    (hsec : DifferentialGeometry.Geometry.HasNonnegativeSectionalCurvature (I := I) h)
     {c : ℝ≥0 → N} (hc : Isometry c) (q : N)
     (hmin : ∀ x : N, busemann c q ≤ busemann c x)
     (hcores : Pairwise (fun i j : ℕ => Disjoint (W i).core (W j).core))

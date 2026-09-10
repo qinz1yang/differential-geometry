@@ -4,7 +4,7 @@ import Mathlib.CategoryTheory.Limits.Shapes.Products
 set_option autoImplicit false
 noncomputable section
 open CategoryTheory CategoryTheory.Limits
-namespace Poincare.CategoryTheory
+namespace DifferentialGeometry.CategoryTheory
 universe v u w
 variable {C : Type u} [Category.{v} C] [HasZeroMorphisms C] [HasCokernels C]
   {ι : Type w} {A B : ι → C} (f : ∀ i, A i ⟶ B i)
@@ -49,4 +49,4 @@ def cokernelCofanIsColimit (ha : IsColimit a) (hb : IsColimit b) :
       simpa only [Category.assoc] using hh
   choose l hl hu using H
   exact Cofan.IsColimit.mk _ l hl hu
-end Poincare.CategoryTheory
+end DifferentialGeometry.CategoryTheory

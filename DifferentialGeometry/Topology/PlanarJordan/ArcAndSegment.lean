@@ -5,7 +5,7 @@ import Mathlib.Analysis.InnerProductSpace.PiL2
 noncomputable section
 open Set
 
-namespace Poincare.Topology.PlanarJordan
+namespace DifferentialGeometry.Topology.PlanarJordan
 
 theorem exists_simple_closed_curve_of_arc_and_segment
     {γ : ℝ → ℂ} {a b : ℝ} (hab : a < b)
@@ -65,4 +65,4 @@ theorem exists_simple_closed_curve_of_arc_and_segment
     ← hseg]
   simp only [image_image, l.symm_apply_apply, image_id']
 
-end Poincare.Topology.PlanarJordan
+end DifferentialGeometry.Topology.PlanarJordan

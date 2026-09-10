@@ -9,7 +9,7 @@ open DifferentialGeometry DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection DifferentialGeometry.Tensor0SBundle
 open DifferentialGeometry.CheegerGromovCompactness
 
-namespace Poincare.Geometry.Curvature
+namespace DifferentialGeometry.Geometry.Curvature
 
 variable {E F H H' M N : Type*}
   [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
@@ -80,4 +80,4 @@ theorem ricciSharp_pullbackMetricCross
   rw [he, ← Diffeomorph.pullbackMetricCross_inner, inner_ricciSharp, inner_ricciSharp]
   exact ricciTensor_pullbackMetricCross g Φ x v w
 
-end Poincare.Geometry.Curvature
+end DifferentialGeometry.Geometry.Curvature

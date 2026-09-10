@@ -8,7 +8,7 @@ import DifferentialGeometry.Topology.SphereSeparation.Defs
 
 set_option autoImplicit false
 
-namespace Poincare.Topology.SphereSeparation
+namespace DifferentialGeometry.Topology.SphereSeparation
 
 open Set
 open Metric
@@ -134,4 +134,4 @@ noncomputable def standardUnitSphereComplementComponents :
       ((Metric.sphere (0 : EuclideanThree) 1)ᶜ : Set EuclideanThree) ≃ Fin 2 :=
   connectedComponentsComplEquivFinTwo standardUnitSphereSides
 
-end Poincare.Topology.SphereSeparation
+end DifferentialGeometry.Topology.SphereSeparation

@@ -13,7 +13,7 @@ open CategoryTheory.Limits
 open ZeroObject
 open scoped Simplicial
 
-namespace Poincare.Topology.SphereSeparation
+namespace DifferentialGeometry.Topology.SphereSeparation
 
 section ContinuousMapsToSum
 
@@ -498,4 +498,4 @@ noncomputable def sphereTwoCohomologyTwoIsoIntOfCellularComparison
     singularCohomology (TopCat.of SphereTwo) 2 ≅ ModuleCat.of ℤ ℤ :=
   comparison.toHomologyIso 2 ≪≫ sphereTwoCellularCohomologyTwoIsoInt
 
-end Poincare.Topology.SphereSeparation
+end DifferentialGeometry.Topology.SphereSeparation

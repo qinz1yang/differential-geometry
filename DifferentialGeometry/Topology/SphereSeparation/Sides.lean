@@ -2,7 +2,7 @@ import DifferentialGeometry.Topology.SphereSeparation.Defs
 
 set_option autoImplicit false
 
-namespace Poincare.Topology.SphereSeparation
+namespace DifferentialGeometry.Topology.SphereSeparation
 
 open Set
 
@@ -184,4 +184,4 @@ instance : Subsingleton (SphereSides S) :=
 
 end SphereSides
 
-end Poincare.Topology.SphereSeparation
+end DifferentialGeometry.Topology.SphereSeparation

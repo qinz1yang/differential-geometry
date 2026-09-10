@@ -10,7 +10,7 @@ set_option autoImplicit false
 
 universe u v
 
-namespace Poincare.Algebra.Group
+namespace DifferentialGeometry.Algebra.Group
 
 
 abbrev optionFreeProductFactor {ι : Type u} (G : ι → Type v) (H : Type v) :
@@ -91,4 +91,4 @@ theorem coprodIOptionEquivCoprod_comp_some {ι : Type u}
       Monoid.Coprod.inl.comp (Monoid.CoprodI.of (M := G) (i := i)) := by
   rfl
 
-end Poincare.Algebra.Group
+end DifferentialGeometry.Algebra.Group

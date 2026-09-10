@@ -7,8 +7,8 @@ import Mathlib.Analysis.Convex.Contractible
 set_option autoImplicit false
 noncomputable section
 open Set Function Topology
-namespace Poincare.Homology
-open Poincare.Topology
+namespace DifferentialGeometry.Homology
+open DifferentialGeometry.Topology
 
 theorem finiteHomologyType_and_eulerChar_double_of_collar
     {X : Type} [TopologicalSpace X]
@@ -72,4 +72,4 @@ theorem finiteHomologyType_and_eulerChar_double_of_collar
     eulerChar_eq_of_homotopyEquiv K (X := TopCat.of (U ∩ V : Set D)) (Y := TopCat.of B) eI] at he
   linarith
 
-end Poincare.Homology
+end DifferentialGeometry.Homology

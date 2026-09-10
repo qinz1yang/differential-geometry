@@ -9,9 +9,9 @@ open DifferentialGeometry.Geometry.Riemannian
 open DifferentialGeometry.Geometry.Riemannian.Geodesic
 open DifferentialGeometry.Geometry.Riemannian.Variation
 open DifferentialGeometry.Geometry.Riemannian.CovariantDerivativeAlong
-open Poincare.Geometry
+open DifferentialGeometry.Geometry
 
-namespace Poincare.Geometry.Riemannian.Geodesic
+namespace DifferentialGeometry.Geometry.Riemannian.Geodesic
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
@@ -74,4 +74,4 @@ theorem exists_parallel_normal_field_of_return_det
     (congrArg P hvfix.symm).trans (P.apply_symm_apply (D v))
   rw [hV0, hVL, hPv]
 
-end Poincare.Geometry.Riemannian.Geodesic
+end DifferentialGeometry.Geometry.Riemannian.Geodesic

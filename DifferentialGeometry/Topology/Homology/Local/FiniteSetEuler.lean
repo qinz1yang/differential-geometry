@@ -5,7 +5,7 @@ import Mathlib.Data.Fintype.Order
 set_option autoImplicit false
 noncomputable section
 open CategoryTheory CategoryTheory.Limits Set Function
-namespace Poincare.Homology
+namespace DifferentialGeometry.Homology
 universe u
 variable (X : TopCat.{u}) [T2Space X] (Z : Set X) (hZ : Z.Finite)
   (k : Type u) [Field k]
@@ -13,9 +13,9 @@ include hZ
 
 
 theorem finiteHomologyType_finitePuncture
-    (h : ∀ p : Z, Poincare.HomologicalComplex.finiteHomologyType
+    (h : ∀ p : Z, DifferentialGeometry.HomologicalComplex.finiteHomologyType
       (relativeChainComplex X ({p.val}ᶜ : Set X) (ModuleCat.of k k))) :
-    Poincare.HomologicalComplex.finiteHomologyType
+    DifferentialGeometry.HomologicalComplex.finiteHomologyType
       (relativeChainComplex X Zᶜ (ModuleCat.of k k)) := by
   let := hZ.to_subtype
   constructor
@@ -30,7 +30,7 @@ theorem finiteHomologyType_finitePuncture
 
 
 theorem relativeEulerChar_finitePuncture
-    (h : ∀ p : Z, Poincare.HomologicalComplex.finiteHomologyType
+    (h : ∀ p : Z, DifferentialGeometry.HomologicalComplex.finiteHomologyType
       (relativeChainComplex X ({p.val}ᶜ : Set X) (ModuleCat.of k k))) :
     relativeEulerChar X Zᶜ k = ∑ᶠ p : Z, relativeEulerChar X ({p.val}ᶜ : Set X) k := by
   let := hZ.fintype
@@ -58,4 +58,4 @@ theorem relativeEulerChar_finitePuncture
       (Module.finrank k (relativeHomology X Zᶜ (ModuleCat.of k k) n) : ℤ)) = _
   simp_rw [hd, Nat.cast_sum, Finset.mul_sum]
   exact finsum_sum_comm Finset.univ _ (fun p _ => hs p)
-end Poincare.Homology
+end DifferentialGeometry.Homology

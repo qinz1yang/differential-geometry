@@ -5,7 +5,7 @@ open scoped ContDiff
 set_option autoImplicit false
 noncomputable section
 
-namespace Poincare.Manifold.BoundaryCollar
+namespace DifferentialGeometry.Manifold.BoundaryCollar
 
 private theorem exists_cutoff_smul_contDiffOn
     {E F : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
@@ -66,4 +66,4 @@ theorem exists_contDiff_halfSpace_extension
     with p hpg hp₀ hpW hpH
   exact hpg.trans ((heG p.1 hpH.1 p.2 (hWV hpW.2)).trans hp₀)
 
-end Poincare.Manifold.BoundaryCollar
+end DifferentialGeometry.Manifold.BoundaryCollar

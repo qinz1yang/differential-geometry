@@ -3,7 +3,7 @@ import DifferentialGeometry.Analysis.Calculus.Inverse.LocalInverse
 noncomputable section
 open scoped ContDiff Topology
 
-namespace Poincare.Analysis
+namespace DifferentialGeometry.Analysis
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
 
@@ -47,4 +47,4 @@ theorem exists_localInverse_preserving_parameter
   have hboth : ((e.symm q).1, h (e.symm q)) = q := (heq _).symm.trans (e.right_inv hq)
   exact Prod.mk.inj hboth
 
-end Poincare.Analysis
+end DifferentialGeometry.Analysis

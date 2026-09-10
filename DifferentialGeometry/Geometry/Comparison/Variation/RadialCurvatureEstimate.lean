@@ -1,4 +1,3 @@
-import Batteries.Tactic.Alias
 import DifferentialGeometry.Geometry.Comparison.Variation.RadialEndpoint
 import DifferentialGeometry.Geometry.Exponential.Variation.Jacobi
 import DifferentialGeometry.Geometry.Comparison.Variation.PerpendicularFrame.Basic
@@ -222,10 +221,3 @@ end Variation
 end Riemannian
 end Geometry
 end DifferentialGeometry
-
-namespace Poincare.Geometry.Riemannian.Variation.RadialEndpointVariation
-
-alias secondVariation_half_energy_le_inv_sub_quarter := DifferentialGeometry.Geometry.Riemannian.Variation.RadialEndpointVariation.secondVariation_half_energy_le_inv_sub_quarter
-alias parallel_inner_velocity_eq_terminal := DifferentialGeometry.Geometry.Riemannian.Variation.RadialEndpointVariation.parallel_inner_velocity_eq_terminal
-
-end Poincare.Geometry.Riemannian.Variation.RadialEndpointVariation

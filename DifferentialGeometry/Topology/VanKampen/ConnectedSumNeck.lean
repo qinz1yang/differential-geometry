@@ -15,10 +15,10 @@ open scoped ContinuousMap unitInterval
 
 universe u
 
-namespace Poincare.Topology.ThreeManifold
+namespace DifferentialGeometry.Topology.ThreeManifold
 
 open DifferentialGeometry.Topology
-open Poincare.Topology.CellAttachment
+open DifferentialGeometry.Topology.CellAttachment
 
 
 abbrev ConnectedSumNeckCylinder :=
@@ -662,4 +662,4 @@ theorem simplyConnectedSpace_connectedSumNeck_inter
         (CellBoundary 3) (Set.Ioo (1 / 3 : ℝ) (2 / 3 : ℝ)))
   exact e.simplyConnectedSpace
 
-end Poincare.Topology.ThreeManifold
+end DifferentialGeometry.Topology.ThreeManifold

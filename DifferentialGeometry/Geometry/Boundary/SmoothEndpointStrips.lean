@@ -6,7 +6,7 @@ noncomputable section
 open Set Filter Function Topology Manifold
 open scoped ContDiff
 
-namespace Poincare.Geometry.Boundary
+namespace DifferentialGeometry.Geometry.Boundary
 
 open DifferentialGeometry
 open DifferentialGeometry.Integral.DivergenceTheorem.WithBoundary
@@ -84,4 +84,4 @@ theorem exists_smooth_embedded_endpoint_strips
   · rintro _ ⟨z, rfl⟩
     exact ⟨(z.1.1.1, z.2.1), ⟨z.1.2, z.2.2⟩, rfl⟩
 
-end Poincare.Geometry.Boundary
+end DifferentialGeometry.Geometry.Boundary

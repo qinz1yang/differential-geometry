@@ -4,7 +4,7 @@ open Set Function Manifold
 open scoped ContDiff
 set_option autoImplicit false
 noncomputable section
-namespace Poincare.Manifold.Interval
+namespace DifferentialGeometry.Manifold.Interval
 
 theorem exists_smooth_compression {ε r : ℝ} [Fact ((0 : ℝ) < ε)]
     (hr : 0 < r) (hrε : 2 * r ≤ ε) :
@@ -18,4 +18,4 @@ theorem exists_smooth_compression {ε r : ℝ} [Fact ((0 : ℝ) < ε)]
     exists_smooth_compression_with_diffeomorph hr hrε
   exact ⟨a, ha, har, σ, hs, hm, hrange, hnear, hfix⟩
 
-end Poincare.Manifold.Interval
+end DifferentialGeometry.Manifold.Interval

@@ -12,7 +12,7 @@ open scoped Topology unitInterval Simplicial
 
 noncomputable section
 
-namespace Poincare.LocalDegree
+namespace DifferentialGeometry.LocalDegree
 
 
 abbrev ZeroSphere := sphere (0 : ℝ) 1
@@ -340,4 +340,4 @@ theorem zeroSphereDegree_sphereMap_eq (f : ℝ → ℝ) (x R : ℝ)
       zeroSphereDegree (sphereMap f x R hf hzero r₁) :=
   zeroSphereDegree_eq_of_homotopy (sphereMapHomotopy f x R hf hzero r₀ r₁)
 
-end Poincare.LocalDegree
+end DifferentialGeometry.LocalDegree

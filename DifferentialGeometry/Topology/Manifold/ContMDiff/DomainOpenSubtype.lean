@@ -4,7 +4,7 @@ set_option autoImplicit false
 noncomputable section
 open Set Function Manifold TopologicalSpace
 open scoped ContDiff Topology
-namespace Poincare.Manifold
+namespace DifferentialGeometry.Manifold
 
 
 theorem contMDiffOn_of_contMDiff_open_restrict
@@ -27,4 +27,4 @@ theorem contMDiffOn_of_contMDiff_open_restrict
   change f y = f (e.symm y).val
   rw [show e.symm y = ⟨y, hy⟩ from openSubtypePartialDiffeomorph_symm_apply I U ⟨⟨x, hx⟩⟩ hy]
 
-end Poincare.Manifold
+end DifferentialGeometry.Manifold

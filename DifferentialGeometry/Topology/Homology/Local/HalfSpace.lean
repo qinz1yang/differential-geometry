@@ -4,7 +4,7 @@ import Mathlib.Geometry.Manifold.Instances.Real
 set_option autoImplicit false
 noncomputable section
 open CategoryTheory CategoryTheory.Limits Set Metric
-namespace Poincare.Homology
+namespace DifferentialGeometry.Homology
 variable {n : ℕ} [NeZero n] (p : EuclideanHalfSpace n)
 
 
@@ -54,7 +54,7 @@ variable (k : Type) [Field k]
 
 
 theorem finiteHomologyType_localHalfSpace (hp : p.val 0 = 0) :
-    Poincare.HomologicalComplex.finiteHomologyType
+    DifferentialGeometry.HomologicalComplex.finiteHomologyType
       (relativeChainComplex (TopCat.of (EuclideanHalfSpace n))
         ({p}ᶜ : Set (EuclideanHalfSpace n)) (ModuleCat.of k k)) := by
   let := contractibleSpace_euclideanHalfSpace (n := n)
@@ -72,4 +72,4 @@ theorem relativeEulerChar_localHalfSpace (hp : p.val 0 = 0) :
     (finiteHomologyType_of_contractible k), eulerChar_of_contractible,
     eulerChar_of_contractible, sub_self]
 
-end Poincare.Homology
+end DifferentialGeometry.Homology

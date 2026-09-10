@@ -8,7 +8,7 @@ open CategoryTheory CategoryTheory.Limits Opposite Simplicial AlgebraicTopology
 
 universe u
 
-namespace Poincare.Homology
+namespace DifferentialGeometry.Homology
 
 variable {k : Type u} [Ring k] (R : ModuleCat.{u} k) (X : TopCat.{u})
 
@@ -217,4 +217,4 @@ theorem singularSubdivisionHomotopyMap_naturality (n : ℕ) :
   simp only [HomologicalComplex.comp_f] at h
   rw [h]
 
-end Poincare.Homology
+end DifferentialGeometry.Homology

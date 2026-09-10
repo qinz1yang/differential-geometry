@@ -56,7 +56,7 @@ private local instance outwardAngleC1 : IsManifold I 1 N :=
 
 theorem outward_comparisonAngle_le (hEnorm : IsMetricNorm (I := I) h)
     (hsmall : epsilon ≤ spatialNeckControlEpsilon)
-    (hsec : Poincare.Geometry.HasNonnegativeSectionalCurvature (I := I) h)
+    (hsec : DifferentialGeometry.Geometry.HasNonnegativeSectionalCurvature (I := I) h)
     {x y : N} (hx : x ∈ D.upper (5 * Real.pi)) (hy : y ∈ D.upper (5 * Real.pi)) :
     comparisonAngle (dist p x) (dist p y) (dist x y) ≤ Real.pi / 6 := by
   let _ : NeZero (Module.finrank ℝ E) := ⟨by rw [W.dimension_three]; norm_num⟩
@@ -114,7 +114,7 @@ theorem outward_comparisonAngle_le (hEnorm : IsMetricNorm (I := I) h)
 
 theorem outward_distance_loss (hEnorm : IsMetricNorm (I := I) h)
     (hsmall : epsilon ≤ spatialNeckControlEpsilon)
-    (hsec : Poincare.Geometry.HasNonnegativeSectionalCurvature (I := I) h)
+    (hsec : DifferentialGeometry.Geometry.HasNonnegativeSectionalCurvature (I := I) h)
     {x y : N} (hx : x ∈ D.upper (5 * Real.pi)) (hy : y ∈ D.upper (5 * Real.pi))
     (hlarge : 2 * dist p y ≤ dist p x) : dist x y ≤ dist p x - dist p y / 4 := by
   have hangle := D.outward_comparisonAngle_le hEnorm hsmall hsec hx hy

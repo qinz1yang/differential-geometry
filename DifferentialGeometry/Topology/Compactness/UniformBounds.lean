@@ -3,7 +3,7 @@ import Mathlib.Topology.MetricSpace.Pseudo.Lemmas
 
 open Set Filter Topology
 
-namespace Poincare.Topology.Compactness
+namespace DifferentialGeometry.Topology.Compactness
 
 theorem exists_pos_uniform_lower_bound
     {P Q : Type*} [TopologicalSpace P] [TopologicalSpace Q]
@@ -59,4 +59,4 @@ theorem exists_pos_uniform_lower_bound_on_Icc
   rw [Real.dist_eq, sub_zero, abs_of_nonneg hr.1]
   exact lt_of_le_of_lt (hr.2.trans (min_le_right _ _)) (half_lt_self hr₀)
 
-end Poincare.Topology.Compactness
+end DifferentialGeometry.Topology.Compactness

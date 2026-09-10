@@ -6,7 +6,7 @@ noncomputable section
 open Set
 open scoped Manifold ContDiff Topology
 open DifferentialGeometry.Topology.Morse
-namespace Poincare.Morse
+namespace DifferentialGeometry.Morse
 variable {n : ℕ} {M : Type} [TopologicalSpace M]
   [ChartedSpace (EuclideanHalfSpace (n + 1)) M] [IsManifold (𝓡∂ (n + 1)) ∞ M]
   [T2Space M] [CompactSpace M]
@@ -20,8 +20,8 @@ theorem exists_relative_morse_eulerChar :
       InjOn f {x | IsCriticalPointAt (𝓡∂ (n + 1)) f x} ∧
       ∃ hfinite : {x | IsCriticalPointAt (𝓡∂ (n + 1)) f x}.Finite,
         ∀ (K : Type) [Field K],
-          Poincare.Homology.finiteHomologyType K (TopCat.of M) ∧
-          Poincare.Homology.eulerChar K (TopCat.of M) =
+          DifferentialGeometry.Homology.finiteHomologyType K (TopCat.of M) ∧
+          DifferentialGeometry.Homology.eulerChar K (TopCat.of M) =
             ∑ p ∈ hfinite.toFinset, (-1 : ℤ) ^ sigNeg (chartHessianAt
               (fun y => f ((extChartAt (𝓡∂ (n + 1)) p).symm y))
               (extChartAt (𝓡∂ (n + 1)) p p)) := by
@@ -43,8 +43,8 @@ theorem exists_relative_morse_eulerChar :
     (𝓡∂ (n + 1)) K (EuclideanSpace.equiv (𝕜 := ℝ) (ι := Fin (n + 1)))
     hf c (isClosed_Iic.preimage hf.continuous).isCompact hint hfinite
     (fun x hx => (hcrit x hx).2.1) hinj (fun x hx => (hcrit x hx).2.2)
-  exact ⟨(Poincare.Homology.finiteHomologyType_iff_of_homeomorph K
+  exact ⟨(DifferentialGeometry.Homology.finiteHomologyType_iff_of_homeomorph K
       (X := TopCat.of M) (Y := TopCat.of (SublevelSpace f c)) hhomeo).mpr hfin,
-    (Poincare.Homology.eulerChar_eq_of_homeomorph K hhomeo).trans hχ⟩
+    (DifferentialGeometry.Homology.eulerChar_eq_of_homeomorph K hhomeo).trans hχ⟩
 
-end Poincare.Morse
+end DifferentialGeometry.Morse

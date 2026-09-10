@@ -3,7 +3,7 @@ import Mathlib.Analysis.InnerProductSpace.Projection.FiniteDimensional
 
 noncomputable section
 
-namespace Poincare.Geometry
+namespace DifferentialGeometry.Geometry
 
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
   [FiniteDimensional ℝ E]
@@ -44,4 +44,4 @@ theorem exists_unit_fixed_vector_of_det_ne (A : E ≃ₗᵢ[ℝ] E)
   · simp [norm_smul, norm_ne_zero_iff.mpr hv0]
   · simp [hfix]
 
-end Poincare.Geometry
+end DifferentialGeometry.Geometry

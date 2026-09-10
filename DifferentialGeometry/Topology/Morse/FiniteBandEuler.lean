@@ -9,7 +9,7 @@ open Set
 open scoped Manifold ContDiff Topology ContinuousMap
 open DifferentialGeometry.Topology DifferentialGeometry.Topology.Morse
 open DifferentialGeometry.Topology.Homotopy
-namespace Poincare.Morse
+namespace DifferentialGeometry.Morse
 
 private theorem exists_last_critical_band {A : Type} (f : A → ℝ) (s : Finset A)
     (p : A) (hp : p ∈ s) (hinj : InjOn f (s : Set A))
@@ -49,16 +49,16 @@ private theorem regularBandEuler (K : Type) [Field K]
     (hcompact : IsCompact (f ⁻¹' Icc a b))
     (hr : ∀ x ∈ f ⁻¹' Icc a b, ¬ IsCriticalPointAt I f x)
     (hinterior : sublevel f b ⊆ I.interior M)
-    (hfin : Poincare.Homology.finiteHomologyType K (TopCat.of (SublevelSpace f a))) :
-    Poincare.Homology.finiteHomologyType K (TopCat.of (SublevelSpace f b)) ∧
-      Poincare.Homology.eulerChar K (TopCat.of (SublevelSpace f b)) =
-        Poincare.Homology.eulerChar K (TopCat.of (SublevelSpace f a)) := by
+    (hfin : DifferentialGeometry.Homology.finiteHomologyType K (TopCat.of (SublevelSpace f a))) :
+    DifferentialGeometry.Homology.finiteHomologyType K (TopCat.of (SublevelSpace f b)) ∧
+      DifferentialGeometry.Homology.eulerChar K (TopCat.of (SublevelSpace f b)) =
+        DifferentialGeometry.Homology.eulerChar K (TopCat.of (SublevelSpace f a)) := by
   obtain ⟨h, _⟩ := exists_sublevelHomotopyEquivUnder_of_interiorSublevel I e hf hab
     hcompact hr hinterior (ContinuousMap.id (SublevelSpace f a))
-  exact ⟨(Poincare.Homology.finiteHomologyType_iff_of_homotopyEquiv K
+  exact ⟨(DifferentialGeometry.Homology.finiteHomologyType_iff_of_homotopyEquiv K
     (X := TopCat.of (SublevelSpace f b)) (Y := TopCat.of (SublevelSpace f a))
     h.toHomotopyEquiv).mpr hfin,
-    Poincare.Homology.eulerChar_eq_of_homotopyEquiv K h.toHomotopyEquiv⟩
+    DifferentialGeometry.Homology.eulerChar_eq_of_homotopyEquiv K h.toHomotopyEquiv⟩
 
 private theorem finiteBandEulerAux (K : Type) [Field K]
     (e : E ≃L[ℝ] MorseModel (m + 1)) {f : M → ℝ}
@@ -70,10 +70,10 @@ private theorem finiteBandEulerAux (K : Type) [Field K]
     (hb : ∀ x, f x = b → ¬ IsCriticalPointAt I f x)
     (hnd : ∀ x ∈ s, IsNondegenerateCriticalPointAt I f x)
     (hinj : InjOn f (s : Set M))
-    (hfin : Poincare.Homology.finiteHomologyType K (TopCat.of (SublevelSpace f a))) :
-    Poincare.Homology.finiteHomologyType K (TopCat.of (SublevelSpace f b)) ∧
-      Poincare.Homology.eulerChar K (TopCat.of (SublevelSpace f b)) =
-        Poincare.Homology.eulerChar K (TopCat.of (SublevelSpace f a)) +
+    (hfin : DifferentialGeometry.Homology.finiteHomologyType K (TopCat.of (SublevelSpace f a))) :
+    DifferentialGeometry.Homology.finiteHomologyType K (TopCat.of (SublevelSpace f b)) ∧
+      DifferentialGeometry.Homology.eulerChar K (TopCat.of (SublevelSpace f b)) =
+        DifferentialGeometry.Homology.eulerChar K (TopCat.of (SublevelSpace f a)) +
           ∑ p ∈ s, (-1 : ℤ) ^ sigNeg (chartHessianAt
             (fun y => f ((extChartAt I p).symm y)) (extChartAt I p p)) := by
   classical
@@ -142,14 +142,14 @@ private theorem finiteBandEulerAux (K : Type) [Field K]
   obtain ⟨hfinlo, heulerlo⟩ := ih (s.erase p) (Finset.erase_ssubset hp) haε.le hclo hulo hslo
     ha hreglo (fun x hx => hnd x (Finset.mem_of_mem_erase hx))
     (hinj.mono (Finset.coe_subset.mpr (Finset.erase_subset _ _))) hfin
-  have hfinadj := Poincare.Cell.finiteHomologyType_cellAdjunction d φ K hfinlo
-  have hfinmid := (Poincare.Homology.finiteHomologyType_iff_of_homotopyEquiv K
+  have hfinadj := DifferentialGeometry.Cell.finiteHomologyType_cellAdjunction d φ K hfinlo
+  have hfinmid := (DifferentialGeometry.Homology.finiteHomologyType_iff_of_homotopyEquiv K
     (X := TopCat.of (SublevelSpace f (f p + ε)))
     (Y := TopCat.of (CellAdjunctionSpace d φ)) hφ.toHomotopyEquiv).mpr hfinadj
-  have heulermid : Poincare.Homology.eulerChar K (TopCat.of (SublevelSpace f (f p + ε))) =
-      Poincare.Homology.eulerChar K (TopCat.of (SublevelSpace f (f p - ε))) + (-1 : ℤ)^d :=
-    (Poincare.Homology.eulerChar_eq_of_homotopyEquiv K hφ.toHomotopyEquiv).trans
-      (Poincare.Cell.eulerChar_cellAdjunction d φ K hfinlo)
+  have heulermid : DifferentialGeometry.Homology.eulerChar K (TopCat.of (SublevelSpace f (f p + ε))) =
+      DifferentialGeometry.Homology.eulerChar K (TopCat.of (SublevelSpace f (f p - ε))) + (-1 : ℤ)^d :=
+    (DifferentialGeometry.Homology.eulerChar_eq_of_homotopyEquiv K hφ.toHomotopyEquiv).trans
+      (DifferentialGeometry.Cell.eulerChar_cellAdjunction d φ K hfinlo)
   have hcup : IsCompact (f ⁻¹' Icc (f p + ε) b) :=
     hcompact.of_isClosed_subset (isClosed_Icc.preimage hf.continuous)
       (fun _ hx => ⟨by linarith [hx.1], hx.2⟩)
@@ -174,10 +174,10 @@ theorem finiteHomologyType_and_eulerChar_of_finite_morse_band (K : Type) [Field 
     (hnd : ∀ x, f x ∈ Icc a b → IsCriticalPointAt I f x →
       IsNondegenerateCriticalPointAt I f x)
     (hinj : InjOn f {x | f x ∈ Icc a b ∧ IsCriticalPointAt I f x})
-    (hfin : Poincare.Homology.finiteHomologyType K (TopCat.of (SublevelSpace f a))) :
-    Poincare.Homology.finiteHomologyType K (TopCat.of (SublevelSpace f b)) ∧
-      Poincare.Homology.eulerChar K (TopCat.of (SublevelSpace f b)) =
-        Poincare.Homology.eulerChar K (TopCat.of (SublevelSpace f a)) +
+    (hfin : DifferentialGeometry.Homology.finiteHomologyType K (TopCat.of (SublevelSpace f a))) :
+    DifferentialGeometry.Homology.finiteHomologyType K (TopCat.of (SublevelSpace f b)) ∧
+      DifferentialGeometry.Homology.eulerChar K (TopCat.of (SublevelSpace f b)) =
+        DifferentialGeometry.Homology.eulerChar K (TopCat.of (SublevelSpace f a)) +
           ∑ p ∈ hfinite.toFinset, (-1 : ℤ) ^ sigNeg (chartHessianAt
             (fun y => f ((extChartAt I p).symm y)) (extChartAt I p p)) := by
   classical
@@ -195,8 +195,8 @@ theorem finiteHomologyType_and_eulerChar_of_finite_morse_sublevel (K : Type) [Fi
     (hnd : ∀ x, IsCriticalPointAt I f x → IsNondegenerateCriticalPointAt I f x)
     (hinj : InjOn f {x | IsCriticalPointAt I f x})
     (hbelow : ∀ x, IsCriticalPointAt I f x → f x < b) :
-    Poincare.Homology.finiteHomologyType K (TopCat.of (SublevelSpace f b)) ∧
-      Poincare.Homology.eulerChar K (TopCat.of (SublevelSpace f b)) =
+    DifferentialGeometry.Homology.finiteHomologyType K (TopCat.of (SublevelSpace f b)) ∧
+      DifferentialGeometry.Homology.eulerChar K (TopCat.of (SublevelSpace f b)) =
         ∑ p ∈ hfinite.toFinset, (-1 : ℤ) ^ sigNeg (chartHessianAt
           (fun y => f ((extChartAt I p).symm y)) (extChartAt I p p)) := by
   classical
@@ -222,11 +222,11 @@ theorem finiteHomologyType_and_eulerChar_of_finite_morse_sublevel (K : Type) [Fi
     hband hinterior (fun x hx => False.elim ((ne_of_gt (halower x)) hx))
     (fun x hx hc => (ne_of_lt (hbelow x hc)) hx) hbandfinite
     (fun x _ hx => hnd x hx) (fun _ hx _ hy he => hinj hx.2 hy.2 he)
-    (Poincare.Homology.finiteHomologyType_of_subsingleton K)
+    (DifferentialGeometry.Homology.finiteHomologyType_of_subsingleton K)
   refine ⟨hfin, ?_⟩
-  rw [Poincare.Homology.eulerChar_of_isEmpty K (X := TopCat.of (SublevelSpace f a)), zero_add] at hχ
+  rw [DifferentialGeometry.Homology.eulerChar_of_isEmpty K (X := TopCat.of (SublevelSpace f a)), zero_add] at hχ
   convert hχ using 1
   congr 1
   exact Set.Finite.toFinset_inj.mpr hcritset.symm
 
-end Poincare.Morse
+end DifferentialGeometry.Morse

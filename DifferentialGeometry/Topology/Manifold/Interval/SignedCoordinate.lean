@@ -8,7 +8,7 @@ set_option autoImplicit false
 noncomputable section
 open Set Function Manifold TopologicalSpace
 open scoped ContDiff Topology
-namespace Poincare.Manifold.Interval
+namespace DifferentialGeometry.Manifold.Interval
 
 theorem mfderiv_signedStripCoordinate
     {E H B : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -82,4 +82,4 @@ theorem exists_signedStrip_partialDiffeomorph
   rw [show u.symm p.val = ⟨p.val, hpU⟩ from hu, hd]
   rfl
 
-end Poincare.Manifold.Interval
+end DifferentialGeometry.Manifold.Interval

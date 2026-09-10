@@ -6,7 +6,7 @@ set_option autoImplicit false
 noncomputable section
 open Set
 
-namespace Poincare.Topology.SimplicialComplex
+namespace DifferentialGeometry.Topology.SimplicialComplex
 
 universe u
 variable {E : Type u} [NormedAddCommGroup E] [NormedSpace ℝ E] [LinearOrder E]
@@ -79,14 +79,14 @@ theorem contractibleSpace_vertexOpenStar : ContractibleSpace (vertexOpenStar K p
 
 
 theorem finiteHomologyType_vertexOpenStar (k : Type u) [Field k] :
-    Poincare.Homology.finiteHomologyType k (TopCat.of (vertexOpenStar K p)) := by
+    DifferentialGeometry.Homology.finiteHomologyType k (TopCat.of (vertexOpenStar K p)) := by
   let := contractibleSpace_vertexOpenStar K p hp
-  exact Poincare.Homology.finiteHomologyType_of_contractible k
+  exact DifferentialGeometry.Homology.finiteHomologyType_of_contractible k
 
 
 theorem eulerChar_vertexOpenStar (k : Type u) [Field k] :
-    Poincare.Homology.eulerChar k (TopCat.of (vertexOpenStar K p)) = 1 := by
+    DifferentialGeometry.Homology.eulerChar k (TopCat.of (vertexOpenStar K p)) = 1 := by
   let := contractibleSpace_vertexOpenStar K p hp
-  exact Poincare.Homology.eulerChar_of_contractible k
+  exact DifferentialGeometry.Homology.eulerChar_of_contractible k
 
-end Poincare.Topology.SimplicialComplex
+end DifferentialGeometry.Topology.SimplicialComplex

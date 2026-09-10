@@ -3,7 +3,7 @@ import DifferentialGeometry.Topology.PlanarJordan.InvariantDisk
 
 open Set
 
-namespace Poincare.Analysis
+namespace DifferentialGeometry.Analysis
 
 theorem injective_orbit_of_nonvanishing
     (φ : _root_.Flow ℝ ℂ) {v : ℂ → ℂ} (hv : Continuous v)
@@ -19,7 +19,7 @@ theorem injective_orbit_of_nonvanishing
     exact hnz x (hd.unique (hasDerivAt_const 0 x))
   have hno (t : ℝ) (ht : 0 < t) (hret : φ t x = x) : False := by
     obtain ⟨U, _, _, _, ⟨e⟩, hinv⟩ :=
-      Poincare.Topology.PlanarJordan.exists_invariant_disk_of_periodic_orbit
+      DifferentialGeometry.Topology.PlanarJordan.exists_invariant_disk_of_periodic_orbit
         φ hnon ⟨t, ht, hret⟩
     obtain ⟨y, _, hy⟩ := exists_zero_of_forward_invariant_disk e φ hv.continuousOn
       (fun {s} _ ↦ hinv s) (fun y _ s _ ↦ (hderiv y s).hasDerivWithinAt)
@@ -36,4 +36,4 @@ theorem injective_orbit_of_nonvanishing
   · exact h
   · exact (horder t s h he.symm).elim
 
-end Poincare.Analysis
+end DifferentialGeometry.Analysis

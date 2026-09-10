@@ -10,7 +10,7 @@ set_option autoImplicit false
 open Function Set
 open scoped ContDiff Manifold Topology
 
-namespace Poincare.Topology.SphereSeparation
+namespace DifferentialGeometry.Topology.SphereSeparation
 
 
 def normalFieldParametrization
@@ -551,4 +551,4 @@ theorem exists_uniform_normal_bicollar_product
   have hcomp := hcollar.comp domainEquiv.isOpenEmbedding
   simpa [domainEquiv, normalFieldParametrization, Function.comp_def] using hcomp
 
-end Poincare.Topology.SphereSeparation
+end DifferentialGeometry.Topology.SphereSeparation

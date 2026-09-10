@@ -6,11 +6,11 @@ set_option autoImplicit false
 
 open Set Manifold
 open scoped Topology ContDiff
-open DifferentialGeometry.Topology.Morse Poincare.Topology
+open DifferentialGeometry.Topology.Morse DifferentialGeometry.Topology
 
 noncomputable section
 
-namespace Poincare.Manifold.RegularLevel
+namespace DifferentialGeometry.Manifold.RegularLevel
 
 theorem exists_smoothTwoSidedCollar_of_compact_regularLevel
     {m : ℕ} {f : MorseModel (m + 1) → ℝ} (hf : ContDiff ℝ ∞ f) (a : ℝ)
@@ -79,4 +79,4 @@ theorem exists_smoothTwoSidedCollar_of_compact_regularLevel
       zero_eq := hzero }
   exact ⟨c, hvalue⟩
 
-end Poincare.Manifold.RegularLevel
+end DifferentialGeometry.Manifold.RegularLevel

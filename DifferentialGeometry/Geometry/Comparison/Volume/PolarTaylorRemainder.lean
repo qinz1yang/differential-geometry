@@ -8,7 +8,7 @@ noncomputable section
 open Set Function Bundle Manifold
 open scoped Topology Manifold ContDiff
 
-namespace Poincare.Geometry.Riemannian.VolumeComparison
+namespace DifferentialGeometry.Geometry.Riemannian.VolumeComparison
 
 open DifferentialGeometry
 open DifferentialGeometry.Geometry.Curvature
@@ -268,6 +268,6 @@ theorem normalPolarJacobian_uniform_taylor_remainder_of_radial_jets
       mul_le_mul_of_nonneg_left (hrem u t ht) hpow
     _ = C * t ^ (Module.finrank ℝ E - 1) * t ^ 3 := by ring
 
-end Poincare.Geometry.Riemannian.VolumeComparison
+end DifferentialGeometry.Geometry.Riemannian.VolumeComparison
 
 end

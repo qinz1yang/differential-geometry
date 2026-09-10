@@ -11,7 +11,7 @@ open scoped Manifold ContDiff Topology
 open DifferentialGeometry.Topology.Morse DifferentialGeometry.Topology.Homotopy
 open DifferentialGeometry.Analysis.ODE
 
-namespace Poincare.Morse
+namespace DifferentialGeometry.Morse
 
 variable {m : ℕ} {H M : Type} [TopologicalSpace H] [TopologicalSpace M]
   [ChartedSpace H M] (I : ModelWithCorners ℝ (MorseModel (m + 1)) H)
@@ -25,7 +25,7 @@ theorem exists_sublevelHomotopyEquivUnder {f : M → ℝ}
     ∃ e : HomotopyEquivUnder ((sublevelInclusion f hab).comp j) j,
       e.invFun = sublevelInclusion f hab := by
   obtain ⟨V, hV, hsupp, hdf, hrate⟩ :=
-    Poincare.Manifold.RegularLevel.exists_descendingField_on_compact I hf hK hr
+    DifferentialGeometry.Manifold.RegularLevel.exists_descendingField_on_compact I hf hK hr
   let hc := exists_globalIntegralCurve_of_compactSupport V hV hsupp
   let T : M → ℝ := fun x ↦ max (f x - a) 0
   have hT0 (x : M) (hx : f x ≤ a) : T x = 0 := max_eq_right (sub_nonpos.mpr hx)
@@ -96,4 +96,4 @@ theorem exists_sublevelHomotopyEquivUnder {f : M → ℝ}
     rightInv := (ContinuousMap.HomotopyRel.refl (ContinuousMap.id (SublevelSpace f a))
       (Set.range j)).cast hri.symm rfl }, rfl⟩
 
-end Poincare.Morse
+end DifferentialGeometry.Morse

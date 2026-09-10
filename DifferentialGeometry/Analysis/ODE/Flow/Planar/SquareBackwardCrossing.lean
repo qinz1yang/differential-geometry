@@ -3,7 +3,7 @@ import DifferentialGeometry.Analysis.ODE.Flow.Planar.SquareFlowExit
 open Set
 open scoped ContDiff
 
-namespace Poincare.Analysis
+namespace DifferentialGeometry.Analysis
 
 theorem exists_neg_leftEdge_crossing
     (φ : _root_.Flow ℝ ℂ) {v : ℂ → ℂ} (hv : ContDiff ℝ ∞ v)
@@ -45,4 +45,4 @@ theorem exists_neg_leftEdge_crossing
   rw [sub_sub_cancel, hre] at hcross
   exact ⟨-t, neg_neg_of_pos ht, by linarith⟩
 
-end Poincare.Analysis
+end DifferentialGeometry.Analysis

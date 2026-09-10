@@ -8,7 +8,7 @@ open DifferentialGeometry
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Integral.Connection
 
-namespace Poincare.Geometry
+namespace DifferentialGeometry.Geometry
 
 variable {E F : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
   [FiniteDimensional ℝ E] [NormedAddCommGroup F] [InnerProductSpace ℝ F]
@@ -49,4 +49,4 @@ theorem HasPositiveSectionalCurvature.localPull {g : SmoothRiemannianMetric J N}
   ext i
   fin_cases i <;> rfl
 
-end Poincare.Geometry
+end DifferentialGeometry.Geometry

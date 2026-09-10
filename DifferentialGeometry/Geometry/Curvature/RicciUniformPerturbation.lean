@@ -6,7 +6,7 @@ open scoped Manifold ContDiff BigOperators
 open DifferentialGeometry DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.Tensor0SBundle
 
-namespace Poincare.Geometry.Curvature
+namespace DifferentialGeometry.Geometry.Curvature
 
 theorem abs_ricci_difference_bound_of_small_metric_derivatives
     {E H M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -24,4 +24,4 @@ theorem abs_ricci_difference_bound_of_small_metric_derivatives
   convert h using 1
   ring
 
-end Poincare.Geometry.Curvature
+end DifferentialGeometry.Geometry.Curvature

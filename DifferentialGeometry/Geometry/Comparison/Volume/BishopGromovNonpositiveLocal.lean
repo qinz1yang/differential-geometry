@@ -11,7 +11,7 @@ noncomputable section
 open Set Function Filter Bundle Manifold MeasureTheory Metric
 open scoped Topology Manifold ContDiff ENNReal
 
-namespace Poincare.Geometry.Riemannian.VolumeComparison
+namespace DifferentialGeometry.Geometry.Riemannian.VolumeComparison
 
 open DifferentialGeometry.Geometry.Riemannian
 open DifferentialGeometry.Geometry.Riemannian.CovariantDerivativeAlong
@@ -745,4 +745,4 @@ theorem segmentBall_vol_rel_endpoint_of_ricciBoundedBelowOn
         riemannianVolumeMeasure (I := I) (M := M) g
           {y : M | riemannianEDist I x y < ENNReal.ofReal s})
 
-end Poincare.Geometry.Riemannian.VolumeComparison
+end DifferentialGeometry.Geometry.Riemannian.VolumeComparison

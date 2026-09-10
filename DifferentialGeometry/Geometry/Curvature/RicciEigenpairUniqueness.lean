@@ -5,7 +5,7 @@ noncomputable section
 open scoped Manifold ContDiff
 open DifferentialGeometry DifferentialGeometry.Geometry.Curvature
 
-namespace Poincare.Geometry.Curvature
+namespace DifferentialGeometry.Geometry.Curvature
 
 theorem least_ricci_eigenpair_eq_of_positive_functional
     {E H M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
@@ -28,9 +28,9 @@ theorem least_ricci_eigenpair_eq_of_positive_functional
     ((hminv w hw).trans_eq (hRayleigh ν w hw hew))
     ((hminw v hv).trans_eq (hRayleigh μ v hv hev))
   refine ⟨heval, ?_⟩
-  apply Poincare.Analysis.eq_of_unit_of_mem_span_of_positive_functional
+  apply DifferentialGeometry.Analysis.eq_of_unit_of_mem_span_of_positive_functional
     (g.inner x).toBilinForm ℓ v w hv hw _ hvpos hwpos
   rw [← hsimple]
   exact Module.End.mem_eigenspace_iff.mpr (hev.trans (congrArg (fun a : ℝ ↦ a • v) heval))
 
-end Poincare.Geometry.Curvature
+end DifferentialGeometry.Geometry.Curvature

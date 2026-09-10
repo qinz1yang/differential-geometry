@@ -6,7 +6,7 @@ noncomputable section
 open Set Filter Function
 open scoped Manifold ContDiff Topology
 open DifferentialGeometry.Topology.Morse
-namespace Poincare.Morse
+namespace DifferentialGeometry.Morse
 variable {E : Type} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
   {H M : Type} [TopologicalSpace H] [TopologicalSpace M] [ChartedSpace H M]
   {I : ModelWithCorners ℝ E H} [IsManifold I ∞ M]
@@ -16,9 +16,9 @@ theorem exists_open_isolated_criticalPoint {f : M → ℝ} {x : M}
     (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) (hx : I.IsInteriorPoint x)
     (hnd : IsNondegenerateCriticalPointAt I f x) :
     ∃ V : Set M, IsOpen V ∧ x ∈ V ∧ ∀ y ∈ V, IsCriticalPointAt I f y → y = x := by
-  let c := Poincare.Manifold.interiorChart I ∞ x
+  let c := DifferentialGeometry.Manifold.interiorChart I ∞ x
   let g : E → ℝ := fun z => f (c.symm z)
-  have hxc : x ∈ c.source := (Poincare.Manifold.mem_interiorChart_source_iff I ∞ x).mpr hx
+  have hxc : x ∈ c.source := (DifferentialGeometry.Manifold.mem_interiorChart_source_iff I ∞ x).mpr hx
   have hg : ContDiffAt ℝ 2 g (c x) :=
     (((hf.comp_contMDiffOn c.symm.contMDiffOn).contMDiffAt
       (c.open_target.mem_nhds (c.map_source hxc))).contDiffAt).of_le
@@ -92,4 +92,4 @@ theorem finite_criticalPoints_of_isCompact {f : M → ℝ}
   obtain ⟨x,hxs,hyV⟩ := mem_iUnion₂.mp (hs (hcrit y hy))
   exact ⟨x,hxs,(hprop x y hyV hy).symm⟩
 
-end Poincare.Morse
+end DifferentialGeometry.Morse

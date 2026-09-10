@@ -5,7 +5,7 @@ import Mathlib.CategoryTheory.Limits.Shapes.Pullback.IsPullback.Defs
 set_option autoImplicit false
 noncomputable section
 open CategoryTheory CategoryTheory.Limits DifferentialGeometry.Topology
-namespace Poincare.TopCat.Adjunction
+namespace DifferentialGeometry.TopCat.Adjunction
 universe u
 variable {A B X : TopCat.{u}} (i : A ⟶ B) (φ : A ⟶ X)
 
@@ -47,4 +47,4 @@ theorem isPushout : IsPushout i φ (cellMap i φ) (lowerMap i φ) := by
         | inl v => exact ConcreteCategory.congr_hom hm v
         | inr v => exact ConcreteCategory.congr_hom hb v
 
-end Poincare.TopCat.Adjunction
+end DifferentialGeometry.TopCat.Adjunction

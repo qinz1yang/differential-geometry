@@ -6,7 +6,7 @@ noncomputable section
 open Set Filter Topology
 open scoped ContDiff Manifold
 
-namespace Poincare.Geometry.Boundary
+namespace DifferentialGeometry.Geometry.Boundary
 
 open DifferentialGeometry.Integral.DivergenceTheorem.WithBoundary
 
@@ -47,7 +47,7 @@ theorem exists_localInverse_of_model
     change HasFDerivAt g A y
     rwa [hdf] at hdg
   obtain ⟨e, hye, heV, he, hi, heg⟩ :=
-    Poincare.Analysis.exists_localInverse_of_hasFDerivAt_equiv hg hV hyV hd
+    DifferentialGeometry.Analysis.exists_localInverse_of_hasFDerivAt_equiv hg hV hyV hd
   exact ⟨e, hye, heV.trans hVU, he, hi, fun z hz ↦ (heg z).trans (heq ⟨heV hz.1, hz.2⟩)⟩
 
-end Poincare.Geometry.Boundary
+end DifferentialGeometry.Geometry.Boundary

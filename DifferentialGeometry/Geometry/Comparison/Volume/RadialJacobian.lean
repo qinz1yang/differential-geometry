@@ -8,7 +8,7 @@ noncomputable section
 open Bundle Filter Function Manifold Set
 open scoped ContDiff Manifold Topology
 
-namespace Poincare.Geometry.Riemannian.VolumeComparison
+namespace DifferentialGeometry.Geometry.Riemannian.VolumeComparison
 
 open DifferentialGeometry
 open DifferentialGeometry.Geometry.Curvature
@@ -223,4 +223,4 @@ theorem radialJacobianComparison [_hConnected : ConnectedSpace M]
     filter_upwards [self_mem_nhdsWithin] with t ht
     rw [hbridge t ht]
 
-end Poincare.Geometry.Riemannian.VolumeComparison
+end DifferentialGeometry.Geometry.Riemannian.VolumeComparison

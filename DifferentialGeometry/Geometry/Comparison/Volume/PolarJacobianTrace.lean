@@ -8,7 +8,7 @@ noncomputable section
 open Set Function Filter Bundle Manifold Matrix
 open scoped Topology Manifold ContDiff BigOperators
 
-namespace Poincare.Geometry.Riemannian.VolumeComparison
+namespace DifferentialGeometry.Geometry.Riemannian.VolumeComparison
 
 open DifferentialGeometry
 open DifferentialGeometry.Geometry.Curvature
@@ -288,4 +288,4 @@ theorem normalExpJacobian_radial_two_of_intrinsicMetricJet_trace
   have hdiag := intrinsicFrameMetric_diag_jet (I := I) g hEnorm p 0 a ei 2
   simpa only [zero_add, ei] using happly.trans (happ.trans hdiag)
 
-end Poincare.Geometry.Riemannian.VolumeComparison
+end DifferentialGeometry.Geometry.Riemannian.VolumeComparison

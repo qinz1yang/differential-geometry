@@ -6,7 +6,7 @@ open Set Bundle
 open scoped Manifold ContDiff Topology
 open DifferentialGeometry.Topology.Morse
 
-namespace Poincare.Manifold.RegularLevel
+namespace DifferentialGeometry.Manifold.RegularLevel
 
 variable {m : ℕ} {H M : Type*} [TopologicalSpace H] [TopologicalSpace M]
   [ChartedSpace H M] (I : ModelWithCorners ℝ (MorseModel (m + 1)) H)
@@ -57,4 +57,4 @@ theorem exists_descendingField_on_compact {f : M → ℝ}
     · rw [hρzero x hx, zero_smul, map_zero]
       norm_num
 
-end Poincare.Manifold.RegularLevel
+end DifferentialGeometry.Manifold.RegularLevel

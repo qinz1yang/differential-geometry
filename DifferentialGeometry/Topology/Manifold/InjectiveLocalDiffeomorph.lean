@@ -4,7 +4,7 @@ noncomputable section
 open Set Filter Topology Manifold
 open scoped ContDiff
 
-namespace Poincare.Topology.Manifold
+namespace DifferentialGeometry.Topology.Manifold
 
 variable {E F H G X Y : Type*}
   [NormedAddCommGroup E] [NormedSpace ℝ E] [NormedAddCommGroup F] [NormedSpace ℝ F]
@@ -54,4 +54,4 @@ theorem exists_partialDiffeomorph_of_injOn [Nonempty X]
            contMDiffOn_toFun := hf.contMDiffOn
            contMDiffOn_invFun := hi }, rfl, rfl, rfl⟩
 
-end Poincare.Topology.Manifold
+end DifferentialGeometry.Topology.Manifold

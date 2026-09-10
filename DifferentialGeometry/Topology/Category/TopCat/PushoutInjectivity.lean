@@ -3,7 +3,7 @@ import DifferentialGeometry.Topology.Category.TopCat.PushoutClosedEmbedding
 set_option autoImplicit false
 noncomputable section
 open CategoryTheory CategoryTheory.Limits
-namespace Poincare.TopCat.Pushout
+namespace DifferentialGeometry.TopCat.Pushout
 universe u
 variable {A D X P Z : TopCat.{u}} {f : A ⟶ D} {g : A ⟶ X}
   {r : D ⟶ P} {b : X ⟶ P} (h : IsPushout f g r b) (F : P ⟶ Z)
@@ -29,4 +29,4 @@ theorem injective_of_cell_overlap (hD : Function.Injective (F ∘ r))
     · exact (hcross e x hpq.symm).symm
     · exact congrArg b (hX hpq)
 
-end Poincare.TopCat.Pushout
+end DifferentialGeometry.TopCat.Pushout

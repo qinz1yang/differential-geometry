@@ -11,7 +11,7 @@ open CategoryTheory CategoryTheory.Limits Opposite Simplicial
 
 universe u
 
-namespace Poincare.Homology
+namespace DifferentialGeometry.Homology
 
 variable {E : Type u} [NormedAddCommGroup E] [NormedSpace ℝ E]
   {k : Type u} [Ring k] (R : ModuleCat.{u} k)
@@ -88,4 +88,4 @@ theorem exists_uniform_subdivision_mesh_threshold {s : Set E} (hs : Convex ℝ s
   exact ⟨N, fun m hm ↦ ⟨hN m hm,
     fun _ hc ↦ singularSubdivision_pow_mem_affineMeshSubmodule R hs n m hc⟩⟩
 
-end Poincare.Homology
+end DifferentialGeometry.Homology

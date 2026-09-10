@@ -6,7 +6,7 @@ noncomputable section
 open Set Metric Filter Topology Manifold
 open scoped ContDiff
 
-namespace Poincare.Topology.Manifold
+namespace DifferentialGeometry.Topology.Manifold
 
 variable {E F H M : Type*}
   [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]
@@ -30,7 +30,7 @@ theorem exists_diffeomorphs_contracting_embedded_closedBall
   have hU : IsOpen U := φ.toOpenPartialHomeomorph.isOpen_inter_preimage hV
   have hBU : closedBall (0 : E) r ⊆ U := fun x hx ↦ ⟨hrs hx, himage ⟨x, hx, rfl⟩⟩
   obtain ⟨D, hD, hDi, hzero, hrad, K, hK, hKU, hfix⟩ :=
-    Poincare.Analysis.exists_compact_flow_contracting_closedBall_in_open hr hU hBU
+    DifferentialGeometry.Analysis.exists_compact_flow_contracting_closedBall_in_open hr hU hBU
   let e := φ.symm.toOpenPartialHomeomorph
   have hKt : K ⊆ e.target := fun x hx ↦ (hKU hx).1
   obtain ⟨J, hJ, hJi, hJe, hKi, hKit, hJfix⟩ :=
@@ -54,4 +54,4 @@ theorem exists_diffeomorphs_contracting_embedded_closedBall
   · rintro x ⟨z, hz, rfl⟩
     exact (hKU hz).2
 
-end Poincare.Topology.Manifold
+end DifferentialGeometry.Topology.Manifold

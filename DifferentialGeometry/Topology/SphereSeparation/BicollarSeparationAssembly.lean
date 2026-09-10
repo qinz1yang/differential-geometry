@@ -7,7 +7,7 @@ open Function Set Topology
 open CategoryTheory CategoryTheory.Limits
 open scoped Manifold ContDiff Topology
 
-namespace Poincare.Topology.SphereSeparation
+namespace DifferentialGeometry.Topology.SphereSeparation
 
 noncomputable def smoothSphereSidesOpenThreeSpace_of_openBicollar_of_sphereH1
     {N : Type*} [TopologicalSpace N] [ChartedSpace EuclideanThree N]
@@ -180,4 +180,4 @@ theorem bicollar_order_openThreeSpace_of_cellularComparison
   exact bicollar_order_openThreeSpace_of_alexanderDuality
     ha Φ hΦ ψ hAD o₀ hst
 
-end Poincare.Topology.SphereSeparation
+end DifferentialGeometry.Topology.SphereSeparation

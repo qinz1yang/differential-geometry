@@ -5,7 +5,7 @@ set_option autoImplicit false
 noncomputable section
 open Set Manifold TopologicalSpace
 open scoped ContDiff Topology
-namespace Poincare.Manifold.Interval
+namespace DifferentialGeometry.Manifold.Interval
 
 
 def shorterStripDiffeomorph
@@ -37,4 +37,4 @@ def shorterStripDiffeomorph
       (contMDiff_snd.comp contMDiff_subtype_val)⟩
   exact ⟨⟨f, g, (fun _ => rfl), (fun _ => rfl)⟩, hf, hg⟩
 
-end Poincare.Manifold.Interval
+end DifferentialGeometry.Manifold.Interval

@@ -6,7 +6,7 @@ noncomputable section
 open Set Topology
 open scoped ContDiff Manifold
 
-namespace Poincare.Topology.Manifold
+namespace DifferentialGeometry.Topology.Manifold
 
 def halfSpaceOneHomeomorph : EuclideanHalfSpace 1 ≃ₜ Ici (0 : ℝ) := by
   let T : EuclideanSpace ℝ (Fin 1) ≃L[ℝ] ℝ :=
@@ -114,4 +114,4 @@ theorem injective_mfderiv_scaledHalfSpaceOneProductCoordinate
     change σ * T v.2 = σ * T w.2 at hs
     exact mul_left_cancel₀ hσ hs
 
-end Poincare.Topology.Manifold
+end DifferentialGeometry.Topology.Manifold

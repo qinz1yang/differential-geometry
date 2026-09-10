@@ -5,7 +5,7 @@ set_option autoImplicit false
 noncomputable section
 open Set Bundle Filter
 open scoped Manifold ContDiff Topology
-namespace Poincare.VectorField
+namespace DifferentialGeometry.VectorField
 variable {d : ℕ} {H M : Type} [TopologicalSpace H] [TopologicalSpace M]
   [ChartedSpace H M] (I : ModelWithCorners ℝ (EuclideanSpace ℝ (Fin (d + 1))) H)
   [IsManifold I ∞ M] [BoundarylessManifold I M] [T2Space M] [CompactSpace M]
@@ -17,7 +17,7 @@ theorem interiorIndexSumOn_eq_eulerChar_of_isClopen
     (hVi : ∀ x, V x = 0 → HasContinuousIsolatedZero I V x)
     (hVI : ∀ x, V x = 0 → I.IsInteriorPoint x)
     (A : Set M) (hA : IsClopen A) (K : Type) [Field K] :
-    interiorIndexSumOn I V hVf hVi hVI A = Poincare.Homology.eulerChar K (TopCat.of A) := by
+    interiorIndexSumOn I V hVf hVi hVI A = DifferentialGeometry.Homology.eulerChar K (TopCat.of A) := by
   classical
   let U : TopologicalSpace.Opens M := ⟨A, hA.isOpen⟩
   let _ : CompactSpace U := isCompact_iff_compactSpace.mp hA.isClosed.isCompact
@@ -28,15 +28,15 @@ theorem interiorIndexSumOn_eq_eulerChar_of_isClopen
       intro x hx
       exact he.false ⟨x, hx⟩
     subst A
-    rw [interiorIndexSumOn_empty, Poincare.Homology.eulerChar_of_isEmpty]
+    rw [interiorIndexSumOn_empty, DifferentialGeometry.Homology.eulerChar_of_isEmpty]
   | inr hU =>
-    let f₀ := Poincare.Manifold.openSubtypePartialDiffeomorph I U hU
+    let f₀ := DifferentialGeometry.Manifold.openSubtypePartialDiffeomorph I U hU
     let f : PartialDiffeomorph I I U M 1 :=
       { f₀ with
         contMDiffOn_toFun := f₀.contMDiffOn.of_le (by simp)
         contMDiffOn_invFun := f₀.symm.contMDiffOn.of_le (by simp) }
     let W := _root_.VectorField.mpullback I I f V
-    have hWval (x : U) : W x = V x.val := Poincare.Manifold.mpullback_openSubtype I U hU V x
+    have hWval (x : U) : W x = V x.val := DifferentialGeometry.Manifold.mpullback_openSubtype I U hU V x
     have hW : ContMDiff I I.tangent ∞ (fun x => (⟨x, W x⟩ : TangentBundle I U)) := by
       intro x
       exact contMDiffAt_mpullback_partialDiffeomorph f₀ (by simp) (by trivial) (hV x.val)
@@ -65,4 +65,4 @@ theorem interiorIndexSumOn_eq_eulerChar_of_isClopen
         (hVi x.val.val ((hWval x).symm.trans x.property))
     exact hs.symm.trans (interiorIndexSum_eq_eulerChar_of_boundaryless I W hW hWf hWi hWI K)
 
-end Poincare.VectorField
+end DifferentialGeometry.VectorField

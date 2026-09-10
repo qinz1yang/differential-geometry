@@ -6,7 +6,7 @@ import Mathlib.Topology.Homeomorph.Lemmas
 noncomputable section
 open Set Topology
 
-namespace Poincare.Topology.Ehresmann
+namespace DifferentialGeometry.Topology.Ehresmann
 
 variable {M : Type*} [TopologicalSpace M]
 
@@ -85,4 +85,4 @@ theorem isCompact_preimage_Icc_intervalCompletionHeight [CompactSpace M]
     exact and_iff_right (mem_univ q.1.1)
   rwa [heq] at hh
 
-end Poincare.Topology.Ehresmann
+end DifferentialGeometry.Topology.Ehresmann

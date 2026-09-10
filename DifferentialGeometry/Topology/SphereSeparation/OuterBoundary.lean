@@ -5,7 +5,7 @@ import Mathlib.Topology.Connected.Clopen
 noncomputable section
 open Set Topology
 
-namespace Poincare.Topology.SphereSeparation
+namespace DifferentialGeometry.Topology.SphereSeparation
 
 theorem interior_subset_compactSide_or_of_two_boundary_collars
     {B C X : Type*} [TopologicalSpace B] [ConnectedSpace B]
@@ -79,4 +79,4 @@ theorem interior_subset_compactSide_or_of_two_boundary_collars
   apply s.not_isCompact_closure_endSide
   exact hAc.of_isClosed_subset isClosed_closure (hAuniv ▸ subset_univ _)
 
-end Poincare.Topology.SphereSeparation
+end DifferentialGeometry.Topology.SphereSeparation

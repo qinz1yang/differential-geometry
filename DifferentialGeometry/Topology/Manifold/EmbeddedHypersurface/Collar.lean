@@ -1,12 +1,12 @@
 import DifferentialGeometry.Topology.Manifold.EmbeddedHypersurface.DefiningFunction
 import DifferentialGeometry.Topology.Manifold.RegularLevel.Collar.ManifoldSmooth
 
-open Set DifferentialGeometry.Topology.Morse Poincare.Topology
+open Set DifferentialGeometry.Topology.Morse DifferentialGeometry.Topology
 open scoped Manifold ContDiff Topology
 set_option autoImplicit false
 noncomputable section
 
-namespace Poincare.Manifold.EmbeddedHypersurface
+namespace DifferentialGeometry.Manifold.EmbeddedHypersurface
 
 private theorem exists_flatten_open_diffeomorph
     {E G M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -93,4 +93,4 @@ theorem nonempty_smoothTwoSidedCollar {e : S → M}
   rw [hdO]
   exact congrArg (fun y : U => (y : M)) (c.zero_eq (d s))
 
-end Poincare.Manifold.EmbeddedHypersurface
+end DifferentialGeometry.Manifold.EmbeddedHypersurface

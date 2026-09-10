@@ -8,9 +8,9 @@ noncomputable section
 open scoped ContDiff Manifold Topology
 open Bundle
 open DifferentialGeometry
-open Poincare.Geometry.VectorBundle
+open DifferentialGeometry.Geometry.VectorBundle
 
-namespace Poincare.Geometry.Submersion
+namespace DifferentialGeometry.Geometry.Submersion
 
 variable {E E' : Type*}
   [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
@@ -169,4 +169,4 @@ theorem exists_unique_smooth_horizontal_lift
       (W := TangentSpace J (f x)) (g.inner x) (g.pos x) (mfderiv I J f x)
       ((hX'.1 x).trans (hrel x).symm) (hX'.2.1 x) (horth x)
 
-end Poincare.Geometry.Submersion
+end DifferentialGeometry.Geometry.Submersion

@@ -5,10 +5,10 @@ noncomputable section
 open Set Topology Manifold
 open scoped ContDiff
 
-namespace Poincare.Topology.Ehresmann
+namespace DifferentialGeometry.Topology.Ehresmann
 
-open Poincare.Topology Poincare.Geometry.Boundary Poincare.Topology.Manifold
-open Poincare.Topology.SphereSeparation
+open DifferentialGeometry.Topology DifferentialGeometry.Geometry.Boundary DifferentialGeometry.Topology.Manifold
+open DifferentialGeometry.Topology.SphereSeparation
 open DifferentialGeometry.Integral.DivergenceTheorem.WithBoundary
 
 section Conclusion
@@ -106,4 +106,4 @@ theorem sphereAnnulusWithBoundaryMatching_of_product
     · intro t ht p
       rw [hhi t ht p, unitCylinderDiffeomorphOfProduct_apply, hτ]
 
-end Poincare.Topology.Ehresmann
+end DifferentialGeometry.Topology.Ehresmann

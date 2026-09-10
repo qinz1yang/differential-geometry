@@ -5,7 +5,7 @@ import Mathlib.Analysis.Convex.PathConnected
 open Set Filter Topology
 open scoped Manifold ContDiff
 
-namespace Poincare.Topology.Manifold
+namespace DifferentialGeometry.Topology.Manifold
 
 variable {E H M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
@@ -31,7 +31,7 @@ theorem dense_manifold_interior : Dense (I.interior M) := by
 
 theorem isPreconnected_manifold_interior [PreconnectedSpace M] :
     IsPreconnected (I.interior M) := by
-  apply Poincare.Topology.isPreconnected_of_dense_of_locally_preconnected_inter
+  apply DifferentialGeometry.Topology.isPreconnected_of_dense_of_locally_preconnected_inter
     dense_manifold_interior
   intro x
   let c := extChartAt I x
@@ -68,4 +68,4 @@ theorem isPreconnected_manifold_interior [PreconnectedSpace M] :
   exact ((convex_ball (c x) r).inter I.convex_range.interior).isPreconnected.image c.symm
     ((continuousOn_extChartAt_symm (I := I) x).mono htarget)
 
-end Poincare.Topology.Manifold
+end DifferentialGeometry.Topology.Manifold

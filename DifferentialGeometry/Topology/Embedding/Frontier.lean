@@ -2,7 +2,7 @@ import Mathlib.Topology.Maps.Basic
 
 open Set Filter Topology
 
-namespace Poincare.Topology.Embedding
+namespace DifferentialGeometry.Topology.Embedding
 
 theorem frontier_image_of_isEmbedding
     {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
@@ -44,4 +44,4 @@ theorem frontier_image_subset_of_isEmbedding
   rw [frontier_image_of_isEmbedding hf A]
   exact union_subset subset_union_right (inter_subset_left.trans subset_union_left)
 
-end Poincare.Topology.Embedding
+end DifferentialGeometry.Topology.Embedding

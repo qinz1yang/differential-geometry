@@ -20,7 +20,7 @@ open AddSubgroup
 
 universe u
 
-namespace Poincare.Topology
+namespace DifferentialGeometry.Topology
 
 noncomputable def intEquivZMultiplesOne : ℤ ≃+ zmultiples (1 : ℝ) :=
   AddEquiv.ofBijective
@@ -59,4 +59,4 @@ noncomputable def fundamentalGroupProdCircleEquivIntOfSimplyConnected
   (fundamentalGroupProdRightEquivOfSimplyConnected x (1 : Circle)).trans
     fundamentalGroupCircleEquivInt
 
-end Poincare.Topology
+end DifferentialGeometry.Topology

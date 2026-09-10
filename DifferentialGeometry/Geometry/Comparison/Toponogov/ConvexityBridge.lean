@@ -5,7 +5,7 @@ open Set Topology
 
 noncomputable section
 
-namespace Poincare.Toponogov
+namespace DifferentialGeometry.Toponogov
 
 structure C2LowerSupportAt (f : ℝ → ℝ) (I : Set ℝ) (x : ℝ) where
 
@@ -54,4 +54,4 @@ theorem convexOn_of_c2LowerSupport {I : Set ℝ} {f : ℝ → ℝ}
     ConvexOn ℝ I f := by
   exact convexOn_of_lowerSupport hI hf fun x hx ↦ (hsupport x hx).toLowerSupportAt
 
-end Poincare.Toponogov
+end DifferentialGeometry.Toponogov

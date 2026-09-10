@@ -6,7 +6,7 @@ noncomputable section
 open Set Function Topology Manifold
 open scoped ContDiff
 
-namespace Poincare.Topology.Manifold
+namespace DifferentialGeometry.Topology.Manifold
 
 variable {E H F G : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [NormedAddCommGroup F] [NormedSpace ℝ F] [TopologicalSpace H] [TopologicalSpace G]
@@ -62,4 +62,4 @@ theorem exists_modelRestriction
         (fun y hy ↦ hinv y hy) }
   exact ⟨d.toOpenPartialHomeomorph, rfl, rfl, d.contMDiffOn, d.symm.contMDiffOn, hfor, hback⟩
 
-end Poincare.Topology.Manifold
+end DifferentialGeometry.Topology.Manifold

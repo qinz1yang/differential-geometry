@@ -8,7 +8,7 @@ import Mathlib.Tactic.NormNum
 noncomputable section
 open Set
 
-namespace Poincare.Analysis
+namespace DifferentialGeometry.Analysis
 
 private theorem scaled_error_lt (A E r Q R η : ℝ) (hA : 0 ≤ A) (hE : 0 ≤ E)
     (hr : 0 ≤ r) (hr' : r ≤ 1 / 2) (hQ : 0 < Q) (hR : 0 < R)
@@ -125,4 +125,4 @@ theorem exists_overlap_error_bound_of_line_cover_with_margin
   intro x i hi
   simpa only [div_div_div_cancel_right₀ hm.ne'] using hb x i hi
 
-end Poincare.Analysis
+end DifferentialGeometry.Analysis

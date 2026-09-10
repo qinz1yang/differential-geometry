@@ -9,7 +9,7 @@ open scoped Topology unitInterval
 
 noncomputable section
 
-namespace Poincare.LocalDegree
+namespace DifferentialGeometry.LocalDegree
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
@@ -111,4 +111,4 @@ theorem sphereMap_id (R : ℝ) (r : Ioc (0 : ℝ) R) :
     Real.norm_of_nonneg r.property.1.le, norm_eq_of_mem_sphere v, mul_one, smul_smul,
     inv_mul_cancel₀ r.property.1.ne', one_smul]
 
-end Poincare.LocalDegree
+end DifferentialGeometry.LocalDegree

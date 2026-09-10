@@ -9,7 +9,7 @@ open CategoryTheory CategoryTheory.Limits Simplicial
 
 universe u
 
-namespace Poincare.SSet
+namespace DifferentialGeometry.SSet
 
 
 def isInitial_of_isEmpty_nondegenerate (X : _root_.SSet.{u}) [IsEmpty X.N] : IsInitial X := by
@@ -59,4 +59,4 @@ theorem finite_cell_induction (P : _root_.SSet.{u} → Prop)
             (by rw [← hn]; exact card_costar_nondegenerate_lt s) (costar s)
             inferInstance inferInstance rfl
 
-end Poincare.SSet
+end DifferentialGeometry.SSet

@@ -12,7 +12,7 @@ open CategoryTheory
 
 universe u v
 
-namespace Poincare.Topology.VanKampen
+namespace DifferentialGeometry.Topology.VanKampen
 
 theorem groupoid_telescope {C : Type u} [Groupoid.{v} C] {n : ℕ}
     {R S : ComposableArrows C n} (α : R ⟶ S) :
@@ -43,4 +43,4 @@ example {C : Type u} [Groupoid.{v} C] {R S : ComposableArrows C 1} (α : R ⟶ S
 
 end Regression
 
-end Poincare.Topology.VanKampen
+end DifferentialGeometry.Topology.VanKampen

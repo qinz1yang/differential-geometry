@@ -11,7 +11,7 @@ open DifferentialGeometry.Geometry.Riemannian.Geodesic
 open DifferentialGeometry.Geometry.Riemannian.Variation
 open DifferentialGeometry.Geometry.Riemannian.CovariantDerivativeAlong
 
-namespace Poincare.Geometry.Riemannian.Variation
+namespace DifferentialGeometry.Geometry.Riemannian.Variation
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
@@ -151,4 +151,4 @@ theorem secondVariation_curveEnergy_parallel_geodesicEndpoints_local
   rw [hi] at hsecond
   exact hsecond.congr_of_eventuallyEq hE.deriv.symm
 
-end Poincare.Geometry.Riemannian.Variation
+end DifferentialGeometry.Geometry.Riemannian.Variation

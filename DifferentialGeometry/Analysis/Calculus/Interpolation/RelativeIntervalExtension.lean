@@ -5,7 +5,7 @@ noncomputable section
 open Set Filter Topology
 open scoped ContDiff
 
-namespace Poincare.Analysis
+namespace DifferentialGeometry.Analysis
 
 def extendIntervalById {P : Type*} (a b : ℝ) (f : P × ℝ → ℝ) (q : P × ℝ) : ℝ :=
   if q.2 ∈ Icc a b then f q else q.2
@@ -52,4 +52,4 @@ theorem leftInverse_extendIntervalById
     exact hinv y hy
   · simp only [extendIntervalById, if_neg hy]
 
-end Poincare.Analysis
+end DifferentialGeometry.Analysis

@@ -5,7 +5,7 @@ set_option autoImplicit false
 noncomputable section
 open Set Filter Function
 open scoped ContDiff Topology
-namespace Poincare.Morse
+namespace DifferentialGeometry.Morse
 variable {E F : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [NormedAddCommGroup F] [NormedSpace ℝ F]
 
@@ -55,4 +55,4 @@ theorem bijective_fderiv_fderiv_comp_at_critical_iff {f : F → ℝ} {c : E → 
     ((fderiv ℝ (fderiv ℝ f) (c x)) ∘ e)) ↔ _
   rw [(bijective_dual_precomp e).of_comp_iff',Bijective.of_comp_iff _ e.bijective]
 
-end Poincare.Morse
+end DifferentialGeometry.Morse

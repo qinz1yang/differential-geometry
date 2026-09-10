@@ -6,10 +6,10 @@ noncomputable section
 open Set Filter Topology
 open scoped Manifold ContDiff
 
-namespace Poincare.Geometry.Neck
+namespace DifferentialGeometry.Geometry.Neck
 
 open DifferentialGeometry.Integral.DivergenceTheorem.WithBoundary
-open Poincare.Topology.Manifold Poincare.Geometry.Boundary
+open DifferentialGeometry.Topology.Manifold DifferentialGeometry.Geometry.Boundary
 
 private instance : Fact (Module.finrank ℝ (EuclideanSpace ℝ (Fin 3)) = 2 + 1) := ⟨by simp⟩
 local notation "S²" => Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1
@@ -229,4 +229,4 @@ theorem exists_uniform_partition_of_signed_neck_collars :
     change w ∈ ι ⁻¹' (eU j '' {x | a j ≤ (x.2 : ℝ) ∧ (x.2 : ℝ) ≤ b j})
     rwa [hK]
 
-end Poincare.Geometry.Neck
+end DifferentialGeometry.Geometry.Neck

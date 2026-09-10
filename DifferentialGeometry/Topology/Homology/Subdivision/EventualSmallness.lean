@@ -9,7 +9,7 @@ open CategoryTheory CategoryTheory.Limits Opposite Simplicial
 
 universe u v
 
-namespace Poincare.Homology
+namespace DifferentialGeometry.Homology
 
 variable {k : Type u} [Ring k] (R : ModuleCat.{u} k)
   (X : TopCat.{u}) {ι : Type v} (U : ι → Set X)
@@ -72,4 +72,4 @@ theorem exists_small_subdivision_power
   obtain ⟨N, hN⟩ := exists_eventually_small_subdivision_power R X U hopen hcover n c
   exact ⟨N, hN N le_rfl⟩
 
-end Poincare.Homology
+end DifferentialGeometry.Homology

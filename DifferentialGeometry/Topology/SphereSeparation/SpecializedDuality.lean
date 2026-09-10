@@ -14,7 +14,7 @@ open CategoryTheory.Limits
 open Simplicial
 open scoped Manifold ContDiff Topology Simplicial
 
-namespace Poincare.Topology.SphereSeparation
+namespace DifferentialGeometry.Topology.SphereSeparation
 
 
 
@@ -893,4 +893,4 @@ theorem specializedAlexanderDuality_iff_twoComponents
   · intro hcomponents
     exact specializedAlexanderDuality_of_componentCount e he hcomponents hsphere
 
-end Poincare.Topology.SphereSeparation
+end DifferentialGeometry.Topology.SphereSeparation

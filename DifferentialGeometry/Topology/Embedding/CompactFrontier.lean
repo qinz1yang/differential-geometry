@@ -1,7 +1,7 @@
 import Mathlib.Topology.Maps.Basic
 import Mathlib.Topology.Separation.Hausdorff
 
-namespace Poincare.Topology.Embedding
+namespace DifferentialGeometry.Topology.Embedding
 
 open Set
 
@@ -26,4 +26,4 @@ theorem image_frontier_of_isOpenEmbedding_of_isCompact
   exact image_preimage_eq_of_subset
     ((hA.image hf.continuous).isClosed.frontier_subset.trans (image_subset_range _ _))
 
-end Poincare.Topology.Embedding
+end DifferentialGeometry.Topology.Embedding

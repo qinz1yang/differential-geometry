@@ -2,7 +2,7 @@ import DifferentialGeometry.Topology.Flow.TransverseReturns
 
 open Set
 
-namespace Poincare.Topology.Flow
+namespace DifferentialGeometry.Topology.Flow
 
 theorem disjoint_returnArc_flowBox_strip
     {X : Type*} [TopologicalSpace X] (φ : _root_.Flow ℝ X)
@@ -52,4 +52,4 @@ theorem disjoint_returnArc_flowBox_strip
   apply havoid (t - r) ⟨lt_of_not_ge hleft, lt_of_not_ge hright⟩
   exact ⟨u, ⟨hu.1.le, hu.2.le⟩, hhit.symm⟩
 
-end Poincare.Topology.Flow
+end DifferentialGeometry.Topology.Flow

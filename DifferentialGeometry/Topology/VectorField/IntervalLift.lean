@@ -5,7 +5,7 @@ set_option autoImplicit false
 open Set Function Bundle Manifold TopologicalSpace
 open scoped ContDiff Topology
 noncomputable section
-namespace Poincare.VectorField
+namespace DifferentialGeometry.VectorField
 
 theorem mpullback_intervalInclusion
     {E H B : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -22,7 +22,7 @@ theorem mpullback_intervalInclusion
     ContMDiff (J.prod (𝓡∂ 1)) (J.prod (𝓡∂ 1)).tangent ∞
       (fun q => (⟨q, V q⟩ : TangentBundle (J.prod (𝓡∂ 1)) S)) ∧
       (∀ q : S, V q = ((W (κ q)).1,
-        (Poincare.Manifold.Interval.tangentCoordinateIcc q.val.2).symm (W (κ q)).2)) ∧
+        (DifferentialGeometry.Manifold.Interval.tangentCoordinateIcc q.val.2).symm (W (κ q)).2)) ∧
       (∀ q : S, mfderiv (J.prod (𝓡∂ 1)) (J.prod 𝓘(ℝ, ℝ)) κ q (V q) = W (κ q)) ∧
       ∀ q : S, V q = 0 ↔ W (κ q) = 0 := by
   intro κ V
@@ -32,7 +32,7 @@ theorem mpullback_intervalInclusion
   let L (q : S) : TangentSpace (J.prod (𝓡∂ 1)) q ≃L[ℝ]
       TangentSpace (J.prod 𝓘(ℝ, ℝ)) (κ q) :=
     (ContinuousLinearEquiv.refl ℝ (TangentSpace J q.val.1)).prodCongr
-      ((Poincare.Manifold.Interval.tangentCoordinateIcc q.val.2).trans
+      ((DifferentialGeometry.Manifold.Interval.tangentCoordinateIcc q.val.2).trans
         (NormedSpace.fromTangentSpace q.val.2.val).symm)
   have hderiv (q : S) : mfderiv (J.prod (𝓡∂ 1)) (J.prod 𝓘(ℝ, ℝ)) κ q = (L q).toContinuousLinearMap := by
     have hh := mfderiv_comp q
@@ -50,7 +50,7 @@ theorem mpullback_intervalInclusion
     have hhv := congrArg (fun A => A v) hh
     exact hhv.symm
   have hformula (q : S) : V q = ((W (κ q)).1,
-      (Poincare.Manifold.Interval.tangentCoordinateIcc q.val.2).symm (W (κ q)).2) := by
+      (DifferentialGeometry.Manifold.Interval.tangentCoordinateIcc q.val.2).symm (W (κ q)).2) := by
     change (mfderiv (J.prod (𝓡∂ 1)) (J.prod 𝓘(ℝ, ℝ)) κ q).inverse (W (κ q)) = _
     rw [hderiv, ContinuousLinearMap.inverse_equiv]
     rfl
@@ -60,7 +60,7 @@ theorem mpullback_intervalInclusion
     have hc := contMDiff_equivTangentBundleProd.comp
       (((contMDiff_tangentSection_opens_iff U W).mp hW).comp hκ)
     have hb := (contMDiff_snd_tangentBundle_modelSpace ℝ 𝓘(ℝ, ℝ)).comp hc.snd
-    have hR := Poincare.Manifold.Interval.contMDiff_tangentCoordinateIcc_symm.comp
+    have hR := DifferentialGeometry.Manifold.Interval.contMDiff_tangentCoordinateIcc_symm.comp
       ((contMDiff_snd.comp (contMDiff_subtype_val (U := S))).prodMk hb)
     exact (contMDiff_equivTangentBundleProd_symm.comp (hc.fst.prodMk hR)).congr (fun q =>
       congrArg (fun v : TangentSpace (J.prod (𝓡∂ 1)) q.val =>
@@ -76,4 +76,4 @@ theorem mpullback_intervalInclusion
     rw [hderiv, ContinuousLinearMap.inverse_equiv]
     exact (L q).symm.map_eq_zero_iff
 
-end Poincare.VectorField
+end DifferentialGeometry.VectorField

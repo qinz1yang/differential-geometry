@@ -11,7 +11,7 @@ set_option autoImplicit false
 
 open Function
 
-namespace Poincare.Algebra.Group
+namespace DifferentialGeometry.Algebra.Group
 
 
 abbrev TwoElementGroup := Multiplicative (ZMod 2)
@@ -87,4 +87,4 @@ instance twoElementCoprodInfinite :
     Infinite (Monoid.Coprod TwoElementGroup TwoElementGroup) :=
   Infinite.of_injective alternatingWord alternatingWord_injective
 
-end Poincare.Algebra.Group
+end DifferentialGeometry.Algebra.Group

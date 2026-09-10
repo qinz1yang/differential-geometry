@@ -6,7 +6,7 @@ noncomputable section
 
 open Set
 
-namespace Poincare.Topology.VanKampen
+namespace DifferentialGeometry.Topology.VanKampen
 
 private theorem path_range_subset_cover_member
     {X ι : Type*} [TopologicalSpace X] (U : ι → Set X)
@@ -137,7 +137,7 @@ theorem simplyConnectedSpace_of_injective_comp_through_torsion_free
       ((FundamentalGroup.map g (f w₀)).comp (FundamentalGroup.map f w₀))) :
     SimplyConnectedSpace W := by
   apply (simplyConnectedSpace_iff_fundamentalGroup_subsingleton W w₀).2
-  exact Poincare.Algebra.Group.subsingleton_of_injective_comp_through_torsion_free
+  exact DifferentialGeometry.Algebra.Group.subsingleton_of_injective_comp_through_torsion_free
     (FundamentalGroup.map f w₀) (FundamentalGroup.map g (f w₀)) hinj
 
-end Poincare.Topology.VanKampen
+end DifferentialGeometry.Topology.VanKampen

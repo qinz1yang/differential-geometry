@@ -7,7 +7,7 @@ noncomputable section
 open Set Filter Function Topology Manifold
 open scoped ContDiff
 
-namespace Poincare.Topology.Manifold
+namespace DifferentialGeometry.Topology.Manifold
 
 variable {E H M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [TopologicalSpace H] [TopologicalSpace M] [ChartedSpace H M] [T2Space M]
@@ -88,4 +88,4 @@ theorem exists_uniform_localFlow_of_compact
     rw [hΦeq i hi y hyi t ⟨ht.1.le, ht.2⟩]
     exact hinside i y hyi t ⟨ht.1, ht.2.trans_le (hbound i hi)⟩
 
-end Poincare.Topology.Manifold
+end DifferentialGeometry.Topology.Manifold

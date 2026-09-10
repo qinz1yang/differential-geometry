@@ -5,7 +5,7 @@ set_option autoImplicit false
 noncomputable section
 open Bundle
 open scoped Manifold ContDiff
-namespace Poincare.VectorField
+namespace DifferentialGeometry.VectorField
 variable {d : ℕ} {g : EuclideanSpace ℝ (Fin (d + 1)) → ℝ}
   {a : EuclideanSpace ℝ (Fin (d + 1))}
 
@@ -62,4 +62,4 @@ theorem exists_index_gradient_of_isNondegenerateCriticalPointAt
       mfderiv_eq_fderiv] using! hcrit.1
   · simpa only [mfld_simps, chartAt_self_eq] using! hcrit.2
 
-end Poincare.VectorField
+end DifferentialGeometry.VectorField

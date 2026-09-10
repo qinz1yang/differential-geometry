@@ -3,7 +3,7 @@ import Mathlib.Data.Fin.SuccPredOrder
 
 open Set
 
-namespace Poincare.Topology
+namespace DifferentialGeometry.Topology
 
 theorem isConnected_iUnion_of_finite_chain
     {X : Type*} [TopologicalSpace X] {n : ℕ} (U : Fin (n + 1) → Set X)
@@ -18,4 +18,4 @@ theorem isConnected_iUnion_of_finite_chain
   · obtain ⟨i, rfl⟩ := Fin.eq_castSucc_of_ne_last hi
     simpa only [Fin.orderSucc_castSucc] using hmeet i
 
-end Poincare.Topology
+end DifferentialGeometry.Topology

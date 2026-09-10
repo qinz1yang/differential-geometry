@@ -3,7 +3,7 @@ import DifferentialGeometry.Topology.Double.Seam
 set_option autoImplicit false
 noncomputable section
 open Set Function Topology
-namespace Poincare.Topology
+namespace DifferentialGeometry.Topology
 variable {X : Type*} [TopologicalSpace X] [CompactSpace X] [T2Space X]
   (B : Set X) (r : C(X, ℝ)) (hr : ∀ b : B, r b.val = 0)
   (hz : ∀ x, r x = 0 → x ∈ B) (hn : ∀ x, 0 ≤ r x)
@@ -103,4 +103,4 @@ theorem doubleSeamHomeomorph_symm_height (hc : IsEmbedding c)
   rw [Homeomorph.apply_symm_apply] at hh
   exact hh.symm
 
-end Poincare.Topology
+end DifferentialGeometry.Topology

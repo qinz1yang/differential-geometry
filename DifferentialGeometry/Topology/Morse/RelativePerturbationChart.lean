@@ -7,7 +7,7 @@ set_option autoImplicit false
 noncomputable section
 open Set Filter Function
 open scoped Manifold ContDiff Topology
-namespace Poincare.Morse
+namespace DifferentialGeometry.Morse
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
 
 
@@ -38,13 +38,13 @@ variable {H M : Type*} [TopologicalSpace H] [TopologicalSpace M] [ChartedSpace H
 theorem exists_contDiff_interiorChart_extensions {ι : Type*} {g : ι → M → ℝ}
     (hg : ∀ i, ContMDiff I 𝓘(ℝ, ℝ) ∞ (g i)) {x : M} (hx : I.IsInteriorPoint x) :
     ∃ (W : Set E) (F : ι → E → ℝ), IsOpen W ∧
-      Poincare.Manifold.interiorChart I ∞ x x ∈ W ∧
-      W ⊆ (Poincare.Manifold.interiorChart I ∞ x).target ∧
+      DifferentialGeometry.Manifold.interiorChart I ∞ x x ∈ W ∧
+      W ⊆ (DifferentialGeometry.Manifold.interiorChart I ∞ x).target ∧
       ∀ i, ContDiff ℝ ∞ (F i) ∧ HasCompactSupport (F i) ∧
-        tsupport (F i) ⊆ (Poincare.Manifold.interiorChart I ∞ x).target ∧
-        EqOn (F i) (fun z => g i ((Poincare.Manifold.interiorChart I ∞ x).symm z)) W := by
-  let c := Poincare.Manifold.interiorChart I ∞ x
-  have hxc : x ∈ c.source := (Poincare.Manifold.mem_interiorChart_source_iff I ∞ x).mpr hx
+        tsupport (F i) ⊆ (DifferentialGeometry.Manifold.interiorChart I ∞ x).target ∧
+        EqOn (F i) (fun z => g i ((DifferentialGeometry.Manifold.interiorChart I ∞ x).symm z)) W := by
+  let c := DifferentialGeometry.Manifold.interiorChart I ∞ x
+  have hxc : x ∈ c.source := (DifferentialGeometry.Manifold.mem_interiorChart_source_iff I ∞ x).mpr hx
   apply exists_contDiff_extensions_on_nhds c.open_target _ (c.map_source hxc)
   intro i
   apply contMDiffOn_iff_contDiffOn.mp
@@ -74,7 +74,7 @@ theorem fderiv_scalar_partialDiffeomorph_symm_eq_zero_iff {f : M → ℝ}
     fderiv ℝ (fun w => f (c.symm w)) z = 0 ↔ mfderiv I 𝓘(ℝ, ℝ) f (c.symm z) = 0 := by
   let L : E →L[ℝ] E := mfderiv 𝓘(ℝ, E) I c.symm z
   let D : E →L[ℝ] ℝ := mfderiv I 𝓘(ℝ, ℝ) f (c.symm z)
-  have hL : L.IsInvertible := Poincare.VectorField.isInvertible_mfderiv_partialDiffeomorph
+  have hL : L.IsInvertible := DifferentialGeometry.VectorField.isInvertible_mfderiv_partialDiffeomorph
     c.symm (by simp) hz
   have hd : fderiv ℝ (fun w => f (c.symm w)) z = D.comp L :=
     fderiv_scalar_partialDiffeomorph_symm hf c hz
@@ -114,7 +114,7 @@ theorem surjective_parameterDifferential_partialDiffeomorph_symm {n : ℕ} {φ :
     Surjective (parameterDifferential (I := 𝓘(ℝ, E)) (fun i w => φ i (c.symm w)) z) := by
   let L : E →L[ℝ] E := mfderiv 𝓘(ℝ, E) I c.symm z
   let D := (ContinuousLinearMap.compL ℝ E E ℝ).flip L
-  have hL : L.IsInvertible := Poincare.VectorField.isInvertible_mfderiv_partialDiffeomorph
+  have hL : L.IsInvertible := DifferentialGeometry.VectorField.isInvertible_mfderiv_partialDiffeomorph
     c.symm (by simp) hz
   have hD : Bijective D := by
     obtain ⟨e,he⟩ := hL
@@ -156,7 +156,7 @@ theorem bijective_hessian_partialDiffeomorph_chart_iff {f : M → ℝ}
     exact (congrArg Df (c.left_inv hcx)).trans hcrit
   have hinv : (fderiv ℝ ψ (d x)).IsInvertible := by
     let L : E →L[ℝ] E := mfderiv 𝓘(ℝ, E) 𝓘(ℝ, E) ψ (d x)
-    have hL : L.IsInvertible := Poincare.VectorField.isInvertible_mfderiv_partialDiffeomorph ψ (by simp) hz
+    have hL : L.IsInvertible := DifferentialGeometry.VectorField.isInvertible_mfderiv_partialDiffeomorph ψ (by simp) hz
     have he : L = fderiv ℝ ψ (d x) := mfderiv_eq_fderiv
     rw [← he]
     exact hL
@@ -169,4 +169,4 @@ theorem bijective_hessian_partialDiffeomorph_chart_iff {f : M → ℝ}
   simpa only [hψx] using hh
 
 end Manifold
-end Poincare.Morse
+end DifferentialGeometry.Morse

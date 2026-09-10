@@ -6,7 +6,7 @@ set_option autoImplicit false
 open Bundle Filter Set Topology
 open scoped Manifold
 
-namespace Poincare.VectorBundle
+namespace DifferentialGeometry.VectorBundle
 
 variable (𝕜 : Type*) [NontriviallyNormedField 𝕜]
   {B : Type*} [TopologicalSpace B]
@@ -54,9 +54,9 @@ theorem finite_zeroSet_of_isolated [CompactSpace B] {v : ∀ x, E x}
     self_mem_nhdsWithin] with y hy hyv
   exact hy hyv
 
-end Poincare.VectorBundle
+end DifferentialGeometry.VectorBundle
 
-namespace Poincare.VectorField
+namespace DifferentialGeometry.VectorField
 
 variable {𝕜 : Type*} [NontriviallyNormedField 𝕜]
   {F : Type*} [NormedAddCommGroup F] [NormedSpace 𝕜 F]
@@ -67,6 +67,6 @@ theorem finite_zeroSet [CompactSpace M] {v : ∀ x : M, TangentSpace I x}
     (hv : Continuous (fun x ↦ (⟨x, v x⟩ : TangentBundle I M)))
     (hzeros : ∀ x, v x = 0 → ∀ᶠ y in 𝓝 x, v y = 0 → y = x) :
     {x | v x = 0}.Finite :=
-  Poincare.VectorBundle.finite_zeroSet_of_isolated 𝕜 hv hzeros
+  DifferentialGeometry.VectorBundle.finite_zeroSet_of_isolated 𝕜 hv hzeros
 
-end Poincare.VectorField
+end DifferentialGeometry.VectorField

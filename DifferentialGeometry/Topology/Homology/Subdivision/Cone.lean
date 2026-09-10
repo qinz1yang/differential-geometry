@@ -12,7 +12,7 @@ open CategoryTheory CategoryTheory.Limits Opposite Simplicial
 
 universe u
 
-namespace Poincare.Homology
+namespace DifferentialGeometry.Homology
 
 variable {E : Type u} [NormedAddCommGroup E] [NormedSpace ℝ E]
   {k : Type u} [Ring k] (R : ModuleCat.{u} k)
@@ -156,4 +156,4 @@ theorem straightening_affineCone (p : E) (n : ℕ) :
         (singularSimplexVertices (affineSingularSimplex (singularSimplexVertices σ))))) = _
   rw [singularSimplexVertices_affineSingularSimplex]
 
-end Poincare.Homology
+end DifferentialGeometry.Homology

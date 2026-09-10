@@ -6,7 +6,7 @@ noncomputable section
 open Set Manifold
 open scoped Manifold ContDiff
 
-namespace Poincare.Topology.VanKampen
+namespace DifferentialGeometry.Topology.VanKampen
 
 theorem simplyConnectedSpace_of_cylindrical_chain_of_two_spherical_boundaries
     {M : Type*} [TopologicalSpace M] [T2Space M]
@@ -41,4 +41,4 @@ theorem simplyConnectedSpace_of_cylindrical_chain_of_two_spherical_boundaries
   · exact ⟨Sum.inl s, rfl⟩
   · exact ⟨Sum.inr s, rfl⟩
 
-end Poincare.Topology.VanKampen
+end DifferentialGeometry.Topology.VanKampen

@@ -14,7 +14,7 @@ noncomputable section
 
 universe u v w x y z
 
-namespace Poincare.Topology
+namespace DifferentialGeometry.Topology
 
 theorem realNormalSide_neg {t : ℝ} (ht : t ≠ 0) :
     realNormalSide (-t) = Bool.xor (realNormalSide t) true := by
@@ -354,4 +354,4 @@ theorem nonempty_coorientedSmoothSphereEmbeddingRealNormalAtlas
     (C := smoothSphereEmbeddingRealNormalAtlas he)
     (b₀ := Classical.arbitrary SphereTwo) (side₀ := false)
 
-end Poincare.Topology
+end DifferentialGeometry.Topology

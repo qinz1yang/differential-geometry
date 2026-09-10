@@ -6,10 +6,10 @@ noncomputable section
 open Set Filter Topology Manifold
 open scoped ContDiff
 
-namespace Poincare.Topology.Ehresmann
+namespace DifferentialGeometry.Topology.Ehresmann
 
 open DifferentialGeometry
-open Poincare.Topology.Manifold Poincare.Geometry.Boundary
+open DifferentialGeometry.Topology.Manifold DifferentialGeometry.Geometry.Boundary
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem.WithBoundary
 
@@ -353,4 +353,4 @@ theorem exists_smooth_intervalCompletion [CompactSpace M]
         (fun z _ ↦ regular_signed_height hI.boundaryI b z)
         (fun z hz ↦ congrArg (fun p : M × ℝ ↦ p.2) (hrf z hz)) hq
 
-end Poincare.Topology.Ehresmann
+end DifferentialGeometry.Topology.Ehresmann

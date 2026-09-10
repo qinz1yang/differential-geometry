@@ -7,7 +7,7 @@ noncomputable section
 open Set Function Manifold Topology TopologicalSpace
 open scoped ContDiff Topology
 open DifferentialGeometry.Integral.DivergenceTheorem.WithBoundary
-namespace Poincare.Topology
+namespace DifferentialGeometry.Topology
 
 theorem exists_smoothAtlas_intrinsicDouble
     {n : ℕ} {M : Type} [TopologicalSpace M]
@@ -28,7 +28,7 @@ theorem exists_smoothAtlas_intrinsicDouble
     inferInstanceAs (ChartedSpace (HasSmoothBoundary.boundaryH I) (BoundaryManifold I M))
   let _ : IsManifold J ∞ (I.boundary M) := inferInstanceAs (IsManifold J ∞ (BoundaryManifold I M))
   obtain ⟨r, _, hn, hzero, a, ha, c, hc, _, _, hheight, hrange, Y, hY, d, hd⟩ :=
-    Poincare.Manifold.Boundary.exists_definingFunction_sublevel_collar (n := n) (M := M)
+    DifferentialGeometry.Manifold.Boundary.exists_definingFunction_sublevel_collar (n := n) (M := M)
   let _ : Fact ((0 : ℝ) < a) := ⟨ha⟩
   have hr (b : (I.boundary M)) : r b.val = 0 := (hzero b.val).mpr b.property
   have hz (x : M) (hx : r x = 0) : x ∈ (I.boundary M) := (hzero x).mp hx
@@ -41,7 +41,7 @@ theorem exists_smoothAtlas_intrinsicDouble
     exact HasSmoothBoundary.finrank_boundaryE_succ
   let L : (HasSmoothBoundary.boundaryE I × ℝ) ≃L[ℝ] EuclideanSpace ℝ (Fin (n + 1)) :=
     ContinuousLinearEquiv.ofFinrankEq hdim
-  obtain ⟨d', hd'⟩ := Poincare.Manifold.BoundaryCollar.exists_positiveCoordinates_diffeomorph
+  obtain ⟨d', hd'⟩ := DifferentialGeometry.Manifold.BoundaryCollar.exists_positiveCoordinates_diffeomorph
     J I r c hheight Y hY d hd
   have hboundary : IsManifold J ∞ (I.boundary M) := by infer_instance
   obtain ⟨A, hA, hp, hm, hs⟩ := @exists_smoothAtlas_double_of_collar M (EuclideanSpace ℝ (Fin (n + 1)))
@@ -53,4 +53,4 @@ theorem exists_smoothAtlas_intrinsicDouble
     ha Y hY d hd hp hm (fun b => (hs b).1)
   exact ⟨A, hA, t2Space_double (I.boundary M) r hr hz, hcopies⟩
 
-end Poincare.Topology
+end DifferentialGeometry.Topology

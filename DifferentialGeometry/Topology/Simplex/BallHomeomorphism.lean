@@ -6,7 +6,7 @@ noncomputable section
 
 open Set Metric Topology
 
-namespace Poincare.Simplex
+namespace DifferentialGeometry.Simplex
 
 def coordinateSimplexBallAmbientHomeomorph (n : ℕ) : (Fin n → ℝ) ≃ₜ (Fin n → ℝ) :=
   (exists_homeomorph_image_interior_closure_frontier_eq_unitBall
@@ -92,4 +92,4 @@ theorem stdSimplexBoundarySphereHomeomorph_symm_val (n : ℕ)
     ((stdSimplexBoundarySphereHomeomorph n).symm y).val =
       (stdSimplexBallHomeomorph n).symm ⟨y.val, sphere_subset_closedBall y.prop⟩ := rfl
 
-end Poincare.Simplex
+end DifferentialGeometry.Simplex

@@ -7,7 +7,7 @@ noncomputable section
 open Bundle Manifold Set
 open scoped ENNReal Manifold ContDiff Topology
 
-namespace Poincare.Toponogov
+namespace DifferentialGeometry.Toponogov
 
 open DifferentialGeometry
 open DifferentialGeometry.Geometry.Riemannian
@@ -111,4 +111,4 @@ theorem realizedConnectors_of_complete
   exact nonempty_realizedMinimizingConnector_of_complete
     (I := I) g hcomplete p (β r)
 
-end Poincare.Toponogov
+end DifferentialGeometry.Toponogov

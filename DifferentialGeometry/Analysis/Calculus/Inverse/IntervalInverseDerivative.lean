@@ -6,7 +6,7 @@ import Mathlib.Topology.Order.IntermediateValue
 noncomputable section
 open Set
 
-namespace Poincare.Analysis
+namespace DifferentialGeometry.Analysis
 
 theorem derivWithin_pos_of_left_inverse_Icc
     {f g : ℝ → ℝ} {a b : ℝ} {T : Set ℝ} (hab : a < b)
@@ -44,4 +44,4 @@ theorem deriv_pos_of_monotone_left_inverse
     exact zero_ne_one he
   exact lt_of_le_of_ne hmono.deriv_nonneg hne.symm
 
-end Poincare.Analysis
+end DifferentialGeometry.Analysis

@@ -64,13 +64,13 @@ theorem isTotallyConvex.isPreconnected
 
 end DifferentialGeometry.Geometry
 
-namespace Poincare.Geometry
+namespace DifferentialGeometry.Geometry
 
 @[reducible] alias IsTotallyConvex := DifferentialGeometry.Geometry.isTotallyConvex
-end Poincare.Geometry
+end DifferentialGeometry.Geometry
 
-namespace Poincare.Geometry.IsTotallyConvex
+namespace DifferentialGeometry.Geometry.IsTotallyConvex
 
 alias isPreconnected := DifferentialGeometry.Geometry.isTotallyConvex.isPreconnected
 
-end Poincare.Geometry.IsTotallyConvex
+end DifferentialGeometry.Geometry.IsTotallyConvex

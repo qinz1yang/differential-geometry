@@ -7,7 +7,7 @@ set_option autoImplicit false
 open CategoryTheory CategoryTheory.Limits AlgebraicTopology
 noncomputable section
 universe u
-namespace Poincare.Homology
+namespace DifferentialGeometry.Homology
 variable (X : TopCat.{u}) (s t : Set X) {k : Type u} [Ring k] (R : ModuleCat.{u} k)
 
 private def nestedIntersectionHomeomorph : {x : s // (x : X) ∈ t} ≃ₜ (s ∩ t : Set X) where
@@ -85,7 +85,7 @@ theorem quasiIso_relativeChainMap_of_openCover (hs : IsOpen s) (ht : IsOpen t)
   have hI : QuasiIso I := quasiIso_smallChainMap X (twoSetFamily X s t) R hopen hcov
   have hab : j ≫ I = 𝟙 _ ≫ relativeInclusion X t R := by simpa using hjI
   let q' := cokernel.map j (relativeInclusion X t R) (𝟙 _) I hab
-  have : QuasiIso q' := Poincare.HomologicalComplex.quasiIso_cokernel_map
+  have : QuasiIso q' := DifferentialGeometry.HomologicalComplex.quasiIso_cokernel_map
     j (relativeInclusion X t R) (𝟙 _) I hab (quasiIso_of_isIso (𝟙 _)) hI
   have heq : relativeChainMap R
       (TopCat.ofHom (⟨Subtype.val, continuous_subtype_val⟩ : C(s, X)))
@@ -125,4 +125,4 @@ theorem relativeExcisionIso_hom (hs : IsOpen s) (ht : IsOpen t)
         (TopCat.ofHom (⟨Subtype.val, continuous_subtype_val⟩ : C(s, X)))
         (show Set.MapsTo Subtype.val {x : s | (x : X) ∈ t} t from fun _ hx => hx) n := rfl
 
-end Poincare.Homology
+end DifferentialGeometry.Homology

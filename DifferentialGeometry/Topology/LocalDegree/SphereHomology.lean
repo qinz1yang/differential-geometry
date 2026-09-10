@@ -6,8 +6,8 @@ open CategoryTheory CategoryTheory.Limits
 open scoped Topology
 noncomputable section
 universe u
-namespace Poincare.LocalDegree
-open Poincare.Homology
+namespace DifferentialGeometry.LocalDegree
+open DifferentialGeometry.Homology
 variable {k : Type u} [Ring k] (R : ModuleCat.{u} k)
   {E : Type u} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
   (v : Metric.sphere (0 : E) 1)
@@ -75,4 +75,4 @@ theorem isZero_euclideanZeroSphere_reducedHomology_succ {k : Type} [Ring k]
       (TopCat.of (Metric.sphere (0 : EuclideanSpace ℝ (Fin 0)) 1)) n)
     (euclideanSphereReducedHomologySuccIso R 0 n)
 
-end Poincare.LocalDegree
+end DifferentialGeometry.LocalDegree

@@ -13,7 +13,7 @@ open Function Manifold Set Topology
 open scoped Manifold ContDiff
 noncomputable section
 
-namespace Poincare.Topology.SmoothTwoSidedCollar
+namespace DifferentialGeometry.Topology.SmoothTwoSidedCollar
 
 private abbrev E2 := EuclideanSpace ℝ (Fin 2)
 private abbrev E3 := EuclideanSpace ℝ (Fin 3)
@@ -143,4 +143,4 @@ theorem exists_boundaryAtlas_closure_positiveSide :
     ← h.finiteTime_pos_iff_mem_positiveSide, ← h.finiteTime_eq_zero_iff_mem_sphere]
   simp [le_iff_lt_or_eq, eq_comm]
 
-end Poincare.Topology.SmoothTwoSidedCollar
+end DifferentialGeometry.Topology.SmoothTwoSidedCollar

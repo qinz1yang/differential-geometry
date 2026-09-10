@@ -6,7 +6,7 @@ set_option autoImplicit false
 noncomputable section
 open Set Bundle Filter Manifold TopologicalSpace
 open scoped ContDiff Topology
-namespace Poincare.VectorField
+namespace DifferentialGeometry.VectorField
 
 theorem relativePoincareHopf_one_of_collar
     {E H B : Type*} {M : Type}
@@ -32,10 +32,10 @@ theorem relativePoincareHopf_one_of_collar
     let z : B → S := fun p => ⟨(p, ⟨0, ⟨le_rfl, (Fact.out : (0 : ℝ) < ε).le⟩⟩), hδ⟩
     let T : ∀ p : B, TangentSpace J p := fun p => (W (z p)).1
     let b : B → ℝ := fun p =>
-      -(Poincare.Manifold.Interval.tangentCoordinateIcc (z p).val.2 (W (z p)).2)
+      -(DifferentialGeometry.Manifold.Interval.tangentCoordinateIcc (z p).val.2 (W (z p)).2)
     ∀ (K : Type) [Field K],
       interiorIndexSum I V hVf hVi hVI + (∑ᶠ _ : {p | T p = 0 ∧ b p < 0}, (1 : ℤ)) =
-        Poincare.Homology.eulerChar K (TopCat.of M) := by
+        DifferentialGeometry.Homology.eulerChar K (TopCat.of M) := by
   intro I S Y hY e hi V hV hVf hVi hVI W hn z T b K _
   let _ : DiscreteTopology B := DifferentialGeometry.discrete_topology_of_subsingleton_model J
   let _ : Finite B := DifferentialGeometry.finite_of_compact_subsingleton_model J
@@ -62,7 +62,7 @@ theorem relativePoincareHopf_one_of_collar
   have hcomponents := contMDiff_equivTangentBundleProd.comp
     (((contMDiff_tangentSection_opens_iff S W).mp hW).comp hz)
   have hb : ContMDiff J 𝓘(ℝ, ℝ) ∞ (fun p => b p / a) := by
-    have hs := Poincare.Manifold.Interval.contMDiff_tangentCoordinateIcc.comp hcomponents.snd
+    have hs := DifferentialGeometry.Manifold.Interval.contMDiff_tangentCoordinateIcc.comp hcomponents.snd
     have hl : ContDiff ℝ ∞ (fun t : ℝ => -t / a) := by fun_prop
     exact hl.contMDiff.comp hs
   obtain ⟨L, _, hLinner, G, hGeq, hG, hout, hgerm, hzero, hdis, hbij, hheight, hfinite⟩ :=
@@ -93,4 +93,4 @@ theorem relativePoincareHopf_one_of_collar
   rw [hregion] at hsum
   exact hsum.symm.trans hχ
 
-end Poincare.VectorField
+end DifferentialGeometry.VectorField

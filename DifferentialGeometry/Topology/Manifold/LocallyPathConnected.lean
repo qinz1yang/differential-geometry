@@ -5,7 +5,7 @@ import Mathlib.Topology.Homeomorph.Lemmas
 
 open Set Topology
 
-namespace Poincare.Topology.Manifold
+namespace DifferentialGeometry.Topology.Manifold
 
 theorem locallyPathConnectedSpace_of_modelWithCorners
     {E H M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -15,4 +15,4 @@ theorem locallyPathConnectedSpace_of_modelWithCorners
   have : LocallyPathConnectedSpace H := I.isClosedEmbedding.isEmbedding.toHomeomorph.isOpenEmbedding.locallyPathConnectedSpace
   exact ChartedSpace.locallyPathConnectedSpace H M
 
-end Poincare.Topology.Manifold
+end DifferentialGeometry.Topology.Manifold

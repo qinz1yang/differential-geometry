@@ -7,7 +7,7 @@ open scoped Manifold ContDiff Topology
 set_option autoImplicit false
 noncomputable section
 
-namespace Poincare.Manifold.EmbeddedHypersurface
+namespace DifferentialGeometry.Manifold.EmbeddedHypersurface
 
 variable {m : ℕ} {H G S M : Type*}
   [TopologicalSpace H] [TopologicalSpace G]
@@ -68,4 +68,4 @@ theorem exists_regular_definingFunction {e : S → M}
   rw [← hs] at hz'
   exact hgr s hz'
 
-end Poincare.Manifold.EmbeddedHypersurface
+end DifferentialGeometry.Manifold.EmbeddedHypersurface

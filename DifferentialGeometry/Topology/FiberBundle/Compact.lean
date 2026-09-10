@@ -5,7 +5,7 @@ noncomputable section
 open Set Bundle
 open scoped Topology
 
-namespace Poincare.Topology.FiberBundle
+namespace DifferentialGeometry.Topology.FiberBundle
 
 variable {J B F : Type*} [TopologicalSpace B] [TopologicalSpace F]
 
@@ -45,4 +45,4 @@ theorem compactSpace_totalSpace [T2Space B] [CompactSpace B] [CompactSpace F]
     exact mem_iUnion.mpr ⟨x, mem_iUnion.mpr ⟨hxs, hz⟩⟩
   exact ⟨heq ▸ hc⟩
 
-end Poincare.Topology.FiberBundle
+end DifferentialGeometry.Topology.FiberBundle

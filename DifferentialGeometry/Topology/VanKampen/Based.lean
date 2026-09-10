@@ -14,7 +14,7 @@ open CategoryTheory Set
 
 universe u v w t
 
-namespace Poincare.Topology.VanKampen
+namespace DifferentialGeometry.Topology.VanKampen
 
 @[simp] theorem fullSubgroupoid_coe_id {C : Type u} [Groupoid C]
     (D : Set C) (x : (CategoryTheory.Subgroupoid.full D).objs) :
@@ -677,4 +677,4 @@ theorem fundamentalGroup_isPushout {X : Type u} [TopologicalSpace X]
         GrpCat.hom_comp, GrpCat.hom_ofHom,
         MonoidHom.comp_toFunctor, Equiv.apply_symm_apply] using hVfactorFun
 
-end Poincare.Topology.VanKampen
+end DifferentialGeometry.Topology.VanKampen

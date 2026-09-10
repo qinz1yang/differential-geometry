@@ -37,9 +37,9 @@ theorem exists_soul_diffeomorphism
       let _ := embeddedSliceChartedSpace hS
       let _ := embeddedSlice_isManifold hS
       IsSmoothEmbedding 𝓘(ℝ, Fin (maxSliceDim I S) → ℝ) I ∞ (Subtype.val : S → M) ∧
-      Poincare.Geometry.IsRiemannianIsometricImmersion
+      DifferentialGeometry.Geometry.IsRiemannianIsometricImmersion
         (inducedSliceMetric g hS) g (Subtype.val : S → M) ∧
-      Poincare.Geometry.PreservesGeodesics
+      DifferentialGeometry.Geometry.PreservesGeodesics
         (inducedSliceMetric g hS) g (Subtype.val : S → M) ∧
       let a := normalBundlePrebundle g hEnorm hconv hB
       let _ := a.totalSpaceTopology

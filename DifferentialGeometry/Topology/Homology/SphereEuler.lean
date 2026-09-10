@@ -3,9 +3,9 @@ import DifferentialGeometry.Topology.LocalDegree.SphereCover
 
 set_option autoImplicit false
 open CategoryTheory CategoryTheory.Limits Metric
-open Poincare.LocalDegree
+open DifferentialGeometry.LocalDegree
 noncomputable section
-namespace Poincare.Homology
+namespace DifferentialGeometry.Homology
 variable (k : Type) [Field k]
 
 private theorem sphereCover_finite_euler (n : ℕ)
@@ -60,4 +60,4 @@ theorem eulerChar_euclideanSphere (n : ℕ) :
       1 + (-1 : ℤ) ^ n :=
   (sphere_finite_euler k n).2
 
-end Poincare.Homology
+end DifferentialGeometry.Homology

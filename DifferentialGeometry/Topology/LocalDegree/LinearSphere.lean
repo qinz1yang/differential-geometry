@@ -4,7 +4,7 @@ import Mathlib.Analysis.Normed.Operator.ContinuousLinearMap
 set_option autoImplicit false
 open Metric
 noncomputable section
-namespace Poincare.LocalDegree
+namespace DifferentialGeometry.LocalDegree
 variable {E F : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [NormedAddCommGroup F] [NormedSpace ℝ F]
 
@@ -60,4 +60,4 @@ theorem sphereMap_linear_eq (A : E ≃L[ℝ] F) (R : ℝ) (r : Set.Ioc (0 : ℝ)
   congr 1
   rw [mul_assoc, inv_mul_cancel₀ r.property.1.ne', mul_one]
 
-end Poincare.LocalDegree
+end DifferentialGeometry.LocalDegree

@@ -11,7 +11,7 @@ noncomputable section
 
 universe u v
 
-namespace Poincare.Topology
+namespace DifferentialGeometry.Topology
 
 theorem exists_continuous_section_of_isCoveringMap_of_simplyConnected
     {E : Type u} {X : Type v} [TopologicalSpace E] [TopologicalSpace X]
@@ -23,4 +23,4 @@ theorem exists_continuous_section_of_isCoveringMap_of_simplyConnected
   refine ⟨s, fun x ↦ ?_⟩
   exact congrFun hs x
 
-end Poincare.Topology
+end DifferentialGeometry.Topology

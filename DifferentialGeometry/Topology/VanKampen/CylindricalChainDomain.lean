@@ -5,7 +5,7 @@ noncomputable section
 
 open Set
 
-namespace Poincare.Topology.VanKampen
+namespace DifferentialGeometry.Topology.VanKampen
 
 theorem simplyConnectedSpace_of_cylindrical_chain_of_boundary_collar
     {S B M : Type*} [TopologicalSpace S] [CompactSpace S] [SimplyConnectedSpace S]
@@ -44,4 +44,4 @@ theorem simplyConnectedSpace_of_cylindrical_chain_of_boundary_collar
   rw [← Path.Homotopic.Quotient.map_comp, ← Path.Homotopic.Quotient.map_comp] at hpq
   exact hpq
 
-end Poincare.Topology.VanKampen
+end DifferentialGeometry.Topology.VanKampen

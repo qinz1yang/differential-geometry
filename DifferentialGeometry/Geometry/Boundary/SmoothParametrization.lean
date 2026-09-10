@@ -5,7 +5,7 @@ noncomputable section
 open Set Topology Manifold
 open scoped ContDiff
 
-namespace Poincare.Geometry.Boundary
+namespace DifferentialGeometry.Geometry.Boundary
 
 open DifferentialGeometry.Integral.DivergenceTheorem.WithBoundary
 
@@ -54,4 +54,4 @@ theorem exists_diffeomorph_of_smooth_partial_equiv_to_range
       contMDiff_invFun := hgs }
   exact ⟨D, hf⟩
 
-end Poincare.Geometry.Boundary
+end DifferentialGeometry.Geometry.Boundary

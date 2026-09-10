@@ -2,7 +2,7 @@ import Mathlib.GroupTheory.Perm.Fin
 
 set_option autoImplicit false
 
-namespace Poincare.Topology.SphereSeparation
+namespace DifferentialGeometry.Topology.SphereSeparation
 
 def eraseLastPermutation {n : ℕ} (σ : Equiv.Perm (Fin (n + 1))) :
     Equiv.Perm (Fin n) :=
@@ -88,4 +88,4 @@ theorem sign_eq_sign_eraseLastPermutation_mul {n : ℕ}
           Equiv.Perm.sign (eraseLastPermutation σ) := hsign.symm
     _ = _ := mul_comm _ _
 
-end Poincare.Topology.SphereSeparation
+end DifferentialGeometry.Topology.SphereSeparation

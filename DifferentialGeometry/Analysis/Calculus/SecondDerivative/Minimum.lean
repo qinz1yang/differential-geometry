@@ -5,7 +5,7 @@ import Mathlib.Analysis.Calculus.DerivativeTest
 open Filter
 open scoped Topology
 
-namespace Poincare.Analysis
+namespace DifferentialGeometry.Analysis
 
 theorem second_deriv_nonneg_of_isLocalMin {f : ℝ → ℝ} {x : ℝ}
     (hmin : IsLocalMin f x) (hc : ContinuousAt f x) :
@@ -23,4 +23,4 @@ theorem second_deriv_nonneg_of_isLocalMin {f : ℝ → ℝ} {x : ℝ}
     simpa only [deriv_const] using hd.deriv_eq
   linarith
 
-end Poincare.Analysis
+end DifferentialGeometry.Analysis

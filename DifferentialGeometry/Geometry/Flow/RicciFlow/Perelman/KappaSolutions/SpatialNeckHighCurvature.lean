@@ -35,7 +35,7 @@ theorem not_tendsto_scalar_spatialNeck_centers
     (W : ∀ i : ℕ, SpatialNeckWitness h (marks i) (centers i) epsilon)
     (hEnorm : IsMetricNorm (I := I) h)
     (hsmall : epsilon ≤ spatialNeckControlEpsilon)
-    (hsec : Poincare.Geometry.HasPositiveSectionalCurvature (I := I) h) :
+    (hsec : DifferentialGeometry.Geometry.HasPositiveSectionalCurvature (I := I) h) :
     ¬ Tendsto (fun i => metricScalarAt (I := I) h (centers i)) atTop atTop := by
   intro hscalar
   have hcont := (metricScalar_smooth (I := I) h).continuous
@@ -75,7 +75,7 @@ theorem bddAbove_scalar_spatialNeck_centers
     (W : ∀ i : ℕ, SpatialNeckWitness h (marks i) (centers i) epsilon)
     (hEnorm : IsMetricNorm (I := I) h)
     (hsmall : epsilon ≤ spatialNeckControlEpsilon)
-    (hsec : Poincare.Geometry.HasPositiveSectionalCurvature (I := I) h) :
+    (hsec : DifferentialGeometry.Geometry.HasPositiveSectionalCurvature (I := I) h) :
     BddAbove (range (fun i => metricScalarAt (I := I) h (centers i))) := by
   classical
   by_contra hunbounded

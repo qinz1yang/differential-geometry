@@ -18,7 +18,7 @@ open scoped Manifold ContDiff
 
 noncomputable section
 
-namespace Poincare.Topology.SmoothTwoSidedCollar
+namespace DifferentialGeometry.Topology.SmoothTwoSidedCollar
 
 open DifferentialGeometry.Topology.Morse
 
@@ -918,4 +918,4 @@ theorem collarSignedValue_toFun (p : S × symmetricOpenInterval h.radius) :
       smoothSignedClamp h.radius h.radius_pos p.2 := by
   simp [collarSignedValue]
 
-end Poincare.Topology.SmoothTwoSidedCollar
+end DifferentialGeometry.Topology.SmoothTwoSidedCollar

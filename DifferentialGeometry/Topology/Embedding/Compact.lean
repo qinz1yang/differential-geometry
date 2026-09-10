@@ -10,7 +10,7 @@ set_option autoImplicit false
 
 open Filter Function Set Topology
 
-namespace Poincare.Topology
+namespace DifferentialGeometry.Topology
 
 theorem exists_injOn_prod_nhds_of_compact
     {X T Y : Type*} [TopologicalSpace X] [CompactSpace X] [TopologicalSpace T]
@@ -49,4 +49,4 @@ theorem exists_injOn_prod_nhds_of_compact
   exact hVW (show ((p.1, q.1), (p.2, q.2)) ∈ V ×ˢ W from
     ⟨hVall (p.1, q.1), hU ⟨hp.2.1, hq.2.2⟩⟩) heq
 
-end Poincare.Topology
+end DifferentialGeometry.Topology

@@ -1,6 +1,6 @@
 import Mathlib.AlgebraicTopology.FundamentalGroupoid.FundamentalGroup
 
-namespace Poincare.Topology
+namespace DifferentialGeometry.Topology
 
 theorem injective_fundamentalGroup_map_of_leftInverse
     {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
@@ -20,4 +20,4 @@ theorem injective_fundamentalGroup_map_of_leftInverse
       exact hr (p t)
   exact hi.injective
 
-end Poincare.Topology
+end DifferentialGeometry.Topology

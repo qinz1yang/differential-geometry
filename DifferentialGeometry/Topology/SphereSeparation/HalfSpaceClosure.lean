@@ -8,7 +8,7 @@ set_option autoImplicit false
 open Function Set
 open scoped ContDiff Manifold Topology
 
-namespace Poincare.Topology.SphereSeparation
+namespace DifferentialGeometry.Topology.SphereSeparation
 
 namespace SphereSides
 
@@ -1954,4 +1954,4 @@ theorem endClosure_boundary_image
 
 end ClosureAtlas
 
-end Poincare.Topology.SphereSeparation
+end DifferentialGeometry.Topology.SphereSeparation

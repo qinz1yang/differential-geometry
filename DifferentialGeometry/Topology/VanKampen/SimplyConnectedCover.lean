@@ -13,7 +13,7 @@ open CategoryTheory Set
 
 universe u
 
-namespace Poincare.Topology.VanKampen
+namespace DifferentialGeometry.Topology.VanKampen
 
 noncomputable def pushoutInlMulEquivOfIsIso
     {Z X Y P : GrpCat.{u}} {f : Z ⟶ X} {g : Z ⟶ Y} {inl : X ⟶ P} {inr : Y ⟶ P}
@@ -88,4 +88,4 @@ theorem fundamentalGroupRightToAmbientEquivOfSimplyConnected_toMonoidHom
         (fundamentalGroupRightToAmbient V x₀ hx₀.2).hom := by
   rfl
 
-end Poincare.Topology.VanKampen
+end DifferentialGeometry.Topology.VanKampen

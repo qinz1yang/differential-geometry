@@ -8,7 +8,7 @@ open Set Filter DifferentialGeometry.Topology.Morse
 open DifferentialGeometry.Topology.Morse.CellAttachment
 open scoped Manifold ContDiff Topology
 
-namespace Poincare.Morse
+namespace DifferentialGeometry.Morse
 
 private def smoothAffineDiffeomorph {n : ℕ} (a : MorseModel n)
     (L : MorseModel n ≃ₗ[ℝ] MorseModel n) :
@@ -45,8 +45,8 @@ theorem exists_interior_morse_normal_form (f : M → ℝ) (hf : ContMDiff I 𝓘
       0 ∈ χ.source ∧ χ 0 = p ∧
       (∀ y ∈ χ.source, f (χ y) = morseNormalForm hk (f p) y) ∧
       ∀ x ∈ χ.target, I.IsInteriorPoint x := by
-  let c := Poincare.Manifold.interiorChart I ∞ p
-  have hpc : p ∈ c.source := (Poincare.Manifold.mem_interiorChart_source_iff I ∞ p).mpr hp
+  let c := DifferentialGeometry.Manifold.interiorChart I ∞ p
+  have hpc : p ∈ c.source := (DifferentialGeometry.Manifold.mem_interiorChart_source_iff I ∞ p).mpr hp
   let z := c p
   obtain ⟨W, F, hW, hzW, hWsub, hF⟩ :=
     exists_contDiff_interiorChart_extensions (g := fun _ : Unit ↦ f) (fun _ ↦ hf) hp
@@ -130,6 +130,6 @@ theorem exists_interior_morse_normal_form (f : M → ℝ) (hf : ContMDiff I 𝓘
     rfl
   · intro x hx
     have hxc : x ∈ c.source := hx.1.1
-    exact Poincare.Manifold.isInteriorPoint_of_mem_interiorChart_source I ∞ (by simp) hxc
+    exact DifferentialGeometry.Manifold.isInteriorPoint_of_mem_interiorChart_source I ∞ (by simp) hxc
 
-end Poincare.Morse
+end DifferentialGeometry.Morse

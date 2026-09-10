@@ -4,7 +4,7 @@ set_option autoImplicit false
 noncomputable section
 open Set
 open scoped Manifold ContDiff
-namespace Poincare.VectorField
+namespace DifferentialGeometry.VectorField
 
 
 theorem mpullback_trans_partialDiffeomorph
@@ -27,4 +27,4 @@ theorem mpullback_trans_partialDiffeomorph
   erw [mfderiv_comp x (g.mdifferentiableAt hn hg) (f.mdifferentiableAt hn hx)]
   exact (isInvertible_mfderiv_partialDiffeomorph g hn hg).inverse_comp_apply_of_left
 
-end Poincare.VectorField
+end DifferentialGeometry.VectorField

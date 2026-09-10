@@ -7,7 +7,7 @@ set_option autoImplicit false
 noncomputable section
 open Set Bundle Filter
 open scoped Manifold ContDiff Topology
-namespace Poincare.VectorBundle
+namespace DifferentialGeometry.VectorBundle
 variable {B ι : Type*} [Fintype ι] {F : B → Type*}
   [∀ x, AddCommGroup (F x)] [∀ x, Module ℝ (F x)]
   (V : ∀ x, F x) (A : ι → ∀ x, F x)
@@ -91,4 +91,4 @@ theorem contMDiff_parameterFamily
   simp only [parameterFamily, map_add, map_sum, map_smul]
   congr 1
 end Smooth
-end Poincare.VectorBundle
+end DifferentialGeometry.VectorBundle

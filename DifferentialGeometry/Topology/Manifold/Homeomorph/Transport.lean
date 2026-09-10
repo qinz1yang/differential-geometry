@@ -5,7 +5,7 @@ open Set Function Manifold Topology
 open scoped ContDiff
 set_option autoImplicit false
 noncomputable section
-namespace Poincare.Manifold.Homeomorph
+namespace DifferentialGeometry.Manifold.Homeomorph
 variable {H M X : Type*} [TopologicalSpace H] [TopologicalSpace M] [ChartedSpace H M]
   [TopologicalSpace X]
 
@@ -103,4 +103,4 @@ theorem pullbackDiffeomorph_symm_apply (h : X ≃ₜ M) (x : M) :
     let _ := pullbackChartedSpace (H := H) h
     (pullbackDiffeomorph (I := I) (n := n) h).symm x = h.symm x := rfl
 
-end Poincare.Manifold.Homeomorph
+end DifferentialGeometry.Manifold.Homeomorph

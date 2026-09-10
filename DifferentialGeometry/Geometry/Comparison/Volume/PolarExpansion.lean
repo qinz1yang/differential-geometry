@@ -10,7 +10,7 @@ noncomputable section
 open Set Function Bundle Manifold
 open scoped Topology Manifold ContDiff
 
-namespace Poincare.Geometry.Riemannian.VolumeComparison
+namespace DifferentialGeometry.Geometry.Riemannian.VolumeComparison
 
 open DifferentialGeometry
 open DifferentialGeometry.Geometry.Riemannian
@@ -298,6 +298,6 @@ theorem normalPolarJacobian_contMDiffOn
     contMDiff_snd.pow _
   exact (hpow.contMDiffOn.mul hcomp).congr fun _ _ => rfl
 
-end Poincare.Geometry.Riemannian.VolumeComparison
+end DifferentialGeometry.Geometry.Riemannian.VolumeComparison
 
 end

@@ -3,7 +3,7 @@ import Mathlib.Data.Fin.Basic
 
 open Set
 
-namespace Poincare.Topology
+namespace DifferentialGeometry.Topology
 
 theorem subset_of_frontier_subset_of_closure_interior_eq
     {X : Type*} [TopologicalSpace X] {W U : Set X}
@@ -41,4 +41,4 @@ theorem subset_iUnion_of_frontier_sections
     exact hx.2 (interior_mono (subset_iUnion A i) hint)
   exact (hsections i hfi).elim (hsection i.castSucc) (hsection i.succ)
 
-end Poincare.Topology
+end DifferentialGeometry.Topology

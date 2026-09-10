@@ -4,9 +4,9 @@ noncomputable section
 open Set Topology Manifold
 open scoped ContDiff
 
-namespace Poincare.Geometry.Boundary
+namespace DifferentialGeometry.Geometry.Boundary
 
-open Poincare.Topology.Manifold
+open DifferentialGeometry.Topology.Manifold
 
 variable {E F H G B M : Type*}
   [NormedAddCommGroup E] [NormedSpace ℝ E] [NormedAddCommGroup F] [NormedSpace ℝ F]
@@ -52,4 +52,4 @@ theorem exists_collar_interior_coordinates
       y ∈ c.target ∧ 0 < (c.symm y).2.1 0
     simp only [mem_univ, true_and]
 
-end Poincare.Geometry.Boundary
+end DifferentialGeometry.Geometry.Boundary

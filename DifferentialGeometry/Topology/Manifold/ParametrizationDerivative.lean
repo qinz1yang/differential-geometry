@@ -6,7 +6,7 @@ noncomputable section
 open Set Topology Manifold
 open scoped ContDiff
 
-namespace Poincare.Topology.Manifold
+namespace DifferentialGeometry.Topology.Manifold
 
 variable {E F H H' P M : Type*}
   [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -55,4 +55,4 @@ theorem isEmbedding_and_injective_mfderiv_of_smooth_partialEquiv
   exact injective_mfderiv_of_leftInverseOn he hei
     (fun p ↦ e.map_source (hes ▸ mem_univ p)) (fun p ↦ e.left_inv (hes ▸ mem_univ p))
 
-end Poincare.Topology.Manifold
+end DifferentialGeometry.Topology.Manifold

@@ -1,6 +1,6 @@
 import Mathlib.GroupTheory.Torsion
 
-namespace Poincare.Algebra.Group
+namespace DifferentialGeometry.Algebra.Group
 
 theorem subsingleton_of_injective_hom_to_torsion_free
     {G H : Type*} [Group G] [Finite G] [Monoid H] [IsMulTorsionFree H]
@@ -20,4 +20,4 @@ theorem subsingleton_of_injective_comp_through_torsion_free
   exact subsingleton_of_injective_hom_to_torsion_free f
     (Function.Injective.of_comp hgf)
 
-end Poincare.Algebra.Group
+end DifferentialGeometry.Algebra.Group

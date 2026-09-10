@@ -10,7 +10,7 @@ open DifferentialGeometry.Geometry.Riemannian
 open DifferentialGeometry.Geometry.Riemannian.Geodesic
 open DifferentialGeometry.Geometry.Riemannian.Exponential
 
-namespace Poincare.Geometry.Riemannian.Variation
+namespace DifferentialGeometry.Geometry.Riemannian.Variation
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
@@ -93,4 +93,4 @@ theorem exists_twisted_variation_of_field (g : SmoothRiemannianMetric I M)
     exact hs
   · exact intrinsicExpVariation_twisted g hEnorm F hF γ W L htw hWL
 
-end Poincare.Geometry.Riemannian.Variation
+end DifferentialGeometry.Geometry.Riemannian.Variation

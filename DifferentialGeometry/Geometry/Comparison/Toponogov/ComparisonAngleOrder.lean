@@ -6,7 +6,7 @@ noncomputable section
 
 open Set
 
-namespace Poincare.Toponogov
+namespace DifferentialGeometry.Toponogov
 
 theorem comparisonAngle_le_of_sq_le_cos {a b c θ : ℝ}
     (ha : 0 < a) (hb : 0 < b) (hθ₀ : 0 ≤ θ) (hθπ : θ ≤ Real.pi)
@@ -51,4 +51,4 @@ theorem comparisonAngle_le_iff_sq_le_cos {a b c θ : ℝ}
   · exact sq_le_cos_of_comparisonAngle_le ha hb hca hac hθπ
   · exact comparisonAngle_le_of_sq_le_cos ha hb hθ₀ hθπ
 
-end Poincare.Toponogov
+end DifferentialGeometry.Toponogov

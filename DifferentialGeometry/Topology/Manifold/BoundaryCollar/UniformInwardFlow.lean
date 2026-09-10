@@ -8,7 +8,7 @@ open scoped Topology ContDiff
 set_option autoImplicit false
 noncomputable section
 
-namespace Poincare.Manifold.BoundaryCollar
+namespace DifferentialGeometry.Manifold.BoundaryCollar
 
 private theorem finite_positive_time {α : Type*} (a : Finset α) (f : α → ℝ)
     (hf : ∀ x, 0 < f x) : ∃ ε : ℝ, 0 < ε ∧ ∀ x ∈ a, ε ≤ f x := by
@@ -150,4 +150,4 @@ theorem exists_uniform_positive_boundary_flow
   have hpos := fun p => (hnormal p).1
   exact ⟨V, hV, hVK, hpos, exists_uniform_boundary_flow_of_inward hV hpos hK⟩
 
-end Poincare.Manifold.BoundaryCollar
+end DifferentialGeometry.Manifold.BoundaryCollar

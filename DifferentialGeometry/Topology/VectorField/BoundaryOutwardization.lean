@@ -5,7 +5,7 @@ set_option autoImplicit false
 noncomputable section
 open Set Bundle Filter Manifold TopologicalSpace
 open scoped ContDiff Topology
-namespace Poincare.VectorField
+namespace DifferentialGeometry.VectorField
 
 theorem exists_outward_replacement_in_collar
     {E H B M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -28,12 +28,12 @@ theorem exists_outward_replacement_in_collar
     let z : B → S := fun p => ⟨(p, ⟨0, ⟨le_rfl, (Fact.out : (0 : ℝ) < ε).le⟩⟩), hδ⟩
     let T : ∀ p : B, TangentSpace J p := fun p => (W (z p)).1
     let b : B → ℝ := fun p =>
-      -(Poincare.Manifold.Interval.tangentCoordinateIcc (z p).val.2 (W (z p)).2) / a
+      -(DifferentialGeometry.Manifold.Interval.tangentCoordinateIcc (z p).val.2 (W (z p)).2) / a
     ∃ L : ∀ q : S, TangentSpace (J.prod (𝓡∂ 1)) q,
       ContMDiff (J.prod (𝓡∂ 1)) (J.prod (𝓡∂ 1)).tangent ∞
         (fun q => (⟨q, L q⟩ : TangentBundle (J.prod (𝓡∂ 1)) S)) ∧
       (∀ q : S, q.val.2.val ≤ a → L q =
-        (T q.val.1, (Poincare.Manifold.Interval.tangentCoordinateIcc q.val.2).symm
+        (T q.val.1, (DifferentialGeometry.Manifold.Interval.tangentCoordinateIcc q.val.2).symm
           (-a * (collarExtension T b collarTransition (q.val.1, 1 - q.val.2.val / a)).2))) ∧
       ∃ G : ∀ x : M, TangentSpace I x,
         G = patchThroughDiffeomorph Y e V L ∧
@@ -56,10 +56,10 @@ theorem exists_outward_replacement_in_collar
   let G := patchThroughDiffeomorph Y e V L
   have hboundary (p : B) (hTp : T p = 0) : b p ≠ 0 := by
     intro hbp
-    have hv : Poincare.Manifold.Interval.tangentCoordinateIcc (z p).val.2 (W (z p)).2 = 0 :=
+    have hv : DifferentialGeometry.Manifold.Interval.tangentCoordinateIcc (z p).val.2 (W (z p)).2 = 0 :=
       neg_eq_zero.mp ((div_eq_zero_iff.mp hbp).resolve_right ha.ne')
     exact hn (z p) (Prod.ext hTp
-      ((Poincare.Manifold.Interval.tangentCoordinateIcc (z p).val.2).map_eq_zero_iff.mp hv))
+      ((DifferentialGeometry.Manifold.Interval.tangentCoordinateIcc (z p).val.2).map_eq_zero_iff.mp hv))
   have hzero := patchThroughCollar_zeroSet S Y e V L hn
   refine ⟨L, hL, hLinner, G, rfl,
     contMDiff_patchThroughCollar S rfl Y e V L haδ hLmatch hV hL, ?_, ?_,
@@ -75,7 +75,7 @@ theorem exists_outward_replacement_in_collar
       apply le_antisymm _ q.val.2.property.1
       by_contra h
       exact (I.isBoundaryPoint_iff_not_isInteriorPoint (e q).val).mp hqb (hi q (lt_of_not_ge h))
-    have hv := Poincare.Manifold.BoundaryCollar.proj_collar_pushforward_neg S Y e hq0 hqb (L q)
+    have hv := DifferentialGeometry.Manifold.BoundaryCollar.proj_collar_pushforward_neg S Y e hq0 hqb (L q)
       (by rw [hLout q hq0]; exact neg_neg_of_pos ha)
     have hg := patchThroughDiffeomorph_apply Y e V L q
     change (G (e q).val : EuclideanSpace ℝ (Fin (n + 1))) = _ at hg
@@ -91,4 +91,4 @@ theorem exists_outward_replacement_in_collar
     exact ((finite_inwardCollar_zeroSet S rfl T b L hboundary hLzero ha
       (by linarith) (by linarith) hTfinite).image _).union hVfinite
 
-end Poincare.VectorField
+end DifferentialGeometry.VectorField

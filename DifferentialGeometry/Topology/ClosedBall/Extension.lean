@@ -4,7 +4,7 @@ set_option autoImplicit false
 noncomputable section
 open Set Metric Filter
 open scoped Topology
-namespace Poincare.Topology.ClosedBall
+namespace DifferentialGeometry.Topology.ClosedBall
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   {F : Type*} [TopologicalSpace F]
   (a : E) {r : ℝ} (hr : 0 ≤ r)
@@ -93,4 +93,4 @@ theorem extension_zeroSet (f : C(closedBall a r, F))
       Subtype.val '' {y : closedBall a r | f y = 0} :=
   extension_preimage_singleton a hr f hb
 
-end Poincare.Topology.ClosedBall
+end DifferentialGeometry.Topology.ClosedBall

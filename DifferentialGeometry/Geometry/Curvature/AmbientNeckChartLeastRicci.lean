@@ -8,10 +8,10 @@ open Set Bundle
 open scoped Manifold ContDiff
 open DifferentialGeometry DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.Geometry.Curvature
-open Poincare.Geometry.Metric Poincare.Geometry.VectorField
-open Poincare.Topology.Manifold
+open DifferentialGeometry.Geometry.Metric DifferentialGeometry.Geometry.VectorField
+open DifferentialGeometry.Topology.Manifold
 
-namespace Poincare.Geometry.Curvature
+namespace DifferentialGeometry.Geometry.Curvature
 
 theorem exists_ambient_least_ricci_field_from_neck_chart
     {E F H M : Type*}
@@ -78,4 +78,4 @@ theorem exists_ambient_least_ricci_field_from_neck_chart
   · rwa [mvfderiv_extend_from_open V uV _ huV]
   · rwa [mvfderiv_extend_from_open V uV _ huV]
 
-end Poincare.Geometry.Curvature
+end DifferentialGeometry.Geometry.Curvature

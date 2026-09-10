@@ -3,7 +3,7 @@ import DifferentialGeometry.Topology.Homology.Local.Generator
 set_option autoImplicit false
 noncomputable section
 open CategoryTheory CategoryTheory.Limits Set Metric
-namespace Poincare.Homology
+namespace DifferentialGeometry.Homology
 universe u
 
 
@@ -65,4 +65,4 @@ theorem euclideanLocalGeneratorAt_ne_zero (p : EuclideanSpace ℝ (Fin (d + 1)))
 theorem euclideanLocalGeneratorAt_zero (d : ℕ) :
     euclideanLocalGeneratorAt (0 : EuclideanSpace ℝ (Fin (d + 1))) = euclideanLocalGenerator d := by
   simp [euclideanLocalGeneratorAt]
-end Poincare.Homology
+end DifferentialGeometry.Homology

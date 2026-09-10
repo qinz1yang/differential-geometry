@@ -8,7 +8,7 @@ open CategoryTheory CategoryTheory.Limits Opposite Simplicial
 
 universe u v
 
-namespace Poincare.Homology
+namespace DifferentialGeometry.Homology
 
 variable (X : TopCat.{u}) {ι : Type v} (U : ι → Set X)
 
@@ -195,4 +195,4 @@ theorem smallSingularSubdivisionHomotopy_hom (n : ℕ) :
     smallSingularSubdivisionHomotopyMap X U R n ≫ eqToHom (congrArg (KA).X h) else 0) = _
   rw [dif_pos rfl, eqToHom_refl, Category.comp_id]
 
-end Poincare.Homology
+end DifferentialGeometry.Homology

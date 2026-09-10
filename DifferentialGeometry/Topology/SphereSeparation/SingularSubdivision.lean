@@ -12,7 +12,7 @@ open PartialOrder
 open Simplicial
 open scoped Simplicial
 
-namespace Poincare.Topology.SphereSeparation
+namespace DifferentialGeometry.Topology.SphereSeparation
 
 
 
@@ -647,4 +647,4 @@ theorem barycentricSubdivisionChainEndomorphism_f_zero
     (barycentricSubdivisionChainEndomorphism X h).f 0 = 𝟙 _ :=
   barycentricSubdivisionDegreeMap_zero X
 
-end Poincare.Topology.SphereSeparation
+end DifferentialGeometry.Topology.SphereSeparation

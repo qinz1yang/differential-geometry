@@ -5,7 +5,7 @@ noncomputable section
 open Set Metric Filter Topology Manifold
 open scoped ContDiff
 
-namespace Poincare.Topology.Manifold
+namespace DifferentialGeometry.Topology.Manifold
 
 theorem exists_sphere_isotopy_of_identity_near_point
     (f : Diffeomorph (𝓡 2) (𝓡 2)
@@ -40,4 +40,4 @@ theorem exists_sphere_isotopy_of_identity_near_point
   rw [hes] at hvs
   exact hvs (mem_singleton v)
 
-end Poincare.Topology.Manifold
+end DifferentialGeometry.Topology.Manifold

@@ -7,7 +7,7 @@ import Mathlib.Algebra.Category.ModuleCat.Products
 set_option autoImplicit false
 noncomputable section
 open CategoryTheory CategoryTheory.Limits Set Function
-namespace Poincare.Homology
+namespace DifferentialGeometry.Homology
 universe u
 variable (X : TopCat.{u}) (Z : Set X) (U : Z → Set X)
   (hp : ∀ p, p.val ∈ U p) (hd : Pairwise (Disjoint on U))
@@ -212,4 +212,4 @@ theorem isZero_relativeHomology_finitePuncture [T2Space X] (hZ : Z.Finite) (n : 
   apply ModuleCat.isZero_iff_subsingleton.mpr
   exact ⟨fun x y => (finitePunctureHomologyLinearEquiv X Z R hZ n).injective
     (Subsingleton.elim _ _)⟩
-end Poincare.Homology
+end DifferentialGeometry.Homology

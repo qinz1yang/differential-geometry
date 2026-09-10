@@ -6,7 +6,7 @@ set_option autoImplicit false
 open CategoryTheory CategoryTheory.Limits
 noncomputable section
 universe u v
-namespace Poincare.HomologicalComplex
+namespace DifferentialGeometry.HomologicalComplex
 variable {k : Type u} [Ring k] {ι : Type*} {c : ComplexShape ι}
   (K : _root_.HomologicalComplex (ModuleCat.{v} k) c) (B : End K)
 
@@ -43,4 +43,4 @@ theorem isZero_homology_of_locallyNilpotent (H : Homotopy B (𝟙 K))
   rw [hz, map_zero] at hh
   exact hh
 
-end Poincare.HomologicalComplex
+end DifferentialGeometry.HomologicalComplex

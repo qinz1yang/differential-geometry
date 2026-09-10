@@ -4,7 +4,7 @@ set_option autoImplicit false
 open Bundle Filter Set
 open scoped Manifold ContDiff Topology
 noncomputable section
-namespace Poincare.VectorField
+namespace DifferentialGeometry.VectorField
 
 section General
 variable {E F H G M N : Type*}
@@ -74,7 +74,7 @@ theorem index_mpullback_partialDiffeomorph
     erw [mfderiv_comp y hf hc]
     exact hi.inverse_comp_apply_of_left.symm
   rw [index_eq_in_coordinates I hP c hcx]
-  have hdegree := (Poincare.LocalDegree.euclideanLocalDegree_congr hp he heq).trans
+  have hdegree := (DifferentialGeometry.LocalDegree.euclideanLocalDegree_congr hp he heq).trans
     (index_eq_localDegree J e hxe hVE).symm
   simpa only [hecenter] using hdegree
 
@@ -93,6 +93,6 @@ theorem index_congr {V W : ∀ x : M, TangentSpace I x} {x : M}
     erw [hy]
     rfl
   rw [index_eq_in_coordinates I hV c hx, index_eq_in_coordinates I hW c hx]
-  exact Poincare.LocalDegree.euclideanLocalDegree_congr _ _ heq
+  exact DifferentialGeometry.LocalDegree.euclideanLocalDegree_congr _ _ heq
 
-end Poincare.VectorField
+end DifferentialGeometry.VectorField

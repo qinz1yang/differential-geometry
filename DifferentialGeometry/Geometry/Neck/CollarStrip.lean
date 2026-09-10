@@ -6,7 +6,7 @@ open Set DifferentialGeometry
 open scoped Manifold ContDiff
 open DifferentialGeometry.Geometry.Operator
 
-namespace Poincare.Geometry.Neck
+namespace DifferentialGeometry.Geometry.Neck
 
 private abbrev S := Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1
 
@@ -157,4 +157,4 @@ theorem cylindricalChart.exists_strip_containing_full_collar_of_gradient_close
     ⟨C₁.chart.symm ⟨(C₀.chart ⟨(x.1, (x.2 : ℝ)), hcollar x⟩ : M), htarget x⟩,
       hband x, C₁.chart.apply_symm_apply _⟩, rfl⟩
 
-end Poincare.Geometry.Neck
+end DifferentialGeometry.Geometry.Neck

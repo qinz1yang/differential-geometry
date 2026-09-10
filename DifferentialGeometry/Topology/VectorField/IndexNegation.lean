@@ -4,7 +4,7 @@ import DifferentialGeometry.Topology.LocalDegree.Negation
 set_option autoImplicit false
 open scoped Manifold ContDiff Topology
 noncomputable section
-namespace Poincare.VectorField
+namespace DifferentialGeometry.VectorField
 variable {d : ℕ} {H M : Type*} [TopologicalSpace H] [TopologicalSpace M]
   [ChartedSpace H M] (I : ModelWithCorners ℝ (EuclideanSpace ℝ (Fin (d + 1))) H)
   [IsManifold I 1 M] [I.Boundaryless]
@@ -22,8 +22,8 @@ theorem index_neg {V : ∀ x : M, TangentSpace I x} {x : M}
         (fun y => -_root_.VectorField.mpullback
           𝓘(ℝ, EuclideanSpace ℝ (Fin (d + 1))) I c.symm V y) :=
     Filter.Eventually.of_forall (fun _ => _root_.VectorField.mpullback_neg_apply)
-  exact (Poincare.LocalDegree.euclideanLocalDegree_congr hn
-    (Poincare.LocalDegree.isolatedZero_neg h) he).trans
-      (Poincare.LocalDegree.euclideanLocalDegree_neg h)
+  exact (DifferentialGeometry.LocalDegree.euclideanLocalDegree_congr hn
+    (DifferentialGeometry.LocalDegree.isolatedZero_neg h) he).trans
+      (DifferentialGeometry.LocalDegree.euclideanLocalDegree_neg h)
 
-end Poincare.VectorField
+end DifferentialGeometry.VectorField

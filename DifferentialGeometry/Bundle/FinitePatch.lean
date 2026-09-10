@@ -4,7 +4,7 @@ set_option autoImplicit false
 noncomputable section
 open Set Filter Bundle
 open scoped Manifold ContDiff Topology
-namespace Poincare.VectorBundle
+namespace DifferentialGeometry.VectorBundle
 variable {B ι : Type*} {V : B → Type*} [∀ x, AddCommGroup (V x)] [Fintype ι]
   (s : ∀ x, V x) (t : ι → ∀ x, V x)
 
@@ -68,4 +68,4 @@ theorem contMDiff_finitePatch
     ContMDiff I (I.prod 𝓘(𝕜, F)) n (fun x => TotalSpace.mk' F x (finitePatch s t x)) :=
   hs.add_section (ContMDiff.sum_section (fun i _ => (ht i).sub_section hs))
 end Smooth
-end Poincare.VectorBundle
+end DifferentialGeometry.VectorBundle

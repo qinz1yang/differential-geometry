@@ -2,7 +2,7 @@ import DifferentialGeometry.Topology.Connected.CollarCover
 
 open Set Topology
 
-namespace Poincare.Topology
+namespace DifferentialGeometry.Topology
 
 private theorem frontier_left_subset_inter_of_closed_cover
     {X : Type*} [TopologicalSpace X] {P K Q : Set X}
@@ -68,4 +68,4 @@ theorem cover_and_between_subset_of_separating_collars
     hfrontP hfront hfrontQ (inter_subset_right.trans hK₀D) (inter_subset_left.trans hK₁D)
     hleft hright (hne.mono (fun _ hx ↦ Or.inl (Or.inr (hK₀D hx))))
 
-end Poincare.Topology
+end DifferentialGeometry.Topology

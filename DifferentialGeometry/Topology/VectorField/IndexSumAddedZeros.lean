@@ -4,7 +4,7 @@ set_option autoImplicit false
 noncomputable section
 open Set Bundle Filter
 open scoped Manifold ContDiff Topology
-namespace Poincare.VectorField
+namespace DifferentialGeometry.VectorField
 variable {d : ℕ} {H M : Type*} [TopologicalSpace H] [TopologicalSpace M] [ChartedSpace H M]
   (I : ModelWithCorners ℝ (EuclideanSpace ℝ (Fin (d + 1))) H) [IsManifold I 1 M]
 
@@ -41,4 +41,4 @@ theorem interiorIndexSum_eq_add_of_added_zeros
   rw [interiorIndexSumOn_eq_of_contains_zeroSet I V hVf hVi hVI {x | V x = 0} subset_rfl]
   exact add_comm _ _
 
-end Poincare.VectorField
+end DifferentialGeometry.VectorField

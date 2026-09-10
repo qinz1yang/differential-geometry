@@ -9,7 +9,7 @@ open Bundle Manifold Set Filter InnerProductSpace
 open scoped Manifold ContDiff Topology
 open DifferentialGeometry DifferentialGeometry.Geometry.Operator
   DifferentialGeometry.Tensor.Coordinates
-namespace Poincare.VectorField
+namespace DifferentialGeometry.VectorField
 variable {E : Type} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]
   {H M : Type*} [TopologicalSpace H] [TopologicalSpace M] [ChartedSpace H M]
   {I : ModelWithCorners ℝ E H} [IsManifold I ∞ M]
@@ -19,7 +19,7 @@ theorem rieszFlat_comp_fderiv_gradientInChart
     (g : SmoothRiemannianMetric I M) {f : M → ℝ} {x : M}
     (hx : I.IsInteriorPoint x) (hf : ContMDiffAt I 𝓘(ℝ, ℝ) ∞ f x)
     (hcrit : mfderiv I 𝓘(ℝ, ℝ) f x = 0) :
-    Poincare.QuadraticForm.rieszFlat (metricFlatContinuousEquiv g x).toContinuousLinearMap ∘L
+    DifferentialGeometry.QuadraticForm.rieszFlat (metricFlatContinuousEquiv g x).toContinuousLinearMap ∘L
         fderiv ℝ (gradientInChart g f x) (extChartAt I x x) =
       fderiv ℝ (gradient (fun z => f ((extChartAt I x).symm z))) (extChartAt I x x) := by
   rw [fderiv_gradient ((contDiffAt_scalarInChart hx hf).of_le (WithTop.coe_le_coe.mpr (le_top : (2 : ℕ∞) ≤ ⊤)))]
@@ -42,7 +42,7 @@ theorem det_fderiv_gradientInChart_ne_zero
   intro h
   apply hS
   change LinearMap.det
-    ((Poincare.QuadraticForm.rieszFlat (metricFlatContinuousEquiv g x).toContinuousLinearMap).toLinearMap.comp
+    ((DifferentialGeometry.QuadraticForm.rieszFlat (metricFlatContinuousEquiv g x).toContinuousLinearMap).toLinearMap.comp
       (fderiv ℝ (gradientInChart g f x) (extChartAt I x x)).toLinearMap) = 0
   rw [LinearMap.det_comp, h, mul_zero]
 
@@ -66,16 +66,16 @@ theorem sign_det_fderiv_gradientInChart
     intro v hv
     erw [metricFlatContinuousEquiv_apply_self]
     exact g.pos x v hv
-  have hs := Poincare.QuadraticForm.sign_det_rieszFlat_comp
+  have hs := DifferentialGeometry.QuadraticForm.sign_det_rieszFlat_comp
     (metricFlatContinuousEquiv g x).toContinuousLinearMap hb hp
     (fderiv ℝ (gradientInChart g f x) (extChartAt I x x))
   rw [rieszFlat_comp_fderiv_gradientInChart g hx hf hcrit] at hs
   exact hs.symm.trans (sign_det_fderiv_gradient
     ((contDiffAt_scalarInChart hx hf).of_le (WithTop.coe_le_coe.mpr (le_top : (2 : ℕ∞) ≤ ⊤))) hnd)
 
-end Poincare.VectorField
+end DifferentialGeometry.VectorField
 
-namespace Poincare.VectorField
+namespace DifferentialGeometry.VectorField
 variable {d : ℕ} {H M : Type*} [TopologicalSpace H] [TopologicalSpace M]
   [ChartedSpace H M] (I : ModelWithCorners ℝ (EuclideanSpace ℝ (Fin (d + 1))) H)
   [IsManifold I ∞ M]
@@ -137,9 +137,9 @@ theorem exists_interiorIndex_gradientFun_eq_neg_one_pow_sigNeg
   ⟨hasContinuousIsolatedZero_gradientFun_of_hessian_nondegenerate I g hx hf hcrit hnd,
     interiorIndex_gradientFun_eq_neg_one_pow_sigNeg I g hx hf hnd _⟩
 
-end Poincare.VectorField
+end DifferentialGeometry.VectorField
 
-namespace Poincare.VectorField
+namespace DifferentialGeometry.VectorField
 
 theorem exists_interiorIndex_gradientFun_of_isNondegenerateCriticalPointAt
     {d : ℕ} {H M : Type} [TopologicalSpace H] [TopologicalSpace M] [ChartedSpace H M]
@@ -152,4 +152,4 @@ theorem exists_interiorIndex_gradientFun_of_isNondegenerateCriticalPointAt
         (-1 : ℤ) ^ sigNeg (DifferentialGeometry.Topology.Morse.chartHessianAt
           (fun z => f ((extChartAt I x).symm z)) (extChartAt I x x)) :=
   exists_interiorIndex_gradientFun_eq_neg_one_pow_sigNeg I g hx hf hcrit.1 hcrit.2
-end Poincare.VectorField
+end DifferentialGeometry.VectorField

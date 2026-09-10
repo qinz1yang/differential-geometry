@@ -4,7 +4,7 @@ import Mathlib.Analysis.Convex.GaugeRescale
 noncomputable section
 open Set Metric Topology
 
-namespace Poincare.Topology.PlanarJordan
+namespace DifferentialGeometry.Topology.PlanarJordan
 
 private theorem closed_region_homeomorph_ball
     {U : Set Schoenflies.Plane} (hU : IsOpen U) (hconn : IsConnected U)
@@ -73,4 +73,4 @@ theorem nonempty_homeomorph_closedBall_closure
     (e.image (closure U)).trans (Homeomorph.setCongr (e.image_closure U))
   exact ⟨b.trans (d.symm.trans a.symm)⟩
 
-end Poincare.Topology.PlanarJordan
+end DifferentialGeometry.Topology.PlanarJordan

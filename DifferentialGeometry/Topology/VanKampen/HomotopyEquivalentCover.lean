@@ -13,7 +13,7 @@ open scoped ContinuousMap
 
 universe u
 
-namespace Poincare.Topology.VanKampen
+namespace DifferentialGeometry.Topology.VanKampen
 
 
 noncomputable def fundamentalGroupEquivOfHomotopyEquivToLeftCover
@@ -24,7 +24,7 @@ noncomputable def fundamentalGroupEquivOfHomotopyEquivToLeftCover
     [PathConnectedSpace U] [SimplyConnectedSpace V]
     [SimplyConnectedSpace (↑(U ∩ V))] :
     FundamentalGroup K k₀ ≃* FundamentalGroup X x₀ :=
-  (Poincare.Topology.fundamentalGroupMulEquivOfHomotopyEquiv
+  (DifferentialGeometry.Topology.fundamentalGroupMulEquivOfHomotopyEquiv
     e k₀ (leftBasepoint U x₀ hx₀.1) hbase).trans
       (fundamentalGroupLeftToAmbientEquivOfSimplyConnected
         U V hU hV hcover x₀ hx₀)
@@ -52,7 +52,7 @@ noncomputable def fundamentalGroupEquivOfHomotopyEquivToRightCover
     [PathConnectedSpace V] [SimplyConnectedSpace U]
     [SimplyConnectedSpace (↑(U ∩ V))] :
     FundamentalGroup K k₀ ≃* FundamentalGroup X x₀ :=
-  (Poincare.Topology.fundamentalGroupMulEquivOfHomotopyEquiv
+  (DifferentialGeometry.Topology.fundamentalGroupMulEquivOfHomotopyEquiv
     e k₀ (rightBasepoint V x₀ hx₀.2) hbase).trans
       (fundamentalGroupRightToAmbientEquivOfSimplyConnected
         U V hU hV hcover x₀ hx₀)
@@ -71,4 +71,4 @@ theorem fundamentalGroupEquivOfHomotopyEquivToRightCover_toMonoidHom
         (FundamentalGroup.mapOfEq e.toFun hbase) := by
   rfl
 
-end Poincare.Topology.VanKampen
+end DifferentialGeometry.Topology.VanKampen

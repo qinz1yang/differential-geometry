@@ -7,9 +7,9 @@ open DifferentialGeometry
 open DifferentialGeometry.Geometry.Riemannian
 open DifferentialGeometry.Geometry.Riemannian.Geodesic
 open DifferentialGeometry.Geometry.Riemannian.Exponential
-open Poincare.Geometry.Riemannian.Exponential
+open DifferentialGeometry.Geometry.Riemannian.Exponential
 
-namespace Poincare.Geometry.Riemannian.Variation
+namespace DifferentialGeometry.Geometry.Riemannian.Variation
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
@@ -88,4 +88,4 @@ theorem intrinsicExpVariation_twisted
   rw [expMapIntrinsic_isometry g hEnorm F hF, map_smul]
   rw [hW, hγ]
 
-end Poincare.Geometry.Riemannian.Variation
+end DifferentialGeometry.Geometry.Riemannian.Variation

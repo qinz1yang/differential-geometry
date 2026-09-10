@@ -5,7 +5,7 @@ noncomputable section
 open scoped Manifold ContDiff
 open DifferentialGeometry DifferentialGeometry.Geometry.Curvature
 
-namespace Poincare.Geometry.Curvature
+namespace DifferentialGeometry.Geometry.Curvature
 
 theorem least_ricci_eigenpair_of_scaleMetric
     {E H M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
@@ -63,4 +63,4 @@ theorem least_ricci_eigenpair_of_scaleMetric
     rw [Module.End.mem_eigenspace_iff, Module.End.mem_eigenspace_iff]
     exact (he z).symm
 
-end Poincare.Geometry.Curvature
+end DifferentialGeometry.Geometry.Curvature

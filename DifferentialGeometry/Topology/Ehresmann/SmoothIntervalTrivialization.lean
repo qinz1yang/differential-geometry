@@ -5,9 +5,9 @@ noncomputable section
 open Set Topology Manifold
 open scoped ContDiff
 
-namespace Poincare.Topology.Ehresmann
+namespace DifferentialGeometry.Topology.Ehresmann
 
-open Poincare.Topology.Manifold
+open DifferentialGeometry.Topology.Manifold
 
 variable {E H M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [TopologicalSpace H] [TopologicalSpace M] [ChartedSpace H M]
@@ -88,4 +88,4 @@ theorem exists_trivialization_over_interval_of_proper
   rw [sub_self, hD0]
   rfl
 
-end Poincare.Topology.Ehresmann
+end DifferentialGeometry.Topology.Ehresmann

@@ -7,7 +7,7 @@ open Set Filter Function Bundle
 open scoped Manifold ContDiff Topology
 open DifferentialGeometry.Topology.Morse
 open DifferentialGeometry.Integral.DivergenceTheorem.WithBoundary
-namespace Poincare.Morse
+namespace DifferentialGeometry.Morse
 variable {n : ℕ} [NeZero n] {M : Type} [TopologicalSpace M]
   [ChartedSpace (EuclideanHalfSpace n) M] [IsManifold (𝓡∂ n) ∞ M]
   [T2Space M] [CompactSpace M]
@@ -63,4 +63,4 @@ theorem exists_excellent_morse_boundary_definingFunction :
   have hd : mfderiv (𝓡∂ n) 𝓘(ℝ, ℝ) r y = mfderiv (𝓡∂ n) 𝓘(ℝ, ℝ) f y := hlocal.mfderiv_eq
   exact (congrArg (fun L : TangentSpace (𝓡∂ n) y →L[ℝ] ℝ => L (V y)) hd).trans (hunit y hy.1)
 
-end Poincare.Morse
+end DifferentialGeometry.Morse

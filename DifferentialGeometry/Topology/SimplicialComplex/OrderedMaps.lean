@@ -3,7 +3,7 @@ import DifferentialGeometry.Topology.SimplicialComplex.OrderedSimplicialSet
 set_option autoImplicit false
 noncomputable section
 open CategoryTheory Simplicial
-namespace Poincare.Topology.SimplicialComplex
+namespace DifferentialGeometry.Topology.SimplicialComplex
 universe u
 variable {ι : Type u} [LinearOrder ι] {K L Q : PreAbstractSimplicialComplex ι}
 
@@ -34,4 +34,4 @@ theorem orderedInclusion_comp (h : K ≤ L) (h' : L ≤ Q) :
 @[simp]
 theorem orderedInclusion_refl : orderedInclusion (le_rfl : K ≤ K) = 𝟙 (orderedSimplicialSet K) := rfl
 
-end Poincare.Topology.SimplicialComplex
+end DifferentialGeometry.Topology.SimplicialComplex

@@ -6,7 +6,7 @@ set_option autoImplicit false
 open Filter Metric Set
 open scoped Manifold ContDiff Topology unitInterval
 noncomputable section
-namespace Poincare.LocalDegree
+namespace DifferentialGeometry.LocalDegree
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
@@ -47,7 +47,7 @@ private theorem inverse_fderiv_coordinate {n : ℕ∞ω}
     {x : E} (hx : x ∈ φ.source) :
     (fderiv ℝ φ x).inverse = fderiv ℝ φ.symm (φ x) := by
   simpa only [mfderiv_eq_fderiv] using!
-    Poincare.VectorField.inverse_mfderiv_partialDiffeomorph φ
+    DifferentialGeometry.VectorField.inverse_mfderiv_partialDiffeomorph φ
       (ne_of_gt (zero_lt_one.trans_le hn)) hx
 
 private theorem continuousOn_inverse_coordinate_derivative {n : ℕ∞ω}
@@ -62,7 +62,7 @@ private theorem exists_coordinate_derivative {n : ℕ∞ω}
     ∃ A : E ≃L[ℝ] F, A.toContinuousLinearMap = fderiv ℝ φ x := by
   have hi : (fderiv ℝ φ x).IsInvertible := by
     simpa only [mfderiv_eq_fderiv] using!
-      Poincare.VectorField.isInvertible_mfderiv_partialDiffeomorph φ
+      DifferentialGeometry.VectorField.isInvertible_mfderiv_partialDiffeomorph φ
         (ne_of_gt (zero_lt_one.trans_le hn)) hx
   exact hi
 
@@ -351,4 +351,4 @@ theorem exists_sphereMap_coordinateChange_homotopy {n : ℕ∞ω}
     (H₂.cast (sphereMap_same_radius hQ₂ hQ₁ hzQ₂ hzQ₁ r₂ r₁ rfl)
       (sphereMap_same_radius hG₂ hG hzG₂ hzG r₂ r rfl))⟩
 
-end Poincare.LocalDegree
+end DifferentialGeometry.LocalDegree

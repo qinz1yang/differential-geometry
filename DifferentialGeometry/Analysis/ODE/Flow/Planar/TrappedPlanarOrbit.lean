@@ -4,7 +4,7 @@ import DifferentialGeometry.Topology.Flow.TransverseReturns
 open Set Filter
 open scoped ContDiff Topology
 
-namespace Poincare.Analysis
+namespace DifferentialGeometry.Analysis
 
 theorem exists_transverse_returns_of_frequent_visits
     (φ : _root_.Flow ℝ ℂ) {v : ℂ → ℂ} (hv : ContDiff ℝ ∞ v)
@@ -30,7 +30,7 @@ theorem exists_transverse_returns_of_frequent_visits
     frequently_atTop.mp (mapClusterPt_iff_frequently.mp hcluster e.target
       (e.open_target.mem_nhds hxTarget))
   exact ⟨x, hx, ε, hε, e, hsource, he, heinv, heq,
-    Poincare.Topology.Flow.exists_transverse_hit_after φ e hsource heq hvisits⟩
+    DifferentialGeometry.Topology.Flow.exists_transverse_hit_after φ e hsource heq hvisits⟩
 
 theorem exists_transverse_returns_of_trapped_orbit
     (φ : _root_.Flow ℝ ℂ) {v : ℂ → ℂ} (hv : ContDiff ℝ ∞ v)
@@ -46,4 +46,4 @@ theorem exists_transverse_returns_of_trapped_orbit
   exact exists_transverse_returns_of_frequent_visits φ hv hderiv hK hnz
     (((eventually_ge_atTop (0 : ℝ)).mono (fun t ht ↦ hstay t ht)).frequently)
 
-end Poincare.Analysis
+end DifferentialGeometry.Analysis

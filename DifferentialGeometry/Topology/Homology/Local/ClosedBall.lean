@@ -4,8 +4,8 @@ import DifferentialGeometry.Topology.Homotopy.SphereRadial
 
 set_option autoImplicit false
 noncomputable section
-open CategoryTheory CategoryTheory.Limits Set Metric Poincare.Topology Poincare.LocalDegree
-namespace Poincare.Homology
+open CategoryTheory CategoryTheory.Limits Set Metric DifferentialGeometry.Topology DifferentialGeometry.LocalDegree
+namespace DifferentialGeometry.Homology
 universe u
 section Metric
 variable {E : Type u} [PseudoMetricSpace E] (a : E) (r : ℝ)
@@ -141,4 +141,4 @@ theorem euclideanClosedBallFundamentalClass_ne_zero {d : ℕ}
   have hh := congrArg (closedBallLocalHomologyMap a r (ModuleCat.of ℤ ℤ) a (mem_ball_self hr) (d + 1)) h
   rw [closedBallLocalHomologyMap_fundamentalClass,map_zero] at hh
   exact euclideanLocalGeneratorAt_ne_zero a hh
-end Poincare.Homology
+end DifferentialGeometry.Homology

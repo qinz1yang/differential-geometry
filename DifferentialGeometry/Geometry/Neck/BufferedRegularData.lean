@@ -7,9 +7,9 @@ open Set Filter Topology
 open scoped Manifold ContDiff BigOperators
 open DifferentialGeometry DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Integral.DivergenceTheorem.WithBoundary
-open Poincare.Geometry.Affine Poincare.Geometry.Boundary Poincare.Topology.Ehresmann
+open DifferentialGeometry.Geometry.Affine DifferentialGeometry.Geometry.Boundary DifferentialGeometry.Topology.Ehresmann
 
-namespace Poincare.Geometry.Neck
+namespace DifferentialGeometry.Geometry.Neck
 
 theorem exists_regular_data_of_buffered_neck_bands_on_intersections
     {E H W : Type} {F H' M : Type*}
@@ -87,11 +87,11 @@ theorem exists_regular_data_of_buffered_neck_bands_on_intersections
   have hcoe (i) (w : W) : f.toPartitionOfUnity i w = f.toSmoothPartitionOfUnity hf i w := rfl
   have hlocal₀ : ∀ᶠ w in 𝓝ˢ S₀, u w = v 0 w := by
     simpa only [finsum_eq_sum_of_fintype, smul_eq_mul, hcoe] using
-      Poincare.Topology.partition_patch_eq_near_of_disjoint_tsupport f.toPartitionOfUnity v S₀ 0
+      DifferentialGeometry.Topology.partition_patch_eq_near_of_disjoint_tsupport f.toPartitionOfUnity v S₀ 0
         (fun j hj ↦ (hdisj₀ j hj).mono_right (hρsupp j))
   have hlocal₁ : ∀ᶠ w in 𝓝ˢ S₁, u w = v (Fin.last n) w := by
     simpa only [finsum_eq_sum_of_fintype, smul_eq_mul, hcoe] using
-      Poincare.Topology.partition_patch_eq_near_of_disjoint_tsupport f.toPartitionOfUnity v S₁ (Fin.last n)
+      DifferentialGeometry.Topology.partition_patch_eq_near_of_disjoint_tsupport f.toPartitionOfUnity v S₁ (Fin.last n)
         (fun j hj ↦ (hdisj₁ j hj).mono_right (hρsupp j))
   obtain ⟨hb, hbdy, hdata, hfiber₀, hfiber₁, hη₀⟩ := exists_regular_endpoints_of_extreme_neck_sections
     ι hι hemb hinj hdim (C 0) (C (Fin.last n)) t₀ t₁ (a 0).1 (a (Fin.last n)).1
@@ -175,4 +175,4 @@ theorem exists_regular_data_of_buffered_neck_bands
     (fun j w hi hj ↦ hvalue j (ι w) (hbuffer _ hi) (hbuffer _ hj))
     (fun j w hi hj ↦ hoverlap j (ι w) (hbuffer _ hi) (hbuffer _ hj))
 
-end Poincare.Geometry.Neck
+end DifferentialGeometry.Geometry.Neck

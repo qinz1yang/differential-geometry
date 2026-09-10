@@ -4,7 +4,7 @@ noncomputable section
 open Set Metric Manifold Module
 open scoped ContDiff
 
-namespace Poincare.Topology.Manifold
+namespace DifferentialGeometry.Topology.Manifold
 
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
   [FiniteDimensional ℝ E]
@@ -98,4 +98,4 @@ theorem exists_smooth_nestedBallShell_parametrization
     exact (hcancel z (ball_subset_closedBall hz)).symm.trans
       ((congrArg outer.toPartialEquiv hzx).trans hxy)
 
-end Poincare.Topology.Manifold
+end DifferentialGeometry.Topology.Manifold

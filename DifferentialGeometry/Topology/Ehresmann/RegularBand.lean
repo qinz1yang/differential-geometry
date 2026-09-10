@@ -8,7 +8,7 @@ open scoped ContDiff Manifold Topology
 open DifferentialGeometry.Topology.Morse
 open DifferentialGeometry.Analysis.ODE
 
-namespace Poincare.Topology.Ehresmann
+namespace DifferentialGeometry.Topology.Ehresmann
 
 private def setCongrDiffeomorph
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -145,7 +145,7 @@ theorem mem_boundary_regularBand_iff
   let _ := regularBandChartedSpace f a b hab hf hreg
   refine (setCongr_mem_boundary_iff (morseModelWithCornersHalfSpace m)
     (band_sublevel_eq f hab.le) x).trans ?_
-  refine (Poincare.Topology.Manifold.mem_boundary_manifoldSublevel_iff
+  refine (DifferentialGeometry.Topology.Manifold.mem_boundary_manifoldSublevel_iff
     (I := I) (fun x ↦ (f x - a) * (f x - b)) 0
     ((hf.sub contMDiff_const).mul (hf.sub contMDiff_const))
     (band_definingFunction_regular f a b hab hf hreg) _).trans ?_
@@ -165,7 +165,7 @@ theorem contMDiff_regularBandInclusion
     (band_definingFunction_regular f a b hab hf hreg)
   let _ := regularBandChartedSpace f a b hab hf hreg
   let d := setCongrDiffeomorph (morseModelWithCornersHalfSpace m) (band_sublevel_eq f hab.le)
-  have hi := Poincare.Topology.Manifold.contMDiff_manifoldSublevelInclusion
+  have hi := DifferentialGeometry.Topology.Manifold.contMDiff_manifoldSublevelInclusion
     (I := I) (fun x ↦ (f x - a) * (f x - b)) 0
     ((hf.sub contMDiff_const).mul (hf.sub contMDiff_const))
     (band_definingFunction_regular f a b hab hf hreg)
@@ -327,4 +327,4 @@ theorem exists_regularBandDiffeomorph
     regularBandDiffeomorph_height f a b hab hf hreg v hv hsupp hdfOn hrate,
     regularBandDiffeomorph_lower_endpoint f a b hab hf hreg v hv hsupp hdfOn hrate⟩
 
-end Poincare.Topology.Ehresmann
+end DifferentialGeometry.Topology.Ehresmann

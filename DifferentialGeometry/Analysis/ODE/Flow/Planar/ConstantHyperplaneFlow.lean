@@ -6,7 +6,7 @@ noncomputable section
 open Set Topology
 open scoped ContDiff
 
-namespace Poincare.Analysis
+namespace DifferentialGeometry.Analysis
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 
@@ -59,4 +59,4 @@ theorem le_iff_of_integralCurve_constant_hyperplane
       simpa only [map_add, map_smul, smul_eq_mul, hs, hc, mul_zero, add_zero] using hlevel.le
   exact ⟨hside s t, hside t s⟩
 
-end Poincare.Analysis
+end DifferentialGeometry.Analysis

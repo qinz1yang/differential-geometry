@@ -6,7 +6,7 @@ open Set Function Manifold Filter
 open scoped Topology ContDiff
 set_option autoImplicit false
 noncomputable section
-namespace Poincare.Manifold.BoundaryCollar
+namespace DifferentialGeometry.Manifold.BoundaryCollar
 
 theorem exists_inward_halfSpace_flowBox
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -44,4 +44,4 @@ theorem exists_inward_halfSpace_flowBox
   rw [← hAgf ⟨hh.1.2, hh.2, mem_univ _⟩]
   exact hder (0, p.2) t
 
-end Poincare.Manifold.BoundaryCollar
+end DifferentialGeometry.Manifold.BoundaryCollar

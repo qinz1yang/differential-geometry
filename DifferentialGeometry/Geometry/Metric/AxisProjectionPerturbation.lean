@@ -7,7 +7,7 @@ open scoped Manifold ContDiff
 open DifferentialGeometry DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.Analysis.Laplacian
 
-namespace Poincare.Geometry.Metric
+namespace DifferentialGeometry.Geometry.Metric
 
 theorem axis_projection_difference_bound
     {E H M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
@@ -62,4 +62,4 @@ theorem axis_projection_difference_bound
     hv, Real.sqrt_one, mul_one]
   exact hc
 
-end Poincare.Geometry.Metric
+end DifferentialGeometry.Geometry.Metric

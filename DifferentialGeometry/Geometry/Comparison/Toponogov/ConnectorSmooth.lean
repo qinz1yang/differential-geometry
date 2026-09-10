@@ -11,7 +11,7 @@ noncomputable section
 open Bundle Manifold Set Function Filter
 open scoped ENNReal Manifold ContDiff Topology
 
-namespace Poincare.Toponogov
+namespace DifferentialGeometry.Toponogov
 
 open DifferentialGeometry
 open DifferentialGeometry.Geometry.Riemannian
@@ -656,4 +656,4 @@ theorem SmoothGeodesicRepresentative.unitSpeed_Icc
   intro t ht
   simpa only [f, speedSq] using heqClosed ht
 
-end Poincare.Toponogov
+end DifferentialGeometry.Toponogov

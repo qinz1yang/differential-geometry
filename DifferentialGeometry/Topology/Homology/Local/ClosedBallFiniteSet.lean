@@ -4,7 +4,7 @@ import DifferentialGeometry.Topology.Homology.Local.FiniteSetDecomposition
 set_option autoImplicit false
 noncomputable section
 open CategoryTheory Set Metric
-namespace Poincare.Homology
+namespace DifferentialGeometry.Homology
 universe u
 variable {E : Type u} [PseudoMetricSpace E] (a : E) (r : ℝ)
   {k : Type u} [Ring k] (A : ModuleCat.{u} k) (Z : Set E) (hZ : Z ⊆ ball a r)
@@ -66,4 +66,4 @@ theorem closedBallPunctureHomologyMap_fundamentalClass_eq_finsum {d : ℕ}
     Z (ModuleCat.of ℤ ℤ) hfinite (d + 1)).injective
   rw [LinearEquiv.apply_symm_apply]
   exact closedBallPunctureHomologyMap_fundamentalClass a r hr Z hZ hfinite
-end Poincare.Homology
+end DifferentialGeometry.Homology

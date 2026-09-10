@@ -4,7 +4,7 @@ noncomputable section
 open Set
 open scoped Manifold ContDiff BigOperators
 
-namespace Poincare.Topology.Manifold
+namespace DifferentialGeometry.Topology.Manifold
 
 variable {n : ℕ} {E H M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
@@ -72,4 +72,4 @@ theorem mvfderiv_orderedStepPartition_sum_pos_of_local_products
     (∑ i, ρ i x * mvfderiv I (u i) x v)| ≤ B at herr
   linarith only [hmain', herr, hneg, hsmall]
 
-end Poincare.Topology.Manifold
+end DifferentialGeometry.Topology.Manifold

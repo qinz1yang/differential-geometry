@@ -5,7 +5,7 @@ noncomputable section
 open Set Topology
 open scoped ContDiff Manifold
 
-namespace Poincare.Geometry.VectorField
+namespace DifferentialGeometry.Geometry.VectorField
 
 set_option backward.isDefEq.respectTransparency false in
 theorem exists_planar_field_deformation_of_diffeomorph
@@ -35,7 +35,7 @@ theorem exists_planar_field_deformation_of_diffeomorph
     simpa only [HasCompactSupport, HasCompactMulSupport, tsupport, mulTSupport,
       Function.support, Function.mulSupport, sub_ne_zero] using hcompact
   obtain ⟨V, hV, hnonzero, hVzero, hVone, hsupp, D, hD, hderiv, hzero, hadd, hinv, hterminal⟩ :=
-    Poincare.Topology.Manifold.exists_nonvanishing_deformation_with_smooth_flows hW hWne hWcompact
+    DifferentialGeometry.Topology.Manifold.exists_nonvanishing_deformation_with_smooth_flows hW hWne hWcompact
   refine ⟨V, hV, hnonzero, hVzero, hVone, hsupp, D, hD, hderiv, hzero, hadd, hinv, ?_, hterminal⟩
   intro z t
   let R := |t| + 1
@@ -48,4 +48,4 @@ theorem exists_planar_field_deformation_of_diffeomorph
     (by rw [hzero]; simp)
   exact he ⟨by dsimp [R]; linarith [neg_abs_le t], by dsimp [R]; linarith [le_abs_self t]⟩
 
-end Poincare.Geometry.VectorField
+end DifferentialGeometry.Geometry.VectorField

@@ -10,7 +10,7 @@ open CategoryTheory CategoryTheory.Limits
 
 universe u v
 
-namespace Poincare.ShortComplex
+namespace DifferentialGeometry.ShortComplex
 
 variable {k : Type u} [Field k] (S : CategoryTheory.ShortComplex (ModuleCat.{v} k))
 
@@ -40,9 +40,9 @@ theorem finrank_eq_homology_add_range [FiniteDimensional k S.X₂] :
   have hrank := S.g.hom.finrank_range_add_finrank_ker
   omega
 
-end Poincare.ShortComplex
+end DifferentialGeometry.ShortComplex
 
-namespace Poincare.HomologicalComplex
+namespace DifferentialGeometry.HomologicalComplex
 
 variable {k : Type u} [Field k]
 
@@ -62,7 +62,7 @@ theorem finiteDimensional_homology {ι : Type*} {c : ComplexShape ι}
   have : FiniteDimensional k (K.sc i).X₂ := by
     change FiniteDimensional k (K.X i)
     infer_instance
-  exact Poincare.ShortComplex.finiteDimensional_homology (K.sc i)
+  exact DifferentialGeometry.ShortComplex.finiteDimensional_homology (K.sc i)
 
 private theorem alternating_sum_telescope (a h r : ℕ → ℤ)
     (hzero : a 0 = h 0 + r 0)
@@ -85,7 +85,7 @@ private theorem finrank_zero :
   have : FiniteDimensional k (K.sc' 1 0 0).X₂ := by
     change FiniteDimensional k (K.X 0)
     infer_instance
-  have h := Poincare.ShortComplex.finrank_eq_homology_add_range (K.sc' 1 0 0)
+  have h := DifferentialGeometry.ShortComplex.finrank_eq_homology_add_range (K.sc' 1 0 0)
   have hiso := (CategoryTheory.ShortComplex.homologyMapIso
     (K.isoSc' 1 0 0 (by simp) _root_.ChainComplex.next_nat_zero)).toLinearEquiv.finrank_eq
   change Module.finrank k (K.homology 0) = Module.finrank k (K.sc' 1 0 0).homology at hiso
@@ -104,7 +104,7 @@ private theorem finrank_succ (n : ℕ) :
   have : FiniteDimensional k (K.sc' (n + 2) (n + 1) n).X₂ := by
     change FiniteDimensional k (K.X (n + 1))
     infer_instance
-  have h := Poincare.ShortComplex.finrank_eq_homology_add_range (K.sc' (n + 2) (n + 1) n)
+  have h := DifferentialGeometry.ShortComplex.finrank_eq_homology_add_range (K.sc' (n + 2) (n + 1) n)
   have hiso := (CategoryTheory.ShortComplex.homologyMapIso
     (K.isoSc' (n + 2) (n + 1) n (by simp [Nat.add_assoc])
       (_root_.ChainComplex.next_nat_succ n))).toLinearEquiv.finrank_eq
@@ -149,4 +149,4 @@ theorem eulerChar_eq_homologyEulerChar
   have hzrank := finrank_range_eq_zero hd
   simpa [ComplexShape.χ, hzrank] using sum_finrank_eq_sum_homology_add_range K N
 
-end Poincare.HomologicalComplex
+end DifferentialGeometry.HomologicalComplex

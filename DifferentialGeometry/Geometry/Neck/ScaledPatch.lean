@@ -6,9 +6,9 @@ noncomputable section
 open Set Bundle Topology
 open scoped Manifold ContDiff BigOperators
 open DifferentialGeometry DifferentialGeometry.Geometry.Operator
-open Poincare.Geometry.Affine Poincare.Analysis
+open DifferentialGeometry.Geometry.Affine DifferentialGeometry.Analysis
 
-namespace Poincare.Geometry.Neck
+namespace DifferentialGeometry.Geometry.Neck
 
 theorem exists_regular_patch_of_scaled_neck_bands_on_intersections
     {E H W F H' M : Type*}
@@ -178,4 +178,4 @@ theorem exists_regular_patch_of_scaled_neck_bands
     exists_regular_patch_of_scaled_neck_bands_with_margin
       (I := I) (J := J) (W := W) (M := M) 1 zero_lt_one Cₒ hCₒ
 
-end Poincare.Geometry.Neck
+end DifferentialGeometry.Geometry.Neck

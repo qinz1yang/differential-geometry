@@ -5,7 +5,7 @@ noncomputable section
 open Set Filter Topology
 open scoped Manifold ContDiff
 
-namespace Poincare.Topology
+namespace DifferentialGeometry.Topology
 
 theorem antitone_of_separated_steps
     {ι X : Type*} [LinearOrder ι] (θ : ι → X → ℝ) (P Q : ι → Set X)
@@ -147,4 +147,4 @@ theorem orderedStepPartition_last_eq_one_near
   rw [hone y (interior_subset hy), hlast y, sub_zero]
 
 end Manifold
-end Poincare.Topology
+end DifferentialGeometry.Topology

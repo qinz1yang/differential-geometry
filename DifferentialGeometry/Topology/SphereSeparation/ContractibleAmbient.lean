@@ -5,7 +5,7 @@ set_option autoImplicit false
 open CategoryTheory
 open CategoryTheory.Limits
 
-namespace Poincare.Topology.SphereSeparation
+namespace DifferentialGeometry.Topology.SphereSeparation
 
 set_option backward.isDefEq.respectTransparency false in
 @[reassoc]
@@ -175,4 +175,4 @@ theorem hasAlexanderDualityH0Certificate_of_relativeH1
     (isZero_integerSingularHomology_one_of_contractible EuclideanThree)
     hrel
 
-end Poincare.Topology.SphereSeparation
+end DifferentialGeometry.Topology.SphereSeparation

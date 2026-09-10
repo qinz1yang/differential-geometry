@@ -9,7 +9,7 @@ noncomputable section
 open Set Function Manifold Topology TopologicalSpace
 open scoped ContDiff Topology
 open DifferentialGeometry.Integral.DivergenceTheorem.WithBoundary
-namespace Poincare.Manifold.Boundary
+namespace DifferentialGeometry.Manifold.Boundary
 
 theorem exists_definingFunction_sublevel_collar
     {n : ℕ} {M : Type} [TopologicalSpace M]
@@ -41,7 +41,7 @@ theorem exists_definingFunction_sublevel_collar
     BoundaryCollar.exists_unit_height_boundary_collar hK hV hpos W hBW
       (hr.mdifferentiable (by simp)) (fun p => (hrzero p.val).mpr p.property) hunit
   let _ : Fact ((0 : ℝ) < ε) := ⟨hε⟩
-  obtain ⟨η, hη, hηr⟩ := Poincare.Topology.exists_pos_lt_norm_of_isCompact
+  obtain ⟨η, hη, hηr⟩ := DifferentialGeometry.Topology.exists_pos_lt_norm_of_isCompact
     Y.isOpen.isClosed_compl.isCompact hr.continuous.continuousOn
     (fun x hx hz => hx (hBY ((hrzero x).mp hz)))
   let a := min (δ / 2) (η / 2)
@@ -96,7 +96,7 @@ theorem exists_definingFunction_sublevel_collar
   · let Uε : Opens (B × Icc (0 : ℝ) ε) :=
       ⟨{q | q.2.val < a}, isOpen_lt (continuous_subtype_val.comp continuous_snd) continuous_const⟩
     have hUεS : Uε ≤ S := fun q hq => hq.trans haδ
-    obtain ⟨Y', _, _, d, hd, _⟩ := Poincare.Manifold.Diffeomorph.exists_restrict_opens e Uε hUεS
+    obtain ⟨Y', _, _, d, hd, _⟩ := DifferentialGeometry.Manifold.Diffeomorph.exists_restrict_opens e Uε hUεS
     have hY'eq : (Y' : Set M) = {x | r x < a} := by
       ext x
       constructor
@@ -124,4 +124,4 @@ theorem exists_definingFunction_sublevel_collar
     intro q
     exact hd _
 
-end Poincare.Manifold.Boundary
+end DifferentialGeometry.Manifold.Boundary

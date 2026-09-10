@@ -11,9 +11,9 @@ set_option autoImplicit false
 
 open Metric
 
-namespace Poincare.Topology
+namespace DifferentialGeometry.Topology
 
-open Poincare.Algebra.Group
+open DifferentialGeometry.Algebra.Group
 
 
 noncomputable def antipodalScalar : sphere (0 : ℝ) 1 :=
@@ -122,4 +122,4 @@ noncomputable def fundamentalGroupRealProjectiveThreeEquivTwoElement :
     FundamentalGroup RealProjectiveThree realProjectiveThreeBasepoint ≃* TwoElementGroup :=
   fundamentalGroupFiniteFreeSphereThreeQuotientEquiv
 
-end Poincare.Topology
+end DifferentialGeometry.Topology

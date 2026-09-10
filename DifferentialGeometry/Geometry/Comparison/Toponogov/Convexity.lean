@@ -7,7 +7,7 @@ import Mathlib.Analysis.Convex.Deriv
 
 open Filter Set Topology
 
-namespace Poincare.Toponogov
+namespace DifferentialGeometry.Toponogov
 
 structure LowerSupportAt (f : ℝ → ℝ) (I : Set ℝ) (x : ℝ) where
 
@@ -240,4 +240,4 @@ theorem convex_endpoint_ge_of_lower_support {T ε d : ℝ} {f ψ : ℝ → ℝ}
   have := (le_div_iff₀ hT).mp hd_slope
   linarith
 
-end Poincare.Toponogov
+end DifferentialGeometry.Toponogov

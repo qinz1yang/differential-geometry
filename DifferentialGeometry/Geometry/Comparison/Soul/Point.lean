@@ -148,26 +148,14 @@ theorem isSoul.eq_singleton
 
 end DifferentialGeometry.Geometry
 
-namespace Poincare.Geometry
-
-alias subsingleton_of_compact_connected_geodesic_preserving_isometric_immersion := DifferentialGeometry.Geometry.subsingleton_of_compact_connected_geodesic_preserving_isometric_immersion
-alias subsingleton_of_compact_connected_vanishingSecondFundamentalForm_isometric_immersion := DifferentialGeometry.Geometry.subsingleton_of_compact_connected_vanishingSecondFundamentalForm_isometric_immersion
-end Poincare.Geometry
-
-namespace Poincare.Geometry.GeodesicPreservingSoulData
+namespace DifferentialGeometry.Geometry.GeodesicPreservingSoulData
 
 alias subsingleton := DifferentialGeometry.Geometry.GeodesicPreservingSoul.subsingleton
 alias range_eq_singleton := DifferentialGeometry.Geometry.GeodesicPreservingSoul.range_eq_singleton
-end Poincare.Geometry.GeodesicPreservingSoulData
+end DifferentialGeometry.Geometry.GeodesicPreservingSoulData
 
-namespace Poincare.Geometry.VanishingSecondFundamentalFormSoulData
+namespace DifferentialGeometry.Geometry.VanishingSecondFundamentalFormSoulData
 
 alias subsingleton := DifferentialGeometry.Geometry.Soul.subsingleton
 alias range_eq_singleton := DifferentialGeometry.Geometry.Soul.range_eq_singleton
-end Poincare.Geometry.VanishingSecondFundamentalFormSoulData
-
-namespace Poincare.Geometry.isSoul
-
-alias eq_singleton := DifferentialGeometry.Geometry.isSoul.eq_singleton
-
-end Poincare.Geometry.isSoul
+end DifferentialGeometry.Geometry.VanishingSecondFundamentalFormSoulData

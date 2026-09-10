@@ -7,7 +7,7 @@ noncomputable section
 open Set Filter Function Topology Manifold
 open scoped ContDiff
 
-namespace Poincare.Geometry.Boundary
+namespace DifferentialGeometry.Geometry.Boundary
 
 private theorem exists_open_initial_strip
     {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
@@ -185,4 +185,4 @@ theorem exists_collar_coordinates_of_one_sided
   change c.symm (d₀ (k z.1, z.2)) = φ (z.1, z.2.1 0)
   rw [heq, c.left_inv hqC]
 
-end Poincare.Geometry.Boundary
+end DifferentialGeometry.Geometry.Boundary

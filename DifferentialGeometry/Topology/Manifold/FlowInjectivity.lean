@@ -5,7 +5,7 @@ noncomputable section
 open Set Filter Function Topology Manifold
 open scoped ContDiff
 
-namespace Poincare.Topology.Manifold
+namespace DifferentialGeometry.Topology.Manifold
 
 variable {E H M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [TopologicalSpace H] [TopologicalSpace M] [ChartedSpace H M] [T2Space M]
@@ -37,4 +37,4 @@ theorem injOn_integralCurveFamily_of_height
   rw [hzero x hx.1, hzero y hy.1] at hxy
   exact Prod.ext hxy rfl
 
-end Poincare.Topology.Manifold
+end DifferentialGeometry.Topology.Manifold

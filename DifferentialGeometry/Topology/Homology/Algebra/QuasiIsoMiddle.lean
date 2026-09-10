@@ -4,7 +4,7 @@ set_option autoImplicit false
 open CategoryTheory ComposableArrows Abelian
 open _root_.HomologicalComplex _root_.HomologicalComplex.HomologySequence
 noncomputable section
-namespace Poincare.HomologicalComplex
+namespace DifferentialGeometry.HomologicalComplex
 variable {C ι : Type*} [Category* C] [Abelian C] {c : ComplexShape ι}
   {S₁ S₂ : ShortComplex (_root_.HomologicalComplex C c)}
   (φ : S₁ ⟶ S₂) (hS₁ : S₁.ShortExact) (hS₂ : S₂.ShortExact)
@@ -65,4 +65,4 @@ theorem quasiIso_middle (h₁ : QuasiIso φ.τ₁) (h₃ : QuasiIso φ.τ₃) : 
   apply isIso_homologyMap_middle φ hS₁ hS₂ i
   all_goals infer_instance
 
-end Poincare.HomologicalComplex
+end DifferentialGeometry.HomologicalComplex

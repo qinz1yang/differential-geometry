@@ -3,7 +3,7 @@ import Mathlib.Topology.Instances.Real.Lemmas
 
 open Set Function Topology Filter
 set_option autoImplicit false
-namespace Poincare.Topology
+namespace DifferentialGeometry.Topology
 
 theorem exists_shorter_strip_image_subset
     {B M : Type*} [TopologicalSpace B] [CompactSpace B] [TopologicalSpace M]
@@ -37,4 +37,4 @@ theorem exists_shorter_strip_image_subset
   rw [Metric.mem_ball, Real.dist_eq, sub_zero, abs_of_nonneg t.2.1]
   exact lt_of_lt_of_le ht (le_trans (min_le_right _ _) (by linarith))
 
-end Poincare.Topology
+end DifferentialGeometry.Topology

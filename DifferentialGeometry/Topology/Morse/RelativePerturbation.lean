@@ -8,7 +8,7 @@ noncomputable section
 open Bundle Set Filter Function Module
 open scoped Manifold ContDiff Topology
 universe uE uH uM
-namespace Poincare.Morse
+namespace DifferentialGeometry.Morse
 variable {E : Type uE} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
   {H : Type uH} [TopologicalSpace H] {M : Type uM} [TopologicalSpace M]
   [ChartedSpace H M] (I : ModelWithCorners ℝ E H) [IsManifold I ∞ M] [T2Space M]
@@ -169,4 +169,4 @@ theorem exists_supported_differentials_span_of_isCompact {K U : Set M}
       hFc.comp_left (map_zero L), (tsupport_comp_subset (map_zero L) F).trans hFU⟩
   · exact span_mfderiv_components_of_injective (hF.mdifferentiableAt (by simp)) (hFinj x hx)
 
-end Poincare.Morse
+end DifferentialGeometry.Morse

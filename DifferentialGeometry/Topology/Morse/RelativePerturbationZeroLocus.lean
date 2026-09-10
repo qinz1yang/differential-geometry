@@ -6,7 +6,7 @@ set_option autoImplicit false
 noncomputable section
 open Set Function Filter
 open scoped Manifold ContDiff Topology BigOperators
-namespace Poincare.Morse
+namespace DifferentialGeometry.Morse
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
   {n : ℕ}
 
@@ -100,4 +100,4 @@ theorem ae_regular_perturbationZero_projection {f : E → ℝ} {φ : Fin n → E
   let _ := perturbationZeroIsManifold hf hφ
   exact ae_regular_values μ ((contMDiff_perturbationZero_projection hf hφ).mdifferentiable one_ne_zero)
 
-end Poincare.Morse
+end DifferentialGeometry.Morse

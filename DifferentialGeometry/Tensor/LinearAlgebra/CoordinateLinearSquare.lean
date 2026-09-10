@@ -5,7 +5,7 @@ noncomputable section
 open Set
 open scoped ContDiff Manifold
 
-namespace Poincare.Analysis
+namespace DifferentialGeometry.Analysis
 
 theorem det_pos_iff_of_coordinate_linear_square
     {E F : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -53,4 +53,4 @@ theorem det_pos_iff_of_coordinate_linear_square
   rw [mul_pos_iff_of_pos_right hsq, mul_pos_iff_of_pos_right hpos, hM] at hi
   exact Iff.of_eq hi
 
-end Poincare.Analysis
+end DifferentialGeometry.Analysis

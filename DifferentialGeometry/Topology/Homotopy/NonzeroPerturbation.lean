@@ -6,7 +6,7 @@ import DifferentialGeometry.Topology.Compactness.Nonvanishing
 set_option autoImplicit false
 noncomputable section
 open Set Metric
-namespace Poincare.Topology
+namespace DifferentialGeometry.Topology
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 
 theorem affineInterpolation_ne_zero_of_norm_sub_lt {u v : E}
@@ -44,4 +44,4 @@ theorem exists_pos_nonzero_affineHomotopy [CompactSpace X] (f : C(X, E))
   exact ⟨δ,hδ,fun g hg q => affineHomotopy_ne_zero_of_norm_sub_lt f g
     (fun x => (hg x).trans (hbound x (mem_univ x))) q⟩
 
-end Poincare.Topology
+end DifferentialGeometry.Topology

@@ -6,7 +6,7 @@ set_option autoImplicit false
 noncomputable section
 open Set Metric Filter Bundle
 open scoped Manifold ContDiff Topology
-namespace Poincare.VectorField
+namespace DifferentialGeometry.VectorField
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
   {H M : Type*} [TopologicalSpace H] [TopologicalSpace M] [ChartedSpace H M]
   (I : ModelWithCorners ℝ E H) [IsManifold I ∞ M] [T2Space M]
@@ -35,11 +35,11 @@ theorem exists_pairwise_disjoint_zero_charts (hfinite : {x | V x = 0}.Finite)
           V ((c p).symm y) ≠ 0 ∧
             _root_.VectorField.mpullback 𝓘(ℝ,E) I (c p).symm V y ≠ 0) := by
   obtain ⟨R,hR,hRt,hdis,hone⟩ :=
-    Poincare.Manifold.exists_pairwise_disjoint_interiorChart_closedBalls I hfinite hinterior
+    DifferentialGeometry.Manifold.exists_pairwise_disjoint_interiorChart_closedBalls I hfinite hinterior
   let c : {x | V x = 0} → PartialDiffeomorph I 𝓘(ℝ,E) M E ∞ :=
-    fun p => Poincare.Manifold.interiorChart I ∞ p.val
+    fun p => DifferentialGeometry.Manifold.interiorChart I ∞ p.val
   have hsource (p : {x | V x = 0}) : p.val ∈ (c p).source :=
-    (Poincare.Manifold.mem_interiorChart_source_iff I ∞ p.val).mpr (hinterior p p.property)
+    (DifferentialGeometry.Manifold.mem_interiorChart_source_iff I ∞ p.val).mpr (hinterior p p.property)
   have hr (p : {x | V x = 0}) : 0 < R p / 2 ∧ R p / 2 < R p :=
     ⟨half_pos (hR p),half_lt_self (hR p)⟩
   have hzero (p : {x | V x = 0}) (x : M)
@@ -82,4 +82,4 @@ theorem exists_pairwise_disjoint_zero_charts (hfinite : {x | V x = 0}.Finite)
   apply hannulus p y (sphere_subset_closedBall hy)
   exact (hr p).2.le.trans_eq (mem_sphere.mp hy).symm
 
-end Poincare.VectorField
+end DifferentialGeometry.VectorField

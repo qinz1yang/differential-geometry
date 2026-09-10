@@ -8,7 +8,7 @@ noncomputable section
 open Set Function Filter Bundle Manifold
 open scoped Topology Manifold ContDiff
 
-namespace Poincare.Geometry.Riemannian.VolumeComparison
+namespace DifferentialGeometry.Geometry.Riemannian.VolumeComparison
 
 private def residualSlots3
     (x y z : DifferentialGeometry.CheegerGromovCompactness.CurvatureJetTerm) :
@@ -717,4 +717,4 @@ theorem intrJetResidual_two_zero_eq_curvature
     (tangentSpaceModelContinuousLinearEquiv_symm_apply (I := I)
       (intrinsicLaunch3 (I := I) g hEnorm p 0 a b ((0, 0), 1)) ((-2 : ℝ) • R))
 
-end Poincare.Geometry.Riemannian.VolumeComparison
+end DifferentialGeometry.Geometry.Riemannian.VolumeComparison

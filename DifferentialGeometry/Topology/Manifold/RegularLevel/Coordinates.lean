@@ -7,7 +7,7 @@ open scoped Manifold ContDiff Topology
 set_option autoImplicit false
 noncomputable section
 
-namespace Poincare.Manifold.RegularLevel
+namespace DifferentialGeometry.Manifold.RegularLevel
 
 private theorem exists_euclidean_regular_coordinates {m : ℕ}
     {g : MorseModel (m + 1) → ℝ} {s : Set (MorseModel (m + 1))}
@@ -197,4 +197,4 @@ theorem coordinate_change {f : M → ℝ} {a : ℝ}
     _ = z (Fin.last m) := congrArg (fun w : MorseModel (m + 1) => w (Fin.last m))
       (Φ.right_inv hz.1)
 
-end Poincare.Manifold.RegularLevel
+end DifferentialGeometry.Manifold.RegularLevel

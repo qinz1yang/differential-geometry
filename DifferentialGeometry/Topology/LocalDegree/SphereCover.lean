@@ -6,7 +6,7 @@ set_option autoImplicit false
 open Metric Set Module ContinuousMap
 open scoped Topology RealInnerProductSpace unitInterval
 noncomputable section
-namespace Poincare.LocalDegree
+namespace DifferentialGeometry.LocalDegree
 
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
 
@@ -232,4 +232,4 @@ theorem isEmpty_euclideanZeroSphereIntersection : IsEmpty (poleIntersection (euc
   let : Fact (finrank ℝ (EuclideanSpace ℝ (Fin (0 + 1))) = 1) := ⟨by simp⟩
   exact isEmpty_poleIntersection_of_finrank_one _
 
-end Poincare.LocalDegree
+end DifferentialGeometry.LocalDegree

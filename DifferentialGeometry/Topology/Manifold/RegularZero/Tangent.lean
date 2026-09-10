@@ -5,7 +5,7 @@ set_option autoImplicit false
 noncomputable section
 open Set Filter Function
 open scoped Manifold ContDiff Topology
-namespace Poincare.Manifold.RegularZero
+namespace DifferentialGeometry.Manifold.RegularZero
 variable {A B C : Type*} [NormedAddCommGroup A] [NormedSpace ℝ A]
   [NormedAddCommGroup B] [NormedSpace ℝ B] [NormedAddCommGroup C] [NormedSpace ℝ C]
   {S : Set A} {n : ℕ∞ω}
@@ -121,4 +121,4 @@ theorem range_mfderiv_inclusion (hn : n ≠ 0) (hs : IsOpen S) (hg : ContDiffOn 
   omega
 
 end FiniteDimension
-end Poincare.Manifold.RegularZero
+end DifferentialGeometry.Manifold.RegularZero

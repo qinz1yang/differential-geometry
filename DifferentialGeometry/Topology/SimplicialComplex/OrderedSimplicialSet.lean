@@ -7,7 +7,7 @@ import Mathlib.Data.Finset.Sort
 set_option autoImplicit false
 noncomputable section
 open CategoryTheory Simplicial Opposite
-namespace Poincare.Topology.SimplicialComplex
+namespace DifferentialGeometry.Topology.SimplicialComplex
 universe u
 variable {ι : Type u} [LinearOrder ι] (K : PreAbstractSimplicialComplex ι)
 
@@ -100,4 +100,4 @@ instance finite_orderedSimplicialSet [Finite K.faces] : (orderedSimplicialSet K)
       (fun _ _ h => Subtype.ext (congrArg (fun t : K.faces => t.val) h))
   exact Finite.of_equiv _ (orderedNondegenerateFaceEquiv K n).symm
 
-end Poincare.Topology.SimplicialComplex
+end DifferentialGeometry.Topology.SimplicialComplex

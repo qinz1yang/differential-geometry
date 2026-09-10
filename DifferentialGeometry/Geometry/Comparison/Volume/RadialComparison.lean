@@ -12,7 +12,7 @@ noncomputable section
 open Bundle Filter Function Manifold Set
 open scoped ContDiff Manifold Matrix Topology
 
-namespace Poincare.Geometry.Riemannian.VolumeComparison
+namespace DifferentialGeometry.Geometry.Riemannian.VolumeComparison
 
 open DifferentialGeometry
 open DifferentialGeometry.Geometry.Riemannian
@@ -733,4 +733,4 @@ theorem intrHypRatioOfFrame_on
   exact curveRatio_anti (I := I) (n := (2 : WithTop ℕ∞)) (by norm_num)
     g γ V (q * ell) b d (mul_nonneg hq hell.le) hγ hVdiff hLI hW hmean
 
-end Poincare.Geometry.Riemannian.VolumeComparison
+end DifferentialGeometry.Geometry.Riemannian.VolumeComparison

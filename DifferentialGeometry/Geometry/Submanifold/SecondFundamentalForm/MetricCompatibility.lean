@@ -1,4 +1,3 @@
-import Batteries.Tactic.Alias
 import DifferentialGeometry.Geometry.Submanifold.IsometricImmersion
 import DifferentialGeometry.Geometry.Connection.ChartFrame.ChartSection
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.AlongCurve
@@ -204,19 +203,3 @@ theorem IsRiemannianIsometricImmersion.chartMetricBilin_pullback_eventually
 end ChartDerivative
 
 end DifferentialGeometry.Geometry
-
-namespace Poincare.Geometry
-
-@[reducible] alias chartMetricBilin := DifferentialGeometry.Geometry.chartMetricBilin
-alias chartMetricBilin_apply := DifferentialGeometry.Geometry.chartMetricBilin_apply
-alias chartMetricBilin_trivToE := DifferentialGeometry.Geometry.chartMetricBilin_trivToE
-alias chartMetricBilin_hasDerivAt := DifferentialGeometry.Geometry.chartMetricBilin_hasDerivAt
-alias trivToE_mfderiv_trivFromE := DifferentialGeometry.Geometry.trivToE_mfderiv_trivFromE
-end Poincare.Geometry
-
-namespace Poincare.Geometry.IsRiemannianIsometricImmersion
-
-alias chartMetricBilin_pullback := DifferentialGeometry.Geometry.IsRiemannianIsometricImmersion.chartMetricBilin_pullback
-alias chartMetricBilin_pullback_eventually := DifferentialGeometry.Geometry.IsRiemannianIsometricImmersion.chartMetricBilin_pullback_eventually
-
-end Poincare.Geometry.IsRiemannianIsometricImmersion

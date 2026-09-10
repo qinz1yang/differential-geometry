@@ -4,7 +4,7 @@ open Set DifferentialGeometry.Topology.Morse
 open scoped Manifold ContDiff Topology
 set_option autoImplicit false
 noncomputable section
-namespace Poincare.Manifold.RegularLevel
+namespace DifferentialGeometry.Manifold.RegularLevel
 
 private def restrictSubtypes {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
     (e : OpenPartialHomeomorph X Y) {S : Set X} {T : Set Y}
@@ -337,4 +337,4 @@ theorem contMDiff_sublevel_iff
   let _ := sublevelChartedSpace I hf hr
   exact forall_congr' (fun _ => contMDiffAt_sublevel_iff I J hf hr hn)
 
-end Poincare.Manifold.RegularLevel
+end DifferentialGeometry.Manifold.RegularLevel

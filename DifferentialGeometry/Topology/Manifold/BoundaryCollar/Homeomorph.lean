@@ -5,7 +5,7 @@ open scoped ContDiff
 open DifferentialGeometry.Integral.DivergenceTheorem.WithBoundary
 set_option autoImplicit false
 noncomputable section
-namespace Poincare.Manifold.BoundaryCollar
+namespace DifferentialGeometry.Manifold.BoundaryCollar
 
 
 def halfOpenStrip {B M : Type*} {ε δ : ℝ} (c : B × Icc (0 : ℝ) ε → M)
@@ -58,4 +58,4 @@ theorem exists_boundary_collar_homeomorph
   · intro p t ht
     exact hi p ⟨t, t.2.1, t.2.2.le.trans hδε.le⟩ ht
 
-end Poincare.Manifold.BoundaryCollar
+end DifferentialGeometry.Manifold.BoundaryCollar

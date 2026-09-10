@@ -324,42 +324,17 @@ end GermInRange
 
 end DifferentialGeometry.Geometry
 
-namespace Poincare.Geometry
-
-@[reducible] alias IsRiemannianIsometricImmersion := DifferentialGeometry.Geometry.IsRiemannianIsometricImmersion
-end Poincare.Geometry
-
-namespace Poincare.Geometry.IsRiemannianIsometricImmersion
-
-alias contMDiff := DifferentialGeometry.Geometry.IsRiemannianIsometricImmersion.contMDiff
-alias continuous := DifferentialGeometry.Geometry.IsRiemannianIsometricImmersion.continuous
-alias speed_sq_comp := DifferentialGeometry.Geometry.IsRiemannianIsometricImmersion.speed_sq_comp
-alias of_is_smooth_embedding := DifferentialGeometry.Geometry.IsRiemannianIsometricImmersion.of_is_smooth_embedding
-end Poincare.Geometry.IsRiemannianIsometricImmersion
-
-namespace Poincare.Geometry
+namespace DifferentialGeometry.Geometry
 
 @[reducible] alias PreservesGeodesics := DifferentialGeometry.Geometry.preservesGeodesics
-end Poincare.Geometry
+end DifferentialGeometry.Geometry
 
-namespace Poincare.Geometry.PreservesGeodesics
+namespace DifferentialGeometry.Geometry.PreservesGeodesics
 
 alias is_geodesic_on := DifferentialGeometry.Geometry.preservesGeodesics.is_geodesic_on
-end Poincare.Geometry.PreservesGeodesics
+end DifferentialGeometry.Geometry.PreservesGeodesics
 
-namespace Poincare.Geometry
+namespace DifferentialGeometry.Geometry
 
 @[reducible] alias IsUnitSpeedGeodesicGermIn := DifferentialGeometry.Geometry.isUnitSpeedGeodesicGermIn
-alias exists_unit_tangent_of_finrank_pos := DifferentialGeometry.Geometry.exists_unit_tangent_of_finrank_pos
-alias exists_isGeodesicAt_on_ioo_at_velocity := DifferentialGeometry.Geometry.exists_isGeodesicAt_on_ioo_at_velocity
-alias exists_unit_speed_geodesic_germ_at := DifferentialGeometry.Geometry.exists_unit_speed_geodesic_germ_at
-alias exists_unit_speed_geodesic_germ_in_range := DifferentialGeometry.Geometry.exists_unit_speed_geodesic_germ_in_range
-end Poincare.Geometry
-
-namespace Poincare.Geometry.IsRiemannianIsometricImmersion
-
-@[reducible] alias mk := DifferentialGeometry.Geometry.IsRiemannianIsometricImmersion.mk
-alias isImmersion := DifferentialGeometry.Geometry.IsRiemannianIsometricImmersion.isImmersion
-alias inner_map := DifferentialGeometry.Geometry.IsRiemannianIsometricImmersion.inner_map
-
-end Poincare.Geometry.IsRiemannianIsometricImmersion
+end DifferentialGeometry.Geometry

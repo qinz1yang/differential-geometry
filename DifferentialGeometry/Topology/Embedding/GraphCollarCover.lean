@@ -4,7 +4,7 @@ import DifferentialGeometry.Topology.GraphBandChart
 noncomputable section
 open Set Topology
 
-namespace Poincare.Topology.Embedding
+namespace DifferentialGeometry.Topology.Embedding
 
 theorem cover_and_between_subset_of_chart_graph_collars
     {X Y N : Type*} [TopologicalSpace X] [PreconnectedSpace X]
@@ -74,4 +74,4 @@ theorem cover_and_between_subset_of_chart_graph_collars
   exact ⟨mem_univ _, (hla (x : N × ℝ).1).trans hx.1,
     hx.2.trans (hdr (x : N × ℝ).1)⟩
 
-end Poincare.Topology.Embedding
+end DifferentialGeometry.Topology.Embedding

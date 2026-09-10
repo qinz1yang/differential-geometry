@@ -1,4 +1,3 @@
-import Batteries.Tactic.Alias
 import DifferentialGeometry.Geometry.Curve.Reparametrization
 import DifferentialGeometry.Geometry.Geodesic.Chart.Regularity
 import DifferentialGeometry.Geometry.Geodesic.Flow.CrossVectorFieldReduction
@@ -65,12 +64,3 @@ theorem isGeodesicAt_congr {g : SmoothRiemannianMetric I M} {γ β : ℝ → M} 
     exact hd
 
 end DifferentialGeometry.Geometry
-
-namespace Poincare.Geometry
-
-alias eventually_isGeodesicAt := DifferentialGeometry.Geometry.eventually_isGeodesicAt
-alias contMDiffAt_of_isGeodesicAt := DifferentialGeometry.Geometry.contMDiffAt_of_isGeodesicAt
-alias isGeodesicAt_comp_add := DifferentialGeometry.Geometry.isGeodesicAt_comp_add
-alias isGeodesicAt_congr := DifferentialGeometry.Geometry.isGeodesicAt_congr
-
-end Poincare.Geometry

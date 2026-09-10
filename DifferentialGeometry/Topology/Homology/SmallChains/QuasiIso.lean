@@ -6,7 +6,7 @@ set_option autoImplicit false
 open CategoryTheory CategoryTheory.Limits
 noncomputable section
 universe u v
-namespace Poincare.Homology
+namespace DifferentialGeometry.Homology
 variable (X : TopCat.{u}) {ι : Type v} (U : ι → Set X)
   {k : Type u} [Ring k] (R : ModuleCat.{u} k)
 
@@ -14,7 +14,7 @@ theorem quasiIso_smallChainMap
     (hopen : ∀ i, IsOpen (U i)) (hcover : ∀ x : X, ∃ i, x ∈ U i) :
     QuasiIso (smallChainMap X U R) := by
   let := mono_smallChainMap X U R
-  apply Poincare.HomologicalComplex.quasiIso_of_eventually_in_image (smallChainMap X U R)
+  apply DifferentialGeometry.HomologicalComplex.quasiIso_of_eventually_in_image (smallChainMap X U R)
     (smallSingularSubdivision X U R) (End.of (singularSubdivision R X))
     (smallSingularSubdivision_inclusion X U R).symm
     (singularSubdivisionHomotopy R X) (smallSingularSubdivisionHomotopyMap X U R)
@@ -38,4 +38,4 @@ theorem smallChainHomologyIso_hom
     (smallChainHomologyIso X U R hopen hcover n).hom =
       _root_.HomologicalComplex.homologyMap (smallChainMap X U R) n := rfl
 
-end Poincare.Homology
+end DifferentialGeometry.Homology

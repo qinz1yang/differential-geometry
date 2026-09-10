@@ -6,7 +6,7 @@ import Mathlib.Topology.Order.ProjIcc
 noncomputable section
 open Set Topology
 
-namespace Poincare.Topology.Embedding
+namespace DifferentialGeometry.Topology.Embedding
 
 theorem exists_curve_of_product_chart_segment
     {N M W : Type*} [TopologicalSpace N] [TopologicalSpace M] [TopologicalSpace W]
@@ -39,4 +39,4 @@ theorem exists_curve_of_product_chart_segment
   change (p, t + σ * (projIcc 0 r hr.le s : ℝ)) = (p, t + σ * s)
   rw [projIcc_of_mem hr.le hs]
 
-end Poincare.Topology.Embedding
+end DifferentialGeometry.Topology.Embedding

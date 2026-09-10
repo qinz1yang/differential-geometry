@@ -67,14 +67,13 @@ def isSoul {E H M : Type*}
 
 end DifferentialGeometry.Geometry
 
-namespace Poincare.Geometry
+namespace DifferentialGeometry.Geometry
 
 @[reducible] alias GeodesicPreservingSoulData := DifferentialGeometry.Geometry.GeodesicPreservingSoul
 @[reducible] alias VanishingSecondFundamentalFormSoulData := DifferentialGeometry.Geometry.Soul
-@[reducible] alias isSoul := DifferentialGeometry.Geometry.isSoul
-end Poincare.Geometry
+end DifferentialGeometry.Geometry
 
-namespace Poincare.Geometry.GeodesicPreservingSoulData
+namespace DifferentialGeometry.Geometry.GeodesicPreservingSoulData
 
 @[reducible] alias mk := DifferentialGeometry.Geometry.GeodesicPreservingSoul.mk
 alias nonempty := DifferentialGeometry.Geometry.GeodesicPreservingSoul.nonempty
@@ -85,9 +84,9 @@ alias isSmoothEmbedding := DifferentialGeometry.Geometry.GeodesicPreservingSoul.
 alias isometricImmersion := DifferentialGeometry.Geometry.GeodesicPreservingSoul.isometricImmersion
 alias totallyConvex := DifferentialGeometry.Geometry.GeodesicPreservingSoul.totallyConvex
 alias preservesGeodesics := DifferentialGeometry.Geometry.GeodesicPreservingSoul.preservesGeodesics
-end Poincare.Geometry.GeodesicPreservingSoulData
+end DifferentialGeometry.Geometry.GeodesicPreservingSoulData
 
-namespace Poincare.Geometry.VanishingSecondFundamentalFormSoulData
+namespace DifferentialGeometry.Geometry.VanishingSecondFundamentalFormSoulData
 
 @[reducible] alias mk := DifferentialGeometry.Geometry.Soul.mk
 alias nonempty := DifferentialGeometry.Geometry.Soul.nonempty
@@ -99,4 +98,4 @@ alias isometricImmersion := DifferentialGeometry.Geometry.Soul.isometricImmersio
 alias totallyConvex := DifferentialGeometry.Geometry.Soul.totallyConvex
 alias vanishingSecondFundamentalForm := DifferentialGeometry.Geometry.Soul.vanishingSecondFundamentalForm
 
-end Poincare.Geometry.VanishingSecondFundamentalFormSoulData
+end DifferentialGeometry.Geometry.VanishingSecondFundamentalFormSoulData

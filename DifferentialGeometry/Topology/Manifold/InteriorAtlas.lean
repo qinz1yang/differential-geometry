@@ -5,7 +5,7 @@ set_option autoImplicit false
 open Set
 open scoped Manifold ContDiff Topology
 noncomputable section
-namespace Poincare.Manifold
+namespace DifferentialGeometry.Manifold
 
 variable {𝕜 : Type*} [NontriviallyNormedField 𝕜]
   {E : Type*} [NormedAddCommGroup E] [NormedSpace 𝕜 E]
@@ -108,4 +108,4 @@ theorem contMDiff_intrinsicInterior_val (hn : n ≠ 0) :
   exact (contMDiff_subtype_val (I := I) (U := U)).comp
     (contMDiff_interiorAtlas_id I n (M := U))
 
-end Poincare.Manifold
+end DifferentialGeometry.Manifold

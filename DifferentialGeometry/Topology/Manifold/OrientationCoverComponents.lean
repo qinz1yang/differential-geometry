@@ -36,7 +36,7 @@ theorem tangentOrientationProjection_isClosedMap (hdim : Module.finrank ℝ E = 
   let : Fintype (Orientation ℝ E (Fin n)) := Fintype.ofEquiv Bool
     (DifferentialGeometry.VectorBundle.orientationEquivBool
       ((Module.finBasis ℝ E).reindex (finCongr hdim))).symm
-  exact Poincare.Topology.FiberBundle.isClosedMap_projection_of_finite
+  exact DifferentialGeometry.Topology.FiberBundle.isClosedMap_projection_of_finite
     (DifferentialGeometry.VectorBundle.orientationCore (tangentBundleCore 𝓘(ℝ, E) M) hdim)
 
 theorem exists_compatibleOrientation_of_orientationCover_not_connected

@@ -4,7 +4,7 @@ import Mathlib.Topology.Order.ProjIcc
 set_option autoImplicit false
 noncomputable section
 open Set Function Topology
-namespace Poincare.Topology
+namespace DifferentialGeometry.Topology
 variable {X : Type*} [TopologicalSpace X] [CompactSpace X] [T2Space X]
   (B : Set X) (r : C(X, ℝ)) (hr : ∀ b : B, r b.val = 0)
   (hz : ∀ x, r x = 0 → x ∈ B)
@@ -85,4 +85,4 @@ theorem isEmbedding_doubleSeam (hc : IsEmbedding c) :
   have hbase := congrArg Prod.fst (hc.injective (congrArg Prod.fst hh))
   exact Prod.ext hbase (Subtype.ext (congrArg Prod.snd hh))
 
-end Poincare.Topology
+end DifferentialGeometry.Topology

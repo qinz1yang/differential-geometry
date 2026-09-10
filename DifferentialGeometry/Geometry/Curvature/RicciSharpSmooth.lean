@@ -8,7 +8,7 @@ open scoped Manifold ContDiff
 open DifferentialGeometry DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator DifferentialGeometry.Integral.Measure
 
-namespace Poincare.Geometry.Curvature
+namespace DifferentialGeometry.Geometry.Curvature
 
 theorem ricciSharp_contMDiff
     {E H M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
@@ -39,4 +39,4 @@ theorem ricciSharp_contMDiff
   intro x hx
   exact (contMDiffWithinAt_totalSpace.mp (ht x hx)).2
 
-end Poincare.Geometry.Curvature
+end DifferentialGeometry.Geometry.Curvature

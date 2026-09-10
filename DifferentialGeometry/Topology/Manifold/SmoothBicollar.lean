@@ -14,7 +14,7 @@ open scoped Manifold ContDiff
 
 noncomputable section
 
-namespace Poincare.Topology
+namespace DifferentialGeometry.Topology
 
 open DifferentialGeometry.Analysis.ODE
 
@@ -58,4 +58,4 @@ theorem exists_smoothTwoSidedCollar_of_smoothSphereEmbedding
   obtain ⟨C⟩ := nonempty_coorientedSmoothSphereEmbeddingRealNormalAtlas he
   exact exists_smoothTwoSidedCollar_of_coorientedAtlas C he.isEmbedding.injective (by simp)
 
-end Poincare.Topology
+end DifferentialGeometry.Topology

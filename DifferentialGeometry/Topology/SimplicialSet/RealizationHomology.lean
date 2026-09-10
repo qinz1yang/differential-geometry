@@ -15,7 +15,7 @@ open CategoryTheory CategoryTheory.Limits Simplicial
 
 universe u
 
-namespace Poincare.SSet
+namespace DifferentialGeometry.SSet
 
 variable {k : Type u} [Ring k]
 
@@ -159,4 +159,4 @@ theorem quasiIso_realizationChainMap_stdSimplex (n : ℕ) (R : ModuleCat.{u} k) 
   · exact (isZero_homology_stdSimplex n m hm R).isIso
       (isZero_homology_toSSet_of_contractible _ R m hm) _
 
-end Poincare.SSet
+end DifferentialGeometry.SSet

@@ -7,7 +7,7 @@ open scoped Manifold ContDiff Topology
 set_option autoImplicit false
 noncomputable section
 
-namespace Poincare.VectorBundle
+namespace DifferentialGeometry.VectorBundle
 
 variable {EB HB B F : Type*}
   [NormedAddCommGroup EB] [NormedSpace ℝ EB] [FiniteDimensional ℝ EB]
@@ -68,4 +68,4 @@ theorem exists_contMDiff_section_covector_pos
     (fun x => (convex_Ioi (0 : ℝ)).linear_preimage (ν x).toLinearMap) hlocal
   exact ⟨W, W.contMDiff, hW⟩
 
-end Poincare.VectorBundle
+end DifferentialGeometry.VectorBundle

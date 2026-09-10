@@ -7,7 +7,7 @@ open scoped Manifold ContDiff
 set_option autoImplicit false
 noncomputable section
 
-namespace Poincare.Manifold.BoundaryCollar
+namespace DifferentialGeometry.Manifold.BoundaryCollar
 
 variable {n : ℕ} [NeZero n] {M : Type*} [TopologicalSpace M]
   [ChartedSpace (EuclideanHalfSpace n) M] [IsManifold (𝓡∂ n) ∞ M]
@@ -132,4 +132,4 @@ theorem exists_smooth_boundary_definingFunction (hK : IsCompact ((𝓡∂ n).bou
   erw [hzero] at hdf
   exact lt_irrefl (0 : ℝ) hdf
 
-end Poincare.Manifold.BoundaryCollar
+end DifferentialGeometry.Manifold.BoundaryCollar

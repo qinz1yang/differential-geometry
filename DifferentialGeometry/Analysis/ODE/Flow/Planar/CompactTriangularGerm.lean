@@ -6,7 +6,7 @@ noncomputable section
 open Set Metric Filter Topology
 open scoped ContDiff Manifold
 
-namespace Poincare.Analysis
+namespace DifferentialGeometry.Analysis
 
 theorem exists_compact_isotopy_realizing_shear
     (s r : ℝ) (hr : 0 < r) :
@@ -60,4 +60,4 @@ theorem exists_compact_isotopy_realizing_vertical_scale
   refine ⟨D, hD, hDi, hD0, ?_, hfix⟩
   simpa only [Γ, one_mul, Real.exp_log hb] using hgerm
 
-end Poincare.Analysis
+end DifferentialGeometry.Analysis

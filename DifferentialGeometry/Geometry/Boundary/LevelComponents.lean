@@ -7,10 +7,10 @@ noncomputable section
 open Set Filter Function Topology Manifold
 open scoped ContDiff
 
-namespace Poincare.Geometry.Boundary
+namespace DifferentialGeometry.Geometry.Boundary
 
 open DifferentialGeometry.Integral.DivergenceTheorem.WithBoundary
-open Poincare.Topology.Manifold
+open DifferentialGeometry.Topology.Manifold
 
 variable {E H M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [TopologicalSpace H] [TopologicalSpace M] [ChartedSpace H M]
@@ -112,4 +112,4 @@ theorem range_boundaryLevelInclusion_upper [CompactSpace M]
       simpa only [show u x = b from hx] using hh)
     exact ⟨⟨⟨x, isBoundaryPoint_of_isLocalMax_of_mfderiv_ne_zero hmax (hreg x)⟩, hx⟩, rfl⟩
 
-end Poincare.Geometry.Boundary
+end DifferentialGeometry.Geometry.Boundary

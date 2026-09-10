@@ -5,7 +5,7 @@ import Mathlib.Geometry.Manifold.Algebra.Structures
 open Function Set
 open scoped ContDiff Manifold Topology Matrix.Norms.Elementwise
 
-namespace Poincare.Topology.SphereSeparation
+namespace DifferentialGeometry.Topology.SphereSeparation
 
 theorem mvfderiv_subtypeVal_punctured (y : puncturedEuclideanThree) :
     mvfderiv (modelWithCornersSelf ℝ EuclideanThree)
@@ -580,4 +580,4 @@ theorem contMDiff_embeddedSphereAdjugateNormal
   intro x
   rfl
 
-end Poincare.Topology.SphereSeparation
+end DifferentialGeometry.Topology.SphereSeparation

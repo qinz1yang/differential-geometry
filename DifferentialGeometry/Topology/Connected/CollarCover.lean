@@ -2,7 +2,7 @@ import Mathlib.Topology.Connected.Clopen
 
 open Set
 
-namespace Poincare.Topology
+namespace DifferentialGeometry.Topology
 
 theorem cover_and_between_subset_of_frontier_sections
     {X : Type*} [TopologicalSpace X] [PreconnectedSpace X]
@@ -36,4 +36,4 @@ theorem cover_and_between_subset_of_frontier_sections
   · exact hd
   · exact hBD (hQ ⟨subset_closure hq, hx.2⟩)
 
-end Poincare.Topology
+end DifferentialGeometry.Topology

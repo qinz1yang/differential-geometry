@@ -13,12 +13,12 @@ noncomputable section
 open Bundle Filter Manifold Set Topology
 open scoped ENNReal Manifold ContDiff Topology
 
-namespace Poincare.Toponogov
+namespace DifferentialGeometry.Toponogov
 
 open DifferentialGeometry
 open DifferentialGeometry.Geometry.Riemannian
 open DifferentialGeometry.Geometry.Riemannian.Exponential
-open Poincare.Geometry
+open DifferentialGeometry.Geometry
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [CompleteSpace E]
@@ -142,4 +142,4 @@ theorem exists_squaredDistanceC2LowerSupport
       refine ⟨c, hcLength, gamma, ?_⟩
       simpa only [v] using hCfirst
 
-end Poincare.Toponogov
+end DifferentialGeometry.Toponogov

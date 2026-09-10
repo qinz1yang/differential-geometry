@@ -1,4 +1,3 @@
-import Batteries.Tactic.Alias
 import DifferentialGeometry.Analysis.Calculus.SecondDerivative
 import DifferentialGeometry.Geometry.Metric.CurveEnergy
 import DifferentialGeometry.Geometry.Curvature.CompactPositive
@@ -23,7 +22,7 @@ open DifferentialGeometry.Geometry.Riemannian.Exponential
 open DifferentialGeometry.Geometry.Riemannian.Geodesic
 open DifferentialGeometry.Geometry.Riemannian.HopfRinow
 open DifferentialGeometry.Geometry.Riemannian.Variation
-open Poincare.Geometry.Riemannian
+open DifferentialGeometry.Geometry.Riemannian
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [CompleteSpace E]
@@ -463,10 +462,3 @@ theorem farPoint_noLocalMin_distance
   simpa only [hcanonical] using hlocal
 
 end DifferentialGeometry.Geometry
-
-namespace Poincare.Geometry
-
-alias farPoint_noLocalMin_of_geodesicAt := DifferentialGeometry.Geometry.farPoint_noLocalMin_of_geodesicAt
-alias farPoint_noLocalMin_distance := DifferentialGeometry.Geometry.farPoint_noLocalMin_distance
-
-end Poincare.Geometry

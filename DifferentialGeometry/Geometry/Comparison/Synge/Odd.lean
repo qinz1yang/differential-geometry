@@ -9,9 +9,9 @@ open scoped Manifold ContDiff
 open DifferentialGeometry
 open DifferentialGeometry.VectorBundle
 open DifferentialGeometry.Topology.Manifold
-open Poincare.Geometry.Riemannian
+open DifferentialGeometry.Geometry.Riemannian
 
-namespace Poincare.Geometry
+namespace DifferentialGeometry.Geometry
 
 variable {E M : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
   [FiniteDimensional ℝ E] [TopologicalSpace M] [ChartedSpace E M]
@@ -41,4 +41,4 @@ theorem synge_orientable_three_dim (hdim : Module.finrank ℝ E = 3)
       IsCompatibleOrientation (F := E) (TangentSpace 𝓘(ℝ, E)) o :=
   synge_orientable_of_odd_dim hdim le_rfl (by decide) g hsec
 
-end Poincare.Geometry
+end DifferentialGeometry.Geometry

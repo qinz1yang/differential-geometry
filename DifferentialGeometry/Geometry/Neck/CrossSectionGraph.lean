@@ -7,9 +7,9 @@ noncomputable section
 open Set DifferentialGeometry
 open scoped Manifold ContDiff
 open DifferentialGeometry.Geometry.Operator
-open Poincare.Topology.Manifold
+open DifferentialGeometry.Topology.Manifold
 
-namespace Poincare.Geometry.Neck
+namespace DifferentialGeometry.Geometry.Neck
 
 private abbrev S := Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1
 private abbrev IC := (𝓡 2).prod 𝓘(ℝ)
@@ -131,4 +131,4 @@ theorem cylindricalChart.exists_graph_of_full_cross_section_and_gradient_close
   rw [heq p] at h₁
   rwa [h₀, h₁] at hb
 
-end Poincare.Geometry.Neck
+end DifferentialGeometry.Geometry.Neck

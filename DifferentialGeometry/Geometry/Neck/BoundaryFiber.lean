@@ -5,9 +5,9 @@ noncomputable section
 open Set Topology
 open scoped Manifold ContDiff
 
-namespace Poincare.Geometry.Neck
+namespace DifferentialGeometry.Geometry.Neck
 
-open Poincare.Geometry.Boundary
+open DifferentialGeometry.Geometry.Boundary
 open DifferentialGeometry.Integral.DivergenceTheorem.WithBoundary
 
 theorem cylindricalChart.exists_boundaryLevel_sphere_parametrization
@@ -34,4 +34,4 @@ theorem cylindricalChart.exists_boundaryLevel_sphere_parametrization
   exists_boundaryLevel_diffeomorph_of_product_chart ι hι hemb hinj hdim
     C.domain C.target C.chart t hsection u a b hab hu hboundary himage
 
-end Poincare.Geometry.Neck
+end DifferentialGeometry.Geometry.Neck

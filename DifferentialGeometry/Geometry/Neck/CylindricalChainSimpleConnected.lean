@@ -5,10 +5,10 @@ noncomputable section
 open Set Metric Topology Manifold
 open scoped ContDiff
 
-namespace Poincare.Geometry.Neck
+namespace DifferentialGeometry.Geometry.Neck
 
 open DifferentialGeometry.Integral.DivergenceTheorem.WithBoundary
-open Poincare.Topology
+open DifferentialGeometry.Topology
 
 theorem simplyConnectedSpace_of_cylindrical_chain
     {E H W M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
@@ -48,4 +48,4 @@ theorem simplyConnectedSpace_of_cylindrical_chain
       ⟨ι w₀, mem_range_self w₀⟩ e₀ e₁ he₀ he₁ hfront hboundary e a b hab hsource hmeet hd hcover
   exact hemb.toHomeomorph.toHomotopyEquiv.simplyConnectedSpace
 
-end Poincare.Geometry.Neck
+end DifferentialGeometry.Geometry.Neck

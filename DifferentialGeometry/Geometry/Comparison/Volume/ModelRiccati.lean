@@ -5,7 +5,7 @@ noncomputable section
 open Filter Set
 open scoped Topology
 
-namespace Poincare.Geometry.Riemannian.VolumeComparison
+namespace DifferentialGeometry.Geometry.Riemannian.VolumeComparison
 
 theorem weightedModelMean_anti
     {m m' : ℝ → ℝ} {K b : ℝ} {d : ℕ}
@@ -200,4 +200,4 @@ theorem density_le_model_of_ratio_anti
     exact ge_of_tendsto hlim hev
   rwa [div_le_one hpos] at hRatioLE
 
-end Poincare.Geometry.Riemannian.VolumeComparison
+end DifferentialGeometry.Geometry.Riemannian.VolumeComparison

@@ -6,7 +6,7 @@ import Mathlib.CategoryTheory.Preadditive.AdditiveFunctor
 set_option autoImplicit false
 noncomputable section
 open CategoryTheory CategoryTheory.Limits AlgebraicTopology
-namespace Poincare.Homology
+namespace DifferentialGeometry.Homology
 universe u
 variable {ι : Type u} (X : ι → TopCat.{u}) {k : Type u} [Ring k] (R : ModuleCat.{u} k)
 
@@ -18,8 +18,8 @@ def singularChainSigmaCofan : Cofan (fun i => ((singularChainComplexFunctor (Mod
 
 def singularChainSigmaCofanIsColimit : IsColimit (singularChainSigmaCofan X R) :=
   (Cofan.isColimitMapCoconeEquiv ((_root_.SSet.chainComplexFunctor (ModuleCat.{u} k)).obj R)
-    _ (Poincare.TopCat.singularSigmaCofan X))
-    (isColimitOfPreserves _ (Poincare.TopCat.singularSigmaCofanIsColimit X))
+    _ (DifferentialGeometry.TopCat.singularSigmaCofan X))
+    (isColimitOfPreserves _ (DifferentialGeometry.TopCat.singularSigmaCofanIsColimit X))
 
 
 def singularHomologySigmaCofan (n : ℕ) : Cofan (fun i =>
@@ -46,4 +46,4 @@ theorem singularHomologySigmaIso_ι_hom [Finite ι] (n : ℕ) (i : ι) :
         ((singularHomologyFunctor (ModuleCat.{u} k) n).obj R).map (TopCat.sigmaι X i) :=
   (coproductIsCoproduct _).comp_coconePointUniqueUpToIso_hom (singularHomologySigmaCofanIsColimit X R n) ⟨i⟩
 
-end Poincare.Homology
+end DifferentialGeometry.Homology

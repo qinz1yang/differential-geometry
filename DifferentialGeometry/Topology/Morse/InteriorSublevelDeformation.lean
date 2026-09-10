@@ -7,7 +7,7 @@ noncomputable section
 open Set
 open scoped Manifold ContDiff Topology
 open DifferentialGeometry.Topology.Morse DifferentialGeometry.Topology.Homotopy
-namespace Poincare.Morse
+namespace DifferentialGeometry.Morse
 variable {m : ℕ} {E H M : Type} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [TopologicalSpace H] [TopologicalSpace M] [ChartedSpace H M]
   (I : ModelWithCorners ℝ E H) [IsManifold I ∞ M] [T2Space M] [SigmaCompactSpace M]
@@ -26,14 +26,14 @@ theorem exists_sublevelHomotopyEquivUnder_of_interiorSublevel
   let _ : SecondCountableTopology M := ChartedSpace.secondCountable_of_sigmaCompact H M
   let _ : LocallyCompactSpace H := I.locallyCompactSpace
   let _ : LocallyCompactSpace M := ChartedSpace.locallyCompactSpace H M
-  let U := Poincare.Manifold.intrinsicInterior I ∞ (by simp) (M := M)
+  let U := DifferentialGeometry.Manifold.intrinsicInterior I ∞ (by simp) (M := M)
   let _ : LocallyCompactSpace U := U.isOpen.locallyCompactSpace
   let g : U → ℝ := fun x => f x
   have hgold : ContMDiff I 𝓘(ℝ, ℝ) ∞ g := hf.comp contMDiff_subtype_val
-  let _ := Poincare.Manifold.interiorChartedSpace I ∞ (M := U)
-  let _ : IsManifold 𝓘(ℝ, E) ∞ U := Poincare.Manifold.interiorIsManifold I ∞
+  let _ := DifferentialGeometry.Manifold.interiorChartedSpace I ∞ (M := U)
+  let _ : IsManifold 𝓘(ℝ, E) ∞ U := DifferentialGeometry.Manifold.interiorIsManifold I ∞
   have hg : ContMDiff 𝓘(ℝ, E) 𝓘(ℝ, ℝ) ∞ g :=
-    hgold.comp (Poincare.Manifold.contMDiff_interiorAtlas_id I ∞)
+    hgold.comp (DifferentialGeometry.Manifold.contMDiff_interiorAtlas_id I ∞)
   let J := (𝓘(ℝ, E)).transContinuousLinearEquiv e
   let _ : J.Boundaryless := ⟨by
     rw [ModelWithCorners.transContinuousLinearEquiv_range,
@@ -64,4 +64,4 @@ theorem exists_sublevelHomotopyEquivUnder_of_interiorSublevel
   simp only [HomotopyEquivUnder.trans_invFun, hi]
   rfl
 
-end Poincare.Morse
+end DifferentialGeometry.Morse

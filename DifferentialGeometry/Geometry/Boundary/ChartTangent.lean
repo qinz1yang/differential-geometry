@@ -6,7 +6,7 @@ noncomputable section
 open Set Filter Function Topology Manifold
 open scoped ContDiff
 
-namespace Poincare.Geometry.Boundary
+namespace DifferentialGeometry.Geometry.Boundary
 
 open DifferentialGeometry
 open DifferentialGeometry.Integral.DivergenceTheorem.WithBoundary
@@ -54,4 +54,4 @@ theorem boundaryInclusionMfderiv_model (x : BoundaryManifold I M)
     ContinuousLinearMap.id_comp, ContinuousLinearMap.comp_id] at hd
   exact congrArg (fun L : TangentSpace hI.boundaryI x →L[ℝ] E ↦ L w) hd
 
-end Poincare.Geometry.Boundary
+end DifferentialGeometry.Geometry.Boundary

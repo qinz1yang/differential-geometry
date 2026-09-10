@@ -4,7 +4,7 @@ noncomputable section
 open Set Metric Manifold Module
 open scoped ContDiff
 
-namespace Poincare.Topology.Manifold
+namespace DifferentialGeometry.Topology.Manifold
 
 section Basic
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -53,4 +53,4 @@ theorem contMDiffOn_sphereDirection
   intro x hx
   exact (contMDiffAt_subtype_iff (U := U) (f := sphereDirection v) |>.mp (hd ⟨x, hx⟩)).contMDiffWithinAt
 
-end Poincare.Topology.Manifold
+end DifferentialGeometry.Topology.Manifold

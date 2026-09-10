@@ -4,7 +4,7 @@ import DifferentialGeometry.Topology.LocalDegree.LinearSphere
 set_option autoImplicit false
 open Metric Set
 noncomputable section
-namespace Poincare.LocalDegree
+namespace DifferentialGeometry.LocalDegree
 
 theorem IsolatingRadius.linear_postcomp {E F G : Type*} [PseudoMetricSpace E]
     [NormedAddCommGroup F] [NormedSpace ℝ F] [NormedAddCommGroup G] [NormedSpace ℝ G]
@@ -63,4 +63,4 @@ theorem euclideanLocalDegree_linear_postcomp {d : ℕ}
     euclideanLocalDegree_eq_sphereDegree _ h.choose_spec r]
   rw [sphereMap_linear_postcomp A h.choose_spec r, euclideanSphereDegree_comp]
 
-end Poincare.LocalDegree
+end DifferentialGeometry.LocalDegree

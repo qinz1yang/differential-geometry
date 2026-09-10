@@ -5,7 +5,7 @@ set_option autoImplicit false
 
 open Set
 
-namespace Poincare.Topology.SphereSeparation
+namespace DifferentialGeometry.Topology.SphereSeparation
 
 structure LocalTwoSidedAt {X : Type*} [TopologicalSpace X]
     (S : Set X) (x : X) where
@@ -157,4 +157,4 @@ theorem both_components_approach_of_locallyTwoSided
 
 end ComplementPair
 
-end Poincare.Topology.SphereSeparation
+end DifferentialGeometry.Topology.SphereSeparation

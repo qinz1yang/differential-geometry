@@ -13,7 +13,7 @@ open scoped unitInterval
 
 universe u
 
-namespace Poincare.Topology.VanKampen
+namespace DifferentialGeometry.Topology.VanKampen
 
 namespace Path
 
@@ -84,4 +84,4 @@ theorem IsCovered.mul {X : Type u} [TopologicalSpace X] {a b : X} {p : _root_.Pa
 
 end Path
 
-end Poincare.Topology.VanKampen
+end DifferentialGeometry.Topology.VanKampen

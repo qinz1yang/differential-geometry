@@ -8,9 +8,9 @@ import Mathlib.Order.Interval.Set.OrdConnected
 noncomputable section
 open Set Topology
 open scoped Manifold ContDiff
-open Poincare.Topology Poincare.Topology.Manifold Poincare.Topology.Embedding
+open DifferentialGeometry.Topology DifferentialGeometry.Topology.Manifold DifferentialGeometry.Topology.Embedding
 
-namespace Poincare.Geometry.Neck
+namespace DifferentialGeometry.Geometry.Neck
 
 local notation "S²" => Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1
 private instance : Fact (Module.finrank ℝ (EuclideanSpace ℝ (Fin 3)) = 2 + 1) := ⟨by simp⟩
@@ -252,4 +252,4 @@ theorem cylindricalChart.endpoint_subset_controlled_and_inward_of_signed_graph_c
     rw [hΦ] at h
     exact h
 
-end Poincare.Geometry.Neck
+end DifferentialGeometry.Geometry.Neck

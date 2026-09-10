@@ -5,7 +5,7 @@ noncomputable section
 open Set
 open scoped ContDiff
 
-namespace Poincare.Analysis
+namespace DifferentialGeometry.Analysis
 
 theorem integralCurve_eq_translation_in_constant_halfSpace_of_endpoints
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
@@ -38,4 +38,4 @@ theorem integralCurve_eq_translation_in_constant_halfSpace_of_endpoints
     (fun r hr ↦ (hξ r hr).hasDerivWithinAt) (by simp [η, ξ])
   simpa only [η, ξ, one_mul, add_sub_cancel] using he ⟨zero_le_one, le_rfl⟩
 
-end Poincare.Analysis
+end DifferentialGeometry.Analysis

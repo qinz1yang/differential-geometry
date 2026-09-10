@@ -9,7 +9,7 @@ noncomputable section
 open Set Manifold
 open scoped Manifold ContDiff
 
-namespace Poincare.Topology
+namespace DifferentialGeometry.Topology
 
 private def sumSelfHomeomorphBoolProd (S : Type*) [TopologicalSpace S] :
     (S ⊕ S) ≃ₜ Bool × S where
@@ -65,4 +65,4 @@ theorem injective_fundamentalGroup_map_of_two_spherical_boundaries
   · exact ⟨Sum.inl s, rfl⟩
   · exact ⟨Sum.inr s, rfl⟩
 
-end Poincare.Topology
+end DifferentialGeometry.Topology

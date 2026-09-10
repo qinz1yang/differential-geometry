@@ -4,8 +4,8 @@ set_option autoImplicit false
 open Bundle Filter Set
 open scoped Manifold ContDiff Topology
 noncomputable section
-namespace Poincare.VectorField
-open Poincare.LocalDegree
+namespace DifferentialGeometry.VectorField
+open DifferentialGeometry.LocalDegree
 variable {d : ℕ} {H M : Type*} [TopologicalSpace H] [TopologicalSpace M]
   [ChartedSpace H M] (I : ModelWithCorners ℝ (EuclideanSpace ℝ (Fin (d + 1))) H)
 
@@ -140,4 +140,4 @@ theorem mpullback_collarExtension_collarParametrization
         ρ (euclideanProductChart d z).2)
   exact congrArg (euclideanProductChart d).symm (Prod.ext hAi.symm rfl)
 
-end Poincare.VectorField
+end DifferentialGeometry.VectorField

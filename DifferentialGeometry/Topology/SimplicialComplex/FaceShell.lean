@@ -3,7 +3,7 @@ import DifferentialGeometry.Topology.SimplicialComplex.GeometricLink
 set_option autoImplicit false
 noncomputable section
 
-namespace Poincare.Topology.SimplicialComplex
+namespace DifferentialGeometry.Topology.SimplicialComplex
 
 variable {ι : Type*} [DecidableEq ι] (K : PreAbstractSimplicialComplex ι) (s : Finset ι)
 
@@ -83,4 +83,4 @@ theorem geometricFaceShell_singleton (p : E) : geometricFaceShell K {p} = geomet
 
 end Geometry
 
-end Poincare.Topology.SimplicialComplex
+end DifferentialGeometry.Topology.SimplicialComplex

@@ -5,7 +5,7 @@ noncomputable section
 open Set Topology
 open scoped Manifold ContDiff
 
-namespace Poincare.Geometry.Boundary
+namespace DifferentialGeometry.Geometry.Boundary
 
 open DifferentialGeometry.Integral.DivergenceTheorem.WithBoundary
 
@@ -35,7 +35,7 @@ theorem exists_lifted_chart_of_interior_range
   have hRV : R ≤ V := inter_subset_left
   have hRι : (R : Set M) ⊆ range ι := inter_subset_right.trans interior_subset
   obtain ⟨U, hUO, e, hU, he⟩ :=
-    Poincare.Topology.Manifold.exists_diffeomorph_restriction_to_open O V R Φ hRV
+    DifferentialGeometry.Topology.Manifold.exists_diffeomorph_restriction_to_open O V R Φ hRV
   let Z := TopologicalSpace.Opens.comap ⟨ι, hι.continuous⟩ R
   let d : Z ≃ₘ⟮I, J⟯ R := diffeomorphOfOpenSubsetRange ι hι hemb hinj hdim R hRι
   refine ⟨U, hUO, Z, e.trans d.symm, ?_, rfl, ?_⟩
@@ -47,4 +47,4 @@ theorem exists_lifted_chart_of_interior_range
     exact (diffeomorphOfOpenSubsetRange_symm_apply_coe ι hι hemb hinj hdim R hRι
       (e x)).trans (he x)
 
-end Poincare.Geometry.Boundary
+end DifferentialGeometry.Geometry.Boundary

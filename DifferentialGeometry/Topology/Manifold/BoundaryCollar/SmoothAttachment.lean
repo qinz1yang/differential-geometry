@@ -7,7 +7,7 @@ open scoped ContDiff
 open DifferentialGeometry.Integral.DivergenceTheorem.WithBoundary
 set_option autoImplicit false
 noncomputable section
-namespace Poincare.Manifold.BoundaryCollar
+namespace DifferentialGeometry.Manifold.BoundaryCollar
 
 theorem exists_boundaryAttachment_smooth_realization
     {n : ℕ} {M : Type*} [TopologicalSpace M]
@@ -28,7 +28,7 @@ theorem exists_boundaryAttachment_smooth_realization
           (∀ t : Icc (0 : ℝ) ε, t.val ≤ r → (σ t).val = t.val + a) ∧
           ∃ h : BoundaryAttachment (M := M) (𝓡∂ (n + 1)) ≃ₜ M,
             (∀ x, h (attachmentOriginal (𝓡∂ (n + 1)) x) =
-              Poincare.Topology.Collar.rescale c hc.isEmbedding σ x) ∧
+              DifferentialGeometry.Topology.Collar.rescale c hc.isEmbedding σ x) ∧
             (∀ q : BoundaryManifold (𝓡∂ (n + 1)) M × Icc (0 : ℝ) 1,
               h (attachmentProduct (𝓡∂ (n + 1)) q) =
                 c (q.1, ⟨a * (1 - q.2.val),
@@ -56,10 +56,10 @@ theorem exists_boundaryAttachment_smooth_realization
   have hrε : 2 * r < ε := by dsimp [r]; linarith
   let f : C(B, M) := ⟨boundaryInclusion I M, continuous_subtype_val⟩
   obtain ⟨a, ha, har, σ, _, _, hσs, _, _, hσnear, _, h, hO, hP, hOs, hPs⟩ :=
-    Poincare.Manifold.Collar.exists_smooth_attachment_realization hr hrε.le
+    DifferentialGeometry.Manifold.Collar.exists_smooth_attachment_realization hr hrε.le
       (by dsimp [r]; linarith) f c hc.isEmbedding hcs hc0 Y e hec
   have houter (p : B) : h (attachmentProduct I (p, 1)) = boundaryInclusion I M p := by
-    change h (Poincare.Topology.mappingCylinderProduct f (p, 1)) = _
+    change h (DifferentialGeometry.Topology.mappingCylinderProduct f (p, 1)) = _
     rw [hP]
     convert hc0 p using 1
     congr 1
@@ -77,4 +77,4 @@ theorem exists_boundaryAttachment_smooth_realization
     rw [houter]
     exact p.property
 
-end Poincare.Manifold.BoundaryCollar
+end DifferentialGeometry.Manifold.BoundaryCollar

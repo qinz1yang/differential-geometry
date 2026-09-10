@@ -5,7 +5,7 @@ noncomputable section
 open Set Bundle
 open scoped Manifold ContDiff
 
-namespace Poincare.Geometry.VectorField
+namespace DifferentialGeometry.Geometry.VectorField
 
 variable {E H M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
@@ -42,4 +42,4 @@ theorem contMDiffOn_extendOpenTangentField [IsManifold I ∞ M]
     exact hT.contMDiffAt.comp y ((hX y hy).contMDiffAt (hA.mem_nhds hy))
   exact (contMDiffAt_subtype_iff.mp hlocal).contMDiffWithinAt
 
-end Poincare.Geometry.VectorField
+end DifferentialGeometry.Geometry.VectorField

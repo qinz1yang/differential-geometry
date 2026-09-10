@@ -69,14 +69,14 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 
 theorem maxSliceDim_eq_zero_of_positiveSectionalCurvature
     (g : SmoothRiemannianMetric I M) (hEnorm : IsMetricNorm (I := I) g)
-    (hsec : Poincare.Geometry.HasPositiveSectionalCurvature (I := I) g)
+    (hsec : DifferentialGeometry.Geometry.HasPositiveSectionalCurvature (I := I) g)
     (hdim : 2 ≤ Module.finrank ℝ E)
     {S : Set M} (hne : S.Nonempty) (hcompact : IsCompact S)
     (hconv : IsTotallyConvex (I := I) g S) (hB : relBoundary I S = ∅) :
     maxSliceDim I S = 0 := by
   by_contra hzero
   have hpos : 0 < maxSliceDim I S := Nat.pos_of_ne_zero hzero
-  apply Poincare.Geometry.no_compact_geodesic_carrier (I := I) g
+  apply DifferentialGeometry.Geometry.no_compact_geodesic_carrier (I := I) g
     (riemannianMetricComplete_of_isMetricNorm g hEnorm) hsec hdim S hne hcompact
   intro x hx
   obtain ⟨γ, hγzero, hγsmooth, hγgeo, hγgerm, hγunit, hγmem⟩ :=
@@ -91,7 +91,7 @@ theorem maxSliceDim_eq_zero_of_positiveSectionalCurvature
 
 theorem exists_point_soul_diffeomorph
     (g : SmoothRiemannianMetric I M) (hEnorm : IsMetricNorm (I := I) g)
-    (hsec : Poincare.Geometry.HasPositiveSectionalCurvature (I := I) g) (p : M) :
+    (hsec : DifferentialGeometry.Geometry.HasPositiveSectionalCurvature (I := I) g) (p : M) :
     ∃ (S : Set M) (s : M), S = {s} ∧ S.Nonempty ∧ IsCompact S ∧
       IsTotallyConvex (I := I) g S ∧ relBoundary I S = ∅ ∧ maxSliceDim I S = 0 ∧
       ∃ e : M ≃ₘ⟮I, 𝓘(ℝ, E)⟯ E, e s = 0 := by

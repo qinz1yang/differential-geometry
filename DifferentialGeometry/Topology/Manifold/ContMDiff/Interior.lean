@@ -3,7 +3,7 @@ import DifferentialGeometry.Topology.Manifold.InteriorChart
 set_option autoImplicit false
 noncomputable section
 open scoped Manifold ContDiff
-namespace Poincare.Manifold
+namespace DifferentialGeometry.Manifold
 variable {𝕜 : Type*} [NontriviallyNormedField 𝕜]
   {E F : Type*} [NormedAddCommGroup E] [NormedSpace 𝕜 E]
   [NormedAddCommGroup F] [NormedSpace 𝕜 F]
@@ -18,4 +18,4 @@ theorem contDiffAt_comp_extChartAt_symm_of_isInteriorPoint {f : M → F}
   exact ((hf.comp_contMDiffOn c.symm.contMDiffOn).contMDiffAt
     (c.open_target.mem_nhds (c.map_source hxc))).contDiffAt
 
-end Poincare.Manifold
+end DifferentialGeometry.Manifold

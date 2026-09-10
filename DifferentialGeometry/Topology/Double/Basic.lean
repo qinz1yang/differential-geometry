@@ -5,7 +5,7 @@ import Mathlib.Topology.Instances.Real.Lemmas
 set_option autoImplicit false
 noncomputable section
 open Set Function Topology
-namespace Poincare.Topology
+namespace DifferentialGeometry.Topology
 
 variable {X : Type*} [TopologicalSpace X]
 
@@ -128,4 +128,4 @@ theorem t2Space_double [CompactSpace X] [T2Space X]
     (hz : ∀ x, r x = 0 → x ∈ B) : T2Space (Double B) :=
   (isClosedEmbedding_doubleRealization B r hr hz).isEmbedding.t2Space
 
-end Poincare.Topology
+end DifferentialGeometry.Topology

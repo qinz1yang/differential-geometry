@@ -13,7 +13,7 @@ open scoped unitInterval
 
 universe u
 
-namespace Poincare.Topology.VanKampen
+namespace DifferentialGeometry.Topology.VanKampen
 
 def IsCoveredGrid {X : Type u} [TopologicalSpace X] (H : C(I × I, X))
     (U V : Set X) (n : ℕ) : Prop :=
@@ -64,4 +64,4 @@ theorem exists_coveredGrid {X : Type u} [TopologicalSpace X] (H : C(I × I, X))
   · exact Or.inr himage
   · exact Or.inl himage
 
-end Poincare.Topology.VanKampen
+end DifferentialGeometry.Topology.VanKampen

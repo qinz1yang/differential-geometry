@@ -6,7 +6,7 @@ noncomputable section
 open Set Filter Topology
 open scoped ContDiff
 
-namespace Poincare.Analysis
+namespace DifferentialGeometry.Analysis
 
 def extendRectangleById {P : Type*} (a b c d : ℝ) (f : P × ℂ → ℂ) (q : P × ℂ) : ℂ := by
   classical
@@ -76,4 +76,4 @@ theorem leftInverse_extendRectangleById
   · rw [extendRectangleById_of_notMem f (q := (p, z)) hz,
       extendRectangleById_of_notMem g (q := (p, z)) hz]
 
-end Poincare.Analysis
+end DifferentialGeometry.Analysis

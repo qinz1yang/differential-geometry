@@ -13,7 +13,7 @@ open scoped Simplicial ContinuousMap
 noncomputable section
 universe u
 
-namespace Poincare.Homology
+namespace DifferentialGeometry.Homology
 
 variable {k : Type u} [Ring k] (R : ModuleCat.{u} k)
   (X : TopCat.{u})
@@ -476,4 +476,4 @@ theorem reducedSingularHomologyZeroIso_naturality (f : X ⟶ Y) :
     (singularZeroProjection_naturality R f)
   exact h.trans h'
 
-end Poincare.Homology
+end DifferentialGeometry.Homology

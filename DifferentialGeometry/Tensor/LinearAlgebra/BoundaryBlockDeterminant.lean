@@ -4,7 +4,7 @@ import Mathlib.Data.Real.Basic
 noncomputable section
 open Module
 
-namespace Poincare.Analysis
+namespace DifferentialGeometry.Analysis
 
 theorem det_eq_normal_mul_of_horizontal
     {E : Type*} [AddCommGroup E] [Module ℝ E] [FiniteDimensional ℝ E]
@@ -50,4 +50,4 @@ theorem det_pos_iff_horizontal_of_surjective
   rw [det_eq_normal_mul_of_horizontal L A hA]
   exact mul_pos_iff_of_pos_left (normal_coefficient_pos_of_surjective L A hA hL hn)
 
-end Poincare.Analysis
+end DifferentialGeometry.Analysis

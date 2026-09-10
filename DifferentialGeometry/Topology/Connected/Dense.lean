@@ -2,7 +2,7 @@ import Mathlib.Topology.Connected.Basic
 
 open Set Topology
 
-namespace Poincare.Topology
+namespace DifferentialGeometry.Topology
 
 theorem isPreconnected_of_dense_of_locally_preconnected_inter
     {X : Type*} [TopologicalSpace X] [PreconnectedSpace X] {S : Set X}
@@ -27,4 +27,4 @@ theorem isPreconnected_of_dense_of_locally_preconnected_inter
     (fun _ hw ↦ hcover hw.2) ⟨y, ⟨hyN, hyS⟩, hyU⟩ ⟨z, ⟨hzN, hzS⟩, hzV⟩
   exact ⟨w, hw.2, hwU, hwV⟩
 
-end Poincare.Topology
+end DifferentialGeometry.Topology

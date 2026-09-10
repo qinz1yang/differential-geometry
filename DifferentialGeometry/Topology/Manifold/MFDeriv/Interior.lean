@@ -6,7 +6,7 @@ set_option autoImplicit false
 noncomputable section
 open Set Filter
 open scoped Manifold ContDiff Topology
-namespace Poincare.Manifold
+namespace DifferentialGeometry.Manifold
 variable {𝕜 : Type*} [NontriviallyNormedField 𝕜]
   {E F : Type*} [NormedAddCommGroup E] [NormedSpace 𝕜 E]
   [NormedAddCommGroup F] [NormedSpace 𝕜 F]
@@ -57,4 +57,4 @@ theorem mfderiv_interiorAtlas [IsManifold I ∞ M] [BoundarylessManifold I M]
     mfderiv_eq_fderiv_extChartAt_of_isInteriorPoint I
       (hf.mdifferentiableAt (by simp)) BoundarylessManifold.isInteriorPoint]
   rfl
-end Poincare.Manifold
+end DifferentialGeometry.Manifold

@@ -15,7 +15,7 @@ noncomputable section
 
 universe u v w x y z
 
-namespace Poincare.Topology
+namespace DifferentialGeometry.Topology
 
 namespace ContinuousLinearMap
 
@@ -150,7 +150,7 @@ noncomputable def transverseEquivAt
     (hw : w₀ ∉ Set.range (mfderiv I J f x)) :
     (TangentSpace I x × ℝ) ≃L[ℝ] TangentSpace J (f x) := by
   change (E × ℝ) ≃L[ℝ] F
-  exact Poincare.Topology.ContinuousLinearMap.transverseEquiv
+  exact DifferentialGeometry.Topology.ContinuousLinearMap.transverseEquiv
     (mfderiv I J f x) w₀ (C.mfderiv_injective hn x) hw hdim
 
 set_option backward.isDefEq.respectTransparency false in
@@ -165,7 +165,7 @@ theorem transverseEquivAt_apply
     (p : TangentSpace I x × ℝ) :
     C.transverseEquivAt hn hdim x w₀ hw p =
       mfderiv I J f x p.1 + p.2 • w₀ := by
-  exact Poincare.Topology.ContinuousLinearMap.transverseEquiv_apply
+  exact DifferentialGeometry.Topology.ContinuousLinearMap.transverseEquiv_apply
     (E := E) (F := F) (mfderiv I J f x) w₀
       (C.mfderiv_injective hn x) hw hdim p
 
@@ -209,4 +209,4 @@ theorem positiveNormalEquivAt_apply
 
 end CoorientedSmoothEmbeddingRealNormalAtlas
 
-end Poincare.Topology
+end DifferentialGeometry.Topology

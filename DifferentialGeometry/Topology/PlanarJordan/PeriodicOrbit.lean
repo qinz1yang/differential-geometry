@@ -3,7 +3,7 @@ import DifferentialGeometry.Topology.Flow.PeriodicOrbit
 
 open Set
 
-namespace Poincare.Topology.PlanarJordan
+namespace DifferentialGeometry.Topology.PlanarJordan
 
 private theorem invariant_of_orbit_complement_partition
     (φ : _root_.Flow ℝ ℂ) {x : ℂ} {U V : Set ℂ}
@@ -36,7 +36,7 @@ theorem exists_invariant_regions_of_periodic_orbit
       IsCompact (closure U) ∧ ¬ IsCompact (closure V) ∧
       IsInvariant φ U ∧ IsInvariant φ V := by
   obtain ⟨γ, hγ, hclose, hsimple, himage⟩ :=
-    Poincare.Topology.Flow.exists_simple_closed_curve_of_periodic_orbit φ hnon hreturn
+    DifferentialGeometry.Topology.Flow.exists_simple_closed_curve_of_periodic_orbit φ hnon hreturn
   obtain ⟨U, V, hU, hV, hUc, hVc, hdisj, hcover, hUf, hVf, hcompact, hunbounded⟩ :=
     exists_regions_of_simple_closed_curve hγ.continuousOn hclose hsimple
   rw [himage] at hcover hUf hVf
@@ -45,4 +45,4 @@ theorem exists_invariant_regions_of_periodic_orbit
     invariant_of_orbit_complement_partition φ hV hU hdisj.symm
       (by rw [union_comm]; exact hcover)⟩
 
-end Poincare.Topology.PlanarJordan
+end DifferentialGeometry.Topology.PlanarJordan

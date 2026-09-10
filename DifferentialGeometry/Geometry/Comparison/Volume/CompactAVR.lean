@@ -7,7 +7,7 @@ noncomputable section
 open Bundle Filter Manifold MeasureTheory Set
 open scoped ContDiff ENNReal Manifold Topology
 
-namespace Poincare.Geometry.Riemannian.VolumeComparison
+namespace DifferentialGeometry.Geometry.Riemannian.VolumeComparison
 
 open DifferentialGeometry
 open DifferentialGeometry.Geometry.Riemannian
@@ -87,4 +87,4 @@ theorem not_compactSpace_of_pos_le_asymptoticVolumeRatio
   rw [asymptoticVolumeRatio_eq_zero_of_compactSpace (I := I) g p] at hAVR
   exact (not_lt_of_ge hAVR) hv
 
-end Poincare.Geometry.Riemannian.VolumeComparison
+end DifferentialGeometry.Geometry.Riemannian.VolumeComparison

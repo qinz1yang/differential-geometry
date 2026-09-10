@@ -5,7 +5,7 @@ noncomputable section
 open Set Topology
 open scoped ContDiff
 
-namespace Poincare.Analysis
+namespace DifferentialGeometry.Analysis
 
 theorem tsupport_integralCurveFamily_sub_subset
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -28,4 +28,4 @@ theorem tsupport_integralCurveFamily_sub_subset
   exact hx (sub_eq_zero.mpr (he
     ⟨by dsimp [R]; linarith [neg_abs_le t], by dsimp [R]; linarith [le_abs_self t]⟩))
 
-end Poincare.Analysis
+end DifferentialGeometry.Analysis

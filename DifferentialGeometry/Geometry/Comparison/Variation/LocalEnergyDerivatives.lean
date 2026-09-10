@@ -7,7 +7,7 @@ open DifferentialGeometry
 open DifferentialGeometry.Geometry.Riemannian
 open DifferentialGeometry.Geometry.Riemannian.Variation
 
-namespace Poincare.Geometry.Riemannian.Variation
+namespace DifferentialGeometry.Geometry.Riemannian.Variation
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
@@ -86,4 +86,4 @@ theorem curveEnergy_derivatives_of_smooth_near_slice (g : SmoothRiemannianMetric
   · rw [← hDD.eq_of_nhds]
     exact (curveEnergy_deriv_hasDerivAt g (Function.curry d) hd8 0 L s).congr_of_eventuallyEq hE.deriv.symm
 
-end Poincare.Geometry.Riemannian.Variation
+end DifferentialGeometry.Geometry.Riemannian.Variation

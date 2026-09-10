@@ -6,8 +6,8 @@ import DifferentialGeometry.Topology.Homotopy.ConvexProduct
 
 set_option autoImplicit false
 noncomputable section
-open Set CategoryTheory ContinuousMap Poincare.Homology
-namespace Poincare.Topology.SimplicialComplex
+open Set CategoryTheory ContinuousMap DifferentialGeometry.Homology
+namespace DifferentialGeometry.Topology.SimplicialComplex
 universe u
 variable {E : Type u} [NormedAddCommGroup E] [NormedSpace ℝ E] [LinearOrder E]
   (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces] (s : Finset E)
@@ -49,7 +49,7 @@ private theorem neighborhood_puncture_iff
 def puncturedFaceStarHomotopyEquiv :
     puncturedFaceOpenStar K s ≃ₕ (geometricFaceShell K s).space :=
   (puncturedFaceStarHomeomorphism K s hs).toHomotopyEquiv.trans
-    (Poincare.HomotopyEquiv.productConvex _ (convex_Ioo (0 : ℝ) 1)
+    (DifferentialGeometry.HomotopyEquiv.productConvex _ (convex_Ioo (0 : ℝ) 1)
       ⟨1 / 2, by constructor <;> norm_num⟩)
 
 
@@ -80,7 +80,7 @@ theorem eulerChar_puncturedFaceStar (k : Type u) [Field k] :
 
 
 theorem finiteHomologyType_localGeometricFace (k : Type u) [Field k] :
-    Poincare.HomologicalComplex.finiteHomologyType
+    DifferentialGeometry.HomologicalComplex.finiteHomologyType
       (relativeChainComplex (TopCat.of K.space)
         ({(geometricFaceBarycenter K s hs : K.space)}ᶜ : Set K.space)
         (ModuleCat.of k k)) := by
@@ -98,7 +98,7 @@ theorem finiteHomologyType_localGeometricFace (k : Type u) [Field k] :
   let e := relativeChainIso (X := TopCat.of U) (Y := TopCat.of (faceOpenStar K s))
     (ModuleCat.of k k) (faceStarNeighborhoodHomeomorphism K s)
     (neighborhood_puncture_iff K s hs)
-  have hn := (Poincare.HomologicalComplex.finiteHomologyType_iff_of_quasiIso e.hom).mpr hrel
+  have hn := (DifferentialGeometry.HomologicalComplex.finiteHomologyType_iff_of_quasiIso e.hom).mpr hrel
   exact (finiteHomologyType_puncturedNeighborhood_iff (TopCat.of K.space) U x hx k
     (isOpen_faceOpenStar K s)).mp hn
 
@@ -162,4 +162,4 @@ theorem faceEulerChar_link_eq_one_sub_signed_local (k : Type u) [Field k] :
   rw [h, hfactor, ← mul_assoc, hsq, one_mul]
   ring
 
-end Poincare.Topology.SimplicialComplex
+end DifferentialGeometry.Topology.SimplicialComplex

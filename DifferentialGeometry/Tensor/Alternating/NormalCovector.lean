@@ -7,7 +7,7 @@ set_option autoImplicit false
 noncomputable section
 open Module
 
-namespace Poincare.ContinuousAlternatingMap
+namespace DifferentialGeometry.ContinuousAlternatingMap
 
 variable {m : ℕ} {E F : Type*}
   [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
@@ -177,4 +177,4 @@ theorem continuousAt_normalCovector {X : Type*} [TopologicalSpace X] {x : X}
   exact ((hω.eval continuousAt_const).inv₀ hb).smul
     (continuousAt_const.clm_comp (h₂.clm_comp h₁))
 
-end Poincare.ContinuousAlternatingMap
+end DifferentialGeometry.ContinuousAlternatingMap

@@ -5,7 +5,7 @@ set_option autoImplicit false
 noncomputable section
 open Set Function Filter
 open scoped Manifold ContDiff Topology
-namespace Poincare.Morse
+namespace DifferentialGeometry.Morse
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
   {n : ℕ}
 
@@ -178,4 +178,4 @@ theorem exists_arbitrarily_small_relative_nondegenerate_finitePerturbation
     (MeasureTheory.ae_restrict_of_ae hae)
   exact ⟨p,by simpa only [Metric.mem_ball, dist_zero_right] using hp,hreg⟩
 
-end Poincare.Morse
+end DifferentialGeometry.Morse

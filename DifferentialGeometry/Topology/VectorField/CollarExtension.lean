@@ -11,7 +11,7 @@ open scoped Manifold ContDiff
 
 noncomputable section
 
-namespace Poincare.VectorField
+namespace DifferentialGeometry.VectorField
 
 
 def collarTransition (t : ℝ) : ℝ := Real.smoothTransition (3 * t - 1)
@@ -261,4 +261,4 @@ theorem collarExtension_components_eq_comp (T : E → E) (b : E → ℝ) (ρ : �
 
 end Coordinates
 
-end Poincare.VectorField
+end DifferentialGeometry.VectorField

@@ -5,7 +5,7 @@ set_option autoImplicit false
 noncomputable section
 open Set Finset
 
-namespace Poincare.Topology.SimplicialComplex
+namespace DifferentialGeometry.Topology.SimplicialComplex
 
 universe u
 variable {E : Type u} [NormedAddCommGroup E] [NormedSpace ℝ E] [LinearOrder E]
@@ -483,4 +483,4 @@ theorem isEmpty_puncturedFaceOpenStar_iff [Finite K.faces] (hs : s ∈ K.faces) 
   · intro h
     exact ⟨fun x ↦ h.false (faceStarCoordinates K s hs x).1⟩
 
-end Poincare.Topology.SimplicialComplex
+end DifferentialGeometry.Topology.SimplicialComplex

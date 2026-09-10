@@ -3,7 +3,7 @@ import DifferentialGeometry.Topology.Simplex.BallCoordinates
 set_option autoImplicit false
 noncomputable section
 open Set Metric Topology
-namespace Poincare.Simplex
+namespace DifferentialGeometry.Simplex
 variable {n : ℕ} {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   (e : (Fin n → ℝ) ≃L[ℝ] E)
 
@@ -82,4 +82,4 @@ theorem stdSimplexNormedBoundarySphereHomeomorph_val (x : boundary (Fin (n + 1))
     (stdSimplexNormedBoundarySphereHomeomorph e x).val =
       (stdSimplexNormedBallHomeomorph e x.val).val := rfl
 
-end Poincare.Simplex
+end DifferentialGeometry.Simplex

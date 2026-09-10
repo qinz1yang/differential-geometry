@@ -14,7 +14,7 @@ open scoped ContinuousMap
 
 universe u v
 
-namespace Poincare.Topology
+namespace DifferentialGeometry.Topology
 
 
 theorem fundamentalGroup_map_changeBasepoint
@@ -99,24 +99,24 @@ theorem fundamentalGroup_outerInclusion_bijective_at_overlap
   let _ : SimplyConnectedSpace (inner 3 φ) := SimplyConnectedSpace.ofContractible _
   let _ : SimplyConnectedSpace ↑(outer 3 φ ∩ inner 3 φ) :=
     simplyConnectedSpace_overlapThree φ
-  let e := Poincare.Topology.VanKampen.fundamentalGroupLeftToAmbientEquivOfSimplyConnected
+  let e := DifferentialGeometry.Topology.VanKampen.fundamentalGroupLeftToAmbientEquivOfSimplyConnected
     (outer 3 φ) (inner 3 φ) (isOpen_outer 3 φ) (isOpen_inner 3 φ)
       (outer_union_inner 3 φ) q₀ hq₀
   have heq : (↑e : FundamentalGroup (outer 3 φ) ⟨q₀, hq₀.1⟩ →*
       FundamentalGroup (CellAdjunctionSpace 3 φ) q₀) =
       FundamentalGroup.map (outerInclusion 3 φ) ⟨q₀, hq₀.1⟩ := by
-    rw [Poincare.Topology.VanKampen.fundamentalGroupLeftToAmbientEquivOfSimplyConnected_toMonoidHom]
+    rw [DifferentialGeometry.Topology.VanKampen.fundamentalGroupLeftToAmbientEquivOfSimplyConnected_toMonoidHom]
     change FundamentalGroup.mapOfEq
-      (Poincare.Topology.VanKampen.subsetToAmbient (outer 3 φ))
-      (Poincare.Topology.VanKampen.leftBasepoint_toAmbient
+      (DifferentialGeometry.Topology.VanKampen.subsetToAmbient (outer 3 φ))
+      (DifferentialGeometry.Topology.VanKampen.leftBasepoint_toAmbient
         (outer 3 φ) q₀ hq₀.1) = _
     apply MonoidHom.ext
     intro g
     exact eq_of_heq
-      (Poincare.Topology.VanKampen.fundamentalGroup_mapOfEq_heq_map
-        (Poincare.Topology.VanKampen.subsetToAmbient (outer 3 φ))
+      (DifferentialGeometry.Topology.VanKampen.fundamentalGroup_mapOfEq_heq_map
+        (DifferentialGeometry.Topology.VanKampen.subsetToAmbient (outer 3 φ))
         ⟨q₀, hq₀.1⟩ q₀
-        (Poincare.Topology.VanKampen.leftBasepoint_toAmbient
+        (DifferentialGeometry.Topology.VanKampen.leftBasepoint_toAmbient
           (outer 3 φ) q₀ hq₀.1) g)
   rw [← heq]
   exact e.bijective
@@ -174,7 +174,7 @@ theorem fundamentalGroup_outerLower_bijective
     apply MonoidHom.ext
     intro g
     exact eq_of_heq
-      (Poincare.Topology.VanKampen.fundamentalGroup_mapOfEq_heq_map
+      (DifferentialGeometry.Topology.VanKampen.fundamentalGroup_mapOfEq_heq_map
         (outerHomotopyEquiv n φ hφ).toFun x (outerLower n φ x) rfl g)
   rw [← heq]
   exact h
@@ -217,4 +217,4 @@ theorem fundamentalGroupCellAdjunctionLowerEquiv_toMonoidHom
 
 end CellAttachment
 
-end Poincare.Topology
+end DifferentialGeometry.Topology

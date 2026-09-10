@@ -5,7 +5,7 @@ open scoped Topology ContDiff
 set_option autoImplicit false
 noncomputable section
 
-namespace Poincare.Manifold.BoundaryCollar
+namespace DifferentialGeometry.Manifold.BoundaryCollar
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 
 
@@ -86,4 +86,4 @@ theorem exists_flowBox_of_flow [CompleteSpace E]
       (by norm_num)
   · exact hasFDerivAt_flowBox hΦ hzero hder hg
 
-end Poincare.Manifold.BoundaryCollar
+end DifferentialGeometry.Manifold.BoundaryCollar

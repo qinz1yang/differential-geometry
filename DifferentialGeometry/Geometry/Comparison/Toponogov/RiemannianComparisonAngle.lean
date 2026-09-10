@@ -8,7 +8,7 @@ noncomputable section
 open Bundle Manifold
 open scoped ENNReal Manifold ContDiff Topology
 
-namespace Poincare.Toponogov
+namespace DifferentialGeometry.Toponogov
 
 open DifferentialGeometry
 
@@ -51,4 +51,4 @@ theorem riemannianComparisonAngle_scale_sq
     riemannianDistance_scale_sq (I := I) g hscale x y]
   exact comparisonAngle_scale hox hoy hscale
 
-end Poincare.Toponogov
+end DifferentialGeometry.Toponogov

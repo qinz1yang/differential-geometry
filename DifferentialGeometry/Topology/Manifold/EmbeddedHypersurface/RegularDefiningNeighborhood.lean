@@ -5,7 +5,7 @@ open scoped Manifold ContDiff Topology
 set_option autoImplicit false
 noncomputable section
 
-namespace Poincare.Manifold.EmbeddedHypersurface
+namespace DifferentialGeometry.Manifold.EmbeddedHypersurface
 
 variable {m : ℕ} {H G S M : Type*}
   [TopologicalSpace H] [TopologicalSpace G]
@@ -121,4 +121,4 @@ theorem exists_defining_neighborhood_of_regular_vanishing {e : S → M} {x : S}
   · rintro ⟨s, rfl⟩
     exact hz s
 
-end Poincare.Manifold.EmbeddedHypersurface
+end DifferentialGeometry.Manifold.EmbeddedHypersurface

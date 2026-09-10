@@ -5,7 +5,7 @@ noncomputable section
 
 open scoped ENNReal
 
-namespace Poincare.Analysis
+namespace DifferentialGeometry.Analysis
 
 
 theorem summable_exp_neg_mul_sq (c : ℝ) (hc : 0 < c) :
@@ -37,4 +37,4 @@ theorem tsum_ofReal_exp_neg_mul_sq_add_mul_lt_top (c C : ℝ) (hc : 0 < c) :
       (Real.exp (-c * (k : ℝ) ^ 2 + C * (k : ℝ)))) < ⊤ :=
   (summable_exp_neg_mul_sq_add_mul c C hc).tsum_ofReal_lt_top
 
-end Poincare.Analysis
+end DifferentialGeometry.Analysis

@@ -5,7 +5,7 @@ open CategoryTheory CategoryTheory.Limits
 noncomputable section
 universe u v
 
-namespace Poincare.ShortComplex
+namespace DifferentialGeometry.ShortComplex
 variable {k : Type u} [Field k]
 
 
@@ -20,9 +20,9 @@ theorem finiteDimensional_of_exact (S : CategoryTheory.ShortComplex (ModuleCat.{
   rw [Submodule.comap_top] at ht
   exact (Submodule.topEquiv : (⊤ : Submodule k S.X₂) ≃ₗ[k] S.X₂).finiteDimensional
 
-end Poincare.ShortComplex
+end DifferentialGeometry.ShortComplex
 
-namespace Poincare.HomologicalComplex
+namespace DifferentialGeometry.HomologicalComplex
 variable {k : Type u} [Field k]
 
 
@@ -43,7 +43,7 @@ theorem finiteHomologyType_middle
   · intro n
     have := h₁.1 n
     have := h₃.1 n
-    exact Poincare.ShortComplex.finiteDimensional_of_exact _ (hS.homology_exact₂ n)
+    exact DifferentialGeometry.ShortComplex.finiteDimensional_of_exact _ (hS.homology_exact₂ n)
   · obtain ⟨N₁, h₁⟩ := h₁.2
     obtain ⟨N₃, h₃⟩ := h₃.2
     refine ⟨max N₁ N₃, fun n hn ↦ ?_⟩
@@ -59,7 +59,7 @@ theorem finiteHomologyType_first
   · intro n
     have := h₂.1 n
     have := h₃.1 (n + 1)
-    exact Poincare.ShortComplex.finiteDimensional_of_exact _ (hS.homology_exact₁ (n + 1) n rfl)
+    exact DifferentialGeometry.ShortComplex.finiteDimensional_of_exact _ (hS.homology_exact₁ (n + 1) n rfl)
   · obtain ⟨N₂, h₂⟩ := h₂.2
     obtain ⟨N₃, h₃⟩ := h₃.2
     refine ⟨max N₂ N₃, fun n hn ↦ ?_⟩
@@ -86,7 +86,7 @@ theorem finiteHomologyType_last
     | succ n =>
       have := h₁.1 n
       have := h₂.1 (n + 1)
-      exact Poincare.ShortComplex.finiteDimensional_of_exact _ (hS.homology_exact₃ (n + 1) n rfl)
+      exact DifferentialGeometry.ShortComplex.finiteDimensional_of_exact _ (hS.homology_exact₃ (n + 1) n rfl)
   · obtain ⟨N₁, h₁⟩ := h₁.2
     obtain ⟨N₂, h₂⟩ := h₂.2
     refine ⟨max N₁ N₂ + 1, fun n hn ↦ ?_⟩
@@ -96,4 +96,4 @@ theorem finiteHomologyType_last
       exact (hS.homology_exact₃ (n + 1) n rfl).isZero_of_both_isZero
         (h₂ (n + 1) (by omega)) (h₁ n (by omega))
 
-end Poincare.HomologicalComplex
+end DifferentialGeometry.HomologicalComplex

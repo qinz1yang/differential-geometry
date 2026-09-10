@@ -5,7 +5,7 @@ set_option autoImplicit false
 noncomputable section
 open Set Function Manifold TopologicalSpace
 open scoped ContDiff Topology
-namespace Poincare.Manifold.BoundaryCollar
+namespace DifferentialGeometry.Manifold.BoundaryCollar
 
 theorem exists_positiveCoordinates_diffeomorph
     {E H B : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -66,4 +66,4 @@ theorem exists_positiveCoordinates_diffeomorph
   have ht : (s.symm q).val.2.val = q.val.2 := congrArg Prod.snd hh
   exact Prod.ext hb (Subtype.ext ht)
 
-end Poincare.Manifold.BoundaryCollar
+end DifferentialGeometry.Manifold.BoundaryCollar

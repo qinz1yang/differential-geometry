@@ -1,4 +1,3 @@
-import Batteries.Tactic.Alias
 import DifferentialGeometry.Geometry.Metric.Ray
 import DifferentialGeometry.Geometry.Metric.Segment
 import DifferentialGeometry.Geometry.Geodesic.EquationGerm
@@ -147,11 +146,3 @@ theorem exists_riemannian_ray [NoncompactSpace M]
   exact hisom.dist_eq s t
 
 end DifferentialGeometry.Geometry
-
-namespace Poincare.Geometry
-
-alias exists_unitSpeed_minimizing_riemannian_geodesic := DifferentialGeometry.Geometry.exists_unitSpeed_minimizing_riemannian_geodesic
-alias exists_isometric_riemannian_segment := DifferentialGeometry.Geometry.exists_isometric_riemannian_segment
-alias exists_riemannian_ray := DifferentialGeometry.Geometry.exists_riemannian_ray
-
-end Poincare.Geometry

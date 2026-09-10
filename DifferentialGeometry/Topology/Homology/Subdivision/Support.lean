@@ -9,7 +9,7 @@ open CategoryTheory CategoryTheory.Limits Opposite Simplicial
 
 universe u
 
-namespace Poincare.Homology
+namespace DifferentialGeometry.Homology
 
 variable {E : Type u} [NormedAddCommGroup E] [NormedSpace ℝ E]
   {s : Set E} (hs : Convex ℝ s)
@@ -197,4 +197,4 @@ theorem smallAffineSubdivisionHomotopyMap_inclusion (n : ℕ) :
       SSet.ι_chainComplexMap_f, ι_affineSubdivisionHomotopyMap_succ]
     rfl
 
-end Poincare.Homology
+end DifferentialGeometry.Homology

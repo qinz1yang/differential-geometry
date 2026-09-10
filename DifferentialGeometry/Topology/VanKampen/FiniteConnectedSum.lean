@@ -17,11 +17,11 @@ noncomputable section
 
 universe u
 
-namespace Poincare.Topology.ThreeManifold
+namespace DifferentialGeometry.Topology.ThreeManifold
 
 open DifferentialGeometry.Topology
-open Poincare.Algebra.Group
-open Poincare.Topology.VanKampen
+open DifferentialGeometry.Algebra.Group
+open DifferentialGeometry.Topology.VanKampen
 
 structure BasedConnectedClosedSmoothThreeManifold where
 
@@ -122,8 +122,8 @@ noncomputable def ConnectedSumStep.sourceBasepointEquiv
     (fundamentalGroupSourceFactor
       (connectedSumLeftGluingPoint s.leftCell s.boundaryPoint : A)
       (connectedSumRightGluingPoint s.rightCell s.glue s.boundaryPoint : B)) fun
-    | false => Poincare.Topology.fundamentalGroupChangeBasepoint s.leftConnector
-    | true => Poincare.Topology.fundamentalGroupChangeBasepoint s.rightConnector
+    | false => DifferentialGeometry.Topology.fundamentalGroupChangeBasepoint s.leftConnector
+    | true => DifferentialGeometry.Topology.fundamentalGroupChangeBasepoint s.rightConnector
 
 noncomputable def ConnectedSumStep.realizationFundamentalGroupEquiv
     {A B C : BasedConnectedClosedSmoothThreeManifold} (s : ConnectedSumStep A B C) :
@@ -131,7 +131,7 @@ noncomputable def ConnectedSumStep.realizationFundamentalGroupEquiv
         (connectedSumNeckMidpoint s.leftCell.boundaryMap s.rightCell.boundaryMap
           s.glue s.boundaryPoint) ≃*
       FundamentalGroup C C.basepoint :=
-  Poincare.Topology.fundamentalGroupMulEquivOfHomotopyEquiv
+  DifferentialGeometry.Topology.fundamentalGroupMulEquivOfHomotopyEquiv
     s.realization.toHomotopyEquiv
     (connectedSumNeckMidpoint s.leftCell.boundaryMap s.rightCell.boundaryMap
       s.glue s.boundaryPoint)
@@ -179,11 +179,11 @@ theorem ConnectedSumStep.forwardFundamentalGroupEquiv_comp_inl
       ((fundamentalGroupEquiv_connectedSum
         s.leftCell s.rightCell s.glue s.boundaryPoint)
         (Monoid.CoprodI.of (i := false)
-          (Poincare.Topology.fundamentalGroupChangeBasepoint s.leftConnector g))) = _
+          (DifferentialGeometry.Topology.fundamentalGroupChangeBasepoint s.leftConnector g))) = _
   have h := DFunLike.congr_fun
     (fundamentalGroupEquiv_connectedSum_comp_left
       s.leftCell s.rightCell s.glue s.boundaryPoint)
-    (Poincare.Topology.fundamentalGroupChangeBasepoint s.leftConnector g)
+    (DifferentialGeometry.Topology.fundamentalGroupChangeBasepoint s.leftConnector g)
   change
     (fundamentalGroupEquiv_connectedSum
       s.leftCell s.rightCell s.glue s.boundaryPoint)
@@ -192,9 +192,9 @@ theorem ConnectedSumStep.forwardFundamentalGroupEquiv_comp_inl
             (connectedSumLeftGluingPoint s.leftCell s.boundaryPoint : A)
             (connectedSumRightGluingPoint s.rightCell s.glue s.boundaryPoint : B))
           (i := false)
-          (Poincare.Topology.fundamentalGroupChangeBasepoint s.leftConnector g)) =
+          (DifferentialGeometry.Topology.fundamentalGroupChangeBasepoint s.leftConnector g)) =
       connectedSumLeftFactorHom s.leftCell s.rightCell s.glue s.boundaryPoint
-        (Poincare.Topology.fundamentalGroupChangeBasepoint s.leftConnector g) at h
+        (DifferentialGeometry.Topology.fundamentalGroupChangeBasepoint s.leftConnector g) at h
   rw [h]
   rfl
 
@@ -209,11 +209,11 @@ theorem ConnectedSumStep.forwardFundamentalGroupEquiv_comp_inr
       ((fundamentalGroupEquiv_connectedSum
         s.leftCell s.rightCell s.glue s.boundaryPoint)
         (Monoid.CoprodI.of (i := true)
-          (Poincare.Topology.fundamentalGroupChangeBasepoint s.rightConnector g))) = _
+          (DifferentialGeometry.Topology.fundamentalGroupChangeBasepoint s.rightConnector g))) = _
   have h := DFunLike.congr_fun
     (fundamentalGroupEquiv_connectedSum_comp_right
       s.leftCell s.rightCell s.glue s.boundaryPoint)
-    (Poincare.Topology.fundamentalGroupChangeBasepoint s.rightConnector g)
+    (DifferentialGeometry.Topology.fundamentalGroupChangeBasepoint s.rightConnector g)
   change
     (fundamentalGroupEquiv_connectedSum
       s.leftCell s.rightCell s.glue s.boundaryPoint)
@@ -222,9 +222,9 @@ theorem ConnectedSumStep.forwardFundamentalGroupEquiv_comp_inr
             (connectedSumLeftGluingPoint s.leftCell s.boundaryPoint : A)
             (connectedSumRightGluingPoint s.rightCell s.glue s.boundaryPoint : B))
           (i := true)
-          (Poincare.Topology.fundamentalGroupChangeBasepoint s.rightConnector g)) =
+          (DifferentialGeometry.Topology.fundamentalGroupChangeBasepoint s.rightConnector g)) =
       connectedSumRightFactorHom s.leftCell s.rightCell s.glue s.boundaryPoint
-        (Poincare.Topology.fundamentalGroupChangeBasepoint s.rightConnector g) at h
+        (DifferentialGeometry.Topology.fundamentalGroupChangeBasepoint s.rightConnector g) at h
   rw [h]
   rfl
 
@@ -253,9 +253,9 @@ theorem ConnectedSumStep.fundamentalGroupEquiv_comp_rightFactorHom
 inductive LeftAssociatedConnectedSumConstruction :
     (r : ℕ) → BasedConnectedClosedSmoothThreeManifold → Type (u + 1)
   | empty (result : BasedConnectedClosedSmoothThreeManifold)
-      (sphereRealization : result ≃ₜ Poincare.Topology.SphereThree)
+      (sphereRealization : result ≃ₜ DifferentialGeometry.Topology.SphereThree)
       (sphereRealization_basepoint :
-        sphereRealization result.basepoint = Poincare.Topology.sphereThreeNorth) :
+        sphereRealization result.basepoint = DifferentialGeometry.Topology.sphereThreeNorth) :
       LeftAssociatedConnectedSumConstruction 0 result
   | singleton (factor : BasedConnectedClosedSmoothThreeManifold) :
       LeftAssociatedConnectedSumConstruction 1 factor
@@ -599,18 +599,18 @@ theorem appendFactorFreeProductEquiv_symm_comp_inr_last
 
 noncomputable def emptyConnectedSumFundamentalGroupEquiv
     (result : BasedConnectedClosedSmoothThreeManifold)
-    (sphereRealization : result ≃ₜ Poincare.Topology.SphereThree)
+    (sphereRealization : result ≃ₜ DifferentialGeometry.Topology.SphereThree)
     (sphereRealization_basepoint :
-      sphereRealization result.basepoint = Poincare.Topology.sphereThreeNorth) :
+      sphereRealization result.basepoint = DifferentialGeometry.Topology.sphereThreeNorth) :
     FundamentalGroup result result.basepoint ≃*
       Monoid.CoprodI
         (LeftAssociatedConnectedSumConstruction.empty result sphereRealization
           sphereRealization_basepoint).factorFundamentalGroup := by
   let sphereEquiv : FundamentalGroup result result.basepoint ≃*
-      FundamentalGroup Poincare.Topology.SphereThree Poincare.Topology.sphereThreeNorth :=
-    Poincare.Topology.fundamentalGroupMulEquivOfHomotopyEquiv
+      FundamentalGroup DifferentialGeometry.Topology.SphereThree DifferentialGeometry.Topology.sphereThreeNorth :=
+    DifferentialGeometry.Topology.fundamentalGroupMulEquivOfHomotopyEquiv
       sphereRealization.toHomotopyEquiv result.basepoint
-        Poincare.Topology.sphereThreeNorth sphereRealization_basepoint
+        DifferentialGeometry.Topology.sphereThreeNorth sphereRealization_basepoint
   let target := Monoid.CoprodI
     (LeftAssociatedConnectedSumConstruction.empty result sphereRealization
       sphereRealization_basepoint).factorFundamentalGroup
@@ -619,8 +619,8 @@ noncomputable def emptyConnectedSumFundamentalGroupEquiv
   letI : Unique target :=
     { default := 1
       uniq := fun x => Subsingleton.elim x 1 }
-  letI : Unique (FundamentalGroup Poincare.Topology.SphereThree
-      Poincare.Topology.sphereThreeNorth) :=
+  letI : Unique (FundamentalGroup DifferentialGeometry.Topology.SphereThree
+      DifferentialGeometry.Topology.sphereThreeNorth) :=
     { default := 1
       uniq := fun x => Subsingleton.elim x 1 }
   exact sphereEquiv.trans MulEquiv.ofUnique
@@ -756,4 +756,4 @@ theorem fundamentalGroupEquiv_finiteConnectedSum_comp_factorToResult :
           (appendFactorFreeProductEquiv_symm_comp_inl_castSucc
             previous nonempty factor result step j) g
 
-end Poincare.Topology.ThreeManifold
+end DifferentialGeometry.Topology.ThreeManifold

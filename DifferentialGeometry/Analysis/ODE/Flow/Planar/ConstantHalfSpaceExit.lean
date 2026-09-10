@@ -5,7 +5,7 @@ noncomputable section
 open Set Topology
 open scoped ContDiff
 
-namespace Poincare.Analysis
+namespace DifferentialGeometry.Analysis
 
 theorem exists_smooth_exitTime_of_constant_halfSpace
     {P E : Type*} [NormedAddCommGroup P] [NormedSpace ℝ P] [CompleteSpace P]
@@ -49,4 +49,4 @@ theorem exists_smooth_exitTime_of_constant_halfSpace
     exact integralCurve_eq_translation_in_constant_halfSpace (hvs p) ℓ c hc.le (hfixed p hp)
       (hderiv p hp) (hroot p hp).ge hs
 
-end Poincare.Analysis
+end DifferentialGeometry.Analysis

@@ -6,9 +6,9 @@ noncomputable section
 open Set
 open scoped ContDiff Manifold
 
-namespace Poincare.Topology.Manifold
+namespace DifferentialGeometry.Topology.Manifold
 
-open Poincare.Analysis
+open DifferentialGeometry.Analysis
 
 theorem exists_relative_isotopy_of_square_flow
     (f : Diffeomorph 𝓘(ℝ, ℂ) 𝓘(ℝ, ℂ) ℂ ℂ ∞) {δ : ℝ} (hδ : 0 < δ)
@@ -116,4 +116,4 @@ theorem exists_relative_isotopy_of_square_flow
     · exact if_neg hz
   · exact ((hHprop p (mem_univ _)).2.2.2.2 z (by simpa only [zero_add] using hz)).1
 
-end Poincare.Topology.Manifold
+end DifferentialGeometry.Topology.Manifold

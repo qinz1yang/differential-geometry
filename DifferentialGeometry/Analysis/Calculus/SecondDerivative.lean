@@ -37,8 +37,8 @@ theorem second_derivative_nonneg_of_isLocalMin
 
 end DifferentialGeometry
 
-namespace Poincare.Analysis
+namespace DifferentialGeometry.Analysis
 
 alias second_derivative_nonneg_of_isLocalMin := DifferentialGeometry.second_derivative_nonneg_of_isLocalMin
 
-end Poincare.Analysis
+end DifferentialGeometry.Analysis

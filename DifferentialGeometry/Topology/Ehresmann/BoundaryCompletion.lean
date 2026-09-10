@@ -11,7 +11,7 @@ open scoped ContDiff Manifold
 
 open DifferentialGeometry.Topology.Morse
 
-namespace Poincare.Topology.Ehresmann
+namespace DifferentialGeometry.Topology.Ehresmann
 
 variable {E : Type} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type} [TopologicalSpace H]
@@ -65,8 +65,8 @@ theorem regularIntervalDatum_of_boundary_values [CompactSpace W] [PreconnectedSp
     RegularIntervalDatum I u a b where
   lt := hab
   smooth := hu
-  range_eq := Poincare.Topology.Manifold.range_eq_Icc_of_boundary_values hab.le hreg hboundary ha hb
-  boundary_eq := Poincare.Topology.Manifold.boundary_eq_preimage_endpoints_of_boundary_values
+  range_eq := DifferentialGeometry.Topology.Manifold.range_eq_Icc_of_boundary_values hab.le hreg hboundary ha hb
+  boundary_eq := DifferentialGeometry.Topology.Manifold.boundary_eq_preimage_endpoints_of_boundary_values
     hab.le hreg hboundary
   boundary_disjoint := by
     apply Set.disjoint_left.mpr
@@ -104,4 +104,4 @@ theorem hasDerivWithinAt_neg_of_localMaxOn_Ici
     simpa using h
   exact lt_of_le_of_ne hd hne
 
-end Poincare.Topology.Ehresmann
+end DifferentialGeometry.Topology.Ehresmann

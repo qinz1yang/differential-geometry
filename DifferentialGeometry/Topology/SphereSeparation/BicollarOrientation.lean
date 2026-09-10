@@ -5,7 +5,7 @@ set_option autoImplicit false
 open Function Set Topology
 open scoped Manifold ContDiff Topology
 
-namespace Poincare.Topology.SphereSeparation
+namespace DifferentialGeometry.Topology.SphereSeparation
 
 theorem lowerAxis_connected {a : ℝ} (c : AxialInterval a) :
     IsConnected (Iio c : Set (AxialInterval a)) := by
@@ -465,4 +465,4 @@ theorem bicollar_order_of_atZero
     o.compactClosure_ssubset_later_compact hst,
     o.compactClosure_ssubset hst⟩
 
-end Poincare.Topology.SphereSeparation
+end DifferentialGeometry.Topology.SphereSeparation

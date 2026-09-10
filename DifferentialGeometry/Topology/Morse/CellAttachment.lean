@@ -13,7 +13,7 @@ open DifferentialGeometry.Topology.Morse.CellAttachment
 open DifferentialGeometry.Topology.Morse.ManifoldCellAttachment
 open DifferentialGeometry.Topology.Homotopy
 
-namespace Poincare.Morse
+namespace DifferentialGeometry.Morse
 
 private def homotopyEquivUnderOfHomeomorph {A X Y : Type*}
     [TopologicalSpace A] [TopologicalSpace X] [TopologicalSpace Y]
@@ -90,7 +90,7 @@ theorem one_critical_point_cell_attachment (f : M → ℝ)
     contMDiffOn_invFun := hχinv }
   let g := morseModifiedFunction hk (f p) ε δ R data.χ f
   have hg : ContMDiff I 𝓘(ℝ, ℝ) ∞ g :=
-    Poincare.Morse.contMDiff_morseModifiedFunction hk (f p) ε δ R hε hδ hbound data₀.radius_pos
+    DifferentialGeometry.Morse.contMDiff_morseModifiedFunction hk (f p) ε δ R hε hδ hbound data₀.radius_pos
       f hf χ hnormal data₀.closedBall_subset_source
   have hgle : ∀ x, g x ≤ f x :=
     morseModifiedFunction_le_f hk (f p) ε δ R hε data.χ f data₀.normalForm_on
@@ -140,4 +140,4 @@ theorem one_critical_point_cell_attachment (f : M → ℝ)
   exact ⟨ε, hε, hεa, cellAttachingMap hk (f p) data,
     ⟨((eu.trans er rfl).trans elow rfl).trans ec rfl⟩⟩
 
-end Poincare.Morse
+end DifferentialGeometry.Morse

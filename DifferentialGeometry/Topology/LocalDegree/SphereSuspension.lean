@@ -6,8 +6,8 @@ set_option autoImplicit false
 open CategoryTheory CategoryTheory.Limits Metric Set
 noncomputable section
 universe u
-namespace Poincare.LocalDegree
-open Poincare.Homology
+namespace DifferentialGeometry.LocalDegree
+open DifferentialGeometry.Homology
 variable {E : Type u} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
 
 
@@ -210,4 +210,4 @@ theorem euclideanSphereDegree_suspension {d : ℕ} (f : C(EuclideanSphere d, Euc
   rw [euclideanSphereTopGenerator_connecting]
   rfl
 
-end Poincare.LocalDegree
+end DifferentialGeometry.LocalDegree

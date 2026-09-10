@@ -8,7 +8,7 @@ open scoped Manifold ContDiff
 set_option autoImplicit false
 noncomputable section
 
-namespace Poincare.Manifold.BoundaryCollar
+namespace DifferentialGeometry.Manifold.BoundaryCollar
 
 variable {n : ℕ} [NeZero n] {M : Type*} [TopologicalSpace M]
   [ChartedSpace (EuclideanHalfSpace n) M]
@@ -138,4 +138,4 @@ theorem mfderiv_chartHeight_eq_pos_smul_proj (p : M) {y : M}
     hb ((chartHeight_eq_zero_iff (n := n) p hy).mpr hb) (Filter.Eventually.of_forall (chartHeight_nonneg (n := n) p))
     (mfderiv_chartHeight_ne_zero (n := n) p hy)
 
-end Poincare.Manifold.BoundaryCollar
+end DifferentialGeometry.Manifold.BoundaryCollar

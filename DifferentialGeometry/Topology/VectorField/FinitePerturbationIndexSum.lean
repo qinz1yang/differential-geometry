@@ -5,7 +5,7 @@ set_option autoImplicit false
 noncomputable section
 open Set Metric Filter Bundle
 open scoped Manifold ContDiff Topology
-namespace Poincare.VectorField
+namespace DifferentialGeometry.VectorField
 variable {d : ℕ} {H M : Type*} [TopologicalSpace H] [TopologicalSpace M]
   [ChartedSpace H M] [T2Space M]
   (I : ModelWithCorners ℝ (EuclideanSpace ℝ (Fin (d + 1))) H) [IsManifold I ∞ M]
@@ -52,7 +52,7 @@ theorem exists_regular_perturbation_interiorIndexSum_eq
   have hUnion : (⋃ p, K p) ⊆ {x | I.IsInteriorPoint x} := by
     intro x hx
     obtain ⟨p, y, hy, rfl⟩ := mem_iUnion.mp hx
-    exact Poincare.Manifold.isInteriorPoint_of_model_partialDiffeomorph I ∞ (c p).symm
+    exact DifferentialGeometry.Manifold.isInteriorPoint_of_model_partialDiffeomorph I ∞ (c p).symm
       (by simp) (hRt p hy)
   obtain ⟨ρ, v, G, hG, _, _, hcompact, hsupport, hgerm, _, hboundary, hGfinite, hregular⟩ :=
     exists_regular_perturbation_in_disjoint_charts I V hV c a r R hr hRt hdis hcover
@@ -97,4 +97,4 @@ theorem exists_regular_perturbation_interiorIndexSum_eq
     hpartition V hfinite hisolated hinterior hcover]
   exact Finset.sum_congr rfl (fun p _ => hlocal p)
 
-end Poincare.VectorField
+end DifferentialGeometry.VectorField

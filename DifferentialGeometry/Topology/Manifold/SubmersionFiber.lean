@@ -4,7 +4,7 @@ set_option autoImplicit false
 noncomputable section
 open scoped ContDiff Manifold Topology
 
-namespace Poincare.Topology.Manifold
+namespace DifferentialGeometry.Topology.Manifold
 
 variable {X A B : Type*} [TopologicalSpace X] [TopologicalSpace A] [TopologicalSpace B]
 
@@ -329,4 +329,4 @@ theorem mfderiv_regularFiberInclusion_injective
 
 end FiniteDimensional
 
-end Poincare.Topology.Manifold
+end DifferentialGeometry.Topology.Manifold

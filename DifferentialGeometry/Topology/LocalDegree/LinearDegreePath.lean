@@ -6,7 +6,7 @@ import Mathlib.Topology.Path
 set_option autoImplicit false
 noncomputable section
 open InnerProductSpace Module
-namespace Poincare.LocalDegree
+namespace DifferentialGeometry.LocalDegree
 variable {n : ℕ}
 
 private theorem gs_diag (f : Fin n → EuclideanSpace ℝ (Fin n))
@@ -191,4 +191,4 @@ theorem orthogonalReductionPath_nonzero
     orthogonalReductionPath A t x ≠ 0 :=
   mt (orthogonalReductionPathEquiv A t).map_eq_zero_iff.mp hx
 
-end Poincare.LocalDegree
+end DifferentialGeometry.LocalDegree

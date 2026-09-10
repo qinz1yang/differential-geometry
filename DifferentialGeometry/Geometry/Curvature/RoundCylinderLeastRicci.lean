@@ -8,9 +8,9 @@ open scoped Manifold ContDiff
 open DifferentialGeometry DifferentialGeometry.Geometry DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.Geometry.Riemannian
 open DifferentialGeometry.Analysis.Laplacian
-open Poincare.Geometry.Metric
+open DifferentialGeometry.Geometry.Metric
 
-namespace Poincare.Geometry.Curvature
+namespace DifferentialGeometry.Geometry.Curvature
 
 theorem exists_least_ricci_direction_on_roundCylinder
     {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
@@ -97,4 +97,4 @@ theorem exists_least_ricci_direction_on_roundCylinder
   refine ⟨μ, w, hw, heig, hmin, hμ, hspace, ?_, hclose⟩
   exact (cylinderMetric_axis_inner gS x w) ▸ hpos
 
-end Poincare.Geometry.Curvature
+end DifferentialGeometry.Geometry.Curvature

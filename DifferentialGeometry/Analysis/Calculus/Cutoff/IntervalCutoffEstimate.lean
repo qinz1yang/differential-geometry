@@ -7,7 +7,7 @@ noncomputable section
 open Set Filter Topology
 open scoped ContDiff
 
-namespace Poincare.Analysis
+namespace DifferentialGeometry.Analysis
 
 private theorem exists_bound_deriv_smoothTransition :
     ∃ D : ℝ, 0 < D ∧ ∀ t, |deriv Real.smoothTransition t| ≤ D := by
@@ -132,4 +132,4 @@ theorem exists_uniform_smooth_interval_cutoff :
           (mul_le_mul_of_nonneg_right h₂ (by positivity)))
       _ = 2 * D / η := by ring
 
-end Poincare.Analysis
+end DifferentialGeometry.Analysis

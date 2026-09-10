@@ -8,7 +8,7 @@ open DifferentialGeometry DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Tensor0SBundle
 
-namespace Poincare.Geometry.Curvature
+namespace DifferentialGeometry.Geometry.Curvature
 
 theorem ricciSharp_difference_bound_of_tensor_difference
     {E H M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
@@ -42,9 +42,9 @@ theorem ricciSharp_difference_bound_of_tensor_difference
       rw [← mul_assoc]
       exact mul_le_mul_of_nonneg_right
         (mul_le_mul_of_nonneg_right hRicci (Real.sqrt_nonneg _)) (Real.sqrt_nonneg _))
-  exact Poincare.Geometry.Metric.metricSharp_difference_bound_of_covector_difference
+  exact DifferentialGeometry.Geometry.Metric.metricSharp_difference_bound_of_covector_difference
     g gRef x (ricciTensor g x v).toLinearMap (ricciTensor gRef x v).toLinearMap
     δ (ρ * Real.sqrt (gRef.inner x v v)) hδ (mul_nonneg hρ (Real.sqrt_nonneg _))
     hmetric hcov
 
-end Poincare.Geometry.Curvature
+end DifferentialGeometry.Geometry.Curvature

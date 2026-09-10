@@ -6,7 +6,7 @@ set_option autoImplicit false
 open Function Set Topology
 open scoped Manifold ContDiff Topology
 
-namespace Poincare.Topology.SphereSeparation
+namespace DifferentialGeometry.Topology.SphereSeparation
 
 variable {N : Type*} {a : ℝ} (Φ : SphereTwo × AxialInterval a → N)
 
@@ -152,4 +152,4 @@ theorem locallyTwoSided_sliceImage
       sliceImage_subset_closure_upperHalfImage Φ hcont c hz.2
   }⟩
 
-end Poincare.Topology.SphereSeparation
+end DifferentialGeometry.Topology.SphereSeparation

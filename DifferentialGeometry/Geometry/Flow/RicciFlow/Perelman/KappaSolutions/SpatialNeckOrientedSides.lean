@@ -22,7 +22,7 @@ namespace SpatialNeckWitness
 theorem exists_oriented_compact_end_sides
     {h : SmoothRiemannianMetric I N} {yStar : SpatialNeckSphere}
     {p : N} {epsilon : ℝ} (W : SpatialNeckWitness h yStar p epsilon)
-    (hsec : Poincare.Geometry.HasPositiveSectionalCurvature (I := I) h) :
+    (hsec : DifferentialGeometry.Geometry.HasPositiveSectionalCurvature (I := I) h) :
     ∃ W' : SpatialNeckWitness h yStar p epsilon,
       (W' = W ∨ W' = W.reflect) ∧ W'.centralSphere = W.centralSphere ∧
       W'.core = W.core ∧ W'.image = W.image ∧

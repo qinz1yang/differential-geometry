@@ -5,7 +5,7 @@ set_option autoImplicit false
 open Metric Set
 open scoped unitInterval
 noncomputable section
-namespace Poincare.LocalDegree
+namespace DifferentialGeometry.LocalDegree
 variable {E D : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [NormedAddCommGroup D] [NormedSpace ℝ D]
 
@@ -124,4 +124,4 @@ theorem euclideanSphereDegree_triangularConjugate {d : ℕ}
     euclideanSphereDegree (linearSphereMap (triangularConjugate C ℓ c hc.ne')) = 1 := by
   rw [euclideanSphereDegree_eq_of_homotopy (triangularSphereHomotopy C ℓ hc), euclideanSphereDegree_id]
 
-end Poincare.LocalDegree
+end DifferentialGeometry.LocalDegree

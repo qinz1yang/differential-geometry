@@ -8,7 +8,7 @@ set_option autoImplicit false
 open ContinuousLinearMap
 open scoped RealInnerProductSpace
 
-namespace Poincare.Topology.SphereSeparation
+namespace DifferentialGeometry.Topology.SphereSeparation
 
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
 
@@ -81,4 +81,4 @@ theorem range_unitSphereTangentProjection
     refine ⟨y, ?_⟩
     simp [unitSphereTangentProjection, hy]
 
-end Poincare.Topology.SphereSeparation
+end DifferentialGeometry.Topology.SphereSeparation

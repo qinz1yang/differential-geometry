@@ -5,7 +5,7 @@ set_option autoImplicit false
 noncomputable section
 open Set Filter Bundle Manifold TopologicalSpace
 open scoped ContDiff Topology
-namespace Poincare.VectorField
+namespace DifferentialGeometry.VectorField
 
 
 def inwardNormalizationTime (η r : ℝ) : ℝ := -collarNormalizationTime η (-r)
@@ -49,8 +49,8 @@ theorem exists_inward_closedCollarNormalization
       ∃ N : ∀ q : S, TangentSpace (J.prod (𝓡∂ 1)) q,
         ContMDiff (J.prod (𝓡∂ 1)) (J.prod (𝓡∂ 1)).tangent ∞
           (fun q => (⟨q, N q⟩ : TangentBundle (J.prod (𝓡∂ 1)) S)) ∧
-        (∀ q : S, N q = ((W (κ q)).1, (Poincare.Manifold.Interval.tangentCoordinateIcc q.val.2).symm
-          (Poincare.Manifold.Interval.tangentCoordinateIcc (κ q).val.2 (W (κ q)).2))) ∧
+        (∀ q : S, N q = ((W (κ q)).1, (DifferentialGeometry.Manifold.Interval.tangentCoordinateIcc q.val.2).symm
+          (DifferentialGeometry.Manifold.Interval.tangentCoordinateIcc (κ q).val.2 (W (κ q)).2))) ∧
         (∀ q : S, N q = 0 ↔ W (κ q) = 0) ∧
         (∀ q : S, 2 * η / 3 ≤ q.val.2.val → N q = W q) ∧
         ∀ q : S, q.val.2.val ≤ η / 3 →
@@ -71,27 +71,27 @@ theorem exists_inward_closedCollarNormalization
           (contMDiff_subtype_val (I := J.prod (𝓡∂ 1)) (U := S))))
       exact ⟨hh.continuous.subtype_mk _, hh⟩
   let N : ∀ q : S, TangentSpace (J.prod (𝓡∂ 1)) q := fun q =>
-    ((W (κ q)).1, (Poincare.Manifold.Interval.tangentCoordinateIcc q.val.2).symm
-      (Poincare.Manifold.Interval.tangentCoordinateIcc (κ q).val.2 (W (κ q)).2))
+    ((W (κ q)).1, (DifferentialGeometry.Manifold.Interval.tangentCoordinateIcc q.val.2).symm
+      (DifferentialGeometry.Manifold.Interval.tangentCoordinateIcc (κ q).val.2 (W (κ q)).2))
   have hN : ContMDiff (J.prod (𝓡∂ 1)) (J.prod (𝓡∂ 1)).tangent ∞
       (fun q => (⟨q, N q⟩ : TangentBundle (J.prod (𝓡∂ 1)) S)) := by
     apply (contMDiff_tangentSection_opens_iff S N).mpr
     have hc := contMDiff_equivTangentBundleProd.comp
       (((contMDiff_tangentSection_opens_iff S W).mp hW).comp hκ)
-    have hb := Poincare.Manifold.Interval.contMDiff_tangentCoordinateIcc.comp hc.snd
-    have hR := Poincare.Manifold.Interval.contMDiff_tangentCoordinateIcc_symm.comp
+    have hb := DifferentialGeometry.Manifold.Interval.contMDiff_tangentCoordinateIcc.comp hc.snd
+    have hR := DifferentialGeometry.Manifold.Interval.contMDiff_tangentCoordinateIcc_symm.comp
       ((contMDiff_snd.comp (contMDiff_subtype_val (U := S))).prodMk hb)
     exact contMDiff_equivTangentBundleProd_symm.comp (hc.fst.prodMk hR)
   refine ⟨κ, hκ, fun _ => ⟨rfl, rfl⟩, N, hN, fun _ => rfl, ?_, ?_, ?_⟩
   · intro q
-    change ((W (κ q)).1, (Poincare.Manifold.Interval.tangentCoordinateIcc q.val.2).symm
-      (Poincare.Manifold.Interval.tangentCoordinateIcc (κ q).val.2 (W (κ q)).2)) = 0 ↔ _
+    change ((W (κ q)).1, (DifferentialGeometry.Manifold.Interval.tangentCoordinateIcc q.val.2).symm
+      (DifferentialGeometry.Manifold.Interval.tangentCoordinateIcc (κ q).val.2 (W (κ q)).2)) = 0 ↔ _
     rw [Prod.mk_eq_zero]
-    have he : (Poincare.Manifold.Interval.tangentCoordinateIcc q.val.2).symm
-        (Poincare.Manifold.Interval.tangentCoordinateIcc (κ q).val.2 (W (κ q)).2) = 0 ↔
+    have he : (DifferentialGeometry.Manifold.Interval.tangentCoordinateIcc q.val.2).symm
+        (DifferentialGeometry.Manifold.Interval.tangentCoordinateIcc (κ q).val.2 (W (κ q)).2) = 0 ↔
         (W (κ q)).2 = 0 :=
-      ((Poincare.Manifold.Interval.tangentCoordinateIcc q.val.2).symm.map_eq_zero_iff).trans
-        (Poincare.Manifold.Interval.tangentCoordinateIcc (κ q).val.2).map_eq_zero_iff
+      ((DifferentialGeometry.Manifold.Interval.tangentCoordinateIcc q.val.2).symm.map_eq_zero_iff).trans
+        (DifferentialGeometry.Manifold.Interval.tangentCoordinateIcc (κ q).val.2).map_eq_zero_iff
     exact (and_congr_right (fun _ => he)).trans Prod.mk_eq_zero.symm
   · intro q hq
     have he : κ q = q := by
@@ -99,11 +99,11 @@ theorem exists_inward_closedCollarNormalization
       apply Prod.ext
       · rfl
       · exact Subtype.ext (inwardNormalizationTime_eq_self hη hq)
-    change ((W (κ q)).1, (Poincare.Manifold.Interval.tangentCoordinateIcc q.val.2).symm
-      (Poincare.Manifold.Interval.tangentCoordinateIcc (κ q).val.2 (W (κ q)).2)) = W q
+    change ((W (κ q)).1, (DifferentialGeometry.Manifold.Interval.tangentCoordinateIcc q.val.2).symm
+      (DifferentialGeometry.Manifold.Interval.tangentCoordinateIcc (κ q).val.2 (W (κ q)).2)) = W q
     rw [he]
-    exact Prod.ext rfl ((Poincare.Manifold.Interval.tangentCoordinateIcc q.val.2).symm_apply_apply _)
+    exact Prod.ext rfl ((DifferentialGeometry.Manifold.Interval.tangentCoordinateIcc q.val.2).symm_apply_apply _)
   · intro q hq
     exact Prod.ext rfl (Subtype.ext (inwardNormalizationTime_eq_zero hη hq))
 
-end Poincare.VectorField
+end DifferentialGeometry.VectorField

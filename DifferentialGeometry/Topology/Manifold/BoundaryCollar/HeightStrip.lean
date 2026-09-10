@@ -10,7 +10,7 @@ open scoped Topology ContDiff
 open DifferentialGeometry.Integral.DivergenceTheorem.WithBoundary
 set_option autoImplicit false
 noncomputable section
-namespace Poincare.Manifold.BoundaryCollar
+namespace DifferentialGeometry.Manifold.BoundaryCollar
 
 
 theorem exists_smooth_unit_height_boundary_strip
@@ -90,4 +90,4 @@ theorem exists_smooth_unit_height_boundary_strip
     have hezero : c (⟨p, hp⟩, ⟨0, ⟨le_rfl, hτ.le⟩⟩) = p := hzero p (hKU hp)
     rwa [hezero] at hh
 
-end Poincare.Manifold.BoundaryCollar
+end DifferentialGeometry.Manifold.BoundaryCollar

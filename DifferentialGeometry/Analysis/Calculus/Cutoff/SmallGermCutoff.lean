@@ -6,7 +6,7 @@ noncomputable section
 open Set Metric Filter Topology
 open scoped ContDiff NNReal
 
-namespace Poincare.Analysis
+namespace DifferentialGeometry.Analysis
 
 variable {E F : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
   [FiniteDimensional ℝ E] [NormedAddCommGroup F] [NormedSpace ℝ F]
@@ -90,4 +90,4 @@ theorem exists_small_compact_extension_of_zero_derivative
     exact div_mul_cancel₀ c (by positivity)
   exact heq ▸ hbound
 
-end Poincare.Analysis
+end DifferentialGeometry.Analysis

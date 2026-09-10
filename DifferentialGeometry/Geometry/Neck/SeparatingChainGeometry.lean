@@ -5,9 +5,9 @@ open Set Topology
 open scoped Manifold ContDiff
 open DifferentialGeometry DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Integral.DivergenceTheorem.WithBoundary
-open Poincare.Geometry.Affine Poincare.Geometry.Boundary
+open DifferentialGeometry.Geometry.Affine DifferentialGeometry.Geometry.Boundary
 
-namespace Poincare.Geometry.Neck
+namespace DifferentialGeometry.Geometry.Neck
 
 private instance : Fact (Module.finrank ℝ (EuclideanSpace ℝ (Fin 3)) = 2 + 1) := ⟨by simp⟩
 local notation "S²" => Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1
@@ -99,7 +99,7 @@ theorem separatingNeckChain.ordered_exteriors
       rw [D.upperEnd_image]
       exact range_nonempty _
     exact h.of_image
-  exact Poincare.Topology.ordered_exteriors_of_finite_chain D.inclusion hc
+  exact DifferentialGeometry.Topology.ordered_exteriors_of_finite_chain D.inclusion hc
     D.truncation hT hmeet D.truncation_disjoint D.lowerSide D.collarRegion D.upperSide
     D.lowerSide_closed hKclosed D.upperSide_closed D.sides_cover D.sides_disjoint
     (by rintro j _ ⟨w, hw, rfl⟩; exact D.collar_truncation j hw)
@@ -146,4 +146,4 @@ theorem separatingNeckChain.recorded_collar_errors
     simpa only [heq, map_neg, neg_apply, neg_neg] using hg
   · simpa only [hs, neg_one_smul, sub_neg_eq_add, add_comm] using hg
 
-end Poincare.Geometry.Neck
+end DifferentialGeometry.Geometry.Neck

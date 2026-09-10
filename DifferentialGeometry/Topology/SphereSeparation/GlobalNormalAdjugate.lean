@@ -8,7 +8,7 @@ import DifferentialGeometry.Topology.SphereSeparation.GlobalNormal
 open Function Set Matrix
 open scoped ContDiff Manifold Topology Matrix.Norms.Elementwise
 
-namespace Poincare.Topology.SphereSeparation
+namespace DifferentialGeometry.Topology.SphereSeparation
 
 abbrev R3 := Fin 3 → ℝ
 
@@ -445,4 +445,4 @@ theorem embeddedSphereAdjugateNormal_spec
   · rw [embeddedSphereNormalLine, ← hrange]
     exact euclideanAdjugateNormal_mem_orthogonal_range _ _ hker
 
-end Poincare.Topology.SphereSeparation
+end DifferentialGeometry.Topology.SphereSeparation

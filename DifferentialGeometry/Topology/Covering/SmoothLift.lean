@@ -7,7 +7,7 @@ noncomputable section
 open Set Filter Topology Manifold
 open scoped Manifold ContDiff
 
-namespace Poincare.Topology
+namespace DifferentialGeometry.Topology
 
 theorem contMDiff_of_lift_through_localDiffeomorph
     {E F G H H' H'' W M N : Type*}
@@ -51,10 +51,10 @@ theorem exists_smooth_lift_of_simplyConnected
     (f : W → M) (hf : ContMDiff I J ∞ f) (w₀ : W) (n₀ : N) (hn₀ : p n₀ = f w₀) :
     ∃ g : C(W, N), g w₀ = n₀ ∧ (∀ x, p (g x) = f x) ∧ ContMDiff I L ∞ g := by
   have : LocallyPathConnectedSpace W :=
-    Poincare.Topology.Manifold.locallyPathConnectedSpace_of_modelWithCorners I
+    DifferentialGeometry.Topology.Manifold.locallyPathConnectedSpace_of_modelWithCorners I
   obtain ⟨g, ⟨hg₀, hpg⟩, _⟩ := hp.existsUnique_continuousMap_lifts
     ⟨f, hf.continuous⟩ w₀ n₀ hn₀
   have hpg' : ∀ x, p (g x) = f x := fun x ↦ congrFun hpg x
   exact ⟨g, hg₀, hpg', contMDiff_of_lift_through_localDiffeomorph hps hf g hpg'⟩
 
-end Poincare.Topology
+end DifferentialGeometry.Topology

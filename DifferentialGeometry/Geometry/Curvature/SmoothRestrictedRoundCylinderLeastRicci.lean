@@ -9,9 +9,9 @@ open Set Bundle
 open scoped Manifold ContDiff
 open DifferentialGeometry DifferentialGeometry.Geometry DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.Geometry.Riemannian
-open Poincare.Geometry.Metric
+open DifferentialGeometry.Geometry.Metric
 
-namespace Poincare.Geometry.Curvature
+namespace DifferentialGeometry.Geometry.Curvature
 
 theorem exists_smooth_least_ricci_direction_on_restricted_roundCylinder
     {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
@@ -93,9 +93,9 @@ theorem exists_smooth_least_ricci_direction_on_restricted_roundCylinder
     rw [← hspace]
     apply Module.End.mem_eigenspace_iff.mpr
     exact hueigen.trans (congrArg (fun a : ℝ ↦ a • u) heval)
-  have heqw : u = w x := Poincare.Analysis.eq_of_unit_of_mem_span_of_positive_functional
+  have heqw : u = w x := DifferentialGeometry.Analysis.eq_of_unit_of_mem_span_of_positive_functional
     (g.inner x).toBilinForm (mvfderiv IC (fun y : O ↦ (y : Metric.sphere (0 : E) 1 × ℝ).2) x).toLinearMap
     u (w x) hu hwunit hmem hupos hpos
   rwa [heqw] at huclose
 
-end Poincare.Geometry.Curvature
+end DifferentialGeometry.Geometry.Curvature

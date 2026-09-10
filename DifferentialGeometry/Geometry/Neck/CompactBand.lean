@@ -6,7 +6,7 @@ noncomputable section
 open Set
 open scoped Manifold ContDiff
 
-namespace Poincare.Geometry.Neck
+namespace DifferentialGeometry.Geometry.Neck
 
 variable {F H M : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
   [TopologicalSpace H] {J : ModelWithCorners ℝ F H}
@@ -21,7 +21,7 @@ theorem cylindricalChart.isCompact_affine_axial_band
   have hα : τ * (Real.sqrt C.scale)⁻¹ ≠ 0 :=
     mul_ne_zero hτ (inv_ne_zero (Real.sqrt_pos.mpr C.scale_pos).ne')
   let χ := (Homeomorph.mulLeft₀ (τ * (Real.sqrt C.scale)⁻¹) hα).trans (Homeomorph.addRight b)
-  apply Poincare.Topology.Compactness.isCompact_coordinate_band_of_opens_product_chart
+  apply DifferentialGeometry.Topology.Compactness.isCompact_coordinate_band_of_opens_product_chart
     C.domain C.target C.chart.toHomeomorph U χ (fun x ↦ τ * C.axial x + b) _ l r hband
   intro p
   change τ * (Subtype.val.extend
@@ -44,4 +44,4 @@ theorem cylindricalChart.closure_preimage_affine_axial_band_subset_region
   rw [hclosed.closure_eq]
   exact inter_subset_left
 
-end Poincare.Geometry.Neck
+end DifferentialGeometry.Geometry.Neck

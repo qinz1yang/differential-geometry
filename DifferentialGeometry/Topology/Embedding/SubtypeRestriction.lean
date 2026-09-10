@@ -11,7 +11,7 @@ open Set Topology
 
 noncomputable section
 
-namespace Poincare.Topology.OpenPartialHomeomorph
+namespace DifferentialGeometry.Topology.OpenPartialHomeomorph
 
 variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
 
@@ -78,4 +78,4 @@ theorem restrictSubtypes_symm_apply (e : _root_.OpenPartialHomeomorph X Y) (s : 
   change (if hx : e.symm y ∈ s then (⟨e.symm y, hx⟩ : s) else hs).val = e.symm y
   rw [dif_pos ((h (e.symm y) (e.map_target hy)).mpr (by rw [e.right_inv hy]; exact y.property))]
 
-end Poincare.Topology.OpenPartialHomeomorph
+end DifferentialGeometry.Topology.OpenPartialHomeomorph

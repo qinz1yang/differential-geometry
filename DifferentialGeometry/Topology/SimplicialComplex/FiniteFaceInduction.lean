@@ -4,7 +4,7 @@ import Mathlib.Order.Preorder.Finite
 set_option autoImplicit false
 noncomputable section
 
-namespace Poincare.Topology.SimplicialComplex
+namespace DifferentialGeometry.Topology.SimplicialComplex
 
 variable {ι : Type*}
 
@@ -48,4 +48,4 @@ theorem finite_geometricFace_induction (P : Geometry.SimplicialComplex 𝕜 E �
         (geometricFaceCostar K s) rfl
 
 end Geometry
-end Poincare.Topology.SimplicialComplex
+end DifferentialGeometry.Topology.SimplicialComplex

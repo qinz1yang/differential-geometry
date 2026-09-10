@@ -4,7 +4,7 @@ set_option autoImplicit false
 noncomputable section
 open Bundle Set Filter Function Module
 open scoped Manifold ContDiff Topology BigOperators
-namespace Poincare.Morse
+namespace DifferentialGeometry.Morse
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   {H M : Type*} [TopologicalSpace H] [TopologicalSpace M] [ChartedSpace H M]
   {I : ModelWithCorners ℝ E H} {n : ℕ}
@@ -118,4 +118,4 @@ theorem exists_relative_perturbation_parameter_submersion
     (fun i => (hφ i).1.mdifferentiableAt (by simp)) a).fderiv]
   exact surjective_parameterDifferential (hspan x hx)
 
-end Poincare.Morse
+end DifferentialGeometry.Morse

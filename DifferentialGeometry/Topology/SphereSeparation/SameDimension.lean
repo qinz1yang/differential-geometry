@@ -7,7 +7,7 @@ set_option autoImplicit false
 open Function Set
 open scoped Topology ContDiff Manifold
 
-namespace Poincare.Topology.SphereSeparation
+namespace DifferentialGeometry.Topology.SphereSeparation
 
 namespace Manifold
 
@@ -147,4 +147,4 @@ theorem isOpen_range_of_isSmoothEmbedding
 
 end Manifold
 
-end Poincare.Topology.SphereSeparation
+end DifferentialGeometry.Topology.SphereSeparation

@@ -7,7 +7,7 @@ noncomputable section
 open Set Function
 open scoped Manifold ContDiff Topology
 open DifferentialGeometry.Topology.Morse
-namespace Poincare.Manifold.RegularLevel
+namespace DifferentialGeometry.Manifold.RegularLevel
 
 variable {m : ℕ} {E H M : Type} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [TopologicalSpace H] [TopologicalSpace M] [ChartedSpace H M]
@@ -85,7 +85,7 @@ def interiorSublevelChartedSpace {f : M → ℝ} {a : ℝ}
   let _ : IsManifold 𝓘(ℝ, E) ∞ U := interiorIsManifold I ∞
   let _ := sublevelChartedSpace (interiorModel e)
     (interiorFunction_smooth I e hf) (interiorFunction_regular I e hf hr)
-  exact Poincare.Manifold.Homeomorph.pullbackChartedSpace (H := MorseHalfSpace m) (interiorSublevelHomeomorph I hi)
+  exact DifferentialGeometry.Manifold.Homeomorph.pullbackChartedSpace (H := MorseHalfSpace m) (interiorSublevelHomeomorph I hi)
 
 theorem interiorSublevelIsManifold {f : M → ℝ} {a : ℝ}
     (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f)
@@ -100,7 +100,7 @@ theorem interiorSublevelIsManifold {f : M → ℝ} {a : ℝ}
     (interiorFunction_smooth I e hf) (interiorFunction_regular I e hf hr)
   let _ := sublevelIsManifold (interiorModel e)
     (interiorFunction_smooth I e hf) (interiorFunction_regular I e hf hr)
-  exact Poincare.Manifold.Homeomorph.instIsManifoldPullback (I := morseModelWithCornersHalfSpace m) (n := ∞) (interiorSublevelHomeomorph I hi)
+  exact DifferentialGeometry.Manifold.Homeomorph.instIsManifoldPullback (I := morseModelWithCornersHalfSpace m) (n := ∞) (interiorSublevelHomeomorph I hi)
 
 theorem interiorSublevelBoundary_iff
     {f : M → ℝ} {a : ℝ}
@@ -117,7 +117,7 @@ theorem interiorSublevelBoundary_iff
   let _ := sublevelIsManifold (interiorModel e)
     (interiorFunction_smooth I e hf) (interiorFunction_regular I e hf hr)
   let _ := interiorSublevelChartedSpace I e hf hr hi
-  let d := Poincare.Manifold.Homeomorph.pullbackDiffeomorph (I := morseModelWithCornersHalfSpace m) (n := ∞)
+  let d := DifferentialGeometry.Manifold.Homeomorph.pullbackDiffeomorph (I := morseModelWithCornersHalfSpace m) (n := ∞)
     (interiorSublevelHomeomorph I hi)
   let _ := interiorSublevelIsManifold I e hf hr hi
   exact ((d.isLocalDiffeomorph x).isBoundaryPoint_iff (by simp)).trans
@@ -141,7 +141,7 @@ theorem contMDiff_interiorSublevel_inclusion
   let _ := sublevelIsManifold (interiorModel e)
     (interiorFunction_smooth I e hf) (interiorFunction_regular I e hf hr)
   let _ := interiorSublevelChartedSpace I e hf hr hi
-  let d := Poincare.Manifold.Homeomorph.pullbackDiffeomorph (I := morseModelWithCornersHalfSpace m) (n := ∞)
+  let d := DifferentialGeometry.Manifold.Homeomorph.pullbackDiffeomorph (I := morseModelWithCornersHalfSpace m) (n := ∞)
     (interiorSublevelHomeomorph I hi)
   have hinc := contMDiff_sublevel_inclusion (interiorModel e)
     (interiorFunction_smooth I e hf) (interiorFunction_regular I e hf hr)
@@ -169,7 +169,7 @@ theorem contMDiff_interiorSublevel_iff
   let _ := sublevelIsManifold (interiorModel e)
     (interiorFunction_smooth I e hf) (interiorFunction_regular I e hf hr)
   let _ := interiorSublevelChartedSpace I e hf hr hi
-  let d := Poincare.Manifold.Homeomorph.pullbackDiffeomorph (I := morseModelWithCornersHalfSpace m) (n := ∞)
+  let d := DifferentialGeometry.Manifold.Homeomorph.pullbackDiffeomorph (I := morseModelWithCornersHalfSpace m) (n := ∞)
     (interiorSublevelHomeomorph I hi)
   change ContMDiff J (morseModelWithCornersHalfSpace m) ∞ g ↔
     ContMDiff J I ∞ (Subtype.val ∘ g)
@@ -189,4 +189,4 @@ theorem contMDiff_interiorSublevel_iff
         (interiorFunction_smooth I e hf) (interiorFunction_regular I e hf hr) le_rfl).mpr hq
     exact (d.contMDiff_diffeomorph_comp_iff le_rfl).mp hgd
 
-end Poincare.Manifold.RegularLevel
+end DifferentialGeometry.Manifold.RegularLevel

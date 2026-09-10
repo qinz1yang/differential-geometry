@@ -6,7 +6,7 @@ set_option autoImplicit false
 noncomputable section
 open Set Filter Function
 open scoped Manifold ContDiff Topology
-namespace Poincare.Manifold.RegularZero
+namespace DifferentialGeometry.Manifold.RegularZero
 variable {A : Type*} [NormedAddCommGroup A] [NormedSpace ℝ A] [CompleteSpace A]
   {B : Type*} [NormedAddCommGroup B] [NormedSpace ℝ B] {n : ℕ∞ω}
 
@@ -204,4 +204,4 @@ theorem contDiffOn_fiberChart_transition
     ((contDiffOn_fiberChart_symm g Φ hΦ hΦS a).mono inter_subset_left)
     (fun _ hz => hz.2)
 end FiberChart
-end Poincare.Manifold.RegularZero
+end DifferentialGeometry.Manifold.RegularZero

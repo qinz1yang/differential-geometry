@@ -10,7 +10,7 @@ noncomputable section
 open Set Function Bundle Manifold MeasureTheory
 open scoped Topology Manifold ContDiff ENNReal
 
-namespace Poincare.Geometry.Riemannian.VolumeComparison
+namespace DifferentialGeometry.Geometry.Riemannian.VolumeComparison
 
 open DifferentialGeometry
 open DifferentialGeometry.Geometry.Riemannian
@@ -280,6 +280,6 @@ theorem metricBall_volume_eq_lintegral_minimizingInterior [ConnectedSpace M]
           ∂(modelHaar (E := E)) :=
   segmentBall_area_eq (I := I) g hEnorm x hR
 
-end Poincare.Geometry.Riemannian.VolumeComparison
+end DifferentialGeometry.Geometry.Riemannian.VolumeComparison
 
 end

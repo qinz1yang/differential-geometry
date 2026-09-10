@@ -5,9 +5,9 @@ import DifferentialGeometry.Topology.Manifold.SmoothTwoSidedCollar
 set_option autoImplicit false
 open Set Manifold
 open scoped Topology ContDiff
-open DifferentialGeometry.Topology.Morse Poincare.Topology
+open DifferentialGeometry.Topology.Morse DifferentialGeometry.Topology
 noncomputable section
-namespace Poincare.Manifold.RegularLevel
+namespace DifferentialGeometry.Manifold.RegularLevel
 
 variable {m : ℕ} {H : Type*} [TopologicalSpace H]
   {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
@@ -62,4 +62,4 @@ theorem exists_smoothTwoSidedCollar_of_compact_regularLevel_manifold
       zero_eq := hzero }
   exact ⟨c, hvalue⟩
 
-end Poincare.Manifold.RegularLevel
+end DifferentialGeometry.Manifold.RegularLevel

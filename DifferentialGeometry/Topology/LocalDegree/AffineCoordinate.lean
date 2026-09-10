@@ -6,7 +6,7 @@ set_option autoImplicit false
 open Filter Metric Set
 open scoped Topology
 noncomputable section
-namespace Poincare.LocalDegree
+namespace DifferentialGeometry.LocalDegree
 variable {E F : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [NormedAddCommGroup F] [NormedSpace ℝ F]
 
@@ -162,4 +162,4 @@ theorem euclideanLocalDegree_affineCoordinate
       by ring
     _ = _ := by rw [hi, one_mul]
 
-end Poincare.LocalDegree
+end DifferentialGeometry.LocalDegree

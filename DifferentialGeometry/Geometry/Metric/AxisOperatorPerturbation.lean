@@ -7,7 +7,7 @@ open DifferentialGeometry DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.Analysis.Laplacian
 open DifferentialGeometry.Geometry.Riemannian
 
-namespace Poincare.Geometry.Metric
+namespace DifferentialGeometry.Geometry.Metric
 
 theorem axis_operator_error_for_perturbed_metric
     {E H M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
@@ -75,4 +75,4 @@ theorem axis_operator_error_for_perturbed_metric
         (mul_le_mul_of_nonneg_left (hcompare z).2 (by positivity)) (by norm_num)
     _ = _ := by ring
 
-end Poincare.Geometry.Metric
+end DifferentialGeometry.Geometry.Metric

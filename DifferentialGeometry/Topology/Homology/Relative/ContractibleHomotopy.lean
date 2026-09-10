@@ -4,7 +4,7 @@ set_option autoImplicit false
 noncomputable section
 open CategoryTheory Set
 open scoped unitInterval
-namespace Poincare.Homology
+namespace DifferentialGeometry.Homology
 universe u
 variable {X Y : TopCat.{u}} {s : Set X} {t : Set Y}
   {f g : X ⟶ Y} (hf : MapsTo f s t) (hg : MapsTo g s t)
@@ -42,4 +42,4 @@ theorem relativeHomologyMap_eq_of_homotopy_of_contractible
     (H : TopCat.Homotopy f g) (hH : ∀ a : I, MapsTo (fun x => H (a,x)) s t) (n : ℕ) :
     relativeHomologyMap A f hf (n + 1) = relativeHomologyMap A g hg (n + 1) :=
   relativeHomologyMap_eq_of_subspace_homotopy hf hg A (relativeSubspaceHomotopy hf hg H hH) n
-end Poincare.Homology
+end DifferentialGeometry.Homology

@@ -6,7 +6,7 @@ noncomputable section
 open Set Filter Bundle
 open scoped Manifold ContDiff Topology
 open DifferentialGeometry.Geometry.Operator
-namespace Poincare.VectorField
+namespace DifferentialGeometry.VectorField
 
 variable {E H M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [TopologicalSpace H] [TopologicalSpace M] [ChartedSpace H M]
@@ -23,9 +23,9 @@ theorem gradientFun_eq_zero_iff_mfderiv_eq_zero
     exact hh.symm
   · exact gradientFun_eq_zero_of_mfderiv_eq_zero g f
 
-end Poincare.VectorField
+end DifferentialGeometry.VectorField
 
-namespace Poincare.VectorField
+namespace DifferentialGeometry.VectorField
 variable {n : ℕ} [NeZero n] {M : Type*} [TopologicalSpace M]
   [ChartedSpace (EuclideanHalfSpace n) M] [IsManifold (𝓡∂ n) ∞ M]
 
@@ -40,7 +40,7 @@ theorem proj_gradientFun_neg_of_nonpos
   have hnegreg : mfderiv (𝓡∂ n) 𝓘(ℝ, ℝ) (-f) x ≠ 0 := by
     rw [mfderiv_neg]
     exact neg_ne_zero.mpr hreg
-  obtain ⟨c,hc,he⟩ := Poincare.Manifold.BoundaryCollar.mfderiv_eq_pos_smul_proj_of_nonneg
+  obtain ⟨c,hc,he⟩ := DifferentialGeometry.Manifold.BoundaryCollar.mfderiv_eq_pos_smul_proj_of_nonneg
     hf.neg hx (by simp [hf0]) (hneg.mono fun _ hy => neg_nonneg.mpr hy) hnegreg
   rw [mfderiv_neg] at he
   have hV : gradientFun g f x ≠ 0 :=
@@ -58,4 +58,4 @@ theorem proj_gradientFun_neg_of_nonpos
     exact neg_neg_of_pos (hinner ▸ hpos)
   exact neg_of_mul_neg_right hmul hc.le
 
-end Poincare.VectorField
+end DifferentialGeometry.VectorField

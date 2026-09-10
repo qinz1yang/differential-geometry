@@ -10,7 +10,7 @@ open DifferentialGeometry
 open DifferentialGeometry.Geometry.Riemannian.Topology
 open DifferentialGeometry.Topology.Manifold DifferentialGeometry.Topology.Covering
 
-namespace Poincare.Geometry.Riemannian
+namespace DifferentialGeometry.Geometry.Riemannian
 
 variable {n : ℕ} {E M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [TopologicalSpace M] [ChartedSpace E M]
@@ -35,4 +35,4 @@ theorem universalCover_deck_diffeomorph
   exact ⟨UniversalCover.deckDiffeo a, fun _ => rfl,
     UniversalCover.deck_inner g a, universalCoverDeck_preserves_orientation o a⟩
 
-end Poincare.Geometry.Riemannian
+end DifferentialGeometry.Geometry.Riemannian

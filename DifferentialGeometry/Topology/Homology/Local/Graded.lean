@@ -8,7 +8,7 @@ noncomputable section
 open CategoryTheory CategoryTheory.Limits Set Metric
 open scoped Manifold
 
-namespace Poincare.Homology
+namespace DifferentialGeometry.Homology
 
 variable {k : Type} [Ring k] (R : ModuleCat k)
 
@@ -26,7 +26,7 @@ theorem isZero_localEuclidean_succ (n q : ℕ) (h : q + 1 ≠ n) :
   apply IsZero.of_iso _ (localEuclideanSphereHomologyIso R n q)
   cases n with
   | zero => exact isZero_reducedSingularHomology_of_isEmpty R _ q
-  | succ n => exact Poincare.LocalDegree.isZero_euclideanSphere_reducedHomology R n q (by omega)
+  | succ n => exact DifferentialGeometry.LocalDegree.isZero_euclideanSphere_reducedHomology R n q (by omega)
 
 
 theorem isZero_localEuclidean_of_gt (n q : ℕ) (h : n < q) :
@@ -41,7 +41,7 @@ theorem not_isZero_localEuclidean_top (n : ℕ) :
   intro h
   have hz := h.of_iso (localEuclideanSphereHomologyIso (ModuleCat.of ℤ ℤ) (n + 1) n).symm
   have := ModuleCat.isZero_iff_subsingleton.mp hz
-  exact Poincare.LocalDegree.euclideanSphereTopGenerator_ne_zero n
+  exact DifferentialGeometry.LocalDegree.euclideanSphereTopGenerator_ne_zero n
     (Subsingleton.elim _ _)
 
 
@@ -83,8 +83,8 @@ variable {n : ℕ} {H M : Type} [TopologicalSpace H] [TopologicalSpace M]
 
 theorem isZero_localManifold_interior_of_gt (hx : I.IsInteriorPoint x) (q : ℕ) (hq : n < q) :
     IsZero (relativeHomology (TopCat.of M) ({x}ᶜ : Set M) R q) := by
-  let e := (Poincare.Manifold.interiorChart I 0 x).toOpenPartialHomeomorph
-  have he : x ∈ e.source := (Poincare.Manifold.mem_interiorChart_source_iff I 0 x).mpr hx
+  let e := (DifferentialGeometry.Manifold.interiorChart I 0 x).toOpenPartialHomeomorph
+  have he : x ∈ e.source := (DifferentialGeometry.Manifold.mem_interiorChart_source_iff I 0 x).mpr hx
   exact (isZero_localEuclidean_at_of_gt R n q (e x) hq).of_iso
     (chartLocalHomologyIso (X := TopCat.of M)
       (Y := TopCat.of (EuclideanSpace ℝ (Fin n))) e x he R q)
@@ -113,4 +113,4 @@ theorem isZero_localManifold_of_gt (q : ℕ) (hq : n < q) :
 
 end Boundary
 
-end Poincare.Homology
+end DifferentialGeometry.Homology

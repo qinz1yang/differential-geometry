@@ -5,7 +5,7 @@ noncomputable section
 open Set Metric Manifold Module
 open scoped ContDiff
 
-namespace Poincare.Topology.Manifold
+namespace DifferentialGeometry.Topology.Manifold
 
 def puncturedSpace (E : Type*) [NormedAddCommGroup E] : TopologicalSpace.Opens E :=
   ⟨{0}ᶜ, isOpen_compl_singleton⟩
@@ -46,4 +46,4 @@ def sphereProdRealDiffeomorphPunctured
     rw [Real.exp_log (norm_pos_iff.mpr x.property)]
     exact norm_smul_sphereDirection v x.property
 
-end Poincare.Topology.Manifold
+end DifferentialGeometry.Topology.Manifold

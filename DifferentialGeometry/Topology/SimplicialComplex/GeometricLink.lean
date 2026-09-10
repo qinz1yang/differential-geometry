@@ -4,7 +4,7 @@ import DifferentialGeometry.Topology.SimplicialComplex.MaximalFace
 set_option autoImplicit false
 noncomputable section
 
-namespace Poincare.Topology.SimplicialComplex
+namespace DifferentialGeometry.Topology.SimplicialComplex
 
 variable {𝕜 E : Type*} [Ring 𝕜] [PartialOrder 𝕜] [AddCommGroup E] [Module 𝕜 E]
   [DecidableEq E] (K : Geometry.SimplicialComplex 𝕜 E) (s : Finset E)
@@ -51,4 +51,4 @@ theorem geometricLink_singleton_space_subset_costar (p : E) :
   exact Geometry.SimplicialComplex.mem_space_iff.mpr
     ⟨t, geometricLink_singleton_le_costar K p ht, hx⟩
 
-end Poincare.Topology.SimplicialComplex
+end DifferentialGeometry.Topology.SimplicialComplex

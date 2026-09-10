@@ -5,7 +5,7 @@ import Mathlib.Tactic.Linarith
 noncomputable section
 open Set Filter Topology
 
-namespace Poincare.Analysis
+namespace DifferentialGeometry.Analysis
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 
@@ -81,4 +81,4 @@ theorem horizontal_derivative_of_face_eq
   intro w
   exact congrArg (fun B : E →L[ℝ] (ℝ × E) ↦ B w) hder
 
-end Poincare.Analysis
+end DifferentialGeometry.Analysis

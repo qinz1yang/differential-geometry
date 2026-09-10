@@ -5,7 +5,7 @@ noncomputable section
 open Set Filter Topology
 open scoped ContDiff Manifold BigOperators
 
-namespace Poincare.Topology.Manifold
+namespace DifferentialGeometry.Topology.Manifold
 
 open scoped Classical in
 theorem mvfderiv_bump_partition_sum_pos_of_multiplicity
@@ -56,4 +56,4 @@ theorem mvfderiv_bump_partition_sum_pos_of_multiplicity
     _ ≤ (N : ℝ) ^ 2 * D * δ := mul_le_mul_of_nonneg_right hsum hδ
     _ < κ := hsmall
 
-end Poincare.Topology.Manifold
+end DifferentialGeometry.Topology.Manifold

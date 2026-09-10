@@ -7,7 +7,7 @@ open scoped ContDiff Manifold Topology
 open Set
 open DifferentialGeometry.Geometry.Operator
 
-namespace Poincare.Topology.Manifold
+namespace DifferentialGeometry.Topology.Manifold
 
 variable {E H M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [TopologicalSpace H] [TopologicalSpace M] [ChartedSpace H M]
@@ -76,4 +76,4 @@ theorem range_eq_Icc_of_boundary_values [CompactSpace M] [PreconnectedSpace M]
   exact Subset.antisymm (range_subset_Icc_of_boundary_values hab hreg hboundary)
     ((isPreconnected_range hf).Icc_subset ha hb)
 
-end Poincare.Topology.Manifold
+end DifferentialGeometry.Topology.Manifold

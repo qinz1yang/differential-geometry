@@ -6,7 +6,7 @@ import Mathlib.Topology.MetricSpace.Holder
 set_option autoImplicit false
 open Set Metric Filter
 open scoped NNReal ENNReal Topology
-namespace Poincare.Calculus
+namespace DifferentialGeometry.Calculus
 variable {E F : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [NormedAddCommGroup F] [NormedSpace ℝ F]
   {f : E → F} {s : Set E} {K : ℝ≥0}
@@ -53,4 +53,4 @@ theorem exists_holderOnWith_fderiv_zeroSet_ball {x : E}
   exact ⟨K, r, hr, holderOnWith_fderiv_zeroSet (convex_ball x r)
     (fun y hy => (hrt hy).2) (hLip.mono (fun y hy => (hrt hy).1))⟩
 
-end Poincare.Calculus
+end DifferentialGeometry.Calculus

@@ -8,10 +8,10 @@ open DifferentialGeometry
 open DifferentialGeometry.Geometry.Riemannian
 open DifferentialGeometry.Geometry.Riemannian.Variation
 open DifferentialGeometry.Geometry.Riemannian.CovariantDerivativeAlong
-open Poincare.Geometry.Riemannian.Variation
+open DifferentialGeometry.Geometry.Riemannian.Variation
 open DifferentialGeometry.VectorBundle
 
-namespace Poincare.Geometry.Riemannian.Geodesic
+namespace DifferentialGeometry.Geometry.Riemannian.Geodesic
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
@@ -97,4 +97,4 @@ theorem parallelTransport_preserves_orientation {n : ℕ} [NeZero n]
   exact (b₀.orientation_map (parallelTransportLinearEquivOnIcc (I := I) g γ
     (hγ.of_le (by decide)) hL)).symm.trans hend
 
-end Poincare.Geometry.Riemannian.Geodesic
+end DifferentialGeometry.Geometry.Riemannian.Geodesic

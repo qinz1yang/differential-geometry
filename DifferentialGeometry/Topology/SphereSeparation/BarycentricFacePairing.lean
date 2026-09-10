@@ -7,7 +7,7 @@ set_option autoImplicit false
 open Equiv
 open scoped Simplicial
 
-namespace Poincare.Topology.SphereSeparation
+namespace DifferentialGeometry.Topology.SphereSeparation
 
 
 def adjacentPositionSwap {n : ℕ}
@@ -250,4 +250,4 @@ theorem delta_barycentricPiece_adjacentPositionSwap
   exact congr_arg (X.toSSetObjEquiv _ s)
     (barycentricPermutationSimplexMap_adjacentPositionSwap_face σ i x)
 
-end Poincare.Topology.SphereSeparation
+end DifferentialGeometry.Topology.SphereSeparation

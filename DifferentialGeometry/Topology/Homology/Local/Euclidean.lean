@@ -6,7 +6,7 @@ import Mathlib.Analysis.Convex.Contractible
 set_option autoImplicit false
 noncomputable section
 open CategoryTheory CategoryTheory.Limits Set Metric ContinuousMap
-namespace Poincare.Homology
+namespace DifferentialGeometry.Homology
 
 def puncturedSpaceSphereHomotopyEquiv (E : Type*) [NormedAddCommGroup E] [NormedSpace ℝ E] :
     ({0}ᶜ : Set E) ≃ₕ sphere (0 : E) 1 := by
@@ -45,7 +45,7 @@ theorem eulerChar_puncturedEuclidean (n : ℕ) :
 
 
 theorem finiteHomologyType_localEuclidean (n : ℕ) :
-    Poincare.HomologicalComplex.finiteHomologyType
+    DifferentialGeometry.HomologicalComplex.finiteHomologyType
       (relativeChainComplex (TopCat.of (EuclideanSpace ℝ (Fin n)))
         ({0}ᶜ : Set (EuclideanSpace ℝ (Fin n))) (ModuleCat.of k k)) := by
   apply finiteHomologyType_relativeChainComplex
@@ -75,7 +75,7 @@ theorem relativeEulerChar_localEuclidean (n : ℕ) :
 
 
 theorem finiteHomologyType_localEuclidean_at (n : ℕ) (p : EuclideanSpace ℝ (Fin n)) :
-    Poincare.HomologicalComplex.finiteHomologyType
+    DifferentialGeometry.HomologicalComplex.finiteHomologyType
       (relativeChainComplex (TopCat.of (EuclideanSpace ℝ (Fin n)))
         ({p}ᶜ : Set (EuclideanSpace ℝ (Fin n))) (ModuleCat.of k k)) := by
   let e := (Homeomorph.subRight p).toOpenPartialHomeomorph
@@ -98,4 +98,4 @@ theorem relativeEulerChar_localEuclidean_at (n : ℕ) (p : EuclideanSpace ℝ (F
   rw [h, he]
   exact relativeEulerChar_localEuclidean k n
 
-end Poincare.Homology
+end DifferentialGeometry.Homology

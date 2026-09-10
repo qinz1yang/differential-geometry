@@ -7,7 +7,7 @@ noncomputable section
 open scoped ContDiff Manifold
 open DifferentialGeometry.Topology.Morse
 
-namespace Poincare.Topology.Ehresmann
+namespace DifferentialGeometry.Topology.Ehresmann
 
 variable {m : ℕ} {H : Type} [TopologicalSpace H]
   {M : Type} [TopologicalSpace M] [ChartedSpace H M]
@@ -83,4 +83,4 @@ theorem exists_unitCylinderDiffeomorph_of_compact_regular_band
     rw [unitCylinderDiffeomorphOfProduct_lower]
     exact hl (sphereToFiber x)
 
-end Poincare.Topology.Ehresmann
+end DifferentialGeometry.Topology.Ehresmann

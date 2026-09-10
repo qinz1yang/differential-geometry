@@ -7,7 +7,7 @@ noncomputable section
 open Set
 open scoped ContDiff Manifold
 
-namespace Poincare.Analysis
+namespace DifferentialGeometry.Analysis
 
 theorem det_fderiv_pos_of_planar_isotopy
     (D : ℝ → Diffeomorph 𝓘(ℝ, ℂ) 𝓘(ℝ, ℂ) ℂ ℂ ∞)
@@ -67,4 +67,4 @@ theorem det_fderiv_pos_of_planar_isotopy
     (show (0 : ℝ) ∈ Icc (d p) (d 0) from ⟨le_of_not_gt hp, by rw [hd0]; norm_num⟩)
   exact hdnz t ht
 
-end Poincare.Analysis
+end DifferentialGeometry.Analysis

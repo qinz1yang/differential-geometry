@@ -7,7 +7,7 @@ noncomputable section
 open Set Metric Manifold Module
 open scoped ContDiff
 
-namespace Poincare.Topology.Manifold
+namespace DifferentialGeometry.Topology.Manifold
 
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
   {n : ℕ} [Fact (finrank ℝ E = n + 1)]
@@ -54,7 +54,7 @@ theorem det_fderiv_sphereRadialExtension_ne_zero
     (f : Diffeomorph (𝓡 n) (𝓡 n) (sphere (0 : E) 1) (sphere (0 : E) 1) ∞)
     {x : E} (hx : x ≠ 0) :
     (fderiv ℝ (sphereRadialExtension f) x).toLinearMap.det ≠ 0 :=
-  Poincare.Analysis.det_fderiv_ne_zero_of_partialDiffeomorph (sphereRadialDiffeomorph f) hx
+  DifferentialGeometry.Analysis.det_fderiv_ne_zero_of_partialDiffeomorph (sphereRadialDiffeomorph f) hx
 
 theorem det_fderiv_sphereRadialExtension_pos_iff
     (hrank : 1 < Module.rank ℝ E)
@@ -62,7 +62,7 @@ theorem det_fderiv_sphereRadialExtension_pos_iff
     {x y : E} (hx : x ≠ 0) (hy : y ≠ 0) :
     0 < (fderiv ℝ (sphereRadialExtension f) x).toLinearMap.det ↔
       0 < (fderiv ℝ (sphereRadialExtension f) y).toLinearMap.det :=
-  Poincare.Analysis.det_fderiv_pos_iff_of_preconnected (sphereRadialDiffeomorph f)
+  DifferentialGeometry.Analysis.det_fderiv_pos_iff_of_preconnected (sphereRadialDiffeomorph f)
     (isConnected_compl_singleton_of_one_lt_rank hrank 0).isPreconnected hx hy
 
-end Poincare.Topology.Manifold
+end DifferentialGeometry.Topology.Manifold

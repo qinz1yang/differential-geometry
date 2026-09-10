@@ -4,7 +4,7 @@ noncomputable section
 open Set Topology
 open scoped Manifold ContDiff
 
-namespace Poincare.Topology.Manifold
+namespace DifferentialGeometry.Topology.Manifold
 
 theorem exists_diffeomorph_restriction_to_open
     {E F H G N M : Type*}
@@ -64,4 +64,4 @@ theorem exists_diffeomorph_restriction_to_open
   exact ⟨U, hUO, { toEquiv := e, contMDiff_toFun := hf, contMDiff_invFun := hg },
     hmem, fun _ ↦ rfl⟩
 
-end Poincare.Topology.Manifold
+end DifferentialGeometry.Topology.Manifold

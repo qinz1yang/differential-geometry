@@ -5,7 +5,7 @@ set_option autoImplicit false
 noncomputable section
 open Set Bundle Filter Manifold TopologicalSpace
 open scoped ContDiff Topology
-namespace Poincare.VectorField
+namespace DifferentialGeometry.VectorField
 
 private theorem isCompact_closed_collar_strip {B : Type*} [TopologicalSpace B] [CompactSpace B]
     {ε δ R : ℝ} (hR : R < δ)
@@ -90,4 +90,4 @@ theorem patchThroughCollar_zeroSet
     rintro x ⟨q, _, rfl⟩ hx
     exact hnY (e q) hx
 
-end Poincare.VectorField
+end DifferentialGeometry.VectorField

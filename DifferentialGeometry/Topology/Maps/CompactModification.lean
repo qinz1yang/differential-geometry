@@ -3,7 +3,7 @@ import Mathlib.Topology.Separation.Hausdorff
 
 open Set Function Topology
 set_option autoImplicit false
-namespace Poincare.Topology
+namespace DifferentialGeometry.Topology
 
 theorem isClosedMap_of_compact_modification
     {X : Type*} [TopologicalSpace X] [T2Space X] {f : X → X}
@@ -28,4 +28,4 @@ theorem isClosedMap_of_compact_modification
   rw [heq]
   exact ((hK.inter_left hS).image hf).isClosed.union (hS.inter isClosed_closure)
 
-end Poincare.Topology
+end DifferentialGeometry.Topology

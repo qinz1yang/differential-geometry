@@ -11,7 +11,7 @@ open Filter Set Topology
 
 universe u v
 
-namespace Poincare.Topology
+namespace DifferentialGeometry.Topology
 
 
 theorem locallyPathConnectedSpace_of_openCover
@@ -33,4 +33,4 @@ theorem locallyPathConnectedSpace_of_openCover
   · rintro _ ⟨y, hy, rfl⟩
     exact hts hy
 
-end Poincare.Topology
+end DifferentialGeometry.Topology

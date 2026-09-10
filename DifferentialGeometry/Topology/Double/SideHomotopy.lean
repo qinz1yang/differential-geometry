@@ -5,7 +5,7 @@ import Mathlib.Topology.Piecewise
 set_option autoImplicit false
 noncomputable section
 open Set Function Topology
-namespace Poincare.Topology
+namespace DifferentialGeometry.Topology
 
 theorem exists_doublePositive_neighborhood_homotopyEquiv
     {X : Type} [TopologicalSpace X]
@@ -117,4 +117,4 @@ theorem exists_doublePositive_neighborhood_homotopyEquiv
     rfl
   simpa only [hRj] using ContinuousMap.Homotopic.refl (ContinuousMap.id X)
 
-end Poincare.Topology
+end DifferentialGeometry.Topology

@@ -4,7 +4,7 @@ open Set Function Topology Filter Manifold
 open scoped ContDiff
 set_option autoImplicit false
 noncomputable section
-namespace Poincare.Manifold.BoundaryCollar
+namespace DifferentialGeometry.Manifold.BoundaryCollar
 
 theorem boundary_flow_image_mem_nhds
     {n : ℕ} {M : Type*} [TopologicalSpace M]
@@ -29,4 +29,4 @@ theorem boundary_flow_image_mem_nhds
   obtain ⟨hU, hb, ht, he⟩ := hR y hy
   exact ⟨(R y).1, hU, hb, (R y).2, ht, he⟩
 
-end Poincare.Manifold.BoundaryCollar
+end DifferentialGeometry.Manifold.BoundaryCollar

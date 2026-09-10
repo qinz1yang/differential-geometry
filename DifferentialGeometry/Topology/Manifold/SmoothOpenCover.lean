@@ -6,7 +6,7 @@ noncomputable section
 open Set Filter Topology Manifold
 open scoped ContDiff
 
-namespace Poincare.Topology.Manifold
+namespace DifferentialGeometry.Topology.Manifold
 
 variable {ι E Q : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [TopologicalSpace Q]
   {F : ι → Type*} [∀ i, NormedAddCommGroup (F i)] [∀ i, NormedSpace ℝ (F i)]
@@ -94,4 +94,4 @@ theorem exists_smoothAtlas_of_openCover
     change (e i).symm y = (p v).symm (p v ((e i).symm y))
     exact ((p v).left_inv hy.2).symm
 
-end Poincare.Topology.Manifold
+end DifferentialGeometry.Topology.Manifold

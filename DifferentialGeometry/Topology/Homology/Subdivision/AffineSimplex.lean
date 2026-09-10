@@ -9,7 +9,7 @@ open CategoryTheory Opposite Simplicial
 
 universe u
 
-namespace Poincare.Homology
+namespace DifferentialGeometry.Homology
 
 variable {E : Type u} [NormedAddCommGroup E] [NormedSpace ℝ E]
 
@@ -155,4 +155,4 @@ theorem affineSingularSimplexIn_inclusion {s : Set E} (hs : Convex ℝ s) {n : �
       (op ⦋n⦌) (affineSingularSimplexIn hs v) =
         affineSingularSimplex (fun i ↦ (v i : E)) := rfl
 
-end Poincare.Homology
+end DifferentialGeometry.Homology

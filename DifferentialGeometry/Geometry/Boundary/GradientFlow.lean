@@ -8,13 +8,13 @@ noncomputable section
 open Set Filter Function Topology Manifold
 open scoped ContDiff
 
-namespace Poincare.Geometry.Boundary
+namespace DifferentialGeometry.Geometry.Boundary
 
 open DifferentialGeometry
 open DifferentialGeometry.Integral.DivergenceTheorem.WithBoundary
 open DifferentialGeometry.Integral.Measure
-open Poincare.Geometry.Gradient
-open Poincare.Topology.Manifold
+open DifferentialGeometry.Geometry.Gradient
+open DifferentialGeometry.Topology.Manifold
 
 variable {E H M : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
   [FiniteDimensional ℝ E] [TopologicalSpace H] [TopologicalSpace M] [ChartedSpace H M]
@@ -67,4 +67,4 @@ theorem exists_normalizedGradient_upper_localFlow (g : SmoothRiemannianMetric I 
   have h := height_eq_add_mul_time hε (hu.mdifferentiable (by simp)) hunit (hcurve y hy) t ht
   simpa only [hzero y hy, neg_one_mul, sub_eq_add_neg] using h
 
-end Poincare.Geometry.Boundary
+end DifferentialGeometry.Geometry.Boundary

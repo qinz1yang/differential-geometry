@@ -6,7 +6,7 @@ open DifferentialGeometry.Integral.DivergenceTheorem.WithBoundary
 set_option autoImplicit false
 noncomputable section
 
-namespace Poincare.Manifold.BoundaryCollar
+namespace DifferentialGeometry.Manifold.BoundaryCollar
 
 variable {n : ℕ} [NeZero n] {M : Type*} [TopologicalSpace M]
   [ChartedSpace (EuclideanHalfSpace n) M] [IsManifold (𝓡∂ n) ∞ M]
@@ -73,4 +73,4 @@ instance instHasOrientableBoundary : HasOrientableBoundary (I := 𝓡∂ n) M wh
       (L (inwardCoordAt p y) / L (inwardCoordAt q y)) * L (inwardCoordAt q y) = 0
     rw [div_mul_cancel₀ _ (ne_of_gt hq0), sub_self]
 
-end Poincare.Manifold.BoundaryCollar
+end DifferentialGeometry.Manifold.BoundaryCollar

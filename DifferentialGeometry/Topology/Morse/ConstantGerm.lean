@@ -7,7 +7,7 @@ noncomputable section
 open Set Filter Function
 open scoped Manifold ContDiff Topology
 open DifferentialGeometry.Topology.Morse
-namespace Poincare.Morse
+namespace DifferentialGeometry.Morse
 variable {E H M : Type} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [TopologicalSpace H] [TopologicalSpace M] [ChartedSpace H M]
   {I : ModelWithCorners ℝ E H}
@@ -33,8 +33,8 @@ theorem chartHessianAt_eq_of_eventuallyEq_add_const {f g : M → ℝ} {x : M} {b
     (hx : I.IsInteriorPoint x) (h : g =ᶠ[𝓝 x] (fun y => f y + b)) :
     chartHessianAt (fun z => g ((extChartAt I x).symm z)) (extChartAt I x x) =
       chartHessianAt (fun z => f ((extChartAt I x).symm z)) (extChartAt I x x) := by
-  let c := Poincare.Manifold.interiorChart I ∞ x
-  have hxc : x ∈ c.source := (Poincare.Manifold.mem_interiorChart_source_iff I ∞ x).mpr hx
+  let c := DifferentialGeometry.Manifold.interiorChart I ∞ x
+  have hxc : x ∈ c.source := (DifferentialGeometry.Manifold.mem_interiorChart_source_iff I ∞ x).mpr hx
   have hc : ContinuousAt c.symm (c x) :=
     c.symm.toOpenPartialHomeomorph.continuousOn.continuousAt
       (c.open_target.mem_nhds (c.map_source hxc))
@@ -62,4 +62,4 @@ theorem isNondegenerateCriticalPointAt_iff_of_eventuallyEq_add_const
   rw [isCriticalPointAt_iff_of_eventuallyEq_add_const hf h,
     chartHessianAt_eq_of_eventuallyEq_add_const hx h]
 
-end Poincare.Morse
+end DifferentialGeometry.Morse

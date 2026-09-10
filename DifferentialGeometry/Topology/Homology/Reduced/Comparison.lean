@@ -4,7 +4,7 @@ set_option autoImplicit false
 open CategoryTheory CategoryTheory.Limits AlgebraicTopology
 noncomputable section
 universe u
-namespace Poincare.Homology
+namespace DifferentialGeometry.Homology
 variable {k : Type u} [Ring k] (R : ModuleCat.{u} k) (X : TopCat.{u})
 private def positiveMap (n : ℕ) :
     (augmentedSingularChainComplex R X).sc' (n + 3) (n + 2) (n + 1) ⟶
@@ -101,4 +101,4 @@ theorem reducedSingularHomologySuccIso_naturality (f : X ⟶ Y) (n : ℕ) :
   have hright' := (by simpa only [Category.assoc] using! ho.symm.trans hright.symm)
   simpa only [Category.assoc] using! hleft'.trans hright'
 
-end Poincare.Homology
+end DifferentialGeometry.Homology

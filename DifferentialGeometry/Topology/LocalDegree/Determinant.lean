@@ -5,7 +5,7 @@ set_option autoImplicit false
 open Metric Set
 open scoped Topology
 noncomputable section
-namespace Poincare.LocalDegree
+namespace DifferentialGeometry.LocalDegree
 
 variable {d : ℕ}
   {f : EuclideanSpace ℝ (Fin (d + 1)) → EuclideanSpace ℝ (Fin (d + 1))}
@@ -30,4 +30,4 @@ theorem euclideanLocalDegree_eq_sign_det_fderiv
     euclideanSphereDegree_linearEquiv]
   rfl
 
-end Poincare.LocalDegree
+end DifferentialGeometry.LocalDegree

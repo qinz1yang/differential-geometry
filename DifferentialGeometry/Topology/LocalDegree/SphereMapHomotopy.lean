@@ -4,7 +4,7 @@ set_option autoImplicit false
 open Metric Set
 open scoped unitInterval
 noncomputable section
-namespace Poincare.LocalDegree
+namespace DifferentialGeometry.LocalDegree
 variable {E F : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [NormedAddCommGroup F] [NormedSpace ℝ F]
 
@@ -40,4 +40,4 @@ theorem sphereMapHomotopyOfFamily_apply {f g : E → F} {x : E} {R : ℝ}
       ‖H (t, v)‖⁻¹ • H (t, v) :=
   homeomorphUnitSphereProd_apply_fst_coe F _
 
-end Poincare.LocalDegree
+end DifferentialGeometry.LocalDegree

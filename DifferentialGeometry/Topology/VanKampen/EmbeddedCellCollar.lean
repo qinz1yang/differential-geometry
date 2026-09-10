@@ -18,7 +18,7 @@ noncomputable section
 
 universe u
 
-namespace Poincare.Topology.ThreeManifold
+namespace DifferentialGeometry.Topology.ThreeManifold
 
 open DifferentialGeometry.Topology
 open DifferentialGeometry.Topology.Handle
@@ -131,7 +131,7 @@ theorem locallyPathConnectedSpace_embeddedCellComplement_of_twoSidedCellCollar
   let U : Bool → Set (embeddedCellComplement c)
     | false => embeddedCellExterior c
     | true => Set.range hcollar.complementMap
-  apply Poincare.Topology.locallyPathConnectedSpace_of_openCover U
+  apply DifferentialGeometry.Topology.locallyPathConnectedSpace_of_openCover U
   · intro i
     cases i with
     | false => exact isOpen_embeddedCellExterior c hcont
@@ -205,4 +205,4 @@ theorem fundamentalGroupEmbeddedCellComplementEquivOfSmoothEmbeddingOfCollar_toM
       FundamentalGroup.map (embeddedCellComplementInclusion c) x := by
   rfl
 
-end Poincare.Topology.ThreeManifold
+end DifferentialGeometry.Topology.ThreeManifold

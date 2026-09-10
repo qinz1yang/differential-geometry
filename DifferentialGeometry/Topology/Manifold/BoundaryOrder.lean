@@ -6,7 +6,7 @@ noncomputable section
 open Set Filter Topology
 open scoped ContDiff Manifold
 
-namespace Poincare.Topology.Manifold
+namespace DifferentialGeometry.Topology.Manifold
 
 theorem boundary_value_lt_of_inward_coordinate
     {E H W : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -31,4 +31,4 @@ theorem boundary_value_lt_of_inward_coordinate
     (fun x hx ↦ (hboundary x hx).symm) (mem_range_self (γ (r / 2)))
   exact (not_lt_of_ge hbound.2) habove
 
-end Poincare.Topology.Manifold
+end DifferentialGeometry.Topology.Manifold

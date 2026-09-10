@@ -12,7 +12,7 @@ open Set Topology
 
 universe u v
 
-namespace Poincare.Topology
+namespace DifferentialGeometry.Topology
 
 structure BoolCocycle (ι : Type u) (B : Type v) [TopologicalSpace B] where
   baseSet : ι → Set B
@@ -134,4 +134,4 @@ theorem nonempty_coorientation
 
 end BoolCocycle
 
-end Poincare.Topology
+end DifferentialGeometry.Topology

@@ -12,7 +12,7 @@ noncomputable section
 open Set
 open scoped Manifold ContDiff
 
-namespace Poincare.Geometry.Riemannian.VolumeComparison
+namespace DifferentialGeometry.Geometry.Riemannian.VolumeComparison
 
 open DifferentialGeometry
 open DifferentialGeometry.CheegerGromovCompactness
@@ -329,4 +329,4 @@ theorem constantPointedRiemannianCGMaps_capturesSourceBalls_of_complete
   constantPointedRiemannianCGMaps_capturesSourceBalls (I := I) Y
     (fun R _ => pointedClosedBall_isCompact_of_complete (I := I) Y hY R)
 
-end Poincare.Geometry.Riemannian.VolumeComparison
+end DifferentialGeometry.Geometry.Riemannian.VolumeComparison

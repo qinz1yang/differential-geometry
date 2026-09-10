@@ -6,7 +6,7 @@ noncomputable section
 open Set Metric Topology Manifold
 open scoped ContDiff
 
-namespace Poincare.Geometry.Boundary
+namespace DifferentialGeometry.Geometry.Boundary
 
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
   [FiniteDimensional ℝ E]
@@ -31,7 +31,7 @@ theorem isPreconnected_interior_nestedBallShell [PreconnectedSpace (sphere (0 : 
   have : Fact (Module.finrank ℝ E = n + 1) :=
     ⟨(Nat.sub_add_cancel (positive_dimension v)).symm⟩
   obtain ⟨e, hes, het, he, hei⟩ :=
-    Poincare.Topology.Manifold.exists_smooth_nestedBallShell_parametrization (n := n)
+    DifferentialGeometry.Topology.Manifold.exists_smooth_nestedBallShell_parametrization (n := n)
       outer inner hr houter hinner hnested v
   have hdim : Module.finrank ℝ (EuclideanSpace ℝ (Fin n) × EuclideanSpace ℝ (Fin 1)) =
       Module.finrank ℝ E := by
@@ -53,7 +53,7 @@ theorem closure_interior_nestedBallShell
   have : Fact (Module.finrank ℝ E = n + 1) :=
     ⟨(Nat.sub_add_cancel (positive_dimension v)).symm⟩
   obtain ⟨e, hes, het, he, hei⟩ :=
-    Poincare.Topology.Manifold.exists_smooth_nestedBallShell_parametrization (n := n)
+    DifferentialGeometry.Topology.Manifold.exists_smooth_nestedBallShell_parametrization (n := n)
       outer inner hr houter hinner hnested v
   have hdim : Module.finrank ℝ (EuclideanSpace ℝ (Fin n) × EuclideanSpace ℝ (Fin 1)) =
       Module.finrank ℝ E := by
@@ -62,4 +62,4 @@ theorem closure_interior_nestedBallShell
   have h := closure_interior_target_of_smooth_parametrization e hes he hei hdim
   rwa [het] at h
 
-end Poincare.Geometry.Boundary
+end DifferentialGeometry.Geometry.Boundary

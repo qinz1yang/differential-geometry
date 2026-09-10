@@ -5,7 +5,7 @@ set_option autoImplicit false
 noncomputable section
 open Bundle Set Filter
 open scoped Manifold ContDiff Topology
-namespace Poincare.VectorField
+namespace DifferentialGeometry.VectorField
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   {H M : Type*} [TopologicalSpace H] [TopologicalSpace M] [ChartedSpace H M]
   {I : ModelWithCorners ℝ E H}
@@ -171,4 +171,4 @@ theorem finite_zeroSet_patchInCoordinates
   rw [patchInCoordinates_zeroSet c V W]
   exact (hW.image c.symm).union hV
 
-end Poincare.VectorField
+end DifferentialGeometry.VectorField

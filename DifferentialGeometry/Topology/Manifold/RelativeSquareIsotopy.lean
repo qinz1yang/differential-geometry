@@ -6,9 +6,9 @@ noncomputable section
 open Set
 open scoped ContDiff Manifold
 
-namespace Poincare.Topology.Manifold
+namespace DifferentialGeometry.Topology.Manifold
 
-open Poincare.Geometry.VectorField
+open DifferentialGeometry.Geometry.VectorField
 
 theorem exists_relative_square_isotopy
     (f : Diffeomorph 𝓘(ℝ, ℂ) 𝓘(ℝ, ℂ) ℂ ℂ ∞) {δ : ℝ} (hδ : 0 < δ)
@@ -72,4 +72,4 @@ theorem exists_relative_square_isotopy
   · exact Or.inr (Or.inr (Or.inl (by linarith)))
   · exact Or.inr (Or.inr (Or.inr (by linarith)))
 
-end Poincare.Topology.Manifold
+end DifferentialGeometry.Topology.Manifold

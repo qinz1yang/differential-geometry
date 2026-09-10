@@ -7,12 +7,12 @@ noncomputable section
 open Set Filter Function Topology Manifold
 open scoped ContDiff
 
-namespace Poincare.Geometry.Boundary
+namespace DifferentialGeometry.Geometry.Boundary
 
 open DifferentialGeometry
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem.WithBoundary
-open Poincare.Geometry.Gradient Poincare.Topology.Manifold
+open DifferentialGeometry.Geometry.Gradient DifferentialGeometry.Topology.Manifold
 
 variable {E H M : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
   [FiniteDimensional ℝ E] [TopologicalSpace H] [TopologicalSpace M] [ChartedSpace H M]
@@ -114,4 +114,4 @@ theorem exists_disjoint_adapted_endpoint_strips [CompactSpace M]
   · exact fun x hx t ht ↦ hinside₁ x hx t ⟨ht.1, ht.2.trans_lt hεlo⟩
   · exact fun x hx t ht ↦ hinside₂ x hx t ⟨ht.1, ht.2.trans_lt hεhi⟩
 
-end Poincare.Geometry.Boundary
+end DifferentialGeometry.Geometry.Boundary

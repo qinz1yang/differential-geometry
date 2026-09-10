@@ -5,7 +5,7 @@ noncomputable section
 open Set Metric Manifold Module
 open scoped ContDiff
 
-namespace Poincare.Topology.Manifold
+namespace DifferentialGeometry.Topology.Manifold
 
 variable (f : Diffeomorph (𝓡 2) (𝓡 2)
   (sphere (0 : EuclideanSpace ℝ (Fin 3)) 1)
@@ -94,4 +94,4 @@ theorem sphereDiffeomorphDegree_eq_one_iff_isotopy :
   exact (sphereDiffeomorphDegree_eq_one_iff f v).trans
     (sphere_isotopy_iff_positive_radial_derivative f v).symm
 
-end Poincare.Topology.Manifold
+end DifferentialGeometry.Topology.Manifold

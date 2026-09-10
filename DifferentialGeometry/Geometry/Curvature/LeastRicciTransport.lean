@@ -6,7 +6,7 @@ noncomputable section
 open scoped Manifold ContDiff
 open DifferentialGeometry DifferentialGeometry.Geometry.Curvature
 
-namespace Poincare.Geometry.Curvature
+namespace DifferentialGeometry.Geometry.Curvature
 
 variable {E F H H' M N : Type*}
   [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
@@ -68,4 +68,4 @@ theorem least_ricci_eigenpair_pullback
       change ricciSharp g (Φ x) (mfderiv I J Φ x w) = μ • mfderiv I J Φ x w
       simpa only [he] using heu
 
-end Poincare.Geometry.Curvature
+end DifferentialGeometry.Geometry.Curvature

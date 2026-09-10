@@ -13,7 +13,7 @@ open CategoryTheory Set
 
 universe u v
 
-namespace Poincare.Topology.VanKampen
+namespace DifferentialGeometry.Topology.VanKampen
 
 abbrev FundamentalGroupoidOn (Y : Type u) [TopologicalSpace Y] (A : Set Y) :=
   (CategoryTheory.Subgroupoid.full {z : FundamentalGroupoid Y | z.as ∈ A}).objs
@@ -771,4 +771,4 @@ theorem seifertVanKampenOn {X : Type u} [TopologicalSpace X] (A U V : Set X)
   unfold selectedGroupoidSquareIsPushoutStatement
   exact R.isPushout (seifertVanKampen U V hU hV hcover)
 
-end Poincare.Topology.VanKampen
+end DifferentialGeometry.Topology.VanKampen

@@ -5,7 +5,7 @@ noncomputable section
 
 open Set Topology
 
-namespace Poincare.Topology.ThreeManifold.TwoSidedCollar
+namespace DifferentialGeometry.Topology.ThreeManifold.TwoSidedCollar
 
 def inl
     {B C X : Type*} [TopologicalSpace B] [TopologicalSpace C] [TopologicalSpace X]
@@ -74,4 +74,4 @@ def sum
         Homeomorph.sumProdDistrib.isOpenEmbedding
     zero_eq := fun b ↦ by cases b <;> simp [φ, c.zero_eq, d.zero_eq] }
 
-end Poincare.Topology.ThreeManifold.TwoSidedCollar
+end DifferentialGeometry.Topology.ThreeManifold.TwoSidedCollar

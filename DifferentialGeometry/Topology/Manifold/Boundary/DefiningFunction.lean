@@ -5,7 +5,7 @@ noncomputable section
 open Set Filter Function Bundle
 open scoped Manifold ContDiff Topology
 open DifferentialGeometry.Integral.DivergenceTheorem.WithBoundary
-namespace Poincare.Manifold.Boundary
+namespace DifferentialGeometry.Manifold.Boundary
 variable {n : ℕ} [NeZero n] {M : Type*} [TopologicalSpace M]
   [ChartedSpace (EuclideanHalfSpace n) M] [IsManifold (𝓡∂ n) ∞ M]
   [T2Space M] [SigmaCompactSpace M]
@@ -23,7 +23,7 @@ theorem exists_global_boundary_definingFunction (hK : IsCompact ((𝓡∂ n).bou
           0 < (EuclideanSpace.proj (𝕜 := ℝ) (0 : Fin n)) (V y) := by
   classical
   obtain ⟨O,hBO,f,hf,hfn,hfzero,V,hV,hVc,hunit,hpos⟩ :=
-    Poincare.Manifold.BoundaryCollar.exists_smooth_unitSpeed_boundaryField hK
+    DifferentialGeometry.Manifold.BoundaryCollar.exists_smooth_unitSpeed_boundaryField hK
   let _ : LocallyCompactSpace (EuclideanHalfSpace n) := (𝓡∂ n).locallyCompactSpace
   let _ : LocallyCompactSpace M := ChartedSpace.locallyCompactSpace (EuclideanHalfSpace n) M
   obtain ⟨W,hW,hBW,hclW,_⟩ := exists_open_between_and_isCompact_closure hK O.isOpen hBO
@@ -68,4 +68,4 @@ theorem exists_global_boundary_definingFunction (hK : IsCompact ((𝓡∂ n).bou
   exact (congrArg (fun L : TangentSpace (𝓡∂ n) y →L[ℝ] ℝ => L (V y)) he).trans
     (hunit y (hclW (subset_closure hy)))
 
-end Poincare.Manifold.Boundary
+end DifferentialGeometry.Manifold.Boundary

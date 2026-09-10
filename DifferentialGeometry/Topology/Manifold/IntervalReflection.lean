@@ -6,7 +6,7 @@ noncomputable section
 open Manifold
 open scoped ContDiff
 
-namespace Poincare.Topology.Manifold
+namespace DifferentialGeometry.Topology.Manifold
 
 def unitIntervalReflection : Diffeomorph (𝓡∂ 1) (𝓡∂ 1) unitInterval unitInterval ∞ where
   toEquiv := unitInterval.symmHomeomorph.toEquiv
@@ -23,4 +23,4 @@ def unitIntervalReflection : Diffeomorph (𝓡∂ 1) (𝓡∂ 1) unitInterval un
 @[simp] theorem unitIntervalReflection_symm_apply (t : unitInterval) :
     unitIntervalReflection.symm t = unitInterval.symm t := rfl
 
-end Poincare.Topology.Manifold
+end DifferentialGeometry.Topology.Manifold

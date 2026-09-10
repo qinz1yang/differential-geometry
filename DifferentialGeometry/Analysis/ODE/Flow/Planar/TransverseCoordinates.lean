@@ -5,7 +5,7 @@ noncomputable section
 open Set Filter Topology
 open scoped ContDiff
 
-namespace Poincare.Analysis
+namespace DifferentialGeometry.Analysis
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
 
@@ -54,4 +54,4 @@ theorem exists_localInverse_of_transverse_zeroSlice
   apply exists_localInverse_of_hasFDerivAt_equiv hf hU hp
   rwa [hT]
 
-end Poincare.Analysis
+end DifferentialGeometry.Analysis

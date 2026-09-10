@@ -9,9 +9,9 @@ open DifferentialGeometry
 open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem.WithBoundary
-open Poincare.Geometry.Gradient
+open DifferentialGeometry.Geometry.Gradient
 
-namespace Poincare.Geometry.Boundary
+namespace DifferentialGeometry.Geometry.Boundary
 
 variable {E H M : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
   [FiniteDimensional ℝ E] [TopologicalSpace H] [TopologicalSpace M]
@@ -126,4 +126,4 @@ theorem normalizedGradient_inner_outwardNormal_pos_of_isLocalMax
   exact mul_pos (normalizedGradient_scale_pos g f x.1 hreg)
     (outwardNormalDerivative_pos_of_isLocalMax g hmax hf hreg)
 
-end Poincare.Geometry.Boundary
+end DifferentialGeometry.Geometry.Boundary

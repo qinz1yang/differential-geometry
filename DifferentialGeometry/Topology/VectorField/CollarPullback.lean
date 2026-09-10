@@ -7,7 +7,7 @@ set_option autoImplicit false
 open Set Function Bundle Manifold TopologicalSpace
 open scoped ContDiff Topology
 noncomputable section
-namespace Poincare.VectorField
+namespace DifferentialGeometry.VectorField
 
 theorem exists_nonvanishing_collar_pullback_strip
     {E H B : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -46,8 +46,8 @@ theorem exists_nonvanishing_collar_pullback_strip
     change (V ((e q).val) : F) = 0 ↔ (V (c q.val) : F) = 0
     rw [he q]
   have hnonzero : IsOpen {q : S | W q ≠ 0} :=
-    (Poincare.VectorBundle.isClosed_zeroSet ℝ hW.continuous).isOpen_compl
-  obtain ⟨δ, hδ, hδε, hδS⟩ := Poincare.Topology.exists_shorter_strip_image_subset
+    (DifferentialGeometry.VectorBundle.isClosed_zeroSet ℝ hW.continuous).isOpen_compl
+  obtain ⟨δ, hδ, hδε, hδS⟩ := DifferentialGeometry.Topology.exists_shorter_strip_image_subset
     (Fact.out : (0 : ℝ) < ε) continuous_id (S.isOpen.isOpenMap_subtype_val _ hnonzero)
     (fun p => ⟨⟨_, hS p⟩, fun hh => hzero p ((hz ⟨_, hS p⟩).mp hh), rfl⟩)
   refine ⟨hW, hz, ?_, δ, hδ, hδε, ?_, ?_⟩
@@ -62,4 +62,4 @@ theorem exists_nonvanishing_collar_pullback_strip
     have hh : q' = q := Subtype.ext heq
     exact hn (hh ▸ hWzero)
 
-end Poincare.VectorField
+end DifferentialGeometry.VectorField

@@ -3,7 +3,7 @@ import DifferentialGeometry.Topology.Embedding.Frontier
 
 open Set Filter Topology
 
-namespace Poincare.Topology
+namespace DifferentialGeometry.Topology
 
 theorem cover_and_endpoint_subset_of_embedded_collar
     {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
@@ -69,4 +69,4 @@ theorem cover_and_endpoint_subset_of_embedded_collar
   · have hxQ : x ∈ Q := hf.injective.mem_set_image.mp hq
     exact hKD ⟨x, (hfrontQ ⟨subset_closure hxQ, hx⟩).1, rfl⟩
 
-end Poincare.Topology
+end DifferentialGeometry.Topology

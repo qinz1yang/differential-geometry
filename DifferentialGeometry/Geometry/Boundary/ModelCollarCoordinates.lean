@@ -6,7 +6,7 @@ noncomputable section
 open Set Filter Topology
 open scoped ContDiff Manifold
 
-namespace Poincare.Geometry.Boundary
+namespace DifferentialGeometry.Geometry.Boundary
 
 open DifferentialGeometry.Integral.DivergenceTheorem.WithBoundary
 
@@ -49,7 +49,7 @@ theorem exists_modelBoundary_collar_coordinates
     rw [hh, hLval, ModelWithCorners.range_prod, range_modelWithCornersEuclideanHalfSpace]
     simp
   obtain ⟨d, hsource, _, hd, hdi, hdeq, _⟩ :=
-    Poincare.Topology.Manifold.exists_modelRestriction J I e' he' hi' hside
+    DifferentialGeometry.Topology.Manifold.exists_modelRestriction J I e' he' hi' hside
   have hsource' : ∀ z ∈ d.source, (z.1, z.2.1 0) ∈ e.source := by
     intro z hz
     rw [hsource] at hz
@@ -70,4 +70,4 @@ theorem exists_modelBoundary_collar_coordinates
     rw [hformula (p, 0) hpD]
     exact hzero p hp
 
-end Poincare.Geometry.Boundary
+end DifferentialGeometry.Geometry.Boundary

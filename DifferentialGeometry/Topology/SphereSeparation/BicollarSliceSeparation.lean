@@ -8,7 +8,7 @@ set_option autoImplicit false
 open Function Set Topology
 open scoped Manifold ContDiff Topology
 
-namespace Poincare.Topology.SphereSeparation
+namespace DifferentialGeometry.Topology.SphereSeparation
 
 
 def bicollarSliceMap {N : Type*} {a : ℝ}
@@ -167,4 +167,4 @@ theorem bicollar_order_openThreeSpace_of_alexanderDuality
     (bicollarSliceSidesOpenThreeSpace_of_alexanderDuality Φ hΦ ψ hAD)
     o₀ hst
 
-end Poincare.Topology.SphereSeparation
+end DifferentialGeometry.Topology.SphereSeparation

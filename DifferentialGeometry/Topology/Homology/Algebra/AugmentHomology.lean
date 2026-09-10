@@ -3,7 +3,7 @@ import DifferentialGeometry.Topology.Homology.Algebra.Augment
 set_option autoImplicit false
 noncomputable section
 open CategoryTheory CategoryTheory.Limits
-namespace Poincare.HomologicalComplex
+namespace DifferentialGeometry.HomologicalComplex
 variable {C : Type*} [Category* C] [Abelian C]
   {ι : Type*} {c : ComplexShape ι} {K L : HomologicalComplex C c}
   (f : K ⟶ L) (i j k : ι) (hi : c.prev j = i) (hk : c.next j = k)
@@ -17,9 +17,9 @@ private theorem homologyIsoSc'_naturality :
     𝟙 (K.homology j) ≫ _root_.HomologicalComplex.homologyMap f j
   simp only [Category.comp_id,Category.id_comp]
 
-end Poincare.HomologicalComplex
+end DifferentialGeometry.HomologicalComplex
 
-namespace Poincare.ChainComplex
+namespace DifferentialGeometry.ChainComplex
 variable {C : Type*} [Category* C] [Abelian C]
   {K L : ChainComplex C ℕ} {A B : C}
   {ε : K.X 0 ⟶ A} {η : L.X 0 ⟶ B}
@@ -69,12 +69,12 @@ theorem augmentHomologySuccIso_naturality (f : K ⟶ L) (a : A ⟶ B)
       (L.homologyIsoSc' (n + 2) (n + 1) n (by simp) (by simp)).inv := by
     apply (cancel_epi (K.homologyIsoSc' (n + 2) (n + 1) n (by simp) (by simp)).hom).mp
     rw [Iso.hom_inv_id_assoc, ← Category.assoc,
-      ← Poincare.HomologicalComplex.homologyIsoSc'_naturality, Category.assoc, Iso.hom_inv_id, Category.comp_id]
+      ← DifferentialGeometry.HomologicalComplex.homologyIsoSc'_naturality, Category.assoc, Iso.hom_inv_id, Category.comp_id]
   dsimp only [augmentHomologySuccIso, Iso.trans_hom, Iso.symm_hom]
   simp only [ShortComplex.homologyMapIso_hom]
-  rw [← Category.assoc, Poincare.HomologicalComplex.homologyIsoSc'_naturality]
+  rw [← Category.assoc, DifferentialGeometry.HomologicalComplex.homologyIsoSc'_naturality]
   simp only [Category.assoc]
   rw [← Category.assoc (ShortComplex.homologyMap _), hshort]
   simp only [Category.assoc]
   rw [← hinv]
-end Poincare.ChainComplex
+end DifferentialGeometry.ChainComplex

@@ -4,7 +4,7 @@ noncomputable section
 open scoped Manifold ContDiff
 open DifferentialGeometry DifferentialGeometry.Geometry.Curvature
 
-namespace Poincare.Geometry.Curvature
+namespace DifferentialGeometry.Geometry.Curvature
 
 theorem least_ricci_eigenpair_eq_of_signed_covector_error
     {E H M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
@@ -52,4 +52,4 @@ theorem least_ricci_eigenpair_eq_of_signed_covector_error
     hv hun hev he hminv hminw hs hpv hpw
   exact ⟨hμ, hvw, hb⟩
 
-end Poincare.Geometry.Curvature
+end DifferentialGeometry.Geometry.Curvature

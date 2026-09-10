@@ -10,7 +10,7 @@ noncomputable section
 
 open Set Module
 
-namespace Poincare.ContinuousAlternatingMap
+namespace DifferentialGeometry.ContinuousAlternatingMap
 
 variable {m : ℕ} {E : Type*}
 
@@ -85,4 +85,4 @@ theorem nonempty_positiveForms (hm : finrank ℝ E = m) (o : Orientation ℝ E (
 
 end Normed
 
-end Poincare.ContinuousAlternatingMap
+end DifferentialGeometry.ContinuousAlternatingMap

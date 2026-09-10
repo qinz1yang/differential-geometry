@@ -6,7 +6,7 @@ open scoped ContDiff
 open DifferentialGeometry.Integral.DivergenceTheorem.WithBoundary
 set_option autoImplicit false
 noncomputable section
-namespace Poincare.Manifold.BoundaryCollar
+namespace DifferentialGeometry.Manifold.BoundaryCollar
 
 variable {E H M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [TopologicalSpace H] [TopologicalSpace M] [ChartedSpace H M]
@@ -22,11 +22,11 @@ theorem contMDiffAt_boundary_product_iff {k : ℕ∞ω} (hk : k ≤ ∞)
         (fun y => ((f y).1.val, (f y).2.val)) x := by
   constructor
   · intro h
-    have hf := (Poincare.Manifold.Boundary.contMDiffAt_boundary_iff hk).mp h.fst
+    have hf := (DifferentialGeometry.Manifold.Boundary.contMDiffAt_boundary_iff hk).mp h.fst
     have ht := (contMDiff_subtypeVal_Icc (x := (0 : ℝ)) (y := ε) (n := k)).contMDiffAt.comp x h.snd
     exact hf.prodMk ht
   · intro h
-    have hf := (Poincare.Manifold.Boundary.contMDiffAt_boundary_iff hk).mpr h.fst
+    have hf := (DifferentialGeometry.Manifold.Boundary.contMDiffAt_boundary_iff hk).mpr h.fst
     have ht : ContMDiffAt J (𝓡∂ 1) k (fun y => (f y).2) x := by
       apply (ContMDiffAt.iff_comp_isImmersionAtOfComplement (f := fun y : X => (f y).2)
         (isImmersionOfComplement_subtypeVal_Icc (x := (0 : ℝ)) (y := ε) (n := k) (f x).2)).mpr
@@ -40,4 +40,4 @@ theorem contMDiff_boundary_product_iff {k : ℕ∞ω} (hk : k ≤ ∞)
       ContMDiff J (I.prod 𝓘(ℝ, ℝ)) k (fun y => ((f y).1.val, (f y).2.val)) := by
   exact forall_congr' fun _ => contMDiffAt_boundary_product_iff hk
 
-end Poincare.Manifold.BoundaryCollar
+end DifferentialGeometry.Manifold.BoundaryCollar

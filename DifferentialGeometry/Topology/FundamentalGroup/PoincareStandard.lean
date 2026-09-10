@@ -10,9 +10,9 @@ set_option autoImplicit false
 
 universe u v
 
-namespace Poincare.Topology
+namespace DifferentialGeometry.Topology
 
-open Poincare.Algebra.Group
+open DifferentialGeometry.Algebra.Group
 
 abbrev poincareStandardSpaceFactor {a : ℕ} (Gamma : Fin a → Type u)
     [∀ j, Group (Gamma j)] [∀ j, MulAction (Gamma j) SphereThree]
@@ -87,7 +87,7 @@ noncomputable def poincareStandardFactorFreeProductEquiv
     (b : ℕ) :
     Monoid.CoprodI (poincareStandardFundamentalGroupFactors Gamma b) ≃*
       poincareStandardFreeProduct Gamma b :=
-  Poincare.Algebra.Group.coprodIMulEquiv
+  DifferentialGeometry.Algebra.Group.coprodIMulEquiv
     (poincareStandardFundamentalGroupFactors Gamma b)
     (poincareStandardGroupFactors Gamma b)
     (poincareStandardFactorEquiv Gamma b)
@@ -122,7 +122,7 @@ theorem poincareStandardFactorFreeProductEquiv_comp_of
       (Monoid.CoprodI.of :
         poincareStandardGroupFactors Gamma b i →* poincareStandardFreeProduct Gamma b).comp
         (poincareStandardFactorEquiv Gamma b i).toMonoidHom := by
-  exact Poincare.Algebra.Group.coprodIMulEquiv_comp_of
+  exact DifferentialGeometry.Algebra.Group.coprodIMulEquiv_comp_of
     (poincareStandardFundamentalGroupFactors Gamma b)
     (poincareStandardGroupFactors Gamma b)
     (poincareStandardFactorEquiv Gamma b) i
@@ -183,7 +183,7 @@ theorem poincareStandard_factors_trivial_of_fundamentalGroupEquiv
       FundamentalGroup M m ≃*
         Monoid.CoprodI (poincareStandardFundamentalGroupFactors Gamma b)) :
     b = 0 ∧ ∀ j, Subsingleton (Gamma j) := by
-  apply (Poincare.Algebra.Group.poincareStandardFreeProduct_subsingleton_iff Gamma b).mp
+  apply (DifferentialGeometry.Algebra.Group.poincareStandardFreeProduct_subsingleton_iff Gamma b).mp
   exact (poincareStandardFundamentalGroupEquiv Gamma b m connectedSumEquiv).symm.subsingleton
 
 theorem poincareStandard_factors_trivial_of_fundamentalGroupEquivOfIsometric
@@ -199,4 +199,4 @@ theorem poincareStandard_factors_trivial_of_fundamentalGroupEquivOfIsometric
     b = 0 ∧ ∀ j, Subsingleton (Gamma j) := by
   exact poincareStandard_factors_trivial_of_fundamentalGroupEquiv Gamma b m connectedSumEquiv
 
-end Poincare.Topology
+end DifferentialGeometry.Topology

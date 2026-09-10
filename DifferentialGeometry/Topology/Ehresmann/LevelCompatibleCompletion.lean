@@ -6,9 +6,9 @@ open Set Topology Manifold
 open DifferentialGeometry
 open scoped ContDiff
 
-namespace Poincare.Topology.Ehresmann
+namespace DifferentialGeometry.Topology.Ehresmann
 
-open Poincare.Geometry.Boundary Poincare.Topology.Manifold
+open DifferentialGeometry.Geometry.Boundary DifferentialGeometry.Topology.Manifold
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem.WithBoundary
 
@@ -62,4 +62,4 @@ theorem exists_level_compatible_completion [CompactSpace M]
   · rwa [hwidth]
   · rwa [hwidth]
 
-end Poincare.Topology.Ehresmann
+end DifferentialGeometry.Topology.Ehresmann

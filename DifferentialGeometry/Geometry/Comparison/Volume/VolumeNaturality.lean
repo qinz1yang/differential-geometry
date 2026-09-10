@@ -7,7 +7,7 @@ noncomputable section
 open Bundle Manifold MeasureTheory Set
 open scoped ContDiff ENNReal Manifold Topology
 
-namespace Poincare.Geometry.Riemannian.VolumeComparison
+namespace DifferentialGeometry.Geometry.Riemannian.VolumeComparison
 
 open DifferentialGeometry
 open DifferentialGeometry.Integral.Measure
@@ -144,4 +144,4 @@ theorem riemannianVolumeMeasure_apply_eq_of_inner_eqOn
         (I := I) g h hA (Q := 1) zero_lt_one
         (fun x hx v ↦ by simpa using (heq x hx v).ge))
 
-end Poincare.Geometry.Riemannian.VolumeComparison
+end DifferentialGeometry.Geometry.Riemannian.VolumeComparison

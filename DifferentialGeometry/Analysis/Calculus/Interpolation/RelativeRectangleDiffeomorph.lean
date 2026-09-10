@@ -6,7 +6,7 @@ noncomputable section
 open Set
 open scoped ContDiff Manifold
 
-namespace Poincare.Analysis
+namespace DifferentialGeometry.Analysis
 
 theorem exists_diffeomorph_extension_of_rectangle_family
     {P : Type*} [NormedAddCommGroup P] [NormedSpace ℝ P]
@@ -83,4 +83,4 @@ theorem exists_diffeomorph_extension_of_rectangle_family
       exact ⟨hFz.trans (hfixed p hp z hz he).1, hGz.trans (hfixed p hp z hz he).2⟩
     · exact ⟨if_neg hz, if_neg hz⟩
 
-end Poincare.Analysis
+end DifferentialGeometry.Analysis

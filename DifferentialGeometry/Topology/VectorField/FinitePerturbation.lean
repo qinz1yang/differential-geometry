@@ -6,7 +6,7 @@ set_option autoImplicit false
 noncomputable section
 open Set Metric Filter Bundle
 open scoped Manifold ContDiff Topology
-namespace Poincare.VectorField
+namespace DifferentialGeometry.VectorField
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
   {H M : Type*} [TopologicalSpace H] [TopologicalSpace M] [ChartedSpace H M] [T2Space M]
   (I : ModelWithCorners ℝ E H) [IsManifold I ∞ M]
@@ -26,8 +26,8 @@ theorem exists_regular_perturbation_in_disjoint_charts {ι : Type*} [Fintype ι]
     (ε : ι → ℝ) (hε : ∀ p, 0 < ε p) :
     ∃ (ρ : ι → E → ℝ) (v : ι → E) (G : ∀ x : M, TangentSpace I x)
       (hG : ContMDiff I I.tangent ∞ (fun x => (⟨x, G x⟩ : TangentBundle I M))),
-      G = Poincare.VectorBundle.finitePatch V (fun p => patchInCoordinates (c p) V
-        (Poincare.Calculus.bumpPerturbation
+      G = DifferentialGeometry.VectorBundle.finitePatch V (fun p => patchInCoordinates (c p) V
+        (DifferentialGeometry.Calculus.bumpPerturbation
           (_root_.VectorField.mpullback 𝓘(ℝ, E) I (c p).symm V) (ρ p) (v p))) ∧
       (∀ p, ContDiff ℝ ∞ (ρ p) ∧ HasCompactSupport (ρ p) ∧
         Function.support (ρ p) = ball (a p) (R p) ∧
@@ -39,7 +39,7 @@ theorem exists_regular_perturbation_in_disjoint_charts {ι : Type*} [Fintype ι]
           (fun y => (⟨y, V y⟩ : TangentBundle I M))) ∧
       (∀ p x, x ∈ (c p).symm '' closedBall (a p) (R p) →
         (fun y => (⟨y, G y⟩ : TangentBundle I M)) =ᶠ[𝓝 x]
-          (fun y => (⟨y, patchInCoordinates (c p) V (Poincare.Calculus.bumpPerturbation
+          (fun y => (⟨y, patchInCoordinates (c p) V (DifferentialGeometry.Calculus.bumpPerturbation
             (_root_.VectorField.mpullback 𝓘(ℝ, E) I (c p).symm V) (ρ p) (v p)) y⟩ :
               TangentBundle I M))) ∧
       (∀ p y, y ∈ sphere (a p) (R p) → G ((c p).symm y) = V ((c p).symm y)) ∧
@@ -56,17 +56,17 @@ theorem exists_regular_perturbation_in_disjoint_charts {ι : Type*} [Fintype ι]
     (isCompact_closedBall (a p) (R p)).image_of_continuousOn
       ((c p).symm.toOpenPartialHomeomorph.continuousOn.mono (hRt p))
   have hC : IsCompact (⋃ p, K p) := isCompact_iUnion hK
-  let G := Poincare.VectorBundle.finitePatch V Q
+  let G := DifferentialGeometry.VectorBundle.finitePatch V Q
   have hG : ContMDiff I I.tangent ∞ (fun x => (⟨x, G x⟩ : TangentBundle I M)) :=
-    Poincare.VectorBundle.contMDiff_finitePatch V Q I hV hQ
+    DifferentialGeometry.VectorBundle.contMDiff_finitePatch V Q I hV hQ
   have hQout (p : ι) (x : M) (hx : x ∉ K p) : ∀ᶠ y in 𝓝 x, Q p y = V y := by
     filter_upwards [hgerm p x hx] with y hy
     exact TotalSpace.mk_injective y hy
   have hGout (x : M) (hx : x ∉ ⋃ p, K p) : ∀ᶠ y in 𝓝 x, G y = V y :=
-    Poincare.VectorBundle.finitePatch_eventuallyEq_self V Q
+    DifferentialGeometry.VectorBundle.finitePatch_eventuallyEq_self V Q
       (fun p => hQout p x (fun hp => hx (mem_iUnion.mpr ⟨p, hp⟩)))
   have hGQ (p : ι) (x : M) (hx : x ∈ K p) : ∀ᶠ y in 𝓝 x, G y = Q p y :=
-    Poincare.VectorBundle.finitePatch_eventuallyEq_patch V Q p (fun q hqp =>
+    DifferentialGeometry.VectorBundle.finitePatch_eventuallyEq_patch V Q p (fun q hqp =>
       hQout q x (fun hq => Set.disjoint_left.mp (hdis hqp.symm) hx hq))
   have hGQgraph (p : ι) (x : M) (hx : x ∈ K p) :
       (fun y => (⟨y, G y⟩ : TangentBundle I M)) =ᶠ[𝓝 x]
@@ -89,7 +89,7 @@ theorem exists_regular_perturbation_in_disjoint_charts {ι : Type*} [Fintype ι]
   refine ⟨ρ, v, G, hG, ?_, fun p => ⟨hρ p, hρcompact p, hρsupport p,
     hρone p, hρrange p, hv p⟩, hC.of_isClosed_subset isClosed_closure hts, hts,
     ?_, ?_, ?_, hfinite, ?_⟩
-  · change Poincare.VectorBundle.finitePatch V Q = _
+  · change DifferentialGeometry.VectorBundle.finitePatch V Q = _
     congr 1
     funext p
     exact hQdef p
@@ -112,7 +112,7 @@ theorem exists_regular_perturbation_in_disjoint_charts {ι : Type*} [Fintype ι]
     obtain ⟨_, hiso, hdet⟩ := hregularQ p x hp hzp
     refine ⟨hiso.congr ((hGQ p x hp).mono (fun _ hy => hy.symm)), ?_, ?_⟩
     · obtain ⟨y, hy, rfl⟩ := hp
-      exact Poincare.Manifold.isInteriorPoint_of_model_partialDiffeomorph I ∞ (c p).symm
+      exact DifferentialGeometry.Manifold.isInteriorPoint_of_model_partialDiffeomorph I ∞ (c p).symm
         (by simp) (hRt p hy)
     · rw [linearizationAtZero_congr_of_eventuallyEq
         ((hG x).mdifferentiableAt (by simp)) ((hQ p x).mdifferentiableAt (by simp))
@@ -146,7 +146,7 @@ theorem exists_compactly_supported_regular_perturbation
       {x | I.IsInteriorPoint x} := by
     intro x hx
     obtain ⟨p, y, hy, rfl⟩ := mem_iUnion.mp hx
-    exact Poincare.Manifold.isInteriorPoint_of_model_partialDiffeomorph I ∞ (c p).symm
+    exact DifferentialGeometry.Manifold.isInteriorPoint_of_model_partialDiffeomorph I ∞ (c p).symm
       (by simp) (hRt p hy)
   obtain ⟨ρ, v, G, hG, _, _, hcompact, hsupport, hgerm, _, _, hGfinite, hregular⟩ :=
     exists_regular_perturbation_in_disjoint_charts I V hV c (fun p => c p p.val) r R
@@ -155,4 +155,4 @@ theorem exists_compactly_supported_regular_perturbation
   exact ⟨G, hG, hcompact, hsupport.trans hUnion,
     fun x hx => hgerm x (fun h => hx (hUnion h)), hGfinite, hregular⟩
 
-end Poincare.VectorField
+end DifferentialGeometry.VectorField

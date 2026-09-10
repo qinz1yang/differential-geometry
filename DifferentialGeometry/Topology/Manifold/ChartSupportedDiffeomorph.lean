@@ -5,7 +5,7 @@ noncomputable section
 open Set Manifold
 open scoped ContDiff
 
-namespace Poincare.Topology.Manifold
+namespace DifferentialGeometry.Topology.Manifold
 
 variable {E F H M : Type*}
   [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -73,4 +73,4 @@ theorem exists_compactly_supported_chart_representative
     change e.symm (e (f (e.symm (e x)))) = f x
     rw [e.left_inv hx, e.left_inv (hmaps x hx)]
 
-end Poincare.Topology.Manifold
+end DifferentialGeometry.Topology.Manifold

@@ -6,7 +6,7 @@ set_option autoImplicit false
 noncomputable section
 open Finset
 
-namespace Poincare.Topology.SimplicialComplex
+namespace DifferentialGeometry.Topology.SimplicialComplex
 
 variable {ι : Type*} [DecidableEq ι] (K : PreAbstractSimplicialComplex ι)
   (s : Finset ι) (hs : s ∈ K)
@@ -183,4 +183,4 @@ theorem one_sub_faceEulerChar_faceShell [Finite K.faces] :
   rw [faceEulerChar_faceShell K s hs, hp]
   ring
 
-end Poincare.Topology.SimplicialComplex
+end DifferentialGeometry.Topology.SimplicialComplex

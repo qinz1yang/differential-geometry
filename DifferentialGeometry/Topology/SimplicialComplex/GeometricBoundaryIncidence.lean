@@ -5,7 +5,7 @@ set_option autoImplicit false
 noncomputable section
 open Set
 open scoped Manifold
-namespace Poincare.Topology.SimplicialComplex
+namespace DifferentialGeometry.Topology.SimplicialComplex
 
 private theorem faceEulerChar_link_eq_zero_of_card_bound {ι : Type*} [DecidableEq ι]
     (K : PreAbstractSimplicialComplex ι) [Finite K.faces] (s : Finset ι)
@@ -46,9 +46,9 @@ theorem boundaryFace_card_le_of_geometric_pair {s : Finset E} (hs : s ∈ L.face
     (fun t ht => face_card_le_of_manifold_homeomorph (n := n) K e t ht) hs
   omega
 
-end Poincare.Topology.SimplicialComplex
+end DifferentialGeometry.Topology.SimplicialComplex
 
-namespace Poincare.Topology.SimplicialComplex
+namespace DifferentialGeometry.Topology.SimplicialComplex
 variable {E : Type} [NormedAddCommGroup E] [NormedSpace ℝ E] [DecidableEq E]
   {K L : Geometry.SimplicialComplex ℝ E} [Finite K.faces]
   (hLK : L ≤ K) {M : Type} [TopologicalSpace M] [T1Space M]
@@ -87,4 +87,4 @@ theorem edgeLink_values_of_geometric_boundary {s : Finset E}
   simpa only [hcard, Nat.reduceSub, pow_one, pow_succ, pow_zero, one_mul,
     neg_mul_neg, sub_self] using hvalue
 
-end Poincare.Topology.SimplicialComplex
+end DifferentialGeometry.Topology.SimplicialComplex

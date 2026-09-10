@@ -8,7 +8,7 @@ open DifferentialGeometry.Topology.Morse
 open DifferentialGeometry.Topology.Morse.CellAttachment
 open DifferentialGeometry.Topology.Morse.ManifoldCellAttachment
 
-namespace Poincare.Morse
+namespace DifferentialGeometry.Morse
 
 variable {n k : ℕ} {H M : Type} [TopologicalSpace H] [TopologicalSpace M]
   [ChartedSpace H M] {I : ModelWithCorners ℝ (MorseModel n) H} [T2Space M]
@@ -68,4 +68,4 @@ theorem contMDiff_morseModifiedFunction (hk : k ≤ n) (c ε δ R : ℝ)
     · rfl
     · rfl
 
-end Poincare.Morse
+end DifferentialGeometry.Morse

@@ -5,7 +5,7 @@ noncomputable section
 open Set DifferentialGeometry
 open scoped Manifold ContDiff
 
-namespace Poincare.Topology.Manifold
+namespace DifferentialGeometry.Topology.Manifold
 
 theorem exists_diffeomorph_graph_of_product_chart_section
     {E₀ E₁ F H₀ H₁ H N₀ N₁ M : Type*}
@@ -82,4 +82,4 @@ theorem exists_diffeomorph_graph_of_product_chart_section
   change (Φ₁ (Φ₁.symm (f (η p))) : M) = e₀ (η p)
   rw [Φ₁.apply_symm_apply]
 
-end Poincare.Topology.Manifold
+end DifferentialGeometry.Topology.Manifold

@@ -5,7 +5,7 @@ noncomputable section
 open Filter MeasureTheory Set
 open scoped ENNReal Topology
 
-namespace Poincare.Geometry.Riemannian.VolumeComparison
+namespace DifferentialGeometry.Geometry.Riemannian.VolumeComparison
 
 open DifferentialGeometry.Geometry.Riemannian.VolumeComparison
 
@@ -530,4 +530,4 @@ theorem modelVolume_pos {K r : ℝ} {n : ℕ} (hn : 1 ≤ n) (hr : 0 < r)
     ((modelArea_continuous K n).intervalIntegrable (0 : ℝ) r)
     (fun t ht => modelArea_pos hn ⟨ht.1, fun hK => lt_of_lt_of_le ht.2 (hadm.2 hK)⟩) hr
 
-end Poincare.Geometry.Riemannian.VolumeComparison
+end DifferentialGeometry.Geometry.Riemannian.VolumeComparison

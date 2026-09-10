@@ -6,10 +6,10 @@ import DifferentialGeometry.Topology.Manifold.BoundaryOrder
 noncomputable section
 open Set Filter Topology
 open scoped Manifold ContDiff
-open Poincare.Geometry.Boundary Poincare.Topology.Ehresmann
+open DifferentialGeometry.Geometry.Boundary DifferentialGeometry.Topology.Ehresmann
 open DifferentialGeometry.Integral.DivergenceTheorem.WithBoundary
 
-namespace Poincare.Geometry.Neck
+namespace DifferentialGeometry.Geometry.Neck
 
 theorem exists_regular_endpoints_of_extreme_neck_sections
     {E H W : Type} {F H' M : Type*}
@@ -80,7 +80,7 @@ theorem exists_regular_endpoints_of_extreme_neck_sections
       exact mem_range_self p
     obtain ⟨w, hw, heq⟩ := hx
     exact hemb.injective heq ▸ hw
-  have hab : a < b := Poincare.Topology.Manifold.boundary_value_lt_of_inward_coordinate
+  have hab : a < b := DifferentialGeometry.Topology.Manifold.boundary_value_lt_of_inward_coordinate
     hreg hbdy γ hγ.continuousWithinAt (mem_nhdsSet_iff_forall.mp hlocal₀ _ hγ₀) hk hcoord
   have ha : a ∈ range u := ⟨γ 0, hval₀ _ hγ₀⟩
   have hb : b ∈ range u := by
@@ -117,4 +117,4 @@ theorem exists_regular_endpoints_of_extreme_neck_sections
   rw [hset]
   exact himage₀
 
-end Poincare.Geometry.Neck
+end DifferentialGeometry.Geometry.Neck

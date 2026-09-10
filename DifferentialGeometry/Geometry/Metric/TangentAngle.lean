@@ -9,7 +9,7 @@ open Bundle Manifold Set
 open scoped Bundle Manifold ContDiff
 open DifferentialGeometry
 
-namespace Poincare.Geometry
+namespace DifferentialGeometry.Geometry
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
@@ -141,4 +141,4 @@ theorem sin_half_tangentAngle_eq_sqrt_of_unit
   rw [sin_half_tangentAngle_eq_sqrt,
     cos_tangentAngle_of_unit g hv hw]
 
-end Poincare.Geometry
+end DifferentialGeometry.Geometry

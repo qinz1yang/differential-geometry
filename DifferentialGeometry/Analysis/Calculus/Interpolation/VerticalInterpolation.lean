@@ -6,7 +6,7 @@ noncomputable section
 open Set
 open scoped ContDiff Manifold
 
-namespace Poincare.Analysis
+namespace DifferentialGeometry.Analysis
 
 theorem exists_vertical_interpolation_diffeomorphs
     {P : Type*} [NormedAddCommGroup P] [NormedSpace ℝ P] [CompleteSpace P]
@@ -83,4 +83,4 @@ theorem exists_vertical_interpolation_diffeomorphs
     rw [← he, Diffeomorph.symm_apply_apply]
     exact hy
 
-end Poincare.Analysis
+end DifferentialGeometry.Analysis

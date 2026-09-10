@@ -5,10 +5,10 @@ noncomputable section
 open Set Metric Topology Manifold
 open scoped ContDiff
 
-namespace Poincare.Geometry.Boundary
+namespace DifferentialGeometry.Geometry.Boundary
 
 open DifferentialGeometry.Integral.DivergenceTheorem.WithBoundary
-open Poincare.Topology Poincare.Topology.SphereSeparation
+open DifferentialGeometry.Topology DifferentialGeometry.Topology.SphereSeparation
 
 theorem exists_diffeomorph_sphere_prod_interval_of_euclidean_cover
     {E H W M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
@@ -36,4 +36,4 @@ theorem exists_diffeomorph_sphere_prod_interval_of_euclidean_cover
   exact exists_diffeomorph_sphere_prod_interval_of_two_spherical_boundaries hSch g hgs hge hgi hdim
     f₀ f₁ hf₀ hf₁ hgbdy hgdisj
 
-end Poincare.Geometry.Boundary
+end DifferentialGeometry.Geometry.Boundary

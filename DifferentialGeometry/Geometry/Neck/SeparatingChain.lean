@@ -7,9 +7,9 @@ open Set Topology
 open scoped Manifold ContDiff
 open DifferentialGeometry DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Integral.DivergenceTheorem.WithBoundary
-open Poincare.Geometry.Affine Poincare.Geometry.Boundary
+open DifferentialGeometry.Geometry.Affine DifferentialGeometry.Geometry.Boundary
 
-namespace Poincare.Geometry.Neck
+namespace DifferentialGeometry.Geometry.Neck
 
 private instance : Fact (Module.finrank ℝ (EuclideanSpace ℝ (Fin 3)) = 2 + 1) := ⟨by simp⟩
 local notation "S²" => Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1
@@ -143,4 +143,4 @@ structure separatingNeckChain (g : SmoothRiemannianMetric J M) (Cₒ ε : ℝ) (
         (finiteLineAffineAlignment sign (fun j ↦ -sign j * sourceTranslation j) (Fin.last n)).1 *
           (x : S² × ℝ).2 < 0
 
-end Poincare.Geometry.Neck
+end DifferentialGeometry.Geometry.Neck

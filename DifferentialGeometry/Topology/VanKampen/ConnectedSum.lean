@@ -15,10 +15,10 @@ noncomputable section
 
 universe u
 
-namespace Poincare.Topology.ThreeManifold
+namespace DifferentialGeometry.Topology.ThreeManifold
 
 open DifferentialGeometry.Topology
-open Poincare.Topology.VanKampen
+open DifferentialGeometry.Topology.VanKampen
 
 
 structure SmoothEmbeddedClosedThreeCellWithCollar
@@ -130,7 +130,7 @@ noncomputable def connectedSumAmbientToComplementFreeProductEquiv
       fundamentalGroupSourceFreeProduct
         (connectedSumLeftGluingPoint BM b)
         (connectedSumRightGluingPoint BN glue b) :=
-  Poincare.Algebra.Group.coprodIMulEquiv
+  DifferentialGeometry.Algebra.Group.coprodIMulEquiv
     (fundamentalGroupSourceFactor
       (connectedSumLeftGluingPoint BM b : M)
       (connectedSumRightGluingPoint BN glue b : N))
@@ -237,7 +237,7 @@ theorem connectedSumLeftFactorHom_eq_inverseBallDeletion_then_inclusion
           (connectedSumNeckMidpoint BM.boundaryMap BN.boundaryMap glue b)
           (connectedSumNeckMidpoint_mem_inter
             BM.boundaryMap BN.boundaryMap glue b).1).hom.comp
-        ((Poincare.Topology.fundamentalGroupChangeBasepoint
+        ((DifferentialGeometry.Topology.fundamentalGroupChangeBasepoint
           (connectedSumNeckLeftConnector BM.boundaryMap BM.continuous_boundaryMap
             BN.boundaryMap glue b)).toMonoidHom.comp
           (FundamentalGroup.mapOfEq
@@ -281,7 +281,7 @@ theorem connectedSumRightFactorHom_eq_inverseBallDeletion_then_inclusion
           (connectedSumNeckMidpoint BM.boundaryMap BN.boundaryMap glue b)
           (connectedSumNeckMidpoint_mem_inter
             BM.boundaryMap BN.boundaryMap glue b).2).hom.comp
-        ((Poincare.Topology.fundamentalGroupChangeBasepoint
+        ((DifferentialGeometry.Topology.fundamentalGroupChangeBasepoint
           (connectedSumNeckRightConnector BM.boundaryMap BN.boundaryMap
             BN.continuous_boundaryMap glue b)).toMonoidHom.comp
           (FundamentalGroup.mapOfEq
@@ -403,7 +403,7 @@ noncomputable def connectedSumLeftTransportedFactorHom
     FundamentalGroup M m →*
       FundamentalGroup (EmbeddedCellConnectedSum BM BN glue)
         (connectedSumNeckMidpoint BM.boundaryMap BN.boundaryMap glue b) :=
-  Poincare.Topology.transportedFundamentalGroupHom
+  DifferentialGeometry.Topology.transportedFundamentalGroupHom
     (connectedSumLeftFactorHom BM BN glue b) β
 
 
@@ -435,9 +435,9 @@ theorem connectedSumLeftTransportedFactorHom_connector
     connectedSumLeftTransportedFactorHom BM BN glue b β' =
       (MulAut.conj
         (connectedSumLeftFactorHom BM BN glue b
-          (Poincare.Topology.connectorLoop β β'))⁻¹).toMonoidHom.comp
+          (DifferentialGeometry.Topology.connectorLoop β β'))⁻¹).toMonoidHom.comp
         (connectedSumLeftTransportedFactorHom BM BN glue b β) :=
-  Poincare.Topology.transportedFundamentalGroupHom_connector
+  DifferentialGeometry.Topology.transportedFundamentalGroupHom_connector
     (connectedSumLeftFactorHom BM BN glue b) β β'
 
 noncomputable def connectedSumRightTransportedFactorHom
@@ -452,7 +452,7 @@ noncomputable def connectedSumRightTransportedFactorHom
     FundamentalGroup N n →*
       FundamentalGroup (EmbeddedCellConnectedSum BM BN glue)
         (connectedSumNeckMidpoint BM.boundaryMap BN.boundaryMap glue b) :=
-  Poincare.Topology.transportedFundamentalGroupHom
+  DifferentialGeometry.Topology.transportedFundamentalGroupHom
     (connectedSumRightFactorHom BM BN glue b) β
 
 
@@ -484,9 +484,9 @@ theorem connectedSumRightTransportedFactorHom_connector
     connectedSumRightTransportedFactorHom BM BN glue b β' =
       (MulAut.conj
         (connectedSumRightFactorHom BM BN glue b
-          (Poincare.Topology.connectorLoop β β'))⁻¹).toMonoidHom.comp
+          (DifferentialGeometry.Topology.connectorLoop β β'))⁻¹).toMonoidHom.comp
         (connectedSumRightTransportedFactorHom BM BN glue b β) :=
-  Poincare.Topology.transportedFundamentalGroupHom_connector
+  DifferentialGeometry.Topology.transportedFundamentalGroupHom_connector
     (connectedSumRightFactorHom BM BN glue b) β β'
 
-end Poincare.Topology.ThreeManifold
+end DifferentialGeometry.Topology.ThreeManifold

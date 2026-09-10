@@ -12,7 +12,7 @@ noncomputable section
 open Bundle Manifold MeasureTheory Set TopologicalSpace
 open scoped ContDiff ENNReal Manifold Topology
 
-namespace Poincare.Geometry.Riemannian.VolumeComparison
+namespace DifferentialGeometry.Geometry.Riemannian.VolumeComparison
 
 open DifferentialGeometry
 open DifferentialGeometry.Integral.Measure
@@ -494,4 +494,4 @@ theorem measurePreserving_riemannianVolume_restrictOpen
   exact ⟨continuous_subtype_val.measurable,
     riemannianVolumeMeasure_map_restrictOpen (I := I) g U⟩
 
-end Poincare.Geometry.Riemannian.VolumeComparison
+end DifferentialGeometry.Geometry.Riemannian.VolumeComparison

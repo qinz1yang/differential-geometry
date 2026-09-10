@@ -6,7 +6,7 @@ set_option autoImplicit false
 noncomputable section
 open Set Metric Filter Function
 open scoped Topology ContDiff
-namespace Poincare.Calculus
+namespace DifferentialGeometry.Calculus
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 
 
@@ -55,7 +55,7 @@ theorem exists_small_regular_bumpPerturbation {f : E → E} {ρ : E → ℝ}
   let K := closedBall a R ∩ {x : E | r ≤ dist x a}
   have hK : IsCompact K := (isCompact_closedBall a R).inter_right
     (isClosed_le continuous_const (continuous_id.dist continuous_const))
-  obtain ⟨δ,hδ,hbound⟩ := Poincare.Topology.exists_pos_lt_norm_of_isCompact hK
+  obtain ⟨δ,hδ,hbound⟩ := DifferentialGeometry.Topology.exists_pos_lt_norm_of_isCompact hK
     (hf.continuousOn.mono (fun _ hx => hRU hx.1)) (fun x hx => hn x hx.1 hx.2)
   have hfd : ∀ x ∈ ball a r, DifferentiableAt ℝ f x := by
     intro x hx
@@ -116,4 +116,4 @@ theorem exists_small_regular_ball_perturbation {f : E → E} (a : E)
   exact ⟨ρ,v,ρ.contDiff,ρ.hasCompactSupport,ρ.support_eq,
     fun _ hx => ρ.one_of_mem_closedBall hx,fun _ => ⟨ρ.nonneg,ρ.le_one⟩,hv⟩
 
-end Poincare.Calculus
+end DifferentialGeometry.Calculus

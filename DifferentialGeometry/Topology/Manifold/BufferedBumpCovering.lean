@@ -5,7 +5,7 @@ noncomputable section
 open Set Filter Topology
 open scoped ContDiff Manifold
 
-namespace Poincare.Topology.Manifold
+namespace DifferentialGeometry.Topology.Manifold
 
 theorem exists_uniform_controlled_bumpCovering_of_buffered_functions
     {E H M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -60,4 +60,4 @@ theorem exists_controlled_bumpCovering_of_buffered_functions
   obtain ⟨C, hC, h⟩ := exists_uniform_controlled_bumpCovering_of_buffered_functions (I := I) (M := M)
   exact ⟨C, hC, h ι⟩
 
-end Poincare.Topology.Manifold
+end DifferentialGeometry.Topology.Manifold

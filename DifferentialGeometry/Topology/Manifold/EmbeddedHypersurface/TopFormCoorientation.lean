@@ -7,7 +7,7 @@ open scoped Manifold ContDiff Topology
 set_option autoImplicit false
 noncomputable section
 
-namespace Poincare.Manifold.EmbeddedHypersurface
+namespace DifferentialGeometry.Manifold.EmbeddedHypersurface
 
 private instance pullbackAddCommGroup {B B' : Type*} (f : B' → B) (V : B → Type*)
     [∀ b, AddCommGroup (V b)] (x : B') : AddCommGroup ((f *ᵖ V) x) :=
@@ -77,7 +77,7 @@ theorem exists_contMDiff_transverse_of_topForms {e : S → M}
     rfl
   have hν0 (s : S) : ν s ≠ 0 :=
     topFormNormal_ne_zero I J e η Ω (he.isImmersionAt s) (hη0 s) (hΩ0 s)
-  obtain ⟨V, hV, hpos⟩ := Poincare.VectorBundle.exists_contMDiff_section_covector_pos I T ν hν hν0
+  obtain ⟨V, hV, hpos⟩ := DifferentialGeometry.VectorBundle.exists_contMDiff_section_covector_pos I T ν hν hν0
   refine ⟨V, ?_, hpos, ?_⟩
   · intro x
     apply Bundle.contMDiffAt_totalSpace.mpr
@@ -90,4 +90,4 @@ theorem exists_contMDiff_transverse_of_topForms {e : S → M}
       exact hv
     exact (ne_of_gt (hpos s)) hz
 
-end Poincare.Manifold.EmbeddedHypersurface
+end DifferentialGeometry.Manifold.EmbeddedHypersurface

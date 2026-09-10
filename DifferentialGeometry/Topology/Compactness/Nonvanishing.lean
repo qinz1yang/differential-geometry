@@ -3,7 +3,7 @@ import Mathlib.Analysis.Normed.Group.Continuity
 
 set_option autoImplicit false
 open Set
-namespace Poincare.Topology
+namespace DifferentialGeometry.Topology
 variable {X E : Type*} [TopologicalSpace X] [NormedAddCommGroup E]
 
 theorem exists_pos_lt_norm_of_isCompact {f : X → E} {K : Set X} (hK : IsCompact K)
@@ -15,4 +15,4 @@ theorem exists_pos_lt_norm_of_isCompact {f : X → E} {K : Set X} (hK : IsCompac
     exact ⟨‖f x‖ / 2, half_pos hp, fun y hy => (half_lt_self hp).trans_le (hmin hy)⟩
   · exact ⟨1,zero_lt_one,fun x hx => (he ⟨x,hx⟩).elim⟩
 
-end Poincare.Topology
+end DifferentialGeometry.Topology

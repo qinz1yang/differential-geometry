@@ -13,7 +13,7 @@ open CategoryTheory Set
 
 universe u v
 
-namespace Poincare.Topology.VanKampen
+namespace DifferentialGeometry.Topology.VanKampen
 
 noncomputable def coverCycleLocalFunctorData
     {X : Type u} [TopologicalSpace X] (U V : Set X)
@@ -82,4 +82,4 @@ theorem not_simplyConnectedSpace_of_cover_cycle
   apply hne
   rw [← hmapV, ← heq, hmapU]
 
-end Poincare.Topology.VanKampen
+end DifferentialGeometry.Topology.VanKampen

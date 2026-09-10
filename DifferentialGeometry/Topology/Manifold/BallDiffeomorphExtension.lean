@@ -4,7 +4,7 @@ noncomputable section
 open Set Metric Manifold
 open scoped ContDiff
 
-namespace Poincare.Topology.Manifold
+namespace DifferentialGeometry.Topology.Manifold
 
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
   [FiniteDimensional ℝ E]
@@ -16,11 +16,11 @@ theorem exists_diffeomorph_eqOn_of_partialDiffeomorph_closedBall
   obtain ⟨A, ε, F, _, hε, _, hformula, _⟩ :=
     exists_diffeomorph_straightening_embedded_closedBall φ hr hrs isOpen_univ (subset_univ _)
   let B : E ≃L[ℝ] E := (Units.mk0 ε hε.ne') • A
-  let T := Poincare.Topology.translateDiffeomorph (φ 0)
+  let T := DifferentialGeometry.Topology.translateDiffeomorph (φ 0)
   let D := (B.toDiffeomorph.trans T).trans F.symm
   refine ⟨D, ?_⟩
   intro x hx
   change F.symm (ε • A x + φ 0) = φ x
   rw [← hformula x hx, F.symm_apply_apply]
 
-end Poincare.Topology.Manifold
+end DifferentialGeometry.Topology.Manifold

@@ -5,18 +5,18 @@ import DifferentialGeometry.Topology.SimplicialComplex.Simplex
 set_option autoImplicit false
 noncomputable section
 open CategoryTheory CategoryTheory.Limits Simplicial
-namespace Poincare.Simplex
-open Poincare.Topology.SimplicialComplex
+namespace DifferentialGeometry.Simplex
+open DifferentialGeometry.Topology.SimplicialComplex
 
 private def boundaryRealizationCoordinates (n : ℕ) :
     _root_.SSet.toTop.obj (_root_.SSet.boundary n : _root_.SSet) ≃ₜ boundary (Fin (n + 1)) :=
-  (Poincare.SSet.boundaryRealizationHomeomorph n).trans (Homeomorph.ulift.sets rfl)
+  (DifferentialGeometry.SSet.boundaryRealizationHomeomorph n).trans (Homeomorph.ulift.sets rfl)
 
 
 theorem finiteHomologyType_boundary (k : Type) [Field k] (n : ℕ) :
-    Poincare.Homology.finiteHomologyType k (TopCat.of (boundary (Fin (n + 1)))) :=
-  (Poincare.Homology.finiteHomologyType_iff_of_homeomorph k (boundaryRealizationCoordinates n)).mp
-    (Poincare.SSet.finiteHomologyType_realization k (_root_.SSet.boundary n : _root_.SSet))
+    DifferentialGeometry.Homology.finiteHomologyType k (TopCat.of (boundary (Fin (n + 1)))) :=
+  (DifferentialGeometry.Homology.finiteHomologyType_iff_of_homeomorph k (boundaryRealizationCoordinates n)).mp
+    (DifferentialGeometry.SSet.finiteHomologyType_realization k (_root_.SSet.boundary n : _root_.SSet))
 
 private def boundaryNondegenerateEquiv {n d : ℕ} (hd : d < n) :
     (_root_.SSet.boundary n : _root_.SSet).nonDegenerate d ≃
@@ -38,9 +38,9 @@ private theorem boundary_count {n d : ℕ} (hd : d < n) :
 
 
 theorem eulerChar_boundary (k : Type) [Field k] (n : ℕ) :
-    Poincare.Homology.eulerChar k (TopCat.of (boundary (Fin (n + 1)))) = 1 - (-1 : ℤ)^n := by
-  rw [← Poincare.Homology.eulerChar_eq_of_homeomorph k (boundaryRealizationCoordinates n),
-    Poincare.SSet.eulerChar_realization_eq_sum_card_nonDegenerate k _ n]
+    DifferentialGeometry.Homology.eulerChar k (TopCat.of (boundary (Fin (n + 1)))) = 1 - (-1 : ℤ)^n := by
+  rw [← DifferentialGeometry.Homology.eulerChar_eq_of_homeomorph k (boundaryRealizationCoordinates n),
+    DifferentialGeometry.SSet.eulerChar_realization_eq_sum_card_nonDegenerate k _ n]
   have hd : ∀ s ∈ boundarySimplex (Finset.univ : Finset (Fin (n + 1))), s.card ≤ n := by
     intro s hs
     have := Finset.card_lt_card hs.2
@@ -58,4 +58,4 @@ theorem eulerChar_boundary (k : Type) [Field k] (n : ℕ) :
     ring
   · ring
 
-end Poincare.Simplex
+end DifferentialGeometry.Simplex

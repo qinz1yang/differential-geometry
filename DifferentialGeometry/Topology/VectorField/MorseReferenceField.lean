@@ -9,7 +9,7 @@ open Set Filter Bundle
 open scoped Manifold ContDiff Topology
 open DifferentialGeometry DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Topology.Morse
-namespace Poincare.VectorField
+namespace DifferentialGeometry.VectorField
 variable {n : ℕ} {M : Type} [TopologicalSpace M]
   [ChartedSpace (EuclideanHalfSpace (n + 1)) M] [IsManifold (𝓡∂ (n + 1)) ∞ M]
   [T2Space M] [CompactSpace M]
@@ -33,14 +33,14 @@ theorem exists_outward_gradient_indexSum_eq_eulerChar
           LinearMap.det (linearizationAtZero
             ((gradientFun_contMDiffAt g f.contMDiff.contMDiffAt).mdifferentiableAt (by simp))
             hx).toLinearMap ≠ 0) ∧
-        ∀ (K : Type) [Field K], Poincare.Homology.finiteHomologyType K (TopCat.of M) ∧
+        ∀ (K : Type) [Field K], DifferentialGeometry.Homology.finiteHomologyType K (TopCat.of M) ∧
           (∑ p : hfinite.toFinset, interiorIndex (𝓡∂ (n + 1)) (gradientFun g f) p
             (hisolated p (hfinite.mem_toFinset.mp p.property))
             (hinterior p (hfinite.mem_toFinset.mp p.property))) =
-              Poincare.Homology.eulerChar K (TopCat.of M) := by
+              DifferentialGeometry.Homology.eulerChar K (TopCat.of M) := by
   classical
   obtain ⟨f,hf,hneg,hzero,_,hcrit,_,hcfinite,hχ⟩ :=
-    Poincare.Morse.exists_relative_morse_eulerChar (M := M) (n := n)
+    DifferentialGeometry.Morse.exists_relative_morse_eulerChar (M := M) (n := n)
   let fs : C^∞⟮𝓡∂ (n + 1), M; ℝ⟯ := ⟨f,hf⟩
   have heq (x : M) : gradientFun g fs x = 0 ↔ IsCriticalPointAt (𝓡∂ (n + 1)) f x :=
     gradientFun_eq_zero_iff_mfderiv_eq_zero g f x
@@ -81,9 +81,9 @@ theorem exists_outward_gradient_indexSum_eq_eulerChar
       _ = ∑ p ∈ hzfinite.toFinset, q p := Finset.sum_coe_sort hzfinite.toFinset q
       _ = _ := by rw [hs]; exact (hχ K).2.symm
 
-end Poincare.VectorField
+end DifferentialGeometry.VectorField
 
-namespace Poincare.VectorField
+namespace DifferentialGeometry.VectorField
 variable {n : ℕ} {M : Type} [TopologicalSpace M]
   [ChartedSpace (EuclideanHalfSpace (n + 1)) M] [IsManifold (𝓡∂ (n + 1)) ∞ M]
   [T2Space M] [CompactSpace M]
@@ -104,11 +104,11 @@ theorem exists_outward_vectorField_indexSum_eq_eulerChar :
       ∃ hisolated : ∀ x, V x = 0 → HasContinuousIsolatedZero (𝓡∂ (n + 1)) V x,
         (∀ x (hx : V x = 0), LinearMap.det
           (linearizationAtZero (hV.contMDiffAt.mdifferentiableAt (by simp)) hx).toLinearMap ≠ 0) ∧
-        ∀ (K : Type) [Field K], Poincare.Homology.finiteHomologyType K (TopCat.of M) ∧
+        ∀ (K : Type) [Field K], DifferentialGeometry.Homology.finiteHomologyType K (TopCat.of M) ∧
           (∑ p : hfinite.toFinset, interiorIndex (𝓡∂ (n + 1)) V p
             (hisolated p (hfinite.mem_toFinset.mp p.property))
             (hinterior p (hfinite.mem_toFinset.mp p.property))) =
-              Poincare.Homology.eulerChar K (TopCat.of M) := by
+              DifferentialGeometry.Homology.eulerChar K (TopCat.of M) := by
   obtain ⟨g⟩ := DifferentialGeometry.Geometry.nonempty_contMDiffRiemannianMetric_of_sigmaCompact
     (I := 𝓡∂ (n + 1)) (M := M)
   obtain ⟨f,hneg,hzero,hnd,hV,hout,hfinite,hinterior,hisolated,hdet,hχ⟩ :=
@@ -116,4 +116,4 @@ theorem exists_outward_vectorField_indexSum_eq_eulerChar :
   exact ⟨gradientFun g f,hV,⟨g,f,rfl,hneg,hzero,hnd⟩,hout,
     hfinite,hinterior,hisolated,hdet,hχ⟩
 
-end Poincare.VectorField
+end DifferentialGeometry.VectorField

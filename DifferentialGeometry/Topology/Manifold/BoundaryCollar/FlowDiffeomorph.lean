@@ -8,7 +8,7 @@ open scoped ContDiff
 open DifferentialGeometry.Integral.DivergenceTheorem.WithBoundary
 set_option autoImplicit false
 noncomputable section
-namespace Poincare.Manifold.BoundaryCollar
+namespace DifferentialGeometry.Manifold.BoundaryCollar
 
 theorem exists_boundary_flow_diffeomorph
     {n : ℕ} {M : Type*} [TopologicalSpace M]
@@ -92,4 +92,4 @@ theorem exists_boundary_flow_diffeomorph
     exact hKW p.2
   · exact heq
 
-end Poincare.Manifold.BoundaryCollar
+end DifferentialGeometry.Manifold.BoundaryCollar

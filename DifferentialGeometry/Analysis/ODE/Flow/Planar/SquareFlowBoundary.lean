@@ -4,7 +4,7 @@ noncomputable section
 open Set
 open scoped ContDiff Manifold
 
-namespace Poincare.Analysis
+namespace DifferentialGeometry.Analysis
 
 theorem leftEdgeSquareMap_eq_on_constant_horizontal
     {P : Type*} {φ : P → _root_.Flow ℝ ℂ} {τ : P × ℝ → ℝ}
@@ -151,4 +151,4 @@ theorem exists_smooth_inverse_rightEdgeExitMap
     rw [hf] at hi
     exact (congrArg Complex.im hi).trans (he y).2
 
-end Poincare.Analysis
+end DifferentialGeometry.Analysis

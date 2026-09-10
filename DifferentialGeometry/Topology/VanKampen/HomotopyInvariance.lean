@@ -13,7 +13,7 @@ open scoped unitInterval
 
 universe u v
 
-namespace Poincare.Topology.VanKampen
+namespace DifferentialGeometry.Topology.VanKampen
 
 def homotopySquare {X : Type u} [TopologicalSpace X] {x y : X}
     {p q : _root_.Path x y} (K : p.Homotopy q) : C(I × I, X) where
@@ -475,4 +475,4 @@ theorem LocalFunctorData.rawEvaluation_eq_of_homotopic
   rcases hpq with ⟨K⟩
   exact F.rawEvaluation_eq_of_homotopy hU hV hcover K
 
-end Poincare.Topology.VanKampen
+end DifferentialGeometry.Topology.VanKampen

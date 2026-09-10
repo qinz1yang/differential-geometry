@@ -11,7 +11,7 @@ open scoped ContDiff Manifold
 open DifferentialGeometry.Analysis.ODE
 open DifferentialGeometry.Topology.Morse
 
-namespace Poincare.Topology.Ehresmann
+namespace DifferentialGeometry.Topology.Ehresmann
 
 variable {m : ℕ}
 variable {H : Type} [TopologicalSpace H]
@@ -562,4 +562,4 @@ theorem regularLevelFlowDiffeomorphOnBand_comp_apply
       congr 1
       ring
 
-end Poincare.Topology.Ehresmann
+end DifferentialGeometry.Topology.Ehresmann

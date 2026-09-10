@@ -8,7 +8,7 @@ noncomputable section
 open Bundle
 open scoped ContDiff Manifold
 
-namespace Poincare.Geometry.Riemannian.VolumeComparison
+namespace DifferentialGeometry.Geometry.Riemannian.VolumeComparison
 
 open DifferentialGeometry
 open DifferentialGeometry.Geometry.Riemannian.BonnetMyers
@@ -67,6 +67,6 @@ theorem capturedPointedLimit_noncompact_ricciNonnegative_avrLower
     ricciNonnegative_of_canonicalPointedLimit (I := I) C hRic
   exact ⟨hvolume.1, hcurvature, hvolume.2⟩
 
-end Poincare.Geometry.Riemannian.VolumeComparison
+end DifferentialGeometry.Geometry.Riemannian.VolumeComparison
 
 end

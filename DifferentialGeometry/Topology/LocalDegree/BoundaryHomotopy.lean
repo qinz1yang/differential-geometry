@@ -5,7 +5,7 @@ set_option autoImplicit false
 open Metric Set
 open scoped unitInterval
 noncomputable section
-namespace Poincare.LocalDegree
+namespace DifferentialGeometry.LocalDegree
 variable {E F : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [NormedAddCommGroup F] [NormedSpace ℝ F]
 
@@ -58,4 +58,4 @@ theorem euclideanLocalDegree_eq_of_boundaryHomotopy {d : ℕ}
     euclideanLocalDegree_eq_sphereDegree _ hg ⟨R, hg.pos, le_rfl⟩]
   exact euclideanSphereDegree_eq_of_homotopy (sphereMapHomotopyOfBoundary hf hg H hH hn h₀ h₁)
 
-end Poincare.LocalDegree
+end DifferentialGeometry.LocalDegree

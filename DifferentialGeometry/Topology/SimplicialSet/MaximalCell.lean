@@ -12,7 +12,7 @@ open CategoryTheory CategoryTheory.Limits Simplicial Opposite
 
 universe u
 
-namespace Poincare.SSet
+namespace DifferentialGeometry.SSet
 
 variable {X : _root_.SSet.{u}} (s : X.N)
 
@@ -174,4 +174,4 @@ theorem card_costar_nondegenerate_lt [X.Finite] :
   obtain ⟨t, ht⟩ := h s
   exact (costarNondegenerateEquiv s t).prop (le_of_eq ht.symm)
 
-end Poincare.SSet
+end DifferentialGeometry.SSet

@@ -8,7 +8,7 @@ noncomputable section
 open Bundle Filter Manifold MeasureTheory Set
 open scoped ContDiff ENNReal Manifold Topology
 
-namespace Poincare.Geometry.Riemannian.VolumeComparison
+namespace DifferentialGeometry.Geometry.Riemannian.VolumeComparison
 
 open DifferentialGeometry
 open DifferentialGeometry.Geometry.Riemannian
@@ -190,4 +190,4 @@ theorem localBishopGromovVolumeComparison [ConnectedSpace M] [CompleteSpace M]
     exact localBishopGromov_absolute_upper
       (I := I) g hEnorm p K R₀ hRic hRpos hR
 
-end Poincare.Geometry.Riemannian.VolumeComparison
+end DifferentialGeometry.Geometry.Riemannian.VolumeComparison

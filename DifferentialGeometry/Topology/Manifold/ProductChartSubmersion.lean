@@ -6,7 +6,7 @@ noncomputable section
 open Set DifferentialGeometry
 open scoped Manifold ContDiff
 
-namespace Poincare.Topology.Manifold
+namespace DifferentialGeometry.Topology.Manifold
 
 theorem contMDiff_and_surjective_mfderiv_snd_of_product_chart
     {E H W F H' M G H₀ N L H₁ P : Type*}
@@ -59,4 +59,4 @@ theorem contMDiff_and_surjective_mfderiv_snd_of_product_chart
   change (mfderiv I (K.prod B) ψ w z : G × L).2 = y
   exact congrArg Prod.snd hz
 
-end Poincare.Topology.Manifold
+end DifferentialGeometry.Topology.Manifold

@@ -8,7 +8,7 @@ set_option autoImplicit false
 open Set
 open Metric
 
-namespace Poincare.Topology.SphereSeparation
+namespace DifferentialGeometry.Topology.SphereSeparation
 
 theorem image_unitSphere_smulOfNeZero {r : ℝ} (hr : 0 < r) :
     (Homeomorph.smulOfNeZero r hr.ne' : EuclideanThree ≃ₜ EuclideanThree) ''
@@ -114,4 +114,4 @@ theorem concentric_roundSphere_exclusiveNesting
   rintro ⟨_, _, hreverse⟩
   exact lt_asymm hclosure hreverse
 
-end Poincare.Topology.SphereSeparation
+end DifferentialGeometry.Topology.SphereSeparation

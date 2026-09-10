@@ -5,7 +5,7 @@ noncomputable section
 open Set Metric Topology Manifold
 open scoped ContDiff
 
-namespace Poincare.Geometry.Boundary
+namespace DifferentialGeometry.Geometry.Boundary
 
 open DifferentialGeometry.Integral.DivergenceTheorem.WithBoundary
 
@@ -29,10 +29,10 @@ theorem exists_diffeomorph_sphere_prod_interval_of_nested_balls
     (v : sphere (0 : F) 1) :
     Nonempty (Diffeomorph ((𝓡 n).prod (𝓡∂ 1)) I (sphere (0 : F) 1 × unitInterval) W ∞) := by
   obtain ⟨e, hes, het, he, hei⟩ :=
-    Poincare.Topology.Manifold.exists_smooth_nestedBallShell_parametrization (n := n)
+    DifferentialGeometry.Topology.Manifold.exists_smooth_nestedBallShell_parametrization (n := n)
       outer inner hr houter hinner hnested v
   obtain ⟨D, _⟩ := exists_diffeomorph_of_smooth_partial_equiv_to_range ι hι hemb hinj hdim
     e hes (het.trans hrange.symm) he hei
   exact ⟨D⟩
 
-end Poincare.Geometry.Boundary
+end DifferentialGeometry.Geometry.Boundary

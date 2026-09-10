@@ -6,9 +6,9 @@ noncomputable section
 open Set Topology Manifold
 open scoped ContDiff
 
-namespace Poincare.Topology.Ehresmann
+namespace DifferentialGeometry.Topology.Ehresmann
 
-open Poincare.Topology.Manifold
+open DifferentialGeometry.Topology.Manifold
 
 variable {E F H G B M : Type*}
   [NormedAddCommGroup E] [NormedSpace ℝ E] [NormedAddCommGroup F] [NormedSpace ℝ F]
@@ -170,4 +170,4 @@ theorem exists_upper_smooth_completionChart
     intro y hy
     exact hdi' _ hy.2
 
-end Poincare.Topology.Ehresmann
+end DifferentialGeometry.Topology.Ehresmann

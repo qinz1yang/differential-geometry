@@ -1,7 +1,7 @@
 import Mathlib.Data.Real.Basic
 import Mathlib.Tactic.Ring
 
-namespace Poincare.Geometry.Affine
+namespace DifferentialGeometry.Geometry.Affine
 
 def lineAffineAlignment (s c : ℕ → ℝ) : ℕ → ℝ × ℝ
   | 0 => (1, 0)
@@ -37,4 +37,4 @@ theorem abs_lineAffineAlignment_transition_error (s c : ℕ → ℝ)
   rw [lineAffineAlignment_transition_error s c n hs', abs_mul]
   rcases lineAffineAlignment_sign s c hs (n + 1) with h | h <;> simp [h]
 
-end Poincare.Geometry.Affine
+end DifferentialGeometry.Geometry.Affine

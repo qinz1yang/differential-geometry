@@ -5,7 +5,7 @@ set_option autoImplicit false
 noncomputable section
 open CategoryTheory CategoryTheory.Limits Set
 open scoped Manifold ContDiff
-namespace Poincare.Homology
+namespace DifferentialGeometry.Homology
 variable (k : Type) [Field k]
 
 section Interior
@@ -16,10 +16,10 @@ include hx
 
 
 theorem finiteHomologyType_localManifold_interior :
-    Poincare.HomologicalComplex.finiteHomologyType
+    DifferentialGeometry.HomologicalComplex.finiteHomologyType
       (relativeChainComplex (TopCat.of M) ({x}ᶜ : Set M) (ModuleCat.of k k)) := by
-  let e := (Poincare.Manifold.interiorChart I 0 x).toOpenPartialHomeomorph
-  have he : x ∈ e.source := (Poincare.Manifold.mem_interiorChart_source_iff I 0 x).mpr hx
+  let e := (DifferentialGeometry.Manifold.interiorChart I 0 x).toOpenPartialHomeomorph
+  have he : x ∈ e.source := (DifferentialGeometry.Manifold.mem_interiorChart_source_iff I 0 x).mpr hx
   exact (finiteHomologyType_chart_iff (X := TopCat.of M)
     (Y := TopCat.of (EuclideanSpace ℝ (Fin n))) e x he k).mpr
       (finiteHomologyType_localEuclidean_at k n (e x))
@@ -27,8 +27,8 @@ theorem finiteHomologyType_localManifold_interior :
 
 theorem relativeEulerChar_localManifold_interior :
     relativeEulerChar (TopCat.of M) ({x}ᶜ : Set M) k = (-1 : ℤ) ^ n := by
-  let e := (Poincare.Manifold.interiorChart I 0 x).toOpenPartialHomeomorph
-  have he : x ∈ e.source := (Poincare.Manifold.mem_interiorChart_source_iff I 0 x).mpr hx
+  let e := (DifferentialGeometry.Manifold.interiorChart I 0 x).toOpenPartialHomeomorph
+  have he : x ∈ e.source := (DifferentialGeometry.Manifold.mem_interiorChart_source_iff I 0 x).mpr hx
   exact (relativeEulerChar_chart (X := TopCat.of M)
     (Y := TopCat.of (EuclideanSpace ℝ (Fin n))) e x he k).trans
       (relativeEulerChar_localEuclidean_at k n (e x))
@@ -49,7 +49,7 @@ theorem chartAt_boundary_normal_eq_zero :
 
 
 theorem finiteHomologyType_localManifold_boundary :
-    Poincare.HomologicalComplex.finiteHomologyType
+    DifferentialGeometry.HomologicalComplex.finiteHomologyType
       (relativeChainComplex (TopCat.of M) ({x}ᶜ : Set M) (ModuleCat.of k k)) := by
   let : T1Space (EuclideanHalfSpace n) := inferInstanceAs
     (T1Space {v : EuclideanSpace ℝ (Fin n) // 0 ≤ v 0})
@@ -69,4 +69,4 @@ theorem relativeEulerChar_localManifold_boundary :
     (relativeEulerChar_localHalfSpace _ k (chartAt_boundary_normal_eq_zero x hx))
 
 end Boundary
-end Poincare.Homology
+end DifferentialGeometry.Homology

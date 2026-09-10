@@ -5,8 +5,8 @@ set_option autoImplicit false
 open Set
 open scoped Manifold Topology
 noncomputable section
-namespace Poincare.VectorField
-open Poincare.LocalDegree
+namespace DifferentialGeometry.VectorField
+open DifferentialGeometry.LocalDegree
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
   {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
@@ -40,4 +40,4 @@ theorem realLocalDegree_collarExtension_normal {T : ∀ x : M, TangentSpace I x}
   rw [realLocalDegree_eq_sign_of_hasDerivAt _ hd hp.ne', sign_pos hp]
   rfl
 
-end Poincare.VectorField
+end DifferentialGeometry.VectorField

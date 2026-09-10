@@ -8,7 +8,7 @@ open CategoryTheory CategoryTheory.Limits Opposite Simplicial
 
 universe u
 
-namespace Poincare.Homology
+namespace DifferentialGeometry.Homology
 
 variable {E : Type u} [NormedAddCommGroup E] [NormedSpace ℝ E]
 
@@ -117,4 +117,4 @@ theorem affineSubdivision_comp_straightening :
   funext n
   exact affineSubdivisionMap_straightening (E := E) R n
 
-end Poincare.Homology
+end DifferentialGeometry.Homology

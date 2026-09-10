@@ -12,7 +12,7 @@ open DifferentialGeometry.Geometry.Riemannian
 open DifferentialGeometry.Geometry.Riemannian.Topology
 open DifferentialGeometry.Geometry.Connection
 
-namespace Poincare.Geometry.Riemannian
+namespace DifferentialGeometry.Geometry.Riemannian
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
   {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
@@ -23,7 +23,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimension
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 theorem universalCover_compactSpace_of_positiveSectional
-    (g : SmoothRiemannianMetric I M) (hsec : Poincare.Geometry.HasPositiveSectionalCurvature g)
+    (g : SmoothRiemannianMetric I M) (hsec : DifferentialGeometry.Geometry.HasPositiveSectionalCurvature g)
     (hdim : 2 ≤ Module.finrank ℝ E) : CompactSpace (UniversalCover M) := by
   let : NeZero (Module.finrank ℝ E) := ⟨by omega⟩
   let : TopologicalSpace.MetrizableSpace M := Manifold.metrizableSpace I M
@@ -53,4 +53,4 @@ theorem universalCover_compactSpace_of_positiveSectional
       (fun x => chartRiemannBasisIdentity_LeviCivita g x)
   exact BonnetMyers.bonnet_myers_compactSpace_of_ricci_bound h hdim hk hRicLift hcoverNorm
 
-end Poincare.Geometry.Riemannian
+end DifferentialGeometry.Geometry.Riemannian

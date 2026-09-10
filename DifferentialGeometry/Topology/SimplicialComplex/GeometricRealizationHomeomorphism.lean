@@ -8,7 +8,7 @@ import DifferentialGeometry.Topology.Category.TopCat.PushoutInjectivity
 set_option autoImplicit false
 noncomputable section
 open CategoryTheory CategoryTheory.Limits Simplicial
-namespace Poincare.Topology.SimplicialComplex
+namespace DifferentialGeometry.Topology.SimplicialComplex
 universe u
 variable {E : Type u} [NormedAddCommGroup E] [NormedSpace ℝ E] [LinearOrder E]
 
@@ -29,7 +29,7 @@ theorem geometricRealizationMap_injective (K : Geometry.SimplicialComplex ℝ E)
       exact (hs.2 t.prop ht).symm.le
     have hP := (orderedFaceAttachment_isPushout L.toPreAbstractSimplicialComplex s hs.1 hn hmax).map
       SSet.toTop
-    apply Poincare.TopCat.Pushout.injective_of_cell_overlap hP (geometricRealizationMap L)
+    apply DifferentialGeometry.TopCat.Pushout.injective_of_cell_overlap hP (geometricRealizationMap L)
     · intro x y hxy
       apply (orderedFaceRealizationHomeomorph L s hs.1 hn).injective
       apply Subtype.ext
@@ -73,4 +73,4 @@ theorem geometricRealizationHomeomorphism_inclusion
       (TopCat.isoOfHomeo (geometricRealizationHomeomorphism K)).hom ≫ geometricInclusion h :=
   geometricRealizationMap_inclusion h
 
-end Poincare.Topology.SimplicialComplex
+end DifferentialGeometry.Topology.SimplicialComplex

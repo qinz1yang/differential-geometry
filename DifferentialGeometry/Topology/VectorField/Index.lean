@@ -6,7 +6,7 @@ set_option autoImplicit false
 open Bundle Filter Set
 open scoped Manifold ContDiff Topology
 noncomputable section
-namespace Poincare.VectorField
+namespace DifferentialGeometry.VectorField
 variable {d : ℕ} {H M : Type*} [TopologicalSpace H] [TopologicalSpace M]
   [ChartedSpace H M] (I : ModelWithCorners ℝ (EuclideanSpace ℝ (Fin (d + 1))) H)
   [IsManifold I 1 M]
@@ -41,10 +41,10 @@ theorem localDegree_in_coordinates_eq
     {V : ∀ x : M, TangentSpace I x} {x : M} (hV : HasContinuousIsolatedZero I V x)
     (c e : PartialDiffeomorph I 𝓘(ℝ, EuclideanSpace ℝ (Fin (d + 1))) M
       (EuclideanSpace ℝ (Fin (d + 1))) 1) (hcx : x ∈ c.source) (hex : x ∈ e.source) :
-    Poincare.LocalDegree.euclideanLocalDegree
+    DifferentialGeometry.LocalDegree.euclideanLocalDegree
         (_root_.VectorField.mpullback 𝓘(ℝ, EuclideanSpace ℝ (Fin (d + 1))) I c.symm V) (c x)
         (hV.in_coordinates I c le_rfl hcx) =
-      Poincare.LocalDegree.euclideanLocalDegree
+      DifferentialGeometry.LocalDegree.euclideanLocalDegree
         (_root_.VectorField.mpullback 𝓘(ℝ, EuclideanSpace ℝ (Fin (d + 1))) I e.symm V) (e x)
         (hV.in_coordinates I e le_rfl hex) := by
   let f := e.symm.trans c
@@ -69,12 +69,12 @@ theorem localDegree_in_coordinates_eq
         (isInvertible_mfderiv_partialDiffeomorph c.symm one_ne_zero (c.map_source hys.2)))
   have hc := hV.in_coordinates I c le_rfl hcx
   have he := hV.in_coordinates I e le_rfl hex
-  have hcf : Poincare.LocalDegree.isolatedZero
+  have hcf : DifferentialGeometry.LocalDegree.isolatedZero
       (_root_.VectorField.mpullback 𝓘(ℝ, EuclideanSpace ℝ (Fin (d + 1))) I c.symm V) (f (e x)) :=
     hcenter.symm ▸ hc
-  have hp := Poincare.LocalDegree.isolatedZero_mpullback_partialDiffeomorph f le_rfl hxf hcf
-  have hdegree := Poincare.LocalDegree.euclideanLocalDegree_mpullback_partialDiffeomorph f le_rfl hxf hcf
-  have hsame := Poincare.LocalDegree.euclideanLocalDegree_congr he hp hfields
+  have hp := DifferentialGeometry.LocalDegree.isolatedZero_mpullback_partialDiffeomorph f le_rfl hxf hcf
+  have hdegree := DifferentialGeometry.LocalDegree.euclideanLocalDegree_mpullback_partialDiffeomorph f le_rfl hxf hcf
+  have hsame := DifferentialGeometry.LocalDegree.euclideanLocalDegree_congr he hp hfields
   exact (hsame.trans (by simpa only [hcenter] using hdegree)).symm
 
 variable [I.Boundaryless]
@@ -93,7 +93,7 @@ theorem indexChart_source (x : M) : (indexChart I x).source = (chartAt H x).sour
   extChartAt_source I x
 
 def index (V : ∀ x : M, TangentSpace I x) (x : M) (hV : HasContinuousIsolatedZero I V x) : ℤ :=
-  Poincare.LocalDegree.euclideanLocalDegree
+  DifferentialGeometry.LocalDegree.euclideanLocalDegree
     (_root_.VectorField.mpullback 𝓘(ℝ, EuclideanSpace ℝ (Fin (d + 1))) I (indexChart I x).symm V)
     (indexChart I x x)
     (hV.in_coordinates I (indexChart I x) le_rfl (by simp))
@@ -103,7 +103,7 @@ theorem index_eq_in_coordinates
     {V : ∀ x : M, TangentSpace I x} {x : M} (hV : HasContinuousIsolatedZero I V x)
     (c : PartialDiffeomorph I 𝓘(ℝ, EuclideanSpace ℝ (Fin (d + 1))) M
       (EuclideanSpace ℝ (Fin (d + 1))) 1) (hx : x ∈ c.source) :
-    index I V x hV = Poincare.LocalDegree.euclideanLocalDegree
+    index I V x hV = DifferentialGeometry.LocalDegree.euclideanLocalDegree
       (_root_.VectorField.mpullback 𝓘(ℝ, EuclideanSpace ℝ (Fin (d + 1))) I c.symm V) (c x)
       (hV.in_coordinates I c le_rfl hx) :=
   localDegree_in_coordinates_eq I hV (indexChart I x) c (by simp) hx
@@ -114,11 +114,11 @@ theorem index_eq_localDegree
       (EuclideanSpace ℝ (Fin (d + 1))) M 1)
     {a : EuclideanSpace ℝ (Fin (d + 1))} (ha : a ∈ f.source)
     (hV : HasContinuousIsolatedZero I V (f a)) :
-    index I V (f a) hV = Poincare.LocalDegree.euclideanLocalDegree
+    index I V (f a) hV = DifferentialGeometry.LocalDegree.euclideanLocalDegree
       (_root_.VectorField.mpullback 𝓘(ℝ, EuclideanSpace ℝ (Fin (d + 1))) I f V) a
       (hV.model_pullback I f le_rfl ha) := by
   have hh := index_eq_in_coordinates I hV f.symm (f.map_source ha)
-  change index I V (f a) hV = Poincare.LocalDegree.euclideanLocalDegree
+  change index I V (f a) hV = DifferentialGeometry.LocalDegree.euclideanLocalDegree
     (_root_.VectorField.mpullback 𝓘(ℝ, EuclideanSpace ℝ (Fin (d + 1))) I f V)
     (f.toPartialEquiv.symm (f a)) _ at hh
   simpa only [f.left_inv ha] using hh
@@ -127,16 +127,16 @@ theorem index_generator
     {V : ∀ x : M, TangentSpace I x} {x : M} (hV : HasContinuousIsolatedZero I V x)
     (c : PartialDiffeomorph I 𝓘(ℝ, EuclideanSpace ℝ (Fin (d + 1))) M
       (EuclideanSpace ℝ (Fin (d + 1))) 1) (hx : x ∈ c.source)
-    {R : ℝ} (hR : Poincare.LocalDegree.IsolatingRadius
+    {R : ℝ} (hR : DifferentialGeometry.LocalDegree.IsolatingRadius
       (_root_.VectorField.mpullback 𝓘(ℝ, EuclideanSpace ℝ (Fin (d + 1))) I c.symm V) (c x) R)
     (r : Ioc (0 : ℝ) R) :
-    Poincare.Homology.reducedSingularHomologyMap (ModuleCat.of ℤ ℤ)
-      (TopCat.ofHom (Poincare.LocalDegree.sphereMap
+    DifferentialGeometry.Homology.reducedSingularHomologyMap (ModuleCat.of ℤ ℤ)
+      (TopCat.ofHom (DifferentialGeometry.LocalDegree.sphereMap
         (_root_.VectorField.mpullback 𝓘(ℝ, EuclideanSpace ℝ (Fin (d + 1))) I c.symm V) (c x) R
-        hR.continuousOn hR.nonzero r)) d (Poincare.LocalDegree.euclideanSphereTopGenerator d) =
-      index I V x hV • Poincare.LocalDegree.euclideanSphereTopGenerator d := by
+        hR.continuousOn hR.nonzero r)) d (DifferentialGeometry.LocalDegree.euclideanSphereTopGenerator d) =
+      index I V x hV • DifferentialGeometry.LocalDegree.euclideanSphereTopGenerator d := by
   rw [index_eq_in_coordinates I hV c hx]
-  exact Poincare.LocalDegree.euclideanLocalDegree_generator _ hR r
+  exact DifferentialGeometry.LocalDegree.euclideanLocalDegree_generator _ hR r
 
 theorem index_eq_linear_of_hasFDerivAt
     {V : ∀ x : M, TangentSpace I x}
@@ -147,12 +147,12 @@ theorem index_eq_linear_of_hasFDerivAt
     (A : EuclideanSpace ℝ (Fin (d + 1)) ≃L[ℝ] EuclideanSpace ℝ (Fin (d + 1)))
     (hd : HasFDerivAt (_root_.VectorField.mpullback
       𝓘(ℝ, EuclideanSpace ℝ (Fin (d + 1))) I f V) A.toContinuousLinearMap a) :
-    index I V (f a) hV = Poincare.LocalDegree.euclideanSphereDegree
-      (Poincare.LocalDegree.linearSphereMap A) := by
+    index I V (f a) hV = DifferentialGeometry.LocalDegree.euclideanSphereDegree
+      (DifferentialGeometry.LocalDegree.linearSphereMap A) := by
   have h := hV.model_pullback I f le_rfl ha
   have hR := h.choose_spec
   rw [index_eq_localDegree I f ha hV]
-  exact Poincare.LocalDegree.euclideanLocalDegree_eq_linear_of_hasFDerivAt A
+  exact DifferentialGeometry.LocalDegree.euclideanLocalDegree_eq_linear_of_hasFDerivAt A
     (Metric.closedBall_mem_nhds _ hR.pos) hR.continuousOn hR.zero hd h
 
-end Poincare.VectorField
+end DifferentialGeometry.VectorField

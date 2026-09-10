@@ -6,7 +6,7 @@ noncomputable section
 open Set Function
 open scoped Topology
 
-namespace Poincare.Topology.Covering
+namespace DifferentialGeometry.Topology.Covering
 
 theorem injective_of_continuous_fiber_separating_map
     {E X L : Type*} [TopologicalSpace E] [CompactSpace E] [PathConnectedSpace E]
@@ -39,4 +39,4 @@ theorem injective_of_continuous_fiber_separating_map
   intro x y hxy
   exact hsep (Prod.ext hxy (le_antisymm (hle x y hxy) (hle y x hxy.symm)))
 
-end Poincare.Topology.Covering
+end DifferentialGeometry.Topology.Covering

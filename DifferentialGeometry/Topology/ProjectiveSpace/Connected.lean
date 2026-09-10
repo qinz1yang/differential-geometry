@@ -4,7 +4,7 @@ import Mathlib.Analysis.InnerProductSpace.PiL2
 
 set_option autoImplicit false
 noncomputable section
-namespace Poincare.ProjectiveSpace
+namespace DifferentialGeometry.ProjectiveSpace
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 
 
@@ -22,4 +22,4 @@ instance pathConnectedSpace_euclidean (n : ℕ) :
   simp only [finrank_euclideanSpace, Fintype.card_fin]
   exact_mod_cast (show 1 < n + 2 by omega)
 
-end Poincare.ProjectiveSpace
+end DifferentialGeometry.ProjectiveSpace

@@ -7,7 +7,7 @@ noncomputable section
 open Set Filter Function
 open scoped Manifold ContDiff Topology
 open DifferentialGeometry.Topology.Morse
-namespace Poincare.Morse
+namespace DifferentialGeometry.Morse
 variable {E : Type} [NormedAddCommGroup E] [NormedSpace ℝ E]
 
 
@@ -47,8 +47,8 @@ theorem isNondegenerateCriticalPointAt_of_bijective_hessian {f : M → ℝ} {x :
       (extChartAt I x x))) : IsNondegenerateCriticalPointAt I f x := by
   refine ⟨hcrit,?_⟩
   apply (separatingLeft_chartHessianAt_iff _).mpr hess.1
-  let c := Poincare.Manifold.interiorChart I ∞ x
-  have hc : x ∈ c.source := (Poincare.Manifold.mem_interiorChart_source_iff I ∞ x).mpr hx
+  let c := DifferentialGeometry.Manifold.interiorChart I ∞ x
+  have hc : x ∈ c.source := (DifferentialGeometry.Manifold.mem_interiorChart_source_iff I ∞ x).mpr hx
   exact (((hf.comp_contMDiffOn c.symm.contMDiffOn).contMDiffAt
     (c.open_target.mem_nhds (c.map_source hc))).contDiffAt).of_le
       (show (2 : WithTop ℕ∞) ≤ ∞ from WithTop.coe_le_coe.mpr le_top)
@@ -69,4 +69,4 @@ theorem exists_positive_relative_morse_on_isCompact {f : M → ℝ}
   exact ⟨g,hg,hfix,hpositive,fun x hx hc =>
     isNondegenerateCriticalPointAt_of_bijective_hessian hg (hKI x hx) hc (hreg x hx hc)⟩
 
-end Poincare.Morse
+end DifferentialGeometry.Morse

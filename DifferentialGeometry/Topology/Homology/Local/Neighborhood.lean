@@ -4,7 +4,7 @@ import DifferentialGeometry.Topology.Homology.Algebra.FiniteTypeMap
 set_option autoImplicit false
 noncomputable section
 open CategoryTheory CategoryTheory.Limits AlgebraicTopology Set
-namespace Poincare.Homology
+namespace DifferentialGeometry.Homology
 universe u
 variable (X : TopCat.{u}) (U : Set X) (x : X) (hx : x ∈ U)
   {k : Type u} [Ring k] (R : ModuleCat.{u} k)
@@ -69,21 +69,21 @@ section Field
 variable (k : Type u) [Field k]
 
 theorem finiteHomologyType_puncturedNeighborhood_iff [T1Space X] (hU : IsOpen U) :
-    Poincare.HomologicalComplex.finiteHomologyType
+    DifferentialGeometry.HomologicalComplex.finiteHomologyType
         (relativeChainComplex (TopCat.of U) ({(⟨x, hx⟩ : U)}ᶜ : Set U) (ModuleCat.of k k)) ↔
-      Poincare.HomologicalComplex.finiteHomologyType
+      DifferentialGeometry.HomologicalComplex.finiteHomologyType
         (relativeChainComplex X ({x}ᶜ : Set X) (ModuleCat.of k k)) := by
   let :=  quasiIso_puncturedNeighborhoodChainMap X U x hx (ModuleCat.of k k) hU
-  exact Poincare.HomologicalComplex.finiteHomologyType_iff_of_quasiIso
+  exact DifferentialGeometry.HomologicalComplex.finiteHomologyType_iff_of_quasiIso
     (puncturedNeighborhoodChainMap X U x hx (ModuleCat.of k k))
 
 theorem relativeEulerChar_puncturedNeighborhood [T1Space X] (hU : IsOpen U) :
     relativeEulerChar (TopCat.of U) ({(⟨x, hx⟩ : U)}ᶜ : Set U) k =
       relativeEulerChar X ({x}ᶜ : Set X) k := by
   let :=  quasiIso_puncturedNeighborhoodChainMap X U x hx (ModuleCat.of k k) hU
-  exact Poincare.HomologicalComplex.homologyEulerChar_eq_of_quasiIso
+  exact DifferentialGeometry.HomologicalComplex.homologyEulerChar_eq_of_quasiIso
     (puncturedNeighborhoodChainMap X U x hx (ModuleCat.of k k))
 
 end Field
 
-end Poincare.Homology
+end DifferentialGeometry.Homology

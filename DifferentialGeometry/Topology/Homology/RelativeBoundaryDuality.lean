@@ -6,7 +6,7 @@ noncomputable section
 open Set
 open scoped Manifold ContDiff Topology
 open DifferentialGeometry.Integral.DivergenceTheorem.WithBoundary
-namespace Poincare.Homology
+namespace DifferentialGeometry.Homology
 
 private def boundarySubsetHomeomorph {n : ℕ} {M : Type} [TopologicalSpace M]
     [ChartedSpace (EuclideanHalfSpace (n + 1)) M]
@@ -71,4 +71,4 @@ theorem relativeEulerChar_boundary_complement
   rw [mul_sub, hsign]
   linarith
 
-end Poincare.Homology
+end DifferentialGeometry.Homology

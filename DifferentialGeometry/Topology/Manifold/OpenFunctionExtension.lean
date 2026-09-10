@@ -6,7 +6,7 @@ noncomputable section
 open Set
 open scoped Manifold ContDiff
 
-namespace Poincare.Topology.Manifold
+namespace DifferentialGeometry.Topology.Manifold
 
 theorem contMDiffOn_extend_from_open
     {E F H H' M N : Type*}
@@ -44,4 +44,4 @@ theorem mvfderiv_extend_from_open
   rw [Function.extend_comp Subtype.val_injective] at h
   exact h.symm
 
-end Poincare.Topology.Manifold
+end DifferentialGeometry.Topology.Manifold

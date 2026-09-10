@@ -4,7 +4,7 @@ import Mathlib.Analysis.Convex.SimplicialComplex.Basic
 
 set_option autoImplicit false
 noncomputable section
-namespace Poincare.Topology.SimplicialComplex
+namespace DifferentialGeometry.Topology.SimplicialComplex
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 
 
@@ -16,4 +16,4 @@ theorem isCompact_geometricSpace (K : Geometry.SimplicialComplex ℝ E) [Finite 
 instance compactSpace_geometricSpace (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces] :
     CompactSpace K.space := isCompact_iff_compactSpace.mp (isCompact_geometricSpace K)
 
-end Poincare.Topology.SimplicialComplex
+end DifferentialGeometry.Topology.SimplicialComplex

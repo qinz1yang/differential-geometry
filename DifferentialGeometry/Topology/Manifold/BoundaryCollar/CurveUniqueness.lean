@@ -7,7 +7,7 @@ open scoped ContDiff Topology
 set_option autoImplicit false
 noncomputable section
 
-namespace Poincare.Manifold.BoundaryCollar
+namespace DifferentialGeometry.Manifold.BoundaryCollar
 
 private theorem hasDerivWithinAt_chartField
     {E H M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -173,4 +173,4 @@ theorem isMIntegralCurveOn_Icc_unique_of_interior_of_eq_right
   apply hopen.of_subset_closure hγ.continuousOn hη.continuousOn Ioo_subset_Icc_self
   rw [closure_Ioo hb.ne]
 
-end Poincare.Manifold.BoundaryCollar
+end DifferentialGeometry.Manifold.BoundaryCollar

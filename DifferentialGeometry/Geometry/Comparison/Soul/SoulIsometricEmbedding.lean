@@ -32,12 +32,12 @@ theorem embeddedSlice_inclusion_isRiemannianIsometricImmersion
     let hS := isEmbeddedSlice_of_relBoundary_eq_empty hEnorm hconv hB
     let _ := embeddedSliceChartedSpace hS
     let _ := embeddedSlice_isManifold hS
-    Poincare.Geometry.IsRiemannianIsometricImmersion
+    DifferentialGeometry.Geometry.IsRiemannianIsometricImmersion
       (inducedSliceMetric g hS) g (Subtype.val : S → M) := by
   let hS := isEmbeddedSlice_of_relBoundary_eq_empty hEnorm hconv hB
   let _ := embeddedSliceChartedSpace hS
   let _ := embeddedSlice_isManifold hS
-  apply Poincare.Geometry.IsRiemannianIsometricImmersion.of_is_smooth_embedding
+  apply DifferentialGeometry.Geometry.IsRiemannianIsometricImmersion.of_is_smooth_embedding
     (embeddedSlice_inclusion_isSmoothEmbedding g hEnorm hconv hB)
   intro p u v
   exact (inducedSliceMetric_inner g hS p u v).symm

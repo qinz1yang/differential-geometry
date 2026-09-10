@@ -4,7 +4,7 @@ import Mathlib.Topology.Constructions
 set_option autoImplicit false
 noncomputable section
 open Set Function Topology
-namespace Poincare.Topology
+namespace DifferentialGeometry.Topology
 universe u v
 variable {X : Type u} [TopologicalSpace X] {ι : Type v} (U : ι → Set X)
   (hU : ∀ i, IsOpen (U i)) (hd : Pairwise (Disjoint on U))
@@ -23,4 +23,4 @@ def disjointOpenUnionHomeomorph : (Σ i, U i) ≃ₜ ⋃ i, U i := by
 @[simp]
 theorem disjointOpenUnionHomeomorph_apply (x : Σ i, U i) :
     (disjointOpenUnionHomeomorph U hU hd x).val = x.2.val := rfl
-end Poincare.Topology
+end DifferentialGeometry.Topology

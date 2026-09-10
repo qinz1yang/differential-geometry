@@ -7,7 +7,7 @@ noncomputable section
 open Manifold
 open scoped ContDiff
 
-namespace Poincare.Geometry
+namespace DifferentialGeometry.Geometry
 
 open DifferentialGeometry DifferentialGeometry.Geometry.Curvature
 
@@ -35,4 +35,4 @@ theorem HasPositiveSectionalCurvature.positive_ricci_metric
   apply hb
   rw [← hr, hrzero, zero_smul]
 
-end Poincare.Geometry
+end DifferentialGeometry.Geometry

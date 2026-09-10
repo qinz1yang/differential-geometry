@@ -5,8 +5,8 @@ import DifferentialGeometry.Topology.LocalDegree.IsometricCoordinate
 set_option autoImplicit false
 open CategoryTheory Metric Set
 noncomputable section
-namespace Poincare.LocalDegree
-open Poincare.Homology
+namespace DifferentialGeometry.LocalDegree
+open DifferentialGeometry.Homology
 
 theorem realIsolatingRadius_iff {f : ℝ → ℝ} {x R : ℝ} :
     RealIsolatingRadius f x R ↔ IsolatingRadius f x R :=
@@ -91,4 +91,4 @@ theorem euclideanLocalDegree_real_eq_endpoints {f : ℝ → ℝ} {x R : ℝ}
   rw [euclideanLocalDegree_eq_realLocalDegree hR]
   exact realLocalDegree_eq_endpoints ⟨R, hR⟩ hR r
 
-end Poincare.LocalDegree
+end DifferentialGeometry.LocalDegree

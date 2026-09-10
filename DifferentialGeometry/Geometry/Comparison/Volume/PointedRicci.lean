@@ -11,7 +11,7 @@ noncomputable section
 open Set
 open scoped Manifold ContDiff
 
-namespace Poincare.Geometry.Riemannian.VolumeComparison
+namespace DifferentialGeometry.Geometry.Riemannian.VolumeComparison
 
 open DifferentialGeometry
 open DifferentialGeometry.CheegerGromovCompactness
@@ -422,4 +422,4 @@ theorem ricciNonnegative_of_canonicalPointedLimit
 
 end RicciLimit
 
-end Poincare.Geometry.Riemannian.VolumeComparison
+end DifferentialGeometry.Geometry.Riemannian.VolumeComparison

@@ -6,7 +6,7 @@ noncomputable section
 open Set Metric Filter Topology Manifold
 open scoped ContDiff
 
-namespace Poincare.Topology.Manifold
+namespace DifferentialGeometry.Topology.Manifold
 
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
   [FiniteDimensional ℝ E]
@@ -22,7 +22,7 @@ theorem exists_diffeomorph_straightening_embedded_closedBall
         ∀ y, y ∉ K → F y = y ∧ F.symm y = y := by
   have h0B : (0 : E) ∈ closedBall 0 r := mem_closedBall_self hr.le
   obtain ⟨A, hA, L, hgerm, K₀, hK₀, hK₀V, hLfix⟩ :=
-    Poincare.Analysis.exists_compact_diffeomorph_straightening_partialDiffeomorph
+    DifferentialGeometry.Analysis.exists_compact_diffeomorph_straightening_partialDiffeomorph
       φ (hrs h0B) hV (himage ⟨0, h0B, rfl⟩)
   obtain ⟨δ, hδ, hδeq⟩ := Metric.nhds_basis_closedBall.mem_iff.mp hgerm
   let ε := min 1 (δ / r)
@@ -54,4 +54,4 @@ theorem exists_diffeomorph_straightening_embedded_closedBall
     apply F.injective
     exact (F.apply_symm_apply y).trans (hFfix y hy).symm
 
-end Poincare.Topology.Manifold
+end DifferentialGeometry.Topology.Manifold

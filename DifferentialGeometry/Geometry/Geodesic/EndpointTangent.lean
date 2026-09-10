@@ -9,9 +9,9 @@ open DifferentialGeometry
 open DifferentialGeometry.Geometry.Riemannian
 open DifferentialGeometry.Geometry.Riemannian.Geodesic
 open DifferentialGeometry.Geometry.Riemannian.Variation
-open Poincare.Geometry.Riemannian.Variation
+open DifferentialGeometry.Geometry.Riemannian.Variation
 
-namespace Poincare.Geometry.Riemannian
+namespace DifferentialGeometry.Geometry.Riemannian
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
@@ -85,4 +85,4 @@ theorem exists_minimal_twisted_geodesic_with_endpoint_tangent
   have hpos := g.pos (γ L) (u - w) (sub_ne_zero.mpr hne)
   linarith
 
-end Poincare.Geometry.Riemannian
+end DifferentialGeometry.Geometry.Riemannian

@@ -12,7 +12,7 @@ noncomputable section
 
 open Set
 
-namespace Poincare.Toponogov
+namespace DifferentialGeometry.Toponogov
 
 def RadialOn {X : Type*} [PseudoMetricSpace X]
     (o : X) (curve : ℝ → X) (T : ℝ) : Prop :=
@@ -200,4 +200,4 @@ theorem metricComparisonAngle_shortening_of_convex_defect
         hconvexFst hs₁ hs₁s₂ hs₂A ht₁
           (ht₁t₂.trans ht₂B))
 
-end Poincare.Toponogov
+end DifferentialGeometry.Toponogov

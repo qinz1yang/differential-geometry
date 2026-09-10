@@ -13,7 +13,7 @@ open CategoryTheory
 
 universe u v
 
-namespace Poincare.Topology.VanKampen
+namespace DifferentialGeometry.Topology.VanKampen
 
 structure RepresentativeChoice (C : Type u) [Groupoid.{v} C] (D : Set C) where
   obj : C → C
@@ -177,4 +177,4 @@ theorem fundamentalGroupoid_inclusion_comp_retraction {Y : Type u} [TopologicalS
         𝟭 (CategoryTheory.Subgroupoid.full {x : FundamentalGroupoid Y | x.as ∈ A}).objs :=
   inclusion_comp_representativeRetraction (representativeChoiceOfIsRepresentative hA)
 
-end Poincare.Topology.VanKampen
+end DifferentialGeometry.Topology.VanKampen

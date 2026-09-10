@@ -6,7 +6,7 @@ set_option autoImplicit false
 noncomputable section
 open Set Finset
 
-namespace Poincare.Topology.SimplicialComplex
+namespace DifferentialGeometry.Topology.SimplicialComplex
 
 universe u
 variable {E : Type u} [NormedAddCommGroup E] [NormedSpace ℝ E] [LinearOrder E]
@@ -95,7 +95,7 @@ theorem vertexHeight_eq_zero_iff [Finite K.faces] (x : K.space) :
     intro s hs a ha
     by_cases hp : p ∈ s
     · rw [vertexHeight_face_of_mem K p hs hp] at ha
-      have hh : Poincare.Simplex.vertexMap (fun i : s ↦ (i : E)) a ∈
+      have hh : DifferentialGeometry.Simplex.vertexMap (fun i : s ↦ (i : E)) a ∈
           convexHull ℝ (s.erase p : Set E) := by
         have he : (fun i : s ↦ (i : E)) '' {i | i.val ≠ p} = (s.erase p : Set E) := by
           ext y
@@ -105,7 +105,7 @@ theorem vertexHeight_eq_zero_iff [Finite K.faces] (x : K.space) :
             exact ⟨hi, i.prop⟩
           · rintro ⟨hy, hs⟩
             exact ⟨⟨y, hs⟩, hy, rfl⟩
-        rw [← he, Poincare.Simplex.vertexMap_mem_convexHull_image_iff (K.indep hs)]
+        rw [← he, DifferentialGeometry.Simplex.vertexMap_mem_convexHull_image_iff (K.indep hs)]
         intro i hi
         have he : i = (⟨p, hp⟩ : s) := Subtype.ext (by simpa using hi)
         simpa only [he] using ha
@@ -157,8 +157,8 @@ theorem eq_vertex_of_vertexHeight_eq_one [Finite K.faces] (x : K.space)
       have hj' : j ∈ Finset.univ.erase i := Finset.mem_erase.mpr ⟨hj, Finset.mem_univ _⟩
       have hle := Finset.single_le_sum (fun j _ ↦ a.prop.1 j) hj'
       exact hle.trans hsum.le
-    change Poincare.Simplex.vertexMap (fun j : s ↦ (j : E)) a = p
-    rw [Poincare.Simplex.vertexMap_apply, Finset.sum_eq_single i]
+    change DifferentialGeometry.Simplex.vertexMap (fun j : s ↦ (j : E)) a = p
+    rw [DifferentialGeometry.Simplex.vertexMap_apply, Finset.sum_eq_single i]
     · change a.val i • p = p
       rw [show a.val i = 1 from ha, one_smul]
     · intro j _ hj
@@ -187,7 +187,7 @@ theorem vertexHeight_mem_Ioo_iff [Finite K.faces] (hp : {p} ∈ K.faces) (x : K.
 private theorem normalize_vertexMap_mem_hull_erase {s : Finset E} (hp : p ∈ s)
     (a : stdSimplex ℝ s) (ha : a.val ⟨p, hp⟩ < 1) :
     (1 - a.val ⟨p, hp⟩)⁻¹ •
-      (Poincare.Simplex.vertexMap (fun i : s ↦ (i : E)) a - a.val ⟨p, hp⟩ • p) ∈
+      (DifferentialGeometry.Simplex.vertexMap (fun i : s ↦ (i : E)) a - a.val ⟨p, hp⟩ • p) ∈
         convexHull ℝ (s.erase p : Set E) := by
   classical
   let i : s := ⟨p, hp⟩
@@ -199,7 +199,7 @@ private theorem normalize_vertexMap_mem_hull_erase {s : Finset E} (hp : p ∈ s)
   have hweights : ∑ j ∈ Finset.univ.erase i, (1 - a.val i)⁻¹ * a.val j = 1 := by
     rw [← Finset.mul_sum, hsum, inv_mul_cancel₀ hpos.ne']
   have hv : ∑ j ∈ Finset.univ.erase i, a.val j • j.val =
-      Poincare.Simplex.vertexMap (fun j : s ↦ (j : E)) a - a.val i • p := by
+      DifferentialGeometry.Simplex.vertexMap (fun j : s ↦ (j : E)) a - a.val i • p := by
     exact eq_sub_of_add_eq
       (Finset.sum_erase_add Finset.univ (fun j : s ↦ a.val j • j.val) (Finset.mem_univ i))
   have hh : (∑ j ∈ Finset.univ.erase i, ((1 - a.val i)⁻¹ * a.val j) • j.val) ∈
@@ -408,4 +408,4 @@ theorem isEmpty_puncturedVertexOpenStar_iff [Finite K.faces] (hp : {p} ∈ K.fac
   · intro h
     exact ⟨fun x ↦ h.false (vertexStarCoordinates K p hp x).1⟩
 
-end Poincare.Topology.SimplicialComplex
+end DifferentialGeometry.Topology.SimplicialComplex

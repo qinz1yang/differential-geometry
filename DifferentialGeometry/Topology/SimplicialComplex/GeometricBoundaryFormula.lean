@@ -3,9 +3,9 @@ import DifferentialGeometry.Topology.SimplicialComplex.LinkEulerSum
 
 set_option autoImplicit false
 noncomputable section
-open Set Poincare.Homology
+open Set DifferentialGeometry.Homology
 open scoped Manifold
-namespace Poincare.Topology.SimplicialComplex
+namespace DifferentialGeometry.Topology.SimplicialComplex
 
 variable {E : Type} [NormedAddCommGroup E] [NormedSpace ℝ E]
   {K L : Geometry.SimplicialComplex ℝ E} [Finite K.faces] [Finite L.faces]
@@ -81,4 +81,4 @@ theorem relativeEulerChar_boundary_of_geometric_pair (k : Type) [Field k] :
     eulerChar_boundary_of_geometric_pair hLK e hboundary k]
   ring
 
-end Poincare.Topology.SimplicialComplex
+end DifferentialGeometry.Topology.SimplicialComplex

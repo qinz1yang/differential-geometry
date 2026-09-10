@@ -6,7 +6,7 @@ noncomputable section
 open scoped ContDiff Manifold Topology
 open Bundle
 
-namespace Poincare.Topology.Manifold
+namespace DifferentialGeometry.Topology.Manifold
 
 variable {E H M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [TopologicalSpace H] [TopologicalSpace M]
@@ -42,4 +42,4 @@ theorem exists_compactlySupported_vectorField_eq (x₀ : M)
     Trivialization.coe_continuousLinearEquivAt_eq] using
     (e.continuousLinearEquivAt ℝ x₀ he).symm_apply_apply v
 
-end Poincare.Topology.Manifold
+end DifferentialGeometry.Topology.Manifold

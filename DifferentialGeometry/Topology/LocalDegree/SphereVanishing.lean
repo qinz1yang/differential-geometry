@@ -4,8 +4,8 @@ import Mathlib.Analysis.Normed.Module.Connected
 set_option autoImplicit false
 open CategoryTheory CategoryTheory.Limits Metric
 noncomputable section
-namespace Poincare.LocalDegree
-open Poincare.Homology
+namespace DifferentialGeometry.LocalDegree
+open DifferentialGeometry.Homology
 variable {k : Type} [Ring k] (R : ModuleCat k)
 
 private theorem pathConnected_euclideanSphere (d : ℕ) :
@@ -32,4 +32,4 @@ theorem isZero_euclideanSphere_reducedHomology (d n : ℕ) (h : n ≠ d) :
       exact IsZero.of_iso (ih n (by omega))
         (euclideanSphereReducedHomologySuccIso R (d + 1) n)
 
-end Poincare.LocalDegree
+end DifferentialGeometry.LocalDegree

@@ -5,7 +5,7 @@ noncomputable section
 open Set Filter Topology
 open scoped Manifold ContDiff
 
-namespace Poincare.Geometry.Neck
+namespace DifferentialGeometry.Geometry.Neck
 
 variable {F H' M : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
   [TopologicalSpace H'] {J : ModelWithCorners ℝ F H'}
@@ -31,7 +31,7 @@ theorem cylindricalChart.exists_inward_affine_curve
         τ * C.axial (ι (γ s)) + b =
           (τ * (Real.sqrt C.scale)⁻¹ * t + b) + (Real.sqrt C.scale)⁻¹ * s) ∧
       0 < (Real.sqrt C.scale)⁻¹ := by
-  obtain ⟨γ, hγ, hγeq⟩ := Poincare.Topology.Embedding.exists_curve_of_product_chart_segment
+  obtain ⟨γ, hγ, hγeq⟩ := DifferentialGeometry.Topology.Embedding.exists_curve_of_product_chart_segment
     C.domain C.target C.chart.toHomeomorph ι hemb p t τ r hr hsegment himage
   change ∀ s (hs : s ∈ Icc 0 r),
     ι (γ s) = (C.chart ⟨(p, t + τ * s), hsegment s hs⟩ : M) at hγeq
@@ -40,4 +40,4 @@ theorem cylindricalChart.exists_inward_affine_curve
   rw [hγeq s hs, C.axial_chart]
   rcases hτ with rfl | rfl <;> dsimp only [Prod.snd] <;> ring
 
-end Poincare.Geometry.Neck
+end DifferentialGeometry.Geometry.Neck

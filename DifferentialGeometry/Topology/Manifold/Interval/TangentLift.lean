@@ -5,7 +5,7 @@ set_option autoImplicit false
 open Set Function Bundle Manifold
 open scoped ContDiff Topology
 noncomputable section
-namespace Poincare.Manifold.Interval
+namespace DifferentialGeometry.Manifold.Interval
 
 theorem contMDiff_tangentCoordinateIcc_symm
     {a b : ℝ} [Fact (a < b)] :
@@ -67,4 +67,4 @@ theorem tangentBundleIccDiffeomorph_symm_apply {a b : ℝ} [Fact (a < b)]
   change (⟨q.1, (tangentCoordinateIcc q.1).symm q.2⟩ : TangentBundle (𝓡∂ 1) (Icc a b)) = _
   rw [tangentCoordinateIcc_symm_apply]
 
-end Poincare.Manifold.Interval
+end DifferentialGeometry.Manifold.Interval

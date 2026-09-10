@@ -6,7 +6,7 @@ set_option autoImplicit false
 noncomputable section
 open Set Bundle Filter Manifold TopologicalSpace
 open scoped ContDiff Topology
-namespace Poincare.VectorField
+namespace DifferentialGeometry.VectorField
 
 theorem exists_outward_with_prescribed_tangential_component
     {E H B : Type*} {M : Type} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -34,7 +34,7 @@ theorem exists_outward_with_prescribed_tangential_component
       (∀ x, V x = 0 → G =ᶠ[𝓝 x] V) ∧
       ∀ q : S, q.val.2.val = 0 →
         _root_.VectorField.mpullback (J.prod (𝓡∂ 1)) I e (fun y : Y => G y.val) q =
-          (T q.val.1, (Poincare.Manifold.Interval.tangentCoordinateIcc q.val.2).symm (-1)) := by
+          (T q.val.1, (DifferentialGeometry.Manifold.Interval.tangentCoordinateIcc q.val.2).symm (-1)) := by
   intro I S Y hY e hi hzero V hV hout T hT
   obtain ⟨U, hU, hUzero⟩ := exists_boundary_section_extension hδ Y e V hV T (fun _ => -1)
     hT contMDiff_const
@@ -48,8 +48,8 @@ theorem exists_outward_with_prescribed_tangential_component
       apply le_antisymm _ q.val.2.property.1
       by_contra h
       exact (I.isBoundaryPoint_iff_not_isInteriorPoint (e q).val).mp hqb (hi q (lt_of_not_ge h))
-    have hv := Poincare.Manifold.BoundaryCollar.proj_collar_pushforward_neg S Y e hq0 hqb
-      (T q.val.1, (Poincare.Manifold.Interval.tangentCoordinateIcc q.val.2).symm (-1))
+    have hv := DifferentialGeometry.Manifold.BoundaryCollar.proj_collar_pushforward_neg S Y e hq0 hqb
+      (T q.val.1, (DifferentialGeometry.Manifold.Interval.tangentCoordinateIcc q.val.2).symm (-1))
       (by rw [ContinuousLinearEquiv.apply_symm_apply]; norm_num)
     rw [← hUzero q hq0] at hv
     erw [he] at hv
@@ -60,10 +60,10 @@ theorem exists_outward_with_prescribed_tangential_component
   refine ⟨G, hG, (fun x hx => (hGU x hx).self_of_nhds.symm ▸ hUout x hx), hz, hgerm, ?_⟩
   intro q hq
   have hval : G (e q).val = mfderiv (J.prod (𝓡∂ 1)) I e q
-      (T q.val.1, (Poincare.Manifold.Interval.tangentCoordinateIcc q.val.2).symm (-1)) :=
+      (T q.val.1, (DifferentialGeometry.Manifold.Interval.tangentCoordinateIcc q.val.2).symm (-1)) :=
     (hGU (e q).val (hzero q hq)).self_of_nhds.trans (hUzero q hq)
   change (mfderiv (J.prod (𝓡∂ 1)) I e q).inverse (G (e q).val) = _
   exact (congrArg (mfderiv (J.prod (𝓡∂ 1)) I e q).inverse hval).trans
     ((isInvertible_mfderiv_diffeomorph e (by simp) q).inverse_apply_self _)
 
-end Poincare.VectorField
+end DifferentialGeometry.VectorField

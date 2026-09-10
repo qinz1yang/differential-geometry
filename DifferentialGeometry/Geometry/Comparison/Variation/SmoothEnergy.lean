@@ -8,7 +8,7 @@ open scoped Manifold ContDiff Topology
 open DifferentialGeometry
 open DifferentialGeometry.Geometry.Riemannian
 
-namespace Poincare.Geometry.Riemannian.Variation
+namespace DifferentialGeometry.Geometry.Riemannian.Variation
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
@@ -95,4 +95,4 @@ theorem curveEnergy_contDiffOn_of_smooth_near_strip (g : SmoothRiemannianMetric 
     rfl
   exact ((curveEnergy_contDiff g d hd L).contDiffAt.congr_of_eventuallyEq heqE.symm).contDiffWithinAt
 
-end Poincare.Geometry.Riemannian.Variation
+end DifferentialGeometry.Geometry.Riemannian.Variation

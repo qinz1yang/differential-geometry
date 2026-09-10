@@ -5,7 +5,7 @@ import DifferentialGeometry.Topology.Homology.Relative.Map
 set_option autoImplicit false
 noncomputable section
 open CategoryTheory CategoryTheory.Limits AlgebraicTopology Set Topology
-namespace Poincare.Homology
+namespace DifferentialGeometry.Homology
 universe u
 variable {ι : Type u} (X : ι → TopCat.{u}) (s : ∀ i, Set (X i))
 private def sigmaSubspaceHomeomorph : (Σ i, s i) ≃ₜ {x : Σ i, X i // x.2 ∈ s x.1} where
@@ -59,7 +59,7 @@ def relativeChainSigmaCofanIsColimit : IsColimit (relativeChainSigmaCofan X s R)
   let F := relativeInclusion (TopCat.of (Σ i, X i)) {x : Σ i, X i | x.2 ∈ s x.1} R
   have hF (i : ι) : a.inj i ≫ F = f i ≫ b.inj i :=
     (relativeInclusion_naturality (X := X i) (Y := TopCat.of (Σ i, X i)) (s := s i) (t := {x : Σ i, X i | x.2 ∈ s x.1}) R (TopCat.sigmaι X i) (fun _ hx => hx)).symm
-  exact Poincare.CategoryTheory.cokernelCofanIsColimit f a b F hF
+  exact DifferentialGeometry.CategoryTheory.cokernelCofanIsColimit f a b F hF
     (subspaceSigmaCofanIsColimit X s R) (singularChainSigmaCofanIsColimit X R)
 
 
@@ -88,4 +88,4 @@ theorem relativeHomologySigmaIso_ι_hom [Finite ι] (n : ℕ) (i : ι) :
         (s := s i) (t := {x : Σ i, X i | x.2 ∈ s x.1}) (fun _ hx => hx) n :=
   (coproductIsCoproduct _).comp_coconePointUniqueUpToIso_hom (relativeHomologySigmaCofanIsColimit X s R n) ⟨i⟩
 
-end Poincare.Homology
+end DifferentialGeometry.Homology

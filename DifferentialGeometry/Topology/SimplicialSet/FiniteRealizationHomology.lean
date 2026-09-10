@@ -9,7 +9,7 @@ open CategoryTheory CategoryTheory.Limits AlgebraicTopology
 
 universe u
 
-namespace Poincare.SSet
+namespace DifferentialGeometry.SSet
 
 variable {k : Type u} [Ring k] (R : ModuleCat.{u} k)
 
@@ -54,4 +54,4 @@ theorem realizationHomologyIso_naturality {X Y : _root_.SSet.{u}} [X.Finite] [Y.
     congrArg (fun v ↦ _root_.HomologicalComplex.homologyMap v n)
       (realizationChainMap_naturality f R)
 
-end Poincare.SSet
+end DifferentialGeometry.SSet

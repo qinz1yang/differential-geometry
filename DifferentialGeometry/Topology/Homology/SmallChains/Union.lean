@@ -5,7 +5,7 @@ set_option autoImplicit false
 open CategoryTheory CategoryTheory.Limits Opposite Simplicial AlgebraicTopology
 noncomputable section
 universe u
-namespace Poincare.Homology
+namespace DifferentialGeometry.Homology
 variable (X : TopCat.{u}) (s t : Set X)
 
 
@@ -96,7 +96,7 @@ theorem subspaceSmallChainSquare :
 
 
 abbrev subspaceSmallShortComplex : ShortComplex (ChainComplex (ModuleCat.{u} k) ℕ) :=
-  Poincare.ShortComplex.pushoutShortComplex (subspaceSmallChainSquare X s t R)
+  DifferentialGeometry.ShortComplex.pushoutShortComplex (subspaceSmallChainSquare X s t R)
 
 
 theorem subspaceSmallShortExact : (subspaceSmallShortComplex X s t R).ShortExact := by
@@ -106,6 +106,6 @@ theorem subspaceSmallShortExact : (subspaceSmallShortComplex X s t R).ShortExact
       (subspaceInclusion X (show s ∩ t ⊆ s from Set.inter_subset_left))) R) := by
     unfold SSet.chainComplexMap
     infer_instance
-  exact Poincare.ShortComplex.pushoutShortExact (subspaceSmallChainSquare X s t R)
+  exact DifferentialGeometry.ShortComplex.pushoutShortExact (subspaceSmallChainSquare X s t R)
 
-end Poincare.Homology
+end DifferentialGeometry.Homology

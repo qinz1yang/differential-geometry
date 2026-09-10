@@ -3,7 +3,7 @@ import DifferentialGeometry.Topology.Double.Basic
 set_option autoImplicit false
 noncomputable section
 open Set Function Topology
-namespace Poincare.Topology
+namespace DifferentialGeometry.Topology
 variable {X : Type*} [TopologicalSpace X]
 
 
@@ -104,4 +104,4 @@ theorem range_doubleRealization (B : Set X) (r : C(X, ℝ))
       have hh := (abs_of_neg (lt_of_not_ge ht)).symm.trans hq
       linarith
 
-end Poincare.Topology
+end DifferentialGeometry.Topology

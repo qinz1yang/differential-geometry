@@ -7,7 +7,7 @@ noncomputable section
 open Set Filter Topology
 open scoped ContDiff
 
-namespace Poincare.Analysis
+namespace DifferentialGeometry.Analysis
 
 theorem exists_smooth_bilinear_normalized_eigenpair
     {P E : Type*} [NormedAddCommGroup P] [NormedSpace ℝ P] [CompleteSpace P]
@@ -73,4 +73,4 @@ theorem exists_smooth_bilinear_normalized_eigenpair
   change A p (s p).2 - (s p).1 • (s p).2 = 0 at heigen'
   exact ⟨by linarith only [hnorm], sub_eq_zero.mp heigen'⟩
 
-end Poincare.Analysis
+end DifferentialGeometry.Analysis

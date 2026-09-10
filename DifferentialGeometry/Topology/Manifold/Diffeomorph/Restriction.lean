@@ -4,7 +4,7 @@ open Set Function Manifold Topology TopologicalSpace
 open scoped ContDiff
 set_option autoImplicit false
 noncomputable section
-namespace Poincare.Manifold.Diffeomorph
+namespace DifferentialGeometry.Manifold.Diffeomorph
 
 theorem exists_restrict_opens
     {𝕜 : Type*} [NontriviallyNormedField 𝕜]
@@ -59,4 +59,4 @@ theorem exists_restrict_opens
   · rintro ⟨y, ⟨q, hq, rfl⟩, rfl⟩
     exact ⟨⟨q.val, hq⟩, rfl⟩
 
-end Poincare.Manifold.Diffeomorph
+end DifferentialGeometry.Manifold.Diffeomorph

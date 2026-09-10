@@ -8,7 +8,7 @@ set_option autoImplicit false
 
 open scoped ContDiff Manifold Topology
 
-namespace Poincare.Topology.Ehresmann
+namespace DifferentialGeometry.Topology.Ehresmann
 
 theorem isProperMap_iff_compact_preimage_definition
     {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
@@ -124,4 +124,4 @@ theorem exists_compactlySupported_relatedFlow_of_surjective
     Z hZsmooth hZcompact (fun x ↦ exists_local_smoothDerivativeLift_of_surjective
       f hfSmooth Z hZsmooth x (hsurj x))
 
-end Poincare.Topology.Ehresmann
+end DifferentialGeometry.Topology.Ehresmann

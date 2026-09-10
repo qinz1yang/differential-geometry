@@ -5,7 +5,7 @@ noncomputable section
 open Set Metric Filter Topology Manifold
 open scoped ContDiff
 
-namespace Poincare.Topology.Manifold
+namespace DifferentialGeometry.Topology.Manifold
 
 theorem exists_sphere_isotopy_of_positive_fixed_point_chart
     (e : OpenPartialHomeomorph (sphere (0 : EuclideanSpace ℝ (Fin 3)) 1) ℂ)
@@ -56,4 +56,4 @@ theorem exists_sphere_isotopy_of_positive_fixed_point_chart
     rw [sub_self, hB0, hH1]
     rfl
 
-end Poincare.Topology.Manifold
+end DifferentialGeometry.Topology.Manifold

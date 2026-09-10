@@ -6,7 +6,7 @@ set_option autoImplicit false
 noncomputable section
 open Set Function
 open scoped Manifold Topology
-namespace Poincare.Manifold.Boundary
+namespace DifferentialGeometry.Manifold.Boundary
 variable {E H M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [TopologicalSpace H] [TopologicalSpace M] [ChartedSpace H M] [CompactSpace M]
   {I : ModelWithCorners ℝ E H}
@@ -39,4 +39,4 @@ theorem exists_regular_boundary_band {r : M → ℝ} (hr : Continuous r)
     exact zero_ne_one hh
   exact ⟨ε/2,hδ,hband,hcritical,fun x hx hc => (ne_of_lt (hcritical x hc)) hx.symm⟩
 
-end Poincare.Manifold.Boundary
+end DifferentialGeometry.Manifold.Boundary

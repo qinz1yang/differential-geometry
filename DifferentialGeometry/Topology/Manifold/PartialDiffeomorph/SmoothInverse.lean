@@ -6,7 +6,7 @@ open Set Manifold
 open scoped ContDiff
 set_option autoImplicit false
 noncomputable section
-namespace Poincare.Manifold.PartialDiffeomorph
+namespace DifferentialGeometry.Manifold.PartialDiffeomorph
 
 theorem contDiffOn_symm_of_partialDiffeomorph
     {E F : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
@@ -27,4 +27,4 @@ theorem contDiffOn_symm_of_partialDiffeomorph
   exact (e.toOpenPartialHomeomorph.contDiffAt_symm hy hd
     (he.contDiffAt (e.open_source.mem_nhds hx))).contDiffWithinAt
 
-end Poincare.Manifold.PartialDiffeomorph
+end DifferentialGeometry.Manifold.PartialDiffeomorph

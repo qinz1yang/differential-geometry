@@ -4,7 +4,7 @@ import Mathlib.Topology.OpenPartialHomeomorph.Basic
 set_option autoImplicit false
 noncomputable section
 open CategoryTheory CategoryTheory.Limits Set
-namespace Poincare.Homology
+namespace DifferentialGeometry.Homology
 universe u
 variable {X Y : TopCat.{u}} (e : OpenPartialHomeomorph X Y) (x : X) (hx : x ∈ e.source)
   {k : Type u} [Ring k] (R : ModuleCat.{u} k)
@@ -53,14 +53,14 @@ theorem relativeEulerChar_chart [T1Space X] [T1Space Y] :
 
 
 theorem finiteHomologyType_chart_iff [T1Space X] [T1Space Y] :
-    Poincare.HomologicalComplex.finiteHomologyType
+    DifferentialGeometry.HomologicalComplex.finiteHomologyType
         (relativeChainComplex X ({x}ᶜ : Set X) (ModuleCat.of k k)) ↔
-      Poincare.HomologicalComplex.finiteHomologyType
+      DifferentialGeometry.HomologicalComplex.finiteHomologyType
         (relativeChainComplex Y ({e x}ᶜ : Set Y) (ModuleCat.of k k)) := by
   have transfer {A B : ChainComplex (ModuleCat.{u} k) ℕ}
       (h : ∀ n, A.homology n ≅ B.homology n)
-      (hA : Poincare.HomologicalComplex.finiteHomologyType A) :
-      Poincare.HomologicalComplex.finiteHomologyType B := by
+      (hA : DifferentialGeometry.HomologicalComplex.finiteHomologyType A) :
+      DifferentialGeometry.HomologicalComplex.finiteHomologyType B := by
     constructor
     · intro n
       let :=  hA.1 n
@@ -71,4 +71,4 @@ theorem finiteHomologyType_chart_iff [T1Space X] [T1Space Y] :
     transfer (fun n => (chartLocalHomologyIso e x hx (ModuleCat.of k k) n).symm)⟩
 
 end Field
-end Poincare.Homology
+end DifferentialGeometry.Homology

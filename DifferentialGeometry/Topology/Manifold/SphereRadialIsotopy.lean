@@ -4,7 +4,7 @@ noncomputable section
 open Set Metric Manifold Module
 open scoped ContDiff
 
-namespace Poincare.Topology.Manifold
+namespace DifferentialGeometry.Topology.Manifold
 
 theorem det_fderiv_sphereRadialExtension_pos_of_isotopy
     {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
@@ -45,4 +45,4 @@ theorem det_fderiv_sphereRadialExtension_pos_of_isotopy
     (show (0 : ℝ) ∈ Icc (d p) (d 0) from ⟨le_of_not_gt hp, by rw [hd0]; exact zero_le_one⟩)
   exact det_fderiv_sphereRadialExtension_ne_zero (D t) hx ht
 
-end Poincare.Topology.Manifold
+end DifferentialGeometry.Topology.Manifold

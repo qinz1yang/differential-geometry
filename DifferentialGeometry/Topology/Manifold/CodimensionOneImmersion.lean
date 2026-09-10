@@ -17,7 +17,7 @@ noncomputable section
 
 universe u v w x y z
 
-namespace Poincare.Topology
+namespace DifferentialGeometry.Topology
 
 theorem nonempty_continuousLinearEquiv_complement_real_of_finrank_succ
     {E : Type u} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
@@ -62,7 +62,7 @@ theorem isImmersionOfComplement_real_of_isSmoothEmbedding_finrank_succ
     (hf : IsSmoothEmbedding I J n f)
     (hdim : Module.finrank ℝ E' = Module.finrank ℝ E + 1) :
     IsImmersionOfComplement ℝ I J n f :=
-  Poincare.Topology.isImmersionOfComplement_real_of_finrank_succ hdim hf.isImmersion
+  DifferentialGeometry.Topology.isImmersionOfComplement_real_of_finrank_succ hdim hf.isImmersion
 
 theorem isImmersionOfComplement_real_of_isSmoothEmbedding_sphereTwo
     {M : Type u} [TopologicalSpace M]
@@ -341,4 +341,4 @@ theorem exists_embeddingAdapted_realNormalFormPartialHomeomorph
       change q ∈ W ∩ normal.target at hq
       exact hq.2
 
-end Poincare.Topology
+end DifferentialGeometry.Topology

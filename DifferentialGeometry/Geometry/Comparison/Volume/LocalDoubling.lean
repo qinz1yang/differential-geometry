@@ -5,7 +5,7 @@ noncomputable section
 open Bundle Manifold MeasureTheory Set
 open scoped ContDiff ENNReal Manifold Topology
 
-namespace Poincare.Geometry.Riemannian.VolumeComparison
+namespace DifferentialGeometry.Geometry.Riemannian.VolumeComparison
 
 def doublingConstant (n : ℕ) (a : ℝ) : ℝ :=
   modelVolume (-a / (n - 1 : ℕ)) n 1 /
@@ -193,4 +193,4 @@ theorem localDoubling
   rw [← ENNReal.ofReal_div_of_pos hVsPos, ← hD] at hdiv
   simpa only [n] using hdiv
 
-end Poincare.Geometry.Riemannian.VolumeComparison
+end DifferentialGeometry.Geometry.Riemannian.VolumeComparison

@@ -5,7 +5,7 @@ set_option autoImplicit false
 open Bundle Filter Set
 open scoped Manifold ContDiff Topology
 noncomputable section
-namespace Poincare.VectorField
+namespace DifferentialGeometry.VectorField
 
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace ℝ M]
   [IsManifold 𝓘(ℝ, ℝ) 1 M]
@@ -35,7 +35,7 @@ theorem ContinuousIsolatedZero.real_pullback {n : ℕ∞ω}
     {V : ∀ x : M, TangentSpace 𝓘(ℝ, ℝ) x}
     (f : PartialDiffeomorph 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) ℝ M n) (hn : 1 ≤ n)
     {a : ℝ} (ha : a ∈ f.source) (hV : ContinuousIsolatedZero V (f a)) :
-    Poincare.LocalDegree.realIsolatedZero
+    DifferentialGeometry.LocalDegree.realIsolatedZero
       (_root_.VectorField.mpullback 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) f V) a := by
   obtain ⟨s, hs, hc⟩ := hV.continuous
   obtain ⟨U, hUs, hU, haU⟩ := mem_nhds_iff.mp hs
@@ -50,7 +50,7 @@ theorem ContinuousIsolatedZero.real_pullback {n : ℕ∞ω}
         (fun z ↦ (⟨z, V z⟩ : TangentBundle 𝓘(ℝ, ℝ) M)) (f y) :=
       (contMDiffOn_zero_iff.mpr (hc.mono hUs)).contMDiffAt (hU.mem_nhds hy.2)
     exact (contMDiffAt_mpullback_partialDiffeomorph f (by simpa using hn) hy.1 hVy).continuousAt.continuousWithinAt
-  apply Poincare.LocalDegree.realIsolatedZero_of_nhds ht (continuousOn_real_section hP)
+  apply DifferentialGeometry.LocalDegree.realIsolatedZero_of_nhds ht (continuousOn_real_section hP)
   · exact (mpullback_partialDiffeomorph_eq_zero_iff f
       (ne_of_gt (zero_lt_one.trans_le hn)) V ha).mpr hV.zero
   · apply eventually_nhdsWithin_iff.mpr
@@ -65,7 +65,7 @@ theorem ContinuousIsolatedZero.in_coordinates
     (hV : ContinuousIsolatedZero V x) {n : ℕ∞ω}
     (c : PartialDiffeomorph 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) M ℝ n) (hn : 1 ≤ n)
     (hx : x ∈ c.source) :
-    Poincare.LocalDegree.realIsolatedZero
+    DifferentialGeometry.LocalDegree.realIsolatedZero
       (_root_.VectorField.mpullback 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) c.symm V) (c x) := by
   apply ContinuousIsolatedZero.real_pullback c.symm hn (c.map_source hx)
   exact (c.left_inv hx).symm ▸ hV
@@ -95,10 +95,10 @@ theorem realLocalDegree_in_coordinates_eq
     (hV : ContinuousIsolatedZero V x)
     (c d : PartialDiffeomorph 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) M ℝ 1)
     (hcx : x ∈ c.source) (hdx : x ∈ d.source) :
-    Poincare.LocalDegree.realLocalDegree
+    DifferentialGeometry.LocalDegree.realLocalDegree
         (_root_.VectorField.mpullback 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) c.symm V) (c x)
         (hV.in_coordinates c le_rfl hcx) =
-      Poincare.LocalDegree.realLocalDegree
+      DifferentialGeometry.LocalDegree.realLocalDegree
         (_root_.VectorField.mpullback 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) d.symm V) (d x)
         (hV.in_coordinates d le_rfl hdx) := by
   let f := d.symm.trans c
@@ -122,17 +122,17 @@ theorem realLocalDegree_in_coordinates_eq
         (isInvertible_mfderiv_partialDiffeomorph c.symm one_ne_zero (c.map_source hys.2)))
   have hc := hV.in_coordinates c le_rfl hcx
   have hd := hV.in_coordinates d le_rfl hdx
-  have hcf : Poincare.LocalDegree.realIsolatedZero
+  have hcf : DifferentialGeometry.LocalDegree.realIsolatedZero
       (_root_.VectorField.mpullback 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) c.symm V) (f (d x)) :=
     hcenter.symm ▸ hc
-  have hp := Poincare.LocalDegree.realIsolatedZero_mpullback_partialDiffeomorph f le_rfl hxf hcf
-  have hdegree := Poincare.LocalDegree.realLocalDegree_mpullback_partialDiffeomorph f le_rfl hxf hcf
-  have hsame := Poincare.LocalDegree.realLocalDegree_congr hd hp hfields
+  have hp := DifferentialGeometry.LocalDegree.realIsolatedZero_mpullback_partialDiffeomorph f le_rfl hxf hcf
+  have hdegree := DifferentialGeometry.LocalDegree.realLocalDegree_mpullback_partialDiffeomorph f le_rfl hxf hcf
+  have hsame := DifferentialGeometry.LocalDegree.realLocalDegree_congr hd hp hfields
   exact (hsame.trans (by simpa only [hcenter] using hdegree)).symm
 
 def realIndex (V : ∀ x : M, TangentSpace 𝓘(ℝ, ℝ) x) (x : M)
     (hV : ContinuousIsolatedZero V x) : ℤ :=
-  Poincare.LocalDegree.realLocalDegree
+  DifferentialGeometry.LocalDegree.realLocalDegree
     (_root_.VectorField.mpullback 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) (realIndexChart x).symm V)
     (realIndexChart x x)
     (hV.in_coordinates (realIndexChart x) le_rfl (mem_chart_source ℝ x))
@@ -143,7 +143,7 @@ theorem realIndex_eq_in_coordinates
     (hV : ContinuousIsolatedZero V x)
     (c : PartialDiffeomorph 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) M ℝ 1) (hx : x ∈ c.source) :
     realIndex V x hV =
-      Poincare.LocalDegree.realLocalDegree
+      DifferentialGeometry.LocalDegree.realLocalDegree
         (_root_.VectorField.mpullback 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) c.symm V) (c x)
         (hV.in_coordinates c le_rfl hx) :=
   realLocalDegree_in_coordinates_eq hV (realIndexChart x) c (mem_chart_source ℝ x) hx
@@ -154,12 +154,12 @@ theorem realIndex_eq_realLocalDegree
     (f : PartialDiffeomorph 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) ℝ M 1) {a : ℝ}
     (ha : a ∈ f.source) (hV : ContinuousIsolatedZero V (f a)) :
     realIndex V (f a) hV =
-      Poincare.LocalDegree.realLocalDegree
+      DifferentialGeometry.LocalDegree.realLocalDegree
         (_root_.VectorField.mpullback 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) f V) a
         (hV.real_pullback f le_rfl ha) := by
   have hh := realIndex_eq_in_coordinates hV f.symm (f.map_source ha)
   change realIndex V (f a) hV =
-    Poincare.LocalDegree.realLocalDegree
+    DifferentialGeometry.LocalDegree.realLocalDegree
       (_root_.VectorField.mpullback 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) f V)
       (f.toPartialEquiv.symm (f a)) _ at hh
   simpa only [f.left_inv ha] using hh
@@ -168,16 +168,16 @@ theorem realIndex_smul_generator
     {V : ∀ x : M, TangentSpace 𝓘(ℝ, ℝ) x} {x : M}
     (hV : ContinuousIsolatedZero V x)
     (c : PartialDiffeomorph 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) M ℝ 1) (hx : x ∈ c.source)
-    {R : ℝ} (hR : Poincare.LocalDegree.RealIsolatingRadius
+    {R : ℝ} (hR : DifferentialGeometry.LocalDegree.RealIsolatingRadius
       (_root_.VectorField.mpullback 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) c.symm V) (c x) R)
     (r : Ioc (0 : ℝ) R) :
-    realIndex V x hV • Poincare.LocalDegree.zeroSphereGenerator =
-      Poincare.LocalDegree.zeroSphereReducedMap
-        (Poincare.LocalDegree.sphereMap
+    realIndex V x hV • DifferentialGeometry.LocalDegree.zeroSphereGenerator =
+      DifferentialGeometry.LocalDegree.zeroSphereReducedMap
+        (DifferentialGeometry.LocalDegree.sphereMap
           (_root_.VectorField.mpullback 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) c.symm V) (c x) R
-          hR.continuousOn hR.nonzero r) Poincare.LocalDegree.zeroSphereGenerator := by
+          hR.continuousOn hR.nonzero r) DifferentialGeometry.LocalDegree.zeroSphereGenerator := by
   rw [realIndex_eq_in_coordinates hV c hx]
-  exact Poincare.LocalDegree.realLocalDegree_smul_generator _ hR r
+  exact DifferentialGeometry.LocalDegree.realLocalDegree_smul_generator _ hR r
 
 theorem realIndex_eq_sign_of_hasDerivAt
     {V : ∀ x : M, TangentSpace 𝓘(ℝ, ℝ) x}
@@ -186,6 +186,6 @@ theorem realIndex_eq_sign_of_hasDerivAt
     (hd : HasDerivAt (_root_.VectorField.mpullback 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) f V) d a)
     (hne : d ≠ 0) : realIndex V (f a) hV = (SignType.sign d : ℤ) :=
   (realIndex_eq_realLocalDegree f ha hV).trans
-    (Poincare.LocalDegree.realLocalDegree_eq_sign_of_hasDerivAt _ hd hne)
+    (DifferentialGeometry.LocalDegree.realLocalDegree_eq_sign_of_hasDerivAt _ hd hne)
 
-end Poincare.VectorField
+end DifferentialGeometry.VectorField

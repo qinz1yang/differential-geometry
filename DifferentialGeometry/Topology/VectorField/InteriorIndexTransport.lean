@@ -5,7 +5,7 @@ set_option autoImplicit false
 open Bundle Filter Set
 open scoped Manifold ContDiff Topology
 noncomputable section
-namespace Poincare.VectorField
+namespace DifferentialGeometry.VectorField
 variable {d : ℕ} {H G M N : Type*} [TopologicalSpace H] [TopologicalSpace G]
   [TopologicalSpace M] [ChartedSpace H M] [TopologicalSpace N] [ChartedSpace G N]
   (I : ModelWithCorners ℝ (EuclideanSpace ℝ (Fin (d + 1))) H)
@@ -18,8 +18,8 @@ theorem interiorIndex_mpullback_partialDiffeomorph
     {V : ∀ y : N, TangentSpace J y} (hV : HasContinuousIsolatedZero J V (f x)) :
     interiorIndex I (_root_.VectorField.mpullback I J f V) x (hV.mpullback I J f le_rfl hx) hIx =
       interiorIndex J V (f x) hV hJx := by
-  let c := Poincare.Manifold.interiorChart I 1 x
-  have hcx : x ∈ c.source := (Poincare.Manifold.mem_interiorChart_source_iff I 1 x).mpr hIx
+  let c := DifferentialGeometry.Manifold.interiorChart I 1 x
+  have hcx : x ∈ c.source := (DifferentialGeometry.Manifold.mem_interiorChart_source_iff I 1 x).mpr hIx
   let e := c.symm.trans f
   have hxe : c x ∈ e.source := by
     refine ⟨c.map_source hcx, ?_⟩
@@ -44,7 +44,7 @@ theorem interiorIndex_mpullback_partialDiffeomorph
     erw [mfderiv_comp y hf hc]
     exact hi.inverse_comp_apply_of_left.symm
   rw [interiorIndex_eq_in_coordinates I hP hIx c hcx]
-  have hdegree := (Poincare.LocalDegree.euclideanLocalDegree_congr hp he heq).trans
+  have hdegree := (DifferentialGeometry.LocalDegree.euclideanLocalDegree_congr hp he heq).trans
     (interiorIndex_eq_localDegree J e hxe hVE).symm
   simpa only [hecenter] using hdegree
 
@@ -53,8 +53,8 @@ theorem interiorIndex_congr {V W : ∀ x : M, TangentSpace I x} {x : M}
     (hV : HasContinuousIsolatedZero I V x) (hW : HasContinuousIsolatedZero I W x)
     (hVW : V =ᶠ[𝓝 x] W) (hIx : I.IsInteriorPoint x) :
     interiorIndex I V x hV hIx = interiorIndex I W x hW hIx := by
-  let c := Poincare.Manifold.interiorChart I 1 x
-  have hx : x ∈ c.source := (Poincare.Manifold.mem_interiorChart_source_iff I 1 x).mpr hIx
+  let c := DifferentialGeometry.Manifold.interiorChart I 1 x
+  have hx : x ∈ c.source := (DifferentialGeometry.Manifold.mem_interiorChart_source_iff I 1 x).mpr hIx
   have heq : _root_.VectorField.mpullback 𝓘(ℝ, EuclideanSpace ℝ (Fin (d + 1))) I c.symm V =ᶠ[𝓝 (c x)]
       _root_.VectorField.mpullback 𝓘(ℝ, EuclideanSpace ℝ (Fin (d + 1))) I c.symm W := by
     have hvw : V =ᶠ[𝓝 (c.symm (c x))] W := (c.left_inv hx).symm ▸ hVW
@@ -65,6 +65,6 @@ theorem interiorIndex_congr {V W : ∀ x : M, TangentSpace I x} {x : M}
     rfl
   rw [interiorIndex_eq_in_coordinates I hV hIx c hx,
     interiorIndex_eq_in_coordinates I hW hIx c hx]
-  exact Poincare.LocalDegree.euclideanLocalDegree_congr _ _ heq
+  exact DifferentialGeometry.LocalDegree.euclideanLocalDegree_congr _ _ heq
 
-end Poincare.VectorField
+end DifferentialGeometry.VectorField

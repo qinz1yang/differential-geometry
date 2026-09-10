@@ -3,8 +3,8 @@ import DifferentialGeometry.Topology.LocalDegree.SphereGenerator
 set_option autoImplicit false
 open CategoryTheory CategoryTheory.Limits
 noncomputable section
-namespace Poincare.LocalDegree
-open Poincare.Homology
+namespace DifferentialGeometry.LocalDegree
+open DifferentialGeometry.Homology
 variable {d : ℕ}
 
 
@@ -78,4 +78,4 @@ theorem euclideanSphereDegree_isUnit
   rw [euclideanSphereDegree_comp, euclideanSphereDegree_id] at he
   exact isUnit_of_dvd_one ⟨euclideanSphereDegree e.invFun, by rw [mul_comm]; exact he.symm⟩
 
-end Poincare.LocalDegree
+end DifferentialGeometry.LocalDegree

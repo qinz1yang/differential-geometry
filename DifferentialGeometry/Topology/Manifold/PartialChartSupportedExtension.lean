@@ -4,7 +4,7 @@ noncomputable section
 open Set Filter Topology Manifold
 open scoped ContDiff
 
-namespace Poincare.Topology.Manifold
+namespace DifferentialGeometry.Topology.Manifold
 
 variable {E F P H M : Type*}
   [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -108,4 +108,4 @@ theorem exists_diffeomorph_extension_of_partial_chart_family [T2Space M]
     exact ⟨extendChartById_eq_of_notMem_image e _ (fun z hz ↦ (hfix p z hz).1) hx,
       extendChartById_eq_of_notMem_image e _ (fun z hz ↦ (hfix p z hz).2) hx⟩
 
-end Poincare.Topology.Manifold
+end DifferentialGeometry.Topology.Manifold

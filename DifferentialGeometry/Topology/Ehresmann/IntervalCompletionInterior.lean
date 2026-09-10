@@ -4,7 +4,7 @@ import Mathlib.Topology.OpenPartialHomeomorph.Basic
 noncomputable section
 open Set Topology
 
-namespace Poincare.Topology.Ehresmann
+namespace DifferentialGeometry.Topology.Ehresmann
 
 variable {M : Type*} [TopologicalSpace M]
 
@@ -36,4 +36,4 @@ def intervalCompletionInterior {u : M → ℝ} (hu : Continuous u) (a b : ℝ) :
   continuousOn_toFun := ((continuous_id.prodMk hu).subtype_mk _).continuousOn
   continuousOn_invFun := (continuous_fst.comp continuous_subtype_val).continuousOn
 
-end Poincare.Topology.Ehresmann
+end DifferentialGeometry.Topology.Ehresmann

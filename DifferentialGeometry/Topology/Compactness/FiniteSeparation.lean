@@ -2,7 +2,7 @@ import Mathlib.Topology.Separation.Hausdorff
 
 open Set
 
-namespace Poincare.Topology.Compactness
+namespace DifferentialGeometry.Topology.Compactness
 
 theorem exists_open_supersets_preserving_disjointness
     {X ι : Type*} [TopologicalSpace X] [T2Space X] [Finite ι]
@@ -29,4 +29,4 @@ theorem exists_open_supersets_preserving_disjointness
   exact (hd i j hij).mono
     (fun _ hx ↦ mem_iInter.mp hx.1 j) (fun _ hx ↦ mem_iInter.mp hx.2 i)
 
-end Poincare.Topology.Compactness
+end DifferentialGeometry.Topology.Compactness

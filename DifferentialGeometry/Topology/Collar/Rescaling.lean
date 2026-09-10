@@ -5,7 +5,7 @@ import Mathlib.Topology.Instances.Real.Lemmas
 open Set Function Topology Filter
 set_option autoImplicit false
 noncomputable section
-namespace Poincare.Topology.Collar
+namespace DifferentialGeometry.Topology.Collar
 
 variable {B X : Type*} [TopologicalSpace B] [TopologicalSpace X] {ε : ℝ}
 
@@ -77,7 +77,7 @@ theorem isClosedMap_rescale [CompactSpace B] [T2Space X]
   have hK : IsCompact (c '' {q | (q.2 : ℝ) ≤ k}) :=
     ((isClosed_le (continuous_subtype_val.comp continuous_snd) continuous_const).isCompact).image
       hc.continuous
-  exact Poincare.Topology.isClosedMap_of_compact_modification
+  exact DifferentialGeometry.Topology.isClosedMap_of_compact_modification
     (continuous_rescale c hc σ hkδ hopen hσ) hK
     (fun _ hx => rescale_eq_self_off_core c hc σ hσ hx)
 
@@ -138,4 +138,4 @@ theorem isClosedEmbedding_rescale [CompactSpace B] [T2Space X]
     ⟨continuous_rescale c hc σ hkδ hopen hσ, injective_rescale c hc σ hσinj,
       isClosedMap_rescale c hc σ hkδ hopen hσ⟩
 
-end Poincare.Topology.Collar
+end DifferentialGeometry.Topology.Collar

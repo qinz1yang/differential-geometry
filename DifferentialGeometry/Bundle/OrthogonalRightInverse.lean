@@ -3,7 +3,7 @@ import DifferentialGeometry.Bundle.RightInverse
 noncomputable section
 open scoped ContDiff Manifold Topology
 
-namespace Poincare.Geometry.VectorBundle
+namespace DifferentialGeometry.Geometry.VectorBundle
 
 variable {E F : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NormedAddCommGroup F] [NormedSpace ℝ F]
@@ -120,4 +120,4 @@ theorem exists_contMDiffOn_rightInverse_orthogonal_ker
     simpa only [D, transpose, ContinuousLinearMap.flip_apply,
       ContinuousLinearMap.compL_apply, ContinuousLinearMap.comp_apply, hv, map_zero] using h
 
-end Poincare.Geometry.VectorBundle
+end DifferentialGeometry.Geometry.VectorBundle

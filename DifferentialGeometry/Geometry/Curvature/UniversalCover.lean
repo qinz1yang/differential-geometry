@@ -13,7 +13,7 @@ open scoped Manifold ContDiff
 open DifferentialGeometry DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Riemannian.Topology
 
-namespace Poincare.Geometry
+namespace DifferentialGeometry.Geometry
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
   {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
@@ -52,4 +52,4 @@ theorem universalCover_orthonormal_sectional_bound (g : SmoothRiemannianMetric I
   exact le_trans (hsec (UniversalCover.proj x) v w hv hw hvw)
     (UniversalCover.metricRm_lifted (I := I) g x v w w v).symm.le
 
-end Poincare.Geometry
+end DifferentialGeometry.Geometry

@@ -13,7 +13,7 @@ open DifferentialGeometry.Geometry.Riemannian
 open DifferentialGeometry.Geometry.Riemannian.BonnetMyers
 open DifferentialGeometry.Integral.Connection
 
-namespace Poincare.Geometry
+namespace DifferentialGeometry.Geometry
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
   {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
@@ -93,4 +93,4 @@ theorem HasPositiveSectionalCurvature.exists_uniform_sectional_and_ricci_bound [
   obtain ⟨u, q, hu, hq, huq, heq⟩ := exists_orthonormal_pair_sectional_quotient g x v w hvw
   exact le_trans (hbound x u q hu hq huq) heq.le
 
-end Poincare.Geometry
+end DifferentialGeometry.Geometry

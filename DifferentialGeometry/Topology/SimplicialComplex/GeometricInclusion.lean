@@ -4,7 +4,7 @@ import DifferentialGeometry.Topology.SimplicialComplex.OrderedMaps
 set_option autoImplicit false
 noncomputable section
 open CategoryTheory Simplicial
-namespace Poincare.Topology.SimplicialComplex
+namespace DifferentialGeometry.Topology.SimplicialComplex
 universe u
 variable {E : Type u} [NormedAddCommGroup E] [NormedSpace ℝ E] [LinearOrder E]
   {K L : Geometry.SimplicialComplex ℝ E}
@@ -45,4 +45,4 @@ theorem geometricRealizationMap_inclusion (h : K ≤ L) :
   simp only [geometricRealizationMap, Equiv.apply_symm_apply]
   exact geometricSingularMap_inclusion h
 
-end Poincare.Topology.SimplicialComplex
+end DifferentialGeometry.Topology.SimplicialComplex

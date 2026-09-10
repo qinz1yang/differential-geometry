@@ -9,7 +9,7 @@ open scoped Manifold ContDiff
 open DifferentialGeometry DifferentialGeometry.Tensor0SBundle
 open DifferentialGeometry.Geometry.Curvature
 
-namespace Poincare.Geometry
+namespace DifferentialGeometry.Geometry
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
   {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
@@ -35,4 +35,4 @@ theorem continuous_sectional_contraction {P : Type*} [TopologicalSpace P]
   rw [metricRm04_apply]
   rfl
 
-end Poincare.Geometry
+end DifferentialGeometry.Geometry

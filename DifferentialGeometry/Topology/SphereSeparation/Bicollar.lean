@@ -10,7 +10,7 @@ set_option autoImplicit false
 open Function Set
 open scoped Manifold ContDiff Topology
 
-namespace Poincare.Topology.SphereSeparation
+namespace DifferentialGeometry.Topology.SphereSeparation
 
 def AxialInterval (a : ℝ) : TopologicalSpace.Opens ℝ :=
   ⟨Ioo (-a) a, isOpen_Ioo⟩
@@ -171,4 +171,4 @@ theorem bicollar_halves_opposite
   exact d.neighborhood_halves_opposite hzeroNonempty hneg hpos
     hnegCompl hposCompl hopen hzeroRange hrangeDecomp
 
-end Poincare.Topology.SphereSeparation
+end DifferentialGeometry.Topology.SphereSeparation

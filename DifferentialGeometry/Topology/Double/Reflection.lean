@@ -3,7 +3,7 @@ import DifferentialGeometry.Topology.Double.ClosedCover
 set_option autoImplicit false
 noncomputable section
 open Set Function Topology
-namespace Poincare.Topology
+namespace DifferentialGeometry.Topology
 variable {X : Type*} [TopologicalSpace X]
 
 
@@ -38,4 +38,4 @@ theorem doubleHeight_reflection (B : Set X) (r : C(X, ℝ))
   · rfl
   · exact (neg_neg (r x)).symm
 
-end Poincare.Topology
+end DifferentialGeometry.Topology

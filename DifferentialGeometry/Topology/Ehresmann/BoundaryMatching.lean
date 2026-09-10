@@ -7,9 +7,9 @@ noncomputable section
 open Set Filter Topology Manifold
 open scoped ContDiff
 
-namespace Poincare.Topology.Ehresmann
+namespace DifferentialGeometry.Topology.Ehresmann
 
-open Poincare.Geometry.Boundary
+open DifferentialGeometry.Geometry.Boundary
 open DifferentialGeometry.Integral.DivergenceTheorem.WithBoundary
 
 variable {E H M : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
@@ -99,7 +99,7 @@ theorem prescribed_boundary_transition_homotopic :
   dsimp only
   intro Θ P hl hP η₀ η₁ Ψ hzero hone
   let Hprod := unitCylinderDiffeomorphOfProduct a b η₀ Θ
-  refine ⟨Poincare.Topology.Homotopy.productBoundaryHomotopy Hprod.toHomeomorph _ Ψ ?_ ?_⟩
+  refine ⟨DifferentialGeometry.Topology.Homotopy.productBoundaryHomotopy Hprod.toHomeomorph _ Ψ ?_ ?_⟩
   · intro x
     change Ψ (x, 0) = Hprod (x, 0)
     exact (hzero x).trans ((unitCylinderDiffeomorphOfProduct_lower a b η₀ Θ x).trans
@@ -113,4 +113,4 @@ theorem prescribed_boundary_transition_homotopic :
     rw [hδ, ← hP, P.apply_symm_apply] at he
     exact (hone x).trans he.symm
 
-end Poincare.Topology.Ehresmann
+end DifferentialGeometry.Topology.Ehresmann

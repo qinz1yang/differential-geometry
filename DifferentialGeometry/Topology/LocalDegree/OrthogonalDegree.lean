@@ -4,7 +4,7 @@ import Mathlib.Data.Sign.Basic
 set_option autoImplicit false
 open Metric Submodule
 noncomputable section
-namespace Poincare.LocalDegree
+namespace DifferentialGeometry.LocalDegree
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 
@@ -69,4 +69,4 @@ theorem euclideanSphereDegree_linearIsometryEquiv
     change euclideanSphereDegree (unitSphereReflection v) * _ = _
     rw [reflection_degree_eq_det_sign, ih]
 
-end Poincare.LocalDegree
+end DifferentialGeometry.LocalDegree

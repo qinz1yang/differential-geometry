@@ -8,7 +8,7 @@ noncomputable section
 open Bundle Manifold MeasureTheory Set
 open scoped ENNReal Manifold
 
-namespace Poincare.Geometry.Riemannian.VolumeComparison
+namespace DifferentialGeometry.Geometry.Riemannian.VolumeComparison
 
 open DifferentialGeometry
 open DifferentialGeometry.Geometry.Curvature
@@ -213,7 +213,7 @@ theorem global_gaussian_annuli_tsum_lt_top
   let n := Module.finrank ℝ E
   let C₁ := hyperbolicGrowthConstant n lambda
   let C₂ := hyperbolicGrowthRate n lambda
-  have hseries := Poincare.Analysis.tsum_ofReal_exp_neg_mul_sq_add_mul_lt_top c C₂ hc
+  have hseries := DifferentialGeometry.Analysis.tsum_ofReal_exp_neg_mul_sq_add_mul_lt_top c C₂ hc
   have hC₁ : 0 ≤ C₁ := by
     dsimp [C₁, n]
     exact (hyperbolicGrowthConstant_pos (Module.finrank ℝ E) lambda (by omega)).le
@@ -254,4 +254,4 @@ theorem global_gaussian_annuli_tsum_lt_top
       ENNReal.tsum_mul_left
     _ < ⊤ := ENNReal.mul_lt_top ENNReal.ofReal_lt_top hseries
 
-end Poincare.Geometry.Riemannian.VolumeComparison
+end DifferentialGeometry.Geometry.Riemannian.VolumeComparison

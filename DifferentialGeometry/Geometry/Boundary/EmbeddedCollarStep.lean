@@ -5,7 +5,7 @@ noncomputable section
 open Set Filter Topology
 open scoped Manifold ContDiff
 
-namespace Poincare.Geometry.Boundary
+namespace DifferentialGeometry.Geometry.Boundary
 
 open DifferentialGeometry.Integral.DivergenceTheorem.WithBoundary
 
@@ -50,7 +50,7 @@ theorem exists_uniform_smooth_step_of_embedded_product_collar :
         ∀ w (v : TangentSpace I w),
           |mvfderiv I θ w v| ≤ (C / (b - a)) * |mvfderiv I (q ∘ ι) w v| := by
   obtain ⟨C, hC, hstep⟩ :=
-    Poincare.Topology.Manifold.exists_uniform_smooth_step_of_product_collar
+    DifferentialGeometry.Topology.Manifold.exists_uniform_smooth_step_of_product_collar
   refine ⟨C, hC, ?_⟩
   intro E H W F G M E' H' N _ _ _ _ I _ _ _ _ _ _ _ _ _ J _ _ _ _ _ _ L _ _ _
   specialize hstep (N := N) (M := W) L I
@@ -135,4 +135,4 @@ theorem exists_uniform_smooth_step_of_embedded_product_collar :
       simp only [zero_apply, abs_zero]
       exact mul_nonneg (div_nonneg hC.le (sub_pos.mpr hab).le) (abs_nonneg _)
 
-end Poincare.Geometry.Boundary
+end DifferentialGeometry.Geometry.Boundary

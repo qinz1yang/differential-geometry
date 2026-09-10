@@ -79,7 +79,7 @@ theorem tangentOrientationCover_compactSpace [T2Space M] [CompactSpace M]
   let : Fintype (Orientation ℝ E (Fin n)) := Fintype.ofEquiv Bool
     (DifferentialGeometry.VectorBundle.orientationEquivBool
       ((Module.finBasis ℝ E).reindex (finCongr hdim))).symm
-  exact Poincare.Topology.FiberBundle.compactSpace_totalSpace
+  exact DifferentialGeometry.Topology.FiberBundle.compactSpace_totalSpace
     (DifferentialGeometry.VectorBundle.orientationCore (tangentBundleCore 𝓘(ℝ, E) M) hdim)
 
 end DifferentialGeometry.Topology.Manifold

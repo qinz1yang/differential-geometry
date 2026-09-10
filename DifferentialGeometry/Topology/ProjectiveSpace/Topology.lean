@@ -8,7 +8,7 @@ noncomputable section
 
 open Topology
 
-namespace Poincare.ProjectiveSpace
+namespace DifferentialGeometry.ProjectiveSpace
 
 variable (K V : Type*) [DivisionRing K] [AddCommGroup V] [Module K V] [TopologicalSpace V]
 
@@ -58,4 +58,4 @@ theorem homeomorphMap_mk (e : V ≃L[K] W) (v : V) (hv : v ≠ 0) :
     homeomorphMap e (Projectivization.mk K v hv) =
       Projectivization.mk K (e v) (e.map_ne_zero_iff.mpr hv) := rfl
 
-end Poincare.ProjectiveSpace
+end DifferentialGeometry.ProjectiveSpace

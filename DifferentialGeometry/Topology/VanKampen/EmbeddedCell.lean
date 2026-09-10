@@ -14,7 +14,7 @@ open scoped ContinuousMap Manifold ContDiff
 
 universe u
 
-namespace Poincare.Topology.ThreeManifold
+namespace DifferentialGeometry.Topology.ThreeManifold
 
 open DifferentialGeometry.Topology
 
@@ -65,7 +65,7 @@ theorem isOpen_embeddedCellInteriorImage_of_isImmersion
       (embeddedCellInteriorMap c)) :
     IsOpen (embeddedCellInteriorImage c) :=
   isOpen_embeddedCellInteriorImage_of_isLocalHomeomorph c
-    (Poincare.Topology.isLocalHomeomorph_of_isImmersion_modelSelf himm)
+    (DifferentialGeometry.Topology.isLocalHomeomorph_of_isImmersion_modelSelf himm)
 
 theorem isOpen_embeddedCellInteriorImage_of_isSmoothEmbedding
     {M : Type u} [TopologicalSpace M]
@@ -162,7 +162,7 @@ theorem connectedSpace_embeddedCellComplement
     ConnectedSpace (embeddedCellComplement c) := by
   rw [connectedSpace_iff_connectedComponent]
   let z₀ : embeddedCellComplement c :=
-    embeddedCellBoundaryMap c hc Poincare.Topology.CellAttachment.cellBoundaryThreeNorth
+    embeddedCellBoundaryMap c hc DifferentialGeometry.Topology.CellAttachment.cellBoundaryThreeNorth
   refine ⟨z₀, Set.eq_univ_of_forall fun x => ?_⟩
   by_contra hx
   have hne : connectedComponent x ≠ connectedComponent z₀ := by
@@ -173,10 +173,10 @@ theorem connectedSpace_embeddedCellComplement
   have hdisj : Disjoint (connectedComponent x) (connectedComponent z₀) :=
     connectedComponent_disjoint hne
   let _ : SimplyConnectedSpace (CellBoundary 3) :=
-    Poincare.Topology.CellAttachment.simplyConnectedSpace_cellBoundaryThree
+    DifferentialGeometry.Topology.CellAttachment.simplyConnectedSpace_cellBoundaryThree
   have hboundary : Set.range (embeddedCellBoundaryMap c hc) ⊆ connectedComponent z₀ :=
     (isPreconnected_range (continuous_embeddedCellBoundaryMap c hc hcont)).subset_connectedComponent
-      ⟨Poincare.Topology.CellAttachment.cellBoundaryThreeNorth, rfl⟩
+      ⟨DifferentialGeometry.Topology.CellAttachment.cellBoundaryThreeNorth, rfl⟩
   let C : Set M := Subtype.val '' connectedComponent x
   have hCrange : C ⊆ (Set.range c)ᶜ := by
     rintro y ⟨q, hqC, rfl⟩ ⟨d, hd⟩
@@ -253,7 +253,7 @@ theorem fundamentalGroup_embeddedCellComplementInclusion_bijective
     Function.Bijective
       (FundamentalGroup.map (embeddedCellComplementInclusion c) x) := by
   let φ := embeddedCellBoundaryMap c hc
-  let l := Poincare.Topology.CellAttachment.cellAdjunctionLowerContinuousMap 3 φ
+  let l := DifferentialGeometry.Topology.CellAttachment.cellAdjunctionLowerContinuousMap 3 φ
   let e := cellAdjunctionHomeomorphOfEmbeddedCell c hc hcont hopen
   let emap : C(CellAdjunctionSpace 3 φ, M) := e
   have hi : embeddedCellComplementInclusion c = emap.comp l := by
@@ -271,14 +271,14 @@ theorem fundamentalGroup_embeddedCellComplementInclusion_bijective
     apply MonoidHom.ext
     intro g
     exact eq_of_heq
-      (Poincare.Topology.VanKampen.fundamentalGroup_mapOfEq_heq_map
+      (DifferentialGeometry.Topology.VanKampen.fundamentalGroup_mapOfEq_heq_map
         emap (l x) (emap (l x)) rfl g)
-  have he := Poincare.Topology.fundamentalGroup_mapOfEq_bijective_of_homotopyEquiv
+  have he := DifferentialGeometry.Topology.fundamentalGroup_mapOfEq_bijective_of_homotopyEquiv
     e.toHomotopyEquiv (l x) (e (l x)) rfl
   change Function.Bijective (FundamentalGroup.mapOfEq emap rfl) at he
   rw [heq] at he
   exact he.comp
-    (Poincare.Topology.CellAttachment.fundamentalGroup_cellAdjunctionLower_bijective
+    (DifferentialGeometry.Topology.CellAttachment.fundamentalGroup_cellAdjunctionLower_bijective
       φ (continuous_embeddedCellBoundaryMap c hc hcont) x)
 
 noncomputable def fundamentalGroupEmbeddedCellComplementEquiv
@@ -396,4 +396,4 @@ theorem fundamentalGroupEmbeddedCellComplementEquivOfSmoothEmbedding_toMonoidHom
       FundamentalGroup.map (embeddedCellComplementInclusion c) x := by
   rfl
 
-end Poincare.Topology.ThreeManifold
+end DifferentialGeometry.Topology.ThreeManifold

@@ -5,7 +5,7 @@ open scoped Topology ContDiff
 open DifferentialGeometry.Integral.DivergenceTheorem.WithBoundary
 set_option autoImplicit false
 noncomputable section
-namespace Poincare.Manifold.BoundaryCollar
+namespace DifferentialGeometry.Manifold.BoundaryCollar
 
 theorem exists_smooth_boundary_collar_strip
     {n : ℕ} {M : Type*} [TopologicalSpace M]
@@ -30,4 +30,4 @@ theorem exists_smooth_boundary_collar_strip
   · exact hY ▸ Y.isOpen
   · exact hY ▸ hKY
 
-end Poincare.Manifold.BoundaryCollar
+end DifferentialGeometry.Manifold.BoundaryCollar

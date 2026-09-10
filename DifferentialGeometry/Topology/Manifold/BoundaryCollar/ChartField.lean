@@ -7,7 +7,7 @@ open scoped ContDiff
 set_option autoImplicit false
 noncomputable section
 
-namespace Poincare.Manifold.BoundaryCollar
+namespace DifferentialGeometry.Manifold.BoundaryCollar
 
 section General
 
@@ -102,4 +102,4 @@ theorem chartField_normal_pos
   rw [chartField_self]
   exact hV
 
-end Poincare.Manifold.BoundaryCollar
+end DifferentialGeometry.Manifold.BoundaryCollar

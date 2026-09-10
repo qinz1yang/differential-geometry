@@ -4,7 +4,7 @@ import DifferentialGeometry.Topology.Manifold.ContMDiff.Interior
 set_option autoImplicit false
 noncomputable section
 open scoped Manifold ContDiff
-namespace Poincare.Manifold
+namespace DifferentialGeometry.Manifold
 variable {𝕜 : Type*} [NontriviallyNormedField 𝕜]
   {E F G : Type*} [NormedAddCommGroup E] [NormedSpace 𝕜 E]
   [NormedAddCommGroup F] [NormedSpace 𝕜 F]
@@ -31,4 +31,4 @@ theorem mfderiv_transContinuousLinearEquiv {f : M → G}
   rw [fderiv_comp _ (by simpa using hg.differentiableAt (by simp)) e.symm.differentiableAt,
     e.symm.fderiv, e.symm_apply_apply]
 
-end Poincare.Manifold
+end DifferentialGeometry.Manifold

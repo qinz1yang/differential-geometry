@@ -8,7 +8,7 @@ noncomputable section
 open Set Function
 open scoped Manifold ContDiff
 
-namespace Poincare.Topology.Manifold
+namespace DifferentialGeometry.Topology.Manifold
 
 theorem exists_diffeomorph_graph_of_transverse_embedding
     {E F H H' M N : Type*}
@@ -67,7 +67,7 @@ theorem exists_diffeomorph_graph_of_transverse_embedding
   let : T2Space M := T2Space.of_injective_continuous hinj he.continuous
   have hcover := hloc.isLocalHomeomorph.covering_compact
   have hbij : Function.Bijective q :=
-    ⟨Poincare.Topology.Covering.injective_of_continuous_fiber_separating_map hcover
+    ⟨DifferentialGeometry.Topology.Covering.injective_of_continuous_fiber_separating_map hcover
       (fun p ↦ (e p).2) (continuous_snd.comp he.continuous)
       (by simpa [q] using hinj), hloc.isLocalHomeomorph.surjective_compact⟩
   let φ := hloc.diffeomorphOfBijective hbij
@@ -76,4 +76,4 @@ theorem exists_diffeomorph_graph_of_transverse_embedding
   intro p
   exact Prod.ext (φ.apply_symm_apply p) rfl
 
-end Poincare.Topology.Manifold
+end DifferentialGeometry.Topology.Manifold

@@ -8,7 +8,7 @@ noncomputable section
 open Set Function Bundle Manifold MeasureTheory
 open scoped Topology Manifold ContDiff ENNReal
 
-namespace Poincare.Geometry.Riemannian.VolumeComparison
+namespace DifferentialGeometry.Geometry.Riemannian.VolumeComparison
 
 open DifferentialGeometry
 open DifferentialGeometry.Geometry.Riemannian
@@ -987,6 +987,6 @@ theorem metricBall_volume_eq_lintegral_polarJacobian
     rw [Set.indicator_of_notMem (fun h => htR (hmem.mp h)),
       Set.indicator_of_notMem htR, zero_mul]
 
-end Poincare.Geometry.Riemannian.VolumeComparison
+end DifferentialGeometry.Geometry.Riemannian.VolumeComparison
 
 end

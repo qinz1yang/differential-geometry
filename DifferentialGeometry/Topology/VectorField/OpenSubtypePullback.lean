@@ -8,7 +8,7 @@ noncomputable section
 open Bundle Set
 open scoped Manifold ContDiff Topology
 
-namespace Poincare.Manifold
+namespace DifferentialGeometry.Manifold
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   {H : Type*} [TopologicalSpace H] (I : ModelWithCorners ℝ E H)
@@ -21,7 +21,7 @@ theorem mpullback_openSubtype_symm (U : TopologicalSpace.Opens M) (hU : Nonempty
   let f := openSubtypePartialDiffeomorph I U hU
   have hxf : x ∈ f.symm.source := by simpa [f] using hx
   change (mfderiv I I f.symm x).inverse (V (f.symm x)) = V ⟨x, hx⟩
-  rw [Poincare.VectorField.inverse_mfderiv_partialDiffeomorph f.symm (by simp) hxf]
+  rw [DifferentialGeometry.VectorField.inverse_mfderiv_partialDiffeomorph f.symm (by simp) hxf]
   have hi : mfderiv I I f.symm.symm (f.symm x) = ContinuousLinearMap.id ℝ E :=
     DifferentialGeometry.mfderiv_subtype_val U (f.symm x)
   rw [hi]
@@ -38,4 +38,4 @@ theorem mpullback_openSubtype (U : TopologicalSpace.Opens M) (hU : Nonempty U)
   rw [ContinuousLinearMap.inverse_equiv]
   rfl
 
-end Poincare.Manifold
+end DifferentialGeometry.Manifold

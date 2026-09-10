@@ -6,7 +6,7 @@ noncomputable section
 open Set Metric
 open scoped ContDiff InnerProductSpace
 
-namespace Poincare.Analysis
+namespace DifferentialGeometry.Analysis
 
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
 
@@ -94,4 +94,4 @@ theorem smul_add_mem_ball_iff {p u : E} {R t : ℝ}
   · intro h
     exact Or.inr ⟨sub_neg.mpr h, hfactor⟩
 
-end Poincare.Analysis
+end DifferentialGeometry.Analysis

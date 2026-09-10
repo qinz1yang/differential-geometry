@@ -6,9 +6,9 @@ noncomputable section
 open Set Bundle Filter Topology
 open scoped Manifold ContDiff BigOperators
 open DifferentialGeometry DifferentialGeometry.Geometry.Operator
-open Poincare.Geometry.Affine Poincare.Topology.Manifold
+open DifferentialGeometry.Geometry.Affine DifferentialGeometry.Topology.Manifold
 
-namespace Poincare.Geometry.Neck
+namespace DifferentialGeometry.Geometry.Neck
 
 theorem exists_uniform_regular_patch_of_buffered_neck_coordinates_on_intersections
     {E H W F H' M : Type*}
@@ -212,4 +212,4 @@ theorem exists_regular_patch_of_buffered_neck_coordinates
     (I := I) (J := J) (W := W) (M := M)
   exact ⟨A, hA, h n ι hι hιsurj g C U hU ε δ₁ hε hδ₁ hmetric s c e₀ hs hvalue hoverlap⟩
 
-end Poincare.Geometry.Neck
+end DifferentialGeometry.Geometry.Neck

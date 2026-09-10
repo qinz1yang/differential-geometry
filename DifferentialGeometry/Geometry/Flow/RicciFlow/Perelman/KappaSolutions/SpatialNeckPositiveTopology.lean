@@ -31,7 +31,7 @@ attribute [-instance] DifferentialGeometry.Tensor0SBundle.tangentSpaceNormedAddC
 theorem compact_end_sides
     {h : SmoothRiemannianMetric I N} {yStar : SpatialNeckSphere}
     {p : N} {epsilon : ℝ} (W : SpatialNeckWitness h yStar p epsilon)
-    (hsec : Poincare.Geometry.HasPositiveSectionalCurvature (I := I) h) :
+    (hsec : DifferentialGeometry.Geometry.HasPositiveSectionalCurvature (I := I) h) :
     ∃ B U : Set N,
       IsConnected B ∧ IsConnected U ∧ IsOpen B ∧ IsOpen U ∧ Disjoint B U ∧
       B ∪ U = W.centralSphereᶜ ∧

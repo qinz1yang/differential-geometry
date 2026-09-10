@@ -8,7 +8,7 @@ noncomputable section
 open Set
 open scoped Manifold ContDiff Topology
 
-namespace Poincare.Manifold
+namespace DifferentialGeometry.Manifold
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   {H : Type*} [TopologicalSpace H] (I : ModelWithCorners ℝ E H)
@@ -50,4 +50,4 @@ theorem openSubtypePartialDiffeomorph_symm_apply (U : TopologicalSpace.Opens M)
   apply Subtype.ext
   exact (openSubtypePartialDiffeomorph I U hU).right_inv (by simpa using hx)
 
-end Poincare.Manifold
+end DifferentialGeometry.Manifold

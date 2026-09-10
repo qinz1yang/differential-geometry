@@ -5,7 +5,7 @@ noncomputable section
 open Set Topology
 open scoped ContDiff Manifold
 
-namespace Poincare.Topology.Manifold
+namespace DifferentialGeometry.Topology.Manifold
 
 set_option backward.isDefEq.respectTransparency false in
 theorem exists_nonvanishing_deformation_with_smooth_flows
@@ -30,7 +30,7 @@ theorem exists_nonvanishing_deformation_with_smooth_flows
   have hfixed (p : ℝ) (z : ℂ) (hz : z ∉ Metric.closedBall 0 r) : V (p, z) = 1 :=
     image_eq_one_of_notMem_mulTSupport (f := fun z ↦ V (p, z)) (fun hs ↦ hz (hsupp p hs))
   obtain ⟨D, hD, hderiv, hzero, hadd, hinv⟩ :=
-    Poincare.Analysis.exists_smoothFlow_family_of_uniform_const_off_compact hV (1 : ℂ)
+    DifferentialGeometry.Analysis.exists_smoothFlow_family_of_uniform_const_off_compact hV (1 : ℂ)
       (isCompact_Icc (a := (0 : ℝ)) (b := 1)) (isCompact_closedBall (0 : ℂ) r) hfixed
   refine ⟨V, hV, hnonzero, hVzero, hVone, ⟨r, hr, hsupp⟩,
     D, hD, hderiv, hzero, hadd, hinv, ?_⟩
@@ -45,4 +45,4 @@ theorem exists_nonvanishing_deformation_with_smooth_flows
   have hz : D 1 0 z = z := by rw [hzero]; rfl
   simpa only [hz, zero_smul, sub_zero, sub_eq_iff_eq_add] using he
 
-end Poincare.Topology.Manifold
+end DifferentialGeometry.Topology.Manifold

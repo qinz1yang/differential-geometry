@@ -10,7 +10,7 @@ noncomputable section
 open Set Metric
 open scoped NNReal
 
-namespace Poincare.Analysis
+namespace DifferentialGeometry.Analysis
 
 variable {E F : Type*} [NormedAddCommGroup E]
   [NormedAddCommGroup F] [NormedSpace ℝ F]
@@ -65,4 +65,4 @@ theorem lipschitzWith_cutoff_smul
     · simp only [hψout x hx, hψout y hy, zero_smul, sub_self, norm_zero]
       positivity
 
-end Poincare.Analysis
+end DifferentialGeometry.Analysis

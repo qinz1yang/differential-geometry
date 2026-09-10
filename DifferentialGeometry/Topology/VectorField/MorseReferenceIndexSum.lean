@@ -5,7 +5,7 @@ set_option autoImplicit false
 noncomputable section
 open Set Bundle
 open scoped Manifold ContDiff Topology
-namespace Poincare.VectorField
+namespace DifferentialGeometry.VectorField
 variable {n : ℕ} {M : Type} [TopologicalSpace M]
   [ChartedSpace (EuclideanHalfSpace (n + 1)) M] [IsManifold (𝓡∂ (n + 1)) ∞ M]
   [T2Space M] [CompactSpace M]
@@ -19,11 +19,11 @@ theorem exists_outward_vectorField_interiorIndexSum_eq_eulerChar :
       ∃ hfinite : {x | V x = 0}.Finite,
       ∃ hisolated : ∀ x, V x = 0 → HasContinuousIsolatedZero (𝓡∂ (n + 1)) V x,
       ∃ hinterior : ∀ x, V x = 0 → (𝓡∂ (n + 1)).IsInteriorPoint x,
-        ∀ (K : Type) [Field K], Poincare.Homology.finiteHomologyType K (TopCat.of M) ∧
+        ∀ (K : Type) [Field K], DifferentialGeometry.Homology.finiteHomologyType K (TopCat.of M) ∧
           interiorIndexSum (𝓡∂ (n + 1)) V hfinite hisolated hinterior =
-            Poincare.Homology.eulerChar K (TopCat.of M) := by
+            DifferentialGeometry.Homology.eulerChar K (TopCat.of M) := by
   obtain ⟨V,hV,_,hout,hfinite,hinterior,hisolated,_,hχ⟩ :=
     exists_outward_vectorField_indexSum_eq_eulerChar (n := n) (M := M)
   exact ⟨V,hV,hout,hfinite,hisolated,hinterior,hχ⟩
 
-end Poincare.VectorField
+end DifferentialGeometry.VectorField

@@ -7,7 +7,7 @@ import Mathlib.Tactic.Linarith
 noncomputable section
 open Set
 
-namespace Poincare.Topology
+namespace DifferentialGeometry.Topology
 
 variable {N : Type*} [TopologicalSpace N]
 
@@ -113,4 +113,4 @@ theorem isPreconnected_graphBand [PreconnectedSpace N] (a b : N → ℝ)
   rw [← closure_openGraphBand a b ha hb hab]
   exact (isPreconnected_openGraphBand a b ha hb hab).closure
 
-end Poincare.Topology
+end DifferentialGeometry.Topology

@@ -7,7 +7,7 @@ noncomputable section
 open Bundle Manifold
 open scoped Manifold ContDiff
 
-namespace Poincare.Geometry.Riemannian.VolumeComparison
+namespace DifferentialGeometry.Geometry.Riemannian.VolumeComparison
 
 open DifferentialGeometry
 open DifferentialGeometry.Geometry.Riemannian
@@ -292,4 +292,4 @@ theorem covDerivAlong_const_cubic_first
     exact hraw'
   exact (hscalar.smul_const (X : E)).deriv
 
-end Poincare.Geometry.Riemannian.VolumeComparison
+end DifferentialGeometry.Geometry.Riemannian.VolumeComparison

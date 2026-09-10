@@ -4,7 +4,7 @@ import DifferentialGeometry.Topology.Homology.Local.Euclidean
 set_option autoImplicit false
 noncomputable section
 open CategoryTheory CategoryTheory.Limits Set Metric
-namespace Poincare.Homology
+namespace DifferentialGeometry.Homology
 universe u
 variable (E : Type u) [NormedAddCommGroup E] [NormedSpace ℝ E]
   (x : E)
@@ -112,4 +112,4 @@ theorem puncturedNeighborhoodSphereHomologyIso_inv [ContractibleSpace U] (n : �
       (TopCat.ofHom (puncturedNeighborhoodRadialMap E x U hx)) = 𝟙 (TopCat.of (sphere (0 : E) 1)) :=
     congrArg TopCat.ofHom (puncturedNeighborhoodRadialMap_comp_section E x U hx hr hs)
   rw [he, reducedSingularHomologyMap_id]
-end Poincare.Homology
+end DifferentialGeometry.Homology

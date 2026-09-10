@@ -9,7 +9,7 @@ noncomputable section
 open Set Metric Filter Topology Manifold Module
 open scoped ContDiff
 
-namespace Poincare.Topology.Manifold
+namespace DifferentialGeometry.Topology.Manifold
 
 private instance : Fact (finrank ℝ (EuclideanSpace ℝ (Fin 3)) = 2 + 1) := ⟨by simp⟩
 
@@ -95,11 +95,11 @@ theorem det_sphereCylinderAnnulusEquiv_pos_iff_boundary_degree_one
     rcases ht with ht | ht
     · have hrone : r = 1 := by simp [r, ht]
       have hB' : HasFDerivWithinAt G B T (1, e v) := by simpa only [a, hrone] using hB
-      exact Poincare.Analysis.normal_coefficient_nonneg_at_lower (by norm_num)
+      exact DifferentialGeometry.Analysis.normal_coefficient_nonneg_at_lower (by norm_num)
         G B (e v) hB' hbound (by simpa only [hrone] using congrArg Prod.fst (hBface (e v)))
     · have hrtwo : r = 2 := by norm_num [r, ht]
       have hB' : HasFDerivWithinAt G B T (2, e v) := by simpa only [a, hrtwo] using hB
-      exact Poincare.Analysis.normal_coefficient_nonneg_at_upper (by norm_num)
+      exact DifferentialGeometry.Analysis.normal_coefficient_nonneg_at_upper (by norm_num)
         G B (e v) hB' hbound (by simpa only [hrtwo] using congrArg Prod.fst (hBface (e v)))
   have hi : ContMDiff 𝓘(ℝ, ℂ) (𝓡 2) ∞ e.symm := contMDiffOn_univ.mp (het ▸ hei)
   let U : Set ℂ := (fun z ↦ f (e.symm z)) ⁻¹' e.source
@@ -111,24 +111,24 @@ theorem det_sphereCylinderAnnulusEquiv_pos_iff_boundary_degree_one
     (he.comp (f.contMDiff.comp hi).contMDiffOn (fun _ hz ↦ hz)).contDiffOn
   have hga : HasFDerivAt g (fderiv ℝ g (e v)) (e v) :=
     ((hg.contDiffAt (hU.mem_nhds hevU)).differentiableAt (by simp)).hasFDerivAt
-  have hhoriz := Poincare.Analysis.horizontal_derivative_of_face_eq
+  have hhoriz := DifferentialGeometry.Analysis.horizontal_derivative_of_face_eq
     hr G g B (fderiv ℝ g (e v)) (e v) hB hga hBface
   have hAnz : A.toLinearMap.det ≠ 0 :=
-    Poincare.Analysis.det_fderivWithin_ne_zero_of_inverse
-      (Poincare.Analysis.uniqueDiffOn_norm_band zero_lt_one (by norm_num))
+    DifferentialGeometry.Analysis.det_fderivWithin_ne_zero_of_inverse
+      (DifferentialGeometry.Analysis.uniqueDiffOn_norm_band zero_lt_one (by norm_num))
       F F.symm hF hFi F.mapsTo (fun _ hx ↦ F.left_inv hx) hcaS
   have hAsurj : Function.Surjective A := by
     intro y
     obtain ⟨x, hx⟩ := (A.toContinuousLinearEquivOfDetNeZero hAnz).surjective y
     exact ⟨x, (A.toContinuousLinearEquivOfDetNeZero_apply hAnz x).symm.trans hx⟩
   have hBsurj : Function.Surjective B :=
-    (Poincare.Analysis.bijective_fderiv_of_partialDiffeomorph c.symm hFc).2.comp
-      (hAsurj.comp (Poincare.Analysis.bijective_fderiv_of_partialDiffeomorph c ha).2)
-  have hBtangent := Poincare.Analysis.det_pos_iff_horizontal_of_surjective
+    (DifferentialGeometry.Analysis.bijective_fderiv_of_partialDiffeomorph c.symm hFc).2.comp
+      (hAsurj.comp (DifferentialGeometry.Analysis.bijective_fderiv_of_partialDiffeomorph c ha).2)
+  have hBtangent := DifferentialGeometry.Analysis.det_pos_iff_horizontal_of_surjective
     B.toLinearMap (fderiv ℝ g (e v)).toLinearMap hhoriz hBsurj hnormal
   have hinv : (fderiv ℝ c b).comp (fderiv ℝ c.symm (F (c a))) =
       ContinuousLinearMap.id ℝ (EuclideanSpace ℝ (Fin 3)) := by
-    have h := Poincare.Analysis.fderiv_symm_comp_fderiv_of_partialDiffeomorph
+    have h := DifferentialGeometry.Analysis.fderiv_symm_comp_fderiv_of_partialDiffeomorph
       c.symm (c.map_source hb)
     change (fderiv ℝ c (c.symm (c b))).comp (fderiv ℝ c.symm (c b)) = _ at h
     have hleft : c.symm (c b) = b := c.left_inv hb
@@ -143,11 +143,11 @@ theorem det_sphereCylinderAnnulusEquiv_pos_iff_boundary_degree_one
     exact (convex_Ioi (0 : ℝ)).isPreconnected.prod convex_univ.isPreconnected
   let L : EuclideanSpace ℝ (Fin 3) ≃L[ℝ] ℝ × ℂ :=
     ContinuousLinearEquiv.ofFinrankEq (by simp [Module.finrank_prod])
-  have hsign := Poincare.Analysis.det_pos_iff_of_coordinate_linear_square L c hconn ha hb A B hsquare
+  have hsign := DifferentialGeometry.Analysis.det_pos_iff_of_coordinate_linear_square L c hconn ha hb A B hsquare
   have hchart := (sphereDiffeomorphDegree_eq_one_iff f v).trans
     (det_radial_pos_iff_det_chart_pos e het he hei f v hv hfv)
   have hresult := hsign.trans (hBtangent.trans hchart.symm)
   dsimp only [A] at hresult
   rwa [hca] at hresult
 
-end Poincare.Topology.Manifold
+end DifferentialGeometry.Topology.Manifold

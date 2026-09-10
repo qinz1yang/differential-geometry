@@ -4,7 +4,7 @@ import Mathlib.Analysis.InnerProductSpace.PiL2
 set_option autoImplicit false
 noncomputable section
 
-namespace Poincare.ProjectiveSpace
+namespace DifferentialGeometry.ProjectiveSpace
 
 def coordinateExtensionHomeomorph (n : ℕ) :
     Projectivization ℝ ((Fin n → ℝ) × ℝ) ≃ₜ Projectivization ℝ (Fin (n + 1) → ℝ) :=
@@ -32,4 +32,4 @@ theorem euclideanCoordinateHomeomorph_mk (n : ℕ) (v : EuclideanSpace ℝ (Fin 
       Projectivization.mk ℝ (WithLp.ofLp v)
         ((PiLp.continuousLinearEquiv 2 ℝ (fun _ : Fin n ↦ ℝ)).map_ne_zero_iff.mpr hv) := rfl
 
-end Poincare.ProjectiveSpace
+end DifferentialGeometry.ProjectiveSpace

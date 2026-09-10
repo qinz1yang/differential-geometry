@@ -5,7 +5,7 @@ open Bundle Set
 open scoped Manifold ContDiff Topology
 set_option autoImplicit false
 noncomputable section
-namespace Poincare.VectorField
+namespace DifferentialGeometry.VectorField
 
 variable {𝕜 : Type*} [NontriviallyNormedField 𝕜]
   {E : Type*} [NormedAddCommGroup E] [NormedSpace 𝕜 E]
@@ -264,4 +264,4 @@ theorem det_linearizationAtZero_mpullback_partialDiffeomorph {n : ℕ∞ω}
   rw [← he, ContinuousLinearMap.inverse_equiv]
   exact LinearMap.det_conj (linearizationAtZero hV hzero).toLinearMap e.symm.toLinearEquiv
 
-end Poincare.VectorField
+end DifferentialGeometry.VectorField

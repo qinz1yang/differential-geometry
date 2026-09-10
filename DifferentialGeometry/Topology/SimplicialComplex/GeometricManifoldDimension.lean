@@ -4,10 +4,10 @@ import Mathlib.Order.Preorder.Finite
 
 set_option autoImplicit false
 noncomputable section
-open CategoryTheory CategoryTheory.Limits Set Poincare.Homology
+open CategoryTheory CategoryTheory.Limits Set DifferentialGeometry.Homology
 open scoped Manifold
 
-namespace Poincare.Topology.SimplicialComplex
+namespace DifferentialGeometry.Topology.SimplicialComplex
 
 variable {E : Type} [NormedAddCommGroup E] [NormedSpace ℝ E]
   (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces]
@@ -77,4 +77,4 @@ theorem face_card_le_of_boundaryless_homeomorph {n : ℕ} {H : Type}
 
 end Manifold
 
-end Poincare.Topology.SimplicialComplex
+end DifferentialGeometry.Topology.SimplicialComplex

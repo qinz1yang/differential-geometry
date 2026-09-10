@@ -6,7 +6,7 @@ set_option autoImplicit false
 noncomputable section
 open Set Bundle Filter Manifold TopologicalSpace
 open scoped ContDiff Topology
-namespace Poincare.VectorField
+namespace DifferentialGeometry.VectorField
 
 theorem mixedPoincareHopf_of_collar
     {d : ℕ} {H B M : Type}
@@ -33,11 +33,11 @@ theorem mixedPoincareHopf_of_collar
     (∀ q : S, W q ≠ 0) →
     ∀ (A : Set B), IsClopen A →
       (∀ q : S, q.val.2.val = 0 →
-        (q.val.1 ∈ A → 0 < Poincare.Manifold.Interval.tangentCoordinateIcc q.val.2 (W q).2) ∧
-        (q.val.1 ∉ A → Poincare.Manifold.Interval.tangentCoordinateIcc q.val.2 (W q).2 < 0)) →
+        (q.val.1 ∈ A → 0 < DifferentialGeometry.Manifold.Interval.tangentCoordinateIcc q.val.2 (W q).2) ∧
+        (q.val.1 ∉ A → DifferentialGeometry.Manifold.Interval.tangentCoordinateIcc q.val.2 (W q).2 < 0)) →
     ∀ (K : Type) [Field K],
       interiorIndexSum I V hVf hVi hVI =
-        Poincare.Homology.eulerChar K (TopCat.of M) - Poincare.Homology.eulerChar K (TopCat.of A) := by
+        DifferentialGeometry.Homology.eulerChar K (TopCat.of M) - DifferentialGeometry.Homology.eulerChar K (TopCat.of A) := by
   intro I S Y hY e hi hz V hV hVf hVi hVI W hn A hA hsign K _
   classical
   obtain ⟨T, hT, hTf, hTi, hTI, _⟩ := exists_closed_vectorField_interiorIndexSum_eq_eulerChar J (M := B)
@@ -52,7 +52,7 @@ theorem mixedPoincareHopf_of_collar
       filter_upwards [hA.isClosed.isOpen_compl.mem_nhds hp] with q hq
       simp only [b, if_neg hq]
   have hnormal (q : S) (hq : q.val.2.val = 0) :
-      0 < Poincare.Manifold.Interval.tangentCoordinateIcc q.val.2 (W q).2 * b q.val.1 := by
+      0 < DifferentialGeometry.Manifold.Interval.tangentCoordinateIcc q.val.2 (W q).2 * b q.val.1 := by
     by_cases hp : q.val.1 ∈ A
     · simpa only [b, if_pos hp, mul_one] using (hsign q hq).1 hp
     · simpa only [b, if_neg hp, mul_neg_one] using neg_pos.mpr ((hsign q hq).2 hp)
@@ -73,18 +73,18 @@ theorem mixedPoincareHopf_of_collar
   let z : B → S := fun p => ⟨(p, ⟨0, ⟨le_rfl, (Fact.out : (0 : ℝ) < ε).le⟩⟩), hδ⟩
   let TG : ∀ p : B, TangentSpace J p := fun p => (WG (z p)).1
   let bG : B → ℝ := fun p =>
-    -(Poincare.Manifold.Interval.tangentCoordinateIcc (z p).val.2 (WG (z p)).2)
+    -(DifferentialGeometry.Manifold.Interval.tangentCoordinateIcc (z p).val.2 (WG (z p)).2)
   have hTG : TG = T := by
     funext p
     exact congrArg Prod.fst (hcomp (z p) rfl)
   have hregion : {p | bG p < 0} = A := by
     ext p
-    change -(Poincare.Manifold.Interval.tangentCoordinateIcc (z p).val.2 (WG (z p)).2) < 0 ↔ p ∈ A
+    change -(DifferentialGeometry.Manifold.Interval.tangentCoordinateIcc (z p).val.2 (WG (z p)).2) < 0 ↔ p ∈ A
     have hc := congrArg (fun v : EuclideanSpace ℝ (Fin (d + 1)) × EuclideanSpace ℝ (Fin 1) =>
-      Poincare.Manifold.Interval.tangentCoordinateIcc (z p).val.2 v.2) (hcomp (z p) rfl)
-    change Poincare.Manifold.Interval.tangentCoordinateIcc (z p).val.2 (WG (z p)).2 =
-      Poincare.Manifold.Interval.tangentCoordinateIcc (z p).val.2
-        ((Poincare.Manifold.Interval.tangentCoordinateIcc (z p).val.2).symm (b p)) at hc
+      DifferentialGeometry.Manifold.Interval.tangentCoordinateIcc (z p).val.2 v.2) (hcomp (z p) rfl)
+    change DifferentialGeometry.Manifold.Interval.tangentCoordinateIcc (z p).val.2 (WG (z p)).2 =
+      DifferentialGeometry.Manifold.Interval.tangentCoordinateIcc (z p).val.2
+        ((DifferentialGeometry.Manifold.Interval.tangentCoordinateIcc (z p).val.2).symm (b p)) at hc
     rw [hc, ContinuousLinearEquiv.apply_symm_apply]
     by_cases hp : p ∈ A <;> simp [b, hp]
   have hr := relativePoincareHopf_of_collar J hδ hδε Y hY e hi G hG hGf hGi hGI hGn
@@ -92,7 +92,7 @@ theorem mixedPoincareHopf_of_collar
     (his : ∀ p, TG p = 0 → HasContinuousIsolatedZero J TG p)
     (hint : ∀ p, TG p = 0 → J.IsInteriorPoint p) (K : Type) [Field K],
     interiorIndexSum I G hGf hGi hGI + interiorIndexSumOn J TG hf his hint {p | bG p < 0} =
-      Poincare.Homology.eulerChar K (TopCat.of M) at hr
+      DifferentialGeometry.Homology.eulerChar K (TopCat.of M) at hr
   rw [hTG] at hr
   have hlaw := hr hTf hTi hTI K
   rw [hregion, interiorIndexSumOn_eq_eulerChar_of_isClopen J T hT hTf hTi hTI A hA K] at hlaw
@@ -101,4 +101,4 @@ theorem mixedPoincareHopf_of_collar
   rw [heq] at hlaw
   omega
 
-end Poincare.VectorField
+end DifferentialGeometry.VectorField

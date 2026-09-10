@@ -8,7 +8,7 @@ noncomputable section
 
 open scoped BigOperators
 
-namespace Poincare.Simplex
+namespace DifferentialGeometry.Simplex
 
 variable {I : Type*} [Fintype I] [Nonempty I]
 
@@ -222,4 +222,4 @@ def radialHomotopyEquiv : ContinuousMap.HomotopyEquiv (punctured I) (boundary I)
       exact radialRetraction_boundary x
     rw [he]
 
-end Poincare.Simplex
+end DifferentialGeometry.Simplex

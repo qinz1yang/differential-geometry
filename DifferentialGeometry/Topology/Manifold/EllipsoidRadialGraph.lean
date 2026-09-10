@@ -7,7 +7,7 @@ noncomputable section
 open Set Metric Manifold Module
 open scoped ContDiff
 
-namespace Poincare.Topology.Manifold
+namespace DifferentialGeometry.Topology.Manifold
 
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
 
@@ -83,9 +83,9 @@ theorem ellipsoidRadialFunction_lt_ballRadialFunction
     (A : E ≃L[ℝ] E) (p : E) {r R : ℝ} (hr : 0 < r) (hp : ‖p‖ < R)
     (hsub : (fun x ↦ A x + p) '' closedBall 0 r ⊆ ball 0 R)
     (u : sphere (0 : E) 1) :
-    ellipsoidRadialFunction A r u < Poincare.Analysis.ballRadialFunction p R (u : E) := by
+    ellipsoidRadialFunction A r u < DifferentialGeometry.Analysis.ballRadialFunction p R (u : E) := by
   have ha := ellipsoidRadialFunction_pos A hr u
   have hi := (smul_add_mem_closedEllipsoid_iff A p r u ha.le).mpr le_rfl
-  exact (Poincare.Analysis.smul_add_mem_ball_iff hp (norm_eq_of_mem_sphere u) ha.le).mp (hsub hi)
+  exact (DifferentialGeometry.Analysis.smul_add_mem_ball_iff hp (norm_eq_of_mem_sphere u) ha.le).mp (hsub hi)
 
-end Poincare.Topology.Manifold
+end DifferentialGeometry.Topology.Manifold

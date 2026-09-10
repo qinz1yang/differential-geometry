@@ -12,7 +12,7 @@ open CategoryTheory CategoryTheory.Limits AlgebraicTopology Simplicial
 
 universe u
 
-namespace Poincare.SSet
+namespace DifferentialGeometry.SSet
 
 theorem isIso_realizationChainMap_of_isEmpty {k : Type u} [Ring k]
     (R : ModuleCat.{u} k) (X : _root_.SSet.{u}) [IsEmpty (_root_.SSet.toTop.obj X)] :
@@ -79,11 +79,11 @@ theorem quasiIso_realizationChainMap_of_cell
   have : IsIso (realizationToRange b) :=
     isIso_realizationToRange b (isClosedEmbedding_toTop_attachment h).isEmbedding
   have : QuasiIso (realizationChainMap X R) := hX
-  exact Poincare.HomologicalComplex.quasiIso_middle (relativeRealizationShortComplexMap R b)
-    (Poincare.HomologicalComplex.cokernelSequence_shortExact _)
-    (Poincare.Homology.relativeShortExact _ _ R)
+  exact DifferentialGeometry.HomologicalComplex.quasiIso_middle (relativeRealizationShortComplexMap R b)
+    (DifferentialGeometry.HomologicalComplex.cokernelSequence_shortExact _)
+    (DifferentialGeometry.Homology.relativeShortExact _ _ R)
     (quasiIso_comp (realizationChainMap X R)
       (((singularChainComplexFunctor (ModuleCat.{u} k)).obj R).map (realizationToRange b)))
     (quasiIso_relativeRealizationChainMap_of_cell R h hBoundary)
 
-end Poincare.SSet
+end DifferentialGeometry.SSet

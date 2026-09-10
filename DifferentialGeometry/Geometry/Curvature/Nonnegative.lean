@@ -56,10 +56,8 @@ theorem riemann_contraction_nonneg
 
 end DifferentialGeometry.Geometry
 
-namespace Poincare.Geometry
+namespace DifferentialGeometry.Geometry
 
 @[reducible] alias HasNonnegativeSectionalCurvature := DifferentialGeometry.Geometry.hasNonnegativeSectionalCurvature
-alias hasNonnegativeSectionalCurvature_iff := DifferentialGeometry.Geometry.hasNonnegativeSectionalCurvature_iff
-alias riemann_contraction_nonneg := DifferentialGeometry.Geometry.riemann_contraction_nonneg
 
-end Poincare.Geometry
+end DifferentialGeometry.Geometry

@@ -12,7 +12,7 @@ open DifferentialGeometry.Geometry.Riemannian
 open DifferentialGeometry.Geometry.Riemannian.Geodesic
 open DifferentialGeometry.Geometry.Riemannian.Exponential
 
-namespace Poincare.Geometry.Riemannian
+namespace DifferentialGeometry.Geometry.Riemannian
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
@@ -90,4 +90,4 @@ theorem exists_minimal_displacement_geodesic
     have hs := sq_le_sq₀ hL.le ENNReal.toReal_nonneg |>.mpr hm
     nlinarith
 
-end Poincare.Geometry.Riemannian
+end DifferentialGeometry.Geometry.Riemannian

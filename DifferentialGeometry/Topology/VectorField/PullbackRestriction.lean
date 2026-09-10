@@ -4,7 +4,7 @@ set_option autoImplicit false
 noncomputable section
 open Set Bundle Manifold TopologicalSpace
 open scoped ContDiff Topology
-namespace Poincare.VectorField
+namespace DifferentialGeometry.VectorField
 
 theorem mpullback_eq_of_restrict_opens
     {E H M F G N : Type*}
@@ -44,4 +44,4 @@ theorem mpullback_eq_of_restrict_opens
   rw [hder]
   exact congrArg (mfderiv I J e (i q)).inverse (congrArg (fun x => (V x : F)) (hd q))
 
-end Poincare.VectorField
+end DifferentialGeometry.VectorField

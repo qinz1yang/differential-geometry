@@ -5,7 +5,7 @@ set_option autoImplicit false
 noncomputable section
 open Set Metric
 open scoped unitInterval
-namespace Poincare.Topology
+namespace DifferentialGeometry.Topology
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   (a : E) (r : ℝ) (p : E) (hp : p ∈ ball a r)
 
@@ -66,4 +66,4 @@ theorem sphereRadialHomotopy_apply (t : I) (v : sphere (0 : E) 1) :
       ‖r • v.val - (t : ℝ) • (p-a)‖⁻¹ • (r • v.val - (t : ℝ) • (p-a)) :=
   homeomorphUnitSphereProd_apply_fst_coe E _
 
-end Poincare.Topology
+end DifferentialGeometry.Topology

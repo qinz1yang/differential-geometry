@@ -4,7 +4,7 @@ import DifferentialGeometry.Topology.Homotopy.NonzeroPerturbation
 set_option autoImplicit false
 noncomputable section
 open Set Metric
-namespace Poincare.LocalDegree
+namespace DifferentialGeometry.LocalDegree
 variable {d : ℕ} {a : EuclideanSpace ℝ (Fin (d + 1))} {r : ℝ}
   (hr : 0 < r) (f : C(closedBall a r, EuclideanSpace ℝ (Fin (d + 1))))
   (hf : ∀ y : closedBall a r, y.val ∈ sphere a r → f y ≠ 0)
@@ -29,7 +29,7 @@ theorem euclideanBallDegree_eq_of_norm_sub_lt
   let K := ContinuousMap.Homotopy.affine F G
   refine ⟨hg,euclideanBallDegree_eq_of_boundaryHomotopy hr hf hg K.toContinuousMap ?_
     K.map_zero_left K.map_one_left⟩
-  exact Poincare.Topology.affineHomotopy_ne_zero_of_norm_sub_lt F G
+  exact DifferentialGeometry.Topology.affineHomotopy_ne_zero_of_norm_sub_lt F G
     (fun y => hclose ⟨y.val,sphere_subset_closedBall y.property⟩ y.property)
 
 theorem exists_pos_euclideanBallDegree_eq_of_boundary_norm_lt :
@@ -39,9 +39,9 @@ theorem exists_pos_euclideanBallDegree_eq_of_boundary_norm_lt :
         euclideanBallDegree hr f hf = euclideanBallDegree hr g hg := by
   have hK : IsCompact {y : closedBall a r | y.val ∈ sphere a r} :=
     isClosed_sphere.preimage continuous_subtype_val |>.isCompact
-  obtain ⟨δ,hδ,hbound⟩ := Poincare.Topology.exists_pos_lt_norm_of_isCompact hK
+  obtain ⟨δ,hδ,hbound⟩ := DifferentialGeometry.Topology.exists_pos_lt_norm_of_isCompact hK
     f.continuous.continuousOn hf
   exact ⟨δ,hδ,fun g hg => euclideanBallDegree_eq_of_norm_sub_lt hr f hf g
     (fun y hy => (hg y hy).trans (hbound y hy))⟩
 
-end Poincare.LocalDegree
+end DifferentialGeometry.LocalDegree

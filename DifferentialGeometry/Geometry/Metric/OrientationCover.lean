@@ -9,7 +9,7 @@ open scoped Manifold ContDiff
 open DifferentialGeometry
 open DifferentialGeometry.Topology.Manifold
 
-namespace Poincare.Geometry.Riemannian
+namespace DifferentialGeometry.Geometry.Riemannian
 
 variable {n : ℕ} {E M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [TopologicalSpace M] [ChartedSpace E M]
@@ -59,4 +59,4 @@ theorem tangentOrientationDeck_isometry (g : SmoothRiemannianMetric 𝓘(ℝ, E)
     (tangentOrientationProjection_isLocalDiffeomorph hdim)
     (tangentOrientationDeckDiffeomorph hdim) (tangentOrientationDeck_projects hdim)
 
-end Poincare.Geometry.Riemannian
+end DifferentialGeometry.Geometry.Riemannian

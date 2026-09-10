@@ -6,10 +6,10 @@ noncomputable section
 open Set Metric Topology Manifold
 open scoped ContDiff
 
-namespace Poincare.Geometry.Boundary
+namespace DifferentialGeometry.Geometry.Boundary
 
 open DifferentialGeometry.Integral.DivergenceTheorem.WithBoundary
-open Poincare.Topology Poincare.Topology.SphereSeparation
+open DifferentialGeometry.Topology DifferentialGeometry.Topology.SphereSeparation
 
 theorem exists_diffeomorph_sphere_prod_interval_of_two_spherical_boundaries
     {E H W : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
@@ -40,4 +40,4 @@ theorem exists_diffeomorph_sphere_prod_interval_of_two_spherical_boundaries
     ι hι hemb hinj hdim' outer.toPartialDiffeomorph inner.toPartialDiffeomorph zero_lt_one
     (subset_univ _) (subset_univ _) hnest hrange (Classical.arbitrary SphereTwo)
 
-end Poincare.Geometry.Boundary
+end DifferentialGeometry.Geometry.Boundary

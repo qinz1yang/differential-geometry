@@ -7,7 +7,7 @@ set_option autoImplicit false
 open Function Set
 open scoped ContDiff Manifold Topology
 
-namespace Poincare.Topology.SphereSeparation
+namespace DifferentialGeometry.Topology.SphereSeparation
 
 theorem exists_nhds_isOpenEmbedding_domRestrict_of_contMDiffAt_of_bijective_mfderiv
     {E F H G M N : Type*}
@@ -129,4 +129,4 @@ theorem exists_nhds_injOn_of_contMDiffAt_of_bijective_mfderiv
       I J hn hf hbij
   exact ⟨U, hU, Set.injOn_iff_injective.mpr hUemb.injective⟩
 
-end Poincare.Topology.SphereSeparation
+end DifferentialGeometry.Topology.SphereSeparation

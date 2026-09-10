@@ -5,7 +5,7 @@ set_option autoImplicit false
 noncomputable section
 open Set Function Manifold Topology TopologicalSpace
 open scoped ContDiff Topology
-namespace Poincare.Topology
+namespace DifferentialGeometry.Topology
 variable {M : Type*} [TopologicalSpace M] [CompactSpace M] [T2Space M]
   {E H : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [TopologicalSpace H] [ChartedSpace H M] (I : ModelWithCorners ℝ E H)
@@ -63,7 +63,7 @@ theorem contMDiffOn_doubleSeam_negative_transition
       ((doubleSeamPatch B r hr hz hn c hheight hsmall hc ha b).trans
         (doubleNegativePatch B r hr hn).symm).source := by
   rw [source_doubleSeam_negative_transition]
-  apply Poincare.Manifold.contMDiffOn_of_contMDiff_open_restrict (doubleNegativeStrip B (a := a))
+  apply DifferentialGeometry.Manifold.contMDiffOn_of_contMDiff_open_restrict (doubleNegativeStrip B (a := a))
   let f : doubleNegativeStrip B (a := a) → doublePositiveStrip B (a := a) :=
     fun q => ⟨(q.val.1, -q.val.2), q.property⟩
   have hf : ContMDiff (J.prod 𝓘(ℝ, ℝ)) (J.prod 𝓘(ℝ, ℝ)) ∞ f := by
@@ -88,7 +88,7 @@ theorem contMDiffOn_doubleNegative_seam_transition
       ((doubleNegativePatch B r hr hn).trans
         (doubleSeamPatch B r hr hz hn c hheight hsmall hc ha b).symm).source := by
   rw [source_doubleNegative_seam_transition]
-  apply Poincare.Manifold.contMDiffOn_of_contMDiff_open_restrict (doublePositiveBand r (a := a))
+  apply DifferentialGeometry.Manifold.contMDiffOn_of_contMDiff_open_restrict (doublePositiveBand r (a := a))
   have hfirst := contMDiff_fst.comp (contMDiff_subtype_val.comp d.symm.contMDiff)
   have hneg : ContMDiff 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) ∞ (fun t : ℝ => -t) := contDiff_neg.contMDiff
   have hsecond := hneg.comp (contMDiff_snd.comp (contMDiff_subtype_val.comp d.symm.contMDiff))
@@ -115,4 +115,4 @@ theorem contMDiffOn_doubleNegative_seam_transition
   rw [doubleSeamPatch_source]
   exact hp
 
-end Poincare.Topology
+end DifferentialGeometry.Topology

@@ -7,8 +7,8 @@ set_option autoImplicit false
 open Bundle Filter Set
 open scoped Manifold ContDiff Topology
 noncomputable section
-namespace Poincare.VectorField
-open Poincare.LocalDegree
+namespace DifferentialGeometry.VectorField
+open DifferentialGeometry.LocalDegree
 variable {d : ℕ} {H M : Type*} [TopologicalSpace H] [TopologicalSpace M]
   [ChartedSpace H M] (I : ModelWithCorners ℝ (EuclideanSpace ℝ (Fin (d + 1))) H)
   [IsManifold I 1 M]
@@ -77,7 +77,7 @@ theorem localDegree_mpullback_collarParametrization
         (I.prod 𝓘(ℝ, ℝ)) (collarParametrization I f) (collarExtension T b collarTransition))
         (euclideanProductPoint d x t) (isolatedZero_mpullback_collarParametrization I f hx hT hb hb0 hz) =
       interiorIndex I T (f x) hT
-        (Poincare.Manifold.isInteriorPoint_of_model_partialDiffeomorph I 1 f one_ne_zero hx) := by
+        (DifferentialGeometry.Manifold.isInteriorPoint_of_model_partialDiffeomorph I 1 f one_ne_zero hx) := by
   obtain ⟨hi, hb', hz'⟩ := collar_coordinate_data I f hx hT hb hz
   have hP := isolatedZero_euclideanCollarExtension hi hb' hb0 hz'
   have he := euclideanLocalDegree_congr
@@ -93,11 +93,11 @@ theorem isolatedZero_mpullback_collarInteriorChart
     (hb : ContMDiffAt I 𝓘(ℝ, ℝ) 1 b x) (hb0 : b x ≠ 0)
     (hz : collarExtension T b collarTransition (x, t) = 0) :
     isolatedZero (_root_.VectorField.mpullback 𝓘(ℝ, EuclideanSpace ℝ (Fin (d + 2)))
-      (I.prod 𝓘(ℝ, ℝ)) (collarParametrization I (Poincare.Manifold.interiorChart I 1 x).symm)
+      (I.prod 𝓘(ℝ, ℝ)) (collarParametrization I (DifferentialGeometry.Manifold.interiorChart I 1 x).symm)
       (collarExtension T b collarTransition))
-      (euclideanProductPoint d (Poincare.Manifold.interiorChart I 1 x x) t) := by
-  let c := Poincare.Manifold.interiorChart I 1 x
-  have hcx : x ∈ c.source := (Poincare.Manifold.mem_interiorChart_source_iff I 1 x).mpr hx
+      (euclideanProductPoint d (DifferentialGeometry.Manifold.interiorChart I 1 x x) t) := by
+  let c := DifferentialGeometry.Manifold.interiorChart I 1 x
+  have hcx : x ∈ c.source := (DifferentialGeometry.Manifold.mem_interiorChart_source_iff I 1 x).mpr hx
   have he : c.symm (c x) = x := c.left_inv hcx
   have hT' : HasContinuousIsolatedZero I T (c.symm (c x)) := he.symm ▸ hT
   have hb' : ContMDiffAt I 𝓘(ℝ, ℝ) 1 b (c.symm (c x)) := he.symm ▸ hb
@@ -111,13 +111,13 @@ theorem localDegree_mpullback_collarInteriorChart
     (hb : ContMDiffAt I 𝓘(ℝ, ℝ) 1 b x) (hb0 : b x ≠ 0)
     (hz : collarExtension T b collarTransition (x, t) = 0) :
     euclideanLocalDegree (_root_.VectorField.mpullback 𝓘(ℝ, EuclideanSpace ℝ (Fin (d + 2)))
-        (I.prod 𝓘(ℝ, ℝ)) (collarParametrization I (Poincare.Manifold.interiorChart I 1 x).symm)
+        (I.prod 𝓘(ℝ, ℝ)) (collarParametrization I (DifferentialGeometry.Manifold.interiorChart I 1 x).symm)
         (collarExtension T b collarTransition))
-        (euclideanProductPoint d (Poincare.Manifold.interiorChart I 1 x x) t)
+        (euclideanProductPoint d (DifferentialGeometry.Manifold.interiorChart I 1 x x) t)
         (isolatedZero_mpullback_collarInteriorChart I hT hx hb hb0 hz) =
       interiorIndex I T x hT hx := by
-  let c := Poincare.Manifold.interiorChart I 1 x
-  have hcx : x ∈ c.source := (Poincare.Manifold.mem_interiorChart_source_iff I 1 x).mpr hx
+  let c := DifferentialGeometry.Manifold.interiorChart I 1 x
+  have hcx : x ∈ c.source := (DifferentialGeometry.Manifold.mem_interiorChart_source_iff I 1 x).mpr hx
   have he : c.symm (c x) = x := c.left_inv hcx
   have hT' : HasContinuousIsolatedZero I T (c.symm (c x)) := he.symm ▸ hT
   have hb' : ContMDiffAt I 𝓘(ℝ, ℝ) 1 b (c.symm (c x)) := he.symm ▸ hb
@@ -148,12 +148,12 @@ theorem HasContinuousIsolatedZero.collarPushforward
     {T : ∀ x : M, TangentSpace I x} {b : M → ℝ} {x : M} {t : ℝ}
     (hΦ : (x, t) ∈ Φ.source) (hT : HasContinuousIsolatedZero I T x)
     (hb : ContMDiffAt I 𝓘(ℝ, ℝ) 1 b x) (hb0 : b x ≠ 0)
-    (hz : Poincare.VectorField.collarExtension T b collarTransition (x, t) = 0) :
+    (hz : DifferentialGeometry.VectorField.collarExtension T b collarTransition (x, t) = 0) :
     HasContinuousIsolatedZero J (_root_.VectorField.mpullback J (I.prod 𝓘(ℝ, ℝ)) Φ.symm
-      (Poincare.VectorField.collarExtension T b collarTransition)) (Φ (x, t)) := by
+      (DifferentialGeometry.VectorField.collarExtension T b collarTransition)) (Φ (x, t)) := by
   have hW := hT.collarExtension_of_contMDiffAt I hb hb0 hz
   have hW' : HasContinuousIsolatedZero (I.prod 𝓘(ℝ, ℝ))
-      (Poincare.VectorField.collarExtension T b collarTransition) (Φ.symm (Φ (x, t))) :=
+      (DifferentialGeometry.VectorField.collarExtension T b collarTransition) (Φ.symm (Φ (x, t))) :=
     (Φ.left_inv hΦ).symm ▸ hW
   exact hW'.mpullback J (I.prod 𝓘(ℝ, ℝ)) Φ.symm le_rfl (Φ.map_source hΦ)
 
@@ -167,8 +167,8 @@ theorem interiorIndex_collarPushforward
         (collarExtension T b collarTransition)) (Φ (x, t))
         (hT.collarPushforward I J Φ hΦ hb hb0 hz) (isInteriorPoint_collar_image I J Φ hΦ hx) =
       interiorIndex I T x hT hx := by
-  let c := Poincare.Manifold.interiorChart I 1 x
-  have hcx : x ∈ c.source := (Poincare.Manifold.mem_interiorChart_source_iff I 1 x).mpr hx
+  let c := DifferentialGeometry.Manifold.interiorChart I 1 x
+  have hcx : x ∈ c.source := (DifferentialGeometry.Manifold.mem_interiorChart_source_iff I 1 x).mpr hx
   let P := collarParametrization I c.symm
   let a := euclideanProductPoint d (c x) t
   have ha : a ∈ P.source := by
@@ -202,4 +202,4 @@ theorem interiorIndex_collarPushforward
   simpa only [hcenter] using hd
 
 end Ambient
-end Poincare.VectorField
+end DifferentialGeometry.VectorField

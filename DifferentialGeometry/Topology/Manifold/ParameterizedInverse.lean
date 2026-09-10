@@ -7,7 +7,7 @@ noncomputable section
 open Set Filter Topology
 open scoped ContDiff Manifold
 
-namespace Poincare.Topology.Manifold
+namespace DifferentialGeometry.Topology.Manifold
 
 variable {E H M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
   [TopologicalSpace H] [TopologicalSpace M] [ChartedSpace H M]
@@ -68,7 +68,7 @@ theorem exists_localInverse_preserving_parameter
   have hfv : fderiv ℝ f (C p) (0, 1) ≠ 0 := by
     rwa [← hscalar.deriv]
   obtain ⟨e, hpe, heV, he, heinv, heq, _⟩ :=
-    Poincare.Analysis.exists_localInverse_preserving_parameter hf hV hpV hfv
+    DifferentialGeometry.Analysis.exists_localInverse_preserving_parameter hf hV hpV hfv
   let A : PartialDiffeomorph 𝓘(ℝ, E × ℝ) 𝓘(ℝ, E × ℝ) (E × ℝ) (E × ℝ) ∞ :=
     { toPartialEquiv := e.toPartialEquiv
       open_source := e.open_source
@@ -97,4 +97,4 @@ theorem exists_localInverse_preserving_parameter
     (Φ.toPartialEquiv.right_inv hz)
   exact Prod.mk.inj h
 
-end Poincare.Topology.Manifold
+end DifferentialGeometry.Topology.Manifold

@@ -5,7 +5,7 @@ set_option autoImplicit false
 noncomputable section
 open Set Bundle Filter Manifold TopologicalSpace
 open scoped ContDiff Topology
-namespace Poincare.VectorField
+namespace DifferentialGeometry.VectorField
 
 theorem exists_boundary_section_extension
     {E F H H' B M : Type*}
@@ -29,7 +29,7 @@ theorem exists_boundary_section_extension
       ContMDiff I I.tangent ∞ (fun x => (⟨x, G x⟩ : TangentBundle I M)) ∧
       ∀ q : S, q.val.2.val = 0 → G (e q).val =
         mfderiv (J.prod (𝓡∂ 1)) I e q
-          (T q.val.1, (Poincare.Manifold.Interval.tangentCoordinateIcc q.val.2).symm (b q.val.1)) := by
+          (T q.val.1, (DifferentialGeometry.Manifold.Interval.tangentCoordinateIcc q.val.2).symm (b q.val.1)) := by
   intro S Y e V hV T b hT hb
   let W := _root_.VectorField.mpullback (J.prod (𝓡∂ 1)) I e (fun y : Y => V y.val)
   have hW : ContMDiff (J.prod (𝓡∂ 1)) (J.prod (𝓡∂ 1)).tangent ∞
@@ -39,12 +39,12 @@ theorem exists_boundary_section_extension
     exact contMDiffAt_mpullback_partialDiffeomorph e.toPartialDiffeomorph (by simp)
       (by trivial) (hVr (e q))
   let Q : ∀ q : S, TangentSpace (J.prod (𝓡∂ 1)) q := fun q =>
-    (T q.val.1, (Poincare.Manifold.Interval.tangentCoordinateIcc q.val.2).symm (b q.val.1))
+    (T q.val.1, (DifferentialGeometry.Manifold.Interval.tangentCoordinateIcc q.val.2).symm (b q.val.1))
   have hQ : ContMDiff (J.prod (𝓡∂ 1)) (J.prod (𝓡∂ 1)).tangent ∞
       (fun q => (⟨q, Q q⟩ : TangentBundle (J.prod (𝓡∂ 1)) S)) := by
     apply (contMDiff_tangentSection_opens_iff S Q).mpr
     have hp := (contMDiff_fst (I := J) (J := 𝓡∂ 1) (n := ∞)).comp (contMDiff_subtype_val (U := S))
-    have hr := Poincare.Manifold.Interval.contMDiff_tangentCoordinateIcc_symm.comp
+    have hr := DifferentialGeometry.Manifold.Interval.contMDiff_tangentCoordinateIcc_symm.comp
       (((contMDiff_snd (I := J) (J := 𝓡∂ 1)).comp
         (contMDiff_subtype_val (U := S))).prodMk (hb.comp hp))
     exact contMDiff_equivTangentBundleProd_symm.comp ((hT.comp hp).prodMk hr)
@@ -74,4 +74,4 @@ theorem exists_boundary_section_extension
   simp only [L, hβq, one_smul, sub_self, zero_smul, add_zero]
   rfl
 
-end Poincare.VectorField
+end DifferentialGeometry.VectorField

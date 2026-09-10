@@ -6,7 +6,7 @@ noncomputable section
 open Set Metric Filter Topology
 open scoped ContDiff Manifold
 
-namespace Poincare.Analysis
+namespace DifferentialGeometry.Analysis
 
 theorem exists_compact_isotopy_realizing_flow_germ
     {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
@@ -64,4 +64,4 @@ theorem exists_compact_isotopy_realizing_flow_germ
   apply (D p).injective
   exact ((D p).apply_symm_apply x).trans (hfix p x hx).symm
 
-end Poincare.Analysis
+end DifferentialGeometry.Analysis

@@ -4,7 +4,7 @@ set_option autoImplicit false
 open Bundle Set
 open scoped Manifold ContDiff Topology
 noncomputable section
-namespace Poincare.VectorField
+namespace DifferentialGeometry.VectorField
 
 variable {𝕜 : Type*} [NontriviallyNormedField 𝕜]
   {E : Type*} [NormedAddCommGroup E] [NormedSpace 𝕜 E]
@@ -94,4 +94,4 @@ theorem mpullback_partialDiffeomorph_congr_germ {n : ℕ∞ω}
   exact congrArg (fun v : TangentSpace J (f y) ↦
     (⟨y, (mfderiv I J f y).inverse v⟩ : TangentBundle I M)) hvw
 
-end Poincare.VectorField
+end DifferentialGeometry.VectorField

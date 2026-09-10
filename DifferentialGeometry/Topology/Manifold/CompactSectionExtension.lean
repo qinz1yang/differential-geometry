@@ -12,7 +12,7 @@ open scoped Manifold ContDiff
 
 noncomputable section
 
-namespace Poincare.Topology
+namespace DifferentialGeometry.Topology
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
     [FiniteDimensional ℝ E] {H : Type*} [TopologicalSpace H]
@@ -115,4 +115,4 @@ theorem exists_contMDiffSection_eqOn_of_isCompact_of_local
         simpa only [finsum_eq_sum_of_fintype] using ρ.sum_eq_one hx
       rw [hsum, one_smul]
 
-end Poincare.Topology
+end DifferentialGeometry.Topology

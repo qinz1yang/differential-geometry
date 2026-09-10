@@ -8,7 +8,7 @@ open Bundle Manifold Set Filter
 open scoped Manifold ContDiff Topology
 open DifferentialGeometry DifferentialGeometry.Geometry.Operator
   DifferentialGeometry.Tensor.Coordinates
-namespace Poincare.VectorField
+namespace DifferentialGeometry.VectorField
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
   {H M : Type*} [TopologicalSpace H] [TopologicalSpace M] [ChartedSpace H M]
   {I : ModelWithCorners ℝ E H} [IsManifold I ∞ M]
@@ -24,7 +24,7 @@ theorem metricFlat_gradientInChart (g : SmoothRiemannianMetric I M)
     (hf : MDifferentiableAt I 𝓘(ℝ, ℝ) f ((extChartAt I x).symm y)) :
     metricFlatModelInChart g x y (gradientInChart g f x y) =
       fderiv ℝ (fun z => f ((extChartAt I x).symm z)) y := by
-  let c := Poincare.Manifold.interiorChart I ∞ x
+  let c := DifferentialGeometry.Manifold.interiorChart I ∞ x
   have hc : y ∈ c.symm.source := hy
   have hy' : (extChartAt I x).symm y ∈ (chartAt H x).source :=
     (c.map_target hy).1
@@ -183,4 +183,4 @@ theorem linearizationAtZero_gradientFun_apply_metricSharp
     metric_inner_linearizationAtZero_gradientFun g hx hf hcrit]
   rfl
 
-end Poincare.VectorField
+end DifferentialGeometry.VectorField

@@ -5,7 +5,7 @@ noncomputable section
 open Bundle
 open scoped Manifold ContDiff
 
-namespace Poincare.Topology.Manifold
+namespace DifferentialGeometry.Topology.Manifold
 
 variable {E H M F K N : Type*}
   [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
@@ -59,4 +59,4 @@ theorem mfderiv_mlieBracket_of_related
   rw [hcomp] at hbr
   exact hbr
 
-end Poincare.Topology.Manifold
+end DifferentialGeometry.Topology.Manifold

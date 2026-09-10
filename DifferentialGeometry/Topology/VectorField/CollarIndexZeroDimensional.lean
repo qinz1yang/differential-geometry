@@ -8,8 +8,8 @@ set_option autoImplicit false
 noncomputable section
 open Set Filter Bundle
 open scoped Manifold ContDiff Topology
-namespace Poincare.VectorField
-open Poincare.LocalDegree Poincare.Manifold
+namespace DifferentialGeometry.VectorField
+open DifferentialGeometry.LocalDegree DifferentialGeometry.Manifold
 variable {E H B : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [Subsingleton E]
   [TopologicalSpace H] [TopologicalSpace B] [ChartedSpace H B]
   (J : ModelWithCorners ℝ E H)
@@ -67,7 +67,7 @@ theorem exists_collarPushforward_index_zeroDimensional
     exact hΦ
   have hc : Γ a = Φ (p, t) := congrArg Φ hPa
   have hWI : I.IsInteriorPoint (Φ (p, t)) := hc ▸
-    Poincare.Manifold.isInteriorPoint_of_model_partialDiffeomorph I 1 Γ one_ne_zero hΓa
+    DifferentialGeometry.Manifold.isInteriorPoint_of_model_partialDiffeomorph I 1 Γ one_ne_zero hΓa
   refine ⟨hW, hWI, ?_⟩
   have hW' : HasContinuousIsolatedZero I W (Γ a) := hc.symm ▸ hW
   have hΓ := hW'.model_pullback I Γ le_rfl hΓa
@@ -85,4 +85,4 @@ theorem exists_collarPushforward_index_zeroDimensional
         (realLocalDegree_collarExtension_normal hb0 hz)))
   simpa only [hc] using hd
 
-end Poincare.VectorField
+end DifferentialGeometry.VectorField

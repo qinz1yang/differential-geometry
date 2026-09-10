@@ -7,7 +7,7 @@ noncomputable section
 open Set Filter Topology
 open scoped ContDiff Manifold
 
-namespace Poincare.Analysis
+namespace DifferentialGeometry.Analysis
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 
@@ -54,4 +54,4 @@ theorem det_fderiv_pos_iff_of_preconnected
     exact det_fderiv_ne_zero_of_partialDiffeomorph e hz hzero
   exact ⟨hprop x y hx hy, hprop y x hy hx⟩
 
-end Poincare.Analysis
+end DifferentialGeometry.Analysis

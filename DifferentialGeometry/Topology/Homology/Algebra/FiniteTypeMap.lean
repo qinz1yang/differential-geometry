@@ -5,7 +5,7 @@ set_option autoImplicit false
 open CategoryTheory CategoryTheory.Limits
 noncomputable section
 universe u v
-namespace Poincare.HomologicalComplex
+namespace DifferentialGeometry.HomologicalComplex
 variable {k : Type u} [Field k]
   {K L : ChainComplex (ModuleCat.{v} k) ℕ} (φ : K ⟶ L) [QuasiIso φ]
 
@@ -28,4 +28,4 @@ theorem homologyEulerChar_eq_of_quasiIso : K.homologyEulerChar = L.homologyEuler
   intro n
   rw [(isoOfQuasiIsoAt φ n).toLinearEquiv.finrank_eq]
 
-end Poincare.HomologicalComplex
+end DifferentialGeometry.HomologicalComplex

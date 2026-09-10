@@ -1,12 +1,12 @@
 import DifferentialGeometry.Topology.Manifold.EmbeddedHypersurface.TopFormCoorientation
 import DifferentialGeometry.Topology.Manifold.EmbeddedHypersurface.Collar
 
-open Set Bundle DifferentialGeometry.Topology.Morse Poincare.Topology
+open Set Bundle DifferentialGeometry.Topology.Morse DifferentialGeometry.Topology
 open scoped Manifold ContDiff Topology
 set_option autoImplicit false
 noncomputable section
 
-namespace Poincare.Manifold.EmbeddedHypersurface
+namespace DifferentialGeometry.Manifold.EmbeddedHypersurface
 
 variable {m : ℕ} {H G S M : Type*}
   [TopologicalSpace H] [TopologicalSpace G]
@@ -34,4 +34,4 @@ theorem nonempty_smoothTwoSidedCollar_of_topForms {e : S → M}
     η Ω hη hΩ hη0 hΩ0
   exact nonempty_smoothTwoSidedCollar I J he hK V hV.continuous htrans
 
-end Poincare.Manifold.EmbeddedHypersurface
+end DifferentialGeometry.Manifold.EmbeddedHypersurface

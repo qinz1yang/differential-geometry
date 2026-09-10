@@ -8,12 +8,12 @@ open Filter Metric Set
 open scoped Topology Manifold ContDiff
 noncomputable section
 
-namespace Poincare.LocalDegree
+namespace DifferentialGeometry.LocalDegree
 
 private theorem coordinate_deriv_ne_zero {n : ℕ∞ω}
     (φ : PartialDiffeomorph 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) ℝ ℝ n)
     (hn : 1 ≤ n) {x : ℝ} (hx : x ∈ φ.source) : deriv φ x ≠ 0 := by
-  have hi := Poincare.VectorField.isInvertible_mfderiv_partialDiffeomorph φ
+  have hi := DifferentialGeometry.VectorField.isInvertible_mfderiv_partialDiffeomorph φ
     (ne_of_gt (zero_lt_one.trans_le hn)) hx
   have hi' : (fderiv ℝ φ x).IsInvertible := by
     simpa only [mfderiv_eq_fderiv] using! hi
@@ -27,7 +27,7 @@ private theorem real_pullback_eq_div {n : ℕ∞ω}
     (φ : PartialDiffeomorph 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) ℝ ℝ n)
     (hn : 1 ≤ n) (V : ℝ → ℝ) {x : ℝ} (hx : x ∈ φ.source) :
     _root_.VectorField.mpullback 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) φ V x = V (φ x) / deriv φ x := by
-  have hi := Poincare.VectorField.isInvertible_mfderiv_partialDiffeomorph φ
+  have hi := DifferentialGeometry.VectorField.isInvertible_mfderiv_partialDiffeomorph φ
     (ne_of_gt (zero_lt_one.trans_le hn)) hx
   have hi' : (fderiv ℝ φ x).IsInvertible := by
     simpa only [mfderiv_eq_fderiv] using! hi
@@ -204,4 +204,4 @@ theorem realLocalDegree_mpullback_partialDiffeomorph {n : ℕ∞ω}
         (hcontrol _ hxp).2.1 hleft hright]
     simp only [hp, hm]
 
-end Poincare.LocalDegree
+end DifferentialGeometry.LocalDegree

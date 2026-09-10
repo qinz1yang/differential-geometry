@@ -5,7 +5,7 @@ set_option autoImplicit false
 noncomputable section
 open CategoryTheory Set Metric
 open scoped unitInterval
-namespace Poincare.LocalDegree
+namespace DifferentialGeometry.LocalDegree
 variable {d : ℕ} {a : EuclideanSpace ℝ (Fin (d + 1))} {r : ℝ} (hr : 0 < r)
   {f g : EuclideanSpace ℝ (Fin (d + 1)) → EuclideanSpace ℝ (Fin (d + 1))}
   (hf : ContinuousOn f (closedBall a r)) (hg : ContinuousOn g (closedBall a r))
@@ -41,4 +41,4 @@ theorem finsum_localDegrees_eq_of_eqOn_sphere (hfg : EqOn f g (sphere a r)) :
       (fun q => sphere_subset_closedBall q.2.property)⟩
   exact finsum_localDegrees_eq_of_boundaryHomotopy hr hf hg hfinitef hfiniteg hbf hbg H
     (fun q => hbf _ q.2.property) (fun _ => rfl) (fun x => hfg x.property)
-end Poincare.LocalDegree
+end DifferentialGeometry.LocalDegree

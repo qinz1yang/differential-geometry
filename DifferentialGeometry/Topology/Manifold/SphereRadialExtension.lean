@@ -6,7 +6,7 @@ noncomputable section
 open Set Metric Manifold Module
 open scoped ContDiff
 
-namespace Poincare.Topology.Manifold
+namespace DifferentialGeometry.Topology.Manifold
 
 section Basic
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -125,4 +125,4 @@ theorem contDiffOn_sphereRadialExtension
     contDiff_const.prodMk contDiff_id).contDiffOn (fun _ hx ↦ hx)
 
 end Smooth
-end Poincare.Topology.Manifold
+end DifferentialGeometry.Topology.Manifold

@@ -4,7 +4,7 @@ noncomputable section
 open Set Filter Topology
 open scoped ContDiff
 
-namespace Poincare.Analysis
+namespace DifferentialGeometry.Analysis
 
 theorem exists_contDiffOn_inverse_of_bijective
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
@@ -40,4 +40,4 @@ theorem exists_contDiffOn_inverse_of_bijective
   exact ((heinv.contDiffAt (e.open_target.mem_nhds ht)).snd).contDiffWithinAt.congr_of_eventuallyEq
     hagree hat
 
-end Poincare.Analysis
+end DifferentialGeometry.Analysis

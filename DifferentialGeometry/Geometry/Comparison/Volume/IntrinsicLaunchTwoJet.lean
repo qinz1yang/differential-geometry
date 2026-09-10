@@ -8,7 +8,7 @@ noncomputable section
 open Set Function Filter Bundle Manifold
 open scoped Topology Manifold ContDiff
 
-namespace Poincare.Geometry.Riemannian.VolumeComparison
+namespace DifferentialGeometry.Geometry.Riemannian.VolumeComparison
 
 open DifferentialGeometry
 open DifferentialGeometry.Geometry.Riemannian
@@ -54,6 +54,6 @@ theorem intrinsicLaunchJet_two_zero_of_residual
       (intrJetResidual_two_zero_eq_curvature (I := I) g hEnorm p a b)
   linear_combination (norm := module) (1 / 6 : ℝ) • hsix
 
-end Poincare.Geometry.Riemannian.VolumeComparison
+end DifferentialGeometry.Geometry.Riemannian.VolumeComparison
 
 end

@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Comparison.Toponogov.MetricComparisonAngle
 
-namespace Poincare.Toponogov
+namespace DifferentialGeometry.Toponogov
 
 theorem smallAngle_quadratic_loss {A B C : ℝ} (hA : 0 < A) (hB : 0 < B) (_hC : 0 ≤ C)
     (hreverse : |A - B| ≤ C) (htriangle : C ≤ A + B)
@@ -58,4 +58,4 @@ example : (1 : ℝ) ≤ 2 - 1 / 4 := by
 
 end Regression
 
-end Poincare.Toponogov
+end DifferentialGeometry.Toponogov

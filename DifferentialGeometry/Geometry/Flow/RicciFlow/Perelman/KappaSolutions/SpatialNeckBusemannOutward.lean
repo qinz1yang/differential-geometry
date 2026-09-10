@@ -35,7 +35,7 @@ variable {h : SmoothRiemannianMetric I N} {yStar : SpatialNeckSphere}
 
 theorem busemann_outward_ge (hEnorm : IsMetricNorm (I := I) h)
     (hsmall : epsilon ≤ spatialNeckControlEpsilon)
-    (hsec : Poincare.Geometry.HasNonnegativeSectionalCurvature (I := I) h)
+    (hsec : DifferentialGeometry.Geometry.HasNonnegativeSectionalCurvature (I := I) h)
     {c : ℝ≥0 → N} (hc : Isometry c) {q : N}
     (hq : q ∈ D.upper (5 * Real.pi)) :
     busemann c p + dist p q / 4 ≤ busemann c q := by
@@ -68,7 +68,7 @@ theorem busemann_outward_ge (hEnorm : IsMetricNorm (I := I) h)
 
 theorem busemann_outward_lt (hEnorm : IsMetricNorm (I := I) h)
     (hsmall : epsilon ≤ spatialNeckControlEpsilon)
-    (hsec : Poincare.Geometry.HasNonnegativeSectionalCurvature (I := I) h)
+    (hsec : DifferentialGeometry.Geometry.HasNonnegativeSectionalCurvature (I := I) h)
     {c : ℝ≥0 → N} (hc : Isometry c) {q : N}
     (hq : q ∈ D.upper (5 * Real.pi)) : busemann c p < busemann c q := by
   have hgap := spatialNeckControlEpsilon_inverse_gap W.epsilon_pos hsmall

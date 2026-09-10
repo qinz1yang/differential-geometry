@@ -7,7 +7,7 @@ noncomputable section
 open Set Filter Function Topology Manifold
 open scoped ContDiff
 
-namespace Poincare.Geometry.Boundary
+namespace DifferentialGeometry.Geometry.Boundary
 
 open DifferentialGeometry
 open DifferentialGeometry.Integral.DivergenceTheorem.WithBoundary
@@ -135,4 +135,4 @@ theorem exists_inward_localFlow
     have hn := extChartAt_target_mem_nhdsWithin_of_mem hqt
     rwa [nhdsWithin_eq_nhds.mpr (mem_interior_iff_mem_nhds.mp hqi)] at hn
 
-end Poincare.Geometry.Boundary
+end DifferentialGeometry.Geometry.Boundary

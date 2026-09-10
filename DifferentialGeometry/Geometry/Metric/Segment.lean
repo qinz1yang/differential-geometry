@@ -1,4 +1,3 @@
-import Batteries.Tactic.Alias
 import Mathlib.Topology.MetricSpace.Isometry
 import Mathlib.Topology.MetricSpace.Lipschitz
 import Mathlib.Topology.Instances.Real.Lemmas
@@ -34,9 +33,3 @@ theorem isometry_Icc_of_lipschitzOnWith_of_dist_eq
   linarith
 
 end DifferentialGeometry.Geometry
-
-namespace Poincare.Geometry
-
-alias isometry_Icc_of_lipschitzOnWith_of_dist_eq := DifferentialGeometry.Geometry.isometry_Icc_of_lipschitzOnWith_of_dist_eq
-
-end Poincare.Geometry

@@ -7,7 +7,7 @@ set_option autoImplicit false
 noncomputable section
 open Set Metric Filter Bundle
 open scoped Manifold ContDiff Topology
-namespace Poincare.VectorField
+namespace DifferentialGeometry.VectorField
 variable {d : ℕ} {H M : Type*} [TopologicalSpace H] [TopologicalSpace M]
   [ChartedSpace H M] [T2Space M] [CompactSpace M]
   (I : ModelWithCorners ℝ (EuclideanSpace ℝ (Fin (d + 1))) H) [IsManifold I ∞ M]
@@ -142,4 +142,4 @@ theorem interiorIndexSum_eq_of_boundary_affine_ne_zero
   exact he.symm.trans (interiorIndexSum_eq_of_boundary_germ I G W hG hW
     hGfinite hGiso hGint hWfinite hWisolated hWint hGb)
 
-end Poincare.VectorField
+end DifferentialGeometry.VectorField

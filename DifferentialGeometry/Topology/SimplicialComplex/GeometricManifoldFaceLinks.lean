@@ -2,9 +2,9 @@ import DifferentialGeometry.Topology.SimplicialComplex.FaceLinkLocalEuler
 
 set_option autoImplicit false
 noncomputable section
-open Set Poincare.Homology
+open Set DifferentialGeometry.Homology
 open scoped Manifold
-namespace Poincare.Topology.SimplicialComplex
+namespace DifferentialGeometry.Topology.SimplicialComplex
 variable {E : Type} [NormedAddCommGroup E] [NormedSpace ℝ E] [d : DecidableEq E]
   (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces] (s : Finset E) (hs : s ∈ K.faces)
   {M : Type} [TopologicalSpace M] [T1Space M] (e : K.space ≃ₜ M)
@@ -67,4 +67,4 @@ theorem faceEulerChar_triangleLink_three_interior
   norm_num [hcard] at h ⊢
   exact h
 
-end Poincare.Topology.SimplicialComplex
+end DifferentialGeometry.Topology.SimplicialComplex

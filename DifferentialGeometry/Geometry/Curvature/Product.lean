@@ -6,9 +6,9 @@ open Bundle
 open scoped Manifold ContDiff
 open DifferentialGeometry DifferentialGeometry.Geometry.Connection
 open DifferentialGeometry.Geometry.Curvature
-open Poincare.Geometry.Metric Poincare.Geometry.VectorField Poincare.Geometry.Connection
+open DifferentialGeometry.Geometry.Metric DifferentialGeometry.Geometry.VectorField DifferentialGeometry.Geometry.Connection
 
-namespace Poincare.Geometry.Curvature
+namespace DifferentialGeometry.Geometry.Curvature
 
 private def covariantField
     {E H M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
@@ -113,4 +113,4 @@ theorem ricciTensor_productMetric
   exact ht.trans (LinearMap.trace_prodMap' (ricciEndo g x.1 v.1 w.1)
     (ricciEndo h x.2 v.2 w.2))
 
-end Poincare.Geometry.Curvature
+end DifferentialGeometry.Geometry.Curvature

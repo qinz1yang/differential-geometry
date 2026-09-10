@@ -67,7 +67,7 @@ theorem boundaryless_manifold_of_subsingleton_model
 
 end DifferentialGeometry
 
-namespace Poincare.Homology
+namespace DifferentialGeometry.Homology
 
 universe u
 
@@ -95,9 +95,9 @@ theorem eulerChar_of_subsingleton_model :
     DifferentialGeometry.finite_of_compact_subsingleton_model I
   exact eulerChar_of_finite_totallyDisconnected k
 
-end Poincare.Homology
+end DifferentialGeometry.Homology
 
-namespace Poincare.VectorField
+namespace DifferentialGeometry.VectorField
 
 universe u
 
@@ -114,12 +114,12 @@ theorem eq_zero_of_subsingleton_model
 theorem sum_one_zeroSet_eq_eulerChar_of_subsingleton_model [CompactSpace M]
     (k : Type u) [Field k] (V : ∀ x : M, TangentSpace I x) :
     ∑ᶠ _ : {x : M | V x = 0}, (1 : ℤ) =
-      Poincare.Homology.eulerChar k (TopCat.of M) := by
+      DifferentialGeometry.Homology.eulerChar k (TopCat.of M) := by
   let _ : Finite M :=
     DifferentialGeometry.finite_of_compact_subsingleton_model I
   have he : {x : M | V x = 0} ≃ M :=
     Equiv.subtypeUnivEquiv (fun x => eq_zero_of_subsingleton_model V x)
-  rw [Poincare.Homology.eulerChar_of_subsingleton_model k I M]
+  rw [DifferentialGeometry.Homology.eulerChar_of_subsingleton_model k I M]
   classical
   let _ : Fintype {x : M | V x = 0} := Fintype.ofFinite _
   rw [finsum_eq_sum_of_fintype]
@@ -128,11 +128,11 @@ theorem sum_one_zeroSet_eq_eulerChar_of_subsingleton_model [CompactSpace M]
   rw [Nat.card_eq_fintype_card] at hc
   exact_mod_cast hc
 
-end Poincare.VectorField
+end DifferentialGeometry.VectorField
 
-namespace Poincare.Geometry
+namespace DifferentialGeometry.Geometry
 
 alias discrete_topology_of_finrank_eq_zero := DifferentialGeometry.discrete_topology_of_finrank_eq_zero
 alias subsingleton_of_preconnected_of_finrank_eq_zero := DifferentialGeometry.subsingleton_of_preconnected_of_finrank_eq_zero
 
-end Poincare.Geometry
+end DifferentialGeometry.Geometry

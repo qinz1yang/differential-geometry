@@ -4,7 +4,7 @@ noncomputable section
 open Set Manifold
 open scoped ContDiff
 
-namespace Poincare.Topology.Manifold
+namespace DifferentialGeometry.Topology.Manifold
 
 theorem exists_smooth_chart_centered
     {E F H M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -34,4 +34,4 @@ theorem exists_smooth_chart_centered
     exact (hi.contMDiffAt.comp z
       (contDiff_id.add contDiff_const).contMDiff.contMDiffAt).contMDiffWithinAt
 
-end Poincare.Topology.Manifold
+end DifferentialGeometry.Topology.Manifold

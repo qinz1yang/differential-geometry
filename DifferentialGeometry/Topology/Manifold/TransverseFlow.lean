@@ -14,7 +14,7 @@ open scoped Manifold ContDiff
 
 noncomputable section
 
-namespace Poincare.Topology.SmoothEmbeddingRealNormalAtlas
+namespace DifferentialGeometry.Topology.SmoothEmbeddingRealNormalAtlas
 
 open DifferentialGeometry.Analysis.ODE
 
@@ -64,4 +64,4 @@ theorem isLocalDiffeomorphAt_flowMap
   exact isLocalDiffeomorphAt_of_contMDiffOn_of_isInvertible_mfderiv
     isOpen_univ (mem_univ _) hΦ.contMDiffOn ⟨L, hderiv.symm⟩
 
-end Poincare.Topology.SmoothEmbeddingRealNormalAtlas
+end DifferentialGeometry.Topology.SmoothEmbeddingRealNormalAtlas

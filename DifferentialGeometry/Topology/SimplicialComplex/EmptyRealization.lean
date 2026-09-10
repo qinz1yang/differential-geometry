@@ -5,7 +5,7 @@ import Mathlib.AlgebraicTopology.SimplicialSet.TopAdj
 set_option autoImplicit false
 noncomputable section
 open CategoryTheory CategoryTheory.Limits
-namespace Poincare.Topology.SimplicialComplex
+namespace DifferentialGeometry.Topology.SimplicialComplex
 universe u
 variable {ι : Type u} [LinearOrder ι]
 
@@ -17,8 +17,8 @@ theorem isEmpty_orderedRealization (K : PreAbstractSimplicialComplex ι) (hK : K
     change Finset.univ.image a.simplex.val.obj ∈ K.faces at ha
     rw [hK] at ha
     exact ha⟩
-  have hI := (Poincare.SSet.isInitial_of_isEmpty_nondegenerate (orderedSimplicialSet K)).isInitialObj
+  have hI := (DifferentialGeometry.SSet.isInitial_of_isEmpty_nondegenerate (orderedSimplicialSet K)).isInitialObj
     SSet.toTop
   exact ⟨fun x => PEmpty.elim (hI.to (TopCat.of PEmpty.{u + 1}) x)⟩
 
-end Poincare.Topology.SimplicialComplex
+end DifferentialGeometry.Topology.SimplicialComplex

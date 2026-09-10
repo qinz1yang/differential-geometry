@@ -12,7 +12,7 @@ set_option autoImplicit false
 
 universe u v
 
-namespace Poincare.Algebra.Group
+namespace DifferentialGeometry.Algebra.Group
 
 theorem coprodI_subsingleton_iff {ι : Type u} (G : ι → Type v) [∀ i, Group (G i)] :
     Subsingleton (Monoid.CoprodI G) ↔ ∀ i, Subsingleton (G i) := by
@@ -233,4 +233,4 @@ theorem coprodIBoolEquivCoprod_of_true (G : Type u) (H : Type v) [Group G] [Grou
       Monoid.Coprod.inr h.down := by
   rfl
 
-end Poincare.Algebra.Group
+end DifferentialGeometry.Algebra.Group

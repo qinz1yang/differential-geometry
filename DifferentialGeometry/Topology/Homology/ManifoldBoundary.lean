@@ -6,7 +6,7 @@ noncomputable section
 open Set
 open scoped Manifold ContDiff Topology
 open DifferentialGeometry.Integral.DivergenceTheorem.WithBoundary
-namespace Poincare.Homology
+namespace DifferentialGeometry.Homology
 variable {E H M : Type} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [TopologicalSpace H] [TopologicalSpace M] [ChartedSpace H M]
   (I : ModelWithCorners ℝ E H) [hI : HasSmoothBoundary E H I]
@@ -59,4 +59,4 @@ theorem eulerChar_eq_of_isClopen_boundary_subset (K L : Type) [Field K] [Field L
     ((eulerChar_eq_of_compact_boundaryless_manifold hI.boundaryI K L (M := U)).trans
       (eulerChar_eq_of_homeomorph L e))
 
-end Poincare.Homology
+end DifferentialGeometry.Homology

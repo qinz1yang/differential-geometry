@@ -4,7 +4,7 @@ noncomputable section
 open Set Filter Topology
 open scoped ContDiff
 
-namespace Poincare.Analysis
+namespace DifferentialGeometry.Analysis
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 
@@ -54,4 +54,4 @@ theorem det_fderivWithin_pos_iff_of_inverse
     exact det_fderivWithin_ne_zero_of_inverse hS f g hf hg hmap hleft hz hzero
   exact ⟨hprop x y hx hy, hprop y x hy hx⟩
 
-end Poincare.Analysis
+end DifferentialGeometry.Analysis

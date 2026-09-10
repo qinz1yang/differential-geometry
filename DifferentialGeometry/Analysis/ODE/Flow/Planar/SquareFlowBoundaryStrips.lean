@@ -5,7 +5,7 @@ noncomputable section
 open Set
 open scoped ContDiff Manifold
 
-namespace Poincare.Analysis
+namespace DifferentialGeometry.Analysis
 
 theorem leftEdgeSquareMap_eq_on_left_strip
     {P : Type*} {φ : P → _root_.Flow ℝ ℂ} {τ : P × ℝ → ℝ}
@@ -104,4 +104,4 @@ theorem exists_reparametrization_with_uniform_square_strips
     · exact Or.inr (Or.inr (Or.inl (hz ▸ hyedge)))
     · exact Or.inr (Or.inr (Or.inr (hz ▸ hyedge)))
 
-end Poincare.Analysis
+end DifferentialGeometry.Analysis

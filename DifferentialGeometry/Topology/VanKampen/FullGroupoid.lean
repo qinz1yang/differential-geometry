@@ -12,7 +12,7 @@ open CategoryTheory CategoryTheory.Limits Set
 
 universe u v
 
-namespace Poincare.Topology.VanKampen
+namespace DifferentialGeometry.Topology.VanKampen
 
 def subsetToAmbient {X : Type u} [TopologicalSpace X] (A : Set X) : C(A, X) where
   toFun x := x.1
@@ -339,4 +339,4 @@ theorem seifertVanKampen {X : Type u} [TopologicalSpace X] (U V : Set X)
   · intro L hleft hright
     exact F.extension_unique hU hV hcover L hleft hright
 
-end Poincare.Topology.VanKampen
+end DifferentialGeometry.Topology.VanKampen

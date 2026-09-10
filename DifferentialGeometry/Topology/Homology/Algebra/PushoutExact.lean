@@ -4,7 +4,7 @@ import Mathlib.CategoryTheory.Limits.Shapes.Pullback.IsPullback.Defs
 set_option autoImplicit false
 open CategoryTheory CategoryTheory.Limits
 noncomputable section
-namespace Poincare.ShortComplex
+namespace DifferentialGeometry.ShortComplex
 variable {C : Type*} [Category* C] [Abelian C]
   {W X Y Z : C} {f : W ⟶ X} {g : W ⟶ Y} {r : X ⟶ Z} {s : Y ⟶ Z}
   (sq : IsPushout f g r s)
@@ -37,4 +37,4 @@ theorem pushoutShortExact [Mono f] : (pushoutShortComplex sq).ShortExact where
     exact mono_of_mono_fac (show (pushoutShortComplex sq).f ≫ biprod.fst = f from biprod.lift_fst _ _)
   epi_g := epi_of_isColimit_cofork (pushoutSumIsCokernel sq)
 
-end Poincare.ShortComplex
+end DifferentialGeometry.ShortComplex

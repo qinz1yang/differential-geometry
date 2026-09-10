@@ -40,7 +40,7 @@ theorem busemann_level_diameter_and_proper
     {p : N} {epsilon : ℝ} (W : SpatialNeckWitness h yStar p epsilon)
     (hEnorm : IsMetricNorm (I := I) h)
     (hsmall : epsilon ≤ spatialNeckControlEpsilon)
-    (hsec : Poincare.Geometry.HasPositiveSectionalCurvature (I := I) h)
+    (hsec : DifferentialGeometry.Geometry.HasPositiveSectionalCurvature (I := I) h)
     {c : ℝ≥0 → N} (hc : Isometry c) :
     11 / 12 * spatialNeckScale h p * Real.pi ≤
       Metric.diam {q : N | busemann c q = busemann c p} ∧

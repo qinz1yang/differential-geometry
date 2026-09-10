@@ -2,7 +2,7 @@ import DifferentialGeometry.Topology.SphereSeparation.Sides
 
 set_option autoImplicit false
 
-namespace Poincare.Topology.SphereSeparation
+namespace DifferentialGeometry.Topology.SphereSeparation
 
 open Set
 
@@ -55,4 +55,4 @@ theorem neighborhood_halves_opposite (d : SphereSides S)
 
 end SphereSides
 
-end Poincare.Topology.SphereSeparation
+end DifferentialGeometry.Topology.SphereSeparation

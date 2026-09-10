@@ -11,7 +11,7 @@ set_option autoImplicit false
 
 universe u v
 
-namespace Poincare.Topology
+namespace DifferentialGeometry.Topology
 
 noncomputable def fundamentalGroupProdEquiv
     {X : Type u} {Y : Type v} [TopologicalSpace X] [TopologicalSpace Y]
@@ -82,4 +82,4 @@ theorem fundamentalGroupProdRightEquivOfSimplyConnected_symm_apply
   rw [MulEquiv.apply_symm_apply]
   exact (Path.Homotopic.projRight_prod (1 : FundamentalGroup X x) q).symm
 
-end Poincare.Topology
+end DifferentialGeometry.Topology

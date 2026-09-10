@@ -5,9 +5,9 @@ noncomputable section
 open Bundle Manifold Set
 open scoped Manifold ContDiff
 open DifferentialGeometry DifferentialGeometry.Geometry.Curvature
-open Poincare.Geometry.Riemannian
+open DifferentialGeometry.Geometry.Riemannian
 
-namespace Poincare.Geometry
+namespace DifferentialGeometry.Geometry
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
   {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
@@ -49,4 +49,4 @@ theorem HasPositiveSectionalCurvature.exists_uniform_orthonormal_bound [CompactS
     intro x v w hv hw hvw
     exact False.elim (hn ⟨⟨⟨(⟨⟨x, v⟩, hv⟩, ⟨⟨x, w⟩, hw⟩), rfl⟩, hvw⟩⟩)
 
-end Poincare.Geometry
+end DifferentialGeometry.Geometry

@@ -7,7 +7,7 @@ noncomputable section
 open Set Topology Manifold
 open scoped ContDiff
 
-namespace Poincare.Topology.Ehresmann
+namespace DifferentialGeometry.Topology.Ehresmann
 
 variable {E F H G W B : Type}
   [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -109,4 +109,4 @@ theorem regularIntervalDatum_heightOfIntervalProduct
     ⟨D (b, 0), heightOfIntervalProduct_apply D (b, 0)⟩
     ⟨D (b, 1), heightOfIntervalProduct_apply D (b, 1)⟩
 
-end Poincare.Topology.Ehresmann
+end DifferentialGeometry.Topology.Ehresmann

@@ -6,14 +6,14 @@ set_option autoImplicit false
 noncomputable section
 open CategoryTheory CategoryTheory.Limits AlgebraicTopology
 open scoped ZeroObject
-namespace Poincare.Homology
+namespace DifferentialGeometry.Homology
 universe u
 variable {X Y : TopCat.{u}} {s : Set X} {t : Set Y}
   {k : Type u} [Ring k] (R : ModuleCat.{u} k)
 
 def augmentedRelativeChainMap (f : X ⟶ Y) (hf : Set.MapsTo f s t) :
     augmentedRelativeChainComplex X s R ⟶ augmentedRelativeChainComplex Y t R :=
-  Poincare.ChainComplex.augmentMap (by simp) (by simp) (relativeChainMap R f hf)
+  DifferentialGeometry.ChainComplex.augmentMap (by simp) (by simp) (relativeChainMap R f hf)
     (0 : (0 : ModuleCat.{u} k) ⟶ 0) (by simp)
 
 
@@ -42,7 +42,7 @@ theorem augmentedRelativeHomologySuccIso_naturality (f : X ⟶ Y) (hf : Set.Maps
     _root_.HomologicalComplex.homologyMap (augmentedRelativeChainMap R f hf) (n + 2) ≫
       (augmentedRelativeHomologySuccIso Y t R n).hom =
     (augmentedRelativeHomologySuccIso X s R n).hom ≫ relativeHomologyMap R f hf (n + 1) :=
-  Poincare.ChainComplex.augmentHomologySuccIso_naturality (by simp) (by simp)
+  DifferentialGeometry.ChainComplex.augmentHomologySuccIso_naturality (by simp) (by simp)
     (relativeChainMap R f hf) (0 : (0 : ModuleCat.{u} k) ⟶ 0) (by simp) n
 
 
@@ -59,4 +59,4 @@ theorem relativeReducedConnectingIso_naturality [ContractibleSpace X] [Contracti
   exact _root_.HomologicalComplex.HomologySequence.δ_naturality
     (augmentedRelativeShortComplexMap R f hf)
     (augmentedRelativeShortExact X s R) (augmentedRelativeShortExact Y t R) (n + 2) (n + 1) rfl
-end Poincare.Homology
+end DifferentialGeometry.Homology

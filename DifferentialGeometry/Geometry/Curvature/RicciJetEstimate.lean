@@ -7,7 +7,7 @@ open scoped Manifold ContDiff BigOperators
 open DifferentialGeometry DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.Tensor0SBundle
 
-namespace Poincare.Geometry.Curvature
+namespace DifferentialGeometry.Geometry.Curvature
 
 theorem exists_ricci_tensor_difference_bound_of_metric_derivative_bounds
     {E H M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
@@ -121,4 +121,4 @@ theorem exists_ricci_tensor_difference_bound_of_small_metric_derivatives
     _ ≤ C * (3 * ε) := mul_le_mul_of_nonneg_left hsum hC.le
     _ = 3 * C * ε := by ring
 
-end Poincare.Geometry.Curvature
+end DifferentialGeometry.Geometry.Curvature

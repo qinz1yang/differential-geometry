@@ -14,7 +14,7 @@ set_option autoImplicit false
 
 noncomputable section
 
-namespace Poincare.Toponogov
+namespace DifferentialGeometry.Toponogov
 
 def positiveRectangleValues (L₁ L₂ : ℝ) (f : ℝ → ℝ → ℝ) : Set ℝ :=
   {z | ∃ s ∈ Ioc (0 : ℝ) L₁, ∃ t ∈ Ioc (0 : ℝ) L₂, z = f s t}
@@ -286,4 +286,4 @@ theorem limitingRadialAngle_package {X : Type*} [MetricSpace X]
       tendsto_limitingRadialAngle γ (hL i) (hL j) (hmono i j hij)
   · exact limitingRadialAngle_triangle E L γ hL hrad hmono
 
-end Poincare.Toponogov
+end DifferentialGeometry.Toponogov

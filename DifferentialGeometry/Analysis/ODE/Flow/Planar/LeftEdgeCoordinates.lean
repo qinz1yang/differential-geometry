@@ -4,7 +4,7 @@ import DifferentialGeometry.Analysis.ODE.Flow.Planar.ConstantHalfSpaceFlow
 open Set
 open scoped ContDiff
 
-namespace Poincare.Analysis
+namespace DifferentialGeometry.Analysis
 
 theorem injective_leftEdge_flow_coordinates
     (φ : _root_.Flow ℝ ℂ) {v : ℂ → ℂ} (hv : ContDiff ℝ ∞ v)
@@ -65,4 +65,4 @@ theorem exists_leftEdge_flow_coordinates
   have hp := huniq (a₁ := (y', t')) (a₂ := (y, t)) (he.trans htz.symm)
   exact ⟨congrArg Prod.fst hp, congrArg Prod.snd hp⟩
 
-end Poincare.Analysis
+end DifferentialGeometry.Analysis

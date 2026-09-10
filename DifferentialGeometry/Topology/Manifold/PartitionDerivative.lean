@@ -4,7 +4,7 @@ import Mathlib.Geometry.Manifold.MFDeriv.NormedSpace
 open Set Filter Topology
 open scoped ContDiff Manifold BigOperators
 
-namespace Poincare.Topology.Manifold
+namespace DifferentialGeometry.Topology.Manifold
 
 variable {ι E H M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [TopologicalSpace H] [TopologicalSpace M] [ChartedSpace H M]
@@ -122,4 +122,4 @@ theorem mfderiv_partition_sum_ne_zero_of_error_lt [Fintype ι]
   have hpos := mvfderiv_partition_sum_pos_of_error_lt ρ g x hg v c κ hmain herror
   simp [mvfderiv, hzero] at hpos
 
-end Poincare.Topology.Manifold
+end DifferentialGeometry.Topology.Manifold

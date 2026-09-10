@@ -4,7 +4,7 @@ import Mathlib.MeasureTheory.Measure.Haar.Unique
 set_option autoImplicit false
 open Set MeasureTheory MeasureTheory.Measure
 open scoped ENNReal NNReal
-namespace Poincare.MeasureTheory
+namespace DifferentialGeometry.MeasureTheory
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [MeasurableSpace E] [BorelSpace E]
 
@@ -24,4 +24,4 @@ theorem addHaar_eq_zero_of_dimH_lt (μ : Measure E) [IsAddHaarMeasure μ]
   exact le_antisymm
     ((le_map_apply_image e.continuous.measurable.aemeasurable s).trans_eq hn') zero_le
 
-end Poincare.MeasureTheory
+end DifferentialGeometry.MeasureTheory

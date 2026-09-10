@@ -5,7 +5,7 @@ noncomputable section
 open Set Metric Manifold Module
 open scoped ContDiff
 
-namespace Poincare.Topology.Manifold
+namespace DifferentialGeometry.Topology.Manifold
 
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
   [FiniteDimensional ℝ E]
@@ -63,4 +63,4 @@ theorem exists_smooth_embeddedBallShell_parametrization
   refine ⟨d, hes, hdt, F.symm.contMDiff.comp he, ?_⟩
   exact hei.comp F.contMDiff.contMDiffOn (fun _ hx ↦ hx)
 
-end Poincare.Topology.Manifold
+end DifferentialGeometry.Topology.Manifold

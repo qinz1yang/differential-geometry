@@ -10,9 +10,9 @@ import DifferentialGeometry.Topology.VanKampen.HomotopyEquivalentFreeProductCove
 
 set_option autoImplicit false
 
-namespace Poincare.Topology.VanKampen
+namespace DifferentialGeometry.Topology.VanKampen
 
-open Poincare.Algebra.Group
+open DifferentialGeometry.Algebra.Group
 
 noncomputable def projectiveConnectedSumFactorEquiv :
     ∀ i, fundamentalGroupSourceFactor realProjectiveThreeBasepoint
@@ -136,12 +136,12 @@ theorem infinite_fundamentalGroup_projectiveConnectedSum
   let e := fundamentalGroupProjectiveConnectedSumEquiv x₀ connectedSumEquiv
   exact Infinite.of_injective e.symm e.symm.injective
 
-end Poincare.Topology.VanKampen
+end DifferentialGeometry.Topology.VanKampen
 
-namespace Poincare.Topology.ThreeManifold
+namespace DifferentialGeometry.Topology.ThreeManifold
 
-open Poincare.Algebra.Group
-open Poincare.Topology.VanKampen
+open DifferentialGeometry.Algebra.Group
+open DifferentialGeometry.Topology.VanKampen
 
 structure ProjectiveConnectedSumPresentation where
 
@@ -151,66 +151,66 @@ structure ProjectiveConnectedSumPresentation where
 
   result : BasedConnectedClosedSmoothThreeManifold
 
-  leftHomeomorph : left ≃ₜ Poincare.Topology.RealProjectiveThree
+  leftHomeomorph : left ≃ₜ DifferentialGeometry.Topology.RealProjectiveThree
 
   leftHomeomorph_basepoint :
-    leftHomeomorph left.basepoint = Poincare.Topology.realProjectiveThreeBasepoint
+    leftHomeomorph left.basepoint = DifferentialGeometry.Topology.realProjectiveThreeBasepoint
 
-  rightHomeomorph : right ≃ₜ Poincare.Topology.RealProjectiveThree
+  rightHomeomorph : right ≃ₜ DifferentialGeometry.Topology.RealProjectiveThree
 
   rightHomeomorph_basepoint :
-    rightHomeomorph right.basepoint = Poincare.Topology.realProjectiveThreeBasepoint
+    rightHomeomorph right.basepoint = DifferentialGeometry.Topology.realProjectiveThreeBasepoint
 
   step : ConnectedSumStep left right result
 
 
 noncomputable def ProjectiveConnectedSumPresentation.leftFundamentalGroupEquiv
     (p : ProjectiveConnectedSumPresentation) :
-    FundamentalGroup Poincare.Topology.RealProjectiveThree
-        Poincare.Topology.realProjectiveThreeBasepoint ≃*
+    FundamentalGroup DifferentialGeometry.Topology.RealProjectiveThree
+        DifferentialGeometry.Topology.realProjectiveThreeBasepoint ≃*
       FundamentalGroup p.left p.left.basepoint :=
-  (Poincare.Topology.fundamentalGroupMulEquivOfHomotopyEquiv
+  (DifferentialGeometry.Topology.fundamentalGroupMulEquivOfHomotopyEquiv
     p.leftHomeomorph.toHomotopyEquiv p.left.basepoint
-      Poincare.Topology.realProjectiveThreeBasepoint
+      DifferentialGeometry.Topology.realProjectiveThreeBasepoint
       p.leftHomeomorph_basepoint).symm
 
 
 noncomputable def ProjectiveConnectedSumPresentation.rightFundamentalGroupEquiv
     (p : ProjectiveConnectedSumPresentation) :
-    FundamentalGroup Poincare.Topology.RealProjectiveThree
-        Poincare.Topology.realProjectiveThreeBasepoint ≃*
+    FundamentalGroup DifferentialGeometry.Topology.RealProjectiveThree
+        DifferentialGeometry.Topology.realProjectiveThreeBasepoint ≃*
       FundamentalGroup p.right p.right.basepoint :=
-  (Poincare.Topology.fundamentalGroupMulEquivOfHomotopyEquiv
+  (DifferentialGeometry.Topology.fundamentalGroupMulEquivOfHomotopyEquiv
     p.rightHomeomorph.toHomotopyEquiv p.right.basepoint
-      Poincare.Topology.realProjectiveThreeBasepoint
+      DifferentialGeometry.Topology.realProjectiveThreeBasepoint
       p.rightHomeomorph_basepoint).symm
 
 noncomputable def ProjectiveConnectedSumPresentation.sourceFactorEquiv
     (p : ProjectiveConnectedSumPresentation) : ∀ i,
-    fundamentalGroupSourceFactor Poincare.Topology.realProjectiveThreeBasepoint
-        Poincare.Topology.realProjectiveThreeBasepoint i ≃*
+    fundamentalGroupSourceFactor DifferentialGeometry.Topology.realProjectiveThreeBasepoint
+        DifferentialGeometry.Topology.realProjectiveThreeBasepoint i ≃*
       fundamentalGroupSourceFactor p.left.basepoint p.right.basepoint i
   | false => p.leftFundamentalGroupEquiv
   | true => p.rightFundamentalGroupEquiv
 
 noncomputable def ProjectiveConnectedSumPresentation.sourceFreeProductEquivCoprod
     (p : ProjectiveConnectedSumPresentation) :
-    fundamentalGroupSourceFreeProduct Poincare.Topology.realProjectiveThreeBasepoint
-        Poincare.Topology.realProjectiveThreeBasepoint ≃*
+    fundamentalGroupSourceFreeProduct DifferentialGeometry.Topology.realProjectiveThreeBasepoint
+        DifferentialGeometry.Topology.realProjectiveThreeBasepoint ≃*
       Monoid.Coprod
         (FundamentalGroup p.left p.left.basepoint)
         (FundamentalGroup p.right p.right.basepoint) :=
   (coprodIMulEquiv
-    (fundamentalGroupSourceFactor Poincare.Topology.realProjectiveThreeBasepoint
-      Poincare.Topology.realProjectiveThreeBasepoint)
+    (fundamentalGroupSourceFactor DifferentialGeometry.Topology.realProjectiveThreeBasepoint
+      DifferentialGeometry.Topology.realProjectiveThreeBasepoint)
     (fundamentalGroupSourceFactor p.left.basepoint p.right.basepoint)
     p.sourceFactorEquiv).trans
       (fundamentalGroupSourceFreeProductEquivCoprod p.left.basepoint p.right.basepoint)
 
 noncomputable def ProjectiveConnectedSumPresentation.connectedSumFundamentalGroupEquiv
     (p : ProjectiveConnectedSumPresentation) :
-    fundamentalGroupSourceFreeProduct Poincare.Topology.realProjectiveThreeBasepoint
-        Poincare.Topology.realProjectiveThreeBasepoint ≃*
+    fundamentalGroupSourceFreeProduct DifferentialGeometry.Topology.realProjectiveThreeBasepoint
+        DifferentialGeometry.Topology.realProjectiveThreeBasepoint ≃*
       FundamentalGroup p.result p.result.basepoint :=
   p.sourceFreeProductEquivCoprod.trans p.step.forwardFundamentalGroupEquiv
 
@@ -219,29 +219,29 @@ theorem ProjectiveConnectedSumPresentation.connectedSumFundamentalGroupEquiv_com
     p.connectedSumFundamentalGroupEquiv.toMonoidHom.comp
         (Monoid.CoprodI.of
           (M := fundamentalGroupSourceFactor
-            Poincare.Topology.realProjectiveThreeBasepoint
-            Poincare.Topology.realProjectiveThreeBasepoint)
+            DifferentialGeometry.Topology.realProjectiveThreeBasepoint
+            DifferentialGeometry.Topology.realProjectiveThreeBasepoint)
           (i := false)) =
       p.step.leftFactorHom.comp p.leftFundamentalGroupEquiv.toMonoidHom := by
   ext g
   change p.step.forwardFundamentalGroupEquiv
       (fundamentalGroupSourceFreeProductEquivCoprod p.left.basepoint p.right.basepoint
         ((coprodIMulEquiv
-          (fundamentalGroupSourceFactor Poincare.Topology.realProjectiveThreeBasepoint
-            Poincare.Topology.realProjectiveThreeBasepoint)
+          (fundamentalGroupSourceFactor DifferentialGeometry.Topology.realProjectiveThreeBasepoint
+            DifferentialGeometry.Topology.realProjectiveThreeBasepoint)
           (fundamentalGroupSourceFactor p.left.basepoint p.right.basepoint)
           p.sourceFactorEquiv)
             (Monoid.CoprodI.of (i := false) g))) = _
   have hsource := DFunLike.congr_fun
     (coprodIMulEquiv_comp_of
-      (fundamentalGroupSourceFactor Poincare.Topology.realProjectiveThreeBasepoint
-        Poincare.Topology.realProjectiveThreeBasepoint)
+      (fundamentalGroupSourceFactor DifferentialGeometry.Topology.realProjectiveThreeBasepoint
+        DifferentialGeometry.Topology.realProjectiveThreeBasepoint)
       (fundamentalGroupSourceFactor p.left.basepoint p.right.basepoint)
       p.sourceFactorEquiv false) g
   change
     (coprodIMulEquiv
-      (fundamentalGroupSourceFactor Poincare.Topology.realProjectiveThreeBasepoint
-        Poincare.Topology.realProjectiveThreeBasepoint)
+      (fundamentalGroupSourceFactor DifferentialGeometry.Topology.realProjectiveThreeBasepoint
+        DifferentialGeometry.Topology.realProjectiveThreeBasepoint)
       (fundamentalGroupSourceFactor p.left.basepoint p.right.basepoint)
       p.sourceFactorEquiv)
         (Monoid.CoprodI.of (i := false) g) =
@@ -255,29 +255,29 @@ theorem ProjectiveConnectedSumPresentation.connectedSumFundamentalGroupEquiv_com
     p.connectedSumFundamentalGroupEquiv.toMonoidHom.comp
         (Monoid.CoprodI.of
           (M := fundamentalGroupSourceFactor
-            Poincare.Topology.realProjectiveThreeBasepoint
-            Poincare.Topology.realProjectiveThreeBasepoint)
+            DifferentialGeometry.Topology.realProjectiveThreeBasepoint
+            DifferentialGeometry.Topology.realProjectiveThreeBasepoint)
           (i := true)) =
       p.step.rightFactorHom.comp p.rightFundamentalGroupEquiv.toMonoidHom := by
   ext g
   change p.step.forwardFundamentalGroupEquiv
       (fundamentalGroupSourceFreeProductEquivCoprod p.left.basepoint p.right.basepoint
         ((coprodIMulEquiv
-          (fundamentalGroupSourceFactor Poincare.Topology.realProjectiveThreeBasepoint
-            Poincare.Topology.realProjectiveThreeBasepoint)
+          (fundamentalGroupSourceFactor DifferentialGeometry.Topology.realProjectiveThreeBasepoint
+            DifferentialGeometry.Topology.realProjectiveThreeBasepoint)
           (fundamentalGroupSourceFactor p.left.basepoint p.right.basepoint)
           p.sourceFactorEquiv)
             (Monoid.CoprodI.of (i := true) g))) = _
   have hsource := DFunLike.congr_fun
     (coprodIMulEquiv_comp_of
-      (fundamentalGroupSourceFactor Poincare.Topology.realProjectiveThreeBasepoint
-        Poincare.Topology.realProjectiveThreeBasepoint)
+      (fundamentalGroupSourceFactor DifferentialGeometry.Topology.realProjectiveThreeBasepoint
+        DifferentialGeometry.Topology.realProjectiveThreeBasepoint)
       (fundamentalGroupSourceFactor p.left.basepoint p.right.basepoint)
       p.sourceFactorEquiv true) g
   change
     (coprodIMulEquiv
-      (fundamentalGroupSourceFactor Poincare.Topology.realProjectiveThreeBasepoint
-        Poincare.Topology.realProjectiveThreeBasepoint)
+      (fundamentalGroupSourceFactor DifferentialGeometry.Topology.realProjectiveThreeBasepoint
+        DifferentialGeometry.Topology.realProjectiveThreeBasepoint)
       (fundamentalGroupSourceFactor p.left.basepoint p.right.basepoint)
       p.sourceFactorEquiv)
         (Monoid.CoprodI.of (i := true) g) =
@@ -297,7 +297,7 @@ theorem ProjectiveConnectedSumPresentation.fundamentalGroupEquiv_comp_leftFactor
     (p : ProjectiveConnectedSumPresentation) :
     p.fundamentalGroupEquiv.toMonoidHom.comp p.step.leftFactorHom =
       Monoid.Coprod.inl.comp
-        (Poincare.Topology.fundamentalGroupRealProjectiveThreeEquivTwoElement.toMonoidHom.comp
+        (DifferentialGeometry.Topology.fundamentalGroupRealProjectiveThreeEquivTwoElement.toMonoidHom.comp
           p.leftFundamentalGroupEquiv.symm.toMonoidHom) := by
   ext g
   change projectiveConnectedSumSourceEquivTwoElementCoprod
@@ -322,7 +322,7 @@ theorem ProjectiveConnectedSumPresentation.fundamentalGroupEquiv_comp_rightFacto
     (p : ProjectiveConnectedSumPresentation) :
     p.fundamentalGroupEquiv.toMonoidHom.comp p.step.rightFactorHom =
       Monoid.Coprod.inr.comp
-        (Poincare.Topology.fundamentalGroupRealProjectiveThreeEquivTwoElement.toMonoidHom.comp
+        (DifferentialGeometry.Topology.fundamentalGroupRealProjectiveThreeEquivTwoElement.toMonoidHom.comp
           p.rightFundamentalGroupEquiv.symm.toMonoidHom) := by
   ext g
   change projectiveConnectedSumSourceEquivTwoElementCoprod
@@ -349,4 +349,4 @@ theorem ProjectiveConnectedSumPresentation.infinite_fundamentalGroup
   infinite_fundamentalGroup_projectiveConnectedSum p.result.basepoint
     p.connectedSumFundamentalGroupEquiv
 
-end Poincare.Topology.ThreeManifold
+end DifferentialGeometry.Topology.ThreeManifold

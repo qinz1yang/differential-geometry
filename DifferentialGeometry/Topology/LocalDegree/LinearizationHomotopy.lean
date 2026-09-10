@@ -8,7 +8,7 @@ open scoped Topology unitInterval
 
 noncomputable section
 
-namespace Poincare.LocalDegree
+namespace DifferentialGeometry.LocalDegree
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
@@ -155,4 +155,4 @@ theorem exists_sphereMap_linearization_homotopy {f : E → F} {x : E} {s : Set E
     ⟨normalizedLinearizationHomotopy A hc hn r, fun t v ↦ ?_⟩⟩
   exact homeomorphUnitSphereProd_apply_fst_coe F _
 
-end Poincare.LocalDegree
+end DifferentialGeometry.LocalDegree

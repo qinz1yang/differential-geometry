@@ -6,7 +6,7 @@ set_option autoImplicit false
 noncomputable section
 open Bundle Set Metric Filter
 open scoped Manifold ContDiff Topology
-namespace Poincare.VectorField
+namespace DifferentialGeometry.VectorField
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
   {H M : Type*} [TopologicalSpace H] [TopologicalSpace M] [ChartedSpace H M] [T2Space M]
   {I : ModelWithCorners ℝ E H} [IsManifold I 1 M]
@@ -17,11 +17,11 @@ omit [FiniteDimensional ℝ E] [T2Space M] [IsManifold I 1 M] in
 theorem support_patchInCoordinates_bumpPerturbation (ρ : E → ℝ) (v : E)
     (hρ : Function.support ρ ⊆ c.target) :
     Function.support (fun x => patchInCoordinates c V
-      (Poincare.Calculus.bumpPerturbation
+      (DifferentialGeometry.Calculus.bumpPerturbation
         (_root_.VectorField.mpullback 𝓘(ℝ, E) I c.symm V) ρ v) x - V x) =
       c.symm '' {y | ρ y ≠ 0 ∧ v ≠ 0} := by
   let f : E → E := _root_.VectorField.mpullback 𝓘(ℝ, E) I c.symm V
-  let g : E → E := Poincare.Calculus.bumpPerturbation f ρ v
+  let g : E → E := DifferentialGeometry.Calculus.bumpPerturbation f ρ v
   have heq (x : M) (hx : x ∈ c.source) :
       patchInCoordinates c V g x = V x ↔ ρ (c x) = 0 ∨ v = 0 := by
     rw [patchInCoordinates_of_mem c V g hx]
@@ -57,7 +57,7 @@ theorem exists_small_regular_chart_perturbation
       (hG : ContMDiff I I.tangent ∞ (fun x => (⟨x, G x⟩ : TangentBundle I M))),
       ContDiff ℝ ∞ ρ ∧ HasCompactSupport ρ ∧ Function.support ρ = ball a R ∧
       EqOn ρ 1 (closedBall a r) ∧ (∀ y, ρ y ∈ Icc (0 : ℝ) 1) ∧
-      G = patchInCoordinates c V (Poincare.Calculus.bumpPerturbation
+      G = patchInCoordinates c V (DifferentialGeometry.Calculus.bumpPerturbation
         (_root_.VectorField.mpullback 𝓘(ℝ, E) I c.symm V) ρ v) ∧
       ‖v‖ < ε ∧
       Function.support (fun x => G x - V x) = {x ∈ c.symm '' ball a R | v ≠ 0} ∧
@@ -67,7 +67,7 @@ theorem exists_small_regular_chart_perturbation
         (fun y => (⟨y, G y⟩ : TangentBundle I M)) =ᶠ[𝓝 x]
           (fun y => (⟨y, V y⟩ : TangentBundle I M))) ∧
       (∀ y ∈ c.target, _root_.VectorField.mpullback 𝓘(ℝ, E) I c.symm G y =
-        Poincare.Calculus.bumpPerturbation
+        DifferentialGeometry.Calculus.bumpPerturbation
           (_root_.VectorField.mpullback 𝓘(ℝ, E) I c.symm V) ρ v y) ∧
       (∀ y ∈ c.target, ‖(show E from _root_.VectorField.mpullback 𝓘(ℝ, E) I c.symm G y) -
         (show E from _root_.VectorField.mpullback 𝓘(ℝ, E) I c.symm V y)‖ < ε) ∧
@@ -86,8 +86,8 @@ theorem exists_small_regular_chart_perturbation
     exact hannulus y hy hyr
       ((mpullback_partialDiffeomorph_eq_zero_iff c.symm (by simp) V (hRt hy)).mp hz)
   obtain ⟨ρ, v, hρ, hρcompact, hρsupport, hρone, hρrange, hv, _, hg, hfixed, hsmall, hregular, hfinite⟩ :=
-    Poincare.Calculus.exists_small_regular_ball_perturbation a hr hrR c.open_target hRt hf hn hε
-  let g : E → E := Poincare.Calculus.bumpPerturbation f ρ v
+    DifferentialGeometry.Calculus.exists_small_regular_ball_perturbation a hr hrR c.open_target hRt hf hn hε
+  let g : E → E := DifferentialGeometry.Calculus.bumpPerturbation f ρ v
   have hagree : ∀ y ∈ c.target \ closedBall a R, g y = f y := by
     intro y hy
     exact hfixed y (le_of_lt (lt_of_not_ge hy.2))
@@ -129,11 +129,11 @@ theorem exists_small_regular_chart_perturbation
       erw [c.right_inv (hRt hy)] at hzy
       exact hzy
     obtain ⟨hinner, hdet⟩ := hregular y hy hgzero
-    have hiso : Poincare.LocalDegree.isolatedZero g y :=
-      Poincare.LocalDegree.isolatedZero_of_finite_zeroSet
+    have hiso : DifferentialGeometry.LocalDegree.isolatedZero g y :=
+      DifferentialGeometry.LocalDegree.isolatedZero_of_finite_zeroSet
         (closedBall_mem_nhds_of_mem (ball_subset_ball hrR.le hinner))
         (hg.continuousOn.mono hRt) hfinite hgzero
-    have hiso' : Poincare.LocalDegree.isolatedZero g (c (c.symm y)) := by
+    have hiso' : DifferentialGeometry.LocalDegree.isolatedZero g (c (c.symm y)) := by
       erw [c.right_inv (hRt hy)]
       exact hiso
     refine ⟨⟨y, hinner, rfl⟩,
@@ -145,4 +145,4 @@ theorem exists_small_regular_chart_perturbation
     erw [c.right_inv (hRt hy)]
     exact hdet
 
-end Poincare.VectorField
+end DifferentialGeometry.VectorField

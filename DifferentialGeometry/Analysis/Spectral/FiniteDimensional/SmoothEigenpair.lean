@@ -7,7 +7,7 @@ noncomputable section
 open Set Filter Topology
 open scoped ContDiff InnerProductSpace
 
-namespace Poincare.Analysis
+namespace DifferentialGeometry.Analysis
 
 theorem exists_smooth_eigenpair_near_simple
     {P E : Type*} [NormedAddCommGroup P] [NormedSpace ℝ P] [CompleteSpace P]
@@ -68,4 +68,4 @@ theorem exists_smooth_eigenpair_near_simple
   change A p (s p).2 - (s p).1 • (s p).2 = 0 at heigen'
   exact ⟨by nlinarith [norm_nonneg (s p).2], sub_eq_zero.mp heigen'⟩
 
-end Poincare.Analysis
+end DifferentialGeometry.Analysis

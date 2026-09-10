@@ -13,7 +13,7 @@ open CategoryTheory Set
 
 universe u v
 
-namespace Poincare.Topology.VanKampen
+namespace DifferentialGeometry.Topology.VanKampen
 
 def interToLeft {X : Type u} [TopologicalSpace X] (U V : Set X) : C(↥(U ∩ V), ↥U) where
   toFun x := ⟨x.1, x.2.1⟩
@@ -1175,4 +1175,4 @@ theorem coveredEvaluation_eq_rightPathMap (hcover : U ∪ V = univ) {x y : X}
 
 end LocalFunctorData
 
-end Poincare.Topology.VanKampen
+end DifferentialGeometry.Topology.VanKampen

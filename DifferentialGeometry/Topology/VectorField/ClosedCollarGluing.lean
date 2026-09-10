@@ -4,7 +4,7 @@ set_option autoImplicit false
 open Set Function Bundle Manifold TopologicalSpace
 open scoped ContDiff Topology
 noncomputable section
-namespace Poincare.VectorField
+namespace DifferentialGeometry.VectorField
 
 theorem exists_closedCollarGluing
     {E H B : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -23,7 +23,7 @@ theorem exists_closedCollarGluing
       ⟨(p, ⟨0, ⟨le_rfl, (Fact.out : (0 : ℝ) < ε).le⟩⟩), hcore ha.le⟩
     let T : ∀ p : B, TangentSpace J p := fun p => (W (z p)).1
     let b : B → ℝ := fun p =>
-      -(Poincare.Manifold.Interval.tangentCoordinateIcc (z p).val.2 (W (z p)).2) / a.val
+      -(DifferentialGeometry.Manifold.Interval.tangentCoordinateIcc (z p).val.2 (W (z p)).2) / a.val
     ∃ κ : U → S, ContMDiff (J.prod 𝓘(ℝ, ℝ)) (J.prod (𝓡∂ 1)) ∞ κ ∧
       (∀ q : U, (κ q).val.1 = q.val.1 ∧
         (κ q).val.2.val = -a.val * collarNormalizationTime η q.val.2) ∧
@@ -32,7 +32,7 @@ theorem exists_closedCollarGluing
         ContMDiff (J.prod 𝓘(ℝ, ℝ)) (J.prod 𝓘(ℝ, ℝ)).tangent ∞
           (fun q => (⟨q, G q⟩ : TangentBundle (J.prod 𝓘(ℝ, ℝ)) U)) ∧
         (∀ q : U, q.val.2 ≤ 0 → G q = ((W (κ q)).1,
-          -(Poincare.Manifold.Interval.tangentCoordinateIcc (κ q).val.2 (W (κ q)).2) / a.val)) ∧
+          -(DifferentialGeometry.Manifold.Interval.tangentCoordinateIcc (κ q).val.2 (W (κ q)).2) / a.val)) ∧
         (∀ q : U, 0 < q.val.2 → G q = collarExtension T b collarTransition q.val) ∧
         (∀ q : U, q.val.2 = 0 → G q = (T q.val.1, b q.val.1)) ∧
         (∀ q : U, 2 / 3 ≤ q.val.2 → G q = (T q.val.1, (1 : ℝ))) ∧
@@ -48,15 +48,15 @@ theorem exists_closedCollarGluing
     (((contMDiff_tangentSection_opens_iff S W).mp hW).comp hz)
   have hT : ContMDiff J J.tangent ∞ (fun p => (⟨p, T p⟩ : TangentBundle J B)) := hcomponents.fst
   have hb : ContMDiff J 𝓘(ℝ, ℝ) ∞ b := by
-    have hscalar := Poincare.Manifold.Interval.contMDiff_tangentCoordinateIcc.comp hcomponents.snd
+    have hscalar := DifferentialGeometry.Manifold.Interval.contMDiff_tangentCoordinateIcc.comp hcomponents.snd
     have hlin : ContDiff ℝ ∞ (fun r : ℝ => -r / a.val) := by fun_prop
     exact hlin.contMDiff.comp hscalar
   have hboundary (p : B) (hTp : T p = 0) : b p ≠ 0 := by
     intro hbp
-    have hv : Poincare.Manifold.Interval.tangentCoordinateIcc (z p).val.2 (W (z p)).2 = 0 :=
+    have hv : DifferentialGeometry.Manifold.Interval.tangentCoordinateIcc (z p).val.2 (W (z p)).2 = 0 :=
       neg_eq_zero.mp ((div_eq_zero_iff.mp hbp).resolve_right ha.ne')
     exact hnonzero (z p) (Prod.ext hTp
-      ((Poincare.Manifold.Interval.tangentCoordinateIcc (z p).val.2).map_eq_zero_iff.mp hv))
+      ((DifferentialGeometry.Manifold.Interval.tangentCoordinateIcc (z p).val.2).map_eq_zero_iff.mp hv))
   have hNboundary (q : U) (hq : -η / 3 ≤ q.val.2) : N q = (T q.val.1, b q.val.1) := by
     have hk : κ q = z q.val.1 := by
       apply Subtype.ext
@@ -65,9 +65,9 @@ theorem exists_closedCollarGluing
       change (κ q).val.2.val = 0
       rw [(hκeq q).2, collarNormalizationTime_eq_zero hη hq, mul_zero]
     rw [hNeq q]
-    change ((W (κ q)).1, -(Poincare.Manifold.Interval.tangentCoordinateIcc (κ q).val.2
+    change ((W (κ q)).1, -(DifferentialGeometry.Manifold.Interval.tangentCoordinateIcc (κ q).val.2
       (W (κ q)).2) / a.val) = ((W (z q.val.1)).1,
-        -(Poincare.Manifold.Interval.tangentCoordinateIcc (z q.val.1).val.2 (W (z q.val.1)).2) / a.val)
+        -(DifferentialGeometry.Manifold.Interval.tangentCoordinateIcc (z q.val.1).val.2 (W (z q.val.1)).2) / a.val)
     rw [hk]
   let G : ∀ q : U, TangentSpace (J.prod 𝓘(ℝ, ℝ)) q := fun q =>
     if q.val.2 ≤ 0 then N q else collarExtension T b collarTransition q.val
@@ -111,4 +111,4 @@ theorem exists_closedCollarGluing
       exact (collarExtension_eq_zero_iff (hboundary q.val.1) (collarTransition_mem_Icc q.val.2)).trans
         (by simp only [lt_of_not_ge hq, true_and])
 
-end Poincare.VectorField
+end DifferentialGeometry.VectorField

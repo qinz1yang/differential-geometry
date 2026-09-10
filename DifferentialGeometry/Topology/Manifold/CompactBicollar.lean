@@ -15,7 +15,7 @@ open scoped Manifold ContDiff
 
 noncomputable section
 
-namespace Poincare.Topology
+namespace DifferentialGeometry.Topology
 
 theorem exists_smoothTwoSidedCollar_of_localDiffeomorphAt_zero
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -91,4 +91,4 @@ theorem exists_smoothTwoSidedCollar_of_localDiffeomorphAt_zero
     toDiffeomorph := diffeomorphRangeOfInjective hf hfInj
     zero_eq := fun x ↦ hzero x }⟩
 
-end Poincare.Topology
+end DifferentialGeometry.Topology

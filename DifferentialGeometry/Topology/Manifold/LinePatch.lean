@@ -5,9 +5,9 @@ noncomputable section
 open Set Filter Topology
 open scoped ContDiff Manifold BigOperators
 
-namespace Poincare.Topology.Manifold
+namespace DifferentialGeometry.Topology.Manifold
 
-open Poincare.Topology.Combinatorics
+open DifferentialGeometry.Topology.Combinatorics
 
 open scoped Classical in
 theorem mvfderiv_line_bump_partition_sum_pos
@@ -94,4 +94,4 @@ theorem contMDiff_and_mvfderiv_ne_zero_line_bump_partition
     rw [hz] at hpos
     exact (lt_irrefl 0) hpos
 
-end Poincare.Topology.Manifold
+end DifferentialGeometry.Topology.Manifold

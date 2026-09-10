@@ -9,7 +9,7 @@ open DifferentialGeometry DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection DifferentialGeometry.Tensor0SBundle
 open DifferentialGeometry.CheegerGromovCompactness
 
-namespace Poincare.Geometry.Curvature
+namespace DifferentialGeometry.Geometry.Curvature
 
 variable {E H M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
   [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
@@ -82,4 +82,4 @@ theorem ricciSharp_restrictOpen
   rw [inclusionTangentEquiv_apply, ← restrict_inner, inner_ricciSharp, inner_ricciSharp]
   exact ricciTensor_restrictOpen g U x v w
 
-end Poincare.Geometry.Curvature
+end DifferentialGeometry.Geometry.Curvature

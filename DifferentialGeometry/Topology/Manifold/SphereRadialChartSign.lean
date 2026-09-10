@@ -8,7 +8,7 @@ noncomputable section
 open Set Metric Filter Topology Manifold Module
 open scoped ContDiff
 
-namespace Poincare.Topology.Manifold
+namespace DifferentialGeometry.Topology.Manifold
 
 theorem det_radial_pos_iff_det_chart_pos
     (e : OpenPartialHomeomorph (sphere (0 : EuclideanSpace ℝ (Fin 3)) 1) ℂ)
@@ -69,11 +69,11 @@ theorem det_radial_pos_iff_det_chart_pos
     exact (convex_Ioi (0 : ℝ)).isPreconnected.prod convex_univ.isPreconnected
   have ha : a ∈ c.source := hcs ▸ ⟨show (0 : ℝ) < 1 from zero_lt_one, mem_univ _⟩
   have hGa : G a ∈ c.source := hcs ▸ ⟨show (0 : ℝ) < 1 from zero_lt_one, mem_univ _⟩
-  have hsign := Poincare.Analysis.det_fderiv_pos_iff_of_equivalent_coordinates
+  have hsign := DifferentialGeometry.Analysis.det_fderiv_pos_iff_of_equivalent_coordinates
     L c hconn F G ha hGa hF hG.differentiableAt hcomm
   rw [hca, hG.fderiv] at hsign
   change 0 < (fderiv ℝ F (v : EuclideanSpace ℝ (Fin 3))).toLinearMap.det ↔
     0 < (LinearMap.prodMap (LinearMap.id : ℝ →ₗ[ℝ] ℝ) (fderiv ℝ g (e v)).toLinearMap).det at hsign
   simpa only [LinearMap.det_prodMap, LinearMap.det_id, one_mul] using hsign
 
-end Poincare.Topology.Manifold
+end DifferentialGeometry.Topology.Manifold

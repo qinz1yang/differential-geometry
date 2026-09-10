@@ -8,7 +8,7 @@ open CategoryTheory.Limits
 open Simplicial
 open scoped Simplicial
 
-namespace Poincare.Topology.SphereSeparation
+namespace DifferentialGeometry.Topology.SphereSeparation
 
 private theorem nonemptyFaceBarycenter_eq_of_finset_eq
     {n : ℕ} {A B : Finset (Fin (n + 1))}
@@ -732,4 +732,4 @@ theorem barycentricSubdivisionDegreeMap_boundary_zero (X : TopCat) :
     delta_one_barycentricPiece_one_swap]
   abel
 
-end Poincare.Topology.SphereSeparation
+end DifferentialGeometry.Topology.SphereSeparation

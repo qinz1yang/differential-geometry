@@ -16,13 +16,13 @@ noncomputable section
 open Bundle Filter Manifold MeasureTheory Set Topology
 open scoped ENNReal Manifold ContDiff Topology
 
-namespace Poincare.Toponogov
+namespace DifferentialGeometry.Toponogov
 
 open DifferentialGeometry
 open DifferentialGeometry.Geometry.Riemannian
 open DifferentialGeometry.Geometry.Riemannian.Geodesic
-open Poincare.Geometry
-open Poincare.Geometry.Riemannian
+open DifferentialGeometry.Geometry
+open DifferentialGeometry.Geometry.Riemannian
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [CompleteSpace E]
@@ -234,4 +234,4 @@ theorem squaredDistanceDefect_convexOn_of_complete
     (I := I) g hsec p beta J hJ hbeta
       (realizedConnectors_of_complete (I := I) g hcomplete p beta J)
 
-end Poincare.Toponogov
+end DifferentialGeometry.Toponogov

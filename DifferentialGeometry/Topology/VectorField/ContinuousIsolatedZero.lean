@@ -5,7 +5,7 @@ set_option autoImplicit false
 open Bundle Filter Set
 open scoped Manifold ContDiff Topology
 noncomputable section
-namespace Poincare.VectorField
+namespace DifferentialGeometry.VectorField
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   {H : Type*} [TopologicalSpace H] {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
@@ -53,7 +53,7 @@ theorem HasContinuousIsolatedZero.model_pullback {n : ℕ∞ω}
     {V : ∀ x : M, TangentSpace I x}
     (f : PartialDiffeomorph 𝓘(ℝ, E) I E M n) (hn : 1 ≤ n)
     {a : E} (ha : a ∈ f.source) (hV : HasContinuousIsolatedZero I V (f a)) :
-    Poincare.LocalDegree.isolatedZero (_root_.VectorField.mpullback 𝓘(ℝ, E) I f V) a := by
+    DifferentialGeometry.LocalDegree.isolatedZero (_root_.VectorField.mpullback 𝓘(ℝ, E) I f V) a := by
   obtain ⟨s, hs, hc⟩ := hV.continuous
   obtain ⟨U, hUs, hU, haU⟩ := mem_nhds_iff.mp hs
   let t : Set E := f.source ∩ f ⁻¹' U
@@ -67,7 +67,7 @@ theorem HasContinuousIsolatedZero.model_pullback {n : ℕ∞ω}
         (fun z => (⟨z, V z⟩ : TangentBundle I M)) (f y) :=
       (contMDiffOn_zero_iff.mpr (hc.mono hUs)).contMDiffAt (hU.mem_nhds hy.2)
     exact (contMDiffAt_mpullback_partialDiffeomorph f (by simpa using hn) hy.1 hVy).continuousAt.continuousWithinAt
-  apply Poincare.LocalDegree.isolatedZero_of_nhds ht (continuousOn_model_section hP)
+  apply DifferentialGeometry.LocalDegree.isolatedZero_of_nhds ht (continuousOn_model_section hP)
   · exact (mpullback_partialDiffeomorph_eq_zero_iff f
       (ne_of_gt (zero_lt_one.trans_le hn)) V ha).mpr hV.zero
   · apply eventually_nhdsWithin_iff.mpr
@@ -80,9 +80,9 @@ theorem HasContinuousIsolatedZero.in_coordinates
     {V : ∀ x : M, TangentSpace I x} {x : M}
     (hV : HasContinuousIsolatedZero I V x) {n : ℕ∞ω}
     (c : PartialDiffeomorph I 𝓘(ℝ, E) M E n) (hn : 1 ≤ n) (hx : x ∈ c.source) :
-    Poincare.LocalDegree.isolatedZero
+    DifferentialGeometry.LocalDegree.isolatedZero
       (_root_.VectorField.mpullback 𝓘(ℝ, E) I c.symm V) (c x) := by
   apply HasContinuousIsolatedZero.model_pullback I c.symm hn (c.map_source hx)
   exact (c.left_inv hx).symm ▸ hV
 
-end Poincare.VectorField
+end DifferentialGeometry.VectorField

@@ -8,7 +8,7 @@ noncomputable section
 open Set
 open scoped Manifold ContDiff Topology
 open DifferentialGeometry.Integral.DivergenceTheorem.WithBoundary
-namespace Poincare.Homology
+namespace DifferentialGeometry.Homology
 variable {n : ℕ} {M : Type} [TopologicalSpace M]
   [ChartedSpace (EuclideanHalfSpace (n + 1)) M]
   [IsManifold (𝓡∂ (n + 1)) ∞ M] [T2Space M] [CompactSpace M]
@@ -46,4 +46,4 @@ theorem eulerChar_boundary_component_parity (K : Type) [Field K]
   rw [hdim] at h
   exact h
 
-end Poincare.Homology
+end DifferentialGeometry.Homology

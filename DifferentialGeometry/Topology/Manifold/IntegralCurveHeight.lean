@@ -5,7 +5,7 @@ noncomputable section
 open Set Filter Function Topology Manifold
 open scoped ContDiff
 
-namespace Poincare.Topology.Manifold
+namespace DifferentialGeometry.Topology.Manifold
 
 variable {E H M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [TopologicalSpace H] [TopologicalSpace M] [ChartedSpace H M]
@@ -40,4 +40,4 @@ theorem height_eq_add_mul_time {u : M → ℝ} {v : (x : M) → TangentSpace I x
     (show (0 : ℝ) ∈ Ico 0 ε from ⟨le_rfl, hε⟩) (by simp)
   exact fun t ht ↦ heq ht
 
-end Poincare.Topology.Manifold
+end DifferentialGeometry.Topology.Manifold

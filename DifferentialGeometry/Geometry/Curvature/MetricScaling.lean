@@ -6,7 +6,7 @@ open scoped Manifold ContDiff
 open DifferentialGeometry DifferentialGeometry.Geometry.Connection
 open DifferentialGeometry.Geometry.Curvature
 
-namespace Poincare.Geometry.Curvature
+namespace DifferentialGeometry.Geometry.Curvature
 
 variable {E H M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
@@ -31,4 +31,4 @@ theorem ricciTensor_scaleMetric (g : SmoothRiemannianMetric I M)
   ext z
   rw [ricciEndo_apply, ricciEndo_apply, riemannOp_scaleMetric]
 
-end Poincare.Geometry.Curvature
+end DifferentialGeometry.Geometry.Curvature

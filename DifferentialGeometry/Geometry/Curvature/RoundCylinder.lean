@@ -8,9 +8,9 @@ noncomputable section
 open scoped Manifold ContDiff
 open DifferentialGeometry DifferentialGeometry.Geometry
 open DifferentialGeometry.Geometry.Curvature
-open Poincare.Geometry.Metric
+open DifferentialGeometry.Geometry.Metric
 
-namespace Poincare.Geometry.Curvature
+namespace DifferentialGeometry.Geometry.Curvature
 
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
   {n : ℕ} [Fact (Module.finrank ℝ E = n + 1)]
@@ -68,4 +68,4 @@ theorem metricScalarAt_roundCylinder (x : Metric.sphere (0 : E) 1 × ℝ) :
   simp only [finrank_euclideanSpace_fin, smul_eq_mul, add_zero]
   ring
 
-end Poincare.Geometry.Curvature
+end DifferentialGeometry.Geometry.Curvature

@@ -6,7 +6,7 @@ noncomputable section
 open scoped Manifold ContDiff
 open DifferentialGeometry DifferentialGeometry.Geometry DifferentialGeometry.Geometry.Curvature
 
-namespace Poincare.Geometry.Curvature
+namespace DifferentialGeometry.Geometry.Curvature
 
 theorem ricciTensor_roundSphere
     {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
@@ -40,4 +40,4 @@ theorem ricciTensor_scaledRoundSphere
   rw [ricciTensor_scaleMetric, ricciTensor_roundSphere, scaleMetric_inner]
   field_simp
 
-end Poincare.Geometry.Curvature
+end DifferentialGeometry.Geometry.Curvature

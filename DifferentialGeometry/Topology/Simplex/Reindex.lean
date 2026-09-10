@@ -4,7 +4,7 @@ import DifferentialGeometry.Topology.Simplex.BoundaryRetraction
 set_option autoImplicit false
 noncomputable section
 
-namespace Poincare.Simplex
+namespace DifferentialGeometry.Simplex
 
 variable {ι κ : Type*} [Fintype ι] [Fintype κ]
 
@@ -56,4 +56,4 @@ theorem vertexMap_reindex {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   simpa only [e.symm_apply_apply] using
     (e.sum_comp (fun j ↦ x.val (e.symm j) • v j)).symm
 
-end Poincare.Simplex
+end DifferentialGeometry.Simplex

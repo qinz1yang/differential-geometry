@@ -9,7 +9,7 @@ open scoped Manifold
 
 noncomputable section
 
-namespace Poincare.VectorField
+namespace DifferentialGeometry.VectorField
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 
@@ -107,4 +107,4 @@ theorem det_fderiv_collarExtension_ne_zero_iff [FiniteDimensional ℝ E]
   rw [det_fderiv_collarExtension hT hb (contDiff_collarTransition.differentiable (by simp) t)]
   exact mul_ne_zero_iff.trans (and_iff_right (collar_normal_factor_pos hboundary hzero).ne')
 
-end Poincare.VectorField
+end DifferentialGeometry.VectorField

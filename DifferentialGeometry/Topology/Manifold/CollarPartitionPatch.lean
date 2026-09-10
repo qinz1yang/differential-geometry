@@ -5,7 +5,7 @@ noncomputable section
 open Set
 open scoped Manifold ContDiff BigOperators
 
-namespace Poincare.Topology.Manifold
+namespace DifferentialGeometry.Topology.Manifold
 
 private theorem sum_consecutive_sub_mul {n : ℕ} (a : Fin (n + 2) → ℝ)
     (b : Fin (n + 1) → ℝ) (hfirst : a 0 = 0) (hlast : a (Fin.last (n + 1)) = 0) :
@@ -120,4 +120,4 @@ theorem mvfderiv_orderedStepPartition_sum_pos_of_pairwiseDisjoint
     (∑ i, ρ i x * mvfderiv I (u i) x v)| ≤ D * δ at herr
   linarith only [hmain', herr, hneg, hsmall]
 
-end Poincare.Topology.Manifold
+end DifferentialGeometry.Topology.Manifold

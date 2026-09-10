@@ -34,7 +34,7 @@ theorem embeddedSlice_inclusion_preservesGeodesics
     let hS := isEmbeddedSlice_of_relBoundary_eq_empty hEnorm hconv hB
     let _ := embeddedSliceChartedSpace hS
     let _ := embeddedSlice_isManifold hS
-    Poincare.Geometry.PreservesGeodesics
+    DifferentialGeometry.Geometry.PreservesGeodesics
       (inducedSliceMetric g hS) g (Subtype.val : S → M) := by
   let hS := isEmbeddedSlice_of_relBoundary_eq_empty hEnorm hconv hB
   let _ := embeddedSliceChartedSpace hS

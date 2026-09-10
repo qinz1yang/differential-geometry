@@ -9,9 +9,9 @@ open Set Bundle
 open scoped Manifold ContDiff
 open DifferentialGeometry DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.Geometry.Curvature
-open Poincare.Geometry.Metric Poincare.Geometry.Gradient
+open DifferentialGeometry.Geometry.Metric DifferentialGeometry.Geometry.Gradient
 
-namespace Poincare.Geometry.Curvature
+namespace DifferentialGeometry.Geometry.Curvature
 
 theorem exists_smooth_least_ricci_field_from_neck_chart
     {E F H N : Type*}
@@ -92,4 +92,4 @@ theorem exists_smooth_least_ricci_field_from_neck_chart
     rw [mvfderiv_scaled_chart_coordinate Φ _ hf Q hQ]
     exact (restricted_roundCylinder_height_differential_bound O x (w x)).trans hwd
 
-end Poincare.Geometry.Curvature
+end DifferentialGeometry.Geometry.Curvature

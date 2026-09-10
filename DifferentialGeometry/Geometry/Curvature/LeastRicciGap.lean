@@ -6,7 +6,7 @@ open scoped Manifold ContDiff InnerProductSpace
 open DifferentialGeometry DifferentialGeometry.Tensor0SBundle
 open DifferentialGeometry.Geometry.Curvature
 
-namespace Poincare.Geometry.Curvature
+namespace DifferentialGeometry.Geometry.Curvature
 
 theorem least_ricci_eigenpair_of_axis_error
     {E H M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
@@ -49,17 +49,17 @@ theorem least_ricci_eigenpair_of_axis_error
       ‖A z - κ • (z - ⟪v, z⟫_ℝ • v)‖ ≤ ε * ‖z‖ := by
     rw [hn, hn, hi]
     exact herror z
-  have hmin := Poincare.Analysis.is_least_eigenvalue_of_axis_error A hA v he w hwn heigen hμ
-  have habs := Poincare.Analysis.abs_least_eigenvalue_le_axis_error A v hvn hκ.le he w hwn heigen hmin
+  have hmin := DifferentialGeometry.Analysis.is_least_eigenvalue_of_axis_error A hA v he w hwn heigen hμ
+  have habs := DifferentialGeometry.Analysis.abs_least_eigenvalue_le_axis_error A v hvn hκ.le he w hwn heigen hmin
   refine ⟨?_, habs, ?_⟩
   · intro z hz
     have hzn : ‖z‖ = 1 := by rw [hn, hz, Real.sqrt_one]
     have h := hmin z hzn
     rw [hi] at h
     exact h.trans_eq (inner_ricciSharp g x z z)
-  · apply Poincare.Analysis.eigenspace_eq_span_of_axis_error A v hκ he
+  · apply DifferentialGeometry.Analysis.eigenspace_eq_span_of_axis_error A v hκ he
       (by linarith only [habs, hε]) w _ heigen
     intro hz
     simp [hz] at hwn
 
-end Poincare.Geometry.Curvature
+end DifferentialGeometry.Geometry.Curvature

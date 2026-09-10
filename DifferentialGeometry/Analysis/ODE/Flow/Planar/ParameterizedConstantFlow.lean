@@ -7,7 +7,7 @@ noncomputable section
 open Set Filter Topology Metric
 open scoped ContDiff Manifold
 
-namespace Poincare.Analysis
+namespace DifferentialGeometry.Analysis
 
 variable {P E : Type*} [NormedAddCommGroup P] [NormedSpace ℝ P] [FiniteDimensional ℝ P]
   [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
@@ -91,4 +91,4 @@ theorem exists_smoothFlow_family_of_uniform_const_off_compact
     apply Diffeomorph.ext
     exact fun _ ↦ rfl
 
-end Poincare.Analysis
+end DifferentialGeometry.Analysis

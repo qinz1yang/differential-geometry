@@ -5,7 +5,7 @@ set_option autoImplicit false
 noncomputable section
 open Set Metric Filter
 open scoped Topology
-namespace Poincare.Topology.ClosedBall
+namespace DifferentialGeometry.Topology.ClosedBall
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   (a : E) {r : ℝ} (hr : 0 ≤ r)
 
@@ -66,4 +66,4 @@ theorem retraction_eventuallyEq_id {x : E} (hx : x ∈ ball a r) :
   filter_upwards [isOpen_ball.mem_nhds hx] with y hy
   exact retraction_apply_of_mem a hr (ball_subset_closedBall hy)
 
-end Poincare.Topology.ClosedBall
+end DifferentialGeometry.Topology.ClosedBall

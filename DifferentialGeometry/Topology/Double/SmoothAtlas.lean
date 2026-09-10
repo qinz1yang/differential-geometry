@@ -5,7 +5,7 @@ set_option autoImplicit false
 noncomputable section
 open Set Function Manifold Topology TopologicalSpace
 open scoped ContDiff Topology
-namespace Poincare.Topology
+namespace DifferentialGeometry.Topology
 
 theorem exists_smoothAtlas_double_of_collar
     {M E H F G : Type} [TopologicalSpace M] [CompactSpace M] [T2Space M]
@@ -80,13 +80,13 @@ theorem exists_smoothAtlas_double_of_collar
     · apply contMDiff_id.contMDiffOn.congr
       intro q hq
       exact doubleSeamPatch_transition_apply B r hr hz hn c hheight hsmall hc ha b b' hq
-  let A := Poincare.Manifold.openCoverChartedSpace V W N Q C e hcover hinterior
-  refine ⟨A, Poincare.Manifold.isManifold_openCoverChartedSpace V W N Q C e hcover hinterior htrans,
-    Poincare.Manifold.contMDiffOn_openCover_parametrization V W N Q C e hcover hinterior htrans (.inl false),
-    Poincare.Manifold.contMDiffOn_openCover_parametrization V W N Q C e hcover hinterior htrans (.inl true), ?_⟩
+  let A := DifferentialGeometry.Manifold.openCoverChartedSpace V W N Q C e hcover hinterior
+  refine ⟨A, DifferentialGeometry.Manifold.isManifold_openCoverChartedSpace V W N Q C e hcover hinterior htrans,
+    DifferentialGeometry.Manifold.contMDiffOn_openCover_parametrization V W N Q C e hcover hinterior htrans (.inl false),
+    DifferentialGeometry.Manifold.contMDiffOn_openCover_parametrization V W N Q C e hcover hinterior htrans (.inl true), ?_⟩
   intro b
-  have hf := Poincare.Manifold.contMDiffOn_openCover_parametrization V W N Q C e hcover hinterior htrans (.inr b)
-  have hg := Poincare.Manifold.contMDiffOn_openCover_inverse V W N Q C e hcover hinterior htrans (.inr b)
+  have hf := DifferentialGeometry.Manifold.contMDiffOn_openCover_parametrization V W N Q C e hcover hinterior htrans (.inr b)
+  have hg := DifferentialGeometry.Manifold.contMDiffOn_openCover_inverse V W N Q C e hcover hinterior htrans (.inr b)
   change ContMDiffOn (J.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, E) ∞
     (doubleSeamPatch B r hr hz hn c hheight hsmall hc ha b)
     (doubleSeamPatch B r hr hz hn c hheight hsmall hc ha b).source at hf
@@ -97,4 +97,4 @@ theorem exists_smoothAtlas_double_of_collar
   rw [doubleSeamPatch_target] at hg
   exact ⟨hf, hg⟩
 
-end Poincare.Topology
+end DifferentialGeometry.Topology

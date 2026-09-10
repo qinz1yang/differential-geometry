@@ -6,9 +6,9 @@ open Set
 open scoped Manifold ContDiff BigOperators
 open DifferentialGeometry DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.Tensor0SBundle
-open Poincare.Geometry.Metric Poincare.Geometry.Curvature
+open DifferentialGeometry.Geometry.Metric DifferentialGeometry.Geometry.Curvature
 
-namespace Poincare.Geometry.Neck
+namespace DifferentialGeometry.Geometry.Neck
 
 private abbrev S := Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1
 private abbrev IC := (𝓡 2).prod 𝓘(ℝ)
@@ -166,4 +166,4 @@ theorem cylindricalChart.scale_ratio_of_metricCloseOn
   convert h using 1
   ring
 
-end Poincare.Geometry.Neck
+end DifferentialGeometry.Geometry.Neck

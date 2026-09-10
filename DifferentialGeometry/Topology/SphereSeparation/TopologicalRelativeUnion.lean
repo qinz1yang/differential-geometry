@@ -6,7 +6,7 @@ set_option autoImplicit false
 open CategoryTheory
 open CategoryTheory.Limits
 
-namespace Poincare.Topology.SphereSeparation
+namespace DifferentialGeometry.Topology.SphereSeparation
 
 def topologicalIntersectionToRight
     {X : Type} [TopologicalSpace X] (A B : Set X) :
@@ -348,4 +348,4 @@ theorem singularExcisionFor
   rw [← quasiIsoAt_iff_isIso_homologyMap]
   infer_instance
 
-end Poincare.Topology.SphereSeparation
+end DifferentialGeometry.Topology.SphereSeparation

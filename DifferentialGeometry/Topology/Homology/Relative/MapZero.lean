@@ -3,7 +3,7 @@ import DifferentialGeometry.Topology.Homology.Relative.Map
 set_option autoImplicit false
 noncomputable section
 open CategoryTheory CategoryTheory.Limits AlgebraicTopology Set
-namespace Poincare.Homology
+namespace DifferentialGeometry.Homology
 universe u
 variable {X Y : TopCat.{u}} {s : Set X} {t : Set Y}
   {k : Type u} [Ring k] (R : ModuleCat.{u} k)
@@ -25,4 +25,4 @@ theorem relativeHomologyMap_eq_zero_of_range_subset (f : X ⟶ Y) (hf : MapsTo f
   unfold relativeHomologyMap
   rw [relativeChainMap_eq_zero_of_range_subset R f hf h]
   exact (_root_.HomologicalComplex.homologyFunctor (ModuleCat.{u} k) (ComplexShape.down ℕ) n).map_zero _ _
-end Poincare.Homology
+end DifferentialGeometry.Homology

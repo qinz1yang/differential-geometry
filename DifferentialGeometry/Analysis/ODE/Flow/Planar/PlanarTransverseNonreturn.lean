@@ -4,7 +4,7 @@ import DifferentialGeometry.Topology.PlanarJordan.ReturnDisk
 
 open Set
 
-namespace Poincare.Analysis
+namespace DifferentialGeometry.Analysis
 
 theorem not_mem_transverse_segment_of_pos
     (φ : _root_.Flow ℝ ℂ) {v : ℂ → ℂ} (hv : Continuous v)
@@ -20,7 +20,7 @@ theorem not_mem_transverse_segment_of_pos
   have haK : a ∈ Icc (-r) r := abs_le.mp (le_max_left |a| |b|)
   have hbK : b ∈ Icc (-r) r := abs_le.mp (le_max_right |a| |b|)
   obtain ⟨T, hT, ⟨c, hc, hce⟩, havoid⟩ :=
-    Poincare.Topology.Flow.exists_first_return_to_transverse_segment φ e hsource he hr haK
+    DifferentialGeometry.Topology.Flow.exists_first_return_to_transverse_segment φ e hsource he hr haK
       ⟨t, ht, b, hbK, hbe⟩
   have hcε : c ∈ Ioo (-ε) ε := by constructor <;> linarith [hc.1, hc.2]
   have havoid' (s : ℝ) (hs : s ∈ Ioo 0 T) : φ s (σ a) ∉ σ '' uIcc a c := by
@@ -30,7 +30,7 @@ theorem not_mem_transverse_segment_of_pos
     intro u hu
     exact ⟨(le_min haK.1 hc.1).trans hu.1, hu.2.trans (max_le haK.2 hc.2)⟩
   obtain ⟨U, _, _, _, ⟨d⟩, hforward | hbackward⟩ :=
-    Poincare.Topology.PlanarJordan.exists_trapped_disk_of_transverse_return
+    DifferentialGeometry.Topology.PlanarJordan.exists_trapped_disk_of_transverse_return
       φ σ e hsource he ha hcε hT hce.symm
       (injective_orbit_of_nonvanishing φ hv hnz hderiv (σ a)).injOn havoid'
   · obtain ⟨z, _, hz⟩ := exists_zero_of_forward_invariant_disk d φ hv.continuousOn
@@ -45,4 +45,4 @@ theorem not_mem_transverse_segment_of_pos
       (fun z _ s _ ↦ (hrev z s).hasDerivWithinAt)
     exact hnz z (neg_eq_zero.mp hz)
 
-end Poincare.Analysis
+end DifferentialGeometry.Analysis

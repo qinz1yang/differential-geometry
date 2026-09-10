@@ -8,7 +8,7 @@ open scoped Manifold ContDiff Topology
 set_option autoImplicit false
 noncomputable section
 
-namespace Poincare.Manifold.EmbeddedHypersurface
+namespace DifferentialGeometry.Manifold.EmbeddedHypersurface
 
 variable {m : ℕ} {H G S M : Type*}
   [TopologicalSpace H] [TopologicalSpace G]
@@ -33,7 +33,7 @@ variable (e : S → M)
   (Ω : ∀ y : M, TangentSpace J y [⋀^Fin (m + 1)]→L[ℝ] ℝ)
 
 def topFormNormal (s : S) : TangentSpace J (e s) →L[ℝ] ℝ :=
-  Poincare.ContinuousAlternatingMap.normalCovector
+  DifferentialGeometry.ContinuousAlternatingMap.normalCovector
     (show finrank ℝ (TangentSpace I s) = m from by
       change finrank ℝ (MorseModel m) = m
       simp [MorseModel])
@@ -43,13 +43,13 @@ theorem topFormNormal_spec (s : S) (hη : η s ≠ 0)
     (v : TangentSpace J (e s)) (u : Fin m → TangentSpace I s) :
     Ω (e s) (Matrix.vecCons v ((mfderiv I J e s) ∘ u)) =
       topFormNormal I J e η Ω s v * η s u :=
-  Poincare.ContinuousAlternatingMap.normalCovector_spec _ _ _ _ hη v u
+  DifferentialGeometry.ContinuousAlternatingMap.normalCovector_spec _ _ _ _ hη v u
 
 
 theorem ker_topFormNormal [I.Boundaryless] [J.Boundaryless] {s : S}
     (he : Manifold.IsImmersionAt I J ∞ e s) (hη : η s ≠ 0) (hΩ : Ω (e s) ≠ 0) :
     (topFormNormal I J e η Ω s).ker = (mfderiv I J e s).range :=
-  Poincare.ContinuousAlternatingMap.ker_normalCovector _ _ _ _ hη
+  DifferentialGeometry.ContinuousAlternatingMap.ker_normalCovector _ _ _ _ hη
     (by change finrank ℝ (MorseModel (m + 1)) = m + 1; simp [MorseModel]) hΩ
     (injective_mfderiv_of_isImmersionAt I J he)
 
@@ -57,7 +57,7 @@ theorem ker_topFormNormal [I.Boundaryless] [J.Boundaryless] {s : S}
 theorem topFormNormal_ne_zero [I.Boundaryless] [J.Boundaryless] {s : S}
     (he : Manifold.IsImmersionAt I J ∞ e s) (hη : η s ≠ 0) (hΩ : Ω (e s) ≠ 0) :
     topFormNormal I J e η Ω s ≠ 0 :=
-  Poincare.ContinuousAlternatingMap.normalCovector_ne_zero _ _ _ _ hη
+  DifferentialGeometry.ContinuousAlternatingMap.normalCovector_ne_zero _ _ _ _ hη
     (by change finrank ℝ (MorseModel (m + 1)) = m + 1; simp [MorseModel]) hΩ
     (injective_mfderiv_of_isImmersionAt I J he)
 
@@ -105,7 +105,7 @@ theorem continuousAt_topFormNormal [IsManifold I 1 S] [IsManifold J 1 M] {x : S}
       ((A.continuousLinearEquivAt ℝ x hxA) (u i))) = 0 at ht
     simp only [ContinuousLinearEquiv.symm_apply_apply] at ht
     exact ht
-  have hN := Poincare.ContinuousAlternatingMap.continuousAt_normalCovector
+  have hN := DifferentialGeometry.ContinuousAlternatingMap.continuousAt_normalCovector
     (show finrank ℝ (MorseModel m) = m by simp [MorseModel]) hηc hΩc hDc hηcx
   apply (continuousAt_hom_bundle (RingHom.id ℝ) _).mpr
   refine ⟨he.continuousAt, ?_⟩
@@ -133,7 +133,7 @@ theorem continuousAt_topFormNormal [IsManifold I 1 S] [IsManifold J 1 M] {x : S}
     rfl
   symm
   rw [hηeq s hsA, hΩeq, hDeq]
-  have hcov := Poincare.ContinuousAlternatingMap.normalCovector_compContinuousLinearEquiv
+  have hcov := DifferentialGeometry.ContinuousAlternatingMap.normalCovector_compContinuousLinearEquiv
     (show finrank ℝ (TangentSpace I s) = m by
       change finrank ℝ (MorseModel m) = m; simp [MorseModel])
     (η s) (Ω (e s)) (mfderiv I J e s) hηs
@@ -160,4 +160,4 @@ theorem continuous_topFormNormal [IsManifold I 1 S] [IsManifold J 1 M]
   continuous_iff_continuousAt.mpr fun s =>
     continuousAt_topFormNormal I J e η Ω (he s) hη.continuousAt hΩ.continuousAt (hη0 s)
 
-end Poincare.Manifold.EmbeddedHypersurface
+end DifferentialGeometry.Manifold.EmbeddedHypersurface

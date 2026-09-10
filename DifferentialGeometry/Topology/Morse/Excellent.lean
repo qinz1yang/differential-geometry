@@ -7,7 +7,7 @@ noncomputable section
 open Set Filter Function
 open scoped Manifold ContDiff Topology
 open DifferentialGeometry.Topology.Morse
-namespace Poincare.Morse
+namespace DifferentialGeometry.Morse
 variable {E H M : Type} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [TopologicalSpace H] [TopologicalSpace M] [ChartedSpace H M]
   {I : ModelWithCorners ℝ E H} [FiniteDimensional ℝ E] [IsManifold I ∞ M] [T2Space M]
@@ -29,7 +29,7 @@ theorem exists_positive_distinct_critical_values {f : M → ℝ}
   obtain ⟨δ,hδ,hpositive⟩ := exists_pos_radius_finitePerturbation hf.continuous
     (fun i => (hφ i).1.continuous) (fun i => (hφ i).2.1)
     (fun i => (hφ i).2.2.trans hUS) hpos
-  obtain ⟨p,hp,hinj⟩ := Poincare.Topology.exists_small_injective_add (fun i => f (e i)) (lt_min hε hδ)
+  obtain ⟨p,hp,hinj⟩ := DifferentialGeometry.Topology.exists_small_injective_add (fun i => f (e i)) (lt_min hε hδ)
   have hpε : ‖p‖ < ε := lt_of_lt_of_le hp (min_le_left _ _)
   have hpδ : ‖p‖ < δ := lt_of_lt_of_le hp (min_le_right _ _)
   obtain ⟨N,hN,hUN,hfix⟩ := exists_open_finitePerturbation_eq (f := f) (fun i => (hφ i).2.2)
@@ -70,4 +70,4 @@ theorem exists_positive_relative_excellent_morse {f : M → ℝ}
   exact (isNondegenerateCriticalPointAt_iff_of_eventuallyEq_add_const
     (hf.mdifferentiableAt (by simp)) (hUI x (hCU hxC)) hb).mpr (hnd x hxC)
 
-end Poincare.Morse
+end DifferentialGeometry.Morse

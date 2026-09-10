@@ -6,7 +6,7 @@ noncomputable section
 open Set Filter Topology
 open scoped Manifold ContDiff
 
-namespace Poincare.Topology.Manifold
+namespace DifferentialGeometry.Topology.Manifold
 
 private def pad {n : ℕ} {α : Type*} (first last : α) (f : Fin n → α) : Fin (n + 2) → α :=
   Fin.cons first (Fin.snoc f last)
@@ -141,7 +141,7 @@ theorem exists_uniform_ordered_partition_of_product_collars
   have hsep' : ∀ i j, i < j → interior (QQ i) ∪ interior (PP j) = univ :=
     pad_exterior_cover P Q hsep
   have horder (x : M) : Antitone (fun i ↦ θ i x) :=
-    Poincare.Topology.antitone_of_separated_steps (fun i x ↦ θ i x) PP QQ h01 hz ho
+    DifferentialGeometry.Topology.antitone_of_separated_steps (fun i x ↦ θ i x) PP QQ h01 hz ho
       (fun i j hij ↦ eq_univ_of_forall (fun y ↦ by
         have hy : y ∈ interior (QQ i) ∪ interior (PP j) := (hsep' i j hij).symm ▸ mem_univ y
         exact hy.elim (fun h ↦ Or.inl (interior_subset h)) (fun h ↦ Or.inr (interior_subset h)))) x
@@ -190,4 +190,4 @@ theorem exists_uniform_ordered_partition_of_product_collars
   · exact disjoint_tsupport_orderedStepPartition_of_separated_exteriors θ horder hfirst hlast
       PP QQ hz ho hsep'
 
-end Poincare.Topology.Manifold
+end DifferentialGeometry.Topology.Manifold

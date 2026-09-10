@@ -8,10 +8,10 @@ open Set Filter Topology
 open scoped Manifold ContDiff BigOperators
 open DifferentialGeometry DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Integral.DivergenceTheorem.WithBoundary
-open Poincare.Geometry.Affine Poincare.Geometry.Boundary
-open Poincare.Topology.Manifold Poincare.Topology.Ehresmann
+open DifferentialGeometry.Geometry.Affine DifferentialGeometry.Geometry.Boundary
+open DifferentialGeometry.Topology.Manifold DifferentialGeometry.Topology.Ehresmann
 
-namespace Poincare.Geometry.Neck
+namespace DifferentialGeometry.Geometry.Neck
 
 private instance : Fact (Module.finrank ℝ (EuclideanSpace ℝ (Fin 3)) = 2 + 1) := ⟨by simp⟩
 local notation "S²" => Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1
@@ -203,4 +203,4 @@ theorem exists_regular_data_of_controlled_collar_regions (Cₒ : ℝ) (hCₒ : 0
   rw [hstart]
   exact hη₀ p
 
-end Poincare.Geometry.Neck
+end DifferentialGeometry.Geometry.Neck

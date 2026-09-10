@@ -5,7 +5,7 @@ import Mathlib.Topology.Separation.Hausdorff
 noncomputable section
 open Set
 
-namespace Poincare.Analysis
+namespace DifferentialGeometry.Analysis
 
 theorem exists_uniform_unique_root_of_pos_deriv
     {P : Type*} [TopologicalSpace P] {K : Set P} (hK : IsCompact K)
@@ -18,7 +18,7 @@ theorem exists_uniform_unique_root_of_pos_deriv
       (∀ r ∈ Icc 0 ε, m * r ≤ h p r) ∧
       ∀ s ∈ Icc 0 (m * ε), ∃! r : ℝ, r ∈ Icc 0 ε ∧ h p r = s := by
   obtain ⟨ε, hε, hερ, m, hm, hb⟩ :=
-    Poincare.Topology.Compactness.exists_pos_uniform_lower_bound_on_Icc hK hρ hd hpos
+    DifferentialGeometry.Topology.Compactness.exists_pos_uniform_lower_bound_on_Icc hK hρ hd hpos
   refine ⟨ε, hε, hερ, m, hm, ?_⟩
   intro p hp
   have hsub : Icc (0 : ℝ) ε ⊆ Icc 0 ρ := Icc_subset_Icc_right hερ
@@ -107,7 +107,7 @@ theorem exists_uniform_continuous_inverse_of_pos_deriv
         0 < dh (q.1, R q) := by
   classical
   obtain ⟨ε₀, hε₀, hε₀ρ, m₀, hm₀, hb⟩ :=
-    Poincare.Topology.Compactness.exists_pos_uniform_lower_bound_on_Icc hK hρ hdh hpos
+    DifferentialGeometry.Topology.Compactness.exists_pos_uniform_lower_bound_on_Icc hK hρ hdh hpos
   have hsub₀ : Icc (0 : ℝ) ε₀ ⊆ Icc 0 ρ := Icc_subset_Icc_right hε₀ρ
   obtain ⟨ε, hε, hεε₀, m, hm, hroots⟩ := exists_uniform_unique_root_of_pos_deriv hK hε₀
     (h := fun p r ↦ h (p, r)) (dh := fun p r ↦ dh (p, r))
@@ -137,4 +137,4 @@ theorem exists_uniform_continuous_inverse_of_pos_deriv
       exact ((hroots q.1 hq.1).2.2 q.2 hq.2).unique ⟨hr, heq⟩ (hR q hq)
     · exact hm₀.trans_le (hb q.1 hq.1 (R q) (Icc_subset_Icc_right hεε₀ (hR q hq).1))
 
-end Poincare.Analysis
+end DifferentialGeometry.Analysis

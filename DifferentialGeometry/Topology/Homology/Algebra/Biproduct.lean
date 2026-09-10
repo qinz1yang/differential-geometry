@@ -5,7 +5,7 @@ set_option autoImplicit false
 open CategoryTheory CategoryTheory.Limits
 noncomputable section
 universe u v
-namespace Poincare.HomologicalComplex
+namespace DifferentialGeometry.HomologicalComplex
 variable {k : Type u} [Ring k]
   (K L : ChainComplex (ModuleCat.{v} k) ℕ)
 
@@ -53,4 +53,4 @@ theorem homologyEulerChar_biprod
     (ShortComplex.Splitting.ofHasBinaryBiproduct K L).shortExact hK.2 hKL.2 hL.2
 
 end Field
-end Poincare.HomologicalComplex
+end DifferentialGeometry.HomologicalComplex

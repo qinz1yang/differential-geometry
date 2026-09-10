@@ -4,10 +4,10 @@ import DifferentialGeometry.Geometry.Neck.RegularEndpoints
 noncomputable section
 open Set Filter Topology
 open scoped Manifold ContDiff
-open Poincare.Geometry.Boundary Poincare.Topology.Ehresmann
+open DifferentialGeometry.Geometry.Boundary DifferentialGeometry.Topology.Ehresmann
 open DifferentialGeometry.Integral.DivergenceTheorem.WithBoundary
 
-namespace Poincare.Geometry.Neck
+namespace DifferentialGeometry.Geometry.Neck
 
 theorem cylindricalChart.exists_regular_data_of_boundary_sections
     {E H W : Type} {F H' M : Type*}
@@ -54,4 +54,4 @@ theorem cylindricalChart.exists_regular_data_of_boundary_sections
     (fun w ↦ τ * C.axial (ι w) + c) hu hreg
     (Eventually.of_forall (fun _ ↦ rfl)) (Eventually.of_forall (fun _ ↦ rfl)) r hr hcollar hinward
 
-end Poincare.Geometry.Neck
+end DifferentialGeometry.Geometry.Neck

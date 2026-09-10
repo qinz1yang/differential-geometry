@@ -5,7 +5,7 @@ open Bundle Manifold
 open scoped Manifold ContDiff
 open DifferentialGeometry
 
-namespace Poincare.Geometry.Riemannian
+namespace DifferentialGeometry.Geometry.Riemannian
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
@@ -29,4 +29,4 @@ theorem localPullMetric_deck_isometry (g : SmoothRiemannianMetric I M)
     exact hc.symm
   rw [localPullMetric_inner, localPullMetric_inner, hd v, hd w, hdeck]
 
-end Poincare.Geometry.Riemannian
+end DifferentialGeometry.Geometry.Riemannian

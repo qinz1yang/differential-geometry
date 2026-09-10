@@ -7,7 +7,7 @@ noncomputable section
 open Set Bundle DifferentialGeometry.Topology.Morse
 open scoped Manifold ContDiff Topology
 
-namespace Poincare.Manifold.EmbeddedHypersurface
+namespace DifferentialGeometry.Manifold.EmbeddedHypersurface
 
 variable {m : ℕ} {H G S M : Type*}
   [TopologicalSpace H] [TopologicalSpace G]
@@ -138,4 +138,4 @@ theorem continuous_normalTrivializationCovector_apply :
     simpa only [t.source_eq, ht, Set.preimage_univ] using t.continuousOn
   exact hc.snd.comp (continuous_normalQuotientMap I J e)
 
-end Poincare.Manifold.EmbeddedHypersurface
+end DifferentialGeometry.Manifold.EmbeddedHypersurface

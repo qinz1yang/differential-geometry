@@ -12,7 +12,7 @@ open Manifold Set Topology
 open scoped Manifold ContDiff
 noncomputable section
 
-namespace Poincare.Topology
+namespace DifferentialGeometry.Topology
 
 def normalFirstEquiv (n : ℕ) :
     (EuclideanSpace ℝ (Fin n) × ℝ) ≃L[ℝ] EuclideanSpace ℝ (Fin (n + 1)) :=
@@ -82,4 +82,4 @@ theorem exists_positiveChart_of_mem_open {n : ℕ} [NeZero n]
   · exact fun _ hy ↦ hy.2.2
   · exact fun _ hy ↦ hy.2.1.2
 
-end Poincare.Topology
+end DifferentialGeometry.Topology

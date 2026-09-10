@@ -10,7 +10,7 @@ open CategoryTheory CategoryTheory.Limits Opposite Simplicial
 
 universe u
 
-namespace Poincare.Homology
+namespace DifferentialGeometry.Homology
 
 variable {E : Type u} [NormedAddCommGroup E] [NormedSpace ℝ E]
   {s : Set E} (hs : Convex ℝ s) {k : Type u} [Ring k] (R : ModuleCat.{u} k)
@@ -158,4 +158,4 @@ theorem smallAffineSubdivisionHomotopyMap_naturality_linear (n : ℕ) :
   rw [← Category.assoc ((Tₛ).f n), supported_linear_inclusion R f hf]
   simp only [Category.assoc]
 
-end Poincare.Homology
+end DifferentialGeometry.Homology

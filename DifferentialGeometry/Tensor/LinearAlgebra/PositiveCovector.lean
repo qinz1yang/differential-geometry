@@ -4,7 +4,7 @@ import Mathlib.Tactic.Linarith
 noncomputable section
 open scoped InnerProductSpace
 
-namespace Poincare.Analysis
+namespace DifferentialGeometry.Analysis
 
 theorem apply_pos_of_near_unit_dual
     {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
@@ -20,4 +20,4 @@ theorem apply_pos_of_near_unit_dual
   have hvl := (abs_le.mp hvector).1
   linarith
 
-end Poincare.Analysis
+end DifferentialGeometry.Analysis

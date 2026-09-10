@@ -4,7 +4,7 @@ import Mathlib.Topology.Connected.TotallyDisconnected
 
 open scoped ContinuousMap
 
-namespace Poincare.Topology
+namespace DifferentialGeometry.Topology
 
 theorem subsingleton_pathHomotopicQuotient_of_totallyDisconnected
     {X : Type*} [TopologicalSpace X] [TotallyDisconnectedSpace X] (x y : X) :
@@ -43,4 +43,4 @@ theorem subsingleton_pathHomotopicQuotient_of_homotopyEquiv
       (E.functor.map (X := FundamentalGroupoid.mk x) (Y := FundamentalGroupoid.mk y) p)
       (E.functor.map (X := FundamentalGroupoid.mk x) (Y := FundamentalGroupoid.mk y) q))⟩
 
-end Poincare.Topology
+end DifferentialGeometry.Topology

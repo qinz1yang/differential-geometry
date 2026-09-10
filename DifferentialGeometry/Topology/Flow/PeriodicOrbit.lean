@@ -3,7 +3,7 @@ import Mathlib.Topology.Instances.Real.Lemmas
 
 open Set
 
-namespace Poincare.Topology.Flow
+namespace DifferentialGeometry.Topology.Flow
 
 theorem exists_minimal_pos_period
     {X : Type*} [TopologicalSpace X] [T2Space X] (φ : _root_.Flow ℝ X) {x : X}
@@ -91,4 +91,4 @@ theorem exists_simple_closed_curve_of_periodic_orbit
       exact he.symm
   exact ⟨γ, hγ, hclose, hsimple, himage⟩
 
-end Poincare.Topology.Flow
+end DifferentialGeometry.Topology.Flow

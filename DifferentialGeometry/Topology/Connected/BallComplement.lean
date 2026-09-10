@@ -2,7 +2,7 @@ import Mathlib.Analysis.Normed.Module.Connected
 
 open Set Metric
 
-namespace Poincare.Topology
+namespace DifferentialGeometry.Topology
 
 theorem isPathConnected_compl_closedBall {E : Type*}
     [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -31,4 +31,4 @@ theorem isPathConnected_compl_closedBall {E : Type*}
   exact ((isPathConnected_sphere hd (0 : E) zero_le_one).prod
     ((convex_Ioi r).isPathConnected ⟨r + 1, by simp⟩)).image (by fun_prop)
 
-end Poincare.Topology
+end DifferentialGeometry.Topology

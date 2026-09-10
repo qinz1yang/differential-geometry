@@ -8,9 +8,9 @@ noncomputable section
 
 open scoped ContDiff Manifold Topology
 open Bundle
-open Poincare.Geometry.VectorBundle
+open DifferentialGeometry.Geometry.VectorBundle
 
-namespace Poincare.Topology.Ehresmann
+namespace DifferentialGeometry.Topology.Ehresmann
 
 variable {E E' : Type*}
   [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
@@ -103,4 +103,4 @@ theorem exists_smoothDerivativeLift_of_surjective
   exists_smoothDerivativeLift_of_local f hf.continuous Z
     (fun x ↦ exists_local_smoothDerivativeLift_of_surjective f hf Z hZ x (hsurj x))
 
-end Poincare.Topology.Ehresmann
+end DifferentialGeometry.Topology.Ehresmann

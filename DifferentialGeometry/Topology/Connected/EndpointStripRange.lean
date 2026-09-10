@@ -3,7 +3,7 @@ import DifferentialGeometry.Topology.Embedding.Frontier
 
 open Set Filter Topology
 
-namespace Poincare.Topology
+namespace DifferentialGeometry.Topology
 
 theorem endpoint_strip_subset_image_of_embedded_collar
     {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
@@ -50,4 +50,4 @@ theorem endpoint_strip_subset_image_of_embedded_collar
   exact subset_of_frontier_subset_of_closure_interior_eq hclosed hregular hconnected
     (hfrontImage.trans hsections) hmeet
 
-end Poincare.Topology
+end DifferentialGeometry.Topology

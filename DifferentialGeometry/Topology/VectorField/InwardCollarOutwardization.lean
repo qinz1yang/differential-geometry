@@ -4,7 +4,7 @@ set_option autoImplicit false
 noncomputable section
 open Set Function Filter Bundle Manifold TopologicalSpace
 open scoped ContDiff Topology
-namespace Poincare.VectorField
+namespace DifferentialGeometry.VectorField
 
 theorem exists_inwardCollar_outwardization
     {E H B : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -20,16 +20,16 @@ theorem exists_inwardCollar_outwardization
     let z : B → S := fun p => ⟨(p, ⟨0, ⟨le_rfl, (Fact.out : (0 : ℝ) < ε).le⟩⟩), hδ⟩
     let T : ∀ p : B, TangentSpace J p := fun p => (W (z p)).1
     let b : B → ℝ := fun p =>
-      -(Poincare.Manifold.Interval.tangentCoordinateIcc (z p).val.2 (W (z p)).2) / a
+      -(DifferentialGeometry.Manifold.Interval.tangentCoordinateIcc (z p).val.2 (W (z p)).2) / a
     ∃ G : ∀ q : S, TangentSpace (J.prod (𝓡∂ 1)) q,
       ContMDiff (J.prod (𝓡∂ 1)) (J.prod (𝓡∂ 1)).tangent ∞
         (fun q => (⟨q, G q⟩ : TangentBundle (J.prod (𝓡∂ 1)) S)) ∧
       (∀ q : S, q.val.2.val ≤ a → G q =
-        (T q.val.1, (Poincare.Manifold.Interval.tangentCoordinateIcc q.val.2).symm
+        (T q.val.1, (DifferentialGeometry.Manifold.Interval.tangentCoordinateIcc q.val.2).symm
           (-a * (collarExtension T b collarTransition (q.val.1, 1 - q.val.2.val / a)).2))) ∧
       (∀ q : S, 4 * a ≤ q.val.2.val → G q = W q) ∧
       (∀ q : S, q.val.2.val = 0 →
-        Poincare.Manifold.Interval.tangentCoordinateIcc q.val.2 (G q).2 = -a) ∧
+        DifferentialGeometry.Manifold.Interval.tangentCoordinateIcc q.val.2 (G q).2 = -a) ∧
       ∀ q : S, G q = 0 ↔ q.val.2.val ≤ a ∧
         collarExtension T b collarTransition (q.val.1, 1 - q.val.2.val / a) = 0 := by
   intro S W hW hn z T b
@@ -43,12 +43,12 @@ theorem exists_inwardCollar_outwardization
     (((contMDiff_tangentSection_opens_iff S W).mp hW).comp hz)
   have hT : ContMDiff J J.tangent ∞ (fun p => (⟨p, T p⟩ : TangentBundle J B)) := hcomponents.fst
   have hb : ContMDiff J 𝓘(ℝ, ℝ) ∞ b := by
-    have hs := Poincare.Manifold.Interval.contMDiff_tangentCoordinateIcc.comp hcomponents.snd
+    have hs := DifferentialGeometry.Manifold.Interval.contMDiff_tangentCoordinateIcc.comp hcomponents.snd
     have hl : ContDiff ℝ ∞ (fun t : ℝ => -t / a) := by fun_prop
     exact hl.contMDiff.comp hs
   let L (q : S) := collarExtension T b collarTransition (q.val.1, 1 - q.val.2.val / a)
   let R : ∀ q : S, TangentSpace (J.prod (𝓡∂ 1)) q := fun q =>
-    (T q.val.1, (Poincare.Manifold.Interval.tangentCoordinateIcc q.val.2).symm (-a * (L q).2))
+    (T q.val.1, (DifferentialGeometry.Manifold.Interval.tangentCoordinateIcc q.val.2).symm (-a * (L q).2))
   have hR : ContMDiff (J.prod (𝓡∂ 1)) (J.prod (𝓡∂ 1)).tangent ∞
       (fun q => (⟨q, R q⟩ : TangentBundle (J.prod (𝓡∂ 1)) S)) := by
     apply (contMDiff_tangentSection_opens_iff S R).mpr
@@ -60,7 +60,7 @@ theorem exists_inwardCollar_outwardization
       ((contMDiff_collarExtension hT hb contDiff_collarTransition).comp hp)
     have hb' := (contMDiff_const (c := -a)).mul
       ((contMDiff_snd_tangentBundle_modelSpace ℝ 𝓘(ℝ, ℝ)).comp hc.snd)
-    have hnormal := Poincare.Manifold.Interval.contMDiff_tangentCoordinateIcc_symm.comp
+    have hnormal := DifferentialGeometry.Manifold.Interval.contMDiff_tangentCoordinateIcc_symm.comp
       (((contMDiff_snd (I := J) (J := 𝓡∂ 1)).comp (contMDiff_subtype_val (U := S))).prodMk hb')
     exact contMDiff_equivTangentBundleProd_symm.comp (hc.fst.prodMk hnormal)
   have hcommon (q : S) (hlo : 2 * a / 3 ≤ q.val.2.val) (hhi : q.val.2.val ≤ 2 * a) :
@@ -72,14 +72,14 @@ theorem exists_inwardCollar_outwardization
       have hh : 2 / 3 ≤ q.val.2.val / a := (le_div_iff₀ ha).mpr (by linarith)
       linarith
     rw [hNeq q, hk]
-    change (T q.val.1, (Poincare.Manifold.Interval.tangentCoordinateIcc q.val.2).symm
+    change (T q.val.1, (DifferentialGeometry.Manifold.Interval.tangentCoordinateIcc q.val.2).symm
       (-a * (L q).2)) = _
     have hL : L q = (T q.val.1, b q.val.1) := collarExtension_eq_boundaryPair T b hs
     rw [hL]
     apply Prod.ext
     · rfl
-    · apply congrArg (Poincare.Manifold.Interval.tangentCoordinateIcc q.val.2).symm
-      change -a * (-((Poincare.Manifold.Interval.tangentCoordinateIcc (z q.val.1).val.2)
+    · apply congrArg (DifferentialGeometry.Manifold.Interval.tangentCoordinateIcc q.val.2).symm
+      change -a * (-((DifferentialGeometry.Manifold.Interval.tangentCoordinateIcc (z q.val.1).val.2)
         (W (z q.val.1)).2) / a) = _
       field_simp
   let G : ∀ q : S, TangentSpace (J.prod (𝓡∂ 1)) q := fun q =>
@@ -106,13 +106,13 @@ theorem exists_inwardCollar_outwardization
       have hTz := congrArg Prod.fst hz
       have hNz := congrArg Prod.snd hz
       have hs : -a * (L q).2 = 0 :=
-        (Poincare.Manifold.Interval.tangentCoordinateIcc q.val.2).symm.map_eq_zero_iff.mp hNz
+        (DifferentialGeometry.Manifold.Interval.tangentCoordinateIcc q.val.2).symm.map_eq_zero_iff.mp hNz
       exact Prod.ext hTz ((mul_eq_zero.mp hs).resolve_left (neg_ne_zero.mpr ha.ne'))
     · intro hz
       have hTz := congrArg Prod.fst hz
       have hNz := congrArg Prod.snd hz
       change (L q).2 = (0 : ℝ) at hNz
-      change (T q.val.1, (Poincare.Manifold.Interval.tangentCoordinateIcc q.val.2).symm (-a * (L q).2)) = 0
+      change (T q.val.1, (DifferentialGeometry.Manifold.Interval.tangentCoordinateIcc q.val.2).symm (-a * (L q).2)) = 0
       rw [show T q.val.1 = 0 from hTz, hNz, mul_zero, map_zero]
       rfl
   refine ⟨G, hG, fun q hq => if_pos hq, ?_, ?_, ?_⟩
@@ -121,8 +121,8 @@ theorem exists_inwardCollar_outwardization
     exact hNself q (by linarith)
   · intro q hq
     rw [show G q = R q from if_pos (by linarith)]
-    change (Poincare.Manifold.Interval.tangentCoordinateIcc q.val.2)
-      ((Poincare.Manifold.Interval.tangentCoordinateIcc q.val.2).symm (-a * (L q).2)) = -a
+    change (DifferentialGeometry.Manifold.Interval.tangentCoordinateIcc q.val.2)
+      ((DifferentialGeometry.Manifold.Interval.tangentCoordinateIcc q.val.2).symm (-a * (L q).2)) = -a
     rw [ContinuousLinearEquiv.apply_symm_apply]
     have hs : 2 / 3 ≤ 1 - q.val.2.val / a := by rw [hq]; norm_num
     have hL : L q = (T q.val.1, (1 : ℝ)) := collarExtension_eq_outwardPair T b hs
@@ -136,4 +136,4 @@ theorem exists_inwardCollar_outwardization
       rw [show G q = N q from if_neg hq]
       simp only [hnonzero, hq, false_and]
 
-end Poincare.VectorField
+end DifferentialGeometry.VectorField

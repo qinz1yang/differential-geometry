@@ -15,7 +15,7 @@ noncomputable section
 
 universe u v
 
-namespace Poincare.Topology.ThreeManifold.TwoSidedCollar
+namespace DifferentialGeometry.Topology.ThreeManifold.TwoSidedCollar
 
 def realHomeomorphIoo (a : ℝ) (ha : 0 < a) :
     ℝ ≃ₜ Set.Ioo (-a) a :=
@@ -82,4 +82,4 @@ def ofOpenInterval
       exact realHomeomorphIoo_zero a ha]
   exact hzero s
 
-end Poincare.Topology.ThreeManifold.TwoSidedCollar
+end DifferentialGeometry.Topology.ThreeManifold.TwoSidedCollar

@@ -8,7 +8,7 @@ noncomputable section
 open Set
 open scoped Manifold ContDiff
 open DifferentialGeometry.Integral.DivergenceTheorem.WithBoundary
-namespace Poincare.Homology
+namespace DifferentialGeometry.Homology
 variable {n : ℕ} [NeZero n] {M : Type} [TopologicalSpace M]
   [ChartedSpace (EuclideanHalfSpace n) M] [IsManifold (𝓡∂ n) ∞ M]
   [T2Space M] [CompactSpace M]
@@ -18,7 +18,7 @@ variable {n : ℕ} [NeZero n] {M : Type} [TopologicalSpace M]
 include hB hclopen
 
 theorem finiteHomologyType_relative_boundary_subset (K : Type) [Field K] :
-    Poincare.HomologicalComplex.finiteHomologyType
+    DifferentialGeometry.HomologicalComplex.finiteHomologyType
       (relativeChainComplex (TopCat.of M) B (ModuleCat.of K K)) :=
   finiteHomologyType_relativeChainComplex (TopCat.of M) B K
     (finiteHomologyType_of_isClopen_boundary_subset (𝓡∂ n) K B hB hclopen)
@@ -38,4 +38,4 @@ theorem relativeEulerChar_boundary_subset_eq (K L : Type) [Field K] [Field L] :
     eulerChar_eq_of_compact_manifold_withBoundary (n := n) K L,
     eulerChar_eq_of_isClopen_boundary_subset (𝓡∂ n) K L B hB hclopen]
 
-end Poincare.Homology
+end DifferentialGeometry.Homology

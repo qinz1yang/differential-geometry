@@ -1,4 +1,3 @@
-import Batteries.Tactic.Alias
 import DifferentialGeometry.Analysis.Calculus.Cutoff.Clamp.Smooth
 import DifferentialGeometry.Analysis.Calculus.Cutoff.Compact
 import DifferentialGeometry.Analysis.ODE.Flow.CompactSupport
@@ -314,11 +313,3 @@ end Variation
 end Riemannian
 end Geometry
 end DifferentialGeometry
-
-namespace Poincare.Geometry.Riemannian.Variation
-
-alias exists_clamped_geodesic_variation_on_compactCarrier := DifferentialGeometry.Geometry.Riemannian.Variation.exists_clamped_geodesic_variation_on_compactCarrier
-alias exists_clamped_geodesic_variation := DifferentialGeometry.Geometry.Riemannian.Variation.exists_clamped_geodesic_variation
-alias exists_centered_lift_of_isGeodesicAt := DifferentialGeometry.Geometry.Riemannian.Variation.exists_centered_lift_of_isGeodesicAt
-
-end Poincare.Geometry.Riemannian.Variation

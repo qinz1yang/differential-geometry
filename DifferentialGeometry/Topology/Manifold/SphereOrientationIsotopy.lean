@@ -8,7 +8,7 @@ noncomputable section
 open Set Metric Manifold Module
 open scoped ContDiff
 
-namespace Poincare.Topology.Manifold
+namespace DifferentialGeometry.Topology.Manifold
 
 theorem sphere_isotopy_iff_positive_radial_derivative
     (f : Diffeomorph (𝓡 2) (𝓡 2)
@@ -48,4 +48,4 @@ theorem sphere_isotopy_iff_positive_radial_derivative
     rw [hev] at hc
     exact exists_sphere_isotopy_of_positive_chart_derivative e het he hei f v hv hev hfv hc
 
-end Poincare.Topology.Manifold
+end DifferentialGeometry.Topology.Manifold

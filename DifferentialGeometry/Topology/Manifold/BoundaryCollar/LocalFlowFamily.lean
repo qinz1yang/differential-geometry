@@ -7,7 +7,7 @@ open DifferentialGeometry.Integral.DivergenceTheorem.WithBoundary
 set_option autoImplicit false
 noncomputable section
 
-namespace Poincare.Manifold.BoundaryCollar
+namespace DifferentialGeometry.Manifold.BoundaryCollar
 
 theorem exists_smooth_boundary_localFlows
     {n : ℕ} {M : Type*} [TopologicalSpace M]
@@ -38,4 +38,4 @@ theorem exists_smooth_boundary_localFlows
     exists_inward_manifold_localFlow p.2 hV (hnormal p).1
   exact ⟨O, hpO, ε, hε, Φ, hΦ, hzero p hpO, hzero, hcurve, hi, hinj, hadd⟩
 
-end Poincare.Manifold.BoundaryCollar
+end DifferentialGeometry.Manifold.BoundaryCollar

@@ -9,7 +9,7 @@ open scoped Topology
 
 noncomputable section
 
-namespace Poincare.LocalDegree
+namespace DifferentialGeometry.LocalDegree
 
 structure RealIsolatingRadius (f : ℝ → ℝ) (x R : ℝ) : Prop where
   pos : 0 < R
@@ -233,4 +233,4 @@ theorem realLocalDegree_eq_sign_deriv {f : ℝ → ℝ} {x : ℝ}
     realLocalDegree f x h = (SignType.sign (deriv f x) : ℤ) :=
   realLocalDegree_eq_sign_of_hasDerivAt h hd.hasDerivAt hne
 
-end Poincare.LocalDegree
+end DifferentialGeometry.LocalDegree

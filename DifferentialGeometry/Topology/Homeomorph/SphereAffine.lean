@@ -3,7 +3,7 @@ import Mathlib.Analysis.Normed.Module.Ball.RadialEquiv
 set_option autoImplicit false
 noncomputable section
 open Set Metric
-namespace Poincare.Topology
+namespace DifferentialGeometry.Topology
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 
 
@@ -31,4 +31,4 @@ theorem sphereAffineHomeomorph_symm_apply (a : E) (r : ℝ) (hr : 0 < r) (v : sp
   rw [Homeomorph.smulOfNeZero_symm_apply]
   congr 1
   abel
-end Poincare.Topology
+end DifferentialGeometry.Topology

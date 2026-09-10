@@ -8,9 +8,9 @@ open Set Bundle Topology
 open scoped Manifold ContDiff BigOperators
 open DifferentialGeometry DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Integral.DivergenceTheorem.WithBoundary
-open Poincare.Geometry.Affine Poincare.Topology.Manifold
+open DifferentialGeometry.Geometry.Affine DifferentialGeometry.Topology.Manifold
 
-namespace Poincare.Geometry.Neck
+namespace DifferentialGeometry.Geometry.Neck
 
 private instance : Fact (Module.finrank ℝ (EuclideanSpace ℝ (Fin 3)) = 2 + 1) := ⟨by simp⟩
 local notation "S²" => Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1
@@ -86,7 +86,7 @@ theorem exists_regular_patch_of_controlled_collar_regions (Cₒ : ℝ) (hCₒ : 
   obtain ⟨A, hA, hpartition⟩ := exists_uniform_partition_of_signed_neck_collars
   let C₁ := max Cₒ 17292
   have hC₁ : 0 < C₁ := hCₒ.trans_le (le_max_left _ _)
-  obtain ⟨ε₀, hε₀, hthreshold⟩ := Poincare.Analysis.exists_uniform_collar_error_threshold A C₁ hA hC₁
+  obtain ⟨ε₀, hε₀, hthreshold⟩ := DifferentialGeometry.Analysis.exists_uniform_collar_error_threshold A C₁ hA hC₁
   refine ⟨ε₀, hε₀, ?_⟩
   intro E H W F G M _ _ _ _ I _ _ _ _ _ _ _ _ _ J _ _ _ _ _
   specialize hpartition (W := W) (M := M) I J
@@ -170,4 +170,4 @@ theorem exists_regular_patch_of_controlled_collar_regions (Cₒ : ℝ) (hCₒ : 
     exact (hscale (C j.castSucc).scale (C j.succ).scale (C j.castSucc).scale_pos
       (C j.succ).scale_pos (hratio j) (C (k j)).scale hwhich).2 _ (hhalf j)
 
-end Poincare.Geometry.Neck
+end DifferentialGeometry.Geometry.Neck

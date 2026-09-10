@@ -6,7 +6,7 @@ noncomputable section
 
 open Metric Topology
 
-namespace Poincare.ProjectiveSpace
+namespace DifferentialGeometry.ProjectiveSpace
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 
@@ -144,4 +144,4 @@ theorem diskCharacteristicMap_mem_range_coordinateInclusion_iff
     refine ⟨sphereProjection ⟨x.val, mem_sphere_zero_iff_norm.mpr hx⟩, ?_⟩
     exact (diskCharacteristicMap_sphere ⟨x.val, mem_sphere_zero_iff_norm.mpr hx⟩).symm
 
-end Poincare.ProjectiveSpace
+end DifferentialGeometry.ProjectiveSpace

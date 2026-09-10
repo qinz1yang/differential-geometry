@@ -421,8 +421,8 @@ theorem exists_smooth_bounded_eventuallyEq_id {ε : ℝ} (hε : 0 < ε) :
 
 end DifferentialGeometry
 
-namespace Poincare.Analysis
+namespace DifferentialGeometry.Analysis
 
 alias exists_smooth_bounded_eventuallyEq_id := DifferentialGeometry.exists_smooth_bounded_eventuallyEq_id
 
-end Poincare.Analysis
+end DifferentialGeometry.Analysis

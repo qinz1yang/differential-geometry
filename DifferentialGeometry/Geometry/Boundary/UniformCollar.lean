@@ -6,7 +6,7 @@ noncomputable section
 open Set Filter Function Topology Manifold
 open scoped ContDiff
 
-namespace Poincare.Geometry.Boundary
+namespace DifferentialGeometry.Geometry.Boundary
 
 private theorem exists_halfStrip_subset
     {X : Type*} [TopologicalSpace X] {K : Set X} {S : Set (X × EuclideanHalfSpace 1)}
@@ -47,7 +47,7 @@ private theorem exists_halfStrip_subset
 
 open DifferentialGeometry
 open DifferentialGeometry.Integral.DivergenceTheorem.WithBoundary
-open Poincare.Topology.Manifold
+open DifferentialGeometry.Topology.Manifold
 
 variable {E H M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [TopologicalSpace H] [TopologicalSpace M] [ChartedSpace H M]
@@ -125,4 +125,4 @@ theorem exists_uniform_collar_of_one_sided
   change φ (x, 0) ∈ D.target at hh
   rwa [hzero x hx] at hh
 
-end Poincare.Geometry.Boundary
+end DifferentialGeometry.Geometry.Boundary

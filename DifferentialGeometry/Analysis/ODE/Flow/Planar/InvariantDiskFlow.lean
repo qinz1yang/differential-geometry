@@ -5,7 +5,7 @@ import Mathlib.Dynamics.Flow
 noncomputable section
 open Set Metric
 
-namespace Poincare.Analysis
+namespace DifferentialGeometry.Analysis
 
 theorem exists_zero_of_forward_invariant_disk
     {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
@@ -33,7 +33,7 @@ theorem exists_zero_of_forward_invariant_disk
       (φ.continuous continuous_const continuous_subtype_val).subtype_mk _⟩
   let a : C(closedBall (0 : ℂ) 1, K) := ⟨e, e.continuous⟩
   let b : C(K, closedBall (0 : ℂ) 1) := ⟨e.symm, e.symm.continuous⟩
-  obtain ⟨z, hz⟩ := Poincare.Topology.FixedPoint.exists_fixedPoint_closed_unitDisk
+  obtain ⟨z, hz⟩ := DifferentialGeometry.Topology.FixedPoint.exists_fixedPoint_closed_unitDisk
     (b.comp (f.comp a))
   have hfix : f (e z) = e z := by
     have he := congrArg e hz
@@ -47,4 +47,4 @@ theorem exists_zero_of_forward_invariant_disk
     (by constructor <;> linarith) heq
   exact (half_pos hε).ne' htzero
 
-end Poincare.Analysis
+end DifferentialGeometry.Analysis

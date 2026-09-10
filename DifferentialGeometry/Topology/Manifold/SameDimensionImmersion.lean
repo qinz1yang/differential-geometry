@@ -16,7 +16,7 @@ noncomputable section
 
 universe u v w x
 
-namespace Poincare.Topology
+namespace DifferentialGeometry.Topology
 
 theorem continuousLinearEquiv_prod_self_complement_subsingleton
     {E : Type u} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
@@ -82,4 +82,4 @@ theorem isLocalHomeomorph_of_isImmersion_modelSelf
     rw [← hqcoord]
     exact (h.codChart.left_inv (h.source_subset_preimage_source hqdom)).symm
 
-end Poincare.Topology
+end DifferentialGeometry.Topology

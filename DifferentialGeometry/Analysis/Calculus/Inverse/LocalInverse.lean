@@ -3,7 +3,7 @@ import Mathlib.Analysis.Calculus.InverseFunctionTheorem.ContDiff
 noncomputable section
 open scoped ContDiff Topology
 
-namespace Poincare.Analysis
+namespace DifferentialGeometry.Analysis
 
 variable {E F : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
   [NormedAddCommGroup F] [NormedSpace ℝ F]
@@ -40,4 +40,4 @@ theorem exists_localInverse_of_hasFDerivAt_equiv
     exact hfe.differentiableAt (by simp) |>.hasFDerivAt
   exact (e.contDiffAt_symm hy hde hfe).contDiffWithinAt
 
-end Poincare.Analysis
+end DifferentialGeometry.Analysis

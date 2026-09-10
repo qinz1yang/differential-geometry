@@ -9,7 +9,7 @@ noncomputable section
 open Set
 open scoped ContinuousMap
 
-namespace Poincare.Topology.ThreeManifold.TwoSidedCollar
+namespace DifferentialGeometry.Topology.ThreeManifold.TwoSidedCollar
 
 variable {B X : Type*} [TopologicalSpace B] [TopologicalSpace X]
   {e : B → X} (c : TwoSidedCollar e)
@@ -167,7 +167,7 @@ private theorem subsingleton_overlap_paths {K : Set X}
     ((ContinuousMap.HomotopyEquiv.refl B).prodCongr
       (ContractibleSpace.hequiv_unit (Ioi (0 : ℝ))).some).trans
         (Homeomorph.prodUnique B Unit).toHomotopyEquiv
-  exact Poincare.Topology.subsingleton_pathHomotopicQuotient_of_homotopyEquiv
+  exact DifferentialGeometry.Topology.subsingleton_pathHomotopicQuotient_of_homotopyEquiv
     (E₁.toHomotopyEquiv.trans E₂) hB x y
 
 theorem injective_fundamentalGroup_map_domain {K : Set X} [PathConnectedSpace K]
@@ -177,7 +177,7 @@ theorem injective_fundamentalGroup_map_domain {K : Set X} [PathConnectedSpace K]
     Function.Injective (FundamentalGroup.map (VanKampen.subsetToAmbient K) x₀) := by
   let _ := c.pathConnectedSpace_domainNeighborhood hK hfront hside
   let i := c.domainInclusion hK hfront
-  have hi := Poincare.Topology.injective_fundamentalGroup_map_of_leftInverse
+  have hi := DifferentialGeometry.Topology.injective_fundamentalGroup_map_of_leftInverse
     i (c.domainRetraction hside) (c.domainRetraction_leftInverse hK hfront hside) x₀
   have hcover : c.domainNeighborhood K ∪ Kᶜ = univ := by
     apply eq_univ_of_forall
@@ -198,4 +198,4 @@ theorem injective_fundamentalGroup_map_domain {K : Set X} [PathConnectedSpace K]
   rw [← Path.Homotopic.Quotient.map_comp, ← Path.Homotopic.Quotient.map_comp]
   exact hpq
 
-end Poincare.Topology.ThreeManifold.TwoSidedCollar
+end DifferentialGeometry.Topology.ThreeManifold.TwoSidedCollar

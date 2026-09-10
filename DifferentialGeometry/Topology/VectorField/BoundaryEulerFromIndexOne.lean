@@ -5,7 +5,7 @@ set_option autoImplicit false
 noncomputable section
 open Set Bundle Filter Manifold TopologicalSpace
 open scoped ContDiff Topology
-namespace Poincare.VectorField
+namespace DifferentialGeometry.VectorField
 
 theorem eulerChar_collar_base_of_outward_components_one
     {E H B M : Type}
@@ -33,10 +33,10 @@ theorem eulerChar_collar_base_of_outward_components_one
     (∀ q : S, W q ≠ 0) →
     ∀ T : ∀ p : B, TangentSpace J p,
       (∀ q : S, q.val.2.val = 0 → W q =
-        (T q.val.1, (Poincare.Manifold.Interval.tangentCoordinateIcc q.val.2).symm (-1))) →
+        (T q.val.1, (DifferentialGeometry.Manifold.Interval.tangentCoordinateIcc q.val.2).symm (-1))) →
     ∀ (K : Type) [Field K],
-      Poincare.Homology.eulerChar K (TopCat.of B) =
-        (1 - (-1 : ℤ) ^ 1) * Poincare.Homology.eulerChar K (TopCat.of M) := by
+      DifferentialGeometry.Homology.eulerChar K (TopCat.of B) =
+        (1 - (-1 : ℤ) ^ 1) * DifferentialGeometry.Homology.eulerChar K (TopCat.of M) := by
   intro I S Y hY e hi V hV hout hVf hVi hVI W hn T hcomp K _
   let z : B → S := fun p => ⟨(p, ⟨0, ⟨le_rfl, (Fact.out : (0 : ℝ) < ε).le⟩⟩), hδ⟩
   let Wn := _root_.VectorField.mpullback (J.prod (𝓡∂ 1)) I e (fun y : Y => (-V) y.val)
@@ -49,17 +49,17 @@ theorem eulerChar_collar_base_of_outward_components_one
   have hr := relativePoincareHopf_one_of_collar J hδ hδε Y hY e hi (-V) hV.neg_section hnf hni hnI hnn K
   let Tn : ∀ p : B, TangentSpace J p := fun p => (Wn (z p)).1
   let bn : B → ℝ := fun p =>
-    -(Poincare.Manifold.Interval.tangentCoordinateIcc (z p).val.2 (Wn (z p)).2)
+    -(DifferentialGeometry.Manifold.Interval.tangentCoordinateIcc (z p).val.2 (Wn (z p)).2)
   have hbn : bn = (fun _ : B => (-1 : ℝ)) := by
     funext p
-    change -(Poincare.Manifold.Interval.tangentCoordinateIcc (z p).val.2 (Wn (z p)).2) = -1
+    change -(DifferentialGeometry.Manifold.Interval.tangentCoordinateIcc (z p).val.2 (Wn (z p)).2) = -1
     rw [hWn, hcomp (z p) rfl]
-    change -(Poincare.Manifold.Interval.tangentCoordinateIcc (z p).val.2
-      (-((Poincare.Manifold.Interval.tangentCoordinateIcc (z p).val.2).symm (-1)))) = -1
+    change -(DifferentialGeometry.Manifold.Interval.tangentCoordinateIcc (z p).val.2
+      (-((DifferentialGeometry.Manifold.Interval.tangentCoordinateIcc (z p).val.2).symm (-1)))) = -1
     rw [map_neg, ContinuousLinearEquiv.apply_symm_apply, neg_neg]
   change interiorIndexSum I (-V) hnf hni hnI +
     (∑ᶠ _ : {p | Tn p = 0 ∧ bn p < 0}, (1 : ℤ)) =
-      Poincare.Homology.eulerChar K (TopCat.of M) at hr
+      DifferentialGeometry.Homology.eulerChar K (TopCat.of M) at hr
   rw [hbn] at hr
   have hs : {p | Tn p = 0 ∧ (-1 : ℝ) < 0} = {p | Tn p = 0} := by
     ext p
@@ -69,9 +69,9 @@ theorem eulerChar_collar_base_of_outward_components_one
   have hneg := interiorIndexSum_neg I V hVf hVi hVI
   have hvχ := interiorIndexSum_eq_eulerChar_of_outward V hV hout hVf hVi hVI K
   rw [hvχ] at hneg
-  have hsum : (-1 : ℤ) ^ 1 * Poincare.Homology.eulerChar K (TopCat.of M) +
-      Poincare.Homology.eulerChar K (TopCat.of B) = Poincare.Homology.eulerChar K (TopCat.of M) :=
+  have hsum : (-1 : ℤ) ^ 1 * DifferentialGeometry.Homology.eulerChar K (TopCat.of M) +
+      DifferentialGeometry.Homology.eulerChar K (TopCat.of B) = DifferentialGeometry.Homology.eulerChar K (TopCat.of M) :=
     hneg ▸ hr
   linarith
 
-end Poincare.VectorField
+end DifferentialGeometry.VectorField

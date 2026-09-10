@@ -5,7 +5,7 @@ noncomputable section
 open Set Metric
 open scoped ContDiff Manifold
 
-namespace Poincare.Topology.Manifold
+namespace DifferentialGeometry.Topology.Manifold
 
 theorem exists_compactly_supported_planar_isotopy
     (f : Diffeomorph 𝓘(ℝ, ℂ) 𝓘(ℝ, ℂ) ℂ ℂ ∞)
@@ -106,4 +106,4 @@ theorem exists_compactly_supported_planar_isotopy
   · apply (H p).injective
     exact ((H p).apply_symm_apply z).trans (hHout p z hz).symm
 
-end Poincare.Topology.Manifold
+end DifferentialGeometry.Topology.Manifold

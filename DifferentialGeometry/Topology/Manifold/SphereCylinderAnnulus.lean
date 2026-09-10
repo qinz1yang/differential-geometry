@@ -8,7 +8,7 @@ noncomputable section
 open Set Metric Manifold Module
 open scoped ContDiff
 
-namespace Poincare.Topology.Manifold
+namespace DifferentialGeometry.Topology.Manifold
 
 section Coordinates
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -120,10 +120,10 @@ theorem det_sphereCylinderAnnulusEquiv_pos_iff (hrank : 1 < Module.rank ℝ E)
       {z | ‖z‖ ∈ Icc (1 : ℝ) 2} y).toLinearMap.det := by
   let c := sphereCylinderAnnulusEquiv v Ψ
   obtain ⟨hf, hg⟩ := contDiffOn_sphereCylinderAnnulusEquiv v Ψ
-  exact Poincare.Analysis.det_fderivWithin_pos_iff_of_inverse
-    (Poincare.Analysis.uniqueDiffOn_norm_band zero_lt_one (by norm_num))
-    (Poincare.Analysis.isConnected_norm_band hrank zero_lt_one (by norm_num)).isPreconnected
+  exact DifferentialGeometry.Analysis.det_fderivWithin_pos_iff_of_inverse
+    (DifferentialGeometry.Analysis.uniqueDiffOn_norm_band zero_lt_one (by norm_num))
+    (DifferentialGeometry.Analysis.isConnected_norm_band hrank zero_lt_one (by norm_num)).isPreconnected
     c c.symm hf hg c.mapsTo (fun _ hz ↦ c.left_inv hz) hx hy
 
 end Smooth
-end Poincare.Topology.Manifold
+end DifferentialGeometry.Topology.Manifold

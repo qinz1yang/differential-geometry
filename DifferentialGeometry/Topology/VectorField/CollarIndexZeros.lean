@@ -5,7 +5,7 @@ set_option autoImplicit false
 open Bundle Filter Set
 open scoped Manifold ContDiff Topology
 noncomputable section
-namespace Poincare.VectorField
+namespace DifferentialGeometry.VectorField
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   {H M : Type*} [TopologicalSpace H] [TopologicalSpace M] [ChartedSpace H M]
   (I : ModelWithCorners ℝ E H) [IsManifold I 1 M]
@@ -13,8 +13,8 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 theorem HasContinuousIsolatedZero.collarExtension
     {T : ∀ x : M, TangentSpace I x} {b : M → ℝ} {x : M} {t : ℝ}
     (hT : HasContinuousIsolatedZero I T x) (hb : ∃ s ∈ 𝓝 x, ContinuousOn b s)
-    (hb0 : b x ≠ 0) (hz : Poincare.VectorField.collarExtension T b collarTransition (x, t) = 0) :
-    HasContinuousIsolatedZero (I.prod 𝓘(ℝ, ℝ)) (Poincare.VectorField.collarExtension T b collarTransition) (x, t) where
+    (hb0 : b x ≠ 0) (hz : DifferentialGeometry.VectorField.collarExtension T b collarTransition (x, t) = 0) :
+    HasContinuousIsolatedZero (I.prod 𝓘(ℝ, ℝ)) (DifferentialGeometry.VectorField.collarExtension T b collarTransition) (x, t) where
   zero := hz
   continuous := by
     obtain ⟨s, hs, hTs⟩ := hT.continuous
@@ -58,9 +58,9 @@ theorem HasContinuousIsolatedZero.collarExtension
 theorem HasContinuousIsolatedZero.collarExtension_of_contMDiffAt
     {T : ∀ x : M, TangentSpace I x} {b : M → ℝ} {x : M} {t : ℝ}
     (hT : HasContinuousIsolatedZero I T x) (hb : ContMDiffAt I 𝓘(ℝ, ℝ) 1 b x)
-    (hb0 : b x ≠ 0) (hz : Poincare.VectorField.collarExtension T b collarTransition (x, t) = 0) :
-    HasContinuousIsolatedZero (I.prod 𝓘(ℝ, ℝ)) (Poincare.VectorField.collarExtension T b collarTransition) (x, t) := by
+    (hb0 : b x ≠ 0) (hz : DifferentialGeometry.VectorField.collarExtension T b collarTransition (x, t) = 0) :
+    HasContinuousIsolatedZero (I.prod 𝓘(ℝ, ℝ)) (DifferentialGeometry.VectorField.collarExtension T b collarTransition) (x, t) := by
   obtain ⟨s, hs, hc⟩ := (contMDiffAt_iff_contMDiffOn_nhds (by simp : (1 : ℕ∞ω) ≠ ∞)).mp hb
   exact hT.collarExtension I ⟨s, hs, hc.continuousOn⟩ hb0 hz
 
-end Poincare.VectorField
+end DifferentialGeometry.VectorField

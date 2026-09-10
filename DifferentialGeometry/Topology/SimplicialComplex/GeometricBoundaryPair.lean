@@ -6,7 +6,7 @@ set_option autoImplicit false
 noncomputable section
 open Set
 open scoped Manifold
-namespace Poincare.Topology.SimplicialComplex
+namespace DifferentialGeometry.Topology.SimplicialComplex
 variable {E : Type} [NormedAddCommGroup E] [NormedSpace ℝ E]
   {K L : Geometry.SimplicialComplex ℝ E} (hLK : L ≤ K)
 include hLK
@@ -112,4 +112,4 @@ theorem card_boundary_vertices_of_geometric_manifold [Finite L.faces]
     hLK hd (fun _ hs => vertexLink_values_of_geometric_boundary hLK e hboundary hs)
 
 end Three
-end Poincare.Topology.SimplicialComplex
+end DifferentialGeometry.Topology.SimplicialComplex

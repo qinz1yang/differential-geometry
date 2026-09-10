@@ -11,7 +11,7 @@ open CategoryTheory
 
 universe u v
 
-namespace Poincare.Topology
+namespace DifferentialGeometry.Topology
 
 noncomputable def fundamentalGroupChangeBasepoint
     {X : Type u} [TopologicalSpace X] {z m : X} (β : Path z m) :
@@ -108,4 +108,4 @@ theorem transportedFundamentalGroupHom_connector
   rw [fundamentalGroupChangeBasepoint_connector β β' g]
   simp only [MulAut.conj_inv_apply, map_mul, map_inv]
 
-end Poincare.Topology
+end DifferentialGeometry.Topology

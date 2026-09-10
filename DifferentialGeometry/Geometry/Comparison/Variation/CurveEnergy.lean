@@ -1,4 +1,3 @@
-import Batteries.Tactic.Alias
 import DifferentialGeometry.Analysis.Calculus.Derivative.ParametricIntervalIntegral
 import DifferentialGeometry.Geometry.Comparison.Variation.FirstVariation.Basic
 import DifferentialGeometry.Geometry.Comparison.Variation.Curve.SpeedDerivative
@@ -437,24 +436,3 @@ end Variation
 end Riemannian
 end Geometry
 end DifferentialGeometry
-
-namespace Poincare.Geometry.Riemannian.Variation
-
-@[reducible] alias firstEnergyDensity := DifferentialGeometry.Geometry.Riemannian.Variation.firstEnergyDensity
-@[reducible] alias secondEnergyDensity := DifferentialGeometry.Geometry.Riemannian.Variation.secondEnergyDensity
-alias curveEnergy_slice_eq_integral_speedSq := DifferentialGeometry.Geometry.Riemannian.Variation.curveEnergy_slice_eq_integral_speedSq
-alias firstEnergyDensity_contDiff := DifferentialGeometry.Geometry.Riemannian.Variation.firstEnergyDensity_contDiff
-alias secondEnergyDensity_contDiff := DifferentialGeometry.Geometry.Riemannian.Variation.secondEnergyDensity_contDiff
-alias hasDerivAt_intervalIntegral_fst_of_contDiff := DifferentialGeometry.Geometry.Riemannian.Variation.hasDerivAt_intervalIntegral_fst_of_contDiff
-alias firstEnergyDensity_hasDerivAt := DifferentialGeometry.Geometry.Riemannian.Variation.firstEnergyDensity_hasDerivAt
-alias secondEnergyDensity_hasDerivAt := DifferentialGeometry.Geometry.Riemannian.Variation.secondEnergyDensity_hasDerivAt
-alias curveEnergy_hasDerivAt := DifferentialGeometry.Geometry.Riemannian.Variation.curveEnergy_hasDerivAt
-alias firstEnergyIntegral_hasDerivAt := DifferentialGeometry.Geometry.Riemannian.Variation.firstEnergyIntegral_hasDerivAt
-alias curveEnergy_deriv_hasDerivAt := DifferentialGeometry.Geometry.Riemannian.Variation.curveEnergy_deriv_hasDerivAt
-alias firstEnergyDensity_eq := DifferentialGeometry.Geometry.Riemannian.Variation.firstEnergyDensity_eq
-alias firstEnergyDensity_zero_eq := DifferentialGeometry.Geometry.Riemannian.Variation.firstEnergyDensity_zero_eq
-alias firstVariation_curveEnergy := DifferentialGeometry.Geometry.Riemannian.Variation.firstVariation_curveEnergy
-alias firstVariation_curveEnergy_freeEndpoints_of_unitSpeed := DifferentialGeometry.Geometry.Riemannian.Variation.firstVariation_curveEnergy_freeEndpoints_of_unitSpeed
-alias firstVariation_curveEnergy_geodesic_fixedInitial := DifferentialGeometry.Geometry.Riemannian.Variation.firstVariation_curveEnergy_geodesic_fixedInitial
-
-end Poincare.Geometry.Riemannian.Variation

@@ -5,7 +5,7 @@ set_option autoImplicit false
 noncomputable section
 open Set Bundle Filter
 open scoped Manifold ContDiff Topology
-namespace Poincare.VectorField
+namespace DifferentialGeometry.VectorField
 variable {n : ℕ} {M : Type} [TopologicalSpace M]
   [ChartedSpace (EuclideanHalfSpace (n + 1)) M] [IsManifold (𝓡∂ (n + 1)) ∞ M]
   [T2Space M] [CompactSpace M]
@@ -36,7 +36,7 @@ theorem interiorIndexSum_eq_eulerChar_of_outward
     (hinterior : ∀ x, V x = 0 → (𝓡∂ (n + 1)).IsInteriorPoint x)
     (K : Type) [Field K] :
     interiorIndexSum (𝓡∂ (n + 1)) V hfinite hisolated hinterior =
-      Poincare.Homology.eulerChar K (TopCat.of M) := by
+      DifferentialGeometry.Homology.eulerChar K (TopCat.of M) := by
   obtain ⟨W, hW, hWout, hWfinite, hWisolated, hWinterior, hWχ⟩ :=
     exists_outward_vectorField_interiorIndexSum_eq_eulerChar (n := n) (M := M)
   have he := interiorIndexSum_eq_of_boundary_affine_ne_zero (𝓡∂ (n + 1)) V W hV hW
@@ -53,7 +53,7 @@ theorem eulerChar_eq_zero_of_nonzero_outward
     (hout : ∀ x, (𝓡∂ (n + 1)).IsBoundaryPoint x →
       (EuclideanSpace.proj (𝕜 := ℝ) (0 : Fin (n + 1))) (V x) < 0)
     (hn : ∀ x, V x ≠ 0) (K : Type) [Field K] :
-    Poincare.Homology.eulerChar K (TopCat.of M) = 0 := by
+    DifferentialGeometry.Homology.eulerChar K (TopCat.of M) = 0 := by
   have hfinite : {x | V x = 0}.Finite := (Set.eq_empty_of_forall_notMem hn) ▸ finite_empty
   have hi (x : M) (hx : V x = 0) : HasContinuousIsolatedZero (𝓡∂ (n + 1)) V x :=
     (hn x hx).elim
@@ -61,4 +61,4 @@ theorem eulerChar_eq_zero_of_nonzero_outward
   rw [← interiorIndexSum_eq_eulerChar_of_outward V hV hout hfinite hi hint K]
   exact interiorIndexSum_eq_zero_of_nonzero (𝓡∂ (n + 1)) V hfinite hi hint hn
 
-end Poincare.VectorField
+end DifferentialGeometry.VectorField

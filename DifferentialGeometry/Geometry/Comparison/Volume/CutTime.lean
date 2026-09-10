@@ -8,7 +8,7 @@ noncomputable section
 open Set Function Bundle Manifold
 open scoped Topology Manifold ContDiff ENNReal
 
-namespace Poincare.Geometry.Riemannian.VolumeComparison
+namespace DifferentialGeometry.Geometry.Riemannian.VolumeComparison
 
 open DifferentialGeometry
 open DifferentialGeometry.Geometry.Riemannian
@@ -640,6 +640,6 @@ theorem cutTime_lowerSemicontinuous [ConnectedSpace M]
   cutTime_lowerSemicontinuous_of_isOpen_segInt (I := I) g hEnorm x
     (isOpen_segInt (I := I) g hEnorm x)
 
-end Poincare.Geometry.Riemannian.VolumeComparison
+end DifferentialGeometry.Geometry.Riemannian.VolumeComparison
 
 end

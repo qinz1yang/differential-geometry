@@ -5,7 +5,7 @@ set_option autoImplicit false
 noncomputable section
 open Set Filter Bundle
 open scoped Manifold ContDiff Topology
-namespace Poincare.VectorField
+namespace DifferentialGeometry.VectorField
 variable {d : ℕ} {H M : Type*} [TopologicalSpace H] [TopologicalSpace M]
   [ChartedSpace H M] (I : ModelWithCorners ℝ (EuclideanSpace ℝ (Fin (d + 1))) H)
   [IsManifold I 1 M]
@@ -200,4 +200,4 @@ theorem interiorIndexSumOn_biUnion {ι : Type*} (s : Finset ι) (S : ι → Set 
     rw [hUnion,interiorIndexSumOn_union I V hfinite hisolated hinterior hsplit,
       ih hsdis,Finset.sum_insert hi]
 
-end Poincare.VectorField
+end DifferentialGeometry.VectorField

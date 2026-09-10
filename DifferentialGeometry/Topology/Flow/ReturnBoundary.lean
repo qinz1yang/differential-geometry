@@ -3,7 +3,7 @@ import Mathlib.Topology.Order.DenselyOrdered
 
 open Set
 
-namespace Poincare.Topology.Flow
+namespace DifferentialGeometry.Topology.Flow
 
 theorem isForwardInvariant_of_returnArc_and_side
     {X : Type*} [TopologicalSpace X] (φ : _root_.Flow ℝ X)
@@ -34,4 +34,4 @@ theorem isForwardInvariant_of_returnArc_and_side
       simpa only [hreturn] using hchord b right_mem_uIcc t ht
   · exact ⟨ε, hε, hchord u hu⟩
 
-end Poincare.Topology.Flow
+end DifferentialGeometry.Topology.Flow

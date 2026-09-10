@@ -6,7 +6,7 @@ set_option autoImplicit false
 open Set
 open scoped Manifold ContDiff Topology
 
-namespace Poincare.Topology.SphereSeparation
+namespace DifferentialGeometry.Topology.SphereSeparation
 
 theorem disjoint_spheres_nested_openThreeSpace_of_alexanderDuality
     {N : Type*} [TopologicalSpace N] [ChartedSpace EuclideanThree N]
@@ -45,4 +45,4 @@ theorem disjoint_spheres_nested_openThreeSpace_of_alexanderDuality
     (isConnected_range he₁.contMDiff.continuous)
     (isConnected_range he₂.contMDiff.continuous) hmeet
 
-end Poincare.Topology.SphereSeparation
+end DifferentialGeometry.Topology.SphereSeparation

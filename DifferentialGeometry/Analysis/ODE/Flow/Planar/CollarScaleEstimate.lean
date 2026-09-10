@@ -4,7 +4,7 @@ import Mathlib.Tactic.FieldSimp
 import Mathlib.Tactic.Ring
 import Mathlib.Tactic.NormNum
 
-namespace Poincare.Analysis
+namespace DifferentialGeometry.Analysis
 
 theorem exists_uniform_collar_error_threshold (A C : ℝ) (hA : 0 < A) (hC : 0 < C) :
     ∃ ε₀ : ℝ, 0 < ε₀ ∧ ∀ ε : ℝ, 0 ≤ ε → ε < ε₀ →
@@ -95,4 +95,4 @@ theorem exists_uniform_collar_error_threshold (A C : ℝ) (hA : 0 < A) (hC : 0 <
         dsimp only [B]
         nlinarith only [hr.le, hAE]
 
-end Poincare.Analysis
+end DifferentialGeometry.Analysis

@@ -4,7 +4,7 @@ import DifferentialGeometry.Topology.LocalDegree.OrthogonalDegree
 set_option autoImplicit false
 open Metric
 noncomputable section
-namespace Poincare.LocalDegree
+namespace DifferentialGeometry.LocalDegree
 
 variable {n : ℕ}
 
@@ -53,4 +53,4 @@ theorem euclideanSphereDegree_linearEquiv {d : ℕ}
   rw [euclideanSphereDegree_eq_of_homotopy (linearSphereOrthogonalHomotopy A),
     euclideanSphereDegree_linearIsometryEquiv, orthogonalReduction_det_sign]
 
-end Poincare.LocalDegree
+end DifferentialGeometry.LocalDegree

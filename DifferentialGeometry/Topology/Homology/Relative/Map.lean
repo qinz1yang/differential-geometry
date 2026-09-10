@@ -6,7 +6,7 @@ open CategoryTheory CategoryTheory.Limits AlgebraicTopology
 noncomputable section
 universe u
 
-namespace Poincare.Homology
+namespace DifferentialGeometry.Homology
 variable {X Y Z : TopCat.{u}} {s : Set X} {t : Set Y} {v : Set Z}
   {k : Type u} [Ring k] (R : ModuleCat.{u} k)
 
@@ -148,4 +148,4 @@ theorem relativeEulerChar_eq_of_homeomorph (e : X ≃ₜ Y) (he : ∀ x, x ∈ s
     (relativeHomologyIso (ModuleCat.of k k) e he n).toLinearEquiv.finrank_eq
 
 end Field
-end Poincare.Homology
+end DifferentialGeometry.Homology

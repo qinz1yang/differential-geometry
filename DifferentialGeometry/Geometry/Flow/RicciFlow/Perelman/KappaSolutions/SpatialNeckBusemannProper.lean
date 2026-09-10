@@ -37,7 +37,7 @@ include D
 
 theorem busemann_sublevel_isCompact (hEnorm : IsMetricNorm (I := I) h)
     (hsmall : epsilon ≤ spatialNeckControlEpsilon)
-    (hsec : Poincare.Geometry.HasNonnegativeSectionalCurvature (I := I) h)
+    (hsec : DifferentialGeometry.Geometry.HasNonnegativeSectionalCurvature (I := I) h)
     {c : ℝ≥0 → N} (hc : Isometry c) (r : ℝ) :
     IsCompact {q : N | busemann c q ≤ r} := by
   let _ : NeZero (Module.finrank ℝ E) := ⟨by rw [W.dimension_three]; norm_num⟩
@@ -65,7 +65,7 @@ theorem busemann_sublevel_isCompact (hEnorm : IsMetricNorm (I := I) h)
 
 theorem busemann_isProperMap (hEnorm : IsMetricNorm (I := I) h)
     (hsmall : epsilon ≤ spatialNeckControlEpsilon)
-    (hsec : Poincare.Geometry.HasNonnegativeSectionalCurvature (I := I) h)
+    (hsec : DifferentialGeometry.Geometry.HasNonnegativeSectionalCurvature (I := I) h)
     {c : ℝ≥0 → N} (hc : Isometry c) : IsProperMap (busemann c) := by
   have hcont := (lipschitzWith_busemann hc).continuous
   apply isProperMap_iff_isCompact_preimage.mpr
@@ -79,7 +79,7 @@ theorem busemann_isProperMap (hEnorm : IsMetricNorm (I := I) h)
 
 theorem busemann_bddBelow (hEnorm : IsMetricNorm (I := I) h)
     (hsmall : epsilon ≤ spatialNeckControlEpsilon)
-    (hsec : Poincare.Geometry.HasNonnegativeSectionalCurvature (I := I) h)
+    (hsec : DifferentialGeometry.Geometry.HasNonnegativeSectionalCurvature (I := I) h)
     {c : ℝ≥0 → N} (hc : Isometry c) : BddBelow (range (busemann c)) := by
   have hgap := spatialNeckControlEpsilon_inverse_gap W.epsilon_pos hsmall
   have hs : |5 * Real.pi| < epsilon⁻¹ + 1 := by
@@ -101,7 +101,7 @@ theorem busemann_bddBelow (hEnorm : IsMetricNorm (I := I) h)
 
 theorem exists_busemann_minimum (hEnorm : IsMetricNorm (I := I) h)
     (hsmall : epsilon ≤ spatialNeckControlEpsilon)
-    (hsec : Poincare.Geometry.HasNonnegativeSectionalCurvature (I := I) h)
+    (hsec : DifferentialGeometry.Geometry.HasNonnegativeSectionalCurvature (I := I) h)
     {c : ℝ≥0 → N} (hc : Isometry c) :
     ∃ q : N, busemann c q = (⨅ x : N, busemann c x) ∧
       ∀ x : N, busemann c q ≤ busemann c x :=

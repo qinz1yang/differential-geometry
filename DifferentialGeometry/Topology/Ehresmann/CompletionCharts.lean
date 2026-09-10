@@ -4,7 +4,7 @@ import DifferentialGeometry.Topology.Ehresmann.IntervalCompletionInterior
 noncomputable section
 open Set Topology
 
-namespace Poincare.Topology.Ehresmann
+namespace DifferentialGeometry.Topology.Ehresmann
 
 private theorem exists_openPartialHomeomorph_of_subtype
     {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
@@ -118,4 +118,4 @@ theorem exists_upper_completionChart
     rw [hdi q hq']
     exact Prod.ext (hei ⟨q, hq'⟩).1 (hei ⟨q, hq'⟩).2
 
-end Poincare.Topology.Ehresmann
+end DifferentialGeometry.Topology.Ehresmann

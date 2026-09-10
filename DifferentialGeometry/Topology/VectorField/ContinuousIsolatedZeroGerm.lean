@@ -4,7 +4,7 @@ set_option autoImplicit false
 noncomputable section
 open Bundle Set Filter Metric
 open scoped Manifold ContDiff Topology
-namespace Poincare.VectorField
+namespace DifferentialGeometry.VectorField
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   {H M : Type*} [TopologicalSpace H] [TopologicalSpace M] [ChartedSpace H M]
   {I : ModelWithCorners ℝ E H} [IsManifold I 1 M]
@@ -26,7 +26,7 @@ theorem HasContinuousIsolatedZero.congr {V W : ∀ x : M, TangentSpace I x} {x :
 
 omit [IsManifold I 1 M] in
 theorem hasContinuousIsolatedZero_modelSpace_iff {W : E → E} {x : E} :
-    HasContinuousIsolatedZero 𝓘(ℝ, E) W x ↔ Poincare.LocalDegree.isolatedZero W x := by
+    HasContinuousIsolatedZero 𝓘(ℝ, E) W x ↔ DifferentialGeometry.LocalDegree.isolatedZero W x := by
   constructor
   · intro h
     obtain ⟨s,hs,hc⟩ := h.continuous
@@ -34,7 +34,7 @@ theorem hasContinuousIsolatedZero_modelSpace_iff {W : E → E} {x : E} :
       intro y hy
       have hh := (FiberBundle.continuousWithinAt_section E).mp (hc y hy)
       simpa only [trivializationAt_model_space_apply] using! hh
-    apply Poincare.LocalDegree.isolatedZero_of_nhds hs hW h.zero
+    apply DifferentialGeometry.LocalDegree.isolatedZero_of_nhds hs hW h.zero
     apply eventually_nhdsWithin_iff.mpr
     filter_upwards [h.isolated] with y hy
     exact fun hne hz => hne (hy hz)
@@ -46,4 +46,4 @@ theorem hasContinuousIsolatedZero_modelSpace_iff {W : E → E} {x : E} :
     · filter_upwards [closedBall_mem_nhds x hR.pos] with y hy
       exact (hR.zero_iff y hy).mp
 
-end Poincare.VectorField
+end DifferentialGeometry.VectorField

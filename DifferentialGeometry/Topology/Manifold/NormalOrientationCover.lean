@@ -17,7 +17,7 @@ noncomputable section
 
 universe u v w x
 
-namespace Poincare.Topology
+namespace DifferentialGeometry.Topology
 
 structure EmbeddingRealNormalAtlas
     {B : Type u} {A : Type v} [TopologicalSpace B] [TopologicalSpace A] (f : B → A) where
@@ -359,4 +359,4 @@ theorem exists_continuous_section_smoothSphereNormalOrientation
     ChartedSpace.locallyPathConnectedSpace (EuclideanSpace ℝ (Fin 2)) SphereTwo
   exact (smoothSphereNormalOrientationBoolCocycle he).exists_continuous_section x₀ side₀
 
-end Poincare.Topology
+end DifferentialGeometry.Topology

@@ -5,9 +5,9 @@ noncomputable section
 open Set Bundle Topology
 open scoped Manifold ContDiff BigOperators
 open DifferentialGeometry DifferentialGeometry.Geometry.Operator
-open Poincare.Geometry.Affine Poincare.Topology.Manifold
+open DifferentialGeometry.Geometry.Affine DifferentialGeometry.Topology.Manifold
 
-namespace Poincare.Geometry.Neck
+namespace DifferentialGeometry.Geometry.Neck
 
 theorem regular_patch_of_ordered_neck_collars
     {n : ℕ} {E H W F H' M : Type*}
@@ -118,4 +118,4 @@ theorem regular_patch_of_ordered_neck_collars
     linarith only [hh]
   · exact fun _ ↦ hsmall
 
-end Poincare.Geometry.Neck
+end DifferentialGeometry.Geometry.Neck

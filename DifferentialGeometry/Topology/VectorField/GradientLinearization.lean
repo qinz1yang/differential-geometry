@@ -8,7 +8,7 @@ set_option autoImplicit false
 noncomputable section
 open InnerProductSpace Bundle
 open scoped Manifold ContDiff
-namespace Poincare.VectorField
+namespace DifferentialGeometry.VectorField
 section Hilbert
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [CompleteSpace E]
 variable {f : E → ℝ} {x : E}
@@ -73,7 +73,7 @@ variable {E : Type} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [CompleteSp
 
 theorem chartHessianAt_eq_operatorForm (hf : ContDiffAt ℝ 2 f x) :
     DifferentialGeometry.Topology.Morse.chartHessianAt f x =
-      Poincare.QuadraticForm.operatorForm (fderiv ℝ (gradient f) x).toLinearMap := by
+      DifferentialGeometry.QuadraticForm.operatorForm (fderiv ℝ (gradient f) x).toLinearMap := by
   ext v
   exact (inner_fderiv_gradient hf v v).symm
 
@@ -85,7 +85,7 @@ theorem det_fderiv_gradient_ne_zero (hf : ContDiffAt ℝ 2 f x)
       (DifferentialGeometry.Topology.Morse.chartHessianAt f x)).SeparatingLeft) :
     LinearMap.det (fderiv ℝ (gradient f) x).toLinearMap ≠ 0 := by
   rw [chartHessianAt_eq_operatorForm hf] at hnd
-  exact (Poincare.QuadraticForm.operatorForm_separatingLeft_iff
+  exact (DifferentialGeometry.QuadraticForm.operatorForm_separatingLeft_iff
     (isSymmetric_fderiv_gradient hf)).mp hnd
 
 
@@ -95,8 +95,8 @@ theorem sign_det_fderiv_gradient (hf : ContDiffAt ℝ 2 f x)
     (SignType.sign (LinearMap.det (fderiv ℝ (gradient f) x).toLinearMap) : ℤ) =
       (-1 : ℤ) ^ sigNeg (DifferentialGeometry.Topology.Morse.chartHessianAt f x) := by
   rw [chartHessianAt_eq_operatorForm hf]
-  exact Poincare.QuadraticForm.sign_det_eq_neg_one_pow_sigNeg
+  exact DifferentialGeometry.QuadraticForm.sign_det_eq_neg_one_pow_sigNeg
     (isSymmetric_fderiv_gradient hf) (det_fderiv_gradient_ne_zero hf hnd)
 
 end Hessian
-end Poincare.VectorField
+end DifferentialGeometry.VectorField

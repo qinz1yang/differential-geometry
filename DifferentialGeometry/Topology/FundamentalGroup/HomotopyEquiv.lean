@@ -13,7 +13,7 @@ open scoped ContinuousMap
 
 universe u v
 
-namespace Poincare.Topology
+namespace DifferentialGeometry.Topology
 
 theorem fundamentalGroup_mapOfEq_bijective_of_homotopyEquiv
     {X : Type u} {Y : Type v} [TopologicalSpace X] [TopologicalSpace Y]
@@ -46,4 +46,4 @@ theorem fundamentalGroupMulEquivOfHomotopyEquiv_toMonoidHom
         FundamentalGroup.mapOfEq e.toFun h := by
   rfl
 
-end Poincare.Topology
+end DifferentialGeometry.Topology

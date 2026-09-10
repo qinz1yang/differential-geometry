@@ -4,7 +4,7 @@ import Mathlib.Analysis.Calculus.ContDiff.RCLike
 open Set Filter Function Topology Manifold
 open scoped ContDiff
 
-namespace Poincare.Topology.Manifold
+namespace DifferentialGeometry.Topology.Manifold
 
 variable {E H M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [TopologicalSpace H] [TopologicalSpace M] [ChartedSpace H M]
@@ -209,4 +209,4 @@ theorem isMIntegralCurveOn_Ico_eqOn [T2Space M]
     rw [closure_Ioo (ht₀.1.trans_lt ht₀.2).ne]
     exact Ico_subset_Icc_self
 
-end Poincare.Topology.Manifold
+end DifferentialGeometry.Topology.Manifold

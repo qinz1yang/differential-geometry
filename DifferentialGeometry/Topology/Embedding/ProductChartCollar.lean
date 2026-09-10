@@ -4,7 +4,7 @@ import Mathlib.Topology.UniformSpace.Real
 
 open Set
 
-namespace Poincare.Topology.Embedding
+namespace DifferentialGeometry.Topology.Embedding
 
 theorem section_subset_interior_union_of_product_chart_collar
     {N M : Type*} [TopologicalSpace N] [TopologicalSpace M]
@@ -29,4 +29,4 @@ theorem section_subset_interior_union_of_product_chart_collar
   exact mem_interior.mpr ⟨F '' U, hsub, hopen,
     ⟨⟨(p, c), hcollar ⟨mem_univ _, hac.le, hcb.le⟩⟩, ⟨hac, hcb⟩, rfl⟩⟩
 
-end Poincare.Topology.Embedding
+end DifferentialGeometry.Topology.Embedding

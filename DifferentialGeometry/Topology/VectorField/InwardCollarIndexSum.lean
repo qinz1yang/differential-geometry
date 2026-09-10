@@ -5,7 +5,7 @@ set_option autoImplicit false
 noncomputable section
 open Set Bundle Filter Manifold TopologicalSpace
 open scoped ContDiff Topology
-namespace Poincare.VectorField
+namespace DifferentialGeometry.VectorField
 
 theorem interiorIndexSum_inwardCollar_patch
     {d : ℕ} {H H' B M : Type*}
@@ -21,7 +21,7 @@ theorem interiorIndexSum_inwardCollar_patch
     (T : ∀ p : B, TangentSpace J p) (b : B → ℝ)
     (L : ∀ q : S, TangentSpace (J.prod (𝓡∂ 1)) q)
     (hL : ∀ p : S, p.val.2.val ≤ a → L p =
-      (T p.val.1, (Poincare.Manifold.Interval.tangentCoordinateIcc p.val.2).symm
+      (T p.val.1, (DifferentialGeometry.Manifold.Interval.tangentCoordinateIcc p.val.2).symm
         (-a * (collarExtension T b collarTransition (p.val.1, 1 - p.val.2.val / a)).2)))
     (hheight : ∀ q : S, L q = 0 → q.val.2.val ∈ Ioo (a / 3) (2 * a / 3))
     (hbij : BijOn (fun q : S => q.val.1) {q | L q = 0} {p | T p = 0 ∧ b p < 0})
@@ -72,4 +72,4 @@ theorem interiorIndexSum_inwardCollar_patch
   exact (interiorIndexSum_eq_add_of_added_zeros I V G hVf hVi hVI hGf hGi hGI C hzero hdis hgerm).trans
     (congrArg (fun z => interiorIndexSum I V hVf hVi hVI + z) hnew)
 
-end Poincare.VectorField
+end DifferentialGeometry.VectorField

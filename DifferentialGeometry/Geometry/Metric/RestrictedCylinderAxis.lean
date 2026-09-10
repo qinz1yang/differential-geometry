@@ -6,7 +6,7 @@ open Bundle
 open scoped Manifold ContDiff
 open DifferentialGeometry DifferentialGeometry.Geometry.Curvature
 
-namespace Poincare.Geometry.Metric
+namespace DifferentialGeometry.Geometry.Metric
 
 variable {E H M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
@@ -45,4 +45,4 @@ theorem restrictedCylinderAxis_inner
     (contMDiff_snd.mdifferentiable (by decide : (∞ : WithTop ℕ∞) ≠ 0) (x : M × ℝ))
   exact (cylinderMetric_axis_inner g (x : M × ℝ) v).trans h.symm
 
-end Poincare.Geometry.Metric
+end DifferentialGeometry.Geometry.Metric

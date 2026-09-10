@@ -8,7 +8,7 @@ set_option autoImplicit false
 open Set
 open scoped Manifold ContDiff Topology
 
-namespace Poincare.Topology.SphereSeparation
+namespace DifferentialGeometry.Topology.SphereSeparation
 
 structure SmoothSideClosure
     {N : Type*} [TopologicalSpace N] [ChartedSpace EuclideanThree N]
@@ -45,4 +45,4 @@ def sides (d : SmoothSphereSides S) : SphereSides S := d.toSphereSides
 
 end SmoothSphereSides
 
-end Poincare.Topology.SphereSeparation
+end DifferentialGeometry.Topology.SphereSeparation

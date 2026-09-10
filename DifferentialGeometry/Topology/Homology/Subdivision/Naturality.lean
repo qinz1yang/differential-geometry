@@ -8,7 +8,7 @@ open CategoryTheory CategoryTheory.Limits Opposite Simplicial
 
 universe u
 
-namespace Poincare.Homology
+namespace DifferentialGeometry.Homology
 
 variable {E E' : Type u} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [NormedAddCommGroup E'] [NormedSpace ℝ E'] (f : E →L[ℝ] E')
@@ -147,4 +147,4 @@ theorem affineSubdivisionHomotopyMap_naturality_linear (n : ℕ) :
       SSet.ι_chainComplexMap_f, ι_affineSubdivisionHomotopyMap_succ,
       singularSimplexBarycenter_map_linear]
 
-end Poincare.Homology
+end DifferentialGeometry.Homology

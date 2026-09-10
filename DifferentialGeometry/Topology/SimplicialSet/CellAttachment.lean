@@ -10,39 +10,39 @@ open CategoryTheory CategoryTheory.Limits Simplicial Topology
 
 universe u
 
-namespace Poincare.SSet
+namespace DifferentialGeometry.SSet
 
 def nativeSimplexHomeomorph (n : ℕ) :
     _root_.SSet.toTop.obj (Δ[n] : _root_.SSet.{u}) ≃ₜ
       stdSimplex ℝ (ULift.{u} (Fin (n + 1))) :=
   (TopCat.homeoOfIso (_root_.SSet.toTopSimplex.app ⦋n⦌)).trans
-    (Poincare.Simplex.uliftHomeomorph (Fin (n + 1)))
+    (DifferentialGeometry.Simplex.uliftHomeomorph (Fin (n + 1)))
 
 def nativeBoundaryHomeomorph (n : ℕ) :
     _root_.SSet.toTop.obj (_root_.SSet.boundary n : _root_.SSet.{u}) ≃ₜ
-      Poincare.Simplex.boundary (ULift.{u} (Fin (n + 1))) :=
+      DifferentialGeometry.Simplex.boundary (ULift.{u} (Fin (n + 1))) :=
   (boundaryRealizationHomeomorph n).trans
-    (Poincare.Simplex.boundaryUliftHomeomorph (Fin (n + 1)))
+    (DifferentialGeometry.Simplex.boundaryUliftHomeomorph (Fin (n + 1)))
 
 @[reassoc]
 theorem nativeBoundaryHomeomorph_inclusion (n : ℕ) :
     _root_.SSet.toTop.map (_root_.SSet.boundary n).ι ≫
         (TopCat.isoOfHomeo (nativeSimplexHomeomorph.{u} n)).hom =
       (TopCat.isoOfHomeo (nativeBoundaryHomeomorph n)).hom ≫
-        Poincare.Simplex.Attachment.boundaryι := by
+        DifferentialGeometry.Simplex.Attachment.boundaryι := by
   apply ConcreteCategory.hom_ext
   intro x
-  change Poincare.Simplex.uliftHomeomorph (Fin (n + 1))
+  change DifferentialGeometry.Simplex.uliftHomeomorph (Fin (n + 1))
       ((_root_.SSet.toTopSimplex.hom.app ⦋n⦌)
         ((_root_.SSet.toTop.map (_root_.SSet.boundary n).ι) x)) =
-    Poincare.Simplex.uliftHomeomorph (Fin (n + 1)) ((boundaryRealizationHomeomorph n x).val)
-  exact congrArg (Poincare.Simplex.uliftHomeomorph (Fin (n + 1)))
+    DifferentialGeometry.Simplex.uliftHomeomorph (Fin (n + 1)) ((boundaryRealizationHomeomorph n x).val)
+  exact congrArg (DifferentialGeometry.Simplex.uliftHomeomorph (Fin (n + 1)))
     (boundaryRealizationHomeomorph_ambient n x).symm
 
 theorem nativeSimplexHomeomorph_mem_boundary (n : ℕ)
     (x : _root_.SSet.toTop.obj (Δ[n] : _root_.SSet.{u})) :
     x ∈ Set.range (_root_.SSet.toTop.map (_root_.SSet.boundary n).ι) ↔
-      nativeSimplexHomeomorph n x ∈ Poincare.Simplex.boundary (ULift.{u} (Fin (n + 1))) := by
+      nativeSimplexHomeomorph n x ∈ DifferentialGeometry.Simplex.boundary (ULift.{u} (Fin (n + 1))) := by
   have he (a : _root_.SSet.toTop.obj (_root_.SSet.boundary n : _root_.SSet.{u})) :
       nativeSimplexHomeomorph n ((_root_.SSet.toTop.map (_root_.SSet.boundary n).ι) a) =
         (nativeBoundaryHomeomorph n a).val :=
@@ -68,18 +68,18 @@ theorem isClosedEmbedding_toTop_boundaryι (n : ℕ) :
     exact (ConcreteCategory.congr_hom (nativeBoundaryHomeomorph_inclusion n) a).symm
   rw [← heq]
   exact (nativeSimplexHomeomorph n).symm.isClosedEmbedding.comp
-    (Poincare.Simplex.isClosed_boundary.isClosedEmbedding_subtypeVal.comp
+    (DifferentialGeometry.Simplex.isClosed_boundary.isClosedEmbedding_subtypeVal.comp
       (nativeBoundaryHomeomorph n).isClosedEmbedding)
 
 variable {k : Type u} [Ring k] (R : ModuleCat.{u} k)
 
 def nativeSimplexRelativeChainIso (n : ℕ) :
-    Poincare.Homology.relativeChainComplex (_root_.SSet.toTop.obj (Δ[n] : _root_.SSet.{u}))
+    DifferentialGeometry.Homology.relativeChainComplex (_root_.SSet.toTop.obj (Δ[n] : _root_.SSet.{u}))
         (Set.range (_root_.SSet.toTop.map (_root_.SSet.boundary n).ι)) R ≅
-      Poincare.Homology.relativeChainComplex
+      DifferentialGeometry.Homology.relativeChainComplex
         (TopCat.of (stdSimplex ℝ (ULift.{u} (Fin (n + 1)))))
-        (Poincare.Simplex.boundary (ULift.{u} (Fin (n + 1)))) R :=
-  Poincare.Homology.relativeChainIso R (nativeSimplexHomeomorph n)
+        (DifferentialGeometry.Simplex.boundary (ULift.{u} (Fin (n + 1)))) R :=
+  DifferentialGeometry.Homology.relativeChainIso R (nativeSimplexHomeomorph n)
     (nativeSimplexHomeomorph_mem_boundary n)
 
 variable {n : ℕ} {X Y : _root_.SSet.{u}}
@@ -87,7 +87,7 @@ variable {n : ℕ} {X Y : _root_.SSet.{u}}
 
 
 def nativeAttachingMap :
-    TopCat.of (Poincare.Simplex.boundary (ULift.{u} (Fin (n + 1)))) ⟶ _root_.SSet.toTop.obj X :=
+    TopCat.of (DifferentialGeometry.Simplex.boundary (ULift.{u} (Fin (n + 1)))) ⟶ _root_.SSet.toTop.obj X :=
   (TopCat.isoOfHomeo (nativeBoundaryHomeomorph n)).inv ≫ _root_.SSet.toTop.map g
 
 
@@ -110,7 +110,7 @@ variable {g r} {b : X ⟶ Y} (h : IsPushout (_root_.SSet.boundary n).ι g r b)
 include h
 
 theorem nativeAttachment_isPushout :
-    IsPushout Poincare.Simplex.Attachment.boundaryι (nativeAttachingMap g)
+    IsPushout DifferentialGeometry.Simplex.Attachment.boundaryι (nativeAttachingMap g)
       (nativeCellMap r) (_root_.SSet.toTop.map b) := by
   apply (h.map _root_.SSet.toTop).of_iso
     (TopCat.isoOfHomeo (nativeBoundaryHomeomorph n))
@@ -126,8 +126,8 @@ theorem nativeAttachment_isPushout :
   · simp
 
 theorem isClosedEmbedding_toTop_attachment : IsClosedEmbedding (_root_.SSet.toTop.map b) :=
-  Poincare.TopCat.Pushout.isClosedEmbedding_inr (nativeAttachment_isPushout h)
-    Poincare.Simplex.Attachment.isClosedEmbedding_boundaryι
+  DifferentialGeometry.TopCat.Pushout.isClosedEmbedding_inr (nativeAttachment_isPushout h)
+    DifferentialGeometry.Simplex.Attachment.isClosedEmbedding_boundaryι
 
 
 theorem realizedCell_mapsTo_range :
@@ -140,41 +140,41 @@ theorem realizedCell_mapsTo_range :
 
 
 def realizedCellRelativeChainMap :
-    Poincare.Homology.relativeChainComplex (_root_.SSet.toTop.obj (Δ[n] : _root_.SSet.{u}))
+    DifferentialGeometry.Homology.relativeChainComplex (_root_.SSet.toTop.obj (Δ[n] : _root_.SSet.{u}))
         (Set.range (_root_.SSet.toTop.map (_root_.SSet.boundary n).ι)) R ⟶
-      Poincare.Homology.relativeChainComplex (_root_.SSet.toTop.obj Y)
+      DifferentialGeometry.Homology.relativeChainComplex (_root_.SSet.toTop.obj Y)
         (Set.range (_root_.SSet.toTop.map b)) R :=
-  Poincare.Homology.relativeChainMap R (_root_.SSet.toTop.map r) (realizedCell_mapsTo_range h)
+  DifferentialGeometry.Homology.relativeChainMap R (_root_.SSet.toTop.map r) (realizedCell_mapsTo_range h)
 
 theorem nativeSimplexRelativeChainIso_cellMap :
     (nativeSimplexRelativeChainIso R n).hom ≫
-        Poincare.Simplex.Attachment.cellRelativeChainMap R (nativeAttachment_isPushout h) =
+        DifferentialGeometry.Simplex.Attachment.cellRelativeChainMap R (nativeAttachment_isPushout h) =
       realizedCellRelativeChainMap R h := by
-  change Poincare.Homology.relativeChainMap R
+  change DifferentialGeometry.Homology.relativeChainMap R
       (TopCat.isoOfHomeo (nativeSimplexHomeomorph n)).hom
       (fun x hx ↦ (nativeSimplexHomeomorph_mem_boundary n x).mp hx) ≫
-        Poincare.Homology.relativeChainMap R (nativeCellMap r)
-          (Poincare.Simplex.Attachment.mapsTo_boundary_range_inr (nativeAttachment_isPushout h)) =
-    Poincare.Homology.relativeChainMap R (_root_.SSet.toTop.map r) (realizedCell_mapsTo_range h)
-  erw [← Poincare.Homology.relativeChainMap_comp]
-  exact Poincare.Homology.relativeChainMap_congr R _ _ (nativeSimplexHomeomorph_nativeCellMap r)
+        DifferentialGeometry.Homology.relativeChainMap R (nativeCellMap r)
+          (DifferentialGeometry.Simplex.Attachment.mapsTo_boundary_range_inr (nativeAttachment_isPushout h)) =
+    DifferentialGeometry.Homology.relativeChainMap R (_root_.SSet.toTop.map r) (realizedCell_mapsTo_range h)
+  erw [← DifferentialGeometry.Homology.relativeChainMap_comp]
+  exact DifferentialGeometry.Homology.relativeChainMap_congr R _ _ (nativeSimplexHomeomorph_nativeCellMap r)
 
 theorem quasiIso_realizedCellRelativeChainMap : QuasiIso (realizedCellRelativeChainMap R h) := by
   rw [← nativeSimplexRelativeChainIso_cellMap]
-  have : QuasiIso (Poincare.Simplex.Attachment.cellRelativeChainMap R
+  have : QuasiIso (DifferentialGeometry.Simplex.Attachment.cellRelativeChainMap R
       (nativeAttachment_isPushout h)) :=
-    Poincare.Simplex.Attachment.quasiIso_cellRelativeChainMap R (nativeAttachment_isPushout h)
+    DifferentialGeometry.Simplex.Attachment.quasiIso_cellRelativeChainMap R (nativeAttachment_isPushout h)
   exact quasiIso_comp _ _
 
 @[reassoc (attr := simp)]
 theorem relativeProjection_realizedCellRelativeChainMap :
-    Poincare.Homology.relativeProjection (_root_.SSet.toTop.obj (Δ[n] : _root_.SSet.{u}))
+    DifferentialGeometry.Homology.relativeProjection (_root_.SSet.toTop.obj (Δ[n] : _root_.SSet.{u}))
         (Set.range (_root_.SSet.toTop.map (_root_.SSet.boundary n).ι)) R ≫
           realizedCellRelativeChainMap R h =
       ((AlgebraicTopology.singularChainComplexFunctor (ModuleCat.{u} k)).obj R).map
           (_root_.SSet.toTop.map r) ≫
-        Poincare.Homology.relativeProjection (_root_.SSet.toTop.obj Y)
+        DifferentialGeometry.Homology.relativeProjection (_root_.SSet.toTop.obj Y)
           (Set.range (_root_.SSet.toTop.map b)) R :=
-  Poincare.Homology.relativeProjection_chainMap R _ _
+  DifferentialGeometry.Homology.relativeProjection_chainMap R _ _
 
-end Poincare.SSet
+end DifferentialGeometry.SSet

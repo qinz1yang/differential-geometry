@@ -5,7 +5,7 @@ import Mathlib.Topology.Compactness.SigmaCompact
 noncomputable section
 open Set Topology
 
-namespace Poincare.Topology.Ehresmann
+namespace DifferentialGeometry.Topology.Ehresmann
 
 variable {M : Type*} [TopologicalSpace M] [CompactSpace M]
 
@@ -31,4 +31,4 @@ theorem sigmaCompactSpace_intervalCompletionSpace {u : M → ℝ} (hu : Continuo
   obtain ⟨n, hn⟩ := exists_nat_ge |intervalCompletionHeight u a b q|
   exact mem_iUnion.mpr ⟨n, abs_le.mp hn⟩
 
-end Poincare.Topology.Ehresmann
+end DifferentialGeometry.Topology.Ehresmann

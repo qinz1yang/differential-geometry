@@ -6,7 +6,7 @@ open Set Function Manifold Topology
 open scoped ContDiff
 set_option autoImplicit false
 noncomputable section
-namespace Poincare.Manifold.Collar
+namespace DifferentialGeometry.Manifold.Collar
 
 local instance : Fact ((-1 : ℝ) < 1) := ⟨by norm_num⟩
 
@@ -23,16 +23,16 @@ theorem attachmentSeam_embedding_contMDiff
     (hc : IsEmbedding c) (hcs : ContMDiff (J.prod (𝓡∂ 1)) I ∞ c)
     (σ : C(Icc (0 : ℝ) ε, Icc (0 : ℝ) ε))
     (hσnear : ∀ t : Icc (0 : ℝ) ε, t.val ≤ a.val → (σ t).val = t.val + a.val)
-    (h : Poincare.Topology.MappingCylinder f ≃ₜ M)
-    (hO : ∀ x, h (Poincare.Topology.mappingCylinderOriginal f x) =
-      Poincare.Topology.Collar.rescale c hc σ x)
-    (hP : ∀ q : B × Icc (0 : ℝ) 1, h (Poincare.Topology.mappingCylinderProduct f q) =
+    (h : DifferentialGeometry.Topology.MappingCylinder f ≃ₜ M)
+    (hO : ∀ x, h (DifferentialGeometry.Topology.mappingCylinderOriginal f x) =
+      DifferentialGeometry.Topology.Collar.rescale c hc σ x)
+    (hP : ∀ q : B × Icc (0 : ℝ) 1, h (DifferentialGeometry.Topology.mappingCylinderProduct f q) =
       c (q.1, ⟨a.val * (1 - q.2.val),
         ⟨mul_nonneg a.property.1 (sub_nonneg.mpr q.2.property.2), by
           nlinarith [q.2.property.1, a.property.1, a.property.2]⟩⟩)) :
-    IsEmbedding (Poincare.Topology.Collar.attachmentSeam f c a hzero) ∧
+    IsEmbedding (DifferentialGeometry.Topology.Collar.attachmentSeam f c a hzero) ∧
       ContMDiff (J.prod (𝓡∂ 1)) I ∞
-        (fun q => h (Poincare.Topology.Collar.attachmentSeam f c a hzero q)) := by
+        (fun q => h (DifferentialGeometry.Topology.Collar.attachmentSeam f c a hzero q)) := by
   let φ : Icc (-1 : ℝ) 1 → Icc (0 : ℝ) ε :=
     fun t => ⟨a.val * (1 - t.val),
       mul_nonneg a.property.1 (sub_nonneg.mpr t.property.2), by
@@ -53,8 +53,8 @@ theorem attachmentSeam_embedding_contMDiff
     nlinarith
   have hφe : IsEmbedding φ := (hφ.continuous.isClosedEmbedding hφinj).isEmbedding
   have heq (q : B × Icc (-1 : ℝ) 1) :
-      h (Poincare.Topology.Collar.attachmentSeam f c a hzero q) = c (q.1, φ q.2) :=
-    Poincare.Topology.Collar.attachmentSeam_realization f c a hzero hc h2a σ hσnear h hO hP q
+      h (DifferentialGeometry.Topology.Collar.attachmentSeam f c a hzero q) = c (q.1, φ q.2) :=
+    DifferentialGeometry.Topology.Collar.attachmentSeam_realization f c a hzero hc h2a σ hσnear h hO hP q
   constructor
   · apply h.isEmbedding.of_comp_iff.mp
     have hh := hc.comp (IsEmbedding.id.prodMap hφe)
@@ -62,4 +62,4 @@ theorem attachmentSeam_embedding_contMDiff
     exact funext heq
   · exact (hcs.comp (contMDiff_id.prodMap hφ)).congr heq
 
-end Poincare.Manifold.Collar
+end DifferentialGeometry.Manifold.Collar

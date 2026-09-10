@@ -10,7 +10,7 @@ open CategoryTheory
 open CategoryTheory.Limits
 open Set
 
-namespace Poincare.Topology.SphereSeparation
+namespace DifferentialGeometry.Topology.SphereSeparation
 
 private theorem bicollar_finTwo_eq_zero_or_one (i : Fin 2) :
     i = 0 ∨ i = 1 := by
@@ -272,4 +272,4 @@ theorem centralSliceComplement_relativeH1_iso_int_of_sphere
   centralSliceComplement_relativeH1_iso_int ha
     (isZero_integerSingularHomology_sphereTwoProductAxial_one ha hSphere)
 
-end Poincare.Topology.SphereSeparation
+end DifferentialGeometry.Topology.SphereSeparation

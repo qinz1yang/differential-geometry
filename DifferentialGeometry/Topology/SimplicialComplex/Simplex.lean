@@ -3,7 +3,7 @@ import Mathlib.Data.Nat.Choose.Sum
 
 open Finset
 
-namespace Poincare.Topology.SimplicialComplex
+namespace DifferentialGeometry.Topology.SimplicialComplex
 
 variable {ι : Type*}
 
@@ -266,4 +266,4 @@ theorem tetrahedron_boundary_faceEulerChar :
 
 end
 
-end Poincare.Topology.SimplicialComplex
+end DifferentialGeometry.Topology.SimplicialComplex

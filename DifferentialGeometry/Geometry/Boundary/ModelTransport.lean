@@ -9,7 +9,7 @@ open Set Function Topology
 open scoped Manifold ContDiff
 open DifferentialGeometry.Integral.DivergenceTheorem.WithBoundary
 
-namespace Poincare.Geometry.Boundary
+namespace DifferentialGeometry.Geometry.Boundary
 
 universe u v
 
@@ -125,4 +125,4 @@ theorem injective_mfderiv_transContinuousLinearEquiv_left
   rw [hcomp]
   exact hinj.comp (d.symm.mfderivToContinuousLinearEquiv (by decide) w).injective
 
-end Poincare.Geometry.Boundary
+end DifferentialGeometry.Geometry.Boundary

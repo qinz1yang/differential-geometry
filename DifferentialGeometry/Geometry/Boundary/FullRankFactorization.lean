@@ -6,7 +6,7 @@ noncomputable section
 open Set Filter Topology Manifold
 open scoped ContDiff
 
-namespace Poincare.Geometry.Boundary
+namespace DifferentialGeometry.Geometry.Boundary
 
 open DifferentialGeometry.Integral.DivergenceTheorem.WithBoundary
 
@@ -108,4 +108,4 @@ theorem contMDiff_iff_comp_of_fullRank_embedding
     exact (contMDiffAt_iff_comp_of_injective_mfderiv hf (hinj (g z)) hdim).mpr
       ⟨(hemb.continuous_iff.mpr hfg.continuous).continuousAt, hfg z⟩
 
-end Poincare.Geometry.Boundary
+end DifferentialGeometry.Geometry.Boundary

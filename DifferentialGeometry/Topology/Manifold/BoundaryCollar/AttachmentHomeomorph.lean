@@ -7,7 +7,7 @@ open scoped ContDiff
 open DifferentialGeometry.Integral.DivergenceTheorem.WithBoundary
 set_option autoImplicit false
 noncomputable section
-namespace Poincare.Manifold.BoundaryCollar
+namespace DifferentialGeometry.Manifold.BoundaryCollar
 
 theorem exists_boundaryAttachment_realization
     {n : ℕ} {M : Type*} [TopologicalSpace M]
@@ -24,8 +24,8 @@ theorem exists_boundaryAttachment_realization
         (∀ p, c (p, ⟨0, ⟨le_rfl, hε.le⟩⟩) = boundaryInclusion (𝓡∂ (n + 1)) M p) ∧
         ∃ h : BoundaryAttachment (M := M) (𝓡∂ (n + 1)) ≃ₜ M,
           (∀ x, h (attachmentOriginal (𝓡∂ (n + 1)) x) =
-            Poincare.Topology.Collar.rescale c hc.isEmbedding
-              (Poincare.Topology.intervalPush (δ / 4) (by linarith)) x) ∧
+            DifferentialGeometry.Topology.Collar.rescale c hc.isEmbedding
+              (DifferentialGeometry.Topology.intervalPush (δ / 4) (by linarith)) x) ∧
           ∀ q : BoundaryManifold (𝓡∂ (n + 1)) M × Icc (0 : ℝ) 1,
             h (attachmentProduct (𝓡∂ (n + 1)) q) =
               c (q.1, ⟨δ / 4 * (1 - q.2.val),
@@ -40,7 +40,7 @@ theorem exists_boundaryAttachment_realization
   let f : C(BoundaryManifold (𝓡∂ (n + 1)) M, M) :=
     ⟨boundaryInclusion (𝓡∂ (n + 1)) M, continuous_subtype_val⟩
   let : CompactSpace (BoundaryManifold (𝓡∂ (n + 1)) M) := isCompact_iff_compactSpace.mp hK
-  obtain ⟨h, hOriginal, hProduct⟩ := Poincare.Topology.Collar.exists_attachment_homeomorph
+  obtain ⟨h, hOriginal, hProduct⟩ := DifferentialGeometry.Topology.Collar.exists_attachment_homeomorph
     f (a := δ / 4) (by positivity) (by linarith) hδε.le C hclosed.isEmbedding hzero hopen
   exact ⟨δ, hδ, hδε, C, hclosed, hsmooth, hzero, h, hOriginal, hProduct⟩
 
@@ -76,4 +76,4 @@ theorem exists_boundaryAttachment_homeomorph
     rw [houter]
     exact p.property
 
-end Poincare.Manifold.BoundaryCollar
+end DifferentialGeometry.Manifold.BoundaryCollar

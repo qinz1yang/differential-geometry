@@ -9,9 +9,9 @@ open Set Bundle
 open scoped Manifold ContDiff
 open DifferentialGeometry DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Geometry.Curvature
-open Poincare.Geometry.Curvature Poincare.Geometry.Gradient Poincare.Geometry.Affine
+open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.Geometry.Gradient DifferentialGeometry.Geometry.Affine
 
-namespace Poincare.Geometry.Neck
+namespace DifferentialGeometry.Geometry.Neck
 
 theorem exists_finitely_aligned_least_ricci_fields_of_metric_close
     {n : ℕ} {F H M : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F] [FiniteDimensional ℝ F]
@@ -129,4 +129,4 @@ theorem exists_finitely_aligned_least_ricci_fields
     rw [abs_finiteLineAffineAlignment_transition_error s c hs]
     exact hvalue j x hx hy
 
-end Poincare.Geometry.Neck
+end DifferentialGeometry.Geometry.Neck

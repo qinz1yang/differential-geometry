@@ -5,7 +5,7 @@ set_option autoImplicit false
 noncomputable section
 open CategoryTheory CategoryTheory.Limits Set
 open scoped Manifold
-namespace Poincare.Homology
+namespace DifferentialGeometry.Homology
 variable {k : Type} [Ring k] (R : ModuleCat k)
 section Interior
 variable {n : ℕ} {H M : Type} [TopologicalSpace H] [TopologicalSpace M]
@@ -22,7 +22,7 @@ theorem isZero_finitePunctureManifold_interior_of_gt (q : ℕ) (hq : n < q) :
 variable (k : Type) [Field k]
 
 theorem finiteHomologyType_finitePunctureManifold_interior :
-    Poincare.HomologicalComplex.finiteHomologyType
+    DifferentialGeometry.HomologicalComplex.finiteHomologyType
       (relativeChainComplex (TopCat.of M) Zᶜ (ModuleCat.of k k)) :=
   finiteHomologyType_finitePuncture (TopCat.of M) Z hZ k
     (fun p => finiteHomologyType_localManifold_interior k I p.val (hI p.val p.property))
@@ -54,7 +54,7 @@ theorem isZero_finitePunctureManifold_of_gt (q : ℕ) (hq : n < q) :
 variable (k : Type) [Field k]
 
 theorem finiteHomologyType_finitePunctureManifold :
-    Poincare.HomologicalComplex.finiteHomologyType
+    DifferentialGeometry.HomologicalComplex.finiteHomologyType
       (relativeChainComplex (TopCat.of M) Zᶜ (ModuleCat.of k k)) := by
   apply finiteHomologyType_finitePuncture (TopCat.of M) Z hZ k
   intro p
@@ -67,7 +67,7 @@ theorem relativeEulerChar_finitePunctureManifold :
     relativeEulerChar (TopCat.of M) Zᶜ k =
       ∑ᶠ p : Z, if (𝓡∂ n).IsInteriorPoint p.val then (-1 : ℤ)^n else 0 := by
   classical
-  have hlocal (p : Z) : Poincare.HomologicalComplex.finiteHomologyType
+  have hlocal (p : Z) : DifferentialGeometry.HomologicalComplex.finiteHomologyType
       (relativeChainComplex (TopCat.of M) ({p.val}ᶜ : Set M) (ModuleCat.of k k)) := by
     rcases (𝓡∂ n).isInteriorPoint_or_isBoundaryPoint p.val with hi | hb
     · exact finiteHomologyType_localManifold_interior k (𝓡∂ n) p.val hi
@@ -82,4 +82,4 @@ theorem relativeEulerChar_finitePunctureManifold :
     exact relativeEulerChar_localManifold_boundary k p.val
       (((𝓡∂ n).isBoundaryPoint_iff_not_isInteriorPoint p.val).mpr hi)
 end Boundary
-end Poincare.Homology
+end DifferentialGeometry.Homology

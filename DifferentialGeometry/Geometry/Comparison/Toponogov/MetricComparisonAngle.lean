@@ -9,7 +9,7 @@ open Filter Set Topology
 
 noncomputable section
 
-namespace Poincare.Toponogov
+namespace DifferentialGeometry.Toponogov
 
 
 def comparisonCosine (a b c : ℝ) : ℝ :=
@@ -155,4 +155,4 @@ theorem cos_metricComparisonAngle {X : Type*} [MetricSpace X] {x o y : X}
   simpa only [metricComparisonAngle, dist_self, sub_self, abs_zero] using
     (comparisonAngle_abs_sub hpos hpos)
 
-end Poincare.Toponogov
+end DifferentialGeometry.Toponogov

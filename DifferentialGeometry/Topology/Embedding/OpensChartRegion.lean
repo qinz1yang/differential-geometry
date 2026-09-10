@@ -3,7 +3,7 @@ import Mathlib.Topology.Sets.Opens
 import Mathlib.Topology.Homeomorph.Lemmas
 import Mathlib.Topology.Connected.Basic
 
-namespace Poincare.Topology.Embedding
+namespace DifferentialGeometry.Topology.Embedding
 
 open Set
 
@@ -64,4 +64,4 @@ theorem isPreconnected_interior_opens_chart_image {A : Set X}
     (fun x hx ↦ ⟨⟨x, hAO hx⟩, rfl⟩)).image _
       (continuous_subtype_val.comp e.continuous).continuousOn
 
-end Poincare.Topology.Embedding
+end DifferentialGeometry.Topology.Embedding

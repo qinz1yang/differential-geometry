@@ -5,7 +5,7 @@ noncomputable section
 open Set Topology
 open scoped Manifold ContDiff BigOperators
 
-namespace Poincare.Topology.Manifold
+namespace DifferentialGeometry.Topology.Manifold
 
 theorem contMDiff_and_mvfderiv_ne_zero_ordered_collar_partition
     {n : ℕ} {E H M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -52,7 +52,7 @@ theorem contMDiff_and_mvfderiv_ne_zero_ordered_collar_partition
       by_contra h
       exact Set.disjoint_left.mp (hnonadjacent k j (not_le.mp h)) hk hj
     have hX (j : Fin (n + 1)) (hj : x ∈ tsupport (ρ j)) : X j x = X i x := by
-      rcases Poincare.Topology.Combinatorics.eq_or_adjacent_of_val_le_succ i j
+      rcases DifferentialGeometry.Topology.Combinatorics.eq_or_adjacent_of_val_le_succ i j
         (hline i j hisupp hj) (hline j i hj hisupp) with
         rfl | ⟨k, rfl, rfl⟩ | ⟨k, rfl, rfl⟩
       · rfl
@@ -77,4 +77,4 @@ theorem contMDiff_and_mvfderiv_ne_zero_ordered_collar_partition
     rw [hz] at hpos
     exact (lt_irrefl 0) hpos
 
-end Poincare.Topology.Manifold
+end DifferentialGeometry.Topology.Manifold

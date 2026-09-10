@@ -4,7 +4,7 @@ set_option autoImplicit false
 
 open CategoryTheory
 
-namespace Poincare.Topology.SphereSeparation
+namespace DifferentialGeometry.Topology.SphereSeparation
 
 noncomputable def singularBarycentricSubdivision (X : TopCat) :
     ((AlgebraicTopology.singularChainComplexFunctor (ModuleCat ℤ)).obj
@@ -88,4 +88,4 @@ theorem singularBarycentricSubdivisionIterate_f_zero
       simp only [HomologicalComplex.comp_f,
         singularBarycentricSubdivision_f_zero, ih, Category.comp_id]
 
-end Poincare.Topology.SphereSeparation
+end DifferentialGeometry.Topology.SphereSeparation

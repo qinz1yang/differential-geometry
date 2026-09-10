@@ -7,7 +7,7 @@ set_option autoImplicit false
 noncomputable section
 open Set Metric Filter Bundle
 open scoped Manifold ContDiff Topology
-namespace Poincare.VectorField
+namespace DifferentialGeometry.VectorField
 variable {d : ℕ} {H M : Type*} [TopologicalSpace H] [TopologicalSpace M]
   [ChartedSpace H M] [T2Space M]
   (I : ModelWithCorners ℝ (EuclideanSpace ℝ (Fin (d + 1))) H) [IsManifold I ∞ M]
@@ -103,7 +103,7 @@ theorem exists_regular_chart_splice
     rw [hy]
     rfl
   obtain ⟨g, hg, hinner, houter, hprotected, hreg, _⟩ :=
-    Poincare.Calculus.exists_regular_ball_splice_preserving_germs a hr hrR c.open_target hRt
+    DifferentialGeometry.Calculus.exists_regular_ball_splice_preserving_germs a hr hrR c.open_target hRt
       hA hAt hf hw (component_regular I c V hV hVreg) (component_regular I c W hW hWreg) hAgerm
   have hfixed : ∀ y ∈ c.target \ closedBall a R, g y = f y :=
     fun _ hy => houter (fun h => hy.2 (ball_subset_closedBall h))
@@ -118,7 +118,7 @@ theorem exists_regular_chart_splice
   have hGI : ∀ x, G x = 0 → I.IsInteriorPoint x := by
     intro x hz
     by_cases hx : x ∈ c.source
-    · have hh := Poincare.Manifold.isInteriorPoint_of_model_partialDiffeomorph I ∞ c.symm
+    · have hh := DifferentialGeometry.Manifold.isInteriorPoint_of_model_partialDiffeomorph I ∞ c.symm
         (by simp) (c.map_source hx)
       erw [c.left_inv hx] at hh
       exact hh
@@ -166,4 +166,4 @@ theorem exists_regular_chart_splice
       exact patch_eq_of_component_eq I c V V g hy hye
     · exact hout x hxC
 
-end Poincare.VectorField
+end DifferentialGeometry.VectorField

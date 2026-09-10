@@ -234,7 +234,7 @@ private theorem side_data_of_oriented [I.Boundaryless]
 theorem exists_ordered_compact_end_sides [I.Boundaryless] [ConnectedSpace N] [NoncompactSpace N]
     {h : SmoothRiemannianMetric I N} {yStar : SpatialNeckSphere}
     {p : N} {epsilon : ℝ} (W : SpatialNeckWitness h yStar p epsilon)
-    (hsec : Poincare.Geometry.HasPositiveSectionalCurvature (I := I) h) :
+    (hsec : DifferentialGeometry.Geometry.HasPositiveSectionalCurvature (I := I) h) :
     ∃ W' : SpatialNeckWitness h yStar p epsilon,
       (W' = W ∨ W' = W.reflect) ∧ W'.centralSphere = W.centralSphere ∧
       W'.core = W.core ∧ W'.image = W.image ∧ Nonempty (SpatialNeckSideData W') := by

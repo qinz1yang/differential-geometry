@@ -7,10 +7,10 @@ noncomputable section
 open Set Topology Manifold
 open scoped ContDiff
 
-namespace Poincare.Topology.Ehresmann
+namespace DifferentialGeometry.Topology.Ehresmann
 
-open Poincare.Topology Poincare.Geometry.Boundary
-open Poincare.Topology.SphereSeparation
+open DifferentialGeometry.Topology DifferentialGeometry.Geometry.Boundary
+open DifferentialGeometry.Topology.SphereSeparation
 open DifferentialGeometry.Integral.DivergenceTheorem.WithBoundary
 
 theorem exists_regular_height_of_labeled_sphere_product
@@ -58,4 +58,4 @@ theorem exists_regular_height_of_labeled_sphere_product
       (fun w hw ↦ (h.boundary_values w hw).symm) (by rw [h.boundary_level_right]; exact hfib₁)
   exact ⟨u, h, hfib₀, hfib₁, η₀, η₁, hη₀, hη₁⟩
 
-end Poincare.Topology.Ehresmann
+end DifferentialGeometry.Topology.Ehresmann

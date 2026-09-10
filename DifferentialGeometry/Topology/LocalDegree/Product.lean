@@ -5,7 +5,7 @@ import DifferentialGeometry.Topology.LocalDegree.AffineCoordinate
 set_option autoImplicit false
 open Metric Set
 noncomputable section
-namespace Poincare.LocalDegree
+namespace DifferentialGeometry.LocalDegree
 
 
 abbrev EuclideanProductEquator (d : ℕ) := (ℝ ∙ (euclideanNorth (d + 1)).val)ᗮ
@@ -273,4 +273,4 @@ theorem euclideanLocalDegree_product {d : ℕ}
     simpa only [heq] using hp
   rw [← hp', euclideanLocalDegree_product_zero (isolatedZero_translate h), localDegree_translate h]
 
-end Poincare.LocalDegree
+end DifferentialGeometry.LocalDegree

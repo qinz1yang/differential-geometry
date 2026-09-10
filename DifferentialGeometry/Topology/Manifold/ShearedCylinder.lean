@@ -6,7 +6,7 @@ noncomputable section
 open Set Filter Topology
 open scoped ContDiff Manifold
 
-namespace Poincare.Topology.Manifold
+namespace DifferentialGeometry.Topology.Manifold
 
 theorem endpoint_order_of_regular_patch_on_variable_height_cylinder
     {E H N : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -76,4 +76,4 @@ theorem endpoint_order_of_regular_patch_on_variable_height_cylinder
   exact ⟨hi, hj, ha0, hbc, boundary_value_lt_of_inward_coordinate hreg hbdy γ
     hγ.continuousWithinAt hlocal hp hcoordinate⟩
 
-end Poincare.Topology.Manifold
+end DifferentialGeometry.Topology.Manifold

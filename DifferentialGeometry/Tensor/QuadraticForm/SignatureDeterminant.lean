@@ -6,7 +6,7 @@ set_option autoImplicit false
 noncomputable section
 open InnerProductSpace
 open scoped BigOperators
-namespace Poincare.QuadraticForm
+namespace DifferentialGeometry.QuadraticForm
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
 
 
@@ -95,4 +95,4 @@ theorem sign_det_eq_neg_one_pow_sigNeg {T : E →ₗ[ℝ] E}
   simpa only [RCLike.ofReal_real_eq_id, id_eq, Set.ncard_eq_toFinset_card', Set.toFinset_ofPred]
     using sign_prod Finset.univ (hT.eigenvalues rfl) hw
 
-end Poincare.QuadraticForm
+end DifferentialGeometry.QuadraticForm

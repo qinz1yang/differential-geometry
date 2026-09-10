@@ -5,7 +5,7 @@ set_option autoImplicit false
 noncomputable section
 open Set Function Filter
 open scoped Manifold ContDiff Topology
-namespace Poincare.Manifold
+namespace DifferentialGeometry.Manifold
 variable {E H M ι : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
   [TopologicalSpace H] [TopologicalSpace M] [ChartedSpace H M]
   {I : ModelWithCorners ℝ E H} [IsManifold I ∞ M] [T2Space M] [Finite ι]
@@ -39,4 +39,4 @@ theorem exists_finite_point_bumps {e : ι → M} (he : Injective e) {U : Set M}
     filter_upwards [(isClosed_tsupport (b j)).isOpen_compl.mem_nhds hout] with x hx
     exact image_eq_zero_of_notMem_tsupport hx
 
-end Poincare.Manifold
+end DifferentialGeometry.Manifold

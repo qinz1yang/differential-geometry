@@ -4,7 +4,7 @@ import Mathlib.Topology.Homeomorph.Lemmas
 
 set_option autoImplicit false
 noncomputable section
-namespace Poincare.Simplex
+namespace DifferentialGeometry.Simplex
 variable {ι E : Type*} [Fintype ι]
   [NormedAddCommGroup E] [NormedSpace ℝ E]
 
@@ -31,4 +31,4 @@ def vertexHomeomorphism {v : ι → E} (hv : AffineIndependent ℝ v) :
 theorem vertexHomeomorphism_apply {v : ι → E} (hv : AffineIndependent ℝ v)
     (x : stdSimplex ℝ ι) : (vertexHomeomorphism hv x : E) = ∑ i, x.val i • v i := rfl
 
-end Poincare.Simplex
+end DifferentialGeometry.Simplex

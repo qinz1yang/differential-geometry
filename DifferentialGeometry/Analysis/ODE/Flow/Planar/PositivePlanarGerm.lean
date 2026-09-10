@@ -5,7 +5,7 @@ noncomputable section
 open Set Metric Filter Topology
 open scoped ContDiff Manifold
 
-namespace Poincare.Analysis
+namespace DifferentialGeometry.Analysis
 
 theorem exists_compact_isotopy_realizing_positive_planar_germ
     {f : ℂ → ℂ} {U : Set ℂ} (hU : IsOpen U) (h0U : (0 : ℂ) ∈ U)
@@ -75,4 +75,4 @@ theorem exists_compact_isotopy_realizing_positive_planar_germ
     · change (L p).symm ((C p).symm z) = z
       rw [(hCfix p z hzK).2, (hLfix p z hz).2]
 
-end Poincare.Analysis
+end DifferentialGeometry.Analysis

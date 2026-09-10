@@ -3,7 +3,7 @@ import Mathlib.Tactic.NormNum
 
 open Finset
 
-namespace Poincare.Topology.SimplicialComplex
+namespace DifferentialGeometry.Topology.SimplicialComplex
 
 noncomputable section
 
@@ -68,4 +68,4 @@ theorem sum_faceEulerChar_link_vertices (hd : ∀ u ∈ K, u.card ≤ 4) :
 
 end
 
-end Poincare.Topology.SimplicialComplex
+end DifferentialGeometry.Topology.SimplicialComplex

@@ -6,7 +6,7 @@ noncomputable section
 open Set Function
 open scoped ContDiff Manifold
 
-namespace Poincare.Geometry.Boundary
+namespace DifferentialGeometry.Geometry.Boundary
 
 open DifferentialGeometry.Integral.DivergenceTheorem.WithBoundary
 
@@ -149,9 +149,9 @@ theorem exists_modelBoundary_coordinates [FiniteDimensional ℝ E] (p : hI.bound
       ∀ z, e z = modelBoundaryParam I z.1 + z.2 • hI.inwardCoordE := by
   have hparam : ContDiff ℝ ∞ (modelBoundaryParam I) := hI.I_inclH_boundaryI_symm_contDiff
   have hinj := injective_fderiv_modelBoundaryParam I p
-  obtain ⟨e, hp, _, he, hi, heq⟩ := Poincare.Analysis.exists_localInverse_of_transverse_immersion
+  obtain ⟨e, hp, _, he, hi, heq⟩ := DifferentialGeometry.Analysis.exists_localInverse_of_transverse_immersion
     hparam.contDiffOn isOpen_univ (mem_univ p) hinj hI.finrank_boundaryE_succ
     (hI.inwardCoordE_transverse p)
   exact ⟨e, hp, he, hi, heq⟩
 
-end Poincare.Geometry.Boundary
+end DifferentialGeometry.Geometry.Boundary

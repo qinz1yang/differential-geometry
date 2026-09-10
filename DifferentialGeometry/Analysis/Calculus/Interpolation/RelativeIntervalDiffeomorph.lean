@@ -6,7 +6,7 @@ noncomputable section
 open Set
 open scoped ContDiff Manifold
 
-namespace Poincare.Analysis
+namespace DifferentialGeometry.Analysis
 
 theorem exists_diffeomorph_extension_of_interval_family
     {P : Type*} [NormedAddCommGroup P] [NormedSpace ℝ P]
@@ -83,4 +83,4 @@ theorem exists_diffeomorph_extension_of_interval_family
     exact deriv_pos_of_monotone_left_inverse ((hFs p hp).differentiable (by simp))
       ((hGs p hp).differentiable (by simp)) (hGF p hp) hmono.monotone y
 
-end Poincare.Analysis
+end DifferentialGeometry.Analysis

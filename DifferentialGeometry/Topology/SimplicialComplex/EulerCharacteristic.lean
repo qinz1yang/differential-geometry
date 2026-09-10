@@ -4,7 +4,7 @@ import Mathlib.Tactic.Ring
 
 open Finset
 
-namespace Poincare.Topology.SimplicialComplex
+namespace DifferentialGeometry.Topology.SimplicialComplex
 
 noncomputable section
 
@@ -100,4 +100,4 @@ theorem faceEulerChar_map_of_injective {κ : Type*} [DecidableEq κ]
 
 end
 
-end Poincare.Topology.SimplicialComplex
+end DifferentialGeometry.Topology.SimplicialComplex

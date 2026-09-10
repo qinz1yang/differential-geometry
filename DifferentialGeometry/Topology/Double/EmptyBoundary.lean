@@ -4,7 +4,7 @@ import Mathlib.Topology.Constructions.SumProd
 set_option autoImplicit false
 noncomputable section
 open Set Function Topology
-namespace Poincare.Topology
+namespace DifferentialGeometry.Topology
 variable {X : Type*} [TopologicalSpace X]
 
 
@@ -25,4 +25,4 @@ def doubleEmptyHomeomorph : Double (∅ : Set X) ≃ₜ X ⊕ X where
 @[simp] theorem doubleEmptyHomeomorph_negative (x : X) :
     doubleEmptyHomeomorph (doubleNegative (∅ : Set X) x) = Sum.inr x := rfl
 
-end Poincare.Topology
+end DifferentialGeometry.Topology

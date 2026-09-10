@@ -5,7 +5,7 @@ set_option autoImplicit false
 open CategoryTheory CategoryTheory.Limits Opposite Simplicial
 universe u
 noncomputable section
-namespace Poincare.Homology
+namespace DifferentialGeometry.Homology
 private abbrev simplexAmbient (n : ℕ) := ULift.{u} (Fin (n + 1) → ℝ)
 private def simplexRegion (n : ℕ) : Set (simplexAmbient.{u} n) :=
   ULift.down ⁻¹' stdSimplex ℝ (Fin (n + 1))
@@ -304,4 +304,4 @@ theorem barycentricSimplexHomotopyChain_boundary (n : ℕ) :
   rw [← simplexSubdivisionHomotopy_naturality R (SimplexCategory.δ i) n]
   rfl
 
-end Poincare.Homology
+end DifferentialGeometry.Homology

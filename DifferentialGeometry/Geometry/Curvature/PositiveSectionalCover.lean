@@ -9,7 +9,7 @@ noncomputable section
 open Manifold Topology
 open scoped ContDiff
 
-namespace Poincare.Geometry
+namespace DifferentialGeometry.Geometry
 
 open DifferentialGeometry
 
@@ -39,4 +39,4 @@ theorem exists_euclidean_cover_of_cheegerGromoll
   exact ⟨⟨d.symm, hp, d.symm.surjective, d.symm.isLocalDiffeomorph⟩,
     fun _ ↦ inferInstance⟩
 
-end Poincare.Geometry
+end DifferentialGeometry.Geometry

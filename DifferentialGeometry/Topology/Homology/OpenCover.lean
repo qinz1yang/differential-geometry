@@ -6,7 +6,7 @@ set_option autoImplicit false
 open CategoryTheory CategoryTheory.Limits
 noncomputable section
 universe u
-namespace Poincare.Homology
+namespace DifferentialGeometry.Homology
 variable (X : TopCat.{u}) (s t : Set X) (k : Type u) [Field k]
 
 private theorem twoSet_cover_open (hs : IsOpen s) (ht : IsOpen t) (b : Bool) :
@@ -29,7 +29,7 @@ theorem finiteHomologyType_of_openCover
   let φ := smallChainMap X (twoSetFamily X s t) (ModuleCat.of k k)
   let : QuasiIso φ := quasiIso_smallChainMap X _ _
     (twoSet_cover_open X s t hs ht) (twoSet_cover_all X s t hcover)
-  exact (Poincare.HomologicalComplex.finiteHomologyType_iff_of_quasiIso φ).mp
+  exact (DifferentialGeometry.HomologicalComplex.finiteHomologyType_iff_of_quasiIso φ).mp
     (finiteHomologyType_twoSetSmall X s t k hfs hft hfi)
 
 theorem eulerChar_openCover
@@ -41,10 +41,10 @@ theorem eulerChar_openCover
   let φ := smallChainMap X (twoSetFamily X s t) (ModuleCat.of k k)
   let : QuasiIso φ := quasiIso_smallChainMap X _ _
     (twoSet_cover_open X s t hs ht) (twoSet_cover_all X s t hcover)
-  have h := Poincare.HomologicalComplex.homologyEulerChar_eq_of_quasiIso φ
+  have h := DifferentialGeometry.HomologicalComplex.homologyEulerChar_eq_of_quasiIso φ
   change ((smallSingularSimplices X (twoSetFamily X s t) : SSet).chainComplex
     (ModuleCat.of k k)).homologyEulerChar = eulerChar k X at h
   rw [← h]
   exact homologyEulerChar_twoSetSmall X s t k hfs hft hfi
 
-end Poincare.Homology
+end DifferentialGeometry.Homology

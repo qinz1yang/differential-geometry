@@ -9,7 +9,7 @@ open CategoryTheory.Limits
 open Simplicial
 open scoped Simplicial
 
-namespace Poincare.Topology.SphereSeparation
+namespace DifferentialGeometry.Topology.SphereSeparation
 
 
 
@@ -273,4 +273,4 @@ theorem barycentricSubdivisionBoundaryCompatible (X : TopCat) :
     exact sum_signed_delta_barycentricPiece_castSucc_eq_zero X s i
   rw [hinternal, zero_add, sum_finalFaces_barycentricPiece]
 
-end Poincare.Topology.SphereSeparation
+end DifferentialGeometry.Topology.SphereSeparation

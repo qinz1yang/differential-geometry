@@ -10,7 +10,7 @@ open DifferentialGeometry.Geometry.Riemannian
 open DifferentialGeometry.Geometry.Riemannian.Geodesic
 open DifferentialGeometry.Geometry.Riemannian.Exponential
 
-namespace Poincare.Geometry.Riemannian.Exponential
+namespace DifferentialGeometry.Geometry.Riemannian.Exponential
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
@@ -66,4 +66,4 @@ theorem expMapIntrinsic_isometry
     exact hcomp
   erw [heq, hv, h0]
 
-end Poincare.Geometry.Riemannian.Exponential
+end DifferentialGeometry.Geometry.Riemannian.Exponential

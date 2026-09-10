@@ -1,6 +1,6 @@
 import Mathlib.Topology.Homotopy.Basic
 
-namespace Poincare.Topology.Homotopy
+namespace DifferentialGeometry.Topology.Homotopy
 
 open scoped unitInterval
 
@@ -31,4 +31,4 @@ def productBoundaryHomotopy {X W : Type*} [TopologicalSpace X] [TopologicalSpace
     (fun x ↦ by simp only [ContinuousMap.coe_mk, hzero, Hprod.symm_apply_apply])
     (fun x ↦ by simp only [ContinuousMap.coe_mk, hone, Hprod.symm_apply_apply])
 
-end Poincare.Topology.Homotopy
+end DifferentialGeometry.Topology.Homotopy

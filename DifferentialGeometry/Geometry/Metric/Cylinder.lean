@@ -7,7 +7,7 @@ open Bundle Manifold
 open scoped Manifold ContDiff
 open DifferentialGeometry DifferentialGeometry.Geometry.Operator
 
-namespace Poincare.Geometry.Metric
+namespace DifferentialGeometry.Geometry.Metric
 
 variable {E H M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
@@ -91,4 +91,4 @@ theorem gradFun_height_eq_cylinderAxis (g : SmoothRiemannianMetric I M) (x : M �
     exact (ne_of_gt (m.pos x z hn)) hz
   exact sub_eq_zero.mp he
 
-end Poincare.Geometry.Metric
+end DifferentialGeometry.Geometry.Metric

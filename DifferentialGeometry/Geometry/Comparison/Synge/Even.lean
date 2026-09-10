@@ -12,7 +12,7 @@ open DifferentialGeometry
 open DifferentialGeometry.Geometry.Riemannian.Topology
 open DifferentialGeometry.Topology.Manifold DifferentialGeometry.Topology.Covering
 
-namespace Poincare.Geometry
+namespace DifferentialGeometry.Geometry
 
 variable {E M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
   [TopologicalSpace M] [ChartedSpace E M] [IsManifold 𝓘(ℝ, E) ∞ M]
@@ -49,6 +49,6 @@ theorem synge_simplyConnected_of_even_dim {n : ℕ} (hdim : Module.finrank ℝ E
     simpa only [map_one] using hdeck
   let : Subsingleton (FundamentalGroup M (default : M)) :=
     ⟨fun a b => (htrivial a).trans (htrivial b).symm⟩
-  exact Poincare.Topology.simplyConnectedSpace_of_subsingleton_fundamentalGroup (default : M)
+  exact DifferentialGeometry.Topology.simplyConnectedSpace_of_subsingleton_fundamentalGroup (default : M)
 
-end Poincare.Geometry
+end DifferentialGeometry.Geometry

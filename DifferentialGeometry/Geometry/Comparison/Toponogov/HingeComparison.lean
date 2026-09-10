@@ -14,13 +14,13 @@ noncomputable section
 open Bundle Filter Function Manifold Set Topology
 open scoped ENNReal Manifold ContDiff Topology
 
-namespace Poincare.Toponogov
+namespace DifferentialGeometry.Toponogov
 
 open DifferentialGeometry
 open DifferentialGeometry.Geometry.Riemannian
 open DifferentialGeometry.Geometry.Riemannian.Geodesic
 open DifferentialGeometry.Geometry.Riemannian.HopfRinow
-open Poincare.Geometry
+open DifferentialGeometry.Geometry
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [CompleteSpace E]
@@ -699,4 +699,4 @@ theorem riemannianComparisonAngle_le_tangentAngle_of_complete
         (I := I) g hcomplete x tau
           (Icc 0 (riemannianDistance (I := I) g o y)))
 
-end Poincare.Toponogov
+end DifferentialGeometry.Toponogov

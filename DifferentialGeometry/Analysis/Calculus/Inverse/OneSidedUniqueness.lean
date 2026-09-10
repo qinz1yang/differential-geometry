@@ -4,7 +4,7 @@ import Mathlib.Analysis.ODE.ExistUnique
 open Set Filter Topology
 open scoped ContDiff
 
-namespace Poincare.Analysis
+namespace DifferentialGeometry.Analysis
 
 variable {E F : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [NormedAddCommGroup F] [NormedSpace ℝ F]
@@ -50,4 +50,4 @@ theorem eqOn_of_one_sided_integral_curves
     (fun t ht ↦ Or.inl ⟨t, Ico_subset_Icc_self ht, rfl⟩) hη hηd
     (fun t ht ↦ Or.inr ⟨t, Ico_subset_Icc_self ht, rfl⟩) hinit
 
-end Poincare.Analysis
+end DifferentialGeometry.Analysis

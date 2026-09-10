@@ -10,7 +10,7 @@ open CategoryTheory Opposite Simplicial
 
 universe u
 
-namespace Poincare.SSet
+namespace DifferentialGeometry.SSet
 
 
 def boundaryFaceMap {n : ℕ} (i : Fin (n + 2)) :
@@ -80,19 +80,19 @@ theorem boundaryFaceMap_overlap {n : ℕ} (i : Fin (n + 3)) (j : Fin (n + 2))
 
 private theorem coordinate_faceDelete_map {n : ℕ} (i : Fin (n + 2))
     (p : stdSimplex ℝ (Fin (n + 2))) (hi : p.val i = 0) :
-    stdSimplex.map i.succAbove (Poincare.Simplex.faceDelete i ⟨p, hi⟩) = p :=
-  congrArg Subtype.val (Poincare.Simplex.faceInsert_faceDelete i ⟨p, hi⟩)
+    stdSimplex.map i.succAbove (DifferentialGeometry.Simplex.faceDelete i ⟨p, hi⟩) = p :=
+  congrArg Subtype.val (DifferentialGeometry.Simplex.faceInsert_faceDelete i ⟨p, hi⟩)
 
 
 theorem boundaryFaceMap_delete_eq {n : ℕ} (i j : Fin (n + 2))
     (p : stdSimplex ℝ (Fin (n + 2))) (hi : p.val i = 0) (hj : p.val j = 0) :
-    boundaryFaceMap.{u} i (Poincare.Simplex.faceDelete i ⟨p, hi⟩) =
-      boundaryFaceMap j (Poincare.Simplex.faceDelete j ⟨p, hj⟩) := by
+    boundaryFaceMap.{u} i (DifferentialGeometry.Simplex.faceDelete i ⟨p, hi⟩) =
+      boundaryFaceMap j (DifferentialGeometry.Simplex.faceDelete j ⟨p, hj⟩) := by
   by_cases hji : j = i
   · subst j
     rfl
   obtain ⟨j, rfl⟩ := Fin.exists_succAbove_eq hji
-  let q := Poincare.Simplex.faceDelete i ⟨p, hi⟩
+  let q := DifferentialGeometry.Simplex.faceDelete i ⟨p, hi⟩
   have hq : q.val j = 0 := hj
   cases n with
   | zero =>
@@ -102,14 +102,14 @@ theorem boundaryFaceMap_delete_eq {n : ℕ} (i j : Fin (n + 2))
       simpa only [Fin.sum_univ_one, Subsingleton.elim (0 : Fin 1) j] using hs
     exact False.elim (zero_ne_one (hq.symm.trans he))
   | succ n =>
-    let z := Poincare.Simplex.faceDelete j ⟨q, hq⟩
+    let z := DifferentialGeometry.Simplex.faceDelete j ⟨q, hq⟩
     have hz : stdSimplex.map j.succAbove z = q := coordinate_faceDelete_map j q hq
-    have hother : Poincare.Simplex.faceDelete (i.succAbove j) ⟨p, hj⟩ =
+    have hother : DifferentialGeometry.Simplex.faceDelete (i.succAbove j) ⟨p, hj⟩ =
         stdSimplex.map (j.predAbove i).succAbove z := by
-      apply (Poincare.Simplex.faceHomeomorph (i.succAbove j)).injective
+      apply (DifferentialGeometry.Simplex.faceHomeomorph (i.succAbove j)).injective
       apply Subtype.ext
       change stdSimplex.map (i.succAbove j).succAbove
-        (Poincare.Simplex.faceDelete (i.succAbove j) ⟨p, hj⟩) =
+        (DifferentialGeometry.Simplex.faceDelete (i.succAbove j) ⟨p, hj⟩) =
           stdSimplex.map (i.succAbove j).succAbove (stdSimplex.map (j.predAbove i).succAbove z)
       rw [coordinate_faceDelete_map]
       calc
@@ -141,11 +141,11 @@ instance isEmpty_realization_boundary_zero :
 private def boundaryInverseSuccPoint (n : ℕ) (p : simplexBoundarySet.{u} (n + 1)) :
     _root_.SSet.toTop.obj (_root_.SSet.boundary (n + 1) : _root_.SSet.{u}) :=
   boundaryFaceMap p.property.choose
-    (Poincare.Simplex.faceDelete p.property.choose ⟨p.val.down, p.property.choose_spec⟩)
+    (DifferentialGeometry.Simplex.faceDelete p.property.choose ⟨p.val.down, p.property.choose_spec⟩)
 
 private theorem boundaryInverseSuccPoint_face (n : ℕ) (p : simplexBoundarySet.{u} (n + 1))
     (i : Fin (n + 2)) (hi : p.val.down.val i = 0) :
-    boundaryInverseSuccPoint n p = boundaryFaceMap i (Poincare.Simplex.faceDelete i ⟨p.val.down, hi⟩) :=
+    boundaryInverseSuccPoint n p = boundaryFaceMap i (DifferentialGeometry.Simplex.faceDelete i ⟨p.val.down, hi⟩) :=
   boundaryFaceMap_delete_eq _ _ _ _ _
 
 private theorem continuous_boundaryInverseSuccPoint (n : ℕ) :
@@ -167,13 +167,13 @@ private theorem continuous_boundaryInverseSuccPoint (n : ℕ) :
   rw [continuousOn_iff_continuous_domRestrict]
   have he : (fun p : F i ↦ boundaryInverseSuccPoint n p.val) =
       fun p : F i ↦ boundaryFaceMap i
-        (Poincare.Simplex.faceDelete i ⟨p.val.val.down, p.property⟩) := by
+        (DifferentialGeometry.Simplex.faceDelete i ⟨p.val.val.down, p.property⟩) := by
     funext p
     exact boundaryInverseSuccPoint_face n p.val i p.property
   change Continuous (fun p : F i ↦ boundaryInverseSuccPoint n p.val)
   rw [he]
   apply (boundaryFaceMap i).continuous.comp
-  apply (Poincare.Simplex.faceDelete i).continuous.comp
+  apply (DifferentialGeometry.Simplex.faceDelete i).continuous.comp
   have hv : Continuous (fun p : F i ↦ (p.val.val.down : stdSimplex ℝ (Fin (n + 2)))) := by
     fun_prop
   exact hv.subtype_mk _
@@ -191,7 +191,7 @@ def boundaryRealizationInverse (n : ℕ) :
 theorem boundaryRealizationInverse_face {n : ℕ} (p : simplexBoundarySet.{u} (n + 1))
     (i : Fin (n + 2)) (hi : p.val.down.val i = 0) :
     boundaryRealizationInverse (n + 1) p =
-      boundaryFaceMap i (Poincare.Simplex.faceDelete i ⟨p.val.down, hi⟩) :=
+      boundaryFaceMap i (DifferentialGeometry.Simplex.faceDelete i ⟨p.val.down, hi⟩) :=
   boundaryInverseSuccPoint_face n p i hi
 
 
@@ -205,7 +205,7 @@ theorem boundaryRealizationLift_inverse (n : ℕ) (p : simplexBoundarySet.{u} n)
     rw [boundaryRealizationInverse_face p i hi]
     apply Subtype.ext
     have h := ConcreteCategory.congr_hom (boundaryRealizationLift_inclusion (n + 1))
-      (boundaryFaceMap i (Poincare.Simplex.faceDelete i ⟨p.val.down, hi⟩))
+      (boundaryFaceMap i (DifferentialGeometry.Simplex.faceDelete i ⟨p.val.down, hi⟩))
     refine h.trans ((boundaryFaceMap_ambient i _).trans ?_)
     exact congrArg ULift.up (coordinate_faceDelete_map i p.val.down hi)
 
@@ -219,11 +219,11 @@ theorem boundaryRealizationInverse_boundaryFaceMap {n : ℕ} (i : Fin (n + 2))
     congrArg ULift.down ((ConcreteCategory.congr_hom
       (boundaryRealizationLift_inclusion (n + 1)) (boundaryFaceMap i q)).trans
         (boundaryFaceMap_ambient i q))
-  have hpi : p.val.down.val i = 0 := hp ▸ Poincare.Simplex.map_succAbove_apply_pivot i q
+  have hpi : p.val.down.val i = 0 := hp ▸ DifferentialGeometry.Simplex.map_succAbove_apply_pivot i q
   rw [boundaryRealizationInverse_face p i hpi]
-  have hface : (⟨p.val.down, hpi⟩ : Poincare.Simplex.face i) = Poincare.Simplex.faceInsert i q :=
+  have hface : (⟨p.val.down, hpi⟩ : DifferentialGeometry.Simplex.face i) = DifferentialGeometry.Simplex.faceInsert i q :=
     Subtype.ext hp
-  rw [hface, Poincare.Simplex.faceDelete_faceInsert]
+  rw [hface, DifferentialGeometry.Simplex.faceDelete_faceInsert]
 
 theorem boundaryRealization_hom_ext {n : ℕ} {X : TopCat.{u}}
     {f g : _root_.SSet.toTop.obj (_root_.SSet.boundary (n + 1) : _root_.SSet.{u}) ⟶ X}
@@ -285,7 +285,7 @@ theorem boundaryRealizationHomeomorph_apply (n : ℕ)
 theorem boundaryRealizationHomeomorph_symm_face {n : ℕ} (p : simplexBoundarySet.{u} (n + 1))
     (i : Fin (n + 2)) (hi : p.val.down.val i = 0) :
     (boundaryRealizationHomeomorph (n + 1)).symm p =
-      boundaryFaceMap i (Poincare.Simplex.faceDelete i ⟨p.val.down, hi⟩) :=
+      boundaryFaceMap i (DifferentialGeometry.Simplex.faceDelete i ⟨p.val.down, hi⟩) :=
   boundaryRealizationInverse_face p i hi
 
 
@@ -301,4 +301,4 @@ theorem isClosedEmbedding_boundaryRealizationMap (n : ℕ) :
     (boundaryRealizationHomeomorph.{u} n).isClosedEmbedding
   simpa only [Function.comp_def, boundaryRealizationHomeomorph_ambient] using h
 
-end Poincare.SSet
+end DifferentialGeometry.SSet

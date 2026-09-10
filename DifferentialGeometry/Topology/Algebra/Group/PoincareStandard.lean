@@ -11,7 +11,7 @@ set_option autoImplicit false
 
 universe u
 
-namespace Poincare.Algebra.Group
+namespace DifferentialGeometry.Algebra.Group
 
 
 abbrev poincareStandardGroupFactors {a : ℕ} (Γ : Fin a → Type u) (b : ℕ) :
@@ -102,4 +102,4 @@ theorem finiteFreeProductPoincareStandardEquiv_comp_factorToStage
     (poincareStandardGroupFactors Gamma b)
     finSumFinEquiv.symm factorEquiv i
 
-end Poincare.Algebra.Group
+end DifferentialGeometry.Algebra.Group

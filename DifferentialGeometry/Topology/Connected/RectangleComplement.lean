@@ -2,7 +2,7 @@ import Mathlib.Analysis.Complex.Convex
 
 open Set
 
-namespace Poincare.Topology
+namespace DifferentialGeometry.Topology
 
 theorem isConnected_compl_openRectangle (a b c d : ℝ) :
     IsConnected {z : ℂ | z.re ≤ a ∨ b ≤ z.re ∨ z.im ≤ c ∨ d ≤ z.im} := by
@@ -26,4 +26,4 @@ theorem isConnected_compl_openRectangle (a b c d : ℝ) :
     ((z.re ≤ a ∨ z.im ≤ c) ∨ b ≤ z.re ∨ d ≤ z.im)
   tauto
 
-end Poincare.Topology
+end DifferentialGeometry.Topology

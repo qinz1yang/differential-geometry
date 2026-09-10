@@ -3,7 +3,7 @@ import Mathlib.Topology.PartitionOfUnity
 noncomputable section
 open Set Filter Topology
 
-namespace Poincare.Topology
+namespace DifferentialGeometry.Topology
 
 theorem partition_eq_one_near_of_disjoint_tsupport
     {ι X : Type*} [TopologicalSpace X] (ρ : PartitionOfUnity ι X)
@@ -37,4 +37,4 @@ theorem partition_patch_eq_near_of_disjoint_tsupport
   filter_upwards [partition_eq_one_near_of_disjoint_tsupport ρ C i hdisj] with x hx
   rw [finsum_eq_single _ i (fun j hj ↦ by rw [hx.2 j hj, zero_smul]), hx.1, one_smul]
 
-end Poincare.Topology
+end DifferentialGeometry.Topology

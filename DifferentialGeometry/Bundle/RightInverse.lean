@@ -7,7 +7,7 @@ noncomputable section
 
 open scoped ContDiff Manifold Topology
 
-namespace Poincare.Geometry.VectorBundle
+namespace DifferentialGeometry.Geometry.VectorBundle
 
 variable {E F G : Type*}
   [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -64,4 +64,4 @@ theorem exists_contMDiffOn_rightInverse
   · intro x hx v
     exact hx.2.self_apply_inverse v
 
-end Poincare.Geometry.VectorBundle
+end DifferentialGeometry.Geometry.VectorBundle

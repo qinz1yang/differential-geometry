@@ -6,7 +6,7 @@ set_option autoImplicit false
 open Function Set Topology
 open scoped Manifold ContDiff Topology
 
-namespace Poincare.Topology.SphereSeparation
+namespace DifferentialGeometry.Topology.SphereSeparation
 
 
 def sliceDomain {a : ℝ} (c : AxialInterval a) :
@@ -512,4 +512,4 @@ theorem orderedSlices_core_of_isSmoothEmbedding
 
 end IsAxiallyOriented
 
-end Poincare.Topology.SphereSeparation
+end DifferentialGeometry.Topology.SphereSeparation

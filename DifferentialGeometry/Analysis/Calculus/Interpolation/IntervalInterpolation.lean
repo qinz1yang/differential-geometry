@@ -6,7 +6,7 @@ noncomputable section
 open Set Filter Topology
 open scoped ContDiff Manifold
 
-namespace Poincare.Analysis
+namespace DifferentialGeometry.Analysis
 
 def intervalInterpolation {P : Type*} (f : P × ℝ → ℝ) (β : P → ℝ) (q : P × ℝ) : ℝ :=
   (1 - β q.1) * q.2 + β q.1 * f q
@@ -109,4 +109,4 @@ theorem exists_diffeomorph_intervalInterpolation
   have hm : y ∈ (fun y ↦ H (p, y)) '' Icc a b := by rwa [himage]
   exact hm
 
-end Poincare.Analysis
+end DifferentialGeometry.Analysis

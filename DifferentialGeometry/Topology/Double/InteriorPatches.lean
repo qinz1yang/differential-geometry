@@ -4,7 +4,7 @@ import Mathlib.Topology.OpenPartialHomeomorph.Basic
 set_option autoImplicit false
 noncomputable section
 open Set Function Topology
-namespace Poincare.Topology
+namespace DifferentialGeometry.Topology
 variable {X : Type*} [TopologicalSpace X]
   (B : Set X) (r : C(X, ℝ)) (hr : ∀ b : B, r b.val = 0) (hn : ∀ x, 0 ≤ r x)
 
@@ -67,4 +67,4 @@ def doubleNegativePatch : OpenPartialHomeomorph X (Double B) where
 @[simp] theorem doubleNegativePatch_symm_apply (z : Double B) :
     (doubleNegativePatch B r hr hn).symm z = doubleFold B z := rfl
 
-end Poincare.Topology
+end DifferentialGeometry.Topology

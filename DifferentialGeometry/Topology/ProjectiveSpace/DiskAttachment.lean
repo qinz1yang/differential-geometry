@@ -10,7 +10,7 @@ open Metric Topology CategoryTheory CategoryTheory.Limits
 
 universe u
 
-namespace Poincare.ProjectiveSpace
+namespace DifferentialGeometry.ProjectiveSpace
 
 variable (E : Type u) [NormedAddCommGroup E] [NormedSpace ℝ E]
 
@@ -84,4 +84,4 @@ theorem diskAttachment_isPushout [FiniteDimensional ℝ E] :
     obtain ⟨x, rfl⟩ := diskCharacteristicMap_surjective p
     exact (ConcreteCategory.congr_hom hm x).trans (ConcreteCategory.congr_hom hl x).symm
 
-end Poincare.ProjectiveSpace
+end DifferentialGeometry.ProjectiveSpace

@@ -4,7 +4,7 @@ import DifferentialGeometry.Topology.SimplicialComplex.MaximalFace
 set_option autoImplicit false
 noncomputable section
 open Set Finset
-namespace Poincare.Topology.SimplicialComplex
+namespace DifferentialGeometry.Topology.SimplicialComplex
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   (K : Geometry.SimplicialComplex ℝ E) {s : Finset E}
 
@@ -19,21 +19,21 @@ private theorem image_face_inter (t : Finset E) :
     exact ⟨⟨a, has⟩, hat, rfl⟩
 
 theorem vertexMap_mem_geometricFaceCostar_iff (hs : s ∈ K.faces) (x : stdSimplex ℝ s) :
-    Poincare.Simplex.vertexMap (fun i : s => (i : E)) x ∈ (geometricFaceCostar K s).space ↔
-      x ∈ Poincare.Simplex.boundary s := by
+    DifferentialGeometry.Simplex.vertexMap (fun i : s => (i : E)) x ∈ (geometricFaceCostar K s).space ↔
+      x ∈ DifferentialGeometry.Simplex.boundary s := by
   classical
   constructor
   · intro hx
     obtain ⟨t, ht, hxt⟩ := Geometry.SimplicialComplex.mem_space_iff.mp hx
-    have hxs : Poincare.Simplex.vertexMap (fun i : s => (i : E)) x ∈ convexHull ℝ (s : Set E) := by
+    have hxs : DifferentialGeometry.Simplex.vertexMap (fun i : s => (i : E)) x ∈ convexHull ℝ (s : Set E) := by
       have hr : Set.range (fun i : s => (i : E)) = (s : Set E) := by
         ext a
         simp
       rw [← hr]
-      exact Poincare.Simplex.vertexMap_mem_convexHull (fun i : s => (i : E)) x
+      exact DifferentialGeometry.Simplex.vertexMap_mem_convexHull (fun i : s => (i : E)) x
     have hinter := K.inter_subset_convexHull hs ht.1 ⟨hxs, hxt⟩
     rw [← image_face_inter (s := s) t] at hinter
-    have hw := (Poincare.Simplex.vertexMap_mem_convexHull_image_iff (K.indep hs) _ x).mp hinter
+    have hw := (DifferentialGeometry.Simplex.vertexMap_mem_convexHull_image_iff (K.indep hs) _ x).mp hinter
     have hnt : ∃ a ∈ s, a ∉ t := Finset.not_subset.mp ht.2
     obtain ⟨a, has, hat⟩ := hnt
     exact ⟨⟨a, has⟩, hw ⟨a, has⟩ hat⟩
@@ -44,7 +44,7 @@ theorem vertexMap_mem_geometricFaceCostar_iff (hs : s ∈ K.faces) (x : stdSimpl
         apply Subtype.ext
         simpa only [mem_erase, j.prop, and_true, not_not] using hj
       simpa only [hji] using hi
-    have hh := (Poincare.Simplex.vertexMap_mem_convexHull_image_iff (K.indep hs)
+    have hh := (DifferentialGeometry.Simplex.vertexMap_mem_convexHull_image_iff (K.indep hs)
       {j : s | (j : E) ∈ s.erase i.val} x).mpr hw
     rw [image_face_inter] at hh
     rw [Set.inter_eq_right.mpr (show (s.erase i.val : Set E) ⊆ s from erase_subset _ _)] at hh
@@ -55,4 +55,4 @@ theorem vertexMap_mem_geometricFaceCostar_iff (hs : s ∈ K.faces) (x : stdSimpl
     intro hsub
     exact notMem_erase i.val s (hsub i.prop)
 
-end Poincare.Topology.SimplicialComplex
+end DifferentialGeometry.Topology.SimplicialComplex

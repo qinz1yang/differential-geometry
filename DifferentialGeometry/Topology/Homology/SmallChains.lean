@@ -11,7 +11,7 @@ open CategoryTheory CategoryTheory.Limits Opposite Simplicial AlgebraicTopology
 
 universe u v w
 
-namespace Poincare.Homology
+namespace DifferentialGeometry.Homology
 
 variable (X : TopCat.{u}) {ι : Type v} (U : ι → Set X)
 
@@ -190,4 +190,4 @@ theorem smallChainRefinement_smallChainMap {κ : Type w} (V : κ → Set X)
   rw [← Functor.map_comp, SSet.Subcomplex.homOfLE_ι]
   rfl
 
-end Poincare.Homology
+end DifferentialGeometry.Homology

@@ -5,7 +5,7 @@ set_option autoImplicit false
 noncomputable section
 open Set Filter Bundle
 open scoped Manifold ContDiff Topology
-namespace Poincare.VectorField
+namespace DifferentialGeometry.VectorField
 section General
 variable {E H M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [TopologicalSpace H] [TopologicalSpace M] [ChartedSpace H M]
@@ -57,7 +57,7 @@ theorem interiorIndexSumOn_eq_finsum_in_parametrization :
     interiorIndexSumOn I V hfinite hisolated hinterior (e '' S) =
       ∑ᶠ p : {y | _root_.VectorField.mpullback
         𝓘(ℝ, EuclideanSpace ℝ (Fin (d + 1))) I e V y = 0 ∧ y ∈ S},
-        Poincare.LocalDegree.euclideanLocalDegree
+        DifferentialGeometry.LocalDegree.euclideanLocalDegree
           (_root_.VectorField.mpullback 𝓘(ℝ, EuclideanSpace ℝ (Fin (d + 1))) I e V) p.val
           ((hisolated (e p.val) ((mpullback_partialDiffeomorph_eq_zero_iff e
             one_ne_zero V (hS p.property.2)).mp p.property.1)).model_pullback I e le_rfl
@@ -73,4 +73,4 @@ theorem interiorIndexSumOn_eq_finsum_in_parametrization :
       one_ne_zero V (hS p.property.2)).mp p.property.1))
 
 end Index
-end Poincare.VectorField
+end DifferentialGeometry.VectorField

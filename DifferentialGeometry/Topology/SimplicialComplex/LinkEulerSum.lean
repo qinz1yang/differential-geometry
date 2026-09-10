@@ -5,7 +5,7 @@ set_option autoImplicit false
 noncomputable section
 open Finset
 
-namespace Poincare.Topology.SimplicialComplex
+namespace DifferentialGeometry.Topology.SimplicialComplex
 
 variable {ι : Type*} [DecidableEq ι] (K : PreAbstractSimplicialComplex ι) [Finite K.faces]
 
@@ -105,4 +105,4 @@ theorem sum_one_sub_faceEulerChar_link :
       exact nonempty_subface_sum K t ((Set.toFinite K.faces).mem_toFinset.mp ht)
     _ = faceEulerChar K := rfl
 
-end Poincare.Topology.SimplicialComplex
+end DifferentialGeometry.Topology.SimplicialComplex

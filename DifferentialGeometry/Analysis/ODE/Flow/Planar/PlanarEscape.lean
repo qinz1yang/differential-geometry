@@ -4,7 +4,7 @@ import DifferentialGeometry.Analysis.ODE.Flow.Planar.TrappedPlanarOrbit
 open Set Filter
 open scoped ContDiff
 
-namespace Poincare.Analysis
+namespace DifferentialGeometry.Analysis
 
 theorem eventually_not_mem_isCompact
     (φ : _root_.Flow ℝ ℂ) {v : ℂ → ℂ} (hv : ContDiff ℝ ∞ v)
@@ -35,4 +35,4 @@ theorem exists_time_ge_not_mem_isCompact
     ∃ t ≥ T, φ t z ∉ K :=
   frequently_atTop.mp (eventually_not_mem_isCompact φ hv hnz hderiv hK z).frequently T
 
-end Poincare.Analysis
+end DifferentialGeometry.Analysis

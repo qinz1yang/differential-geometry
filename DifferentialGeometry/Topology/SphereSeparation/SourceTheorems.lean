@@ -7,7 +7,7 @@ set_option autoImplicit false
 open Function Set Topology
 open scoped Manifold ContDiff Topology
 
-namespace Poincare.Topology.SphereSeparation
+namespace DifferentialGeometry.Topology.SphereSeparation
 
 theorem embeddedSphere_hasAlexanderDualityH0Certificate
     (e : SphereTwo → EuclideanThree)
@@ -183,4 +183,4 @@ theorem disjoint_spheres_nested_openThreeSpace
     (isConnected_range he₁.contMDiff.continuous)
     (isConnected_range he₂.contMDiff.continuous) hmeet
 
-end Poincare.Topology.SphereSeparation
+end DifferentialGeometry.Topology.SphereSeparation

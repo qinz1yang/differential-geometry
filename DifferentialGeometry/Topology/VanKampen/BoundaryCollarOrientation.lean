@@ -6,13 +6,13 @@ noncomputable section
 
 open Set Filter Topology
 
-namespace Poincare.Topology.ThreeManifold.TwoSidedCollar
+namespace DifferentialGeometry.Topology.ThreeManifold.TwoSidedCollar
 
 private theorem side_subset_interior_or_compl
     {X : Type*} [TopologicalSpace X] {A K : Set X} (hA : IsPreconnected A)
     (havoid : Disjoint A (frontier K)) : A ⊆ interior K ∨ A ⊆ Kᶜ := by
   by_cases hm : (A ∩ interior K).Nonempty
-  · exact Or.inl (Poincare.Topology.subset_interior_of_isPreconnected_of_disjoint_frontier
+  · exact Or.inl (DifferentialGeometry.Topology.subset_interior_of_isPreconnected_of_disjoint_frontier
       hA havoid hm)
   · right
     intro x hx hxK
@@ -129,4 +129,4 @@ theorem exists_outward_collar_of_frontier_zero
       rw [hpos]
       exact neg_nonneg
 
-end Poincare.Topology.ThreeManifold.TwoSidedCollar
+end DifferentialGeometry.Topology.ThreeManifold.TwoSidedCollar

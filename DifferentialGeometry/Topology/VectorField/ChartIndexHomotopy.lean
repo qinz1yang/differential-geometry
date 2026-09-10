@@ -8,7 +8,7 @@ set_option autoImplicit false
 noncomputable section
 open Set Metric Filter Bundle
 open scoped Manifold ContDiff Topology
-namespace Poincare.VectorField
+namespace DifferentialGeometry.VectorField
 variable {d : ℕ} {H M : Type*} [TopologicalSpace H] [TopologicalSpace M]
   [ChartedSpace H M] (I : ModelWithCorners ℝ (EuclideanSpace ℝ (Fin (d + 1))) H)
   [IsManifold I 1 M]
@@ -46,7 +46,7 @@ private theorem region_sum_eq_ballDegree (hr : 0 < r)
     (hinterior : ∀ x, V x = 0 → I.IsInteriorPoint x)
     (hb : ∀ y ∈ sphere a r, V (e y) ≠ 0) :
     interiorIndexSumOn I V hfinite hisolated hinterior (e '' closedBall a r) =
-      Poincare.LocalDegree.euclideanBallDegree hr (componentBallMap I e hsource V hV)
+      DifferentialGeometry.LocalDegree.euclideanBallDegree hr (componentBallMap I e hsource V hV)
         (componentBall_nonzero I e hsource V hV hb) := by
   let F := _root_.VectorField.mpullback 𝓘(ℝ, EuclideanSpace ℝ (Fin (d + 1))) I e V
   have hF : ContinuousOn F (closedBall a r) := continuousOn_components I e hsource V hV
@@ -58,14 +58,14 @@ private theorem region_sum_eq_ballDegree (hr : 0 < r)
       (hsource (sphere_subset_closedBall hy))).mp hz)
   rw [interiorIndexSumOn_eq_finsum_in_parametrization I e V hfinite hisolated hinterior
     (closedBall a r) hsource]
-  change _ = Poincare.LocalDegree.euclideanBallDegree hr
+  change _ = DifferentialGeometry.LocalDegree.euclideanBallDegree hr
     (⟨fun y => F y.val,hF.domRestrict⟩ : C(closedBall a r,EuclideanSpace ℝ (Fin (d + 1)))) _
-  rw [Poincare.LocalDegree.euclideanBallDegree_eq_finsum_localDegrees hr hF hf hFb]
+  rw [DifferentialGeometry.LocalDegree.euclideanBallDegree_eq_finsum_localDegrees hr hF hf hFb]
   have hs : {y | F y = 0 ∧ y ∈ closedBall a r} = {y ∈ closedBall a r | F y = 0} :=
     Set.ext (fun _ => and_comm)
   exact finsum_comp_equiv (Equiv.setCongr hs)
-    (f := fun p : {y ∈ closedBall a r | F y = 0} => Poincare.LocalDegree.euclideanLocalDegree F p.val
-      (Poincare.LocalDegree.isolatedZero_of_finite_closedBall_zeroSet hF hf hFb
+    (f := fun p : {y ∈ closedBall a r | F y = 0} => DifferentialGeometry.LocalDegree.euclideanLocalDegree F p.val
+      (DifferentialGeometry.LocalDegree.isolatedZero_of_finite_closedBall_zeroSet hF hf hFb
         p.property.1 p.property.2))
 
 variable (hr : 0 < r)
@@ -100,7 +100,7 @@ theorem interiorIndexSumOn_eq_of_parametrization_boundaryHomotopy
         (hsource (sphere_subset_closedBall hy))).mpr hz))
   rw [region_sum_eq_ballDegree I e hsource V hV hr hfiniteV hisolatedV hinteriorV hbV,
     region_sum_eq_ballDegree I e hsource W hW hr hfiniteW hisolatedW hinteriorW hbW]
-  exact Poincare.LocalDegree.euclideanBallDegree_eq_of_boundaryHomotopy hr
+  exact DifferentialGeometry.LocalDegree.euclideanBallDegree_eq_of_boundaryHomotopy hr
     (componentBall_nonzero I e hsource V hV hbV)
     (componentBall_nonzero I e hsource W hW hbW) K hK h₀ h₁
 
@@ -175,7 +175,7 @@ theorem interiorIndexSumOn_eq_of_parametrization_norm_sub_lt
   let K := ContinuousMap.Homotopy.affine F G
   exact interiorIndexSumOn_eq_of_parametrization_boundaryHomotopy I e hsource V hV hr
     hfiniteV hisolatedV hinteriorV W hW hfiniteW hisolatedW hinteriorW K.toContinuousMap
-    (Poincare.Topology.affineHomotopy_ne_zero_of_norm_sub_lt F G (fun y => hclose y.val y.property))
+    (DifferentialGeometry.Topology.affineHomotopy_ne_zero_of_norm_sub_lt F G (fun y => hclose y.val y.property))
     K.map_zero_left K.map_one_left
 
-end Poincare.VectorField
+end DifferentialGeometry.VectorField

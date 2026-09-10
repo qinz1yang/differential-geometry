@@ -7,7 +7,7 @@ import Mathlib.Tactic.Linarith
 noncomputable section
 open Set Metric Filter Topology
 
-namespace Poincare.Analysis
+namespace DifferentialGeometry.Analysis
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 
@@ -69,4 +69,4 @@ theorem isConnected_norm_band (hrank : 1 < Module.rank ℝ E)
   rw [← himage]
   exact hprod.image _ (continuous_snd.smul continuous_fst).continuousOn
 
-end Poincare.Analysis
+end DifferentialGeometry.Analysis

@@ -5,7 +5,7 @@ noncomputable section
 open Set Filter Function Topology Manifold
 open scoped ContDiff
 
-namespace Poincare.Geometry.Boundary
+namespace DifferentialGeometry.Geometry.Boundary
 
 open DifferentialGeometry.Integral.DivergenceTheorem.WithBoundary
 
@@ -66,4 +66,4 @@ theorem contMDiff_boundaryLevelInclusion_comp_iff
     ContMDiff J I ∞ (fun y ↦ (f y).1.1) ↔ ContMDiff J hI.boundaryI ∞ f := by
   simp only [ContMDiff, ContMDiffAt, contMDiffWithinAt_boundaryLevelInclusion_comp_iff]
 
-end Poincare.Geometry.Boundary
+end DifferentialGeometry.Geometry.Boundary

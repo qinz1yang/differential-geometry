@@ -4,7 +4,7 @@ set_option autoImplicit false
 open Set
 open scoped Topology
 
-namespace Poincare.Topology.ThreeManifold.TwoSidedCollar
+namespace DifferentialGeometry.Topology.ThreeManifold.TwoSidedCollar
 
 variable {S X : Type*} [TopologicalSpace S] [TopologicalSpace X]
   {e : S → X} (h : TwoSidedCollar e)
@@ -366,4 +366,4 @@ theorem isCompact_closure_negativeSide [Nonempty S] [CompactSpace X] :
 theorem isCompact_closure_positiveSide [Nonempty S] [CompactSpace X] :
     IsCompact (closure h.positiveSide) := isClosed_closure.isCompact
 
-end Poincare.Topology.ThreeManifold.TwoSidedCollar
+end DifferentialGeometry.Topology.ThreeManifold.TwoSidedCollar

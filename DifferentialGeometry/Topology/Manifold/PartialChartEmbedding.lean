@@ -5,7 +5,7 @@ noncomputable section
 open Set Topology Manifold
 open scoped ContDiff
 
-namespace Poincare.Topology
+namespace DifferentialGeometry.Topology
 
 variable {E F H H' W M N : Type*}
   [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -55,4 +55,4 @@ theorem injective_mfderiv_comp_partialDiffeomorph
     (hf.mdifferentiable (by decide) x)]
   exact (hmd.mfderiv_injective (hsub (mem_range_self x))).comp (hinj x)
 
-end Poincare.Topology
+end DifferentialGeometry.Topology

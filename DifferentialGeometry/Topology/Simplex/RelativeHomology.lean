@@ -10,7 +10,7 @@ open CategoryTheory CategoryTheory.Limits AlgebraicTopology
 
 universe u
 
-namespace Poincare.Simplex
+namespace DifferentialGeometry.Simplex
 
 variable {I : Type u} [Fintype I] [Nonempty I]
   {k : Type u} [Ring k] (R : ModuleCat.{u} k)
@@ -40,18 +40,18 @@ def boundaryInclusionChainHomotopyEquiv :
     rwa [F.map_comp, F.map_id] at h
 
 def boundaryToPuncturedChainMap :
-    Poincare.Homology.relativeChainComplex (TopCat.of (stdSimplex ℝ I)) (boundary I) R ⟶
-      Poincare.Homology.relativeChainComplex (TopCat.of (stdSimplex ℝ I)) (punctured I) R :=
-  Poincare.Homology.relativeChainMap R (𝟙 (TopCat.of (stdSimplex ℝ I)))
+    DifferentialGeometry.Homology.relativeChainComplex (TopCat.of (stdSimplex ℝ I)) (boundary I) R ⟶
+      DifferentialGeometry.Homology.relativeChainComplex (TopCat.of (stdSimplex ℝ I)) (punctured I) R :=
+  DifferentialGeometry.Homology.relativeChainMap R (𝟙 (TopCat.of (stdSimplex ℝ I)))
     (fun _ hx ↦ boundary_subset_punctured hx)
 
 
 @[reassoc (attr := simp)]
 theorem relativeProjection_boundaryToPuncturedChainMap :
-    Poincare.Homology.relativeProjection (TopCat.of (stdSimplex ℝ I)) (boundary I) R ≫
+    DifferentialGeometry.Homology.relativeProjection (TopCat.of (stdSimplex ℝ I)) (boundary I) R ≫
         boundaryToPuncturedChainMap R =
-      Poincare.Homology.relativeProjection (TopCat.of (stdSimplex ℝ I)) (punctured I) R := by
-  have h := Poincare.Homology.relativeProjection_chainMap R (𝟙 (TopCat.of (stdSimplex ℝ I)))
+      DifferentialGeometry.Homology.relativeProjection (TopCat.of (stdSimplex ℝ I)) (punctured I) R := by
+  have h := DifferentialGeometry.Homology.relativeProjection_chainMap R (𝟙 (TopCat.of (stdSimplex ℝ I)))
       (show Set.MapsTo (𝟙 (TopCat.of (stdSimplex ℝ I))) (boundary I) (punctured I) from
         fun _ hx ↦ boundary_subset_punctured hx)
   rw [CategoryTheory.Functor.map_id, Category.id_comp] at h
@@ -59,14 +59,14 @@ theorem relativeProjection_boundaryToPuncturedChainMap :
 
 theorem quasiIso_boundaryToPuncturedChainMap :
     QuasiIso (boundaryToPuncturedChainMap (I := I) R) := by
-  unfold boundaryToPuncturedChainMap Poincare.Homology.relativeChainMap
-  exact Poincare.HomologicalComplex.quasiIso_cokernel_map _ _ _ _ _
+  unfold boundaryToPuncturedChainMap DifferentialGeometry.Homology.relativeChainMap
+  exact DifferentialGeometry.HomologicalComplex.quasiIso_cokernel_map _ _ _ _ _
     (boundaryInclusionChainHomotopyEquiv (I := I) R).quasiIso_hom
     (quasiIso_of_isIso _)
 
 def boundaryToPuncturedHomologyIso (n : ℕ) :
-    Poincare.Homology.relativeHomology (TopCat.of (stdSimplex ℝ I)) (boundary I) R n ≅
-      Poincare.Homology.relativeHomology (TopCat.of (stdSimplex ℝ I)) (punctured I) R n := by
+    DifferentialGeometry.Homology.relativeHomology (TopCat.of (stdSimplex ℝ I)) (boundary I) R n ≅
+      DifferentialGeometry.Homology.relativeHomology (TopCat.of (stdSimplex ℝ I)) (punctured I) R n := by
   letI := quasiIso_boundaryToPuncturedChainMap (I := I) R
   exact isoOfQuasiIsoAt (boundaryToPuncturedChainMap R) n
 
@@ -110,34 +110,34 @@ theorem openCell_union_punctured : openCell I ∪ punctured I = Set.univ := by
   · exact Or.inr h
 
 def openCellExcisionChainMap :
-    Poincare.Homology.relativeChainComplex (TopCat.of (openCell I))
+    DifferentialGeometry.Homology.relativeChainComplex (TopCat.of (openCell I))
       {x : openCell I | x.val ∈ punctured I} R ⟶
-      Poincare.Homology.relativeChainComplex (TopCat.of (stdSimplex ℝ I)) (punctured I) R :=
-  Poincare.Homology.relativeChainMap R
+      DifferentialGeometry.Homology.relativeChainComplex (TopCat.of (stdSimplex ℝ I)) (punctured I) R :=
+  DifferentialGeometry.Homology.relativeChainMap R
     (TopCat.ofHom (⟨Subtype.val, continuous_subtype_val⟩ : C(openCell I, stdSimplex ℝ I)))
     (fun _ hx ↦ hx)
 
 
 @[reassoc (attr := simp)]
 theorem relativeProjection_openCellExcisionChainMap :
-    Poincare.Homology.relativeProjection (TopCat.of (openCell I))
+    DifferentialGeometry.Homology.relativeProjection (TopCat.of (openCell I))
         {x : openCell I | x.val ∈ punctured I} R ≫ openCellExcisionChainMap R =
-      Poincare.Homology.relativeInclusion (TopCat.of (stdSimplex ℝ I)) (openCell I) R ≫
-        Poincare.Homology.relativeProjection (TopCat.of (stdSimplex ℝ I)) (punctured I) R :=
-  Poincare.Homology.relativeProjection_chainMap R _ _
+      DifferentialGeometry.Homology.relativeInclusion (TopCat.of (stdSimplex ℝ I)) (openCell I) R ≫
+        DifferentialGeometry.Homology.relativeProjection (TopCat.of (stdSimplex ℝ I)) (punctured I) R :=
+  DifferentialGeometry.Homology.relativeProjection_chainMap R _ _
 
 
 theorem quasiIso_openCellExcisionChainMap :
     QuasiIso (openCellExcisionChainMap (I := I) R) :=
-  Poincare.Homology.quasiIso_relativeChainMap_of_openCover
+  DifferentialGeometry.Homology.quasiIso_relativeChainMap_of_openCover
     (TopCat.of (stdSimplex ℝ I)) (openCell I) (punctured I) R
     isOpen_openCell isOpen_punctured openCell_union_punctured
 
 def openCellRelativeHomologyIso (n : ℕ) :
-    Poincare.Homology.relativeHomology (TopCat.of (openCell I))
+    DifferentialGeometry.Homology.relativeHomology (TopCat.of (openCell I))
       {x : openCell I | x.val ∈ punctured I} R n ≅
-      Poincare.Homology.relativeHomology (TopCat.of (stdSimplex ℝ I)) (boundary I) R n :=
-  Poincare.Homology.relativeExcisionIso (TopCat.of (stdSimplex ℝ I))
+      DifferentialGeometry.Homology.relativeHomology (TopCat.of (stdSimplex ℝ I)) (boundary I) R n :=
+  DifferentialGeometry.Homology.relativeExcisionIso (TopCat.of (stdSimplex ℝ I))
     (openCell I) (punctured I) R isOpen_openCell isOpen_punctured openCell_union_punctured n ≪≫
       (boundaryToPuncturedHomologyIso R n).symm
 
@@ -151,4 +151,4 @@ theorem openCellRelativeHomologyIso_hom_boundaryToPunctured (n : ℕ) :
   rw [Category.assoc, Iso.inv_hom_id, Category.comp_id]
   rfl
 
-end Poincare.Simplex
+end DifferentialGeometry.Simplex

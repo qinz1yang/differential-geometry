@@ -4,7 +4,7 @@ set_option autoImplicit false
 
 noncomputable section
 
-namespace Poincare.Simplex
+namespace DifferentialGeometry.Simplex
 
 
 def face {n : ℕ} (i : Fin (n + 2)) : Set (stdSimplex ℝ (Fin (n + 2))) :=
@@ -83,4 +83,4 @@ def faceHomeomorph {n : ℕ} (i : Fin (n + 2)) :
   continuous_toFun := (faceInsert i).continuous
   continuous_invFun := (faceDelete i).continuous
 
-end Poincare.Simplex
+end DifferentialGeometry.Simplex

@@ -5,7 +5,7 @@ noncomputable section
 open Bundle
 open scoped Manifold ContDiff
 
-namespace Poincare.Geometry.VectorField
+namespace DifferentialGeometry.Geometry.VectorField
 
 variable {E H M F K N : Type*}
   [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -38,11 +38,11 @@ theorem mlieBracket_productVectorField
           _root_.VectorField.mlieBracket J X' Y' x.2) := by
   let : CompleteSpace E := FiniteDimensional.complete ℝ E
   let : CompleteSpace F := FiniteDimensional.complete ℝ F
-  have h1 := Poincare.Topology.Manifold.mfderiv_mlieBracket_of_related
+  have h1 := DifferentialGeometry.Topology.Manifold.mfderiv_mlieBracket_of_related
     (φ := Prod.fst) (J := I) contMDiff_fst (productVectorField X X')
     (productVectorField Y Y') X Y
     (fun y ↦ by rw [mfderiv_fst]; rfl) (fun y ↦ by rw [mfderiv_fst]; rfl) x
-  have h2 := Poincare.Topology.Manifold.mfderiv_mlieBracket_of_related
+  have h2 := DifferentialGeometry.Topology.Manifold.mfderiv_mlieBracket_of_related
     (φ := Prod.snd) (J := J) contMDiff_snd (productVectorField X X')
     (productVectorField Y Y') X' Y'
     (fun y ↦ by rw [mfderiv_snd]; rfl) (fun y ↦ by rw [mfderiv_snd]; rfl) x
@@ -50,4 +50,4 @@ theorem mlieBracket_productVectorField
   rw [mfderiv_snd] at h2
   exact Prod.ext h1 h2
 
-end Poincare.Geometry.VectorField
+end DifferentialGeometry.Geometry.VectorField

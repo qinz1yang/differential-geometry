@@ -3,7 +3,7 @@ import Mathlib.Tactic.Linarith
 
 open Finset
 
-namespace Poincare.Topology.SimplicialComplex
+namespace DifferentialGeometry.Topology.SimplicialComplex
 
 noncomputable section
 
@@ -101,4 +101,4 @@ theorem faceEulerChar_eq_two_mul_of_link_counts (hLK : L ≤ K)
 
 end
 
-end Poincare.Topology.SimplicialComplex
+end DifferentialGeometry.Topology.SimplicialComplex

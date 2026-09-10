@@ -6,7 +6,7 @@ noncomputable section
 open Set
 open scoped ContDiff Manifold
 
-namespace Poincare.Analysis
+namespace DifferentialGeometry.Analysis
 
 def leftEdgeSquareMap {P : Type*} (φ : P → _root_.Flow ℝ ℂ) (τ : P × ℝ → ℝ)
     (D : ℝ → Diffeomorph 𝓘(ℝ) 𝓘(ℝ) ℝ ℝ ∞) (q : P × ℂ) : ℂ :=
@@ -98,4 +98,4 @@ theorem exists_smooth_inverse_leftEdgeSquareMap
     rw [hGre, hGim, Diffeomorph.apply_symm_apply]
     exact (hcoords p hp z hz.1 hz.2).2.2.1
 
-end Poincare.Analysis
+end DifferentialGeometry.Analysis

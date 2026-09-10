@@ -6,7 +6,7 @@ import DifferentialGeometry.Topology.SphereSeparation.StandardSphere
 
 set_option autoImplicit false
 
-namespace Poincare.Topology.SphereSeparation
+namespace DifferentialGeometry.Topology.SphereSeparation
 
 open Set
 open Metric
@@ -124,4 +124,4 @@ noncomputable def sphereSidesOfComplementPair {S : Set EuclideanThree}
     SphereSides S :=
   Classical.choice (sphereSidesOfComplementPair_nonempty hSCompact p hSleft hSright)
 
-end Poincare.Topology.SphereSeparation
+end DifferentialGeometry.Topology.SphereSeparation

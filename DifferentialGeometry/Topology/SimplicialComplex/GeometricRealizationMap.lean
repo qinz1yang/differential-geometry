@@ -6,7 +6,7 @@ import Mathlib.AlgebraicTopology.SimplicialSet.TopAdj
 set_option autoImplicit false
 noncomputable section
 open CategoryTheory Simplicial Opposite
-namespace Poincare.Topology.SimplicialComplex
+namespace DifferentialGeometry.Topology.SimplicialComplex
 universe u
 variable {E : Type u} [NormedAddCommGroup E] [NormedSpace ℝ E] [LinearOrder E]
   (K : Geometry.SimplicialComplex ℝ E)
@@ -15,20 +15,20 @@ variable {E : Type u} [NormedAddCommGroup E] [NormedSpace ℝ E] [LinearOrder E]
 theorem geometricVertexSum_mem_space {n : SimplexCategoryᵒᵖ}
     (s : (orderedSimplicialSet K.toPreAbstractSimplicialComplex).obj n)
     (x : stdSimplex ℝ (Fin (n.unop.len + 1))) :
-    Poincare.Simplex.vertexMap s.val.obj x ∈ K.space := by
+    DifferentialGeometry.Simplex.vertexMap s.val.obj x ∈ K.space := by
   have hs : Finset.univ.image s.val.obj ∈ K.faces := s.prop
-  have hh : Poincare.Simplex.vertexMap s.val.obj x ∈
+  have hh : DifferentialGeometry.Simplex.vertexMap s.val.obj x ∈
       convexHull ℝ (↑(Finset.univ.image s.val.obj) : Set E) := by
     simpa only [Finset.coe_image, Finset.coe_univ, Set.image_univ] using
-      Poincare.Simplex.vertexMap_mem_convexHull s.val.obj x
+      DifferentialGeometry.Simplex.vertexMap_mem_convexHull s.val.obj x
   exact Geometry.SimplicialComplex.convexHull_subset_space (K := K) hs hh
 
 
 def geometricSimplexMap {n : SimplexCategoryᵒᵖ}
     (s : (orderedSimplicialSet K.toPreAbstractSimplicialComplex).obj n) :
     C(stdSimplex ℝ (Fin (n.unop.len + 1)), K.space) where
-  toFun x := ⟨Poincare.Simplex.vertexMap s.val.obj x, geometricVertexSum_mem_space K s x⟩
-  continuous_toFun := (Poincare.Simplex.vertexMap s.val.obj).continuous.subtype_mk _
+  toFun x := ⟨DifferentialGeometry.Simplex.vertexMap s.val.obj x, geometricVertexSum_mem_space K s x⟩
+  continuous_toFun := (DifferentialGeometry.Simplex.vertexMap s.val.obj).continuous.subtype_mk _
 
 
 @[simp]
@@ -44,7 +44,7 @@ theorem geometricSimplexMap_naturality {m n : SimplexCategoryᵒᵖ} (f : m ⟶ 
     geometricSimplexMap K ((orderedSimplicialSet K.toPreAbstractSimplicialComplex).map f s) x =
       geometricSimplexMap K s (stdSimplex.map f.unop.toOrderHom x) := by
   apply Subtype.ext
-  exact (Poincare.Simplex.vertexMap_map s.val.obj f.unop.toOrderHom x).symm
+  exact (DifferentialGeometry.Simplex.vertexMap_map s.val.obj f.unop.toOrderHom x).symm
 
 def geometricSingularMap : orderedSimplicialSet K.toPreAbstractSimplicialComplex ⟶
     TopCat.toSSet.obj (TopCat.of K.space) where
@@ -86,7 +86,7 @@ theorem geometricSimplexMap_injective {n : ℕ}
       fun _ _ h => hs (congrArg Subtype.val h)⟩
   have hv : AffineIndependent ℝ s.val.val.obj := (K.indep s.val.prop).comp_embedding e
   intro x y h
-  exact Poincare.Simplex.vertexMap_injective hv (congrArg Subtype.val h)
+  exact DifferentialGeometry.Simplex.vertexMap_injective hv (congrArg Subtype.val h)
 
 theorem geometricRealizationMap_surjective : Function.Surjective (geometricRealizationMap K) := by
   intro x
@@ -99,12 +99,12 @@ theorem geometricRealizationMap_surjective : Function.Surjective (geometricReali
     rw [← vertices_orderedSimplexOfFace K.toPreAbstractSimplicialComplex s hs hn]
     simp only [Finset.coe_image, Finset.coe_univ, Set.image_univ]
     rfl
-  have hx' : x.val ∈ Set.range (Poincare.Simplex.vertexMap a.val.val.obj) := by
-    rw [Poincare.Simplex.range_vertexMap, hrange]
+  have hx' : x.val ∈ Set.range (DifferentialGeometry.Simplex.vertexMap a.val.val.obj) := by
+    rw [DifferentialGeometry.Simplex.range_vertexMap, hrange]
     exact hx
   obtain ⟨t, ht⟩ := hx'
   refine ⟨(TopCat.toSSetObjEquiv _ (op ⦋n⦌))
     ((sSetTopAdj.unit.app (orderedSimplicialSet K.toPreAbstractSimplicialComplex)).app _ a.val) t, ?_⟩
   exact (geometricRealizationMap_unit_apply K a.val t).trans (Subtype.ext ht)
 
-end Poincare.Topology.SimplicialComplex
+end DifferentialGeometry.Topology.SimplicialComplex

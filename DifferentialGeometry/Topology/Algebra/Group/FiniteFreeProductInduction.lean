@@ -9,7 +9,7 @@ set_option autoImplicit false
 
 universe u
 
-namespace Poincare.Algebra.Group
+namespace DifferentialGeometry.Algebra.Group
 
 
 abbrev finFreeProductFamily (G : ℕ → Type u) (n : ℕ) : Fin n → Type u :=
@@ -170,4 +170,4 @@ theorem finiteFreeProductEquiv_comp_factorToStage
         rw [hj]
         rfl
 
-end Poincare.Algebra.Group
+end DifferentialGeometry.Algebra.Group

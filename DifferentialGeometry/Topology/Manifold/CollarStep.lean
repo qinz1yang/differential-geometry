@@ -6,7 +6,7 @@ noncomputable section
 open Set Filter Topology
 open scoped Manifold ContDiff
 
-namespace Poincare.Topology.Manifold
+namespace DifferentialGeometry.Topology.Manifold
 
 open scoped Classical in
 def collarStep {M : Type*} (U L : Set M) (q : M → ℝ) (β : ℝ → ℝ) : M → ℝ :=
@@ -123,4 +123,4 @@ theorem mvfderiv_collarStep_of_mem
   rw [mfderiv_eq_fderiv, hβ.hasDerivAt.hasFDerivAt.fderiv]
   exact mul_comm _ _
 
-end Poincare.Topology.Manifold
+end DifferentialGeometry.Topology.Manifold

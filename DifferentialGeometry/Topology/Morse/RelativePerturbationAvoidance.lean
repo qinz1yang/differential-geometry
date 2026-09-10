@@ -4,7 +4,7 @@ set_option autoImplicit false
 noncomputable section
 open Set Filter Function
 open scoped Manifold ContDiff Topology
-namespace Poincare.Morse
+namespace DifferentialGeometry.Morse
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   {H M : Type*} [TopologicalSpace H] [TopologicalSpace M] [ChartedSpace H M]
   {I : ModelWithCorners ℝ E H}
@@ -18,7 +18,7 @@ theorem surjective_parameterDifferential_partialDiffeomorph_symm_iff {n : ℕ} {
   refine ⟨?_,surjective_parameterDifferential_partialDiffeomorph_symm hφ c hz⟩
   intro h B
   let L : E →L[ℝ] E := mfderiv 𝓘(ℝ, E) I c.symm z
-  have hL : L.IsInvertible := Poincare.VectorField.isInvertible_mfderiv_partialDiffeomorph c.symm (by simp) hz
+  have hL : L.IsInvertible := DifferentialGeometry.VectorField.isInvertible_mfderiv_partialDiffeomorph c.symm (by simp) hz
   obtain ⟨p,hp⟩ := h (B.comp L)
   refine ⟨p,?_⟩
   rw [parameterDifferential_partialDiffeomorph_symm hφ c hz] at hp
@@ -36,8 +36,8 @@ theorem exists_open_surjective_parameterDifferential {n : ℕ} {φ : Fin n → M
     ∃ V : Set M, IsOpen V ∧ x ∈ V ∧ ∀ y ∈ V,
       I.IsInteriorPoint y ∧ Surjective (parameterDifferential (I := I) φ y) := by
   obtain ⟨W,F,hW,hxW,hWc,hF⟩ := exists_contDiff_interiorChart_extensions hφ hx
-  let c := Poincare.Manifold.interiorChart I ∞ x
-  have hxc : x ∈ c.source := (Poincare.Manifold.mem_interiorChart_source_iff I ∞ x).mpr hx
+  let c := DifferentialGeometry.Manifold.interiorChart I ∞ x
+  have hxc : x ∈ c.source := (DifferentialGeometry.Manifold.mem_interiorChart_source_iff I ∞ x).mpr hx
   have heq : ∀ z ∈ W, parameterDifferential (I := 𝓘(ℝ, E)) F z =
       parameterDifferential (I := 𝓘(ℝ, E)) (fun i w => φ i (c.symm w)) z := by
     intro z hz
@@ -56,7 +56,7 @@ theorem exists_open_surjective_parameterDifferential {n : ℕ} {φ : Fin n → M
     c.toOpenPartialHomeomorph.continuousOn.isOpen_inter_preimage c.open_source (hW.inter hR),
     ⟨hxc,hxW,hxR⟩,?_⟩
   intro y hy
-  refine ⟨Poincare.Manifold.isInteriorPoint_of_mem_interiorChart_source I ∞ (by simp) hy.1,?_⟩
+  refine ⟨DifferentialGeometry.Manifold.isInteriorPoint_of_mem_interiorChart_source I ∞ (by simp) hy.1,?_⟩
   have hyR : Surjective (parameterDifferential (I := 𝓘(ℝ, E)) F (c y)) := hy.2.2
   rw [heq _ hy.2.1] at hyR
   have hh := (surjective_parameterDifferential_partialDiffeomorph_symm_iff hφ c (hWc hy.2.1)).mp hyR
@@ -75,8 +75,8 @@ theorem eventually_mfderiv_finitePerturbation_ne_zero {n : ℕ} {f : M → ℝ}
     | none => exact hf
     | some j => exact hφ j
   obtain ⟨W,F,hW,hxW,hWc,hF⟩ := exists_contDiff_interiorChart_extensions hg hx
-  let c := Poincare.Manifold.interiorChart I ∞ x
-  have hxc : x ∈ c.source := (Poincare.Manifold.mem_interiorChart_source_iff I ∞ x).mpr hx
+  let c := DifferentialGeometry.Manifold.interiorChart I ∞ x
+  have hxc : x ∈ c.source := (DifferentialGeometry.Manifold.mem_interiorChart_source_iff I ∞ x).mpr hx
   have hccont : ContinuousAt c x := c.toOpenPartialHomeomorph.continuousOn.continuousAt (c.open_source.mem_nhds hxc)
   have hFeq : ∀ p z, z ∈ W → finitePerturbation (F none) (fun i => F (some i)) p =ᶠ[𝓝 z]
       (fun w => finitePerturbation f φ p (c.symm w)) := by
@@ -188,4 +188,4 @@ theorem critical_finitePerturbation_mem_support_union {n : ℕ} {f : M → ℝ}
       exact hfix p hy
     exact hcrit x (heq.mfderiv_eq.symm.trans hx)
 
-end Poincare.Morse
+end DifferentialGeometry.Morse

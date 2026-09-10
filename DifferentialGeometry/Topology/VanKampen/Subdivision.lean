@@ -12,7 +12,7 @@ open scoped unitInterval
 
 universe u
 
-namespace Poincare.Topology.VanKampen
+namespace DifferentialGeometry.Topology.VanKampen
 
 noncomputable def standardTime (n : ℕ) (i : Fin (n + 1)) : I :=
   ⟨(i : ℝ) / (n : ℝ), unitInterval.div_mem (by positivity) (by positivity) (by
@@ -262,4 +262,4 @@ example {X : Type u} [TopologicalSpace X] {a b : X} (p : Path a b) :
 
 end Regression
 
-end Poincare.Topology.VanKampen
+end DifferentialGeometry.Topology.VanKampen

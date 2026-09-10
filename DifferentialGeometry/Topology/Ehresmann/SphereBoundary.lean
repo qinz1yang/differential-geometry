@@ -8,7 +8,7 @@ noncomputable section
 
 open scoped ContDiff Manifold
 
-namespace Poincare.Topology.Ehresmann
+namespace DifferentialGeometry.Topology.Ehresmann
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {HF : Type*} [TopologicalSpace HF]
@@ -206,4 +206,4 @@ theorem exists_endpoint_flat_corrected_product
     change Hprod (A (flattenParameter t) x, t) = _
     rw [flattenParameter_upper t ht]
 
-end Poincare.Topology.Ehresmann
+end DifferentialGeometry.Topology.Ehresmann

@@ -3,7 +3,7 @@ import DifferentialGeometry.Topology.Homology.Local.Translation
 set_option autoImplicit false
 noncomputable section
 open CategoryTheory CategoryTheory.Limits Set Metric
-namespace Poincare.Homology
+namespace DifferentialGeometry.Homology
 variable {n : ℕ} (p : EuclideanSpace ℝ (Fin n))
   (U : Set (EuclideanSpace ℝ (Fin n))) (hp : p ∈ U) (hU : IsOpen U)
   [ContractibleSpace U] {k : Type} [Ring k] (A : ModuleCat k)
@@ -54,13 +54,13 @@ theorem euclideanBallLocalGenerator_inclusion
   have he := congrArg (fun f => f (euclideanBallLocalGenerator x r hr))
     (puncturedNeighborhoodHomologyIso_translation_sphere x (ball x r) (mem_ball_self hr)
       isOpen_ball (ModuleCat.of ℤ ℤ) d)
-  have hs := congrArg (fun f => f (Poincare.LocalDegree.euclideanSphereTopGenerator d))
+  have hs := congrArg (fun f => f (DifferentialGeometry.LocalDegree.euclideanSphereTopGenerator d))
     (localBallSphereHomologyIso _ x r hr (ModuleCat.of ℤ ℤ) d).inv_hom_id
-  have ht := congrArg (fun f => f (Poincare.LocalDegree.euclideanSphereTopGenerator d))
+  have ht := congrArg (fun f => f (DifferentialGeometry.LocalDegree.euclideanSphereTopGenerator d))
     (localEuclideanSphereHomologyIso (ModuleCat.of ℤ ℤ) (d + 1) d).inv_hom_id
   change _ = (localEuclideanSphereHomologyIso (ModuleCat.of ℤ ℤ) (d + 1) d).hom
     ((localTranslationHomologyIso _ x (ModuleCat.of ℤ ℤ) (d + 1)).hom (euclideanLocalGeneratorAt x))
   rw [euclideanLocalGeneratorAt_translate]
   exact he.trans (hs.trans ht.symm)
 
-end Poincare.Homology
+end DifferentialGeometry.Homology

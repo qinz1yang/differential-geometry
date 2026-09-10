@@ -5,7 +5,7 @@ noncomputable section
 open Set Manifold
 open scoped ContDiff
 
-namespace Poincare.Topology.Manifold
+namespace DifferentialGeometry.Topology.Manifold
 
 variable {ι E M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [TopologicalSpace M]
 
@@ -29,14 +29,14 @@ theorem isManifold_chartedSpaceOfOpenCover
   simpa only [modelWithCornersSelf_coe, modelWithCornersSelf_coe_symm, Function.comp_id,
     Function.id_comp, preimage_id, range_id, inter_univ] using hcompat i j
 
-end Poincare.Topology.Manifold
+end DifferentialGeometry.Topology.Manifold
 
 set_option autoImplicit false
 
 open Set Function Manifold
 open scoped Topology
 
-namespace Poincare.Manifold
+namespace DifferentialGeometry.Manifold
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   {X : Type*} [TopologicalSpace X] {ι : Type*}
@@ -154,4 +154,4 @@ theorem contMDiffOn_openCover_inverse
     (range (𝓘(ℝ, E))) ((coverCoordinate F H N J L q) q.2)
   exact hh.contMDiffWithinAt
 
-end Poincare.Manifold
+end DifferentialGeometry.Manifold

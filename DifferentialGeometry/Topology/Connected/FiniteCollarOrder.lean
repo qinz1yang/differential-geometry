@@ -5,7 +5,7 @@ import Mathlib.Data.Fin.SuccPredOrder
 
 open Set Filter Topology
 
-namespace Poincare.Topology
+namespace DifferentialGeometry.Topology
 
 theorem separator_subset_lower_side_of_finite_chain
     {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y] {n : ℕ}
@@ -155,4 +155,4 @@ theorem ordered_exteriors_of_finite_chain
     (hcover i) (hcover j) (hPQ i) (hPQ j) hKK (hconnK i)
     (IsPreconnected.union' (hattach j) (hconnK j) (hconnQ j)) hplace hcommon
 
-end Poincare.Topology
+end DifferentialGeometry.Topology

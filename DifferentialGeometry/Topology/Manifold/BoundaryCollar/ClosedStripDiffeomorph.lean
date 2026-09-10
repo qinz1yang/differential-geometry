@@ -5,7 +5,7 @@ open scoped ContDiff
 open DifferentialGeometry.Integral.DivergenceTheorem.WithBoundary
 set_option autoImplicit false
 noncomputable section
-namespace Poincare.Manifold.BoundaryCollar
+namespace DifferentialGeometry.Manifold.BoundaryCollar
 
 theorem exists_closed_boundary_collar_diffeomorph
     {n : ℕ} {M : Type*} [TopologicalSpace M]
@@ -60,4 +60,4 @@ theorem exists_closed_boundary_collar_diffeomorph
     rw [← he ⟨q, hq⟩]
     exact (e ⟨q, hq⟩).property
 
-end Poincare.Manifold.BoundaryCollar
+end DifferentialGeometry.Manifold.BoundaryCollar

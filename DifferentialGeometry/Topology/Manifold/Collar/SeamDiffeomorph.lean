@@ -7,7 +7,7 @@ open Set Function Manifold Topology TopologicalSpace
 open scoped ContDiff
 set_option autoImplicit false
 noncomputable section
-namespace Poincare.Manifold.Collar
+namespace DifferentialGeometry.Manifold.Collar
 
 local instance : Fact ((-1 : ℝ) < 1) := ⟨by norm_num⟩
 
@@ -86,24 +86,24 @@ theorem exists_attachmentSeam_diffeomorph
     (hcore : {q : B × Icc (0 : ℝ) ε | 0 < q.2.val ∧ q.2.val < 2 * a.val} ⊆ Ω)
     (σ : C(Icc (0 : ℝ) ε, Icc (0 : ℝ) ε))
     (hσnear : ∀ t : Icc (0 : ℝ) ε, t.val ≤ a.val → (σ t).val = t.val + a.val)
-    (h : Poincare.Topology.MappingCylinder f ≃ₜ M)
-    (hO : ∀ x, h (Poincare.Topology.mappingCylinderOriginal f x) =
-      Poincare.Topology.Collar.rescale c hc σ x)
-    (hP : ∀ q : B × Icc (0 : ℝ) 1, h (Poincare.Topology.mappingCylinderProduct f q) =
+    (h : DifferentialGeometry.Topology.MappingCylinder f ≃ₜ M)
+    (hO : ∀ x, h (DifferentialGeometry.Topology.mappingCylinderOriginal f x) =
+      DifferentialGeometry.Topology.Collar.rescale c hc σ x)
+    (hP : ∀ q : B × Icc (0 : ℝ) 1, h (DifferentialGeometry.Topology.mappingCylinderProduct f q) =
       c (q.1, ⟨a.val * (1 - q.2.val),
         ⟨mul_nonneg a.property.1 (sub_nonneg.mpr q.2.property.2), by
           nlinarith [q.2.property.1, a.property.1, a.property.2]⟩⟩)) :
-    let _ := Poincare.Manifold.Homeomorph.pullbackChartedSpace (H := G) h
+    let _ := DifferentialGeometry.Manifold.Homeomorph.pullbackChartedSpace (H := G) h
     let U : Opens (B × Icc (-1 : ℝ) 1) :=
       ⟨{q | -1 < q.2.val ∧ q.2.val < 1},
         (isOpen_lt continuous_const (continuous_subtype_val.comp continuous_snd)).inter
           (isOpen_lt (continuous_subtype_val.comp continuous_snd) continuous_const)⟩
-    ∃ Z : Opens (Poincare.Topology.MappingCylinder f),
-      (Z : Set _) = Poincare.Topology.Collar.attachmentSeam f c a hzero '' (U : Set _) ∧
+    ∃ Z : Opens (DifferentialGeometry.Topology.MappingCylinder f),
+      (Z : Set _) = DifferentialGeometry.Topology.Collar.attachmentSeam f c a hzero '' (U : Set _) ∧
       ∃ d : Diffeomorph (J.prod (𝓡∂ 1)) I U Z ∞,
-        (∀ q : U, (d q : Poincare.Topology.MappingCylinder f) =
-          Poincare.Topology.Collar.attachmentSeam f c a hzero q.val) ∧
-        ∀ z : Z, Poincare.Topology.Collar.attachmentSeam f c a hzero (d.symm z).val = z.val := by
+        (∀ q : U, (d q : DifferentialGeometry.Topology.MappingCylinder f) =
+          DifferentialGeometry.Topology.Collar.attachmentSeam f c a hzero q.val) ∧
+        ∀ z : Z, DifferentialGeometry.Topology.Collar.attachmentSeam f c a hzero (d.symm z).val = z.val := by
   intro C U
   let _ := C
   let R : Opens (B × Icc (0 : ℝ) ε) :=
@@ -118,21 +118,21 @@ theorem exists_attachmentSeam_diffeomorph
         have hhi : q.val.2.val / a.val < 2 := (div_lt_iff₀ ha).mpr (by linarith [q.property.2])
         constructor <;> linarith)
   obtain ⟨W, _, _, eR, heR, _⟩ :=
-    Poincare.Manifold.Diffeomorph.exists_restrict_opens e R hcore
+    DifferentialGeometry.Manifold.Diffeomorph.exists_restrict_opens e R hcore
   let k := p.trans eR
-  let g : U → Poincare.Topology.MappingCylinder f := fun q => h.symm (k q : M)
-  have hgeq (q : U) : g q = Poincare.Topology.Collar.attachmentSeam f c a hzero q.val := by
+  let g : U → DifferentialGeometry.Topology.MappingCylinder f := fun q => h.symm (k q : M)
+  have hgeq (q : U) : g q = DifferentialGeometry.Topology.Collar.attachmentSeam f c a hzero q.val := by
     apply h.injective
     change h (h.symm (eR (p q) : M)) = _
     rw [h.apply_symm_apply, heR, he]
-    exact (Poincare.Topology.Collar.attachmentSeam_realization
+    exact (DifferentialGeometry.Topology.Collar.attachmentSeam_realization
       f c a hzero hc h2a σ hσnear h hO hP q.val).symm
-  let dh : Diffeomorph I I (Poincare.Topology.MappingCylinder f) M ∞ :=
-    Poincare.Manifold.Homeomorph.pullbackDiffeomorph h
-  let Z : Opens (Poincare.Topology.MappingCylinder f) := ⟨h ⁻¹' W, W.isOpen.preimage h.continuous⟩
+  let dh : Diffeomorph I I (DifferentialGeometry.Topology.MappingCylinder f) M ∞ :=
+    DifferentialGeometry.Manifold.Homeomorph.pullbackDiffeomorph h
+  let Z : Opens (DifferentialGeometry.Topology.MappingCylinder f) := ⟨h ⁻¹' W, W.isOpen.preimage h.continuous⟩
   let d : Diffeomorph (J.prod (𝓡∂ 1)) I U Z ∞ :=
-    k.trans (Poincare.Manifold.Diffeomorph.preimage dh W).symm
-  have hd (q : U) : (d q : Poincare.Topology.MappingCylinder f) = g q := rfl
+    k.trans (DifferentialGeometry.Manifold.Diffeomorph.preimage dh W).symm
+  have hd (q : U) : (d q : DifferentialGeometry.Topology.MappingCylinder f) = g q := rfl
   refine ⟨Z, ?_, d, (fun q => (hd q).trans (hgeq q)), ?_⟩
   · ext z
     constructor
@@ -168,23 +168,23 @@ theorem exists_attachmentSeam_boundary_diffeomorph
     (hcore : {q : B × Icc (0 : ℝ) ε | q.2.val < 2 * a.val} ⊆ Ω)
     (σ : C(Icc (0 : ℝ) ε, Icc (0 : ℝ) ε))
     (hσnear : ∀ t : Icc (0 : ℝ) ε, t.val ≤ a.val → (σ t).val = t.val + a.val)
-    (h : Poincare.Topology.MappingCylinder f ≃ₜ M)
-    (hO : ∀ x, h (Poincare.Topology.mappingCylinderOriginal f x) =
-      Poincare.Topology.Collar.rescale c hc σ x)
-    (hP : ∀ q : B × Icc (0 : ℝ) 1, h (Poincare.Topology.mappingCylinderProduct f q) =
+    (h : DifferentialGeometry.Topology.MappingCylinder f ≃ₜ M)
+    (hO : ∀ x, h (DifferentialGeometry.Topology.mappingCylinderOriginal f x) =
+      DifferentialGeometry.Topology.Collar.rescale c hc σ x)
+    (hP : ∀ q : B × Icc (0 : ℝ) 1, h (DifferentialGeometry.Topology.mappingCylinderProduct f q) =
       c (q.1, ⟨a.val * (1 - q.2.val),
         ⟨mul_nonneg a.property.1 (sub_nonneg.mpr q.2.property.2), by
           nlinarith [q.2.property.1, a.property.1, a.property.2]⟩⟩)) :
-    let _ := Poincare.Manifold.Homeomorph.pullbackChartedSpace (H := G) h
+    let _ := DifferentialGeometry.Manifold.Homeomorph.pullbackChartedSpace (H := G) h
     let U : Opens (B × Icc (-1 : ℝ) 1) :=
       ⟨{q | -1 < q.2.val}, isOpen_lt continuous_const (continuous_subtype_val.comp continuous_snd)⟩
-    ∃ Z : Opens (Poincare.Topology.MappingCylinder f),
-      (Z : Set _) = Poincare.Topology.Collar.attachmentSeam f c a hzero '' (U : Set _) ∧
-      range (Poincare.Topology.mappingCylinderProduct f) ⊆ Z ∧
+    ∃ Z : Opens (DifferentialGeometry.Topology.MappingCylinder f),
+      (Z : Set _) = DifferentialGeometry.Topology.Collar.attachmentSeam f c a hzero '' (U : Set _) ∧
+      range (DifferentialGeometry.Topology.mappingCylinderProduct f) ⊆ Z ∧
       ∃ d : Diffeomorph (J.prod (𝓡∂ 1)) I U Z ∞,
-        (∀ q : U, (d q : Poincare.Topology.MappingCylinder f) =
-          Poincare.Topology.Collar.attachmentSeam f c a hzero q.val) ∧
-        ∀ z : Z, Poincare.Topology.Collar.attachmentSeam f c a hzero (d.symm z).val = z.val := by
+        (∀ q : U, (d q : DifferentialGeometry.Topology.MappingCylinder f) =
+          DifferentialGeometry.Topology.Collar.attachmentSeam f c a hzero q.val) ∧
+        ∀ z : Z, DifferentialGeometry.Topology.Collar.attachmentSeam f c a hzero (d.symm z).val = z.val := by
   intro C U
   let _ := C
   let R : Opens (B × Icc (0 : ℝ) ε) :=
@@ -201,21 +201,21 @@ theorem exists_attachmentSeam_boundary_diffeomorph
         change -1 < 1 - q.val.2.val / a.val
         linarith)
   obtain ⟨W, _, _, eR, heR, _⟩ :=
-    Poincare.Manifold.Diffeomorph.exists_restrict_opens e R hcore
+    DifferentialGeometry.Manifold.Diffeomorph.exists_restrict_opens e R hcore
   let k := p.trans eR
-  let g : U → Poincare.Topology.MappingCylinder f := fun q => h.symm (k q : M)
-  have hgeq (q : U) : g q = Poincare.Topology.Collar.attachmentSeam f c a hzero q.val := by
+  let g : U → DifferentialGeometry.Topology.MappingCylinder f := fun q => h.symm (k q : M)
+  have hgeq (q : U) : g q = DifferentialGeometry.Topology.Collar.attachmentSeam f c a hzero q.val := by
     apply h.injective
     change h (h.symm (eR (p q) : M)) = _
     rw [h.apply_symm_apply, heR, he]
-    exact (Poincare.Topology.Collar.attachmentSeam_realization
+    exact (DifferentialGeometry.Topology.Collar.attachmentSeam_realization
       f c a hzero hc h2a σ hσnear h hO hP q.val).symm
-  let dh : Diffeomorph I I (Poincare.Topology.MappingCylinder f) M ∞ :=
-    Poincare.Manifold.Homeomorph.pullbackDiffeomorph h
-  let Z : Opens (Poincare.Topology.MappingCylinder f) := ⟨h ⁻¹' W, W.isOpen.preimage h.continuous⟩
+  let dh : Diffeomorph I I (DifferentialGeometry.Topology.MappingCylinder f) M ∞ :=
+    DifferentialGeometry.Manifold.Homeomorph.pullbackDiffeomorph h
+  let Z : Opens (DifferentialGeometry.Topology.MappingCylinder f) := ⟨h ⁻¹' W, W.isOpen.preimage h.continuous⟩
   let d : Diffeomorph (J.prod (𝓡∂ 1)) I U Z ∞ :=
-    k.trans (Poincare.Manifold.Diffeomorph.preimage dh W).symm
-  have hd (q : U) : (d q : Poincare.Topology.MappingCylinder f) = g q := rfl
+    k.trans (DifferentialGeometry.Manifold.Diffeomorph.preimage dh W).symm
+  have hd (q : U) : (d q : DifferentialGeometry.Topology.MappingCylinder f) = g q := rfl
   refine ⟨Z, ?_, ?_, d, (fun q => (hd q).trans (hgeq q)), ?_⟩
   · ext z
     constructor
@@ -234,8 +234,8 @@ theorem exists_attachmentSeam_boundary_diffeomorph
   · rintro z ⟨⟨p, t⟩, rfl⟩
     let q : U := ⟨(p, ⟨t.val, by constructor <;> linarith [t.property.1, t.property.2]⟩),
       by change -1 < t.val; linarith [t.property.1]⟩
-    have hq : g q = Poincare.Topology.mappingCylinderProduct f (p, t) :=
-      (hgeq q).trans (Poincare.Topology.Collar.attachmentSeam_nonneg f c a hzero q.val t.property.1)
+    have hq : g q = DifferentialGeometry.Topology.mappingCylinderProduct f (p, t) :=
+      (hgeq q).trans (DifferentialGeometry.Topology.Collar.attachmentSeam_nonneg f c a hzero q.val t.property.1)
     rw [← hq]
     change h (h.symm (k q : M)) ∈ W
     rw [h.apply_symm_apply]
@@ -243,4 +243,4 @@ theorem exists_attachmentSeam_boundary_diffeomorph
   · intro z
     exact (hgeq (d.symm z)).symm.trans (congrArg Subtype.val (d.apply_symm_apply z))
 
-end Poincare.Manifold.Collar
+end DifferentialGeometry.Manifold.Collar

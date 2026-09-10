@@ -4,7 +4,7 @@ open Set Function Filter Manifold Topology TopologicalSpace
 open scoped ContDiff
 set_option autoImplicit false
 noncomputable section
-namespace Poincare.Manifold.Collar
+namespace DifferentialGeometry.Manifold.Collar
 
 theorem contMDiff_rescale_homeomorph_symm
     {E H B : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -25,25 +25,25 @@ theorem contMDiff_rescale_homeomorph_symm
     {k : ℝ} (hcore : {q : B × Icc (0 : ℝ) ε | q.2.val ≤ k} ⊆ Ω)
     (hfix : ∀ t : Icc (0 : ℝ) ε, k ≤ t.val → σ t = t)
     (h : M ≃ₜ A)
-    (hmap : ∀ x, (h x : M) = Poincare.Topology.Collar.rescale c hc σ x)
+    (hmap : ∀ x, (h x : M) = DifferentialGeometry.Topology.Collar.rescale c hc σ x)
     (hinc : ContMDiff K I ∞ (Subtype.val : A → M)) :
     ContMDiff K I ∞ h.symm := by
-  let R := Poincare.Topology.Collar.rescale c hc σ
+  let R := DifferentialGeometry.Topology.Collar.rescale c hc σ
   have hR (q : B × Icc (0 : ℝ) ε) : R (c q) = c (q.1, σ q.2) :=
-    Poincare.Topology.Collar.rescale_apply c hc σ q
+    DifferentialGeometry.Topology.Collar.rescale_apply c hc σ q
   have hinj : Injective σ := by
     intro t u htu
     apply Subtype.ext
     apply d.injective
     exact (hd t).symm.trans ((congrArg Subtype.val htu).trans (hd u))
-  have hRinj : Injective R := Poincare.Topology.Collar.injective_rescale c hc σ hinj
+  have hRinj : Injective R := DifferentialGeometry.Topology.Collar.injective_rescale c hc σ hinj
   have hinverse (y : A) : R (h.symm y) = (y : M) := by
     exact (hmap (h.symm y)).symm.trans (congrArg Subtype.val (h.apply_symm_apply y))
   have hpreimage (y : A) (q : B × Icc (0 : ℝ) ε) (hq : (y : M) = c q) :
       ∃ t : Icc (0 : ℝ) ε, σ t = q.2 ∧ h.symm y = c (q.1, t) := by
     have hp : h.symm y ∈ range c := by
       by_contra hp
-      have hh := Poincare.Topology.Collar.rescale_of_not_mem c hc σ hp
+      have hh := DifferentialGeometry.Topology.Collar.rescale_of_not_mem c hc σ hp
       exact hp ⟨q, hq.symm.trans ((hinverse y).symm.trans hh)⟩
     obtain ⟨p, hp⟩ := hp
     have heq : (p.1, σ p.2) = q := hc.injective (by rw [← hR, hp, hinverse, hq])
@@ -96,6 +96,6 @@ theorem contMDiff_rescale_homeomorph_symm
     · obtain ⟨q, hq⟩ := hzc
       have ht : k ≤ q.2.val := le_of_lt (lt_of_not_ge (fun ht => hz ⟨q, ht, hq⟩))
       rw [← hq, hR, hfix q.2 ht]
-    · exact (Poincare.Topology.Collar.rescale_of_not_mem c hc σ hzc).symm
+    · exact (DifferentialGeometry.Topology.Collar.rescale_of_not_mem c hc σ hzc).symm
 
-end Poincare.Manifold.Collar
+end DifferentialGeometry.Manifold.Collar

@@ -6,7 +6,7 @@ set_option autoImplicit false
 open Function Set
 open scoped Manifold ContDiff Topology
 
-namespace Poincare.Topology.SphereSeparation
+namespace DifferentialGeometry.Topology.SphereSeparation
 
 namespace EmbeddedSphereNormalChart
 
@@ -109,4 +109,4 @@ theorem locallyTwoSided_range_of_isSmoothEmbedding
       c.central_subset_closure_positiveHalf
   }⟩
 
-end Poincare.Topology.SphereSeparation
+end DifferentialGeometry.Topology.SphereSeparation

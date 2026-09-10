@@ -7,7 +7,7 @@ noncomputable section
 open Set Filter Topology
 open scoped ContDiff Manifold
 
-namespace Poincare.Topology.Manifold
+namespace DifferentialGeometry.Topology.Manifold
 
 variable {E H M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [TopologicalSpace H] [TopologicalSpace M] [ChartedSpace H M]
@@ -88,7 +88,7 @@ theorem exists_uniform_contMDiffOn_inverse_of_one_sided
     rw [← hd.derivWithin (uniqueDiffOn_Icc hρ 0 ⟨le_rfl, hρ.le⟩)]
     exact hpos p hp
   obtain ⟨ε, hε, hερ, σ, hσ, R, hc, hRzero, hR⟩ :=
-    Poincare.Analysis.exists_uniform_continuous_inverse_of_pos_deriv hK hρ
+    DifferentialGeometry.Analysis.exists_uniform_continuous_inverse_of_pos_deriv hK hρ
       hg.continuous.continuousOn hdg.continuousOn
       (fun p _ r _ ↦ (hgd p r).hasDerivWithinAt) hzero' hpos'
   have hsub : Icc (0 : ℝ) ε ⊆ Icc 0 ρ := Icc_subset_Icc_right hερ
@@ -103,4 +103,4 @@ theorem exists_uniform_contMDiffOn_inverse_of_one_sided
   · intro r hr heq
     exact (hR q hq).2.2.1 r hr ((hgh ⟨mem_univ _, hsub hr⟩).trans heq)
 
-end Poincare.Topology.Manifold
+end DifferentialGeometry.Topology.Manifold

@@ -7,7 +7,7 @@ set_option autoImplicit false
 open CategoryTheory
 open unitInterval
 
-namespace Poincare.Topology.SphereSeparation
+namespace DifferentialGeometry.Topology.SphereSeparation
 
 
 abbrev EuclideanPlane := EuclideanSpace ℝ (Fin 2)
@@ -198,4 +198,4 @@ noncomputable def singularChainsSphereTwoTwoPointComplHomotopyEquivCircleOne
   singularChainHomotopyEquivOfHomotopyEquiv
     (sphereTwoTwoPointComplHomotopyEquivCircleOne p q hpq)
 
-end Poincare.Topology.SphereSeparation
+end DifferentialGeometry.Topology.SphereSeparation

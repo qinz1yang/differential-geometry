@@ -7,10 +7,10 @@ noncomputable section
 open Set Metric Topology Manifold
 open scoped ContDiff
 
-namespace Poincare.Geometry.Neck
+namespace DifferentialGeometry.Geometry.Neck
 
 open DifferentialGeometry.Integral.DivergenceTheorem.WithBoundary
-open Poincare.Topology Poincare.Topology.SphereSeparation
+open DifferentialGeometry.Topology DifferentialGeometry.Topology.SphereSeparation
 
 theorem exists_annulus_of_cylindrical_chain_of_euclidean_cover
     {E H W M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
@@ -111,4 +111,4 @@ theorem exists_annulus_of_cylindrical_chain_of_euclidean_open_cover
   exact Boundary.exists_diffeomorph_sphere_prod_interval_of_euclidean_open_cover hSch U p hp hponto hps
     ι hι hemb hinj hdim e₀ e₁ he₀ he₁ hbdy hboundary
 
-end Poincare.Geometry.Neck
+end DifferentialGeometry.Geometry.Neck

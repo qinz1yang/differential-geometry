@@ -4,7 +4,7 @@ set_option autoImplicit false
 open Metric Set
 open scoped unitInterval
 noncomputable section
-namespace Poincare.LocalDegree
+namespace DifferentialGeometry.LocalDegree
 variable {E F K : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [NormedAddCommGroup F] [NormedSpace ℝ F] [TopologicalSpace K]
   (f : E → F) (x : E) (R : ℝ)
@@ -76,4 +76,4 @@ theorem sphereMapParameterHomotopy_apply (r₀ r₁ : C(K, Ioc (0 : ℝ) R))
         f (x + ((1 - (t : ℝ)) * (r₀ z : ℝ) + (t : ℝ) * (r₁ z : ℝ)) • (v z : E)) :=
   sphereMapFamily_apply f x R hf hz (interpolatedRadius R r₀ r₁ (t, z)) (v z)
 
-end Poincare.LocalDegree
+end DifferentialGeometry.LocalDegree

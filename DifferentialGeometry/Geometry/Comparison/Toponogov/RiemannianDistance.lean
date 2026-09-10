@@ -14,7 +14,7 @@ noncomputable section
 open Bundle Manifold Set
 open scoped ENNReal Manifold ContDiff Topology
 
-namespace Poincare.Toponogov
+namespace DifferentialGeometry.Toponogov
 
 open DifferentialGeometry
 open DifferentialGeometry.Geometry.Riemannian
@@ -185,4 +185,4 @@ def RealizedMinimizingConnector.reverse
 
 end Connectors
 
-end Poincare.Toponogov
+end DifferentialGeometry.Toponogov

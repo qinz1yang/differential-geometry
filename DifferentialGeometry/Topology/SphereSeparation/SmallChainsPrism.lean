@@ -10,7 +10,7 @@ open CategoryTheory.Limits
 open Simplicial
 open scoped Simplicial
 
-namespace Poincare.Topology.SphereSeparation
+namespace DifferentialGeometry.Topology.SphereSeparation
 
 private noncomputable abbrev AmbientChains (X : TopCat) :
     ChainComplex (ModuleCat ℤ) ℕ :=
@@ -847,4 +847,4 @@ theorem quasiIso_smallSingularChainInclusion_of_openCover_refines
   exact smallChainsCokernelSubdivision_eventually_zero X
     hV₀ hW₀ hcover hV hW n x
 
-end Poincare.Topology.SphereSeparation
+end DifferentialGeometry.Topology.SphereSeparation

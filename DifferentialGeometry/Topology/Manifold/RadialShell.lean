@@ -5,7 +5,7 @@ noncomputable section
 open Set Metric Manifold Module
 open scoped ContDiff
 
-namespace Poincare.Topology.Manifold
+namespace DifferentialGeometry.Topology.Manifold
 
 variable {E : Type*} [NormedAddCommGroup E]
 
@@ -142,4 +142,4 @@ theorem contMDiffOn_radialShellProjection (p : E) (a b : sphere (0 : E) 1 → �
     (fun _ hx ↦ normalized_radius_mem (hab _) hx.2))
 
 end Smooth
-end Poincare.Topology.Manifold
+end DifferentialGeometry.Topology.Manifold

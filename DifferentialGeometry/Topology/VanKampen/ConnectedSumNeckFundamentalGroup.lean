@@ -13,11 +13,11 @@ open scoped ContinuousMap unitInterval
 
 universe u
 
-namespace Poincare.Topology.ThreeManifold
+namespace DifferentialGeometry.Topology.ThreeManifold
 
 open DifferentialGeometry.Topology
-open Poincare.Topology.CellAttachment
-open Poincare.Topology.VanKampen
+open DifferentialGeometry.Topology.CellAttachment
+open DifferentialGeometry.Topology.VanKampen
 
 
 noncomputable def connectedSumNeckLeftConnectorTime (t : unitInterval) : unitInterval :=
@@ -213,7 +213,7 @@ theorem fundamentalGroupEquivConnectedSumNeck_comp_left
           (connectedSumNeckMidpoint leftBoundary rightBoundary glue b)
           (connectedSumNeckMidpoint_mem_inter
             leftBoundary rightBoundary glue b).1).hom.comp
-        ((Poincare.Topology.fundamentalGroupChangeBasepoint
+        ((DifferentialGeometry.Topology.fundamentalGroupChangeBasepoint
           (connectedSumNeckLeftConnector
             leftBoundary hleft rightBoundary glue b)).toMonoidHom.comp
           (FundamentalGroup.mapOfEq
@@ -270,7 +270,7 @@ theorem fundamentalGroupEquivConnectedSumNeck_comp_right
           (connectedSumNeckMidpoint leftBoundary rightBoundary glue b)
           (connectedSumNeckMidpoint_mem_inter
             leftBoundary rightBoundary glue b).2).hom.comp
-        ((Poincare.Topology.fundamentalGroupChangeBasepoint
+        ((DifferentialGeometry.Topology.fundamentalGroupChangeBasepoint
           (connectedSumNeckRightConnector
             leftBoundary rightBoundary hright glue b)).toMonoidHom.comp
           (FundamentalGroup.mapOfEq
@@ -307,4 +307,4 @@ theorem fundamentalGroupEquivConnectedSumNeck_comp_right
     (connectedSumNeckRightConnector
       leftBoundary rightBoundary hright glue b)
 
-end Poincare.Topology.ThreeManifold
+end DifferentialGeometry.Topology.ThreeManifold

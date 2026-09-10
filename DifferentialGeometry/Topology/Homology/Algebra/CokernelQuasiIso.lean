@@ -4,7 +4,7 @@ import Mathlib.Algebra.Homology.HomologicalComplexAbelian
 set_option autoImplicit false
 open CategoryTheory CategoryTheory.Limits
 noncomputable section
-namespace Poincare.HomologicalComplex
+namespace DifferentialGeometry.HomologicalComplex
 variable {C : Type*} [Category* C] [Abelian C] {ι : Type*} {c : ComplexShape ι}
   {A K B L : _root_.HomologicalComplex C c}
   (i : A ⟶ K) (j : B ⟶ L)
@@ -31,4 +31,4 @@ theorem quasiIso_cokernel_map [Mono i] [Mono j]
   exact _root_.HomologicalComplex.HomologySequence.quasiIso_τ₃ φ
     (cokernelSequence_shortExact i) (cokernelSequence_shortExact j) ha hb
 
-end Poincare.HomologicalComplex
+end DifferentialGeometry.HomologicalComplex

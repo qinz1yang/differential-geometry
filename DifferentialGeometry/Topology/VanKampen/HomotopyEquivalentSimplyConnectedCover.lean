@@ -12,7 +12,7 @@ open scoped ContinuousMap
 
 universe u
 
-namespace Poincare.Topology.VanKampen
+namespace DifferentialGeometry.Topology.VanKampen
 
 theorem simplyConnected_sourceSpaces_of_homotopyEquiv_to_cover
     {K L X : Type u} [TopologicalSpace K] [TopologicalSpace L] [TopologicalSpace X]
@@ -26,4 +26,4 @@ theorem simplyConnected_sourceSpaces_of_homotopyEquiv_to_cover
   let _ : SimplyConnectedSpace V := hSV
   exact ⟨eU.simplyConnectedSpace, eV.simplyConnectedSpace⟩
 
-end Poincare.Topology.VanKampen
+end DifferentialGeometry.Topology.VanKampen

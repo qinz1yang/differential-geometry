@@ -5,7 +5,7 @@ import DifferentialGeometry.Topology.Simplex.RelativeHomology
 set_option autoImplicit false
 noncomputable section
 open Set Metric
-namespace Poincare.Simplex
+namespace DifferentialGeometry.Simplex
 
 
 def openCellReindexHomeomorph {ι κ : Type*} [Fintype ι] [Fintype κ] (e : ι ≃ κ) :
@@ -66,4 +66,4 @@ theorem stdSimplexOpenBallHomeomorph_symm_val (n : ℕ) (y : ball (0 : Fin n →
     ((stdSimplexOpenBallHomeomorph n).symm y).val =
       (stdSimplexBallHomeomorph n).symm ⟨y.val, ball_subset_closedBall y.prop⟩ := rfl
 
-end Poincare.Simplex
+end DifferentialGeometry.Simplex

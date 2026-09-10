@@ -9,9 +9,9 @@ open DifferentialGeometry.Geometry.Riemannian
 open DifferentialGeometry.Geometry.Riemannian.Geodesic
 open DifferentialGeometry.Geometry.Riemannian.Variation
 open DifferentialGeometry.Geometry.Riemannian.CovariantDerivativeAlong
-open Poincare.Geometry.Riemannian.Variation
+open DifferentialGeometry.Geometry.Riemannian.Variation
 
-namespace Poincare.Geometry.Riemannian.Geodesic
+namespace DifferentialGeometry.Geometry.Riemannian.Geodesic
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
@@ -88,4 +88,4 @@ theorem exists_smooth_parallel_unit_normal_field (g : SmoothRiemannianMetric I M
     rw [hV0, hnormal] at hh
     exact hh
 
-end Poincare.Geometry.Riemannian.Geodesic
+end DifferentialGeometry.Geometry.Riemannian.Geodesic

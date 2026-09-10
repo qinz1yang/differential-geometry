@@ -5,7 +5,7 @@ import DifferentialGeometry.Topology.Homology.Relative.Excision
 set_option autoImplicit false
 noncomputable section
 open CategoryTheory CategoryTheory.Limits AlgebraicTopology Set Function
-namespace Poincare.Homology
+namespace DifferentialGeometry.Homology
 universe u
 variable (X : TopCat.{u}) {ι : Type u} (U : ι → Set X) (t : Set X)
   {k : Type u} [Ring k] (R : ModuleCat.{u} k)
@@ -25,7 +25,7 @@ theorem quasiIso_disjointRelativeChainMap (hU : ∀ i, IsOpen (U i))
     (hd : Pairwise (Disjoint on U)) (ht : IsOpen t) (hcover : (⋃ i, U i) ∪ t = univ) :
     QuasiIso (disjointRelativeChainMap X U t R) := by
   let V := ⋃ i, U i
-  let h := Poincare.Topology.disjointOpenUnionHomeomorph U hU hd
+  let h := DifferentialGeometry.Topology.disjointOpenUnionHomeomorph U hU hd
   let e := relativeChainIso (X := TopCat.of (Σ i, U i)) (Y := TopCat.of V) R h
     (s := {q : Σ i, U i | q.2.val ∈ t}) (t := {y : V | y.val ∈ t}) (fun _ => Iff.rfl)
   let j : TopCat.of V ⟶ X := TopCat.ofHom ⟨Subtype.val, continuous_subtype_val⟩
@@ -68,4 +68,4 @@ theorem disjointRelativeHomologyIso_ι_hom (hU : ∀ i, IsOpen (U i))
     (TopCat.sigmaι (fun j => TopCat.of (U j)) i)
     (s := {y : U i | y.val ∈ t}) (t := {q : Σ j, U j | q.2.val ∈ t})
     (v := t) (fun _ hx => hx) (sigmaInclusion X U) (fun _ hx => hx) n).symm
-end Poincare.Homology
+end DifferentialGeometry.Homology

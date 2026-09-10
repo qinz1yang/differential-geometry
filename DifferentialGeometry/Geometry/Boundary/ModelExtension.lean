@@ -5,7 +5,7 @@ noncomputable section
 open Set Filter Topology
 open scoped ContDiff Manifold
 
-namespace Poincare.Geometry.Boundary
+namespace DifferentialGeometry.Geometry.Boundary
 
 open DifferentialGeometry.Integral.DivergenceTheorem.WithBoundary
 
@@ -71,4 +71,4 @@ theorem exists_contDiffOn_extension_of_model
   change gext (e.symm z).2 (e.symm z).1 = f z
   rw [hext _ ⟨hnonneg, hz.1.1.2.2.2.le⟩ _ (hWW₀ hz.1.1.2.1), e.right_inv hz.1.1.1]
 
-end Poincare.Geometry.Boundary
+end DifferentialGeometry.Geometry.Boundary

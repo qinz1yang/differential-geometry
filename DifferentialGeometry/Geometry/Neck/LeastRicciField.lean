@@ -7,9 +7,9 @@ open Set Bundle
 open scoped Manifold ContDiff
 open DifferentialGeometry DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Geometry.Curvature
-open Poincare.Geometry.Curvature Poincare.Geometry.Gradient
+open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.Geometry.Gradient
 
-namespace Poincare.Geometry.Neck
+namespace DifferentialGeometry.Geometry.Neck
 
 theorem exists_compatible_least_ricci_fields
     {ι F H M : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F] [FiniteDimensional ℝ F]
@@ -55,4 +55,4 @@ theorem exists_compatible_least_ricci_fields
     (ν i x) (ν j x) (Y i x) (Y j x) hin hjn hie hje him hjm hjs
     (σ i j) (92354 * ε) (92354 * ε) δ (hσ i j) hid hjd (by linarith) hδ hc
 
-end Poincare.Geometry.Neck
+end DifferentialGeometry.Geometry.Neck

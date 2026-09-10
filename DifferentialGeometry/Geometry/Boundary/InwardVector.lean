@@ -6,7 +6,7 @@ open Set Function
 open scoped ContDiff Manifold
 open DifferentialGeometry
 
-namespace Poincare.Geometry.Boundary
+namespace DifferentialGeometry.Geometry.Boundary
 
 open DifferentialGeometry.Integral.DivergenceTheorem.WithBoundary
 open DifferentialGeometry.Integral.Measure
@@ -54,4 +54,4 @@ theorem exists_pos_inward_decomposition_iff (g : SmoothRiemannianMetric I M)
     rw [heq', hformula] at hv
     nlinarith
 
-end Poincare.Geometry.Boundary
+end DifferentialGeometry.Geometry.Boundary

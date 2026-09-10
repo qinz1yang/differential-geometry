@@ -61,11 +61,11 @@ theorem vectorBundleFiberDiffeomorph_symm_mk [Subsingleton B] (b : B) {n : â„•âˆ
 
 end DifferentialGeometry
 
-namespace Poincare.Geometry
+namespace DifferentialGeometry.Geometry
 
 alias contMDiff_fiberInclusion := DifferentialGeometry.contMDiff_fiberInclusion
 @[reducible] alias vectorBundleFiberDiffeomorph := DifferentialGeometry.vectorBundleFiberDiffeomorph
 alias vectorBundleFiberDiffeomorph_apply := DifferentialGeometry.vectorBundleFiberDiffeomorph_apply
 alias vectorBundleFiberDiffeomorph_symm_mk := DifferentialGeometry.vectorBundleFiberDiffeomorph_symm_mk
 
-end Poincare.Geometry
+end DifferentialGeometry.Geometry

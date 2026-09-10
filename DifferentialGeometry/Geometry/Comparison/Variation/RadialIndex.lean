@@ -1,4 +1,3 @@
-import Batteries.Tactic.Alias
 import DifferentialGeometry.Geometry.Comparison.Variation.SecondVariation
 
 noncomputable section
@@ -318,16 +317,3 @@ end Variation
 end Riemannian
 end Geometry
 end DifferentialGeometry
-
-namespace Poincare.Geometry.Riemannian.Variation
-
-alias indexFormIntegrand_radial_parallel_eq := DifferentialGeometry.Geometry.Riemannian.Variation.indexFormIntegrand_radial_parallel_eq
-alias indexFormIntegrand_eq_of_radial_data := DifferentialGeometry.Geometry.Riemannian.Variation.indexFormIntegrand_eq_of_radial_data
-alias indexForm_radial_parallel_le_inv := DifferentialGeometry.Geometry.Riemannian.Variation.indexForm_radial_parallel_le_inv
-alias indexForm_le_inv_of_radial_data := DifferentialGeometry.Geometry.Riemannian.Variation.indexForm_le_inv_of_radial_data
-alias centralVariation_indexForm_le_inv_of_radial_parallel := DifferentialGeometry.Geometry.Riemannian.Variation.centralVariation_indexForm_le_inv_of_radial_parallel
-alias centralVariation_indexForm_le_inv_of_radial_data := DifferentialGeometry.Geometry.Riemannian.Variation.centralVariation_indexForm_le_inv_of_radial_data
-alias secondVariation_half_curveEnergy_deriv_le_inv_of_radial_parallel := DifferentialGeometry.Geometry.Riemannian.Variation.secondVariation_half_curveEnergy_deriv_le_inv_of_radial_parallel
-alias secondVariation_half_curveEnergy_deriv_le_inv_of_radial_data := DifferentialGeometry.Geometry.Riemannian.Variation.secondVariation_half_curveEnergy_deriv_le_inv_of_radial_data
-
-end Poincare.Geometry.Riemannian.Variation

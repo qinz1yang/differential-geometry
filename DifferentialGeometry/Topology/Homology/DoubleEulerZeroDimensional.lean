@@ -6,8 +6,8 @@ set_option autoImplicit false
 noncomputable section
 open Set Function Topology
 open scoped Manifold
-namespace Poincare.Homology
-open Poincare.Topology
+namespace DifferentialGeometry.Homology
+open DifferentialGeometry.Topology
 
 theorem finiteHomologyType_and_eulerChar_intrinsicDouble_of_subsingleton_model
     {E H M : Type} [NormedAddCommGroup E] [NormedSpace ℝ E] [Subsingleton E]
@@ -27,4 +27,4 @@ theorem finiteHomologyType_and_eulerChar_intrinsicDouble_of_subsingleton_model
     eulerChar_of_finite_totallyDisconnected]
   simp [Nat.card_sum, two_mul]
 
-end Poincare.Homology
+end DifferentialGeometry.Homology

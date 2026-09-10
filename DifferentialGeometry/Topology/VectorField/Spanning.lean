@@ -7,7 +7,7 @@ noncomputable section
 open Bundle Set Filter Function
 open scoped Manifold ContDiff Topology BigOperators
 open DifferentialGeometry DifferentialGeometry.Geometry.Operator
-namespace Poincare.VectorField
+namespace DifferentialGeometry.VectorField
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
   {H M : Type*} [TopologicalSpace H] [TopologicalSpace M] [ChartedSpace H M]
   {I : ModelWithCorners ℝ E H} [IsManifold I ∞ M]
@@ -66,11 +66,11 @@ theorem exists_supported_gradients_span_of_isCompact [T2Space M]
         g.inner x (gradientFun g (φ i) x) v = mfderiv I 𝓘(ℝ, ℝ) (φ i) x v) ∧
       ∀ x ∈ K, Submodule.span ℝ (range (fun i => gradientFun g (φ i) x)) = ⊤ := by
   obtain ⟨n,φ,hφ,hspan⟩ :=
-    Poincare.Morse.exists_supported_differentials_span_of_isCompact (I := I) hK hU hKU
+    DifferentialGeometry.Morse.exists_supported_differentials_span_of_isCompact (I := I) hK hU hKU
   refine ⟨n,φ,hφ,fun i => ?_,fun i x v => inner_gradientFun g (φ i) x v,
     fun x hx => span_gradientFun_eq_top g φ x (hspan x hx)⟩
   exact ⟨gradientFun_smooth g (hφ i).1,
     (hφ i).2.1.of_isClosed_subset (isClosed_tsupport _) (tsupport_gradientFun_subset g _),
     (tsupport_gradientFun_subset g _).trans (hφ i).2.2⟩
 
-end Poincare.VectorField
+end DifferentialGeometry.VectorField

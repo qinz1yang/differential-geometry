@@ -7,7 +7,7 @@ open DifferentialGeometry DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.Analysis.Laplacian
 open DifferentialGeometry.Geometry.Riemannian
 
-namespace Poincare.Geometry.Metric
+namespace DifferentialGeometry.Geometry.Metric
 
 theorem normalized_axis_for_perturbed_metric
     {E H M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
@@ -61,4 +61,4 @@ theorem normalized_axis_for_perturbed_metric
     rw [he, sqrt_inner_smul, hv, Real.sqrt_one, mul_one]
     exact hi
 
-end Poincare.Geometry.Metric
+end DifferentialGeometry.Geometry.Metric

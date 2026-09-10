@@ -6,7 +6,7 @@ noncomputable section
 open scoped ContDiff Manifold Topology
 open DifferentialGeometry.Topology.Morse
 
-namespace Poincare.Topology.Manifold
+namespace DifferentialGeometry.Topology.Manifold
 
 variable {m : ℕ} {H : Type} [TopologicalSpace H]
   {M : Type} [TopologicalSpace M] [ChartedSpace H M]
@@ -146,4 +146,4 @@ theorem mem_boundary_manifoldSublevel_iff
     exact iff_of_false
       (ne_of_gt (manifoldSublevelInteriorChart_extend_last_pos I f a hf x hxlt)) hx
 
-end Poincare.Topology.Manifold
+end DifferentialGeometry.Topology.Manifold

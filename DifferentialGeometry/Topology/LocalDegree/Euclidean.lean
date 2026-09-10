@@ -5,7 +5,7 @@ set_option autoImplicit false
 open Filter Metric Set
 open scoped Topology
 noncomputable section
-namespace Poincare.LocalDegree
+namespace DifferentialGeometry.LocalDegree
 variable {d : ℕ}
 
 
@@ -62,7 +62,7 @@ theorem euclideanLocalDegree_generator
     {f : EuclideanSpace ℝ (Fin (d + 1)) → EuclideanSpace ℝ (Fin (d + 1))}
     {x : EuclideanSpace ℝ (Fin (d + 1))} (h : isolatedZero f x)
     {R : ℝ} (hR : IsolatingRadius f x R) (r : Ioc (0 : ℝ) R) :
-    Poincare.Homology.reducedSingularHomologyMap (ModuleCat.of ℤ ℤ)
+    DifferentialGeometry.Homology.reducedSingularHomologyMap (ModuleCat.of ℤ ℤ)
         (TopCat.ofHom (sphereMap f x R hR.continuousOn hR.nonzero r)) d
           (euclideanSphereTopGenerator d) =
       euclideanLocalDegree f x h • euclideanSphereTopGenerator d := by
@@ -113,4 +113,4 @@ theorem euclideanLocalDegree_id :
     0 1 continuousOn_id (fun _ _ h => h) ⟨1, by norm_num, le_rfl⟩) = 1
   rw [sphereMap_id, euclideanSphereDegree_id]
 
-end Poincare.LocalDegree
+end DifferentialGeometry.LocalDegree

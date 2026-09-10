@@ -5,7 +5,7 @@ set_option autoImplicit false
 noncomputable section
 open InnerProductSpace
 open scoped BigOperators
-namespace Poincare.QuadraticForm
+namespace DifferentialGeometry.QuadraticForm
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]
 
 
@@ -51,4 +51,4 @@ theorem sign_det_rieszFlat_comp (B : E →L[ℝ] E →L[ℝ] ℝ)
   rw [LinearMap.det_comp, _root_.sign_mul, SignType.coe_mul]
   simp [det_rieszFlat_pos B hB hpos]
 
-end Poincare.QuadraticForm
+end DifferentialGeometry.QuadraticForm

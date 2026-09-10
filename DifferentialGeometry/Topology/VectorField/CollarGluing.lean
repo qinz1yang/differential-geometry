@@ -5,7 +5,7 @@ open scoped Manifold ContDiff Topology
 
 noncomputable section
 
-namespace Poincare.VectorField
+namespace DifferentialGeometry.VectorField
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
@@ -222,4 +222,4 @@ theorem normalizedCollarExtension_isolated_zeros
     rw [normalizedCollarExtension_of_pos V ε hqt]
     exact hq
 
-end Poincare.VectorField
+end DifferentialGeometry.VectorField

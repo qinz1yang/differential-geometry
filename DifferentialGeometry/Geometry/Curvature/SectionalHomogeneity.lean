@@ -7,7 +7,7 @@ open Bundle Manifold
 open scoped Manifold ContDiff
 open DifferentialGeometry DifferentialGeometry.Geometry.Curvature
 
-namespace Poincare.Geometry
+namespace DifferentialGeometry.Geometry
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
   {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
@@ -30,4 +30,4 @@ theorem sectional_contraction_smul_pair (g : SmoothRiemannianMetric I M) (x : M)
   change (a * b * b * a) * metricRm04StandardAt g x v w w v = _
   ring
 
-end Poincare.Geometry
+end DifferentialGeometry.Geometry

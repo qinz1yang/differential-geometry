@@ -4,7 +4,7 @@ import Mathlib.CategoryTheory.Limits.Shapes.Pullback.IsPullback.Defs
 set_option autoImplicit false
 noncomputable section
 open CategoryTheory CategoryTheory.Limits Topology Set
-namespace Poincare.TopCat
+namespace DifferentialGeometry.TopCat
 universe u
 variable {X : Type u} [TopologicalSpace X]
 
@@ -75,4 +75,4 @@ theorem closedUnion_isPushout {A B : Set X} (hA : IsClosed A) (hB : IsClosed B) 
     | inl a => exact (ConcreteCategory.congr_hom hm a).trans (hl (Sum.inl a)).symm
     | inr b => exact (ConcreteCategory.congr_hom hn b).trans (hl (Sum.inr b)).symm
 
-end Poincare.TopCat
+end DifferentialGeometry.TopCat

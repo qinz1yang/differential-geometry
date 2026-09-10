@@ -6,7 +6,7 @@ set_option autoImplicit false
 noncomputable section
 open Set Metric Filter Function MeasureTheory MeasureTheory.Measure
 open scoped Topology ContDiff
-namespace Poincare.Calculus
+namespace DifferentialGeometry.Calculus
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
 
 theorem exists_near_regular_value {f : E → E} {s : Set E}
@@ -57,4 +57,4 @@ theorem finite_regular_fiber {f : E → E} {K : Set E} (hK : IsCompact K)
     subst y
     exact ⟨hxV,hx⟩
 
-end Poincare.Calculus
+end DifferentialGeometry.Calculus

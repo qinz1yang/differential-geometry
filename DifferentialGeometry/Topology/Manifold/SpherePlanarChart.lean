@@ -4,7 +4,7 @@ noncomputable section
 open Set Metric Manifold
 open scoped ContDiff
 
-namespace Poincare.Topology.Manifold
+namespace DifferentialGeometry.Topology.Manifold
 
 theorem exists_smooth_planar_chart_sphere
     (v : sphere (0 : EuclideanSpace ℝ (Fin 3)) 1) :
@@ -32,4 +32,4 @@ theorem exists_smooth_planar_chart_sphere
     exact ((contMDiffAt_symm_of_mem_maximalAtlas hs hsz).comp z
       L.symm.toContinuousLinearEquiv.contDiff.contMDiff.contMDiffAt).contMDiffWithinAt
 
-end Poincare.Topology.Manifold
+end DifferentialGeometry.Topology.Manifold

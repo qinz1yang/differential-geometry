@@ -4,7 +4,7 @@ noncomputable section
 open Set Topology Manifold
 open scoped ContDiff
 
-namespace Poincare.Topology
+namespace DifferentialGeometry.Topology
 
 theorem exists_smooth_boundary_lifts
     {A S W M N E F H H' : Type*}
@@ -90,4 +90,4 @@ theorem exists_two_smooth_boundary_lifts
   exact ⟨f false, f true, hf false, hf true, hpf false, hpf true,
     hfB.trans (bool_iUnion _), hfd false true hd⟩
 
-end Poincare.Topology
+end DifferentialGeometry.Topology

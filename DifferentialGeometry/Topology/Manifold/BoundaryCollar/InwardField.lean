@@ -8,7 +8,7 @@ open DifferentialGeometry.Integral.DivergenceTheorem.WithBoundary
 set_option autoImplicit false
 noncomputable section
 
-namespace Poincare.Manifold.BoundaryCollar
+namespace DifferentialGeometry.Manifold.BoundaryCollar
 
 variable {n : ℕ} [NeZero n] {M : Type*} [TopologicalSpace M]
   [ChartedSpace (EuclideanHalfSpace n) M] [IsManifold (𝓡∂ n) ∞ M]
@@ -93,4 +93,4 @@ theorem exists_smooth_inwardField [T2Space M] [SigmaCompactSpace M]
   rw [range_boundaryInclusionMfderiv_eq_ker_proj]
   exact ne_of_gt hpos
 
-end Poincare.Manifold.BoundaryCollar
+end DifferentialGeometry.Manifold.BoundaryCollar

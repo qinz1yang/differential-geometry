@@ -8,7 +8,7 @@ open CategoryTheory CategoryTheory.Limits Opposite Simplicial
 
 universe u
 
-namespace Poincare.Homology
+namespace DifferentialGeometry.Homology
 
 
 def simplexCoordinateEmbedding (n : ℕ) :
@@ -180,4 +180,4 @@ theorem singularSubdivisionMap_affine {n : ℕ} (v : Fin (n + 1) → E) :
     exact vertexCoordinateMap_vertex v i
   rw [hv]
 
-end Poincare.Homology
+end DifferentialGeometry.Homology

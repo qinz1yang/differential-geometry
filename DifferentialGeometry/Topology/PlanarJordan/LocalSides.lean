@@ -4,7 +4,7 @@ import Mathlib.Topology.Instances.Real.Lemmas
 
 open Set
 
-namespace Poincare.Topology.PlanarJordan
+namespace DifferentialGeometry.Topology.PlanarJordan
 
 theorem flowBox_halves_in_opposite_regions
     {X : Type*} [TopologicalSpace X] {C U V : Set X}
@@ -63,4 +63,4 @@ theorem flowBox_halves_in_opposite_regions
   · exact Or.inr ⟨hPV, hNU⟩
   · exact (hnot V U hfrU hUV.symm hUc hPV hNV).elim
 
-end Poincare.Topology.PlanarJordan
+end DifferentialGeometry.Topology.PlanarJordan

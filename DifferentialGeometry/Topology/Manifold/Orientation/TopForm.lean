@@ -1,12 +1,12 @@
 import DifferentialGeometry.Bundle.Orientation.TopForm
 import Mathlib.Geometry.Manifold.VectorBundle.Tangent
 
-open Set Bundle Module Poincare.ContinuousAlternatingMap
+open Set Bundle Module DifferentialGeometry.ContinuousAlternatingMap
 open scoped Manifold ContDiff Topology
 set_option autoImplicit false
 noncomputable section
 
-namespace Poincare.Manifold.Orientation
+namespace DifferentialGeometry.Manifold.Orientation
 
 variable {m : ℕ} {E H M : Type*}
   [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
@@ -45,4 +45,4 @@ theorem isCompatibleOrientation_model (p : _root_.Orientation ℝ E (Fin m)) :
   rw [heq]
   exact congrArg (fun q => q p) (_root_.Orientation.map_refl (Fin m))
 
-end Poincare.Manifold.Orientation
+end DifferentialGeometry.Manifold.Orientation

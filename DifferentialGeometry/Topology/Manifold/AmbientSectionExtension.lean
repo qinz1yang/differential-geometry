@@ -13,7 +13,7 @@ open scoped Bundle Manifold ContDiff
 
 noncomputable section
 
-namespace Poincare.Topology.SmoothEmbeddingRealNormalAtlas
+namespace DifferentialGeometry.Topology.SmoothEmbeddingRealNormalAtlas
 
 variable
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -121,9 +121,9 @@ theorem exists_compactlySupported_ambientSection
     (I := J) (TangentSpace J : A → Type _) (isCompact_range C.contMDiff.continuous) sA hlocal
   exact ⟨S, hS, fun x ↦ (heq (f x) (mem_range_self x)).trans (hsA x)⟩
 
-end Poincare.Topology.SmoothEmbeddingRealNormalAtlas
+end DifferentialGeometry.Topology.SmoothEmbeddingRealNormalAtlas
 
-namespace Poincare.Topology.CoorientedSmoothEmbeddingRealNormalAtlas
+namespace DifferentialGeometry.Topology.CoorientedSmoothEmbeddingRealNormalAtlas
 
 theorem exists_compactlySupported_transverseField
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
@@ -144,4 +144,4 @@ theorem exists_compactlySupported_transverseField
   exact ⟨S, hS, fun x ↦ by rw [heq]; exact hspos x,
     fun x ↦ by rw [heq]; exact hstrans x⟩
 
-end Poincare.Topology.CoorientedSmoothEmbeddingRealNormalAtlas
+end DifferentialGeometry.Topology.CoorientedSmoothEmbeddingRealNormalAtlas

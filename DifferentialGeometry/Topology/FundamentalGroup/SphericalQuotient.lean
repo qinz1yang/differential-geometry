@@ -13,7 +13,7 @@ set_option autoImplicit false
 
 universe u v
 
-namespace Poincare.Topology
+namespace DifferentialGeometry.Topology
 
 abbrev MulActionOrbitQuotient (G E : Type*) [Group G] [MulAction G E] :=
   Quotient (MulAction.orbitRel G E)
@@ -53,4 +53,4 @@ noncomputable def fundamentalGroupFiniteFreeSphereThreeIsometricQuotientEquiv
         (Quotient.mk (MulAction.orbitRel G SphereThree) sphereThreeNorth) ≃* G :=
   fundamentalGroupFiniteFreeSphereThreeQuotientEquiv
 
-end Poincare.Topology
+end DifferentialGeometry.Topology

@@ -13,13 +13,13 @@ open scoped ContinuousMap unitInterval
 
 universe u
 
-namespace Poincare.Topology.ThreeManifold
+namespace DifferentialGeometry.Topology.ThreeManifold
 
 open DifferentialGeometry.Topology
-open Poincare.Topology.CellAttachment
+open DifferentialGeometry.Topology.CellAttachment
 
 noncomputable def connectedSumNeckBoundaryBasepoint : CellBoundary 3 :=
-  cellBoundaryThreeHomeomorphSphereTwo.symm Poincare.Topology.sphereTwoNorth
+  cellBoundaryThreeHomeomorphSphereTwo.symm DifferentialGeometry.Topology.sphereTwoNorth
 
 
 
@@ -991,4 +991,4 @@ theorem pathConnectedSpace_connectedSumNeckRight
   pathConnectedSpace_of_homotopyEquiv
     (connectedSumNeckRightHomotopyEquiv leftBoundary rightBoundary hright glue)
 
-end Poincare.Topology.ThreeManifold
+end DifferentialGeometry.Topology.ThreeManifold

@@ -15,7 +15,7 @@ noncomputable section
 
 universe u v w x
 
-namespace Poincare.Topology.SmoothTwoSidedCollar
+namespace DifferentialGeometry.Topology.SmoothTwoSidedCollar
 
 variable
     {E : Type u} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -38,4 +38,4 @@ theorem toTwoSidedCollar_toFun (p : S × ℝ) :
         h.radius h.radius_pos p.2) :=
   rfl
 
-end Poincare.Topology.SmoothTwoSidedCollar
+end DifferentialGeometry.Topology.SmoothTwoSidedCollar

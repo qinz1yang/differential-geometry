@@ -6,7 +6,7 @@ open Set Topology Manifold
 open scoped Manifold ContDiff
 noncomputable section
 
-namespace Poincare.Topology.SmoothTwoSidedCollar
+namespace DifferentialGeometry.Topology.SmoothTwoSidedCollar
 
 variable
     {E : Type} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -282,4 +282,4 @@ theorem mfderiv_oppositeSideDefiningFunction_ne_zero [Nonempty S]
   change -(mfderiv J 𝓘(ℝ, ℝ) h.sideDefiningFunction x : F →L[ℝ] ℝ) ≠ 0
   exact neg_ne_zero.mpr (h.mfderiv_sideDefiningFunction_ne_zero (neg_eq_zero.mp hx))
 
-end Poincare.Topology.SmoothTwoSidedCollar
+end DifferentialGeometry.Topology.SmoothTwoSidedCollar

@@ -5,7 +5,7 @@ open scoped ContDiff
 set_option autoImplicit false
 noncomputable section
 
-namespace Poincare.Manifold.BoundaryCollar
+namespace DifferentialGeometry.Manifold.BoundaryCollar
 
 
 def normalSplit (n : ℕ) : EuclideanSpace ℝ (Fin (n + 1)) ≃L[ℝ]
@@ -91,4 +91,4 @@ theorem exists_normalChartField_neighborhood [IsManifold (𝓡∂ (n + 1)) ∞ M
     rw [(normalSplit n).symm_apply_apply, normalSplit_fst, chartField_self]
     exact hpos
 
-end Poincare.Manifold.BoundaryCollar
+end DifferentialGeometry.Manifold.BoundaryCollar

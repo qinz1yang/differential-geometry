@@ -4,7 +4,7 @@ import DifferentialGeometry.Topology.Order.IntervalPush
 set_option autoImplicit false
 noncomputable section
 open Set Function Topology
-namespace Poincare.Topology.Collar
+namespace DifferentialGeometry.Topology.Collar
 variable {B X : Type*} [TopologicalSpace B] [TopologicalSpace X] {ε a : ℝ}
 
 
@@ -46,4 +46,4 @@ theorem exists_homeomorph_superlevel_of_collar
     range_rescale_intervalPush_eq_superlevel c hc _ hheight houtside
   exact ⟨hj.isEmbedding.toHomeomorph.trans (Homeomorph.setCongr hrange),fun _ => rfl⟩
 
-end Poincare.Topology.Collar
+end DifferentialGeometry.Topology.Collar

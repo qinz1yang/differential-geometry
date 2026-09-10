@@ -7,7 +7,7 @@ import Mathlib.Tactic.Ring
 open Set Function Topology
 set_option autoImplicit false
 noncomputable section
-namespace Poincare.Topology.Collar
+namespace DifferentialGeometry.Topology.Collar
 
 variable {B X : Type*} [TopologicalSpace B] [TopologicalSpace X] {ε : ℝ}
 
@@ -111,4 +111,4 @@ theorem attachmentSeam_realization (f : C(B, X)) (c : C(B × Icc (0 : ℝ) ε, X
       rw [hσnear _ (by dsimp; nlinarith [q.2.property.1, a.property.1])]
       ring
 
-end Poincare.Topology.Collar
+end DifferentialGeometry.Topology.Collar

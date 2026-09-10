@@ -6,7 +6,7 @@ open Bundle
 open DifferentialGeometry
 open scoped Manifold ContDiff
 
-namespace Poincare.Geometry.Metric
+namespace DifferentialGeometry.Geometry.Metric
 
 theorem contMDiff_metric_inner
     {E H M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -24,4 +24,4 @@ theorem contMDiff_metric_inner
   intro x
   exact (contMDiffAt_totalSpace.mp (ht x)).2
 
-end Poincare.Geometry.Metric
+end DifferentialGeometry.Geometry.Metric

@@ -5,7 +5,7 @@ noncomputable section
 open Filter Topology
 open scoped ContDiff Manifold
 
-namespace Poincare.Analysis
+namespace DifferentialGeometry.Analysis
 
 theorem bijective_fderiv_of_partialDiffeomorph
     {E F : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -33,4 +33,4 @@ theorem fderiv_symm_comp_fderiv_of_partialDiffeomorph
     exact c.left_inv hy
   exact ((hB.comp x hA).congr_of_eventuallyEq heq.symm).unique (hasFDerivAt_id x)
 
-end Poincare.Analysis
+end DifferentialGeometry.Analysis

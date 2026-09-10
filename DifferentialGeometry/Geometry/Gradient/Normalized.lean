@@ -8,7 +8,7 @@ open DifferentialGeometry
 open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Integral.Measure
 
-namespace Poincare.Geometry.Gradient
+namespace DifferentialGeometry.Geometry.Gradient
 
 variable {E H M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [TopologicalSpace H] [TopologicalSpace M]
@@ -51,4 +51,4 @@ theorem contMDiff_normalizedGradient (g : SmoothRiemannianMetric I M) (f : M →
     exact (contMDiffAt_section (F := ℝ) (E := Bundle.Trivial M ℝ) x).mp (h2 x)
   exact (hn.inv₀ (fun x ↦ (g.pos x _ (grad_ne_zero g f (hreg x))).ne')).smul_section hgrad
 
-end Poincare.Geometry.Gradient
+end DifferentialGeometry.Geometry.Gradient

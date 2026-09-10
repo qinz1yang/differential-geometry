@@ -14,7 +14,7 @@ open scoped unitInterval
 
 universe u v
 
-namespace Poincare.Topology.VanKampen
+namespace DifferentialGeometry.Topology.VanKampen
 
 noncomputable def convexSubtypeSegment {E : Type u} [AddCommGroup E] [Module ℝ E]
     [TopologicalSpace E] [IsTopologicalAddGroup E] [ContinuousSMul ℝ E]
@@ -310,4 +310,4 @@ theorem LocalFunctorData.cell_boundary
   · exact F.cell_boundary_of_side hU hV hcover H hn i j .left hcell
   · exact F.cell_boundary_of_side hU hV hcover H hn i j .right hcell
 
-end Poincare.Topology.VanKampen
+end DifferentialGeometry.Topology.VanKampen

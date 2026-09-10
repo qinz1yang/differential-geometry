@@ -4,7 +4,7 @@ set_option autoImplicit false
 noncomputable section
 open Set Filter Function
 open scoped Manifold ContDiff Topology
-namespace Poincare.Morse
+namespace DifferentialGeometry.Morse
 variable {M : Type*} [TopologicalSpace M] {n : ℕ}
 
 
@@ -62,4 +62,4 @@ theorem exists_positive_relative_nondegenerate_perturbation {f : M → ℝ}
   exact ⟨finitePerturbation f φ p,contMDiff_finitePerturbation hf (fun i => (hφ i).1) p,
     ⟨N,hN,hUN,heq p⟩,hposε p hp,hcrit⟩
 
-end Poincare.Morse
+end DifferentialGeometry.Morse

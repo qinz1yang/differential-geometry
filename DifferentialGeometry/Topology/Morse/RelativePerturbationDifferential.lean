@@ -6,7 +6,7 @@ set_option autoImplicit false
 noncomputable section
 open Set Function Filter
 open scoped Manifold ContDiff Topology BigOperators
-namespace Poincare.Morse
+namespace DifferentialGeometry.Morse
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   {n : ℕ}
 
@@ -129,4 +129,4 @@ theorem exists_supported_regularPerturbationDomain {K U : Set E}
   exact ⟨mem_univ _,surjective_parameterDifferential (hspan q.2 hq.2)⟩
 
 end FiniteDimension
-end Poincare.Morse
+end DifferentialGeometry.Morse

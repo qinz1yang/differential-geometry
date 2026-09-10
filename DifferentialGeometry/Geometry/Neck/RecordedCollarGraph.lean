@@ -7,7 +7,7 @@ open Set DifferentialGeometry
 open scoped Manifold ContDiff
 open DifferentialGeometry.Geometry.Operator
 
-namespace Poincare.Geometry.Neck
+namespace DifferentialGeometry.Geometry.Neck
 
 private abbrev S := Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1
 
@@ -90,7 +90,7 @@ theorem exists_uniform_graphs_of_recorded_collar_estimates (Cₒ : ℝ) (hCₒ :
   let C' : ℝ := max Cₒ 17292
   have hC' : 0 < C' := hCₒ.trans_le (le_max_left _ _)
   obtain ⟨ε₀, hε₀, hthreshold⟩ :=
-    Poincare.Analysis.exists_uniform_collar_error_threshold 1 C' zero_lt_one hC'
+    DifferentialGeometry.Analysis.exists_uniform_collar_error_threshold 1 C' zero_lt_one hC'
   refine ⟨ε₀, hε₀, ?_⟩
   intro F H M _ _ _ _ J _ _ _ _ _ g C U ε hεnonneg hε hmetric s c hs τ hτ hcompat
     k i l r hwidth hcollar e hboth hvalue hgradient
@@ -129,4 +129,4 @@ theorem exists_uniform_graphs_of_recorded_collar_estimates (Cₒ : ℝ) (hCₒ :
     (fun x ↦ (recorded_value_error (fun j ↦ (C j).axial (e x)) τ hτ s c hs hcompat k i).trans
       ((hvalue x).trans (div_le_div_of_nonneg_right herror (Real.sqrt_nonneg _)))) hsep
 
-end Poincare.Geometry.Neck
+end DifferentialGeometry.Geometry.Neck

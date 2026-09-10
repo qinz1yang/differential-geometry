@@ -10,7 +10,7 @@ open CategoryTheory CategoryTheory.Limits AlgebraicTopology
 open scoped Simplicial ContinuousMap
 noncomputable section
 universe u v
-namespace Poincare.Homology
+namespace DifferentialGeometry.Homology
 variable {k : Type u} [Ring k] (R : ModuleCat.{u} k)
   (X : TopCat.{u}) {ι : Type v} (U : ι → Set X)
 
@@ -37,7 +37,7 @@ def augmentedSmallChainComplex : ChainComplex (ModuleCat.{u} k) ℕ :=
 
 def augmentedSmallChainMap :
     augmentedSmallChainComplex R X U ⟶ augmentedSingularChainComplex R X :=
-  Poincare.ChainComplex.augmentMap (d_smallChainAugmentation R X U)
+  DifferentialGeometry.ChainComplex.augmentMap (d_smallChainAugmentation R X U)
     (d_singularAugmentation R X) (smallChainMap X U R) (𝟙 R)
     (Category.comp_id (smallChainAugmentation R X U)).symm
 
@@ -55,7 +55,7 @@ theorem quasiIso_augmentedSmallChainMap
     QuasiIso (augmentedSmallChainMap R X U) := by
   have hf := quasiIso_smallChainMap X U R hopen hcover
   have hf' : QuasiIso (SSet.chainComplexMap (smallSingularSimplices X U).ι R) := hf
-  exact Poincare.ChainComplex.quasiIso_augmentMap
+  exact DifferentialGeometry.ChainComplex.quasiIso_augmentMap
     (d_smallChainAugmentation R X U) (d_singularAugmentation R X)
     (SSet.chainComplexMap (smallSingularSimplices X U).ι R) (𝟙 R) _
 
@@ -100,7 +100,7 @@ private theorem secondSubspace_augmentation :
 
 def augmentedFirstSubspaceToSmall : augmentedSingularChainComplex R (TopCat.of s) ⟶
     augmentedSmallChainComplex R X (twoSetFamily X s t) :=
-  Poincare.ChainComplex.augmentMap (d_singularAugmentation R (TopCat.of s))
+  DifferentialGeometry.ChainComplex.augmentMap (d_singularAugmentation R (TopCat.of s))
     (d_smallChainAugmentation R X (twoSetFamily X s t))
     (SSet.chainComplexMap (firstSubspaceToSmall X s t) R) (𝟙 R)
     (by simpa using! firstSubspace_augmentation R X s t)
@@ -108,7 +108,7 @@ def augmentedFirstSubspaceToSmall : augmentedSingularChainComplex R (TopCat.of s
 
 def augmentedSecondSubspaceToSmall : augmentedSingularChainComplex R (TopCat.of t) ⟶
     augmentedSmallChainComplex R X (twoSetFamily X s t) :=
-  Poincare.ChainComplex.augmentMap (d_singularAugmentation R (TopCat.of t))
+  DifferentialGeometry.ChainComplex.augmentMap (d_singularAugmentation R (TopCat.of t))
     (d_smallChainAugmentation R X (twoSetFamily X s t))
     (SSet.chainComplexMap (secondSubspaceToSmall X s t) R) (𝟙 R)
     (by simpa using! secondSubspace_augmentation R X s t)
@@ -163,7 +163,7 @@ theorem augmentedSubspaceSmallSquare :
 
 
 abbrev augmentedSubspaceSmallShortComplex : ShortComplex (ChainComplex (ModuleCat.{u} k) ℕ) :=
-  Poincare.ShortComplex.pushoutShortComplex (augmentedSubspaceSmallSquare R X s t)
+  DifferentialGeometry.ShortComplex.pushoutShortComplex (augmentedSubspaceSmallSquare R X s t)
 
 theorem augmentedSubspaceSmallShortExact :
     (augmentedSubspaceSmallShortComplex R X s t).ShortExact := by
@@ -180,7 +180,7 @@ theorem augmentedSubspaceSmallShortExact :
         (subspaceInclusion X (show s ∩ t ⊆ s from Set.inter_subset_left))) R).f n)
       unfold SSet.chainComplexMap
       infer_instance
-  exact Poincare.ShortComplex.pushoutShortExact (augmentedSubspaceSmallSquare R X s t)
+  exact DifferentialGeometry.ShortComplex.pushoutShortExact (augmentedSubspaceSmallSquare R X s t)
 
 
 def augmentedSmallConnectingMap (n : ℕ) :
@@ -193,7 +193,7 @@ private theorem isZero_middle_homology [ContractibleSpace s] [ContractibleSpace 
   IsZero.of_iso ((biprod_isZero_iff _ _).mpr
     ⟨isZero_reducedSingularHomology_of_contractible R (TopCat.of s) n,
       isZero_reducedSingularHomology_of_contractible R (TopCat.of t) n⟩)
-    (Poincare.HomologicalComplex.homologyBiprodIso
+    (DifferentialGeometry.HomologicalComplex.homologyBiprodIso
       (augmentedSingularChainComplex R (TopCat.of s))
       (augmentedSingularChainComplex R (TopCat.of t)) (n + 1))
 
@@ -245,4 +245,4 @@ theorem small_inclusion_reducedMayerVietorisConnectingIso
   rw [Iso.hom_inv_id_assoc]
   rfl
 
-end Poincare.Homology
+end DifferentialGeometry.Homology

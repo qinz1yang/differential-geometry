@@ -143,12 +143,12 @@ theorem riemann_contraction_pos_of_orthonormal
 
 end DifferentialGeometry.Geometry
 
-namespace Poincare.Geometry
+namespace DifferentialGeometry.Geometry
 
 @[reducible] alias HasPositiveSectionalCurvature := DifferentialGeometry.Geometry.hasPositiveSectionalCurvature
-end Poincare.Geometry
+end DifferentialGeometry.Geometry
 
-namespace Poincare.Geometry.HasPositiveSectionalCurvature
+namespace DifferentialGeometry.Geometry.HasPositiveSectionalCurvature
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [CompleteSpace E]
@@ -160,17 +160,8 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
 
 omit [I.Boundaryless] [SigmaCompactSpace M] [BoundarylessManifold I M] in
 theorem toNonnegative {g : DifferentialGeometry.SmoothRiemannianMetric I M}
-    (hsec : Poincare.Geometry.HasPositiveSectionalCurvature (I := I) g) :
-    Poincare.Geometry.HasNonnegativeSectionalCurvature (I := I) g :=
+    (hsec : DifferentialGeometry.Geometry.HasPositiveSectionalCurvature (I := I) g) :
+    DifferentialGeometry.Geometry.HasNonnegativeSectionalCurvature (I := I) g :=
   DifferentialGeometry.Geometry.hasPositiveSectionalCurvature.toNonnegative hsec
 
-end Poincare.Geometry.HasPositiveSectionalCurvature
-
-namespace Poincare.Geometry
-
-alias gram_determinant_pos := DifferentialGeometry.Geometry.gram_determinant_pos
-alias positive_sectional_iff_quotient := DifferentialGeometry.Geometry.positive_sectional_iff_quotient
-alias tangent_pair_linearIndependent_of_orthonormal := DifferentialGeometry.Geometry.tangent_pair_linearIndependent_of_orthonormal
-alias riemann_contraction_pos_of_orthonormal := DifferentialGeometry.Geometry.riemann_contraction_pos_of_orthonormal
-
-end Poincare.Geometry
+end DifferentialGeometry.Geometry.HasPositiveSectionalCurvature

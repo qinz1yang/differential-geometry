@@ -5,7 +5,7 @@ set_option autoImplicit false
 noncomputable section
 open Set Metric Filter Function
 open scoped Topology ContDiff
-namespace Poincare.Calculus
+namespace DifferentialGeometry.Calculus
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 
 theorem fderiv_bumpPerturbation_of_ne_zero {f : E → E} {ρ : E → ℝ} {x v : E}
@@ -88,4 +88,4 @@ theorem exists_small_regular_perturbation_fixed {f : E → E} {U Ω : Set E}
       (hρ.contDiffAt.differentiableAt (by simp)) (Eventually.of_forall (fun y => (hn y).1))
       ((hzero x).mpr hxo)
 
-end Poincare.Calculus
+end DifferentialGeometry.Calculus

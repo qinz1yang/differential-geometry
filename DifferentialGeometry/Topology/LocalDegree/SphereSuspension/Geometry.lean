@@ -5,7 +5,7 @@ set_option autoImplicit false
 open Metric Set
 open scoped RealInnerProductSpace
 noncomputable section
-namespace Poincare.LocalDegree
+namespace DifferentialGeometry.LocalDegree
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
   (K : Submodule ℝ E) [K.HasOrthogonalProjection]
 
@@ -150,4 +150,4 @@ theorem equatorSphereSuspension_height (v : sphere (0 : E) 1)
       (Submodule.inner_starProjection_left_eq_right Kᗮ _ _).symm
     _ = _ := by rw [hv]
 
-end Poincare.LocalDegree
+end DifferentialGeometry.LocalDegree

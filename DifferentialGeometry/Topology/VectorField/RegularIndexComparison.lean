@@ -5,7 +5,7 @@ set_option autoImplicit false
 noncomputable section
 open Set Metric Filter Bundle
 open scoped Manifold ContDiff Topology
-namespace Poincare.VectorField
+namespace DifferentialGeometry.VectorField
 variable {d : ℕ} {H M : Type*} [TopologicalSpace H] [TopologicalSpace M]
   [ChartedSpace H M] [T2Space M] [CompactSpace M]
   (I : ModelWithCorners ℝ (EuclideanSpace ℝ (Fin (d + 1))) H) [IsManifold I ∞ M]
@@ -43,11 +43,11 @@ theorem interiorIndexSum_eq_of_regular_boundary_germ
     intro x hx
     by_contra hn
     exact hx (hKU hn)
-  let c (p : closure U) := Poincare.Manifold.interiorChart I ∞ p.val
+  let c (p : closure U) := DifferentialGeometry.Manifold.interiorChart I ∞ p.val
   have hcs (p : closure U) : p.val ∈ (c p).source :=
-    (Poincare.Manifold.mem_interiorChart_source_iff I ∞ p.val).mpr (hUI p.property)
+    (DifferentialGeometry.Manifold.mem_interiorChart_source_iff I ∞ p.val).mpr (hUI p.property)
   choose R hR hRt hsub using
-    fun p : closure U => Poincare.Manifold.exists_interiorChart_closedBall_subset I
+    fun p : closure U => DifferentialGeometry.Manifold.exists_interiorChart_closedBall_subset I
       (hUI p.property) (U := univ) univ_mem
   let a (p : closure U) := c p p.val
   let C (p : closure U) := (c p).symm '' closedBall (a p) (R p / 4)
@@ -121,4 +121,4 @@ theorem interiorIndexSum_eq_of_regular_boundary_germ
   subst G
   exact hGindex.symm
 
-end Poincare.VectorField
+end DifferentialGeometry.VectorField

@@ -10,7 +10,7 @@ open CategoryTheory CategoryTheory.Limits Opposite Simplicial
 
 universe u
 
-namespace Poincare.Homology
+namespace DifferentialGeometry.Homology
 
 variable {E : Type u} [NormedAddCommGroup E] [NormedSpace ℝ E]
   {k : Type u} [Ring k] (R : ModuleCat.{u} k)
@@ -162,4 +162,4 @@ theorem affineSubdivisionHomotopy_hom (n : ℕ) :
     affineSubdivisionHomotopyMap R n ≫ eqToHom (congrArg (K).X h) else 0) = _
   rw [dif_pos rfl, eqToHom_refl, Category.comp_id]
 
-end Poincare.Homology
+end DifferentialGeometry.Homology

@@ -9,7 +9,7 @@ open DifferentialGeometry.Integral.DivergenceTheorem.WithBoundary
 set_option autoImplicit false
 noncomputable section
 
-namespace Poincare.Manifold.BoundaryCollar
+namespace DifferentialGeometry.Manifold.BoundaryCollar
 
 private theorem contMDiff_mvfderiv_apply_section
     {E H M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -98,4 +98,4 @@ theorem exists_smooth_unitSpeed_boundaryField (hK : IsCompact ((𝓡∂ n).bound
   rw [hh]
   exact zero_lt_one
 
-end Poincare.Manifold.BoundaryCollar
+end DifferentialGeometry.Manifold.BoundaryCollar

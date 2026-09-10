@@ -8,7 +8,7 @@ open Set Bundle
 open scoped ContDiff Manifold
 open DifferentialGeometry
 
-namespace Poincare.Geometry.VectorBundle
+namespace DifferentialGeometry.Geometry.VectorBundle
 
 variable {E H M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
@@ -113,7 +113,7 @@ theorem exists_smooth_metric_normalized_eigenpair
       obtain rfl := Set.mem_singleton_iff.mp hv
       exact Module.End.mem_eigenspace_iff.mpr hCe
   obtain ⟨V, hVo, hxV, hVD, μ, w, hμ, hw, hμ₀, hw₀', heq⟩ :=
-    Poincare.Topology.Manifold.exists_contMDiff_bilinear_normalized_eigenpair C B
+    DifferentialGeometry.Topology.Manifold.exists_contMDiff_bilinear_normalized_eigenpair C B
       (hU.inter e.open_baseSet) hC hB (p₀ := x₀) ⟨hx₀, hx⟩
       (fun u v ↦ g.symm x₀ _ _)
       (by intro u v; change g.inner x₀ (e.symmL ℝ x₀ (C x₀ u)) (e.symmL ℝ x₀ v) =
@@ -133,4 +133,4 @@ theorem exists_smooth_metric_normalized_eigenpair
     simpa only [Trivialization.coe_continuousLinearEquivAt_eq, map_smul,
       e.continuousLinearMapAt_symmL (R := ℝ) (hVD hx).2] using hh
 
-end Poincare.Geometry.VectorBundle
+end DifferentialGeometry.Geometry.VectorBundle

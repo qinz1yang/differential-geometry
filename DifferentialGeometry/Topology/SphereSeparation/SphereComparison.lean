@@ -8,7 +8,7 @@ open CategoryTheory
 open CategoryTheory.Limits
 open ZeroObject
 
-namespace Poincare.Topology.SphereSeparation
+namespace DifferentialGeometry.Topology.SphereSeparation
 
 
 
@@ -362,4 +362,4 @@ noncomputable def sphereTwoCohomologyTwoIsoIntOfCellularChainComparison
     ((dualCochainHomotopyEquiv comparison).symm.trans
       (HomotopyEquiv.ofIso sphereTwoCellularChainDualIso))
 
-end Poincare.Topology.SphereSeparation
+end DifferentialGeometry.Topology.SphereSeparation

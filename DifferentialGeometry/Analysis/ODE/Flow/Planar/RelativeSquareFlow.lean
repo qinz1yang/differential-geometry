@@ -6,7 +6,7 @@ noncomputable section
 open Set
 open scoped ContDiff Manifold
 
-namespace Poincare.Analysis
+namespace DifferentialGeometry.Analysis
 
 theorem exists_boundary_fixed_square_reconstruction
     {v : ℝ × ℂ → ℂ} (hv : ContDiff ℝ ∞ v) (φ : ℝ → _root_.Flow ℝ ℂ)
@@ -185,4 +185,4 @@ theorem exists_boundary_fixed_square_reconstruction
     have hfz := hboundary p z hz he
     exact ⟨hfz, by have hi := hGF p z hz; rw [hfz] at hi; exact hi⟩
 
-end Poincare.Analysis
+end DifferentialGeometry.Analysis

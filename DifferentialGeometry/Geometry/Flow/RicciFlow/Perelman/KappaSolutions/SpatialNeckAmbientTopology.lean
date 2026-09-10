@@ -32,7 +32,7 @@ namespace SpatialNeckWitness
 theorem nonempty_ambient_homeomorph
     {h : SmoothRiemannianMetric I N} {yStar : SpatialNeckSphere}
     {p : N} {epsilon : ℝ} (W : SpatialNeckWitness h yStar p epsilon)
-    (hsec : Poincare.Geometry.HasPositiveSectionalCurvature (I := I) h) :
+    (hsec : DifferentialGeometry.Geometry.HasPositiveSectionalCurvature (I := I) h) :
     Nonempty (N ≃ₜ E) := by
   let _ : NeZero (Module.finrank ℝ E) := ⟨by rw [W.dimension_three]; norm_num⟩
   let _ : TopologicalSpace.MetrizableSpace N := Manifold.metrizableSpace I N

@@ -2,9 +2,9 @@ import DifferentialGeometry.Topology.SimplicialComplex.VertexLinkLocalEuler
 
 set_option autoImplicit false
 noncomputable section
-open Set Poincare.Homology
+open Set DifferentialGeometry.Homology
 open scoped Manifold
-namespace Poincare.Topology.SimplicialComplex
+namespace DifferentialGeometry.Topology.SimplicialComplex
 variable {E : Type} [NormedAddCommGroup E] [NormedSpace ℝ E] [d : DecidableEq E]
   (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces] (p : E) (hp : {p} ∈ K.faces)
   {M : Type} [TopologicalSpace M] [T1Space M] (e : K.space ≃ₜ M)
@@ -56,4 +56,4 @@ theorem faceEulerChar_vertexLink_three_interior
     faceEulerChar (link K.toPreAbstractSimplicialComplex {p}) = 2 := by
   simpa using faceEulerChar_vertexLink_of_interior K p hp e (𝓡∂ 3) hx
 
-end Poincare.Topology.SimplicialComplex
+end DifferentialGeometry.Topology.SimplicialComplex

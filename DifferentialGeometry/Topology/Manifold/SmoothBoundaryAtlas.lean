@@ -15,7 +15,7 @@ open scoped Manifold ContDiff
 
 noncomputable section
 
-namespace Poincare.Topology
+namespace DifferentialGeometry.Topology
 
 structure SmoothBoundaryAtlas
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -129,4 +129,4 @@ theorem contMDiff_subtype_val :
 
 end SmoothBoundaryAtlas
 
-end Poincare.Topology
+end DifferentialGeometry.Topology

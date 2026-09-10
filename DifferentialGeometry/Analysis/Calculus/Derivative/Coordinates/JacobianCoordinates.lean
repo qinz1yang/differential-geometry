@@ -5,7 +5,7 @@ noncomputable section
 open Set Filter Topology
 open scoped ContDiff Manifold
 
-namespace Poincare.Analysis
+namespace DifferentialGeometry.Analysis
 
 theorem det_fderiv_pos_iff_of_coordinate_conjugacy
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -92,4 +92,4 @@ theorem det_fderiv_pos_iff_of_equivalent_coordinates
   rw [hdet] at hi
   exact hi
 
-end Poincare.Analysis
+end DifferentialGeometry.Analysis

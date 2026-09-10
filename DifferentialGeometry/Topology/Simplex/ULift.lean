@@ -7,7 +7,7 @@ noncomputable section
 
 universe u v
 
-namespace Poincare.Simplex
+namespace DifferentialGeometry.Simplex
 
 variable (I : Type v) [Fintype I]
 
@@ -60,4 +60,4 @@ theorem boundaryUliftHomeomorph_val
     (p : {p : ULift.{u} (stdSimplex ℝ I) // p.down ∈ boundary I}) :
     (boundaryUliftHomeomorph I p).val = uliftHomeomorph I p.val := rfl
 
-end Poincare.Simplex
+end DifferentialGeometry.Simplex

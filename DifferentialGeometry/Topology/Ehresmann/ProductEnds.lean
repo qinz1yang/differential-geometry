@@ -6,7 +6,7 @@ noncomputable section
 open Set Topology Manifold
 open scoped ContDiff
 
-namespace Poincare.Topology.Ehresmann
+namespace DifferentialGeometry.Topology.Ehresmann
 
 theorem exists_intervalProduct_with_labeled_ends
     {E F H G W B M : Type}
@@ -42,14 +42,14 @@ theorem exists_intervalProduct_with_labeled_ends
     rw [← hbdy, boundary_eq_range_intervalProduct_ends D, image_union,
       ← range_comp, ← range_comp]
     rfl
-  rcases Poincare.Topology.eq_or_eq_of_two_preconnected_closed_partitions
+  rcases DifferentialGeometry.Topology.eq_or_eq_of_two_preconnected_closed_partitions
     hS₀ hS₁ hnonempty₀ hnonempty₁ hclosed₀ hclosed₁ hd hcover with h | h
   · exact ⟨D, h.1.symm, h.2.symm⟩
-  · let R := (Diffeomorph.refl J B ∞).prodCongr Poincare.Topology.Manifold.unitIntervalReflection
+  · let R := (Diffeomorph.refl J B ∞).prodCongr DifferentialGeometry.Topology.Manifold.unitIntervalReflection
     refine ⟨R.trans D, ?_, ?_⟩
     · change range (fun p : B ↦ ι (D (p, unitInterval.symm 0))) = S₀
       simpa only [unitInterval.symm_zero] using h.1.symm
     · change range (fun p : B ↦ ι (D (p, unitInterval.symm 1))) = S₁
       simpa only [unitInterval.symm_one] using h.2.symm
 
-end Poincare.Topology.Ehresmann
+end DifferentialGeometry.Topology.Ehresmann

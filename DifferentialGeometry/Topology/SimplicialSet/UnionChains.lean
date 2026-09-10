@@ -9,7 +9,7 @@ set_option autoImplicit false
 open CategoryTheory CategoryTheory.Limits
 noncomputable section
 universe u
-namespace Poincare.SSet
+namespace DifferentialGeometry.SSet
 variable {X : _root_.SSet.{u}} (A B : X.Subcomplex)
   {k : Type u} [Ring k] (R : ModuleCat.{u} k)
 
@@ -25,7 +25,7 @@ theorem unionChainSquare :
 
 
 abbrev unionChainShortComplex : ShortComplex (ChainComplex (ModuleCat.{u} k) ℕ) :=
-  Poincare.ShortComplex.pushoutShortComplex (unionChainSquare A B R)
+  DifferentialGeometry.ShortComplex.pushoutShortComplex (unionChainSquare A B R)
 
 
 theorem unionChainShortExact : (unionChainShortComplex A B R).ShortExact := by
@@ -33,7 +33,7 @@ theorem unionChainShortExact : (unionChainShortComplex A B R).ShortExact := by
       (_root_.SSet.Subcomplex.homOfLE (show A ⊓ B ≤ A from inf_le_left)) R) := by
     unfold _root_.SSet.chainComplexMap
     infer_instance
-  exact Poincare.ShortComplex.pushoutShortExact (unionChainSquare A B R)
+  exact DifferentialGeometry.ShortComplex.pushoutShortExact (unionChainSquare A B R)
 
 def unionRelativeChainIso :
     cokernel (_root_.SSet.chainComplexMap
@@ -56,4 +56,4 @@ theorem unionRelativeChainIso_projection :
         (_root_.SSet.Subcomplex.homOfLE (show B ≤ A ⊔ B from le_sup_right)) R) :=
   cokernel.π_desc _ _ _
 
-end Poincare.SSet
+end DifferentialGeometry.SSet

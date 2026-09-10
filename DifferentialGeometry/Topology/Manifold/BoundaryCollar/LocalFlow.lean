@@ -6,7 +6,7 @@ open scoped Topology ContDiff
 set_option autoImplicit false
 noncomputable section
 
-namespace Poincare.Manifold.BoundaryCollar
+namespace DifferentialGeometry.Manifold.BoundaryCollar
 
 private theorem exists_complete_euclidean_flow
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -104,4 +104,4 @@ theorem exists_inward_halfSpace_localFlow
     rw [hzero] at hh
     exact hxpos.trans_lt hh
 
-end Poincare.Manifold.BoundaryCollar
+end DifferentialGeometry.Manifold.BoundaryCollar

@@ -6,7 +6,7 @@ noncomputable section
 open Set
 open scoped Manifold ContDiff
 
-namespace Poincare.Geometry.Neck
+namespace DifferentialGeometry.Geometry.Neck
 
 theorem cylindricalChart.contMDiff_and_mvfderiv_affine_axial_ne_zero
     {E H W F H' M : Type*}
@@ -21,7 +21,7 @@ theorem cylindricalChart.contMDiff_and_mvfderiv_affine_axial_ne_zero
     ContMDiff I 𝓘(ℝ) ∞ u ∧ ∀ w, mvfderiv I u w ≠ 0 := by
   let q : W → ℝ := fun w ↦
     (C.chart.symm ⟨ι w, htarget w⟩ : Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1 × ℝ).2
-  obtain ⟨hq, hqsurj⟩ := Poincare.Topology.Manifold.contMDiff_and_surjective_mfderiv_snd_of_product_chart
+  obtain ⟨hq, hqsurj⟩ := DifferentialGeometry.Topology.Manifold.contMDiff_and_surjective_mfderiv_snd_of_product_chart
     C.domain C.target C.chart ι hι hsurj htarget
   change ContMDiff I 𝓘(ℝ) ∞ q at hq
   have heq : (fun w ↦ τ * C.axial (ι w) + c) =
@@ -45,4 +45,4 @@ theorem cylindricalChart.contMDiff_and_mvfderiv_affine_axial_ne_zero
   simp only [smul_zero, add_zero, smul_apply, smul_eq_mul, hz', mul_one, zero_apply] at hval
   exact (mul_ne_zero hτ (inv_ne_zero (Real.sqrt_pos.mpr C.scale_pos).ne')) hval
 
-end Poincare.Geometry.Neck
+end DifferentialGeometry.Geometry.Neck

@@ -6,7 +6,7 @@ open scoped Manifold ContDiff
 open DifferentialGeometry DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.Geometry.Operator
 
-namespace Poincare.Geometry.Metric
+namespace DifferentialGeometry.Geometry.Metric
 
 theorem metricSharp_difference_bound_of_covector_difference
     {E H M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
@@ -70,4 +70,4 @@ theorem metricSharp_difference_bound_of_covector_difference
     rw [le_div_iff₀ hpos]
     nlinarith
 
-end Poincare.Geometry.Metric
+end DifferentialGeometry.Geometry.Metric

@@ -8,7 +8,7 @@ noncomputable section
 open Bundle Filter Manifold MeasureTheory Set
 open scoped ContDiff ENNReal Manifold Topology
 
-namespace Poincare.Geometry.Riemannian.VolumeComparison
+namespace DifferentialGeometry.Geometry.Riemannian.VolumeComparison
 
 open DifferentialGeometry
 open DifferentialGeometry.Geometry.Riemannian
@@ -279,4 +279,4 @@ theorem nonnegativeRicciAVR [ConnectedSpace M] [CompleteSpace M]
   · intro R hR
     exact asymptoticVolumeRatio_mul_euclidean_le_ballVolume g p hR
 
-end Poincare.Geometry.Riemannian.VolumeComparison
+end DifferentialGeometry.Geometry.Riemannian.VolumeComparison

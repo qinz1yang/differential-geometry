@@ -7,7 +7,7 @@ open CategoryTheory CategoryTheory.Limits AlgebraicTopology
 open scoped ZeroObject
 noncomputable section
 universe u
-namespace Poincare.Homology
+namespace DifferentialGeometry.Homology
 variable (X : TopCat.{u}) (s : Set X) {k : Type u} [Ring k] (R : ModuleCat.{u} k)
 
 
@@ -17,7 +17,7 @@ def augmentedRelativeChainComplex : ChainComplex (ModuleCat.{u} k) ℕ :=
 
 def augmentedRelativeProjection :
     augmentedSingularChainComplex R X ⟶ augmentedRelativeChainComplex X s R :=
-  Poincare.ChainComplex.augmentMap (d_singularAugmentation R X) (by simp)
+  DifferentialGeometry.ChainComplex.augmentMap (d_singularAugmentation R X) (by simp)
     (relativeProjection X s R) (0 : R ⟶ 0) (by simp)
 
 
@@ -94,4 +94,4 @@ theorem augmentedRelativeHomologySuccIso_connecting [ContractibleSpace X] (n : �
   erw [Iso.hom_inv_id_assoc]
   rfl
 
-end Poincare.Homology
+end DifferentialGeometry.Homology

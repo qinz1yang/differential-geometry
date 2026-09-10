@@ -5,9 +5,9 @@ open Set Bundle
 open scoped Manifold ContDiff
 open DifferentialGeometry DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.Geometry.Curvature
-open Poincare.Geometry.Metric
+open DifferentialGeometry.Geometry.Metric
 
-namespace Poincare.Geometry.Neck
+namespace DifferentialGeometry.Geometry.Neck
 
 private instance : Fact (Module.finrank ℝ (EuclideanSpace ℝ (Fin 3)) = 2 + 1) := ⟨by simp⟩
 
@@ -61,7 +61,7 @@ theorem cylindricalChart.exists_least_ricci_field [BoundarylessManifold J M]
         |ν y| ≤ 5772 * C.scale * ε ∧
         Module.End.eigenspace (ricciSharp g y).toLinearMap (ν y) = Submodule.span ℝ {Y y} ∧
         0 < mvfderiv J C.axial y (Y y) ∧ |mvfderiv J C.axial y (Y y) - 1| ≤ 92354 * ε :=
-  Poincare.Geometry.Curvature.exists_ambient_least_ricci_field_from_neck_chart
+  DifferentialGeometry.Geometry.Curvature.exists_ambient_least_ricci_field_from_neck_chart
     C.domain C.target g C.chart C.scale C.scale_pos hU ε hε hsmall
 
-end Poincare.Geometry.Neck
+end DifferentialGeometry.Geometry.Neck

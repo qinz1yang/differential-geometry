@@ -7,7 +7,7 @@ set_option autoImplicit false
 noncomputable section
 open Set Metric
 
-namespace Poincare.Topology.SimplicialComplex
+namespace DifferentialGeometry.Topology.SimplicialComplex
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [LinearOrder E]
   (K : Geometry.SimplicialComplex ℝ E) (s : Finset E) (hs : s ∈ K.faces)
@@ -25,29 +25,29 @@ private theorem maximalFace_coordinate_mem_openCell
     (x : (Subtype.val : K.space → E) ⁻¹' faceOpenStar K s) :
     (geometricFaceHomeomorphism K hs).symm
       ⟨x.val.val, mem_convexHull_of_mem_maximalFaceStar K s hs hmax x.prop⟩ ∈
-        Poincare.Simplex.openCell s := by
-  rw [Poincare.Simplex.openCell_eq_compl_boundary]
+        DifferentialGeometry.Simplex.openCell s := by
+  rw [DifferentialGeometry.Simplex.openCell_eq_compl_boundary]
   intro hb
   have hh := (vertexMap_mem_geometricFaceCostar_iff K hs _).mpr hb
   have he := congrArg (fun y : convexHull ℝ (s : Set E) ↦ y.val)
     ((geometricFaceHomeomorphism K hs).apply_symm_apply
       ⟨x.val.val, mem_convexHull_of_mem_maximalFaceStar K s hs hmax x.prop⟩)
-  change Poincare.Simplex.vertexMap (fun i : s ↦ (i : E)) _ = x.val.val at he
+  change DifferentialGeometry.Simplex.vertexMap (fun i : s ↦ (i : E)) _ = x.val.val at he
   exact x.prop.2 (he ▸ hh)
 
 omit [LinearOrder E] in
-private theorem geometricFace_openCell_mem_star (a : Poincare.Simplex.openCell s) :
+private theorem geometricFace_openCell_mem_star (a : DifferentialGeometry.Simplex.openCell s) :
     (geometricFaceHomeomorphism K hs a.val).val ∈ faceOpenStar K s := by
   refine ⟨Geometry.SimplicialComplex.convexHull_subset_space hs
     (geometricFaceHomeomorphism K hs a.val).prop, ?_⟩
   intro hx
   have hb := (vertexMap_mem_geometricFaceCostar_iff K hs a.val).mp hx
-  have ha : a.val ∉ Poincare.Simplex.boundary s := by
-    simpa only [Poincare.Simplex.openCell_eq_compl_boundary, Set.mem_compl_iff] using a.prop
+  have ha : a.val ∉ DifferentialGeometry.Simplex.boundary s := by
+    simpa only [DifferentialGeometry.Simplex.openCell_eq_compl_boundary, Set.mem_compl_iff] using a.prop
   exact ha hb
 
 def maximalFaceStarHomeomorphism :
-    ((Subtype.val : K.space → E) ⁻¹' faceOpenStar K s) ≃ₜ Poincare.Simplex.openCell s where
+    ((Subtype.val : K.space → E) ⁻¹' faceOpenStar K s) ≃ₜ DifferentialGeometry.Simplex.openCell s where
   toFun x := ⟨(geometricFaceHomeomorphism K hs).symm
     ⟨x.val.val, mem_convexHull_of_mem_maximalFaceStar K s hs hmax x.prop⟩,
     maximalFace_coordinate_mem_openCell K s hs hmax x⟩
@@ -71,7 +71,7 @@ def maximalFaceStarHomeomorphism :
 
 
 @[simp]
-theorem maximalFaceStarHomeomorphism_symm_val (a : Poincare.Simplex.openCell s) :
+theorem maximalFaceStarHomeomorphism_symm_val (a : DifferentialGeometry.Simplex.openCell s) :
     ((maximalFaceStarHomeomorphism K s hs hmax).symm a).val.val =
       (geometricFaceHomeomorphism K hs a.val).val := rfl
 
@@ -86,8 +86,8 @@ theorem maximalFaceStarHomeomorphism_apply_val
 def maximalFaceOpenBallHomeomorphism {n : ℕ} (hn : s.card = n + 1) :
     ((Subtype.val : K.space → E) ⁻¹' faceOpenStar K s) ≃ₜ ball (0 : Fin n → ℝ) 1 :=
   (maximalFaceStarHomeomorphism K s hs hmax).trans
-    (((Poincare.Simplex.openCellReindexHomeomorph (s.orderIsoOfFin hn).toEquiv).symm).trans
-      (Poincare.Simplex.stdSimplexOpenBallHomeomorph n))
+    (((DifferentialGeometry.Simplex.openCellReindexHomeomorph (s.orderIsoOfFin hn).toEquiv).symm).trans
+      (DifferentialGeometry.Simplex.stdSimplexOpenBallHomeomorph n))
 
 theorem isOpenEmbedding_maximalFaceCoordinates {n : ℕ} (hn : s.card = n + 1) :
     Topology.IsOpenEmbedding (fun x ↦ (EuclideanSpace.equiv (Fin n) ℝ).symm
@@ -116,4 +116,4 @@ theorem maximalFaceEuclideanChart_apply {n : ℕ} (hn : s.card = n + 1)
       (EuclideanSpace.equiv (Fin n) ℝ).symm
         (maximalFaceOpenBallHomeomorphism K s hs hmax hn x).val := rfl
 
-end Poincare.Topology.SimplicialComplex
+end DifferentialGeometry.Topology.SimplicialComplex

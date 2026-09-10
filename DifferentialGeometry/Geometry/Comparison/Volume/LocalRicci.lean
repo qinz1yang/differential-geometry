@@ -5,7 +5,7 @@ noncomputable section
 open Bundle Manifold Set
 open scoped ContDiff Manifold
 
-namespace Poincare.Geometry.Riemannian.VolumeComparison
+namespace DifferentialGeometry.Geometry.Riemannian.VolumeComparison
 
 open DifferentialGeometry
 open DifferentialGeometry.Geometry.Curvature
@@ -53,4 +53,4 @@ theorem ricciBoundedBelowOn_apply {g : SmoothRiemannianMetric I M}
     κ * (g.inner x v v : ℝ) ≤ ricciTensor (I := I) g x v v :=
   h x hx v
 
-end Poincare.Geometry.Riemannian.VolumeComparison
+end DifferentialGeometry.Geometry.Riemannian.VolumeComparison

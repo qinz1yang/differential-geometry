@@ -7,7 +7,7 @@ noncomputable section
 open Set
 open scoped ContDiff Manifold NNReal
 
-namespace Poincare.Analysis
+namespace DifferentialGeometry.Analysis
 
 variable {E : Type*} [NormedAddCommGroup E] [CompleteSpace E]
 
@@ -75,4 +75,4 @@ theorem exists_diffeomorphs_of_small_lipschitz_displacement
       contMDiff_invFun := (hR'.comp (contDiff_const.prodMk contDiff_id)).contMDiff }
   exact ⟨D, hh, hR', fun _ _ ↦ rfl⟩
 
-end Poincare.Analysis
+end DifferentialGeometry.Analysis

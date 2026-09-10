@@ -6,7 +6,7 @@ noncomputable section
 open Set Filter Topology
 open scoped ContDiff Manifold
 
-namespace Poincare.Topology.Manifold
+namespace DifferentialGeometry.Topology.Manifold
 
 theorem not_exists_regular_patch_of_endpoint_shift
     {E H N : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -49,4 +49,4 @@ theorem not_exists_regular_patch_of_endpoint_shift
     hγ.continuousWithinAt (mem_nhdsSet_iff_forall.mp hlocal₀ _ hγ₀) zero_lt_one hcoordinate
   linarith only [hlt, hδ]
 
-end Poincare.Topology.Manifold
+end DifferentialGeometry.Topology.Manifold

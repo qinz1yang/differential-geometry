@@ -3,9 +3,9 @@ import DifferentialGeometry.Topology.ProjectiveSpace.EulerCharacteristic
 
 set_option autoImplicit false
 noncomputable section
-open Set Poincare.Homology Poincare.Topology.SimplicialComplex
+open Set DifferentialGeometry.Homology DifferentialGeometry.Topology.SimplicialComplex
 open scoped Manifold
-namespace Poincare.Manifold
+namespace DifferentialGeometry.Manifold
 variable {E : Type} [NormedAddCommGroup E] [NormedSpace ℝ E]
   {K L : Geometry.SimplicialComplex ℝ E} [Finite K.faces] [Finite L.faces]
   (hLK : L ≤ K) {M : Type} [TopologicalSpace M] [T1Space M]
@@ -22,8 +22,8 @@ theorem not_boundary_homeomorphic_projectivePlane_of_geometric_pair :
   have hRP := eulerChar_eq_of_homeomorph ℚ
     (X := TopCat.of ((𝓡∂ 3).boundary M))
     (Y := TopCat.of (Projectivization ℝ (EuclideanSpace ℝ (Fin 3)))) b
-  rw [Poincare.ProjectiveSpace.eulerChar_projectivePlane] at hRP
+  rw [DifferentialGeometry.ProjectiveSpace.eulerChar_projectivePlane] at hRP
   norm_num at hboundaryEuler
   omega
 
-end Poincare.Manifold
+end DifferentialGeometry.Manifold

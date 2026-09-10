@@ -7,7 +7,7 @@ open CategoryTheory CategoryTheory.Limits AlgebraicTopology
 noncomputable section
 universe u
 
-namespace Poincare.Homology
+namespace DifferentialGeometry.Homology
 variable (X : TopCat.{u}) (s : Set X) {k : Type u} [Ring k] (R : ModuleCat.{u} k)
 
 
@@ -104,8 +104,8 @@ variable (k : Type u) [Field k]
 
 theorem finiteHomologyType_relativeChainComplex
     (hs : finiteHomologyType k (TopCat.of s)) (hX : finiteHomologyType k X) :
-    Poincare.HomologicalComplex.finiteHomologyType (relativeChainComplex X s (ModuleCat.of k k)) :=
-  Poincare.HomologicalComplex.finiteHomologyType_last
+    DifferentialGeometry.HomologicalComplex.finiteHomologyType (relativeChainComplex X s (ModuleCat.of k k)) :=
+  DifferentialGeometry.HomologicalComplex.finiteHomologyType_last
     (relativeShortComplex X s (ModuleCat.of k k)) (relativeShortExact X s (ModuleCat.of k k)) hs hX
 
 def relativeEulerChar : ℤ :=
@@ -119,10 +119,10 @@ theorem relativeEulerChar_eq_sub
   have : ∀ n, FiniteDimensional k (S.X₁.homology n) := hs.1
   have : ∀ n, FiniteDimensional k (S.X₂.homology n) := hX.1
   have : ∀ n, FiniteDimensional k (S.X₃.homology n) := hr.1
-  have h := Poincare.HomologicalComplex.homologyEulerChar_additive S
+  have h := DifferentialGeometry.HomologicalComplex.homologyEulerChar_additive S
     (relativeShortExact X s (ModuleCat.of k k)) hs.2 hX.2 hr.2
   change eulerChar k X = eulerChar k (TopCat.of s) + relativeEulerChar X s k at h
   omega
 
 end Field
-end Poincare.Homology
+end DifferentialGeometry.Homology

@@ -6,7 +6,7 @@ noncomputable section
 open Set Bundle Manifold
 open scoped ContDiff Topology
 open DifferentialGeometry.Integral.DivergenceTheorem.WithBoundary
-namespace Poincare.VectorField
+namespace DifferentialGeometry.VectorField
 
 theorem interiorIndexSum_eq_relativeEulerChar_of_mixed
     {n : ℕ}
@@ -25,7 +25,7 @@ theorem interiorIndexSum_eq_relativeEulerChar_of_mixed
     (hout : ∀ p, (𝓡∂ (n + 1)).IsBoundaryPoint p → p ∉ B → (EuclideanSpace.proj (𝕜 := ℝ) (0 : Fin (n + 1))) (V p) < 0)
     (K : Type) [Field K] :
     interiorIndexSum (𝓡∂ (n + 1)) V hVf hVi hVI =
-      Poincare.Homology.relativeEulerChar (TopCat.of M) B K := by
+      DifferentialGeometry.Homology.relativeEulerChar (TopCat.of M) B K := by
   let I := 𝓡∂ (n + 1)
   let A : Set (BoundaryManifold I M) := ((↑) : BoundaryManifold I M → M) ⁻¹' B
   have hr := mixedPoincareHopf V hV hVf hVi hVI A hBclopen
@@ -34,12 +34,12 @@ theorem interiorIndexSum_eq_relativeEulerChar_of_mixed
     (BoundaryManifold.range_coe_eq_boundary (I := I) (M := M)).symm ▸ hB
   let e := (show Topology.IsEmbedding ((↑) : BoundaryManifold I M → M) from
     Topology.IsEmbedding.subtypeVal).homeomorphOfSubsetRange hrange
-  have he : Poincare.Homology.eulerChar K (TopCat.of A) =
-      Poincare.Homology.eulerChar K (TopCat.of B) :=
-    Poincare.Homology.eulerChar_eq_of_homeomorph K e
+  have he : DifferentialGeometry.Homology.eulerChar K (TopCat.of A) =
+      DifferentialGeometry.Homology.eulerChar K (TopCat.of B) :=
+    DifferentialGeometry.Homology.eulerChar_eq_of_homeomorph K e
   rw [he] at hr
-  exact hr.trans (Poincare.Homology.relativeEulerChar_eq_sub (TopCat.of M) B K
-    (Poincare.Homology.finiteHomologyType_of_isClopen_boundary_subset I K B hB hBclopen)
-    (Poincare.Homology.finiteHomologyType_of_compact_manifold_withBoundary (n := n + 1) (M := M) K)).symm
+  exact hr.trans (DifferentialGeometry.Homology.relativeEulerChar_eq_sub (TopCat.of M) B K
+    (DifferentialGeometry.Homology.finiteHomologyType_of_isClopen_boundary_subset I K B hB hBclopen)
+    (DifferentialGeometry.Homology.finiteHomologyType_of_compact_manifold_withBoundary (n := n + 1) (M := M) K)).symm
 
-end Poincare.VectorField
+end DifferentialGeometry.VectorField

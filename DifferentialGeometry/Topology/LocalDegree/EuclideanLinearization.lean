@@ -7,7 +7,7 @@ set_option autoImplicit false
 open Metric Set
 open scoped Topology
 noncomputable section
-namespace Poincare.LocalDegree
+namespace DifferentialGeometry.LocalDegree
 
 theorem isolatedZero_of_hasFDerivAt_equiv
     {E F : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -58,4 +58,4 @@ theorem euclideanLocalDegree_eq_one_or_neg_one_of_hasFDerivAt
     euclideanLocalDegree f x h = 1 ∨ euclideanLocalDegree f x h = -1 :=
   Int.isUnit_iff.mp (euclideanLocalDegree_isUnit_of_hasFDerivAt A hs hf hz hd h)
 
-end Poincare.LocalDegree
+end DifferentialGeometry.LocalDegree

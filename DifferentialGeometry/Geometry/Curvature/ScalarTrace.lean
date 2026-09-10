@@ -6,7 +6,7 @@ open scoped Manifold ContDiff BigOperators
 open DifferentialGeometry DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Tensor0SBundle
 
-namespace Poincare.Geometry.Curvature
+namespace DifferentialGeometry.Geometry.Curvature
 
 theorem metricScalar_eq_trace_ricciSharp
     {E H M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
@@ -30,4 +30,4 @@ theorem metricScalar_eq_trace_ricciSharp
     simp [identityInvMetric, diagonalInvMetric]
   exact (inner_ricciSharp g x (b i) (b i)).symm.trans hr.symm
 
-end Poincare.Geometry.Curvature
+end DifferentialGeometry.Geometry.Curvature

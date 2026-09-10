@@ -2,7 +2,7 @@ import DifferentialGeometry.Topology.SphereSeparation.Defs
 
 set_option autoImplicit false
 
-namespace Poincare.Topology.SphereSeparation
+namespace DifferentialGeometry.Topology.SphereSeparation
 
 open Set
 
@@ -166,4 +166,4 @@ def swap (p : ComplementPair S) : ComplementPair S where
 
 end ComplementPair
 
-end Poincare.Topology.SphereSeparation
+end DifferentialGeometry.Topology.SphereSeparation

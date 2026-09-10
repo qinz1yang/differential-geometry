@@ -6,7 +6,7 @@ open scoped Manifold ContDiff Topology
 set_option autoImplicit false
 noncomputable section
 
-namespace Poincare.Manifold.EmbeddedHypersurface
+namespace DifferentialGeometry.Manifold.EmbeddedHypersurface
 
 section Immersion
 
@@ -122,4 +122,4 @@ theorem mfderiv_apply_ne_zero_of_transverse {e : S → M} {x : S} {f : M → ℝ
   rw [← ker_mfderiv_eq_range_of_vanishing I J he hf hz hreg]
   exact hzero
 
-end Poincare.Manifold.EmbeddedHypersurface
+end DifferentialGeometry.Manifold.EmbeddedHypersurface

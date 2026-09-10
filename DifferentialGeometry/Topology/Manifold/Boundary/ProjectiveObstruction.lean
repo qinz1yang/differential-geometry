@@ -3,9 +3,9 @@ import DifferentialGeometry.Topology.ProjectiveSpace.EulerCharacteristic
 
 set_option autoImplicit false
 noncomputable section
-open Set Poincare.Homology
+open Set DifferentialGeometry.Homology
 open scoped Manifold ContDiff
-namespace Poincare.Manifold
+namespace DifferentialGeometry.Manifold
 
 theorem not_boundary_homeomorphic_projectivePlane
     {M : Type} [TopologicalSpace M] [ChartedSpace (EuclideanHalfSpace 3) M]
@@ -17,8 +17,8 @@ theorem not_boundary_homeomorphic_projectivePlane
   have hRP := eulerChar_eq_of_homeomorph ℚ
     (X := TopCat.of ((𝓡∂ 3).boundary M))
     (Y := TopCat.of (Projectivization ℝ (EuclideanSpace ℝ (Fin 3)))) b
-  rw [Poincare.ProjectiveSpace.eulerChar_projectivePlane] at hRP
+  rw [DifferentialGeometry.ProjectiveSpace.eulerChar_projectivePlane] at hRP
   norm_num at hboundaryEuler
   omega
 
-end Poincare.Manifold
+end DifferentialGeometry.Manifold

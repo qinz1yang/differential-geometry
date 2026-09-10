@@ -12,7 +12,7 @@ noncomputable section
 
 open Set Filter Topology
 
-namespace Poincare.Toponogov
+namespace DifferentialGeometry.Toponogov
 
 def lowerSupportAt_sq_sub_sq_of_energy
     {distance energy energyDeriv : ℝ → ℝ} {J U : Set ℝ}
@@ -79,4 +79,4 @@ def lowerSupportAt_sq_sub_sq_of_zero
     all_goals ring
   · exact hasDerivAt_const r₀ (2 * r₀)
 
-end Poincare.Toponogov
+end DifferentialGeometry.Toponogov

@@ -4,7 +4,7 @@ import DifferentialGeometry.Topology.Order.IntervalPush
 open Set Function Topology
 set_option autoImplicit false
 noncomputable section
-namespace Poincare.Topology.Collar
+namespace DifferentialGeometry.Topology.Collar
 
 variable {B X : Type*} [TopologicalSpace B] [CompactSpace B]
   [TopologicalSpace X] [T2Space X]
@@ -30,4 +30,4 @@ theorem exists_attachment_homeomorph
   · exact range_intervalPush _
   · exact intervalPush_fixed a _
 
-end Poincare.Topology.Collar
+end DifferentialGeometry.Topology.Collar

@@ -8,7 +8,7 @@ noncomputable section
 open Set Filter Topology
 open scoped ContDiff
 
-namespace Poincare.Analysis
+namespace DifferentialGeometry.Analysis
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
 
@@ -137,4 +137,4 @@ theorem exists_uniform_contDiffOn_inverse_of_one_sided [FiniteDimensional ℝ E]
     (fun z hz ↦ by rw [hgderiv z hz]; exact ne_of_gt (hR z hz.1).2.2.2)
   exact (contDiffWithinAt_inter (hgo.mem_nhds ⟨hqW, mem_univ _⟩)).mp (hs q ⟨hq, hqW, mem_univ _⟩)
 
-end Poincare.Analysis
+end DifferentialGeometry.Analysis

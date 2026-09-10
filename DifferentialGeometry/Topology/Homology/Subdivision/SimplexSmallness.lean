@@ -10,7 +10,7 @@ open CategoryTheory CategoryTheory.Limits Opposite Simplicial
 
 universe u v
 
-namespace Poincare.Homology
+namespace DifferentialGeometry.Homology
 
 private theorem convex_coordinateSimplex (n : ℕ) :
     Convex ℝ (ULift.down ⁻¹' stdSimplex ℝ (Fin (n + 1)) :
@@ -182,4 +182,4 @@ theorem exists_small_subdivision_power_generator
   rw [← he]
   exact ha
 
-end Poincare.Homology
+end DifferentialGeometry.Homology

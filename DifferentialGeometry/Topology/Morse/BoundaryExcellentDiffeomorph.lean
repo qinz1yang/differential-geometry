@@ -7,7 +7,7 @@ open Set Filter Function Bundle
 open scoped Manifold ContDiff Topology
 open DifferentialGeometry.Topology.Morse
 open DifferentialGeometry.Integral.DivergenceTheorem.WithBoundary
-namespace Poincare.Morse
+namespace DifferentialGeometry.Morse
 variable {n : ℕ} {M : Type} [TopologicalSpace M]
   [ChartedSpace (EuclideanHalfSpace (n + 1)) M] [IsManifold (𝓡∂ (n + 1)) ∞ M]
   [T2Space M] [CompactSpace M]
@@ -17,7 +17,7 @@ theorem exists_relative_excellent_morse_sublevel_diffeomorph (b : ℝ) :
       (hf : ContMDiff (𝓡∂ (n + 1)) 𝓘(ℝ, ℝ) ∞ f)
       (hreg : ∀ x, f x = c₀ → mfderiv (𝓡∂ (n + 1)) 𝓘(ℝ, ℝ) f x ≠ 0)
       (hi : {x | f x ≤ c₀} ⊆ (𝓡∂ (n + 1)).interior M),
-      let _ := Poincare.Manifold.RegularLevel.interiorSublevelChartedSpace (𝓡∂ (n + 1))
+      let _ := DifferentialGeometry.Manifold.RegularLevel.interiorSublevelChartedSpace (𝓡∂ (n + 1))
         (EuclideanSpace.equiv (Fin (n + 1)) ℝ) hf hreg hi
       ∃ d : M ≃ₘ⟮𝓡∂ (n + 1), morseModelWithCornersHalfSpace n⟯ {x : M // f x ≤ c₀},
         a < t ∧ t < c₀ ∧ c₀ < b ∧
@@ -53,7 +53,7 @@ theorem exists_relative_excellent_morse_sublevel_diffeomorph (b : ℝ) :
     have hb : x ∈ (𝓡∂ (n + 1)).boundary M := hlevel ▸ (show x ∈ f ⁻¹' {b} from he)
     exact ((𝓡∂ (n + 1)).isInteriorPoint_iff_not_isBoundaryPoint x).mp hx hb
   obtain ⟨c₀, htc, hcb, _, hreg, hi, d, hfix, hdb⟩ :=
-    Poincare.Manifold.Boundary.exists_regular_top_sublevel_diffeomorph
+    DifferentialGeometry.Manifold.Boundary.exists_regular_top_sublevel_diffeomorph
       hV hVpos W hBW hf hboundary hinterior hunit htb
   refine ⟨f, a, t, c₀, W, hf, hreg, hi, d, hat, htc, hcb, hbound, hempty,
     hlevel, hBW, ?_, hcrit, hfinite, hinj, hfix, ?_, hdb, V, hV, hVc, hunit, hVpos⟩
@@ -64,4 +64,4 @@ theorem exists_relative_excellent_morse_sublevel_diffeomorph (b : ℝ) :
       (isOpen_Iio.mem_nhds (hcrit x hx).2.2)] with y hy
     exact hfix y (show f y ≤ t from hy.le)
 
-end Poincare.Morse
+end DifferentialGeometry.Morse

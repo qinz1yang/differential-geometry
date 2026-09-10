@@ -5,7 +5,7 @@ set_option autoImplicit false
 open Set Bundle
 open scoped Manifold ContDiff Topology
 noncomputable section
-namespace Poincare.VectorField
+namespace DifferentialGeometry.VectorField
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
@@ -16,13 +16,13 @@ private theorem contMDiff_restrict
     (hV : ContMDiffOn I I.tangent ∞ (fun x => (⟨x, V x⟩ : TangentBundle I M)) U) :
     ContMDiff I I.tangent ∞ (fun x : U => (⟨x, V x.val⟩ : TangentBundle I U)) := by
   intro x
-  let f := Poincare.Manifold.openSubtypePartialDiffeomorph I U ⟨x⟩
+  let f := DifferentialGeometry.Manifold.openSubtypePartialDiffeomorph I U ⟨x⟩
   have h := contMDiffAt_mpullback_partialDiffeomorph f (by simp)
     (x := x) (by simp [f]) (hV.contMDiffAt (U.isOpen.mem_nhds x.property))
   apply h.congr_of_eventuallyEq
   exact Filter.Eventually.of_forall fun y => congrArg
     (fun v : TangentSpace I y => (⟨y, v⟩ : TangentBundle I U))
-    (Poincare.Manifold.mpullback_openSubtype I U ⟨x⟩ V y).symm
+    (DifferentialGeometry.Manifold.mpullback_openSubtype I U ⟨x⟩ V y).symm
 
 theorem contMDiff_tangentSection_opens_iff
     (U : TopologicalSpace.Opens M) (W : ∀ x : U, TangentSpace I x) :
@@ -67,4 +67,4 @@ theorem contMDiff_tangentSection_restrict_opens
     ContMDiff I I.tangent ∞ (fun x : U => (⟨x, V x.val⟩ : TangentBundle I U)) :=
   (contMDiff_tangentSection_restrict_opens_iff U V).mpr hV
 
-end Poincare.VectorField
+end DifferentialGeometry.VectorField

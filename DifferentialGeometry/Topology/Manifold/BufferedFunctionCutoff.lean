@@ -6,7 +6,7 @@ noncomputable section
 open Set Filter Topology
 open scoped ContDiff Manifold
 
-namespace Poincare.Topology.Manifold
+namespace DifferentialGeometry.Topology.Manifold
 
 theorem exists_uniform_cutoff_of_buffered_function
     {E H M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -22,7 +22,7 @@ theorem exists_uniform_cutoff_of_buffered_function
         ∀ x ∈ U, ∀ v : TangentSpace I x,
           |mvfderiv I β x v| ≤ (C / η) * |mvfderiv I u x v| := by
   classical
-  obtain ⟨C, hC, hcutoff⟩ := Poincare.Analysis.exists_uniform_smooth_interval_cutoff
+  obtain ⟨C, hC, hcutoff⟩ := DifferentialGeometry.Analysis.exists_uniform_smooth_interval_cutoff
   refine ⟨C, hC, ?_⟩
   intro U hU u hu a b η hη hbuffer
   obtain ⟨χ, hχ, hχbound, hχsupport, hχone, hχderiv⟩ := hcutoff a b η hη
@@ -71,4 +71,4 @@ theorem exists_uniform_cutoff_of_buffered_function
     rw [heq, abs_mul]
     exact mul_le_mul_of_nonneg_right (hχderiv (u x)) (abs_nonneg _)
 
-end Poincare.Topology.Manifold
+end DifferentialGeometry.Topology.Manifold

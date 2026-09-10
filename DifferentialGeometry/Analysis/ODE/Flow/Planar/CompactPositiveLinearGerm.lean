@@ -6,7 +6,7 @@ noncomputable section
 open Set Metric Filter Topology
 open scoped ContDiff Manifold
 
-namespace Poincare.Analysis
+namespace DifferentialGeometry.Analysis
 
 theorem exists_compact_isotopy_realizing_positive_linear_map
     (A : ℂ →ₗ[ℝ] ℂ) (hA : 0 < A.det) (r : ℝ) (hr : 0 < r) :
@@ -53,4 +53,4 @@ theorem exists_compact_isotopy_realizing_positive_linear_map
     · change (S p).symm ((V p).symm ((M p).symm z)) = z
       rw [(hMfix p z hz).2, (hVfix p z hz).2, (hSfix p z hz).2]
 
-end Poincare.Analysis
+end DifferentialGeometry.Analysis

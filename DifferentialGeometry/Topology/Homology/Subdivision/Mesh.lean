@@ -12,7 +12,7 @@ open Finset
 
 universe u
 
-namespace Poincare.Homology
+namespace DifferentialGeometry.Homology
 
 variable {E : Type u} [NormedAddCommGroup E] [NormedSpace ℝ E]
 
@@ -111,4 +111,4 @@ theorem dist_affineBarycentricPiece_le (n : ℕ) (v : Fin (n + 1) → E)
       (n : ℝ) / (n + 1) * D :=
   dist_affineSimplex_le _ (dist_barycentricPieceVertices_le n v p hv) x y
 
-end Poincare.Homology
+end DifferentialGeometry.Homology

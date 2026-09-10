@@ -5,7 +5,7 @@ import Mathlib.Analysis.Calculus.FDeriv.Mul
 noncomputable section
 open scoped InnerProductSpace
 
-namespace Poincare.Analysis
+namespace DifferentialGeometry.Analysis
 
 theorem bijective_fderiv_normalized_eigenpair
     {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
@@ -58,4 +58,4 @@ theorem bijective_fderiv_normalized_eigenpair
   rw [(hfst.prodMk hsnd).fderiv]
   exact hbij
 
-end Poincare.Analysis
+end DifferentialGeometry.Analysis

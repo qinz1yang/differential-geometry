@@ -6,7 +6,7 @@ noncomputable section
 open Set Metric Filter Topology Manifold
 open scoped ContDiff
 
-namespace Poincare.Topology.Manifold
+namespace DifferentialGeometry.Topology.Manifold
 
 theorem exists_sphere_isotopy_of_positive_chart_derivative
     (e : OpenPartialHomeomorph (sphere (0 : EuclideanSpace ℝ (Fin 3)) 1) ℂ)
@@ -30,7 +30,7 @@ theorem exists_sphere_isotopy_of_positive_chart_derivative
   have hiv : e.symm 0 = v := by rw [← hev]; exact e.left_inv hv
   have hi : ContMDiff 𝓘(ℝ, ℂ) (𝓡 2) ∞ e.symm := contMDiffOn_univ.mp (htarget ▸ hei)
   obtain ⟨D, hD, hDi, hD0, hmove, K, hK, hDfix⟩ :=
-    Poincare.Analysis.exists_compact_isotopy_moving_point (e (f v)) (0 : ℂ)
+    DifferentialGeometry.Analysis.exists_compact_isotopy_moving_point (e (f v)) (0 : ℂ)
   obtain ⟨B, hB, hBi, hBe, _, _, _⟩ :=
     exists_diffeomorph_extension_of_chart_family e htarget he hei D hD hDi hK hDfix
   have hB0 : B 0 = Diffeomorph.refl (𝓡 2) _ ∞ := by
@@ -71,7 +71,7 @@ theorem exists_sphere_isotopy_of_positive_chart_derivative
     change 0 < ((fderiv ℝ (D 1) (F 0)).toLinearMap.comp
       (fderiv ℝ F 0).toLinearMap).det
     rw [LinearMap.det_comp]
-    exact mul_pos (Poincare.Analysis.det_fderiv_pos_of_planar_isotopy D hD hD0 1 (F 0)) hpos
+    exact mul_pos (DifferentialGeometry.Analysis.det_fderiv_pos_of_planar_isotopy D hD hD0 1 (F 0)) hpos
   obtain ⟨H, hH, hHi, hH0, hH1⟩ :=
     exists_sphere_isotopy_of_positive_fixed_point_chart e htarget he hei g v hv hev hgv hGpos
   let J (p : ℝ) := (H p).trans (B (1 - p)).symm
@@ -96,4 +96,4 @@ theorem exists_sphere_isotopy_of_positive_chart_derivative
     rw [sub_self, hB0, hH1]
     rfl
 
-end Poincare.Topology.Manifold
+end DifferentialGeometry.Topology.Manifold

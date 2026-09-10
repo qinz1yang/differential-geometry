@@ -6,7 +6,7 @@ open Set Function Manifold Topology TopologicalSpace
 open scoped ContDiff
 set_option autoImplicit false
 noncomputable section
-namespace Poincare.Manifold.Collar
+namespace DifferentialGeometry.Manifold.Collar
 
 theorem exists_smooth_attachment_realization
     {E H B : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -31,15 +31,15 @@ theorem exists_smooth_attachment_realization
         range σ = {t : Icc (0 : ℝ) ε | a ≤ t.val} ∧
         (∀ t : Icc (0 : ℝ) ε, t.val ≤ r → (σ t).val = t.val + a) ∧
         (∀ t : Icc (0 : ℝ) ε, 2 * r ≤ t.val → σ t = t) ∧
-        ∃ h : Poincare.Topology.MappingCylinder f ≃ₜ M,
-          (∀ x, h (Poincare.Topology.mappingCylinderOriginal f x) =
-            Poincare.Topology.Collar.rescale c hc σ x) ∧
-          (∀ q : B × Icc (0 : ℝ) 1, h (Poincare.Topology.mappingCylinderProduct f q) =
+        ∃ h : DifferentialGeometry.Topology.MappingCylinder f ≃ₜ M,
+          (∀ x, h (DifferentialGeometry.Topology.mappingCylinderOriginal f x) =
+            DifferentialGeometry.Topology.Collar.rescale c hc σ x) ∧
+          (∀ q : B × Icc (0 : ℝ) 1, h (DifferentialGeometry.Topology.mappingCylinderProduct f q) =
             c (q.1, ⟨a * (1 - q.2.val),
               ⟨mul_nonneg ha.le (sub_nonneg.mpr q.2.property.2), by
                 nlinarith [q.2.property.1]⟩⟩)) ∧
-          ContMDiff I I ∞ (fun x => h (Poincare.Topology.mappingCylinderOriginal f x)) ∧
-          ContMDiff (J.prod (𝓡∂ 1)) I ∞ (fun q => h (Poincare.Topology.mappingCylinderProduct f q)) := by
+          ContMDiff I I ∞ (fun x => h (DifferentialGeometry.Topology.mappingCylinderOriginal f x)) ∧
+          ContMDiff (J.prod (𝓡∂ 1)) I ∞ (fun q => h (DifferentialGeometry.Topology.mappingCylinderProduct f q)) := by
   have hε : 0 < ε := Fact.out
   have hY : (Y : Set M) = c '' {q | q.2.val < δ} := by
     ext y
@@ -51,15 +51,15 @@ theorem exists_smooth_attachment_realization
       rw [← he ⟨q, hq⟩]
       exact (e ⟨q, hq⟩).property
   obtain ⟨a, ha, har, σ, d, hσd, hσs, hσmono, hσrange, hσnear, hσfix⟩ :=
-    Poincare.Manifold.Interval.exists_smooth_compression_with_diffeomorph hr hrε
+    DifferentialGeometry.Manifold.Interval.exists_smooth_compression_with_diffeomorph hr hrε
   let cut : Icc (0 : ℝ) ε := ⟨a, ha.le, by linarith⟩
   have hσ0 : σ ⟨0, ⟨le_rfl, hε.le⟩⟩ = cut := by
     apply Subtype.ext
     simpa [cut] using hσnear ⟨0, ⟨le_rfl, hε.le⟩⟩ hr.le
-  obtain ⟨h, hO, hP⟩ := Poincare.Topology.Collar.exists_attachment_homeomorph_of_rescaling
+  obtain ⟨h, hO, hP⟩ := DifferentialGeometry.Topology.Collar.exists_attachment_homeomorph_of_rescaling
     f (a := cut) ha (k := 2 * r) hrδ c hc hzero
     (hY ▸ Y.isOpen) σ hσmono.injective hσ0 hσrange hσfix
-  have hOs : ContMDiff I I ∞ (fun x => h (Poincare.Topology.mappingCylinderOriginal f x)) := by
+  have hOs : ContMDiff I I ∞ (fun x => h (DifferentialGeometry.Topology.mappingCylinderOriginal f x)) := by
     have hh := contMDiff_rescale c hc hcs σ hσs e he
       (k := 2 * r) (fun _ hq => hq.trans_lt hrδ) hσfix
     exact hh.congr hO
@@ -74,4 +74,4 @@ theorem exists_smooth_attachment_realization
   exact ⟨a, ha, har, σ, d, hσd, hσs, hσmono, hσrange, hσnear, hσfix,
     h, hO, hP, hOs, (hcs.comp (contMDiff_id.prodMap hρ)).congr hP⟩
 
-end Poincare.Manifold.Collar
+end DifferentialGeometry.Manifold.Collar

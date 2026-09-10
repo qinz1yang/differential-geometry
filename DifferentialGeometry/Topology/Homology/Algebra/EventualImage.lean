@@ -6,7 +6,7 @@ set_option autoImplicit false
 open CategoryTheory CategoryTheory.Limits
 noncomputable section
 universe u v
-namespace Poincare.HomologicalComplex
+namespace DifferentialGeometry.HomologicalComplex
 variable {k : Type u} [Ring k]
   {A K : ChainComplex (ModuleCat.{v} k) ℕ} (i : A ⟶ K)
 
@@ -70,4 +70,4 @@ theorem quasiIso_of_eventually_in_image [Mono i]
     (End.of (cokernelEndomorphism i a b hab)) (cokernelHomotopy i a b hab H hA hcompat)
     (cokernelEndomorphism_locallyNilpotent i a b hab henter)
 
-end Poincare.HomologicalComplex
+end DifferentialGeometry.HomologicalComplex

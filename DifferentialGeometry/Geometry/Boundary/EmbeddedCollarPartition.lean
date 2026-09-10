@@ -6,10 +6,10 @@ noncomputable section
 open Set Filter Topology
 open scoped Manifold ContDiff
 
-namespace Poincare.Geometry.Boundary
+namespace DifferentialGeometry.Geometry.Boundary
 
 open DifferentialGeometry.Integral.DivergenceTheorem.WithBoundary
-open Poincare.Topology.Manifold
+open DifferentialGeometry.Topology.Manifold
 
 private def pad {n : ℕ} {α : Type*} (first last : α) (f : Fin n → α) : Fin (n + 2) → α :=
   Fin.cons first (Fin.snoc f last)
@@ -162,7 +162,7 @@ theorem exists_uniform_ordered_partition_of_embedded_product_collars :
   have hsep' : ∀ i j, i < j → interior (QQ i) ∪ interior (PP j) = univ :=
     pad_exterior_cover P Q hsep
   have horder (w : W) : Antitone (fun i ↦ θ i w) :=
-    Poincare.Topology.antitone_of_separated_steps (fun i w ↦ θ i w) PP QQ h01 hz ho
+    DifferentialGeometry.Topology.antitone_of_separated_steps (fun i w ↦ θ i w) PP QQ h01 hz ho
       (fun i j hij ↦ eq_univ_of_forall (fun y ↦ by
         have hy : y ∈ interior (QQ i) ∪ interior (PP j) := (hsep' i j hij).symm ▸ mem_univ y
         exact hy.elim (fun h ↦ Or.inl (interior_subset h)) (fun h ↦ Or.inr (interior_subset h)))) w
@@ -251,4 +251,4 @@ theorem exists_uniform_ordered_partition_of_embedded_product_collars :
       · exact Set.disjoint_left.mp (hKQ j) hw (interior_subset hq)
       · exact (hwedges k).2 (hik ▸ hwχ) hp
 
-end Poincare.Geometry.Boundary
+end DifferentialGeometry.Geometry.Boundary

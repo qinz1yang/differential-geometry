@@ -2,9 +2,9 @@ import DifferentialGeometry.Topology.SimplicialComplex.GeometricBoundaryPair
 
 set_option autoImplicit false
 noncomputable section
-open Set Poincare.Homology
+open Set DifferentialGeometry.Homology
 open scoped Manifold
-namespace Poincare.Topology.SimplicialComplex
+namespace DifferentialGeometry.Topology.SimplicialComplex
 variable {E : Type} [NormedAddCommGroup E] [NormedSpace ℝ E]
   {K L : Geometry.SimplicialComplex ℝ E} (hLK : L ≤ K)
 
@@ -67,7 +67,7 @@ theorem eulerChar_eq_faceEulerChar_of_geometric_homeomorphism [Finite K.faces]
 
 theorem finiteHomologyType_relativeBoundary_of_geometric_pair
     [Finite K.faces] [Finite L.faces] (k : Type) [Field k] :
-    Poincare.HomologicalComplex.finiteHomologyType
+    DifferentialGeometry.HomologicalComplex.finiteHomologyType
       (relativeChainComplex (TopCat.of M) ((𝓡∂ n).boundary M) (ModuleCat.of k k)) :=
   finiteHomologyType_relativeChainComplex (TopCat.of M) ((𝓡∂ n).boundary M) k
     (finiteHomologyType_boundary_of_geometric_pair hLK e hboundary k)
@@ -84,4 +84,4 @@ theorem relativeEulerChar_boundary_eq_faceDifference
     eulerChar_eq_faceEulerChar_of_geometric_homeomorphism e k,
     eulerChar_boundary_eq_faceEulerChar hLK e hboundary k]
 
-end Poincare.Topology.SimplicialComplex
+end DifferentialGeometry.Topology.SimplicialComplex

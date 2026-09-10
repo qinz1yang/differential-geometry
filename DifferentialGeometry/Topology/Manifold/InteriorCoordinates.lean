@@ -5,7 +5,7 @@ noncomputable section
 open Set Manifold
 open scoped ContDiff
 
-namespace Poincare.Topology.Manifold
+namespace DifferentialGeometry.Topology.Manifold
 
 variable {E H M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [TopologicalSpace H] [TopologicalSpace M] [ChartedSpace H M]
@@ -42,4 +42,4 @@ theorem exists_interior_coordinates {x : M} (hx : I.IsInteriorPoint x) :
   exact (I.isInteriorPoint_iff_of_mem_atlas (n := ∞) (by simp) (chart_mem_atlas H x)
     (show y ∈ (chartAt H x).source by simpa only [p, extChartAt_source] using hy.1)).2 hy.2
 
-end Poincare.Topology.Manifold
+end DifferentialGeometry.Topology.Manifold

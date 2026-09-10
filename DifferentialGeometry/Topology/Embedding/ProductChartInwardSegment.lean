@@ -4,7 +4,7 @@ import Mathlib.Topology.Order.Compact
 noncomputable section
 open Set Topology
 
-namespace Poincare.Topology.Embedding
+namespace DifferentialGeometry.Topology.Embedding
 
 theorem exists_inward_segment_of_graph_chart_endpoint
     {X Y N : Type*} [TopologicalSpace X] [TopologicalSpace Y] [T2Space Y]
@@ -46,4 +46,4 @@ theorem exists_inward_segment_of_graph_chart_endpoint
     Sminus Splus hboundary hplusQ hinternal O V Φ t₀ a b ha hb h₀a hab hstrip
     hminus hcollar hfar p t ⟨ht.1, ht.2.trans (hle p)⟩
 
-end Poincare.Topology.Embedding
+end DifferentialGeometry.Topology.Embedding

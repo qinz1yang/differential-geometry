@@ -5,8 +5,8 @@ import DifferentialGeometry.Topology.Homotopy.ConvexProduct
 
 set_option autoImplicit false
 noncomputable section
-open Set CategoryTheory ContinuousMap Poincare.Homology
-namespace Poincare.Topology.SimplicialComplex
+open Set CategoryTheory ContinuousMap DifferentialGeometry.Homology
+namespace DifferentialGeometry.Topology.SimplicialComplex
 universe u
 variable {E : Type u} [NormedAddCommGroup E] [NormedSpace ℝ E] [LinearOrder E]
   (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces] (p : E)
@@ -48,7 +48,7 @@ private theorem neighborhood_puncture_iff
 def puncturedVertexStarHomotopyEquiv :
     puncturedVertexOpenStar K p ≃ₕ (geometricLink K {p}).space :=
   (puncturedVertexStarHomeomorphism K p hp).toHomotopyEquiv.trans
-    (Poincare.HomotopyEquiv.productConvex _ (convex_Ioo (0 : ℝ) 1)
+    (DifferentialGeometry.HomotopyEquiv.productConvex _ (convex_Ioo (0 : ℝ) 1)
       ⟨1 / 2, by constructor <;> norm_num⟩)
 
 
@@ -79,7 +79,7 @@ theorem eulerChar_puncturedVertexStar (k : Type u) [Field k] :
 
 
 theorem finiteHomologyType_localGeometricVertex (k : Type u) [Field k] :
-    Poincare.HomologicalComplex.finiteHomologyType
+    DifferentialGeometry.HomologicalComplex.finiteHomologyType
       (relativeChainComplex (TopCat.of K.space)
         ({(⟨p, Geometry.SimplicialComplex.vertices_subset_space hp⟩ : K.space)}ᶜ : Set K.space)
         (ModuleCat.of k k)) := by
@@ -97,7 +97,7 @@ theorem finiteHomologyType_localGeometricVertex (k : Type u) [Field k] :
   let e := relativeChainIso (X := TopCat.of U) (Y := TopCat.of (vertexOpenStar K p))
     (ModuleCat.of k k) (vertexStarNeighborhoodHomeomorphism K p)
     (neighborhood_puncture_iff K p hp)
-  have hn := (Poincare.HomologicalComplex.finiteHomologyType_iff_of_quasiIso e.hom).mpr hs
+  have hn := (DifferentialGeometry.HomologicalComplex.finiteHomologyType_iff_of_quasiIso e.hom).mpr hs
   exact (finiteHomologyType_puncturedNeighborhood_iff (TopCat.of K.space) U x hx k
     (isOpen_vertexOpenStar K p)).mp hn
 
@@ -146,4 +146,4 @@ theorem faceEulerChar_vertexLink_eq_one_sub_local (k : Type u) [Field k] :
   change _ = 1 - faceEulerChar (link K.toPreAbstractSimplicialComplex {p}) at h
   omega
 
-end Poincare.Topology.SimplicialComplex
+end DifferentialGeometry.Topology.SimplicialComplex

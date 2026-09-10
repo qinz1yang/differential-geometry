@@ -13,7 +13,7 @@ open Set Function Manifold Topology TopologicalSpace
 open scoped ContDiff
 open DifferentialGeometry.Integral.DivergenceTheorem.WithBoundary
 open DifferentialGeometry.Topology.Morse
-namespace Poincare.Manifold.Boundary
+namespace DifferentialGeometry.Manifold.Boundary
 
 theorem exists_regular_top_sublevel_diffeomorph
     {n : ℕ} {M : Type} [TopologicalSpace M]
@@ -92,7 +92,7 @@ theorem exists_regular_top_sublevel_diffeomorph
   have hρt : ρ ≤ (b - t) / 4 := (min_le_right _ _).trans (min_le_right _ _)
   have h2ρδ : 2 * ρ < δ := by linarith
   obtain ⟨a, ha, haρ, σ, scalar, hscalar, hσs, hσmono, hσrange, _, hσfix⟩ :=
-    Poincare.Manifold.Interval.exists_smooth_compression_with_diffeomorph hρ (h2ρδ.trans hδε).le
+    DifferentialGeometry.Manifold.Interval.exists_smooth_compression_with_diffeomorph hρ (h2ρδ.trans hδε).le
   have haζ : a < ζ := by linarith
   have haδ : a < δ := by linarith
   let c : ℝ := b - a
@@ -114,8 +114,8 @@ theorem exists_regular_top_sublevel_diffeomorph
     have hb := hboundary ⟨x, hxb⟩
     change f x ≤ c at hx
     linarith
-  let R := Poincare.Topology.Collar.rescale collar hc.isEmbedding σ
-  have hR : IsClosedEmbedding R := Poincare.Topology.Collar.isClosedEmbedding_rescale
+  let R := DifferentialGeometry.Topology.Collar.rescale collar hc.isEmbedding σ
+  have hR : IsClosedEmbedding R := DifferentialGeometry.Topology.Collar.isClosedEmbedding_rescale
     collar hc.isEmbedding σ hσmono.injective h2ρδ hopen hσfix
   have hheightCut (q : B × Icc (0 : ℝ) ε) : a ≤ r (collar q) ↔ a ≤ q.2.val := by
     by_cases hq : q.2.val < δ
@@ -129,7 +129,7 @@ theorem exists_regular_top_sublevel_diffeomorph
       have hrζ : ζ < r (collar q) := lt_of_not_ge (fun hz => hnotY (hsmall hz))
       exact iff_of_true (haζ.le.trans hrζ.le) (haδ.le.trans hqδ)
   have hrange : range R = {x | f x ≤ c} := by
-    rw [Poincare.Topology.Collar.range_rescale collar hc.isEmbedding σ hσrange]
+    rw [DifferentialGeometry.Topology.Collar.range_rescale collar hc.isEmbedding σ hσrange]
     ext x
     constructor
     · rintro (hx | ⟨q, hq, rfl⟩)
@@ -154,13 +154,13 @@ theorem exists_regular_top_sublevel_diffeomorph
   have hmap (x : M) : (homeo x : M) = R x := rfl
   let _ : ChartedSpace (MorseHalfSpace n) A :=
     RegularLevel.interiorSublevelChartedSpace I (EuclideanSpace.equiv (Fin (n + 1)) ℝ) hf hreg hinter
-  have hRs : ContMDiff I I ∞ R := Poincare.Manifold.Collar.contMDiff_rescale collar hc.isEmbedding hcs σ hσs
+  have hRs : ContMDiff I I ∞ R := DifferentialGeometry.Manifold.Collar.contMDiff_rescale collar hc.isEmbedding hcs σ hσs
     chart he (fun q hq => hq.trans_lt h2ρδ) hσfix
   have hforward : ContMDiff I (morseModelWithCornersHalfSpace n) ∞ homeo :=
     (RegularLevel.contMDiff_interiorSublevel_iff I (EuclideanSpace.equiv (Fin (n + 1)) ℝ)
       I hf hreg hinter).mpr hRs
   have hinverse : ContMDiff (morseModelWithCornersHalfSpace n) I ∞ homeo.symm :=
-    Poincare.Manifold.Collar.contMDiff_rescale_homeomorph_symm
+    DifferentialGeometry.Manifold.Collar.contMDiff_rescale_homeomorph_symm
       (A := A) (K := morseModelWithCornersHalfSpace n) collar hc.isEmbedding hcs σ scalar hscalar
       chart he (fun q hq => hq.trans_lt h2ρδ) hσfix homeo hmap
       (RegularLevel.contMDiff_interiorSublevel_inclusion I (EuclideanSpace.equiv (Fin (n + 1)) ℝ) hf hreg hinter)
@@ -177,12 +177,12 @@ theorem exists_regular_top_sublevel_diffeomorph
         have hh := hheight' q (hqt.trans h2ρδ)
         dsimp [r] at hh
         linarith
-      change Poincare.Topology.Collar.rescale collar hc.isEmbedding σ (collar q) = collar q
-      rw [Poincare.Topology.Collar.rescale_apply, hσfix q.2 htime]
-    · exact Poincare.Topology.Collar.rescale_of_not_mem collar hc.isEmbedding σ hxc
+      change DifferentialGeometry.Topology.Collar.rescale collar hc.isEmbedding σ (collar q) = collar q
+      rw [DifferentialGeometry.Topology.Collar.rescale_apply, hσfix q.2 htime]
+    · exact DifferentialGeometry.Topology.Collar.rescale_of_not_mem collar hc.isEmbedding σ hxc
   · intro p
     let _ := RegularLevel.interiorSublevelIsManifold I (EuclideanSpace.equiv (Fin (n + 1)) ℝ) hf hreg hinter
     apply (RegularLevel.interiorSublevelBoundary_iff I (EuclideanSpace.equiv (Fin (n + 1)) ℝ) hf hreg hinter (d p)).mp
     exact ((d.isLocalDiffeomorph (p : M)).isBoundaryPoint_iff (by simp)).mp p.property
 
-end Poincare.Manifold.Boundary
+end DifferentialGeometry.Manifold.Boundary

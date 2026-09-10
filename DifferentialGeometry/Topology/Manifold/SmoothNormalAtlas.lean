@@ -15,7 +15,7 @@ noncomputable section
 
 universe u v w x y z
 
-namespace Poincare.Topology
+namespace DifferentialGeometry.Topology
 
 theorem deriv_pos_of_eventually_realNormalSide_eq_of_ne_zero
     {g : ℝ → ℝ}
@@ -347,4 +347,4 @@ noncomputable def smoothSphereEmbeddingRealNormalAtlas
   smoothEmbeddingRealNormalAtlasOfIsImmersionOfComplement he.isEmbedding
     (isImmersionOfComplement_real_of_isSmoothEmbedding_sphereTwo he)
 
-end Poincare.Topology
+end DifferentialGeometry.Topology

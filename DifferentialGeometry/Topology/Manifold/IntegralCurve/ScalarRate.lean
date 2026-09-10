@@ -6,7 +6,7 @@ set_option autoImplicit false
 noncomputable section
 open Set Function
 open scoped Manifold Topology
-namespace Poincare.Manifold
+namespace DifferentialGeometry.Manifold
 variable {E H M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [TopologicalSpace H] [TopologicalSpace M] [ChartedSpace H M]
   {I : ModelWithCorners ℝ E H}
@@ -47,4 +47,4 @@ theorem scalar_eq_affine_of_integralCurve_constant_rate {f : M → ℝ} {γ : �
   change f (γ t) = f (γ a) + k*(t-a)
   linarith
 
-end Poincare.Manifold
+end DifferentialGeometry.Manifold

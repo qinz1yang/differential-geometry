@@ -9,7 +9,7 @@ set_option backward.isDefEq.respectTransparency false
 
 open CategoryTheory Set
 
-namespace Poincare.Topology.VanKampen
+namespace DifferentialGeometry.Topology.VanKampen
 
 private theorem exists_coherent_connectors
     {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
@@ -346,4 +346,4 @@ theorem injective_fundamentalGroup_map_of_open_cover_of_overlap_components
     Groupoid.inv (q (FundamentalGroupoid.mk x₀)) ≫ s ≫ q (FundamentalGroupoid.mk x₀)) he
   simpa [Category.assoc] using he'
 
-end Poincare.Topology.VanKampen
+end DifferentialGeometry.Topology.VanKampen

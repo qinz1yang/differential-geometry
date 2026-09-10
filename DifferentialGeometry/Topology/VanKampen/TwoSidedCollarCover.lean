@@ -15,7 +15,7 @@ open scoped ContinuousMap
 
 universe u v
 
-namespace Poincare.Topology.ThreeManifold.TwoSidedCollar
+namespace DifferentialGeometry.Topology.ThreeManifold.TwoSidedCollar
 
 open Set
 
@@ -256,7 +256,7 @@ theorem simplyConnectedSpace_negativeCover_and_positiveCover
   let x₀ : X := h.toFun (s, 0)
   have hx₀N : x₀ ∈ h.negativeCover := Or.inr ⟨(s, 0), ⟨trivial, by norm_num⟩, rfl⟩
   have hx₀P : x₀ ∈ h.positiveCover := Or.inr ⟨(s, 0), ⟨trivial, by norm_num⟩, rfl⟩
-  exact Poincare.Topology.VanKampen.simplyConnected_coverMembers_of_union
+  exact DifferentialGeometry.Topology.VanKampen.simplyConnected_coverMembers_of_union
     h.negativeCover h.positiveCover h.isOpen_negativeCover h.isOpen_positiveCover
       h.negativeCover_union_positiveCover x₀ ⟨hx₀N, hx₀P⟩
 
@@ -352,4 +352,4 @@ theorem simplyConnectedSpace_closure_sides_of_retractions
     simplyConnectedSpace_of_retract h.positiveClosureInclusion r.positive
       r.positive_comp_inclusion⟩
 
-end Poincare.Topology.ThreeManifold.TwoSidedCollar
+end DifferentialGeometry.Topology.ThreeManifold.TwoSidedCollar

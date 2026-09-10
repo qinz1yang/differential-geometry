@@ -5,7 +5,7 @@ set_option autoImplicit false
 
 open CategoryTheory CategoryTheory.Limits
 
-namespace Poincare.Topology.SphereSeparation
+namespace DifferentialGeometry.Topology.SphereSeparation
 
 theorem isZero_mayerVietorisMiddleHomology_one
     {X : Type} [TopologicalSpace X] (A B : Set X)
@@ -205,4 +205,4 @@ theorem isZero_integerSingularHomology_sphereTwo_one :
     (isZero_integerSingularHomology_one_of_contractible _)
     (isZero_integerSingularHomology_one_of_contractible _)
 
-end Poincare.Topology.SphereSeparation
+end DifferentialGeometry.Topology.SphereSeparation

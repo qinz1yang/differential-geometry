@@ -8,7 +8,7 @@ import Mathlib.Tactic.NormNum
 set_option autoImplicit false
 noncomputable section
 open Set Function
-namespace Poincare.Topology
+namespace DifferentialGeometry.Topology
 
 
 theorem exists_small_injective_add {n : ℕ} (a : Fin n → ℝ) {ε : ℝ} (hε : 0 < ε) :
@@ -43,4 +43,4 @@ theorem exists_small_injective_add {n : ℕ} (a : Fin n → ℝ) {ε : ℝ} (hε
   apply htB
   exact ⟨(i,j),ht.symm⟩
 
-end Poincare.Topology
+end DifferentialGeometry.Topology

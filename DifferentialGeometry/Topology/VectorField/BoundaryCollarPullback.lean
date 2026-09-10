@@ -7,7 +7,7 @@ open Set Function Bundle Manifold TopologicalSpace Topology
 open scoped ContDiff Topology
 open DifferentialGeometry.Integral.DivergenceTheorem.WithBoundary
 noncomputable section
-namespace Poincare.VectorField
+namespace DifferentialGeometry.VectorField
 
 theorem exists_nonvanishing_boundary_collar_pullback
     {n : ℕ} {M : Type*} [TopologicalSpace M]
@@ -43,7 +43,7 @@ theorem exists_nonvanishing_boundary_collar_pullback
                   ((HasSmoothBoundary.boundaryModel (𝓡∂ (n + 1))).prod (𝓡∂ 1)) S)) ∧
               ∀ q : S, W q ≠ 0 := by
   obtain ⟨ε, hε, c, hc, hcs, hc0, hci, δ₀, hδ₀, hδ₀ε, Y₀, hKY₀, hY₀, e₀, he₀⟩ :=
-    Poincare.Manifold.BoundaryCollar.exists_closed_boundary_collar_diffeomorph hK
+    DifferentialGeometry.Manifold.BoundaryCollar.exists_closed_boundary_collar_diffeomorph hK
   let _ : Fact ((0 : ℝ) < ε) := ⟨hε⟩
   let I := 𝓡∂ (n + 1)
   let B := BoundaryManifold I M
@@ -54,7 +54,7 @@ theorem exists_nonvanishing_boundary_collar_pullback
     (fun p => by change (V (c _) : EuclideanSpace ℝ (Fin (n + 1))) ≠ 0; rw [hc0 p]; exact hzero p)
   let S : Opens (B × Icc (0 : ℝ) ε) :=
     ⟨{q | q.2.val < δ}, isOpen_lt (continuous_subtype_val.comp continuous_snd) continuous_const⟩
-  obtain ⟨Y, hYY₀, _, e, he, _⟩ := Poincare.Manifold.Diffeomorph.exists_restrict_opens e₀ S hS
+  obtain ⟨Y, hYY₀, _, e, he, _⟩ := DifferentialGeometry.Manifold.Diffeomorph.exists_restrict_opens e₀ S hS
   have hec (q : S) : (e q : M) = c q.val := (he q).trans (he₀ _)
   have hY : (Y : Set M) = c '' {q | q.2.val < δ} := by
     ext y
@@ -82,4 +82,4 @@ theorem exists_nonvanishing_boundary_collar_pullback
       exact hVz
     exact hn ⟨q.val, hS q.property⟩ q.property ((hz _).mpr hVcz)
 
-end Poincare.VectorField
+end DifferentialGeometry.VectorField

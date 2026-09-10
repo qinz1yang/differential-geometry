@@ -4,7 +4,7 @@ import Mathlib.Topology.UnitInterval
 open Set Function Topology
 set_option autoImplicit false
 noncomputable section
-namespace Poincare.Topology
+namespace DifferentialGeometry.Topology
 
 variable {A X : Type*} [TopologicalSpace A] [TopologicalSpace X]
 
@@ -129,4 +129,4 @@ theorem isClosedEmbedding_mappingCylinderProduct (f : C(A, X)) (hf : IsClosedEmb
     rw [range_mappingCylinderProduct]
     exact hf.isClosed_range.preimage (mappingCylinderRetract f).continuous⟩
 
-end Poincare.Topology
+end DifferentialGeometry.Topology

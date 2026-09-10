@@ -5,8 +5,8 @@ set_option autoImplicit false
 open CategoryTheory CategoryTheory.Limits
 noncomputable section
 universe u
-namespace Poincare.LocalDegree
-open Poincare.Homology
+namespace DifferentialGeometry.LocalDegree
+open DifferentialGeometry.Homology
 variable {E : Type u} [NormedAddCommGroup E]
 
 
@@ -240,4 +240,4 @@ theorem euclideanSphereAntipodal_generator (d : ℕ) :
       ((-1 : ℤ) ^ (d + 1)) • euclideanSphereTopGenerator d := by
   rw [euclideanSphereDegree_generator, euclideanSphereDegree_antipodal]
 
-end Poincare.LocalDegree
+end DifferentialGeometry.LocalDegree

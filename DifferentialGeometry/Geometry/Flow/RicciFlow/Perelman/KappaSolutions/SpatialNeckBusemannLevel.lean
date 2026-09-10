@@ -55,7 +55,7 @@ private theorem lower_slice_busemann_le (hEnorm : IsMetricNorm (I := I) h)
 
 private theorem upper_slice_busemann_ge (hEnorm : IsMetricNorm (I := I) h)
     (hsmall : epsilon ≤ spatialNeckControlEpsilon)
-    (hsec : Poincare.Geometry.HasNonnegativeSectionalCurvature (I := I) h)
+    (hsec : DifferentialGeometry.Geometry.HasNonnegativeSectionalCurvature (I := I) h)
     {c : ℝ≥0 → N} (hc : Isometry c)
     (z : spatialNeckBuffer epsilon) (hz : z.val.2 = 5 * Real.pi) :
     busemann c p ≤ busemann c (W.embedding z) := by
@@ -73,7 +73,7 @@ private theorem upper_slice_busemann_ge (hEnorm : IsMetricNorm (I := I) h)
 
 theorem busemann_level_subset_band (hEnorm : IsMetricNorm (I := I) h)
     (hsmall : epsilon ≤ spatialNeckControlEpsilon)
-    (hsec : Poincare.Geometry.HasNonnegativeSectionalCurvature (I := I) h)
+    (hsec : DifferentialGeometry.Geometry.HasNonnegativeSectionalCurvature (I := I) h)
     {c : ℝ≥0 → N} (hc : Isometry c) :
     {q : N | busemann c q = busemann c p} ⊆
       W.embedding '' {z : spatialNeckBuffer epsilon | |z.val.2| ≤ 5 * Real.pi} := by
@@ -99,7 +99,7 @@ theorem busemann_level_subset_band (hEnorm : IsMetricNorm (I := I) h)
 
 theorem exists_vertical_busemann_level (hEnorm : IsMetricNorm (I := I) h)
     (hsmall : epsilon ≤ spatialNeckControlEpsilon)
-    (hsec : Poincare.Geometry.HasNonnegativeSectionalCurvature (I := I) h)
+    (hsec : DifferentialGeometry.Geometry.HasNonnegativeSectionalCurvature (I := I) h)
     {c : ℝ≥0 → N} (hc : Isometry c) (y : SpatialNeckSphere) :
     ∃ z : spatialNeckBuffer epsilon, z.val.1 = y ∧ |z.val.2| ≤ 5 * Real.pi ∧
       busemann c (W.embedding z) = busemann c p := by
@@ -132,7 +132,7 @@ theorem exists_vertical_busemann_level (hEnorm : IsMetricNorm (I := I) h)
 
 theorem busemann_level_ediam_bounds (hEnorm : IsMetricNorm (I := I) h)
     (hsmall : epsilon ≤ spatialNeckControlEpsilon)
-    (hsec : Poincare.Geometry.HasNonnegativeSectionalCurvature (I := I) h)
+    (hsec : DifferentialGeometry.Geometry.HasNonnegativeSectionalCurvature (I := I) h)
     {c : ℝ≥0 → N} (hc : Isometry c) :
     ENNReal.ofReal (11 / 12 * spatialNeckScale h p * Real.pi) ≤
       Metric.ediam {q : N | busemann c q = busemann c p} ∧
@@ -150,7 +150,7 @@ theorem busemann_level_ediam_bounds (hEnorm : IsMetricNorm (I := I) h)
 
 theorem busemann_level_diam_bounds (hEnorm : IsMetricNorm (I := I) h)
     (hsmall : epsilon ≤ spatialNeckControlEpsilon)
-    (hsec : Poincare.Geometry.HasNonnegativeSectionalCurvature (I := I) h)
+    (hsec : DifferentialGeometry.Geometry.HasNonnegativeSectionalCurvature (I := I) h)
     {c : ℝ≥0 → N} (hc : Isometry c) :
     11 / 12 * spatialNeckScale h p * Real.pi ≤
       Metric.diam {q : N | busemann c q = busemann c p} ∧

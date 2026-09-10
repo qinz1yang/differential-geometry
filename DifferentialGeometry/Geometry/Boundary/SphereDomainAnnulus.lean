@@ -5,10 +5,10 @@ noncomputable section
 open Set Metric Topology Manifold
 open scoped ContDiff
 
-namespace Poincare.Geometry.Boundary
+namespace DifferentialGeometry.Geometry.Boundary
 
 open DifferentialGeometry.Integral.DivergenceTheorem.WithBoundary
-open Poincare.Topology Poincare.Topology.SphereSeparation
+open DifferentialGeometry.Topology DifferentialGeometry.Topology.SphereSeparation
 
 theorem exists_diffeomorph_sphere_prod_interval_of_two_boundaries_in_sphere
     {E H W : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
@@ -35,7 +35,7 @@ theorem exists_diffeomorph_sphere_prod_interval_of_two_boundaries_in_sphere
     have hxf : x ∈ frontier (range ι) := hfront ▸ Or.inl hx
     simp only [h, frontier_univ, mem_empty_iff_false] at hxf
   obtain ⟨v, hv⟩ := (Set.ne_univ_iff_exists_notMem (range ι)).mp hproper
-  obtain ⟨φ, hφ, _⟩ := Poincare.Topology.Manifold.exists_smooth_punctured_sphere_chart 3 v
+  obtain ⟨φ, hφ, _⟩ := DifferentialGeometry.Topology.Manifold.exists_smooth_punctured_sphere_chart 3 v
   apply exists_diffeomorph_sphere_prod_interval_of_range_subset_chart hSch ι hι hemb hinj hdim
     e₀ e₁ he₀ he₁ hbdy hd φ
   rw [hφ]
@@ -43,4 +43,4 @@ theorem exists_diffeomorph_sphere_prod_interval_of_two_boundaries_in_sphere
   have hxe : x = v := hxeq
   exact hv (hxe ▸ hx)
 
-end Poincare.Geometry.Boundary
+end DifferentialGeometry.Geometry.Boundary

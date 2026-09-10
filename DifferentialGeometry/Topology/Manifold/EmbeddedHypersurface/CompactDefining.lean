@@ -7,7 +7,7 @@ open scoped Manifold ContDiff Topology
 set_option autoImplicit false
 noncomputable section
 
-namespace Poincare.Manifold.EmbeddedHypersurface
+namespace DifferentialGeometry.Manifold.EmbeddedHypersurface
 
 private theorem mvfderiv_finset_sum
     {E H M A : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -137,4 +137,4 @@ theorem exists_smooth_function_regular_on_compact_hypersurface {e : S → M}
       exact ⟨i, Finset.mem_univ _, mul_pos hi
         (hpos i.1 s (hρ i (subset_tsupport _ (ne_of_gt hi))).1)⟩
 
-end Poincare.Manifold.EmbeddedHypersurface
+end DifferentialGeometry.Manifold.EmbeddedHypersurface

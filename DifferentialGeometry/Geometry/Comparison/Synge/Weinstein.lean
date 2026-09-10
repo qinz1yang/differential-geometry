@@ -8,10 +8,10 @@ open scoped Manifold ContDiff
 open DifferentialGeometry
 open DifferentialGeometry.Geometry.Riemannian.Variation
 open DifferentialGeometry.VectorBundle
-open Poincare.Geometry.Riemannian
-open Poincare.Geometry.Riemannian.Geodesic
+open DifferentialGeometry.Geometry.Riemannian
+open DifferentialGeometry.Geometry.Riemannian.Geodesic
 
-namespace Poincare.Geometry
+namespace DifferentialGeometry.Geometry
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
@@ -73,4 +73,4 @@ theorem synge_weinstein_fixed_point {n : ℕ} (hdim : Module.finrank ℝ E = n) 
     rw [hpow, heven'.neg_one_pow] at hneg
     norm_num at hneg
 
-end Poincare.Geometry
+end DifferentialGeometry.Geometry

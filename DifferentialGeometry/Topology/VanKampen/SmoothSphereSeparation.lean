@@ -14,7 +14,7 @@ open scoped Manifold ContDiff
 
 noncomputable section
 
-namespace Poincare.Topology.ThreeManifold
+namespace DifferentialGeometry.Topology.ThreeManifold
 
 variable {M : Type} [TopologicalSpace M] [T2Space M]
     [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M]
@@ -117,4 +117,4 @@ theorem simplyConnectedSpace_closure_component_of_smoothSphereEmbedding
     rw [hside]
     exact h.simplyConnectedSpace_closure_sides.2
 
-end Poincare.Topology.ThreeManifold
+end DifferentialGeometry.Topology.ThreeManifold

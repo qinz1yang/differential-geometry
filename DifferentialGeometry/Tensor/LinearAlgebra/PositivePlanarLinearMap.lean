@@ -5,7 +5,7 @@ import Mathlib.Tactic.Ring
 
 noncomputable section
 
-namespace Poincare.Analysis
+namespace DifferentialGeometry.Analysis
 
 theorem det_complex_real_linearMap (A : ℂ →ₗ[ℝ] ℂ) :
     A.det = (A 1).re * (A Complex.I).im - (A Complex.I).re * (A 1).im := by
@@ -54,4 +54,4 @@ theorem exists_positive_triangular_decomposition
       ring
     _ = _ := by ring
 
-end Poincare.Analysis
+end DifferentialGeometry.Analysis

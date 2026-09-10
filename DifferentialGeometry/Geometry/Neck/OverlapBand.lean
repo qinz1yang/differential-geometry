@@ -8,7 +8,7 @@ open Set DifferentialGeometry
 open scoped Manifold ContDiff
 open DifferentialGeometry.Geometry.Operator
 
-namespace Poincare.Geometry.Neck
+namespace DifferentialGeometry.Geometry.Neck
 
 private abbrev S := Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1
 
@@ -132,7 +132,7 @@ theorem cylindricalChart.full_band_subset_transition_range_of_gradient_close
   let t₀ : Icc a b := ⟨a, le_rfl, hab⟩
   let t₁ : Icc a b := ⟨b, hab, le_rfl⟩
   let : PreconnectedSpace (Icc a b) := isPreconnected_iff_preconnectedSpace.mp isPreconnected_Icc
-  have hband := Poincare.Topology.prod_Icc_subset_range_of_fiberwise_bijective e he hbij
+  have hband := DifferentialGeometry.Topology.prod_Icc_subset_range_of_fiberwise_bijective e he hbij
     t₀ t₁ ((Real.sqrt C₀.scale)⁻¹ * a + B) ((Real.sqrt C₀.scale)⁻¹ * b - B)
     (fun p ↦ by have h := (abs_le.mp (herror (p, t₀))).1; dsimp only [t₀] at h; linarith only [h])
     (fun p ↦ by have h := (abs_le.mp (herror (p, t₁))).2; dsimp only [t₁] at h; linarith only [h])
@@ -198,7 +198,7 @@ theorem cylindricalChart.exists_full_overlap_band_of_gradient_close
     apply (div_le_div_iff₀ (Real.sqrt_pos.mpr C₁.scale_pos)
       (Real.sqrt_pos.mpr C₀.scale_pos)).mpr
     simpa only [one_mul] using hroot
-  obtain ⟨l, r, heq, hlen⟩ := Poincare.Geometry.Affine.exists_Icc_of_comparable_scales
+  obtain ⟨l, r, heq, hlen⟩ := DifferentialGeometry.Geometry.Affine.exists_Icc_of_comparable_scales
     (Real.sqrt C₀.scale)⁻¹ (Real.sqrt C₁.scale)⁻¹ a b B σ c
     (inv_pos.mpr (Real.sqrt_pos.mpr C₁.scale_pos)) hscale hwidth herror hσ
   exact ⟨l, r, hlen, by rw [← heq]; exact hband⟩
@@ -259,11 +259,11 @@ theorem cylindricalChart.exists_ordered_graph_band_of_gradient_close
     have hfirst := congrArg Prod.fst hxy
     have hsecond := congrArg Prod.snd hxy
     exact hψinj (Prod.ext hfirst (hv hsecond))
-  exact Poincare.Topology.exists_ordered_graph_band_of_fiberwise_bijective a b hab e he hei hbij
+  exact DifferentialGeometry.Topology.exists_ordered_graph_band_of_fiberwise_bijective a b hab e he hei hbij
     (fun p q _ ↦ by
       have h₀ := (abs_le.mp (herror (p, ⟨a, le_rfl, hab⟩))).1
       have h₁ := (abs_le.mp (herror (q, ⟨b, hab, le_rfl⟩))).2
       dsimp only at h₀ h₁
       linarith only [h₀, h₁, hsep])
 
-end Poincare.Geometry.Neck
+end DifferentialGeometry.Geometry.Neck

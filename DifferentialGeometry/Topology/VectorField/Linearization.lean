@@ -4,7 +4,7 @@ import Mathlib.LinearAlgebra.Determinant
 open Filter ContinuousLinearMap
 open scoped Topology
 
-namespace Poincare.VectorField
+namespace DifferentialGeometry.VectorField
 
 variable {𝕜 : Type*} [NontriviallyNormedField 𝕜]
   {E : Type*} [NormedAddCommGroup E] [NormedSpace 𝕜 E]
@@ -46,4 +46,4 @@ theorem det_fderiv_pullback_of_eq_zero {f : E → F} {V : F → F} {x : E}
   rw [← he, ContinuousLinearMap.inverse_equiv]
   exact LinearMap.det_conj (fderiv 𝕜 V (f x)).toLinearMap e.symm.toLinearEquiv
 
-end Poincare.VectorField
+end DifferentialGeometry.VectorField

@@ -4,7 +4,7 @@ noncomputable section
 open Set Topology Manifold
 open scoped ContDiff
 
-namespace Poincare.Topology.Manifold
+namespace DifferentialGeometry.Topology.Manifold
 
 variable {E H M N : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [TopologicalSpace H] [TopologicalSpace M] [TopologicalSpace N] [ChartedSpace H M]
@@ -30,4 +30,4 @@ theorem exists_smoothAtlas_of_homeomorph (h : M ≃ₜ N) :
   have hback : ContMDiff 𝓘(ℝ, E) I ∞ h.symm := contMDiffOn_univ.mp (hs Unit.unit).2
   exact ⟨C, hm, ⟨h.toEquiv, hfor, hback⟩, rfl⟩
 
-end Poincare.Topology.Manifold
+end DifferentialGeometry.Topology.Manifold

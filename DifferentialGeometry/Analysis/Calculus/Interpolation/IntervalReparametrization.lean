@@ -10,7 +10,7 @@ noncomputable section
 open Set Filter Topology
 open scoped ContDiff Manifold
 
-namespace Poincare.Analysis
+namespace DifferentialGeometry.Analysis
 
 private def transitionPrimitive (x : ℝ) : ℝ :=
   ∫ t in (0 : ℝ)..x, Real.smoothTransition t
@@ -318,4 +318,4 @@ theorem exists_smooth_interval_diffeomorphs_uniform_ends :
   · rw [hformula r (hpos hr)]
     exact intervalChange_upper (hpos hr) (by linarith)
 
-end Poincare.Analysis
+end DifferentialGeometry.Analysis

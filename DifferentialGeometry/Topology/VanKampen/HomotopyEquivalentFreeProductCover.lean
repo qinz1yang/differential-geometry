@@ -13,7 +13,7 @@ open scoped ContinuousMap
 
 universe u
 
-namespace Poincare.Topology.VanKampen
+namespace DifferentialGeometry.Topology.VanKampen
 
 abbrev fundamentalGroupSourceFactor
     {K L : Type u} [TopologicalSpace K] [TopologicalSpace L]
@@ -40,9 +40,9 @@ noncomputable def fundamentalGroupSourceFactorEquiv
     (eV : L ≃ₕ V) (hbaseV : eV l₀ = rightBasepoint V x₀ hx₀.2) :
     ∀ i, fundamentalGroupSourceFactor k₀ l₀ i ≃*
       fundamentalGroupFactor U V x₀ hx₀ i
-  | false => Poincare.Topology.fundamentalGroupMulEquivOfHomotopyEquiv
+  | false => DifferentialGeometry.Topology.fundamentalGroupMulEquivOfHomotopyEquiv
       eU k₀ (leftBasepoint U x₀ hx₀.1) hbaseU
-  | true => Poincare.Topology.fundamentalGroupMulEquivOfHomotopyEquiv
+  | true => DifferentialGeometry.Topology.fundamentalGroupMulEquivOfHomotopyEquiv
       eV l₀ (rightBasepoint V x₀ hx₀.2) hbaseV
 
 theorem fundamentalGroupSourceFactorEquiv_false_toMonoidHom
@@ -80,7 +80,7 @@ noncomputable def fundamentalGroupEquivFreeProductOfHomotopyEquiv
     [PathConnectedSpace U] [PathConnectedSpace V]
     [SimplyConnectedSpace (↑(U ∩ V))] :
     fundamentalGroupSourceFreeProduct k₀ l₀ ≃* FundamentalGroup X x₀ :=
-  (Poincare.Algebra.Group.coprodIMulEquiv
+  (DifferentialGeometry.Algebra.Group.coprodIMulEquiv
       (fundamentalGroupSourceFactor k₀ l₀)
       (fundamentalGroupFactor U V x₀ hx₀)
       (fundamentalGroupSourceFactorEquiv U V x₀ hx₀ k₀ l₀ eU hbaseU eV hbaseV)).trans
@@ -136,4 +136,4 @@ theorem fundamentalGroupEquivFreeProductOfHomotopyEquiv_comp_right
       (fundamentalGroupEquivFreeProduct_comp_right U V hU hV hcover x₀ hx₀)
       (FundamentalGroup.mapOfEq eV.toFun hbaseV g)
 
-end Poincare.Topology.VanKampen
+end DifferentialGeometry.Topology.VanKampen

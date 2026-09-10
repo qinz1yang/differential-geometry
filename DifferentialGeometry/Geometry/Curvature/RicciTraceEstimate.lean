@@ -7,7 +7,7 @@ open scoped Manifold ContDiff BigOperators
 open DifferentialGeometry DifferentialGeometry.Tensor0SBundle
 open DifferentialGeometry.Geometry.Connection DifferentialGeometry.Geometry.Curvature
 
-namespace Poincare.Geometry.Curvature
+namespace DifferentialGeometry.Geometry.Curvature
 
 theorem abs_ricci_difference_le_of_riemann_difference
     {E H M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
@@ -56,4 +56,4 @@ theorem abs_ricci_difference_le_of_riemann_difference
       rw [show Module.finrank ℝ (TangentSpace I x) = Module.finrank ℝ E from rfl]
       ring
 
-end Poincare.Geometry.Curvature
+end DifferentialGeometry.Geometry.Curvature

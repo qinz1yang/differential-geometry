@@ -5,7 +5,7 @@ set_option autoImplicit false
 noncomputable section
 open Set Bundle Filter
 open scoped Manifold ContDiff Topology
-namespace Poincare.VectorField
+namespace DifferentialGeometry.VectorField
 
 theorem exists_patchThroughDiffeomorph_model_germ
     {E F G H H' H'' M N P : Type*}
@@ -23,14 +23,14 @@ theorem exists_patchThroughDiffeomorph_model_germ
     (hL : L =ᶠ[𝓝 q] _root_.VectorField.mpullback J K f C) :
     ∃ Φ : PartialDiffeomorph K I P M ∞, f q ∈ Φ.source ∧ Φ (f q) = (e q).val ∧
       patchThroughDiffeomorph U e V L =ᶠ[𝓝 (e q).val] _root_.VectorField.mpullback I K Φ.symm C := by
-  let u := Poincare.Manifold.openSubtypePartialDiffeomorph I U ⟨e q⟩
+  let u := DifferentialGeometry.Manifold.openSubtypePartialDiffeomorph I U ⟨e q⟩
   let g := u.symm.trans e.symm.toPartialDiffeomorph
   have hxu : (e q).val ∈ u.symm.source := by
     change (e q).val ∈ u.target
-    rw [Poincare.Manifold.openSubtypePartialDiffeomorph_target]
+    rw [DifferentialGeometry.Manifold.openSubtypePartialDiffeomorph_target]
     exact (e q).property
   have hu : u.symm (e q).val = e q :=
-    Poincare.Manifold.openSubtypePartialDiffeomorph_symm_apply I U ⟨e q⟩ (e q).property
+    DifferentialGeometry.Manifold.openSubtypePartialDiffeomorph_symm_apply I U ⟨e q⟩ (e q).property
   have hxg : (e q).val ∈ g.source := ⟨hxu, trivial⟩
   have hg : g (e q).val = q := by
     change e.symm (u.symm (e q).val) = q
@@ -63,4 +63,4 @@ theorem exists_patchThroughDiffeomorph_model_germ
       (by simp) L hxs.1.1 hxs.1.2).symm.trans
         (h2.trans (mpullback_trans_partialDiffeomorph g f (by simp) C hxs.1 hxs.2).symm))
 
-end Poincare.VectorField
+end DifferentialGeometry.VectorField

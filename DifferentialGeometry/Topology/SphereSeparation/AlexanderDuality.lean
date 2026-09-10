@@ -11,7 +11,7 @@ open CategoryTheory
 open CategoryTheory.Limits
 open scoped Manifold ContDiff Topology
 
-namespace Poincare.Topology.SphereSeparation
+namespace DifferentialGeometry.Topology.SphereSeparation
 
 
 abbrev integerDual (M : ModuleCat ℤ) := Module.Dual ℤ M
@@ -453,4 +453,4 @@ noncomputable def embeddedSphereInOnePointCohomologyIsoSphereTwo
   singularCohomologyIsoOfHomeomorph
     (sphereTwoHomeomorphEmbeddedSphereInOnePoint e he) n
 
-end Poincare.Topology.SphereSeparation
+end DifferentialGeometry.Topology.SphereSeparation

@@ -13,7 +13,7 @@ open Bundle Manifold MeasureTheory Set
 open scoped ENNReal Manifold ContDiff Topology
 open DifferentialGeometry
 
-namespace Poincare
+namespace DifferentialGeometry
 namespace Geometry
 namespace Riemannian
 
@@ -102,4 +102,4 @@ theorem riemannianEDistOf_toReal_le_arcLength (g : SmoothRiemannianMetric I M)
 
 end Riemannian
 end Geometry
-end Poincare
+end DifferentialGeometry

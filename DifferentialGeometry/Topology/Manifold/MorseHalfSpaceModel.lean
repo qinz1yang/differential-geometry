@@ -8,7 +8,7 @@ set_option autoImplicit false
 noncomputable section
 open Set DifferentialGeometry.Topology.Morse
 open scoped Manifold
-namespace Poincare.Manifold
+namespace DifferentialGeometry.Manifold
 
 def morseEuclideanCoordinates (m : ℕ) : MorseModel (m + 1) ≃L[ℝ] EuclideanSpace ℝ (Fin (m + 1)) :=
   (ContinuousLinearEquiv.piCongrLeft ℝ (fun _ : Fin (m + 1) => ℝ) Fin.revPerm).trans
@@ -65,4 +65,4 @@ theorem morseHalfSpaceEuclidean_isInteriorPoint_iff (m : ℕ) {M : Type*} [Topol
     (morseHalfSpaceHomeomorphism m) (morseEuclideanCoordinates m).toHomeomorph
     (morseHalfSpaceHomeomorphism_model m) x
 
-end Poincare.Manifold
+end DifferentialGeometry.Manifold

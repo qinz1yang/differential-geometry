@@ -5,7 +5,7 @@ import Mathlib.Tactic.FunProp
 set_option autoImplicit false
 noncomputable section
 open Set Function Topology
-namespace Poincare.Topology
+namespace DifferentialGeometry.Topology
 
 
 def heightBandHomeomorph
@@ -47,4 +47,4 @@ def heightBandHomeomorph
       ((continuous_subtype_val.comp (continuous_snd.comp hw)).subtype_mk _)
   exact ⟨⟨f, g, hgf, hfg⟩, hf, hg⟩
 
-end Poincare.Topology
+end DifferentialGeometry.Topology

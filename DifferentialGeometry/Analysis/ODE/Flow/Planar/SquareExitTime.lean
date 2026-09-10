@@ -4,7 +4,7 @@ import DifferentialGeometry.Analysis.ODE.Flow.Planar.ConstantHalfSpaceExit
 open Set
 open scoped ContDiff
 
-namespace Poincare.Analysis
+namespace DifferentialGeometry.Analysis
 
 theorem exists_smooth_square_exitTime
     {P : Type*} [NormedAddCommGroup P] [NormedSpace ℝ P] [CompleteSpace P]
@@ -36,4 +36,4 @@ theorem exists_smooth_square_exitTime
     (hfixed p hp) (hinit p hp).1 (hinit p hp).2
   exact ⟨t, ht⟩
 
-end Poincare.Analysis
+end DifferentialGeometry.Analysis

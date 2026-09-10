@@ -5,7 +5,7 @@ set_option autoImplicit false
 noncomputable section
 open Set Bundle Filter Manifold TopologicalSpace
 open scoped ContDiff Topology
-namespace Poincare.VectorField
+namespace DifferentialGeometry.VectorField
 
 theorem relativePoincareHopf_of_chosen_collar
     {d : ℕ} {H B : Type*} {M : Type}
@@ -30,13 +30,13 @@ theorem relativePoincareHopf_of_chosen_collar
     let z : B → S := fun p => ⟨(p, ⟨0, ⟨le_rfl, (Fact.out : (0 : ℝ) < ε).le⟩⟩), hS p⟩
     let T : ∀ p : B, TangentSpace J p := fun p => (W (z p)).1
     let b : B → ℝ := fun p =>
-      -(Poincare.Manifold.Interval.tangentCoordinateIcc (z p).val.2 (W (z p)).2)
+      -(DifferentialGeometry.Manifold.Interval.tangentCoordinateIcc (z p).val.2 (W (z p)).2)
     ∀ (hTf : {p | T p = 0}.Finite)
       (hTi : ∀ p, T p = 0 → HasContinuousIsolatedZero J T p)
       (hTI : ∀ p, T p = 0 → J.IsInteriorPoint p)
       (K : Type) [Field K],
       interiorIndexSum I V hVf hVi hVI + interiorIndexSumOn J T hTf hTi hTI {p | b p < 0} =
-        Poincare.Homology.eulerChar K (TopCat.of M) := by
+        DifferentialGeometry.Homology.eulerChar K (TopCat.of M) := by
   intro I S hS Y hY e hi hz V hV hVf hVi hVI W z T b hTf hTi hTI K _
   have hn (q : S) (hq : q.val.2.val = 0) : V (e q).val ≠ 0 := by
     intro hv
@@ -66,21 +66,21 @@ theorem relativePoincareHopf_of_chosen_collar
   let z' : B → U := fun p => ⟨(p, ⟨0, ⟨le_rfl, (Fact.out : (0 : ℝ) < ε).le⟩⟩), hδ⟩
   let T' : ∀ p : B, TangentSpace J p := fun p => (W' (z' p)).1
   let b' : B → ℝ := fun p =>
-    -(Poincare.Manifold.Interval.tangentCoordinateIcc (z' p).val.2 (W' (z' p)).2)
+    -(DifferentialGeometry.Manifold.Interval.tangentCoordinateIcc (z' p).val.2 (W' (z' p)).2)
   have hT : T' = T := by
     funext p
     exact congrArg Prod.fst (hp (z' p))
   have hb : b' = b := by
     funext p
     exact congrArg (fun v : EuclideanSpace ℝ (Fin (d + 1)) × EuclideanSpace ℝ (Fin 1) =>
-      -(Poincare.Manifold.Interval.tangentCoordinateIcc (z' p).val.2 v.2)) (hp (z' p))
+      -(DifferentialGeometry.Manifold.Interval.tangentCoordinateIcc (z' p).val.2 v.2)) (hp (z' p))
   have hr := relativePoincareHopf_of_collar J hδ hδε Y' hY' e' hi' V hV hVf hVi hVI hn'
   change ∀ (hf : {p | T' p = 0}.Finite)
     (his : ∀ p, T' p = 0 → HasContinuousIsolatedZero J T' p)
     (hint : ∀ p, T' p = 0 → J.IsInteriorPoint p) (K : Type) [Field K],
     interiorIndexSum I V hVf hVi hVI + interiorIndexSumOn J T' hf his hint {p | b' p < 0} =
-      Poincare.Homology.eulerChar K (TopCat.of M) at hr
+      DifferentialGeometry.Homology.eulerChar K (TopCat.of M) at hr
   rw [hT, hb] at hr
   exact hr hTf hTi hTI K
 
-end Poincare.VectorField
+end DifferentialGeometry.VectorField

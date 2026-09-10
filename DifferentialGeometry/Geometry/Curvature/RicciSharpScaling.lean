@@ -5,9 +5,9 @@ import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Identities.Ricc
 noncomputable section
 open scoped Manifold ContDiff
 open DifferentialGeometry DifferentialGeometry.Geometry.Curvature
-open Poincare.Geometry.Metric
+open DifferentialGeometry.Geometry.Metric
 
-namespace Poincare.Geometry.Curvature
+namespace DifferentialGeometry.Geometry.Curvature
 
 theorem ricciSharp_scaleMetric
     {E H M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
@@ -20,4 +20,4 @@ theorem ricciSharp_scaleMetric
   rw [ricciSharp_apply, ricciSharpVec, ricciTensor_scaleMetric, metricSharp_scaleMetric]
   rfl
 
-end Poincare.Geometry.Curvature
+end DifferentialGeometry.Geometry.Curvature

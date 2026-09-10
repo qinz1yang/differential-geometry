@@ -7,7 +7,7 @@ noncomputable section
 open Set Topology Manifold
 open scoped ContDiff
 
-namespace Poincare.Geometry.Boundary
+namespace DifferentialGeometry.Geometry.Boundary
 
 open DifferentialGeometry.Integral.DivergenceTheorem.WithBoundary
 
@@ -62,4 +62,4 @@ theorem exists_boundaryLevel_diffeomorph_of_smooth_embedding
     exact hemb.injective ((hfeq (back x)).trans (hbackeq x))
   exact ⟨⟨⟨forward, back, hleft, hright⟩, hforward, hback⟩, hfeq⟩
 
-end Poincare.Geometry.Boundary
+end DifferentialGeometry.Geometry.Boundary

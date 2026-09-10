@@ -7,7 +7,7 @@ import Mathlib.Geometry.Manifold.MFDeriv.Atlas
 noncomputable section
 open scoped ContDiff Manifold Topology
 
-namespace Poincare.Topology.Manifold
+namespace DifferentialGeometry.Topology.Manifold
 
 variable {E F H H' M N : Type*}
   [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
@@ -54,7 +54,7 @@ theorem isLocalDiffeomorphAt_of_hasMFDerivAt_equiv
     have hw : HasFDerivWithinAt g (A : E →L[ℝ] F) (Set.range I) (cM x₀) := hdf.2
     exact hw.hasFDerivAt (by rw [I.range_eq_univ]; exact Filter.univ_mem)
   obtain ⟨e, hxe, heU, he, heinv, heq⟩ :=
-    Poincare.Analysis.exists_localInverse_of_hasFDerivAt_equiv hg hU hxU hd
+    DifferentialGeometry.Analysis.exists_localInverse_of_hasFDerivAt_equiv hg hU hxU hd
   let φ := (cM.trans e).trans cN.symm
   have hφ : ContMDiffOn I J ∞ φ φ.source := by
     apply (contMDiffOn_extChartAt_symm (I := J) (f x₀)).comp
@@ -95,11 +95,11 @@ theorem isLocalDiffeomorphAt_of_hasMFDerivAt_equiv
     rw [cM.left_inv hz.1.1] at hsource
     exact (cN.left_inv hsource).symm
 
-end Poincare.Topology.Manifold
+end DifferentialGeometry.Topology.Manifold
 
 open Manifold Set Topology
 
-namespace Poincare.Topology
+namespace DifferentialGeometry.Topology
 
 theorem isLocalDiffeomorphAt_of_contMDiffOn_of_isInvertible_mfderiv
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
@@ -132,9 +132,9 @@ theorem isLocalDiffeomorphAt_of_contMDiffOn_of_isInvertible_mfderiv
       Φ.open_source hxΦ (hf.mono hΦU) hregular
   exact ⟨Ψ, hxΨ, hΨ⟩
 
-end Poincare.Topology
+end DifferentialGeometry.Topology
 
-namespace Poincare.Manifold
+namespace DifferentialGeometry.Manifold
 
 variable {E F : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
   [NormedAddCommGroup F] [NormedSpace ℝ F]
@@ -166,4 +166,4 @@ theorem exists_partialDiffeomorph_of_contDiffAt {f : E → F} {p : E}
     contMDiffOn_invFun := (hcV.mono ht).contMDiffOn }
   refine ⟨Φ, ⟨hp, mem_interior_iff_mem_nhds.mpr hs⟩, rfl⟩
 
-end Poincare.Manifold
+end DifferentialGeometry.Manifold

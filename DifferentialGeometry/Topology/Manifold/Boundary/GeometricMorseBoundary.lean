@@ -3,10 +3,10 @@ import DifferentialGeometry.Topology.Manifold.Boundary.GeometricProjectiveObstru
 
 set_option autoImplicit false
 noncomputable section
-open Set Poincare.Homology DifferentialGeometry.Topology.Morse
-open Poincare.Topology.SimplicialComplex
+open Set DifferentialGeometry.Homology DifferentialGeometry.Topology.Morse
+open DifferentialGeometry.Topology.SimplicialComplex
 open scoped Manifold
-namespace Poincare.Manifold
+namespace DifferentialGeometry.Manifold
 
 variable {E : Type} [NormedAddCommGroup E] [NormedSpace ℝ E]
   {K L : Geometry.SimplicialComplex ℝ E} [Finite K.faces] [Finite L.faces]
@@ -36,9 +36,9 @@ theorem relativeEulerChar_morseBoundary_of_geometric_pair (k : Type) [Field k] :
   rw [← morseHalfSpaceEuclidean_boundary m M]
   exact relativeEulerChar_boundary_of_geometric_pair hLK e hb k
 
-end Poincare.Manifold
+end DifferentialGeometry.Manifold
 
-namespace Poincare.Manifold
+namespace DifferentialGeometry.Manifold
 variable {E : Type} [NormedAddCommGroup E] [NormedSpace ℝ E]
   {K L : Geometry.SimplicialComplex ℝ E} [Finite K.faces] [Finite L.faces]
   (hLK : L ≤ K) {M : Type} [TopologicalSpace M] [T1Space M]
@@ -58,4 +58,4 @@ theorem not_morseBoundary_homeomorphic_projectivePlane_of_geometric_pair :
   apply not_boundary_homeomorphic_projectivePlane_of_geometric_pair hLK e hb
   exact ⟨(Homeomorph.setCongr (morseHalfSpaceEuclidean_boundary 2 M)).trans f⟩
 
-end Poincare.Manifold
+end DifferentialGeometry.Manifold

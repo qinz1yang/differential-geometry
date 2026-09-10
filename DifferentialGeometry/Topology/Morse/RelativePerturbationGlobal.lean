@@ -6,7 +6,7 @@ noncomputable section
 open Set Filter Function
 open scoped Manifold ContDiff Topology
 open DifferentialGeometry.Topology.Morse
-namespace Poincare.Morse
+namespace DifferentialGeometry.Morse
 variable {E H M : Type} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
   [TopologicalSpace H] [TopologicalSpace M] [ChartedSpace H M]
   {I : ModelWithCorners ℝ E H} [IsManifold I ∞ M] [T2Space M]
@@ -58,4 +58,4 @@ theorem exists_positive_relative_morse {f : M → ℝ}
   exact finite_criticalPoints_of_isCompact hfp hC hCI
     (fun _ hx => critical_finitePerturbation_mem_support_union hcrit p hx) (fun x hx => (hnondeg x hx).2)
 
-end Poincare.Morse
+end DifferentialGeometry.Morse

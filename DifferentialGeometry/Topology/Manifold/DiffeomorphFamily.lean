@@ -10,7 +10,7 @@ import Mathlib.LinearAlgebra.Finsupp.VectorSpace
 noncomputable section
 open scoped ContDiff Manifold
 
-namespace Poincare.Topology.Manifold
+namespace DifferentialGeometry.Topology.Manifold
 
 variable {E H M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [TopologicalSpace H] [TopologicalSpace M] [ChartedSpace H M]
@@ -140,4 +140,4 @@ theorem isLocalDiffeomorphAt_diffeomorphList_of_basis
   rw [← hA]
   exact ((hg 0).mdifferentiableAt (by simp)).hasMFDerivAt
 
-end Poincare.Topology.Manifold
+end DifferentialGeometry.Topology.Manifold

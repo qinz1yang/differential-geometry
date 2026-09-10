@@ -6,7 +6,7 @@ set_option autoImplicit false
 noncomputable section
 open Set Bundle Filter
 open scoped Manifold ContDiff Topology
-namespace Poincare.VectorField
+namespace DifferentialGeometry.VectorField
 variable {E H M ι : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [Fintype ι]
   [TopologicalSpace H] [TopologicalSpace M] [ChartedSpace H M]
   {I : ModelWithCorners ℝ E H} [IsManifold I 1 M]
@@ -16,7 +16,7 @@ variable {E H M ι : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [Fintype 
 
 def parameterFamilyInCoordinates (q : (ι → ℝ) × E) : E :=
   _root_.VectorField.mpullback 𝓘(ℝ, E) I c.symm
-    (Poincare.VectorBundle.parameterFamily V A q.1) q.2
+    (DifferentialGeometry.VectorBundle.parameterFamily V A q.1) q.2
 
 omit [IsManifold I 1 M] in
 theorem parameterFamilyInCoordinates_apply (p : ι → ℝ) (y : E) :
@@ -24,22 +24,22 @@ theorem parameterFamilyInCoordinates_apply (p : ι → ℝ) (y : E) :
       _root_.VectorField.mpullback 𝓘(ℝ, E) I c.symm V y +
         ∑ i, p i • _root_.VectorField.mpullback 𝓘(ℝ, E) I c.symm (A i) y := by
   simp only [parameterFamilyInCoordinates, _root_.VectorField.mpullback,
-    Poincare.VectorBundle.parameterFamily, map_add, map_sum, map_smul]
+    DifferentialGeometry.VectorBundle.parameterFamily, map_add, map_sum, map_smul]
   rfl
 
 omit [IsManifold I 1 M] in
 theorem hasFDerivAt_parameterFamilyInCoordinates (p : ι → ℝ) (y : E) :
     HasFDerivAt (fun b => parameterFamilyInCoordinates c V A (b, y))
       ((mfderiv 𝓘(ℝ, E) I c.symm y).inverse ∘L
-        Poincare.VectorBundle.parameterDerivative A (c.symm y)) p := by
+        DifferentialGeometry.VectorBundle.parameterDerivative A (c.symm y)) p := by
   let L : TangentSpace I (c.symm y) →L[ℝ] E := (mfderiv 𝓘(ℝ, E) I c.symm y).inverse
-  let D : (ι → ℝ) →L[ℝ] E := L ∘L Poincare.VectorBundle.parameterDerivative A (c.symm y)
+  let D : (ι → ℝ) →L[ℝ] E := L ∘L DifferentialGeometry.VectorBundle.parameterDerivative A (c.symm y)
   have he : (fun b => parameterFamilyInCoordinates c V A (b, y)) =
       (fun b => L (V (c.symm y)) + D b) := by
     funext b
     change L (V (c.symm y) + ∑ i, b i • A i (c.symm y)) =
-      L (V (c.symm y)) + (L ∘L Poincare.VectorBundle.parameterDerivative A (c.symm y)) b
-    rw [ContinuousLinearMap.comp_apply, Poincare.VectorBundle.parameterDerivative_apply, map_add, map_sum]
+      L (V (c.symm y)) + (L ∘L DifferentialGeometry.VectorBundle.parameterDerivative A (c.symm y)) b
+    rw [ContinuousLinearMap.comp_apply, DifferentialGeometry.VectorBundle.parameterDerivative_apply, map_add, map_sum]
   rw [he]
   exact D.hasFDerivAt.const_add _
 
@@ -47,9 +47,9 @@ omit [IsManifold I 1 M] in
 theorem surjective_parameterDerivative_in_coordinates {y : E} (hy : y ∈ c.target)
     (hspan : Submodule.span ℝ (range (fun i => A i (c.symm y))) = ⊤) :
     Function.Surjective ((mfderiv 𝓘(ℝ, E) I c.symm y).inverse ∘L
-      Poincare.VectorBundle.parameterDerivative A (c.symm y)) :=
+      DifferentialGeometry.VectorBundle.parameterDerivative A (c.symm y)) :=
   (isInvertible_mfderiv_partialDiffeomorph c.symm (by simp) hy).inverse.surjective.comp
-    (Poincare.VectorBundle.surjective_parameterDerivative A (c.symm y) hspan)
+    (DifferentialGeometry.VectorBundle.surjective_parameterDerivative A (c.symm y) hspan)
 
 variable
   (hV : ContMDiff I I.tangent ∞ (fun x => (⟨x, V x⟩ : TangentBundle I M)))
@@ -81,7 +81,7 @@ theorem fderiv_parameterFamilyInCoordinates_comp_inl (p : ι → ℝ) {y : E}
     fderiv ℝ (parameterFamilyInCoordinates c V A) (p, y) ∘L
         ContinuousLinearMap.inl ℝ (ι → ℝ) E =
       (mfderiv 𝓘(ℝ, E) I c.symm y).inverse ∘L
-        Poincare.VectorBundle.parameterDerivative A (c.symm y) := by
+        DifferentialGeometry.VectorBundle.parameterDerivative A (c.symm y) := by
   have hd : DifferentiableAt ℝ (parameterFamilyInCoordinates c V A) (p, y) :=
     ((contDiffOn_parameterFamilyInCoordinates c V A hV hA).contDiffAt
       ((isOpen_univ.prod c.open_target).mem_nhds ⟨mem_univ _, hy⟩)).differentiableAt (by simp)
@@ -102,4 +102,4 @@ theorem surjective_fderiv_parameterFamilyInCoordinates (p : ι → ℝ) {y : E}
   rw [← fderiv_parameterFamilyInCoordinates_comp_inl c V A hV hA p hy] at hh
   exact Function.Surjective.of_comp hh
 
-end Poincare.VectorField
+end DifferentialGeometry.VectorField

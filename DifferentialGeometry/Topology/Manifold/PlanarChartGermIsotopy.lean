@@ -5,7 +5,7 @@ noncomputable section
 open Set Metric Filter Topology Manifold
 open scoped ContDiff
 
-namespace Poincare.Topology.Manifold
+namespace DifferentialGeometry.Topology.Manifold
 
 theorem exists_isotopy_realizing_positive_chart_germ
     {F H M : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
@@ -36,7 +36,7 @@ theorem exists_isotopy_realizing_positive_chart_germ
     (he.comp (f.contMDiff.comp hi).contMDiffOn (fun _ hz ↦ hz)).contDiffOn
   have hg0 : g 0 = 0 := by simp only [g, hix, hfx, hex]
   obtain ⟨D, hD, hDi, hD0, hDg, hDfix⟩ :=
-    Poincare.Analysis.exists_compact_isotopy_realizing_positive_planar_germ hU h0U hg hg0
+    DifferentialGeometry.Analysis.exists_compact_isotopy_realizing_positive_planar_germ hU h0U hg hg0
       (fderiv ℝ g 0) ((hg.contDiffAt (hU.mem_nhds h0U)).differentiableAt (by simp)).hasFDerivAt
       hpos 1 (by norm_num)
   obtain ⟨B, hB, hBi, hBe, hK, hKs, hBfix⟩ :=
@@ -62,4 +62,4 @@ theorem exists_isotopy_realizing_positive_chart_germ
     have hext : extendChartById e (D 1) y = e.symm (D 1 (e y)) := if_pos hys
     rw [hext, hy, e.left_inv hyfs]
 
-end Poincare.Topology.Manifold
+end DifferentialGeometry.Topology.Manifold

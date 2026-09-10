@@ -1,4 +1,3 @@
-import Batteries.Tactic.Alias
 import Mathlib.Topology.MetricSpace.Isometry
 import Mathlib.Topology.MetricSpace.ProperSpace
 import Mathlib.Topology.Instances.NNReal.Lemmas
@@ -68,10 +67,3 @@ theorem exists_isometry_ray [NoncompactSpace M] (p : M)
   exact ⟨γ, hγzero, hγ⟩
 
 end DifferentialGeometry.Geometry
-
-namespace Poincare.Geometry
-
-alias exists_isometry_mapClusterPt_of_dist_min := DifferentialGeometry.Geometry.exists_isometry_mapClusterPt_of_dist_min
-alias exists_isometry_ray := DifferentialGeometry.Geometry.exists_isometry_ray
-
-end Poincare.Geometry

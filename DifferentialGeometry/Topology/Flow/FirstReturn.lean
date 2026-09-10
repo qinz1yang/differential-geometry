@@ -3,7 +3,7 @@ import Mathlib.Topology.Order.Compact
 
 open Set
 
-namespace Poincare.Topology.Flow
+namespace DifferentialGeometry.Topology.Flow
 
 private theorem first_return_to_closedSet
     {X : Type*} [TopologicalSpace X] {γ : ℝ → X} (hγ : Continuous γ)
@@ -53,4 +53,4 @@ theorem exists_first_return_to_transverse_segment
   have hp := e.injOn (hpair ha ⟨by linarith [ht.1], ht.2⟩) (hpair hb hzero) heq
   exact ht.1.ne' (congrArg Prod.snd hp)
 
-end Poincare.Topology.Flow
+end DifferentialGeometry.Topology.Flow

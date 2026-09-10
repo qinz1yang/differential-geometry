@@ -5,7 +5,7 @@ set_option autoImplicit false
 open Metric Set
 open scoped Topology unitInterval
 noncomputable section
-namespace Poincare.LocalDegree
+namespace DifferentialGeometry.LocalDegree
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
   (K : Submodule ℝ E) [K.HasOrthogonalProjection]
 
@@ -177,4 +177,4 @@ theorem orthogonalProductSphereHomotopy_apply {F : K → K} {R : ℝ}
       ‖orthogonalProductInterpolation K h r p‖⁻¹ • orthogonalProductInterpolation K h r p :=
   homeomorphUnitSphereProd_apply_fst_coe E _
 
-end Poincare.LocalDegree
+end DifferentialGeometry.LocalDegree

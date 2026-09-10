@@ -4,7 +4,7 @@ import Mathlib.Topology.Order.IntermediateValue
 noncomputable section
 open Set
 
-namespace Poincare.Topology
+namespace DifferentialGeometry.Topology
 
 def fiberwiseHomeomorph
     {N P T : Type*} [TopologicalSpace N] [CompactSpace N]
@@ -79,4 +79,4 @@ theorem prod_Icc_subset_range_of_fiberwise_bijective
     ⟨h₀.trans hz.1, hz.2.trans h₁⟩
   exact ⟨Φ.symm (p, t), Prod.ext (hfirst (p, t)) ht⟩
 
-end Poincare.Topology
+end DifferentialGeometry.Topology

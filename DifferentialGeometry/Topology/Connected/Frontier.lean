@@ -1,6 +1,6 @@
 import Mathlib.Topology.Connected.Basic
 
-namespace Poincare.Topology
+namespace DifferentialGeometry.Topology
 
 open Set
 
@@ -29,4 +29,4 @@ theorem eq_of_frontier_eq_of_closure_interior_eq
       (inter_comm (interior A) (interior B) ▸ hmeet)
   rw [← hA, ← hB, subset_antisymm hAB hBA]
 
-end Poincare.Topology
+end DifferentialGeometry.Topology

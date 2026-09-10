@@ -1,7 +1,7 @@
 import Mathlib.Analysis.Complex.CoveringMap
 import Mathlib.Analysis.SpecialFunctions.Complex.Circle
 
-namespace Poincare.Topology.Circle
+namespace DifferentialGeometry.Topology.Circle
 
 theorem not_exists_continuous_logarithm :
     ¬ ∃ g : C(_root_.Circle, ℂ), ∀ z, Complex.exp (g z) = (z : ℂ) := by
@@ -27,4 +27,4 @@ theorem not_exists_continuous_logarithm :
     Complex.I_im, Complex.ofReal_im, Complex.I_re, mul_one, mul_zero, add_zero] at him
   linarith [Real.pi_pos]
 
-end Poincare.Topology.Circle
+end DifferentialGeometry.Topology.Circle

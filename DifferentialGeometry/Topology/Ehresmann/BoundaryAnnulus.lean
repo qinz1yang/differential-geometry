@@ -7,9 +7,9 @@ noncomputable section
 open Set Topology Manifold
 open scoped ContDiff
 
-namespace Poincare.Topology.Ehresmann
+namespace DifferentialGeometry.Topology.Ehresmann
 
-open Poincare.Geometry.Boundary
+open DifferentialGeometry.Geometry.Boundary
 open DifferentialGeometry.Integral.DivergenceTheorem.WithBoundary
 
 variable {E H M : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
@@ -60,4 +60,4 @@ theorem exists_boundary_sphere_annulus
   let e := η.trans (S s)
   exact ⟨⟨e⟩, e.toHomeomorph.connectedSpace_iff.mp hsphere⟩
 
-end Poincare.Topology.Ehresmann
+end DifferentialGeometry.Topology.Ehresmann

@@ -5,7 +5,7 @@ noncomputable section
 open Set Metric
 open scoped InnerProductSpace
 
-namespace Poincare.Analysis
+namespace DifferentialGeometry.Analysis
 
 theorem exists_unit_least_eigenvector
     {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
@@ -25,4 +25,4 @@ theorem exists_unit_least_eigenvector
   · intro x hx
     exact hmin (mem_sphere_zero_iff_norm.mpr hx)
 
-end Poincare.Analysis
+end DifferentialGeometry.Analysis

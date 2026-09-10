@@ -10,7 +10,7 @@ set_option autoImplicit false
 open CategoryTheory
 open CategoryTheory.Limits
 
-namespace Poincare.Topology.SphereSeparation
+namespace DifferentialGeometry.Topology.SphereSeparation
 
 variable {R : Type*} [CommRing R]
 
@@ -281,4 +281,4 @@ theorem quasiIso_of_cokernelSubdivision_eventually_zero
     (fun n ↦ locallyNilpotent_chainCokernelEndomorphism
       i TA TB hcomm n (heventual n))
 
-end Poincare.Topology.SphereSeparation
+end DifferentialGeometry.Topology.SphereSeparation

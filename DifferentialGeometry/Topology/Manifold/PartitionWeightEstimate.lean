@@ -5,7 +5,7 @@ noncomputable section
 open Set Filter Topology
 open scoped ContDiff Manifold BigOperators
 
-namespace Poincare.Topology.Manifold
+namespace DifferentialGeometry.Topology.Manifold
 
 variable {ι : Type} {E H M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [TopologicalSpace H] [TopologicalSpace M] [ChartedSpace H M]
@@ -150,4 +150,4 @@ theorem sum_abs_mvfderiv_bump_partition_le_multiplicity [Fintype ι]
     _ ≤ (N : ℝ) ^ 2 * D := mul_le_mul_of_nonneg_right
       (by nlinarith [Nat.cast_nonneg (α := ℝ) s.card, Nat.cast_nonneg (α := ℝ) N]) hD
 
-end Poincare.Topology.Manifold
+end DifferentialGeometry.Topology.Manifold

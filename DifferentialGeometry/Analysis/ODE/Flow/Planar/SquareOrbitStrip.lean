@@ -3,7 +3,7 @@ import DifferentialGeometry.Analysis.ODE.Flow.Planar.LeftEdgeCoordinates
 open Set
 open scoped ContDiff
 
-namespace Poincare.Analysis
+namespace DifferentialGeometry.Analysis
 
 theorem mem_square_iff_time_mem_Icc
     (φ : _root_.Flow ℝ ℂ) {v : ℂ → ℂ} (hv : ContDiff ℝ ∞ v)
@@ -68,4 +68,4 @@ theorem bijOn_leftEdge_flow_strip
   refine ⟨(y, t), ⟨hy, ?_⟩, he⟩
   exact (mem_square_iff_time_mem_Icc φ hv hnz hderiv hfixed hy (hexit y hy) t).mp (he.symm ▸ hz)
 
-end Poincare.Analysis
+end DifferentialGeometry.Analysis

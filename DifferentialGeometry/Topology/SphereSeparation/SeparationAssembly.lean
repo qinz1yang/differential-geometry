@@ -6,7 +6,7 @@ set_option autoImplicit false
 open Set
 open scoped Manifold ContDiff Topology
 
-namespace Poincare.Topology.SphereSeparation
+namespace DifferentialGeometry.Topology.SphereSeparation
 
 noncomputable def smoothSphereSidesOpenThreeSpace_of_alexanderDuality
     {N : Type*} [TopologicalSpace N] [ChartedSpace EuclideanThree N]
@@ -32,4 +32,4 @@ theorem smoothSphereSides_side_sets_unique
     d₁.compactSide = d₂.compactSide ∧ d₁.endSide = d₂.endSide :=
   SphereSides.side_sets_unique d₁.toSphereSides d₂.toSphereSides
 
-end Poincare.Topology.SphereSeparation
+end DifferentialGeometry.Topology.SphereSeparation

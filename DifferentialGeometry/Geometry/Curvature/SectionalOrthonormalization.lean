@@ -7,7 +7,7 @@ open Bundle Manifold
 open scoped Manifold ContDiff
 open DifferentialGeometry DifferentialGeometry.Geometry.Curvature
 
-namespace Poincare.Geometry
+namespace DifferentialGeometry.Geometry
 
 theorem IsAlgCurvForm.pair_shear {V : Type*} [AddCommGroup V] [Module ℝ V]
     {B : V → V → V → V → ℝ} (hB : IsAlgCurvForm B) (v w : V) (a b : ℝ) :
@@ -95,4 +95,4 @@ theorem HasPositiveSectionalCurvature.exists_uniform_sectional_quotient_bound [C
   obtain ⟨u, q, hu, hq, huq, heq⟩ := exists_orthonormal_pair_sectional_quotient g x v w hvw
   exact le_trans (hbound x u q hu hq huq) heq.le
 
-end Poincare.Geometry
+end DifferentialGeometry.Geometry

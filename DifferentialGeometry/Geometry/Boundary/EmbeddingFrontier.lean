@@ -7,7 +7,7 @@ noncomputable section
 open Set Filter Topology
 open scoped Manifold ContDiff
 
-namespace Poincare.Geometry.Boundary
+namespace DifferentialGeometry.Geometry.Boundary
 
 open DifferentialGeometry
 open DifferentialGeometry.Integral.DivergenceTheorem.WithBoundary
@@ -125,7 +125,7 @@ theorem closure_interior_range_of_fullRank_closedEmbedding
     (hdim : Module.finrank ℝ E = Module.finrank ℝ F) :
     closure (interior (range ι)) = range ι := by
   have hd : closure (I.interior W) = univ := dense_iff_closure_eq.mp
-    (Poincare.Topology.Manifold.dense_manifold_interior (I := I) (M := W))
+    (DifferentialGeometry.Topology.Manifold.dense_manifold_interior (I := I) (M := W))
   rw [← image_interior_eq_of_fullRank_embedding ι hι hemb.isEmbedding hinj hdim,
     hemb.isClosedMap.closure_image_eq_of_continuous hι.continuous, hd, image_univ]
 
@@ -135,7 +135,7 @@ theorem isPreconnected_interior_range_of_fullRank_embedding [PreconnectedSpace W
     (hdim : Module.finrank ℝ E = Module.finrank ℝ F) :
     IsPreconnected (interior (range ι)) := by
   rw [← image_interior_eq_of_fullRank_embedding ι hι hemb hinj hdim]
-  exact (Poincare.Topology.Manifold.isPreconnected_manifold_interior (I := I) (M := W)).image
+  exact (DifferentialGeometry.Topology.Manifold.isPreconnected_manifold_interior (I := I) (M := W)).image
     ι hι.continuous.continuousOn
 
-end Poincare.Geometry.Boundary
+end DifferentialGeometry.Geometry.Boundary

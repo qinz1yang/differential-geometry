@@ -5,8 +5,8 @@ import DifferentialGeometry.Topology.Homology.Local.FiniteSetDecomposition
 set_option autoImplicit false
 noncomputable section
 open CategoryTheory CategoryTheory.Limits Set Metric
-namespace Poincare.LocalDegree
-open Poincare.Homology
+namespace DifferentialGeometry.LocalDegree
+open DifferentialGeometry.Homology
 universe u
 section Maps
 variable {E F : Type u} [PseudoMetricSpace E] [TopologicalSpace F] [Zero F]
@@ -17,7 +17,7 @@ def IsolatingRadius.finitePunctureHomologyMap (n : ℕ) :
     relativeHomology (TopCat.of (ball p r))
       ({(⟨p,mem_ball_self hr.pos⟩ : ball p r)}ᶜ : Set (ball p r)) A n ⟶
     relativeHomology (TopCat.of E) ({x | f x = 0}ᶜ : Set E) A n :=
-  Poincare.Homology.relativeHomologyMap A (X := TopCat.of (ball p r)) (Y := TopCat.of E)
+  DifferentialGeometry.Homology.relativeHomologyMap A (X := TopCat.of (ball p r)) (Y := TopCat.of E)
     (s := ({(⟨p,mem_ball_self hr.pos⟩ : ball p r)}ᶜ : Set (ball p r)))
     (t := ({x | f x = 0}ᶜ : Set E))
     (TopCat.ofHom (⟨Subtype.val,continuous_subtype_val⟩ : C(ball p r,E)))
@@ -70,7 +70,7 @@ theorem IsolatingRadius.finitePunctureHomologyMap_eq_inclusion [T2Space E]
 @[reassoc]
 theorem IsolatingRadius.finitePunctureHomologyMap_comp (hf : Continuous f) (n : ℕ) :
     hr.finitePunctureHomologyMap A n ≫
-      Poincare.Homology.relativeHomologyMap A (X := TopCat.of E) (Y := TopCat.of F)
+      DifferentialGeometry.Homology.relativeHomologyMap A (X := TopCat.of E) (Y := TopCat.of F)
         (s := ({x | f x = 0}ᶜ : Set E)) (t := ({0}ᶜ : Set F))
         (TopCat.ofHom (⟨f,hf⟩ : C(E,F))) (fun _ hy => hy) n =
       hr.relativeHomologyMap A n := by
@@ -117,7 +117,7 @@ theorem IsolatingRadius.finitePunctureHomologyMap_generator_inclusion
     (euclideanBallLocalGenerator_inclusion p r hr.pos))
 
 theorem IsolatingRadius.finitePunctureHomologyMap_generator_degree (hf : Continuous f) :
-    Poincare.Homology.relativeHomologyMap (ModuleCat.of ℤ ℤ)
+    DifferentialGeometry.Homology.relativeHomologyMap (ModuleCat.of ℤ ℤ)
       (X := TopCat.of (EuclideanSpace ℝ (Fin (d + 1))))
       (Y := TopCat.of (EuclideanSpace ℝ (Fin (d + 1))))
       (s := ({x | f x = 0}ᶜ : Set (EuclideanSpace ℝ (Fin (d + 1)))))
@@ -133,7 +133,7 @@ theorem IsolatingRadius.finitePunctureHomologyMap_generator_degree (hf : Continu
 
 theorem IsolatingRadius.finitePunctureHomologyInclusion_generator_degree
     (hZ : {x | f x = 0}.Finite) (hf : Continuous f) :
-    Poincare.Homology.relativeHomologyMap (ModuleCat.of ℤ ℤ)
+    DifferentialGeometry.Homology.relativeHomologyMap (ModuleCat.of ℤ ℤ)
       (X := TopCat.of (EuclideanSpace ℝ (Fin (d + 1))))
       (Y := TopCat.of (EuclideanSpace ℝ (Fin (d + 1))))
       (s := ({x | f x = 0}ᶜ : Set (EuclideanSpace ℝ (Fin (d + 1)))))
@@ -147,4 +147,4 @@ theorem IsolatingRadius.finitePunctureHomologyInclusion_generator_degree
   exact hr.finitePunctureHomologyMap_generator_degree hf
 
 end Euclidean
-end Poincare.LocalDegree
+end DifferentialGeometry.LocalDegree

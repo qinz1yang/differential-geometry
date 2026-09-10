@@ -41,7 +41,7 @@ attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
 
 theorem KLim.three_terminal_bddAbove_of_positive
     {kappa : ℝ} (hK : KLim kappa F) (hdim : Module.finrank ℝ E = 3)
-    (hsec : Poincare.Geometry.HasPositiveSectionalCurvature (I := I)
+    (hsec : DifferentialGeometry.Geometry.HasPositiveSectionalCurvature (I := I)
       (F.S.base.metric 0))
     (hnoEmbedding : ∀ f : SphereAntipodalQuotient → EuclideanSpace ℝ (Fin 3),
       ¬ Topology.IsEmbedding f) : BddAbove (Set.range (F.S.scalar 0)) := by

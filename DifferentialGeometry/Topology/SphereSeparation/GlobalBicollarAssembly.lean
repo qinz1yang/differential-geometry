@@ -8,7 +8,7 @@ open CategoryTheory CategoryTheory.Limits
 open Function Set Topology
 open scoped Manifold ContDiff Topology
 
-namespace Poincare.Topology.SphereSeparation
+namespace DifferentialGeometry.Topology.SphereSeparation
 
 def axialIntervalHomeomorphIoo (a : ℝ) :
     AxialInterval a ≃ₜ (Ioo (-a) a : Set ℝ) where
@@ -151,4 +151,4 @@ theorem disjoint_spheres_nested_openThreeSpace_of_smooth_normalFields_of_sphereH
   exact disjoint_spheres_nested_openThreeSpace_of_alexanderDuality
     e₁ e₂ he₁ he₂ ψ hAD₁ hAD₂ hdisjoint hmeet
 
-end Poincare.Topology.SphereSeparation
+end DifferentialGeometry.Topology.SphereSeparation

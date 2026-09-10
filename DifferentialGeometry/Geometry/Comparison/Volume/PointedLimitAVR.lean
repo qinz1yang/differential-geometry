@@ -19,7 +19,7 @@ noncomputable section
 open Bundle Filter Manifold MeasureTheory Set TopologicalSpace
 open scoped ContDiff ENNReal Manifold Topology
 
-namespace Poincare.Geometry.Riemannian.VolumeComparison
+namespace DifferentialGeometry.Geometry.Riemannian.VolumeComparison
 
 open DifferentialGeometry
 open DifferentialGeometry.Geometry.Curvature
@@ -1582,4 +1582,4 @@ theorem pointedAsymptoticVolumeRatio_lower_and_noncompact_of_source_AVR_real
   exact pointedAsymptoticVolumeRatio_lower_and_noncompact_of_source_AVR
     (I := I) C capture hcomplete hconn (ENNReal.ofReal_pos.mpr hv) hAVR
 
-end Poincare.Geometry.Riemannian.VolumeComparison
+end DifferentialGeometry.Geometry.Riemannian.VolumeComparison

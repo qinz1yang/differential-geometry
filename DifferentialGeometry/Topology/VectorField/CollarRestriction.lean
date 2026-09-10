@@ -6,7 +6,7 @@ set_option autoImplicit false
 noncomputable section
 open Set Bundle Manifold TopologicalSpace
 open scoped ContDiff Topology
-namespace Poincare.VectorField
+namespace DifferentialGeometry.VectorField
 
 theorem exists_nonvanishing_collar_restriction
     {E H B F G M : Type*}
@@ -39,8 +39,8 @@ theorem exists_nonvanishing_collar_restriction
     exact contMDiffAt_mpullback_partialDiffeomorph e.toPartialDiffeomorph (by simp)
       (by trivial) (hVr (e q))
   have hopen : IsOpen {q : S | W0 q ≠ 0} :=
-    (Poincare.VectorBundle.isClosed_zeroSet ℝ hW0.continuous).isOpen_compl
-  obtain ⟨δ, hδ, hδε, hstrip⟩ := Poincare.Topology.exists_shorter_strip_image_subset
+    (DifferentialGeometry.VectorBundle.isClosed_zeroSet ℝ hW0.continuous).isOpen_compl
+  obtain ⟨δ, hδ, hδε, hstrip⟩ := DifferentialGeometry.Topology.exists_shorter_strip_image_subset
     (Fact.out : (0 : ℝ) < ε) continuous_id (S.isOpen.isOpenMap_subtype_val _ hopen)
     (fun p => ⟨⟨_, hS p⟩, fun h => hn ⟨_, hS p⟩ rfl
       ((mpullback_diffeomorph_eq_zero_iff e (by simp) (fun y : Y => V y.val) _).mp h), rfl⟩)
@@ -51,7 +51,7 @@ theorem exists_nonvanishing_collar_restriction
     obtain ⟨r, _, hr⟩ := hstrip ⟨q, hq, rfl⟩
     change r.val = q at hr
     exact hr ▸ r.property
-  obtain ⟨W, _, _, d, hd, _⟩ := Poincare.Manifold.Diffeomorph.exists_restrict_opens e U hUS
+  obtain ⟨W, _, _, d, hd, _⟩ := DifferentialGeometry.Manifold.Diffeomorph.exists_restrict_opens e U hUS
   have hp := mpullback_eq_of_restrict_opens e d hUS hd V
   refine ⟨δ, hδ, hδε, hUS, W, d, hd, hp, ?_⟩
   intro q hq
@@ -60,4 +60,4 @@ theorem exists_nonvanishing_collar_restriction
   have hh : r = ⟨q.val, hUS q.property⟩ := Subtype.ext heq
   exact hr (hh ▸ hq)
 
-end Poincare.VectorField
+end DifferentialGeometry.VectorField

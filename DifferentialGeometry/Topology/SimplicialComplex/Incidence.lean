@@ -4,7 +4,7 @@ import Mathlib.Data.Finset.Powerset
 
 open Finset
 
-namespace Poincare.Topology.SimplicialComplex
+namespace DifferentialGeometry.Topology.SimplicialComplex
 
 variable {ι : Type*}
 
@@ -154,4 +154,4 @@ theorem sum_card_facesOfCard_link [DecidableEq ι] (k n : ℕ) (hk : 0 < k) (hn 
 
 end
 
-end Poincare.Topology.SimplicialComplex
+end DifferentialGeometry.Topology.SimplicialComplex

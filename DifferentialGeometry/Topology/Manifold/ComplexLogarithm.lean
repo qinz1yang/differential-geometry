@@ -7,7 +7,7 @@ noncomputable section
 open Set Filter Topology
 open scoped ContDiff Manifold
 
-namespace Poincare.Topology.Manifold
+namespace DifferentialGeometry.Topology.Manifold
 
 variable {E H M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [TopologicalSpace H] [TopologicalSpace M] [ChartedSpace H M]
@@ -53,4 +53,4 @@ theorem exists_contMDiff_logarithm [SimplyConnectedSpace M] [LocallyPathConnecte
     congrArg Subtype.val (congrFun hg x)
   exact ⟨g, contMDiff_logarithm_of_continuous hf g.continuous he, hg₀, he⟩
 
-end Poincare.Topology.Manifold
+end DifferentialGeometry.Topology.Manifold

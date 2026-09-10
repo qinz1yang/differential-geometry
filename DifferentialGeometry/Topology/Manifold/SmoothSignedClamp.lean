@@ -13,7 +13,7 @@ open scoped ContDiff Topology
 
 noncomputable section
 
-namespace Poincare.Topology
+namespace DifferentialGeometry.Topology
 
 def signedClampBump (a : ℝ) (ha : 0 < a) : ContDiffBump (0 : ℝ) where
   rIn := a / 3
@@ -155,4 +155,4 @@ theorem hasDerivAt_smoothSignedClamp_zero (a : ℝ) (ha : 0 < a) :
   have habs : |t| < a / 3 := by simpa [Real.dist_eq] using ht
   exact habs.le
 
-end Poincare.Topology
+end DifferentialGeometry.Topology

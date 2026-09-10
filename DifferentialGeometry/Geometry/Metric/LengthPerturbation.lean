@@ -6,7 +6,7 @@ open scoped Manifold ContDiff
 open DifferentialGeometry DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.Analysis.Laplacian
 
-namespace Poincare.Geometry.Metric
+namespace DifferentialGeometry.Geometry.Metric
 
 theorem sqrt_inner_comparison_of_metric_difference
     {E H M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
@@ -28,4 +28,4 @@ theorem sqrt_inner_comparison_of_metric_difference
   · rw [← Real.sqrt_mul (show 0 ≤ 1 + δ by linarith)]
     exact Real.sqrt_le_sqrt (by nlinarith [hb.2])
 
-end Poincare.Geometry.Metric
+end DifferentialGeometry.Geometry.Metric

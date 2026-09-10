@@ -6,7 +6,7 @@ open scoped ContDiff
 open DifferentialGeometry.Integral.DivergenceTheorem.WithBoundary
 set_option autoImplicit false
 noncomputable section
-namespace Poincare.Manifold.BoundaryCollar
+namespace DifferentialGeometry.Manifold.BoundaryCollar
 
 
 theorem exists_boundary_flow_collar_diffeomorph_height
@@ -100,4 +100,4 @@ theorem exists_unit_height_boundary_collar
   rw [hd]
   exact hzero p.val (hKU p.property)
 
-end Poincare.Manifold.BoundaryCollar
+end DifferentialGeometry.Manifold.BoundaryCollar

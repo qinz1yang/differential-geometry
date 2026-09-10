@@ -5,7 +5,7 @@ noncomputable section
 open Set Filter Topology
 open scoped ContDiff
 
-namespace Poincare.Analysis
+namespace DifferentialGeometry.Analysis
 
 variable {E F : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
   [NormedAddCommGroup F] [NormedSpace ℝ F] [FiniteDimensional ℝ F]
@@ -55,4 +55,4 @@ theorem exists_localInverse_of_one_sided_transverse_family
   rw [heq]
   exact hgeq z.1 (heD hz).1.1 z.2 ⟨ht, (heD hz).2.2.le⟩
 
-end Poincare.Analysis
+end DifferentialGeometry.Analysis

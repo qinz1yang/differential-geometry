@@ -4,8 +4,8 @@ import DifferentialGeometry.Topology.LocalDegree.Euclidean
 set_option autoImplicit false
 noncomputable section
 open CategoryTheory CategoryTheory.Limits Set Metric
-namespace Poincare.LocalDegree
-open Poincare.Homology
+namespace DifferentialGeometry.LocalDegree
+open DifferentialGeometry.Homology
 universe u
 section Maps
 variable {E F : Type u} [PseudoMetricSpace E] [TopologicalSpace F] [Zero F]
@@ -25,13 +25,13 @@ def IsolatingRadius.relativeHomologyMap {k : Type u} [Ring k] (A : ModuleCat.{u}
     relativeHomology (TopCat.of (ball x R))
       ({(⟨x,mem_ball_self hR.pos⟩ : ball x R)}ᶜ : Set (ball x R)) A n ⟶
     relativeHomology (TopCat.of F) ({0}ᶜ : Set F) A n :=
-  Poincare.Homology.relativeHomologyMap A (X := TopCat.of (ball x R)) (Y := TopCat.of F)
+  DifferentialGeometry.Homology.relativeHomologyMap A (X := TopCat.of (ball x R)) (Y := TopCat.of F)
     (TopCat.ofHom (isolatingBallMap hR)) (isolatingBallMap_mapsTo hR) n
 
 
 theorem IsolatingRadius.relativeHomologyMap_eq {k : Type u} [Ring k] (A : ModuleCat.{u} k) (n : ℕ) :
     hR.relativeHomologyMap A n =
-      Poincare.Homology.relativeHomologyMap A (X := TopCat.of (ball x R)) (Y := TopCat.of F)
+      DifferentialGeometry.Homology.relativeHomologyMap A (X := TopCat.of (ball x R)) (Y := TopCat.of F)
         (s := ({(⟨x,mem_ball_self hR.pos⟩ : ball x R)}ᶜ : Set (ball x R))) (t := ({0}ᶜ : Set F))
         (TopCat.ofHom (⟨fun y => f y,
           (hR.continuousOn.mono ball_subset_closedBall).domRestrict⟩ : C(ball x R,F)))
@@ -102,4 +102,4 @@ theorem euclideanLocalDegree_relativeHomology :
   congr 1
   exact (congrArg (fun g => g (euclideanSphereTopGenerator d))
     (localEuclideanSphereHomologyIso (ModuleCat.of ℤ ℤ) (d + 1) d).inv_hom_id).symm
-end Poincare.LocalDegree
+end DifferentialGeometry.LocalDegree

@@ -8,7 +8,7 @@ open DifferentialGeometry.Integral.DivergenceTheorem.WithBoundary
 set_option autoImplicit false
 noncomputable section
 
-namespace Poincare.Manifold.BoundaryCollar
+namespace DifferentialGeometry.Manifold.BoundaryCollar
 
 theorem exists_smooth_embedded_boundary_strip
     {n : ℕ} {M : Type*} [TopologicalSpace M]
@@ -43,4 +43,4 @@ theorem exists_smooth_embedded_boundary_strip
   · intro p t ht
     exact hi p (hKU p.2) t ⟨ht, t.2.2⟩
 
-end Poincare.Manifold.BoundaryCollar
+end DifferentialGeometry.Manifold.BoundaryCollar

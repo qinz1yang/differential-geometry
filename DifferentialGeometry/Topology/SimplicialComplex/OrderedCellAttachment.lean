@@ -6,7 +6,7 @@ set_option autoImplicit false
 noncomputable section
 open CategoryTheory CategoryTheory.Limits Simplicial Opposite
 
-namespace Poincare.Topology.SimplicialComplex
+namespace DifferentialGeometry.Topology.SimplicialComplex
 universe u
 variable {ι : Type u} [LinearOrder ι]
 
@@ -88,12 +88,12 @@ theorem isMax_orderedFaceN (hmax : IsMax (⟨s, hs⟩ : K.faces)) :
 
 theorem mem_orderedFaceN_costar_iff {m : SimplexCategoryᵒᵖ}
     (x : (orderedSimplicialSet K).obj m) :
-    x ∈ (Poincare.SSet.costar (orderedFaceN K s hs hn)).obj m ↔
+    x ∈ (DifferentialGeometry.SSet.costar (orderedFaceN K s hs hn)).obj m ↔
       ¬s ⊆ Finset.univ.image x.val.obj :=
   not_congr (orderedFace_subcomplex_le_iff K s hs hn x)
 
 def orderedFaceCostarIso :
-    orderedSimplicialSet (faceCostar K s) ≅ Poincare.SSet.costar (orderedFaceN K s hs hn) :=
+    orderedSimplicialSet (faceCostar K s) ≅ DifferentialGeometry.SSet.costar (orderedFaceN K s hs hn) :=
   NatIso.ofComponents (fun _ ↦ Equiv.toIso {
     toFun := fun x ↦ ⟨⟨x.val, x.prop.1⟩,
       (mem_orderedFaceN_costar_iff K s hs hn _).mpr x.prop.2⟩
@@ -105,11 +105,11 @@ def orderedFaceCostarIso :
 
 @[reassoc (attr := simp)]
 theorem orderedFaceCostarIso_hom_inclusion :
-    (orderedFaceCostarIso K s hs hn).hom ≫ (Poincare.SSet.costar (orderedFaceN K s hs hn)).ι =
+    (orderedFaceCostarIso K s hs hn).hom ≫ (DifferentialGeometry.SSet.costar (orderedFaceN K s hs hn)).ι =
       orderedInclusion (faceCostar_le K s) := rfl
 
 def orderedFaceCellMap : (Δ[n] : _root_.SSet.{u}) ⟶ orderedSimplicialSet K :=
-  Poincare.SSet.nondegenerateCellMap (orderedFaceN K s hs hn)
+  DifferentialGeometry.SSet.nondegenerateCellMap (orderedFaceN K s hs hn)
 
 theorem orderedFaceCellMap_app {m : ℕ} (f : ⦋m⦌ ⟶ ⦋n⦌) :
     ((orderedFaceCellMap K s hs hn).app (op ⦋m⦌)
@@ -119,7 +119,7 @@ theorem orderedFaceCellMap_app {m : ℕ} (f : ⦋m⦌ ⟶ ⦋n⦌) :
 
 def orderedFaceAttachingMap : (_root_.SSet.boundary n : _root_.SSet.{u}) ⟶
     orderedSimplicialSet (faceCostar K s) :=
-  Poincare.SSet.costarAttachingMap (orderedFaceN K s hs hn) ≫ (orderedFaceCostarIso K s hs hn).inv
+  DifferentialGeometry.SSet.costarAttachingMap (orderedFaceN K s hs hn) ≫ (orderedFaceCostarIso K s hs hn).inv
 
 @[reassoc (attr := simp)]
 theorem orderedFaceAttachingMap_inclusion :
@@ -131,7 +131,7 @@ theorem orderedFaceAttachingMap_inclusion :
 theorem orderedFaceAttachment_isPushout (hmax : IsMax (⟨s, hs⟩ : K.faces)) :
     IsPushout (_root_.SSet.boundary n).ι (orderedFaceAttachingMap K s hs hn)
       (orderedFaceCellMap K s hs hn) (orderedInclusion (faceCostar_le K s)) := by
-  apply (Poincare.SSet.costar_cell_isPushout (orderedFaceN K s hs hn)
+  apply (DifferentialGeometry.SSet.costar_cell_isPushout (orderedFaceN K s hs hn)
     (isMax_orderedFaceN K s hs hn hmax)).of_iso'
     (Iso.refl _) (Iso.refl _) (orderedFaceCostarIso K s hs hn) (Iso.refl _)
   · change (𝟙 (_root_.SSet.boundary n : _root_.SSet)) ≫ (_root_.SSet.boundary n).ι =
@@ -143,4 +143,4 @@ theorem orderedFaceAttachment_isPushout (hmax : IsMax (⟨s, hs⟩ : K.faces)) :
     rfl
   · simp
 
-end Poincare.Topology.SimplicialComplex
+end DifferentialGeometry.Topology.SimplicialComplex

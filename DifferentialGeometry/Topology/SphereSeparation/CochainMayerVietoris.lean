@@ -10,7 +10,7 @@ set_option autoImplicit false
 
 open CategoryTheory CategoryTheory.Limits Simplicial
 
-namespace Poincare.Topology.SphereSeparation
+namespace DifferentialGeometry.Topology.SphereSeparation
 
 
 
@@ -439,4 +439,4 @@ noncomputable def subspaceMayerVietorisHTwoIsoIntOfOverlap
   subspaceMayerVietorisHTwoIsoOfOverlap X A B (ModuleCat.of ℤ ℤ)
     hA hB hcover hOverlap
 
-end Poincare.Topology.SphereSeparation
+end DifferentialGeometry.Topology.SphereSeparation

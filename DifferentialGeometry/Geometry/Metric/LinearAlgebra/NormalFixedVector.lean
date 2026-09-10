@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Metric.LinearAlgebra.OrthogonalFixedVector
 
 noncomputable section
 
-namespace Poincare.Geometry
+namespace DifferentialGeometry.Geometry
 
 open Submodule
 
@@ -93,4 +93,4 @@ theorem exists_unit_normal_fixed_vector_of_odd (A : E ≃ₗᵢ[ℝ] E) {u : E}
   rw [hdet, (Nat.Odd.sub_odd hodd odd_one).neg_one_pow]
   norm_num
 
-end Poincare.Geometry
+end DifferentialGeometry.Geometry

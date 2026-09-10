@@ -6,7 +6,7 @@ open Set Manifold
 open scoped Topology ContDiff
 open DifferentialGeometry.Topology.Morse DifferentialGeometry.Analysis.ODE
 noncomputable section
-namespace Poincare.Manifold.RegularLevel
+namespace DifferentialGeometry.Manifold.RegularLevel
 
 private theorem exists_uniform_time
     {E : Type*} [TopologicalSpace E]
@@ -151,4 +151,4 @@ theorem exists_flowCollar_of_compact_regularLevel_manifold
   intro x
   exact hzero x
 
-end Poincare.Manifold.RegularLevel
+end DifferentialGeometry.Manifold.RegularLevel

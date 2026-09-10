@@ -6,7 +6,7 @@ noncomputable section
 open Set Manifold
 open scoped ContDiff
 
-namespace Poincare.Topology.Manifold
+namespace DifferentialGeometry.Topology.Manifold
 
 variable {F H M : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
   [TopologicalSpace H] [TopologicalSpace M] [ChartedSpace H M] [T2Space M]
@@ -47,4 +47,4 @@ theorem exists_isotopy_of_support_in_planar_chart
     · exact (show extendChartById e id x = e.symm (e x) from if_pos hx).trans (e.left_inv hx)
     · exact if_neg hx
 
-end Poincare.Topology.Manifold
+end DifferentialGeometry.Topology.Manifold

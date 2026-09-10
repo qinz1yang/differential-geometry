@@ -4,9 +4,9 @@ noncomputable section
 open Set Filter Topology Manifold
 open scoped ContDiff
 
-namespace Poincare.Topology.Ehresmann
+namespace DifferentialGeometry.Topology.Ehresmann
 
-open Poincare.Geometry.Boundary Poincare.Topology.Manifold
+open DifferentialGeometry.Geometry.Boundary DifferentialGeometry.Topology.Manifold
 open DifferentialGeometry.Integral.DivergenceTheorem.WithBoundary
 
 variable {E H M : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
@@ -64,4 +64,4 @@ theorem exists_boundary_endpoint_transport
       hu.continuous (fun x hx ↦ (hboundary x hx).symm)))
   exact ⟨Θ, hh, hl, ⟨⟨forward, inverse, hleft, hright⟩, hfor, hback⟩, fun _ ↦ rfl, fun _ ↦ rfl⟩
 
-end Poincare.Topology.Ehresmann
+end DifferentialGeometry.Topology.Ehresmann

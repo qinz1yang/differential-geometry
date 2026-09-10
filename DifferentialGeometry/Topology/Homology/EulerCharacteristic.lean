@@ -17,7 +17,7 @@ open scoped ContinuousMap
 
 universe u
 
-namespace Poincare.Homology
+namespace DifferentialGeometry.Homology
 
 variable (k : Type u) [Field k]
 
@@ -203,4 +203,4 @@ theorem eulerChar_of_contractible [ContractibleSpace X] : eulerChar k X = 1 := b
   exact (eulerChar_eq_of_homotopyEquiv k
     (Y := TopCat.of PUnit.{u + 1}) e).trans (eulerChar_of_unique k)
 
-end Poincare.Homology
+end DifferentialGeometry.Homology

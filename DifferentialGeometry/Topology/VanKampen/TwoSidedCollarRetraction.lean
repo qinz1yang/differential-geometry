@@ -12,7 +12,7 @@ open scoped ContinuousMap
 
 universe u v
 
-namespace Poincare.Topology.ThreeManifold.TwoSidedCollar
+namespace DifferentialGeometry.Topology.ThreeManifold.TwoSidedCollar
 
 open Set
 
@@ -313,4 +313,4 @@ theorem simplyConnectedSpace_closure_sides
       SimplyConnectedSpace (closure h.positiveSide) :=
   h.simplyConnectedSpace_closure_sides_of_retractions h.sideRetractions
 
-end Poincare.Topology.ThreeManifold.TwoSidedCollar
+end DifferentialGeometry.Topology.ThreeManifold.TwoSidedCollar

@@ -4,10 +4,10 @@ import DifferentialGeometry.Topology.Manifold.EmbeddedHypersurface.Collar
 
 set_option autoImplicit false
 noncomputable section
-open Set Bundle Filter DifferentialGeometry.Topology.Morse Poincare.Topology
+open Set Bundle Filter DifferentialGeometry.Topology.Morse DifferentialGeometry.Topology
 open scoped Manifold ContDiff Topology
 
-namespace Poincare.Manifold.EmbeddedHypersurface
+namespace DifferentialGeometry.Manifold.EmbeddedHypersurface
 
 private theorem continuous_covector_of_continuous_apply
     {B F : Type*} [TopologicalSpace B] [NormedAddCommGroup F] [NormedSpace ℝ F]
@@ -66,7 +66,7 @@ theorem exists_contMDiff_transverse_of_normalTrivialization {e : S → M}
       (E := fun s : S ↦ T s →L[ℝ] ℝ) s (ν s)) :=
     continuous_covector_of_continuous_apply T ν
       (continuous_normalTrivializationCovector_apply I J e t ht)
-  obtain ⟨V, hV, hpos⟩ := Poincare.VectorBundle.exists_contMDiff_section_covector_pos I T ν hν
+  obtain ⟨V, hV, hpos⟩ := DifferentialGeometry.VectorBundle.exists_contMDiff_section_covector_pos I T ν hν
     (normalTrivializationCovector_ne_zero I J e t ht)
   refine ⟨V, ?_, hpos, ?_, ?_⟩
   · intro x
@@ -96,4 +96,4 @@ theorem nonempty_smoothTwoSidedCollar_of_normalTrivialization {e : S → M}
     exists_contMDiff_transverse_of_normalTrivialization I J he.contMDiff t ht
   exact nonempty_smoothTwoSidedCollar I J he hK V hV.continuous htrans
 
-end Poincare.Manifold.EmbeddedHypersurface
+end DifferentialGeometry.Manifold.EmbeddedHypersurface

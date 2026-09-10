@@ -4,7 +4,7 @@ import Mathlib.AlgebraicTopology.FundamentalGroupoid.SimplyConnected
 
 noncomputable section
 
-namespace Poincare.Topology
+namespace DifferentialGeometry.Topology
 
 theorem simplyConnectedSpace_of_subsingleton_fundamentalGroup
     {X : Type*} [TopologicalSpace X] [PathConnectedSpace X] (x₀ : X)
@@ -19,4 +19,4 @@ theorem simplyConnectedSpace_of_subsingleton_fundamentalGroup
   apply Path.Homotopic.Quotient.eq.mp
   exact hh
 
-end Poincare.Topology
+end DifferentialGeometry.Topology

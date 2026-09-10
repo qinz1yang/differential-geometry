@@ -6,7 +6,7 @@ noncomputable section
 
 open scoped ContDiff Topology
 
-namespace Poincare.Analysis
+namespace DifferentialGeometry.Analysis
 
 variable {E F : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
   [NormedAddCommGroup F] [NormedSpace ℝ F]
@@ -37,4 +37,4 @@ theorem exists_localProjection_of_hasRightInverse
       f (e.symm y) = (e (e.symm y)).1 := (congrArg Prod.fst (heq (e.symm y))).symm
       _ = y.1 := congrArg Prod.fst (e.right_inv hy)
 
-end Poincare.Analysis
+end DifferentialGeometry.Analysis

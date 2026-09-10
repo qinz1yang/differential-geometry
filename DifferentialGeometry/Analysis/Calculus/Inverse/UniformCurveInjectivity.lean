@@ -5,7 +5,7 @@ import Mathlib.Analysis.Calculus.Deriv.MeanValue
 noncomputable section
 open Set Filter Topology
 
-namespace Poincare.Analysis
+namespace DifferentialGeometry.Analysis
 
 theorem exists_uniform_injOn_of_continuous_deriv
     {P E : Type*} [TopologicalSpace P] [NormedAddCommGroup E] [InnerProductSpace ℝ E]
@@ -20,7 +20,7 @@ theorem exists_uniform_injOn_of_continuous_deriv
   have hpos (p : P) (hp : p ∈ K) : 0 < D (p, 0) :=
     real_inner_self_pos.mpr (hzero p hp)
   obtain ⟨m, hm, V, hV, hbound⟩ :=
-    Poincare.Topology.Compactness.exists_pos_uniform_lower_bound hK
+    DifferentialGeometry.Topology.Compactness.exists_pos_uniform_lower_bound hK
       (fun _ _ ↦ hD.continuousAt) hpos
   obtain ⟨r, hr, hrV⟩ := Metric.mem_nhds_iff.mp hV
   refine ⟨r / 2, half_pos hr, fun p hp ↦ ?_⟩
@@ -53,7 +53,7 @@ theorem exists_uniform_injOn_of_continuous_deriv_on_Icc
       (fun _ hq ↦ ⟨hq.1, le_rfl, hρ.le⟩)
   have hD : ContinuousOn D (K ×ˢ Icc 0 ρ) := hd₀.inner hdγ
   obtain ⟨ε, hε, hερ, m, hm, hbound⟩ :=
-    Poincare.Topology.Compactness.exists_pos_uniform_lower_bound_on_Icc hK hρ hD
+    DifferentialGeometry.Topology.Compactness.exists_pos_uniform_lower_bound_on_Icc hK hρ hD
       (fun p hp ↦ real_inner_self_pos.mpr (hzero p hp))
   refine ⟨ε, hε, hερ, fun p hp ↦ ?_⟩
   let f : ℝ → ℝ := fun t ↦ inner ℝ (dγ p 0) (γ p t)
@@ -70,4 +70,4 @@ theorem exists_uniform_injOn_of_continuous_deriv_on_Icc
   intro s hs t ht he
   exact hmono.injOn hs ht (congrArg (fun z ↦ inner ℝ (dγ p 0) z) he)
 
-end Poincare.Analysis
+end DifferentialGeometry.Analysis

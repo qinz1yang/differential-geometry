@@ -6,7 +6,7 @@ noncomputable section
 open Set Filter Topology
 open scoped ContDiff Manifold NNReal
 
-namespace Poincare.Analysis
+namespace DifferentialGeometry.Analysis
 
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
   [FiniteDimensional ℝ E]
@@ -72,4 +72,4 @@ theorem exists_compact_isotopy_realizing_identity_tangent_germ
     apply (D p).injective
     exact ((D p).apply_symm_apply x).trans (hfix p x hx).symm
 
-end Poincare.Analysis
+end DifferentialGeometry.Analysis

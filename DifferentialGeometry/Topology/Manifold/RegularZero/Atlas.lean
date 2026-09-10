@@ -4,7 +4,7 @@ set_option autoImplicit false
 noncomputable section
 open Set Filter Function
 open scoped Manifold ContDiff Topology
-namespace Poincare.Manifold.RegularZero
+namespace DifferentialGeometry.Manifold.RegularZero
 variable {A : Type*} [NormedAddCommGroup A] [NormedSpace ℝ A] [FiniteDimensional ℝ A]
   {B : Type*} [NormedAddCommGroup B] [NormedSpace ℝ B] [FiniteDimensional ℝ B]
   {g : A → B} {S : Set A} {n : ℕ∞ω}
@@ -100,4 +100,4 @@ theorem contMDiff_inclusion (hn : n ≠ 0) (hs : IsOpen S) (hg : ContDiffOn ℝ 
   change y.val = (c.symm (c y)).val
   exact (congrArg Subtype.val (c.left_inv hy)).symm
 
-end Poincare.Manifold.RegularZero
+end DifferentialGeometry.Manifold.RegularZero

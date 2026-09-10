@@ -2,7 +2,7 @@ import Mathlib.Topology.Connected.Basic
 
 set_option autoImplicit false
 
-namespace Poincare.Topology.SphereSeparation
+namespace DifferentialGeometry.Topology.SphereSeparation
 
 open Set
 
@@ -83,4 +83,4 @@ theorem subset_endSide_of_isPreconnected_of_inter_nonempty
 
 end SphereSides
 
-end Poincare.Topology.SphereSeparation
+end DifferentialGeometry.Topology.SphereSeparation

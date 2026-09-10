@@ -3,9 +3,9 @@ import Mathlib.Topology.Connected.Clopen
 
 noncomputable section
 open scoped ContDiff Manifold Topology
-open Poincare.Topology.Manifold
+open DifferentialGeometry.Topology.Manifold
 
-namespace Poincare.Topology.Ehresmann
+namespace DifferentialGeometry.Topology.Ehresmann
 
 variable {E F H H' M N : Type*}
   [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
@@ -106,4 +106,4 @@ theorem nonempty_diffeomorph_regularFiber_of_mem_connectedComponent
   exact (IsClopen.connectedComponent_subset ⟨hclosed, hopen⟩
     (show R y y from ⟨Diffeomorph.refl 𝓘(ℝ, K) _ ∞⟩)) hz
 
-end Poincare.Topology.Ehresmann
+end DifferentialGeometry.Topology.Ehresmann

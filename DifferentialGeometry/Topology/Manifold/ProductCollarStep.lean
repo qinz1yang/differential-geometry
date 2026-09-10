@@ -8,7 +8,7 @@ noncomputable section
 open Set Filter Topology
 open scoped Manifold ContDiff
 
-namespace Poincare.Topology.Manifold
+namespace DifferentialGeometry.Topology.Manifold
 
 theorem exists_uniform_smooth_step_of_product_collar :
     ∃ C : ℝ, 0 < C ∧ ∀
@@ -43,7 +43,7 @@ theorem exists_uniform_smooth_step_of_product_collar :
         ∀ x (v : TangentSpace J x),
           |mvfderiv J θM x v| ≤ (C / (b - a)) * |mvfderiv J q x v| := by
   classical
-  obtain ⟨C, hC, hsteps⟩ := Poincare.Analysis.exists_uniform_smooth_interval_step
+  obtain ⟨C, hC, hsteps⟩ := DifferentialGeometry.Analysis.exists_uniform_smooth_interval_step
   refine ⟨C, hC, ?_⟩
   intro E F H G N M _ _ _ _ _ _ I J _ _ _ _ _ _
     O V Φ l r hlr hcollar P Q hP hQ hPQ e q hcover hleft hright
@@ -91,7 +91,7 @@ theorem exists_uniform_smooth_step_of_product_collar :
   have hcr : c < r := hcb.trans hbr
   let L := P ∪ e '' {x | (x.2 : ℝ) ≤ c}
   obtain ⟨hL, _, _, _, hfront, _, hpre, _⟩ :=
-    Poincare.Topology.closed_sides_of_embedded_collar l c r hlc hcr e he hinj
+    DifferentialGeometry.Topology.closed_sides_of_embedded_collar l c r hlc hcr e he hinj
       P Q hP hQ hPQ hcover hleft hright
   have heU (x : N × Icc l r) (hx : l < (x.2 : ℝ) ∧ (x.2 : ℝ) < r) : e x ∈ U :=
     ⟨ι x, hx, rfl⟩
@@ -217,4 +217,4 @@ theorem exists_uniform_smooth_step_of_product_collar :
       simp only [zero_apply, abs_zero]
       exact mul_nonneg (div_nonneg hC.le (sub_pos.mpr hab).le) (abs_nonneg _)
 
-end Poincare.Topology.Manifold
+end DifferentialGeometry.Topology.Manifold

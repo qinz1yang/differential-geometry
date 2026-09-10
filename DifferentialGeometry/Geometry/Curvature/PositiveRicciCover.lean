@@ -4,10 +4,10 @@ import DifferentialGeometry.Geometry.Curvature.SphericalCover
 open Manifold
 open scoped ContDiff
 
-namespace Poincare.Geometry
+namespace DifferentialGeometry.Geometry
 
 open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.Topology.ThreeManifold
-open Poincare.Topology
+open DifferentialGeometry.Topology
 
 variable {M : Type*} [TopologicalSpace M] [T2Space M]
   [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M] [IsManifold (𝓡 3) ∞ M]
@@ -23,4 +23,4 @@ theorem exists_spherical_cover_of_admits_positive_ricci
     (DifferentialGeometry.PDE.RicciFlow.HamiltonPositiveRicci.hamilton_positive_ricci
       (I := 𝓡 3) (M := M) hM hpos).1
 
-end Poincare.Geometry
+end DifferentialGeometry.Geometry

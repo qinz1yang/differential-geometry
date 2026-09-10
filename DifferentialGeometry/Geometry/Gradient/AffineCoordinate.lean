@@ -4,7 +4,7 @@ import Mathlib.Geometry.Manifold.Algebra.Structures
 noncomputable section
 open scoped Manifold ContDiff
 
-namespace Poincare.Geometry.Gradient
+namespace DifferentialGeometry.Geometry.Gradient
 
 theorem mvfderiv_signed_affine_coordinate
     {E H M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -21,4 +21,4 @@ theorem mvfderiv_signed_affine_coordinate
   have hs : σ * σ = 1 := by rcases hσ with rfl | rfl <;> norm_num
   rw [← mul_assoc, hs, one_mul]
 
-end Poincare.Geometry.Gradient
+end DifferentialGeometry.Geometry.Gradient

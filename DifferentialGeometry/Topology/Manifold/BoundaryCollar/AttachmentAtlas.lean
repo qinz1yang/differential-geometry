@@ -6,7 +6,7 @@ open scoped ContDiff
 open DifferentialGeometry.Integral.DivergenceTheorem.WithBoundary
 set_option autoImplicit false
 noncomputable section
-namespace Poincare.Manifold.BoundaryCollar
+namespace DifferentialGeometry.Manifold.BoundaryCollar
 
 theorem exists_boundaryAttachment_smooth_atlas
     {n : ℕ} {M : Type*} [TopologicalSpace M]
@@ -29,9 +29,9 @@ theorem exists_boundaryAttachment_smooth_atlas
     h, hO, hP, hOs, hPs, houter, hboundary⟩ := exists_boundaryAttachment_smooth_realization hK
   let I := 𝓡∂ (n + 1)
   let Q := BoundaryAttachment (M := M) I
-  let C := Poincare.Manifold.Homeomorph.pullbackChartedSpace (H := EuclideanHalfSpace (n + 1)) h
+  let C := DifferentialGeometry.Manifold.Homeomorph.pullbackChartedSpace (H := EuclideanHalfSpace (n + 1)) h
   let _ : ChartedSpace (EuclideanHalfSpace (n + 1)) Q := C
-  let d : Diffeomorph I I Q M ∞ := Poincare.Manifold.Homeomorph.pullbackDiffeomorph h
+  let d : Diffeomorph I I Q M ∞ := DifferentialGeometry.Manifold.Homeomorph.pullbackDiffeomorph h
   have hOrig : ContMDiff I I ∞ (attachmentOriginal (M := M) I) := by
     have hh := d.symm.contMDiff.comp hOs
     apply hh.congr
@@ -46,4 +46,4 @@ theorem exists_boundaryAttachment_smooth_atlas
   refine ⟨C, inferInstance, d, hOrig, hProd, houter, ?_⟩
   exact (d.preimage_boundary (by simp)).symm.trans hboundary
 
-end Poincare.Manifold.BoundaryCollar
+end DifferentialGeometry.Manifold.BoundaryCollar

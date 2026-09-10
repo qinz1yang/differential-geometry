@@ -9,8 +9,8 @@ noncomputable section
 open Set Function Topology
 open scoped Manifold ContDiff Topology
 open DifferentialGeometry.Integral.DivergenceTheorem.WithBoundary
-namespace Poincare.Homology
-open Poincare.Topology
+namespace DifferentialGeometry.Homology
+open DifferentialGeometry.Topology
 
 theorem finiteHomologyType_and_eulerChar_intrinsicDouble
     {n : ℕ} {M : Type} [TopologicalSpace M]
@@ -21,7 +21,7 @@ theorem finiteHomologyType_and_eulerChar_intrinsicDouble
       eulerChar K (TopCat.of (Double ((𝓡∂ (n + 1)).boundary M))) =
         2 * eulerChar K (TopCat.of M) - eulerChar K (TopCat.of ((𝓡∂ (n + 1)).boundary M)) := by
   obtain ⟨r, _, hrn, hrzero, a, ha, c, hc, _, _, hheight, hsmall, _⟩ :=
-    Poincare.Manifold.Boundary.exists_definingFunction_sublevel_collar (n := n) (M := M)
+    DifferentialGeometry.Manifold.Boundary.exists_definingFunction_sublevel_collar (n := n) (M := M)
   let B := (𝓡∂ (n + 1)).boundary M
   have hr (b : B) : r b.val = 0 := (hrzero b.val).mpr b.property
   have hz (x : M) (hx : r x = 0) : x ∈ B := (hrzero x).mp hx
@@ -32,4 +32,4 @@ theorem finiteHomologyType_and_eulerChar_intrinsicDouble
     (finiteHomologyType_of_compact_manifold_withBoundary (n := n + 1) (M := M) K)
     (finiteHomologyType_intrinsicBoundary (𝓡∂ (n + 1)) K)
 
-end Poincare.Homology
+end DifferentialGeometry.Homology

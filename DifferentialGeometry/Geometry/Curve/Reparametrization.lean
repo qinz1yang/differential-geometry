@@ -1,4 +1,3 @@
-import Batteries.Tactic.Alias
 import Mathlib.Geometry.Manifold.MFDeriv.SpecificFunctions
 import Mathlib.Geometry.Manifold.MFDeriv.FDeriv
 
@@ -36,10 +35,3 @@ theorem mfderiv_comp_affine_apply_one {γ : ℝ → M} (s c d : ℝ)
   exact hh.trans ((mfderiv 𝓘(ℝ, ℝ) I γ (c * s + d)).map_smul c (1 : ℝ))
 
 end DifferentialGeometry.Geometry
-
-namespace Poincare.Geometry
-
-alias mfderiv_comp_add_apply_one := DifferentialGeometry.Geometry.mfderiv_comp_add_apply_one
-alias mfderiv_comp_affine_apply_one := DifferentialGeometry.Geometry.mfderiv_comp_affine_apply_one
-
-end Poincare.Geometry

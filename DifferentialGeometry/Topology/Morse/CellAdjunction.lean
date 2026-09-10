@@ -9,7 +9,7 @@ open DifferentialGeometry.Topology.Morse.CellAttachment
 open DifferentialGeometry.Topology.Morse.ManifoldCellAttachment
 open DifferentialGeometry.Topology.Handle
 
-namespace Poincare.Morse
+namespace DifferentialGeometry.Morse
 
 variable {n k : ℕ} {H M : Type} [TopologicalSpace H] [TopologicalSpace M]
   [ChartedSpace H M] {I : ModelWithCorners ℝ (MorseModel n) H}
@@ -72,4 +72,4 @@ theorem cellAdjunctionHomeomorphLowerUnion_cell (hf : Continuous f) (x : ClosedC
       ⟨cellEmbedding hk c data x, Or.inr (mem_range_self x)⟩ := by
   rfl
 
-end Poincare.Morse
+end DifferentialGeometry.Morse

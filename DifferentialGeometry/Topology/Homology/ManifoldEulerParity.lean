@@ -8,7 +8,7 @@ open Set
 open scoped Manifold ContDiff Topology
 open DifferentialGeometry.Topology.Morse
 open DifferentialGeometry.Integral.DivergenceTheorem.WithBoundary
-namespace Poincare.Homology
+namespace DifferentialGeometry.Homology
 
 private theorem hessian_const_sub {E : Type} [NormedAddCommGroup E] [NormedSpace ℝ E]
     (f : E → ℝ) (b : ℝ) (x : E) :
@@ -45,17 +45,17 @@ theorem eulerChar_eq_neg_one_pow_mul_of_compact_boundaryless_manifold
   classical
   cases subsingleton_or_nontrivial E
   · rw [Module.finrank_zero_of_subsingleton, pow_zero, one_mul]
-  obtain ⟨f,hf,hnd,hinj,hfinite,hχ⟩ := Poincare.Morse.exists_morse_eulerChar I (M := M)
+  obtain ⟨f,hf,hnd,hinj,hfinite,hχ⟩ := DifferentialGeometry.Morse.exists_morse_eulerChar I (M := M)
   let g : M → ℝ := fun x => 0 - f x
   have hg : ContMDiff I 𝓘(ℝ, ℝ) ∞ g := contMDiff_const.sub hf
   have hc (x : M) : IsCriticalPointAt I g x ↔ IsCriticalPointAt I f x :=
-    Poincare.Morse.isCriticalPointAt_const_sub_iff (hf.mdifferentiableAt (by simp)) 0
+    DifferentialGeometry.Morse.isCriticalPointAt_const_sub_iff (hf.mdifferentiableAt (by simp)) 0
   have hcset : {x | IsCriticalPointAt I g x} = {x | IsCriticalPointAt I f x} :=
     Set.ext hc
   have hgfinite : {x | IsCriticalPointAt I g x}.Finite := hcset.symm ▸ hfinite
   have hgnd : ∀ x, IsCriticalPointAt I g x → IsNondegenerateCriticalPointAt I g x := by
     intro x hx
-    exact (Poincare.Morse.isNondegenerateCriticalPointAt_const_sub_iff hf
+    exact (DifferentialGeometry.Morse.isNondegenerateCriticalPointAt_const_sub_iff hf
       BoundarylessManifold.isInteriorPoint 0).mpr (hnd x ((hc x).mp hx))
   have hginj : InjOn g {x | IsCriticalPointAt I g x} := by
     intro x hx y hy he
@@ -70,7 +70,7 @@ theorem eulerChar_eq_neg_one_pow_mul_of_compact_boundaryless_manifold
   obtain ⟨m,hm⟩ := Nat.exists_eq_succ_of_ne_zero (Module.finrank_pos (R := ℝ) (M := E)).ne'
   let e : E ≃L[ℝ] MorseModel (m + 1) :=
     ((Module.finBasis ℝ E).reindex (finCongr hm)).equivFunL
-  obtain ⟨_,hgχ⟩ := Poincare.Morse.finiteHomologyType_and_eulerChar_of_finite_morse_sublevel
+  obtain ⟨_,hgχ⟩ := DifferentialGeometry.Morse.finiteHomologyType_and_eulerChar_of_finite_morse_sublevel
     I K e hg (A + 1) (htop ▸ isCompact_univ) (fun _ _ => BoundarylessManifold.isInteriorPoint)
     hgfinite hgnd hginj (fun x _ => hbelow x)
   have hχg := (eulerChar_eq_of_homeomorph K (X := TopCat.of (SublevelSpace g (A + 1)))
@@ -98,9 +98,9 @@ theorem eulerChar_eq_zero_of_odd_compact_boundaryless_manifold
   rw [hdim.neg_one_pow, neg_one_mul] at h
   omega
 
-end Poincare.Homology
+end DifferentialGeometry.Homology
 
-namespace Poincare.Homology
+namespace DifferentialGeometry.Homology
 variable {E H M : Type} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [TopologicalSpace H] [TopologicalSpace M] [ChartedSpace H M]
   (I : ModelWithCorners ℝ E H) [hI : HasSmoothBoundary E H I]
@@ -118,4 +118,4 @@ theorem eulerChar_intrinsicBoundary_eq_zero_of_even (K : Type) [Field K]
   exact eulerChar_eq_zero_of_odd_compact_boundaryless_manifold hI.boundaryI K hodd
     (M := BoundaryManifold I M)
 
-end Poincare.Homology
+end DifferentialGeometry.Homology

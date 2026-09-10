@@ -3,8 +3,8 @@ import DifferentialGeometry.Topology.Homology.Local.Graded
 
 set_option autoImplicit false
 noncomputable section
-open CategoryTheory CategoryTheory.Limits Set Metric Poincare.LocalDegree
-namespace Poincare.Homology
+open CategoryTheory CategoryTheory.Limits Set Metric DifferentialGeometry.LocalDegree
+namespace DifferentialGeometry.Homology
 universe u
 variable {d : ℕ}
 
@@ -47,4 +47,4 @@ theorem euclideanBallLocalGenerator_ne_zero (x : EuclideanSpace ℝ (Fin (d + 1)
     (localBallSphereHomologyIso _ x r hr (ModuleCat.of ℤ ℤ) d).inv_hom_id
   exact euclideanSphereTopGenerator_ne_zero d (he.symm.trans (hh.trans (map_zero _)))
 
-end Poincare.Homology
+end DifferentialGeometry.Homology

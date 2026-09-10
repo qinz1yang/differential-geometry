@@ -14,7 +14,7 @@ open CategoryTheory.Limits
 open Simplicial
 open scoped Simplicial
 
-namespace Poincare.Topology.SphereSeparation
+namespace DifferentialGeometry.Topology.SphereSeparation
 
 
 
@@ -332,4 +332,4 @@ theorem sphereTwoPunctureCover_mayerVietoris_shortExact
       ({p}ᶜ : Set SphereTwo) {q}ᶜ).shortComplex.ShortExact :=
   integerSingularChains_mayerVietoris_shortExact_subspaces _ _
 
-end Poincare.Topology.SphereSeparation
+end DifferentialGeometry.Topology.SphereSeparation

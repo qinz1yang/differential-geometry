@@ -6,7 +6,7 @@ set_option autoImplicit false
 noncomputable section
 open Set Function Manifold Topology
 open scoped ContDiff Topology
-namespace Poincare.Topology
+namespace DifferentialGeometry.Topology
 
 theorem exists_smoothAtlas_intrinsicDouble_of_subsingleton_model
     {E H M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [Subsingleton E]
@@ -20,14 +20,14 @@ theorem exists_smoothAtlas_intrinsicDouble_of_subsingleton_model
   let _ : BoundarylessManifold I M :=
     DifferentialGeometry.boundaryless_manifold_of_subsingleton_model I
   let h : Double (∅ : Set M) ≃ₜ M ⊕ M := doubleEmptyHomeomorph
-  let A := Poincare.Manifold.Homeomorph.pullbackChartedSpace (H := H) h
+  let A := DifferentialGeometry.Manifold.Homeomorph.pullbackChartedSpace (H := H) h
   let _ := A
   have hA : IsManifold I ∞ (Double (∅ : Set M)) :=
-    Poincare.Manifold.Homeomorph.instIsManifoldPullback (I := I) (n := ∞) h
-  have hs := Poincare.Manifold.Homeomorph.contMDiff_symm_pullback (I := I) (n := ∞) h
+    DifferentialGeometry.Manifold.Homeomorph.instIsManifoldPullback (I := I) (n := ∞) h
+  have hs := DifferentialGeometry.Manifold.Homeomorph.contMDiff_symm_pullback (I := I) (n := ∞) h
   have hB : BoundarylessManifold I (Double (∅ : Set M)) :=
-    Poincare.Manifold.Homeomorph.boundaryless_manifold_pullback
+    DifferentialGeometry.Manifold.Homeomorph.boundaryless_manifold_pullback
       (I := I) (n := ∞) h (by simp)
   exact ⟨A, hA, hB, hs.comp ContMDiff.inl, hs.comp ContMDiff.inr⟩
 
-end Poincare.Topology
+end DifferentialGeometry.Topology

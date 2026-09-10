@@ -2,7 +2,7 @@ import Mathlib.Topology.Connected.Basic
 
 open Set
 
-namespace Poincare.Topology
+namespace DifferentialGeometry.Topology
 
 theorem eq_of_regularClosed_subset_of_frontier_disjoint
     {X : Type*} [TopologicalSpace X] {A B : Set X}
@@ -25,4 +25,4 @@ theorem eq_of_regularClosed_subset_of_frontier_disjoint
       exact fun hf ↦ hd.le_bot ⟨hf, hxB⟩
   rw [← hA, ← hB, Set.Subset.antisymm hinc hreverse]
 
-end Poincare.Topology
+end DifferentialGeometry.Topology

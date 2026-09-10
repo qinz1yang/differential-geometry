@@ -7,7 +7,7 @@ open DifferentialGeometry.Integral.DivergenceTheorem.WithBoundary
 set_option autoImplicit false
 noncomputable section
 
-namespace Poincare.Manifold.BoundaryCollar
+namespace DifferentialGeometry.Manifold.BoundaryCollar
 
 variable {n : ℕ} [NeZero n] {M : Type*} [TopologicalSpace M]
   [ChartedSpace (EuclideanHalfSpace n) M] [IsManifold (𝓡∂ n) ∞ M]
@@ -71,4 +71,4 @@ theorem ker_mfderiv_chartHeight_eq_range_boundaryInclusion (p : M)
     (EuclideanSpace.proj (𝕜 := ℝ) (0 : Fin n)) v = 0
   exact mul_eq_zero.trans (or_iff_right (ne_of_gt hc))
 
-end Poincare.Manifold.BoundaryCollar
+end DifferentialGeometry.Manifold.BoundaryCollar

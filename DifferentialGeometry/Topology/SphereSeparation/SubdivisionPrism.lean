@@ -8,7 +8,7 @@ open CategoryTheory.Limits
 open Simplicial
 open scoped Simplicial
 
-namespace Poincare.Topology.SphereSeparation
+namespace DifferentialGeometry.Topology.SphereSeparation
 
 private noncomputable abbrev PrismChains (X : TopCat) :
     ChainComplex (ModuleCat ℤ) ℕ :=
@@ -537,4 +537,4 @@ noncomputable def signedBarycentricSubdivisionChainHomotopy
   _root_.Homotopy.equivSubZero.symm
     (signedBarycentricSubdivisionDifferenceNullHomotopy X)
 
-end Poincare.Topology.SphereSeparation
+end DifferentialGeometry.Topology.SphereSeparation

@@ -4,7 +4,7 @@ set_option autoImplicit false
 open Filter Metric Set
 open scoped Topology
 noncomputable section
-namespace Poincare.LocalDegree
+namespace DifferentialGeometry.LocalDegree
 variable {E F : Type*} [PseudoMetricSpace E] [TopologicalSpace F] [Zero F]
 
 structure IsolatingRadius (f : E → F) (x : E) (R : ℝ) : Prop where
@@ -77,4 +77,4 @@ theorem isolatedZero_congr {f g : E → F} {x : E} (hfg : f =ᶠ[𝓝 x] g) :
   exact hball (closedBall_subset_ball (lt_of_le_of_lt (min_le_right _ _)
     (by linarith)) hy)
 
-end Poincare.LocalDegree
+end DifferentialGeometry.LocalDegree

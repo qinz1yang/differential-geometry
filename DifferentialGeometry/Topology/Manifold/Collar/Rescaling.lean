@@ -6,7 +6,7 @@ open Set Function Filter Manifold Topology TopologicalSpace
 open scoped ContDiff
 set_option autoImplicit false
 noncomputable section
-namespace Poincare.Manifold.Collar
+namespace DifferentialGeometry.Manifold.Collar
 
 theorem contMDiff_rescale
     {E H B : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -24,10 +24,10 @@ theorem contMDiff_rescale
     (he : ∀ q : Ω, (e q : M) = c q.val)
     {k : ℝ} (hcore : {q : B × Icc (0 : ℝ) ε | q.2.val ≤ k} ⊆ Ω)
     (hfix : ∀ t : Icc (0 : ℝ) ε, k ≤ t.val → σ t = t) :
-    ContMDiff I I ∞ (Poincare.Topology.Collar.rescale c hc σ) := by
-  let R := Poincare.Topology.Collar.rescale c hc σ
+    ContMDiff I I ∞ (DifferentialGeometry.Topology.Collar.rescale c hc σ) := by
+  let R := DifferentialGeometry.Topology.Collar.rescale c hc σ
   have hR (q : B × Icc (0 : ℝ) ε) : R (c q) = c (q.1, σ q.2) :=
-    Poincare.Topology.Collar.rescale_apply c hc σ q
+    DifferentialGeometry.Topology.Collar.rescale_apply c hc σ q
   let K := c '' {q : B × Icc (0 : ℝ) ε | q.2.val ≤ k}
   have hK : IsCompact K :=
     ((isClosed_le (continuous_subtype_val.comp continuous_snd) continuous_const).isCompact).image
@@ -58,6 +58,6 @@ theorem contMDiff_rescale
     · obtain ⟨q, rfl⟩ := hyc
       have ht : k ≤ q.2.val := le_of_lt (lt_of_not_ge (fun h => hy ⟨q, h, rfl⟩))
       rw [hR, hfix q.2 ht]
-    · exact Poincare.Topology.Collar.rescale_of_not_mem c hc σ hyc
+    · exact DifferentialGeometry.Topology.Collar.rescale_of_not_mem c hc σ hyc
 
-end Poincare.Manifold.Collar
+end DifferentialGeometry.Manifold.Collar

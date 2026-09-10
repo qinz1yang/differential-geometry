@@ -9,7 +9,7 @@ open Set
 open scoped Manifold ContDiff Topology
 open DifferentialGeometry.Topology DifferentialGeometry.Topology.Morse
 open DifferentialGeometry.Topology.Homotopy
-namespace Poincare.Morse
+namespace DifferentialGeometry.Morse
 variable {m : ℕ} {E H M : Type} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [TopologicalSpace H] [TopologicalSpace M] [ChartedSpace H M]
   (I : ModelWithCorners ℝ E H) [IsManifold I ∞ M] [T2Space M] [SigmaCompactSpace M]
@@ -37,7 +37,7 @@ theorem one_critical_point_cell_attachment_of_interiorSublevel
   let _ : SecondCountableTopology M := ChartedSpace.secondCountable_of_sigmaCompact H M
   let _ : LocallyCompactSpace H := I.locallyCompactSpace
   let _ : LocallyCompactSpace M := ChartedSpace.locallyCompactSpace H M
-  let U := Poincare.Manifold.intrinsicInterior I ∞ (by simp) (M := M)
+  let U := DifferentialGeometry.Manifold.intrinsicInterior I ∞ (by simp) (M := M)
   let _ : LocallyCompactSpace U := U.isOpen.locallyCompactSpace
   have hp : I.IsInteriorPoint p := hinterior (show f p ≤ f p + a by linarith)
   let q : U := ⟨p, hp⟩
@@ -45,10 +45,10 @@ theorem one_critical_point_cell_attachment_of_interiorSublevel
   have hgold : ContMDiff I 𝓘(ℝ, ℝ) ∞ g := hf.comp contMDiff_subtype_val
   have hndold : IsNondegenerateCriticalPointAt I g q :=
     (isNondegenerateCriticalPointAt_openRestriction I hf q hp).mpr hnd
-  let _ := Poincare.Manifold.interiorChartedSpace I ∞ (M := U)
-  let _ : IsManifold 𝓘(ℝ, E) ∞ U := Poincare.Manifold.interiorIsManifold I ∞
+  let _ := DifferentialGeometry.Manifold.interiorChartedSpace I ∞ (M := U)
+  let _ : IsManifold 𝓘(ℝ, E) ∞ U := DifferentialGeometry.Manifold.interiorIsManifold I ∞
   have hg : ContMDiff 𝓘(ℝ, E) 𝓘(ℝ, ℝ) ∞ g :=
-    hgold.comp (Poincare.Manifold.contMDiff_interiorAtlas_id I ∞)
+    hgold.comp (DifferentialGeometry.Manifold.contMDiff_interiorAtlas_id I ∞)
   have hndself : IsNondegenerateCriticalPointAt 𝓘(ℝ, E) g q :=
     (isNondegenerateCriticalPointAt_interiorAtlas I hgold q).mpr hndold
   let J := (𝓘(ℝ, E)).transContinuousLinearEquiv e
@@ -103,4 +103,4 @@ theorem one_critical_point_cell_attachment_of_interiorSublevel
     (⟨ea, ea.continuous_toFun⟩ : C(SublevelSpace g (g q - ε), SublevelSpace f (f p - ε))).comp φ
   exact ⟨ε, hε, hεa, φ', ⟨cellAttachmentUnderSublevelRestriction
     (U : Set M) f (by linarith) hlo hup φ hφ⟩⟩
-end Poincare.Morse
+end DifferentialGeometry.Morse

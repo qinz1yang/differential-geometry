@@ -9,7 +9,7 @@ noncomputable section
 open Set Filter Topology Metric
 open scoped ContDiff Manifold
 
-namespace Poincare.Analysis
+namespace DifferentialGeometry.Analysis
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
 
@@ -89,4 +89,4 @@ theorem exists_smoothFlow_of_eq_const_off_compact
   exists_smoothFlow_of_globalIntegralCurves hv
     (exists_globalIntegralCurve_of_eq_const_off_compact hv c hc)
 
-end Poincare.Analysis
+end DifferentialGeometry.Analysis

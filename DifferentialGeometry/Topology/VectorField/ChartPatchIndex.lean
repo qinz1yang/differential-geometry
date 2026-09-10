@@ -6,7 +6,7 @@ set_option autoImplicit false
 noncomputable section
 open Bundle Set Filter
 open scoped Manifold ContDiff Topology
-namespace Poincare.VectorField
+namespace DifferentialGeometry.VectorField
 section General
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   {H M : Type*} [TopologicalSpace H] [TopologicalSpace M] [ChartedSpace H M]
@@ -15,7 +15,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   (V : ∀ x : M, TangentSpace I x) (W : E → E)
 
 theorem hasContinuousIsolatedZero_patchInCoordinates {x : M} (hx : x ∈ c.source)
-    (hW : Poincare.LocalDegree.isolatedZero W (c x)) :
+    (hW : DifferentialGeometry.LocalDegree.isolatedZero W (c x)) :
     HasContinuousIsolatedZero I (patchInCoordinates c V W) x := by
   have hP := (hasContinuousIsolatedZero_modelSpace_iff.mpr hW).mpullback I 𝓘(ℝ, E)
     c (by simp) hx
@@ -76,17 +76,17 @@ variable {d : ℕ} {H M : Type*} [TopologicalSpace H] [TopologicalSpace M] [Char
 omit [IsManifold I 1 M] in
 private theorem isInteriorPoint_of_mem_chart {x : M} (hx : x ∈ c.source) :
     I.IsInteriorPoint x := by
-  have hh := Poincare.Manifold.isInteriorPoint_of_model_partialDiffeomorph I ∞ c.symm
+  have hh := DifferentialGeometry.Manifold.isInteriorPoint_of_model_partialDiffeomorph I ∞ c.symm
     (by simp) (c.map_source hx)
   erw [c.left_inv hx] at hh
   exact hh
 
 theorem interiorIndex_patchInCoordinates {x : M} (hx : x ∈ c.source)
-    (hW : Poincare.LocalDegree.isolatedZero W (c x)) :
+    (hW : DifferentialGeometry.LocalDegree.isolatedZero W (c x)) :
     interiorIndex I (patchInCoordinates c V W) x
       (hasContinuousIsolatedZero_patchInCoordinates c V W hx hW)
       (isInteriorPoint_of_mem_chart I c hx) =
-        Poincare.LocalDegree.euclideanLocalDegree W (c x) hW := by
+        DifferentialGeometry.LocalDegree.euclideanLocalDegree W (c x) hW := by
   let c₁ : PartialDiffeomorph I 𝓘(ℝ, EuclideanSpace ℝ (Fin (d + 1))) M
       (EuclideanSpace ℝ (Fin (d + 1))) 1 :=
     { c with
@@ -95,7 +95,7 @@ theorem interiorIndex_patchInCoordinates {x : M} (hx : x ∈ c.source)
   rw [interiorIndex_eq_in_coordinates I
     (hasContinuousIsolatedZero_patchInCoordinates c V W hx hW)
     (isInteriorPoint_of_mem_chart I c hx) c₁ hx]
-  apply Poincare.LocalDegree.euclideanLocalDegree_congr
+  apply DifferentialGeometry.LocalDegree.euclideanLocalDegree_congr
   filter_upwards [c.open_target.mem_nhds (c.map_source hx)] with y hy
   exact mpullback_patchInCoordinates c V W hy
 
@@ -113,4 +113,4 @@ theorem interiorIndex_patchInCoordinates_off [T2Space M] {C : Set (EuclideanSpac
   exact TotalSpace.mk_injective y hy
 
 end Index
-end Poincare.VectorField
+end DifferentialGeometry.VectorField

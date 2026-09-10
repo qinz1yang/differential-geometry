@@ -6,7 +6,7 @@ noncomputable section
 open Set Function
 open scoped Manifold ContDiff Topology
 open DifferentialGeometry.Topology.Morse
-namespace Poincare.Morse
+namespace DifferentialGeometry.Morse
 variable {E : Type} [NormedAddCommGroup E] [NormedSpace ℝ E]
 
 
@@ -24,7 +24,7 @@ theorem isCriticalPointAt_const_sub_iff {f : M → ℝ} {x : M}
     IsCriticalPointAt I (fun y => b - f y) x ↔ IsCriticalPointAt I f x := by
   change (show E →L[ℝ] ℝ from mfderiv I 𝓘(ℝ, ℝ) (fun y => b - f y) x) = 0 ↔
     (show E →L[ℝ] ℝ from mfderiv I 𝓘(ℝ, ℝ) f x) = 0
-  rw [Poincare.Manifold.mfderiv_const_sub_real hf b,neg_eq_zero]
+  rw [DifferentialGeometry.Manifold.mfderiv_const_sub_real hf b,neg_eq_zero]
 
 variable [IsManifold I ∞ M]
 
@@ -32,9 +32,9 @@ variable [IsManifold I ∞ M]
 theorem isNondegenerateCriticalPointAt_const_sub_iff {f : M → ℝ} {x : M}
     (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) (hx : I.IsInteriorPoint x) (b : ℝ) :
     IsNondegenerateCriticalPointAt I (fun y => b - f y) x ↔ IsNondegenerateCriticalPointAt I f x := by
-  let c := Poincare.Manifold.interiorChart I ∞ x
+  let c := DifferentialGeometry.Manifold.interiorChart I ∞ x
   let g : E → ℝ := fun z => f (c.symm z)
-  have hxc : x ∈ c.source := (Poincare.Manifold.mem_interiorChart_source_iff I ∞ x).mpr hx
+  have hxc : x ∈ c.source := (DifferentialGeometry.Manifold.mem_interiorChart_source_iff I ∞ x).mpr hx
   have hg : ContDiffAt ℝ 2 g (c x) :=
     (((hf.comp_contMDiffOn c.symm.contMDiffOn).contMDiffAt
       (c.open_target.mem_nhds (c.map_source hxc))).contDiffAt).of_le
@@ -53,4 +53,4 @@ theorem isNondegenerateCriticalPointAt_const_sub_iff {f : M → ℝ} {x : M}
     refine ⟨hc,fun v w hvw => ?_⟩
     exact h (neg_injective hvw)
 
-end Poincare.Morse
+end DifferentialGeometry.Morse

@@ -9,7 +9,7 @@ open CategoryTheory Opposite Simplicial
 
 universe u v
 
-namespace Poincare.Homology
+namespace DifferentialGeometry.Homology
 
 variable (X : TopCat.{u}) {ι : Type v} (U : ι → Set X)
   (hopen : ∀ i, IsOpen (U i)) (hcover : ∀ x : X, ∃ i, x ∈ U i)
@@ -60,4 +60,4 @@ theorem exists_uniform_small_precomp_radius {n : ℕ}
     · exact hεσ m τ (fun a b ↦ (hτ a b).trans_le (min_le_right _ _))
     · exact hδF ρ hρ m τ (fun a b ↦ (hτ a b).trans_le (min_le_left _ _))
 
-end Poincare.Homology
+end DifferentialGeometry.Homology

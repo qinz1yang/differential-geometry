@@ -4,8 +4,8 @@ set_option autoImplicit false
 noncomputable section
 open CategoryTheory Set Metric
 open scoped unitInterval
-namespace Poincare.LocalDegree
-open Poincare.Homology
+namespace DifferentialGeometry.LocalDegree
+open DifferentialGeometry.Homology
 universe u
 section Maps
 variable {E F : Type u} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -61,4 +61,4 @@ theorem euclideanBallDegree_eq_of_eqOn_boundary
   exact euclideanBallDegree_eq_of_boundaryHomotopy hr hf hg H
     (fun q => hf _ q.2.property) (fun _ => rfl) (fun x => hfg _ x.property)
 end Degree
-end Poincare.LocalDegree
+end DifferentialGeometry.LocalDegree

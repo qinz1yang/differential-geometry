@@ -76,7 +76,7 @@ private local instance outwardComparisonC1 : IsManifold I 1 N :=
 
 private theorem exists_ray_of_neck [NoncompactSpace N]
     (W1 : SpatialNeckWitness h y1 p1 epsilon) (hEnorm : IsMetricNorm (I := I) h)
-    (hsec : Poincare.Geometry.HasNonnegativeSectionalCurvature (I := I) h) :
+    (hsec : DifferentialGeometry.Geometry.HasNonnegativeSectionalCurvature (I := I) h) :
     ∃ c : ℝ≥0 → N, Isometry c := by
   let _ : NeZero (Module.finrank ℝ E) := ⟨by rw [W1.dimension_three]; norm_num⟩
   let _ : CompleteSpace N := completeMetric_compatible_completeSpace h hEnorm W1.complete
@@ -92,7 +92,7 @@ private theorem exists_ray_of_neck [NoncompactSpace N]
 theorem outward_scalar_le [NoncompactSpace N]
     (hEnorm : IsMetricNorm (I := I) h)
     (hsmall : epsilon ≤ spatialNeckControlEpsilon)
-    (hsec : Poincare.Geometry.HasNonnegativeSectionalCurvature (I := I) h)
+    (hsec : DifferentialGeometry.Geometry.HasNonnegativeSectionalCurvature (I := I) h)
     (hcores : Disjoint W1.core W2.core)
     (horder : closure (D1.lower 0) ⊆ D2.lower 0) :
     metricScalarAt (I := I) h p2 ≤ 144 * metricScalarAt (I := I) h p1 := by

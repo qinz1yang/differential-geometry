@@ -7,7 +7,7 @@ import Mathlib.Topology.Instances.Real.Lemmas
 open Set Function
 set_option autoImplicit false
 noncomputable section
-namespace Poincare.Topology
+namespace DifferentialGeometry.Topology
 
 
 def intervalPush {ε : ℝ} (a : ℝ) (haε : 2 * a ≤ ε) : C(Icc (0 : ℝ) ε, Icc (0 : ℝ) ε) where
@@ -49,4 +49,4 @@ theorem range_intervalPush {a ε : ℝ} (haε : 2 * a ≤ ε) :
       rw [hh, max_eq_right (by linarith)]
     · exact ⟨t, intervalPush_fixed a haε t (le_of_lt (lt_of_not_ge hta))⟩
 
-end Poincare.Topology
+end DifferentialGeometry.Topology

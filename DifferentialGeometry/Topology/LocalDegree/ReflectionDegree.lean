@@ -7,8 +7,8 @@ open CategoryTheory CategoryTheory.Limits
 open Metric Submodule
 noncomputable section
 universe u
-namespace Poincare.LocalDegree
-open Poincare.Homology
+namespace DifferentialGeometry.LocalDegree
+open DifferentialGeometry.Homology
 
 variable {E : Type u} [NormedAddCommGroup E]
 
@@ -212,4 +212,4 @@ theorem euclideanSphereDegree_reflection_zero (d : ℕ) :
     euclideanSphereDegree (unitSphereReflection (0 : EuclideanSpace ℝ (Fin (d + 1)))) = 1 := by
   rw [unitSphereReflection_zero, euclideanSphereDegree_id]
 
-end Poincare.LocalDegree
+end DifferentialGeometry.LocalDegree

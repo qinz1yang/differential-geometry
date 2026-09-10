@@ -17,10 +17,10 @@ open Filter Topology
 
 universe u v
 
-namespace Poincare.Topology.ThreeManifold
+namespace DifferentialGeometry.Topology.ThreeManifold
 
 open Set
-open Poincare.Topology.VanKampen
+open DifferentialGeometry.Topology.VanKampen
 
 structure TwoSidedCollar
     {S : Type v} [TopologicalSpace S] {X : Type u} [TopologicalSpace X]
@@ -554,4 +554,4 @@ theorem frontier_positiveSide
 
 end TwoSidedCollar
 
-end Poincare.Topology.ThreeManifold
+end DifferentialGeometry.Topology.ThreeManifold

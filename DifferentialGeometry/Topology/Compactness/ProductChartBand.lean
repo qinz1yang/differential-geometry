@@ -2,7 +2,7 @@ import Mathlib.Topology.OpenPartialHomeomorph.Basic
 import Mathlib.Topology.Order.Compact
 import Mathlib.Topology.Instances.Real.Lemmas
 
-namespace Poincare.Topology.Compactness
+namespace DifferentialGeometry.Topology.Compactness
 
 open Set
 
@@ -34,4 +34,4 @@ theorem closure_coordinate_band_subset_target_of_product_chart
   rw [(isCompact_coordinate_band_of_product_chart e a b hsource).isClosed.closure_eq]
   exact inter_subset_left
 
-end Poincare.Topology.Compactness
+end DifferentialGeometry.Topology.Compactness

@@ -10,7 +10,7 @@ noncomputable section
 open Set Function Filter Bundle Manifold Matrix
 open scoped Topology Manifold ContDiff BigOperators
 
-namespace Poincare.Geometry.Riemannian.VolumeComparison
+namespace DifferentialGeometry.Geometry.Riemannian.VolumeComparison
 
 open DifferentialGeometry
 open DifferentialGeometry.Geometry.Curvature
@@ -763,6 +763,6 @@ theorem normalExpJacobian_radial_jets_of_intrLaunchJet_two_zero
   exact congrArg (fun v ↦ (v : E))
     (intrinsicLaunchJet_one_zero (I := I) g hEnorm p a b)
 
-end Poincare.Geometry.Riemannian.VolumeComparison
+end DifferentialGeometry.Geometry.Riemannian.VolumeComparison
 
 end

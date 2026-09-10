@@ -9,7 +9,7 @@ open DifferentialGeometry.Topology.Morse DifferentialGeometry.Analysis.ODE
 
 noncomputable section
 
-namespace Poincare.Manifold.RegularLevel
+namespace DifferentialGeometry.Manifold.RegularLevel
 
 variable {n : ℕ}
 
@@ -196,4 +196,4 @@ theorem exists_flowCollar_of_compact_regularLevel
   intro x
   exact hzero x
 
-end Poincare.Manifold.RegularLevel
+end DifferentialGeometry.Manifold.RegularLevel

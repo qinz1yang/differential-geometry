@@ -2,7 +2,7 @@ import DifferentialGeometry.Tensor.Alternating.Orientation
 import DifferentialGeometry.Bundle.Orientation.Basic
 import Mathlib.Geometry.Manifold.PartitionOfUnity
 
-open Set Bundle Module Poincare.ContinuousAlternatingMap
+open Set Bundle Module DifferentialGeometry.ContinuousAlternatingMap
 open scoped Manifold ContDiff Topology
 set_option autoImplicit false
 noncomputable section

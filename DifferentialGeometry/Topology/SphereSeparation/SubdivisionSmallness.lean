@@ -10,7 +10,7 @@ open CategoryTheory.Limits
 open Simplicial
 open scoped Simplicial
 
-namespace Poincare.Topology.SphereSeparation
+namespace DifferentialGeometry.Topology.SphereSeparation
 
 
 
@@ -918,4 +918,4 @@ theorem subdivision_eventually_zero_in_smallChainCokernel
       (cokernel.condition (smallSingularChainInclusion X V W)) n)
     hstable
 
-end Poincare.Topology.SphereSeparation
+end DifferentialGeometry.Topology.SphereSeparation

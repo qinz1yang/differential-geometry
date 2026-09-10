@@ -4,7 +4,7 @@ import Mathlib.SetTheory.Cardinal.Finite
 set_option autoImplicit false
 noncomputable section
 
-namespace Poincare.Topology.SimplicialComplex
+namespace DifferentialGeometry.Topology.SimplicialComplex
 
 variable {ι : Type*} (K : PreAbstractSimplicialComplex ι) (s : Finset ι)
 
@@ -96,4 +96,4 @@ theorem space_geometricFaceCostar_union (hs : s ∈ K.facets) :
 
 end Geometry
 
-end Poincare.Topology.SimplicialComplex
+end DifferentialGeometry.Topology.SimplicialComplex

@@ -5,9 +5,9 @@ import DifferentialGeometry.Topology.Manifold.DiffeomorphFamily
 
 noncomputable section
 open scoped ContDiff Manifold Topology
-open Poincare.Topology.Manifold DifferentialGeometry.Analysis.ODE
+open DifferentialGeometry.Topology.Manifold DifferentialGeometry.Analysis.ODE
 
-namespace Poincare.Topology.Ehresmann
+namespace DifferentialGeometry.Topology.Ehresmann
 
 variable {E F H H' M N : Type*}
   [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
@@ -183,4 +183,4 @@ theorem ehresmann_local_triviality
     (hrelated l) hbase (by rw [diffeomorphList_zero d hd0]; rfl)
     (diffeomorphList_zero D hD0 l)
 
-end Poincare.Topology.Ehresmann
+end DifferentialGeometry.Topology.Ehresmann

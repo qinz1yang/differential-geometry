@@ -5,7 +5,7 @@ set_option autoImplicit false
 open CategoryTheory CategoryTheory.Limits AlgebraicTopology
 noncomputable section
 universe u
-namespace Poincare.Homology
+namespace DifferentialGeometry.Homology
 variable {k : Type u} [Ring k] (R : ModuleCat.{u} k)
   {X Y : TopCat.{u}} {s t : Set X} {s' t' : Set Y}
   (f : X ⟶ Y) (hs : Set.MapsTo f s s') (ht : Set.MapsTo f t t')
@@ -336,4 +336,4 @@ theorem reducedMayerVietorisConnectingMap_swap (X : TopCat.{u}) (s t : Set X)
   rw [Preadditive.comp_neg, ← Category.assoc, small_inclusion_reducedMayerVietorisConnectingMap]
   exact augmentedSmallConnectingMap_swap R X s t n
 
-end Poincare.Homology
+end DifferentialGeometry.Homology

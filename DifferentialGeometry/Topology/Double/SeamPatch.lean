@@ -4,7 +4,7 @@ import Mathlib.Topology.OpenPartialHomeomorph.Composition
 set_option autoImplicit false
 noncomputable section
 open Set Function Topology TopologicalSpace
-namespace Poincare.Topology
+namespace DifferentialGeometry.Topology
 variable {X : Type*} [TopologicalSpace X] [CompactSpace X] [T2Space X]
   (B : Set X) (r : C(X, ℝ)) (hr : ∀ b : B, r b.val = 0)
   (hz : ∀ x, r x = 0 → x ∈ B) (hn : ∀ x, 0 ≤ r x)
@@ -146,4 +146,4 @@ theorem doubleSeamPatch_transition_apply (ha : 0 < a) (b b' : B) {q : B × ℝ}
   rw [doubleSeamPatch_source]
   exact hqa
 
-end Poincare.Topology
+end DifferentialGeometry.Topology

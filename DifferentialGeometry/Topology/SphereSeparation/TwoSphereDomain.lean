@@ -8,7 +8,7 @@ noncomputable section
 open Set Metric Topology Manifold
 open scoped ContDiff
 
-namespace Poincare.Topology.SphereSeparation
+namespace DifferentialGeometry.Topology.SphereSeparation
 
 private theorem shell_of_outer_side
     {K S₀ S₁ : Set EuclideanThree} (hK : IsCompact K)
@@ -54,12 +54,12 @@ private theorem shell_of_outer_side
     rwa [hD₁c, hD₀] at hnest
   have hAc : IsPreconnected (interior A) := by
     rw [hAeq]
-    exact Poincare.Geometry.Boundary.isPreconnected_interior_nestedBallShell
+    exact DifferentialGeometry.Geometry.Boundary.isPreconnected_interior_nestedBallShell
       D₀.toPartialDiffeomorph D₁.toPartialDiffeomorph zero_lt_one
       (subset_univ _) (subset_univ _) hnestD (Classical.arbitrary SphereTwo)
   have hAr : closure (interior A) = A := by
     rw [hAeq]
-    exact Poincare.Geometry.Boundary.closure_interior_nestedBallShell
+    exact DifferentialGeometry.Geometry.Boundary.closure_interior_nestedBallShell
       D₀.toPartialDiffeomorph D₁.toPartialDiffeomorph zero_lt_one
       (subset_univ _) (subset_univ _) hnestD (Classical.arbitrary SphereTwo)
   have hiB : interior A ⊆ s.compactSide := by
@@ -106,4 +106,4 @@ theorem exists_nested_ball_shell_of_two_spherical_boundaries
       (range_nonempty e₁) (isConnected_range he₀.contMDiff.continuous) t s D₁ D₀
       hD₁ hD₁c hD₀ hD₀c ht⟩
 
-end Poincare.Topology.SphereSeparation
+end DifferentialGeometry.Topology.SphereSeparation

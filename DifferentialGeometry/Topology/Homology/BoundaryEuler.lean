@@ -7,7 +7,7 @@ import DifferentialGeometry.Topology.Homology.Manifold
 set_option autoImplicit false
 noncomputable section
 open scoped Manifold ContDiff
-namespace Poincare.Homology
+namespace DifferentialGeometry.Homology
 
 theorem eulerChar_intrinsicBoundary
     {n : ℕ} {M : Type} [TopologicalSpace M]
@@ -33,4 +33,4 @@ theorem relativeEulerChar_intrinsicBoundary
     eulerChar_intrinsicBoundary K]
   ring
 
-end Poincare.Homology
+end DifferentialGeometry.Homology

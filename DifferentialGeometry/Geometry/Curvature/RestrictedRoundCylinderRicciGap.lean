@@ -7,9 +7,9 @@ noncomputable section
 open scoped Manifold ContDiff
 open DifferentialGeometry DifferentialGeometry.Geometry DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.Geometry.Riemannian
-open Poincare.Geometry.Metric
+open DifferentialGeometry.Geometry.Metric
 
-namespace Poincare.Geometry.Curvature
+namespace DifferentialGeometry.Geometry.Curvature
 
 theorem ricciSharp_restricted_roundCylinder_normalized_axis_bound
     {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
@@ -66,4 +66,4 @@ theorem ricciSharp_restricted_roundCylinder_normalized_axis_bound
   norm_num only [abs_of_pos (by norm_num : (0 : ℝ) < 1 / 2)] at h
   convert h using 1 <;> first | rfl | ring
 
-end Poincare.Geometry.Curvature
+end DifferentialGeometry.Geometry.Curvature

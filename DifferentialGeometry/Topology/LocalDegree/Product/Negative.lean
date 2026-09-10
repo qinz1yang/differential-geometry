@@ -4,7 +4,7 @@ import DifferentialGeometry.Topology.LocalDegree.ReflectionDegree
 set_option autoImplicit false
 open Metric Set
 noncomputable section
-namespace Poincare.LocalDegree
+namespace DifferentialGeometry.LocalDegree
 
 
 def euclideanNegativeProductField {d : ℕ}
@@ -89,4 +89,4 @@ theorem euclideanLocalDegree_negativeProduct {d : ℕ}
     euclideanSphereDegree_reflection_unit, neg_one_mul, ← he,
     euclideanLocalDegree_product h]
 
-end Poincare.LocalDegree
+end DifferentialGeometry.LocalDegree

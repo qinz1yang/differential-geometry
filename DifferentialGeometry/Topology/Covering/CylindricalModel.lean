@@ -6,7 +6,7 @@ noncomputable section
 open Set Metric Manifold
 open scoped ContDiff ContinuousMap
 
-namespace Poincare.Topology
+namespace DifferentialGeometry.Topology
 
 theorem simplyConnectedSpace_sphereTwo_prod_real : SimplyConnectedSpace (SphereTwo × ℝ) := by
   let e : SphereTwo × ℝ ≃ₕ SphereTwo :=
@@ -73,15 +73,15 @@ theorem finite_fundamentalGroup (c : smoothCylinderCover M) (x : M) :
     c.projection c.isCoveringMap x ⟨q, hq⟩
 
 theorem exists_euclidean_open_cover (c : smoothCylinderCover M) :
-    ∃ p : Poincare.Topology.Manifold.puncturedSpace (EuclideanSpace ℝ (Fin 3)) → M,
+    ∃ p : DifferentialGeometry.Topology.Manifold.puncturedSpace (EuclideanSpace ℝ (Fin 3)) → M,
       IsCoveringMap p ∧ Function.Surjective p ∧
         IsLocalDiffeomorph (𝓡 3) (𝓡 3) ∞ p := by
   let : Fact (Module.finrank ℝ (EuclideanSpace ℝ (Fin 3)) = 2 + 1) := ⟨by simp⟩
-  let D := Poincare.Topology.Manifold.sphereProdRealDiffeomorphPunctured (n := 2) sphereTwoNorth
+  let D := DifferentialGeometry.Topology.Manifold.sphereProdRealDiffeomorphPunctured (n := 2) sphereTwoNorth
   refine ⟨c.projection ∘ D.symm, c.isCoveringMap.comp_homeomorph D.symm.toHomeomorph,
     c.surjective.comp D.symm.surjective, ?_⟩
   intro x
   exact (D.symm.isLocalDiffeomorph x).comp (𝓡 3) M (c.isLocalDiffeomorph (D.symm x))
 
 end smoothCylinderCover
-end Poincare.Topology
+end DifferentialGeometry.Topology

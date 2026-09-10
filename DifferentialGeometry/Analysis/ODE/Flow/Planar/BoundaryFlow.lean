@@ -8,7 +8,7 @@ noncomputable section
 open Set Filter Topology
 open scoped ContDiff
 
-namespace Poincare.Analysis
+namespace DifferentialGeometry.Analysis
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
 
@@ -129,4 +129,4 @@ theorem exists_inward_flow_coordinates_of_one_sided
     · simpa only [heq, f] using h.1
     · simpa only [heq, f] using h.2.2
 
-end Poincare.Analysis
+end DifferentialGeometry.Analysis

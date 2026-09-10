@@ -5,7 +5,7 @@ set_option autoImplicit false
 open Bundle Filter Set
 open scoped Manifold ContDiff Topology
 noncomputable section
-namespace Poincare.VectorField
+namespace DifferentialGeometry.VectorField
 
 variable {d : ℕ} {H M : Type*} [TopologicalSpace H] [TopologicalSpace M]
   [ChartedSpace H M] (I : ModelWithCorners ℝ (EuclideanSpace ℝ (Fin (d + 1))) H)
@@ -97,7 +97,7 @@ theorem hasContinuousIsolatedZero_of_det_linearizationAtZero_ne_zero_in_model {n
     hdetEq ▸ hdet
   have hn0 : n ≠ 0 := ne_of_gt (lt_of_lt_of_le (by norm_num) hn)
   have hPz := (mpullback_partialDiffeomorph_eq_zero_iff f hn0 V ha).mpr hz
-  have hPi := Poincare.LocalDegree.isolatedZero_of_det_fderiv_ne_zero ht hP hPz hD hDdet
+  have hPi := DifferentialGeometry.LocalDegree.isolatedZero_of_det_fderiv_ne_zero ht hP hPz hD hDdet
   have hiso : ∀ᶠ y in 𝓝 a,
       _root_.VectorField.mpullback 𝓘(ℝ, EuclideanSpace ℝ (Fin (d + 1))) I f V y = 0 → y = a := by
     filter_upwards [Metric.closedBall_mem_nhds a hPi.choose_spec.pos] with y hy
@@ -126,7 +126,7 @@ theorem index_eq_sign_det_linearizationAtZero_in_model {n : ℕ∞ω}
       (_root_.VectorField.mpullback 𝓘(ℝ, EuclideanSpace ℝ (Fin (d + 1))) I f V) a).toLinearMap ≠ 0 :=
     hdetEq ▸ hdet
   rw [index_eq_localDegree I f₁ ha hV,
-    Poincare.LocalDegree.euclideanLocalDegree_eq_sign_det_fderiv _ hD hDdet, hdetEq]
+    DifferentialGeometry.LocalDegree.euclideanLocalDegree_eq_sign_det_fderiv _ hD hDdet, hdetEq]
 
 variable [IsManifold I 2 M]
 
@@ -210,4 +210,4 @@ theorem exists_index_eq_sign_det_linearizationAtZero
   exact ⟨hV, index_eq_sign_det_linearizationAtZero I hV
     (hC.mdifferentiableAt one_ne_zero) hdet⟩
 
-end Poincare.VectorField
+end DifferentialGeometry.VectorField

@@ -6,7 +6,7 @@ noncomputable section
 open Set Metric Manifold
 open scoped ContDiff
 
-namespace Poincare.Topology.Manifold
+namespace DifferentialGeometry.Topology.Manifold
 
 theorem exists_smooth_planar_chart_containing_pair
     (a b : sphere (0 : EuclideanSpace ℝ (Fin 3)) 1) :
@@ -39,7 +39,7 @@ theorem exists_sphere_isotopy_moving_point
       J 0 = Diffeomorph.refl (𝓡 2) _ ∞ ∧ J 1 a = b := by
   obtain ⟨e, ha, hb, het, he, hei⟩ := exists_smooth_planar_chart_containing_pair a b
   obtain ⟨D, hD, hDi, hD0, hmove, K, hK, hfix⟩ :=
-    Poincare.Analysis.exists_compact_isotopy_moving_point (e a) (e b)
+    DifferentialGeometry.Analysis.exists_compact_isotopy_moving_point (e a) (e b)
   obtain ⟨J, hJ, hJi, hJe, _, _, _⟩ :=
     exists_diffeomorph_extension_of_chart_family e het he hei D hD hDi hK hfix
   refine ⟨J, hJ, hJi, ?_, ?_⟩
@@ -54,4 +54,4 @@ theorem exists_sphere_isotopy_moving_point
     have hx : extendChartById e (D 1) a = e.symm (D 1 (e a)) := if_pos ha
     rw [hx, hmove, e.left_inv hb]
 
-end Poincare.Topology.Manifold
+end DifferentialGeometry.Topology.Manifold

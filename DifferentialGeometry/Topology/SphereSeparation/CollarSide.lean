@@ -4,13 +4,13 @@ import DifferentialGeometry.Topology.VanKampen.TwoSidedCollarSeparation
 noncomputable section
 open Set Topology
 
-namespace Poincare.Topology.ThreeManifold.TwoSidedCollar
+namespace DifferentialGeometry.Topology.ThreeManifold.TwoSidedCollar
 
 variable {B X : Type*} [TopologicalSpace B] [ConnectedSpace B] [TopologicalSpace X]
   {e : B → X}
 
 theorem range_subset_domain_union_compactSide
-    (c : TwoSidedCollar e) (d : Poincare.Topology.SphereSeparation.SphereSides (Set.range e))
+    (c : TwoSidedCollar e) (d : DifferentialGeometry.Topology.SphereSeparation.SphereSides (Set.range e))
     {K : Set X} (hside : ∀ p : B × ℝ, c.toFun p ∈ K ↔ p.2 ≤ 0)
     (hinterior : interior K ⊆ d.endSide) : c.range ⊆ K ∪ d.compactSide := by
   let N := c.toFun '' ((univ : Set B) ×ˢ Iio (0 : ℝ))
@@ -57,4 +57,4 @@ theorem range_subset_domain_union_compactSide
   · exact Or.inl ((hside p).mpr hp)
   · exact Or.inr (hPC ⟨p, ⟨mem_univ _, lt_of_not_ge hp⟩, rfl⟩)
 
-end Poincare.Topology.ThreeManifold.TwoSidedCollar
+end DifferentialGeometry.Topology.ThreeManifold.TwoSidedCollar

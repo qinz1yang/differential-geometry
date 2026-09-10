@@ -6,7 +6,7 @@ open scoped Manifold ContDiff Topology
 set_option autoImplicit false
 noncomputable section
 
-namespace Poincare.Manifold.RegularLevel
+namespace DifferentialGeometry.Manifold.RegularLevel
 
 variable {m : ℕ} {H : Type*} [TopologicalSpace H]
   {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
@@ -81,11 +81,11 @@ private def frontierBoundaryHomeomorph {X : Type*} [TopologicalSpace X]
   continuous_toFun := by fun_prop
   continuous_invFun := by fun_prop
 
-end Poincare.Manifold.RegularLevel
+end DifferentialGeometry.Manifold.RegularLevel
 
-namespace Poincare.Topology.SmoothTwoSidedCollar
+namespace DifferentialGeometry.Topology.SmoothTwoSidedCollar
 
-open Poincare.Manifold.RegularLevel
+open DifferentialGeometry.Manifold.RegularLevel
 
 variable {m : ℕ}
     {E : Type} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -130,7 +130,7 @@ theorem positiveClosureIsManifold :
     (h.oppositeSideDefiningFunction_nonpos_set_of_disconnected hsep)
 
 def negativeSublevelClosureDiffeomorph :
-    let _ := Poincare.Manifold.RegularLevel.sublevelChartedSpace J
+    let _ := DifferentialGeometry.Manifold.RegularLevel.sublevelChartedSpace J
       (h.contMDiff_sideDefiningFunction_of_disconnected hsep)
       (fun _ hx => h.mfderiv_sideDefiningFunction_ne_zero hx)
     let _ := h.negativeClosureChartedSpace hsep
@@ -142,7 +142,7 @@ def negativeSublevelClosureDiffeomorph :
 
 
 theorem negativeSublevelClosureDiffeomorph_toHomeomorph :
-    let _ := Poincare.Manifold.RegularLevel.sublevelChartedSpace J
+    let _ := DifferentialGeometry.Manifold.RegularLevel.sublevelChartedSpace J
       (h.contMDiff_sideDefiningFunction_of_disconnected hsep)
       (fun _ hx => h.mfderiv_sideDefiningFunction_ne_zero hx)
     let _ := h.negativeClosureChartedSpace hsep
@@ -154,7 +154,7 @@ theorem negativeSublevelClosureDiffeomorph_toHomeomorph :
 
 
 def positiveSublevelClosureDiffeomorph :
-    let _ := Poincare.Manifold.RegularLevel.sublevelChartedSpace J
+    let _ := DifferentialGeometry.Manifold.RegularLevel.sublevelChartedSpace J
       (h.contMDiff_oppositeSideDefiningFunction_of_disconnected hsep)
       (fun _ hx => h.mfderiv_oppositeSideDefiningFunction_ne_zero hx)
     let _ := h.positiveClosureChartedSpace hsep
@@ -166,7 +166,7 @@ def positiveSublevelClosureDiffeomorph :
 
 
 theorem positiveSublevelClosureDiffeomorph_toHomeomorph :
-    let _ := Poincare.Manifold.RegularLevel.sublevelChartedSpace J
+    let _ := DifferentialGeometry.Manifold.RegularLevel.sublevelChartedSpace J
       (h.contMDiff_oppositeSideDefiningFunction_of_disconnected hsep)
       (fun _ hx => h.mfderiv_oppositeSideDefiningFunction_ne_zero hx)
     let _ := h.positiveClosureChartedSpace hsep
@@ -261,4 +261,4 @@ theorem positiveBoundaryHomeomorph_coe (s : S) :
     let _ := h.positiveClosureChartedSpace hsep
     (h.positiveBoundaryHomeomorph hsep s).val.val = e s := rfl
 
-end Poincare.Topology.SmoothTwoSidedCollar
+end DifferentialGeometry.Topology.SmoothTwoSidedCollar

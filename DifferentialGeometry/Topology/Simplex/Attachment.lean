@@ -10,7 +10,7 @@ open CategoryTheory CategoryTheory.Limits Topology
 
 universe u
 
-namespace Poincare.Simplex.Attachment
+namespace DifferentialGeometry.Simplex.Attachment
 
 variable {I : Type u} [Fintype I] [Nonempty I]
 
@@ -36,7 +36,7 @@ theorem inl_eq_barycenter_iff (d : stdSimplex ℝ I) :
     r d = r stdSimplex.barycenter ↔ d = stdSimplex.barycenter := by
   constructor
   · intro hd
-    rcases (Poincare.TopCat.Pushout.inl_eq_inl_iff h Subtype.val_injective
+    rcases (DifferentialGeometry.TopCat.Pushout.inl_eq_inl_iff h Subtype.val_injective
       d stdSimplex.barycenter).mp hd with hd | ⟨_, a, _, _, ha⟩
     · exact hd
     · exact (boundary_ne_barycenter a.property ha.symm).elim
@@ -46,7 +46,7 @@ theorem inl_eq_barycenter_iff (d : stdSimplex ℝ I) :
 
 theorem inr_ne_barycenter (x : X) : b x ≠ r stdSimplex.barycenter := by
   intro hx
-  obtain ⟨a, ha, _⟩ := (Poincare.TopCat.Pushout.inl_eq_inr_iff h Subtype.val_injective
+  obtain ⟨a, ha, _⟩ := (DifferentialGeometry.TopCat.Pushout.inl_eq_inr_iff h Subtype.val_injective
     stdSimplex.barycenter x).mp hx.symm
   exact boundary_ne_barycenter a.property ha
 
@@ -63,7 +63,7 @@ theorem preimage_inr_puncturedNeighborhood :
 
 
 theorem isOpen_puncturedNeighborhood : IsOpen (puncturedNeighborhood (r := r)) := by
-  rw [Poincare.TopCat.Pushout.isOpen_iff_preimages h,
+  rw [DifferentialGeometry.TopCat.Pushout.isOpen_iff_preimages h,
     preimage_inl_puncturedNeighborhood h, preimage_inr_puncturedNeighborhood h]
   exact ⟨isOpen_punctured, isOpen_univ⟩
 
@@ -77,7 +77,7 @@ def oldToNeighborhood : C(X, puncturedNeighborhood (r := r)) :=
   ⟨fun x ↦ ⟨b x, inr_ne_barycenter h x⟩, b.hom.continuous.subtype_mk _⟩
 
 theorem isClosedEmbedding_oldToNeighborhood : IsClosedEmbedding (oldToNeighborhood h) := by
-  have hb := Poincare.TopCat.Pushout.isClosedEmbedding_inr h isClosedEmbedding_boundaryι
+  have hb := DifferentialGeometry.TopCat.Pushout.isClosedEmbedding_inr h isClosedEmbedding_boundaryι
   exact IsClosedEmbedding.of_continuous_injective_isClosedMap (oldToNeighborhood h).continuous
     (fun x y hxy ↦ hb.injective (congrArg Subtype.val hxy))
     (hb.isClosedMap.subtype_mk (inr_ne_barycenter h))
@@ -113,7 +113,7 @@ theorem isQuotientMap_neighborhoodQuotient : IsQuotientMap (neighborhoodQuotient
     · intro hs
       have hparts := isOpen_sum_iff.mp hs
       apply (isOpen_puncturedNeighborhood h).isOpenEmbedding_subtypeVal.isOpen_iff_image_isOpen.mpr
-      apply (Poincare.TopCat.Pushout.isOpen_iff_preimages h _).mpr
+      apply (DifferentialGeometry.TopCat.Pushout.isOpen_iff_preimages h _).mpr
       constructor
       · have heq : r ⁻¹' (Subtype.val '' s) =
             Subtype.val '' ((cellToNeighborhood h) ⁻¹' s) := by
@@ -142,7 +142,7 @@ theorem isQuotientMap_neighborhoodQuotient : IsQuotientMap (neighborhoodQuotient
         exact hparts.2
     · exact fun hs ↦ hs.preimage (neighborhoodQuotient h).continuous
   · intro p
-    rcases Poincare.TopCat.Pushout.jointly_surjective h p.val with ⟨d, hd⟩ | ⟨x, hx⟩
+    rcases DifferentialGeometry.TopCat.Pushout.jointly_surjective h p.val with ⟨d, hd⟩ | ⟨x, hx⟩
     · have hdc : d ∈ punctured I := by
         intro he
         exact p.property (hd.symm.trans (congrArg r he))
@@ -164,7 +164,7 @@ private theorem retractionOnSum_fiber (z z' : punctured I ⊕ X)
     retractionOnSum (g := g) z = retractionOnSum (g := g) z' := by
   have he := congrArg Subtype.val hz
   rcases z with d | x <;> rcases z' with e | y
-  · rcases (Poincare.TopCat.Pushout.inl_eq_inl_iff h Subtype.val_injective d.val e.val).mp he
+  · rcases (DifferentialGeometry.TopCat.Pushout.inl_eq_inl_iff h Subtype.val_injective d.val e.val).mp he
       with hde | ⟨a, a', haa', ha, ha'⟩
     · exact congrArg (fun d ↦ retractionOnSum (g := g) (Sum.inl d)) (Subtype.ext hde)
     · have hd : d = boundaryInclusion a := Subtype.ext ha
@@ -172,16 +172,16 @@ private theorem retractionOnSum_fiber (z z' : punctured I ⊕ X)
       rw [hd, he, retractionOnSum_boundary, retractionOnSum_boundary]
       exact haa'
   · obtain ⟨a, ha, hax⟩ :=
-      (Poincare.TopCat.Pushout.inl_eq_inr_iff h Subtype.val_injective d.val y).mp he
+      (DifferentialGeometry.TopCat.Pushout.inl_eq_inr_iff h Subtype.val_injective d.val y).mp he
     have hd : d = boundaryInclusion a := Subtype.ext ha.symm
     rw [hd, retractionOnSum_boundary]
     exact hax
   · obtain ⟨a, ha, hax⟩ :=
-      (Poincare.TopCat.Pushout.inl_eq_inr_iff h Subtype.val_injective e.val x).mp he.symm
+      (DifferentialGeometry.TopCat.Pushout.inl_eq_inr_iff h Subtype.val_injective e.val x).mp he.symm
     have he : e = boundaryInclusion a := Subtype.ext ha.symm
     rw [he, retractionOnSum_boundary]
     exact hax.symm
-  · exact Poincare.TopCat.Pushout.injective_inr h Subtype.val_injective he
+  · exact DifferentialGeometry.TopCat.Pushout.injective_inr h Subtype.val_injective he
 
 private def neighborhoodRetractionPoint (p : puncturedNeighborhood (r := r)) : X :=
   retractionOnSum (g := g)
@@ -235,19 +235,19 @@ private theorem deformationOnSum_fiber (t : unitInterval) (z z' : punctured I �
     deformationOnSum h (t, z) = deformationOnSum h (t, z') := by
   have he := congrArg Subtype.val hz
   rcases z with d | x <;> rcases z' with e | y
-  · rcases (Poincare.TopCat.Pushout.inl_eq_inl_iff h Subtype.val_injective d.val e.val).mp he
+  · rcases (DifferentialGeometry.TopCat.Pushout.inl_eq_inl_iff h Subtype.val_injective d.val e.val).mp he
       with hde | ⟨a, a', haa', ha, ha'⟩
     · exact congrArg (fun d ↦ deformationOnSum h (t, Sum.inl d)) (Subtype.ext hde)
     · have hd : d = boundaryInclusion a := Subtype.ext ha
       have he : e = boundaryInclusion a' := Subtype.ext ha'
       rw [hd, he, deformationOnSum_boundary, deformationOnSum_boundary, haa']
   · obtain ⟨a, ha, hax⟩ :=
-      (Poincare.TopCat.Pushout.inl_eq_inr_iff h Subtype.val_injective d.val y).mp he
+      (DifferentialGeometry.TopCat.Pushout.inl_eq_inr_iff h Subtype.val_injective d.val y).mp he
     have hd : d = boundaryInclusion a := Subtype.ext ha.symm
     rw [hd, deformationOnSum_boundary, hax]
     rfl
   · obtain ⟨a, ha, hax⟩ :=
-      (Poincare.TopCat.Pushout.inl_eq_inr_iff h Subtype.val_injective e.val x).mp he.symm
+      (DifferentialGeometry.TopCat.Pushout.inl_eq_inr_iff h Subtype.val_injective e.val x).mp he.symm
     have he : e = boundaryInclusion a := Subtype.ext ha.symm
     rw [he, deformationOnSum_boundary, hax]
     rfl
@@ -319,4 +319,4 @@ def neighborhoodHomotopyEquiv :
       exact neighborhoodRetraction_old h x
     rw [he]
 
-end Poincare.Simplex.Attachment
+end DifferentialGeometry.Simplex.Attachment

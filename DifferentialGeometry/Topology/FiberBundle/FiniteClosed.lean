@@ -5,7 +5,7 @@ noncomputable section
 open Bundle Set Filter
 open scoped Topology
 
-namespace Poincare.Topology.FiberBundle
+namespace DifferentialGeometry.Topology.FiberBundle
 
 theorem isClosedMap_projection_of_finite {J B F : Type*} [TopologicalSpace B]
     [TopologicalSpace F] [Finite F] (Z : FiberBundleCore J B F) : IsClosedMap Z.proj := by
@@ -37,4 +37,4 @@ theorem isClosedMap_projection_of_finite {J B F : Type*} [TopologicalSpace B]
     exact e.left_inv hsrc
   exact hforall (e z).2 (hval.symm ▸ hz)
 
-end Poincare.Topology.FiberBundle
+end DifferentialGeometry.Topology.FiberBundle

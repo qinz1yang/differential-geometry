@@ -5,7 +5,7 @@ import DifferentialGeometry.Topology.SimplicialSet.RealizationEulerCharacteristi
 set_option autoImplicit false
 noncomputable section
 open CategoryTheory
-namespace Poincare.Topology.SimplicialComplex
+namespace DifferentialGeometry.Topology.SimplicialComplex
 universe u
 variable {ι : Type u} [LinearOrder ι] (K : PreAbstractSimplicialComplex ι) [Finite K.faces]
 
@@ -18,14 +18,14 @@ theorem card_orderedSimplicialSet_nonDegenerate (n : ℕ) :
   exact Fintype.card_coe _
 
 theorem eulerChar_orderedRealization_eq_faceEulerChar (k : Type u) [Field k] :
-    Poincare.Homology.eulerChar k (SSet.toTop.obj (orderedSimplicialSet K)) = faceEulerChar K := by
+    DifferentialGeometry.Homology.eulerChar k (SSet.toTop.obj (orderedSimplicialSet K)) = faceEulerChar K := by
   classical
   let d := (Set.toFinite K.faces).toFinset.sup Finset.card
   have hd : ∀ s ∈ K, s.card ≤ d := by
     intro s hs
     exact Finset.le_sup (f := Finset.card) ((Set.toFinite K.faces).mem_toFinset.mpr hs)
   have : (orderedSimplicialSet K).HasDimensionLT d := orderedSimplicialSet_hasDimensionLT K d hd
-  rw [Poincare.SSet.eulerChar_realization_eq_sum_card_nonDegenerate k _ d,
+  rw [DifferentialGeometry.SSet.eulerChar_realization_eq_sum_card_nonDegenerate k _ d,
     faceEulerChar_eq_sum K d hd, Finset.sum_range_succ']
   simp only [pow_zero, facesOfCard_zero, Finset.card_empty, Nat.cast_zero, mul_zero, add_zero]
   apply Finset.sum_congr rfl
@@ -34,7 +34,7 @@ theorem eulerChar_orderedRealization_eq_faceEulerChar (k : Type u) [Field k] :
   ring
 
 theorem finiteHomologyType_orderedRealization (k : Type u) [Field k] :
-    Poincare.Homology.finiteHomologyType k (SSet.toTop.obj (orderedSimplicialSet K)) :=
-  Poincare.SSet.finiteHomologyType_realization k (orderedSimplicialSet K)
+    DifferentialGeometry.Homology.finiteHomologyType k (SSet.toTop.obj (orderedSimplicialSet K)) :=
+  DifferentialGeometry.SSet.finiteHomologyType_realization k (orderedSimplicialSet K)
 
-end Poincare.Topology.SimplicialComplex
+end DifferentialGeometry.Topology.SimplicialComplex

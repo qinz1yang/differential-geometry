@@ -4,7 +4,7 @@ open Filter Topology
 
 noncomputable section
 
-namespace Poincare.Toponogov
+namespace DifferentialGeometry.Toponogov
 
 theorem comparisonTriangleLimit {a b c : ℕ → ℝ}
     (ha : ∀ i, 0 < a i) (hb : ∀ i, 0 < b i) (hc : ∀ i, 0 < c i)
@@ -62,4 +62,4 @@ theorem comparisonTriangleLimit {a b c : ℕ → ℝ}
   simpa only [Real.arccos_neg_one] using
     (Real.continuous_arccos.tendsto (-1)).comp hphi_cosine
 
-end Poincare.Toponogov
+end DifferentialGeometry.Toponogov

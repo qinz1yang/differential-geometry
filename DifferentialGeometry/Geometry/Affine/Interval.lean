@@ -5,7 +5,7 @@ import Mathlib.Tactic.Ring
 
 open Set
 
-namespace Poincare.Geometry.Affine
+namespace DifferentialGeometry.Geometry.Affine
 
 theorem exists_Icc_eq_preimage_affine (s c a b : ℝ) (hs : s ≠ 0) :
     ∃ l r : ℝ, (fun z ↦ s * z + c) ⁻¹' Icc a b = Icc l r ∧
@@ -44,4 +44,4 @@ theorem exists_Icc_of_comparable_scales
     apply (le_div_iff₀ hβ).mpr
     nlinarith only [mul_le_mul_of_nonneg_left hwidth hα.le, hscale, herror]
 
-end Poincare.Geometry.Affine
+end DifferentialGeometry.Geometry.Affine

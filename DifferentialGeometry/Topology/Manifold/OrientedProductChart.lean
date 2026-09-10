@@ -6,7 +6,7 @@ noncomputable section
 open Set Topology
 open scoped Manifold ContDiff
 
-namespace Poincare.Topology.Manifold
+namespace DifferentialGeometry.Topology.Manifold
 
 theorem exists_oriented_product_chart
     {E F H G N M : Type*}
@@ -56,4 +56,4 @@ theorem exists_oriented_product_chart
         exact hsmooth.comp contMDiff_subtype_val }
   exact ⟨U, hU, d.trans Φ, fun _ ↦ rfl, fun _ ↦ rfl⟩
 
-end Poincare.Topology.Manifold
+end DifferentialGeometry.Topology.Manifold

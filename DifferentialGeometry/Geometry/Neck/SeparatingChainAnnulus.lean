@@ -7,10 +7,10 @@ open Set Filter Topology
 open scoped Manifold ContDiff BigOperators
 open DifferentialGeometry
 open DifferentialGeometry.Integral.DivergenceTheorem.WithBoundary
-open Poincare.Geometry.Affine Poincare.Geometry.Boundary
-open Poincare.Topology.Manifold Poincare.Topology.Ehresmann
+open DifferentialGeometry.Geometry.Affine DifferentialGeometry.Geometry.Boundary
+open DifferentialGeometry.Topology.Manifold DifferentialGeometry.Topology.Ehresmann
 
-namespace Poincare.Geometry.Neck
+namespace DifferentialGeometry.Geometry.Neck
 
 local notation "S²" => Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1
 
@@ -100,4 +100,4 @@ theorem exists_regular_data_of_separating_neck_chain (Cₒ : ℝ) (hCₒ : 0 < C
   · rintro _ ⟨p, rfl⟩
     exact D.truncation_cover ⟨Ψ p, rfl⟩
 
-end Poincare.Geometry.Neck
+end DifferentialGeometry.Geometry.Neck

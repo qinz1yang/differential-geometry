@@ -5,7 +5,7 @@ open Set DifferentialGeometry
 open scoped Manifold ContDiff
 open DifferentialGeometry.Geometry.Operator
 
-namespace Poincare.Geometry.Neck
+namespace DifferentialGeometry.Geometry.Neck
 
 private abbrev S := Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1
 
@@ -156,4 +156,4 @@ theorem cylindricalChart.exists_signed_graph_band_of_gradient_close
     · simpa only [hset] using hband
     · simpa only [hset] using hrange
 
-end Poincare.Geometry.Neck
+end DifferentialGeometry.Geometry.Neck

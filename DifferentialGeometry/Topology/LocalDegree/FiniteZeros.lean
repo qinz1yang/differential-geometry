@@ -5,7 +5,7 @@ set_option autoImplicit false
 noncomputable section
 open Set Filter Metric
 open scoped Topology
-namespace Poincare.LocalDegree
+namespace DifferentialGeometry.LocalDegree
 variable {E F : Type*} [PseudoMetricSpace E] [T1Space E]
   [TopologicalSpace F] [Zero F] {f : E → F} {p : E}
 
@@ -39,4 +39,4 @@ theorem isolatedZero_of_finite_closedBall_zeroSet {a : E} {r : ℝ}
   isolatedZero_of_finite_zeroSet
     (closedBall_mem_nhds_of_mem (closedBall_zeroSet_subset_ball hb ⟨hp,hz⟩)) hf hZ hz
 
-end Poincare.LocalDegree
+end DifferentialGeometry.LocalDegree

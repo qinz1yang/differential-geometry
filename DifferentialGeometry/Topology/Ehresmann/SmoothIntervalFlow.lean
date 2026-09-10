@@ -5,7 +5,7 @@ noncomputable section
 open Set Topology Manifold
 open scoped ContDiff
 
-namespace Poincare.Topology.Ehresmann
+namespace DifferentialGeometry.Topology.Ehresmann
 
 open DifferentialGeometry.Analysis.ODE
 
@@ -93,4 +93,4 @@ theorem exists_interval_transport_of_proper
     ⟨by linarith [hx.1], by linarith [hx.2]⟩
     ⟨by linarith [ht.1], by linarith [ht.2]⟩
 
-end Poincare.Topology.Ehresmann
+end DifferentialGeometry.Topology.Ehresmann

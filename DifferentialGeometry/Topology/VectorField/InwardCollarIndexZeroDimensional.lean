@@ -7,7 +7,7 @@ set_option autoImplicit false
 noncomputable section
 open Set Bundle Filter Manifold TopologicalSpace
 open scoped ContDiff Topology
-namespace Poincare.VectorField
+namespace DifferentialGeometry.VectorField
 
 theorem exists_inwardCollar_patch_index_zeroDimensional
     {E H H' B M : Type*}
@@ -24,7 +24,7 @@ theorem exists_inwardCollar_patch_index_zeroDimensional
     (T : ∀ p : B, TangentSpace J p) (b : B → ℝ)
     (L : ∀ q : S, TangentSpace (J.prod (𝓡∂ 1)) q)
     (hL : ∀ p : S, p.val.2.val ≤ a → L p =
-      (T p.val.1, (Poincare.Manifold.Interval.tangentCoordinateIcc p.val.2).symm
+      (T p.val.1, (DifferentialGeometry.Manifold.Interval.tangentCoordinateIcc p.val.2).symm
         (-a * (collarExtension T b collarTransition (p.val.1, 1 - p.val.2.val / a)).2)))
     (q : S) (hq : 0 < q.val.2.val ∧ q.val.2.val < ε) (hqa : q.val.2.val < a)
     (hT : HasContinuousIsolatedZero J T q.val.1)
@@ -61,4 +61,4 @@ theorem exists_inwardCollar_patch_index_zeroDimensional
     exact hindex
   exact hresult (e q).val hΦ₁eq.symm hW hWI
 
-end Poincare.VectorField
+end DifferentialGeometry.VectorField

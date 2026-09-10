@@ -5,7 +5,7 @@ open Set Function Manifold
 open scoped ContDiff
 set_option autoImplicit false
 noncomputable section
-namespace Poincare.Manifold.Interval
+namespace DifferentialGeometry.Manifold.Interval
 
 theorem exists_smooth_compression_with_diffeomorph {ε r : ℝ} [Fact ((0 : ℝ) < ε)]
     (hr : 0 < r) (hrε : 2 * r ≤ ε) :
@@ -17,7 +17,7 @@ theorem exists_smooth_compression_with_diffeomorph {ε r : ℝ} [Fact ((0 : ℝ)
         (∀ t : Icc (0 : ℝ) ε, t.val ≤ r → (σ t).val = t.val + a) ∧
         ∀ t : Icc (0 : ℝ) ε, 2 * r ≤ t.val → σ t = t := by
   obtain ⟨a, ha, har, d, hd, hnear, hfar, _, _⟩ :=
-    Poincare.Manifold.Diffeomorph.exists_compact_translation hr
+    DifferentialGeometry.Manifold.Diffeomorph.exists_compact_translation hr
   have h0 : d 0 = a := by simpa using hnear 0 ⟨by linarith, hr.le⟩
   have hε : d ε = ε := hfar ε (hrε.trans (le_abs_self ε))
   let σ : C(Icc (0 : ℝ) ε, Icc (0 : ℝ) ε) :=
@@ -52,4 +52,4 @@ theorem exists_smooth_compression_with_diffeomorph {ε r : ℝ} [Fact ((0 : ℝ)
   · intro t ht
     exact Subtype.ext (hfar t.val (ht.trans (le_abs_self t.val)))
 
-end Poincare.Manifold.Interval
+end DifferentialGeometry.Manifold.Interval

@@ -3,7 +3,7 @@ import DifferentialGeometry.Topology.Attachment.MappingCylinder
 open Set Function Topology
 set_option autoImplicit false
 noncomputable section
-namespace Poincare.Topology
+namespace DifferentialGeometry.Topology
 
 variable {A X Y : Type*} [TopologicalSpace A] [TopologicalSpace X] [TopologicalSpace Y]
 
@@ -94,4 +94,4 @@ def mappingCylinderHomeomorphOfClosedCover (f : C(A, X))
     mappingCylinderHomeomorphOfClosedCover f g j hseam hg hj hcross hcover
       (mappingCylinderProduct f p) = g p := rfl
 
-end Poincare.Topology
+end DifferentialGeometry.Topology

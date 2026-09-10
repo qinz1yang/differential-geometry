@@ -18,7 +18,7 @@ noncomputable section
 
 universe u v
 
-namespace Poincare.Topology
+namespace DifferentialGeometry.Topology
 
 def realNormalSide (t : ℝ) : Bool :=
   decide (t < 0)
@@ -396,4 +396,4 @@ theorem isLocallyConstant_normalSideFlipAt
 
 end OpenPartialHomeomorph
 
-end Poincare.Topology
+end DifferentialGeometry.Topology

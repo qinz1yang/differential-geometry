@@ -8,7 +8,7 @@ open Set Filter Function Bundle
 open scoped Manifold ContDiff Topology
 open DifferentialGeometry.Topology.Morse
 open DifferentialGeometry.Integral.DivergenceTheorem.WithBoundary
-namespace Poincare.Morse
+namespace DifferentialGeometry.Morse
 variable {n : ℕ} [NeZero n] {M : Type} [TopologicalSpace M]
   [ChartedSpace (EuclideanHalfSpace n) M] [IsManifold (𝓡∂ n) ∞ M]
   [T2Space M] [CompactSpace M]
@@ -35,7 +35,7 @@ theorem exists_relative_excellent_morse_sublevel_thresholds (b : ℝ) :
     exists_excellent_morse_boundary_definingFunction (M := M) (n := n)
   let f : M → ℝ := fun x => b - r x
   have hf : ContMDiff (𝓡∂ n) 𝓘(ℝ, ℝ) ∞ f := contMDiff_const.sub hr
-  obtain ⟨δ,hδ,hsmall,hcritical,_⟩ := Poincare.Manifold.Boundary.exists_regular_boundary_band
+  obtain ⟨δ,hδ,hsmall,hcritical,_⟩ := DifferentialGeometry.Manifold.Boundary.exists_regular_boundary_band
     hr.continuous hrpos W.isOpen hBW hunit
   let c₀ : ℝ := b - δ
   have hc₀ : c₀ < b := by dsimp [c₀]; linarith
@@ -87,8 +87,8 @@ theorem exists_relative_excellent_morse_sublevel_thresholds (b : ℝ) :
     exact (ne_of_lt (hcritlt x hc)) hx
   · intro y hy
     have hd := congrArg (fun L : EuclideanSpace ℝ (Fin n) →L[ℝ] ℝ => L (V y))
-      (Poincare.Manifold.mfderiv_const_sub_real (x := y) (hr.mdifferentiableAt (by simp)) b)
+      (DifferentialGeometry.Manifold.mfderiv_const_sub_real (x := y) (hr.mdifferentiableAt (by simp)) b)
     change (mfderiv (𝓡∂ n) 𝓘(ℝ, ℝ) f y) (V y) = -(mfderiv (𝓡∂ n) 𝓘(ℝ, ℝ) r y) (V y) at hd
     exact hd.trans (congrArg Neg.neg (hunit y hy))
 
-end Poincare.Morse
+end DifferentialGeometry.Morse

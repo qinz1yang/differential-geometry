@@ -8,7 +8,7 @@ open CategoryTheory.Limits
 open Set
 open Topology
 
-namespace Poincare.Topology.SphereSeparation
+namespace DifferentialGeometry.Topology.SphereSeparation
 
 noncomputable def openBicollarExcisionAmbientHomeomorph
     {a : ℝ} (Φ : SphereTwo × AxialInterval a → EuclideanThree)
@@ -195,4 +195,4 @@ theorem hasAlexanderDualityH0Certificate_of_openBicollar
       (isZero_integerSingularHomology_sphereTwo_one_of_cellularComparison
         comparison)
 
-end Poincare.Topology.SphereSeparation
+end DifferentialGeometry.Topology.SphereSeparation

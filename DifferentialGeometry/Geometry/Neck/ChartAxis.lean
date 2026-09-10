@@ -5,9 +5,9 @@ import DifferentialGeometry.Geometry.Metric.LengthPerturbation
 noncomputable section
 open Set DifferentialGeometry
 open scoped Manifold ContDiff
-open Poincare.Geometry.Metric Poincare.Geometry.Gradient Poincare.Topology.Manifold
+open DifferentialGeometry.Geometry.Metric DifferentialGeometry.Geometry.Gradient DifferentialGeometry.Topology.Manifold
 
-namespace Poincare.Geometry.Neck
+namespace DifferentialGeometry.Geometry.Neck
 
 private instance : Fact (Module.finrank ℝ (EuclideanSpace ℝ (Fin 3)) = 2 + 1) := ⟨by simp⟩
 
@@ -102,4 +102,4 @@ theorem cylindricalChart.mvfderiv_axialVector_ne_zero_of_gradient_close
   rw [hσabs] at hb
   exact (not_lt_of_ge hb) hδ
 
-end Poincare.Geometry.Neck
+end DifferentialGeometry.Geometry.Neck

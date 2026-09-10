@@ -12,7 +12,7 @@ open CategoryTheory CategoryTheory.Limits AlgebraicTopology Topology
 
 universe u
 
-namespace Poincare.SSet
+namespace DifferentialGeometry.SSet
 
 variable {A B X Y : _root_.SSet.{u}}
 
@@ -44,18 +44,18 @@ theorem relativeRealizationSquare (f : A ⟶ X) :
     _root_.SSet.chainComplexMap f R ≫ realizationChainMap X R =
       (realizationChainMap A R ≫
         ((singularChainComplexFunctor (ModuleCat.{u} k)).obj R).map (realizationToRange f)) ≫
-      Poincare.Homology.relativeInclusion (_root_.SSet.toTop.obj X)
+      DifferentialGeometry.Homology.relativeInclusion (_root_.SSet.toTop.obj X)
         (Set.range (_root_.SSet.toTop.map f)) R := by
   rw [realizationChainMap_naturality]
-  unfold Poincare.Homology.relativeInclusion
+  unfold DifferentialGeometry.Homology.relativeInclusion
   rw [Category.assoc, ← CategoryTheory.Functor.map_comp, realizationToRange_inclusion]
 
 def relativeRealizationChainMap (f : A ⟶ X) :
     cokernel (_root_.SSet.chainComplexMap f R) ⟶
-      Poincare.Homology.relativeChainComplex (_root_.SSet.toTop.obj X)
+      DifferentialGeometry.Homology.relativeChainComplex (_root_.SSet.toTop.obj X)
         (Set.range (_root_.SSet.toTop.map f)) R :=
   cokernel.map (_root_.SSet.chainComplexMap f R)
-    (Poincare.Homology.relativeInclusion (_root_.SSet.toTop.obj X)
+    (DifferentialGeometry.Homology.relativeInclusion (_root_.SSet.toTop.obj X)
       (Set.range (_root_.SSet.toTop.map f)) R)
     (realizationChainMap A R ≫
       ((singularChainComplexFunctor (ModuleCat.{u} k)).obj R).map (realizationToRange f))
@@ -64,7 +64,7 @@ def relativeRealizationChainMap (f : A ⟶ X) :
 @[reassoc (attr := simp)]
 theorem relativeRealizationProjection (f : A ⟶ X) :
     cokernel.π (_root_.SSet.chainComplexMap f R) ≫ relativeRealizationChainMap R f =
-      realizationChainMap X R ≫ Poincare.Homology.relativeProjection (_root_.SSet.toTop.obj X)
+      realizationChainMap X R ≫ DifferentialGeometry.Homology.relativeProjection (_root_.SSet.toTop.obj X)
         (Set.range (_root_.SSet.toTop.map f)) R :=
   cokernel.π_desc _ _ _
 
@@ -78,13 +78,13 @@ theorem quasiIso_relativeRealizationChainMap (f : A ⟶ X) [Mono f]
   have : IsIso (realizationToRange f) := isIso_realizationToRange f hf
   have : QuasiIso (realizationChainMap A R) := hA
   unfold relativeRealizationChainMap
-  exact Poincare.HomologicalComplex.quasiIso_cokernel_map _ _ _ _ _
+  exact DifferentialGeometry.HomologicalComplex.quasiIso_cokernel_map _ _ _ _ _
     (quasiIso_comp (realizationChainMap A R)
       (((singularChainComplexFunctor (ModuleCat.{u} k)).obj R).map (realizationToRange f))) hX
 
 def relativeRealizationShortComplexMap (f : A ⟶ X) :
-    Poincare.HomologicalComplex.cokernelSequence (_root_.SSet.chainComplexMap f R) ⟶
-      Poincare.Homology.relativeShortComplex (_root_.SSet.toTop.obj X)
+    DifferentialGeometry.HomologicalComplex.cokernelSequence (_root_.SSet.chainComplexMap f R) ⟶
+      DifferentialGeometry.Homology.relativeShortComplex (_root_.SSet.toTop.obj X)
         (Set.range (_root_.SSet.toTop.map f)) R where
   τ₁ := realizationChainMap A R ≫
     ((singularChainComplexFunctor (ModuleCat.{u} k)).obj R).map (realizationToRange f)
@@ -133,13 +133,13 @@ theorem realizationRange_mapsTo :
 theorem relativeRealizationChainMap_naturality :
     relativeSimplicialChainMap R w ≫ relativeRealizationChainMap R g =
       relativeRealizationChainMap R f ≫
-        Poincare.Homology.relativeChainMap R (_root_.SSet.toTop.map b)
+        DifferentialGeometry.Homology.relativeChainMap R (_root_.SSet.toTop.map b)
           (realizationRange_mapsTo w) := by
   apply (cancel_epi (cokernel.π (_root_.SSet.chainComplexMap f R))).mp
   simp only [relativeSimplicialProjection_assoc, relativeRealizationProjection,
     relativeRealizationProjection_assoc,
-    Poincare.Homology.relativeProjection_chainMap]
-  exact congrArg (fun v ↦ v ≫ Poincare.Homology.relativeProjection (_root_.SSet.toTop.obj Y)
+    DifferentialGeometry.Homology.relativeProjection_chainMap]
+  exact congrArg (fun v ↦ v ≫ DifferentialGeometry.Homology.relativeProjection (_root_.SSet.toTop.obj Y)
       (Set.range (_root_.SSet.toTop.map g)) R) (realizationChainMap_naturality b R)
 
-end Poincare.SSet
+end DifferentialGeometry.SSet

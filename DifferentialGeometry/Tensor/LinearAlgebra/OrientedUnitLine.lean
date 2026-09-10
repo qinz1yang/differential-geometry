@@ -2,7 +2,7 @@ import Mathlib.LinearAlgebra.Span.Basic
 import Mathlib.Data.Real.Basic
 import Mathlib.Tactic.Linarith
 
-namespace Poincare.Analysis
+namespace DifferentialGeometry.Analysis
 
 theorem eq_of_unit_of_mem_span_of_positive_functional
     {E : Type*} [AddCommGroup E] [Module ℝ E]
@@ -20,4 +20,4 @@ theorem eq_of_unit_of_mem_span_of_positive_functional
   have hc1 : c = 1 := by nlinarith only [hnorm, hcpos]
   simpa only [hc1, one_smul] using hc.symm
 
-end Poincare.Analysis
+end DifferentialGeometry.Analysis

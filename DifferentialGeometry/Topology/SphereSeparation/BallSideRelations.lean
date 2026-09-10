@@ -1,6 +1,6 @@
 import DifferentialGeometry.Topology.SphereSeparation.Nesting
 
-namespace Poincare.Topology.SphereSeparation.SphereSides
+namespace DifferentialGeometry.Topology.SphereSeparation.SphereSides
 
 open Set
 
@@ -47,4 +47,4 @@ theorem closure_compactSide_subset_of_sphere_subset
       ⟨h.1 (subset_closure (hsub hx)), hx⟩)
   · exact h.1
 
-end Poincare.Topology.SphereSeparation.SphereSides
+end DifferentialGeometry.Topology.SphereSeparation.SphereSides

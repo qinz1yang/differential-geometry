@@ -5,7 +5,7 @@ set_option autoImplicit false
 open Set
 open scoped Manifold ContDiff
 noncomputable section
-namespace Poincare.Manifold
+namespace DifferentialGeometry.Manifold
 variable {𝕜 : Type*} [NontriviallyNormedField 𝕜]
   {E : Type*} [NormedAddCommGroup E] [NormedSpace 𝕜 E]
   {H M : Type*} [TopologicalSpace H] [TopologicalSpace M] [ChartedSpace H M]
@@ -67,4 +67,4 @@ theorem isInteriorPoint_of_model_partialDiffeomorph
   have hf : IsLocalDiffeomorphAt 𝓘(𝕜, E) I n f x := ⟨f, hx, fun _ _ => rfl⟩
   exact (hf.isInteriorPoint_iff hn).mp BoundarylessManifold.isInteriorPoint
 
-end Poincare.Manifold
+end DifferentialGeometry.Manifold

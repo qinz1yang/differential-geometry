@@ -6,7 +6,7 @@ noncomputable section
 open Set Filter Topology
 open scoped ContDiff Manifold
 
-namespace Poincare.Analysis
+namespace DifferentialGeometry.Analysis
 
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
   [FiniteDimensional ℝ E]
@@ -34,7 +34,7 @@ theorem exists_compact_diffeomorph_realizing_germ_up_to_derivative
     simpa only [ContinuousLinearEquiv.coe_comp_coe_symm, Function.comp_def] using hd'
   obtain ⟨D, _, _, _, hgerm, _, K, hK, hKW, hfix⟩ :=
     exists_compact_isotopy_realizing_identity_tangent_germ hW h0W hg hg0 hd
-  let T := Poincare.Topology.translateDiffeomorph (f 0)
+  let T := DifferentialGeometry.Topology.translateDiffeomorph (f 0)
   let J := (T.symm.trans (D 1)).trans T
   have hJ (x : E) : J x = D 1 (x - f 0) + f 0 := by
     change D 1 (x + -(f 0)) + f 0 = _
@@ -76,4 +76,4 @@ theorem exists_compact_diffeomorph_straightening_partialDiffeomorph
   exact ⟨A, hAe, exists_compact_diffeomorph_realizing_germ_up_to_derivative
     φ.open_source h0 φ.contMDiffOn.contDiffOn A hA hV h0V⟩
 
-end Poincare.Analysis
+end DifferentialGeometry.Analysis

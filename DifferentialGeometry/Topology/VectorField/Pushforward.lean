@@ -4,7 +4,7 @@ set_option autoImplicit false
 open Set
 open scoped Manifold ContDiff
 noncomputable section
-namespace Poincare.VectorField
+namespace DifferentialGeometry.VectorField
 variable {𝕜 : Type*} [NontriviallyNormedField 𝕜]
   {E F G H H' H'' M N P : Type*}
   [NormedAddCommGroup E] [NormedSpace 𝕜 E]
@@ -40,4 +40,4 @@ theorem mpullback_trans_symm_partialDiffeomorph
   rw [hi.inverse_comp_apply_of_left, hi.inverse_apply_self]
   rfl
 
-end Poincare.VectorField
+end DifferentialGeometry.VectorField

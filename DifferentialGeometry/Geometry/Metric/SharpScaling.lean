@@ -5,7 +5,7 @@ noncomputable section
 open scoped Manifold ContDiff
 open DifferentialGeometry DifferentialGeometry.Geometry.Operator
 
-namespace Poincare.Geometry.Metric
+namespace DifferentialGeometry.Geometry.Metric
 
 theorem metricSharp_scaleMetric
     {E H M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
@@ -21,4 +21,4 @@ theorem metricSharp_scaleMetric
   change α v = c * (c⁻¹ * α v)
   rw [← mul_assoc, mul_inv_cancel₀ hc.ne', one_mul]
 
-end Poincare.Geometry.Metric
+end DifferentialGeometry.Geometry.Metric

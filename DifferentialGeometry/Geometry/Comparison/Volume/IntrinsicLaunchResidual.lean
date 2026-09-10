@@ -7,7 +7,7 @@ noncomputable section
 open Set Function Filter Bundle Manifold
 open scoped Topology Manifold ContDiff
 
-namespace Poincare.Geometry.Riemannian.VolumeComparison
+namespace DifferentialGeometry.Geometry.Riemannian.VolumeComparison
 
 open DifferentialGeometry
 open DifferentialGeometry.Geometry.Riemannian
@@ -128,4 +128,4 @@ theorem intrJetResidual_two_zero_eq_six
       (fun t ↦ covDerivAlong (I := I) g γ W0 t) 1 : E) = _
   exact hD2
 
-end Poincare.Geometry.Riemannian.VolumeComparison
+end DifferentialGeometry.Geometry.Riemannian.VolumeComparison

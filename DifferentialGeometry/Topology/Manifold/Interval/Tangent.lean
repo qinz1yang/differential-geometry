@@ -7,7 +7,7 @@ open Set Function Manifold Bundle
 open scoped ContDiff
 set_option autoImplicit false
 noncomputable section
-namespace Poincare.Manifold.Interval
+namespace DifferentialGeometry.Manifold.Interval
 
 variable {a b : ℝ} [Fact (a < b)]
 
@@ -61,4 +61,4 @@ theorem contMDiff_tangentCoordinateIcc :
   intro p
   rfl
 
-end Poincare.Manifold.Interval
+end DifferentialGeometry.Manifold.Interval

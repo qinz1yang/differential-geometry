@@ -4,7 +4,7 @@ import DifferentialGeometry.Analysis.ODE.Flow.Planar.TransverseHittingTime
 open Set
 open scoped ContDiff
 
-namespace Poincare.Analysis
+namespace DifferentialGeometry.Analysis
 
 theorem exists_smooth_leftEdge_coordinates
     {P : Type*} [NormedAddCommGroup P] [NormedSpace ℝ P] [CompleteSpace P]
@@ -74,4 +74,4 @@ theorem exists_smooth_leftEdge_coordinates
   refine ⟨hy, ht, he, fun y' t' he' ↦ ?_⟩
   exact Prod.ext (huniq y' t' he').1 (huniq y' t' he').2
 
-end Poincare.Analysis
+end DifferentialGeometry.Analysis

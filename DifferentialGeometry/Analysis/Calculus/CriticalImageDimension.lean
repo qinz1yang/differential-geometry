@@ -5,7 +5,7 @@ import DifferentialGeometry.Analysis.Integration.Measure.HausdorffDimension
 set_option autoImplicit false
 open Set Metric MeasureTheory Filter
 open scoped NNReal ENNReal Topology
-namespace Poincare.Calculus
+namespace DifferentialGeometry.Calculus
 variable {E F : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [NormedAddCommGroup F] [NormedSpace ℝ F]
   [SecondCountableTopology E] {f : E → F} {s : Set E}
@@ -27,7 +27,7 @@ theorem addHaar_image_eq_zero_of_fderiv_eq_zero [FiniteDimensional ℝ F]
     (hf : ∀ x ∈ s, ContDiffAt ℝ 2 f x)
     (hz : ∀ x ∈ s, fderiv ℝ f x = 0)
     (hd : dimH s / 2 < Module.finrank ℝ F) : μ (f '' s) = 0 :=
-  Poincare.MeasureTheory.addHaar_eq_zero_of_dimH_lt μ
+  DifferentialGeometry.MeasureTheory.addHaar_eq_zero_of_dimH_lt μ
     ((dimH_image_le_of_fderiv_eq_zero hf hz).trans_lt hd)
 
 theorem addHaar_image_eq_zero_of_fderiv_eq_zero_of_finrank_lt
@@ -44,4 +44,4 @@ theorem addHaar_image_eq_zero_of_fderiv_eq_zero_of_finrank_lt
   apply (ENNReal.div_lt_iff (Or.inl (by norm_num)) (Or.inl (by norm_num))).mpr
   exact_mod_cast (show Module.finrank ℝ E < Module.finrank ℝ F * 2 by omega)
 
-end Poincare.Calculus
+end DifferentialGeometry.Calculus

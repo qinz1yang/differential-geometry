@@ -3,7 +3,7 @@ import DifferentialGeometry.Analysis.Spectral.FiniteDimensional.TransverseSpectr
 noncomputable section
 open scoped InnerProductSpace
 
-namespace Poincare.Analysis
+namespace DifferentialGeometry.Analysis
 
 theorem is_least_eigenvalue_of_axis_error
     {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
@@ -31,4 +31,4 @@ theorem is_least_eigenvalue_of_axis_error
     hlower u w hu hw heu heigen (hν.trans_lt hμ) hμ
   exact heq ▸ hmin
 
-end Poincare.Analysis
+end DifferentialGeometry.Analysis

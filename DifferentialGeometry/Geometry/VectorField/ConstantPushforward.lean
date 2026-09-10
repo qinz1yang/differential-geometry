@@ -6,7 +6,7 @@ noncomputable section
 open Set Filter Topology
 open scoped ContDiff Manifold
 
-namespace Poincare.Geometry.VectorField
+namespace DifferentialGeometry.Geometry.VectorField
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 
@@ -74,4 +74,4 @@ theorem hasDerivAt_pushforward_const_orbit
     simpa only [one_smul, id_eq] using ((hasDerivAt_id t).smul_const c).const_add (f.symm x)
   exact (f.contMDiff.contDiff.differentiable (by simp) _).hasFDerivAt.comp_hasDerivAt t ht
 
-end Poincare.Geometry.VectorField
+end DifferentialGeometry.Geometry.VectorField

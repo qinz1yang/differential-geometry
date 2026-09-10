@@ -7,7 +7,7 @@ noncomputable section
 open Set Filter
 open scoped Manifold ContDiff Topology
 
-namespace Poincare.Topology.Manifold
+namespace DifferentialGeometry.Topology.Manifold
 
 theorem exists_smooth_function_with_differential
     {E H M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
@@ -71,4 +71,4 @@ theorem tangent_eq_of_smooth_function_differentials
       (U := Set.univ) Filter.univ_mem
   exact hd ▸ h f hf hc
 
-end Poincare.Topology.Manifold
+end DifferentialGeometry.Topology.Manifold

@@ -10,11 +10,11 @@ open DifferentialGeometry.Geometry.Riemannian
 open DifferentialGeometry.Geometry.Riemannian.Geodesic
 open DifferentialGeometry.Geometry.Riemannian.Variation
 open DifferentialGeometry.Geometry.Riemannian.CovariantDerivativeAlong
-open Poincare.Geometry
-open Poincare.Geometry.Riemannian.Geodesic
-open Poincare.Geometry.Riemannian.Variation
+open DifferentialGeometry.Geometry
+open DifferentialGeometry.Geometry.Riemannian.Geodesic
+open DifferentialGeometry.Geometry.Riemannian.Variation
 
-namespace Poincare.Geometry.Riemannian
+namespace DifferentialGeometry.Geometry.Riemannian
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
@@ -67,6 +67,6 @@ theorem exists_minimal_twisted_geodesic_with_return_det_eq
     (isOpen_univ.prod isOpen_Ioo) hstrip hf
   have hcont := hsmooth.continuousOn.continuousAt
     (Ioo_mem_nhds (show (-1 : ℝ) < 0 by norm_num) (show (0 : ℝ) < 1 by norm_num))
-  exact (not_lt_of_ge (Poincare.Analysis.second_deriv_nonneg_of_isLocalMin hlocal hcont)) hneg
+  exact (not_lt_of_ge (DifferentialGeometry.Analysis.second_deriv_nonneg_of_isLocalMin hlocal hcont)) hneg
 
-end Poincare.Geometry.Riemannian
+end DifferentialGeometry.Geometry.Riemannian

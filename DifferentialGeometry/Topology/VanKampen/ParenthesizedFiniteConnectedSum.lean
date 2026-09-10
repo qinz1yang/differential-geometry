@@ -11,9 +11,9 @@ noncomputable section
 
 universe u
 
-namespace Poincare.Topology.ThreeManifold
+namespace DifferentialGeometry.Topology.ThreeManifold
 
-open Poincare.Algebra.Group
+open DifferentialGeometry.Algebra.Group
 
 
 
@@ -126,9 +126,9 @@ theorem sumFreeProductEquivCoprod_symm_comp_inr {ι κ : Type*}
 inductive ParenthesizedConnectedSumConstruction :
     (r : ℕ) → (ι : Type) → BasedConnectedClosedSmoothThreeManifold → Type (u + 1)
   | empty (result : BasedConnectedClosedSmoothThreeManifold)
-      (sphereRealization : result ≃ₜ Poincare.Topology.SphereThree)
+      (sphereRealization : result ≃ₜ DifferentialGeometry.Topology.SphereThree)
       (sphereRealization_basepoint :
-        sphereRealization result.basepoint = Poincare.Topology.sphereThreeNorth) :
+        sphereRealization result.basepoint = DifferentialGeometry.Topology.sphereThreeNorth) :
       ParenthesizedConnectedSumConstruction 0 Empty result
   | singleton (factor : BasedConnectedClosedSmoothThreeManifold) :
       ParenthesizedConnectedSumConstruction 1 PUnit factor
@@ -454,18 +454,18 @@ theorem combineFactorFreeProductEquivCoprod_symm_comp_inr
 
 noncomputable def emptyParenthesizedConnectedSumFundamentalGroupEquiv
     (result : BasedConnectedClosedSmoothThreeManifold)
-    (sphereRealization : result ≃ₜ Poincare.Topology.SphereThree)
+    (sphereRealization : result ≃ₜ DifferentialGeometry.Topology.SphereThree)
     (sphereRealization_basepoint :
-      sphereRealization result.basepoint = Poincare.Topology.sphereThreeNorth) :
+      sphereRealization result.basepoint = DifferentialGeometry.Topology.sphereThreeNorth) :
     FundamentalGroup result result.basepoint ≃*
       Monoid.CoprodI
         (ParenthesizedConnectedSumConstruction.empty result sphereRealization
           sphereRealization_basepoint).factorFundamentalGroup := by
   let sphereEquiv : FundamentalGroup result result.basepoint ≃*
-      FundamentalGroup Poincare.Topology.SphereThree Poincare.Topology.sphereThreeNorth :=
-    Poincare.Topology.fundamentalGroupMulEquivOfHomotopyEquiv
+      FundamentalGroup DifferentialGeometry.Topology.SphereThree DifferentialGeometry.Topology.sphereThreeNorth :=
+    DifferentialGeometry.Topology.fundamentalGroupMulEquivOfHomotopyEquiv
       sphereRealization.toHomotopyEquiv result.basepoint
-        Poincare.Topology.sphereThreeNorth sphereRealization_basepoint
+        DifferentialGeometry.Topology.sphereThreeNorth sphereRealization_basepoint
   let target := Monoid.CoprodI
     (ParenthesizedConnectedSumConstruction.empty result sphereRealization
       sphereRealization_basepoint).factorFundamentalGroup
@@ -474,8 +474,8 @@ noncomputable def emptyParenthesizedConnectedSumFundamentalGroupEquiv
   letI : Unique target :=
     { default := 1
       uniq := fun x => Subsingleton.elim x 1 }
-  letI : Unique (FundamentalGroup Poincare.Topology.SphereThree
-      Poincare.Topology.sphereThreeNorth) :=
+  letI : Unique (FundamentalGroup DifferentialGeometry.Topology.SphereThree
+      DifferentialGeometry.Topology.sphereThreeNorth) :=
     { default := 1
       uniq := fun x => Subsingleton.elim x 1 }
   exact sphereEquiv.trans MulEquiv.ofUnique
@@ -679,4 +679,4 @@ theorem fundamentalGroupEquiv_parenthesizedFiniteConnectedSum_comp_orderedFactor
       (fun _ => MulEquiv.refl _) i) g
   exact hreindex.symm
 
-end Poincare.Topology.ThreeManifold
+end DifferentialGeometry.Topology.ThreeManifold

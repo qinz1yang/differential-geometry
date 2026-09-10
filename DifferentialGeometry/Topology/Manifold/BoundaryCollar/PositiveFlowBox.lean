@@ -5,7 +5,7 @@ open Set Function Manifold Filter
 open scoped Topology ContDiff
 set_option autoImplicit false
 noncomputable section
-namespace Poincare.Manifold.BoundaryCollar
+namespace DifferentialGeometry.Manifold.BoundaryCollar
 
 theorem exists_positive_flowBox_of_flow
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
@@ -87,4 +87,4 @@ theorem exists_positive_flowBox_of_flow
     have hh := (hmono p.2 (hsource p hp).2).monotoneOn h0 htp ht.1
     simpa only [Ψ, hzero] using hh
 
-end Poincare.Manifold.BoundaryCollar
+end DifferentialGeometry.Manifold.BoundaryCollar

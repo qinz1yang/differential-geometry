@@ -8,7 +8,7 @@ noncomputable section
 
 open scoped ContDiff Manifold Topology
 
-namespace Poincare.Topology.Manifold
+namespace DifferentialGeometry.Topology.Manifold
 
 variable {E F : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
   [NormedAddCommGroup F] [NormedSpace ℝ F]
@@ -19,7 +19,7 @@ theorem isSubmersionAt_of_hasFDerivAt_hasRightInverse
     (hdf : HasFDerivAt f f' x₀) (hsplit : f'.HasRightInverse) :
     Manifold.IsSubmersionAt 𝓘(ℝ, E) 𝓘(ℝ, F) ∞ f x₀ := by
   obtain ⟨e, hxe, _, he, heinv, _, hproj⟩ :=
-    Poincare.Analysis.exists_localProjection_of_hasRightInverse hf hU hx₀ hdf hsplit
+    DifferentialGeometry.Analysis.exists_localProjection_of_hasRightInverse hf hU hx₀ hdf hsplit
   let A := ContinuousLinearEquiv.equivOfRightInverse f' hsplit.rightInverse
     hsplit.rightInverse_rightInverse
   let φ := e.trans A.symm.toHomeomorph.toOpenPartialHomeomorph
@@ -89,7 +89,7 @@ theorem isSubmersionAt_of_mfderiv_hasRightInverse
     have hw : HasFDerivWithinAt g L (Set.range I) (cM x₀) := hd.2
     exact hw.hasFDerivAt (by rw [I.range_eq_univ]; exact Filter.univ_mem)
   obtain ⟨e, hxe, _, he, heinv, _, hproj⟩ :=
-    Poincare.Analysis.exists_localProjection_of_hasRightInverse hg hU hxU hL hsplit
+    DifferentialGeometry.Analysis.exists_localProjection_of_hasRightInverse hg hU hxU hL hsplit
   let A := ContinuousLinearEquiv.equivOfRightInverse L hsplit.rightInverse
     hsplit.rightInverse_rightInverse
   let φ := ((cM.trans e).trans A.symm.toHomeomorph.toOpenPartialHomeomorph).trans
@@ -255,4 +255,4 @@ theorem isSubmersion_iff_surjective_mfderiv
 
 end Manifold
 
-end Poincare.Topology.Manifold
+end DifferentialGeometry.Topology.Manifold

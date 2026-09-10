@@ -3,7 +3,7 @@ import Mathlib.Topology.Homeomorph.Lemmas
 import Mathlib.Topology.Order.Compact
 import Mathlib.Topology.Instances.Real.Lemmas
 
-namespace Poincare.Topology.Compactness
+namespace DifferentialGeometry.Topology.Compactness
 
 open Set
 
@@ -41,4 +41,4 @@ theorem isCompact_coordinate_band_of_opens_product_chart
   rw [← heq]
   exact hcompact.image (continuous_subtype_val.comp e.continuous)
 
-end Poincare.Topology.Compactness
+end DifferentialGeometry.Topology.Compactness

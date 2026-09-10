@@ -4,7 +4,7 @@ import DifferentialGeometry.Topology.GraphBandChart
 noncomputable section
 open Set Topology
 
-namespace Poincare.Topology.Embedding
+namespace DifferentialGeometry.Topology.Embedding
 
 theorem graph_chart_endpoint_strip_subset_range
     {X Y N : Type*} [TopologicalSpace X] [TopologicalSpace Y] [T2Space Y]
@@ -107,4 +107,4 @@ theorem product_chart_endpoint_strip_subset_range
     continuous_const continuous_const (fun _ ↦ h₀a) (fun _ ↦ hab)
     (fun x hx ↦ hstrip ⟨mem_univ x.1, hx⟩) hminus hcollar' hfar
 
-end Poincare.Topology.Embedding
+end DifferentialGeometry.Topology.Embedding

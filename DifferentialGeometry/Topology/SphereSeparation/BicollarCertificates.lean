@@ -7,7 +7,7 @@ open Function Set Topology
 open CategoryTheory CategoryTheory.Limits
 open scoped Manifold ContDiff Topology
 
-namespace Poincare.Topology.SphereSeparation
+namespace DifferentialGeometry.Topology.SphereSeparation
 
 
 noncomputable def axialRecenterRadius {a : ℝ} (c : AxialInterval a) : ℝ :=
@@ -171,4 +171,4 @@ theorem hasAlexanderDualityH0Certificate_bicollarSlice_of_smoothEmbedding
         comparison)
     c
 
-end Poincare.Topology.SphereSeparation
+end DifferentialGeometry.Topology.SphereSeparation

@@ -5,9 +5,9 @@ noncomputable section
 open Set DifferentialGeometry
 open scoped Manifold ContDiff
 open DifferentialGeometry.Geometry.Operator
-open Poincare.Topology
+open DifferentialGeometry.Topology
 
-namespace Poincare.Geometry.Neck
+namespace DifferentialGeometry.Geometry.Neck
 
 private abbrev S := Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1
 private instance : Fact (Module.finrank ℝ (EuclideanSpace ℝ (Fin 3)) = 2 + 1) := ⟨by simp⟩
@@ -151,4 +151,4 @@ theorem cylindricalChart.exists_strip_of_full_cross_sections_and_gradient_close
     unfold cylindricalChart.region
     exact image_mono (image_mono (preimage_mono hAstrip))
 
-end Poincare.Geometry.Neck
+end DifferentialGeometry.Geometry.Neck

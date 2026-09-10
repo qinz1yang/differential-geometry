@@ -5,7 +5,7 @@ open Bundle Manifold Set
 open scoped Manifold ContDiff
 open DifferentialGeometry
 
-namespace Poincare.Geometry.Riemannian
+namespace DifferentialGeometry.Geometry.Riemannian
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
   {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
@@ -93,4 +93,4 @@ theorem orthonormalTangentPair_compactSpace [T2Space M] [CompactSpace M]
   exact isCompact_iff_compactSpace.mp
     (isClosed_eq (SameBaseUnitTangentPair.continuous_inner g) continuous_const).isCompact
 
-end Poincare.Geometry.Riemannian
+end DifferentialGeometry.Geometry.Riemannian

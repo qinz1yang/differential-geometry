@@ -10,7 +10,7 @@ open CategoryTheory Opposite Simplicial
 
 universe u
 
-namespace Poincare.SSet
+namespace DifferentialGeometry.SSet
 
 
 def simplexBoundarySet (n : ℕ) : Set (SimplexCategory.toTop.{u}.obj ⦋n⦌) :=
@@ -66,7 +66,7 @@ private theorem coordinateMap_zero_of_not_mem_range {n m : ℕ}
 private theorem boundaryCanonicalSimplex_mem (n : ℕ) (m : SimplexCategoryᵒᵖ)
     (σ : (_root_.SSet.boundary n : _root_.SSet.{u}).obj m) :
     (_root_.SSet.stdSimplexToTop.app ⦋n⦌).app m σ.val ∈
-      (Poincare.Homology.smallSingularSimplices (SimplexCategory.toTop.obj ⦋n⦌)
+      (DifferentialGeometry.Homology.smallSingularSimplices (SimplexCategory.toTop.obj ⦋n⦌)
         (fun _ : Unit ↦ simplexBoundarySet n)).obj m := by
   refine ⟨(), ?_⟩
   rintro _ ⟨z, rfl⟩
@@ -80,7 +80,7 @@ private theorem boundaryCanonicalSimplex_mem (n : ℕ) (m : SimplexCategoryᵒ�
 
 private def boundaryToSmallSingular (n : ℕ) :
     (_root_.SSet.boundary n : _root_.SSet.{u}) ⟶
-      Poincare.Homology.smallSingularSimplices (SimplexCategory.toTop.obj ⦋n⦌)
+      DifferentialGeometry.Homology.smallSingularSimplices (SimplexCategory.toTop.obj ⦋n⦌)
         (fun _ : Unit ↦ simplexBoundarySet n) :=
   _root_.SSet.Subcomplex.lift
     ((_root_.SSet.boundary n).ι ≫ _root_.SSet.stdSimplexToTop.app ⦋n⦌) (by
@@ -93,7 +93,7 @@ def boundarySingularMap (n : ℕ) :
     (_root_.SSet.boundary n : _root_.SSet.{u}) ⟶
       TopCat.toSSet.obj (TopCat.of (simplexBoundarySet n)) :=
   boundaryToSmallSingular n ≫
-    (Poincare.Homology.singularSubspaceIso (SimplexCategory.toTop.obj ⦋n⦌)
+    (DifferentialGeometry.Homology.singularSubspaceIso (SimplexCategory.toTop.obj ⦋n⦌)
       (simplexBoundarySet n)).inv
 
 
@@ -104,7 +104,7 @@ theorem boundarySingularMap_inclusion (n : ℕ) :
           C(simplexBoundarySet n, SimplexCategory.toTop.{u}.obj ⦋n⦌))) =
       (_root_.SSet.boundary n).ι ≫ _root_.SSet.stdSimplexToTop.app ⦋n⦌ := by
   rw [boundarySingularMap, Category.assoc,
-    Poincare.Homology.singularSubspaceIso_inv_inclusion]
+    DifferentialGeometry.Homology.singularSubspaceIso_inv_inclusion]
   rfl
 
 
@@ -219,4 +219,4 @@ theorem range_toTopHomeo_boundary (n : ℕ) :
     refine ⟨x, ?_⟩
     exact congrArg ULift.down hx
 
-end Poincare.SSet
+end DifferentialGeometry.SSet

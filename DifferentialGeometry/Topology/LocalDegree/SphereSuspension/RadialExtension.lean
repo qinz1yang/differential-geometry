@@ -3,7 +3,7 @@ import Mathlib.Analysis.Normed.Module.Ball.RadialEquiv
 set_option autoImplicit false
 open Metric Set
 noncomputable section
-namespace Poincare.LocalDegree
+namespace DifferentialGeometry.LocalDegree
 variable {E F : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [NormedAddCommGroup F] [NormedSpace ℝ F]
 
@@ -70,4 +70,4 @@ theorem sphereRadialExtension_sphere (f : C(sphere (0 : E) 1, sphere (0 : F) 1))
   apply Subtype.ext
   rw [homeomorphUnitSphereProd_apply_fst_coe, norm_eq_of_mem_sphere v]
   simp
-end Poincare.LocalDegree
+end DifferentialGeometry.LocalDegree

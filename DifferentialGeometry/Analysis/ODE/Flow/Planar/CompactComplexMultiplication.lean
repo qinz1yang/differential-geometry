@@ -6,7 +6,7 @@ noncomputable section
 open Set Metric Filter Topology
 open scoped ContDiff Manifold
 
-namespace Poincare.Analysis
+namespace DifferentialGeometry.Analysis
 
 theorem exists_compact_isotopy_realizing_complex_mul
     (a : ℂ) (ha : a ≠ 0) (r : ℝ) (hr : 0 < r) :
@@ -31,4 +31,4 @@ theorem exists_compact_isotopy_realizing_complex_mul
   refine ⟨D, hD, hDi, hD0, ?_, hfix⟩
   simpa only [Γ, Complex.ofReal_one, one_mul, Complex.exp_log ha] using hgerm
 
-end Poincare.Analysis
+end DifferentialGeometry.Analysis

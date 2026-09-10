@@ -5,7 +5,7 @@ set_option autoImplicit false
 noncomputable section
 open Set Filter Function
 open scoped Manifold ContDiff Topology
-namespace Poincare.Morse
+namespace DifferentialGeometry.Morse
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 
 
@@ -38,10 +38,10 @@ theorem exists_open_ae_nondegenerate_finitePerturbation {n : ℕ} {f : M → ℝ
     | none => exact hf
     | some j => exact hφ j
   obtain ⟨W,F,hW,hxW,hWc,hF⟩ := exists_contDiff_interiorChart_extensions hg hx
-  let c := Poincare.Manifold.interiorChart I ∞ x
+  let c := DifferentialGeometry.Manifold.interiorChart I ∞ x
   let V := c.source ∩ c ⁻¹' W
   have hV : IsOpen V := c.toOpenPartialHomeomorph.continuousOn.isOpen_inter_preimage c.open_source hW
-  have hxc : x ∈ c.source := (Poincare.Manifold.mem_interiorChart_source_iff I ∞ x).mpr hx
+  have hxc : x ∈ c.source := (DifferentialGeometry.Manifold.mem_interiorChart_source_iff I ∞ x).mpr hx
   refine ⟨V,hV,⟨hxc,hxW⟩,?_⟩
   have hFeq : ∀ p, EqOn (finitePerturbation (F none) (fun i => F (some i)) p)
       (fun z => finitePerturbation f φ p (c.symm z)) W := by
@@ -76,9 +76,9 @@ theorem exists_open_ae_nondegenerate_finitePerturbation {n : ℕ} {f : M → ℝ
     exact (congrArg D (c.left_inv hyc)).trans hcrit
   have hess := hp (c y) hreg' hcrit'
   rw [heq.fderiv.fderiv_eq] at hess
-  let d := Poincare.Manifold.interiorChart I ∞ y
-  have hyd : y ∈ d.source := (Poincare.Manifold.mem_interiorChart_source_iff I ∞ y).mpr
-    (Poincare.Manifold.isInteriorPoint_of_mem_interiorChart_source I ∞ (by simp) hyc)
+  let d := DifferentialGeometry.Manifold.interiorChart I ∞ y
+  have hyd : y ∈ d.source := (DifferentialGeometry.Manifold.mem_interiorChart_source_iff I ∞ y).mpr
+    (DifferentialGeometry.Manifold.isInteriorPoint_of_mem_interiorChart_source I ∞ (by simp) hyc)
   exact (bijective_hessian_partialDiffeomorph_chart_iff hfp c d hyc hyd hcrit).mpr hess
 
 
@@ -135,4 +135,4 @@ theorem exists_arbitrarily_small_relative_nondegenerate_manifold_finitePerturbat
     (MeasureTheory.ae_restrict_of_ae hae)
   exact ⟨p,by simpa only [Metric.mem_ball, dist_zero_right] using hp,hreg⟩
 
-end Poincare.Morse
+end DifferentialGeometry.Morse

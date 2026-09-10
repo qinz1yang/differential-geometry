@@ -6,7 +6,7 @@ set_option autoImplicit false
 
 open Function Set
 
-namespace Poincare.Topology.SphereSeparation
+namespace DifferentialGeometry.Topology.SphereSeparation
 
 private theorem finTwo_eq_zero_or_one (i : Fin 2) : i = 0 ∨ i = 1 := by
   refine Fin.cases (Or.inl rfl) (fun j => ?_) i
@@ -163,4 +163,4 @@ noncomputable def connectedComponentsComplEquivFinTwo
     · exact hBconnected
     · exact hEconnected
 
-end Poincare.Topology.SphereSeparation
+end DifferentialGeometry.Topology.SphereSeparation

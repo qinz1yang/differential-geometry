@@ -12,7 +12,7 @@ noncomputable section
 
 open Set
 
-namespace Poincare.Toponogov
+namespace DifferentialGeometry.Toponogov
 
 theorem comparisonAngle_le_of_hinge_sq
     {a b c θ : ℝ}
@@ -63,7 +63,7 @@ section TangentAngle
 open Bundle Manifold
 open scoped Manifold ContDiff
 open DifferentialGeometry
-open Poincare.Geometry
+open DifferentialGeometry.Geometry
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
@@ -123,4 +123,4 @@ example {a c : ℝ} (ha : 0 ≤ a) (hc : 0 ≤ c)
 
 end Regression
 
-end Poincare.Toponogov
+end DifferentialGeometry.Toponogov

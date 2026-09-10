@@ -9,7 +9,7 @@ open scoped Manifold ContDiff Topology
 
 noncomputable section
 
-namespace Poincare.VectorField
+namespace DifferentialGeometry.VectorField
 
 
 def collarNormalizationTime (ε s : ℝ) : ℝ :=
@@ -181,7 +181,7 @@ theorem exists_pos_ne_zero_on_product_strip [IsManifold I 1 M] [CompactSpace M]
     (hzero : ∀ x, V (x, 0) ≠ 0) :
     ∃ ε : ℝ, 0 < ε ∧ ∀ x t, t ∈ Icc (-ε) ε → V (x, t) ≠ 0 := by
   have hopen : IsOpen {p : M × ℝ | V p ≠ 0} :=
-    (Poincare.VectorBundle.isClosed_zeroSet ℝ hV).isOpen_compl
+    (DifferentialGeometry.VectorBundle.isClosed_zeroSet ℝ hV).isOpen_compl
   have hslice : (univ : Set M) ×ˢ ({0} : Set ℝ) ⊆ {p | V p ≠ 0} := by
     rintro ⟨x, t⟩ ⟨_, ht⟩
     have : t = 0 := ht
@@ -277,4 +277,4 @@ theorem exists_pos_collarNormalization_ne_zero [IsManifold I 1 M] [CompactSpace 
 
 end ProductManifold
 
-end Poincare.VectorField
+end DifferentialGeometry.VectorField

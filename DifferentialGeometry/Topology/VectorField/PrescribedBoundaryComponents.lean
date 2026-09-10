@@ -6,7 +6,7 @@ set_option autoImplicit false
 noncomputable section
 open Set Bundle Filter Manifold TopologicalSpace
 open scoped ContDiff Topology
-namespace Poincare.VectorField
+namespace DifferentialGeometry.VectorField
 
 theorem exists_with_prescribed_boundary_components
     {E H B : Type*} {M : Type} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -28,7 +28,7 @@ theorem exists_with_prescribed_boundary_components
       ContMDiff J J.tangent ∞ (fun p => (⟨p, T p⟩ : TangentBundle J B)) →
       ContMDiff J 𝓘(ℝ, ℝ) ∞ b →
       (∀ q : S, q.val.2.val = 0 →
-        0 < Poincare.Manifold.Interval.tangentCoordinateIcc q.val.2
+        0 < DifferentialGeometry.Manifold.Interval.tangentCoordinateIcc q.val.2
           (_root_.VectorField.mpullback (J.prod (𝓡∂ 1)) I e (fun y : Y => V y.val) q).2 * b q.val.1) →
     ∃ G : ∀ x : M, TangentSpace I x,
       ContMDiff I I.tangent ∞ (fun x => (⟨x, G x⟩ : TangentBundle I M)) ∧
@@ -36,7 +36,7 @@ theorem exists_with_prescribed_boundary_components
       (∀ x, V x = 0 → G =ᶠ[𝓝 x] V) ∧
       ∀ q : S, q.val.2.val = 0 →
         _root_.VectorField.mpullback (J.prod (𝓡∂ 1)) I e (fun y : Y => G y.val) q =
-          (T q.val.1, (Poincare.Manifold.Interval.tangentCoordinateIcc q.val.2).symm (b q.val.1)) := by
+          (T q.val.1, (DifferentialGeometry.Manifold.Interval.tangentCoordinateIcc q.val.2).symm (b q.val.1)) := by
   intro I S Y hY e hi hzero V hV T b hT hb hsign
   obtain ⟨U, hU, hUzero⟩ := exists_boundary_section_extension hδ Y e V hV T b hT hb
   have haffine (x : M) (hx : I.IsBoundaryPoint x) (t : unitInterval) :
@@ -50,13 +50,13 @@ theorem exists_with_prescribed_boundary_components
       by_contra h
       exact (I.isBoundaryPoint_iff_not_isInteriorPoint (e q).val).mp hqb (hi q (lt_of_not_ge h))
     let W := _root_.VectorField.mpullback (J.prod (𝓡∂ 1)) I e (fun y : Y => V y.val)
-    obtain ⟨c, hc, hnormal⟩ := Poincare.Manifold.BoundaryCollar.collar_normal_eq_pos_mul_proj S Y e hq0 hqb
+    obtain ⟨c, hc, hnormal⟩ := DifferentialGeometry.Manifold.BoundaryCollar.collar_normal_eq_pos_mul_proj S Y e hq0 hqb
     have hv := hnormal (W q)
     have hpush : mfderiv (J.prod (𝓡∂ 1)) I e q (W q) = V (e q).val :=
       (isInvertible_mfderiv_diffeomorph e (by simp) q).self_apply_inverse _
     rw [hpush] at hv
     have hu := hnormal (T q.val.1,
-      (Poincare.Manifold.Interval.tangentCoordinateIcc q.val.2).symm (b q.val.1))
+      (DifferentialGeometry.Manifold.Interval.tangentCoordinateIcc q.val.2).symm (b q.val.1))
     rw [ContinuousLinearEquiv.apply_symm_apply, ← hUzero q hq0] at hu
     erw [he] at hv hu
     let L := EuclideanSpace.proj (𝕜 := ℝ) (0 : Fin (n + 1))
@@ -80,10 +80,10 @@ theorem exists_with_prescribed_boundary_components
   refine ⟨G, hG, hz, hgerm, ?_⟩
   intro q hq
   have hval : G (e q).val = mfderiv (J.prod (𝓡∂ 1)) I e q
-      (T q.val.1, (Poincare.Manifold.Interval.tangentCoordinateIcc q.val.2).symm (b q.val.1)) :=
+      (T q.val.1, (DifferentialGeometry.Manifold.Interval.tangentCoordinateIcc q.val.2).symm (b q.val.1)) :=
     (hGU (e q).val (hzero q hq)).self_of_nhds.trans (hUzero q hq)
   change (mfderiv (J.prod (𝓡∂ 1)) I e q).inverse (G (e q).val) = _
   exact (congrArg (mfderiv (J.prod (𝓡∂ 1)) I e q).inverse hval).trans
     ((isInvertible_mfderiv_diffeomorph e (by simp) q).inverse_apply_self _)
 
-end Poincare.VectorField
+end DifferentialGeometry.VectorField

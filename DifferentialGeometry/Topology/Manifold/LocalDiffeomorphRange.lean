@@ -12,7 +12,7 @@ open scoped Manifold ContDiff
 
 noncomputable section
 
-namespace Poincare.Topology
+namespace DifferentialGeometry.Topology
 
 def diffeomorphRangeOfInjective
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -57,4 +57,4 @@ theorem diffeomorphRangeOfInjective_apply
     {f : M → N} (hf : IsLocalDiffeomorph I J ∞ f) (hinj : Injective f) (x : M) :
     (diffeomorphRangeOfInjective hf hinj x : N) = f x := rfl
 
-end Poincare.Topology
+end DifferentialGeometry.Topology

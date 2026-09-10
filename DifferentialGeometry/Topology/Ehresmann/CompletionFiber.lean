@@ -7,9 +7,9 @@ noncomputable section
 open Set Topology Manifold
 open scoped ContDiff
 
-namespace Poincare.Topology.Ehresmann
+namespace DifferentialGeometry.Topology.Ehresmann
 
-open Poincare.Topology.Manifold Poincare.Geometry.Boundary
+open DifferentialGeometry.Topology.Manifold DifferentialGeometry.Geometry.Boundary
 open DifferentialGeometry.Integral.DivergenceTheorem.WithBoundary
 
 variable {M : Type*} [TopologicalSpace M] {u : M → ℝ} {a b s : ℝ}
@@ -166,4 +166,4 @@ theorem contMDiff_completionFiberInclusion
   let _ := completionFiberChartedSpace hu hs hf hreg
   exact (contMDiff_completionFiber_iff hu hs hf hreg hi hemb hj id).mp contMDiff_id
 
-end Poincare.Topology.Ehresmann
+end DifferentialGeometry.Topology.Ehresmann

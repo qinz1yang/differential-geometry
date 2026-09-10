@@ -9,7 +9,7 @@ open Set Function Manifold
 open scoped Topology ContDiff
 set_option autoImplicit false
 noncomputable section
-namespace Poincare.Manifold.Diffeomorph
+namespace DifferentialGeometry.Manifold.Diffeomorph
 
 theorem exists_compact_translation {r : ℝ} (hr : 0 < r) :
     ∃ a : ℝ, 0 < a ∧ a < r ∧
@@ -74,4 +74,4 @@ theorem exists_compact_translation {r : ℝ} (hr : 0 < r) :
     rw [hh]
     exact b.hasCompactSupport.mul_left
 
-end Poincare.Manifold.Diffeomorph
+end DifferentialGeometry.Manifold.Diffeomorph

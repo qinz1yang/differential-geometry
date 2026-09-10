@@ -10,10 +10,10 @@ noncomputable section
 open Metric Manifold
 open scoped ContDiff
 
-namespace Poincare.Geometry
+namespace DifferentialGeometry.Geometry
 
 open DifferentialGeometry.Geometry DifferentialGeometry.Geometry.Curvature
-open DifferentialGeometry.Topology.ThreeManifold Poincare.Topology
+open DifferentialGeometry.Topology.ThreeManifold DifferentialGeometry.Topology
 
 variable {M : Type*} [TopologicalSpace M] [T2Space M]
   [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M] [IsManifold (𝓡 3) ∞ M]
@@ -55,4 +55,4 @@ theorem exists_spherical_cover_of_admits_constant_positive_sectional_curvature
   exact ⟨⟨p, hp, hs, hl⟩,
     finite_fundamentalGroup_of_compact_simplyConnected_cover p hp hs⟩
 
-end Poincare.Geometry
+end DifferentialGeometry.Geometry

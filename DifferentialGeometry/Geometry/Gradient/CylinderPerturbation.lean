@@ -4,9 +4,9 @@ import DifferentialGeometry.Geometry.Metric.SharpPerturbation
 noncomputable section
 open scoped Manifold ContDiff
 open DifferentialGeometry DifferentialGeometry.CheegerGromovCompactness
-open DifferentialGeometry.Geometry.Operator Poincare.Geometry.Metric
+open DifferentialGeometry.Geometry.Operator DifferentialGeometry.Geometry.Metric
 
-namespace Poincare.Geometry.Gradient
+namespace DifferentialGeometry.Geometry.Gradient
 
 theorem gradFun_height_close_to_axis
     {E H M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
@@ -32,4 +32,4 @@ theorem gradFun_height_close_to_axis
   rw [div_le_iff₀ (by linarith : 0 < 1 - δ)]
   nlinarith
 
-end Poincare.Geometry.Gradient
+end DifferentialGeometry.Geometry.Gradient

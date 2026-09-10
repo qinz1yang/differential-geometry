@@ -4,7 +4,7 @@ open Set Function Manifold Filter
 open scoped Topology ContDiff
 set_option autoImplicit false
 noncomputable section
-namespace Poincare.Manifold.BoundaryCollar
+namespace DifferentialGeometry.Manifold.BoundaryCollar
 
 theorem exists_complete_smooth_flow
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -37,4 +37,4 @@ theorem exists_complete_smooth_flow
       exact (DifferentialGeometry.Analysis.ODE.curveAt_integralCurve V hc x t).hasFDerivAt
     simpa using hd.hasDerivAt
 
-end Poincare.Manifold.BoundaryCollar
+end DifferentialGeometry.Manifold.BoundaryCollar

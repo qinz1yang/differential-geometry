@@ -4,7 +4,7 @@ import Mathlib.LinearAlgebra.Pi
 set_option autoImplicit false
 noncomputable section
 open CategoryTheory CategoryTheory.Limits Set
-namespace Poincare.Homology
+namespace DifferentialGeometry.Homology
 universe u
 variable (X : TopCat.{u}) [T2Space X] (Z : Set X)
   {k : Type u} [Ring k] (A : ModuleCat.{u} k) (hZ : Z.Finite) (n : ℕ)
@@ -58,4 +58,4 @@ theorem finsum_finitePunctureHomologyInclusion_projection (z : relativeHomology 
     (∑ᶠ p : Z, finitePunctureHomologyInclusion X Z A hZ n p (finitePunctureProjection X Z A p n z)) = z := by
   simpa only [finitePunctureHomologyLinearEquiv_apply,LinearEquiv.symm_apply_apply] using
     finsum_finitePunctureHomologyInclusion X Z A hZ n (finitePunctureHomologyLinearEquiv X Z A hZ n z)
-end Poincare.Homology
+end DifferentialGeometry.Homology

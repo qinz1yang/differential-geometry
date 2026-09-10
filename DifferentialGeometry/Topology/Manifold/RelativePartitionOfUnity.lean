@@ -3,7 +3,7 @@ import Mathlib.Geometry.Manifold.PartitionOfUnity
 open Set Filter Topology
 open scoped ContDiff Manifold
 
-namespace Poincare.Topology.Manifold
+namespace DifferentialGeometry.Topology.Manifold
 
 variable {ι E H M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [TopologicalSpace H] [TopologicalSpace M]
@@ -76,4 +76,4 @@ theorem exists_smooth_patch_eq_near_closed
   filter_upwards [hflat i] with x hx
   rw [finsum_eq_single _ i (fun j hj ↦ by rw [hx.2 j hj, zero_smul]), hx.1, one_smul]
 
-end Poincare.Topology.Manifold
+end DifferentialGeometry.Topology.Manifold

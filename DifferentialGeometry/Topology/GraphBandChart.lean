@@ -1,7 +1,7 @@
 import DifferentialGeometry.Topology.GraphBand
 import DifferentialGeometry.Topology.Embedding.OpensChartRegion
 
-namespace Poincare.Topology
+namespace DifferentialGeometry.Topology
 
 open Set
 
@@ -36,4 +36,4 @@ theorem frontier_graphBand_of_opens_product_chart
     · exact ⟨⟨(p, a p), hband ⟨le_rfl, (hab p).le⟩⟩, Or.inl ⟨p, rfl⟩, rfl⟩
     · exact ⟨⟨(p, b p), hband ⟨(hab p).le, le_rfl⟩⟩, Or.inr ⟨p, rfl⟩, rfl⟩
 
-end Poincare.Topology
+end DifferentialGeometry.Topology

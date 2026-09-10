@@ -6,7 +6,7 @@ open Set Bundle
 open scoped ContDiff Manifold
 open DifferentialGeometry DifferentialGeometry.Geometry.Curvature
 
-namespace Poincare.Geometry.Curvature
+namespace DifferentialGeometry.Geometry.Curvature
 
 theorem exists_smooth_ricci_eigenpair_near_simple
     {E H M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
@@ -22,9 +22,9 @@ theorem exists_smooth_ricci_eigenpair_near_simple
         ContMDiffOn I I.tangent ∞ (fun x ↦ (⟨x, w x⟩ : TangentBundle I M)) V ∧
         μ x₀ = μ₀ ∧ w x₀ = w₀ ∧ ∀ x ∈ V,
           g.inner x (w x) (w x) = 1 ∧ ricciSharp g x (w x) = μ x • w x := by
-  apply Poincare.Geometry.VectorBundle.exists_smooth_metric_normalized_eigenpair g (ricciSharp g)
+  apply DifferentialGeometry.Geometry.VectorBundle.exists_smooth_metric_normalized_eigenpair g (ricciSharp g)
     hU (ricciSharp_contMDiff g).contMDiffOn hx₀ _ μ₀ w₀ hw₀ heigen hsimple
   intro u v
   rw [inner_ricciSharp, inner_ricciSharp_right, ricciTensor_symm g x₀ u v]
 
-end Poincare.Geometry.Curvature
+end DifferentialGeometry.Geometry.Curvature

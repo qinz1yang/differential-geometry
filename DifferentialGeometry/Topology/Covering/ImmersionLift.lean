@@ -6,7 +6,7 @@ noncomputable section
 open Set Filter Topology Manifold
 open scoped ContDiff
 
-namespace Poincare.Topology
+namespace DifferentialGeometry.Topology
 
 variable {E F C H H' W M N : Type*}
   [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -97,4 +97,4 @@ theorem injective_mfderiv_of_smooth_lift
   rw [← heq, hc]
   exact congrArg (mfderiv J J p (g x)) hvw
 
-end Poincare.Topology
+end DifferentialGeometry.Topology

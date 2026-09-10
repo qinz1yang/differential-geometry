@@ -9,7 +9,7 @@ set_option autoImplicit false
 open CategoryTheory CategoryTheory.Limits Opposite Simplicial
 noncomputable section
 universe u
-namespace Poincare.SSet
+namespace DifferentialGeometry.SSet
 variable {k : Type u} [Ring k] (R : ModuleCat.{u} k)
 
 
@@ -32,4 +32,4 @@ instance chainComplexFunctor_preservesMonomorphisms :
     dsimp [_root_.SSet, SimplicialObject.whiskering, SimplicialObject]
     infer_instance
 
-end Poincare.SSet
+end DifferentialGeometry.SSet

@@ -4,7 +4,7 @@ import DifferentialGeometry.Topology.Simplex.BoundaryRetraction
 set_option autoImplicit false
 noncomputable section
 open Set Finset
-namespace Poincare.Simplex
+namespace DifferentialGeometry.Simplex
 variable {ι E : Type*} [Fintype ι]
   [NormedAddCommGroup E] [NormedSpace ℝ E]
 
@@ -52,4 +52,4 @@ theorem vertexMap_mem_proper_face_iff {v : ι → E} (hv : AffineIndependent ℝ
       have hji : j = i := by simpa using hj
       simpa only [hji] using hi
 
-end Poincare.Simplex
+end DifferentialGeometry.Simplex

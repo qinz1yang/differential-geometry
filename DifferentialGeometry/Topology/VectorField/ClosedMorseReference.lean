@@ -10,7 +10,7 @@ open Set Bundle
 open scoped Manifold ContDiff Topology
 open DifferentialGeometry DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Topology.Morse
-namespace Poincare.VectorField
+namespace DifferentialGeometry.VectorField
 variable {d : ℕ} {H M : Type} [TopologicalSpace H] [TopologicalSpace M]
   [ChartedSpace H M] (I : ModelWithCorners ℝ (EuclideanSpace ℝ (Fin (d + 1))) H)
   [IsManifold I ∞ M] [BoundarylessManifold I M] [T2Space M] [CompactSpace M]
@@ -23,11 +23,11 @@ theorem exists_closed_vectorField_interiorIndexSum_eq_eulerChar :
       ∃ hinterior : ∀ x, V x = 0 → I.IsInteriorPoint x,
         ∀ (K : Type) [Field K],
           interiorIndexSum I V hfinite hisolated hinterior =
-            Poincare.Homology.eulerChar K (TopCat.of M) := by
+            DifferentialGeometry.Homology.eulerChar K (TopCat.of M) := by
   classical
   obtain ⟨g⟩ := DifferentialGeometry.Geometry.nonempty_contMDiffRiemannianMetric_of_sigmaCompact
     (I := I) (M := M)
-  obtain ⟨f, hf, hnd, _, hfinite, hχ⟩ := Poincare.Morse.exists_morse_eulerChar I (M := M)
+  obtain ⟨f, hf, hnd, _, hfinite, hχ⟩ := DifferentialGeometry.Morse.exists_morse_eulerChar I (M := M)
   let fs : C^∞⟮I, M; ℝ⟯ := ⟨f, hf⟩
   let V := gradientFun g fs
   have heq (x : M) : V x = 0 ↔ IsCriticalPointAt I f x :=
@@ -54,4 +54,4 @@ theorem exists_closed_vectorField_interiorIndexSum_eq_eulerChar :
     _ = ∑ p ∈ hVf.toFinset, q p := Finset.sum_coe_sort hVf.toFinset q
     _ = _ := by rw [hs]; exact (hχ K).2.symm
 
-end Poincare.VectorField
+end DifferentialGeometry.VectorField

@@ -3,7 +3,7 @@ import Mathlib.Topology.UniformSpace.Real
 
 open Set Topology
 
-namespace Poincare.Topology
+namespace DifferentialGeometry.Topology
 
 private theorem frontier_subset_inter_of_closed_cover
     {W : Type*} [TopologicalSpace W] {L R : Set W}
@@ -108,4 +108,4 @@ theorem closed_sides_of_embedded_collar
   · exact (frontier_subset_inter_of_closed_cover hR hL (union_comm L R ▸ hLR)).trans_eq
       ((inter_comm R L).trans hinter)
 
-end Poincare.Topology
+end DifferentialGeometry.Topology

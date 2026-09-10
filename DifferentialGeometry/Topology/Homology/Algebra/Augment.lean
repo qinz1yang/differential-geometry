@@ -5,7 +5,7 @@ import Mathlib.Algebra.Homology.ShortComplex.Abelian
 set_option autoImplicit false
 open CategoryTheory CategoryTheory.Limits
 noncomputable section
-namespace Poincare.ChainComplex
+namespace DifferentialGeometry.ChainComplex
 variable {C : Type*} [Category* C] [Abelian C]
   {K L M : ChainComplex C ℕ} {A B D : C}
   {ε : K.X 0 ⟶ A} {η : L.X 0 ⟶ B} {θ : M.X 0 ⟶ D}
@@ -186,4 +186,4 @@ theorem quasiIso_augmentMap (f : K ⟶ L) (a : A ⟶ B)
       (by simp) (by simp)).mp inferInstance
     exact hf
 
-end Poincare.ChainComplex
+end DifferentialGeometry.ChainComplex

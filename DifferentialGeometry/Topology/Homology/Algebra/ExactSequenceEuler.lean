@@ -8,7 +8,7 @@ open CategoryTheory CategoryTheory.Limits
 noncomputable section
 universe u v
 
-namespace Poincare.ShortComplex
+namespace DifferentialGeometry.ShortComplex
 
 variable {k : Type u} [Field k]
 
@@ -20,9 +20,9 @@ theorem finrank_eq_range_add_range (S : CategoryTheory.ShortComplex (ModuleCat.{
   rw [heq]
   exact S.g.hom.finrank_range_add_finrank_ker.symm.trans (add_comm _ _)
 
-end Poincare.ShortComplex
+end DifferentialGeometry.ShortComplex
 
-namespace Poincare.HomologicalComplex
+namespace DifferentialGeometry.HomologicalComplex
 
 variable {k : Type u} [Field k]
   (S : CategoryTheory.ShortComplex (ChainComplex (ModuleCat.{v} k) ℕ)) (hS : S.ShortExact)
@@ -41,7 +41,7 @@ private theorem homology_rank_one (n : ℕ) :
     (Module.finrank k (S.X₁.homology n) : ℤ) = connectingRank S hS n +
       Module.finrank k (LinearMap.range (_root_.HomologicalComplex.homologyMap S.f n).hom) := by
   unfold connectingRank
-  exact_mod_cast Poincare.ShortComplex.finrank_eq_range_add_range _ (hS.homology_exact₁ (n + 1) n rfl)
+  exact_mod_cast DifferentialGeometry.ShortComplex.finrank_eq_range_add_range _ (hS.homology_exact₁ (n + 1) n rfl)
 
 omit [∀ n : ℕ, FiniteDimensional k (S.X₁.homology n)]
   [∀ n : ℕ, FiniteDimensional k (S.X₃.homology n)] in
@@ -49,7 +49,7 @@ private theorem homology_rank_two (n : ℕ) :
     (Module.finrank k (S.X₂.homology n) : ℤ) =
       Module.finrank k (LinearMap.range (_root_.HomologicalComplex.homologyMap S.f n).hom) +
         Module.finrank k (LinearMap.range (_root_.HomologicalComplex.homologyMap S.g n).hom) := by
-  exact_mod_cast Poincare.ShortComplex.finrank_eq_range_add_range _ (hS.homology_exact₂ n)
+  exact_mod_cast DifferentialGeometry.ShortComplex.finrank_eq_range_add_range _ (hS.homology_exact₂ n)
 
 omit [∀ n : ℕ, FiniteDimensional k (S.X₁.homology n)]
   [∀ n : ℕ, FiniteDimensional k (S.X₂.homology n)] in
@@ -58,7 +58,7 @@ private theorem homology_rank_three (n : ℕ) :
       Module.finrank k (LinearMap.range (_root_.HomologicalComplex.homologyMap S.g (n + 1)).hom) +
         connectingRank S hS n := by
   unfold connectingRank
-  exact_mod_cast Poincare.ShortComplex.finrank_eq_range_add_range _ (hS.homology_exact₃ (n + 1) n rfl)
+  exact_mod_cast DifferentialGeometry.ShortComplex.finrank_eq_range_add_range _ (hS.homology_exact₃ (n + 1) n rfl)
 
 omit [∀ n : ℕ, FiniteDimensional k (S.X₁.homology n)]
   [∀ n : ℕ, FiniteDimensional k (S.X₂.homology n)]
@@ -143,4 +143,4 @@ theorem homologyEulerChar_additive
   simp [ComplexShape.χ]
   linarith
 
-end Poincare.HomologicalComplex
+end DifferentialGeometry.HomologicalComplex

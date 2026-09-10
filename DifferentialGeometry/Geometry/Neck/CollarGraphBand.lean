@@ -5,7 +5,7 @@ open Set DifferentialGeometry
 open scoped Manifold ContDiff
 open DifferentialGeometry.Geometry.Operator
 
-namespace Poincare.Geometry.Neck
+namespace DifferentialGeometry.Geometry.Neck
 
 private abbrev S := Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1
 
@@ -191,4 +191,4 @@ theorem cylindricalChart.exists_raw_graph_band_of_gradient_close
     exact (hcomm x).symm.trans
       (congrArg (fun z : C₁.domain ↦ (C₁.chart z : M)) (Subtype.ext hx))
 
-end Poincare.Geometry.Neck
+end DifferentialGeometry.Geometry.Neck

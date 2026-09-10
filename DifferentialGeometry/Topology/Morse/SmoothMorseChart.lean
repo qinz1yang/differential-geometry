@@ -8,7 +8,7 @@ open DifferentialGeometry.Topology.Morse.CellAttachment
 open DifferentialGeometry.Topology.Morse.ManifoldCellAttachment
 open scoped Manifold ContDiff Topology
 
-namespace Poincare.Morse
+namespace DifferentialGeometry.Morse
 
 variable {n : ℕ} {H M : Type} [TopologicalSpace H] [TopologicalSpace M]
   [ChartedSpace H M] (I : ModelWithCorners ℝ (MorseModel n) H) [IsManifold I ∞ M]
@@ -65,4 +65,4 @@ theorem exists_interior_morse_chart (f : M → ℝ) (hf : ContMDiff I 𝓘(ℝ, 
   change p ∈ χ.target
   exact hχ0 ▸ χ.map_source hχsrc
 
-end Poincare.Morse
+end DifferentialGeometry.Morse

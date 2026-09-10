@@ -11,7 +11,7 @@ open CategoryTheory CategoryTheory.Limits Simplicial
 
 universe u
 
-namespace Poincare.SSet
+namespace DifferentialGeometry.SSet
 
 private theorem compactSpace_pushout {A D X P : TopCat.{u}} {f : A ⟶ D} {g : A ⟶ X}
     {r : D ⟶ P} {b : X ⟶ P} (h : IsPushout f g r b)
@@ -20,7 +20,7 @@ private theorem compactSpace_pushout {A D X P : TopCat.{u}} {f : A ⟶ D} {g : A
     continuous_sum_dom.mpr ⟨r.hom.continuous, b.hom.continuous⟩
   apply Function.Surjective.compactSpace hc
   intro p
-  rcases Poincare.TopCat.Pushout.jointly_surjective h p with ⟨d, hd⟩ | ⟨x, hx⟩
+  rcases DifferentialGeometry.TopCat.Pushout.jointly_surjective h p with ⟨d, hd⟩ | ⟨x, hx⟩
   · exact ⟨Sum.inl d, hd⟩
   · exact ⟨Sum.inr x, hx⟩
 
@@ -39,4 +39,4 @@ instance compactSpace_realization (X : _root_.SSet.{u}) [X.Finite] :
       (SimplexCategory.toTopHomeo ⦋n⦌).symm.compactSpace
     exact compactSpace_pushout (h.map _root_.SSet.toTop)
 
-end Poincare.SSet
+end DifferentialGeometry.SSet

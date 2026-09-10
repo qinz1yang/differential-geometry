@@ -13,7 +13,7 @@ open Set
 open scoped ContinuousMap
 open unitInterval
 
-namespace Poincare.Topology.CellAttachment
+namespace DifferentialGeometry.Topology.CellAttachment
 
 open DifferentialGeometry.Topology
 
@@ -1030,4 +1030,4 @@ noncomputable def outerHomotopyEquiv
     }
     exact ⟨H.symm⟩
 
-end Poincare.Topology.CellAttachment
+end DifferentialGeometry.Topology.CellAttachment

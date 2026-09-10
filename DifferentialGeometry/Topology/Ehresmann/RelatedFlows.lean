@@ -9,7 +9,7 @@ open scoped ContDiff Manifold
 
 open DifferentialGeometry.Analysis.ODE
 
-namespace Poincare.Topology.Ehresmann
+namespace DifferentialGeometry.Topology.Ehresmann
 
 variable {E E' : Type*}
   [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -236,4 +236,4 @@ theorem compactSupportFlowDiffeomorph_map_of_mfderiv_eq
 
 end CompactSupportRelatedFlow
 
-end Poincare.Topology.Ehresmann
+end DifferentialGeometry.Topology.Ehresmann

@@ -5,7 +5,7 @@ open scoped Manifold ContDiff
 open DifferentialGeometry DifferentialGeometry.Geometry.Connection
 open DifferentialGeometry.Geometry.Curvature
 
-namespace Poincare.Geometry.Curvature
+namespace DifferentialGeometry.Geometry.Curvature
 
 theorem riemannOp_line_eq_zero (g : SmoothRiemannianMetric 𝓘(ℝ) ℝ)
     (t u v w : ℝ) : riemannOp (LeviCivita g) t u v w = 0 := by
@@ -34,4 +34,4 @@ theorem ricciTensor_line_eq_zero (g : SmoothRiemannianMetric 𝓘(ℝ) ℝ)
     exact riemannOp_line_eq_zero g t w u v
   exact (congrArg (LinearMap.trace ℝ (TangentSpace 𝓘(ℝ) t)) he).trans (map_zero _)
 
-end Poincare.Geometry.Curvature
+end DifferentialGeometry.Geometry.Curvature

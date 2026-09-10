@@ -5,7 +5,7 @@ set_option autoImplicit false
 noncomputable section
 open Set Bundle Filter Manifold TopologicalSpace
 open scoped ContDiff Topology
-namespace Poincare.VectorField
+namespace DifferentialGeometry.VectorField
 
 theorem relativePoincareHopf_one_of_chosen_collar
     {E H B : Type*} {M : Type}
@@ -31,10 +31,10 @@ theorem relativePoincareHopf_one_of_chosen_collar
     let z : B → S := fun p => ⟨(p, ⟨0, ⟨le_rfl, (Fact.out : (0 : ℝ) < ε).le⟩⟩), hS p⟩
     let T : ∀ p : B, TangentSpace J p := fun p => (W (z p)).1
     let b : B → ℝ := fun p =>
-      -(Poincare.Manifold.Interval.tangentCoordinateIcc (z p).val.2 (W (z p)).2)
+      -(DifferentialGeometry.Manifold.Interval.tangentCoordinateIcc (z p).val.2 (W (z p)).2)
     ∀ (K : Type) [Field K],
       interiorIndexSum I V hVf hVi hVI + (∑ᶠ _ : {p | T p = 0 ∧ b p < 0}, (1 : ℤ)) =
-        Poincare.Homology.eulerChar K (TopCat.of M) := by
+        DifferentialGeometry.Homology.eulerChar K (TopCat.of M) := by
   intro I S hS Y hY e hi hz V hV hVf hVi hVI W z T b K _
   have hn (q : S) (hq : q.val.2.val = 0) : V (e q).val ≠ 0 := by
     intro hv
@@ -64,18 +64,18 @@ theorem relativePoincareHopf_one_of_chosen_collar
   let z' : B → U := fun p => ⟨(p, ⟨0, ⟨le_rfl, (Fact.out : (0 : ℝ) < ε).le⟩⟩), hδ⟩
   let T' : ∀ p : B, TangentSpace J p := fun p => (W' (z' p)).1
   let b' : B → ℝ := fun p =>
-    -(Poincare.Manifold.Interval.tangentCoordinateIcc (z' p).val.2 (W' (z' p)).2)
+    -(DifferentialGeometry.Manifold.Interval.tangentCoordinateIcc (z' p).val.2 (W' (z' p)).2)
   have hT : T' = T := by
     funext p
     exact congrArg Prod.fst (hp (z' p))
   have hb : b' = b := by
     funext p
     exact congrArg (fun v : E × EuclideanSpace ℝ (Fin 1) =>
-      -(Poincare.Manifold.Interval.tangentCoordinateIcc (z' p).val.2 v.2)) (hp (z' p))
+      -(DifferentialGeometry.Manifold.Interval.tangentCoordinateIcc (z' p).val.2 v.2)) (hp (z' p))
   have hr := relativePoincareHopf_one_of_collar J hδ hδε Y' hY' e' hi' V hV hVf hVi hVI hn' K
   change interiorIndexSum I V hVf hVi hVI + (∑ᶠ _ : {p | T' p = 0 ∧ b' p < 0}, (1 : ℤ)) =
-    Poincare.Homology.eulerChar K (TopCat.of M) at hr
+    DifferentialGeometry.Homology.eulerChar K (TopCat.of M) at hr
   rw [hT, hb] at hr
   exact hr
 
-end Poincare.VectorField
+end DifferentialGeometry.VectorField

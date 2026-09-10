@@ -5,9 +5,9 @@ import DifferentialGeometry.Topology.ProjectiveSpace.Connected
 
 set_option autoImplicit false
 noncomputable section
-open Set Bundle DifferentialGeometry.Topology.Morse Poincare.Topology
+open Set Bundle DifferentialGeometry.Topology.Morse DifferentialGeometry.Topology
 open scoped Manifold ContDiff Topology
-namespace Poincare.Manifold
+namespace DifferentialGeometry.Manifold
 
 theorem isConnected_complement_of_projectivePlane_bicollar
     {E H G S M : Type} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -50,4 +50,4 @@ theorem isConnected_complement_of_projectivePlane_normalTrivialization
     he (isCompact_range he.contMDiff.continuous) t ht
   exact isConnected_complement_of_projectivePlane_bicollar h hRP
 
-end Poincare.Manifold
+end DifferentialGeometry.Manifold

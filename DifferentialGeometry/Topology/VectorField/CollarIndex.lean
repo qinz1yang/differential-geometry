@@ -8,8 +8,8 @@ set_option autoImplicit false
 open Set Metric
 open scoped Manifold ContDiff Topology
 noncomputable section
-namespace Poincare.VectorField
-open Poincare.LocalDegree
+namespace DifferentialGeometry.VectorField
+open DifferentialGeometry.LocalDegree
 variable {d : ℕ}
 
 
@@ -125,7 +125,7 @@ theorem exists_partialDiffeomorph_collarNormalCoordinate
   have hd : ContDiffAt ℝ 1 (euclideanCollarExtension id b ρ)
       (euclideanProductPoint d x t) :=
     C.symm.contDiff.contDiffAt.comp _ (hD.comp _ C.contDiff.contDiffAt)
-  exact Poincare.Manifold.exists_partialDiffeomorph_of_contDiffAt
+  exact DifferentialGeometry.Manifold.exists_partialDiffeomorph_of_contDiffAt
     (triangularConjugate C ((1 - ρ t) • fderiv ℝ b x) (deriv ρ t * (1 - b x)) hc)
     hd (hasFDerivAt_euclideanCollarNormalCoordinate hb.differentiableAt_one hρ.differentiableAt_one hc)
 
@@ -237,4 +237,4 @@ theorem euclideanLocalDegree_collarExtension
     (contDiff_collarTransition.of_le (by simp)).contDiffAt
     (collar_created_normal_factor hb0 hz).1 (collar_created_normal_factor hb0 hz).2
 
-end Poincare.VectorField
+end DifferentialGeometry.VectorField

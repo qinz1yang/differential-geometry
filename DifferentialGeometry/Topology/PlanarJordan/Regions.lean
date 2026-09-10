@@ -4,7 +4,7 @@ import Mathlib.Analysis.InnerProductSpace.PiL2
 noncomputable section
 open Set Topology
 
-namespace Poincare.Topology.PlanarJordan
+namespace DifferentialGeometry.Topology.PlanarJordan
 
 theorem exists_regions_of_simple_closed_curve
     {γ : ℝ → ℂ} (hγ : ContinuousOn γ (Icc 0 1)) (hclose : γ 0 = γ 1)
@@ -50,4 +50,4 @@ theorem exists_regions_of_simple_closed_curve
       e.isCompact_preimage.mp (by simpa only [e.preimage_closure] using hcompact)
     exact hsep.not_isBounded_outside (he.isBounded.subset subset_closure)
 
-end Poincare.Topology.PlanarJordan
+end DifferentialGeometry.Topology.PlanarJordan

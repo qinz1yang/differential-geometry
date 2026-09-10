@@ -34,7 +34,7 @@ theorem exists_scalarBounded_spatialNeck_subsequence
     (W : ∀ i : ℕ, SpatialNeckWitness h (marks i) (centers i) epsilon)
     (hEnorm : IsMetricNorm (I := I) h)
     (hsmall : epsilon ≤ spatialNeckControlEpsilon)
-    (hsec : Poincare.Geometry.HasPositiveSectionalCurvature (I := I) h)
+    (hsec : DifferentialGeometry.Geometry.HasPositiveSectionalCurvature (I := I) h)
     (hcores : Pairwise (fun i j : ℕ => Disjoint (W i).core (W j).core))
     (hescape : Tendsto centers atTop (cocompact N)) :
     ∃ phi : ℕ → ℕ, StrictMono phi ∧ ∀ n : ℕ,
@@ -86,7 +86,7 @@ theorem not_tendsto_scalar_of_disjoint_escaping_necks
     (W : ∀ i : ℕ, SpatialNeckWitness h (marks i) (centers i) epsilon)
     (hEnorm : IsMetricNorm (I := I) h)
     (hsmall : epsilon ≤ spatialNeckControlEpsilon)
-    (hsec : Poincare.Geometry.HasPositiveSectionalCurvature (I := I) h)
+    (hsec : DifferentialGeometry.Geometry.HasPositiveSectionalCurvature (I := I) h)
     (hcores : Pairwise (fun i j : ℕ => Disjoint (W i).core (W j).core))
     (hescape : Tendsto centers atTop (cocompact N)) :
     ¬ Tendsto (fun i => metricScalarAt (I := I) h (centers i)) atTop atTop := by
