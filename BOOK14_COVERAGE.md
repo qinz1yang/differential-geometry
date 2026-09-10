@@ -4,7 +4,7 @@ Source: `book14.tex`; SHA-256 `ff3e8df5e43995554e641d0a31ba7caa85186eb5ba281c867
 
 Status vocabulary: **Unverified**, **Engine only**, **Missing**, **Repair required**, **Accepted**. Existing file names and theorem names do not certify correspondence.
 
-Current inventory: **144 of 148 Accepted**. The Kazdan–Warner integration snapshot passes named-module and strict source builds, all standard declaration linters except documentation-presence checks, foundational-only transitive axiom audits, exact arbitrary-metric sphere and weighted-integral consumers, and a fresh `lake build DifferentialGeometry` (13656 jobs, zero errors, warnings, or diagnostic output). Rows 4655, 5980, 6033, and 6223 remain open. Earlier rows retain their recorded source correspondence and checkpoint evidence; the current aggregate verifies all registered modules together.
+Current inventory: **144 of 148 Accepted**. The Kazdan–Warner integration snapshot passes named-module and strict source builds, all standard declaration linters except documentation-presence checks, foundational-only transitive axiom audits, exact arbitrary-metric sphere and weighted-integral consumers, and a fresh `lake build DifferentialGeometry` (13668 jobs, zero errors, warnings, or diagnostic output). Rows 4655, 5980, 6033, and 6223 remain open. Earlier rows retain their recorded source correspondence and checkpoint evidence; the current aggregate verifies all registered modules together.
 
 ## Chapter 2
 
