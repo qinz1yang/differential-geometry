@@ -127,7 +127,7 @@ end DifferentialGeometry.Analysis.HeatEquation
 namespace DifferentialGeometry.Analysis.HeatEquation
 
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
-  [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
+  [FiniteDimensional ℝ E]
   {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
   {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [T2Space M] [CompactSpace M]
@@ -137,24 +137,28 @@ private local instance : BorelSpace M := ⟨rfl⟩
 
 theorem exists_integral_mul_heatKernel_diagonal_sub_leading_bound
     (g : SmoothRiemannianMetric I M) (hn : Module.finrank ℝ E = 2) (T : ℝ) :
+    letI : NeZero (Module.finrank ℝ E) := ⟨by omega⟩
     ∃ C : ℝ, 0 ≤ C ∧ ∀ w : M → ℝ,
       Integrable w (riemannianVolumeMeasure (I := I) (M := M) g) → ∀ t ∈ Ioc 0 T,
         |(∫ x, w x * (heatKernel g t x x - 1 / (4 * Real.pi * t))
           ∂riemannianVolumeMeasure (I := I) (M := M) g) -
             (∫ x, w x * Geometry.Curvature.metricScalarAt g x
               ∂riemannianVolumeMeasure (I := I) (M := M) g) / (24 * Real.pi)| ≤
-          t * C * ∫ x, |w x| ∂riemannianVolumeMeasure (I := I) (M := M) g :=
-  exists_integral_mul_heatKernel_diagonal_sub_leading_bound_of_local_bound g
+          t * C * ∫ x, |w x| ∂riemannianVolumeMeasure (I := I) (M := M) g := by
+  let : NeZero (Module.finrank ℝ E) := ⟨by omega⟩
+  exact exists_integral_mul_heatKernel_diagonal_sub_leading_bound_of_local_bound g
     (exists_heatKernel_diagonal_sub_leading_local_bound g hn T)
 
 theorem tendsto_integral_mul_heatKernel_diagonal_sub_leading
     (g : SmoothRiemannianMetric I M) (hn : Module.finrank ℝ E = 2) {w : M → ℝ}
     (hw : Integrable w (riemannianVolumeMeasure (I := I) (M := M) g)) :
+    letI : NeZero (Module.finrank ℝ E) := ⟨by omega⟩
     Tendsto (fun t => ∫ x, w x * (heatKernel g t x x - 1 / (4 * Real.pi * t))
       ∂riemannianVolumeMeasure (I := I) (M := M) g) (𝓝[>] 0)
         (𝓝 ((∫ x, w x * Geometry.Curvature.metricScalarAt g x
-          ∂riemannianVolumeMeasure (I := I) (M := M) g) / (24 * Real.pi))) :=
-  tendsto_integral_mul_heatKernel_diagonal_sub_leading_of_local_bound g
+          ∂riemannianVolumeMeasure (I := I) (M := M) g) / (24 * Real.pi))) := by
+  let : NeZero (Module.finrank ℝ E) := ⟨by omega⟩
+  exact tendsto_integral_mul_heatKernel_diagonal_sub_leading_of_local_bound g
     (T := 1) (by norm_num) (exists_heatKernel_diagonal_sub_leading_local_bound g hn 1) hw
 
 end DifferentialGeometry.Analysis.HeatEquation
