@@ -13,7 +13,7 @@ open DifferentialGeometry.Geometry.Connection.Realization
 open DifferentialGeometry.Geometry.Operator
 
 noncomputable section
-
+set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
@@ -48,8 +48,6 @@ end CurvatureCoefficientDifferenceJetTower
 open CurvatureCoefficientDifferenceJetTower
 
 section TopOrderSeparatedResidualIntegrator
-
-
 
 theorem ricciOrderZeroBaseCoeff_perOrder_l2_topOrderSeparated
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
@@ -389,6 +387,7 @@ theorem ricciOrderZeroBaseCoeff_perOrder_l2_topOrderSeparated
 section TopOrderSeparatedKoszulExport
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
 theorem riemannianFiberNormSq_iteratedCovGrad_raisedKoszul_pointwise_le
     (g₀ g₁ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2)
     (htie : ∀ (y : M) (v w : TangentSpace I y),

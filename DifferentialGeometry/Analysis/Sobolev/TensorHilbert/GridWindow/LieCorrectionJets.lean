@@ -2,6 +2,7 @@ import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.GridWindow.TermJets
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.LieCorrection.ZeroOrder.VectorBundle.Expansion
 
 noncomputable section
+set_option backward.isDefEq.respectTransparency false
 
 set_option autoImplicit false
 

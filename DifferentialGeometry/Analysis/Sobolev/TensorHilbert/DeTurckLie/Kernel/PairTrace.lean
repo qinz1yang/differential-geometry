@@ -7,7 +7,7 @@ open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
-
+set_option backward.isDefEq.respectTransparency false
 
 open MeasureTheory Set Filter Topology Bundle Manifold DifferentialGeometry.Tensor0SBundle
     ContinuousLinearMap
@@ -730,7 +730,6 @@ theorem deTurckLieConnectionDifferenceDerivCoeffField_eq_pairTrace
   refine Finset.sum_congr rfl fun b _ => ?_
   rw [hXval a b]
   ring
-
 
 end DeTurckLieConnectionDifferenceDerivativeGridBrick
 

@@ -11,6 +11,7 @@ import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.LieCorrection.ZeroOrd
 set_option autoImplicit false
 
 noncomputable section
+set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators

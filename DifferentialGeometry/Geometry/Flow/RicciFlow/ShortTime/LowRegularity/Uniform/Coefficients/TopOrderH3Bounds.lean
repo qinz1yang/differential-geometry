@@ -846,6 +846,7 @@ private theorem reindex_jet_four_eq
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
   [BoundarylessManifold I M] [SigmaCompactSpace M] in
+set_option backward.isDefEq.respectTransparency false in
 private theorem perm_app_eq_reindex
     (g : SmoothRiemannianMetric I M) {d : ℕ}
     (A : SmoothCcTensor g d d) (e : Equiv.Perm (Fin d)) :
@@ -981,6 +982,7 @@ private theorem slot_extend_sq
   rw [MeasureTheory.integral_const_mul, hint] at hsq
   exact hsq
 
+set_option backward.isDefEq.respectTransparency false in
 theorem ricciConnectionPrincipalCoefficient_h3_uniform
     (hDim : Module.finrank ℝ E = 3)
     (gBase : SmoothRiemannianMetric I M)
@@ -1914,6 +1916,7 @@ theorem ricciConnectionDifferenceTopOrderCoefficient_h3_of_metricWeight_and_prin
     (I := I) (M := M) g gm T x N Dp Dj Kt Tp Cr
     hDp hTp hCr hx hxPsq htransPt htransJet hdagPt hdagJet happR
 
+set_option backward.isDefEq.respectTransparency false in
 theorem ricciConnectionDifferenceTopOrderCoefficient_h3_uniform
     (hDim : Module.finrank ℝ E = 3)
     (gBase : SmoothRiemannianMetric I M)

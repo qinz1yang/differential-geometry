@@ -7,9 +7,9 @@ open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 open DifferentialGeometry.Geometry.Operator
 
-
 noncomputable section
 
+set_option backward.isDefEq.respectTransparency false
 open Bundle Manifold Set Filter DifferentialGeometry.Tensor0SBundle MeasureTheory intervalIntegral
 open scoped Manifold Topology ContDiff BigOperators Matrix Interval
 
@@ -631,7 +631,6 @@ lemma covDerivLowerOrderTerm02_center_eq
       have herase1 : (Finset.univ.erase (1 : Fin 2)) = {(0 : Fin 2)} := by decide
       rw [herase0, herase1]
       simp only [Finset.prod_singleton, Matrix.cons_val_zero, Matrix.cons_val_one]
-      rfl
     rw [Finset.sum_congr rfl (fun J' _ => by rw [hout J'] :
       ∀ J' ∈ Finset.univ,
         (-∑ x_2, outputSlotCoeff (I := I) (M := M) g₀ 2 x m x_2 ![p, q] J'
@@ -750,7 +749,6 @@ lemma covDerivLowerOrderTerm03_center_hout
   rw [chartChristoffel_symm (I := I) g₀ x b m (J' 0) (extChartAt I x x),
     chartChristoffel_symm (I := I) g₀ x c m (J' 1) (extChartAt I x x),
     chartChristoffel_symm (I := I) g₀ x d m (J' 2) (extChartAt I x x)]
-  rfl
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] in
 private lemma sum_fin3_collapse_gen

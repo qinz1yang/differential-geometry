@@ -8,9 +8,8 @@ open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 open DifferentialGeometry.Geometry.Operator
 
-
 noncomputable section
-
+set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
     CovariantDerivative
@@ -50,6 +49,20 @@ private local instance tensorCovDivergenceModelNormedAddCommGroup (r s : ℕ) :
 private local instance tensorCovDivergenceModelNormedSpace (r s : ℕ) :
     NormedSpace ℝ (TensorRSModel r s ℝ E) :=
   Tensor0SBundle.tensorRSModelNormedSpace r s
+
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
+    [T2Space M] [SigmaCompactSpace M] in
+private lemma tensorRSSpace_toModelL_sum {r s : ℕ} (x : M) {ι : Type*} (fs : Finset ι)
+    (f : ι → TensorRSSpace r s I x) :
+    TensorRSSpace.toModelL (𝕜 := ℝ) (I := I) r s x (∑ i ∈ fs, f i) =
+      ∑ i ∈ fs, TensorRSSpace.toModelL (𝕜 := ℝ) (I := I) r s x (f i) := by
+  classical
+  induction fs using Finset.cons_induction with
+  | empty =>
+      rw [Finset.sum_empty, Finset.sum_empty]
+      exact ContinuousLinearMap.map_zero _
+  | cons a fs ha ih =>
+      rw [Finset.sum_cons, Finset.sum_cons, ContinuousLinearMap.map_add, ih]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
@@ -390,7 +403,8 @@ lemma covDivergenceRaw_eq_zero_off_tsupport
         (smoothOrthoFrame (I := I) g b i z)) b :=
     (smoothOrthoFrame_smooth (I := I) g b i).contMDiffAt.mdifferentiableAt (by simp)
   rw [codiffPsi_apply (I := I) (M := M) g s V b hSmooth_at hSmooth_at]
-  rw [hzero, map_zero]
+  rw [hzero]
+  exact ContinuousLinearMap.map_zero _
 
 omit [CompactSpace M] [SigmaCompactSpace M] in
 lemma covDivergenceRaw_toModel_hasCompactSupport
@@ -632,8 +646,8 @@ lemma oneSidedDirichletForm_chartBasis_component_contMDiffOn
   intro b _
   rw [oneSidedDirichletForm_apply]
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] [T2Space M]
-    [SigmaCompactSpace M] [I.Boundaryless] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
+    [T2Space M] [SigmaCompactSpace M] in
 lemma oneSidedDirichletVF_contMDiff
     (g : SmoothRiemannianMetric I M) (s : ℕ) (T : SmoothCcTensor g 0 s)
     (V : SmoothCcTensor g 0 (s + 1)) :
@@ -652,9 +666,8 @@ def oneSidedDirichletVFSection
     (fun b : M => oneSidedDirichletVF (I := I) (M := M) g s T V b)
     (oneSidedDirichletVF_contMDiff (I := I) (M := M) g s T V)
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] [T2Space M]
-    [SigmaCompactSpace M] in
-omit [I.Boundaryless] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
+    [T2Space M] [SigmaCompactSpace M] in
 @[simp] lemma oneSidedDirichletVFSection_apply
     (g : SmoothRiemannianMetric I M) (s : ℕ) (T : SmoothCcTensor g 0 s)
     (V : SmoothCcTensor g 0 (s + 1)) (b : M) :
@@ -822,8 +835,8 @@ private lemma contract_covariant_leibniz
   rw [eq_sub_iff_add_eq] at hleib
   exact hleib.symm
 
-omit [CompactSpace M] [BoundarylessManifold I M] [SigmaCompactSpace M] in
-omit [NeZero (Module.finrank ℝ E)] in
+omit [BoundarylessManifold I M] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [SigmaCompactSpace M] in
 private lemma contract_covGrad_eq_covDeriv
     (g : SmoothRiemannianMetric I M) (s : ℕ) (T : SmoothCcTensor g 0 s) (x : M)
     (v : TangentSpace I x) :
@@ -1174,7 +1187,7 @@ theorem divergence_oneSidedVF_eq
             (covDivergenceBilinear (I := I) (M := M) g s V b
               (smoothOrthoFrame (I := I) g b i b)
               (smoothOrthoFrame (I := I) g b i b))
-      exact map_sum (TensorRSSpace.toModelL (I := I) 0 s b) _ Finset.univ]
+      exact tensorRSSpace_toModelL_sum (I := I) (M := M) b Finset.univ _]
     rw [tip_sum_right (I := I) (M := M) g s b]
     refine Finset.sum_congr rfl (fun i _ => ?_)
     have hcodiff : covDivergenceBilinear (I := I) (M := M) g s V b

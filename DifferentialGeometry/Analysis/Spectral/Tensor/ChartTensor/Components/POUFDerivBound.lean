@@ -2,9 +2,8 @@ import DifferentialGeometry.Analysis.Sobolev.Intrinsic.Equivalence.IntrinsicToCh
 import DifferentialGeometry.Analysis.Sobolev.Manifold.Morrey.Basic
 import Mathlib.Analysis.Calculus.FDeriv.Mul
 
-
 noncomputable section
-
+set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter
 open scoped Manifold Topology ContDiff ENNReal NNReal BigOperators

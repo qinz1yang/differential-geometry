@@ -15,9 +15,8 @@ open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 open DifferentialGeometry.Geometry.Operator
 
-
 noncomputable section
-
+set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set Filter DifferentialGeometry.Tensor0SBundle MeasureTheory
 open scoped Manifold Topology ContDiff BigOperators
@@ -132,6 +131,7 @@ def metricDifferenceCcTensor (g₀ g₁ : SmoothRiemannianMetric I M) : SmoothCc
   metricCcTensor (I := I) (M := M) g₀ g₁ - metricCcTensor (I := I) (M := M) g₀ g₀
 
 omit [I.Boundaryless] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
 @[simp] theorem metricDifferenceCcTensor_self (g₀ : SmoothRiemannianMetric I M) :
     metricDifferenceCcTensor (I := I) (M := M) g₀ g₀ = 0 :=
@@ -193,17 +193,16 @@ def gInvDiffQuadResidualField (g₀ g₁ : SmoothRiemannianMetric I M) :
     SmoothCcTensor g₀ 2 2 :=
   connectionDifferenceBiContrCoeffField (I := I) (M := M) g₁ g₀ g₁ g₀
 
-omit [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 @[simp] theorem gInvDiffQuadResidualField_toSection (g₀ g₁ : SmoothRiemannianMetric I M)
     (x : M) :
     (gInvDiffQuadResidualField (I := I) (M := M) g₀ g₁).toSection x =
       (show TensorRSSpace 2 2 I x from
         TensorRSSpace.ofCLM (connectionDifferenceBiContrFib (I := I) g₁ g₀ g₁ g₀ x)) := rfl
 
-
-omit [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 theorem gInvDiffQuadResidualField_self (g₀ : SmoothRiemannianMetric I M) :
     gInvDiffQuadResidualField (I := I) (M := M) g₀ g₀ = 0 := by
   classical

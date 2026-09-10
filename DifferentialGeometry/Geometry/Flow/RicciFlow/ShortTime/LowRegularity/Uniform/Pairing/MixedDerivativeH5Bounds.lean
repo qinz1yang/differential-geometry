@@ -170,6 +170,8 @@ private theorem iter_three_jet_two_le_five_h5
     norm_nonneg (iteratedCovGrad (I := I) g r s 4 S)]
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
+set_option backward.isDefEq.respectTransparency false in
+omit [NeZero (Module.finrank ℝ E)] in
 private theorem covgrad_slot_extend_eq_reindex_h5
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : SmoothCcTensor g r s) :
@@ -276,6 +278,7 @@ private theorem covgrad_slot_jet_three_le_four_h5
     slot_covgrad_jet_three_le_four_h5
       (I := I) (M := M) g r s S
 
+set_option backward.isDefEq.respectTransparency false in
 private theorem edge_corner_inner_h1_of_jets_h5
     (hDim : Module.finrank ℝ E = 3)
     (gBase : SmoothRiemannianMetric I M)
@@ -552,6 +555,7 @@ private theorem three_corner_pair_h5_le
   dsimp only [V, W, z]
   nlinarith
 
+set_option backward.isDefEq.respectTransparency false in
 theorem mixed_derivative_action_h1_uniform_bound
     (hDim : Module.finrank ℝ E = 3)
     (gBase : SmoothRiemannianMetric I M)
@@ -731,6 +735,7 @@ theorem mixed_derivative_action_h1_uniform_bound
         A20, A11L, A11R, D3T, HT, y, q] using hIn) hscale
     _ = G * y * q := by dsimp only [G]; ring
 
+set_option backward.isDefEq.respectTransparency false in
 theorem mixed_derivative_action_pairing_h5_uniform_bound
     (hDim : Module.finrank ℝ E = 3)
     (gBase : SmoothRiemannianMetric I M)

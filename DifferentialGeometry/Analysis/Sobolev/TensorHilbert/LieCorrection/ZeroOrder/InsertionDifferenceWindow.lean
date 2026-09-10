@@ -3,6 +3,7 @@ import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.LieCorrection.ZeroOrd
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.GridWindow.TermJets
 
 noncomputable section
+set_option backward.isDefEq.respectTransparency false
 
 set_option autoImplicit false
 

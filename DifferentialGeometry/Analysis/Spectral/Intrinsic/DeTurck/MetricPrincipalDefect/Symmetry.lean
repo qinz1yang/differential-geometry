@@ -31,6 +31,7 @@ variable [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
   [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
 
 omit [SigmaCompactSpace M] in
+set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [BoundarylessManifold I M] in
 omit [I.Boundaryless] in
@@ -186,6 +187,7 @@ noncomputable def metricPrincipalDefectCurvCoeff
     (gradSwapCurvCoeff (I := I) g₀)
 
 omit [SigmaCompactSpace M] in
+set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem metricPrincipalDefect_curvature_contraction
     (g₀ g : SmoothRiemannianMetric I M) (S : SmoothCcTensor g₀ 0 2) :

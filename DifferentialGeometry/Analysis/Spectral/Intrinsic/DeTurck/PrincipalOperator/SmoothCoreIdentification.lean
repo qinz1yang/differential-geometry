@@ -2,7 +2,6 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.PrincipalOperato
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.PrincipalOperator.PrincipalCometricH2
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.ConnectionDifference.MetricComparisonEndomorphismJetBounds
 
-
 noncomputable section
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
@@ -74,6 +73,7 @@ private noncomputable def fullH2
   appHs (I := I) (M := M) g 4 4 2
     (fullCoeff4 (I := I) (M := M) g a b)
 
+set_option backward.isDefEq.respectTransparency false in
 omit [BoundarylessManifold I M] [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
 omit [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
@@ -98,6 +98,7 @@ private lemma raise_eq_diff
   rw [htie x v w]
   ring
 
+set_option backward.isDefEq.respectTransparency false in
 omit [BoundarylessManifold I M] [NeZero (Module.finrank ℝ E)] in
 omit [I.Boundaryless] in
 omit [SigmaCompactSpace M] in

@@ -5,6 +5,7 @@ import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Scaling
 set_option autoImplicit false
 
 noncomputable section
+set_option backward.isDefEq.respectTransparency false
 
 namespace DifferentialGeometry.PDE.RicciFlow
 
@@ -21,7 +22,6 @@ variable [FiniteDimensional Real E]
 variable {H : Type*} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-
 
 variable [SigmaCompactSpace M] [T2Space M] [I.Boundaryless]
 

@@ -122,6 +122,7 @@ lemma chartSmoothExt_pou_value_bounded
           ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) y = 0 by simpa [f] using hf]
       simp
 
+set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
     [SigmaCompactSpace M] in
 lemma tensorChartComponentRaw_eq_zero_of_notMem_chart_source

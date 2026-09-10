@@ -299,6 +299,7 @@ private theorem inner_fiber_linf22_le
         rA sA rC sC A C K hQ
     _ ≤ _ := mul_le_mul_of_nonneg_left hholder hK
 
+set_option backward.isDefEq.respectTransparency false in
 theorem mixed_derivative_action_pairing_h4_uniform_bound
     (hDim : Module.finrank ℝ E = 3)
     (gBase : SmoothRiemannianMetric I M)

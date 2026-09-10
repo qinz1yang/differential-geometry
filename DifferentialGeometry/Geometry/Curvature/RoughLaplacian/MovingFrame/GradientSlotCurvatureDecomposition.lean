@@ -11,9 +11,8 @@ open DifferentialGeometry.Geometry.Curvature
 
 open DifferentialGeometry.Geometry.Connection
 
-
 noncomputable section
-
+set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
@@ -56,6 +55,7 @@ def gradSlotCurv (g : SmoothRiemannianMetric I M) (s : ℕ) (S : SmoothCcTensor 
     (fun b => X b) (fun b => W b) (unitGradFieldCovariantTensor (I := I) (M := M) g s S) x
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
 theorem gradSlotCurv_toModel_eq_baseSlot_sum
     (g : SmoothRiemannianMetric I M) (s : ℕ) (S : SmoothCcTensor g 0 s)
     (X W : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
@@ -70,6 +70,7 @@ theorem gradSlotCurv_toModel_eq_baseSlot_sum
     (contMDiff_unitGradFieldCovariantTensor (I := I) (M := M) g s S) x u
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
 theorem gradSlotCurv_toModel_eq_leading_add_tail
     (g : SmoothRiemannianMetric I M) (s : ℕ) (S : SmoothCcTensor g 0 s)
     (X W : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)

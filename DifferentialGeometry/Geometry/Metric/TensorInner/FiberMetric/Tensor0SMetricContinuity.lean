@@ -187,6 +187,12 @@ theorem normSq0S_cont {s : ℕ}
     Continuous (fun y : M => normSq0S (I := I) g y s (T y)) :=
   continuous_iff_continuousAt.2 fun x₀ => normSq0S_contAt (I := I) g T x₀
 
+theorem normSq0S_total_cont {s : ℕ} :
+    Continuous (fun p : Bundle.TotalSpace (Tensor0SModel s ℝ E)
+        (fun x : M => Tensor0SSpace s I x) =>
+      normSq0S (I := I) g p.proj s p.2) := by
+  sorry
+
 end NormSqContinuity
 
 end

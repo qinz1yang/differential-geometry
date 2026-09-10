@@ -18,7 +18,7 @@ open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
-
+set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal NNReal BigOperators Matrix
@@ -28,7 +28,6 @@ namespace DifferentialGeometry
 namespace Analysis
 namespace Spectral
 namespace MetricRealization
-
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
@@ -234,7 +233,6 @@ private lemma chosenComp_w_contDiffOn (w : TensorL2 r s g)
     (exists_smooth_supercritical_chart_component_representative
       (I := I) (M := M) g r s w α P (fun k => h_all k α P))).1
 
-
 private lemma chosenComp_w_hasCompactSupport (w : TensorL2 r s g)
     (h_all : ∀ k : ℕ, ∀ (α : M) (P₀ : TensorCompIdx (E := E) r s),
       MemWkp (d := Module.finrank ℝ E) (2 * k) 2
@@ -401,7 +399,6 @@ private lemma ae_eq_of_ae_eq_restrict_of_eqOn_compl'
   rw [MeasureTheory.Measure.restrict_apply₀'] at h_restrict
   · rwa [h_inter]
   · exact ht.nullMeasurableSet
-
 
 private lemma ite_finsetSum_eq_finsetSum_ite'
     {ι : Type*} (t : Finset ι) (p : Prop) [Decidable p] (f : ι → ℝ) :

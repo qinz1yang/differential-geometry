@@ -15,7 +15,6 @@ namespace DifferentialGeometry
 namespace Analysis
 namespace Spectral
 
-
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 open DifferentialGeometry.Analysis.Sobolev.TensorHilbert
@@ -158,6 +157,7 @@ private lemma pair_frame_repr (g : SmoothRiemannianMetric I M) (x : M)
   rw [hrepr v i, hbB_coe i]
 
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
+set_option backward.isDefEq.respectTransparency false in
 omit [I.Boundaryless] in
 theorem pairTrace_decomposition (g gm : SmoothRiemannianMetric I M) (s : Nat) :
     secondMetricCometricDoubleTraceField (I := I) (M := M) g gm s =
@@ -331,6 +331,7 @@ def pairProd4 (g : SmoothRiemannianMetric I M)
 
 omit [NeZero (Module.finrank Real E)] [I.Boundaryless]
   [BoundarylessManifold I M] [SigmaCompactSpace M] in
+set_option backward.isDefEq.respectTransparency false in
 theorem pairSlot2_eval (g : SmoothRiemannianMetric I M)
     (Λ : ContMDiffSection I (E →L[Real] E) ∞
       (fun x : M => TangentSpace I x →L[Real] TangentSpace I x))
@@ -405,6 +406,7 @@ private lemma pair_rank0_decomp (x : M) (t : Tensor0SSpace 0 I x) :
 
 omit [NeZero (Module.finrank Real E)] [I.Boundaryless]
   [BoundarylessManifold I M] [SigmaCompactSpace M] in
+set_option backward.isDefEq.respectTransparency false in
 private lemma pair_extend2_eval (g : SmoothRiemannianMetric I M)
     (B : SmoothCcTensor g 0 2) (x : M) (D : Tensor0SSpace 2 I x)
     (u : Fin 4 → TangentSpace I x) :

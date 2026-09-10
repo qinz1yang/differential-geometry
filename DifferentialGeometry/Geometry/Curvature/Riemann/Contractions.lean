@@ -9,7 +9,6 @@ import DifferentialGeometry.Geometry.Curvature.Riemann.Bianchi
 open DifferentialGeometry.Tensor.RSTensor
 open DifferentialGeometry.Geometry.Curvature
 
-
 set_option autoImplicit false
 
 noncomputable section
@@ -95,7 +94,6 @@ theorem rm13_oneForm_apply_eq_sum_inv_flat
           rw [map_smul]
           rfl
 
-
 def raised02CompAt
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
@@ -104,14 +102,12 @@ def raised02CompAt
   ∑ a : Idx, ∑ b : Idx,
     gInv i a * gInv j b * A (vec2 (basis a) (basis b))
 
-
 def oneUp02CompAt
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
     (A : Tensor02At (I := I) (M := M) x)
     (i k : Idx) : Real :=
   ∑ a : Idx, gInv k a * A (vec2 (basis i) (basis a))
-
 
 def rm04RicciContractionAt
     (basis : Module.Basis Idx Real (TangentSpace I x))
@@ -123,7 +119,6 @@ def rm04RicciContractionAt
     Rm04 (vec4 (basis a) (basis k) (basis b) (basis l)) *
       raised02CompAt (I := I) basis gInv A k l
 
-
 def ricciQuadraticAt
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
@@ -132,7 +127,6 @@ def ricciQuadraticAt
   ∑ k : Idx,
     oneUp02CompAt (I := I) basis gInv A a k *
       A (vec2 (basis k) (basis b))
-
 
 omit [FiniteDimensional ℝ E] [DecidableEq Idx] in
 private theorem raised02CompAt_symm
@@ -204,7 +198,7 @@ private theorem ricciQuadraticAt_symm
           simp [Finset.sum_mul, mul_assoc]
 
 omit [FiniteDimensional ℝ E] [DecidableEq Idx] in
-private theorem rm04RicciContractionAt_symm
+theorem rm04RicciContractionAt_symm
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (Rm04 : Tensor04At (I := I) (M := M) x)
     (gInv : Idx -> Idx -> Real)
@@ -791,7 +785,6 @@ theorem contracted_curvatureAction0SAt_vec2_eq
         ricciQuadraticAt (I := I) basis gInv A a b := by
           rw [← hslot1_contracted, hslot0_contracted]
           ring
-
 
 omit [FiniteDimensional ℝ E] [DecidableEq Idx] in
 theorem curvature_ricci_rhs_symm

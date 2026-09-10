@@ -7,9 +7,8 @@ open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 
-
 noncomputable section
-
+set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff BigOperators
@@ -30,7 +29,6 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 private local instance : NormedSpace ℝ E := InnerProductSpace.toNormedSpace
 private local instance : Module.Finite ℝ E := inferInstance
-
 
 omit [CompactSpace M] [I.Boundaryless] [SigmaCompactSpace M] in
 theorem rawTensorConnLapSmooth_toSection_eq_parseval_secondCovDeriv_sum
@@ -58,10 +56,10 @@ theorem rawTensorConnLapSmooth_toSection_eq_parseval_secondCovDeriv_sum
     tensorHessianBilinAt (I := I) g 0 k (fun z : M => T.toSection z) hT x with hΨ
   set B : TangentSpace I x →ₗ[ℝ] TangentSpace I x →ₗ[ℝ] TensorRSSpace 0 k I x :=
     LinearMap.mk₂ ℝ (fun u v => Ψ u v)
-      (fun u u' v => by rw [map_add, add_apply])
-      (fun c u v => by rw [map_smul, smul_apply])
-      (fun u v v' => by rw [map_add])
-      (fun c u v => by rw [map_smul])
+      (fun u u' v => by rw [ContinuousLinearMap.map_add, add_apply])
+      (fun c u v => by rw [ContinuousLinearMap.map_smul, smul_apply])
+      (fun u v v' => by rw [ContinuousLinearMap.map_add])
+      (fun c u v => by rw [ContinuousLinearMap.map_smul])
   have hframe := rawTensorConnLap_eq_frame_trace (I := I) g 0 k
     (fun z : M => T.toSection z) hT x e horth
   have hpars := parseval_family_sum_bilin_eq (I := I) (M := M) g x
@@ -85,13 +83,11 @@ theorem rawTensorConnLapSmooth_toSection_eq_parseval_secondCovDeriv_sum
         refine Finset.sum_congr rfl (fun a _ => ?_)
         rw [hBval (V a x) (V a x), hψa a]
 
-
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
     [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
 private lemma tensor0S_eq_of_toModel_eq {s : ℕ} {x : M} {T T' : Tensor0SSpace s I x}
     (h : ∀ v : Fin s → E, Tensor0SSpace.toModel T v = Tensor0SSpace.toModel T' v) : T = T' :=
   Tensor0SSpace.toModel_injective (ContinuousMultilinearMap.ext h)
-
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
@@ -117,7 +113,6 @@ private lemma tensor0SAsRS_add (t : ℕ) (x : M) (C D : Tensor0SSpace t I x) :
     ring
   exact h
 
-
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
 private lemma tensor0SAsRS_smul (t : ℕ) (x : M) (c : ℝ) (C : Tensor0SSpace t I x) :
@@ -133,7 +128,6 @@ private lemma tensor0SAsRS_smul (t : ℕ) (x : M) (c : ℝ) (C : Tensor0SSpace t
       c • (tensor00Scalar (I := I) (M := M) x τ • C)
     rw [smul_comm]
   exact h
-
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in

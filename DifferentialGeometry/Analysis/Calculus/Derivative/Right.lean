@@ -60,6 +60,82 @@ theorem hasDerivAt_of_right
     exact (hgderivIcc t htIcc).hasDerivAt (Icc_mem_nhds ht.1 ht.2)
   exact hgAt.congr_of_eventuallyEq hfg_ev
 
+theorem exp_neg_intervalIntegral_mul_le_of_deriv_add_mul_nonneg
+    {f f' a : Real → Real} {u v : Real} (huv : u < v)
+    (hf : ContinuousOn f (Icc u v))
+    (ha : ContinuousOn a (Icc u v))
+    (hderiv : ∀ t ∈ Ioo u v, HasDerivAt f (f' t) t)
+    (hnonneg : ∀ t ∈ Ioo u v, 0 ≤ f' t + a t * f t) :
+    Real.exp (-intervalIntegral a u v volume) * f u ≤ f v := by
+  let A : Real → Real := fun t => intervalIntegral a u t volume
+  let q : Real → Real := fun t => Real.exp (A t) * f t
+  have haInt : IntervalIntegrable a volume u v :=
+    ContinuousOn.intervalIntegrable_of_Icc huv.le ha
+  have hAcont : ContinuousOn A (Icc u v) := by
+    dsimp only [A]
+    rw [← uIcc_of_le huv.le]
+    exact intervalIntegral.continuousOn_primitive_interval
+      ((intervalIntegrable_iff').mp haInt)
+  have hqcont : ContinuousOn q (Icc u v) :=
+    (Real.continuous_exp.comp_continuousOn hAcont).mul hf
+  have hqmono : MonotoneOn q (Icc u v) := by
+    apply monotoneOn_of_deriv_nonneg (convex_Icc u v) hqcont
+    · intro t ht
+      have hti : t ∈ Ioo u v := by
+        simpa only [interior_Icc] using ht
+      have hat : ContinuousAt a t :=
+        (ha t (Ioo_subset_Icc_self hti)).continuousAt
+          (Icc_mem_nhds hti.1 hti.2)
+      have haIntT : IntervalIntegrable a volume u t :=
+        ContinuousOn.intervalIntegrable_of_Icc hti.1.le
+          (ha.mono fun _ hs => ⟨hs.1, hs.2.trans hti.2.le⟩)
+      have hameas : StronglyMeasurableAtFilter a (𝓝 t) volume :=
+        ⟨Icc u v, Icc_mem_nhds hti.1 hti.2,
+          ha.aestronglyMeasurable measurableSet_Icc⟩
+      have hAd : HasDerivAt A (a t) t := by
+        dsimp only [A]
+        exact intervalIntegral.integral_hasDerivAt_right haIntT hameas hat
+      exact ((Real.hasDerivAt_exp (A t)).comp t hAd).mul (hderiv t hti)
+        |>.differentiableAt.differentiableWithinAt
+    · intro t ht
+      have hti : t ∈ Ioo u v := by
+        simpa only [interior_Icc] using ht
+      have hat : ContinuousAt a t :=
+        (ha t (Ioo_subset_Icc_self hti)).continuousAt
+          (Icc_mem_nhds hti.1 hti.2)
+      have haIntT : IntervalIntegrable a volume u t :=
+        ContinuousOn.intervalIntegrable_of_Icc hti.1.le
+          (ha.mono fun _ hs => ⟨hs.1, hs.2.trans hti.2.le⟩)
+      have hameas : StronglyMeasurableAtFilter a (𝓝 t) volume :=
+        ⟨Icc u v, Icc_mem_nhds hti.1 hti.2,
+          ha.aestronglyMeasurable measurableSet_Icc⟩
+      have hAd : HasDerivAt A (a t) t := by
+        dsimp only [A]
+        exact intervalIntegral.integral_hasDerivAt_right haIntT hameas hat
+      have hqd := ((Real.hasDerivAt_exp (A t)).comp t hAd).mul (hderiv t hti)
+      change 0 ≤ deriv ((Real.exp ∘ A) * f) t
+      rw [hqd.deriv]
+      have hexp : 0 ≤ Real.exp (A t) := (Real.exp_pos _).le
+      have hfactor :
+          Real.exp (A t) * a t * f t + (Real.exp ∘ A) t * f' t =
+            Real.exp (A t) * (f' t + a t * f t) := by
+        simp only [Function.comp_apply]
+        ring
+      rw [hfactor]
+      exact mul_nonneg hexp (hnonneg t hti)
+  have hqend := hqmono (left_mem_Icc.mpr huv.le)
+    (right_mem_Icc.mpr huv.le) huv.le
+  have hAu : A u = 0 := by simp [A]
+  have hAv : A v = intervalIntegral a u v volume := rfl
+  dsimp only [q] at hqend
+  rw [hAu, Real.exp_zero, one_mul, hAv] at hqend
+  calc
+    Real.exp (-intervalIntegral a u v volume) * f u ≤
+        Real.exp (-intervalIntegral a u v volume) *
+          (Real.exp (intervalIntegral a u v volume) * f v) :=
+      mul_le_mul_of_nonneg_left hqend (Real.exp_pos _).le
+    _ = f v := by rw [← mul_assoc, ← Real.exp_add]; simp
+
 theorem contDiffOn_of_right
     {v : F → F} {f : Real → F} {a b : Real} (hab : a < b)
     (hv : ContDiff Real ∞ v) (hf : ContinuousOn f (Icc a b))

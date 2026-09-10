@@ -3,6 +3,7 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.OperatorField.Com
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.CovariantJet.Naturality
 
 noncomputable section
+set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped BigOperators Manifold ContDiff
@@ -188,8 +189,9 @@ private theorem norm_sq_le_of_riemannianFiberNormSq_le
       tensorL2Norm_sq_toFun_eq_integral_riemannianFiberNormSq_rs]
   rwa [MeasureTheory.integral_const_mul, hint] at hsq
 
-omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
+omit [BoundarylessManifold I M] in
+omit [NeZero (Module.finrank ℝ E)] in
 private theorem covariantJetNormSq_le_of_pointwise_iteratedCovGrad_le
     (g : SmoothRiemannianMetric I M) {a b a' b' : ℕ}
     (X : SmoothCcTensor g a b) (Y : SmoothCcTensor g a' b') {K : ℝ}

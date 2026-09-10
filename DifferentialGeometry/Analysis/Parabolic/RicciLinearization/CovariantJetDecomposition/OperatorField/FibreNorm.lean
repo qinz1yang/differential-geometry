@@ -20,9 +20,8 @@ open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature
 
-
 noncomputable section
-
+set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set Filter DifferentialGeometry.Tensor0SBundle MeasureTheory intervalIntegral
 open scoped Manifold Topology ContDiff BigOperators Matrix Interval
@@ -67,7 +66,6 @@ private abbrev cometricDualBasisTangent (g : SmoothRiemannianMetric I M) (x : M)
   modelTangent (I := I) x (cometricLmodel (I := I) g x
     (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
       ((Module.finBasis ℝ E).cDualBasis k)))
-
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in

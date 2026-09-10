@@ -9,8 +9,6 @@ open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 
-
-
 noncomputable section
 
 open Bundle Manifold Set Filter DifferentialGeometry.Tensor0SBundle MeasureTheory
@@ -39,9 +37,9 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
+omit [CompactSpace M] [SigmaCompactSpace M] in
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
-omit [CompactSpace M] [SigmaCompactSpace M] in
 private theorem iteratedCovGrad_smul_real (g : SmoothRiemannianMetric I M) (r s j : ℕ) (c : ℝ)
     (w : SmoothCcTensor g r s) :
     iteratedCovGrad (I := I) g r s j (c • w) = c • iteratedCovGrad (I := I) g r s j w := by
@@ -220,6 +218,7 @@ private lemma interiorProduct_toModel_eval (s : ℕ) (x : M) (v : TangentSpace I
   rw [h1]
   rfl
 
+set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
 omit [I.Boundaryless] in
@@ -353,6 +352,7 @@ private lemma cometricDoubleTraceFib_toModel_center (p : ℕ) (x : M)
     (mem_smoothOrthoFrameNeighborhood_self (I := I) (M := M) x)
     (Tensor0SSpace.toModel D) m
 
+set_option backward.isDefEq.respectTransparency false in
 omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
@@ -397,6 +397,7 @@ private lemma slotExtend_connectionDifferenceLowered_toModel (x : M)
   rw [unitModel] at hu
   exact hu
 
+set_option backward.isDefEq.respectTransparency false in
 omit [SigmaCompactSpace M] in
 omit [I.Boundaryless] in
 private lemma gInvQuadDecompositionTerm_toModel (x : M) (om : Tensor0SSpace 1 I x) (m : Fin 2 → E) :
@@ -433,6 +434,7 @@ private lemma gInvQuadDecompositionTerm_toModel (x : M) (om : Tensor0SSpace 1 I 
       (smoothOrthoFrame (I := I) g₀ x c x)) m)]
   rfl
 
+set_option backward.isDefEq.respectTransparency false in
 omit [SigmaCompactSpace M] in
 omit [I.Boundaryless] in
 private lemma gInvQuadDecompositionWeight_toModel (x : M) (D : Tensor0SSpace 2 I x) (m : Fin 1 → E) :
@@ -508,6 +510,7 @@ private lemma gInvQuadDecompositionWeight_toModel (x : M) (D : Tensor0SSpace 2 I
     funext i
     fin_cases i <;> rfl
 
+set_option backward.isDefEq.respectTransparency false in
 omit [SigmaCompactSpace M] in
 omit [I.Boundaryless] in
 private theorem gInvDiffQuadResidualField_eq_decomposition :
@@ -713,7 +716,6 @@ private lemma sum_rect_le_sum_triangle (a : ℕ → ℝ) (ha : ∀ j, 0 ≤ a j)
         exact Finset.sum_nonneg fun j₂ _ => mul_nonneg (ha j) (ha j₂)
 
 end helpers
-
 
 theorem exists_riemannianFiberNormSq_iteratedCovGrad_gInvDiffQuadResidual_connectionDifferenceSection_diagGrid
     (g₀ : SmoothRiemannianMetric I M) :
@@ -1095,7 +1097,6 @@ theorem exists_riemannianFiberNormSq_iteratedCovGrad_gInvDiffQuadResidual_connec
                 ((iteratedCovGrad (I := I) g₀ 1 2 j₂
                   (connectionDifferenceSection (I := I) g₁ g₀)).toSection x) := by
         rw [mul_assoc]
-
 
 theorem riemannianFiberNormSq_iteratedCovGrad_gInvDiffQuadResidualInputSymm_gridWindow_le
     (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :

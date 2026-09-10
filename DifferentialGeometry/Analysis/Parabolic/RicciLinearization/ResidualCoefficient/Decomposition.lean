@@ -21,7 +21,7 @@ open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
-
+set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set Filter DifferentialGeometry.Tensor0SBundle MeasureTheory
 open scoped Manifold Topology ContDiff BigOperators
@@ -49,6 +49,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
+set_option backward.isDefEq.respectTransparency false in
 omit [I.Boundaryless] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma residualMetricCcTensor_unitModel_apply (g₀ g : SmoothRiemannianMetric I M) (x : M)
@@ -69,6 +70,7 @@ private lemma residualMetricCcTensor_unitModel_apply (g₀ g : SmoothRiemannianM
   rw [hbase]
   rfl
 
+set_option backward.isDefEq.respectTransparency false in
 omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
@@ -151,7 +153,6 @@ private theorem ccTensor22_ext_of_operatorFieldApply (g₀ : SmoothRiemannianMet
   rw [hWval] at h2
   exact h2
 
-
 omit [SigmaCompactSpace M] in
 private theorem halfRiemannBackgroundDifference_eq_residualFieldSum_add_kernelContraction
     (g₀ g₁ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
@@ -207,7 +208,6 @@ private theorem halfRiemannBackgroundDifference_eq_residualFieldSum_add_kernelCo
     (Equiv.swap (0 : Fin 4) 2) (Equiv.swap (1 : Fin 4) 3)
     (Equiv.swap (0 : Fin 4) 2 * Equiv.swap (1 : Fin 4) 3) 1 W]
 
-
 omit [SigmaCompactSpace M] in
 theorem linearizedRicciConnectionDifferenceOrder0RiemannHalfBackgroundDiffCombInputSymm_eq_residualFieldSum
     (g₀ g₁ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
@@ -236,7 +236,6 @@ theorem linearizedRicciConnectionDifferenceOrder0RiemannHalfBackgroundDiffCombIn
     ccInputSlotSymm_add (I := I) (M := M) g₀]
   abel
 
-
 omit [I.Boundaryless] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem metricCcTensor_apply (g₀ g : SmoothRiemannianMetric I M)
@@ -262,7 +261,6 @@ theorem metricCcTensor_apply (g₀ g : SmoothRiemannianMetric I M)
   unfold ccTensorModel
   rw [hround]
   rfl
-
 
 end TensorSpectral
 end Parabolic

@@ -6,6 +6,7 @@ import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.MetricPerturbation.Co
 set_option autoImplicit false
 
 noncomputable section
+set_option backward.isDefEq.respectTransparency false
 
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Spectral
@@ -301,9 +302,9 @@ private lemma combinedTrace42Model_apply_symbolic
   rw [← Finset.sum_add_distrib, ← Finset.sum_sub_distrib]
   congr 1
 
+omit [I.Boundaryless] in
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-omit [I.Boundaryless] in
 private theorem ricciSelf_twice_eq
     (g : SmoothRiemannianMetric I M) :
     ricciDeTurckPrincipalCoefficient (I := I) (M := M) g g +
@@ -353,10 +354,10 @@ private theorem ricciSelf_twice_eq
     ContinuousMultilinearMap.domDomCongr_apply]
   ring
 
+omit [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
-omit [I.Boundaryless] in
-omit [SigmaCompactSpace M] in
 theorem ricciSelf_eq
     (g : SmoothRiemannianMetric I M) :
     ricciDeTurckPrincipalCoefficient (I := I) (M := M) g g =

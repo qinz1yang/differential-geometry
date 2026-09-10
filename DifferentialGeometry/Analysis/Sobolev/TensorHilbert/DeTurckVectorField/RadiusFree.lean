@@ -3,7 +3,7 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.CurvatureCoefficien
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.CurvatureCoefficientDifferenceJetTower.Residual.RadiusFreeIntegral
 
 noncomputable section
-
+set_option backward.isDefEq.respectTransparency false
 
 open MeasureTheory Set Filter Topology Bundle Manifold DifferentialGeometry.Tensor0SBundle ContinuousLinearMap
 open scoped ENNReal NNReal BigOperators Manifold ContDiff
@@ -34,6 +34,7 @@ private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 open DifferentialGeometry.Analysis.Spectral.DeTurck in
 open DifferentialGeometry.Analysis.Sobolev.TensorHilbert in
+set_option backward.isDefEq.respectTransparency false in
 theorem cometricCastG0_order0sup_jetL2_radiusFree
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1)
@@ -382,6 +383,7 @@ private lemma sharpFlatEndoCc_eq_insert_fullRaised_rf (g₀ g₁ : SmoothRiemann
   rw [cotangentToDualLinear_apply, cotangentToDual_g0FlatCLM]
   rw [g₀.symm x w (inverseMetricSharpFib (I := I) g₁ x om)]
 
+set_option backward.isDefEq.respectTransparency false in
 theorem sharpFlatEndoCc_lowOrder_jetL2_radiusFree
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1)

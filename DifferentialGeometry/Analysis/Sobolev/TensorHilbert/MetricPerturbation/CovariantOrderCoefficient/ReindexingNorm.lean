@@ -55,6 +55,7 @@ theorem riemannianFiberNormSq_iteratedCovGrad_rsDomDomCongr_both_eq
     (fun y d => by
       rw [rsDomDomCongrSection_toSection, toModel_rsDomDomCongr_apply]) i x
 
+set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
     [SigmaCompactSpace M] in
 private lemma slotInsertEndoCc_succ_eq_reindex_slotExtend

@@ -178,6 +178,73 @@ theorem indexForm_add_smul {R : ℝ → F →L[ℝ] F} {a b : ℝ} {y v z w : �
     intervalIntegral.integral_add hyy (hyz.const_mul (2 * c)),
     intervalIntegral.integral_const_mul, intervalIntegral.integral_const_mul]
 
+theorem IsJacobiFieldOn.indexForm_le
+    {R : ℝ → F →L[ℝ] F} {a b : ℝ} {y v z w : ℝ → F}
+    (hab : a ≤ b)
+    (hR : ContinuousOn R (Icc a b))
+    (hR_symm : ∀ t, ∀ x x' : F, ⟪R t x, x'⟫ = ⟪x, R t x'⟫)
+    (hy : IsJacobiFieldOn R a b y v)
+    (hz : ∀ t ∈ Icc a b, HasDerivWithinAt z (w t) (Icc a b) t)
+    (hw : ContinuousOn w (Icc a b))
+    (hza : z a = y a) (hzb : z b = y b)
+    (hsub : 0 ≤ indexForm R a b (z - y) (w - v) (z - y) (w - v)) :
+    indexForm R a b y v y v ≤ indexForm R a b z w z w := by
+  let d : ℝ → F := z - y
+  let e : ℝ → F := w - v
+  have hz_cont : ContinuousOn z (Icc a b) :=
+    fun t ht => (hz t ht).continuousWithinAt
+  have hd_cont : ContinuousOn d (Icc a b) := hz_cont.sub hy.contOn_fst
+  have he_cont : ContinuousOn e (Icc a b) := hw.sub hy.contOn_snd
+  have hd_deriv : ∀ t ∈ Icc a b,
+      HasDerivWithinAt d (e t) (Icc a b) t := by
+    intro t ht
+    exact (hz t ht).sub (hy.deriv_fst t ht)
+  have hyy : IntervalIntegrable
+      (indexIntegrand R y v y v) volume a b :=
+    intInt_indexIntegrand
+      (by simpa [uIcc_of_le hab] using hR)
+      (by simpa [uIcc_of_le hab] using hy.contOn_fst)
+      (by simpa [uIcc_of_le hab] using hy.contOn_snd)
+      (by simpa [uIcc_of_le hab] using hy.contOn_fst)
+      (by simpa [uIcc_of_le hab] using hy.contOn_snd)
+  have hyd : IntervalIntegrable
+      (indexIntegrand R y v d e) volume a b :=
+    intInt_indexIntegrand
+      (by simpa [uIcc_of_le hab] using hR)
+      (by simpa [uIcc_of_le hab] using hy.contOn_fst)
+      (by simpa [uIcc_of_le hab] using hy.contOn_snd)
+      (by simpa [uIcc_of_le hab] using hd_cont)
+      (by simpa [uIcc_of_le hab] using he_cont)
+  have hdd : IntervalIntegrable
+      (indexIntegrand R d e d e) volume a b :=
+    intInt_indexIntegrand
+      (by simpa [uIcc_of_le hab] using hR)
+      (by simpa [uIcc_of_le hab] using hd_cont)
+      (by simpa [uIcc_of_le hab] using he_cont)
+      (by simpa [uIcc_of_le hab] using hd_cont)
+      (by simpa [uIcc_of_le hab] using he_cont)
+  have hda : d a = 0 := by
+    dsimp only [d]
+    simp only [Pi.sub_apply]
+    exact sub_eq_zero.mpr hza
+  have hdb : d b = 0 := by
+    dsimp only [d]
+    simp only [Pi.sub_apply]
+    exact sub_eq_zero.mpr hzb
+  have hcross : indexForm R a b y v d e = 0 := by
+    rw [hy.indexForm_eq_sub hab hR hd_deriv he_cont, hda, hdb]
+    simp
+  have hsum := indexForm_add_smul hR_symm hyy hyd hdd (1 : ℝ)
+  have hz_eq : y + (1 : ℝ) • d = z := by
+    funext t
+    simp [d]
+  have hw_eq : v + (1 : ℝ) • e = w := by
+    funext t
+    simp [e]
+  rw [hz_eq, hw_eq, hcross, mul_zero, add_zero, one_pow, one_mul] at hsum
+  rw [hsum]
+  exact le_add_of_nonneg_right hsub
+
 theorem exists_indexForm_neg {R : ℝ → F →L[ℝ] F} {a b : ℝ} {y v z w : ℝ → F}
     (hR : ∀ t, ∀ x x' : F, ⟪R t x, x'⟫ = ⟪x, R t x'⟫)
     (hyy : IntervalIntegrable (indexIntegrand R y v y v) volume a b)

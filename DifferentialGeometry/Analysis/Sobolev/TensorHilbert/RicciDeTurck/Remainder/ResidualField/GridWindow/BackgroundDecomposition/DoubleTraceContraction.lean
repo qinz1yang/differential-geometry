@@ -13,7 +13,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-
 open Bundle Manifold Set Filter DifferentialGeometry.Tensor0SBundle MeasureTheory
 open scoped Manifold Topology ContDiff BigOperators
 
@@ -46,6 +45,7 @@ open DifferentialGeometry.Analysis.Sobolev.TensorHilbert
 
 variable (g₀ g₁ : SmoothRiemannianMetric I M)
 
+set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 omit [I.Boundaryless] in
 lemma movingMetricDoubleTraceField_self_eq (s : ℕ) :
@@ -57,6 +57,7 @@ lemma movingMetricDoubleTraceField_self_eq (s : ℕ) :
   rw [cometricDoubleTraceField_toSection]
   rfl
 
+set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 private lemma slotInsertEndoCc_add_local (s : ℕ)
     (A B : ContMDiffSection I (E →L[ℝ] E) ∞
@@ -79,6 +80,7 @@ private lemma slotInsertEndoCc_add_local (s : ℕ)
   rw [show ((A + B) x) = A x + B x from by rw [ContMDiffSection.coe_add]; rfl]
   rw [slotInsertEndoFib_add_left, add_apply]
 
+set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 omit [I.Boundaryless] in
 private lemma metricComparisonEndomorphismField_diff_split_local :
@@ -102,6 +104,7 @@ private lemma metricComparisonEndomorphismField_diff_split_local :
   rw [show metricComparisonEndomorphism (I := I) g₀ g₀ x v = v from by
     rw [metricComparisonEndomorphism_apply, inverseMetricSharpFib_g0FlatCLM]]
 
+set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 omit [I.Boundaryless] in
 private lemma operatorFieldComposition_slotInsert_id_eq (s c : ℕ) (Φ : SmoothCcTensor g₀ (s + 1) c) :
@@ -132,6 +135,7 @@ private lemma operatorFieldComposition_slotInsert_id_eq (s c : ℕ) (Φ : Smooth
       ContinuousLinearEquiv.apply_symm_apply]]
   rw [Function.update_eq_self]
 
+set_option backward.isDefEq.respectTransparency false in
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
 omit [I.Boundaryless] in
 private lemma movingMetricDoubleTraceField_eq_trace_fullRaised (s : ℕ) :
@@ -275,6 +279,7 @@ private lemma movingMetricDoubleTraceField_eq_trace_fullRaised (s : ℕ) :
             Tensor0SSpace.toModel Z
               (Fin.cons (smoothOrthoFrame (I := I) g₁ x c x) (Fin.cons u mm))) hrep0.symm)
 
+set_option backward.isDefEq.respectTransparency false in
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
 omit [I.Boundaryless] in
 private lemma movingMetricDoubleTraceField_cross_split (s : ℕ) :
@@ -297,6 +302,7 @@ def secondMetricPairTraceOperator : SmoothCcTensor g₀ 6 2 :=
     (secondMetricCometricDoubleTraceField (I := I) (M := M) g₀ g₁ 2)
     (secondMetricCometricDoubleTraceField (I := I) (M := M) g₀ g₁ 4)
 
+set_option backward.isDefEq.respectTransparency false in
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
 omit [I.Boundaryless] in
 lemma secondMetricPairTraceOperator_apply_toModel (X : SmoothCcTensor g₀ 0 4) (x : M)
@@ -386,6 +392,7 @@ def riemannCometricDoubleTraceContraction : SmoothCcTensor g₀ 2 4 :=
       (slotExtendIter (I := I) (M := M) g₀ 0 4 2
         (riemannLoweredCc (I := I) (M := M) g₀ g₀ g₀)))
 
+set_option backward.isDefEq.respectTransparency false in
 omit [SigmaCompactSpace M] in
 omit [I.Boundaryless] in
 lemma bgRTermWeight_toModel (x : M) (D : Tensor0SSpace 2 I x)
@@ -648,7 +655,6 @@ lemma exists_riemannianFiberNormSq_iteratedCovGrad_movingMetricDoubleTraceField_
           ∑ u₁ ∈ Finset.range (u + 1), KD u₁ *
             ∑ u₂ ∈ Finset.range (u + 1 - u₁),
               (Module.finrank ℝ E : ℝ) ^ (s + 1) * CΛ u₂) + 2 * KD u) * W := by ring
-
 
 lemma exists_riemannianFiberNormSq_iteratedCovGrad_movingMetricPairTraceOperator_window {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
     ∃ C : ℕ → ℝ, (∀ u, 0 ≤ C u) ∧

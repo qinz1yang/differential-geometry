@@ -4,7 +4,7 @@ open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator
 
 noncomputable section
-
+set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
@@ -50,7 +50,6 @@ noncomputable def lapDiffA20
   (scalarL2ToH0 (I := I) (M := M)
     (g_fam (T : Real))).toContinuousLinearMap.comp
       (lapDiffA2 (I := I) (M := M) g_fam T s)
-
 
 @[simp] theorem lapDiffA20_apply
     {D : RealTimeInterval}

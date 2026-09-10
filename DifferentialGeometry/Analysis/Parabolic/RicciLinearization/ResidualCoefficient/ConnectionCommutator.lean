@@ -15,9 +15,8 @@ open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 open DifferentialGeometry.Geometry.Operator
 
-
 noncomputable section
-
+set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set Filter DifferentialGeometry.Tensor0SBundle MeasureTheory
 open scoped Manifold Topology ContDiff BigOperators
@@ -360,7 +359,6 @@ def connectionDifferenceAACommBiContrFib (g₀ g₁ : SmoothRiemannianMetric I M
     Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x :=
   connectionDifferenceAACommBiContrFibFixedFrame (I := I) g₀ g₁ (smoothOrthoFrame (I := I) g₁ x) x
 
-
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 omit [T2Space M] [SigmaCompactSpace M] in
@@ -492,7 +490,6 @@ omit [SigmaCompactSpace M] in
       (show TensorRSSpace 2 2 I x from
         TensorRSSpace.ofCLM (connectionDifferenceAACommBiContrFib (I := I) g₀ g₁ x)) := rfl
 
-
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 omit [SigmaCompactSpace M] in
@@ -524,7 +521,6 @@ theorem connectionDifferenceAACommBiContrFib_self (g₀ : SmoothRiemannianMetric
             ![smoothOrthoFrame g₀ x a x, smoothOrthoFrame g₀ x b x] * 0 = 0
       rw [mul_zero]))]
   simp only [zero_apply, Tensor0SSpace.toModel_zero]
-
 
 omit [I.Boundaryless] in
 omit [SigmaCompactSpace M] in

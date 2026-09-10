@@ -9,6 +9,7 @@ import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Derivatives.Slo
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.CurvatureCoefficientDifferenceJetTower.PairTrace
 
 noncomputable section
+set_option backward.isDefEq.respectTransparency false
 
 set_option autoImplicit false
 
@@ -59,8 +60,8 @@ theorem deTurckLieEndomorphismTerm_eq_covariantDerivativeInsertion (g₀ g₁ g_
   intro x
   rw [deTurckLieEndoTermField_toSection, deTurckLieCovariantDerivativeInsertionField_toSection]
 
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 theorem lieCorrectionZeroInsertion_base_eq_neg_covariantDerivativeInsertion (g₀ g₁ : SmoothRiemannianMetric I M) :
     lieCorrectionZeroInsertion (I := I) (M := M) g₀ g₁ g₀ =
       -deTurckLieCovariantDerivativeInsertionField (I := I) (M := M) g₀ g₁ g₀ := by
@@ -792,8 +793,8 @@ private theorem sq_le_two_add (t u v c1 c2 : ℝ) (ht : 0 ≤ t) (hu : 0 ≤ u) 
   have huv : 0 ≤ u + v := by linarith
   nlinarith only [mul_le_mul htri htri ht huv, sq_nonneg (u - v), h1, h2, hu, hv]
 
-omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 omit [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 private theorem normSq_iteratedCovGrad_le_scaled (g₀ : SmoothRiemannianMetric I M)
     (X : SmoothCcTensor g₀ 2 2) (Y : SmoothCcTensor g₀ 1 1) (i : ℕ) (c : ℝ)
     (hpt : ∀ x : M,
@@ -1760,7 +1761,6 @@ private theorem lieCorrectionZeroVectorBundle_metricPerturbationPath_perOrder_to
         ‖iteratedCovGrad (I := I) g₀ 0 2 j T'‖ ^ 2) :=
     Finset.sum_nonneg (fun j _ => add_nonneg (sq_nonneg _) (sq_nonneg _))
   nlinarith only [hb, hK_nn i, hlow_nn, mul_nonneg (hK_nn i) hlow_nn]
-
 
 end DifferentialGeometry.Integral.Connection
 

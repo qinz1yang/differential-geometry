@@ -85,6 +85,8 @@ private theorem cometricTrace_eq
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
   [BoundarylessManifold I M] [SigmaCompactSpace M] in
+set_option backward.isDefEq.respectTransparency false in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 private theorem exists_trace31
     (g : SmoothRiemannianMetric I M)
     (A : Tensor0SField (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M)
@@ -124,6 +126,7 @@ private theorem exists_trace31
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
   [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 private theorem trace31_norm_le
     (g : SmoothRiemannianMetric I M)
     (A : Tensor0SField (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M)
@@ -166,8 +169,8 @@ noncomputable def revJetThreeC (Λ : ℝ) : ℝ :=
   let D := thirdIteratedCovariantDerivativeComparisonConstant (E := E) 2 Λ L₁ Λ Λ
   Real.sqrt (Λ ^ 5) * (D * Real.sqrt (Module.finrank ℝ E : ℝ))
 
-omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 omit [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 private theorem reverseJetThree
     (gBase g₀ : SmoothRiemannianMetric I M) {Λ : ℝ}
     (hEq : MetricUniformEquivalentOn (I := I) Set.univ gBase g₀ Λ)
@@ -512,7 +515,6 @@ noncomputable def connectionDifferenceZeroSqC (Λ : ℝ) : ℝ :=
   let C := 3 / 2 * Λ ^ 3 * C₁
   (Module.finrank ℝ E : ℝ) ^ 3 * C ^ 2
 
-
 omit [SigmaCompactSpace M] in
 theorem uniformConnectionDifferenceZero
     (gBase g₀ : SmoothRiemannianMetric I M) {Λ : ℝ}
@@ -614,7 +616,6 @@ noncomputable def connectionDifferenceOneSqC (Λ : ℝ) : ℝ :=
   let C₂ := revJetTwoC (E := E) Λ
   let C := 3 / 2 * Λ ^ 4 * (C₂ + Λ * C₁ ^ 2)
   (Module.finrank ℝ E : ℝ) ^ 4 * C ^ 2
-
 
 omit [SigmaCompactSpace M] in
 theorem uniformConnectionDifferenceOne
@@ -761,7 +762,6 @@ noncomputable def connectionDifferenceTwoC (Λ : ℝ) : ℝ :=
       9 / 2 * Λ ^ 6 * C₁ * C₂ +
       3 * Λ ^ 7 * C₁ ^ 3
   (Module.finrank ℝ E : ℝ) ^ 5 * C ^ 2
-
 
 omit [SigmaCompactSpace M] in
 theorem uniformConnectionDifferenceTwo
@@ -940,6 +940,7 @@ private theorem connLow_self_zero
   simp
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 private theorem wXi_base_eq
     (gBase g₀ : SmoothRiemannianMetric I M) :
     metricLoweredConnectionDifference (I := I) (M := M) g₀ g₀ gBase =
@@ -947,8 +948,8 @@ private theorem wXi_base_eq
   unfold metricLoweredConnectionDifference
   rw [connLow_self_zero (I := I) g₀, zero_sub]
 
-omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 omit [I.Boundaryless] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 private theorem cometricCast_self
     (g : SmoothRiemannianMetric I M) :
     cometricCastG0 (I := I) g g =
@@ -956,8 +957,9 @@ private theorem cometricCast_self
   apply SmoothCcTensor.ext
   rfl
 
-omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 omit [I.Boundaryless] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
 private theorem wOmega_base_eq
     (gBase g₀ : SmoothRiemannianMetric I M) :
     deTurckVectorFieldCovector (I := I) (M := M) g₀ g₀ gBase =
@@ -1049,7 +1051,6 @@ private theorem riemannianFiberNormSq_iter_neg
       rw [SmoothCcTensor.toSection_neg]
       rfl]
   exact riemannianFiberNormSq_neg (I := I) g r (s + j) x _
-
 
 noncomputable def alphaOneC (Λ : ℝ) : ℝ :=
   Real.sqrt ((Module.finrank ℝ E : ℝ) ^ 5 * connectionDifferenceTwoC (E := E) Λ)
@@ -1176,7 +1177,6 @@ private theorem uniformAlphaOne
           (deTurckVectorFieldCovariantDerivativeLoweredBase (I := I) (M := M) g₀ g₀ gBase)).toSection x) ≤ K ^ 2 := by
   exact ⟨alphaOneC (E := E) Λ, Real.sqrt_nonneg _,
     uniformAlphaOne_of (I := I) gBase g₀ hΛ hcomp hjet1 hjet2 hjet3⟩
-
 
 noncomputable def ricciOneC (Λ Kb₀ Kb₁ : ℝ) : ℝ :=
   Real.sqrt ((Module.finrank ℝ E : ℝ) ^ 5 *
@@ -1432,10 +1432,8 @@ private theorem rhs_one_split
   rw [rhs_split, iteratedCovGrad_add, iteratedCovGrad_add,
     iteratedCovGrad_smul]
 
-
 noncomputable def ksupOneC (Λ Kb₀ Kb₁ : ℝ) : ℝ :=
   4 * (ricciOneC (E := E) Λ Kb₀ Kb₁ + alphaOneC (E := E) Λ)
-
 
 omit [SigmaCompactSpace M] in
 theorem uniformKsupOne_of
@@ -1532,7 +1530,6 @@ theorem uniformKsupOne_of
     dsimp [ksupOneC, KR, KA]
     nlinarith [mul_nonneg hKR0 hKA0, sq_nonneg KA])
 
-
 theorem uniformKsupOne
     (gBase g₀ : SmoothRiemannianMetric I M) {Λ : ℝ}
     (hΛ : 1 ≤ Λ)
@@ -1556,7 +1553,6 @@ theorem uniformKsupOne
       add_nonneg (Real.sqrt_nonneg _) (Real.sqrt_nonneg _)
   · exact uniformKsupOne_of (I := I) gBase g₀ hΛ
       hKb₀0 hKb₀ hKb₁0 hKb₁ hcomp hjet1 hjet2 hjet3
-
 
 theorem uniformKsupLeOne
     (gBase : SmoothRiemannianMetric I M) {Λ : ℝ}
@@ -1597,7 +1593,6 @@ theorem uniformKsupLeOne
       nlinarith [mul_nonneg hK₀0 hK₁0, sq_nonneg K₁])
   · exact (h1 x).trans (by
       nlinarith [mul_nonneg hK₀0 hK₁0, sq_nonneg K₀])
-
 
 theorem uniformKsupLow
     (gBase g₀ : SmoothRiemannianMetric I M) {Λ : ℝ}

@@ -6,7 +6,7 @@ import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.OperatorField.JetProd
 section
 
 noncomputable section
-
+set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
@@ -936,6 +936,7 @@ theorem deTurckLieCovariantDerivativeSecondOrderCoefficient_metricPerturbationPa
   simpa only [S, deTurckLieCovariantDerivativeSecondOrderCoefficient_eq_permuted_connectionDifferenceContravariantInsertionField] using hout
 
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 theorem metricComparisonSlotInsertion_metricPerturbationPath_eq
     (g : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2)
@@ -985,6 +986,7 @@ theorem metricComparisonSlotInsertion_metricPerturbationPath_eq
   rw [hfull, slotInsertEndoCc_add, slotInsertEndoCc_smul]
 
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 theorem metricComparisonSlotInsertion_metricPerturbationPath_jointlySmooth
     (g : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2)
@@ -1027,6 +1029,7 @@ noncomputable def connectionDifferenceMetricLoweringCoefficient
       (RicciDeTurckLowOrder.connectionDifferenceLowOrderOperator (I := I) (M := M) g gm))
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 theorem connectionDifferenceMetricLoweringCoefficient_metricPerturbationPath_jointlySmooth
     (g : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2)
     {δ : ℝ}
@@ -1120,6 +1123,7 @@ noncomputable def connectionDifferenceQuadraticCurvatureDerivativeCoefficient
       (connectionDifferenceQuadraticComposedDerivativeCoefficient (I := I) (M := M) g gm)
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
 theorem connectionDifferenceQuadraticPairedDerivativeCoefficient_metricPerturbationPath_jointlySmooth
     (g : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2)
     {δ : ℝ}
@@ -1137,6 +1141,7 @@ theorem connectionDifferenceQuadraticPairedDerivativeCoefficient_metricPerturbat
   simpa only [connectionDifferenceQuadraticPairedDerivativeCoefficient] using jointlySmoothCcTensorFamily_ccOperatorFieldComp (I := I) (M := M) g harm homega
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
 theorem connectionDifferenceQuadraticComposedDerivativeCoefficient_metricPerturbationPath_jointlySmooth
     (g : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2)
     {δ : ℝ}
@@ -1158,6 +1163,7 @@ theorem connectionDifferenceQuadraticComposedDerivativeCoefficient_metricPerturb
   simpa only [S, connectionDifferenceQuadraticComposedDerivativeCoefficient] using jointlySmoothCcTensorFamily_ccOperatorFieldComp (I := I) (M := M) g harm hswap
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
 theorem connectionDifferenceQuadraticCurvatureDerivativeCoefficient_metricPerturbationPath_jointlySmooth
     (g : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2)
     {δ : ℝ}
@@ -1439,6 +1445,7 @@ theorem lieCorrectionQuadraticFirstDerivativeIntermediateCoefficient_apply
     _ = _ := by rw [hslot]
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
 theorem lieCorrectionQuadraticFirstDerivativeIntermediateCoefficient_metricPerturbationPath_jointlySmooth
     (g : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2)
     {δ : ℝ}
@@ -1534,6 +1541,7 @@ noncomputable def lieCorrectionQuadraticFirstDerivativeCoefficient
       (permCoeff (I := I) (M := M) g deTurckLieCovariantDerivativePairTracePermutation)
       (lieCorrectionQuadraticFirstDerivativeIntermediateCoefficient (I := I) (M := M) g gm T))
 
+set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 theorem operatorFieldComposition_smul_left
     (g : SmoothRiemannianMetric I M) (a b c : ℕ)
@@ -1554,6 +1562,7 @@ theorem operatorFieldComposition_smul_left
     rfl]
   rw [ContinuousLinearMap.smul_comp]
 
+set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 theorem slotExtend_smul
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
@@ -1686,6 +1695,7 @@ theorem ricciConnectionDifferenceDerivativeTransposedCoefficient_smul
   module
 
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [BoundarylessManifold I M] in
 theorem ricciConnectionDerivativeTransposedCoefficient_smul
     (g gm : SmoothRiemannianMetric I M) (a : ℝ)
     (W : SmoothCcTensor g 0 2) :
@@ -1703,6 +1713,7 @@ theorem ricciConnectionDifferenceDerivativeCoefficient_smul
   simp only [ricciConnectionDifferenceDerivativeCoefficient, ricciConnectionDifferenceQuadraticDerivativeCoefficient_smul, ccTensor02Symm_smul, ricciConnectionDerivativeTransposedCoefficient_smul]
   module
 
+set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 omit [I.Boundaryless] in
 theorem cometricRaiseSlot0Field_smul
@@ -1789,6 +1800,7 @@ theorem lieCorrectionQuadraticFirstDerivativeCoefficient_smul
   simp only [lieCorrectionQuadraticFirstDerivativeCoefficient, lieCorrectionQuadraticFirstDerivativeIntermediateCoefficient_smul, operatorFieldComposition_smul_right]
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
 theorem lieCorrectionQuadraticFirstDerivativeCoefficient_metricPerturbationPath_jointlySmooth
     (g : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2)
     {δ : ℝ}
@@ -1924,7 +1936,6 @@ end
 section
 
 noncomputable section
-
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
@@ -4404,7 +4415,6 @@ section
 
 noncomputable section
 
-
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
 
@@ -4712,6 +4722,7 @@ theorem slotExtendIter_sub
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
   [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] in
 theorem tensorThreeTwoProductCoefficient_sub
     (g : SmoothRiemannianMetric I M)
     (A B : SmoothCcTensor g 0 2) :
@@ -4990,6 +5001,7 @@ theorem exists_rotatedConnectionDifferenceLowOrderOperator_covariantJetNormSq_tw
       (mul_nonneg hC0 hJ)
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 omit [I.Boundaryless] in
 theorem metricComparisonSlotInsertion_eq
     (g gm : SmoothRiemannianMetric I M) (P : SmoothCcTensor g 0 2)
@@ -6866,7 +6878,6 @@ section
 
 noncomputable section
 
-
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
 
@@ -7349,7 +7360,6 @@ end
 section
 
 noncomputable section
-
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
@@ -8061,7 +8071,6 @@ end
 section
 
 noncomputable section
-
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators

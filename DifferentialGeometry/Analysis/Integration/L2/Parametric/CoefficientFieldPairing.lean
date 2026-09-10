@@ -6,6 +6,7 @@ import DifferentialGeometry.Bundle.ContinuousLinearMapSection.ParametricSmoothne
 noncomputable section
 
 set_option autoImplicit false
+set_option backward.isDefEq.respectTransparency false
 open Manifold MeasureTheory Set Filter Bundle DifferentialGeometry.Tensor0SBundle intervalIntegral
 open scoped Manifold Topology ContDiff BigOperators RealInnerProductSpace
 

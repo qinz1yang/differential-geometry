@@ -6,7 +6,7 @@ open DifferentialGeometry.Geometry.Connection
 open DifferentialGeometry.Geometry.Operator
 
 noncomputable section
-
+set_option backward.isDefEq.respectTransparency false
 
 open MeasureTheory Set Filter Topology Bundle Manifold DifferentialGeometry.Tensor0SBundle
     ContinuousLinearMap
@@ -244,7 +244,6 @@ private lemma lieCorrectionZero_raw_chartComponent (hδ_lt : δ < 1)
   rw [(extChartAt I x).left_inv hx_source] at hpt
   exact hpt
 
-
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem lieFirstOrder_center (hδ_lt : δ < 1)
@@ -381,7 +380,6 @@ private lemma lieCorrectionZero_euclid_f_bridge (hδ_lt : δ < 1)
     hδ_lt hδ hδ'_lt hδ' x m r d]
   rw [euclidPartial_def, euclidPartial_def]
   simp only [smul_eq_mul]
-
 
 omit [SigmaCompactSpace M] in
 omit [BoundarylessManifold I M] in

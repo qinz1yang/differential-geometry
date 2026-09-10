@@ -12,7 +12,6 @@ open DifferentialGeometry.Analysis.Integration DifferentialGeometry.Analysis.Sob
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 
-
 noncomputable section
 
 open Bundle Manifold MeasureTheory Set Filter
@@ -51,9 +50,9 @@ private local instance tensorRSModelNormedSpace_local :
     NormedSpace ℝ (Tensor0SBundle.TensorRSModel 0 2 ℝ E) :=
   Tensor0SBundle.tensorRSModelNormedSpace 0 2
 
-
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
     [SigmaCompactSpace M] in
+set_option backward.isDefEq.respectTransparency false in
 theorem smoothCcTensor_path_toFun_contDiffWithinAt
     (g₀ : SmoothRiemannianMetric I M) {T : ℝ} {N : WithTop ℕ∞}
     (Sfam : ℝ → SmoothCcTensor g₀ 0 2)
@@ -107,16 +106,15 @@ theorem smoothCcTensor_path_toFun_contDiffWithinAt
     L.contDiff.comp_contDiffWithinAt h2
   exact h4.congr (fun s _ => (hLeq s).symm) (hLeq t).symm
 
-
 section FiniteOrderReconJetEnergy
 
 open DifferentialGeometry.Tensor0SBundle DifferentialGeometry.TensorMultilinear
 open DifferentialGeometry.Tensor.TensorRSRiemannian
 open DifferentialGeometry.Tensor.Tensor0SRiemannian
 
-
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
     [T2Space M] [SigmaCompactSpace M] in
+set_option backward.isDefEq.respectTransparency false in
 private theorem partialSnd_set_contMDiffOn_Icc_finiteOrder
     (f : M → ℝ → ℝ) {T : ℝ} (U : Set M) (N : ℕ)
     (hf : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, ℝ) ((N : WithTop ℕ∞) + 1)
@@ -189,6 +187,7 @@ private theorem partialSnd_set_contMDiffOn_Icc_finiteOrder
     (x₀ := p₀)] at h_apply
   exact h_apply
 
+set_option backward.isDefEq.respectTransparency false in
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
     [T2Space M] [SigmaCompactSpace M] in
 private theorem iteratedPartialSnd_set_contMDiffOn_Icc_finiteOrder
@@ -222,6 +221,7 @@ private theorem iteratedPartialSnd_set_contMDiffOn_Icc_finiteOrder
       intro p _
       rw [iteratedDerivWithin_succ']
 
+set_option backward.isDefEq.respectTransparency false in
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
     [T2Space M] [SigmaCompactSpace M] in
 private theorem vec_iteratedPartialSnd_set_contMDiffOn_Icc_finiteOrder
@@ -300,6 +300,7 @@ private theorem vec_iteratedPartialSnd_set_contMDiffOn_Icc_finiteOrder
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
     [SigmaCompactSpace M] in
+set_option backward.isDefEq.respectTransparency false in
 private theorem contMDiff_constOfIsEmpty_tensor0S_section_local :
     ContMDiff (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, Tensor0SBundle.Tensor0SModel 0 ℝ E)) ∞
       (fun p : M × ℝ => TotalSpace.mk' (Tensor0SBundle.Tensor0SModel 0 ℝ E)
@@ -338,6 +339,7 @@ private theorem contMDiff_constOfIsEmpty_tensor0S_section_local :
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
     [SigmaCompactSpace M] in
+set_option backward.isDefEq.respectTransparency false in
 private theorem contMDiffWithinAt_curriedSection_prod_ofOrder_local {N : WithTop ℕ∞} {n : ℕ}
     {s : Set (M × ℝ)} {p₀ : M × ℝ}
     (T : ∀ p : M × ℝ, Tensor0SBundle.Tensor0SSpace (n + 1) I p.1)
@@ -397,6 +399,7 @@ private theorem contMDiffWithinAt_curriedSection_prod_ofOrder_local {N : WithTop
           (fun y : M => Tensor0SBundle.Tensor0SSpace (n + 1) I y) p₀.1 ⟨p₀.1, T p₀⟩).2)
     exact hpt
 
+set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
     [SigmaCompactSpace M] in
 private theorem contMDiffWithinAt_section_apply_prod_ofOrder_local {N : WithTop ℕ∞} : ∀ (n : ℕ)
@@ -493,6 +496,7 @@ private theorem contMDiffWithinAt_section_apply_prod_ofOrder_local {N : WithTop 
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
     [SigmaCompactSpace M] in
+set_option backward.isDefEq.respectTransparency false in
 private theorem chartTensorInnerPointwise_0s_jointContMDiffOn_args_ofOrder_local
     {N : WithTop ℕ∞} (hN : N ≤ (∞ : WithTop ℕ∞))
     (g : SmoothRiemannianMetric I M) (α : M) {T : ℝ} :
@@ -607,6 +611,7 @@ private theorem chartTensorInnerPointwise_0s_jointContMDiffOn_args_ofOrder_local
           rw [heq']
           exact hS ψ'
 
+set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
     [SigmaCompactSpace M] in
 private theorem loweredCompose_zero_basis_eval_jointContMDiffOn_ofOrder_local
@@ -655,6 +660,7 @@ private theorem loweredCompose_zero_basis_eval_jointContMDiffOn_ofOrder_local
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
     [SigmaCompactSpace M] in
+set_option backward.isDefEq.respectTransparency false in
 private lemma tensorInnerPointwise_abs_le_half_selfInner_add
     (g : SmoothRiemannianMetric I M) (x : M)
     (V W : Tensor0SBundle.TensorRSModel 0 2 ℝ E) :
@@ -689,6 +695,7 @@ private lemma tensorInnerPointwise_abs_le_half_selfInner_add
   rw [← hsymm] at hplus hminus
   refine abs_le.mpr ⟨by linarith, by linarith⟩
 
+set_option backward.isDefEq.respectTransparency false in
 private lemma eigenvectorSmooth_selfInner_integral_eq_one
     (g₀ : SmoothRiemannianMetric I M)
     (i : TensorEigenIdx (I := I) (M := M) g₀ 0 2) :
@@ -721,6 +728,7 @@ private lemma eigenvectorSmooth_selfInner_integral_eq_one
       (tensorResolventL2_isCompactOperator (I := I) (M := M) g₀ 0 2)).1 i]
   norm_num
 
+set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
     [SigmaCompactSpace M] in
 private theorem smoothCcTensorPath_timeJet_selfPairing_continuousOn
@@ -1011,6 +1019,7 @@ private theorem smoothCcTensorPath_timeJet_selfPairing_continuousOn
       hcoeff_W hcoeff_W
   exact hpair.continuousOn
 
+set_option backward.isDefEq.respectTransparency false in
 theorem smoothCcTensorPath_eigenPairing_timeJet_uniform_bound
     (g₀ : SmoothRiemannianMetric I M) {T : ℝ} (hT : 0 < T) (kk j : ℕ) (hj : j ≤ kk)
     (Sfam : ℝ → SmoothCcTensor g₀ 0 2)

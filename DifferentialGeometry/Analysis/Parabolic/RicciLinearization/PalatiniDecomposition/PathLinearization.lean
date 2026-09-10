@@ -8,9 +8,8 @@ open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 open DifferentialGeometry.Geometry.Operator
 
-
 noncomputable section
-
+set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff BigOperators Matrix
@@ -88,6 +87,7 @@ private lemma vec3_update_two {F : Type*} (a b c z : F) :
   fin_cases k <;> simp [Function.update]
 
 omit [BoundarylessManifold I M] [CompactSpace M] [SigmaCompactSpace M] in
+omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma linearizedKoszulCovec_apply (g' : SmoothRiemannianMetric I M) (S : SmoothCcTensor g' 0 2)
     (x : M) (u ζ z : TangentSpace I x) :
@@ -129,6 +129,7 @@ lemma linearizedKoszulCovec_apply (g' : SmoothRiemannianMetric I M) (S : SmoothC
 end NormedLinearizedKoszulCovector
 
 omit [BoundarylessManifold I M] [CompactSpace M] [SigmaCompactSpace M] in
+omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma continuous_linearizedKoszulCovec_fst (g' : SmoothRiemannianMetric I M)
     (S : SmoothCcTensor g' 0 2) (x : M) (ζ z : TangentSpace I x) :
@@ -165,6 +166,7 @@ def linearizedConnSharp (g' : SmoothRiemannianMetric I M) (S : SmoothCcTensor g'
     (linearizedKoszulCovec (I := I) g' S x u ζ)
 
 omit [BoundarylessManifold I M] [CompactSpace M] [SigmaCompactSpace M] in
+omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma inner_linearizedConnSharp (g' : SmoothRiemannianMetric I M) (S : SmoothCcTensor g' 0 2)
     (x : M) (u ζ z : TangentSpace I x) :
@@ -207,9 +209,9 @@ end NormedRealizedVelocity
 
 variable (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
 
-omit [BoundarylessManifold I M] in
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+omit [BoundarylessManifold I M] in
 lemma realizedVelocityCc_bilin
     {δ : ℝ} (hδ_lt : δ < 1)
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
@@ -1256,8 +1258,9 @@ private lemma slopeCore_tendsto
   · exact hquad Vf Wf (smoothExtensionTangent (I := I) x (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x i) x)
   · exact hquad Bi Wf (smoothExtensionTangent (I := I) x v x)
 
-omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
+omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [BoundarylessManifold I M] in
 private lemma slopeCore_at_base
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     {δ' : ℝ} (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T')

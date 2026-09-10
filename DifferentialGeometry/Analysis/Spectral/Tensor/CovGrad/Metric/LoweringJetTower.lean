@@ -9,7 +9,7 @@ import DifferentialGeometry.Tensor.RSTensor.Coordinates.Field
 set_option autoImplicit false
 
 noncomputable section
-
+set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators Matrix
@@ -93,6 +93,7 @@ private def lowerGradPerm (r s : ℕ) : Equiv.Perm (Fin ((r + s) + 1)) :=
   Fin.cycleRange ⟨r, by omega⟩
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
 private lemma lowerCc_grad_rel (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (T : SmoothCcTensor g r s) :
     ∀ y : M,

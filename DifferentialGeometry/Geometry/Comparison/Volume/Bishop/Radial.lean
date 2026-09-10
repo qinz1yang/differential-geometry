@@ -515,6 +515,19 @@ theorem radialRatio_basis
             (∑ i, c i • v i) 1) := by rfl
   exact radialRatio_ge (I := I) g p x v q (δ * B) hq (mul_pos hδ hB) hv hone
 
+omit [T2Space M] [SigmaCompactSpace M] in
+theorem radialRatio_auto
+    {ι : Type*} [Fintype ι] [DecidableEq ι]
+    (g : SmoothRiemannianMetric I M) (p : M) (x : E) (v : ι → E)
+    (q : ℝ) (hq : 0 ≤ q) (hv : LinearIndependent ℝ v) :
+    ∃ C : ℝ, 0 < C ∧
+      ∀ᶠ t in 𝓝[>] (0 : ℝ),
+        C ≤ curveDensity (I := I) g (radialCurve (I := I) g p x)
+            (fun i => radialJacobiField (I := I) g p x (v i)) t /
+          hyperbolicDensity q (Fintype.card ι) t := by
+  obtain ⟨B, hB, hbase⟩ := exists_radial_base (I := I) g p x
+  exact radialRatio_basis (I := I) g p x v q B hq hB hv hbase
+
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M]
     [T2Space (TangentBundle I M)] in
 theorem curveMean_radialJacobiField_le_hyperbolicMeanCurv
@@ -739,7 +752,6 @@ theorem exists_radius_radialJacobiField_comparison
       g p x hxne v hv hperp hcard q b hq hdom hinj hRicγ,
     antitoneOn_curveDensity_radialJacobiField_div_hyperbolicDensity (I := I)
       g p x hxne v hv hperp hcard q b hq hdom hinj hRicγ⟩
-
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [T2Space M] [SigmaCompactSpace M] in

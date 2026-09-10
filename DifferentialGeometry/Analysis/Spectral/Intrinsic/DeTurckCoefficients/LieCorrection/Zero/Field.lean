@@ -9,16 +9,9 @@ open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 open DifferentialGeometry.Geometry.Operator
 
-
-
-
-
-
-
-
-
 noncomputable section
 
+set_option backward.isDefEq.respectTransparency false
 open MeasureTheory Set Filter Topology Bundle Manifold DifferentialGeometry.Tensor0SBundle
     ContinuousLinearMap
 open scoped ENNReal NNReal BigOperators Manifold ContDiff Matrix
@@ -1073,9 +1066,10 @@ private lemma lieCorrectionZero_natAdd4of6 (b w3 w0 w1 w2 a : E) :
       ![w0, w1, w2, a] := by
   funext i
   fin_cases i <;> rfl
+omit [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
-omit [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+omit [SigmaCompactSpace M] in
 private lemma lieCorrectionZeroRiemT4_value (x : M) (D : Tensor0SSpace 2 I x) (w : Fin 4 → E) :
     Tensor0SSpace.toModel
         (lieCorrectionZeroTraceStep (I := I) g₀ 4 lieCorrectionZeroRiemPerm1 x

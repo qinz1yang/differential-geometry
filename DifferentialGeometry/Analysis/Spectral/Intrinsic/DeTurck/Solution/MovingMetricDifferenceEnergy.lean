@@ -26,6 +26,7 @@ open DifferentialGeometry.Tensor.Coordinates
 set_option autoImplicit false
 
 noncomputable section
+set_option backward.isDefEq.respectTransparency false
 
 open Bundle Filter Manifold MeasureTheory Set DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff BigOperators Matrix

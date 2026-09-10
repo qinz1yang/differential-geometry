@@ -7,9 +7,8 @@ open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 open DifferentialGeometry.Geometry.Operator
 
-
 noncomputable section
-
+set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff BigOperators Matrix
@@ -37,7 +36,6 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
-
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
 private lemma unitModel_add2_apply_local (g₀ : SmoothRiemannianMetric I M)
@@ -48,7 +46,6 @@ private lemma unitModel_add2_apply_local (g₀ : SmoothRiemannianMetric I M)
   rw [SmoothCcTensor.toSection_add, ContMDiffSection.coe_add, Pi.add_apply,
     add_apply, Tensor0SSpace.toModel_add, add_apply]
 
-
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
 private lemma unitModel_sub2_apply_local (g₀ : SmoothRiemannianMetric I M)
@@ -58,7 +55,6 @@ private lemma unitModel_sub2_apply_local (g₀ : SmoothRiemannianMetric I M)
   simp only [unitModel]
   rw [SmoothCcTensor.toSection_sub, ContMDiffSection.coe_sub, Pi.sub_apply,
     sub_apply, Tensor0SSpace.toModel_sub, sub_apply]
-
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
@@ -95,7 +91,6 @@ theorem deTurckLieTraceCoeff_apply_eq (g₀ g₁ : SmoothRiemannianMetric I M)
   rw [deTurckLieTraceFib, ContinuousLinearMap.comp_apply, domDomCongrFibPerm_apply,
     cometricDoubleTraceFib_toModel, Tensor0SSpace.toModel_ofModel, modelDoubleTrace_apply]
   simp only [unitModel]
-
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
@@ -146,7 +141,6 @@ theorem deTurckLieSecondOrderPrincipalCoeff_apply_eq (g₀ g₁ : SmoothRiemanni
     exact congrArg (fun t : Fin 4 → E => unitModel (I := I) (M := M) g₀ 4 D x t)
       (by funext i; fin_cases i <;> rfl)
 
-
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
 private lemma interior_product_toModel_eval (s : ℕ) (x : M) (v : TangentSpace I x)
@@ -164,7 +158,6 @@ private lemma interior_product_toModel_eval (s : ℕ) (x : M) (v : TangentSpace 
   rw [h1]
   rfl
 
-
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
 private lemma connectionDifferenceFib_toModel_eval (g₁ g₀ : SmoothRiemannianMetric I M) (x : M)
@@ -177,7 +170,6 @@ private lemma connectionDifferenceFib_toModel_eval (g₁ g₀ : SmoothRiemannian
           (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x
             ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (w 0))
             ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (w 1)))) := rfl
-
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
@@ -207,7 +199,6 @@ private lemma deTurckLiePairTraceFib_toModel_eval (g₁ gA gB : SmoothRiemannian
     cometricDoubleTraceFib_toModel, Tensor0SSpace.toModel_ofModel]
   simp only [modelDoubleTrace_apply]
 
-
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
 private lemma deTurckLieKoszulTraceFib_toModel_eval (g₀ g₁ : SmoothRiemannianMetric I M)
@@ -232,7 +223,6 @@ private lemma deTurckLieKoszulTraceFib_toModel_eval (g₀ g₁ : SmoothRiemannia
   refine congrArg _ ?_
   funext i
   fin_cases i <;> rfl
-
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -457,7 +447,6 @@ private lemma deTurckLieFirstOrderCoreFib_toModel_eval (g₀ g₁ g_bg : SmoothR
     Tensor0SSpace.toModel_sub]
   rw [hS2, hB, hT2, hT3, hT4, hT5]
 
-
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
@@ -547,7 +536,6 @@ private lemma deTurckLieFirstOrderCoreFib_toModel_eval' (g₀ g₁ g_bg : Smooth
   conv_lhs => rw [hw]
   exact deTurckLieFirstOrderCoreFib_toModel_eval (I := I) g₀ g₁ g_bg x D (w 0) (w 1)
 
-
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
@@ -564,7 +552,6 @@ private lemma deTurckLieFirstOrder_swapCore_eval (g₀ g₁ g_bg : SmoothRiemann
     (deTurckLieFirstOrderCoreFib (I := I) g₀ g₁ g_bg x D) t)
     (by funext i; fin_cases i <;> rfl)
 
-
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
@@ -580,7 +567,6 @@ private lemma deTurckLieFirstOrder_interiorProduct_eval (g₁ g_bg : SmoothRiema
   rw [interior_product_toModel_eval]
   exact congrArg (fun t : Fin 3 → E => Tensor0SBundle.Tensor0SSpace.toModel D t)
     (by funext i; fin_cases i <;> rfl)
-
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
@@ -603,7 +589,6 @@ private lemma deTurckLieFirstOrder_koszulZero_eval (g₀ g₁ : SmoothRiemannian
   rw [ContinuousMultilinearMap.domDomCongr_apply]
   exact congrArg (fun t : Fin 3 → E => Tensor0SBundle.Tensor0SSpace.toModel D t)
     (by funext i; fin_cases i <;> rfl)
-
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
@@ -809,7 +794,6 @@ theorem deTurckLieFirstOrderCoeff_apply_eq (g₀ g₁ g_bg : SmoothRiemannianMet
     deTurckLieFirstOrder_koszulZero_eval]
   simp only [unitModel]
 
-
 omit [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
 theorem deTurckLieCoeffField_apply_eq (g₀ g₁ g_bg : SmoothRiemannianMetric I M)
@@ -910,7 +894,6 @@ theorem deTurckLieCoeffField_apply_eq (g₀ g₁ g_bg : SmoothRiemannianMetric I
       funext j
       fin_cases j <;> simp
 
-
 omit [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
 theorem deTurckLieConnectionDifferenceDerivCoeffField_apply_eq (g₀ g₁ g_bg : SmoothRiemannianMetric I M)
@@ -966,7 +949,6 @@ theorem deTurckLieConnectionDifferenceDerivCoeffField_apply_eq (g₀ g₁ g_bg :
   funext j
   fin_cases j <;> simp
 
-
 omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
@@ -1020,7 +1002,6 @@ theorem deTurckLieCovariantDerivativeInsertionField_apply_eq (g₀ g₁ g_bg : S
     funext j
     fin_cases j <;> simp
 
-
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
 private lemma christoffelCorrection_chartModelBasis_pair_self
@@ -1050,7 +1031,6 @@ private lemma christoffelCorrection_chartModelBasis_pair_self
       zero_smul]
   · intro h
     exact absurd (Finset.mem_univ i) h
-
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -1178,7 +1158,6 @@ private lemma leviCivita_toFun_chartBasis_eval_of_localComponents
     ContinuousLinearMap.map_smul, trivFromE_self_apply (I := I) x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) p),
     DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis_apply, ← add_smul]
 
-
 open DifferentialGeometry.PDE.DeTurck.DeTurckLinearization in
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -1211,7 +1190,6 @@ theorem deTurckLieCovariantDerivativeW_chartBasis_eq (g₁ g_bg : SmoothRiemanni
     (fun p => chartDeTurckVFComp_differentiableAt_interior (I := I) g₁ g_bg x p hy0_int)
     (fun b hb => PDE.DeTurck.deTurckVF_apply_eq_chartDeTurckVFComp_sum (I := I) g₁ g_bg x hb)
     i
-
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in

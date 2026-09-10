@@ -14,7 +14,7 @@ open DifferentialGeometry.Geometry.Connection.Realization
 open DifferentialGeometry.Geometry.Operator
 
 noncomputable section
-
+set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
@@ -50,7 +50,6 @@ open CurvatureCoefficientDifferenceJetTower
 
 section TopOrderSeparatedTransportMirrors
 
-
 namespace CurvatureCoefficientDifferenceJetTower
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
@@ -59,6 +58,7 @@ lemma castCcTensorRank_refl (g₀ : SmoothRiemannianMetric I M) (r : ℕ) {a : �
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M]
     [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 lemma covGrad_castCcTensorRank (g₀ : SmoothRiemannianMetric I M) (r : ℕ) {a b : ℕ}
     (h : a = b) (W : SmoothCcTensor g₀ r a) :
     covGrad (I := I) (M := M) g₀ r b (castCcTensorRank g₀ r h W) =
@@ -86,6 +86,7 @@ lemma castCcTensorRank_add (g₀ : SmoothRiemannianMetric I M) (r : ℕ) {a b : 
   subst h; rfl
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
 lemma exists_iteratedCovGrad_domDomCongrSection_eq (g₀ : SmoothRiemannianMetric I M)
     {s : ℕ} (σ : Equiv.Perm (Fin s)) (S : SmoothCcTensor g₀ 0 s) (i : ℕ) :
     ∃ σ' : Equiv.Perm (Fin (s + i)),
@@ -100,6 +101,7 @@ lemma exists_iteratedCovGrad_domDomCongrSection_eq (g₀ : SmoothRiemannianMetri
   rw [hσ' x, domDomCongrSection_unitModel]
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
 lemma exists_covGrad_domDomCongrSection_eq (g₀ : SmoothRiemannianMetric I M)
     {s : ℕ} (σ : Equiv.Perm (Fin s)) (S : SmoothCcTensor g₀ 0 s) :
     ∃ σ' : Equiv.Perm (Fin (s + 1)),
@@ -162,6 +164,7 @@ lemma domDomCongrSection_add (g₀ : SmoothRiemannianMetric I M) {s : ℕ}
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M]
     [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 lemma iteratedCovGrad_covGrad_eq_castCcTensorRank (g₀ : SmoothRiemannianMetric I M) (r s : ℕ)
     (W : SmoothCcTensor g₀ r s) (i : ℕ) :
     iteratedCovGrad (I := I) g₀ r (s + 1) i (covGrad (I := I) (M := M) g₀ r s W) =
@@ -181,6 +184,7 @@ lemma iteratedCovGrad_covGrad_eq_castCcTensorRank (g₀ : SmoothRiemannianMetric
         rw [iteratedCovGrad_succ]]
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
 lemma exists_iteratedCovGrad_rsDomDomCongrSection_eq (g₀ : SmoothRiemannianMetric I M)
     (r s : ℕ) (σ : Equiv.Perm (Fin s)) (Z : SmoothCcTensor g₀ r s) (i : ℕ) :
     ∃ σ' : Equiv.Perm (Fin (s + i)),
@@ -221,8 +225,6 @@ end CurvatureCoefficientDifferenceJetTower
 
 section MetricLowering
 
-
-
 namespace CurvatureCoefficientDifferenceJetTower
 
 def riemannianMetricCovariantTensor (g₀ : SmoothRiemannianMetric I M) (x : M) : Tensor0SSpace 2 I x :=
@@ -253,6 +255,7 @@ omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] 
     (m : Fin 2 → TangentSpace I x) :
     riemannianMetricCovariantTensor (I := I) g₀ x m = g₀.inner x (m 0) (m 1) := rfl
 
+set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 theorem riemannianMetricCovariantTensor_contMDiff (g₀ : SmoothRiemannianMetric I M) :
     ContMDiff I (I.prod 𝓘(ℝ, Tensor0SModel 2 ℝ E)) ∞
@@ -294,6 +297,7 @@ def riemannianMetricCcTensor (g₀ : SmoothRiemannianMetric I M) : SmoothCcTenso
       (E := (TangentSpace I : M → Type _)) ∞ (riemannianMetricCovariantTensorField (I := I) g₀)
   hasCompactSupport := HasCompactSupport.of_compactSpace _
 
+set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 lemma riemannianMetricCcTensor_unitModel (g₀ : SmoothRiemannianMetric I M) (x : M) :
     unitModel (I := I) (M := M) g₀ 2 (riemannianMetricCcTensor (I := I) (M := M) g₀) x =
@@ -433,6 +437,7 @@ theorem lowerContravariantSlot_cometricRaiseSlot0Field (g₀ : SmoothRiemannianM
   refine Fin.cases rfl (fun j => rfl) k
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
 lemma exists_iteratedCovGrad_cometricRaiseSlot0Field_eq (g₀ : SmoothRiemannianMetric I M)
     (s : ℕ) (W : SmoothCcTensor g₀ 0 (s + 2)) (i : ℕ) :
     ∃ σ : Equiv.Perm (Fin ((s + i) + 2)),
@@ -474,11 +479,10 @@ end MetricLowering
 
 section HeadTransport
 
-
-
 namespace CurvatureCoefficientDifferenceJetTower
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
 lemma riemannianFiberNormSq_domDomCongrSection_eq (g₀ : SmoothRiemannianMetric I M) {s : ℕ}
     (σ : Equiv.Perm (Fin s)) (S : SmoothCcTensor g₀ 0 s) (x : M) :
     riemannianFiberNormSq (I := I) (M := M) g₀ 0 s x
@@ -499,6 +503,7 @@ lemma riemannianFiberNormSq_castCcTensorRank_eq (g₀ : SmoothRiemannianMetric I
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
     [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
 lemma tensorRS_domDomCongr_sub {r s : ℕ} {x : M} (σ : Equiv.Perm (Fin s))
     (T T' : TensorRSSpace r s I x) :
     rsDomDomCongr (I := I) (M := M) σ (T - T') =
@@ -840,10 +845,10 @@ end HeadTransport
 
 section ConnectionDifferenceCarrierSplit
 
-
 namespace CurvatureCoefficientDifferenceJetTower
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
 lemma iteratedCovGrad_connectionDifferenceSection_eq_head_add_tail (g₀ g₁ : SmoothRiemannianMetric I M) (j : ℕ) :
     iteratedCovGrad (I := I) g₀ 1 2 j (connectionDifferenceSection (I := I) g₁ g₀) =
       ccOperatorFieldComp (I := I) (M := M) g₀ 1 1 (2 + j)
@@ -889,8 +894,6 @@ end ConnectionDifferenceCarrierSplit
 end TopOrderSeparatedTransportMirrors
 
 section TopOrderSeparatedRungRLD
-
-
 
 namespace CurvatureCoefficientDifferenceJetTower
 

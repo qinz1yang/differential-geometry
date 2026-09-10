@@ -3,6 +3,7 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Metric.CometricDoub
 import DifferentialGeometry.Analysis.Spectral.Tensor.UniformChartBounds.FiberNorm.UniformBound
 
 noncomputable section
+set_option backward.isDefEq.respectTransparency false
 
 set_option autoImplicit false
 
@@ -262,8 +263,8 @@ private lemma ipjb_cons_sum_smul {n : ℕ}
 
 end Eval
 
-omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
 omit [I.Boundaryless] in
+omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
 theorem ipLowCc_toSec_ip (g : SmoothRiemannianMetric I M) (om : SmoothCcTensor g 0 1)
     (x : M) (V : TangentSpace I x)
     (hflat : ∀ z : TangentSpace I x,

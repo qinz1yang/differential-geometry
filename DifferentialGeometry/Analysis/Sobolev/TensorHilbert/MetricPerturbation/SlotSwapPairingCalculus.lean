@@ -8,7 +8,7 @@ open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
-
+set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
@@ -123,7 +123,7 @@ private lemma homTensorRSFieldApply_add_right_cc (g : SmoothRiemannianMetric I M
       (homTensorRSFieldApply (I := I) (M := M) g 0 a c Q B).toSection x from rfl]
   rw [homTensorRSFieldApply_toSection, homTensorRSFieldApply_toSection, homTensorRSFieldApply_toSection]
   rw [show ((A + B).toSection x : TensorRSSpace 0 a I x) = A.toSection x + B.toSection x from rfl]
-  exact map_add _ _ _
+  exact ContinuousLinearMap.map_add _ _ _
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem homTensorRSFieldApply_swap_norm_eq (g : SmoothRiemannianMetric I M) (t : ℕ)
@@ -224,8 +224,8 @@ theorem homTensorRSFieldApply_swap_l2Inner_hop (g : SmoothRiemannianMetric I M) 
   rw [homTensorRSFieldApply_swap_norm_eq (I := I) (M := M) g t F hF A]
   rw [homTensorRSFieldApply_swap_norm_eq (I := I) (M := M) g t F hF B]
 
-omit [NeZero (Module.finrank ℝ E)] in
 omit [CompactSpace M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
 theorem unitModel_covGrad_of_unitModel_domDomCongr
     (g : SmoothRiemannianMetric I M) (s : ℕ) (σ : Equiv.Perm (Fin s))
     (S S' : SmoothCcTensor g 0 s)

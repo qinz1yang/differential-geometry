@@ -4,7 +4,7 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Permutation.Jets
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.LieCorrection.Zero.Splitting
 
 noncomputable section
-
+set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff BigOperators
@@ -420,9 +420,9 @@ def lieCorrectionZeroMixedConnectionBackgroundDifferenceHalfExpansion (g₀ g₁
           (slotExtendIter (I := I) (M := M) g₀ 0 3 2
             (metricConnectionDifferenceLoweredCoefficient (I := I) (M := M) g₀ g₁ g₀)))))
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [I.Boundaryless] in
-omit [SigmaCompactSpace M] in
 theorem lieCorrectionZeroMixedConnectionHalfExpansion_sub_eq_backgroundDifferenceHalfExpansion
     (g₀ g₁ gB : SmoothRiemannianMetric I M)
     (σ : Equiv.Perm (Fin 4)) :
@@ -434,9 +434,9 @@ theorem lieCorrectionZeroMixedConnectionHalfExpansion_sub_eq_backgroundDifferenc
     ← operatorFieldComposition_sub_left,
     ← DifferentialGeometry.Analysis.Spectral.slotExtendIter_sub]
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [I.Boundaryless] in
-omit [SigmaCompactSpace M] in
 theorem lieCorrectionZeroMixedConnection_sub_reference_eq_backgroundDifferenceExpansion
     (g₀ g₁ gB : SmoothRiemannianMetric I M) :
     lieCorrectionZeroMixedConnection (I := I) (M := M) g₀ g₁ gB -

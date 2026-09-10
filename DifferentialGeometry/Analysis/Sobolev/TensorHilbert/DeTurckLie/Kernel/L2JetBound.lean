@@ -8,7 +8,7 @@ open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
-
+set_option backward.isDefEq.respectTransparency false
 
 open MeasureTheory Set Filter Topology Bundle Manifold DifferentialGeometry.Tensor0SBundle
     ContinuousLinearMap
@@ -462,8 +462,8 @@ theorem quad_tower
   deTurckLieConnectionDifferenceDerivativeQuad_tower_of_factors (I := I) (M := M) g₀ ga gb j x b hb
     Ba Bb hBa_nn hBb_nn harm hin
 
-omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
 theorem lower_raise (g₀ g₁ g_bg : SmoothRiemannianMetric I M) :
     cometricRaiseSlot0Field (I := I) (M := M) g₀ 2
         (deTurckLieConnectionDifferenceDerivativeLowered (I := I) (M := M) g₀ g₁ g_bg) =
@@ -483,8 +483,8 @@ theorem insert_riemannianFiberNormSq (g₀ : SmoothRiemannianMetric I M)
             (ccTensor02Symm (I := I) (M := M) g₀ T)).toSection x) :=
   riemannianFiberNormSq_iteratedCovGrad_slotInsert3_deTurckLieConnectionDifferenceDerivativePerturb_le (I := I) (M := M) g₀ T j x
 
-omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 omit [I.Boundaryless] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 theorem pair_trace_def (g₀ g₁ : SmoothRiemannianMetric I M) :
     deTurckLieConnectionDifferenceDerivativePairTrace (I := I) (M := M) g₀ g₁ =
       ccOperatorFieldComp (I := I) (M := M) g₀ 6 4 2

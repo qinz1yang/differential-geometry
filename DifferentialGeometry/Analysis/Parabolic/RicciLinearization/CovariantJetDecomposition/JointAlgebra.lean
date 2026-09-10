@@ -3,7 +3,7 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Parametric.JetInteg
 import DifferentialGeometry.Bundle.ContinuousLinearMapSection.ParametricSmoothness
 
 noncomputable section
-
+set_option backward.isDefEq.respectTransparency false
 
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Spectral

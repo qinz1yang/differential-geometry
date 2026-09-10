@@ -3,7 +3,7 @@ open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
-
+set_option backward.isDefEq.respectTransparency false
 
 open MeasureTheory Set Filter Bundle DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff BigOperators
@@ -11,7 +11,6 @@ open scoped Manifold Topology ContDiff BigOperators
 namespace DifferentialGeometry
 namespace Integral
 namespace L2
-
 
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral (pathIntegralCoeffField
   pathIntegralCoeffField_toSection pathIntegralFib pathIntegralFib_toModel)

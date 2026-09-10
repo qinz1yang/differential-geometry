@@ -5,7 +5,7 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Embedding.Incl
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Embedding.SmoothCompactSupportDense
 
 noncomputable section
-
+set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped BigOperators Manifold ContDiff

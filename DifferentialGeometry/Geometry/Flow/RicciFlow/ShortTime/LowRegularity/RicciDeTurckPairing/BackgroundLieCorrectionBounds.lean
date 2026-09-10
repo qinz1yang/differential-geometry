@@ -6,7 +6,7 @@ import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.CovariantJet.Naturali
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.LieCorrection.ZeroOrder.ReindexedPureTraceCovariantJet
 
 noncomputable section
-
+set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
@@ -112,8 +112,9 @@ private theorem slotExtendIter_sub
       rw [ih, slotExtend_sub]
       rfl
 
-omit [NeZero (Module.finrank ℝ E)] in
 omit [I.Boundaryless] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
+omit [I.Boundaryless] in
 private theorem backgroundMixedConnectionHalf_sub
     (g gm gB : SmoothRiemannianMetric I M)
     (σ : Equiv.Perm (Fin 4)) :
@@ -126,8 +127,9 @@ private theorem backgroundMixedConnectionHalf_sub
     ← operatorFieldComposition_sub_right, ← operatorFieldComposition_sub_right,
     ← operatorFieldComposition_sub_left, ← slotExtendIter_sub]
 
-omit [NeZero (Module.finrank ℝ E)] in
 omit [I.Boundaryless] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
+omit [I.Boundaryless] in
 private theorem lieCorrectionZeroMixedConnection_backgroundDifference_eq
     (g gm gB : SmoothRiemannianMetric I M) :
     lieCorrectionZeroMixedConnection (I := I) (M := M) g gm gB -
@@ -614,7 +616,6 @@ private theorem exists_backgroundMixedConnectionHalf_pairing_secondOrder_bound
     _ = (B0 * D3 + B1 * A * N) ^ 2 := by
       rw [pairing_difference_stage_factorization]
 
-
 theorem exists_lieCorrectionZeroMixedConnection_backgroundDifference_covariantJetNormSq_two_bound
     (hDim : Module.finrank ℝ E = 3)
     (g gB : SmoothRiemannianMetric I M) :
@@ -834,7 +835,6 @@ private theorem deTurckLieBackgroundDifferenceLoweredCoefficient_raw_secondOrder
     _ = (P * X + Q * Y) ^ 2 := by
       rw [two_three_mul_eq]
 
-
 private theorem deTurckLieBackgroundDifferenceLoweredCoefficient_pairing_secondOrder_bound
     (hDim : Module.finrank ℝ E = 3)
     (g gB : SmoothRiemannianMetric I M) :
@@ -930,7 +930,6 @@ private theorem deTurckLieBackgroundDifferenceLoweredCoefficient_pairing_secondO
       _ = (B0 R * D3 + B1 R * D2 + B1 R * A * D2) ^ 2 := by
         dsimp only [B0, B1, X, Y]
         ring
-
 
 private theorem deTurckLieBackgroundDifferenceLoweredCoefficient_secondOrder_bound
     (hDim : Module.finrank ℝ E = 3)
@@ -1075,7 +1074,6 @@ private theorem reindexedThirdSlot_pairing_secondOrder_bound
       g gT gU T U hTtie hUtie]
   exact covariantJetNormSq_slotInsertEndoCc_symmRaiseEndo_le (I := I) (M := M) g 3 2 (T - U) hsymm
 
-
 private theorem reindexedThirdSlot_secondOrder_bound
     (g : SmoothRiemannianMetric I M) :
     ∃ B : ℝ → ℝ,
@@ -1147,7 +1145,6 @@ private theorem reindexedThirdSlot_secondOrder_bound
         (add_le_add hpairR le_rfl) (by norm_num)
     _ = L R := by rfl
     _ = (B R) ^ 2 := hBsq.symm
-
 
 private theorem deTurckLieBackgroundDifferenceCoefficient_pairing_secondOrder_bound
     (hDim : Module.finrank ℝ E = 3)
@@ -1324,7 +1321,6 @@ private theorem deTurckLieBackgroundDifferenceCoefficient_pairing_secondOrder_bo
       _ = (B0 R * D3 + B1 R * D2 + B1 R * A * D2) ^ 2 := by
         rfl
 
-
 private theorem deTurckLieBackgroundDifferenceCoefficient_secondOrder_bound
     (hDim : Module.finrank ℝ E = 3)
     (g gB : SmoothRiemannianMetric I M) :
@@ -1461,7 +1457,6 @@ private theorem covariantJetNormSq_two_deTurckLieConnectionDifferenceDerivativeB
   rw [covariantJetNormSq_rsDomDomCongrSection]
   simpa only [covariantJetNormSq] using
     slotIter_h2 (I := I) (M := M) g 0 4 2 S
-
 
 theorem exists_deTurckLieConnectionDifferenceDerivativeCoefficient_backgroundDifference_pairing_secondOrder_bound
     (hDim : Module.finrank ℝ E = 3)

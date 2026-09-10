@@ -3,6 +3,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Acti
 
 noncomputable section
 set_option autoImplicit false
+set_option backward.isDefEq.respectTransparency false
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle intervalIntegral
 open scoped Manifold Topology ContDiff BigOperators RealInnerProductSpace
 namespace DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral

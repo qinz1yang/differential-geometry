@@ -4,9 +4,8 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.Variational.CotangentCovari
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 
-
 noncomputable section
-
+set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff BigOperators Matrix
@@ -215,6 +214,7 @@ theorem tensorCovDerivAt_cometricRaiseSlot0Field_eq (g₀ : SmoothRiemannianMetr
   rw [add_sub_cancel_right, hDderiv, hYsharp_app x]
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
 theorem covGrad_cometricRaiseSlot0Field_eq (g₀ : SmoothRiemannianMetric I M) (s : ℕ)
     (S : SmoothCcTensor g₀ 0 (s + 2)) :
     covGrad (I := I) (M := M) g₀ 1 (s + 1) (cometricRaiseSlot0Field (I := I) (M := M) g₀ s S) =

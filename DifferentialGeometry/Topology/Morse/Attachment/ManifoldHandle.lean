@@ -15,7 +15,6 @@ import DifferentialGeometry.Bundle.TangentSpace
 import Mathlib.Topology.MetricSpace.Bounded
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.Series
 
-
 namespace DifferentialGeometry.Topology.Morse
 
 open Manifold
@@ -119,7 +118,6 @@ def subtypeSetHomeomorph {X : Type} [TopologicalSpace X] {s t : Set X} (h : s = 
   continuous_toFun := by fun_prop
   continuous_invFun := by fun_prop
 
-
 structure MorseChart (n k : ℕ) (hk : k ≤ n) (c : ℝ)
     {H : Type} [TopologicalSpace H] {M : Type} [TopologicalSpace M] [ChartedSpace H M]
     (I : ModelWithCorners ℝ (MorseModel n) H) (f : M → ℝ) where
@@ -143,7 +141,7 @@ structure MorseChart (n k : ℕ) (hk : k ≤ n) (c : ℝ)
 
 noncomputable def morseChart {n : ℕ} {H : Type} [TopologicalSpace H] {M : Type} [TopologicalSpace M]
     [ChartedSpace H M] (I : ModelWithCorners ℝ (MorseModel n) H) [I.Boundaryless]
-    [IsManifold I (⊤ : WithTop ℕ∞) M] (f : M → ℝ) (hf : ContMDiff I 𝓘(ℝ, ℝ) (⊤ : WithTop ℕ∞) f)
+    [IsManifold I (↑(⊤ : ℕ∞) : WithTop ℕ∞) M] (f : M → ℝ) (hf : ContMDiff I 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞) f)
     (p : M) (c : ℝ) (k : ℕ) (hk : k ≤ n)
     (hnd : IsNondegenerateCriticalPointAt I f p)
     (hindex : sigNeg (chartHessianAt (g := fun y => f ((extChartAt I p).symm y)) (extChartAt I p p)) = k)
@@ -8792,7 +8790,6 @@ theorem morseFlowInChart {m k : ℕ} (hk : k ≤ m + 1) (c : ℝ)
   intro t ht
   exact hEq ht
 
-
 noncomputable def morseCompressLevel (c ε δ : ℝ) (t : ℝ) : ℝ :=
   if t ≤ c - ε - δ then t else c - ε - δ + (t - c + ε + δ) * δ / (2 * ε + δ)
 
@@ -8872,7 +8869,6 @@ theorem morseCompressLevel_uncompressLevel {c ε δ s : ℝ} (hδ : 0 < δ) (hε
     field_simp [hδ.ne', hε.ne']
     ring
 
-
 theorem morseUncompressLevel_fixed {c ε δ s : ℝ} (hs : s ≤ c - ε - δ) :
     morseUncompressLevel c ε δ s = s := by
   dsimp [morseUncompressLevel]
@@ -8908,7 +8904,6 @@ theorem morseExpandTime {c ε δ : ℝ} (hδ : 0 < δ) {t : ℝ}
   rw [if_neg (not_le_of_gt ht)]
   field_simp [hδ.ne']
   ring
-
 
 noncomputable def morseFarCutoffPos (r ε' : ℝ) (s : ℝ) : ℝ :=
   Real.smoothTransition ((s - r) / ε')
@@ -9006,7 +9001,6 @@ theorem morseFarCutoff_eq_one {m k : ℕ} (hk : k ≤ m + 1) (c : ℝ) (r ε' R�
     simp
   · dsimp [morseFarCutoff]
     rw [if_neg hx]
-
 
 noncomputable def morseFarExpandTime (c ε δ : ℝ) (t : ℝ) : ℝ :=
   t - morseUncompressLevel c ε δ t
@@ -9923,7 +9917,6 @@ theorem morseFarExpandMap_value {m k : ℕ} (hk : k ≤ m + 1) (c ε r δ ε' R�
     change f (curveAt v hcomplete z.1 τ) = f z.1 - τ
     exact hval
 
-
 theorem morseFarExpandMap_mem_upper {m k : ℕ} (hk : k ≤ m + 1) (c ε r δ ε' R₀ R₁ : ℝ)
     {H : Type} [TopologicalSpace H] {M : Type} [TopologicalSpace M] [ChartedSpace H M] [T2Space M]
     {I : ModelWithCorners ℝ (MorseModel (m + 1)) H} [I.Boundaryless]
@@ -10540,7 +10533,6 @@ theorem morseFarExpandLevel_mono {c ε δ : ℝ} (hδ : 0 < δ) (hε : 0 < ε)
     nlinarith only [h1, h2]
   nlinarith only [hdiff, ht]
 
-
 theorem morseFarCutoffModel_mono {m k : ℕ} (hk : k ≤ m + 1) (c : ℝ) (r ε' R₀ R₁ : ℝ)
     (hε' : 0 < ε') (hR : R₀ < R₁)
     {y₁ y₂ : MorseModel (m + 1)} (hneg : ‖negPart hk y₂‖ = ‖negPart hk y₁‖)
@@ -10574,7 +10566,6 @@ theorem morseFarCutoffModel_mono {m k : ℕ} (hk : k ≤ m + 1) (c : ℝ) (r ε'
     (le_trans hp (le_max_left _ _))
     (le_trans hn (le_max_right _ _))
 
-
 theorem morseFarCutoff_mono_on_orbit {m k : ℕ} (hk : k ≤ m + 1) (c r ε' R₀ R₁ : ℝ)
     {H : Type} [TopologicalSpace H] {M : Type} [TopologicalSpace M] [ChartedSpace H M]
     {I : ModelWithCorners ℝ (MorseModel (m + 1)) H} {f : M → ℝ}
@@ -10602,7 +10593,6 @@ theorem morseFarCutoff_mono_on_orbit {m k : ℕ} (hk : k ≤ m + 1) (c r ε' R�
   have hsymm2 : data.χ.symm (data.χ y₂) = y₂ := data.χ.left_inv hy₂
   have hmono := morseFarCutoffModel_mono hk c r ε' R₀ R₁ hε' hR hneg hlev'
   simpa [hsymm1, hsymm2] using hmono
-
 
 theorem morseFarExpandTime_cut_bounds {c ε δ : ℝ} (hδ : 0 < δ) (hε : 0 < ε)
     {ρ t : ℝ} (hρ : ρ ∈ Set.Icc (0 : ℝ) 1) (ht : t ≤ c - ε) :
@@ -10809,7 +10799,6 @@ theorem morseFarExpandMap_injective {m k : ℕ} (hk : k ≤ m + 1) (c ε r δ ε
   rw [horbit]
   rw [hτeq]
   simp [curveAt_zero]
-
 
 theorem morseCollarLevelMap_injective_of_level {m k : ℕ} (hk : k ≤ m + 1) (c ε r η : ℝ)
     {H : Type} [TopologicalSpace H] {M : Type} [TopologicalSpace M] [ChartedSpace H M]
@@ -11111,7 +11100,7 @@ theorem cocoreAttachingEmbedding_core_eq_cellAttachingMap {n k : ℕ} (hk : k �
 noncomputable def cellAdjunctionSpaceHomeomorphLowerUnion {n : ℕ} {H : Type}
     [TopologicalSpace H] {M : Type} [TopologicalSpace M]
     [ChartedSpace H M] [T2Space M] (I : ModelWithCorners ℝ (MorseModel n) H)
-    (f : M → ℝ) (hf : ContMDiff I 𝓘(ℝ, ℝ) (⊤ : WithTop ℕ∞) f)
+    (f : M → ℝ) (hf : Continuous f)
     (c : ℝ) (k : ℕ) (hk : k ≤ n)
     (data : MorseChart n k hk c I f) :
     CellAdjunctionSpace k (cellAttachingMap hk c data) ≃ₜ
@@ -11176,7 +11165,7 @@ noncomputable def cellAdjunctionSpaceHomeomorphLowerUnion {n : ℕ} {H : Type}
           exact Set.mem_range.mpr ⟨z, rfl⟩
         exact (Set.disjoint_left.mp (cellInterior_disjoint hk c data.ε data.epsilon_pos)) hmem hn
       exact hnot (by rw [← hfz']; exact hfz)
-    · exact isClosed_Iic.preimage hf.continuous
+    · exact isClosed_Iic.preimage hf
   exact hAdj
 
 theorem range_handleEmbedding {m k : ℕ} (hk : k ≤ m + 1) (c ε r : ℝ)
@@ -11244,7 +11233,7 @@ theorem contMDiff_morseModifiedFunction {n k : ℕ} (hk : k ≤ n) (c ε δ R r�
     {H : Type} [TopologicalSpace H] {M : Type} [TopologicalSpace M] [ChartedSpace H M]
     (I : ModelWithCorners ℝ (MorseModel n) H)
     [T2Space M] (f : M → ℝ)
-    (hf : ContMDiff I 𝓘(ℝ, ℝ) (⊤ : WithTop ℕ∞) f)
+    (hf : ContMDiff I 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞) f)
     (χ : OpenPartialHomeomorph (MorseModel n) M)
     (hnorm : ∀ y : MorseModel n, morseNorm n y ≤ R → f (χ y) = morseNormalForm hk c y)
     (hχsource : ∀ y : MorseModel n, morseNorm n y ≤ R → y ∈ χ.source)
@@ -11278,8 +11267,6 @@ theorem contMDiff_morseModifiedFunction {n k : ℕ} (hk : k ≤ n) (c ε δ R r�
     have hcont : ContinuousOn χ ball := χ.continuousOn_toFun.mono hχsource
     exact (hballComp.image_of_continuousOn hcont).isClosed
   classical
-  have hfInfty : ContMDiff I 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞) f :=
-    hf.of_le (le_top : (↑(⊤ : ℕ∞) : WithTop ℕ∞) ≤ (⊤ : WithTop ℕ∞))
   intro x
   by_cases hx : x ∈ χ.target
   · by_cases hball : morseNorm n (χ.symm x) < min R rΦ
@@ -11359,7 +11346,7 @@ theorem contMDiff_morseModifiedFunction {n k : ℕ} (hk : k ≤ n) (c ε δ R r�
           rw [hmod]
           simpa [χ.right_inv hz.1] using (hnorm (χ.symm z) hle).symm
         · rw [if_neg hle]
-      exact (ContMDiffAt.congr_of_eventuallyEq (hfInfty x) hagree)
+      exact (ContMDiffAt.congr_of_eventuallyEq (hf x) hagree)
   · have houtside : {x : M | x ∉ χ '' ball} ∈ nhds x := by
       exact (isOpen_compl_iff.mpr hχballClosed).mem_nhds (by
         intro hxmem
@@ -11380,7 +11367,7 @@ theorem contMDiff_morseModifiedFunction {n k : ℕ} (hk : k ≤ n) (c ε δ R r�
           exact ⟨χ.symm z, hle, χ.right_inv hzt⟩
         rw [if_neg hle']
       · rw [if_neg hzt]
-    exact (ContMDiffAt.congr_of_eventuallyEq (hfInfty x) hagree)
+    exact (ContMDiffAt.congr_of_eventuallyEq (hf x) hagree)
 
 theorem sublevel_upper_identity_morseModifiedFunction {n k : ℕ} (hk : k ≤ n) (c ε δ R : ℝ)
     (hε : 0 < ε) (hδ : 0 < δ) (hδε : 9 * δ ^ 2 < 4 * ε)
@@ -12290,7 +12277,6 @@ theorem modifiedSublevel_subset_lower_union_modelHandle {n k : ℕ} (hk : k ≤ 
       · exact hpos_le
       · exact hneg_le)
 
-
 theorem modifiedSublevel_union_modelHandle_eq {n k : ℕ} (hk : k ≤ n) (c ε δ r : ℝ)
     (hε : 0 < ε) (hδ : 0 < δ) (hr : 3 * δ / 2 ≤ r) :
     {y : MorseModel n | modifiedNormalForm hk c ε δ y ≤ c - ε} ∪ modelHandle hk ε r =
@@ -12308,7 +12294,6 @@ theorem modifiedSublevel_union_modelHandle_eq {n k : ℕ} (hk : k ≤ n) (c ε �
     rcases hy with hf | hh
     · exact Or.inl (le_trans (modifiedNormalForm_le_f hk c ε δ hε y) hf)
     · exact Or.inr hh
-
 
 theorem modifiedNormalForm_eq_of_norm_large {n k : ℕ} (hk : k ≤ n) (c ε δ r : ℝ)
     (hε : 0 < ε) (hδ : 0 < δ) (hr : r ^ 2 ≥ ε + 9 * δ ^ 2 / 8) (y : MorseModel n)
@@ -16893,7 +16878,6 @@ theorem contMDiff_morseRoundedFunction {m k : ℕ} (hk : k ≤ m + 1) (c ε r δ
     exact h₁.union_of_isOpen h₂ hU₁ hU₂
   exact contMDiffOn_univ.mp hwhole
 
-
 theorem modelSharpUnion_negPart_ge_of_norm_gt {m k : ℕ} (hk : k ≤ m + 1) (c ε r δ R₀ R₁ : ℝ)
     (hε : 0 ≤ ε) (hδ : 0 < δ) (hR0 : 0 ≤ R₀) (hR : R₀ < R₁)
     (hbig : 2 * (r ^ 2 + 2 * ε + δ) ≤ R₀ ^ 2) {y : MorseModel (m + 1)}
@@ -17181,7 +17165,6 @@ theorem sublevel_morseRoundedFunction_eq_roundedAttachment {m k : ℕ} (hk : k �
         rw [heq]
         have hlow' : f x ≤ c - ε := hlow
         nlinarith only [hlow']
-
 
 lemma morseRoundedFunction_notCritical_of_chartComp {m k : ℕ} (hk : k ≤ m + 1) (c ε r δ R₀ R₁ : ℝ)
     {H : Type} [TopologicalSpace H] {M : Type} [TopologicalSpace M] [ChartedSpace H M]
@@ -17615,7 +17598,6 @@ theorem morseRoundedFunction_no_critical_at_level {m k : ℕ} (hk : k ≤ m + 1)
       exact hcrit'
     exact hreg hcrit''
 
-
 @[reducible]
 noncomputable def morseSublevelIsotopyFamily {m k : ℕ} (hk : k ≤ m + 1)
     (c ε r δ R₀ R₁ : ℝ) {H : Type} [TopologicalSpace H] {M : Type} [TopologicalSpace M]
@@ -17664,7 +17646,6 @@ theorem contMDiff_morseSublevelIsotopyFamily {m k : ℕ} (hk : k ≤ m + 1)
       (fun _ : M × ℝ => c))).sub (contMDiff_const : ContMDiff (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, ℝ)
         (↑(⊤ : ℕ∞) : WithTop ℕ∞) (fun _ : M × ℝ => ε))
   exact (hc1.mul hc2).add (hsnd.mul hc4)
-
 
 theorem constant_shift_criticalPoint {m : ℕ} {H : Type} [TopologicalSpace H] {M : Type} [TopologicalSpace M]
     [ChartedSpace H M]
@@ -17720,7 +17701,6 @@ theorem constant_shift_criticalPoint {m : ℕ} {H : Type} [TopologicalSpace H] {
     hunique hgrep hcrep
   rw [hadd, hconst0, add_zero] at hcritModel
   exact hcritModel
-
 
 private theorem no_critical_morseSublevelIsotopyFamily {m k : ℕ} (hk : k ≤ m + 1)
     (c ε r δ R₀ R₁ R₁' : ℝ) {H : Type} [TopologicalSpace H] {M : Type} [TopologicalSpace M]
@@ -18011,8 +17991,6 @@ private theorem no_critical_morseSublevelIsotopyFamily {m k : ℕ} (hk : k ≤ m
         (f := f) (x := x) (a := -c + (1 - 2 * s) * ε) hf (by
           simpa [sub_eq_add_neg, add_assoc, add_comm, add_left_comm] using hcrit'))
     exact hreg hcritf
-
-
 
 theorem isCompact_morseSublevelIsotopyFamily_strip {m k : ℕ} (hk : k ≤ m + 1)
     (c ε r δ R₀ R₁ R₁' a : ℝ) {H : Type} [TopologicalSpace H] {M : Type} [TopologicalSpace M]
@@ -19876,7 +19854,6 @@ noncomputable def morseHandleAdjunctionCellPushedChart {m k : ℕ} (hk : k ≤ m
     change IsOpen target
     exact hPre
 
-
 noncomputable def morseAttachingEmbeddingInverse {m k : ℕ} (hk : k ≤ m + 1) (c ε r : ℝ)
     {H : Type} [TopologicalSpace H] {M : Type} [TopologicalSpace M] [ChartedSpace H M]
     {I : ModelWithCorners ℝ (MorseModel (m + 1)) H} {f : M → ℝ}
@@ -19991,7 +19968,6 @@ theorem morseLowerAttachingChartPoint_model_norm_sq_le {m k : ℕ} (hk : k ≤ m
   rw [hsymm]
   rw [hsymm']
   exact hnorm'
-
 
 private theorem morseHandleAdjunctionEquivRoundedSublevelSharp_symm_rel_deep {m k : ℕ} (hk : k ≤ m + 1)
     (c ε r δ R₀ R₁ η : ℝ) {H : Type} [TopologicalSpace H] {M : Type} [TopologicalSpace M]

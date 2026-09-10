@@ -5,6 +5,7 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Permutation.FiberNo
 set_option autoImplicit false
 
 noncomputable section
+set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff BigOperators

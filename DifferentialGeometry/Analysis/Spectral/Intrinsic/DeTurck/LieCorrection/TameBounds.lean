@@ -47,6 +47,7 @@ open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
+set_option backward.isDefEq.respectTransparency false
 
 open MeasureTheory Set Filter Topology Bundle Manifold DifferentialGeometry.Tensor0SBundle
     ContinuousLinearMap
@@ -129,7 +130,6 @@ private theorem realizedDeTurckLie_covariantJet_lowerOrder_residual
     hident s hs x (fun i => tangentSpaceModelContinuousLinearEquiv (I := I) x (v i))
 
 section LieCorrectionZeroBoundsAll
-
 
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   (deTurckVectorFieldCovariantDerivativeEndomorphism deTurckVectorFieldCovariantDerivativeEndomorphism_apply deTurckVectorFieldCovariantDerivativeEndomorphism_homSection_contMDiff deTurckVFCovDeriv
@@ -622,7 +622,6 @@ private local instance instCompleteSpaceE_tame_02 : CompleteSpace E :=
 
 section LieCorrectionZeroBoundsAll
 
-
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   (deTurckVectorFieldCovariantDerivativeEndomorphism deTurckVectorFieldCovariantDerivativeEndomorphism_apply deTurckVectorFieldCovariantDerivativeEndomorphism_homSection_contMDiff deTurckVFCovDeriv
   connectionDifferenceOp_homSection_contMDiff metricConnectionDifferenceLoweredFib metricConnectionDifferenceLoweredFib_toModel
@@ -938,6 +937,7 @@ theorem lieCorrectionZeroKappa_eq_self_sub_connectionDifferenceLowered_add_pbLow
   ring
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 theorem lieCorrectionZeroKappa_self_sub_eq_connectionDifferenceLowered_sub_pbLow
     (g₀ g₁ gB : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
     (htie : ∀ (y : M) (v w : TangentSpace I y),
@@ -1303,7 +1303,6 @@ open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 
-
 noncomputable section
 
 open MeasureTheory Set Filter Topology Bundle Manifold DifferentialGeometry.Tensor0SBundle
@@ -1356,7 +1355,6 @@ private local instance instCompleteSpaceE_tame_03 : CompleteSpace E :=
   FiniteDimensional.complete ℝ E
 
 section LieCorrectionZeroBoundsAll
-
 
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   (deTurckVectorFieldCovariantDerivativeEndomorphism deTurckVectorFieldCovariantDerivativeEndomorphism_apply deTurckVectorFieldCovariantDerivativeEndomorphism_homSection_contMDiff deTurckVFCovDeriv
@@ -1878,7 +1876,6 @@ open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 
-
 noncomputable section
 
 open MeasureTheory Set Filter Topology Bundle Manifold DifferentialGeometry.Tensor0SBundle
@@ -1931,7 +1928,6 @@ private local instance instCompleteSpaceE_tame_04 : CompleteSpace E :=
   FiniteDimensional.complete ℝ E
 
 section LieCorrectionZeroBoundsAll
-
 
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   (deTurckVectorFieldCovariantDerivativeEndomorphism deTurckVectorFieldCovariantDerivativeEndomorphism_apply deTurckVectorFieldCovariantDerivativeEndomorphism_homSection_contMDiff deTurckVFCovDeriv
@@ -2492,7 +2488,6 @@ open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Geometry.Curvature
 
-
 noncomputable section
 
 open MeasureTheory Set Filter Topology Bundle Manifold DifferentialGeometry.Tensor0SBundle
@@ -2543,7 +2538,6 @@ private local instance instCompleteSpaceE_tame_05 : CompleteSpace E :=
   FiniteDimensional.complete ℝ E
 
 section LieCorrectionZeroBoundsAll
-
 
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   (deTurckVectorFieldCovariantDerivativeEndomorphism deTurckVectorFieldCovariantDerivativeEndomorphism_apply deTurckVectorFieldCovariantDerivativeEndomorphism_homSection_contMDiff deTurckVFCovDeriv
@@ -2897,7 +2891,6 @@ section
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Geometry.Connection
 
-
 noncomputable section
 
 open MeasureTheory Set Filter Topology Bundle Manifold DifferentialGeometry.Tensor0SBundle
@@ -2949,7 +2942,6 @@ private local instance instCompleteSpaceE_tame_06 : CompleteSpace E :=
   FiniteDimensional.complete ℝ E
 
 section LieCorrectionZeroBoundsAll
-
 
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   (deTurckVectorFieldCovariantDerivativeEndomorphism deTurckVectorFieldCovariantDerivativeEndomorphism_apply deTurckVectorFieldCovariantDerivativeEndomorphism_homSection_contMDiff deTurckVFCovDeriv
@@ -3029,14 +3021,12 @@ end DifferentialGeometry.Analysis.Spectral
 
 end
 
-
 end
 
 section
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
-
 
 noncomputable section
 
@@ -3089,7 +3079,6 @@ private local instance instCompleteSpaceE_tame_07 : CompleteSpace E :=
   FiniteDimensional.complete ℝ E
 
 section LieCorrectionZeroBoundsAll
-
 
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   (deTurckVectorFieldCovariantDerivativeEndomorphism deTurckVectorFieldCovariantDerivativeEndomorphism_apply deTurckVectorFieldCovariantDerivativeEndomorphism_homSection_contMDiff deTurckVFCovDeriv
@@ -3250,7 +3239,6 @@ section
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Geometry.Curvature
 
-
 noncomputable section
 
 open MeasureTheory Set Filter Topology Bundle Manifold DifferentialGeometry.Tensor0SBundle
@@ -3302,7 +3290,6 @@ private local instance instCompleteSpaceE_tame_08 : CompleteSpace E :=
   FiniteDimensional.complete ℝ E
 
 section LieCorrectionZeroBoundsAll
-
 
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   (deTurckVectorFieldCovariantDerivativeEndomorphism deTurckVectorFieldCovariantDerivativeEndomorphism_apply deTurckVectorFieldCovariantDerivativeEndomorphism_homSection_contMDiff deTurckVFCovDeriv
@@ -3407,7 +3394,6 @@ end DifferentialGeometry.Analysis.Spectral
 
 end
 
-
 end
 
 section
@@ -3416,7 +3402,6 @@ open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
-
 
 noncomputable section
 
@@ -3469,7 +3454,6 @@ private local instance instCompleteSpaceE_tame_09 : CompleteSpace E :=
   FiniteDimensional.complete ℝ E
 
 section LieCorrectionZeroBoundsAll
-
 
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   (deTurckVectorFieldCovariantDerivativeEndomorphism deTurckVectorFieldCovariantDerivativeEndomorphism_apply deTurckVectorFieldCovariantDerivativeEndomorphism_homSection_contMDiff deTurckVFCovDeriv
@@ -3651,7 +3635,6 @@ end
 section
 open DifferentialGeometry.Analysis.Spectral
 
-
 noncomputable section
 
 open MeasureTheory Set Filter Topology Bundle Manifold DifferentialGeometry.Tensor0SBundle
@@ -3703,7 +3686,6 @@ private local instance instCompleteSpaceE_tame_10 : CompleteSpace E :=
   FiniteDimensional.complete ℝ E
 
 section LieCorrectionZeroBoundsAll
-
 
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   (deTurckVectorFieldCovariantDerivativeEndomorphism deTurckVectorFieldCovariantDerivativeEndomorphism_apply deTurckVectorFieldCovariantDerivativeEndomorphism_homSection_contMDiff deTurckVFCovDeriv
@@ -3777,7 +3759,6 @@ end
 section
 open DifferentialGeometry.Analysis.Spectral
 
-
 noncomputable section
 
 open MeasureTheory Set Filter Topology Bundle Manifold DifferentialGeometry.Tensor0SBundle
@@ -3829,7 +3810,6 @@ private local instance instCompleteSpaceE_tame_11 : CompleteSpace E :=
   FiniteDimensional.complete ℝ E
 
 section LieCorrectionZeroBoundsAll
-
 
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   (deTurckVectorFieldCovariantDerivativeEndomorphism deTurckVectorFieldCovariantDerivativeEndomorphism_apply deTurckVectorFieldCovariantDerivativeEndomorphism_homSection_contMDiff deTurckVFCovDeriv
@@ -3886,7 +3866,6 @@ end
 section
 open DifferentialGeometry.Analysis.Spectral
 
-
 noncomputable section
 
 open MeasureTheory Set Filter Topology Bundle Manifold DifferentialGeometry.Tensor0SBundle
@@ -3939,7 +3918,6 @@ private local instance instCompleteSpaceE_tame_12 : CompleteSpace E :=
 
 section LieCorrectionZeroBoundsAll
 
-
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   (deTurckVectorFieldCovariantDerivativeEndomorphism deTurckVectorFieldCovariantDerivativeEndomorphism_apply deTurckVectorFieldCovariantDerivativeEndomorphism_homSection_contMDiff deTurckVFCovDeriv
   connectionDifferenceOp_homSection_contMDiff metricConnectionDifferenceLoweredFib metricConnectionDifferenceLoweredFib_toModel
@@ -3987,7 +3965,6 @@ end
 section
 open DifferentialGeometry.Analysis.Spectral
 
-
 noncomputable section
 
 open Bundle Manifold DifferentialGeometry.Tensor0SBundle ContinuousLinearMap
@@ -4008,7 +3985,6 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 private local instance instCompleteSpaceE_tame_13 : CompleteSpace E :=
   FiniteDimensional.complete ℝ E
-
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 omit [I.Boundaryless] in
@@ -4047,7 +4023,6 @@ end
 
 section
 open DifferentialGeometry.Analysis.Spectral
-
 
 noncomputable section
 
@@ -4101,7 +4076,6 @@ private local instance instCompleteSpaceE_tame_14 : CompleteSpace E :=
 
 section LieCorrectionZeroBoundsAll
 
-
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   (deTurckVectorFieldCovariantDerivativeEndomorphism deTurckVectorFieldCovariantDerivativeEndomorphism_apply deTurckVectorFieldCovariantDerivativeEndomorphism_homSection_contMDiff deTurckVFCovDeriv
   connectionDifferenceOp_homSection_contMDiff metricConnectionDifferenceLoweredFib metricConnectionDifferenceLoweredFib_toModel
@@ -4139,7 +4113,6 @@ end
 end
 
 section
-
 
 noncomputable section
 
@@ -4193,7 +4166,6 @@ private local instance instCompleteSpaceE_tame_15 : CompleteSpace E :=
 
 section LieCorrectionZeroBoundsAll
 
-
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   (deTurckVectorFieldCovariantDerivativeEndomorphism deTurckVectorFieldCovariantDerivativeEndomorphism_apply deTurckVectorFieldCovariantDerivativeEndomorphism_homSection_contMDiff deTurckVFCovDeriv
   connectionDifferenceOp_homSection_contMDiff metricConnectionDifferenceLoweredFib metricConnectionDifferenceLoweredFib_toModel
@@ -4207,7 +4179,6 @@ section LieCorrectionZeroBoundsE3
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 open DifferentialGeometry.Analysis.Spectral.DeTurck (modelDoubleTrace_apply
   cometricLmodel)
-
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
@@ -4238,7 +4209,6 @@ end
 
 section
 open DifferentialGeometry.Geometry.Connection
-
 
 noncomputable section
 
@@ -4291,7 +4261,6 @@ private local instance instCompleteSpaceE_tame_16 : CompleteSpace E :=
   FiniteDimensional.complete ℝ E
 
 section LieCorrectionZeroBoundsAll
-
 
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   (deTurckVectorFieldCovariantDerivativeEndomorphism deTurckVectorFieldCovariantDerivativeEndomorphism_apply deTurckVectorFieldCovariantDerivativeEndomorphism_homSection_contMDiff deTurckVFCovDeriv
@@ -4354,7 +4323,6 @@ end
 
 section
 
-
 noncomputable section
 
 open MeasureTheory Set Filter Topology Bundle Manifold DifferentialGeometry.Tensor0SBundle
@@ -4406,7 +4374,6 @@ private local instance instCompleteSpaceE_tame_17 : CompleteSpace E :=
   FiniteDimensional.complete ℝ E
 
 section LieCorrectionZeroBoundsAll
-
 
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   (deTurckVectorFieldCovariantDerivativeEndomorphism deTurckVectorFieldCovariantDerivativeEndomorphism_apply deTurckVectorFieldCovariantDerivativeEndomorphism_homSection_contMDiff deTurckVFCovDeriv
@@ -4472,7 +4439,6 @@ open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 
-
 noncomputable section
 
 open MeasureTheory Set Filter Topology Bundle Manifold DifferentialGeometry.Tensor0SBundle
@@ -4524,7 +4490,6 @@ private local instance instCompleteSpaceE_tame_18 : CompleteSpace E :=
   FiniteDimensional.complete ℝ E
 
 section LieCorrectionZeroBoundsAll
-
 
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   (deTurckVectorFieldCovariantDerivativeEndomorphism deTurckVectorFieldCovariantDerivativeEndomorphism_apply deTurckVectorFieldCovariantDerivativeEndomorphism_homSection_contMDiff deTurckVFCovDeriv
@@ -4673,7 +4638,6 @@ end
 section
 open DifferentialGeometry.Geometry.Curvature
 
-
 noncomputable section
 
 open MeasureTheory Set Filter Topology Bundle Manifold DifferentialGeometry.Tensor0SBundle
@@ -4725,7 +4689,6 @@ private local instance instCompleteSpaceE_tame_19 : CompleteSpace E :=
   FiniteDimensional.complete ℝ E
 
 section LieCorrectionZeroBoundsAll
-
 
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   (deTurckVectorFieldCovariantDerivativeEndomorphism deTurckVectorFieldCovariantDerivativeEndomorphism_apply deTurckVectorFieldCovariantDerivativeEndomorphism_homSection_contMDiff deTurckVFCovDeriv
@@ -4795,7 +4758,6 @@ end DifferentialGeometry.Analysis.Spectral
 
 end
 
-
 end
 
 section
@@ -4804,7 +4766,6 @@ open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
-
 
 noncomputable section
 
@@ -4858,7 +4819,6 @@ private local instance instCompleteSpaceE_tame_20 : CompleteSpace E :=
   FiniteDimensional.complete ℝ E
 
 section LieCorrectionZeroBoundsAll
-
 
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   (deTurckVectorFieldCovariantDerivativeEndomorphism deTurckVectorFieldCovariantDerivativeEndomorphism_apply deTurckVectorFieldCovariantDerivativeEndomorphism_homSection_contMDiff deTurckVFCovDeriv
@@ -5062,7 +5022,6 @@ open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature
 
-
 noncomputable section
 
 open MeasureTheory Set Filter Topology Bundle Manifold DifferentialGeometry.Tensor0SBundle
@@ -5115,7 +5074,6 @@ private local instance instCompleteSpaceE_tame_21 : CompleteSpace E :=
   FiniteDimensional.complete ℝ E
 
 section LieCorrectionZeroBoundsAll
-
 
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   (deTurckVectorFieldCovariantDerivativeEndomorphism deTurckVectorFieldCovariantDerivativeEndomorphism_apply deTurckVectorFieldCovariantDerivativeEndomorphism_homSection_contMDiff deTurckVFCovDeriv
@@ -5369,7 +5327,6 @@ section
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic
 
-
 noncomputable section
 
 open MeasureTheory Set Filter Topology Bundle Manifold DifferentialGeometry.Tensor0SBundle
@@ -5422,7 +5379,6 @@ private local instance instCompleteSpaceE_tame_22 : CompleteSpace E :=
   FiniteDimensional.complete ℝ E
 
 section LieCorrectionZeroBoundsAll
-
 
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   (deTurckVectorFieldCovariantDerivativeEndomorphism deTurckVectorFieldCovariantDerivativeEndomorphism_apply deTurckVectorFieldCovariantDerivativeEndomorphism_homSection_contMDiff deTurckVFCovDeriv
@@ -5800,7 +5756,6 @@ open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Geometry.Connection
 
-
 noncomputable section
 
 open MeasureTheory Set Filter Topology Bundle Manifold DifferentialGeometry.Tensor0SBundle
@@ -5853,7 +5808,6 @@ private local instance instCompleteSpaceE_tame_23 : CompleteSpace E :=
   FiniteDimensional.complete ℝ E
 
 section LieCorrectionZeroBoundsAll
-
 
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   (deTurckVectorFieldCovariantDerivativeEndomorphism deTurckVectorFieldCovariantDerivativeEndomorphism_apply deTurckVectorFieldCovariantDerivativeEndomorphism_homSection_contMDiff deTurckVFCovDeriv

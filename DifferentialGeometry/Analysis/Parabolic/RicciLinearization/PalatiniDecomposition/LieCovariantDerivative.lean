@@ -15,9 +15,8 @@ import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.RicciDeTurck.Remainde
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 
-
 noncomputable section
-
+set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set Filter DifferentialGeometry.Tensor0SBundle MeasureTheory
 open scoped Manifold Topology ContDiff BigOperators
@@ -62,7 +61,6 @@ def deTurckLieCovariantDerivativeDecompositionC2Family (g₀ : SmoothRiemannianM
         (ccTensorUnitValueSection_contMDiff (I := I) (M := M) g₀ T)
         ((q i).trans (Equiv.swap (0 : Fin 4) 1))))
 
-
 omit [BoundarylessManifold I M] in
 omit [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
@@ -74,7 +72,6 @@ omit [SigmaCompactSpace M] in
     (q : Fin 3 → Equiv.Perm (Fin 4)) (ε : Fin 3 → ℝ) :
     deTurckLieCovariantDerivativeDecompositionC2Family (I := I) (M := M) g₀ T hδ hδZ q ε 0 = 0 := by
   rw [deTurckLieCovariantDerivativeDecompositionC2Family, zero_smul]
-
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 omit [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
@@ -95,7 +92,6 @@ lemma toModel_ccTensorUnitValueSection_domDomCongrSection_swap
   funext i
   fin_cases i <;> rfl
 
-
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
 lemma eval_ccTensorUnitValueSection_domDomCongrSection_swap
@@ -110,7 +106,6 @@ lemma eval_ccTensorUnitValueSection_domDomCongrSection_swap
   exact toModel_ccTensorUnitValueSection_domDomCongrSection_swap (I := I) (M := M) g₀ T x
     (tangentSpaceModelContinuousLinearEquiv (I := I) x p)
     (tangentSpaceModelContinuousLinearEquiv (I := I) x q')
-
 
 omit [I.Boundaryless] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 theorem curvatureDecompositionMonomialCoeffField_unitValue_trans_swap
@@ -166,7 +161,6 @@ theorem curvatureDecompositionMonomialCoeffField_unitValue_trans_swap
   refine Finset.sum_congr rfl (fun a _ => Finset.sum_congr rfl (fun b _ => ?_))
   rw [eval_ccTensorUnitValueSection_domDomCongrSection_swap]
 
-
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
 omit [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
 lemma ccTensorUnitValueSection_add (g₀ : SmoothRiemannianMetric I M)
@@ -180,7 +174,6 @@ lemma ccTensorUnitValueSection_add (g₀ : SmoothRiemannianMetric I M)
   rw [ccTensorUnitValueSection, ccTensorUnitValueSection, ccTensorUnitValueSection, h]
   rfl
 
-
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
 omit [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
 lemma ccTensorUnitValueSection_smul (g₀ : SmoothRiemannianMetric I M) (c : ℝ)
@@ -192,7 +185,6 @@ lemma ccTensorUnitValueSection_smul (g₀ : SmoothRiemannianMetric I M) (c : ℝ
     rw [SmoothCcTensor.toSection_smul, ContMDiffSection.coe_smul, Pi.smul_apply]
   rw [ccTensorUnitValueSection, ccTensorUnitValueSection, h]
   rfl
-
 
 omit [I.Boundaryless] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 theorem curvatureDecompositionMonomialCoeffField_unitValue_add
@@ -239,7 +231,6 @@ theorem curvatureDecompositionMonomialCoeffField_unitValue_add
   simp only [Tensor0SSpace.eval_add]
   rw [add_mul]
 
-
 omit [I.Boundaryless] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 theorem curvatureDecompositionMonomialCoeffField_unitValue_smul
     (g₀ g₁ : SmoothRiemannianMetric I M) (c : ℝ) (S : SmoothCcTensor g₀ 0 2)
@@ -276,7 +267,6 @@ theorem curvatureDecompositionMonomialCoeffField_unitValue_smul
   simp only [Tensor0SSpace.eval_smul, smul_eq_mul]
   ring
 
-
 omit [I.Boundaryless] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 theorem curvatureDecompositionMonomialCoeffField_unitValue_pair_eq_ccTensor02Symm
     (g₀ g₁ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2)
@@ -306,7 +296,6 @@ theorem curvatureDecompositionMonomialCoeffField_unitValue_pair_eq_ccTensor02Sym
   rw [curvatureDecompositionMonomialCoeffField_unitValue_smul,
     curvatureDecompositionMonomialCoeffField_unitValue_add,
     curvatureDecompositionMonomialCoeffField_unitValue_trans_swap]
-
 
 omit [BoundarylessManifold I M] in
 omit [I.Boundaryless] in

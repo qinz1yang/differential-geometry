@@ -25,7 +25,7 @@ open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
-
+set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set Filter DifferentialGeometry.Tensor0SBundle MeasureTheory intervalIntegral
 open scoped Manifold Topology ContDiff BigOperators Matrix Interval
@@ -181,7 +181,6 @@ theorem exists_linearizedRicci_covariantJet_coeffFields
   exact linearizedRicci_lichnerowicz_firstOrder_identity (I := I) g₀ T T'
     hTsymm hT'symm hδ_lt hδ hδ'_lt hδ'
 
-
 theorem exists_ricciFirstOrderCoeff
     (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     (hTsymm : ∀ (x : M) (v w : TangentSpace I x),
@@ -287,7 +286,6 @@ theorem exists_ricciFirstOrderCoeff
   rw [← hR₁] at he1
   rw [← hR₂] at he2
   rw [← he0, ← he1, ← he2, unitModel_add2_apply, unitModel_add2_apply]
-
 
 theorem ricciTensor_realize_sub_eq_covariantJet_operatorFieldApply
     (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)

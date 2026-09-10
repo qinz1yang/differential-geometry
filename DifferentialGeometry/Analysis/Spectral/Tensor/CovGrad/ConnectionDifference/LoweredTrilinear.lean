@@ -7,9 +7,8 @@ open DifferentialGeometry.Tensor.Multilinear
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator
 
-
 noncomputable section
-
+set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff BigOperators Matrix
@@ -43,7 +42,6 @@ noncomputable def domDomCongrFibRank (d : ℕ) (σ : Equiv.Perm (Fin d)) (x : M)
     (((ContinuousMultilinearMap.domDomCongrₗᵢ ℝ E ℝ
           σ).toContinuousLinearEquiv.toContinuousLinearMap).comp
       (Tensor0SBundle.tensor0SSpaceContinuousLinearEquiv (I := I) d x).toContinuousLinearMap)
-
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
     [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
@@ -109,7 +107,6 @@ noncomputable def modelProdCLM (p q : ℕ) :
         simp only [smul_eq_mul]
         ring }
 
-
 omit [NeZero (Module.finrank ℝ E)] in
 theorem modelProdCLM_apply (p q : ℕ)
     (A : Tensor0SBundle.Tensor0SModel p ℝ E) (B : Tensor0SBundle.Tensor0SModel q ℝ E) :
@@ -126,7 +123,6 @@ noncomputable def tensor0SProdKappaFib {p q : ℕ} (x : M)
     (((modelProdCLM (E := E) p q).flip
         (Tensor0SBundle.Tensor0SSpace.toModel κ)).comp
       (Tensor0SBundle.tensor0SSpaceContinuousLinearEquiv (I := I) p x).toContinuousLinearMap)
-
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
@@ -191,7 +187,6 @@ noncomputable def metricConnectionDifferenceLoweredTrilin (gm gA gB : SmoothRiem
       (TangentSpace I x →L[ℝ] ℝ) (gm.inner x)).comp
     (PDE.DeTurck.connectionDifference (I := I) gA gB x)
 
-
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 omit [T2Space M] [SigmaCompactSpace M] in
@@ -207,7 +202,6 @@ noncomputable def metricConnectionDifferenceLoweredFib (gm gA gB : SmoothRiemann
   (Tensor0SBundle.tensor0SSpaceFiberContinuousLinearEquiv
     (I := I) 3 x).symm
     (trilinFormToModel (TangentSpace I x) (metricConnectionDifferenceLoweredTrilin (I := I) gm gA gB x))
-
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
@@ -234,7 +228,6 @@ noncomputable def ccBilinConnectionDifferenceLoweredTrilin (g₀ : SmoothRiemann
       (TangentSpace I x →L[ℝ] ℝ) (ccTensorBilinSymm (I := I) g₀ V x)).comp
     (PDE.DeTurck.connectionDifference (I := I) gA gB x)
 
-
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 omit [T2Space M] [SigmaCompactSpace M] in
@@ -252,7 +245,6 @@ noncomputable def ccBilinConnectionDifferenceLoweredFib (g₀ : SmoothRiemannian
   (Tensor0SBundle.tensor0SSpaceFiberContinuousLinearEquiv
     (I := I) 3 x).symm
     (trilinFormToModel (TangentSpace I x) (ccBilinConnectionDifferenceLoweredTrilin (I := I) g₀ V gA gB x))
-
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
@@ -274,6 +266,7 @@ theorem ccBilinConnectionDifferenceLoweredFib_toModel (g₀ : SmoothRiemannianMe
         (fun i => (tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v i)) = _
   rw [trilinFormToModel_apply, ccBilinConnectionDifferenceLoweredTrilin_apply]
 
+set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [SigmaCompactSpace M] in
 private theorem trilinKernel_section_contMDiff

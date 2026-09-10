@@ -19,7 +19,6 @@ namespace DifferentialGeometry
 namespace Analysis
 namespace Spectral
 
-
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 open DifferentialGeometry.Analysis.Sobolev.TensorHilbert
@@ -114,6 +113,7 @@ private theorem edge_full_split
 
 omit [NeZero (Module.finrank Real E)] [I.Boundaryless]
   [BoundarylessManifold I M] [SigmaCompactSpace M] in
+set_option backward.isDefEq.respectTransparency false in
 private theorem edge_insert_add
     (g : SmoothRiemannianMetric I M) (s : Nat)
     (A B : ContMDiffSection I (E →L[Real] E) ∞
@@ -160,6 +160,8 @@ private lemma edge_endo_id_zero (g : SmoothRiemannianMetric I M)
     inverseMetricSharpFib_g0FlatCLM, sub_self]
 
 omit [NeZero (Module.finrank Real E)] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank Real E)] in
+set_option backward.isDefEq.respectTransparency false in
 private lemma edge_cov_insert_id (g : SmoothRiemannianMetric I M) (s : Nat) :
     covGrad (I := I) (M := M) g (s + 1) (s + 1)
         (endoSlotZeroCcTensor (I := I) (M := M) g s
@@ -197,6 +199,8 @@ private lemma edge_cov_insert_id (g : SmoothRiemannianMetric I M) (s : Nat) :
   simp [SmoothCcTensor.toSection_zero]
 
 omit [NeZero (Module.finrank Real E)] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank Real E)] in
+set_option backward.isDefEq.respectTransparency false in
 private theorem edge_cov_full_eq
     (g gm : SmoothRiemannianMetric I M) (s : Nat) :
     covGrad (I := I) (M := M) g (s + 1) (s + 1)
@@ -325,6 +329,7 @@ private lemma edge_app_le (g : SmoothRiemannianMetric I M)
     (I := I) (M := M) g 0 r s x (Phi.toSection x) (W.toSection x)
 
 omit [NeZero (Module.finrank Real E)] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank Real E)] in
 theorem slotInsertionCoefficient_norm_bound
     (g gm : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2)
     (htie : ∀ (y : M) (v w : TangentSpace I y),

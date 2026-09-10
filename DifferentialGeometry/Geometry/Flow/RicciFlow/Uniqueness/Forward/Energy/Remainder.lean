@@ -6,6 +6,7 @@ import DifferentialGeometry.Geometry.Metric.TensorInner.FiberMetric.Tensor0SMetr
 set_option autoImplicit false
 
 noncomputable section
+set_option backward.isDefEq.respectTransparency false
 
 namespace DifferentialGeometry.PDE.RicciFlow
 
@@ -25,7 +26,6 @@ variable {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 
 variable [SigmaCompactSpace M] [T2Space M] [I.Boundaryless]
-
 
 section Fiber
 
@@ -104,7 +104,6 @@ theorem rmDotRem_low
   rfl
 
 variable [NeZero (Module.finrank Real E)]
-
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] [I.Boundaryless] in
@@ -240,7 +239,6 @@ private theorem rem_repr_inner {Idx : Type*} [Finite Idx] [DecidableEq Idx]
     simpa using hON l k
   simp only [hbb, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq',
     Finset.mem_univ, if_true]
-
 
 omit [SigmaCompactSpace M] [T2Space M] [I.Boundaryless] [NeZero (Module.finrank ℝ E)] in
 theorem reLowerDefSq_le (g₁ g₂ : SmoothRiemannianMetric I M) {s : ℕ}
@@ -411,7 +409,6 @@ theorem roughLapSq_le (g : SmoothRiemannianMetric I M) {s : ℕ}
 private def lowerTriPerm : Equiv.Perm (Fin 6) :=
   Equiv.ofBijective ![2, 3, 4, 0, 1, 5] (by decide)
 
-
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] [T2Space M] [I.Boundaryless] in
 theorem lowerTriSq_le (g : SmoothRiemannianMetric I M)
@@ -511,7 +508,6 @@ theorem lowerTriSq_le (g : SmoothRiemannianMetric I M)
   rw [hcongr, hprod] at htr
   simpa [P, mul_comm] using htr
 
-
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] [T2Space M] [I.Boundaryless] in
 theorem lowerTriDiffSq_le (g₁ g₂ : SmoothRiemannianMetric I M)
@@ -526,7 +522,6 @@ theorem lowerTriDiffSq_le (g₁ g₂ : SmoothRiemannianMetric I M)
           metricDiffSq (I := I) g₁ g₂ x) := by
   simpa only [metricDiffSq_def, mul_comm] using
     (lowerTriSq_le (I := I) g₁ (metricDiffAt (I := I) g₁ g₂ x) A)
-
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] [T2Space M] [I.Boundaryless] in
@@ -592,7 +587,6 @@ theorem lowerTriSwapSq_le (g₁ g₂ : SmoothRiemannianMetric I M)
           (normSq0S (I := I) g₂ x 4
               (lowerTri (I := I) (metricTensorField (I := I) g₂ x) A) *
             metricDiffSq (I := I) g₁ g₂ x) := by ring
-
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
@@ -719,7 +713,6 @@ theorem ownRmDiffSq_le (g₁ g₂ : SmoothRiemannianMetric I M) (x : M)
     _ = 2 * rmDiffSq (I := I) g₁ g₂ x +
           2 * (Module.finrank Real E : Real) ^ 6 * BP *
             metricDiffSq (I := I) g₁ g₂ x := by ring
-
 
 omit [SigmaCompactSpace M] [T2Space M] [I.Boundaryless] [NeZero (Module.finrank ℝ E)] in
 theorem traceProdSq_le (g : SmoothRiemannianMetric I M) {a b r : ℕ}

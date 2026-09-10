@@ -21,7 +21,6 @@ open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 
-
 noncomputable section
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
@@ -69,6 +68,7 @@ private local instance tensorRSRiemannianNormedAddCommGroup
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
     [BoundarylessManifold I M] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] in
 theorem tensorL2Norm_sq_toFun_eq_integral_riemannianFiberNormSq_rs
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (S : SmoothCcTensor g r s) :
     tensorL2Norm (I := I) (M := M) g r s S.toFun ^ 2 =
@@ -85,6 +85,7 @@ private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
     [BoundarylessManifold I M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] in
 theorem norm_le_of_pointwise_fiberNormSq_bound_rs
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (C : SmoothCcTensor g r s) (B : ℝ)
@@ -122,6 +123,7 @@ private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
     [BoundarylessManifold I M] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] in
 theorem normSq_le_integral_of_pointwise_fiberNormSq_le_rs
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (C : SmoothCcTensor g r s) (F : M → ℝ)
@@ -197,6 +199,7 @@ theorem inverseMetricDifferenceSlotCoefficient_eq_slotInsertEndoCc (g₀ g₁ : 
 
 end NormedSlotCoefficientIdentity
 
+set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [SigmaCompactSpace M] in
 private theorem endoCompSection_contMDiff
@@ -221,6 +224,7 @@ private theorem endoCompSection_contMDiff
   refine hABY.congr (fun x => ?_)
   rfl
 
+set_option backward.isDefEq.respectTransparency false in
 def endoCompField (A B : ContMDiffSection I (E →L[ℝ] E) ∞
       (fun x : M => TangentSpace I x →L[ℝ] TangentSpace I x)) :
     ContMDiffSection I (E →L[ℝ] E) ∞
@@ -235,6 +239,7 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [Boundary
       (fun x : M => TangentSpace I x →L[ℝ] TangentSpace I x)) (x : M) :
     (endoCompField (I := I) (M := M) A B x) = (A x).comp (B x) := rfl
 
+set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [SigmaCompactSpace M] in
 theorem endoCovariantDerivative_comp
@@ -801,9 +806,11 @@ theorem covGrad_inverseMetricDifferenceSlotCoefficient_eq_operatorFieldCompositi
 
 open DifferentialGeometry.TensorMultilinear
 
+omit [I.Boundaryless] [SigmaCompactSpace M] in
+set_option backward.isDefEq.respectTransparency false in
 omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-omit [I.Boundaryless] [SigmaCompactSpace M] in
+omit [SigmaCompactSpace M] in
 theorem endoCov_gInvDiffRaisedField_fibrewise
     (g₀ g₁ : SmoothRiemannianMetric I M) (x : M)
     (v0 w : TangentSpace I x) :
@@ -820,7 +827,6 @@ theorem endoCov_gInvDiffRaisedField_fibrewise
   have hk := covGrad_inverseMetricDifferenceSlotCoefficient_endoCov_apply (I := I) (M := M) g₀ g₁ Y x v0
   rw [hYx] at hk
   exact hk
-
 
 end Sobolev
 end Analysis

@@ -77,6 +77,7 @@ lemma phiDtPair_covGrad_zero (g₀ : SmoothRiemannianMetric I M) :
 def pairTraceKernelSlotPerm : Equiv.Perm (Fin 6) :=
   CurvatureCoefficientDifferenceJetTower.sigmaE0
 
+set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
     [SigmaCompactSpace M] in
 lemma slotExtendIter_two_toModel (g₀ : SmoothRiemannianMetric I M)
@@ -91,6 +92,7 @@ lemma slotExtendIter_two_toModel (g₀ : SmoothRiemannianMetric I M)
   CurvatureCoefficientDifferenceJetTower.slotExtendIter_two_toModel
     (I := I) (M := M) g₀ X x D u
 
+set_option backward.isDefEq.respectTransparency false in
 omit [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
 theorem mixedCoeff_backgroundDifference_eq_pairTrace

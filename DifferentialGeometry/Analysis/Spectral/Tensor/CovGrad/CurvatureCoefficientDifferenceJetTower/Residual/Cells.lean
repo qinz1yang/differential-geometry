@@ -24,7 +24,7 @@ import Mathlib.Analysis.MeanInequalities
 import Mathlib.Data.Fin.Tuple.NatAntidiagonal
 
 noncomputable section
-
+set_option backward.isDefEq.respectTransparency false
 
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Spectral
@@ -65,8 +65,6 @@ end CurvatureCoefficientDifferenceJetTower
 open CurvatureCoefficientDifferenceJetTower
 
 section TopOrderSeparatedResidualIntegrator
-
-
 
 namespace CurvatureCoefficientDifferenceJetTower
 

@@ -1,3 +1,4 @@
+import Mathlib.Analysis.Calculus.ContDiff.RCLike
 import Mathlib.Geometry.Manifold.IntegralCurve.UniformTime
 import Mathlib.Geometry.Manifold.VectorBundle.ContMDiffSection
 import DifferentialGeometry.Analysis.ODE.Flow.IntegralCurveTransport
@@ -254,15 +255,14 @@ private lemma contMDiffAt_globalFlow_step [I.Boundaryless] [IsManifold I ∞ M] 
       exact hagree (curveAt v hcomplete x s) hx σ hσmem)
   exact hcomp.congr_of_eventuallyEq heqev
 
-theorem contMDiffAt_globalFlow_of_compactSupport_nonneg [FiniteDimensional ℝ E]
+private theorem contMDiffAt_curveAt_slice_nonneg [FiniteDimensional ℝ E]
     [CompleteSpace E] [I.Boundaryless] [IsManifold I ∞ M] [T2Space M]
     (v : (x : M) → TangentSpace I x)
     (hv : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞
       (fun x : M => (⟨x, v x⟩ : TangentBundle I M)))
-    (hsupp : IsCompact (tsupport v)) {t₀ : ℝ} (ht₀ : 0 ≤ t₀) (x₀ : M) :
+    (hcomplete : ∀ x : M, ∃ γ : ℝ → M, γ 0 = x ∧ IsMIntegralCurve γ v) {t₀ : ℝ} (ht₀ : 0 ≤ t₀) (x₀ : M) :
     ContMDiffAt I I ∞
-      (fun x : M => curveAt v (exists_globalIntegralCurve_of_compactSupport v hv hsupp) x t₀) x₀ := by
-  let hcomplete := exists_globalIntegralCurve_of_compactSupport v hv hsupp
+      (fun x : M => curveAt v hcomplete x t₀) x₀ := by
   let γ : ℝ → M := curveAt v hcomplete x₀
   let K : Set M := γ '' Set.Icc (0 : ℝ) t₀
   have hK : IsCompact K := by
@@ -353,64 +353,30 @@ theorem contMDiffAt_globalFlow_of_compactSupport_nonneg [FiniteDimensional ℝ E
   have hPn : hP n := hPle n (Nat.zero_le n)
   simpa [hP, hsn] using hPn
 
-theorem contMDiffAt_globalFlow_of_compactSupport [FiniteDimensional ℝ E] [CompleteSpace E]
+private theorem contMDiffAt_curveAt_slice [FiniteDimensional ℝ E] [CompleteSpace E]
     [I.Boundaryless] [IsManifold I ∞ M] [T2Space M]
     (v : (x : M) → TangentSpace I x)
-    (hv : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞
-      (fun x : M => (⟨x, v x⟩ : TangentBundle I M)))
-    (hsupp : IsCompact (tsupport v)) (t₀ : ℝ) (x₀ : M) :
-    ContMDiffAt I I ∞
-      (fun x : M => curveAt v (exists_globalIntegralCurve_of_compactSupport v hv hsupp) x t₀) x₀ := by
+    (hv : CMDiff ∞ (fun x : M => (⟨x, v x⟩ : TangentBundle I M)))
+    (hcomplete : ∀ x : M, ∃ γ : ℝ → M, γ 0 = x ∧ IsMIntegralCurve γ v)
+    (t₀ : ℝ) (x₀ : M) :
+    ContMDiffAt I I ∞ (fun x => curveAt v hcomplete x t₀) x₀ := by
   by_cases ht₀ : 0 ≤ t₀
-  · exact contMDiffAt_globalFlow_of_compactSupport_nonneg v hv hsupp ht₀ x₀
-  · have hneg : 0 ≤ -t₀ := by linarith
-    have hvneg : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞
-        (fun x : M => (⟨x, -v x⟩ : TangentBundle I M)) :=
-      ContMDiff.neg_section hv
-    have hsuppneg : IsCompact (tsupport (-v)) := by
-      have hsupp_eq : Function.support (-v) = Function.support v := by
-        ext x
-        simp only [Function.support, Pi.neg_apply]
-        exact Iff.not (neg_eq_zero (a := v x))
-      have hts : tsupport (-v) = tsupport v := by
-        dsimp [tsupport]
-        rw [hsupp_eq]
-      rwa [hts]
-    have hnonneg := contMDiffAt_globalFlow_of_compactSupport_nonneg (-v) hvneg hsuppneg hneg x₀
-    have hrefl : ∀ x : M, ∀ t : ℝ,
-        curveAt v (exists_globalIntegralCurve_of_compactSupport v hv hsupp) x t =
-          curveAt (-v) (exists_globalIntegralCurve_of_compactSupport (-v) hvneg hsuppneg) x (-t) := by
-      intro x t
-      have hcomplete := exists_globalIntegralCurve_of_compactSupport v hv hsupp
-      have hcomplete' := exists_globalIntegralCurve_of_compactSupport (-v) hvneg hsuppneg
-      have hvneg1 : CMDiff 1 (fun x : M => (⟨x, -v x⟩ : TangentBundle I M)) :=
-        hvneg.of_le (by norm_num : (1 : WithTop ℕ∞) ≤ ∞)
-      have hγ : IsMIntegralCurve (curveAt v hcomplete x) v :=
-        curveAt_integralCurve v hcomplete x
-      have hrev : IsMIntegralCurve (fun s : ℝ => curveAt v hcomplete x (-s)) (-v) := by
-        have hc := IsMIntegralCurve.comp_mul hγ (-1)
-        have hcurve : (curveAt v hcomplete x ∘ fun s : ℝ => s * (-1)) =
-            fun s : ℝ => curveAt v hcomplete x (-s) := by
-          funext s
-          exact congrArg (curveAt v hcomplete x) (mul_neg_one s)
-        have hfield : (-1 : ℝ) • v = -v := by
-          funext y
-          exact neg_one_smul ℝ (v y)
-        rw [hcurve, hfield] at hc
-        exact hc
-      have h0 : curveAt v hcomplete x (-0) = curveAt (-v) hcomplete' x 0 := by
-        simp [curveAt_zero v hcomplete x, curveAt_zero (-v) hcomplete' x]
-      have hEq := integralCurve_eq_of_agree (t₀ := 0) (-v) hvneg1 hrev
-        (curveAt_integralCurve (-v) hcomplete' x) h0
-      have hh := congrFun hEq (-t)
-      simpa [neg_neg] using hh
-    have hcongr : (fun x : M => curveAt v
-        (exists_globalIntegralCurve_of_compactSupport v hv hsupp) x t₀) =ᶠ[𝓝 x₀]
-        (fun x : M => curveAt (-v)
-          (exists_globalIntegralCurve_of_compactSupport (-v) hvneg hsuppneg) x (-t₀)) := by
-      exact Filter.Eventually.of_forall (fun x => by
-        exact hrefl x t₀)
-    exact hnonneg.congr_of_eventuallyEq hcongr
+  · exact contMDiffAt_curveAt_slice_nonneg v hv hcomplete ht₀ x₀
+  · have hvneg : CMDiff ∞ (fun x : M => (⟨x, -v x⟩ : TangentBundle I M)) :=
+      hv.neg_section
+    have hrev : ∀ x : M, IsMIntegralCurve (fun t => curveAt v hcomplete x (-t)) (-v) := by
+      intro x
+      simpa only [Function.comp_def, mul_neg_one, neg_one_smul] using
+        (curveAt_integralCurve v hcomplete x).comp_mul (-1)
+    let hn : ∀ x : M, ∃ γ : ℝ → M, γ 0 = x ∧ IsMIntegralCurve γ (-v) :=
+      fun x => ⟨fun t => curveAt v hcomplete x (-t), by simp [curveAt_zero], hrev x⟩
+    have heq : ∀ x : M, curveAt (-v) hn x = fun t => curveAt v hcomplete x (-t) := by
+      intro x
+      exact integralCurve_eq_of_agree (t₀ := 0) (-v) (hvneg.of_le (by simp))
+        (curveAt_integralCurve (-v) hn x) (hrev x) (by simp [curveAt_zero])
+    have h := contMDiffAt_curveAt_slice_nonneg (-v) hvneg hn (neg_nonneg.mpr (le_of_not_ge ht₀)) x₀
+    apply h.congr_of_eventuallyEq
+    exact Filter.Eventually.of_forall fun x => by simpa using (congrFun (heq x) (-t₀)).symm
 
 private theorem continuousAt_globalFlow_of_compactSupport_nonneg [FiniteDimensional ℝ E]
     [CompleteSpace E] [I.Boundaryless] [IsManifold I ∞ M] [T2Space M]
@@ -480,7 +446,7 @@ private theorem continuousAt_globalFlow_of_compactSupport_nonneg [FiniteDimensio
         exact (hΨinitial p hp).symm)
     exact heq hτ
   have hcont_s : ContinuousAt (fun x : M => curveAt v hcomplete x s) x₀ :=
-    (contMDiffAt_globalFlow_of_compactSupport v hv hsupp s x₀).continuousAt
+    (contMDiffAt_curveAt_slice v hv hcomplete s x₀).continuousAt
   have hmemU : {x : M | curveAt v hcomplete x s ∈ U} ∈ 𝓝 x₀ :=
     hcont_s.preimage_mem_nhds (hUopen.mem_nhds hyU)
   let η : ℝ := (ε - |t₀ - s|) / 2
@@ -547,142 +513,23 @@ private theorem continuousAt_globalFlow_of_compactSupport_nonneg [FiniteDimensio
     exact Filter.eventuallyEq_of_mem hVnhds (by intro p hp; exact (hVmain p.1 p.2 hp))
   exact hmain.congr_of_eventuallyEq heq
 
-theorem continuous_globalFlow_of_compactSupport [FiniteDimensional ℝ E] [CompleteSpace E]
+private theorem contMDiffAt_curveAt_of_slice [FiniteDimensional ℝ E] [CompleteSpace E]
     [I.Boundaryless] [IsManifold I ∞ M] [T2Space M]
     (v : (x : M) → TangentSpace I x)
-    (hv : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞
-      (fun x : M => (⟨x, v x⟩ : TangentBundle I M)))
-    (hsupp : IsCompact (tsupport v)) :
-    Continuous (fun p : ℝ × M =>
-      curveAt v (exists_globalIntegralCurve_of_compactSupport v hv hsupp) p.2 p.1) := by
-  rw [continuous_iff_continuousAt]
-  intro q
-  rcases q with ⟨t₀, x₀⟩
-  by_cases ht₀ : 0 ≤ t₀
-  · exact continuousAt_globalFlow_of_compactSupport_nonneg v hv hsupp ht₀ x₀
-  · have hneg : 0 ≤ -t₀ := by linarith
-    have hvneg : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞
-        (fun x : M => (⟨x, -v x⟩ : TangentBundle I M)) :=
-      ContMDiff.neg_section hv
-    have hsuppneg : IsCompact (tsupport (-v)) := by
-      have hsupp_eq : Function.support (-v) = Function.support v := by
-        ext x
-        simp only [Function.support, Pi.neg_apply]
-        exact Iff.not (neg_eq_zero (a := v x))
-      have hts : tsupport (-v) = tsupport v := by
-        dsimp [tsupport]
-        rw [hsupp_eq]
-      rwa [hts]
-    have hnonneg := continuousAt_globalFlow_of_compactSupport_nonneg (-v) hvneg hsuppneg hneg x₀
-    have hrefl : ∀ x : M, ∀ t : ℝ,
-        curveAt v (exists_globalIntegralCurve_of_compactSupport v hv hsupp) x t =
-          curveAt (-v) (exists_globalIntegralCurve_of_compactSupport (-v) hvneg hsuppneg) x (-t) := by
-      intro x t
-      have hcomplete := exists_globalIntegralCurve_of_compactSupport v hv hsupp
-      have hcomplete' := exists_globalIntegralCurve_of_compactSupport (-v) hvneg hsuppneg
-      have hvneg1 : CMDiff 1 (fun x : M => (⟨x, -v x⟩ : TangentBundle I M)) :=
-        hvneg.of_le (by norm_num : (1 : WithTop ℕ∞) ≤ ∞)
-      have hγ : IsMIntegralCurve (curveAt v hcomplete x) v :=
-        curveAt_integralCurve v hcomplete x
-      have hrev : IsMIntegralCurve (fun s : ℝ => curveAt v hcomplete x (-s)) (-v) := by
-        have hc := IsMIntegralCurve.comp_mul hγ (-1)
-        have hcurve : (curveAt v hcomplete x ∘ fun s : ℝ => s * (-1)) =
-            fun s : ℝ => curveAt v hcomplete x (-s) := by
-          funext s
-          exact congrArg (curveAt v hcomplete x) (mul_neg_one s)
-        have hfield : (-1 : ℝ) • v = -v := by
-          funext y
-          exact neg_one_smul ℝ (v y)
-        rw [hcurve, hfield] at hc
-        exact hc
-      have h0 : curveAt v hcomplete x (-0) = curveAt (-v) hcomplete' x 0 := by
-        simp [curveAt_zero v hcomplete x, curveAt_zero (-v) hcomplete' x]
-      have hEq := integralCurve_eq_of_agree (t₀ := 0) (-v) hvneg1 hrev
-        (curveAt_integralCurve (-v) hcomplete' x) h0
-      have hh := congrFun hEq (-t)
-      simpa [neg_neg] using hh
-    have hcongr : ContinuousAt (fun p : ℝ × M =>
-        curveAt v (exists_globalIntegralCurve_of_compactSupport v hv hsupp) p.2 p.1) (t₀, x₀) := by
-      have hstep : ContinuousAt (fun p : ℝ × M =>
-          curveAt (-v) (exists_globalIntegralCurve_of_compactSupport (-v) hvneg hsuppneg) p.2 (-p.1))
-          (t₀, x₀) := by
-        have hnegcont : ContinuousAt (fun p : ℝ × M => (-p.1, p.2)) (t₀, x₀) := by
-          have hf : ContinuousAt (fun p : ℝ × M => -p.1) (t₀, x₀) :=
-            (continuousAt_fst : ContinuousAt (fun p : ℝ × M => p.1) (t₀, x₀)).neg
-          exact hf.prodMk (continuousAt_snd : ContinuousAt (fun p : ℝ × M => p.2) (t₀, x₀))
-        have hnc : ContinuousAt (fun p : ℝ × M =>
-            curveAt (-v) (exists_globalIntegralCurve_of_compactSupport (-v) hvneg hsuppneg)
-              p.2 (-p.1)) (t₀, x₀) := by
-          have hcomp := ContinuousAt.comp (x := (t₀, x₀))
-            (f := fun p : ℝ × M => (-p.1, p.2))
-            (g := fun q : ℝ × M =>
-              curveAt (-v) (exists_globalIntegralCurve_of_compactSupport (-v) hvneg hsuppneg) q.2 q.1)
-            hnonneg hnegcont
-          simpa [Function.comp_def] using hcomp
-        exact hnc
-      have heq : (fun p : ℝ × M =>
-          curveAt v (exists_globalIntegralCurve_of_compactSupport v hv hsupp) p.2 p.1) =ᶠ[𝓝 (t₀, x₀)]
-          (fun p : ℝ × M =>
-            curveAt (-v) (exists_globalIntegralCurve_of_compactSupport (-v) hvneg hsuppneg) p.2 (-p.1)) := by
-        exact Filter.Eventually.of_forall (fun p => by
-          exact hrefl p.2 p.1)
-      exact hstep.congr_of_eventuallyEq heq
-    exact hcongr
-
-theorem contMDiffAt_globalFlow_joint_of_compactSupport_nonneg [FiniteDimensional ℝ E]
-    [CompleteSpace E] [I.Boundaryless] [IsManifold I ∞ M] [T2Space M]
-    (v : (x : M) → TangentSpace I x)
-    (hv : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞
-      (fun x : M => (⟨x, v x⟩ : TangentBundle I M)))
-    (hsupp : IsCompact (tsupport v)) {t₀ : ℝ} (ht₀ : 0 ≤ t₀) (x₀ : M) :
+    (hv : CMDiff ∞ (fun x : M => (⟨x, v x⟩ : TangentBundle I M)))
+    (hcomplete : ∀ x : M, ∃ γ : ℝ → M, γ 0 = x ∧ IsMIntegralCurve γ v)
+    (t₀ : ℝ) (x₀ : M)
+    (hslice : ContMDiffAt I I ∞ (fun x => curveAt v hcomplete x t₀) x₀) :
     ContMDiffAt (𝓘(ℝ, ℝ).prod I) I ∞
-      (fun p : ℝ × M =>
-        curveAt v (exists_globalIntegralCurve_of_compactSupport v hv hsupp) p.2 p.1) (t₀, x₀) := by
-  let hcomplete := exists_globalIntegralCurve_of_compactSupport v hv hsupp
-  let γ : ℝ → M := curveAt v hcomplete x₀
-  let K : Set M := γ '' Set.Icc (0 : ℝ) t₀
-  have hK : IsCompact K := by
-    exact (isCompact_Icc : IsCompact (Set.Icc (0 : ℝ) t₀)).image
-      (curveAt_integralCurve v hcomplete x₀).continuous
-  rcases exists_uniform_localFlow_on_compact v hv hK with ⟨ε, hε, hflow⟩
-  let δ : ℝ := ε / 2
-  have hδ : 0 < δ := by dsimp [δ]; positivity
-  rcases exists_nat_gt (t₀ / δ) with ⟨n, hn⟩
-  have hnpos : 0 < n := by
-    by_contra hn0
-    have hnle : n = 0 := Nat.eq_zero_of_not_pos hn0
-    have hncast : (n : ℝ) = 0 := by exact_mod_cast hnle
-    have hdiv : 0 ≤ t₀ / δ := div_nonneg ht₀ (le_of_lt hδ)
-    have hlt : t₀ / δ < 0 := by
-      rw [hncast] at hn
-      exact hn
-    linarith
-  let s : ℝ := min (((n - 1 : ℕ) : ℝ) * δ) t₀
-  have hs_mem : s ∈ Set.Icc (0 : ℝ) t₀ := by
-    dsimp [s]
-    constructor
-    · exact le_min (mul_nonneg (by positivity : (0 : ℝ) ≤ ((n - 1 : ℕ) : ℝ)) (le_of_lt hδ)) ht₀
-    · exact min_le_right _ _
-  have hts : |t₀ - s| < ε := by
-    dsimp [s]
-    by_cases h : t₀ ≤ ((n - 1 : ℕ) : ℝ) * δ
-    · rw [min_eq_right h]
-      simpa using hε
-    · have hlt : ((n - 1 : ℕ) : ℝ) * δ < t₀ := lt_of_not_ge h
-      rw [min_eq_left (le_of_lt hlt)]
-      have hcast : ((n - 1 : ℕ) : ℝ) = (n : ℝ) - 1 := by
-        cases n with
-        | zero => exact (False.elim (Nat.lt_irrefl 0 hnpos))
-        | succ n' =>
-            simp [Nat.cast_succ]
-      have hδε : δ < ε := by dsimp [δ]; linarith
-      have hnδ : t₀ < (n : ℝ) * δ := (div_lt_iff₀ hδ).mp hn
-      rw [abs_of_nonneg (sub_nonneg.mpr (le_of_lt hlt))]
-      nlinarith [hcast, hnδ, hδε]
-  have hγs : curveAt v hcomplete x₀ s ∈ K := by
-    dsimp [K, γ]
-    exact ⟨s, hs_mem, rfl⟩
-  rcases hflow (curveAt v hcomplete x₀ s) hγs with ⟨U, hyU, hUopen, Ψ, hΨinitial, hΨsm, hΨbare⟩
+      (fun p : ℝ × M => curveAt v hcomplete p.2 p.1) (t₀, x₀) := by
+  let s : ℝ := t₀
+  rcases exists_uniform_localFlow_on_compact v hv
+    (isCompact_singleton : IsCompact ({curveAt v hcomplete x₀ s} : Set M)) with
+    ⟨ε, hε, hflow⟩
+  have hγs : curveAt v hcomplete x₀ s ∈ ({curveAt v hcomplete x₀ s} : Set M) := rfl
+  have hts : |t₀ - s| < ε := by simpa only [s, sub_self, abs_zero] using hε
+  rcases hflow (curveAt v hcomplete x₀ s) hγs with
+    ⟨U, hyU, hUopen, Ψ, hΨinitial, hΨsm, hΨbare⟩
   have hv1 : CMDiff 1 (fun x : M => (⟨x, v x⟩ : TangentBundle I M)) :=
     hv.of_le (by norm_num : (1 : WithTop ℕ∞) ≤ ∞)
   have hσmem0 : (0 : ℝ) ∈ Ioo (-ε) ε := by constructor <;> linarith
@@ -698,7 +545,7 @@ theorem contMDiffAt_globalFlow_joint_of_compactSupport_nonneg [FiniteDimensional
         exact (hΨinitial p hp).symm)
     exact heq hτ
   have hcont_s : ContinuousAt (fun x : M => curveAt v hcomplete x s) x₀ :=
-    (contMDiffAt_globalFlow_of_compactSupport v hv hsupp s x₀).continuousAt
+    hslice.continuousAt
   have hmemU : {x : M | curveAt v hcomplete x s ∈ U} ∈ 𝓝 x₀ :=
     hcont_s.preimage_mem_nhds (hUopen.mem_nhds hyU)
   let η : ℝ := (ε - |t₀ - s|) / 2
@@ -746,7 +593,7 @@ theorem contMDiffAt_globalFlow_joint_of_compactSupport_nonneg [FiniteDimensional
       simpa [Function.comp_def] using hcomp
     have hsnd : ContMDiffAt (𝓘(ℝ, ℝ).prod I) I ∞
         (fun p : ℝ × M => curveAt v hcomplete p.2 s) (t₀, x₀) :=
-      (contMDiffAt_globalFlow_of_compactSupport v hv hsupp s x₀).comp (t₀, x₀)
+      hslice.comp (t₀, x₀)
         (contMDiffAt_snd (p := (t₀, x₀)))
     have hpair : ContMDiffAt (𝓘(ℝ, ℝ).prod I) ((𝓘(ℝ, ℝ).prod I)) ∞
         (fun p : ℝ × M => (p.1 - s, curveAt v hcomplete p.2 s)) (t₀, x₀) :=
@@ -768,6 +615,63 @@ theorem contMDiffAt_globalFlow_joint_of_compactSupport_nonneg [FiniteDimensional
     exact Filter.eventuallyEq_of_mem hVnhds (by intro p hp; exact (hVmain p.1 p.2 hp))
   exact hmain.congr_of_eventuallyEq heq
 
+theorem contMDiff_curveAt [FiniteDimensional ℝ E] [I.Boundaryless]
+    [IsManifold I ∞ M] [T2Space M]
+    (v : (x : M) → TangentSpace I x)
+    (hv : CMDiff ∞ (fun x : M => (⟨x, v x⟩ : TangentBundle I M)))
+    (hcomplete : ∀ x : M, ∃ γ : ℝ → M, γ 0 = x ∧ IsMIntegralCurve γ v) :
+    ContMDiff (𝓘(ℝ, ℝ).prod I) I ∞ (fun p : ℝ × M => curveAt v hcomplete p.2 p.1) := by
+  let : CompleteSpace E := FiniteDimensional.complete ℝ E
+  rintro ⟨t₀, x₀⟩
+  exact contMDiffAt_curveAt_of_slice v hv hcomplete t₀ x₀
+    (contMDiffAt_curveAt_slice v hv hcomplete t₀ x₀)
+
+theorem contMDiffAt_globalFlow_of_compactSupport_nonneg [FiniteDimensional ℝ E]
+    [CompleteSpace E] [I.Boundaryless] [IsManifold I ∞ M] [T2Space M]
+    (v : (x : M) → TangentSpace I x)
+    (hv : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞
+      (fun x : M => (⟨x, v x⟩ : TangentBundle I M)))
+    (hsupp : IsCompact (tsupport v)) {t₀ : ℝ} (ht₀ : 0 ≤ t₀) (x₀ : M) :
+    ContMDiffAt I I ∞
+      (fun x : M => curveAt v (exists_globalIntegralCurve_of_compactSupport v hv hsupp) x t₀) x₀ := by
+  exact contMDiffAt_curveAt_slice_nonneg v hv
+    (exists_globalIntegralCurve_of_compactSupport v hv hsupp) ht₀ x₀
+
+theorem contMDiffAt_globalFlow_of_compactSupport [FiniteDimensional ℝ E] [CompleteSpace E]
+    [I.Boundaryless] [IsManifold I ∞ M] [T2Space M]
+    (v : (x : M) → TangentSpace I x)
+    (hv : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞
+      (fun x : M => (⟨x, v x⟩ : TangentBundle I M)))
+    (hsupp : IsCompact (tsupport v)) (t₀ : ℝ) (x₀ : M) :
+    ContMDiffAt I I ∞
+      (fun x : M => curveAt v (exists_globalIntegralCurve_of_compactSupport v hv hsupp) x t₀) x₀ := by
+  exact contMDiffAt_curveAt_slice v hv
+    (exists_globalIntegralCurve_of_compactSupport v hv hsupp) t₀ x₀
+
+theorem continuous_globalFlow_of_compactSupport [FiniteDimensional ℝ E] [CompleteSpace E]
+    [I.Boundaryless] [IsManifold I ∞ M] [T2Space M]
+    (v : (x : M) → TangentSpace I x)
+    (hv : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞
+      (fun x : M => (⟨x, v x⟩ : TangentBundle I M)))
+    (hsupp : IsCompact (tsupport v)) :
+    Continuous (fun p : ℝ × M =>
+      curveAt v (exists_globalIntegralCurve_of_compactSupport v hv hsupp) p.2 p.1) := by
+  exact (contMDiff_curveAt v hv
+    (exists_globalIntegralCurve_of_compactSupport v hv hsupp)).continuous
+
+theorem contMDiffAt_globalFlow_joint_of_compactSupport_nonneg [FiniteDimensional ℝ E]
+    [CompleteSpace E] [I.Boundaryless] [IsManifold I ∞ M] [T2Space M]
+    (v : (x : M) → TangentSpace I x)
+    (hv : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞
+      (fun x : M => (⟨x, v x⟩ : TangentBundle I M)))
+    (hsupp : IsCompact (tsupport v)) {t₀ : ℝ} (ht₀ : 0 ≤ t₀) (x₀ : M) :
+    ContMDiffAt (𝓘(ℝ, ℝ).prod I) I ∞
+      (fun p : ℝ × M =>
+        curveAt v (exists_globalIntegralCurve_of_compactSupport v hv hsupp) p.2 p.1) (t₀, x₀) := by
+  exact contMDiffAt_curveAt_of_slice v hv
+    (exists_globalIntegralCurve_of_compactSupport v hv hsupp) t₀ x₀
+    (contMDiffAt_globalFlow_of_compactSupport_nonneg v hv hsupp ht₀ x₀)
+
 theorem contMDiffAt_globalFlow_joint_of_compactSupport [FiniteDimensional ℝ E] [CompleteSpace E]
     [I.Boundaryless] [IsManifold I ∞ M] [T2Space M]
     (v : (x : M) → TangentSpace I x)
@@ -777,74 +681,7 @@ theorem contMDiffAt_globalFlow_joint_of_compactSupport [FiniteDimensional ℝ E]
     ContMDiffAt (𝓘(ℝ, ℝ).prod I) I ∞
       (fun p : ℝ × M =>
         curveAt v (exists_globalIntegralCurve_of_compactSupport v hv hsupp) p.2 p.1) (t₀, x₀) := by
-  by_cases ht₀ : 0 ≤ t₀
-  · exact contMDiffAt_globalFlow_joint_of_compactSupport_nonneg v hv hsupp ht₀ x₀
-  · have hneg : 0 ≤ -t₀ := by linarith
-    have hvneg : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞
-        (fun x : M => (⟨x, -v x⟩ : TangentBundle I M)) :=
-      ContMDiff.neg_section hv
-    have hsuppneg : IsCompact (tsupport (-v)) := by
-      have hsupp_eq : Function.support (-v) = Function.support v := by
-        ext x
-        simp only [Function.support, Pi.neg_apply]
-        exact Iff.not (neg_eq_zero (a := v x))
-      have hts : tsupport (-v) = tsupport v := by
-        dsimp [tsupport]
-        rw [hsupp_eq]
-      rwa [hts]
-    have hnonneg := contMDiffAt_globalFlow_joint_of_compactSupport_nonneg (-v) hvneg hsuppneg hneg x₀
-    have hrefl : ∀ x : M, ∀ t : ℝ,
-        curveAt v (exists_globalIntegralCurve_of_compactSupport v hv hsupp) x t =
-          curveAt (-v) (exists_globalIntegralCurve_of_compactSupport (-v) hvneg hsuppneg) x (-t) := by
-      intro x t
-      have hcomplete := exists_globalIntegralCurve_of_compactSupport v hv hsupp
-      have hcomplete' := exists_globalIntegralCurve_of_compactSupport (-v) hvneg hsuppneg
-      have hvneg1 : CMDiff 1 (fun x : M => (⟨x, -v x⟩ : TangentBundle I M)) :=
-        hvneg.of_le (by norm_num : (1 : WithTop ℕ∞) ≤ ∞)
-      have hγ : IsMIntegralCurve (curveAt v hcomplete x) v :=
-        curveAt_integralCurve v hcomplete x
-      have hrev : IsMIntegralCurve (fun s : ℝ => curveAt v hcomplete x (-s)) (-v) := by
-        have hc := IsMIntegralCurve.comp_mul hγ (-1)
-        have hcurve : (curveAt v hcomplete x ∘ fun s : ℝ => s * (-1)) =
-            fun s : ℝ => curveAt v hcomplete x (-s) := by
-          funext s
-          exact congrArg (curveAt v hcomplete x) (mul_neg_one s)
-        have hfield : (-1 : ℝ) • v = -v := by
-          funext y
-          exact neg_one_smul ℝ (v y)
-        rw [hcurve, hfield] at hc
-        exact hc
-      have h0 : curveAt v hcomplete x (-0) = curveAt (-v) hcomplete' x 0 := by
-        simp [curveAt_zero v hcomplete x, curveAt_zero (-v) hcomplete' x]
-      have hEq := integralCurve_eq_of_agree (t₀ := 0) (-v) hvneg1 hrev
-        (curveAt_integralCurve (-v) hcomplete' x) h0
-      have hh := congrFun hEq (-t)
-      simpa [neg_neg] using hh
-    have hreparam : ContMDiffAt (𝓘(ℝ, ℝ).prod I) ((𝓘(ℝ, ℝ).prod I)) ∞
-        (fun p : ℝ × M => (-p.1, p.2)) (t₀, x₀) := by
-      have hnegfst : ContMDiffAt (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ, ℝ) ∞ (fun p : ℝ × M => -p.1) (t₀, x₀) := by
-        have hneg : ContDiffAt ℝ ∞ (fun z : ℝ => -z) t₀ := by
-          exact contDiff_id.neg.contDiffAt
-        have hneg' : ContMDiffAt 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) ∞ (fun z : ℝ => -z) t₀ :=
-          hneg.contMDiffAt
-        have hcomp := ContMDiffAt.comp (x := (t₀, x₀)) (M := ℝ × M) (M' := ℝ) (M'' := ℝ)
-          (I := 𝓘(ℝ, ℝ).prod I) (I' := 𝓘(ℝ, ℝ)) (I'' := 𝓘(ℝ, ℝ))
-          (f := Prod.fst) (g := fun z : ℝ => -z) hneg' (contMDiffAt_fst (p := (t₀, x₀)))
-        simpa [Function.comp_def] using hcomp
-      exact hnegfst.prodMk (contMDiffAt_snd (p := (t₀, x₀)))
-    have hstep : ContMDiffAt (𝓘(ℝ, ℝ).prod I) I ∞
-        (fun p : ℝ × M =>
-          curveAt (-v) (exists_globalIntegralCurve_of_compactSupport (-v) hvneg hsuppneg) p.2 (-p.1))
-        (t₀, x₀) := by
-      have hcomp := hnonneg.comp (t₀, x₀) hreparam
-      simpa [Function.comp_def] using hcomp
-    have heq : (fun p : ℝ × M =>
-        curveAt v (exists_globalIntegralCurve_of_compactSupport v hv hsupp) p.2 p.1) =ᶠ[𝓝 (t₀, x₀)]
-        (fun p : ℝ × M =>
-          curveAt (-v) (exists_globalIntegralCurve_of_compactSupport (-v) hvneg hsuppneg) p.2 (-p.1)) := by
-      exact Filter.Eventually.of_forall (fun p => by
-        exact hrefl p.2 p.1)
-    exact hstep.congr_of_eventuallyEq heq
+  exact contMDiff_curveAt v hv (exists_globalIntegralCurve_of_compactSupport v hv hsupp) (t₀, x₀)
 
 theorem contMDiff_globalFlow_joint_of_compactSupport [FiniteDimensional ℝ E] [CompleteSpace E]
     [I.Boundaryless] [IsManifold I ∞ M] [T2Space M]
@@ -855,9 +692,50 @@ theorem contMDiff_globalFlow_joint_of_compactSupport [FiniteDimensional ℝ E] [
     ContMDiff (𝓘(ℝ, ℝ).prod I) I ∞
       (fun p : ℝ × M =>
         curveAt v (exists_globalIntegralCurve_of_compactSupport v hv hsupp) p.2 p.1) := by
-  intro q
-  rcases q with ⟨t₀, x₀⟩
-  exact contMDiffAt_globalFlow_joint_of_compactSupport v hv hsupp t₀ x₀
+  exact contMDiff_curveAt v hv (exists_globalIntegralCurve_of_compactSupport v hv hsupp)
+
+theorem curveAt_eq_self_of_eq_zero [IsManifold I 1 M] [BoundarylessManifold I M]
+    [T2Space M] (v : (x : M) → TangentSpace I x)
+    (hv : CMDiff 1 (fun x : M => (⟨x, v x⟩ : TangentBundle I M)))
+    (hcomplete : ∀ x : M, ∃ γ : ℝ → M, γ 0 = x ∧ IsMIntegralCurve γ v)
+    {x : M} (hvx : v x = 0) (t : ℝ) : curveAt v hcomplete x t = x := by
+  exact congrFun (isMIntegralCurve_Ioo_eq_of_contMDiff_boundaryless (t₀ := 0) hv
+    (curveAt_integralCurve v hcomplete x) (isMIntegralCurve_const hvx)
+    (curveAt_zero v hcomplete x)) t
+
+theorem exists_globalIntegralCurve_of_hasCompactSupport_sub_const
+    [CompleteSpace E] (v : E → E) (hv : ContDiff ℝ 1 v) (c : E)
+    (hsupp : HasCompactSupport (fun x => v x - c)) (x : E) :
+    ∃ γ : ℝ → E, γ 0 = x ∧ IsMIntegralCurve (I := 𝓘(ℝ, E)) γ v := by
+  obtain ⟨K, hK⟩ := ContDiff.lipschitzWith_of_hasCompactSupport hsupp
+    (hv.sub contDiff_const) one_ne_zero
+  have hlip : LipschitzWith K v := by
+    refine LipschitzWith.of_dist_le_mul (fun a b => ?_)
+    simpa only [dist_sub_right] using hK.dist_le_mul a b
+  obtain ⟨B, hB⟩ := hsupp.exists_bound_of_continuous (hv.continuous.sub continuous_const)
+  have hB₀ : 0 ≤ B := (norm_nonneg (v 0 - c)).trans (hB 0)
+  let L : NNReal := ⟨B + ‖c‖, add_nonneg hB₀ (norm_nonneg c)⟩
+  have hb : ∀ y : E, ‖v y‖ ≤ L := by
+    intro y
+    calc
+      ‖v y‖ = ‖(v y - c) + c‖ := by rw [sub_add_cancel]
+      _ ≤ ‖v y - c‖ + ‖c‖ := norm_add_le _ _
+      _ ≤ (L : ℝ) := add_le_add (hB y) le_rfl
+  have hlocal : ∀ y : E, ∃ γ : ℝ → E, γ 0 = y ∧
+      IsMIntegralCurveOn (I := 𝓘(ℝ, E)) γ v (Set.Ioo (-1) 1) := by
+    intro y
+    let t₀ : Set.Icc (-1 : ℝ) 1 := ⟨0, by norm_num⟩
+    have hp : IsPicardLindelof (fun _ : ℝ => v) t₀ y (L + 1) 0 L K :=
+      IsPicardLindelof.of_time_independent (fun z _ => hb z)
+        hlip.lipschitzOnWith (by simp [t₀])
+    obtain ⟨γ, hγ₀, hγ⟩ := hp.exists_eq_forall_mem_Icc_hasDerivWithinAt₀
+    refine ⟨γ, hγ₀, ?_⟩
+    intro t ht
+    have hd : HasDerivAt γ (v (γ t)) t :=
+      (hγ t ⟨ht.1.le, ht.2.le⟩).hasDerivAt (Icc_mem_nhds ht.1 ht.2)
+    exact hd.hasFDerivAt.hasMFDerivAt.hasMFDerivWithinAt
+  exact exists_isMIntegralCurve_of_isMIntegralCurveOn (I := 𝓘(ℝ, E))
+    (contMDiff_vectorSpace_iff_contDiff.mpr hv) zero_lt_one hlocal x
 
 end DifferentialGeometry.Analysis.ODE
 

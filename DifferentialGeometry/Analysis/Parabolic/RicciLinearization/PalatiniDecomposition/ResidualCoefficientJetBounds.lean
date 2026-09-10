@@ -26,7 +26,7 @@ open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
-
+set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set Filter DifferentialGeometry.Tensor0SBundle MeasureTheory
 open scoped Manifold Topology ContDiff BigOperators
@@ -54,7 +54,6 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
   [T2Space M] [SigmaCompactSpace M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
-
 
 private lemma palatiniWindowOneThree_le (b : ℕ → ℝ) (hb : ∀ j, 0 ≤ b j) {B : ℝ}
     (hB1 : b 1 ≤ B) :
@@ -96,7 +95,6 @@ private lemma palatiniWindowOneThree_le (b : ℕ → ℝ) (hb : ∀ j, 0 ≤ b j
   rw [Combinatorics.boundedFactorGridWindow, Finset.sum_range_succ, Finset.sum_range_succ,
     Finset.sum_range_one, hgrid0, hgrid1, hgrid2]
   nlinarith only [hb 1, hB1, hB0, sq_nonneg (b 1 - B)]
-
 
 theorem exists_ricciOrderZeroAACommCoeffField_metricPerturbationPath_fiberNormSq_ballUniform
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
@@ -173,7 +171,6 @@ theorem exists_ricciOrderZeroAACommCoeffField_metricPerturbationPath_fiberNormSq
     (fun l => riemannianFiberNormSq_nonneg (I := I) (M := M) g₀ 0 (2 + l) x _)
     hb1
   exact le_trans h0 (mul_le_mul_of_nonneg_left hwin (hC_nn 0))
-
 
 theorem exists_ricciOrderZeroAACommCoeffField_metricPerturbationPath_l2JetWindow
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
@@ -291,7 +288,6 @@ private lemma palatiniBoundedFactorGridWindow_mono_of_le (b b' : ℕ → ℝ) (h
   refine Finset.sum_le_sum fun n _ => ?_
   refine Finset.sum_le_sum fun e _ => ?_
   exact Finset.prod_le_prod (fun m _ => hb (e m)) (fun m _ => hbb (e m))
-
 
 theorem exists_ricciOrderZeroBackgroundRCommCoeffField_metricPerturbationPath_backgroundDifference_l2JetWindow
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
@@ -991,7 +987,6 @@ private lemma sharpGradKoszulComposite_pointwise_boundedWindow (g₀ : SmoothRie
   rw [hrw]
   exact le_of_eq (by ring)
 
-
 theorem exists_ricciCovariantTermSharpGradKoszulResidualField_metricPerturbationPath_l2JetWindow
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
@@ -1647,7 +1642,6 @@ private theorem ricciContractionWeightComposite_pointwise_gridWindow (g₀ : Smo
   refine le_trans (mul_le_mul_of_nonneg_left (Finset.sum_le_sum hcell)
     (operatorFieldApplicationGdiag_nonneg (E := E) i)) ?_
   rw [← Finset.sum_mul, ← mul_assoc]
-
 
 theorem exists_ricciContractionRemainderField_metricPerturbationPath_l2JetWindow
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)

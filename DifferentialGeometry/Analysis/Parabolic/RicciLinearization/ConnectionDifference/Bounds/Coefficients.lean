@@ -16,7 +16,7 @@ open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
-
+set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set Filter DifferentialGeometry.Tensor0SBundle MeasureTheory intervalIntegral
 open scoped Manifold Topology ContDiff BigOperators Matrix Interval
@@ -116,6 +116,7 @@ private theorem fiberNormSqComponent_cometricTraced_eq
 attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
   Tensor0SBundle.tensorRSSpaceNormedSpace in
 omit [SigmaCompactSpace M] in
+set_option backward.isDefEq.respectTransparency true in
 private theorem exists_uniformBound_riemannianFiberNormSq_linearizedRicciConnectionDifferenceFib_of_jetEnvelope
     (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀ : δ₀ < 1) (B : ℝ) (hB : 0 ≤ B) :
     ∃ C : ℝ, 0 ≤ C ∧
@@ -443,6 +444,7 @@ private theorem exists_uniformBound_riemannianFiberNormSq_linearizedRicciConnect
 
 attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
   Tensor0SBundle.tensorRSSpaceNormedSpace in
+set_option backward.isDefEq.respectTransparency true in
 theorem exists_uniformBound_sqrt_riemannianFiberNormSq_linRicciConnectionDifferenceCoeff_of_jetEnvelope
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
@@ -513,6 +515,7 @@ theorem exists_uniformBound_sqrt_riemannianFiberNormSq_linRicciConnectionDiffere
 attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
   Tensor0SBundle.tensorRSSpaceNormedSpace in
 omit [SigmaCompactSpace M] in
+set_option backward.isDefEq.respectTransparency true in
 theorem ricci_coeff_riemannianFiberNormSq_le
     (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀ : δ₀ < 1) (B : ℝ) (hB : 0 ≤ B) :
     ∃ C : ℝ, 0 ≤ C ∧
@@ -537,7 +540,6 @@ theorem ricci_coeff_riemannianFiberNormSq_le
   exact
     exists_uniformBound_riemannianFiberNormSq_linearizedRicciConnectionDifferenceFib_of_jetEnvelope
       (I := I) (M := M) g₀ hδ₀ B hB
-
 
 end UniformBound
 

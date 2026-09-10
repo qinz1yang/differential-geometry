@@ -3,7 +3,7 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.LieC
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.RicciDeTurck.SectionDifference.ConnectionBicontraction
 
 noncomputable section
-
+set_option backward.isDefEq.respectTransparency false
 
 open Set Bundle Manifold DifferentialGeometry.Tensor0SBundle
 open DifferentialGeometry.Analysis.Spectral

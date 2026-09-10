@@ -6,7 +6,7 @@ open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
-
+set_option backward.isDefEq.respectTransparency false
 
 open MeasureTheory Set Filter Topology Bundle Manifold DifferentialGeometry.Tensor0SBundle
     ContinuousLinearMap
@@ -516,6 +516,7 @@ private theorem connectionDifference_background_sqrt_le
     _ = (CaB + Cc) * (Real.sqrt (g₀.inner x u u) * Real.sqrt (g₀.inner x v v)) := by
         ring
 
+set_option backward.isDefEq.respectTransparency true in
 noncomputable def tensorRSRiemannianNorm
     (g₀ : SmoothRiemannianMetric I M) (r s : ℕ) (x : M)
     (W : TensorRSSpace r s I x) : ℝ :=
@@ -531,6 +532,7 @@ noncomputable def tensorRSRiemannianNorm
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
   [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+set_option backward.isDefEq.respectTransparency true in
 private theorem tensorRSRiemannianNorm_nonneg
     (g₀ : SmoothRiemannianMetric I M) (r s : ℕ) (x : M)
     (W : TensorRSSpace r s I x) :
@@ -546,8 +548,8 @@ private theorem tensorRSRiemannianNorm_nonneg
   change 0 ≤ ‖W‖
   exact norm_nonneg W
 
-omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 omit [CompactSpace M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 private theorem firstCovGrad_fiberNorm_le_pointwiseC2Sum
     (g₀ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
     (x : M) {B : ℝ}
@@ -635,7 +637,6 @@ theorem deTurckLieConnectionDifferenceDerivCoeffField_fiberNormSq_le_of_scalar_b
     hquad hbg hconn_g1 hconn_gbg hpinch
   exact deTurckLieConnectionDifferenceDerivCoeffField_fiberNormSq_le_of_kernel_bound
     g₀ g₁ g_bg P htie hδP_lt1 hδP_bound x κ CK hκ_nn hCK_nn hpinch hkernel
-
 
 end DifferentialGeometry.Analysis.Sobolev
 

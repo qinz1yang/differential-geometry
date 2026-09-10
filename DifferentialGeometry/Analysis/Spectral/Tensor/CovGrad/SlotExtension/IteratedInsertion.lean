@@ -5,7 +5,7 @@ open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
-
+set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff InnerProductSpace
@@ -41,7 +41,6 @@ private local instance slotIterTensorRSFiberBundle (r s : ℕ) :
     FiberBundle (TensorRSModel r s ℝ E) (fun x : M => TensorRSSpace r s I x) :=
   Tensor0SBundle.tensorRSBundleFiber r s
 
-
 omit [CompleteSpace E] in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
     [SigmaCompactSpace M] in
@@ -74,7 +73,6 @@ theorem slotExtIter_apply (g : SmoothRiemannianMetric I M) (s w : ℕ)
       rw [slotExtendFib_apply_eval (I := I) (M := M) ((s + 1) + w) ((s + 1) + w),
         slotExtendFib_apply_eval (I := I) (M := M) ((s + 1) + w) ((s + 1) + w)]
       rw [ih]
-
 
 omit [CompleteSpace E] in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]

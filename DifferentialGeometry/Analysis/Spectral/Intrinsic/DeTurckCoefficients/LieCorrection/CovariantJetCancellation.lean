@@ -5,7 +5,7 @@ open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Spectral
 
 noncomputable section
-
+set_option backward.isDefEq.respectTransparency false
 
 open Set Bundle Manifold DifferentialGeometry.Tensor0SBundle ContinuousLinearMap
 open scoped Topology Manifold BigOperators ContDiff

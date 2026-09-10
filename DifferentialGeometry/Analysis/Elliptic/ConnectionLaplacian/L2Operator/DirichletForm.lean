@@ -2,7 +2,7 @@ import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.L2Operator.Unb
 open DifferentialGeometry.Analysis.Elliptic
 
 noncomputable section
-
+set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators Matrix
@@ -16,7 +16,6 @@ namespace ConnectionLaplacian
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
 
-
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
@@ -28,7 +27,6 @@ private local instance : BorelSpace E := ⟨rfl⟩
 private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
-
 def dirichletForm (g : SmoothRiemannianMetric I M) (r s : ℕ) :
     SmoothCcTensor g r s → SmoothCcTensor g r s → ℝ :=
   fun T S => - (@inner ℝ _ _
@@ -36,7 +34,6 @@ def dirichletForm (g : SmoothRiemannianMetric I M) (r s : ℕ) :
         ⟨SmoothCcTensor.toL2 (g := g) (r := r) (s := s) T,
           toL2_mem_connLaplacianL2_domain (I := I) g r s T⟩)
       (SmoothCcTensor.toL2 (g := g) (r := r) (s := s) S))
-
 
 omit [CompactSpace M] in
 theorem dirichletForm_eq_neg_inner_laplacian

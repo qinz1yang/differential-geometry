@@ -9,6 +9,7 @@ set_option autoImplicit false
 set_option relaxedAutoImplicit false
 
 noncomputable section
+set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set Filter DifferentialGeometry.Tensor0SBundle MeasureTheory
 open scoped Manifold Topology ContDiff BigOperators

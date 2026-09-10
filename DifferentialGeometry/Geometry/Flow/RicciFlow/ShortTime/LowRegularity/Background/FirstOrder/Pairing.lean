@@ -5,7 +5,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Acti
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.RicciDeTurckPairing.RemainderDifferenceBounds
 
 noncomputable section
-
+set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
@@ -290,7 +290,6 @@ private theorem zeroOrderBackgroundCoefficient_sub
           g gB T U hδ_lt hδT hδU hδZ := by
       rw [hsame, hbg]
 
-
 theorem bg0_pair_h1
     (hDim : Module.finrank ℝ E = 3)
     (g gB : SmoothRiemannianMetric I M) :
@@ -473,7 +472,6 @@ theorem bg0_pair_h1
       intro s hs
       simpa only [covariantJetNormSq, Nat.reduceAdd] using hpoint s hs)
   simpa only [covariantJetNormSq, bg0PairInt, Φ, S, B, Nat.reduceAdd] using hpath
-
 
 theorem bg0_pair_h2
     (hDim : Module.finrank ℝ E = 3)
@@ -702,7 +700,6 @@ theorem bg0_pair_h2
       simpa only [covariantJetNormSq, Nat.reduceAdd] using hpoint s hs)
   simpa only [covariantJetNormSq, bg0PairInt, Φ, S, B, Nat.reduceAdd] using hpath
 
-
 theorem zeroOrderBackgroundCoefficient_pairing_h1_bound
     (hDim : Module.finrank ℝ E = 3)
     (g gB : SmoothRiemannianMetric I M) :
@@ -762,7 +759,6 @@ theorem zeroOrderBackgroundCoefficient_pairing_h1_bound
     (lt_of_le_of_lt hδ_le (by norm_num)) hδT hδU hδZ]
   exact (covariantJetNormSq_add_le (I := I) (M := M) g 1 _ _).trans
     (mul_le_mul_of_nonneg_left (add_le_add hc0 hb0) (by norm_num))
-
 
 theorem zeroOrderBackgroundCoefficient_pairing_h2_bound
     (hDim : Module.finrank ℝ E = 3)
@@ -933,7 +929,6 @@ private theorem firstOrderBackgroundCoefficient_sub
     ContMDiffSection.coe_sub, Pi.sub_apply, TensorRSSpace.toModel_sub]
   rw [intervalIntegral.integral_sub hTint hUint]
 
-
 theorem ricciDeTurckRemainderFirstOrderCoefficient_background_pairing_h2_bound
     (hDim : Module.finrank ℝ E = 3)
     (g gB : SmoothRiemannianMetric I M) :
@@ -1053,6 +1048,7 @@ theorem ricciDeTurckRemainderFirstOrderCoefficient_background_pairing_h2_bound
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
     [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 private theorem rhs1_bg_sub
     (g gB : SmoothRiemannianMetric I M)
     (T U : SmoothCcTensor g 0 2)
@@ -1078,7 +1074,6 @@ private theorem rhs1_bg_sub
             (metricPerturbationPath (I := I) g U 0 hδU hδZ s) gB) := by
   simp only [ricciDeTurckRemainderFirstOrderCoefficient, smul_sub]
   abel
-
 
 theorem firstOrderBackgroundCoefficient_pairing_h2_bound
     (hDim : Module.finrank ℝ E = 3)
@@ -1278,7 +1273,6 @@ theorem firstOrderBackgroundCoefficient_pairing_h2_bound
   simpa only [covariantJetNormSq, firstOrderBackgroundCoefficientDifference, Φ, S, N, B, Nat.reduceAdd,
     hδ_lt] using hpath
 
-
 theorem firstOrderActionSecondToFirstOrder_background_pairing_bound
     (hDim : Module.finrank ℝ E = 3)
     (g gB : SmoothRiemannianMetric I M) :
@@ -1410,7 +1404,6 @@ theorem firstOrderActionSecondToFirstOrder_background_pairing_bound
     exact hm.trans (pow_le_pow_left₀ hactual0 hactual_le 2)
   have hpair := hop AT AU R0 R1 hR0 hR1 hj0 hj1
   simpa only [AT, AU, R0, E0, R1] using hpair
-
 
 theorem firstOrderActionThirdToSecondOrder_self_pairing_bound
     (hDim : Module.finrank ℝ E = 3)
@@ -1544,7 +1537,6 @@ theorem firstOrderActionThirdToSecondOrder_self_pairing_bound
         exact (Real.sq_sqrt hQ).symm
   have hpair := (hop AT AU Rt hRt hcoeff).1
   simpa only [AT, AU, Rt, Q, R0, R1] using hpair
-
 
 theorem firstOrderActionThirdToSecondOrder_background_pairing_bound
     (hDim : Module.finrank ℝ E = 3)

@@ -12,7 +12,7 @@ open DifferentialGeometry.Geometry.Connection.Realization
 open DifferentialGeometry.Geometry.Operator
 
 noncomputable section
-
+set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
@@ -47,8 +47,6 @@ end CurvatureCoefficientDifferenceJetTower
 open CurvatureCoefficientDifferenceJetTower
 
 section TopOrderSeparatedResidualIntegrator
-
-
 
 omit [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
 theorem riemannianFiberNormSq_ccTensor02Symm_zero_le_fibreSmall

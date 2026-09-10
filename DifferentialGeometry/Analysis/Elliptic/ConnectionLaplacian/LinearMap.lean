@@ -4,7 +4,7 @@ open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
-
+set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set IsManifold ContinuousLinearMap Filter
 open scoped Manifold Topology Bundle ContDiff BigOperators ENNReal NNReal
@@ -102,7 +102,6 @@ noncomputable def rawConnLapLin
       rfl
     rw [hLHS, hsmul_section, hRHS]
     exact hsmul
-
 
 omit [CompactSpace M] [I.Boundaryless] [SigmaCompactSpace M] in
 @[simp] theorem rawConnLapLin_apply

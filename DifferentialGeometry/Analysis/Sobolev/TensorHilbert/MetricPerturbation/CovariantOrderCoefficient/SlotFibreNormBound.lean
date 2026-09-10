@@ -16,7 +16,6 @@ open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
-
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
 
@@ -300,6 +299,7 @@ private lemma sum_compSq_termSlotFib_eq_normSq
   rw [Finset.sum_congr rfl (fun m _ => hinner m)]
   exact hpars w
 
+set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
 theorem riemannianFiberNormSq_bilinearSlotInsertCLM_le
@@ -402,6 +402,7 @@ private lemma riemannianFiberNormSq_termSlotFib_eq_sum_normSq_frame
   congr 1
   rw [Fintype.sum_prod_type]
 
+set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
 theorem riemannianFiberNormSq_termSlotFib_spectator_eq
@@ -423,6 +424,7 @@ theorem riemannianFiberNormSq_termSlotFib_spectator_eq
   rw [pow_zero, one_mul]
   rw [show ((Module.finrank ℝ E : ℝ)) ^ s = (n : ℝ) ^ s from by rw [hnE]]
 
+set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [SigmaCompactSpace M] in
 theorem termSlotFib_contMDiff (s : ℕ)

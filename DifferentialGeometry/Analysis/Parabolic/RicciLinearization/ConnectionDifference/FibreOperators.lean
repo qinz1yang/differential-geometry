@@ -5,9 +5,8 @@ import DifferentialGeometry.Geometry.Metric.DeTurck.ConnectionDifference.Identit
 import DifferentialGeometry.Tensor.Multilinear.Bundle.ModelProduct
 open DifferentialGeometry.Geometry.Curvature
 
-
 noncomputable section
-
+set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set Filter DifferentialGeometry.Tensor0SBundle MeasureTheory intervalIntegral
 open scoped Manifold Topology ContDiff BigOperators Matrix Interval
@@ -94,7 +93,6 @@ noncomputable def slotPermCLM {d : ℕ} (ρ : Equiv.Perm (Fin d)) (x : M) :
           ρ).toContinuousLinearEquiv.toContinuousLinearMap).comp
       (Tensor0SBundle.tensor0SSpaceContinuousLinearEquiv (I := I) d x).toContinuousLinearMap)
 
-
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
     [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
 theorem slotPermCLM_apply {d : ℕ} (ρ : Equiv.Perm (Fin d)) (x : M)
@@ -116,7 +114,6 @@ noncomputable def tensorProdWithCLM (m k : ℕ) (x : M)
     ((Bundle.continuousMultilinearMap.modelProductL (𝕜 := ℝ) (F := E) m k
         (Tensor0SBundle.Tensor0SSpace.toModel P)).comp
       (Tensor0SBundle.tensor0SSpaceContinuousLinearEquiv (I := I) k x).toContinuousLinearMap)
-
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
@@ -175,7 +172,6 @@ noncomputable def tensorProdPairCLM (m k : ℕ) (x : M) :
         exact map_smul
           ((Tensor0SBundle.tensor0SSpaceContinuousLinearEquiv (I := I) (m + k) x).symm) c _ }
 
-
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
 @[simp] theorem tensorProdPairCLM_apply (m k : ℕ) (x : M)
@@ -206,10 +202,10 @@ noncomputable def connContrCLM (m k : ℕ) (x : M)
                 Tensor0SBundle.Tensor0SSpace (k + 1) I x from B)
         map_add' := fun D₁ D₂ => by
           simp only [← tensorProdPairCLM_apply]
-          rw [map_add, ContinuousLinearMap.add_comp]
+          rw [ContinuousLinearMap.map_add, ContinuousLinearMap.add_comp]
         map_smul' := fun c D => by
           simp only [← tensorProdPairCLM_apply, RingHom.id_apply]
-          rw [map_smul, ContinuousLinearMap.smul_comp] })
+          rw [ContinuousLinearMap.map_smul, ContinuousLinearMap.smul_comp] })
 
 noncomputable def linearizedRicciConnectionDifferenceOrder1CLM (x : M)
     (A : Tensor0SBundle.TensorRSSpace 1 2 I x) :

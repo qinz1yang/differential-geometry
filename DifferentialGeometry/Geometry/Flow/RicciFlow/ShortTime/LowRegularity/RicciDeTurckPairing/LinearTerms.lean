@@ -10,7 +10,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Coef
 section
 
 noncomputable section
-
+set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold DifferentialGeometry.Tensor0SBundle
 open scoped BigOperators Manifold ContDiff
@@ -973,7 +973,6 @@ section
 
 noncomputable section
 
-
 open Bundle Manifold DifferentialGeometry.Tensor0SBundle
 open scoped BigOperators Manifold ContDiff
 
@@ -1105,7 +1104,6 @@ theorem exists_connectionDifferenceMetricLoweredTensor_covariantJetNormSq_differ
       R A D2 D3 hR hA hD2 hD3 hT2 hU2 hT3 hTU2 hTU3 =>
       hpair gT gU T U hT hU hTtie hUtie hδ_le hδ0 hδT hδU hδZ
         R A D2 D3 hR hA hD2 hD3 hT2 hU2 hT3 hTU2 hTU3⟩
-
 
 theorem exists_bilinearSlotInsertionCoefficient_connectionDifferenceEndomorphism_covariantJetNormSq_bound
     (hDim : Module.finrank ℝ E = 3)
@@ -1255,8 +1253,9 @@ theorem exists_bilinearSlotInsertionCoefficient_connectionDifferenceEndomorphism
         (Module.finrank ℝ E : ℝ) * B1 R * D2 +
         (Module.finrank ℝ E : ℝ) * B1 R * A * D2) ^ 2 := by ring
 
-omit [NeZero (Module.finrank ℝ E)] in
 omit [I.Boundaryless] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
+omit [I.Boundaryless] in
 theorem riemannCurvatureCoefficientField_sub
     (g : SmoothRiemannianMetric I M) (T U : SmoothCcTensor g 0 2) :
     riemannCurvatureCoefficientField (I := I) (M := M) g T - riemannCurvatureCoefficientField (I := I) (M := M) g U =
@@ -1371,8 +1370,9 @@ theorem exists_connectionDifferenceQuadraticCurvatureTerm_covariantJetNormSq_bou
   refine (covariantJetNormSq_connectionDifferenceQuadraticCurvatureTerm_decomposition_le (I := I) (M := M) g _ _ hQB hQA).trans (le_of_eq ?_)
   ring
 
-omit [NeZero (Module.finrank ℝ E)] in
 omit [I.Boundaryless] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
+omit [I.Boundaryless] in
 theorem connectionDifferenceQuadraticPairedTensor_sub
     (g gT gU : SmoothRiemannianMetric I M) :
     connectionDifferenceQuadraticPairedTensor (I := I) (M := M) g gT - connectionDifferenceQuadraticPairedTensor (I := I) (M := M) g gU =
@@ -1392,8 +1392,9 @@ theorem connectionDifferenceQuadraticPairedTensor_sub
   rw [operatorFieldComposition_sub_right, operatorFieldComposition_sub_left]
   module
 
-omit [NeZero (Module.finrank ℝ E)] in
 omit [I.Boundaryless] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
+omit [I.Boundaryless] in
 theorem connectionDifferenceQuadraticComposedTensor_sub
     (g gT gU : SmoothRiemannianMetric I M) :
     connectionDifferenceQuadraticComposedTensor (I := I) (M := M) g gT - connectionDifferenceQuadraticComposedTensor (I := I) (M := M) g gU =
@@ -1520,7 +1521,6 @@ theorem exists_connectionDifferenceQuadraticCurvatureTerm_covariantJetNormSq_dif
   rw [hsplit]
   refine (covariantJetNormSq_connectionDifferenceQuadraticCurvatureTerm_decomposition_le (I := I) (M := M) g _ _ hQBd hQAd).trans (le_of_eq ?_)
   ring
-
 
 theorem exists_deTurckLieCovariantDerivativeRemainderTensor_covariantJetNormSq_bound
     (hDim : Module.finrank ℝ E = 3)
@@ -2155,6 +2155,7 @@ theorem exists_deTurckLieCovariantDerivativeRemainderPairTrace_covariantJetNormS
     _ = fr ^ 2 * Cr R * ((1 + A) ^ 4 * D3 ^ 2) := by ring
 
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem deTurckLieEdgePairingFamily_eq_deTurckLieCovariantDerivativeExpansionPairTraceFamily
     (g : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2)
@@ -2492,7 +2493,6 @@ end
 section
 
 noncomputable section
-
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
@@ -3049,6 +3049,7 @@ noncomputable def koszulCovectorCoefficient
       permCoeff (I := I) (M := M) g (Equiv.swap (1 : Fin 3) 2))
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 theorem koszulCovectorCoefficient_apply
     (g : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2)
     (hT : ∀ (x : M) (u v : TangentSpace I x),

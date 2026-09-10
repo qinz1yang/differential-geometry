@@ -4,6 +4,7 @@ import DifferentialGeometry.Geometry.Metric.TensorInner.FiberMetric.Tensor0SMetr
 set_option autoImplicit false
 
 noncomputable section
+set_option backward.isDefEq.respectTransparency false
 
 namespace DifferentialGeometry.PDE.RicciFlow
 
@@ -22,9 +23,7 @@ variable {H : Type*} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 
-
 variable [SigmaCompactSpace M] [T2Space M] [I.Boundaryless]
-
 
 def curvatureQuadraticPairing (g : SmoothRiemannianMetric I M) (σ : Fin 8 ≃ Fin 8)
     (A B : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
@@ -47,7 +46,6 @@ def curvatureQuadraticPairingPermutationZeroTwoOneThree : Equiv.Perm (Fin 8) :=
 
 def curvatureQuadraticPairingPermutationZeroThreeOneTwo : Equiv.Perm (Fin 8) :=
   Equiv.ofBijective ![4, 0, 7, 2, 5, 1, 6, 3] (by decide)
-
 
 omit [SigmaCompactSpace M] [T2Space M] [I.Boundaryless] in
 theorem curvatureQuadraticPairing_zero_one_two_three_component {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
@@ -124,7 +122,6 @@ theorem curvatureQuadraticPairing_zero_one_two_three_component {Idx : Type*} [Fi
   rw [hA, hB]
   ring
 
-
 omit [SigmaCompactSpace M] [T2Space M] [I.Boundaryless] in
 theorem curvatureQuadraticPairing_zero_one_three_two_component {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     (g : SmoothRiemannianMetric I M) {x : M}
@@ -200,7 +197,6 @@ theorem curvatureQuadraticPairing_zero_one_three_two_component {Idx : Type*} [Fi
   rw [hA, hB]
   ring
 
-
 omit [SigmaCompactSpace M] [T2Space M] [I.Boundaryless] in
 theorem curvatureQuadraticPairing_zero_two_one_three_component {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     (g : SmoothRiemannianMetric I M) {x : M}
@@ -275,7 +271,6 @@ theorem curvatureQuadraticPairing_zero_two_one_three_component {Idx : Type*} [Fi
       simp [curvatureQuadraticPairingPermutationZeroTwoOneThree, Equiv.ofBijective, Fin.natAdd, metricTraceInput_apply]
   rw [hA, hB]
   ring
-
 
 omit [SigmaCompactSpace M] [T2Space M] [I.Boundaryless] in
 theorem curvatureQuadraticPairing_zero_three_one_two_component {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
@@ -359,7 +354,6 @@ def curvatureQuadraticCombination (g : SmoothRiemannianMetric I M)
       (n := (∞ : WithTop ℕ∞)) 4 :=
   (curvatureQuadraticPairing (I := I) g curvatureQuadraticPairingPermutationZeroOneTwoThree A A - curvatureQuadraticPairing (I := I) g curvatureQuadraticPairingPermutationZeroOneThreeTwo A A) +
     (curvatureQuadraticPairing (I := I) g curvatureQuadraticPairingPermutationZeroTwoOneThree A A - curvatureQuadraticPairing (I := I) g curvatureQuadraticPairingPermutationZeroThreeOneTwo A A)
-
 
 omit [SigmaCompactSpace M] [T2Space M] [I.Boundaryless] in
 theorem curvatureQuadraticCombination_component {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
@@ -497,7 +491,6 @@ theorem curvatureQuadraticPairing_norm_sq_le (g : SmoothRiemannianMetric I M) (�
           (normSq0S (I := I) g x 4 (A x) *
             normSq0S (I := I) g x 4 (B x)) := by ring
 
-
 omit [SigmaCompactSpace M] [T2Space M] [I.Boundaryless] in
 theorem curvatureQuadraticCombination_norm_sq_le (g : SmoothRiemannianMetric I M)
     (A : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
@@ -565,7 +558,6 @@ theorem curvatureQuadraticCombination_norm_sq_le (g : SmoothRiemannianMetric I M
       dsimp only [K]
       ring
 
-
 omit [SigmaCompactSpace M] [T2Space M] [I.Boundaryless] in
 theorem curvatureQuadraticPairing_sub (g : SmoothRiemannianMetric I M) (σ : Fin 8 ≃ Fin 8)
     (A B : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
@@ -631,7 +623,6 @@ theorem curvatureQuadraticPairing_sub (g : SmoothRiemannianMetric I M) (σ : Fin
   rw [hroute]
   rw [metricTraceFirstTwoField_add (I := I) (M := M) (s := 6) g]
   rw [metricTraceFirstTwoField_add (I := I) (M := M) (s := 4) g]
-
 
 omit [SigmaCompactSpace M] [T2Space M] [I.Boundaryless] in
 theorem curvatureQuadraticPairing_metric_difference_norm_sq_le (g₁ g₂ : SmoothRiemannianMetric I M) (σ : Fin 8 ≃ Fin 8)
@@ -809,7 +800,6 @@ theorem curvatureQuadraticPairing_metric_difference_norm_sq_le (g₁ g₂ : Smoo
           H0 * (NA * NB) := by ring
     _ = _ := by rw [hnR, hH0, hNA, hNB]
 
-
 omit [SigmaCompactSpace M] [T2Space M] [I.Boundaryless] in
 theorem curvatureQuadraticPairing_difference_norm_sq_le (g₁ g₂ : SmoothRiemannianMetric I M) (σ : Fin 8 ≃ Fin 8)
     (A B : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
@@ -894,7 +884,6 @@ theorem curvatureQuadraticPairing_difference_norm_sq_le (g₁ g₂ : SmoothRiema
     _ = _ := by
       dsimp only [C, D, NA, NB]
       ring
-
 
 omit [SigmaCompactSpace M] [T2Space M] [I.Boundaryless] in
 theorem curvatureQuadraticCombination_difference_norm_sq_le (g₁ g₂ : SmoothRiemannianMetric I M)

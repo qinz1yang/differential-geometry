@@ -6,7 +6,7 @@ open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
-
+set_option backward.isDefEq.respectTransparency false
 
 open MeasureTheory Set Filter Topology Bundle Manifold DifferentialGeometry.Tensor0SBundle
     ContinuousLinearMap
@@ -429,6 +429,7 @@ private theorem covGrad_connectionDifferenceSection_flat_eval_eq_inner_local
 attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
   Tensor0SBundle.tensorRSSpaceNormedSpace in
 omit [NeZero (Module.finrank ℝ E)] in
+set_option backward.isDefEq.respectTransparency true in
 theorem exists_fixed_covDerivConnectionDifference_sqrt_bound
     (g₀ g_bg : SmoothRiemannianMetric I M) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ (x : M) (v w u : TangentSpace I x),
@@ -502,7 +503,6 @@ theorem exists_fixed_covDerivConnectionDifference_sqrt_bound
     _ ≤ Real.sqrt K * Sv * Sw * Su := by
         have hprod_nn : 0 ≤ Sv * Sw * Su := by positivity
         nlinarith only [hWnorm, hprod_nn, hSv_nn, hSw_nn, hSu_nn, hNW_nn]
-
 
 end DifferentialGeometry.Analysis.Sobolev
 

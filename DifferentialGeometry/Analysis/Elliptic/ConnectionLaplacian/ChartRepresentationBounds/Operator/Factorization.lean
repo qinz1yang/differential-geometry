@@ -4,9 +4,9 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.ChartTensor.Components.Defs
 import Mathlib.Analysis.SpecialFunctions.Sqrt
 open DifferentialGeometry.Geometry.Connection
 
-
 noncomputable section
 
+set_option backward.isDefEq.respectTransparency false
 open Bundle Manifold Set IsManifold ContinuousLinearMap Filter
 open scoped Manifold Topology Bundle ContDiff BigOperators
 

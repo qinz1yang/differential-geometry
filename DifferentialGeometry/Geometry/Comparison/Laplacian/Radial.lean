@@ -8,7 +8,6 @@ import DifferentialGeometry.Geometry.Comparison.Volume.Radial.Gronwall
 import DifferentialGeometry.Geometry.Connection.ChartBridge.Scalar.Laplacian
 import DifferentialGeometry.Geometry.Connection.MetricTrace.LineSplit
 
-
 open DifferentialGeometry.Tensor.RSTensor
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
@@ -272,7 +271,7 @@ private lemma metric_smul_right
       _
   rw [map_smul (g.inner p (show TangentSpace I p from v)), smul_eq_mul]
 
-private theorem intrinsicJacobi_smul
+theorem intrinsicJacobi_smul
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (x w : E) (t s : Real) :

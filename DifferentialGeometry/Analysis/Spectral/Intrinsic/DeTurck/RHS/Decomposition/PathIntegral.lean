@@ -4,7 +4,7 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Metric.MovingPairTr
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.ConnectionDifference.Bounds.Coefficients
 
 noncomputable section
-
+set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set Filter DifferentialGeometry.Tensor0SBundle MeasureTheory intervalIntegral
 open scoped BigOperators Manifold Topology ContDiff
@@ -231,6 +231,7 @@ theorem edgePairMono_joint
   simpa only [topOrderPairingCoefficient] using h
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 theorem edgeLiePair_joint
     (g : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2)
     {delta : Real}

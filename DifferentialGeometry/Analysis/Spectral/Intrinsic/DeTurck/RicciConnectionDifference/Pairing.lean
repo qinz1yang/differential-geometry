@@ -11,7 +11,7 @@ open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
-
+set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set Filter DifferentialGeometry.Tensor0SBundle MeasureTheory
 open scoped Manifold Topology ContDiff BigOperators RealInnerProductSpace Matrix
@@ -217,6 +217,7 @@ def ricciCovariantDerivativeConnectionDifferenceKernel (g gm : SmoothRiemannianM
     ricDer1 (I := I) (M := M) g gm
 
 omit [NeZero (Module.finrank Real E)] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank Real E)] in
 theorem ricciKer_split (g gm : SmoothRiemannianMetric I M) :
     linearizedRicciConnectionDifferenceOrder0KernelField (I := I) g gm =
       ricciConnectionDifferenceQuadraticKernel (I := I) (M := M) g gm +
@@ -269,6 +270,7 @@ def ricciCovariantDerivativeConnectionDifferenceTerm (g gm : SmoothRiemannianMet
     (ricciCovariantDerivativeConnectionDifferenceKernel (I := I) (M := M) g gm)
 
 omit [NeZero (Module.finrank Real E)] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank Real E)] in
 theorem ricciCoeff_split (g gm : SmoothRiemannianMetric I M) :
     linearizedRicciConnectionDifferenceOrder0CoeffField (I := I) (M := M) g gm =
       ricciConnectionDifferenceQuadraticTerm (I := I) (M := M) g gm +
@@ -314,6 +316,7 @@ private lemma ricPerm2_eval (x : M) (D : Tensor0SSpace 2 I x)
   exact congrArg _ (funext fun j => by fin_cases j <;> rfl)
 
 omit [NeZero (Module.finrank Real E)] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank Real E)] in
 theorem ricciCovariantDerivativeConnectionDifferenceKernel_fiber_apply (g gm : SmoothRiemannianMetric I M) (x : M)
     (T : Tensor0SSpace 2 I x) (v : Fin 4 → E) :
     Tensor0SSpace.toModel
@@ -557,6 +560,7 @@ theorem ricciFlux_riemannianFiberNormSq (g gm : SmoothRiemannianMetric I M)
     _ = _ := by rfl
 
 omit [NeZero (Module.finrank Real E)] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank Real E)] in
 theorem ricciPart_riemannianFiberNormSq (g gm : SmoothRiemannianMetric I M)
     (W : SmoothCcTensor g 0 2) (j : Nat) (x : M) :
     riemannianFiberNormSq (I := I) (M := M) g 0 (4 + j) x
@@ -571,6 +575,7 @@ theorem ricciPart_riemannianFiberNormSq (g gm : SmoothRiemannianMetric I M)
       (ricciCovariantDerivativeConnectionDifferenceFlux (I := I) (M := M) g gm W) j x
 
 omit [NeZero (Module.finrank Real E)] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank Real E)] in
 theorem ricciConnectionDifferenceCovariantDerivativeTensor_unitModel (g gm : SmoothRiemannianMetric I M)
     (x : M) (v : Fin 4 → E) :
     unitModel (I := I) (M := M) g 4
@@ -961,6 +966,7 @@ theorem connectionDifferenceCovariantDerivativeContraction_pairing (g gm : Smoot
     ricciConnectionDifferenceCovariantDerivativeTensor_pairing (I := I) (M := M) g gm x r p u v
 
 omit [NeZero (Module.finrank Real E)] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank Real E)] in
 theorem ricciCovariantDerivativeConnectionDifferenceKernel_operatorFieldApply (g gm : SmoothRiemannianMetric I M)
     (W : SmoothCcTensor g 0 2) (x : M)
     (v : Fin 4 → E) :
@@ -989,6 +995,7 @@ theorem ricciCovariantDerivativeConnectionDifferenceKernel_operatorFieldApply (g
         W.toSection x) (unitTensor (I := I) (M := M) x)) v
 
 omit [NeZero (Module.finrank Real E)] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank Real E)] in
 theorem connectionDifferenceCovariantDerivativeContraction_symm (g gm : SmoothRiemannianMetric I M) (x : M)
     (a b c : TangentSpace I x) :
     connectionDifferenceCovariantDerivativeContraction (I := I) (M := M) g gm x a b c =
@@ -1210,6 +1217,7 @@ private lemma ricPair_alg {A : Type*} [Fintype A]
 
 omit [NeZero (Module.finrank Real E)] [CompactSpace M] [I.Boundaryless]
   [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+set_option backward.isDefEq.respectTransparency false in
 private lemma ricInner0 (g : SmoothRiemannianMetric I M) (s : Nat)
     (A B : SmoothCcTensor g 0 s) (x : M)
     (e : Fin (Module.finrank Real E) → TangentSpace I x)
@@ -1297,6 +1305,7 @@ private lemma ricSmooth_basis (g : SmoothRiemannianMetric I M) (x : M) :
 
 omit [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
   [SigmaCompactSpace M] in
+set_option backward.isDefEq.respectTransparency false in
 private lemma ricSwap_point (g : SmoothRiemannianMetric I M)
     (A B : SmoothCcTensor g 0 4) (x : M) :
     tensorInnerPointwise (I := I) (M := M) g 0 4 x (A.toFun x)
@@ -2018,6 +2027,7 @@ theorem ricciCovariantDerivativeConnectionDifference_finiteSum_expansion (g gm :
   ring
 
 omit [SigmaCompactSpace M] in
+set_option backward.isDefEq.respectTransparency false in
 private theorem ricciCovariantDerivativeConnectionDifference_pointwise_pairing (g gm : SmoothRiemannianMetric I M)
     (W : SmoothCcTensor g 0 2)
     (hWsymm : ∀ (x : M) (u v : TangentSpace I x),

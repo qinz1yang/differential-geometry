@@ -15,9 +15,8 @@ open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 
-
 noncomputable section
-
+set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
@@ -722,7 +721,6 @@ theorem covDiv_operatorFieldApply (g₀ : SmoothRiemannianMetric I M)
   rw [covDivergence_eq_cometricDoubleTrace_apply_covGrad, covGrad_operatorFieldApply_eq,
     operatorFieldApplication_add_right]
   rw [operatorFieldApplication_assoc, operatorFieldApplication_assoc]
-
 
 end Elliptic
 end Analysis

@@ -25,7 +25,6 @@ open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 
-
 noncomputable section
 
 open Bundle Manifold MeasureTheory Set Filter
@@ -55,6 +54,7 @@ open DifferentialGeometry.Tensor0SBundle
 open DifferentialGeometry.Integral.Measure
 
 omit [CompactSpace M] [SigmaCompactSpace M] in
+set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem iteratedCovGrad_jointContMDiffOn
     (g₀ : SmoothRiemannianMetric I M) (r sIdx i : ℕ)
@@ -76,6 +76,7 @@ private theorem iteratedCovGrad_jointContMDiffOn
 
 omit [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
     [SigmaCompactSpace M] in
+set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem riemannianFiberNormSq_jointContinuousOn
     (g₀ : SmoothRiemannianMetric I M) (r sIdx : ℕ)
@@ -136,6 +137,7 @@ private theorem riemannianFiberNormSq_jointContinuousOn
       ((Ψ t).toSection x),
     DifferentialGeometry.Tensor.TensorRSRiemannianBundle.tensorRSRiemannianInnerCLM_apply]
 
+set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
 private theorem pathIntegralCoeffField_congr_of_family_eq
     (g₀ : SmoothRiemannianMetric I M) (r sIdx : ℕ)
@@ -159,6 +161,7 @@ private theorem pathIntegralCoeffField_congr_of_family_eq
   rfl
 
 omit [SigmaCompactSpace M] in
+set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem iteratedCovGrad_pathIntegralCoeffField_comm
     (g₀ : SmoothRiemannianMetric I M) (r sIdx i : ℕ)
@@ -208,6 +211,7 @@ private theorem iteratedCovGrad_pathIntegralCoeffField_comm
       (fun t => iteratedCovGrad (I := I) g₀ r sIdx (j + 1) (Φ t)) S hS hSI hjgsucc hji
       (by funext t; rw [iteratedCovGrad_succ])
 
+set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem termField_pathIntegral_jetL2_perOrder_le
     (g₀ : SmoothRiemannianMetric I M) (r : ℕ)

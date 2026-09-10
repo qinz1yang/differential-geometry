@@ -4,7 +4,7 @@ import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.ResidualCoeffi
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckLie.Kernel.OrderZero.Identities
 
 noncomputable section
-
+set_option backward.isDefEq.respectTransparency false
 
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Spectral

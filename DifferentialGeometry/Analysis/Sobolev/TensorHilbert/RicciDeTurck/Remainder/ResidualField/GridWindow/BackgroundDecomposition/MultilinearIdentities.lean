@@ -11,9 +11,7 @@ open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 
-
 noncomputable section
-
 
 open Bundle Manifold Set Filter DifferentialGeometry.Tensor0SBundle MeasureTheory
 open scoped Manifold Topology ContDiff BigOperators
@@ -130,6 +128,7 @@ lemma unitModel_eq_ccTensorBilin_pt (S : SmoothCcTensor g₀ 0 2) (b : M)
   funext k
   fin_cases k <;> rfl
 
+set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
     [SigmaCompactSpace M] in
 private lemma reindexCoefficientInputSlots_one_eq (r s : ℕ) (R : SmoothCcTensor g₀ r s) :
@@ -236,6 +235,7 @@ lemma tangent_eq_sum_inner_smoothOrthoFrame (g : SmoothRiemannianMetric I M) (x 
   refine Finset.sum_congr rfl fun i _ => ?_
   rw [hrepr v i, hbB_coe i]
 
+set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
     [SigmaCompactSpace M] in
 lemma slotExtend_toModel_cons (r s : ℕ) (Φ : SmoothCcTensor g₀ r s) (x : M)
@@ -255,6 +255,7 @@ lemma slotExtend_toModel_cons (r s : ℕ) (Φ : SmoothCcTensor g₀ r s) (x : M)
     (show Tensor0SSpace r I x →L[ℝ] Tensor0SSpace s I x from Φ.toSection x) D
     (show E from v0) vs
 
+set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
     [SigmaCompactSpace M] in
 lemma slotExtendIter_two_toModel (X : SmoothCcTensor g₀ 0 4) (x : M)
@@ -339,6 +340,7 @@ lemma slotExtendIter_two_toModel (X : SmoothCcTensor g₀ 0 4) (x : M)
   rw [hdecomp, map_smul]
   with_unfolding_all rfl
 
+set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
     [SigmaCompactSpace M] in
 lemma slotExtendIter_three_toModel (X : SmoothCcTensor g₀ 0 3) (x : M)
@@ -439,6 +441,7 @@ lemma slotExtendIter_three_toModel (X : SmoothCcTensor g₀ 0 3) (x : M)
   rw [hdecomp, map_smul]
   with_unfolding_all rfl
 
+set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
     [SigmaCompactSpace M] in
 lemma slotExtendIter_four_toModel (S : SmoothCcTensor g₀ 0 2) (x : M)
@@ -559,6 +562,7 @@ lemma slotExtendIter_four_toModel (S : SmoothCcTensor g₀ 0 2) (x : M)
   rw [hdecomp, map_smul]
   with_unfolding_all rfl
 
+set_option backward.isDefEq.respectTransparency false in
 omit [I.Boundaryless] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma metricCcTensor_unitModel_apply (g : SmoothRiemannianMetric I M) (x : M)

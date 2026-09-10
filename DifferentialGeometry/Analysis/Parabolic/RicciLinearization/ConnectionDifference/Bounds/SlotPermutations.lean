@@ -9,7 +9,7 @@ import DifferentialGeometry.Geometry.Connection.MetricCompatibility.Tensor.Lower
 import DifferentialGeometry.Geometry.Metric.PointwiseInner.Bounds
 
 noncomputable section
-
+set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set Filter DifferentialGeometry.Tensor0SBundle MeasureTheory intervalIntegral
 open scoped Manifold Topology ContDiff BigOperators Matrix Interval

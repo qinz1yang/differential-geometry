@@ -6,6 +6,7 @@ open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
+set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set Filter DifferentialGeometry.Tensor0SBundle MeasureTheory
 open scoped Manifold Topology ContDiff BigOperators
@@ -32,7 +33,6 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
   [T2Space M] [SigmaCompactSpace M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
-
 
 section RicciContractionRemainderLeibnizDiagonal
 
@@ -1559,7 +1559,6 @@ theorem riemannianFiberNormSq_secondMetricPairTraceOperator_leibnizDiagonal_ricc
           riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + (i + 2)) x
             ((iteratedCovGrad (I := I) g₀ 0 2 (i + 2) P).toSection x) := by
         ring
-
 
 theorem exists_riemannianFiberNormSq_iteratedCovGrad_decompositionKernelContractionMonomialField_leibnizResidual_window
     (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :

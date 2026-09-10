@@ -9,7 +9,7 @@ open DifferentialGeometry.Geometry.Connection
 open DifferentialGeometry.Geometry.Operator
 
 noncomputable section
-
+set_option backward.isDefEq.respectTransparency false
 
 open Set Bundle Manifold DifferentialGeometry.Tensor0SBundle ContinuousLinearMap
 open scoped Topology Manifold BigOperators ContDiff
@@ -179,8 +179,9 @@ private theorem chartLie_symm
   rw [chartLieDeTurckComp_def, chartLieDeTurckComp_def, hA, hB, hC]
   ring
 
-omit [BoundarylessManifold I M] in
 omit [CompactSpace M] [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
+omit [BoundarylessManifold I M] in
+omit [CompactSpace M] in
 private theorem lieSlope_symm
     (g₀ g_bg : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
@@ -292,7 +293,6 @@ def ricciDeTurckRemainderZeroOrderCoefficient
         (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg +
       lieCorrectionZeroField (I := I) (M := M) g₀
         (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg)
-
 
 def ricciDeTurckRemainderFirstOrderCoefficient
     (g₀ g_bg : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)

@@ -19,7 +19,6 @@ namespace DifferentialGeometry
 namespace Analysis
 namespace Spectral
 
-
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 open DifferentialGeometry.Analysis.Sobolev.TensorHilbert
@@ -270,6 +269,7 @@ private lemma edge_frame_repr (g : SmoothRiemannianMetric I M) (x : M)
   rw [hrepr v i, hbB_coe i]
 
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
+set_option backward.isDefEq.respectTransparency false in
 omit [I.Boundaryless] in
 theorem metricComparison_trace_contraction (g gm : SmoothRiemannianMetric I M) (s : Nat) :
     secondMetricCometricDoubleTraceField (I := I) (M := M) g gm s =
@@ -429,6 +429,7 @@ def topOrderPairingCoefficient (g gm : SmoothRiemannianMetric I M)
           (σ.trans (Equiv.swap (0 : Fin 4) 2 * Equiv.swap (1 : Fin 4) 3)) G)))
 
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
+set_option backward.isDefEq.respectTransparency false in
 omit [I.Boundaryless] in
 theorem topOrderPairingCoefficient_decomposition (g gm : SmoothRiemannianMetric I M)
     (S : SmoothCcTensor g 0 2) (G : SmoothCcTensor g 0 4)
@@ -490,6 +491,7 @@ theorem topOrderPairingCoefficient_decomposition (g gm : SmoothRiemannianMetric 
 
 omit [NeZero (Module.finrank Real E)] [I.Boundaryless]
   [BoundarylessManifold I M] [SigmaCompactSpace M] in
+set_option backward.isDefEq.respectTransparency false in
 theorem secondSlotInsertionCoefficient_apply (g : SmoothRiemannianMetric I M)
     (Λ : ContMDiffSection I (E →L[Real] E) ∞
       (fun x : M => TangentSpace I x →L[Real] TangentSpace I x))
@@ -560,6 +562,7 @@ private lemma edge_extend_cons
 
 omit [NeZero (Module.finrank Real E)] [I.Boundaryless]
   [BoundarylessManifold I M] [SigmaCompactSpace M] in
+set_option backward.isDefEq.respectTransparency false in
 private lemma edge_extend2_eval (g : SmoothRiemannianMetric I M)
     (B : SmoothCcTensor g 0 2) (x : M) (D : Tensor0SSpace 2 I x)
     (u : Fin 4 → E) :
@@ -810,6 +813,7 @@ private lemma edge_sum4 {A : Type*} [Fintype A] (F : (Fin 4 → A) → Real) :
 
 omit [NeZero (Module.finrank Real E)] [CompactSpace M] [I.Boundaryless]
   [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+set_option backward.isDefEq.respectTransparency false in
 private lemma edge_inner0 (g : SmoothRiemannianMetric I M) (s : Nat)
     (A B : SmoothCcTensor g 0 s) (x : M)
     (e : Fin (Module.finrank Real E) → TangentSpace I x)
@@ -854,6 +858,7 @@ private lemma edge_inner0 (g : SmoothRiemannianMetric I M) (s : Nat)
   rw [hcomp A Fin.elim0 J, hcomp B Fin.elim0 J]
 
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
+set_option backward.isDefEq.respectTransparency false in
 omit [I.Boundaryless] in
 private theorem edgePair_point (g gm : SmoothRiemannianMetric I M)
     (S : SmoothCcTensor g 0 2) (G : SmoothCcTensor g 0 4)
@@ -1115,6 +1120,7 @@ def deTurckLieTopOrderPairingAdjoint (g : SmoothRiemannianMetric I M)
         ((q i).trans (Equiv.swap (0 : Fin 4) 1))))
 
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [BoundarylessManifold I M] in
 theorem deTurckLieTopOrderPairing_apply
     (g : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2)
     {delta : Real}

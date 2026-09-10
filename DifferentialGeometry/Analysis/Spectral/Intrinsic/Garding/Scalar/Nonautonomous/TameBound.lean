@@ -18,13 +18,12 @@ open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
-
+set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff RealInnerProductSpace InnerProductSpace
 
 namespace DifferentialGeometry.Analysis.Spectral
-
 
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
@@ -83,7 +82,6 @@ theorem trace_retag_eq
     ContinuousLinearMap.comp_apply]
   exact trace_slot_flat (I := I) q h x D
 
-
 omit [NeZero (Module.finrank ℝ E)] in
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
 omit [I.Boundaryless] in
@@ -97,7 +95,6 @@ theorem traceCast_self (q : SmoothRiemannianMetric I M) :
 noncomputable def scalarFluxCoeff
     (q h : SmoothRiemannianMetric I M) : SmoothCcTensor q 1 1 :=
   sharpFlatEndoCc (I := I) q h - sharpFlatEndoCc (I := I) q q
-
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 omit [I.Boundaryless] in
@@ -360,7 +357,6 @@ theorem cc_last_pair
     rw [hAA, real_inner_self_eq_norm_sq, SmoothCcTensor.norm_toL2]
   rw [hminus, hnorm] at hneg
   simpa only [A, B] using hneg
-
 
 noncomputable def scalarTraceCoeff
     (q h : SmoothRiemannianMetric I M) : SmoothCcTensor q 2 0 :=
@@ -854,7 +850,6 @@ theorem cc_lap_pair
   calc
     P + -Q ≤ (D + Cp * J) + Cc * J := add_le_add hp hq
     _ = D + (Cp + Cc) * J := by ring
-
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 omit [I.Boundaryless] in

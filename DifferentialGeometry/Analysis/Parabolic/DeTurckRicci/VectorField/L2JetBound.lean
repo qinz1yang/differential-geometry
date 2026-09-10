@@ -8,9 +8,8 @@ open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 
-
 noncomputable section
-
+set_option backward.isDefEq.respectTransparency false
 
 open MeasureTheory Set Filter Topology Bundle Manifold DifferentialGeometry.Tensor0SBundle
     ContinuousLinearMap
@@ -135,9 +134,9 @@ private lemma metricLoweredConnectionDifference_unitModel_apply (g₀ g₁ g_bg 
     rw [map_sub, sub_apply]]
   rw [connectionDifference_endpoint_cocycle (I := I) g₀ g₁ g_bg x (m 0) (m 1)]
 
+omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-omit [I.Boundaryless] in
 private lemma wOmega_toSection_unit (g₀ g₁ g_bg : SmoothRiemannianMetric I M) (x : M) :
     (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 1 I x from
         (deTurckVFFlat (I := I) (M := M) g₀ g₁ g_bg).toSection x)
@@ -237,8 +236,8 @@ private lemma deTurckVectorFieldCovector_unitModel_apply (g₀ g₁ g_bg : Smoot
     rw [map_sum, sum_apply]]
   rw [deTurckVFRaw, ← PDE.DeTurck.deTurckVF_eq_orthoFrame_trace (I := I) g₁ g_bg x]
 
-omit [SigmaCompactSpace M] in
 omit [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 private lemma wOmega_toSection_unit_eq_flat (g₀ g₁ g_bg : SmoothRiemannianMetric I M) (x : M) :
     (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 1 I x from
         (deTurckVFFlat (I := I) (M := M) g₀ g₁ g_bg).toSection x)
@@ -325,8 +324,8 @@ private lemma tensor0SCovariantDerivative01_consEval_leibnizDefect
     rw [hfun]
   rw [hpeel, hbase]
 
-omit [SigmaCompactSpace M] in
 omit [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 private lemma wOmega_toSection_unitZero (g₀ g₁ g_bg : SmoothRiemannianMetric I M) (b : M) :
     (show Tensor0SSpace 0 I b →L[ℝ] Tensor0SSpace 1 I b from
         (deTurckVFFlat (I := I) (M := M) g₀ g₁ g_bg).toSection b)
@@ -334,8 +333,8 @@ private lemma wOmega_toSection_unitZero (g₀ g₁ g_bg : SmoothRiemannianMetric
       g0FlatCLM (I := I) g₀ b (deTurckVFRaw (I := I) (M := M) g₁ g_bg b) :=
   wOmega_toSection_unit_eq_flat (I := I) (M := M) g₀ g₁ g_bg b
 
-omit [SigmaCompactSpace M] in
 omit [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 private lemma unitEvalSection_wOmega_toModel (g₀ g₁ g_bg : SmoothRiemannianMetric I M)
     (b : M) (z : TangentSpace I b) :
     Tensor0SSpace.toModel (unitEvalSection (I := I) (M := M) g₀ 1
@@ -567,8 +566,8 @@ lemma cotangentToDual_slotInsertEndoFib (x : M)
   rw [Tensor0SSpace.toModel_apply_model_vector]
   congr 1
 
-omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
 private lemma cotangentToDual_cometricRaise_wAlpha
     (g₀ g₁ g_bg : SmoothRiemannianMetric I M) (x : M) (om : Tensor0SSpace 1 I x)
     (w : TangentSpace I x) :

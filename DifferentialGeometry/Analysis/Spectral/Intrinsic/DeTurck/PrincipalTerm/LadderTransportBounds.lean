@@ -28,9 +28,7 @@ open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 
-
 noncomputable section
-
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
@@ -568,6 +566,7 @@ theorem termAsm_transport_pairing_jet_le (g₀ : SmoothRiemannianMetric I M)
           (∑ j ∈ Finset.range (NB + 1), ‖iteratedCovGrad (I := I) g₀ 0 2 j u₀‖)) := by
         ring
 
+set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
     [SigmaCompactSpace M] in
 private theorem termSwap_homTensorRSFieldApply_sub_right (g : SmoothRiemannianMetric I M) (t : ℕ)
@@ -588,7 +587,7 @@ private theorem termSwap_homTensorRSFieldApply_sub_right (g : SmoothRiemannianMe
   rw [show ((A - B).toSection x : TensorRSSpace 0 (t + 2) I x) =
       A.toSection x - B.toSection x from by
     rw [SmoothCcTensor.toSection_sub]; rfl]
-  exact map_sub _ _ _
+  exact ContinuousLinearMap.map_sub _ _ _
 
 omit [SigmaCompactSpace M] in
 private theorem termSwap_oneMinusConnLapSmooth_comm (g : SmoothRiemannianMetric I M) (t : ℕ)

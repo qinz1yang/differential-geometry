@@ -22,9 +22,8 @@ open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Connection
 
-
 noncomputable section
-
+set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set Filter DifferentialGeometry.Tensor0SBundle MeasureTheory
 open scoped Manifold Topology ContDiff BigOperators
@@ -60,7 +59,6 @@ private local instance tensorRSNormedAddCommGroupOfRiemannianBundle
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
-
 private lemma lrSingle_b_le_grid (b : ℕ → ℝ) (hb : ∀ j, 0 ≤ b j) (q : ℕ) (hq : 1 ≤ q) :
     b q ≤ Combinatorics.antidiagonalTupleGrid b q := by
   have h := Combinatorics.single_factor_mul_antidiagonalTupleGrid_le b hb 0 q hq
@@ -78,7 +76,6 @@ private lemma lrBFGW_mono_of_le (b b' : ℕ → ℝ) (hb : ∀ j, 0 ≤ b j)
   refine Finset.sum_le_sum fun e _ => ?_
   exact Finset.prod_le_prod (fun m _ => hb (e m)) (fun m _ => hbb (e m))
 
-
 private lemma lrWindow_le_bFGW (b : ℕ → ℝ) (hb : ∀ j, 0 ≤ b j) {K W W' : ℕ}
     (hK : W ≤ K + 1) (hW : W ≤ W') (_hW1 : 1 ≤ W') :
     Combinatorics.antidiagonalTupleGridWindow b W ≤
@@ -92,7 +89,6 @@ private lemma lrWindow_le_bFGW (b : ℕ → ℝ) (hb : ∀ j, 0 ≤ b j) {K W W'
           (by omega) (by omega)
     _ = (W : ℝ) * Combinatorics.boundedFactorGridWindow b K W' := by
         rw [Finset.sum_const, Finset.card_range, nsmul_eq_mul]
-
 
 private lemma lrTcell_bfgw (b : ℕ → ℝ) (hb : ∀ j, 0 ≤ b j) {Λ0 : ℝ} (hΛ0 : 0 ≤ Λ0)
     (h0 : b 0 ≤ Λ0) {n K W : ℕ} (hnK : n ≤ K) (hnW : n + 1 ≤ W) :
@@ -113,6 +109,7 @@ private lemma lrTcell_bfgw (b : ℕ → ℝ) (hb : ∀ j, 0 ≤ b j) {Λ0 : ℝ}
 attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
   Tensor0SBundle.tensorRSSpaceNormedSpace in
 omit [BoundarylessManifold I M] in
+set_option backward.isDefEq.respectTransparency true in
 theorem exists_sobolev_pointwise_bound_zero_order (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) :
     ∃ Csob : ℝ, 0 ≤ Csob ∧
@@ -162,6 +159,7 @@ theorem exists_sobolev_pointwise_bound_zero_order (g₀ : SmoothRiemannianMetric
 attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
   Tensor0SBundle.tensorRSSpaceNormedSpace in
 omit [BoundarylessManifold I M] in
+set_option backward.isDefEq.respectTransparency true in
 theorem exists_sobolev_pointwise_bound_first_order (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) :
     ∃ Csob : ℝ, 0 ≤ Csob ∧
@@ -211,7 +209,6 @@ theorem exists_sobolev_pointwise_bound_first_order (g₀ : SmoothRiemannianMetri
   have hnn : (0 : ℝ) ≤ ‖((iteratedCovGrad (I := I) g₀ 0 2 1 T).toSection x :
       Tensor0SBundle.TensorRSSpace 0 (2 + 1) I x)‖ := norm_nonneg _
   nlinarith only [h1', hb, hnn, mul_nonneg hCsob_nn hR]
-
 
 private theorem riemannCurvatureCoefficientFieldGridWindow (g₀ : SmoothRiemannianMetric I M) (Λ0 : ℝ)
     (hΛ0 : 0 ≤ Λ0) :
@@ -325,7 +322,6 @@ private theorem riemannCurvatureCoefficientFieldGridWindow (g₀ : SmoothRiemann
   have h1 := hpart (riemannLoweredContractionA (I := I) (M := M) g₀) cW1 hcW1_nn hcW1
   have h2 := hpart (riemannLoweredContractionB (I := I) (M := M) g₀) cW2 hcW2_nn hcW2
   nlinarith [h1, h2, hW_nn]
-
 
 private theorem lrOmegaHat_gridWindow (g₀ : SmoothRiemannianMetric I M)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
@@ -471,7 +467,6 @@ private theorem lrOmegaHat_gridWindow (g₀ : SmoothRiemannianMetric I M)
   refine le_trans (mul_le_mul_of_nonneg_left (Finset.sum_le_sum hcell)
     (operatorFieldApplicationGdiag_nonneg (E := E) l)) ?_
   rw [← Finset.sum_mul, ← mul_assoc]
-
 
 private theorem connectionDifferenceQuadraticCurvatureTermGridWindow (g₀ : SmoothRiemannianMetric I M)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
@@ -748,7 +743,6 @@ private lemma lrGridWindow_mono_of_le (b b' : ℕ → ℝ) (hb : ∀ j, 0 ≤ b 
   refine Finset.sum_le_sum fun e _ => ?_
   exact Finset.prod_le_prod (fun m _ => hb (e m)) (fun m _ => hbb (e m))
 
-
 private theorem riemannCurvatureRemainderGridWindow (g₀ : SmoothRiemannianMetric I M) (Λ0 : ℝ)
     (hΛ0 : 0 ≤ Λ0)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
@@ -861,7 +855,6 @@ private theorem riemannCurvatureRemainderGridWindow (g₀ : SmoothRiemannianMetr
       (fun l' => riemannianFiberNormSq_nonneg (I := I) (M := M) g₀ 0 (2 + l') x _)
       (fun l' => hPT l') K (w + 3)
   linarith [hsub, hA, hB]
-
 
 theorem deTurckLieCovariantDerivativeTermDifferenceGridWindow (g₀ : SmoothRiemannianMetric I M) (Λ0 : ℝ)
     (hΛ0 : 0 ≤ Λ0)
@@ -1155,7 +1148,6 @@ theorem deTurckLieCovariantDerivativeTermDifferenceGridWindow (g₀ : SmoothRiem
   refine le_trans (mul_le_mul_of_nonneg_left (Finset.sum_le_sum hcell)
     (operatorFieldApplicationGdiag_nonneg (E := E) i)) ?_
   rw [← Finset.sum_mul, ← mul_assoc]
-
 
 end TensorSpectral
 end Parabolic

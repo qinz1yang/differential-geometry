@@ -35,6 +35,95 @@ theorem abs_le_sqrt_compNormSqMulti {r : ℕ}
   rw [← Real.sqrt_sq_eq_abs]
   exact Real.sqrt_le_sqrt (sq_le_compNormSqMulti A m)
 
+theorem abs_bilinear_sum_le
+    {ι κ : Type*} [Fintype ι] [Fintype κ]
+    (F : ι → κ → Real) (X : ι → Real) (Y : κ → Real)
+    (C : Real) (hC : 0 ≤ C)
+    (hF : ∀ i j, |F i j| ≤ C) :
+    |∑ i, ∑ j, F i j * X i * Y j| ≤
+      C / 2 *
+        ((Fintype.card κ : Real) * (∑ i, (X i) ^ 2) +
+          (Fintype.card ι : Real) * (∑ j, (Y j) ^ 2)) := by
+  classical
+  calc
+    |∑ i, ∑ j, F i j * X i * Y j| ≤
+        ∑ i, |∑ j, F i j * X i * Y j| :=
+      Finset.abs_sum_le_sum_abs _ _
+    _ ≤ ∑ i, ∑ j, |F i j * X i * Y j| := by
+      exact Finset.sum_le_sum fun i _ => Finset.abs_sum_le_sum_abs _ _
+    _ ≤ ∑ i, ∑ j, C / 2 * ((X i) ^ 2 + (Y j) ^ 2) := by
+      refine Finset.sum_le_sum fun i _ => ?_
+      refine Finset.sum_le_sum fun j _ => ?_
+      rw [abs_mul, abs_mul]
+      have hxy : 2 * |X i| * |Y j| ≤ (X i) ^ 2 + (Y j) ^ 2 := by
+        simpa only [sq_abs] using two_mul_le_add_sq |X i| |Y j|
+      have hnonneg : 0 ≤ |X i| * |Y j| :=
+        mul_nonneg (abs_nonneg _) (abs_nonneg _)
+      have hcoeff : |F i j| * (|X i| * |Y j|) ≤
+          C * (|X i| * |Y j|) :=
+        mul_le_mul_of_nonneg_right (hF i j) hnonneg
+      calc
+        |F i j| * |X i| * |Y j| =
+            |F i j| * (|X i| * |Y j|) := by ring
+        _ ≤ C * (|X i| * |Y j|) := hcoeff
+        _ ≤ C / 2 * ((X i) ^ 2 + (Y j) ^ 2) := by
+          nlinarith
+    _ = C / 2 *
+        ((Fintype.card κ : Real) * (∑ i, (X i) ^ 2) +
+          (Fintype.card ι : Real) * (∑ j, (Y j) ^ 2)) := by
+      simp only [mul_add, Finset.sum_add_distrib, Finset.sum_const,
+        Finset.card_univ, nsmul_eq_mul]
+      have hX :
+          (∑ i, C / 2 * (X i) ^ 2) =
+            C / 2 * (∑ i, (X i) ^ 2) := by
+        rw [Finset.mul_sum]
+      have hY :
+          (∑ j, C / 2 * (Y j) ^ 2) =
+            C / 2 * (∑ j, (Y j) ^ 2) := by
+        rw [Finset.mul_sum]
+      have hXcard :
+          (∑ i, (Fintype.card κ : Real) *
+              (C / 2 * (X i) ^ 2)) =
+            (Fintype.card κ : Real) *
+              (∑ i, C / 2 * (X i) ^ 2) := by
+        rw [Finset.mul_sum]
+      rw [hXcard, hX, hY]
+      ring
+
+theorem abs_quadratic_sum_le
+    {ι : Type*} [Fintype ι]
+    (F : ι → ι → Real) (X : ι → Real)
+    (C : Real) (hC : 0 ≤ C)
+    (hF : ∀ i j, |F i j| ≤ C) :
+    |∑ i, ∑ j, F i j * X i * X j| ≤
+      C * (Fintype.card ι : Real) * (∑ i, (X i) ^ 2) := by
+  have h := abs_bilinear_sum_le F X X C hC hF
+  convert h using 1
+  ring
+
+theorem abs_sum_le_card_mul_of_bound
+    {ι : Type*} [Fintype ι]
+    (f : ι → Real) (C : Real)
+    (h : ∀ i, |f i| ≤ C) :
+    |∑ i, f i| ≤ (Fintype.card ι : Real) * C := by
+  classical
+  calc
+    |∑ i, f i| ≤ ∑ i, |f i| := Finset.abs_sum_le_sum_abs _ _
+    _ ≤ ∑ _i : ι, C := Finset.sum_le_sum fun i _ => h i
+    _ = (Fintype.card ι : Real) * C := by
+      simp only [Finset.sum_const, Finset.card_univ, nsmul_eq_mul]
+
+theorem abs_double_sum_le_card_mul_card_mul_of_bound
+    {ι κ : Type*} [Fintype ι] [Fintype κ]
+    (f : ι → κ → Real) (C : Real)
+    (h : ∀ i j, |f i j| ≤ C) :
+    |∑ i, ∑ j, f i j| ≤
+      (Fintype.card ι : Real) * (Fintype.card κ : Real) * C := by
+  have houter := abs_sum_le_card_mul_of_bound
+    (fun i => ∑ j, f i j) ((Fintype.card κ : Real) * C)
+    (fun i => abs_sum_le_card_mul_of_bound (f i) C (h i))
+  simpa only [mul_assoc] using houter
+
 theorem sum_delta_erase_slot_eq [DecidableEq Idx] {s : ℕ}
     (I0 : Fin s → Idx) (b : Fin s) (G : (Fin s → Idx) → Real) :
     (∑ J0 : Fin s → Idx,
@@ -80,6 +169,232 @@ theorem sum_delta_erase_slot_eq [DecidableEq Idx] {s : ℕ}
   refine mul_eq_zero_of_left ?_ _
   refine Finset.prod_eq_zero (Finset.mem_erase.mpr ⟨hab, Finset.mem_univ a⟩) ?_
   rw [identityInvMetric, diagonalInvMetric_eq_zero_of_ne hdis]
+
+
+private def ricStarArrayUpdateEquiv {s : ℕ}
+    (b : Fin s) : ((Fin s → Idx) × Idx) ≃ ((Fin s → Idx) × Idx) where
+  toFun Ie := (Function.update Ie.1 b Ie.2, Ie.1 b)
+  invFun Ie := (Function.update Ie.1 b Ie.2, Ie.1 b)
+  left_inv := by
+    intro Ie
+    rcases Ie with ⟨I0, e⟩
+    ext q <;> simp
+  right_inv := by
+    intro Ie
+    rcases Ie with ⟨I0, e⟩
+    ext q <;> simp
+
+theorem ricStarArray_pairing_self_adjoint {s : ℕ}
+    (ric : Idx → Idx → Real) (cA cB : (Fin s → Idx) → Real)
+    (hric : ∀ i j, ric i j = ric j i) :
+    (∑ I0 : Fin s → Idx, ricStarArray ric cA I0 * cB I0) =
+      ∑ I0 : Fin s → Idx, cA I0 * ricStarArray ric cB I0 := by
+  classical
+  unfold ricStarArray
+  simp_rw [Finset.sum_mul, Finset.mul_sum]
+  rw [Finset.sum_comm]
+  conv_rhs => rw [Finset.sum_comm]
+  refine Finset.sum_congr rfl fun b _ => ?_
+  change
+    (∑ I0 : Fin s → Idx, ∑ e : Idx,
+      ric (I0 b) e * cA (Function.update I0 b e) * cB I0) =
+    ∑ I0 : Fin s → Idx, ∑ e : Idx,
+      cA I0 * (ric (I0 b) e * cB (Function.update I0 b e))
+  let F : ((Fin s → Idx) × Idx) → Real := fun Ie =>
+    ric (Ie.1 b) Ie.2 * cA (Function.update Ie.1 b Ie.2) * cB Ie.1
+  let G : ((Fin s → Idx) × Idx) → Real := fun Ie =>
+    cA Ie.1 * (ric (Ie.1 b) Ie.2 * cB (Function.update Ie.1 b Ie.2))
+  have hleft :
+      (∑ I0 : Fin s → Idx, ∑ e : Idx,
+          ric (I0 b) e * cA (Function.update I0 b e) * cB I0) =
+        ∑ Ie, F Ie := by
+    rw [Fintype.sum_prod_type]
+  have hright :
+      (∑ I0 : Fin s → Idx, ∑ e : Idx,
+          cA I0 * (ric (I0 b) e * cB (Function.update I0 b e))) =
+        ∑ Ie, G Ie := by
+    rw [Fintype.sum_prod_type]
+  rw [hleft, hright]
+  refine Fintype.sum_equiv (ricStarArrayUpdateEquiv (Idx := Idx) b) F G ?_
+  intro Ie
+  rcases Ie with ⟨I0, e⟩
+  have hupdate :
+      Function.update (Function.update I0 b e) b (I0 b) = I0 := by
+    funext q
+    by_cases hqb : q = b
+    · subst q
+      simp
+    · simp [Function.update, hqb]
+  change
+    ric (I0 b) e * cA (Function.update I0 b e) * cB I0 =
+      cA (Function.update I0 b e) *
+        (ric ((Function.update I0 b e) b) (I0 b) *
+          cB (Function.update (Function.update I0 b e) b (I0 b)))
+  rw [Function.update_self, hric, hupdate]
+  ring
+
+theorem ricReactionContract_eq_two_mul_coordContract_ricStarArray_raise {s : ℕ}
+    (gInv ric : Idx → Idx → Real)
+    (cA cB : (Fin s → Idx) → Real) :
+    ricReactionContract gInv ric cA cB =
+      2 * coordContract gInv cA
+        (ricStarArray (fun i e => ∑ q : Idx, gInv e q * ric i q) cB) := by
+  classical
+  unfold ricReactionContract coordContract ricStarArray
+  congr 1
+  have hslot (I0 : Fin s → Idx) (b : Fin s) :
+      (∑ J0 : Fin s → Idx,
+          (∏ a ∈ (Finset.univ : Finset (Fin s)).erase b,
+              gInv (I0 a) (J0 a)) *
+            (∑ p : Idx, ∑ q : Idx,
+              gInv (I0 b) p * gInv (J0 b) q * ric p q) *
+            cA I0 * cB J0) =
+        ∑ J0 : Fin s → Idx,
+          (∏ a : Fin s, gInv (I0 a) (J0 a)) * cA I0 *
+            (∑ e : Idx,
+              (∑ q : Idx, gInv e q * ric (J0 b) q) *
+                cB (Function.update J0 b e)) := by
+    let F : ((Fin s → Idx) × Idx) → Real := fun Je =>
+      (∏ a : Fin s, gInv (I0 a) (Je.1 a)) * cA I0 *
+        ((∑ q : Idx, gInv Je.2 q * ric (Je.1 b) q) *
+          cB (Function.update Je.1 b Je.2))
+    let G : ((Fin s → Idx) × Idx) → Real := fun Jp =>
+      (∏ a ∈ (Finset.univ : Finset (Fin s)).erase b,
+          gInv (I0 a) (Jp.1 a)) *
+        (∑ q : Idx,
+          gInv (I0 b) Jp.2 * gInv (Jp.1 b) q * ric Jp.2 q) *
+        cA I0 * cB Jp.1
+    have hF :
+        (∑ J0 : Fin s → Idx,
+            (∏ a : Fin s, gInv (I0 a) (J0 a)) * cA I0 *
+              (∑ e : Idx,
+                (∑ q : Idx, gInv e q * ric (J0 b) q) *
+                  cB (Function.update J0 b e))) =
+          ∑ Je, F Je := by
+      rw [Fintype.sum_prod_type]
+      refine Finset.sum_congr rfl fun J0 _ => ?_
+      rw [Finset.mul_sum]
+    have hG :
+        (∑ J0 : Fin s → Idx,
+            (∏ a ∈ (Finset.univ : Finset (Fin s)).erase b,
+                gInv (I0 a) (J0 a)) *
+              (∑ p : Idx, ∑ q : Idx,
+                gInv (I0 b) p * gInv (J0 b) q * ric p q) *
+              cA I0 * cB J0) =
+          ∑ Jp, G Jp := by
+      rw [Fintype.sum_prod_type]
+      refine Finset.sum_congr rfl fun J0 _ => ?_
+      rw [Finset.mul_sum, Finset.sum_mul, Finset.sum_mul]
+    rw [hG, hF]
+    exact (Fintype.sum_equiv (ricStarArrayUpdateEquiv (Idx := Idx) b) F G (fun Je => by
+      rcases Je with ⟨J0, e⟩
+      change
+        (∏ a : Fin s, gInv (I0 a) (J0 a)) * cA I0 *
+            ((∑ q : Idx, gInv e q * ric (J0 b) q) *
+              cB (Function.update J0 b e)) =
+          (∏ a ∈ (Finset.univ : Finset (Fin s)).erase b,
+              gInv (I0 a) (Function.update J0 b e a)) *
+            (∑ q : Idx,
+              gInv (I0 b) (J0 b) *
+                gInv (Function.update J0 b e b) q * ric (J0 b) q) *
+            cA I0 * cB (Function.update J0 b e)
+      rw [show (∏ a : Fin s, gInv (I0 a) (J0 a)) =
+          (∏ a ∈ (Finset.univ : Finset (Fin s)).erase b,
+              gInv (I0 a) (J0 a)) * gInv (I0 b) (J0 b) by
+        rw [Finset.prod_erase_mul (Finset.univ : Finset (Fin s)) _
+          (Finset.mem_univ b)]]
+      rw [show
+          (∏ a ∈ (Finset.univ : Finset (Fin s)).erase b,
+              gInv (I0 a) (Function.update J0 b e a)) =
+            ∏ a ∈ (Finset.univ : Finset (Fin s)).erase b,
+              gInv (I0 a) (J0 a) by
+        refine Finset.prod_congr rfl fun a ha => ?_
+        rw [Function.update_of_ne (Finset.ne_of_mem_erase ha)]]
+      rw [Function.update_self]
+      rw [Finset.mul_sum, Finset.sum_mul]
+      rw [Finset.mul_sum, Finset.sum_mul, Finset.sum_mul]
+      refine Finset.sum_congr rfl fun q _ => ?_
+      ring)).symm
+  calc
+    (∑ I0 : Fin s → Idx, ∑ J0 : Fin s → Idx,
+        (∑ b : Fin s,
+            (∏ a ∈ (Finset.univ : Finset (Fin s)).erase b,
+                gInv (I0 a) (J0 a)) *
+              (∑ p : Idx, ∑ q : Idx,
+                gInv (I0 b) p * gInv (J0 b) q * ric p q)) *
+          cA I0 * cB J0) =
+      ∑ I0 : Fin s → Idx, ∑ b : Fin s, ∑ J0 : Fin s → Idx,
+        (∏ a ∈ (Finset.univ : Finset (Fin s)).erase b,
+            gInv (I0 a) (J0 a)) *
+          (∑ p : Idx, ∑ q : Idx,
+            gInv (I0 b) p * gInv (J0 b) q * ric p q) *
+          cA I0 * cB J0 := by
+        refine Finset.sum_congr rfl fun I0 _ => ?_
+        simp_rw [Finset.sum_mul]
+        rw [Finset.sum_comm]
+    _ = ∑ I0 : Fin s → Idx, ∑ b : Fin s, ∑ J0 : Fin s → Idx,
+        (∏ a : Fin s, gInv (I0 a) (J0 a)) * cA I0 *
+          (∑ e : Idx,
+            (∑ q : Idx, gInv e q * ric (J0 b) q) *
+              cB (Function.update J0 b e)) := by
+        refine Finset.sum_congr rfl fun I0 _ => ?_
+        refine Finset.sum_congr rfl fun b _ => hslot I0 b
+    _ = ∑ I0 : Fin s → Idx, ∑ J0 : Fin s → Idx,
+        (∏ a : Fin s, gInv (I0 a) (J0 a)) * cA I0 *
+          (∑ b : Fin s, ∑ e : Idx,
+            (∑ q : Idx, gInv e q * ric (J0 b) q) *
+              cB (Function.update J0 b e)) := by
+        refine Finset.sum_congr rfl fun I0 _ => ?_
+        rw [Finset.sum_comm]
+        refine Finset.sum_congr rfl fun J0 _ => ?_
+        rw [Finset.mul_sum]
+
+theorem ricReactionContract_symm {s : ℕ}
+    (gInv ric : Idx → Idx → Real)
+    (cA cB : (Fin s → Idx) → Real)
+    (hgInv : ∀ i j, gInv i j = gInv j i)
+    (hric : ∀ i j, ric i j = ric j i) :
+    ricReactionContract gInv ric cA cB =
+      ricReactionContract gInv ric cB cA := by
+  classical
+  unfold ricReactionContract
+  congr 1
+  rw [Finset.sum_comm]
+  refine Finset.sum_congr rfl fun I0 _ => ?_
+  refine Finset.sum_congr rfl fun J0 _ => ?_
+  have hcoeff :
+      (∑ b : Fin s,
+          (∏ a ∈ (Finset.univ : Finset (Fin s)).erase b,
+              gInv (J0 a) (I0 a)) *
+            (∑ p : Idx, ∑ q : Idx,
+              gInv (J0 b) p * gInv (I0 b) q * ric p q)) =
+        ∑ b : Fin s,
+          (∏ a ∈ (Finset.univ : Finset (Fin s)).erase b,
+              gInv (I0 a) (J0 a)) *
+            (∑ p : Idx, ∑ q : Idx,
+              gInv (I0 b) p * gInv (J0 b) q * ric p q) := by
+    refine Finset.sum_congr rfl fun b _ => ?_
+    have hprod :
+        (∏ a ∈ (Finset.univ : Finset (Fin s)).erase b,
+            gInv (J0 a) (I0 a)) =
+          ∏ a ∈ (Finset.univ : Finset (Fin s)).erase b,
+            gInv (I0 a) (J0 a) := by
+      refine Finset.prod_congr rfl fun a _ => hgInv (J0 a) (I0 a)
+    have hsum :
+        (∑ p : Idx, ∑ q : Idx,
+            gInv (J0 b) p * gInv (I0 b) q * ric p q) =
+          ∑ p : Idx, ∑ q : Idx,
+            gInv (I0 b) p * gInv (J0 b) q * ric p q := by
+      rw [Finset.sum_comm]
+      refine Finset.sum_congr rfl fun p _ => ?_
+      refine Finset.sum_congr rfl fun q _ => ?_
+      rw [hric]
+      ring
+    rw [hprod, hsum]
+  rw [hcoeff]
+  ring
+
+
 
 theorem ricReactionContract_delta_eq_compContract [DecidableEq Idx] {s : ℕ}
     (ric : Idx → Idx → Real) (cA cB : (Fin s → Idx) → Real) :

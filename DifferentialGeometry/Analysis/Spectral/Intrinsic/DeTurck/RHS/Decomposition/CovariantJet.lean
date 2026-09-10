@@ -4,7 +4,7 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.RHS.
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.CovariantJetDecomposition.JointAlgebra
 
 noncomputable section
-
+set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set DifferentialGeometry.Tensor0SBundle
 open scoped BigOperators Manifold ContDiff

@@ -50,8 +50,8 @@ open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 
-
 noncomputable section
+set_option backward.isDefEq.respectTransparency false
 
 open MeasureTheory Set Filter Topology Bundle Manifold DifferentialGeometry.Tensor0SBundle
     ContinuousLinearMap
@@ -118,7 +118,7 @@ open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 open DifferentialGeometry.PDE.DeTurck.RicciLinearization
   (convexPerturbation convexPerturbation_gFibreOpBound metricPerturbationPath_inner_of_mem)
 
-
+set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
     [SigmaCompactSpace M] in
 private lemma slotInsertEndoCc_sub (g₀ : SmoothRiemannianMetric I M) (s : ℕ)
@@ -151,6 +151,7 @@ private lemma unitModel_add_model_apply (g₀ : SmoothRiemannianMetric I M)
         unitModel (I := I) (M := M) g₀ 2 S' x v := by
   rw [DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel_add, add_apply]
 
+set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
     [SigmaCompactSpace M] in
 private lemma rsDomDomCongrSection_sub (g₀ : SmoothRiemannianMetric I M)
@@ -196,6 +197,7 @@ private lemma rsDomDomCongrSection_sub (g₀ : SmoothRiemannianMetric I M)
     toModel_rsDomDomCongr_apply, toModel_rsDomDomCongr_apply]
   simp only [ContinuousMultilinearMap.domDomCongr_apply, sub_apply]
 
+set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
     [SigmaCompactSpace M] in
 private lemma reindexCoefficientInputSlots_sub (g₀ : SmoothRiemannianMetric I M)
@@ -378,6 +380,7 @@ private theorem lieCorrectionZero_add_baseEndomorphism_decomposition (g₀ g₁ 
   abel
 
 omit [BoundarylessManifold I M] [CompactSpace M] in
+omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma one_le_l2JetWindow (g₀ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
     (i : ℕ) :
@@ -389,6 +392,7 @@ private lemma one_le_l2JetWindow (g₀ : SmoothRiemannianMetric I M) (P : Smooth
   linarith
 
 omit [BoundarylessManifold I M] [CompactSpace M] in
+omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma l2JetWindow_mono (g₀ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
     {q i : ℕ} (h : q ≤ i) :
@@ -633,6 +637,7 @@ private theorem exists_pureDoubleTraceCoeff_coeffJetEnvelope (g₀ : SmoothRiema
     (c0 0) (fr ^ (s + 1) * Λsf) FcDT (fun q => fr ^ (s + 1) * Fsfw q)
     (hc0_nn 0) (mul_nonneg hfrpow_nn hΛsf_nn) hΦ0 hWpt0 hFΦ hKW
 
+set_option backward.isDefEq.respectTransparency false in
 private theorem exists_deTurckVectorFieldFlat_coeffJetEnvelope (g₀ gB : SmoothRiemannianMetric I M)
     (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
@@ -691,6 +696,7 @@ private theorem exists_deTurckVectorFieldFlat_coeffJetEnvelope (g₀ gB : Smooth
     C2 hC2_nn hC2 Λdt Λκ Kdt Kκ hΛdt_nn hΛκ_nn
     (hdt0) (hκ0) hKΦ hKW
 
+set_option backward.isDefEq.respectTransparency false in
 private theorem exists_deTurckVectorFieldInteriorProduct_coeffJetEnvelope
     (g₀ gB : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
@@ -1350,6 +1356,7 @@ private theorem lieCorrectionZeroWindow_mixedConnection_bounds (g₀ g_bg : Smoo
     (2 * ΛhA + 2 * ΛhB) (fun q => 2 * (KhA q * Win) + 2 * (KhB q * Win)) i hadd0 haddL2
   exact le_trans (hsL2 i le_rfl) (le_of_eq (by ring))
 
+set_option backward.isDefEq.respectTransparency false in
 private theorem exists_lieDerivativeRiemannCoeff_coeffJetEnvelope (g₀ : SmoothRiemannianMetric I M)
     (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
@@ -2230,6 +2237,8 @@ private theorem exists_riemannLieDerivativeCorrection_curvatureDecomposition_dat
     linarith
 
 omit [BoundarylessManifold I M] [CompactSpace M] in
+set_option backward.isDefEq.respectTransparency false in
+omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem sum_range_shift_two_sq_le (g₀ : SmoothRiemannianMetric I M) (i : ℕ)
     (T₀ : SmoothCcTensor g₀ 0 2) :
@@ -2944,6 +2953,7 @@ private theorem deTurckPhiZeroPathIntegral_zero_curvatureDecomposition_coeffSup_
     rw [Real.sq_sqrt hprod_nn] at hfin
     exact hfin
 
+set_option backward.isDefEq.respectTransparency false in
 private theorem deTurckPhiOnePathIntegral_zero_coeffSup_jetEnvelope
     (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R₀ : ℝ} (hR₀ : 0 ≤ R₀)

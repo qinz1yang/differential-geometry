@@ -3,7 +3,7 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Pairing.TopOrder
 import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.OperatorField.LpProduct
 
 noncomputable section
-
+set_option backward.isDefEq.respectTransparency false
 
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Spectral
@@ -83,8 +83,8 @@ private lemma edge_extend2_one (g : SmoothRiemannianMetric I M)
   rw [riemannianFiberNormSq_covGrad_slotExtend_scale (I := I) (M := M) g 0 2 T x]
   ring
 
-omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
 private lemma edgeRaise_zero_mul (g gm : SmoothRiemannianMetric I M)
     (W P : SmoothCcTensor g 0 2)
     (htie : ∀ (y : M) (v w : TangentSpace I y),

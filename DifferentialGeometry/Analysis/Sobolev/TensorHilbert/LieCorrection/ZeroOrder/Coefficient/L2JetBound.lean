@@ -5,6 +5,7 @@ open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
+set_option backward.isDefEq.respectTransparency false
 
 set_option autoImplicit false
 
@@ -41,8 +42,8 @@ private theorem deTurckLieEndomorphismTerm_eq_covariantDerivativeInsertion (g₀
   intro x
   rw [deTurckLieEndoTermField_toSection, deTurckLieCovariantDerivativeInsertionField_toSection]
 
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 private theorem lieCorrectionZeroInsertion_base_eq_neg_covariantDerivativeInsertion (g₀ g₁ : SmoothRiemannianMetric I M) :
     lieCorrectionZeroInsertion (I := I) (M := M) g₀ g₁ g₀ =
       -deTurckLieCovariantDerivativeInsertionField (I := I) (M := M) g₀ g₁ g₀ := by

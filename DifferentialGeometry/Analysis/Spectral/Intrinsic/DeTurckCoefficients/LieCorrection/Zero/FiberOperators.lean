@@ -10,16 +10,9 @@ open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 
-
-
-
-
-
-
-
-
 noncomputable section
 
+set_option backward.isDefEq.respectTransparency false
 open MeasureTheory Set Filter Topology Bundle Manifold DifferentialGeometry.Tensor0SBundle
     ContinuousLinearMap
 open scoped ENNReal NNReal BigOperators Manifold ContDiff Matrix
@@ -353,6 +346,7 @@ theorem lieCorrectionZeroTraceStep_section_contMDiff
   refine congrArg (fun t => TotalSpace.mk' (Tensor0SModel p ℝ E)
     (E := fun z : M => Tensor0SSpace p I z) x t) ?_
   rw [lieCorrectionZeroTraceStep, ContinuousLinearMap.comp_apply, domDomCongrFibRank_apply]
+  rfl
 
 omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -618,7 +612,6 @@ def lieCorrectionZeroField (g₀ g₁ g_bg : SmoothRiemannianMetric I M) :
           TensorRSSpace.ofCLM (lieCorrectionZeroTotalFib (I := I) g₀ g₁ g_bg x))
       contMDiff_toFun := lieCorrectionZeroTotalFib_contMDiff (I := I) g₀ g₁ g_bg }
   hasCompactSupport := HasCompactSupport.of_compactSpace _
-
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [I.Boundaryless] in

@@ -1,3 +1,4 @@
+import Batteries.Tactic.Alias
 import Mathlib.Analysis.Calculus.BumpFunction.Basic
 import Mathlib.Analysis.Calculus.BumpFunction.FiniteDimension
 import Mathlib.Analysis.Calculus.ContDiff.Deriv
@@ -369,3 +370,59 @@ theorem exists_smooth_positive_clamp_eventuallyEq_on_compact
     linarith [hpos xmin hxmin, hmaxx]
 
 end DifferentialGeometry
+
+open Filter Set Topology
+open scoped ContDiff
+
+namespace DifferentialGeometry
+
+theorem exists_smooth_bounded_eventuallyEq_id {ε : ℝ} (hε : 0 < ε) :
+    ∃ η : ℝ → ℝ,
+      ContDiff ℝ ∞ η ∧
+      η =ᶠ[nhds (0 : ℝ)] id ∧
+      (∀ u : ℝ, |η u| ≤ ε) := by
+  obtain ⟨ψ, hψsmooth, hψid, hψbound⟩ :=
+    exists_smooth_clamp (-1 : ℝ) 1 (by norm_num) (by norm_num)
+  let η : ℝ → ℝ := fun u ↦ (ε / 4) * ψ ((4 / ε) * u)
+  have hηsmooth : ContDiff ℝ ∞ η := by
+    exact contDiff_const.mul (hψsmooth.comp (contDiff_const.mul contDiff_id))
+  have hscaled_mem (u : ℝ) (hu : u ∈ Icc (-ε / 4) (ε / 4)) :
+      (4 / ε) * u ∈ Icc (-1 : ℝ) 1 := by
+    have hfactor : 0 < 4 / ε := div_pos (by norm_num) hε
+    have hright : (4 / ε) * (ε / 4) = (1 : ℝ) := by
+      field_simp [hε.ne']
+    have hleft : (4 / ε) * (-ε / 4) = (-1 : ℝ) := by
+      field_simp [hε.ne']
+    constructor
+    · rw [← hleft]
+      exact mul_le_mul_of_nonneg_left hu.1 hfactor.le
+    · rw [← hright]
+      exact mul_le_mul_of_nonneg_left hu.2 hfactor.le
+  have hηid (u : ℝ) (hu : u ∈ Icc (-ε / 4) (ε / 4)) : η u = u := by
+    dsimp only [η]
+    rw [hψid _ (hscaled_mem u hu)]
+    field_simp [hε.ne']
+  have hwindow : Icc (-ε / 4) (ε / 4) ∈ nhds (0 : ℝ) := by
+    apply Icc_mem_nhds
+    · linarith
+    · linarith
+  have hηeventual : η =ᶠ[nhds (0 : ℝ)] id := by
+    filter_upwards [hwindow] with u hu
+    simpa only [id_eq] using hηid u hu
+  refine ⟨η, hηsmooth, hηeventual, ?_⟩
+  intro u
+  have hεfour : 0 ≤ ε / 4 := (div_pos hε (by norm_num)).le
+  calc
+    |η u| = (ε / 4) * |ψ ((4 / ε) * u)| := by
+      rw [abs_mul, abs_of_nonneg hεfour]
+    _ ≤ (ε / 4) * (1 - (-1) + 2) :=
+      mul_le_mul_of_nonneg_left (hψbound _) hεfour
+    _ = ε := by ring
+
+end DifferentialGeometry
+
+namespace Poincare.Analysis
+
+alias exists_smooth_bounded_eventuallyEq_id := DifferentialGeometry.exists_smooth_bounded_eventuallyEq_id
+
+end Poincare.Analysis

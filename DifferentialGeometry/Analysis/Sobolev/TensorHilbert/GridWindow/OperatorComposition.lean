@@ -1,7 +1,7 @@
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckVectorField.RadiusFree
 
 noncomputable section
-
+set_option backward.isDefEq.respectTransparency false
 
 open MeasureTheory Set Filter Topology Bundle Manifold DifferentialGeometry.Tensor0SBundle ContinuousLinearMap
 open scoped ENNReal NNReal BigOperators Manifold ContDiff
@@ -32,9 +32,9 @@ def covariantJetFiberNormSqGrid (g₀ : SmoothRiemannianMetric I M) {rb sb : ℕ
   fun j => riemannianFiberNormSq (I := I) (M := M) g₀ rb (sb + j) x
     ((iteratedCovGrad (I := I) g₀ rb sb j P).toSection x)
 
+omit [CompactSpace M] [SigmaCompactSpace M] in
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
-omit [CompactSpace M] [SigmaCompactSpace M] in
 lemma covariantJetFiberNormSqGrid_nonneg (g₀ : SmoothRiemannianMetric I M) {rb sb : ℕ}
     (P : SmoothCcTensor g₀ rb sb)
     (x : M) (j : ℕ) : 0 ≤ covariantJetFiberNormSqGrid (I := I) (M := M) g₀ P x j :=

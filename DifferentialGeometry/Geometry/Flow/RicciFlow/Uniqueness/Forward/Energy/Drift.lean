@@ -3,6 +3,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.Energy.Re
 set_option autoImplicit false
 
 noncomputable section
+set_option backward.isDefEq.respectTransparency false
 
 namespace DifferentialGeometry.PDE.RicciFlow
 
@@ -22,7 +23,6 @@ variable {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 
 variable [SigmaCompactSpace M] [T2Space M] [I.Boundaryless]
-
 
 section Slots
 
@@ -132,7 +132,6 @@ theorem driftSlots_sub
 
 variable [NeZero (Module.finrank Real E)]
 
-
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [I.Boundaryless] in
 theorem driftSlotsSq_le (g : SmoothRiemannianMetric I M)
     (T : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 4 x) :
@@ -231,7 +230,6 @@ theorem lowerTri_split
   rw [hsub]
   ring
 
-
 omit [SigmaCompactSpace M] in
 theorem lowerRm_eq_rm04 (g : SmoothRiemannianMetric I M) (x : M) :
     lowerTri (I := I) (metricTensorField (I := I) g x)
@@ -283,7 +281,6 @@ theorem ricciDrift_sub (g₁ g₂ : SmoothRiemannianMetric I M) (x : M) :
   rfl
 
 variable [NeZero (Module.finrank Real E)]
-
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in

@@ -10,7 +10,6 @@ import DifferentialGeometry.Analysis.Parabolic.MaximalRegularity.Spectral.Planch
 import Mathlib.Analysis.InnerProductSpace.PiL2
 open DifferentialGeometry.Geometry.Curvature
 
-
 noncomputable section
 
 open Bundle Manifold MeasureTheory Set Filter
@@ -796,6 +795,7 @@ open DifferentialGeometry.Analysis.Spectral.MetricRealization
   (smoothCcTensorBilinForm)
 
 omit [BoundarylessManifold I M] in
+set_option backward.isDefEq.respectTransparency false in
 private lemma eigenIdxFinset_mem_iff_of_eigenvalue_eq (g₀ : SmoothRiemannianMetric I M) (N : ℕ) :
     ∀ i j : TensorEigenIdx (I := I) (M := M) g₀ 0 2, i.1 = j.1 →
       (i ∈ eigenIdxFinset (I := I) (M := M) g₀ N ↔
@@ -808,6 +808,7 @@ private lemma eigenIdxFinset_mem_iff_of_eigenvalue_eq (g₀ : SmoothRiemannianMe
     rw [hij]
   rw [hl]
 
+set_option backward.isDefEq.respectTransparency false in
 private lemma gscr_finiteEigenComboHs_eq_smoothCcToTensorHs
     (g₀ : SmoothRiemannianMetric I M)
     (S : Finset (TensorEigenIdx (I := I) (M := M) g₀ 0 2))
@@ -1225,6 +1226,7 @@ theorem de_turck_sobolev_nonlinearity_difference_sobolev_split_per_scale
   exact add_le_add (mul_le_mul_of_nonneg_left (hRHS_le (σ + 1)) hCδ₀_nn)
     (mul_le_mul_of_nonneg_left (hRHS_le σ) (hCrem_nn k))
 
+set_option backward.isDefEq.respectTransparency false in
 private lemma deTurckSobolevNHa2Symm_finiteEigenComboHs_eq
     (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a)
@@ -1241,6 +1243,7 @@ private lemma deTurckSobolevNHa2Symm_finiteEigenComboHs_eq
     ← deTurckSobolevNHa2_smoothEmbed_eq (I := I) (M := M) g₀ g_bg a ha_super
       (ccTensor02Symm (I := I) (M := M) g₀ (finiteEigenCombo (I := I) (M := M) g₀ S c))]
 
+set_option backward.isDefEq.respectTransparency false in
 private lemma deTurckSobolevNHa2Symm_zero_eq
     (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) :
@@ -1268,6 +1271,7 @@ private lemma deTurckSobolevNHa2Symm_zero_eq
       (ccTensor02Symm (I := I) (M := M) g₀ (0 : SmoothCcTensor g₀ 0 2)),
     hccTensor02Symm_zero, ← hzero_embed]
 
+set_option backward.isDefEq.respectTransparency false in
 private theorem deTurckGalerkinForcingSymm_tame_diff_mass_perScale
     (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 4 * Module.finrank ℝ E + 10 ≤ a) {T : ℝ}
@@ -1360,6 +1364,7 @@ private theorem deTurckGalerkinForcingSymm_tame_diff_mass_perScale
     exact hmass
   exact hfinal
 
+set_option backward.isDefEq.respectTransparency false in
 private theorem deTurckGalerkinForcingSymm_seed_mass
     (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) :
@@ -1385,6 +1390,7 @@ private theorem deTurckGalerkinForcingSymm_seed_mass
         rw [deTurckSobolevNHa2Symm_zero_eq (I := I) (M := M) g₀ g_bg a ha_super]
     _ ≤ Cseed k ^ 2 := hb N k
 
+set_option backward.isDefEq.respectTransparency false in
 private theorem deTurckGalerkin_forcing_dissipation_perScaleSymm
     (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 4 * Module.finrank ℝ E + 10 ≤ a) {T : ℝ}
@@ -1503,6 +1509,7 @@ private theorem deTurckGalerkin_forcing_dissipation_perScaleSymm
     nlinarith only [hTame, hSeed, hEσ1nn]
   exact hfinal
 
+set_option backward.isDefEq.respectTransparency false in
 theorem deTurckGalerkin_forcing_closure_perScaleSymm
     (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 4 * Module.finrank ℝ E + 10 ≤ a) {T : ℝ}

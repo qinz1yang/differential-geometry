@@ -5,7 +5,6 @@ open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
-
 open Bundle Manifold DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff BigOperators
 
@@ -47,6 +46,7 @@ private lemma fiberComponent_slotInsertEndoFib_eq_two
     Function.update_of_ne (by decide : (1 : Fin 2) ≠ 0)]
   rw [g₀.symm x (e (K 0)) (Λ (e (J 0))), horth (K 1) (J 1)]
 
+set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
 lemma riemannianFiberNormSq_slotInsertEndoFib_le_card_mul_two
@@ -231,6 +231,7 @@ private lemma sum_compSq_slotInsertEndoFib_eq_normSq
   rw [Finset.sum_congr rfl (fun m _ => hinner m)]
   exact hpars (Λ (e (J k)))
 
+set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
 lemma riemannianFiberNormSq_slotInsertEndoFib_le_card_mul

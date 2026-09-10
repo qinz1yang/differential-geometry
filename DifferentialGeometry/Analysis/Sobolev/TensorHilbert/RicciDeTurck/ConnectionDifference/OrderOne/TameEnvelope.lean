@@ -8,7 +8,7 @@ open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
-
+set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set Filter DifferentialGeometry.Tensor0SBundle MeasureTheory
 open scoped Manifold Topology ContDiff BigOperators
@@ -190,6 +190,7 @@ private lemma cometricDoubleTraceCoefficient_sub_doubleTrace_clm
   rw [hcast, cometricDoubleTraceField_toSection, cometricDoubleTraceField_toSection]
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 omit [I.Boundaryless] in
 theorem cometricDoubleTraceCoefficient_eq_doubleTrace_add_ccOperatorFieldComp
     (g₀ g₁ : SmoothRiemannianMetric I M) :
@@ -224,9 +225,9 @@ theorem cometricDoubleTraceCoefficient_eq_doubleTrace_add_ccOperatorFieldComp
     rfl
   rw [← hsub]; abel
 
+omit [CompactSpace M] [SigmaCompactSpace M] in
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
-omit [CompactSpace M] [SigmaCompactSpace M] in
 private lemma fourTrace_iteratedCovGrad_smul (g : SmoothRiemannianMetric I M) (r s j : ℕ)
     (c : ℝ) (w : SmoothCcTensor g r s) :
     iteratedCovGrad (I := I) g r s j (c • w) = c • iteratedCovGrad (I := I) g r s j w := by
@@ -1188,7 +1189,6 @@ theorem connectionDifferenceContravariantInsertionField_order0sup_perOrder_l2_ta
             Finset.univ_unique, Fin.default_eq_zero, Fin.isValue, Finset.prod_singleton,
             Finset.sum_singleton, Matrix.cons_val_zero, iteratedCovGrad_succ, Nat.add_zero,
             iteratedCovGrad_zero, zero_add]
-          with_unfolding_all rfl
         rw [hS1]
         have hmem : riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + 1) x
             ((iteratedCovGrad (I := I) g₀ 0 2 1 P).toSection x) ≤

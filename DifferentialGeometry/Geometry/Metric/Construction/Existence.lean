@@ -8,7 +8,6 @@ import Mathlib.Analysis.LocallyConvex.Bounded
 import Mathlib.Analysis.Normed.Module.FiniteDimension
 import Mathlib.Topology.MetricSpace.ProperSpace
 
-
 noncomputable section
 
 open Bundle Manifold Set ContinuousLinearMap Bornology Metric
@@ -75,7 +74,7 @@ omit [FiniteDimensional ℝ E] in
 private def tangentTrivializationContinuousLinearMapAt (x₀ x : M) : E →L[ℝ] E :=
   ((trivializationAt E (TangentSpace I) x₀).continuousLinearMapAt ℝ x : E →L[ℝ] E)
 
-private def localFiber (x₀ x : M) : TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ :=
+def localFiber (x₀ x : M) : TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ :=
   (((euclForm E).bilinearComp (tangentTrivializationContinuousLinearMapAt (I := I) x₀ x)
     (tangentTrivializationContinuousLinearMapAt (I := I) x₀ x)) :
     E →L[ℝ] E →L[ℝ] ℝ)
@@ -158,7 +157,6 @@ private lemma coord_localFiber (x₀ : M) {x : M}
     ⟨x, localFiber (I := I) x₀ x⟩
   rw [congrArg Prod.snd h]
   exact inCoordinates_localFiber x₀ hx
-
 
 omit [FiniteDimensional ℝ E] in
 lemma localFiber_contMDiffOn (x₀ : M) :

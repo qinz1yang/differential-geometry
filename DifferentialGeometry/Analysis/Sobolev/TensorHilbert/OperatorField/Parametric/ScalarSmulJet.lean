@@ -10,7 +10,7 @@ open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Elliptic
 
 noncomputable section
-
+set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
@@ -54,7 +54,6 @@ private theorem rank_zero_one (x : M) (c : Tensor0SSpace 0 I x) :
       (I := I) (M := M) ∞ x v
   rw [hone, mul_one]
   exact congrArg (Tensor0SSpace.toModel c) (Subsingleton.elim Fin.elim0 v)
-
 
 noncomputable def scalarCc (g : SmoothRiemannianMetric I M)
     (zeta : C^∞⟮I, M; ℝ⟯) : SmoothCcTensor g 0 0 where
@@ -131,9 +130,8 @@ theorem unit_initial_or_empty (g : SmoothRiemannianMetric I M) :
         MeasureTheory.measureReal_def]
       exact mul_inv_cancel₀ hvol.ne'
 
-
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] in
 omit [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] in
 theorem app_scalarCc (g : SmoothRiemannianMetric I M)
     (zeta : C^∞⟮I, M; ℝ⟯) (U : SmoothCcTensor g 0 0) :
     operatorFieldApply (I := I) (M := M) g 0 0 (scalarCc (I := I) (M := M) g zeta) U =
@@ -152,9 +150,9 @@ theorem app_scalarCc (g : SmoothRiemannianMetric I M)
   rw [smul_apply, Tensor0SField.toRS0_apply,
     rank_zero_one]
 
+omit [CompactSpace M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
     [BoundarylessManifold I M] in
-omit [CompactSpace M] [SigmaCompactSpace M] in
 theorem scalar0_smul_cc (g : SmoothRiemannianMetric I M)
     (zeta : C^∞⟮I, M; ℝ⟯) (U : SmoothCcTensor g 0 0) (x : M) :
     TensorRSField.scalar0 (n := (∞ : WithTop ℕ∞))

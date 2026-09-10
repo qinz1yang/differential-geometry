@@ -6,6 +6,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Extension.Regularity
 set_option autoImplicit false
 
 noncomputable section
+set_option backward.isDefEq.respectTransparency false
 
 namespace DifferentialGeometry.PDE.RicciFlow
 
@@ -27,7 +28,6 @@ variable [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] [BoundarylessManifo
 section Quad
 
 variable {Idx : Type*} [Fintype Idx] {u : Set M} {x : M}
-
 
 omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] [IsManifold I 1 M] [IsManifold I 2 M] [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
 theorem tri_expand {ι : Type*} [Fintype ι]
@@ -70,7 +70,6 @@ theorem tri_expand {ι : Type*} [Fintype ι]
   refine Finset.sum_congr rfl fun k _ => ?_
   rw [smul_smul, smul_smul]
 
-
 def quadOfComp (b : Module.Basis Idx Real (TangentSpace I x))
     (c : Idx -> Idx -> Idx -> Idx -> Real) :
     TangentSpace I x →L[Real] TangentSpace I x →L[Real] TangentSpace I x →L[Real]
@@ -110,7 +109,6 @@ theorem quadOfComp_basis (b : Module.Basis Idx Real (TangentSpace I x))
   change (b.constr Real fun k' => ∑ l, c i j k' l • b l) (b k) = _
   rw [Module.Basis.constr_basis]
 
-
 omit [IsManifold I ∞ M] [IsManifold I 1 M] [IsManifold I 2 M] [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
 theorem quadOfComp_vec (b : Module.Basis Idx Real (TangentSpace I x))
     (V : Idx -> Idx -> Idx -> TangentSpace I x) (i j k : Idx) :
@@ -118,7 +116,6 @@ theorem quadOfComp_vec (b : Module.Basis Idx Real (TangentSpace I x))
       V i j k := by
   rw [quadOfComp_basis]
   exact b.sum_repr (V i j k)
-
 
 omit [IsManifold I ∞ M] [IsManifold I 2 M] [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
 theorem coeff_quadOfComp (frame : Idx -> (y : M) -> TangentSpace I y)
@@ -138,7 +135,6 @@ theorem coeff_quadOfComp (frame : Idx -> (y : M) -> TangentSpace I y)
     simp [IsLocalFrameOn.coeff, hx, hbdef, Module.Basis.coord_apply]
   rw [← hbcoe i, ← hbcoe j, ← hbcoe k, hcoeff l, quadOfComp_basis]
   simp [Finsupp.single_apply]
-
 
 omit [Fintype Idx] [IsManifold I 1 M] [IsManifold I 2 M] [CompleteSpace E] [SigmaCompactSpace M] in
 theorem rmDiffVec_hasDerivAt_of_basis [Finite Idx]
@@ -181,7 +177,6 @@ section Collapse
 
 variable {Idx : Type*} [Fintype Idx]
 
-
 def uhlRaisedDeriv (g : Real -> SmoothRiemannianMetric I M)
     (basisAt : (y : M) -> Module.Basis Idx Real (TangentSpace I y))
     (Rm04 roughLapRm04 B : FourComp M Idx) (ricciOneUp : MatrixComp M Idx)
@@ -197,7 +192,6 @@ def uhlRaisedDeriv (g : Real -> SmoothRiemannianMetric I M)
               (basisAt y i) (basisAt y j) (basisAt y k)
             else basisAt y l))
 
-
 def uhlRmDiffSpeed (g₁ g₂ : Real -> SmoothRiemannianMetric I M)
     (basisAt : (y : M) -> Module.Basis Idx Real (TangentSpace I y))
     (Rm04₁ roughLapRm04₁ B₁ : FourComp M Idx) (ricciOneUp₁ : MatrixComp M Idx)
@@ -210,7 +204,6 @@ def uhlRmDiffSpeed (g₁ g₂ : Real -> SmoothRiemannianMetric I M)
       (basisAt y).repr
         (uhlRaisedDeriv (I := I) g₁ basisAt Rm04₁ roughLapRm04₁ B₁ ricciOneUp₁ t y i j k -
           uhlRaisedDeriv (I := I) g₂ basisAt Rm04₂ roughLapRm04₂ B₂ ricciOneUp₂ t y i j k) l)
-
 
 omit [IsManifold I 2 M] [SigmaCompactSpace M] in
 theorem rm_of_uhlenbeck

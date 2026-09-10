@@ -5,7 +5,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Time
 section
 
 noncomputable section
-
+set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
@@ -559,7 +559,6 @@ section
 
 noncomputable section
 
-
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
 
@@ -632,7 +631,6 @@ theorem radialLowerScaleActionCoefficients_apply_self
       (lt_of_le_of_lt hδ_le (by norm_num))
       (hreal _ (lowRadial_norm (I := I) (M := M) g hρ T))
       (gFibreOpBound_zero (I := I) (M := M) g hδ0)
-
 
 theorem exists_radialLowerScaleActionCoefficients_lipschitz_on_hs_three_ball
     (hDim : Module.finrank ℝ E = 3)
@@ -882,7 +880,6 @@ theorem exists_radialLowerScaleActionCoefficients_lipschitz_on_hs_three_ball
         rw [hq0, hq1, hsqrt]
         simp only [K]
         ring
-
 
 theorem exists_affineLowerScaleCoefficients_covariantJetNormSq_two_bound
     (hDim : Module.finrank ℝ E = 3)

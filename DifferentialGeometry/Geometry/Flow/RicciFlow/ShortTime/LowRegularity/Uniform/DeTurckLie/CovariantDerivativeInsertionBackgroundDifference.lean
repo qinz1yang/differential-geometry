@@ -5,6 +5,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Unif
 set_option autoImplicit false
 
 noncomputable section
+set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
@@ -137,7 +138,6 @@ private theorem wAlphaB_sub_eq_ccOperatorFieldComp
         (connectionDifferenceRaisedEndomorphism (I := I) (M := M) g₀ g₁)
         (deTurckVectorFieldCovector (I := I) (M := M) g₀ g₁ gA)
         (deTurckVectorFieldCovector (I := I) (M := M) g₀ g₁ gB)).symm
-
 
 theorem exists_uniform_deTurckLieCovariantDerivativeInsertion_backgroundDifference_covariantJetNormSq_one_bound
     (hDim : Module.finrank ℝ E = 3)

@@ -41,7 +41,6 @@ open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 
-
 noncomputable section
 
 open MeasureTheory Set Filter Topology Bundle Manifold DifferentialGeometry.Tensor0SBundle
@@ -92,7 +91,6 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 private local instance instCompleteSpaceE_tame : CompleteSpace E :=
   FiniteDimensional.complete ℝ E
 
-
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
 private theorem mixed_continuous_riemannianFiberNormSq
@@ -103,7 +101,6 @@ private theorem mixed_continuous_riemannianFiberNormSq
   refine hc.congr (fun x => ?_)
   rw [riemannianFiberNormSq_eq_tensorInnerPointwise (I := I) (M := M) g r s x (S.toSection x),
     ← Integral.L2.SmoothCcTensor.toFun_apply (I := I) (M := M) S x]
-
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] in
 private theorem mixed_real_holder_two_nonneg
@@ -163,7 +160,6 @@ private theorem mixed_real_holder_two_nonneg
     ← ENNReal.ofReal_mul (by positivity)] at hHolder
   have hrhs_nn : 0 ≤ (∫ x, φ x ^ p ∂μ) ^ (1 / p) * (∫ x, ψ x ^ q ∂μ) ^ (1 / q) := by positivity
   exact (ENNReal.ofReal_le_ofReal_iff hrhs_nn).mp hHolder
-
 
 private theorem mixed_young_term_split
     (wi wl CS CT ΛS ΛT NS NT Iφp Iψq : ℝ)
@@ -694,6 +690,7 @@ lemma jetTowerSum_add_le (g₀ : SmoothRiemannianMetric I M) (r s n : ℕ)
         rw [Finset.sum_add_distrib, ← Finset.mul_sum, ← Finset.mul_sum]
 
 omit [CompactSpace M] [SigmaCompactSpace M] in
+set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem termField_covGrad_step_jointSmooth
     (g₀ : SmoothRiemannianMetric I M) (r sIdx : ℕ)
@@ -773,6 +770,7 @@ private theorem termField_jointSmooth_riemannianFiberNormSq_jointContinuous
     DifferentialGeometry.Tensor.TensorRSRiemannianBundle.tensorRSRiemannianInnerCLM_apply]
 
 omit [SigmaCompactSpace M] in
+set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem termField_covGrad_pathIntegral_comm
     (g₀ : SmoothRiemannianMetric I M) (r sIdx : ℕ)
@@ -794,6 +792,7 @@ private theorem termField_covGrad_pathIntegral_comm
   DifferentialGeometry.Analysis.Parabolic.TensorSpectral.covGrad_pathIntegral_comm
     (I := I) (M := M) g₀ r sIdx Ψ S hS hSI hjoint hjg
 
+set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
 private theorem pathIntegralCoeffField_congr
     (g₀ : SmoothRiemannianMetric I M) (r sIdx : ℕ)
@@ -817,6 +816,7 @@ private theorem pathIntegralCoeffField_congr
   rfl
 
 omit [CompactSpace M] [SigmaCompactSpace M] in
+set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem termField_iteratedCovGrad_jointSmooth
     (g₀ : SmoothRiemannianMetric I M) (r sIdx i : ℕ)
@@ -855,6 +855,7 @@ private theorem termField_iteratedCovGrad_riemannianFiberNormSq_jointContinuous
     (by rw [Set.uIcc_of_le (zero_le_one (α := ℝ))] at hSI; exact hSI)
     (termField_iteratedCovGrad_jointSmooth (I := I) g₀ r sIdx i Φ S hjoint)
 
+set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem termField_iteratedCovGrad_normSq_intervalIntegrable
     (g₀ : SmoothRiemannianMetric I M) (r sIdx i : ℕ)
@@ -901,6 +902,7 @@ private theorem termField_iteratedCovGrad_normSq_intervalIntegrable
   exact hcontInt.intervalIntegrable_of_Icc (by norm_num)
 
 omit [SigmaCompactSpace M] in
+set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem termField_iteratedCovGrad_pathIntegral_comm
     (g₀ : SmoothRiemannianMetric I M) (r sIdx i : ℕ)
@@ -950,6 +952,7 @@ private theorem termField_iteratedCovGrad_pathIntegral_comm
       (fun t => iteratedCovGrad (I := I) g₀ r sIdx (j + 1) (Φ t)) S hS hSI hjgsucc hji
       (by funext t; rw [iteratedCovGrad_succ])
 
+set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem pathIntegralCoeffField_jetL2_tower_le
     (g₀ : SmoothRiemannianMetric I M) (r a : ℕ)

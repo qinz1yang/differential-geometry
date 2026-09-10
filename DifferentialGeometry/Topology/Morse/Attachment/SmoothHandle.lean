@@ -17,7 +17,7 @@ open CellAttachment
 noncomputable def sublevelCellAdjunctionHomotopyEquivUnderOfMorseChart {n : ℕ} {H : Type}
     [TopologicalSpace H] {M : Type} [TopologicalSpace M]
     [ChartedSpace H M] [T2Space M] (I : ModelWithCorners ℝ (MorseModel n) H) [I.Boundaryless]
-    [IsManifold I (⊤ : WithTop ℕ∞) M] (f : M → ℝ) (hf : ContMDiff I 𝓘(ℝ, ℝ) (⊤ : WithTop ℕ∞) f)
+    [IsManifold I (⊤ : WithTop ℕ∞) M] (f : M → ℝ) (hf : Continuous f)
     (c : ℝ) (k : ℕ) (hk : k ≤ n)
     (data : MorseChart n k hk c I f)
     (g : M → ℝ) (hg : ContMDiff I 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞) g)
@@ -421,7 +421,7 @@ private theorem morse_smooth_handle_attachment_relative {m : ℕ} {H : Type} [To
     {M : Type} [TopologicalSpace M] [ChartedSpace H M] [T2Space M] [SigmaCompactSpace M]
     (I : ModelWithCorners ℝ (MorseModel (m + 1)) H) [I.Boundaryless]
     [IsManifold I (⊤ : WithTop ℕ∞) M] (f : M → ℝ)
-    (hf : ContMDiff I 𝓘(ℝ, ℝ) (⊤ : WithTop ℕ∞) f)
+    (hf : ContMDiff I 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞) f)
     (p : M) (c : ℝ) (k : ℕ) (hk : k ≤ m + 1)
     (hnd : IsNondegenerateCriticalPointAt I f p)
     (hindex : sigNeg (chartHessianAt (g := fun y => f ((extChartAt I p).symm y)) (extChartAt I p p)) = k)
@@ -467,7 +467,7 @@ private theorem morse_smooth_handle_attachment_relative {m : ℕ} {H : Type} [To
                     (AttachingRegion k (m + 1 - k)) _ (attachingRegionChartedSpace k (m + 1 - k))
                     (MorseModel m) _ _ (MorseModel m) _
                     (𝓘(ℝ, MorseModel m)) (LevelSetSpace f (c - ε)) _
-                    (manifoldLevelSetChartedSpace I f (c - ε) (hf.of_le le_top) hreg_f)
+                    (manifoldLevelSetChartedSpace I f (c - ε) hf hreg_f)
                     (⊤ : ℕ∞)
                     φ₀ ∧
                   Topology.IsClosedEmbedding φ₀ ∧
@@ -788,7 +788,7 @@ private theorem morse_smooth_handle_attachment_relative {m : ℕ} {H : Type} [To
       (fromBase := ContinuousMap.mk (adjunctionLower (i := cellBoundaryInclusion k)
         (cellAttachingMap hk c data))
         (continuous_adjunctionLower (i := cellBoundaryInclusion k) (cellAttachingMap hk c data)))) :=
-    ⟨sublevelCellAdjunctionHomotopyEquivUnderOfMorseChart (I := I) (hf := hf)
+    ⟨sublevelCellAdjunctionHomotopyEquivUnderOfMorseChart (I := I) (hf := hf.continuous)
       (f := f) (c := c) (k := k) (hk := hk) (data := data) (g := g) hgmd hg_le hlow0 hcell hunion_sub
       hlow_invFun_val hgup v hv hsupp hdfOn hrate⟩
   refine ⟨ε₀, hε₀, hεa, g, hgmd, hg_le, ?_, ?_, v, hv, hsupp, ?_, hrate, Φ, ?_, ?_, ⟨η, hηpos, hηmain⟩,
@@ -821,7 +821,7 @@ private theorem morse_smooth_handle_attachment_relative {m : ℕ} {H : Type} [To
           linarith
         · exact hcrit
       rcases morse_smooth_handle_attachment_cell hk c ε₀ r₀ I f data hε₀ hr₀ hεr₀ hεr₀'
-        (hf.of_le le_top) hreg_f with
+        hf hreg_f with
         ⟨φ₀, hφ₀md, hφ₀cl, hφ₀rel⟩
       exact ⟨hreg_f, φ₀, hφ₀md, hφ₀cl, fun p => by
         have hrel := hφ₀rel p
@@ -844,7 +844,7 @@ private theorem morse_smooth_handle_attachment_relative_natural {m : ℕ} {H : T
     {M : Type} [TopologicalSpace M] [ChartedSpace H M] [T2Space M] [SigmaCompactSpace M]
     (I : ModelWithCorners ℝ (MorseModel (m + 1)) H) [I.Boundaryless]
     [IsManifold I (⊤ : WithTop ℕ∞) M] (f : M → ℝ)
-    (hf : ContMDiff I 𝓘(ℝ, ℝ) (⊤ : WithTop ℕ∞) f)
+    (hf : ContMDiff I 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞) f)
     (p : M) (c : ℝ) (k : ℕ) (hk : k ≤ m + 1)
     (hnd : IsNondegenerateCriticalPointAt I f p)
     (hindex : sigNeg (chartHessianAt (g := fun y => f ((extChartAt I p).symm y)) (extChartAt I p p)) = k)
@@ -890,7 +890,7 @@ private theorem morse_smooth_handle_attachment_relative_natural {m : ℕ} {H : T
                     (AttachingRegion k (m + 1 - k)) _ (attachingRegionChartedSpace k (m + 1 - k))
                     (MorseModel m) _ _ (MorseModel m) _
                     (𝓘(ℝ, MorseModel m)) (LevelSetSpace f (c - ε)) _
-                    (manifoldLevelSetChartedSpace I f (c - ε) (hf.of_le le_top) hreg_f)
+                    (manifoldLevelSetChartedSpace I f (c - ε) hf hreg_f)
                     (⊤ : ℕ∞)
                     φ₀ ∧
                   Topology.IsClosedEmbedding φ₀ ∧
@@ -933,7 +933,7 @@ theorem one_critical_point_cell_attachment {m : ℕ} {H : Type} [TopologicalSpac
     [TopologicalSpace M] [ChartedSpace H M] [T2Space M] [SigmaCompactSpace M]
     (I : ModelWithCorners ℝ (MorseModel (m + 1)) H) [I.Boundaryless]
     [IsManifold I (⊤ : WithTop ℕ∞) M] (f : M → ℝ)
-    (hf : ContMDiff I 𝓘(ℝ, ℝ) (⊤ : WithTop ℕ∞) f)
+    (hf : ContMDiff I 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞) f)
     (p : M) (c : ℝ) (k : ℕ) (hk : k ≤ m + 1)
     (hnd : IsNondegenerateCriticalPointAt I f p)
     (hindex : sigNeg (chartHessianAt (g := fun y => f ((extChartAt I p).symm y)) (extChartAt I p p)) = k)
@@ -956,11 +956,11 @@ theorem one_critical_point_cell_attachment {m : ℕ} {H : Type} [TopologicalSpac
       hrsq, δ₁, hδ₁₀, hδ₁r, φ, hφb, hφinj, hφcl, hsmooth, hmani, Ψ, hrel, ⟨φc, hcelladj⟩⟩
   exact ⟨ε, hε, hεa, φc, hcelladj⟩
 
-theorem morse_smooth_attaching_embedding {m : ℕ} {H : Type} [TopologicalSpace H]
+theorem exists_contMDiff_isClosedEmbedding_attachingRegion {m : ℕ} {H : Type} [TopologicalSpace H]
     {M : Type} [TopologicalSpace M] [ChartedSpace H M] [T2Space M] [SigmaCompactSpace M]
     (I : ModelWithCorners ℝ (MorseModel (m + 1)) H) [I.Boundaryless]
     [IsManifold I (⊤ : WithTop ℕ∞) M] (f : M → ℝ)
-    (hf : ContMDiff I 𝓘(ℝ, ℝ) (⊤ : WithTop ℕ∞) f)
+    (hf : ContMDiff I 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞) f)
     (p : M) (c : ℝ) (k : ℕ) (hk : k ≤ m + 1)
     (hnd : IsNondegenerateCriticalPointAt I f p)
     (hindex : sigNeg (chartHessianAt (g := fun y => f ((extChartAt I p).symm y)) (extChartAt I p p)) = k)
@@ -985,7 +985,7 @@ theorem morse_smooth_attaching_embedding {m : ℕ} {H : Type} [TopologicalSpace 
             (AttachingRegion k (m + 1 - k)) _ (attachingRegionChartedSpace k (m + 1 - k))
             (MorseModel m) _ _ (MorseModel m) _
             (𝓘(ℝ, MorseModel m)) (LevelSetSpace f (c - ε)) _
-            (manifoldLevelSetChartedSpace I f (c - ε) (hf.of_le le_top) hreg_f)
+            (manifoldLevelSetChartedSpace I f (c - ε) hf hreg_f)
             (⊤ : ℕ∞)
             φ₀ ∧
           Topology.IsClosedEmbedding φ₀ ∧
@@ -998,7 +998,6 @@ theorem morse_smooth_attaching_embedding {m : ℕ} {H : Type} [TopologicalSpace 
     hsmooth (inferInstance : NeZero k) (inferInstance : NeZero (m + 1 - k))⟩
 
 end ManifoldCellAttachment
-
 
 end
 end DifferentialGeometry.Topology.Morse

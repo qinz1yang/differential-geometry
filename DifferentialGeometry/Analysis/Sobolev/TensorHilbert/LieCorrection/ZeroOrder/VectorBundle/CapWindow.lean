@@ -2,6 +2,7 @@ import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.CovariantJet.Pointwis
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.LieCorrection.ZeroOrder.Coefficient.RadiusFreeDifference
 
 noncomputable section
+set_option backward.isDefEq.respectTransparency false
 
 set_option autoImplicit false
 

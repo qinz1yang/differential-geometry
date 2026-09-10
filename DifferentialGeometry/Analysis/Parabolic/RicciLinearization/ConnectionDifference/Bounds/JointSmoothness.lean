@@ -12,7 +12,7 @@ open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
-
+set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set Filter DifferentialGeometry.Tensor0SBundle MeasureTheory intervalIntegral
 open scoped Manifold Topology ContDiff BigOperators Matrix Interval
@@ -185,6 +185,7 @@ private theorem slotPermField_jointContMDiffOn {d : ℕ} (ρ : Equiv.Perm (Fin d
     (E := fun z : M => Tensor0SBundle.Tensor0SSpace d I z) p.1 t)
     (slotPermCLM_apply (I := I) ρ p.1 (Z p))
 
+set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
 private theorem tensorProdField_jointContMDiffOn (m k : ℕ) {S : Set ℝ}
@@ -260,6 +261,7 @@ private theorem tensorProdField_jointContMDiffOn (m k : ℕ) {S : Set ℝ}
     exact hpointwise p hx
   · exact hpointwise p₀ (by rw [← hx₀]; exact mem_baseSet_trivializationAt _ _ x₀)
 
+set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [SigmaCompactSpace M] in
 private theorem connContrField_jointContMDiffOn (m k : ℕ) {S : Set ℝ}
@@ -338,6 +340,7 @@ private theorem connContrField_jointContMDiffOn (m k : ℕ) {S : Set ℝ}
   exact congrArg (fun t => TotalSpace.mk' (Tensor0SBundle.Tensor0SModel (m + 1 + k) ℝ E)
     (E := fun z : M => Tensor0SBundle.Tensor0SSpace (m + 1 + k) I z) p.1 t) rfl
 
+set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 private theorem connectionDifferenceSection_metricPerturbationPath_jointContMDiffOn
     (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
@@ -457,6 +460,7 @@ private theorem covGradConnectionDifference_metricPerturbationPath_jointContMDif
     (connectionDifferenceSection_metricPerturbationPath_jointContMDiffOn (I := I) g₀ T T' hδ hδ')
   exact h
 
+set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 private theorem order1CLM_metricPerturbationPath_jointContMDiffOn
     (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
@@ -510,6 +514,7 @@ private theorem order1CLM_metricPerturbationPath_jointContMDiffOn
     (E := fun z : M => Tensor0SBundle.Tensor0SSpace 4 I z) p.1 t) rfl
 
 omit [SigmaCompactSpace M] in
+set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem order0CLM_metricPerturbationPath_jointContMDiffOn
     (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
@@ -598,6 +603,7 @@ private theorem order0CLM_metricPerturbationPath_jointContMDiffOn
   exact congrArg (fun t => TotalSpace.mk' (Tensor0SBundle.Tensor0SModel 4 ℝ E)
     (E := fun z : M => Tensor0SBundle.Tensor0SSpace 4 I z) p.1 t) rfl
 
+set_option backward.isDefEq.respectTransparency false in
 omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 theorem fourTrace_joint
@@ -635,6 +641,7 @@ theorem fourTrace_joint
   exact congrArg (fun t => TotalSpace.mk' (Tensor0SBundle.Tensor0SModel 2 ℝ E)
     (E := fun z : M => Tensor0SBundle.Tensor0SSpace 2 I z) p.1 t) rfl
 
+set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem linearizedRicciConnectionDifferenceOrder1Fib_metricPerturbationPath_jointContMDiffOn
     (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
@@ -692,6 +699,7 @@ theorem linearizedRicciConnectionDifferenceOrder1Fib_metricPerturbationPath_join
   rw [hvalue p]
 
 omit [SigmaCompactSpace M] in
+set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem linearizedRicciConnectionDifferenceOrder0Fib_metricPerturbationPath_jointContMDiffOn
     (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)

@@ -4,7 +4,7 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Embedding.Incl
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.CovariantJet.Interpolation
 
 noncomputable section
-
+set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped BigOperators Manifold ContDiff
@@ -301,6 +301,7 @@ noncomputable def LowerScaleActionCoefficients.firstOrderCoefficientDifference
   secondOrderCoefficient := 0
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 theorem LowerScaleActionCoefficients.firstOrderCoefficientDifference_firstOrderAction
     {g : SmoothRiemannianMetric I M}
     (A B : LowerScaleActionCoefficients g) (W : SmoothCcTensor g 0 2) :

@@ -14,7 +14,7 @@ open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
-
+set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
@@ -50,6 +50,7 @@ private abbrev jet
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M]
     [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 private theorem low_grid_nonneg
     (g : SmoothRiemannianMetric I M) (P : SmoothCcTensor g 0 2)
     (k : ℕ) (x : M) :
@@ -573,6 +574,7 @@ private theorem lie_kappa_unit
   exact metricConnectionDifferenceLoweredFib_toModel (I := I) g₁ gB g₁ x m
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 private theorem lie_kappa_eq
     (g₀ g₁ gB : SmoothRiemannianMetric I M) :
     deTurckLieFirstOrderBackgroundLoweredConnectionDifference (I := I) (M := M) g₀ g₁ gB =
@@ -681,6 +683,7 @@ private theorem inner_inv_mixed
   rw [g₀.symm x v (inverseMetricSharpFib (I := I) g₁ x om)]
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+set_option backward.isDefEq.respectTransparency false in
 omit [I.Boundaryless] in
 private theorem sharp_eq_insert
     (g₀ g₁ : SmoothRiemannianMetric I M) :
@@ -751,6 +754,7 @@ private theorem fullRaised_split
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
   [SigmaCompactSpace M] in
+set_option backward.isDefEq.respectTransparency false in
 private theorem insert_add
     (g₀ : SmoothRiemannianMetric I M) (s : ℕ)
     (A B : ContMDiffSection I (E →L[ℝ] E) ∞
@@ -1533,7 +1537,6 @@ theorem deTurckLieFirstOrder_h2_tame_bound
     ring
   rw [← hfactor]
   simpa only [Q9] using hAll
-
 
 theorem deTurckLieFirstOrder_h2_uniform_bound
     (hDim : Module.finrank ℝ E = 3)

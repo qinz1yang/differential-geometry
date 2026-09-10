@@ -34,6 +34,21 @@ private theorem path_integral_subtype_val
   rw [hc, mfderiv_subtype_val]
   rfl
 
+theorem riemannianEDistOf_le_restrictOpen
+    (g : SmoothRiemannianMetric I M) (U : TopologicalSpace.Opens M)
+    [T2Space U] (x y : U) :
+    riemannianEDistOf (I := I) g (x : M) (y : M) ≤
+      riemannianEDistOf (I := I) (g.restrictOpen (I := I) U) x y := by
+  rw [edistOf_iInf, edistOf_iInf]
+  refine le_iInf fun gamma => ?_
+  refine le_iInf fun hgamma => ?_
+  let gammaM : Path (x : M) (y : M) := gamma.map continuous_subtype_val
+  have hgammaM : CMDiff 1 gammaM :=
+    (contMDiff_subtype_val (I := I) (U := U)).comp hgamma
+  refine iInf_le_of_le gammaM (iInf_le_of_le hgammaM ?_)
+  exact le_of_eq (by
+    simpa only [gammaM] using path_integral_subtype_val g U gamma hgamma)
+
 theorem riemannianEDistOf_restrictOpen_of_isClosed
     (g : SmoothRiemannianMetric I M) (U : TopologicalSpace.Opens M) [T2Space U]
     (hU : IsClosed (U : Set M)) (x y : U) :

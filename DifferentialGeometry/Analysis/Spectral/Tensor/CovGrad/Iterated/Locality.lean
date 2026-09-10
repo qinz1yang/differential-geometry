@@ -6,7 +6,7 @@ open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
-
+set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
@@ -30,6 +30,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
 theorem covGrad_toSection_apply_congr_of_eventuallyEq
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     {G₁ G₂ : SmoothCcTensor g r s} {x : M}
@@ -45,6 +46,7 @@ theorem covGrad_toSection_apply_congr_of_eventuallyEq
     (G₂.toSection.contMDiff.mdifferentiableAt (by simp))
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
 theorem covGrad_toSection_eventuallyEq_of_eventuallyEq
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     {G₁ G₂ : SmoothCcTensor g r s} {x : M}
@@ -57,6 +59,7 @@ theorem covGrad_toSection_eventuallyEq_of_eventuallyEq
     (G₁ := G₁) (G₂ := G₂) (x := y) hy
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
 theorem iteratedCovGrad_toSection_apply_congr_of_eventuallyEq
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     {G₁ G₂ : SmoothCcTensor g r s} {x : M}
@@ -82,6 +85,7 @@ theorem iteratedCovGrad_toSection_apply_congr_of_eventuallyEq
   exact (hev k).self_of_nhds
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
 theorem riemannianFiberNormSq_iteratedCovGrad_toSection_congr_of_eventuallyEq
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     {G₁ G₂ : SmoothCcTensor g r s} {x : M}

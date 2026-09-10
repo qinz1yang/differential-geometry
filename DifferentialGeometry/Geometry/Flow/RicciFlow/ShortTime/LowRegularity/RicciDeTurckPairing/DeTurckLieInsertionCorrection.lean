@@ -3,7 +3,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Ricc
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.CovariantJet.Naturality
 
 noncomputable section
-
+set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
@@ -538,7 +538,6 @@ private theorem covariantJetNormSq_two_cometricRaiseSlot0Field
   apply Finset.sum_congr rfl
   intro q _
   rw [norm_iteratedCovGrad_cometricRaiseSlot0Field_eq]
-
 
 theorem exists_deTurckLieInsertionCorrection_covariantJetNormSq_tame_difference_bound
     (hDim : Module.finrank ℝ E = 3)

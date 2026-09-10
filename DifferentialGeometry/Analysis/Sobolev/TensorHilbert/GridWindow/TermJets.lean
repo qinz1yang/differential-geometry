@@ -2,6 +2,7 @@ import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.GridWindow.Marked
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.GridWindow.SelfLowCap
 
 noncomputable section
+set_option backward.isDefEq.respectTransparency false
 
 set_option autoImplicit false
 

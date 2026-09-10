@@ -5,7 +5,7 @@ import DifferentialGeometry.Analysis.Sobolev.Manifold.Embedding.Iterated
 open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
-
+set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
@@ -342,6 +342,7 @@ abbrev FineWkpArray (ι : Type*) (r s k : ℕ) (p : ℝ≥0∞)
   infer_instance
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] in
+omit [FiniteDimensional ℝ E] in
 theorem fineWkpComplete
     (ι : Type*) [Fintype ι] (r s k : ℕ) {p : ℝ≥0∞}
     (hp : 1 ≤ p) :

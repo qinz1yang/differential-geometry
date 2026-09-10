@@ -8,9 +8,8 @@ open DifferentialGeometry.Geometry.Connection.Realization DifferentialGeometry.T
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 
-
 noncomputable section
-
+set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set Filter DifferentialGeometry.Tensor0SBundle MeasureTheory intervalIntegral
 open scoped Manifold Topology ContDiff BigOperators Matrix Interval
@@ -41,6 +40,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
+set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
 private theorem domDomCongrSectionContMDiff {d : ℕ} (ρ : Equiv.Perm (Fin d))
@@ -75,7 +75,6 @@ private theorem domDomCongrSectionContMDiff {d : ℕ} (ρ : Equiv.Perm (Fin d))
   rw [ContinuousMultilinearMap.domDomCongr_apply]
   rfl
 
-
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
 theorem slotPermCLM_field_contMDiff {d : ℕ} (ρ : Equiv.Perm (Fin d))
@@ -92,6 +91,7 @@ theorem slotPermCLM_field_contMDiff {d : ℕ} (ρ : Equiv.Perm (Fin d))
     (E := fun z : M => Tensor0SBundle.Tensor0SSpace d I z) x t)
     (slotPermCLM_apply (I := I) ρ x (Z x))
 
+set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
 private theorem tensorProdWithCLM_field_contMDiff (m k : ℕ)
@@ -138,6 +138,7 @@ private theorem tensorProdWithCLM_field_contMDiff (m k : ℕ)
   rw [Bundle.continuousMultilinearMap.modelProduct_apply]
   rfl
 
+set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
 theorem connContrCLM_field_contMDiff (m k : ℕ)
@@ -197,6 +198,7 @@ theorem connContrCLM_field_contMDiff (m k : ℕ)
   exact congrArg (fun t => TotalSpace.mk' (Tensor0SBundle.Tensor0SModel (m + 1 + k) ℝ E)
     (E := fun z : M => Tensor0SBundle.Tensor0SSpace (m + 1 + k) I z) x t) rfl
 
+set_option backward.isDefEq.respectTransparency false in
 omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
@@ -240,6 +242,8 @@ theorem linearizedRicciConnectionDifferenceOrder1CLM_field_contMDiff
     (E := fun z : M => Tensor0SBundle.Tensor0SSpace 4 I z) x t) rfl
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
+set_option backward.isDefEq.respectTransparency false in
+omit [NeZero (Module.finrank ℝ E)] in
 theorem linearizedRicciConnectionDifferenceOrder0CLM_field_contMDiff
     (g₀ g₁ : SmoothRiemannianMetric I M)
     (Z : ∀ x : M, Tensor0SBundle.Tensor0SSpace 2 I x)
@@ -319,6 +323,7 @@ theorem linearizedRicciConnectionDifferenceOrder0CLM_field_contMDiff
   simp only [add_apply, sub_apply, ContinuousLinearMap.comp_apply]
   rfl
 
+set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
 omit [I.Boundaryless] in
@@ -366,6 +371,7 @@ noncomputable def linearizedRicciConnectionDifferenceOrder0CometricTracedCLM
       ((covGrad (I := I) (M := M) g₀ 1 2 (connectionDifferenceSection (I := I) g₁ g₀)).toSection x))
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
 @[simp] theorem linearizedRicciConnectionDifferenceOrder0CometricTracedCLM_apply
     (g₀ g₁ : SmoothRiemannianMetric I M) (x : M) (D : Tensor0SBundle.Tensor0SSpace 2 I x) :
     linearizedRicciConnectionDifferenceOrder0CometricTracedCLM (I := I) g₀ g₁ x D =
@@ -376,6 +382,7 @@ omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
             (connectionDifferenceSection (I := I) g₁ g₀)).toSection x) D) := by
   rw [linearizedRicciConnectionDifferenceOrder0CometricTracedCLM, ContinuousLinearMap.comp_apply]
 
+set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
 omit [I.Boundaryless] in
@@ -402,8 +409,8 @@ theorem linearizedRicciConnectionDifferenceOrder1CometricTracedCLM_contMDiff
   rw [linearizedRicciConnectionDifferenceOrder1CometricTracedCLM,
     ContinuousLinearMap.comp_apply]
 
-
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
 theorem linearizedRicciConnectionDifferenceOrder0CometricTracedCLM_contMDiff
     (g₀ g₁ : SmoothRiemannianMetric I M) :
     ContMDiff I (I.prod 𝓘(ℝ, Tensor0SBundle.TensorRSModel 2 2 ℝ E)) ∞
@@ -447,7 +454,6 @@ noncomputable def linearizedRicciConnectionDifferenceOrder0CoeffField
       contMDiff_toFun := linearizedRicciConnectionDifferenceOrder0CometricTracedCLM_contMDiff (I := I) g₀ g₁ }
   hasCompactSupport := HasCompactSupport.of_compactSpace _
 
-
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
 omit [I.Boundaryless] in
@@ -457,8 +463,8 @@ omit [I.Boundaryless] in
       (show Tensor0SBundle.TensorRSSpace 3 2 I x from
         linearizedRicciConnectionDifferenceOrder1CometricTracedCLM (I := I) g₀ g₁ x) := rfl
 
-
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
 @[simp] theorem linearizedRicciConnectionDifferenceOrder0CoeffField_toSection
     (g₀ g₁ : SmoothRiemannianMetric I M) (x : M) :
     (linearizedRicciConnectionDifferenceOrder0CoeffField (I := I) (M := M) g₀ g₁).toSection x =
@@ -484,6 +490,7 @@ def linearizedRicciConnectionDifferenceOrder0Coeff (g₀ : SmoothRiemannianMetri
     (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s)
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
 @[simp] theorem linearizedRicciConnectionDifferenceOrder0Coeff_toSection
     (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀
@@ -495,7 +502,6 @@ omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
       (show Tensor0SBundle.TensorRSSpace 2 2 I x from
         linearizedRicciConnectionDifferenceOrder0CometricTracedCLM (I := I) g₀
           (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x) := rfl
-
 
 omit [SigmaCompactSpace M] in
 theorem linearizedRicciConnectionDifferenceOrder0Coeff_eq_base_add_sub
@@ -510,9 +516,9 @@ theorem linearizedRicciConnectionDifferenceOrder0Coeff_eq_base_add_sub
             - linearizedRicciOrderZeroBaseCoeff (I := I) g₀ T T' hδ hδ' s) := by
   abel
 
-
-omit [NeZero (Module.finrank ℝ E)] in
 omit [I.Boundaryless] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
+omit [I.Boundaryless] in
 theorem linearizedRicciConnectionDifferenceOrder1Coeff_eq_base_add_sub
     (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)

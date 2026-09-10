@@ -86,6 +86,7 @@ theorem ricci_riemannianFiberNormSq_le
       simp only [ricciJetC]
       ring
 
+set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 omit [I.Boundaryless] in
 theorem traceCoeff_sub_eq
@@ -126,8 +127,8 @@ theorem trace_riemannianFiberNormSq_le
       traceHessianSlotPerm i x]
   exact pcc_riemannianFiberNormSq_le (I := I) (M := M) g₀ g₁ i x
 
-omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 omit [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 private theorem jetL2_of_riemannianFiberNormSq
     (g : SmoothRiemannianMetric I M) (A : SmoothCcTensor g 4 2)
     (B : SmoothCcTensor g 2 2) (C : ℝ) (i : ℕ)

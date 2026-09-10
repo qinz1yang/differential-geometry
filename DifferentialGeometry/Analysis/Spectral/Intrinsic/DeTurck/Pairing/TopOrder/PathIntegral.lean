@@ -4,7 +4,7 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.RHS.Decompositio
 import DifferentialGeometry.Geometry.Metric.TensorInner.TensorRS.RiemannianBundle
 
 noncomputable section
-
+set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set Filter DifferentialGeometry.Tensor0SBundle MeasureTheory intervalIntegral
 open scoped BigOperators Manifold Topology ContDiff RealInnerProductSpace
@@ -374,6 +374,7 @@ private theorem edgePartner_joint
   simpa only [topOrderBilinearPairingAdjointCoefficient] using hPerm
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 theorem ricciDeTurckTopOrderPairingCoefficient_joint_contDiff
     (g : SmoothRiemannianMetric I M) (T U : SmoothCcTensor g 0 2)
     {delta : Real}
@@ -618,6 +619,7 @@ private theorem path_app_zero
   simp only [Psi, operatorFieldComposition_zero_eq_operatorFieldApply]
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 theorem ricciDeTurckTopOrderPathIntegralCoefficient_apply
     (g : SmoothRiemannianMetric I M) (T U P : SmoothCcTensor g 0 2)
     {delta : Real} (hdelta_lt : delta < 1)

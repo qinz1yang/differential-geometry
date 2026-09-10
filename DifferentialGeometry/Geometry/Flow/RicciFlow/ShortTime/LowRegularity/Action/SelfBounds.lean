@@ -4,6 +4,7 @@ import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.RicciDeTurck.Remainde
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.GridWindow.LieCorrectionJets
 
 noncomputable section
+set_option backward.isDefEq.respectTransparency false
 
 set_option autoImplicit false
 
@@ -53,6 +54,7 @@ private lemma half_sq_three_term_le
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
     [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 private lemma sieSplit (g₀ g₁ : SmoothRiemannianMetric I M) (s : ℕ) :
     slotInsertEndoCc (I := I) (M := M) g₀ s
         (metricComparisonEndomorphismField (I := I) (M := M) g₀ g₁) =
@@ -163,6 +165,7 @@ private theorem endoAntidiagonalTupleGridWindow (g₀ : SmoothRiemannianMetric I
   nlinarith [hA, hB, hWnn]
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 private lemma clSplit (g₀ : SmoothRiemannianMetric I M) :
     ∃ Z : SmoothCcTensor g₀ 3 3, ∀ g₁ : SmoothRiemannianMetric I M,
       connectionDifferenceLowOrderOperator (I := I) (M := M) g₀ g₁ =
@@ -524,6 +527,7 @@ private theorem pairCap (g₀ : SmoothRiemannianMetric I M)
     (capApp (I := I) (M := M) g₀ P _ _ hK2_nn hK4_nn hP2 hP4)
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
 private lemma curvSmul (g₀ : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g₀ 0 2) (t : ℝ) :
     riemannCurvatureCoefficientField (I := I) (M := M) g₀ (t • T) = t • riemannCurvatureCoefficientField (I := I) (M := M) g₀ T := by
@@ -1336,6 +1340,7 @@ theorem lieCovJet (hDim : Module.finrank ℝ E = 3)
 
 open DifferentialGeometry.Analysis.Spectral.CurvatureCoefficientDifferenceJetTower in
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
 private lemma sieZero (g₀ : SmoothRiemannianMetric I M) (s : ℕ) :
     covGrad (I := I) (M := M) g₀ (s + 1) (s + 1)
         (slotInsertEndoCc (I := I) (M := M) g₀ s
@@ -1389,6 +1394,7 @@ private lemma permRe (g₀ : SmoothRiemannianMetric I M) {d : ℕ}
   rw [slotPermCLM_apply]
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 private lemma clZ (g₀ g₁ : SmoothRiemannianMetric I M) :
     connectionDifferenceLowOrderOperator (I := I) (M := M) g₀ g₁ =
       ccOperatorFieldComp (I := I) (M := M) g₀ 3 3 3 (permCoeff (I := I) (M := M) g₀ connectionDifferenceLowOrderPermutation)

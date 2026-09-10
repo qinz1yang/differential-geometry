@@ -30,9 +30,8 @@ open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 open DifferentialGeometry.Geometry.Operator
 
-
 noncomputable section
-
+set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set Filter DifferentialGeometry.Tensor0SBundle MeasureTheory
 open scoped Manifold Topology ContDiff BigOperators
@@ -68,7 +67,6 @@ private lemma real_sq_add_three_le {a b c K0 K1 K2 W : ℝ}
     h0, h1, h2, _ha, _hb, _hc, mul_nonneg _hK0 _hW, mul_nonneg _hK1 _hW, mul_nonneg _hK2 _hW]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
-
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 omit [BoundarylessManifold I M] in
@@ -118,7 +116,6 @@ private lemma coeffOpApply_slotSwapField_eq_apply_of_symm (g₀ : SmoothRiemanni
             (unitTensor (I := I) (M := M) x)))) from rfl]
   rw [hswapfix]
   rfl
-
 
 theorem exists_riemannPalatini_decomposition_identity_with_bounds
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
@@ -650,7 +647,6 @@ theorem riemannPalatiniDecompositionC2Family_riemannianFiberNormSq_le
     sq_nonneg (fC * (δ / (1 - δ) ^ 2)),
     mul_nonneg (mul_nonneg hδ0 hδ0) (sq_nonneg (fC * (δ / (1 - δ) ^ 2)))]
 
-
 theorem exists_riemannPalatiniDecompositionC2Family_l2JetWindow
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
@@ -776,7 +772,6 @@ theorem exists_riemannPalatiniDecompositionC2Family_l2JetWindow
           ‖iteratedCovGrad (I := I) g₀ 0 2 j T‖ ^ 2)) := by ring
   rw [hexp]
   linarith [hG0w, hG1w, hG2w, hG3w]
-
 
 theorem exists_deTurckLieCovariantDerivativeDecompositionC2Family_cap_l2JetWindow
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
@@ -1041,7 +1036,6 @@ theorem exists_deTurckLieCovariantDerivativeDecompositionC2Family_cap_l2JetWindo
     exact real_sq_add_three_le (norm_nonneg G0) (norm_nonneg G1) (norm_nonneg G2)
       hG0 hG1 hG2 (hK0_nn i) (hK1_nn i) (hK2_nn i) hwin_nn
 
-
 theorem exists_deTurckLieCovariantDerivativeTerm_curvatureDecomposition_with_bounds
     (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
@@ -1103,7 +1097,6 @@ theorem exists_deTurckLieCovariantDerivativeTerm_curvatureDecomposition_with_bou
     refine le_trans (henv2 i s hs) (mul_le_mul_of_nonneg_right (le_max_right _ _) ?_)
     positivity
 
-
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
@@ -1130,7 +1123,6 @@ theorem deTurckVF_background_sub_eq_connectionDifference_trace
   rw [PDE.DeTurck.connectionDifference_cocycle (I := I) gB g₁ gA x
       (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x j x) (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x k x),
     add_sub_cancel_left]
-
 
 theorem exists_deTurckLieEndoTerm_backgroundDifference_perOrder_l2_tameEnvelope
     (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ)
@@ -1182,7 +1174,6 @@ theorem exists_deTurckLieEndoTerm_backgroundDifference_perOrder_l2_tameEnvelope
     have hK_nn : 0 ≤ C i * ∑ k ∈ Finset.range (i + 2), Kg k :=
       mul_nonneg (hC_nn i) (Finset.sum_nonneg fun k _ => hKg_nn k)
     nlinarith only [hwin_nn, hK_nn]
-
 
 theorem exists_deTurckLieEndoTerm_backgroundDifference_l2JetWindow
     (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ)
@@ -1249,7 +1240,6 @@ theorem exists_deTurckLieEndoTerm_backgroundDifference_l2JetWindow
   have h1 : |s| ^ 2 ≤ 1 := by nlinarith only [abs_nonneg s, habs]
   nlinarith only [sq_nonneg ‖iteratedCovGrad (I := I) g₀ 0 2 j T‖, h1,
     norm_nonneg (iteratedCovGrad (I := I) g₀ 0 2 j T)]
-
 
 theorem exists_deTurckLieEndoTerm_backgroundDifference_order0_bounds
     (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ)
@@ -1323,8 +1313,8 @@ theorem exists_deTurckLieEndoTerm_backgroundDifference_order0_bounds
     refine le_trans (riemannianFiberNormSq_sub_le (I := I) (M := M) g₀ 2 2 x _ _) ?_
     linarith [h1, h2]
 
-
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
 theorem covDerivConnectionDifference_metricPerturbationPath_zero_endpoint_eq_smul_covDerivSharp
     (g₀ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)

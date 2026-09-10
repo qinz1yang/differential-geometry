@@ -14,8 +14,8 @@ import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Scalar.HeatPoten
 import DifferentialGeometry.Analysis.Heat.Smoothing.Scalar.MildSolution
 import DifferentialGeometry.Analysis.Parabolic.Harnack.LiYauHarnack
 
-
 noncomputable section
+set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter
 open scoped Manifold Topology ContDiff ENNReal BigOperators
@@ -3319,7 +3319,6 @@ theorem scalarForcingCoeff_contDiff
     (scalarEigenFunctionLp g i)).contDiff.comp hf
 
 section jointSmoothness
-
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M]
   [SigmaCompactSpace M] [CompactSpace M] in

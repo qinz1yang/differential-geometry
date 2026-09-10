@@ -14,7 +14,7 @@ open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
-
+set_option backward.isDefEq.respectTransparency false
 
 open MeasureTheory Set Filter Topology Bundle Manifold DifferentialGeometry.Tensor0SBundle
     ContinuousLinearMap
@@ -180,8 +180,9 @@ private theorem deTurckLieCovariantDerivativeInsertionField_eq_slotInsert_sum
           (deTurckVectorFieldCovariantDerivativeEndomorphism (I := I) g₁ g_bg x) (m z)) hswap0
   rw [harg]
 
-omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
+omit [BoundarylessManifold I M] in
+omit [NeZero (Module.finrank ℝ E)] in
 private theorem normSq_iteratedCovGrad_le_scaled_of_pointwise
     (g₀ : SmoothRiemannianMetric I M) (X : SmoothCcTensor g₀ 2 2) (Y : SmoothCcTensor g₀ 1 1)
     (i : ℕ) (c : ℝ)

@@ -24,10 +24,8 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 noncomputable section
 
-
 def spacetimeSlab (T : Real) : Set (Real × M) :=
   Set.Icc 0 T ×ˢ Set.univ
-
 
 theorem parabolic_const_sub
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
@@ -614,7 +612,6 @@ theorem parabolic_exp_rescale_nonneg_of_potential
     mul_nonneg (sub_nonneg.mpr hV) hv_nonneg
   linarith
 
-
 structure ParabolicUpperSupportAt
     (G : MetricConnectionFamily (I := I) (M := M) Real)
     (T : Real)
@@ -668,6 +665,30 @@ private theorem derivWithin_nonpos_at_Icc_min_of_pos
   rw [hlin] at hnonneg
   exact nonpos_of_mul_nonneg_right hnonneg htneg
 
+theorem derivWithin_nonneg_at_Icc_max_of_pos
+    {ψ : Real → Real} {T t : Real}
+    (hmax : IsLocalMaxOn ψ (Set.Icc 0 T) t)
+    (ht : t ∈ Set.Icc 0 T) (htpos : 0 < t) :
+    0 ≤ derivWithin ψ (Set.Icc 0 T) t := by
+  have hdir : (0 : Real) - t ∈ posTangentConeAt (Set.Icc 0 T) t := by
+    have hseg : segment Real t 0 ⊆ Set.Icc 0 T := by
+      rw [segment_symm, segment_eq_Icc ht.1]
+      intro y hy
+      exact ⟨hy.1, hy.2.trans ht.2⟩
+    exact sub_mem_posTangentConeAt_of_segment_subset hseg
+  have hnonpos :
+      (fderivWithin Real ψ (Set.Icc 0 T) t : Real →L[Real] Real) (0 - t) ≤ 0 :=
+    hmax.fderivWithin_nonpos hdir
+  have hlin :
+      (fderivWithin Real ψ (Set.Icc 0 T) t : Real →L[Real] Real) (0 - t) =
+        (0 - t) * derivWithin ψ (Set.Icc 0 T) t := by
+    rw [← fderivWithin_derivWithin (𝕜 := Real) (f := ψ) (s := Set.Icc 0 T) (x := t)]
+    simpa [smul_eq_mul] using
+      ((fderivWithin Real ψ (Set.Icc 0 T) t : Real →L[Real] Real).map_smul
+        (0 - t) (1 : Real))
+  have htneg : (0 : Real) - t < 0 := sub_neg.mpr htpos
+  rw [hlin] at hnonpos
+  exact nonneg_of_mul_nonpos_right hnonpos htneg
 
 omit [TopologicalSpace M] in
 private theorem derivWithin_add_eps_mul_time
@@ -688,7 +709,6 @@ private theorem derivWithin_add_eps_mul_time
     ring
   rw [derivWithin_fun_add hw hlinear]
   rw [hderiv_linear]
-
 
 theorem strict_barrier_nonnegative_of_positive_time
     [I.Boundaryless]
@@ -2110,7 +2130,6 @@ theorem scalar_weak_maximum_principle_supersolutions_of_lipschitz_on_values_of_r
 def scalarValueSet (u : Real -> M -> Real) (c : Real -> Real) (t : Real) : Set Real :=
   Set.range (fun x : M => u t x) ∪ {c t}
 
-
 theorem scalarValueSet_isCompact_of_continuous
     [CompactSpace M]
     (u : Real -> M -> Real) (c : Real -> Real) (t : Real)
@@ -2174,7 +2193,6 @@ theorem exists_time_dependent_lipschitz_bound_on_values
       rfl
     exact Classical.choose_spec (hExists t ht) (u t x) hu_mem (c t) hc_mem
 
-
 omit [TopologicalSpace M] in
 theorem exists_time_dependent_lipschitz_bound_on_values_of_locallyLipschitz
     (F : Real -> Real -> Real)
@@ -2190,11 +2208,9 @@ theorem exists_time_dependent_lipschitz_bound_on_values_of_locallyLipschitz
   exact exists_time_dependent_lipschitz_bound_on_values (M := M) F u c T
     (fun t ht => (hF t ht).locallyLipschitzOn) hcompact
 
-
 def scalarWeakMaximumPrincipleValueSet (T : Real) (u : Real -> M -> Real)
     (c : Real -> Real) : Set Real :=
   (fun p : Real × M => u p.1 p.2) '' spacetimeSlab (M := M) T ∪ c '' Set.Icc 0 T
-
 
 omit [TopologicalSpace M] in
 theorem scalarWeakMaximumPrincipleValueSet_u_mem
@@ -2204,7 +2220,6 @@ theorem scalarWeakMaximumPrincipleValueSet_u_mem
   left
   refine ⟨(t, x), ?_, rfl⟩
   exact ⟨ht, trivial⟩
-
 
 omit [TopologicalSpace M] in
 theorem scalarWeakMaximumPrincipleValueSet_c_mem

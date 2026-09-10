@@ -43,6 +43,8 @@ private local instance tensorRSNormedAddCommGroupOfRiemannianBundle
     (E := fun y : M => TensorRSSpace r s I y) x
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
+set_option backward.isDefEq.respectTransparency false in
 private theorem covGrad_connectionDifferenceSection_flat_eval_eq_inner
     (g₂ g₁ : SmoothRiemannianMetric I M) (x : M) (v w u : TangentSpace I x) :
     Tensor0SSpace.toModel
@@ -224,7 +226,6 @@ theorem sqrt_normSq0S_comp
     _ = Real.sqrt (Λ ^ s) * Real.sqrt (Tensor0SBundle.normSq0S (I := I) g₂ x s A) := by
         rw [Real.sqrt_mul (pow_nonneg (le_trans zero_le_one hEq.1) s)]
 
-
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 private theorem lcDiff_covOne_le
     {K : Set M} (g h : SmoothRiemannianMetric I M) {C : ℝ}
@@ -241,7 +242,6 @@ private theorem lcDiff_covOne_le
     exists_diagInv_of_metricUniformEquivalentOn (I := I)
       (metricUniformEquivalentOn_symm (I := I) hEq) hx
   exact diff_le_covOne_basis_ref_lc (I := I) h g hx C hEq basis hhinv
-
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 theorem connectionDifference_gJet_le
@@ -340,7 +340,6 @@ theorem connectionDifference_gJet_le
       linear_combination
         (3 / 2 * Λ' * (Real.sqrt Λ ^ 2 + Λ) *
           (Real.sqrt (g₂.inner x w w) * Real.sqrt (g₂.inner x u u)) * Λ) * hs2
-
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [SigmaCompactSpace M] in
 theorem covDerivConnectionDifference_g1_le
@@ -509,7 +508,6 @@ theorem covDerivConnectionDifference_g1_le
       nlinarith [hkos, hT1, hT2, hT3, hT4', habs1, habs2, habs3, habs4]
     have hdiv := le_of_mul_le_mul_left hmul hSBpos
     linarith
-
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [SigmaCompactSpace M] in
 theorem covDerivConnectionDifference_gJet_le

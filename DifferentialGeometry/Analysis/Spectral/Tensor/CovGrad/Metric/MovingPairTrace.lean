@@ -5,7 +5,6 @@ import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.MetricPerturbation.Co
 
 noncomputable section
 
-
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic
@@ -78,6 +77,7 @@ private lemma slotExtend_toModel_cons
     (show Tensor0SSpace r I x →L[ℝ] Tensor0SSpace s I x from
       Phi.toSection x) D v0 vs
 
+set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 private lemma slotExtendTwo_toModel
     (g : SmoothRiemannianMetric I M) (X : SmoothCcTensor g 0 4)

@@ -24,9 +24,8 @@ open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 open DifferentialGeometry.Geometry.Operator
 
-
 noncomputable section
-
+set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set Filter DifferentialGeometry.Tensor0SBundle MeasureTheory
 open scoped Manifold Topology ContDiff BigOperators
@@ -54,7 +53,6 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
-
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
 lemma riemannianFiberNormSq_addsub4_le (g : SmoothRiemannianMetric I M)
     (r s : ℕ) (x : M) (u v w z : TensorRSSpace r s I x) :
@@ -74,7 +72,6 @@ lemma riemannianFiberNormSq_addsub4_le (g : SmoothRiemannianMetric I M)
   have huv := riemannianFiberNormSq_add_le (I := I) (M := M) g r s x u v
   have hwz := riemannianFiberNormSq_add_le (I := I) (M := M) g r s x w z
   linarith
-
 
 omit [BoundarylessManifold I M] in
 omit [I.Boundaryless] in
@@ -152,6 +149,7 @@ private def backgroundRiemannCommWeightKernel (g₀ : SmoothRiemannianMetric I M
       (slotExtendIter (I := I) (M := M) g₀ 0 4 2
         (riemannLoweredCc (I := I) (M := M) g₀ g₀ g₀)))
 
+set_option backward.isDefEq.respectTransparency false in
 omit [SigmaCompactSpace M] in
 omit [I.Boundaryless] in
 private lemma palatiniBackgroundRTermWeight_toModel (g₀ : SmoothRiemannianMetric I M) (x : M)
@@ -232,6 +230,7 @@ private lemma palatiniBackgroundRTermWeight_toModel (g₀ : SmoothRiemannianMetr
     Matrix.cons_val_two, Matrix.tail_cons, Matrix.cons_val_three,
     ContinuousLinearEquiv.symm_apply_apply]
 
+set_option backward.isDefEq.respectTransparency false in
 omit [I.Boundaryless] [SigmaCompactSpace M] in
 private theorem palatiniBackgroundRComm_eq_decomposition (g₀ g : SmoothRiemannianMetric I M) :
     ricciOrderZeroBackgroundCurvatureCoeffField (I := I) (M := M) g₀ g =
@@ -451,6 +450,7 @@ def palatiniRicciContractionWeightB (g₀ : SmoothRiemannianMetric I M)
         (slotExtendIter (I := I) (M := M) g₀ 0 4 2
           (riemannLoweredCc (I := I) (M := M) g₀ g₀ g₀)) S))
 
+set_option backward.isDefEq.respectTransparency false in
 omit [SigmaCompactSpace M] in
 omit [I.Boundaryless] in
 private lemma palatiniRicciContractionWeight_unitModel_gen (g₀ : SmoothRiemannianMetric I M)
@@ -555,6 +555,7 @@ private lemma palatiniRicciContractionWeight_unitModel_gen (g₀ : SmoothRiemann
   rw [hYval]
   rfl
 
+set_option backward.isDefEq.respectTransparency false in
 omit [SigmaCompactSpace M] in
 omit [I.Boundaryless] in
 private lemma palatiniRicciContractionWeights_unitModel_eq_kernel (g₀ : SmoothRiemannianMetric I M)
@@ -744,6 +745,7 @@ private lemma palatiniRicciContractionWeights_unitModel_eq_kernel (g₀ : Smooth
     ring
   rw [hA, hB]
 
+set_option backward.isDefEq.respectTransparency false in
 omit [SigmaCompactSpace M] in
 omit [I.Boundaryless] in
 lemma palatiniRicciContraction_eq_decomposition (g₀ g₁ : SmoothRiemannianMetric I M)
@@ -864,6 +866,7 @@ lemma palatiniRicciContraction_eq_decomposition (g₀ g₁ : SmoothRiemannianMet
   rw [hfold]
   ring
 
+set_option backward.isDefEq.respectTransparency false in
 omit [SigmaCompactSpace M] in
 omit [I.Boundaryless] in
 private lemma palatiniRicciContractionWeights_pair_smul (g₀ : SmoothRiemannianMetric I M)
@@ -918,6 +921,7 @@ private lemma palatiniRicciContractionWeights_pair_smul (g₀ : SmoothRiemannian
   rw [ccTensorBilin_smul_local, ccTensorBilin_smul_local]
   ring
 
+set_option backward.isDefEq.respectTransparency false in
 omit [SigmaCompactSpace M] in
 omit [I.Boundaryless] in
 lemma palatiniRicciContractionXi_smul (g₀ : SmoothRiemannianMetric I M)
@@ -1481,7 +1485,6 @@ private lemma palatiniAACommBiContrFibAppY_metricPerturbationPath_jointContMDiff
     · exact (Bcmm.equivFun.symm_apply_apply _).symm
   exact hfinal
 
-
 omit [CompactSpace M] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 theorem connectionDifferenceAACommBiContrFib_metricPerturbationPath_apply_section_jointContMDiffOn
     (g₀ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2) {δ : ℝ}
@@ -1496,7 +1499,6 @@ theorem connectionDifferenceAACommBiContrFib_metricPerturbationPath_apply_sectio
           (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ p.2) p.1 (Y p.1)))
       ((Set.univ : Set M) ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ)) :=
   palatiniAACommBiContrFibAppY_metricPerturbationPath_jointContMDiffOn (I := I) (M := M) g₀ T 0 hδ hδZ Y
-
 
 omit [SigmaCompactSpace M] in
 theorem ricciOrderZeroAACommCoeffField_metricPerturbationPath_covariantJetJointSmoothness
@@ -1518,7 +1520,6 @@ theorem ricciOrderZeroAACommCoeffField_metricPerturbationPath_covariantJetJointS
       (I := I) (M := M) g₀ T hδ hδZ Y)
   refine hCLM.congr (fun p _ => ?_)
   rfl
-
 
 omit [SigmaCompactSpace M] in
 theorem ricciOrderZeroBackgroundRCommCoeffField_metricPerturbationPath_covariantJetJointSmoothness

@@ -11,9 +11,8 @@ open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 
-
 noncomputable section
-
+set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
@@ -63,7 +62,6 @@ private lemma cons_cons_comp_decomposeFin_double {α : Type*} {s : ℕ}
       rfl
     · rw [Equiv.Perm.decomposeFin_symm_apply_succ, Equiv.swap_self]
       simp only [Equiv.refl_apply, Fin.cons_succ]
-
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 omit [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
@@ -458,7 +456,6 @@ theorem tensorL2Coeff_toL2_ccTensor02Symm_eq_zero_of_notMem
   rw [toL2_ccTensor02Symm_eq (I := I) (M := M) g X, tensorL2Coeff_smul, tensorL2Coeff_add,
     hX i hi, hswap]
   ring
-
 
 theorem sum_tensorSobolevWeight_mul_sq_tensorL2Coeff_toL2_ccTensor02Symm_le
     (σ : ℝ)

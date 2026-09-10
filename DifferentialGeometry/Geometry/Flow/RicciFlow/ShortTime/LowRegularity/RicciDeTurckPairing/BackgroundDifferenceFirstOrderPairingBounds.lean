@@ -3,7 +3,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Coef
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.RicciDeTurckPairing.LinearTerms
 
 noncomputable section
-
+set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
@@ -38,6 +38,7 @@ variable
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 omit [BoundarylessManifold I M] [CompactSpace M] in
+omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem covariantJetNormSq_mono
     (g : SmoothRiemannianMetric I M) {r s m n : ℕ}
@@ -643,6 +644,8 @@ private lemma neg_smul_sub {V : Type*} [AddCommGroup V] [Module ℝ V]
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
     [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
+    [BoundarylessManifold I M] in
 private theorem operatorFieldComposition_sub_apply_bilinear
     (g : SmoothRiemannianMetric I M)
     (PT PU : SmoothCcTensor g 6 2) (XT XU : SmoothCcTensor g 2 6) :
@@ -2574,8 +2577,9 @@ private theorem slotExtendIter_sub
       rw [ih, slotExtend_sub]
       rfl
 
-omit [NeZero (Module.finrank ℝ E)] in
 omit [I.Boundaryless] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
+omit [I.Boundaryless] in
 private theorem lieCorrectionZeroMixedConnectionHalfRF_backgroundDifference
     (g gm g_bg : SmoothRiemannianMetric I M)
     (σ : Equiv.Perm (Fin 4)) :
@@ -3097,8 +3101,9 @@ private theorem exists_lieCorrectionZeroMixedConnectionBackgroundHalf_pairing_fi
   rw [hhalfT, hhalfU]
   simpa only [N] using hS1D
 
-omit [NeZero (Module.finrank ℝ E)] in
 omit [I.Boundaryless] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
+omit [I.Boundaryless] in
 private theorem lieCorrectionZeroMixedConnection_backgroundDifference_eq
     (g gm g_bg : SmoothRiemannianMetric I M) :
     lieCorrectionZeroMixedConnection (I := I) (M := M) g gm g_bg -
@@ -3246,7 +3251,6 @@ private theorem deTurckLieCoefficient_backgroundDifference_decomposition
     lieCorrectionZero_decomp (I := I) (M := M) g gU gB,
     lieCorrectionZero_decomp (I := I) (M := M) g gU g]
   module
-
 
 theorem exists_deTurckLieCoefficient_backgroundDifference_pairing_firstOrder_bound
     (hDim : Module.finrank ℝ E = 3)

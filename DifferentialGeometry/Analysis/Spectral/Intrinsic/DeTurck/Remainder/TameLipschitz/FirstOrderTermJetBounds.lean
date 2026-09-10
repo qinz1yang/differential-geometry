@@ -44,7 +44,6 @@ open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 
-
 noncomputable section
 
 open MeasureTheory Set Filter Topology Bundle Manifold DifferentialGeometry.Tensor0SBundle
@@ -111,7 +110,6 @@ open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 open DifferentialGeometry.PDE.DeTurck.RicciLinearization
   (convexPerturbation convexPerturbation_gFibreOpBound metricPerturbationPath_inner_of_mem)
 
-
 lemma pAO_range_subset {m n : ℕ} (h : m ≤ n) :
     Finset.range m ⊆ Finset.range n := by
   intro x hx
@@ -153,6 +151,7 @@ private theorem inverseMetricDifferenceSlotCoefficient_jetL2_allOrder_tame (g₀
   rw [MeasureTheory.integral_const_mul, mul_assoc]
   exact mul_le_mul_of_nonneg_left (le_trans hbound (le_of_eq rfl)) (hC_nn j)
 
+set_option backward.isDefEq.respectTransparency false in
 theorem pAO_traceHessian_jetSum_tame (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :

@@ -88,6 +88,30 @@ theorem metricPDE_Icc
 
 end
 
+omit [NeZero (Module.finrank Real E)] [SigmaCompactSpace M] in
+theorem metric_inner_antitoneOn_of_ricci_nonnegative
+    {D : RealTimeInterval}
+    (S : SolutionOn (I := I) (M := M) D)
+    (hS : IsSolutionOn (I := I) S)
+    {a b : Real} (_hab : a < b)
+    (hslab : Set.Icc a b ⊆ D.carrier)
+    (hreg : Set.Ioc a b ⊆ D.regular)
+    (hRic : ∀ t ∈ Set.Icc a b, ∀ x : M, ∀ v : TangentSpace I x,
+      0 ≤ ricciTensor (I := I) (S.base.metric t) x v v)
+    (x : M) (v : TangentSpace I x) :
+    AntitoneOn (fun t : Real ↦ (S.base.metric t).inner x v v)
+      (Set.Icc a b) := by
+  have hpde := metricPDE_Icc (I := I) S hS hslab
+    (fun t ht => hreg ⟨ht.1, ht.2.le⟩)
+  apply antitoneOn_of_hasDerivWithinAt_nonpos (convex_Icc a b)
+  · intro t ht
+    exact (hpde t ht x v v).continuousWithinAt
+  · intro t ht
+    exact (hpde t (interior_subset ht) x v v).mono interior_subset
+  · intro t ht
+    have hnonneg := hRic t (interior_subset ht) x v
+    nlinarith
+
 theorem exp_bounds_log
     {fa fb R : Real} (hfa : 0 < fa) (hfb : 0 < fb)
     (hlog : |Real.log fb - Real.log fa| ≤ R) :
@@ -160,6 +184,63 @@ private theorem metric_pair_Icc
       mul_le_mul_of_nonneg_left hts (Real.exp_pos _).le
     _ = (g s).inner x v v := by
       rw [← mul_assoc, ← Real.exp_add, neg_add_cancel, Real.exp_zero, one_mul]
+
+omit [NeZero (Module.finrank ℝ E)]
+  [CompleteSpace E]
+  [IsManifold I 1 M]
+  [SigmaCompactSpace M] in
+theorem metricEquiv_Icc_on
+    (g : Real → SmoothRiemannianMetric I M) (B : Set M)
+    {a b K : Real}
+    (hpde : ∀ t ∈ Set.Icc a b, ∀ x : M,
+      ∀ v w : TangentSpace I x,
+        HasDerivWithinAt (fun s : Real ↦ (g s).inner x v w)
+          ((-2 : Real) * ricciTensor (I := I) (g t) x v w)
+          (Set.Icc a b) t)
+    (hric : ∀ t ∈ Set.Icc a b, ∀ x ∈ B,
+      ∀ v : TangentSpace I x,
+        |ricciTensor (I := I) (g t) x v v| ≤
+          K * (g t).inner x v v) :
+    ∀ s ∈ Set.Icc a b, ∀ x ∈ B,
+      ∀ v : TangentSpace I x,
+        Real.exp (-(2 * K * (s - a))) * (g a).inner x v v ≤
+            (g s).inner x v v ∧
+          (g s).inner x v v ≤
+            Real.exp (2 * K * (s - a)) * (g a).inner x v v := by
+  intro s hs x hxB v
+  rcases eq_or_ne v 0 with rfl | hv
+  · simp
+  have hpos : ∀ t : Real, 0 < (g t).inner x v v :=
+    fun t ↦ (g t).pos x v hv
+  have hsub : Set.Icc a s ⊆ Set.Icc a b :=
+    fun _ ht ↦ ⟨ht.1, ht.2.trans hs.2⟩
+  have hderiv : ∀ t ∈ Set.Icc a s,
+      HasDerivWithinAt
+        (fun r : Real ↦ Real.log ((g r).inner x v v))
+        ((-2 : Real) * ricciTensor (I := I) (g t) x v v /
+          (g t).inner x v v)
+        (Set.Icc a s) t := by
+    intro t ht
+    exact ((hpde t (hsub ht) x v v).mono hsub).log (hpos t).ne'
+  have hbound : ∀ t ∈ Set.Icc a s,
+      ‖(-2 : Real) * ricciTensor (I := I) (g t) x v v /
+          (g t).inner x v v‖ ≤ 2 * K := by
+    intro t ht
+    have hden := hpos t
+    have hricT := hric t (hsub ht) x hxB v
+    rw [Real.norm_eq_abs, abs_div, abs_of_pos hden, div_le_iff₀ hden]
+    rw [abs_mul]
+    norm_num
+    nlinarith
+  have hmvt := (convex_Icc a s).norm_image_sub_le_of_norm_hasDerivWithin_le
+    hderiv hbound (Set.left_mem_Icc.mpr hs.1) (Set.right_mem_Icc.mpr hs.1)
+  have hlog :
+      |Real.log ((g s).inner x v v) - Real.log ((g a).inner x v v)| ≤
+        2 * K * (s - a) := by
+    rw [Real.norm_eq_abs, Real.norm_eq_abs,
+      abs_of_nonneg (sub_nonneg.mpr hs.1)] at hmvt
+    exact hmvt
+  exact exp_bounds_log (hpos a) (hpos s) hlog
 
 omit [NeZero (Module.finrank ℝ E)]
   [CompleteSpace E]

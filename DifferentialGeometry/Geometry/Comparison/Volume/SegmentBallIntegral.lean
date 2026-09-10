@@ -31,7 +31,7 @@ private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
 omit [T2Space (TangentBundle I M)] in
-private theorem segBall_image_sub
+private theorem segmentBall_image_sub
     [ConnectedSpace M] [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun y : M ↦ TangentSpace I y)]
@@ -56,7 +56,7 @@ private theorem segBall_image_sub
   rw [← ENNReal.ofReal_toReal hfin, ← (mem_segmentDom (I := I)).mp hvD]
   exact (ENNReal.ofReal_lt_ofReal_iff hR).2 hv.2
 
-private theorem segBall_int_eq
+private theorem segmentBall_int_eq
     [ConnectedSpace M] [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun y : M ↦ TangentSpace I y)]
@@ -72,7 +72,7 @@ private theorem segBall_int_eq
         f y ∂(riemannianVolumeMeasure (I := I) (M := M) g) := by
   apply setIntegral_congr_set
   refine ae_eq_set.2 ⟨segmentBall_complement_volume_zero (I := I) g hEnorm x hR, ?_⟩
-  rw [sdiff_eq_empty.mpr (segBall_image_sub (I := I) g hEnorm x hR),
+  rw [sdiff_eq_empty.mpr (segmentBall_image_sub (I := I) g hEnorm x hR),
     measure_empty]
 
 theorem integral_eq_segmentBall_image
@@ -98,7 +98,7 @@ theorem integral_eq_segmentBall_image
         (subset_univ _) fun y hy => by
           by_contra hfy
           exact hy.2 (hf (Function.mem_support.mpr hfy))
-    _ = _ := segBall_int_eq (I := I) g hEnorm x hR f
+    _ = _ := segmentBall_int_eq (I := I) g hEnorm x hR f
 
 theorem ball_integral_eq_segment_polar
     [ConnectedSpace M] [PseudoEMetricSpace M]
@@ -121,9 +121,9 @@ theorem ball_integral_eq_segment_polar
             (r.1 • u.1)
           ∂(Measure.volumeIoiPow (Module.finrank ℝ E - 1))
         ∂(modelHaar (E := E)).toSphere := by
-  rw [segBall_int_eq (I := I) g hEnorm x hR f]
+  rw [segmentBall_int_eq (I := I) g hEnorm x hR f]
   simpa only [smul_eq_mul] using
     integral_image_segmentInt_inter_gBall_eq_polar (I := I) g hEnorm x R f
-      (hf.mono_set (segBall_image_sub (I := I) g hEnorm x hR))
+      (hf.mono_set (segmentBall_image_sub (I := I) g hEnorm x hR))
 
 end DifferentialGeometry.Geometry.Riemannian.VolumeComparison

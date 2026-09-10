@@ -9,6 +9,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Unif
 set_option autoImplicit false
 
 noncomputable section
+set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
@@ -74,6 +75,7 @@ theorem ricciDeTurckRemainderZeroOrderCoefficient_h1_bound_of_uniform_component_
     hδ₀_nonneg hδ₀_lt C.secondOrder C.thirdOrder hC.secondOrder_nonneg hC.thirdOrder_nonneg
     hpath2 hpath3
 
+set_option backward.isDefEq.respectTransparency true in
 theorem ricciDeTurckRemainderZeroOrderCoefficient_h1_uniform_bound
     (hDim : Module.finrank ℝ E = 3)
     (gBase : SmoothRiemannianMetric I M) {Λ : ℝ} (hΛ : 1 ≤ Λ)

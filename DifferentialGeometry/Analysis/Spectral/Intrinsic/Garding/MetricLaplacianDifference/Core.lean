@@ -9,7 +9,7 @@ open DifferentialGeometry.Geometry.Connection
 open DifferentialGeometry.Geometry.Operator
 
 noncomputable section
-
+set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
@@ -17,7 +17,6 @@ open scoped Manifold Topology ContDiff ENNReal BigOperators
 namespace DifferentialGeometry
 namespace Analysis
 namespace Spectral
-
 
 open DifferentialGeometry.Integral.DivergenceTheorem
 open DifferentialGeometry.Integral.L2
@@ -38,7 +37,6 @@ private local instance : BorelSpace E := ⟨rfl⟩
 private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
-
 abbrev ScalarH2Core (g : SmoothRiemannianMetric I M) :=
   TensorHs.finiteSupportSubmodule
     (I := I) (M := M) (g := g) (r := 0) (s := 0) 2
@@ -54,7 +52,6 @@ private theorem toRS0_sub {x : M} (A B : Tensor0SSpace 0 I x) :
     (tensor0SSpaceEvalScalar (𝕜 := Real) (I := I) (M := M) x) c • A -
       (tensor0SSpaceEvalScalar (𝕜 := Real) (I := I) (M := M) x) c • B
   exact smul_sub _ _ _
-
 
 noncomputable def lapDiffSec
     (g h : SmoothRiemannianMetric I M) :

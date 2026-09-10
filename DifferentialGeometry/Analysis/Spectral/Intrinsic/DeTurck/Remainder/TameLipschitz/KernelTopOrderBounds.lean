@@ -45,8 +45,8 @@ open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 
-
 noncomputable section
+set_option backward.isDefEq.respectTransparency false
 
 open MeasureTheory Set Filter Topology Bundle Manifold DifferentialGeometry.Tensor0SBundle
     ContinuousLinearMap
@@ -111,7 +111,6 @@ open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 open DifferentialGeometry.PDE.DeTurck.RicciLinearization
   (convexPerturbation convexPerturbation_gFibreOpBound metricPerturbationPath_inner_of_mem)
 open Analysis.Parabolic.TensorSpectral
-
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
@@ -386,7 +385,6 @@ private lemma riemannianFiberNormSq_add_sub_expand (g : SmoothRiemannianMetric I
       tensorInnerPointwise_smul_right]
     ring]
   ring
-
 
 omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -1226,7 +1224,6 @@ private lemma sum_fin_one_function {α : Type*} [AddCommMonoid α] {n : ℕ} (f 
   funext i
   rw [Subsingleton.elim i 0]
   rfl
-
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 omit [I.Boundaryless] in
@@ -2364,7 +2361,6 @@ private theorem riemannianFiberNormSq_comp_slotExtendIterFib_operator_le (g : Sm
         (show TensorRSSpace p (b + w) I x from U) n e K P))) ?_
   rw [← Finset.mul_sum]
 
-
 omit [SigmaCompactSpace M] in
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -3251,7 +3247,6 @@ private lemma one_remainder_young_bound {T e btop c K w : ℝ}
         rw [hu2, hv2]
         ring
 
-
 theorem riemannianFiberNormSq_iteratedCovGrad_decompositionKernelContrMonomial_topOrderSeparated_lowerWindow_le
     (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
     ∃ K : ℕ → ℝ, (∀ i, 0 ≤ K i) ∧
@@ -3309,7 +3304,6 @@ theorem riemannianFiberNormSq_iteratedCovGrad_decompositionKernelContrMonomial_t
     ⟨Analysis.Parabolic.TensorSpectral.riemannianFiberNormSq_secondMetricPairTraceOperator_leibnizDiagonal_ricciContractionRemainder_le
       (I := I) (M := M) g₀ g₁ P htie hδ₀ hδ_le hδ0 hbound σ i x,
     hres g₁ P htie hδ_le hδ0 hbound σ i x⟩
-
 
 omit [I.Boundaryless] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 theorem decompositionKernelContractionMonomialField_eq_of_finrank_one (h1 : Module.finrank ℝ E = 1)
@@ -3729,6 +3723,7 @@ private theorem decompositionKernelContractionField_topOrderSeparated_bound (g�
     nlinarith [mul_le_mul_of_nonneg_right
       (mul_le_mul hfr2 hfr2 (by norm_num) (by linarith)) hd4]
 
+set_option backward.isDefEq.respectTransparency false in
 theorem riemannianFiberNormSq_iteratedCovGrad_decompositionKernelContr_symmSecondCovGrad_topAmplitude_le
     (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ}
     (hδ₀ : δ₀ < 1) (hδ₀half : δ₀ ≤ 1 / 2) :

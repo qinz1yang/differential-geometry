@@ -4,6 +4,7 @@ import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.RicciDeTurck.Connecti
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.RicciConnectionDifference.Pairing
 
 noncomputable section
+set_option backward.isDefEq.respectTransparency false
 
 set_option autoImplicit false
 

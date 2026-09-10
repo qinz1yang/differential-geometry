@@ -4,7 +4,7 @@ import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.MetricPerturbation.Co
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.MetricPerturbation.InverseCometricMultiplier
 
 noncomputable section
-
+set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold DifferentialGeometry.Tensor0SBundle
 open DifferentialGeometry.Analysis.Sobolev
@@ -274,6 +274,7 @@ private lemma edge_sum4 {A : Type*} [Fintype A] (F : (Fin 4 → A) → Real) :
   · intro h
     exact absurd (Finset.mem_univ _) h
 
+set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 omit [I.Boundaryless] in
 theorem topOrderBilinearPairingAdjointCoefficient_apply (g gm : SmoothRiemannianMetric I M)
@@ -294,6 +295,7 @@ theorem topOrderBilinearPairingAdjointCoefficient_apply (g gm : SmoothRiemannian
     funext k
     fin_cases k <;> rfl
 
+set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
 private lemma edge_inner0 (g : SmoothRiemannianMetric I M) (s : Nat)
     (A B : SmoothCcTensor g 0 s) (x : M)
@@ -338,6 +340,7 @@ private lemma edge_inner0 (g : SmoothRiemannianMetric I M) (s : Nat)
   refine Finset.sum_congr rfl fun J _ => ?_
   rw [hcomp A Fin.elim0 J, hcomp B Fin.elim0 J]
 
+set_option backward.isDefEq.respectTransparency false in
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
 omit [I.Boundaryless] in
 theorem topOrderBilinearPairing_pointwise (g gm : SmoothRiemannianMetric I M)
@@ -643,8 +646,9 @@ def ricciDeTurckTopOrderBilinearPairingCoefficient (g : SmoothRiemannianMetric I
   ricciDeTurckTopOrderPairingCoefficientForJet (I := I) (M := M) g T
     (iteratedCovGrad (I := I) g 0 2 2 U) hdelta hdeltaZ qA qB q epsilon s
 
-omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
+omit [BoundarylessManifold I M] in
+omit [NeZero (Module.finrank ℝ E)] in
 theorem ricciDeTurckTopOrderBilinearPairingCoefficient_eq_coefficientForJet (g : SmoothRiemannianMetric I M)
     (T U : SmoothCcTensor g 0 2) {delta : Real}
     (hdelta : gFibreOpBound (I := I) (M := M) g
