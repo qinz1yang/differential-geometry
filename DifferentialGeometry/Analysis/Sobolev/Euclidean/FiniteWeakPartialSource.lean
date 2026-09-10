@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Sobolev.Euclidean.SliceWkp
+import DifferentialGeometry.Analysis.Sobolev.Euclidean.WeakPartialTree
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.Multiplication.SmoothCoefWeakPartialIBP
 
 noncomputable section
@@ -136,10 +136,10 @@ private theorem hasWeakPartialDeriv_sum
     ← Finset.sum_neg_distrib]
   exact Finset.sum_congr rfl fun j _ => hweak j φ hφ hφc hφs
 
-theorem ae_memWkp_and_memLp_wkpNorm_of_finite_sum_weak_partial_trees
+theorem exists_lp_weak_partial_tree_of_finite_sum
     {Z ι : Type*} [MeasurableSpace Z] [Fintype ι] {μ : Measure Z}
-    {p : ℝ≥0∞} (hp : 1 ≤ p) (hpt : p ≠ ⊤) {Ω : Set E} (hΩ : IsOpen Ω) (K : ℕ)
-    (f : Z × E → ℝ)
+    {p : ℝ≥0∞} (hp : 1 ≤ p) {Ω : Set E} (hΩ : IsOpen Ω) (K : ℕ)
+    (f : Lp ℝ p (μ.prod (volume.restrict Ω)))
     (A Y : ι → ∀ n : ℕ, (Fin n → Fin d) → Z × E → ℝ)
     (hA : ∀ j n, n ≤ K → ∀ α, MemLp (A j n α) ∞ (μ.prod (volume.restrict Ω)))
     (hY : ∀ j n, n ≤ K → ∀ α, MemLp (Y j n α) p (μ.prod (volume.restrict Ω)))
@@ -154,19 +154,22 @@ theorem ae_memWkp_and_memLp_wkpNorm_of_finite_sum_weak_partial_trees
         (fun x => Y j n α (t, x)) Ω)
     (hf : f =ᵐ[μ.prod (volume.restrict Ω)] fun q => ∑ j,
       A j 0 (fun i => Fin.elim0 i) q * Y j 0 (fun i => Fin.elim0 i) q) :
-    (∀ᵐ t ∂μ, MemWkp K p (fun x => f (t, x)) Ω) ∧
-      MemLp (fun t => (iteratedWeakSobolevNorm K p (fun x => f (t, x)) Ω).toReal) p μ := by
+    ∃ F : ∀ n : ℕ, (Fin n → Fin d) → Lp ℝ p (μ.prod (volume.restrict Ω)),
+      F 0 (fun i => Fin.elim0 i) = f ∧
+        ∀ n < K, ∀ α i, ∀ᵐ t ∂μ,
+          DeGiorgi.HasWeakPartialDeriv i
+            (fun x => F (n + 1) (Fin.cons i α) (t, x))
+            (fun x => F n α (t, x)) Ω := by
   classical
+  have hslices {g : Z × E → ℝ} (hg : MemLp g p (μ.prod (volume.restrict Ω))) :
+      ∀ᵐ t ∂μ, MemLp (fun x => g (t, x)) p (volume.restrict Ω) := by
+    by_cases hpt : p = ⊤
+    · subst p
+      exact hg.prodMk_left_top
+    · exact hg.prodMk_left hpt
   induction K generalizing ι f with
   | zero =>
-      have hsum : MemLp (fun q => ∑ j, A j 0 (fun i => Fin.elim0 i) q *
-          Y j 0 (fun i => Fin.elim0 i) q) p (μ.prod (volume.restrict Ω)) :=
-        memLp_finsetSum Finset.univ fun j _ =>
-        (hY j 0 (by omega) (fun i => Fin.elim0 i)).mul
-          (hA j 0 (by omega) (fun i => Fin.elim0 i))
-      have hfLp := hsum.ae_eq hf.symm
-      exact ⟨hfLp.prodMk_left hpt, by
-        simpa only [wkpNorm_zero] using hfLp.eLpNorm_toReal hpt⟩
+      exact ⟨fun _ _ => f, rfl, fun n hn => by omega⟩
   | succ K ih =>
       let e : Fin 0 → Fin d := fun i => Fin.elim0 i
       let V := fun j q => A j 0 e q * Y j 0 e q
@@ -178,13 +181,57 @@ theorem ae_memWkp_and_memLp_wkpNorm_of_finite_sum_weak_partial_trees
       have hD i j : MemLp (D i j) p (μ.prod (volume.restrict Ω)) :=
         ((hY j 1 (by omega) (Fin.cons i e)).mul (hA j 0 (by omega) e)).add
           ((hY j 0 (by omega) e).mul (hA j 1 (by omega) (Fin.cons i e)))
-      have hchild i : (∀ᵐ t ∂μ, MemWkp K p (fun x => W i (t, x)) Ω) ∧
-          MemLp (fun t => (iteratedWeakSobolevNorm K p (fun x => W i (t, x)) Ω).toReal) p μ := by
+      have hW i : MemLp (W i) p (μ.prod (volume.restrict Ω)) :=
+        memLp_finsetSum Finset.univ fun j _ => hD i j
+      let w := fun i => (hW i).toLp (W i)
+      have hweak i : ∀ᵐ t ∂μ, DeGiorgi.HasWeakPartialDeriv i
+          (fun x => w i (t, x)) (fun x => f (t, x)) Ω := by
+        have hterm j : ∀ᵐ t ∂μ, DeGiorgi.HasWeakPartialDeriv i
+            (fun x => D i j (t, x)) (fun x => V j (t, x)) Ω := by
+          filter_upwards [hAsmooth j 0 (by omega) e, hYweak j 0 (by omega) e i,
+            hslices (hY j 0 (by omega) e),
+            hslices (hY j 1 (by omega) (Fin.cons i e)),
+            Measure.ae_ae_of_ae_prod (hDA j 0 (by omega) e i)]
+            with t hAt hwt hYt hDYt hDAt
+          have hw := hwt.mul_contDiffOn hΩ hAt
+            (hYt.locallyIntegrable hp) (hDYt.locallyIntegrable hp)
+          intro φ hφ hφc hφs
+          refine (hw φ hφ hφc hφs).trans ?_
+          congr 1
+          apply integral_congr_ae
+          filter_upwards [hDAt] with x hx
+          dsimp [D]
+          rw [hx]
+        filter_upwards [ae_all_iff.mpr hterm,
+          ae_all_iff.mpr (fun j => hslices (hV j)),
+          ae_all_iff.mpr (fun j => hslices (hD i j)),
+          Measure.ae_ae_of_ae_prod hf,
+          Measure.ae_ae_of_ae_prod (hW i).coeFn_toLp] with t hwt hVt hDt hft hWt
+        have hw := hasWeakPartialDeriv_sum hp hVt hDt hwt
+        intro φ hφ hφc hφs
+        calc
+          (∫ x in Ω, f (t, x) * fderiv ℝ φ x (EuclideanSpace.single i 1)) =
+              ∫ x in Ω, (∑ j, V j (t, x)) * fderiv ℝ φ x (EuclideanSpace.single i 1) := by
+            apply integral_congr_ae
+            filter_upwards [hft] with x hx
+            rw [hx]
+          _ = -∫ x in Ω, (∑ j, D i j (t, x)) * φ x := hw φ hφ hφc hφs
+          _ = -∫ x in Ω, w i (t, x) * φ x := by
+            congr 1
+            apply integral_congr_ae
+            filter_upwards [hWt] with x hx
+            rw [hx]
+      have hchild i :
+          ∃ F : ∀ n : ℕ, (Fin n → Fin d) → Lp ℝ p (μ.prod (volume.restrict Ω)),
+            F 0 e = w i ∧ ∀ n < K, ∀ α r, ∀ᵐ t ∂μ,
+              DeGiorgi.HasWeakPartialDeriv r
+                (fun x => F (n + 1) (Fin.cons r α) (t, x))
+                (fun x => F n α (t, x)) Ω := by
         let B : ι ⊕ ι → ∀ n : ℕ, (Fin n → Fin d) → Z × E → ℝ :=
           Sum.elim (fun j n α => A j n α) (fun j n α => A j (n + 1) (Fin.snoc α i))
         let U : ι ⊕ ι → ∀ n : ℕ, (Fin n → Fin d) → Z × E → ℝ :=
           Sum.elim (fun j n α => Y j (n + 1) (Fin.snoc α i)) (fun j n α => Y j n α)
-        apply ih (W i) B U
+        apply ih (w i) B U
         · intro j n hn α
           cases j with
           | inl j => exact hA j n (by omega) α
@@ -209,43 +256,72 @@ theorem ae_memWkp_and_memLp_wkpNorm_of_finite_sum_weak_partial_trees
               simpa only [U, Sum.elim_inl, Fin.cons_snoc_eq_snoc_cons] using
                 hYweak j (n + 1) (by omega) (Fin.snoc α i) r
           | inr j => exact hYweak j n (by omega) α r
-        · apply Filter.Eventually.of_forall
+        · refine ((hW i).coeFn_toLp).trans ?_
+          apply Filter.Eventually.of_forall
           intro q
           simp only [W, D, B, U, Fintype.sum_sum_type, Sum.elim_inl, Sum.elim_inr,
             Finset.sum_add_distrib]
           congr 1 <;> apply Finset.sum_congr rfl <;> intro j hj <;> congr 2 <;>
             funext r <;> fin_cases r <;> rfl
-      have hweak i : ∀ᵐ t ∂μ, DeGiorgi.HasWeakPartialDeriv i
-          (fun x => W i (t, x)) (fun x => f (t, x)) Ω := by
-        have hterm j : ∀ᵐ t ∂μ, DeGiorgi.HasWeakPartialDeriv i
-            (fun x => D i j (t, x)) (fun x => V j (t, x)) Ω := by
-          filter_upwards [hAsmooth j 0 (by omega) e, hYweak j 0 (by omega) e i,
-            (hY j 0 (by omega) e).prodMk_left hpt,
-            (hY j 1 (by omega) (Fin.cons i e)).prodMk_left hpt,
-            Measure.ae_ae_of_ae_prod (hDA j 0 (by omega) e i)]
-            with t hAt hwt hYt hDYt hDAt
-          have hw := hwt.mul_contDiffOn hΩ hAt
-            (hYt.locallyIntegrable hp) (hDYt.locallyIntegrable hp)
-          intro φ hφ hφc hφs
-          refine (hw φ hφ hφc hφs).trans ?_
-          congr 1
-          apply integral_congr_ae
-          filter_upwards [hDAt] with x hx
-          dsimp [D]
-          rw [hx]
-        filter_upwards [ae_all_iff.mpr hterm,
-          ae_all_iff.mpr (fun j => (hV j).prodMk_left hpt),
-          ae_all_iff.mpr (fun j => (hD i j).prodMk_left hpt),
-          Measure.ae_ae_of_ae_prod hf] with t hwt hVt hDt hft
-        have hw := hasWeakPartialDeriv_sum hp hVt hDt hwt
-        intro φ hφ hφc hφs
-        refine Eq.trans ?_ (hw φ hφ hφc hφs)
-        apply integral_congr_ae
-        filter_upwards [hft] with x hx
-        rw [hx]
-      exact ae_memWkp_succ_and_memLp_wkpNorm_of_weak_partials hΩ hp hpt
-        ((memLp_finsetSum Finset.univ fun j _ => hV j).ae_eq hf.symm)
-        (fun i => (hchild i).1) (fun i => (hchild i).2) hweak
+      choose C hC hCW using hchild
+      let F : ∀ n : ℕ, (Fin n → Fin d) → Lp ℝ p (μ.prod (volume.restrict Ω)) :=
+        fun n => match n with
+        | 0 => fun _ => f
+        | n + 1 => fun α => C (α (Fin.last n)) n (Fin.init α)
+      refine ⟨F, rfl, ?_⟩
+      intro n hn α i
+      cases n with
+      | zero =>
+          have hα : α = e := Subsingleton.elim _ _
+          subst α
+          have he : Fin.init (Fin.cons i e : Fin 1 → Fin d) = e :=
+            Subsingleton.elim _ _
+          simpa only [F, Fin.cons_zero, Fin.last_zero, hC,
+            he] using hweak i
+      | succ n =>
+          obtain ⟨β, j, rfl⟩ : ∃ (β : Fin n → Fin d) (j : Fin d), α = Fin.snoc β j :=
+            ⟨Fin.init α, α (Fin.last n), (Fin.snoc_init_self α).symm⟩
+          simpa only [F, Fin.cons_snoc_eq_snoc_cons, Fin.snoc_last, Fin.init_snoc] using
+            hCW j n (by omega) β i
+
+theorem ae_memWkp_and_memLp_wkpNorm_of_finite_sum_weak_partial_trees
+    {Z ι : Type*} [MeasurableSpace Z] [Fintype ι] {μ : Measure Z}
+    {p : ℝ≥0∞} (hp : 1 ≤ p) (hpt : p ≠ ⊤) {Ω : Set E} (hΩ : IsOpen Ω) (K : ℕ)
+    (f : Z × E → ℝ)
+    (A Y : ι → ∀ n : ℕ, (Fin n → Fin d) → Z × E → ℝ)
+    (hA : ∀ j n, n ≤ K → ∀ α, MemLp (A j n α) ∞ (μ.prod (volume.restrict Ω)))
+    (hY : ∀ j n, n ≤ K → ∀ α, MemLp (Y j n α) p (μ.prod (volume.restrict Ω)))
+    (hAsmooth : ∀ j n, n < K → ∀ α, ∀ᵐ t ∂μ,
+      ContDiffOn ℝ (⊤ : ℕ∞) (fun x => A j n α (t, x)) Ω)
+    (hDA : ∀ j n, n < K → ∀ α i,
+      A j (n + 1) (Fin.cons i α) =ᵐ[μ.prod (volume.restrict Ω)]
+        fun q => fderiv ℝ (fun x => A j n α (q.1, x)) q.2 (EuclideanSpace.single i 1))
+    (hYweak : ∀ j n, n < K → ∀ α i, ∀ᵐ t ∂μ,
+      DeGiorgi.HasWeakPartialDeriv i
+        (fun x => Y j (n + 1) (Fin.cons i α) (t, x))
+        (fun x => Y j n α (t, x)) Ω)
+    (hf : f =ᵐ[μ.prod (volume.restrict Ω)] fun q => ∑ j,
+      A j 0 (fun i => Fin.elim0 i) q * Y j 0 (fun i => Fin.elim0 i) q) :
+    (∀ᵐ t ∂μ, MemWkp K p (fun x => f (t, x)) Ω) ∧
+      MemLp (fun t => (iteratedWeakSobolevNorm K p (fun x => f (t, x)) Ω).toReal) p μ := by
+  have hfLp : MemLp f p (μ.prod (volume.restrict Ω)) :=
+    (memLp_finsetSum Finset.univ fun j _ =>
+      (hY j 0 (by omega) (fun i => Fin.elim0 i)).mul
+        (hA j 0 (by omega) (fun i => Fin.elim0 i))).ae_eq hf.symm
+  obtain ⟨F, hF, hFW⟩ := exists_lp_weak_partial_tree_of_finite_sum hp hΩ K
+    (hfLp.toLp f) A Y hA hY hAsmooth hDA hYweak (hfLp.coeFn_toLp.trans hf)
+  have heq : ∀ᵐ t ∂μ, (fun x => F 0 (fun i => Fin.elim0 i) (t, x)) =ᵐ[volume.restrict Ω]
+      fun x => f (t, x) := by
+    rw [hF]
+    exact Measure.ae_ae_of_ae_prod hfLp.coeFn_toLp
+  obtain ⟨hmem, hnorm⟩ := ae_memWkp_and_memLp_wkpNorm_of_finite_weak_partial_tree hp hpt hΩ K
+    (fun n α q => F n α q) (fun n _ α => Lp.memLp (F n α)) hFW
+  constructor
+  · filter_upwards [hmem, heq] with t ht he
+    exact (MemWkp_congr_ae hp hΩ he).mp ht
+  · apply hnorm.ae_eq
+    filter_upwards [heq] with t ht
+    exact congrArg ENNReal.toReal (wkpNorm_congr_ae hp hΩ ht)
 
 theorem ae_memWkp_mul_and_memLp_wkpNorm_of_finite_weak_partial_trees
     {Z : Type*} [MeasurableSpace Z] {μ : Measure Z}
