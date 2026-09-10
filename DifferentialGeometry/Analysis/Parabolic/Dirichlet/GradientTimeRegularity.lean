@@ -1,5 +1,6 @@
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.MixedTimeSpatialRegularity
 import DifferentialGeometry.Analysis.Integration.Lp.Curry
+import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.TimeWeakDerivativeProduct
 
 noncomputable section
 
@@ -129,7 +130,26 @@ theorem IsWeakEvolutionSolution.exists_timeH1_localWeakPartial
     refine (integral_congr_ae ?_).trans (hcomm.trans hrspace)
     filter_upwards [(hV i).coeFn_toLp] with p hp
     exact congrArg (fun v => v * fderiv ℝ φ p (1, 0)) hp
-  obtain ⟨w, hw, _⟩ := exists_timeH1_of_spacetime_weak_deriv_on ht₀₁ hΩ₀ P (DR i) hweak
+  let Utree : ∀ n : ℕ, (Fin n → Fin (Module.finrank ℝ EuN)) → Lp ℝ 2 ν :=
+    fun n _ => if n = 0 then Lp.uncurry ℝ (by norm_num) P else 0
+  let Rtree : ∀ n : ℕ, (Fin n → Fin (Module.finrank ℝ EuN)) → Lp ℝ 2 ν :=
+    fun n _ => if n = 0 then DR i else 0
+  have hrootTree : ∀ φ : ℝ × EuStd → ℝ, ContDiff ℝ (⊤ : ℕ∞) φ →
+      HasCompactSupport φ → tsupport φ ⊆ Ioo t₀ t₁ ×ˢ Ω₀ →
+      (∫ p, Utree 0 (fun j => Fin.elim0 j) p * fderiv ℝ φ p (1, 0) ∂ν) =
+        -∫ p, Rtree 0 (fun j => Fin.elim0 j) p * φ p ∂ν := by
+    intro φ hφ hφc hφs
+    simpa only [Utree, Rtree, if_pos] using hweak φ hφ hφc hφs
+  have htree := exists_timeH1_of_finite_weak_partial_trees
+    (d := Module.finrank ℝ EuN) (Ω := Ω₀) (a := t₀) (b := t₁)
+    ht₀₁ hΩ₀ 0 Utree Rtree
+    (by intro n hn; omega) (by intro n hn; omega) hrootTree
+  obtain ⟨w, hwae⟩ := htree 0 (by omega) (fun j => Fin.elim0 j)
+  have hw : ∀ᵐ s ∂timeMeasure (t₁ - t₀),
+      (w.toFun s : EuStd → ℝ) =ᵐ[volume.restrict Ω₀]
+        fun x => V₀ (t₀ + s, x) := by
+    filter_upwards [hwae] with s hs
+    simpa [Utree, P, Lp.uncurry_curry] using hs.1
   have hP : ∀ᵐ t ∂μ, (P t : EuStd → ℝ) =ᵐ[volume.restrict Ω₀]
       dirichletLocalWeakPartialLp q α hΩ hΩc hΩs i (u t) := by
     have hc := (dirichletLocalSpacetimeWeakPartialLp_coeFn q α hΩ hΩc hΩs
@@ -138,9 +158,12 @@ theorem IsWeakEvolutionSolution.exists_timeH1_localWeakPartial
       Measure.ae_ae_of_ae_prod ((hV i).coeFn_toLp), hc] with t ht hvt hct
     exact Filter.EventuallyEq.trans ht
       (Filter.EventuallyEq.trans hvt (ae_restrict_of_ae_restrict_of_subset hsub hct))
+  have hP₀ : ∀ᵐ t ∂μ, (fun x => V₀ (t, x)) =ᵐ[volume.restrict Ω₀]
+      dirichletLocalWeakPartialLp q α hΩ hΩc hΩs i (u t) := by
+    filter_upwards [Lp.curry_coeFn (𝕜 := ℝ) (by norm_num) V₀, hP] with t ht hpt
+    exact ht.symm.trans hpt
   refine ⟨w, ?_⟩
-  filter_upwards [hw, hshift.quasiMeasurePreserving.ae hP] with s hs hsP
-  rw [← hs]
-  exact hsP
+  filter_upwards [hw, hshift.quasiMeasurePreserving.ae hP₀] with s hs hsP
+  exact hs.trans hsP
 
 end DifferentialGeometry.Analysis.Parabolic.Dirichlet
