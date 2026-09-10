@@ -200,6 +200,41 @@ theorem timeH1.deriv_ae_eq_of_dense_weak_dual_deriv_on
   timeH1.deriv_ae_eq_of_weak_dual_deriv_on hab w hp hq hrep
     (extend_scalar_weak_deriv_of_denseRange_on ι hdense hp hq hweak)
 
+theorem timeH1.deriv_ae_eq_of_tensor_mass_dual
+    {X Y S E J : Type*} [NormedAddCommGroup X] [NormedSpace ℝ X]
+    [NormedAddCommGroup Y] [NormedSpace ℝ Y]
+    [SeminormedAddCommGroup S] [NormedSpace ℝ S]
+    [MeasurableSpace E] [Fintype J] {ν : Measure E}
+    {a b : ℝ} (hab : a < b) (μ : Measure ℝ) (hμ : μ = volume.restrict (Icc a b))
+    (ι : S →L[ℝ] X) (hdense : DenseRange ι)
+    (mass : Y →L[ℝ] X →L[ℝ] ℝ) (v : Lp Y 2 μ)
+    (w : timeH1 (X →L[ℝ] ℝ) (b - a)) (q : Lp (X →L[ℝ] ℝ) 2 μ)
+    (hw : ∀ᵐ s ∂timeMeasure (b - a), ∀ z : X, w.toFun s z = mass (v (a + s)) z)
+    {W B : ℝ × E → ℝ} {Q : J → ℝ × E → ℝ}
+    {R : S → E → ℝ} {D : S → J → E → ℝ}
+    (hmass : ∀ (τ : Lp ℝ 2 μ) (x : S),
+      (∫ t, τ t * mass (v t) (ι x) ∂μ) = ∫ z, τ z.1 * W z * R x z.2 ∂μ.prod ν)
+    (hdual : ∀ (τ : Lp ℝ 2 μ) (x : S),
+      (∫ t, τ t * q t (ι x) ∂μ) = (∫ z, τ z.1 * B z * R x z.2 ∂μ.prod ν) -
+        ∑ j, ∫ z, τ z.1 * Q j z * D x j z.2 ∂μ.prod ν)
+    (hweak : ∀ (x : S) (φ : ℝ → ℝ), ContDiff ℝ (⊤ : ℕ∞) φ → HasCompactSupport φ →
+      tsupport φ ⊆ Ioo a b →
+      (∫ z, _root_.deriv φ z.1 * W z * R x z.2 ∂μ.prod ν) =
+        (∑ j, ∫ z, φ z.1 * Q j z * D x j z.2 ∂μ.prod ν) -
+          ∫ z, φ z.1 * B z * R x z.2 ∂μ.prod ν) :
+    w.deriv =ᵐ[timeMeasure (b - a)] fun s => q (a + s) := by
+  have hp : MemLp (fun t => mass (v t)) 2 (volume.restrict (Icc a b)) := by
+    rw [← hμ]
+    exact mass.comp_memLp v
+  have hq : MemLp (fun t => q t) 2 (volume.restrict (Icc a b)) := by
+    rw [← hμ]
+    exact Lp.memLp q
+  have hrep : (fun s => mass (v (a + s))) =ᵐ[timeMeasure (b - a)] w.toFun := by
+    filter_upwards [hw] with s hs
+    exact ContinuousLinearMap.ext (fun z => (hs z).symm)
+  exact w.deriv_ae_eq_of_dense_weak_dual_deriv_on hab ι hdense hp hq hrep
+    (scalar_weak_deriv_of_tensor_integrals_on μ hμ ι hmass hdual hweak)
+
 variable [CompleteSpace X]
 
 theorem timeH1.integral_dual_deriv_add_deriv_dual
@@ -228,6 +263,29 @@ theorem timeH1.integral_dual_deriv_add_deriv_dual
     exact integral_congr_ae hzd
   rw [hzint, integral_add hright hleft] at h
   exact (add_comm _ _).trans h.symm
+
+theorem integral_timeH1_test_of_mass_dual
+    {X Y : Type*} [NormedAddCommGroup X] [NormedSpace ℝ X] [CompleteSpace X]
+    [NormedAddCommGroup Y] [NormedSpace ℝ Y]
+    {a b : ℝ} (hab : a ≤ b) (mass : Y →L[ℝ] X →L[ℝ] ℝ)
+    (v : ℝ → Y) (w : timeH1 (X →L[ℝ] ℝ) (b - a))
+    (ℓ : ℝ → X →L[ℝ] ℝ)
+    (hw : ∀ᵐ s ∂timeMeasure (b - a), ∀ z : X,
+      w.toFun s z = mass (v (a + s)) z)
+    (hd : w.deriv =ᵐ[timeMeasure (b - a)] fun s => ℓ (a + s))
+    (ζ : timeH1 X (b - a)) (hζ0 : ζ.toFun 0 = 0) (hζ1 : ζ.toFun (b - a) = 0) :
+    (∫ s, mass (v (a + s)) (ζ.deriv s) ∂timeMeasure (b - a)) +
+      (∫ s, ℓ (a + s) (ζ.toFun s) ∂timeMeasure (b - a)) = 0 := by
+  have h := timeH1.integral_dual_deriv_add_deriv_dual (sub_nonneg.mpr hab) w ζ
+  rw [hζ0, hζ1, map_zero, map_zero, sub_self] at h
+  refine Eq.trans ?_ h
+  apply congrArg₂ (fun x y : ℝ => x + y)
+  · apply integral_congr_ae
+    filter_upwards [hw] with s hs
+    exact (hs (ζ.deriv s)).symm
+  · apply integral_congr_ae
+    filter_upwards [hd] with s hs
+    exact (congrArg (fun L : X →L[ℝ] ℝ => L (ζ.toFun s)) hs).symm
 
 theorem integral_timeH1_test_of_weak_dual_deriv_on
     {a b : ℝ} (hab : a < b) {p q : ℝ → X →L[ℝ] ℝ}

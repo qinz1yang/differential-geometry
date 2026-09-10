@@ -4801,6 +4801,7 @@ import DifferentialGeometry.Analysis.Parabolic.Dirichlet.GradientEnergy
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.GradientFluxBound
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.SourceFormula
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.GradientMassPairing
+import DifferentialGeometry.Analysis.Parabolic.WeakEquationTensor
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.GradientTensorEquation
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.GivenGradientCommutator
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.GradientSourceFormula
@@ -4927,6 +4928,7 @@ import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.TimeMeasureRestrict
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.ThirdWeakDerivative
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.HessianH1
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.HessianTimeDual
+import DifferentialGeometry.Analysis.Parabolic.Dirichlet.HessianSourceDual
 import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletChartMassPairing
 import DifferentialGeometry.Analysis.Integration.Lp.Curry
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.MixedTimeSpatialRegularity

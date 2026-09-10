@@ -28,6 +28,65 @@ private local instance : BorelSpace M := ⟨rfl⟩
 private local instance : MeasurableSpace EuStd :=
   WithLp.measurableSpace 2 ((i : Fin (Module.finrank ℝ EuN)) → ℝ)
 
+theorem integral_chart_tensor_test_of_smooth
+    (q : SmoothRiemannianMetric I_hs M) (α : M) {Ω : Set EuStd}
+    (hΩ : IsOpen Ω) (hΩc : IsCompact (closure Ω))
+    (hΩs : closure Ω ⊆ toEuclidean (E := EuN) '' interior (extChartAt I_hs α).target)
+    (μ : Measure ℝ) {W B : ℝ × EuStd → ℝ}
+    {Q : Fin (Module.finrank ℝ EuN) → ℝ × EuStd → ℝ}
+    (v : SmoothScalarDirichlet q) (τ : ℝ → ℝ)
+    (hraw :
+      let ψ := fun z => v.toFun ((extChartAt I_hs α).symm ((toEuclidean (E := EuN)).symm z))
+      (∫ p, deriv τ p.1 * W p * ψ p.2 ∂μ.prod (volume.restrict Ω)) =
+        (∑ j, ∫ p, τ p.1 * Q j p * fderiv ℝ ψ p.2 (EuclideanSpace.single j 1)
+          ∂μ.prod (volume.restrict Ω)) -
+        ∫ p, τ p.1 * B p * ψ p.2 ∂μ.prod (volume.restrict Ω)) :
+    (∫ p, deriv τ p.1 * W p *
+      H1ComplDirichletToLp q (smoothToH1ComplDirichlet q v)
+        ((extChartAt I_hs α).symm ((toEuclidean (E := EuN)).symm p.2))
+        ∂μ.prod (volume.restrict Ω)) =
+      (∑ j, ∫ p, τ p.1 * Q j p * dirichletLocalWeakPartialLp q α hΩ hΩc hΩs j
+        (smoothToH1ComplDirichlet q v) p.2 ∂μ.prod (volume.restrict Ω)) -
+      ∫ p, τ p.1 * B p * H1ComplDirichletToLp q (smoothToH1ComplDirichlet q v)
+        ((extChartAt I_hs α).symm ((toEuclidean (E := EuN)).symm p.2))
+        ∂μ.prod (volume.restrict Ω) := by
+  let ψ := fun z => v.toFun ((extChartAt I_hs α).symm ((toEuclidean (E := EuN)).symm z))
+  let R := fun z => H1ComplDirichletToLp q (smoothToH1ComplDirichlet q v)
+    ((extChartAt I_hs α).symm ((toEuclidean (E := EuN)).symm z))
+  let ν := μ.prod (volume.restrict Ω)
+  have hR : R =ᵐ[volume.restrict Ω] ψ := by
+    rw [show R = (fun z => smoothToLpDirichlet q v
+      ((extChartAt I_hs α).symm ((toEuclidean (E := EuN)).symm z))) by
+      funext z; simp only [R, H1ComplDirichletToLp_smoothToH1ComplDirichlet]]
+    have h := ae_chartInverse_of_ae q α hΩ.measurableSet hΩc
+      (hΩs.trans (image_mono interior_subset)) v.memLp_two.coeFn_toLp
+    change (fun z => v.memLp_two.toLp v.toFun ((extChartAt I_hs α).symm
+      ((toEuclidean (E := EuN)).symm z))) =ᵐ[volume.restrict Ω] ψ
+    exact h
+  have hRp : (fun p : ℝ × EuStd => R p.2) =ᵐ[ν] fun p => ψ p.2 :=
+    (Measure.quasiMeasurePreserving_snd (μ := μ) (ν := volume.restrict Ω)).ae hR
+  have hleft : (∫ p, deriv τ p.1 * W p * R p.2 ∂ν) =
+      ∫ p, deriv τ p.1 * W p * ψ p.2 ∂ν := by
+    apply integral_congr_ae
+    filter_upwards [hRp] with p hp
+    exact congrArg (fun r : ℝ => deriv τ p.1 * W p * r) hp
+  have hright : (∫ p, τ p.1 * B p * R p.2 ∂ν) =
+      ∫ p, τ p.1 * B p * ψ p.2 ∂ν := by
+    apply integral_congr_ae
+    filter_upwards [hRp] with p hp
+    exact congrArg (fun r : ℝ => τ p.1 * B p * r) hp
+  have hflux : (∑ j, ∫ p, τ p.1 * Q j p * dirichletLocalWeakPartialLp q α hΩ hΩc hΩs j
+      (smoothToH1ComplDirichlet q v) p.2 ∂ν) =
+      ∑ j, ∫ p, τ p.1 * Q j p * fderiv ℝ ψ p.2 (EuclideanSpace.single j 1) ∂ν := by
+    apply Finset.sum_congr rfl
+    intro j _
+    have hD := dirichletLocalWeakPartialLp_smoothToH1ComplDirichlet_coeFn q α hΩ hΩc hΩs j v
+    have hDp := (Measure.quasiMeasurePreserving_snd (μ := μ) (ν := volume.restrict Ω)).ae hD
+    apply integral_congr_ae
+    filter_upwards [hDp] with p hp
+    exact congrArg (fun r : ℝ => τ p.1 * Q j p * r) hp
+  exact hleft.trans (hraw.trans (congrArg₂ (fun a b : ℝ => a - b) hflux hright).symm)
+
 theorem integral_chart_source_dual_of_smooth_tensor_test
     {q : SmoothRiemannianMetric I_hs M} (α : M) {Ω : Set EuStd}
     (hΩ : IsOpen Ω) (hΩc : IsCompact (closure Ω))
