@@ -4929,6 +4929,7 @@ import DifferentialGeometry.Analysis.Parabolic.Dirichlet.ThirdWeakDerivative
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.HessianH1
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.HessianTimeDual
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.HessianSourceDual
+import DifferentialGeometry.Analysis.Parabolic.Dirichlet.HessianTimeEquation
 import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletChartMassPairing
 import DifferentialGeometry.Analysis.Integration.Lp.Curry
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.MixedTimeSpatialRegularity
