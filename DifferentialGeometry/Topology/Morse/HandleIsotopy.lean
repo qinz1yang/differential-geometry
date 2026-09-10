@@ -90,7 +90,7 @@ theorem exists_isotopy_cocoreAttachingEmbedding
               (r • q.2.val)) : MorseModel n) ∧
           f (H t ((cocoreAttachingEmbedding hk c ε r data hε hR.le q).val : MorseModel n)) =
             c - ε + t := by
-  obtain ⟨δ, hδ, hδε, Φ, hΦ, hi, hformula, hinv, hheight, hsource, hzero, hemb⟩ :=
+  obtain ⟨δ, hδ, hδε, Φ, hΦ, hi, hformula, hinv, hheight, hsource, hzero, hemb, _⟩ :=
     exists_isSmoothEmbedding_cocore_collar hk c ε r data hr hε hR hR'
   obtain ⟨Ψ, hs, ht, htarget, hval, hival, hΨ, hΨi⟩ :=
     exists_ambient_collar O data.p Φ hΦ hi

@@ -32,6 +32,7 @@ private theorem exists_cocore_collar_of_isNondegenerateCriticalPointAt
       ∃ ε : ℝ, ∃ hε : 0 < ε, ∃ r : ℝ, 0 < r ∧
         ∃ hR : Real.sqrt (2 * ε + 2 * r ^ 2) < data.R,
           Real.sqrt (2 * ε + 2 * r ^ 2) < data.R' ∧
+          2 * (r ^ 2 + 2 * ε) < (data.R / 2) ^ 2 ∧
           ∃ δ : ℝ, 0 < δ ∧ δ < ε ∧
             ∃ Φ : OpenPartialHomeomorph
                 ((CellBoundary k × EuclideanSpace ℝ (Fin (n - k))) × ℝ) M,
@@ -51,10 +52,21 @@ private theorem exists_cocore_collar_of_isNondegenerateCriticalPointAt
               (∀ q : AttachingRegion k (n - k),
                 Φ ((q.1, q.2.val), 0) =
                   (cocoreAttachingEmbedding hk (f p) ε r data hε hR.le q).val) ∧
-              let T : TopologicalSpace.Opens ℝ := ⟨Set.Ioo (-δ) δ, isOpen_Ioo⟩
-              Manifold.IsSmoothEmbedding Iclosed I ∞
-                (fun q : AttachingRegion k (n - k) × T =>
-                  Φ ((q.1.1, q.1.2.val), q.2.val)) := by
+              (let T : TopologicalSpace.Opens ℝ := ⟨Set.Ioo (-δ) δ, isOpen_Ioo⟩
+               Manifold.IsSmoothEmbedding Iclosed I ∞
+                 (fun q : AttachingRegion k (n - k) × T =>
+                   Φ ((q.1.1, q.1.2.val), q.2.val))) ∧
+              (∀ (δ₁ θ : ℝ), 0 < δ₁ → 0 < θ →
+                ∀ (z : AttachingRegion k (n - k)) (s : Set.Ico (0 : ℝ) 1),
+                  ‖z.2.val‖ ^ 2 < 1 - δ₁ / r ^ 2 →
+                  ‖z.2.val‖ ^ 2 < 1 - θ / r ^ 2 → s.val < δ / (2 * ε + r ^ 2) →
+                  let τ := (2 * ε + r ^ 2 * ‖z.2.val‖ ^ 2) * (2 * s.val - s.val ^ 2) / 2
+                  let q : StandardHandle k (n - k) := (Handle.attachingCollar k (n - k)) (z, s)
+                  τ ∈ Set.Ioo (-δ) δ ∧ ((z.1, z.2.val), τ) ∈ Φ.source ∧
+                    handleRoundEmbedding hk (f p) ε r δ₁ θ data q = Φ ((z.1, z.2.val), τ) ∧
+                    Φ.symm (handleRoundEmbedding hk (f p) ε r δ₁ θ data q) = ((z.1, z.2.val), τ) ∧
+                    f (handleRoundEmbedding hk (f p) ε r δ₁ θ data q) = f p - ε + τ ∧
+                    1 - Real.sqrt (1 - 2 * τ / (2 * ε + r ^ 2 * ‖z.2.val‖ ^ 2)) = s.val) := by
   let data : MorseChart n k hk (f p) I f := morseChart I f hf p (f p) k hk hnd hindex rfl
   have hdata : data.p = p := by
     have hAnd {P Q : Prop} {α : Type} (F : P → Q → α) (h : P ∧ Q) :
@@ -76,8 +88,16 @@ private theorem exists_cocore_collar_of_isNondegenerateCriticalPointAt
     hsqrt.trans_le (min_le_left _ _)
   have hR' : Real.sqrt (2 * ε + 2 * r ^ 2) < data.R' :=
     hsqrt.trans_le (min_le_right _ _)
-  refine ⟨data, hdata, ε, hε, r, hr, hR, hR', ?_⟩
-  exact exists_isSmoothEmbedding_cocore_collar hk (f p) ε r data hr.ne' hε hR hR'
+  have hmargin : 2 * (r ^ 2 + 2 * ε) < (data.R / 2) ^ 2 := by
+    have hρR : ρ ≤ data.R := min_le_left _ _
+    have hs : ρ ^ 2 ≤ data.R ^ 2 := (sq_le_sq₀ hρ.le data.hRpos.le).mpr hρR
+    dsimp only [r, ε]
+    nlinarith only [hs, sq_pos_of_pos hρ]
+  refine ⟨data, hdata, ε, hε, r, hr, hR, hR', hmargin, ?_⟩
+  obtain ⟨δ, hδ, hδε, Φ, hΦ, hi, hformula, hinv, hheight, hwidth, hzero, hemb, hflat⟩ :=
+    exists_isSmoothEmbedding_cocore_collar hk (f p) ε r data hr.ne' hε hR hR'
+  exact ⟨δ, hδ, hδε, Φ, hΦ, hi, hformula, hinv, hheight, hwidth, hzero, hemb,
+    fun δ₁ θ hδ₁ hθ => hflat δ₁ θ hδ₁ hθ hr⟩
 
 end
 
@@ -133,6 +153,7 @@ theorem exists_boundaryMorsePerturbation_with_cocore_collar_in_interior
             ∃ ε : ℝ, ∃ hε : 0 < ε, ∃ r : ℝ, 0 < r ∧
               ∃ hR : Real.sqrt (2 * ε + 2 * r ^ 2) < data.R,
                 Real.sqrt (2 * ε + 2 * r ^ 2) < data.R' ∧
+                2 * (r ^ 2 + 2 * ε) < (data.R / 2) ^ 2 ∧
                 ∃ δ : ℝ, 0 < δ ∧ δ < ε ∧
                   ∃ Φ : OpenPartialHomeomorph
                       ((CellBoundary k.val × EuclideanSpace ℝ (Fin (n + 1 - k.val))) × ℝ) O,
@@ -157,13 +178,25 @@ theorem exists_boundaryMorsePerturbation_with_cocore_collar_in_interior
                     (∀ q : AttachingRegion k.val (n + 1 - k.val),
                       Φ ((q.1, q.2.val), 0) =
                         (cocoreAttachingEmbedding k.isLt.le (g p) ε r data hε hR.le q).val) ∧
-                    let T : TopologicalSpace.Opens ℝ := ⟨Set.Ioo (-δ) δ, isOpen_Ioo⟩
-                    Manifold.IsSmoothEmbedding
-                      (((𝓡 (k.val - 1)).prod
-                        (modelWithCornersEuclideanHalfSpace (((n + 1 - k.val) - 1) + 1))).prod
-                        𝓘(ℝ, ℝ)) I ∞
-                      (fun q : AttachingRegion k.val (n + 1 - k.val) × T =>
-                        Φ ((q.1.1, q.1.2.val), q.2.val)) := by
+                    (let T : TopologicalSpace.Opens ℝ := ⟨Set.Ioo (-δ) δ, isOpen_Ioo⟩
+                     Manifold.IsSmoothEmbedding
+                       (((𝓡 (k.val - 1)).prod
+                         (modelWithCornersEuclideanHalfSpace (((n + 1 - k.val) - 1) + 1))).prod
+                         𝓘(ℝ, ℝ)) I ∞
+                       (fun q : AttachingRegion k.val (n + 1 - k.val) × T =>
+                         Φ ((q.1.1, q.1.2.val), q.2.val))) ∧
+                    (∀ (δ₁ θ : ℝ), 0 < δ₁ → 0 < θ →
+                      ∀ (z : AttachingRegion k.val (n + 1 - k.val)) (s : Set.Ico (0 : ℝ) 1),
+                        ‖z.2.val‖ ^ 2 < 1 - δ₁ / r ^ 2 →
+                        ‖z.2.val‖ ^ 2 < 1 - θ / r ^ 2 → s.val < δ / (2 * ε + r ^ 2) →
+                        let τ := (2 * ε + r ^ 2 * ‖z.2.val‖ ^ 2) * (2 * s.val - s.val ^ 2) / 2
+                        let q : StandardHandle k.val (n + 1 - k.val) :=
+                          (Handle.attachingCollar k.val (n + 1 - k.val)) (z, s)
+                        τ ∈ Set.Ioo (-δ) δ ∧ ((z.1, z.2.val), τ) ∈ Φ.source ∧
+                          handleRoundEmbedding k.isLt.le (g p) ε r δ₁ θ data q = Φ ((z.1, z.2.val), τ) ∧
+                          Φ.symm (handleRoundEmbedding k.isLt.le (g p) ε r δ₁ θ data q) = ((z.1, z.2.val), τ) ∧
+                          g ((handleRoundEmbedding k.isLt.le (g p) ε r δ₁ θ data q : O) : M) = g p - ε + τ ∧
+                          1 - Real.sqrt (1 - 2 * τ / (2 * ε + r ^ 2 * ‖z.2.val‖ ^ 2)) = s.val) := by
   let _ : NeZero (n + 1 - k.val) := ⟨Nat.ne_of_gt (Nat.sub_pos_of_lt k.isLt)⟩
   obtain ⟨a₀, ha₀, hconstruction⟩ :=
     exists_boundaryMorsePerturbation_with_criticalPoint_in_chart c d hd b D hD f hf v hchart
