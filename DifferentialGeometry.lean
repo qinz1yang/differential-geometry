@@ -4925,6 +4925,7 @@ import DifferentialGeometry.Analysis.Sobolev.Euclidean.TwoTermSource
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.FiniteSumReindex
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.TimeMeasureRestrict
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.ThirdWeakDerivative
+import DifferentialGeometry.Analysis.Parabolic.Dirichlet.HessianH1
 import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletChartMassPairing
 import DifferentialGeometry.Analysis.Integration.Lp.Curry
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.MixedTimeSpatialRegularity
