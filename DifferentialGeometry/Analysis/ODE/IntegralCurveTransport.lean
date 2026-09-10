@@ -58,15 +58,28 @@ theorem hasDerivAt_f_comp_integralCurve (f : M → ℝ) (hf : ContMDiff I 𝓘(�
     simpa using! hdf (γ t)
   simpa [hval] using h
 
-theorem f_rate_bounds_of_integralCurve (f : M → ℝ) (hf : ContMDiff I 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞) f)
+theorem f_rate_bounds_of_integralCurve_on_set (f : M → ℝ) (hf : MDifferentiable I 𝓘(ℝ) f)
     (v : (x : M) → TangentSpace I x)
-    (hrate : ∀ x, -1 ≤ (NormedSpace.fromTangentSpace (f x)) ((mfderiv I 𝓘(ℝ, ℝ) f x) (v x)) ∧
+    (D : Set M)
+    (hrate : ∀ x ∈ D, -1 ≤ (NormedSpace.fromTangentSpace (f x)) ((mfderiv I 𝓘(ℝ, ℝ) f x) (v x)) ∧
       (NormedSpace.fromTangentSpace (f x)) ((mfderiv I 𝓘(ℝ, ℝ) f x) (v x)) ≤ 0)
-    {γ : ℝ → M} (hγ : IsMIntegralCurve γ v) {t : ℝ} (ht : 0 ≤ t) :
+    {γ : ℝ → M} (hγ : IsMIntegralCurve γ v) {t : ℝ} (ht : 0 ≤ t)
+    (hstay : ∀ s ∈ Set.Icc (0 : ℝ) t, γ s ∈ D) :
     f (γ 0) - t ≤ f (γ t) ∧ f (γ t) ≤ f (γ 0) := by
   let g : ℝ → ℝ := f ∘ γ
-  have hderiv : ∀ s : ℝ, HasDerivAt g ((mfderiv I 𝓘(ℝ, ℝ) f (γ s)) (v (γ s))) s :=
-    fun s => hasDerivAt_df_comp_integralCurve f hf v hγ s
+  have hderiv : ∀ s : ℝ, HasDerivAt g ((mfderiv I 𝓘(ℝ, ℝ) f (γ s)) (v (γ s))) s := by
+    intro s
+    have hfd : HasFDerivAt g
+        ((mfderiv I 𝓘(ℝ, ℝ) f (γ s)).comp
+          ((1 : ℝ →L[ℝ] ℝ).smulRight (v (γ s)))) s :=
+      hasMFDerivAt_iff_hasFDerivAt.mp ((hf (γ s)).hasMFDerivAt.comp s (hγ s))
+    apply hasDerivAt_iff_hasFDerivAt.mpr
+    apply hfd.congr_fderiv
+    apply ContinuousLinearMap.ext
+    intro r
+    change (mfderiv I 𝓘(ℝ, ℝ) f (γ s)) (r • v (γ s)) =
+      r • (mfderiv I 𝓘(ℝ, ℝ) f (γ s)) (v (γ s))
+    exact map_smul _ _ _
   have hgdiff : DifferentiableOn ℝ g (Set.Icc (0 : ℝ) t) := by
     intro x hx
     exact (hderiv x).differentiableAt.differentiableWithinAt
@@ -74,7 +87,7 @@ theorem f_rate_bounds_of_integralCurve (f : M → ℝ) (hf : ContMDiff I 𝓘(�
     intro x hx
     rw [(hderiv x).deriv]
     have hv : (NormedSpace.fromTangentSpace (f (γ x))) ((mfderiv I 𝓘(ℝ, ℝ) f (γ x)) (v (γ x))) ≤ 0 :=
-      (hrate (γ x)).2
+      (hrate (γ x) (hstay x (interior_subset hx))).2
     simpa using! hv
   have hganti : AntitoneOn g (Set.Icc (0 : ℝ) t) :=
     antitoneOn_of_deriv_nonpos (convex_Icc (0 : ℝ) t) hgdiff.continuousOn
@@ -93,7 +106,7 @@ theorem f_rate_bounds_of_integralCurve (f : M → ℝ) (hf : ContMDiff I 𝓘(�
     intro x hx
     rw [(hhderiv x).deriv]
     have hv : -1 ≤ (NormedSpace.fromTangentSpace (f (γ x))) ((mfderiv I 𝓘(ℝ, ℝ) f (γ x)) (v (γ x))) :=
-      (hrate (γ x)).1
+      (hrate (γ x) (hstay x (interior_subset hx))).1
     linarith
   have hhmono : MonotoneOn h (Set.Icc (0 : ℝ) t) :=
     monotoneOn_of_deriv_nonneg (convex_Icc (0 : ℝ) t) hhdiff.continuousOn
@@ -103,6 +116,15 @@ theorem f_rate_bounds_of_integralCurve (f : M → ℝ) (hf : ContMDiff I 𝓘(�
     dsimp [h, g] at hm
     linarith
   exact ⟨hle', hle⟩
+
+theorem f_rate_bounds_of_integralCurve (f : M → ℝ) (hf : ContMDiff I 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞) f)
+    (v : (x : M) → TangentSpace I x)
+    (hrate : ∀ x, -1 ≤ (NormedSpace.fromTangentSpace (f x)) ((mfderiv I 𝓘(ℝ, ℝ) f x) (v x)) ∧
+      (NormedSpace.fromTangentSpace (f x)) ((mfderiv I 𝓘(ℝ, ℝ) f x) (v x)) ≤ 0)
+    {γ : ℝ → M} (hγ : IsMIntegralCurve γ v) {t : ℝ} (ht : 0 ≤ t) :
+    f (γ 0) - t ≤ f (γ t) ∧ f (γ t) ≤ f (γ 0) := by
+  exact f_rate_bounds_of_integralCurve_on_set f (hf.mdifferentiable (by simp)) v Set.univ
+    (fun x _ => hrate x) hγ ht (fun _ _ => Set.mem_univ _)
 
 theorem f_rate_bounds_of_integralCurve_back (f : M → ℝ) (hf : ContMDiff I 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞) f)
     (v : (x : M) → TangentSpace I x)
