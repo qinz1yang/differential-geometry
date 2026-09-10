@@ -1,3 +1,4 @@
+import DifferentialGeometry.Analysis.Calculus.SpaceJet
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.GradientSourceExpansion
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.MixedTimeSpatialRegularity
 
@@ -35,7 +36,7 @@ private theorem slice_contDiffOn {S : Set ℝ} {W : Set E} {b : ℝ × E → ℝ
 
 private theorem coefficient_regular_of_eq_sub_mul
     {S J : Set ℝ} {W Ω : Set E} (hS : IsOpen S) (hW : IsOpen W)
-    (hJ : IsCompact J) (hJS : J ⊆ S) (hΩ : IsOpen Ω)
+    (hJ : IsCompact J) (hJS : J ⊆ S)
     (hΩc : IsCompact (closure Ω)) (hΩW : closure Ω ⊆ W)
     {b L P : ℝ × E → ℝ} {a : ℝ → ℝ}
     (hL : ContDiffOn ℝ ∞ L (S ×ˢ W)) (hP : ContDiffOn ℝ ∞ P (S ×ˢ W))
@@ -47,46 +48,27 @@ private theorem coefficient_regular_of_eq_sub_mul
         fderiv ℝ (fun x => b (p.1, x)) p.2 (EuclideanSpace.single j 1)) ∞ ν) ∧
       (∀ᵐ t ∂volume.restrict J, ContDiffOn ℝ ∞ (fun x => b (t, x)) Ω) := by
   intro ν
-  have hderiv (t) (ht : t ∈ J) (x) (hx : x ∈ W) (v : E) :
-      fderiv ℝ (fun y => b (t, y)) x v =
-        fderiv ℝ (fun y => L (t, y)) x v -
-          a t * fderiv ℝ (fun y => P (t, y)) x v := by
-    have hLs := ((slice_contDiffOn hL (hJS ht)).contDiffAt (hW.mem_nhds hx)).differentiableAt
-      (by simp)
-    have hPs := ((slice_contDiffOn hP (hJS ht)).contDiffAt (hW.mem_nhds hx)).differentiableAt
-      (by simp)
-    have hg : (fun y => b (t, y)) =ᶠ[𝓝 x] (fun y => L (t, y) - a t * P (t, y)) :=
-      Filter.eventuallyEq_of_mem (hW.mem_nhds hx) (fun y hy => heq t ht y hy)
-    rw [hg.fderiv_eq, fderiv_fun_sub hLs (hPs.const_mul _), fderiv_const_mul hPs]
-    rfl
-  have hcont : ContinuousOn b (J ×ˢ closure Ω) :=
-    ((hL.continuousOn.mono (prod_mono hJS hΩW)).sub
-      ((ha.comp continuousOn_fst (fun _ hp => hp.1)).mul
-        (hP.continuousOn.mono (prod_mono hJS hΩW)))).congr
-          (fun p hp => heq p.1 hp.1 p.2 (hΩW hp.2))
-  have hbound {f : ℝ × E → ℝ} (hf : ContinuousOn f (J ×ˢ closure Ω)) : MemLp f ∞ ν := by
-    have h := hf.memLp_top_of_subset_isCompact (hJ.prod hΩc)
-      (hJ.measurableSet.prod hΩ.measurableSet) (prod_mono Subset.rfl subset_closure)
-      (μ := volume.prod volume)
-    simpa only [ν, Measure.prod_restrict] using h
-  refine ⟨hbound hcont, ?_, ?_⟩
+  have hjet (N : ℕ) (v : Fin N → E) :
+      MemLp (fun p : ℝ × E => iteratedFDeriv ℝ N (fun y => b (p.1, y)) p.2 v) ∞ ν := by
+    have h := DifferentialGeometry.Analysis.memLp_iterated_spatial_fderiv_apply_of_eq_sub_smul
+      hS hW hJS hL hP ha heq (hJ.prod hΩc) (prod_mono Subset.rfl hΩW)
+      N (by exact_mod_cast (le_top : (N : ℕ∞) ≤ ⊤)) v (volume.prod volume)
+    have h' := h.mono_measure (Measure.restrict_mono
+      (prod_mono (Subset.rfl (s := J)) (subset_closure (s := Ω))) le_rfl)
+    simpa only [ν, Measure.prod_restrict] using h'
+  refine ⟨?_, ?_, ?_⟩
+  · simpa only [iteratedFDeriv_zero_apply] using hjet 0 (fun i => Fin.elim0 i)
   · intro j
-    apply hbound
-    exact (((spatial_derivative_contDiffOn hS hW hL _).continuousOn.mono
-      (prod_mono hJS hΩW)).sub
-        ((ha.comp continuousOn_fst (fun _ hp => hp.1)).mul
-          ((spatial_derivative_contDiffOn hS hW hP _).continuousOn.mono
-            (prod_mono hJS hΩW)))).congr
-              (fun p hp => hderiv p.1 hp.1 p.2 (hΩW hp.2) _)
+    simpa only [iteratedFDeriv_one_apply] using
+      hjet 1 (fun _ => EuclideanSpace.single j 1)
   · filter_upwards [ae_restrict_mem hJ.measurableSet] with t ht
-    apply (((slice_contDiffOn hL (hJS ht)).sub
-      (contDiffOn_const.mul (slice_contDiffOn hP (hJS ht)))).congr
-        (fun x hx => heq t ht x hx)).mono
-    exact subset_closure.trans hΩW
+    have hs := DifferentialGeometry.Analysis.contDiffOn_iterated_spatial_fderiv_apply_of_eq_sub_smul
+      hW hJS hL hP heq 0 (m := ∞) (by simp) (fun i => Fin.elim0 i) ht
+    simpa only [iteratedFDeriv_zero_apply] using hs.mono (subset_closure.trans hΩW)
 
 private theorem gradient_source_coefficient_regular
     {S J : Set ℝ} {W Ω : Set E} (hS : IsOpen S) (hW : IsOpen W)
-    (hJ : IsCompact J) (hJS : J ⊆ S) (hΩ : IsOpen Ω)
+    (hJ : IsCompact J) (hJS : J ⊆ S)
     (hΩc : IsCompact (closure Ω)) (hΩW : closure Ω ⊆ W)
     {ρ Q : ℝ × E → ℝ} {A : Fin d → Fin d → ℝ × E → ℝ}
     {C : Fin d → ℝ × E → ℝ} {a : ℝ → ℝ}
@@ -108,7 +90,7 @@ private theorem gradient_source_coefficient_regular
           fderiv ℝ (fun x => b (p.1, x)) p.2 (EuclideanSpace.single j 1)) ∞
             ((volume.restrict J).prod (volume.restrict Ω))) ∧
         (∀ᵐ t ∂volume.restrict J, ContDiffOn ℝ ∞ (fun x => b (t, x)) Ω) := by
-    apply coefficient_regular_of_eq_sub_mul hS hW hJ hJS hΩ hΩc hΩW hb
+    apply coefficient_regular_of_eq_sub_mul hS hW hJ hJS hΩc hΩW hb
       (contDiffOn_const (c := 0)) ha
     intro t ht x hx
     simp
@@ -121,7 +103,7 @@ private theorem gradient_source_coefficient_regular
     · exact hsmooth (spatial_derivative_contDiffOn hS hW (hC i) _)
     · exact hsmooth (hC i)
   · cases b <;> cases c
-    · refine coefficient_regular_of_eq_sub_mul hS hW hJ hJS hΩ hΩc hΩW
+    · refine coefficient_regular_of_eq_sub_mul hS hW hJ hJS hΩc hΩW
         (spatial_derivative_contDiffOn hS hW hQ (EuclideanSpace.single k 1))
         (spatial_derivative_contDiffOn hS hW hρ (EuclideanSpace.single k 1)) ha ?_
       intro t ht x hx
@@ -135,7 +117,7 @@ private theorem gradient_source_coefficient_regular
     · exact hsmooth (((hjoint (0, EuclideanSpace.single k 1)).fderiv_of_isOpen
         (m := ∞) (hS.prod hW) (by simp)).clm_apply
           (contDiffOn_const (c := ((1, 0) : ℝ × E)))).neg
-    · exact coefficient_regular_of_eq_sub_mul hS hW hJ hJS hΩ hΩc hΩW hQ hρ ha
+    · exact coefficient_regular_of_eq_sub_mul hS hW hJ hJS hΩc hΩW hQ hρ ha
         (fun _ _ _ _ => rfl)
     · exact hsmooth (hjoint (0, EuclideanSpace.single k 1)).neg
 
@@ -325,7 +307,7 @@ private theorem local_gradient_source_coefficients_regular
       (D.regular ×ˢ (trivializationAt (EuclideanSpace ℝ (Fin n)) (TangentSpace I_hs) α).baseSet))
     {t₀ t₁ : ℝ} (ht₀ : 0 < t₀) (ht₁ : t₁ < T)
     {Ω₀ : Set (EuclideanSpace ℝ (Fin (Module.finrank ℝ (EuclideanSpace ℝ (Fin n)))))}
-    (hΩ₀ : IsOpen Ω₀) (hΩ₀Ω : closure Ω₀ ⊆ Ω) :
+    (hΩ₀Ω : closure Ω₀ ⊆ Ω) :
     let μ := (timeMeasure T).restrict (Icc t₀ t₁)
     let ν := μ.prod (volume.restrict Ω₀)
     let ρ := fun (p : ℝ × EuStd) => MetricExtension.densityOnEuclid (I := I_hs) (G.metric p.1) α p.2
@@ -376,7 +358,7 @@ private theorem local_gradient_source_coefficients_regular
         (EuclideanSpace.single j 1)) ∞ ν) ∧
       (∀ᵐ t ∂μ, ContDiffOn ℝ ∞ (fun x => Co k s (t, x)) Ω₀) := by
     have h := gradient_source_coefficient_regular D.regular_isOpen hW isCompact_Icc
-      (hI.trans hreg) hΩ₀ hΩ₀c hΩ₀W hρ hQ hA hC (hacont.mono hI) k s
+      (hI.trans hreg) hΩ₀c hΩ₀W hρ hQ hA hC (hacont.mono hI) k s
     simpa only [Co, hC₀, ν, hμ] using h
   exact hCo
 
@@ -470,7 +452,7 @@ private theorem source_spatial_derivative_of_weak_gradient_equation
     exists_local_spatial_weak_jet q u α hΩ hΩc hΩs hΩ₀ hΩ₀Ω H hH
   let Co := gradientSourceCoefficient ρ A C C₀
   have hCo := local_gradient_source_coefficients_regular (hG := hG) (hreg := hreg)
-    hacont α hΩc hΩs hXsmooth ht₀ ht₁ hΩ₀ hΩ₀Ω
+    hacont α hΩc hΩs hXsmooth ht₀ ht₁ hΩ₀Ω
   obtain ⟨DF, hDF, hDFformula, hWkp, hNorm⟩ := exists_gradient_source_weak_partials hΩ₀
     (fun p => U p) (fun i p => V i p) U₀ V₀ H R K DR F Co hU₀ hV₀ hUweak hVweak hK hDR hCo hFinite
   exact ⟨K, DR, DF, hK, hDR, hDF, hDFformula, hWkp, hNorm⟩
