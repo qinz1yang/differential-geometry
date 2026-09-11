@@ -9,8 +9,7 @@ Third-party libraries vendored into this project.
 - **Author**: Álvaro Begué
 - **License**: Apache-2.0 (`Schoenflies/LICENSE`)
 
-The Jordan separation and crosscut theorems with their transitive dependencies.
-The ambient Jordan--Schoenflies extension is being ported next.
+The planar Jordan--Schoenflies theorem and its transitive dependencies.
 See `Schoenflies/PORTING.md` for scope and validation, and
 `Schoenflies/MODIFICATIONS.md` for local changes. Original attribution and
 documentation are preserved.
