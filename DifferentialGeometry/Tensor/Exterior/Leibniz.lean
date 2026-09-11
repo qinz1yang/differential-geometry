@@ -455,7 +455,7 @@ attribute [local instance] normedSpaceTangentSpace
 variable {EM : Type*} [NormedAddCommGroup EM] [NormedSpace ℝ EM]
   {HM : Type*} [TopologicalSpace HM]
   {IM : ModelWithCorners ℝ EM HM}
-  {M : Type*} [TopologicalSpace M] [ChartedSpace HM M] [IsManifold IM ⊤ M]
+  {M : Type*} [TopologicalSpace M] [ChartedSpace HM M] [IsManifold IM ∞ M]
   {k l : ℕ}
 
 private def trivialFiberEquiv (x : M) : Bundle.Trivial M ℝ x ≃L[ℝ] ℝ := by
@@ -506,7 +506,7 @@ private lemma scalarize_reindex {m n : ℕ} (σ : Fin m ≃ Fin n)
   ext v
   rfl
 
-omit [IsManifold IM ⊤ M] in
+omit [IsManifold IM ∞ M] in
 private lemma scalarize_add (m : ℕ) (x : M)
     (L K : Bundle.continuousAlternatingMap ℝ (Fin m) EM (TangentSpace IM) ℝ
       (Bundle.Trivial M ℝ) x) :
@@ -514,7 +514,7 @@ private lemma scalarize_add (m : ℕ) (x : M)
   ext v
   rfl
 
-omit [IsManifold IM ⊤ M] in
+omit [IsManifold IM ∞ M] in
 private lemma scalarize_smul (m : ℕ) (x : M) (c : ℝ)
     (L : Bundle.continuousAlternatingMap ℝ (Fin m) EM (TangentSpace IM) ℝ
       (Bundle.Trivial M ℝ) x) :

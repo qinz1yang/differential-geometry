@@ -308,7 +308,7 @@ theorem calabiDist_hess_support_on_of_sectional_lower_bound_lt
     rwa [IsRiemannianManifold.out (I := I) O y] at hy
   obtain ⟨tail, hreach, _hrho_inf, hrho_x, hupper, _hrho_ev, _hrho_grad,
       hgrad_norm, _hlap⟩ :=
-    exists_calabi_support_lt (I := I) g hEnorm (Real.sqrt (-K))
+    exists_calabiData_lt (I := I) g hEnorm (Real.sqrt (-K))
       (Real.sqrt_nonneg _) hRicBall hOx hfin hR
   let rho : M → Real := fun y =>
     tail.initialLength + branchRadius (I := I) g tail.branch y

@@ -54,7 +54,7 @@ theorem noncompact_backward_three_shrinker_classification
     (tau : ℕ → ℝ) (htau : ∀ i, 0 < tau i) (q : ℕ → F.M) {phi : ℕ → ℕ}
     (Phi : PointedRiemannianConvergenceMaps (I := I) (backwardSliceSequence F tau htau q) L phi)
     (hcomplete : MetricComplete (I := I) L) (hconnected : ConnectedSpace L.M)
-    (f : C^∞⟮I, L.M; ℝ⟯) (hsoliton : isGradientRicciSoliton (I := I) L.metric f 1)
+    (f : C^∞⟮I, L.M; ℝ⟯) (hsoliton : gradientRicciSoliton (I := I) L.metric f 1)
     (hnonflat : ∃ x : L.M, metricScalarAt (I := I) L.metric x ≠ 0) :
     NoncompactSpace L.M ∧
       ∃ Psi : Cylinder ≃ₘ⟮CI, I⟯ UniversalCover L.M,

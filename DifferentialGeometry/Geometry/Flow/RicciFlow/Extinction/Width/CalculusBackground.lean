@@ -163,7 +163,7 @@ private theorem lipschitz_lineDeriv_weak
   rw [hcomm] at h
   linarith
 
-theorem lipschitzOn_hasWeakPartialDeriv [NeZero d]
+theorem lipschitzOn_hasWeakPartialDeriv
     {Ω : Set E} (hΩ : IsOpen Ω) {f : E → F} {L : ℝ≥0}
     (hf : LipschitzOnWith L f Ω) (i : Fin d) (j : Fin m) :
     LocallyIntegrableOn
@@ -224,7 +224,7 @@ theorem lipschitzOn_ae_fderiv_smooth_comp
   exact fderiv_comp x (hG.differentiable_one (f x))
     (hx.differentiableAt (hΩ.mem_nhds hxs))
 
-theorem convolution_weakPartial [NeZero d]
+theorem convolution_weakPartial
     {u g : E → ℝ} {i : Fin d}
     (hweak : DeGiorgi.HasWeakPartialDeriv i g u univ)
     {φ : E → ℝ} (hφ : ContDiff ℝ (⊤ : ℕ∞) φ)
@@ -380,7 +380,7 @@ private theorem lipschitzOn_measurable_differentiability_subset
     fun x hx => (htd x hx).hasFDerivWithinAt.mono hts⟩
 
 theorem biLipschitz_integrableOn_image_iff
-    {B : Type*} [NormedAddCommGroup B] [NormedSpace ℝ B] [CompleteSpace B]
+    {B : Type*} [NormedAddCommGroup B] [NormedSpace ℝ B]
     {s : Set E} (hs : MeasurableSet s) {f : E → E} {L A : ℝ≥0}
     (hf : LipschitzOnWith L f s)
     (hinv : AntilipschitzWith A (fun x : s => f x)) (h : E → B) :
@@ -398,7 +398,7 @@ theorem biLipschitz_integrableOn_image_iff
     Measure.restrict_congr_set himg] using hnative
 
 theorem biLipschitz_integral_image
-    {B : Type*} [NormedAddCommGroup B] [NormedSpace ℝ B] [CompleteSpace B]
+    {B : Type*} [NormedAddCommGroup B] [NormedSpace ℝ B]
     {s : Set E} (hs : MeasurableSet s) {f : E → E} {L A : ℝ≥0}
     (hf : LipschitzOnWith L f s)
     (hinv : AntilipschitzWith A (fun x : s => f x)) (h : E → B)

@@ -3,6 +3,8 @@ import DifferentialGeometry.Geometry.Curvature.Naturality.Pullback.Basic
 import DifferentialGeometry.Geometry.Metric.Sphere.Round.Shape
 import DifferentialGeometry.Geometry.Curvature.Riemann.Basic.Sections
 import DifferentialGeometry.Geometry.Curvature.Metric.Sectional
+import DifferentialGeometry.Geometry.Curvature.Metric.ConstantRicci
+
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 
@@ -165,6 +167,18 @@ theorem round_riemann_one (x : sphere (0 : E) 1)
     simpa only [one_smul] using
       riemannOp_of_rm (I := 𝓡 n)
         (M := sphere (0 : E) 1) (roundMetric (E := E) (n := n)) x 1 hRm X Y Z
+
+omit [FiniteDimensional ℝ E] in
+theorem roundMetric_ricciTensor
+    (x : sphere (0 : E) 1) (v w : TangentSpace (𝓡 n) x) :
+    ricciTensor (I := 𝓡 n) (roundMetric (E := E) (n := n)) x v w =
+      ((n : ℝ) - 1) * (roundMetric (E := E) (n := n)).inner x v w := by
+  have h := Curvature.ricci_of_op (I := 𝓡 n)
+    (roundMetric (E := E) (n := n)) x 1
+    (fun X Y Z => by
+      simpa using round_riemann_one (E := E) (n := n) x X Y Z)
+    v w
+  simpa [finrank_euclideanSpace_fin] using h
 
 end Geometry
 end DifferentialGeometry

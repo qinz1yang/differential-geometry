@@ -381,8 +381,7 @@ theorem smoothTubularRetraction_exists {N : ℕ}
   sorry
 
 omit finiteDimensionalE boundarylessI t2Q compactQ connectedQ in
-theorem RegularLoop.isLipschitz_of_compact
-    [FiniteDimensional ℝ E] [I.Boundaryless] [T2Space Q] [CompactSpace Q]
+theorem RegularLoop.isLipschitz
     (g : SmoothRiemannianMetric I Q)
     (γ : RegularLoop I Q) : IsLipschitzLoop g γ.toContinuousLoop := by
   obtain ⟨V, hV, hspeed⟩ := regularLoop_speed_bounded g γ
@@ -390,15 +389,8 @@ theorem RegularLoop.isLipschitz_of_compact
   refine ⟨L, ?_⟩
   exact regularLoop_lipschitz_of_speed_bound g γ hV hspeed
 
-omit connectedQ in
-theorem RegularLoop.isLipschitz [_connectedQ : ConnectedSpace Q]
-    (g : SmoothRiemannianMetric I Q) (γ : RegularLoop I Q) :
-    IsLipschitzLoop g γ.toContinuousLoop := by
-  exact γ.isLipschitz_of_compact g
-
 omit finiteDimensionalE boundarylessI t2Q compactQ connectedQ in
 theorem regularFamily_uniform_bounds
-    [FiniteDimensional ℝ E] [I.Boundaryless] [T2Space Q] [CompactSpace Q] [ConnectedSpace Q]
     {K : Type*} [TopologicalSpace K] [CompactSpace K]
     (g : SmoothRiemannianMetric I Q) (Γ : RegularFamily (I := I) (Q := Q) K) :
     ∃ L : ℝ≥0, (∀ k x y, riemannianEDistOf g ((Γ k).1.toContinuousLoop x)
@@ -501,7 +493,6 @@ def RegularLoop.postcompose (f : C(Q, P)) (hf : ContMDiff I J ∞ f)
 
 omit finiteDimensionalE boundarylessI t2Q compactQ connectedQ in
 theorem continuous_regularLoop_postcompose
-    [FiniteDimensional ℝ E] [I.Boundaryless] [T2Space Q] [CompactSpace Q] [ConnectedSpace Q]
     (f : C(Q, P)) (hf : ContMDiff I J ∞ f) :
     Continuous (RegularLoop.postcompose f hf) := by
   let T : C(TangentBundle I Q, TangentBundle J P) :=

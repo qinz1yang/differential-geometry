@@ -190,7 +190,16 @@ private theorem laplacianAt_time_contDiffAt_on
           DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (chartVossWeylIntegrand (I := I) g α (u p.1) i) p.2) /
           chartDensityOnE (I := I) g α p.2)
       (t₀, (extChartAt I α) x) :=
-    chartLaplacianValue_jointContDiffAt (I := I) (M := M) (D := D) g u hu ht₀ x α hxsrc
+    by
+      have hy : extChartAt I α x ∈ interior (extChartAt I α).target := by
+        rwa [(isOpen_extChartAt_target (I := I) α).interior_eq]
+      have h := (scalarOnE_chartVossWeylLaplacian_contDiffOn_prod g u
+        D.regular_isOpen hu α).contDiffAt (x := (t₀, extChartAt I α x))
+          ((D.regular_isOpen.prod isOpen_interior).mem_nhds ⟨ht₀, hy⟩)
+      apply h.congr_of_eventuallyEq
+      filter_upwards [continuousAt_snd.eventually (isOpen_interior.mem_nhds hy)] with p hp
+      simp only [scalarOnE_def, chartVossWeylLaplacian_def, chartDensityOnE,
+        (extChartAt I α).right_inv (interior_subset hp)]
   have hsliceAt : ContDiffAt ℝ ∞
       (fun t : ℝ =>
         (∑ i : Fin (Module.finrank ℝ E),

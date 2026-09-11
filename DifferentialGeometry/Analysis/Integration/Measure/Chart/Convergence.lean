@@ -43,6 +43,9 @@ theorem tendstoUniformlyOn_chartDensity_of_metricDerivNorm
   have hAi (i : Fin (Module.finrank Real E)) : C i ≤ A :=
     (le_max_left _ _).trans
       (Finset.single_le_sum (fun j _ => le_max_right (C j) 0) (Finset.mem_univ i))
+  let : UniformSpace
+      (Matrix (Fin (Module.finrank Real E)) (Fin (Module.finrank Real E)) Real) :=
+    PseudoMetricSpace.toUniformSpace
   let G : ι → K → Matrix (Fin (Module.finrank Real E)) (Fin (Module.finrank Real E)) Real :=
     fun k z => chartGramMatrix (g k) alpha ((extChartAt I alpha).symm z)
   let GInf : K → Matrix (Fin (Module.finrank Real E)) (Fin (Module.finrank Real E)) Real :=

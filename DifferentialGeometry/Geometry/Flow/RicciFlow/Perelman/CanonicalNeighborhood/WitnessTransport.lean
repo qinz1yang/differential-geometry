@@ -619,7 +619,7 @@ theorem modelComparison_sqrt_model_le
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [SigmaCompactSpace M]
   [BoundarylessManifold I M] [SigmaCompactSpace N] [BoundarylessManifold I N] in
 def metricScalarDifferential {M' : Type u} [TopologicalSpace M'] [ChartedSpace H M']
-    [IsManifold I ∞ M'] [T2Space M'] [BoundarylessManifold I M']
+    [IsManifold I ∞ M']
     (g : SmoothRiemannianMetric I M') (z : M') (v : TangentSpace I z) : ℝ :=
   mfderiv I (modelWithCornersSelf ℝ ℝ) (fun q : M' => metricScalarAt (I := I) g q) z v
 

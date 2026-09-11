@@ -1,6 +1,8 @@
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tangent.NormDiamond
 import DifferentialGeometry.Topology.Manifold.InverseFunctionTheorem.ManifoldDerivative
 import DifferentialGeometry.Geometry.Exponential.ConjugatePoint.Basic
+import DifferentialGeometry.Geometry.Exponential.Smoothness.AtZero.IntrinsicDerivative
+
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 
@@ -259,6 +261,28 @@ theorem not_conj
   exact hinj hvw
 
 end ExponentialInverseBranch
+
+theorem exists_exponentialInverseBranch_zero_mem
+    (g : SmoothRiemannianMetric I M) (hEnorm : IsMetricNorm g) (p : M) :
+    ∃ B : ExponentialInverseBranch g hEnorm p, (0 : E) ∈ B.hom.source := by
+  have hzero : ¬ IsConjVec (I := I) g hEnorm p (0 : E) := by
+    unfold IsConjVec
+    simp only [not_not]
+    have hfun : (fun b : E => expMapIntrinsic g hEnorm p
+        ((tangentSpaceModelContinuousLinearEquiv (I := I) p).symm b)) =
+        fun b : E => expMapIntrinsic g hEnorm p (show TangentSpace I p from b) := by
+      funext b
+      rw [tangentSpaceModelContinuousLinearEquiv_symm_apply]
+    rw [hfun, mfderiv_expMapIntrinsic_at_zero g hEnorm p]
+    intro a b hab
+    have habModel := congrArg (tangentSpaceModelContinuousLinearEquiv (I := I)
+      (expMapIntrinsic g hEnorm p
+        ((tangentSpaceModelContinuousLinearEquiv (I := I) p).symm (0 : E)))) hab
+    change a = b at habModel
+    exact habModel
+  obtain ⟨B, hB⟩ := branch_of_not_conj g hEnorm (u := (0 : TangentSpace I p))
+    (by simpa only [map_zero] using hzero)
+  exact ⟨B, by simpa only [map_zero] using hB⟩
 
 end Exponential
 end Riemannian

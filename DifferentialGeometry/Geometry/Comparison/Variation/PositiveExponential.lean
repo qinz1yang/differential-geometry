@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Comparison.Variation.TwistedExponential
 import DifferentialGeometry.Geometry.Comparison.Variation.LocalSecondVariation
-import DifferentialGeometry.Geometry.Curvature.Positive
+import DifferentialGeometry.Geometry.Curvature.PositiveSectional
 
 noncomputable section
 open Bundle Manifold Set Filter

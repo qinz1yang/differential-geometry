@@ -4,6 +4,7 @@ import Mathlib.Geometry.Manifold.VectorBundle.MDifferentiable
 import Mathlib.Geometry.Manifold.VectorBundle.Tangent
 import Mathlib.Geometry.Manifold.IsManifold.InteriorBoundary
 import Mathlib.Analysis.Calculus.DerivativeTest
+
 open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
@@ -298,8 +299,8 @@ theorem mfderiv_eq_zero_at_spatial_min_of_isInteriorPoint
       fderiv Real (fun y : E => f ((extChartAt I x).symm y))
         ((extChartAt I x) x) = 0 :=
     hmin_chart.fderiv_eq_zero
-  have hrange : Set.range I ∈ nhds ((extChartAt I x) x) := by
-    exact range_mem_nhds_isInteriorPoint hx
+  have hrange : Set.range I ∈ nhds ((extChartAt I x) x) :=
+    range_mem_nhds_isInteriorPoint hx
   have hmvfderiv : mvfderiv (I := I) f x = 0 := by
     apply ContinuousLinearMap.ext
     intro v
@@ -516,7 +517,7 @@ private theorem fderiv_fderiv_self_nonneg_of_isLocalMin
     rw [hzero]
     simp only [ContinuousLinearMap.comp_apply, zero_apply, map_zero, le_refl]
 
-private theorem cov_gradient_inner_self_nonneg_at_spatial_min
+theorem cov_gradientFun_inner_self_nonneg_at_spatial_min_of_isInteriorPoint
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (g : SmoothRiemannianMetric I M)
     (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatible (I := I) cov g)
@@ -599,7 +600,7 @@ theorem laplacian_nonneg_at_spatial_min_of_metricCompatible_of_isInteriorPoint
     ((cov (fun y : M => gradientFun (I := I) g f y) x).toLinearMap)
     (fun v => by
       simpa using
-        cov_gradient_inner_self_nonneg_at_spatial_min
+        cov_gradientFun_inner_self_nonneg_at_spatial_min_of_isInteriorPoint
           (I := I) cov g hmc hmin hx hf hf_near hgrad v)
 
 

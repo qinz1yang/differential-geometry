@@ -203,9 +203,9 @@ theorem sqrt_rmNormSq_le_sqrt_three_mul_scalar_of_curvatureOperatorNonneg
       _ = 3 := hdim
   obtain ⟨basis, horth⟩ := exists_orthonormalBasisAt (I := I) (S.base.metric t) x hdimT
   have hmin := (curvatureOperatorLowerBoundAt_iff_neg_sectionalMin_le (I := I)
-    (S.base.metric t) x basis horth
-    ⟨S.base.rm04 t x, metricRm04At_mem_algebraicCurvatureTensorSubmodule
-      (I := I) (S.base.metric t) x⟩ 0).mp hnn
+    (S.base.metric t) basis horth
+    (A := ⟨S.base.rm04 t x, metricRm04At_mem_algebraicCurvatureTensorSubmodule
+      (I := I) (S.base.metric t) x⟩) (K := 0)).mp hnn
   have hanti := orderedSectionalCurvaturesAt_antitone (I := I) x basis
     (⟨S.base.rm04 t x, metricRm04At_mem_algebraicCurvatureTensorSubmodule
       (I := I) (S.base.metric t) x⟩ :

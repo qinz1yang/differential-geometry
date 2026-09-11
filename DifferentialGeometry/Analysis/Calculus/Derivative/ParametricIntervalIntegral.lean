@@ -14,7 +14,7 @@ namespace DifferentialGeometry.Analysis.Calculus
 universe uE uF
 
 variable {E : Type uE} {F : Type uF}
-variable [NormedAddCommGroup E] [NormedSpace ℝ E] [ProperSpace E]
+variable [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable [NormedAddCommGroup F] [NormedSpace ℝ F] [CompleteSpace F]
 
 private def inlCLM (E : Type uE) [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -22,7 +22,7 @@ private def inlCLM (E : Type uE) [NormedAddCommGroup E] [NormedSpace ℝ E]
     E →L[ℝ] E × F :=
   (1 : E →L[ℝ] E).prod (0 : E →L[ℝ] F)
 
-omit [ProperSpace E] [CompleteSpace F] in
+omit [CompleteSpace F] in
 private theorem fderiv_partial_eq_comp {f : E → ℝ → F} (p : E × ℝ)
     (hd : DifferentiableAt ℝ (fun q : E × ℝ => f q.1 q.2) p) :
     fderiv ℝ (fun y : E => f y p.2) p.1 =
@@ -38,7 +38,7 @@ private theorem fderiv_partial_eq_comp {f : E → ℝ → F} (p : E × ℝ)
   rw [← hfun] at hcomp
   exact hcomp.fderiv
 
-omit [ProperSpace E] [CompleteSpace F] in
+omit [CompleteSpace F] in
 private theorem partial_fderiv_contDiffOn {f : E → ℝ → F}
     (hf : ContDiffOn ℝ (↑(⊤ : ℕ∞) : WithTop ℕ∞) (fun p : E × ℝ => f p.1 p.2) Set.univ) :
     ContDiffOn ℝ (↑(⊤ : ℕ∞) : WithTop ℕ∞)
@@ -68,6 +68,7 @@ private theorem partial_fderiv_contDiffOn {f : E → ℝ → F}
 
 omit [CompleteSpace F] in
 private theorem hasFDerivAt_paramIntervalIntegral (f : E → ℝ → F)
+    [ProperSpace E]
     (hf : ContDiffOn ℝ (↑(⊤ : ℕ∞) : WithTop ℕ∞) (fun p : E × ℝ => f p.1 p.2) Set.univ)
     (x₀ : E) :
     HasFDerivAt (fun x : E => ∫ t in (0 : ℝ)..1, f x t)
@@ -172,22 +173,31 @@ private theorem hasFDerivAt_paramIntervalIntegral (f : E → ℝ → F)
 omit [NormedSpace ℝ E] [NormedSpace ℝ F] [CompleteSpace F] in
 private theorem paramInt_tube
     (G : E × ℝ → F) (U : Set E) (hU : IsOpen U)
-    (a b : ℝ) (S : Set ℝ) (hSI : Set.uIcc a b ⊆ S)
+    (a b : ℝ) (S : Set ℝ) (hS : IsOpen S) (hSI : Set.uIcc a b ⊆ S)
     (x₀ : E) (hx₀ : x₀ ∈ U) (hG : ContinuousOn G (U ×ˢ S)) :
     ∃ C : ℝ, ∀ᶠ x in nhds x₀, ∀ t ∈ Ι a b, ‖G (x, t)‖ ≤ C := by
-  obtain ⟨K, ⟨hKnhds, hKcomp⟩, hKU⟩ :=
-    (compact_basis_nhds x₀).mem_iff.1 (hU.mem_nhds hx₀)
-  have hcompact : IsCompact (K ×ˢ Set.uIcc a b) :=
-    hKcomp.prod isCompact_uIcc
-  have hsub : K ×ˢ Set.uIcc a b ⊆ U ×ˢ S :=
-    fun p hp ↦ ⟨hKU hp.1, hSI hp.2⟩
-  obtain ⟨C, hC⟩ :=
-    (hcompact.image_of_continuousOn (hG.mono hsub).norm).bddAbove
-  exact ⟨C, by
-    filter_upwards [hKnhds] with x hx t ht
-    exact hC ⟨(x, t), ⟨hx, Set.uIoc_subset_uIcc ht⟩, rfl⟩⟩
+  have hslice : ContinuousOn (fun t : ℝ ↦ ‖G (x₀, t)‖) (Set.uIcc a b) := by
+    exact hG.norm.comp (continuous_const.prodMk continuous_id).continuousOn
+      (fun t ht ↦ ⟨hx₀, hSI ht⟩)
+  obtain ⟨B, hB⟩ := isCompact_uIcc.exists_bound_of_continuousOn hslice
+  let C : ℝ := B + 1
+  have hBC : B < C := lt_add_of_pos_right B zero_lt_one
+  let V : Set (E × ℝ) := (U ×ˢ S) ∩ (fun p ↦ ‖G p‖) ⁻¹' Set.Iio C
+  have hV : IsOpen V := hG.norm.isOpen_inter_preimage (hU.prod hS) isOpen_Iio
+  have hsub : ({x₀} : Set E) ×ˢ Set.uIcc a b ⊆ V := by
+    rintro ⟨x, t⟩ ⟨hx, ht⟩
+    simp only [Set.mem_singleton_iff] at hx
+    subst x
+    have hBt : ‖G (x₀, t)‖ ≤ B := by
+      simpa only [Real.norm_eq_abs, abs_of_nonneg (norm_nonneg _)] using hB t ht
+    exact ⟨⟨hx₀, hSI ht⟩, hBt.trans_lt hBC⟩
+  obtain ⟨W, T, hW, _hT, hxW, hKT, hWT⟩ :=
+    generalized_tube_lemma isCompact_singleton isCompact_uIcc hV hsub
+  refine ⟨C, ?_⟩
+  filter_upwards [hW.mem_nhds (hxW (Set.mem_singleton x₀))] with x hx t ht
+  exact (hWT ⟨hx, hKT (Set.uIoc_subset_uIcc ht)⟩).2.le
 
-omit [NormedSpace ℝ E] [NormedSpace ℝ F] [ProperSpace E] [CompleteSpace F] in
+omit [NormedSpace ℝ E] [NormedSpace ℝ F] [CompleteSpace F] in
 private theorem paramInt_slice
     (G : E × ℝ → F) (U : Set E) (hU : IsOpen U)
     (S : Set ℝ) (hS : IsOpen S)
@@ -197,7 +207,7 @@ private theorem paramInt_slice
   refine (hG.continuousAt ((hU.prod hS).mem_nhds ⟨hx, ht⟩)).comp_continuousWithinAt ?_
   exact continuousWithinAt_const.prodMk continuousWithinAt_id
 
-omit [ProperSpace E] [CompleteSpace F] in
+omit [CompleteSpace F] in
 private theorem paramInt_fderiv
     (G : E × ℝ → F) (U : Set E) (hU : IsOpen U)
     (S : Set ℝ) (hS : IsOpen S)
@@ -234,7 +244,7 @@ theorem hasFDerivAt_paramInt
   have hGp : ContDiffOn ℝ 0 Gp (U ×ˢ S) := by
     simpa only [Gp] using paramInt_fderiv G U hU S hS hfG
   have hGpc : ContinuousOn Gp (U ×ˢ S) := hGp.continuousOn
-  obtain ⟨C, hC⟩ := paramInt_tube Gp U hU a b S hSI x₀ hx₀ hGpc
+  obtain ⟨C, hC⟩ := paramInt_tube Gp U hU a b S hS hSI x₀ hx₀ hGpc
   let s : Set E := {x | ∀ t ∈ Ι a b, ‖Gp (x, t)‖ ≤ C} ∩ U
   have hs : s ∈ nhds x₀ := Filter.inter_mem hC (hU.mem_nhds hx₀)
   have hsU : s ⊆ U := Set.inter_subset_right
@@ -262,7 +272,7 @@ theorem hasFDerivAt_paramInt
       hAt.comp₂ contDiffAt_id contDiffAt_const
     simpa only [Gp, G] using (hslice.differentiableAt (by norm_num)).hasFDerivAt
 
-omit [NormedSpace ℝ E] [ProperSpace E] in
+omit [NormedSpace ℝ E] in
 theorem paramInt_tendstoUniform
     (G : E × ℝ → F) (K U : Set E) (S : Set ℝ)
     (hK : IsCompact K) (hKU : K ⊆ U)

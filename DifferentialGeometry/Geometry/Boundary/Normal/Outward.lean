@@ -1,5 +1,7 @@
 import DifferentialGeometry.Geometry.Boundary.Metric.Induced
+import DifferentialGeometry.Geometry.Boundary.Metric.GramMatrix
 import DifferentialGeometry.Geometry.Operator.Gradient.Basic
+import DifferentialGeometry.Tensor.BilinearForm
 import DifferentialGeometry.Tensor.RSTensor.Defs
 import Mathlib.Analysis.InnerProductSpace.Basic
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
@@ -37,74 +39,6 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
 open DifferentialGeometry.Integral.Measure
 
 abbrev inwardCoordE : E := hI.inwardCoordE
-
-private def PhiLocal (I : ModelWithCorners ℝ E H) [hI : HasSmoothBoundary E H I] :
-    hI.boundaryE → E :=
-  (I : H → E) ∘ hI.inclH ∘ hI.boundaryI.symm
-
-private lemma infty_ne_zero_withTopENat' : (∞ : WithTop ℕ∞) ≠ 0 := by
-  intro h
-  have h' : ((⊤ : ℕ∞) : WithTop ℕ∞) = ((0 : ℕ∞) : WithTop ℕ∞) := h
-  exact ENat.top_ne_zero (WithTop.coe_eq_coe.mp h')
-
-omit [FiniteDimensional ℝ E] in
-private noncomputable def boundaryInclusionModelMfderivLocal
-    (x : BoundaryManifold I M) : hI.boundaryE →L[ℝ] E :=
-  (tangentSpaceModelContinuousLinearEquiv (I := hI.boundaryI) x).arrowCongr
-    (tangentSpaceModelContinuousLinearEquiv (I := I) (x : M))
-    (boundaryInclusionMfderiv x)
-
-omit [FiniteDimensional ℝ E] in
-private lemma dincl_eq_fderiv_PhiLocal (x : BoundaryManifold I M)
-    [Nonempty hI.boundaryH] :
-    boundaryInclusionModelMfderivLocal (M := M) x =
-      fderiv ℝ (PhiLocal I) (extChartAt hI.boundaryI x x) := by
-  unfold boundaryInclusionModelMfderivLocal boundaryInclusionMfderiv
-  unfold tangentSpaceModelContinuousLinearEquiv
-  have h_diff : MDifferentiableAt hI.boundaryI I (boundaryInclusion I M) x :=
-    (boundaryInclusion_contMDiff (I := I) (M := M)).mdifferentiableAt
-      infty_ne_zero_withTopENat'
-  rw [h_diff.mfderiv]
-  have h_range : Set.range hI.boundaryI = Set.univ := hI.boundaryI.range_eq_univ
-  rw [h_range, fderivWithin_univ]
-  have h_chart_eq :
-      chartAt hI.boundaryH x = BoundaryManifold.boundaryChart (I := I) x := by
-    change BoundaryManifold.defaultBoundaryChart (I := I) x =
-      BoundaryManifold.boundaryChart (I := I) x
-    exact BoundaryManifold.defaultBoundaryChart_eq_boundaryChart (I := I) x
-  have h_eq : (writtenInExtChartAt hI.boundaryI I x (boundaryInclusion I M))
-      =ᶠ[𝓝 (extChartAt hI.boundaryI x x)] PhiLocal I := by
-    have h_target_mem : (extChartAt hI.boundaryI x).target ∈
-        𝓝 (extChartAt hI.boundaryI x x) :=
-      extChartAt_target_mem_nhds (I := hI.boundaryI) (M := BoundaryManifold I M) x
-    filter_upwards [h_target_mem] with e he
-    have he_target_chart : hI.boundaryI.symm e ∈ (chartAt hI.boundaryH x).target := by
-      rw [extChartAt_target] at he
-      exact he.1
-    rw [h_chart_eq] at he_target_chart
-    have h_extChart_symm_val :
-        (((extChartAt hI.boundaryI x).symm e : BoundaryManifold I M) : M) =
-          (chartAt H (x : M)).symm (hI.inclH (hI.boundaryI.symm e)) := by
-      change (((chartAt hI.boundaryH x).symm (hI.boundaryI.symm e) :
-          BoundaryManifold I M) : M) = _
-      rw [h_chart_eq]
-      exact BoundaryManifold.boundaryChartInvFun_val_of_mem_target
-        (I := I) x he_target_chart
-    change writtenInExtChartAt hI.boundaryI I x (boundaryInclusion I M) e =
-      PhiLocal I e
-    unfold writtenInExtChartAt
-    simp only [Function.comp_apply]
-    change extChartAt I (boundaryInclusion I M x)
-        (((extChartAt hI.boundaryI x).symm e : BoundaryManifold I M) : M) =
-      PhiLocal I e
-    rw [h_extChart_symm_val]
-    change I (chartAt H (x : M) ((chartAt H (x : M)).symm
-      (hI.inclH (hI.boundaryI.symm e)))) = PhiLocal I e
-    rw [(chartAt H (x : M)).right_inv he_target_chart]
-    rfl
-  rw [Filter.EventuallyEq.fderiv_eq h_eq]
-  ext v
-  rfl
 
 def inwardCoord (x : BoundaryManifold I M) : TangentSpace I (x : M) :=
   (trivializationAt E (TangentSpace I) (x : M)).symm (x : M) hI.inwardCoordE
@@ -306,6 +240,44 @@ theorem outwardDir_mem_normalSubspace :
   rw [inducedMetricInner_boundaryComponentOfInward (M := M) g x w]
   ring
 omit [FiniteDimensional ℝ E] in
+theorem det_gram_inwardCoord_boundaryChartBasis :
+    (Matrix.of fun i j : Fin (Module.finrank Real hI.boundaryE + 1) =>
+      g.inner (x : M)
+        (Fin.cons (α := fun _ => TangentSpace I (x : M)) (inwardCoord (M := M) x)
+          (fun k => boundaryInclusionMfderiv x (boundaryChartBasisVecFiber x k x)) i)
+        (Fin.cons (α := fun _ => TangentSpace I (x : M)) (inwardCoord (M := M) x)
+          (fun k => boundaryInclusionMfderiv x (boundaryChartBasisVecFiber x k x)) j)).det =
+      g.inner (x : M) (outwardDir (M := M) g x) (outwardDir (M := M) g x) *
+        (boundaryGramMatrix g x x).det := by
+  let b := boundaryChartBasisFamily (M := M) x
+    (mem_baseSet_trivializationAt hI.boundaryE (TangentSpace hI.boundaryI) x)
+  let c : Fin (Module.finrank Real hI.boundaryE) → Real :=
+    fun i => b.repr (boundaryComponentOfInward (M := M) g x) i
+  let v : Fin (Module.finrank Real hI.boundaryE) → TangentSpace I (x : M) :=
+    fun i => boundaryInclusionMfderiv x (boundaryChartBasisVecFiber x i x)
+  have hsum : (∑ i, c i • v i) = inwardTangentialPart (M := M) g x := by
+    rw [inwardTangentialPart_def, ← b.sum_repr (boundaryComponentOfInward (M := M) g x), map_sum]
+    apply Finset.sum_congr rfl
+    intro i _
+    rw [map_smul]
+    congr 1
+  have hw : (∑ i, c i • v i) - inwardCoord (M := M) x = outwardDir (M := M) g x := by
+    rw [hsum, outwardDir_def]
+  have h := (g.inner (x : M)).toBilinForm.det_gram_cons_eq_mul_of_orthogonal
+    (inwardCoord (M := M) x) v c (by
+      intro i
+      rw [hw]
+      exact outwardDir_mem_normalSubspace g x (boundaryChartBasisVecFiber x i x))
+  rw [hw] at h
+  have hgram : (Matrix.of fun i j => (g.inner (x : M)).toBilinForm (v i) (v j)) =
+      boundaryGramMatrix g x x := by
+    ext i j
+    exact (inducedMetricInner_apply g x (boundaryChartBasisVecFiber x i x)
+      (boundaryChartBasisVecFiber x j x)).symm
+  rw [hgram] at h
+  exact h
+
+omit [FiniteDimensional ℝ E] in
 lemma g_inner_outwardDir_inwardCoord :
     g.inner (x : M) (outwardDir (M := M) g x) (inwardCoord (M := M) x) =
       g.inner (x : M) (inwardTangentialPart (M := M) g x) (inwardCoord (M := M) x) -
@@ -353,8 +325,9 @@ theorem InwardCoordTransverse_of_HasSmoothBoundary
     rcases hmem with ⟨w, hw⟩
     apply hI.inwardCoordE_transverse (extChartAt hI.boundaryI x x)
     change hI.inwardCoordE ∈ Set.range
-      (fderiv ℝ (PhiLocal I) (extChartAt hI.boundaryI x x))
-    rw [← dincl_eq_fderiv_PhiLocal (I := I) (M := M) x]
+      (fderiv ℝ ((I : H → E) ∘ hI.inclH ∘ hI.boundaryI.symm)
+        (extChartAt hI.boundaryI x x))
+    rw [← boundaryInclusionMfderiv_model_eq_fderiv (I := I) (M := M) x]
     refine ⟨tangentSpaceModelContinuousLinearEquiv (I := hI.boundaryI) x w, ?_⟩
     change tangentSpaceModelContinuousLinearEquiv (I := I) (x : M)
         (boundaryInclusionMfderiv (M := M) x
@@ -458,21 +431,26 @@ theorem outwardNormal_norm_one :
   rw [hsq_sq]
   exact div_self hq_ne
 omit [FiniteDimensional ℝ E] in
+theorem outwardNormal_inner_inwardCoord_eq_neg_sqrt :
+    g.inner (x : M) (outwardNormal (M := M) g x) (inwardCoord (M := M) x) =
+      -Real.sqrt (g.inner (x : M) (outwardDir (M := M) g x) (outwardDir (M := M) g x)) := by
+  have hq : 0 < g.inner (x : M) (outwardDir (M := M) g x) (outwardDir (M := M) g x) :=
+    g_inner_outwardDir_pos g x
+  have hin : g.inner (x : M) (outwardDir (M := M) g x) (inwardCoord (M := M) x) =
+      -g.inner (x : M) (outwardDir (M := M) g x) (outwardDir (M := M) g x) := by
+    rw [g_inner_outwardDir_inwardCoord, g_inner_outwardDir_outwardDir]
+    ring
+  rw [outwardNormal_eq, map_smul, smul_apply, smul_eq_mul, hin, mul_neg]
+  congr 1
+  exact (inv_mul_eq_iff_eq_mul₀ (ne_of_gt (Real.sqrt_pos.mpr hq))).mpr
+    (Real.mul_self_sqrt hq.le).symm
+
+
+omit [FiniteDimensional ℝ E] in
 theorem outwardNormal_inner_inwardCoord_neg :
     g.inner (x : M) (outwardNormal (M := M) g x) (inwardCoord (M := M) x) < 0 := by
-  rw [outwardNormal_eq (M := M) g x]
-  rw [ContinuousLinearMap.map_smul, smul_apply, smul_eq_mul]
-  have hq_pos : 0 < g.inner (x : M) (outwardDir (M := M) g x) (outwardDir (M := M) g x) :=
-    g_inner_outwardDir_pos (M := M) g x
-  have hsq_pos : 0 < Real.sqrt
-      (g.inner (x : M) (outwardDir (M := M) g x) (outwardDir (M := M) g x)) :=
-    Real.sqrt_pos.mpr hq_pos
-  have hsq_inv_pos : 0 < (Real.sqrt
-      (g.inner (x : M) (outwardDir (M := M) g x) (outwardDir (M := M) g x)))⁻¹ :=
-    inv_pos.mpr hsq_pos
-  have hneg : g.inner (x : M) (outwardDir (M := M) g x) (inwardCoord (M := M) x) < 0 :=
-    g_inner_outwardDir_inwardCoord_neg (M := M) g x
-  exact mul_neg_of_pos_of_neg hsq_inv_pos hneg
+  rw [outwardNormal_inner_inwardCoord_eq_neg_sqrt]
+  exact neg_neg_of_pos (Real.sqrt_pos.mpr (g_inner_outwardDir_pos g x))
 
 def boundaryFunOfInwardAt (g : SmoothRiemannianMetric I M)
     (α₀ x : BoundaryManifold I M) : TangentSpace hI.boundaryI x →ₗ[ℝ] ℝ where
@@ -630,6 +608,52 @@ omit [FiniteDimensional ℝ E] in
   unfold outwardNormalAt outwardNormal
   rw [outwardDirAt_self]
 
+omit [FiniteDimensional ℝ E] in
+theorem outwardNormalAt_inner_eq_neg_sqrt_mul_of_sub_mem_range
+    (g : SmoothRiemannianMetric I M) (alpha x : BoundaryManifold I M)
+    (v : TangentSpace I (x : M)) (c : Real)
+    (hv : v - c • inwardCoordAt (M := M) alpha x ∈
+      LinearMap.range (boundaryInclusionMfderiv (M := M) x).toLinearMap) :
+    g.inner (x : M) (outwardNormalAt (M := M) g alpha x) v =
+      -Real.sqrt (g.inner (x : M) (outwardDirAt (M := M) g alpha x)
+        (outwardDirAt (M := M) g alpha x)) * c := by
+  let q := g.inner (x : M) (outwardDirAt (M := M) g alpha x)
+    (outwardDirAt (M := M) g alpha x)
+  have hnormal : g.inner (x : M) (outwardDirAt (M := M) g alpha x)
+      (inwardCoordAt (M := M) alpha x) = -q := by
+    change g.inner (x : M) (outwardDirAt (M := M) g alpha x)
+      (inwardCoordAt (M := M) alpha x) = -g.inner (x : M) (outwardDirAt (M := M) g alpha x)
+        (outwardDirAt (M := M) g alpha x)
+    rw [g_inner_outwardDirAt_inwardCoordAt, g_inner_outwardDirAt_outwardDirAt]
+    ring
+  obtain ⟨w, hw⟩ := hv
+  change boundaryInclusionMfderiv x w = v - c • inwardCoordAt alpha x at hw
+  have hzero := outwardDirAt_mem_normalSubspace g alpha x w
+  rw [hw, map_sub, map_smul, smul_eq_mul, hnormal] at hzero
+  have hinner : g.inner (x : M) (outwardDirAt (M := M) g alpha x) v = -q * c := by
+    linarith
+  by_cases hq : 0 < q
+  · have hs : Real.sqrt q ≠ 0 := (Real.sqrt_pos.mpr hq).ne'
+    change g.inner (x : M) (outwardNormalAt g alpha x) v = -Real.sqrt q * c
+    rw [outwardNormalAt, dif_pos hq, map_smul, smul_apply, smul_eq_mul, hinner]
+    change (Real.sqrt q)⁻¹ * (-q * c) = -Real.sqrt q * c
+    field_simp
+    rw [Real.sq_sqrt hq.le]
+  · have hs : Real.sqrt q = 0 := Real.sqrt_eq_zero_of_nonpos (le_of_not_gt hq)
+    change g.inner (x : M) (outwardNormalAt g alpha x) v = -Real.sqrt q * c
+    rw [outwardNormalAt, dif_neg hq, map_zero, zero_apply, hs, neg_zero, zero_mul]
+
+omit [FiniteDimensional ℝ E] in
+theorem outwardNormal_inner_eq_neg_sqrt_mul_of_sub_mem_range
+    (v : TangentSpace I (x : M)) (c : ℝ)
+    (hv : v - c • inwardCoord (M := M) x ∈
+      LinearMap.range (boundaryInclusionMfderiv (M := M) x).toLinearMap) :
+    g.inner (x : M) (outwardNormal (M := M) g x) v =
+      -Real.sqrt (g.inner (x : M) (outwardDir (M := M) g x) (outwardDir (M := M) g x)) * c := by
+  simpa only [outwardNormalAt_self, outwardDirAt_self] using
+    outwardNormalAt_inner_eq_neg_sqrt_mul_of_sub_mem_range g x x v c
+      (by simpa only [inwardCoordAt_self] using hv)
+
 end Metric
 
 section Smoothness
@@ -729,12 +753,24 @@ private lemma boundaryFlatCharted_contMDiffAt
     (x₀ : BoundaryManifold I M) :
     ContMDiffAt hI.boundaryI 𝓘(ℝ, hI.boundaryE →L[ℝ] hI.boundaryE →L[ℝ] ℝ) ∞
       (boundaryFlatCharted (M := M) g x₀) x₀ := by
+  let : NormedAddCommGroup (hI.boundaryE →L[ℝ] ℝ) :=
+    ContinuousLinearMap.toNormedAddCommGroup
+  let : NormedSpace ℝ (hI.boundaryE →L[ℝ] ℝ) :=
+    ContinuousLinearMap.toNormedSpace
+  let : NormedAddCommGroup (hI.boundaryE →L[ℝ] hI.boundaryE →L[ℝ] ℝ) :=
+    ContinuousLinearMap.toNormedAddCommGroup
+  let : NormedSpace ℝ (hI.boundaryE →L[ℝ] hI.boundaryE →L[ℝ] ℝ) :=
+    ContinuousLinearMap.toNormedSpace
+  let (x : BoundaryManifold I M) : ContinuousAdd (TangentSpace hI.boundaryI x →L[ℝ] ℝ) :=
+    (ContinuousLinearMap.topologicalAddGroup (𝕜₁ := ℝ) (𝕜₂ := ℝ)).toContinuousAdd
   have h_section := inducedMetricInner_contMDiff (g := g)
   have h_x₀ : x₀ ∈ (trivializationAt (hI.boundaryE →L[ℝ] hI.boundaryE →L[ℝ] ℝ)
       (fun y : BoundaryManifold I M =>
         TangentSpace hI.boundaryI y →L[ℝ] TangentSpace hI.boundaryI y →L[ℝ] ℝ) x₀).baseSet :=
     FiberBundle.mem_baseSet_trivializationAt' x₀
-  exact ((trivializationAt _ _ x₀).contMDiffAt_section_iff h_x₀).mp
+  exact ((trivializationAt (hI.boundaryE →L[ℝ] hI.boundaryE →L[ℝ] ℝ)
+      (fun y : BoundaryManifold I M =>
+        TangentSpace hI.boundaryI y →L[ℝ] TangentSpace hI.boundaryI y →L[ℝ] ℝ) x₀).contMDiffAt_section_iff h_x₀).mp
     h_section.contMDiffAt
 
 private noncomputable def boundaryFunOfInwardCLM

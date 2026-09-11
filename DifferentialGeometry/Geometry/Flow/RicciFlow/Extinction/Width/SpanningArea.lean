@@ -1236,7 +1236,7 @@ theorem RegularLoop.length_eq_riemannianCurveLength (g : SmoothRiemannianMetric 
     (γ : RegularLoop I Q) :
     ENNReal.ofReal (loopLength g γ.toContinuousLoop) =
       Surgery.Topology.riemannianCurveLength g (loopLift γ.toContinuousLoop) 0 1 :=
-  loopLength_eq_riemannianCurveLength g γ.toContinuousLoop (γ.isLipschitz_of_compact g)
+  loopLength_eq_riemannianCurveLength g γ.toContinuousLoop (γ.isLipschitz g)
 
 omit boundarylessI connectedQ in
 theorem isLipschitzLoop_metric_iff (g h : SmoothRiemannianMetric I Q)
@@ -1425,7 +1425,6 @@ theorem rfs_disk_competitor_exists (g : SmoothRiemannianMetric I Q)
 
 omit finiteDimensionalE boundarylessI t2Q compactQ connectedQ in
 theorem LipschitzDisk.isLipschitz_trace
-    [FiniteDimensional ℝ E] [I.Boundaryless] [T2Space Q] [CompactSpace Q] [ConnectedSpace Q]
     (g : SmoothRiemannianMetric I Q)
     (u : LipschitzDisk g) (γ : ContinuousFreeLoop Q)
     (htrace : ∀ θ, u.map (diskBoundary θ) = γ θ) : IsLipschitzLoop g γ := by
@@ -1455,7 +1454,7 @@ private theorem diskArea_metric_upper (g h : SmoothRiemannianMetric I Q)
     _ = c * diskArea g u.map := integral_const_mul _ _
 
 omit connectedQ in
-theorem diskArea_metric_comparison [ConnectedSpace Q] (g h : SmoothRiemannianMetric I Q)
+theorem diskArea_metric_comparison (g h : SmoothRiemannianMetric I Q)
     {a b : ℝ} (ha : 0 < a) (hab : a ≤ b)
     (hmetric : ∀ q (v : TangentSpace I q),
       a ^ 2 * g.inner q v v ≤ h.inner q v v ∧ h.inner q v v ≤ b ^ 2 * g.inner q v v)

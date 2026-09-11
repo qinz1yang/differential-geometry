@@ -70,7 +70,8 @@ theorem compactnessSolution
     canon.compactness.compSubseq d.φ d.strictMono
   refine ⟨d.limit.L, mc'.subseq, mc'.strictMono, ?_, hcompleteL⟩
   exact ⟨SmoothCGHConverges.ofRestrictPullback (I := I)
-    d.limit.maps d.limit.scalar d.limit.ricciNorm d.limit.source_sigmaCompact
+    d.limit.maps d.limit.metric d.limit.scalar d.limit.ricci d.limit.ricciNorm
+    d.limit.source_sigmaCompact
     d.limit.refMetric
     (letI : TopologicalSpace d.limit.L.M := d.limit.L.topology
      letI : ChartedSpace H d.limit.L.M := d.limit.L.charted

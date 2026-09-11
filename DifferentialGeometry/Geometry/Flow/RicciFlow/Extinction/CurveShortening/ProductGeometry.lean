@@ -267,7 +267,7 @@ theorem quotientProduct_ricciBackground_C {D : RealTimeInterval} {a b : ℝ}
   obtain ⟨Bhat, hf, h0, h1, h2⟩ := quotientProduct_ricciBackground A B lambda hlambda
   exact ⟨Bhat, hf, h0, h1, h2, by simp only [RicciBackground.C, h0, h1, h2]⟩
 
-theorem rfs_csf_ramp_geometry [I.Boundaryless] [CompactSpace M] [Nonempty M]
+theorem rfs_csf_ramp_geometry [I.Boundaryless] [CompactSpace M]
     {D : RealTimeInterval} {a b : ℝ}
     (F : SolutionOn (I := I) (M := M) D)
     (hF : DifferentialGeometry.PDE.RicciFlow.IsSolutionOn F)

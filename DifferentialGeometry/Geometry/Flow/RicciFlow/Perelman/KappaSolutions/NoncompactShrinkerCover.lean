@@ -1,7 +1,8 @@
-import DifferentialGeometry.Geometry.RicciSoliton.Defs
+import DifferentialGeometry.Geometry.Metric.RicciSoliton.Defs
 import DifferentialGeometry.Geometry.Metric.Completeness
 import DifferentialGeometry.Geometry.Metric.UniversalCover.Metric
 import DifferentialGeometry.Geometry.Metric.Sphere.Round.Metric
+import DifferentialGeometry.Geometry.Curvature.Metric.Defs
 
 set_option autoImplicit false
 
@@ -34,7 +35,7 @@ theorem complete_noncompact_three_shrinker_universal_cover_fibres
     (g : SmoothRiemannianMetric I M) (f : C^∞⟮I, M; ℝ⟯)
     {sigma : ℝ} (hsigma : 0 < sigma) (hdim : Module.finrank ℝ E = 3)
     (hcomplete : RiemannianMetricComplete (I := I) g)
-    (hsoliton : isGradientRicciSoliton (I := I) g f sigma)
+    (hsoliton : gradientRicciSoliton (I := I) g f sigma)
     (hnonflat : ∃ x : M, metricScalarAt (I := I) g x ≠ 0) :
     ∃ Psi : (SphereTwo × ℝ) ≃ₘ⟮(𝓡 2).prod 𝓘(ℝ, ℝ), I⟯ UniversalCover M,
       (∀ (x : SphereTwo) (s : ℝ) (v w : TangentSpace (𝓡 2) x) (a b : ℝ),
@@ -57,7 +58,7 @@ theorem complete_noncompact_three_shrinker_universal_cover_cylinder
     (g : SmoothRiemannianMetric I M) (f : C^∞⟮I, M; ℝ⟯)
     {sigma : ℝ} (hsigma : 0 < sigma) (hdim : Module.finrank ℝ E = 3)
     (hcomplete : RiemannianMetricComplete (I := I) g)
-    (hsoliton : isGradientRicciSoliton (I := I) g f sigma)
+    (hsoliton : gradientRicciSoliton (I := I) g f sigma)
     (hnonflat : ∃ x : M, metricScalarAt (I := I) g x ≠ 0) :
     ∃ Psi : (SphereTwo × ℝ) ≃ₘ⟮(𝓡 2).prod 𝓘(ℝ, ℝ), I⟯ UniversalCover M,
       ∀ (x : SphereTwo) (s : ℝ) (v w : TangentSpace (𝓡 2) x) (a b : ℝ),

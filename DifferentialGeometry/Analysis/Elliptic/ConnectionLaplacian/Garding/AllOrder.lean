@@ -7,6 +7,7 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Iterated.Linear
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.Bounds.HomFieldActionJets
 import DifferentialGeometry.Analysis.Sobolev.Embedding.ConnectionLaplacian.OrderDropping
 import DifferentialGeometry.Geometry.Curvature.Bochner.Tensor.Pointwise.FirstOrder.Section
+
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature

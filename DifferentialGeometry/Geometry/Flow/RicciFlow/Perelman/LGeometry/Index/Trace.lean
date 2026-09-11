@@ -27,7 +27,7 @@ variable {M : Type u} [TopologicalSpace M] [ChartedSpace H M]
 variable {D : RealTimeInterval}
 
 omit [InnerProductSpace Real E] in
-omit [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank Real E)] [SigmaCompactSpace M] in
 theorem lRegularizedIndex_trace_linear_cutoff
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) (T : Real)
@@ -212,7 +212,7 @@ theorem lRegularizedIndex_trace_linear_cutoff
           rw [hRic s hs']
 
 omit [InnerProductSpace Real E] in
-omit [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank Real E)] [SigmaCompactSpace M] in
 theorem lRegularizedIndex_trace_linear_cutoff_zero
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) (T : Real)

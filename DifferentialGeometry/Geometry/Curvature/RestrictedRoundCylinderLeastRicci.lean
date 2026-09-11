@@ -12,6 +12,7 @@ open DifferentialGeometry.Geometry.Metric
 
 namespace DifferentialGeometry.Geometry.Curvature
 
+set_option backward.isDefEq.respectTransparency false in
 theorem exists_least_ricci_direction_on_restricted_roundCylinder
     {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
     [Fact (Module.finrank ℝ E = 2 + 1)]
@@ -45,25 +46,30 @@ theorem exists_least_ricci_direction_on_restricted_roundCylinder
     exists_least_ricci_direction_of_axis_error g x e heunit (1 / 2) (5772 * ε)
       (by norm_num) (by linarith) hactual
   have hdist' : Real.sqrt (g.inner x (w - e) (w - e)) ≤ 46176 * ε := by
-    convert hdist using 1
-    ring
+    exact hdist.trans_eq (by ring)
   have hrefdist : Real.sqrt (gRef.inner x (w - e) (w - e)) ≤ 92352 * ε := by
     have hlen := (sqrt_inner_comparison_of_metric_difference g gRef x ε (by linarith)
       (hsmall 0 (by norm_num)) (w - e)).1
     have hhalf : 1 / 2 ≤ Real.sqrt (1 - ε) :=
-      (Real.le_sqrt (by norm_num) (by linarith)).mpr (by nlinarith)
+      (Real.le_sqrt (by norm_num) (by linarith only [hεhalf])).mpr
+        (by nlinarith only [hεhalf])
     have hb := mul_le_mul_of_nonneg_right hhalf
       (Real.sqrt_nonneg (gRef.inner x (w - e) (w - e)))
     nlinarith only [hlen, hb, hdist']
   have hclose : Real.sqrt (gRef.inner x (w - v) (w - v)) ≤ 92354 * ε := by
-    have ht := sqrt_inner_add_le gRef x (w - e) (e - v)
+    let a : TangentSpace IC x := w - e
+    let b : TangentSpace IC x := e - v
+    have ht := sqrt_inner_add_le gRef x a b
+    dsimp only [a, b] at ht
     rw [sub_add_sub_cancel] at ht
-    change Real.sqrt (gRef.inner x (e - v) (e - v)) ≤ 2 * ε at heclose
     linarith only [ht, hrefdist, heclose]
   have hpos : 0 < gRef.inner x v w := by
     have hcs := abs_metric_inner_le_sqrt_metric_quadratic gRef x v (w - v)
-    rw [hv, Real.sqrt_one, one_mul, map_sub, hv] at hcs
-    have hl := (abs_le.mp (hcs.trans hclose)).1
+    have hinner : gRef.inner x v (w - v) = gRef.inner x v w - 1 := by
+      rw [map_sub, hv]
+    rw [hinner, hv, Real.sqrt_one, one_mul] at hcs
+    have hcs' : |gRef.inner x v w - 1| ≤ 92354 * ε := hcs.trans hclose
+    have hl := (abs_le.mp hcs').1
     linarith only [hl, hε]
   refine ⟨μ, w, hw, heig, hmin, hμ, hspace, ?_, hclose⟩
   exact (restrictedCylinderAxis_inner gS U x w) ▸ hpos

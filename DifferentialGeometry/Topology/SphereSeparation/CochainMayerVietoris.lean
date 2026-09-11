@@ -103,7 +103,6 @@ noncomputable def smallSingularChainsHomotopyEquivOfOpenCoverMV
   have he := Classical.choose_spec hh
   exact e.copy (_root_.Homotopy.ofEq he)
 
-@[simp]
 theorem dualCochainMap_zero
     {C D : ChainComplex (ModuleCat ℤ) ℕ} :
     dualCochainMap (0 : C ⟶ D) = 0 := by

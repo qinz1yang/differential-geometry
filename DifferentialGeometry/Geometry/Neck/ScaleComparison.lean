@@ -116,7 +116,8 @@ theorem cylindricalChart.scalar_comparison_of_metricCloseOn
   have hscale : (ricciSharp (scaleMetric C.scale C.scale_pos gV) (C.chart x)).toLinearMap =
       C.scale⁻¹ • (ricciSharp gV (C.chart x)).toLinearMap := by
     ext v
-    exact ricciSharp_scaleMetric gV C.scale C.scale_pos (C.chart x) v
+    exact congrArg (fun A : TangentSpace J (C.chart x) →L[ℝ] TangentSpace J (C.chart x) ↦ A v)
+      (ricciSharp_scaleMetric C.scale C.scale_pos gV (C.chart x))
   have hrestrict : (ricciSharp gV (C.chart x)).toLinearMap =
       (ricciSharp g (C.chart x : M)).toLinearMap := by
     ext v

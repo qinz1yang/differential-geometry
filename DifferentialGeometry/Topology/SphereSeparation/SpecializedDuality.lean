@@ -54,7 +54,7 @@ noncomputable abbrev relativeSingularChainProjection {A X : TopCat} (i : A ⟶ X
     integerSingularChainComplex X ⟶ relativeSingularChainComplex i :=
   cokernel.π (integerSingularChainMap i)
 
-@[reassoc (attr := simp)]
+@[reassoc]
 theorem integerSingularChainMap_comp_relativeProjection
     {A X : TopCat} (i : A ⟶ X) :
     integerSingularChainMap i ≫ relativeSingularChainProjection i = 0 :=
@@ -189,7 +189,7 @@ theorem isIso_relativeSingularHomologyMapOfSubspaces
 
 
 def subspaceOutside
-    {X : Type} [TopologicalSpace X] (A U : Set X) : Set (Uᶜ : Set X) :=
+    {X : Type} (A U : Set X) : Set (Uᶜ : Set X) :=
   {x | x.1 ∈ A}
 
 def subspaceOutsideHomeomorphDiff

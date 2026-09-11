@@ -1,9 +1,10 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.HomTensor.Defs
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.Bounds.SingleSlotFiberNorm
 import DifferentialGeometry.Analysis.Spectral.Tensor.ChartTensor.Inner.TensorRSContRiemannianBundle
-import Mathlib.Topology.VectorBundle.Riemannian
+import DifferentialGeometry.Bundle.HomNorm
 import Mathlib.Topology.VectorBundle.Hom
 import Mathlib.Topology.Order.Compact
+
 open DifferentialGeometry.Analysis.Sobolev.IntrinsicSobolev.SmoothCcTensorHs
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic

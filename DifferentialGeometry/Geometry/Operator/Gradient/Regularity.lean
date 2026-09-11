@@ -3,6 +3,7 @@ import DifferentialGeometry.Geometry.Coordinates.MetricCompatibility.Covariant
 import DifferentialGeometry.Geometry.Coordinates.MetricCompatibility.Coordinate
 import DifferentialGeometry.Geometry.Metric.TensorInner.Cotangent.InverseMetric
 import DifferentialGeometry.Geometry.Connection.LocalFrameRegularity
+
 open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
@@ -114,6 +115,55 @@ theorem gradientFun_contMDiffAt
       (coordinateFrameAt_mem (I := I) x₀)] with y hy
   exact gradientFun_coeff_eq_sum (I := I) g f hy k
 
+theorem gradientFun_contMDiffAt_one
+    (g : SmoothRiemannianMetric I M)
+    {f : M -> Real} {x₀ : M}
+    (hf : ContMDiffAt I 𝓘(Real, Real) 2 f x₀) :
+    ContMDiffAt I (I.prod 𝓘(Real, E)) 1
+      (T% fun y : M => gradientFun (I := I) g f y) x₀ := by
+  classical
+  let frameTop := coordinateFrameAt_isLocalFrame (I := I) x₀
+  let frame : IsLocalFrameOn I E 1 (coordinateFrameAt (I := I) x₀)
+      (coordinateFrameSet (I := I) x₀) := {
+    linearIndependent := frameTop.linearIndependent
+    generating := frameTop.generating
+    contMDiffOn := fun i => (frameTop.contMDiffOn i).of_le (by simp) }
+  refine frame.contMDiffAt_of_coeff_aux ?_ (coordinateFrameSet_open (I := I) x₀)
+    (coordinateFrameAt_mem (I := I) x₀)
+  intro k
+  let rhs : M -> Real := fun y =>
+    ∑ l : CoordinateIdx (𝕜 := Real) E,
+      inverseMetricFlatModelInChartComponent (I := I) g x₀ k l
+          (extChartAt I x₀ y) *
+        mvfderiv (I := I) f y (coordinateFrameAt (I := I) x₀ l y)
+  have hrhs : ContMDiffAt I 𝓘(Real, Real) 1 rhs x₀ := by
+    refine ContMDiffAt.sum fun l _ => ?_
+    have hginv :
+        ContMDiffAt I 𝓘(Real, Real) 1
+          (fun y : M =>
+            inverseMetricFlatModelInChartComponent (I := I) g x₀ k l
+              (extChartAt I x₀ y)) x₀ :=
+      (gInvComp_contMDiffAt (I := I) g x₀ k l).of_le (by simp)
+    have hframe :
+        ContMDiffAt I (I.prod 𝓘(Real, E)) 1
+          (fun y : M =>
+            (⟨y, coordinateFrameAt (I := I) x₀ l y⟩ :
+              TotalSpace E (TangentSpace I : M -> Type _))) x₀ :=
+      frame.contMDiffAt (coordinateFrameSet_open (I := I) x₀)
+        (coordinateFrameAt_mem (I := I) x₀) l
+    have hderiv :
+        ContMDiffAt I 𝓘(Real, Real) 1
+          (fun y : M =>
+            mvfderiv (I := I) f y (coordinateFrameAt (I := I) x₀ l y)) x₀ :=
+      mvfderiv_apply_contMDiffAt_of_section_one (I := I)
+        (f := f) (X := coordinateFrameAt (I := I) x₀ l)
+        hf hframe
+    exact hginv.mul hderiv
+  refine hrhs.congr_of_eventuallyEq ?_
+  filter_upwards [(coordinateFrameSet_open (I := I) x₀).mem_nhds
+      (coordinateFrameAt_mem (I := I) x₀)] with y hy
+  exact gradientFun_coeff_eq_sum (I := I) g f hy k
+
 theorem gradientFun_smooth
     (g : SmoothRiemannianMetric I M)
     {f : M -> Real} (hf : ContMDiff I 𝓘(Real, Real) ∞ f) :
@@ -170,7 +220,7 @@ theorem laplacian_congr_of_eventuallyEq
   unfold laplacian divergence
   rw [hcov]
 
-theorem laplacian_sub_at
+theorem laplacian_sub_at_of_contMDiffAt
     (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
     (g : SmoothRiemannianMetric I M)
     {f h : M → Real} {x : M}

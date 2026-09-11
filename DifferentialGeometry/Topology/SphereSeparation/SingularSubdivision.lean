@@ -242,7 +242,6 @@ theorem barycentricPrefix_last {n : ℕ}
   simp only [mem_barycentricPrefix_iff, Finset.mem_univ, iff_true]
   exact Fin.le_last _
 
-@[simp]
 theorem barycentricPrefixBarycenter_apply {n : ℕ}
     (σ : Equiv.Perm (Fin (n + 1))) (k i : Fin (n + 1)) :
     nonemptyFaceBarycenter (barycentricPrefix σ k)

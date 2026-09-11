@@ -2,6 +2,7 @@ import DifferentialGeometry.Geometry.Connection.TensorNabla.TensorRS.Basic
 import DifferentialGeometry.Geometry.Connection.Laplacian.ConnectionLaplacian
 import DifferentialGeometry.Geometry.Curvature.Bochner.WeitzenbockIdentity
 import DifferentialGeometry.Analysis.Integration.L2.SmoothSections.Defs
+
 open DifferentialGeometry.Geometry.Curvature
 
 
@@ -458,6 +459,38 @@ private lemma rawTensorConnLap_covApply_mdiff_at
         (covApply cov B (fun y : M => T y) y)) x :=
     h_covApply.contMDiffAt (Filter.univ_mem)
   exact h_at.mdifferentiableAt (by simp)
+
+omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] in
+theorem rawTensorConnLap_congr_of_eventuallyEq
+    (g : SmoothRiemannianMetric I M) (r s : ℕ)
+    (T T' : Cₛ^∞⟮I; TensorRSModel r s ℝ E,
+      (fun x : M => TensorRSSpace r s I x)⟯)
+    {x : M} (h : ∀ᶠ y in 𝓝 x, T y = T' y) :
+    rawTensorConnLap (I := I) g r s T x =
+      rawTensorConnLap (I := I) g r s T' x := by
+  classical
+  let cov := TensorRSNabla.tensorRSCovariantDerivative I M r s (LeviCivita (I := I) g)
+  have hcov : ∀ᶠ y in 𝓝 x, cov.toFun T y = cov.toFun T' y := by
+    filter_upwards [h.eventually_nhds] with y hy
+    exact cov.isCovariantDerivativeOnUniv.congr_of_eventuallyEq
+      (rawTensorConnLap_T_mdiff_at r s T y)
+      (rawTensorConnLap_T_mdiff_at r s T' y) Filter.univ_mem hy
+  have hpoint := hcov.self_of_nhds
+  unfold rawTensorConnLap
+  refine Finset.sum_congr rfl (fun i _ => ?_)
+  have : NeZero (Module.finrank ℝ E) := ⟨by have hi := i.isLt; omega⟩
+  let B := smoothOrthoFrame (I := I) g x i
+  have happly : ∀ᶠ y in 𝓝 x, covApply cov B T y = covApply cov B T' y := by
+    filter_upwards [hcov] with y hy
+    exact congrArg (fun A => A (B y)) hy
+  have hsecond := cov.isCovariantDerivativeOnUniv.congr_of_eventuallyEq
+    (rawTensorConnLap_covApply_mdiff_at g r s T B
+      (smoothOrthoFrame_smooth (I := I) g x i) x)
+    (rawTensorConnLap_covApply_mdiff_at g r s T' B
+      (smoothOrthoFrame_smooth (I := I) g x i) x) Filter.univ_mem happly
+  exact congrArg₂ (fun A B : TensorRSSpace r s I x => A - B)
+    (congrArg (fun A => A (B x)) hsecond)
+    (congrArg (fun A => A ((LeviCivita (I := I) g).toFun B x (B x))) hpoint)
 
 omit [CompleteSpace E] in
 theorem rawTensorConnLap_eq_zero_of_not_mem_tsupport

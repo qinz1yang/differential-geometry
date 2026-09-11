@@ -34,6 +34,14 @@ variable
   {N'' : Type*} [NormedAddCommGroup N''] [NormedSpace 𝕜 N'']
   {m n p m' d : ℕ}
 
+instance real_smulCommClass_continuousLinearMap {E F : Type*}
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [NormedAddCommGroup F] [NormedSpace ℝ F] :
+    SMulCommClass ℝ ℝ (E →L[ℝ] F) :=
+  ⟨by
+    intro c d f
+    ext x
+    simp [smul_smul, mul_comm]⟩
+
 def wedgeProduct (g : M [⋀^Fin m]→L[𝕜] N) (h : M [⋀^Fin n]→L[𝕜] N')
     (f : N →L[𝕜] N' →L[𝕜] N'') : M [⋀^Fin (m + n)]→L[𝕜] N'' :=
   uncurryFinAdd (f.compContinuousAlternatingMap₂ g h)
@@ -286,6 +294,29 @@ theorem norm_wedge_product_le (g : M [⋀^Fin m]→L[𝕜] N) (h : M [⋀^Fin n]
         rw [Finset.sum_const, Finset.card_univ, nsmul_eq_mul]
     _ = Fintype.card (Equiv.Perm.ModSumCongr (Fin m) (Fin n)) * (‖f‖ * ‖g‖ * ‖h‖) *
           ∏ i, ‖v i‖ := by ring
+
+theorem isBoundedBilinearMap_wedgeProduct (f : N →L[𝕜] N' →L[𝕜] N'') :
+    IsBoundedBilinearMap 𝕜 (fun p : (M [⋀^Fin m]→L[𝕜] N) × (M [⋀^Fin n]→L[𝕜] N') =>
+      wedgeProduct p.1 p.2 f) := by
+  refine { add_left := ?_, smul_left := ?_, add_right := ?_, smul_right := ?_, bound := ?_ }
+  · intro g₁ g₂ h
+    exact add_wedge g₁ g₂ h f
+  · intro c g h
+    exact smul_wedge c g h f
+  · intro g h₁ h₂
+    exact wedge_add g h₁ h₂ f
+  · intro c g h
+    exact wedge_smul c g h f
+  · refine ⟨(Fintype.card (Equiv.Perm.ModSumCongr (Fin m) (Fin n)) : ℝ) * ‖f‖ + 1,
+      by positivity, ?_⟩
+    intro g h
+    calc
+      ‖wedgeProduct g h f‖ ≤
+          (Fintype.card (Equiv.Perm.ModSumCongr (Fin m) (Fin n)) : ℝ) *
+            (‖f‖ * ‖g‖ * ‖h‖) := norm_wedge_product_le g h f
+      _ ≤ ((Fintype.card (Equiv.Perm.ModSumCongr (Fin m) (Fin n)) : ℝ) * ‖f‖ + 1) *
+          ‖g‖ * ‖h‖ := by
+        nlinarith [norm_nonneg g, norm_nonneg h]
 
 noncomputable def wedgeProductL (f : N →L[𝕜] N' →L[𝕜] N'') :
     (M [⋀^Fin m]→L[𝕜] N) →L[𝕜] (M [⋀^Fin n]→L[𝕜] N') →L[𝕜]

@@ -9,6 +9,7 @@ import DifferentialGeometry.Analysis.Parabolic.ScalarHeat.TimeDependent
 import DifferentialGeometry.Analysis.Parabolic.MaximalRegularity.Spectral.Plancherel
 import DifferentialGeometry.Analysis.Parabolic.AbstractSemigroup.Spectral.Semigroup
 import DifferentialGeometry.Analysis.Spectral.Scalar.EigenIdx
+import DifferentialGeometry.Analysis.Spectral.Scalar.Eigenfunction
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Scalar.Comparison
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Scalar.HeatPotential.Strong
 import DifferentialGeometry.Analysis.Heat.Smoothing.Scalar.MildSolution
@@ -330,10 +331,6 @@ noncomputable def scalarHeatFlow
     (g : SmoothRiemannianMetric I M)
     (u₀ : Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : ℝ → M → ℝ :=
   scalarHeatFlowTensor g ((tensor00ScalarL2Equiv g).symm u₀)
-
-noncomputable def scalarEigenFunction
-    (g : SmoothRiemannianMetric I M) (i : TensorEigenIdx00 g) : SmoothScalar g :=
-  scalar0Cc g (eigenvectorSmooth g 0 0 i)
 
 noncomputable def scalarEigenFunctionLp
     (g : SmoothRiemannianMetric I M) (i : TensorEigenIdx00 g) :
@@ -997,35 +994,6 @@ private lemma eigenvectorSmooth_hs_norm
   rw [← hsq]
   rw [Real.sqrt_sq_eq_abs]
   exact (abs_of_nonneg (norm_nonneg _)).symm
-
-theorem scalarEigenFunction_abs_le
-    (g : SmoothRiemannianMetric I M) :
-    ∃ C : ℝ, 0 ≤ C ∧ ∀ (i : TensorEigenIdx00 g) (x : M),
-      |(scalarEigenFunction g i).toFun x| ≤
-        C * (1 + TensorEigenIdx.lambda (I := I) (M := M) i) ^
-          (((Module.finrank ℝ E / 2 + 1 : ℕ) : ℝ) / 2) := by
-  classical
-  set σ : ℝ := ((Module.finrank ℝ E / 2 + 1 : ℕ) : ℝ)
-  obtain ⟨C, hC, hb⟩ := scalar0_abs_le_hs (I := I) (M := M) g
-  refine ⟨C, hC, ?_⟩
-  intro i x
-  have h1 := hb (eigenvectorSmooth g 0 0 i) x
-  have hφ : (scalarEigenFunction g i).toFun x =
-      TensorRSField.scalar0 (n := (∞ : WithTop ℕ∞))
-        (eigenvectorSmooth g 0 0 i).toSection x := rfl
-  have hnorm := eigenvectorSmooth_hs_norm (I := I) (M := M) g σ i
-  rw [hnorm] at h1
-  have hsqrt : Real.sqrt (tensorSobolevWeight (I := I) (M := M) i σ) =
-      (1 + TensorEigenIdx.lambda (I := I) (M := M) i) ^ (σ / 2) := by
-    unfold tensorSobolevWeight
-    have hnonneg : 0 ≤ 1 + TensorEigenIdx.lambda (I := I) (M := M) i := by
-      linarith [tensor_lambda_nonneg (I := I) (M := M) i]
-    rw [Real.sqrt_eq_rpow]
-    rw [← Real.rpow_mul hnonneg]
-    congr 1
-    ring
-  rw [hsqrt] at h1
-  simpa [hφ] using h1
 
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma exp_sq_eq (a : ℝ) : (Real.exp a) ^ 2 = Real.exp (2 * a) := by

@@ -9,7 +9,7 @@ import Mathlib.Topology.Compactness.LocallyFinite
 import Mathlib.Topology.Algebra.Support
 import Mathlib.MeasureTheory.Measure.Regular
 import Mathlib.Geometry.Manifold.Metrizable
-import Mathlib.Geometry.Manifold.IsManifold.InteriorBoundary
+import DifferentialGeometry.Topology.Manifold.InteriorBoundary
 
 noncomputable section
 
@@ -555,7 +555,7 @@ theorem riemannianMeasure_isOpenPosMeasure
     (hρ : ρ.IsSubordinate (fun α : M => (chartAt H α).source)) :
     (riemannianMeasure (I := I) g ρ).IsOpenPosMeasure := by
   refine ⟨fun U hUopen hUne => ?_⟩
-  rcases (interior_isInteriorPoint_dense (I := I) (M := M)).inter_open_nonempty
+  rcases (I.dense_interior (M := M)).inter_open_nonempty
       U hUopen hUne with ⟨x, hxU, hx_int⟩
   have hexpos : ∃ α, 0 < ρ α x :=
     ρ.exists_pos_of_mem (Set.mem_univ _)

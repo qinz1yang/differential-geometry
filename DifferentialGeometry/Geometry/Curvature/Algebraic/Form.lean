@@ -1,4 +1,6 @@
 import Mathlib.Analysis.InnerProductSpace.Basic
+import Mathlib.Analysis.Normed.Module.Multilinear.Basic
+import Mathlib.Tactic.FinCases
 import Mathlib.Tactic.Linarith
 import Mathlib.Tactic.Ring
 
@@ -158,5 +160,31 @@ theorem ext (hB : IsAlgCurvForm B) (hB' : IsAlgCurvForm B')
   linarith
 
 end IsAlgCurvForm
+
+theorem IsAlgCurvForm.compContinuousLinearMap
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
+    {T : ContinuousMultilinearMap ℝ (fun _ : Fin 4 => F) ℝ}
+    (hT : IsAlgCurvForm (fun a b c d => T ![a, b, c, d])) (e : E →L[ℝ] F) :
+    IsAlgCurvForm (fun a b c d =>
+      T.compContinuousLinearMap (fun _ => e) ![a, b, c, d]) := by
+  have he (a b c d : E) :
+      T.compContinuousLinearMap (fun _ => e) ![a, b, c, d] = T ![e a, e b, e c, e d] := by
+    change T _ = T _
+    congr 1
+    ext i
+    fin_cases i <;> rfl
+  simp_rw [he]
+  refine ⟨?_, ?_, ?_, ?_, ?_⟩
+  · intro a b c d f
+    rw [map_add, hT.add_left]
+  · intro r a b c d
+    rw [map_smul, hT.smul_left]
+  · intro a b c d
+    exact hT.anti_first _ _ _ _
+  · intro a b c d
+    exact hT.anti_last _ _ _ _
+  · intro a b c d
+    exact hT.bianchi _ _ _ _
 
 end DifferentialGeometry.Geometry.Curvature

@@ -3,11 +3,13 @@ import DifferentialGeometry.Tensor.RSTensor.Coordinates.BasisEvaluation
 import DifferentialGeometry.Geometry.Metric.Pullback.PartialDiffeomorph.OpenSubtype
 import DifferentialGeometry.Geometry.Connection.ChartFrame.ChartMetric
 import Mathlib.Geometry.Manifold.VectorBundle.Hom
+
 open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
 
 open DifferentialGeometry.Geometry.Connection
+open DifferentialGeometry.Tensor.Coordinates
 namespace DifferentialGeometry.Geometry.Curvature
 
 open Bundle DifferentialGeometry.Tensor0SBundle
@@ -20,6 +22,29 @@ variable {H : Type*} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
 variable [IsManifold I ∞ M] [IsManifold I 1 M]
+
+theorem tensor0SFamilyContinuousOnSet.of_locally
+    {s : Nat} {K : Set ℝ}
+    {A : (t : ℝ) -> (x : M) -> Tensor0SSpace s I x}
+    (hA : ∀ t ∈ K, ∃ U : Set ℝ, IsOpen U ∧ t ∈ U ∧
+      tensor0SFamilyContinuousOnSet (I := I) (M := M) s (K ∩ U) A) :
+    tensor0SFamilyContinuousOnSet (I := I) (M := M) s K A := by
+  unfold tensor0SFamilyContinuousOnSet
+  rw [continuous_iff_continuousAt]
+  intro q
+  rcases hA q.1.1 q.1.2 with ⟨U, hU, hqt, hcont⟩
+  let V : Set ({t : ℝ // t ∈ K} × M) := {q' | (q'.1 : ℝ) ∈ U}
+  have hVopen : IsOpen V := hU.preimage (continuous_subtype_val.comp continuous_fst)
+  have hVcont : ContinuousOn
+      (fun q' : {t : ℝ // t ∈ K} × M =>
+        TotalSpace.mk' (Tensor0SModel s ℝ E) q'.2 (A q'.1.1 q'.2)) V := by
+    rw [continuousOn_iff_continuous_domRestrict]
+    refine hcont.comp (f := fun w : V =>
+      ((⟨w.1.1.1, ⟨w.1.1.2, w.2⟩⟩ : {t : ℝ // t ∈ K ∩ U}), w.1.2)) ?_
+    exact (((continuous_subtype_val.comp continuous_fst).comp
+      continuous_subtype_val).subtype_mk _).prodMk
+        (continuous_snd.comp continuous_subtype_val)
+  exact hVcont.continuousAt (hVopen.mem_nhds hqt)
 
 theorem tensor0SFamilyContinuousOnSet_of_chartComp
     {s : Nat} {K : Set Real}
@@ -212,6 +237,55 @@ private lemma inCoordinates_metric_eq_chartGram_sum
 end MetricCLMSectionCoordinates
 
 omit [NeZero (Module.finrank ℝ E)] in
+theorem metricCLMSection_jointContMDiffOn_of_chartGram_on
+    (g : ℝ → SmoothRiemannianMetric I M) (A : Set ℝ)
+    (hgram : ∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)),
+      ContMDiffOn (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ) ∞
+        (fun p : ℝ × M => chartGramMatrix (I := I) (g p.1) x₀ p.2 i j)
+        (A ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet)) :
+    ContMDiffOn (𝓘(ℝ, ℝ).prod I) (I.prod 𝓘(ℝ, E →L[ℝ] E →L[ℝ] ℝ)) ∞
+      (fun p : ℝ × M => (⟨p.2, (g p.1).inner p.2⟩ :
+        TotalSpace (E →L[ℝ] E →L[ℝ] ℝ)
+          (fun x => TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ)))
+      (A ×ˢ (Set.univ : Set M)) := by
+  classical
+  intro q₀ hq₀
+  set α : M := q₀.2
+  have hbase0 : α ∈ (trivializationAt E (TangentSpace I) α).baseSet :=
+    FiberBundle.mem_baseSet_trivializationAt E (TangentSpace I) α
+  rw [contMDiffWithinAt_hom_bundle]
+  refine ⟨contMDiffWithinAt_snd, ?_⟩
+  apply contMDiffWithinAt_clm_of_pointwise (IB := 𝓘(ℝ, ℝ).prod I) (X := ℝ × M)
+  intro v
+  apply contMDiffWithinAt_clm_of_pointwise (IB := 𝓘(ℝ, ℝ).prod I) (X := ℝ × M)
+  intro w
+  have hpre : (fun p : ℝ × M => p.2) ⁻¹'
+      (trivializationAt E (TangentSpace I) α).baseSet ∈ nhds q₀ :=
+    continuous_snd.continuousAt.preimage_mem_nhds
+      ((trivializationAt E (TangentSpace I) α).open_baseSet.mem_nhds hbase0)
+  have hgram_at (i j : Fin (Module.finrank ℝ E)) :
+      ContMDiffWithinAt (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ) ∞
+        (fun p : ℝ × M => chartGramMatrix (I := I) (g p.1) α p.2 i j)
+        (A ×ˢ Set.univ) q₀ := by
+    have h := hgram α i j q₀ ⟨hq₀.1, hbase0⟩
+    apply h.mono_of_mem_nhdsWithin
+    filter_upwards [nhdsWithin_le_nhds hpre, self_mem_nhdsWithin] with p hp hq
+    exact ⟨hq.1, hp⟩
+  have hs : ContMDiffWithinAt (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ) ∞
+      (fun p : ℝ × M => ∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
+        ((chartModelBasis E).repr v) i * ((chartModelBasis E).repr w) j *
+          chartGramMatrix (I := I) (g p.1) α p.2 i j)
+      (A ×ˢ Set.univ) q₀ := by
+    refine ContMDiffWithinAt.sum (fun i _ => ContMDiffWithinAt.sum (fun j _ => ?_))
+    exact contMDiffWithinAt_const.mul (hgram_at i j)
+  apply hs.congr_of_eventuallyEq
+  · filter_upwards [nhdsWithin_le_nhds hpre] with p hp
+    exact MetricCLMSectionCoordinates.inCoordinates_metric_eq_chartGram_sum
+      (g p.1) α hp v w
+  · exact MetricCLMSectionCoordinates.inCoordinates_metric_eq_chartGram_sum
+      (g q₀.1) α hbase0 v w
+
+omit [NeZero (Module.finrank ℝ E)] in
 theorem metricCLMSection_jointContMDiffOn_of_chartGram
     (g_DT : ℝ → SmoothRiemannianMetric I M) (T : ℝ)
     (hgram_DT : ∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)),
@@ -275,17 +349,23 @@ end MetricCLMSection
 
 namespace tensor0SFamilyContinuousOnSet
 
-theorem pullback
+section Pullback
+
+variable {F : Type*} [NormedAddCommGroup F] [NormedSpace Real F]
+  [FiniteDimensional Real F]
+variable {H' : Type*} [TopologicalSpace H'] {J : ModelWithCorners Real F H'}
+variable {N : Type*} [TopologicalSpace N] [ChartedSpace H' N] [IsManifold J ∞ N]
+
+omit [IsManifold I 1 M] in
+theorem pullback_of_contMDiff
     {s : Nat} {K : Set Real}
-    {N : Type*} [TopologicalSpace N] [ChartedSpace H N]
-    [IsManifold I ∞ N] [IsManifold I 1 N]
     (A : (t : Real) → (x : N) →
-      Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := N) s x)
-    (hA : tensor0SFamilyContinuousOnSet (I := I) (M := N) s K A)
-    (Φ : M ≃ₘ⟮I, I⟯ N) :
+      Tensor0SSpace (𝕜 := Real) (E := F) (H := H') (I := J) (M := N) s x)
+    (hA : tensor0SFamilyContinuousOnSet (I := J) (M := N) s K A)
+    (Φ : M → N) (hΦ : ContMDiff I J 1 Φ) :
     tensor0SFamilyContinuousOnSet (I := I) (M := M) s K
       (fun t x => (A t (Φ x)).compContinuousLinearMap
-        (fun _ : Fin s => mfderiv I I (Φ : M → N) x)) := by
+        (fun _ : Fin s => mfderiv I J (Φ : M → N) x)) := by
   apply tensor0SFamilyContinuousOnSet_of_chartBasisComp
     (N := fun x₀ => (trivializationAt E (TangentSpace I) x₀).baseSet)
     (hN := fun x₀ => (Trivialization.open_baseSet _).mem_nhds
@@ -295,23 +375,23 @@ theorem pullback
   have hslot : ∀ k : Fin s, Continuous
       (fun p : {q : {t : Real // t ∈ K} × M //
             q.2 ∈ (trivializationAt E (TangentSpace I) x₀).baseSet} =>
-        TotalSpace.mk' E (E := fun y : N => TangentSpace I y) (Φ p.1.2)
-          (mfderiv I I (Φ : M → N) p.1.2
+        TotalSpace.mk' F (E := fun y : N => TangentSpace J y) (Φ p.1.2)
+          (mfderiv I J (Φ : M → N) p.1.2
             (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ (idx k)
               p.1.2))) := by
     intro k
     have hcomp :
         (fun p : {q : {t : Real // t ∈ K} × M //
               q.2 ∈ (trivializationAt E (TangentSpace I) x₀).baseSet} =>
-          TotalSpace.mk' E (E := fun y : N => TangentSpace I y) (Φ p.1.2)
-            (mfderiv I I (Φ : M → N) p.1.2
+          TotalSpace.mk' F (E := fun y : N => TangentSpace J y) (Φ p.1.2)
+            (mfderiv I J (Φ : M → N) p.1.2
               (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ (idx k) p.1.2)))
-          = (tangentMap I I (Φ : M → N)) ∘
+          = (tangentMap I J (Φ : M → N)) ∘
               (fun p => DifferentialGeometry.Tensor.Coordinates.chartBasisVec (I := I) x₀ (idx k)
                 p.1.2) := by
       funext p; rfl
     rw [hcomp]
-    refine (Φ.contMDiff.continuous_tangentMap (by simp)).comp ?_
+    refine (hΦ.continuous_tangentMap (by simp)).comp ?_
     exact (DifferentialGeometry.Tensor.Coordinates.chartBasisVec_contMDiffOn
         (I := I) x₀ (idx k)).continuousOn.comp_continuous
       (continuous_snd.comp continuous_subtype_val) (fun p => p.2)
@@ -321,11 +401,25 @@ theorem pullback
       (τ := fun p => p.1.1.1) (b := fun p => Φ p.1.2)
       (continuous_subtype_val.comp (continuous_fst.comp continuous_subtype_val))
       (fun p => p.1.1.2)
-      (Φ.continuous.comp (continuous_snd.comp continuous_subtype_val))
+      (hΦ.continuous.comp (continuous_snd.comp continuous_subtype_val))
       hslot
   refine hev.congr ?_
   intro p
   rfl
+
+omit [IsManifold I 1 M] in
+theorem pullback
+    {s : Nat} {K : Set Real}
+    (A : (t : Real) → (x : N) →
+      Tensor0SSpace (𝕜 := Real) (E := F) (H := H') (I := J) (M := N) s x)
+    (hA : tensor0SFamilyContinuousOnSet (I := J) (M := N) s K A)
+    (Φ : M ≃ₘ⟮I, J⟯ N) :
+    tensor0SFamilyContinuousOnSet (I := I) (M := M) s K
+      (fun t x => (A t (Φ x)).compContinuousLinearMap
+        (fun _ : Fin s => mfderiv I J (Φ : M → N) x)) :=
+  hA.pullback_of_contMDiff A Φ (Φ.contMDiff.of_le (by norm_num))
+
+end Pullback
 
 theorem restrictOpen
     {s : Nat} {K : Set Real}

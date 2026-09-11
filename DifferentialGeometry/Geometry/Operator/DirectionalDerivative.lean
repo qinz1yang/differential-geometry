@@ -1,6 +1,8 @@
 import DifferentialGeometry.Tensor.Coordinates.PartialDerivative
 import DifferentialGeometry.Geometry.Coordinates.Fields.Scalar
 import DifferentialGeometry.Geometry.Coordinates.Fields.Vector
+import DifferentialGeometry.Analysis.Calculus.ContDiff.Support
+import DifferentialGeometry.Bundle.PartialMfderiv.Basic
 import Mathlib.Geometry.Manifold.MFDeriv.Basic
 import Mathlib.Geometry.Manifold.MFDeriv.SpecificFunctions
 import Mathlib.Geometry.Manifold.MFDeriv.FDeriv
@@ -85,6 +87,69 @@ lemma chartPullZero_nmem (α : M) (f : M → ℝ) {y : E}
     (hy : y ∉ (extChartAt I α).target) :
     chartPullZero (I := I) α f y = 0 :=
   Set.indicator_of_notMem hy _
+
+omit [Module.Finite ℝ E] [IsManifold I ∞ M] in
+theorem tsupport_chartPullZero_subset_image
+    (α : M) {f : M → ℝ} (hc : HasCompactSupport f)
+    (hs : tsupport f ⊆ (chartAt H α).source) :
+    tsupport (chartPullZero (I := I) α f) ⊆ (extChartAt I α) '' tsupport f := by
+  have hcompact : IsCompact ((extChartAt I α) '' tsupport f) :=
+    hc.image_of_continuousOn ((continuousOn_extChartAt α).mono
+      (by simpa only [extChartAt_source] using hs))
+  apply closure_minimal _ hcompact.isClosed
+  intro y hy
+  by_cases hyt : y ∈ (extChartAt I α).target
+  · refine ⟨(extChartAt I α).symm y, ?_, (extChartAt I α).right_inv hyt⟩
+    apply subset_tsupport
+    simpa only [Function.mem_support, chartPullZero_mem α f hyt, scalarOnE_def] using hy
+  · exact (hy (chartPullZero_nmem α f hyt)).elim
+
+omit [Module.Finite ℝ E] [IsManifold I ∞ M] in
+theorem hasCompactSupport_chartPullZero
+    (α : M) {f : M → ℝ} (hc : HasCompactSupport f)
+    (hs : tsupport f ⊆ (chartAt H α).source) :
+    HasCompactSupport (chartPullZero (I := I) α f) := by
+  have hcompact : IsCompact ((extChartAt I α) '' tsupport f) :=
+    hc.image_of_continuousOn ((continuousOn_extChartAt α).mono
+      (by simpa only [extChartAt_source] using hs))
+  exact hcompact.of_isClosed_subset isClosed_closure
+    (tsupport_chartPullZero_subset_image α hc hs)
+
+omit [Module.Finite ℝ E] [IsManifold I ∞ M] in
+theorem tsupport_chartPullZero_subset_target
+    (α : M) {f : M → ℝ} (hc : HasCompactSupport f)
+    (hs : tsupport f ⊆ (chartAt H α).source) :
+    tsupport (chartPullZero (I := I) α f) ⊆ (extChartAt I α).target := by
+  intro y hy
+  obtain ⟨x, hx, rfl⟩ := tsupport_chartPullZero_subset_image α hc hs hy
+  exact (extChartAt I α).map_source (by simpa only [extChartAt_source] using hs hx)
+
+omit [Module.Finite ℝ E] [IsManifold I ∞ M] in
+theorem chartPullZero_contDiffOn
+    {k : WithTop ℕ∞} [IsManifold I k M]
+    (α : M) {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ) k f) :
+    ContDiffOn ℝ k (chartPullZero (I := I) α f) (extChartAt I α).target := by
+  have hcomp : ContMDiffOn 𝓘(ℝ, E) 𝓘(ℝ) k
+      (f ∘ (extChartAt I α).symm) (extChartAt I α).target :=
+    (hf.contMDiffOn (s := univ)).comp
+      (contMDiffOn_extChartAt_symm α) (fun _ _ => mem_univ _)
+  exact hcomp.contDiffOn.congr (fun y hy => chartPullZero_mem α f hy)
+
+omit [Module.Finite ℝ E] [IsManifold I ∞ M] in
+theorem chartPullZero_contDiffOn_range
+    {k : WithTop ℕ∞} [IsManifold I k M]
+    (α : M) {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ) k f)
+    (hc : HasCompactSupport f) (hs : tsupport f ⊆ (chartAt H α).source) :
+    ContDiffOn ℝ k (chartPullZero (I := I) α f) (Set.range I) := by
+  apply ContDiffOn.contDiffOn_of_tsupport_subset
+    (s := I.symm ⁻¹' (chartAt H α).target)
+  · simpa only [← extChartAt_target] using chartPullZero_contDiffOn α hf
+  · exact (chartAt H α).open_target.preimage I.continuous_symm
+  · intro y hy
+    have hyt := tsupport_chartPullZero_subset_target α hc hs hy.1
+    rw [extChartAt_target] at hyt
+    exact hyt.1
+
 lemma mfderiv_chart_diff (α : M)
     {f : M → ℝ} {x : M} (hx : x ∈ (chartAt H α).source)
     (hf : DifferentiableAt ℝ (scalarOnE (I := I) α f) (extChartAt I α x))
@@ -398,17 +463,72 @@ theorem tangentSectionAction_contMDiffOn_baseSet [I.Boundaryless]
     · congr 1
       exact (isOpen_extChartAt_target (I := I) α).interior_eq
 
-theorem tangentSectionAction_contMDiff [I.Boundaryless]
+omit [Module.Finite ℝ E] in
+theorem tangentSectionAction_contMDiff
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ) ∞ f) :
     ContMDiff I 𝓘(ℝ) ∞ (tangentSectionAction (I := I) X f) := by
-  intro x
-  have hx_source : x ∈ (chartAt H x).source := mem_chart_source H x
-  have hsrc_open : IsOpen ((chartAt H x).source) := (chartAt H x).open_source
-  have hsmooth : ContMDiffOn I 𝓘(ℝ) ∞ (tangentSectionAction (I := I) X f)
-      (chartAt H x).source :=
-    tangentSectionAction_contMDiffOn_baseSet (I := I) x X hf
-  exact (hsmooth x hx_source).contMDiffAt (hsrc_open.mem_nhds hx_source)
+  intro x₀
+  let e₀ := trivializationAt E (TangentSpace I) x₀
+  have hdf : ContMDiffAt I 𝓘(ℝ, E →L[ℝ] ℝ) (∞ : WithTop ℕ∞)
+      (inTangentCoordinates I 𝓘(ℝ) id f (mfderiv I 𝓘(ℝ) f) x₀) x₀ :=
+    hf.contMDiffAt.mfderiv_const (WithTop.coe_le_coe.mpr le_top)
+  have hX : ContMDiffAt I 𝓘(ℝ, E) (∞ : WithTop ℕ∞)
+      (fun x => (e₀ ⟨x, X x⟩).2) x₀ :=
+    (Bundle.contMDiffAt_section (n := (∞ : WithTop ℕ∞)) x₀).mp X.contMDiff.contMDiffAt
+  refine (hdf.clm_apply hX).congr_of_eventuallyEq ?_
+  filter_upwards
+    [e₀.open_baseSet.mem_nhds (mem_baseSet_trivializationAt E (TangentSpace I) x₀)]
+  intro x hx
+  simp only [inTangentCoordinates, ContinuousLinearMap.inCoordinates, Function.id_def,
+    TangentBundle.continuousLinearMapAt_model_space]
+  change mfderiv I 𝓘(ℝ) f x (X x) =
+    mfderiv I 𝓘(ℝ) f x (e₀.symmL ℝ x ((e₀ ⟨x, X x⟩).2))
+  congr 1
+  rw [e₀.symmL_apply hx]
+  exact (Bundle.Trivialization.symm_apply_apply_mk e₀ hx (X x)).symm
+
+omit [Module.Finite ℝ E] in
+theorem mfderiv_eq_fderivWithin_scalarOnE
+    (α : M) {f : M → ℝ} {x : M}
+    (hx : x ∈ (chartAt H α).source) (hf : MDifferentiableAt I 𝓘(ℝ) f x)
+    (v : TangentSpace I x) :
+    mfderiv I 𝓘(ℝ) f x v =
+      fderivWithin ℝ (scalarOnE (I := I) α f) (extChartAt I α).target (extChartAt I α x)
+        ((trivializationAt E (TangentSpace I) α).continuousLinearMapAt ℝ x v) := by
+  have hxs : x ∈ (extChartAt I α).source := by rwa [extChartAt_source]
+  have hxt := (extChartAt I α).map_source hxs
+  have hinv := (extChartAt I α).left_inv hxs
+  have hs := mdifferentiableWithinAt_extChartAt_symm (I := I) hxt
+  have hchain := mfderiv_comp_mfderivWithin_of_eq hf hs
+    (I.uniqueMDiffOn (extChartAt I α x) (extChartAt_target_subset_range α hxt)) hinv
+  rw [mfderivWithin_eq_fderivWithin] at hchain
+  rw [fderivWithin_congr_set (extChartAt_target_eventuallyEq_of_mem hxt)]
+  change mfderiv I 𝓘(ℝ) f x v =
+    fderivWithin ℝ (f ∘ (extChartAt I α).symm) (Set.range I) (extChartAt I α x)
+      ((trivializationAt E (TangentSpace I) α).continuousLinearMapAt ℝ x v)
+  rw [hchain]
+  change mfderiv I 𝓘(ℝ) f x v = mfderiv I 𝓘(ℝ) f x
+    (mfderivWithin 𝓘(ℝ, E) I (extChartAt I α).symm (Set.range I) (extChartAt I α x)
+      ((trivializationAt E (TangentSpace I) α).continuousLinearMapAt ℝ x v))
+  have hsymm := congrArg
+    (fun L : E →L[ℝ] TangentSpace I x => L
+      ((trivializationAt E (TangentSpace I) α).continuousLinearMapAt ℝ x v))
+    (TangentBundle.symmL_trivializationAt (I := I) hx)
+  have hcancel := Trivialization.symmL_continuousLinearMapAt
+    (R := ℝ) (trivializationAt E (TangentSpace I) α) hx v
+  apply congrArg (mfderiv I 𝓘(ℝ) f x)
+  exact hcancel.symm.trans hsymm
+
+omit [Module.Finite ℝ E] in
+theorem tangentSectionAction_eq_fderivWithin_scalarOnE
+    (α : M) (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
+    {f : M → ℝ} {x : M} (hx : x ∈ (chartAt H α).source)
+    (hf : MDifferentiableAt I 𝓘(ℝ) f x) :
+    tangentSectionAction X f x =
+      fderivWithin ℝ (scalarOnE (I := I) α f) (extChartAt I α).target (extChartAt I α x)
+        ((trivializationAt E (TangentSpace I) α).continuousLinearMapAt ℝ x (X x)) :=
+  mfderiv_eq_fderivWithin_scalarOnE α hx hf (X x)
 
 end DivergenceTheorem
 end Integral

@@ -362,7 +362,8 @@ theorem smooth_flow_limit_converges
     Nonempty (SmoothCGHConverges (I := I) X d.limit.L
       (mc.compSubseq d.φ d.strictMono).subseq) :=
   ⟨SmoothCGHConverges.ofRestrictPullback (I := I)
-    d.limit.maps d.limit.scalar d.limit.ricciNorm d.limit.source_sigmaCompact
+    d.limit.maps d.limit.metric d.limit.scalar d.limit.ricci d.limit.ricciNorm
+    d.limit.source_sigmaCompact
     d.limit.refMetric
     (letI : TopologicalSpace d.limit.L.M := d.limit.L.topology
      letI : ChartedSpace H d.limit.L.M := d.limit.L.charted

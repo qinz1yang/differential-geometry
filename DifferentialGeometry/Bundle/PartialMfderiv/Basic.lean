@@ -365,13 +365,14 @@ theorem contMDiff_partial_deriv_fst
 theorem timeDeriv_smoothAt
     {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners Real E H}
-    {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-    {F : Real × M -> Real} {p0 : Real × M} {m n : WithTop ℕ∞}
+    {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I 1 M]
+    {G : Type*} [NormedAddCommGroup G] [NormedSpace Real G]
+    {F : Real × M -> G} {p0 : Real × M} {m n : WithTop ℕ∞}
     (hF : ContMDiffAt ((modelWithCornersSelf Real Real).prod I)
-      (modelWithCornersSelf Real Real) n F p0)
+      (modelWithCornersSelf Real G) n F p0)
     (hmn : m + 1 ≤ n) :
     ContMDiffAt ((modelWithCornersSelf Real Real).prod I)
-      (modelWithCornersSelf Real Real) m
+      (modelWithCornersSelf Real G) m
       (fun p : Real × M => deriv (fun t => F (t, p.2)) p.1) p0 := by
   have harg :
       ContMDiffAt
@@ -384,13 +385,13 @@ theorem timeDeriv_smoothAt
       ContMDiffAt
         (((modelWithCornersSelf Real Real).prod I).prod
           (modelWithCornersSelf Real Real))
-        (modelWithCornersSelf Real Real) n
+        (modelWithCornersSelf Real G) n
         (fun q : (Real × M) × Real => F (q.2, q.1.2)) (p0, p0.1) :=
     hF.comp (p0, p0.1) harg
   have h_apply :=
     ContMDiffAt.mfderiv_apply
       (I := modelWithCornersSelf Real Real)
-      (I' := modelWithCornersSelf Real Real)
+      (I' := modelWithCornersSelf Real G)
       (f := fun (p : Real × M) (t : Real) => F (t, p.2))
       (g := fun p : Real × M => p.1)
       (g₁ := fun p : Real × M => p)
@@ -429,6 +430,86 @@ theorem mvfderiv_mul_at
     funext y; simp [smul_eq_mul]
   rw [hsmul]
   simpa [smul_eq_mul] using congr($(mvfderiv_mul (I := I) hf hg) v)
+
+theorem mdifferentiableAt_finset_sum
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+    {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
+    {ι : Type*} (t : Finset ι) (f : ι → M → ℝ)
+    {x : M}
+    (hf : ∀ i ∈ t, MDifferentiableAt I 𝓘(ℝ, ℝ) (f i) x) :
+    MDifferentiableAt I 𝓘(ℝ, ℝ) (t.sum f) x := by
+  classical
+  induction t using Finset.induction_on with
+  | empty =>
+      change MDifferentiableAt I 𝓘(ℝ, ℝ) (fun _ : M ↦ (0 : ℝ)) x
+      exact mdifferentiableAt_const (I := I) (I' := 𝓘(ℝ, ℝ))
+        (c := (0 : ℝ)) (x := x)
+  | insert i t hit ih =>
+      have hfi : MDifferentiableAt I 𝓘(ℝ, ℝ) (f i) x := hf i (by simp [hit])
+      have hft : ∀ j ∈ t, MDifferentiableAt I 𝓘(ℝ, ℝ) (f j) x := by
+        intro j hj
+        exact hf j (by simp [hj])
+      have hsum : MDifferentiableAt I 𝓘(ℝ, ℝ) (t.sum f) x := ih hft
+      simpa [Finset.sum_insert, hit] using hfi.add hsum
+
+theorem mdiffAt_finset_sum
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+    {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
+    {ι : Type*} (t : Finset ι) (f : ι → M → ℝ)
+    {x : M}
+    (hf : ∀ i ∈ t, MDifferentiableAt I 𝓘(ℝ, ℝ) (f i) x) :
+    MDifferentiableAt I 𝓘(ℝ, ℝ) (t.sum f) x :=
+  mdifferentiableAt_finset_sum t f hf
+
+theorem mvfderiv_finset_sum_at
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+    {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
+    {ι : Type*} (t : Finset ι) (f : ι → M → ℝ)
+    {x : M} (v : TangentSpace I x)
+    (hf : ∀ i ∈ t, MDifferentiableAt I 𝓘(ℝ, ℝ) (f i) x) :
+    mvfderiv (I := I) (t.sum f) x v =
+      t.sum (fun i => mvfderiv (I := I) (f i) x v) := by
+  classical
+  induction t using Finset.induction_on with
+  | empty => simp
+  | insert i t hit ih =>
+      have hfi : MDifferentiableAt I 𝓘(ℝ, ℝ) (f i) x := hf i (by simp [hit])
+      have hft : ∀ j ∈ t, MDifferentiableAt I 𝓘(ℝ, ℝ) (f j) x := by
+        intro j hj
+        exact hf j (by simp [hj])
+      have hsum : MDifferentiableAt I 𝓘(ℝ, ℝ) (t.sum f) x :=
+        mdifferentiableAt_finset_sum t f hft
+      calc
+        mvfderiv (I := I) ((insert i t).sum f) x v =
+            mvfderiv (I := I) (f i + t.sum f) x v := by
+              simp [Finset.sum_insert, hit]
+        _ = mvfderiv (I := I) (f i) x v +
+              mvfderiv (I := I) (t.sum f) x v := by
+              have hadd := congr($(mvfderiv_add
+                (I := I) (g := f i) (g' := t.sum f)
+                (x := x) hfi hsum) v)
+              simpa [Pi.add_apply] using hadd
+        _ = (insert i t).sum (fun j => mvfderiv (I := I) (f j) x v) := by
+              rw [ih hft]
+              simp [Finset.sum_insert, hit]
+
+theorem mvfderiv_finset_sum_apply_at
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+    {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
+    {ι : Type*} (t : Finset ι) (f : ι → M → ℝ)
+    {x : M} (v : TangentSpace I x)
+    (hf : ∀ i ∈ t, MDifferentiableAt I 𝓘(ℝ, ℝ) (f i) x) :
+    mvfderiv (I := I) (fun y => ∑ i ∈ t, f i y) x v =
+      ∑ i ∈ t, mvfderiv (I := I) (f i) x v := by
+  have hfun : (fun y => ∑ i ∈ t, f i y) = t.sum f := by
+    funext y
+    simp only [Finset.sum_apply]
+  rw [hfun]
+  exact mvfderiv_finset_sum_at t f v hf
 
 theorem mvfderiv_finset_sum_mul_at
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]

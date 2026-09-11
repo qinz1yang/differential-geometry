@@ -18,6 +18,7 @@ import DifferentialGeometry.Geometry.Operator.Gradient.Basic
 import DifferentialGeometry.Geometry.Operator.Hessian.Trace.Realization
 import DifferentialGeometry.Geometry.Operator.Scalar.Calculus
 import DifferentialGeometry.Geometry.Metric.TensorInner.Cotangent.InverseMetric
+
 open DifferentialGeometry.Tensor.RSTensor
 open DifferentialGeometry.Geometry.Curvature
 

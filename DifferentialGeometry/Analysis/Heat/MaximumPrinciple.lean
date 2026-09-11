@@ -1,4 +1,5 @@
 import DifferentialGeometry.Analysis.Heat.Semigroup.Defs
+import DifferentialGeometry.Analysis.Calculus.LocalExtrema
 import DifferentialGeometry.Geometry.Operator.Hessian.TraceFormula
 import DifferentialGeometry.Geometry.Operator.Laplacian.Basic
 import DifferentialGeometry.Geometry.Operator.Laplacian.VossWeylFormula
@@ -8,6 +9,7 @@ import Mathlib.Analysis.Matrix.Spectrum
 import Mathlib.Analysis.Matrix.PosDef
 import Mathlib.LinearAlgebra.Matrix.PosDef
 import Mathlib.Topology.Order.Compact
+
 open DifferentialGeometry.Geometry.Operator
 
 
@@ -121,68 +123,8 @@ private lemma sum_posSemidef_mul_neg_semidef_le_zero
 private lemma deriv_deriv_nonpos_of_isLocalMax_at_zero
     {g : ℝ → ℝ} (hg_max : IsLocalMax g 0)
     (hg_C2 : ContDiffAt ℝ 2 g 0) :
-    deriv (deriv g) 0 ≤ 0 := by
-  classical
-  by_contra h_pos
-  push Not at h_pos
-  have h_deriv_zero : deriv g 0 = 0 := hg_max.deriv_eq_zero
-  have h_sign : ∀ᶠ x in 𝓝 (0 : ℝ), sign (deriv g x) = sign (x - 0) :=
-    eventually_nhdsWithin_sign_eq_of_deriv_pos h_pos h_deriv_zero
-  have h_sign' : ∀ᶠ x in 𝓝 (0 : ℝ), sign (deriv g x) = sign x := by
-    filter_upwards [h_sign] with x hx
-    simpa using hx
-  rw [Metric.eventually_nhds_iff] at h_sign'
-  obtain ⟨ε₁, hε₁_pos, hε₁_sign⟩ := h_sign'
-  obtain ⟨u, hu_mem_nhd, hu_C2⟩ := hg_C2.contDiffOn (n := 2) le_rfl
-    (by intro h; exfalso; revert h; decide)
-  have hu_C1 : ContDiffOn ℝ 1 g u := hu_C2.of_le (by norm_num)
-  have hg_diff_on : DifferentiableOn ℝ g u := hu_C1.differentiableOn (by norm_num)
-  have hg_cont_on : ContinuousOn g u := hu_C1.continuousOn
-  obtain ⟨ε₂, hε₂_pos, hε₂_sub⟩ := Metric.mem_nhds_iff.mp hu_mem_nhd
-  set ε := min ε₁ ε₂ / 2 with hε_def
-  have hε_pos : 0 < ε := by
-    have : 0 < min ε₁ ε₂ := lt_min hε₁_pos hε₂_pos
-    linarith
-  have hε_lt_ε₁ : ε < ε₁ := by
-    have h := min_le_left ε₁ ε₂
-    linarith
-  have hε_lt_ε₂ : ε < ε₂ := by
-    have h := min_le_right ε₁ ε₂
-    linarith
-  have hIcc_sub_u : Set.Icc (0 : ℝ) ε ⊆ u := by
-    intro x hx
-    apply hε₂_sub
-    rw [Metric.mem_ball, Real.dist_eq, sub_zero, abs_of_nonneg hx.1]
-    linarith [hx.2]
-  have hg_cont_Icc : ContinuousOn g (Set.Icc (0 : ℝ) ε) := hg_cont_on.mono hIcc_sub_u
-  have hderiv_pos : ∀ x ∈ Set.Ioo (0 : ℝ) ε, 0 < deriv g x := by
-    intro x hx
-    have hx_lt : dist x 0 < ε₁ := by
-      rw [Real.dist_eq, sub_zero, abs_of_nonneg (le_of_lt hx.1)]
-      linarith [hx.2]
-    have h_signx : sign (deriv g x) = sign x := hε₁_sign hx_lt
-    have hsignx : sign x = 1 := sign_pos hx.1
-    rw [hsignx] at h_signx
-    rwa [sign_eq_one_iff] at h_signx
-  have hMono : StrictMonoOn g (Set.Icc (0 : ℝ) ε) := by
-    refine strictMonoOn_of_deriv_pos (convex_Icc _ _) hg_cont_Icc ?_
-    intro x hx
-    rw [interior_Icc] at hx
-    exact hderiv_pos x hx
-  rw [show (IsLocalMax g 0) = (∀ᶠ x in 𝓝 (0 : ℝ), g x ≤ g 0) from rfl,
-    Metric.eventually_nhds_iff] at hg_max
-  obtain ⟨δ, hδ_pos, hδ_le⟩ := hg_max
-  set t := min (ε / 2) (δ / 2) with ht_def
-  have ht_pos : 0 < t := lt_min (by linarith) (by linarith)
-  have ht_le_ε : t ≤ ε / 2 := min_le_left _ _
-  have ht_le_δ : t ≤ δ / 2 := min_le_right _ _
-  have ht_in_Icc : t ∈ Set.Icc (0 : ℝ) ε := ⟨le_of_lt ht_pos, by linarith [hε_pos]⟩
-  have ht_in_ball : dist t 0 < δ := by
-    rw [Real.dist_eq, sub_zero, abs_of_nonneg (le_of_lt ht_pos)]
-    linarith
-  have ht_le_g0 : g t ≤ g 0 := hδ_le ht_in_ball
-  have ht_lt : g 0 < g t := hMono (left_mem_Icc.mpr (le_of_lt hε_pos)) ht_in_Icc ht_pos
-  linarith
+    deriv (deriv g) 0 ≤ 0 :=
+  hg_max.deriv_deriv_nonpos hg_C2.continuousAt
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] in
 private lemma sndFDeriv_apply_self_nonpos_of_isLocalMax

@@ -58,7 +58,6 @@ end Primitive
 section Inner
 
 variable [NormedAddCommGroup X] [InnerProductSpace ℝ X] [CompleteSpace X]
-  [FiniteDimensional ℝ X]
 
 theorem mom_rep_c1
     (hT : 0 < T)

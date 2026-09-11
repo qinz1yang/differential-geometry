@@ -822,23 +822,25 @@ theorem morse_lemma_of_contMDiff {n : ℕ} {H : Type*} [TopologicalSpace H] {M :
     hf.comp_contMDiffOn (contMDiffOn_extChartAt_symm p)
   exact morse_lemma_smooth I f p ((contMDiffOn_iff_contDiffOn).1 hg) hcrit hnd
 
-theorem isCriticalPointAt_iff_chart_fderiv {n : ℕ} {H : Type*} [TopologicalSpace H] {M : Type*}
-    [TopologicalSpace M] [ChartedSpace H M] (I : ModelWithCorners ℝ (MorseModel n) H)
+theorem isCriticalPointAt_iff_chart_fderiv {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    {H : Type*} [TopologicalSpace H] {M : Type*}
+    [TopologicalSpace M] [ChartedSpace H M] (I : ModelWithCorners ℝ (E) H)
     [I.Boundaryless] [IsManifold I (↑(⊤ : ℕ∞) : WithTop ℕ∞) M] (f : M → ℝ)
     (hf : ContMDiff I 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞) f) (p : M) :
     IsCriticalPointAt I f p ↔
-      fderiv ℝ (fun y : MorseModel n => f ((extChartAt I p).symm y)) (extChartAt I p p) = 0 := by
-  let e : PartialEquiv M (MorseModel n) := extChartAt I p
+      fderiv ℝ (fun y : E => f ((extChartAt I p).symm y))
+        (extChartAt I p p) = 0 := by
+  let e : PartialEquiv M (E) := extChartAt I p
   have hpsrc : p ∈ e.source := by simp [e]
   have hep : e.symm (e p) = p := e.left_inv hpsrc
-  have hσc : ContMDiffAt 𝓘(ℝ, MorseModel n) I (↑(⊤ : ℕ∞) : WithTop ℕ∞) e.symm (e p) :=
+  have hσc : ContMDiffAt 𝓘(ℝ, E) I (↑(⊤ : ℕ∞) : WithTop ℕ∞) e.symm (e p) :=
     (contMDiffOn_extChartAt_symm p).contMDiffAt (by
       have hmemTarget : e p ∈ (extChartAt I p).target :=
         (extChartAt I p).map_source (mem_extChartAt_source p)
       simpa [e] using (isOpen_extChartAt_target p).mem_nhds hmemTarget)
-  have hσmd : MDifferentiableAt 𝓘(ℝ, MorseModel n) I e.symm (e p) :=
+  have hσmd : MDifferentiableAt 𝓘(ℝ, E) I e.symm (e p) :=
     hσc.mdifferentiableAt (by norm_num)
-  have hmdChart : MDifferentiableAt I 𝓘(ℝ, MorseModel n) e p :=
+  have hmdChart : MDifferentiableAt I 𝓘(ℝ, E) e p :=
     (contMDiffAt_extChartAt (n := (↑(⊤ : ℕ∞) : WithTop ℕ∞)) (x := p)).mdifferentiableAt (by norm_num)
   have hmdgAtEp : MDifferentiableAt I 𝓘(ℝ, ℝ) f (e.symm (e p)) := by
     simpa [hep] using ((hf p).mdifferentiableAt (by norm_num : (↑(⊤ : ℕ∞) : WithTop ℕ∞) ≠ 0))
@@ -847,8 +849,10 @@ theorem isCriticalPointAt_iff_chart_fderiv {n : ℕ} {H : Type*} [TopologicalSpa
     exact Filter.eventuallyEq_of_mem (by simpa [e] using (hsrcopen.mem_nhds hpsrc))
       (fun x hx => congrArg f (e.left_inv hx).symm)
   have hcomp := mfderiv_comp (x := p) (g := f ∘ e.symm) (f := e) (hg := by
-    have hfg : MDifferentiableAt 𝓘(ℝ, MorseModel n) 𝓘(ℝ, ℝ) (f ∘ e.symm) (e p) := by
-      have hc : ContMDiffAt 𝓘(ℝ, MorseModel n) 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞) (f ∘ e.symm) (e p) :=
+    have hfg : MDifferentiableAt 𝓘(ℝ, E) 𝓘(ℝ, ℝ)
+        (f ∘ e.symm) (e p) := by
+      have hc : ContMDiffAt 𝓘(ℝ, E) 𝓘(ℝ, ℝ)
+          (↑(⊤ : ℕ∞) : WithTop ℕ∞) (f ∘ e.symm) (e p) :=
         ContMDiffAt.comp (x := e p) (g := f) (f := e.symm)
           (hg := by simpa [hep] using (hf p))
           (hf := hσc)
@@ -856,45 +860,50 @@ theorem isCriticalPointAt_iff_chart_fderiv {n : ℕ} {H : Type*} [TopologicalSpa
     exact hfg) (hf := hmdChart)
   have heq := Filter.EventuallyEq.mfderiv_eq (I := I) (I' := 𝓘(ℝ, ℝ)) hfuneq
   have hmain : mfderiv I 𝓘(ℝ, ℝ) f p =
-        (mfderiv 𝓘(ℝ, MorseModel n) 𝓘(ℝ, ℝ) (f ∘ e.symm) (e p)).comp
-        (mfderiv I 𝓘(ℝ, MorseModel n) e p) := by
+        (mfderiv 𝓘(ℝ, E) 𝓘(ℝ, ℝ) (f ∘ e.symm) (e p)).comp
+        (mfderiv I 𝓘(ℝ, E) e p) := by
     exact heq.trans hcomp
   constructor
   · intro hcrit
     have hcomp2 := mfderiv_comp (x := e p) (g := f) (f := e.symm) (hg := hmdgAtEp) (hf := hσmd)
     rw [hep] at hcomp2
-    have hzero2 : mfderiv 𝓘(ℝ, MorseModel n) 𝓘(ℝ, ℝ) (f ∘ e.symm) (e p) = 0 := by
+    have hzero2 : mfderiv 𝓘(ℝ, E) 𝓘(ℝ, ℝ)
+        (f ∘ e.symm) (e p) = 0 := by
       rw [hcomp2, hcrit]
       ext v
       rfl
-    exact ((mfderiv_eq_fderiv (𝕜 := ℝ) (E := MorseModel n) (E' := ℝ)
-      (f := fun y : MorseModel n => f (e.symm y)) (x := e p)).symm).trans hzero2
+    exact ((mfderiv_eq_fderiv (𝕜 := ℝ) (E := E) (E' := ℝ)
+      (f := fun y : E => f (e.symm y)) (x := e p)).symm).trans hzero2
   · intro hchart
-    have hzero : mfderiv 𝓘(ℝ, MorseModel n) 𝓘(ℝ, ℝ) (fun y : MorseModel n => f (e.symm y)) (e p) = 0 := by
-      exact (mfderiv_eq_fderiv (𝕜 := ℝ) (E := MorseModel n) (E' := ℝ)
-        (f := fun y : MorseModel n => f (e.symm y)) (x := e p)).trans hchart
+    have hzero : mfderiv 𝓘(ℝ, E) 𝓘(ℝ, ℝ)
+        (fun y : E => f (e.symm y)) (e p) = 0 := by
+      exact (mfderiv_eq_fderiv (𝕜 := ℝ) (E := E) (E' := ℝ)
+        (f := fun y : E => f (e.symm y)) (x := e p)).trans hchart
     change mfderiv I 𝓘(ℝ, ℝ) f p = 0
     rw [hmain]
-    change (mfderiv 𝓘(ℝ, MorseModel n) 𝓘(ℝ, ℝ) (fun y : MorseModel n => f (e.symm y)) (e p)).comp
-        (mfderiv I 𝓘(ℝ, MorseModel n) e p) = 0
+    change (mfderiv 𝓘(ℝ, E) 𝓘(ℝ, ℝ)
+        (fun y : E => f (e.symm y)) (e p)).comp
+        (mfderiv I 𝓘(ℝ, E) e p) = 0
     rw [hzero]
     simp
 
-theorem isCriticalPointAt_iff_fderiv_of_localInverse {n : ℕ} {H : Type*} [TopologicalSpace H]
-    {M : Type*} [TopologicalSpace M] [ChartedSpace H M] (I : ModelWithCorners ℝ (MorseModel n) H)
-    {x : M} {σ : M → MorseModel n} {τ : MorseModel n → M} {h : MorseModel n → ℝ}
+theorem isCriticalPointAt_iff_fderiv_of_localInverse {E : Type*} [NormedAddCommGroup E]
+    [NormedSpace ℝ E] {H : Type*} [TopologicalSpace H]
+    {M : Type*} [TopologicalSpace M] [ChartedSpace H M] (I : ModelWithCorners ℝ (E) H)
+    {x : M} {σ : M → E} {τ : E → M} {h : E → ℝ}
     (hleft : (τ ∘ σ) =ᶠ[nhds x] id)
     (hright : (σ ∘ τ) =ᶠ[nhds (σ x)] id)
-    (hσmd : MDifferentiableAt I 𝓘(ℝ, MorseModel n) σ x)
-    (hτmd : MDifferentiableAt 𝓘(ℝ, MorseModel n) I τ (σ x))
-    (hh : ContMDiffAt 𝓘(ℝ, MorseModel n) 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞) h (σ x)) :
+    (hσmd : MDifferentiableAt I 𝓘(ℝ, E) σ x)
+    (hτmd : MDifferentiableAt 𝓘(ℝ, E) I τ (σ x))
+    (hh : ContMDiffAt 𝓘(ℝ, E) 𝓘(ℝ, ℝ)
+      (↑(⊤ : ℕ∞) : WithTop ℕ∞) h (σ x)) :
     IsCriticalPointAt I (h ∘ σ) x ↔ fderiv ℝ h (σ x) = 0 := by
   have hτσx : τ (σ x) = x := hleft.eq_of_nhds
-  have hσmd' : MDifferentiableAt I 𝓘(ℝ, MorseModel n) σ (τ (σ x)) := by
+  have hσmd' : MDifferentiableAt I 𝓘(ℝ, E) σ (τ (σ x)) := by
     simpa [hτσx] using hσmd
-  have hcompA : (mfderiv I 𝓘(ℝ, MorseModel n) σ x).comp
-      (mfderiv 𝓘(ℝ, MorseModel n) I τ (σ x)) =
-      ContinuousLinearMap.id ℝ (MorseModel n) := by
+  have hcompA : (mfderiv I 𝓘(ℝ, E) σ x).comp
+      (mfderiv 𝓘(ℝ, E) I τ (σ x)) =
+      ContinuousLinearMap.id ℝ (E) := by
     have hcomp' := mfderiv_comp (x := σ x) (g := σ) (f := τ) (hg := hσmd') (hf := hτmd)
     rw [mfderiv_eq_fderiv] at hcomp'
     have hcompPoint : (σ ∘ τ) (σ x) = σ x := hright.eq_of_nhds
@@ -904,12 +913,12 @@ theorem isCriticalPointAt_iff_fderiv_of_localInverse {n : ℕ} {H : Type*} [Topo
     have heq := Filter.EventuallyEq.fderiv_eq (𝕜 := ℝ) hright
     rw [heq] at hcomp'
     simpa only [hστσx, fderiv_id] using hcomp'.symm
-  have hA_surj : Function.Surjective (mfderiv I 𝓘(ℝ, MorseModel n) σ x) := by
+  have hA_surj : Function.Surjective (mfderiv I 𝓘(ℝ, E) σ x) := by
     intro v
-    refine ⟨(mfderiv 𝓘(ℝ, MorseModel n) I τ (σ x)) v, ?_⟩
+    refine ⟨(mfderiv 𝓘(ℝ, E) I τ (σ x)) v, ?_⟩
     simpa using! (DFunLike.congr_fun hcompA v)
   have hmain : mfderiv I 𝓘(ℝ, ℝ) (h ∘ σ) x =
-      (fderiv ℝ h (σ x)).comp (mfderiv I 𝓘(ℝ, MorseModel n) σ x) := by
+      (fderiv ℝ h (σ x)).comp (mfderiv I 𝓘(ℝ, E) σ x) := by
     have hcomp' := mfderiv_comp (x := x) (g := h) (f := σ)
       (hg := hh.mdifferentiableAt (by norm_num)) (hf := hσmd)
     rw [mfderiv_eq_fderiv] at hcomp'
@@ -917,13 +926,16 @@ theorem isCriticalPointAt_iff_fderiv_of_localInverse {n : ℕ} {H : Type*} [Topo
   constructor
   · intro hcrit
     change mfderiv I 𝓘(ℝ, ℝ) (h ∘ σ) x = 0 at hcrit
-    have hzero : (fderiv ℝ h (σ x)).comp (mfderiv I 𝓘(ℝ, MorseModel n) σ x) = 0 := by
+    have hzero : (fderiv ℝ h (σ x)).comp
+        (mfderiv I 𝓘(ℝ, E) σ x) = 0 := by
       rwa [← hmain]
     ext v
     rcases hA_surj v with ⟨w, hw⟩
     calc
-      fderiv ℝ h (σ x) v = fderiv ℝ h (σ x) ((mfderiv I 𝓘(ℝ, MorseModel n) σ x) w) := by rw [hw]
-      _ = ((fderiv ℝ h (σ x)).comp (mfderiv I 𝓘(ℝ, MorseModel n) σ x)) w := rfl
+      fderiv ℝ h (σ x) v =
+          fderiv ℝ h (σ x) ((mfderiv I 𝓘(ℝ, E) σ x) w) := by rw [hw]
+      _ = ((fderiv ℝ h (σ x)).comp
+          (mfderiv I 𝓘(ℝ, E) σ x)) w := rfl
       _ = 0 := by
         rw [hzero]
         simp
@@ -931,7 +943,7 @@ theorem isCriticalPointAt_iff_fderiv_of_localInverse {n : ℕ} {H : Type*} [Topo
     change mfderiv I 𝓘(ℝ, ℝ) (h ∘ σ) x = 0
     rw [hmain]
     ext v
-    change fderiv ℝ h (σ x) ((mfderiv I 𝓘(ℝ, MorseModel n) σ x) v) = 0
+    change fderiv ℝ h (σ x) ((mfderiv I 𝓘(ℝ, E) σ x) v) = 0
     rw [hfd]
     rfl
 

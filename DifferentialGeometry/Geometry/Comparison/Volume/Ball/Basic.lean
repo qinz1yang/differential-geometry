@@ -3,6 +3,7 @@ import DifferentialGeometry.Geometry.Comparison.Convexity.Geodesic
 import DifferentialGeometry.Geometry.Comparison.HopfRinow.Proper
 import DifferentialGeometry.Geometry.Exponential.Variation.Jacobi
 import DifferentialGeometry.Geometry.Exponential.MinimizingGeodesic
+
 open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
@@ -2007,7 +2008,7 @@ theorem exists_vol_two_rm04_at
           (ENNReal.ofReal (R ^ Module.finrank ℝ E) *
             (modelHaar (E := E)) (Metric.ball (0 : E) 1)) := by
   obtain ⟨ρvol, hρvol_pos, hvol⟩ := exists_vol_two_dens (I := I) (M := M) g hEnorm p
-  obtain ⟨ρdens, hρdens_pos, hdens⟩ := exists_dens_two_rm04_at (I := I) g hEnorm p
+  obtain ⟨ρdens, hρdens_pos, hdens⟩ := exists_dens_two_rm04_at (I := I) g p
   refine ⟨min ρvol ρdens, lt_min hρvol_pos hρdens_pos, ?_⟩
   intro a K Rm Vb b A B R s bound_nonneg scale_pos growthBound_nonneg curvatureBound_nonneg speedBound_nonneg time_nonneg time_le_one one_le_time domainRadius_pos domainRadius_le_chartRadius
     domainRadius_le_expMapC2Radius tangentBall_metricRadius_lt tangentBall_geodesicRadius_lt geodesicRadius_lt_domainRadius geodesicRadius_lt_chartRadius normalizedGeodesicRadius_lt_domainRadius scaledBasis_mem_chartRadius scaledUnitDirection_mem_chartRadius radialSpeed_le jacobiCoefficient_le curvature_norm_le radialCurve_contMDiffAt
@@ -2122,7 +2123,7 @@ theorem exists_vol_pair_rm04_at
           (ENNReal.ofReal (R ^ Module.finrank ℝ E) *
             (modelHaar (E := E)) (Metric.ball (0 : E) 1)) := by
   obtain ⟨ρvol, hρvol_pos, hvol⟩ := exists_vol_two_dens (I := I) (M := M) g hEnorm p
-  obtain ⟨ρdens, hρdens_pos, hdens⟩ := exists_dens_pair_rm04_at (I := I) g hEnorm p
+  obtain ⟨ρdens, hρdens_pos, hdens⟩ := exists_dens_pair_rm04_at (I := I) g p
   refine ⟨min ρvol ρdens, lt_min hρvol_pos hρdens_pos, ?_⟩
   intro a K Rm Vb b A Blo Bhi R s lowerBound_nonneg upperBound_nonneg scale_pos growthBound_nonneg curvatureBound_nonneg speedBound_nonneg time_nonneg time_le_one one_le_time
     domainRadius_pos domainRadius_le_chartRadius domainRadius_le_expMapC2Radius tangentBall_metricRadius_lt tangentBall_geodesicRadius_lt geodesicRadius_lt_domainRadius geodesicRadius_lt_chartRadius normalizedGeodesicRadius_lt_domainRadius scaledBasis_mem_chartRadius scaledUnitDirection_mem_chartRadius radialSpeed_le
@@ -2243,7 +2244,7 @@ theorem exists_pairR_rm04_at
           (ENNReal.ofReal (Rup ^ Module.finrank ℝ E) *
             (modelHaar (E := E)) (Metric.ball (0 : E) 1)) := by
   obtain ⟨ρvol, hρvol_pos, hvol⟩ := exists_vol_two_dens_pairR (I := I) (M := M) g hEnorm p
-  obtain ⟨ρdens, hρdens_pos, hdens⟩ := exists_dens_pair_rm04_at (I := I) g hEnorm p
+  obtain ⟨ρdens, hρdens_pos, hdens⟩ := exists_dens_pair_rm04_at (I := I) g p
   refine ⟨min ρvol ρdens, lt_min hρvol_pos hρdens_pos, ?_⟩
   intro a K Rm Vb b A Blo Bhi Rlo Rup s lowerBound_nonneg upperBound_nonneg scale_pos growthBound_nonneg curvatureBound_nonneg speedBound_nonneg time_nonneg time_le_one
     one_le_time hRlo_pos hRloρ hRloC2 hρlo_ball tangentBall_geodesicRadius_lt hRup_pos hRupρ hRupC2 hsRup geodesicRadius_lt_chartRadius normalizedGeodesicRadius_lt_domainRadius

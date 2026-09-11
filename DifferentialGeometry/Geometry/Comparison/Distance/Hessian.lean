@@ -61,7 +61,7 @@ theorem calabiDist_hess_support_on
     Geometry.Riemannian.BonnetMyers.ricciLower_of_sec (I := I) g hsec
   obtain ⟨tail, _hrho_inf, hrho_x, hupper, _hrho_ev, _hrho_grad,
       hgrad_norm, _hlap⟩ :=
-    exists_calabi_support (I := I) g hEnorm 0 le_rfl (by simpa using hRic) hOx hfin
+    exists_calabiData (I := I) g hEnorm 0 le_rfl (by simpa using hRic) hOx hfin
   let rho : M → Real := fun y =>
     tail.initialLength + branchRadius (I := I) g tail.branch y
   have hrad_x :

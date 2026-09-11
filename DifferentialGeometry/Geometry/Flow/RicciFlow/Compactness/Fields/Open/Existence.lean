@@ -152,6 +152,8 @@ theorem exists_complete_smooth_flow_limit_subsequence_of_open_metric_bounds
     flowOfMetric_atTime (I := I) X.D mc.limit co.gInf hsol 0 hzero
   have hscalarRaw := OpenMetricConvergenceData.scalar_convergence (I := I) (Φ := Phi)
     hzero_mem hD co cLow hcLow hbound hcovTail
+  have hricciRaw := OpenMetricConvergenceData.ricci_convergence (I := I) (Φ := Phi)
+    hzero_mem hD co cLow hcLow hbound hcovTail
   have hricRaw := OpenMetricConvergenceData.ricNorm_convergence (I := I) (Φ := Phi)
     hzero_mem hD co cLow hcLow hbound hcovTail
   have map_cast {P Q : PointedRiemannianManifold (I := I)}
@@ -232,7 +234,7 @@ theorem exists_complete_smooth_flow_limit_subsequence_of_open_metric_bounds
         (X.term ((mc.subseq ∘ co.φ) k)).S t y) (hmap k x).symm
   let d := smoothFlowLimitSubsequenceOfOpenMetricConvergence (I := I) mc L mc.limit rfl hL0 Phi
     mc.limit.metric bf hsrc htgt hzero_mem hD co (fun _ _ => HEq.rfl) scalar
-    ricciNorm
+    hricciRaw ricciNorm
   refine ⟨d, ?_⟩
   intro t ht
   have htOpen : t ∈ Set.Ioo a b := by
@@ -254,7 +256,7 @@ theorem exists_complete_smooth_flow_limit_subsequence_of_open_metric_bounds
   have hdL : d.limit.L = L := by
     exact smoothFlowLimitSubsequenceOfOpenMetricConvergence_limit (I := I) mc L mc.limit rfl hL0 Phi
       mc.limit.metric bf hsrc htgt hzero_mem hD co (fun _ _ => HEq.rfl) scalar
-      ricciNorm
+      hricciRaw ricciNorm
   rw [hdL]
   change MetricComplete (I := I)
     ({ mc.limit with metric := co.gInf t } : PointedRiemannianManifold (I := I))

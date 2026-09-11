@@ -4,6 +4,7 @@ import DifferentialGeometry.Geometry.Exponential.Intrinsic.GaussLemma
 import DifferentialGeometry.Geometry.Exponential.Intrinsic.Velocity
 import DifferentialGeometry.Geometry.Exponential.MinimizingGeodesic
 import DifferentialGeometry.Geometry.Operator.Scalar.Calculus
+
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 
@@ -101,6 +102,16 @@ theorem branchEnergy_exp
   unfold branchEnergy
   rw [hinv, modelMetricInner_apply,
     ContinuousLinearEquiv.symm_apply_apply]
+
+theorem branchEnergy_center
+    {g : SmoothRiemannianMetric I M}
+    {hEnorm : IsMetricNorm (I := I) (M := M) g}
+    {p : M} (B : ExponentialInverseBranch (I := I) g hEnorm p)
+    (hB0 : (0 : E) ∈ B.hom.source) :
+    branchEnergy (I := I) g B p = 0 := by
+  have h := branchEnergy_exp (I := I) B (u := (0 : TangentSpace I p))
+    (by simpa only [map_zero] using hB0)
+  simpa only [expMapIntrinsic_zero, map_zero, mul_zero] using h
 
 theorem branchRadius_exp
     {g : SmoothRiemannianMetric I M}

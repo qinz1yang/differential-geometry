@@ -26,7 +26,7 @@ theorem not_isEssentialFamilyClass_constant (f : C(Sphere 2, Q)) :
   intro h
   exact h f rfl
 
-theorem isEssentialFamilyClass_of_pi2_zero [PathConnectedSpace Q]
+theorem isEssentialFamilyClass_of_pi2_zero
     (hpi2 : ∀ q : Q, Subsingleton (HomotopyGroup (Fin 2) Q q))
     (ξ : FreeContractibleSphereClass Q)
     (hnonnull : ∀ q : Q, ξ ≠ FreeHomotopyClass.mk
@@ -85,12 +85,12 @@ theorem rfs_essential_short_family (g : SmoothRiemannianMetric I Q) :
         convert! h using 1
     exact hξ f (((FreeHomotopyClass.mk_eq_mk_iff _ _).mpr hhom).symm.trans Γ.2)
   · intro γ ell hell hellsigma hshort
-    obtain ⟨u, hu⟩ := hfill γ.1.toContinuousLoop (γ.1.isLipschitz_of_compact g)
+    obtain ⟨u, hu⟩ := hfill γ.1.toContinuousLoop (γ.1.isLipschitz g)
       (hshort.trans_le hellsigma)
     have hsq : loopLength g γ.1.toContinuousLoop ^ 2 ≤ ell ^ 2 := by
       nlinarith [loopLength_nonneg g γ.1.toContinuousLoop]
     exact (leastArea_le_competitor g γ.1.toContinuousLoop γ.2
-      (γ.1.isLipschitz_of_compact g) u).trans
+      (γ.1.isLipschitz g) u).trans
       (hu.trans (mul_le_mul_of_nonneg_left hsq hK))
 
 end DifferentialGeometry.PDE.RicciFlow.Extinction.Families

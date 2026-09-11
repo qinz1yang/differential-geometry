@@ -8,6 +8,7 @@ import DifferentialGeometry.Analysis.Sobolev.Euclidean.Multiplication.SmoothCoef
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.IteratedSobolevSpace.IteratedSobolev
 import Mathlib.Analysis.Calculus.FDeriv.Symmetric
 import DifferentialGeometry.Analysis.Elliptic.Regularity.DiffChart.TwiceDifferentiated.BaseLocalIntegrability
+
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 
@@ -495,48 +496,6 @@ private lemma base_f_chart_locally_memLp_helper
   base_f_chart_locally_memLp (I := I) (M := M) g α hu_h hK_compact
     hK_compact.isClosed.measurableSet hK_in
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
-private lemma memLp_top_of_continuousOn_on_compact_chart
-    (_g : SmoothRiemannianMetric I M) (α : M)
-    {h : EuclN → ℝ}
-    (hh_contOn : ContinuousOn h (chartTargetEuclid (I := I) (M := M) α))
-    {K : Set EuclN} (hK_compact : IsCompact K)
-    (hK_in : K ⊆ chartTargetEuclid (I := I) (M := M) α) :
-    MemLp h ∞ ((volume : Measure EuclN).restrict K) := by
-  classical
-  by_cases hK_empty : K = ∅
-  · subst hK_empty
-    rw [MeasureTheory.Measure.restrict_empty]
-    refine ⟨?_, ?_⟩
-    · exact aestronglyMeasurable_zero_measure h
-    · simp
-  have hK_ne : K.Nonempty := Set.nonempty_iff_ne_empty.mpr hK_empty
-  have h_K_cont : ContinuousOn h K := hh_contOn.mono hK_in
-  have h_abs_K : ContinuousOn (fun y => |h y|) K :=
-    continuous_abs.comp_continuousOn h_K_cont
-  obtain ⟨y_max, _hy_max_K, h_max⟩ :=
-    hK_compact.exists_isMaxOn hK_ne h_abs_K
-  set C : ℝ := |h y_max|
-  have hC_bd : ∀ y ∈ K, |h y| ≤ C := fun y hy => h_max hy
-  have hK_meas : MeasurableSet K := hK_compact.isClosed.measurableSet
-  have h_meas : AEStronglyMeasurable h ((volume : Measure EuclN).restrict K) :=
-    h_K_cont.aestronglyMeasurable hK_meas
-  have h_ae_bd : ∀ᵐ y ∂((volume : Measure EuclN).restrict K), |h y| ≤ C := by
-    refine (ae_restrict_iff' hK_meas).mpr ?_
-    refine Filter.Eventually.of_forall ?_
-    intro y hy
-    exact hC_bd y hy
-  refine ⟨h_meas, ?_⟩
-  rw [eLpNorm_exponent_top]
-  refine lt_of_le_of_lt ?_
-    (show (ENNReal.ofReal (max C 0) : ℝ≥0∞) < ⊤ from
-      ENNReal.ofReal_lt_top)
-  refine eLpNormEssSup_le_of_ae_enorm_bound (C := ENNReal.ofReal (max C 0)) ?_
-  refine h_ae_bd.mono (fun y hy => ?_)
-  rw [Real.enorm_eq_ofReal_abs]
-  apply ENNReal.ofReal_le_ofReal
-  exact hy.trans (le_max_left _ _)
 
 private lemma base_f_chart_ae_zero_off_chart_image_pou_tsupport
     (g : SmoothRiemannianMetric I M) (α : M)
@@ -570,8 +529,8 @@ private lemma base_f_chart_ae_zero_off_chart_image_pou_tsupport
     have hB_subset_Ω : B ⊆ Ω := fun y hy => hU_sub (hB_subset_U hy)
     have h_fchart_K_memLp := base_f_chart_locally_memLp_helper
       (I := I) (M := M) g α hu_h hB_compact hB_subset_Ω
-    have h_density_memLp_top := memLp_top_of_continuousOn_on_compact_chart
-      (I := I) (M := M) g α h_density_contOn hB_compact hB_subset_Ω
+    have h_density_memLp_top := (h_density_contOn.mono hB_subset_Ω).memLp_top_of_isCompact (μ := volume)
+      hB_compact hB_compact.measurableSet
     have h_prod_memLp : MemLp (fun y => densityOnEuclid (I := I) g α y *
         D.fChart y) 2 ((volume : Measure EuclN).restrict B) :=
       MemLp.mul' (p := ∞) (q := 2) (r := 2) h_fchart_K_memLp h_density_memLp_top

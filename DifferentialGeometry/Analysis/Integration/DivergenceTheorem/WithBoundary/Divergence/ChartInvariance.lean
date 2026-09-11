@@ -572,7 +572,7 @@ private theorem localDivergenceWithin_chart_invariance_pos [T2Space M]
       _ ≤ ∫ y, Δ y * φ y ∂(chartLocalMeasure (I := I) g α) := hLB_total
   linarith
 
-theorem localDivergenceWithin_chart_invariance [T2Space M]
+private theorem localDivergenceWithin_chart_invariance_of_isInteriorPoint [T2Space M]
     (g : SmoothRiemannianMetric I M) (α β : M)
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
     {x : M}
@@ -588,6 +588,26 @@ theorem localDivergenceWithin_chart_invariance [T2Space M]
     linarith
   · exact localDivergenceWithin_chart_invariance_pos
       (I := I) g α β X hx_α hx_β hx_int hΔpos
+
+theorem localDivergenceWithin_chart_invariance
+    [T2Space M]
+    (g : SmoothRiemannianMetric I M) (alpha beta : M)
+    (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
+    {x : M} (ha : x ∈ (chartAt H alpha).source) (hb : x ∈ (chartAt H beta).source) :
+    localDivergenceWithin g alpha X x = localDivergenceWithin g beta X x := by
+  have hca := (localDivergenceWithin_continuousOn g alpha X).continuousAt
+    ((chartAt H alpha).open_source.mem_nhds ha)
+  have hcb := (localDivergenceWithin_continuousOn g beta X).continuousAt
+    ((chartAt H beta).open_source.mem_nhds hb)
+  by_contra hne
+  have hev := (hca.sub hcb).eventually_ne (sub_ne_zero.mpr hne)
+  have hmem : {y | localDivergenceWithin g alpha X y - localDivergenceWithin g beta X y ≠ 0} ∩
+      ((chartAt H alpha).source ∩ (chartAt H beta).source) ∈ 𝓝 x :=
+    Filter.inter_mem hev (Filter.inter_mem
+      ((chartAt H alpha).open_source.mem_nhds ha) ((chartAt H beta).open_source.mem_nhds hb))
+  obtain ⟨y, hy, hyint⟩ := mem_closure_iff_nhds.mp (I.dense_interior (M := M) x) _ hmem
+  exact hy.1 (sub_eq_zero.mpr (localDivergenceWithin_chart_invariance_of_isInteriorPoint g alpha beta X
+    hy.2.1 hy.2.2 hyint))
 
 end WithBoundary
 end DivergenceTheorem

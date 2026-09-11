@@ -329,6 +329,7 @@ theorem classWidth_relative_metric_bound (g h : SmoothRiemannianMetric I Q)
   exact abs_le.mpr ⟨by nlinarith [hw.1], by nlinarith [hw.2]⟩
 
 
+omit connectedQ in
 theorem leastArea_relative_metric_bound (g h : SmoothRiemannianMetric I Q)
     {δ : ℝ} (hδ : 0 ≤ δ) (hδone : δ < 1)
     (hmetric : ∀ q (v : TangentSpace I q),
@@ -376,7 +377,8 @@ theorem continuousOn_classWidth_metricFamily
   rw [Real.dist_eq]
   exact (classWidth_relative_metric_bound (g t₀) (g t) hδ.le hδone ht ξ).trans_lt hδA
 
-include finiteDimensionalE boundarylessI t2Q compactQ connectedQ in
+omit connectedQ in
+include finiteDimensionalE boundarylessI t2Q compactQ in
 theorem continuousOn_leastArea_metricFamily
     (D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval)
     (g : ℝ → SmoothRiemannianMetric I Q)
@@ -406,6 +408,7 @@ theorem continuousOn_leastArea_metricFamily
     (hLip t₀) (hLip t)).trans_lt hδA
 
 
+omit connectedQ in
 theorem regularLeastArea_relative_metric_bound (g h : SmoothRiemannianMetric I Q)
     {δ : ℝ} (hδ : 0 ≤ δ) (hδone : δ < 1)
     (hmetric : ∀ q (v : TangentSpace I q),

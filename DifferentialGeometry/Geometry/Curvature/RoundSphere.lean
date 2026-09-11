@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Curvature.Sphere.ConstCurvature
 import DifferentialGeometry.Geometry.Curvature.Metric.ConstantRicci
-import DifferentialGeometry.Geometry.Curvature.MetricScaling
+import DifferentialGeometry.Geometry.Curvature.Metric.Scaling
 
 noncomputable section
 open scoped Manifold ContDiff

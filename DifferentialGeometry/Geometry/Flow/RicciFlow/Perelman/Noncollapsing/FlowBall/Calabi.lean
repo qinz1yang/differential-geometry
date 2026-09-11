@@ -142,7 +142,7 @@ theorem exists_ballCalabi
             (S.base.metric t).inner y w w := by ring
       _ ≤ ricciTensor (I := I) (S.base.metric t) y w w := by
         simpa only [n] using hbase
-  exact exists_calabi_support_lt (I := I) (S.base.metric t) hEnorm q hq
+  exact exists_calabiData_lt (I := I) (S.base.metric t) hEnorm q hq
     hRic hOx hfinite hr
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup

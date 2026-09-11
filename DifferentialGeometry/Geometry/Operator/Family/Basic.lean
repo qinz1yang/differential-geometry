@@ -2,6 +2,7 @@ import DifferentialGeometry.Geometry.Operator.Laplacian.Minimum
 import DifferentialGeometry.Geometry.Operator.Gradient.Regularity
 import DifferentialGeometry.Geometry.Metric.Family.Basic
 import DifferentialGeometry.Geometry.Operator.Scalar.Calculus
+
 open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
@@ -121,6 +122,20 @@ theorem driftTerm_add
   simp only [map_add]
 
 omit [VectorBundle ℝ E (TangentSpace I : M → Type _)] in
+theorem driftTerm_sub
+    (G : MetricConnectionFamily (I := I) (M := M) Time)
+    (t : Time) (X : (x : M) -> TangentSpace I x)
+    {f h : M -> Real} {x : M}
+    (hf : MDifferentiableAt I 𝓘(Real, Real) f x)
+    (hh : MDifferentiableAt I 𝓘(Real, Real) h x) :
+    driftTerm (I := I) G t X (fun y : M => f y - h y) x =
+      driftTerm (I := I) G t X f x -
+        driftTerm (I := I) G t X h x := by
+  unfold driftTerm gradientAt
+  rw [gradientFun_sub (I := I) (G.metric t) hf hh]
+  simp only [map_sub]
+
+omit [VectorBundle ℝ E (TangentSpace I : M → Type _)] in
 theorem heatOperatorWithDrift_sub_const
     (G : MetricConnectionFamily (I := I) (M := M) Time)
     (t : Time) (X : (x : M) -> TangentSpace I x)
@@ -162,6 +177,40 @@ theorem laplacianAt_sub
   unfold laplacianAt
   exact laplacian_sub (I := I) (G.connection t) (G.metric t)
     hf hh hgradf hgradh
+
+theorem laplacianAt_sub_at
+    (G : MetricConnectionFamily (I := I) (M := M) Time)
+    (t : Time) {f h : M -> Real} {x : M}
+    (hf : ∀ᶠ y in nhds x, MDifferentiableAt I 𝓘(Real, Real) f y)
+    (hh : ∀ᶠ y in nhds x, MDifferentiableAt I 𝓘(Real, Real) h y)
+    (hgradf : MDiffAt (T% fun y : M =>
+      gradientFun (I := I) (G.metric t) f y) x)
+    (hgradh : MDiffAt (T% fun y : M =>
+      gradientFun (I := I) (G.metric t) h y) x) :
+    laplacianAt (I := I) G t (fun y : M => f y - h y) x =
+      laplacianAt (I := I) G t f x -
+        laplacianAt (I := I) G t h x := by
+  unfold laplacianAt
+  exact laplacian_sub_at (I := I) (G.connection t) (G.metric t)
+    hf hh hgradf hgradh
+
+theorem heatOperatorWithDrift_sub_at
+    (G : MetricConnectionFamily (I := I) (M := M) Time)
+    (t : Time) (X : (x : M) -> TangentSpace I x)
+    {f h : M -> Real} {x : M}
+    (hf : ∀ᶠ y in nhds x, MDifferentiableAt I 𝓘(Real, Real) f y)
+    (hh : ∀ᶠ y in nhds x, MDifferentiableAt I 𝓘(Real, Real) h y)
+    (hgradf : MDiffAt (T% fun y : M =>
+      gradientFun (I := I) (G.metric t) f y) x)
+    (hgradh : MDiffAt (T% fun y : M =>
+      gradientFun (I := I) (G.metric t) h y) x) :
+    heatOperatorWithDrift (I := I) G t X (fun y : M => f y - h y) x =
+      heatOperatorWithDrift (I := I) G t X f x -
+        heatOperatorWithDrift (I := I) G t X h x := by
+  unfold heatOperatorWithDrift
+  rw [laplacianAt_sub_at (I := I) G t hf hh hgradf hgradh]
+  rw [driftTerm_sub (I := I) G t X (hf.self_of_nhds) (hh.self_of_nhds)]
+  ring
 
 theorem laplacianAt_smul
     (G : MetricConnectionFamily (I := I) (M := M) Time)
@@ -276,6 +325,7 @@ theorem laplacianAt_mul_of_scalarRegular
     ((hf x).smul_section (hgradh x))
     ((hh x).smul_section (hgradf x))
 
+omit [VectorBundle ℝ E (TangentSpace I : M → Type _)] in
 theorem heatDrift_comp
     (G : MetricConnectionFamily (I := I) (M := M) Time)
     (t : Time) (X : (x : M) -> TangentSpace I x)

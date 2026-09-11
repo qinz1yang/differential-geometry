@@ -2,6 +2,7 @@ import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Identities.Ricc
 import DifferentialGeometry.Geometry.Connection.ChartBridge.Scalar.Gradient
 import DifferentialGeometry.Bundle.SmoothScalarGerm
 import Mathlib.Analysis.Calculus.FDeriv.Congr
+
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator
 
@@ -930,6 +931,120 @@ theorem hessFun_eq_cov_local [I.Boundaryless]
     _ = g.inner x ((LeviCivita (I := I) g).toFun
           (fun b => gradFun (I := I) g f b) x v) w := by rw [hcov]
 
+omit [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
+theorem hessFun_add_const [I.Boundaryless]
+    (g : SmoothRiemannianMetric I M) (c : Real)
+    {f : M → Real} {U : Set M} {x : M}
+    (hU : IsOpen U) (hf : ContMDiffOn I 𝓘(Real, Real) ∞ f U)
+    (hx : x ∈ U) :
+    hessFun (I := I) g (fun y => c + f y) x = hessFun (I := I) g f x := by
+  obtain ⟨F, hF, hFf⟩ :=
+    DifferentialGeometry.exists_smooth_germ (I := I) hU hx hf
+  have hplus : (fun y => c + F y) =ᶠ[nhds x] fun y => c + f y := by
+    filter_upwards [hFf] with y hy
+    rw [hy]
+  have hgrad :
+      (fun y => gradFun (I := I) g ((fun _ : M => c) + F) y) =
+        fun y => gradFun (I := I) g F y := by
+    funext y
+    calc
+      gradFun (I := I) g (fun z => c + F z) y =
+          gradFun (I := I) g (fun _ : M => c) y +
+            gradFun (I := I) g F y := by
+        exact gradFun_add (I := I) g mdifferentiableAt_const
+          (hF.contMDiffAt.mdifferentiableAt (by simp))
+      _ = gradFun (I := I) g F y := by
+        rw [gradFun_const, zero_add]
+  have hglobal :
+      hessFun (I := I) g (fun y => c + F y) x =
+        hessFun (I := I) g F x := by
+    rw [show (fun y => c + F y) = (fun _ : M => c) + F by rfl]
+    ext v w
+    rw [hessFun_eq_cov_grad (I := I) g (contMDiff_const.add hF) x v w,
+      hessFun_eq_cov_grad (I := I) g hF x v w, hgrad]
+  calc
+    hessFun (I := I) g (fun y => c + f y) x =
+        hessFun (I := I) g (fun y => c + F y) x := by
+      exact hessFun_congr (I := I) g hplus.symm
+    _ = hessFun (I := I) g F x := hglobal
+    _ = hessFun (I := I) g f x := hessFun_congr (I := I) g hFf
+
+omit [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
+private theorem hessFun_sub_eq_neg_mvfderiv_connectionDifference_of_contMDiff
+    [I.Boundaryless]
+    (g g' : SmoothRiemannianMetric I M)
+    {f : M → Real} (hf : ContMDiff I 𝓘(Real, Real) ∞ f)
+    (x : M) (v w : TangentSpace I x) :
+    hessFun (I := I) g f x v w - hessFun (I := I) g' f x v w =
+      -mvfderiv (I := I) f x
+        (CovariantDerivative.difference
+          (LeviCivita (I := I) g) (LeviCivita (I := I) g') x w v) := by
+  obtain ⟨Y, hY⟩ :=
+    ContMDiffSection.exists_eq_at
+      (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞)) x w
+  have htheta : MDiffAtCotangent (mvfderiv (I := I) f) x :=
+    ((cotangentCov_mvfderiv_smooth (I := I) hf) x).mdifferentiableAt (by simp)
+  have hYmd : MDiffAt (T% (fun y : M ↦ Y y)) x :=
+    Y.contMDiff.contMDiffAt.mdifferentiableAt (by simp)
+  have hgPair := cotangentCov_dualPairing
+    (LeviCivita (I := I) g) htheta hYmd v
+  have hg'Pair := cotangentCov_dualPairing
+    (LeviCivita (I := I) g') htheta hYmd v
+  have hdiff := IsCovariantDerivativeOn.difference_apply
+    (LeviCivita (I := I) g).isCovariantDerivativeOnUniv
+    (LeviCivita (I := I) g').isCovariantDerivativeOnUniv
+    (x := x) (Set.mem_univ x) (σ := fun y : M ↦ Y y) hYmd
+  have hdiffv := congrArg (fun A => A v) hdiff
+  rw [hessFun_eq_abstract (I := I) g hf x v w,
+    hessFun_eq_abstract (I := I) g' hf x v w]
+  change
+    ((cotangentCov (LeviCivita (I := I) g)).toFun
+          (mvfderiv (I := I) f) x v) w -
+        ((cotangentCov (LeviCivita (I := I) g')).toFun
+          (mvfderiv (I := I) f) x v) w = _
+  rw [← hY]
+  change
+    ((cotangentCov (LeviCivita (I := I) g)).toFun
+          (mvfderiv (I := I) f) x v) (Y x) -
+        ((cotangentCov (LeviCivita (I := I) g')).toFun
+          (mvfderiv (I := I) f) x v) (Y x) = _
+  rw [show CovariantDerivative.difference
+      (LeviCivita (I := I) g) (LeviCivita (I := I) g') x (Y x) v =
+        (LeviCivita (I := I) g).toFun (fun y : M ↦ Y y) x v -
+          (LeviCivita (I := I) g').toFun (fun y : M ↦ Y y) x v from hdiffv]
+  rw [map_sub]
+  linarith
+
+omit [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
+theorem hessFun_sub_eq_neg_mvfderiv_connectionDifference [I.Boundaryless]
+    (g g' : SmoothRiemannianMetric I M)
+    {f : M → Real} {U : Set M} {x : M}
+    (hU : IsOpen U) (hf : ContMDiffOn I 𝓘(Real, Real) ∞ f U)
+    (hx : x ∈ U) (v w : TangentSpace I x) :
+    hessFun (I := I) g f x v w - hessFun (I := I) g' f x v w =
+      -mvfderiv (I := I) f x
+        (CovariantDerivative.difference
+          (LeviCivita (I := I) g) (LeviCivita (I := I) g') x w v) := by
+  obtain ⟨F, hF, hFf⟩ :=
+    DifferentialGeometry.exists_smooth_germ (I := I) hU hx hf
+  have hg := congrArg (fun B => B v w) (hessFun_congr (I := I) g hFf)
+  have hg' := congrArg (fun B => B v w) (hessFun_congr (I := I) g' hFf)
+  calc
+    hessFun (I := I) g f x v w - hessFun (I := I) g' f x v w =
+        hessFun (I := I) g F x v w - hessFun (I := I) g' F x v w := by
+      rw [hg, hg']
+    _ = -mvfderiv (I := I) F x
+          (CovariantDerivative.difference
+            (LeviCivita (I := I) g) (LeviCivita (I := I) g') x w v) :=
+      hessFun_sub_eq_neg_mvfderiv_connectionDifference_of_contMDiff
+        (I := I) g g' hF x v w
+    _ = _ := by
+      unfold mvfderiv
+      rw [hFf.mfderiv_eq, hFf.eq_of_nhds]
+
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
 private lemma mvfderiv_chartBasisVec_alpha_apply_of_mem
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ) ∞ f) (α : M)
@@ -1350,117 +1465,6 @@ theorem chartAlphaMatrixIdentity_holds [I.Boundaryless]
   exact chartAlphaMatrixIdentity_holds_on_goodSet
     (I := I) (M := M) g α hf hx_good i j
 
-omit [NeZero (Module.finrank ℝ E)] in
-omit [SigmaCompactSpace M] in
-theorem hessFun_add_const [I.Boundaryless]
-    (g : SmoothRiemannianMetric I M) (c : Real)
-    {f : M → Real} {U : Set M} {x : M}
-    (hU : IsOpen U) (hf : ContMDiffOn I 𝓘(Real, Real) ∞ f U)
-    (hx : x ∈ U) :
-    hessFun (I := I) g (fun y => c + f y) x = hessFun (I := I) g f x := by
-  obtain ⟨F, hF, hFf⟩ :=
-    DifferentialGeometry.exists_smooth_germ (I := I) hU hx hf
-  have hplus : (fun y => c + F y) =ᶠ[nhds x] fun y => c + f y := by
-    filter_upwards [hFf] with y hy
-    rw [hy]
-  have hgrad :
-      (fun y => gradFun (I := I) g ((fun _ : M => c) + F) y) =
-        fun y => gradFun (I := I) g F y := by
-    funext y
-    calc
-      gradFun (I := I) g (fun z => c + F z) y =
-          gradFun (I := I) g (fun _ : M => c) y +
-            gradFun (I := I) g F y := by
-        exact gradFun_add (I := I) g mdifferentiableAt_const
-          (hF.contMDiffAt.mdifferentiableAt (by simp))
-      _ = gradFun (I := I) g F y := by
-        rw [gradFun_const, zero_add]
-  have hglobal :
-      hessFun (I := I) g (fun y => c + F y) x =
-        hessFun (I := I) g F x := by
-    rw [show (fun y => c + F y) = (fun _ : M => c) + F by rfl]
-    ext v w
-    rw [hessFun_eq_cov_grad (I := I) g (contMDiff_const.add hF) x v w,
-      hessFun_eq_cov_grad (I := I) g hF x v w, hgrad]
-  calc
-    hessFun (I := I) g (fun y => c + f y) x =
-        hessFun (I := I) g (fun y => c + F y) x := by
-      exact hessFun_congr (I := I) g hplus.symm
-    _ = hessFun (I := I) g F x := hglobal
-    _ = hessFun (I := I) g f x := hessFun_congr (I := I) g hFf
-
-omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
-private theorem hessFun_sub_eq_neg_mvfderiv_connectionDifference_of_contMDiff
-    [I.Boundaryless]
-    (g g' : SmoothRiemannianMetric I M)
-    {f : M → Real} (hf : ContMDiff I 𝓘(Real, Real) ∞ f)
-    (x : M) (v w : TangentSpace I x) :
-    hessFun (I := I) g f x v w - hessFun (I := I) g' f x v w =
-      -mvfderiv (I := I) f x
-        (CovariantDerivative.difference
-          (LeviCivita (I := I) g) (LeviCivita (I := I) g') x w v) := by
-  obtain ⟨Y, hY⟩ :=
-    ContMDiffSection.exists_eq_at
-      (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞)) x w
-  have htheta : MDiffAtCotangent (mvfderiv (I := I) f) x :=
-    ((cotangentCov_mvfderiv_smooth (I := I) hf) x).mdifferentiableAt (by simp)
-  have hYmd : MDiffAt (T% (fun y : M ↦ Y y)) x :=
-    Y.contMDiff.contMDiffAt.mdifferentiableAt (by simp)
-  have hgPair := cotangentCov_dualPairing
-    (LeviCivita (I := I) g) htheta hYmd v
-  have hg'Pair := cotangentCov_dualPairing
-    (LeviCivita (I := I) g') htheta hYmd v
-  have hdiff := IsCovariantDerivativeOn.difference_apply
-    (LeviCivita (I := I) g).isCovariantDerivativeOnUniv
-    (LeviCivita (I := I) g').isCovariantDerivativeOnUniv
-    (x := x) (Set.mem_univ x) (σ := fun y : M ↦ Y y) hYmd
-  have hdiffv := congrArg (fun A => A v) hdiff
-  rw [hessFun_eq_abstract (I := I) g hf x v w,
-    hessFun_eq_abstract (I := I) g' hf x v w]
-  change
-    ((cotangentCov (LeviCivita (I := I) g)).toFun
-          (mvfderiv (I := I) f) x v) w -
-        ((cotangentCov (LeviCivita (I := I) g')).toFun
-          (mvfderiv (I := I) f) x v) w = _
-  rw [← hY]
-  change
-    ((cotangentCov (LeviCivita (I := I) g)).toFun
-          (mvfderiv (I := I) f) x v) (Y x) -
-        ((cotangentCov (LeviCivita (I := I) g')).toFun
-          (mvfderiv (I := I) f) x v) (Y x) = _
-  rw [show CovariantDerivative.difference
-      (LeviCivita (I := I) g) (LeviCivita (I := I) g') x (Y x) v =
-        (LeviCivita (I := I) g).toFun (fun y : M ↦ Y y) x v -
-          (LeviCivita (I := I) g').toFun (fun y : M ↦ Y y) x v from hdiffv]
-  rw [map_sub]
-  linarith
-
-omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
-theorem hessFun_sub_eq_neg_mvfderiv_connectionDifference [I.Boundaryless]
-    (g g' : SmoothRiemannianMetric I M)
-    {f : M → Real} {U : Set M} {x : M}
-    (hU : IsOpen U) (hf : ContMDiffOn I 𝓘(Real, Real) ∞ f U)
-    (hx : x ∈ U) (v w : TangentSpace I x) :
-    hessFun (I := I) g f x v w - hessFun (I := I) g' f x v w =
-      -mvfderiv (I := I) f x
-        (CovariantDerivative.difference
-          (LeviCivita (I := I) g) (LeviCivita (I := I) g') x w v) := by
-  obtain ⟨F, hF, hFf⟩ :=
-    DifferentialGeometry.exists_smooth_germ (I := I) hU hx hf
-  have hg := congrArg (fun B => B v w) (hessFun_congr (I := I) g hFf)
-  have hg' := congrArg (fun B => B v w) (hessFun_congr (I := I) g' hFf)
-  calc
-    hessFun (I := I) g f x v w - hessFun (I := I) g' f x v w =
-        hessFun (I := I) g F x v w - hessFun (I := I) g' F x v w := by
-      rw [hg, hg']
-    _ = -mvfderiv (I := I) F x
-          (CovariantDerivative.difference
-            (LeviCivita (I := I) g) (LeviCivita (I := I) g') x w v) :=
-      hessFun_sub_eq_neg_mvfderiv_connectionDifference_of_contMDiff
-        (I := I) g g' hF x v w
-    _ = _ := by
-      unfold mvfderiv
-      rw [hFf.mfderiv_eq, hFf.eq_of_nhds]
 
 end Connection
 end Geometry

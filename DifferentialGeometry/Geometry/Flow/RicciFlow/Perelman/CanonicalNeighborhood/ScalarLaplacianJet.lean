@@ -214,7 +214,7 @@ theorem abs_laplacian_scalar_le_second_curvature
         by ring
       rw [hpow, Real.sqrt_mul (sq_nonneg _), Real.sqrt_sq (by positivity)]
 
-theorem scalarLaplacianCurvatureJetBound [I.Boundaryless] :
+theorem scalarLaplacianCurvatureJetBound :
     ScalarLaplacianCurvatureJetBound.{u, uE, uH} I ((Module.finrank ℝ E : ℝ) ^ 6) := by
   intro M _ _ _ _ _ _ _ D S _ t _ x
   exact abs_laplacian_scalar_le_second_curvature S t x

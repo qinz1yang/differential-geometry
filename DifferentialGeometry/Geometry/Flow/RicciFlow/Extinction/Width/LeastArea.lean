@@ -73,7 +73,7 @@ theorem leastArea_const (g : SmoothRiemannianMetric I Q) (q : Q) :
 
 def regularLeastArea (g : SmoothRiemannianMetric I Q)
     (γ : ContractibleRegularLoop (I := I) (Q := Q)) : ℝ :=
-  leastArea g γ.1.toContinuousLoop γ.2 (γ.1.isLipschitz_of_compact g)
+  leastArea g γ.1.toContinuousLoop γ.2 (γ.1.isLipschitz g)
 
 theorem regularLeastArea_nonneg (g : SmoothRiemannianMetric I Q)
     (γ : ContractibleRegularLoop (I := I) (Q := Q)) : 0 ≤ regularLeastArea g γ :=
@@ -195,6 +195,7 @@ theorem leastArea_circle_homeomorph (g : SmoothRiemannianMetric I Q)
     leastArea g (γ.comp ⟨ψ, ψ.continuous⟩) hctr' hlip' = leastArea g γ hctr hlip := by
   sorry
 
+omit connectedQ in
 theorem leastArea_metric_comparison (g h : SmoothRiemannianMetric I Q)
     {a b : ℝ} (ha : 0 < a) (hab : a ≤ b)
     (hmetric : ∀ q (v : TangentSpace I q),
@@ -228,6 +229,7 @@ theorem leastArea_metric_comparison (g h : SmoothRiemannianMetric I Q)
   refine ⟨hlower, ?_⟩
   simpa only [mul_comm] using (div_le_iff₀ hb2).mp hupperDiv
 
+omit connectedQ in
 theorem regularLeastArea_metric_comparison (g h : SmoothRiemannianMetric I Q)
     {a b : ℝ} (ha : 0 < a) (hab : a ≤ b)
     (hmetric : ∀ q (v : TangentSpace I q),
@@ -238,6 +240,7 @@ theorem regularLeastArea_metric_comparison (g h : SmoothRiemannianMetric I Q)
   leastArea_metric_comparison g h ha hab hmetric γ.1.toContinuousLoop γ.2
     (γ.1.isLipschitz g) (γ.1.isLipschitz h)
 
+omit connectedQ in
 theorem leastArea_scale (g : SmoothRiemannianMetric I Q) {c : ℝ} (hc : 0 < c)
     (γ : ContinuousFreeLoop Q) (hctr : IsContractibleLoop γ) (hlip : IsLipschitzLoop g γ) :
     leastArea (scaleMetric c hc g) γ hctr

@@ -3849,7 +3849,7 @@ private theorem hamiltonM_test_tensor_scalar_evolution
     (hamiltonTestW_fixed_heat (I := I) S clock x basis horth W)
 
 omit [SigmaCompactSpace M] in
-theorem hamilton_harnack_block_exact_evolution_of_test_jet
+theorem hamilton_harnack_block_exact_evolution_of_tensor_test_jet
     [I.Boundaryless]
     {D : RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
@@ -3860,13 +3860,12 @@ theorem hamilton_harnack_block_exact_evolution_of_test_jet
     (horth : ∀ i j,
       (S.base.metric clock.time).inner x (basis i) (basis j) =
         if i = j then (1 : Real) else 0)
-    (U : ∀ (_ : Real) (y : M),
-      HamiltonHarnackTwoForm (TangentSpace I y))
     (U_tensor : Real →
       Tensor0SField (E := E) (H := H) (I := I) (M := M) ∞ 2)
     (W : Real →
       Tensor0SField (E := E) (H := H) (I := I) (M := M) ∞ 1)
-    (hU_tensor : ∀ r y, (U r y).toTensor0S = U_tensor r y)
+    (hUskew : ∀ X Y : TangentSpace I x,
+      U_tensor clock.time x ![X, Y] = -U_tensor clock.time x ![Y, X])
     (hDW : totalNabla0SFun (I := I) (M := M) 1
       (metricCov (I := I) (M := M) (S.base.metric clock.time))
       (W clock.time) x = 0)
@@ -4251,26 +4250,11 @@ theorem hamilton_harnack_block_exact_evolution_of_test_jet
               (vec2 (I := I) (basis a) (basis b)) =
             -U_tensor clock.time x
               (vec2 (I := I) (basis b) (basis a))
-          rw [← hU_tensor clock.time x]
-          simp only [HamiltonHarnackTwoForm.toTensor0S_apply]
-          calc
-            U clock.time x (vec2 (I := I) (basis a) (basis b)) =
-                U clock.time x (fun i => basis (![a, b] i)) := by
-              exact congrArg (U clock.time x) (by
-                funext i
-                fin_cases i <;> rfl)
-            _ = -U clock.time x
-                (fun i => basis (![b, a] i)) := by
-              simpa only [HamiltonHarnackTwoForm.component, component0S_apply,
-                HamiltonHarnackTwoForm.toTensor0S_apply] using
-                  HamiltonHarnackTwoForm.component_skew
-                    (I := I) basis (U clock.time x) a b
-            _ = -U clock.time x
-                (vec2 (I := I) (basis b) (basis a)) := by
-              congr 1
-              exact congrArg (U clock.time x) (by
-                funext i
-                fin_cases i <;> rfl)
+          have hv (X Y : TangentSpace I x) :
+              vec2 (I := I) X Y = ![X, Y] := by
+            funext i
+            fin_cases i <;> rfl
+          simpa only [hv] using hUskew (basis a) (basis b)
         have hKcomp (a b c d : Fin n) :
             hamiltonKField (I := I) S clock.time x
                 (vec4 (I := I) (basis a) (basis b) (basis c) (basis d)) =
@@ -4526,8 +4510,19 @@ theorem hamilton_harnack_block_exact_evolution
                 W clock.time x (fun _ : Fin 1 => Y)) := by
     intro X Y Z
     simpa only [hWvalue] using hDU X Y Z
-  have hexact := hamilton_harnack_block_exact_evolution_of_test_jet
-    (I := I) S hS clock ht x basis horth U U_tensor W hU_tensor hDW hDU'
+  have hUskew (X Y : TangentSpace I x) :
+      U_tensor clock.time x ![X, Y] =
+        -U_tensor clock.time x ![Y, X] := by
+    rw [← hU_tensor clock.time x]
+    have hswap := (U clock.time x).map_swap (v := ![Y, X])
+      (i := (0 : Fin 2)) (j := 1) (by decide)
+    have hv : ![Y, X] ∘ Equiv.swap (0 : Fin 2) 1 = ![X, Y] := by
+      funext q
+      fin_cases q <;> simp
+    rw [hv] at hswap
+    exact hswap
+  have hexact := hamilton_harnack_block_exact_evolution_of_tensor_test_jet
+    (I := I) S hS clock ht x basis horth U_tensor W hUskew hDW hDU'
       hUtime hWtime
   have hUvalueTensor : U_tensor clock.time x = U₀.toTensor0S := by
     calc
@@ -4767,9 +4762,20 @@ private theorem hamilton_perturbed_harnack_block_exact_evolution_of_test_jet
   let qW := fun r y => c r * (h y * FW r y)
   let qU := fun r y => psi r * FU r y
   let q := fun r y => qBase r y + qW r y + qU r y
+  have hUskew (X Y : TangentSpace I x) :
+      U_tensor clock.time x ![X, Y] =
+        -U_tensor clock.time x ![Y, X] := by
+    rw [← hU_tensor clock.time x]
+    have hswap := (U clock.time x).map_swap (v := ![Y, X])
+      (i := (0 : Fin 2)) (j := 1) (by decide)
+    have hv : ![Y, X] ∘ Equiv.swap (0 : Fin 2) 1 = ![X, Y] := by
+      funext q
+      fin_cases q <;> simp
+    rw [hv] at hswap
+    exact hswap
   obtain ⟨hBaseTime, hBaseHeat⟩ :=
-    hamilton_harnack_block_exact_evolution_of_test_jet
-      (I := I) S hS clock ht x basis horth U U_tensor W hU_tensor hDW hDU
+    hamilton_harnack_block_exact_evolution_of_tensor_test_jet
+      (I := I) S hS clock ht x basis horth U_tensor W hUskew hDW hDU
         hUtime hWtime
   obtain ⟨dW, hFWTime, hFWHeat⟩ :=
     hamiltonTestW_normSq_evolution
@@ -6028,6 +6034,48 @@ private theorem hamiltonPerturbedBlockJ_nonneg_of_harnack_nonneg_of_null
   exact hamiltonBlockJ_nonneg_of_psd_quadratic_eq_zero
     K P Mblock (fun a b => U ![basis a, basis b])
       (fun a => W ![basis a]) hK.1 hK.2.1 hP hM hPSD hU hzeroBlock
+
+omit [SigmaCompactSpace M] in
+theorem hamiltonBlockJ_add_sigmaSquare_nonneg_of_harnack_nonneg
+    {D : RealTimeInterval}
+    (S : SolutionOn (I := I) (M := M) D)
+    (clock : HarnackClock) (ht : clock.time ∈ D.regular) (x : M)
+    {A : Type*} [Fintype A] [DecidableEq A]
+    (basis : Module.Basis A ℝ (TangentSpace I x))
+    (horth : ∀ i j, (S.base.metric clock.time).inner x (basis i) (basis j) =
+      if i = j then (1 : ℝ) else 0)
+    (hnonneg : ∀ (U : HamiltonHarnackTwoForm (TangentSpace I x))
+      (W : Tensor0SSpace 1 I x),
+      0 ≤ hamiltonHarnackQuadraticAt (I := I) S clock x U W)
+    (U : A → A → ℝ) (W : A → ℝ) (hU : ∀ a b, U a b = -U b a) :
+    let K := fun a b c d => tensor04StandardAt (I := I) (M := M)
+      (S.base.rm04 clock.time x) (basis a) (basis b) (basis d) (basis c)
+    let P := fun a b c => hamiltonPAt (I := I)
+      (S.base.metric clock.time) x ![basis a, basis b, basis c]
+    let Mbar := fun a b => hamiltonMAt (I := I) clock
+      (S.base.metric clock.time) x ![basis a, basis b]
+    0 ≤ hamiltonBlockJ K P Mbar U W + hamiltonBlockSigmaSquare K P U W := by
+  dsimp only
+  have hinv := metricInverseInBasis_identity_of_orthonormal
+    (S.base.metric clock.time) basis horth
+  have hK := hamiltonPerturbedCurvatureBlock_coordinates_symmetries
+    (I := I) S clock x basis 0
+  have hM := hamiltonPerturbedMBlock_coordinates_symm
+    (I := I) S clock ht x basis 0
+  have hPSD := hamiltonPerturbedBlockPSD_of_harnack_nonneg
+    (I := I) S clock 0 0 x basis hinv (by
+      simpa only [hamiltonPerturbedHarnackQuadraticAt, zero_div, zero_mul, add_zero]
+        using hnonneg)
+  simp only [hamiltonPerturbedCurvatureBlock, hamiltonMetricCurvatureBlockPerturbation,
+    hamiltonPerturbedMBlock, zero_div, zero_mul, add_zero] at hK hM
+  simp only [hamiltonBlockPSD, hamiltonBlockQuadratic, hamiltonBlockPolarized,
+    hamiltonPerturbedCurvatureBlock,
+    hamiltonMetricCurvatureBlockPerturbation, hamiltonPerturbedMBlock,
+    zero_div, zero_mul, add_zero] at hPSD
+  rw [← hamiltonBlock_exact_evolution_eq_j_add_sigma_square]
+  exact hamiltonBlock_exact_evolution_nonneg_of_psd _ _ _ U W
+    hK.1 hK.2.1 (hamiltonP_coordinates_skew (S.base.metric clock.time) x basis)
+    hM hPSD hU
 
 omit [SigmaCompactSpace M] in
 private theorem hamilton_perturbed_harnack_exact_rhs_pos_of_null
@@ -8955,7 +9003,7 @@ omit [SigmaCompactSpace M] in
 private theorem hamiltonPAt_restrictOpen
     [BoundarylessManifold I M]
     (g : SmoothRiemannianMetric I M) (O : TopologicalSpace.Opens M)
-    [SigmaCompactSpace O] [T2Space O] [BoundarylessManifold I O]
+    [T2Space O] [BoundarylessManifold I O]
     [IsManifold I 1 O] [IsManifold I 2 O]
     [IsManifold I ((∞ : WithTop ℕ∞) + 1) O]
     (x : O) (A B C : TangentSpace I (x : M)) :
@@ -9017,7 +9065,7 @@ omit [SigmaCompactSpace M] in
 private theorem metricNabla2Ric_restrictOpen
     [BoundarylessManifold I M]
     (g : SmoothRiemannianMetric I M) (O : TopologicalSpace.Opens M)
-    [SigmaCompactSpace O] [T2Space O] [BoundarylessManifold I O]
+    [T2Space O] [BoundarylessManifold I O]
     [IsManifold I 1 O] [IsManifold I 2 O]
     [IsManifold I ((∞ : WithTop ℕ∞) + 1) O]
     (x : O) (A B C D : TangentSpace I (x : M)) :
@@ -9051,7 +9099,7 @@ private theorem metricNabla2Ric_restrictOpen
 omit [SigmaCompactSpace M] in
 private theorem metricRm04_restrictOpen
     (g : SmoothRiemannianMetric I M) (O : TopologicalSpace.Opens M)
-    [SigmaCompactSpace O] [T2Space O] [IsManifold I 1 O]
+    [T2Space O] [IsManifold I 1 O]
     (x : O) (A B C D : TangentSpace I (x : M)) :
     metricRm04 (I := I) (M := O) (g.restrictOpen (I := I) O) x
         ![(restrictOpenTangentEquiv (I := I) O x).symm A,
@@ -9083,7 +9131,7 @@ omit [SigmaCompactSpace M] in
 private theorem metricRicci_restrictOpen
     [BoundarylessManifold I M]
     (g : SmoothRiemannianMetric I M) (O : TopologicalSpace.Opens M)
-    [SigmaCompactSpace O] [T2Space O] [BoundarylessManifold I O]
+    [T2Space O] [BoundarylessManifold I O]
     [IsManifold I 1 O]
     (x : O) (A B : TangentSpace I (x : M)) :
     metricRicci (I := I) (M := O) (g.restrictOpen (I := I) O) x

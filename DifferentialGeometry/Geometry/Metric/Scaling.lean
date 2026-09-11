@@ -1,6 +1,7 @@
 import DifferentialGeometry.Geometry.Connection.MetricCompatibility.Defs
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Basic
 import DifferentialGeometry.Bundle.PartialMfderiv.Basic
+
 open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
@@ -50,6 +51,8 @@ private theorem contMDiff_scaleMetric_inner_section
           (E := fun y : M =>
             TangentSpace I y →L[Real] TangentSpace I y →L[Real] Real)
           y (c • g.inner y)) := by
+  let _ : ∀ x : M, ContinuousAdd (TangentSpace I x →L[ℝ] ℝ) :=
+    fun _ => inferInstance
   simpa only [Pi.smul_apply] using
     (g.contMDiff.const_smul_section (I := I)
       (F := E →L[Real] E →L[Real] Real)
@@ -104,6 +107,18 @@ def scaleMetric (c : Real) (hc : 0 < c)
     (scaleMetric (I := I) c hc g).inner x v w =
       c * g.inner x v w := by
   rfl
+
+
+theorem scaleMetric_inner_inv_sqrt_smul
+    (c : ℝ) (hc : 0 < c) (g : SmoothRiemannianMetric I M) (x : M)
+    (v w : TangentSpace I x) :
+    (scaleMetric c hc g).inner x ((Real.sqrt c)⁻¹ • v) ((Real.sqrt c)⁻¹ • w) =
+      g.inner x v w := by
+  simp only [scaleMetric_inner, map_smul, smul_apply, smul_eq_mul]
+  have hsq := Real.sq_sqrt hc.le
+  have hn := ne_of_gt (Real.sqrt_pos.mpr hc)
+  field_simp
+  rw [hsq]
 
 
 theorem scaleMetric_one

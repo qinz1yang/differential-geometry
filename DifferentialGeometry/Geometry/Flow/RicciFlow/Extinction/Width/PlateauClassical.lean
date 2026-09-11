@@ -247,8 +247,7 @@ end ComponentTopology
 
 omit [IsManifold I ∞ Q] [FiniteDimensional ℝ E] [CompleteSpace E] in
 theorem plateau_component_topology
-    [IsManifold I ∞ Q] [FiniteDimensional ℝ E] [CompleteSpace E]
-    [I.Boundaryless] [T2Space Q] [CompactSpace Q]
+    [I.Boundaryless] [CompactSpace Q]
     (gamma : Width.RegularLoop I Q)
     (hctr : Surgery.Topology.IsContractibleLoop gamma.toContinuousLoop) :
     ∃ U : TopologicalSpace.Opens Q,
@@ -266,7 +265,7 @@ theorem plateau_component_topology
   exact ComponentTopology.component_topology gamma.toContinuousLoop hctr
 
 theorem plateau_component_disk_geometry
-    [I.Boundaryless] [T2Space Q] [CompactSpace Q]
+    [I.Boundaryless] [T2Space Q]
     (g : SmoothRiemannianMetric I Q) (U : TopologicalSpace.Opens Q)
     (hclosed : IsClosed (U : Set Q)) (hconnected : IsConnected (U : Set Q)) :
     letI : IsManifold I ∞ U := { U.instHasGroupoid (contDiffGroupoid ∞ I) with }

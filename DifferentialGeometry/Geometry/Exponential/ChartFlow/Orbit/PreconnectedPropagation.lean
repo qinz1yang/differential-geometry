@@ -90,7 +90,6 @@ theorem isMIntegralCurveOn_eq_of_isPreconnected
   have h0_A : (0 : ℝ) ∈ A := ⟨h0_K, h0_eq⟩
   have hf₁_cont : ContinuousOn f₁ K := hf₁_on.continuousOn
   have hf₂_cont : ContinuousOn f₂ K := hf₂_on.continuousOn
-  have hclosed_in_K : IsClosed {s : ℝ | s ∈ K ∧ f₁ s = f₂ s} ∨ True := Or.inr trivial
   have hA_rel_open : ∀ s ∈ A, ∃ U : Set ℝ, IsOpen U ∧ s ∈ U ∧ U ∩ K ⊆ A := by
     intro s hs_A
     obtain ⟨hs_K, hs_eq⟩ := hs_A

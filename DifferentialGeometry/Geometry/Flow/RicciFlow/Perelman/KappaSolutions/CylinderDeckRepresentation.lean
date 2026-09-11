@@ -204,7 +204,7 @@ theorem exists_cylinderDeckRepresentation
     rw [hfactor (gamma * delta) p₀ s, hfactor delta p₀ s,
       hfactor gamma (A delta p₀) (b delta s)] at h
     exact congrArg Prod.snd h
-  obtain ⟨rhoSphere, hrhoSphere⟩ := orth_rep_of_iso (n := 2) p₀ A (by decide)
+  obtain ⟨rhoSphere, hrhoSphere⟩ := orth_rep_of_iso (n := 2) A (by decide)
     hAOne hAMul (fun gamma x v w => (hA gamma x v w).symm)
   let rhoLine : FundamentalGroup M (default : M) →* LineIsometry := {
     toFun := b

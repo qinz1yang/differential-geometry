@@ -184,59 +184,6 @@ theorem Nabla20SRealizesAt.eval_smooth_slots
             cov X V nablaAlpha x
 
 omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] in
-theorem mdiffAt_finset_sum
-    {ι : Type*} (t : Finset ι) (f : ι → M → Real)
-    {x : M}
-    (hf : ∀ i ∈ t, MDifferentiableAt I 𝓘(Real, Real) (f i) x) :
-    MDifferentiableAt I 𝓘(Real, Real) (t.sum f) x := by
-  classical
-  induction t using Finset.induction_on with
-  | empty =>
-      change MDifferentiableAt I 𝓘(Real, Real) (fun _ : M ↦ (0 : Real)) x
-      exact mdifferentiableAt_const (I := I) (I' := 𝓘(Real, Real))
-        (c := (0 : Real)) (x := x)
-  | insert i t hit ih =>
-      have hfi : MDifferentiableAt I 𝓘(Real, Real) (f i) x := hf i (by simp [hit])
-      have hft : ∀ j ∈ t, MDifferentiableAt I 𝓘(Real, Real) (f j) x := by
-        intro j hj
-        exact hf j (by simp [hj])
-      have hsum : MDifferentiableAt I 𝓘(Real, Real) (t.sum f) x := ih hft
-      have hadd : MDifferentiableAt I 𝓘(Real, Real) (f i + t.sum f) x := hfi.add hsum
-      simpa [Finset.sum_insert, hit] using hadd
-
-omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] in
-theorem mvfderiv_finset_sum_at
-    {ι : Type*} (t : Finset ι) (f : ι → M → Real)
-    {x : M} (v : TangentSpace I x)
-    (hf : ∀ i ∈ t, MDifferentiableAt I 𝓘(Real, Real) (f i) x) :
-    mvfderiv (I := I) (t.sum f) x v =
-      t.sum (fun i => mvfderiv (I := I) (f i) x v) := by
-  classical
-  induction t using Finset.induction_on with
-  | empty =>
-      simp
-  | insert i t hit ih =>
-      have hfi : MDifferentiableAt I 𝓘(Real, Real) (f i) x := hf i (by simp [hit])
-      have hft : ∀ j ∈ t, MDifferentiableAt I 𝓘(Real, Real) (f j) x := by
-        intro j hj
-        exact hf j (by simp [hj])
-      have hsum : MDifferentiableAt I 𝓘(Real, Real) (t.sum f) x :=
-        mdiffAt_finset_sum (I := I) t f hft
-      calc
-        mvfderiv (I := I) ((insert i t).sum f) x v
-            = mvfderiv (I := I) (f i + t.sum f) x v := by
-              simp [Finset.sum_insert, hit]
-        _ = mvfderiv (I := I) (f i) x v +
-              mvfderiv (I := I) (t.sum f) x v := by
-              have hadd := congr($(mvfderiv_add
-                (I := I) (g := f i) (g' := t.sum f)
-                (x := x) hfi hsum) v)
-              simpa [Pi.add_apply] using hadd
-        _ = (insert i t).sum (fun j => mvfderiv (I := I) (f j) x v) := by
-              rw [ih hft]
-              simp [Finset.sum_insert, hit]
-
-omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] in
 theorem mvfderiv_neg_at
     {f : M → Real} {x : M} (v : TangentSpace I x)
     (hf : MDifferentiableAt I 𝓘(Real, Real) f x) :

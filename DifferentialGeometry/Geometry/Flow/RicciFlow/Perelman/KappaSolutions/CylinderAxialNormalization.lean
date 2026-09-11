@@ -47,7 +47,7 @@ theorem cylinderAxialScale_symm (c : ℝ) (hc : c ≠ 0) :
   intro x
   rfl
 
-@[simp] theorem cylinderAxialScale_central (c : ℝ) (hc : c ≠ 0)
+theorem cylinderAxialScale_central (c : ℝ) (hc : c ≠ 0)
     (y : SpatialNeckSphere) : cylinderAxialScale c hc (y, 0) = (y, 0) := by
   simp only [cylinderAxialScale_apply, mul_zero]
 

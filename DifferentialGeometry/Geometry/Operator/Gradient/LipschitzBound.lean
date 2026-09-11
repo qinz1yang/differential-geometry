@@ -1,7 +1,10 @@
 import DifferentialGeometry.Geometry.Exponential.GaussLemma.Basic
+import DifferentialGeometry.Geometry.Exponential.MinimizingGeodesic
 import DifferentialGeometry.Geometry.Metric.Comparison.DistanceScaling
 import DifferentialGeometry.Geometry.Operator.Gradient.Basic
 import DifferentialGeometry.Bundle.FiberBundleHausdorff
+import DifferentialGeometry.Analysis.Calculus.Derivative.Curve
+
 open DifferentialGeometry.Geometry.Connection
 open DifferentialGeometry.Geometry.Operator
 
@@ -193,6 +196,148 @@ theorem grad_norm_le_lip_all
       gradFun_eq_zero_of_mfderiv_eq_zero (I := I) g u hmf
     rw [hgrad]
     simpa only [map_zero, Real.sqrt_zero] using NNReal.coe_nonneg L
+
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+private theorem lip_of_grad_norm_le_ne
+    [I.Boundaryless] [T2Space M] [T2Space (TangentBundle I M)]
+    [SigmaCompactSpace M] [ConnectedSpace M]
+    [NeZero (Module.finrank ℝ E)]
+    (g : SmoothRiemannianMetric I M)
+    (hg : RiemannianMetricComplete (I := I) g)
+    {u : M → ℝ} {L : ℝ≥0}
+    (hu : ContMDiff I (modelWithCornersSelf ℝ ℝ)
+      (↑(⊤ : ℕ∞) : WithTop ℕ∞) u)
+    (hgrad : ∀ x : M,
+      Real.sqrt (g.inner x (gradFun (I := I) g u x)
+        (gradFun (I := I) g u x)) ≤ (L : ℝ)) :
+    ∀ x y : M, edist (u x) (u y) ≤
+      (L : ℝ≥0∞) * riemannianEDistOf (I := I) g x y := by
+  classical
+  let : IsManifold I 1 M :=
+    IsManifold.of_le (I := I) (M := M)
+      (n := (↑(⊤ : ℕ∞) : WithTop ℕ∞))
+      (by decide : (1 : WithTop ℕ∞) ≤ (↑(⊤ : ℕ∞) : WithTop ℕ∞))
+  let : TopologicalSpace.MetrizableSpace M :=
+    Manifold.metrizableSpace I M
+  let : T3Space M := inferInstance
+  let : RiemannianBundle (fun x : M => TangentSpace I x) :=
+    ⟨g.toRiemannianMetric⟩
+  let : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
+    ⟨⟨g.inner, g.contMDiff.continuous, by intro x v w; rfl⟩⟩
+  let : PseudoEMetricSpace M :=
+    PseudoEMetricSpace.ofRiemannianMetric I M
+  let : CompleteSpace M := hg.complete
+  have hEnorm : IsMetricNorm (I := I) (M := M) g := by
+    intro x v
+    exact tensor0SBundle_enorm_eq_riemannianBundle_enorm (I := I) g x v
+  intro x y
+  have hfin : riemannianEDist I x y ≠ (∞ : ENNReal) :=
+    riemannianEDist_ne_top (I := I) x y
+  obtain ⟨v, hv_end, hv_norm⟩ :=
+    minExp_of_ne_top (I := I) g hEnorm x y hfin
+  let gamma : ℝ → M := intrinsicGeodesic (I := I) g hEnorm x v
+  have hgamma_smooth : ContMDiff (modelWithCornersSelf ℝ ℝ) I 1 gamma := by
+    exact contMDiffOn_univ.mp
+      (intrinsicGeodesic_contMDiffOn (I := I) g hEnorm x v)
+  have hderiv : ∀ t : ℝ, HasDerivAt (fun s : ℝ => u (gamma s))
+      (NormedSpace.fromTangentSpace (u (gamma t))
+        (mfderiv I (modelWithCornersSelf ℝ ℝ) u (gamma t)
+          (mfderiv (modelWithCornersSelf ℝ ℝ) I gamma t
+            (DifferentialGeometry.Analysis.Calculus.realTangentOne t)))) t := by
+    intro t
+    exact DifferentialGeometry.Analysis.Calculus.hasDerivAt_comp_mfderiv_along
+      I u gamma t
+        ((hu (gamma t)).mdifferentiableAt (by simp))
+        ((hgamma_smooth t).mdifferentiableAt (by simp))
+  have hbound : ∀ t : ℝ,
+      ‖NormedSpace.fromTangentSpace (u (gamma t))
+        (mfderiv I (modelWithCornersSelf ℝ ℝ) u (gamma t)
+          (mfderiv (modelWithCornersSelf ℝ ℝ) I gamma t
+            (DifferentialGeometry.Analysis.Calculus.realTangentOne t)))‖ ≤
+        (L : ℝ) * (riemannianEDist I x y).toReal := by
+    intro t
+    let w : TangentSpace I (gamma t) :=
+      mfderiv (modelWithCornersSelf ℝ ℝ) I gamma t
+        (DifferentialGeometry.Analysis.Calculus.realTangentOne t)
+    have hw_eq : w = mfderiv (modelWithCornersSelf ℝ ℝ) I gamma t (1 : ℝ) := by
+      rfl
+    have hdu : mfderiv I (modelWithCornersSelf ℝ ℝ) u (gamma t) w =
+        g.inner (gamma t) (gradFun (I := I) g u (gamma t)) w := by
+      exact (inner_gradFun (I := I) g u (gamma t) w).symm
+    have hcs := abs_inner_le_sqrt_mul_sqrt (I := I) g (gamma t)
+      (gradFun (I := I) g u (gamma t)) w
+    have hspeed_sq : g.inner (gamma t) w w = g.inner x v v := by
+      rw [hw_eq]
+      exact intrinsicGeodesic_speedSq_eq (I := I) g hEnorm x v t
+    have hspeed : Real.sqrt (g.inner (gamma t) w w) =
+        (riemannianEDist I x y).toReal := by
+      rw [hspeed_sq, hv_norm]
+    calc
+      ‖NormedSpace.fromTangentSpace (u (gamma t))
+          (mfderiv I (modelWithCornersSelf ℝ ℝ) u (gamma t) w)‖ =
+          |g.inner (gamma t) (gradFun (I := I) g u (gamma t)) w| := by
+            rw [hdu]
+            rfl
+      _ ≤ Real.sqrt (g.inner (gamma t)
+            (gradFun (I := I) g u (gamma t))
+            (gradFun (I := I) g u (gamma t))) *
+          Real.sqrt (g.inner (gamma t) w w) := hcs
+      _ ≤ (L : ℝ) * Real.sqrt (g.inner (gamma t) w w) := by
+        exact mul_le_mul_of_nonneg_right (hgrad (gamma t)) (Real.sqrt_nonneg _)
+      _ = (L : ℝ) * (riemannianEDist I x y).toReal := by rw [hspeed]
+  have hreal : |u y - u x| ≤
+      (L : ℝ) * (riemannianEDist I x y).toReal := by
+    have hmv := norm_image_sub_le_of_norm_deriv_le_segment_01'
+      (f := fun s : ℝ => u (gamma s))
+      (f' := fun t => NormedSpace.fromTangentSpace (u (gamma t))
+        (mfderiv I (modelWithCornersSelf ℝ ℝ) u (gamma t)
+          (mfderiv (modelWithCornersSelf ℝ ℝ) I gamma t
+            (DifferentialGeometry.Analysis.Calculus.realTangentOne t))))
+      (C := (L : ℝ) * (riemannianEDist I x y).toReal)
+      (fun t _ => (hderiv t).hasDerivWithinAt)
+      (fun t _ => hbound t)
+    have hgamma_zero : gamma 0 = x :=
+      intrinsicGeodesic_zero (I := I) g hEnorm x v
+    have hgamma_one : gamma 1 = y := by
+      exact hv_end
+    simpa only [hgamma_zero, hgamma_one, Real.norm_eq_abs] using hmv
+  have htarget : ENNReal.ofReal |u y - u x| ≤
+      ENNReal.ofReal ((L : ℝ) * (riemannianEDist I x y).toReal) :=
+    ENNReal.ofReal_le_ofReal hreal
+  rw [ENNReal.ofReal_mul (NNReal.coe_nonneg L),
+    ENNReal.ofReal_toReal hfin] at htarget
+  simpa only [edist_dist, Real.dist_eq, abs_sub_comm, riemannianEDistOf,
+    ENNReal.coe_nnreal_eq] using htarget
+
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+theorem lip_of_grad_norm_le
+    [I.Boundaryless] [T2Space M] [T2Space (TangentBundle I M)]
+    [SigmaCompactSpace M] [ConnectedSpace M]
+    (g : SmoothRiemannianMetric I M)
+    (hg : RiemannianMetricComplete (I := I) g)
+    {u : M → ℝ} {L : ℝ≥0}
+    (hu : ContMDiff I (modelWithCornersSelf ℝ ℝ)
+      (↑(⊤ : ℕ∞) : WithTop ℕ∞) u)
+    (hgrad : ∀ x : M,
+      Real.sqrt (g.inner x (gradFun (I := I) g u x)
+        (gradFun (I := I) g u x)) ≤ (L : ℝ)) :
+    ∀ x y : M, edist (u x) (u y) ≤
+      (L : ℝ≥0∞) * riemannianEDistOf (I := I) g x y := by
+  classical
+  by_cases hdim : Module.finrank ℝ E = 0
+  · let _ : Subsingleton E :=
+      (Module.finrank_zero_iff (R := ℝ) (M := E)).mp hdim
+    let _ : Subsingleton H := I.injective.subsingleton
+    let _ : DiscreteTopology M := ChartedSpace.discreteTopology H M
+    let _ : Subsingleton M :=
+      subsingleton_of_preconnected_totallyDisconnected
+    intro x y
+    rw [Subsingleton.elim y x]
+    simp only [edist_self, riemannianEDistOf_self, mul_zero, le_refl]
+  · let _ : NeZero (Module.finrank ℝ E) := ⟨hdim⟩
+    exact lip_of_grad_norm_le_ne (I := I) g hg hu hgrad
 
 end Riemannian
 end Geometry

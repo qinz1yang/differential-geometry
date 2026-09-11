@@ -25,6 +25,29 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
 
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+theorem FlowMetricConvergenceData.metric_convergence
+    {X : PointedFlowSeq (I := I)}
+    {P : PointedRiemannianManifold (I := I)}
+    {subseq : Nat → Nat}
+    (Φ : PointedCGHMaps (I := I) X P subseq)
+    (R : letI : TopologicalSpace P.M := P.topology
+      letI : ChartedSpace H P.M := P.charted
+      letI : IsManifold I ∞ P.M := P.smooth
+      SmoothRiemannianMetric I P.M)
+    (bf : BumpFamily (I := I) Φ) (hsrc : SourceIsSigmaCompact Φ) (htgt : TargetIsSigmaCompact Φ)
+    (β ψ : Real)
+    (co : FlowMetricConvergenceData (I := I) Φ R bf hsrc htgt β ψ)
+    (hcarrier : X.D.carrier ⊆ Set.Icc β ψ) :
+    MetricInnerPullbackTendsto (I := I) (Φ.compSubseq co.φ co.strictMono) co.gInf := by
+  intro t ht x v w
+  simp only [Function.comp_apply, PointedCGHMaps.compSubseq_map]
+  convert FlowMetricConvergenceData.metric_convergence_at (I := I) Φ R bf hsrc htgt β ψ co
+    (hcarrier ht) x v w using 1
+  funext k
+  rfl
+
+
 theorem FlowMetricConvergenceData.scalar_convergence
     {X : PointedFlowSeq (I := I)}
     {P : PointedRiemannianManifold (I := I)}
@@ -96,6 +119,53 @@ theorem FlowMetricConvergenceData.scalar_convergence
   simpa only [Function.comp_apply, PointedCGHMaps.compSubseq, PointedCGHMaps.map] using
     FlowMetricConvergenceData.scalar_convergence_at (I := I) Φ R bf hsrc htgt β ψ cLow hcLow hbound
       hcovTail co (hcarrier ht) x
+
+theorem FlowMetricConvergenceData.ricci_convergence
+    {X : PointedFlowSeq (I := I)}
+    {P : PointedRiemannianManifold (I := I)}
+    {subseq : Nat → Nat}
+    (Φ : PointedCGHMaps (I := I) X P subseq)
+    (R : letI : TopologicalSpace P.M := P.topology
+      letI : ChartedSpace H P.M := P.charted
+      letI : IsManifold I ∞ P.M := P.smooth
+      SmoothRiemannianMetric I P.M)
+    (bf : BumpFamily (I := I) Φ) (hsrc : SourceIsSigmaCompact Φ) (htgt : TargetIsSigmaCompact Φ)
+    (β ψ : Real) (cLow : Real) (hcLow : 0 < cLow)
+    (hbound : letI : TopologicalSpace P.M := P.topology
+        letI : ChartedSpace H P.M := P.charted
+        letI : IsManifold I ∞ P.M := P.smooth
+      ∀ (k : Nat) (t : Real), t ∈ Set.Icc β ψ →
+        ∀ (y : SourceDomain (I := I) Φ k)
+          (v : letI : TopologicalSpace (SourceDomain (I := I) Φ k) :=
+              sourceDomTop (I := I) Φ k
+            letI : ChartedSpace H (SourceDomain (I := I) Φ k) :=
+              sourceDomCharted (I := I) Φ k
+            TangentSpace I y),
+          cLow * R.inner (y : P.M) v v ≤
+            letI : TopologicalSpace (SourceDomain (I := I) Φ k) :=
+              sourceDomTop (I := I) Φ k
+            letI : ChartedSpace H (SourceDomain (I := I) Φ k) :=
+              sourceDomCharted (I := I) Φ k
+            letI : IsManifold I ∞ (SourceDomain (I := I) Φ k) :=
+              sourceDomSmooth (I := I) Φ k
+            (sourceMetric (I := I) Φ hsrc htgt k t).inner y v v)
+    (hcovTail : letI : TopologicalSpace P.M := P.topology
+        letI : ChartedSpace H P.M := P.charted
+        letI : T2Space P.M := P.t2
+        letI : IsManifold I ∞ P.M := P.smooth
+        letI : SigmaCompactSpace P.M := P.sigmaCompact
+      ∀ q : Nat, ∃ C : Real, ∀ (k : Nat) (t : Real), t ∈ Set.Icc β ψ →
+        ∀ z : P.M, z ∈ bf.grow k →
+          metricCovDerivNorm (I := I) q
+            (gSeqExt (I := I) Φ R bf hsrc htgt k t) R z ≤ C)
+    (co : FlowMetricConvergenceData (I := I) Φ R bf hsrc htgt β ψ)
+    (hcarrier : X.D.carrier ⊆ Set.Icc β ψ) :
+    MetricRicciPullbackTendsto (I := I) (Φ.compSubseq co.φ co.strictMono) co.gInf := by
+  intro t ht x v w
+  simp only [Function.comp_apply, PointedCGHMaps.compSubseq_map]
+  exact FlowMetricConvergenceData.ricci_convergence_at (I := I) Φ R bf hsrc htgt β ψ cLow hcLow hbound
+    hcovTail co (hcarrier ht) x v w
+
 
 theorem FlowMetricConvergenceData.ricNorm_convergence
     {X : PointedFlowSeq (I := I)}
@@ -212,6 +282,8 @@ noncomputable def smoothFlowLimitSubsequenceOfMaps
     (scalar : ScalarPullbackTendsto (I := I)
       (hPL.symm ▸ (Φ.compSubseq co.φ co.strictMono) :
         PointedCGHMaps (I := I) X (L.atTime 0) (mc.subseq ∘ co.φ)))
+    (ricci : MetricRicciPullbackTendsto (I := I)
+      (Φ.compSubseq co.φ co.strictMono) co.gInf)
     (ricciNorm : RicNormPullback (I := I)
       (hPL.symm ▸ (Φ.compSubseq co.φ co.strictMono) :
         PointedCGHMaps (I := I) X (L.atTime 0) (mc.subseq ∘ co.φ))) :
@@ -230,7 +302,16 @@ noncomputable def smoothFlowLimitSubsequenceOfMaps
   letI : SigmaCompactSpace (L.atTime 0).M := L.sigmaCompact
   have hLm : forall t : Real, t ∈ Set.Icc β ψ -> L.S.family.metric t = co.gInf t :=
     fun t ht => eq_of_heq (hLmetric t ht)
+  have hmetricRaw : MetricInnerPullbackTendsto (I := I)
+      (Φ.compSubseq co.φ co.strictMono) co.gInf :=
+    FlowMetricConvergenceData.metric_convergence (I := I) Φ R bf hsrc htgt β ψ co hcarrier
+  have hmetric : MetricPullbackTendsto (I := I) (Φ.compSubseq co.φ co.strictMono) :=
+    MetricInnerPullbackTendsto.congr_metric (I := I)
+      (fun t ht => (hLm t (hcarrier ht)).symm) hmetricRaw
   have hscalar : ScalarPullbackTendsto (I := I) (Φ.compSubseq co.φ co.strictMono) := scalar
+  have hricci : RicciPullbackTendsto (I := I) (Φ.compSubseq co.φ co.strictMono) :=
+    MetricRicciPullbackTendsto.congr_metric (I := I)
+      (fun t ht => (hLm t (hcarrier ht)).symm) ricci
   have hricciNorm : RicNormPullback (I := I) (Φ.compSubseq co.φ co.strictMono) := ricciNorm
   set mc' := mc.compSubseq co.φ co.strictMono with hmc'
   set Φ' := (Φ).compSubseq co.φ co.strictMono with hΦ'
@@ -240,7 +321,9 @@ noncomputable def smoothFlowLimitSubsequenceOfMaps
     { L := L
       atTime_zero := by simpa [mc'] using hL0
       maps := Φ'
+      metric := hmetric
       scalar := hscalar
+      ricci := hricci
       ricciNorm := hricciNorm
       source_sigmaCompact := ?_
       target_sigmaCompact := ?_
@@ -295,11 +378,13 @@ theorem smoothFlowLimitSubsequenceOfMaps_limit
     (scalar : ScalarPullbackTendsto (I := I)
       (hPL.symm ▸ (Φ.compSubseq co.φ co.strictMono) :
         PointedCGHMaps (I := I) X (L.atTime 0) (mc.subseq ∘ co.φ)))
+    (ricci : MetricRicciPullbackTendsto (I := I)
+      (Φ.compSubseq co.φ co.strictMono) co.gInf)
     (ricciNorm : RicNormPullback (I := I)
       (hPL.symm ▸ (Φ.compSubseq co.φ co.strictMono) :
         PointedCGHMaps (I := I) X (L.atTime 0) (mc.subseq ∘ co.φ))) :
     (smoothFlowLimitSubsequenceOfMaps (I := I) mc L P hPlim hPL Φ R bf hsrc htgt
-      β ψ hcarrier co hLmetric scalar ricciNorm).limit.L = L := by
+      β ψ hcarrier co hLmetric scalar ricci ricciNorm).limit.L = L := by
   cases hPL
   rfl
 
@@ -333,12 +418,14 @@ theorem flowLimit_of_maps
     (scalar : ScalarPullbackTendsto (I := I)
       (hPL.symm ▸ (Φ.compSubseq co.φ co.strictMono) :
         PointedCGHMaps (I := I) X (L.atTime 0) (mc.subseq ∘ co.φ)))
+    (ricci : MetricRicciPullbackTendsto (I := I)
+      (Φ.compSubseq co.φ co.strictMono) co.gInf)
     (ricciNorm : RicNormPullback (I := I)
       (hPL.symm ▸ (Φ.compSubseq co.φ co.strictMono) :
         PointedCGHMaps (I := I) X (L.atTime 0) (mc.subseq ∘ co.φ))) :
     HasSmoothCheegerGromovLimit (I := I) X :=
   (smoothFlowLimitSubsequenceOfMaps (I := I) (X := X) mc L P hPlim hPL Φ R bf hsrc htgt
-    β ψ hcarrier co hLmetric scalar ricciNorm).hasSmoothCheegerGromovLimit
+    β ψ hcarrier co hLmetric scalar ricci ricciNorm).hasSmoothCheegerGromovLimit
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 theorem flowLimit_of_co
@@ -365,12 +452,14 @@ theorem flowLimit_of_co
       forall t : Real, t ∈ Set.Icc β ψ -> L.S.family.metric t = co.gInf t)
     (scalar : ScalarPullbackTendsto (I := I)
       ((endgamePhi (I := I) mc L hL0).compSubseq co.φ co.strictMono))
+    (ricci : MetricRicciPullbackTendsto (I := I)
+      ((endgamePhi (I := I) mc L hL0).compSubseq co.φ co.strictMono) co.gInf)
     (ricciNorm : RicNormPullback (I := I)
       ((endgamePhi (I := I) mc L hL0).compSubseq co.φ co.strictMono)) :
     HasSmoothCheegerGromovLimit (I := I) X :=
   flowLimit_of_maps (I := I) mc L (L.atTime 0) hL0 rfl (endgamePhi
     (I := I) mc L hL0) R bf hsrc htgt β ψ
-    hcarrier co (fun t ht => heq_of_eq (hLmetric t ht)) scalar ricciNorm
+    hcarrier co (fun t ht => heq_of_eq (hLmetric t ht)) scalar ricci ricciNorm
 
 noncomputable def smoothFlowLimitSubsequenceOfMetricLimit
     (mc : MetricCompactLimit (I := I) (X.atZero (I := I)))
@@ -412,6 +501,8 @@ noncomputable def smoothFlowLimitSubsequenceOfMetricLimit
         PointedCGHMaps (I := I) X
           ((flowOfMetric (I := I) X.D mc.limit co.gInf hsol).atTime 0)
           (mc.subseq ∘ co.φ)))
+    (ricci : MetricRicciPullbackTendsto (I := I)
+      (Φ₀.compSubseq co.φ co.strictMono) co.gInf)
     (ricciNorm : RicNormPullback (I := I)
       ((flowOfMetric_atTime (I := I) X.D mc.limit co.gInf hsol 0 hzero).symm ▸
         (Φ₀.compSubseq co.φ co.strictMono) :
@@ -424,7 +515,7 @@ noncomputable def smoothFlowLimitSubsequenceOfMetricLimit
     flowOfMetric_atTime (I := I) X.D mc.limit co.gInf hsol 0 hzero
   exact smoothFlowLimitSubsequenceOfMaps (I := I) mc
     (flowOfMetric (I := I) X.D mc.limit co.gInf hsol) mc.limit rfl hL0 Φ₀
-    R bf hsrc htgt β ψ hcarrier co (fun t _ => HEq.rfl) scalar ricciNorm
+    R bf hsrc htgt β ψ hcarrier co (fun t _ => HEq.rfl) scalar ricci ricciNorm
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 theorem flowLimit_of_mc
@@ -467,6 +558,8 @@ theorem flowLimit_of_mc
         PointedCGHMaps (I := I) X
           ((flowOfMetric (I := I) X.D mc.limit co.gInf hsol).atTime 0)
           (mc.subseq ∘ co.φ)))
+    (ricci : MetricRicciPullbackTendsto (I := I)
+      (Φ₀.compSubseq co.φ co.strictMono) co.gInf)
     (ricciNorm : RicNormPullback (I := I)
       ((flowOfMetric_atTime (I := I) X.D mc.limit co.gInf hsol 0 hzero).symm ▸
         (Φ₀.compSubseq co.φ co.strictMono) :
@@ -475,7 +568,7 @@ theorem flowLimit_of_mc
           (mc.subseq ∘ co.φ))) :
     HasSmoothCheegerGromovLimit (I := I) X :=
   (smoothFlowLimitSubsequenceOfMetricLimit (I := I) (X := X) mc Φ₀ R bf hsrc htgt β ψ
-    hcarrier co hzero hsol scalar ricciNorm).hasSmoothCheegerGromovLimit
+    hcarrier co hzero hsol scalar ricci ricciNorm).hasSmoothCheegerGromovLimit
 
 noncomputable def endgameCo
     {P : PointedRiemannianManifold (I := I)} {subseq : Nat -> Nat}
@@ -811,6 +904,14 @@ theorem flowLimit_endgame
   have hL0 :
       (flowOfMetric (I := I) X.D mc.limit co.gInf hsol).atTime 0 = mc.limit :=
     flowOfMetric_atTime (I := I) X.D mc.limit co.gInf hsol 0 hzero
+  have hricciRaw := FlowMetricConvergenceData.ricci_convergence (I := I) (X := X)
+    Φ₀ R bf hsrc htgt β ψ ((Crel * Bmax)⁻¹)
+    (inv_pos.2 (mul_pos (lt_of_lt_of_le one_pos hCrel1)
+      (lt_of_lt_of_le one_pos hBmax1)))
+    (hbound_of_equiv (I := I) (Φ := Φ₀) R hsrc htgt β ψ gRefT B Crel Bmax
+      hBmax hCrel1 hequivT hrel)
+    (covTail_of_bounds (I := I) (Φ := Φ₀) R bf hsrc htgt β ψ hcovSource)
+    co hcarrier
   have hricRaw := FlowMetricConvergenceData.ricNorm_convergence (I := I) (Φ := Φ₀) R bf hsrc htgt β ψ
     ((Crel * Bmax)⁻¹)
     (inv_pos.2 (mul_pos (lt_of_lt_of_le one_pos hCrel1)
@@ -869,7 +970,7 @@ theorem flowLimit_endgame
       (fun y => DifferentialGeometry.PDE.RicciFlow.ricciNorm (I := I)
         (X.term ((mc.subseq ∘ co.φ) k)).S t y) (hmap k x).symm
   exact flowLimit_of_mc (I := I) mc Φ₀ R bf hsrc htgt β ψ hcarrier co hzero
-    hsol scalar ricciNorm
+    hsol scalar hricciRaw ricciNorm
 
 theorem flowLimit_of_regularity
     (mc : MetricCompactLimit (I := I) (X.atZero (I := I)))

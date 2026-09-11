@@ -56,7 +56,7 @@ def tensorOfPolynomialComponents {n r : ℕ} {σ : Type*} {x : M}
     Tensor0SSpace r I x :=
   (coordEquiv0S (I := I) basis r).symm (fun slots => MvPolynomial.eval v (P slots))
 
-@[simp] theorem component0S_tensorOfPolynomialComponents
+theorem component0S_tensorOfPolynomialComponents
     {n r : ℕ} {σ : Type*} {x : M}
     (basis : Module.Basis (Fin n) ℝ (TangentSpace I x))
     (P : (Fin r → Fin n) → MvPolynomial σ ℝ) (v : σ → ℝ)

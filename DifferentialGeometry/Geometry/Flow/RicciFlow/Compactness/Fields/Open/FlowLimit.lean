@@ -161,6 +161,8 @@ noncomputable def smoothFlowLimitSubsequenceOfOpenMetricConvergence
     (scalar : ScalarPullbackTendsto (I := I)
       (hPL.symm ▸ (Φ.compSubseq co.φ co.strictMono) :
         PointedCGHMaps (I := I) X (L.atTime 0) (mc.subseq ∘ co.φ)))
+    (ricci : MetricRicciPullbackTendsto (I := I)
+      (Φ.compSubseq co.φ co.strictMono) co.gInf)
     (ricciNorm : RicNormPullback (I := I)
       (hPL.symm ▸ (Φ.compSubseq co.φ co.strictMono) :
         PointedCGHMaps (I := I) X (L.atTime 0) (mc.subseq ∘ co.φ))) :
@@ -180,7 +182,16 @@ noncomputable def smoothFlowLimitSubsequenceOfOpenMetricConvergence
   have hLm : ∀ t : Real, t ∈ X.D.carrier →
       L.S.family.metric t = co.gInf t :=
     fun t ht => eq_of_heq (hLmetric t ht)
+  have hmetricRaw : MetricInnerPullbackTendsto (I := I)
+      (Φ.compSubseq co.φ co.strictMono) co.gInf :=
+    OpenMetricConvergenceData.metric_convergence (I := I) Φ ht₀ hD co
+  have hmetric : MetricPullbackTendsto (I := I) (Φ.compSubseq co.φ co.strictMono) :=
+    MetricInnerPullbackTendsto.congr_metric (I := I)
+      (fun t ht => (hLm t ht).symm) hmetricRaw
   have hscalar : ScalarPullbackTendsto (I := I) (Φ.compSubseq co.φ co.strictMono) := scalar
+  have hricci : RicciPullbackTendsto (I := I) (Φ.compSubseq co.φ co.strictMono) :=
+    MetricRicciPullbackTendsto.congr_metric (I := I)
+      (fun t ht => (hLm t ht).symm) ricci
   have hricciNorm : RicNormPullback (I := I) (Φ.compSubseq co.φ co.strictMono) := ricciNorm
   set mc' := mc.compSubseq co.φ co.strictMono with hmc'
   set Φ' := Φ.compSubseq co.φ co.strictMono with hΦ'
@@ -193,7 +204,9 @@ noncomputable def smoothFlowLimitSubsequenceOfOpenMetricConvergence
     { L := L
       atTime_zero := by simpa [mc'] using hL0
       maps := Φ'
+      metric := hmetric
       scalar := hscalar
+      ricci := hricci
       ricciNorm := hricciNorm
       source_sigmaCompact := hσsource'
       target_sigmaCompact := ?_
@@ -272,11 +285,13 @@ theorem smoothFlowLimitSubsequenceOfOpenMetricConvergence_limit
     (scalar : ScalarPullbackTendsto (I := I)
       (hPL.symm ▸ (Φ.compSubseq co.φ co.strictMono) :
         PointedCGHMaps (I := I) X (L.atTime 0) (mc.subseq ∘ co.φ)))
+    (ricci : MetricRicciPullbackTendsto (I := I)
+      (Φ.compSubseq co.φ co.strictMono) co.gInf)
     (ricciNorm : RicNormPullback (I := I)
       (hPL.symm ▸ (Φ.compSubseq co.φ co.strictMono) :
         PointedCGHMaps (I := I) X (L.atTime 0) (mc.subseq ∘ co.φ))) :
     (smoothFlowLimitSubsequenceOfOpenMetricConvergence (I := I) mc L P hPlim hPL Φ R bf hsrc htgt ht₀ hD co
-      hLmetric scalar ricciNorm).limit.L = L := by
+      hLmetric scalar ricci ricciNorm).limit.L = L := by
   cases hPL
   rfl
 
@@ -311,12 +326,14 @@ theorem flowLimit_of_open
     (scalar : ScalarPullbackTendsto (I := I)
       (hPL.symm ▸ (Φ.compSubseq co.φ co.strictMono) :
         PointedCGHMaps (I := I) X (L.atTime 0) (mc.subseq ∘ co.φ)))
+    (ricci : MetricRicciPullbackTendsto (I := I)
+      (Φ.compSubseq co.φ co.strictMono) co.gInf)
     (ricciNorm : RicNormPullback (I := I)
       (hPL.symm ▸ (Φ.compSubseq co.φ co.strictMono) :
         PointedCGHMaps (I := I) X (L.atTime 0) (mc.subseq ∘ co.φ))) :
     HasSmoothCheegerGromovLimit (I := I) X :=
   (smoothFlowLimitSubsequenceOfOpenMetricConvergence (I := I) mc L P hPlim hPL Φ R bf hsrc htgt ht₀ hD co
-    hLmetric scalar ricciNorm).hasSmoothCheegerGromovLimit
+    hLmetric scalar ricci ricciNorm).hasSmoothCheegerGromovLimit
 
 end CheegerGromovCompactness
 end DifferentialGeometry

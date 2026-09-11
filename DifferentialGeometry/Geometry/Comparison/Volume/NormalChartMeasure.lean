@@ -1,6 +1,7 @@
 import DifferentialGeometry.Analysis.Integration.Measure.Parametric.Evaluation
 import DifferentialGeometry.Geometry.Comparison.NormalCoordinates.Basic
 import DifferentialGeometry.Geometry.Exponential.Variation.Jacobi
+
 open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
@@ -113,21 +114,16 @@ theorem exists_radialJacobi_radius
     exact radialJacobiField_eq (I := I) g p x w v]
   exact h x w hx hw t₀ ht₀
 
-attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
-  Tensor0SBundle.tangentSpaceNormedSpace in
+omit [SigmaCompactSpace M] [NeZero (Module.finrank ℝ E)] [CompleteSpace E] in
 theorem exists_radialJacobi_zero_radius
-    [PseudoEMetricSpace M] [RiemannianBundle (fun x : M => TangentSpace I x)]
-    [IsRiemannianManifold I M] [CompleteSpace M]
-    [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) :
     ∃ r : ℝ, 0 < r ∧ ∀ x w : E, ‖x‖ < r → ‖w‖ < r →
       IsJacobiAt (I := I) g
         (fun v : ℝ => (expMap (I := I) g p (show TangentSpace I p from (v • x)) : M))
         (radialJacobiField (I := I) g p x w) 0 := by
   obtain ⟨r, hr, h⟩ :=
-    DifferentialGeometry.Geometry.Riemannian.exists_jacobi_zero (I := I) g hEnorm p
+    DifferentialGeometry.Geometry.Riemannian.exists_jacobi_zero (I := I) g p
   refine ⟨r, hr, ?_⟩
   intro x w hx hw
   rw [show radialJacobiField (I := I) g p x w = fun v =>

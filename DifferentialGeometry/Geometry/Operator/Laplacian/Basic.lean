@@ -1,5 +1,6 @@
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.Local.Formula
 import DifferentialGeometry.Geometry.Operator.Gradient.Basic
+import DifferentialGeometry.Geometry.Operator.Scalar.Calculus
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.Global.PartitionOfUnity
 
 
@@ -64,6 +65,27 @@ lemma gradFun_add
   congr 1
   · rw [hd_f_def]; exact (inner_gradFun (I := I) g f x v).symm
   · rw [hd_h_def]; exact (inner_gradFun (I := I) g h x v).symm
+
+lemma gradFun_const_smul
+    (g : SmoothRiemannianMetric I M) (a : ℝ)
+    {f : M → ℝ} {x : M}
+    (hf : MDifferentiableAt I 𝓘(ℝ, ℝ) f x) :
+    gradFun (I := I) g (a • f) x =
+      a • gradFun (I := I) g f x := by
+  change gradientFun (I := I) g (a • f) x =
+    a • gradientFun (I := I) g f x
+  exact gradientFun_const_smul (I := I) g a hf
+
+lemma gradFun_comp
+    (g : SmoothRiemannianMetric I M)
+    {φ : ℝ → ℝ} {f : M → ℝ} {x : M}
+    (hφ : DifferentiableAt ℝ φ (f x))
+    (hf : MDifferentiableAt I 𝓘(ℝ, ℝ) f x) :
+    gradFun (I := I) g (fun y : M => φ (f y)) x =
+      deriv φ (f x) • gradFun (I := I) g f x := by
+  change gradientFun (I := I) g (fun y : M => φ (f y)) x =
+    deriv φ (f x) • gradientFun (I := I) g f x
+  exact gradientFun_comp (I := I) g hφ hf
 
 lemma grad_g_add_apply [I.Boundaryless]
     (g : SmoothRiemannianMetric I M)

@@ -3,6 +3,7 @@ import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.Garding.Pointw
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.Garding.FirstDerivativeBound
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.Garding.IntegratedSecondOrder
 import DifferentialGeometry.Analysis.Integration.L2.Hilbert.DenseSubset
+
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature

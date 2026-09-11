@@ -1,3 +1,5 @@
+import DifferentialGeometry.Analysis.Sobolev.Euclidean.Density
+import DifferentialGeometry.Analysis.Calculus.ContDiff.Support
 import DifferentialGeometry.External.DeGiorgi.SobolevSpace.WeakDerivatives
 
 
@@ -258,3 +260,60 @@ end Euclidean
 end Sobolev
 end Analysis
 end DifferentialGeometry
+
+namespace DeGiorgi
+
+open Metric
+
+variable {d : ℕ}
+local notation "E" => EuclideanSpace ℝ (Fin d)
+
+theorem HasWeakPartialDeriv.mul_contDiffOn {Ω : Set E} (hΩ : IsOpen Ω)
+    {i : Fin d} {g f η : E → ℝ}
+    (hf : HasWeakPartialDeriv i g f Ω)
+    (hη : ContDiffOn ℝ (⊤ : ℕ∞) η Ω)
+    (hf_int : LocallyIntegrable f (volume.restrict Ω))
+    (hg_int : LocallyIntegrable g (volume.restrict Ω)) :
+    HasWeakPartialDeriv i
+      (fun x => η x * g x + fderiv ℝ η x (EuclideanSpace.single i 1) * f x)
+      (fun x => η x * f x) Ω := by
+  intro φ hφ hφc hφs
+  obtain ⟨δ, χ, hδ, _, hχ, hχc, _, hχone, hχs⟩ :=
+    DifferentialGeometry.Analysis.Sobolev.Euclidean.exists_smooth_cutoff_with_neighborhood
+      hφc hΩ hφs
+  let η' := fun x => χ x * η x
+  have hη's : tsupport η' ⊆ Ω := (tsupport_mul_subset_left (f := χ) (g := η)).trans hχs
+  have hη' : ContDiff ℝ (⊤ : ℕ∞) η' :=
+    (hχ.contDiffOn.mul hη).contDiff_of_tsupport_subset hΩ hη's
+  have hlocal : ∀ x ∈ tsupport φ, η' =ᶠ[𝓝 x] η := by
+    intro x hx
+    have hχloc : χ =ᶠ[𝓝 x] fun _ => (1 : ℝ) := by
+      filter_upwards [ball_mem_nhds x hδ] with y hy
+      apply hχone
+      exact closedBall_subset_cthickening hx δ (mem_closedBall.mpr (le_of_lt hy))
+    filter_upwards [hχloc] with y hy
+    change χ y * η y = η y
+    rw [hy, one_mul]
+  have htest := (hf.mul_smooth hΩ hη' hf_int hg_int) φ hφ hφc hφs
+  have hl : (∫ x in Ω, η' x * f x * fderiv ℝ φ x (EuclideanSpace.single i 1)) =
+      ∫ x in Ω, η x * f x * fderiv ℝ φ x (EuclideanSpace.single i 1) := by
+    apply integral_congr_ae
+    filter_upwards [] with x
+    by_cases hx : x ∈ tsupport φ
+    · rw [(hlocal x hx).eq_of_nhds]
+    · have hz : fderiv ℝ φ x (EuclideanSpace.single i 1) = 0 :=
+        image_eq_zero_of_notMem_tsupport
+          (f := fun y => fderiv ℝ φ y (EuclideanSpace.single i 1))
+          (fun hs => hx ((tsupport_fderiv_apply_subset (f := φ) ℝ (EuclideanSpace.single i 1)) hs))
+      simp only [hz, mul_zero]
+  have hr : (∫ x in Ω,
+        (η' x * g x + fderiv ℝ η' x (EuclideanSpace.single i 1) * f x) * φ x) =
+      ∫ x in Ω, (η x * g x + fderiv ℝ η x (EuclideanSpace.single i 1) * f x) * φ x := by
+    apply integral_congr_ae
+    filter_upwards [] with x
+    by_cases hx : x ∈ tsupport φ
+    · rw [(hlocal x hx).eq_of_nhds, (hlocal x hx).fderiv_eq]
+    · rw [image_eq_zero_of_notMem_tsupport hx, mul_zero, mul_zero]
+  exact hl.symm.trans (htest.trans (congrArg Neg.neg hr))
+
+end DeGiorgi

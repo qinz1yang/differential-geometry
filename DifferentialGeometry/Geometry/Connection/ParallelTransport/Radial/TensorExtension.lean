@@ -1666,7 +1666,7 @@ private theorem radialTransportTensorExtension_nabla2_diagonal_center_zero
     · simp [Function.update_of_ne hbj]
   have hsumqmd : MDifferentiableAt I 𝓘(ℝ, ℝ) (fun y => ∑ j : Fin 4, q j y) p := by
     change MDifferentiableAt I 𝓘(ℝ, ℝ) (Finset.univ.sum q) p
-    apply DifferentialGeometry.Tensor.RicciIdentity.mdiffAt_finset_sum
+    apply DifferentialGeometry.mdiffAt_finset_sum
     intro j _
     exact (hqsm j).contMDiffAt.mdifferentiableAt (by simp)
   have hGderiv : mvfderiv (I := I) G p (X p) = 0 := by
@@ -1675,7 +1675,7 @@ private theorem radialTransportTensorExtension_nabla2_diagonal_center_zero
     rw [DifferentialGeometry.Tensor.RicciIdentity.mvfderiv_neg_at
       (I := I) (x := p) (X p) hsumqmd]
     change -mvfderiv (I := I) (Finset.univ.sum q) p (X p) = 0
-    rw [DifferentialGeometry.Tensor.RicciIdentity.mvfderiv_finset_sum_at
+    rw [DifferentialGeometry.mvfderiv_finset_sum_at
       (I := I) Finset.univ q (X p) (fun j _ =>
         (hqsm j).contMDiffAt.mdifferentiableAt (by simp))]
     simp [hqderiv]

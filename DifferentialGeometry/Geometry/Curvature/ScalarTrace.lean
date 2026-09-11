@@ -10,7 +10,6 @@ namespace DifferentialGeometry.Geometry.Curvature
 
 theorem metricScalar_eq_trace_ricciSharp
     {E H M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
-    [NeZero (Module.finrank ℝ E)]
     [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
     [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M] [T2Space M]
     [BoundarylessManifold I M] (g : SmoothRiemannianMetric I M) (x : M) :
@@ -18,8 +17,9 @@ theorem metricScalar_eq_trace_ricciSharp
   classical
   obtain ⟨b, hb⟩ := exists_orthonormal_basis g x
   have hinv := metricInverseInBasis_of_orthonormal g b hb
-  rw [metricScalar_eq_scal, scalarCurv_eq_orthonormal_trace g x b hb,
-    LinearMap.trace_eq_matrix_trace ℝ b]
+  rw [metricScalar_eq_scal (I := I) g x]
+  rw [scalarCurv_eq_orthonormal_trace (I := I) g x b hb]
+  rw [LinearMap.trace_eq_matrix_trace ℝ b]
   simp only [Matrix.trace, Matrix.diag, LinearMap.toMatrix_apply]
   change (∑ i, ricciTensor g x (b i) (b i)) =
     ∑ i, b.repr (ricciSharp g x (b i)) i

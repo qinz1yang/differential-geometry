@@ -103,4 +103,18 @@ theorem SmoothRiemannianMetric.prod_inner
     g.inner x.1 v.1 w.1 + h.inner x.2 v.2 w.2
   rfl
 
+set_option backward.isDefEq.respectTransparency false in
+theorem SmoothRiemannianMetric.prod_inner_mfderiv
+    [T2Space M]
+    [T2Space N]
+    (g : SmoothRiemannianMetric I M) (h : SmoothRiemannianMetric J N)
+    (x : M × N) (v w : TangentSpace (I.prod J) x) :
+    (g.prod h).inner x v w =
+      g.inner x.1 (mfderiv (I.prod J) I Prod.fst x v)
+          (mfderiv (I.prod J) I Prod.fst x w) +
+        h.inner x.2 (mfderiv (I.prod J) J Prod.snd x v)
+          (mfderiv (I.prod J) J Prod.snd x w) := by
+  rw [SmoothRiemannianMetric.prod_inner, mfderiv_fst, mfderiv_snd]
+  with_unfolding_all rfl
+
 end DifferentialGeometry

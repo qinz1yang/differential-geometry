@@ -35,7 +35,7 @@ local instance pointedSectionalRestrictionOne : IsManifold I 1 M :=
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 private theorem riemannOp_restrictOpen_eq
     (g : SmoothRiemannianMetric I M) (U : TopologicalSpace.Opens M)
-    [SigmaCompactSpace U] (x : U) (v w u : TangentSpace I x) :
+    (x : U) (v w u : TangentSpace I x) :
     riemannOp (cov := LeviCivita (I := I) (g.restrictOpen (I := I) U)) x v w u =
       riemannOp (cov := LeviCivita (I := I) g) (x : M) v w u := by
   let A : TangentSpace I (x : M) :=

@@ -67,7 +67,7 @@ theorem universalCover_tensor_noncollapsed
     intro y hy
     rw [← himage] at hy
     obtain ⟨y', hy', rfl⟩ := hy
-    simpa only [metricRmNormSq_lifted] using hcurvature y' hy'
+    simpa only [UniversalCover.normSq0S_metricRm04At_liftedMetric] using hcurvature y' hy'
   have hopen : IsOpen
       (riemannianBallOf (I := I) (UniversalCover.liftedMetric (I := I) g) x r) :=
     isOpen_lt

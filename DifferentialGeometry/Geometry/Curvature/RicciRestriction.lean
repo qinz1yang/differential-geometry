@@ -34,7 +34,7 @@ private theorem restrict_inner (g : SmoothRiemannianMetric I M) (U : Topological
   rw [SmoothRiemannianMetric.restrictOpen_inner, mfderiv_subtype_val_apply, mfderiv_subtype_val_apply]
 
 theorem riemannOp_restrictOpen
-    (g : SmoothRiemannianMetric I M) (U : TopologicalSpace.Opens M) [SigmaCompactSpace U]
+    (g : SmoothRiemannianMetric I M) (U : TopologicalSpace.Opens M)
     (x : U) (u v w : TangentSpace I x) :
     mfderiv I I (Subtype.val : U → M) x (riemannOp (LeviCivita (g.restrictOpen U)) x u v w) =
       riemannOp (LeviCivita g) (x : M) (mfderiv I I (Subtype.val : U → M) x u)
@@ -50,7 +50,7 @@ theorem riemannOp_restrictOpen
   exact (g.symm (x : M) _ _).trans (h.trans (g.symm (x : M) _ _))
 
 theorem ricciTensor_restrictOpen
-    (g : SmoothRiemannianMetric I M) (U : TopologicalSpace.Opens M) [SigmaCompactSpace U]
+    (g : SmoothRiemannianMetric I M) (U : TopologicalSpace.Opens M)
     (x : U) (v w : TangentSpace I x) :
     ricciTensor (g.restrictOpen U) x v w = ricciTensor g (x : M)
       (mfderiv I I (Subtype.val : U → M) x v) (mfderiv I I (Subtype.val : U → M) x w) := by
@@ -71,7 +71,7 @@ theorem ricciTensor_restrictOpen
   exact LinearMap.trace_conj' A e.toLinearEquiv.symm
 
 theorem ricciSharp_restrictOpen
-    (g : SmoothRiemannianMetric I M) (U : TopologicalSpace.Opens M) [SigmaCompactSpace U]
+    (g : SmoothRiemannianMetric I M) (U : TopologicalSpace.Opens M)
     (x : U) (v : TangentSpace I x) :
     mfderiv I I (Subtype.val : U → M) x (ricciSharp (g.restrictOpen U) x v) =
       ricciSharp g (x : M) (mfderiv I I (Subtype.val : U → M) x v) := by

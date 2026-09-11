@@ -49,6 +49,37 @@ theorem volume_restrict_eq
       exact Set.indicator_of_notMem hx _)
   simpa only [U, MeasureTheory.lintegral_indicator hU] using h
 
+open DifferentialGeometry.Integral.Measure in
+theorem integral_eq_chartLocalMeasure_of_support_in_chart
+    [T2Space M] [CompactSpace M]
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
+    (α : M) {f : M → ℝ}
+    (hsupp : ∀ x, x ∉ (chartAt H α).source → f x = 0) :
+    ∫ x, f x ∂(riemannianVolumeMeasure (I := I) (M := M) g) =
+      ∫ x, f x ∂(chartLocalMeasure (I := I) g α) := by
+  calc
+    ∫ x, f x ∂(riemannianVolumeMeasure (I := I) (M := M) g) =
+        ∫ x in (chartAt H α).source, f x
+          ∂(riemannianVolumeMeasure (I := I) (M := M) g) :=
+      (setIntegral_eq_integral_of_forall_compl_eq_zero hsupp).symm
+    _ = ∫ x in (chartAt H α).source, f x ∂(chartLocalMeasure (I := I) g α) := by
+      rw [volume_restrict_eq (I := I) (M := M) g α]
+    _ = ∫ x, f x ∂(chartLocalMeasure (I := I) g α) :=
+      setIntegral_eq_integral_of_forall_compl_eq_zero hsupp
+
+open DifferentialGeometry.Integral.Measure in
+theorem integral_eq_integral_chartDensity_of_support_in_chart
+    [T2Space M] [CompactSpace M]
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
+    (α : M) {f : M → ℝ} (hf : Measurable f)
+    (hsupp : ∀ x, x ∉ (chartAt H α).source → f x = 0) :
+    ∫ x, f x ∂(riemannianVolumeMeasure (I := I) (M := M) g) =
+      ∫ y in (extChartAt I α).target,
+        chartDensity g α ((extChartAt I α).symm y) * f ((extChartAt I α).symm y)
+        ∂(modelHaar (E := E)) := by
+  rw [integral_eq_chartLocalMeasure_of_support_in_chart g α hsupp,
+    integral_chartLocalMeasure g α f hf]
+
 theorem chart_int_eq_global
     [T2Space M] [CompactSpace M]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
@@ -72,22 +103,8 @@ theorem chart_int_eq_global
         (I := I) (M := M) g).restrict (chartAt H α).source)
     rw [hrestrict]
     exact hf.integrableOn
-  refine ⟨hglobal_on.integrable_of_forall_notMem_eq_zero hsupp, ?_⟩
-  calc
-    ∫ x, f x ∂(DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure
-        (I := I) (M := M) g) =
-        ∫ x in (chartAt H α).source, f x
-          ∂(DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure
-            (I := I) (M := M) g) :=
-      (setIntegral_eq_integral_of_forall_compl_eq_zero hsupp).symm
-    _ = ∫ x in (chartAt H α).source, f x
-          ∂(DifferentialGeometry.Integral.Measure.chartLocalMeasure
-            (I := I) g α) := by
-      rw [hrestrict]
-    _ = ∫ x, f x
-          ∂(DifferentialGeometry.Integral.Measure.chartLocalMeasure
-            (I := I) g α) :=
-      setIntegral_eq_integral_of_forall_compl_eq_zero hsupp
+  exact ⟨hglobal_on.integrable_of_forall_notMem_eq_zero hsupp,
+    integral_eq_chartLocalMeasure_of_support_in_chart g α hsupp⟩
 
 variable (I)
 

@@ -117,6 +117,35 @@ theorem outwardNormal_continuous
       TotalSpace.mk' E (boundaryInclusion I M x) (outwardNormal (M := M) g x)) :=
   (outwardNormal_contMDiff (M := M) g).continuous
 
+theorem continuous_outwardNormal_inner
+    [HasOrientableBoundary (I := I) M]
+    (g : SmoothRiemannianMetric I M)
+    (V : (x : BoundaryManifold I M) → TangentSpace I (x : M))
+    (hV : Continuous (fun x : BoundaryManifold I M => TotalSpace.mk' E (x : M) (V x))) :
+    Continuous (fun x : BoundaryManifold I M =>
+      g.inner (x : M) (outwardNormal (M := M) g x) (V x)) := by
+  have hg := g.contMDiff.continuous.comp (continuous_subtype_val :
+    Continuous (fun x : BoundaryManifold I M => (x : M)))
+  have hnu := outwardNormal_continuous g
+  have h : Continuous (fun x : BoundaryManifold I M =>
+      TotalSpace.mk' Real (E := Bundle.Trivial M Real) (x : M)
+        (g.inner (x : M) (outwardNormal (M := M) g x) (V x))) :=
+    hg.clm_bundle_apply₂ (F₁ := E) (F₂ := E) hnu hV
+  apply continuous_iff_continuousAt.mpr
+  intro x
+  have hx := h.continuousAt (x := x)
+  rw [FiberBundle.continuousAt_totalSpace] at hx
+  exact hx.2
+
+theorem continuous_outwardNormal_inner_smoothSection
+    [HasOrientableBoundary (I := I) M]
+    (g : SmoothRiemannianMetric I M)
+    (V : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) :
+    Continuous (fun x : BoundaryManifold I M =>
+      g.inner (x : M) (outwardNormal (M := M) g x) (V (x : M))) :=
+  continuous_outwardNormal_inner g (fun x => V (x : M))
+    (V.contMDiff.continuous.comp continuous_subtype_val)
+
 end WithBoundary
 end DivergenceTheorem
 end Integral

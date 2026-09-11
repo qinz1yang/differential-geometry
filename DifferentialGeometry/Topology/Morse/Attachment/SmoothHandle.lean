@@ -381,7 +381,7 @@ noncomputable def sublevelCellAdjunctionHomotopyEquivUnderOfMorseChart {n : ℕ}
 theorem sublevelTransport_diffeomorph_of_setImage {m : ℕ} {H : Type} [TopologicalSpace H]
     {M : Type} [TopologicalSpace M] [ChartedSpace H M]
     (I : ModelWithCorners ℝ (MorseModel (m + 1)) H) [I.Boundaryless]
-    [IsManifold I (⊤ : WithTop ℕ∞) M]
+    [IsManifold I (↑(⊤ : ℕ∞) : WithTop ℕ∞) M]
     (g f : M → ℝ) (a b : ℝ)
     (hg : ContMDiff I 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞) g)
     (hf : ContMDiff I 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞) f)

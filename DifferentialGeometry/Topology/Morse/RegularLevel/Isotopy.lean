@@ -26,7 +26,7 @@ private theorem hasDerivAt_of_hasMFDerivAt_real
 
 private theorem familyChartRep_contDiffOn
     {I : ModelWithCorners ℝ (MorseModel (m + 1)) H}
-    [IsManifold I (⊤ : WithTop ℕ∞) M] (F : M → ℝ → ℝ)
+    [IsManifold I (↑(⊤ : ℕ∞) : WithTop ℕ∞) M] (F : M → ℝ → ℝ)
     (hF : ContMDiff (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞)
       (fun q : M × ℝ => F q.1 q.2)) (x₀ : M) :
     ContDiffOn ℝ (↑(⊤ : ℕ∞) : WithTop ℕ∞)
@@ -80,7 +80,7 @@ private theorem familyChartRep_contDiffOn
 
 private theorem familyChartRep_fderiv_apply_contDiffOn
     {I : ModelWithCorners ℝ (MorseModel (m + 1)) H} [I.Boundaryless]
-    [IsManifold I (⊤ : WithTop ℕ∞) M] (F : M → ℝ → ℝ)
+    [IsManifold I (↑(⊤ : ℕ∞) : WithTop ℕ∞) M] (F : M → ℝ → ℝ)
     (hF : ContMDiff (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞)
       (fun q : M × ℝ => F q.1 q.2)) (x₀ : M) (i : Fin (m + 1)) :
     ContDiffOn ℝ (↑(⊤ : ℕ∞) : WithTop ℕ∞)
@@ -101,7 +101,7 @@ private theorem familyChartRep_fderiv_apply_contDiffOn
 
 private theorem familyChartRep_fderiv_curry
     {I : ModelWithCorners ℝ (MorseModel (m + 1)) H} [I.Boundaryless]
-    [IsManifold I (⊤ : WithTop ℕ∞) M] (F : M → ℝ → ℝ)
+    [IsManifold I (↑(⊤ : ℕ∞) : WithTop ℕ∞) M] (F : M → ℝ → ℝ)
     (hF : ContMDiff (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞)
       (fun q : M × ℝ => F q.1 q.2)) (x₀ : M) (y : MorseModel (m + 1)) (s : ℝ)
     (hy : y ∈ (extChartAt I x₀).target) :
@@ -126,7 +126,7 @@ private theorem familyChartRep_fderiv_curry
 
 private theorem familyChartRep_fderiv_curry_time
     {I : ModelWithCorners ℝ (MorseModel (m + 1)) H} [I.Boundaryless]
-    [IsManifold I (⊤ : WithTop ℕ∞) M] (F : M → ℝ → ℝ)
+    [IsManifold I (↑(⊤ : ℕ∞) : WithTop ℕ∞) M] (F : M → ℝ → ℝ)
     (hF : ContMDiff (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞)
       (fun q : M × ℝ => F q.1 q.2)) (x₀ : M) (y : MorseModel (m + 1)) (s : ℝ)
     (hy : y ∈ (extChartAt I x₀).target) :
@@ -151,7 +151,7 @@ private theorem familyChartRep_fderiv_curry_time
 
 private theorem familyTimeDeriv_contMDiffOn
     {I : ModelWithCorners ℝ (MorseModel (m + 1)) H} [I.Boundaryless]
-    [IsManifold I (⊤ : WithTop ℕ∞) M] (F : M → ℝ → ℝ)
+    [IsManifold I (↑(⊤ : ℕ∞) : WithTop ℕ∞) M] (F : M → ℝ → ℝ)
     (hF : ContMDiff (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞)
       (fun q : M × ℝ => F q.1 q.2)) (x₀ : M) :
     ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞)
@@ -205,7 +205,7 @@ private theorem familyTimeDeriv_contMDiffOn
 
 private theorem familyTimeDeriv_contMDiff
     {I : ModelWithCorners ℝ (MorseModel (m + 1)) H} [I.Boundaryless]
-    [IsManifold I (⊤ : WithTop ℕ∞) M] (F : M → ℝ → ℝ)
+    [IsManifold I (↑(⊤ : ℕ∞) : WithTop ℕ∞) M] (F : M → ℝ → ℝ)
     (hF : ContMDiff (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞)
       (fun q : M × ℝ => F q.1 q.2)) :
     ContMDiff (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞)
@@ -459,7 +459,7 @@ private theorem suspension_level_equation
 
 private theorem familyChartRep_coefficient_contMDiffOn
     {I : ModelWithCorners ℝ (MorseModel (m + 1)) H} [I.Boundaryless]
-    [IsManifold I (⊤ : WithTop ℕ∞) M] (F : M → ℝ → ℝ)
+    [IsManifold I (↑(⊤ : ℕ∞) : WithTop ℕ∞) M] (F : M → ℝ → ℝ)
     (hF : ContMDiff (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞)
       (fun q : M × ℝ => F q.1 q.2)) (x₀ : M) (i : Fin (m + 1)) :
     ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞)
@@ -493,7 +493,7 @@ private theorem familyChartRep_coefficient_contMDiffOn
 
 private theorem familyTangentSection_contMDiffWithinAt_section_iff
     {I : ModelWithCorners ℝ (MorseModel (m + 1)) H}
-    [IsManifold I (⊤ : WithTop ℕ∞) M]
+    [IsManifold I (↑(⊤ : ℕ∞) : WithTop ℕ∞) M]
     {W : (x : M) → (s : ℝ) → TangentSpace I x} {a : Set (M × ℝ)} {p : M × ℝ}
     (ha : a ⊆ (extChartAt I p.1).source ×ˢ Set.univ) :
     ContMDiffWithinAt (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, MorseModel (m + 1))) (↑(⊤ : ℕ∞) : WithTop ℕ∞)
@@ -602,7 +602,7 @@ private theorem familyTangentSection_contMDiffWithinAt_section_iff
 
 private theorem familyTangentSection_contMDiffWithinAt_section_iff'
     {I : ModelWithCorners ℝ (MorseModel (m + 1)) H}
-    [IsManifold I (⊤ : WithTop ℕ∞) M]
+    [IsManifold I (↑(⊤ : ℕ∞) : WithTop ℕ∞) M]
     {W : (x : M) → (s : ℝ) → TangentSpace I x} {a : Set (M × ℝ)} {p : M × ℝ}
     (x₀ : M) (hp : p.1 ∈ (trivializationAt (MorseModel (m + 1)) (TangentSpace I) x₀).baseSet) :
     ContMDiffWithinAt (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, MorseModel (m + 1)) (↑(⊤ : ℕ∞) : WithTop ℕ∞)
@@ -640,7 +640,7 @@ private theorem familyTangentSection_contMDiffWithinAt_section_iff'
 
 private theorem familyTangentSection_smul_section
     {I : ModelWithCorners ℝ (MorseModel (m + 1)) H}
-    [IsManifold I (⊤ : WithTop ℕ∞) M]
+    [IsManifold I (↑(⊤ : ℕ∞) : WithTop ℕ∞) M]
     {W : (x : M) → (s : ℝ) → TangentSpace I x} {ψ : M × ℝ → ℝ} {u : Set (M × ℝ)} {p : M × ℝ}
     (hψ : ContMDiffWithinAt (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞) ψ u p)
     (hW : ContMDiffWithinAt (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, MorseModel (m + 1))) (↑(⊤ : ℕ∞) : WithTop ℕ∞)
@@ -701,7 +701,7 @@ private theorem familyTangentSection_smul_section
 
 private theorem familyTangentSection_finsum_of_locallyFinite
     {I : ModelWithCorners ℝ (MorseModel (m + 1)) H}
-    [IsManifold I (⊤ : WithTop ℕ∞) M]
+    [IsManifold I (↑(⊤ : ℕ∞) : WithTop ℕ∞) M]
     {ι : Type*} {t : ι → (x : M) → (s : ℝ) → TangentSpace I x}
     (ht : LocallyFinite (fun i : ι => {q : M × ℝ | t i q.1 q.2 ≠ 0}))
     (ht' : ∀ i, ContMDiff (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, MorseModel (m + 1))) (↑(⊤ : ℕ∞) : WithTop ℕ∞)
@@ -814,7 +814,7 @@ private theorem familyTangentSection_finsum_of_locallyFinite
 
 private theorem familyTangentSection_smul_of_tsupport
     {I : ModelWithCorners ℝ (MorseModel (m + 1)) H}
-    [IsManifold I (⊤ : WithTop ℕ∞) M]
+    [IsManifold I (↑(⊤ : ℕ∞) : WithTop ℕ∞) M]
     {W : (x : M) → (s : ℝ) → TangentSpace I x} {ψ : M × ℝ → ℝ} {u : Set (M × ℝ)}
     (hψ : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞) ψ u)
     (ht : IsOpen u) (ht' : tsupport ψ ⊆ u)
@@ -877,7 +877,7 @@ private theorem familyTangentSection_smul_of_tsupport
 
 private theorem suspensionSection_contMDiff
     {I : ModelWithCorners ℝ (MorseModel (m + 1)) H}
-    [IsManifold I (⊤ : WithTop ℕ∞) M]
+    [IsManifold I (↑(⊤ : ℕ∞) : WithTop ℕ∞) M]
     {W : (x : M) → (s : ℝ) → TangentSpace I x}
     (hW : ContMDiff (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, MorseModel (m + 1))) (↑(⊤ : ℕ∞) : WithTop ℕ∞)
       (fun q : M × ℝ => (⟨q.1, W q.1 q.2⟩ : TangentBundle I M))) :
@@ -917,7 +917,7 @@ private theorem suspensionSection_contMDiff
 
 private theorem suspensionSection_smul_contMDiff
     {I : ModelWithCorners ℝ (MorseModel (m + 1)) H}
-    [IsManifold I (⊤ : WithTop ℕ∞) M]
+    [IsManifold I (↑(⊤ : ℕ∞) : WithTop ℕ∞) M]
     {W : (x : M) → (s : ℝ) → TangentSpace I x} {α : M × ℝ → ℝ}
     (hW : ContMDiff (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, MorseModel (m + 1))) (↑(⊤ : ℕ∞) : WithTop ℕ∞)
       (fun q : M × ℝ => (⟨q.1, W q.1 q.2⟩ : TangentBundle I M)))
@@ -961,7 +961,7 @@ private theorem suspensionSection_smul_contMDiff
 
 private theorem suspensionSection_smul2_contMDiff
     {I : ModelWithCorners ℝ (MorseModel (m + 1)) H}
-    [IsManifold I (⊤ : WithTop ℕ∞) M]
+    [IsManifold I (↑(⊤ : ℕ∞) : WithTop ℕ∞) M]
     {W : (x : M) → (s : ℝ) → TangentSpace I x} {α : M × ℝ → ℝ} {β : M × ℝ → ℝ}
     (hW : ContMDiff (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, MorseModel (m + 1))) (↑(⊤ : ℕ∞) : WithTop ℕ∞)
       (fun q : M × ℝ => (⟨q.1, W q.1 q.2⟩ : TangentBundle I M)))
@@ -1466,7 +1466,7 @@ private lemma sublevel_const_of_deriv_eq_zero_on_unit
     · exact sublevel_const_of_deriv_eq_zero_on_unit' hf hL hf0 hderiv ht₁ hgt
 theorem localUnitSpeedFamilyVectorField_at_noncritical
     (I : ModelWithCorners ℝ (MorseModel (m + 1)) H) [I.Boundaryless]
-    [IsManifold I (⊤ : WithTop ℕ∞) M]
+    [IsManifold I (↑(⊤ : ℕ∞) : WithTop ℕ∞) M]
     (F : M → ℝ → ℝ)
     (hF : ContMDiff (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞)
       (fun q : M × ℝ => F q.1 q.2)) {x₀ : M} {s₀ : ℝ}
@@ -1487,7 +1487,8 @@ theorem localUnitSpeedFamilyVectorField_at_noncritical
     exact (hF.comp hpair).congr (fun x => by rfl)
   have hcritChart : fderiv ℝ (fun y : MorseModel (m + 1) => F ((extChartAt I x₀).symm y) s₀)
       (extChartAt I x₀ x₀) ≠ 0 := by
-    have hiff := isCriticalPointAt_iff_chart_fderiv I (fun x : M => F x s₀) hfSlice x₀
+    have hiff := isCriticalPointAt_iff_chart_fderiv (I := I)
+      (f := fun x : M => F x s₀) hfSlice (p := x₀)
     intro hz
     exact hcrit (hiff.2 hz)
   rcases exists_coord_of_fderiv_ne_zero (fun y : MorseModel (m + 1) => F ((extChartAt I x₀).symm y) s₀)
@@ -1705,7 +1706,7 @@ theorem localUnitSpeedFamilyVectorField_at_noncritical
 
 theorem exists_unitSpeedFamilyVectorField_on_compact
     (I : ModelWithCorners ℝ (MorseModel (m + 1)) H) [I.Boundaryless]
-    [IsManifold I (⊤ : WithTop ℕ∞) M] [T2Space M] [SigmaCompactSpace M]
+    [IsManifold I (↑(⊤ : ℕ∞) : WithTop ℕ∞) M] [T2Space M] [SigmaCompactSpace M]
     (F : M → ℝ → ℝ) (hF : ContMDiff (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞)
       (fun q : M × ℝ => F q.1 q.2)) (K : Set (M × ℝ)) (hcompact : IsCompact K)
     (hregular : ∀ p ∈ K, ¬ IsCriticalPointAt I (fun x => F x p.2) p.1) :
@@ -2280,7 +2281,7 @@ private lemma pairFlow_aux_curve_integral
 
 private lemma orbit_spatial_mem_projection
     {I : ModelWithCorners ℝ (MorseModel (m + 1)) H} [I.Boundaryless]
-    [IsManifold I (⊤ : WithTop ℕ∞) M] [T2Space M]
+    [IsManifold I (↑(⊤ : ℕ∞) : WithTop ℕ∞) M] [T2Space M]
     {χs : M × ℝ → ℝ} {ρ : M × ℝ → ℝ} {χt : ℝ → ℝ}
     {w : (x : M) → (s : ℝ) → TangentSpace I x}
     (hχs_sm : ContMDiff (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞) χs)
@@ -2573,7 +2574,7 @@ private lemma orbit_spatial_mem_projection
 
 theorem exists_relDiffeomorph_sublevel_of_regularFamily
     (I : ModelWithCorners ℝ (MorseModel (m + 1)) H) [I.Boundaryless]
-    [IsManifold I (⊤ : WithTop ℕ∞) M] [T2Space M] [SigmaCompactSpace M]
+    [IsManifold I (↑(⊤ : ℕ∞) : WithTop ℕ∞) M] [T2Space M] [SigmaCompactSpace M]
     [CompleteSpace (MorseModel (m + 1))]
     (F : M → ℝ → ℝ)
     (hF : ContMDiff (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞)
@@ -3665,7 +3666,7 @@ theorem regularFamilySliceRegular
 
 theorem exists_diffeomorph_sublevel_of_regularFamily
     (I : ModelWithCorners ℝ (MorseModel (m + 1)) H) [I.Boundaryless]
-    [IsManifold I (⊤ : WithTop ℕ∞) M] [T2Space M] [SigmaCompactSpace M]
+    [IsManifold I (↑(⊤ : ℕ∞) : WithTop ℕ∞) M] [T2Space M] [SigmaCompactSpace M]
     [CompleteSpace (MorseModel (m + 1))]
     (F : M → ℝ → ℝ)
     (hF : ContMDiff (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞)

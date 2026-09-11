@@ -80,6 +80,30 @@ abbrev IsHeatForcedOnStationary
 
 namespace IsHeatForcedOn
 
+theorem sub_same
+    {D : RealTimeInterval}
+    {G : MetricConnectionFamily (I := I) (M := M) Real}
+    {f u v : Real → M → Real}
+    (hu : IsHeatForcedOn D G f u) (hv : IsHeatForcedOn D G f v) :
+    IsHeatOn D G (fun t x => u t x - v t x) where
+  jointSmooth := hu.jointSmooth.sub hv.jointSmooth
+  jointCont := hu.jointCont.sub hv.jointCont
+  sliceSmooth t ht := (hu.sliceSmooth t ht).sub (hv.sliceSmooth t ht)
+  equation t ht x := by
+    have htcarrier := D.regular_subset ht
+    have husmooth := hu.sliceSmooth t htcarrier
+    have hvsmooth := hv.sliceSmooth t htcarrier
+    have hlaplacian := laplacianAt_sub (I := I) G t
+      (fun y => husmooth.mdifferentiable (by simp) y)
+      (fun y => hvsmooth.mdifferentiable (by simp) y)
+      (DifferentialGeometry.Geometry.Operator.gradientFun_mdiffAt
+        (I := I) (G.metric t) husmooth x)
+      (DifferentialGeometry.Geometry.Operator.gradientFun_mdiffAt
+        (I := I) (G.metric t) hvsmooth x)
+    refine ((hu.equation t ht x).sub (hv.equation t ht x)).congr_deriv ?_
+    rw [hlaplacian]
+    ring
+
 theorem mono
     {D D' : RealTimeInterval}
     {G : MetricConnectionFamily (I := I) (M := M) Real}

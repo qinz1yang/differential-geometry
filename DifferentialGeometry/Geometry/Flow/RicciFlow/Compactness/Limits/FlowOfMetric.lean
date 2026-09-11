@@ -14,8 +14,7 @@ set_option autoImplicit false
 
 noncomputable section
 
-open Bundle
-open scoped Manifold ContDiff Topology
+open scoped Manifold ContDiff
 
 namespace DifferentialGeometry
 namespace PDE

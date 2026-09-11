@@ -18,7 +18,7 @@ theorem exists_nhds_isOpenEmbedding_domRestrict_of_contMDiffAt_of_bijective_mfde
     [I.Boundaryless] [J.Boundaryless]
     [TopologicalSpace M] [ChartedSpace H M]
     [TopologicalSpace N] [ChartedSpace G N]
-    {n : ℕ∞ω} [IsManifold I n M] [IsManifold J n N]
+    {n : ℕ∞ω}
     {f : M → N} {x : M}
     (hn : n ≠ 0)
     (hf : ContMDiffAt I J n f x)
@@ -118,7 +118,7 @@ theorem exists_nhds_injOn_of_contMDiffAt_of_bijective_mfderiv
     [I.Boundaryless] [J.Boundaryless]
     [TopologicalSpace M] [ChartedSpace H M]
     [TopologicalSpace N] [ChartedSpace G N]
-    {n : ℕ∞ω} [IsManifold I n M] [IsManifold J n N]
+    {n : ℕ∞ω}
     {f : M → N} {x : M}
     (hn : n ≠ 0)
     (hf : ContMDiffAt I J n f x)

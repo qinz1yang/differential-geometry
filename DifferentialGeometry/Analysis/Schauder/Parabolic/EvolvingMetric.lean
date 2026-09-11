@@ -483,7 +483,6 @@ theorem exists_uniform_parabolic_chart_operator_coefficient_schauder_bounds_of_f
       (Finset.single_le_sum (fun s _ ↦ (zero_le : 0 ≤ Kbr s k)) (Finset.mem_univ r))
 
 theorem exists_uniform_parabolic_chart_principal_coefficient_quadratic_lower_bound_of_finite
-    [NeZero (Module.finrank Real E)]
     {D : RealTimeInterval}
     {G : MetricConnectionFamilyOn (I := I) (M := M) D}
     (hG : MetricFamilySmoothOn (I := I) (M := M) D G.metric)

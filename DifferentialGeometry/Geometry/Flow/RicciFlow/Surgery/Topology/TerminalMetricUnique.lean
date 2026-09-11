@@ -11,7 +11,7 @@ universe u
 
 private theorem inner_sub_le_metricDerivNorm
     {M : Type u} [TopologicalSpace M] [ChartedSpace ThreeSpace M]
-    [IsManifold ThreeModel ∞ M] [T2Space M] [SigmaCompactSpace M]
+    [IsManifold ThreeModel ∞ M] [T2Space M]
     (g h : SmoothRiemannianMetric ThreeModel M) (x : M)
     (v w : TangentSpace ThreeModel x) :
     |g.inner x v w - h.inner x v w| ≤

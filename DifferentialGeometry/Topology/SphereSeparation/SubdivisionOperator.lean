@@ -21,7 +21,6 @@ theorem singularBarycentricSubdivision_f
       barycentricSubdivisionDegreeMap X n :=
   rfl
 
-@[simp]
 theorem singularBarycentricSubdivision_f_zero (X : TopCat) :
     (singularBarycentricSubdivision X).f 0 = 𝟙 _ :=
   barycentricSubdivisionDegreeMap_zero X

@@ -163,7 +163,7 @@ theorem chainComplexMap_singularSimplexRealizationMap_naturality
   rw [← HomologicalComplex.comp_f, ← Functor.map_comp,
     ← Functor.map_comp]
 
-@[reassoc (attr := simp)]
+@[reassoc]
 theorem ι_standardSimplex_comp_singularSimplexRealizationMap
     (X : TopCat) {n : ℕ} (s : (TopCat.toSSet.obj X) _⦋n⦌) :
     (TopCat.toSSet.obj

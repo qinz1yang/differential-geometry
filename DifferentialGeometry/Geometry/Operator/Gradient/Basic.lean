@@ -1,5 +1,6 @@
 import DifferentialGeometry.Geometry.Coordinates.Fields.Scalar
 import DifferentialGeometry.Geometry.Coordinates.Fields.Vector
+import DifferentialGeometry.Geometry.Coordinates.Frame.Chart
 import DifferentialGeometry.Geometry.Metric.Coordinates.ChartGram
 import DifferentialGeometry.Geometry.Operator.DirectionalDerivative
 import DifferentialGeometry.Tensor.Coordinates.PartialDerivative
@@ -18,6 +19,7 @@ noncomputable section
 open Bundle Manifold Set
 open scoped Manifold Topology ContDiff Matrix
 open DifferentialGeometry.Integral.DivergenceTheorem
+open DifferentialGeometry.Tensor.Coordinates
 
 namespace DifferentialGeometry
 namespace Geometry
@@ -535,6 +537,81 @@ lemma gradChartLocal_eq_gradFun
   intro k _
   congr 1
   rw [inner_gradChartLocal_chartBasis (I := I) g α f hx k, hmfderiv_basis k]
+
+theorem chartBasisFamily_repr_gradFun
+    (g : SmoothRiemannianMetric I M) (α : M)
+    {f : M → ℝ} {x : M} (hf : MDifferentiableAt I 𝓘(ℝ, ℝ) f x)
+    (hx : x ∈ (trivializationAt E (TangentSpace I) α).baseSet)
+    (hx_int : extChartAt I α x ∈ interior (extChartAt I α).target)
+    (i : Fin (Module.finrank ℝ E)) :
+    (chartBasisFamily (I := I) α hx).repr (gradFun (I := I) g f x) i =
+      gradChartCoeff (I := I) g α f i x := by
+  classical
+  rw [← gradChartLocal_eq_gradFun (I := I) g α hf hx hx_int]
+  unfold gradChartLocal
+  simp_rw [← chartBasisFamily_apply (I := I) α hx]
+  simp [Finsupp.single_apply]
+
+theorem grad_norm_sq_chart_of_mem_interior
+    (g : SmoothRiemannianMetric I M) (α : M) {f : M → ℝ} {x : M}
+    (hf : MDifferentiableAt I 𝓘(ℝ, ℝ) f x)
+    (hx : x ∈ (chartAt H α).source)
+    (hxint : extChartAt I α x ∈ interior (extChartAt I α).target) :
+    g.inner x (gradFun (I := I) g f x) (gradFun (I := I) g f x) =
+      ∑ i, ∑ j, chartInvGramMatrix (I := I) g α x i j *
+        partialDeriv (E := E) j (scalarOnE (I := I) α f) (extChartAt I α x) *
+        partialDeriv (E := E) i (scalarOnE (I := I) α f) (extChartAt I α x) := by
+  have hbase : x ∈ (trivializationAt E (TangentSpace I) α).baseSet := by
+    rw [trivializationAt_baseSet_eq_chartAt_source]
+    exact hx
+  have hgrad := gradChartLocal_eq_gradFun (I := I) g α hf hbase hxint
+  rw [inner_gradFun (I := I) g f x, ← hgrad]
+  unfold gradChartLocal
+  rw [map_sum]
+  refine Finset.sum_congr rfl ?_
+  intro i _
+  rw [map_smul, mfderiv_chartBasisVecFiber_of_mdifferentiableAt (I := I) α hf hx hxint i]
+  change gradChartCoeff (I := I) g α f i x *
+      partialDeriv (E := E) i (scalarOnE (I := I) α f) (extChartAt I α x) = _
+  unfold gradChartCoeff
+  rw [Finset.sum_mul]
+
+theorem g_inner_gradFun_le_chartInvGramMatrix_l1Sum_mul_sum_sq_partials_of_mem_interior
+    (g : SmoothRiemannianMetric I M) (α : M) {f : M → ℝ} {x : M}
+    (hf : MDifferentiableAt I 𝓘(ℝ, ℝ) f x)
+    (hx : x ∈ (chartAt H α).source)
+    (hxint : extChartAt I α x ∈ interior (extChartAt I α).target) :
+    g.inner x (gradFun (I := I) g f x) (gradFun (I := I) g f x) ≤
+      chartInvGramMatrixL1Sum (I := I) (M := M) g α x *
+        ∑ k : Fin (Module.finrank ℝ E),
+          (partialDeriv (E := E) k (scalarOnE (I := I) α f)
+            (extChartAt I α x)) ^ 2 := by
+  classical
+  rw [grad_norm_sq_chart_of_mem_interior g α hf hx hxint]
+  let d : Fin (Module.finrank ℝ E) → ℝ := fun k =>
+    partialDeriv (E := E) k (scalarOnE (I := I) α f) (extChartAt I α x)
+  let D : ℝ := ∑ k, (d k) ^ 2
+  have hd (k : Fin (Module.finrank ℝ E)) : (d k) ^ 2 ≤ D :=
+    Finset.single_le_sum (fun j _ => sq_nonneg (d j)) (Finset.mem_univ k)
+  have hprod (i j : Fin (Module.finrank ℝ E)) : |d j * d i| ≤ D := by
+    rw [abs_mul]
+    have hsq : 0 ≤ d j ^ 2 - 2 * |d j| * |d i| + d i ^ 2 := by
+      simpa [sub_sq, sq_abs] using sq_nonneg (|d j| - |d i|)
+    nlinarith [hd i, hd j]
+  change (∑ i, ∑ j, chartInvGramMatrix (I := I) g α x i j * d j * d i) ≤
+    chartInvGramMatrixL1Sum (I := I) (M := M) g α x * D
+  unfold chartInvGramMatrixL1Sum
+  rw [Finset.sum_mul, Fintype.sum_prod_type]
+  apply Finset.sum_le_sum
+  intro i _
+  apply Finset.sum_le_sum
+  intro j _
+  calc
+    _ ≤ |chartInvGramMatrix (I := I) g α x i j * d j * d i| := le_abs_self _
+    _ = |chartInvGramMatrix (I := I) g α x i j| * |d j * d i| := by
+      rw [mul_assoc, abs_mul]
+    _ ≤ _ := mul_le_mul_of_nonneg_left (hprod i j) (abs_nonneg _)
+
 
 theorem grad_norm_sq_chart
     (g : SmoothRiemannianMetric I M) [I.Boundaryless]

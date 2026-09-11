@@ -1,5 +1,8 @@
 import DifferentialGeometry.Geometry.Metric.Scaling
 import DifferentialGeometry.Geometry.Operator.Scalar.Calculus
+import DifferentialGeometry.Geometry.Operator.Laplacian.Rough
+import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Scaling
+
 open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
@@ -8,7 +11,7 @@ namespace DifferentialGeometry.Geometry.Operator
 
 noncomputable section
 
-open Bundle
+open Bundle Manifold DifferentialGeometry.Tensor0SBundle
 open scoped Manifold ContDiff
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
@@ -118,6 +121,37 @@ theorem laplacian_scaleMetric_const_smul
   rw [laplacian_const_smul (I := I) cov (scaleMetric (I := I) c hc g)
     c⁻¹ hf hgradScaled]
   rw [laplacian_scaleMetric (I := I) c hc cov g hgrad]
+  ring
+
+theorem metricTracePair0SAt_scaleMetric
+    (c : Real) (hc : 0 < c) (g : SmoothRiemannianMetric I M)
+    {x : M} (B : Tensor0SSpace (𝕜 := Real) (E := E) (H := H)
+      (I := I) (M := M) 2 x) :
+    metricTracePair0SAt (I := I) (scaleMetric (I := I) c hc g) B =
+      c⁻¹ * metricTracePair0SAt (I := I) g B := by
+  classical
+  let basis : Module.Basis (DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E)
+    Real (TangentSpace I x) :=
+      DifferentialGeometry.Tensor.Coordinates.coordinateFrameAtToBasis (I := I) x
+  let gInv : DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E ->
+      DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E -> Real :=
+    fun k l =>
+      DifferentialGeometry.Tensor.Coordinates.inverseMetricFlatModelInChartComponent (I := I) g x k
+        l (extChartAt I x x)
+  have hinv : MetricInverseInBasis (I := I) g x basis gInv :=
+    Tensor.Coordinates.inverseMetricFlatModelInChart_metricInverseInBasis_center (I := I) g x
+  have hinvScale :
+      MetricInverseInBasis (I := I) (scaleMetric (I := I) c hc g) x basis
+        (fun i j => c⁻¹ * gInv i j) :=
+    metricInvBasis_scale (I := I) c hc g basis gInv hinv
+  rw [metricTracePair0SAt_eq_sum_basis (I := I) (scaleMetric (I := I) c hc g)
+      basis (fun i j => c⁻¹ * gInv i j) hinvScale,
+    metricTracePair0SAt_eq_sum_basis (I := I) g basis gInv hinv]
+  simp only [Finset.mul_sum]
+  apply Finset.sum_congr rfl
+  intro i _
+  apply Finset.sum_congr rfl
+  intro j _
   ring
 
 end

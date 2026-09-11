@@ -2,6 +2,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.Noncollapsing.Cutof
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.W.Estimate
 import DifferentialGeometry.Analysis.Integration.LpNorm
 import Mathlib.Analysis.SpecialFunctions.Log.NegMulLog
+
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 open DifferentialGeometry.Geometry.Operator
@@ -108,7 +109,7 @@ theorem normalize_cutoff
     have hgrad_v : ∀ x : M, gradFun (I := I) g v x =
         c • gradFun (I := I) g φ x := by
       intro x
-      exact gradFun_const_smul (I := I) g c
+      exact Operator.gradFun_const_smul (I := I) g c
         (hφ.mdifferentiableAt (by norm_num))
     have henergy : ∀ x : M,
         g.inner x (gradFun (I := I) g v x) (gradFun (I := I) g v x) =
@@ -137,7 +138,7 @@ theorem normalize_cutoff
     have hgrad_v : ∀ x : M, gradFun (I := I) g v x =
         c • gradFun (I := I) g φ x := by
       intro x
-      exact gradFun_const_smul (I := I) g c
+      exact Operator.gradFun_const_smul (I := I) g c
         (hφ.mdifferentiableAt (by norm_num))
     have henergy : ∀ x : M,
         g.inner x (gradFun (I := I) g v x) (gradFun (I := I) g v x) =

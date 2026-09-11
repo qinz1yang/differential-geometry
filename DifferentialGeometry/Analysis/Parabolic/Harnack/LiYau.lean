@@ -3,6 +3,7 @@ import DifferentialGeometry.Analysis.Calculus.TimeJet.Commutation
 import DifferentialGeometry.Geometry.Operator.Gradient.Basic
 import DifferentialGeometry.Geometry.Operator.Scalar.Calculus
 import DifferentialGeometry.Geometry.Operator.Laplacian.VossWeylFormula
+import DifferentialGeometry.Geometry.Operator.TimeLaplacian
 import DifferentialGeometry.Geometry.Operator.Laplacian.LeviCivitaIdentification
 import DifferentialGeometry.Geometry.Operator.Gradient.NormSquared
 import DifferentialGeometry.Geometry.Operator.Hessian.Trace.Inequality
@@ -437,40 +438,8 @@ theorem scalarOnE_jointContDiffAt
     (hy : y ∈ (extChartAt I α).target) :
     ContDiffAt ℝ ∞
       (fun r : ℝ × E => scalarOnE (I := I) α (f r.1) r.2) (t, y) := by
-  have hU : ContMDiffOn ((𝓘(ℝ, ℝ).prod I)) 𝓘(ℝ, ℝ) ∞
-      (fun p : ℝ × M => f p.1 p.2) (D.regular ×ˢ univ) := hf
-  have hids : ContMDiffOn (𝓘(ℝ, ℝ).prod 𝓘(ℝ, E)) 𝓘(ℝ, ℝ) ∞
-      (fun r : ℝ × E => r.1) (Set.univ ×ˢ (extChartAt I α).target) :=
-    contMDiffOn_fst
-  have hsym : ContMDiffOn (𝓘(ℝ, ℝ).prod 𝓘(ℝ, E)) I ∞
-      (fun r : ℝ × E => (extChartAt I α).symm r.2)
-      (Set.univ ×ˢ (extChartAt I α).target) := by
-    refine (contMDiffOn_extChartAt_symm (I := I) α).comp ?_ ?_
-    · exact contMDiffOn_snd
-    · intro r hr
-      exact hr.2
-  have hsymm : ContMDiffOn (𝓘(ℝ, ℝ).prod 𝓘(ℝ, E)) ((𝓘(ℝ, ℝ).prod I)) ∞
-      (fun r : ℝ × E => (r.1, (extChartAt I α).symm r.2))
-      (D.regular ×ˢ (extChartAt I α).target) := by
-    refine (hids.prodMk hsym).mono ?_
-    intro r hr
-    exact ⟨Set.mem_univ r.1, hr.2⟩
-  have hcomp : ContMDiffOn (𝓘(ℝ, ℝ).prod 𝓘(ℝ, E)) 𝓘(ℝ, ℝ) ∞
-      (fun r : ℝ × E => f r.1 ((extChartAt I α).symm r.2))
-      (D.regular ×ˢ (extChartAt I α).target) :=
-    hU.comp hsymm (fun r hr => ⟨hr.1, trivial⟩)
-  have hcd : ContDiffOn ℝ ∞
-      (fun r : ℝ × E => f r.1 ((extChartAt I α).symm r.2))
-      (D.regular ×ˢ (extChartAt I α).target) := by
-    rw [← contMDiffOn_iff_contDiffOn, modelWithCornersSelf_prod,
-      ← chartedSpaceSelf_prod]
-    exact hcomp
-  have hpt : (t, y) ∈ D.regular ×ˢ (extChartAt I α).target := ⟨ht, hy⟩
-  have hopen : IsOpen (D.regular ×ˢ (extChartAt I α).target) :=
-    D.regular_isOpen.prod (isOpen_extChartAt_target (I := I) α)
-  have hat := hcd.contDiffAt
-    (hopen.mem_nhds hpt)
-  simpa [scalarOnE_def] using hat
+  exact (scalarOnE_contDiffOn_prod α hf).contDiffAt
+    ((D.regular_isOpen.prod (isOpen_extChartAt_target (I := I) α)).mem_nhds ⟨ht, hy⟩)
 
 omit [FiniteDimensional ℝ E] [T2Space M] [SigmaCompactSpace M] in
 theorem time_deriv_slice_contMDiff
@@ -904,7 +873,8 @@ theorem liYauQuantity_evolution_identity
       (fun s : ℝ => chartVossWeylLaplacian (I := I) g α (f s) x)
       (chartVossWeylLaplacian (I := I) g α
         (fun w : M => deriv (fun s : ℝ => f s w) t) x) t :=
-    chartLaplacianTimeDerivOn (I := I) (M := M) (D := D) g f hlog' ht x α hxsrc
+    hasDerivAt_chartVossWeylLaplacian g f D.regular_isOpen hlog' α ht x
+      (by rwa [(isOpen_extChartAt_target (I := I) α).interior_eq])
   have hq_chart_eq : (fun s : ℝ => q s x) =ᶠ[𝓝 t]
       fun s : ℝ => -chartVossWeylLaplacian (I := I) g α (f s) x := by
     rw [Filter.eventuallyEq_iff_exists_mem]
@@ -1485,37 +1455,7 @@ theorem scalarOnE_jointContDiffWithinAt
     ContDiffWithinAt ℝ ∞
       (fun r : ℝ × E => scalarOnE (I := I) α (f r.1) r.2)
       (S ×ˢ (extChartAt I α).target) (t, y) := by
-  have hU : ContMDiffOn ((𝓘(ℝ, ℝ).prod I)) 𝓘(ℝ, ℝ) ∞
-      (fun p : ℝ × M => f p.1 p.2) (S ×ˢ univ) := hf
-  have hids : ContMDiffOn (𝓘(ℝ, ℝ).prod 𝓘(ℝ, E)) 𝓘(ℝ, ℝ) ∞
-      (fun r : ℝ × E => r.1) (Set.univ ×ˢ (extChartAt I α).target) :=
-    contMDiffOn_fst
-  have hsym : ContMDiffOn (𝓘(ℝ, ℝ).prod 𝓘(ℝ, E)) I ∞
-      (fun r : ℝ × E => (extChartAt I α).symm r.2)
-      (Set.univ ×ˢ (extChartAt I α).target) := by
-    refine (contMDiffOn_extChartAt_symm (I := I) α).comp ?_ ?_
-    · exact contMDiffOn_snd
-    · intro r hr
-      exact hr.2
-  have hsymm : ContMDiffOn (𝓘(ℝ, ℝ).prod 𝓘(ℝ, E)) ((𝓘(ℝ, ℝ).prod I)) ∞
-      (fun r : ℝ × E => (r.1, (extChartAt I α).symm r.2))
-      (S ×ˢ (extChartAt I α).target) := by
-    refine (hids.prodMk hsym).mono ?_
-    intro r hr
-    exact ⟨Set.mem_univ r.1, hr.2⟩
-  have hcomp : ContMDiffOn (𝓘(ℝ, ℝ).prod 𝓘(ℝ, E)) 𝓘(ℝ, ℝ) ∞
-      (fun r : ℝ × E => f r.1 ((extChartAt I α).symm r.2))
-      (S ×ˢ (extChartAt I α).target) :=
-    hU.comp hsymm (fun r hr => ⟨hr.1, trivial⟩)
-  have hcd : ContDiffOn ℝ ∞
-      (fun r : ℝ × E => f r.1 ((extChartAt I α).symm r.2))
-      (S ×ˢ (extChartAt I α).target) := by
-    rw [← contMDiffOn_iff_contDiffOn, modelWithCornersSelf_prod,
-      ← chartedSpaceSelf_prod]
-    exact hcomp
-  have hpt : (t, y) ∈ S ×ˢ (extChartAt I α).target := ⟨ht, hy⟩
-  have hat := hcd.contDiffWithinAt hpt
-  simpa [scalarOnE_def] using hat
+  exact (scalarOnE_contDiffOn_prod α hf).contDiffWithinAt ⟨ht, hy⟩
 
 theorem partialDeriv_joint_contDiffWithinAt
     (S : Set ℝ) (Φ : ℝ → E → ℝ)

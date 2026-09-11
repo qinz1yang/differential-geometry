@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Curvature.Positive
+import DifferentialGeometry.Geometry.Curvature.PositiveSectional
 import DifferentialGeometry.Tensor.Multilinear.Bundle.Evaluation
 
 

@@ -9,7 +9,7 @@ open DifferentialGeometry.Geometry.Operator
 
 set_option autoImplicit false
 
-open private exists_intrinsicJacobi_one_eq branchHess_perp_radial_eq_zero
+open private branchHess_perp_radial_eq_zero
   branchHess_symm from DifferentialGeometry.Geometry.Comparison.Hessian.Radial
 
 noncomputable section

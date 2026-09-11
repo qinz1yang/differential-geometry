@@ -1,4 +1,6 @@
 import DifferentialGeometry.Geometry.Operator.Scalar.Calculus
+import DifferentialGeometry.Geometry.Operator.Gradient.NormSquared
+import DifferentialGeometry.Geometry.Operator.Gradient.Regularity
 
 set_option autoImplicit false
 
@@ -107,5 +109,90 @@ theorem inner_levelSetOutwardNormal_neg
       g.inner x (gradientFun (I := I) g f x)
         (gradientFun (I := I) g rho x) < 0
   exact mul_neg_of_pos_of_neg (inv_pos.mpr (Real.sqrt_pos.mpr hgrad)) hneg
+
+theorem levelSetOutwardNormal_inner
+    (g : SmoothRiemannianMetric I M) (f : M → Real) (x : M)
+    (v : TangentSpace I x) :
+    g.inner x (levelSetOutwardNormal (I := I) g f x) v =
+      (Real.sqrt (normGradSqFun (I := I) g f x))⁻¹ * mvfderiv (I := I) f x v := by
+  by_cases hpos : 0 < normGradSqFun (I := I) g f x
+  · rw [levelSetOutwardNormal_eq (I := I) g f x hpos, map_smul, smul_apply, smul_eq_mul]
+    change (Real.sqrt (normGradSqFun (I := I) g f x))⁻¹ *
+      g.inner x (gradientFun (I := I) g f x) v = _
+    rw [inner_gradientFun]
+  · have hzero : normGradSqFun (I := I) g f x = 0 :=
+      le_antisymm (le_of_not_gt hpos) (normGradSqFun_nonneg g f x)
+    have hnormal : levelSetOutwardNormal (I := I) g f x = 0 := by
+      unfold levelSetOutwardNormal
+      exact if_neg hpos
+    simp only [hnormal, hzero, Real.sqrt_zero, inv_zero, zero_mul, map_zero,
+      _root_.zero_apply]
+
+theorem inner_gradientFun_levelSetOutwardNormal
+    (g : SmoothRiemannianMetric I M) (f : M → Real) (x : M) :
+    g.inner x (gradientFun (I := I) g f x) (levelSetOutwardNormal (I := I) g f x) =
+      Real.sqrt (normGradSqFun (I := I) g f x) := by
+  rw [g.symm, levelSetOutwardNormal_inner]
+  have hgrad : mvfderiv (I := I) f x (gradientFun (I := I) g f x) =
+      normGradSqFun (I := I) g f x := by
+    rw [← inner_gradientFun]
+    rfl
+  rw [hgrad]
+  by_cases hz : normGradSqFun (I := I) g f x = 0
+  · simp only [hz, mul_zero, Real.sqrt_zero]
+  · have hpos := lt_of_le_of_ne (normGradSqFun_nonneg g f x) (Ne.symm hz)
+    rw [inv_mul_eq_div]
+    exact (div_eq_iff (Real.sqrt_pos.mpr hpos).ne').mpr
+      (Real.mul_self_sqrt (normGradSqFun_nonneg g f x)).symm
+
+theorem mvfderiv_levelSetOutwardNormal
+    (g : SmoothRiemannianMetric I M) (f : M → Real) (x : M) :
+    mvfderiv (I := I) f x (levelSetOutwardNormal (I := I) g f x) =
+      Real.sqrt (normGradSqFun (I := I) g f x) := by
+  rw [← inner_gradientFun, inner_gradientFun_levelSetOutwardNormal]
+
+theorem levelSetOutwardNormal_inner_eq_zero_of_mem_ker
+    (g : SmoothRiemannianMetric I M) (f : M → Real) (x : M)
+    (v : TangentSpace I x) (hv : v ∈ (mvfderiv (I := I) f x).ker) :
+    g.inner x (levelSetOutwardNormal (I := I) g f x) v = 0 := by
+  change mvfderiv (I := I) f x v = 0 at hv
+  rw [levelSetOutwardNormal_inner, hv, mul_zero]
+
+theorem levelSetOutwardNormal_contMDiffAt
+    (g : SmoothRiemannianMetric I M) {f : M → Real} {x : M}
+    (hf : ContMDiffAt I 𝓘(Real, Real) ∞ f x)
+    (hreg : mfderiv I 𝓘(Real, Real) f x ≠ 0) :
+    ContMDiffAt I (I.prod 𝓘(Real, E)) ∞
+      (fun y : M => TotalSpace.mk' E y (levelSetOutwardNormal (I := I) g f y)) x := by
+  have hgrad := gradientFun_contMDiffAt g hf
+  have htotal := ContMDiffAt.clm_bundle_apply₂
+    (E₁ := fun y : M => TangentSpace I y)
+    (E₂ := fun y : M => TangentSpace I y)
+    (E₃ := fun _ : M => Real) (g.contMDiff x) hgrad hgrad
+  have hnorm : ContMDiffAt I 𝓘(Real, Real) ∞ (normGradSqFun (I := I) g f) x := by
+    rw [Bundle.contMDiffAt_totalSpace] at htotal
+    exact htotal.2
+  have hpos : 0 < normGradSqFun (I := I) g f x :=
+    lt_of_le_of_ne (normGradSqFun_nonneg g f x)
+      (Ne.symm (mt normGradSqFun_eq_zero_iff.mp hreg))
+  have hsqrt : ContMDiffAt I 𝓘(Real, Real) ∞
+      (fun y => Real.sqrt (normGradSqFun (I := I) g f y)) x :=
+    (Real.contDiffAt_sqrt hpos.ne').contMDiffAt.comp x hnorm
+  have hcoeff := hsqrt.inv₀ (Real.sqrt_pos.mpr hpos).ne'
+  have hscaled := hcoeff.smul_section hgrad
+  apply hscaled.congr_of_eventuallyEq
+  filter_upwards [hnorm.continuousAt.eventually (isOpen_Ioi.mem_nhds hpos)] with y hy
+  congr 1
+  exact levelSetOutwardNormal_eq (I := I) g f y hy
+
+theorem levelSetOutwardNormal_contMDiffOn
+    (g : SmoothRiemannianMetric I M) {f : M → Real} {s : Set M}
+    (hf : ContMDiffOn I 𝓘(Real, Real) ∞ f s) (hs : IsOpen s)
+    (hreg : ∀ x ∈ s, mfderiv I 𝓘(Real, Real) f x ≠ 0) :
+    ContMDiffOn I (I.prod 𝓘(Real, E)) ∞
+      (fun y : M => TotalSpace.mk' E y (levelSetOutwardNormal (I := I) g f y)) s := by
+  intro x hx
+  exact (levelSetOutwardNormal_contMDiffAt g
+    (hf.contMDiffAt (hs.mem_nhds hx)) (hreg x hx)).contMDiffWithinAt
 
 end DifferentialGeometry.Geometry.Boundary

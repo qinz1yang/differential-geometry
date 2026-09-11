@@ -255,6 +255,7 @@ theorem termLadder_covGrad_iterL_expansion (g : SmoothRiemannianMetric I M)
     rw [show k + 1 - 1 - k = 0 from by omega, oneMinusConnLapSmoothIter_zero]
     abel
 
+omit [CompactSpace M] in
 theorem termLadder_pairing_transport (g : SmoothRiemannianMetric I M) (σ a r : ℕ)
     (hr : r ≤ a) (X Y : SmoothCcTensor g 0 σ) :
     tensorL2Inner (I := I) (M := M) g 0 σ
@@ -272,6 +273,7 @@ theorem termLadder_pairing_transport (g : SmoothRiemannianMetric I M) (σ a r : 
   exact oneMinusConnLapSmoothIter_l2Inner_selfAdjoint (I := I) (M := M) g 0 σ r
     (oneMinusConnLapSmoothIter (I := I) g 0 σ (a - r) X) Y
 
+omit [CompactSpace M] in
 theorem termLadder_pairing_abs_le_transport (g : SmoothRiemannianMetric I M)
     (σ a r : ℕ) (hr : r ≤ a) (X Y : SmoothCcTensor g 0 σ) :
     |tensorL2Inner (I := I) (M := M) g 0 σ

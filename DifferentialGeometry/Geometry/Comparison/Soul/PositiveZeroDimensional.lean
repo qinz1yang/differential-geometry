@@ -1,1 +1,0 @@
-import DifferentialGeometry.Topology.Manifold.ZeroDimensional

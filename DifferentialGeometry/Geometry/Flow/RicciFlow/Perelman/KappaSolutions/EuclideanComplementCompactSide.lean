@@ -8,7 +8,7 @@ open Set Metric Topology
 namespace DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
 
 private theorem compact_closure_of_disjoint_sphere
-    {V : Type*} [NormedAddCommGroup V] [NormedSpace ℝ V] [ProperSpace V]
+    {V : Type*} [NormedAddCommGroup V] [ProperSpace V]
     {C : Set V} (hC : IsPreconnected C) {c : V} (hc : c ∈ C) {R : ℝ}
     (hcR : ‖c‖ < R) (havoid : Disjoint C (sphere (0 : V) R)) :
     IsCompact (closure C) := by

@@ -559,7 +559,7 @@ private theorem inner_mfderiv_busemannProdDiffeomorph_inr_eq
           (hbI.contMDiffAt.mdifferentiableAt (by simp))
     rw [(g.inner _).map_smul, smul_apply,
       (g.inner _ _).map_smul, smul_eq_mul, smul_eq_mul, hunit]
-    simp only [flatModelMetric, riemannianMetricVectorSpace]
+    simp only [flatModelMetric]
     change -s * (-r * 1) = RCLike.re (inner ℝ s r)
     have h := RCLike.inner_apply s r
     have hrw : RCLike.re (inner ℝ s r) =

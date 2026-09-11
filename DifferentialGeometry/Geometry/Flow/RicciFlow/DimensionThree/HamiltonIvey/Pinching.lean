@@ -237,7 +237,7 @@ theorem curvatureOperatorMatrixAt_initial_mem_hamiltonIveyConvexMatrixRegion
     Subsingleton.elim _ _
   have hmin : -K ≤ orderedSectionalCurvaturesAt (I := I) x basis A 2 := by
     have hiff := (curvatureOperatorLowerBoundAt_iff_neg_sectionalMin_le
-      (I := I) (S.base.metric t0) x basis horth A K).mp hinit
+      (I := I) (S.base.metric t0) basis horth).mp hinit
     linarith
   have h21 := orderedSectionalCurvaturesAt_one_le_zero (I := I) x basis A
   have h32 := orderedSectionalCurvaturesAt_two_le_one (I := I) x basis A
@@ -412,7 +412,7 @@ private theorem scalar_initial_lower
   have hmin :
       -orderedSectionalCurvaturesAt (I := I) x basis A 2 ≤ K :=
     (curvatureOperatorLowerBoundAt_iff_neg_sectionalMin_le
-      (I := I) (S.base.metric t) x basis horth A K).mp hA
+      (I := I) (S.base.metric t) basis horth).mp hA
   have hmin' : -K ≤ orderedSectionalCurvaturesAt (I := I) x basis A 2 := by
     linarith
   have hscalar := scalar_ge_two_mul_three_mul_min (I := I) (M := M) S basis horth

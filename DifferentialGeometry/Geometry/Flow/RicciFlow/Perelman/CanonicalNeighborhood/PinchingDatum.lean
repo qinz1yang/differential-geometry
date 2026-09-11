@@ -718,9 +718,9 @@ theorem phiAlmostNonnegative_iff_neg_le_leastCurvatureOperatorEigenvalueAt
   · intro h t ht x
     obtain ⟨basis, horth⟩ := exists_orthonormalBasisAt (I := I) (S.base.metric t) x (hdimT x)
     have hiff := curvatureOperatorLowerBoundAt_iff_neg_sectionalMin_le (I := I)
-      (S.base.metric t) x basis horth
-      ⟨S.base.rm04 t x, metricRm04At_mem_algebraicCurvatureTensorSubmodule
-        (I := I) (S.base.metric t) x⟩ (Phi (S.scalar t x))
+      (S.base.metric t) basis horth
+      (A := ⟨S.base.rm04 t x, metricRm04At_mem_algebraicCurvatureTensorSubmodule
+        (I := I) (S.base.metric t) x⟩) (K := Phi (S.scalar t x))
     have hle := hiff.mp (h t ht x)
     rw [leastCurvatureOperatorEigenvalueAt_eq_sectionalMin (I := I) (S.base.metric t) x
       basis horth]
@@ -731,9 +731,9 @@ theorem phiAlmostNonnegative_iff_neg_le_leastCurvatureOperatorEigenvalueAt
     rw [leastCurvatureOperatorEigenvalueAt_eq_sectionalMin (I := I) (S.base.metric t) x
       basis horth] at hle
     refine (curvatureOperatorLowerBoundAt_iff_neg_sectionalMin_le (I := I)
-      (S.base.metric t) x basis horth
-      ⟨S.base.rm04 t x, metricRm04At_mem_algebraicCurvatureTensorSubmodule
-        (I := I) (S.base.metric t) x⟩ (Phi (S.scalar t x))).mpr ?_
+      (S.base.metric t) basis horth
+      (A := ⟨S.base.rm04 t x, metricRm04At_mem_algebraicCurvatureTensorSubmodule
+        (I := I) (S.base.metric t) x⟩) (K := Phi (S.scalar t x))).mpr ?_
     linarith
 
 omit [SigmaCompactSpace M] in
@@ -746,9 +746,9 @@ theorem neg_le_orderedSectionalCurvaturesAt_of_phiAlmostNonnegative
       ⟨S.base.rm04 t x, metricRm04At_mem_algebraicCurvatureTensorSubmodule
         (I := I) (S.base.metric t) x⟩ i := by
   have hmin := (curvatureOperatorLowerBoundAt_iff_neg_sectionalMin_le (I := I)
-    (S.base.metric t) x basis horth
-    ⟨S.base.rm04 t x, metricRm04At_mem_algebraicCurvatureTensorSubmodule
-      (I := I) (S.base.metric t) x⟩ (Phi (S.scalar t x))).mp (h t ht x)
+    (S.base.metric t) basis horth
+    (A := ⟨S.base.rm04 t x, metricRm04At_mem_algebraicCurvatureTensorSubmodule
+      (I := I) (S.base.metric t) x⟩) (K := Phi (S.scalar t x))).mp (h t ht x)
   have hi : i ≤ (2 : Fin 3) := by
     fin_cases i <;> decide
   have hle := orderedSectionalCurvaturesAt_antitone (I := I) x basis
@@ -905,10 +905,11 @@ theorem exists_admissiblePinchingFunction_phiAlmostNonnegative_of_curvatureOpera
     ⟨S.base.rm04 t x, metricRm04At_mem_algebraicCurvatureTensorSubmodule
       (I := I) (S.base.metric t) x⟩
   dsimp only
-  rw [curvatureOperatorLowerBoundAt_iff_neg_sectionalMin_le (I := I) (S.base.metric t) x
+  rw [curvatureOperatorLowerBoundAt_iff_neg_sectionalMin_le (I := I) (S.base.metric t)
     basis horth
-    ⟨S.base.rm04 t x, metricRm04At_mem_algebraicCurvatureTensorSubmodule
-      (I := I) (S.base.metric t) x⟩, ← heq]
+    (A := ⟨S.base.rm04 t x, metricRm04At_mem_algebraicCurvatureTensorSubmodule
+      (I := I) (S.base.metric t) x⟩)
+    (K := Phi0 (S.scalar t x) + K * Real.exp 3), ← heq]
   exact hkey
 
 omit [SigmaCompactSpace M] in

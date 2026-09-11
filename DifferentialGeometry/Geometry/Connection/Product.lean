@@ -2,6 +2,7 @@ import DifferentialGeometry.Geometry.VectorField.Product
 import DifferentialGeometry.Geometry.Metric.Product
 import DifferentialGeometry.Geometry.Metric.Evaluation
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Koszul.Formula
+import DifferentialGeometry.Geometry.Connection.LeviCivita.Defs
 import DifferentialGeometry.Bundle.Section
 
 noncomputable section
@@ -120,5 +121,29 @@ theorem leviCivita_productVectorField_apply
   have he := leviCivita_productVectorField g h X Y X' Y' x
   rw [hv, hX, hX'] at he
   exact he
+
+set_option backward.isDefEq.respectTransparency false in
+theorem leviCivita_prod
+    (g : SmoothRiemannianMetric I M) (h : SmoothRiemannianMetric J N)
+    (X Z : (x : M) → TangentSpace I x) (Y W : (x : N) → TangentSpace J x)
+    (_hX : ContMDiff I (I.prod (modelWithCornersSelf ℝ E)) ∞ (T% X))
+    (hZ : ContMDiff I (I.prod (modelWithCornersSelf ℝ E)) ∞ (T% Z))
+    (_hY : ContMDiff J (J.prod (modelWithCornersSelf ℝ F)) ∞ (T% Y))
+    (hW : ContMDiff J (J.prod (modelWithCornersSelf ℝ F)) ∞ (T% W))
+    (x : M × N) :
+    (LeviCivita (I := I.prod J) (g.prod h)).toFun
+        (fun p : M × N => (Z p.1, W p.2)) x (X x.1, Y x.2) =
+      ((LeviCivita (I := I) g).toFun Z x.1 (X x.1),
+        (LeviCivita (I := J) h).toFun W x.2 (Y x.2)) := by
+  let Zs : ContMDiffSection I E ∞ (TangentSpace I : M → Type _) := ⟨Z, hZ⟩
+  let Ws : ContMDiffSection J F ∞ (TangentSpace J : N → Type _) := ⟨W, hW⟩
+  rw [LeviCivita_eq_leviCivitaConnectionOfMetric,
+    LeviCivita_eq_leviCivitaConnectionOfMetric,
+    LeviCivita_eq_leviCivitaConnectionOfMetric]
+  change leviCivitaConnectionOfMetric (g.prod h) (productVectorField Zs Ws) x
+      (X x.1, Y x.2) =
+    (leviCivitaConnectionOfMetric g Zs x.1 (X x.1),
+      leviCivitaConnectionOfMetric h Ws x.2 (Y x.2))
+  exact leviCivita_productVectorField_apply g h Zs Ws x (X x.1, Y x.2)
 
 end DifferentialGeometry.Geometry.Connection

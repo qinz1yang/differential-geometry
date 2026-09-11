@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Curvature.Positive
+import DifferentialGeometry.Geometry.Curvature.PositiveSectional
 import DifferentialGeometry.Geometry.Curvature.Naturality.Pullback.LocalCross
 
 noncomputable section

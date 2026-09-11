@@ -604,6 +604,61 @@ theorem ricciNormSq_cross
     (metricRicci_cross (I := I) (J := J) g Phi x)
 
 
+section
+
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  [FiniteDimensional ℝ E]
+variable {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
+  [FiniteDimensional ℝ F]
+variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+variable {G : Type*} [TopologicalSpace G] {J : ModelWithCorners ℝ F G}
+variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+variable {N : Type*} [TopologicalSpace N] [ChartedSpace G N] [IsManifold J ∞ N]
+
+theorem metricRm04At_cross
+    [T2Space M] [T2Space N]
+    (g : SmoothRiemannianMetric J N) (Phi : M ≃ₘ⟮I, J⟯ N) (x : M)
+    (slots : Fin 4 → TangentSpace I x) :
+    metricRm04At (I := I) (Diffeomorph.pullbackMetricCross g Phi) x slots =
+      metricRm04At (I := J) g (Phi x)
+        (fun q : Fin 4 => mfderiv I J (Phi : M → N) x (slots q)) := by
+  have hleft : vec4 (slots 0) (slots 1) (slots 2) (slots 3) = slots := by
+    funext i
+    fin_cases i <;> rfl
+  have hright : vec4
+      (mfderiv I J (Phi : M → N) x (slots 0))
+      (mfderiv I J (Phi : M → N) x (slots 1))
+      (mfderiv I J (Phi : M → N) x (slots 2))
+      (mfderiv I J (Phi : M → N) x (slots 3)) =
+      (fun q : Fin 4 => mfderiv I J (Phi : M → N) x (slots q)) := by
+    funext i
+    fin_cases i <;> rfl
+  simpa only [metricRm04StandardAt_apply, hleft, hright] using
+    metricRm04Standard_pullbackCross g Phi x (slots 0) (slots 1) (slots 2) (slots 3)
+
+theorem metricRm04_cross
+    [T2Space M] [T2Space N]
+    (g : SmoothRiemannianMetric J N) (Phi : M ≃ₘ⟮I, J⟯ N) (x : M)
+    (slots : Fin 4 → TangentSpace I x) :
+    metricRm04 (I := I) (Diffeomorph.pullbackMetricCross g Phi) x slots =
+      metricRm04 (I := J) g (Phi x)
+        (fun q : Fin 4 => mfderiv I J (Phi : M → N) x (slots q)) := by
+  simpa only [metricRm04_apply] using metricRm04At_cross g Phi x slots
+
+theorem riemannNormSq_cross
+    [SigmaCompactSpace M] [T2Space M] [T2Space N]
+    (g : SmoothRiemannianMetric J N) (Phi : M ≃ₘ⟮I, J⟯ N) (x : M) :
+    normSq0S (I := I) (Diffeomorph.pullbackMetricCross g Phi) x 4
+        (metricRm04At (I := I) (Diffeomorph.pullbackMetricCross g Phi) x) =
+      normSq0S (I := J) g (Phi x) 4 (metricRm04At (I := J) g (Phi x)) := by
+  classical
+  obtain ⟨basis, hON⟩ := DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis
+    (Diffeomorph.pullbackMetricCross g Phi) x
+  exact normSq0S_pullbackCross_eval_of_orthonormal
+    g Phi x 4 basis hON _ _ (metricRm04At_cross g Phi x)
+
+end
+
 omit [NeZero (Module.finrank ℝ E)] [NeZero (Module.finrank ℝ F)] in
 theorem metricDerivNorm_pullbackCross
     [SigmaCompactSpace M] [T2Space M]

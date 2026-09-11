@@ -249,7 +249,7 @@ theorem rfs_composed_family_regularization (g : SmoothRiemannianMetric I P)
     have harea := hnearby (Γ₀ k) (S ε k).toContinuousLoop (Γc k).2 (hctrS k)
       ⟨V, hV k⟩ hlipS ((hclose k).trans_le (min_le_left _ _))
     have hcomp := leastArea_postcompose_le g h f L hf (Γ.1 k).1.toContinuousLoop
-      (Γ.1 k).2 ((Γ.1 k).1.isLipschitz_of_compact g)
+      (Γ.1 k).2 ((Γ.1 k).1.isLipschitz g)
     exact harea.trans (add_le_add hcomp herror)
   · simpa only [HasContinuousSmoothLoopJets, HasContinuousSmoothJets, T,
       ContinuousMap.coe_mk] using hjets ε hε

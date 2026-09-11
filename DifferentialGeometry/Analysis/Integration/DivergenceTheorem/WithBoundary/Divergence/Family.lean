@@ -131,7 +131,7 @@ theorem stokes_compact_family
     ∫ x, divergenceGWithBoundary (I := I) (g_fam t) X x
         ∂(riemannianMeasureFamily (I := I) (M := M) g_fam t) =
       ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
-        chartBoundaryFaceIntegral (I := I) (g_fam t) α X
+        chartWeightedDivergenceIntegral (I := I) (g_fam t) α X
           ((chartAtlasPOU I M) α) := by
   rw [riemannianMeasureFamily_def]
   exact stokes_compact (I := I) (g_fam t) X

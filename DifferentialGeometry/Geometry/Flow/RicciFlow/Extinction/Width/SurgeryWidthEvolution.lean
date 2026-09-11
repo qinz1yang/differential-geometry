@@ -801,7 +801,7 @@ theorem initialIdentification_riemannianEDist_eq (P : OrientedThreeStage.{u}) (g
     d.map d.metric_eq x y
 
 theorem initialIdentification_fundamentalClass (P : OrientedThreeStage.{u})
-    [ConnectedSpace P.Carrier] [SimplyConnectedSpace P.Carrier] (g : P.Metric)
+    (g : P.Metric)
     (H : ObservedHistory.{u}) (d : InitialIdentification P g H) :
     integralHomologyMap 3 (d.map : C(P.Carrier, (H.stage 0).Carrier))
       (fundamentalClass P.orientation) = fundamentalClass (H.stage 0).orientation := by

@@ -284,6 +284,33 @@ theorem memLp_diffQuot
       ((memLp_translate i h hv).sub hv).mul_const h⁻¹
 
 omit [NeZero d] in
+theorem memLp_diffQuot_restrict
+    {p : ℝ≥0∞} {Ω K : Set E} (hΩ : MeasurableSet Ω) (hK : MeasurableSet K)
+    {u : E → ℝ} (hu : MemLp u p (volume.restrict Ω)) (k : Fin d) (s : ℝ)
+    (hKΩ : cthickening |s| K ⊆ Ω) :
+    MemLp (diffQuot k s u) p (volume.restrict K) := by
+  by_cases hs : s = 0
+  · subst s
+    rw [diffQuot_zero_h]
+    exact MemLp.zero
+  have hu0 := (memLp_indicator_iff_restrict hΩ).mpr hu
+  have hdq : MemLp (diffQuot k s (Ω.indicator u)) p volume := by
+    rw [diffQuot_eq_translate_sub_div k hs]
+    convert ((memLp_translate k s hu0).sub hu0).const_mul s⁻¹ using 1
+    ext x
+    simp only [Pi.sub_apply, div_eq_inv_mul]
+  apply (hdq.restrict K).ae_eq
+  filter_upwards [ae_restrict_mem hK] with x hx
+  have hxΩ := hKΩ (self_subset_cthickening _ hx)
+  have hxshift : x + s • EuclideanSpace.single k (1 : ℝ) ∈ Ω := by
+    apply hKΩ
+    apply closedBall_subset_cthickening hx |s|
+    rw [mem_closedBall, dist_eq_norm, add_sub_cancel_left, norm_smul]
+    simp only [PiLp.norm_single, norm_one, mul_one, Real.norm_eq_abs, le_refl]
+  simp only [diffQuot_apply_of_ne k hs, indicator_of_mem hxΩ,
+    indicator_of_mem hxshift]
+
+omit [NeZero d] in
 lemma integrable_translate
     (i : Fin d) (h : ℝ) {v : E → ℝ}
     (hv : Integrable v volume) :

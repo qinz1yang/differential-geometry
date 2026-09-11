@@ -1,5 +1,7 @@
 import DifferentialGeometry.Geometry.Connection.Realization.Tensor0SBridge
 import DifferentialGeometry.Geometry.Connection.HomBundle.Basic
+import DifferentialGeometry.Geometry.Connection.TensorNabla.Multilinear
+
 open DifferentialGeometry.Geometry.Connection.Realization
 
 
@@ -472,6 +474,21 @@ theorem tensor0SCovariantDerivative_unitZero_eq_zero
     simp [mfderiv_const]
   rw [hext]
   simp
+
+omit [CompleteSpace E] [SigmaCompactSpace M] in
+theorem tensor0SCovariantDerivative_eq_multilinear (s : ℕ)
+    (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
+    [ContMDiffCovariantDerivative cov ∞] :
+    tensor0SCovariantDerivative I M s cov = cov.multilinear s := by
+  induction s with
+  | zero =>
+    ext T x X v
+    change mvfderiv (I := I) (scalarFn I M T) x X =
+      mvfderiv (I := I) (fun y => T y 0) x X
+    congr 2
+  | succ s ih =>
+    rw [tensor0SCovariantDerivative_succ_eq, ih]
+    rfl
 
 end Tensor0SNabla
 

@@ -1,4 +1,5 @@
 import DifferentialGeometry.Geometry.Metric.Family.ChartCurvature.MetricFamilySmoothOn
+import DifferentialGeometry.Geometry.Metric.Family.JointSmoothness
 import DifferentialGeometry.Geometry.Connection.ChartBridge.Scalar.Laplacian
 import DifferentialGeometry.Geometry.Operator.Family.Basic
 import DifferentialGeometry.Geometry.Operator.Gradient.Basic
@@ -15,6 +16,7 @@ open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
 open DifferentialGeometry.Geometry.Connection
 open DifferentialGeometry.Geometry.Operator
+open DifferentialGeometry.Tensor.Coordinates
 open scoped Manifold ContDiff Topology BigOperators
 
 universe u uE uH
@@ -27,6 +29,43 @@ variable {M : Type u} [TopologicalSpace M] [ChartedSpace H M]
 variable [IsManifold I ∞ M]
 
 namespace MetricFamilySmoothOn
+
+omit [CompleteSpace E] in
+private theorem metric_joint_contMDiffOn
+    {D : RealTimeInterval} {g : Real → SmoothRiemannianMetric I M}
+    (hG : MetricFamilySmoothOn (I := I) (M := M) D g)
+    {J : Set Real} (hJreg : J ⊆ D.regular) :
+    ContMDiffOn (𝓘(ℝ, ℝ).prod I) (I.prod 𝓘(ℝ, E →L[ℝ] E →L[ℝ] ℝ)) ∞
+      (fun p : ℝ × M => (⟨p.2, (g p.1).inner p.2⟩ : TotalSpace (E →L[ℝ] E →L[ℝ] ℝ)
+        (fun x => TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ)))
+      (J ×ˢ (Set.univ : Set M)) := by
+  intro p hp
+  exact (hG.metricCLMSmoothAt (t := p.1) (x := p.2)
+    (D.regular_isOpen.mem_nhds (hJreg hp.1))).contMDiffWithinAt
+
+omit [CompleteSpace E] in
+theorem chartGramMatrix_contDiffOn
+    {D : RealTimeInterval}
+    {G : MetricConnectionFamilyOn (I := I) (M := M) D}
+    (hG : MetricFamilySmoothOn (I := I) (M := M) D G.metric)
+    {J : Set Real} (hJ : J ⊆ D.regular) (α : M)
+    (i j : Fin (Module.finrank Real E)) :
+    ContMDiffOn (𝓘(Real, Real).prod I) 𝓘(Real, Real) ∞
+      (fun p : Real × M => chartGramMatrix (I := I) (G.metric p.1) α p.2 i j)
+      (J ×ˢ (trivializationAt E (TangentSpace I) α).baseSet) := by
+  exact chartGramMatrix_joint_contMDiffOn G.metric J (metric_joint_contMDiffOn hG hJ) α i j
+
+omit [CompleteSpace E] in
+theorem chartGramMatrix_continuousOn
+    {D : RealTimeInterval}
+    {G : MetricConnectionFamilyOn (I := I) (M := M) D}
+    (hG : MetricFamilySmoothOn (I := I) (M := M) D G.metric)
+    {J : Set Real} (hJ : J ⊆ D.regular) (α : M)
+    (i j : Fin (Module.finrank Real E)) :
+    ContinuousOn
+      (fun p : Real × M => chartGramMatrix (I := I) (G.metric p.1) α p.2 i j)
+      (J ×ˢ (trivializationAt E (TangentSpace I) α).baseSet) := by
+  exact (chartGramMatrix_contDiffOn hG hJ α i j).continuousOn
 
 omit [CompleteSpace E] in
 private theorem partialDeriv_contDiffOn
@@ -395,6 +434,34 @@ theorem heatOperatorWithDrift_continuousOn [I.Boundaryless] [T2Space M]
     laplacianAt (I := I) G p.1 ρ p.2 + driftTerm (I := I) G p.1 (X p.1) ρ p.2)
       (J ×ˢ (Set.univ : Set M)) at h
   exact h
+
+omit [CompleteSpace E] in
+theorem driftTerm_continuousOn [I.Boundaryless]
+    (G : MetricConnectionFamily (I := I) (M := M) ℝ)
+    {D : RealTimeInterval}
+    (hG : MetricFamilySmoothOn (I := I) (M := M) D G.metric)
+    {J : Set ℝ} (hJreg : J ⊆ D.regular)
+    (X : ℝ → (x : M) → TangentSpace I x)
+    (hX : ContinuousOn (fun p : ℝ × M =>
+      (TotalSpace.mk' E p.2 (X p.1 p.2) : TangentBundle I M))
+      (J ×ˢ (Set.univ : Set M)))
+    {rho : M → ℝ} (hrho : ContMDiff I 𝓘(ℝ, ℝ) ∞ rho) :
+    ContinuousOn (fun p : ℝ × M =>
+      driftTerm (I := I) G p.1 (X p.1) rho p.2)
+      (J ×ˢ (Set.univ : Set M)) := by
+  intro p hp
+  have hmetric := (hG.metricCLMSmoothAt (t := p.1) (x := p.2)
+    (D.regular_isOpen.mem_nhds (hJreg hp.1))).continuousAt.continuousWithinAt
+      (s := J ×ˢ (Set.univ : Set M))
+  have hgrad := G.gradientAt_continuousOn hG hJreg hrho p hp
+  have hpair : ContinuousWithinAt
+      (fun q : ℝ × M => TotalSpace.mk' ℝ (E := Bundle.Trivial M ℝ) q.2
+        ((G.metric q.1).inner q.2 (X q.1 q.2)
+          (gradientAt (I := I) G q.1 rho q.2)))
+      (J ×ˢ (Set.univ : Set M)) p :=
+    hmetric.clm_bundle_apply₂ (F₁ := E) (F₂ := E) (hX p hp) hgrad
+  simp only [FiberBundle.continuousWithinAt_totalSpace] at hpair
+  exact hpair.2
 
 end MetricConnectionFamily
 

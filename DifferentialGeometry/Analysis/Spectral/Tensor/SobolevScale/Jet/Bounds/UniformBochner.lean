@@ -1,4 +1,5 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Jet.Bochner.DirichletGap
+
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic
@@ -485,6 +486,7 @@ theorem rawConnLapIter_uniform
           (mul_le_mul_of_nonneg_left hsub_le (hCfun_nn 0))
     _ = (K + Cfun 0) * FULL := by ring
 
+omit [CompactSpace M] in
 theorem baseAddLower_uniform
     (g₀ : SmoothRiemannianMetric I M)
     (Fc : ℕ → ℝ) (hFc : ∀ p, 0 ≤ Fc p)
@@ -2388,6 +2390,7 @@ theorem rawConnLapIter_const
           (mul_le_mul_of_nonneg_left hsub_le hCfun_nn)
     _ = ((Module.finrank ℝ E : ℝ) + roughLapCommC Fc a 0) * FULL := by ring
 
+omit [CompactSpace M] in
 theorem baseAddLower_const
     (g₀ : SmoothRiemannianMetric I M)
     (Fc : ℕ → ℝ) (hFc : ∀ p, 0 ≤ Fc p)

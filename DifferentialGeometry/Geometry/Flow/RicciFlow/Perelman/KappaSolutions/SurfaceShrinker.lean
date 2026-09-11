@@ -1,5 +1,6 @@
-import DifferentialGeometry.Geometry.RicciSoliton.Defs
+import DifferentialGeometry.Geometry.Metric.RicciSoliton.Defs
 import DifferentialGeometry.Geometry.Metric.Completeness
+import DifferentialGeometry.Geometry.Curvature.Metric.Defs
 
 set_option autoImplicit false
 
@@ -21,7 +22,7 @@ theorem complete_surface_shrinker_compact_constant_scalar
     (g : SmoothRiemannianMetric I M) (f : C^∞⟮I, M; ℝ⟯)
     {sigma : ℝ} (hsigma : 0 < sigma) (hdim : Module.finrank ℝ E = 2)
     (hcomplete : RiemannianMetricComplete (I := I) g)
-    (hsoliton : isGradientRicciSoliton (I := I) g f sigma)
+    (hsoliton : gradientRicciSoliton (I := I) g f sigma)
     (hnonflat : ∃ x : M, metricScalarAt (I := I) g x ≠ 0) :
     CompactSpace M ∧ ∀ x : M, metricScalarAt (I := I) g x = sigma := by
   sorry

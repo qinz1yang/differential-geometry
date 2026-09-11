@@ -3,6 +3,7 @@ import Mathlib.Geometry.Manifold.IsManifold.Basic
 import Mathlib.Geometry.Manifold.IsManifold.InteriorBoundary
 import Mathlib.Geometry.Manifold.ChartedSpace
 import Mathlib.Topology.Compactness.SigmaCompact
+import Mathlib.Topology.Algebra.Support
 
 
 noncomputable section
@@ -34,6 +35,23 @@ instance : TopologicalSpace (BoundaryManifold I M) :=
 
 instance : CoeOut (BoundaryManifold I M) M :=
   ⟨Subtype.val⟩
+
+def boundaryInclusion (I : ModelWithCorners ℝ E H) (M : Type*)
+    [TopologicalSpace M] [ChartedSpace H M] :
+    BoundaryManifold I M → M :=
+  Subtype.val
+
+@[simp] lemma boundaryInclusion_apply (x : BoundaryManifold I M) :
+    boundaryInclusion I M x = (x : M) := rfl
+
+theorem isClosedEmbedding_boundaryInclusion [IsManifold I 1 M] :
+    IsClosedEmbedding (boundaryInclusion I M) :=
+  (I.isClosed_boundary (show (1 : WithTop ENat) ≠ 0 by simp)).isClosedEmbedding_subtypeVal
+
+theorem hasCompactSupport_comp_boundaryInclusion [IsManifold I 1 M]
+    {F : Type*} [Zero F] {f : M → F} (hf : HasCompactSupport f) :
+    HasCompactSupport (f ∘ boundaryInclusion I M) :=
+  hf.comp_isClosedEmbedding isClosedEmbedding_boundaryInclusion
 
 namespace BoundaryManifold
 

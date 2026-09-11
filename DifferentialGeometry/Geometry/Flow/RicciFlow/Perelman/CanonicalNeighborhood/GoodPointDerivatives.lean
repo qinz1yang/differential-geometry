@@ -96,7 +96,7 @@ def ModelCurvatureBoundNearBase (I : ModelWithCorners ℝ E H) (kappa : ℝ) : P
              y ∈ riemannianClosedBallOf (I := I) (L.S.base.metric 0) L.basepoint 3) →
               L.rmNormSq (I := I) s y ≤ K ^ 2
 
-def WitnessSourceBallCapture (I : ModelWithCorners ℝ E H) [I.Boundaryless] (kappa : ℝ) : Prop :=
+def WitnessSourceBallCapture (I : ModelWithCorners ℝ E H) (kappa : ℝ) : Prop :=
   ∀ (M : Type u) [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
     [IsManifold I 1 M] [T2Space M] [SigmaCompactSpace M]
     {D : RealTimeInterval} {S : SolutionOn (I := I) (M := M) D} {x : M} {t : ℝ}
@@ -105,7 +105,7 @@ def WitnessSourceBallCapture (I : ModelWithCorners ℝ E H) [I.Boundaryless] (ka
       riemannianClosedBallOf (I := I) (witnessGhat (I := I) W (-2)) x 1 ⊆
         witnessImage (I := I) W
 
-def LocalShiUniformConstant (I : ModelWithCorners ℝ E H) [I.Boundaryless] : Prop :=
+def LocalShiUniformConstant (I : ModelWithCorners ℝ E H) : Prop :=
   ∀ (m : ℕ) (T K R : ℝ), 0 < T → 0 < K → 0 < R →
     ∃ C : ℝ, 0 ≤ C ∧
       ∀ (M : Type u) [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
@@ -127,7 +127,7 @@ def LocalShiUniformConstant (I : ModelWithCorners ℝ E H) [I.Boundaryless] : Pr
               ENNReal.ofReal (R / (2 * Real.sqrt K)) →
             Real.sqrt (tau ^ m * nablaKRm04NormSqIntrinsic (I := I) Sc m tau z) ≤ C * K
 
-def ScalarLaplacianCurvatureJetBound (I : ModelWithCorners ℝ E H) [I.Boundaryless] (c : ℝ) :
+def ScalarLaplacianCurvatureJetBound (I : ModelWithCorners ℝ E H) (c : ℝ) :
     Prop :=
   ∀ (M : Type u) [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
     [IsManifold I 1 M] [IsManifold I 2 M] [T2Space M] [SigmaCompactSpace M]
@@ -308,7 +308,7 @@ variable [IsManifold I 1 N] [T2Space N] [SigmaCompactSpace N]
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [SigmaCompactSpace M] in
 theorem metricRm04At_restrictOpen (g : SmoothRiemannianMetric I M)
-    (U : TopologicalSpace.Opens M) [SigmaCompactSpace U] [T2Space U] [IsManifold I 1 U]
+    (U : TopologicalSpace.Opens M) [T2Space U] [IsManifold I 1 U]
     (y : U) :
     metricRm04At (I := I) (M := U) (g.restrictOpen (I := I) U) y =
       metricRm04At (I := I) (M := M) g (y : M) := by
@@ -323,7 +323,7 @@ theorem metricRm04At_restrictOpen (g : SmoothRiemannianMetric I M)
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [SigmaCompactSpace M] in
 theorem rmNormSq_restrictOpen (g : SmoothRiemannianMetric I M)
-    (U : TopologicalSpace.Opens M) [SigmaCompactSpace U] [T2Space U] [IsManifold I 1 U]
+    (U : TopologicalSpace.Opens M) [T2Space U] [IsManifold I 1 U]
     (y : U) :
     normSq0S (I := I) (M := U) (g.restrictOpen (I := I) U) y 4
         (metricRm04At (I := I) (M := U) (g.restrictOpen (I := I) U) y) =
@@ -337,10 +337,8 @@ omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [SigmaCompactSpace M] [IsM
 theorem rmNormSq_openPullbackMetric
     (F : PartialDiffeomorph I I N M (∞ : WithTop ℕ∞))
     (U : TopologicalSpace.Opens N) (hU : (U : Set N) ⊆ F.source)
-    [SigmaCompactSpace U] [T2Space U] [IsManifold I 1 U]
+    [T2Space U] [IsManifold I 1 U]
     (g : SmoothRiemannianMetric I M) (y : U)
-    [SigmaCompactSpace
-      (⟨(F : N → M) '' (U : Set N), image_opens_isOpen F hU⟩ : TopologicalSpace.Opens M)]
     [T2Space (⟨(F : N → M) '' (U : Set N), image_opens_isOpen F hU⟩ : TopologicalSpace.Opens M)]
     [IsManifold I 1
       (⟨(F : N → M) '' (U : Set N), image_opens_isOpen F hU⟩ : TopologicalSpace.Opens M)] :

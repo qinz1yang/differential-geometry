@@ -54,7 +54,7 @@ theorem exists_morseRoundedSublevel_diffeomorph_upperSublevel_of_morseChart
     (c ε r δ R₀ R₁ R₁' a η ε₀ : ℝ) {H : Type} [TopologicalSpace H] {M : Type}
     [TopologicalSpace M] [ChartedSpace H M] [T2Space M] [SigmaCompactSpace M]
     {I : ModelWithCorners ℝ (MorseModel (m + 1)) H} [I.Boundaryless]
-    [IsManifold I (⊤ : WithTop ℕ∞) M] {f : M → ℝ}
+    [IsManifold I (↑(⊤ : ℕ∞) : WithTop ℕ∞) M] {f : M → ℝ}
     (data : MorseChart (m + 1) k hk c I f)
     (hε : 0 < ε) (hε₀ : 0 < ε₀) (hδ : 0 < δ) (hδr : δ < r ^ 2) (hR : R₀ < R₁) (hR0 : 0 ≤ R₀)
     (hbig : 2 * (r ^ 2 + 2 * ε + δ) ≤ R₀ ^ 2) (hδR : 40 * δ < R₁ ^ 2 - R₀ ^ 2)
@@ -277,7 +277,7 @@ private theorem regularFamily_f_sublevel_of_uniqueCritical
     {m : ℕ} {H : Type} [TopologicalSpace H] {M : Type}
     [TopologicalSpace M] [ChartedSpace H M] [T2Space M] [SigmaCompactSpace M]
     {I : ModelWithCorners ℝ (MorseModel (m + 1)) H} [I.Boundaryless]
-    [IsManifold I (⊤ : WithTop ℕ∞) M] (f : M → ℝ)
+    [IsManifold I (↑(⊤ : ℕ∞) : WithTop ℕ∞) M] (f : M → ℝ)
     (hf : ContMDiff I 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞) f)
     (p : M) (c : ℝ) (hfp : f p = c)
     (r ε a η ε₀ : ℝ)
@@ -409,8 +409,9 @@ private theorem regularFamily_f_sublevel_of_uniqueCritical
           IsCriticalPointAt I f q.1 := by
         have hg : ContMDiff I 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞)
             (fun x : M => F x q.2) := regularFamilySliceSmooth I F hF q.2
-        rw [isCriticalPointAt_iff_chart_fderiv I (fun x : M => F x q.2) hg q.1]
-        rw [isCriticalPointAt_iff_chart_fderiv I f hf q.1]
+        rw [isCriticalPointAt_iff_chart_fderiv (I := I)
+          (f := fun x : M => F x q.2) hg (p := q.1)]
+        rw [isCriticalPointAt_iff_chart_fderiv (I := I) (f := f) hf (p := q.1)]
         have hEq : (fun y : MorseModel (m + 1) => F ((extChartAt I q.1).symm y) q.2) =ᶠ[nhds ((extChartAt I q.1) q.1)] (fun y : MorseModel (m + 1) => f ((extChartAt I q.1).symm y) - (c + r ^ 2 / 2 + q.2 * (ε - r ^ 2 / 2))) := by
           filter_upwards with y
           simp [F]
@@ -530,7 +531,7 @@ theorem exists_sublevel_diffeomorph_regularLevels_of_uniqueCriticalPoint
     {m : ℕ} {H : Type} [TopologicalSpace H] {M : Type}
     [TopologicalSpace M] [ChartedSpace H M] [T2Space M] [SigmaCompactSpace M]
     {I : ModelWithCorners ℝ (MorseModel (m + 1)) H} [I.Boundaryless]
-    [IsManifold I (⊤ : WithTop ℕ∞) M] (f : M → ℝ)
+    [IsManifold I (↑(⊤ : ℕ∞) : WithTop ℕ∞) M] (f : M → ℝ)
     (hf : ContMDiff I 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞) f)
     (p : M) (c : ℝ) (hfp : f p = c)
     (r ε a η ε₀ : ℝ)
@@ -631,7 +632,7 @@ private theorem morseHandleAdjunction_diffeomorph_upperSublevel_engine
     (c ε r δ θ R₀ R₀' R₁' R₁'' a η ε₀ : ℝ) {H : Type} [TopologicalSpace H] {M : Type}
     [TopologicalSpace M] [ChartedSpace H M] [T2Space M] [SigmaCompactSpace M]
     {I : ModelWithCorners ℝ (MorseModel (m + 1)) H} [I.Boundaryless]
-    [IsManifold I (⊤ : WithTop ℕ∞) M] {f : M → ℝ}
+    [IsManifold I (↑(⊤ : ℕ∞) : WithTop ℕ∞) M] {f : M → ℝ}
     (data : MorseChart (m + 1) k hk c I f)
     (hε : 0 < ε) (hε₀ : 0 < ε₀) (hδ : 0 < δ) (hδr : δ < r ^ 2) (hr : 0 < r)
     (hθ : 0 < θ) (hθr : θ < r ^ 2)
@@ -1034,7 +1035,7 @@ theorem exists_morseHandleAdjunction_diffeomorph_upperSublevel_of_morseChart
     (c a : ℝ) {H : Type} [TopologicalSpace H] {M : Type}
     [TopologicalSpace M] [ChartedSpace H M] [T2Space M] [SigmaCompactSpace M]
     {I : ModelWithCorners ℝ (MorseModel (m + 1)) H} [I.Boundaryless]
-    [IsManifold I (⊤ : WithTop ℕ∞) M] {f : M → ℝ}
+    [IsManifold I (↑(⊤ : ℕ∞) : WithTop ℕ∞) M] {f : M → ℝ}
     (data : MorseChart (m + 1) k hk c I f)
     (hf : ContMDiff I 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞) f)
     (ha : 0 < a) (haR : a ≤ data.R ^ 2 / 16) (hRR' : data.R < data.smoothRadius)
@@ -1173,7 +1174,7 @@ theorem exists_morseHandleAdjunction_diffeomorph_upperSublevel_of_morseChart_zer
     (c a : ℝ) {H : Type} [TopologicalSpace H] {M : Type}
     [TopologicalSpace M] [ChartedSpace H M] [T2Space M] [SigmaCompactSpace M]
     {I : ModelWithCorners ℝ (MorseModel (m + 1)) H} [I.Boundaryless]
-    [IsManifold I (⊤ : WithTop ℕ∞) M] {f : M → ℝ}
+    [IsManifold I (↑(⊤ : ℕ∞) : WithTop ℕ∞) M] {f : M → ℝ}
     (data : MorseChart (m + 1) 0 (Nat.zero_le (m + 1)) c I f)
     (hf : ContMDiff I 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞) f)
     (ha : 0 < a) (haR : a ≤ data.R ^ 2 / 16) (hRR' : data.R < data.smoothRadius)
@@ -1310,7 +1311,7 @@ theorem exists_morseHandleAdjunction_diffeomorph_upperSublevel_of_morseChart_top
     (c a : ℝ) {H : Type} [TopologicalSpace H] {M : Type}
     [TopologicalSpace M] [ChartedSpace H M] [T2Space M] [SigmaCompactSpace M]
     {I : ModelWithCorners ℝ (MorseModel (m + 1)) H} [I.Boundaryless]
-    [IsManifold I (⊤ : WithTop ℕ∞) M] {f : M → ℝ}
+    [IsManifold I (↑(⊤ : ℕ∞) : WithTop ℕ∞) M] {f : M → ℝ}
     (data : MorseChart (m + 1) (m + 1) (le_rfl : m + 1 ≤ m + 1) c I f)
     (hf : ContMDiff I 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞) f)
     (ha : 0 < a) (haR : a ≤ data.R ^ 2 / 16) (hRR' : data.R < data.smoothRadius)

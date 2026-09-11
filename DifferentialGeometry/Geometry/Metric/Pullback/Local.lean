@@ -1,6 +1,8 @@
 import DifferentialGeometry.Geometry.Metric.Pullback.Cross
+import DifferentialGeometry.Geometry.Metric.Pullback.PartialDiffeomorph.OpenSubtype
 import DifferentialGeometry.Geometry.Metric.Construction.Existence
 import DifferentialGeometry.Geometry.Metric.Path.Composition
+import DifferentialGeometry.Topology.Manifold.LocalDiffeomorph.Open
 
 set_option autoImplicit false
 
@@ -281,5 +283,23 @@ theorem localPull_pathLen
       (fun _ => hf.contMDiff.mdifferentiableAt (by decide))
   · exact Filter.Eventually.of_forall
       (fun t => localPull_enorm g hEnorm f hf (γ t) _)
+
+theorem localPullMetric_subtype_val
+    (g : SmoothRiemannianMetric I M) (U : TopologicalSpace.Opens M) [T2Space U] :
+    localPullMetric g (Subtype.val : U → M) (isLocalDiffeomorph_subtype_val U) =
+      g.restrictOpen U := by
+  apply SmoothRiemannianMetric.ext_inner
+  intro x v w
+  rw [localPullMetric_inner, SmoothRiemannianMetric.restrictOpen_inner,
+    mfderiv_subtype_val_apply, mfderiv_subtype_val_apply]
+
+omit [FiniteDimensional ℝ F] in
+theorem Diffeomorph.pullbackMetricCross_eq_localPullMetric
+    [T2Space M]
+    (g : SmoothRiemannianMetric J N) (Φ : M ≃ₘ⟮I, J⟯ N) :
+    Diffeomorph.pullbackMetricCross g Φ = localPullMetric g Φ Φ.isLocalDiffeomorph := by
+  apply SmoothRiemannianMetric.ext_inner
+  intro x v w
+  rw [Diffeomorph.pullbackMetricCross_inner, localPullMetric_inner]
 
 end DifferentialGeometry

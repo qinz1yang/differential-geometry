@@ -84,7 +84,7 @@ theorem IsLaplacianLEBarrierAt.to_viscosity
     laplacian_nonneg_at_spatial_min_of_metricCompatible_of_isInteriorPoint
       (I := I) (LeviCivita (I := I) g) g hmc hmin hx hsub_diff
         hsub_diff_near hgrad
-  rw [laplacian_sub_at (I := I) (LeviCivita (I := I) g) g hφ hψ] at hlap_sub
+  rw [laplacian_sub_at_of_contMDiffAt (I := I) (LeviCivita (I := I) g) g hφ hψ] at hlap_sub
   exact (sub_nonneg.mp hlap_sub).trans hlapφ
 
 end DifferentialGeometry.Geometry.Operator

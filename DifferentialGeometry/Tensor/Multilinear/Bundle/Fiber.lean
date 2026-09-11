@@ -3,6 +3,7 @@ Authors: Jack McCarthy
 -/
 import DifferentialGeometry.Tensor.Multilinear.Bundle.Defs
 import DifferentialGeometry.Tensor.Multilinear.Bundle.Basis
+
 open DifferentialGeometry.Tensor.Multilinear
 
 noncomputable section
@@ -284,6 +285,67 @@ theorem toModel_bijective {s : ℕ} {x : B} :
       (fun T : Bundle.continuousMultilinearMap 𝕜 s F E x =>
         toModel (F := F) (E := E) T) :=
   (continuousLinearEquivAt (F := F) (E := E) s x).bijective
+
+def fiberContinuousLinearEquiv (s : ℕ) (x : B) :
+    Bundle.continuousMultilinearMap 𝕜 s F E x ≃L[𝕜]
+      ContinuousMultilinearMap 𝕜 (fun _ : Fin s => E x) 𝕜 where
+  toFun := id
+  invFun := id
+  left_inv _ := rfl
+  right_inv _ := rfl
+  map_add' _ _ := rfl
+  map_smul' _ _ := rfl
+  continuous_toFun := by
+    change @Continuous (Bundle.continuousMultilinearMap 𝕜 s F E x)
+      (ContinuousMultilinearMap 𝕜 (fun _ : Fin s => E x) 𝕜)
+      (instTopologicalSpaceContinuousMultilinearMap 𝕜 s F E x)
+      ContinuousMultilinearMap.instTopologicalSpace id
+    rw [show instTopologicalSpaceContinuousMultilinearMap 𝕜 s F E x =
+      ContinuousMultilinearMap.instTopologicalSpace from
+        topology_eq (𝕜 := 𝕜) (F := F) (E := E) s x]
+    exact @continuous_id _ ContinuousMultilinearMap.instTopologicalSpace
+  continuous_invFun := by
+    change @Continuous (ContinuousMultilinearMap 𝕜 (fun _ : Fin s => E x) 𝕜)
+      (Bundle.continuousMultilinearMap 𝕜 s F E x)
+      ContinuousMultilinearMap.instTopologicalSpace
+      (instTopologicalSpaceContinuousMultilinearMap 𝕜 s F E x) id
+    rw [show instTopologicalSpaceContinuousMultilinearMap 𝕜 s F E x =
+      ContinuousMultilinearMap.instTopologicalSpace from
+        topology_eq (𝕜 := 𝕜) (F := F) (E := E) s x]
+    exact @continuous_id _ ContinuousMultilinearMap.instTopologicalSpace
+
+def curryFin0Equiv (x : B) :
+    Bundle.continuousMultilinearMap 𝕜 0 F E x ≃L[𝕜] 𝕜 :=
+  (fiberContinuousLinearEquiv (F := F) 0 x).trans
+    (continuousMultilinearCurryFin0 𝕜 (E x) 𝕜)
+
+@[simp] theorem curryFin0Equiv_apply (x : B)
+    (T : Bundle.continuousMultilinearMap 𝕜 0 F E x) :
+    curryFin0Equiv (𝕜 := 𝕜) (F := F) (E := E) x T = T Fin.elim0 := by
+  change T 0 = T Fin.elim0
+  exact congrArg T (Subsingleton.elim _ _)
+
+@[simp] theorem curryFin0Equiv_symm_apply (x : B) (c : 𝕜) (v : Fin 0 → E x) :
+    (curryFin0Equiv (𝕜 := 𝕜) (F := F) (E := E) x).symm c v = c := rfl
+
+def curryLeftEquiv (s : ℕ) (x : B) :
+    Bundle.continuousMultilinearMap 𝕜 (s + 1) F E x ≃L[𝕜]
+      (E x →L[𝕜] Bundle.continuousMultilinearMap 𝕜 s F E x) :=
+  (fiberContinuousLinearEquiv (F := F) (s + 1) x).trans
+    ((continuousMultilinearCurryLeftEquiv 𝕜
+      (fun _ : Fin (s + 1) => E x) 𝕜).toContinuousLinearEquiv.trans
+      ((ContinuousLinearEquiv.refl 𝕜 (E x)).arrowCongr
+        (fiberContinuousLinearEquiv (F := F) s x).symm))
+
+@[simp] theorem curryLeftEquiv_apply (s : ℕ) (x : B)
+    (T : Bundle.continuousMultilinearMap 𝕜 (s + 1) F E x)
+    (v : E x) (w : Fin s → E x) :
+    curryLeftEquiv (𝕜 := 𝕜) (F := F) (E := E) s x T v w = T (Fin.cons v w) := rfl
+
+@[simp] theorem curryLeftEquiv_symm_apply (s : ℕ) (x : B)
+    (A : E x →L[𝕜] Bundle.continuousMultilinearMap 𝕜 s F E x)
+    (v : Fin (s + 1) → E x) :
+    (curryLeftEquiv (𝕜 := 𝕜) (F := F) (E := E) s x).symm A v = A (v 0) (Fin.tail v) := rfl
 
 variable [CompleteSpace 𝕜] [FiniteDimensional 𝕜 F]
 

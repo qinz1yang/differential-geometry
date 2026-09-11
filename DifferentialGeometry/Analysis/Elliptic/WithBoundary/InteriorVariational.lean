@@ -57,13 +57,22 @@ noncomputable def lpFunctionalCLMInterior
     (g : SmoothRiemannianMetric (I_half n) M) :
     Lp ℝ 2 (riemannianVolumeMeasure (I := I_half n) (M := M) g) →L[ℝ]
       (H1ComplInterior g →L[ℝ] ℝ) :=
+  letI : NormedAddCommGroup (H1ComplInterior g →L[ℝ]
+      Lp ℝ 2 (riemannianVolumeMeasure (I := I_half n) (M := M) g)) :=
+    ContinuousLinearMap.toNormedAddCommGroup
   let applyL : (Lp ℝ 2 (riemannianVolumeMeasure (I := I_half n) (M := M) g) →L[ℝ] ℝ) →L[ℝ]
       (H1ComplInterior g →L[ℝ]
         Lp ℝ 2 (riemannianVolumeMeasure (I := I_half n) (M := M) g)) →L[ℝ]
         (H1ComplInterior g →L[ℝ] ℝ) :=
     ContinuousLinearMap.compL ℝ (H1ComplInterior g)
       (Lp ℝ 2 (riemannianVolumeMeasure (I := I_half n) (M := M) g)) ℝ
-  ((applyL.flip) (H1ComplInteriorToLp g)).comp
+  ((ContinuousLinearMap.flip (𝕜 := ℝ) (𝕜₂ := ℝ) (𝕜₃ := ℝ)
+      (E := Lp ℝ 2 (riemannianVolumeMeasure (I := I_half n) (M := M) g) →L[ℝ] ℝ)
+      (F := H1ComplInterior g →L[ℝ]
+        Lp ℝ 2 (riemannianVolumeMeasure (I := I_half n) (M := M) g))
+      (G := H1ComplInterior g →L[ℝ] ℝ) applyL) (H1ComplInteriorToLp g) :
+      (Lp ℝ 2 (riemannianVolumeMeasure (I := I_half n) (M := M) g) →L[ℝ] ℝ) →L[ℝ]
+        (H1ComplInterior g →L[ℝ] ℝ)).comp
     (innerSL ℝ : Lp ℝ 2 (riemannianVolumeMeasure (I := I_half n) (M := M) g) →L[ℝ]
       Lp ℝ 2 (riemannianVolumeMeasure (I := I_half n) (M := M) g) →L[ℝ] ℝ)
 

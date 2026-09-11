@@ -241,6 +241,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 
 include hT2 hCompact hConnected hBoundary
 
+omit [SigmaCompactSpace Q] hBoundary in
 theorem rfs_width_gap_comparison (B : RicciBackground (I := I) (M := Q) D a b)
     (f : ℝ → ℝ) (Abar Cup mu error : ℝ)
     (hAbar : 0 ≤ Abar) (hCup : 0 ≤ Cup) (hmu : 0 ≤ mu) (herror : 0 ≤ error)

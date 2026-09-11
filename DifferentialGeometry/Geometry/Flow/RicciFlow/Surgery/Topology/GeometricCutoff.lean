@@ -24,7 +24,6 @@ def cylinderTensorCovDeriv {δ : ℝ}
 
 def InFixedHamiltonIveyRegion {X : Type*} [TopologicalSpace X]
     [ChartedSpace ThreeSpace X] [IsManifold ThreeModel ∞ X]
-    [T2Space X] [SigmaCompactSpace X]
     (g : SmoothRiemannianMetric ThreeModel X) (a : ℝ) (x : X) : Prop :=
   ∀ B : Module.Basis (Fin 3) ℝ (TangentSpace ThreeModel x),
     (∀ i j, g.inner x (B i) (B j) = if i = j then 1 else 0) →

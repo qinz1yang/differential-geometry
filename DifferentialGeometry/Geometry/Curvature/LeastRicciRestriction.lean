@@ -21,7 +21,7 @@ private theorem restrict_inner (g : SmoothRiemannianMetric I M) (U : Topological
   rw [SmoothRiemannianMetric.restrictOpen_inner, mfderiv_subtype_val_apply, mfderiv_subtype_val_apply]
 
 theorem least_ricci_eigenpair_restrictOpen
-    (g : SmoothRiemannianMetric I M) (U : TopologicalSpace.Opens M) [SigmaCompactSpace U]
+    (g : SmoothRiemannianMetric I M) (U : TopologicalSpace.Opens M)
     (x : U) (μ : ℝ) (w : TangentSpace I x)
     (hunit : (g.restrictOpen U).inner x w w = 1)
     (heigen : ricciSharp (g.restrictOpen U) x w = μ • w)

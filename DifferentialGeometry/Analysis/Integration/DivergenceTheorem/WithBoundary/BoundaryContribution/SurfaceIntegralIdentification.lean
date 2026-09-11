@@ -1,4 +1,5 @@
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.WithBoundary.BoundaryContribution.GreenWithBoundary
+import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.WithBoundary.BoundaryContribution.WeightedStokes
 import DifferentialGeometry.Geometry.Boundary.Normal.Outward
 import DifferentialGeometry.Geometry.Boundary.SurfaceMeasure
 import DifferentialGeometry.Geometry.Boundary.Model.EuclideanHalfSpace
@@ -34,7 +35,7 @@ def chartFaceIntegralEqualsSurfaceIntegralOnChart
         EuclideanSpace ℝ (Fin n),
         (TangentSpace (modelWithCornersEuclideanHalfSpace n) : M → Type _)⟯)
     (f : M → ℝ) : Prop :=
-  chartBoundaryFaceIntegral
+  chartWeightedDivergenceIntegral
       (I := modelWithCornersEuclideanHalfSpace n) g α X f =
     ∫ x : (modelWithCornersEuclideanHalfSpace n).boundary M,
         f (x.val) *
@@ -276,7 +277,7 @@ theorem boundaryFaceSum_eq_surface_integral_of_chartIdentification
   rw [boundaryFaceSum_def]
   have h_sum_chart :
       ∑ α ∈ S,
-          chartBoundaryFaceIntegral
+          chartWeightedDivergenceIntegral
             (I := modelWithCornersEuclideanHalfSpace n) g α X
               (((chartAtlasPOU (modelWithCornersEuclideanHalfSpace n) M) α :
                 M → ℝ))
@@ -314,6 +315,27 @@ theorem boundaryFaceSum_eq_surface_integral_of_chartIdentification
   rw [chartAtlasPOU_finset_sum_eq_one_at_val (n := n) (M := M) b, one_mul]
 
 end GlobalAssembly
+
+theorem boundaryFaceSum_eq_surface_integral
+    {n : ℕ} [NeZero n] {M : Type*} [TopologicalSpace M]
+    [ChartedSpace (EuclideanHalfSpace n) M]
+    [IsManifold (modelWithCornersEuclideanHalfSpace n) ∞ M]
+    [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    (g : SmoothRiemannianMetric (modelWithCornersEuclideanHalfSpace n) M)
+    (X : Cₛ^∞⟮(modelWithCornersEuclideanHalfSpace n);
+        EuclideanSpace ℝ (Fin n),
+        (TangentSpace (modelWithCornersEuclideanHalfSpace n) : M → Type _)⟯) :
+    boundaryFaceSum (I := modelWithCornersEuclideanHalfSpace n) g X =
+      ∫ x : (modelWithCornersEuclideanHalfSpace n).boundary M,
+        g.inner x.val
+          (outwardNormal
+              (I := modelWithCornersEuclideanHalfSpace n) (M := M) g x :
+            TangentSpace _ x.val)
+          (X x.val)
+        ∂(surfaceMeasure
+          (I := modelWithCornersEuclideanHalfSpace n) (M := M) g) := by
+  rw [← integral_divergence_with_boundary_eq_boundaryFaceSum]
+  exact integral_divergence_g_with_boundary_eq_surfaceMeasure_flux g X
 
 end WithBoundary
 end DivergenceTheorem

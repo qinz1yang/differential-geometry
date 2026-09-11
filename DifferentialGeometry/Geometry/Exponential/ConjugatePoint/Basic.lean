@@ -1,5 +1,7 @@
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tangent.NormDiamond
 import DifferentialGeometry.Geometry.Exponential.Variation.Jacobi
+import DifferentialGeometry.Geometry.Comparison.Variation.JacobiReparam
+
 open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
@@ -27,126 +29,6 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
   [T2Space M] [SigmaCompactSpace M] [T2Space (TangentBundle I M)]
   [CompleteSpace E]
 
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M]
-  [SigmaCompactSpace M] [T2Space (TangentBundle I M)] [CompleteSpace E] in
-theorem covDeriv_comp_affine
-    (g : SmoothRiemannianMetric I M) (γ : ℝ → M)
-    (V : ∀ t, TangentSpace I (γ t)) (c d t : ℝ) :
-    covDerivAlong (I := I) g
-        (fun s => γ (c * s + d)) (fun s => V (c * s + d)) t =
-      c • covDerivAlong (I := I) g γ V (c * t + d) := by
-  rw [covDerivAlong_def, covDerivAlong_def]
-  rw [← map_smul]
-  congr 1
-  have hrep :
-      chartRepAt (I := I) (fun s => γ (c * s + d))
-          (fun s => V (c * s + d)) t =
-        fun s => chartRepAt (I := I) γ V (c * t + d) (c * s + d) := rfl
-  have hcurve :
-      chartCurve (I := I) (γ (c * t + d)) (fun s => γ (c * s + d)) =
-        fun s => chartCurve (I := I) (γ (c * t + d)) γ (c * s + d) := rfl
-  rw [hrep, chartCovDerivAlong_def, chartCovDerivAlong_def, hcurve]
-  have hderiv (f : ℝ → E) :
-      deriv (fun s => f (c * s + d)) t = c • deriv f (c * t + d) := by
-    calc
-      deriv (fun s => f (c * s + d)) t =
-          deriv (fun s => (fun r => f (r + d)) (c * s)) t := rfl
-      _ = c • deriv (fun r => f (r + d)) (c * t) :=
-        deriv_comp_mul_left c (fun r : ℝ => f (r + d)) t
-      _ = c • deriv f (c * t + d) := by rw [deriv_comp_add_const]
-  rw [hderiv, hderiv,
-    ChartChristoffel.contraction_smul_left, smul_add]
-
-omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
-  [I.Boundaryless] [IsManifold I ∞ M] [T2Space M] [SigmaCompactSpace M]
-  [T2Space (TangentBundle I M)] [CompleteSpace E] in
-theorem curveVelocity_comp_affine
-    (γ : ℝ → M) (c d t : ℝ)
-    (hγ : MDifferentiableAt 𝓘(ℝ, ℝ) I γ (c * t + d)) :
-    curveVelocity (I := I) (fun s => γ (c * s + d)) t =
-      c • curveVelocity (I := I) γ (c * t + d) := by
-  let a : ℝ → ℝ := fun s => c * s + d
-  have ha : MDifferentiableAt 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) a t := by
-    have ha_inf : ContMDiff 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) ∞ a := by
-      exact contMDiff_const.mul contMDiff_id |>.add contMDiff_const
-    exact ha_inf.contMDiffAt.mdifferentiableAt (by simp)
-  have hcomp :=
-    mfderiv_comp_apply (f := a) (g := γ) (x := t) hγ ha (1 : ℝ)
-  have ha_one : mfderiv 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) a t (1 : ℝ) = c := by
-    rw [mfderiv_eq_fderiv]
-    have hfd : HasFDerivAt a (c • (1 : ℝ →L[ℝ] ℝ)) t := by
-      have hadd : HasFDerivAt a
-          ((c • (1 : ℝ →L[ℝ] ℝ)) + (0 : ℝ →L[ℝ] ℝ)) t := by
-        change HasFDerivAt (fun s : ℝ => c * s + d)
-          ((c • (1 : ℝ →L[ℝ] ℝ)) + (0 : ℝ →L[ℝ] ℝ)) t
-        refine HasFDerivAt.add ?_ (hasFDerivAt_const (x := t) d)
-        refine ((c • (1 : ℝ →L[ℝ] ℝ)).hasFDerivAt
-          (x := t)).congr_of_eventuallyEq ?_
-        filter_upwards with s
-        simp only [smul_apply, one_apply_eq_self, smul_eq_mul]
-      rw [add_zero] at hadd
-      exact hadd
-    rw [hfd.fderiv]
-    change c • ((1 : ℝ →L[ℝ] ℝ) (1 : ℝ)) = c
-    rw [one_apply_eq_self, smul_eq_mul, mul_one]
-  change mfderiv 𝓘(ℝ, ℝ) I (γ ∘ a) t (1 : ℝ) =
-    c • mfderiv 𝓘(ℝ, ℝ) I γ (a t) (1 : ℝ)
-  rw [hcomp, ha_one]
-  let A := mfderiv 𝓘(ℝ, ℝ) I γ (a t)
-  have hA : A
-        ((tangentSpaceModelContinuousLinearEquiv
-          (I := 𝓘(ℝ, ℝ)) (a t)).symm c) =
-      c • A
-        ((tangentSpaceModelContinuousLinearEquiv
-          (I := 𝓘(ℝ, ℝ)) (a t)).symm 1) := by
-    rw [← A.map_smul]
-    congr 1
-    apply (tangentSpaceModelContinuousLinearEquiv
-      (I := 𝓘(ℝ, ℝ)) (a t)).injective
-    simp
-  with_unfolding_all exact hA
-
-omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M]
-  [T2Space (TangentBundle I M)] in
-private theorem jacobi_comp_affine
-    (g : SmoothRiemannianMetric I M) (γ : ℝ → M)
-    (J : ∀ t, TangentSpace I (γ t)) (c d : ℝ)
-    (hγ : ContMDiff 𝓘(ℝ, ℝ) I ∞ γ)
-    (hJ : IsJacobiAlong (I := I) g γ J) :
-    IsJacobiAlong (I := I) g
-      (fun s => γ (c * s + d)) (fun s => J (c * s + d)) := by
-  intro t
-  let δ : ℝ → M := fun s => γ (c * s + d)
-  let L : ∀ s, TangentSpace I (δ s) := fun s => J (c * s + d)
-  let DJ : ∀ s, TangentSpace I (γ s) :=
-    fun s => covDerivAlong (I := I) g γ J s
-  have hDL : (fun s => covDerivAlong (I := I) g δ L s) =
-      fun s => c • DJ (c * s + d) := by
-    funext s
-    exact covDeriv_comp_affine (I := I) g γ J c d s
-  have hD2 :
-      covDerivAlong (I := I) g δ
-          (fun s => covDerivAlong (I := I) g δ L s) t =
-        (c * c) • covDerivAlong (I := I) g γ DJ (c * t + d) := by
-    rw [hDL]
-    rw [covDerivAlong_smul]
-    rw [covDeriv_comp_affine (I := I) g γ DJ c d t, smul_smul]
-  have hvel :
-      curveVelocity (I := I) δ t =
-        c • curveVelocity (I := I) γ (c * t + d) := by
-    exact curveVelocity_comp_affine (I := I) γ c d t
-      (hγ.contMDiffAt.mdifferentiableAt (by simp))
-  change
-    covDerivAlong (I := I) g δ
-        (fun s => covDerivAlong (I := I) g δ L s) t +
-      (DifferentialGeometry.Geometry.Curvature.riemannOp
-          (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g)
-          (δ t))
-        (L t) (curveVelocity (I := I) δ t)
-        (curveVelocity (I := I) δ t) = 0
-  rw [hD2, hvel]
-  simp only [map_smul, smul_apply, smul_smul]
-  rw [← smul_add, hJ (c * t + d), smul_zero]
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
@@ -306,7 +188,7 @@ theorem intrinsicGeo_rev_velocity
     _ = -tangentSpaceModelContinuousLinearEquiv (I := I) p u :=
       congrArg Neg.neg hzeroE
 
-omit [T2Space (TangentBundle I M)] in
+omit [T2Space (TangentBundle I M)] [CompleteSpace E] in
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 private theorem exp_pair_reverse
@@ -490,7 +372,7 @@ private theorem exp_pair_reverse
   have hJacobianJR : IsJacobiAlong (I := I) g δ JR := by
     rw [← hrev_def]
     simpa only [JR, Hrev, F] using
-      jacobi_comp_affine (I := I) g γ J (-1) 1 hγ_inf hJacobianJ
+      hJacobianJ.comp_affine (hγ_inf.mdifferentiable (by simp)) (-1) 1
   have hWderiv (t : ℝ) :
       HasDerivAt (jacobiWronskian (I := I) g δ K JR) 0 t :=
     hasDerivAt_wronsk (I := I) (n := ∞) (by simp) g δ K JR t hδ_inf
@@ -721,7 +603,7 @@ theorem isConjVec_iff
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-omit [T2Space (TangentBundle I M)] in
+omit [T2Space (TangentBundle I M)] [CompleteSpace E] in
 theorem conjVec_reverse
     [PseudoEMetricSpace M] [RiemannianBundle (fun (x : M) ↦ TangentSpace I x)]
     [IsRiemannianManifold I M] [CompleteSpace M]

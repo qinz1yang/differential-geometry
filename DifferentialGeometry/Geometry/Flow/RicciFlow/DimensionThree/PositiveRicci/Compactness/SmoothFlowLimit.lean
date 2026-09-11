@@ -1744,6 +1744,9 @@ theorem exists_hamilton_smooth_flow_limit_subsequence
   have hscalarRaw := FlowMetricConvergenceData.scalar_convergence (I := I) (Φ := Phi)
     mc.limit.metric bf hsrc htgt (-(hamiltonReferenceRadius ^ 2)) 0 cLow hcLow
     hbound hcovTail co hcarrier
+  have hricciRaw := FlowMetricConvergenceData.ricci_convergence (I := I) (Φ := Phi)
+    mc.limit.metric bf hsrc htgt (-(hamiltonReferenceRadius ^ 2)) 0 cLow hcLow
+    hbound hcovTail co hcarrier
   have hricRaw := FlowMetricConvergenceData.ricNorm_convergence (I := I) (Φ := Phi)
     mc.limit.metric bf hsrc htgt (-(hamiltonReferenceRadius ^ 2)) 0 cLow hcLow
     hbound hcovTail co hcarrier
@@ -1834,7 +1837,7 @@ theorem exists_hamilton_smooth_flow_limit_subsequence
       (hmap k x).symm
   let d := smoothFlowLimitSubsequenceOfMaps (I := I) (X := X) mc L mc.limit rfl hL0
     Phi mc.limit.metric bf hsrc htgt (-(hamiltonReferenceRadius ^ 2)) 0 hcarrier co
-    (fun _ _ => HEq.rfl) scalar ricciNorm
+    (fun _ _ => HEq.rfl) scalar hricciRaw ricciNorm
   refine ⟨d, ?_⟩
   intro t ht
   have htWindow : t ∈ Set.Icc (-(hamiltonReferenceRadius ^ 2)) 0 := hcarrier ht
@@ -1852,7 +1855,7 @@ theorem exists_hamilton_smooth_flow_limit_subsequence
   have hdL : d.limit.L = L :=
     smoothFlowLimitSubsequenceOfMaps_limit (I := I) (X := X) mc L mc.limit rfl hL0
       Phi mc.limit.metric bf hsrc htgt (-(hamiltonReferenceRadius ^ 2)) 0 hcarrier co
-      (fun _ _ => HEq.rfl) scalar ricciNorm
+      (fun _ _ => HEq.rfl) scalar hricciRaw ricciNorm
   rw [hdL]
   change MetricComplete (I := I)
     ({ mc.limit with metric := co.gInf t } :

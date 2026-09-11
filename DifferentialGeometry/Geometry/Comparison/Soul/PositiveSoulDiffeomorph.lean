@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Comparison.Soul.SoulDiffeomorph
 import DifferentialGeometry.Geometry.Comparison.Soul.SoulGeodesicCarrier
 import DifferentialGeometry.Geometry.Comparison.Soul.PointNormalBundle
-import DifferentialGeometry.Geometry.Comparison.Soul.PositiveGeodesicCarrier
+import DifferentialGeometry.Geometry.Comparison.CompactGeodesicCarrier
 
 set_option autoImplicit false
 

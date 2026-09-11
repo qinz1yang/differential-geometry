@@ -42,7 +42,7 @@ noncomputable def boundaryFaceSum
     (g : SmoothRiemannianMetric I M)
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) : ℝ :=
   ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
-    chartBoundaryFaceIntegral (I := I) g α X
+    chartWeightedDivergenceIntegral (I := I) g α X
       ((chartAtlasPOU I M) α : M → ℝ)
 
 @[simp] lemma boundaryFaceSum_def
@@ -51,7 +51,7 @@ noncomputable def boundaryFaceSum
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) :
     boundaryFaceSum (I := I) g X =
       ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
-        chartBoundaryFaceIntegral (I := I) g α X
+        chartWeightedDivergenceIntegral (I := I) g α X
           ((chartAtlasPOU I M) α : M → ℝ) := rfl
 
 section StokesGlobal

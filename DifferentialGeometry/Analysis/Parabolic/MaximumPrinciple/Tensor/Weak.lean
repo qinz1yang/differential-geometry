@@ -2,6 +2,7 @@ import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Tensor.Barrier.C
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Tensor.Barrier.Continuation
 import DifferentialGeometry.Geometry.Operator.Heat.Tensor
 import DifferentialGeometry.Geometry.Operator.Scalar.Calculus
+
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Geometry.Curvature
 
@@ -64,7 +65,7 @@ theorem tensor_first_null_contradiction
     {epsilon delta t0 : Real}
     (hstrict : TensorBarrierStrictSupersolutionOn (I := I) (M := M)
       G S X N nabla2Barrier nablaBarrier epsilon delta t0)
-    (_hnull : TensorNullEigenvectorCondition (I := I) (M := M) G
+    (hnull : TensorNullEigenvectorCondition (I := I) (M := M) G
       N (Set.Icc t0 (t0 + delta)))
     (hsym : TwoTensorFamilySymmetricOn (I := I) (M := M) S
       (Set.Icc t0 (t0 + delta)))
@@ -114,7 +115,7 @@ theorem tensor_first_null_contradiction
         N d.t1 (G d.t1)
           (tensorBarrierFamily (I := I) (M := M) G S epsilon delta t0 d.t1)
           d.x1 d.v d.v := by
-    exact _hnull d.t1 ht1_mem_slab
+    exact hnull d.t1 ht1_mem_slab
       (tensorBarrierFamily (I := I) (M := M) G S epsilon delta t0 d.t1)
       d.x1 hbarrier_symmetric hbarrier_bilinear hbarrier_nonnegative d.v d.null
   rcases hsigns with
@@ -349,18 +350,18 @@ theorem hamilton_tensor_weak_maximum_principle
     {nablaS : TensorNabla1Family (I := I) (M := M)}
     {T : Real}
     (hreg : TensorWeakMaximumPrincipleRegularityOn (I := I) (M := M) G S X N T)
-    (_hparabolic : TensorParabolicSupersolutionWithDriftOn
+    (hparabolic : TensorParabolicSupersolutionWithDriftOn
       (I := I) (M := M) G S X N nabla2S nablaS T)
-    (_hnull : TensorNullEigenvectorCondition (I := I) (M := M) G N (Set.Icc 0 T))
-    (_hinit : TwoTensorFamilyNonnegativeAtTime (I := I) (M := M) S 0) :
+    (hnull : TensorNullEigenvectorCondition (I := I) (M := M) G N (Set.Icc 0 T))
+    (hinit : TwoTensorFamilyNonnegativeAtTime (I := I) (M := M) S 0) :
     TwoTensorFamilyNonnegativeOn (I := I) (M := M) S (Set.Icc 0 T) := by
   exact weak_maximum_principle_of_cert (I := I) (M := M)
     (G := G) (S := S) (X := X) (N := N) hreg.toCompactness
     (fun t0 ht0 ht0T =>
       certSlab_of_regularity (I := I) (M := M)
         (G := G) (S := S) (X := X) (N := N)
-        ht0 ht0T hreg _hparabolic)
-    _hnull _hinit
+        ht0 ht0T hreg hparabolic)
+    hnull hinit
 
 omit [IsManifold I 2 M] in
 theorem hamilton_tensor_weak_maximum_principle_section
@@ -372,11 +373,11 @@ theorem hamilton_tensor_weak_maximum_principle_section
     {nablaS : TensorNabla1Family (I := I) (M := M)}
     {T : Real}
     (hreg : TensorWeakMaximumPrincipleSectionRegularity (I := I) (M := M) G S X N T)
-    (_hparabolic : TensorParabolicSupersolutionWithDriftOn
+    (hparabolic : TensorParabolicSupersolutionWithDriftOn
       (I := I) (M := M) G (twoTensorSecToFamily (I := I) (M := M) S)
       X N nabla2S nablaS T)
-    (_hnull : TensorNullEigenvectorCondition (I := I) (M := M) G N (Set.Icc 0 T))
-    (_hinit : TwoTensorFamilyNonnegativeAtTime (I := I) (M := M)
+    (hnull : TensorNullEigenvectorCondition (I := I) (M := M) G N (Set.Icc 0 T))
+    (hinit : TwoTensorFamilyNonnegativeAtTime (I := I) (M := M)
       (twoTensorSecToFamily (I := I) (M := M) S) 0) :
     TwoTensorFamilyNonnegativeOn (I := I) (M := M)
       (twoTensorSecToFamily (I := I) (M := M) S) (Set.Icc 0 T) := by
@@ -386,8 +387,8 @@ theorem hamilton_tensor_weak_maximum_principle_section
     (fun t0 ht0 ht0T =>
       certSlab_of_sectionRegularity (I := I) (M := M)
         (G := G) (S := S) (X := X) (N := N)
-        ht0 ht0T hreg _hparabolic)
-    _hnull _hinit
+        ht0 ht0T hreg hparabolic)
+    hnull hinit
 
 end
 

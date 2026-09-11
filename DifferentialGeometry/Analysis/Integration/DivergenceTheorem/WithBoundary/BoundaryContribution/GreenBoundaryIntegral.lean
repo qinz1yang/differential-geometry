@@ -1,4 +1,3 @@
-import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.WithBoundary.BoundaryContribution.GreenWithBoundary
 import DifferentialGeometry.Geometry.Operator.WithBoundary.GradientGlobalSection
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.WithBoundary.BoundaryContribution.SurfaceIntegralIdentification
 import DifferentialGeometry.Geometry.Boundary.Normal.Outward
@@ -14,8 +13,8 @@ import DifferentialGeometry.Geometry.Operator.Gradient.Basic
 
 noncomputable section
 
-open Bundle Manifold Set MeasureTheory Function
-open scoped Manifold Topology ContDiff Matrix ENNReal BigOperators
+open Bundle Manifold MeasureTheory Set
+open scoped Manifold ContDiff ENNReal
 
 open DifferentialGeometry.Geometry.Operator
 namespace DifferentialGeometry
@@ -198,7 +197,7 @@ private lemma integrable_divergence_g_with_boundary
       · exfalso; apply hx
         have hd_eq : divergenceGWithBoundary (I := I) g X x =
             localDivergenceWithin (I := I) g α X x :=
-          voss_weyl_divergence_with_boundary_formula (I := I) g α X hx_chart hx_int
+          voss_weyl_divergence_with_boundary_formula (I := I) g α X hx_chart
         rw [hd_eq]
       · refine ⟨hx_chart, ?_⟩
         rw [← I.compl_interior]

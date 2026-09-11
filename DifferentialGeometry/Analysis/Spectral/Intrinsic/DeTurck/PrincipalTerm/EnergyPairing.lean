@@ -1491,6 +1491,7 @@ private theorem term_g0Term_abs_le_jetProduct (g₀ g₁ : SmoothRiemannianMetri
           · exact mul_nonneg (hCfL_nn 0)
               (mul_nonneg (hCfR_nn 0) (Finset.sum_nonneg (fun q _ => hCfG_nn q)))
 
+omit [CompactSpace M] in
 private theorem termLadder_pairing_transport (g : SmoothRiemannianMetric I M) (σ a r : ℕ)
     (hr : r ≤ a) (X Y : SmoothCcTensor g 0 σ) :
     tensorL2Inner (I := I) (M := M) g 0 σ
@@ -1508,6 +1509,7 @@ private theorem termLadder_pairing_transport (g : SmoothRiemannianMetric I M) (�
   exact oneMinusConnLapSmoothIter_l2Inner_selfAdjoint (I := I) (M := M) g 0 σ r
     (oneMinusConnLapSmoothIter (I := I) g 0 σ (a - r) X) Y
 
+omit [CompactSpace M] in
 private theorem termLadder_pairing_abs_le_transport (g : SmoothRiemannianMetric I M)
     (σ a r : ℕ) (hr : r ≤ a) (X Y : SmoothCcTensor g 0 σ) :
     |tensorL2Inner (I := I) (M := M) g 0 σ

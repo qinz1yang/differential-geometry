@@ -1,5 +1,6 @@
 import DifferentialGeometry.Geometry.Connection.HomBundle.Basic
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Sections
+
 open DifferentialGeometry.Geometry.Curvature
 
 
@@ -112,7 +113,8 @@ lemma cov_V_toFun_pairedSection_apply
   abel
 
 omit [BoundarylessManifold I M] in
-omit [CompleteSpace E] [SigmaCompactSpace M] [CompleteSpace E_U] [CompleteSpace F]
+omit [CompleteSpace E] [SigmaCompactSpace M] [CompleteSpace E_U] [FiniteDimensional ℝ F]
+    [CompleteSpace F]
     [ContMDiffVectorBundle ∞ F V I] in
 lemma cov_V_toFun_covApply_pairedSection_apply
     (cov_U : CovariantDerivative I E_U U) [ContMDiffCovariantDerivative cov_U ∞]
@@ -169,7 +171,8 @@ lemma cov_V_toFun_covApply_pairedSection_apply
   abel
 
 omit [BoundarylessManifold I M] in
-omit [CompleteSpace E] [SigmaCompactSpace M] [CompleteSpace E_U] [CompleteSpace F]
+omit [CompleteSpace E] [SigmaCompactSpace M] [CompleteSpace E_U] [FiniteDimensional ℝ F]
+    [CompleteSpace F]
     [ContMDiffVectorBundle ∞ F V I] in
 lemma riemannSec_cov_V_pairedSection_eq
     (cov_U : CovariantDerivative I E_U U) [ContMDiffCovariantDerivative cov_U ∞]
@@ -200,7 +203,8 @@ lemma riemannSec_cov_V_pairedSection_eq
   abel
 
 omit [BoundarylessManifold I M] in
-omit [CompleteSpace E] [SigmaCompactSpace M] [CompleteSpace E_U] [CompleteSpace F] in
+omit [CompleteSpace E] [SigmaCompactSpace M] [CompleteSpace E_U] [FiniteDimensional ℝ F]
+    [CompleteSpace F] in
 omit [ContMDiffVectorBundle ∞ F V I] in
 theorem riemannSec_homBundle_apply_eq
     (cov_U : CovariantDerivative I E_U U) [ContMDiffCovariantDerivative cov_U ∞]

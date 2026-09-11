@@ -4,6 +4,7 @@ import DifferentialGeometry.Geometry.Metric.Sphere.Quotient.Descent
 import DifferentialGeometry.Geometry.Metric.UniversalCover.DeckIsometry
 import DifferentialGeometry.Topology.Covering.Fiber.Equivalence
 import DifferentialGeometry.Topology.Covering.Smooth.LocalDiffeomorph
+
 open DifferentialGeometry.Geometry.Curvature
 
 
@@ -40,14 +41,6 @@ noncomputable def roundQuotientUC
   let φ (a : FundamentalGroup Q (default : Q)) :
       sphere (0 : E) 1 ≃ₘ⟮𝓡 n, 𝓡 n⟯ sphere (0 : E) 1 :=
     (d.trans (UniversalCover.deckDiffeo (I := 𝓡 n) a)).trans d.symm
-  have hfr : 0 < finrank ℝ E := by
-    rw [show finrank ℝ E = n + 1 from Fact.out]
-    omega
-  letI : Nontrivial E := Module.nontrivial_of_finrank_pos hfr
-  let p : sphere (0 : E) 1 :=
-    Classical.choice
-      (NormedSpace.sphere_nonempty_rclike ℝ
-        (E := E) (r := (1 : ℝ)) zero_le_one)
   have hone : ∀ x, φ 1 x = x := by
     intro x
     dsimp only [φ]
@@ -128,11 +121,11 @@ noncomputable def roundQuotientUC
           (mfderiv (𝓡 n) (𝓡 n) (φ a) x w)
   let ρ : FundamentalGroup Q (default : Q) →* (E ≃ₗᵢ[ℝ] E) :=
     Classical.choose
-      (orth_rep_of_iso (E := E) (n := n) p φ
+      (orth_rep_of_iso (E := E) (n := n) φ
         (Nat.pos_of_ne_zero (NeZero.ne n)) hone hmul hiso)
   have hρ : ∀ a, sphereDiffeo (n := n) (ρ a) = φ a :=
     Classical.choose_spec
-      (orth_rep_of_iso (E := E) (n := n) p φ
+      (orth_rep_of_iso (E := E) (n := n) φ
         (Nat.pos_of_ne_zero (NeZero.ne n)) hone hmul hiso)
   let proj : sphere (0 : E) 1 → Q := UniversalCover.proj ∘ d
   have hprojSurj :
@@ -164,15 +157,25 @@ noncomputable def roundQuotientUC
     { Q := Q
       Γ := FundamentalGroup Q (default : Q)
       ρ := ρ
+      action_free := ?_
       proj := proj
       proj_smooth :=
         (UniversalCover.proj_contMDiff (I := 𝓡 n) (M := Q)).comp d.contMDiff
       proj_smul := ?_
       proj_eq_imp := ?_
       sectionAt := fun x => LocalSmoothSection.ofLocal hsurj hloc x }
+  · intro a x hfix
+    rw [hρ a] at hfix
+    apply (UniversalCover.deckAct_eq_self_iff (d x)).mp
+    have h := congrArg d hfix
+    simp only [φ, Diffeomorph.coe_trans, Function.comp_apply,
+      d.apply_symm_apply] at h
+    change a • d x = d x at h
+    exact h
   · intro a x
+    change UniversalCover.proj (d (sphereDiffeo (ρ a) x)) =
+      UniversalCover.proj (d x)
     rw [hρ a]
-    simp only [proj, Function.comp_apply]
     have hφbase : d (φ a x) = a • d x := by
       simp only [φ, Diffeomorph.coe_trans, Function.comp_apply,
         d.apply_symm_apply]
@@ -180,6 +183,7 @@ noncomputable def roundQuotientUC
     rw [hφbase]
     exact UniversalCover.proj_deckAct a (d x)
   · intro x y hxy
+    change UniversalCover.proj (d x) = UniversalCover.proj (d y) at hxy
     have hdeck :
         ∃ a : FundamentalGroup Q (default : Q), a • d x = d y :=
       (UniversalCover.proj_eq_iff_smul (d x) (d y)).mp hxy

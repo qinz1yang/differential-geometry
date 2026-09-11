@@ -4,6 +4,7 @@ import DifferentialGeometry.Geometry.Comparison.Variation.Jacobi.Basic
 import DifferentialGeometry.Geometry.Exponential.GaussLemma.Pullback
 import DifferentialGeometry.Geometry.Exponential.Intrinsic.Velocity
 import DifferentialGeometry.Geometry.Exponential.Variation.Radial
+
 open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
@@ -347,15 +348,9 @@ private lemma clamped_slice_covDeriv_velocity_zero
     HasGeodesicEquationAt.congr_of_eventuallyEq_at hEv2.eq_of_nhds hEv2 hgeo_unclamped
   exact covDerivAlong_velocity_eq_zero_of_hasGeodesicEquationAt_C2 (I := I) g _ t₀ hγC2 hgeo
 
-attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
-  Tensor0SBundle.tangentSpaceNormedSpace in
-omit [CompleteSpace E] in
+omit [T2Space M] [SigmaCompactSpace M] [NeZero (Module.finrank ℝ E)] [CompleteSpace E] in
 private lemma clamped_slice_covDeriv_velocity_zero_at_zero
-    [PseudoEMetricSpace M] [RiemannianBundle (fun (x : M) ↦ TangentSpace I x)]
-    [IsRiemannianManifold I M] [CompleteSpace M]
-    [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (a : E)
     (ψ : ℝ → ℝ) (hψid : ∀ u ∈ Set.Icc (-1 : ℝ) 2, ψ u = u) :
     covDerivAlong (I := I) g
@@ -408,7 +403,7 @@ private lemma clamped_slice_covDeriv_velocity_zero_at_zero
         (show TangentSpace I p from (u • a)) : M)) v (1 : ℝ))
     hcurve hvel
   have hzero := Exponential.exp_radial_d2_zero
-    (I := I) g hEnorm p (show TangentSpace I p from a)
+    (I := I) g p (show TangentSpace I p from a)
   have hzero_model :
       ((covDerivAlong (I := I) g
         (fun v : ℝ => (expMap (I := I) g p
@@ -1037,14 +1032,9 @@ theorem exists_radial_jacobi_deriv_radius (g : SmoothRiemannianMetric I M) (p : 
   intro x w hx hw
   exact radial_deriv_of_lt (I := I) g p hx hw
 
-attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
-  Tensor0SBundle.tangentSpaceNormedSpace in
+omit [SigmaCompactSpace M] [NeZero (Module.finrank ℝ E)] in
 theorem jacobi_zero_of_lt
-    [PseudoEMetricSpace M] [RiemannianBundle (fun (x : M) ↦ TangentSpace I x)]
-    [IsRiemannianManifold I M] [CompleteSpace M]
-    [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) {x w : E}
     (hx : ‖x‖ < jacobiVarRadius (I := I) g p)
     (hw : ‖w‖ < jacobiVarRadius (I := I) g p) :
@@ -1112,7 +1102,7 @@ theorem jacobi_zero_of_lt
         (fun v : ℝ => mfderiv (𝓘(ℝ, ℝ)) I (fun u : ℝ => F s u) v (1 : ℝ)) 0 = 0 := by
     intro s
     exact clamped_slice_covDeriv_velocity_zero_at_zero
-      (I := I) g hEnorm p (x + φ s • w) ψ hψid
+      (I := I) g p (x + φ s • w) ψ hψid
   have houterL : DifferentiableAt ℝ
       (chartRepAt (I := I) (fun s : ℝ => F s 0)
         (fun s : ℝ => covDerivAlong (I := I) g (fun v : ℝ => F s v)
@@ -1239,14 +1229,9 @@ theorem jacobi_zero_of_lt
     exact congrArg Neg.neg hcurv
   linear_combination (norm := module) hfinal
 
-attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
-  Tensor0SBundle.tangentSpaceNormedSpace in
+omit [SigmaCompactSpace M] [NeZero (Module.finrank ℝ E)] [CompleteSpace E] in
 theorem exists_jacobi_zero
-    [PseudoEMetricSpace M] [RiemannianBundle (fun (x : M) ↦ TangentSpace I x)]
-    [IsRiemannianManifold I M] [CompleteSpace M]
-    [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) :
     ∃ r : ℝ, 0 < r ∧ ∀ x w : E, ‖x‖ < r → ‖w‖ < r →
       IsJacobiAt (I := I) g
@@ -1257,9 +1242,10 @@ theorem exists_jacobi_zero
             (expMap (I := I) g p (show TangentSpace I p from (v • (x + s • w))) : M)) 0
               (1 : ℝ))
         0 := by
+  let : CompleteSpace E := FiniteDimensional.complete ℝ E
   refine ⟨jacobiVarRadius (I := I) g p, jacobiVarRadius_pos (I := I) g p, ?_⟩
   intro x w hx hw
-  exact jacobi_zero_of_lt (I := I) g hEnorm p hx hw
+  exact jacobi_zero_of_lt (I := I) g p hx hw
 
 end Riemannian
 end Geometry

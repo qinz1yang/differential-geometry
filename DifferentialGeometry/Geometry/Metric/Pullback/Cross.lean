@@ -221,6 +221,103 @@ theorem Diffeomorph.pullbackMetricCross_inner
       = g.inner (Φ x) (mfderiv I J Φ x v) (mfderiv I J Φ x w) :=
   pullbackInnerCross_eval g Φ x v w
 
+theorem Diffeomorph.pullbackMetricCross_eq_pullbackMetric
+    {P : Type*} [TopologicalSpace P] [ChartedSpace H P]
+    [IsManifold I ∞ P] [T2Space M]
+    (g : SmoothRiemannianMetric I P) (Φ : M ≃ₘ⟮I, I⟯ P) :
+    Diffeomorph.pullbackMetricCross g Φ =
+      Diffeomorph.pullbackMetric g Φ := by
+  apply SmoothRiemannianMetric.ext_inner
+  intro x v w
+  rw [Diffeomorph.pullbackMetricCross_inner,
+    Diffeomorph.pullbackMetric_inner]
+
+theorem Diffeomorph.pullbackMetricCross_trans
+    {W : Type*} [NormedAddCommGroup W] [NormedSpace Real W]
+    {L : Type*} [TopologicalSpace L] {K : ModelWithCorners Real W L}
+    {P : Type*} [TopologicalSpace P] [ChartedSpace L P] [IsManifold K ∞ P]
+    [T2Space M] [T2Space N]
+    (g : SmoothRiemannianMetric K P)
+    (Φ : M ≃ₘ⟮I, J⟯ N) (Ψ : N ≃ₘ⟮J, K⟯ P) :
+    Diffeomorph.pullbackMetricCross
+        (Diffeomorph.pullbackMetricCross g Ψ) Φ =
+      Diffeomorph.pullbackMetricCross g (Φ.trans Ψ) := by
+  apply SmoothRiemannianMetric.ext_inner
+  intro x v w
+  rw [Diffeomorph.pullbackMetricCross_inner,
+    Diffeomorph.pullbackMetricCross_inner,
+    Diffeomorph.pullbackMetricCross_inner]
+  have hcomp : mfderiv I K (Φ.trans Ψ : M → P) x =
+      (mfderiv J K (Ψ : N → P) (Φ x)).comp
+        (mfderiv I J (Φ : M → N) x) :=
+    mfderiv_comp x
+      (Ψ.contMDiff.mdifferentiableAt (by simp))
+      (Φ.contMDiff.mdifferentiableAt (by simp))
+  rw [hcomp]
+  rfl
+
+theorem Diffeomorph.pullbackMetricCross_refl
+    [T2Space M]
+    (g : SmoothRiemannianMetric I M) :
+    Diffeomorph.pullbackMetricCross g (_root_.Diffeomorph.refl I M ∞) = g := by
+  rcases g with ⟨inner_g, symm_g, pos_g, isVonN_g, contMDiff_g⟩
+  have hinner :
+      (fun x => Diffeomorph.pullbackInnerCross
+          ⟨inner_g, symm_g, pos_g, isVonN_g, contMDiff_g⟩
+          (_root_.Diffeomorph.refl I M ∞) x) = inner_g := by
+    funext x
+    apply ContinuousLinearMap.ext
+    intro v
+    apply ContinuousLinearMap.ext
+    intro w
+    rw [pullbackInnerCross_eval]
+    have hmfd : mfderiv I I
+        (_root_.Diffeomorph.refl I M ∞ : M ≃ₘ⟮I, I⟯ M) x =
+        ContinuousLinearMap.id Real (TangentSpace I x) := by
+      have h : mfderiv I I
+          (fun y : M => (_root_.Diffeomorph.refl I M ∞ : M ≃ₘ⟮I, I⟯ M) y) x =
+          mfderiv I I (id : M → M) x := rfl
+      rw [h]
+      exact mfderiv_id
+    have hv : mfderiv I I
+        (_root_.Diffeomorph.refl I M ∞ : M ≃ₘ⟮I, I⟯ M) x v = v := by
+      rw [hmfd]
+      rfl
+    have hw : mfderiv I I
+        (_root_.Diffeomorph.refl I M ∞ : M ≃ₘ⟮I, I⟯ M) x w = w := by
+      rw [hmfd]
+      rfl
+    rw [hv, hw]
+    rfl
+  unfold Diffeomorph.pullbackMetricCross
+  congr 1
+
+theorem Diffeomorph.pullbackMetricCross_symm_eq_iff
+    [T2Space M] [T2Space N]
+    {g : SmoothRiemannianMetric J N} {h : SmoothRiemannianMetric I M}
+    {Φ : M ≃ₘ⟮I, J⟯ N} :
+    Diffeomorph.pullbackMetricCross g Φ = h ↔
+      Diffeomorph.pullbackMetricCross h Φ.symm = g := by
+  constructor
+  · intro hEq
+    calc
+      Diffeomorph.pullbackMetricCross h Φ.symm =
+          Diffeomorph.pullbackMetricCross
+            (Diffeomorph.pullbackMetricCross g Φ) Φ.symm := by rw [hEq]
+      _ = Diffeomorph.pullbackMetricCross g (Φ.symm.trans Φ) :=
+        Diffeomorph.pullbackMetricCross_trans g Φ.symm Φ
+      _ = g := by
+        rw [Φ.symm_trans_self, Diffeomorph.pullbackMetricCross_refl]
+  · intro hEq
+    calc
+      Diffeomorph.pullbackMetricCross g Φ =
+          Diffeomorph.pullbackMetricCross
+            (Diffeomorph.pullbackMetricCross h Φ.symm) Φ := by rw [hEq]
+      _ = Diffeomorph.pullbackMetricCross h (Φ.trans Φ.symm) :=
+        Diffeomorph.pullbackMetricCross_trans h Φ Φ.symm
+      _ = h := by
+        rw [Φ.self_trans_symm, Diffeomorph.pullbackMetricCross_refl]
+
 omit [FiniteDimensional ℝ F] in
 theorem Diffeomorph.pullbackInnerCross_contMDiff
     [T2Space M]

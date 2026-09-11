@@ -1257,7 +1257,7 @@ noncomputable def extendDownNatHomotopyCofiberRestrictionIso
 
 set_option backward.isDefEq.respectTransparency false in
 noncomputable def Homotopy.restrictionDownNat
-    {V : Type u} [Category.{v} V] [Preadditive V] [HasZeroObject V]
+    {V : Type u} [Category.{v} V] [Preadditive V]
     {C D : CochainComplex V ℤ} {f g : C ⟶ D}
     (h : Homotopy f g) (hC : IsZero (C.X 1)) :
     Homotopy
@@ -1320,7 +1320,7 @@ noncomputable def Homotopy.restrictionDownNat
         rw [prevD_eq h.hom htarget]
 
 noncomputable def HomotopyEquiv.restrictionDownNat
-    {V : Type u} [Category.{v} V] [Preadditive V] [HasZeroObject V]
+    {V : Type u} [Category.{v} V] [Preadditive V]
     {C D : CochainComplex V ℤ} (e : HomotopyEquiv C D)
     (hC : IsZero (C.X 1)) (hD : IsZero (D.X 1)) :
     HomotopyEquiv

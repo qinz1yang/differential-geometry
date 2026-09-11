@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Curvature.RicciSharpScaling
+import DifferentialGeometry.Geometry.Curvature.Metric.Scaling
 import Mathlib.LinearAlgebra.Eigenspace.Basic
 
 noncomputable section
@@ -33,9 +33,14 @@ theorem least_ricci_eigenpair_of_scaleMetric
     rw [ricciSharp_scaleMetric]
     constructor
     · intro h
-      have hh := congrArg (fun v : TangentSpace I x ↦ c • v) h
-      simpa only [smul_smul, mul_inv_cancel₀ hc.ne', one_smul] using hh
+      change c⁻¹ • ricciSharp g x z = μ • z at h
+      calc
+        ricciSharp g x z = c • (c⁻¹ • ricciSharp g x z) := by
+          rw [smul_smul, mul_inv_cancel₀ hc.ne', one_smul]
+        _ = c • (μ • z) := congrArg (fun v : TangentSpace I x ↦ c • v) h
+        _ = (c * μ) • z := by rw [smul_smul]
     · intro h
+      change c⁻¹ • ricciSharp g x z = μ • z
       rw [h, smul_smul, ← mul_assoc, inv_mul_cancel₀ hc.ne', one_mul]
   have heu : ricciSharp g x (Real.sqrt c • w) = (c * μ) • (Real.sqrt c • w) := by
     rw [map_smul, (he w).mp heigen, smul_comm]

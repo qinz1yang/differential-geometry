@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.BackwardSliceSequence
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Compactness.Construction
-import DifferentialGeometry.Geometry.RicciSoliton.Defs
+import DifferentialGeometry.Geometry.Metric.RicciSoliton.Defs
 
 set_option autoImplicit false
 
@@ -39,7 +39,7 @@ theorem exists_backward_slice_asymptotic_shrinker
          let _ : T2Space L.M := L.t2
          ConnectedSpace L.M ∧
          (∃ x : L.M, metricScalarAt (I := I) L.metric x ≠ 0) ∧
-         ∃ f : C^∞⟮I, L.M; ℝ⟯, isGradientRicciSoliton (I := I) L.metric f 1) := by
+         ∃ f : C^∞⟮I, L.M; ℝ⟯, gradientRicciSoliton (I := I) L.metric f 1) := by
   sorry
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions

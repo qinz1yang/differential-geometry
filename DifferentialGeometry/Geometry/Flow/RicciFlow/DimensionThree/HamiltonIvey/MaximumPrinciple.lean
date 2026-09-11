@@ -1321,7 +1321,9 @@ private theorem fiberRegionPropagationOn_of_flatSupport
       hCclosed hCconvex hCne hsupp hsupport_sup hNnormal
       (fun _ => fiberRegionSource hT (I := I) (M := M) S basisAt)
       (uhlenbeckPulledRm04At S basisAt iota)
-      hsol R hbound hCzero L (fun t ht x ν => by simpa [fiberRegionSource] using hL x ν)
+      hsol R hbound 0 (fun t _ x => by
+        rw [Metric.infDist_zero_of_mem (hCzero t x)]) L
+      (fun t ht x ν => by simpa [fiberRegionSource] using hL x ν)
       hCdist_cont hflat hsupport_cont hsupport_time htangent (fun x => by simpa [fiberRegionSet] using hinit x)
   intro t ht x
   have hmem := hres t ht x

@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Curvature.RicciPullback
-import DifferentialGeometry.Geometry.Curvature.RicciSharpScaling
+import DifferentialGeometry.Geometry.Curvature.Metric.Scaling
 import Mathlib.LinearAlgebra.Eigenspace.Basic
 
 noncomputable section

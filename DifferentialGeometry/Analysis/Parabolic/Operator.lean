@@ -208,6 +208,32 @@ theorem parabolic_smul_nhds
   rw [derivWithin_const_mul_field, hlap, hdrift]
   ring
 
+theorem parabolic_sub_nhds
+    {G : MetricConnectionFamily (I := I) (M := M) Real}
+    (T : Real) (X : Real → (x : M) → TangentSpace I x)
+    (u v : Real → M → Real) (t : Real) (x : M)
+    (hu_time : DifferentiableWithinAt Real
+      (fun s : Real => u s x) (Set.Icc 0 T) t)
+    (hv_time : DifferentiableWithinAt Real
+      (fun s : Real => v s x) (Set.Icc 0 T) t)
+    (hu_space : ∀ᶠ y in 𝓝 x,
+      MDifferentiableAt I 𝓘(Real, Real) (u t) y)
+    (hv_space : ∀ᶠ y in 𝓝 x,
+      MDifferentiableAt I 𝓘(Real, Real) (v t) y)
+    (hu_grad : MDifferentiableAt I (I.prod 𝓘(Real, E)) (T% fun y : M =>
+      gradientFun (I := I) (G.metric t) (u t) y) x)
+    (hv_grad : MDifferentiableAt I (I.prod 𝓘(Real, E)) (T% fun y : M =>
+      gradientFun (I := I) (G.metric t) (v t) y) x) :
+    parabolicOperatorWithDrift (I := I) G T X
+        (fun s y => u s y - v s y) t x =
+      parabolicOperatorWithDrift (I := I) G T X u t x -
+        parabolicOperatorWithDrift (I := I) G T X v t x := by
+  unfold parabolicOperatorWithDrift
+  rw [derivWithin_fun_sub hu_time hv_time]
+  rw [heatOperatorWithDrift_sub_at (I := I) G t (X t)
+    hu_space hv_space hu_grad hv_grad]
+  ring
+
 theorem parabolic_affine_sub_nhds
     {G : MetricConnectionFamily (I := I) (M := M) Real}
     (T : Real) (X : Real → (x : M) → TangentSpace I x)

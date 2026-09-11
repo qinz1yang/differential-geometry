@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Comparison.Soul.InducedSliceMetric
 import DifferentialGeometry.Geometry.Comparison.Soul.EmbeddedSliceEmbedding
-import DifferentialGeometry.Geometry.Comparison.Soul.PositiveIsometricImmersion
+import DifferentialGeometry.Geometry.Submanifold.IsometricImmersion
 
 set_option autoImplicit false
 

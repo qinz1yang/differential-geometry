@@ -11,17 +11,18 @@ open DifferentialGeometry.Analysis.ODE
 
 noncomputable section
 
-variable {n : ℕ} {H : Type} [TopologicalSpace H] {M : Type} [TopologicalSpace M] [ChartedSpace H M]
-variable {I : ModelWithCorners ℝ (MorseModel n) H}
+variable {E : Type} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+variable {H : Type} [TopologicalSpace H] {M : Type} [TopologicalSpace M] [ChartedSpace H M]
+variable {I : ModelWithCorners ℝ E H}
 
-theorem no_critical_value_transport [I.Boundaryless] [IsManifold I (⊤ : WithTop ℕ∞) M]
+theorem no_critical_value_transport [I.Boundaryless] [IsManifold I ∞ M]
     [T2Space M] [SigmaCompactSpace M]
     (f : M → ℝ) (hf : ContMDiff I 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞) f) {a b : ℝ} (hab : a ≤ b)
     (hcompact : IsCompact (f ⁻¹' Set.Icc a b))
     (hregular : ∀ x ∈ f ⁻¹' Set.Icc a b, ¬ IsCriticalPointAt I f x) :
     ∃ v : (x : M) → TangentSpace I x,
     ∃ Φ : Diffeomorph I I M M ∞,
-        ContMDiff I (I.prod 𝓘(ℝ, MorseModel n)) ∞
+        ContMDiff I (I.prod 𝓘(ℝ, E)) ∞
           (fun x : M => (⟨x, v x⟩ : TangentBundle I M)) ∧
         IsCompact (tsupport v) ∧
         (∀ x ∈ f ⁻¹' Set.Icc a b,
@@ -39,7 +40,7 @@ theorem no_critical_value_transport [I.Boundaryless] [IsManifold I (⊤ : WithTo
   rcases exists_unitSpeedVectorField_on_strip I f hf a b hcompact hregular with
     ⟨v, hv, hsupp, hdfOn, hrate⟩
   have hcomplete := exists_globalIntegralCurve_of_compactSupport v hv hsupp
-  have hv1 : ContMDiff I (I.prod 𝓘(ℝ, MorseModel n)) (1 : WithTop ℕ∞)
+  have hv1 : ContMDiff I (I.prod 𝓘(ℝ, E)) (1 : WithTop ℕ∞)
       (fun x : M => (⟨x, v x⟩ : TangentBundle I M)) :=
     hv.of_le (by norm_num : (1 : WithTop ℕ∞) ≤ ∞)
   have htransport := sublevel_transport_of_stripUnitSpeedVectorField (I := I) f hf hab v hv1
@@ -183,7 +184,7 @@ theorem no_critical_value_transport [I.Boundaryless] [IsManifold I (⊤ : WithTo
     simpa [flow] using htransport
   · exact htie
 
-theorem no_critical_values [I.Boundaryless] [IsManifold I (⊤ : WithTop ℕ∞) M]
+theorem no_critical_values [I.Boundaryless] [IsManifold I ∞ M]
     [T2Space M] [SigmaCompactSpace M]
     (f : M → ℝ) (hf : ContMDiff I 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞) f) {a b : ℝ} (hab : a ≤ b)
     (hcompact : IsCompact (f ⁻¹' Set.Icc a b))
@@ -193,13 +194,14 @@ theorem no_critical_values [I.Boundaryless] [IsManifold I (⊤ : WithTop ℕ∞)
     ⟨v, Φ, hv, hsupp, hdfOn, hrate, ⟨hcomplete, hflow, htie⟩, _hbnd, _hstrict, _hbnd', _hstrict'⟩
   exact ⟨Φ, hflow⟩
 
-theorem reverseFlow_value_on_levelSet {n : ℕ} {H : Type} [TopologicalSpace H] {M : Type}
+theorem reverseFlow_value_on_levelSet {E : Type} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    [FiniteDimensional ℝ E] {H : Type} [TopologicalSpace H] {M : Type}
     [TopologicalSpace M] [ChartedSpace H M] [T2Space M]
-    (I : ModelWithCorners ℝ (MorseModel n) H) [I.Boundaryless]
-    [IsManifold I (⊤ : WithTop ℕ∞) M] (f : M → ℝ)
+    (I : ModelWithCorners ℝ E H) [I.Boundaryless]
+    [IsManifold I ∞ M] (f : M → ℝ)
     (hf : ContMDiff I 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞) f) {a b : ℝ}
     (v : (x : M) → TangentSpace I x)
-    (hv : ContMDiff I (I.prod 𝓘(ℝ, MorseModel n)) ∞
+    (hv : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞
       (fun x : M => (⟨x, v x⟩ : TangentBundle I M)))
     (hsupp : IsCompact (tsupport v))
     (hdfOn : ∀ x ∈ f ⁻¹' Set.Icc a b,
@@ -274,7 +276,7 @@ theorem reverseFlow_value_on_levelSet {n : ℕ} {H : Type} [TopologicalSpace H] 
     exact hmain
   linarith
 
-noncomputable def noCriticalValueSublevelHomeomorph [I.Boundaryless] [IsManifold I (⊤ : WithTop ℕ∞) M]
+noncomputable def noCriticalValueSublevelHomeomorph [I.Boundaryless] [IsManifold I ∞ M]
     [T2Space M] [SigmaCompactSpace M]
     (f : M → ℝ) (hf : ContMDiff I 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞) f) {a b : ℝ} (hab : a ≤ b)
     (hcompact : IsCompact (f ⁻¹' Set.Icc a b))
@@ -333,13 +335,14 @@ noncomputable def noCriticalValueSublevelHomeomorph [I.Boundaryless] [IsManifold
           change f z ≤ a at hz
           exact hz) }
 
-noncomputable def levelSetTransportHomeomorph {n : ℕ} {H : Type} [TopologicalSpace H] {M : Type}
+noncomputable def levelSetTransportHomeomorph {E : Type} [NormedAddCommGroup E]
+    [NormedSpace ℝ E] [FiniteDimensional ℝ E] {H : Type} [TopologicalSpace H] {M : Type}
     [TopologicalSpace M] [ChartedSpace H M] [T2Space M]
-    (I : ModelWithCorners ℝ (MorseModel n) H) [I.Boundaryless]
-    [IsManifold I (⊤ : WithTop ℕ∞) M] (f : M → ℝ)
+    (I : ModelWithCorners ℝ E H) [I.Boundaryless]
+    [IsManifold I ∞ M] (f : M → ℝ)
     (hf : ContMDiff I 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞) f) {a b : ℝ} (hab : a ≤ b)
     (v : (x : M) → TangentSpace I x)
-    (hv : ContMDiff I (I.prod 𝓘(ℝ, MorseModel n)) ∞
+    (hv : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞
       (fun x : M => (⟨x, v x⟩ : TangentBundle I M)))
     (hsupp : IsCompact (tsupport v))
     (hdfOn : ∀ x ∈ f ⁻¹' Set.Icc a b,
@@ -350,7 +353,7 @@ noncomputable def levelSetTransportHomeomorph {n : ℕ} {H : Type} [TopologicalS
     (f ⁻¹' {a}) ≃ₜ (f ⁻¹' {b}) := by
   let hcomplete : ∀ x : M, ∃ γ : ℝ → M, γ 0 = x ∧ IsMIntegralCurve γ v :=
     exists_globalIntegralCurve_of_compactSupport v hv hsupp
-  have hv1 : ContMDiff I (I.prod 𝓘(ℝ, MorseModel n)) (1 : WithTop ℕ∞)
+  have hv1 : ContMDiff I (I.prod 𝓘(ℝ, E)) (1 : WithTop ℕ∞)
       (fun x : M => (⟨x, v x⟩ : TangentBundle I M)) :=
     hv.of_le (by norm_num : (1 : WithTop ℕ∞) ≤ ∞)
   have hto : ∀ x : f ⁻¹' {a}, f (curveAt v hcomplete x.1 (a - b)) = b := by
@@ -424,13 +427,14 @@ noncomputable def levelSetTransportHomeomorph {n : ℕ} {H : Type} [TopologicalS
           hjointc.comp hpair
         exact Continuous.subtype_mk hmain (by intro y; exact hfrom y) }
 
-theorem frontier_sublevel_eq_levelSet {n : ℕ} {H : Type} [TopologicalSpace H] {M : Type}
+theorem frontier_sublevel_eq_levelSet {E : Type} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    [FiniteDimensional ℝ E] {H : Type} [TopologicalSpace H] {M : Type}
     [TopologicalSpace M] [ChartedSpace H M] [T2Space M]
-    (I : ModelWithCorners ℝ (MorseModel n) H) [I.Boundaryless]
-    [IsManifold I (⊤ : WithTop ℕ∞) M] (f : M → ℝ)
+    (I : ModelWithCorners ℝ E H) [I.Boundaryless]
+    [IsManifold I ∞ M] (f : M → ℝ)
     (hf : ContMDiff I 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞) f) {a b : ℝ} (hab : a < b)
     (v : (x : M) → TangentSpace I x)
-    (hv : ContMDiff I (I.prod 𝓘(ℝ, MorseModel n)) ∞
+    (hv : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞
       (fun x : M => (⟨x, v x⟩ : TangentBundle I M)))
     (hsupp : IsCompact (tsupport v))
     (hdfOn : ∀ x ∈ f ⁻¹' Set.Icc a b,
@@ -516,13 +520,14 @@ theorem frontier_sublevel_eq_levelSet {n : ℕ} {H : Type} [TopologicalSpace H] 
           exact not_le_of_gt hgt⟩⟩
       exact hiff.mp hxcompl
 
-noncomputable def levelSetCollarHomeomorph {n : ℕ} {H : Type} [TopologicalSpace H] {M : Type}
+noncomputable def levelSetCollarHomeomorph {E : Type} [NormedAddCommGroup E]
+    [NormedSpace ℝ E] [FiniteDimensional ℝ E] {H : Type} [TopologicalSpace H] {M : Type}
     [TopologicalSpace M] [ChartedSpace H M] [T2Space M]
-    (I : ModelWithCorners ℝ (MorseModel n) H) [I.Boundaryless]
-    [IsManifold I (⊤ : WithTop ℕ∞) M] (f : M → ℝ)
+    (I : ModelWithCorners ℝ E H) [I.Boundaryless]
+    [IsManifold I ∞ M] (f : M → ℝ)
     (hf : ContMDiff I 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞) f) {a b : ℝ}
     (v : (x : M) → TangentSpace I x)
-    (hv : ContMDiff I (I.prod 𝓘(ℝ, MorseModel n)) ∞
+    (hv : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞
       (fun x : M => (⟨x, v x⟩ : TangentBundle I M)))
     (hsupp : IsCompact (tsupport v))
     (hdfOn : ∀ x ∈ f ⁻¹' Set.Icc a b,
@@ -534,7 +539,7 @@ noncomputable def levelSetCollarHomeomorph {n : ℕ} {H : Type} [TopologicalSpac
       {x : M // x ∈ sublevel f b ∧ a ≤ f x} := by
   let hcomplete : ∀ x : M, ∃ γ : ℝ → M, γ 0 = x ∧ IsMIntegralCurve γ v :=
     exists_globalIntegralCurve_of_compactSupport v hv hsupp
-  have hv1 : ContMDiff I (I.prod 𝓘(ℝ, MorseModel n)) (1 : WithTop ℕ∞)
+  have hv1 : ContMDiff I (I.prod 𝓘(ℝ, E)) (1 : WithTop ℕ∞)
       (fun x : M => (⟨x, v x⟩ : TangentBundle I M)) :=
     hv.of_le (by norm_num : (1 : WithTop ℕ∞) ≤ ∞)
   let hfval : ∀ {x : M}, f x = a → ∀ {t : ℝ}, t ∈ Set.Icc (0 : ℝ) (b - a) →

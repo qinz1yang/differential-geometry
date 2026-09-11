@@ -20,7 +20,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
 omit [IsManifold I ∞ M] in
-private lemma tsupport_chartPullback_subset
+lemma tsupport_chartPullback_subset
     [T2Space M]
     (α : M)
     {ψ : EuclN → ℝ}
@@ -101,6 +101,93 @@ private lemma tsupport_chartPullback_image_subset_chartAt_source
     exact (extChartAt I α).map_target hz_target
   rw [extChartAt_source (I := I)] at hx_in_source
   exact hx_in_source
+
+omit [IsManifold I ∞ M] in
+theorem tsupport_chartPullback_subset_interior
+    [T2Space M] [IsManifold I 1 M]
+    (α : M) {ψ : EuclN → ℝ}
+    (hψ_cpt : HasCompactSupport ψ)
+    (hψ_supp : tsupport ψ ⊆
+      toEuclidean (E := E) '' interior (extChartAt I α).target) :
+    tsupport (chartPullback I α ψ) ⊆ I.interior M := by
+  have hs : tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α :=
+    hψ_supp.trans (Set.image_mono interior_subset)
+  intro x hx
+  obtain ⟨z, ⟨y, hy, rfl⟩, rfl⟩ := tsupport_chartPullback_subset α hψ_cpt hs hx
+  obtain ⟨z, hz, rfl⟩ := hψ_supp hy
+  simp only [ContinuousLinearEquiv.symm_apply_apply]
+  have hsrc := (extChartAt I α).map_target (interior_subset hz)
+  rw [extChartAt_source] at hsrc
+  apply (I.isInteriorPoint_iff_of_mem_atlas (M := M) (n := 1)
+    (by simp) (chart_mem_atlas H α) hsrc).2
+  change extChartAt I α ((extChartAt I α).symm z) ∈ interior (extChartAt I α).target
+  rwa [(extChartAt I α).right_inv (interior_subset hz)]
+
+theorem chartPullback_contMDiff_prod
+    [T2Space M] {P : Type*} [NormedAddCommGroup P] [NormedSpace ℝ P]
+    (α : M) {φ : P × EuclN → ℝ} (hφ : ContDiff ℝ ∞ φ)
+    {K : Set EuclN} (hK : IsCompact K)
+    (hKt : K ⊆ chartTargetEuclid (I := I) (M := M) α)
+    (hφK : tsupport φ ⊆ univ ×ˢ K) :
+    ContMDiff (𝓘(ℝ, P).prod I) 𝓘(ℝ, ℝ) ∞
+      (fun p : P × M => chartPullback I α (fun y => φ (p.1, y)) p.2) := by
+  classical
+  let e := toEuclidean (E := E)
+  let K_M := (extChartAt I α).symm '' (e.symm '' K)
+  have hEt : e.symm '' K ⊆ (extChartAt I α).target := by
+    rintro z ⟨y, hy, rfl⟩
+    have hy' := hKt hy
+    rw [chartTargetEuclid_eq_preimage_symm (I := I) (M := M)] at hy'
+    exact hy'
+  have hKM : IsCompact K_M :=
+    (hK.image e.symm.continuous).image_of_continuousOn
+      ((continuousOn_extChartAt_symm (I := I) α).mono hEt)
+  have hKMs : K_M ⊆ (chartAt H α).source := by
+    rintro x ⟨y, hy, rfl⟩
+    have hsrc := (extChartAt I α).map_target (hEt hy)
+    rwa [extChartAt_source (I := I)] at hsrc
+  have hs (p : P) : tsupport (fun y => φ (p, y)) ⊆ K := by
+    have h := tsupport_comp_subset_preimage φ (f := fun y : EuclN => (p, y))
+      (continuous_const.prodMk continuous_id)
+    exact h.trans fun y hy => (hφK hy).2
+  have hsp (p : P) : tsupport (chartPullback I α (fun y => φ (p, y))) ⊆ K_M :=
+    (tsupport_chartPullback_subset α (hK.of_isClosed_subset (isClosed_tsupport _) (hs p))
+      ((hs p).trans hKt)).trans
+        (Set.image_mono (Set.image_mono (hs p)))
+  have hts : tsupport
+      (fun p : P × M => chartPullback I α (fun y => φ (p.1, y)) p.2) ⊆ univ ×ˢ K_M := by
+    apply closure_minimal ?_ (isClosed_univ.prod hKM.isClosed)
+    intro p hp
+    exact ⟨mem_univ _, hsp p.1 (subset_tsupport _ hp)⟩
+  apply contMDiff_of_tsupport
+  intro p hp
+  have hx : p.2 ∈ (chartAt H α).source := hKMs (hts hp).2
+  have hext : ContMDiffAt I 𝓘(ℝ, E) ∞ (extChartAt I α) p.2 :=
+    (contMDiffOn_extChartAt (I := I) (n := ∞) (x := α)).contMDiffAt
+      ((chartAt H α).open_source.mem_nhds hx)
+  have hcoord : ContMDiffAt I 𝓘(ℝ, EuclN) ∞
+      (fun x => e (extChartAt I α x)) p.2 :=
+    e.toContinuousLinearMap.contMDiff.contMDiffAt.comp p.2 hext
+  have hmap : ContMDiffAt (𝓘(ℝ, P).prod I) 𝓘(ℝ, P × EuclN) ∞
+      (fun r : P × M => (r.1, e (extChartAt I α r.2))) p := by
+    rw [modelWithCornersSelf_prod, ← chartedSpaceSelf_prod]
+    exact contMDiffAt_fst.prodMk (hcoord.comp p contMDiffAt_snd)
+  apply (hφ.comp_contMDiffAt hmap).congr_of_eventuallyEq
+  filter_upwards [continuousAt_snd.eventually ((chartAt H α).open_source.mem_nhds hx)] with r hr
+  exact chartPullback_apply_of_mem (I := I) (M := M) α (fun y => φ (r.1, y)) hr
+
+theorem chartPullback_contMDiff_prod_of_hasCompactSupport
+    [T2Space M] {P : Type*} [NormedAddCommGroup P] [NormedSpace ℝ P]
+    (α : M) {φ : P × EuclN → ℝ} (hφ : ContDiff ℝ ∞ φ)
+    (hφc : HasCompactSupport φ)
+    (hφt : tsupport φ ⊆ univ ×ˢ chartTargetEuclid (I := I) (M := M) α) :
+    ContMDiff (𝓘(ℝ, P).prod I) 𝓘(ℝ, ℝ) ∞
+      (fun p : P × M => chartPullback I α (fun y => φ (p.1, y)) p.2) := by
+  apply chartPullback_contMDiff_prod α hφ (hφc.image continuous_snd)
+  · rintro y ⟨p, hp, rfl⟩
+    exact (hφt hp).2
+  · intro p hp
+    exact ⟨mem_univ _, ⟨p, hp, rfl⟩⟩
 
 theorem chartPullback_contMDiff
     [T2Space M]
@@ -270,9 +357,6 @@ lemma chartOverlapEuclid_isOpen
   rw [h_extChart_eq]
   have h_I_image : IsOpen (I ''
     ((chartAt H γ) '' ((chartAt H γ).source ∩ (chartAt H α).source))) := by
-    have hI_homeo : Continuous (I.toHomeomorph.symm : E → H) ∧
-        Function.Surjective (I.toHomeomorph.symm) ∧ True := by
-      refine ⟨I.toHomeomorph.symm.continuous, I.toHomeomorph.symm.surjective, trivial⟩
     have : (I.toHomeomorph : H → E) =
         (I : H → E) := rfl
     rw [show (I : H → E) = ((I.toHomeomorph : H → E)) from rfl]

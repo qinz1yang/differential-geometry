@@ -2,8 +2,10 @@ import DifferentialGeometry.Analysis.Calculus.Cutoff.Compact
 import DifferentialGeometry.Analysis.Sobolev.Nirenberg.H2Regularity.Defs
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.Global.Family
 import DifferentialGeometry.Geometry.Operator.Hessian.Basic
+import DifferentialGeometry.Analysis.Schauder.Elliptic.CompactEllipticity
 import Mathlib.Analysis.InnerProductSpace.EuclideanDist
 import Mathlib.Topology.Order.Compact
+
 open DifferentialGeometry.Geometry.Operator
 
 
@@ -264,6 +266,15 @@ lemma invGramOnEuclid_posDef
   exact hGinv
 
 omit [NeZero (Module.finrank ℝ E)] in
+lemma weightedInvGramOnEuclid_posDef
+    (g : SmoothRiemannianMetric I M) (α : M)
+    {y : EuclN} (hy : y ∈ chartTargetEuclid (I := I) (M := M) α) :
+    (Matrix.of (fun i j : Fin (Module.finrank ℝ E) =>
+      weightedInvGramOnEuclid (I := I) g α i j y)).PosDef := by
+  exact (invGramOnEuclid_posDef (I := I) g α hy).smul
+    (densityOnEuclid_pos (I := I) g α hy)
+
+omit [NeZero (Module.finrank ℝ E)] in
 lemma weighted_quadForm_pos_of_mem
     (g : SmoothRiemannianMetric I M) (α : M)
     {y : EuclN} (hy : y ∈ chartTargetEuclid (I := I) (M := M) α)
@@ -271,142 +282,15 @@ lemma weighted_quadForm_pos_of_mem
     0 < ⟪ξ, DeGiorgi.matMulE
         (Matrix.of (fun i j : Fin (Module.finrank ℝ E) =>
           weightedInvGramOnEuclid (I := I) g α i j y)) ξ⟫_ℝ := by
-  classical
-  have h_dens_pos : 0 < densityOnEuclid (I := I) g α y :=
-    densityOnEuclid_pos (I := I) g α hy
-  have h_inv_pd := invGramOnEuclid_posDef (I := I) g α hy
-  set Acoeff : Matrix (Fin (Module.finrank ℝ E)) (Fin (Module.finrank ℝ E)) ℝ :=
-    Matrix.of (fun i j : Fin (Module.finrank ℝ E) =>
-      weightedInvGramOnEuclid (I := I) g α i j y)
-    with hA_def
-  set Ainv : Matrix (Fin (Module.finrank ℝ E)) (Fin (Module.finrank ℝ E)) ℝ :=
-    Matrix.of (fun i j : Fin (Module.finrank ℝ E) =>
-      invGramOnEuclid (I := I) g α i j y)
-    with hAinv_def
-  have hA_eq : Acoeff = (densityOnEuclid (I := I) g α y) • Ainv := by
-    ext i j
-    change weightedInvGramOnEuclid (I := I) g α i j y =
-      densityOnEuclid (I := I) g α y * invGramOnEuclid (I := I) g α i j y
-    rfl
-  have h_smul_quad : ⟪ξ, DeGiorgi.matMulE Acoeff ξ⟫_ℝ =
-      densityOnEuclid (I := I) g α y * ⟪ξ, DeGiorgi.matMulE Ainv ξ⟫_ℝ := by
-    rw [hA_eq]
-    have h_mul : DeGiorgi.matMulE
-        ((densityOnEuclid (I := I) g α y) • Ainv) ξ =
-        (densityOnEuclid (I := I) g α y) • DeGiorgi.matMulE Ainv ξ := by
-      apply WithLp.ofLp_injective 2
-      simp only [DeGiorgi.matMulE_ofLp]
-      rw [Matrix.smul_mulVec]
-      rfl
-    rw [h_mul]
-    rw [inner_smul_right]
-  have h_quad_pos : 0 < ⟪ξ, DeGiorgi.matMulE Ainv ξ⟫_ℝ := by
-    have h_form : ⟪ξ, DeGiorgi.matMulE Ainv ξ⟫_ℝ =
-        Ainv.mulVec ξ.ofLp ⬝ᵥ ξ.ofLp := by
-      change (DeGiorgi.matMulE Ainv ξ).ofLp ⬝ᵥ star ξ.ofLp = _
-      rw [DeGiorgi.matMulE_ofLp]
-      have hstar : star ξ.ofLp = ξ.ofLp := by
-        funext i; exact star_trivial _
-      rw [hstar]
-    rw [h_form]
-    have hxi_ne : ξ.ofLp ≠ 0 := by
-      intro h
-      apply hξ
-      have heq : ξ = WithLp.toLp 2 ξ.ofLp := rfl
-      rw [heq, h]
-      simp
-    have h_dot_pos : 0 < star ξ.ofLp ⬝ᵥ Ainv.mulVec ξ.ofLp :=
-      h_inv_pd.dotProduct_mulVec_pos hxi_ne
-    have hstar : star ξ.ofLp = ξ.ofLp := by
-      funext i; exact star_trivial _
-    rw [hstar] at h_dot_pos
-    rw [dotProduct_comm]
-    exact h_dot_pos
-  rw [h_smul_quad]
-  exact mul_pos h_dens_pos h_quad_pos
-
-private def rayleighInt
-    (g : SmoothRiemannianMetric I M) (α : M) (y : EuclN) (ξ : EuclN) : ℝ :=
-  ⟪ξ, DeGiorgi.matMulE
-      (Matrix.of (fun i j : Fin (Module.finrank ℝ E) =>
-        weightedInvGramOnEuclid (I := I) g α i j y)) ξ⟫_ℝ
+  have hξ' : ξ.ofLp ≠ 0 := by
+    intro h
+    exact hξ (WithLp.ofLp_injective 2 h)
+  have h := (weightedInvGramOnEuclid_posDef (I := I) g α hy).dotProduct_mulVec_pos hξ'
+  change 0 < (DeGiorgi.matMulE _ ξ).ofLp ⬝ᵥ star ξ.ofLp
+  rw [DeGiorgi.matMulE_ofLp, dotProduct_comm]
+  exact h
 
 omit [NeZero (Module.finrank ℝ E)] in
-private lemma rayleighInt_eq_sum
-    (g : SmoothRiemannianMetric I M) (α : M) (y ξ : EuclN) :
-    rayleighInt (I := I) g α y ξ =
-      ∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
-        weightedInvGramOnEuclid (I := I) g α i j y * (ξ.ofLp i) * (ξ.ofLp j) := by
-  classical
-  unfold rayleighInt
-  have h_inner : ⟪ξ, DeGiorgi.matMulE
-      (Matrix.of (fun i j : Fin (Module.finrank ℝ E) =>
-        weightedInvGramOnEuclid (I := I) g α i j y)) ξ⟫_ℝ =
-      ((Matrix.of (fun i j : Fin (Module.finrank ℝ E) =>
-        weightedInvGramOnEuclid (I := I) g α i j y)).mulVec ξ.ofLp) ⬝ᵥ ξ.ofLp := by
-    change (DeGiorgi.matMulE _ ξ).ofLp ⬝ᵥ star ξ.ofLp = _
-    rw [DeGiorgi.matMulE_ofLp]
-    have hstar : star ξ.ofLp = ξ.ofLp := by
-      funext i; exact star_trivial _
-    rw [hstar]
-  rw [h_inner]
-  simp only [dotProduct, Matrix.mulVec, Matrix.of_apply]
-  refine Finset.sum_congr rfl ?_
-  intro i _
-  rw [Finset.sum_mul]
-  refine Finset.sum_congr rfl ?_
-  intro j _
-  ring
-
-omit [NeZero (Module.finrank ℝ E)] in
-private lemma rayleighInt_continuousOn
-    (g : SmoothRiemannianMetric I M) (α : M) :
-    ContinuousOn (fun p : EuclN × EuclN =>
-        rayleighInt (I := I) g α p.1 p.2)
-      ((chartTargetEuclid (I := I) (M := M) α) ×ˢ (Set.univ : Set EuclN)) := by
-  classical
-  have h_eq : (fun p : EuclN × EuclN =>
-      rayleighInt (I := I) g α p.1 p.2) =
-      (fun p : EuclN × EuclN =>
-        ∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
-          weightedInvGramOnEuclid (I := I) g α i j p.1 *
-            (p.2.ofLp i) * (p.2.ofLp j)) := by
-    funext p
-    exact rayleighInt_eq_sum (I := I) g α p.1 p.2
-  rw [h_eq]
-  refine continuousOn_finsetSum _ ?_
-  intro i _
-  refine continuousOn_finsetSum _ ?_
-  intro j _
-  have h_fst : ContinuousOn (fun p : EuclN × EuclN => p.1)
-      ((chartTargetEuclid (I := I) (M := M) α) ×ˢ (Set.univ : Set EuclN)) :=
-    continuous_fst.continuousOn
-  have h_snd : ContinuousOn (fun p : EuclN × EuclN => p.2)
-      ((chartTargetEuclid (I := I) (M := M) α) ×ˢ (Set.univ : Set EuclN)) :=
-    continuous_snd.continuousOn
-  have h_fst_in : MapsTo (fun p : EuclN × EuclN => p.1)
-      ((chartTargetEuclid (I := I) (M := M) α) ×ˢ (Set.univ : Set EuclN))
-      (chartTargetEuclid (I := I) (M := M) α) := fun _ hp => hp.1
-  have h_a : ContinuousOn
-      (fun p : EuclN × EuclN =>
-        weightedInvGramOnEuclid (I := I) g α i j p.1)
-      ((chartTargetEuclid (I := I) (M := M) α) ×ˢ (Set.univ : Set EuclN)) := by
-    have h_pull : ContinuousOn (weightedInvGramOnEuclid (I := I) g α i j)
-        (chartTargetEuclid (I := I) (M := M) α) :=
-      ((weightedInvGramOnEuclid_contDiffOn (I := I) g α i j).continuousOn)
-    exact h_pull.comp h_fst h_fst_in
-  have h_xi_i : Continuous (fun ξ : EuclN => ξ.ofLp i) :=
-    (EuclideanSpace.proj i).continuous
-  have h_xi_j : Continuous (fun ξ : EuclN => ξ.ofLp j) :=
-    (EuclideanSpace.proj j).continuous
-  have h_xi_i_p : ContinuousOn (fun p : EuclN × EuclN => p.2.ofLp i)
-      ((chartTargetEuclid (I := I) (M := M) α) ×ˢ (Set.univ : Set EuclN)) :=
-    h_xi_i.continuousOn.comp h_snd (Set.mapsTo_univ _ _)
-  have h_xi_j_p : ContinuousOn (fun p : EuclN × EuclN => p.2.ofLp j)
-      ((chartTargetEuclid (I := I) (M := M) α) ×ˢ (Set.univ : Set EuclN)) :=
-    h_xi_j.continuousOn.comp h_snd (Set.mapsTo_univ _ _)
-  exact (h_a.mul h_xi_i_p).mul h_xi_j_p
-
 lemma exists_uniform_lower_bound_on_compact
     (g : SmoothRiemannianMetric I M) (α : M)
     {K : Set EuclN} (hK_compact : IsCompact K)
@@ -417,116 +301,16 @@ lemma exists_uniform_lower_bound_on_compact
           ⟪ξ, DeGiorgi.matMulE
             (Matrix.of (fun i j : Fin (Module.finrank ℝ E) =>
               weightedInvGramOnEuclid (I := I) g α i j y)) ξ⟫_ℝ := by
-  classical
-  set S : Set EuclN := Metric.sphere (0 : EuclN) 1 with hS_def
-  have hS_compact : IsCompact S := isCompact_sphere _ _
-  have hKS_compact : IsCompact (K ×ˢ S) := hK_compact.prod hS_compact
-  have h_cont : ContinuousOn (fun p : EuclN × EuclN =>
-      rayleighInt (I := I) g α p.1 p.2)
-      (K ×ˢ S) := by
-    have h_super : ContinuousOn (fun p : EuclN × EuclN =>
-        rayleighInt (I := I) g α p.1 p.2)
-        ((chartTargetEuclid (I := I) (M := M) α) ×ˢ (Set.univ : Set EuclN)) :=
-      rayleighInt_continuousOn (I := I) g α
-    apply h_super.mono
-    intro p hp
-    exact ⟨hK_target hp.1, Set.mem_univ _⟩
-  have h_strict_pos : ∀ p ∈ K ×ˢ S, 0 < (fun p : EuclN × EuclN =>
-      rayleighInt (I := I) g α p.1 p.2) p := by
-    intro p hp
-    obtain ⟨hpK, hpS⟩ := hp
-    have h_target : p.1 ∈ chartTargetEuclid (I := I) (M := M) α :=
-      hK_target hpK
-    have h_xi_norm_one : ‖p.2‖ = 1 := by
-      rw [Metric.mem_sphere, dist_zero_right] at hpS
-      exact hpS
-    have h_xi_ne : p.2 ≠ 0 := by
-      intro h0
-      rw [h0, norm_zero] at h_xi_norm_one
-      exact (one_ne_zero h_xi_norm_one.symm)
-    exact weighted_quadForm_pos_of_mem (I := I) g α h_target p.2 h_xi_ne
-  by_cases hKne : (K ×ˢ S).Nonempty
-  · obtain ⟨lamK, hlamK_pos, hlamK_le⟩ :=
-      hKS_compact.exists_forall_le' h_cont h_strict_pos
-    refine ⟨lamK, hlamK_pos, ?_⟩
-    intro y hyK ξ
-    by_cases hξ : ξ = 0
-    · subst hξ
-      have h_inner :
-          ⟪(0 : EuclN), DeGiorgi.matMulE
-            (Matrix.of (fun i j : Fin (Module.finrank ℝ E) =>
-              weightedInvGramOnEuclid (I := I) g α i j y)) 0⟫_ℝ = 0 := by
-        rw [inner_zero_left]
-      rw [h_inner]
-      have h_lhs : lamK * ‖(0 : EuclN)‖ ^ 2 = 0 := by
-        rw [norm_zero]; ring
-      rw [h_lhs]
-    · have hξ_norm_pos : 0 < ‖ξ‖ := norm_pos_iff.mpr hξ
-      set η : EuclN := (1 / ‖ξ‖) • ξ with hη_def
-      have hη_norm : ‖η‖ = 1 := by
-        rw [hη_def, norm_smul]
-        have hone_div : ‖(1 / ‖ξ‖ : ℝ)‖ = 1 / ‖ξ‖ := by
-          rw [Real.norm_eq_abs]
-          exact abs_of_pos (one_div_pos.mpr hξ_norm_pos)
-        rw [hone_div]
-        field_simp
-      have hη_in_S : η ∈ S := by
-        rw [hS_def, Metric.mem_sphere, dist_zero_right]
-        exact hη_norm
-      have h_yη : (y, η) ∈ K ×ˢ S := ⟨hyK, hη_in_S⟩
-      have h_bound : lamK ≤ rayleighInt (I := I) g α y η := hlamK_le (y, η) h_yη
-      change lamK * ‖ξ‖ ^ 2 ≤ rayleighInt (I := I) g α y ξ
-      have h_scale : rayleighInt (I := I) g α y ξ =
-          ‖ξ‖ ^ 2 * rayleighInt (I := I) g α y η := by
-        unfold rayleighInt
-        have hξ_eq_norm_smul : ξ = ‖ξ‖ • η := by
-          rw [hη_def]
-          rw [← smul_assoc, smul_eq_mul]
-          rw [show ‖ξ‖ * (1 / ‖ξ‖) = 1 from by field_simp]
-          rw [one_smul]
-        conv_lhs => rw [hξ_eq_norm_smul]
-        have h_matMulE_smul :
-            DeGiorgi.matMulE (Matrix.of (fun i j : Fin (Module.finrank ℝ E) =>
-              weightedInvGramOnEuclid (I := I) g α i j y)) (‖ξ‖ • η) =
-              ‖ξ‖ • DeGiorgi.matMulE (Matrix.of (fun i j : Fin (Module.finrank ℝ E) =>
-                weightedInvGramOnEuclid (I := I) g α i j y)) η := by
-          apply WithLp.ofLp_injective 2
-          simp only [DeGiorgi.matMulE_ofLp]
-          change (Matrix.of (fun i j : Fin (Module.finrank ℝ E) =>
-              weightedInvGramOnEuclid (I := I) g α i j y)).mulVec
-                (‖ξ‖ • η.ofLp) =
-            ‖ξ‖ • (Matrix.of (fun i j : Fin (Module.finrank ℝ E) =>
-              weightedInvGramOnEuclid (I := I) g α i j y)).mulVec η.ofLp
-          rw [Matrix.mulVec_smul]
-        rw [h_matMulE_smul]
-        rw [inner_smul_left, inner_smul_right]
-        simp only [conj_trivial, sq]
-        ring
-      rw [h_scale]
-      have h_norm_sq_nn : 0 ≤ ‖ξ‖ ^ 2 := sq_nonneg _
-      calc lamK * ‖ξ‖ ^ 2 = ‖ξ‖ ^ 2 * lamK := by ring
-        _ ≤ ‖ξ‖ ^ 2 * rayleighInt (I := I) g α y η :=
-            mul_le_mul_of_nonneg_left h_bound h_norm_sq_nn
-  · rw [Set.not_nonempty_iff_eq_empty] at hKne
-    have hK_empty : K = ∅ := by
-      by_contra h_ne
-      have h_K_ne : K.Nonempty := Set.nonempty_iff_ne_empty.mpr h_ne
-      obtain ⟨y, hy⟩ := h_K_ne
-      have hS_ne : S.Nonempty := by
-        have hpos : (0 : ℕ) < Module.finrank ℝ E :=
-          Nat.pos_of_ne_zero (NeZero.ne _)
-        refine ⟨EuclideanSpace.single (⟨0, hpos⟩ : Fin (Module.finrank ℝ E)) 1, ?_⟩
-        rw [hS_def, Metric.mem_sphere, dist_zero_right]
-        rw [PiLp.norm_single]
-        exact abs_one
-      obtain ⟨η, hη⟩ := hS_ne
-      have hyη : (y, η) ∈ K ×ˢ S := ⟨hy, hη⟩
-      rw [hKne] at hyη
-      exact hyη.elim
-    refine ⟨1, one_pos, ?_⟩
-    intro y hy ξ
-    rw [hK_empty] at hy
-    exact hy.elim
+  obtain ⟨c, hc, hbound⟩ := Schauder.exists_uniform_matrix_quadratic_lower_bound hK_compact
+    (fun y => Matrix.of (fun i j : Fin (Module.finrank ℝ E) =>
+      weightedInvGramOnEuclid (I := I) g α i j y))
+    (fun i j => (weightedInvGramOnEuclid_contDiffOn (I := I) g α i j).continuousOn.mono hK_target)
+    (fun _ hy => weightedInvGramOnEuclid_posDef (I := I) g α (hK_target hy))
+  refine ⟨c, hc, ?_⟩
+  intro y hy ξ
+  change c * ‖ξ‖ ^ 2 ≤ (DeGiorgi.matMulE _ ξ).ofLp ⬝ᵥ star ξ.ofLp
+  rw [DeGiorgi.matMulE_ofLp, dotProduct_comm]
+  exact hbound y hy ξ
 
 private def kronDelta (i j : Fin (Module.finrank ℝ E)) : ℝ := if i = j then 1 else 0
 
@@ -958,3 +742,67 @@ end MetricExtension
 end Laplacian
 end Analysis
 end DifferentialGeometry
+
+namespace DifferentialGeometry.Analysis.Laplacian.MetricExtension
+
+open DifferentialGeometry.Integral.DivergenceTheorem
+
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+
+local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
+
+lemma chartCoeffOnE_comp_toEuclidean_symm_contDiffOn
+    (α : M) {Ω : Set EuclN} (hΩs : Ω ⊆ chartTargetEuclid (I := I) α)
+    (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (i : Fin (Module.finrank ℝ E)) :
+    ContDiffOn ℝ (⊤ : ℕ∞) (fun z => chartCoeffOnE (I := I) α X i
+      ((toEuclidean (E := E)).symm z)) Ω := by
+  apply (chartCoeffOnE_contDiffOn (I := I) α X i).comp
+    (toEuclidean (E := E)).symm.contDiff.contDiffOn
+  intro z hz
+  exact toEuclidean_symm_mem_target (hΩs hz)
+
+
+end DifferentialGeometry.Analysis.Laplacian.MetricExtension
+
+namespace DifferentialGeometry.Analysis.Laplacian.MetricExtension
+
+variable {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F] [FiniteDimensional ℝ F]
+variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ F H}
+variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+
+local notation "EuclF" => EuclideanSpace ℝ (Fin (Module.finrank ℝ F))
+
+lemma exists_uniform_inv_gram_lower_bound_on_compact
+    (g : SmoothRiemannianMetric I M) (α : M) {K : Set EuclF}
+    (hK : IsCompact K) (hKs : K ⊆ chartTargetEuclid (I := I) α) :
+    ∃ lam : ℝ, 0 < lam ∧ ∀ y ∈ K, ∀ ξ : Fin (Module.finrank ℝ F) → ℝ,
+      lam * ∑ i, (ξ i)^2 ≤ ∑ i, ∑ j, invGramOnEuclid g α i j y * ξ i * ξ j := by
+  obtain ⟨lam, hlam, hbound⟩ := Schauder.exists_uniform_matrix_quadratic_lower_bound hK
+    (fun y => Matrix.of (fun i j : Fin (Module.finrank ℝ F) => invGramOnEuclid g α i j y))
+    (fun i j => (invGramOnEuclid_contDiffOn g α i j).continuousOn.mono hKs)
+    (fun y hy => invGramOnEuclid_posDef g α (hKs hy))
+  refine ⟨lam, hlam, ?_⟩
+  intro y hy ξ
+  have hb := hbound y hy (WithLp.toLp 2 ξ)
+  have hnorm : ‖(WithLp.toLp 2 ξ : EuclF)‖ ^ 2 = ∑ i, (ξ i)^2 := by
+    rw [EuclideanSpace.norm_sq_eq]
+    apply Finset.sum_congr rfl
+    intro i _
+    change ‖ξ i‖^2 = (ξ i)^2
+    simp only [Real.norm_eq_abs, sq_abs]
+  have hquad : dotProduct (star (WithLp.toLp 2 ξ : EuclF))
+      ((Matrix.of (fun i j => invGramOnEuclid g α i j y)).mulVec (WithLp.toLp 2 ξ)) =
+      ∑ i, ∑ j, invGramOnEuclid g α i j y * ξ i * ξ j := by
+    simp only [Matrix.mulVec, dotProduct, Pi.star_apply, star_trivial, Matrix.of_apply,
+      Finset.mul_sum]
+    apply Finset.sum_congr rfl
+    intro i _
+    apply Finset.sum_congr rfl
+    intro j _
+    change ξ i * (invGramOnEuclid g α i j y * ξ j) = _
+    ring
+  rwa [hnorm, hquad] at hb
+
+end DifferentialGeometry.Analysis.Laplacian.MetricExtension

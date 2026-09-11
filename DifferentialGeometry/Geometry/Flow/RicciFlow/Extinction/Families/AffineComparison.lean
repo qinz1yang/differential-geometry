@@ -200,7 +200,7 @@ private theorem scalar_window_cont (B : RicciBackground (I := I) (M := Q) D a b)
   exact hraw.comp_continuous (f := fun p : Icc a b × Q => ((p.1 : ℝ), p.2)) hmap hmem
 
 omit [SigmaCompactSpace Q] hBoundary hConnected in
-theorem rfs_width_flow_background [SigmaCompactSpace Q] [I.Boundaryless] [ConnectedSpace Q]
+theorem rfs_width_flow_background
     (B : RicciBackground (I := I) (M := Q) D a b) :
     ContinuousOn (halfScalarMinimum B.family) (Icc a b) ∧
       (∀ t ∈ Icc a b, ∃ q : Q,
@@ -238,6 +238,7 @@ theorem rfs_width_flow_background [SigmaCompactSpace Q] [I.Boundaryless] [Connec
   exact ⟨hcontinuous, hattain, (abs_nonneg _).trans (hbound t ht), hbound, t, ht, hM.symm⟩
 
 
+omit [SigmaCompactSpace Q] hBoundary hConnected in
 theorem areaIntegratingFactor_continuousOn
     (B : RicciBackground (I := I) (M := Q) D a b) {s : ℝ} (hs : s ∈ Icc a b) :
     ContinuousOn (areaIntegratingFactor B.family s) (Icc a b) := by
@@ -247,7 +248,7 @@ theorem areaIntegratingFactor_continuousOn
   exact factor_cont (rfs_width_flow_background B).1 hs
 
 omit [SigmaCompactSpace Q] hBoundary hConnected in
-theorem rfs_width_affine_comparison [SigmaCompactSpace Q] [I.Boundaryless] [ConnectedSpace Q]
+theorem rfs_width_affine_comparison
     (B : RicciBackground (I := I) (M := Q) D a b) :
     (∀ s ∈ Icc a b, ∀ z t, t ∈ Icc a b →
       HasDerivWithinAt (fun v => affineComparison B.family s v z)

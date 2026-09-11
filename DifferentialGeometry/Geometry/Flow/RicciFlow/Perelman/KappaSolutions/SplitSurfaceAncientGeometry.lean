@@ -112,7 +112,8 @@ theorem splitSurface_rmNormSq_eq
   have hp := metricRmNormSq_product_real_of_inner_eq (G.S.family.metric t) gP hP y 0
   have hc := metricRmNormSq_pullbackCross
     (UniversalCover.liftedMetric (I := I) (F.S.family.metric t)) Phi (y, 0)
-  have hl := metricRmNormSq_lifted (F.S.family.metric t) (Phi (y, 0))
+  have hl := UniversalCover.normSq0S_metricRm04At_liftedMetric
+    (F.S.family.metric t) (Phi (y, 0))
   change normSq0S (I := 𝓡 2) (G.S.family.metric t) y 4
       (metricRm04At (I := 𝓡 2) (G.S.family.metric t) y) =
     normSq0S (I := I) (F.S.family.metric t) (UniversalCover.proj (Phi (y, 0))) 4

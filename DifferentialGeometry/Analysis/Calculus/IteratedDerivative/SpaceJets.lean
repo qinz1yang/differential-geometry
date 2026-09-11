@@ -1,11 +1,12 @@
 import Mathlib.Analysis.Calculus.ContDiff.Comp
 import Mathlib.Analysis.Calculus.ContDiff.Operations
 import DifferentialGeometry.Analysis.Calculus.TimeJet.Evolution
+import DifferentialGeometry.Analysis.Integration.Lp.ContinuousOn
 
 noncomputable section
 
-open Set
-open scoped ContDiff
+open MeasureTheory Set
+open scoped ContDiff ENNReal
 
 namespace DifferentialGeometry
 namespace Analysis
@@ -462,6 +463,127 @@ theorem jet2_contOn
         continuousMultilinearCurryRightEquiv_apply', iteratedFDeriv_two_apply]
       rfl
   simpa only [jet2] using hv.prodMk (hd₁.prodMk hd₂)
+
+theorem iterated_spatial_fderiv_eq_sub_smul
+    {S J : Set ℝ} {W : Set E} (hW : IsOpen W) (hJS : J ⊆ S)
+    {b L P : ℝ × E → F} {a : ℝ → ℝ} {r : WithTop ℕ∞}
+    (hL : ContDiffOn ℝ r L (S ×ˢ W)) (hP : ContDiffOn ℝ r P (S ×ˢ W))
+    (heq : ∀ t ∈ J, ∀ x ∈ W, b (t, x) = L (t, x) - a t • P (t, x))
+    (N : ℕ) (hN : (N : WithTop ℕ∞) ≤ r) {t : ℝ} (ht : t ∈ J) {x : E} (hx : x ∈ W) :
+    iteratedFDeriv ℝ N (fun y => b (t, y)) x =
+      iteratedFDeriv ℝ N (fun y => L (t, y)) x -
+        a t • iteratedFDeriv ℝ N (fun y => P (t, y)) x := by
+  have hLs : ContDiffAt ℝ N (fun y => L (t, y)) x :=
+    ((hL.comp (contDiffOn_const.prodMk contDiffOn_id)
+      (fun _ hy => ⟨hJS ht, hy⟩)).contDiffAt (hW.mem_nhds hx)).of_le hN
+  have hPs : ContDiffAt ℝ N (fun y => P (t, y)) x :=
+    ((hP.comp (contDiffOn_const.prodMk contDiffOn_id)
+      (fun _ hy => ⟨hJS ht, hy⟩)).contDiffAt (hW.mem_nhds hx)).of_le hN
+  have hg : (fun y => b (t, y)) =ᶠ[nhds x] (fun y => L (t, y) - a t • P (t, y)) :=
+    Filter.eventuallyEq_of_mem (hW.mem_nhds hx) (fun y hy => heq t ht y hy)
+  rw [(hg.iteratedFDeriv ℝ N).eq_of_nhds]
+  exact (iteratedFDeriv_sub_apply hLs (hPs.const_smul (a t))).trans
+    (congrArg (fun Q => iteratedFDeriv ℝ N (fun y => L (t, y)) x - Q)
+      (iteratedFDeriv_const_smul_apply hPs))
+
+theorem contDiffOn_iterated_spatial_fderiv_of_eq_sub_smul
+    {S J : Set ℝ} {W : Set E} (hW : IsOpen W) (hJS : J ⊆ S)
+    {b L P : ℝ × E → F} {a : ℝ → ℝ} {r m : WithTop ℕ∞}
+    (hL : ContDiffOn ℝ r L (S ×ˢ W)) (hP : ContDiffOn ℝ r P (S ×ˢ W))
+    (heq : ∀ t ∈ J, ∀ x ∈ W, b (t, x) = L (t, x) - a t • P (t, x))
+    (N : ℕ) (hN : m + N ≤ r) {t : ℝ} (ht : t ∈ J) :
+    ContDiffOn ℝ m (fun x => iteratedFDeriv ℝ N (fun y => b (t, y)) x) W := by
+  have hb : ContDiffOn ℝ r (fun x => b (t, x)) W :=
+    ((hL.comp (contDiffOn_const.prodMk contDiffOn_id) (fun _ hx => ⟨hJS ht, hx⟩)).sub
+      ((hP.comp (contDiffOn_const.prodMk contDiffOn_id)
+        (fun _ hx => ⟨hJS ht, hx⟩)).const_smul (a t))).congr
+          (fun x hx => heq t ht x hx)
+  intro x hx
+  exact ((hb.contDiffAt (hW.mem_nhds hx)).iteratedFDeriv_right hN).contDiffWithinAt
+
+theorem contDiffOn_iterated_spatial_fderiv_apply_of_eq_sub_smul
+    {S J : Set ℝ} {W : Set E} (hW : IsOpen W) (hJS : J ⊆ S)
+    {b L P : ℝ × E → F} {a : ℝ → ℝ} {r m : WithTop ℕ∞}
+    (hL : ContDiffOn ℝ r L (S ×ˢ W)) (hP : ContDiffOn ℝ r P (S ×ˢ W))
+    (heq : ∀ t ∈ J, ∀ x ∈ W, b (t, x) = L (t, x) - a t • P (t, x))
+    (N : ℕ) (hN : m + N ≤ r) (v : Fin N → E) {t : ℝ} (ht : t ∈ J) :
+    ContDiffOn ℝ m (fun x => iteratedFDeriv ℝ N (fun y => b (t, y)) x v) W := by
+  exact (ContinuousMultilinearMap.apply ℝ (fun _ : Fin N => E) F v).contDiff.comp_contDiffOn
+    (contDiffOn_iterated_spatial_fderiv_of_eq_sub_smul hW hJS hL hP heq N hN ht)
+
+theorem continuousOn_iterated_spatial_fderiv_of_eq_sub_smul
+    {S J : Set ℝ} {W : Set E} (hS : IsOpen S) (hW : IsOpen W) (hJS : J ⊆ S)
+    {b L P : ℝ × E → F} {a : ℝ → ℝ} {r : WithTop ℕ∞}
+    (hL : ContDiffOn ℝ r L (S ×ˢ W)) (hP : ContDiffOn ℝ r P (S ×ˢ W))
+    (ha : ContinuousOn a J)
+    (heq : ∀ t ∈ J, ∀ x ∈ W, b (t, x) = L (t, x) - a t • P (t, x))
+    (N : ℕ) (hN : (N : WithTop ℕ∞) ≤ r) :
+    ContinuousOn (fun p : ℝ × E => iteratedFDeriv ℝ N (fun y => b (p.1, y)) p.2)
+      (J ×ˢ W) := by
+  have hLj := (spaceJet_contOn (hS.prod hW) hL N hN).mono (Set.prod_mono hJS Subset.rfl)
+  have hPj := (spaceJet_contOn (hS.prod hW) hP N hN).mono (Set.prod_mono hJS Subset.rfl)
+  exact (hLj.sub ((ha.comp continuousOn_fst (fun _ hp => hp.1)).smul hPj)).congr
+    (fun p hp => iterated_spatial_fderiv_eq_sub_smul hW hJS hL hP heq N hN hp.1 hp.2)
+
+section MemLpIteratedSpatialFDeriv
+
+variable [MeasurableSpace E] [OpensMeasurableSpace E]
+
+theorem memLp_iterated_spatial_fderiv_of_contDiffOn
+    {G : ℝ → E → F} {S : Set (ℝ × E)} {r : WithTop ℕ∞} (hS : IsOpen S)
+    (hG : ContDiffOn ℝ r (fun p : ℝ × E => G p.1 p.2) S)
+    {K : Set (ℝ × E)} (hK : IsCompact K) (hKS : K ⊆ S)
+    (N : ℕ) (hN : (N : WithTop ℕ∞) ≤ r) (μ : Measure (ℝ × E)) :
+    MemLp (fun p : ℝ × E => iteratedFDeriv ℝ N (fun y : E => G p.1 y) p.2)
+      ∞ (μ.restrict K) := by
+  have hcont := spaceJet_contOn hS hG N hN
+  exact (hcont.mono hKS).memLp_top_of_isCompact hK hK.measurableSet
+
+theorem memLp_iterated_spatial_fderiv_apply_of_contDiffOn
+    {G : ℝ → E → F} {S : Set (ℝ × E)} {r : WithTop ℕ∞} (hS : IsOpen S)
+    (hG : ContDiffOn ℝ r (fun p : ℝ × E => G p.1 p.2) S)
+    {K : Set (ℝ × E)} (hK : IsCompact K) (hKS : K ⊆ S)
+    (N : ℕ) (hN : (N : WithTop ℕ∞) ≤ r) (v : Fin N → E) (μ : Measure (ℝ × E)) :
+    MemLp (fun p : ℝ × E =>
+      iteratedFDeriv ℝ N (fun y : E => G p.1 y) p.2 v)
+      ∞ (μ.restrict K) := by
+  have hcont := spaceJet_contOn hS hG N hN
+  have happly : ContinuousOn (fun p : ℝ × E =>
+      iteratedFDeriv ℝ N (fun y : E => G p.1 y) p.2 v) S := by
+    have happly' :=
+      (ContinuousMultilinearMap.apply ℝ (fun _ : Fin N => E) F v).continuous.comp_continuousOn hcont
+    exact happly'.congr fun p _ => rfl
+  exact (happly.mono hKS).memLp_top_of_isCompact hK hK.measurableSet
+
+theorem memLp_iterated_spatial_fderiv_of_eq_sub_smul
+    {S J : Set ℝ} {W : Set E} (hS : IsOpen S) (hW : IsOpen W) (hJS : J ⊆ S)
+    {b L P : ℝ × E → F} {a : ℝ → ℝ} {r : WithTop ℕ∞}
+    (hL : ContDiffOn ℝ r L (S ×ˢ W)) (hP : ContDiffOn ℝ r P (S ×ˢ W))
+    (ha : ContinuousOn a J)
+    (heq : ∀ t ∈ J, ∀ x ∈ W, b (t, x) = L (t, x) - a t • P (t, x))
+    {K : Set (ℝ × E)} (hK : IsCompact K) (hKJW : K ⊆ J ×ˢ W)
+    (N : ℕ) (hN : (N : WithTop ℕ∞) ≤ r) (μ : Measure (ℝ × E)) :
+    MemLp (fun p : ℝ × E => iteratedFDeriv ℝ N (fun y => b (p.1, y)) p.2)
+      ∞ (μ.restrict K) := by
+  have hcont := continuousOn_iterated_spatial_fderiv_of_eq_sub_smul hS hW hJS hL hP ha heq N hN
+  exact (hcont.mono hKJW).memLp_top_of_isCompact hK hK.measurableSet
+
+theorem memLp_iterated_spatial_fderiv_apply_of_eq_sub_smul
+    {S J : Set ℝ} {W : Set E} (hS : IsOpen S) (hW : IsOpen W) (hJS : J ⊆ S)
+    {b L P : ℝ × E → F} {a : ℝ → ℝ} {r : WithTop ℕ∞}
+    (hL : ContDiffOn ℝ r L (S ×ˢ W)) (hP : ContDiffOn ℝ r P (S ×ˢ W))
+    (ha : ContinuousOn a J)
+    (heq : ∀ t ∈ J, ∀ x ∈ W, b (t, x) = L (t, x) - a t • P (t, x))
+    {K : Set (ℝ × E)} (hK : IsCompact K) (hKJW : K ⊆ J ×ˢ W)
+    (N : ℕ) (hN : (N : WithTop ℕ∞) ≤ r) (v : Fin N → E) (μ : Measure (ℝ × E)) :
+    MemLp (fun p : ℝ × E => iteratedFDeriv ℝ N (fun y => b (p.1, y)) p.2 v)
+      ∞ (μ.restrict K) := by
+  have hcont := continuousOn_iterated_spatial_fderiv_of_eq_sub_smul hS hW hJS hL hP ha heq N hN
+  have happly := (ContinuousMultilinearMap.apply ℝ (fun _ : Fin N => E) F v).continuous.comp_continuousOn
+    hcont
+  exact (happly.mono hKJW).memLp_top_of_isCompact hK hK.measurableSet
+
+end MemLpIteratedSpatialFDeriv
 
 end Analysis
 end DifferentialGeometry

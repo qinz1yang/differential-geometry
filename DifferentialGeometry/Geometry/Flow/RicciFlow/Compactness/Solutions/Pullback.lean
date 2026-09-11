@@ -1,3 +1,6 @@
+import DifferentialGeometry.Geometry.Metric.Family.Pullback
+import DifferentialGeometry.Geometry.Metric.Convergence.Naturality.PullbackCross
+import DifferentialGeometry.Geometry.Metric.PullbackCompleteness
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Shi.Pullback
 
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.Basic
@@ -19,6 +22,153 @@ namespace DifferentialGeometry
 namespace PDE
 namespace RicciFlow
 
+section Pullback
+
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  [FiniteDimensional ℝ E]
+variable {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
+  [FiniteDimensional ℝ F]
+variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+variable {G : Type*} [TopologicalSpace G] {J : ModelWithCorners ℝ F G}
+variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+variable {N : Type*} [TopologicalSpace N] [ChartedSpace G N] [IsManifold J ∞ N]
+
+def SolutionOn.pullback [T2Space M]
+    {D : RealTimeInterval}
+    (S : SolutionOn (I := J) (M := N) D) (Φ : M ≃ₘ⟮I, J⟯ N) :
+    SolutionOn (I := I) (M := M) D :=
+  { base := { metric := fun t => Diffeomorph.pullbackMetricCross (S.base.metric t) Φ } }
+
+private theorem pullback_cross_coeff_eq
+    [T2Space M]
+    {D : RealTimeInterval}
+    (S : SolutionOn (I := J) (M := N) D) (Φ : M ≃ₘ⟮I, J⟯ N)
+    (x : M) (X Y : TangentSpace I x) :
+    (fun t : ℝ => ((SolutionOn.pullback (I := I) S Φ).family.metric t).inner x X Y)
+      = fun t : ℝ => (S.family.metric t).inner (Φ x)
+          (mfderiv I J (Φ : M → N) x X) (mfderiv I J (Φ : M → N) x Y) := by
+  funext t
+  exact Diffeomorph.pullbackMetricCross_inner (I := I) (S.family.metric t) Φ x X Y
+
+variable [T2Space M] [T2Space N]
+variable [BoundarylessManifold I M] [BoundarylessManifold J N]
+
+private theorem pullback_equation
+    {D : RealTimeInterval}
+    (S : SolutionOn (I := J) (M := N) D) (hS : IsSolutionOn (I := J) S)
+    (Φ : M ≃ₘ⟮I, J⟯ N) :
+    MetricVariationEquationOn (I := I) (SolutionOn.pullback S Φ) := by
+  intro t x X Y
+  have hcoeff := pullback_cross_coeff_eq S Φ x X Y
+  have hric :
+      RicciAtFamily.toTensorField (I := I)
+          (SolutionOn.pullback S Φ).ricciAt (t : ℝ) x X Y
+        = RicciAtFamily.toTensorField (I := J) S.ricciAt (t : ℝ) (Φ x)
+            (mfderiv I J (Φ : M → N) x X) (mfderiv I J (Φ : M → N) x Y) := by
+    simp only [RicciAtFamily.toTensorField_apply]
+    change metricRicciAt (I := I)
+          (Diffeomorph.pullbackMetricCross (S.base.metric (t : ℝ)) Φ) x (vec2 X Y)
+        = metricRicciAt (I := J) (S.base.metric (t : ℝ)) (Φ x)
+            (vec2 (mfderiv I J (Φ : M → N) x X) (mfderiv I J (Φ : M → N) x Y))
+    rw [metricRicciAt_apply_eq_ricciTensor, metricRicciAt_apply_eq_ricciTensor]
+    exact ricciTensor_cross (S.base.metric (t : ℝ)) Φ x X Y
+  rw [hcoeff, hric]
+  exact hS.equation t (Φ x)
+    (mfderiv I J (Φ : M → N) x X) (mfderiv I J (Φ : M → N) x Y)
+
+theorem SolutionOn.pullback_scalar
+    {D : RealTimeInterval}
+    (S : SolutionOn (I := J) (M := N) D) (Φ : M ≃ₘ⟮I, J⟯ N) (t : ℝ) (x : M) :
+    (SolutionOn.pullback S Φ).scalar t x = S.scalar t (Φ x) := by
+  simp only [SolutionOn.scalar, SolutionFamily.scalar, SolutionOn.pullback]
+  exact metricScalar_cross (S.base.metric t) Φ x
+
+theorem IsSolutionOn.pullback
+    {D : RealTimeInterval}
+    (S : SolutionOn (I := J) (M := N) D) (hS : IsSolutionOn (I := J) S)
+    (Φ : M ≃ₘ⟮I, J⟯ N) :
+    IsSolutionOn (I := I) (SolutionOn.pullback S Φ) where
+  smoothMetric := hS.smoothMetric.pullback S.family.metric Φ
+  smoothConnection := by
+    intro t
+    exact leviCivitaConnectionOfMetric_contMDiffCovariantDerivative
+      ((SolutionOn.pullback S Φ).base.metric (t : ℝ))
+  equation := pullback_equation S hS Φ
+  scalarCont := by
+    have heq : (fun q : ℝ × M => (SolutionOn.pullback S Φ).scalar q.1 q.2)
+        = (fun p : ℝ × N => S.scalar p.1 p.2)
+            ∘ (fun q : ℝ × M => ((q.1, Φ q.2) : ℝ × N)) := by
+      funext q
+      exact SolutionOn.pullback_scalar S Φ q.1 q.2
+    rw [heq]
+    exact hS.scalarCont.comp
+      (continuous_fst.prodMk (Φ.continuous.comp continuous_snd)).continuousOn
+      (fun q hq => ⟨hq.1, Set.mem_univ _⟩)
+  scalarTime := by
+    intro K t htK hKsub x
+    have heq : (fun s : ℝ => (SolutionOn.pullback S Φ).scalar s x)
+        = fun s : ℝ => S.scalar s (Φ x) := by
+      funext s
+      exact SolutionOn.pullback_scalar S Φ s x
+    rw [heq]
+    exact hS.scalarTime htK hKsub (Φ x)
+  ricciCont := by
+    apply tensor0SFamilyContinuousOnSet.congr
+      (tensor0SFamilyContinuousOnSet.pullback
+        (fun t x => S.ricci t x) hS.ricciCont Φ)
+    intro t _ht x
+    ext slots
+    exact (metricRicci_cross (S.base.metric t) Φ x slots).symm
+  rm04Cont := by
+    apply tensor0SFamilyContinuousOnSet.congr
+      (tensor0SFamilyContinuousOnSet.pullback
+        (fun t x => S.base.rm04 t x) hS.rm04Cont Φ)
+    intro t _ht x
+    ext slots
+    exact (metricRm04_cross (S.base.metric t) Φ x slots).symm
+  ricciNormSpace := by
+    intro t _ht x
+    have hsm : ContMDiff I 𝓘(ℝ, ℝ) ∞
+        (ricciNorm (I := I) (SolutionOn.pullback S Φ) t) := by
+      refine (normSq02_smooth (I := I)
+        ((SolutionOn.pullback S Φ).family.metric t)
+        (metricRicci ((SolutionOn.pullback S Φ).family.metric t))).congr ?_
+      intro y
+      simp only [ricciNorm, SolutionOn.ricci, SolutionOn.family,
+        SolutionFamily.ricci_apply, SolutionFamily.ricciAt, metricRicci_apply]
+    exact hsm.mdifferentiableAt (by simp)
+  ricciNormGrad := by
+    intro t _ht x
+    have hsm : ContMDiff I 𝓘(ℝ, ℝ) ∞
+        (ricciNorm (I := I) (SolutionOn.pullback S Φ) t) := by
+      refine (normSq02_smooth (I := I)
+        ((SolutionOn.pullback S Φ).family.metric t)
+        (metricRicci ((SolutionOn.pullback S Φ).family.metric t))).congr ?_
+      intro y
+      simp only [ricciNorm, SolutionOn.ricci, SolutionOn.family,
+        SolutionFamily.ricci_apply, SolutionFamily.ricciAt, metricRicci_apply]
+    exact gradientFun_mdiffAt ((SolutionOn.pullback S Φ).family.metric t) hsm x
+
+def CompleteBoundedCurvatureSolutionOn.pullback
+    [SigmaCompactSpace M] [SigmaCompactSpace N]
+    {D : RealTimeInterval}
+    (S : CompleteBoundedCurvatureSolutionOn (I := J) (M := N) (D := D))
+    (Φ : M ≃ₘ⟮I, J⟯ N) :
+    CompleteBoundedCurvatureSolutionOn (I := I) (M := M) (D := D) where
+  solution := SolutionOn.pullback S.solution Φ
+  isSolution := IsSolutionOn.pullback S.solution S.isSolution Φ
+  complete t ht := RiemannianMetricComplete.pullbackCross (S.solution.base.metric t) Φ
+    (S.complete t ht)
+  curvatureBound t ht := by
+    obtain ⟨C, hC, hbound⟩ := S.curvatureBound t ht
+    refine ⟨C, hC, fun x => ?_⟩
+    change normSq0S (I := I) (Diffeomorph.pullbackMetricCross (S.solution.base.metric t) Φ) x 4
+      (metricRm04At (I := I) (Diffeomorph.pullbackMetricCross (S.solution.base.metric t) Φ) x) ≤ C
+    rw [riemannNormSq_cross]
+    exact hbound (Φ x)
+
+end Pullback
+
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [CompleteSpace E]
   [NeZero (Module.finrank ℝ E)]
@@ -27,55 +177,6 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 variable {N : Type*} [TopologicalSpace N] [ChartedSpace H N] [IsManifold I ∞ N]
 
 private lemma infty_ne_zero : (∞ : WithTop ℕ∞) ≠ 0 := by decide
-
-omit [FiniteDimensional ℝ E] [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
-theorem _root_.IsLocalFrameOn.pushforward
-    {ι : Type*} {frame : ι → (x : M) → TangentSpace I x} {u : Set M}
-    (hframe : IsLocalFrameOn I E (∞ : WithTop ℕ∞) frame u) (Φ : M ≃ₘ⟮I, I⟯ N) :
-    IsLocalFrameOn (V := (TangentSpace I : N → Type _)) I E (∞ : WithTop ℕ∞)
-      (fun i (y : N) => mfderiv I I (Φ : M → N) (Φ.symm y) (frame i (Φ.symm y))) (Φ '' u) where
-  linearIndependent {y} hy := by
-    have hsymm : Φ.symm y ∈ u := by
-      obtain ⟨x, hx, hxy⟩ := hy; rw [← hxy, Φ.symm_apply_apply]; exact hx
-    have hb : (fun i => mfderiv I I (Φ : M → N) (Φ.symm y) (frame i (Φ.symm y)))
-        = ⇑((hframe.toBasisAt hsymm).map
-            (Φ.mfderivToContinuousLinearEquiv infty_ne_zero (Φ.symm y)).toLinearEquiv) := by
-      funext i
-      rw [Module.Basis.map_apply, IsLocalFrameOn.toBasisAt_coe,
-        ContinuousLinearEquiv.coe_toLinearEquiv, ← ContinuousLinearEquiv.coe_coe,
-        Φ.mfderivToContinuousLinearEquiv_coe]
-    change LinearIndependent ℝ (fun i => mfderiv I I (Φ : M → N) (Φ.symm y) (frame i (Φ.symm y)))
-    rw [hb]
-    exact Module.Basis.linearIndependent _
-  generating {y} hy := by
-    have hsymm : Φ.symm y ∈ u := by
-      obtain ⟨x, hx, hxy⟩ := hy; rw [← hxy, Φ.symm_apply_apply]; exact hx
-    have hb : (fun i => mfderiv I I (Φ : M → N) (Φ.symm y) (frame i (Φ.symm y)))
-        = ⇑((hframe.toBasisAt hsymm).map
-            (Φ.mfderivToContinuousLinearEquiv infty_ne_zero (Φ.symm y)).toLinearEquiv) := by
-      funext i
-      rw [Module.Basis.map_apply, IsLocalFrameOn.toBasisAt_coe,
-        ContinuousLinearEquiv.coe_toLinearEquiv, ← ContinuousLinearEquiv.coe_coe,
-        Φ.mfderivToContinuousLinearEquiv_coe]
-    change ⊤ ≤ Submodule.span ℝ (Set.range
-      (fun i => mfderiv I I (Φ : M → N) (Φ.symm y) (frame i (Φ.symm y))))
-    rw [hb]
-    exact (Module.Basis.span_eq _).ge
-  contMDiffOn i := by
-    have hmaps : Set.MapsTo (Φ.symm : N → M) (Φ '' u) u := by
-      rintro y ⟨x, hx, rfl⟩; rw [Φ.symm_apply_apply]; exact hx
-    have h1 : ContMDiffOn I (I.prod 𝓘(ℝ, E)) (∞ : WithTop ℕ∞)
-        (fun y : N => TotalSpace.mk' E (Φ.symm y) (frame i (Φ.symm y))) (Φ '' u) :=
-      (hframe.contMDiffOn i).comp (Φ.symm.contMDiff.contMDiffOn) hmaps
-    have h2 := (Φ.contMDiff.contMDiff_tangentMap (by simp)).comp_contMDiffOn h1
-    refine h2.congr ?_
-    intro y _hy
-    change TotalSpace.mk' E y (mfderiv I I (Φ : M → N) (Φ.symm y) (frame i (Φ.symm y)))
-       = tangentMap I I (Φ : M → N) (TotalSpace.mk' E (Φ.symm y) (frame i (Φ.symm y)))
-    exact (congrArg
-      (fun b : N => TotalSpace.mk' E (E := fun z : N => TangentSpace I z) b
-        (mfderiv I I (Φ : M → N) (Φ.symm y) (frame i (Φ.symm y))))
-      (Φ.apply_symm_apply y)).symm
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 theorem gradientFun_pullback
@@ -137,6 +238,16 @@ def solutionOnPullback [hSigma : SigmaCompactSpace M] [T2Space M]
   let _ := hSigma
   exact { base := { metric := fun t => Diffeomorph.pullbackMetric (I := I) (S.base.metric t) Φ } }
 
+omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+theorem solutionOnPullback_eq_pullback
+    [hSigma : SigmaCompactSpace M] [T2Space M]
+    {D : RealTimeInterval}
+    (S : SolutionOn (I := I) (M := N) D) (Φ : M ≃ₘ⟮I, I⟯ N) :
+    solutionOnPullback S Φ = S.pullback Φ := by
+  let _ := hSigma
+  simp only [solutionOnPullback, SolutionOn.pullback,
+    Diffeomorph.pullbackMetricCross_eq_pullbackMetric]
+
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 private theorem pullback_coeff_eq
     [SigmaCompactSpace M] [T2Space M]
@@ -156,56 +267,10 @@ theorem metricFamilySmoothOn_pullback
     {D : RealTimeInterval}
     (S : SolutionOn (I := I) (M := N) D) (hS : IsSolutionOn (I := I) S)
     (Φ : M ≃ₘ⟮I, I⟯ N) :
-    MetricFamilySmoothOn (I := I) D (solutionOnPullback (I := I) S Φ).family.metric where
-  coeff x X Y := by
-    rw [pullback_coeff_eq (I := I) S Φ x X Y]
-    exact hS.smoothMetric.coeff (Φ x)
-      (mfderiv I I (Φ : M → N) x X) (mfderiv I I (Φ : M → N) x Y)
-  coeff_cont x X Y := by
-    rw [pullback_coeff_eq (I := I) S Φ x X Y]
-    exact hS.smoothMetric.coeff_cont (Φ x)
-      (mfderiv I I (Φ : M → N) x X) (mfderiv I I (Φ : M → N) x Y)
-  metricTensor_cont := by
-    apply tensor0SFamilyContinuousOnSet.congr
-      (tensor0SFamilyContinuousOnSet.pullback (I := I)
-        (fun t x => Tensor0SBundle.metricTensorField (I := I) (S.family.metric t) x)
-        hS.smoothMetric.metricTensor_cont Φ)
-    intro t _ht x
-    have hm : (solutionOnPullback (I := I) S Φ).family.metric t
-        = Diffeomorph.pullbackMetric (I := I) (S.family.metric t) Φ := rfl
-    ext slots
-    rw [hm, Tensor0SBundle.metricTensorField_apply, Diffeomorph.pullbackMetric_inner]
-    rfl
-  frameCompSmooth := by
-    intro Idx _ frame u hframe i j
-    have heq : (fun p : ℝ × M =>
-          ((solutionOnPullback (I := I) S Φ).family.metric p.1).inner p.2
-            (frame i p.2) (frame j p.2))
-        = fun p : ℝ × M => (S.family.metric p.1).inner (Φ p.2)
-            (mfderiv I I (Φ : M → N) p.2 (frame i p.2))
-            (mfderiv I I (Φ : M → N) p.2 (frame j p.2)) := by
-      funext p
-      exact Diffeomorph.pullbackMetric_inner (I := I) (S.family.metric p.1) Φ p.2
-        (frame i p.2) (frame j p.2)
-    rw [heq]
-    have hpf := hS.smoothMetric.frameCompSmooth
-      (fun k (y : N) => mfderiv I I (Φ : M → N) (Φ.symm y) (frame k (Φ.symm y)))
-      (hframe.pushforward Φ) i j
-    have hmap : ContMDiff (𝓘(ℝ, ℝ).prod I) (𝓘(ℝ, ℝ).prod I) (∞ : WithTop ℕ∞)
-        (fun p : ℝ × M => (p.1, (Φ : M → N) p.2)) :=
-      contMDiff_fst.prodMk (Φ.contMDiff.comp contMDiff_snd)
-    have hmaps : Set.MapsTo (fun p : ℝ × M => (p.1, (Φ : M → N) p.2))
-        (D.regular ×ˢ u) (D.regular ×ˢ (Φ '' u)) :=
-      fun p hp => ⟨hp.1, Set.mem_image_of_mem _ hp.2⟩
-    have hcomp := hpf.comp hmap.contMDiffOn hmaps
-    have hN : ∀ (k : Idx) (x : M),
-        (mfderiv I I (Φ : M → N) (Φ.symm (Φ x)) (frame k (Φ.symm (Φ x))) : E)
-          = (mfderiv I I (Φ : M → N) x (frame k x) : E) :=
-      fun k x => congrArg
-        (fun a : M => (mfderiv I I (Φ : M → N) a (frame k a) : E)) (Φ.symm_apply_apply x)
-    refine hcomp.congr ?_
-    intro p _hp
-    simp only [Function.comp_apply, hN]
+    MetricFamilySmoothOn (I := I) D (solutionOnPullback (I := I) S Φ).family.metric := by
+  change MetricFamilySmoothOn D (fun t => Diffeomorph.pullbackMetric (S.base.metric t) Φ)
+  simpa only [Diffeomorph.pullbackMetricCross_eq_pullbackMetric, SolutionOn.family_metric] using
+    hS.smoothMetric.pullback S.family.metric Φ
 
 omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -469,33 +534,13 @@ theorem isSolutionOn_pullback
     [FiniteDimensional ℝ E]
     [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
     [T2Space N] [BoundarylessManifold I N]
-    [IsManifold I 1 M] [IsManifold I 2 M] [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
-    [IsManifold I 1 N] [IsManifold I 2 N] [IsManifold I ((∞ : WithTop ℕ∞) + 1) N]
+    [IsManifold I 1 M] [IsManifold I 1 N]
     {D : RealTimeInterval}
     (S : SolutionOn (I := I) (M := N) D) (hS : IsSolutionOn (I := I) S)
     (Φ : M ≃ₘ⟮I, I⟯ N) :
-    IsSolutionOn (I := I) (solutionOnPullback (I := I) S Φ) where
-  smoothMetric := metricFamilySmoothOn_pullback (I := I) S hS Φ
-  smoothConnection := smoothConnection_pullback (I := I) S Φ
-  equation := metricVariationEquation_pullback (I := I) S hS Φ
-  scalarCont := scalarCont_pullback (I := I) S hS Φ
-  scalarTime := scalarTime_pullback (I := I) S hS Φ
-  ricciCont := ricciCont_pullback (I := I) S hS Φ
-  rm04Cont := rm04Cont_pullback (I := I) S hS Φ
-  ricciNormSpace := ricciNormSpace_pullback (I := I) S hS Φ
-  ricciNormGrad := by
-    intro t _ht x
-    have hsmooth : ContMDiff I 𝓘(ℝ, ℝ) (∞ : WithTop ℕ∞)
-        (ricciNorm (I := I) (solutionOnPullback (I := I) S Φ) t) := by
-      refine (DifferentialGeometry.Tensor.RSTensor.normSq02_smooth (I := I) (M := M)
-        ((solutionOnPullback (I := I) S Φ).family.metric t)
-        (metricRicci (I := I) (M := M)
-          ((solutionOnPullback (I := I) S Φ).family.metric t))).congr ?_
-      intro y
-      simp only [ricciNorm, SolutionOn.ricci, SolutionOn.family,
-        SolutionFamily.ricci_apply, SolutionFamily.ricciAt, metricRicci_apply]
-    exact DifferentialGeometry.Geometry.Operator.gradientFun_mdiffAt (I := I)
-      ((solutionOnPullback (I := I) S Φ).family.metric t) hsmooth x
+    IsSolutionOn (I := I) (solutionOnPullback (I := I) S Φ) := by
+  rw [solutionOnPullback_eq_pullback]
+  exact hS.pullback S Φ
 
 end RicciFlow
 end PDE

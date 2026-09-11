@@ -1,3 +1,5 @@
+import DifferentialGeometry.Tensor.BilinearForm
+import Mathlib.Analysis.SpecialFunctions.Sqrt
 import Mathlib.MeasureTheory.Integral.Lebesgue.Add
 import Mathlib.MeasureTheory.Measure.Lebesgue.EqHaar
 
@@ -29,3 +31,30 @@ theorem lintegral_basis_det (b b' : Basis ι ℝ E) (f : E → ENNReal) :
   exact (lintegral_const_mul' _ _ ENNReal.ofReal_ne_top).symm
 
 end Module.Basis
+
+namespace LinearMap.BilinForm
+
+theorem sqrt_det_gram_eq_abs_det_mul_sqrt_det_toMatrix
+    {V i : Type*} [AddCommGroup V] [Module Real V]
+    [Fintype i] [DecidableEq i] (B : LinearMap.BilinForm Real V) (b : Module.Basis i Real V)
+    (v : i → V) :
+    Real.sqrt (Matrix.of fun i j => B (v i) (v j)).det =
+      |b.det v| * Real.sqrt (toMatrix b B).det := by
+  rw [B.det_gram_eq_sq_mul_det_toMatrix b v, Real.sqrt_mul (sq_nonneg _), Real.sqrt_sq_eq_abs]
+
+theorem sqrt_det_toMatrix_basis_change
+    {E i : Type*} [AddCommGroup E] [Module Real E]
+    [Fintype i] [DecidableEq i] (B : LinearMap.BilinForm Real E) (b c : Module.Basis i Real E) :
+    Real.sqrt (toMatrix c B).det = |b.det c| * Real.sqrt (toMatrix b B).det := by
+  rw [B.det_toMatrix_basis_change b c, Real.sqrt_mul (sq_nonneg _), Real.sqrt_sq_eq_abs]
+
+theorem sqrt_det_smul_addHaar_eq
+    {E i : Type*} [NormedAddCommGroup E] [NormedSpace Real E] [FiniteDimensional Real E]
+    [MeasurableSpace E] [BorelSpace E] [Fintype i] [DecidableEq i]
+    (B : LinearMap.BilinForm Real E) (b c : Module.Basis i Real E) :
+    ENNReal.ofReal (Real.sqrt (toMatrix b B).det) • b.addHaar =
+      ENNReal.ofReal (Real.sqrt (toMatrix c B).det) • c.addHaar := by
+  rw [B.sqrt_det_toMatrix_basis_change b c, ENNReal.ofReal_mul (abs_nonneg _),
+    mul_comm, mul_smul, Module.Basis.det_smul_addHaar]
+
+end LinearMap.BilinForm

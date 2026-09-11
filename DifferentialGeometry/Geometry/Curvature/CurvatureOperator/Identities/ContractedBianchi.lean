@@ -152,7 +152,7 @@ theorem symm_bilin_orthonormal_trace_invariant
   · intro l _ hlk
     rw [hB k l, if_neg (fun h => hlk h.symm)]; ring
 
-omit [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem scalarCurv_eq_orthonormal_trace
     (g : SmoothRiemannianMetric I M) (x : M)
     (B : Fin (Module.finrank ℝ E) → TangentSpace I x)
@@ -161,11 +161,17 @@ theorem scalarCurv_eq_orthonormal_trace
     scalarCurv (I := I) g x =
       ∑ i : Fin (Module.finrank ℝ E), ricciTensor (I := I) g x (B i) (B i) := by
   classical
-  unfold scalarCurv
-  exact symm_bilin_orthonormal_trace_invariant (I := I) g x (ricciTensor (I := I) g x)
-    (fun a b => ricciTensor_symm (I := I) g x a b) B
-    (fun i => smoothOrthoFrame (I := I) g x i x) hB
-    (fun i j => smoothOrthoFrame_orthonormal_at_center (I := I) g x i j)
+  by_cases hn : Module.finrank ℝ E = 0
+  · let _ : IsEmpty (Fin (Module.finrank ℝ E)) := ⟨fun i => by
+      have hi := i.isLt
+      omega⟩
+    simp [scalarCurv]
+  · let _ : NeZero (Module.finrank ℝ E) := ⟨hn⟩
+    unfold scalarCurv
+    exact symm_bilin_orthonormal_trace_invariant (I := I) g x
+      (ricciTensor (I := I) g x) (fun a b => ricciTensor_symm (I := I) g x a b) B
+      (fun i => smoothOrthoFrame (I := I) g x i x) hB
+      (fun i j => smoothOrthoFrame_orthonormal_at_center (I := I) g x i j)
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem metric_scalar_at_eq_chart_ricci_sum
@@ -241,12 +247,32 @@ theorem chart_ricci_sum_eq_smooth_orthonormal_sum
       (fun i => smoothOrthoFrame (I := I) g x i x)
       (fun i j => smoothOrthoFrame_orthonormal_at_center (I := I) g x i j)).symm
 
-omit [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem metricScalar_eq_scal
     (g : SmoothRiemannianMetric I M) (x : M) :
     metricScalarAt (I := I) g x = scalarCurv (I := I) g x := by
-  exact (metric_scalar_at_eq_chart_ricci_sum (I := I) g x).trans
-    ((chart_ricci_sum_eq_smooth_orthonormal_sum (I := I) g x).trans rfl)
+  by_cases hn : Module.finrank ℝ E = 0
+  · let _ : IsEmpty (Fin (Module.finrank ℝ E)) := ⟨fun i => by
+      have hi := i.isLt
+      omega⟩
+    rw [metric_scalar_at_eq_chart_ricci_sum (I := I) g x]
+    simp [scalarCurv]
+  · let _ : NeZero (Module.finrank ℝ E) := ⟨hn⟩
+    exact (metric_scalar_at_eq_chart_ricci_sum (I := I) g x).trans
+      ((chart_ricci_sum_eq_smooth_orthonormal_sum (I := I) g x).trans rfl)
+
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
+theorem scalarCurv_contMDiff (g : SmoothRiemannianMetric I M) :
+    ContMDiff I 𝓘(Real) ∞ (scalarCurv g) := by
+  by_cases hn : Module.finrank Real E = 0
+  · have heq : scalarCurv g = 0 := by
+      funext x
+      let _ : IsEmpty (Fin (Module.finrank Real E)) := ⟨fun i => by have hi := i.isLt; omega⟩
+      simp [scalarCurv]
+    rw [heq]
+    exact contMDiff_const
+  · let _ : NeZero (Module.finrank Real E) := ⟨hn⟩
+    simpa only [metricScalar_eq_scal] using metricScalar_smooth g
 
 end ScalarCurv
 

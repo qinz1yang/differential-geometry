@@ -2,6 +2,7 @@ import DifferentialGeometry.Analysis.Elliptic.WithBoundary.Neumann.Unrestricted.
 import DifferentialGeometry.Analysis.Elliptic.WithBoundary.Neumann.Unrestricted.InteriorSupport
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.WithBoundary.BoundaryContribution.GreenBoundaryIntegral
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.WithBoundary.BoundaryContribution.SurfaceIntegralIdentification
+
 open DifferentialGeometry.Geometry.Operator
 
 
@@ -131,7 +132,7 @@ private lemma divergence_g_with_boundary_mul_pou_chart_local_ae
       have hd_eq : divergenceGWithBoundary (I := I_half n) g X x =
           localDivergenceWithin (I := I_half n) g α X x :=
         voss_weyl_divergence_with_boundary_formula
-          (I := I_half n) g α X hx_chart hx_int
+          (I := I_half n) g α X hx_chart
       rw [hd_eq]
     · refine ⟨hx_chart, ?_⟩
       rw [← (I_half n).compl_interior]
@@ -225,7 +226,7 @@ lemma divergence_g_with_boundary_ae_pou
                 divergenceGWithBoundary (I := I_half n) g X x =
                   localDivergenceWithin (I := I_half n) g β X x :=
               voss_weyl_divergence_with_boundary_formula
-                (I := I_half n) g β X hx_chart_β hx_int
+                (I := I_half n) g β X hx_chart_β
             rw [hd_eq]
         rw [Finset.sum_congr rfl h_each]
         rw [← Finset.mul_sum]
@@ -352,8 +353,7 @@ theorem unrestrictedSmoothScalarH1Inner_eq_integral_oneSubLapClassical_mul_neuma
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace
       (I := I_half n) (M := M) g
   have h_green :=
-    green_first_eq_boundary_surface_integral (M := M) (n := n) g v.smooth u.smooth h_chart_iden
-      h_int
+    green_first_eq_boundary_surface_integral (M := M) (n := n) g v.smooth u.smooth
   have h_bdy_zero : ∀ x : (I_half n).boundary M,
       v.toFun x.val *
         g.inner x.val
@@ -394,6 +394,7 @@ theorem unrestrictedSmoothScalarH1Inner_eq_integral_oneSubLapClassical_mul_neuma
           ∂(riemannianVolumeMeasure (I := I_half n) (M := M) g) :=
     integral_congr_ae (Filter.Eventually.of_forall h_symm)
   rw [h_int_symm] at h_green
+  have h_green' := h_green h_chart_iden h_int
   have h_grad_eq :
       ∫ x, g.inner x (gradFun (I := I_half n) g u.toFun x)
             (gradFun (I := I_half n) g v.toFun x)
@@ -401,7 +402,7 @@ theorem unrestrictedSmoothScalarH1Inner_eq_integral_oneSubLapClassical_mul_neuma
         -∫ x, v.toFun x *
               ΔGClassical (M := M) (n := n) g u.smooth x
             ∂(riemannianVolumeMeasure (I := I_half n) (M := M) g) := by
-    linarith
+    linarith [h_green']
   unfold unrestrictedSmoothScalarH1Inner
   have hu_cont : Continuous u.toFun := u.smooth.continuous
   have hv_cont : Continuous v.toFun := v.smooth.continuous

@@ -60,6 +60,8 @@ structure RoundSphereQuotient (E : Type uE) [NormedAddCommGroup E] [InnerProduct
   [grp : Group Γ]
   [fin : Fintype Γ]
   ρ : Γ →* (E ≃ₗᵢ[ℝ] E)
+  action_free : ∀ γ : Γ, ∀ q : sphere (0 : E) 1,
+    sphereDiffeo (n := n) (ρ γ) q = q → γ = 1
   proj : sphere (0 : E) 1 → Q
   proj_smooth : ContMDiff (𝓡 n) (𝓡 n) ∞ proj
   proj_smul : ∀ (γ : Γ) (q : sphere (0 : E) 1),
@@ -227,6 +229,11 @@ end LocalSmoothSection
 namespace RoundSphereQuotient
 
 variable (D : RoundSphereQuotient E n)
+
+theorem proj_surjective : Function.Surjective D.proj := by
+  intro x
+  exact ⟨(D.sectionAt x).toSphere ⟨x, (D.sectionAt x).mem_baseNeighborhood⟩,
+    (D.sectionAt x).toSphere_proj ⟨x, (D.sectionAt x).mem_baseNeighborhood⟩⟩
 
 def gm (x : D.Q) : TangentSpace (𝓡 n) x →L[ℝ] TangentSpace (𝓡 n) x →L[ℝ] ℝ :=
   let xW : (D.sectionAt x).baseNeighborhood := ⟨x, (D.sectionAt x).mem_baseNeighborhood⟩

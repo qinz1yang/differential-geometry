@@ -478,6 +478,97 @@ theorem ricReactionContract_delta_eq_compContract [DecidableEq Idx] {s : ℕ}
   refine Finset.sum_congr rfl fun e _ => ?_
   rw [Function.update_self]
 
+theorem hasDerivWithinAt_inner0S_ricciFlow_orthonormal
+    [DecidableEq Idx]
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
+    [FiniteDimensional Real E]
+    {H : Type*} [TopologicalSpace H]
+    {I : ModelWithCorners Real E H}
+    {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
+    [IsManifold I (⊤ : WithTop ℕ∞) M]
+    {s : Nat} {x : M} {u : Set Real} {t : Real}
+    (g : Real -> SmoothRiemannianMetric I M)
+    (Q : Tensor0SSpace 2 I x)
+    (A B : Real -> Tensor0SSpace s I x)
+    (Adot Bdot : Tensor0SSpace s I x)
+    (basis : Module.Basis Idx Real (TangentSpace I x))
+    (horth : ∀ i j : Idx,
+      (g t).inner x (basis i) (basis j) =
+        if i = j then (1 : Real) else 0)
+    (hg : ∀ X Y : TangentSpace I x,
+      HasDerivAt (fun r : Real => (g r).inner x X Y)
+        ((-2 : Real) * Q (fun a : Fin 2 => if a = 0 then X else Y)) t)
+    (hA : ∀ v : Fin s -> TangentSpace I x,
+      HasDerivWithinAt (fun r : Real => A r v) (Adot v) u t)
+    (hB : ∀ v : Fin s -> TangentSpace I x,
+      HasDerivWithinAt (fun r : Real => B r v) (Bdot v) u t) :
+    HasDerivWithinAt
+      (fun r : Real => inner0S (I := I) (g r) x s (A r) (B r))
+      (2 * ∑ slots : Fin s -> Idx,
+          tensor0SComponent (I := I) (A t) basis slots *
+            ricStarArray
+              (fun i j => Q (fun a : Fin 2 =>
+                if a = 0 then basis i else basis j))
+              (fun slots' => tensor0SComponent (I := I) (B t) basis slots')
+              slots +
+        inner0S (I := I) (g t) x s Adot (B t) +
+        inner0S (I := I) (g t) x s (A t) Bdot)
+      u t := by
+  classical
+  let gInv : Real -> Idx -> Idx -> Real := fun r =>
+    basisInvMetric (I := I) (g r) x basis
+  let ric : Idx -> Idx -> Real := fun i j =>
+    Q (fun a : Fin 2 => if a = 0 then basis i else basis j)
+  let gInvDt : Idx -> Idx -> Real := fun i j =>
+    -(∑ p, ∑ q, gInv t i p * ((-2 : Real) * ric p q) * gInv t q j)
+  let Adt : (Fin s -> Idx) -> Real := fun slots =>
+    tensor0SComponent (I := I) Adot basis slots
+  let Bdt : (Fin s -> Idx) -> Real := fun slots =>
+    tensor0SComponent (I := I) Bdot basis slots
+  have hinvAll (r : Real) :
+      MetricInverseInBasis (I := I) (g r) x basis (gInv r) := by
+    simpa only [gInv] using basisInvMetric_isInverse (I := I) (g r) x basis
+  have hgInv (i j : Idx) :
+      HasDerivWithinAt (fun r : Real => gInv r i j) (gInvDt i j) u t := by
+    have hfull : HasDerivAt (fun r : Real => gInv r i j) (gInvDt i j) t := by
+      simpa only [gInv, gInvDt, ric] using
+        (basisInv_time (I := I) g (fun p q => (-2 : Real) * ric p q) basis
+          (fun p q => by simpa only [ric] using hg (basis p) (basis q)) i j)
+    exact hfull.hasDerivWithinAt
+  have hflow (i j : Idx) :
+      gInvDt i j = 2 * (∑ p, ∑ q, gInv t i p * gInv t j q * ric p q) := by
+    have hterm :
+        (∑ p, ∑ q, gInv t i p * ((-2 : Real) * ric p q) * gInv t q j) =
+          ∑ p, ∑ q, (-2 : Real) *
+            (gInv t i p * gInv t j q * ric p q) := by
+      refine Finset.sum_congr rfl fun p _ => ?_
+      refine Finset.sum_congr rfl fun q _ => ?_
+      simp only [gInv]
+      rw [basisInvMetric_symm (I := I) (g t) x basis q j]
+      ring
+    have hfactor :
+        (∑ p, ∑ q, (-2 : Real) *
+          (gInv t i p * gInv t j q * ric p q)) =
+          (-2 : Real) * (∑ p, ∑ q, gInv t i p * gInv t j q * ric p q) := by
+      rw [Finset.mul_sum]
+      refine Finset.sum_congr rfl fun p _ => ?_
+      rw [Finset.mul_sum]
+    simp only [gInvDt]
+    rw [hterm, hfactor]
+    ring
+  have hmain := hasDerivWithinAt_inner0S_ricciFlow
+    (I := I) g gInv gInvDt ric A B Adt Bdt Adot Bdot basis hinvAll hgInv
+    (fun slots => hA (fun a => basis (slots a)))
+    (fun slots => hB (fun a => basis (slots a)))
+    (fun _ => rfl) (fun _ => rfl) hflow
+  have hinvId : MetricInverseInBasis (I := I) (g t) x basis
+      (identityInvMetric (Idx := Idx)) :=
+    metricInverseInBasis_identity_of_orthonormal (I := I) (g t) basis horth
+  have hgInvId : gInv t = identityInvMetric (Idx := Idx) :=
+    MetricInverseInBasis.unique (I := I) (g t) x basis _ _ (hinvAll t) hinvId
+  rw [hgInvId, ricReactionContract_delta_eq_compContract] at hmain
+  simpa only [ric, Adt, Bdt] using hmain
+
 theorem abs_ricStarArray_le {s : ℕ}
     (ric : Idx → Idx → Real) (cB : (Fin s → Idx) → Real)
     (Rbnd : Real) (hRbnd_nonneg : (0 : Real) ≤ Rbnd)

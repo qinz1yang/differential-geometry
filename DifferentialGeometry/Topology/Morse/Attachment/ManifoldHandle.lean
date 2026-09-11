@@ -464,7 +464,7 @@ theorem attachingRegionRecombine_contMDiff {n k : ℕ} (hk : k ≤ n) (r ε : �
 theorem contMDiff_cocoreAttachingMap {m k : ℕ} (hk : k ≤ m + 1) (c ε r δ : ℝ)
     {H : Type} [TopologicalSpace H] {M : Type} [TopologicalSpace M] [ChartedSpace H M]
     {I : ModelWithCorners ℝ (MorseModel (m + 1)) H} [I.Boundaryless]
-    [IsManifold I (⊤ : WithTop ℕ∞) M] [T2Space M] {f : M → ℝ}
+    [IsManifold I (↑(⊤ : ℕ∞) : WithTop ℕ∞) M] [T2Space M] {f : M → ℝ}
     (data : MorseChart (m + 1) k hk c I f)
     (hε : 0 ≤ ε) (hδ : r ^ 2 / 2 < δ) (hεr : Real.sqrt (2 * ε + r ^ 2) ≤ data.R)
     (hRltR' : data.R < data.smoothRadius)
@@ -1073,7 +1073,7 @@ theorem cocoreAttachingEmbedding_value {n k : ℕ} (hk : k ≤ n) (c ε r : ℝ)
 theorem contMDiff_cocoreAttachingEmbedding {m k : ℕ} (hk : k ≤ m + 1) (c ε r : ℝ)
     {H : Type} [TopologicalSpace H] {M : Type} [TopologicalSpace M] [ChartedSpace H M]
     {I : ModelWithCorners ℝ (MorseModel (m + 1)) H} [I.Boundaryless]
-    [IsManifold I (⊤ : WithTop ℕ∞) M] {f : M → ℝ}
+    [IsManifold I (↑(⊤ : ℕ∞) : WithTop ℕ∞) M] {f : M → ℝ}
     (data : MorseChart (m + 1) k hk c I f)
     (hε : 0 < ε) (hεr : Real.sqrt (2 * ε + 2 * r ^ 2) ≤ data.R)
     (hεr' : Real.sqrt (2 * ε + 2 * r ^ 2) < data.smoothRadius)
@@ -1183,7 +1183,7 @@ theorem cocoreAttachingEmbedding_injective {n k : ℕ} (hk : k ≤ n) (c ε r : 
 theorem isClosedEmbedding_cocoreAttachingEmbedding {m k : ℕ} (hk : k ≤ m + 1) (c ε r : ℝ)
     {H : Type} [TopologicalSpace H] {M : Type} [TopologicalSpace M] [ChartedSpace H M]
     {I : ModelWithCorners ℝ (MorseModel (m + 1)) H} [I.Boundaryless]
-    [IsManifold I (⊤ : WithTop ℕ∞) M] [T2Space M] {f : M → ℝ}
+    [IsManifold I (↑(⊤ : ℕ∞) : WithTop ℕ∞) M] [T2Space M] {f : M → ℝ}
     (data : MorseChart (m + 1) k hk c I f)
     (hε : 0 < ε) (hr : r ≠ 0) (hεr : Real.sqrt (2 * ε + 2 * r ^ 2) ≤ data.R)
     (hεr' : Real.sqrt (2 * ε + 2 * r ^ 2) < data.smoothRadius)
@@ -1264,7 +1264,7 @@ theorem handleCollarMap_value {m k : ℕ} (hk : k ≤ m + 1) (c ε r δ : ℝ)
 theorem contMDiff_handleCollarMap {m k : ℕ} (hk : k ≤ m + 1) (c ε r : ℝ)
     {H : Type} [TopologicalSpace H] {M : Type} [TopologicalSpace M] [ChartedSpace H M]
     {I : ModelWithCorners ℝ (MorseModel (m + 1)) H} [I.Boundaryless]
-    [IsManifold I (⊤ : WithTop ℕ∞) M] [T2Space M] {f : M → ℝ}
+    [IsManifold I (↑(⊤ : ℕ∞) : WithTop ℕ∞) M] [T2Space M] {f : M → ℝ}
     (data : MorseChart (m + 1) k hk c I f)
     (hε : 0 < ε) (hεr : Real.sqrt (2 * ε + 2 * r ^ 2) ≤ data.R) (hRltR' : data.R < data.smoothRadius)
     (hf : ContMDiff I 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞) f)
@@ -1370,7 +1370,7 @@ theorem contMDiff_handleCollarMap {m k : ℕ} (hk : k ≤ m + 1) (c ε r : ℝ)
 theorem handleCollarMap_injective {m k : ℕ} (hk : k ≤ m + 1) (c ε r δ : ℝ)
     {H : Type} [TopologicalSpace H] {M : Type} [TopologicalSpace M] [ChartedSpace H M]
     {I : ModelWithCorners ℝ (MorseModel (m + 1)) H} [I.Boundaryless]
-    [IsManifold I (⊤ : WithTop ℕ∞) M] [T2Space M] {f : M → ℝ}
+    [IsManifold I (↑(⊤ : ℕ∞) : WithTop ℕ∞) M] [T2Space M] {f : M → ℝ}
     (data : MorseChart (m + 1) k hk c I f)
     (hε : 0 < ε) (hr : r ≠ 0) (hεr : Real.sqrt (2 * ε + 2 * r ^ 2) ≤ data.R)
     (hδ : r ^ 2 / 2 < δ)
@@ -1563,7 +1563,7 @@ theorem handleCollarMap_mem_lower_iff {m k : ℕ} (hk : k ≤ m + 1) (c ε r δ 
 theorem isClosedEmbedding_handleCollarMap {m k : ℕ} (hk : k ≤ m + 1) (c ε r δ : ℝ)
     {H : Type} [TopologicalSpace H] {M : Type} [TopologicalSpace M] [ChartedSpace H M]
     {I : ModelWithCorners ℝ (MorseModel (m + 1)) H} [I.Boundaryless]
-    [IsManifold I (⊤ : WithTop ℕ∞) M] [T2Space M] {f : M → ℝ}
+    [IsManifold I (↑(⊤ : ℕ∞) : WithTop ℕ∞) M] [T2Space M] {f : M → ℝ}
     (data : MorseChart (m + 1) k hk c I f)
     (hε : 0 < ε) (hr : r ≠ 0) (hεr : Real.sqrt (2 * ε + 2 * r ^ 2) ≤ data.R)
     (hRltR' : data.R < data.smoothRadius) (hδ : r ^ 2 / 2 < δ)
@@ -2828,7 +2828,7 @@ theorem isClosedEmbedding_topHandleEmbedding {m : ℕ} (c ε : ℝ)
 theorem morse_smooth_handle_attachment {m k : ℕ} (hk : k ≤ m + 1) (c ε r δ : ℝ)
     {H : Type} [TopologicalSpace H] {M : Type} [TopologicalSpace M] [ChartedSpace H M] [T2Space M]
     (I : ModelWithCorners ℝ (MorseModel (m + 1)) H) [I.Boundaryless]
-    [IsManifold I (⊤ : WithTop ℕ∞) M] (f : M → ℝ)
+    [IsManifold I (↑(⊤ : ℕ∞) : WithTop ℕ∞) M] (f : M → ℝ)
     (hf : ContMDiff I 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞) f)
     (data : MorseChart (m + 1) k hk c I f)
     (hε : 0 < ε) (hr : r ≠ 0) (hδ : r ^ 2 / 2 < δ)
@@ -4352,7 +4352,7 @@ theorem morseHandleEmbeddingAttached_attaching {m k : ℕ} (hk : k ≤ m + 1) (c
 theorem morse_smooth_handle_attachment_cell {m k : ℕ} (hk : k ≤ m + 1) (c ε r : ℝ)
     {H : Type} [TopologicalSpace H] {M : Type} [TopologicalSpace M] [ChartedSpace H M] [T2Space M]
     (I : ModelWithCorners ℝ (MorseModel (m + 1)) H) [I.Boundaryless]
-    [IsManifold I (⊤ : WithTop ℕ∞) M] (f : M → ℝ)
+    [IsManifold I (↑(⊤ : ℕ∞) : WithTop ℕ∞) M] (f : M → ℝ)
     (data : MorseChart (m + 1) k hk c I f)
     (hε : 0 < ε) (hr : r ≠ 0) (hεr : Real.sqrt (2 * ε + 2 * r ^ 2) ≤ data.R)
     (hεr' : Real.sqrt (2 * ε + 2 * r ^ 2) < data.smoothRadius)
@@ -4426,7 +4426,7 @@ theorem morseAttachingEmbedding_injective {m k : ℕ} (hk : k ≤ m + 1) (c ε r
 theorem contMDiff_morseAttachingEmbedding {m k : ℕ} (hk : k ≤ m + 1) (c ε r : ℝ)
     {H : Type} [TopologicalSpace H] {M : Type} [TopologicalSpace M] [ChartedSpace H M]
     {I : ModelWithCorners ℝ (MorseModel (m + 1)) H} [I.Boundaryless]
-    [IsManifold I (⊤ : WithTop ℕ∞) M] {f : M → ℝ}
+    [IsManifold I (↑(⊤ : ℕ∞) : WithTop ℕ∞) M] {f : M → ℝ}
     (data : MorseChart (m + 1) k hk c I f)
     (hε : 0 < ε) (hεr : Real.sqrt (2 * ε + 2 * r ^ 2) ≤ data.R)
     (hεr' : Real.sqrt (2 * ε + 2 * r ^ 2) < data.smoothRadius)
@@ -4473,7 +4473,7 @@ theorem contMDiff_morseAttachingEmbedding {m k : ℕ} (hk : k ≤ m + 1) (c ε r
 theorem isClosedEmbedding_morseAttachingEmbedding {m k : ℕ} (hk : k ≤ m + 1) (c ε r : ℝ)
     {H : Type} [TopologicalSpace H] {M : Type} [TopologicalSpace M] [ChartedSpace H M]
     {I : ModelWithCorners ℝ (MorseModel (m + 1)) H} [I.Boundaryless]
-    [IsManifold I (⊤ : WithTop ℕ∞) M] [T2Space M] {f : M → ℝ}
+    [IsManifold I (↑(⊤ : ℕ∞) : WithTop ℕ∞) M] [T2Space M] {f : M → ℝ}
     (data : MorseChart (m + 1) k hk c I f)
     (hε : 0 < ε) (hr : r ≠ 0) (hεr : Real.sqrt (2 * ε + 2 * r ^ 2) ≤ data.R)
     (hεr' : Real.sqrt (2 * ε + 2 * r ^ 2) < data.smoothRadius)
@@ -4489,7 +4489,7 @@ theorem isClosedEmbedding_morseAttachingEmbedding {m k : ℕ} (hk : k ≤ m + 1)
 structure MorseSmoothAttachingEmbedding {m k : ℕ} (hk : k ≤ m + 1) (c ε r : ℝ)
     {H : Type} [TopologicalSpace H] {M : Type} [TopologicalSpace M] [ChartedSpace H M]
     {I : ModelWithCorners ℝ (MorseModel (m + 1)) H} [I.Boundaryless]
-    [IsManifold I (⊤ : WithTop ℕ∞) M] [T2Space M] {f : M → ℝ}
+    [IsManifold I (↑(⊤ : ℕ∞) : WithTop ℕ∞) M] [T2Space M] {f : M → ℝ}
     (data : MorseChart (m + 1) k hk c I f)
     (hε : 0 < ε) (hεr : Real.sqrt (2 * ε + 2 * r ^ 2) ≤ data.R)
     (hεr' : Real.sqrt (2 * ε + 2 * r ^ 2) < data.smoothRadius)
@@ -4514,7 +4514,7 @@ structure MorseSmoothAttachingEmbedding {m k : ℕ} (hk : k ≤ m + 1) (c ε r :
 noncomputable def morseSmoothAttachingEmbedding {m k : ℕ} (hk : k ≤ m + 1) (c ε r : ℝ)
     {H : Type} [TopologicalSpace H] {M : Type} [TopologicalSpace M] [ChartedSpace H M]
     {I : ModelWithCorners ℝ (MorseModel (m + 1)) H} [I.Boundaryless]
-    [IsManifold I (⊤ : WithTop ℕ∞) M] [T2Space M] {f : M → ℝ}
+    [IsManifold I (↑(⊤ : ℕ∞) : WithTop ℕ∞) M] [T2Space M] {f : M → ℝ}
     (data : MorseChart (m + 1) k hk c I f)
     (hε : 0 < ε) (hr : r ≠ 0) (hεr : Real.sqrt (2 * ε + 2 * r ^ 2) ≤ data.R)
     (hεr' : Real.sqrt (2 * ε + 2 * r ^ 2) < data.smoothRadius)
@@ -7959,7 +7959,7 @@ theorem continuous_morseCollarLevelMap {m k : ℕ} (hk : k ≤ m + 1) (c ε r η
 theorem morseCollarFlow_levelValue {n : ℕ} {H : Type} [TopologicalSpace H] {M : Type}
     [TopologicalSpace M] [ChartedSpace H M] [T2Space M]
     (I : ModelWithCorners ℝ (MorseModel n) H) [I.Boundaryless]
-    [IsManifold I (⊤ : WithTop ℕ∞) M] (f : M → ℝ) (c ε r η : ℝ)
+    [IsManifold I (↑(⊤ : ℕ∞) : WithTop ℕ∞) M] (f : M → ℝ) (c ε r η : ℝ)
     (hε : 0 < ε)
     (hη : 0 ≤ η)
     (hf : ContMDiff I 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞) f)
@@ -8041,7 +8041,7 @@ theorem morseCollarFlow_levelValue {n : ℕ} {H : Type} [TopologicalSpace H] {M 
 theorem morseCollarFlow_valueOnStrip {n : ℕ} {H : Type} [TopologicalSpace H] {M : Type}
     [TopologicalSpace M] [ChartedSpace H M] [T2Space M]
     (I : ModelWithCorners ℝ (MorseModel n) H) [I.Boundaryless]
-    [IsManifold I (⊤ : WithTop ℕ∞) M] (f : M → ℝ) (c ε r η : ℝ)
+    [IsManifold I (↑(⊤ : ℕ∞) : WithTop ℕ∞) M] (f : M → ℝ) (c ε r η : ℝ)
     (hf : ContMDiff I 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞) f)
     (v : (x : M) → TangentSpace I x)
     (hv : ContMDiff I (I.prod 𝓘(ℝ, MorseModel n)) ∞
@@ -8193,7 +8193,7 @@ theorem morseCollarLevelMap_nonpos_of_top_zero {m k : ℕ} (hk : k ≤ m + 1) (c
 noncomputable def morseCollarMap {m k : ℕ} (hk : k ≤ m + 1) (c ε r η : ℝ)
     {H : Type} [TopologicalSpace H] {M : Type} [TopologicalSpace M] [ChartedSpace H M] [T2Space M]
     {I : ModelWithCorners ℝ (MorseModel (m + 1)) H} [I.Boundaryless]
-    [IsManifold I (⊤ : WithTop ℕ∞) M] {f : M → ℝ}
+    [IsManifold I (↑(⊤ : ℕ∞) : WithTop ℕ∞) M] {f : M → ℝ}
     {f₀ : M → ℝ} (data : MorseChart (m + 1) k hk c I f₀)
     (hf : ContMDiff I 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞) f)
     (hε : 0 < ε) (hη : 0 ≤ η)
@@ -8224,7 +8224,7 @@ noncomputable def morseCollarMap {m k : ℕ} (hk : k ≤ m + 1) (c ε r η : ℝ
 theorem morseCollarMap_of_low {m k : ℕ} (hk : k ≤ m + 1) (c ε r η : ℝ)
     {H : Type} [TopologicalSpace H] {M : Type} [TopologicalSpace M] [ChartedSpace H M] [T2Space M]
     {I : ModelWithCorners ℝ (MorseModel (m + 1)) H} [I.Boundaryless]
-    [IsManifold I (⊤ : WithTop ℕ∞) M] {f : M → ℝ}
+    [IsManifold I (↑(⊤ : ℕ∞) : WithTop ℕ∞) M] {f : M → ℝ}
     {f₀ : M → ℝ} (data : MorseChart (m + 1) k hk c I f₀)
     (hf : ContMDiff I 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞) f)
     (hε : 0 < ε) (hη : 0 ≤ η)
@@ -8246,7 +8246,7 @@ theorem morseCollarMap_of_low {m k : ℕ} (hk : k ≤ m + 1) (c ε r η : ℝ)
 theorem morseCollarMap_of_strip {m k : ℕ} (hk : k ≤ m + 1) (c ε r η : ℝ)
     {H : Type} [TopologicalSpace H] {M : Type} [TopologicalSpace M] [ChartedSpace H M] [T2Space M]
     {I : ModelWithCorners ℝ (MorseModel (m + 1)) H} [I.Boundaryless]
-    [IsManifold I (⊤ : WithTop ℕ∞) M] {f : M → ℝ}
+    [IsManifold I (↑(⊤ : ℕ∞) : WithTop ℕ∞) M] {f : M → ℝ}
     {f₀ : M → ℝ} (data : MorseChart (m + 1) k hk c I f₀)
     (hf : ContMDiff I 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞) f)
     (hε : 0 < ε) (hη : 0 ≤ η)
@@ -8306,7 +8306,7 @@ theorem morseCollarMap_of_strip {m k : ℕ} (hk : k ≤ m + 1) (c ε r η : ℝ)
 theorem morseCollarMap_value {m k : ℕ} (hk : k ≤ m + 1) (c ε r η : ℝ)
     {H : Type} [TopologicalSpace H] {M : Type} [TopologicalSpace M] [ChartedSpace H M] [T2Space M]
     {I : ModelWithCorners ℝ (MorseModel (m + 1)) H} [I.Boundaryless]
-    [IsManifold I (⊤ : WithTop ℕ∞) M] {f : M → ℝ}
+    [IsManifold I (↑(⊤ : ℕ∞) : WithTop ℕ∞) M] {f : M → ℝ}
     {f₀ : M → ℝ} (data : MorseChart (m + 1) k hk c I f₀)
     (hf : ContMDiff I 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞) f)
     (hε : 0 < ε) (hη : 0 < η)
@@ -8373,7 +8373,7 @@ theorem morseCollarMap_value {m k : ℕ} (hk : k ≤ m + 1) (c ε r η : ℝ)
 theorem morseCollarMap_mem_lower_of_top_zero {m k : ℕ} (hk : k ≤ m + 1) (c ε r η : ℝ)
     {H : Type} [TopologicalSpace H] {M : Type} [TopologicalSpace M] [ChartedSpace H M] [T2Space M]
     {I : ModelWithCorners ℝ (MorseModel (m + 1)) H} [I.Boundaryless]
-    [IsManifold I (⊤ : WithTop ℕ∞) M] {f : M → ℝ}
+    [IsManifold I (↑(⊤ : ℕ∞) : WithTop ℕ∞) M] {f : M → ℝ}
     {f₀ : M → ℝ} (data : MorseChart (m + 1) k hk c I f₀)
     (hf : ContMDiff I 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞) f)
     (hε : 0 < ε) (hη : 0 < η)
@@ -8415,7 +8415,7 @@ theorem morseCollarMap_mem_lower_of_top_zero {m k : ℕ} (hk : k ≤ m + 1) (c �
 theorem morseCollarMap_mem_handle_of_chart {m k : ℕ} (hk : k ≤ m + 1) (c ε r η : ℝ)
     {H : Type} [TopologicalSpace H] {M : Type} [TopologicalSpace M] [ChartedSpace H M] [T2Space M]
     {I : ModelWithCorners ℝ (MorseModel (m + 1)) H} [I.Boundaryless]
-    [IsManifold I (⊤ : WithTop ℕ∞) M] {f : M → ℝ}
+    [IsManifold I (↑(⊤ : ℕ∞) : WithTop ℕ∞) M] {f : M → ℝ}
     {f₀ : M → ℝ} (data : MorseChart (m + 1) k hk c I f₀)
     (hf : ContMDiff I 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞) f)
     (hε : 0 < ε) (hη : 0 < η)
@@ -8540,7 +8540,7 @@ theorem morseCollarMap_mem_handle_of_chart {m k : ℕ} (hk : k ≤ m + 1) (c ε 
 theorem morseCollarMap_mem_sharpUnion {m k : ℕ} (hk : k ≤ m + 1) (c ε r η : ℝ)
     {H : Type} [TopologicalSpace H] {M : Type} [TopologicalSpace M] [ChartedSpace H M] [T2Space M]
     {I : ModelWithCorners ℝ (MorseModel (m + 1)) H} [I.Boundaryless]
-    [IsManifold I (⊤ : WithTop ℕ∞) M] {f : M → ℝ}
+    [IsManifold I (↑(⊤ : ℕ∞) : WithTop ℕ∞) M] {f : M → ℝ}
     {f₀ : M → ℝ} (data : MorseChart (m + 1) k hk c I f₀)
     (hf : ContMDiff I 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞) f)
     (hε : 0 < ε) (hη : 0 < η) (hr : 0 < r)
@@ -8707,7 +8707,7 @@ theorem modelFlow_isMIntegralCurveOn {n k : ℕ} (hk : k ≤ n) (y : MorseModel 
 theorem morseFlowInChart {m k : ℕ} (hk : k ≤ m + 1) (c : ℝ)
     {H : Type} [TopologicalSpace H] {M : Type} [TopologicalSpace M] [ChartedSpace H M] [T2Space M]
     {I : ModelWithCorners ℝ (MorseModel (m + 1)) H} [I.Boundaryless]
-    [IsManifold I (⊤ : WithTop ℕ∞) M] {f : M → ℝ}
+    [IsManifold I (↑(⊤ : ℕ∞) : WithTop ℕ∞) M] {f : M → ℝ}
     (data : MorseChart (m + 1) k hk c I f)
     (v : (x : M) → TangentSpace I x)
     (hv : ContMDiff I (I.prod 𝓘(ℝ, MorseModel (m + 1))) ∞
@@ -9516,7 +9516,7 @@ theorem contDiff_morseFarExpandLevelInverse {c ε δ ρ ρ' : ℝ} (hρ : 0 < ρ
 noncomputable def morseFarExpandMapInverse {m : ℕ} (c ε δ ρ ρ' : ℝ) {H : Type}
     [TopologicalSpace H] {M : Type} [TopologicalSpace M] [ChartedSpace H M] [T2Space M]
     {I : ModelWithCorners ℝ (MorseModel (m + 1)) H} [I.Boundaryless]
-    [IsManifold I (⊤ : WithTop ℕ∞) M] (f : M → ℝ)
+    [IsManifold I (↑(⊤ : ℕ∞) : WithTop ℕ∞) M] (f : M → ℝ)
     (v : (x : M) → TangentSpace I x)
     (hv : ContMDiff I (I.prod 𝓘(ℝ, MorseModel (m + 1))) (↑(⊤ : ℕ∞) : WithTop ℕ∞)
       (fun x : M => (⟨x, v x⟩ : TangentBundle I M)))
@@ -9529,7 +9529,7 @@ noncomputable def morseFarExpandMapInverse {m : ℕ} (c ε δ ρ ρ' : ℝ) {H :
 theorem contMDiff_morseFarExpandMapInverse {m : ℕ} (c ε δ ρ ρ' : ℝ) {H : Type}
     [TopologicalSpace H] {M : Type} [TopologicalSpace M] [ChartedSpace H M] [T2Space M]
     {I : ModelWithCorners ℝ (MorseModel (m + 1)) H} [I.Boundaryless]
-    [IsManifold I (⊤ : WithTop ℕ∞) M] (f : M → ℝ)
+    [IsManifold I (↑(⊤ : ℕ∞) : WithTop ℕ∞) M] (f : M → ℝ)
     (hf : ContMDiff I 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞) f)
     (v : (x : M) → TangentSpace I x)
     (hv : ContMDiff I (I.prod 𝓘(ℝ, MorseModel (m + 1))) (↑(⊤ : ℕ∞) : WithTop ℕ∞)
@@ -9574,7 +9574,7 @@ theorem contMDiff_morseFarExpandMapInverse {m : ℕ} (c ε δ ρ ρ' : ℝ) {H :
 theorem morseFarExpandMapInverse_value {m : ℕ} (c ε r δ ρ ρ' : ℝ) {H : Type}
     [TopologicalSpace H] {M : Type} [TopologicalSpace M] [ChartedSpace H M] [T2Space M]
     {I : ModelWithCorners ℝ (MorseModel (m + 1)) H} [I.Boundaryless]
-    [IsManifold I (⊤ : WithTop ℕ∞) M] {f : M → ℝ}
+    [IsManifold I (↑(⊤ : ℕ∞) : WithTop ℕ∞) M] {f : M → ℝ}
     (hf : ContMDiff I 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞) f)
     (hε : 0 < ε) (hδ : 0 < δ) (hρ : 0 < ρ) (hρ' : 0 < ρ') (hρρ' : ρ + ρ' ≤ δ)
     (v : (x : M) → TangentSpace I x)
@@ -9680,7 +9680,7 @@ theorem morseRoundedExpandTime_interface {m k : ℕ} (hk : k ≤ m + 1) (c ε r 
 theorem morseRoundedCollarMap_value {n : ℕ} (c ε r δ : ℝ)
     {H : Type} [TopologicalSpace H] {M : Type} [TopologicalSpace M] [ChartedSpace H M] [T2Space M]
     {I : ModelWithCorners ℝ (MorseModel n) H} [I.Boundaryless]
-    [IsManifold I (⊤ : WithTop ℕ∞) M] {f : M → ℝ}
+    [IsManifold I (↑(⊤ : ℕ∞) : WithTop ℕ∞) M] {f : M → ℝ}
     (hf : ContMDiff I 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞) f)
     (hε : 0 < ε) (hδ : 0 < δ) (hr2 : r ^ 2 = 2 * ε)
     (v : (x : M) → TangentSpace I x)
@@ -9743,7 +9743,7 @@ theorem morseFarExpandLevel_le_top {c ε δ t ρ : ℝ} (hδ : 0 < δ) (hε : 0 
 theorem morseRoundedCollarMap_mem_upper {n : ℕ} (c ε r δ : ℝ)
     {H : Type} [TopologicalSpace H] {M : Type} [TopologicalSpace M] [ChartedSpace H M] [T2Space M]
     {I : ModelWithCorners ℝ (MorseModel n) H} [I.Boundaryless]
-    [IsManifold I (⊤ : WithTop ℕ∞) M] {f : M → ℝ}
+    [IsManifold I (↑(⊤ : ℕ∞) : WithTop ℕ∞) M] {f : M → ℝ}
     (hf : ContMDiff I 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞) f)
     (hε : 0 < ε) (hδ : 0 < δ) (hr2 : r ^ 2 = 2 * ε)
     (v : (x : M) → TangentSpace I x)
@@ -9768,7 +9768,7 @@ theorem morseRoundedCollarMap_mem_upper {n : ℕ} (c ε r δ : ℝ)
 theorem morseRoundedCollarMapSmooth_value {n : ℕ} (c ε r δ ρ ρ' : ℝ)
     {H : Type} [TopologicalSpace H] {M : Type} [TopologicalSpace M] [ChartedSpace H M] [T2Space M]
     {I : ModelWithCorners ℝ (MorseModel n) H} [I.Boundaryless]
-    [IsManifold I (⊤ : WithTop ℕ∞) M] {f : M → ℝ}
+    [IsManifold I (↑(⊤ : ℕ∞) : WithTop ℕ∞) M] {f : M → ℝ}
     (hf : ContMDiff I 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞) f)
     (hε : 0 < ε) (hδ : 0 < δ) (hρ : 0 < ρ) (hρ' : 0 < ρ')
     (hr2 : r ^ 2 = 2 * ε)
@@ -9811,7 +9811,7 @@ theorem morseRoundedCollarMapSmooth_value {n : ℕ} (c ε r δ ρ ρ' : ℝ)
 theorem morseRoundedCollarMapSmooth_mem_upper {n : ℕ} (c ε r δ ρ ρ' : ℝ)
     {H : Type} [TopologicalSpace H] {M : Type} [TopologicalSpace M] [ChartedSpace H M] [T2Space M]
     {I : ModelWithCorners ℝ (MorseModel n) H} [I.Boundaryless]
-    [IsManifold I (⊤ : WithTop ℕ∞) M] {f : M → ℝ}
+    [IsManifold I (↑(⊤ : ℕ∞) : WithTop ℕ∞) M] {f : M → ℝ}
     (hf : ContMDiff I 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞) f)
     (hε : 0 < ε) (hδ : 0 < δ) (hρ : 0 < ρ) (hρ' : 0 < ρ')
     (hr2 : r ^ 2 = 2 * ε)
@@ -9837,7 +9837,7 @@ theorem morseRoundedCollarMapSmooth_mem_upper {n : ℕ} (c ε r δ ρ ρ' : ℝ)
 noncomputable def morseFarExpandMap {m k : ℕ} (hk : k ≤ m + 1) (c ε r δ ε' R₀ R₁ : ℝ)
     {H : Type} [TopologicalSpace H] {M : Type} [TopologicalSpace M] [ChartedSpace H M] [T2Space M]
     {I : ModelWithCorners ℝ (MorseModel (m + 1)) H} [I.Boundaryless]
-    [IsManifold I (⊤ : WithTop ℕ∞) M] {f : M → ℝ}
+    [IsManifold I (↑(⊤ : ℕ∞) : WithTop ℕ∞) M] {f : M → ℝ}
     (data : MorseChart (m + 1) k hk c I f)
     (v : (x : M) → TangentSpace I x)
     (hv : ContMDiff I (I.prod 𝓘(ℝ, MorseModel (m + 1))) ∞
@@ -9850,7 +9850,7 @@ noncomputable def morseFarExpandMap {m k : ℕ} (hk : k ≤ m + 1) (c ε r δ ε
 theorem morseFarExpandMap_value {m k : ℕ} (hk : k ≤ m + 1) (c ε r δ ε' R₀ R₁ : ℝ)
     {H : Type} [TopologicalSpace H] {M : Type} [TopologicalSpace M] [ChartedSpace H M] [T2Space M]
     {I : ModelWithCorners ℝ (MorseModel (m + 1)) H} [I.Boundaryless]
-    [IsManifold I (⊤ : WithTop ℕ∞) M] {f : M → ℝ}
+    [IsManifold I (↑(⊤ : ℕ∞) : WithTop ℕ∞) M] {f : M → ℝ}
     (data : MorseChart (m + 1) k hk c I f)
     (hf : ContMDiff I 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞) f)
     (hε : 0 < ε) (hδ : 0 < δ) (hr2 : r ^ 2 = 2 * ε)
@@ -9920,7 +9920,7 @@ theorem morseFarExpandMap_value {m k : ℕ} (hk : k ≤ m + 1) (c ε r δ ε' R�
 theorem morseFarExpandMap_mem_upper {m k : ℕ} (hk : k ≤ m + 1) (c ε r δ ε' R₀ R₁ : ℝ)
     {H : Type} [TopologicalSpace H] {M : Type} [TopologicalSpace M] [ChartedSpace H M] [T2Space M]
     {I : ModelWithCorners ℝ (MorseModel (m + 1)) H} [I.Boundaryless]
-    [IsManifold I (⊤ : WithTop ℕ∞) M] {f : M → ℝ}
+    [IsManifold I (↑(⊤ : ℕ∞) : WithTop ℕ∞) M] {f : M → ℝ}
     (data : MorseChart (m + 1) k hk c I f)
     (hf : ContMDiff I 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞) f)
     (hε : 0 < ε) (hδ : 0 < δ) (hr2 : r ^ 2 = 2 * ε)
@@ -9955,7 +9955,7 @@ theorem morseFarExpandMap_mem_upper {m k : ℕ} (hk : k ≤ m + 1) (c ε r δ ε
 theorem morseFarExpandMap_deep {m k : ℕ} (hk : k ≤ m + 1) (c ε r δ ε' R₀ R₁ : ℝ)
     {H : Type} [TopologicalSpace H] {M : Type} [TopologicalSpace M] [ChartedSpace H M] [T2Space M]
     {I : ModelWithCorners ℝ (MorseModel (m + 1)) H} [I.Boundaryless]
-    [IsManifold I (⊤ : WithTop ℕ∞) M] {f : M → ℝ}
+    [IsManifold I (↑(⊤ : ℕ∞) : WithTop ℕ∞) M] {f : M → ℝ}
     (data : MorseChart (m + 1) k hk c I f)
     (v : (x : M) → TangentSpace I x)
     (hv : ContMDiff I (I.prod 𝓘(ℝ, MorseModel (m + 1))) ∞
@@ -9968,7 +9968,7 @@ theorem morseFarExpandMap_deep {m k : ℕ} (hk : k ≤ m + 1) (c ε r δ ε' R�
 noncomputable def morseFarExpandMapSmooth {m : ℕ} (c ε δ ρ ρ' : ℝ) {H : Type}
     [TopologicalSpace H] {M : Type} [TopologicalSpace M] [ChartedSpace H M] [T2Space M]
     {I : ModelWithCorners ℝ (MorseModel (m + 1)) H} [I.Boundaryless]
-    [IsManifold I (⊤ : WithTop ℕ∞) M] (f : M → ℝ)
+    [IsManifold I (↑(⊤ : ℕ∞) : WithTop ℕ∞) M] (f : M → ℝ)
     (v : (x : M) → TangentSpace I x)
     (hv : ContMDiff I (I.prod 𝓘(ℝ, MorseModel (m + 1))) (↑(⊤ : ℕ∞) : WithTop ℕ∞)
       (fun x : M => (⟨x, v x⟩ : TangentBundle I M)))
@@ -9979,7 +9979,7 @@ noncomputable def morseFarExpandMapSmooth {m : ℕ} (c ε δ ρ ρ' : ℝ) {H : 
 theorem contMDiff_morseFarExpandMapSmooth {m : ℕ} (c ε δ ρ ρ' : ℝ) {H : Type}
     [TopologicalSpace H] {M : Type} [TopologicalSpace M] [ChartedSpace H M] [T2Space M]
     {I : ModelWithCorners ℝ (MorseModel (m + 1)) H} [I.Boundaryless]
-    [IsManifold I (⊤ : WithTop ℕ∞) M] (f : M → ℝ)
+    [IsManifold I (↑(⊤ : ℕ∞) : WithTop ℕ∞) M] (f : M → ℝ)
     (v : (x : M) → TangentSpace I x)
     (hv : ContMDiff I (I.prod 𝓘(ℝ, MorseModel (m + 1))) (↑(⊤ : ℕ∞) : WithTop ℕ∞)
       (fun x : M => (⟨x, v x⟩ : TangentBundle I M)))
@@ -10018,7 +10018,7 @@ theorem contMDiff_morseFarExpandMapSmooth {m : ℕ} (c ε δ ρ ρ' : ℝ) {H : 
 theorem morseFarExpandMapSmooth_deep {m : ℕ} (c ε δ ρ ρ' : ℝ) {H : Type}
     [TopologicalSpace H] {M : Type} [TopologicalSpace M] [ChartedSpace H M] [T2Space M]
     {I : ModelWithCorners ℝ (MorseModel (m + 1)) H} [I.Boundaryless]
-    [IsManifold I (⊤ : WithTop ℕ∞) M] (f : M → ℝ)
+    [IsManifold I (↑(⊤ : ℕ∞) : WithTop ℕ∞) M] (f : M → ℝ)
     (v : (x : M) → TangentSpace I x)
     (hv : ContMDiff I (I.prod 𝓘(ℝ, MorseModel (m + 1))) (↑(⊤ : ℕ∞) : WithTop ℕ∞)
       (fun x : M => (⟨x, v x⟩ : TangentBundle I M)))
@@ -10032,7 +10032,7 @@ theorem morseFarExpandMapSmooth_deep {m : ℕ} (c ε δ ρ ρ' : ℝ) {H : Type}
 theorem morseFarExpandMapSmooth_value {m : ℕ} (c ε r δ ρ ρ' : ℝ) {H : Type}
     [TopologicalSpace H] {M : Type} [TopologicalSpace M] [ChartedSpace H M] [T2Space M]
     {I : ModelWithCorners ℝ (MorseModel (m + 1)) H} [I.Boundaryless]
-    [IsManifold I (⊤ : WithTop ℕ∞) M] {f : M → ℝ}
+    [IsManifold I (↑(⊤ : ℕ∞) : WithTop ℕ∞) M] {f : M → ℝ}
     (hf : ContMDiff I 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞) f)
     (hε : 0 < ε) (hδ : 0 < δ) (hρ : 0 < ρ) (hρ' : 0 < ρ') (hr2 : r ^ 2 = 2 * ε)
     (v : (x : M) → TangentSpace I x)
@@ -10055,7 +10055,7 @@ theorem morseFarExpandMapSmooth_value {m : ℕ} (c ε r δ ρ ρ' : ℝ) {H : Ty
 theorem morseFarExpandMapSmooth_mem_upper {m : ℕ} (c ε r δ ρ ρ' : ℝ) {H : Type}
     [TopologicalSpace H] {M : Type} [TopologicalSpace M] [ChartedSpace H M] [T2Space M]
     {I : ModelWithCorners ℝ (MorseModel (m + 1)) H} [I.Boundaryless]
-    [IsManifold I (⊤ : WithTop ℕ∞) M] {f : M → ℝ}
+    [IsManifold I (↑(⊤ : ℕ∞) : WithTop ℕ∞) M] {f : M → ℝ}
     (hf : ContMDiff I 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞) f)
     (hε : 0 < ε) (hδ : 0 < δ) (hρ : 0 < ρ) (hρ' : 0 < ρ') (hr2 : r ^ 2 = 2 * ε)
     (v : (x : M) → TangentSpace I x)
@@ -10084,7 +10084,7 @@ theorem morseFarExpandMapSmooth_mem_upper {m : ℕ} (c ε r δ ρ ρ' : ℝ) {H 
 theorem morseFarExpandMapSmooth_left_inv {m : ℕ} (c ε r δ ρ ρ' : ℝ) {H : Type}
     [TopologicalSpace H] {M : Type} [TopologicalSpace M] [ChartedSpace H M] [T2Space M]
     {I : ModelWithCorners ℝ (MorseModel (m + 1)) H} [I.Boundaryless]
-    [IsManifold I (⊤ : WithTop ℕ∞) M] {f : M → ℝ}
+    [IsManifold I (↑(⊤ : ℕ∞) : WithTop ℕ∞) M] {f : M → ℝ}
     (hf : ContMDiff I 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞) f)
     (hε : 0 < ε) (hδ : 0 < δ) (hρ : 0 < ρ) (hρ' : 0 < ρ') (hρρ' : ρ + ρ' ≤ δ)
     (v : (x : M) → TangentSpace I x)
@@ -10139,7 +10139,7 @@ theorem morseFarExpandMapSmooth_left_inv {m : ℕ} (c ε r δ ρ ρ' : ℝ) {H :
 theorem morseFarExpandMapInverse_left_inv {m : ℕ} (c ε r δ ρ ρ' : ℝ) {H : Type}
     [TopologicalSpace H] {M : Type} [TopologicalSpace M] [ChartedSpace H M] [T2Space M]
     {I : ModelWithCorners ℝ (MorseModel (m + 1)) H} [I.Boundaryless]
-    [IsManifold I (⊤ : WithTop ℕ∞) M] {f : M → ℝ}
+    [IsManifold I (↑(⊤ : ℕ∞) : WithTop ℕ∞) M] {f : M → ℝ}
     (hf : ContMDiff I 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞) f)
     (hε : 0 < ε) (hδ : 0 < δ) (hρ : 0 < ρ) (hρ' : 0 < ρ') (hr2 : r ^ 2 = 2 * ε)
     (hρρ' : ρ + ρ' ≤ δ)
@@ -10213,7 +10213,7 @@ theorem morseFarExpandMapInverse_left_inv {m : ℕ} (c ε r δ ρ ρ' : ℝ) {H 
 theorem morseFarExpandMapInverse_mem_lower {m : ℕ} (c ε r δ ρ ρ' : ℝ) {H : Type}
     [TopologicalSpace H] {M : Type} [TopologicalSpace M] [ChartedSpace H M] [T2Space M]
     {I : ModelWithCorners ℝ (MorseModel (m + 1)) H} [I.Boundaryless]
-    [IsManifold I (⊤ : WithTop ℕ∞) M] {f : M → ℝ}
+    [IsManifold I (↑(⊤ : ℕ∞) : WithTop ℕ∞) M] {f : M → ℝ}
     (hf : ContMDiff I 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞) f)
     (hε : 0 < ε) (hδ : 0 < δ) (hρ : 0 < ρ) (hρ' : 0 < ρ') (hr2 : r ^ 2 = 2 * ε)
     (hρρ' : ρ + ρ' ≤ δ)
@@ -10239,7 +10239,7 @@ theorem morseFarExpandMapInverse_mem_lower {m : ℕ} (c ε r δ ρ ρ' : ℝ) {H
 theorem morseFarExpandMapSmooth_boundary {m : ℕ} (c ε r δ ρ ρ' : ℝ) {H : Type}
     [TopologicalSpace H] {M : Type} [TopologicalSpace M] [ChartedSpace H M] [T2Space M]
     {I : ModelWithCorners ℝ (MorseModel (m + 1)) H} [I.Boundaryless]
-    [IsManifold I (⊤ : WithTop ℕ∞) M] {f : M → ℝ}
+    [IsManifold I (↑(⊤ : ℕ∞) : WithTop ℕ∞) M] {f : M → ℝ}
     (hf : ContMDiff I 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞) f)
     (hε : 0 < ε) (hδ : 0 < δ) (hρ : 0 < ρ) (hρ' : 0 < ρ') (hr2 : r ^ 2 = 2 * ε)
     (hρρ' : ρ + ρ' ≤ δ)
@@ -10268,7 +10268,7 @@ theorem morseFarExpandMapSmooth_boundary {m : ℕ} (c ε r δ ρ ρ' : ℝ) {H :
 theorem morseFarExpandMapSmooth_strict {m : ℕ} (c ε r δ ρ ρ' : ℝ) {H : Type}
     [TopologicalSpace H] {M : Type} [TopologicalSpace M] [ChartedSpace H M] [T2Space M]
     {I : ModelWithCorners ℝ (MorseModel (m + 1)) H} [I.Boundaryless]
-    [IsManifold I (⊤ : WithTop ℕ∞) M] {f : M → ℝ}
+    [IsManifold I (↑(⊤ : ℕ∞) : WithTop ℕ∞) M] {f : M → ℝ}
     (hf : ContMDiff I 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞) f)
     (hε : 0 < ε) (hδ : 0 < δ) (hρ : 0 < ρ) (hρ' : 0 < ρ') (hr2 : r ^ 2 = 2 * ε)
     (hρρ' : ρ + ρ' ≤ δ)
@@ -10303,7 +10303,7 @@ theorem morseFarExpandMapSmooth_strict {m : ℕ} (c ε r δ ρ ρ' : ℝ) {H : T
 theorem morseFarExpandMapInverse_boundary {m : ℕ} (c ε r δ ρ ρ' : ℝ) {H : Type}
     [TopologicalSpace H] {M : Type} [TopologicalSpace M] [ChartedSpace H M] [T2Space M]
     {I : ModelWithCorners ℝ (MorseModel (m + 1)) H} [I.Boundaryless]
-    [IsManifold I (⊤ : WithTop ℕ∞) M] {f : M → ℝ}
+    [IsManifold I (↑(⊤ : ℕ∞) : WithTop ℕ∞) M] {f : M → ℝ}
     (hf : ContMDiff I 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞) f)
     (hε : 0 < ε) (hδ : 0 < δ) (hρ : 0 < ρ) (hρ' : 0 < ρ') (hr2 : r ^ 2 = 2 * ε)
     (hρρ' : ρ + ρ' ≤ δ)
@@ -10344,7 +10344,7 @@ theorem morseFarExpandMapInverse_boundary {m : ℕ} (c ε r δ ρ ρ' : ℝ) {H 
 theorem morseFarExpandMapInverse_strict {m : ℕ} (c ε r δ ρ ρ' : ℝ) {H : Type}
     [TopologicalSpace H] {M : Type} [TopologicalSpace M] [ChartedSpace H M] [T2Space M]
     {I : ModelWithCorners ℝ (MorseModel (m + 1)) H} [I.Boundaryless]
-    [IsManifold I (⊤ : WithTop ℕ∞) M] {f : M → ℝ}
+    [IsManifold I (↑(⊤ : ℕ∞) : WithTop ℕ∞) M] {f : M → ℝ}
     (hf : ContMDiff I 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞) f)
     (hε : 0 < ε) (hδ : 0 < δ) (hρ : 0 < ρ) (hρ' : 0 < ρ') (hr2 : r ^ 2 = 2 * ε)
     (hρρ' : ρ + ρ' ≤ δ)
@@ -10390,7 +10390,7 @@ theorem morseFarExpandMapInverse_strict {m : ℕ} (c ε r δ ρ ρ' : ℝ) {H : 
 noncomputable def morseFarExpandMapSmoothSublevelDiffeomorph {m : ℕ} (c ε r δ ρ ρ' : ℝ) {H : Type}
     [TopologicalSpace H] {M : Type} [TopologicalSpace M] [ChartedSpace H M] [T2Space M]
     {I : ModelWithCorners ℝ (MorseModel (m + 1)) H} [I.Boundaryless]
-    [IsManifold I (⊤ : WithTop ℕ∞) M] {f : M → ℝ}
+    [IsManifold I (↑(⊤ : ℕ∞) : WithTop ℕ∞) M] {f : M → ℝ}
     (hf : ContMDiff I 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞) f)
     (hreg₁ : ∀ x : M, f x = c - ε → ¬ IsCriticalPointAt I f x)
     (hreg₂ : ∀ x : M, f x = c + r ^ 2 / 2 → ¬ IsCriticalPointAt I f x)
@@ -10612,7 +10612,7 @@ theorem morseFarExpandTime_cut_bounds {c ε δ : ℝ} (hδ : 0 < δ) (hε : 0 < 
 theorem morseFarCutoff_mono_on_orbit_expand {m k : ℕ} (hk : k ≤ m + 1) (c ε r ε' R₀ R₁ : ℝ)
     {H : Type} [TopologicalSpace H] {M : Type} [TopologicalSpace M] [ChartedSpace H M] [T2Space M]
     {I : ModelWithCorners ℝ (MorseModel (m + 1)) H} [I.Boundaryless]
-    [IsManifold I (⊤ : WithTop ℕ∞) M] {f : M → ℝ}
+    [IsManifold I (↑(⊤ : ℕ∞) : WithTop ℕ∞) M] {f : M → ℝ}
     (data : MorseChart (m + 1) k hk c I f)
     (hε : 0 < ε) (hε' : 0 < ε') (hR : R₀ < R₁) (hRle : data.smoothRadius ≤ data.R)
     (hRbig : data.smoothRadius ^ 2 + 4 * ε ≤ data.R ^ 2)
@@ -10680,7 +10680,7 @@ theorem morseFarCutoff_mono_on_orbit_expand {m k : ℕ} (hk : k ≤ m + 1) (c ε
 theorem morseFarExpandMap_injective {m k : ℕ} (hk : k ≤ m + 1) (c ε r δ ε' R₀ R₁ : ℝ)
     {H : Type} [TopologicalSpace H] {M : Type} [TopologicalSpace M] [ChartedSpace H M] [T2Space M]
     {I : ModelWithCorners ℝ (MorseModel (m + 1)) H} [I.Boundaryless]
-    [IsManifold I (⊤ : WithTop ℕ∞) M] {f : M → ℝ}
+    [IsManifold I (↑(⊤ : ℕ∞) : WithTop ℕ∞) M] {f : M → ℝ}
     (data : MorseChart (m + 1) k hk c I f)
     (hf : ContMDiff I 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞) f)
     (hε : 0 < ε) (hδ : 0 < δ) (hr2 : r ^ 2 = 2 * ε)
@@ -10899,7 +10899,7 @@ theorem morseHandlePoint_f_mem {m k : ℕ} (hk : k ≤ m + 1) (c ε r : ℝ)
 noncomputable def morseCollarLowerLevelProjection {m : ℕ} (c ε r η : ℝ)
     {H : Type} [TopologicalSpace H] {M : Type} [TopologicalSpace M] [ChartedSpace H M] [T2Space M]
     {I : ModelWithCorners ℝ (MorseModel (m + 1)) H} [I.Boundaryless]
-    [IsManifold I (⊤ : WithTop ℕ∞) M] {f : M → ℝ}
+    [IsManifold I (↑(⊤ : ℕ∞) : WithTop ℕ∞) M] {f : M → ℝ}
     (hf : ContMDiff I 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞) f)
     (hε : 0 < ε) (hη : 0 < η)
     (v : (x : M) → TangentSpace I x)
@@ -10919,7 +10919,7 @@ noncomputable def morseCollarLowerLevelProjection {m : ℕ} (c ε r η : ℝ)
 theorem morseCollarTopLevel_ge_flowTime_of_handlePoint {m k : ℕ} (hk : k ≤ m + 1) (c ε r η : ℝ)
     {H : Type} [TopologicalSpace H] {M : Type} [TopologicalSpace M] [ChartedSpace H M] [T2Space M]
     {I : ModelWithCorners ℝ (MorseModel (m + 1)) H} [I.Boundaryless]
-    [IsManifold I (⊤ : WithTop ℕ∞) M] {f : M → ℝ}
+    [IsManifold I (↑(⊤ : ℕ∞) : WithTop ℕ∞) M] {f : M → ℝ}
     (data : MorseChart (m + 1) k hk c I f)
     (hf : ContMDiff I 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞) f)
     (hε : 0 < ε) (hη : 0 < η) (hr : 0 < r) (hr2 : r ^ 2 = 2 * ε)
@@ -18479,7 +18479,7 @@ noncomputable def morseRoundedSublevelChartedSpace {m k : ℕ} (hk : k ≤ m + 1
     (c ε r δ R₀ R₁ R₁' : ℝ) {H : Type} [TopologicalSpace H] {M : Type} [TopologicalSpace M]
     [ChartedSpace H M] [T2Space M]
     {I : ModelWithCorners ℝ (MorseModel (m + 1)) H} [I.Boundaryless]
-    [IsManifold I (⊤ : WithTop ℕ∞) M] {f : M → ℝ}
+    [IsManifold I (↑(⊤ : ℕ∞) : WithTop ℕ∞) M] {f : M → ℝ}
     (data : MorseChart (m + 1) k hk c I f)
     (hε : 0 < ε) (hδ : 0 < δ) (hδr : δ < r ^ 2) (hR : R₀ < R₁) (hR0 : 0 ≤ R₀)
     (hbig : 2 * (r ^ 2 + 2 * ε + δ) ≤ R₀ ^ 2)
@@ -18497,7 +18497,7 @@ theorem morseRoundedSublevelIsManifold {m k : ℕ} (hk : k ≤ m + 1)
     (c ε r δ R₀ R₁ R₁' : ℝ) {H : Type} [TopologicalSpace H] {M : Type} [TopologicalSpace M]
     [ChartedSpace H M] [T2Space M]
     {I : ModelWithCorners ℝ (MorseModel (m + 1)) H} [I.Boundaryless]
-    [IsManifold I (⊤ : WithTop ℕ∞) M] {f : M → ℝ}
+    [IsManifold I (↑(⊤ : ℕ∞) : WithTop ℕ∞) M] {f : M → ℝ}
     (data : MorseChart (m + 1) k hk c I f)
     (hε : 0 < ε) (hδ : 0 < δ) (hδr : δ < r ^ 2) (hR : R₀ < R₁) (hR0 : 0 ≤ R₀)
     (hbig : 2 * (r ^ 2 + 2 * ε + δ) ≤ R₀ ^ 2)
@@ -18541,7 +18541,7 @@ theorem handleRoundEmbedding_mem_roundedSublevel {m k : ℕ} (hk : k ≤ m + 1)
 theorem contMDiff_handleRoundEmbedding_sublevel {m k : ℕ} (hk : k ≤ m + 1)
     (c ε r δ θ R₀' R₁' R₁'' : ℝ) {H : Type} [TopologicalSpace H] {M : Type} [TopologicalSpace M]
     [T2Space M] [ChartedSpace H M] {I : ModelWithCorners ℝ (MorseModel (m + 1)) H}
-    [I.Boundaryless] [IsManifold I (⊤ : WithTop ℕ∞) M] {f : M → ℝ}
+    [I.Boundaryless] [IsManifold I (↑(⊤ : ℕ∞) : WithTop ℕ∞) M] {f : M → ℝ}
     (data : MorseChart (m + 1) k hk c I f)
     (hε : 0 < ε) (hδ : 0 < δ) (hθ : 0 < θ) (hδr : δ < r ^ 2) (hθr : θ < r ^ 2)
     (hr : 0 < r) (hεr : Real.sqrt (2 * ε + 2 * r ^ 2) ≤ data.R)
@@ -18591,7 +18591,7 @@ theorem contMDiff_handleRoundEmbedding_sublevel {m k : ℕ} (hk : k ≤ m + 1)
 theorem contMDiff_handleRoundEmbedding_sublevel_zero {m : ℕ}
     (c ε r δ θ R₀' R₁' R₁'' : ℝ) {H : Type} [TopologicalSpace H] {M : Type} [TopologicalSpace M]
     [T2Space M] [ChartedSpace H M] {I : ModelWithCorners ℝ (MorseModel (m + 1)) H}
-    [I.Boundaryless] [IsManifold I (⊤ : WithTop ℕ∞) M] {f : M → ℝ}
+    [I.Boundaryless] [IsManifold I (↑(⊤ : ℕ∞) : WithTop ℕ∞) M] {f : M → ℝ}
     (data : MorseChart (m + 1) 0 (Nat.zero_le (m + 1)) c I f)
     (hε : 0 < ε) (hδ : 0 < δ) (hθ : 0 < θ) (hδr : δ < r ^ 2) (hθr : θ < r ^ 2)
     (hr : 0 < r) (hεr : Real.sqrt (2 * ε + 2 * r ^ 2) ≤ data.R)
@@ -18640,7 +18640,7 @@ theorem contMDiff_handleRoundEmbedding_sublevel_zero {m : ℕ}
 theorem contMDiff_handleRoundEmbedding_sublevel_top {m : ℕ}
     (c ε r δ θ R₀' R₁' R₁'' : ℝ) {H : Type} [TopologicalSpace H] {M : Type} [TopologicalSpace M]
     [T2Space M] [ChartedSpace H M] {I : ModelWithCorners ℝ (MorseModel (m + 1)) H}
-    [I.Boundaryless] [IsManifold I (⊤ : WithTop ℕ∞) M] {f : M → ℝ}
+    [I.Boundaryless] [IsManifold I (↑(⊤ : ℕ∞) : WithTop ℕ∞) M] {f : M → ℝ}
     (data : MorseChart (m + 1) (m + 1) (le_rfl : m + 1 ≤ m + 1) c I f)
     (hε : 0 < ε) (hδ : 0 < δ) (hθ : 0 < θ) (hδr : δ < r ^ 2) (hθr : θ < r ^ 2)
     (hr : 0 < r) (hεr : Real.sqrt (2 * ε + 2 * r ^ 2) ≤ data.R)
@@ -18749,7 +18749,7 @@ noncomputable def morseHandleAdjunctionChartedSpace {m k : ℕ} (hk : k ≤ m + 
     (c ε r δ θ R₀ R₀' R₁' R₁'' : ℝ) {H : Type} [TopologicalSpace H] {M : Type} [TopologicalSpace M]
     [ChartedSpace H M] [T2Space M]
     {I : ModelWithCorners ℝ (MorseModel (m + 1)) H} [I.Boundaryless]
-    [IsManifold I (⊤ : WithTop ℕ∞) M] {f : M → ℝ}
+    [IsManifold I (↑(⊤ : ℕ∞) : WithTop ℕ∞) M] {f : M → ℝ}
     (data : MorseChart (m + 1) k hk c I f)
     (hε : 0 < ε) (hδ : 0 < δ) (hθ : 0 < θ) (hδr : δ < r ^ 2) (hθr : θ < r ^ 2)
     (hr : 0 < r)
@@ -18930,7 +18930,7 @@ theorem contMDiff_morseHandleAdjunctionCell {m k : ℕ} (hk : k ≤ m + 1)
     (c ε r δ θ R₀ R₀' R₁' R₁'' : ℝ) {H : Type} [TopologicalSpace H] {M : Type} [TopologicalSpace M]
     [ChartedSpace H M] [T2Space M]
     {I : ModelWithCorners ℝ (MorseModel (m + 1)) H} [I.Boundaryless]
-    [IsManifold I (⊤ : WithTop ℕ∞) M] {f : M → ℝ}
+    [IsManifold I (↑(⊤ : ℕ∞) : WithTop ℕ∞) M] {f : M → ℝ}
     (data : MorseChart (m + 1) k hk c I f)
     (hε : 0 < ε) (hδ : 0 < δ) (hθ : 0 < θ) (hδr : δ < r ^ 2) (hθr : θ < r ^ 2)
     (hr : 0 < r) (hεr : Real.sqrt (2 * ε + 2 * r ^ 2) ≤ data.R)
@@ -19005,7 +19005,7 @@ theorem contMDiff_morseHandleAdjunctionCell_zero {m : ℕ}
     (c ε r δ θ R₀ R₀' R₁' R₁'' : ℝ) {H : Type} [TopologicalSpace H] {M : Type} [TopologicalSpace M]
     [ChartedSpace H M] [T2Space M]
     {I : ModelWithCorners ℝ (MorseModel (m + 1)) H} [I.Boundaryless]
-    [IsManifold I (⊤ : WithTop ℕ∞) M] {f : M → ℝ}
+    [IsManifold I (↑(⊤ : ℕ∞) : WithTop ℕ∞) M] {f : M → ℝ}
     (data : MorseChart (m + 1) 0 (Nat.zero_le (m + 1)) c I f)
     (hε : 0 < ε) (hδ : 0 < δ) (hθ : 0 < θ) (hδr : δ < r ^ 2) (hθr : θ < r ^ 2)
     (hr : 0 < r) (hεr : Real.sqrt (2 * ε + 2 * r ^ 2) ≤ data.R)
@@ -19092,7 +19092,7 @@ theorem contMDiff_morseHandleAdjunctionCell_top {m : ℕ}
     (c ε r δ θ R₀ R₀' R₁' R₁'' : ℝ) {H : Type} [TopologicalSpace H] {M : Type} [TopologicalSpace M]
     [ChartedSpace H M] [T2Space M]
     {I : ModelWithCorners ℝ (MorseModel (m + 1)) H} [I.Boundaryless]
-    [IsManifold I (⊤ : WithTop ℕ∞) M] {f : M → ℝ}
+    [IsManifold I (↑(⊤ : ℕ∞) : WithTop ℕ∞) M] {f : M → ℝ}
     (data : MorseChart (m + 1) (m + 1) (le_rfl : m + 1 ≤ m + 1) c I f)
     (hε : 0 < ε) (hδ : 0 < δ) (hθ : 0 < θ) (hδr : δ < r ^ 2) (hθr : θ < r ^ 2)
     (hr : 0 < r) (hεr : Real.sqrt (2 * ε + 2 * r ^ 2) ≤ data.R)
@@ -19180,7 +19180,7 @@ theorem contMDiff_morseHandleAdjunctionLower {m k : ℕ} (hk : k ≤ m + 1)
     (c ε r δ θ η R₀ R₁ R₀' R₁' R₁'' : ℝ) {H : Type} [TopologicalSpace H] {M : Type}
     [TopologicalSpace M] [ChartedSpace H M] [T2Space M]
     {I : ModelWithCorners ℝ (MorseModel (m + 1)) H} [I.Boundaryless]
-    [IsManifold I (⊤ : WithTop ℕ∞) M] {f : M → ℝ}
+    [IsManifold I (↑(⊤ : ℕ∞) : WithTop ℕ∞) M] {f : M → ℝ}
     (data : MorseChart (m + 1) k hk c I f)
     (hε : 0 < ε) (hδ : 0 < δ) (hθ : 0 < θ) (hδr : δ < r ^ 2) (hθr : θ < r ^ 2)
     (hr : 0 < r) (hη : 0 < η) (hηθ : 2 * η ≤ r ^ 2 - θ) (hηε : η < ε)
@@ -20021,7 +20021,7 @@ private theorem morseHandleAdjunctionEquivRoundedSublevelSharp_symm_rel_deep {m 
     (c ε r δ R₀ R₁ R₁' : ℝ) {H : Type} [TopologicalSpace H] {M : Type} [TopologicalSpace M]
     [ChartedSpace H M] [T2Space M]
     {I : ModelWithCorners ℝ (MorseModel (m + 1)) H} [I.Boundaryless]
-    [IsManifold I (⊤ : WithTop ℕ∞) M] {f : M → ℝ}
+    [IsManifold I (↑(⊤ : ℕ∞) : WithTop ℕ∞) M] {f : M → ℝ}
     (data : MorseChart (m + 1) k hk c I f)
     (hε : 0 < ε) (hδ : 0 < δ) (hδr : δ < r ^ 2) (hr : 0 < r)
     (hεr' : Real.sqrt (2 * ε + 2 * r ^ 2) < data.R / 2)
@@ -20050,7 +20050,7 @@ private theorem morseHandleAdjunctionEquivRoundedSublevelSharp_symm_rel_deep {m 
     (c ε r δ θ R₀ R₁ R₁' : ℝ) {H : Type} [TopologicalSpace H] {M : Type} [TopologicalSpace M]
     [ChartedSpace H M] [T2Space M]
     {I : ModelWithCorners ℝ (MorseModel (m + 1)) H} [I.Boundaryless]
-    [IsManifold I (⊤ : WithTop ℕ∞) M] {f : M → ℝ}
+    [IsManifold I (↑(⊤ : ℕ∞) : WithTop ℕ∞) M] {f : M → ℝ}
     (data : MorseChart (m + 1) k hk c I f)
     (hε : 0 < ε) (hδ : 0 < δ) (hθ : 0 < θ) (hδr : δ < r ^ 2) (hθr : θ < r ^ 2) (hr : 0 < r)
     (hεr' : Real.sqrt (2 * ε + 2 * r ^ 2) < data.R / 2)
@@ -20084,7 +20084,7 @@ private theorem morseHandleAdjunctionIsManifoldSharp {m k : ℕ} (hk : k ≤ m +
     (c ε r δ R₀ R₁ R₁' : ℝ) {H : Type} [TopologicalSpace H] {M : Type} [TopologicalSpace M]
     [ChartedSpace H M] [T2Space M]
     {I : ModelWithCorners ℝ (MorseModel (m + 1)) H} [I.Boundaryless]
-    [IsManifold I (⊤ : WithTop ℕ∞) M] {f : M → ℝ}
+    [IsManifold I (↑(⊤ : ℕ∞) : WithTop ℕ∞) M] {f : M → ℝ}
     (data : MorseChart (m + 1) k hk c I f)
     (hε : 0 < ε) (hδ : 0 < δ) (hδr : δ < r ^ 2) (hr : 0 < r)
     (hεr' : Real.sqrt (2 * ε + 2 * r ^ 2) < data.R / 2)
@@ -20123,7 +20123,7 @@ private theorem morseCapRoundedLowerUnionIsManifold {m k : ℕ} (hk : k ≤ m + 
     (c ε r δ θ R₀ R₁ R₁' : ℝ) {H : Type} [TopologicalSpace H] {M : Type} [TopologicalSpace M]
     [ChartedSpace H M] [T2Space M]
     {I : ModelWithCorners ℝ (MorseModel (m + 1)) H} [I.Boundaryless]
-    [IsManifold I (⊤ : WithTop ℕ∞) M] {f : M → ℝ}
+    [IsManifold I (↑(⊤ : ℕ∞) : WithTop ℕ∞) M] {f : M → ℝ}
     (data : MorseChart (m + 1) k hk c I f)
     (hε : 0 < ε) (hδ : 0 < δ) (hθ : 0 < θ) (hδr : δ < r ^ 2) (hθr : θ < r ^ 2) (hr : 0 < r)
     (hεr' : Real.sqrt (2 * ε + 2 * r ^ 2) < data.R / 2)
@@ -20167,7 +20167,7 @@ private noncomputable def morseHandleAdjunctionDiffeomorphRoundedSublevelSharp {
     (c ε r δ R₀ R₁ R₁' : ℝ) {H : Type} [TopologicalSpace H] {M : Type} [TopologicalSpace M]
     [ChartedSpace H M] [T2Space M]
     {I : ModelWithCorners ℝ (MorseModel (m + 1)) H} [I.Boundaryless]
-    [IsManifold I (⊤ : WithTop ℕ∞) M] {f : M → ℝ}
+    [IsManifold I (↑(⊤ : ℕ∞) : WithTop ℕ∞) M] {f : M → ℝ}
     (data : MorseChart (m + 1) k hk c I f)
     (hε : 0 < ε) (hδ : 0 < δ) (hδr : δ < r ^ 2) (hr : 0 < r)
     (hεr' : Real.sqrt (2 * ε + 2 * r ^ 2) < data.R / 2)
@@ -20221,7 +20221,7 @@ theorem morseHandleAdjunctionIsManifold {m k : ℕ} (hk : k ≤ m + 1)
     (c ε r δ θ R₀ R₀' R₁' R₁'' : ℝ) {H : Type} [TopologicalSpace H] {M : Type} [TopologicalSpace M]
     [ChartedSpace H M] [T2Space M]
     {I : ModelWithCorners ℝ (MorseModel (m + 1)) H} [I.Boundaryless]
-    [IsManifold I (⊤ : WithTop ℕ∞) M] {f : M → ℝ}
+    [IsManifold I (↑(⊤ : ℕ∞) : WithTop ℕ∞) M] {f : M → ℝ}
     (data : MorseChart (m + 1) k hk c I f)
     (hε : 0 < ε) (hδ : 0 < δ) (hθ : 0 < θ) (hδr : δ < r ^ 2) (hθr : θ < r ^ 2)
     (hr : 0 < r) (hεr : Real.sqrt (2 * ε + 2 * r ^ 2) ≤ data.R)
@@ -20260,7 +20260,7 @@ noncomputable def morseHandleAdjunctionDiffeomorphRoundedSublevel {m k : ℕ} (h
     (c ε r δ θ R₀ R₀' R₁' R₁'' : ℝ) {H : Type} [TopologicalSpace H] {M : Type} [TopologicalSpace M]
     [ChartedSpace H M] [T2Space M]
     {I : ModelWithCorners ℝ (MorseModel (m + 1)) H} [I.Boundaryless]
-    [IsManifold I (⊤ : WithTop ℕ∞) M] {f : M → ℝ}
+    [IsManifold I (↑(⊤ : ℕ∞) : WithTop ℕ∞) M] {f : M → ℝ}
     (data : MorseChart (m + 1) k hk c I f)
     (hε : 0 < ε) (hδ : 0 < δ) (hθ : 0 < θ) (hδr : δ < r ^ 2) (hθr : θ < r ^ 2)
     (hr : 0 < r) (hεr : Real.sqrt (2 * ε + 2 * r ^ 2) ≤ data.R)
@@ -20314,7 +20314,7 @@ noncomputable def morseHandleAdjunctionDiffeomorphRoundedSublevel {m k : ℕ} (h
 theorem morseAttachedUnstretchInChart {m k : ℕ} (hk : k ≤ m + 1) (c ε r δ : ℝ)
     {H : Type} [TopologicalSpace H] {M : Type} [TopologicalSpace M] [ChartedSpace H M] [T2Space M]
     {I : ModelWithCorners ℝ (MorseModel (m + 1)) H} [I.Boundaryless]
-    [IsManifold I (⊤ : WithTop ℕ∞) M] {f : M → ℝ}
+    [IsManifold I (↑(⊤ : ℕ∞) : WithTop ℕ∞) M] {f : M → ℝ}
     (data : MorseChart (m + 1) k hk c I f)
     (v : (x : M) → TangentSpace I x)
     (hv : ContMDiff I (I.prod 𝓘(ℝ, MorseModel (m + 1))) ∞

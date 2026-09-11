@@ -1,4 +1,5 @@
 import DifferentialGeometry.Analysis.Elliptic.WithBoundary.InteriorVariational
+
 open DifferentialGeometry.Geometry.Operator
 
 
@@ -36,6 +37,43 @@ private abbrev I_half (n : ℕ) [NeZero n] :
 variable [T2Space M] [CompactSpace M]
 
 omit [CompactSpace M] in
+def InteriorSmoothScalar.oneSubLaplacian
+    {g : SmoothRiemannianMetric (I_half n) M}
+    (u : InteriorSmoothScalar g) : InteriorSmoothScalar g where
+  toFun := fun x => u.toFun x -
+    ΔGWithBoundary (I := I_half n) g u.smooth u.interior_support x
+  smooth := by
+    refine contMDiff_of_tsupport fun x hx => ?_
+    have hx' : x ∈ tsupport u.toFun := by
+      rcases (tsupport_sub (f := u.toFun)
+        (g := ΔGWithBoundary (I := I_half n) g u.smooth u.interior_support)) hx with
+        hx | hx
+      · exact hx
+      · exact tsupport_Δ_g_with_boundary_subset
+          (I := I_half n) g u.smooth u.interior_support hx
+    have hΔ : ContMDiffAt (I_half n) 𝓘(ℝ, ℝ) ∞
+        (ΔGWithBoundary (I := I_half n) g u.smooth u.interior_support) x :=
+      ((Δ_g_with_boundary_contMDiffOn_interior
+          (I := I_half n) g u.smooth u.interior_support)
+        x (u.interior_support hx')).contMDiffAt
+          ((I_half n).isOpen_interior (n := ∞) (by simp) |>.mem_nhds
+            (u.interior_support hx'))
+    exact u.smooth.contMDiffAt.sub hΔ
+  interior_support := by
+    refine (tsupport_sub (f := u.toFun)
+      (g := ΔGWithBoundary (I := I_half n) g u.smooth u.interior_support)).trans ?_
+    exact union_subset u.interior_support
+      ((tsupport_Δ_g_with_boundary_subset
+        (I := I_half n) g u.smooth u.interior_support).trans u.interior_support)
+
+omit [CompactSpace M] in
+@[simp] theorem InteriorSmoothScalar.oneSubLaplacian_toFun
+    {g : SmoothRiemannianMetric (I_half n) M}
+    (u : InteriorSmoothScalar g) (x : M) :
+    u.oneSubLaplacian.toFun x = u.toFun x -
+      ΔGWithBoundary (I := I_half n) g u.smooth u.interior_support x := rfl
+
+omit [CompactSpace M] in
 lemma InteriorSmoothScalar.oneSubLap_continuous
     {g : SmoothRiemannianMetric (I_half n) M} (u : InteriorSmoothScalar g) :
     Continuous (fun x : M =>
@@ -58,6 +96,13 @@ noncomputable def InteriorSmoothScalar.oneSubLapClassicalLp
     {g : SmoothRiemannianMetric (I_half n) M} (u : InteriorSmoothScalar g) :
     Lp ℝ 2 (riemannianVolumeMeasure (I := I_half n) (M := M) g) :=
   u.oneSubLap_memLp.toLp _
+
+theorem InteriorSmoothScalar.smoothToLpInterior_oneSubLaplacian
+    {g : SmoothRiemannianMetric (I_half n) M} (u : InteriorSmoothScalar g) :
+    smoothToLpInterior g u.oneSubLaplacian = u.oneSubLapClassicalLp := by
+  apply Lp.ext
+  exact (MemLp.coeFn_toLp u.oneSubLaplacian.memLp_two).trans
+    (MemLp.coeFn_toLp u.oneSubLap_memLp).symm
 
 theorem interiorSmoothScalarH1Inner_eq_integral_oneSubLap_mul
     {g : SmoothRiemannianMetric (I_half n) M}

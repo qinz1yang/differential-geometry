@@ -6,6 +6,7 @@ import DifferentialGeometry.Geometry.Geodesic.Flow.ChartPhase
 import DifferentialGeometry.Geometry.Geodesic.Flow.CrossVectorFieldReduction
 import Mathlib.Topology.MetricSpace.Pseudo.Lemmas
 import Mathlib.Topology.Compactness.Compact
+
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 
@@ -2857,7 +2858,7 @@ private theorem intrinsicVelocityLift_step_uniformWidth
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [Module.Finite ℝ E] in
-theorem intrinsicGeodesic_jointContinuity
+theorem intrinsicGeodesic_tangentLift_jointContinuity
     [Module.Finite ℝ E]
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
@@ -2867,7 +2868,9 @@ theorem intrinsicGeodesic_jointContinuity
     ∃ ρ : ℝ, 0 < ρ ∧
       ContinuousOn
         (fun vt : TangentSpace I p × ℝ =>
-          intrinsicGeodesic (I := I) g hEnorm p vt.1 vt.2)
+          (⟨intrinsicGeodesic (I := I) g hEnorm p vt.1 vt.2,
+            mfderiv 𝓘(ℝ, ℝ) I (intrinsicGeodesic (I := I) g hEnorm p vt.1) vt.2 (1 : ℝ)⟩ :
+            TangentBundle I M))
         ((Metric.ball v₀ ρ) ×ˢ Set.Icc (0 : ℝ) 1) := by
   classical
   have : CompleteSpace E := FiniteDimensional.complete ℝ E
@@ -3019,7 +3022,7 @@ theorem intrinsicGeodesic_jointContinuity
     intro t ht
     exact ⟨r, a, c, hr, ⟨lt_of_lt_of_le ha ht.1, lt_of_le_of_lt ht.2 hc_gt1⟩, hcont⟩
   refine continuousOn_ball_prod_Icc_of_local_windows (V := TangentSpace I p) v₀
-    (fun vt => intrinsicGeodesic (I := I) g hEnorm p vt.1 vt.2) ?_
+    (fun vt => intrinsicVelocityLift (I := I) g hEnorm p vt.1 vt.2) ?_
   intro t ht
   set α : M := intrinsicGeodesic (I := I) g hEnorm p v₀ t with hα_def
   set z : TangentSpace I p → E × E :=
@@ -3075,8 +3078,32 @@ theorem intrinsicGeodesic_jointContinuity
     exact intrinsicGeodesic_junctionData_of_lift_continuousOn (I := I) g hEnorm p v₀ t
       (α := α) hα_source (z := z) hz_def (x₀ := x₀) (w₀ := w₀) hx₀_def hw₀_def hx₀ hz0
       hr₀ ht_mem hlift
-  exact intrinsicGeodesic_window_of_junction_data (I := I) g hEnorm p v₀ α
+  exact intrinsicVelocityLift_window_of_junction_data (I := I) g hEnorm p v₀ α
     (x₀ := x₀) (w₀ := w₀) hx₀ (z := z) (tₖ := t) (rz := rz) hrz hz_cont hz0 hgeo
+
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+omit [Module.Finite ℝ E] in
+theorem intrinsicGeodesic_jointContinuity
+    [Module.Finite ℝ E]
+    [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
+    [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
+    (g : SmoothRiemannianMetric I M)
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
+    (p : M) (v₀ : TangentSpace I p) :
+    ∃ ρ : ℝ, 0 < ρ ∧
+      ContinuousOn
+        (fun vt : TangentSpace I p × ℝ =>
+          intrinsicGeodesic (I := I) g hEnorm p vt.1 vt.2)
+        ((Metric.ball v₀ ρ) ×ˢ Set.Icc (0 : ℝ) 1) := by
+  obtain ⟨ρ, hρ, hcont⟩ :=
+    intrinsicGeodesic_tangentLift_jointContinuity (I := I) g hEnorm p v₀
+  refine ⟨ρ, hρ, ?_⟩
+  have hproj := (FiberBundle.continuous_proj E (TangentSpace I)).continuousOn.comp hcont
+    (fun _ _ => Set.mem_univ _)
+  refine hproj.congr ?_
+  intro vt _
+  rfl
 
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup

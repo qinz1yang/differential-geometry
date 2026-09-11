@@ -176,7 +176,7 @@ theorem ancientKappa_fixed_cylinder_deck_translation_eq_zero {kappa : ℝ}
         _ = normSq0S (I := I) (UniversalCover.liftedMetric (I := I) (F.S.family.metric t))
             (Psi p) 4 (metricRm04At (I := I)
               (UniversalCover.liftedMetric (I := I) (F.S.family.metric t)) (Psi p)) := by
-          rw [metricRmNormSq_lifted, hp]
+          rw [UniversalCover.normSq0S_metricRm04At_liftedMetric, hp]
         _ = normSq0S (I := (𝓡 2).prod 𝓘(ℝ, ℝ)) gP p 4
             (metricRm04At (I := (𝓡 2).prod 𝓘(ℝ, ℝ)) gP p) :=
           (metricRmNormSq_pullbackCross

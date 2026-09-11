@@ -103,7 +103,7 @@ theorem loopFamilyLeastArea_nonneg (g : ℝ → SmoothRiemannianMetric I M)
     (hctr : ∀ t ∈ J, IsContractibleLoop (γ t)) (t : ℝ) (ht : t ∈ J) :
     0 ≤ loopFamilyLeastArea g γ t :=
   Width.leastArea_nonneg (g t) (γ t) (hctr t ht)
-    ((regularLoopSlice γ hγ t ht).isLipschitz_of_compact (g t))
+    ((regularLoopSlice γ hγ t ht).isLipschitz (g t))
 
 variable [SigmaCompactSpace M]
 variable {D : RealTimeInterval} {a b : ℝ}

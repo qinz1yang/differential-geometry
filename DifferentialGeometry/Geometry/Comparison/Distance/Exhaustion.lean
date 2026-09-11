@@ -1,9 +1,9 @@
+import DifferentialGeometry.Geometry.Connection.LeviCivita.Defs
 import DifferentialGeometry.Geometry.Comparison.Distance.Hessian
 import DifferentialGeometry.Geometry.Comparison.HopfRinow.Proper
 import DifferentialGeometry.Geometry.Connection.ChartBridge.Scalar.Laplacian
 import DifferentialGeometry.Geometry.Operator.Gradient.Regularity
 import DifferentialGeometry.Geometry.Operator.Scalar.Calculus
-import DifferentialGeometry.Geometry.Metric.PointwiseInner.Bounds
 import Mathlib.Topology.MetricSpace.ProperSpace.Lemmas
 
 open DifferentialGeometry.Geometry.Connection
@@ -318,9 +318,29 @@ private theorem gInner_sq_le_mul
     [IsManifold I ∞ M]
     (g : SmoothRiemannianMetric I M) (x : M)
     (v w : TangentSpace I x) :
-    (g.inner x v w) ^ 2 ≤ g.inner x v v * g.inner x w w :=
-  DifferentialGeometry.Analysis.Laplacian.metric_inner_cauchy_schwarz_sq
-    (I := I) g x v w
+    (g.inner x v w) ^ 2 ≤ g.inner x v v * g.inner x w w := by
+  let D := (Tensor0SBundle.tangentMetricDataGen (I := I) g x).metric
+  let : PreInnerProductSpace.Core Real (TangentSpace I x) := D.toCore.toCore
+  let : Inner Real (TangentSpace I x) := D.toCore.toCore.toInner
+  have hcs := InnerProductSpace.Core.inner_mul_inner_self_le
+    (𝕜 := Real) (F := TangentSpace I x) v w
+  have hvw : Inner.inner Real v w = g.inner x v w := by
+    exact Tensor0SBundle.TangentMetricDataGen.inner_eq_gen
+      (Tensor0SBundle.tangentMetricDataGen (I := I) g x) v w
+  have hwv : Inner.inner Real w v = g.inner x v w := by
+    calc
+      Inner.inner Real w v = g.inner x w v :=
+        Tensor0SBundle.TangentMetricDataGen.inner_eq_gen
+          (Tensor0SBundle.tangentMetricDataGen (I := I) g x) w v
+      _ = g.inner x v w := g.symm x w v
+  have hvv : Inner.inner Real v v = g.inner x v v := by
+    exact Tensor0SBundle.TangentMetricDataGen.inner_eq_gen
+      (Tensor0SBundle.tangentMetricDataGen (I := I) g x) v v
+  have hww : Inner.inner Real w w = g.inner x w w := by
+    exact Tensor0SBundle.TangentMetricDataGen.inner_eq_gen
+      (Tensor0SBundle.tangentMetricDataGen (I := I) g x) w w
+  rw [hvw, hwv, hvv, hww] at hcs
+  simpa [Real.norm_eq_abs, pow_two] using hcs
 
 private theorem isProperMap_one_add_distanceExhaustionProfile
     {M : Type*} [MetricSpace M] [ProperSpace M] (O : M) :
@@ -378,7 +398,190 @@ theorem exists_proper_distance_exhaustion
             (gradientFun (I := I) g hbar x)
             (gradientFun (I := I) g hbar x) ≤ C ∧
         laplacian (I := I) (LeviCivita (I := I) g) g hbar x ≤ C := by
-  sorry
+  let _ : IsManifold I 1 M :=
+    IsManifold.of_le (I := I) (M := M) (n := (∞ : WithTop ℕ∞))
+      (by decide : (1 : WithTop ℕ∞) ≤ (∞ : WithTop ℕ∞))
+  let _ : TopologicalSpace.MetrizableSpace M :=
+    Manifold.metrizableSpace I M
+  let _ : T3Space M := inferInstance
+  let _ : RiemannianBundle (fun x : M ↦ TangentSpace I x) :=
+    ⟨g.toRiemannianMetric⟩
+  let _ : IsContinuousRiemannianBundle E (fun x : M ↦ TangentSpace I x) :=
+    ⟨⟨g.inner, g.contMDiff.continuous, by intro x v w; rfl⟩⟩
+  let _ : EMetricSpace M := EMetricSpace.ofRiemannianMetric I M
+  let _ : PseudoEMetricSpace M := inferInstance
+  let _ : CompleteSpace M := hcomplete.complete
+  let _ : MetricSpace M :=
+    Geometry.Riemannian.HopfRinow.riemMetricSpace (I := I) (M := M)
+  let _ : ProperSpace M :=
+    Geometry.Riemannian.HopfRinow.properSpace_riemMetric
+        (I := I) (M := M) hcomplete.complete g
+        (fun x v ↦ Geometry.Riemannian.tensor0SBundle_enorm_eq_riemannianBundle_enorm
+          (I := I) g x v)
+  obtain ⟨D, hD, hDfirst, hDsecond⟩ :=
+    exists_distanceExhaustionProfile_deriv_bounds
+  let n : Real := ((Module.finrank Real E - 1 : Nat) : Real)
+  let C : Real := max 1 (max (D ^ 2) (D * (2 * n + n * q) + D))
+  let h : M → Real := fun x ↦ 1 + distanceExhaustionProfile (dist O x)
+  have hcont : Continuous h :=
+    continuous_const.add
+      (distanceExhaustionProfile_contDiff.continuous.comp
+        (continuous_const.dist continuous_id))
+  refine ⟨h, hcont, isProperMap_one_add_distanceExhaustionProfile O, ?_, C,
+    le_max_left _ _, ?_⟩
+  · intro x
+    exact le_add_of_nonneg_right
+      (distanceExhaustionProfile_nonneg dist_nonneg)
+  · intro x
+    by_cases hx : x = O
+    · subst x
+      refine ⟨fun _ ↦ 1, contMDiffAt_const, ?_, ?_, ?_, ?_⟩
+      · simp [h, distanceExhaustionProfile_eq_zero]
+      · filter_upwards [Metric.ball_mem_nhds O (by norm_num : (0 : Real) < 1)] with y hy
+        have hdist : dist O y ≤ 1 := by
+          rw [dist_comm]
+          exact (Metric.mem_ball.mp hy).le
+        simp [h, distanceExhaustionProfile_eq_zero hdist]
+      · rw [gradientFun_const]
+        simp only [map_zero]
+        exact le_trans (by norm_num) (le_max_left _ _)
+      · rw [laplacian_const]
+        exact le_trans (by norm_num) (le_max_left _ _)
+    · have hfin :
+          riemannianEDistOf (I := I) g O x ≠ (⊤ : ENNReal) := by
+        simpa [riemannianEDistOf] using
+          (Geometry.Riemannian.Exponential.riemannianEDist_ne_top
+            (I := I) O x)
+      obtain ⟨tail, hrhoSmooth, hrhoValue, hrhoUpper, hrhoDiff,
+          hrhoGrad, hrhoNorm, hrhoLap⟩ :=
+        exists_calabiData_of_complete_metric (I := I) (M := M)
+          g hcomplete q hq hRic (Ne.symm hx) hfin
+      let rho : M → Real := fun y ↦
+        tail.initialLength + Geometry.Riemannian.Exponential.branchRadius
+          (I := I) g tail.branch y
+      let hbar : M → Real := fun y ↦
+        1 + distanceExhaustionProfile (rho y)
+      have hprofileDiff : Differentiable Real distanceExhaustionProfile :=
+        distanceExhaustionProfile_contDiff.differentiable (by simp)
+      have hprofileDerivDiff :
+          Differentiable Real (deriv distanceExhaustionProfile) :=
+        ((contDiff_infty_iff_deriv.mp
+          distanceExhaustionProfile_contDiff).2).differentiable (by simp)
+      have hrhoValue' : rho x = dist O x := by
+        rw [Geometry.Riemannian.HopfRinow.riemMetric_dist_eq
+          (I := I) (M := M)]
+        exact hrhoValue
+      have hbarSmooth : ContMDiffAt I 𝓘(Real, Real) ∞ hbar x := by
+        exact contMDiffAt_const.add
+          (distanceExhaustionProfile_contDiff.contMDiff.contMDiffAt.comp
+            x hrhoSmooth)
+      have hbarUpper : ∀ᶠ y in nhds x, h y ≤ hbar y := by
+        filter_upwards [hrhoUpper] with y hy
+        change 1 + distanceExhaustionProfile (dist O y) ≤
+          1 + distanceExhaustionProfile (rho y)
+        have hprofile : distanceExhaustionProfile (dist O y) ≤
+            distanceExhaustionProfile (rho y) := by
+          apply distanceExhaustionProfile_monotone
+          rw [Geometry.Riemannian.HopfRinow.riemMetric_dist_eq
+            (I := I) (M := M)]
+          exact hy
+        linarith
+      have hgradEq :
+          gradientFun (I := I) g hbar x =
+            deriv distanceExhaustionProfile (rho x) •
+              gradientFun (I := I) g rho x := by
+        have hcomp :
+            gradientFun (I := I) g
+                (fun y ↦ distanceExhaustionProfile (rho y)) x =
+              deriv distanceExhaustionProfile (rho x) •
+                gradientFun (I := I) g rho x :=
+          gradientFun_comp (I := I) g
+            (hprofileDiff (rho x)) hrhoDiff.self_of_nhds
+        have hadd :
+            gradientFun (I := I) g hbar x =
+              gradientFun (I := I) g (fun _ : M ↦ (1 : Real)) x +
+                gradientFun (I := I) g
+                  (fun y ↦ distanceExhaustionProfile (rho y)) x := by
+          apply gradientFun_add (I := I) g
+          · exact mdifferentiableAt_const
+          · exact (hprofileDiff (rho x)).mdifferentiableAt.comp x
+              hrhoDiff.self_of_nhds
+        rw [hadd, gradientFun_const, zero_add, hcomp]
+      have hgradBound :
+          g.inner x
+              (gradientFun (I := I) g hbar x)
+              (gradientFun (I := I) g hbar x) ≤ C := by
+        rw [hgradEq, Geometry.Riemannian.Exponential.gInner_smul_self
+          (I := I) g x, hrhoNorm]
+        simp only [mul_one]
+        have habs := hDfirst (rho x)
+        have hsq : deriv distanceExhaustionProfile (rho x) ^ 2 ≤ D ^ 2 := by
+          apply sq_le_sq.mpr
+          simpa [abs_of_nonneg (le_trans (by norm_num) hD)] using habs
+        exact hsq.trans (le_trans (le_max_left _ _) (le_max_right _ _))
+      have hlapEq := laplacian_comp_of_eventually_mdiff
+        (I := I) (LeviCivita (I := I) g) g hprofileDiff
+          (hprofileDerivDiff (rho x)) hrhoDiff hrhoGrad
+      have hlapBound :
+          laplacian (I := I) (LeviCivita (I := I) g) g hbar x ≤ C := by
+        have hcompGrad := grad_comp_mdiffAt (I := I) g hprofileDiff
+          (hprofileDerivDiff (rho x)) hrhoDiff hrhoGrad
+        have haddLap :
+            laplacian (I := I) (LeviCivita (I := I) g) g hbar x =
+              laplacian (I := I) (LeviCivita (I := I) g) g
+                (fun y ↦ distanceExhaustionProfile (rho y)) x := by
+          apply laplacian_add_const (I := I)
+          · exact Filter.Eventually.mono hrhoDiff fun y hy ↦
+              (hprofileDiff (rho y)).mdifferentiableAt.comp y hy
+          · exact hcompGrad
+        rw [haddLap, hlapEq, hrhoNorm]
+        simp only [mul_one]
+        by_cases hr : dist O x < 1
+        · rw [hrhoValue', distanceExhaustionProfile_deriv_eq_zero hr]
+          simp only [zero_mul, zero_add]
+          have hDC : D ≤ C := by
+            have hDD : D ≤ D ^ 2 := by nlinarith
+            exact hDD.trans
+              ((le_max_left _ _).trans (le_max_right _ _))
+          exact (le_abs_self _).trans
+            ((hDsecond (dist O x)).trans hDC)
+        · have hrone : 1 ≤ dist O x := le_of_not_gt hr
+          have hrpos : 0 < dist O x := lt_of_lt_of_le (by norm_num) hrone
+          have hn : 0 ≤ n := Nat.cast_nonneg _
+          have hderivNonneg :
+              0 ≤ deriv distanceExhaustionProfile (rho x) :=
+            distanceExhaustionProfile_monotone.deriv_nonneg
+          have hderivLe : deriv distanceExhaustionProfile (rho x) ≤ D :=
+            (le_abs_self _).trans (hDfirst (rho x))
+          have hsecondLe :
+              deriv (deriv distanceExhaustionProfile) (rho x) ≤ D :=
+            (le_abs_self _).trans (hDsecond (rho x))
+          have hrhoLap' :
+              laplacian (I := I) (LeviCivita (I := I) g) g rho x ≤
+                2 * n + n * q := by
+            have hfrac : 2 * n / dist O x ≤ 2 * n := by
+              rw [div_le_iff₀ hrpos]
+              nlinarith
+            have hdistEq : (riemannianEDist I O x).toReal = dist O x :=
+              hrhoValue.symm.trans hrhoValue'
+            change laplacian (I := I) (LeviCivita (I := I) g) g rho x ≤
+              2 * n / (riemannianEDist I O x).toReal + n * q at hrhoLap
+            rw [hdistEq] at hrhoLap
+            exact hrhoLap.trans (add_le_add hfrac le_rfl)
+          have htarget :
+              deriv distanceExhaustionProfile (rho x) *
+                    laplacian (I := I) (LeviCivita (I := I) g) g rho x +
+                  deriv (deriv distanceExhaustionProfile) (rho x) ≤
+                D * (2 * n + n * q) + D := by
+            have hbase : 0 ≤ 2 * n + n * q := by positivity
+            exact add_le_add
+              ((mul_le_mul_of_nonneg_left hrhoLap' hderivNonneg).trans
+                (mul_le_mul_of_nonneg_right hderivLe hbase))
+              hsecondLe
+          exact htarget.trans
+            (le_trans (le_max_right _ _) (le_max_right _ _))
+      refine ⟨hbar, hbarSmooth, ?_, hbarUpper, hgradBound, hlapBound⟩
+      simp only [hbar, h, hrhoValue']
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
@@ -606,6 +809,49 @@ theorem exists_proper_distance_exhaustion_with_hessian_bound
           exact hsum.trans
             (mul_le_mul_of_nonneg_right
               (le_trans (le_max_right _ _) (le_max_right _ _)) hqnonneg)
+
+end DifferentialGeometry
+
+end
+
+noncomputable section
+
+namespace DifferentialGeometry
+
+open scoped Manifold ContDiff
+
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+variable [FiniteDimensional ℝ E]
+variable {H : Type*} [TopologicalSpace H]
+variable {I : ModelWithCorners ℝ E H} [I.Boundaryless]
+variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
+variable [IsManifold I ∞ M] [T2Space M]
+
+
+omit [I.Boundaryless] [T2Space M] in
+theorem exists_constant_proper_exhaustion_with_gradient_laplacian_bound
+    [CompactSpace M]
+    (G : ℝ → SmoothRiemannianMetric I M) :
+    ∃ h : M → ℝ, h = (fun _ => 1) ∧ Continuous h ∧ IsProperMap h ∧
+      (∀ x, 1 ≤ h x) ∧
+      ∀ t : ℝ, ∀ x : M,
+        ∃ U : Set M, IsOpen U ∧ x ∈ U ∧ ∃ hbar : M → ℝ,
+          ContMDiffOn I 𝓘(ℝ, ℝ) ∞ hbar U ∧
+          hbar x = h x ∧
+          (∀ᶠ y in nhds x, h y ≤ hbar y) ∧
+          Real.sqrt ((G t).inner x
+            (gradientFun (I := I) (G t) hbar x)
+            (gradientFun (I := I) (G t) hbar x)) ≤ 1 * h x ∧
+          laplacian (I := I) (LeviCivita (I := I) (G t)) (G t) hbar x ≤ 1 * h x := by
+  refine ⟨fun _ => 1, rfl, continuous_const, isProperMap_const 1,
+    fun _ => le_rfl, ?_⟩
+  intro t x
+  refine ⟨Set.univ, isOpen_univ, Set.mem_univ x, fun _ => 1,
+    contMDiffOn_const, rfl, Filter.Eventually.of_forall (fun _ => le_rfl), ?_, ?_⟩
+  · rw [gradientFun_const]
+    simp
+  · rw [laplacian_const]
+    norm_num
 
 end DifferentialGeometry
 

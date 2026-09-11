@@ -3,6 +3,7 @@ import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.Inner
 import DifferentialGeometry.Tensor.RSTensor.Algebra.Contraction
 import DifferentialGeometry.Geometry.Curvature.SecondOrderDefect.MetricTraceFrame
 import DifferentialGeometry.Geometry.Connection.TensorNabla.Tensor0S.Algebra.SlotCurryLeibniz
+
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
@@ -1202,6 +1203,7 @@ theorem divergence_oneSidedVF_eq
       rw [codiffPsi_apply (I := I) (M := M) g s V b hSmooth_at hSmooth_at]
     rw [hcodiff]
 
+omit [CompactSpace M] in
 theorem tensorL2Inner_covGrad_eq_neg_tensorL2Inner_covDivergence
     (g : SmoothRiemannianMetric I M) (s : ℕ)
     (T : SmoothCcTensor g 0 s) (V : SmoothCcTensor g 0 (s + 1)) :
@@ -1213,8 +1215,20 @@ theorem tensorL2Inner_covGrad_eq_neg_tensorL2Inner_covDivergence
   set μ := riemannianVolumeMeasure (I := I) (M := M) g with hμ_def
   set Z : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯ :=
     oneSidedDirichletVFSection (I := I) (M := M) g s T V with hZ_def
-  have hZ_cs : HasCompactSupport (Z : ∀ x, TangentSpace I x) :=
-    HasCompactSupport.of_compactSpace _
+  have hZ_cs : HasCompactSupport (Z : ∀ x, TangentSpace I x) := by
+    refine HasCompactSupport.mono (f := T.toFun) T.hasCompactSupport ?_
+    intro b hb
+    change T.toFun b ≠ 0
+    intro hTb
+    apply hb
+    by_contra hZb
+    have hpos := g.pos b (Z b) hZb
+    have hinner : g.inner b (Z b) (Z b) = 0 := by
+      rw [hZ_def, oneSidedDirichletVFSection_apply, inner_oneSidedDirichletVF,
+        oneSidedDirichletForm_apply]
+      change tensorInnerPointwise (I := I) (M := M) g 0 s b (T.toFun b) _ = 0
+      rw [hTb, tensorInnerPointwise_zero_left]
+    linarith
   have hdiv_zero : ∫ b, divergenceG (I := I) g Z b ∂μ = 0 :=
     integral_divergence_eq_zero_of_hasCompactSupport (I := I) g Z hZ_cs
   have hpt : ∀ b : M, divergenceG (I := I) g Z b =
@@ -1252,13 +1266,16 @@ theorem tensorL2Inner_covGrad_eq_neg_tensorL2Inner_covDivergence
           (TensorRSSpace.toModel ((covGrad (I := I) (M := M) g 0 s T).toSection b))
           (TensorRSSpace.toModel (V.toSection b))) μ :=
     Continuous.integrable_of_hasCompactSupport_riemannianVolumeMeasure
-      (I := I) g hcross_cont (HasCompactSupport.of_compactSpace _)
+      (I := I) g hcross_cont
+      ((covGrad (I := I) (M := M) g 0 s T).hasCompactSupport_inner_cross V)
   have hsecond_int : Integrable
       (fun b : M => tensorInnerPointwise (I := I) (M := M) g 0 s b
           (TensorRSSpace.toModel (T.toSection b))
           (TensorRSSpace.toModel (covDivergenceRaw (I := I) (M := M) g s V b))) μ :=
     Continuous.integrable_of_hasCompactSupport_riemannianVolumeMeasure
-      (I := I) g hsecond_cont (HasCompactSupport.of_compactSpace _)
+      (I := I) g hsecond_cont (by
+        simpa only [SmoothCcTensor.toFun_apply, covDivergence_toSection_apply] using
+          T.hasCompactSupport_inner_cross (covDivergence (I := I) (M := M) g s V))
   rw [integral_add hcross_int hsecond_int] at hdiv_zero
   rw [show tensorL2Inner (I := I) (M := M) g 0 (s + 1)
         (covGrad (I := I) (M := M) g 0 s T).toFun V.toFun =

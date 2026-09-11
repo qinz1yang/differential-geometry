@@ -20,8 +20,8 @@ theorem ricciTensor_roundCylinder (x : Metric.sphere (0 : E) 1 × ℝ)
     ricciTensor (roundCylinderMetric (E := E) (n := n)) x v w =
       ((n : ℝ) - 1) * (roundMetric (E := E) (n := n)).inner x.1 v.1 w.1 := by
   exact (ricciTensor_cylinderMetric _ x v w).trans
-    ((congrArg (fun R ↦ R v.1 w.1) (ricciTensor_scaleMetric
-      (roundMetric (E := E) (n := n)) 2 (by norm_num) x.1)).trans
+    ((ricciTensor_scaleMetric 2 (by norm_num) (roundMetric (E := E) (n := n))
+      x.1 v.1 w.1).trans
         (ricciTensor_roundSphere x.1 v.1 w.1))
 
 theorem ricciSharp_roundCylinder (x : Metric.sphere (0 : E) 1 × ℝ)

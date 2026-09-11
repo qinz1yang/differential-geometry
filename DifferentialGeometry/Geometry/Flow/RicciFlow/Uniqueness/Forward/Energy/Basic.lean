@@ -171,9 +171,9 @@ theorem metricDifference_hasDerivAt
 
 end Carriers
 
-section Energy
+section EnergyDefinitions
 
-variable [CompactSpace M]
+variable [SigmaCompactSpace M]
 
 private local instance : MeasurableSpace E := borel E
 private local instance : BorelSpace E := ⟨rfl⟩
@@ -216,6 +216,17 @@ def forwardUniqueRate
       (1 / 2 : Real) * traceTimeDerivMetric (I := I) g₁ t x *
         forwardUniqueDensity (I := I) g₁ g₂ t x
     ∂(riemannianMeasureFamily (I := I) (M := M) g₁ t)
+
+end EnergyDefinitions
+
+section Energy
+
+variable [CompactSpace M]
+
+private local instance : MeasurableSpace E := borel E
+private local instance : BorelSpace E := ⟨rfl⟩
+private local instance : MeasurableSpace M := borel M
+private local instance : BorelSpace M := ⟨rfl⟩
 
 omit [CompactSpace M] [T2Space M] in
 theorem density_hasDerivAt

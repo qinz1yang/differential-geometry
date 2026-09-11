@@ -69,8 +69,7 @@ private theorem actual_curvature_tower_bound [I.Boundaryless] [CompactSpace M]
   exact (le_abs_self _).trans (hh.trans (le_max_left _ _))
 
 omit [SigmaCompactSpace M] in
-theorem rfs_csf_background [I.Boundaryless] [CompactSpace M] [Nonempty M]
-    [SigmaCompactSpace M]
+theorem rfs_csf_background [I.Boundaryless] [CompactSpace M]
     (F : SolutionOn (I := I) (M := M) D)
     (hF : DifferentialGeometry.PDE.RicciFlow.IsSolutionOn F)
     (hab : a < b) (hreg : Icc a b ⊆ D.regular) :
@@ -146,7 +145,7 @@ private theorem tensor_abs_eval_le_of_unit_slots (g : SmoothRiemannianMetric I M
     ((mul_le_mul_of_nonneg_left hprod (Real.sqrt_nonneg _)).trans (by simpa using hsqrt))
 
 omit [SigmaCompactSpace M] in
-theorem RicciBackground.ricci_unit_bound [SigmaCompactSpace M]
+theorem RicciBackground.ricci_unit_bound
     (B : RicciBackground (I := I) (M := M) D a b)
     (t : ℝ) (ht : t ∈ Icc a b) (p : M) (v : Fin 2 → TangentSpace I p)
     (hv : ∀ i, (B.family.metric t).inner p (v i) (v i) ≤ 1) :
@@ -154,7 +153,7 @@ theorem RicciBackground.ricci_unit_bound [SigmaCompactSpace M]
   tensor_abs_eval_le_of_unit_slots _ _ _ _ _ B.B₀_nonneg (B.ricci_bound t ht p) v hv
 
 omit [SigmaCompactSpace M] in
-theorem RicciBackground.riemann_unit_bound [SigmaCompactSpace M]
+theorem RicciBackground.riemann_unit_bound
     (B : RicciBackground (I := I) (M := M) D a b)
     (t : ℝ) (ht : t ∈ Icc a b) (p : M) (v : Fin 4 → TangentSpace I p)
     (hv : ∀ i, (B.family.metric t).inner p (v i) (v i) ≤ 1) :
@@ -162,7 +161,7 @@ theorem RicciBackground.riemann_unit_bound [SigmaCompactSpace M]
   tensor_abs_eval_le_of_unit_slots _ _ _ _ _ B.B₁_nonneg (B.riemann_bound t ht p) v hv
 
 omit [SigmaCompactSpace M] in
-theorem RicciBackground.nablaRicci_unit_bound [SigmaCompactSpace M]
+theorem RicciBackground.nablaRicci_unit_bound
     (B : RicciBackground (I := I) (M := M) D a b)
     (t : ℝ) (ht : t ∈ Icc a b) (p : M) (v : Fin 3 → TangentSpace I p)
     (hv : ∀ i, (B.family.metric t).inner p (v i) (v i) ≤ 1) :

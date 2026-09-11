@@ -432,6 +432,7 @@ theorem SmoothDisk.exists_lipschitz (g : SmoothRiemannianMetric I Q)
   intro z w
   simpa only [ENNReal.ofReal_eq_coe_nnreal hV] using hbound z w
 
+omit [FiniteDimensional ℝ E] boundarylessI t2Q compactQ in
 theorem trace_interpolation_annulus (g : SmoothRiemannianMetric I Q)
     (γ : RegularLoop I Q)
     (hγ : ContMDiff 𝓘(ℝ, ℝ) I ∞ (loopLift γ.toContinuousLoop))
@@ -446,7 +447,7 @@ theorem trace_interpolation_annulus (g : SmoothRiemannianMetric I Q)
         parametricJacobian g (annulusExtension A.map) annulusRectangle z = 0) ∧
       annulusArea g A.map = 0 := by
   obtain ⟨L, hL⟩ := interpolationCircle_lipschitz σ
-  obtain ⟨K, hK⟩ := RegularLoop.isLipschitz_of_compact g γ
+  obtain ⟨K, hK⟩ := RegularLoop.isLipschitz g γ
   let amap : C(Annulus, Q) :=
     ⟨fun z => γ (interpolationCircle σ z),
       γ.toContinuousLoop.continuous.comp hL.continuous⟩
@@ -554,9 +555,9 @@ theorem conformal_disk_attains_exact_area (g : SmoothRiemannianMetric I Q)
     (htrace : ∀ θ, u.map (diskBoundary θ) = γ (σ.map θ))
     (hmin : ∀ v : SmoothDisk (I := I) (Q := Q),
       (∀ θ, v.map (diskBoundary θ) = γ θ) → diskArea g u.map ≤ diskArea g v.map) :
-    diskArea g u.map = leastArea g γ.toContinuousLoop hctr (γ.isLipschitz_of_compact g) := by
+    diskArea g u.map = leastArea g γ.toContinuousLoop hctr (γ.isLipschitz g) := by
   apply le_antisymm
-  · apply le_csInf (competitorAreas_nonempty g γ.toContinuousLoop hctr (γ.isLipschitz_of_compact g))
+  · apply le_csInf (competitorAreas_nonempty g γ.toContinuousLoop hctr (γ.isLipschitz g))
     rintro _ ⟨v, rfl⟩
     obtain ⟨w, htracew, hlim⟩ := smooth_exact_disk_density g γ hγ v
     exact ge_of_tendsto' hlim (fun j => hmin (w j) (htracew j))
@@ -564,7 +565,7 @@ theorem conformal_disk_attains_exact_area (g : SmoothRiemannianMetric I Q)
     have htracelip : ∀ θ, ulip.map (diskBoundary θ) = γ (σ.map θ) := by
       simpa only [hulip] using htrace
     obtain ⟨v, hv⟩ := zero_area_trace_annulus g γ hγ σ ulip htracelip
-    have hle := leastArea_le_competitor g γ.toContinuousLoop hctr (γ.isLipschitz_of_compact g) v
+    have hle := leastArea_le_competitor g γ.toContinuousLoop hctr (γ.isLipschitz g) v
     simpa only [hv, hulip] using hle
 
 theorem conformal_disk_producer (g : SmoothRiemannianMetric I Q)
