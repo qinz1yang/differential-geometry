@@ -491,7 +491,7 @@ theorem sectionalCurvature_symm_of_chartRiemannLower_second_pair_antisymm
 variable [I.Boundaryless] [T2Space M]
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem sectionalCurvatureNumerator_eq_metricRm04StdAt
+theorem sectionalCurvatureNumerator_eq_metricRm04StandardAt
     (g : SmoothRiemannianMetric I M) (x : M) (v w : TangentSpace I x) :
     sectionalCurvatureNumerator (I := I) g x v w =
       Curvature.metricRm04StandardAt (I := I) g x v w w v := by
@@ -539,13 +539,22 @@ theorem sectionalCurvatureNumerator_eq_metricRm04StdAt
   ring
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem sectionalCurvature_eq_metricRm04StdAt_div
+theorem sectionalCurvature_eq_metricRm04StandardAt_div
     (g : SmoothRiemannianMetric I M) (x : M) (v w : TangentSpace I x) :
     sectionalCurvature (I := I) g x v w =
       Curvature.metricRm04StandardAt (I := I) g x v w w v /
         (g.inner x v v * g.inner x w w - (g.inner x v w) ^ 2) := by
-  rw [sectionalCurvature_def, sectionalCurvatureNumerator_eq_metricRm04StdAt,
+  rw [sectionalCurvature_def, sectionalCurvatureNumerator_eq_metricRm04StandardAt,
     sectionalCurvatureDenominator_def]
+
+omit [NeZero (Module.finrank ℝ E)] in
+theorem sectionalCurvature_eq_metricRm04StandardAt_of_unit_orthogonal
+    (g : SmoothRiemannianMetric I M) (x : M) (v w : TangentSpace I x)
+    (hv : g.inner x v v = 1) (hw : g.inner x w w = 1) (hvw : g.inner x v w = 0) :
+    sectionalCurvature (I := I) g x v w =
+      Curvature.metricRm04StandardAt (I := I) g x v w w v := by
+  rw [sectionalCurvature_eq_metricRm04StandardAt_div, hv, hw, hvw]
+  norm_num
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem sectionalCurvature_scaleMetric
@@ -560,8 +569,8 @@ theorem sectionalCurvature_scaleMetric
     simp only [sectionalCurvatureDenominator_def, scaleMetric_inner]
     ring
   rw [sectionalCurvature_def, sectionalCurvature_def,
-    sectionalCurvatureNumerator_eq_metricRm04StdAt,
-    sectionalCurvatureNumerator_eq_metricRm04StdAt, Curvature.metricRmStandard_scale, hd]
+    sectionalCurvatureNumerator_eq_metricRm04StandardAt,
+    sectionalCurvatureNumerator_eq_metricRm04StandardAt, Curvature.metricRmStandard_scale, hd]
   by_cases hden : sectionalCurvatureDenominator (I := I) g x v w = 0
   · simp only [hden, mul_zero, div_zero]
   · field_simp [hc.ne', hden]
@@ -577,7 +586,7 @@ theorem sectionalCurvature_pullback
   let _ : CompleteSpace E := FiniteDimensional.complete Real E
   let _ : IsManifold I 1 M := IsManifold.of_le (by decide : (1 : WithTop ℕ∞) ≤ ∞)
   let _ : IsManifold I 1 N := IsManifold.of_le (by decide : (1 : WithTop ℕ∞) ≤ ∞)
-  simp only [sectionalCurvature_def, sectionalCurvatureNumerator_eq_metricRm04StdAt,
+  simp only [sectionalCurvature_def, sectionalCurvatureNumerator_eq_metricRm04StandardAt,
     Curvature.metricRm04Standard_pullback, sectionalCurvatureDenominator_def,
     Diffeomorph.pullbackMetric_inner]
 

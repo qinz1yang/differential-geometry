@@ -21,7 +21,7 @@ theorem leastCurvatureOperatorEigenvalueAt_le_sectionalCurvature
       (fun _ => v) (fun _ => w)
   have hden := Riemannian.sectionalCurvatureDenominator_pos_of_linearIndependent g x v w hvw
   rw [Riemannian.sectionalCurvatureDenominator_def] at hden
-  rw [Riemannian.sectionalCurvature_eq_metricRm04StdAt_div]
+  rw [Riemannian.sectionalCurvature_eq_metricRm04StandardAt_div]
   apply (le_div_iff₀ hden).mpr
   simpa only [algebraicCurvatureIdentityQuadraticEval, algebraicCurvatureOperatorQuadraticEval,
     Fin.sum_univ_one, one_mul, g.symm x w v, pow_two,

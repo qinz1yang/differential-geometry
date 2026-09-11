@@ -23,7 +23,7 @@ theorem sectionalCurvature_eq_scalar_div_two_of_finrank_eq_two
     sectionalCurvature (I := I) g x v w = metricScalarAt (I := I) g x / 2 := by
   have hden := sectionalCurvatureDenominator_pos_of_linearIndependent g x v w hvw
   rw [sectionalCurvatureDenominator_def] at hden
-  rw [sectionalCurvature_eq_metricRm04StdAt_div,
+  rw [sectionalCurvature_eq_metricRm04StandardAt_div,
     Curvature.metricRm04StdAt_eq_scalar_div_two_of_finrank_eq_two g hdim]
   rw [g.symm x w v, ← pow_two]
   exact mul_div_cancel_right₀ _ hden.ne'

@@ -89,7 +89,7 @@ theorem sectionalCurvature_eq_half_scalar_of_orthonormal_curvature_nullity
   change 2 * metricRm04StandardAt g x (basis 0) (basis 2) (basis 2) (basis 0) = 0 at hm1
   change 2 * metricRm04StandardAt g x (basis 1) (basis 2) (basis 2) (basis 1) = 0 at hm2
   simp only [Riemannian.sectionalCurvature_def,
-    Riemannian.sectionalCurvatureNumerator_eq_metricRm04StdAt,
+    Riemannian.sectionalCurvatureNumerator_eq_metricRm04StandardAt,
     Riemannian.sectionalCurvatureDenominator_def]
   simp_rw [show ∀ i j, g.inner x (basis i) (basis j) = delta3 i j from horth]
   norm_num [delta3]

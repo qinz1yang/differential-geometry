@@ -16,20 +16,28 @@ open scoped Topology Manifold ContDiff ENNReal NNReal
 
 namespace DifferentialGeometry.Geometry
 
-variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
-  {M : Type*} [TopologicalSpace M] [ChartedSpace E M] [IsManifold 𝓘(ℝ, E) ∞ M] [T3Space M]
-
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace
 
+section
+
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+  {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M] [T3Space M]
 
 
-def riemannianCurveVariation (g : SmoothRiemannianMetric 𝓘(ℝ, E) M)
+
+def riemannianCurveVariation (g : SmoothRiemannianMetric I M)
     (γ : ℝ → M) (a b : ℝ) : ℝ≥0∞ :=
   let cg := g.toContinuousRiemannianMetric
-  letI : RiemannianBundle (TangentSpace 𝓘(ℝ, E) : M → Type _) := ⟨cg.toRiemannianMetric⟩
-  letI : PseudoEMetricSpace M := .ofRiemannianMetric 𝓘(ℝ, E) M
+  letI : RiemannianBundle (TangentSpace I : M → Type _) := ⟨cg.toRiemannianMetric⟩
+  letI : PseudoEMetricSpace M := .ofRiemannianMetric I M
   eVariationOn γ (Icc a b)
+
+end
+
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  {M : Type*} [TopologicalSpace M] [ChartedSpace E M] [IsManifold 𝓘(ℝ, E) ∞ M] [T3Space M]
 
 variable [FiniteDimensional ℝ E] [CompactSpace M] [PreconnectedSpace M]
 
