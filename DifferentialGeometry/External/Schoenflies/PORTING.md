@@ -69,7 +69,18 @@ No source proof debt, budget overrides, or linter suppressions were added.
 
 The checked closure represents **77,154 upstream physical Lean lines**, or
 **50,665 nonblank noncomment code lines**, in 128 modules. This counts imported
-mathematics, not an equal reduction in the remaining 3D smooth proof size.
+mathematics. All of it is available as reusable dependencies; downstream smooth
+proofs can consume the topological theorem without rewriting those dependencies.
+Beyond import-prefix rewrites and modification notices, the port changes 204
+added and 207 removed source lines across 56 files. The compatibility repairs
+are small relative to the imported development.
+
+A separate geometric bridge is still needed to obtain a smooth disk with its
+given smooth structure. The active plan now calls for testing disk smoothing
+before committing to a separate polygon-triangulation construction. Its old
+40,000-90,000-line forecast has been withdrawn as a reliable current estimate:
+that forecast did not budget for reproducing this whole topological library,
+so subtracting its size would compare different proof routes.
 
 Kimina consumer probes pass for smooth circle embeddings, a nonzero translation
 whose extension must move the supplied point, exclusion of the empty Jordan
@@ -78,8 +89,25 @@ existing 3D entry point alongside the new planar interfaces.
 
 Every new leaf is registered in the flat `DifferentialGeometry.lean` aggregate.
 These are scoped source/REPL checks, not a completed aggregate build of the
-unrelated full library. Normal IDE artifact preparation is in progress because
-`lake --no-build setup-file` identified missing/stale dependency metadata.
+unrelated full library. Normal IDE artifacts for all 131 new leaves are now
+prepared. The initial `lake --no-build setup-file` check identified missing or
+stale dependency metadata; the permitted artifact repair used one
+`LEAN_NUM_THREADS=1 lake --no-cache --iofail build +MODULE:leanArts` at a time.
+All 131 targets completed without diagnostics. Subsequent no-build editor
+setup checks pass for `JordanCurve.lean`, `JordanSeparation.lean`, and
+`JordanSchoenflies.lean`.
+
+Against those final artifacts, the matching REPL rechecked all three declaration
+linters and transitive axioms across the whole vendor package and the three
+local modules. Exact signatures and axiom closures were read back for the
+Jordan theorem, crosscut theorem, both extension engines, the ambient-extension
+headline, and the three local headlines. The Kimina consumer probes were
+replayed successfully with no diagnostics. All source hashes match the checked
+snapshot, and `git diff --check` passes. The task Kimina server and its REPL
+workers have been stopped; no caffeinate process remains.
+
+Acceptance: **Accepted for the planar port and project interfaces**. This does
+not establish the 3D smooth Schoenflies theorem.
 
 The separation layer was committed and pushed as `ed97bb87e`. The complete
-extension layer is the next verified checkpoint.
+extension layer was committed and pushed as `392dcfd56` on `origin/ayush`.
