@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HamiltonHarnack.BlockInterface
-import DifferentialGeometry.Tensor.RSTensor.QuadraticBounds.FiniteArrayNorm
+import DifferentialGeometry.Geometry.Metric.QuadraticBounds.FiniteArrayNorm
 
 set_option autoImplicit false
 

@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Sobolev.Nirenberg.SubstitutionIdentity.SubstitutionNonSmoothChartBilinear
-import DifferentialGeometry.Analysis.Sobolev.Solutions.Mollification
-import DifferentialGeometry.Analysis.Sobolev.Approximation.H1WeakSolutionApprox
+import DifferentialGeometry.Analysis.Sobolev.Tools.Mollification.Basic
+import DifferentialGeometry.Analysis.Sobolev.Approximation.WeakSolution.H1
 
 
 noncomputable section
@@ -25,8 +25,8 @@ open DifferentialGeometry.Analysis.Laplacian.MetricExtension
 open DifferentialGeometry.Analysis.Laplacian.ChartLocalLaplacian
 open DifferentialGeometry.Analysis.Laplacian.ChartMeasureEquiv
 open DifferentialGeometry.Analysis.Laplacian.ChartBilinearH1Compl
-open DifferentialGeometry.Analysis.Sobolev.NirenbergStandardTest
-open DifferentialGeometry.Analysis.Sobolev.NirenbergDiffQuotTestFunction
+open DifferentialGeometry.Analysis.Sobolev.NirenbergTestFunction
+open DifferentialGeometry.Analysis.Sobolev.NirenbergTranslatedCutoffDiffQuot
 open DifferentialGeometry.Analysis.Sobolev.NirenbergSubstitution
 open DifferentialGeometry.Analysis.Sobolev.SubstitutionNonSmoothChartBilinear
 
@@ -52,10 +52,10 @@ lemma diffQuot_mul_apply
     (d := Module.finrank ℝ E) k h f g x
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] in
-lemma integral_F_diffQuot_neg_eq_neg_integral_diffQuot_F
+lemma integral_mul_diffQuot_neg_eq_neg_integral_diffQuot_mul
     {F G : EuclN → ℝ} (k : Fin (Module.finrank ℝ E)) {h : ℝ} (hh : h ≠ 0)
     (hF_cont : Continuous F) (hG_smooth : ContDiff ℝ (⊤ : ℕ∞) G)
-    (hG_supp : HasCompactSupport G) :
+    (hG_support : HasCompactSupport G) :
     ∫ x, F x *
         DifferentialGeometry.Analysis.Sobolev.diffQuot
           (d := Module.finrank ℝ E) k (-h) G x ∂(volume : Measure EuclN) =
@@ -65,7 +65,7 @@ lemma integral_F_diffQuot_neg_eq_neg_integral_diffQuot_F
   have h_ibp :=
     integral_diffQuot_mul_eq_neg_integral_mul_diffQuot_locally_supported
       (d := Module.finrank ℝ E) (k := k) (f := F) (g := G) hh hF_cont
-      hG_smooth hG_supp
+      hG_smooth hG_support
   linarith [h_ibp]
 
 end SubstitutionDischargeChartBilinear

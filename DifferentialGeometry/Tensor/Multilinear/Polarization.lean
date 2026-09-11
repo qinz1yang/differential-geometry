@@ -1,4 +1,4 @@
-import DifferentialGeometry.Tensor.Multilinear.HsBoundOp
+import DifferentialGeometry.Tensor.Multilinear.Norm.HilbertSchmidt
 import Mathlib.Combinatorics.Enumerative.IncidenceAlgebra
 import Mathlib.Data.Finset.Interval
 import Mathlib.Data.Fintype.Perm

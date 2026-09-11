@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.SmoothInSpace
+import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.SmoothInSpace.Basic
 import Mathlib.Geometry.Manifold.MFDeriv.Basic
 import Mathlib.Geometry.Manifold.IsManifold.InteriorBoundary
 

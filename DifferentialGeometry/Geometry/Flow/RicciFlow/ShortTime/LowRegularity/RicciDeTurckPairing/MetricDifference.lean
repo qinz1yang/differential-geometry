@@ -1,6 +1,6 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.FirstOrderCoefficientLipschitzBounds
+import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Coefficients.FirstOrderLipschitzBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.RicciDeTurckPairing.MetricCoefficientBounds
-import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.OperatorFieldJetDifference
+import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.OperatorField.JetDifference
 
 noncomputable section
 
@@ -11,7 +11,7 @@ namespace DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
 
 open DifferentialGeometry.Analysis.Spectral (ccOperatorFieldComp operatorFieldComposition_sub_left operatorFieldComposition_sub_right covGrad_sub
   metricComparisonEndomorphismField metricComparisonEndomorphismField_apply inverseMetricDifferenceSlotCoefficient permCoeff
-  symmS_eq_self_of_ccTensorBilin_symm)
+  ccTensor02Symm_eq_self)
 open DifferentialGeometry.Geometry.Connection
 open DifferentialGeometry.Integral.Connection
 open DifferentialGeometry.Integral.L2
@@ -185,7 +185,7 @@ theorem exists_slotInsertEndoCc_metricComparisonEndomorphismField_covariantJetNo
               (metricComparisonEndomorphismField (I := I) (M := M) g gU)) ≤
         (B R * D2) ^ 2 := by
   obtain ⟨Bh, hBh, hbdd⟩ :=
-    RicciDeTurckLowOrder.full_slot_sobolev_two_bound
+    RicciDeTurckLowOrder.exists_metricComparisonEndomorphism_slot_one_covariantJetNormSq_two_bound
       (I := I) (M := M) g hδ₀0 hδ₀
   obtain ⟨C, hC, happ⟩ :=
     exists_covariantJetNormSq_two_operatorFieldComposition_le (I := I) (M := M) hDim g 2 2 2
@@ -214,15 +214,15 @@ theorem exists_slotInsertEndoCc_metricComparisonEndomorphismField_covariantJetNo
     ccOperatorFieldComp (I := I) (M := M) g 2 2 2 P LT
   let Y : SmoothCcTensor g 2 2 :=
     ccOperatorFieldComp (I := I) (M := M) g 2 2 2 LU X
-  have hsymm : symmS (I := I) (M := M) g (T - U) = T - U := by
-    have hTs := symmS_eq_self_of_ccTensorBilin_symm
+  have hsymm : ccTensor02Symm (I := I) (M := M) g (T - U) = T - U := by
+    have hTs := ccTensor02Symm_eq_self
       (I := I) (M := M) g T hT
-    have hUs := symmS_eq_self_of_ccTensorBilin_symm
+    have hUs := ccTensor02Symm_eq_self
       (I := I) (M := M) g U hU
     change ccTensor02Symm (I := I) (M := M) g T = T at hTs
     change ccTensor02Symm (I := I) (M := M) g U = U at hUs
     change ccTensor02Symm (I := I) (M := M) g (T - U) = T - U
-    rw [symmS_sub, hTs, hUs]
+    rw [ccTensor02Symm_sub, hTs, hUs]
   have hLT2 :
       covariantJetNormSq (I := I) (M := M) g 2 LT ≤ (Bh R) ^ 2 := by
     simpa only [LT] using

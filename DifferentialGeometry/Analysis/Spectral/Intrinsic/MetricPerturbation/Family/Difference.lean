@@ -1,0 +1,291 @@
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Parametric.JetBounds
+import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.Variation.ConnectionDifference
+import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.ResidualCoefficient.Decomposition
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.Reconstruction.TensorHilbertSobolev
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.Perturbation.GramDifference
+import DifferentialGeometry.Geometry.Metric.Family.Regularity.Pair
+import DifferentialGeometry.Geometry.Metric.RiemannianMetricTensor
+open DifferentialGeometry.Tensor.RSTensor
+open DifferentialGeometry.Analysis.Sobolev.IntrinsicSobolev.SmoothCcTensorHs
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Operator
+
+noncomputable section
+
+open Bundle Manifold DifferentialGeometry.Tensor0SBundle
+open scoped Manifold Topology ContDiff RealInnerProductSpace InnerProductSpace
+namespace DifferentialGeometry.Analysis.Spectral
+
+open DifferentialGeometry.Integral.L2
+open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
+open DifferentialGeometry.Analysis.Spectral.MetricRealization
+open DifferentialGeometry.PDE.DeTurck.RicciLinearization
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
+variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
+  [IsManifold I ∞ M] [CompactSpace M] [I.Boundaryless]
+  [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
+
+private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
+
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
+    [BoundarylessManifold I M] [SigmaCompactSpace M] in
+private lemma metricDifference_apply (q h : SmoothRiemannianMetric I M)
+    (x : M) (c : Tensor0SSpace 0 I x) :
+    (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 2 I x from
+      (metricDifferenceCcTensor (I := I) (M := M) q h).toSection x) c =
+      (tensor0SSpaceEvalScalar (𝕜 := ℝ) (I := I) (M := M) x) c •
+        (metricCcTensorFib (I := I) h x - metricCcTensorFib (I := I) q x) := by
+  unfold metricDifferenceCcTensor
+  change
+    (MixedSection.eval₀ (F := E) (E := TangentSpace I) x c) •
+          metricCcTensorFib (I := I) h x -
+        (MixedSection.eval₀ (F := E) (E := TangentSpace I) x c) •
+          metricCcTensorFib (I := I) q x =
+      (tensor0SSpaceEvalScalar (𝕜 := ℝ) (I := I) (M := M) x) c •
+        (metricCcTensorFib (I := I) h x - metricCcTensorFib (I := I) q x)
+  rw [Tensor0SSpace.evalScalar_apply]
+  have heval :
+      (MixedSection.eval₀ (F := E) (E := TangentSpace I) x c) =
+        c Fin.elim0 := by
+    with_unfolding_all
+      exact MixedSection.eval₀_apply (F := E) (E := TangentSpace I) x c
+  rw [heval, ← smul_sub]
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
+    [BoundarylessManifold I M] [SigmaCompactSpace M] in
+theorem smoothCcTensorBilinForm_metricDifferenceCcTensor (q h : SmoothRiemannianMetric I M)
+    (x : M) (v w : TangentSpace I x) :
+    smoothCcTensorBilinForm (I := I) q
+        (metricDifferenceCcTensor (I := I) (M := M) q h) x v w =
+      h.inner x v w - q.inner x v w := by
+  unfold metricDifferenceCcTensor
+  rw [ccTensorBilin_sub, metricCcTensor_apply, metricCcTensor_apply]
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
+    [BoundarylessManifold I M] [SigmaCompactSpace M] in
+theorem metricDifference_unit (q h : SmoothRiemannianMetric I M)
+    (x : M) (slots : Fin 2 → E) :
+    unitModel (I := I) (M := M) q 2
+        (metricDifferenceCcTensor (I := I) (M := M) q h) x slots =
+      h.inner x (slots 0) (slots 1) - q.inner x (slots 0) (slots 1) := by
+  have hslots : slots = ![slots 0, slots 1] := by
+    funext i
+    fin_cases i <;> rfl
+  rw [hslots]
+  calc
+    unitModel (I := I) (M := M) q 2
+        (metricDifferenceCcTensor (I := I) (M := M) q h) x
+          ![slots 0, slots 1] =
+      smoothCcTensorBilinForm (I := I) q
+        (metricDifferenceCcTensor (I := I) (M := M) q h) x
+          (show TangentSpace I x from slots 0)
+          (show TangentSpace I x from slots 1) := by
+        convert unitModel_eq_ccTensorBilin_local (I := I) (M := M) q
+          (metricDifferenceCcTensor (I := I) (M := M) q h) x
+          (show TangentSpace I x from slots 0)
+          (show TangentSpace I x from slots 1) using 1
+    _ = h.inner x (slots 0) (slots 1) - q.inner x (slots 0) (slots 1) := by
+      convert smoothCcTensorBilinForm_metricDifferenceCcTensor (I := I) (M := M) q h x
+        (show TangentSpace I x from slots 0)
+        (show TangentSpace I x from slots 1) using 1
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
+    [BoundarylessManifold I M] [SigmaCompactSpace M] in
+theorem metricDifference_symm (q h : SmoothRiemannianMetric I M)
+    (x : M) (v w : TangentSpace I x) :
+    smoothCcTensorBilinForm (I := I) q
+        (metricDifferenceCcTensor (I := I) (M := M) q h) x v w =
+      smoothCcTensorBilinForm (I := I) q
+        (metricDifferenceCcTensor (I := I) (M := M) q h) x w v := by
+  rw [smoothCcTensorBilinForm_metricDifferenceCcTensor, smoothCcTensorBilinForm_metricDifferenceCcTensor, h.symm x v w, q.symm x v w]
+
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
+    [BoundarylessManifold I M] [SigmaCompactSpace M] in
+theorem metricDifference_symVal (q h : SmoothRiemannianMetric I M)
+    (x : M) (v w : TangentSpace I x) :
+    ccTensorBilinSymm (I := I) q
+        (metricDifferenceCcTensor (I := I) (M := M) q h) x v w =
+      h.inner x v w - q.inner x v w := by
+  rw [ccTensorBilinSymm_apply, smoothCcTensorBilinForm_metricDifferenceCcTensor, smoothCcTensorBilinForm_metricDifferenceCcTensor,
+    h.symm x v w, q.symm x v w]
+  ring
+omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M]
+    [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
+    [SigmaCompactSpace M] in
+theorem metric_ext_inner
+    {g h : SmoothRiemannianMetric I M}
+    (heq : ∀ (x : M) (v w : TangentSpace I x),
+      g.inner x v w = h.inner x v w) :
+    g = h := by
+  have hinner : g.inner = h.inner := by
+    funext x
+    ext v w
+    exact heq x v w
+  cases g with
+  | mk gi gsymm gpos gvon gcont =>
+    cases h with
+    | mk hi hsymm hpos hvon hcont =>
+      cases hinner
+      rfl
+
+omit [BoundarylessManifold I M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
+theorem realize_metricDifference (q h : SmoothRiemannianMetric I M)
+    {δ : ℝ} (hδ_lt : δ < 1)
+    (hδ : metricCauchySchwarzBound (I := I) (M := M) q
+      (ccTensorBilinSymm (I := I) q
+        (metricDifferenceCcTensor (I := I) (M := M) q h)) δ) :
+    tensorSectionRealizeMetric (I := I) q
+        (metricDifferenceCcTensor (I := I) (M := M) q h) hδ_lt hδ = h := by
+  apply metric_ext_inner
+  intro x v w
+  rw [tensorSectionRealizeMetric_inner, metricDifference_symVal]
+  ring
+
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
+  [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+private theorem metricDifference_eval
+    {D : RealTimeInterval}
+    (g_fam : ℝ → SmoothRiemannianMetric I M)
+    (hG : MetricFamilySmoothOn (I := I) (M := M) D g_fam)
+    (q : SmoothRiemannianMetric I M)
+    (Y Z : ContMDiffSection I E (∞ : WithTop ℕ∞)
+      (TangentSpace I : M → Type _)) :
+    ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, ℝ) ∞
+      (fun p : M × ℝ =>
+        (g_fam p.2).inner p.1 (Y p.1) (Z p.1) -
+          q.inner p.1 (Y p.1) (Z p.1))
+      ((Set.univ : Set M) ×ˢ D.regular) := by
+  intro p hp
+  have hpair := hG.pairSmoothAt (t := p.2) (x := p.1)
+    (D.regular_isOpen.mem_nhds hp.2) (![Y, Z])
+  have hswap : ContMDiffAt (I.prod 𝓘(ℝ, ℝ))
+      (𝓘(ℝ, ℝ).prod I) ∞ (fun r : M × ℝ => (r.2, r.1)) p :=
+    contMDiffAt_snd.prodMk contMDiffAt_fst
+  have hmove : ContMDiffAt (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, ℝ) ∞
+      (fun r : M × ℝ =>
+        (g_fam r.2).inner r.1 (Y r.1) (Z r.1)) p :=
+    hpair.comp p hswap
+  have hfixedM :=
+    DifferentialGeometry.Geometry.Operator.contMDiff_g_inner_of_smooth_sections
+      (I := I) (M := M) q Y Z
+  have hfixed : ContMDiffAt (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, ℝ) ∞
+      (fun r : M × ℝ => q.inner r.1 (Y r.1) (Z r.1)) p :=
+    hfixedM.contMDiffAt.comp p contMDiffAt_fst
+  have hscalar := hmove.sub hfixed
+  refine hscalar.contMDiffWithinAt.congr_of_eventuallyEq ?_ ?_
+  · filter_upwards with r
+    rfl
+  · rfl
+
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
+    [BoundarylessManifold I M] [SigmaCompactSpace M] in
+theorem metricDifference_joint
+    {D : RealTimeInterval}
+    (g_fam : ℝ → SmoothRiemannianMetric I M)
+    (hG : MetricFamilySmoothOn (I := I) (M := M) D g_fam)
+    (q : SmoothRiemannianMetric I M) :
+    ContMDiffOn (I.prod 𝓘(ℝ, ℝ))
+      (I.prod 𝓘(ℝ, TensorRSModel 0 2 ℝ E)) ∞
+      (fun p : M × ℝ => TotalSpace.mk' (TensorRSModel 0 2 ℝ E)
+        (E := fun x : M => TensorRSSpace 0 2 I x) p.1
+        ((metricDifferenceCcTensor (I := I) (M := M) q
+          (g_fam p.2)).toSection p.1))
+      ((Set.univ : Set M) ×ˢ D.regular) := by
+  apply contMDiffOn_clm_section_of_apply (I := I) (M := M)
+    (F₁ := Tensor0SModel 0 ℝ E) (V₁ := fun x : M => Tensor0SSpace 0 I x)
+    (F₂ := Tensor0SModel 2 ℝ E) (V₂ := fun x : M => Tensor0SSpace 2 I x)
+    (φ := fun p : M × ℝ =>
+      (show Tensor0SSpace 0 I p.1 →L[ℝ] Tensor0SSpace 2 I p.1 from
+        (metricDifferenceCcTensor (I := I) (M := M) q
+          (g_fam p.2)).toSection p.1))
+  intro Y
+  have hscalar : ContMDiff I 𝓘(ℝ, ℝ) ∞
+      (Tensor0SNabla.scalarFn I M (fun x : M => Y x)) :=
+    (Tensor0SNabla.contMDiff_scalarFn_iff_section I M
+      (fun x : M => Y x)).mpr Y.contMDiff
+  have hscalar' : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, ℝ) ∞
+      (fun p : M × ℝ =>
+        Tensor0SNabla.scalarFn I M (fun x : M => Y x) p.1)
+      ((Set.univ : Set M) ×ˢ D.regular) :=
+    hscalar.comp_contMDiffOn contMDiffOn_fst
+  have hbilin : ContMDiffOn (I.prod 𝓘(ℝ, ℝ))
+      (I.prod 𝓘(ℝ, E →L[ℝ] E →L[ℝ] ℝ)) ∞
+      (fun p : M × ℝ => TotalSpace.mk' (E →L[ℝ] E →L[ℝ] ℝ)
+        (E := fun x : M => TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ)
+        p.1 ((Tensor0SNabla.scalarFn I M (fun x : M => Y x) p.1) •
+          ((g_fam p.2).inner p.1 - q.inner p.1)))
+      ((Set.univ : Set M) ×ˢ D.regular) := by
+    apply contMDiffOn_clm_section_of_apply (I := I) (M := M)
+      (F₁ := E) (V₁ := fun x : M => TangentSpace I x)
+      (F₂ := E →L[ℝ] ℝ) (V₂ := fun x : M => TangentSpace I x →L[ℝ] ℝ)
+      (φ := fun p : M × ℝ =>
+        (Tensor0SNabla.scalarFn I M (fun x : M => Y x) p.1) •
+          ((g_fam p.2).inner p.1 - q.inner p.1))
+    intro Z
+    apply contMDiffOn_clm_section_of_apply (I := I) (M := M)
+      (F₁ := E) (V₁ := fun x : M => TangentSpace I x)
+      (F₂ := ℝ) (V₂ := fun _ : M => ℝ)
+      (φ := fun p : M × ℝ =>
+        ((Tensor0SNabla.scalarFn I M (fun x : M => Y x) p.1) •
+          ((g_fam p.2).inner p.1 - q.inner p.1)) (Z p.1))
+    intro W p hp
+    rw [Bundle.contMDiffWithinAt_totalSpace]
+    refine ⟨contMDiffWithinAt_fst, ?_⟩
+    have hprod :=
+      (hscalar' p hp).mul
+        (metricDifference_eval (I := I) (M := M) (D := D) g_fam hG q Z W p hp)
+    simpa only [Bundle.Trivial.fiberBundle_trivializationAt',
+      Bundle.Trivial.trivialization_apply, smul_apply, sub_apply, smul_eq_mul] using
+        hprod.congr_of_eventuallyEq
+          (f₁ := fun x : M × ℝ =>
+            Tensor0SNabla.scalarFn I M (fun y : M => Y y) x.1 *
+              (((g_fam x.2).inner x.1) (Z x.1) (W x.1) -
+                (q.inner x.1) (Z x.1) (W x.1)))
+          (Filter.Eventually.of_forall fun _ => rfl) rfl
+  have hscaled : ContMDiffOn (I.prod 𝓘(ℝ, ℝ))
+      (I.prod 𝓘(ℝ, Tensor0SModel 2 ℝ E)) ∞
+      (fun p : M × ℝ => TotalSpace.mk' (Tensor0SModel 2 ℝ E)
+        (E := fun x : M => Tensor0SSpace 2 I x) p.1
+        ((Tensor0SNabla.scalarFn I M (fun x : M => Y x) p.1) •
+          (metricCcTensorFib (I := I) (g_fam p.2) p.1 -
+            metricCcTensorFib (I := I) q p.1)))
+      ((Set.univ : Set M) ×ˢ D.regular) := by
+    refine (joint_to02 (I := I) (M := M)
+      (fun p : M × ℝ =>
+        (Tensor0SNabla.scalarFn I M (fun x : M => Y x) p.1) •
+          ((g_fam p.2).inner p.1 - q.inner p.1)) hbilin).congr (fun p _ => ?_)
+    congr 1
+  refine hscaled.congr (fun p _ => ?_)
+  refine congrArg (fun z : Tensor0SSpace 2 I p.1 =>
+    TotalSpace.mk' (Tensor0SModel 2 ℝ E)
+      (E := fun x : M => Tensor0SSpace 2 I x) p.1 z) ?_
+  rw [metricDifference_apply (I := I) (M := M)]
+  congr 1
+  rw [Tensor0SNabla.scalarFn_eq_apply_zero, Tensor0SSpace.evalScalar_apply]
+  exact congrArg (Y p.1) (Subsingleton.elim _ _)
+
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
+    [BoundarylessManifold I M] [SigmaCompactSpace M] in
+theorem metricDifference_shift
+    {D : RealTimeInterval}
+    (g_fam : ℝ → SmoothRiemannianMetric I M)
+    (hG : MetricFamilySmoothOn (I := I) (M := M) D g_fam)
+    (q : SmoothRiemannianMetric I M) (c : ℝ) {S : Set ℝ}
+    (hmap : ∀ t ∈ S, c + t ∈ D.regular) :
+    ContMDiffOn (I.prod 𝓘(ℝ, ℝ))
+      (I.prod 𝓘(ℝ, TensorRSModel 0 2 ℝ E)) ∞
+      (fun p : M × ℝ => TotalSpace.mk' (TensorRSModel 0 2 ℝ E)
+        (E := fun x : M => TensorRSSpace 0 2 I x) p.1
+        ((metricDifferenceCcTensor (I := I) (M := M) q
+          (g_fam (c + p.2))).toSection p.1))
+      ((Set.univ : Set M) ×ˢ S) := by
+  have hshift : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, ℝ)) ∞
+      (fun p : M × ℝ => (p.1, c + p.2)) ((Set.univ : Set M) ×ˢ S) :=
+    (contMDiff_fst.prodMk (contMDiff_const.add contMDiff_snd)).contMDiffOn
+  exact (metricDifference_joint (I := I) (M := M) g_fam hG q).comp hshift
+    (fun p hp => ⟨Set.mem_univ p.1, hmap p.2 hp.2⟩)
+
+end DifferentialGeometry.Analysis.Spectral
+
+end

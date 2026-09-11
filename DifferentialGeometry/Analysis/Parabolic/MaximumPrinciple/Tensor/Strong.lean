@@ -62,7 +62,7 @@ theorem tensor_positive_definite_on_of_nonnegative_of_strict_supersolution
     (hcovInf : ∀ t : Real, CovariantDerivative.ContMDiffCovariantDerivativeLocally
       (cov t) (∞ : WithTop ℕ∞))
     (hmc : ∀ t : Real,
-      DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen
+      DifferentialGeometry.Geometry.Connection.IsMetricCompatible
         (I := I) (cov t) (G t))
     (hspatial : TensorSpatialDerivs (I := I) (M := M) cov S nablaS nabla2S) :
     TwoTensorFamilyPositiveDefiniteOn (I := I) (M := M)
@@ -145,7 +145,7 @@ theorem tensor_positive_definite_on_of_nonnegative_of_strict_supersolution
   have hsymSlab : TwoTensorFamilySymmetricOn (I := I) (M := M)
       Sraw (Set.Icc 0 (0 + t)) := by simpa only [zero_add] using hsym
   obtain ⟨Xsec, hXsec⟩ :=
-    ContMDiffSection.exists_eq_at_gen
+    ContMDiffSection.exists_eq_at
       (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞))
       x (X t x)
   have hsigns : TensorFirstNullScalarSigns (I := I) (M := M)
@@ -177,7 +177,7 @@ theorem tensor_positive_definite_on_of_strict_supersolution
     {nablaS : TensorNabla1SecFamily (I := I) (M := M)}
     {nabla2S : TensorNabla2SecFamily (I := I) (M := M)}
     {T : Real}
-    (data : TensorWMPInput (I := I) (M := M) G S X N cov nablaS nabla2S T)
+    (data : TensorWeakMaximumPrincipleAssumptions (I := I) (M := M) G S X N cov nablaS nabla2S T)
     (hstrict : TensorParabolicStrictInequalityWithDriftOn
       (I := I) (M := M) G
       (twoTensorSecToFamily (I := I) (M := M) S) X N
@@ -187,8 +187,8 @@ theorem tensor_positive_definite_on_of_strict_supersolution
   exact tensor_positive_definite_on_of_nonnegative_of_strict_supersolution
     (I := I) (M := M) (G := G) (S := S) (X := X) (N := N)
     (cov := cov) (nablaS := nablaS) (nabla2S := nabla2S)
-    (tensor_wmp (I := I) (M := M) data) data.reg.symmetric hstrict
-    data.null data.hcov1 data.hcovInf data.hmc data.spatial
+    (tensor_weak_maximum_principle (I := I) (M := M) data) data.regularity.symmetric hstrict
+    data.null data.connection_contMDiff_one data.connection_contMDiff_infty data.metricCompatible data.spatial
 
 theorem tensor_positive_definite_on_of_null_reaction_lower_bound
     [I.Boundaryless] [T2Space M]
@@ -202,7 +202,7 @@ theorem tensor_positive_definite_on_of_null_reaction_lower_bound
     {nablaS : TensorNabla1SecFamily (I := I) (M := M)}
     {nabla2S : TensorNabla2SecFamily (I := I) (M := M)}
     {T eta : Real}
-    (data : TensorWMPInput (I := I) (M := M) G S X N cov nablaS nabla2S T)
+    (data : TensorWeakMaximumPrincipleAssumptions (I := I) (M := M) G S X N cov nablaS nabla2S T)
     (heta : 0 < eta)
     (hreaction : TensorNullEigenvectorLowerBound (I := I) (M := M)
       G N eta (Set.Icc 0 T)) :
@@ -230,8 +230,8 @@ theorem tensor_positive_definite_on_of_null_reaction_lower_bound
   exact tensor_positive_definite_on_of_nonnegative_of_strict_supersolution
     (I := I) (M := M) (G := G) (S := S) (X := X) (N := Nshift)
     (cov := cov) (nablaS := nablaS) (nabla2S := nabla2S)
-    (tensor_wmp (I := I) (M := M) data) data.reg.symmetric hstrict hnull
-    data.hcov1 data.hcovInf data.hmc data.spatial
+    (tensor_weak_maximum_principle (I := I) (M := M) data) data.regularity.symmetric hstrict hnull
+    data.connection_contMDiff_one data.connection_contMDiff_infty data.metricCompatible data.spatial
 
 end
 

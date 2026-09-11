@@ -1,9 +1,9 @@
-import DifferentialGeometry.Geometry.Coordinates.Christoffel
-import DifferentialGeometry.Geometry.Coordinates.ChristoffelTensor
+import DifferentialGeometry.Geometry.Coordinates.Connection.Christoffel
+import DifferentialGeometry.Geometry.Coordinates.Connection.ChristoffelTensor
 import DifferentialGeometry.Geometry.Coordinates.MetricCompatibility.Inverse
 import DifferentialGeometry.Geometry.Coordinates.MetricCompatibility.Covariant
 import DifferentialGeometry.Geometry.Coordinates.MetricCompatibility.Coordinate
-import DifferentialGeometry.Geometry.Curvature.Basic
+import DifferentialGeometry.Geometry.Curvature.Riemann.RawFields
 import DifferentialGeometry.Geometry.Curvature.Components.Basic
 import DifferentialGeometry.Geometry.Curvature.Components.Lowering
 import DifferentialGeometry.Geometry.Curvature.Components.TraceOneForm
@@ -12,11 +12,11 @@ import DifferentialGeometry.Geometry.Curvature.Components.LocalFrame
 import DifferentialGeometry.Geometry.Curvature.Components.Christoffel
 import DifferentialGeometry.Geometry.Curvature.Components.RicciIdentity
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Basic
-import DifferentialGeometry.Geometry.Connection.LeviCivita.Torsion
+import DifferentialGeometry.Geometry.Connection.LeviCivita.Characterization.Torsion
 import DifferentialGeometry.Geometry.Connection.Variation.Basic
 import DifferentialGeometry.Bundle.PartialMfderiv.Basic
 import DifferentialGeometry.Bundle.PartialMfderiv.ModelMixed
-import DifferentialGeometry.Bundle.PartialMfderiv.FixedBase
+import DifferentialGeometry.Geometry.Coordinates.Calculus.FixedBaseDerivative
 open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
@@ -193,7 +193,7 @@ theorem metricVar_path
       DifferentialGeometry.Geometry.Connection.IsMetricPotentialVariationPath (I := I) path
         metricVariation
         potentialVariation) :
-    metricVarOn (I := I) path.G frame path.base u
+    metricVarOn (I := I) path.connectionFamily frame path.base u
       (metricDotFrame (I := I) metricVariation frame) := by
   intro x _hx a b
   simpa [metricDotFrame] using
@@ -584,15 +584,13 @@ theorem metricCovAtBase_eq_connectionDifference
       connectionDifferenceLow (I := I) G frame var base var x d a b +
         (G.metric var).inner x (frame a x)
           (connectionDifferenceVec (I := I) G frame base var x d b) := by
-  have hfd : MDiffAt (T% (frame d)) x :=
-    localFrame_mdiffAt (I := I) frame hframe hu hx d
   have hfa : MDiffAt (T% (frame a)) x :=
     localFrame_mdiffAt (I := I) frame hframe hu hx a
   have hfb : MDiffAt (T% (frame b)) x :=
     localFrame_mdiffAt (I := I) frame hframe hu hx b
   have hmc :=
-    DifferentialGeometry.Geometry.Connection.metric_compatible_apply
-      (I := I) (hLC var).1 (frame d) (frame a) (frame b) hfd hfa hfb
+    DifferentialGeometry.Geometry.Connection.IsMetricCompatible.mvfderiv_inner
+      (I := I) (hLC var).1 (frame d x) hfa hfb
   unfold metricCovAtBase connectionDifferenceLow connectionDifferenceVec
   have hmc' :
       mvfderiv (I := I)
@@ -937,7 +935,7 @@ theorem normSq0S_three_eq_componentL2Sq3_of_components [DecidableEq Idx]
     (g : SmoothRiemannianMetric I M) (x : M)
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (hinv :
-      Tensor0SBundle.MetricInverseInBasisGen
+      Tensor0SBundle.MetricInverseInBasis
         (I := I) g x basis (Tensor0SBundle.identityInvMetric (Idx := Idx)))
     (A : Tensor0SBundle.Tensor0SSpace
       (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 3 x)
@@ -1115,7 +1113,7 @@ theorem gammaSub_l2_le
   have habs := (sq_le_sq.mp hsquares)
   simpa [abs_of_nonneg (Real.sqrt_nonneg _), abs_of_nonneg hrhs_nonneg] using habs
 
-theorem gammaEvol_l2Sq_le
+theorem gammaEvolution_l2Sq_le
     (A D : Idx -> Idx -> Idx -> Real)
     (hcombo :
       forall a b e : Idx,
@@ -1168,14 +1166,14 @@ theorem gammaEvol_l2Sq_le
           rw [componentL2Sq3_swap12, componentL2Sq3_cyc]
     _ = 9 * componentL2Sq3 A := by ring
 
-theorem gammaEvol_l2_le
+theorem gammaEvolution_l2_le
     (A D : Idx -> Idx -> Idx -> Real)
     (hcombo :
       forall a b e : Idx,
         D a b e = -A a b e - A b a e + A e a b) :
     Real.sqrt (componentL2Sq3 D) <=
       3 * Real.sqrt (componentL2Sq3 A) := by
-  have hsq := gammaEvol_l2Sq_le (Idx := Idx) A D hcombo
+  have hsq := gammaEvolution_l2Sq_le (Idx := Idx) A D hcombo
   have hA_nonneg : 0 <= componentL2Sq3 A := componentL2Sq3_nonneg (Idx := Idx) A
   have hD_nonneg : 0 <= componentL2Sq3 D := componentL2Sq3_nonneg (Idx := Idx) D
   have hrhs_nonneg : 0 <= 3 * Real.sqrt (componentL2Sq3 A) :=
@@ -1347,7 +1345,7 @@ theorem normSqRS_connectionDifference_eq_componentL2Sq3 [DecidableEq Idx]
               (G.connection base) frame hframe x a b e) := by
   classical
   have hinvBasis :
-      Tensor0SBundle.MetricInverseInBasisGen
+      Tensor0SBundle.MetricInverseInBasis
         (I := I) (G.metric var) x (hframe.toBasisAt hx)
         (Tensor0SBundle.identityInvMetric (Idx := Idx)) := by
     intro i j

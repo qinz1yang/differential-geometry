@@ -1,4 +1,4 @@
-import DifferentialGeometry.Tensor.Multilinear.Basis
+import DifferentialGeometry.Tensor.Multilinear.Bundle.Basis
 import DifferentialGeometry.Tensor.RSTensor.Defs
 open DifferentialGeometry.Tensor.Multilinear
 

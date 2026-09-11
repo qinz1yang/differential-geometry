@@ -42,15 +42,15 @@ private lemma memLp_two_contDiff_hasCompactSupport_restrict
   (hf_cd.continuous.memLp_of_hasCompactSupport (μ := volume) (p := 2)
     hf_cs).restrict _
 
-theorem tensor_h2_loc_chartComp
+theorem tensor_h2_local_chartComp
     [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (T F : SmoothCcTensor g r s) (α : M)
     {K : Set EuclN} (hK : IsCompact K)
     (hK_target : K ⊆ chartTargetEuclid (I := I) (M := M) α)
     (P₀ : CompIdx E r s)
-    (hT_supp : tsupport T.toFun ⊆ (chartAt H α).source)
-    (hF_supp : tsupport F.toFun ⊆ (chartAt H α).source)
+    (hT_support : tsupport T.toFun ⊆ (chartAt H α).source)
+    (hF_support : tsupport F.toFun ⊆ (chartAt H α).source)
     (hT_K : tsupport (tensorComponentEuclid (I := I) (M := M) g r s T α P₀) ⊆ K)
     (hweak : ∀ v : SmoothCcTensor g r s,
       ∫ x, tensorCovDerivPointwiseInner (I := I) (M := M) g r s T v x
@@ -88,16 +88,16 @@ theorem tensor_h2_loc_chartComp
         (tensorComponentEuclid (I := I) (M := M) g r s T α P₀)
         (tensorComponentWeakRHS (I := I) (M := M) g r s T F α P₀) :=
     tensorComponent_isSmoothWeakSolution (I := I) (M := M)
-      g r s T F α hK hK_target P₀ hT_supp hF_supp hT_K hweak
+      g r s T F α hK hK_target P₀ hT_support hF_support hT_K hweak
   have hRHS_cd : ContDiff ℝ ∞
       (tensorComponentWeakRHS (I := I) (M := M) g r s T F α P₀) :=
     tensorComponentWeakRHS_contDiff (I := I) (M := M)
-      g r s T F α P₀ hT_supp hF_supp
+      g r s T F α P₀ hT_support hF_support
   have hRHS_cs : HasCompactSupport
       (tensorComponentWeakRHS (I := I) (M := M) g r s T F α P₀) :=
     tensorComponentWeakRHS_hasCompactSupport (I := I) (M := M)
-      g r s T F α hK hK_target P₀ hT_supp hF_supp hT_K hweak
-  have hf_l2_loc : ∀ {Ω' : Set EuclN}, IsCompact (closure Ω') →
+      g r s T F α hK hK_target P₀ hT_support hF_support hT_K hweak
+  have hf_l2_local : ∀ {Ω' : Set EuclN}, IsCompact (closure Ω') →
       MemLp (tensorComponentWeakRHS (I := I) (M := M) g r s T F α P₀)
         2 ((volume : Measure EuclN).restrict Ω') := by
     intro Ω' _
@@ -106,24 +106,24 @@ theorem tensor_h2_loc_chartComp
   have h_room :
       Metric.cthickening 2 (closure Ω'') ⊆ (Set.univ : Set EuclN) :=
     fun y _ => Set.mem_univ y
-  obtain ⟨C, hC_nn, h_eng⟩ := loc_smooth_solution
+  obtain ⟨C, hC_nn, h_eng⟩ := local_smooth_solution
     (d := Module.finrank ℝ E)
     (tensorPrincipalForm (I := I) (M := M) g α hK hK_target)
     hΩ'' hΩ''_compact_closure h_room
   intro i k
   obtain ⟨g_ik, hg_memLp, hg_weak, Ω', hΩ'_open, hΩ''_in_Ω', hΩ'_in,
-    hΩ'_compact, hbound⟩ := h_eng h_weak hf_l2_loc i k
+    hΩ'_compact, hbound⟩ := h_eng h_weak hf_l2_local i k
   exact ⟨g_ik, hg_memLp, hg_weak, Ω', hΩ'_open, hΩ''_in_Ω', hΩ'_in,
     hΩ'_compact, C, hC_nn, hbound⟩
 
-theorem tensor_h2_loc_chartComp_all
+theorem tensor_h2_local_chartComp_all
     [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (T F : SmoothCcTensor g r s) (α : M)
     {K : Set EuclN} (hK : IsCompact K)
     (hK_target : K ⊆ chartTargetEuclid (I := I) (M := M) α)
-    (hT_supp : tsupport T.toFun ⊆ (chartAt H α).source)
-    (hF_supp : tsupport F.toFun ⊆ (chartAt H α).source)
+    (hT_support : tsupport T.toFun ⊆ (chartAt H α).source)
+    (hF_support : tsupport F.toFun ⊆ (chartAt H α).source)
     (hT_K : ∀ P₀ : CompIdx E r s,
       tsupport (tensorComponentEuclid (I := I) (M := M) g r s T α P₀) ⊆ K)
     (hweak : ∀ v : SmoothCcTensor g r s,
@@ -157,8 +157,8 @@ theorem tensor_h2_loc_chartComp_all
                   (tensorComponentWeakRHS (I := I) (M := M)
                     g r s T F α P₀ x) ^ 2
                 ∂(volume : Measure EuclN)) :=
-  fun P₀ => tensor_h2_loc_chartComp (I := I) (M := M)
-    g r s T F α hK hK_target P₀ hT_supp hF_supp (hT_K P₀) hweak hΩ'' hΩ''_compact_closure
+  fun P₀ => tensor_h2_local_chartComp (I := I) (M := M)
+    g r s T F α hK hK_target P₀ hT_support hF_support (hT_K P₀) hweak hΩ'' hΩ''_compact_closure
 
 end TensorRegularity
 end Laplacian

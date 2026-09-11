@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.Raising
-import DifferentialGeometry.Tensor.RSTensor.MetricTrace.Higher
+import DifferentialGeometry.Geometry.Connection.MetricTrace.Higher
 open DifferentialGeometry.Tensor.Multilinear
 open DifferentialGeometry.Tensor.RSTensor
 open DifferentialGeometry.PDE.RicciFlow
@@ -99,7 +99,7 @@ noncomputable def freezeAllBut04Field
         simp [v, Function.update_of_ne hi]
     change ContMDiffAt I 𝓘(Real, Real) (∞ : WithTop ℕ∞)
       (fun y : M => Tensor0SSpace.toModel (A y) (fun i : Fin 4 => v i y)) x₀
-    exact TensorMultilinear.contMDiffAt_section_apply_gen
+    exact TensorMultilinear.contMDiffAt_section_apply
       (𝕜 := Real) (I := I) (M := M) (n := 4)
       (T := fun y : M => A y) (A.contMDiff x₀) v hv
   refine hcoeff.congr_of_eventuallyEq ?_
@@ -400,7 +400,7 @@ def nablaRmFrozenSlotField
       (n := (∞ : WithTop ℕ∞)) 2 :=
   totalNabla0S (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
     1 (S.family.connection t) (rmFrozenSlotField (I := I) S t q Y)
-    (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+    (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
       1 (S.family.connection t) (rmFrozen_connSmoothInf (I := I) S t)
       (rmFrozenSlotField (I := I) S t q Y))
 
@@ -416,7 +416,7 @@ theorem nablaRmFrozenSlotField_realizes
       (nablaRmFrozenSlotField (I := I) S t q Y) :=
   totalNabla0S_realizes (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
     1 (S.family.connection t) (rmFrozenSlotField (I := I) S t q Y)
-    (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+    (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
       1 (S.family.connection t) (rmFrozen_connSmoothInf (I := I) S t)
       (rmFrozenSlotField (I := I) S t q Y))
 

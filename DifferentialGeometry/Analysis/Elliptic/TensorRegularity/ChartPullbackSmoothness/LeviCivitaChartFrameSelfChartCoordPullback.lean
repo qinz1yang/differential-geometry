@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Elliptic.TensorRegularity.ChartPullbackSmoothness.ChartFrameCoordMatrixPullback
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Defs
-import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.ChartCoordinateExpansion.CovApplyFrameToCoordExpansion
+import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.ChartCoordinateExpansion.LocalizedFrame.CovariantDerivative
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
@@ -32,17 +32,17 @@ private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 private noncomputable def chartModelBasisProj (m : Fin (Module.finrank ℝ E)) :
     E →L[ℝ] ℝ :=
   LinearMap.toContinuousLinearMap
-    (((LinearMap.proj m).comp ((chartModelBasis E).equivFun.toLinearMap)) :
+    (((LinearMap.proj m).comp ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).equivFun.toLinearMap)) :
       E →ₗ[ℝ] ℝ)
 
 omit [NeZero (Module.finrank ℝ E)] in
 @[simp] private lemma chartModelBasisProj_apply (m : Fin (Module.finrank ℝ E))
     (v : E) :
     chartModelBasisProj (E := E) m v =
-      ((chartModelBasis E).repr v) m := by
+      ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr v) m := by
   classical
   unfold chartModelBasisProj
-  change ((LinearMap.proj m).comp ((chartModelBasis E).equivFun.toLinearMap)) v = _
+  change ((LinearMap.proj m).comp ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).equivFun.toLinearMap)) v = _
   rw [LinearMap.comp_apply]
   simp [Module.Basis.equivFun]
 
@@ -212,13 +212,13 @@ theorem leviCivita_chartFrame_self_chartCoord_pullback_contDiffOn_chartTarget
         (chartTargetEuclid (I := I) (M := M) α)
         (trivializationAt E (TangentSpace I) α).baseSet := by
     intro y hy
-    have h_src : (extChartAt I α).symm ((toEuclidean (E := E)).symm y) ∈
+    have h_source : (extChartAt I α).symm ((toEuclidean (E := E)).symm y) ∈
         (chartAt H α).source :=
       DifferentialGeometry.Analysis.Sobolev.Chart.symm_toEuclidean_symm_mem_chartAtSource
         (I := I) (M := M) α hy
     change (extChartAt I α).symm ((toEuclidean (E := E)).symm y) ∈
       (chartAt H α).source
-    exact h_src
+    exact h_source
   have h_comp :
       ContMDiffOn 𝓘(ℝ, EuclideanSpace ℝ (Fin (Module.finrank ℝ E))) 𝓘(ℝ, ℝ) ∞
         (fun y : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)) =>

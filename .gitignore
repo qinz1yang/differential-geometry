@@ -5,16 +5,12 @@
 !/.github
 !/Examples/
 !/DifferentialGeometry.lean
-!/lake-manifest.json
 !/lakefile.toml
 !/lean-toolchain
 !/README.md
 !/LICENSE
 !/NOTICE
 !/.gitignore
-!/AGENTS.md
-!/STRUCTURE.md
-!/NAMING.md
 # end of whitelist
 
 .lake/

@@ -1,9 +1,9 @@
-import DifferentialGeometry.Analysis.Sobolev.Euclidean.Embedding.CompactJetWkpBound
-import DifferentialGeometry.Analysis.Sobolev.Tensor.ChartLocality
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.MetricJet3Intrinsic
-import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.CovGrad.EigenvectorCovGradLeibniz
-import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.LowerOrder.ChartL2BoundedConvergence
-import DifferentialGeometry.Geometry.Metric.Convergence.Precompactness
+import DifferentialGeometry.Analysis.Sobolev.Euclidean.Embedding.Jet.CompactBound
+import DifferentialGeometry.Analysis.Sobolev.Tensor.Chart.Locality
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.Metric.IntrinsicThirdJet
+import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.CovariantDerivative.PartitionOfUnityLeibniz
+import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.ChartL2Convergence
+import DifferentialGeometry.Geometry.Metric.Convergence.Compactness.Precompactness
 open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.Sobolev
     DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Geometry.Curvature
@@ -18,7 +18,7 @@ open scoped Manifold Topology ContDiff ENNReal BigOperators Matrix
 
 namespace DifferentialGeometry.PDE.RicciFlow
 
-open DifferentialGeometry.HCGCompactness
+open DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.Integral.DivergenceTheorem
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Integral.Measure
@@ -41,7 +41,7 @@ private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
 omit [BoundarylessManifold I M] in
-theorem metricDiff_fam_jet
+theorem metricDifference_fam_jet
     {ι : Type*}
     (gBase : SmoothRiemannianMetric I M)
     (gSeq : ι → SmoothRiemannianMetric I M)
@@ -167,7 +167,7 @@ theorem metricDiff_fam_jet
               (![] : Fin 0 → Fin (Module.finrank ℝ E)) ![a, c] =ᶠ[nhds y]
             (fun z => ρ z * raw z) := by
         simpa only [tensorChartComp_def, hρ_def, hraw_def] using
-          tensorChartComponent_eventuallyEq_chartPushedRaw_pou_mul_chartPushedRaw_raw
+          tensorChartComponent_eventuallyEq_chartPushedRaw_pou_mul_chartPushedRaw
             (I := I) (M := M) gBase 0 2 T α
             (![] : Fin 0 → Fin (Module.finrank ℝ E)) ![a, c] hyT
       change ‖iteratedFDeriv ℝ j
@@ -331,7 +331,7 @@ theorem metricDiff_fam_jet
     simpa using hC_nn
 
 omit [BoundarylessManifold I M] in
-theorem metricDiff_wkp_terms
+theorem metricDifference_wkp_terms
     {ι : Type*}
     (gBase : SmoothRiemannianMetric I M)
     (gSeq : ι → SmoothRiemannianMetric I M)
@@ -351,7 +351,7 @@ theorem metricDiff_wkp_terms
             (metricDifferenceCcTensor (I := I) (M := M) gBase (gSeq w.1))
             α (![] : Fin 0 → Fin (Module.finrank ℝ E)) w.2)
           (chartTargetEuclid (I := I) (M := M) α) ≤ A := by
-  obtain ⟨C, hC, hjet⟩ := metricDiff_fam_jet
+  obtain ⟨C, hC, hjet⟩ := metricDifference_fam_jet
     (I := I) (M := M) gBase gSeq B hbdd
   intro α
   exact wkp_bdd_of_jet

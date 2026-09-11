@@ -4,7 +4,7 @@ import DifferentialGeometry.Analysis.Elliptic.Regularity.Iterated.Bootstrap.H2Re
 import DifferentialGeometry.Analysis.Elliptic.Regularity.Iterated.Bootstrap.H2RegularitySuccessor
 import DifferentialGeometry.Analysis.Elliptic.Regularity.Iterated.Bootstrap.ChartHmDomainPow
 import DifferentialGeometry.Analysis.Elliptic.Regularity.Iterated.Bootstrap.ChartHmPolymorphic
-import DifferentialGeometry.Analysis.Elliptic.Regularity.LaplacianDomain.PowH2kBridge
+import DifferentialGeometry.Analysis.Elliptic.Regularity.LaplacianDomain.Powers.EvenOrderBridge
 import DifferentialGeometry.Analysis.Elliptic.Regularity.Iterated.Defs
 open DifferentialGeometry.Geometry.Curvature
 
@@ -31,7 +31,7 @@ open DifferentialGeometry.Analysis.Sobolev.Chart
 open DifferentialGeometry.Analysis.Laplacian.IteratedChartHmJump
 open DifferentialGeometry.Analysis.Laplacian.ChartPushedMemWkpFour
 open DifferentialGeometry.Analysis.Laplacian.IteratedChartHmBootstrapCanonical
-open DifferentialGeometry.Analysis.Laplacian.IteratedChartHmBootstrapFinal
+open DifferentialGeometry.Analysis.Laplacian.IteratedChartHmBootstrapPolymorphic
 open DifferentialGeometry.Analysis.Laplacian.LaplacianDomainPowH2kBridge
 
 private local instance : MeasurableSpace E := borel E

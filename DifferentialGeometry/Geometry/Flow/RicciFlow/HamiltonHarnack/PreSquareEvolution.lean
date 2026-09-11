@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HamiltonHarnack.BlockReaction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HamiltonHarnack.MEvolution
-import DifferentialGeometry.Geometry.Flow.RicciFlow.HamiltonHarnack.TestJets
+import DifferentialGeometry.Geometry.Flow.RicciFlow.HamiltonHarnack.TriangularJets
 
 set_option autoImplicit false
 

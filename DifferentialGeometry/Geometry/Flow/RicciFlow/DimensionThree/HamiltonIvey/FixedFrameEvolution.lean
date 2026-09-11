@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Uhlenbeck.CurvatureEvolution
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Uhlenbeck.InverseMetric
-import DifferentialGeometry.Tensor.RSTensor.CoordinateBasis
+import DifferentialGeometry.Tensor.RSTensor.Coordinates.Expansion
 import DifferentialGeometry.Geometry.Curvature.Components.RicciTrace
 
 set_option autoImplicit false
@@ -322,9 +322,9 @@ private lemma roughLapRm04_fixedFrame_pullback
   let Tt : Tensor0SSpace 4 I x :=
     metricTrace0S2TensorInBasis (I := I) f (identityInvMetric (Idx := Fin 3))
       (nablaKRm04Field (I := I) S t 2 x)
-  have hinv : MetricInverseInBasisGen (I := I) (S.base.metric t) x f
+  have hinv : MetricInverseInBasis (I := I) (S.base.metric t) x f
       (identityInvMetric (Idx := Fin 3)) := by
-    exact metricInverseInBasis_of_orthonormal (I := I) (S.base.metric t) f horth
+    exact DifferentialGeometry.Tensor0SBundle.metricInverseInBasis_of_orthonormal (I := I) (S.base.metric t) f horth
   have hconv : metricTraceFirstTwo0SAt (I := I) (S.base.metric t)
       (nablaKRm04Field (I := I) S t 2 x) (vec4 (I := I) (e a) (e b) (e c) (e d)) =
       Tt (vec4 (I := I) (e a) (e b) (e c) (e d)) := by

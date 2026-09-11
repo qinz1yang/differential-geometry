@@ -5,14 +5,14 @@ import Mathlib.Geometry.Manifold.VectorBundle.Tangent
 noncomputable section
 
 open Set
-open scoped Topology Manifold
+open scoped Topology Manifold ContDiff
 
 namespace DifferentialGeometry
 
 variable {EM : Type*} [NormedAddCommGroup EM] [NormedSpace ℝ EM]
   {HM : Type*} [TopologicalSpace HM]
   {IM : ModelWithCorners ℝ EM HM}
-  {M : Type*} [TopologicalSpace M] [ChartedSpace HM M] [IsManifold IM ⊤ M]
+  {M : Type*} [TopologicalSpace M] [ChartedSpace HM M] [IsManifold IM ∞ M]
 
 theorem fderiv_chartChange_eq_tangentCoordChange {x₀ x : M}
     (hx : x ∈ (extChartAt IM x₀).source) (hxi : ModelWithCorners.IsInteriorPoint IM x) :
@@ -43,7 +43,7 @@ theorem fderiv_chartChange_rev_eq_tangentCoordChange {x₀ x : M}
     exact interior_mono (by intro y hy; rw [extChartAt_target] at hy; exact hy.2) htarget
   exact (hw.hasFDerivAt (mem_interior_iff_mem_nhds.mp hmem)).fderiv
 
-omit [IsManifold IM ⊤ M] in
+omit [IsManifold IM ∞ M] in
 theorem symmL_coordChange [IsManifold IM 1 M] {p q x : M}
     (hp : x ∈ (extChartAt IM p).source) (hq : x ∈ (extChartAt IM q).source)
     (v : EM) :

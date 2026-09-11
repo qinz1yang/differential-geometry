@@ -5,7 +5,7 @@ import DifferentialGeometry.Geometry.Operator.WithBoundary.Laplacian
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.WithBoundary.Divergence.IntegrationByParts
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.WithBoundary.Divergence.InteriorCompactSupport
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.WithBoundary.Divergence.Global
-import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.TangentAction
+import DifferentialGeometry.Geometry.Operator.DirectionalDerivative
 import Mathlib.MeasureTheory.Function.LpSpace.Complete
 import Mathlib.MeasureTheory.Function.LpSeminorm.TriangleInequality
 open DifferentialGeometry.Geometry.Operator
@@ -20,7 +20,7 @@ namespace DifferentialGeometry
 namespace Analysis
 namespace Sobolev
 namespace WithBoundary
-namespace EquivalenceFull
+namespace Equivalence
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [Module.Finite ℝ E]
@@ -89,8 +89,8 @@ private lemma tangentSectionAction_continuous_of_X_interior_support
   classical
   rw [continuous_iff_continuousAt]
   intro x
-  by_cases hx_supp : x ∈ tsupport (X : ∀ x, TangentSpace I x)
-  · have hx_int : x ∈ I.interior M := hX_int hx_supp
+  by_cases hx_support : x ∈ tsupport (X : ∀ x, TangentSpace I x)
+  · have hx_int : x ∈ I.interior M := hX_int hx_support
     have hx_chart : x ∈ (chartAt H x).source := mem_chart_source H x
     have hx_target_int : extChartAt I x x ∈ interior (extChartAt I x).target :=
       extChartAt_mem_interior_target_of_isInteriorPoint
@@ -114,7 +114,7 @@ private lemma tangentSectionAction_continuous_of_X_interior_support
       (isClosed_tsupport _).isOpen_compl
     have hev_zero : tangentSectionAction (I := I) X u =ᶠ[𝓝 x]
         (fun _ => (0 : ℝ)) := by
-      filter_upwards [h_open.mem_nhds hx_supp] with y hy
+      filter_upwards [h_open.mem_nhds hx_support] with y hy
       have hX_zero : (X : ∀ z, TangentSpace I z) y = 0 := by
         by_contra hne
         exact hy (subset_tsupport _ hne)
@@ -148,16 +148,16 @@ private theorem integral_tangentSectionAction_eq_neg_no_u_interior_support
     divergence_g_with_boundary_smoothSmul (I := I) g u hu X
   have hu_cont : Continuous u := hu.continuous
   have hX_div_cont : Continuous (divergenceGWithBoundary (I := I) g X) := by
-    have hdiv_supp : tsupport (divergenceGWithBoundary (I := I) g X) ⊆ tsupport X :=
+    have hdiv_support : tsupport (divergenceGWithBoundary (I := I) g X) ⊆ tsupport X :=
       tsupport_divergence_g_with_boundary_subset
         (I := I) g X
-    have hdiv_supp_int :
+    have hdiv_support_int :
         tsupport (divergenceGWithBoundary (I := I) g X) ⊆ I.interior M :=
-      hdiv_supp.trans hX_int
+      hdiv_support.trans hX_int
     rw [continuous_iff_continuousAt]
     intro x
-    by_cases hx_supp : x ∈ tsupport (divergenceGWithBoundary (I := I) g X)
-    · have hx_int : x ∈ I.interior M := hdiv_supp_int hx_supp
+    by_cases hx_support : x ∈ tsupport (divergenceGWithBoundary (I := I) g X)
+    · have hx_int : x ∈ I.interior M := hdiv_support_int hx_support
       have hcont_int :
           ContinuousOn (divergenceGWithBoundary (I := I) g X) (I.interior M) :=
         divergence_g_with_boundary_continuousOn_interior (I := I) g X
@@ -166,7 +166,7 @@ private theorem integral_tangentSectionAction_eq_neg_no_u_interior_support
         (isClosed_tsupport _).isOpen_compl
       have hev_zero : (divergenceGWithBoundary (I := I) g X) =ᶠ[𝓝 x]
           (fun _ => (0 : ℝ)) := by
-        filter_upwards [h_open.mem_nhds hx_supp] with y hy
+        filter_upwards [h_open.mem_nhds hx_support] with y hy
         by_contra hne
         exact hy (subset_tsupport _ hne)
       exact (continuous_const.continuousAt.congr hev_zero.symm)
@@ -401,10 +401,10 @@ private lemma gradChartCoeffWithin_continuousOn_source
 private lemma chartGramMatrix_entry_continuousOn_source
     (g : SmoothRiemannianMetric I M) (α : M)
     (i j : Fin (Module.finrank ℝ E)) :
-    ContinuousOn (fun y : M => chartGramMatrix (I := I) g α y i j)
+    ContinuousOn (fun y : M => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α y i j)
       (chartAt H α).source := by
-  have h := chartGramMatrix_entry_contMDiffOn (I := I) g α i j
-  have hcont : ContinuousOn (fun y : M => chartGramMatrix (I := I) g α y i j)
+  have h := DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_entry_contMDiffOn (I := I) g α i j
+  have hcont : ContinuousOn (fun y : M => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α y i j)
       (trivializationAt E (TangentSpace I) α).baseSet := h.continuousOn
   refine hcont.mono ?_
   intro y hy
@@ -432,41 +432,41 @@ private lemma g_inner_gradFun_gradFun_continuousOn_chart_source
           ∑ j : Fin (Module.finrank ℝ E),
             gradChartCoeffWithin (I := I) g α u i y *
               gradChartCoeffWithin (I := I) g α u j y *
-                chartGramMatrix (I := I) g α y i j := by
+                DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α y i j := by
     intro y _hy
     unfold gradChartLocalWithin
     rw [show (g.inner y (∑ i : Fin (Module.finrank ℝ E),
               gradChartCoeffWithin (I := I) g α u i y •
-                chartBasisVecFiber (I := I) α i y)
+                DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i y)
             (∑ j : Fin (Module.finrank ℝ E),
               gradChartCoeffWithin (I := I) g α u j y •
-                chartBasisVecFiber (I := I) α j y))
+                DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j y))
         = ∑ i : Fin (Module.finrank ℝ E),
             ∑ j : Fin (Module.finrank ℝ E),
               gradChartCoeffWithin (I := I) g α u i y *
                 gradChartCoeffWithin (I := I) g α u j y *
-                  g.inner y (chartBasisVecFiber (I := I) α i y)
-                    (chartBasisVecFiber (I := I) α j y) from ?_]
+                  g.inner y (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i y)
+                    (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j y) from ?_]
     · refine Finset.sum_congr rfl (fun i _ => ?_)
       refine Finset.sum_congr rfl (fun j _ => ?_)
       rfl
     · rw [show (g.inner y (∑ i : Fin (Module.finrank ℝ E),
             gradChartCoeffWithin (I := I) g α u i y •
-              chartBasisVecFiber (I := I) α i y))
+              DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i y))
           = ∑ i : Fin (Module.finrank ℝ E),
               gradChartCoeffWithin (I := I) g α u i y •
-                g.inner y (chartBasisVecFiber (I := I) α i y) from ?_]
+                g.inner y (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i y) from ?_]
       · rw [sum_apply]
         refine Finset.sum_congr rfl (fun i _ => ?_)
         rw [smul_apply, smul_eq_mul]
-        rw [show (g.inner y (chartBasisVecFiber (I := I) α i y))
+        rw [show (g.inner y (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i y))
               (∑ j : Fin (Module.finrank ℝ E),
                 gradChartCoeffWithin (I := I) g α u j y •
-                  chartBasisVecFiber (I := I) α j y) =
+                  DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j y) =
             ∑ j : Fin (Module.finrank ℝ E),
               gradChartCoeffWithin (I := I) g α u j y *
-                g.inner y (chartBasisVecFiber (I := I) α i y)
-                  (chartBasisVecFiber (I := I) α j y) from ?_]
+                g.inner y (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i y)
+                  (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j y) from ?_]
         · rw [Finset.mul_sum]
           refine Finset.sum_congr rfl (fun j _ => ?_)
           ring
@@ -524,17 +524,17 @@ private lemma tangentSectionAction_chartLocal_within
   have hY_decomp : (Y : ∀ z, TangentSpace I z) x =
       ∑ i : Fin (Module.finrank ℝ E),
         chartCoeff (I := I) α Y i x •
-          chartBasisVecFiber (I := I) α i x :=
+          DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x :=
     chartCoeff_recompose (I := I) α Y hbase
   change mfderiv I 𝓘(ℝ) u x ((Y : ∀ z, TangentSpace I z) x) = _
   rw [hY_decomp, map_sum]
   refine Finset.sum_congr rfl (fun i _ => ?_)
   rw [show mfderiv I 𝓘(ℝ) u x (chartCoeff (I := I) α Y i x •
-        chartBasisVecFiber (I := I) α i x) =
+        DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x) =
       chartCoeff (I := I) α Y i x •
-        mfderiv I 𝓘(ℝ) u x (chartBasisVecFiber (I := I) α i x) from
+        mfderiv I 𝓘(ℝ) u x (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x) from
     ContinuousLinearMap.map_smul (mfderiv I 𝓘(ℝ) u x)
-      (chartCoeff (I := I) α Y i x) (chartBasisVecFiber (I := I) α i x)]
+      (chartCoeff (I := I) α Y i x) (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x)]
   rw [mfderiv_chartBasisVecFiber_within_of_smooth (I := I) α hu hx i]
   rfl
 
@@ -855,27 +855,7 @@ theorem wkpNormChart_le_const_mul_w1pNormIntrinsicLp_withBoundary_smooth
       wkpNormChart_le_const_mul_w1pNormIntrinsicLp_withBoundary_smooth_finite
         (n := n) (M := M) g hu_smooth h_chart_lt_top h_intr_zero
     exact ⟨C, hC_nn, hC_bound⟩
-
-theorem wkpNormChart_le_const_mul_w1pNormIntrinsicLp_withBoundary_smooth_uniform_full
-    {n : ℕ} [NeZero n]
-    {M : Type*} [TopologicalSpace M] [ChartedSpace (EuclideanHalfSpace n) M]
-    [IsManifold (modelWithCornersEuclideanHalfSpace n) ∞ M]
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
-    (g : SmoothRiemannianMetric (modelWithCornersEuclideanHalfSpace n) M)
-    {p : ℝ≥0∞} (hp_one : 1 ≤ p) :
-    ∀ {u : M → ℝ}, ContMDiff (modelWithCornersEuclideanHalfSpace n) 𝓘(ℝ, ℝ) ∞ u →
-      DifferentialGeometry.Analysis.Sobolev.WithBoundary.AllChartsInteriorSupport
-        (n := n) (M := M) u →
-      ∃ C : ℝ, 0 ≤ C ∧
-        DifferentialGeometry.Analysis.Sobolev.WithBoundary.wkpNormChart
-            (n := n) (M := M) 1 p u ≤
-          ENNReal.ofReal C *
-            w1pNormIntrinsicLpWithBoundary
-              (I := modelWithCornersEuclideanHalfSpace n) (M := M) g p u :=
-  wkpNormChart_le_const_mul_w1pNormIntrinsicLp_withBoundary_smooth
-    (n := n) (M := M) g hp_one
-
-end EquivalenceFull
+end Equivalence
 end WithBoundary
 end Sobolev
 end Analysis

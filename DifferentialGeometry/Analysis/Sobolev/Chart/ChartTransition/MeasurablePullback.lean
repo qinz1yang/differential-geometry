@@ -1,16 +1,16 @@
 import DifferentialGeometry.Analysis.Sobolev.Chart.BanachCompleteness.Banach
 import DifferentialGeometry.Analysis.Sobolev.Chart.BanachCompleteness.Completeness
-import DifferentialGeometry.Analysis.Integration.Measure.MeasureBridge
-import DifferentialGeometry.Analysis.Sobolev.Manifold.MeasureBridgeUniform
+import DifferentialGeometry.Analysis.Integration.Measure.Chart.MeasureComparison
+import DifferentialGeometry.Analysis.Sobolev.Manifold.Measure.UniformChartComparison
 import DifferentialGeometry.Analysis.Sobolev.Chart.BanachCompleteness.CompletenessLp
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.Completeness.IteratedSobolevBanach
-import DifferentialGeometry.Analysis.Sobolev.Tools.WeakPartialLimit
-import DifferentialGeometry.Analysis.Sobolev.Manifold.Embedding
-import DifferentialGeometry.Analysis.Sobolev.Manifold.EmbeddingManifold
-import DifferentialGeometry.Analysis.Integration.Measure.Rellich
+import DifferentialGeometry.Analysis.Sobolev.Euclidean.WeakDerivative.Closedness
+import DifferentialGeometry.Analysis.Sobolev.Manifold.Embedding.Basic
+import DifferentialGeometry.Analysis.Sobolev.Manifold.Embedding.Manifold
+import DifferentialGeometry.Analysis.Integration.Measure.Chart.Rellich
 import DifferentialGeometry.Analysis.Sobolev.Chart.AtlasNorm.Atlas
-import DifferentialGeometry.Analysis.Integration.Measure.RiemannianMeasure
-import DifferentialGeometry.Analysis.Integration.Measure.Family
+import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.Basic
+import DifferentialGeometry.Analysis.Integration.Measure.Family.Basic
 import Mathlib.MeasureTheory.Function.LpSpace.Complete
 import Mathlib.MeasureTheory.Function.LpSeminorm.TriangleInequality
 import Mathlib.Topology.UniformSpace.UniformEmbedding
@@ -56,14 +56,14 @@ omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] in
 lemma extChartAtExt_measurable (α : M) :
     Measurable (extChartAtExt (I := I) (M := M) α) := by
   classical
-  have h_src_open : IsOpen ((chartAt H α).source) := (chartAt H α).open_source
-  have h_src_meas : MeasurableSet ((chartAt H α).source) := h_src_open.measurableSet
+  have h_source_open : IsOpen ((chartAt H α).source) := (chartAt H α).open_source
+  have h_source_meas : MeasurableSet ((chartAt H α).source) := h_source_open.measurableSet
   have h_extChart_continuousOn :
       ContinuousOn (fun x : M => extChartAt I α x) ((chartAt H α).source) := by
-    have h_src_eq : (chartAt H α).source = (extChartAt I α).source :=
+    have h_source_eq : (chartAt H α).source = (extChartAt I α).source :=
       (DifferentialGeometry.Integral.Measure.extChartAt_source_eq_chartAt_source
         (I := I) (M := M) α).symm
-    rw [h_src_eq]
+    rw [h_source_eq]
     exact continuousOn_extChartAt α
   have h_const_continuousOn :
       ContinuousOn (fun _ : M => (0 : E)) ((chartAt H α).source)ᶜ :=
@@ -76,7 +76,7 @@ lemma extChartAtExt_measurable (α : M) :
     by_cases hx : x ∈ (chartAt H α).source <;> simp [hx]
   rw [h_eq]
   exact ContinuousOn.measurable_piecewise h_extChart_continuousOn
-    h_const_continuousOn h_src_meas
+    h_const_continuousOn h_source_meas
 
 def pullbackToManifold (α : M)
     (v : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)) → ℝ) : M → ℝ := by
@@ -122,7 +122,7 @@ lemma pullbackToManifold_measurable (α : M)
     Measurable (pullbackToManifold (I := I) α v) := by
   classical
   rw [pullbackToManifold_eq_indicator (I := I) (α := α) v]
-  have h_src_meas : MeasurableSet ((chartAt H α).source) :=
+  have h_source_meas : MeasurableSet ((chartAt H α).source) :=
     ((chartAt H α).open_source).measurableSet
   have h_extChart_meas : Measurable (extChartAtExt (I := I) (M := M) α) :=
     extChartAtExt_measurable (I := I) (α := α)
@@ -132,7 +132,7 @@ lemma pullbackToManifold_measurable (α : M)
       Measurable (fun x : M => v ((toEuclidean (E := E))
         (extChartAtExt (I := I) α x))) :=
     hv.comp (h_toEuclidean_meas.comp h_extChart_meas)
-  exact h_comp_meas.indicator h_src_meas
+  exact h_comp_meas.indicator h_source_meas
 
 omit [IsManifold I ∞ M] in
 lemma support_pullbackToManifold_subset (α : M)

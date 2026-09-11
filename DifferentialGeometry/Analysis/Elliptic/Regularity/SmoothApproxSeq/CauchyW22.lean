@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Elliptic.Regularity.FChartResidual.MemW1pResidualFull
+import DifferentialGeometry.Analysis.Elliptic.Regularity.FChartResidual.DensityIdentification
 import DifferentialGeometry.Analysis.Elliptic.Regularity.SmoothFChartResidual.BilinearBoundW22
 import DifferentialGeometry.Analysis.Elliptic.Regularity.SmoothFChartResidual.Linearity
 import DifferentialGeometry.Analysis.Elliptic.Regularity.ChartPushed.MemWkpThreeSmooth

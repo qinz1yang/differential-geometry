@@ -1,8 +1,8 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.MetricComparison
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Ricci
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Ricci.Tower
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Shi.Local
-import DifferentialGeometry.Geometry.Metric.Convergence.SelfCovariantDerivative
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Extension.ShiInputs
+import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Self
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extension.Restart.SolutionBounds
 
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
@@ -17,7 +17,7 @@ namespace DifferentialGeometry.PDE.RicciFlow
 
 open Bundle Set
 open scoped Manifold ContDiff Topology
-open DifferentialGeometry.HCGCompactness
+open DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.Tensor0SBundle
 
 variable {E : Type uE} [NormedAddCommGroup E] [NormedSpace Real E]
@@ -73,10 +73,10 @@ theorem exists_uniform_metric_first_order_bound_on_slab
       have hslabAB : Set.Icc alpha b ⊆ D.carrier := by
         intro t ht
         exact hslab ⟨hbuffer.le.trans ht.1, ht.2⟩
-      have hregAB : Set.Ioc alpha b ⊆ D.regular := by
+      have hregAB : Set.Ioo alpha b ⊆ D.regular := by
         intro t ht
-        exact hreg ⟨hbuffer.trans ht.1, ht.2⟩
-      have hpde := metricPDE_Icc (I := I) S hS halphaB hslabAB hregAB
+        exact hreg ⟨hbuffer.trans ht.1, ht.2.le⟩
+      have hpde := metricPDE_Icc (I := I) S hS hslabAB hregAB
       let Lambda : Real := Real.exp (2 * K * (b - alpha))
       have hLambda : 1 ≤ Lambda := by
         rw [← Real.exp_zero]
@@ -107,7 +107,7 @@ theorem exists_uniform_metric_first_order_bound_on_slab
               (mul_nonneg (by norm_num) hK)))
             (Geometry.Riemannian.Exponential.gInner_self_nonneg
               (I := I) (S.base.metric alpha) x v))
-      let F : HCGCompactness.PointedFlowData (I := I) D := {
+      let F : CheegerGromovCompactness.PointedFlowData (I := I) D := {
         M := M
         topology := inferInstance
         charted := inferInstance
@@ -119,7 +119,7 @@ theorem exists_uniform_metric_first_order_bound_on_slab
         S := S
         isSolution := hS
       }
-      obtain ⟨KShi, hKShi, hShi⟩ := HCGCompactness.movingShi_complete
+      obtain ⟨KShi, hKShi, hShi⟩ := CheegerGromovCompactness.movingShi_complete
         (I := I) F hbuffer halphaB.le hslab hreg hcomplete.complete hC hcurv 1
       let gSeq : Nat → Real → SmoothRiemannianMetric I M :=
         fun _ t => S.base.metric t
@@ -138,7 +138,7 @@ theorem exists_uniform_metric_first_order_bound_on_slab
           (fun _ => D) (fun _ => S) (fun _ => hS) (fun _ _ => rfl)
           (fun _ t ht => hreg ⟨hbuffer.trans_le ht.1, ht.2⟩)
           (fun _ p hp V x0 =>
-            solnTowerSwap_reg (I := I) gRef S hS 1 hDreg p hp V x0)) i x s hs
+            solutionTowerSwap_regularity (I := I) gRef S hS 1 hDreg p hp V x0)) i x s hs
       let Cg : Nat → Real := fun _ => 0
       let C1 : Real := metricCovOrderEvolutionConstant
         (ricTowerCoeffs (Module.finrank Real E) 1 Lambda Cg KShi).slope

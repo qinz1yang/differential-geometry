@@ -2,9 +2,8 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.PouComponent
 import DifferentialGeometry.Analysis.Sobolev.Chart.CrossChartBounds.CrossChartBoundStrict
 open DifferentialGeometry.Geometry.Curvature
 
-
 noncomputable section
-
+set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set IsManifold ContinuousLinearMap Filter
 open MeasureTheory

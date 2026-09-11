@@ -12,7 +12,7 @@ open Set Bundle Manifold
 open scoped Manifold Topology ContDiff
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
   [FiniteDimensional Real E]
@@ -25,7 +25,7 @@ variable {P : PointedRiemannianManifold (I := I)}
 variable {subseq : Nat → Nat}
 variable (Φ : PointedCGHMaps (I := I) X P subseq)
 
-namespace ConvOut
+namespace FlowMetricConvergenceData
 
 omit [NeZero (Module.finrank ℝ E)]
   [I.Boundaryless] in
@@ -34,8 +34,8 @@ theorem lower_of
       letI : ChartedSpace H P.M := P.charted;
       letI : IsManifold I ∞ P.M := P.smooth;
       SmoothRiemannianMetric I P.M}
-    {bf : BumpFamily (I := I) Φ} {hsrc : SrcSigma Φ} {htgt : TgtSigma Φ}
-    {β ψ c : Real} (co : ConvOut (I := I) Φ R bf hsrc htgt β ψ)
+    {bf : BumpFamily (I := I) Φ} {hsrc : SourceIsSigmaCompact Φ} {htgt : TargetIsSigmaCompact Φ}
+    {β ψ c : Real} (co : FlowMetricConvergenceData (I := I) Φ R bf hsrc htgt β ψ)
     (hseq : letI : TopologicalSpace P.M := P.topology;
       letI : ChartedSpace H P.M := P.charted;
       letI : IsManifold I ∞ P.M := P.smooth;
@@ -62,11 +62,11 @@ theorem lower_of
       (fun k ↦ gSeqExt (I := I) Φ R bf hsrc htgt (co.φ k) t)
       (co.gInf t) R x
     intro ε hε
-    obtain ⟨k₀, hk₀⟩ := co.convPt {x} isCompact_singleton 0 ε hε
+    obtain ⟨k₀, hk₀⟩ := co.convergencePt {x} isCompact_singleton 0 ε hε
     exact ⟨k₀, fun k hk ↦ hk₀ k hk t ht 0 le_rfl x (Set.mem_singleton x)⟩
   exact ge_of_tendsto hinner
     (Filter.Eventually.of_forall fun k ↦ hseq k t ht x v)
 
-end ConvOut
-end HCGCompactness
+end FlowMetricConvergenceData
+end CheegerGromovCompactness
 end DifferentialGeometry

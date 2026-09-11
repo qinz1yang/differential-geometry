@@ -1,18 +1,19 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.CenteredTopOrderCommutator
-import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Uniform.MixedDerivativePairingH4Bounds
-import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Uniform.CurvatureCommutatorPairingH4Bounds
-import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Uniform.TopKernelPairingBounds
+import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Action.CenteredTopOrderCommutator
+import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Uniform.Pairing.MixedDerivativeH4Bounds
+import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Uniform.Pairing.CurvatureCommutatorH4Bounds
+import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Uniform.Pairing.TopKernelBounds
 
 set_option autoImplicit false
 
 noncomputable section
+set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff BigOperators RealInnerProductSpace
 
 namespace DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
 
-open DifferentialGeometry.HCGCompactness
+open DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.Analysis.Spectral.MetricRealization
 open DifferentialGeometry.PDE.DeTurck.RicciLinearization
 open DifferentialGeometry.Integral.Connection

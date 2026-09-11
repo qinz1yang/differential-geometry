@@ -488,7 +488,7 @@ def hamiltonCoordinateCurvature
     (A : algebraicCurvatureTensorSubmodule (I := I) (M := M) x)
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (a b c d : Idx) : Real :=
-  tensor04StdAt (I := I) (M := M) (A : Tensor04At (I := I) (M := M) x)
+  tensor04StandardAt (I := I) (M := M) (A : Tensor04At (I := I) (M := M) x)
     (basis a) (basis b) (basis d) (basis c)
 
 def hamiltonCoordinateTwoForm
@@ -563,11 +563,11 @@ theorem hamiltonQuadraticAt_eq_hamiltonBlockQuadratic
     (U : HamiltonHarnackTwoForm (TangentSpace I x))
     (W : Tensor0SSpace 1 I x)
     (basis : Module.Basis A Real (TangentSpace I x))
-    (hinv : MetricInverseInBasisGen (I := I) g x basis
+    (hinv : MetricInverseInBasis (I := I) g x basis
       (identityInvMetric (Idx := A))) :
     hamiltonQuadraticAt g R P Mbar U W =
       hamiltonBlockQuadratic
-        (fun a b c d => tensor04StdAt (I := I) (M := M)
+        (fun a b c d => tensor04StandardAt (I := I) (M := M)
           (R : Tensor04At (I := I) (M := M) x)
           (basis a) (basis b) (basis d) (basis c))
         (fun a b c => P ![basis a, basis b, basis c])
@@ -636,7 +636,7 @@ theorem curvatureBlock_eq_hamiltonCoordinate_sum
     (A : algebraicCurvatureTensorSubmodule (I := I) (M := M) x)
     (U V : HamiltonHarnackTwoForm (TangentSpace I x))
     (basis : Module.Basis Idx Real (TangentSpace I x))
-    (hinv : MetricInverseInBasisGen (I := I) g x basis
+    (hinv : MetricInverseInBasis (I := I) g x basis
       (identityInvMetric (Idx := Idx))) :
     curvatureBlock g A U V =
       ∑ slots : Fin 4 → Idx,

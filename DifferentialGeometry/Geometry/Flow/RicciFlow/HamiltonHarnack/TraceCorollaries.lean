@@ -3,11 +3,11 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.HamiltonHarnack.Optimization
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HamiltonHarnack.AncientLimit
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Scalar.JointRegularity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.MetricComparison
-import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.RicciUpperBound
+import DifferentialGeometry.Geometry.Curvature.Bounds.RicciUpper
 import DifferentialGeometry.Geometry.Exponential.MinimizingGeodesic
-import DifferentialGeometry.Geometry.Geodesic.MaximalInterval
-import DifferentialGeometry.Analysis.Calculus.CurveDerivative
-import DifferentialGeometry.Analysis.Calculus.RightDerivative
+import DifferentialGeometry.Geometry.Geodesic.Maximal.Interval
+import DifferentialGeometry.Analysis.Calculus.Derivative.Curve
+import DifferentialGeometry.Analysis.Calculus.Derivative.Right
 
 set_option autoImplicit false
 
@@ -790,7 +790,7 @@ theorem hamilton_trace_harnack_distance
             (I := I) g hEnorm x (delta⁻¹ • v) delta := by rfl
       _ = DifferentialGeometry.Geometry.Riemannian.Exponential.intrinsicGeodesic
             (I := I) g hEnorm x v (delta⁻¹ * delta) :=
-        DifferentialGeometry.Geometry.Riemannian.Exponential.intrGeo_smul_apply
+        DifferentialGeometry.Geometry.Riemannian.Exponential.intrinsicGeo_smul_apply
           (I := I) g hEnorm x v delta⁻¹ delta
       _ = DifferentialGeometry.Geometry.Riemannian.Exponential.intrinsicGeodesic
             (I := I) g hEnorm x v 1 := by
@@ -916,7 +916,7 @@ theorem hamilton_trace_harnack_distance
         intervalIntegral energy t₁ t₂ MeasureTheory.volume) *
       S.scalar t₁ (gamma t₁) ≤ S.scalar t₂ (gamma t₂) at hpath
   rw [hgamma₁, hgamma₂] at hpath
-  obtain ⟨basis, hON⟩ := exists_gOrthonormalBasis (I := I) g x
+  obtain ⟨basis, hON⟩ := exists_orthonormal_basis (I := I) g x
   let i₀ : Fin (Module.finrank Real (TangentSpace I x)) :=
     ⟨0, by
       change 0 < Module.finrank Real E
@@ -1070,7 +1070,7 @@ theorem hamilton_trace_harnack_optimized
   let gradR := gradientAt (I := I) (flowG (I := I) S) clock.time
     (S.scalar clock.time) x
   let RicT := metricRicci (I := I) (M := M) g x
-  obtain ⟨basis, hON⟩ := exists_gOrthonormalBasis (I := I) g x
+  obtain ⟨basis, hON⟩ := exists_orthonormal_basis (I := I) g x
   let Ric : Fin (Module.finrank Real (TangentSpace I x)) →
       Fin (Module.finrank Real (TangentSpace I x)) → Real :=
     fun a b => RicT (vec2 (basis a) (basis b))

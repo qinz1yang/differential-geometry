@@ -1,3 +1,4 @@
+import DifferentialGeometry.Analysis.Integration.Measure.Family.Decomposition
 import DifferentialGeometry.Analysis.Sobolev.WithBoundary.Chart.Banach
 import DifferentialGeometry.Analysis.Sobolev.WithBoundary.Euclidean.IteratedSobolevBanach
 import Mathlib.MeasureTheory.Function.ConvergenceInMeasure
@@ -17,6 +18,44 @@ variable {n : ℕ} [NeZero n]
 variable {M : Type*} [TopologicalSpace M]
   [ChartedSpace (EuclideanHalfSpace n) M]
   [IsManifold (modelWithCornersEuclideanHalfSpace n) ∞ M]
+
+theorem tendsto_wkpNormChart_zero
+    [CompactSpace M] [T2Space M]
+    {k : ℕ} {p : ℝ≥0∞} (hp : 1 ≤ p)
+    {ι : Type*} {l : Filter ι} {f : ι → M → ℝ}
+    (h : ∀ α : M, Tendsto
+      (fun j => DifferentialGeometry.Analysis.Sobolev.Euclidean.wkpNormHalfSpace
+        (d := n) k p
+        (chartPushed (n := n) (M := M)
+          (DifferentialGeometry.Integral.Measure.chartAtlasPOU
+            (modelWithCornersEuclideanHalfSpace n) M) α (f j))
+        (chartTargetEuclid (n := n) (M := M) α)) l (𝓝 0)) :
+    Tendsto (fun j => wkpNormChart (n := n) (M := M) k p (f j)) l (𝓝 0) := by
+  classical
+  let S := DifferentialGeometry.Integral.Measure.chartAtlasPOUFinset
+    (I := modelWithCornersEuclideanHalfSpace n) (M := M)
+  have heq : ∀ j, wkpNormChart (n := n) (M := M) k p (f j) =
+      ∑ α ∈ S, DifferentialGeometry.Analysis.Sobolev.Euclidean.wkpNormHalfSpace
+        (d := n) k p
+        (chartPushed (n := n) (M := M)
+          (DifferentialGeometry.Integral.Measure.chartAtlasPOU
+            (modelWithCornersEuclideanHalfSpace n) M) α (f j))
+        (chartTargetEuclid (n := n) (M := M) α) := by
+    intro j
+    apply tsum_eq_sum
+    intro α hα
+    have hzero : chartPushed (n := n) (M := M)
+        (DifferentialGeometry.Integral.Measure.chartAtlasPOU
+          (modelWithCornersEuclideanHalfSpace n) M) α (f j) = fun _ => 0 := by
+      funext y
+      simp only [chartPushed,
+        DifferentialGeometry.Integral.Measure.chartAtlasPOU_weight_zero_of_notMem hα,
+        zero_mul]
+    rw [hzero]
+    exact DifferentialGeometry.Analysis.Sobolev.Euclidean.wkpNormHalfSpace_zero_fun_zero hp
+      (chartTargetEuclid_isHalfSpaceRelOpen (n := n) (M := M) α)
+  simp_rw [heq]
+  simpa only [Finset.sum_const_zero] using tendsto_finsetSum S (fun α _ => h α)
 
 theorem wkpNormChart_cauchy_of_seminormCauchySeq
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M]

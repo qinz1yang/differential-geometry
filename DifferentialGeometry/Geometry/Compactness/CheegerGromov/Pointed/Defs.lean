@@ -1,18 +1,14 @@
 import Mathlib.Geometry.Manifold.Metrizable
-
-
 import Mathlib.Geometry.Manifold.Riemannian.Basic
 import DifferentialGeometry.Geometry.Metric.Basic
 
 set_option autoImplicit false
 
 noncomputable section
-
-
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open Bundle
 open scoped Manifold ContDiff Bundle
@@ -49,6 +45,10 @@ structure PointedRiemannianSeq (I : ModelWithCorners Real E H) where
 namespace PointedRiemannianSeq
 
 variable {I : ModelWithCorners Real E H}
+
+abbrev Distance
+    (X : PointedRiemannianSeq.{u, uE, uH} (I := I)) : Type _ :=
+  ∀ k : Nat, (X.obj k).M → (X.obj k).M → Real
 
 def basepoint (X : PointedRiemannianSeq.{u, uE, uH} (I := I)) (i : Nat) :
     (X.obj i).M :=
@@ -146,5 +146,5 @@ theorem subseq
 
 end SeqMetricComplete
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

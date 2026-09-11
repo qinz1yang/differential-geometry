@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Metric.Basic
-import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.RicciConnection
+import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Ricci.Basic
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.Semigroup.MildSolutionExistence
-import DifferentialGeometry.Analysis.Parabolic.PrincipalSymbol
+import DifferentialGeometry.Analysis.Parabolic.PrincipalSymbol.Defs
 import DifferentialGeometry.Analysis.Parabolic.DeTurckRicci.PrincipalSymbol
 import Mathlib.Geometry.Manifold.MFDeriv.Basic
 open DifferentialGeometry.Geometry.Curvature
@@ -46,9 +46,9 @@ def IsSmoothQuasilinearMetricRHS
       ContMDiffOn I 𝓘(ℝ, ℝ) ∞
         (fun x => F g x
           ((trivializationAt E (TangentSpace I) α).symmL ℝ x
-            (DifferentialGeometry.Integral.Measure.chartModelBasis E i))
+            (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i))
           ((trivializationAt E (TangentSpace I) α).symmL ℝ x
-            (DifferentialGeometry.Integral.Measure.chartModelBasis E j)))
+            (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E j)))
         (chartAt H α).source)
     ∧ ∀ g : SmoothRiemannianMetric I M, IsStrictlyParabolicMetricRHS F g
 
@@ -62,7 +62,7 @@ def IsLinearTensorParabolicMildSolution
       u t = S t u₀ + ∫ τ in (0 : ℝ)..t, S (t - τ) (F τ)
 
 omit [SigmaCompactSpace M] [T2Space M] in
-theorem linear_tensor_parabolic_shortTime_exists
+theorem exists_linear_tensor_parabolic_mild_solution
     {X : Type*} [NormedAddCommGroup X] [NormedSpace ℝ X]
     (S : Analysis.Parabolic.QuasiLinear.BoundedC0Semigroup X) (u₀ : X)
     (F : ℝ → X) (hF : Continuous F) :

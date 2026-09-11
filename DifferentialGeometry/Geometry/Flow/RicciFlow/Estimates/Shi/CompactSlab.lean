@@ -45,7 +45,7 @@ theorem shi_curvature_derivative_bound_on_slab
       intro _k _hk _t _ht x
       exact isEmptyElim x
   | inr hNonempty =>
-      let F : DifferentialGeometry.HCGCompactness.PointedFlowData
+      let F : DifferentialGeometry.CheegerGromovCompactness.PointedFlowData
           (I := I) D := {
         M := M
         topology := ‹TopologicalSpace M›
@@ -58,16 +58,16 @@ theorem shi_curvature_derivative_bound_on_slab
         S := S
         isSolution := hS
       }
-      have hCompleteF : DifferentialGeometry.HCGCompactness.MetricComplete
+      have hCompleteF : DifferentialGeometry.CheegerGromovCompactness.MetricComplete
           (I := I) (F.atTime (I := I) alpha) := by
         exact hcomplete.complete
       have hCurvF : ∀ t ∈ Set.Icc alpha psi, ∀ x : F.M,
           F.rmNormSq (I := I) t x <= C := by
         exact hcurv
-      have hRm := DifferentialGeometry.HCGCompactness.movingRm_of_bound
+      have hRm := DifferentialGeometry.CheegerGromovCompactness.movingRm_of_bound
         (I := I) F halphaBeta hbetaPsi hslab hreg hCompleteF hC hCurvF 2
       let KShi : Real := ∑ k ∈ Finset.range 3,
-        max 0 (DifferentialGeometry.HCGCompactness.rmOpenBound
+        max 0 (DifferentialGeometry.CheegerGromovCompactness.rmOpenBound
           (Module.finrank Real E) C alpha beta psi 2 k)
       refine ⟨KShi, ?_, ?_⟩
       · exact Finset.sum_nonneg fun _ _ ↦ le_max_left 0 _
@@ -77,15 +77,15 @@ theorem shi_curvature_derivative_bound_on_slab
           omega
         calc
           nablaKRm04NormSqIntrinsic (I := I) S k t x <=
-              DifferentialGeometry.HCGCompactness.rmOpenBound
+              DifferentialGeometry.CheegerGromovCompactness.rmOpenBound
                 (Module.finrank Real E) C alpha beta psi 2 k := by
             simpa [F] using hRm k hk t ht x
-          _ <= max 0 (DifferentialGeometry.HCGCompactness.rmOpenBound
+          _ <= max 0 (DifferentialGeometry.CheegerGromovCompactness.rmOpenBound
                 (Module.finrank Real E) C alpha beta psi 2 k) := le_max_right _ _
           _ <= KShi := by
             exact Finset.single_le_sum
               (fun j _ ↦ le_max_left 0
-                (DifferentialGeometry.HCGCompactness.rmOpenBound
+                (DifferentialGeometry.CheegerGromovCompactness.rmOpenBound
                   (Module.finrank Real E) C alpha beta psi 2 j)) hkMem
 
 end DifferentialGeometry.PDE.RicciFlow

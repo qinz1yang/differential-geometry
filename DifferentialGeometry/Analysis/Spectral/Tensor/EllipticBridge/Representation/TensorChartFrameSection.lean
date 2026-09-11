@@ -41,30 +41,30 @@ omit [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [CompactSpace M] [T2Sp
 private lemma component_contDiff_of_contDiffOn (α : M)
     {f : EuclN → ℝ}
     (hf : ContDiffOn ℝ ∞ f (chartTargetEuclid (I := I) (M := M) α))
-    (hf_supp : tsupport f ⊆ chartTargetEuclid (I := I) (M := M) α) :
+    (hf_support : tsupport f ⊆ chartTargetEuclid (I := I) (M := M) α) :
     ContDiff ℝ ∞ f :=
   contDiff_of_contDiffOn_chartTarget_zero_off (I := I) (M := M) α
-    (isClosed_tsupport f) hf_supp hf
+    (isClosed_tsupport f) hf_support hf
     (fun _ hy => image_eq_zero_of_notMem_tsupport hy)
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in
 private lemma componentBump_contMDiffOn
     (α : M) {f : EuclN → ℝ}
     (hf : ContDiffOn ℝ ∞ f (chartTargetEuclid (I := I) (M := M) α))
-    (hf_supp : tsupport f ⊆ chartTargetEuclid (I := I) (M := M) α) :
+    (hf_support : tsupport f ⊆ chartTargetEuclid (I := I) (M := M) α) :
     ContMDiffOn I 𝓘(ℝ, ℝ) ∞ (chartTestPullback (I := I) α f)
       (chartAt H α).source :=
   chartTestPullback_contMDiffOn (I := I) (M := M) α
-    (component_contDiff_of_contDiffOn (I := I) (M := M) α hf hf_supp)
+    (component_contDiff_of_contDiffOn (I := I) (M := M) α hf hf_support)
 
 omit [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [CompactSpace M] [I.Boundaryless]
     [SigmaCompactSpace M] in
 private lemma componentBump_tsupport_subset
     (α : M) {f : EuclN → ℝ}
     (hf_cs : HasCompactSupport f)
-    (hf_supp : tsupport f ⊆ chartTargetEuclid (I := I) (M := M) α) :
+    (hf_support : tsupport f ⊆ chartTargetEuclid (I := I) (M := M) α) :
     tsupport (chartTestPullback (I := I) α f) ⊆ (chartAt H α).source :=
-  chartTestPullback_tsupport_subset_source (I := I) (M := M) α hf_cs hf_supp
+  chartTestPullback_tsupport_subset_source (I := I) (M := M) α hf_cs hf_support
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
     [SigmaCompactSpace M] in

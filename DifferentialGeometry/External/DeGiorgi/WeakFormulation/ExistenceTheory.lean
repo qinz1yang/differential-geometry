@@ -470,7 +470,8 @@ private theorem weakIdentity_on_smoothTests
                 (gφS : MeasureTheory.Lp E 2 (volume.restrict Ω)) := repEq gφS
             _ = smoothGradToLp hΩ hφ := by rfl
 
-private theorem weakIdentity_of_smoothTests
+/-- A bounded linear weak identity on smooth tests extends to every signed `H₀¹` test. -/
+theorem bilinFormOfCoeff_eq_of_isSmoothTestOn
     {Ω : Set E}
     (hΩ : IsOpen Ω)
     (A : EllipticCoeff d Ω)
@@ -672,6 +673,115 @@ private theorem weakIdentity_of_smoothTests
       exact bilinFormOfCoeff_eq_right hΩ A hwu hv hvw
     _ = rhs v := hChosen
 
+/-- A weak subsolution and supersolution satisfies the equality-form homogeneous equation. -/
+theorem IsSolution.isHomogeneousWeakSolution
+    {Ω : Set E} (hΩ : IsOpen Ω) {A : EllipticCoeff d Ω} {u : E → ℝ}
+    (h : IsSolution A u) :
+    IsHomogeneousWeakSolution A u := by
+  refine ⟨h.1.1, ?_⟩
+  intro hu v hv0 hv
+  refine bilinFormOfCoeff_eq_of_isSmoothTestOn (d := d) hΩ A (fun _ => 0) ?_ ?_ 0 ?_
+    hu ?_ hu v hv0 hv
+  · intro f g hf hg
+    simp
+  · intro c f hf
+    simp
+  · intro f hf hfw
+    simp
+  · intro φ hφ
+    have h_abs_cont : Continuous (fun x : E => |φ x|) := hφ.1.continuous.abs
+    have h_abs_support : HasCompactSupport (fun x : E => |φ x|) := by
+      have heq : (fun x : E => |φ x|) = abs ∘ φ := rfl
+      rw [heq]
+      exact hφ.2.1.comp_left abs_zero
+    obtain ⟨M, hM⟩ := h_abs_cont.bddAbove_range_of_hasCompactSupport h_abs_support
+    let C : ℝ := max M 0
+    have hC : 0 ≤ C := le_max_right _ _
+    have hφ_bound : ∀ x, |φ x| ≤ C := by
+      intro x
+      exact (hM ⟨x, rfl⟩).trans (le_max_left _ _)
+    obtain ⟨δ, hδ, hδΩ⟩ :=
+      hφ.2.1.isCompact.exists_cthickening_subset_open hΩ hφ.2.2
+    rcases exists_contMDiff_support_eq_eq_one_iff
+        (I := modelWithCornersSelf ℝ E)
+        (s := Metric.thickening δ (tsupport φ)) (t := tsupport φ)
+        Metric.isOpen_thickening (isClosed_tsupport φ)
+        (Metric.self_subset_thickening hδ (tsupport φ)) with
+      ⟨χ, hχ_smooth, hχ_range, hχ_support, hχ_one_iff⟩
+    have hχ_cpt : HasCompactSupport χ := by
+      refine HasCompactSupport.intro'
+        (K := Metric.cthickening δ (tsupport φ))
+        hφ.2.1.isCompact.cthickening Metric.isClosed_cthickening ?_
+      intro x hx
+      apply image_eq_zero_of_notMem_tsupport
+      intro hxt
+      rw [tsupport, hχ_support] at hxt
+      exact hx (Metric.closure_thickening_subset_cthickening δ (tsupport φ) hxt)
+    have hχ_sub : tsupport χ ⊆ Ω := by
+      rw [tsupport, hχ_support]
+      exact (Metric.closure_thickening_subset_cthickening δ (tsupport φ)).trans hδΩ
+    have hχ : IsSmoothTestOn Ω χ :=
+      ⟨contMDiff_iff_contDiff.mp hχ_smooth, hχ_cpt, hχ_sub⟩
+    have hχ_nonneg : ∀ x, 0 ≤ χ x := by
+      intro x
+      exact (hχ_range ⟨x, rfl⟩).1
+    have hχ_one : ∀ x ∈ tsupport φ, χ x = 1 := by
+      intro x hx
+      exact (hχ_one_iff x).1 hx
+    let b : E → ℝ := fun x => C * χ x
+    have hb : IsSmoothTestOn Ω b := by
+      simpa [b] using hχ.smul C
+    have hb_nonneg : ∀ x, 0 ≤ b x := by
+      intro x
+      exact mul_nonneg hC (hχ_nonneg x)
+    let ψ : E → ℝ := fun x => φ x + b x
+    have hψ : IsSmoothTestOn Ω ψ := by
+      simpa [ψ] using hφ.add hb
+    have hψ_nonneg : ∀ x, 0 ≤ ψ x := by
+      intro x
+      by_cases hx : x ∈ tsupport φ
+      · have hlower : -C ≤ φ x := (abs_le.mp (hφ_bound x)).1
+        simp only [ψ, b, hχ_one x hx, mul_one]
+        linarith
+      · rw [show ψ x = b x by simp [ψ, image_eq_zero_of_notMem_tsupport hx]]
+        exact hb_nonneg x
+    have htest_zero : ∀ {f : E → ℝ} (hf : IsSmoothTestOn Ω f),
+        (∀ x, 0 ≤ f x) →
+          bilinFormOfCoeff A hu (smoothTestWitness hΩ hf) = 0 := by
+      intro f hf hf_nonneg
+      exact le_antisymm
+        (h.1.2 hu f (smoothTest_memH01 hΩ hf) (smoothTestWitness hΩ hf) hf_nonneg)
+        (h.2.2 hu f (smoothTest_memH01 hΩ hf) (smoothTestWitness hΩ hf) hf_nonneg)
+    have hb_zero := htest_zero hb hb_nonneg
+    have hψ_zero := htest_zero hψ hψ_nonneg
+    let hφw := smoothTestWitness hΩ hφ
+    let hbw := smoothTestWitness hΩ hb
+    let hψw := smoothTestWitness hΩ hψ
+    have hψ_split :
+        bilinFormOfCoeff A hu hψw =
+          bilinFormOfCoeff A hu hφw + bilinFormOfCoeff A hu hbw := by
+      calc
+        bilinFormOfCoeff A hu hψw = bilinFormOfCoeff A hu (hφw.add hbw) :=
+          bilinFormOfCoeff_eq_right hΩ A hu hψw (hφw.add hbw)
+        _ = bilinFormOfCoeff A hu hφw + bilinFormOfCoeff A hu hbw :=
+          bilinFormOfCoeff_add_right A hu hφw hbw
+    dsimp only [hφw, hbw, hψw] at hψ_split ⊢
+    linarith
+
+/-- On an open set the signed and nonnegative-test homogeneous solution interfaces agree. -/
+theorem isSolution_iff_isHomogeneousWeakSolution
+    {Ω : Set E} (hΩ : IsOpen Ω) {A : EllipticCoeff d Ω} {u : E → ℝ} :
+    IsSolution A u ↔ IsHomogeneousWeakSolution A u :=
+  ⟨IsSolution.isHomogeneousWeakSolution hΩ, isHomogeneousWeakSolution_isSolution⟩
+
+/-- The coefficient bilinear form of a solution vanishes on every signed `H₀¹` test. -/
+theorem IsSolution.bilinFormOfCoeff_eq_zero
+    {Ω : Set E} (hΩ : IsOpen Ω) {A : EllipticCoeff d Ω} {u : E → ℝ}
+    (h : IsSolution A u) (hu : MemW1pWitness 2 u Ω)
+    {v : E → ℝ} (hv0 : MemH01 v Ω) (hv : MemW1pWitness 2 v Ω) :
+    bilinFormOfCoeff A hu hv = 0 :=
+  (h.isHomogeneousWeakSolution hΩ).2 hu v hv0 hv
+
 -- Lax-Milgram existence assembly with instance synthesis
 /-- Existence of weak solutions via Lax-Milgram.
 The bilinear form `bilinFormOfCoeff` is bounded and coercive on `H₀¹(Ω)`
@@ -870,7 +980,7 @@ theorem weakProblem_exists
     exact weakIdentity_on_smoothTests hΩ A rhs repFun repSmooth repEq
       L0 (fun _ => rfl) L hL_eq gsol hLM hwu hwu_gradEq rhs_eq_of_sameGrad
   refine ⟨u, hu0, ?_⟩
-  exact weakIdentity_of_smoothTests hΩ A rhs hF_add hF_smul C_rhs
+  exact bilinFormOfCoeff_eq_of_isSmoothTestOn hΩ A rhs hF_add hF_smul C_rhs
     hF_bound hwu hsmooth_eq
 
 /-- Existence of zero-Dirichlet weak solutions for divergence-form right-hand

@@ -40,81 +40,6 @@ private local instance : BorelSpace M := ⟨rfl⟩
 
 local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
-structure ChartH2NonSmoothPOUWitness
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
-    (g : SmoothRiemannianMetric I M) (u : M → ℝ) (α : M) : Prop where
-  memWkp_two : DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp
-    (d := Module.finrank ℝ E) 2 2
-    (DifferentialGeometry.Analysis.Sobolev.Chart.chartPushed (I := I) (M := M)
-      (chartAtlasPOU I M) α u)
-    (DifferentialGeometry.Analysis.Sobolev.Chart.chartTargetEuclid (I := I) (M := M) α)
-
-namespace ChartH2NonSmoothPOUWitness
-
-variable [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
-
-omit [NeZero (Module.finrank ℝ E)] in
-theorem mk' {g : SmoothRiemannianMetric I M} {u : M → ℝ} {α : M}
-    (h : DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp
-      (d := Module.finrank ℝ E) 2 2
-      (DifferentialGeometry.Analysis.Sobolev.Chart.chartPushed (I := I) (M := M)
-        (chartAtlasPOU I M) α u)
-      (DifferentialGeometry.Analysis.Sobolev.Chart.chartTargetEuclid (I := I) (M := M) α)) :
-    ChartH2NonSmoothPOUWitness (I := I) (M := M) g u α :=
-  ⟨h⟩
-
-omit [NeZero (Module.finrank ℝ E)] in
-theorem memWkp_two_eq {g : SmoothRiemannianMetric I M} {u : M → ℝ} {α : M}
-    (h : ChartH2NonSmoothPOUWitness (I := I) (M := M) g u α) :
-    DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp
-      (d := Module.finrank ℝ E) 2 2
-      (DifferentialGeometry.Analysis.Sobolev.Chart.chartPushed (I := I) (M := M)
-        (chartAtlasPOU I M) α u)
-      (DifferentialGeometry.Analysis.Sobolev.Chart.chartTargetEuclid (I := I) (M := M) α) :=
-  h.memWkp_two
-
-omit [NeZero (Module.finrank ℝ E)] in
-theorem memWkp_one {g : SmoothRiemannianMetric I M} {u : M → ℝ} {α : M}
-    (h : ChartH2NonSmoothPOUWitness (I := I) (M := M) g u α) :
-    DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp
-      (d := Module.finrank ℝ E) 1 2
-      (DifferentialGeometry.Analysis.Sobolev.Chart.chartPushed (I := I) (M := M)
-        (chartAtlasPOU I M) α u)
-      (DifferentialGeometry.Analysis.Sobolev.Chart.chartTargetEuclid (I := I) (M := M) α) :=
-  DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp.le_succ h.memWkp_two
-
-omit [NeZero (Module.finrank ℝ E)] in
-theorem memLp_two {g : SmoothRiemannianMetric I M} {u : M → ℝ} {α : M}
-    (h : ChartH2NonSmoothPOUWitness (I := I) (M := M) g u α) :
-    MemLp
-      (DifferentialGeometry.Analysis.Sobolev.Chart.chartPushed (I := I) (M := M)
-        (chartAtlasPOU I M) α u) 2
-      ((volume : Measure EuclN).restrict
-        (DifferentialGeometry.Analysis.Sobolev.Chart.chartTargetEuclid
-          (I := I) (M := M) α)) :=
-  DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp.memLp h.memWkp_two
-
-end ChartH2NonSmoothPOUWitness
-
-omit [NeZero (Module.finrank ℝ E)] in
-theorem memWkpChart_two_of_chartPOUWitnesses
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
-    (g : SmoothRiemannianMetric I M) {u : M → ℝ}
-    (h_witness : ∀ α : M, ChartH2NonSmoothPOUWitness (I := I) (M := M) g u α) :
-    DifferentialGeometry.Analysis.Sobolev.Chart.MemWkpChart
-      (I := I) (M := M) 2 2 u := by
-  intro α
-  exact (h_witness α).memWkp_two
-
-omit [NeZero (Module.finrank ℝ E)] in
-theorem memWkpChart_one_of_chartPOUWitnesses
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
-    (g : SmoothRiemannianMetric I M) {u : M → ℝ}
-    (h_witness : ∀ α : M, ChartH2NonSmoothPOUWitness (I := I) (M := M) g u α) :
-    DifferentialGeometry.Analysis.Sobolev.Chart.MemWkpChart
-      (I := I) (M := M) 1 2 u :=
-  (memWkpChart_two_of_chartPOUWitnesses (I := I) (M := M) g h_witness).le_succ
-
 omit [NeZero (Module.finrank ℝ E)] in
 theorem wkpNormChart_two_eq_tsum
     [T2Space M] [SigmaCompactSpace M]
@@ -132,17 +57,6 @@ theorem wkpNormChart_two_eq_tsum
     (I := I) (M := M) 2 2 u
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem wkpNormChart_two_lt_top_of_chartPOUWitnesses
-    [CompactSpace M] [I.Boundaryless] [T2Space M]
-    (g : SmoothRiemannianMetric I M) {u : M → ℝ}
-    (h_witness : ∀ α : M, ChartH2NonSmoothPOUWitness (I := I) (M := M) g u α) :
-    DifferentialGeometry.Analysis.Sobolev.Chart.wkpNormChart
-      (I := I) (M := M) 2 2 u < ⊤ :=
-  DifferentialGeometry.Analysis.Sobolev.Chart.wkpNormChart_lt_top_of_memWkpChart
-    (I := I) (M := M) (k := 2) (p := 2) (by norm_num)
-    (memWkpChart_two_of_chartPOUWitnesses (I := I) (M := M) g h_witness)
-
-omit [NeZero (Module.finrank ℝ E)] in
 theorem wkpNormChart_two_le_tsum_chart_norms
     [T2Space M] [SigmaCompactSpace M]
     (u : M → ℝ) :
@@ -156,85 +70,6 @@ theorem wkpNormChart_two_le_tsum_chart_norms
           (DifferentialGeometry.Analysis.Sobolev.Chart.chartTargetEuclid
             (I := I) (M := M) α) :=
   le_of_eq (wkpNormChart_two_eq_tsum (I := I) (M := M) u)
-
-structure ChartH2NonSmoothBridgeData
-    [I.Boundaryless] [T2Space M] [CompactSpace M]
-    (g : SmoothRiemannianMetric I M) (u : M → ℝ) (α : M) where
-  D : ChartBilinearH1ComplData (I := I) (M := M) g α
-  Omega'' : Set EuclN
-  Omega''_open : IsOpen Omega''
-  Omega''_compact_closure : IsCompact (closure Omega'')
-  h0 : ℝ
-  h0_pos : 0 < h0
-  room :
-    Metric.cthickening h0 (closure Omega'') ⊆
-      DifferentialGeometry.Analysis.Sobolev.Chart.chartTargetEuclid
-        (I := I) (M := M) α
-  MBound : Fin (Module.finrank ℝ E) → Fin (Module.finrank ℝ E) → ℝ
-  M_bound_nn : ∀ i k, 0 ≤ MBound i k
-  uniform_diffQuot_bound :
-    ∀ (i : Fin (Module.finrank ℝ E)) (k : Fin (Module.finrank ℝ E))
-      (h : ℝ), 0 < |h| → |h| ≤ h0 →
-        eLpNorm
-            (DifferentialGeometry.Analysis.Sobolev.diffQuot
-              (d := Module.finrank ℝ E) k h (D.weakPartial i)) 2
-            ((volume : Measure EuclN).restrict Omega'')
-          ≤ ENNReal.ofReal (MBound i k)
-  memWkp_two_chartPushed :
-    DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp
-      (d := Module.finrank ℝ E) 2 2
-      (DifferentialGeometry.Analysis.Sobolev.Chart.chartPushed (I := I) (M := M)
-        (chartAtlasPOU I M) α u)
-      (DifferentialGeometry.Analysis.Sobolev.Chart.chartTargetEuclid
-        (I := I) (M := M) α)
-
-namespace ChartH2NonSmoothBridgeData
-
-variable [I.Boundaryless] [T2Space M] [CompactSpace M]
-
-omit [NeZero (Module.finrank ℝ E)] in
-theorem loc_chart_of_chartH2NonSmoothBridgeData
-    {g : SmoothRiemannianMetric I M} {u : M → ℝ} {α : M}
-    (h : ChartH2NonSmoothBridgeData (I := I) (M := M) g u α) :
-    ∀ i k : Fin (Module.finrank ℝ E),
-    ∃ g_ik : EuclN → ℝ,
-      MemLp g_ik 2 ((volume : Measure EuclN).restrict h.Omega'') ∧
-      DeGiorgi.HasWeakPartialDeriv (d := Module.finrank ℝ E) k g_ik
-        (h.D.weakPartial i) h.Omega'' ∧
-      eLpNorm g_ik 2 ((volume : Measure EuclN).restrict h.Omega'') ≤
-        ENNReal.ofReal (h.MBound i k) := by
-  exact exists_weak_second_partial_of_uniform_diffQuot_bound (I := I) (M := M) (g := g) (α := α)
-    h.D h.Omega''_open h.Omega''_compact_closure h.h0_pos h.room
-    h.M_bound_nn h.uniform_diffQuot_bound
-
-omit [NeZero (Module.finrank ℝ E)] in
-theorem chartH2NonSmoothPOUWitness_of_bridgeData
-    {g : SmoothRiemannianMetric I M} {u : M → ℝ} {α : M}
-    (h : ChartH2NonSmoothBridgeData (I := I) (M := M) g u α) :
-    ChartH2NonSmoothPOUWitness (I := I) (M := M) g u α :=
-  ⟨h.memWkp_two_chartPushed⟩
-
-end ChartH2NonSmoothBridgeData
-
-omit [NeZero (Module.finrank ℝ E)] in
-theorem memWkpChart_two_of_chartH2NonSmoothBridgeData
-    [I.Boundaryless] [T2Space M] [CompactSpace M]
-    (g : SmoothRiemannianMetric I M) {u : M → ℝ}
-    (h_bridge : ∀ α : M, ChartH2NonSmoothBridgeData (I := I) (M := M) g u α) :
-    DifferentialGeometry.Analysis.Sobolev.Chart.MemWkpChart
-      (I := I) (M := M) 2 2 u :=
-  memWkpChart_two_of_chartPOUWitnesses (I := I) (M := M) g
-    (fun α => (h_bridge α).chartH2NonSmoothPOUWitness_of_bridgeData)
-
-omit [NeZero (Module.finrank ℝ E)] in
-theorem wkpNormChart_two_lt_top_of_chartH2NonSmoothBridgeData
-    [I.Boundaryless] [T2Space M] [CompactSpace M]
-    (g : SmoothRiemannianMetric I M) {u : M → ℝ}
-    (h_bridge : ∀ α : M, ChartH2NonSmoothBridgeData (I := I) (M := M) g u α) :
-    DifferentialGeometry.Analysis.Sobolev.Chart.wkpNormChart
-      (I := I) (M := M) 2 2 u < ⊤ :=
-  wkpNormChart_two_lt_top_of_chartPOUWitnesses (I := I) (M := M) g
-    (fun α => (h_bridge α).chartH2NonSmoothPOUWitness_of_bridgeData)
 
 end ManifoldH2NonSmooth
 end Laplacian

@@ -1,8 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.PositiveRicci.Blowup
 import Mathlib.Analysis.InnerProductSpace.PiL2
-import DifferentialGeometry.Geometry.Comparison.BonnetMyers.Headlines
-import DifferentialGeometry.Geometry.Metric.TensorInner.TangentNormDiamond
-import DifferentialGeometry.Geometry.Curvature.PullbackNaturalityCross
+import DifferentialGeometry.Geometry.Metric.TensorInner.Tangent.NormDiamond
+import DifferentialGeometry.Geometry.Curvature.Naturality.Pullback.Cross
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Geometry.Curvature
@@ -315,7 +314,7 @@ theorem limit_round_base
       (L.S.ricciAt t0 x) hdimT hsym with
     ⟨basis, _l1, _l2, _l3, horth, _hdiag⟩
   have htrace :=
-    DifferentialGeometry.PDE.RicciFlow.riemann_from_ricci_trace_data (I := I) (M := L.N) L.S
+    DifferentialGeometry.PDE.RicciFlow.riemann_from_ricci_trace (I := I) (M := L.N) L.S
       (t := t0) (x := x) (basis := basis) horth
   have hEinCompNeg : ∀ i j : Fin 3,
       DifferentialGeometry.Geometry.Curvature.ricciCompAt (I := I) basis (-(L.S.ricciAt t0 x)) i j
@@ -335,7 +334,7 @@ theorem limit_round_base
       hEinCompNeg X Y
   have hscalar_x : L.S.scalar t0 x = R0 := hR0_scalar x
   calc
-    DifferentialGeometry.Geometry.Curvature.metricRm04StdAt (I := I) (M := L.N) g x X Y Y X =
+    DifferentialGeometry.Geometry.Curvature.metricRm04StandardAt (I := I) (M := L.N) g x X Y Y X =
         L.S.base.rm04 t0 x (DifferentialGeometry.Geometry.Curvature.vec4 (I := I) X Y Y X) := by
           rfl
     _ = -((-L.S.scalar t0 x) / 6) *
@@ -383,7 +382,7 @@ theorem limit_to_orig
     rw [← DifferentialGeometry.metricRicciAt_apply_eq_ricciTensor]
     exact hRic x v
   have hcomplete :
-      DifferentialGeometry.HCGCompactness.MetricComplete
+      DifferentialGeometry.CheegerGromovCompactness.MetricComplete
         (I := I) (L.limit.atTime (I := I) t) := by
     with_unfolding_all
       exact L.limitComplete t _ht
@@ -391,7 +390,7 @@ theorem limit_to_orig
     have hdim3 : Module.finrank Real E = 3 := hM.2.2.2
     omega
   let : CompactSpace L.N :=
-    DifferentialGeometry.HCGCompactness.PointedRiemannianManifold.compact_of_ricci
+    DifferentialGeometry.CheegerGromovCompactness.PointedRiemannianManifold.compact_of_ricci
       (I := I) (P := L.limit.atTime (I := I) t) (by
         with_unfolding_all
           exact _hconn)
@@ -400,7 +399,7 @@ theorem limit_to_orig
           exact hRicBM) hcomplete
   let Phi := L.cgh.spatial.maps
   obtain ⟨k, hk⟩ :=
-    DifferentialGeometry.HCGCompactness.PointedCGHMaps.exists_source_univ
+    DifferentialGeometry.CheegerGromovCompactness.PointedCGHMaps.exists_source_univ
       (I := I) Phi (isCompact_univ : IsCompact (Set.univ : Set L.N))
   have hsource : Phi.source k = Set.univ := hk k le_rfl
   let j : Nat := L.cghSubseq k
@@ -409,17 +408,17 @@ theorem limit_to_orig
   let : ConnectedSpace (L.sourceTerm j).M :=
     (L.sourceToOrig j).symm.surjective.connectedSpace (L.sourceToOrig j).symm.continuous
   have htarget : Phi.target k = Set.univ :=
-    DifferentialGeometry.HCGCompactness.PointedCGHMaps.target_univ
+    DifferentialGeometry.CheegerGromovCompactness.PointedCGHMaps.target_univ
       (I := I) Phi k (isCompact_univ : IsCompact (Set.univ : Set L.N))
         inferInstance hsource
   let limitToSource : L.N ≃ₘ⟮I, I⟯ (L.sourceTerm j).M :=
-    DifferentialGeometry.HCGCompactness.PointedCGHMaps.globalDiffeomorph
+    DifferentialGeometry.CheegerGromovCompactness.PointedCGHMaps.globalDiffeomorph
       (I := I) Phi k hsource htarget
   let limitToOrig : L.N ≃ₘ⟮I, I⟯ M :=
     limitToSource.trans (L.sourceToOrig j)
   rcases hsecg with ⟨c, hc, hsec⟩
   refine ⟨Diffeomorph.pullbackMetricCross g limitToOrig.symm, c, hc, fun x X Y => ?_⟩
-  rw [DifferentialGeometry.Geometry.Curvature.metricRm04Std_pullbackCross
+  rw [DifferentialGeometry.Geometry.Curvature.metricRm04Standard_pullbackCross
         g limitToOrig.symm x X Y Y X, hsec,
     ← Diffeomorph.pullbackMetricCross_inner g limitToOrig.symm x X X,
     ← Diffeomorph.pullbackMetricCross_inner g limitToOrig.symm x Y Y,

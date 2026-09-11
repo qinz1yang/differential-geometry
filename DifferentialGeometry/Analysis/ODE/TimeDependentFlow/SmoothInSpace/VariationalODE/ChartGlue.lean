@@ -48,7 +48,7 @@ theorem manifold_contMDiffAt_of_chart_smooth_flow
       Φ s x = (chartAt H α).symm
         (I.symm (flow (I ((chartAt H α) x)) s)))
     {t : ℝ} (ht : t ∈ Set.Ioo (0 : ℝ) T)
-    {x : M} (hx_src : x ∈ (chartAt H α).source)
+    {x : M} (hx_source : x ∈ (chartAt H α).source)
     (hx_ball : I ((chartAt H α) x) ∈
       Metric.ball (I ((chartAt H α) α)) ρ)
     (hflow_in_target :
@@ -67,15 +67,15 @@ theorem manifold_contMDiffAt_of_chart_smooth_flow
     refine ContinuousOn.isOpen_inter_preimage ?_
       (chartAt H α).open_source Metric.isOpen_ball
     exact I.continuous.comp_continuousOn (chartAt H α).continuousOn
-  have hxU : x ∈ U := ⟨hx_src, hx_ball⟩
+  have hxU : x ∈ U := ⟨hx_source, hx_ball⟩
   have hUnhds : U ∈ 𝓝 x := hUopen.mem_nhds hxU
   have hEqOn : Set.EqOn (Φ t) Ψ U := by
     intro y hy
-    obtain ⟨hy_src, hy_ball⟩ := hy
-    exact hΦ_eq t ht y hy_src hy_ball
+    obtain ⟨hy_source, hy_ball⟩ := hy
+    exact hΦ_eq t ht y hy_source hy_ball
   have hEqEv : Φ t =ᶠ[𝓝 x] Ψ := Filter.eventuallyEq_of_mem hUnhds hEqOn
   have h_chart : ContMDiffAt I I ∞ (chartAt H α) x :=
-    contMDiffAt_of_mem_maximalAtlas (chart_mem_maximalAtlas α) hx_src
+    contMDiffAt_of_mem_maximalAtlas (chart_mem_maximalAtlas α) hx_source
   have h_I : ContMDiffAt I 𝓘(ℝ, E) ∞ I ((chartAt H α) x) :=
     I.contMDiff.contMDiffAt
   have h_I_chart : ContMDiffAt I 𝓘(ℝ, E) ∞

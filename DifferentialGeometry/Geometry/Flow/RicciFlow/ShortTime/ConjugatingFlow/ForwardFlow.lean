@@ -1,16 +1,15 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DeTurck.PullbackEvaluationChainRule
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DeTurck.PullbackFlat
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.RemainderShortTimeExistence
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.DeTurckGeometricNonlinearity
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.EigenCombination
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.TensorHsRealize
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.Perturbation.DeTurckNonlinearity
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.Spectrum.EigenCombination
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.Reconstruction.TensorHilbertSobolev
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.ChartLocalExistence.ChartLocalPicard
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.ChartLocalExistence.ChartOverlapUniqueness
-import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.Regularity.BareFlowFromJointC1
+import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.Regularity.IntegralCurveFromJointC1
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.SmoothInSpace.CovariantIdentity.FlatIdentity
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.SmoothDependence.GlobalClosedManifold
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.BoundaryExtension.SeeleyTimeExtension
-import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.BoundaryExtension.FullIntervalFlow
+import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.BoundaryExtension.ClosedInterval
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.DiffeomorphismFamily.ChartBridge
 
 
@@ -30,8 +29,6 @@ open DifferentialGeometry.Analysis.Spectral.MetricRealization
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
-open DifferentialGeometry.Analysis.Parabolic.MaximalRegularity
-open DifferentialGeometry.Analysis.Parabolic.TimeSobolev
 open DifferentialGeometry.Analysis.Parabolic.QuasiLinear
 
 variable
@@ -75,7 +72,7 @@ private theorem flow_mfderiv_continuousWithinAt_zero_of_jointSmooth
   have hsrc_nhds : (fun s : ℝ => Φ s x) ⁻¹' (chartAt H y₀).source ∈ nhds (0 : ℝ) :=
     horbit_cont.preimage_mem_nhds ((chartAt H y₀).open_source.mem_nhds (mem_chart_source H y₀))
   have hctgt_open : IsOpen c.target := isOpen_extChartAt_target (I := I) y₀
-  have hc0_tgt : c (Φ 0 x) ∈ c.target := by
+  have hc0_target : c (Φ 0 x) ∈ c.target := by
     rw [show Φ 0 x = y₀ from rfl]; exact mem_extChartAt_target (I := I) y₀
   have hbase_cont : ContinuousAt (fun s : ℝ => c (Φ s x)) 0 := by
     have hcont_c : ContinuousAt c (Φ 0 x) := by
@@ -83,16 +80,16 @@ private theorem flow_mfderiv_continuousWithinAt_zero_of_jointSmooth
       exact continuousAt_extChartAt (I := I) y₀
     exact ContinuousAt.comp (g := fun y : M => c y) (f := fun s : ℝ => Φ s x) hcont_c horbit_cont
   have hbase_nhds : (fun s : ℝ => c (Φ s x)) ⁻¹' c.target ∈ nhds (0 : ℝ) :=
-    hbase_cont.preimage_mem_nhds (hctgt_open.mem_nhds hc0_tgt)
+    hbase_cont.preimage_mem_nhds (hctgt_open.mem_nhds hc0_target)
   have hfib : ∀ s : ℝ, Φ s x ∈ (chartAt H y₀).source →
       mfderivWithin 𝓘(ℝ, E) I c.symm c.target (c (Φ s x)) (P s)
         = mfderiv I I (fun y : M => Φ s y) x v := by
     intro s hs
     have hxsrc : x ∈ (chartAt H x).source := mem_chart_source H x
-    have hΦsrc : Φ s x ∈ (chartAt H y₀).source := hs
+    have hΦsource : Φ s x ∈ (chartAt H y₀).source := hs
     have hcomp := inTangentCoordinates_eq_mfderiv_comp (I := I) (I' := I)
       (f := fun _ : ℝ => x) (g := fun s : ℝ => Φ s x)
-      (ϕ := fun s : ℝ => mfderiv I I (fun y : M => Φ s y) x) (x₀ := 0) (x := s) hxsrc hΦsrc
+      (ϕ := fun s : ℝ => mfderiv I I (fun y : M => Φ s y) x) (x₀ := 0) (x := s) hxsrc hΦsource
     have hS₀ : mfderivWithin 𝓘(ℝ, E) I (extChartAt I x).symm (Set.range I) (extChartAt I x x)
         = ContinuousLinearMap.id ℝ (TangentSpace I x) :=
       mfderivWithin_range_extChartAt_symm (I := I) (x := x)
@@ -101,21 +98,21 @@ private theorem flow_mfderiv_continuousWithinAt_zero_of_jointSmooth
       simp only [hP_def, hS₀] at hap ⊢
       rw [hap]
       rfl
-    have hΦtgt : c (Φ s x) ∈ c.target := by
-      rw [hc]; exact (extChartAt I y₀).map_source (by rw [extChartAt_source]; exact hΦsrc)
+    have hΦtarget : c (Φ s x) ∈ c.target := by
+      rw [hc]; exact (extChartAt I y₀).map_source (by rw [extChartAt_source]; exact hΦsource)
     have heqd : mfderivWithin 𝓘(ℝ, E) I c.symm c.target (c (Φ s x))
         = mfderivWithin 𝓘(ℝ, E) I c.symm (Set.range I) (c (Φ s x)) := by
-      rw [mfderivWithin_of_isOpen hctgt_open hΦtgt,
-        mfderivWithin_of_mem_nhds (Filter.mem_of_superset (hctgt_open.mem_nhds hΦtgt)
+      rw [mfderivWithin_of_isOpen hctgt_open hΦtarget,
+        mfderivWithin_of_mem_nhds (Filter.mem_of_superset (hctgt_open.mem_nhds hΦtarget)
           (extChartAt_target_subset_range y₀))]
     rw [heqd, hPval]
-    have hΦsrc' : Φ s x ∈ (extChartAt I y₀).source := by rw [extChartAt_source]; exact hΦsrc
+    have hΦsource' : Φ s x ∈ (extChartAt I y₀).source := by rw [extChartAt_source]; exact hΦsource
     have hcancel := mfderivWithin_extChartAt_symm_comp_mfderiv_extChartAt' (I := I) (x := y₀)
-      (y := Φ s x) hΦsrc'
+      (y := Φ s x) hΦsource'
     have := congrArg (fun L : TangentSpace I (Φ s x) →L[ℝ] TangentSpace I (Φ s x) =>
         L (mfderiv I I (fun y : M => Φ s y) x v)) hcancel
     rw [hc]
-    rw [(extChartAt I y₀).left_inv hΦsrc']
+    rw [(extChartAt I y₀).left_inv hΦsource']
     rw [← ContinuousLinearMap.comp_apply]
     exact this
   have hrecon : (fun s : ℝ =>
@@ -150,7 +147,7 @@ private theorem flow_mfderiv_continuousWithinAt_zero_of_jointSmooth
     have htgt_nhds : Bundle.TotalSpace.proj ⁻¹' c.target ∈
         nhds (TotalSpace.mk' E (c (Φ 0 x)) (P 0) : TangentBundle 𝓘(ℝ, E) E) :=
       (hctgt_open.preimage (FiberBundle.continuous_proj E (TangentSpace 𝓘(ℝ, E)))).mem_nhds
-        hc0_tgt
+        hc0_target
     have htm_at : ContinuousAt (tangentMapWithin 𝓘(ℝ, E) I c.symm c.target)
         (TotalSpace.mk' E (c (Φ 0 x)) (P 0)) := htm.continuousAt htgt_nhds
     exact ContinuousAt.comp'
@@ -172,7 +169,7 @@ private theorem flow_chartBasis_section_contMDiffWithinAt_of_jointSmooth
       (fun p : ℝ × M =>
         (TotalSpace.mk' E (Φ p.1 p.2)
           (mfderiv I I (fun y : M => Φ p.1 y) p.2
-            (Integral.Measure.chartBasisVecFiber (I := I) x₀ i p.2))
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ i p.2))
           : TangentBundle I M))
       (Set.Ioo lo hi ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet) (t₀, b₀) := by
   classical
@@ -213,12 +210,12 @@ private theorem flow_chartBasis_section_contMDiffWithinAt_of_jointSmooth
     (x₀ := (t₀, b₀))
     hf hg ht₀b₀ hu le_rfl uniqueMDiffOn_univ
   have hv : ContMDiffWithinAt (𝓘(ℝ, ℝ).prod I) (I.prod 𝓘(ℝ, E)) (m : ℕ)
-      (fun q : ℝ × M => (Integral.Measure.chartBasisVec (I := I) x₀ i q.2 : TangentBundle I M))
+      (fun q : ℝ × M => (DifferentialGeometry.Tensor.Coordinates.chartBasisVec (I := I) x₀ i q.2 : TangentBundle I M))
       S (t₀, b₀) := by
     have hcb : ContMDiffWithinAt I (I.prod 𝓘(ℝ, E)) (m : ℕ)
-        (Integral.Measure.chartBasisVec (I := I) x₀ i)
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVec (I := I) x₀ i)
         (trivializationAt E (TangentSpace I) x₀).baseSet b₀ :=
-      (Integral.Measure.chartBasisVec_contMDiffOn (I := I) x₀ i b₀ hb₀).of_le hmtop
+      (DifferentialGeometry.Tensor.Coordinates.chartBasisVec_contMDiffOn (I := I) x₀ i b₀ hb₀).of_le hmtop
     have hsnd : ContMDiffWithinAt (𝓘(ℝ, ℝ).prod I) I (m : ℕ)
         (fun q : ℝ × M => q.2) S (t₀, b₀) := contMDiffWithinAt_snd
     have hmaps2 : Set.MapsTo (fun q : ℝ × M => q.2) S
@@ -232,7 +229,7 @@ private theorem flow_chartBasis_section_contMDiffWithinAt_of_jointSmooth
     (E₁ := TangentSpace I (M := M)) (E₂ := TangentSpace I (M := M))
     (b₁ := fun q : ℝ × M => q.2) (b₂ := fun q : ℝ × M => Φ q.1 q.2)
     (ϕ := fun q : ℝ × M => mfderiv I I (fun y : M => Φ q.1 y) q.2)
-    (v := fun q : ℝ × M => Integral.Measure.chartBasisVecFiber (I := I) x₀ i q.2)
+    (v := fun q : ℝ × M => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ i q.2)
     (m₀ := (t₀, b₀)) (s := S) (n := (m : ℕ))
     ?_ hv hb₂
   · convert hkey using 2
@@ -273,14 +270,14 @@ theorem forward_flow_existence_smooth_neighborhood_of_jointsmooth_field
         ContinuousOn (fun p : ℝ × M =>
           (TotalSpace.mk' E (Φ p.1 p.2)
             (mfderiv I I (fun y : M => Φ p.1 y) p.2
-              (Integral.Measure.chartBasisVecFiber (I := I) x₀ i p.2)) : TangentBundle I M))
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ i p.2)) : TangentBundle I M))
           (Set.Ico 0 T ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet)) ∧
       (∃ lo hi : ℝ, lo < 0 ∧ T < hi ∧
         ContMDiffOn (𝓘(ℝ, ℝ).prod I) I ∞ (fun q : ℝ × M => Φ q.1 q.2)
           (Set.Ioo lo hi ×ˢ Set.univ)) := by
   obtain ⟨Xext, hXsm, hXeq⟩ := seeley_time_extend X_DT T hT hsmooth0
-  obtain ⟨Φ, Ψ, lo, hi, hlo, hhi, hΦ0, hΦsm, hΦvel, hΨsm, hΨΦ, hΦΨ⟩ :=
-    global_flow_full_interval_with_reverse_on_closed_manifold Xext hXsm T hT
+  obtain ⟨Φ, Ψ, lo, hi, hlo, hhi, hΦ0, hΦsm, hΦvelocity, hΨsm, hΨΦ, hΦΨ⟩ :=
+    global_flow_with_reverse_on_closed_interval_of_closed_manifold Xext hXsm T hT
   have hsub : Set.Ioo (0 : ℝ) T ⊆ Set.Ioo lo hi := fun t ht =>
     ⟨lt_trans hlo ht.1, lt_trans ht.2 hhi⟩
   have hIcoSub : Set.Ico (0 : ℝ) T ⊆ Set.Ioo lo hi := fun t ht =>
@@ -291,7 +288,7 @@ theorem forward_flow_existence_smooth_neighborhood_of_jointsmooth_field
     intro t ht x
     have htIcc : t ∈ Set.Icc (0 : ℝ) T := ⟨le_of_lt ht.1, le_of_lt ht.2⟩
     have hat : HasMFDerivAt 𝓘(ℝ, ℝ) I (fun s : ℝ => Φ s x) t
-        ((1 : ℝ →L[ℝ] ℝ).smulRight (Xext t (Φ t x))) := hΦvel t (hsub ht) x
+        ((1 : ℝ →L[ℝ] ℝ).smulRight (Xext t (Φ t x))) := hΦvelocity t (hsub ht) x
     have hrw : Xext t (Φ t x) = X_DT t (Φ t x) := hXeq t htIcc (Φ t x)
     rw [hrw] at hat
     exact hat.hasMFDerivWithinAt
@@ -343,7 +340,7 @@ theorem forward_flow_existence_smooth_neighborhood_of_jointsmooth_field
         (fun p : ℝ × M =>
           (TotalSpace.mk' E (Φ p.1 p.2)
             (mfderiv I I (fun y : M => Φ p.1 y) p.2
-              (Integral.Measure.chartBasisVecFiber (I := I) x₀ i p.2)) : TangentBundle I M))
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ i p.2)) : TangentBundle I M))
         (Set.Ioo lo hi ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet) := by
       intro p hp
       exact flow_chartBasis_section_contMDiffWithinAt_of_jointSmooth Φ hΦsm x₀ i 0 p.1 hp.1 p.2 hp.2
@@ -369,7 +366,7 @@ theorem forward_flow_existence_onesided_of_jointsmooth_field
         ContinuousOn (fun p : ℝ × M =>
           (TotalSpace.mk' E (Φ p.1 p.2)
             (mfderiv I I (fun y : M => Φ p.1 y) p.2
-              (Integral.Measure.chartBasisVecFiber (I := I) x₀ i p.2)) : TangentBundle I M))
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ i p.2)) : TangentBundle I M))
           (Set.Ico 0 T ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet)) := by
   obtain ⟨Φ, hΦ0, hdiffeo, hode, hcont0, hbundle0, horbit, hsection, -⟩ :=
     forward_flow_existence_smooth_neighborhood_of_jointsmooth_field (I := I) X_DT T hT hsmooth0

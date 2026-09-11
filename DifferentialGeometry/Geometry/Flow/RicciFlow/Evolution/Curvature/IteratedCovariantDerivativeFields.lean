@@ -39,7 +39,7 @@ def nablaKRm04Field
   | (k + 1) =>
       totalNabla0S (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
         (4 + k) (S.family.connection t) (nablaKRm04Field S t k)
-        (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+        (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
           (4 + k) (S.family.connection t) (connSmoothInf (I := I) S t)
           (nablaKRm04Field S t k))
 
@@ -56,7 +56,7 @@ theorem nablaKRm04Field_succ
     nablaKRm04Field (I := I) S t (k + 1) =
       totalNabla0S (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
         (4 + k) (S.family.connection t) (nablaKRm04Field (I := I) S t k)
-        (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+        (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
           (4 + k) (S.family.connection t) (connSmoothInf (I := I) S t)
           (nablaKRm04Field (I := I) S t k)) := rfl
 
@@ -70,7 +70,7 @@ theorem nablaKRm04Field_realizes
   rw [nablaKRm04Field_succ]
   exact totalNabla0S_realizes (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
     (4 + k) (S.family.connection t) (nablaKRm04Field (I := I) S t k)
-    (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+    (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
       (4 + k) (S.family.connection t) (connSmoothInf (I := I) S t)
       (nablaKRm04Field (I := I) S t k))
 
@@ -115,14 +115,14 @@ theorem iteratedRmComp_eq_nablaKRm04Field
         simpa [frameComp0S, hframe_def] using ih hy m
       rw [iteratedRmComp_succ]
       have hext :
-          frameExtData (I := I) frame
+          frameDirectionalDerivatives (I := I) frame
               (fun y : M =>
                 iteratedRmComp (I := I) frame
                   (solutionChristoffelComponents (I := I) S x₀) (solutionCurvatureComponents (I := I) S x₀) k t y) x =
-            frameExtData (I := I) frame
+            frameDirectionalDerivatives (I := I) frame
               (frameComp0S (I := I) (nablaKRm04Field (I := I) S t k) frame) x := by
         funext m d
-        simp only [frameExtData]
+        simp only [frameDirectionalDerivatives]
         refine mvfderiv_eventuallyEq_congr (I := I) _ ?_
         exact hlevelk.mono fun y hy => congrFun hy m
       have hbase :
@@ -188,15 +188,15 @@ theorem iterRmLF_eq_nabla
         simpa [frameComp0S] using ih hy m
       rw [iteratedRmComp_succ]
       have hext :
-          frameExtData (I := I) frame
+          frameDirectionalDerivatives (I := I) frame
               (fun y : M =>
                 iteratedRmComp (I := I) frame
                   (fun s y => christoffelSymbolInFrame (S.family.connection s) frame hframe y)
                   (fun s => frameComp0S (I := I) (S.base.rm04 s) frame) k t y) x =
-            frameExtData (I := I) frame
+            frameDirectionalDerivatives (I := I) frame
               (frameComp0S (I := I) (nablaKRm04Field (I := I) S t k) frame) x := by
         funext m d
-        simp only [frameExtData]
+        simp only [frameDirectionalDerivatives]
         refine mvfderiv_eventuallyEq_congr (I := I) _ ?_
         exact hlevelk.mono fun y hy => congrFun hy m
       have hbase :
@@ -255,7 +255,7 @@ theorem nablaKRm04_ricciIdentityAt
   have hcov :
       CovariantDerivative.ContMDiffCovariantDerivativeLocally
         (S.family.connection (t : Real)) (1 : WithTop ℕ∞) :=
-    connSmoothOfSol (I := I) S (t : Real)
+    connSmoothOfSolution (I := I) S (t : Real)
   have htor : (S.family.connection (t : Real)).torsion x = 0 := by
     have htf :=
       DifferentialGeometry.Geometry.Connection.torsionFree_of_isLeviCivita
@@ -268,9 +268,38 @@ theorem nablaKRm04_ricciIdentityAt
     (nablaKRm04Field (I := I) S (t : Real) k x)
     (nablaKRm04Field (I := I) S (t : Real) (k + 1) x)
     (nablaKRm04Field (I := I) S (t : Real) (k + 2) x)
-    (rm13OfSol (I := I) S (t : Real)) rfl rfl
+    (rm13OfSolution (I := I) S (t : Real)) rfl rfl
     (nablaKRm04_nabla20SRealizesAt (I := I) S (t : Real) k x) htor
 
 end RicciIdentity
+
+end DifferentialGeometry.PDE.RicciFlow
+
+namespace DifferentialGeometry.PDE.RicciFlow
+open scoped Manifold ContDiff
+
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  [FiniteDimensional ℝ E]
+  {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+  {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+  [T2Space M]
+
+theorem nablaKRm04Field_eq_of_metric_eq
+    {D₁ D₂ : RealTimeInterval}
+    {S₁ : SolutionOn (I := I) (M := M) D₁}
+    {S₂ : SolutionOn (I := I) (M := M) D₂} {t₁ t₂ : ℝ}
+    (hmetric : S₁.base.metric t₁ = S₂.base.metric t₂) (k : ℕ) :
+    nablaKRm04Field S₁ t₁ k = nablaKRm04Field S₂ t₂ k := by
+  induction k with
+  | zero =>
+      change metricRm04 (S₁.base.metric t₁) = metricRm04 (S₂.base.metric t₂)
+      rw [hmetric]
+  | succ k ih =>
+      have hconn : S₁.family.connection t₁ = S₂.family.connection t₂ := by
+        change Geometry.Connection.LeviCivita (S₁.base.metric t₁) =
+          Geometry.Connection.LeviCivita (S₂.base.metric t₂)
+        rw [hmetric]
+      rw [nablaKRm04Field_succ, nablaKRm04Field_succ]
+      simp only [hconn, ih]
 
 end DifferentialGeometry.PDE.RicciFlow

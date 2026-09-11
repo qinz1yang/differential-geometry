@@ -1,11 +1,10 @@
 import DifferentialGeometry.Geometry.Metric.Basic
-import DifferentialGeometry.Geometry.Metric.ChartGram
-import DifferentialGeometry.Geometry.Operator.Hessian
-import DifferentialGeometry.Geometry.Connection.LeviCivita.LeviCivitaChartLocal
-import DifferentialGeometry.Analysis.Parabolic.DeTurckRicci.DeTurckRHS
+import DifferentialGeometry.Geometry.Metric.Coordinates.ChartGram
+import DifferentialGeometry.Geometry.Operator.Hessian.Basic
+import DifferentialGeometry.Geometry.Connection.LeviCivita.Chart.Local
+import DifferentialGeometry.Analysis.Parabolic.DeTurckRicci.RHS.Defs
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.QuasilinearMetricShortTimeExistence
-import DifferentialGeometry.Analysis.Parabolic.DeTurckRicci.DeTurckChartRegularityFromJoint
-import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.DeTurck.MetricTensorIdentities
+import DifferentialGeometry.Analysis.Parabolic.DeTurckRicci.Regularity.JointChart
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.Construction.QuasilinearExistence
 import DifferentialGeometry.Analysis.Spectral.Tensor.Spectrum.SlotSwapEquivariance
 open DifferentialGeometry.Analysis.Elliptic
@@ -37,7 +36,7 @@ variable
       [IsManifold I ∞ M] [CompactSpace M]
       [I.Boundaryless] [T2Space M]
 
-private theorem rawTensorConnLapSmooth_symmS
+private theorem rawTensorConnLapSmooth_ccTensor02Symm
     (g₀ : SmoothRiemannianMetric I M) (S : SmoothCcTensor g₀ 0 2) :
     rawTensorConnLapSmooth (I := I) g₀ 0 2 (ccTensor02Symm (I := I) (M := M) g₀ S) =
       ccTensor02Symm (I := I) (M := M) g₀ (rawTensorConnLapSmooth (I := I) g₀ 0 2 S) := by
@@ -70,7 +69,7 @@ private theorem rawTensorConnLapSmooth_symmS
     rw [ccTensor02Symm, ← hLV]
   rw [hgoal, smul_add, hhalf]
 
-theorem deTurckRicci_solution_with_jointReg
+theorem deTurckRicci_solution_with_jointRegularity
     (g₀ g_bg : SmoothRiemannianMetric I M) :
     ∃ T : ℝ, ∃ g_DT : ℝ → SmoothRiemannianMetric I M,
       IsQuasilinearMetricParabolicSolution (I := I)
@@ -94,7 +93,7 @@ theorem deTurckRicci_solution_with_jointReg
         ccTensorBilinSymm (I := I) g₀
           (rawTensorConnLapSmooth (I := I) g₀ 0 2 (ccTensor02Symm (I := I) (M := M) g₀ S)) x v
             w := by
-      rw [rawTensorConnLapSmooth_symmS (I := I) (M := M) g₀ S,
+      rw [rawTensorConnLapSmooth_ccTensor02Symm (I := I) (M := M) g₀ S,
         symmetricBilinearForm_of_tensorSymmetrization_eq_self (I := I) (M := M) g₀
           (rawTensorConnLapSmooth (I := I) g₀ 0 2 S) x v w]
     rw [ccTensorBilinSymm_add (I := I) g₀
@@ -123,11 +122,11 @@ theorem deTurckRicci_solution_with_jointReg
       ccTensorBilinSymm_toSection_congr R (deTurckRHSSectionBackground (I := I) g_bg gDT)
         (by rw [hR_def, deTurckRHSSectionBackground_toSection]) x v w]
     have hreal : gDT = tensorSectionRealizeMetric (I := I) g₀ S hδ_lt hδ :=
-      tensorSectionRealizeMetric_symmS_eq (I := I) g₀ S hδ_lt hδ hδ_lt
+      tensorSectionRealizeMetric_ccTensor02Symm_eq (I := I) g₀ S hδ_lt hδ hδ_lt
         (fiberwiseOperatorNormBound_of_tensorSymmetrization (I := I) (M := M) g₀ S hδ)
     rw [← hreal]
     exact deTurckRHSSection_ccTensorBilinSymm_eq_deTurckRicciRHS (I := I) g_bg gDT x v w
-  exact quasilinear_metric_short_time_existence_of_nemytskii_data (I := I)
+  exact quasilinear_metric_short_time_existence_of_nemytskii (I := I)
     (deTurckRicciRHS (I := I) g_bg) g₀ (4 * Module.finrank ℝ E + 10) rfl
     (deTurckSobolevNonlinearitySymm (I := I) (M := M) g₀ g_bg (4 * Module.finrank ℝ E + 10))
     (fun S {δ} hδ_lt hδ => deTurckSmoothRemainder (I := I) (M := M) g₀ g_bg
@@ -157,12 +156,12 @@ theorem deturck_ricci_flow_parabolic_short_time_existence
       (∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)),
         ContMDiffOn (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ) ∞
           (fun p : ℝ × M =>
-            Integral.Measure.chartGramMatrix (I := I) (g_DT p.1) x₀ p.2 i j)
+            DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_DT p.1) x₀ p.2 i j)
           (Set.Ioo (0 : ℝ) T ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet)) ∧
       (∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)),
         ContinuousOn
           (fun p : ℝ × M =>
-            Integral.Measure.chartGramMatrix (I := I) (g_DT p.1) x₀ p.2 i j)
+            DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_DT p.1) x₀ p.2 i j)
           (Set.Ico (0 : ℝ) T ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet)) ∧
       (∀ (α : M) (i j : Fin (Module.finrank ℝ E)),
         ContinuousOn
@@ -176,7 +175,7 @@ theorem deturck_ricci_flow_parabolic_short_time_existence
             (DifferentialGeometry.Geometry.Operator.chartGramOnE (I := I) (g_DT q.1) α i j)
             (extChartAt I α q.2))
           (Set.Icc 0 T ×ˢ chartLeviCivitaGoodSet (I := I) α)) := by
-  obtain ⟨T, g_DT, hsol, hJ⟩ := deTurckRicci_solution_with_jointReg (I := I) g₀ g_bg
+  obtain ⟨T, g_DT, hsol, hJ⟩ := deTurckRicci_solution_with_jointRegularity (I := I) g₀ g_bg
   obtain ⟨h2, h3, h4, h5, h6, h7⟩ :=
     deTurckRicci_chartRegularity_of_jointChartGramSmooth (I := I) g_bg T g_DT hJ
   exact ⟨T, g_DT, hsol, h2, h3, h4, h5, h6, h7⟩

@@ -31,7 +31,7 @@ open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Sobolev.Chart
 open DifferentialGeometry.Analysis.Sobolev.Euclidean
 open DifferentialGeometry.Analysis.Laplacian.IteratedChartHmBootstrap
-open DifferentialGeometry.Analysis.Laplacian.IteratedChartHmBootstrapFinal
+open DifferentialGeometry.Analysis.Laplacian.IteratedChartHmBootstrapPolymorphic
 open DifferentialGeometry.Analysis.Laplacian.LaplacianDomainPowH2kBridge
 open DifferentialGeometry.Analysis.Laplacian.ChartPushedMemWkpFour
 
@@ -151,7 +151,7 @@ theorem chartSideH2kBridge_of_laplacianDomainPow_min_two
   have hu_h_min : u_h ∈ laplacianDomainPow (I := I) (M := M) g (min k 2) :=
     laplacianDomainPow_le_of_le (I := I) (M := M) g (min_le_left _ _) hu_h
   have h_min_le_2 : min k 2 ≤ 2 := min_le_right _ _
-  exact IteratedChartHmBootstrapFinal.chartSideH2kBridge_of_laplacianDomainPow_le_two
+  exact IteratedChartHmBootstrapPolymorphic.chartSideH2kBridge_of_laplacianDomainPow_le_two
     (I := I) (M := M) g h_min_le_2 hu_h_min
 
 theorem memWkpChart_two_k_of_laplacianDomainPow_min_two

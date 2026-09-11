@@ -1,20 +1,19 @@
-import DifferentialGeometry.Topology.Covering.Manifold
+import DifferentialGeometry.Topology.Covering.Smooth.Manifold
 import DifferentialGeometry.Geometry.Metric.UniversalCover.Smoothness
 import DifferentialGeometry.Geometry.Metric.UniversalCover.Metric
-import DifferentialGeometry.Analysis.Integration.Measure.ChartDensity
-import DifferentialGeometry.Geometry.Operator.Hessian
+import DifferentialGeometry.Analysis.Integration.Measure.Chart.Density
+import DifferentialGeometry.Geometry.Operator.Hessian.Basic
 import DifferentialGeometry.Geometry.Curvature.Riemann.Defs
 import DifferentialGeometry.Geometry.Curvature.Riemann.Ricci
-import DifferentialGeometry.Geometry.Geodesic.Equation
+import DifferentialGeometry.Geometry.Geodesic.Equation.Basic
 import Mathlib.Geometry.Manifold.VectorBundle.Tangent
 import Mathlib.Topology.VectorBundle.Basic
 
 open Set Function Filter
 open scoped Topology ContDiff Manifold
-open DifferentialGeometry.Integral.Measure
-  (SmoothRiemannianMetric chartBasisVecFiber chartModelBasis chartGramMatrix)
-open DifferentialGeometry.Integral.DivergenceTheorem
-  (partialDeriv chartRiemannTensor chartRicciTensor)
+open DifferentialGeometry (SmoothRiemannianMetric)
+open DifferentialGeometry.Geometry.Curvature
+  (chartRiemannTensor chartRicciTensor)
 open DifferentialGeometry.Geometry.Operator
   (chartInvGramMatrix chartGramOnE chartChristoffel)
 
@@ -46,10 +45,10 @@ theorem chartBasisVecFiber_lifted
     (i : Fin (Module.finrank ℝ E))
     (x' : DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover M)
     (hx' : x' ∈ (chartAt H α').source) :
-    chartBasisVecFiber (I := I)
+    DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I)
         (M := DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover M)
         α' i x' =
-      chartBasisVecFiber (I := I) (M := M)
+      DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) (M := M)
         (proj (X := M) α') i (proj (X := M) x') := by
   let _ := g
   have hx'_cover : x' ∈ (coverChartAt α').source := hx'
@@ -70,18 +69,18 @@ theorem chartBasisVecFiber_lifted
     rw [Set.mem_preimage, hLS_x'] at hLSchart
     exact hLSchart
   have hLHS_symm :
-      chartBasisVecFiber (I := I)
+      DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I)
           (M := DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover M)
           α' i x'
         = (trivializationAt E (TangentSpace I :
             DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover M
-              → Type _) α').symmL ℝ x' (chartModelBasis E i) := by
+              → Type _) α').symmL ℝ x' (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i) := by
     rfl
   have hRHS_symm :
-      chartBasisVecFiber (I := I) (M := M)
+      DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) (M := M)
           (proj (X := M) α') i (proj (X := M) x')
         = (trivializationAt E (TangentSpace I : M → Type _)
-            (proj α')).symmL ℝ (proj x') (chartModelBasis E i) := by
+            (proj α')).symmL ℝ (proj x') (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i) := by
     rfl
   rw [hLHS_symm, hRHS_symm]
   have hSymmL :
@@ -97,7 +96,7 @@ theorem chartBasisVecFiber_lifted
           (b₀ := proj α') (b := proj x') hprojx'_chartM]
     exact uc_tangentBundleCore_coordChange_agree (I := I) α' x'
       ⟨hx', mem_chart_source H x'⟩
-  have hAt := congrArg (fun L : E →L[ℝ] E => L (chartModelBasis E i)) hSymmL
+  have hAt := congrArg (fun L : E →L[ℝ] E => L (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i)) hSymmL
   exact hAt
 
 omit [NeZero (Module.finrank ℝ E)] in
@@ -109,16 +108,16 @@ theorem chartGramMatrix_lifted
     (x' : DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover M)
     (i j : Fin (Module.finrank ℝ E))
     (hx' : x' ∈ (chartAt H α').source) :
-    chartGramMatrix
+    DifferentialGeometry.Tensor.Coordinates.chartGramMatrix
         (M := DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover M)
         (liftedMetric (I := I) g) α' x' i j =
-      chartGramMatrix (M := M) g
+      DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (M := M) g
         (proj (X := M) α') (proj (X := M) x') i j := by
-  rw [DifferentialGeometry.Integral.Measure.chartGramMatrix_apply
+  rw [DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_apply
         (I := I)
         (M := DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover M)
         (liftedMetric (I := I) g) α' x' i j,
-      DifferentialGeometry.Integral.Measure.chartGramMatrix_apply
+      DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_apply
         (I := I) (M := M) g (proj α') (proj x') i j]
   rw [chartBasisVecFiber_lifted (I := I) (M := M) g α' i x' hx',
       chartBasisVecFiber_lifted (I := I) (M := M) g α' j x' hx']
@@ -181,10 +180,10 @@ theorem chartChristoffel_lifted
     exact (extChartAt I (proj α')).left_inv hproj_x'_ext
   rw [hsymm_LHS, hsymm_RHS]
   have hGramMatEq :
-      chartGramMatrix
+      DifferentialGeometry.Tensor.Coordinates.chartGramMatrix
           (M := DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover M)
           (liftedMetric (I := I) g) α' x' =
-        chartGramMatrix (M := M) g (proj α') (proj x') := by
+        DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (M := M) g (proj α') (proj x') := by
     ext p q
     exact chartGramMatrix_lifted (I := I) (M := M) g α' x' p q hx'
   have hInvGramEq :
@@ -192,10 +191,10 @@ theorem chartChristoffel_lifted
           (M := DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover M)
           (liftedMetric (I := I) g) α' x' k l =
         chartInvGramMatrix (M := M) g (proj α') (proj x') k l := by
-    change (chartGramMatrix
+    change (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix
           (M := DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover M)
           (liftedMetric (I := I) g) α' x')⁻¹ k l =
-        (chartGramMatrix (M := M) g (proj α') (proj x'))⁻¹ k l
+        (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (M := M) g (proj α') (proj x'))⁻¹ k l
     rw [hGramMatEq]
   rw [hInvGramEq]
   congr 1
@@ -216,8 +215,8 @@ theorem chartChristoffel_lifted
         rfl
       rw [← this]
       exact OpenPartialHomeomorph.continuousAt_extend_symm (I := I) ECov hx'
-    have hOpenCoverSrc : IsOpen ECov.source := ECov.open_source
-    have hCoverSrc_mem : (ECov.extend I).symm y₀ ∈ ECov.source := by
+    have hOpenCoverSource : IsOpen ECov.source := ECov.open_source
+    have hCoverSource_mem : (ECov.extend I).symm y₀ ∈ ECov.source := by
       have hy₀_alt : (ECov.extend I) x' = y₀ := by
         rw [hy₀_def]; rfl
       have : (ECov.extend I).symm ((ECov.extend I) x') = x' :=
@@ -226,7 +225,7 @@ theorem chartChristoffel_lifted
       rw [this]
       exact hx'
     have hPreCover : (ECov.extend I).symm ⁻¹' ECov.source ∈ 𝓝 y₀ :=
-      hContCoverInv (hOpenCoverSrc.mem_nhds hCoverSrc_mem)
+      hContCoverInv (hOpenCoverSource.mem_nhds hCoverSource_mem)
     set EBase : OpenPartialHomeomorph M H := chartAt H (proj α') with hEBase_def
     have hContBaseInv : ContinuousAt (EBase.extend I).symm y₀ := by
       have hy₀_base : (EBase.extend I) (proj x') = y₀ := by
@@ -235,8 +234,8 @@ theorem chartChristoffel_lifted
       rw [← hy₀_base]
       exact OpenPartialHomeomorph.continuousAt_extend_symm (I := I)
         EBase hproj_x'_chart
-    have hOpenLSTgt : IsOpen (localSection α').target := (localSection α').open_target
-    have hLSTgt_mem : (EBase.extend I).symm y₀ ∈ (localSection α').target := by
+    have hOpenLSTarget : IsOpen (localSection α').target := (localSection α').open_target
+    have hLSTarget_mem : (EBase.extend I).symm y₀ ∈ (localSection α').target := by
       have hy₀_base : (EBase.extend I) (proj x') = y₀ := by
         change extChartAt I (proj α') (proj x') = y₀
         exact hy_eq.symm
@@ -247,12 +246,12 @@ theorem chartChristoffel_lifted
       have := (localSection α').map_source hx'_LSsrc
       rwa [hLS_x'] at this
     have hPreBase : (EBase.extend I).symm ⁻¹' (localSection α').target ∈ 𝓝 y₀ :=
-      hContBaseInv (hOpenLSTgt.mem_nhds hLSTgt_mem)
+      hContBaseInv (hOpenLSTarget.mem_nhds hLSTarget_mem)
     filter_upwards [hPreCover, hPreBase] with y hyCover hyBase
-    change chartGramMatrix
+    change DifferentialGeometry.Tensor.Coordinates.chartGramMatrix
             (M := DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover M)
             (liftedMetric (I := I) g) α' ((extChartAt I α').symm y) p q
-        = chartGramMatrix (M := M) g (proj α')
+        = DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (M := M) g (proj α')
             ((extChartAt I (proj α')).symm y) p q
     have hConjSymm := (uc_coverChartAt_extend_conjugacy (I := I) α').2
     have hSymmDecomp : (extChartAt I α').symm y =
@@ -280,52 +279,52 @@ theorem chartChristoffel_lifted
       rfl
     rw [hProj_eq]
   have hP_ij_lj :
-      partialDeriv (E := E) i
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i
           (chartGramOnE
             (M := DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover M)
             (liftedMetric (I := I) g) α' l j) y₀
-        = partialDeriv (E := E) i
+        = DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i
             (chartGramOnE (M := M) g (proj α') l j) y₀ := by
     change fderiv ℝ
         (chartGramOnE
           (M := DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover M)
           (liftedMetric (I := I) g) α' l j) y₀
-        (DifferentialGeometry.Integral.Measure.chartModelBasis E i)
+        (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i)
       = fderiv ℝ
           (chartGramOnE (M := M) g (proj α') l j) y₀
-        (DifferentialGeometry.Integral.Measure.chartModelBasis E i)
+        (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i)
     rw [Filter.EventuallyEq.fderiv_eq (hGramOnE_eventuallyEq l j)]
   have hP_ji_li :
-      partialDeriv (E := E) j
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j
           (chartGramOnE
             (M := DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover M)
             (liftedMetric (I := I) g) α' l i) y₀
-        = partialDeriv (E := E) j
+        = DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j
             (chartGramOnE (M := M) g (proj α') l i) y₀ := by
     change fderiv ℝ
         (chartGramOnE
           (M := DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover M)
           (liftedMetric (I := I) g) α' l i) y₀
-        (DifferentialGeometry.Integral.Measure.chartModelBasis E j)
+        (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E j)
       = fderiv ℝ
           (chartGramOnE (M := M) g (proj α') l i) y₀
-        (DifferentialGeometry.Integral.Measure.chartModelBasis E j)
+        (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E j)
     rw [Filter.EventuallyEq.fderiv_eq (hGramOnE_eventuallyEq l i)]
   have hP_lij :
-      partialDeriv (E := E) l
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l
           (chartGramOnE
             (M := DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover M)
             (liftedMetric (I := I) g) α' i j) y₀
-        = partialDeriv (E := E) l
+        = DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l
             (chartGramOnE (M := M) g (proj α') i j) y₀ := by
     change fderiv ℝ
         (chartGramOnE
           (M := DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover M)
           (liftedMetric (I := I) g) α' i j) y₀
-        (DifferentialGeometry.Integral.Measure.chartModelBasis E l)
+        (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E l)
       = fderiv ℝ
           (chartGramOnE (M := M) g (proj α') i j) y₀
-        (DifferentialGeometry.Integral.Measure.chartModelBasis E l)
+        (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E l)
     rw [Filter.EventuallyEq.fderiv_eq (hGramOnE_eventuallyEq i j)]
   rw [hP_ij_lj, hP_ji_li, hP_lij]
 
@@ -382,30 +381,30 @@ lemma chartChristoffel_lifted_eventuallyEq
     have hy₀_alt : (extChartAt I α') x' = y₀ := by rw [hy₀_def]
     rw [← hy₀_alt]
     exact continuousAt_extChartAt_symm' (I := I) (x := α') hx'_ext
-  have hOpenSrc : IsOpen (chartAt H α').source :=
+  have hOpenSource : IsOpen (chartAt H α').source :=
     (chartAt H α').open_source
-  have hSrc_mem : (extChartAt I α').symm y₀ ∈ (chartAt H α').source := by
+  have hSource_mem : (extChartAt I α').symm y₀ ∈ (chartAt H α').source := by
     have hinv : (extChartAt I α').symm ((extChartAt I α') x') = x' :=
       (extChartAt I α').left_inv hx'_ext
     have hy₀_alt : (extChartAt I α') x' = y₀ := by rw [hy₀_def]
     rw [← hy₀_alt, hinv]; exact hx'
   have hPreImage :
       (extChartAt I α').symm ⁻¹' (chartAt H α').source ∈ 𝓝 y₀ :=
-    hContInv (hOpenSrc.mem_nhds hSrc_mem)
+    hContInv (hOpenSource.mem_nhds hSource_mem)
   have hTargetOpen : IsOpen (extChartAt I α').target :=
     isOpen_extChartAt_target (I := I) α'
   have hy₀_target : y₀ ∈ (extChartAt I α').target := by
     rw [hy₀_def]; exact (extChartAt I α').map_source hx'_ext
-  have hTgtMem : (extChartAt I α').target ∈ 𝓝 y₀ :=
+  have hTargetMem : (extChartAt I α').target ∈ 𝓝 y₀ :=
     hTargetOpen.mem_nhds hy₀_target
-  filter_upwards [hPreImage, hTgtMem] with y hyPre hyTgt
+  filter_upwards [hPreImage, hTargetMem] with y hyPre hyTarget
   set x'_y :
       DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover M :=
     (extChartAt I α').symm y with hx'_y_def
-  have hx'_y_src : x'_y ∈ (chartAt H α').source := hyPre
+  have hx'_y_source : x'_y ∈ (chartAt H α').source := hyPre
   have hExt_x'_y : extChartAt I α' x'_y = y := by
-    rw [hx'_y_def]; exact (extChartAt I α').right_inv hyTgt
-  have hLifted := chartChristoffel_lifted (I := I) (M := M) g α' x'_y hx'_y_src i j k
+    rw [hx'_y_def]; exact (extChartAt I α').right_inv hyTarget
+  have hLifted := chartChristoffel_lifted (I := I) (M := M) g α' x'_y hx'_y_source i j k
   have hExt_proj_x'_y :
       extChartAt I (proj (X := M) α') (proj (X := M) x'_y) =
         extChartAt I α' x'_y :=
@@ -432,11 +431,11 @@ theorem chartRiemannTensor_lifted
   have hy_eq : extChartAt I α' x' = extChartAt I (proj α') (proj x') :=
     extChartAt_proj_eq (I := I) (M := M) α' x'
   rw [show extChartAt I (proj (X := M) α') (proj (X := M) x') = y₀ from hy_eq.symm]
-  rw [DifferentialGeometry.Integral.DivergenceTheorem.chartRiemannTensor_def
+  rw [DifferentialGeometry.Geometry.Curvature.chartRiemannTensor_def
         (I := I)
         (M := DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover M)
         (liftedMetric (I := I) g) α' i j k l y₀,
-      DifferentialGeometry.Integral.DivergenceTheorem.chartRiemannTensor_def
+      DifferentialGeometry.Geometry.Curvature.chartRiemannTensor_def
         (I := I) (M := M) g (proj α') i j k l y₀]
   have hChristAt : ∀ (a b c : Fin (Module.finrank ℝ E)),
       chartChristoffel
@@ -458,21 +457,21 @@ theorem chartRiemannTensor_lifted
     have := chartChristoffel_lifted_eventuallyEq (I := I) (M := M) g α' x' hx' a b c
     exact this
   have hPartialDeriv : ∀ (n : Fin (Module.finrank ℝ E)) (a b c : Fin (Module.finrank ℝ E)),
-      partialDeriv (E := E) n
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) n
           (chartChristoffel
             (M := DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover M)
             (liftedMetric (I := I) g) α' a b c) y₀
-        = partialDeriv (E := E) n
+        = DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) n
             (chartChristoffel (M := M) g (proj α') a b c) y₀ := by
     intro n a b c
     change fderiv ℝ
         (chartChristoffel
           (M := DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover M)
           (liftedMetric (I := I) g) α' a b c) y₀
-        (DifferentialGeometry.Integral.Measure.chartModelBasis E n)
+        (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E n)
       = fderiv ℝ
           (chartChristoffel (M := M) g (proj α') a b c) y₀
-        (DifferentialGeometry.Integral.Measure.chartModelBasis E n)
+        (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E n)
     rw [Filter.EventuallyEq.fderiv_eq (hChristEvEq a b c)]
   rw [hPartialDeriv j i k l, hPartialDeriv k i j l]
   congr 1
@@ -495,11 +494,11 @@ theorem chartRicciTensor_lifted
       chartRicciTensor (M := M) g (proj (X := M) α') i k
         (extChartAt I (proj (X := M) α') (proj (X := M) x')) := by
   classical
-  rw [DifferentialGeometry.Integral.DivergenceTheorem.chartRicciTensor_def
+  rw [DifferentialGeometry.Geometry.Curvature.chartRicciTensor_def
         (I := I)
         (M := DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover M)
         (liftedMetric (I := I) g) α' i k (extChartAt I α' x'),
-      DifferentialGeometry.Integral.DivergenceTheorem.chartRicciTensor_def
+      DifferentialGeometry.Geometry.Curvature.chartRicciTensor_def
         (I := I) (M := M) g (proj α') i k
         (extChartAt I (proj (X := M) α') (proj (X := M) x'))]
   refine Finset.sum_congr rfl ?_

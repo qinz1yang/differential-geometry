@@ -1,12 +1,11 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DeTurck.PullbackEvaluationChainRule
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DeTurck.PullbackFlat
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.RemainderShortTimeExistence
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.DeTurckGeometricNonlinearity
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.EigenCombination
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.TensorHsRealize
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.Perturbation.DeTurckNonlinearity
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.Spectrum.EigenCombination
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.Reconstruction.TensorHilbertSobolev
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.ChartLocalExistence.ChartLocalPicard
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.ChartLocalExistence.ChartOverlapUniqueness
-import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.Regularity.BareFlowFromJointC1
+import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.Regularity.IntegralCurveFromJointC1
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.SmoothInSpace.CovariantIdentity.FlatIdentity
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.SmoothInSpace.CovariantIdentity.FlatToCovariant
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.SmoothDependence.GlobalClosedManifold
@@ -22,8 +21,6 @@ open DifferentialGeometry.Analysis.Spectral.MetricRealization
 
 open DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
-open DifferentialGeometry.Analysis.Parabolic.MaximalRegularity
-open DifferentialGeometry.Analysis.Parabolic.TimeSobolev
 open DifferentialGeometry.Analysis.Parabolic.QuasiLinear
 
 variable
@@ -43,7 +40,7 @@ theorem basepoint_metric_along_curve
         (Set.Ici (0 : ℝ)) t
         ((1 : ℝ →L[ℝ] ℝ).smulRight (-(X (Φ_fam t x)))))
     (D : ℝ)
-    (h_reg : HasDerivWithinAt
+    (h_regularity : HasDerivWithinAt
       (fun s : ℝ => g.inner ((Φ_fam s : M → M) x)
         (mfderiv I I (Φ_fam t : M → M) x v) (mfderiv I I (Φ_fam t : M → M) x w))
       D (Set.Ici 0) t)
@@ -53,7 +50,7 @@ theorem basepoint_metric_along_curve
         (mfderiv I I (Φ_fam t : M → M) x v) (mfderiv I I (Φ_fam t : M → M) x w))
       (-metricTransportResidual (I := I) g X Φ_fam t x v w) (Set.Ici 0) t := by
   let _ := horbit
-  rwa [h_compat] at h_reg
+  rwa [h_compat] at h_regularity
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -67,7 +64,7 @@ theorem basepoint_motion_datum
         ((1 : ℝ →L[ℝ] ℝ).smulRight
           (-(deTurckVF (I := I) (g_DT t) g_bg (Φ_fam t x)))))
     (D : ℝ → (x : M) → (v w : TangentSpace I x) → ℝ)
-    (h_reg : ∀ t ∈ Set.Ioo (0 : ℝ) T, ∀ x : M, ∀ v w : TangentSpace I x,
+    (h_regularity : ∀ t ∈ Set.Ioo (0 : ℝ) T, ∀ x : M, ∀ v w : TangentSpace I x,
       HasDerivWithinAt
         (fun s : ℝ => (g_DT t).inner ((Φ_fam s : M → M) x)
           (mfderiv I I (Φ_fam t : M → M) x v) (mfderiv I I (Φ_fam t : M → M) x w))
@@ -85,6 +82,6 @@ theorem basepoint_motion_datum
   intro t ht x v w
   exact basepoint_metric_along_curve (I := I) (g_DT t)
     (deTurckVF (I := I) (g_DT t) g_bg) Φ_fam t x v w (horbit t ht x)
-    (D t x v w) (h_reg t ht x v w) (h_compat t ht x v w)
+    (D t x v w) (h_regularity t ht x v w) (h_compat t ht x v w)
 
 end DifferentialGeometry.PDE.RicciFlow

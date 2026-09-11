@@ -1,22 +1,21 @@
-import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.Green
-import DifferentialGeometry.Analysis.Integration.Measure.ChartDensity
-import DifferentialGeometry.Analysis.Integration.Measure.VolumeVariation
-import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.LocalFormula
-import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.Gradient
-import DifferentialGeometry.Tensor.RSTensor.MetricTrace.Higher
-import DifferentialGeometry.Tensor.RSTensor.Basis
+import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.Green.Identities
+import DifferentialGeometry.Analysis.Integration.Measure.Chart.Density
+import DifferentialGeometry.Analysis.Integration.Measure.Family.VolumeVariation
+import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.Local.Formula
+import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.Green.GradientFormula
+import DifferentialGeometry.Geometry.Connection.MetricTrace.Higher
+import DifferentialGeometry.Tensor.RSTensor.Coordinates.BundleBasis
 import DifferentialGeometry.Tensor.RSTensor.Coordinates.Components
 import DifferentialGeometry.Tensor.RSTensor.Coordinates.CoordinateBasis
 import DifferentialGeometry.Tensor.RSTensor.Coordinates.Field
 import DifferentialGeometry.Geometry.Coordinates.NablaComponents.TensorRS.ApplyInput
 import DifferentialGeometry.Geometry.Coordinates.MetricCompatibility.Covariant
 import DifferentialGeometry.Geometry.Coordinates.MetricCompatibility.Inverse
-import DifferentialGeometry.Geometry.Coordinates.CoordinateFrame
-import DifferentialGeometry.Geometry.Connection.Chart.Christoffel
-import DifferentialGeometry.Geometry.Connection.LeviCivita.LeviCivitaLogDensity
+import DifferentialGeometry.Geometry.Coordinates.Frame.Coordinate
+import DifferentialGeometry.Geometry.Connection.LeviCivita.Chart.LogDensity
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Variation.RicciCoord
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Basic
-import DifferentialGeometry.Bundle.PartialMfderiv.FixedBase
+import DifferentialGeometry.Geometry.Coordinates.Calculus.FixedBaseDerivative
 
 set_option autoImplicit false
 
@@ -28,7 +27,6 @@ noncomputable section
 open Filter MeasureTheory
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Tensor.Coordinates
-open DifferentialGeometry.Coordinates
 open DifferentialGeometry.Tensor0SBundle
 open scoped Manifold ContDiff
 

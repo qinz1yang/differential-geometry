@@ -1,17 +1,17 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.PositiveRicci.Flow
+import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.PositiveRicci.Extinction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Preservation.Pinching.Definitions
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Preservation.Pinching.TraceFreeRicciHeat
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Preservation.Pinching.QuotientEvolution
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Preservation.Pinching.HamiltonReaction
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Preservation.Pinching.TraceFreeRicciEvolution
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Preservation.Pinching.SolutionEvolution
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Preservation.Pinching.IntrinsicEvolution
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Preservation.Pinching.Estimate
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Preservation.Pinching.TraceFreeRicci.HeatEquation
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Preservation.Pinching.Quotient.Evolution
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Preservation.Pinching.Reaction.Hamilton
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Preservation.Pinching.TraceFreeRicci.Evolution
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Preservation.Pinching.Evolution.Solution
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Preservation.Pinching.Evolution.Intrinsic
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Preservation.Pinching.Estimate.Pinching
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Preservation.Pinching.Local
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Preservation.RicciPinching
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Scaling.Parabolic
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.Noncollapsing.Defs
-import DifferentialGeometry.Geometry.Curvature.PullbackNaturalityCross
+import DifferentialGeometry.Geometry.Curvature.Naturality.Pullback.Cross
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Geometry.Curvature
@@ -64,9 +64,9 @@ noncomputable def hamiltonRescaledSolution
     (P : HamiltonFiniteTimeFlow (I := I) (M := M) g0)
     (Q : HamiltonBlowup M) (hsel : hamiltonBlowupPointSelection (I := I) P Q) (i : Nat) :
     SolutionOn (I := I) (M := M)
-      (paraInterval P.D (Q.time i) (hamiltonBlowupScale (I := I) P Q i)
+      (parabolicInterval P.D (Q.time i) (hamiltonBlowupScale (I := I) P Q i)
         (hsel.2.2.1 i)) :=
-  paraSolution (I := I) P.S (Q.time i) (hamiltonBlowupScale (I := I) P Q i)
+  parabolicSolution (I := I) P.S (Q.time i) (hamiltonBlowupScale (I := I) P Q i)
     (hsel.1 i) (hsel.2.2.1 i)
 
 omit [NeZero (Module.finrank ℝ E)] in
@@ -88,8 +88,8 @@ theorem hamilton_rescaled_tracefree_ricci_norm_sq_identity
     DifferentialGeometry.PDE.RicciFlow.traceFreeRicciNormSq,
     DifferentialGeometry.PDE.RicciFlow.traceFreeRicciNormSqOf,
     DifferentialGeometry.PDE.RicciFlow.traceFreeRicciNormSqAtOf,
-    DifferentialGeometry.PDE.RicciFlow.paraSolution_scalar,
-    DifferentialGeometry.PDE.RicciFlow.paraSolution_ricciNorm]
+    DifferentialGeometry.PDE.RicciFlow.parabolicSolution_scalar,
+    DifferentialGeometry.PDE.RicciFlow.parabolicSolution_ricciNorm]
   ring
 
 structure HamiltonSourceRealization
@@ -98,7 +98,7 @@ structure HamiltonSourceRealization
     (Q : HamiltonBlowup M) (hsel : hamiltonBlowupPointSelection (I := I) P Q)
     (L : HamiltonCGHLimit (I := I) M) : Prop where
   time_mem : forall (i : Nat) (t : Real), t ∈ L.D.carrier ->
-    t ∈ (paraInterval P.D (Q.time (L.origIndex i))
+    t ∈ (parabolicInterval P.D (Q.time (L.origIndex i))
       (hamiltonBlowupScale (I := I) P Q (L.origIndex i))
       (hsel.2.2.1 (L.origIndex i))).carrier
   basepoint_map : forall i : Nat,
@@ -225,8 +225,8 @@ theorem hamilton_rescaled_tracefree_ricci_norm_sq_at_zero_bound
   have hr_eq :
       r = R⁻¹ * P.S.scalar (Q.time i) x := by
     simp only [r, R, hamiltonRescaledSolution,
-      DifferentialGeometry.PDE.RicciFlow.paraSolution_scalar,
-      DifferentialGeometry.PDE.RicciFlow.paraTime_zero]
+      DifferentialGeometry.PDE.RicciFlow.parabolicSolution_scalar,
+      DifferentialGeometry.PDE.RicciFlow.parabolicTime_zero]
   have hr : 0 < r := by
     rw [hr_eq]
     exact mul_pos (inv_pos.mpr hR) hscalarOld
@@ -253,10 +253,10 @@ theorem hamilton_rescaled_tracefree_ricci_norm_sq_at_zero_bound
     simpa only [R, hamiltonRescaledSolution] using
       congrFun
         (congrFun
-          (DifferentialGeometry.PDE.RicciFlow.paraSolution_scalar
+          (DifferentialGeometry.PDE.RicciFlow.parabolicSolution_scalar
             (I := I) P.S (Q.time i) R hR htimeMem) s) y
   have hratio :=
-    DifferentialGeometry.PDE.RicciFlow.para_tracefree_ratio_invariant
+    DifferentialGeometry.PDE.RicciFlow.parabolic_tracefree_ratio_invariant
       (M := M)
       (scalar := P.S.scalar)
       (scalarR := (hamiltonRescaledSolution (I := I) P Q hsel i).scalar)
@@ -273,7 +273,7 @@ theorem hamilton_rescaled_tracefree_ricci_norm_sq_at_zero_bound
       q / r ^ 2 ≤ C * (R * r) ^ (-epsilon) := by
     rw [hratio]
     simpa only [q, r, R,
-      DifferentialGeometry.PDE.RicciFlow.paraTime_zero, hscalarOld_eq,
+      DifferentialGeometry.PDE.RicciFlow.parabolicTime_zero, hscalarOld_eq,
       DifferentialGeometry.PDE.RicciFlow.pinchWeight] using
       hest (Q.time i) htimeMem x
   exact scaled_pinch_le hR hr hr1 hC hepsilon0 hepsilon1 hratio_le
@@ -300,9 +300,9 @@ def hamiltonRescaledInitialTime
     {g0 : SmoothRiemannianMetric I M}
     (P : HamiltonFiniteTimeFlow (I := I) (M := M) g0)
     (Q : HamiltonBlowup M) (hsel : hamiltonBlowupPointSelection (I := I) P Q) (i : Nat) :
-    (paraInterval P.D (Q.time i) (hamiltonBlowupScale (I := I) P Q i)
+    (parabolicInterval P.D (Q.time i) (hamiltonBlowupScale (I := I) P Q i)
       (hsel.2.2.1 i)).FlowTime :=
-  ⟨0, (paraInterval P.D (Q.time i) (hamiltonBlowupScale (I := I) P Q i)
+  ⟨0, (parabolicInterval P.D (Q.time i) (hamiltonBlowupScale (I := I) P Q i)
     (hsel.2.2.1 i)).initial_mem⟩
 
 def hamiltonRescaledBall
@@ -357,7 +357,7 @@ private theorem hamilton_rm_scalar_ctl
         (Ric := P.S.ricciAt t x) (scalar := P.S.scalar t x)
         (Rm04 := P.S.base.rm04 t x) hdimT hricSym hricNonneg
         (fun basis horth =>
-          DifferentialGeometry.PDE.RicciFlow.riemann_from_ricci_trace_data (I := I) (M := M) P.S horth)
+          DifferentialGeometry.PDE.RicciFlow.riemann_from_ricci_trace (I := I) (M := M) P.S horth)
     simpa [hamiltonRiemannNormSq, hamiltonScalar, hamiltonSolution] using hpoint
   have hscalarNonneg : 0 <= hamiltonScalar (I := I) P t x := by
     rcases DifferentialGeometry.Geometry.Curvature.ricciEigenBasis3
@@ -503,7 +503,7 @@ theorem hamilton_scalar_blowup
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-theorem hamilton_exists_blowup_point_sequence
+theorem exists_hamilton_blowup_point_sequence
     [CompactSpace M]
     {omega : Real} (h0ω : 0 < omega)
     {g0 : SmoothRiemannianMetric I M}
@@ -712,22 +712,22 @@ theorem hamilton_fixed_pinching
   let : I.Boundaryless := hboundaryless
   let : Nonempty M := inferInstance
   have hpos0 :
-      DifferentialGeometry.PDE.RicciFlow.RicciPosInit (I := I) (M := M)
+      DifferentialGeometry.PDE.RicciFlow.RicciPosInitial (I := I) (M := M)
         (DifferentialGeometry.PDE.RicciFlow.twoTensorSecToFamily (I := I) (M := M)
           P.S.ricci) :=
     hamilton_initial_ricci_positive (I := I) (M := M) h0ω hpos P hD
-  have hinit : DifferentialGeometry.PDE.RicciFlow.PinchInitLt (I := I) (M := M)
+  have hinit : DifferentialGeometry.PDE.RicciFlow.PinchInitialLt (I := I) (M := M)
       (fun t : Real => P.S.base.metric t)
       (DifferentialGeometry.PDE.RicciFlow.twoTensorSecToFamily (I := I) (M := M) P.S.ricci)
       P.S.scalar :=
-    DifferentialGeometry.PDE.RicciFlow.pinchInitLt_pos (I := I) (M := M)
+    DifferentialGeometry.PDE.RicciFlow.pinchInitialLt_pos (I := I) (M := M)
       (G := fun t : Real => P.S.base.metric t)
       (Ric := DifferentialGeometry.PDE.RicciFlow.twoTensorSecToFamily (I := I) (M := M)
         P.S.ricci)
       (scalar := P.S.scalar)
       (DifferentialGeometry.PDE.RicciFlow.initialMetricRicciDataOfSolution
         (I := I) (M := M) P.S)
-      (DifferentialGeometry.PDE.RicciFlow.initial_metric_ricci_data_positive
+      (DifferentialGeometry.PDE.RicciFlow.initialMetricRicciDataOfSolution_positive
         (I := I) (M := M) P.S hpos0)
       (DifferentialGeometry.PDE.RicciFlow.initial_scalar_curvature_continuous_of_solution
         (I := I) (M := M) P.S
@@ -750,7 +750,7 @@ theorem hamilton_fixed_pinching
     intro t ht
     rw [hD]
     exact ⟨ht.1, lt_of_le_of_lt ht.2 hTω⟩
-  exact DifferentialGeometry.PDE.RicciFlow.pinch_sol_closed (I := I) (M := M) (S := P.S)
+  exact DifferentialGeometry.PDE.RicciFlow.pinch_solution_closed (I := I) (M := M) (S := P.S)
     P.isSmooth hT hdelta13 hdimT hTsub hTreg hpinch0
 
 omit [NeZero (Module.finrank ℝ E)] in
@@ -801,7 +801,7 @@ theorem hamilton_ricci_nonnegative
     intro t ht
     rw [hD]
     exact ⟨ht.1, lt_of_le_of_lt ht.2 hTω⟩
-  exact DifferentialGeometry.PDE.RicciFlow.ricci_nonnegative_of_closed_solution_wmp_data
+  exact DifferentialGeometry.PDE.RicciFlow.ricci_nonnegative_of_closed_solution
     (I := I) (M := M) (S := P.S)
     P.isSmooth hT hdimT hTsub hTreg hinit
 
@@ -890,7 +890,7 @@ theorem hamilton_scalar_positive
   have hreg :
       ∀ T : Real, 0 < T -> T < omega ->
         T < DifferentialGeometry.PDE.RicciFlow.scalarBlowupTime 3 c0 ->
-          DifferentialGeometry.PDE.RicciFlow.ScalarLowerBoundWMPRegularity
+          DifferentialGeometry.PDE.RicciFlow.ScalarLowerBoundWeakMaximumPrincipleRegularity
             (I := I) (hamiltonMetricConnectionFamily (I := I) P) T 3 c0
             (hamiltonScalar (I := I) P) (K T) := by
     intro T _hT hTω hPole
@@ -1045,7 +1045,7 @@ theorem hamilton_rescaled_curvature_bound
         (Ric := P.S.ricciAt τ x) (scalar := P.S.scalar τ x)
         (Rm04 := P.S.base.rm04 τ x) hdimT hricSym hricNonneg
         (fun basis horth =>
-          DifferentialGeometry.PDE.RicciFlow.riemann_from_ricci_trace_data (I := I) (M := M) P.S horth)
+          DifferentialGeometry.PDE.RicciFlow.riemann_from_ricci_trace (I := I) (M := M) P.S horth)
     simpa [hamiltonRiemannNormSq, hamiltonScalar, hamiltonSolution, τ] using hpoint
   have hscalarNonneg : 0 <= hamiltonScalar (I := I) P τ x := by
     rcases DifferentialGeometry.Geometry.Curvature.ricciEigenBasis3

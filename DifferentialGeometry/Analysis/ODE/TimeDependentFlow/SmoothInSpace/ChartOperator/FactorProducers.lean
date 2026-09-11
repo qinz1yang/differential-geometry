@@ -38,7 +38,7 @@ omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [SigmaCompactSpac
 theorem chartCloseFderiv_eq_eucl_comp_trivToE
     (Φ_fam : ℝ → M ≃ₘ⟮I, I⟯ M) (α x : M) (s : ℝ)
     (Φ_eucl : E → ℝ → E)
-    (hx_src : x ∈ (chartAt H α).source)
+    (hx_source : x ∈ (chartAt H α).source)
     (heucl_diff : DifferentiableAt ℝ (fun z => Φ_eucl z s) (extChartAt I α x))
     (hagree : (fun y => extChartAt I α ((Φ_fam s : M → M) y))
       =ᶠ[𝓝 x] (fun y => Φ_eucl (extChartAt I α y) s)) :
@@ -51,9 +51,9 @@ theorem chartCloseFderiv_eq_eucl_comp_trivToE
     Filter.EventuallyEq.mfderiv_eq hagree
   rw [hmfeq]
   have hsrc_eq : mfderiv I 𝓘(ℝ, E) (extChartAt I α) x = trivToE (I := I) α x :=
-    (TangentBundle.continuousLinearMapAt_trivializationAt (I := I) hx_src).symm
+    (TangentBundle.continuousLinearMapAt_trivializationAt (I := I) hx_source).symm
   have hext_diff : MDifferentiableAt I 𝓘(ℝ, E) (extChartAt I α) x :=
-    mdifferentiableAt_extChartAt (I := I) hx_src
+    mdifferentiableAt_extChartAt (I := I) hx_source
   have heucl_mdiff : MDifferentiableAt 𝓘(ℝ, E) 𝓘(ℝ, E) (fun z => Φ_eucl z s)
       (extChartAt I α x) :=
     heucl_diff.mdifferentiableAt
@@ -73,7 +73,7 @@ omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [SigmaCompactSpac
 theorem chartCloseFderiv_hasDerivAt_of_eucl
     (Φ_fam : ℝ → M ≃ₘ⟮I, I⟯ M) (α x : M) (t : ℝ)
     (Φ_eucl : E → ℝ → E) {D'_eucl : E →L[ℝ] E}
-    (hx_src : x ∈ (chartAt H α).source)
+    (hx_source : x ∈ (chartAt H α).source)
     (heucl : HasDerivAt (fun s : ℝ => fderiv ℝ (fun z => Φ_eucl z s) (extChartAt I α x))
       D'_eucl t)
     (heucl_diff : ∀ᶠ s : ℝ in 𝓝 t,
@@ -92,7 +92,7 @@ theorem chartCloseFderiv_hasDerivAt_of_eucl
       =ᶠ[𝓝 t] (fun s : ℝ =>
         (fderiv ℝ (fun z => Φ_eucl z s) (extChartAt I α x)).comp (trivToE (I := I) α x)) := by
     filter_upwards [heucl_diff, hagree] with s hsd hsa
-    exact chartCloseFderiv_eq_eucl_comp_trivToE (I := I) Φ_fam α x s Φ_eucl hx_src hsd hsa
+    exact chartCloseFderiv_eq_eucl_comp_trivToE (I := I) Φ_fam α x s Φ_eucl hx_source hsd hsa
   exact hpost.congr_of_eventuallyEq hev
 
 section MovingTrivInverse

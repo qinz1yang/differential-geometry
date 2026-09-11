@@ -1,11 +1,13 @@
 import DifferentialGeometry.Geometry.Operator.WithBoundary.Gradient
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.WithBoundary.Divergence.PartialDerivWithin
-import DifferentialGeometry.Geometry.Boundary.EuclideanHalfSpaceInstance
-import DifferentialGeometry.Analysis.Integration.Measure.Properties
+import DifferentialGeometry.Geometry.Boundary.Model.EuclideanHalfSpace
+import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.Properties
 import Mathlib.Geometry.Manifold.IsManifold.InteriorBoundary
 import Mathlib.Geometry.Manifold.Instances.Real
 import Mathlib.Topology.ContinuousOn
-import DifferentialGeometry.Geometry.Operator.Gradient
+import DifferentialGeometry.Geometry.Operator.Gradient.Basic
+import DifferentialGeometry.Geometry.Metric.Family.ChartCurvature.MetricFamilySmoothOn
+import DifferentialGeometry.Geometry.Metric.Family.Regularity.DifferentialOperator
 
 
 noncomputable section
@@ -14,6 +16,7 @@ open Bundle Manifold Set MeasureTheory Filter
 open scoped Manifold Topology ContDiff Matrix BigOperators ENNReal
 
 open DifferentialGeometry.Geometry.Operator
+open DifferentialGeometry.Tensor.Coordinates
 namespace DifferentialGeometry
 namespace Geometry
 namespace Operator
@@ -112,10 +115,10 @@ private lemma gradChartCoeffWithin_continuousOn_source
 private lemma chartGramMatrix_entry_continuousOn_source
     (g : SmoothRiemannianMetric I M) (α : M)
     (i j : Fin (Module.finrank ℝ E)) :
-    ContinuousOn (fun y : M => chartGramMatrix (I := I) g α y i j)
+    ContinuousOn (fun y : M => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α y i j)
       (chartAt H α).source := by
-  have h := chartGramMatrix_entry_contMDiffOn (I := I) g α i j
-  have hcont : ContinuousOn (fun y : M => chartGramMatrix (I := I) g α y i j)
+  have h := DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_entry_contMDiffOn (I := I) g α i j
+  have hcont : ContinuousOn (fun y : M => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α y i j)
       (trivializationAt E (TangentSpace I) α).baseSet := h.continuousOn
   refine hcont.mono ?_
   intro y hy
@@ -131,29 +134,29 @@ private lemma g_inner_gradChartLocalWithin_expand
         ∑ j : Fin (Module.finrank ℝ E),
           gradChartCoeffWithin (I := I) g α f i y *
             gradChartCoeffWithin (I := I) g α h j y *
-              chartGramMatrix (I := I) g α y i j := by
+              DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α y i j := by
   classical
   unfold gradChartLocalWithin
   rw [show
         g.inner y (∑ i : Fin (Module.finrank ℝ E),
             gradChartCoeffWithin (I := I) g α f i y •
-              chartBasisVecFiber (I := I) α i y)
+              DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i y)
           (∑ j : Fin (Module.finrank ℝ E),
             gradChartCoeffWithin (I := I) g α h j y •
-              chartBasisVecFiber (I := I) α j y) =
+              DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j y) =
         ∑ i : Fin (Module.finrank ℝ E),
           gradChartCoeffWithin (I := I) g α f i y *
-            (g.inner y (chartBasisVecFiber (I := I) α i y))
+            (g.inner y (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i y))
               (∑ j : Fin (Module.finrank ℝ E),
                 gradChartCoeffWithin (I := I) g α h j y •
-                  chartBasisVecFiber (I := I) α j y) from ?_]
+                  DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j y) from ?_]
   swap
   · rw [show g.inner y (∑ i : Fin (Module.finrank ℝ E),
               gradChartCoeffWithin (I := I) g α f i y •
-                chartBasisVecFiber (I := I) α i y) =
+                DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i y) =
             ∑ i : Fin (Module.finrank ℝ E),
               gradChartCoeffWithin (I := I) g α f i y •
-                g.inner y (chartBasisVecFiber (I := I) α i y) from ?_]
+                g.inner y (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i y) from ?_]
     · rw [sum_apply]
       refine Finset.sum_congr rfl ?_
       intro i _
@@ -164,18 +167,18 @@ private lemma g_inner_gradChartLocalWithin_expand
       rw [map_smul]
   refine Finset.sum_congr rfl ?_
   intro i _
-  rw [show (g.inner y (chartBasisVecFiber (I := I) α i y))
+  rw [show (g.inner y (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i y))
           (∑ j : Fin (Module.finrank ℝ E),
             gradChartCoeffWithin (I := I) g α h j y •
-              chartBasisVecFiber (I := I) α j y) =
+              DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j y) =
         ∑ j : Fin (Module.finrank ℝ E),
           gradChartCoeffWithin (I := I) g α h j y *
-            g.inner y (chartBasisVecFiber (I := I) α i y)
-              (chartBasisVecFiber (I := I) α j y) from ?_]
+            g.inner y (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i y)
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j y) from ?_]
   · rw [Finset.mul_sum]
     refine Finset.sum_congr rfl ?_
     intro j _
-    rw [chartGramMatrix_apply]
+    rw [DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_apply]
     ring
   · rw [map_sum]
     refine Finset.sum_congr rfl ?_
@@ -211,7 +214,7 @@ private lemma g_inner_gradFun_gradFun_continuousOn_chart_source
   · exact chartGramMatrix_entry_continuousOn_source (I := I) g α i j
 
 
-private lemma g_inner_gradFun_gradFun_continuous_general
+theorem continuous_g_inner_gradFun_gradFun
     (g : SmoothRiemannianMetric I M)
     {f h : M → ℝ}
     (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f)
@@ -226,6 +229,184 @@ private lemma g_inner_gradFun_gradFun_continuous_general
     g_inner_gradFun_gradFun_continuousOn_chart_source
       (I := I) (M := M) g x hf hh
   exact (hcontOn x hx_chart).continuousAt (hopen.mem_nhds hx_chart)
+
+private lemma gradChartCoeffWithin_family_continuousOn_goodSet
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
+    {G : DifferentialGeometry.Geometry.Curvature.MetricConnectionFamilyOn
+      (I := I) (M := M) D}
+    (hG : DifferentialGeometry.Geometry.Curvature.MetricFamilySmoothOn
+      (I := I) (M := M) D G.metric)
+    {J : Set ℝ} (hJreg : J ⊆ D.regular)
+    (α : M) {f : M → ℝ}
+    (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f)
+    (i : Fin (Module.finrank ℝ E)) :
+    ContinuousOn
+      (fun p : ℝ × M =>
+        gradChartCoeffWithin (I := I) (G.metric p.1) α f i p.2)
+      (J ×ˢ ((chartAt H α).source ∩ I.interior M)) := by
+  classical
+  let S : Set (ℝ × M) := J ×ˢ ((chartAt H α).source ∩ I.interior M)
+  have hψ : ContinuousOn (fun p : ℝ × M => (p.1, extChartAt I α p.2)) S :=
+    continuous_fst.continuousOn.prodMk
+      ((continuousOn_extChartAt (I := I) α).comp continuous_snd.continuousOn
+        fun p hp => by
+          rw [extChartAt_source_eq_chartAt_source (I := I)]
+          exact hp.2.1)
+  have hmaps : MapsTo (fun p : ℝ × M => (p.1, extChartAt I α p.2)) S
+      (J ×ˢ interior (extChartAt I α).target) :=
+    fun p hp => ⟨hp.1,
+      extChartAt_mem_interior_target_of_isInteriorPoint
+        (I := I) α hp.2.1 hp.2.2⟩
+  change ContinuousOn
+    (fun p : ℝ × M =>
+      ∑ j : Fin (Module.finrank ℝ E),
+        chartInvGramMatrix (I := I) (G.metric p.1) α p.2 i j *
+          partialDerivWithin (E := E) (extChartAt I α).target j
+            (scalarOnE (I := I) α f) (extChartAt I α p.2)) S
+  refine continuousOn_finsetSum Finset.univ fun j _ => ?_
+  have hinv :=
+    (DifferentialGeometry.Geometry.Curvature.MetricFamilySmoothOn.chartInvGramOnE_continuousOn
+      (I := I) hG hJreg α i j).comp hψ hmaps
+  have hinv' : ContinuousOn
+      (fun p : ℝ × M => chartInvGramMatrix (I := I) (G.metric p.1) α p.2 i j)
+      S := by
+    refine hinv.congr ?_
+    intro p hp
+    simp only [Function.comp_apply, chartInvGramOnE_def]
+    rw [(extChartAt I α).left_inv
+      (by
+        rw [extChartAt_source_eq_chartAt_source (I := I)]
+        exact hp.2.1)]
+  have hpartial : ContinuousOn
+      (fun p : ℝ × M =>
+        partialDerivWithin (E := E) (extChartAt I α).target j
+          (scalarOnE (I := I) α f) (extChartAt I α p.2)) S :=
+    (partialDerivWithin_scalarOnE_extChartAt_continuousOn_source
+      (I := I) α hf j).comp continuous_snd.continuousOn
+        (fun p hp => hp.2.1)
+  exact hinv'.mul hpartial
+
+theorem gradient_inner_continuousOn_interior
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
+    {G : DifferentialGeometry.Geometry.Curvature.MetricConnectionFamilyOn
+      (I := I) (M := M) D}
+    (hG : DifferentialGeometry.Geometry.Curvature.MetricFamilySmoothOn
+      (I := I) (M := M) D G.metric)
+    {J : Set ℝ} (hJreg : J ⊆ D.regular)
+    {f h : M → ℝ}
+    (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f)
+    (hh : ContMDiff I 𝓘(ℝ, ℝ) ∞ h) :
+    ContinuousOn
+      (fun p : ℝ × M =>
+        (G.metric p.1).inner p.2
+          (gradFun (I := I) (G.metric p.1) f p.2)
+          (gradFun (I := I) (G.metric p.1) h p.2))
+      (J ×ˢ I.interior M) := by
+  classical
+  refine continuousOn_of_locally_continuousOn ?_
+  intro p hp
+  let α := p.2
+  let V : Set M := (chartAt H α).source ∩ I.interior M
+  let U : Set (ℝ × M) := Set.univ ×ˢ V
+  have hVopen : IsOpen V := (chartAt H α).open_source.inter
+    (I.isOpen_interior (M := M) (n := ∞)
+      (by exact (by decide : (∞ : WithTop ℕ∞) ≠ 0)))
+  have hpU : p ∈ U := ⟨Set.mem_univ _, mem_chart_source H α, hp.2⟩
+  refine ⟨U, isOpen_univ.prod hVopen, hpU, ?_⟩
+  let S : Set (ℝ × M) := J ×ˢ V
+  have hfcoeff : ∀ i, ContinuousOn
+      (fun q : ℝ × M =>
+        gradChartCoeffWithin (I := I) (G.metric q.1) α f i q.2) S :=
+    fun i => gradChartCoeffWithin_family_continuousOn_goodSet
+      (I := I) hG hJreg α hf i
+  have hhcoeff : ∀ j, ContinuousOn
+      (fun q : ℝ × M =>
+        gradChartCoeffWithin (I := I) (G.metric q.1) α h j q.2) S :=
+    fun j => gradChartCoeffWithin_family_continuousOn_goodSet
+      (I := I) hG hJreg α hh j
+  have hgram : ∀ i j, ContinuousOn
+      (fun q : ℝ × M => chartGramMatrix (I := I) (G.metric q.1) α q.2 i j) S := by
+    intro i j
+    refine (hG.chartGramMatrix_continuousOn (I := I) hJreg α i j).mono ?_
+    intro q hq
+    refine ⟨hq.1, ?_⟩
+    rw [trivializationAt_baseSet_eq_chartAt_source]
+    exact hq.2.1
+  have hlocal : ContinuousOn
+      (fun q : ℝ × M =>
+        ∑ i : Fin (Module.finrank ℝ E),
+          ∑ j : Fin (Module.finrank ℝ E),
+            gradChartCoeffWithin (I := I) (G.metric q.1) α f i q.2 *
+              gradChartCoeffWithin (I := I) (G.metric q.1) α h j q.2 *
+                chartGramMatrix (I := I) (G.metric q.1) α q.2 i j) S := by
+    refine continuousOn_finsetSum _ fun i _ =>
+      continuousOn_finsetSum _ fun j _ => ?_
+    exact ((hfcoeff i).mul (hhcoeff j)).mul (hgram i j)
+  refine (hlocal.congr ?_).mono ?_
+  · intro q hq
+    change (G.metric q.1).inner q.2
+      (gradFun (I := I) (G.metric q.1) f q.2)
+      (gradFun (I := I) (G.metric q.1) h q.2) = _
+    rw [← gradChartLocalWithin_eq_gradFun (I := I) (G.metric q.1) α hf
+      hq.2.1]
+    rw [← gradChartLocalWithin_eq_gradFun (I := I) (G.metric q.1) α hh
+      hq.2.1]
+    exact g_inner_gradChartLocalWithin_expand
+      (I := I) (G.metric q.1) α f h q.2
+  · intro q hq
+    exact ⟨hq.1.1, hq.2.2⟩
+
+theorem gradient_inner_continuousOn_of_tsupport_subset_interior
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
+    {G : DifferentialGeometry.Geometry.Curvature.MetricConnectionFamilyOn
+      (I := I) (M := M) D}
+    (hG : DifferentialGeometry.Geometry.Curvature.MetricFamilySmoothOn
+      (I := I) (M := M) D G.metric)
+    {J : Set ℝ} (hJreg : J ⊆ D.regular)
+    {f h : M → ℝ}
+    (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f)
+    (hh : ContMDiff I 𝓘(ℝ, ℝ) ∞ h)
+    (hfsupp : tsupport f ⊆ I.interior M) :
+    ContinuousOn
+      (fun p : ℝ × M =>
+        (G.metric p.1).inner p.2
+          (gradFun (I := I) (G.metric p.1) f p.2)
+          (gradFun (I := I) (G.metric p.1) h p.2))
+      (J ×ˢ (Set.univ : Set M)) := by
+  classical
+  refine continuousOn_of_locally_continuousOn ?_
+  intro p hp
+  by_cases hpx : p.2 ∈ tsupport f
+  · let U : Set (ℝ × M) := Set.univ ×ˢ I.interior M
+    have hUopen : IsOpen U := isOpen_univ.prod
+      (I.isOpen_interior (M := M) (n := ∞)
+        (by exact (by decide : (∞ : WithTop ℕ∞) ≠ 0)))
+    have hpU : p ∈ U := ⟨Set.mem_univ _, hfsupp hpx⟩
+    refine ⟨U, hUopen, hpU, ?_⟩
+    exact (gradient_inner_continuousOn_interior
+      (I := I) hG hJreg hf hh).mono fun q hq => ⟨hq.1.1, hq.2.2⟩
+  · let U : Set (ℝ × M) := Set.univ ×ˢ (tsupport f)ᶜ
+    have hUopen : IsOpen U := isOpen_univ.prod (isClosed_tsupport f).isOpen_compl
+    have hpU : p ∈ U := ⟨Set.mem_univ _, hpx⟩
+    refine ⟨U, hUopen, hpU, ?_⟩
+    have hzero : ContinuousOn (fun _ : ℝ × M => (0 : ℝ))
+        ((J ×ˢ (Set.univ : Set M)) ∩ U) := continuousOn_const
+    refine hzero.congr ?_
+    intro q hq
+    have hgrad : gradFun (I := I) (G.metric q.1) f q.2 = 0 := by
+      by_contra hne
+      exact hq.2.2 (support_gradFun_subset (I := I) (G.metric q.1) f hne)
+    have hz : (G.metric q.1).inner q.2 (0 : TangentSpace I q.2) = 0 :=
+      map_zero ((G.metric q.1).inner q.2)
+    calc
+      (G.metric q.1).inner q.2
+          (gradFun (I := I) (G.metric q.1) f q.2)
+          (gradFun (I := I) (G.metric q.1) h q.2) =
+        (G.metric q.1).inner q.2 0
+          (gradFun (I := I) (G.metric q.1) h q.2) := by rw [hgrad]
+      _ = (0 : TangentSpace I q.2 →L[ℝ] ℝ)
+          (gradFun (I := I) (G.metric q.1) h q.2) := by rw [hz]
+      _ = 0 := rfl
 
 end WithBoundary
 end Operator
@@ -244,7 +425,7 @@ variable {M : Type*} [TopologicalSpace M]
 
 open DifferentialGeometry.Integral.Measure
 
-theorem continuous_g_inner_gradFun_gradFun
+theorem continuous_g_inner_gradFun_gradFun_euclideanHalfSpace
     (g : SmoothRiemannianMetric (modelWithCornersEuclideanHalfSpace n) M)
     {f h : M → ℝ}
     (hf : ContMDiff (modelWithCornersEuclideanHalfSpace n) 𝓘(ℝ, ℝ) ∞ f)
@@ -252,7 +433,7 @@ theorem continuous_g_inner_gradFun_gradFun
     Continuous (fun x : M =>
       g.inner x (gradFun (I := modelWithCornersEuclideanHalfSpace n) g f x)
         (gradFun (I := modelWithCornersEuclideanHalfSpace n) g h x)) :=
-  g_inner_gradFun_gradFun_continuous_general
+  continuous_g_inner_gradFun_gradFun
     (I := modelWithCornersEuclideanHalfSpace n) (M := M) g hf hh
 
 theorem bddAbove_g_inner_gradFun_gradFun_of_compactSpace
@@ -267,7 +448,7 @@ theorem bddAbove_g_inner_gradFun_gradFun_of_compactSpace
   have hcont : Continuous (fun x : M =>
       g.inner x (gradFun (I := modelWithCornersEuclideanHalfSpace n) g f x)
         (gradFun (I := modelWithCornersEuclideanHalfSpace n) g h x)) :=
-    continuous_g_inner_gradFun_gradFun (n := n) (M := M) g hf hh
+    continuous_g_inner_gradFun_gradFun_euclideanHalfSpace (n := n) (M := M) g hf hh
   exact (isCompact_range hcont).bddAbove
 
 private local instance instMeasurableSpaceM_gradContinuity :
@@ -293,7 +474,7 @@ theorem integrable_g_inner_gradFun_gradFun
   have hcont : Continuous (fun x : M =>
       g.inner x (gradFun (I := modelWithCornersEuclideanHalfSpace n) g f x)
         (gradFun (I := modelWithCornersEuclideanHalfSpace n) g h x)) :=
-    continuous_g_inner_gradFun_gradFun (n := n) (M := M) g hf hh
+    continuous_g_inner_gradFun_gradFun_euclideanHalfSpace (n := n) (M := M) g hf hh
   exact hcont.integrable_of_hasCompactSupport
     (HasCompactSupport.of_compactSpace _)
 

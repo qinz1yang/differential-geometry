@@ -1,5 +1,5 @@
-import DifferentialGeometry.Analysis.Elliptic.TensorRegularity.SecondCovDerivExpansion.ChartProjectionSecondCovDerivViaSkExt
-import DifferentialGeometry.Analysis.Elliptic.TensorRegularity.CovDeriv.ComponentEuclidSkExtExpansion
+import DifferentialGeometry.Analysis.Elliptic.TensorRegularity.SecondCovDerivExpansion.LocalSecondCovariantDerivativeProjection
+import DifferentialGeometry.Analysis.Elliptic.TensorRegularity.CovDeriv.SmoothExtensionExpansion
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 
@@ -63,7 +63,7 @@ private def secondCovDerivChartGlobalValueCorrectionCoeff
 
 omit [CompleteSpace E] [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-private lemma GlobalCorr_eu_contDiffOn
+private lemma GlobalCorrection_eu_contDiffOn
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (k l : Fin (Module.finrank ℝ E))
     (Idx : Fin r → Fin (Module.finrank ℝ E))
@@ -104,7 +104,7 @@ private lemma GlobalCorr_eu_contDiffOn
 
 omit [CompleteSpace E] [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-private lemma GlobalCorr0_eu_contDiffOn
+private lemma GlobalCorrection0_eu_contDiffOn
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (k l : Fin (Module.finrank ℝ E))
     (Idx : Fin r → Fin (Module.finrank ℝ E))
@@ -174,7 +174,7 @@ private lemma chartPushedRaw_S_k_packed_eqOn
           (LeviCivita (I := I) g)).toFun
         (covApply (TensorRSNabla.tensorRSCovariantDerivative I M r s
           (LeviCivita (I := I) g))
-          (chartBasisVecFiber (I := I) α k) T₀.toSection) b₀ =
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k) T₀.toSection) b₀ =
         (TensorRSNabla.tensorRSCovariantDerivative I M r s
           (LeviCivita (I := I) g)).toFun
         (fun y : M =>
@@ -220,16 +220,16 @@ private lemma chartPushedRaw_S_k_packed_eqOn
   have hV_open : IsOpen V := hcont_comp.isOpen_inter_preimage hchartT_open hU_open
   have hV_sub : V ⊆ chartTargetEuclid (I := I) (M := M) α := fun y hy => hy.1
   have hb₀_good : b₀ ∈ chartLeviCivitaGoodSet (I := I) α := hU_sub_good hb₀_U
-  have hb₀_src : b₀ ∈ (extChartAt I α).source :=
+  have hb₀_source : b₀ ∈ (extChartAt I α).source :=
     chartLeviCivitaGoodSet_mem_extChartAt_source (I := I) hb₀_good
-  have hb₀_tgt : (extChartAt I α) b₀ ∈ (extChartAt I α).target :=
-    (extChartAt I α).map_source hb₀_src
+  have hb₀_target : (extChartAt I α) b₀ ∈ (extChartAt I α).target :=
+    (extChartAt I α).map_source hb₀_source
   have hb₀_V : (toEuclidean (E := E)) ((extChartAt I α) b₀) ∈ V := by
-    refine ⟨⟨(extChartAt I α) b₀, hb₀_tgt, rfl⟩, ?_⟩
+    refine ⟨⟨(extChartAt I α) b₀, hb₀_target, rfl⟩, ?_⟩
     change (extChartAt I α).symm
         ((toEuclidean (E := E)).symm
           ((toEuclidean (E := E)) ((extChartAt I α) b₀))) ∈ U
-    rw [(toEuclidean (E := E)).symm_apply_apply, (extChartAt I α).left_inv hb₀_src]
+    rw [(toEuclidean (E := E)).symm_apply_apply, (extChartAt I α).left_inv hb₀_source]
     exact hb₀_U
   refine ⟨S_k_ext, V, hV_open, hV_sub, hb₀_V, ?_, ?_⟩
   · intro Idx Jdx y hy
@@ -247,7 +247,7 @@ private lemma chartPushedRaw_S_k_packed_eqOn
         (trivializationAt (TensorRSModel r s ℝ E)
             (fun y : M => TensorRSSpace r s I y) α).continuousLinearMapAt ℝ b
           (chartTensorRSCovariantDerivative (I := I) r s g α T₀.toSection
-            (chartBasisVecFiber (I := I) α k) b) := by
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k) b) := by
       congr 1
       rw [packageAsCcG_toSection]
       have hStep_BTCi :
@@ -255,18 +255,18 @@ private lemma chartPushedRaw_S_k_packed_eqOn
           covApply
             (TensorRSNabla.tensorRSCovariantDerivative I M r s
               (LeviCivita (I := I) g))
-            (chartBasisVecFiber (I := I) α k) T₀.toSection b := hU_eq b hb_U
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k) T₀.toSection b := hU_eq b hb_U
       change (S_k_ext : Π b' : M, TensorRSSpace r s I b') b =
         chartTensorRSCovariantDerivative (I := I) r s g α T₀.toSection
-          (chartBasisVecFiber (I := I) α k) b
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k) b
       rw [hStep_BTCi, covApply_apply]
       have hCovDerivAt :
           (TensorRSNabla.tensorRSCovariantDerivative I M r s
             (LeviCivita (I := I) g)).toFun T₀.toSection b
-            (chartBasisVecFiber (I := I) α k b) =
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k b) =
           tensorCovDerivAt (I := I) (M := M) g r s T₀ b
             (tangentSpaceModelContinuousLinearEquiv (I := I) b
-              (chartBasisVecFiber (I := I) α k b)) := by
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k b)) := by
         rw [tensorCovDerivAt_def]
         simp only [ContinuousLinearEquiv.symm_apply_apply]
       rw [hCovDerivAt]
@@ -279,7 +279,7 @@ private lemma chartPushedRaw_S_k_packed_eqOn
         ((trivializationAt (TensorRSModel r s ℝ E)
             (fun z : M => TensorRSSpace r s I z) α).continuousLinearMapAt ℝ b
           (chartTensorRSCovariantDerivative (I := I) r s g α T₀.toSection
-            (chartBasisVecFiber (I := I) α k) b))
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k) b))
     change tensorChartComponentProjection (E := E) r s Idx Jdx
         ((trivializationAt (TensorRSModel r s ℝ E)
             (fun y : M => TensorRSSpace r s I y) α).continuousLinearMapAt ℝ b
@@ -288,21 +288,21 @@ private lemma chartPushedRaw_S_k_packed_eqOn
         ((trivializationAt (TensorRSModel r s ℝ E)
             (fun z : M => TensorRSSpace r s I z) α).continuousLinearMapAt ℝ b
           (chartTensorRSCovariantDerivative (I := I) r s g α T₀.toSection
-            (chartBasisVecFiber (I := I) α k) b))
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k) b))
     rw [htriv_eq]
   · set cov := TensorRSNabla.tensorRSCovariantDerivative I M r s
       (LeviCivita (I := I) g) with hcov_def
     set σ : Π y : M, TensorRSSpace r s I y :=
-      covApply cov (chartBasisVecFiber (I := I) α k) T₀.toSection with hσ_def
+      covApply cov (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k) T₀.toSection with hσ_def
     set σ' : Π y : M, TensorRSSpace r s I y :=
       fun y : M => (S_k_ext : Π y' : M, TensorRSSpace r s I y') y with hσ'_def
     have hagree : ∀ᶠ y in 𝓝 b₀, σ y = σ' y := by
       refine Filter.eventually_of_mem (hU_open.mem_nhds hb₀_U) (fun y hy_U => ?_)
       have hSk_y :
           (S_k_ext : Π y' : M, TensorRSSpace r s I y') y =
-            covApply cov (chartBasisVecFiber (I := I) α k) T₀.toSection y :=
+            covApply cov (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k) T₀.toSection y :=
         hU_eq y hy_U
-      change covApply cov (chartBasisVecFiber (I := I) α k) T₀.toSection y =
+      change covApply cov (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k) T₀.toSection y =
           (S_k_ext : Π y' : M, TensorRSSpace r s I y') y
       exact hSk_y.symm
     have hσ'_total_smooth :
@@ -332,7 +332,7 @@ private lemma chartPushedRaw_S_k_packed_eqOn
             (E := fun z : M => TensorRSSpace r s I z) y (σ y)) b₀ :=
       (htotal_agree.mdifferentiableAt_iff (𝕜 := ℝ) (I := I)
         (I' := I.prod 𝓘(ℝ, TensorRSModel r s ℝ E))).mpr hσ'_total_mdiff
-    have hcov_loc : cov.toFun σ b₀ = cov.toFun σ' b₀ :=
+    have hcov_local : cov.toFun σ b₀ = cov.toFun σ' b₀ :=
       tensorRSCovariantDerivative_congr_of_eventuallyEq
         (I := I) (M := M) g r s
         (σ := σ) (σ' := σ') (x := b₀) hagree hσ_total_mdiff hσ'_total_mdiff
@@ -340,8 +340,8 @@ private lemma chartPushedRaw_S_k_packed_eqOn
         σ' = (fun y : M => (packageAsCcG (I := I) (M := M) g r s S_k_ext).toSection y) := by
       funext y
       simp [hσ'_def, packageAsCcG_toSection]
-    rw [hσ'_eq_packed] at hcov_loc
-    exact hcov_loc
+    rw [hσ'_eq_packed] at hcov_local
+    exact hcov_local
 
 omit [CompleteSpace E] in
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
@@ -359,7 +359,7 @@ private lemma LHS_eq_covDerivComponentEuclid_S_k_packed
         (LeviCivita (I := I) g)).toFun
       (covApply (TensorRSNabla.tensorRSCovariantDerivative I M r s
         (LeviCivita (I := I) g))
-        (chartBasisVecFiber (I := I) α k) T₀.toSection) b =
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k) T₀.toSection) b =
       (TensorRSNabla.tensorRSCovariantDerivative I M r s
         (LeviCivita (I := I) g)).toFun
       (fun y : M =>
@@ -371,8 +371,8 @@ private lemma LHS_eq_covDerivComponentEuclid_S_k_packed
               (LeviCivita (I := I) g)).toFun
             (covApply (TensorRSNabla.tensorRSCovariantDerivative I M r s
               (LeviCivita (I := I) g))
-              (chartBasisVecFiber (I := I) α k) T₀.toSection) b
-            (chartBasisVecFiber (I := I) α l b))) =
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k) T₀.toSection) b
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l b))) =
       covDerivComponentEuclid (I := I) (M := M) g r s α
           (packageAsCcG (I := I) (M := M) g r s S_k_ext) l Idx Jdx
           ((toEuclidean (E := E)) ((extChartAt I α) b)) := by
@@ -386,38 +386,38 @@ private lemma LHS_eq_covDerivComponentEuclid_S_k_packed
     tensorRSBundleFiber r s
   set S_k_packed : SmoothCcTensor g r s :=
     packageAsCcG (I := I) (M := M) g r s S_k_ext with hS_k_packed_def
-  have hb_src : b ∈ (extChartAt I α).source :=
+  have hb_source : b ∈ (extChartAt I α).source :=
     chartLeviCivitaGoodSet_mem_extChartAt_source (I := I) hb_good
-  have hcov_loc_at_v :
+  have hcov_local_at_v :
       (TensorRSNabla.tensorRSCovariantDerivative I M r s
           (LeviCivita (I := I) g)).toFun
         (covApply (TensorRSNabla.tensorRSCovariantDerivative I M r s
           (LeviCivita (I := I) g))
-          (chartBasisVecFiber (I := I) α k) T₀.toSection) b
-        (chartBasisVecFiber (I := I) α l b) =
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k) T₀.toSection) b
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l b) =
       (TensorRSNabla.tensorRSCovariantDerivative I M r s
           (LeviCivita (I := I) g)).toFun
         (fun y : M => S_k_packed.toSection y) b
-        (chartBasisVecFiber (I := I) α l b) := by
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l b) := by
     rw [hcov_agree]
-  rw [hcov_loc_at_v]
+  rw [hcov_local_at_v]
   have hcov_tensor :
       (TensorRSNabla.tensorRSCovariantDerivative I M r s
           (LeviCivita (I := I) g)).toFun
         (fun y : M => S_k_packed.toSection y) b
-        (chartBasisVecFiber (I := I) α l b) =
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l b) =
       tensorCovDerivAt (I := I) (M := M) g r s S_k_packed b
         (tangentSpaceModelContinuousLinearEquiv (I := I) b
-          (chartBasisVecFiber (I := I) α l b)) := by
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l b)) := by
     rw [tensorCovDerivAt_def]
     simp only [ContinuousLinearEquiv.symm_apply_apply]
   rw [hcov_tensor]
   have hcov_chart :
       tensorCovDerivAt (I := I) (M := M) g r s S_k_packed b
         (tangentSpaceModelContinuousLinearEquiv (I := I) b
-          (chartBasisVecFiber (I := I) α l b)) =
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l b)) =
       chartTensorRSCovariantDerivative (I := I) r s g α S_k_packed.toSection
-        (chartBasisVecFiber (I := I) α l) b :=
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l) b :=
     tensorCovDerivAt_eq_chartTensorRSCovariantDerivative
       (I := I) (M := M) g r s S_k_packed α l (b := b) hb_good
   rw [hcov_chart]
@@ -428,7 +428,7 @@ private lemma LHS_eq_covDerivComponentEuclid_S_k_packed
         (extChartAt I α) b :=
     (toEuclidean (E := E)).symm_apply_apply _
   have hleft_inv : (extChartAt I α).symm ((extChartAt I α) b) = b :=
-    (extChartAt I α).left_inv hb_src
+    (extChartAt I α).left_inv hb_source
   rw [hsymm_te, hleft_inv]
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [NeZero (Module.finrank ℝ E)] in
@@ -453,16 +453,16 @@ theorem secondCovDeriv_chartα_proj_eq_iteratedFDeriv_T₀_eqOn
     (Idx : Fin r → Fin (Module.finrank ℝ E))
     (Jdx : Fin s → Fin (Module.finrank ℝ E))
     (k l : Fin (Module.finrank ℝ E)) :
-    ∃ (GlobalCorr : (Fin r → Fin (Module.finrank ℝ E)) →
+    ∃ (GlobalCorrection : (Fin r → Fin (Module.finrank ℝ E)) →
                      (Fin s → Fin (Module.finrank ℝ E)) →
                      Fin (Module.finrank ℝ E) →
                      EuclideanSpace ℝ (Fin (Module.finrank ℝ E)) → ℝ),
-    ∃ (GlobalCorr0 : (Fin r → Fin (Module.finrank ℝ E)) →
+    ∃ (GlobalCorrection0 : (Fin r → Fin (Module.finrank ℝ E)) →
                       (Fin s → Fin (Module.finrank ℝ E)) →
                       EuclideanSpace ℝ (Fin (Module.finrank ℝ E)) → ℝ),
-      (∀ I' J' m, ContDiffOn ℝ ∞ (GlobalCorr I' J' m)
+      (∀ I' J' m, ContDiffOn ℝ ∞ (GlobalCorrection I' J' m)
         (chartTargetEuclid (I := I) (M := M) α)) ∧
-      (∀ I' J', ContDiffOn ℝ ∞ (GlobalCorr0 I' J')
+      (∀ I' J', ContDiffOn ℝ ∞ (GlobalCorrection0 I' J')
         (chartTargetEuclid (I := I) (M := M) α)) ∧
       ∀ (T₀ : SmoothCcTensor g r s),
         ∀ {b : M}, b ∈ chartLeviCivitaGoodSet (I := I) α →
@@ -473,8 +473,8 @@ theorem secondCovDeriv_chartα_proj_eq_iteratedFDeriv_T₀_eqOn
                   (LeviCivita (I := I) g)).toFun
                 (covApply (TensorRSNabla.tensorRSCovariantDerivative I M r s
                   (LeviCivita (I := I) g))
-                  (chartBasisVecFiber (I := I) α k) T₀.toSection) b
-                (chartBasisVecFiber (I := I) α l b))) =
+                  (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k) T₀.toSection) b
+                (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l b))) =
           euclidPartial (E := E) l
             (euclidPartial (E := E) k
               (chartPushedRaw I α
@@ -483,14 +483,14 @@ theorem secondCovDeriv_chartα_proj_eq_iteratedFDeriv_T₀_eqOn
           (∑ I' : Fin r → Fin (Module.finrank ℝ E),
             ∑ J' : Fin s → Fin (Module.finrank ℝ E),
             ∑ m : Fin (Module.finrank ℝ E),
-            GlobalCorr I' J' m ((toEuclidean (E := E)) ((extChartAt I α) b)) *
+            GlobalCorrection I' J' m ((toEuclidean (E := E)) ((extChartAt I α) b)) *
               euclidPartial (E := E) m
                 (chartPushedRaw I α
                   (tensorChartComponentRaw (I := I) (M := M) g r s T₀ α I' J'))
                 ((toEuclidean (E := E)) ((extChartAt I α) b))) +
           (∑ I' : Fin r → Fin (Module.finrank ℝ E),
             ∑ J' : Fin s → Fin (Module.finrank ℝ E),
-            GlobalCorr0 I' J' ((toEuclidean (E := E)) ((extChartAt I α) b)) *
+            GlobalCorrection0 I' J' ((toEuclidean (E := E)) ((extChartAt I α) b)) *
               chartPushedRaw I α
                 (tensorChartComponentRaw (I := I) (M := M) g r s T₀ α I' J')
                 ((toEuclidean (E := E)) ((extChartAt I α) b))) := by
@@ -499,18 +499,18 @@ theorem secondCovDeriv_chartα_proj_eq_iteratedFDeriv_T₀_eqOn
           secondCovDerivChartGlobalValueCorrectionCoeff (I := I) (M := M) g r s α k l Idx Jdx,
           ?_, ?_, ?_⟩
   · intro I' J' m
-    exact GlobalCorr_eu_contDiffOn (I := I) (M := M) g r s α k l Idx Jdx I' J' m
+    exact GlobalCorrection_eu_contDiffOn (I := I) (M := M) g r s α k l Idx Jdx I' J' m
   · intro I' J'
-    exact GlobalCorr0_eu_contDiffOn (I := I) (M := M) g r s α k l Idx Jdx I' J'
+    exact GlobalCorrection0_eu_contDiffOn (I := I) (M := M) g r s α k l Idx Jdx I' J'
   · intro T₀ b hb_good
     set y : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)) :=
       (toEuclidean (E := E)) ((extChartAt I α) b) with hy_def
-    have hb_src : b ∈ (extChartAt I α).source :=
+    have hb_source : b ∈ (extChartAt I α).source :=
       chartLeviCivitaGoodSet_mem_extChartAt_source (I := I) hb_good
-    have hb_tgt : (extChartAt I α) b ∈ (extChartAt I α).target :=
-      (extChartAt I α).map_source hb_src
+    have hb_target : (extChartAt I α) b ∈ (extChartAt I α).target :=
+      (extChartAt I α).map_source hb_source
     have hy_target : y ∈ chartTargetEuclid (I := I) (M := M) α :=
-      ⟨(extChartAt I α) b, hb_tgt, rfl⟩
+      ⟨(extChartAt I α) b, hb_target, rfl⟩
     obtain ⟨S_k_ext, V, hV_open, hV_sub, hb_V, hVeqOn, hcov_agree⟩ :=
       chartPushedRaw_S_k_packed_eqOn (I := I) (M := M) g r s α T₀ k
         (b₀ := b) hb_good
@@ -525,8 +525,8 @@ theorem secondCovDeriv_chartα_proj_eq_iteratedFDeriv_T₀_eqOn
                   (LeviCivita (I := I) g)).toFun
                 (covApply (TensorRSNabla.tensorRSCovariantDerivative I M r s
                   (LeviCivita (I := I) g))
-                  (chartBasisVecFiber (I := I) α k) T₀.toSection) b
-                (chartBasisVecFiber (I := I) α l b))) =
+                  (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k) T₀.toSection) b
+                (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l b))) =
           covDerivComponentEuclid (I := I) (M := M) g r s α S_k_packed l Idx Jdx y :=
       LHS_eq_covDerivComponentEuclid_S_k_packed
         (I := I) (M := M) g r s α T₀ k l Idx Jdx S_k_ext hb_good hcov_agree

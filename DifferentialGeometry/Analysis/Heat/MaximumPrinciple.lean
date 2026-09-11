@@ -1,13 +1,15 @@
 import DifferentialGeometry.Analysis.Heat.Semigroup.Defs
-import DifferentialGeometry.Geometry.Operator.HessianTrace
-import DifferentialGeometry.Geometry.Operator.Laplacian
-import DifferentialGeometry.Geometry.Operator.VossWeyl
+import DifferentialGeometry.Analysis.Calculus.LocalExtrema
+import DifferentialGeometry.Geometry.Operator.Hessian.TraceFormula
+import DifferentialGeometry.Geometry.Operator.Laplacian.Basic
+import DifferentialGeometry.Geometry.Operator.Laplacian.VossWeylFormula
 import Mathlib.Analysis.Calculus.LocalExtr.Basic
 import Mathlib.Analysis.Calculus.DerivativeTest
 import Mathlib.Analysis.Matrix.Spectrum
 import Mathlib.Analysis.Matrix.PosDef
 import Mathlib.LinearAlgebra.Matrix.PosDef
 import Mathlib.Topology.Order.Compact
+
 open DifferentialGeometry.Geometry.Operator
 
 
@@ -121,68 +123,8 @@ private lemma sum_posSemidef_mul_neg_semidef_le_zero
 private lemma deriv_deriv_nonpos_of_isLocalMax_at_zero
     {g : ℝ → ℝ} (hg_max : IsLocalMax g 0)
     (hg_C2 : ContDiffAt ℝ 2 g 0) :
-    deriv (deriv g) 0 ≤ 0 := by
-  classical
-  by_contra h_pos
-  push Not at h_pos
-  have h_deriv_zero : deriv g 0 = 0 := hg_max.deriv_eq_zero
-  have h_sign : ∀ᶠ x in 𝓝 (0 : ℝ), sign (deriv g x) = sign (x - 0) :=
-    eventually_nhdsWithin_sign_eq_of_deriv_pos h_pos h_deriv_zero
-  have h_sign' : ∀ᶠ x in 𝓝 (0 : ℝ), sign (deriv g x) = sign x := by
-    filter_upwards [h_sign] with x hx
-    simpa using hx
-  rw [Metric.eventually_nhds_iff] at h_sign'
-  obtain ⟨ε₁, hε₁_pos, hε₁_sign⟩ := h_sign'
-  obtain ⟨u, hu_mem_nhd, hu_C2⟩ := hg_C2.contDiffOn (n := 2) le_rfl
-    (by intro h; exfalso; revert h; decide)
-  have hu_C1 : ContDiffOn ℝ 1 g u := hu_C2.of_le (by norm_num)
-  have hg_diff_on : DifferentiableOn ℝ g u := hu_C1.differentiableOn (by norm_num)
-  have hg_cont_on : ContinuousOn g u := hu_C1.continuousOn
-  obtain ⟨ε₂, hε₂_pos, hε₂_sub⟩ := Metric.mem_nhds_iff.mp hu_mem_nhd
-  set ε := min ε₁ ε₂ / 2 with hε_def
-  have hε_pos : 0 < ε := by
-    have : 0 < min ε₁ ε₂ := lt_min hε₁_pos hε₂_pos
-    linarith
-  have hε_lt_ε₁ : ε < ε₁ := by
-    have h := min_le_left ε₁ ε₂
-    linarith
-  have hε_lt_ε₂ : ε < ε₂ := by
-    have h := min_le_right ε₁ ε₂
-    linarith
-  have hIcc_sub_u : Set.Icc (0 : ℝ) ε ⊆ u := by
-    intro x hx
-    apply hε₂_sub
-    rw [Metric.mem_ball, Real.dist_eq, sub_zero, abs_of_nonneg hx.1]
-    linarith [hx.2]
-  have hg_cont_Icc : ContinuousOn g (Set.Icc (0 : ℝ) ε) := hg_cont_on.mono hIcc_sub_u
-  have hderiv_pos : ∀ x ∈ Set.Ioo (0 : ℝ) ε, 0 < deriv g x := by
-    intro x hx
-    have hx_lt : dist x 0 < ε₁ := by
-      rw [Real.dist_eq, sub_zero, abs_of_nonneg (le_of_lt hx.1)]
-      linarith [hx.2]
-    have h_signx : sign (deriv g x) = sign x := hε₁_sign hx_lt
-    have hsignx : sign x = 1 := sign_pos hx.1
-    rw [hsignx] at h_signx
-    rwa [sign_eq_one_iff] at h_signx
-  have hMono : StrictMonoOn g (Set.Icc (0 : ℝ) ε) := by
-    refine strictMonoOn_of_deriv_pos (convex_Icc _ _) hg_cont_Icc ?_
-    intro x hx
-    rw [interior_Icc] at hx
-    exact hderiv_pos x hx
-  rw [show (IsLocalMax g 0) = (∀ᶠ x in 𝓝 (0 : ℝ), g x ≤ g 0) from rfl,
-    Metric.eventually_nhds_iff] at hg_max
-  obtain ⟨δ, hδ_pos, hδ_le⟩ := hg_max
-  set t := min (ε / 2) (δ / 2) with ht_def
-  have ht_pos : 0 < t := lt_min (by linarith) (by linarith)
-  have ht_le_ε : t ≤ ε / 2 := min_le_left _ _
-  have ht_le_δ : t ≤ δ / 2 := min_le_right _ _
-  have ht_in_Icc : t ∈ Set.Icc (0 : ℝ) ε := ⟨le_of_lt ht_pos, by linarith [hε_pos]⟩
-  have ht_in_ball : dist t 0 < δ := by
-    rw [Real.dist_eq, sub_zero, abs_of_nonneg (le_of_lt ht_pos)]
-    linarith
-  have ht_le_g0 : g t ≤ g 0 := hδ_le ht_in_ball
-  have ht_lt : g 0 < g t := hMono (left_mem_Icc.mpr (le_of_lt hε_pos)) ht_in_Icc ht_pos
-  linarith
+    deriv (deriv g) 0 ≤ 0 :=
+  hg_max.deriv_deriv_nonpos hg_C2.continuousAt
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] in
 private lemma sndFDeriv_apply_self_nonpos_of_isLocalMax
@@ -282,22 +224,22 @@ private lemma sndFDeriv_apply_self_eq_sum_of_basis
     (v : E) :
     (fderiv ℝ (fderiv ℝ ftilde) y₀ v) v =
       ∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
-        ((chartModelBasis E).repr v) i *
-          ((chartModelBasis E).repr v) j *
-          partialDeriv (E := E) i (partialDeriv (E := E) j ftilde) y₀ := by
+        ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr v) i *
+          ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr v) j *
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j ftilde) y₀ := by
   classical
   have h_outer_inner : ∀ i j : Fin (Module.finrank ℝ E),
-      partialDeriv (E := E) i (partialDeriv (E := E) j ftilde) y₀ =
-        (fderiv ℝ (fderiv ℝ ftilde) y₀ ((chartModelBasis E) i))
-          ((chartModelBasis E) j) := by
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j ftilde) y₀ =
+        (fderiv ℝ (fderiv ℝ ftilde) y₀ ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))
+          ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j) := by
     intros i j
     set L_j : (E →L[ℝ] ℝ) →L[ℝ] ℝ :=
-      ContinuousLinearMap.apply ℝ ℝ ((chartModelBasis E) j) with hLj_def
-    have heq : partialDeriv (E := E) j ftilde = L_j ∘ (fderiv ℝ ftilde) := by
+      ContinuousLinearMap.apply ℝ ℝ ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j) with hLj_def
+    have heq : DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j ftilde = L_j ∘ (fderiv ℝ ftilde) := by
       funext y
       rfl
-    rw [partialDeriv]
-    rw [show (partialDeriv (E := E) j ftilde) = L_j ∘ (fderiv ℝ ftilde) from heq]
+    rw [DifferentialGeometry.Tensor.Coordinates.partialDeriv]
+    rw [show (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j ftilde) = L_j ∘ (fderiv ℝ ftilde) from heq]
     have hcomp_fderiv : fderiv ℝ (L_j ∘ (fderiv ℝ ftilde)) y₀ =
         (fderiv ℝ (L_j) (fderiv ℝ ftilde y₀)).comp
           (fderiv ℝ (fderiv ℝ ftilde) y₀) :=
@@ -305,7 +247,7 @@ private lemma sndFDeriv_apply_self_eq_sum_of_basis
     rw [hcomp_fderiv]
     rw [L_j.fderiv]
     rfl
-  set b := chartModelBasis E with hb_def
+  set b := DifferentialGeometry.Tensor.Coordinates.chartModelBasis E with hb_def
   set B : E →L[ℝ] E →L[ℝ] ℝ := fderiv ℝ (fderiv ℝ ftilde) y₀ with hB_def
   have hv_decomp : v = ∑ i : Fin (Module.finrank ℝ E),
       ((b.repr v) i) • b i := by
@@ -367,13 +309,13 @@ private lemma chartHessianTensor_quad_form_nonpos_at_max
   set α : M := x_max with hα_def
   set ftilde : E → ℝ := scalarOnE (I := I) α f with hftilde_def
   set y₀ : E := extChartAt I α x_max with hy₀_def
-  have hx_in_src : x_max ∈ (chartAt H α).source := mem_chart_source H α
-  have hx_in_extSrc : x_max ∈ (extChartAt I α).source := by
-    rw [extChartAt_source_eq_chartAt_source (I := I)]; exact hx_in_src
+  have hx_in_source : x_max ∈ (chartAt H α).source := mem_chart_source H α
+  have hx_in_extSource : x_max ∈ (extChartAt I α).source := by
+    rw [extChartAt_source_eq_chartAt_source (I := I)]; exact hx_in_source
   have hx_in_baseSet : x_max ∈ (trivializationAt E (TangentSpace I) α).baseSet := by
-    rw [trivializationAt_baseSet_eq_chartAt_source]; exact hx_in_src
+    rw [trivializationAt_baseSet_eq_chartAt_source]; exact hx_in_source
   have hy₀_target : y₀ ∈ (extChartAt I α).target :=
-    (extChartAt I α).map_source hx_in_extSrc
+    (extChartAt I α).map_source hx_in_extSource
   have h_target_open : IsOpen (extChartAt I α).target :=
     isOpen_extChartAt_target (I := I) α
   have hy₀_target_nhds : (extChartAt I α).target ∈ 𝓝 y₀ :=
@@ -392,14 +334,14 @@ private lemma chartHessianTensor_quad_form_nonpos_at_max
     change f ((extChartAt I α).symm y) ≤ ftilde y₀
     have h1 : ftilde y₀ = f x_max := by
       change f ((extChartAt I α).symm y₀) = f x_max
-      rw [(extChartAt I α).left_inv hx_in_extSrc]
+      rw [(extChartAt I α).left_inv hx_in_extSource]
     rw [h1]
     exact h_max _
   have h_partial_zero : ∀ k : Fin (Module.finrank ℝ E),
-      partialDeriv (E := E) k ftilde y₀ = 0 := by
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k ftilde y₀ = 0 := by
     intro k
     have hfderiv_zero : fderiv ℝ ftilde y₀ = 0 := hftilde_max.fderiv_eq_zero
-    rw [partialDeriv, hfderiv_zero]
+    rw [DifferentialGeometry.Tensor.Coordinates.partialDeriv, hfderiv_zero]
     rfl
   have h_hessian_at_max : ∀ i j : Fin (Module.finrank ℝ E),
       chartHessianTensor (I := I) g α f i j x_max =
@@ -409,7 +351,7 @@ private lemma chartHessianTensor_quad_form_nonpos_at_max
     have h_christ_term :
         ∑ k : Fin (Module.finrank ℝ E),
           chartChristoffel (I := I) g α i j k (extChartAt I α x_max) *
-            partialDeriv (E := E) k (scalarOnE (I := I) α f) (extChartAt I α x_max) =
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (scalarOnE (I := I) α f) (extChartAt I α x_max) =
           0 := by
       apply Finset.sum_eq_zero
       intro k _
@@ -417,7 +359,7 @@ private lemma chartHessianTensor_quad_form_nonpos_at_max
       rw [show (scalarOnE (I := I) α f) = ftilde from rfl, h_partial_zero k]
       ring
     rw [h_christ_term, sub_zero]
-  set b : Module.Basis (Fin (Module.finrank ℝ E)) ℝ E := chartModelBasis E with hb_def
+  set b : Module.Basis (Fin (Module.finrank ℝ E)) ℝ E := DifferentialGeometry.Tensor.Coordinates.chartModelBasis E with hb_def
   set v : E := ∑ i : Fin (Module.finrank ℝ E), c i • b i with hv_def
   have h_repr_v : ∀ k : Fin (Module.finrank ℝ E), (b.repr v) k = c k := by
     intro k
@@ -437,7 +379,7 @@ private lemma chartHessianTensor_quad_form_nonpos_at_max
   have h1 : ∑ i, ∑ j, c i * c j *
       chartHessianTensor (I := I) g α f i j x_max =
       ∑ i, ∑ j, (b.repr v) i * (b.repr v) j *
-        partialDeriv (E := E) i (partialDeriv (E := E) j ftilde) y₀ := by
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j ftilde) y₀ := by
     refine Finset.sum_congr rfl ?_
     intros i _
     refine Finset.sum_congr rfl ?_
@@ -451,7 +393,7 @@ private lemma chartHessianTensor_quad_form_nonpos_at_max
     exact h1.differentiableAt one_ne_zero
   have h2 : ∑ i, ∑ j,
       (b.repr v) i * (b.repr v) j *
-        partialDeriv (E := E) i (partialDeriv (E := E) j ftilde) y₀ =
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j ftilde) y₀ =
       (fderiv ℝ (fderiv ℝ ftilde) y₀ v) v :=
     (sndFDeriv_apply_self_eq_sum_of_basis hftilde_fderiv_diff v).symm
   rw [h2]
@@ -477,8 +419,8 @@ theorem laplacian_nonpos_at_max
         chartHessianTensor (I := I) g α f i j x_max) with hHmat_def
   have hx_in_baseSet : x_max ∈ (trivializationAt E (TangentSpace I) α).baseSet := by
     rw [trivializationAt_baseSet_eq_chartAt_source]; exact mem_chart_source H α
-  have hG_PD : (chartGramMatrix (I := I) g α x_max).PosDef :=
-    chartGramMatrix_posDef (I := I) g α hx_in_baseSet
+  have hG_PD : (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α x_max).PosDef :=
+    DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_posDef (I := I) g α hx_in_baseSet
   have hMmat_PD : Mmat.PosDef := by
     rw [hMmat_def]
     unfold chartInvGramMatrix
@@ -528,7 +470,7 @@ theorem weak_maximum_principle_of_closed
       HasDerivAt (fun s : ℝ => u s x) (Du t x) t)
     (h_ineq : ∀ t ∈ Set.Ioo (0 : ℝ) T, ∀ x : M,
       Du t x ≤ ΔG (I := I) g ⟨u t, hu_smooth t⟩ x)
-    (h_init : ∀ x : M, u 0 x ≤ 0) :
+    (h_initial : ∀ x : M, u 0 x ≤ 0) :
     ∀ t ∈ Set.Icc (0 : ℝ) T, ∀ x : M, u t x ≤ 0 := by
   classical
   have key : ∀ {δ : ℝ}, 0 < δ → ∀ {η : ℝ}, 0 < η → η < T →
@@ -565,7 +507,7 @@ theorem weak_maximum_principle_of_closed
       by_contra h_neg
       push Not at h_neg
       have hp_t_zero : p₀.1 = 0 := le_antisymm h_neg hp₀_mem.1.1
-      have hu0 : u 0 p₀.2 ≤ 0 := h_init p₀.2
+      have hu0 : u 0 p₀.2 ≤ 0 := h_initial p₀.2
       have hv_at : v_δ p₀ = u p₀.1 p₀.2 - δ * (p₀.1 + 1) := rfl
       have : v_δ p₀ ≤ -δ := by
         rw [hv_at, hp_t_zero]

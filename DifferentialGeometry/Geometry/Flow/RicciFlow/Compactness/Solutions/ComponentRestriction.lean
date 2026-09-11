@@ -1,6 +1,6 @@
-import DifferentialGeometry.Geometry.Exponential.LocalAddition
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Solutions.OpenRestriction
-import DifferentialGeometry.Geometry.Geodesic.OpenSubtype
+import DifferentialGeometry.Geometry.Geodesic.Naturality.OpenSubtype
+import DifferentialGeometry.Topology.Manifold.ConnectedComponent
 
 
 open DifferentialGeometry.PDE.RicciFlow
@@ -12,9 +12,8 @@ noncomputable section
 
 open Bundle Manifold Set TopologicalSpace
 open scoped Manifold Topology ContDiff
-open DifferentialGeometry.Geometry.Riemannian.Exponential
 open DifferentialGeometry.Geometry.Riemannian.Geodesic
-open DifferentialGeometry.HCGCompactness
+open DifferentialGeometry.CheegerGromovCompactness
 
 open DifferentialGeometry.Integral.Measure
 
@@ -30,14 +29,14 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
 
 noncomputable def compRestrict
     (g : ℝ → SmoothRiemannianMetric I M) (p : M) :
-    ℝ → SmoothRiemannianMetric I (connCompOpen (I := I) p) := by
-  letI : CompactSpace (connCompOpen (I := I) p) := connCompCompact (I := I) p
-  exact fun t => (g t).restrictOpen (I := I) (connCompOpen (I := I) p)
+    ℝ → SmoothRiemannianMetric I (connectedComponentOpen (I := I) p) := by
+  letI : CompactSpace (connectedComponentOpen (I := I) p) := connectedComponentOpen_compactSpace (I := I) p
+  exact fun t => (g t).restrictOpen (I := I) (connectedComponentOpen (I := I) p)
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M]
   [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
 private theorem compBase_mem
-    (p : M) (x₀ y : connCompOpen (I := I) p)
+    (p : M) (x₀ y : connectedComponentOpen (I := I) p)
     (hy : y ∈ (trivializationAt E (TangentSpace I) x₀).baseSet) :
     (y : M) ∈ (trivializationAt E (TangentSpace I) (x₀ : M)).baseSet := by
   rw [trivializationAt_baseSet_eq_chartAt_source] at hy ⊢
@@ -48,15 +47,15 @@ private theorem compBase_mem
 omit [NeZero (Module.finrank ℝ E)]
   [BoundarylessManifold I M]
   [SigmaCompactSpace M] in
-theorem compRestrict_init
+theorem compRestrict_initial
     (g₁ g₂ : ℝ → SmoothRiemannianMetric I M) (p : M) (a : ℝ)
     (h₀ : g₁ a = g₂ a) :
     compRestrict (I := I) g₁ p a = compRestrict (I := I) g₂ p a := by
   let _ := (inferInstance : (CompactSpace M))
-  let : CompactSpace (connCompOpen (I := I) p) := connCompCompact (I := I) p
+  let : CompactSpace (connectedComponentOpen (I := I) p) := connectedComponentOpen_compactSpace (I := I) p
   simpa only [compRestrict] using congrArg
     (fun g : SmoothRiemannianMetric I M =>
-      g.restrictOpen (I := I) (connCompOpen (I := I) p)) h₀
+      g.restrictOpen (I := I) (connectedComponentOpen (I := I) p)) h₀
 
 omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
@@ -65,20 +64,20 @@ theorem compRestrict_smooth
     (g : ℝ → SmoothRiemannianMetric I M) (p : M) {a b : ℝ}
     (hsmooth : ∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)),
       ContMDiffOn (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ) ∞
-        (fun q : ℝ × M => chartGramMatrix (I := I) (g q.1) x₀ q.2 i j)
+        (fun q : ℝ × M => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g q.1) x₀ q.2 i j)
         (Set.Ioo a b ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet)) :
-    ∀ (x₀ : connCompOpen (I := I) p) (i j : Fin (Module.finrank ℝ E)),
+    ∀ (x₀ : connectedComponentOpen (I := I) p) (i j : Fin (Module.finrank ℝ E)),
       ContMDiffOn (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ) ∞
-        (fun q : ℝ × connCompOpen (I := I) p =>
-          chartGramMatrix (I := I) (compRestrict (I := I) g p q.1) x₀ q.2 i j)
+        (fun q : ℝ × connectedComponentOpen (I := I) p =>
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (compRestrict (I := I) g p q.1) x₀ q.2 i j)
         (Set.Ioo a b ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet) := by
   let _ := compactSpace
-  let : CompactSpace (connCompOpen (I := I) p) := connCompCompact (I := I) p
+  let : CompactSpace (connectedComponentOpen (I := I) p) := connectedComponentOpen_compactSpace (I := I) p
   intro x₀ i j
-  let ρ : ℝ × connCompOpen (I := I) p → ℝ × M := fun q => (q.1, (q.2 : M))
+  let ρ : ℝ × connectedComponentOpen (I := I) p → ℝ × M := fun q => (q.1, (q.2 : M))
   have hρ : ContMDiff (𝓘(ℝ, ℝ).prod I) (𝓘(ℝ, ℝ).prod I) ∞ ρ :=
     contMDiff_fst.prodMk
-      ((contMDiff_subtype_val (I := I) (U := connCompOpen (I := I) p)).comp contMDiff_snd)
+      ((contMDiff_subtype_val (I := I) (U := connectedComponentOpen (I := I) p)).comp contMDiff_snd)
   have hmaps : Set.MapsTo ρ
       (Set.Ioo a b ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet)
       (Set.Ioo a b ×ˢ
@@ -91,7 +90,7 @@ theorem compRestrict_smooth
     simpa only [trivializationAt_baseSet_eq_chartAt_source] using
       compBase_mem (I := I) p x₀ q.2 hq.2
   simpa only [Function.comp_apply, ρ, compRestrict] using
-    (chartGram_open (I := I) (g q.1) (connCompOpen (I := I) p) x₀ q.2
+    (chartGram_open (I := I) (g q.1) (connectedComponentOpen (I := I) p) x₀ q.2
       hsource i j)
 
 omit [CompactSpace M] in
@@ -101,17 +100,17 @@ theorem compRestrict_cont
     (g : ℝ → SmoothRiemannianMetric I M) (p : M) {a b : ℝ}
     (hcont : ∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)),
       ContinuousOn
-        (fun q : ℝ × M => chartGramMatrix (I := I) (g q.1) x₀ q.2 i j)
+        (fun q : ℝ × M => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g q.1) x₀ q.2 i j)
         (Set.Ico a b ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet)) :
-    ∀ (x₀ : connCompOpen (I := I) p) (i j : Fin (Module.finrank ℝ E)),
+    ∀ (x₀ : connectedComponentOpen (I := I) p) (i j : Fin (Module.finrank ℝ E)),
       ContinuousOn
-        (fun q : ℝ × connCompOpen (I := I) p =>
-          chartGramMatrix (I := I) (compRestrict (I := I) g p q.1) x₀ q.2 i j)
+        (fun q : ℝ × connectedComponentOpen (I := I) p =>
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (compRestrict (I := I) g p q.1) x₀ q.2 i j)
         (Set.Ico a b ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet) := by
   let _ := compactSpace
-  let : CompactSpace (connCompOpen (I := I) p) := connCompCompact (I := I) p
+  let : CompactSpace (connectedComponentOpen (I := I) p) := connectedComponentOpen_compactSpace (I := I) p
   intro x₀ i j
-  let ρ : ℝ × connCompOpen (I := I) p → ℝ × M := fun q => (q.1, (q.2 : M))
+  let ρ : ℝ × connectedComponentOpen (I := I) p → ℝ × M := fun q => (q.1, (q.2 : M))
   have hρ : Continuous ρ :=
     continuous_fst.prodMk (continuous_subtype_val.comp continuous_snd)
   have hmaps : Set.MapsTo ρ
@@ -126,7 +125,7 @@ theorem compRestrict_cont
     simpa only [trivializationAt_baseSet_eq_chartAt_source] using
       compBase_mem (I := I) p x₀ q.2 hq.2
   simpa only [Function.comp_apply, ρ, compRestrict] using
-    (chartGram_open (I := I) (g q.1) (connCompOpen (I := I) p) x₀ q.2
+    (chartGram_open (I := I) (g q.1) (connectedComponentOpen (I := I) p) x₀ q.2
       hsource i j)
 
 omit [NeZero (Module.finrank ℝ E)] in
@@ -136,28 +135,28 @@ theorem compRestrict_pde
     (hpde : ∀ t ∈ Set.Ico a b, ∀ (x : M) (v w : TangentSpace I x),
       HasDerivWithinAt (fun s : ℝ => (g s).inner x v w)
         ((-2 : ℝ) * ricciTensor (I := I) (g t) x v w) (Set.Ici a) t) :
-    ∀ t ∈ Set.Ico a b, ∀ (x : connCompOpen (I := I) p) (v w : TangentSpace I x),
+    ∀ t ∈ Set.Ico a b, ∀ (x : connectedComponentOpen (I := I) p) (v w : TangentSpace I x),
       HasDerivWithinAt
         (fun s : ℝ => (compRestrict (I := I) g p s).inner x v w)
-        ((-2 : ℝ) * ricciTensor (I := I) (M := connCompOpen (I := I) p)
+        ((-2 : ℝ) * ricciTensor (I := I) (M := connectedComponentOpen (I := I) p)
           (compRestrict (I := I) g p t) x v w)
         (Set.Ici a) t := by
-  let : CompactSpace (connCompOpen (I := I) p) := connCompCompact (I := I) p
+  let : CompactSpace (connectedComponentOpen (I := I) p) := connectedComponentOpen_compactSpace (I := I) p
   intro t ht x v w
   let vM : TangentSpace I (x : M) :=
-    mfderiv I I (Subtype.val : connCompOpen (I := I) p → M) x v
+    mfderiv I I (Subtype.val : connectedComponentOpen (I := I) p → M) x v
   let wM : TangentSpace I (x : M) :=
-    mfderiv I I (Subtype.val : connCompOpen (I := I) p → M) x w
+    mfderiv I I (Subtype.val : connectedComponentOpen (I := I) p → M) x w
   have h := hpde t ht (x : M) vM wM
   convert h using 1
   · funext s
-    change ((g s).restrictOpen (I := I) (connCompOpen (I := I) p)).inner x v w =
+    change ((g s).restrictOpen (I := I) (connectedComponentOpen (I := I) p)).inner x v w =
       (g s).inner (x : M) vM wM
     have hopen := SmoothRiemannianMetric.restrictOpen_inner
-      (I := I) (g s) (connCompOpen (I := I) p) x v w
+      (I := I) (g s) (connectedComponentOpen (I := I) p) x v w
     simpa only [vM, wM, mfderiv_subtype_val_apply] using hopen
   · exact congrArg (fun z : ℝ => (-2 : ℝ) * z)
-      (ricciTensor_restrictOpen (I := I) (g t) (connCompOpen (I := I) p) x v w)
+      (ricciTensor_restrictOpen (I := I) (g t) (connectedComponentOpen (I := I) p) x v w)
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompactSpace M]
   [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
@@ -184,8 +183,8 @@ theorem eq_of_compRestrict
   apply metric_ext (I := I)
   intro x v w
   have hx := congrArg
-    (fun k : SmoothRiemannianMetric I (connCompOpen (I := I) x) =>
-      k.inner (connCompPt (I := I) x) v w)
+    (fun k : SmoothRiemannianMetric I (connectedComponentOpen (I := I) x) =>
+      k.inner (connectedComponentPoint (I := I) x) v w)
     (hcomp x)
   change (g₁ t).inner x v w = (g₂ t).inner x v w at hx
   exact hx
@@ -196,19 +195,19 @@ theorem forward_of_comp
     (g₁ g₂ : ℝ → SmoothRiemannianMetric I M) {a b : ℝ} (hab : a < b)
     (h1smooth : ∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)),
       ContMDiffOn (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ) ∞
-        (fun q : ℝ × M => chartGramMatrix (I := I) (g₁ q.1) x₀ q.2 i j)
+        (fun q : ℝ × M => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g₁ q.1) x₀ q.2 i j)
         (Set.Ioo a b ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
     (h1cont : ∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)),
       ContinuousOn
-        (fun q : ℝ × M => chartGramMatrix (I := I) (g₁ q.1) x₀ q.2 i j)
+        (fun q : ℝ × M => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g₁ q.1) x₀ q.2 i j)
         (Set.Ico a b ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
     (h2smooth : ∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)),
       ContMDiffOn (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ) ∞
-        (fun q : ℝ × M => chartGramMatrix (I := I) (g₂ q.1) x₀ q.2 i j)
+        (fun q : ℝ × M => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g₂ q.1) x₀ q.2 i j)
         (Set.Ioo a b ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
     (h2cont : ∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)),
       ContinuousOn
-        (fun q : ℝ × M => chartGramMatrix (I := I) (g₂ q.1) x₀ q.2 i j)
+        (fun q : ℝ × M => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g₂ q.1) x₀ q.2 i j)
         (Set.Ico a b ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
     (h1pde : ∀ t ∈ Set.Ico a b, ∀ (x : M) (v w : TangentSpace I x),
       HasDerivWithinAt (fun s : ℝ => (g₁ s).inner x v w)
@@ -219,43 +218,43 @@ theorem forward_of_comp
     (h₀ : g₁ a = g₂ a)
     (hconnected : ∀ p : M,
       a < b →
-      (∀ (x₀ : connCompOpen (I := I) p)
+      (∀ (x₀ : connectedComponentOpen (I := I) p)
           (i j : Fin (Module.finrank ℝ E)),
         ContMDiffOn (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ) ∞
-          (fun q : ℝ × connCompOpen (I := I) p =>
-            chartGramMatrix (I := I)
+          (fun q : ℝ × connectedComponentOpen (I := I) p =>
+            DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I)
               (compRestrict (I := I) g₁ p q.1) x₀ q.2 i j)
           (Set.Ioo a b ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet)) →
-      (∀ (x₀ : connCompOpen (I := I) p)
+      (∀ (x₀ : connectedComponentOpen (I := I) p)
           (i j : Fin (Module.finrank ℝ E)),
         ContinuousOn
-          (fun q : ℝ × connCompOpen (I := I) p =>
-            chartGramMatrix (I := I)
+          (fun q : ℝ × connectedComponentOpen (I := I) p =>
+            DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I)
               (compRestrict (I := I) g₁ p q.1) x₀ q.2 i j)
           (Set.Ico a b ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet)) →
-      (∀ (x₀ : connCompOpen (I := I) p)
+      (∀ (x₀ : connectedComponentOpen (I := I) p)
           (i j : Fin (Module.finrank ℝ E)),
         ContMDiffOn (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ) ∞
-          (fun q : ℝ × connCompOpen (I := I) p =>
-            chartGramMatrix (I := I)
+          (fun q : ℝ × connectedComponentOpen (I := I) p =>
+            DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I)
               (compRestrict (I := I) g₂ p q.1) x₀ q.2 i j)
           (Set.Ioo a b ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet)) →
-      (∀ (x₀ : connCompOpen (I := I) p)
+      (∀ (x₀ : connectedComponentOpen (I := I) p)
           (i j : Fin (Module.finrank ℝ E)),
         ContinuousOn
-          (fun q : ℝ × connCompOpen (I := I) p =>
-            chartGramMatrix (I := I)
+          (fun q : ℝ × connectedComponentOpen (I := I) p =>
+            DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I)
               (compRestrict (I := I) g₂ p q.1) x₀ q.2 i j)
           (Set.Ico a b ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet)) →
       (∀ t ∈ Set.Ico a b,
-        ∀ (x : connCompOpen (I := I) p) (v w : TangentSpace I x),
+        ∀ (x : connectedComponentOpen (I := I) p) (v w : TangentSpace I x),
           HasDerivWithinAt
             (fun s : ℝ => (compRestrict (I := I) g₁ p s).inner x v w)
             ((-2 : ℝ) * ricciTensor (I := I)
               (compRestrict (I := I) g₁ p t) x v w)
             (Set.Ici a) t) →
       (∀ t ∈ Set.Ico a b,
-        ∀ (x : connCompOpen (I := I) p) (v w : TangentSpace I x),
+        ∀ (x : connectedComponentOpen (I := I) p) (v w : TangentSpace I x),
           HasDerivWithinAt
             (fun s : ℝ => (compRestrict (I := I) g₂ p s).inner x v w)
             ((-2 : ℝ) * ricciTensor (I := I)
@@ -275,6 +274,6 @@ theorem forward_of_comp
     (compRestrict_cont (I := I) g₂ p h2cont)
     (compRestrict_pde (I := I) g₁ p h1pde)
     (compRestrict_pde (I := I) g₂ p h2pde)
-    (compRestrict_init (I := I) g₁ g₂ p a h₀) t ht
+    (compRestrict_initial (I := I) g₁ g₂ p a h₀) t ht
 
 end DifferentialGeometry.PDE.RicciFlow

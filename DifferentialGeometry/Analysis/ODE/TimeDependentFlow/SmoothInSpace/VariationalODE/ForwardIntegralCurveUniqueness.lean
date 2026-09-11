@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.Regularity.BareFlowFromJointC1
+import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.Regularity.IntegralCurveFromJointC1
 import Mathlib.Geometry.Manifold.IntegralCurve.ExistUnique
 import Mathlib.Analysis.ODE.Gronwall
 
@@ -148,10 +148,10 @@ theorem isMIntegralCurveOn_forward_eqOn_Icc_of_contMDiffAt [BoundarylessManifold
       (fun t _ => hlip) hf_cont hf_deriv hf_mem hg_cont hg_deriv hg_mem hfa
   intro x hx
   have hfx : f x = g x := heqOn_chart hx
-  have hγsrc : γ x ∈ (extChartAt IN p₀).source := (hIcc_in_O x hx).1.1
-  have hγ'src : γ' x ∈ (extChartAt IN p₀).source := (hIcc_in_O x hx).2.1
+  have hγsource : γ x ∈ (extChartAt IN p₀).source := (hIcc_in_O x hx).1.1
+  have hγ'source : γ' x ∈ (extChartAt IN p₀).source := (hIcc_in_O x hx).2.1
   have : (extChartAt IN p₀).symm (f x) = (extChartAt IN p₀).symm (g x) := by rw [hfx]
-  rwa [hf, hg, (extChartAt IN p₀).left_inv hγsrc, (extChartAt IN p₀).left_inv hγ'src] at this
+  rwa [hf, hg, (extChartAt IN p₀).left_inv hγsource, (extChartAt IN p₀).left_inv hγ'source] at this
 
 theorem isMIntegralCurveOn_Icc_eqOn_left_of_contMDiff [BoundarylessManifold IN N]
     {v : (x : N) → TangentSpace IN x} {γ γ' : ℝ → N} {a b : ℝ}
@@ -237,7 +237,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
   [BoundarylessManifold I M] [T2Space M]
 
 omit [FiniteDimensional ℝ E] in
-theorem bare_forward_flow_eqOn_of_jointC1
+theorem forward_integral_curves_eqOn_of_jointC1
     (X : ℝ → ∀ x : M, TangentSpace I x)
     (hX : AutonomizedFieldJointC1 (I := I) X)
     (Φ Φ' : ℝ → M → M) (x x' : M) {a b : ℝ}
@@ -250,9 +250,9 @@ theorem bare_forward_flow_eqOn_of_jointC1
     (hstart : Φ a x = Φ' a x') :
     ∀ t ∈ Icc a b, Φ t x = Φ' t x' := by
   have hc : IsMIntegralCurveOn (fun u : ℝ => (u, Φ u x)) (autonomizedFlowVF X) (Icc a b) :=
-    autonomizedLift_isMIntegralCurveOn_of_bareFlow X Φ x (Icc a b) hflow
+    autonomizedLift_isMIntegralCurveOn X Φ x (Icc a b) hflow
   have hc' : IsMIntegralCurveOn (fun u : ℝ => (u, Φ' u x')) (autonomizedFlowVF X) (Icc a b) :=
-    autonomizedLift_isMIntegralCurveOn_of_bareFlow X Φ' x' (Icc a b) hflow'
+    autonomizedLift_isMIntegralCurveOn X Φ' x' (Icc a b) hflow'
   have hv : ContMDiff (𝓘(ℝ, ℝ).prod I) ((𝓘(ℝ, ℝ).prod I).prod 𝓘(ℝ, ℝ × E)) 1
       (fun p : ℝ × M =>
         (⟨p, autonomizedFlowVF X p⟩ : TangentBundle (𝓘(ℝ, ℝ).prod I) (ℝ × M))) :=

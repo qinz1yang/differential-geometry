@@ -5,9 +5,9 @@ Authors: Yury Kudryashov
 Coauthors: Jack McCarthy
 -/
 import DifferentialGeometry.Tensor.Alternating.Flip
-import DifferentialGeometry.Tensor.Alternating.Comp
-import DifferentialGeometry.Tensor.Alternating.Congr
-import DifferentialGeometry.Tensor.Auxiliary.Shuffle.Decomposition
+import DifferentialGeometry.Tensor.Alternating.Composition
+import DifferentialGeometry.Tensor.Alternating.Reindexing.Domain
+import DifferentialGeometry.Tensor.Alternating.Shuffle.Decomposition
 import Mathlib.Analysis.Normed.Module.Alternating.Curry
 import Mathlib.LinearAlgebra.Alternating.DomCoprod
 import Mathlib.LinearAlgebra.Alternating.Uncurry.Fin
@@ -169,7 +169,8 @@ def uncurrySum.summand (f : E [⋀^ι]→L[𝕜] E [⋀^ι']→L[𝕜] F) (σ : 
       simp [ContinuousMultilinearMap.flipAlternating]
       rfl
 
-theorem uncurrySum.summand_mk (f : E [⋀^ι]→L[𝕜] E [⋀^ι']→L[𝕜] F) (σ : Equiv.Perm (ι ⊕ ι')) :
+theorem uncurrySum.summand_quot_mk
+    (f : E [⋀^ι]→L[𝕜] E [⋀^ι']→L[𝕜] F) (σ : Equiv.Perm (ι ⊕ ι')) :
     uncurrySum.summand f (Quot.mk
     (⇑(QuotientGroup.leftRel (Equiv.Perm.sumCongrHom ι ι').range)) σ) = Equiv.Perm.sign σ •
     (ContinuousMultilinearMap.uncurrySum
@@ -177,7 +178,8 @@ theorem uncurrySum.summand_mk (f : E [⋀^ι]→L[𝕜] E [⋀^ι']→L[𝕜] F)
       : ContinuousMultilinearMap 𝕜 (fun _ => E) F).domDomCongr σ :=
   rfl
 
-theorem uncurrySum.summand_mk'' (f : E [⋀^ι]→L[𝕜] E [⋀^ι']→L[𝕜] F) (σ : Equiv.Perm (ι ⊕ ι')) :
+theorem uncurrySum.summand_quotient_mk
+    (f : E [⋀^ι]→L[𝕜] E [⋀^ι']→L[𝕜] F) (σ : Equiv.Perm (ι ⊕ ι')) :
     uncurrySum.summand f (Quotient.mk'' σ) = Equiv.Perm.sign σ •
     (ContinuousMultilinearMap.uncurrySum
     (f.toContinuousMultilinearMap.flipAlternating.toContinuousMultilinearMap.flipMultilinear)
@@ -189,7 +191,7 @@ theorem uncurrySum_summand_eval
     (σ : Equiv.Perm (ι ⊕ ι')) (v : ι ⊕ ι' → E) :
     uncurrySum.summand f (Quotient.mk'' σ) v =
       Equiv.Perm.sign σ • f (fun i => v (σ (Sum.inl i))) (fun i => v (σ (Sum.inr i))) := by
-  rw [uncurrySum.summand_mk'']
+  rw [uncurrySum.summand_quotient_mk]
   rfl
 
 theorem uncurrySum.summand_add_swap_smul_eq_zero (f : E [⋀^ι]→L[𝕜] E [⋀^ι']→L[𝕜] F)
@@ -298,7 +300,7 @@ theorem lift_comp_domCoprod_eq_uncurrySum
     AlternatingMap.domCoprod_apply, _root_.sum_apply, _root_.map_sum φ]
   apply Finset.sum_congr rfl; intro q _
   induction q using Quotient.inductionOn' with | h σ =>
-  simp only [AlternatingMap.domCoprod.summand_mk'', uncurrySum.summand_mk'',
+  simp only [AlternatingMap.domCoprod.summand_mk'', uncurrySum.summand_quotient_mk,
     _root_.smul_apply, MultilinearMap.domDomCongr_apply, MultilinearMap.domCoprod_apply,
     ContinuousMultilinearMap.domDomCongr_apply, ContinuousMultilinearMap.uncurrySum_apply,
     Function.comp_def]
@@ -321,12 +323,12 @@ theorem summand_left_match
       uncurrySum.summand (curryFin F x) (Quotient.mk'' σ') (w ∘ Sum.map Fin.succ id) := by
   have h_coset : (Quotient.mk'' σ' :
       Equiv.Perm.ModSumCongr (Fin m) (Fin (n + 1))) =
-      Quotient.mk'' (shuffleLeftFwd σ hσ) := by
+      Quotient.mk'' (shuffleLeftRestrictRepresentative σ hσ) := by
     rw [hσ']
-    change Quotient.mk'' (shuffleLeftFwd (Quotient.out (Quotient.mk'' σ)) _) =
-      Quotient.mk'' (shuffleLeftFwd σ hσ)
+    change Quotient.mk'' (shuffleLeftRestrictRepresentative (Quotient.out (Quotient.mk'' σ)) _) =
+      Quotient.mk'' (shuffleLeftRestrictRepresentative σ hσ)
     apply Quotient.sound'
-    apply shuffleLeftFwd_wd
+    apply shuffleLeftRestrictRepresentative_respects_leftRel
     rw [QuotientGroup.leftRel_apply]
     have h_eq : (Quotient.mk'' (Quotient.out (Quotient.mk'' σ)) :
       Equiv.Perm.ModSumCongr (Fin (m + 1)) (Fin (n + 1))) = Quotient.mk'' σ :=
@@ -335,11 +337,11 @@ theorem summand_left_match
   rw [h_coset]
   set k := hσ.choose
   set hk := hσ.choose_spec
-  set σ_can := shuffleLeftFwd σ hσ
+  set σ_can := shuffleLeftRestrictRepresentative σ hσ
   have h_sign : Equiv.Perm.sign σ_can =
       Equiv.Perm.sign σ * Equiv.Perm.sign (Equiv.swap 0 k) := by
-    change Equiv.Perm.sign (shuffleLeftFwd σ hσ) = _
-    unfold shuffleLeftFwd
+    change Equiv.Perm.sign (shuffleLeftRestrictRepresentative σ hσ) = _
+    unfold shuffleLeftRestrictRepresentative
     rw [restrictComplement_sign _ (normalizeLeft_fixes σ k hk)]
     unfold normalizeLeft
     rw [Equiv.Perm.sign_mul]
@@ -411,12 +413,12 @@ theorem summand_right_match
           (Sum.map id Fin.succ y)))) := by
   have h_coset : (Quotient.mk'' σ' :
       Equiv.Perm.ModSumCongr (Fin (m + 1)) (Fin n)) =
-      Quotient.mk'' (shuffleRightFwd σ hσ) := by
+      Quotient.mk'' (shuffleRightRestrictRepresentative σ hσ) := by
     rw [hσ']
-    change Quotient.mk'' (shuffleRightFwd (Quotient.out (Quotient.mk'' σ)) _) =
-      Quotient.mk'' (shuffleRightFwd σ hσ)
+    change Quotient.mk'' (shuffleRightRestrictRepresentative (Quotient.out (Quotient.mk'' σ)) _) =
+      Quotient.mk'' (shuffleRightRestrictRepresentative σ hσ)
     apply Quotient.sound'
-    apply shuffleRightFwd_wd
+    apply shuffleRightRestrictRepresentative_respects_leftRel
     rw [QuotientGroup.leftRel_apply]
     have h_eq : (Quotient.mk'' (Quotient.out (Quotient.mk'' σ)) :
       Equiv.Perm.ModSumCongr (Fin (m + 1)) (Fin (n + 1))) = Quotient.mk'' σ :=
@@ -425,11 +427,11 @@ theorem summand_right_match
   rw [h_coset]
   set k := hσ.choose
   set hk := hσ.choose_spec
-  set σ_can := shuffleRightFwd σ hσ
+  set σ_can := shuffleRightRestrictRepresentative σ hσ
   have h_sign : Equiv.Perm.sign σ_can =
       -Equiv.Perm.sign σ * Equiv.Perm.sign (Equiv.swap (0 : Fin (n + 1)) k) := by
-    change Equiv.Perm.sign (shuffleRightFwd σ hσ) = _
-    unfold shuffleRightFwd
+    change Equiv.Perm.sign (shuffleRightRestrictRepresentative σ hσ) = _
+    unfold shuffleRightRestrictRepresentative
     rw [restrictComplementRight_sign _ (normalizeRight_fixes σ k hk)]
     unfold normalizeRight
     rw [Equiv.Perm.sign_mul, Equiv.Perm.sign_mul, Equiv.Perm.sign_sumCongr,

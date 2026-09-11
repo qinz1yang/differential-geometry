@@ -1,12 +1,12 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.Derivatives.ReactionBound
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.Derivatives.HeatEquation
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.Derivatives.Evolution.ReactionBound
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.Derivatives.Evolution.HeatEquation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.HamiltonEquation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Metric.InverseSmooth
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Curvature.DifferentiatedSecondBianchi
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HamiltonHarnack.MEvolution
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HamiltonHarnack.MIdentities
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HamiltonHarnack.PerturbedEvolution
-import DifferentialGeometry.Tensor.RSTensor.Tensor0SRiemannian.FrozenSlot
+import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Calculus.FrozenSlot
 
 set_option autoImplicit false
 
@@ -17,6 +17,7 @@ namespace DifferentialGeometry.PDE.RicciFlow
 open Bundle DifferentialGeometry.Tensor0SBundle
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator
+open DifferentialGeometry.Tensor.Coordinates
 open DifferentialGeometry.Tensor.RSTensor
 open DifferentialGeometry.Tensor.RicciIdentity
 open scoped Manifold ContDiff BigOperators
@@ -53,8 +54,9 @@ private theorem freezeAllBut0SField_chartBasis_contMDiffOn
       ((trivializationAt E (TangentSpace I) a).open_baseSet.mem_nhds (by
         rw [trivializationAt_baseSet_eq_chartAt_source (I := I) (M := M)]
         exact hy))
-  exact TensorMultilinear.contMDiffAt_section_apply_gen
+  exact TensorMultilinear.contMDiffAt_section_apply
     (𝕜 := Real) (I := I) (M := M) (n := 1)
+    (x₀ := y)
     (T := fun z : M => freezeAllBut0SField (I := I) (M := M) A r V z)
     ((freezeAllBut0SField (I := I) (M := M) A r V).contMDiff y)
     (v := fun _ : Fin 1 => fun z : M => chartBasisVecFiber (I := I) a j z)
@@ -72,7 +74,7 @@ private noncomputable def frozenSlotSharpSection
     ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _) :=
   ContMDiffSection.mk
     (fun y : M =>
-      cotangentSharpGen (I := I) g y
+      cotangentSharp (I := I) g y
         (freezeAllBut0SField (I := I) (M := M) A r V y))
     (cotangentSharp_gen_contMDiff_total (I := I) g
       (fun a j => freezeAllBut0SField_chartBasis_contMDiffOn
@@ -87,7 +89,7 @@ private noncomputable def frozenSlotSharpSection
     (V : Fin q -> ContMDiffSection I E (∞ : WithTop ℕ∞)
       (TangentSpace I : M -> Type _)) (y : M) :
     frozenSlotSharpSection (I := I) g A r V y =
-      cotangentSharpGen (I := I) g y
+      cotangentSharp (I := I) g y
         (freezeAllBut0SField (I := I) (M := M) A r V y) :=
   rfl
 
@@ -120,12 +122,12 @@ private theorem curvatureActionSummand_mvfderiv
             (frozenSlotSharpSection (I := I) (S.base.metric (t : Real)) A r V x)) +
         S.base.rm04 (t : Real) x
           (vec4 (I := I) (Y x) (Z x) (V r x)
-            (cotangentSharpGen (I := I) (S.base.metric (t : Real)) x
+            (cotangentSharp (I := I) (S.base.metric (t : Real)) x
               (tensor0SCurry (I := I) (𝕜 := Real) (M := M) 1 x
                 ((totalNabla0S (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
                   1 (S.family.connection (t : Real))
                   (freezeAllBut0SField (I := I) (M := M) A r V)
-                  (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+                  (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
                     1 (S.family.connection (t : Real)) (by
                       simpa [SolutionFamily.connection, metricCov] using
                         metricCov_smooth (I := I) (M := M) (S.base.metric (t : Real)))
@@ -135,7 +137,7 @@ private theorem curvatureActionSummand_mvfderiv
   let B := freezeAllBut0SField (I := I) (M := M) A r V
   let DB := totalNabla0S (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
     1 cov B
-    (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+    (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
       1 cov (by
         simpa [cov, SolutionFamily.connection, metricCov] using
           metricCov_smooth (I := I) (M := M) (S.base.metric (t : Real))) B)
@@ -169,9 +171,9 @@ private theorem curvatureActionSummand_mvfderiv
   have hsharp :
       (cov
           (fun y : M =>
-            cotangentSharpGen (I := I) (S.base.metric (t : Real)) y (B y)) x)
+            cotangentSharp (I := I) (S.base.metric (t : Real)) y (B y)) x)
           (X x) =
-        cotangentSharpGen (I := I) (S.base.metric (t : Real)) x
+        cotangentSharp (I := I) (S.base.metric (t : Real)) x
           (tensor0SCurry (I := I) (𝕜 := Real) (M := M) 1 x (DB x) (X x)) := by
     exact cotangentSharp_cov_eq_sharp_curry_of_mdiffAt (I := I)
       cov (S.base.metric (t : Real))
@@ -186,7 +188,7 @@ private theorem curvatureActionSummand_mvfderiv
               ((cov (fun y : M => W i y) x) (X x)))) =
         S.base.rm04 (t : Real) x
           (vec4 (I := I) (Y x) (Z x) (V r x)
-            (cotangentSharpGen (I := I) (S.base.metric (t : Real)) x
+            (cotangentSharp (I := I) (S.base.metric (t : Real)) x
               (tensor0SCurry (I := I) (𝕜 := Real) (M := M) 1 x (DB x) (X x)))) := by
     rw [Fin.sum_univ_four]
     have h0 : (cov (fun y : M => W 0 y) x) (X x) = 0 := hY
@@ -194,7 +196,7 @@ private theorem curvatureActionSummand_mvfderiv
     have h2 : (cov (fun y : M => W 2 y) x) (X x) = 0 := hV r
     have h3 :
         (cov (fun y : M => W 3 y) x) (X x) =
-          cotangentSharpGen (I := I) (S.base.metric (t : Real)) x
+          cotangentSharp (I := I) (S.base.metric (t : Real)) x
             (tensor0SCurry (I := I) (𝕜 := Real) (M := M) 1 x (DB x) (X x)) := by
       simpa [W, B, frozenSlotSharpSection_apply] using hsharp
     rw [h0, h1, h2, h3]
@@ -442,12 +444,12 @@ theorem differentiatedTensorRicciIdentityComponents_of_orthonormalBasis
                 (S.base.metric (t : Real)) A r tail x)) +
           S.base.rm04 (t : Real) x
             (vec4 (I := I) (basis e) (basis a) (basis (slots r))
-              (cotangentSharpGen (I := I) (S.base.metric (t : Real)) x
+              (cotangentSharp (I := I) (S.base.metric (t : Real)) x
                 (tensor0SCurry (I := I) (𝕜 := Real) (M := M) 1 x
                   ((totalNabla0S (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
                     1 (S.family.connection (t : Real))
                     (freezeAllBut0SField (I := I) (M := M) A r tail)
-                    (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+                    (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
                       1 (S.family.connection (t : Real)) (by
                         simpa [SolutionFamily.connection, metricCov] using
                           metricCov_smooth (I := I) (M := M) (S.base.metric (t : Real)))
@@ -469,12 +471,12 @@ theorem differentiatedTensorRicciIdentityComponents_of_orthonormalBasis
                   (S.base.metric (t : Real)) A r tail x)) +
             S.base.rm04 (t : Real) x
               (vec4 (I := I) (basis e) (basis a) (basis (slots r))
-                (cotangentSharpGen (I := I) (S.base.metric (t : Real)) x
+                (cotangentSharp (I := I) (S.base.metric (t : Real)) x
                   (tensor0SCurry (I := I) (𝕜 := Real) (M := M) 1 x
                     ((totalNabla0S (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
                       1 (S.family.connection (t : Real))
                       (freezeAllBut0SField (I := I) (M := M) A r tail)
-                      (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+                      (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
                         1 (S.family.connection (t : Real)) (by
                           simpa [SolutionFamily.connection, metricCov] using
                             metricCov_smooth (I := I) (M := M) (S.base.metric (t : Real)))
@@ -511,7 +513,7 @@ theorem differentiatedTensorRicciIdentityComponents_of_orthonormalBasis
           ((totalNabla0S (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
             1 (S.family.connection (t : Real))
             (freezeAllBut0SField (I := I) (M := M) A r tail)
-            (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+            (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
               1 (S.family.connection (t : Real)) (by
                 simpa [SolutionFamily.connection, metricCov] using
                   metricCov_smooth (I := I) (M := M) (S.base.metric (t : Real)))
@@ -522,7 +524,7 @@ theorem differentiatedTensorRicciIdentityComponents_of_orthonormalBasis
     let B := freezeAllBut0SField (I := I) (M := M) A r tail
     let DB := totalNabla0S (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       1 (S.family.connection (t : Real)) B
-      (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+      (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
         1 (S.family.connection (t : Real)) (by
           simpa [SolutionFamily.connection, metricCov] using
             metricCov_smooth (I := I) (M := M) (S.base.metric (t : Real))) B)
@@ -564,12 +566,12 @@ theorem differentiatedTensorRicciIdentityComponents_of_orthonormalBasis
   have hSecond (r : Fin q) :
       S.base.rm04 (t : Real) x
           (vec4 (I := I) (basis e) (basis a) (basis (slots r))
-            (cotangentSharpGen (I := I) (S.base.metric (t : Real)) x
+            (cotangentSharp (I := I) (S.base.metric (t : Real)) x
               (tensor0SCurry (I := I) (𝕜 := Real) (M := M) 1 x
                 ((totalNabla0S (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
                   1 (S.family.connection (t : Real))
                   (freezeAllBut0SField (I := I) (M := M) A r tail)
-                  (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+                  (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
                     1 (S.family.connection (t : Real)) (by
                       simpa [SolutionFamily.connection, metricCov] using
                         metricCov_smooth (I := I) (M := M) (S.base.metric (t : Real)))
@@ -602,12 +604,12 @@ theorem differentiatedTensorRicciIdentityComponents_of_orthonormalBasis
   have hSecondSkew (r : Fin q) :
       -(S.base.rm04 (t : Real) x
           (vec4 (I := I) (basis e) (basis a) (basis (slots r))
-            (cotangentSharpGen (I := I) (S.base.metric (t : Real)) x
+            (cotangentSharp (I := I) (S.base.metric (t : Real)) x
               (tensor0SCurry (I := I) (𝕜 := Real) (M := M) 1 x
                 ((totalNabla0S (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
                   1 (S.family.connection (t : Real))
                   (freezeAllBut0SField (I := I) (M := M) A r tail)
-                  (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+                  (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
                     1 (S.family.connection (t : Real)) (by
                       simpa [SolutionFamily.connection, metricCov] using
                         metricCov_smooth (I := I) (M := M) (S.base.metric (t : Real)))
@@ -644,12 +646,12 @@ theorem differentiatedTensorRicciIdentityComponents_of_orthonormalBasis
                 (S.base.metric (t : Real)) A r tail x)) +
           S.base.rm04 (t : Real) x
             (vec4 (I := I) (basis e) (basis a) (basis (slots r))
-              (cotangentSharpGen (I := I) (S.base.metric (t : Real)) x
+              (cotangentSharp (I := I) (S.base.metric (t : Real)) x
                 (tensor0SCurry (I := I) (𝕜 := Real) (M := M) 1 x
                   ((totalNabla0S (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
                     1 (S.family.connection (t : Real))
                     (freezeAllBut0SField (I := I) (M := M) A r tail)
-                    (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+                    (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
                       1 (S.family.connection (t : Real)) (by
                         simpa [SolutionFamily.connection, metricCov] using
                           metricCov_smooth (I := I) (M := M) (S.base.metric (t : Real)))
@@ -662,12 +664,12 @@ theorem differentiatedTensorRicciIdentityComponents_of_orthonormalBasis
                 (S.base.metric (t : Real)) A r tail x))) +
           -(S.base.rm04 (t : Real) x
             (vec4 (I := I) (basis e) (basis a) (basis (slots r))
-              (cotangentSharpGen (I := I) (S.base.metric (t : Real)) x
+              (cotangentSharp (I := I) (S.base.metric (t : Real)) x
                 (tensor0SCurry (I := I) (𝕜 := Real) (M := M) 1 x
                   ((totalNabla0S (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
                     1 (S.family.connection (t : Real))
                     (freezeAllBut0SField (I := I) (M := M) A r tail)
-                    (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+                    (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
                       1 (S.family.connection (t : Real)) (by
                         simpa [SolutionFamily.connection, metricCov] using
                           metricCov_smooth (I := I) (M := M) (S.base.metric (t : Real)))
@@ -837,7 +839,7 @@ private noncomputable def metricNabla3RicField
   totalNabla0S (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
     4 (metricCov (I := I) (M := M) g)
     (metricNabla2Ric (I := I) (M := M) g)
-    (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+    (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
       4 (metricCov (I := I) (M := M) g)
       (metricCov_smooth (I := I) (M := M) g)
       (metricNabla2Ric (I := I) (M := M) g))
@@ -849,7 +851,7 @@ noncomputable def hamiltonNablaPField
       (n := (∞ : WithTop ℕ∞)) 4 :=
   totalNabla0S (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
     3 (metricCov (I := I) (M := M) g) (hamiltonPField (I := I) g)
-    (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+    (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
       3 (metricCov (I := I) (M := M) g)
       (metricCov_smooth (I := I) (M := M) g) (hamiltonPField (I := I) g))
 
@@ -860,7 +862,7 @@ private noncomputable def hamiltonNabla2PField
       (n := (∞ : WithTop ℕ∞)) 5 :=
   totalNabla0S (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
     4 (metricCov (I := I) (M := M) g) (hamiltonNablaPField (I := I) g)
-    (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+    (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
       4 (metricCov (I := I) (M := M) g)
       (metricCov_smooth (I := I) (M := M) g) (hamiltonNablaPField (I := I) g))
 
@@ -871,7 +873,7 @@ noncomputable def hamiltonNabla3PField
       (n := (∞ : WithTop ℕ∞)) 6 :=
   totalNabla0S (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
     5 (metricCov (I := I) (M := M) g) (hamiltonNabla2PField (I := I) g)
-    (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+    (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
       5 (metricCov (I := I) (M := M) g)
       (metricCov_smooth (I := I) (M := M) g) (hamiltonNabla2PField (I := I) g))
 
@@ -976,7 +978,7 @@ private noncomputable def metricNablaRicciTimeDerivativeField
   totalNabla0S (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
     2 (metricCov (I := I) (M := M) g)
     (metricRicciTimeDerivativeField (I := I) g)
-    (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+    (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
       2 (metricCov (I := I) (M := M) g)
       (metricCov_smooth (I := I) (M := M) g)
       (metricRicciTimeDerivativeField (I := I) g))
@@ -989,7 +991,7 @@ private noncomputable def metricNablaRm04Field
   totalNabla0S (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
     4 (metricCov (I := I) (M := M) g)
     (metricRm04 (I := I) (M := M) g)
-    (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+    (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
       4 (metricCov (I := I) (M := M) g)
       (metricCov_smooth (I := I) (M := M) g)
       (metricRm04 (I := I) (M := M) g))
@@ -1074,7 +1076,7 @@ private theorem hamiltonNablaCurvatureRicciField_realizes
   let nablaRm := metricNablaRm04Field (I := I) g
   let Ric := metricRicci (I := I) (M := M) g
   let nablaRic := metricNablaRic (I := I) (M := M) g
-  have hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen
+  have hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatible
       (I := I) cov g := by
     simpa [cov, metricCov] using
       DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric_isMetricCompatible
@@ -1084,14 +1086,14 @@ private theorem hamiltonNablaCurvatureRicciField_realizes
     simpa [cov, Rm, nablaRm, metricNablaRm04Field] using
       (totalNabla0S_realizes (𝕜 := Real) (E := E) (H := H)
         (I := I) (M := M) 4 cov Rm
-        (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+        (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
           4 cov (by simpa [cov] using metricCov_smooth (I := I) (M := M) g) Rm))
   have hRic : TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H)
       (I := I) (M := M) 2 cov Ric nablaRic := by
     simpa [cov, Ric, nablaRic, metricNablaRic] using
       (totalNabla0S_realizes (𝕜 := Real) (E := E) (H := H)
         (I := I) (M := M) 2 cov Ric
-        (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+        (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
           2 cov (by simpa [cov] using metricCov_smooth (I := I) (M := M) g) Ric))
   have hProduct := nabla0S_product_realizes (I := I) cov
     Rm Ric nablaRm nablaRic hRm hRic
@@ -1217,7 +1219,7 @@ noncomputable def hamiltonNablaPTimeDerivativeField
   totalNabla0S (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
     3 (metricCov (I := I) (M := M) g)
     (hamiltonPTimeDerivativeField (I := I) g)
-    (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+    (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
       3 (metricCov (I := I) (M := M) g)
       (metricCov_smooth (I := I) (M := M) g)
       (hamiltonPTimeDerivativeField (I := I) g))
@@ -1232,7 +1234,7 @@ theorem hamiltonNablaPField_realizes
     (totalNabla0S_realizes (𝕜 := Real) (E := E) (H := H)
       (I := I) (M := M) 3 (metricCov (I := I) (M := M) g)
       (hamiltonPField (I := I) g)
-      (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+      (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
         3 (metricCov (I := I) (M := M) g)
         (metricCov_smooth (I := I) (M := M) g)
         (hamiltonPField (I := I) g)))
@@ -1248,7 +1250,7 @@ private theorem hamiltonNablaPTimeDerivativeField_realizes
     (totalNabla0S_realizes (𝕜 := Real) (E := E) (H := H)
       (I := I) (M := M) 3 (metricCov (I := I) (M := M) g)
       (hamiltonPTimeDerivativeField (I := I) g)
-      (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+      (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
         3 (metricCov (I := I) (M := M) g)
         (metricCov_smooth (I := I) (M := M) g)
         (hamiltonPTimeDerivativeField (I := I) g)))
@@ -1261,7 +1263,7 @@ private noncomputable def metricNabla2RicciTimeDerivativeField
   totalNabla0S (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
     3 (metricCov (I := I) (M := M) g)
     (metricNablaRicciTimeDerivativeField (I := I) g)
-    (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+    (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
       3 (metricCov (I := I) (M := M) g)
       (metricCov_smooth (I := I) (M := M) g)
       (metricNablaRicciTimeDerivativeField (I := I) g))
@@ -1274,7 +1276,7 @@ private noncomputable def metricNabla2Rm04Field
   totalNabla0S (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
     5 (metricCov (I := I) (M := M) g)
     (metricNablaRm04Field (I := I) g)
-    (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+    (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
       5 (metricCov (I := I) (M := M) g)
       (metricCov_smooth (I := I) (M := M) g)
       (metricNablaRm04Field (I := I) g))
@@ -1287,7 +1289,7 @@ private noncomputable def hamiltonNabla2CurvatureRicciField
   totalNabla0S (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
     3 (metricCov (I := I) (M := M) g)
     (hamiltonNablaCurvatureRicciField (I := I) g)
-    (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+    (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
       3 (metricCov (I := I) (M := M) g)
       (metricCov_smooth (I := I) (M := M) g)
       (hamiltonNablaCurvatureRicciField (I := I) g))
@@ -1358,7 +1360,7 @@ private theorem hamiltonNabla2CurvatureRicciField_eq_expected
   let P := tensor0SFieldProduct (∞ : WithTop ℕ∞) R Ric
   let PNabla := hamiltonCurvatureRicciProductNablaField (I := I) g
   let PNabla2 := hamiltonCurvatureRicciProductNabla2Field (I := I) g
-  have hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen
+  have hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatible
       (I := I) cov g := by
     simpa [cov, metricCov] using
       DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric_isMetricCompatible
@@ -1368,28 +1370,28 @@ private theorem hamiltonNabla2CurvatureRicciField_eq_expected
     simpa [cov, R, RNabla, metricNablaRm04Field] using
       (totalNabla0S_realizes (𝕜 := Real) (E := E) (H := H)
         (I := I) (M := M) 4 cov R
-        (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+        (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
           4 cov (by simpa [cov] using metricCov_smooth (I := I) (M := M) g) R))
   have hRNabla : TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H)
       (I := I) (M := M) 5 cov RNabla RNabla2 := by
     simpa [cov, RNabla, RNabla2, metricNabla2Rm04Field] using
       (totalNabla0S_realizes (𝕜 := Real) (E := E) (H := H)
         (I := I) (M := M) 5 cov RNabla
-        (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+        (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
           5 cov (by simpa [cov] using metricCov_smooth (I := I) (M := M) g) RNabla))
   have hRic : TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H)
       (I := I) (M := M) 2 cov Ric RicNabla := by
     simpa [cov, Ric, RicNabla, metricNablaRic] using
       (totalNabla0S_realizes (𝕜 := Real) (E := E) (H := H)
         (I := I) (M := M) 2 cov Ric
-        (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+        (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
           2 cov (by simpa [cov] using metricCov_smooth (I := I) (M := M) g) Ric))
   have hRicNabla : TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H)
       (I := I) (M := M) 3 cov RicNabla RicNabla2 := by
     simpa [cov, RicNabla, RicNabla2, metricNabla2Ric] using
       (totalNabla0S_realizes (𝕜 := Real) (E := E) (H := H)
         (I := I) (M := M) 3 cov RicNabla
-        (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+        (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
           3 cov (by simpa [cov] using metricCov_smooth (I := I) (M := M) g) RicNabla))
   have hP : TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H)
       (I := I) (M := M) 6 cov P PNabla := by
@@ -1485,7 +1487,7 @@ private theorem hamiltonNabla2CurvatureRicciField_eq_expected
       (totalNabla0S_realizes (𝕜 := Real) (E := E) (H := H)
         (I := I) (M := M) 3 cov
         (hamiltonNablaCurvatureRicciField (I := I) g)
-        (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+        (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
           3 cov (metricCov_smooth (I := I) (M := M) g)
           (hamiltonNablaCurvatureRicciField (I := I) g)))
   have hExpected' : TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H)
@@ -1505,7 +1507,7 @@ private noncomputable def ricciFlowConnectionVariationNablaField
   totalNabla0S (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
     3 (metricCov (I := I) (M := M) g)
     (ricciFlowConnectionVariationField (I := I) g)
-    (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+    (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
       3 (metricCov (I := I) (M := M) g)
       (metricCov_smooth (I := I) (M := M) g)
       (ricciFlowConnectionVariationField (I := I) g))
@@ -1886,7 +1888,7 @@ private theorem hamiltonNabla2PField_eq_expected
     simpa [cov, hamiltonNabla2PField] using
       (totalNabla0S_realizes (𝕜 := Real) (E := E) (H := H)
         (I := I) (M := M) 4 cov (hamiltonNablaPField (I := I) g)
-        (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+        (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
           4 cov (metricCov_smooth (I := I) (M := M) g)
           (hamiltonNablaPField (I := I) g)))
   have hRic3 : TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H)
@@ -1896,7 +1898,7 @@ private theorem hamiltonNabla2PField_eq_expected
       (totalNabla0S_realizes (𝕜 := Real) (E := E) (H := H)
         (I := I) (M := M) 4 cov
         (metricNabla2Ric (I := I) (M := M) g)
-        (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+        (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
           4 cov (metricCov_smooth (I := I) (M := M) g)
           (metricNabla2Ric (I := I) (M := M) g)))
   have hPbase :
@@ -2237,7 +2239,6 @@ private theorem doubleTraceProductField_apply_orthonormal
     metricTraceFirstTwoField_apply_orthonormal (I := I) g basis horth]
   refine Finset.sum_congr rfl fun i _ => ?_
   rw [metricTraceFirstTwoField_apply_orthonormal (I := I) g basis horth]
-
 
 private theorem ricciFlowConnectionVariationField_apply
     [T2Space M]
@@ -3575,16 +3576,13 @@ private theorem hamiltonNablaPEvolutionReactionField_apply_orthonormal
   simp only [Finset.sum_add_distrib]
   ring
 
-
-
-
 private theorem hamiltonRicciSquareField_apply_basis
     [T2Space M]
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     (g : SmoothRiemannianMetric I M) {x : M}
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasisGen (I := I) (M := M) g x basis gInv)
+    (hinv : MetricInverseInBasis (I := I) (M := M) g x basis gInv)
     (A B : TangentSpace I x) :
     hamiltonRicciSquareField (I := I) g x (vec2 (I := I) A B) =
       ∑ i : Idx, ∑ j : Idx,
@@ -3621,7 +3619,7 @@ private theorem hamiltonCurvatureRicciField_apply_basis
     (g : SmoothRiemannianMetric I M) {x : M}
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasisGen (I := I) (M := M) g x basis gInv)
+    (hinv : MetricInverseInBasis (I := I) (M := M) g x basis gInv)
     (A B : TangentSpace I x) :
     hamiltonCurvatureRicciField (I := I) g x (vec2 (I := I) A B) =
       ∑ i : Idx, ∑ j : Idx,
@@ -3672,7 +3670,7 @@ private theorem hamiltonRicciSquareField_eq_at_basis
     (g : SmoothRiemannianMetric I M) {x : M}
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasisGen (I := I) (M := M) g x basis gInv)
+    (hinv : MetricInverseInBasis (I := I) (M := M) g x basis gInv)
     (A B : TangentSpace I x) :
     hamiltonRicciSquareField (I := I) g x (vec2 (I := I) A B) =
       hamiltonRicciSquareAt (I := I) g x (vec2 (I := I) A B) := by
@@ -3685,7 +3683,7 @@ private theorem hamiltonCurvatureRicciField_eq_at_basis
     (g : SmoothRiemannianMetric I M) {x : M}
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasisGen (I := I) (M := M) g x basis gInv)
+    (hinv : MetricInverseInBasis (I := I) (M := M) g x basis gInv)
     (A B : TangentSpace I x) :
     hamiltonCurvatureRicciField (I := I) g x (vec2 (I := I) A B) =
       hamiltonCurvatureRicciAt (I := I) g x (vec2 (I := I) A B) := by
@@ -3696,12 +3694,12 @@ private theorem ricciNabla2WMP_eq_metricNabla2Ric
     [CompleteSpace E] [T2Space M]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D) (t : Real) :
-    ricciNabla2WMP (I := I) S t =
+    ricciNabla2WeakMaximumPrinciple (I := I) S t =
       metricNabla2Ric (I := I) (M := M) (S.base.metric t) := by
   have hW1 : TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H)
       (I := I) (M := M) 2 (S.family.connection t) (S.ricci t)
-      (ricciNablaWMP (I := I) S t) :=
-    (ricciSpatialWMP (I := I) S).1 t
+      (ricciNablaWeakMaximumPrinciple (I := I) S t) :=
+    (ricciSpatialWeakMaximumPrinciple (I := I) S).1 t
   have hM1 : TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H)
       (I := I) (M := M) 2 (S.family.connection t) (S.ricci t)
       (metricNablaRic (I := I) (M := M) (S.base.metric t)) := by
@@ -3711,17 +3709,17 @@ private theorem ricciNabla2WMP_eq_metricNabla2Ric
         (I := I) (M := M) 2
         (metricCov (I := I) (M := M) (S.base.metric t))
         (metricRicci (I := I) (M := M) (S.base.metric t))
-        (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+        (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
           2 (metricCov (I := I) (M := M) (S.base.metric t))
           (metricCov_smooth (I := I) (M := M) (S.base.metric t))
           (metricRicci (I := I) (M := M) (S.base.metric t))))
-  have hFirst : ricciNablaWMP (I := I) S t =
+  have hFirst : ricciNablaWeakMaximumPrinciple (I := I) S t =
       metricNablaRic (I := I) (M := M) (S.base.metric t) :=
     totalNabla0SRealizes_unique hW1 hM1
   have hW2 : TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H)
       (I := I) (M := M) 3 (S.family.connection t)
-      (ricciNablaWMP (I := I) S t) (ricciNabla2WMP (I := I) S t) :=
-    (ricciSpatialWMP (I := I) S).2 t
+      (ricciNablaWeakMaximumPrinciple (I := I) S t) (ricciNabla2WeakMaximumPrinciple (I := I) S t) :=
+    (ricciSpatialWeakMaximumPrinciple (I := I) S).2 t
   have hM2 : TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H)
       (I := I) (M := M) 3 (S.family.connection t)
       (metricNablaRic (I := I) (M := M) (S.base.metric t))
@@ -3731,7 +3729,7 @@ private theorem ricciNabla2WMP_eq_metricNabla2Ric
         (I := I) (M := M) 3
         (metricCov (I := I) (M := M) (S.base.metric t))
         (metricNablaRic (I := I) (M := M) (S.base.metric t))
-        (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+        (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
           3 (metricCov (I := I) (M := M) (S.base.metric t))
           (metricCov_smooth (I := I) (M := M) (S.base.metric t))
           (metricNablaRic (I := I) (M := M) (S.base.metric t))))
@@ -3754,12 +3752,12 @@ private theorem hamiltonReactionField_eq_actual
     fun i j =>
       DifferentialGeometry.Tensor.Coordinates.inverseMetricFlatModelInChartComponent
         (I := I) g x i j (extChartAt I x x)
-  have hinv : MetricInverseInBasisGen (I := I) (M := M) g x basis gInv := by
+  have hinv : MetricInverseInBasis (I := I) (M := M) g x basis gInv := by
     simpa [g, basis, gInv] using
       DifferentialGeometry.Tensor.Coordinates.inverseMetricFlatModelInChart_metricInverseInBasis_center
         (I := I) g x
   have hInv : forall i j, gInv i j = gInv j i :=
-    invMetric_symm (I := I) (M := M) g x basis gInv hinv
+    MetricInverseInBasis.symmetric (I := I) (M := M) g x basis gInv hinv
   apply ext0S_basis (I := I) basis
   intro slots
   let a := slots 0
@@ -3862,10 +3860,10 @@ private theorem metricRicciTimeDerivativeField_hasDerivWithinAt_of_solution
     ← hNabla2]
   change
     metricTraceFirstTwo0SAt (I := I) (S.base.metric (t : Real))
-          (ricciNabla2WMP (I := I) S (t : Real) x) (vec2 (I := I) v w) +
+          (ricciNabla2WeakMaximumPrinciple (I := I) S (t : Real) x) (vec2 (I := I) v w) +
         ricciActualReactAt (I := I) S (t : Real) x (vec2 (I := I) v w) =
       metricTraceFirstTwo0SAt (I := I) (S.base.metric (t : Real))
-          (ricciNabla2WMP (I := I) S (t : Real) x) (vec2 (I := I) v w) +
+          (ricciNabla2WeakMaximumPrinciple (I := I) S (t : Real) x) (vec2 (I := I) v w) +
         2 * hamiltonCurvatureRicciField (I := I) (S.base.metric (t : Real)) x
           (vec2 (I := I) v w) +
         (-2 : Real) * hamiltonRicciSquareField (I := I) (S.base.metric (t : Real)) x
@@ -3976,7 +3974,7 @@ private theorem totalNabla0S_apply_coordinateFrame
       (fun r => frame (slots r) x0) := rfl
   rw [htail] at h
   rw [← h]
-  simp only [covDerivStepComp, frameExtData, frameComp0S,
+  simp only [covDerivStepComp, frameComp0S,
     Fin.tail_cons, Fin.cons_zero]
   rfl
 
@@ -4181,7 +4179,7 @@ private theorem metricRicciTimeDerivativeField_fixedBase
           (vec2 (I := I)
             (coordinateFrameAt (I := I) x0 i x)
             (coordinateFrameAt (I := I) x0 j x))) := by
-  refine fixedBaseOnRegLocal
+  refine fixedBaseOnRegularityLocal
     (I := I) (timeSet := D.carrier) (regularSet := D.regular)
     (u := coordinateFrameSet (I := I) x0)
     (coordinateFrameSet_open (I := I) x0) D.regular_subset
@@ -4370,7 +4368,7 @@ private theorem nablaRicCompInCoordinateFrame_contMDiffAt
             (fun y : M => ricciCompInFrame (I := I) S frame p.1 y i j)
             p.2 (frame d p.2))
         ((t : Real), x) := by
-    refine DifferentialGeometry.prodExtDerivAt
+    refine DifferentialGeometry.prodExtDerivAt_two
       (I := I)
       (F := fun p : Real × M =>
         ricciCompInFrame (I := I) S frame p.1 p.2 i j)
@@ -4629,7 +4627,7 @@ private theorem hamiltonPField_hasDerivWithinAt_coordinateFrame_raw
           (t : Real) x0 i j p)
         D.carrier (t : Real) := by
     simpa [frame, hframe] using
-      coordGammaEvol (I := I) S hS x0 hmetric t x0 hx0 i j p
+      coordGammaEvolution (I := I) S hS x0 hmetric t x0 hx0 i j p
   have hfirst := (hpartial a b c).sub (hpartial b a c)
   have hprodFirst := HasDerivWithinAt.fun_sum
     (u := Finset.univ) (fun p _ => (hgamma a c p).mul (hricci b p))
@@ -4691,7 +4689,7 @@ private theorem metricNablaRicciTimeDerivativeField_apply_coordinateFrame
     simpa [cov, A, nablaA, metricNablaRicciTimeDerivativeField] using
       (totalNabla0S_realizes (𝕜 := Real) (E := E) (H := H)
         (I := I) (M := M) 2 cov A
-        (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+        (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
           2 cov (by simpa [cov] using metricCov_smooth (I := I) (M := M) g) A))
   have h := covDerivStepComp_frameComp_eq
     (I := I) cov A nablaA hreal frame hframe
@@ -4722,9 +4720,9 @@ private theorem metricNablaRicciTimeDerivativeField_apply_coordinateFrame
   have htail0 : Fin.tail n 0 = i := rfl
   have htail1 : Fin.tail n 1 = j := rfl
   rw [← hn, ← h]
-  simp only [covDerivStepComp, frameExtData, frameComp0S,
+  simp only [covDerivStepComp, frameDirectionalDerivatives, frameComp0S,
     Fin.sum_univ_two]
-  simp_rw [htail, hupdateFirst, hupdateSecond]
+  simp only [htail, hupdateFirst, hupdateSecond]
   simp only [cov, A, frame, hn0, htail0, htail1]
   ring
 
@@ -4734,7 +4732,7 @@ private theorem connectionVariationRicciFirstField_apply_basis
     (g : SmoothRiemannianMetric I M) {x : M}
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasisGen (I := I) (M := M) g x basis gInv)
+    (hinv : MetricInverseInBasis (I := I) (M := M) g x basis gInv)
     (A B C : TangentSpace I x) :
     connectionVariationRicciFirstField (I := I) g x
         (vec3 (I := I) A B C) =
@@ -4776,7 +4774,7 @@ private theorem connectionVariationRicciSecondField_apply_basis
     (g : SmoothRiemannianMetric I M) {x : M}
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasisGen (I := I) (M := M) g x basis gInv)
+    (hinv : MetricInverseInBasis (I := I) (M := M) g x basis gInv)
     (A B C : TangentSpace I x) :
     connectionVariationRicciSecondField (I := I) g x
         (vec3 (I := I) A B C) =
@@ -4874,12 +4872,12 @@ private theorem christoffelEvolutionRHSInFrame_ricci_contraction
   have hbasis (p : CoordinateIdx (𝕜 := Real) E) :
       basis p = frame p x0 := by
     exact coordinateFrameAt_toBasis_apply (I := I) x0 p
-  have hinv : MetricInverseInBasisGen
+  have hinv : MetricInverseInBasis
       (I := I) (M := M) (S.base.metric s) x0 basis gInv := by
     simpa [basis, gInv, SolutionOn.family] using coordInvReal (I := I) S x0 s
   have hInv (p q : CoordinateIdx (𝕜 := Real) E) :
       gInv p q = gInv q p :=
-    invMetric_symm (I := I) (M := M) (S.base.metric s) x0 basis gInv hinv p q
+    MetricInverseInBasis.symmetric (I := I) (M := M) (S.base.metric s) x0 basis gInv hinv p q
   have hRicciComp (p q : CoordinateIdx (𝕜 := Real) E) :
       ricciCompInFrame (I := I) S frame s x0 p q =
         metricRicci (I := I) (M := M) (S.base.metric s) x0
@@ -4980,7 +4978,7 @@ private theorem hamiltonPTimeDerivativeField_apply_coordinateFrame
   let frame := coordinateFrameAt (I := I) x0
   let basis := coordinateFrameAtToBasis (I := I) x0
   let gInv := fun p q => coordInv (I := I) S x0 s x0 p q
-  have hinv : MetricInverseInBasisGen
+  have hinv : MetricInverseInBasis
       (I := I) (M := M) (S.base.metric s) x0 basis gInv := by
     simpa [basis, gInv, SolutionOn.family] using coordInvReal (I := I) S x0 s
   have hfirst :
@@ -5210,7 +5208,7 @@ private theorem hamiltonPTimeDerivativeField_fixedBase
             (coordinateFrameAt (I := I) x0 c x))) := by
   let slots : Fin 3 -> CoordinateIdx (𝕜 := Real) E :=
     fun r => if r = 0 then a else if r = 1 then b else c
-  refine fixedBaseOnRegLocal
+  refine fixedBaseOnRegularityLocal
     (I := I) (timeSet := D.carrier) (regularSet := D.regular)
     (u := coordinateFrameSet (I := I) x0)
     (coordinateFrameSet_open (I := I) x0) D.regular_subset
@@ -5326,7 +5324,7 @@ private theorem hamiltonNablaPField_hasDerivWithinAt_coordinateFrame
             x0 i j p)
         (gammaDt i j p) D.carrier (t : Real) := by
     simpa [frame, hframe, gammaDt] using
-      coordGammaEvol (I := I) S hS x0 hmetric t x0 hx0 i j p
+      coordGammaEvolution (I := I) S hS x0 hmetric t x0 hx0 i j p
   have hfirst := HasDerivWithinAt.fun_sum
     (u := Finset.univ) (fun p _ => (hgamma d a p).mul (hP p b c))
   have hsecond := HasDerivWithinAt.fun_sum
@@ -5438,7 +5436,7 @@ private theorem connectionVariationPFirstField_apply_basis
     (g : SmoothRiemannianMetric I M) {x : M}
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasisGen (I := I) (M := M) g x basis gInv)
+    (hinv : MetricInverseInBasis (I := I) (M := M) g x basis gInv)
     (D A B C : TangentSpace I x) :
     connectionVariationPFirstField (I := I) g x
         (vec4 (I := I) D A B C) =
@@ -5472,7 +5470,7 @@ private theorem connectionVariationPSecondField_apply_basis
     (g : SmoothRiemannianMetric I M) {x : M}
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasisGen (I := I) (M := M) g x basis gInv)
+    (hinv : MetricInverseInBasis (I := I) (M := M) g x basis gInv)
     (D A B C : TangentSpace I x) :
     connectionVariationPSecondField (I := I) g x
         (vec4 (I := I) D A B C) =
@@ -5506,7 +5504,7 @@ private theorem connectionVariationPThirdField_apply_basis
     (g : SmoothRiemannianMetric I M) {x : M}
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasisGen (I := I) (M := M) g x basis gInv)
+    (hinv : MetricInverseInBasis (I := I) (M := M) g x basis gInv)
     (D A B C : TangentSpace I x) :
     connectionVariationPThirdField (I := I) g x
         (vec4 (I := I) D A B C) =
@@ -5559,13 +5557,13 @@ private theorem christoffelEvolutionRHSInFrame_tensor_contraction
   let frame := coordinateFrameAt (I := I) x0
   let basis := coordinateFrameAtToBasis (I := I) x0
   let gInv := fun p q => coordInv (I := I) S x0 s x0 p q
-  have hinv : MetricInverseInBasisGen
+  have hinv : MetricInverseInBasis
       (I := I) (M := M) (S.base.metric s) x0 basis gInv := by
     simpa [basis, gInv, SolutionOn.family] using
       coordInvReal (I := I) S x0 s
   have hInv (p q : CoordinateIdx (𝕜 := Real) E) :
       gInv p q = gInv q p :=
-    invMetric_symm (I := I) (M := M) (S.base.metric s) x0
+    MetricInverseInBasis.symmetric (I := I) (M := M) (S.base.metric s) x0
       basis gInv hinv p q
   simp_rw [christoffelEvolutionRHSInFrame_eq_connectionVariationField
     (I := I) S s x0]
@@ -5638,7 +5636,7 @@ private theorem hamiltonNablaPTimeVariationField_apply_coordinateFrame
   let frame := coordinateFrameAt (I := I) x0
   let basis := coordinateFrameAtToBasis (I := I) x0
   let gInv := fun p q => coordInv (I := I) S x0 s x0 p q
-  have hinv : MetricInverseInBasisGen
+  have hinv : MetricInverseInBasis
       (I := I) (M := M) (S.base.metric s) x0 basis gInv := by
     simpa [basis, gInv, SolutionOn.family] using
       coordInvReal (I := I) S x0 s
@@ -5815,7 +5813,7 @@ private theorem ricciNablaPTraceField_apply_basis
     (g : SmoothRiemannianMetric I M) {x : M}
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasisGen (I := I) (M := M) g x basis gInv)
+    (hinv : MetricInverseInBasis (I := I) (M := M) g x basis gInv)
     (A B : TangentSpace I x) :
     ricciNablaPTraceField (I := I) g x (vec2 (I := I) A B) =
       ∑ i : Idx, ∑ j : Idx,
@@ -5865,7 +5863,7 @@ private theorem hamiltonDivPTimeDerivativeField_apply_basis
     (g : SmoothRiemannianMetric I M) {x : M}
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasisGen (I := I) (M := M) g x basis gInv)
+    (hinv : MetricInverseInBasis (I := I) (M := M) g x basis gInv)
     (A B : TangentSpace I x) :
     hamiltonDivPTimeDerivativeField (I := I) g x (vec2 (I := I) A B) =
       (∑ i : Idx, ∑ j : Idx,
@@ -5978,13 +5976,13 @@ private theorem inverseMetricEvolution_hamiltonNablaP_contraction
     (vec2 (I := I) (basis i) (basis j))
   let NP := fun i j => hamiltonNablaPField (I := I) g x0
     (vec4 (I := I) (basis i) (basis j) A B)
-  have hinv : MetricInverseInBasisGen
+  have hinv : MetricInverseInBasis
       (I := I) (M := M) g x0 basis gInv := by
     simpa [g, basis, gInv, SolutionOn.family] using
       coordInvReal (I := I) S x0 t
   have hInv (i j : CoordinateIdx (𝕜 := Real) E) :
       gInv i j = gInv j i :=
-    invMetric_symm (I := I) (M := M) g x0 basis gInv hinv i j
+    MetricInverseInBasis.symmetric (I := I) (M := M) g x0 basis gInv hinv i j
   have hRicComp (i j : CoordinateIdx (𝕜 := Real) E) :
       ricciCompInFrame (I := I) S frame t x0 i j = Ric i j := by
     change S.ricciAt t x0
@@ -6038,7 +6036,7 @@ theorem hamiltonDivPAt_apply_eq_trace_hamiltonNablaP
     (g : SmoothRiemannianMetric I M) {x : M}
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasisGen (I := I) (M := M) g x basis gInv)
+    (hinv : MetricInverseInBasis (I := I) (M := M) g x basis gInv)
     (A B : TangentSpace I x) :
     hamiltonDivPAt (I := I) g x (vec2 (I := I) A B) =
       ∑ i : Idx, ∑ j : Idx,
@@ -6069,7 +6067,7 @@ theorem hamiltonMOriginField_apply
     fun i j =>
       DifferentialGeometry.Tensor.Coordinates.inverseMetricFlatModelInChartComponent
         (I := I) g x i j (extChartAt I x x)
-  have hinv : MetricInverseInBasisGen (I := I) (M := M) g x basis gInv := by
+  have hinv : MetricInverseInBasis (I := I) (M := M) g x basis gInv := by
     simpa [basis, gInv] using
       (DifferentialGeometry.Tensor.Coordinates.inverseMetricFlatModelInChart_metricInverseInBasis_center
         (I := I) g x)
@@ -6162,7 +6160,7 @@ private theorem hamiltonDivPAt_hasDerivWithinAt_coordinateFrame
     (nablaRicComp (I := I) S frame) (t : Real) x0
   have hx0 : x0 ∈ coordinateFrameSet (I := I) x0 :=
     coordinateFrameAt_mem (I := I) x0
-  have hinv (s : Real) : MetricInverseInBasisGen
+  have hinv (s : Real) : MetricInverseInBasis
       (I := I) (M := M) (S.base.metric s) x0 basis (gInv s) := by
     simpa [basis, gInv, SolutionOn.family] using
       coordInvReal (I := I) S x0 s
@@ -6183,7 +6181,7 @@ private theorem hamiltonDivPAt_hasDerivWithinAt_coordinateFrame
       HasDerivWithinAt (fun s : Real => gInv s i j) (gInvDt i j)
         D.carrier (t : Real) := by
     simpa only [gInv, gInvDt, frame] using
-      coordInvEvol (I := I) S hS x0 t x0 hx0 i j
+      coordInvEvolution (I := I) S hS x0 t x0 hx0 i j
   have hNabla (i j : CoordinateIdx (𝕜 := Real) E) :=
     hamiltonNablaPField_hasDerivWithinAt_coordinateFrame
       (I := I) S hS t x0 i j a b
@@ -6225,7 +6223,7 @@ private theorem hamiltonDivPAt_hasDerivWithinAt_coordinateFrame_actual
   let gInvDt := fun i j =>
     inverseMetricEvolutionRHSInFrame
       (I := I) S (coordInv (I := I) S x0) frame (t : Real) x0 i j
-  have hinv : MetricInverseInBasisGen
+  have hinv : MetricInverseInBasis
       (I := I) (M := M) g x0 basis gInv := by
     simpa [g, basis, gInv, SolutionOn.family] using
       coordInvReal (I := I) S x0 (t : Real)
@@ -6437,9 +6435,9 @@ private theorem basisInvMetric_hasDerivWithinAt_of_solution
   let dInv : (Idx -> Real) →L[Real] (Idx -> Real) :=
     -(InvG * Gdot * InvG)
   have hinv (s : Real) :
-      MetricInverseInBasisGen (I := I) (M := M) (S.base.metric s) x basis (gInv s) := by
+      MetricInverseInBasis (I := I) (M := M) (S.base.metric s) x basis (gInv s) := by
     simpa only [gInv] using
-      basisInvMetric_real (I := I) (S.base.metric s) x basis
+      basisInvMetric_isInverse (I := I) (S.base.metric s) x basis
   have hGInv (s : Real) :
       G s * matrixCLM (Idx := Idx) (gInv s) =
         ContinuousLinearMap.id Real (Idx -> Real) := by
@@ -7849,7 +7847,7 @@ private theorem metricNablaRicciTimeDerivativeExpandedField_realizes
   let nabla3Ric := metricNabla3RicField (I := I) g
   let Rm := metricRm04 (I := I) (M := M) g
   let nablaRm := metricNablaRm04Field (I := I) g
-  have hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen
+  have hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatible
       (I := I) cov g := by
     simpa [cov, metricCov] using
       DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric_isMetricCompatible
@@ -7859,28 +7857,28 @@ private theorem metricNablaRicciTimeDerivativeExpandedField_realizes
     simpa [cov, Ric, nablaRic, metricNablaRic] using
       (totalNabla0S_realizes (𝕜 := Real) (E := E) (H := H)
         (I := I) (M := M) 2 cov Ric
-        (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+        (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
           2 cov (by simpa [cov] using metricCov_smooth (I := I) (M := M) g) Ric))
   have hRic2 : TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H)
       (I := I) (M := M) 3 cov nablaRic nabla2Ric := by
     simpa [cov, nablaRic, nabla2Ric, metricNabla2Ric] using
       (totalNabla0S_realizes (𝕜 := Real) (E := E) (H := H)
         (I := I) (M := M) 3 cov nablaRic
-        (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+        (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
           3 cov (by simpa [cov] using metricCov_smooth (I := I) (M := M) g) nablaRic))
   have hRic3 : TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H)
       (I := I) (M := M) 4 cov nabla2Ric nabla3Ric := by
     simpa [cov, nabla2Ric, nabla3Ric, metricNabla3RicField] using
       (totalNabla0S_realizes (𝕜 := Real) (E := E) (H := H)
         (I := I) (M := M) 4 cov nabla2Ric
-        (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+        (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
           4 cov (by simpa [cov] using metricCov_smooth (I := I) (M := M) g) nabla2Ric))
   have hRm : TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H)
       (I := I) (M := M) 4 cov Rm nablaRm := by
     simpa [cov, Rm, nablaRm, metricNablaRm04Field] using
       (totalNabla0S_realizes (𝕜 := Real) (E := E) (H := H)
         (I := I) (M := M) 4 cov Rm
-        (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+        (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
           4 cov (by simpa [cov] using metricCov_smooth (I := I) (M := M) g) Rm))
   have hRough := nablaRealizes_metricTraceFirstTwo (I := I) (M := M)
     (s := 2) cov g hmc nabla2Ric nabla3Ric hRic3
@@ -7958,7 +7956,7 @@ private theorem metricNablaRicciTimeDerivativeExpandedField_eq
           (I := I) (M := M) 2
           (metricCov (I := I) (M := M) g)
           (metricRicciTimeDerivativeField (I := I) g)
-          (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+          (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
             2 (metricCov (I := I) (M := M) g)
             (metricCov_smooth (I := I) (M := M) g)
             (metricRicciTimeDerivativeField (I := I) g))))
@@ -8219,7 +8217,7 @@ private theorem metricNablaRm04Field_eq_nablaRm04Field
           (I := I) (M := M) 4
           (metricCov (I := I) (M := M) (S.base.metric t))
           (metricRm04 (I := I) (M := M) (S.base.metric t))
-          (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+          (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
             4 (metricCov (I := I) (M := M) (S.base.metric t))
             (metricCov_smooth (I := I) (M := M) (S.base.metric t))
             (metricRm04 (I := I) (M := M) (S.base.metric t)))))
@@ -8309,7 +8307,7 @@ private theorem metricRicci_nabla20SRealizesAt
     simpa [cov, Ric, D1, metricNablaRic] using
       (totalNabla0S_realizes (𝕜 := Real) (E := E) (H := H)
         (I := I) (M := M) 2 cov Ric
-        (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+        (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
           2 cov (by
             simpa [cov] using metricCov_smooth (I := I) (M := M) g) Ric))
   have h2 : TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H)
@@ -8317,7 +8315,7 @@ private theorem metricRicci_nabla20SRealizesAt
     simpa [cov, D1, D2, metricNabla2Ric] using
       (totalNabla0S_realizes (𝕜 := Real) (E := E) (H := H)
         (I := I) (M := M) 3 cov D1
-        (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+        (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
           3 cov (by
             simpa [cov] using metricCov_smooth (I := I) (M := M) g) D1))
   have h1' : Nabla0SSectionRealizes (I := I) 2 cov Ric D1 := by
@@ -8342,7 +8340,7 @@ private theorem metricNablaRic_nabla20SRealizesAt
     simpa [cov, D1, D2, metricNabla2Ric] using
       (totalNabla0S_realizes (𝕜 := Real) (E := E) (H := H)
         (I := I) (M := M) 3 cov D1
-        (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+        (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
           3 cov (by
             simpa [cov] using metricCov_smooth (I := I) (M := M) g) D1))
   have h3 : TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H)
@@ -8350,7 +8348,7 @@ private theorem metricNablaRic_nabla20SRealizesAt
     simpa [cov, D2, D3, metricNabla3RicField] using
       (totalNabla0S_realizes (𝕜 := Real) (E := E) (H := H)
         (I := I) (M := M) 4 cov D2
-        (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+        (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
           4 cov (by
             simpa [cov] using metricCov_smooth (I := I) (M := M) g) D2))
   have h2' : Nabla0SSectionRealizes (I := I) 3 cov D1 D2 := by
@@ -8373,7 +8371,7 @@ private theorem hamiltonPField_nabla20SRealizesAt
       (totalNabla0S_realizes (𝕜 := Real) (E := E) (H := H)
         (I := I) (M := M) 3 (metricCov (I := I) (M := M) g)
         (hamiltonPField (I := I) g)
-        (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+        (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
           3 (metricCov (I := I) (M := M) g)
           (metricCov_smooth (I := I) (M := M) g) (hamiltonPField (I := I) g)))
   have h2 : TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H)
@@ -8383,7 +8381,7 @@ private theorem hamiltonPField_nabla20SRealizesAt
       (totalNabla0S_realizes (𝕜 := Real) (E := E) (H := H)
         (I := I) (M := M) 4 (metricCov (I := I) (M := M) g)
         (hamiltonNablaPField (I := I) g)
-        (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+        (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
           4 (metricCov (I := I) (M := M) g)
           (metricCov_smooth (I := I) (M := M) g)
           (hamiltonNablaPField (I := I) g)))
@@ -8404,7 +8402,7 @@ private theorem hamiltonNablaPField_nabla20SRealizesAt
       (totalNabla0S_realizes (𝕜 := Real) (E := E) (H := H)
         (I := I) (M := M) 4 (metricCov (I := I) (M := M) g)
         (hamiltonNablaPField (I := I) g)
-        (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+        (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
           4 (metricCov (I := I) (M := M) g)
           (metricCov_smooth (I := I) (M := M) g)
           (hamiltonNablaPField (I := I) g)))
@@ -8415,7 +8413,7 @@ private theorem hamiltonNablaPField_nabla20SRealizesAt
       (totalNabla0S_realizes (𝕜 := Real) (E := E) (H := H)
         (I := I) (M := M) 5 (metricCov (I := I) (M := M) g)
         (hamiltonNabla2PField (I := I) g)
-        (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+        (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
           5 (metricCov (I := I) (M := M) g)
           (metricCov_smooth (I := I) (M := M) g)
           (hamiltonNabla2PField (I := I) g)))
@@ -8433,7 +8431,7 @@ private theorem hamiltonPField_ricciIdentityAt_of_solution
   let g := S.base.metric (t : Real)
   let cov := S.family.connection (t : Real)
   have hcov : CovariantDerivative.ContMDiffCovariantDerivativeLocally
-      cov (1 : WithTop ℕ∞) := connSmoothOfSol (I := I) S (t : Real)
+      cov (1 : WithTop ℕ∞) := connSmoothOfSolution (I := I) S (t : Real)
   have htor : cov.torsion x = 0 := by
     have htf :=
       DifferentialGeometry.Geometry.Connection.torsionFree_of_isLeviCivita
@@ -8446,7 +8444,7 @@ private theorem hamiltonPField_ricciIdentityAt_of_solution
     (hamiltonPField (I := I) g x)
     (hamiltonNablaPField (I := I) g x)
     (hamiltonNabla2PField (I := I) g x)
-    (rm13OfSol (I := I) S (t : Real)) rfl rfl
+    (rm13OfSolution (I := I) S (t : Real)) rfl rfl
     (by simpa [g, cov, SolutionFamily.connection, metricCov] using
       hamiltonPField_nabla20SRealizesAt (I := I) g x) htor
 
@@ -8462,7 +8460,7 @@ private theorem hamiltonNablaPField_ricciIdentityAt_of_solution
   let g := S.base.metric (t : Real)
   let cov := S.family.connection (t : Real)
   have hcov : CovariantDerivative.ContMDiffCovariantDerivativeLocally
-      cov (1 : WithTop ℕ∞) := connSmoothOfSol (I := I) S (t : Real)
+      cov (1 : WithTop ℕ∞) := connSmoothOfSolution (I := I) S (t : Real)
   have htor : cov.torsion x = 0 := by
     have htf :=
       DifferentialGeometry.Geometry.Connection.torsionFree_of_isLeviCivita
@@ -8475,7 +8473,7 @@ private theorem hamiltonNablaPField_ricciIdentityAt_of_solution
     (hamiltonNablaPField (I := I) g x)
     (hamiltonNabla2PField (I := I) g x)
     (hamiltonNabla3PField (I := I) g x)
-    (rm13OfSol (I := I) S (t : Real)) rfl rfl
+    (rm13OfSolution (I := I) S (t : Real)) rfl rfl
     (by simpa [g, cov, SolutionFamily.connection, metricCov] using
       hamiltonNablaPField_nabla20SRealizesAt (I := I) g x) htor
 
@@ -8491,7 +8489,7 @@ private theorem metricRicci_ricciIdentityAt_of_solution
   let g := S.base.metric (t : Real)
   let cov := S.family.connection (t : Real)
   have hcov : CovariantDerivative.ContMDiffCovariantDerivativeLocally
-      cov (1 : WithTop ℕ∞) := connSmoothOfSol (I := I) S (t : Real)
+      cov (1 : WithTop ℕ∞) := connSmoothOfSolution (I := I) S (t : Real)
   have htor : cov.torsion x = 0 := by
     have htf :=
       DifferentialGeometry.Geometry.Connection.torsionFree_of_isLeviCivita
@@ -8504,7 +8502,7 @@ private theorem metricRicci_ricciIdentityAt_of_solution
     (metricRicci (I := I) (M := M) g x)
     (metricNablaRic (I := I) (M := M) g x)
     (metricNabla2Ric (I := I) (M := M) g x)
-    (rm13OfSol (I := I) S (t : Real)) rfl rfl
+    (rm13OfSolution (I := I) S (t : Real)) rfl rfl
     (by simpa [g, cov, SolutionFamily.connection, metricCov] using
       metricRicci_nabla20SRealizesAt (I := I) g x) htor
 
@@ -8520,7 +8518,7 @@ private theorem metricNablaRic_ricciIdentityAt_of_solution
   let g := S.base.metric (t : Real)
   let cov := S.family.connection (t : Real)
   have hcov : CovariantDerivative.ContMDiffCovariantDerivativeLocally
-      cov (1 : WithTop ℕ∞) := connSmoothOfSol (I := I) S (t : Real)
+      cov (1 : WithTop ℕ∞) := connSmoothOfSolution (I := I) S (t : Real)
   have htor : cov.torsion x = 0 := by
     have htf :=
       DifferentialGeometry.Geometry.Connection.torsionFree_of_isLeviCivita
@@ -8533,7 +8531,7 @@ private theorem metricNablaRic_ricciIdentityAt_of_solution
     (metricNablaRic (I := I) (M := M) g x)
     (metricNabla2Ric (I := I) (M := M) g x)
     (metricNabla3RicField (I := I) g x)
-    (rm13OfSol (I := I) S (t : Real)) rfl rfl
+    (rm13OfSolution (I := I) S (t : Real)) rfl rfl
     (by simpa [g, cov, SolutionFamily.connection, metricCov] using
       metricNablaRic_nabla20SRealizesAt (I := I) g x) htor
 
@@ -8572,7 +8570,7 @@ theorem differentiatedRicciIdentityComponents_of_solution
       (totalNabla0S_realizes (𝕜 := Real) (E := E) (H := H)
         (I := I) (M := M) 2 (metricCov (I := I) (M := M) g)
         (metricRicci (I := I) (M := M) g)
-        (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+        (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
           2 (metricCov (I := I) (M := M) g)
           (metricCov_smooth (I := I) (M := M) g)
           (metricRicci (I := I) (M := M) g)))
@@ -8584,13 +8582,13 @@ theorem differentiatedRicciIdentityComponents_of_solution
       (totalNabla0S_realizes (𝕜 := Real) (E := E) (H := H)
         (I := I) (M := M) 4 (metricCov (I := I) (M := M) g)
         (metricNabla2Ric (I := I) (M := M) g)
-        (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+        (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
           4 (metricCov (I := I) (M := M) g)
           (metricCov_smooth (I := I) (M := M) g)
           (metricNabla2Ric (I := I) (M := M) g)))
   have hOutput : Rm04OutputSkewAt (I := I) (S.base.rm04 (t : Real) x) :=
     rm04OutputSkew_regular (I := I) S S.base.rm13 S.base.rm04
-      (fun tau => rm13OfSol (I := I) S (tau : Real))
+      (fun tau => rm13OfSolution (I := I) S (tau : Real))
       (fun tau y => solution_rm04LowersRm13At (I := I) S (tau : Real) y) t x
   have hNablaSymm : NablaRmSymmAt (I := I)
       (nablaRm04Field (I := I) S (t : Real) x) := by
@@ -8635,7 +8633,7 @@ theorem gradientRicciIdentityComponents_of_solution
               (fun r => basis (slots r)))))) := by
   have hOutput : Rm04OutputSkewAt (I := I) (S.base.rm04 (t : Real) x) :=
     rm04OutputSkew_regular (I := I) S S.base.rm13 S.base.rm04
-      (fun tau => rm13OfSol (I := I) S (tau : Real))
+      (fun tau => rm13OfSolution (I := I) S (tau : Real))
       (fun tau y => solution_rm04LowersRm13At (I := I) S (tau : Real) y) t x
   exact tensorGradientRicciIdentityComponents_of_orthonormalBasis
     (I := I) (S.base.metric (t : Real)) (S.base.rm13 (t : Real))
@@ -8681,7 +8679,7 @@ private theorem differentiatedHamiltonPIdentityComponents_of_solution
         (I := I) (M := M) 3
         (metricCov (I := I) (M := M) (S.base.metric (t : Real)))
         (hamiltonPField (I := I) (S.base.metric (t : Real)))
-        (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+        (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
           3 (metricCov (I := I) (M := M) (S.base.metric (t : Real)))
           (metricCov_smooth (I := I) (M := M) (S.base.metric (t : Real)))
           (hamiltonPField (I := I) (S.base.metric (t : Real)))))
@@ -8694,13 +8692,13 @@ private theorem differentiatedHamiltonPIdentityComponents_of_solution
         (I := I) (M := M) 5
         (metricCov (I := I) (M := M) (S.base.metric (t : Real)))
         (hamiltonNabla2PField (I := I) (S.base.metric (t : Real)))
-        (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+        (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
           5 (metricCov (I := I) (M := M) (S.base.metric (t : Real)))
           (metricCov_smooth (I := I) (M := M) (S.base.metric (t : Real)))
           (hamiltonNabla2PField (I := I) (S.base.metric (t : Real)))))
   have hOutput : Rm04OutputSkewAt (I := I) (S.base.rm04 (t : Real) x) :=
     rm04OutputSkew_regular (I := I) S S.base.rm13 S.base.rm04
-      (fun tau => rm13OfSol (I := I) S (tau : Real))
+      (fun tau => rm13OfSolution (I := I) S (tau : Real))
       (fun tau y => solution_rm04LowersRm13At (I := I) S (tau : Real) y) t x
   have hNablaSymm : NablaRmSymmAt (I := I)
       (nablaRm04Field (I := I) S (t : Real) x) := by
@@ -8744,7 +8742,7 @@ private theorem gradientHamiltonPIdentityComponents_of_solution
               (fun r => basis (slots r)))))) := by
   have hOutput : Rm04OutputSkewAt (I := I) (S.base.rm04 (t : Real) x) :=
     rm04OutputSkew_regular (I := I) S S.base.rm13 S.base.rm04
-      (fun tau => rm13OfSol (I := I) S (tau : Real))
+      (fun tau => rm13OfSolution (I := I) S (tau : Real))
       (fun tau y => solution_rm04LowersRm13At (I := I) S (tau : Real) y) t x
   exact tensorGradientRicciIdentityComponents_of_orthonormalBasis
     (I := I) (S.base.metric (t : Real)) (S.base.rm13 (t : Real))
@@ -8776,7 +8774,7 @@ private theorem curvatureSecondDerivativeCommutatorComponents_of_solution
           (fun r => basis (slots r))))) := by
   have hOutput : Rm04OutputSkewAt (I := I) (S.base.rm04 (t : Real) x) :=
     rm04OutputSkew_regular (I := I) S S.base.rm13 S.base.rm04
-      (fun tau => rm13OfSol (I := I) S (tau : Real))
+      (fun tau => rm13OfSolution (I := I) S (tau : Real))
       (fun tau y => solution_rm04LowersRm13At (I := I) S (tau : Real) y) t x
   exact covariantTensorSecondDerivativeCommutatorComponents_of_orthonormalBasis
     (I := I) (S.base.metric (t : Real)) (S.base.rm13 (t : Real))
@@ -9375,7 +9373,7 @@ private theorem hamilton_rm_components_symm_of_solution
     Rm04Symm (hamiltonRmComponentOfSolution (I := I) S (t : Real) x basis) := by
   have hRm13 := fun tau :
       DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D =>
-    rm13OfSol (I := I) S (tau : Real)
+    rm13OfSolution (I := I) S (tau : Real)
   have hLower := fun
       (tau : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D) (y : M) =>
     solution_rm04LowersRm13At (I := I) S (tau : Real) y
@@ -9447,7 +9445,7 @@ private theorem hamilton_curvature_ricci_trace_components_of_solution
     (ricci_diag_eq_sum_rm04_diag_of_orthonormal
       (I := I) (S.base.metric (t : Real)) basis
       (S.ricci (t : Real)) (S.base.rm13 (t : Real)) (S.base.rm04 (t : Real))
-      (ricciTraceOfSol (I := I) S (t : Real))
+      (ricciTraceOfSolution (I := I) S (t : Real))
       (solution_rm04LowersRm13At (I := I) S (t : Real) x) horth i j)
 
 private theorem rm04_hasDerivWithinAt_oneTimeUhlenbeck_heat
@@ -9902,12 +9900,12 @@ private theorem hamiltonCurvatureRicciAt_hasDerivWithinAt_oneTimeUhlenbeck_raw
   let Ricci := fun s c d =>
     metricRicci (I := I) (M := M) (S.base.metric s) x
       (vec2 (I := I) (basis c) (basis d))
-  have hinv (s : Real) : MetricInverseInBasisGen
+  have hinv (s : Real) : MetricInverseInBasis
       (I := I) (M := M) (S.base.metric s) x basis (gInv s) := by
     simpa only [gInv] using
-      basisInvMetric_real (I := I) (S.base.metric s) x basis
+      basisInvMetric_isInverse (I := I) (S.base.metric s) x basis
   have hdeltaFun : gInv (t : Real) = identityInvMetric (Idx := Fin n) := by
-    exact invBasis_unique (I := I) (S.base.metric (t : Real)) x basis _ _
+    exact MetricInverseInBasis.unique (I := I) (S.base.metric (t : Real)) x basis _ _
       (hinv (t : Real))
       (metricInverseInBasis_identity_of_orthonormal
         (I := I) (S.base.metric (t : Real)) basis horth)
@@ -10444,14 +10442,14 @@ private theorem ricciPContractionField_nabla_eq
     simpa [cov, Ric, RicNabla, metricNablaRic] using
       (totalNabla0S_realizes (𝕜 := Real) (E := E) (H := H)
         (I := I) (M := M) 2 cov Ric
-        (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+        (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
           2 cov (by simpa [cov] using metricCov_smooth (I := I) (M := M) g) Ric))
   have hP : TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H)
       (I := I) (M := M) 3 cov P PNabla := by
     simpa [cov, P, PNabla, hamiltonNablaPField] using
       (totalNabla0S_realizes (𝕜 := Real) (E := E) (H := H)
         (I := I) (M := M) 3 cov P
-        (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+        (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
           3 cov (by simpa [cov] using metricCov_smooth (I := I) (M := M) g) P))
   have hProd := nabla0S_product_realizes (I := I) cov Ric P RicNabla PNabla hRic hP
   have hProd' : TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H)
@@ -10468,7 +10466,7 @@ private theorem ricciPContractionField_nabla_eq
       (tensor0SFieldProduct (∞ : WithTop ℕ∞) RicNabla P) +
       Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) (leibnizRightEquiv 2 3)
         (tensor0SFieldProduct (∞ : WithTop ℕ∞) Ric PNabla)) hProd'
-  have hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen
+  have hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatible
       (I := I) cov g := by
     simpa [cov, metricCov] using
       DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric_isMetricCompatible
@@ -10487,7 +10485,7 @@ private theorem ricciPContractionField_nabla_eq
     (totalNabla0S_realizes (𝕜 := Real) (E := E) (H := H)
       (I := I) (M := M) 3 cov
       (ricciPContractionField (I := I) g perm)
-      (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+      (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
         3 cov (metricCov_smooth (I := I) (M := M) g)
         (ricciPContractionField (I := I) g perm)))
     (by simpa [ricciPContractionField, cov, Ric, P, RicNabla, PNabla] using hTrace)
@@ -10514,7 +10512,7 @@ private theorem metricTraceFirstTwoField_nabla_eq
         (Tensor0SField.domDomCongr (∞ : WithTop ℕ∞)
           (traceNablaShuffle s) ANabla) := by
   let cov := metricCov (I := I) (M := M) g
-  have hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen
+  have hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatible
       (I := I) cov g := by
     simpa [cov, metricCov] using
       DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric_isMetricCompatible
@@ -10525,7 +10523,7 @@ private theorem metricTraceFirstTwoField_nabla_eq
     (totalNabla0S_realizes (𝕜 := Real) (E := E) (H := H)
       (I := I) (M := M) s cov
       (metricTraceFirstTwoField (I := I) (M := M) g A)
-      (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+      (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
         s cov (metricCov_smooth (I := I) (M := M) g)
         (metricTraceFirstTwoField (I := I) (M := M) g A))) hTrace
   funext x
@@ -10545,7 +10543,7 @@ private theorem hamiltonPRoughLaplacianField_nabla_eq
   let cov := metricCov (I := I) (M := M) g
   have hCanonical := totalNabla0S_realizes (𝕜 := Real) (E := E) (H := H)
     (I := I) (M := M) 5 cov (hamiltonNabla2PExpectedField (I := I) g)
-    (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+    (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
       5 cov (by simpa [cov] using metricCov_smooth (I := I) (M := M) g)
       (hamiltonNabla2PExpectedField (I := I) g))
   have hExpected : TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H)
@@ -10570,7 +10568,7 @@ private theorem ricciPFirstContractionField_nabla_eq
       nablaRicPContractionField (I := I) g nablaRicPFirstFieldPerm +
         ricciNablaPContractionField (I := I) g ricciNablaPFirstFieldPerm := by
   funext x
-  obtain ⟨basis, horth⟩ := exists_gOrthonormalBasis (I := I) g x
+  obtain ⟨basis, horth⟩ := exists_orthonormal_basis (I := I) g x
   apply ext0S_basis (I := I) basis
   intro slots
   have hslots :
@@ -10634,7 +10632,7 @@ private theorem ricciPSecondContractionField_nabla_eq
       nablaRicPContractionField (I := I) g nablaRicPSecondFieldPerm +
         ricciNablaPContractionField (I := I) g ricciNablaPSecondFieldPerm := by
   funext x
-  obtain ⟨basis, horth⟩ := exists_gOrthonormalBasis (I := I) g x
+  obtain ⟨basis, horth⟩ := exists_orthonormal_basis (I := I) g x
   apply ext0S_basis (I := I) basis
   intro slots
   have hslots :
@@ -10698,7 +10696,7 @@ private theorem ricciPThirdContractionField_nabla_eq
       nablaRicPContractionField (I := I) g nablaRicPThirdFieldPerm +
         ricciNablaPContractionField (I := I) g ricciNablaPThirdFieldPerm := by
   funext x
-  obtain ⟨basis, horth⟩ := exists_gOrthonormalBasis (I := I) g x
+  obtain ⟨basis, horth⟩ := exists_orthonormal_basis (I := I) g x
   apply ext0S_basis (I := I) basis
   intro slots
   have hslots :
@@ -10955,7 +10953,7 @@ private theorem hamiltonPHeatField_eq_reaction
       hamiltonPEvolutionReactionField (I := I) g := by
   apply DFunLike.ext _ _
   intro x
-  obtain ⟨basis, horth⟩ := exists_gOrthonormalBasis (I := I) g x
+  obtain ⟨basis, horth⟩ := exists_orthonormal_basis (I := I) g x
   apply ext0S_basis (I := I) basis
   intro slots
   have hslots :
@@ -11170,7 +11168,7 @@ private theorem doubleTraceProductField_nabla_eq
               (Tensor0SField.domDomCongr (∞ : WithTop ℕ∞)
                 (frontExtendEquiv perm) ANabla)))) := by
   let cov := metricCov (I := I) (M := M) g
-  have hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen
+  have hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatible
       (I := I) cov g := by
     simpa [cov, metricCov] using
       DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric_isMetricCompatible
@@ -11195,7 +11193,7 @@ private theorem doubleTraceProductField_nabla_eq
     (totalNabla0S_realizes (𝕜 := Real) (E := E) (H := H)
       (I := I) (M := M) 3 cov
       (doubleTraceProductField (I := I) g perm A)
-      (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+      (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
         3 cov (metricCov_smooth (I := I) (M := M) g)
         (doubleTraceProductField (I := I) g perm A)))
     (by simpa [doubleTraceProductField] using hOuter)
@@ -11301,14 +11299,14 @@ private theorem curvaturePFirstField_nabla_eq
     simpa [cov, R, RNabla, metricNablaRm04Field] using
       (totalNabla0S_realizes (𝕜 := Real) (E := E) (H := H)
         (I := I) (M := M) 4 cov R
-        (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+        (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
           4 cov (by simpa [cov] using metricCov_smooth (I := I) (M := M) g) R))
   have hP : TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H)
       (I := I) (M := M) 3 cov P PNabla := by
     simpa [cov, P, PNabla, hamiltonNablaPField] using
       (totalNabla0S_realizes (𝕜 := Real) (E := E) (H := H)
         (I := I) (M := M) 3 cov P
-        (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+        (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
           3 cov (by simpa [cov] using metricCov_smooth (I := I) (M := M) g) P))
   have hProd : TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H)
       (I := I) (M := M) 7 cov
@@ -11318,7 +11316,7 @@ private theorem curvaturePFirstField_nabla_eq
   rw [doubleTraceProductField_nabla_eq (I := I) g curvaturePFirstFieldPerm
     (tensor0SFieldProduct (∞ : WithTop ℕ∞) R P) D hProd]
   funext x
-  obtain ⟨basis, horth⟩ := exists_gOrthonormalBasis (I := I) g x
+  obtain ⟨basis, horth⟩ := exists_orthonormal_basis (I := I) g x
   apply ext0S_basis (I := I) basis
   intro slots
   have hslots :
@@ -11652,14 +11650,14 @@ private theorem curvaturePSecondField_nabla_eq
     simpa [cov, R, RNabla, metricNablaRm04Field] using
       (totalNabla0S_realizes (𝕜 := Real) (E := E) (H := H)
         (I := I) (M := M) 4 cov R
-        (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+        (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
           4 cov (by simpa [cov] using metricCov_smooth (I := I) (M := M) g) R))
   have hP : TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H)
       (I := I) (M := M) 3 cov P PNabla := by
     simpa [cov, P, PNabla, hamiltonNablaPField] using
       (totalNabla0S_realizes (𝕜 := Real) (E := E) (H := H)
         (I := I) (M := M) 3 cov P
-        (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+        (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
           3 cov (by simpa [cov] using metricCov_smooth (I := I) (M := M) g) P))
   have hProd : TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H)
       (I := I) (M := M) 7 cov
@@ -11669,7 +11667,7 @@ private theorem curvaturePSecondField_nabla_eq
   rw [doubleTraceProductField_nabla_eq (I := I) g curvaturePSecondFieldPerm
     (tensor0SFieldProduct (∞ : WithTop ℕ∞) R P) D hProd]
   funext x
-  obtain ⟨basis, horth⟩ := exists_gOrthonormalBasis (I := I) g x
+  obtain ⟨basis, horth⟩ := exists_orthonormal_basis (I := I) g x
   apply ext0S_basis (I := I) basis
   intro slots
   have hslots :
@@ -11849,14 +11847,14 @@ private theorem curvaturePThirdField_nabla_eq
     simpa [cov, R, RNabla, metricNablaRm04Field] using
       (totalNabla0S_realizes (𝕜 := Real) (E := E) (H := H)
         (I := I) (M := M) 4 cov R
-        (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+        (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
           4 cov (by simpa [cov] using metricCov_smooth (I := I) (M := M) g) R))
   have hP : TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H)
       (I := I) (M := M) 3 cov P PNabla := by
     simpa [cov, P, PNabla, hamiltonNablaPField] using
       (totalNabla0S_realizes (𝕜 := Real) (E := E) (H := H)
         (I := I) (M := M) 3 cov P
-        (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+        (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
           3 cov (by simpa [cov] using metricCov_smooth (I := I) (M := M) g) P))
   have hProd : TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H)
       (I := I) (M := M) 7 cov
@@ -11866,7 +11864,7 @@ private theorem curvaturePThirdField_nabla_eq
   rw [doubleTraceProductField_nabla_eq (I := I) g curvaturePThirdFieldPerm
     (tensor0SFieldProduct (∞ : WithTop ℕ∞) R P) D hProd]
   funext x
-  obtain ⟨basis, horth⟩ := exists_gOrthonormalBasis (I := I) g x
+  obtain ⟨basis, horth⟩ := exists_orthonormal_basis (I := I) g x
   apply ext0S_basis (I := I) basis
   intro slots
   have hslots :
@@ -12002,14 +12000,14 @@ private theorem ricciNablaRmField_nabla_eq
     simpa [cov, Ric, RicNabla, metricNablaRic] using
       (totalNabla0S_realizes (𝕜 := Real) (E := E) (H := H)
         (I := I) (M := M) 2 cov Ric
-        (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+        (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
           2 cov (by simpa [cov] using metricCov_smooth (I := I) (M := M) g) Ric))
   have hRNabla : TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H)
       (I := I) (M := M) 5 cov RNabla RNabla2 := by
     simpa [cov, RNabla, RNabla2, metricNabla2Rm04Field] using
       (totalNabla0S_realizes (𝕜 := Real) (E := E) (H := H)
         (I := I) (M := M) 5 cov RNabla
-        (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+        (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
           5 cov (by simpa [cov] using metricCov_smooth (I := I) (M := M) g) RNabla))
   have hProd : TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H)
       (I := I) (M := M) 7 cov
@@ -12019,7 +12017,7 @@ private theorem ricciNablaRmField_nabla_eq
   rw [doubleTraceProductField_nabla_eq (I := I) g ricciNablaRmFieldPerm
     (tensor0SFieldProduct (∞ : WithTop ℕ∞) Ric RNabla) D hProd]
   funext x
-  obtain ⟨basis, horth⟩ := exists_gOrthonormalBasis (I := I) g x
+  obtain ⟨basis, horth⟩ := exists_orthonormal_basis (I := I) g x
   apply ext0S_basis (I := I) basis
   intro slots
   have hslots :
@@ -12154,7 +12152,7 @@ private theorem metricNabla2Rm04Field_eq_nablaKRm04Field_of_solution
         (I := I) (M := M) 5
         (metricCov (I := I) (M := M) (S.base.metric t))
         (metricNablaRm04Field (I := I) (S.base.metric t))
-        (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+        (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
           5 (metricCov (I := I) (M := M) (S.base.metric t))
           (metricCov_smooth (I := I) (M := M) (S.base.metric t))
           (metricNablaRm04Field (I := I) (S.base.metric t))))
@@ -12661,7 +12659,6 @@ theorem hamiltonP_evolution_covariantDerivative_of_ricci_flow
   exact hamiltonNablaP_nablaHeat_components_of_solution
     (I := I) S t x basis horth q a b c
 
-
 private theorem hamiltonM_evolution_components_of_solution
     [CompleteSpace E] [T2Space M]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
@@ -12941,7 +12938,7 @@ theorem hamiltonMOriginField_rough_laplacian_component
   let M0 := hamiltonMOriginField (I := I) origin time g
   let M1 := D1 + C1 + q • R1
   let M2 := D2 + C2 + q • R2
-  have hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen
+  have hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatible
       (I := I) cov g := by
     simpa [cov, metricCov] using
       DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric_isMetricCompatible
@@ -12951,14 +12948,14 @@ theorem hamiltonMOriginField_rough_laplacian_component
     simpa [cov, P1, P2, hamiltonNabla2PField] using
       (totalNabla0S_realizes (𝕜 := Real) (E := E) (H := H)
         (I := I) (M := M) 4 cov P1
-        (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+        (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
           4 cov (by simpa [cov] using metricCov_smooth (I := I) (M := M) g) P1))
   have hP3 : TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H)
       (I := I) (M := M) 5 cov P2 P3 := by
     simpa [cov, P2, P3, hamiltonNabla3PField] using
       (totalNabla0S_realizes (𝕜 := Real) (E := E) (H := H)
         (I := I) (M := M) 5 cov P2
-        (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+        (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
           5 cov (by simpa [cov] using metricCov_smooth (I := I) (M := M) g) P2))
   have hD0 : TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H)
       (I := I) (M := M) 2 cov D0 D1 := by
@@ -12982,21 +12979,21 @@ theorem hamiltonMOriginField_rough_laplacian_component
     simpa [cov, C1, C2, hamiltonNabla2CurvatureRicciField] using
       (totalNabla0S_realizes (𝕜 := Real) (E := E) (H := H)
         (I := I) (M := M) 3 cov C1
-        (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+        (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
           3 cov (by simpa [cov] using metricCov_smooth (I := I) (M := M) g) C1))
   have hR0 : TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H)
       (I := I) (M := M) 2 cov R0 R1 := by
     simpa [cov, R0, R1, metricNablaRic] using
       (totalNabla0S_realizes (𝕜 := Real) (E := E) (H := H)
         (I := I) (M := M) 2 cov R0
-        (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+        (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
           2 cov (by simpa [cov] using metricCov_smooth (I := I) (M := M) g) R0))
   have hR1 : TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H)
       (I := I) (M := M) 3 cov R1 R2 := by
     simpa [cov, R1, R2, metricNabla2Ric] using
       (totalNabla0S_realizes (𝕜 := Real) (E := E) (H := H)
         (I := I) (M := M) 3 cov R1
-        (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+        (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
           3 cov (by simpa [cov] using metricCov_smooth (I := I) (M := M) g) R1))
   have hM0 : TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H)
       (I := I) (M := M) 2 cov M0 M1 := by

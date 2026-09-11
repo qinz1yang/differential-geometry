@@ -44,6 +44,24 @@ theorem cocoreRetract_apply (k l : ℕ) (x : ClosedCell k) (y : ClosedCell l) :
     ((cocoreRetract k l).retraction (x, y) : StandardHandle k l) = (closedCellCenter k, y) := by
   simp [cocoreRetract]
 
+theorem coreRetract_retraction_attachingRegion (k l : ℕ) {p : StandardHandle k l}
+    (hp : p ∈ attachingRegion k l) :
+    ((coreRetract k l).retraction p : StandardHandle k l) =
+      attachingInclusion k l
+        (⟨p.1, by simpa [attachingRegion] using hp⟩, closedCellCenter l) := by
+  rcases p with ⟨x, y⟩
+  rw [coreRetract_apply]
+  rfl
+
+theorem cocoreRetract_retraction_beltRegion (k l : ℕ) {p : StandardHandle k l}
+    (hp : p ∈ beltRegion k l) :
+    ((cocoreRetract k l).retraction p : StandardHandle k l) =
+      beltInclusion k l
+        (closedCellCenter k, ⟨p.2, by simpa [beltRegion] using hp⟩) := by
+  rcases p with ⟨x, y⟩
+  rw [cocoreRetract_apply]
+  rfl
+
 theorem attachingSphereRetract_apply (k l : ℕ) (u : CellBoundary k) (y : ClosedCell l) :
     ((attachingSphereRetract k l).retraction (u, y) : AttachingRegion k l) = (u, closedCellCenter l) :=
   by

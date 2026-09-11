@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Tensor.Basic
-import DifferentialGeometry.Geometry.Operator.LaplacianMinimum
+import DifferentialGeometry.Geometry.Operator.Laplacian.Minimum
 
 set_option autoImplicit false
 
@@ -210,7 +210,7 @@ theorem strict_rank_one_support_of_compact_representatives
           exists w, w ∈ K ∧ q t w.proj w.2 <= 0 ∧
             (q t z.proj z.2 < 0 -> q t w.proj w.2 < 0))
     (hmc : forall t,
-      IsMetricCompatibleGen (I := I) (cov t) (G t))
+      IsMetricCompatible (I := I) (cov t) (G t))
     (hsupport : forall t, t ∈ Set.Ioc (a + eta) b ->
       (forall x z, 0 <= q t x z) ->
       forall x z, q t x z = 0 ->
@@ -342,7 +342,7 @@ theorem strict_rank_one_support
       forall z : Bundle.TotalSpace ZModel Z,
         z ∉ K -> 0 < q t z.proj z.2)
     (hmc : forall t,
-      IsMetricCompatibleGen (I := I) (cov t) (G t))
+      IsMetricCompatible (I := I) (cov t) (G t))
     (hsupport : forall t, t ∈ Set.Ioc (a + eta) b ->
       (forall x z, 0 <= q t x z) ->
       forall x z, q t x z = 0 ->

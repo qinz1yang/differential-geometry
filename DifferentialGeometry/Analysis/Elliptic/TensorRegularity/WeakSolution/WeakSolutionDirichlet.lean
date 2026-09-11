@@ -58,10 +58,10 @@ theorem tensorComponent_chartBilinIdentity_of_dirichlet
     {K : Set EuclN} (hK : IsCompact K)
     (hK_target : K ⊆ chartTargetEuclid (I := I) (M := M) α)
     (P₀ : CompIdx E r s)
-    (hT_supp : tsupport T.toFun ⊆ (chartAt H α).source)
+    (hT_support : tsupport T.toFun ⊆ (chartAt H α).source)
     (hT_K : tsupport (tensorComponentEuclid (I := I) (M := M) g r s T α P₀) ⊆ K)
     {φ : EuclN → ℝ} (hφ : ContDiff ℝ (⊤ : ℕ∞) φ) (hφ_cs : HasCompactSupport φ)
-    (hφ_supp : tsupport φ ⊆ chartTargetEuclid (I := I) (M := M) α) :
+    (hφ_support : tsupport φ ⊆ chartTargetEuclid (I := I) (M := M) α) :
     (tensorPrincipalForm (I := I) (M := M) g α hK hK_target).bilin
         (tensorComponentEuclid (I := I) (M := M) g r s T α P₀) φ =
       (∫ x, tensorCovDerivPointwiseInner (I := I) (M := M) g r s T
@@ -69,7 +69,7 @@ theorem tensorComponent_chartBilinIdentity_of_dirichlet
             (chartTestPullback (I := I) (M := M) α φ)
             (chartTestPullback_contMDiffOn (I := I) (M := M) α hφ)
             (chartTestPullback_tsupport_subset_source (I := I) (M := M) α hφ_cs
-              hφ_supp)) x
+              hφ_support)) x
         ∂(riemannianVolumeMeasure (I := I) (M := M) g)) -
       (∫ y, densityOnEuclid (I := I) g α y *
           covPrincipalRotationCoeff (I := I) (M := M) g r s T α P₀ y * φ y
@@ -93,7 +93,7 @@ theorem tensorComponent_chartBilinIdentity_of_dirichlet
     chartTestPullback_contMDiffOn (I := I) (M := M) α hφ
   have hχt : tsupport (chartTestPullback (I := I) (M := M) α φ) ⊆
       (chartAt H α).source :=
-    chartTestPullback_tsupport_subset_source (I := I) (M := M) α hφ_cs hφ_supp
+    chartTestPullback_tsupport_subset_source (I := I) (M := M) α hφ_cs hφ_support
   have hdensity : ContDiffOn ℝ ∞ (densityOnEuclid (I := I) g α)
       (chartTargetEuclid (I := I) (M := M) α) :=
     densityOnEuclid_contDiffOn (I := I) g α
@@ -124,11 +124,11 @@ theorem tensorComponent_chartBilinIdentity_of_dirichlet
     rw [Function.mem_support] at hy
     by_contra hyφ
     exact hy (euclidPartial_eq_zero_of_notMem_tsupport (E := E) l hyφ)
-  have hdφ_supp : ∀ l : Fin (Module.finrank ℝ E),
+  have hdφ_support : ∀ l : Fin (Module.finrank ℝ E),
       tsupport (euclidPartial (E := E) l φ) ⊆
         chartTargetEuclid (I := I) (M := M) α := by
     intro l
-    refine (closure_minimal ?_ (isClosed_tsupport φ)).trans hφ_supp
+    refine (closure_minimal ?_ (isClosed_tsupport φ)).trans hφ_support
     intro z hz
     rw [Function.mem_support] at hz
     by_contra hz'
@@ -146,33 +146,33 @@ theorem tensorComponent_chartBilinIdentity_of_dirichlet
         covPrincipalRotationCoeff (I := I) (M := M) g r s T α P₀ y * φ y) :=
     contDiff_mul_chartTest (I := I) (M := M) α
       (hdensity.mul (covPrincipalRotationCoeff_contDiffOn (I := I) (M := M)
-        g r s T α P₀)) hφ' hφ_supp
+        g r s T α P₀)) hφ' hφ_support
   have hP_lov : ContDiff ℝ ∞
       (fun y => densityOnEuclid (I := I) g α y *
         covLowerOrderRotationValueCoeff (I := I) (M := M) g r s T α P₀ y *
           φ y) :=
     contDiff_mul_chartTest (I := I) (M := M) α
       (hdensity.mul (covLowerOrderRotationValueCoeff_contDiffOn (I := I) (M := M)
-        g r s T α P₀)) hφ' hφ_supp
+        g r s T α P₀)) hφ' hφ_support
   have hP_grad : ∀ l : Fin (Module.finrank ℝ E), ContDiff ℝ ∞
       (fun y => weightedGradCoeff (I := I) (M := M) g r s T α P₀ l y *
         euclidPartial (E := E) l φ y) := fun l =>
     contDiff_mul_chartTest (I := I) (M := M) α
       (weightedGradCoeff_contDiffOn (I := I) (M := M) g r s T α P₀ l) (hdφ l)
-      (hdφ_supp l)
+      (hdφ_support l)
   have hP_ibp : ∀ l : Fin (Module.finrank ℝ E), ContDiff ℝ ∞
       (fun y => euclidPartial (E := E) l
           (weightedGradCoeff (I := I) (M := M) g r s T α P₀ l) y * φ y) :=
     fun l => contDiff_mul_chartTest (I := I) (M := M) α
       (euclidPartial_contDiffOn_chartTarget (I := I) (M := M) α l
         (weightedGradCoeff_contDiffOn (I := I) (M := M) g r s T α P₀ l)) hφ'
-      hφ_supp
+      hφ_support
   have hP_principal : ContDiff ℝ ∞
       ((tensorPrincipalForm (I := I) (M := M) g α hK hK_target).principalIntegrand
         (tensorComponentEuclid (I := I) (M := M) g r s T α P₀) φ) := by
     have hu_cd : ContDiff ℝ ∞
         (tensorComponentEuclid (I := I) (M := M) g r s T α P₀) :=
-      tensorComponentEuclid_contDiff (I := I) (M := M) g r s T α P₀ hT_supp
+      tensorComponentEuclid_contDiff (I := I) (M := M) g r s T α P₀ hT_support
     have hbody : ContDiff ℝ ∞
         (fun x => ∑ i : Fin (Module.finrank ℝ E),
           ∑ j : Fin (Module.finrank ℝ E),
@@ -263,7 +263,7 @@ theorem tensorComponent_chartBilinIdentity_of_dirichlet
             covLowerOrderIntegrand (I := I) (M := M) g r s T vRot α y)
         ∂chartHaar :=
     tensorCovDerivPointwiseInner_integral_chart_pull (I := I) (M := M)
-      g r s T vRot α hT_supp
+      g r s T vRot α hT_support
   have hLHS_integrand : ∀ y ∈ chartTargetEuclid (I := I) (M := M) α,
       densityOnEuclid (I := I) g α y *
           (covPrincipalIntegrand (I := I) (M := M) g r s T vRot α y +
@@ -364,7 +364,7 @@ theorem tensorComponent_chartBilinIdentity_of_dirichlet
             covLowerOrderRotationGradCoeff (I := I) (M := M) g r s T α P₀ l y *
               euclidPartial (E := E) l φ y)) = 0 := by
     intro y hy
-    have hyφ : y ∉ tsupport φ := fun h => hy (hφ_supp h)
+    have hyφ : y ∉ tsupport φ := fun h => hy (hφ_support h)
     have hyu : y ∉ tsupport (tensorComponentEuclid (I := I) (M := M) g r s T α P₀) :=
       fun h => hy ((hT_K.trans hK_target) h)
     have hφ0 : φ y = 0 := image_eq_zero_of_notMem_tsupport hyφ
@@ -497,7 +497,7 @@ theorem tensorComponent_chartBilinIdentity_of_dirichlet
         weightedGradCoeff (I := I) (M := M) g r s T α P₀ l y *
           euclidPartial (E := E) l φ y ∂chartHaar :=
       (hsetInt_to_int _ (fun y hy => by
-        rw [hφ_partial_zero l y (fun h => hy (hφ_supp h)), mul_zero])).symm
+        rw [hφ_partial_zero l y (fun h => hy (hφ_support h)), mul_zero])).symm
     have hR : ∫ y, euclidPartial (E := E) l
         (weightedGradCoeff (I := I) (M := M) g r s T α P₀ l) y * φ y
         ∂(volume : Measure EuclN) =
@@ -506,12 +506,12 @@ theorem tensorComponent_chartBilinIdentity_of_dirichlet
           (weightedGradCoeff (I := I) (M := M) g r s T α P₀ l) y * φ y
         ∂chartHaar :=
       (hsetInt_to_int _ (fun y hy => by
-        rw [image_eq_zero_of_notMem_tsupport (fun h => hy (hφ_supp h)),
+        rw [image_eq_zero_of_notMem_tsupport (fun h => hy (hφ_support h)),
           mul_zero])).symm
     rw [hL, hR]
     exact chartTarget_integral_byParts (I := I) (M := M) α l
       (weightedGradCoeff_contDiffOn (I := I) (M := M) g r s T α P₀ l)
-      hφ'.contDiffOn hφ_cs hφ_supp
+      hφ'.contDiffOn hφ_cs hφ_support
   have hbilin_eq :
       (tensorPrincipalForm (I := I) (M := M) g α hK hK_target).bilin
           (tensorComponentEuclid (I := I) (M := M) g r s T α P₀) φ =

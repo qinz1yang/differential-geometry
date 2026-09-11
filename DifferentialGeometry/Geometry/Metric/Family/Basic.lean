@@ -1,13 +1,13 @@
 import DifferentialGeometry.Analysis.Time
 import Mathlib.RingTheory.Derivation.Basic
 import Mathlib.Tactic
-import DifferentialGeometry.Geometry.Connection.MetricCompatibility
-import DifferentialGeometry.Geometry.Metric.MetricBallMonotone
+import DifferentialGeometry.Geometry.Connection.MetricCompatibility.Defs
+import DifferentialGeometry.Geometry.Metric.Comparison.BallMonotonicity
 import DifferentialGeometry.Geometry.Metric.Basic
 import DifferentialGeometry.Analysis.TimeInterval
-import DifferentialGeometry.Tensor.RSTensor.MetricCompatibility
-import DifferentialGeometry.Tensor.RSTensor.QuadraticBounds.Unit
-import DifferentialGeometry.Tensor.RSTensor.QuadraticBounds.TimeSlab
+import DifferentialGeometry.Geometry.Connection.MetricCompatibility.Tensor.Metric
+import DifferentialGeometry.Geometry.Metric.QuadraticBounds.Unit
+import DifferentialGeometry.Geometry.Metric.QuadraticBounds.TimeSlab
 import Mathlib.Analysis.Calculus.ContDiff.Basic
 import Mathlib.Geometry.Manifold.MFDeriv.Basic
 import Mathlib.Geometry.Manifold.VectorBundle.CovariantDerivative.Basic
@@ -34,14 +34,14 @@ structure MetricConnectionFamily (Time : Type*) where
   metric : Time -> SmoothRiemannianMetric I M
   connection : Time -> CovariantDerivative I E (TangentSpace I : M -> Type _)
   metricCompatible : forall t : Time,
-    DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen (I := I) (connection t)
+    DifferentialGeometry.Geometry.Connection.IsMetricCompatible (I := I) (connection t)
       (metric t)
 
 structure MetricConnectionFamilyOn (D : RealTimeInterval) where
   metric : Real -> SmoothRiemannianMetric I M
   connection : Real -> CovariantDerivative I E (TangentSpace I : M -> Type _)
   metricCompatible : forall t : RealTimeInterval.FlowTime D,
-    DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen (I := I)
+    DifferentialGeometry.Geometry.Connection.IsMetricCompatible (I := I)
       (connection (t : Real)) (metric (t : Real))
 
 namespace MetricConnectionFamily
@@ -123,7 +123,7 @@ theorem metricCompatibleAt
     {D : RealTimeInterval}
     (G : MetricConnectionFamilyOn (I := I) (M := M) D)
     (t : RealTimeInterval.FlowTime D) :
-    DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen (I := I) (G.connectionAt t)
+    DifferentialGeometry.Geometry.Connection.IsMetricCompatible (I := I) (G.connectionAt t)
       (G.metricAt t) := by
   exact G.metricCompatible t
 
@@ -132,7 +132,7 @@ theorem metricCompatibleAt_regular
     {D : RealTimeInterval}
     (G : MetricConnectionFamilyOn (I := I) (M := M) D)
     (t : RealTimeInterval.RegularTime D) :
-    DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen (I := I)
+    DifferentialGeometry.Geometry.Connection.IsMetricCompatible (I := I)
       (G.connection (t : Real)) (G.metric (t : Real)) := by
   exact G.metricCompatible (RealTimeInterval.regularToFlow t)
 

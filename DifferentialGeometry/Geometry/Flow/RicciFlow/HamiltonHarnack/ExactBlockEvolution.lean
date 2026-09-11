@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HamiltonHarnack.PreSquareEvolution
-import DifferentialGeometry.Geometry.Operator.TensorInnerLaplacian
+import DifferentialGeometry.Geometry.Operator.Laplacian.TensorInner
 
 set_option autoImplicit false
 
@@ -87,7 +87,7 @@ private theorem hamiltonBlockRawKProduct_eq_inner0S
         2 * ∑ e : Idx, inner0S (I := I) g x 4 K
           ((tensor0SCurry (I := I) (M := N) 2 x DU (basis e)).product
             (tensor0SCurry (I := I) (M := N) 2 x DU (basis e))) := by
-  have hinv : MetricInverseInBasisGen (I := I) g x basis
+  have hinv : MetricInverseInBasis (I := I) g x basis
       (identityInvMetric (Idx := Idx)) :=
     metricInverseInBasis_identity_of_orthonormal (I := I) g basis horth
   have hvec4 (a b c d : Idx) :
@@ -167,7 +167,7 @@ private theorem hamiltonBlockRawPProduct_eq_inner0S
         4 * ∑ e : Idx, inner0S (I := I) g x 3
           (tensor0SCurry (I := I) (M := N) 3 x DP (basis e))
           ((tensor0SCurry (I := I) (M := N) 2 x DU (basis e)).product W) := by
-  have hinv : MetricInverseInBasisGen (I := I) g x basis
+  have hinv : MetricInverseInBasis (I := I) g x basis
       (identityInvMetric (Idx := Idx)) :=
     metricInverseInBasis_identity_of_orthonormal (I := I) g basis horth
   have hvec3 (a b c : Idx) :
@@ -250,7 +250,7 @@ private theorem hamiltonBlockRawMProduct_eq_inner0S
         (fun a => W (fun _ => basis a)) =
       inner0S (I := I) g x 2 LM (W.product W) +
         2 * inner0S (I := I) g x 2 M (LW.product W) := by
-  have hinv : MetricInverseInBasisGen (I := I) g x basis
+  have hinv : MetricInverseInBasis (I := I) g x basis
       (identityInvMetric (Idx := Idx)) :=
     metricInverseInBasis_identity_of_orthonormal (I := I) g basis horth
   have hvec2 (a b : Idx) :

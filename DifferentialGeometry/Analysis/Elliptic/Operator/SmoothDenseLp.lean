@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Elliptic.Regularity.LaplacianDomain.L2Inclusion
+import DifferentialGeometry.Analysis.Elliptic.Regularity.LaplacianDomain.L2
 import Mathlib.MeasureTheory.Function.ContinuousMapDense
 import Mathlib.Topology.ContinuousMap.StoneWeierstrass
 import Mathlib.Geometry.Manifold.BumpFunction
@@ -132,8 +132,8 @@ private lemma exists_smooth_separating
   refine ⟨(φ : M → ℝ), φ.contMDiff, ?_, ?_⟩
   · exact φ.eq_one
   · by_contra hy
-    have hy_supp : y ∈ tsupport (φ : M → ℝ) := subset_tsupport _ hy
-    have hy_in_compl : y ∈ ({y}ᶜ : Set M) := hφ_tsupp hy_supp
+    have hy_support : y ∈ tsupport (φ : M → ℝ) := subset_tsupport _ hy
+    have hy_in_compl : y ∈ ({y}ᶜ : Set M) := hφ_tsupp hy_support
     exact hy_in_compl rfl
 
 omit [I.Boundaryless] [CompactSpace M] in

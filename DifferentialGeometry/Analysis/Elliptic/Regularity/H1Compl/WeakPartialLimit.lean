@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Elliptic.Regularity.H1Compl.GradientLipschitzBound
 import DifferentialGeometry.Analysis.Elliptic.Regularity.ChartBilinear.H1ComplFromDom
-import DifferentialGeometry.Analysis.Elliptic.Regularity.LaplacianDomain.L2Inclusion
+import DifferentialGeometry.Analysis.Elliptic.Regularity.LaplacianDomain.L2
 import Mathlib.Analysis.Normed.Operator.Extend
 import Mathlib.MeasureTheory.Function.LpSpace.Complete
 

@@ -1,4 +1,4 @@
-import Mathlib.Analysis.Calculus.FDeriv.Analytic
+import DifferentialGeometry.Analysis.Calculus.Multilinear
 
 noncomputable section
 
@@ -16,15 +16,7 @@ theorem cml_deriv_zero {n : ℕ}
     (hzero : A s = 0) :
     HasDerivAt (fun r => A r (fun i => V i r))
       (A' (fun i => V i s)) s := by
-  classical
-  have h := hA.hasFDerivAt.continuousMultilinearMap_apply
-    (fun i => (hV i).hasFDerivAt)
-  convert h.hasDerivAt using 1
-  simp only [add_apply, ContinuousLinearMap.comp_apply,
-    ContinuousMultilinearMap.apply_apply,
-    ContinuousMultilinearMap.toContinuousLinearMap_apply,
-    FunLike.coe_sum, Finset.sum_apply,
-    ContinuousLinearMap.toSpanSingleton_apply, one_smul, hzero,
-    zero_apply, Finset.sum_const_zero, add_zero]
+  simpa only [hzero, zero_apply, Finset.sum_const_zero, add_zero] using
+    hA.continuousMultilinearMap_apply hV
 
 end DifferentialGeometry.Analysis.Calculus

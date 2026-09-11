@@ -1,7 +1,8 @@
 import Mathlib.Geometry.Manifold.Metrizable
 import Mathlib.Geometry.Manifold.Riemannian.Basic
-import DifferentialGeometry.Geometry.Metric.DistanceScaling
-import DifferentialGeometry.Geometry.Metric.OpenSubtype
+import DifferentialGeometry.Geometry.Metric.Comparison.DistanceScaling
+import DifferentialGeometry.Geometry.Metric.Pullback.PartialDiffeomorph.OpenSubtype
+
 open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
@@ -80,22 +81,11 @@ theorem riemannianEDistOf_le_restrictOpen
 namespace RiemannianMetricComplete
 
 omit [CompleteSpace E] in
-attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
-  Tensor0SBundle.tangentSpaceNormedSpace in
-theorem of_compact [CompactSpace M]
+theorem of_compact {M : Type u} [TopologicalSpace M] [ChartedSpace H M]
+    [IsManifold I ∞ M] [T2Space M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M) :
     RiemannianMetricComplete (I := I) g := by
-  let : IsManifold I 1 M :=
-    IsManifold.of_le (I := I) (M := M) (n := ∞)
-      (by decide : (1 : WithTop ℕ∞) ≤ ∞)
-  let : TopologicalSpace.MetrizableSpace M := Manifold.metrizableSpace I M
-  let : T3Space M := inferInstance
-  refine ⟨?_⟩
-  let : RiemannianBundle (fun x : M => TangentSpace I x) :=
-    ⟨g.toRiemannianMetric⟩
-  let : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
-    ⟨⟨g.inner, g.contMDiff.continuous, by intro x v w; rfl⟩⟩
-  let : EMetricSpace M := EMetricSpace.ofRiemannianMetric I M
+  constructor
   infer_instance
 
 omit [CompleteSpace E] in
@@ -215,6 +205,14 @@ theorem of_lower
     exact lt_of_le_of_lt (hdist (s m) (s n)) (hN m hm n hn))
   obtain ⟨x, hx⟩ := cauchySeq_tendsto_of_complete hsSource
   exact ⟨x, hx⟩
+
+omit [CompleteSpace E] in
+theorem scaleMetric
+    {g : SmoothRiemannianMetric I M}
+    (hg : RiemannianMetricComplete (I := I) g)
+    (c : Real) (hc : 0 < c) :
+    RiemannianMetricComplete (I := I) (scaleMetric (I := I) c hc g) := by
+  exact of_lower hg hc (fun x v => by rw [scaleMetric_inner])
 
 omit [CompleteSpace E] in
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup

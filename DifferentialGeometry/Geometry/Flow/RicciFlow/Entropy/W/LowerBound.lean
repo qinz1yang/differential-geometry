@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Sobolev.Manifold.LogSobolev
-import DifferentialGeometry.Geometry.Connection.ChartBridge.Gradient
-import DifferentialGeometry.Geometry.Curvature.Metric
+import DifferentialGeometry.Geometry.Connection.ChartBridge.Scalar.Gradient
+import DifferentialGeometry.Geometry.Curvature.Metric.Defs
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.W.Estimate
 
 

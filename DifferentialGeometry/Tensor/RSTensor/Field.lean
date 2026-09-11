@@ -3,15 +3,15 @@ Authors: Yuan Liao, Jack McCarthy
 Modified by: Ziyang Qin
 -/
 import DifferentialGeometry.Tensor.RSTensor.Defs
-import DifferentialGeometry.Tensor.Multilinear.Fiber
-import DifferentialGeometry.Tensor.Multilinear.Bundle
-import DifferentialGeometry.Tensor.Alternating.Comp
-import DifferentialGeometry.Tensor.Multilinear.Comp
+import DifferentialGeometry.Tensor.Multilinear.Bundle.Fiber
+import DifferentialGeometry.Tensor.Multilinear.Bundle.Defs
+import DifferentialGeometry.Tensor.Alternating.Composition
+import DifferentialGeometry.Tensor.Multilinear.Composition
 import Mathlib.Analysis.Calculus.ContDiff.CPolynomial
 import Mathlib.Analysis.Calculus.ContDiff.Basic
 import Mathlib.Analysis.Calculus.ContDiff.Operations
 import Mathlib.LinearAlgebra.Multilinear.FiniteDimensional
-import DifferentialGeometry.Tensor.Auxiliary.LinearIsometryContDiff
+import DifferentialGeometry.Tensor.Multilinear.Smoothness.LinearIsometry
 import Mathlib.Analysis.Calculus.ContDiff.Comp
 import Mathlib.Analysis.Normed.Module.FiniteDimension
 import Mathlib.Analysis.Normed.Module.Alternating.Basic
@@ -21,13 +21,13 @@ import Mathlib.Geometry.Manifold.VectorBundle.Basic
 import Mathlib.Geometry.Manifold.VectorBundle.ContMDiffSection
 import Mathlib.Geometry.Manifold.VectorBundle.Tangent
 import Mathlib.Data.Bundle
-import DifferentialGeometry.Tensor.Multilinear.Basis
+import DifferentialGeometry.Tensor.Multilinear.Bundle.Basis
 import Mathlib.LinearAlgebra.FiniteDimensional.Lemmas
 import Mathlib.LinearAlgebra.Dimension.Free
 import Mathlib.Topology.Algebra.Module.FiniteDimension
-import DifferentialGeometry.Tensor.Multilinear.Curry
+import DifferentialGeometry.Tensor.Multilinear.Curry.Basic
 import Mathlib.Geometry.Manifold.VectorBundle.Hom
-import DifferentialGeometry.Tensor.RSTensor.Basis
+import DifferentialGeometry.Tensor.RSTensor.Coordinates.BundleBasis
 import DifferentialGeometry.Tensor.Product.Defs
 import DifferentialGeometry.Tensor.Product.HomEquiv
 import Mathlib.LinearAlgebra.Dual.Defs
@@ -50,10 +50,10 @@ import DifferentialGeometry.Tensor.Multilinear.Flip
 import Mathlib.Analysis.Normed.Module.Multilinear.Basic
 import Mathlib.Analysis.Normed.Operator.BoundedLinearMaps
 import Mathlib.Analysis.Normed.Operator.Mul
-import DifferentialGeometry.Tensor.Alternating.Congr
+import DifferentialGeometry.Tensor.Alternating.Reindexing.Domain
 import Mathlib.LinearAlgebra.Alternating.Basic
-import DifferentialGeometry.Tensor.Auxiliary.Shuffle.Decomposition
-import DifferentialGeometry.Tensor.Auxiliary.Shuffle.Split
+import DifferentialGeometry.Tensor.Alternating.Shuffle.Decomposition
+import DifferentialGeometry.Tensor.Alternating.Shuffle.Split
 import Mathlib.GroupTheory.Perm.Option
 import Mathlib.LinearAlgebra.Alternating.DomCoprod
 import Mathlib.GroupTheory.Perm.Finite
@@ -62,8 +62,8 @@ import Mathlib.Tactic.Group
 import Mathlib.Analysis.Normed.Module.Alternating.Curry
 import Mathlib.LinearAlgebra.Alternating.Uncurry.Fin
 import Mathlib.Tactic.Cases
-import DifferentialGeometry.Tensor.Multilinear.Tensor
-import DifferentialGeometry.Tensor.Multilinear.Field
+import DifferentialGeometry.Tensor.Multilinear.Bundle.TensorProduct
+import DifferentialGeometry.Tensor.Multilinear.Bundle.Section
 import DifferentialGeometry.Tensor.Product.Basis
 import DifferentialGeometry.Tensor.Product.Bundle
 import DifferentialGeometry.Tensor.Product.Pretrivialization
@@ -71,7 +71,7 @@ import Mathlib.Topology.FiberBundle.Basic
 import DifferentialGeometry.Tensor.Product.Fiber
 import Mathlib.Topology.VectorBundle.Basic
 import Mathlib.LinearAlgebra.TensorProduct.Basis
-import DifferentialGeometry.Bundle.SectionOperations
+import DifferentialGeometry.Bundle.Section
 import DifferentialGeometry.Tensor.RSTensor.Coordinates.Field
 
 namespace DifferentialGeometry

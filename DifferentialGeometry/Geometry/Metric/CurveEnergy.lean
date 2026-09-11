@@ -1,130 +1,104 @@
-import DifferentialGeometry.Geometry.Geodesic.MaximalInterval
-import DifferentialGeometry.Geometry.Metric.DistanceScaling
-import Mathlib.MeasureTheory.Function.L2Space
-import Mathlib.MeasureTheory.Integral.MeanInequalities
+/-
+Copyright (c) 2026 Bennett Chow. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Bennett Chow, OpenAI
+-/
+import DifferentialGeometry.Geometry.Metric.Comparison.CurveEnergy
+
+set_option autoImplicit false
 
 noncomputable section
 
 open Bundle Manifold MeasureTheory Set
 open scoped ENNReal Manifold ContDiff Topology
+open DifferentialGeometry
 
 namespace DifferentialGeometry
 namespace Geometry
 namespace Riemannian
 
+open DifferentialGeometry.Geometry.Riemannian
+
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
-variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
+  [IsManifold I ∞ M]
 
-def curveEnergy (g : SmoothRiemannianMetric I M) (γ : ℝ → M) (a b : ℝ) : ℝ :=
-  ∫ t in a..b,
-    g.inner (γ t)
-      (mfderiv 𝓘(ℝ, ℝ) I γ t (1 : ℝ))
-      (mfderiv 𝓘(ℝ, ℝ) I γ t (1 : ℝ))
+theorem curveEnergy_nonneg (g : SmoothRiemannianMetric I M)
+    {γ : ℝ → M} {a b : ℝ} (hab : a ≤ b) :
+    0 ≤ curveEnergy (I := I) g γ a b := by
+  apply intervalIntegral.integral_nonneg hab
+  intro t _ht
+  let v := mfderiv 𝓘(ℝ, ℝ) I γ t (1 : ℝ)
+  rcases eq_or_ne v 0 with hv | hv
+  · simp only [v, hv, map_zero]
+    exact le_rfl
+  · exact (g.pos (γ t) v hv).le
 
-theorem curveEnergy_mono (g : SmoothRiemannianMetric I M) {γ : ℝ → M}
-    {a s t b : ℝ} (has : a ≤ s) (hst : s ≤ t) (htb : t ≤ b)
-    (hE : IntegrableOn (fun u =>
-      g.inner (γ u)
-        (mfderiv 𝓘(ℝ, ℝ) I γ u (1 : ℝ))
-        (mfderiv 𝓘(ℝ, ℝ) I γ u (1 : ℝ))) (Set.Icc a b)) :
-    curveEnergy (I := I) g γ s t ≤ curveEnergy (I := I) g γ a b := by
-  apply intervalIntegral.integral_mono_interval has hst htb
-  · filter_upwards [ae_restrict_mem measurableSet_Ioc] with u hu
-    let v := mfderiv 𝓘(ℝ, ℝ) I γ u (1 : ℝ)
-    rcases eq_or_ne v 0 with hv | hv
-    · simp only [v, hv, map_zero]
-      exact le_rfl
-    · exact (g.pos (γ u) v hv).le
-  · apply MeasureTheory.IntegrableOn.intervalIntegrable
-    simpa only [uIcc_of_le (has.trans (hst.trans htb))] using hE
-
-private lemma int_sqrt_le {q : ℝ → ℝ} {a b : ℝ} (hab : a ≤ b)
-    (hq0 : ∀ t ∈ Set.Icc a b, 0 ≤ q t)
-    (hq : IntegrableOn q (Set.Icc a b)) :
-    ∫ t in a..b, Real.sqrt (q t) ≤
-      Real.sqrt (b - a) * Real.sqrt (∫ t in a..b, q t) := by
-  let μ : Measure ℝ := volume.restrict (Set.Ioc a b)
-  have hqIoc : Integrable q μ := hq.mono_set Set.Ioc_subset_Icc_self
-  have hqae : 0 ≤ᵐ[μ] q := by
-    filter_upwards [ae_restrict_mem measurableSet_Ioc] with t ht
-    exact hq0 t ⟨ht.1.le, ht.2⟩
-  have hsqrt_meas : AEStronglyMeasurable (fun t => Real.sqrt (q t)) μ :=
-    (hqIoc.aestronglyMeasurable.aemeasurable.sqrt).aestronglyMeasurable
-  have hsqrt_mem_two : MemLp (fun t => Real.sqrt (q t)) 2 μ := by
-    rw [memLp_two_iff_integrable_sq hsqrt_meas]
-    exact hqIoc.congr (hqae.mono fun t ht => (Real.sq_sqrt ht).symm)
-  have hsqrt_mem : MemLp (fun t => Real.sqrt (q t)) (ENNReal.ofReal 2) μ := by
-    norm_num at hsqrt_mem_two ⊢
-    exact hsqrt_mem_two
-  have hone_mem : MemLp (fun _ : ℝ => (1 : ℝ)) (ENNReal.ofReal 2) μ := by
-    simpa using (memLp_const (p := (2 : ℝ≥0∞)) (1 : ℝ) :
-      MemLp (fun _ : ℝ => (1 : ℝ)) 2 μ)
-  have hholder := integral_mul_le_Lp_mul_Lq_of_nonneg
-    Real.HolderConjugate.two_two
-    (ae_of_all _ fun t => Real.sqrt_nonneg (q t))
-    (ae_of_all _ fun _ => zero_le_one) hsqrt_mem hone_mem
-  have hsquares : ∫ t, Real.sqrt (q t) ^ (2 : ℝ) ∂μ = ∫ t, q t ∂μ := by
-    exact integral_congr_ae (hqae.mono fun t ht => by
-      change Real.sqrt (q t) ^ (2 : ℝ) = q t
-      rw [Real.rpow_two, Real.sq_sqrt ht])
-  have hone : ∫ _ : ℝ, (1 : ℝ) ^ (2 : ℝ) ∂μ = b - a := by
-    simp [μ, hab]
-  rw [hsquares, hone, ← Real.sqrt_eq_rpow, ← Real.sqrt_eq_rpow] at hholder
-  rw [intervalIntegral.integral_of_le hab, intervalIntegral.integral_of_le hab]
-  change ∫ t, Real.sqrt (q t) ∂μ ≤
-    Real.sqrt (b - a) * Real.sqrt (∫ t, q t ∂μ)
-  calc
-    ∫ t, Real.sqrt (q t) ∂μ = ∫ t, Real.sqrt (q t) * 1 ∂μ := by simp
-    _ ≤ Real.sqrt (∫ t, q t ∂μ) * Real.sqrt (b - a) := hholder
-    _ = Real.sqrt (b - a) * Real.sqrt (∫ t, q t ∂μ) := mul_comm _ _
-
-theorem arcLength_le_energy (g : SmoothRiemannianMetric I M) {γ : ℝ → M} {a b : ℝ}
+theorem riemannianEDistOf_toReal_sq_le_curveEnergy
+    (g : SmoothRiemannianMetric I M) {γ : ℝ → M} {a b : ℝ}
     (hab : a ≤ b)
+    (hγ : ContMDiffOn 𝓘(ℝ, ℝ) I 1 γ (Icc a b))
     (hE : IntegrableOn (fun t =>
       g.inner (γ t)
         (mfderiv 𝓘(ℝ, ℝ) I γ t (1 : ℝ))
-        (mfderiv 𝓘(ℝ, ℝ) I γ t (1 : ℝ))) (Set.Icc a b)) :
-    Variation.arcLength (I := I) g γ a b ≤
-      Real.sqrt (b - a) * Real.sqrt (curveEnergy (I := I) g γ a b) := by
-  exact int_sqrt_le hab
-    (fun t _ => by
-      let v := mfderiv 𝓘(ℝ, ℝ) I γ t (1 : ℝ)
-      rcases eq_or_ne v 0 with hv | hv
-      · simp only [v, hv, map_zero]
-        exact le_rfl
-      · exact (g.pos (γ t) v hv).le) hE
+        (mfderiv 𝓘(ℝ, ℝ) I γ t (1 : ℝ))) (Icc a b)) :
+    (riemannianEDistOf (I := I) g (γ a) (γ b)).toReal ^ 2 ≤
+      (b - a) * curveEnergy (I := I) g γ a b := by
+  have hENN := edistOf_le_energy (I := I) g hab hγ hE
+  have hright : ENNReal.ofReal
+      (Real.sqrt (b - a) * Real.sqrt (curveEnergy (I := I) g γ a b)) ≠
+        (⊤ : ℝ≥0∞) :=
+    ENNReal.ofReal_ne_top
+  have hleft : riemannianEDistOf (I := I) g (γ a) (γ b) ≠
+      (⊤ : ℝ≥0∞) :=
+    ne_top_of_le_ne_top hright hENN
+  have hreal := (ENNReal.toReal_le_toReal hleft hright).2 hENN
+  have hlen : 0 ≤ b - a := sub_nonneg.mpr hab
+  have henergy : 0 ≤ curveEnergy (I := I) g γ a b :=
+    curveEnergy_nonneg (I := I) g hab
+  rw [ENNReal.toReal_ofReal
+    (mul_nonneg (Real.sqrt_nonneg _) (Real.sqrt_nonneg _))] at hreal
+  have hsquare :=
+    (sq_le_sq₀ ENNReal.toReal_nonneg
+      (mul_nonneg (Real.sqrt_nonneg _) (Real.sqrt_nonneg _))).2 hreal
+  calc
+    (riemannianEDistOf (I := I) g (γ a) (γ b)).toReal ^ 2 ≤
+        (Real.sqrt (b - a) *
+          Real.sqrt (curveEnergy (I := I) g γ a b)) ^ 2 := hsquare
+    _ = (b - a) * curveEnergy (I := I) g γ a b := by
+      rw [mul_pow, Real.sq_sqrt hlen, Real.sq_sqrt henergy]
 
-theorem edistOf_le_energy (g : SmoothRiemannianMetric I M) {γ : ℝ → M} {a b : ℝ}
-    (hab : a ≤ b) (hγ : ContMDiffOn 𝓘(ℝ, ℝ) I 1 γ (Set.Icc a b))
-    (hE : IntegrableOn (fun t =>
-      g.inner (γ t)
-        (mfderiv 𝓘(ℝ, ℝ) I γ t (1 : ℝ))
-        (mfderiv 𝓘(ℝ, ℝ) I γ t (1 : ℝ))) (Set.Icc a b)) :
-    riemannianEDistOf (I := I) g (γ a) (γ b) ≤
-      ENNReal.ofReal
-        (Real.sqrt (b - a) * Real.sqrt (curveEnergy (I := I) g γ a b)) := by
-  let rb : RiemannianBundle (TangentSpace I : M → Type _) :=
-    ⟨g.toRiemannianMetric⟩
-  have hdist := Geodesic.riemannianEDist_le_arcLength (I := I) g hab hγ
+
+theorem arcLength_nonneg (g : SmoothRiemannianMetric I M) {γ : ℝ → M} {a b : ℝ}
+    (hab : a ≤ b) : 0 ≤ Variation.arcLength (I := I) g γ a b :=
+  intervalIntegral.integral_nonneg hab (fun _ _ => Real.sqrt_nonneg _)
+
+
+theorem arcLength_sq_le_curveEnergy (g : SmoothRiemannianMetric I M)
+    {γ : ℝ → M} {a b : ℝ} (hab : a ≤ b)
+    (hE : IntegrableOn (fun t => g.inner (γ t)
+      (mfderiv 𝓘(ℝ, ℝ) I γ t 1) (mfderiv 𝓘(ℝ, ℝ) I γ t 1)) (Icc a b)) :
+    Variation.arcLength (I := I) g γ a b ^ 2 ≤ (b - a) * curveEnergy (I := I) g γ a b := by
+  have h := arcLength_le_energy g hab hE
+  have hs := (sq_le_sq₀ (arcLength_nonneg g hab)
+    (mul_nonneg (Real.sqrt_nonneg _) (Real.sqrt_nonneg _))).mpr h
+  simpa only [mul_pow, Real.sq_sqrt (sub_nonneg.mpr hab),
+    Real.sq_sqrt (curveEnergy_nonneg g hab)] using hs
+
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+theorem riemannianEDistOf_toReal_le_arcLength (g : SmoothRiemannianMetric I M)
+    {γ : ℝ → M} {a b : ℝ} (hab : a ≤ b)
+    (hγ : ContMDiffOn 𝓘(ℝ, ℝ) I 1 γ (Icc a b)) :
+    (riemannianEDistOf (I := I) g (γ a) (γ b)).toReal ≤ Variation.arcLength (I := I) g γ a b := by
+  let : RiemannianBundle (TangentSpace I : M → Type _) := ⟨g.toRiemannianMetric⟩
+  have hbound := Geodesic.riemannianEDist_le_arcLength (I := I) g hab hγ
     (fun t _ => tensor0SBundle_enorm_eq_riemannianBundle_enorm (I := I) g (γ t)
-      (mfderiv 𝓘(ℝ, ℝ) I γ t (1 : ℝ)))
-  have hlength := arcLength_le_energy (I := I) g hab hE
-  simpa only [riemannianEDistOf] using
-    hdist.trans (ENNReal.ofReal_le_ofReal hlength)
-
-theorem edistOf_le_budget (g : SmoothRiemannianMetric I M) {γ : ℝ → M} {a b C : ℝ}
-    (hab : a ≤ b) (hγ : ContMDiffOn 𝓘(ℝ, ℝ) I 1 γ (Set.Icc a b))
-    (hE : IntegrableOn (fun t =>
-      g.inner (γ t)
-        (mfderiv 𝓘(ℝ, ℝ) I γ t (1 : ℝ))
-        (mfderiv 𝓘(ℝ, ℝ) I γ t (1 : ℝ))) (Set.Icc a b))
-    (hEC : curveEnergy (I := I) g γ a b ≤ C) :
-    riemannianEDistOf (I := I) g (γ a) (γ b) ≤
-      ENNReal.ofReal (Real.sqrt (b - a) * Real.sqrt C) := by
-  refine (edistOf_le_energy (I := I) g hab hγ hE).trans
-    (ENNReal.ofReal_le_ofReal ?_)
-  exact mul_le_mul_of_nonneg_left (Real.sqrt_le_sqrt hEC) (Real.sqrt_nonneg _)
+      (mfderiv 𝓘(ℝ, ℝ) I γ t 1))
+  have hfinite := ne_top_of_le_ne_top ENNReal.ofReal_ne_top hbound
+  have hreal := (ENNReal.toReal_le_toReal hfinite ENNReal.ofReal_ne_top).mpr hbound
+  simpa only [riemannianEDistOf, ENNReal.toReal_ofReal (arcLength_nonneg g hab)] using hreal
 
 end Riemannian
 end Geometry

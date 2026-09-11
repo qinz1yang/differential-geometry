@@ -1,22 +1,23 @@
-import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.MetricArmCoeffReindexingNorm
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.RicciDeTurckSectionDifference
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.IteratedCovGradLinear
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.MetricComparisonEndomorphismJetBound
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.JetProductIntegral
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.CometricDoubleTraceField
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.RecoveryEndomorphismJetBound
-import DifferentialGeometry.Tensor.Multilinear.Basis
+import DifferentialGeometry.Analysis.Integration.L2.Tensor.FiberNormIdentity
+import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.MetricPerturbation.CovariantOrderCoefficient.ReindexingNorm
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.RicciDeTurck.SectionDifference.ConnectionBicontraction
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Iterated.Linear
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.ConnectionDifference.MetricComparisonEndomorphismJetBounds
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Product.JetIntegral
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Metric.CometricDoubleTrace
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.ConnectionDifference.RecoveryEndomorphismJetBounds
+import DifferentialGeometry.Tensor.Multilinear.Bundle.Basis
 import DifferentialGeometry.Tensor.Mixed.Field
-import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.RiemannianFiberNormSq.RiemannianFiberNormSqSmoothCcUniformBound
-import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.RiemannianFiberNormSq.FiberNormSubadditivity
-import DifferentialGeometry.Analysis.Sobolev.GagliardoNirenbergLpFiberNorm
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckRemainderHigherOrderTame
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.ConnectionDifferenceJetTower
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.RaisedKoszulCovariantJetTower
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.RaisedKoszulParallelRaiseJetBound
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.ConnectionDifferenceArmRiemannianFiberNormSqBound
-import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.RicciConnectionDifferencePalatini
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorFieldApplicationDropIteratedGrid
+import DifferentialGeometry.Analysis.Spectral.Tensor.UniformChartBounds.FiberNorm.UniformBound
+import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.Algebra
+import DifferentialGeometry.Analysis.Sobolev.GagliardoNirenberg.FiberNorm.Basic
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Remainder.HigherOrderTame
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.ConnectionDifference.JetTower
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.ConnectionDifference.RaisedKoszul.JetTower
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.ConnectionDifference.RaisedKoszul.ParallelRaiseJetBounds
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.ConnectionDifference.CovariantOrderFibreNormBounds
+import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.ConnectionDifference.RicciPalatini
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.Bounds.ApplicationJets
 import DifferentialGeometry.Analysis.Sobolev.BoundedFactorProductGrid
 import Mathlib.Analysis.MeanInequalities
 import Mathlib.Data.Fin.Tuple.NatAntidiagonal
@@ -108,17 +109,17 @@ omit [NeZero (Module.finrank ℝ E)] in
 omit [I.Boundaryless] [SigmaCompactSpace M] in
 lemma curvCoeffSlot_zero_backgroundDifference_eq
     (g₀ g₁ : SmoothRiemannianMetric I M) :
-    ricciArmOrder0CurvCoeffSlot (I := I) (M := M) g₀ g₁ 0 -
-        ricciArmOrder0CurvCoeffSlot (I := I) (M := M) g₀ g₀ 0 =
+    ricciOrderZeroCurvCoeffSlot (I := I) (M := M) g₀ g₁ 0 -
+        ricciOrderZeroCurvCoeffSlot (I := I) (M := M) g₀ g₀ 0 =
       slotInsertEndoCc (I := I) (M := M) g₀ 1
         (ricEndoBackgroundDifferenceField (I := I) (M := M) g₀ g₁) := by
   apply SmoothCcTensor.ext
   apply ContMDiffSection.ext
   intro x
-  rw [show ((ricciArmOrder0CurvCoeffSlot (I := I) (M := M) g₀ g₁ 0 -
-        ricciArmOrder0CurvCoeffSlot (I := I) (M := M) g₀ g₀ 0).toSection x) =
-      (ricciArmOrder0CurvCoeffSlot (I := I) (M := M) g₀ g₁ 0).toSection x -
-        (ricciArmOrder0CurvCoeffSlot (I := I) (M := M) g₀ g₀ 0).toSection x from by
+  rw [show ((ricciOrderZeroCurvCoeffSlot (I := I) (M := M) g₀ g₁ 0 -
+        ricciOrderZeroCurvCoeffSlot (I := I) (M := M) g₀ g₀ 0).toSection x) =
+      (ricciOrderZeroCurvCoeffSlot (I := I) (M := M) g₀ g₁ 0).toSection x -
+        (ricciOrderZeroCurvCoeffSlot (I := I) (M := M) g₀ g₀ 0).toSection x from by
     rw [SmoothCcTensor.toSection_sub]; rfl]
   apply ContinuousLinearMap.ext
   intro D
@@ -127,11 +128,11 @@ lemma curvCoeffSlot_zero_backgroundDifference_eq
   apply ContinuousMultilinearMap.ext
   intro m
   simp only [Tensor0SSpace.toModel_sub, sub_apply]
-  rw [show ((ricciArmOrder0CurvCoeffSlot (I := I) (M := M) g₀ g₁ 0).toSection x) D =
-      ricciArmOrder0CurvCoeffFibSlot (I := I) g₁ 0 x D from rfl]
-  rw [show ((ricciArmOrder0CurvCoeffSlot (I := I) (M := M) g₀ g₀ 0).toSection x) D =
-      ricciArmOrder0CurvCoeffFibSlot (I := I) g₀ 0 x D from rfl]
-  rw [ricciArmOrder0CurvCoeffFibSlot_toModel, ricciArmOrder0CurvCoeffFibSlot_toModel]
+  rw [show ((ricciOrderZeroCurvCoeffSlot (I := I) (M := M) g₀ g₁ 0).toSection x) D =
+      ricciOrderZeroCurvCoeffFibSlot (I := I) g₁ 0 x D from rfl]
+  rw [show ((ricciOrderZeroCurvCoeffSlot (I := I) (M := M) g₀ g₀ 0).toSection x) D =
+      ricciOrderZeroCurvCoeffFibSlot (I := I) g₀ 0 x D from rfl]
+  rw [ricciOrderZeroCurvCoeffFibSlot_toModel, ricciOrderZeroCurvCoeffFibSlot_toModel]
   rw [show ((slotInsertEndoCc (I := I) (M := M) g₀ 1
         (ricEndoBackgroundDifferenceField (I := I) (M := M) g₀ g₁)).toSection x) D =
       slotInsertEndoFib (I := I) (M := M) 2 0 x
@@ -145,9 +146,9 @@ omit [NeZero (Module.finrank ℝ E)] in
 omit [I.Boundaryless] [SigmaCompactSpace M] in
 lemma curvCoeffSlot_one_backgroundDifference_eq
     (g₀ g₁ : SmoothRiemannianMetric I M) :
-    ricciArmOrder0CurvCoeffSlot (I := I) (M := M) g₀ g₁ 1 -
-        ricciArmOrder0CurvCoeffSlot (I := I) (M := M) g₀ g₀ 1 =
-      reindexCoeffGen (I := I) (M := M) g₀ 2 2
+    ricciOrderZeroCurvCoeffSlot (I := I) (M := M) g₀ g₁ 1 -
+        ricciOrderZeroCurvCoeffSlot (I := I) (M := M) g₀ g₀ 1 =
+      reindexCoefficientInputSlots (I := I) (M := M) g₀ 2 2
         (rsDomDomCongrSection (I := I) (M := M) g₀ 2 2 (Equiv.swap (0 : Fin 2) 1)
           (slotInsertEndoCc (I := I) (M := M) g₀ 1
             (ricEndoBackgroundDifferenceField (I := I) (M := M) g₀ g₁)))
@@ -156,10 +157,10 @@ lemma curvCoeffSlot_one_backgroundDifference_eq
   apply SmoothCcTensor.ext
   apply ContMDiffSection.ext
   intro x
-  rw [show ((ricciArmOrder0CurvCoeffSlot (I := I) (M := M) g₀ g₁ 1 -
-        ricciArmOrder0CurvCoeffSlot (I := I) (M := M) g₀ g₀ 1).toSection x) =
-      (ricciArmOrder0CurvCoeffSlot (I := I) (M := M) g₀ g₁ 1).toSection x -
-        (ricciArmOrder0CurvCoeffSlot (I := I) (M := M) g₀ g₀ 1).toSection x from by
+  rw [show ((ricciOrderZeroCurvCoeffSlot (I := I) (M := M) g₀ g₁ 1 -
+        ricciOrderZeroCurvCoeffSlot (I := I) (M := M) g₀ g₀ 1).toSection x) =
+      (ricciOrderZeroCurvCoeffSlot (I := I) (M := M) g₀ g₁ 1).toSection x -
+        (ricciOrderZeroCurvCoeffSlot (I := I) (M := M) g₀ g₀ 1).toSection x from by
     rw [SmoothCcTensor.toSection_sub]; rfl]
   apply ContinuousLinearMap.ext
   intro D
@@ -168,23 +169,23 @@ lemma curvCoeffSlot_one_backgroundDifference_eq
   apply ContinuousMultilinearMap.ext
   intro m
   simp only [Tensor0SSpace.toModel_sub, sub_apply]
-  rw [show ((ricciArmOrder0CurvCoeffSlot (I := I) (M := M) g₀ g₁ 1).toSection x) D =
-      ricciArmOrder0CurvCoeffFibSlot (I := I) g₁ 1 x D from rfl]
-  rw [show ((ricciArmOrder0CurvCoeffSlot (I := I) (M := M) g₀ g₀ 1).toSection x) D =
-      ricciArmOrder0CurvCoeffFibSlot (I := I) g₀ 1 x D from rfl]
-  rw [ricciArmOrder0CurvCoeffFibSlot_toModel, ricciArmOrder0CurvCoeffFibSlot_toModel]
-  rw [show ((reindexCoeffGen (I := I) (M := M) g₀ 2 2
+  rw [show ((ricciOrderZeroCurvCoeffSlot (I := I) (M := M) g₀ g₁ 1).toSection x) D =
+      ricciOrderZeroCurvCoeffFibSlot (I := I) g₁ 1 x D from rfl]
+  rw [show ((ricciOrderZeroCurvCoeffSlot (I := I) (M := M) g₀ g₀ 1).toSection x) D =
+      ricciOrderZeroCurvCoeffFibSlot (I := I) g₀ 1 x D from rfl]
+  rw [ricciOrderZeroCurvCoeffFibSlot_toModel, ricciOrderZeroCurvCoeffFibSlot_toModel]
+  rw [show ((reindexCoefficientInputSlots (I := I) (M := M) g₀ 2 2
         (rsDomDomCongrSection (I := I) (M := M) g₀ 2 2 (Equiv.swap (0 : Fin 2) 1)
           (slotInsertEndoCc (I := I) (M := M) g₀ 1
             (ricEndoBackgroundDifferenceField (I := I) (M := M) g₀ g₁)))
         (Equiv.swap (0 : Fin 2) 1)).toSection x) D =
-      reindexCoeffFibGen (I := I) 2 2 (Equiv.swap (0 : Fin 2) 1) x
+      reindexCoefficientInputSlotsFiber (I := I) 2 2 (Equiv.swap (0 : Fin 2) 1) x
         (show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
           (rsDomDomCongrSection (I := I) (M := M) g₀ 2 2 (Equiv.swap (0 : Fin 2) 1)
             (slotInsertEndoCc (I := I) (M := M) g₀ 1
               (ricEndoBackgroundDifferenceField (I := I) (M := M) g₀ g₁))).toSection x) D
       from rfl]
-  rw [reindexCoeffFibGen_apply]
+  rw [reindexCoefficientInputSlotsFiber_apply]
   rw [rsDomDomCongrSection_toSection, toModel_rsDomDomCongr_apply,
     ContinuousMultilinearMap.domDomCongr_apply, slotInsertEndoCc_toSection,
     slotInsertEndoFib_apply_eval, Tensor0SSpace.toModel_ofModel,
@@ -208,20 +209,20 @@ end CurvatureCoefficientDifferenceJetTower
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [I.Boundaryless] [SigmaCompactSpace M] in
-theorem ricciArmOrder0CurvCoeff_backgroundDifference_decomp
+theorem ricciOrderZeroCurvCoeff_backgroundDifference_decomp
     (g₀ g₁ : SmoothRiemannianMetric I M) :
-    ricciArmOrder0CurvCoeff (I := I) (M := M) g₀ g₁ -
-        ricciArmOrder0CurvCoeff (I := I) (M := M) g₀ g₀ =
+    ricciOrderZeroCurvCoeff (I := I) (M := M) g₀ g₁ -
+        ricciOrderZeroCurvCoeff (I := I) (M := M) g₀ g₀ =
       slotInsertEndoCc (I := I) (M := M) g₀ 1
           (ricEndoBackgroundDifferenceField (I := I) (M := M) g₀ g₁) +
-        reindexCoeffGen (I := I) (M := M) g₀ 2 2
+        reindexCoefficientInputSlots (I := I) (M := M) g₀ 2 2
           (rsDomDomCongrSection (I := I) (M := M) g₀ 2 2 (Equiv.swap (0 : Fin 2) 1)
             (slotInsertEndoCc (I := I) (M := M) g₀ 1
               (ricEndoBackgroundDifferenceField (I := I) (M := M) g₀ g₁)))
           (Equiv.swap (0 : Fin 2) 1) := by
   rw [← curvCoeffSlot_one_backgroundDifference_eq (I := I) (M := M) g₀ g₁,
     ← curvCoeffSlot_zero_backgroundDifference_eq (I := I) (M := M) g₀ g₁,
-    ricciArmOrder0CurvCoeff, ricciArmOrder0CurvCoeff]
+    ricciOrderZeroCurvCoeff, ricciOrderZeroCurvCoeff]
   abel
 
 namespace CurvatureCoefficientDifferenceJetTower
@@ -1024,14 +1025,14 @@ theorem ricMixedSharpEndoFib_contMDiff (g₀ g₁ : SmoothRiemannianMetric I M) 
       (fun x : M => TotalSpace.mk' (E →L[ℝ] E)
         (E := fun y : M => TangentSpace I y →L[ℝ] TangentSpace I y) x
         (ricMixedSharpEndoFib (I := I) (M := M) g₀ g₁ x)) := by
-  apply cotangentCov_clmSection_smooth_aux (I := I) (M := M)
+  apply contMDiff_continuousLinearMap_section_of_apply (I := I) (M := M)
     (F₂ := E) (V₂ := fun y : M => TangentSpace I y)
     (φ := fun x : M => ricMixedSharpEndoFib (I := I) (M := M) g₀ g₁ x)
   intro Y
   have hcv : ∀ (α : M) (j : Fin (Module.finrank ℝ E)),
       ContMDiffOn I 𝓘(ℝ) ∞
         (fun b : M => (ricciTensor (I := I) g₁ b (Y b)).toLinearMap
-          (chartBasisVecFiber (I := I) α j b))
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j b))
         (chartAt H α).source := by
     intro α j
     have hRic : ContMDiff I (I.prod 𝓘(ℝ, E →L[ℝ] E →L[ℝ] ℝ)) ∞
@@ -1040,12 +1041,12 @@ theorem ricMixedSharpEndoFib_contMDiff (g₀ g₁ : SmoothRiemannianMetric I M) 
           (ricciTensor (I := I) g₁ b)) :=
       ricciTensor_contMDiff (I := I) g₁
     have hBasis : ContMDiffOn I (I.prod 𝓘(ℝ, E)) ∞
-        (chartBasisVec (I := I) α j)
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVec (I := I) α j)
         (trivializationAt E (TangentSpace I) α).baseSet :=
-      chartBasisVec_contMDiffOn (I := I) α j
+      DifferentialGeometry.Tensor.Coordinates.chartBasisVec_contMDiffOn (I := I) α j
     have happ : ContMDiffOn I (I.prod 𝓘(ℝ, ℝ)) ∞
         (fun b : M => (⟨b,
-            ricciTensor (I := I) g₁ b (Y b) (chartBasisVecFiber (I := I) α j b)⟩ :
+            ricciTensor (I := I) g₁ b (Y b) (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j b)⟩ :
             TotalSpace ℝ (Bundle.Trivial M ℝ)))
         (trivializationAt E (TangentSpace I) α).baseSet :=
       ContMDiffOn.clm_bundle_apply₂ (F₁ := E) (F₂ := E) (F₃ := ℝ)

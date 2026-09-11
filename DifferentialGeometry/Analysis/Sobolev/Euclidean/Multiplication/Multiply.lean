@@ -113,13 +113,13 @@ theorem MemW1p.mulSmoothBounded
                     gcongr
                     exact hη_grad_bound x hx
       exact MemLp.ae_eq (Filter.Eventually.of_forall fun _ ↦ rfl) (h1.add h2)
-    · have hu_loc : LocallyIntegrable u (volume.restrict Ω) :=
+    · have hu_local : LocallyIntegrable u (volume.restrict Ω) :=
         hu.1.locallyIntegrable hp
-      have hg_loc : LocallyIntegrable g (volume.restrict Ω) :=
+      have hg_local : LocallyIntegrable g (volume.restrict Ω) :=
         hg_memLp.locallyIntegrable hp
-      exact DeGiorgi.HasWeakPartialDeriv.mul_smooth hΩ hg_weak hη hu_loc hg_loc
+      exact DeGiorgi.HasWeakPartialDeriv.mul_smooth hΩ hg_weak hη hu_local hg_local
 
-theorem chosenWeakPartial'_smul_smooth_bounded_ae
+theorem chosenWeakPartialOrZero_smul_smooth_bounded_ae
     {p : ℝ≥0∞} (hp : 1 ≤ p) {Ω : Set E} (hΩ : IsOpen Ω)
     {η u : E → ℝ}
     (hη : ContDiff ℝ (⊤ : ℕ∞) η)
@@ -127,43 +127,43 @@ theorem chosenWeakPartial'_smul_smooth_bounded_ae
     (hη_bound : ∀ x ∈ Ω, ‖η x‖ ≤ C)
     (hη_grad_bound : ∀ x ∈ Ω, ‖fderiv ℝ η x‖ ≤ C)
     (hu : DeGiorgi.MemW1p (d := d) p u Ω) (i : Fin d) :
-    chosenWeakPartial' (d := d) p i (fun x => η x * u x) Ω
+    chosenWeakPartialOrZero (d := d) p i (fun x => η x * u x) Ω
       =ᵐ[volume.restrict Ω]
-      (fun x => η x * chosenWeakPartial' (d := d) p i u Ω x +
+      (fun x => η x * chosenWeakPartialOrZero (d := d) p i u Ω x +
         (fderiv ℝ η x) (EuclideanSpace.single i 1) * u x) := by
   classical
   have hηu : DeGiorgi.MemW1p (d := d) p (fun x => η x * u x) Ω :=
     MemW1p.mulSmoothBounded (d := d) hp hΩ hη hη_bound hη_grad_bound hu
   have hLHS : DeGiorgi.HasWeakPartialDeriv (d := d) i
-      (chosenWeakPartial' p i (fun x => η x * u x) Ω) (fun x => η x * u x) Ω :=
-    chosenWeakPartial'_isWeakPartial_of_mem hηu i
-  have hu_loc : LocallyIntegrable u (volume.restrict Ω) :=
+      (chosenWeakPartialOrZero p i (fun x => η x * u x) Ω) (fun x => η x * u x) Ω :=
+    chosenWeakPartialOrZero_isWeakPartial_of_mem hηu i
+  have hu_local : LocallyIntegrable u (volume.restrict Ω) :=
     hu.1.locallyIntegrable hp
-  have hcwp_loc : LocallyIntegrable (chosenWeakPartial' p i u Ω) (volume.restrict Ω) :=
-    (chosenWeakPartial'_memLp_of_mem hu i).locallyIntegrable hp
+  have hcwp_local : LocallyIntegrable (chosenWeakPartialOrZero p i u Ω) (volume.restrict Ω) :=
+    (chosenWeakPartialOrZero_memLp_of_mem hu i).locallyIntegrable hp
   have hcwp_weak : DeGiorgi.HasWeakPartialDeriv (d := d) i
-      (chosenWeakPartial' p i u Ω) u Ω :=
-    chosenWeakPartial'_isWeakPartial_of_mem hu i
+      (chosenWeakPartialOrZero p i u Ω) u Ω :=
+    chosenWeakPartialOrZero_isWeakPartial_of_mem hu i
   have hRHS : DeGiorgi.HasWeakPartialDeriv (d := d) i
-      (fun x => η x * chosenWeakPartial' p i u Ω x +
+      (fun x => η x * chosenWeakPartialOrZero p i u Ω x +
         (fderiv ℝ η x) (EuclideanSpace.single i 1) * u x)
       (fun x => η x * u x) Ω :=
-    DeGiorgi.HasWeakPartialDeriv.mul_smooth hΩ hcwp_weak hη hu_loc hcwp_loc
-  have hLHS_loc : LocallyIntegrable
-      (chosenWeakPartial' p i (fun x => η x * u x) Ω) (volume.restrict Ω) :=
-    (chosenWeakPartial'_memLp_of_mem hηu i).locallyIntegrable hp
+    DeGiorgi.HasWeakPartialDeriv.mul_smooth hΩ hcwp_weak hη hu_local hcwp_local
+  have hLHS_local : LocallyIntegrable
+      (chosenWeakPartialOrZero p i (fun x => η x * u x) Ω) (volume.restrict Ω) :=
+    (chosenWeakPartialOrZero_memLp_of_mem hηu i).locallyIntegrable hp
   have hηcwp_memLp :
-      MemLp (fun x => η x * chosenWeakPartial' p i u Ω x) p (volume.restrict Ω) := by
-    refine MemLp.of_le_mul (g := chosenWeakPartial' p i u Ω) (c := C)
-      (chosenWeakPartial'_memLp_of_mem hu i) ?_ ?_
+      MemLp (fun x => η x * chosenWeakPartialOrZero p i u Ω x) p (volume.restrict Ω) := by
+    refine MemLp.of_le_mul (g := chosenWeakPartialOrZero p i u Ω) (c := C)
+      (chosenWeakPartialOrZero_memLp_of_mem hu i) ?_ ?_
     · exact hη.continuous.aestronglyMeasurable.mul
-        (chosenWeakPartial'_memLp_of_mem hu i).aestronglyMeasurable
+        (chosenWeakPartialOrZero_memLp_of_mem hu i).aestronglyMeasurable
     · refine (ae_restrict_iff' hΩ.measurableSet).mpr ?_
       exact Filter.Eventually.of_forall fun x hx => by
         calc
-          ‖η x * chosenWeakPartial' p i u Ω x‖
-              = ‖η x‖ * ‖chosenWeakPartial' p i u Ω x‖ := norm_mul _ _
-          _ ≤ C * ‖chosenWeakPartial' p i u Ω x‖ := by
+          ‖η x * chosenWeakPartialOrZero p i u Ω x‖
+              = ‖η x‖ * ‖chosenWeakPartialOrZero p i u Ω x‖ := norm_mul _ _
+          _ ≤ C * ‖chosenWeakPartialOrZero p i u Ω x‖ := by
                 gcongr
                 exact hη_bound x hx
   have hderiv_cont :
@@ -187,11 +187,11 @@ theorem chosenWeakPartial'_smul_smooth_bounded_ae
           _ ≤ C * ‖u x‖ := by
                 gcongr
                 exact hη_grad_bound x hx
-  have hRHS_loc : LocallyIntegrable
-      (fun x => η x * chosenWeakPartial' p i u Ω x +
+  have hRHS_local : LocallyIntegrable
+      (fun x => η x * chosenWeakPartialOrZero p i u Ω x +
         (fderiv ℝ η x) (EuclideanSpace.single i 1) * u x) (volume.restrict Ω) :=
     (hηcwp_memLp.add hdηu_memLp).locallyIntegrable hp
-  exact DeGiorgi.HasWeakPartialDeriv.ae_eq hΩ hLHS hRHS hLHS_loc hRHS_loc
+  exact DeGiorgi.HasWeakPartialDeriv.ae_eq hΩ hLHS hRHS hLHS_local hRHS_local
 
 theorem MemWkp.smul_smooth_bounded
     (k : ℕ) {p : ℝ≥0∞} (hp : 1 ≤ p)
@@ -230,16 +230,16 @@ theorem MemWkp.smul_smooth_bounded
         rwa [norm_iteratedFDeriv_one] at h
       refine ⟨MemW1p.mulSmoothBounded (d := d) hp hΩ hη h0 h1 hu.1, ?_⟩
       intro i
-      have hae : chosenWeakPartial' p i (fun x => η x * u x) Ω
+      have hae : chosenWeakPartialOrZero p i (fun x => η x * u x) Ω
           =ᵐ[volume.restrict Ω]
-          (fun x => η x * chosenWeakPartial' p i u Ω x +
+          (fun x => η x * chosenWeakPartialOrZero p i u Ω x +
             (fderiv ℝ η x) (EuclideanSpace.single i 1) * u x) :=
-        chosenWeakPartial'_smul_smooth_bounded_ae (d := d) hp hΩ hη h0 h1 hu.1 i
+        chosenWeakPartialOrZero_smul_smooth_bounded_ae (d := d) hp hΩ hη h0 h1 hu.1 i
       have hRHS_in_Wk : MemWkp (d := d) k p
-          (fun x => η x * chosenWeakPartial' p i u Ω x +
+          (fun x => η x * chosenWeakPartialOrZero p i u Ω x +
             (fderiv ℝ η x) (EuclideanSpace.single i 1) * u x) Ω := by
         have hT1 : MemWkp (d := d) k p
-            (fun x => η x * chosenWeakPartial' p i u Ω x) Ω := by
+            (fun x => η x * chosenWeakPartialOrZero p i u Ω x) Ω := by
           have hbnd : ∀ j ≤ k, ∀ x ∈ Ω, ‖iteratedFDeriv ℝ j η x‖ ≤ C :=
             fun j hj x hx => hη_bound j (hj.trans (Nat.le_succ _)) x hx
           exact ih (η := η) hη hbnd (hu.2 i)

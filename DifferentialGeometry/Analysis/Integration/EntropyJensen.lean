@@ -131,7 +131,7 @@ theorem entropy_le_moment
     _ ≤ 2 * (Real.log (∫ x, v x ^ q ∂μ) / (q - 2)) :=
       mul_le_mul_of_nonneg_left hJ (by norm_num)
 
-theorem entropy_supp_le
+theorem entropy_support_le
     (μ : Measure α) [IsFiniteMeasure μ] {w : α → Real} {U : Set α}
     (hwmeas : Measurable w) (hwi : Integrable w μ)
     (hw0 : ∀ x, 0 ≤ w x) (hmass : (∫ x, w x ∂μ) = 1)

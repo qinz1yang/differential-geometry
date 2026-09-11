@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Sobolev.HebeyBlock.FiberNorm.FiberNormRiemannianBridge
-import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.ChartFiberTrivialisationOpNorm.TensorRSChartFiberFromModelOpNorm
-import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.TensorSectionL2BoundByComponents
+import DifferentialGeometry.Analysis.Spectral.Tensor.UniformChartBounds.Tensor.FiberFromModel
+import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.ComponentL2.TensorSection
 import DifferentialGeometry.Analysis.Spectral.Tensor.ChartTensor.Components.Defs
 open DifferentialGeometry.Analysis.Elliptic
 
@@ -66,9 +66,9 @@ theorem tensorFiberNorm_sq_le_chartAlphaComponents_on_compact
       (sq_nonneg _)
   refine ⟨C₀ ^ 2 * B + 1, by positivity, ?_⟩
   intro T x hxK
-  have hx_src : x ∈ (chartAt H α).source := hKsub hxK
+  have hx_source : x ∈ (chartAt H α).source := hKsub hxK
   have hx_tan_α : x ∈ (trivializationAt E (TangentSpace I) α).baseSet := by
-    rw [TangentBundle.trivializationAt_baseSet (𝕜 := ℝ) (I := I) α]; exact hx_src
+    rw [TangentBundle.trivializationAt_baseSet (𝕜 := ℝ) (I := I) α]; exact hx_source
   have hx_α_RS : x ∈ (trivializationAt (TensorRSModel r s ℝ E)
       (fun y : M => TensorRSSpace r s I y) α).baseSet := ⟨hx_tan_α, hx_tan_α⟩
   set v : TensorRSModel r s ℝ E :=

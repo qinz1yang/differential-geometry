@@ -127,7 +127,7 @@ noncomputable def chartLocalPicardDataOfSpatialC1
     (hC1 : ChartCoordSpatialC1 (I := I) X) :
     (∀ α : M, ChartLocalPicardData X α) ×
       (∀ α : M, ChartLocalPicardData (fun t x => -(X t x)) α) := by
-  have hReg : ChartCoordPicardRegular (I := I) X :=
+  have hRegularity : ChartCoordPicardRegular (I := I) X :=
     chartCoordPicardRegular_of_spatialC1 X hCont hC1
   have hContNeg :
       ContinuousOn (Function.uncurry (fun t x => -(X t x)))
@@ -138,10 +138,10 @@ noncomputable def chartLocalPicardDataOfSpatialC1
       funext p; rfl
     rw [hfun]
     exact hCont.neg
-  have hRegNeg : ChartCoordPicardRegular (I := I) (fun t x => -(X t x)) :=
+  have hRegularityNeg : ChartCoordPicardRegular (I := I) (fun t x => -(X t x)) :=
     chartCoordPicardRegular_of_spatialC1 (fun t x => -(X t x)) hContNeg
       (chartCoordSpatialC1_neg X hC1)
-  exact ⟨fun α => chartLocalPicardDataOfRegular X hReg α,
-    fun α => chartLocalPicardDataOfRegular (fun t x => -(X t x)) hRegNeg α⟩
+  exact ⟨fun α => chartLocalPicardDataOfRegular X hRegularity α,
+    fun α => chartLocalPicardDataOfRegular (fun t x => -(X t x)) hRegularityNeg α⟩
 
 end DifferentialGeometry.Analysis.ODE

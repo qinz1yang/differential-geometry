@@ -1,7 +1,7 @@
-import DifferentialGeometry.Analysis.Parabolic.ScalarTimeDependent
-import DifferentialGeometry.Bundle.PartialMfderiv.FixedBase
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.W.FirstVariation
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.W.Potential.Geometry
+import DifferentialGeometry.Analysis.Parabolic.ScalarHeat.TimeDependent
+import DifferentialGeometry.Geometry.Coordinates.Calculus.FixedBaseDerivative
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.W.Variation.First
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.W.Potential.GradientIdentities
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator
 
@@ -282,7 +282,7 @@ theorem potential_df_time
       FixedBaseExtDerivTimeDerivativeOnRegular (I := I)
         D.carrier (D.regular ∩ Set.Ioi (0 : Real)) Set.univ
         (fun t : Real => perelmanPotential n t (u t)) velocity := by
-    apply fixedBaseOnRegSmooth (I := I) isOpen_univ
+    apply fixedBaseOnRegularitySmooth (I := I) isOpen_univ
       (D.regular_isOpen.inter isOpen_Ioi)
     · intro t ht
       exact D.regular_mem_nhds ht.1

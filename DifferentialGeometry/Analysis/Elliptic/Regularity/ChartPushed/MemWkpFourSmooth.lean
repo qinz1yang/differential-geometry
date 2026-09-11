@@ -1,8 +1,8 @@
-import DifferentialGeometry.Analysis.Elliptic.Regularity.DiffChart.Differentiated.DerivedDataConstructor
+import DifferentialGeometry.Analysis.Elliptic.Regularity.DiffChart.Differentiated.CanonicalDerivedData
 import DifferentialGeometry.Analysis.Elliptic.Regularity.DiffChart.TwiceDifferentiated.DerivedH2Interior
 import DifferentialGeometry.Analysis.Elliptic.Regularity.ChartPushed.MemWkpThreeSmooth
 import DifferentialGeometry.Analysis.Elliptic.Regularity.ChartPushed.MemWkpThree
-import DifferentialGeometry.Analysis.Elliptic.Regularity.LaplacianDomain.PowH2kBridge
+import DifferentialGeometry.Analysis.Elliptic.Regularity.LaplacianDomain.Powers.EvenOrderBridge
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.IteratedSobolevSpace.IteratedSobolev
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.Density
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.Multiplication.Multiply
@@ -33,13 +33,13 @@ open DifferentialGeometry.Analysis.Laplacian.MetricExtension
   hiding chartTargetEuclid chartTargetEuclid_isOpen
 open DifferentialGeometry.Analysis.Laplacian.DiffChartBilinearH1Compl
 open DifferentialGeometry.Analysis.Laplacian.ChosenThirdMixedPartialChartPushed
-open DifferentialGeometry.Analysis.Laplacian.FChartEffTwiceDef
-open DifferentialGeometry.Analysis.Laplacian.DerivedChartBilinearH1ComplDataCanonical
+open DifferentialGeometry.Analysis.Laplacian.DiffChartSecondOrderEffectiveSource
+open DifferentialGeometry.Analysis.Laplacian.CanonicalDerivedChartBilinearH1ComplData
 open DifferentialGeometry.Analysis.Laplacian.TwiceDerivedChartBilinearH2Interior
 open DifferentialGeometry.Analysis.Laplacian.ChartPushedMemWkpThreeSmooth
 open DifferentialGeometry.Analysis.Laplacian.ChartPushedMemWkpThree
 open DifferentialGeometry.Analysis.Laplacian.LaplacianDomainPowH2kBridge
-open DifferentialGeometry.Analysis.Laplacian.DiffChartBilinearH1ComplH3
+open DifferentialGeometry.Analysis.Laplacian.DiffChartChosenFirstPartial
 
 private local instance : MeasurableSpace E := borel E
 private local instance : BorelSpace E := ⟨rfl⟩

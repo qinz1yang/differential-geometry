@@ -1,16 +1,14 @@
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.RemainderShortTimeExistence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DeTurck.PullbackEvaluationChainRule
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.DeTurckGeometricNonlinearity
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.EigenCombination
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.TensorHsRealize
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.Perturbation.DeTurckNonlinearity
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.Spectrum.EigenCombination
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.Reconstruction.TensorHilbertSobolev
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.ChartLocalExistence.ChartLocalPicard
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.ChartLocalExistence.ChartOverlapUniqueness
-import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.Regularity.BareFlowFromJointC1
+import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.Regularity.IntegralCurveFromJointC1
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.SmoothDependence.GlobalClosedManifold
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.DiffeomorphismFamily.ManifoldFlowFamily
-import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.SmoothInSpace
-import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.ChartLocalExistence.Glue
-import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.Bijective
+import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.SmoothInSpace.Basic
+import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.ChartLocalExistence.Selection
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.DiffeomorphismFamily.ChartBridge
 open DifferentialGeometry.Geometry.Curvature
 
@@ -25,8 +23,6 @@ open DifferentialGeometry.Analysis.Spectral.MetricRealization
 
 open DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
-open DifferentialGeometry.Analysis.Parabolic.MaximalRegularity
-open DifferentialGeometry.Analysis.Parabolic.TimeSobolev
 open DifferentialGeometry.Analysis.Parabolic.QuasiLinear
 
 variable
@@ -60,7 +56,7 @@ theorem interior_local_flow_existence
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M]
     [BoundarylessManifold I M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
-theorem chartcover_orbit_is_bare_integral_curve
+theorem chartCover_orbit_hasMFDerivWithinAt
     (X : ℝ → ∀ x : M, TangentSpace I x)
     (T : ℝ) (Φcc : ℝ → M → M)
     (hper : ∀ α : M, ChartLocalPicardData (I := I) X α)
@@ -155,7 +151,7 @@ private structure ChartFlowEngineInputs
 private noncomputable def glueFlow
     (Y : ℝ → ∀ x : M, TangentSpace I x)
     (hperY : ∀ α : M, ChartLocalPicardData (I := I) Y α) : ℝ → M → M :=
-  (time_dependent_vf_global_flow_glue (I := I) Y hperY).choose_spec.2.choose_spec.2.choose
+  (chart_local_picard_flow_selection (I := I) Y hperY).choose_spec.2.choose_spec.2.choose
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M]
     [BoundarylessManifold I M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
@@ -167,9 +163,9 @@ private theorem glueFlow_spec
       glueFlow (I := I) Y hperY s x =
         (chartAt H α).symm (I.symm ((hperY α).flow (I ((chartAt H α) x)) s))) := by
   have hspec :=
-    (time_dependent_vf_global_flow_glue (I := I) Y hperY).choose_spec.2.choose_spec.2.choose_spec
+    (chart_local_picard_flow_selection (I := I) Y hperY).choose_spec.2.choose_spec.2.choose_spec
   refine ⟨hspec.1, fun x => ?_⟩
-  obtain ⟨α, _hαS, hxU, hrepr⟩ := hspec.2 x
+  obtain ⟨α, _hαS, hxU, _hTle, hrepr⟩ := hspec.2 x
   exact ⟨α, hxU, hrepr⟩
 
 private noncomputable def flowBijectiveHorizon
@@ -255,7 +251,7 @@ theorem interior_flow_uniqueness_glue
     exact time_dependent_vf_hdiffeo_of_smooth_bijective Φ Ψ T
       hΦsmooth hΨsmooth hΨΦ_T hΦΨ_T t ht.1 ht.2
   · intro t ht x
-    exact chartcover_orbit_is_bare_integral_curve X T Φ hper hTle
+    exact chartCover_orbit_hasMFDerivWithinAt X T Φ hper hTle
       hΦreprU' hconf htgt t ht.1 ht.2 x
 
 end DifferentialGeometry.PDE.RicciFlow

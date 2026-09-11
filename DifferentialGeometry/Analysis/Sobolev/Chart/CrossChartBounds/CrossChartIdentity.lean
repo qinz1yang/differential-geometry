@@ -82,21 +82,21 @@ theorem chartPushed_chartPullback_pointwise_identity
     hΩγα_open.inter (chartTargetEuclid_isOpen (I := I) (M := M) γ)
   have hKEγ_in_Uγ : K_E_γ ⊆ Uγ :=
     Set.subset_inter hKM_image_in_Ωγα hKEγ_subset_target
-  obtain ⟨δ_γ, η_γ_loc, _hδ_γ_pos, _hδγ_subset, hη_γ_loc_smooth, hη_γ_loc_cpt,
-    hη_γ_loc_range, hη_γ_loc_one, hη_γ_loc_supp⟩ :=
+  obtain ⟨δ_γ, η_γ_local, _hδ_γ_pos, _hδγ_subset, hη_γ_local_smooth, hη_γ_local_compact,
+    hη_γ_local_range, hη_γ_local_one, hη_γ_local_support⟩ :=
     DifferentialGeometry.Analysis.Sobolev.Euclidean.exists_smooth_cutoff_with_neighborhood
       (d := Module.finrank ℝ E) hKEγ_compact hUγ_open hKEγ_in_Uγ
-  have hη_γ_loc_supp_Ωγα : tsupport η_γ_loc ⊆ Ω_γα :=
-    fun y hy => (hη_γ_loc_supp hy).1
+  have hη_γ_local_support_Ωγα : tsupport η_γ_local ⊆ Ω_γα :=
+    fun y hy => (hη_γ_local_support hy).1
   set ρ_γ_M : M → ℝ :=
     ((DifferentialGeometry.Integral.Measure.chartAtlasPOU I M γ
       : C^∞⟮I, M; ℝ⟯) : M → ℝ) with hρ_γ_M_def
   have hρ_γ_M_smooth : ContMDiff I (modelWithCornersSelf ℝ ℝ) ∞ ρ_γ_M :=
     (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M γ
       : C^∞⟮I, M; ℝ⟯).contMDiff
-  have hρ_γ_M_supp_in_chart : tsupport ρ_γ_M ⊆ (chartAt H γ).source :=
+  have hρ_γ_M_support_in_chart : tsupport ρ_γ_M ⊆ (chartAt H γ).source :=
     DifferentialGeometry.Integral.Measure.chartAtlasPOU_isSubordinate I M γ
-  have hρ_γ_M_cpt : HasCompactSupport ρ_γ_M :=
+  have hρ_γ_M_compact : HasCompactSupport ρ_γ_M :=
     (isClosed_tsupport _).isCompact
   have hρ_γ_M_range : Set.range ρ_γ_M ⊆ Set.Icc (0 : ℝ) 1 := by
     rintro v ⟨x, hx⟩
@@ -106,47 +106,47 @@ theorem chartPushed_chartPullback_pointwise_identity
     · exact (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M).le_one γ x
   set ργE : EuclN → ℝ := chartCutoffEuclidean (I := I) (M := M) γ ρ_γ_M with hργE_def
   have hργE_smooth : ContDiff ℝ (⊤ : ℕ∞) ργE :=
-    contDiff_etaEuclid (I := I) (M := M) γ ρ_γ_M hρ_γ_M_smooth hρ_γ_M_cpt
-      hρ_γ_M_supp_in_chart
+    contDiff_etaEuclid (I := I) (M := M) γ ρ_γ_M hρ_γ_M_smooth hρ_γ_M_compact
+      hρ_γ_M_support_in_chart
   have hργE_range : Set.range ργE ⊆ Set.Icc (0 : ℝ) 1 :=
     etaEuclid_range_Icc (I := I) (M := M) γ ρ_γ_M hρ_γ_M_range
   have hργE_norm_one : ∀ y : EuclN, ‖ργE y‖ ≤ 1 :=
     norm_le_one_of_range_Icc hργE_range
   obtain ⟨C_ργE_grad, _hC_ργE_pos, hC_ργE_grad⟩ :=
     exists_grad_bound_etaEuclid (I := I) (M := M) γ ρ_γ_M hρ_γ_M_smooth
-      hρ_γ_M_cpt hρ_γ_M_supp_in_chart
-  have hη_γ_loc_norm_one : ∀ y : EuclN, ‖η_γ_loc y‖ ≤ 1 :=
-    norm_le_one_of_range_Icc hη_γ_loc_range
+      hρ_γ_M_compact hρ_γ_M_support_in_chart
+  have hη_γ_local_norm_one : ∀ y : EuclN, ‖η_γ_local y‖ ≤ 1 :=
+    norm_le_one_of_range_Icc hη_γ_local_range
   obtain ⟨C_η_γ_grad, _hC_η_γ_pos, hC_η_γ_grad⟩ :=
-    exists_grad_bound_of_compactSupport_smooth hη_γ_loc_smooth hη_γ_loc_cpt
-  set ργ_pre : EuclN → ℝ := fun y => η_γ_loc y * ργE y with hργ_pre_def
+    exists_grad_bound_of_compactSupport_smooth hη_γ_local_smooth hη_γ_local_compact
+  set ργ_pre : EuclN → ℝ := fun y => η_γ_local y * ργE y with hργ_pre_def
   have hργ_pre_smooth : ContDiff ℝ (⊤ : ℕ∞) ργ_pre :=
-    hη_γ_loc_smooth.mul hργE_smooth
+    hη_γ_local_smooth.mul hργE_smooth
   have hργ_pre_bound : ∀ y : EuclN, ‖ργ_pre y‖ ≤ 1 := by
     intro y
-    have h := mul_le_mul (a := ‖η_γ_loc y‖) (b := 1) (c := ‖ργE y‖) (d := 1)
-      (hη_γ_loc_norm_one y) (hργE_norm_one y) (norm_nonneg _) zero_le_one
-    rw [show ργ_pre y = η_γ_loc y * ργE y from rfl, norm_mul, mul_one] at *
+    have h := mul_le_mul (a := ‖η_γ_local y‖) (b := 1) (c := ‖ργE y‖) (d := 1)
+      (hη_γ_local_norm_one y) (hργE_norm_one y) (norm_nonneg _) zero_le_one
+    rw [show ργ_pre y = η_γ_local y * ργE y from rfl, norm_mul, mul_one] at *
     exact h
   set C_combined_grad : ℝ := C_η_γ_grad + C_ργE_grad with hC_combined_grad_def
   have hC_combined_grad_bound : ∀ y : EuclN, ‖fderiv ℝ ργ_pre y‖ ≤ C_combined_grad := by
     intro y
-    have h_eq : ργ_pre = fun y => η_γ_loc y * ργE y := rfl
-    have hη_γ_loc_diff : DifferentiableAt ℝ η_γ_loc y :=
-      (hη_γ_loc_smooth.differentiable (by simp)).differentiableAt
+    have h_eq : ργ_pre = fun y => η_γ_local y * ργE y := rfl
+    have hη_γ_local_diff : DifferentiableAt ℝ η_γ_local y :=
+      (hη_γ_local_smooth.differentiable (by simp)).differentiableAt
     have hργE_diff : DifferentiableAt ℝ ργE y :=
       (hργE_smooth.differentiable (by simp)).differentiableAt
     rw [h_eq]
-    rw [fderiv_fun_mul hη_γ_loc_diff hργE_diff]
+    rw [fderiv_fun_mul hη_γ_local_diff hργE_diff]
     refine (norm_add_le _ _).trans ?_
-    have h1 : ‖η_γ_loc y • fderiv ℝ ργE y‖ ≤ C_ργE_grad := by
+    have h1 : ‖η_γ_local y • fderiv ℝ ργE y‖ ≤ C_ργE_grad := by
       rw [norm_smul]
-      have : ‖η_γ_loc y‖ * ‖fderiv ℝ ργE y‖ ≤ 1 * C_ργE_grad :=
-        mul_le_mul (hη_γ_loc_norm_one y) (hC_ργE_grad y) (norm_nonneg _) zero_le_one
+      have : ‖η_γ_local y‖ * ‖fderiv ℝ ργE y‖ ≤ 1 * C_ργE_grad :=
+        mul_le_mul (hη_γ_local_norm_one y) (hC_ργE_grad y) (norm_nonneg _) zero_le_one
       simpa using this
-    have h2 : ‖ργE y • fderiv ℝ η_γ_loc y‖ ≤ C_η_γ_grad := by
+    have h2 : ‖ργE y • fderiv ℝ η_γ_local y‖ ≤ C_η_γ_grad := by
       rw [norm_smul]
-      have : ‖ργE y‖ * ‖fderiv ℝ η_γ_loc y‖ ≤ 1 * C_η_γ_grad :=
+      have : ‖ργE y‖ * ‖fderiv ℝ η_γ_local y‖ ≤ 1 * C_η_γ_grad :=
         mul_le_mul (hργE_norm_one y) (hC_η_γ_grad y) (norm_nonneg _) zero_le_one
       simpa using this
     linarith [h1, h2]
@@ -168,15 +168,15 @@ theorem chartPushed_chartPullback_pointwise_identity
     have hx_chart : x ∈ (chartAt H γ).source := hKM_in_γ hxK
     rw [hy_def]
     exact chartTransitionEuclid_eq_chartα_image (I := I) (M := M) γ α hx_chart
-  have hργ_pre_supp_in_Uγ : tsupport ργ_pre ⊆ Uγ := by
-    refine subset_trans ?_ hη_γ_loc_supp
+  have hργ_pre_support_in_Uγ : tsupport ργ_pre ⊆ Uγ := by
+    refine subset_trans ?_ hη_γ_local_support
     refine closure_mono ?_
     intro y hy
     simp only [Function.mem_support, ne_eq] at hy
-    have h_η_ne : η_γ_loc y ≠ 0 := by
+    have h_η_ne : η_γ_local y ≠ 0 := by
       intro h0
       apply hy
-      change η_γ_loc y * ργE y = 0
+      change η_γ_local y * ργE y = 0
       rw [h0]; ring
     exact Function.mem_support.mpr h_η_ne
   have hKEα_in_Ωαγ : (fun x : M => (toEuclidean (E := E)) (extChartAt I α x)) '' K_M ⊆ Ω_αγ := by
@@ -190,9 +190,9 @@ theorem chartPushed_chartPullback_pointwise_identity
     exact Φ.bijOn.mapsTo h_y_in_Ωγα
   refine ⟨Ω_γα, Ω_αγ, hΩγα_open, hΩαγ_open, hΩγα_subset_target, hΩαγ_subset_target,
     Φ, ργ_pre, hργ_pre_smooth,
-    ⟨C, hC_nn, fun y => ⟨hC_norm y, hC_grad y⟩⟩, hργ_pre_supp_in_Uγ,
+    ⟨C, hC_nn, fun y => ⟨hC_norm y, hC_grad y⟩⟩, hργ_pre_support_in_Uγ,
     hKEα_in_Ωαγ, hΦ_eq_on_Ωγα, ?_⟩
-  intro v hv_supp y hy_target
+  intro v hv_support y hy_target
   set z : M := (extChartAt I γ).symm ((toEuclidean (E := E)).symm y) with hz_def
   have hsymm_target : (toEuclidean (E := E)).symm y ∈ (extChartAt I γ).target := by
     have := hy_target
@@ -211,13 +211,13 @@ theorem chartPushed_chartPullback_pointwise_identity
     unfold chartPushed
     rfl
   rw [h_pushed_eq]
-  have hργ_pre_y : ργ_pre y = η_γ_loc y * ργE y := rfl
+  have hργ_pre_y : ργ_pre y = η_γ_local y * ργE y := rfl
   rw [hργ_pre_y]
   have hργE_y : ργE y = ρ_γ_M z := by
     rw [hργE_def]
     exact etaEuclid_apply_of_mem (I := I) (M := M) γ ρ_γ_M hy_target
-  by_cases h_y_in_supp_η_γ : y ∈ tsupport η_γ_loc
-  · have hy_in_Ωγα : y ∈ Ω_γα := hη_γ_loc_supp_Ωγα h_y_in_supp_η_γ
+  by_cases h_y_in_support_η_γ : y ∈ tsupport η_γ_local
+  · have hy_in_Ωγα : y ∈ Ω_γα := hη_γ_local_support_Ωγα h_y_in_support_η_γ
     by_cases hρ_zero : ρ_γ_M z = 0
     · rw [hρ_zero, hργE_y, hρ_zero]; ring
     · have hz_in_tsupp_ρ : z ∈ tsupport ρ_γ_M := by
@@ -235,8 +235,8 @@ theorem chartPushed_chartPullback_pointwise_identity
               (extChartAt I γ).right_inv hsymm_target
             rw [h_z_chart]
             exact (toEuclidean (E := E)).apply_symm_apply y
-          have hη_γ_loc_y : η_γ_loc y = 1 := by
-            apply hη_γ_loc_one
+          have hη_γ_local_y : η_γ_local y = 1 := by
+            apply hη_γ_local_one
             exact Metric.self_subset_cthickening K_E_γ hy_in_KEγ
           have hΦ_y : Φ.toFun y = (toEuclidean (E := E)) (extChartAt I α z) := by
             have h := hΦ_eq_KM z hz_in_KM
@@ -247,11 +247,11 @@ theorem chartPushed_chartPullback_pointwise_identity
               exact (toEuclidean (E := E)).apply_symm_apply y
             rw [← hy_eq]
             exact h
-          rw [hΦ_y, hη_γ_loc_y, hργE_y]
+          rw [hΦ_y, hη_γ_local_y, hργE_y]
           ring
         · have hvα_z_eq : (toEuclidean (E := E)) (extChartAt I α z) ∉ tsupport v := by
             intro hin
-            have := hv_supp hin
+            have := hv_support hin
             rcases this with ⟨x', hx'_K, hx'_eq⟩
             have hx'_chart : x' ∈ (chartAt H α).source := hK_α_in_α hx'_K
             have h_eq_chart_α : extChartAt I α x' = extChartAt I α z := by
@@ -299,7 +299,7 @@ theorem chartPushed_chartPullback_pointwise_identity
           exact (extChartAt I γ).left_inv h_w_chart_γ
         rw [h_z_eq_w] at hz_in_α
         exact hz_in_α hw_inter.2
-  · have h_zero_η : η_γ_loc y = 0 := image_eq_zero_of_notMem_tsupport h_y_in_supp_η_γ
+  · have h_zero_η : η_γ_local y = 0 := image_eq_zero_of_notMem_tsupport h_y_in_support_η_γ
     rw [h_zero_η]
     simp only [zero_mul]
     by_cases hρ_zero : ρ_γ_M z = 0
@@ -322,7 +322,7 @@ theorem chartPushed_chartPullback_pointwise_identity
           exact subset_tsupport _ this
         have h_arg_in_image_K_α : (toEuclidean (E := E)) (extChartAt I α z) ∈
             (fun x : M => (toEuclidean (E := E)) (extChartAt I α x)) '' K_α :=
-          hv_supp h_arg_in_tsupp_v
+          hv_support h_arg_in_tsupp_v
         obtain ⟨x', hx'_K_α, hx'_eq⟩ := h_arg_in_image_K_α
         have hx'_chart : x' ∈ (chartAt H α).source := hK_α_in_α hx'_K_α
         have h_eq_chart : extChartAt I α x' = extChartAt I α z := by
@@ -347,11 +347,11 @@ theorem chartPushed_chartPullback_pointwise_identity
           exact (toEuclidean (E := E)).apply_symm_apply y
         have hy_in_cthick : y ∈ Metric.cthickening δ_γ K_E_γ :=
           Metric.self_subset_cthickening K_E_γ hy_in_KEγ
-        have h_η_y_one : η_γ_loc y = 1 := hη_γ_loc_one y hy_in_cthick
-        have hy_in_supp : y ∈ Function.support η_γ_loc := by
+        have h_η_y_one : η_γ_local y = 1 := hη_γ_local_one y hy_in_cthick
+        have hy_in_support : y ∈ Function.support η_γ_local := by
           simp only [Function.mem_support, ne_eq, h_η_y_one]
           exact one_ne_zero
-        exact h_y_in_supp_η_γ (subset_tsupport _ hy_in_supp)
+        exact h_y_in_support_η_γ (subset_tsupport _ hy_in_support)
 
 end Chart
 end Sobolev

@@ -1,6 +1,6 @@
-import DifferentialGeometry.Geometry.Operator.TensorHeat
-import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureOperatorReactionPreservation
-import DifferentialGeometry.Geometry.Curvature.AlgebraicCurvatureOperatorConeMetric
+import DifferentialGeometry.Geometry.Operator.Heat.Tensor
+import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureOperator.ReactionPreservation
+import DifferentialGeometry.Geometry.Curvature.Algebraic.CurvatureOperatorConeMetric
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Preservation.PositiveRicci
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Preservation.RicciPinching
 
@@ -348,7 +348,7 @@ private theorem ricciUpperBoundHeat_coord
       DifferentialGeometry.Tensor.Coordinates.inverseMetricFlatModelInChartComponent
         (I := I) (S.base.metric t) x k l (extChartAt I x x)
   have hinv :
-      MetricInverseInBasisGen (I := I) (S.base.metric t) x basis gInv := by
+      MetricInverseInBasis (I := I) (S.base.metric t) x basis gInv := by
     simpa [basis, gInv] using
       Tensor.Coordinates.inverseMetricFlatModelInChart_metricInverseInBasis_center
         (I := I) (S.base.metric t) x
@@ -581,12 +581,12 @@ private theorem ricciUpperBoundReactAt_block
     simp_rw [hRicComp]
   have hreact :
       ricciReaction3At (I := I) (M := M) g Ric (vec2 (I := I) (basis 0) (basis 0)) =
-        ricciPresReact (stdRmOfRic3 RicComp) RicComp 0 0 := by
+        ricciPresReact (standardRmOfRic3 RicComp) RicComp 0 0 := by
     rw [ricciReaction3At_comp_orthonormal (I := I) (M := M) basis horth Ric]
     have hRm : ∀ p q r s : Fin 3,
         rm04OfRic3At (I := I) (M := M) g Ric
             (vec4 (I := I) (basis p) (basis q) (basis r) (basis s)) =
-          stdRmOfRic3 RicComp p q r s := by
+          standardRmOfRic3 RicComp p q r s := by
       intro p q r s
       rw [rm04OfRic3At_comp_orthonormal (I := I) (M := M) basis horth Ric]
       simp_rw [hRicComp]
@@ -682,11 +682,11 @@ private theorem ricciUpperBoundReactAt_block
             ricciReaction3At (I := I) (M := M) g Ric (vec2 (I := I) (basis 0) (basis 0)) := hmain
     _ = ricciNorm3 RicComp * 1 -
           (2 * (a + b)) * RicComp 0 0 -
-          ricciPresReact (stdRmOfRic3 RicComp) RicComp 0 0 := by
+          ricciPresReact (standardRmOfRic3 RicComp) RicComp 0 0 := by
           rw [hnorm, hsc, hRicComp 0 0, hreact]
     _ = 2 * (a * b - c ^ 2) := by
           simp [RicComp, ricciNorm3, ricciPresReact, ricciSq3, ricciScal3,
-            shiftBlockS3, stdRmOfRic3, DifferentialGeometry.Geometry.Curvature.delta3,
+            shiftBlockS3, standardRmOfRic3, DifferentialGeometry.Geometry.Curvature.delta3,
             Fin.sum_univ_three]
           ring
 
@@ -704,7 +704,7 @@ private theorem ricciUpperBoundReact_realizes_block
     (I := I) (M := M) (fun _t g x A => ricciUpperBoundReactAt (I := I) g A)
     t g Araw x hbilin]
 
-private theorem ricciUpperBoundReactAt_block_of_raw
+private theorem ricciUpperBoundReactAt_block_of_rawTwoTensor
     (g : SmoothRiemannianMetric I M) {x : M}
     {Araw : RawTwoTensorField (I := I) (M := M)}
     {basis : Module.Basis (Fin 3) Real (TangentSpace I x)}
@@ -770,7 +770,7 @@ private theorem ricci_upper_bound_reaction_null_symm
       rw [hBout.smul_left r (nb.basis 0) (r • nb.basis 0)]
       rw [hBout.smul_right r (nb.basis 0) (nb.basis 0)]
       rw [ricciUpperBoundReact_realizes_block (I := I) (M := M) hbilin]
-      rw [ricciUpperBoundReactAt_block_of_raw (I := I) (G t) hsym hbilin hblock]
+      rw [ricciUpperBoundReactAt_block_of_rawTwoTensor (I := I) (G t) hsym hbilin hblock]
       ring
     rw [heval]
     exact mul_nonneg (sq_nonneg r)
@@ -983,7 +983,7 @@ private theorem ricciUpperBoundSec_tangentBundle_cont
     (tensor0SFamilyContinuousOnSet.mono (I := I) (M := M)
       (ricciUpperBoundSecFamilyContinuousOnSet (I := I) S hS hTsub) hK)
 
-private theorem ricciUpperBoundBarrierReg
+private theorem ricciUpperBoundBarrierRegularity
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     [CompactSpace M] [T2Space M]
     (S : SolutionOn (I := I) (M := M) D)
@@ -1080,19 +1080,19 @@ private theorem ricciUpperBoundSecCore
     (hdim : ∀ x : M, Module.finrank Real (TangentSpace I x) = 3)
     (hTsub : Set.Icc 0 T ⊆ D.carrier)
     (hTreg : Set.Ioc 0 T ⊆ D.regular) :
-    TensorWMPSectionCore (I := I) (M := M)
+    TensorWeakMaximumPrincipleSectionCompactness (I := I) (M := M)
       (fun t : Real => S.base.metric t) (ricciUpperBoundSec S)
       (fun _t x => (0 : TangentSpace I x)) ricciUpperBoundReact T := by
-  exact TensorWMPSectionCore.ofSmoothMetric (I := I) (M := M)
+  exact TensorWeakMaximumPrincipleSectionCompactness.ofSmoothMetric (I := I) (M := M)
     (G := S.family) (S := ricciUpperBoundSec S)
     (X := fun _t x => (0 : TangentSpace I x)) (N := ricciUpperBoundReact) (T := T)
     hTsub hS.smoothMetric
     (ricci_upper_bound_sec_symm (I := I) S (Set.Icc 0 T))
-    (by simpa [SolutionOn.family] using ricciUpperBoundBarrierReg (I := I) S hS hdim hTsub hTreg)
+    (by simpa [SolutionOn.family] using ricciUpperBoundBarrierRegularity (I := I) S hS hdim hTsub hTreg)
     (fun d t0 _hd hsub =>
       ricciUpperBoundSec_tangentBundle_cont (I := I) S hS hTsub hsub)
     (fun epsilon d t0 _hepsilon _hd hsub x v =>
-      (ricciUpperBoundBarrierReg (I := I) S hS hdim hTsub hTreg).barrier_eval_continuous
+      (ricciUpperBoundBarrierRegularity (I := I) S hS hdim hTsub hTreg).barrier_eval_continuous
         epsilon d t0 hsub x v v)
 
 theorem ricci_upper_bound_preserved
@@ -1112,15 +1112,15 @@ theorem ricci_upper_bound_preserved
       (twoTensorSecToFamily (I := I) (M := M) (ricciUpperBoundSec S)) 0) :
     TwoTensorFamilyNonnegativeOn (I := I) (M := M)
       (twoTensorSecToFamily (I := I) (M := M) (ricciUpperBoundSec S)) (Set.Icc 0 T) := by
-  exact tensor_wmp (I := I) (M := M)
-    { hT := hT
-      reg := ricciUpperBoundSecCore (I := I) S hS.isSolution hdim hTsub hTreg
+  exact tensor_weak_maximum_principle (I := I) (M := M)
+    { time_nonneg := hT
+      regularity := ricciUpperBoundSecCore (I := I) S hS.isSolution hdim hTsub hTreg
       parabolic := ricci_upper_bound_parabolic (I := I) S hS hdim hTsub hTreg
       null := ricci_upper_bound_reaction_null (fun t : Real => S.base.metric t) (Set.Icc 0 T) hdim
       initial := hinit
-      hcov1 := fun t => ricciCov1 (I := I) S t
-      hcovInf := fun t => ricciCovInf (I := I) S t
-      hmc := fun t => ricciMetricComp (I := I) S t
+      connection_contMDiff_one := fun t => ricciCov1 (I := I) S t
+      connection_contMDiff_infty := fun t => ricciCovInf (I := I) S t
+      metricCompatible := fun t => ricciMetricComp (I := I) S t
       spatial := ricciUpperBoundSpatialModel (I := I) S }
 
 theorem ricci_upper_bound_of_metric_curvature_operator_nonnegative

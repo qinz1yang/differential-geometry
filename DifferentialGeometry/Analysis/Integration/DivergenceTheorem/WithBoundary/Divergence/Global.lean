@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.WithBoundary.Divergence.LocalFormula
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.WithBoundary.Divergence.ChartInvariance
-import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.LocalFormula
+import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.Local.Formula
 import Mathlib.Geometry.Manifold.IsManifold.InteriorBoundary
 
 
@@ -35,12 +35,12 @@ def divergenceGWithBoundary
 theorem voss_weyl_divergence_with_boundary_formula [T2Space M]
     (g : SmoothRiemannianMetric I M) (α : M)
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
-    {x : M} (hx_α : x ∈ (chartAt H α).source) (hx_int : x ∈ I.interior M) :
+    {x : M} (hx_α : x ∈ (chartAt H α).source) :
     divergenceGWithBoundary (I := I) g X x =
       localDivergenceWithin (I := I) g α X x := by
   unfold divergenceGWithBoundary
   exact localDivergenceWithin_chart_invariance
-    (I := I) g x α X (mem_chart_source H x) hx_α hx_int
+    (I := I) g x α X (mem_chart_source H x) hx_α
 
 theorem divergence_g_with_boundary_eq_divergence_g_of_isInteriorPoint
     (g : SmoothRiemannianMetric I M)
@@ -52,65 +52,25 @@ theorem divergence_g_with_boundary_eq_divergence_g_of_isInteriorPoint
   exact localDivergenceWithin_eq_localDivergence_of_isInteriorPoint
     (I := I) g x X (mem_chart_source H x) hx_int
 
-omit [Module.Finite ℝ E] in
-private lemma isOpen_interior_M : IsOpen (I.interior M) :=
-  I.isOpen_interior (M := M) (n := ∞)
-    (by exact (by decide : (∞ : WithTop ℕ∞) ≠ 0))
-
-omit [Module.Finite ℝ E] in
-private lemma chart_source_inter_interior_open_nhd (x : M) (hx_int : x ∈ I.interior M) :
-    IsOpen ((chartAt H x).source ∩ I.interior M) ∧
-      x ∈ (chartAt H x).source ∩ I.interior M := by
-  refine ⟨?_, ?_, ?_⟩
-  · exact (chartAt H x).open_source.inter isOpen_interior_M
-  · exact mem_chart_source H x
-  · exact hx_int
-
-private lemma divergence_g_with_boundary_eq_localDivergenceWithin_on_chart
-    [T2Space M] (g : SmoothRiemannianMetric I M)
-    (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (x : M) :
-    ∀ y ∈ (chartAt H x).source ∩ I.interior M,
-      divergenceGWithBoundary (I := I) g X y =
-        localDivergenceWithin (I := I) g x X y := by
-  intro y hy
-  exact voss_weyl_divergence_with_boundary_formula
-    (I := I) g x X hy.1 hy.2
-
-private lemma localDivergenceWithin_contMDiffOn_chart_inter_interior
+theorem divergence_g_with_boundary_contMDiff [T2Space M]
     (g : SmoothRiemannianMetric I M)
-    (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (x : M) :
-    ContMDiffOn I 𝓘(ℝ) ∞ (localDivergenceWithin (I := I) g x X)
-      ((chartAt H x).source ∩ I.interior M) :=
-  (localDivergenceWithin_contMDiffOn (I := I) g x X).mono Set.inter_subset_left
+    (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) :
+    ContMDiff I 𝓘(Real) ∞ (divergenceGWithBoundary g X) := by
+  intro x
+  have hx := (chartAt H x).open_source.mem_nhds (mem_chart_source H x)
+  have hlocal := (localDivergenceWithin_contMDiffOn g x X x (mem_chart_source H x)).contMDiffAt hx
+  apply hlocal.congr_of_eventuallyEq
+  filter_upwards [hx] with y hy
+  exact voss_weyl_divergence_with_boundary_formula g x X hy
 
-private lemma divergence_g_with_boundary_contMDiffOn_chart_inter_interior
-    [T2Space M] (g : SmoothRiemannianMetric I M)
-    (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (x : M) :
-    ContMDiffOn I 𝓘(ℝ) ∞ (divergenceGWithBoundary (I := I) g X)
-      ((chartAt H x).source ∩ I.interior M) := by
-  have hsmooth :=
-    localDivergenceWithin_contMDiffOn_chart_inter_interior (I := I) g X x
-  have hcongr := divergence_g_with_boundary_eq_localDivergenceWithin_on_chart
-    (I := I) g X x
-  exact hsmooth.congr hcongr
 
 theorem divergence_g_with_boundary_contMDiffOn_interior [T2Space M]
     (g : SmoothRiemannianMetric I M)
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) :
     ContMDiffOn I 𝓘(ℝ) ∞ (divergenceGWithBoundary (I := I) g X)
-      (I.interior M) := by
-  refine contMDiffOn_of_locally_contMDiffOn ?_
-  intro x hx_int
-  refine ⟨(chartAt H x).source, ?_, ?_, ?_⟩
-  · exact (chartAt H x).open_source
-  · exact mem_chart_source H x
-  · have hsm := divergence_g_with_boundary_contMDiffOn_chart_inter_interior
-      (I := I) g X x
-    have hset_eq : I.interior M ∩ (chartAt H x).source =
-        (chartAt H x).source ∩ I.interior M := by
-      rw [Set.inter_comm]
-    rw [hset_eq]
-    exact hsm
+      (I.interior M) :=
+  (divergence_g_with_boundary_contMDiff g X).contMDiffOn
+
 
 theorem divergence_g_with_boundary_continuousOn_interior [T2Space M]
     (g : SmoothRiemannianMetric I M)

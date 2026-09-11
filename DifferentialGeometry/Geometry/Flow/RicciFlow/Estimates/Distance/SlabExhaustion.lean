@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.MetricFirstOrder
-import DifferentialGeometry.Geometry.Comparison.DistanceExhaustion
+import DifferentialGeometry.Geometry.Comparison.Distance.Exhaustion
 import DifferentialGeometry.Geometry.Connection.Convergence.DifferenceDerivativeBound
-import DifferentialGeometry.Analysis.Elliptic.MetricBounds
+import DifferentialGeometry.Geometry.Metric.PointwiseInner.Bounds
 
 open DifferentialGeometry.Geometry.Connection
 open DifferentialGeometry.Geometry.Curvature
@@ -17,7 +17,7 @@ namespace DifferentialGeometry.PDE.RicciFlow
 
 open Bundle Set
 open scoped Manifold ContDiff Topology BigOperators
-open DifferentialGeometry.HCGCompactness
+open DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.Tensor0SBundle
 
 variable {E : Type uE} [NormedAddCommGroup E] [NormedSpace Real E]
@@ -48,7 +48,8 @@ private theorem differential_normSq_eq_gradient_sq
   rw [normSq0S_eq_inner, inner0S_one_eq_cotangent, cotangentInner_eq_sharp,
     hsharp]
 
-omit [NeZero (Module.finrank Real E)] [IsManifold I 1 M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank Real E)]
+    [IsManifold I 1 M] [IsManifold I 2 M] [SigmaCompactSpace M] in
 private theorem support_bounds_of_metric_first_order
     (g0 gt : SmoothRiemannianMetric I M)
     {Lambda C0 C1 : Real}
@@ -84,8 +85,8 @@ private theorem support_bounds_of_metric_first_order
     exact (Real.sqrt_le_sqrt hnorm).trans
       (Real.sqrt_le_sqrt (mul_le_mul_of_nonneg_left hgrad hLambda0))
   refine ⟨hgradient, ?_⟩
-  obtain ⟨basis, hON⟩ := exists_gOrthonormalBasis (I := I) gt x
-  have hinv : MetricInverseInBasisGen (I := I) gt x basis
+  obtain ⟨basis, hON⟩ := exists_orthonormal_basis (I := I) gt x
+  have hinv : MetricInverseInBasis (I := I) gt x basis
       (identityInvMetric (Idx := Fin (Module.finrank Real (TangentSpace I x)))) :=
     metricInverseInBasis_of_orthonormal (I := I) gt basis hON
   have hlap :

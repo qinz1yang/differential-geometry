@@ -157,7 +157,7 @@ theorem nabla0SFun_one_eval_of_coordFrame_product_rules
     (oneForm_covariantDerivative_coordFrame_product_rule
       (I := I) cov X Z α x₀ z dz hz hdz hdiff_z hZ_diff)
 
-theorem nabla0SFun_one_eval_coordFrame_moving
+theorem nabla0SFun_one_eval_coordFrame_moving_of_contMDiffSection
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (X Z : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _))
     (α : Tensor0SField (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
@@ -187,7 +187,7 @@ theorem nabla0SFun_one_eval_coordFrame_moving
     hdiff_z hdiff_α
     (Z.contMDiff.contMDiffAt.mdifferentiableAt (by simp))
 
-theorem nabla0SFun_one_eval_coordFrame_moving_raw
+theorem nabla0SFun_one_eval_coordFrame_moving
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (X : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _))
     (Z : (x : M) -> TangentSpace I x)

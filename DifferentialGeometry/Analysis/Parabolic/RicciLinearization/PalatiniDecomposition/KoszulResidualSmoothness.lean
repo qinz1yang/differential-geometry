@@ -1,0 +1,1811 @@
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.Calculus.SecondGradient
+import DifferentialGeometry.Geometry.Metric.DeTurck.ConnectionDifference.Identities
+import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.CovariantJetDecomposition.CorrectionFields.PointwiseBounds
+import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.CovariantJetDecomposition.CoefficientFields
+import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.PalatiniDecomposition.PathLinearization
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.RicciDeTurck.SectionDifference.ConnectionBicontraction
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Product.JetIntegral
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Remainder.Defs
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.RicciDeTurck.LieHigherOrderCoefficientField
+import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckLie.Kernel.L2JetBound
+import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckLie.Coefficient.L2JetBound
+import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.Curvature.DecompositionMonomialBounds
+import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.ResidualCoefficient.Decomposition
+import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.RicciDeTurck.Remainder.ResidualField.GridWindow.Basic
+import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.PalatiniDecomposition.EndomorphismTermAlgebra
+import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.PalatiniDecomposition.CovariantDerivativeTerm
+import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.PalatiniDecomposition.RicciContractionKernel
+open DifferentialGeometry.Analysis.Sobolev
+open DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
+open DifferentialGeometry.Geometry.Operator
+
+
+noncomputable section
+
+
+open Bundle Manifold Set Filter DifferentialGeometry.Tensor0SBundle MeasureTheory
+open scoped Manifold Topology ContDiff BigOperators
+
+namespace DifferentialGeometry
+namespace Analysis
+namespace Parabolic
+namespace TensorSpectral
+
+open DifferentialGeometry.Integral.Measure
+open DifferentialGeometry.Integral.L2
+
+open DifferentialGeometry.Integral.DivergenceTheorem
+open DifferentialGeometry.PDE.RicciFlow
+open DifferentialGeometry.Analysis.Spectral.MetricRealization
+open DifferentialGeometry.Analysis.Spectral.DeTurck
+open DifferentialGeometry.PDE.DeTurck.RicciLinearization
+
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
+variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+  [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
+  [T2Space M] [SigmaCompactSpace M]
+
+private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
+
+def koszulCovGradRaw (g₀ : SmoothRiemannianMetric I M) (S : SmoothCcTensor g₀ 0 2) :
+    SmoothCcTensor g₀ 0 3 :=
+  (1 / 2 : ℝ) •
+    (domDomCongrSection (I := I) g₀ (Equiv.swap (0 : Fin 3) 2)
+          (covGrad (I := I) (M := M) g₀ 0 2 S)
+        + domDomCongrSection (I := I) g₀ (finRotate 3)
+          (covGrad (I := I) (M := M) g₀ 0 2 S)
+        - domDomCongrSection (I := I) g₀ (Equiv.swap (1 : Fin 3) 2)
+          (covGrad (I := I) (M := M) g₀ 0 2 S))
+
+omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
+private lemma palatiniKRaw_unitModel (g₀ : SmoothRiemannianMetric I M) (S : SmoothCcTensor g₀ 0 2)
+    (x : M) (a b c : E) :
+    unitModel (I := I) (M := M) g₀ 3 (koszulCovGradRaw (I := I) (M := M) g₀ S) x ![c, a, b] =
+      (1 / 2 : ℝ) *
+        (unitModel (I := I) (M := M) g₀ 3 (covGrad (I := I) (M := M) g₀ 0 2 S) x ![b, a, c]
+          + unitModel (I := I) (M := M) g₀ 3 (covGrad (I := I) (M := M) g₀ 0 2 S) x ![a, b, c]
+          - unitModel (I := I) (M := M) g₀ 3
+              (covGrad (I := I) (M := M) g₀ 0 2 S) x ![c, b, a]) := by
+  classical
+  set W : SmoothCcTensor g₀ 0 3 := covGrad (I := I) (M := M) g₀ 0 2 S with hW
+  have hperm : ∀ (σ : Equiv.Perm (Fin 3)) (m : Fin 3 → E),
+      unitModel (I := I) (M := M) g₀ 3 (domDomCongrSection (I := I) g₀ σ W) x m =
+        unitModel (I := I) (M := M) g₀ 3 W x (fun i => m (σ i)) := by
+    intro σ m
+    rw [domDomCongrSection_unitModel (I := I) g₀ σ W x,
+      ContinuousMultilinearMap.domDomCongr_apply]
+  have hlin : unitModel (I := I) (M := M) g₀ 3 (koszulCovGradRaw (I := I) (M := M) g₀ S) x
+    ![c, a, b] =
+      (1 / 2 : ℝ) *
+        (unitModel (I := I) (M := M) g₀ 3 (domDomCongrSection (I := I) g₀
+              (Equiv.swap (0 : Fin 3) 2) W) x ![c, a, b]
+          + unitModel (I := I) (M := M) g₀ 3 (domDomCongrSection (I := I) g₀ (finRotate 3) W) x
+              ![c, a, b]
+          - unitModel (I := I) (M := M) g₀ 3 (domDomCongrSection (I := I) g₀
+              (Equiv.swap (1 : Fin 3) 2) W) x ![c, a, b]) := by
+    simp only [koszulCovGradRaw, unitModel, SmoothCcTensor.toSection_smul,
+      SmoothCcTensor.toSection_add,
+      SmoothCcTensor.toSection_sub, ContMDiffSection.coe_smul, ContMDiffSection.coe_add,
+      ContMDiffSection.coe_sub, Pi.smul_apply, Pi.add_apply, Pi.sub_apply]
+    rfl
+  rw [hlin, hperm, hperm, hperm]
+  have e1 : (fun i => (![c, a, b] : Fin 3 → E) ((Equiv.swap (0 : Fin 3) 2) i)) =
+      ![b, a, c] := by
+    funext i
+    fin_cases i <;> rfl
+  have e2 : (fun i => (![c, a, b] : Fin 3 → E) ((finRotate 3) i)) =
+      ![a, b, c] := by
+    funext i
+    fin_cases i <;> rfl
+  have e3 : (fun i => (![c, a, b] : Fin 3 → E) ((Equiv.swap (1 : Fin 3) 2) i)) =
+      ![c, b, a] := by
+    funext i
+    fin_cases i <;> rfl
+  rw [e1, e2, e3]
+
+omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
+private lemma palatiniKRaw_unitModel_eq_linearizedKoszul (g₀ : SmoothRiemannianMetric I M)
+    (S : SmoothCcTensor g₀ 0 2) (x : M) (a b c : TangentSpace I x) :
+    unitModel (I := I) (M := M) g₀ 3 (koszulCovGradRaw (I := I) (M := M) g₀ S) x
+        ![tangentSpaceModelContinuousLinearEquiv (I := I) x c,
+          tangentSpaceModelContinuousLinearEquiv (I := I) x a,
+          tangentSpaceModelContinuousLinearEquiv (I := I) x b] =
+      linearizedKoszulCovec (I := I) g₀ S x a b c := by
+  rw [palatiniKRaw_unitModel (I := I) (M := M) g₀ S x
+      (tangentSpaceModelContinuousLinearEquiv (I := I) x a)
+      (tangentSpaceModelContinuousLinearEquiv (I := I) x b)
+      (tangentSpaceModelContinuousLinearEquiv (I := I) x c),
+    linearizedKoszulCovec_apply (I := I) g₀ S x a b c]
+
+omit [CompactSpace M] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
+private lemma palatiniInner_sharpKoszul_left (g₀ g₁ : SmoothRiemannianMetric I M)
+    (S : SmoothCcTensor g₀ 0 2) (x : M) (a b z : TangentSpace I x) :
+    g₁.inner x (sharpRaisedKoszulVec (I := I) g₀ g₁ S x a b) z =
+      linearizedKoszulCovec (I := I) g₀ S x a b z := by
+  rw [sharpRaisedKoszulVec]
+  exact DifferentialGeometry.Geometry.Operator.inner_metricSharp (I := I) g₁ x
+    (linearizedKoszulCovec (I := I) g₀ S x a b) z
+
+omit [CompactSpace M] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
+private lemma palatiniInner_sharpKoszul_right (g₀ g₁ : SmoothRiemannianMetric I M)
+    (S : SmoothCcTensor g₀ 0 2) (x : M) (a b z : TangentSpace I x) :
+    g₁.inner x z (sharpRaisedKoszulVec (I := I) g₀ g₁ S x a b) =
+      linearizedKoszulCovec (I := I) g₀ S x a b z := by
+  rw [sharpRaisedKoszulVec]
+  exact DifferentialGeometry.Geometry.Operator.inner_metricSharp_right (I := I) g₁ x
+    (linearizedKoszulCovec (I := I) g₀ S x a b) z
+
+omit [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
+private lemma palatiniKoszulCc_unitModel_eq_g1_inner (g₀ g₁ : SmoothRiemannianMetric I M)
+    (P : SmoothCcTensor g₀ 0 2)
+    (htie : ∀ (y : M) (v w : TangentSpace I y),
+      g₁.inner y v w = g₀.inner y v w + ccTensorBilinSymm (I := I) g₀ P y v w)
+    (x : M) (a b c : TangentSpace I x) :
+    unitModel (I := I) (M := M) g₀ 3 (koszulCovecCc (I := I) g₀ P) x
+        ![tangentSpaceModelContinuousLinearEquiv (I := I) x c,
+          tangentSpaceModelContinuousLinearEquiv (I := I) x a,
+          tangentSpaceModelContinuousLinearEquiv (I := I) x b] =
+      g₁.inner x (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x a b) c := by
+  rw [koszulCovecCc_unitModel (I := I) g₀ P x a b c]
+  rw [connectionDifferenceInner_g1_eq_half_covGrad_ccTensor02Symm (I := I) g₀ g₁ P htie x a b c]
+  rfl
+
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
+    [SigmaCompactSpace M] in
+private lemma palatiniSlotExtendIter_three_toModel (g₀ : SmoothRiemannianMetric I M)
+    (X : SmoothCcTensor g₀ 0 3) (x : M) (D : Tensor0SSpace 3 I x)
+    (u : Fin 6 → E) :
+    Tensor0SSpace.toModel
+        ((show Tensor0SSpace 3 I x →L[ℝ] Tensor0SSpace 6 I x from
+          (slotExtendIter (I := I) (M := M) g₀ 0 3 3 X).toSection x) D) u =
+      Tensor0SSpace.toModel D ![u 0, u 1, u 2] *
+        unitModel (I := I) (M := M) g₀ 3 X x (fun k : Fin 3 => u (Fin.natAdd 3 k)) := by
+  let v : Fin 6 → TangentSpace I x :=
+    fun i => (tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (u i)
+  have h := slotExtendIter_three_toModel (I := I) (M := M) g₀ X x D v
+  simpa only [v, tangentSpaceModelContinuousLinearEquiv_symm_apply] using h
+
+def sharpGradKoszulPermutationOne : Equiv.Perm (Fin 6) :=
+  ⟨fun i => (![3, 4, 0, 1, 5, 2] : Fin 6 → Fin 6) i,
+   fun i => (![2, 3, 5, 0, 1, 4] : Fin 6 → Fin 6) i,
+   by decide, by decide⟩
+
+def sharpGradKoszulPermutationTwo : Equiv.Perm (Fin 6) :=
+  ⟨fun i => (![0, 4, 3, 1, 5, 2] : Fin 6 → Fin 6) i,
+   fun i => (![0, 3, 5, 2, 1, 4] : Fin 6 → Fin 6) i,
+   by decide, by decide⟩
+
+def sharpGradKoszulPermutationThree : Equiv.Perm (Fin 6) :=
+  ⟨fun i => (![3, 2, 0, 1, 5, 4] : Fin 6 → Fin 6) i,
+   fun i => (![2, 3, 1, 0, 5, 4] : Fin 6 → Fin 6) i,
+   by decide, by decide⟩
+
+def sharpGradKoszulPermutationFour : Equiv.Perm (Fin 6) :=
+  ⟨fun i => (![0, 2, 3, 1, 5, 4] : Fin 6 → Fin 6) i,
+   fun i => (![0, 3, 1, 2, 5, 4] : Fin 6 → Fin 6) i,
+   by decide, by decide⟩
+
+omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
+private lemma palatiniSGKMvWeight_unitModel_gen (g₀ g₁ : SmoothRiemannianMetric I M)
+    (σ : Equiv.Perm (Fin 6)) (P S : SmoothCcTensor g₀ 0 2) (x : M) (m : Fin 4 → E) :
+    unitModel (I := I) (M := M) g₀ 4
+        (ccOperatorFieldComp (I := I) (M := M) g₀ 0 6 4
+          (cometricDoubleTraceCc (I := I) (M := M) g₀ g₁ 4)
+          (rsDomDomCongrSection (I := I) (M := M) g₀ 0 6 σ
+            (ccOperatorFieldComp (I := I) (M := M) g₀ 0 3 6
+              (slotExtendIter (I := I) (M := M) g₀ 0 3 3 (koszulCovGradRaw (I := I) (M := M) g₀ S))
+              (koszulCovecCc (I := I) g₀ P)))) x m =
+      ∑ e : Fin (Module.finrank ℝ E),
+        unitModel (I := I) (M := M) g₀ 3 (koszulCovecCc (I := I) g₀ P) x
+            ![((Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x (smoothOrthoFrame (I := I) g₁ x e x))
+                (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x (smoothOrthoFrame (I := I) g₁ x e x)) m) :
+                  Fin 6 → E) (σ 0)),
+              ((Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x (smoothOrthoFrame (I := I) g₁ x e x))
+                (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x (smoothOrthoFrame (I := I) g₁ x e x)) m) :
+                  Fin 6 → E) (σ 1)),
+              ((Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x (smoothOrthoFrame (I := I) g₁ x e x))
+                (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x (smoothOrthoFrame (I := I) g₁ x e x)) m) :
+                  Fin 6 → E) (σ 2))] *
+          unitModel (I := I) (M := M) g₀ 3 (koszulCovGradRaw (I := I) (M := M) g₀ S) x
+            ![((Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x (smoothOrthoFrame (I := I) g₁ x e x))
+                (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x (smoothOrthoFrame (I := I) g₁ x e x)) m) :
+                  Fin 6 → E) (σ 3)),
+              ((Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x (smoothOrthoFrame (I := I) g₁ x e x))
+                (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x (smoothOrthoFrame (I := I) g₁ x e x)) m) :
+                  Fin 6 → E) (σ 4)),
+              ((Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x (smoothOrthoFrame (I := I) g₁ x e x))
+                (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x (smoothOrthoFrame (I := I) g₁ x e x)) m) :
+                  Fin 6 → E) (σ 5))] := by
+  classical
+  set κ3 : SmoothCcTensor g₀ 0 3 := koszulCovGradRaw (I := I) (M := M) g₀ S with hκ3_def
+  set Cval : Tensor0SSpace 3 I x :=
+    (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 3 I x from
+      (koszulCovecCc (I := I) g₀ P).toSection x)
+      (unitTensor (I := I) (M := M) x) with hCval_def
+  set Y : Tensor0SSpace 6 I x :=
+    (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 6 I x from
+      (rsDomDomCongrSection (I := I) (M := M) g₀ 0 6 σ
+        (ccOperatorFieldComp (I := I) (M := M) g₀ 0 3 6
+          (slotExtendIter (I := I) (M := M) g₀ 0 3 3 κ3)
+          (koszulCovecCc (I := I) g₀ P))).toSection x)
+      (unitTensor (I := I) (M := M) x) with hY_def
+  have hYval : ∀ w : Fin 6 → E,
+      Tensor0SSpace.toModel Y w =
+        Tensor0SSpace.toModel Cval ![w (σ 0), w (σ 1), w (σ 2)] *
+          unitModel (I := I) (M := M) g₀ 3 κ3 x
+            ![w (σ 3), w (σ 4), w (σ 5)] := by
+    intro w
+    rw [hY_def]
+    rw [show ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 6 I x from
+        (rsDomDomCongrSection (I := I) (M := M) g₀ 0 6 σ
+          (ccOperatorFieldComp (I := I) (M := M) g₀ 0 3 6
+            (slotExtendIter (I := I) (M := M) g₀ 0 3 3 κ3)
+            (koszulCovecCc (I := I) g₀ P))).toSection x)
+        (unitTensor (I := I) (M := M) x)) =
+        ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 6 I x from
+          tensorRSDomDomCongr σ
+            ((ccOperatorFieldComp (I := I) (M := M) g₀ 0 3 6
+              (slotExtendIter (I := I) (M := M) g₀ 0 3 3 κ3)
+              (koszulCovecCc (I := I) g₀ P)).toSection x))
+          (unitTensor (I := I) (M := M) x)) from by
+      rw [rsDomDomCongrSection_toSection]]
+    rw [toModel_rsDomDomCongr_apply (I := I) (M := M) σ
+      ((ccOperatorFieldComp (I := I) (M := M) g₀ 0 3 6
+        (slotExtendIter (I := I) (M := M) g₀ 0 3 3 κ3)
+        (koszulCovecCc (I := I) g₀ P)).toSection x)
+      (unitTensor (I := I) (M := M) x)]
+    rw [ContinuousMultilinearMap.domDomCongr_apply]
+    rw [show ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 6 I x from
+        (ccOperatorFieldComp (I := I) (M := M) g₀ 0 3 6
+          (slotExtendIter (I := I) (M := M) g₀ 0 3 3 κ3)
+          (koszulCovecCc (I := I) g₀ P)).toSection x)
+        (unitTensor (I := I) (M := M) x)) =
+        ((show Tensor0SSpace 3 I x →L[ℝ] Tensor0SSpace 6 I x from
+          (slotExtendIter (I := I) (M := M) g₀ 0 3 3 κ3).toSection x) Cval) from by
+      rw [operatorFieldComposition_toSection]
+      rfl]
+    rw [palatiniSlotExtendIter_three_toModel (I := I) (M := M) g₀ κ3 x Cval (fun i => w (σ i))]
+    refine congrArg₂ (· * ·) ?_ ?_
+    · refine congrArg _ ?_
+      funext k
+      fin_cases k <;> rfl
+    · rw [show unitModel (I := I) (M := M) g₀ 3 κ3 x
+          (fun k : Fin 3 => (fun i => w (σ i)) (Fin.natAdd 3 k)) =
+          unitModel (I := I) (M := M) g₀ 3 κ3 x
+            ![w (σ 3), w (σ 4), w (σ 5)] from by
+        refine congrArg _ ?_
+        funext k
+        fin_cases k <;> rfl]
+  rw [show unitModel (I := I) (M := M) g₀ 4
+      (ccOperatorFieldComp (I := I) (M := M) g₀ 0 6 4
+        (cometricDoubleTraceCc (I := I) (M := M) g₀ g₁ 4)
+        (rsDomDomCongrSection (I := I) (M := M) g₀ 0 6 σ
+          (ccOperatorFieldComp (I := I) (M := M) g₀ 0 3 6
+            (slotExtendIter (I := I) (M := M) g₀ 0 3 3 κ3)
+            (koszulCovecCc (I := I) g₀ P)))) x =
+      Tensor0SSpace.toModel (cometricDoubleTraceFib (I := I) g₁ 4 x Y) from by
+    rw [unitModel, hY_def]
+    rw [operatorFieldComposition_toSection]
+    rfl]
+  rw [cometricDoubleTraceFib_toModel (I := I) g₁ 4 x Y]
+  rw [modelDoubleTrace_apply (E := E) 4 (cometricLmodel (I := I) g₁ x)]
+  rw [cometric_dualTrace_eq_orthoFrame_diag (I := I) g₁ x
+    (mem_smoothOrthoFrameNeighborhood_self (I := I) (M := M) x)
+    (Tensor0SSpace.toModel Y) m]
+  refine Finset.sum_congr rfl fun e _ => ?_
+  rw [hYval]
+  rfl
+
+def sharpGradKoszulWeightedTerm (g₀ g₁ : SmoothRiemannianMetric I M) (σ : Equiv.Perm (Fin 6))
+    (P S : SmoothCcTensor g₀ 0 2) : SmoothCcTensor g₀ 0 4 :=
+  ccOperatorFieldComp (I := I) (M := M) g₀ 0 6 4 (cometricDoubleTraceCc (I := I) (M := M) g₀ g₁ 4)
+    (rsDomDomCongrSection (I := I) (M := M) g₀ 0 6 σ
+      (ccOperatorFieldComp (I := I) (M := M) g₀ 0 3 6
+        (slotExtendIter (I := I) (M := M) g₀ 0 3 3 (koszulCovGradRaw (I := I) (M := M) g₀ S))
+        (koszulCovecCc (I := I) g₀ P)))
+
+omit [SigmaCompactSpace M] in
+private lemma palatiniSGKWeights_unitModel_eq_kernel (g₀ g₁ : SmoothRiemannianMetric I M)
+    (P S : SmoothCcTensor g₀ 0 2)
+    (htie : ∀ (y : M) (v w : TangentSpace I y),
+      g₁.inner y v w = g₀.inner y v w + ccTensorBilinSymm (I := I) g₀ P y v w)
+    (x : M) (p q v0 v1 : TangentSpace I x) :
+    unitModel (I := I) (M := M) g₀ 4
+        ((sharpGradKoszulWeightedTerm (I := I) (M := M) g₀ g₁ sharpGradKoszulPermutationOne P S +
+            sharpGradKoszulWeightedTerm (I := I) (M := M) g₀ g₁ sharpGradKoszulPermutationTwo P S) -
+          (sharpGradKoszulWeightedTerm (I := I) (M := M) g₀ g₁ sharpGradKoszulPermutationThree P S +
+            sharpGradKoszulWeightedTerm (I := I) (M := M) g₀ g₁ sharpGradKoszulPermutationFour P S)) x
+        ![tangentSpaceModelContinuousLinearEquiv (I := I) x v0, tangentSpaceModelContinuousLinearEquiv (I := I) x v1, tangentSpaceModelContinuousLinearEquiv (I := I) x p, tangentSpaceModelContinuousLinearEquiv (I := I) x q] =
+      sharpGradKoszulKernelBilin (I := I) g₀ g₁ S x p q v0 v1 := by
+  classical
+  have hM1 : unitModel (I := I) (M := M) g₀ 4
+      (sharpGradKoszulWeightedTerm (I := I) (M := M) g₀ g₁ sharpGradKoszulPermutationOne P S) x
+      ![tangentSpaceModelContinuousLinearEquiv (I := I) x v0, tangentSpaceModelContinuousLinearEquiv (I := I) x v1, tangentSpaceModelContinuousLinearEquiv (I := I) x p, tangentSpaceModelContinuousLinearEquiv (I := I) x q] =
+      ∑ e : Fin (Module.finrank ℝ E),
+        unitModel (I := I) (M := M) g₀ 3 (koszulCovecCc (I := I) g₀ P) x
+            ![tangentSpaceModelContinuousLinearEquiv (I := I) x v1, tangentSpaceModelContinuousLinearEquiv (I := I) x p,
+              tangentSpaceModelContinuousLinearEquiv (I := I) x (smoothOrthoFrame (I := I) g₁ x e x)] *
+          unitModel (I := I) (M := M) g₀ 3 (koszulCovGradRaw (I := I) (M := M) g₀ S) x
+            ![tangentSpaceModelContinuousLinearEquiv (I := I) x (smoothOrthoFrame (I := I) g₁ x e x),
+              tangentSpaceModelContinuousLinearEquiv (I := I) x q, tangentSpaceModelContinuousLinearEquiv (I := I) x v0] := by
+    rw [show sharpGradKoszulWeightedTerm (I := I) (M := M) g₀ g₁ sharpGradKoszulPermutationOne P S =
+        ccOperatorFieldComp (I := I) (M := M) g₀ 0 6 4
+          (cometricDoubleTraceCc (I := I) (M := M) g₀ g₁ 4)
+          (rsDomDomCongrSection (I := I) (M := M) g₀ 0 6 sharpGradKoszulPermutationOne
+            (ccOperatorFieldComp (I := I) (M := M) g₀ 0 3 6
+              (slotExtendIter (I := I) (M := M) g₀ 0 3 3 (koszulCovGradRaw (I := I) (M := M) g₀ S))
+              (koszulCovecCc (I := I) g₀ P))) from rfl]
+    rw [palatiniSGKMvWeight_unitModel_gen (I := I) (M := M) g₀ g₁ sharpGradKoszulPermutationOne P S x
+      ![tangentSpaceModelContinuousLinearEquiv (I := I) x v0, tangentSpaceModelContinuousLinearEquiv (I := I) x v1, tangentSpaceModelContinuousLinearEquiv (I := I) x p, tangentSpaceModelContinuousLinearEquiv (I := I) x q]]
+    refine Finset.sum_congr rfl fun e _ => ?_
+    refine congrArg₂ (· * ·) ?_ ?_
+    · refine congrArg _ ?_
+      funext k
+      fin_cases k <;> rfl
+    · refine congrArg _ ?_
+      funext k
+      fin_cases k <;> rfl
+  have hM2 : unitModel (I := I) (M := M) g₀ 4
+      (sharpGradKoszulWeightedTerm (I := I) (M := M) g₀ g₁ sharpGradKoszulPermutationTwo P S) x
+      ![tangentSpaceModelContinuousLinearEquiv (I := I) x v0, tangentSpaceModelContinuousLinearEquiv (I := I) x v1, tangentSpaceModelContinuousLinearEquiv (I := I) x p, tangentSpaceModelContinuousLinearEquiv (I := I) x q] =
+      ∑ e : Fin (Module.finrank ℝ E),
+        unitModel (I := I) (M := M) g₀ 3 (koszulCovecCc (I := I) g₀ P) x
+            ![tangentSpaceModelContinuousLinearEquiv (I := I) x (smoothOrthoFrame (I := I) g₁ x e x),
+              tangentSpaceModelContinuousLinearEquiv (I := I) x p, tangentSpaceModelContinuousLinearEquiv (I := I) x v1] *
+          unitModel (I := I) (M := M) g₀ 3 (koszulCovGradRaw (I := I) (M := M) g₀ S) x
+            ![tangentSpaceModelContinuousLinearEquiv (I := I) x (smoothOrthoFrame (I := I) g₁ x e x),
+              tangentSpaceModelContinuousLinearEquiv (I := I) x q, tangentSpaceModelContinuousLinearEquiv (I := I) x v0] := by
+    rw [show sharpGradKoszulWeightedTerm (I := I) (M := M) g₀ g₁ sharpGradKoszulPermutationTwo P S =
+        ccOperatorFieldComp (I := I) (M := M) g₀ 0 6 4
+          (cometricDoubleTraceCc (I := I) (M := M) g₀ g₁ 4)
+          (rsDomDomCongrSection (I := I) (M := M) g₀ 0 6 sharpGradKoszulPermutationTwo
+            (ccOperatorFieldComp (I := I) (M := M) g₀ 0 3 6
+              (slotExtendIter (I := I) (M := M) g₀ 0 3 3 (koszulCovGradRaw (I := I) (M := M) g₀ S))
+              (koszulCovecCc (I := I) g₀ P))) from rfl]
+    rw [palatiniSGKMvWeight_unitModel_gen (I := I) (M := M) g₀ g₁ sharpGradKoszulPermutationTwo P S x
+      ![tangentSpaceModelContinuousLinearEquiv (I := I) x v0, tangentSpaceModelContinuousLinearEquiv (I := I) x v1, tangentSpaceModelContinuousLinearEquiv (I := I) x p, tangentSpaceModelContinuousLinearEquiv (I := I) x q]]
+    refine Finset.sum_congr rfl fun e _ => ?_
+    refine congrArg₂ (· * ·) ?_ ?_
+    · refine congrArg _ ?_
+      funext k
+      fin_cases k <;> rfl
+    · refine congrArg _ ?_
+      funext k
+      fin_cases k <;> rfl
+  have hM3 : unitModel (I := I) (M := M) g₀ 4
+      (sharpGradKoszulWeightedTerm (I := I) (M := M) g₀ g₁ sharpGradKoszulPermutationThree P S) x
+      ![tangentSpaceModelContinuousLinearEquiv (I := I) x v0, tangentSpaceModelContinuousLinearEquiv (I := I) x v1, tangentSpaceModelContinuousLinearEquiv (I := I) x p, tangentSpaceModelContinuousLinearEquiv (I := I) x q] =
+      ∑ e : Fin (Module.finrank ℝ E),
+        unitModel (I := I) (M := M) g₀ 3 (koszulCovecCc (I := I) g₀ P) x
+            ![tangentSpaceModelContinuousLinearEquiv (I := I) x v1, tangentSpaceModelContinuousLinearEquiv (I := I) x v0,
+              tangentSpaceModelContinuousLinearEquiv (I := I) x (smoothOrthoFrame (I := I) g₁ x e x)] *
+          unitModel (I := I) (M := M) g₀ 3 (koszulCovGradRaw (I := I) (M := M) g₀ S) x
+            ![tangentSpaceModelContinuousLinearEquiv (I := I) x (smoothOrthoFrame (I := I) g₁ x e x),
+              tangentSpaceModelContinuousLinearEquiv (I := I) x q, tangentSpaceModelContinuousLinearEquiv (I := I) x p] := by
+    rw [show sharpGradKoszulWeightedTerm (I := I) (M := M) g₀ g₁ sharpGradKoszulPermutationThree P S =
+        ccOperatorFieldComp (I := I) (M := M) g₀ 0 6 4
+          (cometricDoubleTraceCc (I := I) (M := M) g₀ g₁ 4)
+          (rsDomDomCongrSection (I := I) (M := M) g₀ 0 6 sharpGradKoszulPermutationThree
+            (ccOperatorFieldComp (I := I) (M := M) g₀ 0 3 6
+              (slotExtendIter (I := I) (M := M) g₀ 0 3 3 (koszulCovGradRaw (I := I) (M := M) g₀ S))
+              (koszulCovecCc (I := I) g₀ P))) from rfl]
+    rw [palatiniSGKMvWeight_unitModel_gen (I := I) (M := M) g₀ g₁ sharpGradKoszulPermutationThree P S x
+      ![tangentSpaceModelContinuousLinearEquiv (I := I) x v0, tangentSpaceModelContinuousLinearEquiv (I := I) x v1, tangentSpaceModelContinuousLinearEquiv (I := I) x p, tangentSpaceModelContinuousLinearEquiv (I := I) x q]]
+    refine Finset.sum_congr rfl fun e _ => ?_
+    refine congrArg₂ (· * ·) ?_ ?_
+    · refine congrArg _ ?_
+      funext k
+      fin_cases k <;> rfl
+    · refine congrArg _ ?_
+      funext k
+      fin_cases k <;> rfl
+  have hM4 : unitModel (I := I) (M := M) g₀ 4
+      (sharpGradKoszulWeightedTerm (I := I) (M := M) g₀ g₁ sharpGradKoszulPermutationFour P S) x
+      ![tangentSpaceModelContinuousLinearEquiv (I := I) x v0, tangentSpaceModelContinuousLinearEquiv (I := I) x v1, tangentSpaceModelContinuousLinearEquiv (I := I) x p, tangentSpaceModelContinuousLinearEquiv (I := I) x q] =
+      ∑ e : Fin (Module.finrank ℝ E),
+        unitModel (I := I) (M := M) g₀ 3 (koszulCovecCc (I := I) g₀ P) x
+            ![tangentSpaceModelContinuousLinearEquiv (I := I) x (smoothOrthoFrame (I := I) g₁ x e x),
+              tangentSpaceModelContinuousLinearEquiv (I := I) x v0, tangentSpaceModelContinuousLinearEquiv (I := I) x v1] *
+          unitModel (I := I) (M := M) g₀ 3 (koszulCovGradRaw (I := I) (M := M) g₀ S) x
+            ![tangentSpaceModelContinuousLinearEquiv (I := I) x (smoothOrthoFrame (I := I) g₁ x e x),
+              tangentSpaceModelContinuousLinearEquiv (I := I) x q, tangentSpaceModelContinuousLinearEquiv (I := I) x p] := by
+    rw [show sharpGradKoszulWeightedTerm (I := I) (M := M) g₀ g₁ sharpGradKoszulPermutationFour P S =
+        ccOperatorFieldComp (I := I) (M := M) g₀ 0 6 4
+          (cometricDoubleTraceCc (I := I) (M := M) g₀ g₁ 4)
+          (rsDomDomCongrSection (I := I) (M := M) g₀ 0 6 sharpGradKoszulPermutationFour
+            (ccOperatorFieldComp (I := I) (M := M) g₀ 0 3 6
+              (slotExtendIter (I := I) (M := M) g₀ 0 3 3 (koszulCovGradRaw (I := I) (M := M) g₀ S))
+              (koszulCovecCc (I := I) g₀ P))) from rfl]
+    rw [palatiniSGKMvWeight_unitModel_gen (I := I) (M := M) g₀ g₁ sharpGradKoszulPermutationFour P S x
+      ![tangentSpaceModelContinuousLinearEquiv (I := I) x v0, tangentSpaceModelContinuousLinearEquiv (I := I) x v1, tangentSpaceModelContinuousLinearEquiv (I := I) x p, tangentSpaceModelContinuousLinearEquiv (I := I) x q]]
+    refine Finset.sum_congr rfl fun e _ => ?_
+    refine congrArg₂ (· * ·) ?_ ?_
+    · refine congrArg _ ?_
+      funext k
+      fin_cases k <;> rfl
+    · refine congrArg _ ?_
+      funext k
+      fin_cases k <;> rfl
+  have hT1 : g₁.inner x (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x p
+      (sharpRaisedKoszulVec (I := I) g₀ g₁ S x q v0)) v1 =
+      ∑ e : Fin (Module.finrank ℝ E),
+        unitModel (I := I) (M := M) g₀ 3 (koszulCovecCc (I := I) g₀ P) x
+            ![tangentSpaceModelContinuousLinearEquiv (I := I) x v1, tangentSpaceModelContinuousLinearEquiv (I := I) x p,
+              tangentSpaceModelContinuousLinearEquiv (I := I) x (smoothOrthoFrame (I := I) g₁ x e x)] *
+          unitModel (I := I) (M := M) g₀ 3 (koszulCovGradRaw (I := I) (M := M) g₀ S) x
+            ![tangentSpaceModelContinuousLinearEquiv (I := I) x (smoothOrthoFrame (I := I) g₁ x e x),
+              tangentSpaceModelContinuousLinearEquiv (I := I) x q, tangentSpaceModelContinuousLinearEquiv (I := I) x v0] := by
+    conv_lhs => rw [palatiniOrthoFrame_center_repr (I := I) (M := M) g₁ x
+      (sharpRaisedKoszulVec (I := I) g₀ g₁ S x q v0)]
+    rw [map_sum, map_sum, sum_apply]
+    refine Finset.sum_congr rfl fun e _ => ?_
+    rw [map_smul, map_smul, smul_apply, smul_eq_mul]
+    rw [palatiniInner_sharpKoszul_right (I := I) (M := M) g₀ g₁ S x q v0
+      (smoothOrthoFrame (I := I) g₁ x e x)]
+    rw [palatiniKoszulCc_unitModel_eq_g1_inner (I := I) (M := M) g₀ g₁ P htie x p
+      (smoothOrthoFrame (I := I) g₁ x e x) v1]
+    rw [palatiniKRaw_unitModel_eq_linearizedKoszul (I := I) (M := M) g₀ S x q v0
+      (smoothOrthoFrame (I := I) g₁ x e x)]
+    ring
+  have hT2 : g₁.inner x (sharpRaisedKoszulVec (I := I) g₀ g₁ S x q v0)
+      (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x p v1) =
+      ∑ e : Fin (Module.finrank ℝ E),
+        unitModel (I := I) (M := M) g₀ 3 (koszulCovecCc (I := I) g₀ P) x
+            ![tangentSpaceModelContinuousLinearEquiv (I := I) x (smoothOrthoFrame (I := I) g₁ x e x),
+              tangentSpaceModelContinuousLinearEquiv (I := I) x p, tangentSpaceModelContinuousLinearEquiv (I := I) x v1] *
+          unitModel (I := I) (M := M) g₀ 3 (koszulCovGradRaw (I := I) (M := M) g₀ S) x
+            ![tangentSpaceModelContinuousLinearEquiv (I := I) x (smoothOrthoFrame (I := I) g₁ x e x),
+              tangentSpaceModelContinuousLinearEquiv (I := I) x q, tangentSpaceModelContinuousLinearEquiv (I := I) x v0] := by
+    conv_lhs => rw [palatiniOrthoFrame_center_repr (I := I) (M := M) g₁ x
+      (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x p v1)]
+    rw [map_sum]
+    refine Finset.sum_congr rfl fun e _ => ?_
+    rw [map_smul, smul_eq_mul]
+    rw [palatiniInner_sharpKoszul_left (I := I) (M := M) g₀ g₁ S x q v0
+      (smoothOrthoFrame (I := I) g₁ x e x)]
+    rw [g₁.symm x (smoothOrthoFrame (I := I) g₁ x e x)
+      (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x p v1)]
+    rw [← palatiniKoszulCc_unitModel_eq_g1_inner (I := I) (M := M) g₀ g₁ P htie x p v1
+      (smoothOrthoFrame (I := I) g₁ x e x)]
+    rw [← palatiniKRaw_unitModel_eq_linearizedKoszul (I := I) (M := M) g₀ S x q v0
+      (smoothOrthoFrame (I := I) g₁ x e x)]
+  have hT3 : g₁.inner x (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x v0
+      (sharpRaisedKoszulVec (I := I) g₀ g₁ S x q p)) v1 =
+      ∑ e : Fin (Module.finrank ℝ E),
+        unitModel (I := I) (M := M) g₀ 3 (koszulCovecCc (I := I) g₀ P) x
+            ![tangentSpaceModelContinuousLinearEquiv (I := I) x v1, tangentSpaceModelContinuousLinearEquiv (I := I) x v0,
+              tangentSpaceModelContinuousLinearEquiv (I := I) x (smoothOrthoFrame (I := I) g₁ x e x)] *
+          unitModel (I := I) (M := M) g₀ 3 (koszulCovGradRaw (I := I) (M := M) g₀ S) x
+            ![tangentSpaceModelContinuousLinearEquiv (I := I) x (smoothOrthoFrame (I := I) g₁ x e x),
+              tangentSpaceModelContinuousLinearEquiv (I := I) x q, tangentSpaceModelContinuousLinearEquiv (I := I) x p] := by
+    conv_lhs => rw [palatiniOrthoFrame_center_repr (I := I) (M := M) g₁ x
+      (sharpRaisedKoszulVec (I := I) g₀ g₁ S x q p)]
+    rw [map_sum, map_sum, sum_apply]
+    refine Finset.sum_congr rfl fun e _ => ?_
+    rw [map_smul, map_smul, smul_apply, smul_eq_mul]
+    rw [palatiniInner_sharpKoszul_right (I := I) (M := M) g₀ g₁ S x q p
+      (smoothOrthoFrame (I := I) g₁ x e x)]
+    rw [palatiniKoszulCc_unitModel_eq_g1_inner (I := I) (M := M) g₀ g₁ P htie x v0
+      (smoothOrthoFrame (I := I) g₁ x e x) v1]
+    rw [palatiniKRaw_unitModel_eq_linearizedKoszul (I := I) (M := M) g₀ S x q p
+      (smoothOrthoFrame (I := I) g₁ x e x)]
+    ring
+  have hT4 : g₁.inner x (sharpRaisedKoszulVec (I := I) g₀ g₁ S x q p)
+      (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x v0 v1) =
+      ∑ e : Fin (Module.finrank ℝ E),
+        unitModel (I := I) (M := M) g₀ 3 (koszulCovecCc (I := I) g₀ P) x
+            ![tangentSpaceModelContinuousLinearEquiv (I := I) x (smoothOrthoFrame (I := I) g₁ x e x),
+              tangentSpaceModelContinuousLinearEquiv (I := I) x v0, tangentSpaceModelContinuousLinearEquiv (I := I) x v1] *
+          unitModel (I := I) (M := M) g₀ 3 (koszulCovGradRaw (I := I) (M := M) g₀ S) x
+            ![tangentSpaceModelContinuousLinearEquiv (I := I) x (smoothOrthoFrame (I := I) g₁ x e x),
+              tangentSpaceModelContinuousLinearEquiv (I := I) x q, tangentSpaceModelContinuousLinearEquiv (I := I) x p] := by
+    conv_lhs => rw [palatiniOrthoFrame_center_repr (I := I) (M := M) g₁ x
+      (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x v0 v1)]
+    rw [map_sum]
+    refine Finset.sum_congr rfl fun e _ => ?_
+    rw [map_smul, smul_eq_mul]
+    rw [palatiniInner_sharpKoszul_left (I := I) (M := M) g₀ g₁ S x q p
+      (smoothOrthoFrame (I := I) g₁ x e x)]
+    rw [g₁.symm x (smoothOrthoFrame (I := I) g₁ x e x)
+      (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x v0 v1)]
+    rw [← palatiniKoszulCc_unitModel_eq_g1_inner (I := I) (M := M) g₀ g₁ P htie x v0 v1
+      (smoothOrthoFrame (I := I) g₁ x e x)]
+    rw [← palatiniKRaw_unitModel_eq_linearizedKoszul (I := I) (M := M) g₀ S x q p
+      (smoothOrthoFrame (I := I) g₁ x e x)]
+  rw [palatiniUnitModel_sub (I := I) (M := M) g₀ 4 _ _ x,
+    palatiniUnitModel_add (I := I) (M := M) g₀ 4 _ _ x,
+    palatiniUnitModel_add (I := I) (M := M) g₀ 4 _ _ x,
+    sub_apply, add_apply, add_apply]
+  rw [hM1, hM2, hM3, hM4]
+  rw [sharpGradKoszulKernelBilin_apply (I := I) g₀ g₁ S x p q v0 v1]
+  rw [hT1, hT2, hT3, hT4]
+
+omit [SigmaCompactSpace M] in
+lemma ricciCovariantTermSharpGradKoszulResidualField_eq_decomposition (g₀ g₁ : SmoothRiemannianMetric I M)
+    (P S : SmoothCcTensor g₀ 0 2)
+    (htie : ∀ (y : M) (v w : TangentSpace I y),
+      g₁.inner y v w = g₀.inner y v w + ccTensorBilinSymm (I := I) g₀ P y v w) :
+    ricciCovariantTermSharpGradKoszulResidualField (I := I) (M := M) g₀ g₁ S =
+      (2 : ℝ) •
+        ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2 (cometricDoublePairTraceCoefficient (I := I) (M := M) g₀ g₁)
+          (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
+            (slotExtendIter (I := I) (M := M) g₀ 0 4 2
+              ((sharpGradKoszulWeightedTerm (I := I) (M := M) g₀ g₁ sharpGradKoszulPermutationOne P S +
+                  sharpGradKoszulWeightedTerm (I := I) (M := M) g₀ g₁ sharpGradKoszulPermutationTwo P S) -
+                (sharpGradKoszulWeightedTerm (I := I) (M := M) g₀ g₁ sharpGradKoszulPermutationThree P S +
+                  sharpGradKoszulWeightedTerm (I := I) (M := M) g₀ g₁ sharpGradKoszulPermutationFour P S)))) := by
+  classical
+  apply SmoothCcTensor.ext
+  apply ContMDiffSection.ext
+  intro x
+  apply tensorRSSpace_ext 2 2 x
+  intro D
+  apply Tensor0SSpace.toModel_injective
+  apply ContinuousMultilinearMap.ext
+  intro v
+  beta_reduce
+  have hRHSsmul : ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
+      (((2 : ℝ) •
+        ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2 (cometricDoublePairTraceCoefficient (I := I) (M := M) g₀ g₁)
+          (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
+            (slotExtendIter (I := I) (M := M) g₀ 0 4 2
+              ((sharpGradKoszulWeightedTerm (I := I) (M := M) g₀ g₁ sharpGradKoszulPermutationOne P S +
+                  sharpGradKoszulWeightedTerm (I := I) (M := M) g₀ g₁ sharpGradKoszulPermutationTwo P S) -
+                (sharpGradKoszulWeightedTerm (I := I) (M := M) g₀ g₁ sharpGradKoszulPermutationThree P S +
+                  sharpGradKoszulWeightedTerm (I := I) (M := M) g₀ g₁ sharpGradKoszulPermutationFour P S))))).toSection
+                    x)) D) =
+      (2 : ℝ) • ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
+        (ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2 (cometricDoublePairTraceCoefficient (I := I) (M := M) g₀ g₁)
+          (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
+            (slotExtendIter (I := I) (M := M) g₀ 0 4 2
+              ((sharpGradKoszulWeightedTerm (I := I) (M := M) g₀ g₁ sharpGradKoszulPermutationOne P S +
+                  sharpGradKoszulWeightedTerm (I := I) (M := M) g₀ g₁ sharpGradKoszulPermutationTwo P S) -
+                (sharpGradKoszulWeightedTerm (I := I) (M := M) g₀ g₁ sharpGradKoszulPermutationThree P S +
+                  sharpGradKoszulWeightedTerm (I := I) (M := M) g₀ g₁ sharpGradKoszulPermutationFour P S))))).toSection
+                    x) D) := by
+    rw [show ((((2 : ℝ) •
+        ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2 (cometricDoublePairTraceCoefficient (I := I) (M := M) g₀ g₁)
+          (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
+            (slotExtendIter (I := I) (M := M) g₀ 0 4 2
+              ((sharpGradKoszulWeightedTerm (I := I) (M := M) g₀ g₁ sharpGradKoszulPermutationOne P S +
+                  sharpGradKoszulWeightedTerm (I := I) (M := M) g₀ g₁ sharpGradKoszulPermutationTwo P S) -
+                (sharpGradKoszulWeightedTerm (I := I) (M := M) g₀ g₁ sharpGradKoszulPermutationThree P S +
+                  sharpGradKoszulWeightedTerm (I := I) (M := M) g₀ g₁ sharpGradKoszulPermutationFour P S))))).toSection
+                    x)) =
+        (2 : ℝ) •
+          ((ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2
+            (cometricDoublePairTraceCoefficient (I := I) (M := M) g₀ g₁)
+            (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
+              (slotExtendIter (I := I) (M := M) g₀ 0 4 2
+                ((sharpGradKoszulWeightedTerm (I := I) (M := M) g₀ g₁ sharpGradKoszulPermutationOne P S +
+                    sharpGradKoszulWeightedTerm (I := I) (M := M) g₀ g₁ sharpGradKoszulPermutationTwo P S) -
+                  (sharpGradKoszulWeightedTerm (I := I) (M := M) g₀ g₁ sharpGradKoszulPermutationThree P S +
+                    sharpGradKoszulWeightedTerm (I := I) (M := M) g₀ g₁ sharpGradKoszulPermutationFour P S))))).toSection
+                      x) from by
+      rw [SmoothCcTensor.toSection_smul]; rfl]
+    rfl
+  rw [hRHSsmul, Tensor0SSpace.toModel_smul, smul_apply, smul_eq_mul]
+  rw [palatiniPairTraceOp_apply_toModel (I := I) (M := M) g₀ g₁
+    ((sharpGradKoszulWeightedTerm (I := I) (M := M) g₀ g₁ sharpGradKoszulPermutationOne P S +
+        sharpGradKoszulWeightedTerm (I := I) (M := M) g₀ g₁ sharpGradKoszulPermutationTwo P S) -
+      (sharpGradKoszulWeightedTerm (I := I) (M := M) g₀ g₁ sharpGradKoszulPermutationThree P S +
+        sharpGradKoszulWeightedTerm (I := I) (M := M) g₀ g₁ sharpGradKoszulPermutationFour P S)) x D v]
+  rw [show ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
+      (ricciCovariantTermSharpGradKoszulResidualField (I := I) (M := M) g₀ g₁ S).toSection x) D) =
+      sharpGradKoszulBiContrFib (I := I) g₀ g₁ S x D from rfl]
+  rw [show sharpGradKoszulBiContrFib (I := I) g₀ g₁ S x =
+      sharpGradKoszulBiContrFibFixedFrame (I := I) g₀ g₁ S
+        (smoothOrthoFrame (I := I) g₁ x) x from rfl]
+  rw [sharpGradKoszulBiContrFibFixedFrame_toModel (I := I) g₀ g₁ S
+    (smoothOrthoFrame (I := I) g₁ x) x D v]
+  change (2 * ∑ a, ∑ b,
+      Tensor0SSpace.toModel D
+          ![tangentSpaceModelContinuousLinearEquiv (I := I) x
+              (smoothOrthoFrame (I := I) g₁ x a x),
+            tangentSpaceModelContinuousLinearEquiv (I := I) x
+              (smoothOrthoFrame (I := I) g₁ x b x)] *
+        sharpGradKoszulKernelBilin (I := I) g₀ g₁ S x
+          (smoothOrthoFrame (I := I) g₁ x a x) (smoothOrthoFrame (I := I) g₁ x b x)
+          ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 0))
+          ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 1))) = _
+  congr 1
+  rw [Finset.sum_comm]
+  refine Finset.sum_congr rfl fun b _ => ?_
+  refine Finset.sum_congr rfl fun a _ => ?_
+  have hkernel := palatiniSGKWeights_unitModel_eq_kernel (I := I) (M := M) g₀ g₁ P S htie x
+    (smoothOrthoFrame (I := I) g₁ x a x) (smoothOrthoFrame (I := I) g₁ x b x)
+    ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 0))
+    ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 1))
+  rw [show unitModel (I := I) (M := M) g₀ 4
+      ((sharpGradKoszulWeightedTerm (I := I) (M := M) g₀ g₁ sharpGradKoszulPermutationOne P S +
+          sharpGradKoszulWeightedTerm (I := I) (M := M) g₀ g₁ sharpGradKoszulPermutationTwo P S) -
+        (sharpGradKoszulWeightedTerm (I := I) (M := M) g₀ g₁ sharpGradKoszulPermutationThree P S +
+          sharpGradKoszulWeightedTerm (I := I) (M := M) g₀ g₁ sharpGradKoszulPermutationFour P S)) x
+      ![v 0, v 1,
+        tangentSpaceModelContinuousLinearEquiv (I := I) x (smoothOrthoFrame (I := I) g₁ x a x),
+        tangentSpaceModelContinuousLinearEquiv (I := I) x (smoothOrthoFrame (I := I) g₁ x b x)] =
+      sharpGradKoszulKernelBilin (I := I) g₀ g₁ S x
+        (smoothOrthoFrame (I := I) g₁ x a x) (smoothOrthoFrame (I := I) g₁ x b x)
+        ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 0))
+        ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 1)) from by
+    simpa only [ContinuousLinearEquiv.apply_symm_apply] using hkernel]
+
+omit [CompactSpace M] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
+private lemma palatiniCovGrad_unitModel_smul (g₀ : SmoothRiemannianMetric I M)
+    (T : SmoothCcTensor g₀ 0 2) (c : ℝ) (x : M) (v : Fin 3 → E) :
+    unitModel (I := I) (M := M) g₀ 3 (covGrad (I := I) (M := M) g₀ 0 2 (c • T)) x v =
+      c * unitModel (I := I) (M := M) g₀ 3 (covGrad (I := I) (M := M) g₀ 0 2 T) x v := by
+  rw [covGrad_smul (I := I) (M := M)]
+  rw [palatiniUnitModel_smul (I := I) (M := M) g₀ 3 c (covGrad (I := I) (M := M) g₀ 0 2 T) x]
+  rw [smul_apply, smul_eq_mul]
+
+omit [BoundarylessManifold I M] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
+private lemma palatiniCcTensor02SymmCovGrad3_unitModel_smul (g₀ : SmoothRiemannianMetric I M)
+    (T : SmoothCcTensor g₀ 0 2) (c : ℝ) (x : M) (v : Fin 3 → E) :
+    unitModel (I := I) (M := M) g₀ 3 (ccTensor02SymmCovGrad3 (I := I) g₀ (c • T)) x v =
+      c * unitModel (I := I) (M := M) g₀ 3 (ccTensor02SymmCovGrad3 (I := I) g₀ T) x v := by
+  rw [ccTensor02SymmCovGrad3_def, ccTensor02SymmCovGrad3_def, ccTensor02Symm_smul (I := I) (M := M) g₀ c T]
+  exact palatiniCovGrad_unitModel_smul (I := I) (M := M) g₀ (ccTensor02Symm (I := I) g₀ T) c x v
+
+omit [SigmaCompactSpace M] in
+omit [BoundarylessManifold I M] in
+omit [NeZero (Module.finrank ℝ E)] in
+private lemma palatiniKoszulCc_unitModel_smul (g₀ : SmoothRiemannianMetric I M)
+    (T : SmoothCcTensor g₀ 0 2) (c : ℝ) (x : M) (m : Fin 3 → E) :
+    unitModel (I := I) (M := M) g₀ 3 (koszulCovecCc (I := I) g₀ (c • T)) x m =
+      c * unitModel (I := I) (M := M) g₀ 3 (koszulCovecCc (I := I) g₀ T) x m := by
+  let mt : Fin 3 → TangentSpace I x :=
+    fun i => (tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (m i)
+  rw [show m = ![
+      tangentSpaceModelContinuousLinearEquiv (I := I) x (mt 0),
+      tangentSpaceModelContinuousLinearEquiv (I := I) x (mt 1),
+      tangentSpaceModelContinuousLinearEquiv (I := I) x (mt 2)] from by
+    have hm : m = ![m 0, m 1, m 2] := by
+      funext k
+      fin_cases k <;> rfl
+    simpa only [mt, ContinuousLinearEquiv.apply_symm_apply] using hm]
+  rw [koszulCovecCc_unitModel (I := I) g₀ (c • T) x (mt 1) (mt 2) (mt 0),
+    koszulCovecCc_unitModel (I := I) g₀ T x (mt 1) (mt 2) (mt 0)]
+  rw [palatiniCcTensor02SymmCovGrad3_unitModel_smul (I := I) (M := M) g₀ T c x,
+    palatiniCcTensor02SymmCovGrad3_unitModel_smul (I := I) (M := M) g₀ T c x,
+    palatiniCcTensor02SymmCovGrad3_unitModel_smul (I := I) (M := M) g₀ T c x]
+  ring
+
+omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
+private lemma palatiniKRaw_unitModel_smul (g₀ : SmoothRiemannianMetric I M)
+    (T : SmoothCcTensor g₀ 0 2) (c : ℝ) (x : M) (m : Fin 3 → E) :
+    unitModel (I := I) (M := M) g₀ 3 (koszulCovGradRaw (I := I) (M := M) g₀ (c • T)) x m =
+      c * unitModel (I := I) (M := M) g₀ 3 (koszulCovGradRaw (I := I) (M := M) g₀ T) x m := by
+  rw [show m = ![m 0, m 1, m 2] from by
+    funext k
+    fin_cases k <;> rfl]
+  rw [palatiniKRaw_unitModel (I := I) (M := M) g₀ (c • T) x (m 1) (m 2) (m 0),
+    palatiniKRaw_unitModel (I := I) (M := M) g₀ T x (m 1) (m 2) (m 0)]
+  rw [palatiniCovGrad_unitModel_smul (I := I) (M := M) g₀ T c x,
+    palatiniCovGrad_unitModel_smul (I := I) (M := M) g₀ T c x,
+    palatiniCovGrad_unitModel_smul (I := I) (M := M) g₀ T c x]
+  ring
+
+omit [SigmaCompactSpace M] in
+omit [BoundarylessManifold I M] in
+private lemma palatiniSGKMvWeight_smul (g₀ g₁ : SmoothRiemannianMetric I M)
+    (σ : Equiv.Perm (Fin 6)) (T : SmoothCcTensor g₀ 0 2) (c : ℝ) :
+    sharpGradKoszulWeightedTerm (I := I) (M := M) g₀ g₁ σ (c • T) (c • T) =
+      (c * c) • sharpGradKoszulWeightedTerm (I := I) (M := M) g₀ g₁ σ T T := by
+  classical
+  apply SmoothCcTensor.ext
+  apply ContMDiffSection.ext
+  intro x
+  apply ContinuousLinearMap.ext
+  intro t
+  apply Tensor0SSpace.toModel_injective
+  apply ContinuousMultilinearMap.ext
+  intro m
+  have hdecomp := tensor0S_zero_rank_eq_smul_unitTensor (I := I) (M := M) x t
+  rw [hdecomp, map_smul, map_smul]
+  beta_reduce
+  rw [Tensor0SSpace.toModel_smul, Tensor0SSpace.toModel_smul,
+    smul_apply, smul_apply]
+  refine congrArg _ ?_
+  change unitModel (I := I) (M := M) g₀ 4
+      (sharpGradKoszulWeightedTerm (I := I) (M := M) g₀ g₁ σ (c • T) (c • T)) x m =
+    unitModel (I := I) (M := M) g₀ 4
+      ((c * c) • sharpGradKoszulWeightedTerm (I := I) (M := M) g₀ g₁ σ T T) x m
+  rw [palatiniUnitModel_smul (I := I) (M := M) g₀ 4 (c * c)
+    (sharpGradKoszulWeightedTerm (I := I) (M := M) g₀ g₁ σ T T) x]
+  rw [smul_apply, smul_eq_mul]
+  rw [show sharpGradKoszulWeightedTerm (I := I) (M := M) g₀ g₁ σ (c • T) (c • T) =
+      ccOperatorFieldComp (I := I) (M := M) g₀ 0 6 4
+        (cometricDoubleTraceCc (I := I) (M := M) g₀ g₁ 4)
+        (rsDomDomCongrSection (I := I) (M := M) g₀ 0 6 σ
+          (ccOperatorFieldComp (I := I) (M := M) g₀ 0 3 6
+            (slotExtendIter (I := I) (M := M) g₀ 0 3 3
+              (koszulCovGradRaw (I := I) (M := M) g₀ (c • T)))
+            (koszulCovecCc (I := I) g₀ (c • T)))) from rfl]
+  rw [show sharpGradKoszulWeightedTerm (I := I) (M := M) g₀ g₁ σ T T =
+      ccOperatorFieldComp (I := I) (M := M) g₀ 0 6 4
+        (cometricDoubleTraceCc (I := I) (M := M) g₀ g₁ 4)
+        (rsDomDomCongrSection (I := I) (M := M) g₀ 0 6 σ
+          (ccOperatorFieldComp (I := I) (M := M) g₀ 0 3 6
+            (slotExtendIter (I := I) (M := M) g₀ 0 3 3 (koszulCovGradRaw (I := I) (M := M) g₀ T))
+            (koszulCovecCc (I := I) g₀ T))) from rfl]
+  rw [palatiniSGKMvWeight_unitModel_gen (I := I) (M := M) g₀ g₁ σ (c • T) (c • T) x m,
+    palatiniSGKMvWeight_unitModel_gen (I := I) (M := M) g₀ g₁ σ T T x m]
+  rw [Finset.mul_sum]
+  refine Finset.sum_congr rfl fun e _ => ?_
+  rw [palatiniKoszulCc_unitModel_smul (I := I) (M := M) g₀ T c x,
+    palatiniKRaw_unitModel_smul (I := I) (M := M) g₀ T c x]
+  ring
+
+omit [SigmaCompactSpace M] in
+omit [BoundarylessManifold I M] in
+private lemma palatiniSGKWeights_pair_smul (g₀ g₁ : SmoothRiemannianMetric I M)
+    (T : SmoothCcTensor g₀ 0 2) (c : ℝ) :
+    (sharpGradKoszulWeightedTerm (I := I) (M := M) g₀ g₁ sharpGradKoszulPermutationOne (c • T) (c • T) +
+        sharpGradKoszulWeightedTerm (I := I) (M := M) g₀ g₁ sharpGradKoszulPermutationTwo (c • T) (c • T)) -
+      (sharpGradKoszulWeightedTerm (I := I) (M := M) g₀ g₁ sharpGradKoszulPermutationThree (c • T) (c • T) +
+        sharpGradKoszulWeightedTerm (I := I) (M := M) g₀ g₁ sharpGradKoszulPermutationFour (c • T) (c • T)) =
+      (c * c) •
+        ((sharpGradKoszulWeightedTerm (I := I) (M := M) g₀ g₁ sharpGradKoszulPermutationOne T T +
+            sharpGradKoszulWeightedTerm (I := I) (M := M) g₀ g₁ sharpGradKoszulPermutationTwo T T) -
+          (sharpGradKoszulWeightedTerm (I := I) (M := M) g₀ g₁ sharpGradKoszulPermutationThree T T +
+            sharpGradKoszulWeightedTerm (I := I) (M := M) g₀ g₁ sharpGradKoszulPermutationFour T T)) := by
+  rw [palatiniSGKMvWeight_smul (I := I) (M := M) g₀ g₁ sharpGradKoszulPermutationOne T c,
+    palatiniSGKMvWeight_smul (I := I) (M := M) g₀ g₁ sharpGradKoszulPermutationTwo T c,
+    palatiniSGKMvWeight_smul (I := I) (M := M) g₀ g₁ sharpGradKoszulPermutationThree T c,
+    palatiniSGKMvWeight_smul (I := I) (M := M) g₀ g₁ sharpGradKoszulPermutationFour T c]
+  rw [← smul_add, ← smul_add, ← smul_sub]
+
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
+    [SigmaCompactSpace M] in
+private lemma palatiniXiChain_toModel (g₀ : SmoothRiemannianMetric I M)
+    (X : SmoothCcTensor g₀ 0 4) (x : M) (D : Tensor0SSpace 2 I x) (w : Fin 6 → E) :
+    Tensor0SSpace.toModel
+        ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 6 I x from
+          (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
+            (slotExtendIter (I := I) (M := M) g₀ 0 4 2 X)).toSection x) D) w =
+      Tensor0SSpace.toModel D
+          ![(fun i => w (termPairTraceSlotPerm6 i)) 0, (fun i => w (termPairTraceSlotPerm6 i)) 1] *
+        unitModel (I := I) (M := M) g₀ 4 X x
+          (fun k : Fin 4 => (fun i => w (termPairTraceSlotPerm6 i)) (Fin.natAdd 2 k)) := by
+  rw [show ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 6 I x from
+      (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
+        (slotExtendIter (I := I) (M := M) g₀ 0 4 2 X)).toSection x) D) =
+      ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 6 I x from
+        tensorRSDomDomCongr termPairTraceSlotPerm6
+          ((slotExtendIter (I := I) (M := M) g₀ 0 4 2 X).toSection x)) D) from by
+    rw [rsDomDomCongrSection_toSection]]
+  rw [toModel_rsDomDomCongr_apply (I := I) (M := M) termPairTraceSlotPerm6
+    ((slotExtendIter (I := I) (M := M) g₀ 0 4 2 X).toSection x) D]
+  rw [ContinuousMultilinearMap.domDomCongr_apply]
+  exact palatiniSlotExtendIter_two_toModel (I := I) (M := M) g₀ X x D
+    (fun i => w (termPairTraceSlotPerm6 i))
+
+omit [SigmaCompactSpace M] in
+omit [BoundarylessManifold I M] in
+lemma sharpGradKoszulDecomposition_smul (g₀ g₁ : SmoothRiemannianMetric I M)
+    (T : SmoothCcTensor g₀ 0 2) (c : ℝ) :
+    rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
+      (slotExtendIter (I := I) (M := M) g₀ 0 4 2
+        ((sharpGradKoszulWeightedTerm (I := I) (M := M) g₀ g₁ sharpGradKoszulPermutationOne (c • T) (c • T) +
+            sharpGradKoszulWeightedTerm (I := I) (M := M) g₀ g₁ sharpGradKoszulPermutationTwo (c • T) (c • T)) -
+          (sharpGradKoszulWeightedTerm (I := I) (M := M) g₀ g₁ sharpGradKoszulPermutationThree (c • T) (c • T) +
+            sharpGradKoszulWeightedTerm (I := I) (M := M) g₀ g₁ sharpGradKoszulPermutationFour (c • T) (c • T)))) =
+    (c * c) • rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
+      (slotExtendIter (I := I) (M := M) g₀ 0 4 2
+        ((sharpGradKoszulWeightedTerm (I := I) (M := M) g₀ g₁ sharpGradKoszulPermutationOne T T +
+            sharpGradKoszulWeightedTerm (I := I) (M := M) g₀ g₁ sharpGradKoszulPermutationTwo T T) -
+          (sharpGradKoszulWeightedTerm (I := I) (M := M) g₀ g₁ sharpGradKoszulPermutationThree T T +
+            sharpGradKoszulWeightedTerm (I := I) (M := M) g₀ g₁ sharpGradKoszulPermutationFour T T))) := by
+  classical
+  rw [palatiniSGKWeights_pair_smul (I := I) (M := M) g₀ g₁ T c]
+  apply SmoothCcTensor.ext
+  apply ContMDiffSection.ext
+  intro x
+  apply ContinuousLinearMap.ext
+  intro D
+  apply Tensor0SSpace.toModel_injective
+  apply ContinuousMultilinearMap.ext
+  intro w
+  rw [show ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 6 I x from
+      (((c * c) • rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
+        (slotExtendIter (I := I) (M := M) g₀ 0 4 2
+          ((sharpGradKoszulWeightedTerm (I := I) (M := M) g₀ g₁ sharpGradKoszulPermutationOne T T +
+              sharpGradKoszulWeightedTerm (I := I) (M := M) g₀ g₁ sharpGradKoszulPermutationTwo T T) -
+            (sharpGradKoszulWeightedTerm (I := I) (M := M) g₀ g₁ sharpGradKoszulPermutationThree T T +
+              sharpGradKoszulWeightedTerm (I := I) (M := M) g₀ g₁ sharpGradKoszulPermutationFour T T)))).toSection x)) D)
+                =
+      (c * c) • ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 6 I x from
+        (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
+          (slotExtendIter (I := I) (M := M) g₀ 0 4 2
+            ((sharpGradKoszulWeightedTerm (I := I) (M := M) g₀ g₁ sharpGradKoszulPermutationOne T T +
+                sharpGradKoszulWeightedTerm (I := I) (M := M) g₀ g₁ sharpGradKoszulPermutationTwo T T) -
+              (sharpGradKoszulWeightedTerm (I := I) (M := M) g₀ g₁ sharpGradKoszulPermutationThree T T +
+                sharpGradKoszulWeightedTerm (I := I) (M := M) g₀ g₁ sharpGradKoszulPermutationFour T T)))).toSection x)
+                  D) from by
+    rw [show ((((c * c) • rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
+        (slotExtendIter (I := I) (M := M) g₀ 0 4 2
+          ((sharpGradKoszulWeightedTerm (I := I) (M := M) g₀ g₁ sharpGradKoszulPermutationOne T T +
+              sharpGradKoszulWeightedTerm (I := I) (M := M) g₀ g₁ sharpGradKoszulPermutationTwo T T) -
+            (sharpGradKoszulWeightedTerm (I := I) (M := M) g₀ g₁ sharpGradKoszulPermutationThree T T +
+              sharpGradKoszulWeightedTerm (I := I) (M := M) g₀ g₁ sharpGradKoszulPermutationFour T T)))).toSection x)) =
+        (c * c) • ((rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
+          (slotExtendIter (I := I) (M := M) g₀ 0 4 2
+            ((sharpGradKoszulWeightedTerm (I := I) (M := M) g₀ g₁ sharpGradKoszulPermutationOne T T +
+                sharpGradKoszulWeightedTerm (I := I) (M := M) g₀ g₁ sharpGradKoszulPermutationTwo T T) -
+              (sharpGradKoszulWeightedTerm (I := I) (M := M) g₀ g₁ sharpGradKoszulPermutationThree T T +
+                sharpGradKoszulWeightedTerm (I := I) (M := M) g₀ g₁ sharpGradKoszulPermutationFour T T)))).toSection x)
+                  from by
+      rw [SmoothCcTensor.toSection_smul]; rfl]
+    rfl]
+  beta_reduce
+  rw [Tensor0SSpace.toModel_smul, smul_apply, smul_eq_mul]
+  rw [palatiniXiChain_toModel (I := I) (M := M) g₀ ((c * c) •
+      ((sharpGradKoszulWeightedTerm (I := I) (M := M) g₀ g₁ sharpGradKoszulPermutationOne T T +
+          sharpGradKoszulWeightedTerm (I := I) (M := M) g₀ g₁ sharpGradKoszulPermutationTwo T T) -
+        (sharpGradKoszulWeightedTerm (I := I) (M := M) g₀ g₁ sharpGradKoszulPermutationThree T T +
+          sharpGradKoszulWeightedTerm (I := I) (M := M) g₀ g₁ sharpGradKoszulPermutationFour T T))) x D w,
+    palatiniXiChain_toModel (I := I) (M := M) g₀
+      ((sharpGradKoszulWeightedTerm (I := I) (M := M) g₀ g₁ sharpGradKoszulPermutationOne T T +
+          sharpGradKoszulWeightedTerm (I := I) (M := M) g₀ g₁ sharpGradKoszulPermutationTwo T T) -
+        (sharpGradKoszulWeightedTerm (I := I) (M := M) g₀ g₁ sharpGradKoszulPermutationThree T T +
+          sharpGradKoszulWeightedTerm (I := I) (M := M) g₀ g₁ sharpGradKoszulPermutationFour T T)) x D w]
+  rw [palatiniUnitModel_smul (I := I) (M := M) g₀ 4 (c * c)
+    ((sharpGradKoszulWeightedTerm (I := I) (M := M) g₀ g₁ sharpGradKoszulPermutationOne T T +
+        sharpGradKoszulWeightedTerm (I := I) (M := M) g₀ g₁ sharpGradKoszulPermutationTwo T T) -
+      (sharpGradKoszulWeightedTerm (I := I) (M := M) g₀ g₁ sharpGradKoszulPermutationThree T T +
+        sharpGradKoszulWeightedTerm (I := I) (M := M) g₀ g₁ sharpGradKoszulPermutationFour T T)) x]
+  rw [smul_apply, smul_eq_mul]
+  ring
+
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
+    [T2Space M] [SigmaCompactSpace M] in
+private lemma palatiniTensorProd_toModel (x : M) (D : Tensor0SSpace 2 I x)
+    (W : Tensor0SSpace 4 I x) (u : Fin 6 → E) :
+    Tensor0SSpace.toModel (tensorProdWithCLM (I := I) 2 4 x D W) u =
+      Tensor0SSpace.toModel D ![u 0, u 1] *
+        Tensor0SSpace.toModel W ![u 2, u 3, u 4, u 5] := by
+  rw [tensorProdWithCLM_apply (I := I) 2 4 x D W, Tensor0SSpace.toModel_ofModel]
+  rw [Bundle.continuousMultilinearMap.modelProduct_apply]
+  refine congrArg₂ (· * ·) ?_ ?_
+  · refine congrArg _ ?_
+    funext k
+    fin_cases k <;> rfl
+  · refine congrArg _ ?_
+    funext k
+    fin_cases k <;> rfl
+
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
+    [SigmaCompactSpace M] in
+private lemma palatiniSGKProd_toSection (g₀ : SmoothRiemannianMetric I M)
+    (X : SmoothCcTensor g₀ 0 4) (x : M) (D : Tensor0SSpace 2 I x) :
+    (show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 6 I x from
+      (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
+        (slotExtendIter (I := I) (M := M) g₀ 0 4 2 X)).toSection x) D =
+      Tensor0SSpace.ofModel (𝕜 := ℝ) (I := I) (x := x)
+        (ContinuousMultilinearMap.domDomCongr termPairTraceSlotPerm6
+          (Tensor0SSpace.toModel (tensorProdWithCLM (I := I) 2 4 x D
+            ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 4 I x from X.toSection x)
+              (unitTensor (I := I) (M := M) x))))) := by
+  apply Tensor0SSpace.toModel_injective
+  apply ContinuousMultilinearMap.ext
+  intro w
+  beta_reduce
+  rw [Tensor0SSpace.toModel_ofModel, ContinuousMultilinearMap.domDomCongr_apply]
+  rw [palatiniTensorProd_toModel (I := I) (M := M) x D]
+  rw [palatiniXiChain_toModel (I := I) (M := M) g₀ X x D w]
+  refine congrArg₂ (· * ·) ?_ ?_
+  · refine congrArg _ ?_
+    funext k
+    fin_cases k <;> rfl
+  · rw [show unitModel (I := I) (M := M) g₀ 4 X x
+        (fun k : Fin 4 => (fun i => w (termPairTraceSlotPerm6 i)) (Fin.natAdd 2 k)) =
+        Tensor0SSpace.toModel
+          ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 4 I x from X.toSection x)
+            (unitTensor (I := I) (M := M) x))
+          (fun k : Fin 4 => (fun i => w (termPairTraceSlotPerm6 i)) (Fin.natAdd 2 k)) from rfl]
+    refine congrArg _ ?_
+    funext k
+    fin_cases k <;> rfl
+
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
+    [T2Space M] [SigmaCompactSpace M] in
+private theorem palatiniJointTotalSpace0S_add_local {d : ℕ} {S : Set ℝ}
+    (A B : ∀ p : M × ℝ, Tensor0SSpace d I p.1)
+    (hA : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, Tensor0SModel d ℝ E)) ∞
+      (fun p : M × ℝ => TotalSpace.mk' (Tensor0SModel d ℝ E)
+        (E := fun z : M => Tensor0SSpace d I z) p.1 (A p))
+      ((Set.univ : Set M) ×ˢ S))
+    (hB : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, Tensor0SModel d ℝ E)) ∞
+      (fun p : M × ℝ => TotalSpace.mk' (Tensor0SModel d ℝ E)
+        (E := fun z : M => Tensor0SSpace d I z) p.1 (B p))
+      ((Set.univ : Set M) ×ˢ S)) :
+    ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, Tensor0SModel d ℝ E)) ∞
+      (fun p : M × ℝ => TotalSpace.mk' (Tensor0SModel d ℝ E)
+        (E := fun z : M => Tensor0SSpace d I z) p.1 (A p + B p))
+      ((Set.univ : Set M) ×ˢ S) := by
+  intro p₀ hp₀
+  rw [Bundle.contMDiffWithinAt_totalSpace]
+  refine ⟨contMDiffWithinAt_fst, ?_⟩
+  set x₀ := p₀.1 with hx₀
+  set e := trivializationAt (Tensor0SModel d ℝ E)
+    (fun z : M => Tensor0SSpace d I z) x₀ with he
+  have hA' := (Bundle.contMDiffWithinAt_totalSpace (F := Tensor0SModel d ℝ E)
+    (E := fun z : M => Tensor0SSpace d I z)).mp (hA p₀ hp₀)
+  have hB' := (Bundle.contMDiffWithinAt_totalSpace (F := Tensor0SModel d ℝ E)
+    (E := fun z : M => Tensor0SSpace d I z)).mp (hB p₀ hp₀)
+  refine (hA'.2.add hB'.2).congr_of_eventuallyEq ?_ ?_
+  · have hbase : ∀ᶠ p : M × ℝ in nhdsWithin p₀ ((Set.univ : Set M) ×ˢ S), p.1 ∈ e.baseSet :=
+      (continuousWithinAt_fst (s := (Set.univ : Set M) ×ˢ S) (p := p₀))
+        (e.open_baseSet.mem_nhds (by rw [he]; exact mem_baseSet_trivializationAt _ _ x₀))
+    filter_upwards [hbase] with p hx
+    exact (e.linear ℝ hx).map_add (A p) (B p)
+  · exact (e.linear ℝ (by rw [he, ← hx₀]; exact mem_baseSet_trivializationAt _ _ x₀)).map_add
+      (A p₀) (B p₀)
+
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
+    [T2Space M] [SigmaCompactSpace M] in
+private theorem palatiniJointTotalSpace0S_sub_local {d : ℕ} {S : Set ℝ}
+    (A B : ∀ p : M × ℝ, Tensor0SSpace d I p.1)
+    (hA : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, Tensor0SModel d ℝ E)) ∞
+      (fun p : M × ℝ => TotalSpace.mk' (Tensor0SModel d ℝ E)
+        (E := fun z : M => Tensor0SSpace d I z) p.1 (A p))
+      ((Set.univ : Set M) ×ˢ S))
+    (hB : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, Tensor0SModel d ℝ E)) ∞
+      (fun p : M × ℝ => TotalSpace.mk' (Tensor0SModel d ℝ E)
+        (E := fun z : M => Tensor0SSpace d I z) p.1 (B p))
+      ((Set.univ : Set M) ×ˢ S)) :
+    ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, Tensor0SModel d ℝ E)) ∞
+      (fun p : M × ℝ => TotalSpace.mk' (Tensor0SModel d ℝ E)
+        (E := fun z : M => Tensor0SSpace d I z) p.1 (A p - B p))
+      ((Set.univ : Set M) ×ˢ S) := by
+  intro p₀ hp₀
+  rw [Bundle.contMDiffWithinAt_totalSpace]
+  refine ⟨contMDiffWithinAt_fst, ?_⟩
+  set x₀ := p₀.1 with hx₀
+  set e := trivializationAt (Tensor0SModel d ℝ E)
+    (fun z : M => Tensor0SSpace d I z) x₀ with he
+  have hA' := (Bundle.contMDiffWithinAt_totalSpace (F := Tensor0SModel d ℝ E)
+    (E := fun z : M => Tensor0SSpace d I z)).mp (hA p₀ hp₀)
+  have hB' := (Bundle.contMDiffWithinAt_totalSpace (F := Tensor0SModel d ℝ E)
+    (E := fun z : M => Tensor0SSpace d I z)).mp (hB p₀ hp₀)
+  refine (hA'.2.sub hB'.2).congr_of_eventuallyEq ?_ ?_
+  · have hbase : ∀ᶠ p : M × ℝ in nhdsWithin p₀ ((Set.univ : Set M) ×ˢ S), p.1 ∈ e.baseSet :=
+      (continuousWithinAt_fst (s := (Set.univ : Set M) ×ˢ S) (p := p₀))
+        (e.open_baseSet.mem_nhds (by rw [he]; exact mem_baseSet_trivializationAt _ _ x₀))
+    filter_upwards [hbase] with p hx
+    exact (e.linear ℝ hx).map_sub (A p) (B p)
+  · exact (e.linear ℝ (by rw [he, ← hx₀]; exact mem_baseSet_trivializationAt _ _ x₀)).map_sub
+      (A p₀) (B p₀)
+
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
+    [T2Space M] [SigmaCompactSpace M] in
+private theorem palatiniTensorProdField_jointContMDiffOn (m k : ℕ) {S : Set ℝ}
+    (P : ∀ p : M × ℝ, Tensor0SSpace m I p.1)
+    (Q : ∀ p : M × ℝ, Tensor0SSpace k I p.1)
+    (hP : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, Tensor0SModel m ℝ E)) ∞
+      (fun p : M × ℝ => TotalSpace.mk' (Tensor0SModel m ℝ E)
+        (E := fun z : M => Tensor0SSpace m I z) p.1 (P p))
+      ((Set.univ : Set M) ×ˢ S))
+    (hQ : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, Tensor0SModel k ℝ E)) ∞
+      (fun p : M × ℝ => TotalSpace.mk' (Tensor0SModel k ℝ E)
+        (E := fun z : M => Tensor0SSpace k I z) p.1 (Q p))
+      ((Set.univ : Set M) ×ˢ S)) :
+    ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, Tensor0SModel (m + k) ℝ E)) ∞
+      (fun p : M × ℝ => TotalSpace.mk' (Tensor0SModel (m + k) ℝ E)
+        (E := fun z : M => Tensor0SSpace (m + k) I z) p.1
+        (tensorProdWithCLM (I := I) m k p.1 (P p) (Q p)))
+      ((Set.univ : Set M) ×ˢ S) := by
+  intro p₀ hp₀
+  rw [Bundle.contMDiffWithinAt_totalSpace]
+  refine ⟨contMDiffWithinAt_fst, ?_⟩
+  set x₀ := p₀.1 with hx₀
+  have hP' := (Bundle.contMDiffWithinAt_totalSpace (F := Tensor0SModel m ℝ E)
+    (E := fun z : M => Tensor0SSpace m I z)).mp (hP p₀ hp₀)
+  have hQ' := (Bundle.contMDiffWithinAt_totalSpace (F := Tensor0SModel k ℝ E)
+    (E := fun z : M => Tensor0SSpace k I z)).mp (hQ p₀ hp₀)
+  have h_combine : ContMDiffWithinAt (I.prod 𝓘(ℝ, ℝ))
+      𝓘(ℝ, Tensor0SModel (m + k) ℝ E) ∞
+      (fun p : M × ℝ => Bundle.continuousMultilinearMap.modelProductL (𝕜 := ℝ) (F := E) m k
+        ((trivializationAt (Tensor0SModel m ℝ E)
+          (fun z : M => Tensor0SSpace m I z) x₀ ⟨p.1, P p⟩).2)
+        ((trivializationAt (Tensor0SModel k ℝ E)
+          (fun z : M => Tensor0SSpace k I z) x₀ ⟨p.1, Q p⟩).2))
+      ((Set.univ : Set M) ×ˢ S) p₀ :=
+    ((contMDiffWithinAt_const (c := Bundle.continuousMultilinearMap.modelProductL
+        (𝕜 := ℝ) (F := E) m k)).clm_apply hP'.2).clm_apply hQ'.2
+  have hpointwise : ∀ p : M × ℝ,
+      p.1 ∈ (trivializationAt E (TangentSpace I) x₀).baseSet →
+      (trivializationAt (Tensor0SModel (m + k) ℝ E)
+        (fun z : M => Tensor0SSpace (m + k) I z) x₀
+        ⟨p.1, tensorProdWithCLM (I := I) m k p.1 (P p) (Q p)⟩).2 =
+      Bundle.continuousMultilinearMap.modelProductL (𝕜 := ℝ) (F := E) m k
+        ((trivializationAt (Tensor0SModel m ℝ E)
+          (fun z : M => Tensor0SSpace m I z) x₀ ⟨p.1, P p⟩).2)
+        ((trivializationAt (Tensor0SModel k ℝ E)
+          (fun z : M => Tensor0SSpace k I z) x₀ ⟨p.1, Q p⟩).2) := by
+    intro p hx
+    apply ContinuousMultilinearMap.ext
+    intro v
+    rw [Bundle.continuousMultilinearMap.modelProductL_apply,
+      Bundle.continuousMultilinearMap.modelProduct_apply]
+    set symmL := (trivializationAt E (TangentSpace I) x₀).symmL ℝ p.1 with hsymmL
+    change (Bundle.continuousMultilinearMap.modelProduct (𝕜 := ℝ) (F := E) m k
+        (Tensor0SSpace.toModel (P p))
+        (Tensor0SSpace.toModel (Q p)))
+        (fun i => tangentSpaceModelContinuousLinearEquiv (I := I) p.1 (symmL (v i))) = _
+    rw [Bundle.continuousMultilinearMap.modelProduct_apply]
+    rfl
+  refine h_combine.congr_of_eventuallyEq ?_ ?_
+  · have hbase : ∀ᶠ p : M × ℝ in nhdsWithin p₀ ((Set.univ : Set M) ×ˢ S),
+        p.1 ∈ (trivializationAt E (TangentSpace I) x₀).baseSet :=
+      (continuousWithinAt_fst (s := (Set.univ : Set M) ×ˢ S) (p := p₀))
+        ((trivializationAt E (TangentSpace I) x₀).open_baseSet.mem_nhds
+          (mem_baseSet_trivializationAt _ _ x₀))
+    filter_upwards [hbase] with p hx
+    exact hpointwise p hx
+  · exact hpointwise p₀ (by rw [← hx₀]; exact mem_baseSet_trivializationAt _ _ x₀)
+
+
+omit [SigmaCompactSpace M] in
+theorem ricciCovariantTermSharpGradKoszulResidualField_metricPerturbationPath_covariantJetJointSmoothness
+    (g₀ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2) {δ : ℝ}
+    (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
+    (hδZ : metricCauchySchwarzBound (I := I) (M := M) g₀
+      (ccTensorBilinSymm (I := I) g₀ (0 : SmoothCcTensor g₀ 0 2)) δ) :
+    linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g₀ 2
+      (fun s => ricciCovariantTermSharpGradKoszulResidualField (I := I) (M := M) g₀
+        (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) (s • T)) (δ := δ) (δ' := δ) := by
+  classical
+  have hperY : ∀ (Y : Cₛ^∞⟮I; Tensor0SModel 2 ℝ E, fun x : M => Tensor0SSpace 2 I x⟯),
+      ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, Tensor0SModel 2 ℝ E)) ∞
+        (fun p : M × ℝ => TotalSpace.mk' (Tensor0SModel 2 ℝ E)
+          (E := fun z : M => Tensor0SSpace 2 I z) p.1
+          (sharpGradKoszulBiContrFib (I := I) g₀
+            (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ p.2) (p.2 • T) p.1 (Y p.1)))
+        ((Set.univ : Set M) ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ)) := by
+    intro Y
+    have hZjoint : ∀ (τ : Equiv.Perm (Fin 6)),
+        ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, Tensor0SModel 6 ℝ E)) ∞
+          (fun q : M × ℝ => TotalSpace.mk' (Tensor0SModel 6 ℝ E)
+            (E := fun z : M => Tensor0SSpace 6 I z) q.1
+            (unitEvalSection (I := I) (M := M) g₀ 6
+              (rsDomDomCongrSection (I := I) (M := M) g₀ 0 6 τ
+                (ccOperatorFieldComp (I := I) (M := M) g₀ 0 3 6
+                  (slotExtendIter (I := I) (M := M) g₀ 0 3 3
+                    (koszulCovGradRaw (I := I) (M := M) g₀ T))
+                  (koszulCovecCc (I := I) g₀ T))) q.1))
+          ((Set.univ : Set M) ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ)) := fun τ =>
+      ((contMDiff_unitEvalSection (I := I) (M := M) g₀ 6
+        (rsDomDomCongrSection (I := I) (M := M) g₀ 0 6 τ
+          (ccOperatorFieldComp (I := I) (M := M) g₀ 0 3 6
+            (slotExtendIter (I := I) (M := M) g₀ 0 3 3
+              (koszulCovGradRaw (I := I) (M := M) g₀ T))
+            (koszulCovecCc (I := I) g₀ T)))).comp_contMDiffOn
+        contMDiffOn_fst).mono (Set.subset_univ _)
+    have hV1 := cometricDoubleTraceFib_metricPerturbationPath_jointContMDiffOn (I := I) (p := 4)
+      g₀ T 0 hδ hδZ
+      (fun q : M × ℝ => unitEvalSection (I := I) (M := M) g₀ 6
+            (rsDomDomCongrSection (I := I) (M := M) g₀ 0 6 sharpGradKoszulPermutationOne
+              (ccOperatorFieldComp (I := I) (M := M) g₀ 0 3 6
+                (slotExtendIter (I := I) (M := M) g₀ 0 3 3
+                  (koszulCovGradRaw (I := I) (M := M) g₀ T))
+                (koszulCovecCc (I := I) g₀ T))) q.1)
+      (hZjoint sharpGradKoszulPermutationOne)
+    have hV2 := cometricDoubleTraceFib_metricPerturbationPath_jointContMDiffOn (I := I) (p := 4)
+      g₀ T 0 hδ hδZ
+      (fun q : M × ℝ => unitEvalSection (I := I) (M := M) g₀ 6
+            (rsDomDomCongrSection (I := I) (M := M) g₀ 0 6 sharpGradKoszulPermutationTwo
+              (ccOperatorFieldComp (I := I) (M := M) g₀ 0 3 6
+                (slotExtendIter (I := I) (M := M) g₀ 0 3 3
+                  (koszulCovGradRaw (I := I) (M := M) g₀ T))
+                (koszulCovecCc (I := I) g₀ T))) q.1)
+      (hZjoint sharpGradKoszulPermutationTwo)
+    have hV3 := cometricDoubleTraceFib_metricPerturbationPath_jointContMDiffOn (I := I) (p := 4)
+      g₀ T 0 hδ hδZ
+      (fun q : M × ℝ => unitEvalSection (I := I) (M := M) g₀ 6
+            (rsDomDomCongrSection (I := I) (M := M) g₀ 0 6 sharpGradKoszulPermutationThree
+              (ccOperatorFieldComp (I := I) (M := M) g₀ 0 3 6
+                (slotExtendIter (I := I) (M := M) g₀ 0 3 3
+                  (koszulCovGradRaw (I := I) (M := M) g₀ T))
+                (koszulCovecCc (I := I) g₀ T))) q.1)
+      (hZjoint sharpGradKoszulPermutationThree)
+    have hV4 := cometricDoubleTraceFib_metricPerturbationPath_jointContMDiffOn (I := I) (p := 4)
+      g₀ T 0 hδ hδZ
+      (fun q : M × ℝ => unitEvalSection (I := I) (M := M) g₀ 6
+            (rsDomDomCongrSection (I := I) (M := M) g₀ 0 6 sharpGradKoszulPermutationFour
+              (ccOperatorFieldComp (I := I) (M := M) g₀ 0 3 6
+                (slotExtendIter (I := I) (M := M) g₀ 0 3 3
+                  (koszulCovGradRaw (I := I) (M := M) g₀ T))
+                (koszulCovecCc (I := I) g₀ T))) q.1)
+      (hZjoint sharpGradKoszulPermutationFour)
+    have hX12 := palatiniJointTotalSpace0S_add_local (I := I) (M := M) (d := 4)
+      (S := metricPerturbationPathDomain (δ := δ) (δ' := δ)) _ _ hV1 hV2
+    have hX34 := palatiniJointTotalSpace0S_add_local (I := I) (M := M) (d := 4)
+      (S := metricPerturbationPathDomain (δ := δ) (δ' := δ)) _ _ hV3 hV4
+    have hX := palatiniJointTotalSpace0S_sub_local (I := I) (M := M) (d := 4)
+      (S := metricPerturbationPathDomain (δ := δ) (δ' := δ)) _ _ hX12 hX34
+    have hYj : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, Tensor0SModel 2 ℝ E)) ∞
+        (fun q : M × ℝ => TotalSpace.mk' (Tensor0SModel 2 ℝ E)
+          (E := fun z : M => Tensor0SSpace 2 I z) q.1 (Y q.1))
+        ((Set.univ : Set M) ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ)) :=
+      (Y.contMDiff.comp_contMDiffOn contMDiffOn_fst).mono (Set.subset_univ _)
+    have hTP := palatiniTensorProdField_jointContMDiffOn (I := I) (M := M) 2 4
+      (S := metricPerturbationPathDomain (δ := δ) (δ' := δ))
+      (fun q : M × ℝ => Y q.1)
+      (fun q : M × ℝ => ((cometricDoubleTraceFib (I := I)
+          (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2) 4 q.1
+          (unitEvalSection (I := I) (M := M) g₀ 6
+            (rsDomDomCongrSection (I := I) (M := M) g₀ 0 6 sharpGradKoszulPermutationOne
+              (ccOperatorFieldComp (I := I) (M := M) g₀ 0 3 6
+                (slotExtendIter (I := I) (M := M) g₀ 0 3 3
+                  (koszulCovGradRaw (I := I) (M := M) g₀ T))
+                (koszulCovecCc (I := I) g₀ T))) q.1) +
+        cometricDoubleTraceFib (I := I)
+          (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2) 4 q.1
+          (unitEvalSection (I := I) (M := M) g₀ 6
+            (rsDomDomCongrSection (I := I) (M := M) g₀ 0 6 sharpGradKoszulPermutationTwo
+              (ccOperatorFieldComp (I := I) (M := M) g₀ 0 3 6
+                (slotExtendIter (I := I) (M := M) g₀ 0 3 3
+                  (koszulCovGradRaw (I := I) (M := M) g₀ T))
+                (koszulCovecCc (I := I) g₀ T))) q.1)) -
+        (cometricDoubleTraceFib (I := I)
+          (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2) 4 q.1
+          (unitEvalSection (I := I) (M := M) g₀ 6
+            (rsDomDomCongrSection (I := I) (M := M) g₀ 0 6 sharpGradKoszulPermutationThree
+              (ccOperatorFieldComp (I := I) (M := M) g₀ 0 3 6
+                (slotExtendIter (I := I) (M := M) g₀ 0 3 3
+                  (koszulCovGradRaw (I := I) (M := M) g₀ T))
+                (koszulCovecCc (I := I) g₀ T))) q.1) +
+        cometricDoubleTraceFib (I := I)
+          (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2) 4 q.1
+          (unitEvalSection (I := I) (M := M) g₀ 6
+            (rsDomDomCongrSection (I := I) (M := M) g₀ 0 6 sharpGradKoszulPermutationFour
+              (ccOperatorFieldComp (I := I) (M := M) g₀ 0 3 6
+                (slotExtendIter (I := I) (M := M) g₀ 0 3 3
+                  (koszulCovGradRaw (I := I) (M := M) g₀ T))
+                (koszulCovecCc (I := I) g₀ T))) q.1))))
+      hYj hX
+    have hRX := domDomCongrField_jointContMDiffOn (I := I) (M := M) (d := 6) termPairTraceSlotPerm6
+      (S := metricPerturbationPathDomain (δ := δ) (δ' := δ))
+      (fun q : M × ℝ => tensorProdWithCLM (I := I) 2 4 q.1 (Y q.1)
+        ((cometricDoubleTraceFib (I := I)
+          (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2) 4 q.1
+          (unitEvalSection (I := I) (M := M) g₀ 6
+            (rsDomDomCongrSection (I := I) (M := M) g₀ 0 6 sharpGradKoszulPermutationOne
+              (ccOperatorFieldComp (I := I) (M := M) g₀ 0 3 6
+                (slotExtendIter (I := I) (M := M) g₀ 0 3 3
+                  (koszulCovGradRaw (I := I) (M := M) g₀ T))
+                (koszulCovecCc (I := I) g₀ T))) q.1) +
+        cometricDoubleTraceFib (I := I)
+          (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2) 4 q.1
+          (unitEvalSection (I := I) (M := M) g₀ 6
+            (rsDomDomCongrSection (I := I) (M := M) g₀ 0 6 sharpGradKoszulPermutationTwo
+              (ccOperatorFieldComp (I := I) (M := M) g₀ 0 3 6
+                (slotExtendIter (I := I) (M := M) g₀ 0 3 3
+                  (koszulCovGradRaw (I := I) (M := M) g₀ T))
+                (koszulCovecCc (I := I) g₀ T))) q.1)) -
+        (cometricDoubleTraceFib (I := I)
+          (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2) 4 q.1
+          (unitEvalSection (I := I) (M := M) g₀ 6
+            (rsDomDomCongrSection (I := I) (M := M) g₀ 0 6 sharpGradKoszulPermutationThree
+              (ccOperatorFieldComp (I := I) (M := M) g₀ 0 3 6
+                (slotExtendIter (I := I) (M := M) g₀ 0 3 3
+                  (koszulCovGradRaw (I := I) (M := M) g₀ T))
+                (koszulCovecCc (I := I) g₀ T))) q.1) +
+        cometricDoubleTraceFib (I := I)
+          (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2) 4 q.1
+          (unitEvalSection (I := I) (M := M) g₀ 6
+            (rsDomDomCongrSection (I := I) (M := M) g₀ 0 6 sharpGradKoszulPermutationFour
+              (ccOperatorFieldComp (I := I) (M := M) g₀ 0 3 6
+                (slotExtendIter (I := I) (M := M) g₀ 0 3 3
+                  (koszulCovGradRaw (I := I) (M := M) g₀ T))
+                (koszulCovecCc (I := I) g₀ T))) q.1))))
+      hTP
+    have hDT4 := cometricDoubleTraceFib_metricPerturbationPath_jointContMDiffOn (I := I) (p := 4)
+      g₀ T 0 hδ hδZ
+      (fun q : M × ℝ => Tensor0SSpace.ofModel (𝕜 := ℝ) (I := I) (x := q.1)
+          (ContinuousMultilinearMap.domDomCongr termPairTraceSlotPerm6
+            (Tensor0SSpace.toModel (tensorProdWithCLM (I := I) 2 4 q.1 (Y q.1)
+              ((cometricDoubleTraceFib (I := I)
+          (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2) 4 q.1
+          (unitEvalSection (I := I) (M := M) g₀ 6
+            (rsDomDomCongrSection (I := I) (M := M) g₀ 0 6 sharpGradKoszulPermutationOne
+              (ccOperatorFieldComp (I := I) (M := M) g₀ 0 3 6
+                (slotExtendIter (I := I) (M := M) g₀ 0 3 3
+                  (koszulCovGradRaw (I := I) (M := M) g₀ T))
+                (koszulCovecCc (I := I) g₀ T))) q.1) +
+        cometricDoubleTraceFib (I := I)
+          (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2) 4 q.1
+          (unitEvalSection (I := I) (M := M) g₀ 6
+            (rsDomDomCongrSection (I := I) (M := M) g₀ 0 6 sharpGradKoszulPermutationTwo
+              (ccOperatorFieldComp (I := I) (M := M) g₀ 0 3 6
+                (slotExtendIter (I := I) (M := M) g₀ 0 3 3
+                  (koszulCovGradRaw (I := I) (M := M) g₀ T))
+                (koszulCovecCc (I := I) g₀ T))) q.1)) -
+        (cometricDoubleTraceFib (I := I)
+          (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2) 4 q.1
+          (unitEvalSection (I := I) (M := M) g₀ 6
+            (rsDomDomCongrSection (I := I) (M := M) g₀ 0 6 sharpGradKoszulPermutationThree
+              (ccOperatorFieldComp (I := I) (M := M) g₀ 0 3 6
+                (slotExtendIter (I := I) (M := M) g₀ 0 3 3
+                  (koszulCovGradRaw (I := I) (M := M) g₀ T))
+                (koszulCovecCc (I := I) g₀ T))) q.1) +
+        cometricDoubleTraceFib (I := I)
+          (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2) 4 q.1
+          (unitEvalSection (I := I) (M := M) g₀ 6
+            (rsDomDomCongrSection (I := I) (M := M) g₀ 0 6 sharpGradKoszulPermutationFour
+              (ccOperatorFieldComp (I := I) (M := M) g₀ 0 3 6
+                (slotExtendIter (I := I) (M := M) g₀ 0 3 3
+                  (koszulCovGradRaw (I := I) (M := M) g₀ T))
+                (koszulCovecCc (I := I) g₀ T))) q.1)))))))
+      hRX
+    have hDT2 := cometricDoubleTraceFib_metricPerturbationPath_jointContMDiffOn (I := I) (p := 2)
+      g₀ T 0 hδ hδZ
+      (fun q : M × ℝ => cometricDoubleTraceFib (I := I)
+        (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2) 4 q.1
+        (Tensor0SSpace.ofModel (𝕜 := ℝ) (I := I) (x := q.1)
+          (ContinuousMultilinearMap.domDomCongr termPairTraceSlotPerm6
+            (Tensor0SSpace.toModel (tensorProdWithCLM (I := I) 2 4 q.1 (Y q.1)
+              ((cometricDoubleTraceFib (I := I)
+          (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2) 4 q.1
+          (unitEvalSection (I := I) (M := M) g₀ 6
+            (rsDomDomCongrSection (I := I) (M := M) g₀ 0 6 sharpGradKoszulPermutationOne
+              (ccOperatorFieldComp (I := I) (M := M) g₀ 0 3 6
+                (slotExtendIter (I := I) (M := M) g₀ 0 3 3
+                  (koszulCovGradRaw (I := I) (M := M) g₀ T))
+                (koszulCovecCc (I := I) g₀ T))) q.1) +
+        cometricDoubleTraceFib (I := I)
+          (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2) 4 q.1
+          (unitEvalSection (I := I) (M := M) g₀ 6
+            (rsDomDomCongrSection (I := I) (M := M) g₀ 0 6 sharpGradKoszulPermutationTwo
+              (ccOperatorFieldComp (I := I) (M := M) g₀ 0 3 6
+                (slotExtendIter (I := I) (M := M) g₀ 0 3 3
+                  (koszulCovGradRaw (I := I) (M := M) g₀ T))
+                (koszulCovecCc (I := I) g₀ T))) q.1)) -
+        (cometricDoubleTraceFib (I := I)
+          (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2) 4 q.1
+          (unitEvalSection (I := I) (M := M) g₀ 6
+            (rsDomDomCongrSection (I := I) (M := M) g₀ 0 6 sharpGradKoszulPermutationThree
+              (ccOperatorFieldComp (I := I) (M := M) g₀ 0 3 6
+                (slotExtendIter (I := I) (M := M) g₀ 0 3 3
+                  (koszulCovGradRaw (I := I) (M := M) g₀ T))
+                (koszulCovecCc (I := I) g₀ T))) q.1) +
+        cometricDoubleTraceFib (I := I)
+          (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2) 4 q.1
+          (unitEvalSection (I := I) (M := M) g₀ 6
+            (rsDomDomCongrSection (I := I) (M := M) g₀ 0 6 sharpGradKoszulPermutationFour
+              (ccOperatorFieldComp (I := I) (M := M) g₀ 0 3 6
+                (slotExtendIter (I := I) (M := M) g₀ 0 3 3
+                  (koszulCovGradRaw (I := I) (M := M) g₀ T))
+                (koszulCovecCc (I := I) g₀ T))) q.1))))))))
+      hDT4
+    have hsmul := palatiniJointTotalSpace0S_smulFun_local (I := I) (M := M) (d := 2)
+      (S := metricPerturbationPathDomain (δ := δ) (δ' := δ))
+      (f := fun s : ℝ => (2 : ℝ) * (s * s))
+      ((contDiff_const.mul (contDiff_id.mul contDiff_id) :
+        ContDiff ℝ ∞ (fun s : ℝ => (2 : ℝ) * (s * s))))
+      (fun q : M × ℝ => cometricDoubleTraceFib (I := I)
+        (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2) 2 q.1
+        (cometricDoubleTraceFib (I := I)
+        (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2) 4 q.1
+        (Tensor0SSpace.ofModel (𝕜 := ℝ) (I := I) (x := q.1)
+          (ContinuousMultilinearMap.domDomCongr termPairTraceSlotPerm6
+            (Tensor0SSpace.toModel (tensorProdWithCLM (I := I) 2 4 q.1 (Y q.1)
+              ((cometricDoubleTraceFib (I := I)
+          (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2) 4 q.1
+          (unitEvalSection (I := I) (M := M) g₀ 6
+            (rsDomDomCongrSection (I := I) (M := M) g₀ 0 6 sharpGradKoszulPermutationOne
+              (ccOperatorFieldComp (I := I) (M := M) g₀ 0 3 6
+                (slotExtendIter (I := I) (M := M) g₀ 0 3 3
+                  (koszulCovGradRaw (I := I) (M := M) g₀ T))
+                (koszulCovecCc (I := I) g₀ T))) q.1) +
+        cometricDoubleTraceFib (I := I)
+          (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2) 4 q.1
+          (unitEvalSection (I := I) (M := M) g₀ 6
+            (rsDomDomCongrSection (I := I) (M := M) g₀ 0 6 sharpGradKoszulPermutationTwo
+              (ccOperatorFieldComp (I := I) (M := M) g₀ 0 3 6
+                (slotExtendIter (I := I) (M := M) g₀ 0 3 3
+                  (koszulCovGradRaw (I := I) (M := M) g₀ T))
+                (koszulCovecCc (I := I) g₀ T))) q.1)) -
+        (cometricDoubleTraceFib (I := I)
+          (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2) 4 q.1
+          (unitEvalSection (I := I) (M := M) g₀ 6
+            (rsDomDomCongrSection (I := I) (M := M) g₀ 0 6 sharpGradKoszulPermutationThree
+              (ccOperatorFieldComp (I := I) (M := M) g₀ 0 3 6
+                (slotExtendIter (I := I) (M := M) g₀ 0 3 3
+                  (koszulCovGradRaw (I := I) (M := M) g₀ T))
+                (koszulCovecCc (I := I) g₀ T))) q.1) +
+        cometricDoubleTraceFib (I := I)
+          (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2) 4 q.1
+          (unitEvalSection (I := I) (M := M) g₀ 6
+            (rsDomDomCongrSection (I := I) (M := M) g₀ 0 6 sharpGradKoszulPermutationFour
+              (ccOperatorFieldComp (I := I) (M := M) g₀ 0 3 6
+                (slotExtendIter (I := I) (M := M) g₀ 0 3 3
+                  (koszulCovGradRaw (I := I) (M := M) g₀ T))
+                (koszulCovecCc (I := I) g₀ T))) q.1)))))))))
+      hDT2
+    refine hsmul.congr (fun q hq => ?_)
+    refine congrArg (fun t => TotalSpace.mk' (Tensor0SModel 2 ℝ E)
+      (E := fun z : M => Tensor0SSpace 2 I z) q.1 t) ?_
+    have hs : q.2 ∈ metricPerturbationPathDomain (δ := δ) (δ' := δ) := hq.2
+    have htie : ∀ (y : M) (v w : TangentSpace I y),
+        (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2).inner y v w =
+          g₀.inner y v w + ccTensorBilinSymm (I := I) g₀ (q.2 • T) y v w := by
+      intro y v w
+      have h0 := metricPerturbationPath_inner_of_mem (I := I) g₀ T 0 hδ hδZ hs y v w
+      rwa [show convexPerturbation (I := I) g₀ T 0 q.2 = q.2 • T from by
+        rw [convexPerturbation, smul_zero, zero_add]] at h0
+    have h1 : sharpGradKoszulBiContrFib (I := I) g₀
+        (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2) (q.2 • T) q.1 (Y q.1) =
+        (show Tensor0SSpace 2 I q.1 →L[ℝ] Tensor0SSpace 2 I q.1 from
+          (((2 : ℝ) • ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2
+            (cometricDoublePairTraceCoefficient (I := I) (M := M) g₀ (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2))
+            (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
+              (slotExtendIter (I := I) (M := M) g₀ 0 4 2
+                ((sharpGradKoszulWeightedTerm (I := I) (M := M) g₀
+                  (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2) sharpGradKoszulPermutationOne (q.2 • T) (q.2 • T) +
+                  sharpGradKoszulWeightedTerm (I := I) (M := M) g₀
+                  (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2) sharpGradKoszulPermutationTwo (q.2 • T) (q.2 • T)) -
+                (sharpGradKoszulWeightedTerm (I := I) (M := M) g₀
+                  (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2) sharpGradKoszulPermutationThree (q.2 • T) (q.2 • T) +
+                  sharpGradKoszulWeightedTerm (I := I) (M := M) g₀
+                  (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2) sharpGradKoszulPermutationFour (q.2 • T)
+                    (q.2 • T)))))).toSection q.1)) (Y q.1) := by
+      rw [← ricciCovariantTermSharpGradKoszulResidualField_eq_decomposition (I := I) (M := M) g₀ (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2)
+        (q.2 • T) (q.2 • T) htie]
+      rfl
+    rw [h1]
+    rw [sharpGradKoszulDecomposition_smul (I := I) (M := M) g₀ (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2) T q.2]
+    rw [operatorFieldComposition_smul_right (I := I) (M := M) g₀ 2 6 2 (q.2 * q.2)
+      (cometricDoublePairTraceCoefficient (I := I) (M := M) g₀ (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2))
+      (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
+        (slotExtendIter (I := I) (M := M) g₀ 0 4 2
+          ((sharpGradKoszulWeightedTerm (I := I) (M := M) g₀
+                  (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2) sharpGradKoszulPermutationOne T T +
+                  sharpGradKoszulWeightedTerm (I := I) (M := M) g₀
+                  (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2) sharpGradKoszulPermutationTwo T T) -
+                (sharpGradKoszulWeightedTerm (I := I) (M := M) g₀
+                  (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2) sharpGradKoszulPermutationThree T T +
+                  sharpGradKoszulWeightedTerm (I := I) (M := M) g₀
+                  (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2) sharpGradKoszulPermutationFour T T))))]
+    rw [show ((show Tensor0SSpace 2 I q.1 →L[ℝ] Tensor0SSpace 2 I q.1 from
+        (((2 : ℝ) • (q.2 * q.2) • ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2
+          (cometricDoublePairTraceCoefficient (I := I) (M := M) g₀ (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2))
+          (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
+            (slotExtendIter (I := I) (M := M) g₀ 0 4 2
+              ((sharpGradKoszulWeightedTerm (I := I) (M := M) g₀
+                  (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2) sharpGradKoszulPermutationOne T T +
+                  sharpGradKoszulWeightedTerm (I := I) (M := M) g₀
+                  (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2) sharpGradKoszulPermutationTwo T T) -
+                (sharpGradKoszulWeightedTerm (I := I) (M := M) g₀
+                  (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2) sharpGradKoszulPermutationThree T T +
+                  sharpGradKoszulWeightedTerm (I := I) (M := M) g₀
+                  (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2) sharpGradKoszulPermutationFour T T))))).toSection q.1))
+                    (Y q.1)) =
+        ((2 : ℝ) * (q.2 * q.2)) •
+          ((show Tensor0SSpace 2 I q.1 →L[ℝ] Tensor0SSpace 2 I q.1 from
+            ((ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2
+              (cometricDoublePairTraceCoefficient (I := I) (M := M) g₀ (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2))
+              (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
+                (slotExtendIter (I := I) (M := M) g₀ 0 4 2
+                  ((sharpGradKoszulWeightedTerm (I := I) (M := M) g₀
+                  (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2) sharpGradKoszulPermutationOne T T +
+                  sharpGradKoszulWeightedTerm (I := I) (M := M) g₀
+                  (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2) sharpGradKoszulPermutationTwo T T) -
+                (sharpGradKoszulWeightedTerm (I := I) (M := M) g₀
+                  (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2) sharpGradKoszulPermutationThree T T +
+                  sharpGradKoszulWeightedTerm (I := I) (M := M) g₀
+                  (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2) sharpGradKoszulPermutationFour T T))))).toSection q.1))
+                    (Y q.1)) from by
+      rw [show ((((2 : ℝ) • (q.2 * q.2) • ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2
+          (cometricDoublePairTraceCoefficient (I := I) (M := M) g₀ (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2))
+          (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
+            (slotExtendIter (I := I) (M := M) g₀ 0 4 2
+              ((sharpGradKoszulWeightedTerm (I := I) (M := M) g₀
+                  (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2) sharpGradKoszulPermutationOne T T +
+                  sharpGradKoszulWeightedTerm (I := I) (M := M) g₀
+                  (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2) sharpGradKoszulPermutationTwo T T) -
+                (sharpGradKoszulWeightedTerm (I := I) (M := M) g₀
+                  (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2) sharpGradKoszulPermutationThree T T +
+                  sharpGradKoszulWeightedTerm (I := I) (M := M) g₀
+                  (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2) sharpGradKoszulPermutationFour T T))))).toSection q.1)) =
+          (2 : ℝ) • (q.2 * q.2) • ((ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2
+            (cometricDoublePairTraceCoefficient (I := I) (M := M) g₀ (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2))
+            (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
+              (slotExtendIter (I := I) (M := M) g₀ 0 4 2
+                ((sharpGradKoszulWeightedTerm (I := I) (M := M) g₀
+                  (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2) sharpGradKoszulPermutationOne T T +
+                  sharpGradKoszulWeightedTerm (I := I) (M := M) g₀
+                  (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2) sharpGradKoszulPermutationTwo T T) -
+                (sharpGradKoszulWeightedTerm (I := I) (M := M) g₀
+                  (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2) sharpGradKoszulPermutationThree T T +
+                  sharpGradKoszulWeightedTerm (I := I) (M := M) g₀
+                  (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2) sharpGradKoszulPermutationFour T T))))).toSection q.1) from by
+        rw [SmoothCcTensor.toSection_smul, SmoothCcTensor.toSection_smul]; rfl]
+      rw [show (((2 : ℝ) • (q.2 * q.2) • ((ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2
+          (cometricDoublePairTraceCoefficient (I := I) (M := M) g₀ (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2))
+          (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
+            (slotExtendIter (I := I) (M := M) g₀ 0 4 2
+              ((sharpGradKoszulWeightedTerm (I := I) (M := M) g₀
+                  (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2) sharpGradKoszulPermutationOne T T +
+                  sharpGradKoszulWeightedTerm (I := I) (M := M) g₀
+                  (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2) sharpGradKoszulPermutationTwo T T) -
+                (sharpGradKoszulWeightedTerm (I := I) (M := M) g₀
+                  (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2) sharpGradKoszulPermutationThree T T +
+                  sharpGradKoszulWeightedTerm (I := I) (M := M) g₀
+                  (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2) sharpGradKoszulPermutationFour T T))))).toSection q.1)) : _) =
+          ((2 : ℝ) * (q.2 * q.2)) • ((ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2
+            (cometricDoublePairTraceCoefficient (I := I) (M := M) g₀ (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2))
+            (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
+              (slotExtendIter (I := I) (M := M) g₀ 0 4 2
+                ((sharpGradKoszulWeightedTerm (I := I) (M := M) g₀
+                  (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2) sharpGradKoszulPermutationOne T T +
+                  sharpGradKoszulWeightedTerm (I := I) (M := M) g₀
+                  (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2) sharpGradKoszulPermutationTwo T T) -
+                (sharpGradKoszulWeightedTerm (I := I) (M := M) g₀
+                  (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2) sharpGradKoszulPermutationThree T T +
+                  sharpGradKoszulWeightedTerm (I := I) (M := M) g₀
+                  (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2) sharpGradKoszulPermutationFour T T))))).toSection q.1) from by
+        rw [smul_smul]]
+      rfl]
+    refine congrArg (fun t => ((2 : ℝ) * (q.2 * q.2)) • t) ?_
+    rw [show ((show Tensor0SSpace 2 I q.1 →L[ℝ] Tensor0SSpace 2 I q.1 from
+        ((ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2
+          (cometricDoublePairTraceCoefficient (I := I) (M := M) g₀ (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2))
+          (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
+            (slotExtendIter (I := I) (M := M) g₀ 0 4 2
+              ((sharpGradKoszulWeightedTerm (I := I) (M := M) g₀
+                  (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2) sharpGradKoszulPermutationOne T T +
+                  sharpGradKoszulWeightedTerm (I := I) (M := M) g₀
+                  (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2) sharpGradKoszulPermutationTwo T T) -
+                (sharpGradKoszulWeightedTerm (I := I) (M := M) g₀
+                  (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2) sharpGradKoszulPermutationThree T T +
+                  sharpGradKoszulWeightedTerm (I := I) (M := M) g₀
+                  (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2) sharpGradKoszulPermutationFour T T))))).toSection q.1))
+                    (Y q.1)) =
+        cometricDoubleTraceFib (I := I) (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2) 2 q.1
+          (cometricDoubleTraceFib (I := I) (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2) 4 q.1
+            ((show Tensor0SSpace 2 I q.1 →L[ℝ] Tensor0SSpace 6 I q.1 from
+              (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
+                (slotExtendIter (I := I) (M := M) g₀ 0 4 2
+                  ((sharpGradKoszulWeightedTerm (I := I) (M := M) g₀
+                  (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2) sharpGradKoszulPermutationOne T T +
+                  sharpGradKoszulWeightedTerm (I := I) (M := M) g₀
+                  (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2) sharpGradKoszulPermutationTwo T T) -
+                (sharpGradKoszulWeightedTerm (I := I) (M := M) g₀
+                  (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2) sharpGradKoszulPermutationThree T T +
+                  sharpGradKoszulWeightedTerm (I := I) (M := M) g₀
+                  (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2) sharpGradKoszulPermutationFour T T)))).toSection q.1)
+                    (Y q.1))) from by
+      rw [operatorFieldComposition_toSection]
+      rfl]
+    rw [palatiniSGKProd_toSection (I := I) (M := M) g₀
+      ((sharpGradKoszulWeightedTerm (I := I) (M := M) g₀
+                  (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2) sharpGradKoszulPermutationOne T T +
+                  sharpGradKoszulWeightedTerm (I := I) (M := M) g₀
+                  (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2) sharpGradKoszulPermutationTwo T T) -
+                (sharpGradKoszulWeightedTerm (I := I) (M := M) g₀
+                  (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2) sharpGradKoszulPermutationThree T T +
+                  sharpGradKoszulWeightedTerm (I := I) (M := M) g₀
+                  (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2) sharpGradKoszulPermutationFour T T)) q.1 (Y q.1)]
+    refine congrArg (fun t => cometricDoubleTraceFib (I := I)
+      (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2) 2 q.1
+      (cometricDoubleTraceFib (I := I) (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2) 4 q.1 t)) ?_
+    refine congrArg (fun t => Tensor0SSpace.ofModel (𝕜 := ℝ) (I := I) (x := q.1)
+      (ContinuousMultilinearMap.domDomCongr termPairTraceSlotPerm6
+        (Tensor0SSpace.toModel (tensorProdWithCLM (I := I) 2 4 q.1 (Y q.1) t)))) ?_
+    rw [show ((show Tensor0SSpace 0 I q.1 →L[ℝ] Tensor0SSpace 4 I q.1 from
+        (((sharpGradKoszulWeightedTerm (I := I) (M := M) g₀
+                  (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2) sharpGradKoszulPermutationOne T T +
+                  sharpGradKoszulWeightedTerm (I := I) (M := M) g₀
+                  (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2) sharpGradKoszulPermutationTwo T T) -
+                (sharpGradKoszulWeightedTerm (I := I) (M := M) g₀
+                  (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2) sharpGradKoszulPermutationThree T T +
+                  sharpGradKoszulWeightedTerm (I := I) (M := M) g₀
+                  (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2) sharpGradKoszulPermutationFour T T))).toSection q.1))
+        (unitTensor (I := I) (M := M) q.1) =
+        (((show Tensor0SSpace 0 I q.1 →L[ℝ] Tensor0SSpace 4 I q.1 from
+            (sharpGradKoszulWeightedTerm (I := I) (M := M) g₀
+                  (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2) sharpGradKoszulPermutationOne T T).toSection q.1)
+          (unitTensor (I := I) (M := M) q.1) +
+          (show Tensor0SSpace 0 I q.1 →L[ℝ] Tensor0SSpace 4 I q.1 from
+            (sharpGradKoszulWeightedTerm (I := I) (M := M) g₀
+                  (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2) sharpGradKoszulPermutationTwo T T).toSection q.1)
+          (unitTensor (I := I) (M := M) q.1)) -
+          ((show Tensor0SSpace 0 I q.1 →L[ℝ] Tensor0SSpace 4 I q.1 from
+            (sharpGradKoszulWeightedTerm (I := I) (M := M) g₀
+                  (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2) sharpGradKoszulPermutationThree T T).toSection q.1)
+          (unitTensor (I := I) (M := M) q.1) +
+          (show Tensor0SSpace 0 I q.1 →L[ℝ] Tensor0SSpace 4 I q.1 from
+            (sharpGradKoszulWeightedTerm (I := I) (M := M) g₀
+                  (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2) sharpGradKoszulPermutationFour T T).toSection q.1)
+          (unitTensor (I := I) (M := M) q.1))) from by
+      rw [SmoothCcTensor.toSection_sub, SmoothCcTensor.toSection_add,
+        SmoothCcTensor.toSection_add]
+      rfl]
+    rw [show (show Tensor0SSpace 0 I q.1 →L[ℝ] Tensor0SSpace 4 I q.1 from
+        (sharpGradKoszulWeightedTerm (I := I) (M := M) g₀
+                  (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2) sharpGradKoszulPermutationOne T T).toSection q.1)
+        (unitTensor (I := I) (M := M) q.1) =
+        cometricDoubleTraceFib (I := I)
+          (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2) 4 q.1
+          (unitEvalSection (I := I) (M := M) g₀ 6
+            (rsDomDomCongrSection (I := I) (M := M) g₀ 0 6 sharpGradKoszulPermutationOne
+              (ccOperatorFieldComp (I := I) (M := M) g₀ 0 3 6
+                (slotExtendIter (I := I) (M := M) g₀ 0 3 3
+                  (koszulCovGradRaw (I := I) (M := M) g₀ T))
+                (koszulCovecCc (I := I) g₀ T))) q.1) from by
+      rw [show sharpGradKoszulWeightedTerm (I := I) (M := M) g₀
+                  (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2) sharpGradKoszulPermutationOne T T =
+          ccOperatorFieldComp (I := I) (M := M) g₀ 0 6 4
+            (cometricDoubleTraceCc (I := I) (M := M) g₀ (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2) 4)
+            (rsDomDomCongrSection (I := I) (M := M) g₀ 0 6 sharpGradKoszulPermutationOne
+              (ccOperatorFieldComp (I := I) (M := M) g₀ 0 3 6
+                (slotExtendIter (I := I) (M := M) g₀ 0 3 3
+                  (koszulCovGradRaw (I := I) (M := M) g₀ T))
+                (koszulCovecCc (I := I) g₀ T))) from rfl]
+      rw [operatorFieldComposition_toSection]
+      rfl]
+    rw [show (show Tensor0SSpace 0 I q.1 →L[ℝ] Tensor0SSpace 4 I q.1 from
+        (sharpGradKoszulWeightedTerm (I := I) (M := M) g₀
+                  (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2) sharpGradKoszulPermutationTwo T T).toSection q.1)
+        (unitTensor (I := I) (M := M) q.1) =
+        cometricDoubleTraceFib (I := I)
+          (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2) 4 q.1
+          (unitEvalSection (I := I) (M := M) g₀ 6
+            (rsDomDomCongrSection (I := I) (M := M) g₀ 0 6 sharpGradKoszulPermutationTwo
+              (ccOperatorFieldComp (I := I) (M := M) g₀ 0 3 6
+                (slotExtendIter (I := I) (M := M) g₀ 0 3 3
+                  (koszulCovGradRaw (I := I) (M := M) g₀ T))
+                (koszulCovecCc (I := I) g₀ T))) q.1) from by
+      rw [show sharpGradKoszulWeightedTerm (I := I) (M := M) g₀
+                  (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2) sharpGradKoszulPermutationTwo T T =
+          ccOperatorFieldComp (I := I) (M := M) g₀ 0 6 4
+            (cometricDoubleTraceCc (I := I) (M := M) g₀ (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2) 4)
+            (rsDomDomCongrSection (I := I) (M := M) g₀ 0 6 sharpGradKoszulPermutationTwo
+              (ccOperatorFieldComp (I := I) (M := M) g₀ 0 3 6
+                (slotExtendIter (I := I) (M := M) g₀ 0 3 3
+                  (koszulCovGradRaw (I := I) (M := M) g₀ T))
+                (koszulCovecCc (I := I) g₀ T))) from rfl]
+      rw [operatorFieldComposition_toSection]
+      rfl]
+    rw [show (show Tensor0SSpace 0 I q.1 →L[ℝ] Tensor0SSpace 4 I q.1 from
+        (sharpGradKoszulWeightedTerm (I := I) (M := M) g₀
+                  (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2) sharpGradKoszulPermutationThree T T).toSection q.1)
+        (unitTensor (I := I) (M := M) q.1) =
+        cometricDoubleTraceFib (I := I)
+          (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2) 4 q.1
+          (unitEvalSection (I := I) (M := M) g₀ 6
+            (rsDomDomCongrSection (I := I) (M := M) g₀ 0 6 sharpGradKoszulPermutationThree
+              (ccOperatorFieldComp (I := I) (M := M) g₀ 0 3 6
+                (slotExtendIter (I := I) (M := M) g₀ 0 3 3
+                  (koszulCovGradRaw (I := I) (M := M) g₀ T))
+                (koszulCovecCc (I := I) g₀ T))) q.1) from by
+      rw [show sharpGradKoszulWeightedTerm (I := I) (M := M) g₀
+                  (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2) sharpGradKoszulPermutationThree T T =
+          ccOperatorFieldComp (I := I) (M := M) g₀ 0 6 4
+            (cometricDoubleTraceCc (I := I) (M := M) g₀ (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2) 4)
+            (rsDomDomCongrSection (I := I) (M := M) g₀ 0 6 sharpGradKoszulPermutationThree
+              (ccOperatorFieldComp (I := I) (M := M) g₀ 0 3 6
+                (slotExtendIter (I := I) (M := M) g₀ 0 3 3
+                  (koszulCovGradRaw (I := I) (M := M) g₀ T))
+                (koszulCovecCc (I := I) g₀ T))) from rfl]
+      rw [operatorFieldComposition_toSection]
+      rfl]
+    rw [show (show Tensor0SSpace 0 I q.1 →L[ℝ] Tensor0SSpace 4 I q.1 from
+        (sharpGradKoszulWeightedTerm (I := I) (M := M) g₀
+                  (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2) sharpGradKoszulPermutationFour T T).toSection q.1)
+        (unitTensor (I := I) (M := M) q.1) =
+        cometricDoubleTraceFib (I := I)
+          (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2) 4 q.1
+          (unitEvalSection (I := I) (M := M) g₀ 6
+            (rsDomDomCongrSection (I := I) (M := M) g₀ 0 6 sharpGradKoszulPermutationFour
+              (ccOperatorFieldComp (I := I) (M := M) g₀ 0 3 6
+                (slotExtendIter (I := I) (M := M) g₀ 0 3 3
+                  (koszulCovGradRaw (I := I) (M := M) g₀ T))
+                (koszulCovecCc (I := I) g₀ T))) q.1) from by
+      rw [show sharpGradKoszulWeightedTerm (I := I) (M := M) g₀
+                  (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2) sharpGradKoszulPermutationFour T T =
+          ccOperatorFieldComp (I := I) (M := M) g₀ 0 6 4
+            (cometricDoubleTraceCc (I := I) (M := M) g₀ (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2) 4)
+            (rsDomDomCongrSection (I := I) (M := M) g₀ 0 6 sharpGradKoszulPermutationFour
+              (ccOperatorFieldComp (I := I) (M := M) g₀ 0 3 6
+                (slotExtendIter (I := I) (M := M) g₀ 0 3 3
+                  (koszulCovGradRaw (I := I) (M := M) g₀ T))
+                (koszulCovecCc (I := I) g₀ T))) from rfl]
+      rw [operatorFieldComposition_toSection]
+      rfl]
+  have hCLM := contMDiffOn_clm_section_of_apply (I := I) (M := M)
+    (F₁ := Tensor0SModel 2 ℝ E) (V₁ := fun x : M => Tensor0SSpace 2 I x)
+    (F₂ := Tensor0SModel 2 ℝ E) (V₂ := fun x : M => Tensor0SSpace 2 I x)
+    (φ := fun p : M × ℝ => sharpGradKoszulBiContrFib (I := I) g₀
+      (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ p.2) (p.2 • T) p.1)
+    (S := metricPerturbationPathDomain (δ := δ) (δ' := δ)) hperY
+  refine hCLM.congr (fun p _ => ?_)
+  rfl
+
+
+omit [SigmaCompactSpace M] in
+theorem ricciContractionRemainderField_metricPerturbationPath_covariantJetJointSmoothness
+    (g₀ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2) {δ : ℝ}
+    (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
+    (hδZ : metricCauchySchwarzBound (I := I) (M := M) g₀
+      (ccTensorBilinSymm (I := I) g₀ (0 : SmoothCcTensor g₀ 0 2)) δ) :
+    linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g₀ 2
+      (fun s => ricciContractionRemainderField (I := I) (M := M) g₀
+        (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) (s • T)) (δ := δ) (δ' := δ) := by
+  classical
+  have hperY : ∀ (Y : Cₛ^∞⟮I; Tensor0SModel 2 ℝ E, fun x : M => Tensor0SSpace 2 I x⟯),
+      ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, Tensor0SModel 2 ℝ E)) ∞
+        (fun p : M × ℝ => TotalSpace.mk' (Tensor0SModel 2 ℝ E)
+          (E := fun z : M => Tensor0SSpace 2 I z) p.1
+          (ricciContractionBiContrFib (I := I) g₀ (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ p.2)
+            (p.2 • T) p.1 (Y p.1)))
+        ((Set.univ : Set M) ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ)) := by
+    intro Y
+    have hXiApp : ContMDiff I (I.prod 𝓘(ℝ, Tensor0SModel 6 ℝ E)) ∞
+        (fun x : M => TotalSpace.mk' (Tensor0SModel 6 ℝ E)
+          (E := fun z : M => Tensor0SSpace 6 I z) x
+          ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 6 I x from
+            (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
+              (slotExtendIter (I := I) (M := M) g₀ 0 4 2
+                (palatiniRicciContractionWeightA (I := I) (M := M) g₀ T +
+                  palatiniRicciContractionWeightB (I := I) (M := M) g₀ T))).toSection x) (Y x))) :=
+      ContMDiff.clm_bundle_apply (b := id)
+        (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
+          (slotExtendIter (I := I) (M := M) g₀ 0 4 2
+            (palatiniRicciContractionWeightA (I := I) (M := M) g₀ T +
+              palatiniRicciContractionWeightB (I := I) (M := M) g₀ T))).toSection.contMDiff Y.contMDiff
+    have hXiJoint : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, Tensor0SModel 6 ℝ E)) ∞
+        (fun q : M × ℝ => TotalSpace.mk' (Tensor0SModel 6 ℝ E)
+          (E := fun z : M => Tensor0SSpace 6 I z) q.1
+          ((show Tensor0SSpace 2 I q.1 →L[ℝ] Tensor0SSpace 6 I q.1 from
+            (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
+              (slotExtendIter (I := I) (M := M) g₀ 0 4 2
+                (palatiniRicciContractionWeightA (I := I) (M := M) g₀ T +
+                  palatiniRicciContractionWeightB (I := I) (M := M) g₀ T))).toSection q.1) (Y q.1)))
+        ((Set.univ : Set M) ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ)) :=
+      (hXiApp.comp_contMDiffOn contMDiffOn_fst).mono (Set.subset_univ _)
+    have hcdtf4 := cometricDoubleTraceFib_metricPerturbationPath_jointContMDiffOn (I := I) (p := 4)
+      g₀ T 0 hδ hδZ
+      (fun q : M × ℝ => (show Tensor0SSpace 2 I q.1 →L[ℝ] Tensor0SSpace 6 I q.1 from
+        (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
+          (slotExtendIter (I := I) (M := M) g₀ 0 4 2
+            (palatiniRicciContractionWeightA (I := I) (M := M) g₀ T +
+              palatiniRicciContractionWeightB (I := I) (M := M) g₀ T))).toSection q.1) (Y q.1)) hXiJoint
+    have hcdtf2 := cometricDoubleTraceFib_metricPerturbationPath_jointContMDiffOn (I := I) (p := 2)
+      g₀ T 0 hδ hδZ
+      (fun q : M × ℝ => cometricDoubleTraceFib (I := I)
+        (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2) 4 q.1
+        ((show Tensor0SSpace 2 I q.1 →L[ℝ] Tensor0SSpace 6 I q.1 from
+          (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
+            (slotExtendIter (I := I) (M := M) g₀ 0 4 2
+              (palatiniRicciContractionWeightA (I := I) (M := M) g₀ T +
+                palatiniRicciContractionWeightB (I := I) (M := M) g₀ T))).toSection q.1) (Y q.1))) hcdtf4
+    have hsmul := palatiniJointTotalSpace0S_smulFun_local (I := I) (M := M) (d := 2)
+      (S := metricPerturbationPathDomain (δ := δ) (δ' := δ))
+      (f := fun s : ℝ => (-(1 / 2) : ℝ) * s)
+      ((contDiff_const.mul contDiff_id :
+        ContDiff ℝ ∞ (fun s : ℝ => (-(1 / 2) : ℝ) * s)))
+      (fun q : M × ℝ => cometricDoubleTraceFib (I := I)
+        (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2) 2 q.1
+        (cometricDoubleTraceFib (I := I)
+          (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2) 4 q.1
+          ((show Tensor0SSpace 2 I q.1 →L[ℝ] Tensor0SSpace 6 I q.1 from
+            (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
+              (slotExtendIter (I := I) (M := M) g₀ 0 4 2
+                (palatiniRicciContractionWeightA (I := I) (M := M) g₀ T +
+                  palatiniRicciContractionWeightB (I := I) (M := M) g₀ T))).toSection q.1) (Y q.1))))
+      hcdtf2
+    refine hsmul.congr (fun q _ => ?_)
+    refine congrArg (fun t => TotalSpace.mk' (Tensor0SModel 2 ℝ E)
+      (E := fun z : M => Tensor0SSpace 2 I z) q.1 t) ?_
+    have h1 : ricciContractionBiContrFib (I := I) g₀ (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2)
+        (q.2 • T) q.1 (Y q.1) =
+        (show Tensor0SSpace 2 I q.1 →L[ℝ] Tensor0SSpace 2 I q.1 from
+          (((-(1 / 2) : ℝ) • ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2
+            (cometricDoublePairTraceCoefficient (I := I) (M := M) g₀ (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2))
+            (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
+              (slotExtendIter (I := I) (M := M) g₀ 0 4 2
+                (palatiniRicciContractionWeightA (I := I) (M := M) g₀ (q.2 • T) +
+                  palatiniRicciContractionWeightB (I := I) (M := M) g₀ (q.2 • T))))).toSection q.1))
+          (Y q.1) := by
+      rw [← palatiniRicciContraction_eq_decomposition (I := I) (M := M) g₀
+        (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2) (q.2 • T)]
+      rfl
+    rw [h1]
+    rw [palatiniRicciContractionXi_smul (I := I) (M := M) g₀ T q.2]
+    rw [operatorFieldComposition_smul_right (I := I) (M := M) g₀ 2 6 2 q.2
+      (cometricDoublePairTraceCoefficient (I := I) (M := M) g₀ (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2))
+      (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
+        (slotExtendIter (I := I) (M := M) g₀ 0 4 2
+          (palatiniRicciContractionWeightA (I := I) (M := M) g₀ T +
+            palatiniRicciContractionWeightB (I := I) (M := M) g₀ T)))]
+    rw [show ((show Tensor0SSpace 2 I q.1 →L[ℝ] Tensor0SSpace 2 I q.1 from
+        (((-(1 / 2) : ℝ) • q.2 • ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2
+          (cometricDoublePairTraceCoefficient (I := I) (M := M) g₀ (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2))
+          (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
+            (slotExtendIter (I := I) (M := M) g₀ 0 4 2
+              (palatiniRicciContractionWeightA (I := I) (M := M) g₀ T +
+                palatiniRicciContractionWeightB (I := I) (M := M) g₀ T)))).toSection q.1)) (Y q.1)) =
+        ((-(1 / 2) : ℝ) * q.2) • ((show Tensor0SSpace 2 I q.1 →L[ℝ] Tensor0SSpace 2 I q.1 from
+          ((ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2
+            (cometricDoublePairTraceCoefficient (I := I) (M := M) g₀ (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2))
+            (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
+              (slotExtendIter (I := I) (M := M) g₀ 0 4 2
+                (palatiniRicciContractionWeightA (I := I) (M := M) g₀ T +
+                  palatiniRicciContractionWeightB (I := I) (M := M) g₀ T)))).toSection q.1)) (Y q.1))
+                    from by
+      rw [show ((((-(1 / 2) : ℝ) • q.2 • ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2
+          (cometricDoublePairTraceCoefficient (I := I) (M := M) g₀ (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2))
+          (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
+            (slotExtendIter (I := I) (M := M) g₀ 0 4 2
+              (palatiniRicciContractionWeightA (I := I) (M := M) g₀ T +
+                palatiniRicciContractionWeightB (I := I) (M := M) g₀ T)))).toSection q.1)) =
+          (-(1 / 2) : ℝ) • q.2 • ((ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2
+            (cometricDoublePairTraceCoefficient (I := I) (M := M) g₀ (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2))
+            (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
+              (slotExtendIter (I := I) (M := M) g₀ 0 4 2
+                (palatiniRicciContractionWeightA (I := I) (M := M) g₀ T +
+                  palatiniRicciContractionWeightB (I := I) (M := M) g₀ T)))).toSection q.1) from by
+        rw [SmoothCcTensor.toSection_smul, SmoothCcTensor.toSection_smul]; rfl]
+      rw [show (((-(1 / 2) : ℝ) • q.2 • ((ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2
+          (cometricDoublePairTraceCoefficient (I := I) (M := M) g₀ (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2))
+          (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
+            (slotExtendIter (I := I) (M := M) g₀ 0 4 2
+              (palatiniRicciContractionWeightA (I := I) (M := M) g₀ T +
+                palatiniRicciContractionWeightB (I := I) (M := M) g₀ T)))).toSection q.1)) : _) =
+          ((-(1 / 2) : ℝ) * q.2) • ((ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2
+            (cometricDoublePairTraceCoefficient (I := I) (M := M) g₀ (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2))
+            (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
+              (slotExtendIter (I := I) (M := M) g₀ 0 4 2
+                (palatiniRicciContractionWeightA (I := I) (M := M) g₀ T +
+                  palatiniRicciContractionWeightB (I := I) (M := M) g₀ T)))).toSection q.1) from by
+        rw [smul_smul]]
+      rfl]
+    refine congrArg (fun t => ((-(1 / 2) : ℝ) * q.2) • t) ?_
+    rw [show ((show Tensor0SSpace 2 I q.1 →L[ℝ] Tensor0SSpace 2 I q.1 from
+        ((ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2
+          (cometricDoublePairTraceCoefficient (I := I) (M := M) g₀ (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2))
+          (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
+            (slotExtendIter (I := I) (M := M) g₀ 0 4 2
+              (palatiniRicciContractionWeightA (I := I) (M := M) g₀ T +
+                palatiniRicciContractionWeightB (I := I) (M := M) g₀ T)))).toSection q.1)) (Y q.1)) =
+        cometricDoubleTraceFib (I := I) (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2) 2 q.1
+          (cometricDoubleTraceFib (I := I) (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2) 4 q.1
+            ((show Tensor0SSpace 2 I q.1 →L[ℝ] Tensor0SSpace 6 I q.1 from
+              (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
+                (slotExtendIter (I := I) (M := M) g₀ 0 4 2
+                  (palatiniRicciContractionWeightA (I := I) (M := M) g₀ T +
+                    palatiniRicciContractionWeightB (I := I) (M := M) g₀ T))).toSection q.1) (Y q.1)))
+                      from by
+      rw [operatorFieldComposition_toSection]
+      rfl]
+  have hCLM := contMDiffOn_clm_section_of_apply (I := I) (M := M)
+    (F₁ := Tensor0SModel 2 ℝ E) (V₁ := fun x : M => Tensor0SSpace 2 I x)
+    (F₂ := Tensor0SModel 2 ℝ E) (V₂ := fun x : M => Tensor0SSpace 2 I x)
+    (φ := fun p : M × ℝ => ricciContractionBiContrFib (I := I) g₀
+      (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ p.2) (p.2 • T) p.1)
+    (S := metricPerturbationPathDomain (δ := δ) (δ' := δ)) hperY
+  refine hCLM.congr (fun p _ => ?_)
+  rfl
+
+end TensorSpectral
+end Parabolic
+end Analysis
+end DifferentialGeometry
+
+end

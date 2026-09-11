@@ -1,14 +1,13 @@
-import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivativePullback
+import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Pullback
 
-import DifferentialGeometry.Geometry.Metric.Convergence.DerivativeNormRestriction
-import DifferentialGeometry.Geometry.Curvature.RestrictOpenRm04
+import DifferentialGeometry.Geometry.Metric.Convergence.DerivativeNorm.Restriction
+import DifferentialGeometry.Geometry.Curvature.Naturality.OpenRestriction
 import DifferentialGeometry.Geometry.Metric.Family.Continuity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.Basic
 
 
 open DifferentialGeometry.Tensor.RicciIdentity
 open DifferentialGeometry.Tensor.RSTensor
-open DifferentialGeometry.Tensor.Auxiliary
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Geometry.Connection
 open DifferentialGeometry.Geometry.Curvature
@@ -25,7 +24,7 @@ open DifferentialGeometry.PDE.RicciFlow (SolutionOn IsSolutionOn MetricVariation
   ricciNorm SolutionFamily RicciAtFamily)
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [CompleteSpace E]
@@ -54,14 +53,14 @@ omit [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
 theorem ricciTensor_restrictOpen
     (g : SmoothRiemannianMetric I M) (U : TopologicalSpace.Opens M)
-    [SigmaCompactSpace U] [T2Space U] [BoundarylessManifold I U]
+    [T2Space U] [BoundarylessManifold I U]
     [IsManifold I 1 U] (x : U) (v w : TangentSpace I x) :
     ricciTensor (I := I) (M := U) (g.restrictOpen (I := I) U) x v w
       = ricciTensor (I := I) (M := M) g (x : M)
           (mfderiv I I (Subtype.val : U → M) x v)
           (mfderiv I I (Subtype.val : U → M) x w) := by
   classical
-  obtain ⟨B, hB⟩ := exists_gOrthonormalBasis (I := I) (M := M) g (x : M)
+  obtain ⟨B, hB⟩ := DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis (I := I) (M := M) g (x : M)
   let hdim : Module.finrank ℝ E = Module.finrank ℝ (TangentSpace I (x : M)) := by
     rfl
   let Bf : Fin (Module.finrank ℝ E) → TangentSpace I (x : M) :=
@@ -112,11 +111,11 @@ theorem ricciTensor_restrictOpen
   refine Finset.sum_congr rfl (fun i _ => ?_)
   rw [(g.restrictOpen (I := I) U).symm x
         (riemannOp (LeviCivita (I := I) (g.restrictOpen (I := I) U)) x (BU i) v w) (BU i),
-    ← metricRm04StdAt_eq_inner_riemannOp (I := I) (M := U) (g.restrictOpen (I := I) U)
+    ← metricRm04StandardAt_eq_inner_riemannOp (I := I) (M := U) (g.restrictOpen (I := I) U)
         x (BU i) v w (BU i),
-    metricRm04StdAt_restrictOpen (I := I) g U x (BU i) v w (BU i),
+    metricRm04StandardAt_restrictOpen (I := I) g U x (BU i) v w (BU i),
     hBU_apply,
-    metricRm04StdAt_eq_inner_riemannOp (I := I) (M := M) g (x : M)
+    metricRm04StandardAt_eq_inner_riemannOp (I := I) (M := M) g (x : M)
       (Bf i) (mfderiv I I (Subtype.val : U → M) x v)
       (mfderiv I I (Subtype.val : U → M) x w) (Bf i),
     g.symm (x : M) (Bf i)
@@ -128,7 +127,7 @@ omit [I.Boundaryless] [IsManifold I 2 M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem metricRicci_restrictOpen_eval
     (g : SmoothRiemannianMetric I M) (U : TopologicalSpace.Opens M)
-    [SigmaCompactSpace U] [T2Space U] [BoundarylessManifold I U]
+    [T2Space U] [BoundarylessManifold I U]
     [IsManifold I 1 U] (x : U) (slots : Fin 2 → TangentSpace I x) :
     metricRicci (I := I) (M := U) (g.restrictOpen (I := I) U) x slots
       = metricRicci (I := I) (M := M) g (x : M)
@@ -166,12 +165,12 @@ omit [I.Boundaryless] [IsManifold I 2 M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem metricScalarAt_restrictOpen
     (g : SmoothRiemannianMetric I M) (U : TopologicalSpace.Opens M)
-    [SigmaCompactSpace U] [T2Space U] [BoundarylessManifold I U]
+    [T2Space U] [BoundarylessManifold I U]
     [IsManifold I 1 U] (x : U) :
     metricScalarAt (I := I) (M := U) (g.restrictOpen (I := I) U) x
       = metricScalarAt (I := I) (M := M) g (x : M) := by
   classical
-  obtain ⟨basisU, hONU⟩ := exists_gOrthonormalBasis (I := I) (M := U)
+  obtain ⟨basisU, hONU⟩ := DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis (I := I) (M := U)
     (g.restrictOpen (I := I) U) x
   let eM : TangentSpace I x ≃ₗ[ℝ] TangentSpace I (x : M) :=
     (tangentSpaceModelContinuousLinearEquiv (I := I) x).toLinearEquiv.trans
@@ -199,18 +198,18 @@ theorem metricScalarAt_restrictOpen
         exact (SmoothRiemannianMetric.restrictOpen_inner g U x
           (basisU i) (basisU j)).symm
       _ = _ := hONU i j
-  have hinvU : MetricInverseInBasisGen (I := I) (M := U)
+  have hinvU : MetricInverseInBasis (I := I) (M := U)
       (g.restrictOpen (I := I) U) x basisU
       (identityInvMetric (Idx := Fin (Module.finrank ℝ (TangentSpace I x)))) := by
-    change MetricInverseInBasisGen (I := I) (M := U)
+    change MetricInverseInBasis (I := I) (M := U)
       (g.restrictOpen (I := I) U) x basisU (fun a k => if a = k then 1 else 0)
-    exact metricInverseInBasis_of_orthonormal (I := I) (M := U)
+    exact DifferentialGeometry.Tensor0SBundle.metricInverseInBasis_of_orthonormal (I := I) (M := U)
       (g.restrictOpen (I := I) U) basisU hONU
-  have hinvM : MetricInverseInBasisGen (I := I) (M := M) g (x : M) basisM
+  have hinvM : MetricInverseInBasis (I := I) (M := M) g (x : M) basisM
       (identityInvMetric (Idx := Fin (Module.finrank ℝ (TangentSpace I x)))) := by
-    change MetricInverseInBasisGen (I := I) (M := M) g (x : M) basisM
+    change MetricInverseInBasis (I := I) (M := M) g (x : M) basisM
       (fun a k => if a = k then 1 else 0)
-    exact metricInverseInBasis_of_orthonormal (I := I) (M := M) g basisM hONM
+    exact DifferentialGeometry.Tensor0SBundle.metricInverseInBasis_of_orthonormal (I := I) (M := M) g basisM hONM
   rw [metricScalarAt_def, metricScalarAt_def,
     metricTracePair0SAt_eq_sum_basis (I := I) (M := U)
       (g.restrictOpen (I := I) U) basisU
@@ -243,23 +242,23 @@ omit [I.Boundaryless] [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M]
 omit [SigmaCompactSpace M] in
 theorem metricRm04_restrictOpen_eval
     (g : SmoothRiemannianMetric I M) (U : TopologicalSpace.Opens M)
-    [SigmaCompactSpace U] [T2Space U] [IsManifold I 1 U] (x : U) (slots : Fin 4 → TangentSpace I x) :
+    [T2Space U] [IsManifold I 1 U] (x : U) (slots : Fin 4 → TangentSpace I x) :
     metricRm04 (I := I) (M := U) (g.restrictOpen (I := I) U) x slots
       = metricRm04 (I := I) (M := M) g (x : M)
           (fun q => mfderiv I I (Subtype.val : U → M) x (slots q)) := by
   have hLHS : metricRm04 (I := I) (M := U) (g.restrictOpen (I := I) U) x slots
-      = metricRm04StdAt (I := I) (M := U) (g.restrictOpen (I := I) U) x
+      = metricRm04StandardAt (I := I) (M := U) (g.restrictOpen (I := I) U) x
           (slots 0) (slots 1) (slots 2) (slots 3) := by
     have hcmm : metricRm04 (I := I) (M := U) (g.restrictOpen (I := I) U) x slots
         = metricRm04 (I := I) (M := U) (g.restrictOpen (I := I) U) x
             (vec4 (slots 0) (slots 1) (slots 2) (slots 3)) :=
       congrArg _ (by funext i; fin_cases i <;> rfl)
     rw [hcmm, metricRm04_apply]
-    exact (metricRm04StdAt_apply (I := I) (M := U) (g.restrictOpen (I := I) U) x
+    exact (metricRm04StandardAt_apply (I := I) (M := U) (g.restrictOpen (I := I) U) x
       (slots 0) (slots 1) (slots 2) (slots 3)).symm
   have hRHS : metricRm04 (I := I) (M := M) g (x : M)
         (fun q => mfderiv I I (Subtype.val : U → M) x (slots q))
-      = metricRm04StdAt (I := I) (M := M) g (x : M)
+      = metricRm04StandardAt (I := I) (M := M) g (x : M)
           (mfderiv I I (Subtype.val : U → M) x (slots 0))
           (mfderiv I I (Subtype.val : U → M) x (slots 1))
           (mfderiv I I (Subtype.val : U → M) x (slots 2))
@@ -273,13 +272,13 @@ theorem metricRm04_restrictOpen_eval
               (mfderiv I I (Subtype.val : U → M) x (slots 3))) :=
       congrArg _ (by funext i; fin_cases i <;> rfl)
     rw [hcmm, metricRm04_apply]
-    exact (metricRm04StdAt_apply (I := I) (M := M) g (x : M)
+    exact (metricRm04StandardAt_apply (I := I) (M := M) g (x : M)
       (mfderiv I I (Subtype.val : U → M) x (slots 0))
       (mfderiv I I (Subtype.val : U → M) x (slots 1))
       (mfderiv I I (Subtype.val : U → M) x (slots 2))
       (mfderiv I I (Subtype.val : U → M) x (slots 3))).symm
   rw [hLHS, hRHS]
-  exact metricRm04StdAt_restrictOpen (I := I) g U x (slots 0) (slots 1) (slots 2) (slots 3)
+  exact metricRm04StandardAt_restrictOpen (I := I) g U x (slots 0) (slots 1) (slots 2) (slots 3)
 
 variable {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
 
@@ -699,5 +698,5 @@ theorem isSolutionOn_restrictOpen
     exact DifferentialGeometry.Geometry.Operator.gradientFun_mdiffAt (I := I)
       ((solutionOnRestrictOpen (I := I) S U).family.metric t) hsmooth x
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

@@ -119,22 +119,22 @@ theorem chart_cover_flow_unique_on_overlap_chart_alpha_coord
     have h : (chartAt H α₁) x ∈
         I ⁻¹' Metric.ball (I ((chartAt H α₁) α₁)) hper₁.r := hx₁.2
     exact Metric.ball_subset_closedBall h
-  obtain ⟨hflow₁_init, hu₁_ode_full⟩ :=
+  obtain ⟨hflow₁_initial, hu₁_ode_full⟩ :=
     (hper₁).flow_spec (I ((chartAt H α₁) x)) hxChart₁_closedBall_r₁
-  have hu₁_init : u₁ 0 = I ((chartAt H α₁) x) := hflow₁_init
+  have hu₁_initial : u₁ 0 = I ((chartAt H α₁) x) := hflow₁_initial
   have hxChart₂_closedBall_r₂ : I ((chartAt H α₂) x) ∈
       Metric.closedBall (I ((chartAt H α₂) α₂)) hper₂.r := by
     unfold ChartLocalPicardData.U at hx₂
     have h : (chartAt H α₂) x ∈
         I ⁻¹' Metric.ball (I ((chartAt H α₂) α₂)) hper₂.r := hx₂.2
     exact Metric.ball_subset_closedBall h
-  obtain ⟨hflow₂_init, _⟩ :=
+  obtain ⟨hflow₂_initial, _⟩ :=
     (hper₂).flow_spec (I ((chartAt H α₂) x)) hxChart₂_closedBall_r₂
-  have hu₂_init : u₂ 0 = I ((chartAt H α₁) x) := by
+  have hu₂_initial : u₂ 0 = I ((chartAt H α₁) x) := by
     change I ((chartAt H α₁) ((chartAt H α₂).symm
       (I.symm ((hper₂).flow (I ((chartAt H α₂) x)) 0)))) = I ((chartAt H α₁) x)
-    rw [hflow₂_init, hx_α₂_pullback_eq_x]
-  have heq0 : u₁ 0 = u₂ 0 := by rw [hu₁_init, hu₂_init]
+    rw [hflow₂_initial, hx_α₂_pullback_eq_x]
+  have heq0 : u₁ 0 = u₂ 0 := by rw [hu₁_initial, hu₂_initial]
   have hu₁_cont_full : ContinuousOn u₁ (Set.Icc (0 : ℝ) hper₁.T) := by
     intro t ht
     have hderiv := hu₁_ode_full t ht
@@ -210,8 +210,8 @@ theorem chart_overlap_alpha_in_alpha_source_short_time
         I ⁻¹' Metric.ball (I ((chartAt H α₂) α₂)) hper₂.r := hx₂.2
     exact Metric.ball_subset_closedBall h
   set u₂ : ℝ → E := fun s => (hper₂).flow y₂ s with hu₂_def
-  obtain ⟨hflow₂_init, hflow₂_ode⟩ := (hper₂).flow_spec y₂ hy₂_closedBall
-  have hu₂_init : u₂ 0 = y₂ := hflow₂_init
+  obtain ⟨hflow₂_initial, hflow₂_ode⟩ := (hper₂).flow_spec y₂ hy₂_closedBall
+  have hu₂_initial : u₂ 0 = y₂ := hflow₂_initial
   have hu₂_cont : ContinuousOn u₂ (Set.Icc (0 : ℝ) hper₂.T) := by
     intro t ht
     exact (hflow₂_ode t ht).continuousWithinAt
@@ -221,14 +221,14 @@ theorem chart_overlap_alpha_in_alpha_source_short_time
     hu₂_cont 0 h0_mem
   have hIsymm_cont : Continuous (I.symm : E → H) := I.continuous_invFun
   have hIsymm_at0 : I.symm (u₂ 0) = (chartAt H α₂) x := by
-    rw [hu₂_init, hy₂_def, I.left_inv]
+    rw [hu₂_initial, hy₂_def, I.left_inv]
   have hChart2_target : (chartAt H α₂) x ∈ (chartAt H α₂).target :=
     (chartAt H α₂).map_source hx₂_source
   have hChart2_target_open : IsOpen (chartAt H α₂).target :=
     (chartAt H α₂).open_target
   set γ₂ : ℝ → M := fun s =>
     (chartAt H α₂).symm (I.symm (u₂ s)) with hγ₂_def
-  have hγ₂_init : γ₂ 0 = x := by
+  have hγ₂_initial : γ₂ 0 = x := by
     change (chartAt H α₂).symm (I.symm (u₂ 0)) = x
     rw [hIsymm_at0]
     exact (chartAt H α₂).left_inv hx₂_source
@@ -252,12 +252,12 @@ theorem chart_overlap_alpha_in_alpha_source_short_time
     exact hcomp
   have hChart1_source_open : IsOpen (chartAt H α₁).source :=
     (chartAt H α₁).open_source
-  have hγ₂_init_mem : γ₂ 0 ∈ (chartAt H α₁).source := by
-    rw [hγ₂_init]; exact hx₁
+  have hγ₂_initial_mem : γ₂ 0 ∈ (chartAt H α₁).source := by
+    rw [hγ₂_initial]; exact hx₁
   have hpreim : γ₂ ⁻¹' (chartAt H α₁).source ∈
       nhdsWithin (0 : ℝ) (Set.Icc (0 : ℝ) hper₂.T) := by
     apply hγ₂_cont0
-    exact hChart1_source_open.mem_nhds hγ₂_init_mem
+    exact hChart1_source_open.mem_nhds hγ₂_initial_mem
   rw [mem_nhdsWithin] at hpreim
   obtain ⟨V, hV_open, hV_mem, hV_subset⟩ := hpreim
   obtain ⟨ε, hε_pos, hε_ball⟩ := Metric.isOpen_iff.mp hV_open 0 hV_mem
@@ -319,7 +319,7 @@ theorem chart_overlap_chart_alpha_coord_ode
     have h : (chartAt H α₂) x ∈
         I ⁻¹' Metric.ball (I ((chartAt H α₂) α₂)) hper₂.r := hx₂.2
     exact Metric.ball_subset_closedBall h
-  obtain ⟨_hflow₂_init, hflow₂_ode⟩ := (hper₂).flow_spec y₂ hy₂_closedBall
+  obtain ⟨_hflow₂_initial, hflow₂_ode⟩ := (hper₂).flow_spec y₂ hy₂_closedBall
   intro t ht
   have ht_T : t ∈ Set.Icc (0 : ℝ) hper₂.T :=
     ⟨ht.1, ht.2.le.trans hS_le₂⟩

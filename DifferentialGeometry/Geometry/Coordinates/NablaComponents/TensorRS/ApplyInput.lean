@@ -31,14 +31,14 @@ private theorem coordinateFrameAt_basis_continuousLinearMapAt
   let e := trivializationAt E (TangentSpace I : M -> Type _) x₀
   have hxE : x ∈ e.baseSet := by
     simpa [e, coordinateFrameSet, coordinateTrivializationAt] using hx
-  have hx_src : x ∈ (chartAt H x₀).source := by
+  have hx_source : x ∈ (chartAt H x₀).source := by
     simpa [coordinateFrameSet, coordinateTrivializationAt, e] using hx
   have hframe :
       (coordinateFrameAtBasis (I := I) x₀ hx) i =
         e.symmL 𝕜 x ((Module.finBasis 𝕜 E) i) := by
     rw [coordinateFrameAt_basis_apply]
     rw [coordinateFrameAt_apply_of_mem (I := I) hx i]
-    rw [TangentBundle.symmL_trivializationAt (I := I) (𝕜 := 𝕜) hx_src]
+    rw [TangentBundle.symmL_trivializationAt (I := I) (𝕜 := 𝕜) hx_source]
     rfl
   rw [hframe]
   exact e.continuousLinearMapAt_symmL (R := 𝕜) hxE ((Module.finBasis 𝕜 E) i)
@@ -138,7 +138,7 @@ theorem applyInput_coordFrame_eventually {r s : ℕ}
       (coordinateFrameAt_mem (I := I) x₀)] with y hy
   let basis := coordinateFrameAtBasis (I := I) x₀ hy
   have h :=
-    Tensor0SBundle.componentRS_apply_input_eq_sum
+    Tensor0SBundle.componentRSField_apply_input_eq_sum
       (I := I) basis (T y) (θ y) lower
   calc
     (T y (θ y))
@@ -147,7 +147,7 @@ theorem applyInput_coordFrame_eventually {r s : ℕ}
           simp [basis, component0S_apply]
     _ = ∑ upper : Fin r -> CoordinateIdx (𝕜 := 𝕜) E,
           component0S (I := I) basis (θ y) upper *
-            componentRSGen (I := I) basis (T y) upper lower := h
+            componentRSField (I := I) basis (T y) upper lower := h
     _ = ∑ upper : Fin r -> CoordinateIdx (𝕜 := 𝕜) E,
         θ y (fun a : Fin r => coordinateFrameAt (I := I) x₀ (upper a) y) *
           (T y
@@ -159,7 +159,7 @@ theorem applyInput_coordFrame_eventually {r s : ℕ}
           refine Finset.sum_congr rfl fun upper _ => ?_
           have hconst := constInChart_basisTensor0S_coordFrame
             (I := I) (M := M) (r := r) x₀ hy upper
-          simp [basis, component0S_apply, componentRS_apply_gen, hconst]
+          simp [basis, component0S_apply, componentRSField_apply, hconst]
 
 omit [IsManifold I 2 M] in
 theorem tensorRS_eval_constInChart_coordinateFrame_contMDiffAt {r s : ℕ}

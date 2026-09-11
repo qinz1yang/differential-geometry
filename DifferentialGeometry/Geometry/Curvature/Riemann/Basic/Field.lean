@@ -1,9 +1,9 @@
-import DifferentialGeometry.Geometry.Curvature.Tensor
-import DifferentialGeometry.Tensor.RSTensor.NablaOnTensors.HigherOrder
+import DifferentialGeometry.Geometry.Curvature.Riemann.Tensor
+import DifferentialGeometry.Geometry.Connection.TensorNabla.Iterated.Basic
 import DifferentialGeometry.Bundle.PartialMfderiv.Basic
 import DifferentialGeometry.Bundle.PartialMfderiv.ModelMixed
-import DifferentialGeometry.Bundle.PartialMfderiv.FixedBase
-import DifferentialGeometry.Tensor.RSTensor.Derivation.NablaOnTensors
+import DifferentialGeometry.Geometry.Coordinates.Calculus.FixedBaseDerivative
+import DifferentialGeometry.Geometry.Connection.TensorNabla.InducedConnection
 import Mathlib.Geometry.Manifold.VectorBundle.MDifferentiable
 import Mathlib.Geometry.Manifold.VectorBundle.Tangent
 import Mathlib.Geometry.Manifold.VectorBundle.CovariantDerivative.Torsion
@@ -400,21 +400,6 @@ theorem cov_tangentConst_smul_apply_eventuallyEq
   rw [tangentConstAt_smul]
   rw [cov.isCovariantDerivativeOnUniv.smul_const a hv]
   rfl
-
-def riemannCurvatureAux
-    (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
-    (X Y Z : (p : M) → TangentSpace I p) (x : M) : TangentSpace I x :=
-  (cov (fun p => (cov Z p) (Y p)) x) (X x) -
-    (cov (fun p => (cov Z p) (X p)) x) (Y x) -
-      (cov Z x) (VectorField.mlieBracket I X Y x)
-
-omit [FiniteDimensional ℝ E] [CompleteSpace E] in
-@[simp]
-theorem riemannCurvatureAux_eq_connectionRiemannCurvatureField
-    (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
-    (X Y Z : (p : M) → TangentSpace I p) (x : M) :
-    riemannCurvatureAux cov X Y Z x =
-      connectionRiemannCurvatureField cov X Y Z x := rfl
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] in
 theorem connectionRiemannCurvatureField_congr_of_eventuallyEq
@@ -878,7 +863,7 @@ private theorem smooth_linear_tangentSection_pointwise
       ∀ (δ : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M → Type _))
         {U : Set M}, IsOpen U → x ∈ U → (∀ y ∈ U, δ y = 0) → Φ δ = 0 := by
     intro δ U hU hxU hδU
-    obtain ⟨ψ, -, hψsupp⟩ :=
+    obtain ⟨ψ, -, hψsupport⟩ :=
       (SmoothBumpFunction.nhds_basis_tsupport (I := I) x).mem_iff.mp
         (hU.mem_nhds hxU)
     let ψ' : C^∞⟮I, M; Real⟯ :=
@@ -888,7 +873,7 @@ private theorem smooth_linear_tangentSection_pointwise
       simp only [ContMDiffSection.coe_smulContMDiffMap,
         ContMDiffSection.coe_zero, Pi.zero_apply]
       by_cases hy : y ∈ Function.support (ψ : M → Real)
-      · exact smul_eq_zero_of_right _ (hδU y (hψsupp (subset_closure hy)))
+      · exact smul_eq_zero_of_right _ (hδU y (hψsupport (subset_closure hy)))
       · simp only [Function.mem_support, not_not] at hy
         exact smul_eq_zero_of_left hy _
     have h := hsmul ψ' δ
@@ -908,7 +893,7 @@ private theorem smooth_linear_tangentSection_pointwise
   have he : x ∈ e.baseSet := mem_baseSet_trivializationAt E (TangentSpace I) x
   have hframe := e.isLocalFrameOn_localFrame_baseSet I (∞ : WithTop ℕ∞) b
   obtain ⟨s', hs'⟩ := hframe.exists_contMDiffSection_eqOn_nhd e.open_baseSet he
-  obtain ⟨χ, -, hχsupp⟩ :=
+  obtain ⟨χ, -, hχsupport⟩ :=
     (SmoothBumpFunction.nhds_basis_tsupport (I := I) x).mem_iff.mp
       (e.open_baseSet.mem_nhds he)
   have hcoeff_smooth : ∀ i, ContMDiff I 𝓘(Real) (∞ : WithTop ℕ∞)
@@ -918,11 +903,11 @@ private theorem smooth_linear_tangentSection_pointwise
     · have hcoeff :
           ContMDiffAt I 𝓘(Real) (∞ : WithTop ℕ∞)
             (fun y : M => e.localFrameCoeff I b i y (δ y)) y :=
-        contMDiffAt_localFrameCoeff b (hχsupp hy) δ.contMDiff.contMDiffAt i
+        contMDiffAt_localFrameCoeff b (hχsupport hy) δ.contMDiff.contMDiffAt i
       have hχy : ContMDiffAt I 𝓘(Real) (∞ : WithTop ℕ∞) (χ : M → Real) y :=
         χ.contMDiff.contMDiffAt
       refine (hχy.smul hcoeff).congr_of_eventuallyEq ?_
-      filter_upwards [((e.open_baseSet).mem_nhds (hχsupp hy))] with z hz
+      filter_upwards [((e.open_baseSet).mem_nhds (hχsupport hy))] with z hz
       have hbasis : e.basisAt b hz = hframe.toBasisAt hz := by
         ext j
         simp [IsLocalFrameOn.toBasisAt, Trivialization.localFrame,
@@ -961,7 +946,7 @@ private theorem smooth_linear_tangentSection_pointwise
     refine ⟨U', hU'_open, hxU', ?_⟩
     intro y hy
     simp only [ContMDiffSection.coe_sub, Pi.sub_apply, sub_eq_zero,
-      ContMDiffSection.finset_sum_apply_gen, ContMDiffSection.coe_smulContMDiffMap]
+      ContMDiffSection.finset_sum_apply, ContMDiffSection.coe_smulContMDiffMap]
     exact hU y (hU'U hy)
   have hloc := hlocal (δ - ∑ i, u' i • s' i) hU_open hxU hU_vanish
   rw [hsub δ (∑ i, u' i • s' i)] at hloc

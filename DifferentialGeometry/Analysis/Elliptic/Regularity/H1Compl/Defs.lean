@@ -36,17 +36,6 @@ noncomputable def smoothToH1Compl (g : SmoothRiemannianMetric I M) :
     smoothToH1Compl (I := I) (M := M) g f = (f : H1Compl g) :=
   rfl
 
-example (g : SmoothRiemannianMetric I M) : Type _ := H1Compl g
-
-example (g : SmoothRiemannianMetric I M) :
-    NormedAddCommGroup (H1Compl g) := inferInstance
-
-example (g : SmoothRiemannianMetric I M) :
-    InnerProductSpace ℝ (H1Compl g) := inferInstance
-
-example (g : SmoothRiemannianMetric I M) :
-    CompleteSpace (H1Compl g) := inferInstance
-
 end Laplacian
 end Analysis
 end DifferentialGeometry

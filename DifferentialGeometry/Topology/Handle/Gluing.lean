@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.Handle.Attachment
+import DifferentialGeometry.Topology.Handle.Attachment.Basic
 import DifferentialGeometry.Topology.Handle.Manifold
 
 namespace DifferentialGeometry.Topology.Handle

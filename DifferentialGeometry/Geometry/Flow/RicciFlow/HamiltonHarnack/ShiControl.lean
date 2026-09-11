@@ -248,4 +248,48 @@ theorem exists_hamiltonPerturbedBlock_slab_control
   simp only [Fintype.card_fin] at hCphi hCpsiW hCpsiU
   exact ⟨K, B, C, hK, hB, hC, rfl, hCphi, hCpsiW, hCpsiU, hShi⟩
 
+omit [NeZero (Module.finrank Real E)] [I.Boundaryless] [SigmaCompactSpace M] in
+theorem exists_hamiltonPerturbedBlock_reaction_lower_bound
+    (K S0 : Real) :
+    ∃ C : Real, 0 ≤ C ∧
+      ∀ {D : RealTimeInterval}
+        (S : SolutionOn (I := I) (M := M) D),
+        IsSolutionOn (I := I) S →
+        ∀ (clock : HarnackClock), clock.time ∈ D.regular →
+        ∀ (x : M) {n : Nat}
+        (basis : Module.Basis (Fin n) Real (TangentSpace I x)),
+        (∀ i j, (S.base.metric clock.time).inner x (basis i) (basis j) =
+          if i = j then (1 : Real) else 0) →
+        ∀ (phi Lphi psi psi' : Real)
+        (U : Fin n → Fin n → Real) (W : Fin n → Real),
+        (∀ k : Nat, k ≤ 2 → nablaKRm04NormSqIntrinsic (I := I) S k clock.time x ≤ K) →
+        clock.elapsed ≤ S0 → 0 ≤ phi → 0 ≤ psi → psi ≤ 1 →
+        (∀ a b, U a b = -U b a) →
+        let R : Fin n → Fin n → Fin n → Fin n → Real := fun a b c d ↦
+          S.base.rm04 clock.time x
+            (vec4 (I := I) (basis a) (basis b) (basis d) (basis c))
+        let P : Fin n → Fin n → Fin n → Real := fun a b c ↦
+          hamiltonPField (I := I) (S.base.metric clock.time) x
+            (vec3 (I := I) (basis a) (basis b) (basis c))
+        let Mbar : Fin n → Fin n → Real := fun a b ↦
+          hamiltonMOriginField (I := I) clock.origin clock.time
+            (S.base.metric clock.time) x (vec2 (I := I) (basis a) (basis b))
+        let Ric : Fin n → Fin n → Real := fun a b ↦
+          metricRicci (I := I) (M := M) (S.base.metric clock.time) x
+            (vec2 (I := I) (basis a) (basis b))
+        hamiltonBlockJ (hamiltonPerturbedCurvatureBlock R psi) P
+            (hamiltonPerturbedMBlock clock Mbar phi) U W +
+          hamiltonBlockSigmaSquare (hamiltonPerturbedCurvatureBlock R psi) P U W +
+          (Lphi / clock.elapsed + phi / clock.elapsed ^ 2 -
+              C * psi / clock.elapsed ^ 2 - C * phi / clock.elapsed) *
+            (∑ a, (W a) ^ 2) +
+          (psi' - C * psi) * (∑ a, ∑ b, (U a b) ^ 2) ≤
+        hamiltonBlockJ R P Mbar U W + hamiltonBlockSigmaSquare R P U W +
+          (Lphi / clock.elapsed + phi / clock.elapsed ^ 2) * (∑ a, (W a) ^ 2) +
+          psi' * (∑ a, ∑ b, (U a b) ^ 2) -
+          2 * psi * (∑ e, ∑ a, ∑ b,
+            (hamiltonTestJetDU clock Ric
+              (fun i j ↦ if i = j then (1 : Real) else 0) W e a b) ^ 2) := by
+  sorry
+
 end DifferentialGeometry.PDE.RicciFlow

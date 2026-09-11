@@ -165,7 +165,7 @@ theorem hasFDerivAt_flow_jointly_of_isLocalFlow
   have hseg_sub : Icc u_lo u_hi ⊆ Icc (t - ρ_t_raw) (t + ρ_t_raw) := by
     intro u hu
     exact ⟨h_uloIcc.trans hu.1, hu.2.trans h_uhiIcc⟩
-  have h_seg_dist : ∀ u ∈ Icc u_lo u_hi, |u - t| ≤ |s| := by
+  have h_segment_dist : ∀ u ∈ Icc u_lo u_hi, |u - t| ≤ |s| := by
     intro u hu
     rcases le_or_gt 0 s with hs_nn | hs_neg
     · have hlo : u_lo = t := min_eq_left (by linarith)
@@ -188,7 +188,7 @@ theorem hasFDerivAt_flow_jointly_of_isLocalFlow
       rw [abs_of_nonpos h3]
       have habs_s : |s| = -s := abs_of_neg hs_neg
       rw [habs_s]; exact h4
-  have hpair_dist_seg : ∀ u ∈ Icc u_lo u_hi,
+  have hpair_dist_segment : ∀ u ∈ Icc u_lo u_hi,
       dist ((x₀ + δ, u) : E × ℝ) (x₀, t) < ρ₀ := by
     intro u hu
     rw [Prod.dist_eq]
@@ -197,15 +197,15 @@ theorem hasFDerivAt_flow_jointly_of_isLocalFlow
     have h2 : dist u t = |u - t| := Real.dist_eq u t
     rw [h1, h2]
     have h3 : ‖δ‖ < ρ₀ := hδ_lt_ρ₀
-    have h4 : |u - t| < ρ₀ := lt_of_le_of_lt (h_seg_dist u hu) hs_lt_ρ₀
+    have h4 : |u - t| < ρ₀ := lt_of_le_of_lt (h_segment_dist u hu) hs_lt_ρ₀
     exact max_lt h3 h4
-  have hΦ_seg : ∀ u ∈ Icc u_lo u_hi,
+  have hΦ_segment : ∀ u ∈ Icc u_lo u_hi,
       dist (α u) (Φ ⟨x₀, t⟩) < η_half := by
     intro u hu
     have hpair_in : (x₀ + δ, u) ∈ closedBall x₀ r ×ˢ Icc tmin tmax := by
       refine ⟨hx_in_ball, ?_⟩
       exact h_ab_sub_tmin (hseg_sub hu)
-    exact hΦ_close hpair_in (hpair_dist_seg u hu)
+    exact hΦ_close hpair_in (hpair_dist_segment u hu)
   have hpair_dist_f : ∀ u ∈ Icc u_lo u_hi,
       dist ((u, α u) : ℝ × E) (t, Φ ⟨x₀, t⟩) < η_f := by
     intro u hu
@@ -213,27 +213,27 @@ theorem hasFDerivAt_flow_jointly_of_isLocalFlow
     have h1 : dist u t = |u - t| := Real.dist_eq u t
     rw [h1]
     have hu_t : |u - t| < η_half := by
-      have h_le : |u - t| ≤ |s| := h_seg_dist u hu
+      have h_le : |u - t| ≤ |s| := h_segment_dist u hu
       exact lt_of_le_of_lt h_le hs_lt_η_half
-    have h2 : dist (α u) (Φ ⟨x₀, t⟩) < η_half := hΦ_seg u hu
+    have h2 : dist (α u) (Φ ⟨x₀, t⟩) < η_half := hΦ_segment u hu
     have h3 : max (|u - t|) (dist (α u) (Φ ⟨x₀, t⟩)) < η_half := max_lt hu_t h2
     exact lt_trans h3 hη_half_lt
-  have hf_close_seg : ∀ u ∈ Icc u_lo u_hi, ‖f u (α u) - v₀‖ ≤ c2 := by
+  have hf_close_segment : ∀ u ∈ Icc u_lo u_hi, ‖f u (α u) - v₀‖ ≤ c2 := by
     intro u hu
     have hd := hpair_dist_f u hu
     have h := hη_f hd
     rw [dist_eq_norm] at h
     change ‖f u (α u) - v₀‖ ≤ c2
     exact le_of_lt h
-  have hg_deriv_seg : ∀ u ∈ Icc u_lo u_hi,
+  have hg_deriv_segment : ∀ u ∈ Icc u_lo u_hi,
       HasDerivWithinAt g (f u (α u) - v₀) (Icc u_lo u_hi) u := fun u hu =>
     (hg_deriv u (hseg_sub hu)).mono hseg_sub
-  have hf_seg_bound : ∀ u ∈ Ico u_lo u_hi, ‖f u (α u) - v₀‖ ≤ c2 := fun u hu =>
-    hf_close_seg u ⟨hu.1, le_of_lt hu.2⟩
+  have hf_segment_bound : ∀ u ∈ Ico u_lo u_hi, ‖f u (α u) - v₀‖ ≤ c2 := fun u hu =>
+    hf_close_segment u ⟨hu.1, le_of_lt hu.2⟩
   have h_mvt :=
     norm_image_sub_le_of_norm_deriv_le_segment' (f := g)
       (f' := fun u => f u (α u) - v₀) (C := c2) (a := u_lo) (b := u_hi)
-      hg_deriv_seg hf_seg_bound u_hi (right_mem_Icc.mpr hu_lo_le_u_hi)
+      hg_deriv_segment hf_segment_bound u_hi (right_mem_Icc.mpr hu_lo_le_u_hi)
   have h_u_diff : u_hi - u_lo = |s| := by
     rcases le_or_gt 0 s with hs_nn | hs_neg
     · have hlo : u_lo = t := min_eq_left (by linarith)

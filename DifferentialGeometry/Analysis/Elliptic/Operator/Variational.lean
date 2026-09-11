@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Elliptic.Regularity.LaplacianDomain.L2Inclusion
+import DifferentialGeometry.Analysis.Elliptic.Regularity.LaplacianDomain.L2
 import Mathlib.Analysis.InnerProductSpace.LaxMilgram
 import Mathlib.Analysis.InnerProductSpace.Dual
 
@@ -125,10 +125,6 @@ theorem resolvent_bilin_eq_lpFunctional
       ⟪H1ComplToLp (I := I) (M := M) g v, f⟫_ℝ := by
   rw [H1ComplBilin_apply]
   exact resolvent_inner_eq_lpFunctional (I := I) (M := M) g f v
-
-example (g : SmoothRiemannianMetric I M) :
-    Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g) →L[ℝ] H1Compl g :=
-  resolvent (I := I) (M := M) g
 
 end Laplacian
 end Analysis

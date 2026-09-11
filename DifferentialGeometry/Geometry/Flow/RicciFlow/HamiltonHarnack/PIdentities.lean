@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Curvature.Metric
+import DifferentialGeometry.Geometry.Curvature.Metric.Defs
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HamiltonHarnack.Defs
 
 set_option autoImplicit false
@@ -249,7 +249,7 @@ theorem hamiltonPAt_first_trace
     (g : SmoothRiemannianMetric I M) {x : M}
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasisGen (I := I) (M := M) g x basis gInv)
+    (hinv : MetricInverseInBasis (I := I) (M := M) g x basis gInv)
     (X : TangentSpace I x) :
     (∑ i : Idx, ∑ j : Idx,
         gInv i j * hamiltonPAt (I := I) g x (vec3 (basis i) X (basis j))) =
@@ -275,7 +275,7 @@ theorem hamiltonPAt_first_trace
       (DifferentialGeometry.Geometry.Connection.levi_civita_bianchi_scalar_trace_identities
         (I := I) (M := M) g basis gInv hinv)
   have hInv : ∀ i j : Idx, gInv i j = gInv j i :=
-    invMetric_symm (I := I) (M := M) g x basis gInv hinv
+    MetricInverseInBasis.symmetric (I := I) (M := M) g x basis gInv hinv
   have hcontract :
       ContractedBianchiOfSecondAt (I := I) basis gInv nablaRm04
         nablaRic dScalar :=
@@ -295,7 +295,7 @@ theorem hamiltonPAt_second_trace
     (g : SmoothRiemannianMetric I M) {x : M}
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasisGen (I := I) (M := M) g x basis gInv)
+    (hinv : MetricInverseInBasis (I := I) (M := M) g x basis gInv)
     (X : TangentSpace I x) :
     (∑ i : Idx, ∑ j : Idx,
         gInv i j * hamiltonPAt (I := I) g x (vec3 X (basis i) (basis j))) =
@@ -321,7 +321,7 @@ theorem hamiltonPAt_second_trace
       (DifferentialGeometry.Geometry.Connection.levi_civita_bianchi_scalar_trace_identities
         (I := I) (M := M) g basis gInv hinv)
   have hInv : ∀ i j : Idx, gInv i j = gInv j i :=
-    invMetric_symm (I := I) (M := M) g x basis gInv hinv
+    MetricInverseInBasis.symmetric (I := I) (M := M) g x basis gInv hinv
   have hcontract :
       ContractedBianchiOfSecondAt (I := I) basis gInv nablaRm04
         nablaRic dScalar :=
@@ -341,7 +341,7 @@ theorem metric_curvature_divergence_eq_hamiltonPAt
     (g : SmoothRiemannianMetric I M) {x : M}
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasisGen (I := I) (M := M) g x basis gInv)
+    (hinv : MetricInverseInBasis (I := I) (M := M) g x basis gInv)
     (A B D : TangentSpace I x) :
     (∑ i : Idx, ∑ j : Idx,
         gInv i j *

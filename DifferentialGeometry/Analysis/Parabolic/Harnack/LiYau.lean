@@ -1,20 +1,21 @@
-import DifferentialGeometry.Analysis.Parabolic.Moser.LogEnergy
-import DifferentialGeometry.Analysis.Calculus.TimeJetCommute
-import DifferentialGeometry.Geometry.Operator.Gradient
-import DifferentialGeometry.Geometry.Operator.Operators
-import DifferentialGeometry.Geometry.Operator.VossWeyl
-import DifferentialGeometry.Geometry.Operator.LaplacianBridge
-import DifferentialGeometry.Geometry.Operator.NormGradSq
-import DifferentialGeometry.Geometry.Operator.HessianTraceInequality
-import DifferentialGeometry.Geometry.Curvature.Bochner.BochnerConcrete
+import DifferentialGeometry.Analysis.Parabolic.Moser.Logarithmic.Energy
+import DifferentialGeometry.Analysis.Calculus.TimeJet.Commutation
+import DifferentialGeometry.Geometry.Operator.Gradient.Basic
+import DifferentialGeometry.Geometry.Operator.Scalar.Calculus
+import DifferentialGeometry.Geometry.Operator.Laplacian.VossWeylFormula
+import DifferentialGeometry.Geometry.Operator.TimeLaplacian
+import DifferentialGeometry.Geometry.Operator.Laplacian.LeviCivitaIdentification
+import DifferentialGeometry.Geometry.Operator.Gradient.NormSquared
+import DifferentialGeometry.Geometry.Operator.Hessian.Trace.Inequality
+import DifferentialGeometry.Geometry.Curvature.Bochner.Scalar.CoordinateFormula
 import DifferentialGeometry.Analysis.Calculus.Extrema
-import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Weak
-import DifferentialGeometry.Geometry.Operator.MetricFamily
+import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Scalar.Weak
+import DifferentialGeometry.Geometry.Operator.Family.Basic
 import DifferentialGeometry.Geometry.Metric.Family.Basic
-import DifferentialGeometry.Geometry.Connection.LeviCivita.KoszulFormula
-import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.TangentAction
-import DifferentialGeometry.Analysis.Integration.Measure.Invariance
-import DifferentialGeometry.Analysis.Parabolic.ScalarTimeDependent
+import DifferentialGeometry.Geometry.Connection.LeviCivita.Koszul.Formula
+import DifferentialGeometry.Geometry.Operator.DirectionalDerivative
+import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.Invariance
+import DifferentialGeometry.Analysis.Parabolic.ScalarHeat.TimeDependent
 
 
 noncomputable section
@@ -40,15 +41,15 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 variable [I.Boundaryless] [T2Space M]
 
-private abbrev deltaLegacy
+private abbrev laplacianOfSmooth
     (g : SmoothRiemannianMetric I M) {f : M → ℝ}
     (hf : ContMDiff I (modelWithCornersSelf ℝ ℝ) ∞ f) : M → ℝ :=
   ΔG (I := I) g ⟨f, hf⟩
 
-private theorem deltaLegacy_contMDiff
+private theorem laplacianOfSmooth_contMDiff
     (g : SmoothRiemannianMetric I M) {f : M → ℝ}
     (hf : ContMDiff I (modelWithCornersSelf ℝ ℝ) ∞ f) :
-    ContMDiff I (modelWithCornersSelf ℝ ℝ) ∞ (deltaLegacy (I := I) g hf) :=
+    ContMDiff I (modelWithCornersSelf ℝ ℝ) ∞ (laplacianOfSmooth (I := I) g hf) :=
   Δ_g_contMDiff (I := I) g ⟨f, hf⟩
 
 def liYauQuantity (g : SmoothRiemannianMetric I M) (f : ℝ → M → ℝ) (t : ℝ) (x : M) : ℝ :=
@@ -83,9 +84,9 @@ theorem heatSolution_log_evolution
     (hpos : ∀ t : ℝ, t ∈ D.carrier → ∀ x : M, 0 < u t x)
     {t : ℝ} (ht : t ∈ D.regular) {x : M}
     (hpde : HasDerivAt (fun s => u s x)
-      (deltaLegacy (I := I) g (hslice t (D.regular_subset ht)) x) t) :
+      (laplacianOfSmooth (I := I) g (hslice t (D.regular_subset ht)) x) t) :
     deriv (fun s => Real.log (u s x)) t =
-      deltaLegacy (I := I) g (hlogslice t (D.regular_subset ht)) x +
+      laplacianOfSmooth (I := I) g (hlogslice t (D.regular_subset ht)) x +
       g.inner x
         (gradientFun (I := I) g (fun y => Real.log (u t y)) x)
         (gradientFun (I := I) g (fun y => Real.log (u t y)) x) := by
@@ -152,12 +153,12 @@ theorem liYauQuantity_eq_neg_laplacian_log
     (hpos : ∀ t : ℝ, t ∈ D.carrier → ∀ x : M, 0 < u t x)
     {t : ℝ} (ht : t ∈ D.regular) {x : M}
     (hpde : HasDerivAt (fun s => u s x)
-      (deltaLegacy (I := I) g (hslice t (D.regular_subset ht)) x) t) :
+      (laplacianOfSmooth (I := I) g (hslice t (D.regular_subset ht)) x) t) :
     g.inner x
           (gradientFun (I := I) g (fun y : M => Real.log (u t y)) x)
           (gradientFun (I := I) g (fun y : M => Real.log (u t y)) x) -
         deriv (fun s : ℝ => Real.log (u s x)) t =
-      -deltaLegacy (I := I) g (hlogslice t (D.regular_subset ht)) x := by
+      -laplacianOfSmooth (I := I) g (hlogslice t (D.regular_subset ht)) x := by
   have h := heatSolution_log_evolution (I := I) (M := M) (D := D) g u hslice hlogslice hpos ht hpde
   rw [h]
   ring
@@ -172,9 +173,9 @@ theorem liYauQuantity_eq_neg_laplacian
     (hpos : ∀ t : ℝ, t ∈ D.carrier → ∀ x : M, 0 < u t x)
     {t : ℝ} (ht : t ∈ D.regular) {x : M}
     (hpde : HasDerivAt (fun s => u s x)
-      (deltaLegacy (I := I) g (hslice t (D.regular_subset ht)) x) t) :
+      (laplacianOfSmooth (I := I) g (hslice t (D.regular_subset ht)) x) t) :
     liYauQuantity g (fun τ y => Real.log (u τ y)) t x =
-      -deltaLegacy (I := I) g (hlogslice t (D.regular_subset ht)) x := by
+      -laplacianOfSmooth (I := I) g (hlogslice t (D.regular_subset ht)) x := by
   simpa [liYauQuantity] using
     liYauQuantity_eq_neg_laplacian_log (I := I) (M := M) (D := D) g u hslice hlogslice hpos ht hpde
 
@@ -249,27 +250,27 @@ theorem gradientFun_time_deriv
     exact (contDiffWithinAt_univ.mp hcd')
   have hpd : ∀ j : Fin (Module.finrank ℝ E),
       HasDerivAt
-        (fun s : ℝ => partialDeriv (E := E) j (scalarOnE (I := I) α (u s))
+        (fun s : ℝ => DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (scalarOnE (I := I) α (u s))
           ((extChartAt I α) x))
-        (partialDeriv (E := E) j (scalarOnE (I := I) α
+        (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (scalarOnE (I := I) α
           (fun y : M => deriv (fun s : ℝ => u s y) t)) ((extChartAt I α) x)) t := by
     intro j
     have hc := fderiv_deriv_hasDerivAt_comm
       (fun r : ℝ × E => scalarOnE (I := I) α (u r.1) r.2) t
       ((extChartAt I α) x) (chartModelBasis E j) hΦ
     have hc1 : HasDerivAt
-        (fun s : ℝ => partialDeriv (E := E) j (scalarOnE (I := I) α (u s))
+        (fun s : ℝ => DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (scalarOnE (I := I) α (u s))
           ((extChartAt I α) x))
         (fderiv ℝ (fun y : E => deriv (fun s : ℝ => scalarOnE (I := I) α (u s) y) t)
           ((extChartAt I α) x) (chartModelBasis E j)) t := by
       rw [show
-        (fun s : ℝ => partialDeriv (E := E) j (scalarOnE (I := I) α (u s))
+        (fun s : ℝ => DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (scalarOnE (I := I) α (u s))
           ((extChartAt I α) x)) =
           (fun s : ℝ => fderiv ℝ
             (fun y : E => u s ((extChartAt I α).symm y))
             ((extChartAt I α) x) (chartModelBasis E j)) by
               funext s
-              rw [partialDeriv]
+              rw [DifferentialGeometry.Tensor.Coordinates.partialDeriv]
               congr 1]
       exact hc
     have hfun : (fun y : E => deriv (fun s : ℝ => scalarOnE (I := I) α (u s) y) t) =
@@ -278,7 +279,7 @@ theorem gradientFun_time_deriv
       rfl
     have hval : fderiv ℝ (fun y : E => deriv (fun s : ℝ => scalarOnE (I := I) α (u s) y) t)
           ((extChartAt I α) x) (chartModelBasis E j) =
-        partialDeriv (E := E) j (scalarOnE (I := I) α
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (scalarOnE (I := I) α
           (fun y : M => deriv (fun s : ℝ => u s y) t)) ((extChartAt I α) x) := by
       rw [hfun]
       rfl
@@ -293,20 +294,20 @@ theorem gradientFun_time_deriv
     have hsum : ∀ j : Fin (Module.finrank ℝ E),
         HasDerivAt
           (fun s : ℝ => chartInvGramMatrix (I := I) g α x i j *
-            partialDeriv (E := E) j (scalarOnE (I := I) α (u s))
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (scalarOnE (I := I) α (u s))
               ((extChartAt I α) x))
           (chartInvGramMatrix (I := I) g α x i j *
-            partialDeriv (E := E) j (scalarOnE (I := I) α
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (scalarOnE (I := I) α
               (fun y : M => deriv (fun s : ℝ => u s y) t)) ((extChartAt I α) x)) t := by
         intro j
         exact (hpd j).const_mul (chartInvGramMatrix (I := I) g α x i j)
     have hsumall : HasDerivAt
         (fun s : ℝ => ∑ j : Fin (Module.finrank ℝ E),
           chartInvGramMatrix (I := I) g α x i j *
-            partialDeriv (E := E) j (scalarOnE (I := I) α (u s)) ((extChartAt I α) x))
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (scalarOnE (I := I) α (u s)) ((extChartAt I α) x))
         (∑ j : Fin (Module.finrank ℝ E),
           chartInvGramMatrix (I := I) g α x i j *
-            partialDeriv (E := E) j (scalarOnE (I := I) α
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (scalarOnE (I := I) α
               (fun y : M => deriv (fun s : ℝ => u s y) t)) ((extChartAt I α) x)) t := by
       exact HasDerivAt.fun_sum (u := Finset.univ) (fun j _ => hsum j)
     simpa [gradChartCoeff_def] using hsumall
@@ -437,40 +438,8 @@ theorem scalarOnE_jointContDiffAt
     (hy : y ∈ (extChartAt I α).target) :
     ContDiffAt ℝ ∞
       (fun r : ℝ × E => scalarOnE (I := I) α (f r.1) r.2) (t, y) := by
-  have hU : ContMDiffOn ((𝓘(ℝ, ℝ).prod I)) 𝓘(ℝ, ℝ) ∞
-      (fun p : ℝ × M => f p.1 p.2) (D.regular ×ˢ univ) := hf
-  have hids : ContMDiffOn (𝓘(ℝ, ℝ).prod 𝓘(ℝ, E)) 𝓘(ℝ, ℝ) ∞
-      (fun r : ℝ × E => r.1) (Set.univ ×ˢ (extChartAt I α).target) :=
-    contMDiffOn_fst
-  have hsym : ContMDiffOn (𝓘(ℝ, ℝ).prod 𝓘(ℝ, E)) I ∞
-      (fun r : ℝ × E => (extChartAt I α).symm r.2)
-      (Set.univ ×ˢ (extChartAt I α).target) := by
-    refine (contMDiffOn_extChartAt_symm (I := I) α).comp ?_ ?_
-    · exact contMDiffOn_snd
-    · intro r hr
-      exact hr.2
-  have hsymm : ContMDiffOn (𝓘(ℝ, ℝ).prod 𝓘(ℝ, E)) ((𝓘(ℝ, ℝ).prod I)) ∞
-      (fun r : ℝ × E => (r.1, (extChartAt I α).symm r.2))
-      (D.regular ×ˢ (extChartAt I α).target) := by
-    refine (hids.prodMk hsym).mono ?_
-    intro r hr
-    exact ⟨Set.mem_univ r.1, hr.2⟩
-  have hcomp : ContMDiffOn (𝓘(ℝ, ℝ).prod 𝓘(ℝ, E)) 𝓘(ℝ, ℝ) ∞
-      (fun r : ℝ × E => f r.1 ((extChartAt I α).symm r.2))
-      (D.regular ×ˢ (extChartAt I α).target) :=
-    hU.comp hsymm (fun r hr => ⟨hr.1, trivial⟩)
-  have hcd : ContDiffOn ℝ ∞
-      (fun r : ℝ × E => f r.1 ((extChartAt I α).symm r.2))
-      (D.regular ×ˢ (extChartAt I α).target) := by
-    rw [← contMDiffOn_iff_contDiffOn, modelWithCornersSelf_prod,
-      ← chartedSpaceSelf_prod]
-    exact hcomp
-  have hpt : (t, y) ∈ D.regular ×ˢ (extChartAt I α).target := ⟨ht, hy⟩
-  have hopen : IsOpen (D.regular ×ˢ (extChartAt I α).target) :=
-    D.regular_isOpen.prod (isOpen_extChartAt_target (I := I) α)
-  have hat := hcd.contDiffAt
-    (hopen.mem_nhds hpt)
-  simpa [scalarOnE_def] using hat
+  exact (scalarOnE_contDiffOn_prod α hf).contDiffAt
+    ((D.regular_isOpen.prod (isOpen_extChartAt_target (I := I) α)).mem_nhds ⟨ht, hy⟩)
 
 omit [FiniteDimensional ℝ E] [T2Space M] [SigmaCompactSpace M] in
 theorem time_deriv_slice_contMDiff
@@ -585,23 +554,23 @@ private theorem chartLaplacianTimeDerivOn
   have hpd : ∀ (j : Fin (Module.finrank ℝ E)) (y : E),
       y ∈ (extChartAt I α).target →
       HasDerivAt
-        (fun s : ℝ => partialDeriv (E := E) j (scalarOnE (I := I) α (f s)) y)
-        (partialDeriv (E := E) j (scalarOnE (I := I) α
+        (fun s : ℝ => DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (scalarOnE (I := I) α (f s)) y)
+        (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (scalarOnE (I := I) α
           (fun w : M => deriv (fun s : ℝ => f s w) t)) y) t := by
     intro j y hy
     have hc := fderiv_deriv_hasDerivAt_comm
       (fun r : ℝ × E => scalarOnE (I := I) α (f r.1) r.2) t y
       (chartModelBasis E j) (hΦ y hy)
     have hc1 : HasDerivAt
-        (fun s : ℝ => partialDeriv (E := E) j (scalarOnE (I := I) α (f s)) y)
+        (fun s : ℝ => DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (scalarOnE (I := I) α (f s)) y)
         (fderiv ℝ (fun z : E => deriv (fun s : ℝ => scalarOnE (I := I) α (f s) z) t)
           y (chartModelBasis E j)) t := by
       rw [show
-        (fun s : ℝ => partialDeriv (E := E) j (scalarOnE (I := I) α (f s)) y) =
+        (fun s : ℝ => DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (scalarOnE (I := I) α (f s)) y) =
           (fun s : ℝ => fderiv ℝ
             (fun z : E => f s ((extChartAt I α).symm z)) y (chartModelBasis E j)) by
               funext s
-              rw [partialDeriv]
+              rw [DifferentialGeometry.Tensor.Coordinates.partialDeriv]
               congr 1]
       exact hc
     have hfun : (fun z : E => deriv (fun s : ℝ => scalarOnE (I := I) α (f s) z) t) =
@@ -610,7 +579,7 @@ private theorem chartLaplacianTimeDerivOn
       rfl
     have hval : fderiv ℝ (fun z : E => deriv (fun s : ℝ => scalarOnE (I := I) α (f s) z) t)
           y (chartModelBasis E j) =
-        partialDeriv (E := E) j (scalarOnE (I := I) α
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (scalarOnE (I := I) α
           (fun w : M => deriv (fun s : ℝ => f s w) t)) y := by
       rw [hfun]
       rfl
@@ -626,19 +595,19 @@ private theorem chartLaplacianTimeDerivOn
     have hsum : ∀ j : Fin (Module.finrank ℝ E),
         HasDerivAt
           (fun s : ℝ => chartInvGramOnE (I := I) g α i j y *
-            partialDeriv (E := E) j (scalarOnE (I := I) α (f s)) y)
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (scalarOnE (I := I) α (f s)) y)
           (chartInvGramOnE (I := I) g α i j y *
-            partialDeriv (E := E) j (scalarOnE (I := I) α
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (scalarOnE (I := I) α
               (fun w : M => deriv (fun s : ℝ => f s w) t)) y) t := by
         intro j
         exact (hpd j y hy).const_mul (chartInvGramOnE (I := I) g α i j y)
     have hsumall : HasDerivAt
         (fun s : ℝ => ∑ j : Fin (Module.finrank ℝ E),
           chartInvGramOnE (I := I) g α i j y *
-            partialDeriv (E := E) j (scalarOnE (I := I) α (f s)) y)
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (scalarOnE (I := I) α (f s)) y)
         (∑ j : Fin (Module.finrank ℝ E),
           chartInvGramOnE (I := I) g α i j y *
-            partialDeriv (E := E) j (scalarOnE (I := I) α
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (scalarOnE (I := I) α
               (fun w : M => deriv (fun s : ℝ => f s w) t)) y) t := by
       exact HasDerivAt.fun_sum (u := Finset.univ) (fun j _ => hsum j)
     simpa [gradChartCoeffOnE_def] using hsumall
@@ -655,7 +624,7 @@ private theorem chartLaplacianTimeDerivOn
   have hpd_joint : ∀ (j : Fin (Module.finrank ℝ E)) (y : E),
       y ∈ (extChartAt I α).target →
       ContDiffAt ℝ ∞
-        (fun p : ℝ × E => partialDeriv (E := E) j
+        (fun p : ℝ × E => DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j
           (fun z : E => scalarOnE (I := I) α (f p.1) z) p.2)
         (t, y) := by
     intro j y hy
@@ -671,7 +640,7 @@ private theorem chartLaplacianTimeDerivOn
       (f := fun (p : ℝ × E) => fun (z : E) => scalarOnE (I := I) α (f p.1) z)
       (g := fun p : ℝ × E => p.2) hf hg (by simp)
     rw [show
-      (fun p : ℝ × E => partialDeriv (E := E) j
+      (fun p : ℝ × E => DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j
         (fun z : E => scalarOnE (I := I) α (f p.1) z) p.2) =
         (ContinuousLinearMap.apply ℝ ℝ (chartModelBasis E j)) ∘
           (fun p : ℝ × E => fderiv ℝ
@@ -688,7 +657,7 @@ private theorem chartLaplacianTimeDerivOn
     have hsum_cd : ∀ j : Fin (Module.finrank ℝ E),
         ContDiffAt ℝ ∞
           (fun p : ℝ × E => chartInvGramOnE (I := I) g α i j p.2 *
-            partialDeriv (E := E) j (fun z : E => scalarOnE (I := I) α (f p.1) z) p.2)
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (fun z : E => scalarOnE (I := I) α (f p.1) z) p.2)
           (t, y) := by
       intro j
       have hgram : ContDiffAt ℝ ∞ (fun p : ℝ × E => chartInvGramOnE (I := I) g α i j p.2)
@@ -704,7 +673,7 @@ private theorem chartLaplacianTimeDerivOn
     have hsumall_cd : ContDiffAt ℝ ∞
         (fun p : ℝ × E => ∑ j : Fin (Module.finrank ℝ E),
           chartInvGramOnE (I := I) g α i j p.2 *
-            partialDeriv (E := E) j (fun z : E => scalarOnE (I := I) α (f p.1) z) p.2)
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (fun z : E => scalarOnE (I := I) α (f p.1) z) p.2)
         (t, y) := by
       exact ContDiffAt.sum (s := Finset.univ) (fun j _ => hsum_cd j)
     have hρ : ContDiffAt ℝ ∞ (fun p : ℝ × E => chartDensityOnE (I := I) g α p.2)
@@ -720,7 +689,7 @@ private theorem chartLaplacianTimeDerivOn
         (fun p : ℝ × E =>
           (∑ j : Fin (Module.finrank ℝ E),
             chartInvGramOnE (I := I) g α i j p.2 *
-              partialDeriv (E := E) j (fun z : E => scalarOnE (I := I) α (f p.1) z) p.2) *
+              DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (fun z : E => scalarOnE (I := I) α (f p.1) z) p.2) *
             chartDensityOnE (I := I) g α p.2)
         (t, y) := hsumall_cd.mul hρ
     rw [show
@@ -729,7 +698,7 @@ private theorem chartLaplacianTimeDerivOn
         (fun p : ℝ × E =>
           (∑ j : Fin (Module.finrank ℝ E),
             chartInvGramOnE (I := I) g α i j p.2 *
-              partialDeriv (E := E) j
+              DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j
                 (fun z : E => scalarOnE (I := I) α (f p.1) z) p.2) *
             chartDensityOnE (I := I) g α p.2) by
               funext p
@@ -737,9 +706,9 @@ private theorem chartLaplacianTimeDerivOn
     exact hprod_cd
   have hpartial : ∀ i : Fin (Module.finrank ℝ E),
       HasDerivAt
-        (fun s : ℝ => partialDeriv (E := E) i
+        (fun s : ℝ => DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i
           (chartVossWeylIntegrand (I := I) g α (f s) i) ((extChartAt I α) x))
-        (partialDeriv (E := E) i
+        (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i
           (chartVossWeylIntegrand (I := I) g α
             (fun w : M => deriv (fun s : ℝ => f s w) t) i) ((extChartAt I α) x)) t := by
     intro i
@@ -749,13 +718,13 @@ private theorem chartLaplacianTimeDerivOn
         chartDensityOnE (I := I) g α p.2) t
       ((extChartAt I α) x) (chartModelBasis E i) (hΨ i ((extChartAt I α) x) hy)
     have hc1 : HasDerivAt
-        (fun s : ℝ => partialDeriv (E := E) i
+        (fun s : ℝ => DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i
           (fun z : E => gradChartCoeffOnE (I := I) g α (f s) i z *
             chartDensityOnE (I := I) g α z) ((extChartAt I α) x))
         (fderiv ℝ (fun z : E => deriv (fun s : ℝ =>
           gradChartCoeffOnE (I := I) g α (f s) i z * chartDensityOnE (I := I) g α z) t)
           ((extChartAt I α) x) (chartModelBasis E i)) t := by
-      simpa [partialDeriv] using hc
+      simpa [DifferentialGeometry.Tensor.Coordinates.partialDeriv] using hc
     have hfun : (fun z : E => deriv (fun s : ℝ =>
         gradChartCoeffOnE (I := I) g α (f s) i z * chartDensityOnE (I := I) g α z) t) =ᶠ[𝓝
           ((extChartAt I α) x)]
@@ -776,23 +745,23 @@ private theorem chartLaplacianTimeDerivOn
     have hval2 : (fderiv ℝ (fun z : E => deriv (fun s : ℝ =>
           gradChartCoeffOnE (I := I) g α (f s) i z * chartDensityOnE (I := I) g α z) t)
           ((extChartAt I α) x)) (chartModelBasis E i) =
-        partialDeriv (E := E) i
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i
           (fun z : E => gradChartCoeffOnE (I := I) g α
             (fun w : M => deriv (fun s : ℝ => f s w) t) i z *
             chartDensityOnE (I := I) g α z) ((extChartAt I α) x) := by
       rw [Filter.EventuallyEq.fderiv_eq hfun]
-      unfold partialDeriv
+      unfold DifferentialGeometry.Tensor.Coordinates.partialDeriv
       rfl
     have hc1'' : HasDerivAt
-        (fun s : ℝ => partialDeriv (E := E) i
+        (fun s : ℝ => DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i
           (fun z : E => gradChartCoeffOnE (I := I) g α (f s) i z *
             chartDensityOnE (I := I) g α z) ((extChartAt I α) x))
-        (partialDeriv (E := E) i
+        (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i
           (fun z : E => gradChartCoeffOnE (I := I) g α
             (fun w : M => deriv (fun s : ℝ => f s w) t) i z *
             chartDensityOnE (I := I) g α z) ((extChartAt I α) x)) t := by
       change HasDerivAt
-        (fun s : ℝ => partialDeriv (E := E) i
+        (fun s : ℝ => DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i
           (fun z : E => gradChartCoeffOnE (I := I) g α (f s) i z *
             chartDensityOnE (I := I) g α z) ((extChartAt I α) x))
         ((fderiv ℝ (fun z : E => gradChartCoeffOnE (I := I) g α
@@ -806,32 +775,32 @@ private theorem chartLaplacianTimeDerivOn
             (fun w : M => deriv (fun s : ℝ => f s w) t) i z *
             chartDensityOnE (I := I) g α z) ((extChartAt I α) x))
             (chartModelBasis E i) := by
-        simpa [partialDeriv] using hval2
+        simpa [DifferentialGeometry.Tensor.Coordinates.partialDeriv] using hval2
       rw [← hval2']
       exact hc1
     change HasDerivAt
-      (fun s : ℝ => partialDeriv (E := E) i
+      (fun s : ℝ => DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i
         (fun z : E => gradChartCoeffOnE (I := I) g α (f s) i z *
           chartDensityOnE (I := I) g α z) ((extChartAt I α) x))
-      (partialDeriv (E := E) i
+      (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i
         (fun z : E => gradChartCoeffOnE (I := I) g α
           (fun w : M => deriv (fun s : ℝ => f s w) t) i z *
           chartDensityOnE (I := I) g α z) ((extChartAt I α) x)) t
     exact hc1''
   have hsumall : HasDerivAt
       (fun s : ℝ => ∑ i : Fin (Module.finrank ℝ E),
-        partialDeriv (E := E) i (chartVossWeylIntegrand (I := I) g α (f s) i)
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (chartVossWeylIntegrand (I := I) g α (f s) i)
           ((extChartAt I α) x))
       (∑ i : Fin (Module.finrank ℝ E),
-        partialDeriv (E := E) i (chartVossWeylIntegrand (I := I) g α
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (chartVossWeylIntegrand (I := I) g α
           (fun w : M => deriv (fun s : ℝ => f s w) t) i) ((extChartAt I α) x)) t := by
     exact HasDerivAt.fun_sum (u := Finset.univ) (fun i _ => hpartial i)
   have hdiv : HasDerivAt
       (fun s : ℝ => (∑ i : Fin (Module.finrank ℝ E),
-        partialDeriv (E := E) i (chartVossWeylIntegrand (I := I) g α (f s) i)
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (chartVossWeylIntegrand (I := I) g α (f s) i)
           ((extChartAt I α) x)) / chartDensity (I := I) g α x)
       ((∑ i : Fin (Module.finrank ℝ E),
-        partialDeriv (E := E) i (chartVossWeylIntegrand (I := I) g α
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (chartVossWeylIntegrand (I := I) g α
           (fun w : M => deriv (fun s : ℝ => f s w) t) i) ((extChartAt I α) x)) /
         chartDensity (I := I) g α x) t := by
     exact hsumall.div_const (chartDensity (I := I) g α x)
@@ -856,12 +825,12 @@ theorem liYauQuantity_evolution_identity
     (hpos : ∀ t : ℝ, t ∈ D.carrier → ∀ x : M, 0 < u t x)
     (hpde : ∀ t : ℝ, (ht : t ∈ D.regular) → ∀ x : M,
       HasDerivAt (fun s => u s x)
-        (deltaLegacy (I := I) g (hslice t (D.regular_subset ht)) x) t)
+        (laplacianOfSmooth (I := I) g (hslice t (D.regular_subset ht)) x) t)
     (hqslice : ∀ t : ℝ, t ∈ D.regular → ContMDiff I 𝓘(ℝ, ℝ) ∞
       (fun y : M => liYauQuantity g (fun σ z => Real.log (u σ z)) t y))
     {t : ℝ} (ht : t ∈ D.regular) (x : M) :
     deriv (fun s => liYauQuantity g (fun τ y => Real.log (u τ y)) s x) t -
-        deltaLegacy (I := I) g (hqslice t ht) x =
+        laplacianOfSmooth (I := I) g (hqslice t ht) x =
       2 * g.inner x
             (gradientFun (I := I) g (fun y => Real.log (u t y)) x)
             (gradientFun (I := I) g (fun y => liYauQuantity g (fun σ z => Real.log
@@ -884,7 +853,7 @@ theorem liYauQuantity_evolution_identity
     simpa [f] using hlogAt.contMDiffWithinAt
   let q : ℝ → M → ℝ := fun τ y => liYauQuantity g f τ y
   have hqid : ∀ (τ : ℝ) (hτ : τ ∈ D.regular) (y : M),
-      q τ y = -deltaLegacy (I := I) g (hlogslice τ (D.regular_subset hτ)) y :=
+      q τ y = -laplacianOfSmooth (I := I) g (hlogslice τ (D.regular_subset hτ)) y :=
     fun τ hτ y => liYauQuantity_eq_neg_laplacian (I := I) (M := M)
       (D := D) g u hslice hlogslice hpos hτ (hpde τ hτ y)
   have hftslice : ContMDiff I 𝓘(ℝ, ℝ) ∞ (fun y : M => deriv (fun s : ℝ => f s y) t) :=
@@ -904,14 +873,15 @@ theorem liYauQuantity_evolution_identity
       (fun s : ℝ => chartVossWeylLaplacian (I := I) g α (f s) x)
       (chartVossWeylLaplacian (I := I) g α
         (fun w : M => deriv (fun s : ℝ => f s w) t) x) t :=
-    chartLaplacianTimeDerivOn (I := I) (M := M) (D := D) g f hlog' ht x α hxsrc
+    hasDerivAt_chartVossWeylLaplacian g f D.regular_isOpen hlog' α ht x
+      (by rwa [(isOpen_extChartAt_target (I := I) α).interior_eq])
   have hq_chart_eq : (fun s : ℝ => q s x) =ᶠ[𝓝 t]
       fun s : ℝ => -chartVossWeylLaplacian (I := I) g α (f s) x := by
     rw [Filter.eventuallyEq_iff_exists_mem]
     refine ⟨D.regular, IsOpen.mem_nhds D.regular_isOpen ht, ?_⟩
     intro s hs
     have hqid_s := hqid s hs x
-    have hvw : deltaLegacy (I := I) g (hlogslice s (D.regular_subset hs)) x =
+    have hvw : laplacianOfSmooth (I := I) g (hlogslice s (D.regular_subset hs)) x =
         chartVossWeylLaplacian (I := I) g α (f s) x :=
       voss_weyl_laplacian_formula_pointwise (I := I) g α
         (hlogslice s (D.regular_subset hs)) hxsrc
@@ -924,37 +894,37 @@ theorem liYauQuantity_evolution_identity
   have hdq : deriv (fun s : ℝ => q s x) t =
       -chartVossWeylLaplacian (I := I) g α (fun w : M => deriv (fun s : ℝ => f s w) t) x :=
     hdq_has.deriv
-  have hdq' : deriv (fun s : ℝ => q s x) t = -deltaLegacy (I := I) g hftslice x := by
+  have hdq' : deriv (fun s : ℝ => q s x) t = -laplacianOfSmooth (I := I) g hftslice x := by
     have hchart_eq : chartVossWeylLaplacian (I := I) g α
-        (fun w : M => deriv (fun s : ℝ => f s w) t) x = deltaLegacy (I := I) g hftslice x := by
+        (fun w : M => deriv (fun s : ℝ => f s w) t) x = laplacianOfSmooth (I := I) g hftslice x := by
       exact (voss_weyl_laplacian_formula_pointwise (I := I) g α hftslice hxsrc).symm
     exact hdq.trans (congrArg Neg.neg hchart_eq)
-  have hdq_laplacian : deltaLegacy (I := I) g (hqslice t ht) x =
-      -deltaLegacy (I := I) g (deltaLegacy_contMDiff (I := I) g (hlogslice t
+  have hdq_laplacian : laplacianOfSmooth (I := I) g (hqslice t ht) x =
+      -laplacianOfSmooth (I := I) g (laplacianOfSmooth_contMDiff (I := I) g (hlogslice t
         (D.regular_subset ht))) x := by
     have heq : (fun y : M => liYauQuantity g f t y) =ᶠ[𝓝 x]
-        (fun y : M => -deltaLegacy (I := I) g (hlogslice t (D.regular_subset ht)) y) := by
+        (fun y : M => -laplacianOfSmooth (I := I) g (hlogslice t (D.regular_subset ht)) y) := by
       rw [Filter.eventuallyEq_iff_exists_mem]
       refine ⟨Set.univ, Filter.univ_mem, ?_⟩
       intro y hy
       exact hqid t ht y
     have hneg : ContMDiff I 𝓘(ℝ, ℝ) ∞
-        (fun y : M => -deltaLegacy (I := I) g (hlogslice t (D.regular_subset ht)) y) :=
-      ContMDiff.neg (deltaLegacy_contMDiff (I := I) g (hlogslice t (D.regular_subset ht)))
+        (fun y : M => -laplacianOfSmooth (I := I) g (hlogslice t (D.regular_subset ht)) y) :=
+      ContMDiff.neg (laplacianOfSmooth_contMDiff (I := I) g (hlogslice t (D.regular_subset ht)))
     have hcongr := Δ_g_congr_of_eventuallyEq (I := I) g
       (hqslice t ht) hneg heq
-    unfold deltaLegacy
+    unfold laplacianOfSmooth
     rw [hcongr]
-    exact Δ_g_neg (I := I) g (deltaLegacy_contMDiff (I := I) g (hlogslice t
+    exact Δ_g_neg (I := I) g (laplacianOfSmooth_contMDiff (I := I) g (hlogslice t
       (D.regular_subset ht))) (x := x)
   have hheq : ∀ y, deriv (fun s : ℝ => f s y) t -
-      deltaLegacy (I := I) g (hlogslice t (D.regular_subset ht)) y =
+      laplacianOfSmooth (I := I) g (hlogslice t (D.regular_subset ht)) y =
       normGradSqFun (I := I) g (fun z : M => Real.log (u t z)) y := by
     intro y
     have hle := heatSolution_log_evolution (I := I) (M := M)
       (D := D) g u hslice hlogslice hpos ht (hpde t ht y)
     have hle' : deriv (fun s : ℝ => f s y) t =
-        deltaLegacy (I := I) g (hlogslice t (D.regular_subset ht)) y +
+        laplacianOfSmooth (I := I) g (hlogslice t (D.regular_subset ht)) y +
           g.inner y (gradientFun (I := I) g (f t) y) (gradientFun (I := I) g (f t) y) := by
       simpa [f] using hle
     have hnorm : g.inner y (gradientFun (I := I) g (f t) y) (gradientFun (I := I) g (f t) y) =
@@ -965,64 +935,64 @@ theorem liYauQuantity_evolution_identity
       have hlogeq : (fun z : M => Real.log (u t z)) = f t := rfl
       rw [normGradSqFun, hlogeq, hvec (f t)]
     have hle'' : deriv (fun s : ℝ => f s y) t =
-        deltaLegacy (I := I) g (hlogslice t (D.regular_subset ht)) y +
+        laplacianOfSmooth (I := I) g (hlogslice t (D.regular_subset ht)) y +
           normGradSqFun (I := I) g (fun z : M => Real.log (u t z)) y := by
       rw [← hnorm]
       exact hle'
     linarith
   have hmain : deriv (fun s : ℝ => q s x) t -
-      deltaLegacy (I := I) g (hqslice t ht) x =
-      -deltaLegacy (I := I) g (normGradSqFun_contMDiff (I := I) g
+      laplacianOfSmooth (I := I) g (hqslice t ht) x =
+      -laplacianOfSmooth (I := I) g (normGradSqFun_contMDiff (I := I) g
         (hlogslice t (D.regular_subset ht))) x := by
     rw [hdq', hdq_laplacian]
     have hsub_fun : (fun y : M => deriv (fun s : ℝ => f s y) t -
-          deltaLegacy (I := I) g (hlogslice t (D.regular_subset ht)) y) =ᶠ[𝓝 x]
+          laplacianOfSmooth (I := I) g (hlogslice t (D.regular_subset ht)) y) =ᶠ[𝓝 x]
         (fun y : M => normGradSqFun (I := I) g (fun z : M => Real.log (u t z)) y) := by
       rw [Filter.eventuallyEq_iff_exists_mem]
       refine ⟨Set.univ, Filter.univ_mem, ?_⟩
       intro y hy
       exact hheq y
-    have hΔsub : deltaLegacy (I := I) g
-        (hftslice.sub (deltaLegacy_contMDiff (I := I) g (hlogslice t (D.regular_subset ht)))) x =
-        deltaLegacy (I := I) g hftslice x -
-          deltaLegacy (I := I) g (deltaLegacy_contMDiff (I := I) g (hlogslice t
+    have hΔsub : laplacianOfSmooth (I := I) g
+        (hftslice.sub (laplacianOfSmooth_contMDiff (I := I) g (hlogslice t (D.regular_subset ht)))) x =
+        laplacianOfSmooth (I := I) g hftslice x -
+          laplacianOfSmooth (I := I) g (laplacianOfSmooth_contMDiff (I := I) g (hlogslice t
             (D.regular_subset ht))) x := by
       have h1 := Δ_g_add (I := I) g ⟨_, hftslice⟩
         ⟨_, ContMDiff.neg
-          (deltaLegacy_contMDiff (I := I) g (hlogslice t (D.regular_subset ht)))⟩ x
-      have h2 := Δ_g_neg (I := I) g (deltaLegacy_contMDiff (I := I) g (hlogslice t
+          (laplacianOfSmooth_contMDiff (I := I) g (hlogslice t (D.regular_subset ht)))⟩ x
+      have h2 := Δ_g_neg (I := I) g (laplacianOfSmooth_contMDiff (I := I) g (hlogslice t
         (D.regular_subset ht))) (x := x)
       have hsub_eq : (fun y : M => deriv (fun s : ℝ => f s y) t -
-            deltaLegacy (I := I) g (hlogslice t (D.regular_subset ht)) y) =ᶠ[𝓝 x]
+            laplacianOfSmooth (I := I) g (hlogslice t (D.regular_subset ht)) y) =ᶠ[𝓝 x]
           (fun y : M => deriv (fun s : ℝ => f s y) t +
-            -(deltaLegacy (I := I) g (hlogslice t (D.regular_subset ht)) y)) := by
+            -(laplacianOfSmooth (I := I) g (hlogslice t (D.regular_subset ht)) y)) := by
         rw [Filter.eventuallyEq_iff_exists_mem]
         refine ⟨Set.univ, Filter.univ_mem, ?_⟩
         intro y hy
         ring
       have hbridge := Δ_g_congr_of_eventuallyEq (I := I) g
-        (hftslice.sub (deltaLegacy_contMDiff (I := I) g (hlogslice t (D.regular_subset ht))))
-        (hftslice.add (ContMDiff.neg (deltaLegacy_contMDiff (I := I) g (hlogslice t
+        (hftslice.sub (laplacianOfSmooth_contMDiff (I := I) g (hlogslice t (D.regular_subset ht))))
+        (hftslice.add (ContMDiff.neg (laplacianOfSmooth_contMDiff (I := I) g (hlogslice t
           (D.regular_subset ht)))))
         hsub_eq
-      unfold deltaLegacy
+      unfold laplacianOfSmooth
       rw [hbridge]
       change ΔG (I := I) g
           (⟨_, hftslice⟩ + ⟨_, ContMDiff.neg
-            (deltaLegacy_contMDiff (I := I) g (hlogslice t (D.regular_subset ht)))⟩) x = _
+            (laplacianOfSmooth_contMDiff (I := I) g (hlogslice t (D.regular_subset ht)))⟩) x = _
       rw [h1, h2]
       ring
-    have hΔnorm : deltaLegacy (I := I) g
-        (hftslice.sub (deltaLegacy_contMDiff (I := I) g (hlogslice t (D.regular_subset ht)))) x =
-        deltaLegacy (I := I) g (normGradSqFun_contMDiff (I := I) g
+    have hΔnorm : laplacianOfSmooth (I := I) g
+        (hftslice.sub (laplacianOfSmooth_contMDiff (I := I) g (hlogslice t (D.regular_subset ht)))) x =
+        laplacianOfSmooth (I := I) g (normGradSqFun_contMDiff (I := I) g
           (hlogslice t (D.regular_subset ht))) x :=
       Δ_g_congr_of_eventuallyEq (I := I) g
-        (hftslice.sub (deltaLegacy_contMDiff (I := I) g (hlogslice t (D.regular_subset ht))))
+        (hftslice.sub (laplacianOfSmooth_contMDiff (I := I) g (hlogslice t (D.regular_subset ht))))
         (normGradSqFun_contMDiff (I := I) g (hlogslice t (D.regular_subset ht))) hsub_fun
-    have hstep : deltaLegacy (I := I) g hftslice x -
-        deltaLegacy (I := I) g (deltaLegacy_contMDiff (I := I) g (hlogslice t
+    have hstep : laplacianOfSmooth (I := I) g hftslice x -
+        laplacianOfSmooth (I := I) g (laplacianOfSmooth_contMDiff (I := I) g (hlogslice t
           (D.regular_subset ht))) x =
-        deltaLegacy (I := I) g (normGradSqFun_contMDiff (I := I) g
+        laplacianOfSmooth (I := I) g (normGradSqFun_contMDiff (I := I) g
           (hlogslice t (D.regular_subset ht))) x :=
       hΔsub.symm.trans hΔnorm
     linarith
@@ -1035,18 +1005,18 @@ theorem liYauQuantity_evolution_identity
         (gradFun (I := I) g (fun y => Real.log (u t y)) x)
         (gradFun (I := I) g (fun y => liYauQuantity g (fun σ z => Real.log (u σ z)) t y) x) =
       2 * g.inner x (gradFun (I := I) g (f t) x)
-         (gradFun (I := I) g (fun y => -deltaLegacy (I := I) g (hlogslice t
+         (gradFun (I := I) g (fun y => -laplacianOfSmooth (I := I) g (hlogslice t
            (D.regular_subset ht)) y) x) := by
     simp [f, q, hqid t ht]
   have hmain' : deriv (fun s : ℝ => q s x) t -
-      deltaLegacy (I := I) g (hqslice t ht) x =
+      laplacianOfSmooth (I := I) g (hqslice t ht) x =
       -2 * chartHessFrobeniusSq (I := I) g (fun y : M => Real.log (u t y)) x -
         2 * ricciTensor (I := I) g x
           (gradFun (I := I) g (fun y : M => Real.log (u t y)) x)
           (gradFun (I := I) g (fun y : M => Real.log (u t y)) x) -
         2 * g.inner x (gradFun (I := I) g (fun y : M => Real.log (u t y)) x)
-          (gradFun (I := I) g (deltaLegacy (I := I) g (hlogslice t (D.regular_subset ht))) x) := by
-    unfold deltaLegacy at hmain ⊢
+          (gradFun (I := I) g (laplacianOfSmooth (I := I) g (hlogslice t (D.regular_subset ht))) x) := by
+    unfold laplacianOfSmooth at hmain ⊢
     rw [hmain, hbochner]
     ring
   rw [hvecg (fun y : M => Real.log (u t y))]
@@ -1054,33 +1024,33 @@ theorem liYauQuantity_evolution_identity
   rw [hgrad]
   rw [hmain']
   have hinner_eq : 2 * g.inner x (gradFun (I := I) g (f t) x)
-        (gradFun (I := I) g (fun y : M => -deltaLegacy (I := I) g (hlogslice t
+        (gradFun (I := I) g (fun y : M => -laplacianOfSmooth (I := I) g (hlogslice t
           (D.regular_subset ht)) y) x) =
       -2 * g.inner x (gradFun (I := I) g (fun y : M => Real.log (u t y)) x)
-        (gradFun (I := I) g (deltaLegacy (I := I) g (hlogslice t (D.regular_subset ht))) x) := by
+        (gradFun (I := I) g (laplacianOfSmooth (I := I) g (hlogslice t (D.regular_subset ht))) x) := by
     have hfun : (f t) = (fun y : M => Real.log (u t y)) := by
       funext y
       rfl
     have hgradneg : gradFun (I := I) g
-        (fun y : M => -deltaLegacy (I := I) g (hlogslice t (D.regular_subset ht)) y) x =
-        -gradFun (I := I) g (deltaLegacy (I := I) g (hlogslice t (D.regular_subset ht))) x := by
+        (fun y : M => -laplacianOfSmooth (I := I) g (hlogslice t (D.regular_subset ht)) y) x =
+        -gradFun (I := I) g (laplacianOfSmooth (I := I) g (hlogslice t (D.regular_subset ht))) x := by
       have hneg : gradientFun (I := I) g
-          (fun y : M => -deltaLegacy (I := I) g (hlogslice t (D.regular_subset ht)) y) x =
-          -gradientFun (I := I) g (deltaLegacy (I := I) g (hlogslice t (D.regular_subset ht))) x :=
+          (fun y : M => -laplacianOfSmooth (I := I) g (hlogslice t (D.regular_subset ht)) y) x =
+          -gradientFun (I := I) g (laplacianOfSmooth (I := I) g (hlogslice t (D.regular_subset ht))) x :=
         gradientFun_neg g
-          ((deltaLegacy_contMDiff (I := I) g (hlogslice t
+          ((laplacianOfSmooth_contMDiff (I := I) g (hlogslice t
             (D.regular_subset ht))).mdifferentiableAt (by simp))
       calc
         gradFun (I := I) g
-            (fun y : M => -deltaLegacy (I := I) g (hlogslice t (D.regular_subset ht)) y) x
+            (fun y : M => -laplacianOfSmooth (I := I) g (hlogslice t (D.regular_subset ht)) y) x
             = gradientFun (I := I) g
-                (fun y : M => -deltaLegacy (I := I) g (hlogslice t (D.regular_subset ht)) y) x :=
-              (hvecg (fun y : M => -deltaLegacy (I := I) g (hlogslice t
+                (fun y : M => -laplacianOfSmooth (I := I) g (hlogslice t (D.regular_subset ht)) y) x :=
+              (hvecg (fun y : M => -laplacianOfSmooth (I := I) g (hlogslice t
                 (D.regular_subset ht)) y)).symm
-        _ = -gradientFun (I := I) g (deltaLegacy (I := I) g (hlogslice t
+        _ = -gradientFun (I := I) g (laplacianOfSmooth (I := I) g (hlogslice t
           (D.regular_subset ht))) x := hneg
-        _ = -gradFun (I := I) g (deltaLegacy (I := I) g (hlogslice t (D.regular_subset ht))) x := by
-              rw [hvecg (deltaLegacy (I := I) g (hlogslice t (D.regular_subset ht)))]
+        _ = -gradFun (I := I) g (laplacianOfSmooth (I := I) g (hlogslice t (D.regular_subset ht))) x := by
+              rw [hvecg (laplacianOfSmooth (I := I) g (hlogslice t (D.regular_subset ht)))]
     rw [hfun, hgradneg]
     rw [map_neg]
     ring
@@ -1103,12 +1073,12 @@ theorem liYauQuantity_evolution_inequality
     (hpos : ∀ t : ℝ, t ∈ D.carrier → ∀ x : M, 0 < u t x)
     (hpde : ∀ t : ℝ, (ht : t ∈ D.regular) → ∀ x : M,
       HasDerivAt (fun s => u s x)
-        (deltaLegacy (I := I) g (hslice t (D.regular_subset ht)) x) t)
+        (laplacianOfSmooth (I := I) g (hslice t (D.regular_subset ht)) x) t)
     (hqslice : ∀ t : ℝ, t ∈ D.regular → ContMDiff I 𝓘(ℝ, ℝ) ∞
       (fun y : M => liYauQuantity g (fun σ z => Real.log (u σ z)) t y))
     {t : ℝ} (ht : t ∈ D.regular) (x : M) :
     deriv (fun s => liYauQuantity g (fun τ y => Real.log (u τ y)) s x) t -
-        deltaLegacy (I := I) g (hqslice t ht) x ≤
+        laplacianOfSmooth (I := I) g (hqslice t ht) x ≤
       2 * g.inner x
             (gradientFun (I := I) g (fun y => Real.log (u t y)) x)
             (gradientFun (I := I) g (fun y => liYauQuantity g (fun σ z => Real.log
@@ -1129,25 +1099,25 @@ theorem liYauQuantity_evolution_inequality
     (hlogslice t (D.regular_subset ht)) x
   have hn : (0 : ℝ) < (Module.finrank ℝ E : ℝ) := by
     exact_mod_cast (Nat.pos_of_ne_zero (NeZero.ne (Module.finrank ℝ E)))
-  have hle0 : (deltaLegacy (I := I) g (hlogslice t (D.regular_subset ht)) x)^2 ≤
+  have hle0 : (laplacianOfSmooth (I := I) g (hlogslice t (D.regular_subset ht)) x)^2 ≤
       chartHessFrobeniusSq (I := I) g logut x *
         (Module.finrank ℝ E : ℝ) := by
     rw [mul_comm] at htrace0
     exact htrace0
-  have hdiv : (deltaLegacy (I := I) g (hlogslice t (D.regular_subset ht)) x)^2 /
+  have hdiv : (laplacianOfSmooth (I := I) g (hlogslice t (D.regular_subset ht)) x)^2 /
         (Module.finrank ℝ E : ℝ) ≤ chartHessFrobeniusSq (I := I) g logut x := by
     exact (div_le_iff₀ hn).2 hle0
   have htrace' : -2 * chartHessFrobeniusSq (I := I) g logut x ≤
       -(2 / (Module.finrank ℝ E : ℝ)) *
-        (deltaLegacy (I := I) g (hlogslice t (D.regular_subset ht)) x)^2 := by
+        (laplacianOfSmooth (I := I) g (hlogslice t (D.regular_subset ht)) x)^2 := by
     have hstep : -2 * chartHessFrobeniusSq (I := I) g logut x ≤
-        -2 * ((deltaLegacy (I := I) g (hlogslice t (D.regular_subset ht)) x)^2 /
+        -2 * ((laplacianOfSmooth (I := I) g (hlogslice t (D.regular_subset ht)) x)^2 /
           (Module.finrank ℝ E : ℝ)) := by
       nlinarith [hdiv]
-    have hring : -2 * ((deltaLegacy (I := I) g (hlogslice t (D.regular_subset ht)) x)^2 /
+    have hring : -2 * ((laplacianOfSmooth (I := I) g (hlogslice t (D.regular_subset ht)) x)^2 /
           (Module.finrank ℝ E : ℝ)) =
         -(2 / (Module.finrank ℝ E : ℝ)) *
-          (deltaLegacy (I := I) g (hlogslice t (D.regular_subset ht)) x)^2 := by
+          (laplacianOfSmooth (I := I) g (hlogslice t (D.regular_subset ht)) x)^2 := by
       ring_nf
     rwa [← hring]
   have hRic' : -2 * ricciTensor (I := I) g x (gradFun (I := I) g logut x) (gradFun
@@ -1159,7 +1129,7 @@ theorem liYauQuantity_evolution_inequality
       rw [hvecg logut]
     nlinarith [hr, hin]
   have hqsq : (liYauQuantity g (fun σ z => Real.log (u σ z)) t x)^2 =
-      (deltaLegacy (I := I) g (hlogslice t (D.regular_subset ht)) x)^2 := by
+      (laplacianOfSmooth (I := I) g (hlogslice t (D.regular_subset ht)) x)^2 := by
     have hqid := liYauQuantity_eq_neg_laplacian (I := I) (M := M)
       (D := D) g u hslice hlogslice hpos ht (hpde t ht x)
     rw [hqid]
@@ -1175,7 +1145,7 @@ theorem partialDeriv_joint_contDiffAt
     (hΦ : ContDiffAt ℝ ∞ (fun p : ℝ × E => Φ p.1 p.2) (t₀, y₀))
     (i : Fin (Module.finrank ℝ E)) :
     ContDiffAt ℝ ∞
-      (fun p : ℝ × E => partialDeriv (E := E) i (fun z : E => Φ p.1 z) p.2)
+      (fun p : ℝ × E => DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (fun z : E => Φ p.1 z) p.2)
       (t₀, y₀) := by
   classical
   have hfd := ContDiffAt.fderiv
@@ -1198,7 +1168,7 @@ theorem partialDeriv_joint_contDiffAt
     change ContDiffAt ℝ ∞
         (fun p : ℝ × E => evalMap (fderiv ℝ (fun z : E => Φ p.1 z) p.2)) (t₀, y₀)
     exact hev
-  simpa [partialDeriv] using happly
+  simpa [DifferentialGeometry.Tensor.Coordinates.partialDeriv] using happly
 
 omit [T2Space M] [SigmaCompactSpace M] in
 theorem normGradSqFun_eq_chartInvGram_sum
@@ -1208,8 +1178,8 @@ theorem normGradSqFun_eq_chartInvGram_sum
     normGradSqFun (I := I) g f x =
       ∑ k : Fin (Module.finrank ℝ E), ∑ i : Fin (Module.finrank ℝ E),
         chartInvGramMatrix (I := I) g α x k i *
-          partialDeriv (E := E) i (scalarOnE (I := I) α f) (extChartAt I α x) *
-          partialDeriv (E := E) k (scalarOnE (I := I) α f) (extChartAt I α x) := by
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (scalarOnE (I := I) α f) (extChartAt I α x) *
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (scalarOnE (I := I) α f) (extChartAt I α x) := by
   classical
   have hxsrc : x ∈ (chartAt H α).source := by
     simpa [trivializationAt_baseSet_eq_chartAt_source (I := I) α] using hx
@@ -1222,7 +1192,7 @@ theorem normGradSqFun_eq_chartInvGram_sum
   have hinner : g.inner x (gradChartLocal (I := I) g α f x) (gradChartLocal (I := I) g α f x) =
       ∑ k : Fin (Module.finrank ℝ E),
         gradChartCoeff (I := I) g α f k x *
-          partialDeriv (E := E) k (scalarOnE (I := I) α f) (extChartAt I α x) := by
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (scalarOnE (I := I) α f) (extChartAt I α x) := by
     nth_rewrite 2 [show gradChartLocal (I := I) g α f x =
         ∑ k : Fin (Module.finrank ℝ E),
           gradChartCoeff (I := I) g α f k x • chartBasisVecFiber (I := I) α k x by
@@ -1245,7 +1215,7 @@ theorem normGradSqFun_eq_chartInvGram_sum
       gradChartCoeff (I := I) g α f k x =
         ∑ i : Fin (Module.finrank ℝ E),
           chartInvGramMatrix (I := I) g α x k i *
-            partialDeriv (E := E) i (scalarOnE (I := I) α f) (extChartAt I α x) :=
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (scalarOnE (I := I) α f) (extChartAt I α x) :=
     fun k => rfl
   calc
     normGradSqFun (I := I) g f x
@@ -1255,12 +1225,12 @@ theorem normGradSqFun_eq_chartInvGram_sum
             rw [hg]
     _ = ∑ k : Fin (Module.finrank ℝ E),
           gradChartCoeff (I := I) g α f k x *
-            partialDeriv (E := E) k (scalarOnE (I := I) α f) (extChartAt I α x) := hinner
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (scalarOnE (I := I) α f) (extChartAt I α x) := hinner
     _ = ∑ k : Fin (Module.finrank ℝ E),
           ∑ i : Fin (Module.finrank ℝ E),
             chartInvGramMatrix (I := I) g α x k i *
-              partialDeriv (E := E) i (scalarOnE (I := I) α f) (extChartAt I α x) *
-              partialDeriv (E := E) k (scalarOnE (I := I) α f) (extChartAt I α x) := by
+              DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (scalarOnE (I := I) α f) (extChartAt I α x) *
+              DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (scalarOnE (I := I) α f) (extChartAt I α x) := by
             refine Finset.sum_congr rfl ?_
             intro k _
             rw [hcoeff k]
@@ -1344,7 +1314,7 @@ theorem liYauQuantity_contMDiff
         (fun r : ℝ × E => scalarOnE (I := I) α (f r.1) r.2) (t₀, (extChartAt I α) x₀) :=
       scalarOnE_jointContDiffAt (I := I) (M := M) (D := D) f hlog' α ht₀ hy₀
     have hpd : ∀ i : Fin (Module.finrank ℝ E), ContDiffAt ℝ ∞
-        (fun p : ℝ × E => partialDeriv (E := E) i (fun z : E => scalarOnE (I := I) α (f p.1) z) p.2)
+        (fun p : ℝ × E => DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (fun z : E => scalarOnE (I := I) α (f p.1) z) p.2)
         (t₀, (extChartAt I α) x₀) :=
       fun i => partialDeriv_joint_contDiffAt (fun t z => scalarOnE (I := I) α (f t) z) hΦ i
     have hgram : ∀ (i j : Fin (Module.finrank ℝ E)), ContDiffAt ℝ ∞
@@ -1369,8 +1339,8 @@ theorem liYauQuantity_contMDiff
         normGradSqFun (I := I) g (f t) ((extChartAt I α).symm y) =
           ∑ k : Fin (Module.finrank ℝ E), ∑ i : Fin (Module.finrank ℝ E),
             chartInvGramOnE (I := I) g α k i y *
-              partialDeriv (E := E) i (scalarOnE (I := I) α (f t)) y *
-              partialDeriv (E := E) k (scalarOnE (I := I) α (f t)) y := by
+              DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (scalarOnE (I := I) α (f t)) y *
+              DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (scalarOnE (I := I) α (f t)) y := by
       intro t ht y hy
       have hx : (extChartAt I α).symm y ∈ (trivializationAt E (TangentSpace I) α).baseSet := by
         simpa [trivializationAt_baseSet_eq_chartAt_source (I := I) α] using
@@ -1389,8 +1359,8 @@ theorem liYauQuantity_contMDiff
         liYauQuantity g f t ((extChartAt I α).symm y) =
           (∑ k : Fin (Module.finrank ℝ E), ∑ i : Fin (Module.finrank ℝ E),
             chartInvGramOnE (I := I) g α k i y *
-              partialDeriv (E := E) i (fun z : E => scalarOnE (I := I) α (f t) z) y *
-              partialDeriv (E := E) k (fun z : E => scalarOnE (I := I) α (f t) z) y) -
+              DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (fun z : E => scalarOnE (I := I) α (f t) z) y *
+              DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (fun z : E => scalarOnE (I := I) α (f t) z) y) -
             deriv (fun s : ℝ => f s ((extChartAt I α).symm y)) t := by
       intro t ht y hy
       rw [hly_def t ((extChartAt I α).symm y)]
@@ -1402,8 +1372,8 @@ theorem liYauQuantity_contMDiff
           (fun p : ℝ × E =>
             (∑ k : Fin (Module.finrank ℝ E), ∑ i : Fin (Module.finrank ℝ E),
               chartInvGramOnE (I := I) g α k i p.2 *
-                partialDeriv (E := E) i (fun z : E => scalarOnE (I := I) α (f p.1) z) p.2 *
-                partialDeriv (E := E) k (fun z : E => scalarOnE (I := I) α (f p.1) z) p.2) -
+                DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (fun z : E => scalarOnE (I := I) α (f p.1) z) p.2 *
+                DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (fun z : E => scalarOnE (I := I) α (f p.1) z) p.2) -
               deriv (fun s : ℝ => f s ((extChartAt I α).symm p.2)) p.1)
           (t₀, (extChartAt I α) x₀) := by
         refine (ContDiffAt.sum (s := Finset.univ) (fun k _ => ?_)).sub hdt
@@ -1485,37 +1455,7 @@ theorem scalarOnE_jointContDiffWithinAt
     ContDiffWithinAt ℝ ∞
       (fun r : ℝ × E => scalarOnE (I := I) α (f r.1) r.2)
       (S ×ˢ (extChartAt I α).target) (t, y) := by
-  have hU : ContMDiffOn ((𝓘(ℝ, ℝ).prod I)) 𝓘(ℝ, ℝ) ∞
-      (fun p : ℝ × M => f p.1 p.2) (S ×ˢ univ) := hf
-  have hids : ContMDiffOn (𝓘(ℝ, ℝ).prod 𝓘(ℝ, E)) 𝓘(ℝ, ℝ) ∞
-      (fun r : ℝ × E => r.1) (Set.univ ×ˢ (extChartAt I α).target) :=
-    contMDiffOn_fst
-  have hsym : ContMDiffOn (𝓘(ℝ, ℝ).prod 𝓘(ℝ, E)) I ∞
-      (fun r : ℝ × E => (extChartAt I α).symm r.2)
-      (Set.univ ×ˢ (extChartAt I α).target) := by
-    refine (contMDiffOn_extChartAt_symm (I := I) α).comp ?_ ?_
-    · exact contMDiffOn_snd
-    · intro r hr
-      exact hr.2
-  have hsymm : ContMDiffOn (𝓘(ℝ, ℝ).prod 𝓘(ℝ, E)) ((𝓘(ℝ, ℝ).prod I)) ∞
-      (fun r : ℝ × E => (r.1, (extChartAt I α).symm r.2))
-      (S ×ˢ (extChartAt I α).target) := by
-    refine (hids.prodMk hsym).mono ?_
-    intro r hr
-    exact ⟨Set.mem_univ r.1, hr.2⟩
-  have hcomp : ContMDiffOn (𝓘(ℝ, ℝ).prod 𝓘(ℝ, E)) 𝓘(ℝ, ℝ) ∞
-      (fun r : ℝ × E => f r.1 ((extChartAt I α).symm r.2))
-      (S ×ˢ (extChartAt I α).target) :=
-    hU.comp hsymm (fun r hr => ⟨hr.1, trivial⟩)
-  have hcd : ContDiffOn ℝ ∞
-      (fun r : ℝ × E => f r.1 ((extChartAt I α).symm r.2))
-      (S ×ˢ (extChartAt I α).target) := by
-    rw [← contMDiffOn_iff_contDiffOn, modelWithCornersSelf_prod,
-      ← chartedSpaceSelf_prod]
-    exact hcomp
-  have hpt : (t, y) ∈ S ×ˢ (extChartAt I α).target := ⟨ht, hy⟩
-  have hat := hcd.contDiffWithinAt hpt
-  simpa [scalarOnE_def] using hat
+  exact (scalarOnE_contDiffOn_prod α hf).contDiffWithinAt ⟨ht, hy⟩
 
 theorem partialDeriv_joint_contDiffWithinAt
     (S : Set ℝ) (Φ : ℝ → E → ℝ)
@@ -1524,7 +1464,7 @@ theorem partialDeriv_joint_contDiffWithinAt
       (S ×ˢ Set.univ) (t₀, y₀))
     (i : Fin (Module.finrank ℝ E)) :
     ContDiffWithinAt ℝ ∞
-      (fun p : ℝ × E => partialDeriv (E := E) i (fun z : E => Φ p.1 z) p.2)
+      (fun p : ℝ × E => DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (fun z : E => Φ p.1 z) p.2)
       (S ×ˢ Set.univ) (t₀, y₀) := by
   classical
   have hfd := ContDiffWithinAt.fderivWithin
@@ -1578,7 +1518,7 @@ theorem partialDeriv_joint_contDiffWithinAt
     exact hev.congr_of_eventuallyEq heq.symm (by
       dsimp [evalMap]
       rw [fderivWithin_of_mem_nhds (Filter.univ_mem : (Set.univ : Set E) ∈ 𝓝 y₀)])
-  simpa [partialDeriv] using happly
+  simpa [DifferentialGeometry.Tensor.Coordinates.partialDeriv] using happly
 
 omit [FiniteDimensional ℝ E] in
 theorem timeDeriv_joint_contDiffWithinAt
@@ -1639,7 +1579,7 @@ theorem normGradSqFun_contMDiffOn
         (fun r : ℝ × E => scalarOnE (I := I) α (f r.1) r.2) (t₀, (extChartAt I α) x₀) :=
       scalarOnE_jointContDiffAt (I := I) (M := M) (D := D) f hf α ht₀ hy₀
     have hpd : ∀ i : Fin (Module.finrank ℝ E), ContDiffAt ℝ ∞
-        (fun p : ℝ × E => partialDeriv (E := E) i
+        (fun p : ℝ × E => DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i
           (fun z : E => scalarOnE (I := I) α (f p.1) z) p.2)
         (t₀, (extChartAt I α) x₀) :=
       fun i => partialDeriv_joint_contDiffAt (fun t z => scalarOnE (I := I) α (f t) z) hΦ i
@@ -1661,8 +1601,8 @@ theorem normGradSqFun_contMDiffOn
           (fun p : ℝ × E =>
             ∑ k : Fin (Module.finrank ℝ E), ∑ i : Fin (Module.finrank ℝ E),
               chartInvGramOnE (I := I) g α k i p.2 *
-                partialDeriv (E := E) i (fun z : E => scalarOnE (I := I) α (f p.1) z) p.2 *
-                partialDeriv (E := E) k (fun z : E => scalarOnE (I := I) α (f p.1) z) p.2)
+                DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (fun z : E => scalarOnE (I := I) α (f p.1) z) p.2 *
+                DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (fun z : E => scalarOnE (I := I) α (f p.1) z) p.2)
           (t₀, (extChartAt I α) x₀) := by
         refine (ContDiffAt.sum (s := Finset.univ) (fun k _ => ?_))
         refine ContDiffAt.sum (s := Finset.univ) (fun i _ => ?_)
@@ -1682,8 +1622,8 @@ theorem normGradSqFun_contMDiffOn
         change normGradSqFun (I := I) g (f z.1) ((extChartAt I α).symm z.2) =
           (∑ k : Fin (Module.finrank ℝ E), ∑ i : Fin (Module.finrank ℝ E),
             chartInvGramOnE (I := I) g α k i z.2 *
-              partialDeriv (E := E) i (fun w : E => scalarOnE (I := I) α (f z.1) w) z.2 *
-              partialDeriv (E := E) k (fun w : E => scalarOnE (I := I) α (f z.1) w) z.2)
+              DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (fun w : E => scalarOnE (I := I) α (f z.1) w) z.2 *
+              DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (fun w : E => scalarOnE (I := I) α (f z.1) w) z.2)
         rw [hformula]
         refine Finset.sum_congr rfl (fun k _ => Finset.sum_congr rfl (fun i _ => ?_))
         rw [← (chartInvGramOnE_def (I := I) g α k i z.2)]
@@ -1788,7 +1728,7 @@ theorem normGradSqFun_contMDiffWithinAt
       (S ×ˢ Set.univ) (t₀, (extChartAt I α) x₀) := by
     exact hΦ.mono_of_mem_nhdsWithin htarget_nhd
   have hpd : ∀ i : Fin (Module.finrank ℝ E), ContDiffWithinAt ℝ ∞
-      (fun p : ℝ × E => partialDeriv (E := E) i
+      (fun p : ℝ × E => DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i
         (fun z : E => scalarOnE (I := I) α (f p.1) z) p.2)
       (S ×ˢ Set.univ) (t₀, (extChartAt I α) x₀) :=
     fun i => partialDeriv_joint_contDiffWithinAt S
@@ -1822,8 +1762,8 @@ theorem normGradSqFun_contMDiffWithinAt
         (fun p : ℝ × E =>
           ∑ k : Fin (Module.finrank ℝ E), ∑ i : Fin (Module.finrank ℝ E),
             chartInvGramOnE (I := I) g α k i p.2 *
-              partialDeriv (E := E) i (fun z : E => scalarOnE (I := I) α (f p.1) z) p.2 *
-              partialDeriv (E := E) k (fun z : E => scalarOnE (I := I) α (f p.1) z) p.2)
+              DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (fun z : E => scalarOnE (I := I) α (f p.1) z) p.2 *
+              DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (fun z : E => scalarOnE (I := I) α (f p.1) z) p.2)
         (S ×ˢ Set.univ) (t₀, (extChartAt I α) x₀) := by
       refine ContDiffWithinAt.sum (s := Finset.univ) (fun k _ => ?_)
       refine ContDiffWithinAt.sum (s := Finset.univ) (fun i _ => ?_)
@@ -1841,8 +1781,8 @@ theorem normGradSqFun_contMDiffWithinAt
       change normGradSqFun (I := I) g (f z.1) ((extChartAt I α).symm z.2) =
         (∑ k : Fin (Module.finrank ℝ E), ∑ i : Fin (Module.finrank ℝ E),
           chartInvGramOnE (I := I) g α k i z.2 *
-            partialDeriv (E := E) i (fun w : E => scalarOnE (I := I) α (f z.1) w) z.2 *
-            partialDeriv (E := E) k (fun w : E => scalarOnE (I := I) α (f z.1) w) z.2)
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (fun w : E => scalarOnE (I := I) α (f z.1) w) z.2 *
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (fun w : E => scalarOnE (I := I) α (f z.1) w) z.2)
       rw [hformula]
       refine Finset.sum_congr rfl (fun k _ => Finset.sum_congr rfl (fun i _ => ?_))
       rw [← (chartInvGramOnE_def (I := I) g α k i z.2)]
@@ -1850,9 +1790,9 @@ theorem normGradSqFun_contMDiffWithinAt
       change normGradSqFun (I := I) g (f t₀) ((extChartAt I α).symm ((extChartAt I α) x₀)) =
         (∑ k : Fin (Module.finrank ℝ E), ∑ i : Fin (Module.finrank ℝ E),
           chartInvGramOnE (I := I) g α k i ((extChartAt I α) x₀) *
-            partialDeriv (E := E) i (fun z : E => scalarOnE (I := I) α (f t₀) z)
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (fun z : E => scalarOnE (I := I) α (f t₀) z)
               ((extChartAt I α) x₀) *
-            partialDeriv (E := E) k (fun z : E => scalarOnE (I := I) α (f t₀) z)
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (fun z : E => scalarOnE (I := I) α (f t₀) z)
               ((extChartAt I α) x₀))
       simpa only [α, chartInvGramOnE_def,
         (extChartAt I α).left_inv (mem_extChartAt_source (I := I) α)] using
@@ -2163,12 +2103,12 @@ theorem timeMulLogDeriv_continuousOn
         hbd'
     simpa [ContinuousWithinAt] using hmain
   · have ht₀pos : 0 < t₀ := lt_of_le_of_ne hp₀.1.1 (Ne.symm ht₀₀)
-    have ht₀reg : t₀ ∈ D.regular := by
+    have ht₀regularity : t₀ ∈ D.regular := by
       by_cases ht₀t : t₀ = t
       · subst t₀
         exact ht
       · exact hslabRegular ⟨ht₀pos, lt_of_le_of_ne hp₀.1.2 ht₀t⟩
-    have hfReg : ContMDiffOn (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ, ℝ) ∞
+    have hfRegularity : ContMDiffOn (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ, ℝ) ∞
         (fun p : ℝ × M => f p.1 p.2) (D.regular ×ˢ univ) := by
       intro p hp
       have hlogAt : ContMDiffAt 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) ∞ Real.log (u p.1 p.2) :=
@@ -2192,7 +2132,7 @@ theorem timeMulLogDeriv_continuousOn
       have hNOn : ContMDiffOn (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ, ℝ) ∞
           (fun p : ℝ × M => normGradSqFun (I := I) g (f p.1) p.2)
           (D.regular ×ˢ univ) :=
-        normGradSqFun_contMDiffOn (I := I) (M := M) (D := D) g f hfReg
+        normGradSqFun_contMDiffOn (I := I) (M := M) (D := D) g f hfRegularity
           (fun τ hτ => Moser.contMDiff_log_of_pos_slice
             (hslice τ (D.regular_subset hτ)) (hpos τ (D.regular_subset hτ)))
       have hly_def : ∀ (τ : ℝ) (y : M), liYauQuantity g f τ y =
@@ -2208,7 +2148,7 @@ theorem timeMulLogDeriv_continuousOn
         p.1 * deriv (fun s : ℝ => f s p.2) p.1) (t₀, y₀) := by
       have hc : ContinuousAt (fun p : ℝ × M => deriv (fun s : ℝ => f s p.2) p.1) (t₀, y₀) :=
         hDOn.continuousOn.continuousAt
-          ((IsOpen.prod D.regular_isOpen isOpen_univ).mem_nhds ⟨ht₀reg, trivial⟩)
+          ((IsOpen.prod D.regular_isOpen isOpen_univ).mem_nhds ⟨ht₀regularity, trivial⟩)
       exact continuousAt_fst.mul hc
     exact hcontAt.continuousWithinAt
 
@@ -2314,11 +2254,11 @@ theorem liYau_estimate_of_nonnegative_ricci_on_of_metric_family
     exact (hqat.comp (x := x) (contMDiffAt_const.prodMk contMDiffAt_id))
   have hpd_all : ∀ (τ : ℝ) (hτ : τ ∈ D.regular) (x : M),
       HasDerivAt (fun s => u s x)
-        (deltaLegacy (I := I) g (hu.sliceSmooth τ (D.regular_subset hτ)) x) τ := by
+        (laplacianOfSmooth (I := I) g (hu.sliceSmooth τ (D.regular_subset hτ)) x) τ := by
     intro τ hτ x
     have heq := hu.equation τ hτ x
     have hbridge : laplacianAt (I := I) G τ (u τ) x =
-        deltaLegacy (I := I) g (hu.sliceSmooth τ (D.regular_subset hτ)) x := by
+        laplacianOfSmooth (I := I) g (hu.sliceSmooth τ (D.regular_subset hτ)) x := by
       have hconn : G.connection τ = LeviCivita (G.metric τ) :=
         hGconn τ (D.regular_subset hτ)
       rw [laplacianAt_eq_delta (I := I) G τ (hu.sliceSmooth τ (D.regular_subset hτ)) hconn x]
@@ -2329,7 +2269,7 @@ theorem liYau_estimate_of_nonnegative_ricci_on_of_metric_family
     exact heq0.congr_deriv hbridge
   let n : ℝ := (Module.finrank ℝ E : ℝ)
   have hevol : ∀ (τ : ℝ) (hτ : τ ∈ D.regular) (y : M),
-      deriv (fun s => q s y) τ - deltaLegacy (I := I) g (hqslice τ hτ) y ≤
+      deriv (fun s => q s y) τ - laplacianOfSmooth (I := I) g (hqslice τ hτ) y ≤
         2 * g.inner y (gradientFun (I := I) g (f τ) y) (gradientFun (I := I) g (q τ) y) -
           (2 / n) * (q τ y)^2 := by
     intro τ hτ y
@@ -2497,7 +2437,7 @@ theorem liYau_estimate_of_nonnegative_ricci_on_of_metric_family
     have hev0 := hevol s hsreg x₀
     have hdq_Δq : deriv (fun τ' : ℝ => q τ' x₀) s - laplacianAt (I := I) G s (q s) x₀ ≤
         -(2 / n) * (q s x₀)^2 := by
-      have hlapeq : laplacianAt (I := I) G s (q s) x₀ = deltaLegacy (I := I) g
+      have hlapeq : laplacianAt (I := I) G s (q s) x₀ = laplacianOfSmooth (I := I) g
         (hqslice s hsreg) x₀ := by
         rw [laplacianAt_eq_delta (I := I) G s (hqslice s hsreg) hconn]
         rw [hGmetric s (D.regular_subset hsreg)]
@@ -2505,7 +2445,7 @@ theorem liYau_estimate_of_nonnegative_ricci_on_of_metric_family
         (q s) x₀) = 0 := by
         rw [hgradq']
         ring
-      have hev0' : deriv (fun τ' : ℝ => q τ' x₀) s - deltaLegacy (I := I) g (hqslice s hsreg) x₀ ≤
+      have hev0' : deriv (fun τ' : ℝ => q τ' x₀) s - laplacianOfSmooth (I := I) g (hqslice s hsreg) x₀ ≤
           -(2 / n) * (q s x₀)^2 := by
         nlinarith [hev0, hcanc]
       rw [hlapeq]
@@ -2544,7 +2484,7 @@ theorem liYau_estimate_of_nonnegative_ricci_on_of_metric_family
           exact hmul
         have hc_cd : ContMDiff I 𝓘(ℝ, ℝ) ∞ (fun _ : M => n / 2 + eps * s) :=
           contMDiff_const
-        change deltaLegacy (I := I) (G.metric s) hsub_cd x₀ =
+        change laplacianOfSmooth (I := I) (G.metric s) hsub_cd x₀ =
           laplacianAt (I := I) G s (fun y : M => s • q s y) x₀ -
             laplacianAt (I := I) G s (fun _ : M => n / 2 + eps * s) x₀
         rw [laplacianAt_eq_delta (I := I) G s hscd hconn]
@@ -2560,7 +2500,7 @@ theorem liYau_estimate_of_nonnegative_ricci_on_of_metric_family
           ring
         have hbridge := Δ_g_congr_of_eventuallyEq (I := I) g hsub_cd
           (hscd.add (ContMDiff.neg hc_cd)) hc_eq
-        unfold deltaLegacy
+        unfold laplacianOfSmooth
         rw [hbridge]
         change ΔG (I := I) g
             (⟨_, hscd⟩ + ⟨_, ContMDiff.neg hc_cd⟩) x₀ = _

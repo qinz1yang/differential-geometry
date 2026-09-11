@@ -1,9 +1,9 @@
-import DifferentialGeometry.Analysis.Parabolic.DeTurckRicci.DeTurckRHS
+import DifferentialGeometry.Analysis.Parabolic.DeTurckRicci.RHS.Defs
 import DifferentialGeometry.Analysis.Parabolic.DeTurckRicci.PrincipalSymbol
-import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RicciSecondOrderPart
-import DifferentialGeometry.Analysis.Parabolic.DeTurckLinearization.DeTurckCorrectionSymbol
-import DifferentialGeometry.Analysis.Parabolic.StrictParabolicity
-import DifferentialGeometry.Analysis.Parabolic.DeTurckRicci.RHSStrictParabolic
+import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.Symbol.SecondOrderPart
+import DifferentialGeometry.Analysis.Parabolic.DeTurckLinearization.PrincipalSymbol.Basic
+import DifferentialGeometry.Analysis.Parabolic.PrincipalSymbol.DeTurck
+import DifferentialGeometry.Analysis.Parabolic.DeTurckRicci.RHS.StrictParabolicity
 
 namespace DifferentialGeometry.Analysis.Spectral
 

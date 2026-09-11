@@ -1,15 +1,15 @@
-import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.BundleConvex
+import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Convex.Bundle
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.HamiltonIvey.RegionTransfer
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.HamiltonIvey.Continuity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.TensorInnerLaplacian
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.HamiltonIvey.CurvatureEvolution
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.HamiltonIvey.FixedFrameEvolution
-import DifferentialGeometry.Geometry.Connection.ParallelTransport.RadialTensorExtension
+import DifferentialGeometry.Geometry.Connection.ParallelTransport.Radial.TensorExtension
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.Restriction
-import DifferentialGeometry.Geometry.Connection.MetricCompatibility.TensorLoweringParallel
-import DifferentialGeometry.Geometry.Curvature.AlgebraicTensorMetric
-import DifferentialGeometry.Analysis.Calculus.MatrixInverseSmooth
-import DifferentialGeometry.Topology.FiberBundleT2
+import DifferentialGeometry.Geometry.Connection.MetricCompatibility.Tensor.Lowering
+import DifferentialGeometry.Geometry.Curvature.Algebraic.TensorMetric
+import DifferentialGeometry.Analysis.Calculus.Inverse.MatrixSmoothness
+import DifferentialGeometry.Bundle.FiberBundleHausdorff
 
 set_option autoImplicit false
 
@@ -203,12 +203,12 @@ private theorem mem_regionNormalDirections_iff_mem_fiberNormalDirections
     · left
       have hw : curvatureOperatorMatrixAt (I := I) x (basisAt x) ⟨ν, hν'⟩ =
           curvatureOperatorMatrixAt (I := I) x (basisAt x) ⟨ν, hν⟩ := by
-        apply curvatureOperatorMatrixAt_independent_of_witness
+        apply curvatureOperatorMatrixAt_independent_of_membership
       simpa [hw, regionProjMatrix_eq_curvatureOperatorMatrixAt (I := I) g (basisAt x) hν] using hlt
     · right
       have hw : curvatureOperatorMatrixAt (I := I) x (basisAt x) ⟨ν, hν'⟩ =
           curvatureOperatorMatrixAt (I := I) x (basisAt x) ⟨ν, hν⟩ := by
-        apply curvatureOperatorMatrixAt_independent_of_witness
+        apply curvatureOperatorMatrixAt_independent_of_membership
       simpa [hw, regionProjMatrix_eq_curvatureOperatorMatrixAt (I := I) g (basisAt x) hν] using hz
 
 end RegionMatrixLemmas
@@ -216,7 +216,7 @@ end RegionMatrixLemmas
 section RegionCharacterization
 
 omit [CompleteSpace E] [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] in
-private theorem fiberRegion_mem_iff_forall_normalDirections
+private theorem fiberRegion_mem_iff_forall_normalDirections_of_mem_algebraicCurvatureTensorSubmodule
     (g : SmoothRiemannianMetric I M)
     (basisAt : ∀ x : M, Module.Basis (Fin 3) Real (TangentSpace I x))
     (horth0 : ∀ x : M, OrthonormalBasisAt (I := I) g x (basisAt x))
@@ -250,7 +250,7 @@ private theorem fiberRegion_mem_iff_forall_normalDirections
       rw [mem_hamiltonIveyConvexMatrixRegionEuclidean_iff]
       have hw : curvatureOperatorMatrixAt (I := I) x (basisAt x) ⟨p, hAlg⟩ =
           curvatureOperatorMatrixAt (I := I) x (basisAt x) ⟨p, hp⟩ := by
-        apply curvatureOperatorMatrixAt_independent_of_witness
+        apply curvatureOperatorMatrixAt_independent_of_membership
       rwa [hw]
     have hmain := (hamiltonIveyConvexMatrixRegionEuclidean_mem_iff_forall_support_le hK hτ
       (matrixToEuclidean (curvatureOperatorMatrixAt (I := I) x (basisAt x) ⟨p, hp⟩))).mp
@@ -560,7 +560,7 @@ private noncomputable def pulledRmComp
     (S : SolutionOn (I := I) (M := M) D)
     (basisAt : ∀ x : M, Module.Basis (Fin 3) Real (TangentSpace I x))
     (iota : MatrixComp M (Fin 3)) : FourComp M (Fin 3) :=
-  fun t x a b c d => tensor04StdAt (uhlenbeckPulledRm04At S basisAt iota t x)
+  fun t x a b c d => tensor04StandardAt (uhlenbeckPulledRm04At S basisAt iota t x)
     (basisAt x a) (basisAt x b) (basisAt x c) (basisAt x d)
 
 private noncomputable def uhlenbeckPullbackTensorAt
@@ -817,7 +817,7 @@ private theorem regionSource_lipschitzOn_closedBall_uniform
 
 omit [CompleteSpace E] [IsManifold I 1 M] [IsManifold I 2 M] [IsManifold I 3 M]
   [SigmaCompactSpace M] [T2Space M] in
-private theorem fiberRegion_mem_iff_forall_normalDirections_full
+private theorem fiberRegion_mem_iff_forall_normalDirections
     (g : SmoothRiemannianMetric I M)
     (basisAt : ∀ x : M, Module.Basis (Fin 3) Real (TangentSpace I x))
     (horth0 : ∀ x : M, OrthonormalBasisAt (I := I) g x (basisAt x))
@@ -829,7 +829,7 @@ private theorem fiberRegion_mem_iff_forall_normalDirections_full
           inner0S (I := I) g x 4 ν p ≤ regionSupport (I := I) g basisAt K τ x ν := by
   constructor
   · intro hpC ν hν
-    exact (fiberRegion_mem_iff_forall_normalDirections (I := I) g basisAt horth0 hK hτ x p hpC.1).mp hpC ν hν
+    exact (fiberRegion_mem_iff_forall_normalDirections_of_mem_algebraicCurvatureTensorSubmodule (I := I) g basisAt horth0 hK hτ x p hpC.1).mp hpC ν hν
   · intro hle
     let pν : algebraicCurvatureTensorSubmodule (I := I) (M := M) x := algebraicCurvatureTensorProjection (I := I) g x p
     let q : Tensor04At (I := I) (M := M) x := p - (pν : Tensor04At (I := I) (M := M) x)
@@ -873,7 +873,7 @@ private theorem fiberRegion_mem_iff_forall_normalDirections_full
       unfold regionProjMatrix
       rw [hqproj0]
       ext i j
-      change tensor04StdAt (I := I) (M := M)
+      change tensor04StandardAt (I := I) (M := M)
         ((0 : algebraicCurvatureTensorSubmodule (I := I) (M := M) x) : Tensor04At (I := I) (M := M) x)
         (basisAt x (bivectorIndex3 i).1) (basisAt x (bivectorIndex3 i).2)
         (basisAt x (bivectorIndex3 j).2) (basisAt x (bivectorIndex3 j).1) = 0
@@ -934,7 +934,7 @@ private theorem fiberRegion_mem_iff_forall_normalDirections_full
         exact sub_eq_zero.mp hz
       rw [hpeq]
       exact pν.2
-    exact (fiberRegion_mem_iff_forall_normalDirections (I := I) g basisAt horth0 hK hτ x p hpW).mpr hle
+    exact (fiberRegion_mem_iff_forall_normalDirections_of_mem_algebraicCurvatureTensorSubmodule (I := I) g basisAt horth0 hK hτ x p hpW).mpr hle
 
 end PulledScalarization
 
@@ -1187,7 +1187,7 @@ private theorem fiberRegionPropagationOn_of_flatSupport
           inner ℝ ν p ≤ fiberRegionSupport hT (I := I) (M := M) S basisAt K t x ν := by
     intro t x p
     have hτ : 0 ≤ max t 0 := le_max_right t 0
-    have hmain := fiberRegion_mem_iff_forall_normalDirections_full (I := I) (S.base.metric 0)
+    have hmain := fiberRegion_mem_iff_forall_normalDirections (I := I) (S.base.metric 0)
       basisAt horth0 hK hτ x p
     constructor
     · intro hp ν hν
@@ -1321,7 +1321,9 @@ private theorem fiberRegionPropagationOn_of_flatSupport
       hCclosed hCconvex hCne hsupp hsupport_sup hNnormal
       (fun _ => fiberRegionSource hT (I := I) (M := M) S basisAt)
       (uhlenbeckPulledRm04At S basisAt iota)
-      hsol R hbound hCzero L (fun t ht x ν => by simpa [fiberRegionSource] using hL x ν)
+      hsol R hbound 0 (fun t _ x => by
+        rw [Metric.infDist_zero_of_mem (hCzero t x)]) L
+      (fun t ht x ν => by simpa [fiberRegionSource] using hL x ν)
       hCdist_cont hflat hsupport_cont hsupport_time htangent (fun x => by simpa [fiberRegionSet] using hinit x)
   intro t ht x
   have hmem := hres t ht x
@@ -1376,74 +1378,6 @@ variable (hdim : ∀ x : M, Module.finrank Real (TangentSpace I x) = 3)
 variable (basisAt : ∀ x : M, Module.Basis (Fin 3) Real (TangentSpace I x))
 variable (horth0 : ∀ x : M, OrthonormalBasisAt (I := I) (S.base.metric 0) x (basisAt x))
 
-omit [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M]
-  [I.Boundaryless] in
-private theorem fiberInner_compUhlenbeck_isometry_full
-    {T : ℝ} (hT : 0 < T)
-    (S : SolutionOn (I := I) (M := M) (RealTimeInterval.closed 0 T hT.le))
-    (basisAt : ∀ x : M, Module.Basis (Fin 3) Real (TangentSpace I x))
-    (iota : MatrixComp M (Fin 3))
-    (hiota0 : ∀ x : M, ∀ a k : Fin 3, iota 0 x a k = if a = k then 1 else 0)
-    (hgram : ∀ t : ℝ, t ∈ Set.Icc 0 T → ∀ x : M, ∀ a b : Fin 3,
-      movingFrameGramInFrame (metricCompInFrame (I := I) S (fun a x => basisAt x a)) iota t x a b =
-        movingFrameGramInFrame (metricCompInFrame (I := I) S (fun a x => basisAt x a)) iota 0 x a b)
-    (horth0 : ∀ x : M, OrthonormalBasisAt (I := I) (S.base.metric 0) x (basisAt x))
-    {t : ℝ} (ht : t ∈ Set.Icc 0 T) (x : M)
-    (A B : Tensor04At (I := I) (M := M) x) :
-    inner0S (I := I) (S.base.metric 0) x 4
-        (A.compContinuousLinearMap (fun _ : Fin 4 => uhlenbeckEndomorphismAt (basisAt x) iota t))
-        (B.compContinuousLinearMap (fun _ : Fin 4 => uhlenbeckEndomorphismAt (basisAt x) iota t)) =
-      inner0S (I := I) (S.base.metric t) x 4 A B := by
-  classical
-  let moving : Module.Basis (Fin 3) Real (TangentSpace I x) :=
-    uhlenbeckMovingBasis hT S basisAt iota hiota0 hgram t ht x
-  let U : TangentSpace I x →L[ℝ] TangentSpace I x :=
-    uhlenbeckEndomorphismAt (basisAt x) iota t
-  have horth_moving : OrthonormalBasisAt (I := I) (S.base.metric t) x moving :=
-    uhlenbeckMovingBasis_orthonormalBasisAt (I := I) (M := M) hT S basisAt iota hiota0 hgram x
-      (horth0 x) ht
-  have hinv0 : MetricInverseInBasisGen (I := I) (S.base.metric 0) x (basisAt x)
-      (identityInvMetric (Idx := Fin 3)) :=
-    Tensor0SBundle.metricInverseInBasis_identity_of_orthonormal
-      (I := I) (S.base.metric 0) (basisAt x) (by
-        intro i j
-        exact horth0 x i j)
-  have hinvt : MetricInverseInBasisGen (I := I) (S.base.metric t) x moving
-      (identityInvMetric (Idx := Fin 3)) :=
-    Tensor0SBundle.metricInverseInBasis_identity_of_orthonormal
-      (I := I) (S.base.metric t) moving (by
-        intro i j
-        exact horth_moving i j)
-  have hdiag : ∀ (g : SmoothRiemannianMetric I M)
-      (basis : Module.Basis (Fin 3) Real (TangentSpace I x))
-      (hinv : MetricInverseInBasisGen (I := I) g x basis (identityInvMetric (Idx := Fin 3)))
-      (A B : Tensor04At (I := I) (M := M) x),
-      inner0S (I := I) g x 4 A B =
-        ∑ I0 : Fin 4 → Fin 3,
-          tensor0SComponent (I := I) A (fun i => basis i) I0 *
-            tensor0SComponent (I := I) B (fun i => basis i) I0 := by
-    intro g basis hinv A B
-    rw [inner0S_eq_coord (I := I) g x 4 basis (identityInvMetric (Idx := Fin 3)) hinv A B]
-    exact coordInner0S_identity_eq_sum (I := I) (x := x) 4 A B basis
-  calc
-    inner0S (I := I) (S.base.metric 0) x 4
-        (A.compContinuousLinearMap (fun _ : Fin 4 => U))
-        (B.compContinuousLinearMap (fun _ : Fin 4 => U))
-        = ∑ I0 : Fin 4 → Fin 3,
-            tensor0SComponent (I := I) (A.compContinuousLinearMap (fun _ : Fin 4 => U))
-                (fun i => basisAt x i) I0 *
-              tensor0SComponent (I := I) (B.compContinuousLinearMap (fun _ : Fin 4 => U))
-                (fun i => basisAt x i) I0 :=
-          hdiag (S.base.metric 0) (basisAt x) hinv0 _ _
-    _ = ∑ I0 : Fin 4 → Fin 3,
-            tensor0SComponent (I := I) A (fun i => moving i) I0 *
-              tensor0SComponent (I := I) B (fun i => moving i) I0 := by
-          apply Finset.sum_congr rfl
-          intro I0 _
-          rfl
-    _ = inner0S (I := I) (S.base.metric t) x 4 A B :=
-          (hdiag (S.base.metric t) moving hinvt A B).symm
-
 omit [CompleteSpace E] [FiniteDimensional Real E] [IsManifold I 1 M] [IsManifold I 2 M]
   [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] in
 omit [I.Boundaryless] in
@@ -1455,20 +1389,20 @@ private theorem compUhlenbeck_mem_algebraicCurvatureTensorSubmodule
     (X : Tensor04At (I := I) (M := M) x).compContinuousLinearMap
         (fun _ : Fin 4 => uhlenbeckEndomorphismAt (basisAt x) iota t) ∈
       algebraicCurvatureTensorSubmodule (I := I) (M := M) x := by
-  have hform : IsAlgCurvForm (tensor04StdAt (I := I) (M := M) (X : Tensor04At (I := I) (M := M) x)) :=
+  have hform : IsAlgCurvForm (tensor04StandardAt (I := I) (M := M) (X : Tensor04At (I := I) (M := M) x)) :=
     (mem_algebraicCurvatureTensorSubmodule (I := I) (M := M)).mp X.2
   rw [show (X : Tensor04At (I := I) (M := M) x).compContinuousLinearMap
         (fun _ : Fin 4 => uhlenbeckEndomorphismAt (basisAt x) iota t) ∈
         algebraicCurvatureTensorSubmodule (I := I) (M := M) x ↔
-      IsAlgCurvForm (tensor04StdAt (I := I) (M := M)
+      IsAlgCurvForm (tensor04StandardAt (I := I) (M := M)
         ((X : Tensor04At (I := I) (M := M) x).compContinuousLinearMap
           (fun _ : Fin 4 => uhlenbeckEndomorphismAt (basisAt x) iota t))) from
     mem_algebraicCurvatureTensorSubmodule (I := I) (M := M)]
   change IsAlgCurvForm (fun v y z w =>
-    tensor04StdAt (I := I) (M := M)
+    tensor04StandardAt (I := I) (M := M)
       ((X : Tensor04At (I := I) (M := M) x).compContinuousLinearMap
         (fun _ : Fin 4 => uhlenbeckEndomorphismAt (basisAt x) iota t)) v y z w)
-  simp_rw [tensor04StdAt_compContinuousLinearMap]
+  simp_rw [tensor04StandardAt_compContinuousLinearMap]
   refine ⟨?_, ?_, ?_, ?_, ?_⟩
   · intro x₁ x₂ y z w
     rw [map_add (uhlenbeckEndomorphismAt (basisAt x) iota t)]
@@ -1507,7 +1441,7 @@ private theorem curvatureOperatorMatrixAt_compU_eq_moving
     uhlenbeckMovingBasis hT S basisAt iota hiota0 hgram t ht x
   ext p q
   unfold curvatureOperatorMatrixAt
-  rw [tensor04StdAt_compContinuousLinearMap (A : Tensor04At (I := I) (M := M) x)
+  rw [tensor04StandardAt_compContinuousLinearMap (A : Tensor04At (I := I) (M := M) x)
     (uhlenbeckEndomorphismAt (basisAt x) iota t)]
   simp [uhlenbeckMovingBasis_apply]
 
@@ -1787,7 +1721,7 @@ private theorem TotalNabla0SRealizes.deriv_linear_combination {s : ℕ}
             rw [update_comp_perm (perms k) (fun b : Fin s => V b x) ((perms k).symm a')
               (cov (fun p : M => V a' p) x (X x))]
             simp [Equiv.apply_symm_apply, Function.comp_def]
-  have hCorr : (∑ k : ι, c k * (∑ a : Fin s, α x
+  have hCorrection : (∑ k : ι, c k * (∑ a : Fin s, α x
       (Function.update (fun b : Fin s => V (perms k b) x) a
         ((cov (fun p : M => V (perms k a) p) x) (X x))))) = 0 := by
     calc
@@ -1845,7 +1779,7 @@ private theorem TotalNabla0SRealizes.deriv_linear_combination {s : ℕ}
             ((cov (fun p : M => V (perms k a) p) x) (X x))))) := by
           simp [Finset.sum_sub_distrib, mul_sub]
     _ = 0 := by
-          rw [hExt, hCorr]
+          rw [hExt, hCorrection]
           ring
 
 end FiberHeatReactionSolutionProof
@@ -1881,16 +1815,16 @@ private theorem nablaKRm04Field_one_anti12_cond
       (nablaKRm04Field (I := I) S t 1 x) (Fin.cons u slots) = 0 := by
   classical
   let X : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M → Type _) :=
-    (ContMDiffSection.exists_eq_at_gen (I := I) (F := E) (V := TangentSpace I)
+    (ContMDiffSection.exists_eq_at (I := I) (F := E) (V := TangentSpace I)
       (n := (⊤ : ℕ∞)) x u).choose
   have hX : X x = u :=
-    (ContMDiffSection.exists_eq_at_gen (I := I) (F := E) (V := TangentSpace I)
+    (ContMDiffSection.exists_eq_at (I := I) (F := E) (V := TangentSpace I)
       (n := (⊤ : ℕ∞)) x u).choose_spec
   let V : Fin 4 → ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M → Type _) :=
-    fun a => (ContMDiffSection.exists_eq_at_gen (I := I) (F := E) (V := TangentSpace I)
+    fun a => (ContMDiffSection.exists_eq_at (I := I) (F := E) (V := TangentSpace I)
       (n := (⊤ : ℕ∞)) x (slots a)).choose
   have hV : ∀ a : Fin 4, V a x = slots a := fun a =>
-    (ContMDiffSection.exists_eq_at_gen (I := I) (F := E) (V := TangentSpace I)
+    (ContMDiffSection.exists_eq_at (I := I) (F := E) (V := TangentSpace I)
       (n := (⊤ : ℕ∞)) x (slots a)).choose_spec
   let perms : Bool → Equiv.Perm (Fin 4) :=
     fun k => if k then Equiv.swap (0 : Fin 4) (1 : Fin 4) else 1
@@ -1909,9 +1843,9 @@ private theorem nablaKRm04Field_one_anti12_cond
       (1 : ℝ) * (S.base.rm04 t p) (fun a : Fin 4 => s a) = 0
     simp only [one_mul]
     rw [vec4_comp_swap01 s, vec4_self s, hA]
-    change tensor04StdAt (I := I) (M := M) (metricRm04At (I := I) (M := M) (S.base.metric t) p)
+    change tensor04StandardAt (I := I) (M := M) (metricRm04At (I := I) (M := M) (S.base.metric t) p)
         (s 1) (s 0) (s 2) (s 3) +
-      tensor04StdAt (I := I) (M := M) (metricRm04At (I := I) (M := M) (S.base.metric t) p)
+      tensor04StandardAt (I := I) (M := M) (metricRm04At (I := I) (M := M) (S.base.metric t) p)
         (s 0) (s 1) (s 2) (s 3) = 0
     rw [h1]
     ring
@@ -1956,16 +1890,16 @@ private theorem nablaKRm04Field_one_anti34_cond
       (nablaKRm04Field (I := I) S t 1 x) (Fin.cons u slots) = 0 := by
   classical
   let X : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M → Type _) :=
-    (ContMDiffSection.exists_eq_at_gen (I := I) (F := E) (V := TangentSpace I)
+    (ContMDiffSection.exists_eq_at (I := I) (F := E) (V := TangentSpace I)
       (n := (⊤ : ℕ∞)) x u).choose
   have hX : X x = u :=
-    (ContMDiffSection.exists_eq_at_gen (I := I) (F := E) (V := TangentSpace I)
+    (ContMDiffSection.exists_eq_at (I := I) (F := E) (V := TangentSpace I)
       (n := (⊤ : ℕ∞)) x u).choose_spec
   let V : Fin 4 → ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M → Type _) :=
-    fun a => (ContMDiffSection.exists_eq_at_gen (I := I) (F := E) (V := TangentSpace I)
+    fun a => (ContMDiffSection.exists_eq_at (I := I) (F := E) (V := TangentSpace I)
       (n := (⊤ : ℕ∞)) x (slots a)).choose
   have hV : ∀ a : Fin 4, V a x = slots a := fun a =>
-    (ContMDiffSection.exists_eq_at_gen (I := I) (F := E) (V := TangentSpace I)
+    (ContMDiffSection.exists_eq_at (I := I) (F := E) (V := TangentSpace I)
       (n := (⊤ : ℕ∞)) x (slots a)).choose_spec
   let perms : Bool → Equiv.Perm (Fin 4) :=
     fun k => if k then Equiv.swap (2 : Fin 4) (3 : Fin 4) else 1
@@ -1984,9 +1918,9 @@ private theorem nablaKRm04Field_one_anti34_cond
       (1 : ℝ) * (S.base.rm04 t p) (fun a : Fin 4 => s a) = 0
     simp only [one_mul]
     rw [vec4_comp_swap23 s, vec4_self s, hA]
-    change tensor04StdAt (I := I) (M := M) (metricRm04At (I := I) (M := M) (S.base.metric t) p)
+    change tensor04StandardAt (I := I) (M := M) (metricRm04At (I := I) (M := M) (S.base.metric t) p)
         (s 0) (s 1) (s 3) (s 2) +
-      tensor04StdAt (I := I) (M := M) (metricRm04At (I := I) (M := M) (S.base.metric t) p)
+      tensor04StandardAt (I := I) (M := M) (metricRm04At (I := I) (M := M) (S.base.metric t) p)
         (s 0) (s 1) (s 2) (s 3) = 0
     rw [h1]
     ring
@@ -2044,9 +1978,9 @@ omit [SigmaCompactSpace M] in
 private theorem rm04BianchiCond'
     (S : SolutionOn (I := I) (M := M) D) (t : Real) (p : M)
     (s : Fin 4 → TangentSpace I p) :
-    tensor04StdAt (I := I) (M := M) (S.base.rm04 t p) (s 0) (s 1) (s 2) (s 3) +
-      tensor04StdAt (I := I) (M := M) (S.base.rm04 t p) (s 1) (s 2) (s 0) (s 3) +
-        tensor04StdAt (I := I) (M := M) (S.base.rm04 t p) (s 2) (s 0) (s 1) (s 3) = 0 := by
+    tensor04StandardAt (I := I) (M := M) (S.base.rm04 t p) (s 0) (s 1) (s 2) (s 3) +
+      tensor04StandardAt (I := I) (M := M) (S.base.rm04 t p) (s 1) (s 2) (s 0) (s 3) +
+        tensor04StandardAt (I := I) (M := M) (S.base.rm04 t p) (s 2) (s 0) (s 1) (s 3) = 0 := by
   have hmem : (S.base.rm04 t p) ∈ algebraicCurvatureTensorSubmodule (I := I) (M := M) p :=
     metricRm04At_mem_algebraicCurvatureTensorSubmodule (I := I) (S.base.metric t) p
   have hform := (mem_algebraicCurvatureTensorSubmodule_iff_symmetries (I := I) (M := M)).1 hmem
@@ -2062,11 +1996,11 @@ private theorem rm04BianchiCond
   rw [vec4_self_refl s]
   rw [vec4_comp_cycle012 s, vec4_comp_cycle012_sq s]
   have h1 := rm04BianchiCond' S t p s
-  rw [show tensor04StdAt (I := I) (M := M) (S.base.rm04 t p) (s 0) (s 1) (s 2) (s 3) =
+  rw [show tensor04StandardAt (I := I) (M := M) (S.base.rm04 t p) (s 0) (s 1) (s 2) (s 3) =
       (S.base.rm04 t p) (vec4 (I := I) (s 0) (s 1) (s 2) (s 3)) by rfl,
-    show tensor04StdAt (I := I) (M := M) (S.base.rm04 t p) (s 1) (s 2) (s 0) (s 3) =
+    show tensor04StandardAt (I := I) (M := M) (S.base.rm04 t p) (s 1) (s 2) (s 0) (s 3) =
       (S.base.rm04 t p) (vec4 (I := I) (s 1) (s 2) (s 0) (s 3)) by rfl,
-    show tensor04StdAt (I := I) (M := M) (S.base.rm04 t p) (s 2) (s 0) (s 1) (s 3) =
+    show tensor04StandardAt (I := I) (M := M) (S.base.rm04 t p) (s 2) (s 0) (s 1) (s 3) =
       (S.base.rm04 t p) (vec4 (I := I) (s 2) (s 0) (s 1) (s 3)) by rfl] at h1
   nlinarith
 
@@ -2098,7 +2032,7 @@ variable (hgram : ∀ t : ℝ, t ∈ Set.Icc 0 T → ∀ x : M, ∀ a b : Fin 3,
 section Helpers
 
 omit [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] [I.Boundaryless] in
-private theorem fiberInner_compUhlenbeck_isometry_general
+private theorem fiberInner_compUhlenbeck_isometry_tensor
     (S : SolutionOn (I := I) (M := M) (RealTimeInterval.closed 0 T hT.le))
     (basisAt : ∀ x : M, Module.Basis (Fin 3) Real (TangentSpace I x))
     (iota : MatrixComp M (Fin 3))
@@ -2331,7 +2265,7 @@ private lemma fiberRegion_nabla_of_algCurvForm
     (nablaα : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) 5)
     (hA : TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 4 cov α nablaα)
     (hAlg : ∀ y : M, IsAlgCurvForm
-      (fun X Y Z W : TangentSpace I y => tensor04StdAt (I := I) (M := M) (α y) X Y Z W))
+      (fun X Y Z W : TangentSpace I y => tensor04StandardAt (I := I) (M := M) (α y) X Y Z W))
     (x : M) :
     ∀ u X Y Z W : TangentSpace I x,
       nablaα x (Fin.cons u (vec4 X Y Z W)) = -nablaα x (Fin.cons u (vec4 Y X Z W)) ∧
@@ -2341,14 +2275,14 @@ private lemma fiberRegion_nabla_of_algCurvForm
   classical
   intro u X Y Z W
   let U : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M → Type _) :=
-    (ContMDiffSection.exists_eq_at_gen (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞)) x u).choose
+    (ContMDiffSection.exists_eq_at (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞)) x u).choose
   have hU : U x = u :=
-    (ContMDiffSection.exists_eq_at_gen (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞)) x u).choose_spec
+    (ContMDiffSection.exists_eq_at (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞)) x u).choose_spec
   let V : Fin 4 → ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M → Type _) :=
-    fun a => (ContMDiffSection.exists_eq_at_gen (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞)) x
+    fun a => (ContMDiffSection.exists_eq_at (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞)) x
       (vec4 X Y Z W a)).choose
   have hV : ∀ a : Fin 4, V a x = vec4 X Y Z W a := fun a =>
-    (ContMDiffSection.exists_eq_at_gen (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞)) x
+    (ContMDiffSection.exists_eq_at (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞)) x
       (vec4 X Y Z W a)).choose_spec
   let s : Fin 4 → TangentSpace I x := fun b => V b x
   let d : Fin 4 → TangentSpace I x := fun a => (cov (fun p : M => V a p) x) (U x)
@@ -2395,10 +2329,10 @@ private lemma fiberRegion_nabla_of_algCurvForm
         fin_cases a <;> simp [vec4]
       calc
         α p (fun a : Fin 4 => V01 a p)
-            = tensor04StdAt (I := I) (M := M) (α p) (V 1 p) (V 0 p) (V 2 p) (V 3 p) := by
+            = tensor04StandardAt (I := I) (M := M) (α p) (V 1 p) (V 0 p) (V 2 p) (V 3 p) := by
               rw [hrec1]
               rfl
-        _ = -tensor04StdAt (I := I) (M := M) (α p) (V 0 p) (V 1 p) (V 2 p) (V 3 p) := by
+        _ = -tensor04StandardAt (I := I) (M := M) (α p) (V 0 p) (V 1 p) (V 2 p) (V 3 p) := by
               exact (hAlg p).anti_first (V 1 p) (V 0 p) (V 2 p) (V 3 p)
         _ = -α p (fun a : Fin 4 => V a p) := by
               rw [hrec2]
@@ -2412,11 +2346,11 @@ private lemma fiberRegion_nabla_of_algCurvForm
       simpa [f] using hneg
     have hβ : ∀ v : Fin 4 → TangentSpace I x, α x v + α x (v ∘ σ01) = 0 := by
       intro v
-      have h1 : α x v = tensor04StdAt (I := I) (M := M) (α x) (v 0) (v 1) (v 2) (v 3) := by
+      have h1 : α x v = tensor04StandardAt (I := I) (M := M) (α x) (v 0) (v 1) (v 2) (v 3) := by
         congr 1
         funext b
         fin_cases b <;> simp [vec4]
-      have h2 : α x (v ∘ σ01) = tensor04StdAt (I := I) (M := M) (α x) (v 1) (v 0) (v 2) (v 3) := by
+      have h2 : α x (v ∘ σ01) = tensor04StandardAt (I := I) (M := M) (α x) (v 1) (v 0) (v 2) (v 3) := by
         congr 1
         funext b
         fin_cases b <;> simp [σ01, vec4]
@@ -2466,10 +2400,10 @@ private lemma fiberRegion_nabla_of_algCurvForm
         fin_cases a <;> simp [vec4]
       calc
         α p (fun a : Fin 4 => V23 a p)
-            = tensor04StdAt (I := I) (M := M) (α p) (V 0 p) (V 1 p) (V 3 p) (V 2 p) := by
+            = tensor04StandardAt (I := I) (M := M) (α p) (V 0 p) (V 1 p) (V 3 p) (V 2 p) := by
               rw [hrec1]
               rfl
-        _ = -tensor04StdAt (I := I) (M := M) (α p) (V 0 p) (V 1 p) (V 2 p) (V 3 p) := by
+        _ = -tensor04StandardAt (I := I) (M := M) (α p) (V 0 p) (V 1 p) (V 2 p) (V 3 p) := by
               exact (hAlg p).anti_last (V 0 p) (V 1 p) (V 3 p) (V 2 p)
         _ = -α p (fun a : Fin 4 => V a p) := by
               rw [hrec2]
@@ -2483,11 +2417,11 @@ private lemma fiberRegion_nabla_of_algCurvForm
       simpa [f] using hneg
     have hβ : ∀ v : Fin 4 → TangentSpace I x, α x v + α x (v ∘ σ23) = 0 := by
       intro v
-      have h1 : α x v = tensor04StdAt (I := I) (M := M) (α x) (v 0) (v 1) (v 2) (v 3) := by
+      have h1 : α x v = tensor04StandardAt (I := I) (M := M) (α x) (v 0) (v 1) (v 2) (v 3) := by
         congr 1
         funext b
         fin_cases b <;> simp [vec4]
-      have h2 : α x (v ∘ σ23) = tensor04StdAt (I := I) (M := M) (α x) (v 0) (v 1) (v 3) (v 2) := by
+      have h2 : α x (v ∘ σ23) = tensor04StandardAt (I := I) (M := M) (α x) (v 0) (v 1) (v 3) (v 2) := by
         congr 1
         funext b
         fin_cases b <;> simp [σ23, vec4]
@@ -2613,15 +2547,15 @@ private lemma fiberRegion_nabla_of_algCurvForm
       linarith
     have hβ : ∀ v : Fin 4 → TangentSpace I x, α x v + α x (v ∘ τ) + α x (v ∘ τ ∘ τ) = 0 := by
       intro v
-      have h1 : α x v = tensor04StdAt (I := I) (M := M) (α x) (v 0) (v 1) (v 2) (v 3) := by
+      have h1 : α x v = tensor04StandardAt (I := I) (M := M) (α x) (v 0) (v 1) (v 2) (v 3) := by
         congr 1
         funext b
         fin_cases b <;> simp [vec4]
-      have h2 : α x (v ∘ τ) = tensor04StdAt (I := I) (M := M) (α x) (v 1) (v 2) (v 0) (v 3) := by
+      have h2 : α x (v ∘ τ) = tensor04StandardAt (I := I) (M := M) (α x) (v 1) (v 2) (v 0) (v 3) := by
         congr 1
         funext b
         fin_cases b <;> simp [τ, vec4]
-      have h3 : α x (v ∘ τ ∘ τ) = tensor04StdAt (I := I) (M := M) (α x) (v 2) (v 0) (v 1) (v 3) := by
+      have h3 : α x (v ∘ τ ∘ τ) = tensor04StandardAt (I := I) (M := M) (α x) (v 2) (v 0) (v 1) (v 3) := by
         congr 1
         funext b
         fin_cases b <;> simp [τ, vec4]
@@ -2706,7 +2640,7 @@ private lemma fiberRegion_nabla2_of_algCurvForm
     (hA : TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 4 cov α nablaα)
     (h2A : TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 5 cov nablaα nabla2α)
     (hAlg : ∀ y : M, IsAlgCurvForm
-      (fun X Y Z W : TangentSpace I y => tensor04StdAt (I := I) (M := M) (α y) X Y Z W))
+      (fun X Y Z W : TangentSpace I y => tensor04StandardAt (I := I) (M := M) (α y) X Y Z W))
     (x : M) :
     ∀ u1 u2 X Y Z W : TangentSpace I x,
       nabla2α x (Fin.cons u1 (fiberRegion_fin5_cons u2 (vec4 X Y Z W))) =
@@ -2725,18 +2659,18 @@ private lemma fiberRegion_nabla2_of_algCurvForm
     fun y => fiberRegion_nabla_of_algCurvForm (I := I) cov α nablaα hA hAlg y
   intro u1 u2 X Y Z W
   let U1 : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M → Type _) :=
-    (ContMDiffSection.exists_eq_at_gen (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞)) x u1).choose
+    (ContMDiffSection.exists_eq_at (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞)) x u1).choose
   have hU1 : U1 x = u1 :=
-    (ContMDiffSection.exists_eq_at_gen (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞)) x u1).choose_spec
+    (ContMDiffSection.exists_eq_at (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞)) x u1).choose_spec
   let U2 : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M → Type _) :=
-    (ContMDiffSection.exists_eq_at_gen (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞)) x u2).choose
+    (ContMDiffSection.exists_eq_at (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞)) x u2).choose
   have hU2 : U2 x = u2 :=
-    (ContMDiffSection.exists_eq_at_gen (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞)) x u2).choose_spec
+    (ContMDiffSection.exists_eq_at (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞)) x u2).choose_spec
   let V : Fin 4 → ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M → Type _) :=
-    fun a => (ContMDiffSection.exists_eq_at_gen (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞)) x
+    fun a => (ContMDiffSection.exists_eq_at (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞)) x
       (vec4 X Y Z W a)).choose
   have hV : ∀ a : Fin 4, V a x = vec4 X Y Z W a := fun a =>
-    (ContMDiffSection.exists_eq_at_gen (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞)) x
+    (ContMDiffSection.exists_eq_at (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞)) x
       (vec4 X Y Z W a)).choose_spec
   let W2 : Fin 5 → ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M → Type _) :=
     fiberRegion_fin5_cons U2 V
@@ -3206,7 +3140,7 @@ private theorem fiberRegion_roughLapRm04_mem_algebraicCurvatureTensorSubmodule
       (S.base.connection t) (nablaKRm04Field (I := I) S t 1) (nablaKRm04Field (I := I) S t 2) := by
     simpa using (nablaKRm04Field_realizes (I := I) S t 1)
   have hAlg : ∀ y : M, IsAlgCurvForm
-      (fun X Y Z W : TangentSpace I y => tensor04StdAt (I := I) (M := M) (S.base.rm04 t y) X Y Z W) := by
+      (fun X Y Z W : TangentSpace I y => tensor04StandardAt (I := I) (M := M) (S.base.rm04 t y) X Y Z W) := by
     intro y
     exact mem_algebraicCurvatureTensorSubmodule.mp
       (metricRm04At_mem_algebraicCurvatureTensorSubmodule (I := I) (S.base.metric t) y)
@@ -3244,7 +3178,7 @@ private theorem fiberRegion_roughLapRm04_mem_algebraicCurvatureTensorSubmodule
       have h := (hSym6 (basis i) (basis j) X Y Z W).1
       simpa [T, hcons] using h
     calc
-      tensor04StdAt (I := I) (M := M) R X Y Z W
+      tensor04StandardAt (I := I) (M := M) R X Y Z W
           = ∑ i : Fin 3, ∑ j : Fin 3,
               identityInvMetric (Idx := Fin 3) i j *
                 T (metricTraceInput (I := I) (basis i) (basis j) (vec4 X Y Z W)) := by
@@ -3254,7 +3188,7 @@ private theorem fiberRegion_roughLapRm04_mem_algebraicCurvatureTensorSubmodule
                 T (metricTraceInput (I := I) (basis i) (basis j) (vec4 Y X Z W)) := by
             simp_rw [hsym_per]
             simp [Finset.sum_neg_distrib, mul_neg]
-      _ = -tensor04StdAt (I := I) (M := M) R Y X Z W := by
+      _ = -tensor04StandardAt (I := I) (M := M) R Y X Z W := by
             rw [← hRapply (vec4 Y X Z W)]
             rfl
   · intro X Y Z W
@@ -3265,7 +3199,7 @@ private theorem fiberRegion_roughLapRm04_mem_algebraicCurvatureTensorSubmodule
       have h := (hSym6 (basis i) (basis j) X Y Z W).2.1
       simpa [T, hcons] using h
     calc
-      tensor04StdAt (I := I) (M := M) R X Y Z W
+      tensor04StandardAt (I := I) (M := M) R X Y Z W
           = ∑ i : Fin 3, ∑ j : Fin 3,
               identityInvMetric (Idx := Fin 3) i j *
                 T (metricTraceInput (I := I) (basis i) (basis j) (vec4 X Y Z W)) := by
@@ -3275,7 +3209,7 @@ private theorem fiberRegion_roughLapRm04_mem_algebraicCurvatureTensorSubmodule
                 T (metricTraceInput (I := I) (basis i) (basis j) (vec4 X Y W Z)) := by
             simp_rw [hsym_per]
             simp [Finset.sum_neg_distrib, mul_neg]
-      _ = -tensor04StdAt (I := I) (M := M) R X Y W Z := by
+      _ = -tensor04StandardAt (I := I) (M := M) R X Y W Z := by
             rw [← hRapply (vec4 X Y W Z)]
             rfl
   · intro X Y Z W
@@ -3287,9 +3221,9 @@ private theorem fiberRegion_roughLapRm04_mem_algebraicCurvatureTensorSubmodule
       have h := (hSym6 (basis i) (basis j) X Y Z W).2.2
       simpa [T, hcons] using h
     calc
-      tensor04StdAt (I := I) (M := M) R X Y Z W +
-          tensor04StdAt (I := I) (M := M) R Y Z X W +
-          tensor04StdAt (I := I) (M := M) R Z X Y W
+      tensor04StandardAt (I := I) (M := M) R X Y Z W +
+          tensor04StandardAt (I := I) (M := M) R Y Z X W +
+          tensor04StandardAt (I := I) (M := M) R Z X Y W
           = (∑ i : Fin 3, ∑ j : Fin 3,
               identityInvMetric (Idx := Fin 3) i j *
                 T (metricTraceInput (I := I) (basis i) (basis j) (vec4 X Y Z W))) +
@@ -3299,15 +3233,15 @@ private theorem fiberRegion_roughLapRm04_mem_algebraicCurvatureTensorSubmodule
               (∑ i : Fin 3, ∑ j : Fin 3,
                 identityInvMetric (Idx := Fin 3) i j *
                   T (metricTraceInput (I := I) (basis i) (basis j) (vec4 Z X Y W))) := by
-            rw [show tensor04StdAt (I := I) (M := M) R X Y Z W =
+            rw [show tensor04StandardAt (I := I) (M := M) R X Y Z W =
                 ∑ i : Fin 3, ∑ j : Fin 3, identityInvMetric (Idx := Fin 3) i j *
                   T (metricTraceInput (I := I) (basis i) (basis j) (vec4 X Y Z W)) from by
               simpa [R] using hRapply (vec4 X Y Z W)]
-            rw [show tensor04StdAt (I := I) (M := M) R Y Z X W =
+            rw [show tensor04StandardAt (I := I) (M := M) R Y Z X W =
                 ∑ i : Fin 3, ∑ j : Fin 3, identityInvMetric (Idx := Fin 3) i j *
                   T (metricTraceInput (I := I) (basis i) (basis j) (vec4 Y Z X W)) from by
               simpa [R] using hRapply (vec4 Y Z X W)]
-            rw [show tensor04StdAt (I := I) (M := M) R Z X Y W =
+            rw [show tensor04StandardAt (I := I) (M := M) R Z X Y W =
                 ∑ i : Fin 3, ∑ j : Fin 3, identityInvMetric (Idx := Fin 3) i j *
                   T (metricTraceInput (I := I) (basis i) (basis j) (vec4 Z X Y W)) from by
               simpa [R] using hRapply (vec4 Z X Y W)]
@@ -3376,11 +3310,11 @@ private theorem fiberRegion_roughLapRm04_component_eq
     (a b c d : Fin 3) :
     metricTraceFirstTwo0SAt (I := I) (S.base.metric t) (nablaKRm04Field (I := I) S t 2 x)
         (vec4 (I := I) (basisAt x a) (basisAt x b) (basisAt x c) (basisAt x d)) =
-      tensor04StdAt (I := I) (M := M)
+      tensor04StandardAt (I := I) (M := M)
         (metricTrace0S2TensorInBasis (I := I) basis (identityInvMetric (Idx := Fin 3))
           (nablaKRm04Field (I := I) S t 2 x))
         (basisAt x a) (basisAt x b) (basisAt x c) (basisAt x d) := by
-  have hinv : MetricInverseInBasisGen (I := I) (S.base.metric t) x basis
+  have hinv : MetricInverseInBasis (I := I) (S.base.metric t) x basis
       (identityInvMetric (Idx := Fin 3)) := by
     exact Tensor0SBundle.metricInverseInBasis_identity_of_orthonormal (I := I)
       (S.base.metric t) basis (by
@@ -3401,7 +3335,7 @@ private theorem pulledRmComp_pullback
       (solutionRm04CompInFrame (I := I) S.base.rm04 (fun a x => basisAt x a))
       (pulledRmComp S basisAt iota) := by
   intro t x a b c d
-  change tensor04StdAt (I := I) (M := M) (uhlenbeckPulledRm04At S basisAt iota t x)
+  change tensor04StandardAt (I := I) (M := M) (uhlenbeckPulledRm04At S basisAt iota t x)
       (basisAt x a) (basisAt x b) (basisAt x c) (basisAt x d) =
     uhlenbeckPullbackRmInFrame iota
       (solutionRm04CompInFrame (I := I) S.base.rm04 (fun a x => basisAt x a)) t x a b c d
@@ -3416,7 +3350,7 @@ private lemma fiberRegion_pulledComponent_continuousOn_time
     (iota : MatrixComp M (Fin 3))
     (hiotaCont : ∀ x : M, ContinuousOn (fun t : ℝ => iota t x) (Set.Icc 0 T))
     (x : M) (a b c d : Fin 3) :
-    ContinuousOn (fun s : ℝ => tensor04StdAt (I := I) (M := M)
+    ContinuousOn (fun s : ℝ => tensor04StandardAt (I := I) (M := M)
         (uhlenbeckPulledRm04At S basisAt iota s x)
         (basisAt x a) (basisAt x b) (basisAt x c) (basisAt x d))
       (Set.Icc 0 T) := by
@@ -3426,7 +3360,7 @@ private lemma fiberRegion_pulledComponent_continuousOn_time
     have h1 : ContinuousOn (fun s : ℝ => iota s x a) (Set.Icc 0 T) := (continuousOn_pi.mp (hiotaCont x)) a
     exact (continuousOn_pi.mp h1) k
   have hrm04_comp : ∀ v w y z : TangentSpace I x,
-      ContinuousOn (fun s : ℝ => tensor04StdAt (I := I) (M := M) (S.base.rm04 s x) v w y z)
+      ContinuousOn (fun s : ℝ => tensor04StandardAt (I := I) (M := M) (S.base.rm04 s x) v w y z)
         (Set.Icc 0 T) := by
     intro v w y z
     rw [continuousOn_iff_continuous_domRestrict]
@@ -3450,18 +3384,18 @@ private lemma fiberRegion_pulledComponent_continuousOn_time
         · exact continuous_const
         · exact continuous_const)
     have hmain : Continuous (fun p : {q : ℝ // q ∈ P} =>
-        tensor04StdAt (I := I) (M := M) (S.base.rm04 p.1 x) v w y z) := by
+        tensor04StandardAt (I := I) (M := M) (S.base.rm04 p.1 x) v w y z) := by
       refine heval.congr (fun p => ?_)
       rfl
     change Continuous (fun p : {q : ℝ // q ∈ Set.Icc 0 T} =>
-      tensor04StdAt (I := I) (M := M) (S.base.rm04 p.1 x) v w y z)
+      tensor04StandardAt (I := I) (M := M) (S.base.rm04 p.1 x) v w y z)
     simpa only [P] using hmain
   have hpoly : ∀ s : ℝ,
-      tensor04StdAt (I := I) (M := M) (uhlenbeckPulledRm04At S basisAt iota s x)
+      tensor04StandardAt (I := I) (M := M) (uhlenbeckPulledRm04At S basisAt iota s x)
           (basisAt x a) (basisAt x b) (basisAt x c) (basisAt x d) =
         ∑ i : Fin 3, ∑ j : Fin 3, ∑ k : Fin 3, ∑ l : Fin 3,
           iota s x a i * iota s x b j * iota s x c k * iota s x d l *
-            tensor04StdAt (I := I) (M := M) (S.base.rm04 s x)
+            tensor04StandardAt (I := I) (M := M) (S.base.rm04 s x)
               (basisAt x i) (basisAt x j) (basisAt x k) (basisAt x l) := by
     intro s
     have h := uhlenbeckPulledRm04At_apply_basis (I := I) (M := M) S basisAt iota s x a b c d
@@ -3479,10 +3413,10 @@ private lemma fiberRegion_pulledComponent_continuousOn_time
     ((((hiota_comp a i).mul (hiota_comp b j)).mul (hiota_comp c k)).mul (hiota_comp d l)).mul
       (hrm04_comp (basisAt x i) (basisAt x j) (basisAt x k) (basisAt x l))
   rw [show (fun s ↦ iota s x a i * iota s x b j * iota s x c k * iota s x d l *
-      tensor04StdAt (I := I) (M := M) (S.base.rm04 s x)
+      tensor04StandardAt (I := I) (M := M) (S.base.rm04 s x)
         (basisAt x i) (basisAt x j) (basisAt x k) (basisAt x l)) =
     (fun s ↦ (((iota s x a i * iota s x b j) * iota s x c k) * iota s x d l) *
-      tensor04StdAt (I := I) (M := M) (S.base.rm04 s x)
+      tensor04StandardAt (I := I) (M := M) (S.base.rm04 s x)
         (basisAt x i) (basisAt x j) (basisAt x k) (basisAt x l)) by rfl]
   exact hmul
 
@@ -3491,8 +3425,8 @@ omit [FiniteDimensional ℝ E] [CompleteSpace E] [I.Boundaryless] [IsManifold I 
 private theorem fiberRegion_pullbackTensorAt_apply
     (iota : MatrixComp M (Fin 3)) (t : ℝ) (x : M)
     (A : Tensor04At (I := I) (M := M) x) (X Y Z W : TangentSpace I x) :
-    tensor04StdAt (I := I) (M := M) (uhlenbeckPullbackTensorAt basisAt iota t x A) X Y Z W =
-      tensor04StdAt (I := I) (M := M) A
+    tensor04StandardAt (I := I) (M := M) (uhlenbeckPullbackTensorAt basisAt iota t x A) X Y Z W =
+      tensor04StandardAt (I := I) (M := M) A
         (uhlenbeckEndomorphismAt (basisAt x) iota t X)
         (uhlenbeckEndomorphismAt (basisAt x) iota t Y)
         (uhlenbeckEndomorphismAt (basisAt x) iota t Z)
@@ -3574,10 +3508,10 @@ private theorem fiberRegion_compU_mem_algebraicCurvatureTensorSubmodule
     uhlenbeckPullbackTensorAt basisAt iota t x A ∈
       algebraicCurvatureTensorSubmodule (I := I) (M := M) x := by
   rw [mem_algebraicCurvatureTensorSubmodule]
-  have hform : IsAlgCurvForm (tensor04StdAt (I := I) (M := M) A) :=
+  have hform : IsAlgCurvForm (tensor04StandardAt (I := I) (M := M) A) :=
     mem_algebraicCurvatureTensorSubmodule.mp hA
   change IsAlgCurvForm (fun X Y Z W =>
-    tensor04StdAt (uhlenbeckPullbackTensorAt basisAt iota t x A) X Y Z W)
+    tensor04StandardAt (uhlenbeckPullbackTensorAt basisAt iota t x A) X Y Z W)
   refine ⟨?_, ?_, ?_, ?_, ?_⟩
   · intro x₁ x₂ y z w
     rw [fiberRegion_pullbackTensorAt_apply (I := I) (M := M) basisAt iota t x A (x₁ + x₂) y z w,
@@ -3619,12 +3553,12 @@ private theorem fiberRegion_pulledTensor_scalarization_eq
     (ν : Tensor04At (I := I) (M := M) x) :
     inner0S (I := I) g x 4 (uhlenbeckPullbackTensorAt basisAt iota t x A) ν =
       4 * inner ℝ (uhlenbeckCurvatureOperatorMatrix
-        (fun t' x' a b c d => tensor04StdAt (I := I) (M := M)
+        (fun t' x' a b c d => tensor04StandardAt (I := I) (M := M)
           (uhlenbeckPullbackTensorAt basisAt iota t' x' A)
           (basisAt x' a) (basisAt x' b) (basisAt x' c) (basisAt x' d)) t x)
         (regionSupportVector g basisAt x ν) := by
   have hmat : uhlenbeckCurvatureOperatorMatrix
-        (fun t' x' a b c d => tensor04StdAt (I := I) (M := M)
+        (fun t' x' a b c d => tensor04StandardAt (I := I) (M := M)
           (uhlenbeckPullbackTensorAt basisAt iota t' x' A)
           (basisAt x' a) (basisAt x' b) (basisAt x' c) (basisAt x' d)) t x =
       matrixToEuclidean (curvatureOperatorMatrixAt (I := I) x (basisAt x)
@@ -3632,7 +3566,7 @@ private theorem fiberRegion_pulledTensor_scalarization_eq
     have hmain := uhlenbeckCurvatureOperatorMatrixAsMatrix_eq_curvatureOperatorMatrixAt
       (I := I) (M := M) (x := x) (basis := basisAt x)
       (A := ⟨uhlenbeckPullbackTensorAt basisAt iota t x A, hAlg⟩)
-      (pulledRm := fun t' x' a b c d => tensor04StdAt (I := I) (M := M)
+      (pulledRm := fun t' x' a b c d => tensor04StandardAt (I := I) (M := M)
         (uhlenbeckPullbackTensorAt basisAt iota t' x' A)
         (basisAt x' a) (basisAt x' b) (basisAt x' c) (basisAt x' d))
       (t := t)
@@ -3665,9 +3599,9 @@ private theorem fiberRegion_pulledRmComp_eq_rm
       (horth0 x) ht i j
   calc
     pulledRmComp S basisAt iota t x a b c d
-        = tensor04StdAt (uhlenbeckPulledRm04At S basisAt iota t x)
+        = tensor04StandardAt (uhlenbeckPulledRm04At S basisAt iota t x)
             (basisAt x a) (basisAt x b) (basisAt x c) (basisAt x d) := rfl
-    _ = tensor04StdAt (S.base.rm04 t x) (moving a) (moving b) (moving c) (moving d) := by
+    _ = tensor04StandardAt (S.base.rm04 t x) (moving a) (moving b) (moving c) (moving d) := by
           rw [uhlenbeckPulledRm04At_apply]
           simp [moving, uhlenbeckMovingBasis_apply]
     _ = S.base.rm04 t x (vec4 (I := I) (moving a) (moving b) (moving c) (moving d)) := rfl
@@ -3984,11 +3918,11 @@ private lemma fiberRegion_pulledTensor_apply_basis
     {x : M} (Q : Tensor04At (I := I) (M := M) x)
     (basisAt : ∀ x : M, Module.Basis (Fin 3) Real (TangentSpace I x))
     (iota : MatrixComp M (Fin 3)) (t : ℝ) (a b c d : Fin 3) :
-    tensor04StdAt (I := I) (M := M)
+    tensor04StandardAt (I := I) (M := M)
         (Q.compContinuousLinearMap (fun _ : Fin 4 => uhlenbeckEndomorphismAt (basisAt x) iota t))
         (basisAt x a) (basisAt x b) (basisAt x c) (basisAt x d) =
       uhlenbeckPullbackRmInFrame iota
-        (fun _s x a b c d => tensor04StdAt (I := I) (M := M) Q
+        (fun _s x a b c d => tensor04StandardAt (I := I) (M := M) Q
           (basisAt x a) (basisAt x b) (basisAt x c) (basisAt x d))
         t x a b c d := by
   classical
@@ -3997,10 +3931,10 @@ private lemma fiberRegion_pulledTensor_apply_basis
         uhlenbeckEndomorphismAt (basisAt x) iota t
           (vec4 (basisAt x a) (basisAt x b) (basisAt x c) (basisAt x d) i)) =
     uhlenbeckPullbackRmInFrame iota
-      (fun s x a b c d => tensor04StdAt (I := I) (M := M) Q
+      (fun s x a b c d => tensor04StandardAt (I := I) (M := M) Q
         (basisAt x a) (basisAt x b) (basisAt x c) (basisAt x d))
       t x a b c d
-  simp only [uhlenbeckPullbackRmInFrame, tensor04StdAt_apply]
+  simp only [uhlenbeckPullbackRmInFrame, tensor04StandardAt_apply]
   let g : Fin 4 → TangentSpace I x := fun _ => 0
   have harg : (fun i : Fin 4 =>
       uhlenbeckEndomorphismAt (basisAt x) iota t
@@ -4280,7 +4214,7 @@ private theorem fiber_region_heat_reaction_on
       filter_upwards [heqν] with y hy
       unfold bundleInnerScalarization
       rw [tensor0S_inner_eq_inner0S (I := I) (S.base.metric 0) y (u t y) (ν y)]
-      have hiso := fiberInner_compUhlenbeck_isometry_general (I := I) (M := M) hT S basisAt iota hiota0 hgram
+      have hiso := fiberInner_compUhlenbeck_isometry_tensor (I := I) (M := M) hT S basisAt iota hiota0 hgram
         horth0 ht y (S.base.rm04 t y) (η y)
       have hu : u t y = (S.base.rm04 t y).compContinuousLinearMap
           (fun _ : Fin 4 => uhlenbeckEndomorphismAt (basisAt y) iota t) := rfl
@@ -4361,7 +4295,7 @@ private theorem fiber_region_heat_reaction_on
         filter_upwards [heqν] with y hy
         unfold bundleInnerScalarization
         rw [tensor0S_inner_eq_inner0S (I := I) (S.base.metric 0) y (u t y) (ν y)]
-        have hiso := fiberInner_compUhlenbeck_isometry_general (I := I) (M := M) hT S basisAt iota hiota0 hgram
+        have hiso := fiberInner_compUhlenbeck_isometry_tensor (I := I) (M := M) hT S basisAt iota hiota0 hgram
           horth0 (D.regular_subset ht) y (S.base.rm04 t y) (η y)
         have hu : u t y = (S.base.rm04 t y).compContinuousLinearMap
             (fun _ : Fin 4 => uhlenbeckEndomorphismAt (basisAt y) iota t) := rfl
@@ -4383,7 +4317,7 @@ private theorem fiber_region_heat_reaction_on
         have hA2 : TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 5
             (S.base.connection t) (nablaKRm04Field (I := I) S t 1) (nablaKRm04Field (I := I) S t 2) := by
           simpa using (nablaKRm04Field_realizes (I := I) S t 1)
-        have hinv : MetricInverseInBasisGen (I := I) (S.base.metric t) x basis
+        have hinv : MetricInverseInBasis (I := I) (S.base.metric t) x basis
             (identityInvMetric (Idx := Fin 3)) := by
           exact Tensor0SBundle.metricInverseInBasis_identity_of_orthonormal (I := I)
             (S.base.metric t) basis (by
@@ -4407,7 +4341,7 @@ private theorem fiber_region_heat_reaction_on
       have hR : R ∈ algebraicCurvatureTensorSubmodule (I := I) (M := M) x :=
         fiberRegion_roughLapRm04_mem_algebraicCurvatureTensorSubmodule (I := I) (M := M) hT S t x basis
       have hcomp : ∀ a b c d : Fin 3,
-          roughLapD t x a b c d = tensor04StdAt (I := I) (M := M)
+          roughLapD t x a b c d = tensor04StandardAt (I := I) (M := M)
             (uhlenbeckPullbackTensorAt basisAt iota t x R)
             (basisAt x a) (basisAt x b) (basisAt x c) (basisAt x d) := by
         intro a b c d
@@ -4421,7 +4355,7 @@ private theorem fiber_region_heat_reaction_on
                 t x a b c d := rfl
           _ = uhlenbeckPullbackRmInFrame iota
                 (fun s y a' b' c' d' =>
-                  tensor04StdAt (I := I) (M := M)
+                  tensor04StandardAt (I := I) (M := M)
                     (metricTrace0S2TensorInBasis (I := I) basis (identityInvMetric (Idx := Fin 3))
                       (nablaKRm04Field (I := I) S s 2 y))
                     (basisAt y a') (basisAt y b') (basisAt y c') (basisAt y d'))
@@ -4432,18 +4366,18 @@ private theorem fiber_region_heat_reaction_on
                 apply Finset.sum_congr rfl; intro l _
                 simpa using (congrArg (fun z : ℝ => iota t x a i * iota t x b j * iota t x c k * iota t x d l * z)
                   (fiberRegion_roughLapRm04_component_eq (I := I) (M := M) hT S basisAt x basis hOrth i j k l))
-          _ = tensor04StdAt (I := I) (M := M) (uhlenbeckPullbackTensorAt basisAt iota t x R)
+          _ = tensor04StandardAt (I := I) (M := M) (uhlenbeckPullbackTensorAt basisAt iota t x R)
                 (basisAt x a) (basisAt x b) (basisAt x c) (basisAt x d) := by
                 rw [show uhlenbeckPullbackRmInFrame iota
                       (fun s y a' b' c' d' =>
-                        tensor04StdAt (I := I) (M := M)
+                        tensor04StandardAt (I := I) (M := M)
                           (metricTrace0S2TensorInBasis (I := I) basis (identityInvMetric (Idx := Fin 3))
                             (nablaKRm04Field (I := I) S s 2 y))
                           (basisAt y a') (basisAt y b') (basisAt y c') (basisAt y d'))
                       t x a b c d =
                     uhlenbeckPullbackRmInFrame iota
                       (fun s y a' b' c' d' =>
-                        tensor04StdAt (I := I) (M := M) R
+                        tensor04StandardAt (I := I) (M := M) R
                           (basisAt y a') (basisAt y b') (basisAt y c') (basisAt y d'))
                       t x a b c d by
                     unfold uhlenbeckPullbackRmInFrame
@@ -4454,14 +4388,14 @@ private theorem fiber_region_heat_reaction_on
       have hRalg : uhlenbeckPullbackTensorAt basisAt iota t x R ∈
           algebraicCurvatureTensorSubmodule (I := I) (M := M) x :=
         fiberRegion_compU_mem_algebraicCurvatureTensorSubmodule (I := I) (M := M) basisAt iota t x R hR
-      have hiso := fiberInner_compUhlenbeck_isometry_general (I := I) (M := M) hT S basisAt iota hiota0 hgram
+      have hiso := fiberInner_compUhlenbeck_isometry_tensor (I := I) (M := M) hT S basisAt iota hiota0 hgram
         horth0 (D.regular_subset ht) x R (η x)
       have hνx : ν x = uhlenbeckPullbackTensorAt basisAt iota t x (η x) := by
         exact heqν.self_of_nhds
       have hscal := fiberRegion_pulledTensor_scalarization_eq (I := I) (M := M)
         basisAt (S.base.metric 0) iota t x (horth0 x) R hRalg (ν x)
       have hmat : uhlenbeckCurvatureOperatorMatrix
-            (fun t' x' a b c d => tensor04StdAt (I := I) (M := M)
+            (fun t' x' a b c d => tensor04StandardAt (I := I) (M := M)
               (uhlenbeckPullbackTensorAt basisAt iota t' x' R)
               (basisAt x' a) (basisAt x' b) (basisAt x' c) (basisAt x' d)) t x =
           uhlenbeckCurvatureOperatorMatrix roughLapD t x := by
@@ -4483,7 +4417,7 @@ private theorem fiber_region_heat_reaction_on
                       (uhlenbeckPullbackTensorAt basisAt iota t x R) (ν x) := by
                       rw [hνx]
         _ = 4 * inner ℝ (uhlenbeckCurvatureOperatorMatrix
-              (fun t' x' a b c d => tensor04StdAt (I := I) (M := M)
+              (fun t' x' a b c d => tensor04StandardAt (I := I) (M := M)
                 (uhlenbeckPullbackTensorAt basisAt iota t' x' R)
                 (basisAt x' a) (basisAt x' b) (basisAt x' c) (basisAt x' d)) t x)
               (regionSupportVector (I := I) (S.base.metric 0) basisAt x (ν x)) := hscal
@@ -4664,7 +4598,7 @@ private theorem algebraicCurvatureTensorProjection_compUhlenbeck_commute
     have hqU : q'.compContinuousLinearMap (fun _ : Fin 4 => U) = (q : Tensor04At (I := I) (M := M) x) := by
       dsimp [q']
       exact hcompUinv (q : Tensor04At (I := I) (M := M) x)
-    have hiso := fiberInner_compUhlenbeck_isometry_full hT S basisAt iota hiota0 hgram horth0 ht x A q'
+    have hiso := fiberInner_compUhlenbeck_isometry_tensor hT S basisAt iota hiota0 hgram horth0 ht x A q'
     calc
       inner0S (I := I) (S.base.metric 0) x 4
           (algebraicCurvatureTensorProjection (I := I) (S.base.metric 0) x
@@ -4686,7 +4620,7 @@ private theorem algebraicCurvatureTensorProjection_compUhlenbeck_commute
               (ContinuousMultilinearMap.compContinuousLinearMap
                 (algebraicCurvatureTensorProjection (I := I) (S.base.metric t) x A : Tensor04At (I := I) (M := M) x)
                 (fun _ : Fin 4 => U)) q := by
-              have hiso' := fiberInner_compUhlenbeck_isometry_full hT S basisAt iota hiota0 hgram horth0 ht x
+              have hiso' := fiberInner_compUhlenbeck_isometry_tensor hT S basisAt iota hiota0 hgram horth0 ht x
                 (algebraicCurvatureTensorProjection (I := I) (S.base.metric t) x A : Tensor04At (I := I) (M := M) x) q'
               rw [← hqU]
               exact hiso'.symm
@@ -4895,7 +4829,7 @@ private theorem radialTransportTensorExtension_regionProjMatrix_eq_conj
     ((algebraicCurvatureTensorProjection (I := I) g y).map_smul
       ((χ y) ^ 4) (radialTransportSectionTensor g p η₀ y))
   ext i j
-  change tensor04StdAt (I := I) (M := M)
+  change tensor04StandardAt (I := I) (M := M)
       (algebraicCurvatureTensorProjection (I := I) g y
         ((χ y) ^ 4 • radialTransportSectionTensor g p η₀ y) :
           Tensor04At (I := I) (M := M) y) _ _ _ _ = _
@@ -5074,11 +5008,11 @@ private theorem fiberRegion_hasFlatSupportSectionsOn
         (O := O) (ρ := (χ y) ^ 4) hρ hO hν'
       simpa only [hmatrixTotal] using hmain
   · intro y
-    have hisoY := fiberInner_compUhlenbeck_isometry_full
+    have hisoY := fiberInner_compUhlenbeck_isometry_tensor
       (I := I) (M := M) hT S basisAt iota hiota0 hgram horth0 ht y (η y) (η y)
     have hrad := radialTransportTensorExtension_inner_self_le
       (I := I) (S.base.metric t) x₀ (hdim x₀) basis horth η₀ χ W hsupport hW y
-    have hiso0 := fiberInner_compUhlenbeck_isometry_full
+    have hiso0 := fiberInner_compUhlenbeck_isometry_tensor
       (I := I) (M := M) hT S basisAt iota hiota0 hgram horth0 ht x₀ η₀ η₀
     have hinner : inner Real (ν y) (ν y) ≤ inner Real ν' ν' := by
       rw [tensor0S_inner_eq_inner0S (I := I) (S.base.metric 0) y (ν y) (ν y)]
@@ -5184,7 +5118,7 @@ end RadialTransportLinear
 
 omit [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
-private theorem curvatureOperatorRegionPropagationOn_zero_aux
+private theorem curvatureOperatorRegionPropagationOn_zero
     {T : Real} (hT : 0 < T) [I.Boundaryless] [CompactSpace M] [Nonempty M]
     (S : SolutionOn (I := I) (M := M) (RealTimeInterval.closed 0 T hT.le))
     (hS : IsSolutionOn (I := I) S)
@@ -5284,7 +5218,7 @@ private theorem curvatureOperatorRegionPropagationOn_of_initial_lower_bound_aux
       have hSshift : IsSolutionOn (I := I) Sshift := by
         exact isSolutionOn_timeShift (I := I) hS t0
       have hS0 : IsSolutionOn (I := I) S0 := by
-        apply isSoln_timeRestrict (I := I) hSshift
+        apply isSolutionOn_timeRestrict (I := I) hSshift
         · intro t ht
           change t + t0 ∈ D.carrier
           exact hslab ⟨by linarith [ht.1], by linarith [ht.2]⟩
@@ -5298,7 +5232,7 @@ private theorem curvatureOperatorRegionPropagationOn_of_initial_lower_bound_aux
         intro x
         simpa [S0, Sshift, SolutionOn.timeRestrict, SolutionOn.timeShift,
           SolutionFamily.timeShift, SolutionFamily.rm04] using hinit x
-      have hprop0 := curvatureOperatorRegionPropagationOn_zero_aux
+      have hprop0 := curvatureOperatorRegionPropagationOn_zero
         (I := I) (M := M) hT S0 hS0 hdimT hK hinit0
       have hpropShift : curvatureOperatorRegionPropagationOn
           (I := I) (M := M) Sshift K 0 T := by

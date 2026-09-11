@@ -1,0 +1,979 @@
+import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckVectorField.L2Jet.Bound
+import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckLie.ConnectionDifferenceDerivative.PathBounds
+import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.MetricPerturbation.CovariantOrderCoefficient.ReindexingNorm
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.RicciDeTurck.SectionDifference.ConnectionBicontraction
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.Bounds.FiberNormJets
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Iterated.Linear
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.Calculus.SlotInsertion
+import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.Algebra
+open DifferentialGeometry.Analysis.Sobolev
+open DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Analysis.Elliptic
+open DifferentialGeometry.PDE.RicciFlow
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
+
+noncomputable section
+set_option backward.isDefEq.respectTransparency false
+
+open MeasureTheory Set Filter Topology Bundle Manifold DifferentialGeometry.Tensor0SBundle
+    ContinuousLinearMap
+open scoped ENNReal NNReal BigOperators Manifold ContDiff
+
+namespace DifferentialGeometry.Analysis.Sobolev
+
+open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.Sobolev
+    DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Analysis.Spectral.MetricRealization
+open DifferentialGeometry.Integral.L2
+open DifferentialGeometry.Integral.Measure
+open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
+  (deTurckLieCoeffField deTurckLieCoeffField_toSection deTurckLieCovariantDerivativeInsertionFib deTurckLieCovariantDerivativeInsertionFib_toModel
+    deTurckVectorFieldCovariantDerivativeEndomorphism reindexCoefficientInputSlots reindexCoefficientInputSlots_toSection reindexCoefficientInputSlotsFiber
+    reindexCoefficientInputSlotsFiber_apply)
+open DifferentialGeometry.PDE.DeTurck.RicciLinearization (metricPerturbationPath)
+
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
+variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+  [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
+
+private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
+
+private theorem sq_le_two_add (t u v c1 c2 : ℝ) (ht : 0 ≤ t) (hu : 0 ≤ u) (hv : 0 ≤ v)
+    (htri : t ≤ u + v) (h1 : u ^ 2 ≤ c1) (h2 : v ^ 2 ≤ c2) : t ^ 2 ≤ 2 * (c1 + c2) := by
+  have huv : 0 ≤ u + v := by linarith
+  nlinarith [mul_le_mul htri htri ht huv, sq_nonneg (u - v), h1, h2, hu, hv]
+
+omit [I.Boundaryless] in
+omit [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
+private theorem deTurckLieCovariantDerivativeInsertionField_eq_slotInsert_sum
+    (g₀ g₁ g_bg : SmoothRiemannianMetric I M) :
+    deTurckLieCovariantDerivativeInsertionField (I := I) (M := M) g₀ g₁ g_bg =
+      endoSlotZeroCcTensor (I := I) (M := M) g₀ 1
+          (deTurckVectorFieldCovariantDerivativeEndomorphismSection (I := I) (M := M) g₁ g_bg)
+        + reindexCoefficientInputSlots (I := I) (M := M) g₀ 2 2
+            (rsDomDomCongrSection (I := I) (M := M) g₀ 2 2 (Equiv.swap (0 : Fin 2) 1)
+              (endoSlotZeroCcTensor (I := I) (M := M) g₀ 1
+                (deTurckVectorFieldCovariantDerivativeEndomorphismSection (I := I) (M := M) g₁ g_bg)))
+            (Equiv.swap (0 : Fin 2) 1) := by
+  classical
+  apply SmoothCcTensor.ext
+  apply ContMDiffSection.ext
+  intro x
+  rw [SmoothCcTensor.toSection_add, ContMDiffSection.coe_add, Pi.add_apply]
+  apply ContinuousLinearMap.ext
+  intro D
+  apply Tensor0SSpace.toModel_injective
+  apply ContinuousMultilinearMap.ext
+  intro m
+  have hsum : (show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
+        (endoSlotZeroCcTensor (I := I) (M := M) g₀ 1
+            (deTurckVectorFieldCovariantDerivativeEndomorphismSection (I := I) (M := M) g₁ g_bg)).toSection x
+          + (reindexCoefficientInputSlots (I := I) (M := M) g₀ 2 2
+              (rsDomDomCongrSection (I := I) (M := M) g₀ 2 2 (Equiv.swap (0 : Fin 2) 1)
+                (endoSlotZeroCcTensor (I := I) (M := M) g₀ 1
+                  (deTurckVectorFieldCovariantDerivativeEndomorphismSection (I := I) (M := M) g₁ g_bg)))
+              (Equiv.swap (0 : Fin 2) 1)).toSection x) D
+      = (show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
+          (endoSlotZeroCcTensor (I := I) (M := M) g₀ 1
+            (deTurckVectorFieldCovariantDerivativeEndomorphismSection (I := I) (M := M) g₁ g_bg)).toSection x) D
+        + (show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
+          (reindexCoefficientInputSlots (I := I) (M := M) g₀ 2 2
+              (rsDomDomCongrSection (I := I) (M := M) g₀ 2 2 (Equiv.swap (0 : Fin 2) 1)
+                (endoSlotZeroCcTensor (I := I) (M := M) g₀ 1
+                  (deTurckVectorFieldCovariantDerivativeEndomorphismSection (I := I) (M := M) g₁ g_bg)))
+              (Equiv.swap (0 : Fin 2) 1)).toSection x) D := rfl
+  change Tensor0SSpace.toModel
+      ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
+        (deTurckLieCovariantDerivativeInsertionField (I := I) (M := M) g₀ g₁ g_bg).toSection x) D) m =
+    Tensor0SSpace.toModel
+      ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
+        (endoSlotZeroCcTensor (I := I) (M := M) g₀ 1
+            (deTurckVectorFieldCovariantDerivativeEndomorphismSection (I := I) (M := M) g₁ g_bg)).toSection x
+          + (reindexCoefficientInputSlots (I := I) (M := M) g₀ 2 2
+              (rsDomDomCongrSection (I := I) (M := M) g₀ 2 2 (Equiv.swap (0 : Fin 2) 1)
+                (endoSlotZeroCcTensor (I := I) (M := M) g₀ 1
+                  (deTurckVectorFieldCovariantDerivativeEndomorphismSection (I := I) (M := M) g₁ g_bg)))
+              (Equiv.swap (0 : Fin 2) 1)).toSection x) D) m
+  rw [hsum, Tensor0SSpace.toModel_add, add_apply]
+  rw [show (show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
+        (deTurckLieCovariantDerivativeInsertionField (I := I) (M := M) g₀ g₁ g_bg).toSection x) D
+      = deTurckLieCovariantDerivativeInsertionFib (I := I) g₁ g_bg x D from rfl]
+  rw [deTurckLieCovariantDerivativeInsertionFib_toModel (I := I) g₁ g_bg x D m]
+  rw [show (show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
+        (endoSlotZeroCcTensor (I := I) (M := M) g₀ 1
+          (deTurckVectorFieldCovariantDerivativeEndomorphismSection (I := I) (M := M) g₁ g_bg)).toSection x) D
+      = slotInsertEndoFib (I := I) (M := M) 2 0 x
+          (deTurckVectorFieldCovariantDerivativeEndomorphism (I := I) g₁ g_bg x) D from rfl]
+  rw [slotInsertEndoFib_apply_eval (I := I) (M := M) 2 0 x
+    (deTurckVectorFieldCovariantDerivativeEndomorphism (I := I) g₁ g_bg x) D m]
+  rw [show (show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
+        (reindexCoefficientInputSlots (I := I) (M := M) g₀ 2 2
+            (rsDomDomCongrSection (I := I) (M := M) g₀ 2 2 (Equiv.swap (0 : Fin 2) 1)
+              (endoSlotZeroCcTensor (I := I) (M := M) g₀ 1
+                (deTurckVectorFieldCovariantDerivativeEndomorphismSection (I := I) (M := M) g₁ g_bg)))
+            (Equiv.swap (0 : Fin 2) 1)).toSection x) D
+      = reindexCoefficientInputSlotsFiber (I := I) 2 2 (Equiv.swap (0 : Fin 2) 1) x
+          (show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
+            (rsDomDomCongrSection (I := I) (M := M) g₀ 2 2 (Equiv.swap (0 : Fin 2) 1)
+              (endoSlotZeroCcTensor (I := I) (M := M) g₀ 1
+                (deTurckVectorFieldCovariantDerivativeEndomorphismSection (I := I) (M := M) g₁ g_bg))).toSection x) D from rfl]
+  rw [reindexCoefficientInputSlotsFiber_apply (I := I) 2 2 (Equiv.swap (0 : Fin 2) 1) x
+    (show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
+      (rsDomDomCongrSection (I := I) (M := M) g₀ 2 2 (Equiv.swap (0 : Fin 2) 1)
+        (endoSlotZeroCcTensor (I := I) (M := M) g₀ 1
+          (deTurckVectorFieldCovariantDerivativeEndomorphismSection (I := I) (M := M) g₁ g_bg))).toSection x) D]
+  rw [show (show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
+        (rsDomDomCongrSection (I := I) (M := M) g₀ 2 2 (Equiv.swap (0 : Fin 2) 1)
+          (endoSlotZeroCcTensor (I := I) (M := M) g₀ 1
+            (deTurckVectorFieldCovariantDerivativeEndomorphismSection (I := I) (M := M) g₁ g_bg))).toSection x)
+      = (show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
+          tensorRSDomDomCongr (I := I) (M := M) (Equiv.swap (0 : Fin 2) 1)
+            ((endoSlotZeroCcTensor (I := I) (M := M) g₀ 1
+              (deTurckVectorFieldCovariantDerivativeEndomorphismSection (I := I) (M := M) g₁ g_bg)).toSection x)) from rfl]
+  rw [toModel_rsDomDomCongr_apply (I := I) (M := M) (Equiv.swap (0 : Fin 2) 1)
+    ((endoSlotZeroCcTensor (I := I) (M := M) g₀ 1
+      (deTurckVectorFieldCovariantDerivativeEndomorphismSection (I := I) (M := M) g₁ g_bg)).toSection x)
+    (Tensor0SSpace.ofModel
+      (ContinuousMultilinearMap.domDomCongr (Equiv.swap (0 : Fin 2) 1)
+        (Tensor0SSpace.toModel D)))]
+  rw [ContinuousMultilinearMap.domDomCongr_apply]
+  rw [show (show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
+        (endoSlotZeroCcTensor (I := I) (M := M) g₀ 1
+          (deTurckVectorFieldCovariantDerivativeEndomorphismSection (I := I) (M := M) g₁ g_bg)).toSection x)
+        (Tensor0SSpace.ofModel
+          (ContinuousMultilinearMap.domDomCongr (Equiv.swap (0 : Fin 2) 1)
+            (Tensor0SSpace.toModel D)))
+      = slotInsertEndoFib (I := I) (M := M) 2 0 x
+          (deTurckVectorFieldCovariantDerivativeEndomorphism (I := I) g₁ g_bg x)
+          (Tensor0SSpace.ofModel
+            (ContinuousMultilinearMap.domDomCongr (Equiv.swap (0 : Fin 2) 1)
+              (Tensor0SSpace.toModel D))) from rfl]
+  rw [slotInsertEndoFib_apply_eval (I := I) (M := M) 2 0 x
+    (deTurckVectorFieldCovariantDerivativeEndomorphism (I := I) g₁ g_bg x)
+    (Tensor0SSpace.ofModel
+      (ContinuousMultilinearMap.domDomCongr (Equiv.swap (0 : Fin 2) 1)
+        (Tensor0SSpace.toModel D)))
+    (fun i => m ((Equiv.swap (0 : Fin 2) 1) i))]
+  rw [Tensor0SSpace.toModel_ofModel, ContinuousMultilinearMap.domDomCongr_apply]
+  have harg : (fun k => Function.update (fun i => m ((Equiv.swap (0 : Fin 2) 1) i)) 0
+        (tangentLinearMapToModel (I := I)
+          (deTurckVectorFieldCovariantDerivativeEndomorphism (I := I) g₁ g_bg x)
+          ((fun i => m ((Equiv.swap (0 : Fin 2) 1) i)) 0))
+        ((Equiv.swap (0 : Fin 2) 1) k))
+      = Function.update m 1
+          (tangentLinearMapToModel (I := I)
+            (deTurckVectorFieldCovariantDerivativeEndomorphism (I := I) g₁ g_bg x) (m 1)) := by
+    have hswap0 : (Equiv.swap (0 : Fin 2) 1) 0 = 1 := Equiv.swap_apply_left 0 1
+    have hswap1 : (Equiv.swap (0 : Fin 2) 1) 1 = 0 := Equiv.swap_apply_right 0 1
+    funext k
+    fin_cases k
+    · simp only [Fin.isValue, Fin.zero_eta, Equiv.swap_apply_left, ne_eq, one_ne_zero,
+        not_false_eq_true, Function.update_of_ne, zero_ne_one]
+      exact congrArg m hswap1
+    · simp only [Fin.isValue, Fin.mk_one, Equiv.swap_apply_right, Function.update_self]
+      exact congrArg
+        (fun z => tangentLinearMapToModel (I := I)
+          (deTurckVectorFieldCovariantDerivativeEndomorphism (I := I) g₁ g_bg x) (m z)) hswap0
+  rw [harg]
+
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
+omit [BoundarylessManifold I M] in
+omit [NeZero (Module.finrank ℝ E)] in
+private theorem normSq_iteratedCovGrad_le_scaled_of_pointwise
+    (g₀ : SmoothRiemannianMetric I M) (X : SmoothCcTensor g₀ 2 2) (Y : SmoothCcTensor g₀ 1 1)
+    (i : ℕ) (c : ℝ)
+    (hpt : ∀ x : M,
+      riemannianFiberNormSq (I := I) (M := M) g₀ 2 (2 + i) x
+          ((iteratedCovGrad (I := I) g₀ 2 2 i X).toSection x) ≤
+        c * riemannianFiberNormSq (I := I) (M := M) g₀ 1 (1 + i) x
+          ((iteratedCovGrad (I := I) g₀ 1 1 i Y).toSection x)) :
+    ‖iteratedCovGrad (I := I) g₀ 2 2 i X‖ ^ 2 ≤
+      c * ‖iteratedCovGrad (I := I) g₀ 1 1 i Y‖ ^ 2 := by
+  have hF_int : MeasureTheory.Integrable
+      (fun x => c * riemannianFiberNormSq (I := I) (M := M) g₀ 1 (1 + i) x
+        ((iteratedCovGrad (I := I) g₀ 1 1 i Y).toSection x))
+      (riemannianVolumeMeasure (I := I) (M := M) g₀) :=
+    (integrable_riemannianFiberNormSq_toSection (I := I) (M := M) g₀ 1 (1 + i)
+      (iteratedCovGrad (I := I) g₀ 1 1 i Y)).const_mul c
+  have key := normSq_le_integral_of_pointwise_fiberNormSq_le_rs (I := I) (M := M) g₀ 2 (2 + i)
+    (iteratedCovGrad (I := I) g₀ 2 2 i X)
+    (fun x => c * riemannianFiberNormSq (I := I) (M := M) g₀ 1 (1 + i) x
+      ((iteratedCovGrad (I := I) g₀ 1 1 i Y).toSection x))
+    hF_int (fun x => hpt x)
+  refine le_trans key (le_of_eq ?_)
+  rw [MeasureTheory.integral_const_mul]
+  congr 1
+  rw [SmoothCcTensor.norm_def (I := I) (M := M) (iteratedCovGrad (I := I) g₀ 1 1 i Y)]
+  exact (tensorL2Norm_sq_toFun_eq_integral_riemannianFiberNormSq_rs (I := I) (M := M) g₀ 1 (1 + i)
+    (iteratedCovGrad (I := I) g₀ 1 1 i Y)).symm
+
+omit [SigmaCompactSpace M] in
+private theorem riemannianFiberNormSq_iteratedCovGrad_deTurckLieCovariantDerivativeInsertionFirstSummand_le
+    (g₀ g₁ g_bg : SmoothRiemannianMetric I M) (i : ℕ) (x : M) :
+    riemannianFiberNormSq (I := I) (M := M) g₀ 2 (2 + i) x
+        ((iteratedCovGrad (I := I) g₀ 2 2 i
+          (endoSlotZeroCcTensor (I := I) (M := M) g₀ 1
+            (deTurckVectorFieldCovariantDerivativeEndomorphismSection (I := I) (M := M) g₁ g_bg))).toSection x) ≤
+      (Module.finrank ℝ E : ℝ) *
+        riemannianFiberNormSq (I := I) (M := M) g₀ 1 (1 + i) x
+          ((iteratedCovGrad (I := I) g₀ 1 1 i
+            (deTurckVectorFieldCovariantDerivativeEndomorphismInsert (I := I) (M := M) g₀ g₁ g_bg)).toSection x) := by
+  have h := riemannianFiberNormSq_iteratedCovGrad_slotInsertEndoCc_le_endo (I := I) (M := M) g₀ 1
+    (deTurckVectorFieldCovariantDerivativeEndomorphismSection (I := I) (M := M) g₁ g_bg) i x
+  rw [pow_one] at h
+  exact h
+
+omit [SigmaCompactSpace M] in
+private theorem riemannianFiberNormSq_iteratedCovGrad_deTurckLieCovariantDerivativeInsertionSecondSummand_le
+    (g₀ g₁ g_bg : SmoothRiemannianMetric I M) (i : ℕ) (x : M) :
+    riemannianFiberNormSq (I := I) (M := M) g₀ 2 (2 + i) x
+        ((iteratedCovGrad (I := I) g₀ 2 2 i
+          (reindexCoefficientInputSlots (I := I) (M := M) g₀ 2 2
+            (rsDomDomCongrSection (I := I) (M := M) g₀ 2 2 (Equiv.swap (0 : Fin 2) 1)
+              (endoSlotZeroCcTensor (I := I) (M := M) g₀ 1
+                (deTurckVectorFieldCovariantDerivativeEndomorphismSection (I := I) (M := M) g₁ g_bg)))
+            (Equiv.swap (0 : Fin 2) 1))).toSection x) ≤
+      (Module.finrank ℝ E : ℝ) *
+        riemannianFiberNormSq (I := I) (M := M) g₀ 1 (1 + i) x
+          ((iteratedCovGrad (I := I) g₀ 1 1 i
+            (deTurckVectorFieldCovariantDerivativeEndomorphismInsert (I := I) (M := M) g₀ g₁ g_bg)).toSection x) := by
+  have heq := riemannianFiberNormSq_iteratedCovGrad_rsDomDomCongr_both_eq (I := I) (M := M) g₀ 2 2
+    (Equiv.swap (0 : Fin 2) 1) (Equiv.swap (0 : Fin 2) 1)
+    (endoSlotZeroCcTensor (I := I) (M := M) g₀ 1
+      (deTurckVectorFieldCovariantDerivativeEndomorphismSection (I := I) (M := M) g₁ g_bg)) i x
+  exact heq.trans_le (riemannianFiberNormSq_iteratedCovGrad_deTurckLieCovariantDerivativeInsertionFirstSummand_le (I := I)
+    (M := M) g₀ g₁ g_bg i x)
+
+theorem deTurckLieCovariantDerivativeInsertionField_metricPerturbationPath_jetL2_perOrder_ballUniform
+    (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ)
+    (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
+    {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
+    ∃ P : ℕ → ℝ, (∀ i, 0 ≤ P i) ∧
+      ∀ (T T' : SmoothCcTensor g₀ 0 2)
+        {δ : ℝ} (_hδ_le : δ ≤ δ₀)
+        (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
+        {δ' : ℝ} (_hδ'_le : δ' ≤ δ₀)
+        (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T') δ'),
+        (∀ j : ℕ, j ≤ a + 2 → ‖iteratedCovGrad (I := I) g₀ 0 2 j T‖ ≤ R) →
+        (∀ j : ℕ, j ≤ a + 2 → ‖iteratedCovGrad (I := I) g₀ 0 2 j T'‖ ≤ R) →
+        ∀ (i : ℕ), i ≤ a → ∀ (s : ℝ), s ∈ Set.Icc (0 : ℝ) 1 →
+          ‖iteratedCovGrad (I := I) g₀ 2 2 i
+              (deTurckLieCovariantDerivativeInsertionField (I := I) g₀
+                (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg)‖ ^ 2 ≤ P i := by
+  obtain ⟨F, hF_nn, hF⟩ :=
+    deTurckVectorFieldCovariantDerivativeEndomorphismInsert_metricPerturbationPath_jetL2_perOrder_ballUniform (I := I) (M := M) g₀ g_bg a
+      ha_super hR hδ₀
+  have hfr_nn : (0 : ℝ) ≤ (Module.finrank ℝ E : ℝ) := Nat.cast_nonneg _
+  refine ⟨fun i => 2 * ((Module.finrank ℝ E : ℝ) * F i + (Module.finrank ℝ E : ℝ) * F i),
+    fun i => by
+      have h1 := hF_nn i
+      have h2 : 0 ≤ (Module.finrank ℝ E : ℝ) * F i := mul_nonneg hfr_nn h1
+      linarith, ?_⟩
+  intro T T' δ hδ_le hδ δ' hδ'_le hδ' hTball hT'ball i hi s hs
+  have hWE : ‖iteratedCovGrad (I := I) g₀ 1 1 i
+      (deTurckVectorFieldCovariantDerivativeEndomorphismInsert (I := I) (M := M) g₀
+        (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg)‖ ^ 2 ≤ F i :=
+    hF T T' hδ_le hδ hδ'_le hδ' hTball hT'ball i hi s hs
+  have hL2A : ‖iteratedCovGrad (I := I) g₀ 2 2 i
+      (endoSlotZeroCcTensor (I := I) (M := M) g₀ 1
+        (deTurckVectorFieldCovariantDerivativeEndomorphismSection (I := I) (M := M)
+          (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg))‖ ^ 2 ≤
+      (Module.finrank ℝ E : ℝ) * F i := by
+    refine le_trans (normSq_iteratedCovGrad_le_scaled_of_pointwise (I := I) (M := M) g₀
+      (endoSlotZeroCcTensor (I := I) (M := M) g₀ 1
+        (deTurckVectorFieldCovariantDerivativeEndomorphismSection (I := I) (M := M)
+          (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg))
+      (deTurckVectorFieldCovariantDerivativeEndomorphismInsert (I := I) (M := M) g₀
+        (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg)
+      i (Module.finrank ℝ E : ℝ)
+      (fun x => riemannianFiberNormSq_iteratedCovGrad_deTurckLieCovariantDerivativeInsertionFirstSummand_le (I := I) (M := M)
+        g₀
+        (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg i x)) ?_
+    exact mul_le_mul_of_nonneg_left hWE hfr_nn
+  have hL2B : ‖iteratedCovGrad (I := I) g₀ 2 2 i
+      (reindexCoefficientInputSlots (I := I) (M := M) g₀ 2 2
+        (rsDomDomCongrSection (I := I) (M := M) g₀ 2 2 (Equiv.swap (0 : Fin 2) 1)
+          (endoSlotZeroCcTensor (I := I) (M := M) g₀ 1
+            (deTurckVectorFieldCovariantDerivativeEndomorphismSection (I := I) (M := M)
+              (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg)))
+        (Equiv.swap (0 : Fin 2) 1))‖ ^ 2 ≤
+      (Module.finrank ℝ E : ℝ) * F i := by
+    refine le_trans (normSq_iteratedCovGrad_le_scaled_of_pointwise (I := I) (M := M) g₀
+      (reindexCoefficientInputSlots (I := I) (M := M) g₀ 2 2
+        (rsDomDomCongrSection (I := I) (M := M) g₀ 2 2 (Equiv.swap (0 : Fin 2) 1)
+          (endoSlotZeroCcTensor (I := I) (M := M) g₀ 1
+            (deTurckVectorFieldCovariantDerivativeEndomorphismSection (I := I) (M := M)
+              (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg)))
+        (Equiv.swap (0 : Fin 2) 1))
+      (deTurckVectorFieldCovariantDerivativeEndomorphismInsert (I := I) (M := M) g₀
+        (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg)
+      i (Module.finrank ℝ E : ℝ)
+      (fun x => riemannianFiberNormSq_iteratedCovGrad_deTurckLieCovariantDerivativeInsertionSecondSummand_le (I := I)
+        (M := M) g₀
+        (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg i x)) ?_
+    exact mul_le_mul_of_nonneg_left hWE hfr_nn
+  have hgrad : iteratedCovGrad (I := I) g₀ 2 2 i
+      (deTurckLieCovariantDerivativeInsertionField (I := I) g₀ (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg)
+      = iteratedCovGrad (I := I) g₀ 2 2 i
+          (endoSlotZeroCcTensor (I := I) (M := M) g₀ 1
+            (deTurckVectorFieldCovariantDerivativeEndomorphismSection (I := I) (M := M)
+              (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg))
+        + iteratedCovGrad (I := I) g₀ 2 2 i
+            (reindexCoefficientInputSlots (I := I) (M := M) g₀ 2 2
+              (rsDomDomCongrSection (I := I) (M := M) g₀ 2 2 (Equiv.swap (0 : Fin 2) 1)
+                (endoSlotZeroCcTensor (I := I) (M := M) g₀ 1
+                  (deTurckVectorFieldCovariantDerivativeEndomorphismSection (I := I) (M := M)
+                    (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg)))
+              (Equiv.swap (0 : Fin 2) 1)) := by
+    rw [deTurckLieCovariantDerivativeInsertionField_eq_slotInsert_sum (I := I) (M := M) g₀
+      (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg, iteratedCovGrad_add]
+  rw [hgrad]
+  exact sq_le_two_add
+    ‖iteratedCovGrad (I := I) g₀ 2 2 i
+        (endoSlotZeroCcTensor (I := I) (M := M) g₀ 1
+          (deTurckVectorFieldCovariantDerivativeEndomorphismSection (I := I) (M := M)
+            (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg))
+      + iteratedCovGrad (I := I) g₀ 2 2 i
+          (reindexCoefficientInputSlots (I := I) (M := M) g₀ 2 2
+            (rsDomDomCongrSection (I := I) (M := M) g₀ 2 2 (Equiv.swap (0 : Fin 2) 1)
+              (endoSlotZeroCcTensor (I := I) (M := M) g₀ 1
+                (deTurckVectorFieldCovariantDerivativeEndomorphismSection (I := I) (M := M)
+                  (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg)))
+            (Equiv.swap (0 : Fin 2) 1))‖
+    ‖iteratedCovGrad (I := I) g₀ 2 2 i
+        (endoSlotZeroCcTensor (I := I) (M := M) g₀ 1
+          (deTurckVectorFieldCovariantDerivativeEndomorphismSection (I := I) (M := M)
+            (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg))‖
+    ‖iteratedCovGrad (I := I) g₀ 2 2 i
+        (reindexCoefficientInputSlots (I := I) (M := M) g₀ 2 2
+          (rsDomDomCongrSection (I := I) (M := M) g₀ 2 2 (Equiv.swap (0 : Fin 2) 1)
+            (endoSlotZeroCcTensor (I := I) (M := M) g₀ 1
+              (deTurckVectorFieldCovariantDerivativeEndomorphismSection (I := I) (M := M)
+                (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg)))
+          (Equiv.swap (0 : Fin 2) 1))‖
+    ((Module.finrank ℝ E : ℝ) * F i) ((Module.finrank ℝ E : ℝ) * F i)
+    (norm_nonneg _) (norm_nonneg _) (norm_nonneg _)
+    (norm_add_le _ _) hL2A hL2B
+
+theorem normSq_iteratedCovGrad_deTurckLieCovariantDerivativeInsertionField_le (g₀ g₁ g_bg : SmoothRiemannianMetric I M) (i : ℕ) :
+    ‖iteratedCovGrad (I := I) g₀ 2 2 i (deTurckLieCovariantDerivativeInsertionField (I := I) g₀ g₁ g_bg)‖ ^ 2 ≤
+      4 * (Module.finrank ℝ E : ℝ) *
+        ‖iteratedCovGrad (I := I) g₀ 1 1 i
+          (deTurckVectorFieldCovariantDerivativeEndomorphismInsert (I := I) (M := M) g₀ g₁ g_bg)‖ ^ 2 := by
+  have hL2A : ‖iteratedCovGrad (I := I) g₀ 2 2 i
+      (endoSlotZeroCcTensor (I := I) (M := M) g₀ 1
+        (deTurckVectorFieldCovariantDerivativeEndomorphismSection (I := I) (M := M) g₁ g_bg))‖ ^ 2 ≤
+      (Module.finrank ℝ E : ℝ) *
+        ‖iteratedCovGrad (I := I) g₀ 1 1 i
+          (deTurckVectorFieldCovariantDerivativeEndomorphismInsert (I := I) (M := M) g₀ g₁ g_bg)‖ ^ 2 :=
+    normSq_iteratedCovGrad_le_scaled_of_pointwise (I := I) (M := M) g₀
+      (endoSlotZeroCcTensor (I := I) (M := M) g₀ 1 (deTurckVectorFieldCovariantDerivativeEndomorphismSection (I := I)
+        (M := M) g₁ g_bg))
+      (deTurckVectorFieldCovariantDerivativeEndomorphismInsert (I := I) (M := M) g₀ g₁ g_bg) i (Module.finrank ℝ E : ℝ)
+      (fun x => riemannianFiberNormSq_iteratedCovGrad_deTurckLieCovariantDerivativeInsertionFirstSummand_le (I := I)
+        (M := M) g₀ g₁ g_bg i x)
+  have hL2B : ‖iteratedCovGrad (I := I) g₀ 2 2 i
+      (reindexCoefficientInputSlots (I := I) (M := M) g₀ 2 2
+        (rsDomDomCongrSection (I := I) (M := M) g₀ 2 2 (Equiv.swap (0 : Fin 2) 1)
+          (endoSlotZeroCcTensor (I := I) (M := M) g₀ 1
+            (deTurckVectorFieldCovariantDerivativeEndomorphismSection (I := I) (M := M) g₁ g_bg)))
+        (Equiv.swap (0 : Fin 2) 1))‖ ^ 2 ≤
+      (Module.finrank ℝ E : ℝ) *
+        ‖iteratedCovGrad (I := I) g₀ 1 1 i
+          (deTurckVectorFieldCovariantDerivativeEndomorphismInsert (I := I) (M := M) g₀ g₁ g_bg)‖ ^ 2 :=
+    normSq_iteratedCovGrad_le_scaled_of_pointwise (I := I) (M := M) g₀
+      (reindexCoefficientInputSlots (I := I) (M := M) g₀ 2 2
+        (rsDomDomCongrSection (I := I) (M := M) g₀ 2 2 (Equiv.swap (0 : Fin 2) 1)
+          (endoSlotZeroCcTensor (I := I) (M := M) g₀ 1
+            (deTurckVectorFieldCovariantDerivativeEndomorphismSection (I := I) (M := M) g₁ g_bg)))
+        (Equiv.swap (0 : Fin 2) 1))
+      (deTurckVectorFieldCovariantDerivativeEndomorphismInsert (I := I) (M := M) g₀ g₁ g_bg) i (Module.finrank ℝ E : ℝ)
+      (fun x => riemannianFiberNormSq_iteratedCovGrad_deTurckLieCovariantDerivativeInsertionSecondSummand_le (I := I)
+        (M := M) g₀ g₁ g_bg i x)
+  have hgrad : iteratedCovGrad (I := I) g₀ 2 2 i (deTurckLieCovariantDerivativeInsertionField (I := I) g₀ g₁ g_bg)
+      = iteratedCovGrad (I := I) g₀ 2 2 i
+          (endoSlotZeroCcTensor (I := I) (M := M) g₀ 1
+            (deTurckVectorFieldCovariantDerivativeEndomorphismSection (I := I) (M := M) g₁ g_bg))
+        + iteratedCovGrad (I := I) g₀ 2 2 i
+            (reindexCoefficientInputSlots (I := I) (M := M) g₀ 2 2
+              (rsDomDomCongrSection (I := I) (M := M) g₀ 2 2 (Equiv.swap (0 : Fin 2) 1)
+                (endoSlotZeroCcTensor (I := I) (M := M) g₀ 1
+                  (deTurckVectorFieldCovariantDerivativeEndomorphismSection (I := I) (M := M) g₁ g_bg)))
+              (Equiv.swap (0 : Fin 2) 1)) := by
+    rw [deTurckLieCovariantDerivativeInsertionField_eq_slotInsert_sum (I := I) (M := M) g₀ g₁ g_bg, iteratedCovGrad_add]
+  rw [hgrad]
+  refine le_trans (sq_le_two_add
+    ‖iteratedCovGrad (I := I) g₀ 2 2 i
+        (endoSlotZeroCcTensor (I := I) (M := M) g₀ 1
+          (deTurckVectorFieldCovariantDerivativeEndomorphismSection (I := I) (M := M) g₁ g_bg))
+      + iteratedCovGrad (I := I) g₀ 2 2 i
+          (reindexCoefficientInputSlots (I := I) (M := M) g₀ 2 2
+            (rsDomDomCongrSection (I := I) (M := M) g₀ 2 2 (Equiv.swap (0 : Fin 2) 1)
+              (endoSlotZeroCcTensor (I := I) (M := M) g₀ 1
+                (deTurckVectorFieldCovariantDerivativeEndomorphismSection (I := I) (M := M) g₁ g_bg)))
+            (Equiv.swap (0 : Fin 2) 1))‖
+    ‖iteratedCovGrad (I := I) g₀ 2 2 i
+        (endoSlotZeroCcTensor (I := I) (M := M) g₀ 1
+          (deTurckVectorFieldCovariantDerivativeEndomorphismSection (I := I) (M := M) g₁ g_bg))‖
+    ‖iteratedCovGrad (I := I) g₀ 2 2 i
+        (reindexCoefficientInputSlots (I := I) (M := M) g₀ 2 2
+          (rsDomDomCongrSection (I := I) (M := M) g₀ 2 2 (Equiv.swap (0 : Fin 2) 1)
+            (endoSlotZeroCcTensor (I := I) (M := M) g₀ 1
+              (deTurckVectorFieldCovariantDerivativeEndomorphismSection (I := I) (M := M) g₁ g_bg)))
+          (Equiv.swap (0 : Fin 2) 1))‖
+    ((Module.finrank ℝ E : ℝ) *
+      ‖iteratedCovGrad (I := I) g₀ 1 1 i (deTurckVectorFieldCovariantDerivativeEndomorphismInsert (I := I) (M := M) g₀ g₁ g_bg)‖ ^ 2)
+    ((Module.finrank ℝ E : ℝ) *
+      ‖iteratedCovGrad (I := I) g₀ 1 1 i (deTurckVectorFieldCovariantDerivativeEndomorphismInsert (I := I) (M := M) g₀ g₁ g_bg)‖ ^ 2)
+    (norm_nonneg _) (norm_nonneg _) (norm_nonneg _)
+    (norm_add_le _ _) hL2A hL2B) (le_of_eq (by ring))
+
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
+    [SigmaCompactSpace M] in
+private lemma deTurckLieCovariantDerivativeInsertion_endoSlotZeroCcTensor_sub (g₀ : SmoothRiemannianMetric I M) (s : ℕ)
+    (A B : ContMDiffSection I (E →L[ℝ] E) ∞
+      (fun x : M => TangentSpace I x →L[ℝ] TangentSpace I x)) :
+    endoSlotZeroCcTensor (I := I) (M := M) g₀ s (A - B) =
+      endoSlotZeroCcTensor (I := I) (M := M) g₀ s A -
+        endoSlotZeroCcTensor (I := I) (M := M) g₀ s B := by
+  apply SmoothCcTensor.ext
+  apply ContMDiffSection.ext
+  intro x
+  apply ContinuousLinearMap.ext
+  intro D
+  rw [show ((endoSlotZeroCcTensor (I := I) (M := M) g₀ s A -
+        endoSlotZeroCcTensor (I := I) (M := M) g₀ s B).toSection x) =
+      (endoSlotZeroCcTensor (I := I) (M := M) g₀ s A).toSection x -
+        (endoSlotZeroCcTensor (I := I) (M := M) g₀ s B).toSection x from by
+    rw [SmoothCcTensor.toSection_sub]
+    rfl]
+  rw [sub_apply]
+  simp only [slotInsertEndoCc_toSection]
+  rw [show ((A - B) x) = A x - B x from by
+    rw [ContMDiffSection.coe_sub]
+    rfl]
+  rw [slotInsertEndoFib_sub_left, sub_apply]
+
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+private lemma deTurckLieCovariantDerivativeInsertion_reindex_sub (g₀ : SmoothRiemannianMetric I M)
+    (A B : SmoothCcTensor g₀ 2 2) (ρ : Equiv.Perm (Fin 2)) :
+    reindexCoefficientInputSlots (I := I) (M := M) g₀ 2 2 (A - B) ρ =
+      reindexCoefficientInputSlots (I := I) (M := M) g₀ 2 2 A ρ -
+        reindexCoefficientInputSlots (I := I) (M := M) g₀ 2 2 B ρ := by
+  apply SmoothCcTensor.ext
+  apply ContMDiffSection.ext
+  intro x
+  rw [SmoothCcTensor.toSection_sub, ContMDiffSection.coe_sub, Pi.sub_apply,
+    reindexCoefficientInputSlots_toSection, reindexCoefficientInputSlots_toSection,
+    reindexCoefficientInputSlots_toSection, SmoothCcTensor.toSection_sub,
+    ContMDiffSection.coe_sub, Pi.sub_apply]
+  apply ContinuousLinearMap.ext
+  intro D
+  rw [sub_apply, reindexCoefficientInputSlotsFiber_apply,
+    reindexCoefficientInputSlotsFiber_apply, reindexCoefficientInputSlotsFiber_apply,
+    sub_apply]
+
+theorem normSq_iteratedCovGrad_deTurckLieCovariantDerivativeInsertion_backgroundDifference_le
+    (g₀ g₁ g_bg g_ref : SmoothRiemannianMetric I M) (i : ℕ) :
+    ‖iteratedCovGrad (I := I) g₀ 2 2 i
+        (deTurckLieCovariantDerivativeInsertionField (I := I) (M := M) g₀ g₁ g_bg -
+          deTurckLieCovariantDerivativeInsertionField (I := I) (M := M) g₀ g₁ g_ref)‖ ^ 2 ≤
+      4 * (Module.finrank ℝ E : ℝ) *
+        ‖iteratedCovGrad (I := I) g₀ 1 1 i
+          (deTurckVectorFieldCovariantDerivativeEndomorphismInsert (I := I) (M := M) g₀ g₁ g_bg -
+            deTurckVectorFieldCovariantDerivativeEndomorphismInsert (I := I) (M := M) g₀ g₁ g_ref)‖ ^ 2 := by
+  let W : ContMDiffSection I (E →L[ℝ] E) ∞
+      (fun x : M => TangentSpace I x →L[ℝ] TangentSpace I x) :=
+    deTurckVectorFieldCovariantDerivativeEndomorphismSection (I := I) (M := M) g₁ g_bg -
+      deTurckVectorFieldCovariantDerivativeEndomorphismSection (I := I) (M := M) g₁ g_ref
+  have hWI :
+      endoSlotZeroCcTensor (I := I) (M := M) g₀ 0 W =
+        deTurckVectorFieldCovariantDerivativeEndomorphismInsert (I := I) (M := M) g₀ g₁ g_bg -
+          deTurckVectorFieldCovariantDerivativeEndomorphismInsert (I := I) (M := M) g₀ g₁ g_ref := by
+    dsimp only [W, deTurckVectorFieldCovariantDerivativeEndomorphismInsert]
+    exact deTurckLieCovariantDerivativeInsertion_endoSlotZeroCcTensor_sub (I := I) (M := M) g₀ 0 _ _
+  have hdiff :
+      deTurckLieCovariantDerivativeInsertionField (I := I) (M := M) g₀ g₁ g_bg -
+          deTurckLieCovariantDerivativeInsertionField (I := I) (M := M) g₀ g₁ g_ref =
+        endoSlotZeroCcTensor (I := I) (M := M) g₀ 1 W +
+          reindexCoefficientInputSlots (I := I) (M := M) g₀ 2 2
+            (rsDomDomCongrSection (I := I) (M := M) g₀ 2 2
+              (Equiv.swap (0 : Fin 2) 1)
+              (endoSlotZeroCcTensor (I := I) (M := M) g₀ 1 W))
+            (Equiv.swap (0 : Fin 2) 1) := by
+    rw [deTurckLieCovariantDerivativeInsertionField_eq_slotInsert_sum
+      (I := I) (M := M) g₀ g₁ g_bg,
+      deTurckLieCovariantDerivativeInsertionField_eq_slotInsert_sum
+        (I := I) (M := M) g₀ g₁ g_ref]
+    dsimp only [W]
+    simp only [deTurckLieCovariantDerivativeInsertion_endoSlotZeroCcTensor_sub, rsDomDomCongr_sub, deTurckLieCovariantDerivativeInsertion_reindex_sub]
+    abel
+  have hL2A :
+      ‖iteratedCovGrad (I := I) g₀ 2 2 i
+        (endoSlotZeroCcTensor (I := I) (M := M) g₀ 1 W)‖ ^ 2 ≤
+      (Module.finrank ℝ E : ℝ) *
+        ‖iteratedCovGrad (I := I) g₀ 1 1 i
+          (deTurckVectorFieldCovariantDerivativeEndomorphismInsert (I := I) (M := M) g₀ g₁ g_bg -
+            deTurckVectorFieldCovariantDerivativeEndomorphismInsert (I := I) (M := M) g₀ g₁ g_ref)‖ ^ 2 := by
+    rw [← hWI]
+    exact normSq_iteratedCovGrad_le_scaled_of_pointwise
+      (I := I) (M := M) g₀
+      (endoSlotZeroCcTensor (I := I) (M := M) g₀ 1 W)
+      (endoSlotZeroCcTensor (I := I) (M := M) g₀ 0 W) i
+      (Module.finrank ℝ E : ℝ) (fun x => by
+        have h := riemannianFiberNormSq_iteratedCovGrad_slotInsertEndoCc_le_endo
+          (I := I) (M := M) g₀ 1 W i x
+        rwa [pow_one] at h)
+  have hL2B :
+      ‖iteratedCovGrad (I := I) g₀ 2 2 i
+        (reindexCoefficientInputSlots (I := I) (M := M) g₀ 2 2
+          (rsDomDomCongrSection (I := I) (M := M) g₀ 2 2
+            (Equiv.swap (0 : Fin 2) 1)
+            (endoSlotZeroCcTensor (I := I) (M := M) g₀ 1 W))
+          (Equiv.swap (0 : Fin 2) 1))‖ ^ 2 ≤
+      (Module.finrank ℝ E : ℝ) *
+        ‖iteratedCovGrad (I := I) g₀ 1 1 i
+          (deTurckVectorFieldCovariantDerivativeEndomorphismInsert (I := I) (M := M) g₀ g₁ g_bg -
+            deTurckVectorFieldCovariantDerivativeEndomorphismInsert (I := I) (M := M) g₀ g₁ g_ref)‖ ^ 2 := by
+    rw [← hWI]
+    exact normSq_iteratedCovGrad_le_scaled_of_pointwise
+      (I := I) (M := M) g₀
+      (reindexCoefficientInputSlots (I := I) (M := M) g₀ 2 2
+        (rsDomDomCongrSection (I := I) (M := M) g₀ 2 2
+          (Equiv.swap (0 : Fin 2) 1)
+          (endoSlotZeroCcTensor (I := I) (M := M) g₀ 1 W))
+        (Equiv.swap (0 : Fin 2) 1))
+      (endoSlotZeroCcTensor (I := I) (M := M) g₀ 0 W) i
+      (Module.finrank ℝ E : ℝ) (fun x => by
+        have heq := riemannianFiberNormSq_iteratedCovGrad_rsDomDomCongr_both_eq
+          (I := I) (M := M) g₀ 2 2 (Equiv.swap (0 : Fin 2) 1)
+          (Equiv.swap (0 : Fin 2) 1)
+          (endoSlotZeroCcTensor (I := I) (M := M) g₀ 1 W) i x
+        have h := riemannianFiberNormSq_iteratedCovGrad_slotInsertEndoCc_le_endo
+          (I := I) (M := M) g₀ 1 W i x
+        rw [pow_one] at h
+        exact heq.trans_le h)
+  have hgrad := congrArg (iteratedCovGrad (I := I) g₀ 2 2 i) hdiff
+  rw [iteratedCovGrad_add] at hgrad
+  rw [hgrad]
+  refine le_trans (sq_le_two_add _ _ _ _ _ (norm_nonneg _) (norm_nonneg _)
+    (norm_nonneg _) (norm_add_le _ _) hL2A hL2B) (le_of_eq (by ring))
+
+theorem deTurckLieCovariantDerivativeInsertionField_metricPerturbationPath_jetL2_perOrder_topOrderSeparated
+    (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ)
+    (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
+    {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
+    ∃ Ktop : ℝ, 0 ≤ Ktop ∧ ∃ Kc : ℕ → ℝ, (∀ i, 0 ≤ Kc i) ∧
+      ∀ (T T' : SmoothCcTensor g₀ 0 2)
+        {δ : ℝ} (_hδ_le : δ ≤ δ₀)
+        (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
+        {δ' : ℝ} (_hδ'_le : δ' ≤ δ₀)
+        (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T') δ'),
+        (∀ j : ℕ, j ≤ a + 2 → ‖iteratedCovGrad (I := I) g₀ 0 2 j T‖ ≤ R) →
+        (∀ j : ℕ, j ≤ a + 2 → ‖iteratedCovGrad (I := I) g₀ 0 2 j T'‖ ≤ R) →
+        ∀ (s : ℝ), s ∈ Set.Icc (0 : ℝ) 1 →
+        ∀ (i : ℕ), i ≤ a →
+          ‖iteratedCovGrad (I := I) g₀ 2 2 i
+              (deTurckLieCovariantDerivativeInsertionField (I := I) g₀
+                (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg)‖ ^ 2 ≤
+            Ktop * (‖iteratedCovGrad (I := I) g₀ 0 2 (i + 2) T‖ ^ 2 +
+              ‖iteratedCovGrad (I := I) g₀ 0 2 (i + 2) T'‖ ^ 2) +
+            Kc i * (1 + ∑ j ∈ Finset.range (i + 3),
+              (‖iteratedCovGrad (I := I) g₀ 0 2 j T‖ ^ 2 +
+                ‖iteratedCovGrad (I := I) g₀ 0 2 j T'‖ ^ 2)) := by
+  obtain ⟨Ktop, hKtop_nn, Kc, hKc_nn, hins⟩ :=
+    deTurckVectorFieldCovariantDerivativeEndomorphismInsert_metricPerturbationPath_jetL2_perOrder_topOrderSeparated (I := I) (M := M) g₀ g_bg a
+      ha_super hR hδ₀
+  have hfr_nn : (0 : ℝ) ≤ (Module.finrank ℝ E : ℝ) := Nat.cast_nonneg _
+  refine ⟨4 * (Module.finrank ℝ E : ℝ) * Ktop,
+      mul_nonneg (mul_nonneg (by norm_num) hfr_nn) hKtop_nn,
+    fun i => 4 * (Module.finrank ℝ E : ℝ) * Kc i,
+    fun i => mul_nonneg (mul_nonneg (by norm_num) hfr_nn) (hKc_nn i), ?_⟩
+  intro T T' δ hδ_le hδ δ' hδ'_le hδ' hTball hT'ball s hs i hi
+  have hins_i := hins T T' hδ_le hδ hδ'_le hδ' hTball hT'ball s hs i hi
+  have hstep : 4 * (Module.finrank ℝ E : ℝ) *
+        ‖iteratedCovGrad (I := I) g₀ 1 1 i
+          (deTurckVectorFieldCovariantDerivativeEndomorphismInsert (I := I) (M := M) g₀
+            (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg)‖ ^ 2 ≤
+      4 * (Module.finrank ℝ E : ℝ) *
+        (Ktop * (‖iteratedCovGrad (I := I) g₀ 0 2 (i + 2) T‖ ^ 2 +
+            ‖iteratedCovGrad (I := I) g₀ 0 2 (i + 2) T'‖ ^ 2) +
+          Kc i * (1 + ∑ j ∈ Finset.range (i + 3),
+            (‖iteratedCovGrad (I := I) g₀ 0 2 j T‖ ^ 2 +
+              ‖iteratedCovGrad (I := I) g₀ 0 2 j T'‖ ^ 2))) :=
+    mul_le_mul_of_nonneg_left hins_i (mul_nonneg (by norm_num) hfr_nn)
+  refine le_trans (normSq_iteratedCovGrad_deTurckLieCovariantDerivativeInsertionField_le (I := I) (M := M) g₀
+    (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg i) ?_
+  refine le_trans hstep (le_of_eq ?_)
+  ring
+
+theorem deTurckLieCovariantDerivativeInsertionField_metricPerturbationPath_jetL2_summed_topOrderSeparated
+    (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ)
+    (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
+    {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
+    ∃ Ktop : ℝ, 0 ≤ Ktop ∧ ∃ Kc : ℝ, 0 ≤ Kc ∧
+      ∀ (T T' : SmoothCcTensor g₀ 0 2)
+        {δ : ℝ} (_hδ_le : δ ≤ δ₀)
+        (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
+        {δ' : ℝ} (_hδ'_le : δ' ≤ δ₀)
+        (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T') δ'),
+        (∀ j : ℕ, j ≤ a + 2 → ‖iteratedCovGrad (I := I) g₀ 0 2 j T‖ ≤ R) →
+        (∀ j : ℕ, j ≤ a + 2 → ‖iteratedCovGrad (I := I) g₀ 0 2 j T'‖ ≤ R) →
+        ∀ (s : ℝ), s ∈ Set.Icc (0 : ℝ) 1 →
+          ∑ i ∈ Finset.range (a + 1),
+              ‖iteratedCovGrad (I := I) g₀ 2 2 i
+                (deTurckLieCovariantDerivativeInsertionField (I := I) g₀
+                  (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg)‖ ^ 2 ≤
+            Ktop * (∑ j ∈ Finset.range (a + 3),
+                (‖iteratedCovGrad (I := I) g₀ 0 2 j T‖ ^ 2 +
+                  ‖iteratedCovGrad (I := I) g₀ 0 2 j T'‖ ^ 2)) +
+            Kc * (1 + ∑ j ∈ Finset.range (a + 3),
+                (‖iteratedCovGrad (I := I) g₀ 0 2 j T‖ ^ 2 +
+                  ‖iteratedCovGrad (I := I) g₀ 0 2 j T'‖ ^ 2)) := by
+  obtain ⟨Ktop, hKtop_nn, Kc, hKc_nn, hins⟩ :=
+    deTurckVectorFieldCovariantDerivativeEndomorphismInsert_metricPerturbationPath_jetL2_summed_topOrderSeparated (I := I) (M := M) g₀ g_bg a
+      ha_super hR hδ₀
+  have hfr_nn : (0 : ℝ) ≤ (Module.finrank ℝ E : ℝ) := Nat.cast_nonneg _
+  refine ⟨4 * (Module.finrank ℝ E : ℝ) * Ktop,
+      mul_nonneg (mul_nonneg (by norm_num) hfr_nn) hKtop_nn,
+    4 * (Module.finrank ℝ E : ℝ) * Kc,
+    mul_nonneg (mul_nonneg (by norm_num) hfr_nn) hKc_nn, ?_⟩
+  intro T T' δ hδ_le hδ δ' hδ'_le hδ' hTball hT'ball s hs
+  have hsum_field : ∑ i ∈ Finset.range (a + 1),
+        ‖iteratedCovGrad (I := I) g₀ 2 2 i
+          (deTurckLieCovariantDerivativeInsertionField (I := I) g₀
+            (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg)‖ ^ 2 ≤
+      4 * (Module.finrank ℝ E : ℝ) *
+        ∑ i ∈ Finset.range (a + 1),
+          ‖iteratedCovGrad (I := I) g₀ 1 1 i
+            (deTurckVectorFieldCovariantDerivativeEndomorphismInsert (I := I) (M := M) g₀
+              (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg)‖ ^ 2 := by
+    rw [Finset.mul_sum]
+    refine Finset.sum_le_sum (fun i _ => ?_)
+    exact normSq_iteratedCovGrad_deTurckLieCovariantDerivativeInsertionField_le (I := I) (M := M) g₀
+      (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg i
+  have hins_s := hins T T' hδ_le hδ hδ'_le hδ' hTball hT'ball s hs
+  refine le_trans hsum_field ?_
+  refine le_trans (mul_le_mul_of_nonneg_left hins_s (mul_nonneg (by norm_num) hfr_nn))
+    (le_of_eq ?_)
+  ring
+
+theorem deTurckLieCovariantDerivativeInsertionField_metricPerturbationPath_riemannianFiberNormSq_order0_ballUniform
+    (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ)
+    (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
+    {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
+    ∃ Λ : ℝ, 0 ≤ Λ ∧
+      ∀ (T T' : SmoothCcTensor g₀ 0 2)
+        {δ : ℝ} (_hδ_le : δ ≤ δ₀)
+        (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
+        {δ' : ℝ} (_hδ'_le : δ' ≤ δ₀)
+        (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T') δ'),
+        (∀ j : ℕ, j ≤ a + 2 → ‖iteratedCovGrad (I := I) g₀ 0 2 j T‖ ≤ R) →
+        (∀ j : ℕ, j ≤ a + 2 → ‖iteratedCovGrad (I := I) g₀ 0 2 j T'‖ ≤ R) →
+        ∀ (s : ℝ), s ∈ Set.Icc (0 : ℝ) 1 → ∀ x : M,
+          riemannianFiberNormSq (I := I) (M := M) g₀ 2 2 x
+              ((deTurckLieCovariantDerivativeInsertionField (I := I) g₀
+                (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg).toSection x) ≤ Λ := by
+  obtain ⟨Λ0, hΛ0_nn, hΛ0⟩ :=
+    deTurckVectorFieldCovariantDerivativeEndomorphismInsert_metricPerturbationPath_order0_ballUniform (I := I) (M := M) g₀ g_bg a
+      ha_super hR hδ₀
+  have hfr_nn : (0 : ℝ) ≤ (Module.finrank ℝ E : ℝ) := Nat.cast_nonneg _
+  refine ⟨2 * ((Module.finrank ℝ E : ℝ) * Λ0) + 2 * ((Module.finrank ℝ E : ℝ) * Λ0), by
+    have h2 : 0 ≤ (Module.finrank ℝ E : ℝ) * Λ0 := mul_nonneg hfr_nn hΛ0_nn
+    linarith, ?_⟩
+  intro T T' δ hδ_le hδ δ' hδ'_le hδ' hTball hT'ball s hs x
+  have hWE : riemannianFiberNormSq (I := I) (M := M) g₀ 1 1 x
+      ((deTurckVectorFieldCovariantDerivativeEndomorphismInsert (I := I) (M := M) g₀
+        (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg).toSection x) ≤ Λ0 :=
+    hΛ0 T T' hδ_le hδ hδ'_le hδ' hTball hT'ball s hs x
+  have hA0 : riemannianFiberNormSq (I := I) (M := M) g₀ 2 2 x
+      ((endoSlotZeroCcTensor (I := I) (M := M) g₀ 1
+        (deTurckVectorFieldCovariantDerivativeEndomorphismSection (I := I) (M := M)
+          (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg)).toSection x) ≤
+      (Module.finrank ℝ E : ℝ) * Λ0 := by
+    have h := riemannianFiberNormSq_iteratedCovGrad_deTurckLieCovariantDerivativeInsertionFirstSummand_le (I := I) (M := M)
+      g₀
+      (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg 0 x
+    exact le_trans h (mul_le_mul_of_nonneg_left hWE hfr_nn)
+  have hB0 : riemannianFiberNormSq (I := I) (M := M) g₀ 2 2 x
+      ((reindexCoefficientInputSlots (I := I) (M := M) g₀ 2 2
+        (rsDomDomCongrSection (I := I) (M := M) g₀ 2 2 (Equiv.swap (0 : Fin 2) 1)
+          (endoSlotZeroCcTensor (I := I) (M := M) g₀ 1
+            (deTurckVectorFieldCovariantDerivativeEndomorphismSection (I := I) (M := M)
+              (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg)))
+        (Equiv.swap (0 : Fin 2) 1)).toSection x) ≤
+      (Module.finrank ℝ E : ℝ) * Λ0 := by
+    have h := riemannianFiberNormSq_iteratedCovGrad_deTurckLieCovariantDerivativeInsertionSecondSummand_le (I := I) (M := M)
+      g₀
+      (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg 0 x
+    exact le_trans h (mul_le_mul_of_nonneg_left hWE hfr_nn)
+  have hsec : (deTurckLieCovariantDerivativeInsertionField (I := I) g₀
+      (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg).toSection x
+      = (endoSlotZeroCcTensor (I := I) (M := M) g₀ 1
+          (deTurckVectorFieldCovariantDerivativeEndomorphismSection (I := I) (M := M)
+            (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg)).toSection x
+        + (reindexCoefficientInputSlots (I := I) (M := M) g₀ 2 2
+            (rsDomDomCongrSection (I := I) (M := M) g₀ 2 2 (Equiv.swap (0 : Fin 2) 1)
+              (endoSlotZeroCcTensor (I := I) (M := M) g₀ 1
+                (deTurckVectorFieldCovariantDerivativeEndomorphismSection (I := I) (M := M)
+                  (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg)))
+            (Equiv.swap (0 : Fin 2) 1)).toSection x := by
+    rw [deTurckLieCovariantDerivativeInsertionField_eq_slotInsert_sum (I := I) (M := M) g₀
+      (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg,
+      SmoothCcTensor.toSection_add, ContMDiffSection.coe_add, Pi.add_apply]
+  rw [hsec]
+  have hadd := riemannianFiberNormSq_add_le (I := I) (M := M) g₀ 2 2 x
+    ((endoSlotZeroCcTensor (I := I) (M := M) g₀ 1
+      (deTurckVectorFieldCovariantDerivativeEndomorphismSection (I := I) (M := M)
+        (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg)).toSection x)
+    ((reindexCoefficientInputSlots (I := I) (M := M) g₀ 2 2
+      (rsDomDomCongrSection (I := I) (M := M) g₀ 2 2 (Equiv.swap (0 : Fin 2) 1)
+        (endoSlotZeroCcTensor (I := I) (M := M) g₀ 1
+          (deTurckVectorFieldCovariantDerivativeEndomorphismSection (I := I) (M := M)
+            (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg)))
+      (Equiv.swap (0 : Fin 2) 1)).toSection x)
+  linarith [hadd, hA0, hB0]
+
+theorem deTurckLieCoeffField_metricPerturbationPath_jetL2_perOrder_ballUniform
+    (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ)
+    (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
+    {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
+    ∃ P : ℕ → ℝ, (∀ i, 0 ≤ P i) ∧
+      ∀ (T T' : SmoothCcTensor g₀ 0 2)
+        {δ : ℝ} (_hδ_le : δ ≤ δ₀)
+        (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
+        {δ' : ℝ} (_hδ'_le : δ' ≤ δ₀)
+        (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T') δ'),
+        (∀ j : ℕ, j ≤ a + 2 → ‖iteratedCovGrad (I := I) g₀ 0 2 j T‖ ≤ R) →
+        (∀ j : ℕ, j ≤ a + 2 → ‖iteratedCovGrad (I := I) g₀ 0 2 j T'‖ ≤ R) →
+        ∀ (i : ℕ), i ≤ a → ∀ (s : ℝ), s ∈ Set.Icc (0 : ℝ) 1 →
+          ‖iteratedCovGrad (I := I) g₀ 2 2 i
+              (deTurckLieCoeffField (I := I) (M := M) g₀
+                (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg)‖ ^ 2 ≤ P i := by
+  obtain ⟨Pa, hPa_nn, hPa⟩ :=
+    deTurckLieConnectionDifferenceDerivCoeffField_metricPerturbationPath_jetL2_perOrder_ballUniform (I := I) (M := M) g₀ g_bg a
+      ha_super hR hδ₀
+  obtain ⟨Pb, hPb_nn, hPb⟩ :=
+    deTurckLieCovariantDerivativeInsertionField_metricPerturbationPath_jetL2_perOrder_ballUniform (I := I) (M := M) g₀ g_bg a
+      ha_super hR hδ₀
+  refine ⟨fun i => 2 * (Pa i + Pb i),
+    fun i => by linarith [hPa_nn i, hPb_nn i], ?_⟩
+  intro T T' δ hδ_le hδ δ' hδ'_le hδ' hTball hT'ball i hi s hs
+  have ha := hPa T T' hδ_le hδ hδ'_le hδ' hTball hT'ball i hi s hs
+  have hb := hPb T T' hδ_le hδ hδ'_le hδ' hTball hT'ball i hi s hs
+  have hgrad : iteratedCovGrad (I := I) g₀ 2 2 i
+      (deTurckLieCoeffField (I := I) (M := M) g₀
+        (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg)
+      = iteratedCovGrad (I := I) g₀ 2 2 i
+          (deTurckLieConnectionDifferenceDerivCoeffField (I := I) g₀
+            (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg)
+        + iteratedCovGrad (I := I) g₀ 2 2 i
+            (deTurckLieCovariantDerivativeInsertionField (I := I) g₀
+              (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg) := by
+    rw [← deTurckLieConnectionDifferenceDerivCoeffField_add_deTurckLieCovariantDerivativeInsertionField (I := I) (M := M) g₀
+      (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg, iteratedCovGrad_add]
+  rw [hgrad]
+  exact sq_le_two_add
+    ‖iteratedCovGrad (I := I) g₀ 2 2 i
+        (deTurckLieConnectionDifferenceDerivCoeffField (I := I) g₀
+          (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg)
+      + iteratedCovGrad (I := I) g₀ 2 2 i
+          (deTurckLieCovariantDerivativeInsertionField (I := I) g₀
+            (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg)‖
+    ‖iteratedCovGrad (I := I) g₀ 2 2 i
+        (deTurckLieConnectionDifferenceDerivCoeffField (I := I) g₀
+          (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg)‖
+    ‖iteratedCovGrad (I := I) g₀ 2 2 i
+        (deTurckLieCovariantDerivativeInsertionField (I := I) g₀
+          (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg)‖
+    (Pa i) (Pb i)
+    (norm_nonneg _) (norm_nonneg _) (norm_nonneg _)
+    (norm_add_le _ _) ha hb
+
+theorem deTurckLieCoeffField_metricPerturbationPath_riemannianFiberNormSq_order0_ballUniform
+    (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ)
+    (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
+    {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
+    ∃ Λ : ℝ, 0 ≤ Λ ∧
+      ∀ (T T' : SmoothCcTensor g₀ 0 2)
+        {δ : ℝ} (_hδ_le : δ ≤ δ₀)
+        (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
+        {δ' : ℝ} (_hδ'_le : δ' ≤ δ₀)
+        (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T') δ'),
+        (∀ j : ℕ, j ≤ a + 2 → ‖iteratedCovGrad (I := I) g₀ 0 2 j T‖ ≤ R) →
+        (∀ j : ℕ, j ≤ a + 2 → ‖iteratedCovGrad (I := I) g₀ 0 2 j T'‖ ≤ R) →
+        ∀ (s : ℝ), s ∈ Set.Icc (0 : ℝ) 1 → ∀ x : M,
+          riemannianFiberNormSq (I := I) (M := M) g₀ 2 2 x
+              ((deTurckLieCoeffField (I := I) (M := M) g₀
+                (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg).toSection x) ≤ Λ := by
+  obtain ⟨Λa, hΛa_nn, hΛa⟩ :=
+    deTurckLieConnectionDifferenceDerivCoeffField_metricPerturbationPath_riemannianFiberNormSq_order0_ballUniform (I := I) (M := M) g₀ g_bg a
+      ha_super hR hδ₀
+  obtain ⟨Λb, hΛb_nn, hΛb⟩ :=
+    deTurckLieCovariantDerivativeInsertionField_metricPerturbationPath_riemannianFiberNormSq_order0_ballUniform (I := I) (M := M) g₀ g_bg a
+      ha_super hR hδ₀
+  refine ⟨2 * Λa + 2 * Λb, by linarith, ?_⟩
+  intro T T' δ hδ_le hδ δ' hδ'_le hδ' hTball hT'ball s hs x
+  have ha := hΛa T T' hδ_le hδ hδ'_le hδ' hTball hT'ball s hs x
+  have hb := hΛb T T' hδ_le hδ hδ'_le hδ' hTball hT'ball s hs x
+  have hsec : (deTurckLieCoeffField (I := I) (M := M) g₀
+      (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg).toSection x
+      = (deTurckLieConnectionDifferenceDerivCoeffField (I := I) g₀
+          (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg).toSection x
+        + (deTurckLieCovariantDerivativeInsertionField (I := I) g₀
+            (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg).toSection x := by
+    rw [← deTurckLieConnectionDifferenceDerivCoeffField_add_deTurckLieCovariantDerivativeInsertionField (I := I) (M := M) g₀
+      (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg,
+      SmoothCcTensor.toSection_add, ContMDiffSection.coe_add, Pi.add_apply]
+  rw [hsec]
+  have hadd := riemannianFiberNormSq_add_le (I := I) (M := M) g₀ 2 2 x
+    ((deTurckLieConnectionDifferenceDerivCoeffField (I := I) g₀
+      (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg).toSection x)
+    ((deTurckLieCovariantDerivativeInsertionField (I := I) g₀
+      (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg).toSection x)
+  linarith [hadd, ha, hb]
+
+private theorem normSq_iteratedCovGrad_deTurckLieCoeff_le (g₀ g₁ g_bg : SmoothRiemannianMetric I M) (i : ℕ) :
+    ‖iteratedCovGrad (I := I) g₀ 2 2 i (deTurckLieCoeffField (I := I) (M := M) g₀ g₁ g_bg)‖ ^ 2 ≤
+      2 * ‖iteratedCovGrad (I := I) g₀ 2 2 i (deTurckLieConnectionDifferenceDerivCoeffField
+        (I := I) g₀ g₁ g_bg)‖ ^ 2
+      + 2 * ‖iteratedCovGrad (I := I) g₀ 2 2 i (deTurckLieCovariantDerivativeInsertionField
+        (I := I) g₀ g₁ g_bg)‖ ^ 2 := by
+  have hgrad : iteratedCovGrad (I := I) g₀ 2 2 i (deTurckLieCoeffField (I := I) (M := M) g₀ g₁ g_bg)
+      = iteratedCovGrad (I := I) g₀ 2 2 i (deTurckLieConnectionDifferenceDerivCoeffField (I := I) g₀ g₁ g_bg)
+        + iteratedCovGrad (I := I) g₀ 2 2 i (deTurckLieCovariantDerivativeInsertionField (I := I) g₀ g₁ g_bg) := by
+    rw [← deTurckLieConnectionDifferenceDerivCoeffField_add_deTurckLieCovariantDerivativeInsertionField (I := I) (M := M) g₀ g₁ g_bg,
+      iteratedCovGrad_add]
+  rw [hgrad]
+  refine le_trans (sq_le_two_add
+    ‖iteratedCovGrad (I := I) g₀ 2 2 i (deTurckLieConnectionDifferenceDerivCoeffField (I := I) g₀ g₁ g_bg)
+      + iteratedCovGrad (I := I) g₀ 2 2 i (deTurckLieCovariantDerivativeInsertionField (I := I) g₀ g₁ g_bg)‖
+    ‖iteratedCovGrad (I := I) g₀ 2 2 i (deTurckLieConnectionDifferenceDerivCoeffField (I := I) g₀ g₁ g_bg)‖
+    ‖iteratedCovGrad (I := I) g₀ 2 2 i (deTurckLieCovariantDerivativeInsertionField (I := I) g₀ g₁ g_bg)‖
+    (‖iteratedCovGrad (I := I) g₀ 2 2 i (deTurckLieConnectionDifferenceDerivCoeffField
+      (I := I) g₀ g₁ g_bg)‖ ^ 2)
+    (‖iteratedCovGrad (I := I) g₀ 2 2 i (deTurckLieCovariantDerivativeInsertionField (I := I) g₀ g₁ g_bg)‖ ^ 2)
+    (norm_nonneg _) (norm_nonneg _) (norm_nonneg _)
+    (norm_add_le _ _) (le_refl _) (le_refl _)) (le_of_eq (by ring))
+
+theorem deTurckLieCoeffField_metricPerturbationPath_jetL2_perOrder_topOrderSeparated
+    (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ)
+    (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
+    {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
+    ∃ Ktop : ℝ, 0 ≤ Ktop ∧ ∃ Kc : ℕ → ℝ, (∀ i, 0 ≤ Kc i) ∧
+      ∀ (T T' : SmoothCcTensor g₀ 0 2)
+        {δ : ℝ} (_hδ_le : δ ≤ δ₀)
+        (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
+        {δ' : ℝ} (_hδ'_le : δ' ≤ δ₀)
+        (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T') δ'),
+        (∀ j : ℕ, j ≤ a + 2 → ‖iteratedCovGrad (I := I) g₀ 0 2 j T‖ ≤ R) →
+        (∀ j : ℕ, j ≤ a + 2 → ‖iteratedCovGrad (I := I) g₀ 0 2 j T'‖ ≤ R) →
+        ∀ (s : ℝ), s ∈ Set.Icc (0 : ℝ) 1 →
+        ∀ (i : ℕ), i ≤ a →
+          ‖iteratedCovGrad (I := I) g₀ 2 2 i
+              (deTurckLieCoeffField (I := I) (M := M) g₀
+                (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg)‖ ^ 2 ≤
+            Ktop * (‖iteratedCovGrad (I := I) g₀ 0 2 (i + 2) T‖ ^ 2 +
+              ‖iteratedCovGrad (I := I) g₀ 0 2 (i + 2) T'‖ ^ 2) +
+            Kc i * (1 + ∑ j ∈ Finset.range (i + 3),
+              (‖iteratedCovGrad (I := I) g₀ 0 2 j T‖ ^ 2 +
+                ‖iteratedCovGrad (I := I) g₀ 0 2 j T'‖ ^ 2)) := by
+  obtain ⟨Ktop_a, hKtop_a_nn, Kc_a, hKc_a_nn, ha⟩ :=
+    deTurckLieConnectionDifferenceDerivCoeffField_metricPerturbationPath_jetL2_perOrder_topOrderSeparated (I := I) (M := M) g₀ g_bg a
+      ha_super hR hδ₀
+  obtain ⟨Ktop_b, hKtop_b_nn, Kc_b, hKc_b_nn, hb⟩ :=
+    deTurckLieCovariantDerivativeInsertionField_metricPerturbationPath_jetL2_perOrder_topOrderSeparated (I := I) (M := M) g₀ g_bg a
+      ha_super hR hδ₀
+  refine ⟨2 * (Ktop_a + Ktop_b), by linarith [hKtop_a_nn, hKtop_b_nn],
+    fun i => 2 * (Kc_a i + Kc_b i),
+    fun i => by linarith [hKc_a_nn i, hKc_b_nn i], ?_⟩
+  intro T T' δ hδ_le hδ δ' hδ'_le hδ' hTball hT'ball s hs i hi
+  have ha_i := ha T T' hδ_le hδ hδ'_le hδ' hTball hT'ball s hs i hi
+  have hb_i := hb T T' hδ_le hδ hδ'_le hδ' hTball hT'ball s hs i hi
+  refine le_trans (normSq_iteratedCovGrad_deTurckLieCoeff_le (I := I) (M := M) g₀
+    (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg i) ?_
+  have h1 : 2 * ‖iteratedCovGrad (I := I) g₀ 2 2 i
+        (deTurckLieConnectionDifferenceDerivCoeffField (I := I) g₀
+          (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg)‖ ^ 2 ≤
+      2 * (Ktop_a * (‖iteratedCovGrad (I := I) g₀ 0 2 (i + 2) T‖ ^ 2 +
+          ‖iteratedCovGrad (I := I) g₀ 0 2 (i + 2) T'‖ ^ 2) +
+        Kc_a i * (1 + ∑ j ∈ Finset.range (i + 3),
+          (‖iteratedCovGrad (I := I) g₀ 0 2 j T‖ ^ 2 +
+            ‖iteratedCovGrad (I := I) g₀ 0 2 j T'‖ ^ 2))) :=
+    mul_le_mul_of_nonneg_left ha_i (by norm_num)
+  have h2 : 2 * ‖iteratedCovGrad (I := I) g₀ 2 2 i
+        (deTurckLieCovariantDerivativeInsertionField (I := I) g₀
+          (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg)‖ ^ 2 ≤
+      2 * (Ktop_b * (‖iteratedCovGrad (I := I) g₀ 0 2 (i + 2) T‖ ^ 2 +
+          ‖iteratedCovGrad (I := I) g₀ 0 2 (i + 2) T'‖ ^ 2) +
+        Kc_b i * (1 + ∑ j ∈ Finset.range (i + 3),
+          (‖iteratedCovGrad (I := I) g₀ 0 2 j T‖ ^ 2 +
+            ‖iteratedCovGrad (I := I) g₀ 0 2 j T'‖ ^ 2))) :=
+    mul_le_mul_of_nonneg_left hb_i (by norm_num)
+  refine le_trans (add_le_add h1 h2) (le_of_eq ?_)
+  ring
+
+theorem deTurckLieCoeffField_metricPerturbationPath_jetL2_summed_topOrderSeparated
+    (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ)
+    (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
+    {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
+    ∃ Ktop : ℝ, 0 ≤ Ktop ∧ ∃ Kc : ℝ, 0 ≤ Kc ∧
+      ∀ (T T' : SmoothCcTensor g₀ 0 2)
+        {δ : ℝ} (_hδ_le : δ ≤ δ₀)
+        (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
+        {δ' : ℝ} (_hδ'_le : δ' ≤ δ₀)
+        (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T') δ'),
+        (∀ j : ℕ, j ≤ a + 2 → ‖iteratedCovGrad (I := I) g₀ 0 2 j T‖ ≤ R) →
+        (∀ j : ℕ, j ≤ a + 2 → ‖iteratedCovGrad (I := I) g₀ 0 2 j T'‖ ≤ R) →
+        ∀ (s : ℝ), s ∈ Set.Icc (0 : ℝ) 1 →
+          ∑ i ∈ Finset.range (a + 1),
+              ‖iteratedCovGrad (I := I) g₀ 2 2 i
+                (deTurckLieCoeffField (I := I) (M := M) g₀
+                  (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg)‖ ^ 2 ≤
+            Ktop * (∑ j ∈ Finset.range (a + 3),
+                (‖iteratedCovGrad (I := I) g₀ 0 2 j T‖ ^ 2 +
+                  ‖iteratedCovGrad (I := I) g₀ 0 2 j T'‖ ^ 2)) +
+            Kc * (1 + ∑ j ∈ Finset.range (a + 3),
+                (‖iteratedCovGrad (I := I) g₀ 0 2 j T‖ ^ 2 +
+                  ‖iteratedCovGrad (I := I) g₀ 0 2 j T'‖ ^ 2)) := by
+  obtain ⟨Ktop_a, hKtop_a_nn, Kc_a, hKc_a_nn, ha⟩ :=
+    deTurckLieConnectionDifferenceDerivCoeffField_metricPerturbationPath_jetL2_summed_topOrderSeparated (I := I) (M := M) g₀ g_bg a
+      ha_super hR hδ₀
+  obtain ⟨Ktop_b, hKtop_b_nn, Kc_b, hKc_b_nn, hb⟩ :=
+    deTurckLieCovariantDerivativeInsertionField_metricPerturbationPath_jetL2_summed_topOrderSeparated (I := I) (M := M) g₀ g_bg a
+      ha_super hR hδ₀
+  refine ⟨2 * (Ktop_a + Ktop_b), by linarith [hKtop_a_nn, hKtop_b_nn],
+    2 * (Kc_a + Kc_b), by linarith [hKc_a_nn, hKc_b_nn], ?_⟩
+  intro T T' δ hδ_le hδ δ' hδ'_le hδ' hTball hT'ball s hs
+  have ha_s := ha T T' hδ_le hδ hδ'_le hδ' hTball hT'ball s hs
+  have hb_s := hb T T' hδ_le hδ hδ'_le hδ' hTball hT'ball s hs
+  have htri_sum : ∑ i ∈ Finset.range (a + 1),
+        ‖iteratedCovGrad (I := I) g₀ 2 2 i
+          (deTurckLieCoeffField (I := I) (M := M) g₀
+            (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg)‖ ^ 2 ≤
+      2 * (∑ i ∈ Finset.range (a + 1),
+          ‖iteratedCovGrad (I := I) g₀ 2 2 i
+            (deTurckLieConnectionDifferenceDerivCoeffField (I := I) g₀
+              (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg)‖ ^ 2)
+        + 2 * (∑ i ∈ Finset.range (a + 1),
+            ‖iteratedCovGrad (I := I) g₀ 2 2 i
+              (deTurckLieCovariantDerivativeInsertionField (I := I) g₀
+                (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg)‖ ^ 2) := by
+    have hstep := Finset.sum_le_sum (fun i (_ : i ∈ Finset.range (a + 1)) =>
+      normSq_iteratedCovGrad_deTurckLieCoeff_le (I := I) (M := M) g₀
+        (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg i)
+    rw [Finset.sum_add_distrib, ← Finset.mul_sum, ← Finset.mul_sum] at hstep
+    exact hstep
+  refine le_trans htri_sum ?_
+  have h1 := mul_le_mul_of_nonneg_left ha_s (show (0 : ℝ) ≤ 2 by norm_num)
+  have h2 := mul_le_mul_of_nonneg_left hb_s (show (0 : ℝ) ≤ 2 by norm_num)
+  refine le_trans (add_le_add h1 h2) (le_of_eq ?_)
+  ring
+
+end DifferentialGeometry.Analysis.Sobolev
+
+end

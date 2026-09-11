@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Curvature.DifferentiatedSecondBianchi
-import DifferentialGeometry.Geometry.Curvature.CurvatureActionLower
+import DifferentialGeometry.Geometry.Curvature.Contractions.CurvatureActionLowering
 
 
 open DifferentialGeometry.Tensor.RSTensor
@@ -242,7 +242,7 @@ private theorem curvatureAction_basis
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     (g : SmoothRiemannianMetric I M) {x : M}
     (basis : Module.Basis Idx Real (TangentSpace I x))
-    (hinv : MetricInverseInBasisGen (I := I) (M := M) g x basis
+    (hinv : MetricInverseInBasis (I := I) (M := M) g x basis
       (identityInvMetric (Idx := Idx)))
     (Rm13 : Tensor13Section (I := I) (M := M))
     (Rm04 : Tensor04At (I := I) (M := M) x)
@@ -303,7 +303,7 @@ private theorem canRmActionSum
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     (g : SmoothRiemannianMetric I M) {x : M}
     (basis : Module.Basis Idx Real (TangentSpace I x))
-    (hinv : MetricInverseInBasisGen (I := I) (M := M) g x basis
+    (hinv : MetricInverseInBasis (I := I) (M := M) g x basis
       (identityInvMetric (Idx := Idx)))
     (A B C D : TangentSpace I x) :
     let cov := leviCivitaConnectionOfMetric (I := I) g
@@ -417,7 +417,7 @@ private theorem canRic_basis
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     (g : SmoothRiemannianMetric I M) {x : M}
     (basis : Module.Basis Idx Real (TangentSpace I x))
-    (hinv : MetricInverseInBasisGen (I := I) (M := M) g x basis
+    (hinv : MetricInverseInBasis (I := I) (M := M) g x basis
       (identityInvMetric (Idx := Idx)))
     (a b : Idx) :
     let cov := leviCivitaConnectionOfMetric (I := I) g
@@ -465,7 +465,7 @@ private theorem canRawLowering
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     (g : SmoothRiemannianMetric I M) {x : M}
     (basis : Module.Basis Idx Real (TangentSpace I x))
-    (hinv : MetricInverseInBasisGen (I := I) (M := M) g x basis
+    (hinv : MetricInverseInBasis (I := I) (M := M) g x basis
       (identityInvMetric (Idx := Idx)))
     (a b c d : Idx) :
     let cov := leviCivitaConnectionOfMetric (I := I) g
@@ -557,7 +557,7 @@ theorem canRmRicci
       CovariantDerivative.rm04Section (I := I) g cov hcov
     let nablaRm04 :=
       totalNabla0S (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
-        4 cov Rm04 (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+        4 cov Rm04 (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
           4 cov hcov Rm04)
     let nabla2Rm04 :=
       totalNabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
@@ -573,7 +573,7 @@ theorem canRmRicci
     CovariantDerivative.rm04Section (I := I) g cov hcov
   let nablaRm04 :=
     totalNabla0S (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
-      4 cov Rm04 (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+      4 cov Rm04 (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
         4 cov hcov Rm04)
   let nabla2Rm04 :=
     totalNabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
@@ -607,7 +607,7 @@ theorem canRmHessComm
       CovariantDerivative.rm04Section (I := I) g cov hcov
     let nablaRm04 :=
       totalNabla0S (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
-        4 cov Rm04 (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+        4 cov Rm04 (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
           4 cov hcov Rm04)
     let nabla2Rm04 :=
       totalNabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
@@ -637,7 +637,7 @@ theorem canRmHessComm
     CovariantDerivative.rm04Section (I := I) g cov hcov
   let nablaRm04 :=
     totalNabla0S (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
-      4 cov Rm04 (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+      4 cov Rm04 (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
         4 cov hcov Rm04)
   let nabla2Rm04 :=
     totalNabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
@@ -685,7 +685,7 @@ theorem canRicHessSum
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     (g : SmoothRiemannianMetric I M) {x : M}
     (basis : Module.Basis Idx Real (TangentSpace I x))
-    (hinv : MetricInverseInBasisGen (I := I) (M := M) g x basis
+    (hinv : MetricInverseInBasis (I := I) (M := M) g x basis
       (identityInvMetric (Idx := Idx)))
     (A B C D : TangentSpace I x) :
     let cov := leviCivitaConnectionOfMetric (I := I) g
@@ -700,14 +700,14 @@ theorem canRicHessSum
       CovariantDerivative.ricciSection (I := I) (M := M) cov hcov
     let nablaRm04 :=
       totalNabla0S (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
-        4 cov Rm04 (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+        4 cov Rm04 (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
           4 cov hcov Rm04)
     let nabla2Rm04 :=
       totalNabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
         5 cov nablaRm04 x
     let nablaRic :=
       totalNabla0S (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
-        2 cov Ric (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+        2 cov Ric (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
           2 cov hcov Ric)
     let nabla2Ric :=
       totalNabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
@@ -744,14 +744,14 @@ theorem canRicHessSum
     CovariantDerivative.ricciSection (I := I) (M := M) cov hcov
   let nablaRm04 :=
     totalNabla0S (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
-      4 cov Rm04 (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+      4 cov Rm04 (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
         4 cov hcov Rm04)
   let nabla2Rm04 :=
     totalNabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       5 cov nablaRm04 x
   let nablaRic :=
     totalNabla0S (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
-      2 cov Ric (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+      2 cov Ric (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
         2 cov hcov Ric)
   let nabla2Ric :=
     totalNabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
@@ -797,7 +797,7 @@ theorem hamiltonRm04Id
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     (g : SmoothRiemannianMetric I M) {x : M}
     (basis : Module.Basis Idx Real (TangentSpace I x))
-    (hinv : MetricInverseInBasisGen (I := I) (M := M) g x basis
+    (hinv : MetricInverseInBasis (I := I) (M := M) g x basis
       (identityInvMetric (Idx := Idx)))
     (m : Fin 4 -> Idx) :
     let cov := leviCivitaConnectionOfMetric (I := I) g
@@ -810,14 +810,14 @@ theorem hamiltonRm04Id
       CovariantDerivative.ricciSection (I := I) (M := M) cov hcov
     let nablaRm04 :=
       totalNabla0S (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
-        4 cov Rm04 (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+        4 cov Rm04 (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
           4 cov hcov Rm04)
     let nabla2Rm04 :=
       totalNabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
         5 cov nablaRm04 x
     let nablaRic :=
       totalNabla0S (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
-        2 cov Ric (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+        2 cov Ric (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
           2 cov hcov Ric)
     let nabla2Ric :=
       totalNabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
@@ -860,14 +860,14 @@ theorem hamiltonRm04Id
     CovariantDerivative.ricciSection (I := I) (M := M) cov hcov
   let nablaRm04 :=
     totalNabla0S (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
-      4 cov Rm04 (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+      4 cov Rm04 (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
         4 cov hcov Rm04)
   let nabla2Rm04 :=
     totalNabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       5 cov nablaRm04 x
   let nablaRic :=
     totalNabla0S (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
-      2 cov Ric (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+      2 cov Ric (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
         2 cov hcov Ric)
   let nabla2Ric :=
     totalNabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)

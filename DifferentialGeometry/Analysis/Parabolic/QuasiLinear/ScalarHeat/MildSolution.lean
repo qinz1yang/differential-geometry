@@ -31,10 +31,10 @@ omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem scalar_quasilinear_local_existence
     (g : SmoothRiemannianMetric I M) (σ : ℝ)
-    (u₀ : scalarHs (I := I) (M := M) g σ)
-    {N : scalarHs (I := I) (M := M) g σ → scalarHs (I := I) (M := M) g σ}
+    (u₀ : ScalarHs (I := I) (M := M) g σ)
+    {N : ScalarHs (I := I) (M := M) g σ → ScalarHs (I := I) (M := M) g σ}
     {L : ℝ≥0} (hN : LipschitzWith L N) :
-    ∃ T : ℝ, 0 < T ∧ ∃ u : ℝ → scalarHs (I := I) (M := M) g σ,
+    ∃ T : ℝ, 0 < T ∧ ∃ u : ℝ → ScalarHs (I := I) (M := M) g σ,
       ContinuousOn u (Set.Icc 0 T) ∧
       u 0 = u₀ ∧
       ∀ t ∈ Set.Icc (0:ℝ) T,
@@ -53,11 +53,11 @@ omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem scalar_quasilinear_local_unique
     (g : SmoothRiemannianMetric I M) (σ : ℝ)
-    (u₀ : scalarHs (I := I) (M := M) g σ)
-    {N : scalarHs (I := I) (M := M) g σ → scalarHs (I := I) (M := M) g σ}
+    (u₀ : ScalarHs (I := I) (M := M) g σ)
+    {N : ScalarHs (I := I) (M := M) g σ → ScalarHs (I := I) (M := M) g σ}
     {L : ℝ≥0} (hN : LipschitzWith L N)
     {T : ℝ} (hT : 0 < T) (hTL : (L : ℝ) * T < 1)
-    {u v : ℝ → scalarHs (I := I) (M := M) g σ}
+    {u v : ℝ → ScalarHs (I := I) (M := M) g σ}
     (hu : ContinuousOn u (Set.Icc 0 T)) (hv : ContinuousOn v (Set.Icc 0 T))
     (hu_eq : ∀ t ∈ Set.Icc (0 : ℝ) T,
       u t = heatSemigroupHsExt (I := I) (M := M) g σ t u₀ +

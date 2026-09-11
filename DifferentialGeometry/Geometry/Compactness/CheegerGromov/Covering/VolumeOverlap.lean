@@ -1,8 +1,8 @@
-import DifferentialGeometry.Geometry.Comparison.Volume.SegmentCount
+import DifferentialGeometry.Geometry.Comparison.Volume.Segment.Count
 
 
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Limit.VolumeComparisonBridge
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Covering.GoodCovering
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Covering.VolumeComparison
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Covering.GoodCovering.Basic
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 
@@ -13,7 +13,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open Bundle Manifold
 open scoped Manifold ContDiff Topology Bundle
@@ -70,7 +70,7 @@ theorem ricci_dim1_bddBelow (h1 : Module.finrank ℝ E = 1)
     rw [ricciTensor_apply_basisSum]
     refine Finset.sum_eq_zero ?_
     intro i _
-    rw [riemannOp_dim1_zero h1 g x ((centeredChartTangentBasis x) i) v v,
+    rw [riemannOp_dim1_zero h1 g x ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis x) i) v v,
       map_zero, Finsupp.zero_apply]
   rw [hzero]
 
@@ -81,19 +81,19 @@ attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
 def volInputOfBg
     (X : PointedRiemannianSeq.{u, uE, uH} (I := I))
     (bg : SeqBoundedGeometry (I := I) X)
-    (hd : InjRadiusDecayInput (I := I) X) (hreal : hd.RealizesEdist)
+    (hd : InjectivityRadiusDecay (I := I) X) (hreal : hd.RealizesDistance)
     (hcpl : SeqMetricComplete (I := I) X)
     (hconn : ∀ k : Nat,
       letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
       ConnectedSpace (X.obj k).M)
     (r0 : Real) (hr0 : 0 < r0) :
-    { vc : VolumeComparisonInput (I := I) X // vc.dist = hd.dist } := by
+    { vc : BallMultiplicityBound (I := I) X // vc.dist = hd.dist } := by
   set q : ℝ := (Module.finrank ℝ E : ℝ) * Real.sqrt (bg.C 0) with hq_def
   have hq : 0 ≤ q := mul_nonneg (Nat.cast_nonneg _) (Real.sqrt_nonneg _)
   have hC0 : 0 ≤ bg.C 0 := bg.nonneg 0
   refine ⟨{ dist := hd.dist, r0 := r0, r0_pos := hr0,
-            Imult := fun m => segImult (Module.finrank ℝ E) q r0 m,
-            ballMult := ?_ }, rfl⟩
+            multiplicity := fun m => segmentImult (Module.finrank ℝ E) q r0 m,
+            card_le := ?_ }, rfl⟩
   intro m k α _ _ centers r hr hcap hsep z J hJz
   let : TopologicalSpace (X.obj k).M := (X.obj k).topology
   let : ChartedSpace H (X.obj k).M := (X.obj k).charted
@@ -173,13 +173,13 @@ def volInputOfBg
     intro j hj
     rw [hbridge (centers j) z]
     exact ENNReal.ofReal_le_ofReal (hJz j hj)
-  exact segBall_card (I := I) (X.obj k).metric hEnorm hq hRic hr hcap
+  exact segmentBall_card (I := I) (X.obj k).metric hEnorm hq hRic hr hcap
     centers hsep' z J hJz'
 
 def packInputOfBg
     (X : PointedRiemannianSeq.{u, uE, uH} (I := I))
     (bg : SeqBoundedGeometry (I := I) X)
-    (hd : InjRadiusDecayInput (I := I) X) (hreal : hd.RealizesEdist)
+    (hd : InjectivityRadiusDecay (I := I) X) (hreal : hd.RealizesDistance)
     (hcpl : SeqMetricComplete (I := I) X)
     (hconn : ∀ k : Nat,
       letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
@@ -191,7 +191,7 @@ def packInputOfBg
       let vc :=
         (volInputOfBg (I := I) X bg hd hreal hcpl hconn
           (r + 1) (by linarith)).1
-      vc.Imult (r / hd.lambda D r)
+      vc.multiplicity (r / hd.lambda D r)
     else
       0
   card_le := by
@@ -204,7 +204,7 @@ def packInputOfBg
       have hr0 : 0 < r + 1 := by linarith
       let out :=
         volInputOfBg (I := I) X bg hd hreal hcpl hconn (r + 1) hr0
-      let vc : VolumeComparisonInput (I := I) X := out.1
+      let vc : BallMultiplicityBound (I := I) X := out.1
       have hvc : vc.dist = hd.dist := out.2
       have hmul_eq : (r / s) * s = r := div_mul_cancel₀ r hs_ne
       have hcap : (r / s) * s ≤ r + 1 := by
@@ -213,7 +213,7 @@ def packInputOfBg
       have hcap' : (r / s) * s ≤ vc.r0 := by
         change (r / s) * s ≤ r + 1
         exact hcap
-      have hmul := vc.ballMult (r / s) k
+      have hmul := vc.card_le (r / s) k
         (centers := fun i : {x // x ∈ J} => (i : (X.obj k).M))
         (r := s) hs hcap'
         (fun i j hij => by
@@ -233,5 +233,5 @@ def packInputOfBg
       subst J
       simp only [Finset.card_empty, hr, ↓reduceDIte, le_refl]
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

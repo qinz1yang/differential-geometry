@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.Reduction
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.UhlenbeckReduction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Uhlenbeck.HeatCommutator
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HamiltonHarnack.Defs
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HamiltonHarnack.PEvolution

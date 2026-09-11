@@ -18,7 +18,7 @@ variable {H : Type uH} [TopologicalSpace H]
 variable {I : ModelWithCorners ℝ E H}
 variable {M : Type u} [TopologicalSpace M] [ChartedSpace H M]
 
-structure StdModelCopy
+structure StandardModelCopy
     (I : ModelWithCorners ℝ E H) (M : Type u)
     [TopologicalSpace M] [ChartedSpace H M]
     (F : Type uF) [NormedAddCommGroup F] [NormedSpace ℝ F] where
@@ -31,8 +31,8 @@ structure StdModelCopy
   [boundaryless : BoundarylessManifold 𝓘(ℝ, F) Q]
   equiv : M ≃ₘ⟮I, 𝓘(ℝ, F)⟯ Q
 
-attribute [instance] StdModelCopy.topos StdModelCopy.charted StdModelCopy.mfld
-  StdModelCopy.t2 StdModelCopy.sigma StdModelCopy.boundaryless
+attribute [instance] StandardModelCopy.topos StandardModelCopy.charted StandardModelCopy.mfld
+  StandardModelCopy.t2 StandardModelCopy.sigma StandardModelCopy.boundaryless
 
 private noncomputable def modelHomeo
     [I.Boundaryless] {F : Type uF}
@@ -41,7 +41,7 @@ private noncomputable def modelHomeo
   I.toHomeomorph.trans e.toHomeomorph
 
 @[implicit_reducible]
-private noncomputable def stdCharts
+private noncomputable def standardCharts
     [I.Boundaryless] {F : Type uF}
     [NormedAddCommGroup F] [NormedSpace ℝ F]
     (e : E ≃L[ℝ] F) : ChartedSpace F M :=
@@ -50,14 +50,14 @@ private noncomputable def stdCharts
     h.toOpenPartialHomeomorph.singletonChartedSpace (by simp [h])
   ChartedSpace.comp F H M
 
-private noncomputable def std_diffeo
+private noncomputable def standard_diffeo
     [I.Boundaryless]
     {F : Type uF} [NormedAddCommGroup F] [NormedSpace ℝ F]
     (e : E ≃L[ℝ] F) :
     @Diffeomorph ℝ _ E _ _ F _ _ H _ F _ I 𝓘(ℝ, F)
       M _ (inferInstance : ChartedSpace H M)
-      M _ (stdCharts (I := I) e) ∞ := by
-  letI : ChartedSpace F M := stdCharts (I := I) e
+      M _ (standardCharts (I := I) e) ∞ := by
+  letI : ChartedSpace F M := standardCharts (I := I) e
   refine
     { toEquiv := Equiv.refl M
       contMDiff_toFun := fun x => ?_
@@ -81,12 +81,12 @@ private noncomputable def std_diffeo
       rw [(extChartAt 𝓘(ℝ, F) x).right_inv hy.1]
     · simp
 
-private theorem std_mfld
+private theorem standard_mfld
     [I.Boundaryless] [IsManifold I ∞ M]
     {F : Type uF} [NormedAddCommGroup F] [NormedSpace ℝ F]
     (e : E ≃L[ℝ] F) :
     @IsManifold ℝ _ F _ _ F _ 𝓘(ℝ, F) ∞ M _
-      (stdCharts (I := I) e) := by
+      (standardCharts (I := I) e) := by
   let h := modelHomeo (I := I) e
   let hs : ChartedSpace F H :=
     h.toOpenPartialHomeomorph.singletonChartedSpace (by simp [h])
@@ -119,7 +119,7 @@ private theorem std_mfld
       · simp
   let : IsManifold 𝓘(ℝ, F) ∞ H :=
     h.toOpenPartialHomeomorph.isManifold_singleton (by simp [h])
-  let : ChartedSpace F M := stdCharts (I := I) e
+  let : ChartedSpace F M := standardCharts (I := I) e
   let : HasGroupoid M (contDiffGroupoid ∞ 𝓘(ℝ, F)) :=
     StructureGroupoid.HasGroupoid.comp (G₂ := contDiffGroupoid ∞ I) (by
       intro f hf
@@ -150,15 +150,15 @@ private theorem std_mfld
         exact hpost.congr fun _ _ => rfl)
   exact IsManifold.mk' 𝓘(ℝ, F) ∞ M
 
-noncomputable def stdModelCopy
+noncomputable def standardModelCopy
     [I.Boundaryless] [IsManifold I ∞ M] [T2Space M] [SigmaCompactSpace M]
     {F : Type uF} [NormedAddCommGroup F] [NormedSpace ℝ F]
     (e : E ≃L[ℝ] F) :
-    StdModelCopy I M F := by
-  let c : ChartedSpace F M := stdCharts (I := I) e
+    StandardModelCopy I M F := by
+  let c : ChartedSpace F M := standardCharts (I := I) e
   letI : ChartedSpace F M := c
-  letI : IsManifold 𝓘(ℝ, F) ∞ M := std_mfld (I := I) e
-  let d : M ≃ₘ⟮I, 𝓘(ℝ, F)⟯ M := std_diffeo (I := I) e
+  letI : IsManifold 𝓘(ℝ, F) ∞ M := standard_mfld (I := I) e
+  let d : M ≃ₘ⟮I, 𝓘(ℝ, F)⟯ M := standard_diffeo (I := I) e
   let h : ULift.{0} M ≃ₜ M := Homeomorph.ulift
   let qBase : ChartedSpace M (ULift.{0} M) :=
     h.toOpenPartialHomeomorph.singletonChartedSpace (by simp [h])

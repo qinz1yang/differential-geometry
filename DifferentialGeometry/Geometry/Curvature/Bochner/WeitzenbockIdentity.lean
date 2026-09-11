@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Connection.Laplacian.ConnectionLaplacian
-import DifferentialGeometry.Geometry.Connection.ChartBridge.Laplacian
-import DifferentialGeometry.Geometry.Connection.ChartBridge.HessFrobenius
-import DifferentialGeometry.Geometry.Operator.NormGradSq
+import DifferentialGeometry.Geometry.Connection.ChartBridge.Scalar.Laplacian
+import DifferentialGeometry.Geometry.Connection.ChartBridge.Scalar.HessianNorm
+import DifferentialGeometry.Geometry.Operator.Gradient.NormSquared
 import DifferentialGeometry.Geometry.Curvature.Bochner.OrthonormalFrameTrace
 open DifferentialGeometry.Geometry.Curvature
 
@@ -195,7 +195,7 @@ theorem normGradSq_contMDiff [I.Boundaryless]
   exact normGradSqFun_contMDiff (I := I) g hf
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem bochner_abstract_packaged [I.Boundaryless]
+theorem bochner_identity_of_inner_commutator [I.Boundaryless]
     (g : SmoothRiemannianMetric I M)
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ) ∞ f) (x : M)
     (hLeibniz :
@@ -221,7 +221,7 @@ theorem bochner_abstract_packaged [I.Boundaryless]
     hLeibniz hInner
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem bochner_abstract_of_heart_of_bochner_packaged [I.Boundaryless]
+theorem bochner_identity_of_vector_commutator [I.Boundaryless]
     (g : SmoothRiemannianMetric I M)
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ) ∞ f) (x : M)
     (hLeibniz :
@@ -269,7 +269,7 @@ def IsChartOrthonormalAt
       g.inner x (gradFun (I := I) g (ΔG (I := I) g ⟨_, hf⟩) x) w +
         g.inner x (ricciSharp (I := I) g x (gradFun (I := I) g f x)) w
 
-structure BochnerReductionAt [I.Boundaryless]
+private structure BochnerReductionAt [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) {f : M → ℝ}
     (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) (x : M) : Prop where
   leibniz : IsLeibnizTraceAt (I := I) g
@@ -277,7 +277,7 @@ structure BochnerReductionAt [I.Boundaryless]
   heart : IsHeartOfBochnerInnerAt (I := I) g hf x
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem bochner_pointwise_abstract_of_reduction [I.Boundaryless]
+private theorem bochner_pointwise_abstract_of_reduction [I.Boundaryless]
     (g : SmoothRiemannianMetric I M)
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ) ∞ f) (x : M)
     (hRed : BochnerReductionAt (I := I) g hf x) :
@@ -288,7 +288,7 @@ theorem bochner_pointwise_abstract_of_reduction [I.Boundaryless]
           (gradFun (I := I) g f x) +
         frobeniusSqGradVector (I := I) g
           (fun b => gradFun (I := I) g f b) x :=
-  bochner_abstract_packaged (I := I) g hf x hRed.leibniz hRed.heart
+  bochner_identity_of_inner_commutator (I := I) g hf x hRed.leibniz hRed.heart
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem bochner_pointwise_abstract [I.Boundaryless]
@@ -327,8 +327,8 @@ theorem sum_abstractHessian_orthonormal_eq_laplacian [I.Boundaryless]
   rw [show (∑ k : Fin (Module.finrank ℝ E), ∑ l : Fin (Module.finrank ℝ E),
         chartInvGramMatrix (I := I) g x x k l *
           abstractHessian (I := I) g f x
-            (centeredChartTangentBasis (I := I) x k)
-            (centeredChartTangentBasis (I := I) x l)) =
+            (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x k)
+            (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x l)) =
       ∑ k : Fin (Module.finrank ℝ E), ∑ l : Fin (Module.finrank ℝ E),
         chartInvGramMatrix (I := I) g x x k l *
           chartHessianTensor (I := I) g x f k l x from by
@@ -566,7 +566,7 @@ theorem leibnizTraceIdentity_holds [I.Boundaryless]
     rw [sub_apply]
   rw [h_LCV]
 
-theorem bochner_pointwise_abstract_via_orthonormalTrace [I.Boundaryless]
+theorem bochner_pointwise_abstract_of_orthonormal_trace_identity [I.Boundaryless]
     (g : SmoothRiemannianMetric I M)
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ) ∞ f) (x : M)
     (hPerSummand_Leibniz :
@@ -803,7 +803,7 @@ private theorem sum_abstractHessian_smoothOrthoFrame_cov_eq_zero
 
 end HessianSkewVanishing
 
-section LaplacianTraceOnNbhd
+section LaplacianTraceOnNeighborhood
 
 variable (g : SmoothRiemannianMetric I M)
 
@@ -816,8 +816,8 @@ private lemma sum_abstractHessian_smoothOrthoFrame_eventuallyEq_laplacian
           (smoothOrthoFrame (I := I) g x i b)) =ᶠ[𝓝 x]
       (fun b : M => ΔG (I := I) g ⟨_, hf⟩ b) := by
   classical
-  have h_open : smoothOrthoFrameNbhd (I := I) (M := M) x ∈ 𝓝 x :=
-    smoothOrthoFrameNbhd_mem_nhds (I := I) (M := M) x
+  have h_open : smoothOrthoFrameNeighborhood (I := I) (M := M) x ∈ 𝓝 x :=
+    smoothOrthoFrameNeighborhood_mem_nhds (I := I) (M := M) x
   filter_upwards [h_open] with b hb
   have hB_orth : ∀ i j : Fin (Module.finrank ℝ E),
       g.inner b
@@ -828,7 +828,7 @@ private lemma sum_abstractHessian_smoothOrthoFrame_eventuallyEq_laplacian
   exact sum_abstractHessian_orthonormal_eq_laplacian (I := I) g hf b
     (fun i => smoothOrthoFrame (I := I) g x i b) hB_orth
 
-end LaplacianTraceOnNbhd
+end LaplacianTraceOnNeighborhood
 
 private lemma heart_per_summand_swap [I.Boundaryless]
     (g : SmoothRiemannianMetric I M)
@@ -1261,7 +1261,7 @@ theorem heartOfBochnerInner_holds [I.Boundaryless]
             (smoothOrthoFrame (I := I) g x i b)
             (smoothOrthoFrame (I := I) g x i b)) x := by
       intro i
-      have h_conv : (fun b : M =>
+      have h_convergence : (fun b : M =>
             abstractHessian (I := I) g f b
               (smoothOrthoFrame (I := I) g x i b)
               (smoothOrthoFrame (I := I) g x i b)) =
@@ -1274,7 +1274,7 @@ theorem heartOfBochnerInner_holds [I.Boundaryless]
           (X := smoothOrthoFrame (I := I) g x i)
           (Y := smoothOrthoFrame (I := I) g x i) (x := b)
           (hB_smooth i)).symm
-      rw [h_conv]
+      rw [h_convergence]
       have hQ_at : MDifferentiableAt I (I.prod 𝓘(ℝ, E))
           (T% (covApply (LeviCivita (I := I) g)
             (smoothOrthoFrame (I := I) g x i)

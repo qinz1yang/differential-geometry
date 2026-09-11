@@ -1,7 +1,7 @@
 import DifferentialGeometry.Analysis.Elliptic.Regularity.DiffChart.ResidualRegularity.BilinearH1ComplFromDomainPow
 import DifferentialGeometry.Analysis.Elliptic.Regularity.GradInner.CLM.Leibniz
-import DifferentialGeometry.Analysis.Elliptic.Regularity.LaplacianDomain.PerChart
-import DifferentialGeometry.Analysis.Elliptic.Regularity.LaplacianDomain.SmoothMulH1Compl
+import DifferentialGeometry.Analysis.Elliptic.Regularity.LaplacianDomain.Chart.LocalRegularity
+import DifferentialGeometry.Analysis.Elliptic.Regularity.LaplacianDomain.Multiplication.H1Completion
 import DifferentialGeometry.Analysis.Sobolev.Chart.SmoothDensity.SmoothMul
 
 noncomputable section
@@ -30,7 +30,6 @@ open DifferentialGeometry.Analysis.Laplacian.H1ComplWeakPartialLimit
 open DifferentialGeometry.Analysis.Laplacian.LaplacianDomainChartData
 open DifferentialGeometry.Analysis.Laplacian.LaplacianDomainVariationalIdentityIntegralForm
 open DifferentialGeometry.Analysis.Laplacian.LaplacianDomainSmoothMul
-open DifferentialGeometry.Analysis.Laplacian.LaplacianDomainPerChartWitness
 open DifferentialGeometry.Analysis.Sobolev.NirenbergEuclidean
 
 private local instance : MeasurableSpace E := borel E

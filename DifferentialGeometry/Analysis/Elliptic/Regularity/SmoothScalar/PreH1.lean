@@ -1,8 +1,8 @@
-import DifferentialGeometry.Geometry.Operator.Gradient
-import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.Green
-import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.Closed
-import DifferentialGeometry.Analysis.Integration.Measure.Properties
-import DifferentialGeometry.Geometry.Metric.TensorInner.TangentRiemannian
+import DifferentialGeometry.Geometry.Operator.Gradient.Basic
+import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.Green.Identities
+import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.Global.CompactSupport
+import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.Properties
+import DifferentialGeometry.Geometry.Metric.TensorInner.Tangent.Riemannian
 import Mathlib.Analysis.InnerProductSpace.Defs
 import Mathlib.MeasureTheory.Integral.Bochner.Basic
 open DifferentialGeometry.Geometry.Operator
@@ -542,12 +542,6 @@ noncomputable instance instInnerProductSpaceSmoothScalar
 @[simp] lemma SmoothScalar.inner_def {g : SmoothRiemannianMetric I M}
     (f h : SmoothScalar g) :
     @inner ℝ _ _ f h = smoothScalarH1Inner (I := I) (M := M) f h := rfl
-
-example (g : SmoothRiemannianMetric I M) :
-    SeminormedAddCommGroup (SmoothScalar g) := inferInstance
-
-example (g : SmoothRiemannianMetric I M) :
-    InnerProductSpace ℝ (SmoothScalar g) := inferInstance
 
 end Laplacian
 end Analysis

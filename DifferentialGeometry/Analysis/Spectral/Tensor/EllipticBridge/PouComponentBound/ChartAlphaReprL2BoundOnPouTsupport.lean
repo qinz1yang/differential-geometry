@@ -1,13 +1,12 @@
-import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.RawConnLapL2SobolevBounds.RawTensorConnLapL2WtwokTwoBound
-import DifferentialGeometry.Tensor.Auxiliary.DetOpNormBound
+import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.SobolevBounds.Chart.SecondDerivativeRepresentation
+import DifferentialGeometry.Analysis.Estimates.Determinant
 import DifferentialGeometry.Analysis.Sobolev.Tensor.Defs
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 
-
 noncomputable section
-
+set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set IsManifold ContinuousLinearMap Filter
 open MeasureTheory

@@ -1,5 +1,5 @@
-import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0SRiemannian
-import DifferentialGeometry.Geometry.Metric.TensorInner.TangentContinuousRiemannianMetric
+import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Bundle.SectionRegularity
+import DifferentialGeometry.Geometry.Metric.TensorInner.Tangent.ContinuousRiemannianMetric
 import Mathlib.Topology.VectorBundle.Riemannian
 import Mathlib.Geometry.Manifold.Riemannian.Basic
 
@@ -10,7 +10,6 @@ open scoped Manifold ContDiff Topology
 
 namespace DifferentialGeometry.Analysis.Sobolev.HebeyBlock
 
-open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Tensor.Tensor0SRiemannian
 
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]

@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.Open.Basic
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.Open.Convergence
 
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.MetricLowerBound
 open DifferentialGeometry.Geometry.Curvature
@@ -11,7 +11,7 @@ open Set Bundle Manifold
 open scoped Manifold Topology ContDiff
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
   [FiniteDimensional Real E]
@@ -24,7 +24,7 @@ variable {P : PointedRiemannianManifold (I := I)}
 variable {subseq : Nat → Nat}
 variable (Φ : PointedCGHMaps (I := I) X P subseq)
 
-namespace OpenConvOut
+namespace OpenMetricConvergenceData
 
 omit [NeZero (Module.finrank ℝ E)]
   [I.Boundaryless] in
@@ -33,8 +33,8 @@ theorem metric_lower
       letI : ChartedSpace H P.M := P.charted;
       letI : IsManifold I ∞ P.M := P.smooth;
       SmoothRiemannianMetric I P.M}
-    {bf : BumpFamily (I := I) Φ} {hsrc : SrcSigma Φ} {htgt : TgtSigma Φ}
-    {a b t₀ : Real} (co : OpenConvOut (I := I) Φ R bf hsrc htgt a b t₀)
+    {bf : BumpFamily (I := I) Φ} {hsrc : SourceIsSigmaCompact Φ} {htgt : TargetIsSigmaCompact Φ}
+    {a b t₀ : Real} (co : OpenMetricConvergenceData (I := I) Φ R bf hsrc htgt a b t₀)
     (c : Nat → Real) (hc : ∀ n, 0 < c n)
     (hseq : letI : TopologicalSpace P.M := P.topology;
       letI : ChartedSpace H P.M := P.charted;
@@ -58,9 +58,9 @@ theorem metric_lower
   let : SigmaCompactSpace P.M := P.sigmaCompact
   obtain ⟨n, htn⟩ := RealTimeInterval.mem_openWindow (t₀ := t₀) ht
   refine ⟨c n, hc n, ?_⟩
-  exact ConvOut.lower_of (I := I) (Φ := Φ) (OpenConvOut.atWindow Φ co n)
+  exact FlowMetricConvergenceData.lower_of (I := I) (Φ := Φ) (OpenMetricConvergenceData.atWindow Φ co n)
     (hseq n) t htn
 
-end OpenConvOut
-end HCGCompactness
+end OpenMetricConvergenceData
+end CheegerGromovCompactness
 end DifferentialGeometry

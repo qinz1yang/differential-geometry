@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Coordinates.NablaComponents.Basic
 import DifferentialGeometry.Bundle.PartialMfderiv.Basic
 import DifferentialGeometry.Bundle.PartialMfderiv.ModelMixed
-import DifferentialGeometry.Bundle.PartialMfderiv.FixedBase
+import DifferentialGeometry.Geometry.Coordinates.Calculus.FixedBaseDerivative
 open DifferentialGeometry.Tensor.Multilinear
 
 set_option autoImplicit false
@@ -363,7 +363,7 @@ private theorem fderivWithin_tensor0S_eval_modelSlots_center_eq_mvfderiv {s : �
     (I := I) X x₀ φ f hpair heq
 
 omit [IsManifold I ∞ M] in
-theorem nabla0SFun_eval_coordFrame_moving_raw {s : ℕ}
+theorem nabla0SFun_eval_coordFrame_moving {s : ℕ}
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (X : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _))
     (V : Fin s -> (x : M) -> TangentSpace I x)
@@ -649,7 +649,7 @@ theorem tensor0S_eval_coordinateFrame_contMDiffAt
     exact (coordinateFrameAt_isLocalFrame (I := I) x₀).contMDiffAt
       (coordinateFrameSet_open (I := I) x₀)
       (coordinateFrameAt_mem (I := I) x₀) (slots a)
-  have hEval := TensorMultilinear.contMDiffAt_section_apply_gen
+  have hEval := TensorMultilinear.contMDiffAt_section_apply
     (I := I) (M := M) (n := s) (x₀ := x₀)
     (T := fun y : M => α y) hα
     (v := fun a : Fin s => coordinateFrameAt (I := I) x₀ (slots a))
@@ -753,7 +753,7 @@ theorem tensor0S_eval_coordinateFrame_covariantDerivative_slot_contMDiffAt
           (coordinateFrameSet_open (I := I) x₀)
           (coordinateFrameAt_mem (I := I) x₀) (slots i)
       simpa [Function.update, hi] using hbase
-  have hEval := TensorMultilinear.contMDiffAt_section_apply_gen
+  have hEval := TensorMultilinear.contMDiffAt_section_apply
     (I := I) (M := M) (n := s) (x₀ := x₀)
     (T := fun p : M => αinf p) αinf.contMDiff.contMDiffAt
     (v := fun i : Fin s =>
@@ -837,7 +837,7 @@ theorem nabla0SFun_eval_coordinateFrame_contMDiffAt
       have hα_top := α.contMDiff p
       have hα := hα_top.of_le
         (by simp : (∞ : WithTop ℕ∞) ≤ (∞ : WithTop ℕ∞))
-      have hEval := TensorMultilinear.contMDiffAt_section_apply_gen
+      have hEval := TensorMultilinear.contMDiffAt_section_apply
         (I := I) (M := M) (n := s) (x₀ := p)
         (T := fun y : M => α y) hα
         (v := fun a : Fin s => V a)
@@ -864,7 +864,7 @@ theorem nabla0SFun_eval_coordinateFrame_contMDiffAt
     fun a i =>
       tangentFieldModelInChart_coord_mdiffAt_center_of_contMDiffAt
         (I := I) (V a) p (hV_at a) i
-  rw [nabla0SFun_eval_coordFrame_moving_raw
+  rw [nabla0SFun_eval_coordFrame_moving
     (I := I) cov X V α p hpair_md hV_md hVmodel_p hcoord_p]
 
 theorem nabla0SFun_contMDiff_of_eval_coordinateFrame_contMDiffAt
@@ -910,12 +910,12 @@ theorem nabla0SFun_contMDiff_of_eval_coordinateFrame_contMDiffAt
             (b (σ a))) =
         fun a : Fin s => coordinateFrameAt (I := I) x₀ (σ a) p := by
     funext a
-    have hp_src : p ∈ (chartAt H x₀).source := by
+    have hp_source : p ∈ (chartAt H x₀).source := by
       simpa [coordinateFrameSet, coordinateTrivializationAt] using hp
     rw [coordinateFrameAt_apply_of_mem (I := I) (x₀ := x₀) (x := p) hp (σ a)]
     exact congrArg
       (fun L : E →L[𝕜] TangentSpace I p => L (b (σ a)))
-      (TangentBundle.symmL_trivializationAt (I := I) (𝕜 := 𝕜) hp_src)
+      (TangentBundle.symmL_trivializationAt (I := I) (𝕜 := 𝕜) hp_source)
   rw [continuousMultilinearMap_basis_repr]
   change ((trivializationAt (Tensor0SModel s 𝕜 E)
       (Bundle.continuousMultilinearMap 𝕜 s E (TangentSpace I : M -> Type _)) x₀
@@ -947,7 +947,7 @@ theorem nabla0SFun_contMDiff
         (⟨p, nabla0SFun (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
           s cov X α p⟩ :
           TotalSpace (Tensor0SModel s 𝕜 E) (fun p : M => Tensor0SSpace s I p))) := by
-  exact Tensor0SBundle.nabla0S_reg
+  exact Tensor0SBundle.nabla0S_regularity
     (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) s cov hcov X α
 
 noncomputable def nabla0SCoord (s : ℕ)

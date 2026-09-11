@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Ricci.CoordinateIdentities
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Ricci.Derivation.CoordinateIdentities
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Scalar.IntrinsicDerivation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Scalar.RicciTrace
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HamiltonHarnack.PIdentities
@@ -102,7 +102,7 @@ private theorem metricNabla2Ric_coordinateFrameAt
       SolutionOn.family, metricCov, metricRicci] using
       (totalNabla0S_realizes (𝕜 := Real) (E := E) (H := H)
         (I := I) (M := M) 3 cov nablaRic
-        (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+        (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
           3 cov (by
             simpa [cov, SolutionFamily.connection, SolutionOn.family, metricCov] using
               metricCov_smooth (I := I) (M := M) (S.family.metric t)) nablaRic))
@@ -173,7 +173,7 @@ theorem hamiltonDivPAt_apply
     (g : SmoothRiemannianMetric I M) {x : M}
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasisGen (I := I) (M := M) g x basis gInv)
+    (hinv : MetricInverseInBasis (I := I) (M := M) g x basis gInv)
     (A B : TangentSpace I x) :
     hamiltonDivPAt (I := I) g x (vec2 A B) =
       (∑ i : Idx, ∑ j : Idx,
@@ -213,7 +213,7 @@ theorem hamiltonScalarHessianAt_apply
     (g : SmoothRiemannianMetric I M) {x : M}
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasisGen (I := I) (M := M) g x basis gInv)
+    (hinv : MetricInverseInBasis (I := I) (M := M) g x basis gInv)
     (A B : TangentSpace I x) :
     hamiltonScalarHessianAt (I := I) g x (vec2 A B) =
       ∑ i : Idx, ∑ j : Idx,
@@ -239,7 +239,7 @@ theorem hamiltonRicciSquareAt_apply
     (g : SmoothRiemannianMetric I M) {x : M}
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasisGen (I := I) (M := M) g x basis gInv)
+    (hinv : MetricInverseInBasis (I := I) (M := M) g x basis gInv)
     (A B : TangentSpace I x) :
     hamiltonRicciSquareAt (I := I) g x (vec2 A B) =
       ∑ i : Idx, ∑ j : Idx,
@@ -274,7 +274,7 @@ theorem hamiltonCurvatureRicciAt_apply
     (g : SmoothRiemannianMetric I M) {x : M}
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasisGen (I := I) (M := M) g x basis gInv)
+    (hinv : MetricInverseInBasis (I := I) (M := M) g x basis gInv)
     (A B : TangentSpace I x) :
     hamiltonCurvatureRicciAt (I := I) g x (vec2 A B) =
       ∑ i : Idx, ∑ j : Idx,
@@ -323,7 +323,7 @@ theorem hamiltonCurvatureRicciAt_eq_raised_contraction
     (g : SmoothRiemannianMetric I M) {x : M}
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasisGen (I := I) (M := M) g x basis gInv)
+    (hinv : MetricInverseInBasis (I := I) (M := M) g x basis gInv)
     (A B : TangentSpace I x) :
     hamiltonCurvatureRicciAt (I := I) g x (vec2 A B) =
       ∑ k : Idx, ∑ i : Idx,
@@ -387,13 +387,13 @@ theorem hamiltonCurvatureRicciAt_eq_neg_rm04RicciContractionAt
     (g : SmoothRiemannianMetric I M) {x : M}
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasisGen (I := I) (M := M) g x basis gInv)
+    (hinv : MetricInverseInBasis (I := I) (M := M) g x basis gInv)
     (a b : Idx) :
     hamiltonCurvatureRicciAt (I := I) g x (vec2 (basis a) (basis b)) =
       -rm04RicciContractionAt (I := I) basis
         (metricRm04 (I := I) (M := M) g x) gInv
         (metricRicci (I := I) (M := M) g x) a b := by
-  let K := metricCurvData (I := I) (M := M) g
+  let K := metricCurvatureSections (I := I) (M := M) g
   have hOutput : Rm04OutputSkewAt (I := I)
       (metricRm04 (I := I) (M := M) g x) := by
     simpa using
@@ -443,11 +443,11 @@ theorem hamiltonDivPAt_eq_rough_laplacian
   let gInv : DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E ->
       DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E -> Real :=
     fun i j => coordInv (I := I) S x (t : Real) x i j
-  have hinv : MetricInverseInBasisGen (I := I) (M := M)
+  have hinv : MetricInverseInBasis (I := I) (M := M)
       (S.family.metric (t : Real)) x basis gInv := by
     simpa [basis, gInv] using coordInvReal (I := I) S x (t : Real)
   have hInv : ∀ i j, gInv i j = gInv j i :=
-    invMetric_symm (I := I) (M := M) (S.family.metric (t : Real)) x
+    MetricInverseInBasis.symmetric (I := I) (M := M) (S.family.metric (t : Real)) x
       basis gInv hinv
   apply ext0S_basis (I := I) basis
   intro slots
@@ -633,7 +633,7 @@ theorem hamiltonMAt_apply_basis
     (clock : HarnackClock) (ht : clock.time ∈ D.regular) (x : M)
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasisGen (I := I) (M := M)
+    (hinv : MetricInverseInBasis (I := I) (M := M)
       (S.family.metric clock.time) x basis gInv)
     (a b : Idx) :
     hamiltonMAt (I := I) clock (S.family.metric clock.time) x
@@ -680,7 +680,7 @@ theorem hamiltonMAt_metricTrace_eq
   let basis := coordinateFrameAtToBasis (I := I) x
   let gInv : CoordinateIdx (𝕜 := Real) E → CoordinateIdx (𝕜 := Real) E → Real :=
     fun i j => coordInv (I := I) S x clock.time x i j
-  have hinv : MetricInverseInBasisGen (I := I) (M := M)
+  have hinv : MetricInverseInBasis (I := I) (M := M)
       (S.family.metric clock.time) x basis gInv := by
     simpa [basis, gInv] using coordInvReal (I := I) S x clock.time
   have hrough :
@@ -765,7 +765,7 @@ theorem hamiltonMAt_metricTrace_eq
   have hInvSym : ∀ i j : CoordinateIdx (𝕜 := Real) E,
       coordInv (I := I) S x clock.time x i j =
         coordInv (I := I) S x clock.time x j i :=
-    invMetric_symm (I := I) (M := M) (S.family.metric clock.time) x
+    MetricInverseInBasis.symmetric (I := I) (M := M) (S.family.metric clock.time) x
       basis gInv hinv
   have hRicSym : ∀ i j : CoordinateIdx (𝕜 := Real) E,
       ricciCompInFrame (I := I) S (coordinateFrameAt (I := I) x)
@@ -834,7 +834,7 @@ theorem hamiltonMAt_metricTrace_eq
           (hamiltonCurvatureRicciAt (I := I) (S.family.metric clock.time) x) =
         normSq0S (I := I) (S.family.metric clock.time) x 2
           (S.ricci clock.time x) := by
-    let K := metricCurvData (I := I) (M := M) (S.family.metric clock.time)
+    let K := metricCurvatureSections (I := I) (M := M) (S.family.metric clock.time)
     have hLower : Rm04LowersRm13At (I := I) (S.family.metric clock.time) x
         (metricRm13 (I := I) (M := M) (S.family.metric clock.time) x)
         (metricRm04 (I := I) (M := M) (S.family.metric clock.time) x) :=
@@ -923,13 +923,13 @@ private theorem hamiltonRicciSquareAt_symm
     (g : SmoothRiemannianMetric I M) {x : M}
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasisGen (I := I) (M := M) g x basis gInv)
+    (hinv : MetricInverseInBasis (I := I) (M := M) g x basis gInv)
     (a b : Idx) :
     hamiltonRicciSquareAt (I := I) g x (vec2 (basis a) (basis b)) =
       hamiltonRicciSquareAt (I := I) g x (vec2 (basis b) (basis a)) := by
   classical
   have hInv : ∀ i j, gInv i j = gInv j i :=
-    invMetric_symm (I := I) (M := M) g x basis gInv hinv
+    MetricInverseInBasis.symmetric (I := I) (M := M) g x basis gInv hinv
   have hRic : ∀ i j,
       metricRicci (I := I) (M := M) g x (vec2 (basis i) (basis j)) =
         metricRicci (I := I) (M := M) g x (vec2 (basis j) (basis i)) :=
@@ -961,11 +961,11 @@ private theorem hamiltonCurvatureRicciAt_symm
     (g : SmoothRiemannianMetric I M) {x : M}
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasisGen (I := I) (M := M) g x basis gInv)
+    (hinv : MetricInverseInBasis (I := I) (M := M) g x basis gInv)
     (a b : Idx) :
     hamiltonCurvatureRicciAt (I := I) g x (vec2 (basis a) (basis b)) =
       hamiltonCurvatureRicciAt (I := I) g x (vec2 (basis b) (basis a)) := by
-  let K := metricCurvData (I := I) (M := M) g
+  let K := metricCurvatureSections (I := I) (M := M) g
   have hPair : ∀ W X Y Z : TangentSpace I x,
       metricRm04 (I := I) (M := M) g x (vec4 W X Y Z) =
         metricRm04 (I := I) (M := M) g x (vec4 Y Z W X) := by
@@ -977,7 +977,7 @@ private theorem hamiltonCurvatureRicciAt_symm
         metricRicci (I := I) (M := M) g x (vec2 (basis j) (basis i)) :=
     metricRicciSymm (I := I) (M := M) g basis gInv hinv
   have hInv : ∀ i j, gInv i j = gInv j i :=
-    invMetric_symm (I := I) (M := M) g x basis gInv hinv
+    MetricInverseInBasis.symmetric (I := I) (M := M) g x basis gInv hinv
   rw [hamiltonCurvatureRicciAt_eq_neg_rm04RicciContractionAt
       (I := I) g basis gInv hinv a b,
     hamiltonCurvatureRicciAt_eq_neg_rm04RicciContractionAt
@@ -1000,7 +1000,7 @@ theorem hamiltonMbarAt_symm
     fun i j =>
       DifferentialGeometry.Tensor.Coordinates.inverseMetricFlatModelInChartComponent
         (I := I) g x i j (extChartAt I x x)
-  have hinv : MetricInverseInBasisGen (I := I) (M := M) g x basis gInv := by
+  have hinv : MetricInverseInBasis (I := I) (M := M) g x basis gInv := by
     simpa [basis, gInv] using
       (DifferentialGeometry.Tensor.Coordinates.inverseMetricFlatModelInChart_metricInverseInBasis_center
         (I := I) g x)

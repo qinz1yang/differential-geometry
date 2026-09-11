@@ -54,7 +54,7 @@ theorem exists_tensorInnerPointwise_chartRSTwist_upper_bound_on_pouTsupport
   exact h
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
-theorem exists_tensorInnerPointwise_upper_bound_via_chartRSTwistInv_norm_sq_on_pouTsupport
+theorem exists_tensorInnerPointwise_le_chartRSTwistInv_norm_sq_on_pouTsupport
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M) :
     ∃ C : ℝ, 0 ≤ C ∧
       ∀ b : M, b ∈ tsupport (fun x : M =>
@@ -85,7 +85,7 @@ end UpperBoundViaTwist
 section UpperBoundViaTrivProj
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
-theorem exists_tensorInnerPointwise_upper_bound_via_trivProj_norm_sq_on_pouTsupport
+theorem exists_tensorInnerPointwise_le_tensorTrivProj_norm_sq_on_pouTsupport
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M) :
     ∃ C : ℝ, 0 ≤ C ∧
       ∀ (S : SmoothCcTensor g r s) (b : M),
@@ -97,7 +97,7 @@ theorem exists_tensorInnerPointwise_upper_bound_via_trivProj_norm_sq_on_pouTsupp
             C * ‖tensorTrivProj (I := I) (M := M) (E := E) g r s S α b‖ ^ 2 := by
   classical
   obtain ⟨C, hC_nn, h_inv⟩ :=
-    exists_tensorInnerPointwise_upper_bound_via_chartRSTwistInv_norm_sq_on_pouTsupport
+    exists_tensorInnerPointwise_le_chartRSTwistInv_norm_sq_on_pouTsupport
       (I := I) (M := M) (E := E) g r s α
   refine ⟨C, hC_nn, ?_⟩
   intro S b hb

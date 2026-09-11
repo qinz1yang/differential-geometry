@@ -1,0 +1,98 @@
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.Metric.Bounds
+import DifferentialGeometry.Analysis.Calculus.MapConvergence.Derivative
+import DifferentialGeometry.Geometry.Exponential.NormalCoordinates.Convergence
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.Phase.Endpoint
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
+
+set_option autoImplicit false
+
+noncomputable section
+
+open Set
+open scoped ContDiff Manifold
+
+namespace DifferentialGeometry
+namespace CheegerGromovCompactness
+
+universe u uE uH
+
+variable {E : Type uE} [NormedAddCommGroup E] [InnerProductSpace Real E]
+variable [FiniteDimensional Real E] [CompleteSpace E]
+variable [NeZero (Module.finrank Real E)]
+variable {H : Type uH} [TopologicalSpace H]
+variable {I : ModelWithCorners Real E H} [I.Boundaryless]
+
+namespace NormalRadiusProfile
+
+theorem diag_end_convergence
+    {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
+    {hd : InjectivityRadiusDecay (I := I) X}
+    {hb : NormalCoordMetricBounds (I := I) X}
+    (h : NormalRadiusProfile hd hb) (R : Real)
+    (c : ∀ n : Nat, (X.obj n).M)
+    (hc : ∀ n, hd.dist n (c n) (X.obj n).basepoint ≤ R)
+    {Q : Set (E × E)} (hQ : IsOpen Q)
+    {gInf : E → E →L[Real] E →L[Real] Real}
+    (hgInf_cd : ContDiffOn Real ∞ gInf
+      (Metric.ball 0 (h.phaseRadius R)))
+    (hgInf_lo : ∀ z ∈ Metric.ball (0 : E) (h.phaseRadius R), ∀ v : E,
+      (1 / 2 : Real) * ‖v‖ ^ 2 ≤ gInf z v v)
+    (hg_convergence : MapCInfConvergenceOnCompacts
+      (Metric.ball 0 (h.phaseRadius R))
+      (fun n ↦ normalCoordMetric (I := I) (X.obj n) (c n)) gInf)
+    {Φ : Nat → (E × E) → Real → E × E}
+    {ΦInf : (E × E) → Real → E × E}
+    {e : Nat → OpenPartialHomeomorph (E × E) (E × E)}
+    (hΦ : ∀ n z, z ∈ Q →
+      Φ n z 0 = z ∧
+      IsIntegralCurveOn (Φ n z)
+        (fun _ ↦ MetricKoszul.metricSpray
+          (normalCoordMetric (I := I) (X.obj n) (c n)))
+        (Icc 0 1))
+    (hΦInf : ∀ z, z ∈ Q →
+      ΦInf z 0 = z ∧
+      IsIntegralCurveOn (ΦInf z)
+        (fun _ ↦ MetricKoszul.metricSpray gInf) (Icc 0 1))
+    (hstay : ∀ n z, z ∈ Q → ∀ t ∈ Icc (0 : Real) 1,
+      (Φ n z t).1 ∈ Metric.ball 0 (h.phaseRadius R))
+    (hstayInf : ∀ z, z ∈ Q → ∀ t ∈ Icc (0 : Real) 1,
+      (ΦInf z t).1 ∈ Metric.ball 0 (h.phaseRadius R))
+    (he : ∀ n, (e n : E × E → E × E) =
+      fun z ↦ (z.1, (Φ n z 1).1)) :
+    MapCInfConvergenceOnCompacts Q
+      (fun n ↦ (e n : E × E → E × E))
+      (fun z ↦ (z.1, (ΦInf z 1).1)) := by
+  have hg_cd : ∀ n, ContDiffOn Real ∞
+      (normalCoordMetric (I := I) (X.obj n) (c n))
+      (Metric.ball 0 (h.phaseRadius R)) := by
+    intro n
+    let : TopologicalSpace (X.obj n).M := (X.obj n).topology
+    let : ChartedSpace H (X.obj n).M := (X.obj n).charted
+    let : IsManifold I ∞ (X.obj n).M := (X.obj n).smooth
+    let : T2Space (TangentBundle I (X.obj n).M) :=
+      (X.obj n).t2TangentBundle
+    apply (normal_coord_metric_cont_diff_on_exp_ball (I := I) (X.obj n) (c n)).mono
+    exact (h.phaseRadius_exp (hc n)).trans (Metric.ball_subset_ball (by
+      nlinarith [Geometry.Riemannian.expMapC2Radius_pos
+        (I := I) (X.obj n).metric (c n)]))
+  have hg_co : ∀ n z, z ∈ Metric.ball (0 : E) (h.phaseRadius R) →
+      IsCoercive (normalCoordMetric (I := I) (X.obj n) (c n) z) := by
+    intro n z hz
+    exact (hb.metric_equiv n (c n)).coercive (h.phaseRadius_metric (hc n) hz)
+  have hgInf_co : ∀ z, z ∈ Metric.ball (0 : E) (h.phaseRadius R) →
+      IsCoercive (gInf z) := by
+    intro z hz
+    refine ⟨1 / 2, by norm_num, ?_⟩
+    intro v
+    simpa only [pow_two, mul_assoc] using hgInf_lo z hz v
+  have hconv := normalDiag_end_convergence
+    (Metric.isOpen_ball : IsOpen (Metric.ball (0 : E) (h.phaseRadius R)))
+    hQ hg_cd hgInf_cd hg_co hgInf_co hg_convergence hΦ hΦInf hstay hstayInf
+  exact hconv.congr hQ
+    (fun n z _hz ↦ congrFun (he n) z)
+    (fun _z _hz ↦ rfl)
+
+end NormalRadiusProfile
+end CheegerGromovCompactness
+end DifferentialGeometry

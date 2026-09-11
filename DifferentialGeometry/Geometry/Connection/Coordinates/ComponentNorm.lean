@@ -181,7 +181,7 @@ theorem compL2_smul {r : ℕ} (c : Real) (T : (Fin r → Idx) → Real) :
 
 end DifferentialGeometry.PDE.RicciFlow
 
-namespace DifferentialGeometry.HCGCompactness
+namespace DifferentialGeometry.CheegerGromovCompactness
 
 open scoped BigOperators
 
@@ -210,4 +210,4 @@ theorem pascal_sum_notop (m : ℕ) (g : ℕ → ℝ) :
   simp only [Nat.cast_one, one_mul] at h
   linarith
 
-end DifferentialGeometry.HCGCompactness
+end DifferentialGeometry.CheegerGromovCompactness

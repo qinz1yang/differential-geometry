@@ -23,7 +23,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 theorem tensorRS_trivAt_symmL_apply_eq_self_on_locality
     (r s : ℕ) (b₀ : M) {b : M}
     (h_chart : chartAt H b = chartAt H b₀)
-    (h_src : b ∈ (chartAt H b₀).source)
+    (h_source : b ∈ (chartAt H b₀).source)
     (D : TensorRSModel r s ℝ E)
     (α_input : Tensor0SSpace r I b) :
     (show Tensor0SSpace r I b →L[ℝ] Tensor0SSpace s I b from
@@ -40,7 +40,7 @@ theorem tensorRS_trivAt_symmL_apply_eq_self_on_locality
     (fun y : M => Tensor0SSpace s I y) b₀ with hes_def
   have hb_tan : b ∈ (trivializationAt E (TangentSpace I) b₀).baseSet := by
     rw [TangentBundle.trivializationAt_baseSet (𝕜 := ℝ) (I := I) b₀]
-    exact h_src
+    exact h_source
   have hb_r : b ∈ er.baseSet := hb_tan
   have hb_s : b ∈ es.baseSet := hb_tan
   have hb_RS : b ∈ eRS.baseSet := ⟨hb_r, hb_s⟩
@@ -66,10 +66,10 @@ theorem tensorRS_trivAt_symmL_apply_eq_self_on_locality
   rw [ContinuousLinearMap.comp_apply, ContinuousLinearMap.comp_apply]
   have h_r := tensor0S_trivAt_continuousLinearMapAt_eq_one_on_locality
     (I := I) (M := M) (s := r) (b₀ := b₀) (b := b)
-    (h_chart := h_chart) (h_src := h_src) (T := α_input)
+    (h_chart := h_chart) (h_source := h_source) (T := α_input)
   have h_s := tensor0S_trivAt_symmL_eq_one_on_locality
     (I := I) (M := M) (s := s) (b₀ := b₀) (b := b)
-    (h_chart := h_chart) (h_src := h_src)
+    (h_chart := h_chart) (h_source := h_source)
     (T := D ((show ContinuousMultilinearMap ℝ (fun _ : Fin r => E) ℝ from α_input)))
   have h_r_id :
       (er.continuousLinearMapAt ℝ b α_input :
@@ -91,7 +91,7 @@ theorem tensorRS_trivAt_symmL_apply_eq_self_on_locality
 theorem tensorRS_trivAt_continuousLinearMapAt_apply_eq_self_on_locality
     (r s : ℕ) (b₀ : M) {b : M}
     (h_chart : chartAt H b = chartAt H b₀)
-    (h_src : b ∈ (chartAt H b₀).source)
+    (h_source : b ∈ (chartAt H b₀).source)
     (T : TensorRSSpace r s I b)
     (D_α : Tensor0SModel r ℝ E) :
     (show Tensor0SModel r ℝ E →L[ℝ] Tensor0SModel s ℝ E from
@@ -109,7 +109,7 @@ theorem tensorRS_trivAt_continuousLinearMapAt_apply_eq_self_on_locality
     (fun y : M => Tensor0SSpace s I y) b₀ with hes_def
   have hb_tan : b ∈ (trivializationAt E (TangentSpace I) b₀).baseSet := by
     rw [TangentBundle.trivializationAt_baseSet (𝕜 := ℝ) (I := I) b₀]
-    exact h_src
+    exact h_source
   have hb_r : b ∈ er.baseSet := hb_tan
   have hb_s : b ∈ es.baseSet := hb_tan
   have hb_RS : b ∈ eRS.baseSet := ⟨hb_r, hb_s⟩
@@ -130,10 +130,10 @@ theorem tensorRS_trivAt_continuousLinearMapAt_apply_eq_self_on_locality
   rw [ContinuousLinearMap.comp_apply, ContinuousLinearMap.comp_apply]
   have h_r := tensor0S_trivAt_symmL_eq_one_on_locality
     (I := I) (M := M) (s := r) (b₀ := b₀) (b := b)
-    (h_chart := h_chart) (h_src := h_src) (T := D_α)
+    (h_chart := h_chart) (h_source := h_source) (T := D_α)
   have h_s := tensor0S_trivAt_continuousLinearMapAt_eq_one_on_locality
     (I := I) (M := M) (s := s) (b₀ := b₀) (b := b)
-    (h_chart := h_chart) (h_src := h_src)
+    (h_chart := h_chart) (h_source := h_source)
     (T :=
       (show Tensor0SSpace r I b →L[ℝ] Tensor0SSpace s I b from T)
         (show Tensor0SSpace r I b from D_α))

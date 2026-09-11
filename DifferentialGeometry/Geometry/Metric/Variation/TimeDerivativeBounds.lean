@@ -20,7 +20,7 @@ universe u uE uH
 namespace DifferentialGeometry
 
 attribute [local instance] Fintype.ofFinite
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open scoped Manifold ContDiff Topology
 
@@ -394,7 +394,7 @@ theorem gammaL2_le_initial_add
     hderiv ?_
   intro s hs
   exact le_trans
-    (DifferentialGeometry.Geometry.Connection.gammaEvol_l2_le (Idx := Idx) (nablaRic s) (dGamma s)
+    (DifferentialGeometry.Geometry.Connection.gammaEvolution_l2_le (Idx := Idx) (nablaRic s) (dGamma s)
       (hcombo s hs))
     (mul_le_mul_of_nonneg_left (hRic s hs) (by norm_num : (0 : Real) <= 3))
 
@@ -423,7 +423,7 @@ theorem gammaL2_le_initial_add_within
     hderiv ?_
   intro s hs
   exact le_trans
-    (DifferentialGeometry.Geometry.Connection.gammaEvol_l2_le (Idx := Idx) (nablaRic s) (dGamma s)
+    (DifferentialGeometry.Geometry.Connection.gammaEvolution_l2_le (Idx := Idx) (nablaRic s) (dGamma s)
       (hcombo s hs))
     (mul_le_mul_of_nonneg_left (hRic s hs) (by norm_num : (0 : Real) <= 3))
 
@@ -453,7 +453,7 @@ theorem gammaL2_le_initial_add_on_subset
     (L := 3 * R) hsub hderiv ?_
   intro s hs
   exact le_trans
-    (DifferentialGeometry.Geometry.Connection.gammaEvol_l2_le (Idx := Idx) (nablaRic s) (dGamma s)
+    (DifferentialGeometry.Geometry.Connection.gammaEvolution_l2_le (Idx := Idx) (nablaRic s) (dGamma s)
       (hcombo s hs))
     (mul_le_mul_of_nonneg_left (hRic s hs) (by norm_num : (0 : Real) <= 3))
 
@@ -487,5 +487,5 @@ theorem gammaL2_le_initial_add_regular
 
 end ComponentL2
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

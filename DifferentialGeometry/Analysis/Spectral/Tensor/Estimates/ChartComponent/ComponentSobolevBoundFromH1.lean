@@ -84,13 +84,13 @@ theorem eLpNorm_chartPushed_le_const_mul_eLpNorm_riemannianVolumeMeasure_uniform
   have hρ_cont : Continuous ((ρ : C^∞⟮I, M; ℝ⟯) : M → ℝ) :=
     (ρ.contMDiff).continuous
   have hf_meas : Measurable f := hρ_cont.measurable.mul hu_meas
-  have hf_supp : tsupport f ⊆ Kβ := by
+  have hf_support : tsupport f ⊆ Kβ := by
     have h_eq : f = (fun x : M => ((ρ : C^∞⟮I, M; ℝ⟯) : M → ℝ) x • u x) := by
       funext x; rfl
     rw [h_eq]
     exact tsupport_smul_subset_left
       (f := fun x : M => ((ρ : C^∞⟮I, M; ℝ⟯) : M → ℝ) x) (g := u)
-  have h_raw_bound := hC_bound (u := f) hf_meas hf_supp
+  have h_raw_bound := hC_bound (u := f) hf_meas hf_support
   rw [show DifferentialGeometry.Integral.Measure.riemannianMeasure (I := I) g
         (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M)
         = DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure I M g from rfl]

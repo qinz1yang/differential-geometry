@@ -68,7 +68,7 @@ noncomputable def tensorHomEquiv : (F₁ ⊗[𝕜] F₂) ≃ₗ[𝕜] ((Module.D
 
 abbrev cDual := F₁ →L[𝕜] 𝕜
 
-noncomputable def toHomAux :
+private noncomputable def pureTensorToHom :
     F₁ →ₗ[𝕜] F₂ →ₗ[𝕜] (cDual (𝕜:=𝕜) (F₁:=F₁) →L[𝕜] F₂) :=
 by
   classical
@@ -103,7 +103,7 @@ by
 
 noncomputable def toHom :
     (F₁ ⊗[𝕜] F₂) →ₗ[𝕜] (cDual (𝕜:=𝕜) (F₁:=F₁) →L[𝕜] F₂) :=
-_root_.TensorProduct.lift (toHomAux (𝕜:=𝕜) (F₁:=F₁) (F₂:=F₂))
+_root_.TensorProduct.lift (pureTensorToHom (𝕜:=𝕜) (F₁:=F₁) (F₂:=F₂))
 
 omit [FiniteDimensional 𝕜 F₂]
 

@@ -2,18 +2,19 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.HamiltonHarnack.ShiControl
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HamiltonHarnack.AncientLimit
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Distance.SlabExhaustion
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Shi.Restriction
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Ricci.JointRegularity
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Ricci.Regularity.Joint
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Preservation.NonnegativeCurvatureOperator
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.Restriction
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.RankOneSupport
-import DifferentialGeometry.Geometry.Connection.ChartBridge.MetricInverse
+import DifferentialGeometry.Geometry.Connection.ChartBridge.Metric.InverseGram
 import DifferentialGeometry.Geometry.Metric.Completeness
-import DifferentialGeometry.Geometry.Operator.MetricFamilyRegularity
-import DifferentialGeometry.Topology.FiberBundleT2
-import DifferentialGeometry.Tensor.RSTensor.FiberMetric.Tensor0SMetricContinuity
-import DifferentialGeometry.Tensor.RSTensor.Tensor0SRiemannian.Scaling
-import DifferentialGeometry.Tensor.Alternating.Bundle
-import DifferentialGeometry.Tensor.RSTensor.Basis
+import DifferentialGeometry.Geometry.Metric.Restriction
+import DifferentialGeometry.Geometry.Metric.Family.Regularity.DifferentialOperator
+import DifferentialGeometry.Bundle.FiberBundleHausdorff
+import DifferentialGeometry.Geometry.Metric.TensorInner.FiberMetric.Tensor0SMetricContinuity
+import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Scaling
+import DifferentialGeometry.Tensor.Alternating.Bundle.Defs
+import DifferentialGeometry.Tensor.RSTensor.Coordinates.BundleBasis
 import Mathlib.Topology.FiberBundle.Constructions
 import Mathlib.Topology.VectorBundle.Constructions
 import Mathlib.Analysis.Calculus.Deriv.Slope
@@ -32,6 +33,7 @@ open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Tensor.RSTensor
+open DifferentialGeometry.Tensor.Coordinates
 open scoped Manifold ContDiff
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
@@ -726,7 +728,7 @@ private theorem hamiltonMAt_origin_family_continuous [I.Boundaryless]
     chartLeviCivitaGoodSet_mem_baseSet (I := I) hq
   let basis := chartBasisFamily (I := I) alpha hxbase
   let clock : HarnackClock := ⟨origin, q.1.1, horigin q.1.1 q.1.2⟩
-  have hinverse : MetricInverseInBasisGen (I := I)
+  have hinverse : MetricInverseInBasis (I := I)
       (S.family.metric q.1.1) q.2 basis
       (fun i j => (chartInvGramMatrix (I := I)
         (S.family.metric q.1.1) alpha q.2) i j) := by
@@ -816,11 +818,11 @@ theorem hamiltonHarnackQuadraticAt_eq_hamiltonBlockQuadratic
     (W : Tensor0SSpace 1 I x)
     {A : Type*} [Fintype A] [DecidableEq A]
     (basis : Module.Basis A Real (TangentSpace I x))
-    (hinv : MetricInverseInBasisGen (I := I)
+    (hinv : MetricInverseInBasis (I := I)
       (S.base.metric clock.time) x basis (identityInvMetric (Idx := A))) :
     hamiltonHarnackQuadraticAt (I := I) S clock x U W =
       hamiltonBlockQuadratic
-        (fun a b c d => tensor04StdAt (I := I) (M := M)
+        (fun a b c d => tensor04StandardAt (I := I) (M := M)
           (S.base.rm04 clock.time x) (basis a) (basis b) (basis d) (basis c))
         (fun a b c => hamiltonPAt (I := I)
           (S.base.metric clock.time) x ![basis a, basis b, basis c])
@@ -1236,12 +1238,12 @@ private theorem hamiltonPerturbedHarnackQuadraticAt_eq_block
     (W : Tensor0SSpace 1 I x)
     {A : Type*} [Fintype A] [DecidableEq A]
     (basis : Module.Basis A Real (TangentSpace I x))
-    (hinv : MetricInverseInBasisGen (I := I)
+    (hinv : MetricInverseInBasis (I := I)
       (S.base.metric clock.time) x basis (identityInvMetric (Idx := A))) :
     hamiltonPerturbedHarnackQuadraticAt (I := I) S clock phi psi x U W =
       hamiltonBlockQuadratic
         (hamiltonPerturbedCurvatureBlock
-          (fun a b c d => tensor04StdAt (I := I) (M := M)
+          (fun a b c d => tensor04StandardAt (I := I) (M := M)
             (S.base.rm04 clock.time x) (basis a) (basis b) (basis d) (basis c))
           psi)
         (fun a b c => hamiltonPAt (I := I)
@@ -1970,7 +1972,7 @@ private theorem inner0S_product_comm_two_of_finAddFlip
     {x : M} {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     (g : SmoothRiemannianMetric I M)
     (basis : Module.Basis Idx Real (TangentSpace I x))
-    (hinv : MetricInverseInBasisGen (I := I) g x basis
+    (hinv : MetricInverseInBasis (I := I) g x basis
       (identityInvMetric (Idx := Idx)))
     (T : Tensor0SSpace 4 I x) (A B : Tensor0SSpace 2 I x)
     (hT : T.domDomCongr (finAddFlip (m := 2) (n := 2)) = T) :
@@ -1987,7 +1989,7 @@ private theorem inner0S_product_comm_one_of_finAddFlip
     {x : M} {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     (g : SmoothRiemannianMetric I M)
     (basis : Module.Basis Idx Real (TangentSpace I x))
-    (hinv : MetricInverseInBasisGen (I := I) g x basis
+    (hinv : MetricInverseInBasis (I := I) g x basis
       (identityInvMetric (Idx := Idx)))
     (T : Tensor0SSpace 2 I x) (A B : Tensor0SSpace 1 I x)
     (hT : T.domDomCongr (finAddFlip (m := 1) (n := 1)) = T) :
@@ -2091,7 +2093,7 @@ private theorem hamilton_rm_components_symm
     Rm04Symm (fun a b c d => S.base.rm04 (t : Real) x
       (vec4 (I := I) (basis a) (basis b) (basis c) (basis d))) := by
   have hRm13 := fun tau : RealTimeInterval.RegularTime D =>
-    rm13OfSol (I := I) S (tau : Real)
+    rm13OfSolution (I := I) S (tau : Real)
   have hLower := fun
       (tau : RealTimeInterval.RegularTime D) (y : M) =>
     solution_rm04LowersRm13At (I := I) S (tau : Real) y
@@ -2138,7 +2140,7 @@ private theorem hamilton_curvature_ricci_trace_components
     (ricci_diag_eq_sum_rm04_diag_of_orthonormal
       (I := I) (S.base.metric (t : Real)) basis
       (S.ricci (t : Real)) (S.base.rm13 (t : Real)) (S.base.rm04 (t : Real))
-      (ricciTraceOfSol (I := I) S (t : Real))
+      (ricciTraceOfSolution (I := I) S (t : Real))
       (solution_rm04LowersRm13At (I := I) S (t : Real) x) horth i j)
 
 omit [SigmaCompactSpace M] in
@@ -3553,17 +3555,17 @@ private theorem hamiltonTestW_normSq_gradient_eq_zero
         ((trivializationAt E (TangentSpace I) a).open_baseSet.mem_nhds (by
           rw [trivializationAt_baseSet_eq_chartAt_source (I := I) (M := M)]
           exact hy))
-    exact TensorMultilinear.contMDiffAt_section_apply_gen
-      (I := I) (M := M) (n := 1) (T := W clock.time)
+    exact TensorMultilinear.contMDiffAt_section_apply
+      (𝕜 := Real) (I := I) (M := M) (n := 1) (x₀ := y) (T := W clock.time)
       ((W clock.time).contMDiff y)
       (v := fun _ : Fin 1 => fun z : M => chartBasisVecFiber (I := I) a j z)
       (fun _ => hvec)
   let Ysharp : (y : M) → TangentSpace I y := fun y =>
-    cotangentSharpGen (I := I) g y (W clock.time y)
+    cotangentSharp (I := I) g y (W clock.time y)
   have hY : MDiffAt (T% Ysharp) x := by
     simpa only [Ysharp] using
       cotangentSharp_gen_mdiffAt (I := I) g hcomp x
-  have hmc : IsMetricCompatibleGen (I := I) cov g := by
+  have hmc : IsMetricCompatible (I := I) cov g := by
     simpa only [cov, g, metricCov] using
       leviCivitaConnectionOfMetric_isMetricCompatible
         (I := I) (S.base.metric clock.time)
@@ -3579,12 +3581,11 @@ private theorem hamiltonTestW_normSq_gradient_eq_zero
         fun y : M => g.inner y (Ysharp y) (Ysharp y) := by
     funext y
     rw [normSq0S_eq_inner, inner0S_one_eq_cotangent]
-    change cotangentInnerGen (I := I) g y (W clock.time y) (W clock.time y) = _
-    rw [cotangentInner_eq_sharp_gen]
+    rw [cotangentInner_eq_sharp]
   apply gradientFun_eq_zero_of_mfderiv_eq_zero (I := I)
   apply ContinuousLinearMap.ext
   intro v
-  obtain ⟨X, hX⟩ := ContMDiffSection.exists_eq_at_gen
+  obtain ⟨X, hX⟩ := ContMDiffSection.exists_eq_at
     (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞)) x v
   have hXdiff : MDiffAt (T% fun y : M => X y) x :=
     X.contMDiff.contMDiffAt.mdifferentiableAt (by simp)
@@ -3596,15 +3597,14 @@ private theorem hamiltonTestW_normSq_gradient_eq_zero
       rw [hnabla]
       simp only [map_zero, zero_apply]
     rw [hcurry] at hsharp
-    have hzero : cotangentSharpGen (I := I) g x 0 = 0 := by
-      change cotangentSharpLinearGen (I := I) g x 0 = 0
+    have hzero : cotangentSharp (I := I) g x 0 = 0 := by
+      change cotangentSharpLinear (I := I) g x 0 = 0
       exact map_zero _
     calc
-      cov Ysharp x (X x) = cotangentSharpGen (I := I) g x 0 := by
+      cov Ysharp x (X x) = cotangentSharp (I := I) g x 0 := by
         simpa only [Ysharp] using hsharp
       _ = 0 := hzero
-  have hmetric := metric_compatible_apply (I := I) hmc
-    (fun y : M => X y) Ysharp Ysharp hXdiff hY hY
+  have hmetric := hmc.mvfderiv_inner (x := x) (X x) hY hY
   rw [hcovY] at hmetric
   rw [hfun]
   rw [← hX]
@@ -3849,7 +3849,7 @@ private theorem hamiltonM_test_tensor_scalar_evolution
     (hamiltonTestW_fixed_heat (I := I) S clock x basis horth W)
 
 omit [SigmaCompactSpace M] in
-theorem hamilton_harnack_block_exact_evolution_of_test_jet
+theorem hamilton_harnack_block_exact_evolution_of_tensor_test_jet
     [I.Boundaryless]
     {D : RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
@@ -3860,13 +3860,12 @@ theorem hamilton_harnack_block_exact_evolution_of_test_jet
     (horth : ∀ i j,
       (S.base.metric clock.time).inner x (basis i) (basis j) =
         if i = j then (1 : Real) else 0)
-    (U : ∀ (_ : Real) (y : M),
-      HamiltonHarnackTwoForm (TangentSpace I y))
     (U_tensor : Real →
       Tensor0SField (E := E) (H := H) (I := I) (M := M) ∞ 2)
     (W : Real →
       Tensor0SField (E := E) (H := H) (I := I) (M := M) ∞ 1)
-    (hU_tensor : ∀ r y, (U r y).toTensor0S = U_tensor r y)
+    (hUskew : ∀ X Y : TangentSpace I x,
+      U_tensor clock.time x ![X, Y] = -U_tensor clock.time x ![Y, X])
     (hDW : totalNabla0SFun (I := I) (M := M) 1
       (metricCov (I := I) (M := M) (S.base.metric clock.time))
       (W clock.time) x = 0)
@@ -4251,26 +4250,11 @@ theorem hamilton_harnack_block_exact_evolution_of_test_jet
               (vec2 (I := I) (basis a) (basis b)) =
             -U_tensor clock.time x
               (vec2 (I := I) (basis b) (basis a))
-          rw [← hU_tensor clock.time x]
-          simp only [HamiltonHarnackTwoForm.toTensor0S_apply]
-          calc
-            U clock.time x (vec2 (I := I) (basis a) (basis b)) =
-                U clock.time x (fun i => basis (![a, b] i)) := by
-              exact congrArg (U clock.time x) (by
-                funext i
-                fin_cases i <;> rfl)
-            _ = -U clock.time x
-                (fun i => basis (![b, a] i)) := by
-              simpa only [HamiltonHarnackTwoForm.component, component0S_apply,
-                HamiltonHarnackTwoForm.toTensor0S_apply] using
-                  HamiltonHarnackTwoForm.component_skew
-                    (I := I) basis (U clock.time x) a b
-            _ = -U clock.time x
-                (vec2 (I := I) (basis b) (basis a)) := by
-              congr 1
-              exact congrArg (U clock.time x) (by
-                funext i
-                fin_cases i <;> rfl)
+          have hv (X Y : TangentSpace I x) :
+              vec2 (I := I) X Y = ![X, Y] := by
+            funext i
+            fin_cases i <;> rfl
+          simpa only [hv] using hUskew (basis a) (basis b)
         have hKcomp (a b c d : Fin n) :
             hamiltonKField (I := I) S clock.time x
                 (vec4 (I := I) (basis a) (basis b) (basis c) (basis d)) =
@@ -4496,7 +4480,7 @@ theorem hamilton_harnack_block_exact_evolution
               (fun a b => U₀ ![basis a, basis b])
               (fun a => W₀ (basis a)) := by
   classical
-  have hmc : IsMetricCompatibleGen (I := I)
+  have hmc : IsMetricCompatible (I := I)
       (metricCov (I := I) (M := M) (S.base.metric clock.time))
       (S.base.metric clock.time) := by
     simpa [metricCov] using
@@ -4526,8 +4510,19 @@ theorem hamilton_harnack_block_exact_evolution
                 W clock.time x (fun _ : Fin 1 => Y)) := by
     intro X Y Z
     simpa only [hWvalue] using hDU X Y Z
-  have hexact := hamilton_harnack_block_exact_evolution_of_test_jet
-    (I := I) S hS clock ht x basis horth U U_tensor W hU_tensor hDW hDU'
+  have hUskew (X Y : TangentSpace I x) :
+      U_tensor clock.time x ![X, Y] =
+        -U_tensor clock.time x ![Y, X] := by
+    rw [← hU_tensor clock.time x]
+    have hswap := (U clock.time x).map_swap (v := ![Y, X])
+      (i := (0 : Fin 2)) (j := 1) (by decide)
+    have hv : ![Y, X] ∘ Equiv.swap (0 : Fin 2) 1 = ![X, Y] := by
+      funext q
+      fin_cases q <;> simp
+    rw [hv] at hswap
+    exact hswap
+  have hexact := hamilton_harnack_block_exact_evolution_of_tensor_test_jet
+    (I := I) S hS clock ht x basis horth U_tensor W hUskew hDW hDU'
       hUtime hWtime
   have hUvalueTensor : U_tensor clock.time x = U₀.toTensor0S := by
     calc
@@ -4767,9 +4762,20 @@ private theorem hamilton_perturbed_harnack_block_exact_evolution_of_test_jet
   let qW := fun r y => c r * (h y * FW r y)
   let qU := fun r y => psi r * FU r y
   let q := fun r y => qBase r y + qW r y + qU r y
+  have hUskew (X Y : TangentSpace I x) :
+      U_tensor clock.time x ![X, Y] =
+        -U_tensor clock.time x ![Y, X] := by
+    rw [← hU_tensor clock.time x]
+    have hswap := (U clock.time x).map_swap (v := ![Y, X])
+      (i := (0 : Fin 2)) (j := 1) (by decide)
+    have hv : ![Y, X] ∘ Equiv.swap (0 : Fin 2) 1 = ![X, Y] := by
+      funext q
+      fin_cases q <;> simp
+    rw [hv] at hswap
+    exact hswap
   obtain ⟨hBaseTime, hBaseHeat⟩ :=
-    hamilton_harnack_block_exact_evolution_of_test_jet
-      (I := I) S hS clock ht x basis horth U U_tensor W hU_tensor hDW hDU
+    hamilton_harnack_block_exact_evolution_of_tensor_test_jet
+      (I := I) S hS clock ht x basis horth U_tensor W hUskew hDW hDU
         hUtime hWtime
   obtain ⟨dW, hFWTime, hFWHeat⟩ :=
     hamiltonTestW_normSq_evolution
@@ -5203,7 +5209,7 @@ private theorem hamilton_perturbed_harnack_block_exact_evolution
                   (fun p q => if p = q then (1 : Real) else 0)
                   (fun p => W₀ (basis p)) e i j) ^ 2) := by
   classical
-  have hmc : IsMetricCompatibleGen (I := I)
+  have hmc : IsMetricCompatible (I := I)
       (metricCov (I := I) (M := M) (S.base.metric clock.time))
       (S.base.metric clock.time) := by
     simpa [metricCov] using
@@ -5746,7 +5752,7 @@ private theorem hamiltonPerturbedCurvatureBlock_coordinates_symmetries
     (clock : HarnackClock) (x : M) {A : Type*}
     (basis : Module.Basis A Real (TangentSpace I x)) (psi : Real) :
     let K := hamiltonPerturbedCurvatureBlock
-      (fun a b c d => tensor04StdAt (I := I) (M := M)
+      (fun a b c d => tensor04StandardAt (I := I) (M := M)
         (S.base.rm04 clock.time x) (basis a) (basis b) (basis d) (basis c)) psi
     (forall a b c d, K a b c d = K c d a b) ∧
     (forall a b c d, K a b c d = -K b a c d) ∧
@@ -5755,30 +5761,30 @@ private theorem hamiltonPerturbedCurvatureBlock_coordinates_symmetries
   classical
   let R := metricAlgebraicCurvatureTensorAt
     (I := I) (M := M) (S.base.metric clock.time) x
-  have hR : IsAlgCurvForm (tensor04StdAt (I := I) (M := M)
+  have hR : IsAlgCurvForm (tensor04StandardAt (I := I) (M := M)
       (R : Tensor04At (I := I) (M := M) x)) := R.2
   have hfirst : forall a b c d,
-      tensor04StdAt (I := I) (M := M) (S.base.rm04 clock.time x)
+      tensor04StandardAt (I := I) (M := M) (S.base.rm04 clock.time x)
         (basis a) (basis b) (basis d) (basis c) =
-      -tensor04StdAt (I := I) (M := M) (S.base.rm04 clock.time x)
+      -tensor04StandardAt (I := I) (M := M) (S.base.rm04 clock.time x)
         (basis b) (basis a) (basis d) (basis c) := by
     intro a b c d
     simpa only [R, metricAlgebraicCurvatureTensorAt_coe,
       SolutionOn.family, SolutionFamily.rm04, metricRm04_apply] using
       hR.anti_first (basis a) (basis b) (basis d) (basis c)
   have hlast : forall a b c d,
-      tensor04StdAt (I := I) (M := M) (S.base.rm04 clock.time x)
+      tensor04StandardAt (I := I) (M := M) (S.base.rm04 clock.time x)
         (basis a) (basis b) (basis d) (basis c) =
-      -tensor04StdAt (I := I) (M := M) (S.base.rm04 clock.time x)
+      -tensor04StandardAt (I := I) (M := M) (S.base.rm04 clock.time x)
         (basis a) (basis b) (basis c) (basis d) := by
     intro a b c d
     simpa only [R, metricAlgebraicCurvatureTensorAt_coe,
       SolutionOn.family, SolutionFamily.rm04, metricRm04_apply] using
       hR.anti_last (basis a) (basis b) (basis d) (basis c)
   have hpair : forall a b c d,
-      tensor04StdAt (I := I) (M := M) (S.base.rm04 clock.time x)
+      tensor04StandardAt (I := I) (M := M) (S.base.rm04 clock.time x)
         (basis a) (basis b) (basis d) (basis c) =
-      tensor04StdAt (I := I) (M := M) (S.base.rm04 clock.time x)
+      tensor04StandardAt (I := I) (M := M) (S.base.rm04 clock.time x)
         (basis c) (basis d) (basis b) (basis a) := by
     intro a b c d
     have hp := hR.pair_swap (basis a) (basis b) (basis d) (basis c)
@@ -5786,10 +5792,10 @@ private theorem hamiltonPerturbedCurvatureBlock_coordinates_symmetries
     have hl := hR.anti_last (basis c) (basis d) (basis a) (basis b)
     dsimp [R] at hp hf hl
     have hmetric :
-        tensor04StdAt (I := I) (M := M)
+        tensor04StandardAt (I := I) (M := M)
             (metricRm04At (I := I) (M := M) (S.base.metric clock.time) x)
             (basis a) (basis b) (basis d) (basis c) =
-          tensor04StdAt (I := I) (M := M)
+          tensor04StandardAt (I := I) (M := M)
             (metricRm04At (I := I) (M := M) (S.base.metric clock.time) x)
             (basis c) (basis d) (basis b) (basis a) := by
       change metricRm04At (I := I) (M := M) (S.base.metric clock.time) x
@@ -5905,7 +5911,7 @@ private theorem hamiltonPerturbedBlockPSD_of_harnack_nonneg
     (clock : HarnackClock) (phi psi : Real) (x : M)
     {A : Type*} [Fintype A] [DecidableEq A]
     (basis : Module.Basis A Real (TangentSpace I x))
-    (hinv : MetricInverseInBasisGen (I := I)
+    (hinv : MetricInverseInBasis (I := I)
       (S.base.metric clock.time) x basis (identityInvMetric (Idx := A)))
     (hnonneg : forall
       (U : HamiltonHarnackTwoForm (TangentSpace I x))
@@ -5914,7 +5920,7 @@ private theorem hamiltonPerturbedBlockPSD_of_harnack_nonneg
           (I := I) S clock phi psi x U W) :
     hamiltonBlockPSD
       (hamiltonPerturbedCurvatureBlock
-        (fun a b c d => tensor04StdAt (I := I) (M := M)
+        (fun a b c d => tensor04StandardAt (I := I) (M := M)
           (S.base.rm04 clock.time x) (basis a) (basis b) (basis d) (basis c))
         psi)
       (fun a b c => hamiltonPAt (I := I)
@@ -5924,7 +5930,7 @@ private theorem hamiltonPerturbedBlockPSD_of_harnack_nonneg
           (S.base.metric clock.time) x ![basis a, basis b]) phi) := by
   classical
   let K := hamiltonPerturbedCurvatureBlock
-    (fun a b c d => tensor04StdAt (I := I) (M := M)
+    (fun a b c d => tensor04StandardAt (I := I) (M := M)
       (S.base.rm04 clock.time x) (basis a) (basis b) (basis d) (basis c)) psi
   let P := fun a b c => hamiltonPAt (I := I)
     (S.base.metric clock.time) x ![basis a, basis b, basis c]
@@ -5965,7 +5971,7 @@ private theorem hamiltonPerturbedBlockJ_nonneg_of_harnack_nonneg_of_null
     (phi psi : Real) (x : M)
     {A : Type*} [Fintype A] [DecidableEq A]
     (basis : Module.Basis A Real (TangentSpace I x))
-    (hinv : MetricInverseInBasisGen (I := I)
+    (hinv : MetricInverseInBasis (I := I)
       (S.base.metric clock.time) x basis (identityInvMetric (Idx := A)))
     (hnonneg : forall
       (U : HamiltonHarnackTwoForm (TangentSpace I x))
@@ -5978,7 +5984,7 @@ private theorem hamiltonPerturbedBlockJ_nonneg_of_harnack_nonneg_of_null
       (I := I) S clock phi psi x U W = 0) :
     0 <= hamiltonBlockJ
       (hamiltonPerturbedCurvatureBlock
-        (fun a b c d => tensor04StdAt (I := I) (M := M)
+        (fun a b c d => tensor04StandardAt (I := I) (M := M)
           (S.base.rm04 clock.time x) (basis a) (basis b) (basis d) (basis c))
         psi)
       (fun a b c => hamiltonPAt (I := I)
@@ -5990,7 +5996,7 @@ private theorem hamiltonPerturbedBlockJ_nonneg_of_harnack_nonneg_of_null
       (fun a => W ![basis a]) := by
   classical
   let K := hamiltonPerturbedCurvatureBlock
-    (fun a b c d => tensor04StdAt (I := I) (M := M)
+    (fun a b c d => tensor04StandardAt (I := I) (M := M)
       (S.base.rm04 clock.time x) (basis a) (basis b) (basis d) (basis c)) psi
   let P := fun a b c => hamiltonPAt (I := I)
     (S.base.metric clock.time) x ![basis a, basis b, basis c]
@@ -6028,6 +6034,48 @@ private theorem hamiltonPerturbedBlockJ_nonneg_of_harnack_nonneg_of_null
   exact hamiltonBlockJ_nonneg_of_psd_quadratic_eq_zero
     K P Mblock (fun a b => U ![basis a, basis b])
       (fun a => W ![basis a]) hK.1 hK.2.1 hP hM hPSD hU hzeroBlock
+
+omit [SigmaCompactSpace M] in
+theorem hamiltonBlockJ_add_sigmaSquare_nonneg_of_harnack_nonneg
+    {D : RealTimeInterval}
+    (S : SolutionOn (I := I) (M := M) D)
+    (clock : HarnackClock) (ht : clock.time ∈ D.regular) (x : M)
+    {A : Type*} [Fintype A] [DecidableEq A]
+    (basis : Module.Basis A ℝ (TangentSpace I x))
+    (horth : ∀ i j, (S.base.metric clock.time).inner x (basis i) (basis j) =
+      if i = j then (1 : ℝ) else 0)
+    (hnonneg : ∀ (U : HamiltonHarnackTwoForm (TangentSpace I x))
+      (W : Tensor0SSpace 1 I x),
+      0 ≤ hamiltonHarnackQuadraticAt (I := I) S clock x U W)
+    (U : A → A → ℝ) (W : A → ℝ) (hU : ∀ a b, U a b = -U b a) :
+    let K := fun a b c d => tensor04StandardAt (I := I) (M := M)
+      (S.base.rm04 clock.time x) (basis a) (basis b) (basis d) (basis c)
+    let P := fun a b c => hamiltonPAt (I := I)
+      (S.base.metric clock.time) x ![basis a, basis b, basis c]
+    let Mbar := fun a b => hamiltonMAt (I := I) clock
+      (S.base.metric clock.time) x ![basis a, basis b]
+    0 ≤ hamiltonBlockJ K P Mbar U W + hamiltonBlockSigmaSquare K P U W := by
+  dsimp only
+  have hinv := metricInverseInBasis_identity_of_orthonormal
+    (S.base.metric clock.time) basis horth
+  have hK := hamiltonPerturbedCurvatureBlock_coordinates_symmetries
+    (I := I) S clock x basis 0
+  have hM := hamiltonPerturbedMBlock_coordinates_symm
+    (I := I) S clock ht x basis 0
+  have hPSD := hamiltonPerturbedBlockPSD_of_harnack_nonneg
+    (I := I) S clock 0 0 x basis hinv (by
+      simpa only [hamiltonPerturbedHarnackQuadraticAt, zero_div, zero_mul, add_zero]
+        using hnonneg)
+  simp only [hamiltonPerturbedCurvatureBlock, hamiltonMetricCurvatureBlockPerturbation,
+    hamiltonPerturbedMBlock, zero_div, zero_mul, add_zero] at hK hM
+  simp only [hamiltonBlockPSD, hamiltonBlockQuadratic, hamiltonBlockPolarized,
+    hamiltonPerturbedCurvatureBlock,
+    hamiltonMetricCurvatureBlockPerturbation, hamiltonPerturbedMBlock,
+    zero_div, zero_mul, add_zero] at hPSD
+  rw [← hamiltonBlock_exact_evolution_eq_j_add_sigma_square]
+  exact hamiltonBlock_exact_evolution_nonneg_of_psd _ _ _ U W
+    hK.1 hK.2.1 (hamiltonP_coordinates_skew (S.base.metric clock.time) x basis)
+    hM hPSD hU
 
 omit [SigmaCompactSpace M] in
 private theorem hamilton_perturbed_harnack_exact_rhs_pos_of_null
@@ -6229,7 +6277,7 @@ private theorem hamilton_perturbed_harnack_exact_rhs_pos_of_null
     simp only [nablaRic, hamiltonPComponent, hamiltonPField_apply,
       hamiltonPAt_apply]
   rw [hPcomp, hMcomp] at hreaction
-  have hinv : MetricInverseInBasisGen (I := I)
+  have hinv : MetricInverseInBasis (I := I)
       (S.base.metric clock.time) x basis
       (identityInvMetric (Idx := Fin n)) :=
     metricInverseInBasis_of_orthonormal (I := I)
@@ -6279,7 +6327,7 @@ private theorem hamilton_perturbed_harnack_exact_rhs_pos_of_null
           (S.base.metric clock.time) x
             (vec2 (I := I) (basis a) (basis b))) phi) Uc Wc := by
     rw [hPAtcomp, hMAtcomp] at hJ
-    simpa only [Uc, Wc, tensor04StdAt_apply, hamiltonPField_apply] using hJ
+    simpa only [Uc, Wc, tensor04StandardAt_apply, hamiltonPField_apply] using hJ
   have hSigma : 0 ≤ hamiltonBlockSigmaSquare
       (hamiltonPerturbedCurvatureBlock
         (fun a b c d => S.base.rm04 clock.time x
@@ -6570,13 +6618,13 @@ private theorem hamilton_curvature_block_coordinates_nonneg
     (basis : Module.Basis A Real (TangentSpace I x))
     (U : A -> A -> Real) :
     0 <= ∑ a, ∑ b, ∑ c, ∑ d,
-      tensor04StdAt (I := I) (M := M) (R : Tensor04At (I := I) (M := M) x)
+      tensor04StandardAt (I := I) (M := M) (R : Tensor04At (I := I) (M := M) x)
         (basis a) (basis b) (basis d) (basis c) * U a b * U c d := by
   classical
   let e : Fin (Fintype.card (A × A)) ≃ A × A := (Fintype.equivFin (A × A)).symm
   let F : (A × A) -> (A × A) -> Real := fun p q =>
     U p.1 p.2 * U q.1 q.2 *
-      tensor04StdAt (I := I) (M := M) (R : Tensor04At (I := I) (M := M) x)
+      tensor04StandardAt (I := I) (M := M) (R : Tensor04At (I := I) (M := M) x)
         (basis p.1) (basis p.2) (basis q.2) (basis q.1)
   have h := mem_algebraicCurvatureOperatorNonnegativeCone.mp hR
     (Fintype.card (A × A))
@@ -6598,11 +6646,11 @@ private theorem hamilton_curvature_block_coordinates_nonneg
   simp_rw [Fintype.sum_prod_type] at hF
   have hfinal :
       (∑ a, ∑ b, ∑ c, ∑ d,
-          tensor04StdAt (I := I) (M := M) (R : Tensor04At (I := I) (M := M) x)
+          tensor04StandardAt (I := I) (M := M) (R : Tensor04At (I := I) (M := M) x)
             (basis a) (basis b) (basis d) (basis c) * U a b * U c d) =
         ∑ a, ∑ b, ∑ c, ∑ d,
           U a b * U c d *
-            tensor04StdAt (I := I) (M := M) (R : Tensor04At (I := I) (M := M) x)
+            tensor04StandardAt (I := I) (M := M) (R : Tensor04At (I := I) (M := M) x)
               (basis a) (basis b) (basis d) (basis c) := by
     apply Finset.sum_congr rfl
     intro a _
@@ -6625,7 +6673,7 @@ private theorem hamilton_ricci_coordinates_nonneg
     (Ric : A -> A -> Real)
     (htrace : curvatureRicciTraceComponents
       (fun a b c d =>
-        tensor04StdAt (I := I) (M := M)
+        tensor04StandardAt (I := I) (M := M)
           (R : Tensor04At (I := I) (M := M) x)
           (basis a) (basis b) (basis c) (basis d)) Ric)
     (W : A -> Real) :
@@ -6634,13 +6682,13 @@ private theorem hamilton_ricci_coordinates_nonneg
   let e : Fin (Fintype.card A) ≃ A := (Fintype.equivFin A).symm
   have hsection : forall q : A,
       0 <= ∑ a, ∑ b,
-        tensor04StdAt (I := I) (M := M)
+        tensor04StandardAt (I := I) (M := M)
             (R : Tensor04At (I := I) (M := M) x)
             (basis q) (basis a) (basis b) (basis q) * W a * W b := by
     intro q
     let F : A -> A -> Real := fun a b =>
       W a * W b *
-        tensor04StdAt (I := I) (M := M)
+        tensor04StandardAt (I := I) (M := M)
           (R : Tensor04At (I := I) (M := M) x)
           (basis q) (basis a) (basis b) (basis q)
     have h := mem_algebraicCurvatureOperatorNonnegativeCone.mp hR
@@ -6660,7 +6708,7 @@ private theorem hamilton_ricci_coordinates_nonneg
         rw [← heq]
         simpa only [F, e, mul_assoc, mul_comm, mul_left_comm] using h
       _ = ∑ a, ∑ b,
-          tensor04StdAt (I := I) (M := M)
+          tensor04StandardAt (I := I) (M := M)
               (R : Tensor04At (I := I) (M := M) x)
               (basis q) (basis a) (basis b) (basis q) * W a * W b := by
         apply Finset.sum_congr rfl
@@ -6670,14 +6718,14 @@ private theorem hamilton_ricci_coordinates_nonneg
         dsimp only [F]
         ring
   have hsum : 0 <= ∑ q : A, ∑ a, ∑ b,
-      tensor04StdAt (I := I) (M := M)
+      tensor04StandardAt (I := I) (M := M)
           (R : Tensor04At (I := I) (M := M) x)
           (basis q) (basis a) (basis b) (basis q) * W a * W b :=
     Finset.sum_nonneg fun q _ => hsection q
   calc
     (∑ a, ∑ b, Ric a b * W a * W b) =
         ∑ a, ∑ b, (∑ q,
-          tensor04StdAt (I := I) (M := M)
+          tensor04StandardAt (I := I) (M := M)
             (R : Tensor04At (I := I) (M := M) x)
             (basis q) (basis a) (basis b) (basis q)) * W a * W b := by
       apply Finset.sum_congr rfl
@@ -6686,19 +6734,19 @@ private theorem hamilton_ricci_coordinates_nonneg
       intro b _
       rw [htrace a b]
     _ = ∑ a, ∑ b, ∑ q,
-        tensor04StdAt (I := I) (M := M)
+        tensor04StandardAt (I := I) (M := M)
             (R : Tensor04At (I := I) (M := M) x)
             (basis q) (basis a) (basis b) (basis q) * W a * W b := by
       simp only [Finset.sum_mul]
     _ = ∑ a, ∑ q, ∑ b,
-        tensor04StdAt (I := I) (M := M)
+        tensor04StandardAt (I := I) (M := M)
             (R : Tensor04At (I := I) (M := M) x)
             (basis q) (basis a) (basis b) (basis q) * W a * W b := by
       apply Finset.sum_congr rfl
       intro a _
       rw [Finset.sum_comm]
     _ = ∑ q, ∑ a, ∑ b,
-        tensor04StdAt (I := I) (M := M)
+        tensor04StandardAt (I := I) (M := M)
             (R : Tensor04At (I := I) (M := M) x)
             (basis q) (basis a) (basis b) (basis q) * W a * W b := by
       rw [Finset.sum_comm]
@@ -6734,7 +6782,7 @@ private theorem hamiltonPerturbedHarnackQuadraticAt_ge_of_unshifted_coefficients
             2 * B ^ 2 * (Module.finrank Real E : Real) ^ 3 / psi) *
           normSq0S (I := I) (S.base.metric clock.time) x 1 W := by
   classical
-  have hinv : MetricInverseInBasisGen (I := I)
+  have hinv : MetricInverseInBasis (I := I)
       (S.base.metric clock.time) x basis
       (identityInvMetric (Idx := Fin (Module.finrank Real E))) :=
     metricInverseInBasis_of_orthonormal (I := I)
@@ -6760,7 +6808,7 @@ private theorem hamiltonPerturbedHarnackQuadraticAt_ge_of_unshifted_coefficients
       (I := I) (M := M) (S.base.metric clock.time) x)
     hR basis (fun a b => U ![basis a, basis b])
   have htrace : curvatureRicciTraceComponents
-      (fun a b c d => tensor04StdAt (I := I) (M := M)
+      (fun a b c d => tensor04StandardAt (I := I) (M := M)
         (metricAlgebraicCurvatureTensorAt
           (I := I) (M := M) (S.base.metric clock.time) x :
             Tensor04At (I := I) (M := M) x)
@@ -6776,7 +6824,7 @@ private theorem hamiltonPerturbedHarnackQuadraticAt_ge_of_unshifted_coefficients
       (ricci_diag_eq_sum_rm04_diag_of_orthonormal
         (I := I) (S.base.metric clock.time) basis
         (S.ricci clock.time) (S.base.rm13 clock.time) (S.base.rm04 clock.time)
-        (ricciTraceOfSol (I := I) S clock.time)
+        (ricciTraceOfSolution (I := I) S clock.time)
         (solution_rm04LowersRm13At (I := I) S clock.time x) horth a b)
   have hRic := hamilton_ricci_coordinates_nonneg
     (I := I)
@@ -6806,7 +6854,7 @@ private theorem hamiltonPerturbedHarnackQuadraticAt_ge_of_unshifted_coefficients
       Tensor0SSpace.smul_apply, smul_eq_mul]
   rw [hMform]
   have hbound := hamiltonPerturbedBlockQuadratic_ge_of_unshifted_bounds clock
-    (fun a b c d => tensor04StdAt (I := I) (M := M)
+    (fun a b c d => tensor04StandardAt (I := I) (M := M)
       (S.base.rm04 clock.time x) (basis a) (basis b) (basis d) (basis c))
     (fun a b c => hamiltonPAt (I := I)
       (S.base.metric clock.time) x ![basis a, basis b, basis c])
@@ -6880,7 +6928,7 @@ private theorem exists_hamiltonPerturbedHarnackQuadratic_slab_lower_bound
     (I := I) S hS halphaBeta hbetaStop hslab hreg hcomplete hC hcurv
   refine ⟨B, hB, ?_⟩
   intro clock htime x phi psi hpsi U W
-  obtain ⟨basis0, horth0⟩ := exists_gOrthonormalBasis
+  obtain ⟨basis0, horth0⟩ := exists_orthonormal_basis
     (I := I) (S.base.metric clock.time) x
   have hdim : Module.finrank Real (TangentSpace I x) = Module.finrank Real E := rfl
   let basis : Module.Basis (Fin (Module.finrank Real E)) Real (TangentSpace I x) :=
@@ -7095,7 +7143,7 @@ private theorem exists_hamiltonPerturbedHarnackQuadraticValue_strict_support
   let _ := ‹SigmaCompactSpace M›
   let clock : HarnackClock := ⟨origin, t, ht.1⟩
   obtain ⟨basis0, horth0⟩ :=
-    exists_gOrthonormalBasis (I := I) (S.base.metric t) x
+    exists_orthonormal_basis (I := I) (S.base.metric t) x
   have hdim : Module.finrank Real (TangentSpace I x) =
       Module.finrank Real E := rfl
   let basis : Module.Basis (Fin (Module.finrank Real E)) Real
@@ -8107,7 +8155,7 @@ private theorem metricFamilyNormSq_sections_continuous
     refine hsum.congr ?_
     intro q
     let basis := chartBasisFamily (I := I) alpha (hbase q)
-    have hinverse : MetricInverseInBasisGen (I := I)
+    have hinverse : MetricInverseInBasis (I := I)
         (G.metric (time q.1).1) (bQ q) basis
         (fun i j => chartInvGramMatrix (I := I)
           (G.metric (time q.1).1) alpha (bQ q) i j) := by
@@ -8325,7 +8373,7 @@ theorem hamiltonHarnackQuadratic_continuous [I.Boundaryless]
     have hxbase : b q ∈ (trivializationAt E (TangentSpace I) alpha).baseSet :=
       hbase q
     let basis := chartBasisFamily (I := I) alpha hxbase
-    have hinverse : MetricInverseInBasisGen (I := I)
+    have hinverse : MetricInverseInBasis (I := I)
         (S.base.metric q.1.1.1) (b q) basis
         (fun i j => (chartInvGramMatrix (I := I)
           (S.base.metric q.1.1.1) alpha (b q)) i j) := by
@@ -8767,7 +8815,7 @@ private theorem exists_hamiltonPerturbedHarnackQuadraticAt_pos_on_connected_slab
         (E := E) (I := I) (M := M) S hS origin htimeReg horiginTime
           phi psi hphiContinuous hpsiContinuous gRef K
   have hmetricCompatible : ∀ t,
-      IsMetricCompatibleGen (I := I)
+      IsMetricCompatible (I := I)
         (LeviCivita (I := I) (S.base.metric t)) (S.base.metric t) := by
     intro t
     simpa only [LeviCivita] using
@@ -8955,7 +9003,7 @@ omit [SigmaCompactSpace M] in
 private theorem hamiltonPAt_restrictOpen
     [BoundarylessManifold I M]
     (g : SmoothRiemannianMetric I M) (O : TopologicalSpace.Opens M)
-    [SigmaCompactSpace O] [T2Space O] [BoundarylessManifold I O]
+    [T2Space O] [BoundarylessManifold I O]
     [IsManifold I 1 O] [IsManifold I 2 O]
     [IsManifold I ((∞ : WithTop ℕ∞) + 1) O]
     (x : O) (A B C : TangentSpace I (x : M)) :
@@ -8968,29 +9016,29 @@ private theorem hamiltonPAt_restrictOpen
   change hamiltonPAt (I := I) (g.restrictOpen (I := I) O) x
       ![eM.symm A, eM.symm B, eM.symm C] =
     hamiltonPAt (I := I) g (x : M) ![A, B, C]
-  have hABC := DifferentialGeometry.HCGCompactness.ricCovTower_restrictOpen
+  have hABC := DifferentialGeometry.CheegerGromovCompactness.ricCovTower_restrictOpen
     (I := I) g O 1 x ![eM.symm A, eM.symm B, eM.symm C]
-  have hBAC := DifferentialGeometry.HCGCompactness.ricCovTower_restrictOpen
+  have hBAC := DifferentialGeometry.CheegerGromovCompactness.ricCovTower_restrictOpen
     (I := I) g O 1 x ![eM.symm B, eM.symm A, eM.symm C]
-  have hABC' : DifferentialGeometry.HCGCompactness.ricCovTower
+  have hABC' : DifferentialGeometry.CheegerGromovCompactness.ricCovTower
         (I := I) (g.restrictOpen (I := I) O)
         (g.restrictOpen (I := I) O) 1 x
           ![eM.symm A, eM.symm B, eM.symm C] =
-      DifferentialGeometry.HCGCompactness.ricCovTower
+      DifferentialGeometry.CheegerGromovCompactness.ricCovTower
         (I := I) g g 1 (x : M) ![A, B, C] := by
     calc
-      _ = DifferentialGeometry.HCGCompactness.ricCovTower
+      _ = DifferentialGeometry.CheegerGromovCompactness.ricCovTower
           (I := I) g g 1 (x : M)
             ![eM.symm A, eM.symm B, eM.symm C] := hABC
       _ = _ := by congr 1
-  have hBAC' : DifferentialGeometry.HCGCompactness.ricCovTower
+  have hBAC' : DifferentialGeometry.CheegerGromovCompactness.ricCovTower
         (I := I) (g.restrictOpen (I := I) O)
         (g.restrictOpen (I := I) O) 1 x
           ![eM.symm B, eM.symm A, eM.symm C] =
-      DifferentialGeometry.HCGCompactness.ricCovTower
+      DifferentialGeometry.CheegerGromovCompactness.ricCovTower
         (I := I) g g 1 (x : M) ![B, A, C] := by
     calc
-      _ = DifferentialGeometry.HCGCompactness.ricCovTower
+      _ = DifferentialGeometry.CheegerGromovCompactness.ricCovTower
           (I := I) g g 1 (x : M)
             ![eM.symm B, eM.symm A, eM.symm C] := hBAC
       _ = _ := by congr 1
@@ -9008,16 +9056,16 @@ private theorem hamiltonPAt_restrictOpen
   unfold hamiltonPAt hamiltonP
   simp only [Tensor0SSpace.sub_apply, Tensor0SSpace.domDomCongr_apply]
   rw [hswapO, hswapM]
-  simpa [DifferentialGeometry.HCGCompactness.ricCovTower,
-    DifferentialGeometry.HCGCompactness.iterCov, metricNablaRic,
-    metricRicci, metricCov, DifferentialGeometry.HCGCompactness.covStep] using
+  simpa [DifferentialGeometry.CheegerGromovCompactness.ricCovTower,
+    DifferentialGeometry.CheegerGromovCompactness.iterCov, metricNablaRic,
+    metricRicci, metricCov, DifferentialGeometry.CheegerGromovCompactness.covStep] using
     congrArg₂ (fun p q : Real => p - q) hABC' hBAC'
 
 omit [SigmaCompactSpace M] in
 private theorem metricNabla2Ric_restrictOpen
     [BoundarylessManifold I M]
     (g : SmoothRiemannianMetric I M) (O : TopologicalSpace.Opens M)
-    [SigmaCompactSpace O] [T2Space O] [BoundarylessManifold I O]
+    [T2Space O] [BoundarylessManifold I O]
     [IsManifold I 1 O] [IsManifold I 2 O]
     [IsManifold I ((∞ : WithTop ℕ∞) + 1) O]
     (x : O) (A B C D : TangentSpace I (x : M)) :
@@ -9028,22 +9076,22 @@ private theorem metricNabla2Ric_restrictOpen
           (restrictOpenTangentEquiv (I := I) O x).symm D] =
       metricNabla2Ric (I := I) (M := M) g (x : M) ![A, B, C, D] := by
   let eM := restrictOpenTangentEquiv (I := I) O x
-  have h := DifferentialGeometry.HCGCompactness.ricCovTower_restrictOpen
+  have h := DifferentialGeometry.CheegerGromovCompactness.ricCovTower_restrictOpen
     (I := I) g O 2 x ![eM.symm A, eM.symm B, eM.symm C, eM.symm D]
   have hleft : metricNabla2Ric (I := I) (M := O)
       (g.restrictOpen (I := I) O) x
         ![eM.symm A, eM.symm B, eM.symm C, eM.symm D] =
-      DifferentialGeometry.HCGCompactness.ricCovTower
+      DifferentialGeometry.CheegerGromovCompactness.ricCovTower
         (I := I) (g.restrictOpen (I := I) O)
           (g.restrictOpen (I := I) O) 2 x
             ![eM.symm A, eM.symm B, eM.symm C, eM.symm D] := by rfl
   have hright : metricNabla2Ric (I := I) (M := M) g (x : M)
         ![A, B, C, D] =
-      DifferentialGeometry.HCGCompactness.ricCovTower
+      DifferentialGeometry.CheegerGromovCompactness.ricCovTower
         (I := I) g g 2 (x : M) ![A, B, C, D] := by rfl
   rw [hleft, hright]
   calc
-    _ = DifferentialGeometry.HCGCompactness.ricCovTower
+    _ = DifferentialGeometry.CheegerGromovCompactness.ricCovTower
         (I := I) g g 2 (x : M)
           ![eM.symm A, eM.symm B, eM.symm C, eM.symm D] := h
     _ = _ := by congr 1
@@ -9051,7 +9099,7 @@ private theorem metricNabla2Ric_restrictOpen
 omit [SigmaCompactSpace M] in
 private theorem metricRm04_restrictOpen
     (g : SmoothRiemannianMetric I M) (O : TopologicalSpace.Opens M)
-    [SigmaCompactSpace O] [T2Space O] [IsManifold I 1 O]
+    [T2Space O] [IsManifold I 1 O]
     (x : O) (A B C D : TangentSpace I (x : M)) :
     metricRm04 (I := I) (M := O) (g.restrictOpen (I := I) O) x
         ![(restrictOpenTangentEquiv (I := I) O x).symm A,
@@ -9065,7 +9113,7 @@ private theorem metricRm04_restrictOpen
           ![eM.symm A, eM.symm B, eM.symm C, eM.symm D] =
       metricRm04 (I := I) (M := M) g (x : M)
         ![eM.symm A, eM.symm B, eM.symm C, eM.symm D] := by
-    have hraw := DifferentialGeometry.HCGCompactness.metricRm04_restrictOpen_eval
+    have hraw := DifferentialGeometry.CheegerGromovCompactness.metricRm04_restrictOpen_eval
       (I := I) g O x ![eM.symm A, eM.symm B, eM.symm C, eM.symm D]
     simp only [mfderiv_subtype_val_apply (I := I) O x] at hraw
     exact hraw.trans (congrArg (metricRm04 (I := I) (M := M) g (x : M))
@@ -9083,7 +9131,7 @@ omit [SigmaCompactSpace M] in
 private theorem metricRicci_restrictOpen
     [BoundarylessManifold I M]
     (g : SmoothRiemannianMetric I M) (O : TopologicalSpace.Opens M)
-    [SigmaCompactSpace O] [T2Space O] [BoundarylessManifold I O]
+    [T2Space O] [BoundarylessManifold I O]
     [IsManifold I 1 O]
     (x : O) (A B : TangentSpace I (x : M)) :
     metricRicci (I := I) (M := O) (g.restrictOpen (I := I) O) x
@@ -9095,7 +9143,7 @@ private theorem metricRicci_restrictOpen
         (g.restrictOpen (I := I) O) x ![eM.symm A, eM.symm B] =
       metricRicci (I := I) (M := M) g (x : M)
         ![eM.symm A, eM.symm B] := by
-    have hraw := DifferentialGeometry.HCGCompactness.metricRicci_restrictOpen_eval
+    have hraw := DifferentialGeometry.CheegerGromovCompactness.metricRicci_restrictOpen_eval
       (I := I) g O x ![eM.symm A, eM.symm B]
     simp only [mfderiv_subtype_val_apply (I := I) O x] at hraw
     exact hraw.trans (congrArg (metricRicci (I := I) (M := M) g (x : M))
@@ -9128,7 +9176,7 @@ private theorem hamiltonHarnackQuadraticAt_restrictOpen
     let WO : Tensor0SSpace 1 I x :=
       W.compContinuousLinearMap (fun _ => eM.toContinuousLinearMap)
     hamiltonHarnackQuadraticAt (I := I)
-        (DifferentialGeometry.HCGCompactness.solutionOnRestrictOpen
+        (DifferentialGeometry.CheegerGromovCompactness.solutionOnRestrictOpen
           (I := I) S O) clock x UO WO =
       hamiltonHarnackQuadraticAt (I := I) S clock (x : M) U W := by
   dsimp only
@@ -9137,12 +9185,12 @@ private theorem hamiltonHarnackQuadraticAt_restrictOpen
     U.compContinuousLinearMap eM.toContinuousLinearMap
   let WO : Tensor0SSpace 1 I x :=
     W.compContinuousLinearMap (fun _ => eM.toContinuousLinearMap)
-  let SO := DifferentialGeometry.HCGCompactness.solutionOnRestrictOpen
+  let SO := DifferentialGeometry.CheegerGromovCompactness.solutionOnRestrictOpen
     (I := I) S O
   have hSO : IsSolutionOn (I := I) SO :=
-    DifferentialGeometry.HCGCompactness.isSolutionOn_restrictOpen
+    DifferentialGeometry.CheegerGromovCompactness.isSolutionOn_restrictOpen
       (I := I) S hS O
-  obtain ⟨basisM, horthM⟩ := exists_gOrthonormalBasis
+  obtain ⟨basisM, horthM⟩ := exists_orthonormal_basis
     (I := I) (M := M) (S.base.metric clock.time) (x : M)
   let basisO := basisM.map eM.symm.toLinearEquiv
   have hbasisO (a) : basisO a = eM.symm (basisM a) := by
@@ -9156,13 +9204,13 @@ private theorem hamiltonHarnackQuadraticAt_restrictOpen
     rw [restrictOpenTangentEquiv_symm_apply,
       restrictOpenTangentEquiv_symm_apply]
     exact horthM i j
-  have hinvM : MetricInverseInBasisGen (I := I) (M := M)
+  have hinvM : MetricInverseInBasis (I := I) (M := M)
       (S.base.metric clock.time) (x : M) basisM
         (identityInvMetric
           (Idx := Fin (Module.finrank Real (TangentSpace I (x : M))))) :=
     metricInverseInBasis_of_orthonormal (I := I) (M := M)
       (S.base.metric clock.time) basisM horthM
-  have hinvO : MetricInverseInBasisGen (I := I) (M := O)
+  have hinvO : MetricInverseInBasis (I := I) (M := O)
       (SO.base.metric clock.time) x basisO
         (identityInvMetric
           (Idx := Fin (Module.finrank Real (TangentSpace I (x : M))))) :=
@@ -9173,9 +9221,9 @@ private theorem hamiltonHarnackQuadraticAt_restrictOpen
   have hquadraticM := hamiltonHarnackQuadraticAt_eq_hamiltonBlockQuadratic
     (I := I) S clock (x : M) U W basisM hinvM
   have hK (a b c d : Fin (Module.finrank Real (TangentSpace I (x : M)))) :
-      tensor04StdAt (I := I) (M := O) (SO.base.rm04 clock.time x)
+      tensor04StandardAt (I := I) (M := O) (SO.base.rm04 clock.time x)
           (basisO a) (basisO b) (basisO d) (basisO c) =
-        tensor04StdAt (I := I) (M := M) (S.base.rm04 clock.time (x : M))
+        tensor04StandardAt (I := I) (M := M) (S.base.rm04 clock.time (x : M))
           (basisM a) (basisM b) (basisM d) (basisM c) := by
     change metricRm04 (I := I) (M := O)
         ((S.base.metric clock.time).restrictOpen (I := I) O) x
@@ -9231,7 +9279,7 @@ private theorem hamiltonHarnackQuadraticAt_restrictOpen
           (Idx := Fin (Module.finrank Real (TangentSpace I (x : M))))) hinvM a b]
     simp only [hbasisO]
     simp only [SolutionOn.family_metric]
-    dsimp only [SO, DifferentialGeometry.HCGCompactness.solutionOnRestrictOpen]
+    dsimp only [SO, DifferentialGeometry.CheegerGromovCompactness.solutionOnRestrictOpen]
     have hvec2 (A B : TangentSpace I x) : vec2 A B = ![A, B] := by
       funext i
       fin_cases i <;> rfl
@@ -9341,30 +9389,28 @@ private theorem hamiltonHarnackQuadraticAt_nonneg_on_slab
   let : IsManifold I ((∞ : WithTop ℕ∞) + 1) O := by
     change IsManifold I ∞ O
     infer_instance
-  let SO := DifferentialGeometry.HCGCompactness.solutionOnRestrictOpen
+  let SO := DifferentialGeometry.CheegerGromovCompactness.solutionOnRestrictOpen
     (I := I) S O
   have hSO : IsSolutionOn (I := I) SO :=
-    DifferentialGeometry.HCGCompactness.isSolutionOn_restrictOpen
+    DifferentialGeometry.CheegerGromovCompactness.isSolutionOn_restrictOpen
       (I := I) S hS O
   have hcompleteO : RiemannianMetricComplete
       (I := I) (SO.base.metric alphaMinus) := by
     change RiemannianMetricComplete (I := I)
       ((S.base.metric alphaMinus).restrictOpen (I := I) O)
-    exact RiemannianMetricComplete.restrictOpen_of_isClosed
-      (I := I) (S.base.metric alphaMinus) hcomplete O
-        isClosed_connectedComponent
+    exact hcomplete.restrictOpen O isClosed_connectedComponent
   have hcurvO : ∀ s ∈ Set.Icc alphaMinus stop, ∀ y : O,
       normSq0S (I := I) (SO.base.metric s) y 4 (SO.base.rm04 s y) ≤ C := by
     intro s hs y
     change normSq0S (I := I) ((S.base.metric s).restrictOpen (I := I) O)
       y 4 (metricRm04 (I := I) (M := O)
         ((S.base.metric s).restrictOpen (I := I) O) y) ≤ C
-    rw [DifferentialGeometry.HCGCompactness.normSq0S_restrictOpen_apply]
+    rw [DifferentialGeometry.CheegerGromovCompactness.normSq0S_restrictOpen_apply]
     have htensor : metricRm04 (I := I) (M := O)
           ((S.base.metric s).restrictOpen (I := I) O) y =
         metricRm04 (I := I) (M := M) (S.base.metric s) (y : M) := by
       ext slots
-      have h := DifferentialGeometry.HCGCompactness.metricRm04_restrictOpen_eval
+      have h := DifferentialGeometry.CheegerGromovCompactness.metricRm04_restrictOpen_eval
         (I := I) (S.base.metric s) O y slots
       simp only [mfderiv_subtype_val_apply (I := I) O y] at h
       exact h.trans (congrArg
@@ -9383,8 +9429,8 @@ private theorem hamiltonHarnackQuadraticAt_nonneg_on_slab
       (metricAlgebraicCurvatureTensorAt_mem_curvatureOperatorNonnegativeCone_iff
         (I := I) (M := M) (S.base.metric s) (y : M)).mp
         (hR s hs (y : M)) n c (fun i => v i) (fun i => w i)
-    simpa only [SO, DifferentialGeometry.HCGCompactness.solutionOnRestrictOpen,
-      metricRm04StdAt_restrictOpen,
+    simpa only [SO, DifferentialGeometry.CheegerGromovCompactness.solutionOnRestrictOpen,
+      metricRm04StandardAt_restrictOpen,
       mfderiv_subtype_val_apply (I := I) O y] using h
   let clock : HarnackClock := ⟨origin, t, ht.1⟩
   have htreg : t ∈ D.regular :=
@@ -9526,6 +9572,7 @@ theorem hamilton_matrix_harnack_finite_origin
     (I := I) S ⟨0, t, ht⟩ x U W]
   simpa only [q, c, HarnackClock.elapsed, sub_zero] using hlimit
 
+omit [SigmaCompactSpace M] in
 theorem hamilton_matrix_harnack_of_compact
     [I.Boundaryless] [NeZero (Module.finrank Real E)] [CompactSpace M]
     {D : RealTimeInterval}
@@ -9563,6 +9610,7 @@ theorem hamilton_matrix_harnack_of_compact
   obtain ⟨C, hC⟩ := (isCompact_range hnorm).bddAbove
   exact ⟨C, fun s hs y ↦ hC ⟨(⟨s, hs⟩, y), rfl⟩⟩
 
+omit [SigmaCompactSpace M] in
 theorem hamilton_matrix_harnack_of_compact_of_initial_nonnegative
     [I.Boundaryless] [CompactSpace M]
     {D : RealTimeInterval}
@@ -9588,7 +9636,7 @@ theorem hamilton_matrix_harnack_of_compact_of_initial_nonnegative
   let D' := RealTimeInterval.openInterval 0 T t ht
   let S' := S.timeRestrict D'
   have hS' : IsSolutionOn (I := I) S' := by
-    apply isSoln_timeRestrict (I := I) hS.isSolution
+    apply isSolutionOn_timeRestrict (I := I) hS.isSolution
     · intro s hs
       change s ∈ Set.Ioo 0 T at hs
       exact hTsub ⟨hs.1.le, hs.2.le⟩

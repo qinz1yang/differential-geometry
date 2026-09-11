@@ -2,9 +2,9 @@ import DifferentialGeometry.Bundle.PartialMfderiv.Basic
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Scalar.TraceAlgebra
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.Regularity
 import DifferentialGeometry.Geometry.Metric.Family.Continuity
-import DifferentialGeometry.Geometry.Metric.ChartGram
-import DifferentialGeometry.Geometry.Operator.HessianTraceRealization
-import DifferentialGeometry.Geometry.Operator.MetricFamilyRegularity
+import DifferentialGeometry.Geometry.Metric.Coordinates.ChartGram
+import DifferentialGeometry.Geometry.Operator.Hessian.Trace.Realization
+import DifferentialGeometry.Geometry.Metric.Family.Regularity.DifferentialOperator
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Geometry.Curvature
 
@@ -243,7 +243,7 @@ theorem chartScalarDeriv
         (chartBasisVecFiber (I := I) α j y)) x :=
     (chartBasisVec_contMDiffOn (I := I) α j).contMDiffAt
       ((trivializationAt E (TangentSpace I) α).open_baseSet.mem_nhds hxbase)
-  have hderiv := DifferentialGeometry.prodExtDerivAt_inf hscalar hframe
+  have hderiv := DifferentialGeometry.prodExtDerivAt_smooth hscalar hframe
   have hsymm : ContMDiffAt 𝓘(Real, E) I ∞
       (extChartAt I α).symm p.2 :=
     ((contMDiffOn_extChartAt_symm (I := I) α) p.2
@@ -277,7 +277,7 @@ private theorem scalarPart_joint
     (j : Fin (Module.finrank Real E)) :
     ContDiffOn Real ∞
       (fun p : Real × E =>
-        partialDeriv (E := E) j
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j
           (scalarOnE (I := I) alpha (S.scalar p.1)) p.2)
       (D.regular ×ˢ interior (extChartAt I alpha).target) := by
   refine (chartScalarDeriv (I := I) S hS alpha j).congr ?_
@@ -290,13 +290,13 @@ private theorem scalarPart_joint
   have hright : extChartAt I alpha x = p.2 :=
     (extChartAt I alpha).right_inv (interior_subset hp.2)
   rw [mvfderiv_real_eq_mfderiv]
-  change partialDeriv (E := E) j
+  change DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j
       (scalarOnE (I := I) alpha (S.scalar p.1)) p.2 =
     mfderiv I 𝓘(Real, Real) (S.scalar p.1) x
       (chartBasisVecFiber (I := I) alpha j x)
   rw [← hright]
   exact (mfderiv_chartBasisVecFiber_of_mdifferentiableAt (I := I) alpha
-    ((scalarSmoothOfSol (I := I) S p.1).mdifferentiableAt (by simp))
+    ((scalarSmoothOfSolution (I := I) S p.1).mdifferentiableAt (by simp))
     hxsrc (by simpa only [hright] using hp.2) j).symm
 
 omit [SigmaCompactSpace M] in
@@ -313,14 +313,14 @@ theorem chartScalarHess
   classical
   let U := D.regular ×ˢ interior (extChartAt I alpha).target
   have hfirst (k : Fin (Module.finrank Real E)) : ContDiffOn Real ∞
-      (fun p : Real × E => partialDeriv (E := E) k
+      (fun p : Real × E => DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k
         (scalarOnE (I := I) alpha (S.scalar p.1)) p.2) U := by
     exact scalarPart_joint (I := I) S hS alpha k
   have hsecond : ContDiffOn Real ∞
       (fun p : Real × E => chartIteratedPartialDeriv (I := I) alpha
         (S.scalar p.1) i j p.2) U := by
     have hfd := DifferentialGeometry.Analysis.spatialFDeriv_contDiffOn
-      (G := fun t y => partialDeriv (E := E) j
+      (G := fun t y => DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j
         (scalarOnE (I := I) alpha (S.scalar t)) y)
       D.regular_isOpen.uniqueDiffOn isOpen_interior
         (scalarPart_joint (I := I) S hS alpha j)
@@ -329,7 +329,7 @@ theorem chartScalarHess
     change ContDiffOn Real ∞
       (fun p : Real × E =>
         (Function.uncurry (fun t y => fderiv Real
-          (fun z => partialDeriv (E := E) j
+          (fun z => DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j
             (scalarOnE (I := I) alpha (S.scalar t)) z) y) p)
           (chartModelBasis E i)) U
     exact hraw
@@ -337,13 +337,13 @@ theorem chartScalarHess
       (fun p : Real × E => chartChristoffel (I := I)
         (S.family.metric p.1) alpha i j k p.2) U :=
     MetricFamilySmoothOn.chartChristoffelOnE_contDiffOn
-      (I := I) (G := S.family) hS.smoothMetric
+      (I := I) (g_fam := S.family.metric) hS.smoothMetric
       (J := D.regular) (fun _ ht => ht) D.regular_isOpen.uniqueDiffOn alpha i j k
   have hchart : ContDiffOn Real ∞
       (fun p : Real × E =>
         chartIteratedPartialDeriv (I := I) alpha (S.scalar p.1) i j p.2 -
           ∑ k, chartChristoffel (I := I) (S.family.metric p.1)
-            alpha i j k p.2 * partialDeriv (E := E) k
+            alpha i j k p.2 * DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k
               (scalarOnE (I := I) alpha (S.scalar p.1)) p.2) U := by
     exact hsecond.sub (ContDiffOn.sum fun k _ => (hGamma k).mul (hfirst k))
   refine hchart.congr ?_
@@ -359,7 +359,7 @@ theorem scalarHess_cont [I.Boundaryless]
     tensor0SFamilyContinuousOnSet (I := I) (M := M) 2 D.regular
       (fun t x => hessianSec (I := I) (S.base.connection t)
         (metricCov_smooth (I := I) (S.base.metric t))
-        (S.scalar t) (scalarSmoothOfSol (I := I) S t) x) := by
+        (S.scalar t) (scalarSmoothOfSolution (I := I) S t) x) := by
   classical
   apply tensor0SFamilyContinuousOnSet_of_chartBasisComp
     (N := fun alpha => chartLeviCivitaGoodSet (I := I) alpha)
@@ -396,15 +396,15 @@ theorem scalarHess_cont [I.Boundaryless]
   rw [hessSec_inner_cov (I := I) (S.base.connection q.1.1)
     (metricCov_smooth (I := I) (S.base.metric q.1.1))
     (S.base.metric q.1.1) (by simpa using hmc)
-    (S.scalar q.1.1) (scalarSmoothOfSol (I := I) S q.1.1)]
+    (S.scalar q.1.1) (scalarSmoothOfSolution (I := I) S q.1.1)]
   rw [show gradientFun (I := I) (S.base.metric q.1.1) (S.scalar q.1.1) =
       gradFun (I := I) (S.base.metric q.1.1) (S.scalar q.1.1) from rfl]
   rw [show S.base.connection q.1.1 =
       LeviCivita (I := I) (S.base.metric q.1.1) from rfl]
   rw [abstractHessian_eq_inner_cov_gradFun_extend (I := I)
-    (S.base.metric q.1.1) (scalarSmoothOfSol (I := I) S q.1.1)]
+    (S.base.metric q.1.1) (scalarSmoothOfSolution (I := I) S q.1.1)]
   rw [chartAlphaMatrixIdentity_holds (I := I) (S.base.metric q.1.1)
-    alpha (scalarSmoothOfSol (I := I) S q.1.1) hx (idx 0) (idx 1)]
+    alpha (scalarSmoothOfSolution (I := I) S q.1.1) hx (idx 0) (idx 1)]
   rw [hleft]
   simp only [SolutionOn.family_metric]
 

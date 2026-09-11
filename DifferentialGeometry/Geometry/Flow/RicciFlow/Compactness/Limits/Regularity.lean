@@ -1,16 +1,16 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Foundations.PointedMaps
 
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.Open.Basic
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.Open.Convergence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.Equation
-import DifferentialGeometry.Geometry.Metric.Convergence.Precompactness
-import DifferentialGeometry.Geometry.Curvature.RicciOperatorNormBound
+import DifferentialGeometry.Geometry.Metric.Convergence.Compactness.Precompactness
+import DifferentialGeometry.Geometry.Curvature.Bounds.RicciOperatorNorm
 import DifferentialGeometry.Geometry.Metric.Family.Continuity
-import DifferentialGeometry.Geometry.Curvature.OpenSubtypeNaturality
-import DifferentialGeometry.Geometry.Connection.ChartBridge.DiffRiemannBasisIdentityOffCentre
-import DifferentialGeometry.Geometry.Metric.ChartGram
-import DifferentialGeometry.Analysis.Calculus.SpaceJet
-import DifferentialGeometry.Analysis.Calculus.TimeSliceSwap
-import DifferentialGeometry.Analysis.Calculus.TimeSliceBootstrap
+import DifferentialGeometry.Geometry.Curvature.Naturality.OpenSubtype
+import DifferentialGeometry.Geometry.Connection.ChartBridge.Curvature.DifferentiatedBasisIdentityOffCenter
+import DifferentialGeometry.Geometry.Metric.Coordinates.ChartGram
+import DifferentialGeometry.Analysis.Calculus.IteratedDerivative.SpaceJets
+import DifferentialGeometry.Analysis.Calculus.TimeJet.SliceSwap
+import DifferentialGeometry.Analysis.Calculus.TimeJet.SliceBootstrap
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
@@ -19,7 +19,7 @@ open DifferentialGeometry.Geometry.Operator
 noncomputable section
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open scoped Manifold ContDiff Topology BigOperators
 open Bundle
@@ -59,17 +59,17 @@ theorem chartGramBound_contOn
     (gRef : SmoothRiemannianMetric I M) (x₀ : M)
     (i j : Fin (Module.finrank Real E)) :
     ContinuousOn (fun x : M =>
-      Real.sqrt (gRef.inner x (chartBasisVecFiber (I := I) x₀ i x)
-          (chartBasisVecFiber (I := I) x₀ i x))
-        * Real.sqrt (gRef.inner x (chartBasisVecFiber (I := I) x₀ j x)
-            (chartBasisVecFiber (I := I) x₀ j x)))
+      Real.sqrt (gRef.inner x (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ i x)
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ i x))
+        * Real.sqrt (gRef.inner x (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ j x)
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ j x)))
       (trivializationAt E (TangentSpace I) x₀).baseSet := by
-  have hii : ContinuousOn (fun x : M => chartGramMatrix (I := I) gRef x₀ x i i)
+  have hii : ContinuousOn (fun x : M => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) gRef x₀ x i i)
       (trivializationAt E (TangentSpace I) x₀).baseSet :=
-    (chartGramMatrix_entry_contMDiffOn (I := I) gRef x₀ i i).continuousOn
-  have hjj : ContinuousOn (fun x : M => chartGramMatrix (I := I) gRef x₀ x j j)
+    (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_entry_contMDiffOn (I := I) gRef x₀ i i).continuousOn
+  have hjj : ContinuousOn (fun x : M => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) gRef x₀ x j j)
       (trivializationAt E (TangentSpace I) x₀).baseSet :=
-    (chartGramMatrix_entry_contMDiffOn (I := I) gRef x₀ j j).continuousOn
+    (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_entry_contMDiffOn (I := I) gRef x₀ j j).continuousOn
   exact (Real.continuous_sqrt.comp_continuousOn hii).mul
     (Real.continuous_sqrt.comp_continuousOn hjj)
 
@@ -77,23 +77,23 @@ omit [SigmaCompactSpace M] in
 theorem chartGram_sub_le
     (gRef u u' : SmoothRiemannianMetric I M) (x₀ x : M)
     (i j : Fin (Module.finrank Real E)) :
-    |chartGramMatrix (I := I) u x₀ x i j - chartGramMatrix (I := I) u' x₀ x i j|
+    |DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) u x₀ x i j - DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) u' x₀ x i j|
       ≤ metricDerivNorm (I := I) 0 u u' gRef x
-        * (Real.sqrt (gRef.inner x (chartBasisVecFiber (I := I) x₀ i x)
-              (chartBasisVecFiber (I := I) x₀ i x))
-          * Real.sqrt (gRef.inner x (chartBasisVecFiber (I := I) x₀ j x)
-              (chartBasisVecFiber (I := I) x₀ j x))) := by
+        * (Real.sqrt (gRef.inner x (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ i x)
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ i x))
+          * Real.sqrt (gRef.inner x (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ j x)
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ j x))) := by
   classical
-  have hentry : chartGramMatrix (I := I) u x₀ x i j - chartGramMatrix (I := I) u' x₀ x i j
+  have hentry : DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) u x₀ x i j - DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) u' x₀ x i j
       = (metricDiffCovDerivAt (I := I) 0 u u' gRef x)
-          ![chartBasisVecFiber (I := I) x₀ i x, chartBasisVecFiber (I := I) x₀ j x] := by
-    rw [chartGramMatrix_apply, chartGramMatrix_apply]
+          ![DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ i x, DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ j x] := by
+    rw [DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_apply, DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_apply]
     have hu := Tensor0SBundle.metricTensorField_apply (I := I) u x
-      (fun a => (![chartBasisVecFiber (I := I) x₀ i x,
-        chartBasisVecFiber (I := I) x₀ j x] : Fin 2 → TangentSpace I x) a)
+      (fun a => (![DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ i x,
+        DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ j x] : Fin 2 → TangentSpace I x) a)
     have hu' := Tensor0SBundle.metricTensorField_apply (I := I) u' x
-      (fun a => (![chartBasisVecFiber (I := I) x₀ i x,
-        chartBasisVecFiber (I := I) x₀ j x] : Fin 2 → TangentSpace I x) a)
+      (fun a => (![DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ i x,
+        DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ j x] : Fin 2 → TangentSpace I x) a)
     simp only [metricDiffCovDerivAt]
     simp only [Matrix.cons_val_zero, Matrix.cons_val_one] at hu hu'
     change u.inner x _ _ - u'.inner x _ _
@@ -104,10 +104,10 @@ theorem chartGram_sub_le
           = Tensor0SBundle.metricTensorField (I := I) u' x from rfl,
       hu, hu']
   rw [hentry]
-  obtain ⟨basis, hON⟩ := exists_gOrthonormalBasis (I := I) gRef x
+  obtain ⟨basis, hON⟩ := DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis (I := I) gRef x
   have h := abs_apply_le_sqrt_normSq0S (I := I) (g := gRef) (x := x) (s := 2)
     basis hON (metricDiffCovDerivAt (I := I) 0 u u' gRef x)
-    ![chartBasisVecFiber (I := I) x₀ i x, chartBasisVecFiber (I := I) x₀ j x]
+    ![DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ i x, DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ j x]
   refine h.trans (le_of_eq ?_)
   rw [Fin.prod_univ_two]
   simp only [Matrix.cons_val_zero, Matrix.cons_val_one]
@@ -124,9 +124,9 @@ theorem chartGramLim_contOn
         metricDerivNorm (I := I) 0 (gSeq k t) (gInf t) gRef x < ε)
     (x₀ : M) (i j : Fin (Module.finrank Real E))
     (hkcont : ∀ k : ℕ, ContinuousOn
-      (fun p : ℝ × M => chartGramMatrix (I := I) (gSeq k p.1) x₀ p.2 i j)
+      (fun p : ℝ × M => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (gSeq k p.1) x₀ p.2 i j)
       (Set.Icc β ψ ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet)) :
-    ContinuousOn (fun p : ℝ × M => chartGramMatrix (I := I) (gInf p.1) x₀ p.2 i j)
+    ContinuousOn (fun p : ℝ × M => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (gInf p.1) x₀ p.2 i j)
       (Set.Icc β ψ ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet) := by
   classical
   intro p₀ hp₀
@@ -135,10 +135,10 @@ theorem chartGramLim_contOn
     (trivializationAt E (TangentSpace I) x₀).open_baseSet hp₀x
   have hKne : K.Nonempty := ⟨p₀.2, interior_subset hKint⟩
   set c : M → ℝ := fun x =>
-    Real.sqrt (gRef.inner x (chartBasisVecFiber (I := I) x₀ i x)
-        (chartBasisVecFiber (I := I) x₀ i x))
-      * Real.sqrt (gRef.inner x (chartBasisVecFiber (I := I) x₀ j x)
-          (chartBasisVecFiber (I := I) x₀ j x)) with hc
+    Real.sqrt (gRef.inner x (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ i x)
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ i x))
+      * Real.sqrt (gRef.inner x (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ j x)
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ j x)) with hc
   have hcnonneg : ∀ x : M, 0 ≤ c x := fun x =>
     mul_nonneg (Real.sqrt_nonneg _) (Real.sqrt_nonneg _)
   obtain ⟨z, hzK, hz⟩ := hKc.exists_isMaxOn hKne
@@ -147,8 +147,8 @@ theorem chartGramLim_contOn
   have hCb0 : 0 ≤ Cb := hcnonneg z
   have hzle : ∀ x ∈ K, c x ≤ Cb := fun x hx => isMaxOn_iff.mp hz x hx
   have htu : TendstoUniformlyOn
-      (fun (k : ℕ) (p : ℝ × M) => chartGramMatrix (I := I) (gSeq k p.1) x₀ p.2 i j)
-      (fun p : ℝ × M => chartGramMatrix (I := I) (gInf p.1) x₀ p.2 i j)
+      (fun (k : ℕ) (p : ℝ × M) => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (gSeq k p.1) x₀ p.2 i j)
+      (fun p : ℝ × M => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (gInf p.1) x₀ p.2 i j)
       atTop (Set.Icc β ψ ×ˢ K) := by
     rw [Metric.tendstoUniformlyOn_iff]
     intro ε hε
@@ -158,10 +158,10 @@ theorem chartGramLim_contOn
     have hd : metricDerivNorm (I := I) 0 (gSeq k t) (gInf t) gRef x ≤ ε / (Cb + 1) :=
       (hk0 k hk t ht x hx).le
     have hcs := chartGram_sub_le (I := I) gRef (gSeq k t) (gInf t) x₀ x i j
-    calc dist (chartGramMatrix (I := I) (gInf t) x₀ x i j)
-          (chartGramMatrix (I := I) (gSeq k t) x₀ x i j)
-        = |chartGramMatrix (I := I) (gSeq k t) x₀ x i j
-            - chartGramMatrix (I := I) (gInf t) x₀ x i j| := by
+    calc dist (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (gInf t) x₀ x i j)
+          (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (gSeq k t) x₀ x i j)
+        = |DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (gSeq k t) x₀ x i j
+            - DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (gInf t) x₀ x i j| := by
           rw [Real.dist_eq, abs_sub_comm]
       _ ≤ metricDerivNorm (I := I) 0 (gSeq k t) (gInf t) gRef x * c x := hcs
       _ ≤ (ε / (Cb + 1)) * Cb := by
@@ -171,7 +171,7 @@ theorem chartGramLim_contOn
           exact mul_lt_mul_of_pos_left (by linarith) hpos
       _ = ε := div_mul_cancel₀ ε (by positivity)
   have hcOn : ContinuousOn
-      (fun p : ℝ × M => chartGramMatrix (I := I) (gInf p.1) x₀ p.2 i j)
+      (fun p : ℝ × M => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (gInf p.1) x₀ p.2 i j)
       (Set.Icc β ψ ×ˢ K) :=
     htu.continuousOn (Filter.Eventually.of_forall (fun k =>
       (hkcont k).mono (Set.prod_mono le_rfl hKsub))).frequently
@@ -196,7 +196,7 @@ theorem metricTensorContLim
       ∀ t ∈ Set.Icc β ψ, ∀ x ∈ K,
         metricDerivNorm (I := I) 0 (gSeq k t) (gInf t) gRef x < ε)
     (hkcont : ∀ (k : ℕ) (x₀ : M) (i j : Fin (Module.finrank Real E)), ContinuousOn
-      (fun p : ℝ × M => chartGramMatrix (I := I) (gSeq k p.1) x₀ p.2 i j)
+      (fun p : ℝ × M => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (gSeq k p.1) x₀ p.2 i j)
       (Set.Icc β ψ ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet)) :
     DifferentialGeometry.Geometry.Curvature.tensor0SFamilyContinuousOnSet
       (I := I) (M := M) 2 (Set.Icc β ψ)
@@ -218,7 +218,7 @@ private theorem metricCLMSection_Ioo
     (g : ℝ → SmoothRiemannianMetric I M) (a b : ℝ)
     (hgram : ∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)),
       ContMDiffOn (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ) ∞
-        (fun p : ℝ × M => chartGramMatrix (I := I) (g p.1) x₀ p.2 i j)
+        (fun p : ℝ × M => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g p.1) x₀ p.2 i j)
         (Set.Ioo a b ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet)) :
     ContMDiffOn (𝓘(ℝ, ℝ).prod I)
       (I.prod 𝓘(ℝ, E →L[ℝ] E →L[ℝ] ℝ)) ∞
@@ -235,7 +235,7 @@ private theorem metricCLMSection_Ioo
     (contMDiff_fst.sub contMDiff_const).prodMk contMDiff_snd
   have hgram_sh : ∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)),
       ContMDiffOn (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ) ∞
-        (fun p : ℝ × M => chartGramMatrix (I := I) (gsh p.1) x₀ p.2 i j)
+        (fun p : ℝ × M => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (gsh p.1) x₀ p.2 i j)
         (Set.Ioo (0 : ℝ) (b - a) ×ˢ
           (trivializationAt E (TangentSpace I) x₀).baseSet) := by
     intro x₀ i j
@@ -263,7 +263,7 @@ private theorem metricFrameComp_Ioo
     (g : ℝ → SmoothRiemannianMetric I M) (a b : ℝ)
     (hgram : ∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)),
       ContMDiffOn (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ) ∞
-        (fun p : ℝ × M => chartGramMatrix (I := I) (g p.1) x₀ p.2 i j)
+        (fun p : ℝ × M => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g p.1) x₀ p.2 i j)
         (Set.Ioo a b ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
     {Idx : Type*}
     (frame : Idx → (x : M) → TangentSpace I x) {u : Set M}
@@ -300,12 +300,12 @@ private theorem metricFrameComp_Ioo
   exact hpx.2
 
 omit [CompleteSpace E] [T2Space M] [SigmaCompactSpace M] in
-private theorem metricCLMSection_reg
+private theorem metricCLMSection_regularity
     (D : RealTimeInterval)
     (g : ℝ → SmoothRiemannianMetric I M)
     (hgram : ∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)),
       ContMDiffOn (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ) ∞
-        (fun p : ℝ × M => chartGramMatrix (I := I) (g p.1) x₀ p.2 i j)
+        (fun p : ℝ × M => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g p.1) x₀ p.2 i j)
         (D.regular ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet)) :
     ContMDiffOn (𝓘(ℝ, ℝ).prod I)
       (I.prod 𝓘(ℝ, E →L[ℝ] E →L[ℝ] ℝ)) ∞
@@ -317,7 +317,7 @@ private theorem metricCLMSection_reg
   obtain ⟨a, b, ht, hwin⟩ := D.exists_Icc_regular hp.1
   have hgramIoo : ∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)),
       ContMDiffOn (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ) ∞
-        (fun q : ℝ × M => chartGramMatrix (I := I) (g q.1) x₀ q.2 i j)
+        (fun q : ℝ × M => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g q.1) x₀ q.2 i j)
         (Set.Ioo a b ×ˢ
           (trivializationAt E (TangentSpace I) x₀).baseSet) := by
     intro x₀ i j
@@ -330,12 +330,12 @@ private theorem metricCLMSection_reg
   exact (hlocal.contMDiffAt hnhds).contMDiffWithinAt
 
 omit [CompleteSpace E] [T2Space M] [SigmaCompactSpace M] in
-private theorem metricFrameComp_reg
+private theorem metricFrameComp_regularity
     (D : RealTimeInterval)
     (g : ℝ → SmoothRiemannianMetric I M)
     (hgram : ∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)),
       ContMDiffOn (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ) ∞
-        (fun p : ℝ × M => chartGramMatrix (I := I) (g p.1) x₀ p.2 i j)
+        (fun p : ℝ × M => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g p.1) x₀ p.2 i j)
         (D.regular ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
     {Idx : Type*}
     (frame : Idx → (x : M) → TangentSpace I x) {u : Set M}
@@ -349,7 +349,7 @@ private theorem metricFrameComp_reg
         (E := fun y => TangentSpace I y →L[ℝ] TangentSpace I y →L[ℝ] ℝ) q.2
         ((g q.1).inner q.2))
       (D.regular ×ˢ u) :=
-    (metricCLMSection_reg (I := I) D g hgram).mono
+    (metricCLMSection_regularity (I := I) D g hgram).mono
       (fun q hq => ⟨hq.1, Set.mem_univ _⟩)
   have hv : ContMDiffOn (𝓘(ℝ, ℝ).prod I) (I.prod 𝓘(ℝ, E)) ∞
       (fun p : ℝ × M => TotalSpace.mk' E p.2 (frame i p.2))
@@ -379,7 +379,7 @@ variable {P : PointedRiemannianManifold (I := I)}
 variable {subseq : Nat → Nat}
 variable (Φ : PointedCGHMaps (I := I) X P subseq)
 
-namespace ConvOut
+namespace FlowMetricConvergenceData
 
 variable [I.Boundaryless]
 
@@ -389,9 +389,9 @@ theorem metric_cont
       letI : ChartedSpace H P.M := P.charted
       letI : IsManifold I ∞ P.M := P.smooth
       SmoothRiemannianMetric I P.M}
-    {bf : BumpFamily (I := I) Φ} {hsrc : SrcSigma Φ} {htgt : TgtSigma Φ}
+    {bf : BumpFamily (I := I) Φ} {hsrc : SourceIsSigmaCompact Φ} {htgt : TargetIsSigmaCompact Φ}
     {β ψ : Real} (hwin : Set.Icc β ψ ⊆ X.D.carrier)
-    (co : ConvOut (I := I) Φ R bf hsrc htgt β ψ) :
+    (co : FlowMetricConvergenceData (I := I) Φ R bf hsrc htgt β ψ) :
     letI : TopologicalSpace P.M := P.topology
     letI : ChartedSpace H P.M := P.charted
     letI : T2Space P.M := P.t2
@@ -411,7 +411,7 @@ theorem metric_cont
       gSeqExt (I := I) Φ R bf hsrc htgt (co.φ k) t)
     (gInf := co.gInf) (gRef := R) β ψ
   · intro K hK ε hε
-    obtain ⟨k₀, hk₀⟩ := co.convPt K hK 0 ε hε
+    obtain ⟨k₀, hk₀⟩ := co.convergencePt K hK 0 ε hε
     refine ⟨k₀, fun k hk t ht x hx => ?_⟩
     simpa only using hk₀ k hk t ht 0 le_rfl x hx
   · intro k x₀ i j
@@ -420,12 +420,12 @@ theorem metric_cont
         (co.φ k) x₀ i j).mono (Set.prod_mono hwin Set.Subset.rfl)
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem gSeqJet_of_soln
+theorem gSeqJet_of_solution
     {R : letI : TopologicalSpace P.M := P.topology
       letI : ChartedSpace H P.M := P.charted
       letI : IsManifold I ∞ P.M := P.smooth
       SmoothRiemannianMetric I P.M}
-    {bf : BumpFamily (I := I) Φ} {hsrc : SrcSigma Φ} {htgt : TgtSigma Φ}
+    {bf : BumpFamily (I := I) Φ} {hsrc : SourceIsSigmaCompact Φ} {htgt : TargetIsSigmaCompact Φ}
     {β ψ : Real} (k : Nat)
     {D : RealTimeInterval}
     (S : letI : TopologicalSpace (SourceDomain (I := I) Φ k) :=
@@ -459,7 +459,7 @@ theorem gSeqJet_of_soln
           sourceDomSigmaOf (I := I) Φ k (hsrc k)
       ∀ (t : Real) (x : SourceDomain (I := I) Φ k)
         (v w : TangentSpace I x),
-        (srcMetric (I := I) Φ hsrc htgt k t).inner x v w =
+        (sourceMetric (I := I) Φ hsrc htgt k t).inner x v w =
           (S.family.metric t).inner x v w)
     (r : Nat) (x₀ : P.M) (i j : Fin (Module.finrank Real E))
     {C : Set E}
@@ -505,10 +505,10 @@ theorem gSeqJet_of_soln
   have hxgrow : x ∈ bf.grow k := hCgrow ⟨y, hqy, rfl⟩
   have hxsource : x ∈ Φ.source k := bf.grow_subset k hxgrow
   obtain ⟨σi, hσi⟩ := exists_section_eqOn_compact (I := I) x₀
-    ((chartModelBasis E) i) isCompact_singleton
+    ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) isCompact_singleton
     (Set.singleton_subset_iff.mpr (by simpa only [extChartAt_source] using hxchart))
   obtain ⟨σj, hσj⟩ := exists_section_eqOn_compact (I := I) x₀
-    ((chartModelBasis E) j) isCompact_singleton
+    ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j) isCompact_singleton
     (Set.singleton_subset_iff.mpr (by simpa only [extChartAt_source] using hxchart))
   let : TopologicalSpace (SourceDomain (I := I) Φ k) := sourceDomTop (I := I) Φ k
   let : ChartedSpace H (SourceDomain (I := I) Φ k) := sourceDomCharted (I := I) Φ k
@@ -570,7 +570,7 @@ theorem gSeqJet_of_soln
       (𝓘(Real, Real).prod I) (∞ : WithTop ℕ∞)
       (fun p : Real × E => (p.1, core p.2)) q := by
     exact contMDiffAt_fst.prodMk (hcore.comp q contMDiffAt_snd)
-  have hsrcSmooth := solnMetricJointAt (I := I) (x := core y) S
+  have hsrcSmooth := solutionMetricJointAt (I := I) (x := core y) S
     hS (D.regular_isOpen.mem_nhds (hreg hqt)) V
   have hlocalMD := hsrcSmooth.comp q hmap
   let G : Real × E → Real := fun p =>
@@ -580,7 +580,7 @@ theorem gSeqJet_of_soln
       𝓘(Real, Real) (∞ : WithTop ℕ∞) G q := by
     apply hlocalMD.congr_of_eventuallyEq
     filter_upwards [] with p
-    simp only [G, solnMetricField, Tensor0SBundle.metricTensorField_apply,
+    simp only [G, solutionMetricField, Tensor0SBundle.metricTensorField_apply,
       Function.comp_apply]
   have hlocal : ContDiffAt Real (∞ : WithTop ℕ∞) G q := by
     rw [← contMDiffAt_iff_contDiffAt, modelWithCornersSelf_prod,
@@ -589,11 +589,11 @@ theorem gSeqJet_of_soln
   obtain ⟨W, hWopen, hgrowW, hWone⟩ := bf.chi_one k
   have hσi0 : ∀ᶠ z in 𝓝 x,
       σi z = TensorLieDeriv.tangentConstInChart (𝕜 := Real) (I := I)
-        x₀ ((chartModelBasis E) i) z :=
+        x₀ ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) z :=
     hσi.filter_mono (nhds_le_nhdsSet (Set.mem_singleton x))
   have hσj0 : ∀ᶠ z in 𝓝 x,
       σj z = TensorLieDeriv.tangentConstInChart (𝕜 := Real) (I := I)
-        x₀ ((chartModelBasis E) j) z :=
+        x₀ ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j) z :=
     hσj.filter_mono (nhds_le_nhdsSet (Set.mem_singleton x))
   have hevY : ∀ᶠ z in 𝓝 y,
       z ∈ (extChartAt I x₀).target ∧
@@ -601,11 +601,11 @@ theorem gSeqJet_of_soln
       (extChartAt I x₀).symm z ∈ W ∧
       σi ((extChartAt I x₀).symm z) =
         TensorLieDeriv.tangentConstInChart (𝕜 := Real) (I := I)
-          x₀ ((chartModelBasis E) i)
+          x₀ ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)
           ((extChartAt I x₀).symm z) ∧
       σj ((extChartAt I x₀).symm z) =
         TensorLieDeriv.tangentConstInChart (𝕜 := Real) (I := I)
-          x₀ ((chartModelBasis E) j)
+          x₀ ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j)
           ((extChartAt I x₀).symm z) := by
     filter_upwards [
       (isOpen_extChartAt_target (I := I) x₀).mem_nhds hytarget,
@@ -634,10 +634,10 @@ theorem gSeqJet_of_soln
       simpa only [V, Matrix.cons_val_zero] using hViz
     have hV1 : V 1 (⟨z, hps⟩ : SourceDomain (I := I) Φ k) = σj z := by
       simpa only [V, Matrix.cons_val_one, Matrix.cons_val_zero] using hVjz
-    simp only [F, G, chartGramOnE_def, chartGramMatrix_apply]
+    simp only [F, G, chartGramOnE_def, DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_apply]
     rw [hcorez]
     rw [gSeqExt_inner_of_mem (I := I) Φ R bf hsrc htgt k p.1 z hps
-      (chartBasisVecFiber (I := I) x₀ i z) (chartBasisVecFiber (I := I) x₀ j z),
+      (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ i z) (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ j z),
       hWone z hpW, hV0, hV1]
     simp only [one_smul, sub_self, zero_smul, add_zero]
     rw [hpi, hpj]
@@ -654,7 +654,7 @@ private theorem gSeqJet_contOn
       letI : ChartedSpace H P.M := P.charted
       letI : IsManifold I ∞ P.M := P.smooth
       SmoothRiemannianMetric I P.M}
-    {bf : BumpFamily (I := I) Φ} {hsrc : SrcSigma Φ} {htgt : TgtSigma Φ}
+    {bf : BumpFamily (I := I) Φ} {hsrc : SourceIsSigmaCompact Φ} {htgt : TargetIsSigmaCompact Φ}
     {β ψ : Real} (hwin : Set.Icc β ψ ⊆ X.D.regular)
     (k r : Nat) (x₀ : P.M) (i j : Fin (Module.finrank Real E))
     {C : Set E}
@@ -674,7 +674,7 @@ private theorem gSeqJet_contOn
           (chartGramOnE (I := I)
             (gSeqExt (I := I) Φ R bf hsrc htgt k p.1) x₀ i j) p.2)
       (Set.Icc β ψ ×ˢ C) := by
-  apply gSeqJet_of_soln (Φ := Φ) (R := R) (bf := bf)
+  apply gSeqJet_of_solution (Φ := Φ) (R := R) (bf := bf)
     (hsrc := hsrc) (htgt := htgt) k
     (sourceFlow (I := I) Φ k (hsrc k) (htgt k))
     (isSolutionOn_sourceFlow (I := I) Φ k (hsrc k) (htgt k))
@@ -690,9 +690,9 @@ theorem gramJets_of_stage
       letI : ChartedSpace H P.M := P.charted
       letI : IsManifold I ∞ P.M := P.smooth
       SmoothRiemannianMetric I P.M}
-    {bf : BumpFamily (I := I) Φ} {hsrc : SrcSigma Φ} {htgt : TgtSigma Φ}
+    {bf : BumpFamily (I := I) Φ} {hsrc : SourceIsSigmaCompact Φ} {htgt : TargetIsSigmaCompact Φ}
     {β ψ : Real}
-    (co : ConvOut (I := I) Φ R bf hsrc htgt β ψ)
+    (co : FlowMetricConvergenceData (I := I) Φ R bf hsrc htgt β ψ)
     (hstage : letI : TopologicalSpace P.M := P.topology
       letI : ChartedSpace H P.M := P.charted
       letI : T2Space P.M := P.t2
@@ -768,7 +768,7 @@ theorem gramJets_of_stage
     have hδ : 0 < δ := by
       dsimp only [δ]
       positivity
-    obtain ⟨k₀, hk₀⟩ := co.convPt K hKc r δ hδ
+    obtain ⟨k₀, hk₀⟩ := co.convergencePt K hKc r δ hδ
     filter_upwards [Filter.eventually_ge_atTop k₀] with k hk
     rintro ⟨t, z⟩ ⟨ht, hz⟩
     let y : P.M := (extChartAt I x₀).symm z
@@ -847,9 +847,9 @@ theorem gramJets
       letI : ChartedSpace H P.M := P.charted
       letI : IsManifold I ∞ P.M := P.smooth
       SmoothRiemannianMetric I P.M}
-    {bf : BumpFamily (I := I) Φ} {hsrc : SrcSigma Φ} {htgt : TgtSigma Φ}
+    {bf : BumpFamily (I := I) Φ} {hsrc : SourceIsSigmaCompact Φ} {htgt : TargetIsSigmaCompact Φ}
     {β ψ : Real} (hwin : Set.Icc β ψ ⊆ X.D.regular)
-    (co : ConvOut (I := I) Φ R bf hsrc htgt β ψ) :
+    (co : FlowMetricConvergenceData (I := I) Φ R bf hsrc htgt β ψ) :
     letI : TopologicalSpace P.M := P.topology
     letI : ChartedSpace H P.M := P.charted
     letI : T2Space P.M := P.t2
@@ -910,7 +910,7 @@ theorem gramJets
     have hδ : 0 < δ := by
       dsimp only [δ]
       positivity
-    obtain ⟨k₀, hk₀⟩ := co.convPt K hKc r δ hδ
+    obtain ⟨k₀, hk₀⟩ := co.convergencePt K hKc r δ hδ
     filter_upwards [Filter.eventually_ge_atTop k₀] with k hk
     rintro ⟨t, z⟩ ⟨ht, hz⟩
     let y : P.M := (extChartAt I x₀).symm z
@@ -970,7 +970,7 @@ theorem gramJets
     filter_upwards [Filter.eventually_ge_atTop kgrow] with k hk
     apply gSeqJet_contOn (Φ := Φ) (R := R) (bf := bf) (hsrc := hsrc) (htgt := htgt)
       hwin (co.φ k) r x₀ i j hCtgt
-    exact hkgrow (co.φ k) (hk.trans (co.hφ.id_le k))
+    exact hkgrow (co.φ k) (hk.trans (co.strictMono.id_le k))
   have hcOn : ContinuousOn
       (fun p : Real × E =>
         iteratedFDeriv Real r
@@ -993,9 +993,9 @@ private theorem gramPiJets
       letI : ChartedSpace H P.M := P.charted
       letI : IsManifold I ∞ P.M := P.smooth
       SmoothRiemannianMetric I P.M}
-    {bf : BumpFamily (I := I) Φ} {hsrc : SrcSigma Φ} {htgt : TgtSigma Φ}
+    {bf : BumpFamily (I := I) Φ} {hsrc : SourceIsSigmaCompact Φ} {htgt : TargetIsSigmaCompact Φ}
     {β ψ : Real}
-    (co : ConvOut (I := I) Φ R bf hsrc htgt β ψ)
+    (co : FlowMetricConvergenceData (I := I) Φ R bf hsrc htgt β ψ)
     (hjets : letI : TopologicalSpace P.M := P.topology
       letI : ChartedSpace H P.M := P.charted
       letI : T2Space P.M := P.t2
@@ -1092,9 +1092,9 @@ private theorem gramPiJet_contOn
       letI : ChartedSpace H P.M := P.charted
       letI : IsManifold I ∞ P.M := P.smooth
       SmoothRiemannianMetric I P.M}
-    {bf : BumpFamily (I := I) Φ} {hsrc : SrcSigma Φ} {htgt : TgtSigma Φ}
+    {bf : BumpFamily (I := I) Φ} {hsrc : SourceIsSigmaCompact Φ} {htgt : TargetIsSigmaCompact Φ}
     {β ψ : Real}
-    (co : ConvOut (I := I) Φ R bf hsrc htgt β ψ)
+    (co : FlowMetricConvergenceData (I := I) Φ R bf hsrc htgt β ψ)
     (hjets : letI : TopologicalSpace P.M := P.topology
       letI : ChartedSpace H P.M := P.charted
       letI : T2Space P.M := P.t2
@@ -1125,7 +1125,7 @@ private theorem gramPiJet_contOn
     (continuousOn_id.prodMk continuousOn_const)
     (fun t ht => ⟨ht, hy⟩)).congr fun t _ => rfl
 
-private theorem uniform_comp_cpt
+private theorem uniform_comp_compact
     {ι X₀ Y Z : Type*} [UniformSpace Y] [UniformSpace Z]
     {F : ι → X₀ → Y} {f : X₀ → Y} {l : Filter ι} {K : Set X₀}
     {g : Y → Z}
@@ -1144,8 +1144,8 @@ private theorem gramJet_tendsto
       letI : ChartedSpace H P.M := P.charted
       letI : IsManifold I ∞ P.M := P.smooth
       SmoothRiemannianMetric I P.M}
-    {bf : BumpFamily (I := I) Φ} {hsrc : SrcSigma Φ} {htgt : TgtSigma Φ}
-    {β ψ : Real} (co : ConvOut (I := I) Φ R bf hsrc htgt β ψ)
+    {bf : BumpFamily (I := I) Φ} {hsrc : SourceIsSigmaCompact Φ} {htgt : TargetIsSigmaCompact Φ}
+    {β ψ : Real} (co : FlowMetricConvergenceData (I := I) Φ R bf hsrc htgt β ψ)
     (x₀ : P.M) {y : E}
     (hy : letI : TopologicalSpace P.M := P.topology
       letI : ChartedSpace H P.M := P.charted
@@ -1209,7 +1209,7 @@ private theorem gramJet_tendsto
   have hδ : 0 < δ := by
     dsimp only [δ]
     positivity
-  obtain ⟨k₀, hk₀⟩ := co.convPt {x} isCompact_singleton 2 δ hδ
+  obtain ⟨k₀, hk₀⟩ := co.convergencePt {x} isCompact_singleton 2 δ hδ
   filter_upwards [Filter.eventually_ge_atTop k₀] with k hk
   intro t ht
   have hsum :
@@ -1258,9 +1258,9 @@ private theorem gramRHS_tendsto
       letI : ChartedSpace H P.M := P.charted
       letI : IsManifold I ∞ P.M := P.smooth
       SmoothRiemannianMetric I P.M}
-    {bf : BumpFamily (I := I) Φ} {hsrc : SrcSigma Φ} {htgt : TgtSigma Φ}
+    {bf : BumpFamily (I := I) Φ} {hsrc : SourceIsSigmaCompact Φ} {htgt : TargetIsSigmaCompact Φ}
     {β ψ : Real}
-    (co : ConvOut (I := I) Φ R bf hsrc htgt β ψ)
+    (co : FlowMetricConvergenceData (I := I) Φ R bf hsrc htgt β ψ)
     (hjets : letI : TopologicalSpace P.M := P.topology
       letI : ChartedSpace H P.M := P.charted
       letI : T2Space P.M := P.t2
@@ -1281,12 +1281,12 @@ private theorem gramRHS_tendsto
     letI : IsManifold I ∞ P.M := P.smooth
     TendstoUniformlyOn
       (fun k t =>
-        (Analysis.jetRicciFlow (chartModelBasis E)
+        (Analysis.jetRicciFlow (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E)
           (Analysis.jet2
             (chartGramPi (I := I)
               (gSeqExt (I := I) Φ R bf hsrc htgt (co.φ k) t) x₀) y)) i j)
       (fun t =>
-        (Analysis.jetRicciFlow (chartModelBasis E)
+        (Analysis.jetRicciFlow (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E)
           (Analysis.jet2 (chartGramPi (I := I) (co.gInf t) x₀) y)) i j)
       atTop (Set.Icc β ψ) := by
   let : TopologicalSpace P.M := P.topology
@@ -1329,7 +1329,7 @@ private theorem gramRHS_tendsto
   let Jinf : Real → Analysis.MatJet E (Module.finrank Real E) := fun t =>
     Analysis.jet2 (chartGramPi (I := I) (co.gInf t) x₀) y
   let op : Analysis.MatJet E (Module.finrank Real E) → Real := fun p =>
-    (Analysis.jetRicciFlow (chartModelBasis E) p) i j
+    (Analysis.jetRicciFlow (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) p) i j
   have hJ : TendstoUniformlyOn J Jinf atTop (Set.Icc β ψ) := by
     simpa only [J, Jinf] using gramJet_tendsto (I := I) (Φ := Φ) co x₀ hy
   have hJinf : ContinuousOn Jinf (Set.Icc β ψ) := by
@@ -1338,18 +1338,18 @@ private theorem gramRHS_tendsto
     intro p hp
     rcases hp with ⟨t, ht, rfl⟩
     have hval : Matrix.of (Jinf t).1 =
-        chartGramMatrix (I := I) (co.gInf t) x₀ x := by
+        DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (co.gInf t) x₀ x := by
       ext a b
       rfl
     have hdet : (Matrix.of (Jinf t).1).det ≠ 0 := by
       rw [hval]
-      exact (chartGramMatrix_det_pos (I := I) (co.gInf t) x₀ hxbase).ne'
-    have hΦ := Analysis.contDiffAt_jetRicciFlow (chartModelBasis E) hdet
+      exact (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_det_pos (I := I) (co.gInf t) x₀ hxbase).ne'
+    have hΦ := Analysis.contDiffAt_jetRicciFlow (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) hdet
     change ContinuousAt
       (fun p : Analysis.MatJet E (Module.finrank Real E) =>
-        Analysis.jetRicciFlow (chartModelBasis E) p i j) (Jinf t)
+        Analysis.jetRicciFlow (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) p i j) (Jinf t)
     exact (contDiffAt_pi.mp (contDiffAt_pi.mp hΦ i) j).continuousAt
-  have hcomp := uniform_comp_cpt (g := op) hJ
+  have hcomp := uniform_comp_compact (g := op) hJ
     (isCompact_Icc.image_of_continuousOn hJinf) hop
   simpa only [J, Jinf, op] using hcomp
 
@@ -1359,9 +1359,9 @@ theorem gramPDE
       letI : ChartedSpace H P.M := P.charted
       letI : IsManifold I ∞ P.M := P.smooth
       SmoothRiemannianMetric I P.M}
-    {bf : BumpFamily (I := I) Φ} {hsrc : SrcSigma Φ} {htgt : TgtSigma Φ}
+    {bf : BumpFamily (I := I) Φ} {hsrc : SourceIsSigmaCompact Φ} {htgt : TargetIsSigmaCompact Φ}
     {β ψ : Real} (hwin : Set.Icc β ψ ⊆ X.D.regular)
-    (co : ConvOut (I := I) Φ R bf hsrc htgt β ψ)
+    (co : FlowMetricConvergenceData (I := I) Φ R bf hsrc htgt β ψ)
     (x₀ : P.M) (i j : Fin (Module.finrank Real E))
     {t : Real} (ht : t ∈ Set.Icc β ψ) {y : E}
     (hy : letI : TopologicalSpace P.M := P.topology
@@ -1373,7 +1373,7 @@ theorem gramPDE
     letI : IsManifold I ∞ P.M := P.smooth
     HasDerivWithinAt
       (fun s => chartGramOnE (I := I) (co.gInf s) x₀ i j y)
-      ((Analysis.jetRicciFlow (chartModelBasis E)
+      ((Analysis.jetRicciFlow (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E)
         (Analysis.jet2 (chartGramPi (I := I) (co.gInf t) x₀) y)) i j)
       (Set.Icc β ψ) t := by
   let : TopologicalSpace P.M := P.topology
@@ -1410,14 +1410,14 @@ theorem gramPDE
     chartGramOnE (I := I)
       (gSeqExt (I := I) Φ R bf hsrc htgt (co.φ k) s) x₀ i j y
   let f' : Nat → Real → Real := fun k u =>
-    (Analysis.jetRicciFlow (chartModelBasis E)
+    (Analysis.jetRicciFlow (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E)
       (Analysis.jet2
         (chartGramPi (I := I)
           (gSeqExt (I := I) Φ R bf hsrc htgt (co.φ k) u) x₀) y)) i j
   let g : Real → Real := fun s =>
     chartGramOnE (I := I) (co.gInf s) x₀ i j y
   let h : Real → Real := fun u =>
-    (Analysis.jetRicciFlow (chartModelBasis E)
+    (Analysis.jetRicciFlow (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E)
       (Analysis.jet2 (chartGramPi (I := I) (co.gInf u) x₀) y)) i j
   obtain ⟨kgrow, hkgrow⟩ := bf.grow_cover {x} isCompact_singleton
   have hderiv : ∃ k₀ : Nat, ∀ k : Nat, k₀ ≤ k →
@@ -1426,11 +1426,11 @@ theorem gramPDE
     refine ⟨kgrow, ?_⟩
     intro k hk u hu
     have hxgrow : x ∈ bf.grow (co.φ k) :=
-      hkgrow (co.φ k) (hk.trans (co.hφ.id_le k)) (Set.mem_singleton x)
+      hkgrow (co.φ k) (hk.trans (co.strictMono.id_le k)) (Set.mem_singleton x)
     have hmpde := gSeqExt_pde (I := I) Φ R bf hsrc htgt (co.φ k)
       β ψ u hwin hu x hxgrow
-      (chartBasisVecFiber (I := I) x₀ i x)
-      (chartBasisVecFiber (I := I) x₀ j x)
+      (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ i x)
+      (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ j x)
     have hentry := chartGramEntryPDE_of_metricPDE (I := I)
       (fun s => gSeqExt (I := I) Φ R bf hsrc htgt (co.φ k) s)
       x₀ hxgood hxy i j hmpde
@@ -1462,18 +1462,18 @@ theorem gramPDE
           (gSeqExt (I := I) Φ R bf hsrc htgt (co.φ k) u)
           (co.gInf u) R x < ε := by
       intro ε hε
-      obtain ⟨k₀, hk₀⟩ := co.convPt {x} isCompact_singleton 0 ε hε
+      obtain ⟨k₀, hk₀⟩ := co.convergencePt {x} isCompact_singleton 0 ε hε
       exact ⟨k₀, fun k hk => hk₀ k hk u hu 0 le_rfl x (Set.mem_singleton x)⟩
     have hinner := metricInner_tendsto (I := I)
       (fun k => gSeqExt (I := I) Φ R bf hsrc htgt (co.φ k) u)
       (co.gInf u) R x hconv
-      (chartBasisVecFiber (I := I) x₀ i x)
-      (chartBasisVecFiber (I := I) x₀ j x)
-    simpa only [f, g, chartGramOnE_def, chartGramMatrix_apply, x] using hinner
+      (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ i x)
+      (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ j x)
+    simpa only [f, g, chartGramOnE_def, DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_apply, x] using hinner
   have hRHS := gramRHS_tendsto (I := I) (Φ := Φ) co
     (gramJets (I := I) (Φ := Φ) hwin co) x₀ i j hy
   rw [Metric.tendstoUniformlyOn_iff] at hRHS
-  have hunif : ∀ ε : Real, 0 < ε → ∃ k₀ : Nat, ∀ k : Nat, k₀ ≤ k →
+  have huniform : ∀ ε : Real, 0 < ε → ∃ k₀ : Nat, ∀ k : Nat, k₀ ≤ k →
       ∀ u ∈ Set.Icc β ψ, |f' k u - h u| < ε := by
     intro ε hε
     obtain ⟨k₀, hk₀⟩ := Filter.eventually_atTop.1 (hRHS ε hε)
@@ -1481,7 +1481,7 @@ theorem gramPDE
     have hd := hk₀ k hk u hu
     rw [Real.dist_eq] at hd
     simpa only [f', h, abs_sub_comm] using hd
-  exact hasDeriv_lim_tail (convex_Icc β ψ) ht f f' g h hderiv hfg hunif
+  exact hasDeriv_lim_tail (convex_Icc β ψ) ht f f' g h hderiv hfg huniform
 
 omit [CompleteSpace E] [NeZero (Module.finrank Real E)] in
 private theorem gramModel_to_mfld
@@ -1501,7 +1501,7 @@ private theorem gramModel_to_mfld
     letI : T2Space P.M := P.t2
     letI : IsManifold I ∞ P.M := P.smooth
     ContMDiffOn (𝓘(Real, Real).prod I) 𝓘(Real) ∞
-      (fun p : Real × P.M => chartGramMatrix (I := I) (g p.1) x₀ p.2 i j)
+      (fun p : Real × P.M => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g p.1) x₀ p.2 i j)
       (Set.Ioo β ψ ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet) := by
   let : TopologicalSpace P.M := P.topology
   let : ChartedSpace H P.M := P.charted
@@ -1535,8 +1535,8 @@ private theorem gramModel_to_mfld
   have hxsrc : x ∈ (extChartAt I x₀).source := by
     rw [extChartAt_source_eq_chartAt_source (I := I)]
     simpa only [trivializationAt_baseSet_eq_chartAt_source] using hx
-  change chartGramMatrix (I := I) (g t) x₀ x i j =
-    chartGramMatrix (I := I) (g t) x₀
+  change DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g t) x₀ x i j =
+    DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g t) x₀
       ((extChartAt I x₀).symm (extChartAt I x₀ x)) i j
   rw [(extChartAt I x₀).left_inv hxsrc]
 
@@ -1558,7 +1558,7 @@ private theorem gramModel_to_mfld_Icc
     letI : T2Space P.M := P.t2
     letI : IsManifold I ∞ P.M := P.smooth
     ContMDiffOn (𝓘(Real, Real).prod I) 𝓘(Real) ∞
-      (fun p : Real × P.M => chartGramMatrix (I := I) (g p.1) x₀ p.2 i j)
+      (fun p : Real × P.M => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g p.1) x₀ p.2 i j)
       (Set.Icc β ψ ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet) := by
   let : TopologicalSpace P.M := P.topology
   let : ChartedSpace H P.M := P.charted
@@ -1592,8 +1592,8 @@ private theorem gramModel_to_mfld_Icc
   have hxsrc : x ∈ (extChartAt I x₀).source := by
     rw [extChartAt_source_eq_chartAt_source (I := I)]
     simpa only [trivializationAt_baseSet_eq_chartAt_source] using hx
-  change chartGramMatrix (I := I) (g t) x₀ x i j =
-    chartGramMatrix (I := I) (g t) x₀
+  change DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g t) x₀ x i j =
+    DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g t) x₀
       ((extChartAt I x₀).symm (extChartAt I x₀ x)) i j
   rw [(extChartAt I x₀).left_inv hxsrc]
 
@@ -1603,10 +1603,10 @@ theorem gramPDE_regular
       letI : ChartedSpace H P.M := P.charted
       letI : IsManifold I ∞ P.M := P.smooth
       SmoothRiemannianMetric I P.M}
-    {bf : BumpFamily (I := I) Φ} {hsrc : SrcSigma Φ} {htgt : TgtSigma Φ}
+    {bf : BumpFamily (I := I) Φ} {hsrc : SourceIsSigmaCompact Φ} {htgt : TargetIsSigmaCompact Φ}
     {β ψ : Real}
     (hcarrier : X.D.carrier ⊆ Set.Icc β ψ)
-    (co : ConvOut (I := I) Φ R bf hsrc htgt β ψ)
+    (co : FlowMetricConvergenceData (I := I) Φ R bf hsrc htgt β ψ)
     (x₀ : P.M) (i j : Fin (Module.finrank Real E))
     {t : Real} (ht : t ∈ X.D.regular) {y : E}
     (hy : letI : TopologicalSpace P.M := P.topology
@@ -1618,7 +1618,7 @@ theorem gramPDE_regular
     letI : IsManifold I ∞ P.M := P.smooth
     HasDerivAt
       (fun s => chartGramOnE (I := I) (co.gInf s) x₀ i j y)
-      ((Analysis.jetRicciFlow (chartModelBasis E)
+      ((Analysis.jetRicciFlow (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E)
         (Analysis.jet2 (chartGramPi (I := I) (co.gInf t) x₀) y)) i j)
       t := by
   let : TopologicalSpace P.M := P.topology
@@ -1630,9 +1630,9 @@ theorem gramPDE_regular
   have hsub : Set.Icc a b ⊆ Set.Icc β ψ :=
     hwin.trans (X.D.regular_subset.trans hcarrier)
   have hpde := gramPDE (I := I) (Φ := Φ) hwin
-    (ConvOut.restrict (Φ := Φ) co hsub) x₀ i j
+    (FlowMetricConvergenceData.restrict (Φ := Φ) co hsub) x₀ i j
     (Set.Ioo_subset_Icc_self htLocal) hy
-  simpa only [ConvOut.restrict] using
+  simpa only [FlowMetricConvergenceData.restrict] using
     hpde.hasDerivAt (Icc_mem_nhds_iff.mpr htLocal)
 
 omit [NeZero (Module.finrank ℝ E)] in
@@ -1641,10 +1641,10 @@ theorem metricPDE_regular
       letI : ChartedSpace H P.M := P.charted
       letI : IsManifold I ∞ P.M := P.smooth
       SmoothRiemannianMetric I P.M}
-    {bf : BumpFamily (I := I) Φ} {hsrc : SrcSigma Φ} {htgt : TgtSigma Φ}
+    {bf : BumpFamily (I := I) Φ} {hsrc : SourceIsSigmaCompact Φ} {htgt : TargetIsSigmaCompact Φ}
     {β ψ : Real}
     (hcarrier : X.D.carrier ⊆ Set.Icc β ψ)
-    (co : ConvOut (I := I) Φ R bf hsrc htgt β ψ)
+    (co : FlowMetricConvergenceData (I := I) Φ R bf hsrc htgt β ψ)
     {t : Real} (ht : t ∈ X.D.regular) (x : P.M) :
     letI : TopologicalSpace P.M := P.topology
     letI : ChartedSpace H P.M := P.charted
@@ -1706,16 +1706,16 @@ theorem gramSmooth
       letI : ChartedSpace H P.M := P.charted
       letI : IsManifold I ∞ P.M := P.smooth
       SmoothRiemannianMetric I P.M}
-    {bf : BumpFamily (I := I) Φ} {hsrc : SrcSigma Φ} {htgt : TgtSigma Φ}
+    {bf : BumpFamily (I := I) Φ} {hsrc : SourceIsSigmaCompact Φ} {htgt : TargetIsSigmaCompact Φ}
     {β ψ : Real} (hwin : Set.Icc β ψ ⊆ X.D.regular)
-    (co : ConvOut (I := I) Φ R bf hsrc htgt β ψ) :
+    (co : FlowMetricConvergenceData (I := I) Φ R bf hsrc htgt β ψ) :
     letI : TopologicalSpace P.M := P.topology
     letI : ChartedSpace H P.M := P.charted
     letI : T2Space P.M := P.t2
     letI : IsManifold I ∞ P.M := P.smooth
     ∀ (x₀ : P.M) (i j : Fin (Module.finrank ℝ E)),
       ContMDiffOn (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ) ∞
-        (fun p : ℝ × P.M => chartGramMatrix (I := I) (co.gInf p.1) x₀ p.2 i j)
+        (fun p : ℝ × P.M => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (co.gInf p.1) x₀ p.2 i j)
         (Set.Ioo β ψ ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet) := by
   let : TopologicalSpace P.M := P.topology
   let : ChartedSpace H P.M := P.charted
@@ -1757,7 +1757,7 @@ theorem gramSmooth
   let U : Set (Real × E) := J ×ˢ V
   let RHS : Real → E →
       (Fin (Module.finrank Real E) → Fin (Module.finrank Real E) → Real) :=
-    fun t y => Analysis.jetRicciFlow (chartModelBasis E) (Analysis.jet2 (G t) y)
+    fun t y => Analysis.jetRicciFlow (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (Analysis.jet2 (G t) y)
   let Ω : Set (Analysis.MatJet E (Module.finrank Real E)) :=
     {p | (Matrix.of p.1).det ≠ 0}
   have hJ : IsOpen J := isOpen_Ioo
@@ -1797,9 +1797,9 @@ theorem gramSmooth
       (isOpen_ne_fun hdet (continuous_const : Continuous
         (fun _ : Analysis.MatJet E (Module.finrank Real E) => (0 : Real))))
   have hΦ : ContDiffOn Real ∞
-      (Analysis.jetRicciFlow (chartModelBasis E)) Ω := by
+      (Analysis.jetRicciFlow (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E)) Ω := by
     intro p hp
-    exact (Analysis.contDiffAt_jetRicciFlow (chartModelBasis E) hp).contDiffWithinAt
+    exact (Analysis.contDiffAt_jetRicciFlow (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) hp).contDiffWithinAt
   have hJetMaps : Set.MapsTo
       (Function.uncurry (fun t y => Analysis.jet2 (G t) y)) (J ×ˢ V) Ω := by
     rintro ⟨t, y⟩ ⟨ht, hy⟩
@@ -1813,12 +1813,12 @@ theorem gramSmooth
         ← extChartAt_source_eq_chartAt_source (I := I)]
       exact hxsrc
     have hmat : Matrix.of (Analysis.jet2 (G t) y).1 =
-        chartGramMatrix (I := I) (co.gInf t) x₀ x := by
+        DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (co.gInf t) x₀ x := by
       ext a b
       simp only [Analysis.jet2, G, Matrix.of_apply, chartGramPi_apply,
         chartGramOnE_def, hx]
     rw [hmat]
-    exact (chartGramMatrix_det_pos (I := I) (co.gInf t) x₀ hxbase).ne'
+    exact (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_det_pos (I := I) (co.gInf t) x₀ hxbase).ne'
   have hRhsSlices : ∀ t ∈ J, ContDiffOn Real ∞ (RHS t) V := by
     intro t ht
     have hmaps : Set.MapsTo (fun y => Analysis.jet2 (G t) y) V Ω :=
@@ -1849,7 +1849,7 @@ theorem gramSmooth
         have hRhsQ : Analysis.SpaceJetDiff q RHS J V := by
           simpa only [RHS] using
             Analysis.spaceJet_comp
-              (Φ := Analysis.jetRicciFlow (chartModelBasis E))
+              (Φ := Analysis.jetRicciFlow (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E))
               (u := fun t y => Analysis.jet2 (G t) y)
               hJ hV hΩ hJetMaps hΦ hJetSlices hJetQ
         intro r
@@ -1906,12 +1906,12 @@ theorem gramSmoothIcc
       letI : ChartedSpace H P.M := P.charted
       letI : IsManifold I ∞ P.M := P.smooth
       SmoothRiemannianMetric I P.M}
-    {bf : BumpFamily (I := I) Φ} {hsrc : SrcSigma Φ} {htgt : TgtSigma Φ}
+    {bf : BumpFamily (I := I) Φ} {hsrc : SourceIsSigmaCompact Φ} {htgt : TargetIsSigmaCompact Φ}
     {β ψ : Real}
     (hβψ : β < ψ)
     (hcarrier : X.D.carrier ⊆ Set.Icc β ψ)
     (hregular : Set.Ioo β ψ ⊆ X.D.regular)
-    (co : ConvOut (I := I) Φ R bf hsrc htgt β ψ)
+    (co : FlowMetricConvergenceData (I := I) Φ R bf hsrc htgt β ψ)
     (hjets : letI : TopologicalSpace P.M := P.topology
       letI : ChartedSpace H P.M := P.charted
       letI : T2Space P.M := P.t2
@@ -1929,7 +1929,7 @@ theorem gramSmoothIcc
     ∀ (x₀ : P.M) (i j : Fin (Module.finrank Real E)),
       ContMDiffOn (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ) ∞
         (fun p : ℝ × P.M =>
-          chartGramMatrix (I := I) (co.gInf p.1) x₀ p.2 i j)
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (co.gInf p.1) x₀ p.2 i j)
         (Set.Icc β ψ ×ˢ
           (trivializationAt E (TangentSpace I) x₀).baseSet) := by
   let : TopologicalSpace P.M := P.topology
@@ -1971,7 +1971,7 @@ theorem gramSmoothIcc
   let V : Set E := interior (extChartAt I x₀).target
   let U : Set (Real × E) := J ×ˢ V
   let RHS : Real → E → MatVal := fun t y =>
-    Analysis.jetRicciFlow (chartModelBasis E) (Analysis.jet2 (G t) y)
+    Analysis.jetRicciFlow (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (Analysis.jet2 (G t) y)
   let Ω : Set (Analysis.MatJet E (Module.finrank Real E)) :=
     {p | (Matrix.of p.1).det ≠ 0}
   have hV : IsOpen V := isOpen_interior
@@ -2013,11 +2013,11 @@ theorem gramSmoothIcc
       (isOpen_ne_fun hdet (continuous_const : Continuous
         (fun _ : Analysis.MatJet E (Module.finrank Real E) => (0 : Real))))
   have hΦ : ContDiffOn Real ∞
-      (Analysis.jetRicciFlow (chartModelBasis E)) Ω := by
+      (Analysis.jetRicciFlow (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E)) Ω := by
     intro p hp
     exact
       (Analysis.contDiffAt_jetRicciFlow
-        (chartModelBasis E) hp).contDiffWithinAt
+        (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) hp).contDiffWithinAt
   have hJetMaps : Set.MapsTo
       (Function.uncurry (fun t y => Analysis.jet2 (G t) y)) U Ω := by
     rintro ⟨t, y⟩ ⟨_ht, hy⟩
@@ -2032,13 +2032,13 @@ theorem gramSmoothIcc
         ← extChartAt_source_eq_chartAt_source (I := I)]
       exact hxsrc
     have hmat : Matrix.of (Analysis.jet2 (G t) y).1 =
-        chartGramMatrix (I := I) (co.gInf t) x₀ x := by
+        DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (co.gInf t) x₀ x := by
       ext a b
       simp only [Analysis.jet2, G, Matrix.of_apply, chartGramPi_apply,
         chartGramOnE_def, hx]
     rw [hmat]
     exact
-      (chartGramMatrix_det_pos
+      (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_det_pos
         (I := I) (co.gInf t) x₀ hxbase).ne'
   have hRhsSlices : ∀ t ∈ J, ContDiffOn Real ∞ (RHS t) V := by
     intro t ht
@@ -2070,7 +2070,7 @@ theorem gramSmoothIcc
   have hRhs0 : Analysis.SpaceJetDiff 0 RHS J V := by
     simpa only [RHS] using
       Analysis.spaceJet_comp_Icc
-        (Φ := Analysis.jetRicciFlow (chartModelBasis E))
+        (Φ := Analysis.jetRicciFlow (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E))
         (u := fun t y => Analysis.jet2 (G t) y)
         hV hΩ hJetMaps hΦ hJetSlices hJet0
   have hGtime (y : E) (hy : y ∈ V) :
@@ -2119,7 +2119,7 @@ theorem gramSmoothIcc
         have hRhsQ : Analysis.SpaceJetDiff q RHS J V := by
           simpa only [RHS] using
             Analysis.spaceJet_comp_Icc
-              (Φ := Analysis.jetRicciFlow (chartModelBasis E))
+              (Φ := Analysis.jetRicciFlow (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E))
               (u := fun t y => Analysis.jet2 (G t) y)
               hV hΩ hJetMaps hΦ hJetSlices hJetQ
         intro r
@@ -2175,10 +2175,10 @@ theorem gramSmooth_regular
       letI : ChartedSpace H P.M := P.charted
       letI : IsManifold I ∞ P.M := P.smooth
       SmoothRiemannianMetric I P.M}
-    {bf : BumpFamily (I := I) Φ} {hsrc : SrcSigma Φ} {htgt : TgtSigma Φ}
+    {bf : BumpFamily (I := I) Φ} {hsrc : SourceIsSigmaCompact Φ} {htgt : TargetIsSigmaCompact Φ}
     {β ψ : Real}
     (hcarrier : X.D.carrier ⊆ Set.Icc β ψ)
-    (co : ConvOut (I := I) Φ R bf hsrc htgt β ψ) :
+    (co : FlowMetricConvergenceData (I := I) Φ R bf hsrc htgt β ψ) :
     letI : TopologicalSpace P.M := P.topology
     letI : ChartedSpace H P.M := P.charted
     letI : T2Space P.M := P.t2
@@ -2186,7 +2186,7 @@ theorem gramSmooth_regular
     ∀ (x₀ : P.M) (i j : Fin (Module.finrank Real E)),
       ContMDiffOn (𝓘(Real, Real).prod I) 𝓘(Real) ∞
         (fun p : Real × P.M =>
-          chartGramMatrix (I := I) (co.gInf p.1) x₀ p.2 i j)
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (co.gInf p.1) x₀ p.2 i j)
         (X.D.regular ×ˢ
           (trivializationAt E (TangentSpace I) x₀).baseSet) := by
   let : TopologicalSpace P.M := P.topology
@@ -2199,8 +2199,8 @@ theorem gramSmooth_regular
   have hsub : Set.Icc a b ⊆ Set.Icc β ψ :=
     hwin.trans (X.D.regular_subset.trans hcarrier)
   have hlocal :=
-    ConvOut.gramSmooth (I := I) (Φ := Φ) hwin
-      (ConvOut.restrict (Φ := Φ) co hsub)
+    FlowMetricConvergenceData.gramSmooth (I := I) (Φ := Φ) hwin
+      (FlowMetricConvergenceData.restrict (Φ := Φ) co hsub)
       x₀ i j p ⟨ht, hp.2⟩
   have hnhds :
       Set.Ioo a b ×ˢ
@@ -2216,10 +2216,10 @@ theorem metricSmooth
       letI : ChartedSpace H P.M := P.charted
       letI : IsManifold I ∞ P.M := P.smooth
       SmoothRiemannianMetric I P.M}
-    {bf : BumpFamily (I := I) Φ} {hsrc : SrcSigma Φ} {htgt : TgtSigma Φ}
+    {bf : BumpFamily (I := I) Φ} {hsrc : SourceIsSigmaCompact Φ} {htgt : TargetIsSigmaCompact Φ}
     {β ψ : Real}
     (hcarrier : X.D.carrier = Set.Icc β ψ)
-    (co : ConvOut (I := I) Φ R bf hsrc htgt β ψ) :
+    (co : FlowMetricConvergenceData (I := I) Φ R bf hsrc htgt β ψ) :
     letI : TopologicalSpace P.M := P.topology
     letI : ChartedSpace H P.M := P.charted
     letI : T2Space P.M := P.t2
@@ -2239,8 +2239,8 @@ theorem metricSmooth
   have hwin : Set.Icc β ψ ⊆ X.D.carrier := by
     simpa only [hcarrier] using
       (Set.Subset.rfl : Set.Icc β ψ ⊆ Set.Icc β ψ)
-  have hgram := ConvOut.gramSmooth_regular (I := I) (Φ := Φ) hcar_le co
-  have hcontWindow := ConvOut.metric_cont (I := I) (Φ := Φ) hwin co
+  have hgram := FlowMetricConvergenceData.gramSmooth_regular (I := I) (Φ := Φ) hcar_le co
+  have hcontWindow := FlowMetricConvergenceData.metric_cont (I := I) (Φ := Φ) hwin co
   have hcontTensor : tensor0SFamilyContinuousOnSet (I := I) (M := P.M) 2
       X.D.carrier
       (fun t x => metricTensorField (I := I) (co.gInf t) x) := by
@@ -2255,7 +2255,7 @@ theorem metricSmooth
         (fun t : ℝ => TotalSpace.mk' (E →L[ℝ] E →L[ℝ] ℝ)
           (E := fun y => TangentSpace I y →L[ℝ] TangentSpace I y →L[ℝ] ℝ) x
           ((co.gInf t).inner x)) X.D.regular :=
-      (metricCLMSection_reg (I := I) X.D co.gInf hgram).comp
+      (metricCLMSection_regularity (I := I) X.D co.gInf hgram).comp
         hcurve (fun t ht => ⟨ht, Set.mem_univ _⟩)
     have hv : ContMDiffOn 𝓘(ℝ, ℝ) (I.prod 𝓘(ℝ, E)) ∞
         (fun _ : ℝ => TotalSpace.mk' E
@@ -2290,11 +2290,11 @@ theorem metricSmooth
     refine hbase.congr (fun s _ => ?_)
     simp [metricTensorField_apply, vec2]
   · intro Idx _ frame u hframe i j
-    exact metricFrameComp_reg (I := I) X.D co.gInf hgram frame hframe i j
+    exact metricFrameComp_regularity (I := I) X.D co.gInf hgram frame hframe i j
 
-end ConvOut
+end FlowMetricConvergenceData
 
-namespace OpenConvOut
+namespace OpenMetricConvergenceData
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem smoothMetric
@@ -2302,16 +2302,16 @@ theorem smoothMetric
       letI : ChartedSpace H P.M := P.charted
       letI : IsManifold I ∞ P.M := P.smooth
       SmoothRiemannianMetric I P.M}
-    {bf : BumpFamily (I := I) Φ} {hsrc : SrcSigma Φ} {htgt : TgtSigma Φ}
+    {bf : BumpFamily (I := I) Φ} {hsrc : SourceIsSigmaCompact Φ} {htgt : TargetIsSigmaCompact Φ}
     {a b t₀ : Real} (ht₀ : t₀ ∈ Set.Ioo a b)
-    (co : OpenConvOut (I := I) Φ R bf hsrc htgt a b t₀)
+    (co : OpenMetricConvergenceData (I := I) Φ R bf hsrc htgt a b t₀)
     (hgramWin : letI : TopologicalSpace P.M := P.topology
         letI : ChartedSpace H P.M := P.charted
         letI : T2Space P.M := P.t2
         letI : IsManifold I ∞ P.M := P.smooth
       ∀ n (x₀ : P.M) (i j : Fin (Module.finrank ℝ E)),
         ContMDiffOn (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ) ∞
-          (fun p : ℝ × P.M => chartGramMatrix (I := I) (co.gInf p.1) x₀ p.2 i j)
+          (fun p : ℝ × P.M => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (co.gInf p.1) x₀ p.2 i j)
           (Set.Ioo (RealTimeInterval.openWindowLeft a t₀ n)
               (RealTimeInterval.openWindowRight b t₀ n) ×ˢ
             (trivializationAt E (TangentSpace I) x₀).baseSet)) :
@@ -2332,7 +2332,7 @@ theorem smoothMetric
   let : SigmaCompactSpace P.M := P.sigmaCompact
   have hgram : ∀ (x₀ : P.M) (i j : Fin (Module.finrank ℝ E)),
       ContMDiffOn (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ) ∞
-        (fun p : ℝ × P.M => chartGramMatrix (I := I) (co.gInf p.1) x₀ p.2 i j)
+        (fun p : ℝ × P.M => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (co.gInf p.1) x₀ p.2 i j)
         (Set.Ioo a b ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet) := by
     intro x₀ i j p hp
     obtain ⟨n, hn⟩ := RealTimeInterval.exists_window_nhds ht₀ hp.1
@@ -2401,17 +2401,17 @@ theorem gramSmooth
       letI : ChartedSpace H P.M := P.charted
       letI : IsManifold I ∞ P.M := P.smooth
       SmoothRiemannianMetric I P.M}
-    {bf : BumpFamily (I := I) Φ} {hsrc : SrcSigma Φ} {htgt : TgtSigma Φ}
+    {bf : BumpFamily (I := I) Φ} {hsrc : SourceIsSigmaCompact Φ} {htgt : TargetIsSigmaCompact Φ}
     {a b t₀ : Real} (ht₀ : t₀ ∈ Set.Ioo a b)
     (hD : X.D = RealTimeInterval.openInterval a b t₀ ht₀)
-    (co : OpenConvOut (I := I) Φ R bf hsrc htgt a b t₀) :
+    (co : OpenMetricConvergenceData (I := I) Φ R bf hsrc htgt a b t₀) :
     letI : TopologicalSpace P.M := P.topology
     letI : ChartedSpace H P.M := P.charted
     letI : T2Space P.M := P.t2
     letI : IsManifold I ∞ P.M := P.smooth
     ∀ (x₀ : P.M) (i j : Fin (Module.finrank ℝ E)),
       ContMDiffOn (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ) ∞
-        (fun p : ℝ × P.M => chartGramMatrix (I := I) (co.gInf p.1) x₀ p.2 i j)
+        (fun p : ℝ × P.M => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (co.gInf p.1) x₀ p.2 i j)
         (Set.Ioo a b ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet) := by
   let : TopologicalSpace P.M := P.topology
   let : ChartedSpace H P.M := P.charted
@@ -2426,8 +2426,8 @@ theorem gramSmooth
     intro t ht
     have htOpen := RealTimeInterval.openWindow_subset ht₀ n ht
     simpa only [hD, RealTimeInterval.openInterval] using htOpen
-  have hlocal := ConvOut.gramSmooth (I := I) (Φ := Φ) hwin
-    (OpenConvOut.atWindow Φ co n) x₀ i j p ⟨htn, hp.2⟩
+  have hlocal := FlowMetricConvergenceData.gramSmooth (I := I) (Φ := Φ) hwin
+    (OpenMetricConvergenceData.atWindow Φ co n) x₀ i j p ⟨htn, hp.2⟩
   have hnhds : Set.Ioo (RealTimeInterval.openWindowLeft a t₀ n)
         (RealTimeInterval.openWindowRight b t₀ n) ×ˢ
       (trivializationAt E (TangentSpace I) x₀).baseSet ∈ 𝓝 p :=
@@ -2436,15 +2436,15 @@ theorem gramSmooth
   exact (hlocal.contMDiffAt hnhds).contMDiffWithinAt
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem smoothMetric_of_conv
+theorem smoothMetric_of_convergence
     {R : letI : TopologicalSpace P.M := P.topology
       letI : ChartedSpace H P.M := P.charted
       letI : IsManifold I ∞ P.M := P.smooth
       SmoothRiemannianMetric I P.M}
-    {bf : BumpFamily (I := I) Φ} {hsrc : SrcSigma Φ} {htgt : TgtSigma Φ}
+    {bf : BumpFamily (I := I) Φ} {hsrc : SourceIsSigmaCompact Φ} {htgt : TargetIsSigmaCompact Φ}
     {a b t₀ : Real} (ht₀ : t₀ ∈ Set.Ioo a b)
     (hD : X.D = RealTimeInterval.openInterval a b t₀ ht₀)
-    (co : OpenConvOut (I := I) Φ R bf hsrc htgt a b t₀) :
+    (co : OpenMetricConvergenceData (I := I) Φ R bf hsrc htgt a b t₀) :
     letI : TopologicalSpace P.M := P.topology
     letI : ChartedSpace H P.M := P.charted
     letI : T2Space P.M := P.t2
@@ -2455,16 +2455,16 @@ theorem smoothMetric_of_conv
       ({ base := { metric := co.gInf } } :
         SolutionOn (I := I) (M := P.M)
           (RealTimeInterval.openInterval a b t₀ ht₀)).family.metric := by
-  apply OpenConvOut.smoothMetric (Φ := Φ) ht₀ co
+  apply OpenMetricConvergenceData.smoothMetric (Φ := Φ) ht₀ co
   intro n
-  apply ConvOut.gramSmooth (Φ := Φ) (co := OpenConvOut.atWindow Φ co n)
+  apply FlowMetricConvergenceData.gramSmooth (Φ := Φ) (co := OpenMetricConvergenceData.atWindow Φ co n)
   intro t ht
   have htOpen := RealTimeInterval.openWindow_subset ht₀ n ht
   simpa only [hD, RealTimeInterval.openInterval] using htOpen
 
-end OpenConvOut
+end OpenMetricConvergenceData
 
 end OpenInterval
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

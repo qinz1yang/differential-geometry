@@ -1,9 +1,9 @@
 import DifferentialGeometry.Geometry.Connection.Laplacian.TensorConnLaplacian
-import DifferentialGeometry.Geometry.Connection.LeviCivita.Smooth.Connection
-import DifferentialGeometry.Geometry.Operator.HessianTraceRealization
+import DifferentialGeometry.Geometry.Connection.LeviCivita.Smooth.CovariantDerivative
+import DifferentialGeometry.Geometry.Operator.Hessian.Trace.Realization
 import DifferentialGeometry.Tensor.RSTensor.Field
-import DifferentialGeometry.Geometry.Operator.Operators
-import DifferentialGeometry.Geometry.Operator.RoughLaplacian
+import DifferentialGeometry.Geometry.Operator.Scalar.Calculus
+import DifferentialGeometry.Geometry.Operator.Laplacian.Rough
 open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
@@ -438,7 +438,7 @@ theorem rawLap_scalar
         intro i j
         rw [orthoBasis_apply, orthoBasis_apply]
         exact smoothOrthoFrame_orthonormal_at_center (I := I) g x i j
-      have hinv : MetricInverseInBasisGen (I := I) g x basis
+      have hinv : MetricInverseInBasis (I := I) g x basis
           (identityInvMetric (Idx := Fin (Module.finrank ℝ E))) := by
         intro i j
         constructor <;> simp [identityInvMetric, diagonalInvMetric, horth]
@@ -457,7 +457,7 @@ theorem rawLap_scalar
       · intro hi
         exact absurd (Finset.mem_univ i) hi
     _ = laplacian (I := I) (LeviCivita (I := I) g) g f x := by
-      have hmc : IsMetricCompatibleGen (I := I) (LeviCivita (I := I) g) g := by
+      have hmc : IsMetricCompatible (I := I) (LeviCivita (I := I) g) g := by
         simpa [LeviCivita] using
           (leviCivitaConnectionOfMetric_isMetricCompatible (I := I) g)
       have hreal := scalarLap_smooth (I := I) (M := M)

@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Foundations.PointedMaps
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.BonnetMyers
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Compactness.BonnetMyers
 
 import Mathlib.Topology.Connected.Clopen
 open DifferentialGeometry.Geometry.Curvature
@@ -11,7 +11,7 @@ noncomputable section
 universe u
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open Set
 open scoped Manifold ContDiff Topology
@@ -113,5 +113,5 @@ noncomputable def globalDiffeomorph
   exact hlocal.diffeomorphOfBijective hbijective
 
 end PointedCGHMaps
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

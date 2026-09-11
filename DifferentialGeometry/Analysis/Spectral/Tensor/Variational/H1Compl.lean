@@ -1,6 +1,5 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.Variational.PreHilbert
 import DifferentialGeometry.Analysis.Integration.L2.Hilbert.Defs
-import DifferentialGeometry.Analysis.Integration.L2.Hilbert.Inherited
 import Mathlib.Topology.UniformSpace.Completion
 import Mathlib.Topology.Algebra.GroupCompletion
 import Mathlib.Analysis.Normed.Group.Completion
@@ -227,21 +226,6 @@ theorem TensorH1ComplToTensorL2_smoothToTensorH1Compl_eq_coe
       (S.toCcTensor : TensorL2 r s g) := by
   rw [TensorH1ComplToTensorL2_smoothToTensorH1Compl,
     smoothCcTensorH1ToTensorL2_apply]
-
-section InstanceTests
-
-example (g : SmoothRiemannianMetric I M) (r s : ℕ) : Type _ := TensorH1Compl g r s
-
-example (g : SmoothRiemannianMetric I M) (r s : ℕ) :
-    NormedAddCommGroup (TensorH1Compl g r s) := inferInstance
-
-example (g : SmoothRiemannianMetric I M) (r s : ℕ) :
-    InnerProductSpace ℝ (TensorH1Compl g r s) := inferInstance
-
-example (g : SmoothRiemannianMetric I M) (r s : ℕ) :
-    CompleteSpace (TensorH1Compl g r s) := inferInstance
-
-end InstanceTests
 
 end TensorSpectral
 end Parabolic

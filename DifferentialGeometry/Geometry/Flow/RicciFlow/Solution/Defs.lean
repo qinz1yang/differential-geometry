@@ -71,18 +71,18 @@ def MetricConnectionFamilyVariationEquationOn
       D.carrier
       (t : Real)
 
-structure RicciFlowCandidateOn (D : RealTimeInterval) where
+structure MetricEvolutionDataOn (D : RealTimeInterval) where
   family : MetricConnectionFamilyOn (I := I) (M := M) D
-  ricci : RicciTensorField (I := I) (M := M) Real
+  drivingTensor : RicciTensorField (I := I) (M := M) Real
 
-structure IsRicciFlowCandidateOn
+structure IsMetricEvolutionOn
     {D : RealTimeInterval}
-    (S : RicciFlowCandidateOn (I := I) (M := M) D) : Prop where
+    (S : MetricEvolutionDataOn (I := I) (M := M) D) : Prop where
   smoothMetric : MetricFamilySmoothOn (I := I) (M := M) D S.family.metric
   smoothConnection : DifferentialGeometry.Geometry.Connection.ConnectionFamilySmoothOn (I := I)
     (M := M) S.family
   leviCivita : DifferentialGeometry.Geometry.Connection.IsLeviCivitaFamilyOn (I := I) S.family
-  equation : MetricConnectionFamilyVariationEquationOn (I := I) S.family S.ricci
+  equation : MetricConnectionFamilyVariationEquationOn (I := I) S.family S.drivingTensor
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
     [IsManifold I 1 M] in
@@ -100,14 +100,14 @@ theorem metric_derivWithin_eq_neg_two_ricci_of_metricVariationEquationOn
   hEq t x X Y
 
 omit [SigmaCompactSpace M] [T2Space M] [IsManifold I 1 M] in
-theorem metric_derivWithin_eq_neg_two_ricci_of_isRicciFlowCandidateOn
+theorem metric_derivWithin_eq_neg_two_drivingTensor_of_isMetricEvolutionOn
     {D : RealTimeInterval}
-    (S : RicciFlowCandidateOn (I := I) (M := M) D)
-    (hS : IsRicciFlowCandidateOn (I := I) S)
+    (S : MetricEvolutionDataOn (I := I) (M := M) D)
+    (hS : IsMetricEvolutionOn (I := I) S)
     (t : RealTimeInterval.RegularTime D) (x : M) (X Y : TangentSpace I x) :
     HasDerivWithinAt
       (fun s : Real => (S.family.metric s).inner x X Y)
-      ((-2 : Real) * S.ricci (t : Real) x X Y)
+      ((-2 : Real) * S.drivingTensor (t : Real) x X Y)
       D.carrier
       (t : Real) :=
   hS.equation t x X Y

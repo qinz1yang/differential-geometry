@@ -1,7 +1,8 @@
-import DifferentialGeometry.Analysis.Sobolev.Embedding.SobolevEmbeddingCm
-import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.RiemannianFiberNormSq.PointwiseToL2Packaging
-import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.GreenIdentityAndIBP.IntegratedOrder2Garding
-import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.RawConnLapL2SobolevBounds.RoughLaplacianSecondCovGradL2Bound
+import DifferentialGeometry.Analysis.Sobolev.Embedding.CovariantDerivative.Cm
+import DifferentialGeometry.Analysis.Integration.L2.Tensor.FiberNormBounds
+import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.Garding.IntegratedSecondOrder
+import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.SobolevBounds.Intrinsic.RoughLaplacianSecondDerivative
+
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature
 
@@ -801,7 +802,7 @@ private theorem exists_rawConnLap_l2Norm_le_secondCovGrad_l2Norm
             (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.covGrad (I := I) g 0 (s' + 1)
               (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.covGrad (I := I) g 0 s'
                 S)).toFun :=
-  DifferentialGeometry.Analysis.Elliptic.exists_rawConnLap_l2Norm_le_secondCovGrad_l2Norm_gen
+  DifferentialGeometry.Analysis.Elliptic.exists_rawConnLap_l2Norm_le_secondCovGrad_l2Norm_covariantTensor
     (I := I) (M := M) g
 
 private theorem l2jet_logConvex_iteratedCovGrad
@@ -837,7 +838,7 @@ private theorem l2jet_logConvex_iteratedCovGrad
       Integral.L2.tensorL2Norm (I := I) g 0 (s + i)
           (rawTensorConnLapSmooth (I := I) g 0 (s + i) S).toFun * aS := by
     rw [haGrad_def, haS_def]
-    exact covGrad_l2NormSq_le_rawConnLap_mul_self_gen (I := I) (M := M) g (s + i) S
+    exact covGrad_l2NormSq_le_rawConnLap_mul_self_covariantTensor (I := I) (M := M) g (s + i) S
   have htr : Integral.L2.tensorL2Norm (I := I) g 0 (s + i)
         (rawTensorConnLapSmooth (I := I) g 0 (s + i) S).toFun ≤ K * aHess := by
     rw [haHess_def]

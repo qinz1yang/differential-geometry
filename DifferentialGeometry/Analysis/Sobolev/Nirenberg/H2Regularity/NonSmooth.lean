@@ -45,15 +45,15 @@ structure SmoothApproximation
   uSeq : ℕ → E → ℝ
   fSeq : ℕ → E → ℝ
   u_seq_smooth : ∀ n, ContDiff ℝ (⊤ : ℕ∞) (uSeq n)
-  is_smooth_weak_sol :
+  is_smooth_weak_solution :
     ∀ n, B.IsSmoothWeakSolution (uSeq n) (fSeq n)
-  f_seq_l2_loc :
+  f_seq_l2_local :
     ∀ n {S : Set E}, IsCompact (closure S) →
       MemLp (fSeq n) 2 (volume.restrict S)
-  u_seq_l2_loc :
+  u_seq_l2_local :
     ∀ n {S : Set E}, IsCompact (closure S) →
       MemLp (uSeq n) 2 (volume.restrict S)
-  grad_seq_l2_loc :
+  grad_seq_l2_local :
     ∀ n {S : Set E}, IsCompact (closure S) →
       ∀ j : Fin d,
         MemLp (fun y : E => (fderiv ℝ (uSeq n) y) (EuclideanSpace.single j 1))
@@ -71,7 +71,7 @@ structure SmoothApproximation
         (∫ y in Ω', (fSeq n y) ^ 2 ∂(volume : Measure E)) ≤
           C * dataBound
 
-private lemma loc_per_n_smooth_bound
+private lemma local_per_n_smooth_bound
     {Ω : Set E} (B : SmoothEllipticBilinearForm d Ω)
     {u f : E → ℝ}
     {Ω'' : Set E} (hΩ'' : IsOpen Ω'')
@@ -93,15 +93,15 @@ private lemma loc_per_n_smooth_bound
                 ∂(volume : Measure E) +
               ∫ x in Ω', (S.uSeq n x) ^ 2 ∂(volume : Measure E) +
               ∫ x in Ω', (S.fSeq n x) ^ 2 ∂(volume : Measure E)) := by
-  obtain ⟨C, hC_nn, h_eng⟩ := loc_smooth_solution (d := d) B
+  obtain ⟨C, hC_nn, h_eng⟩ := local_smooth_solution (d := d) B
     hΩ'' hΩ''_compact_closure h_room
   obtain ⟨g, hg_memLp, hg_weak, Ω', hΩ'_open, hΩ''_in_Ω', hΩ'_in,
     hΩ'_compact, hbound⟩ :=
-    h_eng (S.is_smooth_weak_sol n) (S.f_seq_l2_loc n) i k
+    h_eng (S.is_smooth_weak_solution n) (S.f_seq_l2_local n) i k
   exact ⟨g, hg_memLp, hg_weak, Ω', hΩ'_open, hΩ''_in_Ω', hΩ'_in,
     hΩ'_compact, C, hC_nn, hbound⟩
 
-theorem loc_nonsmooth_per_n_bound
+theorem local_nonsmooth_per_n_bound
     {Ω : Set E} (B : SmoothEllipticBilinearForm d Ω)
     {u f : E → ℝ}
     {Ω'' : Set E} (hΩ'' : IsOpen Ω'')
@@ -119,7 +119,7 @@ theorem loc_nonsmooth_per_n_bound
   intro i k n
   obtain ⟨g, hg_l2, hg_partial, Ω', hΩ'_open, _hΩ''_in_Ω', _hΩ'_in_Ω,
       hΩ'_compact, C, hC_nn, hC_bound⟩ :=
-    loc_per_n_smooth_bound (d := d) B hΩ'' hΩ''_compact_closure
+    local_per_n_smooth_bound (d := d) B hΩ'' hΩ''_compact_closure
       h_room S i k n
   obtain ⟨D, hD_nn, hD_bound⟩ :=
     S.data_integrated_bound (Ω' := Ω') hΩ'_open hΩ'_compact
@@ -132,7 +132,7 @@ theorem loc_nonsmooth_per_n_bound
         mul_le_mul_of_nonneg_left h_data_le hC_nn
     _ = (C * D) * S.dataBound := by ring
 
-theorem loc_nonsmooth_solution
+theorem local_nonsmooth_solution
     {Ω : Set E} (B : SmoothEllipticBilinearForm d Ω)
     {u f : E → ℝ}
     {Ω'' : Set E} (hΩ'' : IsOpen Ω'')
@@ -146,7 +146,7 @@ theorem loc_nonsmooth_solution
           (fderiv ℝ (S.uSeq n) y) (EuclideanSpace.single i 1)) Ω'' ∧
       ∃ K : ℝ, 0 ≤ K ∧
         ∫ x in Ω'', g_n x ^ 2 ∂(volume : Measure E) ≤ K * S.dataBound :=
-  loc_nonsmooth_per_n_bound (d := d) B hΩ'' hΩ''_compact_closure
+  local_nonsmooth_per_n_bound (d := d) B hΩ'' hΩ''_compact_closure
     h_room S
 
 end DifferentialGeometry.Analysis.Sobolev.NirenbergNonSmooth

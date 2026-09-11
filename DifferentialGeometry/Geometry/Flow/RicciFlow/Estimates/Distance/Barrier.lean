@@ -1,10 +1,11 @@
-import DifferentialGeometry.Geometry.Comparison.DistanceCalabi
-import DifferentialGeometry.Geometry.Comparison.HopfRinowProper
-import DifferentialGeometry.Geometry.Comparison.Variation.SpeedDerivative
-import DifferentialGeometry.Geometry.Curvature.MetricLeviCivitaReconcile
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.Derivatives.HeatEquation
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Ricci.QuadraticBound
+import DifferentialGeometry.Geometry.Comparison.Distance.Calabi
+import DifferentialGeometry.Geometry.Comparison.HopfRinow.Proper
+import DifferentialGeometry.Geometry.Comparison.Variation.Curve.SpeedDerivative
+import DifferentialGeometry.Geometry.Curvature.Metric.LeviCivita
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.Derivatives.Evolution.HeatEquation
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Ricci.Estimate.QuadraticForm
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.MetricComparison
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Distance.CalabiSupport
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Scalar.Weak
 
 set_option autoImplicit false
@@ -16,6 +17,7 @@ universe u uE uH
 namespace DifferentialGeometry.PDE.RicciFlow
 
 open Bundle Filter Set
+open DifferentialGeometry.Analysis.Parabolic
 open DifferentialGeometry.Integral.Connection
 open DifferentialGeometry.Geometry.Riemannian
 open DifferentialGeometry.Geometry.Riemannian.Exponential
@@ -38,354 +40,9 @@ variable {M : Type u} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M]
   [SigmaCompactSpace M] [T2Space M]
 
-omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
-private theorem pathLength_timeDeriv_of_ricciFlow
-    {D : RealTimeInterval}
-    (S : SolutionOn (I := I) (M := M) D)
-    (hS : IsSolutionOn (I := I) S)
-    {a b t : Real}
-    (hab : a ≤ b)
-    (ht : t ∈ D.regular)
-    (γ : Real → M)
-    (hγ : ContMDiff 𝓘(Real, Real) I 1 γ)
-    (hvel : ∀ u ∈ Set.Icc a b,
-      mfderiv 𝓘(Real, Real) I γ u (1 : Real) ≠ 0) :
-    HasDerivAt
-      (fun s =>
-        Variation.arcLength (I := I) (S.base.metric s) γ a b)
-      (∫ u in a..b,
-        -ricciTensor (I := I) (S.base.metric t) (γ u)
-            (mfderiv 𝓘(Real, Real) I γ u (1 : Real))
-            (mfderiv 𝓘(Real, Real) I γ u (1 : Real)) /
-          Real.sqrt ((S.base.metric t).inner (γ u)
-            (mfderiv 𝓘(Real, Real) I γ u (1 : Real))
-            (mfderiv 𝓘(Real, Real) I γ u (1 : Real))))
-      t := by
-  classical
-  let v : (u : Real) → TangentSpace I (γ u) :=
-    fun u => mfderiv 𝓘(Real, Real) I γ u (1 : Real)
-  let G : Real → Real → Real :=
-    fun s u => (S.base.metric s).inner (γ u) (v u) (v u)
-  let Ric : Real → Real → Real :=
-    fun s u => ricciTensor (I := I) (S.base.metric s) (γ u) (v u) (v u)
-  let F : Real → Real → Real := fun s u => Real.sqrt (G s u)
-  let F' : Real → Real → Real :=
-    fun s u => ((-2 : Real) * Ric s u) / (2 * Real.sqrt (G s u))
-  obtain ⟨α, β, htIoo, hwin⟩ := D.exists_Icc_regular ht
-  have hαβ : α ≤ β := (htIoo.1.trans htIoo.2).le
-  let Kset : Set (Real × Real) := Set.Icc α β ×ˢ Set.Icc a b
-  have hvLift : Continuous (fun u : Real =>
-      TotalSpace.mk' E (E := fun y : M => TangentSpace I y) (γ u) (v u)) := by
-    have h :=
-      DifferentialGeometry.Geometry.Riemannian.MFDerivAlongCurve.continuous_tangentMap_unitLift
-        (I := I) (M := M)
-        (γ := γ) (by norm_num) hγ
-    simpa only [v, tangentMap] using h
-  have hGcontOn :
-      ContinuousOn (fun p : Real × Real => G p.1 p.2) Kset := by
-    rw [continuousOn_iff_continuous_domRestrict]
-    have htime : Continuous (fun q : ↥Kset => ((q : Real × Real).1)) :=
-      continuous_fst.comp continuous_subtype_val
-    have hparam : Continuous (fun q : ↥Kset => ((q : Real × Real).2)) :=
-      continuous_snd.comp continuous_subtype_val
-    have hbase : Continuous (fun q : ↥Kset => γ ((q : Real × Real).2)) :=
-      hγ.continuous.comp hparam
-    have hvec : ∀ _i : Fin 2, Continuous (fun q : ↥Kset =>
-        TotalSpace.mk' E (E := fun y : M => TangentSpace I y)
-          (γ ((q : Real × Real).2)) (v ((q : Real × Real).2))) :=
-      fun _i => hvLift.comp hparam
-    have heval :=
-      hS.smoothMetric.metricTensor_cont.eval_continuous
-        (P := ↥Kset)
-        (τ := fun q => ((q : Real × Real).1))
-        (b := fun q => γ ((q : Real × Real).2))
-        htime
-        (fun q => D.regular_subset (hwin q.2.1))
-        hbase
-        (v := fun _i q => v ((q : Real × Real).2))
-        hvec
-    refine heval.congr (fun q => ?_)
-    rw [Tensor0SBundle.metricTensorField_apply]
-    rfl
-  have hRicAtContOn :
-      ContinuousOn
-        (fun p : Real × Real =>
-          S.ricciAt p.1 (γ p.2) (vec2 (I := I) (v p.2) (v p.2)))
-        Kset := by
-    rw [continuousOn_iff_continuous_domRestrict]
-    have htime : Continuous (fun q : ↥Kset => ((q : Real × Real).1)) :=
-      continuous_fst.comp continuous_subtype_val
-    have hparam : Continuous (fun q : ↥Kset => ((q : Real × Real).2)) :=
-      continuous_snd.comp continuous_subtype_val
-    have hbase : Continuous (fun q : ↥Kset => γ ((q : Real × Real).2)) :=
-      hγ.continuous.comp hparam
-    have hvec : ∀ _i : Fin 2, Continuous (fun q : ↥Kset =>
-        TotalSpace.mk' E (E := fun y : M => TangentSpace I y)
-          (γ ((q : Real × Real).2)) (v ((q : Real × Real).2))) :=
-      fun _i => hvLift.comp hparam
-    have heval :=
-      hS.ricciCont.eval_continuous
-        (P := ↥Kset)
-        (τ := fun q => ((q : Real × Real).1))
-        (b := fun q => γ ((q : Real × Real).2))
-        htime
-        (fun q => D.regular_subset (hwin q.2.1))
-        hbase
-        (v := fun _i q => v ((q : Real × Real).2))
-        hvec
-    refine heval.congr (fun q => ?_)
-    simp only [SolutionOn.ricci, SolutionFamily.ricci_apply,
-      SolutionFamily.ricciAt]
-    change
-      metricRicciAt (I := I) (S.base.metric ((q : Real × Real).1))
-          (γ ((q : Real × Real).2))
-          (fun _i : Fin 2 => v ((q : Real × Real).2)) =
-        metricRicciAt (I := I) (S.base.metric ((q : Real × Real).1))
-          (γ ((q : Real × Real).2))
-          (vec2 (I := I) (v ((q : Real × Real).2))
-            (v ((q : Real × Real).2)))
-    congr 1
-    funext i
-    fin_cases i <;> rfl
-  have hRicContOn :
-      ContinuousOn (fun p : Real × Real => Ric p.1 p.2) Kset := by
-    refine hRicAtContOn.congr (fun p hp => ?_)
-    simpa only [Ric, SolutionOn.ricciAt, SolutionFamily.ricciAt] using
-      (metricRicciAt_apply_eq_ricciTensor
-        (I := I) (S.base.metric p.1) (γ p.2) (v p.2) (v p.2)).symm
-  have hFcontOn :
-      ContinuousOn (fun p : Real × Real => F p.1 p.2) Kset :=
-    Real.continuous_sqrt.comp_continuousOn hGcontOn
-  have hF'contOn :
-      ContinuousOn (fun p : Real × Real => F' p.1 p.2) Kset := by
-    apply ContinuousOn.div
-      (continuousOn_const.mul hRicContOn)
-      (continuousOn_const.mul
-        (Real.continuous_sqrt.comp_continuousOn hGcontOn))
-    intro p hp
-    have hvne : v p.2 ≠ 0 := hvel p.2 hp.2
-    have hpos : 0 < G p.1 p.2 :=
-      (S.base.metric p.1).pos (γ p.2) (v p.2) hvne
-    exact ne_of_gt (mul_pos two_pos (Real.sqrt_pos.2 hpos))
-  have hFslice : ∀ s ∈ Set.Icc α β,
-      ContinuousOn (F s) (Set.Icc a b) := by
-    intro s hs
-    have hcomp := hFcontOn.comp
-      (continuous_const.prodMk continuous_id).continuousOn
-      (fun u hu => ⟨hs, hu⟩)
-    with_unfolding_all exact hcomp
-  have hF'slice : ∀ s ∈ Set.Icc α β,
-      ContinuousOn (F' s) (Set.Icc a b) := by
-    intro s hs
-    have hcomp := hF'contOn.comp
-      (continuous_const.prodMk continuous_id).continuousOn
-      (fun u hu => ⟨hs, hu⟩)
-    with_unfolding_all exact hcomp
-  have hpoint : ∀ s ∈ Set.Ioo α β, ∀ u ∈ Set.Icc a b,
-      HasDerivAt (fun r => F r u) (F' s u) s := by
-    intro s hs u hu
-    have hsreg : s ∈ D.regular :=
-      hwin ⟨le_of_lt hs.1, le_of_lt hs.2⟩
-    have hmetric := metricDerivAt
-      (I := I) S hS ⟨s, hsreg⟩ (γ u) (v u) (v u)
-    have hbridge :
-        S.ricciAt s (γ u) (vec2 (I := I) (v u) (v u)) = Ric s u := by
-      exact metricRicciAt_apply_eq_ricciTensor
-        (I := I) (S.base.metric s) (γ u) (v u) (v u)
-    rw [hbridge] at hmetric
-    have hGne : G s u ≠ 0 := ne_of_gt
-      ((S.base.metric s).pos (γ u) (v u) (hvel u hu))
-    with_unfolding_all exact hmetric.sqrt hGne
-  have hKcompact : IsCompact Kset := isCompact_Icc.prod isCompact_Icc
-  obtain ⟨C, hC⟩ :=
-    hKcompact.exists_bound_of_continuousOn hF'contOn
-  have hkey :=
-    intervalIntegral.hasDerivAt_integral_of_dominated_loc_of_deriv_le
-      (μ := MeasureTheory.volume) (a := a) (b := b)
-      (F := F) (F' := F') (x₀ := t)
-      (bound := fun _ => C) (s := Set.Ioo α β)
-      (Ioo_mem_nhds htIoo.1 htIoo.2)
-      (Filter.eventually_of_mem (Ioo_mem_nhds htIoo.1 htIoo.2)
-        (fun s hs => by
-          rw [Set.uIoc_of_le hab]
-          exact
-            ((hFslice s ⟨le_of_lt hs.1, le_of_lt hs.2⟩).mono
-              Set.Ioc_subset_Icc_self).aestronglyMeasurable
-              measurableSet_Ioc))
-      (by
-        have hcontFt : ContinuousOn (F t) (Set.Icc a b) :=
-          hFslice t ⟨le_of_lt htIoo.1, le_of_lt htIoo.2⟩
-        exact hcontFt.intervalIntegrable_of_Icc hab)
-      (by
-        rw [Set.uIoc_of_le hab]
-        exact
-          ((hF'slice t ⟨le_of_lt htIoo.1, le_of_lt htIoo.2⟩).mono
-            Set.Ioc_subset_Icc_self).aestronglyMeasurable
-            measurableSet_Ioc)
-      (by
-        apply Filter.Eventually.of_forall
-        intro u hu s hs
-        rw [Set.uIoc_of_le hab] at hu
-        exact hC (s, u)
-          ⟨⟨le_of_lt hs.1, le_of_lt hs.2⟩,
-            ⟨le_of_lt hu.1, hu.2⟩⟩)
-      (_root_.intervalIntegrable_const)
-      (by
-        apply Filter.Eventually.of_forall
-        intro u hu s hs
-        rw [Set.uIoc_of_le hab] at hu
-        exact hpoint s hs u ⟨le_of_lt hu.1, hu.2⟩)
-  have hderiv :
-      (∫ u in a..b, F' t u) =
-        ∫ u in a..b,
-          -Ric t u / Real.sqrt (G t u) := by
-    apply intervalIntegral.integral_congr
-    intro u hu
-    rw [Set.uIcc_of_le hab] at hu
-    have hden : Real.sqrt (G t u) ≠ 0 := ne_of_gt
-      (Real.sqrt_pos.2
-        ((S.base.metric t).pos (γ u) (v u) (hvel u hu)))
-    dsimp only [F']
-    field_simp
-  rw [← hderiv]
-  simpa only [Variation.arcLength, F, G, Ric, v] using hkey.2
-
-omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
-private theorem pathLength_deriv_ge
-    {D : RealTimeInterval}
-    (S : SolutionOn (I := I) (M := M) D)
-    (hS : IsSolutionOn (I := I) S)
-    {a b t A : Real}
-    (hab : a ≤ b)
-    (ht : t ∈ D.regular)
-    (γ : Real → M)
-    (hγ : ContMDiff 𝓘(Real, Real) I 1 γ)
-    (hvel : ∀ u ∈ Set.Icc a b,
-      mfderiv 𝓘(Real, Real) I γ u (1 : Real) ≠ 0)
-    (hRic : ∀ u ∈ Set.Icc a b,
-      |ricciTensor (I := I) (S.base.metric t) (γ u)
-          (mfderiv 𝓘(Real, Real) I γ u (1 : Real))
-          (mfderiv 𝓘(Real, Real) I γ u (1 : Real))| ≤
-        A * (S.base.metric t).inner (γ u)
-          (mfderiv 𝓘(Real, Real) I γ u (1 : Real))
-          (mfderiv 𝓘(Real, Real) I γ u (1 : Real))) :
-    -A * Variation.arcLength (I := I) (S.base.metric t) γ a b ≤
-      deriv
-        (fun s => Variation.arcLength (I := I) (S.base.metric s) γ a b)
-        t := by
-  classical
-  let v : (u : Real) → TangentSpace I (γ u) :=
-    fun u => mfderiv 𝓘(Real, Real) I γ u (1 : Real)
-  let G : Real → Real :=
-    fun u => (S.base.metric t).inner (γ u) (v u) (v u)
-  let Ric : Real → Real :=
-    fun u => ricciTensor (I := I) (S.base.metric t) (γ u) (v u) (v u)
-  let Q : Real → Real := fun u => -Ric u / Real.sqrt (G u)
-  have hvLift : Continuous (fun u : Real =>
-      TotalSpace.mk' E (E := fun y : M => TangentSpace I y) (γ u) (v u)) := by
-    have h :=
-      DifferentialGeometry.Geometry.Riemannian.MFDerivAlongCurve.continuous_tangentMap_unitLift
-        (I := I) (M := M) (γ := γ) (by norm_num) hγ
-    simpa only [v, tangentMap] using h
-  have hGcont : ContinuousOn G (Set.Icc a b) := by
-    rw [continuousOn_iff_continuous_domRestrict]
-    have hbase : Continuous (fun u : ↥(Set.Icc a b) => γ (u : Real)) :=
-      hγ.continuous.comp continuous_subtype_val
-    have hvec : ∀ _i : Fin 2, Continuous (fun u : ↥(Set.Icc a b) =>
-        TotalSpace.mk' E (E := fun y : M => TangentSpace I y)
-          (γ (u : Real)) (v (u : Real))) :=
-      fun _i => hvLift.comp continuous_subtype_val
-    have heval :=
-      hS.smoothMetric.metricTensor_cont.eval_continuous
-        (P := ↥(Set.Icc a b))
-        (τ := fun _u => t)
-        (b := fun u => γ (u : Real))
-        continuous_const
-        (fun _u => D.regular_subset ht)
-        hbase
-        (v := fun _i u => v (u : Real))
-        hvec
-    refine heval.congr (fun u => ?_)
-    rw [Tensor0SBundle.metricTensorField_apply]
-    rfl
-  have hRicAtCont :
-      ContinuousOn
-        (fun u =>
-          S.ricciAt t (γ u) (vec2 (I := I) (v u) (v u)))
-        (Set.Icc a b) := by
-    rw [continuousOn_iff_continuous_domRestrict]
-    have hbase : Continuous (fun u : ↥(Set.Icc a b) => γ (u : Real)) :=
-      hγ.continuous.comp continuous_subtype_val
-    have hvec : ∀ _i : Fin 2, Continuous (fun u : ↥(Set.Icc a b) =>
-        TotalSpace.mk' E (E := fun y : M => TangentSpace I y)
-          (γ (u : Real)) (v (u : Real))) :=
-      fun _i => hvLift.comp continuous_subtype_val
-    have heval :=
-      hS.ricciCont.eval_continuous
-        (P := ↥(Set.Icc a b))
-        (τ := fun _u => t)
-        (b := fun u => γ (u : Real))
-        continuous_const
-        (fun _u => D.regular_subset ht)
-        hbase
-        (v := fun _i u => v (u : Real))
-        hvec
-    refine heval.congr (fun u => ?_)
-    simp only [SolutionOn.ricci, SolutionFamily.ricci_apply,
-      SolutionFamily.ricciAt]
-    change
-      metricRicciAt (I := I) (S.base.metric t) (γ (u : Real))
-          (fun _i : Fin 2 => v (u : Real)) =
-        metricRicciAt (I := I) (S.base.metric t) (γ (u : Real))
-          (vec2 (I := I) (v (u : Real)) (v (u : Real)))
-    congr 1
-    funext i
-    fin_cases i <;> rfl
-  have hRicCont : ContinuousOn Ric (Set.Icc a b) := by
-    refine hRicAtCont.congr (fun u hu => ?_)
-    simpa only [Ric, SolutionOn.ricciAt, SolutionFamily.ricciAt] using
-      (metricRicciAt_apply_eq_ricciTensor
-        (I := I) (S.base.metric t) (γ u) (v u) (v u)).symm
-  have hspeedCont : ContinuousOn (fun u => Real.sqrt (G u)) (Set.Icc a b) :=
-    Real.continuous_sqrt.comp_continuousOn hGcont
-  have hQcont : ContinuousOn Q (Set.Icc a b) := by
-    change ContinuousOn (fun u => -Ric u / Real.sqrt (G u)) (Set.Icc a b)
-    apply ContinuousOn.div hRicCont.neg hspeedCont
-    intro u hu
-    exact ne_of_gt (Real.sqrt_pos.2
-      ((S.base.metric t).pos (γ u) (v u) (hvel u hu)))
-  have hleftInt :
-      IntervalIntegrable (fun u => -A * Real.sqrt (G u))
-        MeasureTheory.volume a b :=
-    (continuousOn_const.mul hspeedCont).intervalIntegrable_of_Icc hab
-  have hrightInt :
-      IntervalIntegrable Q MeasureTheory.volume a b :=
-    hQcont.intervalIntegrable_of_Icc hab
-  have hpoint : ∀ u ∈ Set.Icc a b,
-      -A * Real.sqrt (G u) ≤ Q u := by
-    intro u hu
-    have hGpos : 0 < G u :=
-      (S.base.metric t).pos (γ u) (v u) (hvel u hu)
-    have hRicLe : Ric u ≤ A * G u :=
-      (le_abs_self (Ric u)).trans (by simpa only [Ric, G, v] using hRic u hu)
-    dsimp only [Q]
-    rw [le_div_iff₀ (Real.sqrt_pos.2 hGpos)]
-    rw [mul_assoc, Real.mul_self_sqrt (le_of_lt hGpos)]
-    linarith
-  have hmono :
-      (∫ u in a..b, -A * Real.sqrt (G u)) ≤
-        ∫ u in a..b, Q u :=
-    intervalIntegral.integral_mono_on hab hleftInt hrightInt hpoint
-  have hderiv :=
-    pathLength_timeDeriv_of_ricciFlow
-      (I := I) S hS hab ht γ hγ hvel
-  rw [hderiv.deriv, Variation.arcLength,
-    ← intervalIntegral.integral_const_mul]
-  simpa only [Q, Ric, G, v] using hmono
-
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-private theorem intrGeo_vel_ne
+private theorem intrinsicGeo_velocity_ne
     [RiemannianBundle (fun y : M => TangentSpace I y)]
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun y : M => TangentSpace I y)]
@@ -412,9 +69,9 @@ private theorem intrGeo_vel_ne
     simpa only [map_zero] using h
   exact hv.ne' (hspeed.symm.trans hinner0)
 
-namespace DistanceBarrierCore
+namespace DistanceBarrier
 
-structure ScaledDistSupport
+structure ScaledDistanceSupport
     {D : RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (O : M) (T t : Real) (x : M) (d Λ r : Real) where
@@ -450,11 +107,11 @@ structure ScaledDistSupport
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
   [SigmaCompactSpace M] [T2Space M] in
-theorem ScaledDistSupport.toResult
+theorem ScaledDistanceSupport.exists_support_function
     {D : RealTimeInterval}
     {S : SolutionOn (I := I) (M := M) D}
     {O x : M} {T t d Λ r : Real}
-    (h : ScaledDistSupport (I := I) S O T t x d Λ r) :
+    (h : ScaledDistanceSupport (I := I) S O T t x d Λ r) :
     ∃ ρ : Real → M → Real,
       ρ t x = Real.exp (Λ * t) * r ∧
       (∀ᶠ p in 𝓝[spacetimeSlab (M := M) T] (t, x),
@@ -670,15 +327,15 @@ private theorem calabi_core_of_tail
     (htpos : 0 < t)
     (x : M)
     (hEnorm : IsMetricNorm (I := I) (M := M) (S.base.metric t))
-    (tail : CalabiTailData
+    (tail : CalabiTail
       (I := I) (S.base.metric t) hEnorm O x r)
-    (hreach : tail.left + tail.ell * tail.b < R)
+    (hreach : tail.initialLength + tail.terminalLength * tail.conjugateScale < R)
     (hq : 0 ≤ q)
     (hRicTail : 0 < Module.finrank Real E - 1 →
       let γ : Real → M :=
         intrinsicGeodesic
-          (I := I) (S.base.metric t) hEnorm tail.p tail.u
-      ∀ u ∈ Set.Ioo (0 : Real) tail.b,
+          (I := I) (S.base.metric t) hEnorm tail.splitPoint tail.endpointVector
+      ∀ u ∈ Set.Ioo (0 : Real) tail.conjugateScale,
         -(((Module.finrank Real E - 1 : Nat) : Real) * q ^ 2) *
               (S.base.metric t).inner (γ u)
                 (Geometry.Riemannian.Variation.curveVelocity
@@ -696,33 +353,33 @@ private theorem calabi_core_of_tail
   classical
   obtain ⟨_, hrho0_x, _, hrho0_ev,
       hgrad0, hgrad0_norm, hlap0⟩ :=
-    calabiData_of_tail
+    calabi_support_of_tail
       (I := I) (S.base.metric t) hEnorm q hq tail hRicTail
   let rho0 : M → Real := fun y =>
-    tail.left +
+    tail.initialLength +
       branchRadius (I := I) (S.base.metric t) tail.branch y
   have hleft_fin :
-      Manifold.riemannianEDist I O tail.p ≠ (⊤ : ENNReal) := by
-    rw [tail.left_edist]
+      Manifold.riemannianEDist I O tail.splitPoint ≠ (⊤ : ENNReal) := by
+    rw [tail.initial_edist]
     exact ENNReal.ofReal_ne_top
   obtain ⟨vLeft, hvLeft_exp, hvLeft_norm⟩ :=
     minExp_of_ne_top
-      (I := I) (S.base.metric t) hEnorm O tail.p hleft_fin
+      (I := I) (S.base.metric t) hEnorm O tail.splitPoint hleft_fin
   have hvLeft_norm' :
       Real.sqrt ((S.base.metric t).inner O vLeft vLeft) =
-        tail.left := by
-    rw [hvLeft_norm, tail.left_edist,
-      ENNReal.toReal_ofReal tail.left_nonneg]
+        tail.initialLength := by
+    rw [hvLeft_norm, tail.initial_edist,
+      ENNReal.toReal_ofReal tail.initialLength_nonneg]
   have hvLeft_pos :
       0 < (S.base.metric t).inner O vLeft vLeft := by
     apply Real.sqrt_pos.mp
     rw [hvLeft_norm']
-    exact tail.left_pos
+    exact tail.initialLength_pos
   let γ : Real → M :=
     intrinsicGeodesic (I := I) (S.base.metric t) hEnorm O vLeft
   let δ : M → Real → M := fun y =>
-    intrinsicGeodesic (I := I) (S.base.metric t) hEnorm tail.p
-      ((tangentSpaceModelContinuousLinearEquiv (I := I) tail.p).symm
+    intrinsicGeodesic (I := I) (S.base.metric t) hEnorm tail.splitPoint
+      ((tangentSpaceModelContinuousLinearEquiv (I := I) tail.splitPoint).symm
         (tail.branch.inv y))
   let L₁ : Real → Real := fun s =>
     Geometry.Riemannian.Variation.arcLength
@@ -739,25 +396,25 @@ private theorem calabi_core_of_tail
     intro y
     exact contMDiffOn_univ.mp
       (intrinsicGeodesic_contMDiffOn
-        (I := I) (S.base.metric t) hEnorm tail.p
-          ((tangentSpaceModelContinuousLinearEquiv (I := I) tail.p).symm
+        (I := I) (S.base.metric t) hEnorm tail.splitPoint
+          ((tangentSpaceModelContinuousLinearEquiv (I := I) tail.splitPoint).symm
             (tail.branch.inv y)))
   have hγ_zero : γ 0 = O := by
     exact intrinsicGeodesic_zero
       (I := I) (S.base.metric t) hEnorm O vLeft
-  have hγ_one : γ 1 = tail.p := by
+  have hγ_one : γ 1 = tail.splitPoint := by
     simpa only [γ, expMapIntrinsic_def] using hvLeft_exp
-  have hδ_zero : ∀ y : M, δ y 0 = tail.p := by
+  have hδ_zero : ∀ y : M, δ y 0 = tail.splitPoint := by
     intro y
     exact intrinsicGeodesic_zero
-      (I := I) (S.base.metric t) hEnorm tail.p
-        ((tangentSpaceModelContinuousLinearEquiv (I := I) tail.p).symm
+      (I := I) (S.base.metric t) hEnorm tail.splitPoint
+        ((tangentSpaceModelContinuousLinearEquiv (I := I) tail.splitPoint).symm
           (tail.branch.inv y))
   have hδ_one : ∀ y ∈ tail.branch.dom, δ y 1 = y := by
     intro y hy
     simpa only [δ, expMapIntrinsic_def] using
       tail.branch.right_inv hy
-  have hL₁_t : L₁ t = tail.left := by
+  have hL₁_t : L₁ t = tail.initialLength := by
     rw [show L₁ t =
         Geometry.Riemannian.Variation.arcLength
           (I := I) (S.base.metric t)
@@ -773,8 +430,8 @@ private theorem calabi_core_of_tail
         Geometry.Riemannian.Variation.arcLength
           (I := I) (S.base.metric t)
           (intrinsicGeodesic
-            (I := I) (S.base.metric t) hEnorm tail.p
-              ((tangentSpaceModelContinuousLinearEquiv (I := I) tail.p).symm
+            (I := I) (S.base.metric t) hEnorm tail.splitPoint
+              ((tangentSpaceModelContinuousLinearEquiv (I := I) tail.splitPoint).symm
                 (tail.branch.inv y))) 0 1 by
       rfl]
     rw [arcLength_radial, sub_zero, one_mul]
@@ -829,62 +486,62 @@ private theorem calabi_core_of_tail
     exact hreal
   have htreg : t ∈ D.regular :=
     hreg ⟨htpos, ht.2⟩
-  have hγ_vel : ∀ u ∈ Set.Icc (0 : Real) 1,
+  have hγ_velocity : ∀ u ∈ Set.Icc (0 : Real) 1,
       mfderiv 𝓘(Real, Real) I γ u (1 : Real) ≠ 0 := by
     intro u _hu
     simpa only [γ] using
-      intrGeo_vel_ne
+      intrinsicGeo_velocity_ne
         (I := I) (S.base.metric t) hEnorm O vLeft hvLeft_pos u
-  have hinv_x : tail.branch.inv x = (tail.u : E) := by
+  have hinv_x : tail.branch.inv x = (tail.endpointVector : E) := by
     have hleft := tail.branch.left_inv tail.source_mem
     have hexp :
-        expMapIntrinsic (I := I) (S.base.metric t) hEnorm tail.p
-          ((tangentSpaceModelContinuousLinearEquiv (I := I) tail.p).symm
-            (tail.u : E)) = x := by
+        expMapIntrinsic (I := I) (S.base.metric t) hEnorm tail.splitPoint
+          ((tangentSpaceModelContinuousLinearEquiv (I := I) tail.splitPoint).symm
+            (tail.endpointVector : E)) = x := by
       convert! tail.exp_eq using 1
     rw [hexp] at hleft
     exact hleft
   have hu_round :
-      (tangentSpaceModelContinuousLinearEquiv (I := I) tail.p).symm
-        (tail.u : E) = tail.u := by
+      (tangentSpaceModelContinuousLinearEquiv (I := I) tail.splitPoint).symm
+        (tail.endpointVector : E) = tail.endpointVector := by
     with_unfolding_all
-      exact (tangentSpaceModelContinuousLinearEquiv (I := I) tail.p).symm_apply_apply
-        tail.u
+      exact (tangentSpaceModelContinuousLinearEquiv (I := I) tail.splitPoint).symm_apply_apply
+        tail.endpointVector
   have hu_pos :
-      0 < (S.base.metric t).inner tail.p tail.u tail.u := by
+      0 < (S.base.metric t).inner tail.splitPoint tail.endpointVector tail.endpointVector := by
     apply Real.sqrt_pos.mp
-    rw [tail.u_norm]
-    exact tail.ell_pos
+    rw [tail.endpointVector_norm]
+    exact tail.terminalLength_pos
   have hinv_pos :
-      0 < (S.base.metric t).inner tail.p
-        ((tangentSpaceModelContinuousLinearEquiv (I := I) tail.p).symm
+      0 < (S.base.metric t).inner tail.splitPoint
+        ((tangentSpaceModelContinuousLinearEquiv (I := I) tail.splitPoint).symm
           (tail.branch.inv x))
-        ((tangentSpaceModelContinuousLinearEquiv (I := I) tail.p).symm
+        ((tangentSpaceModelContinuousLinearEquiv (I := I) tail.splitPoint).symm
           (tail.branch.inv x)) := by
     rw [hinv_x]
     rw [hu_round]
     exact hu_pos
-  have hδx_vel : ∀ u ∈ Set.Icc (0 : Real) 1,
+  have hδx_velocity : ∀ u ∈ Set.Icc (0 : Real) 1,
       mfderiv 𝓘(Real, Real) I (δ x) u (1 : Real) ≠ 0 := by
     intro u _hu
     simpa only [δ] using
-      intrGeo_vel_ne
-        (I := I) (S.base.metric t) hEnorm tail.p
-          ((tangentSpaceModelContinuousLinearEquiv (I := I) tail.p).symm
+      intrinsicGeo_velocity_ne
+        (I := I) (S.base.metric t) hEnorm tail.splitPoint
+          ((tangentSpaceModelContinuousLinearEquiv (I := I) tail.splitPoint).symm
             (tail.branch.inv x))
           hinv_pos u
   have hδ_ball : ∀ u ∈ Set.Icc (0 : Real) 1,
       δ x u ∈ Metric.eball O (ENNReal.ofReal R) := by
     intro u hu
-    have hu' : u ∈ Set.Icc (0 : Real) tail.b :=
-      ⟨hu.1, hu.2.trans tail.one_lt.le⟩
+    have hu' : u ∈ Set.Icc (0 : Real) tail.conjugateScale :=
+      ⟨hu.1, hu.2.trans tail.one_lt_conjugateScale.le⟩
     simpa only [δ, hinv_x, hu_round] using tail.mem_eball hreach hu'
-  have hbpos : 0 < tail.b := zero_lt_one.trans tail.one_lt
-  have htailpos : 0 < tail.ell * tail.b :=
-    mul_pos tail.ell_pos hbpos
-  have hleftR : tail.left < R := by
+  have hbpos : 0 < tail.conjugateScale := zero_lt_one.trans tail.one_lt_conjugateScale
+  have htailpos : 0 < tail.terminalLength * tail.conjugateScale :=
+    mul_pos tail.terminalLength_pos hbpos
+  have hleftR : tail.initialLength < R := by
     linarith
-  have hR : 0 < R := tail.left_pos.trans hleftR
+  have hR : 0 < R := tail.initialLength_pos.trans hleftR
   have hγ_ball : ∀ u ∈ Set.Icc (0 : Real) 1,
       γ u ∈ Metric.eball O (ENNReal.ofReal R) := by
     intro u hu
@@ -894,25 +551,25 @@ private theorem calabi_core_of_tail
           (s := (0 : Real)) (t := u) hu.1
     have hseg' :
         Manifold.riemannianEDist I O (γ u) ≤
-          ENNReal.ofReal (tail.left * u) := by
+          ENNReal.ofReal (tail.initialLength * u) := by
       with_unfolding_all
         simpa only [γ, intrinsicGeodesic_zero, hvLeft_norm', sub_zero]
           using hseg
-    have hmul : tail.left * u < R := by
+    have hmul : tail.initialLength * u < R := by
       calc
-        tail.left * u ≤ tail.left * 1 :=
-          mul_le_mul_of_nonneg_left hu.2 tail.left_nonneg
-        _ = tail.left := mul_one _
+        tail.initialLength * u ≤ tail.initialLength * 1 :=
+          mul_le_mul_of_nonneg_left hu.2 tail.initialLength_nonneg
+        _ = tail.initialLength := mul_one _
         _ < R := hleftR
     rw [Metric.mem_eball',
       IsRiemannianManifold.out (I := I) O (γ u)]
     exact hseg'.trans_lt ((ENNReal.ofReal_lt_ofReal_iff hR).2 hmul)
   have hL₁_deriv :=
     pathLength_timeDeriv_of_ricciFlow
-      (I := I) S hS zero_le_one htreg γ hγ_smooth hγ_vel
+      (I := I) S hS zero_le_one htreg γ hγ_smooth hγ_velocity
   have hL₂_deriv :=
     pathLength_timeDeriv_of_ricciFlow
-      (I := I) S hS zero_le_one htreg (δ x) (hδ_smooth x) hδx_vel
+      (I := I) S hS zero_le_one htreg (δ x) (hδ_smooth x) hδx_velocity
   have hL₁_diff : DifferentiableAt Real L₁ t := by
     simpa only [L₁] using hL₁_deriv.differentiableAt
   have hL₂_diff : DifferentiableAt Real (fun s => L₂ s x) t := by
@@ -921,7 +578,7 @@ private theorem calabi_core_of_tail
       -Λ * L₁ t ≤ deriv L₁ t := by
     simpa only [L₁] using
       pathLength_deriv_ge
-        (I := I) S hS (A := Λ) zero_le_one htreg γ hγ_smooth hγ_vel
+        (I := I) S hS (A := Λ) zero_le_one htreg γ hγ_smooth hγ_velocity
           (fun u hu => hricBall (γ u) (hγ_ball u hu)
             (mfderiv 𝓘(Real, Real) I γ u (1 : Real)))
   have hL₂_lower :
@@ -929,7 +586,7 @@ private theorem calabi_core_of_tail
     simpa only [L₂] using
       pathLength_deriv_ge
         (I := I) S hS (A := Λ) zero_le_one htreg (δ x)
-          (hδ_smooth x) hδx_vel
+          (hδ_smooth x) hδx_velocity
           (fun u hu => hricBall (δ x u) (hδ_ball u hu)
             (mfderiv 𝓘(Real, Real) I (δ x) u (1 : Real)))
   have hv_diffAt :
@@ -986,7 +643,7 @@ private theorem calabi_core_of_tail
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-private theorem calabi_core_of_sol
+private theorem calabi_core_of_solution
     [RiemannianBundle (fun y : M => TangentSpace I y)]
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E
@@ -1024,15 +681,15 @@ private theorem calabi_core_of_sol
   obtain ⟨tail, _⟩ :=
     exists_calabiData
       (I := I) (S.base.metric t) hEnorm q hq hRicLower' hOx hfinite
-  let R : Real := tail.left + tail.ell * tail.b + 1
-  have hreach : tail.left + tail.ell * tail.b < R := by
+  let R : Real := tail.initialLength + tail.terminalLength * tail.conjugateScale + 1
+  have hreach : tail.initialLength + tail.terminalLength * tail.conjugateScale < R := by
     dsimp only [R]
     linarith
   have hRicTail : 0 < Module.finrank Real E - 1 →
       let γ : Real → M :=
         intrinsicGeodesic
-          (I := I) (S.base.metric t) hEnorm tail.p tail.u
-      ∀ u ∈ Set.Ioo (0 : Real) tail.b,
+          (I := I) (S.base.metric t) hEnorm tail.splitPoint tail.endpointVector
+      ∀ u ∈ Set.Ioo (0 : Real) tail.conjugateScale,
         -(((Module.finrank Real E - 1 : Nat) : Real) * q ^ 2) *
               (S.base.metric t).inner (γ u)
                 (Geometry.Riemannian.Variation.curveVelocity
@@ -1067,7 +724,7 @@ private theorem CalabiFlowCore.scale
     (hcoef :
       2 * (d - 1) / r + Real.sqrt ((d - 1) * Λ) =
         2 * n / r + n * q) :
-    Nonempty (ScaledDistSupport (I := I) S O T t x d Λ r) := by
+    Nonempty (ScaledDistanceSupport (I := I) S O T t x d Λ r) := by
   let rho : Real → M → Real := fun s y =>
     Real.exp (Λ * s) * C.support s y
   have hrho_t : ∀ y : M,
@@ -1221,7 +878,7 @@ private theorem CalabiFlowCore.scale
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-theorem scaled_of_tail
+theorem exists_scaled_distance_support_of_calabi_tail
     [RiemannianBundle (fun y : M => TangentSpace I y)]
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E
@@ -1237,15 +894,15 @@ theorem scaled_of_tail
     (htpos : 0 < t)
     (x : M)
     (hEnorm : IsMetricNorm (I := I) (M := M) (S.base.metric t))
-    (tail : CalabiTailData
+    (tail : CalabiTail
       (I := I) (S.base.metric t) hEnorm O x r)
-    (hreach : tail.left + tail.ell * tail.b < R)
+    (hreach : tail.initialLength + tail.terminalLength * tail.conjugateScale < R)
     (hq : 0 ≤ q)
     (hRicTail : 0 < Module.finrank Real E - 1 →
       let γ : Real → M :=
         intrinsicGeodesic
-          (I := I) (S.base.metric t) hEnorm tail.p tail.u
-      ∀ u ∈ Set.Ioo (0 : Real) tail.b,
+          (I := I) (S.base.metric t) hEnorm tail.splitPoint tail.endpointVector
+      ∀ u ∈ Set.Ioo (0 : Real) tail.conjugateScale,
         -(((Module.finrank Real E - 1 : Nat) : Real) * q ^ 2) *
               (S.base.metric t).inner (γ u)
                 (Geometry.Riemannian.Variation.curveVelocity
@@ -1265,7 +922,7 @@ theorem scaled_of_tail
       2 * (d - 1) / r + Real.sqrt ((d - 1) * Λ) =
         2 * ((Module.finrank Real E - 1 : Nat) : Real) / r +
           ((Module.finrank Real E - 1 : Nat) : Real) * q) :
-    Nonempty (ScaledDistSupport (I := I) S O T t x d Λ r) := by
+    Nonempty (ScaledDistanceSupport (I := I) S O T t x d Λ r) := by
   let n : Real := ((Module.finrank Real E - 1 : Nat) : Real)
   obtain ⟨core⟩ :=
     calabi_core_of_tail
@@ -1299,7 +956,7 @@ private opaque completeInst
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-theorem scaled_of_quad
+theorem exists_scaled_distance_support_of_ricci_bound
     {D : RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S)
@@ -1321,7 +978,7 @@ theorem scaled_of_quad
       riemannianEDistOf (I := I) (S.base.metric t) O x ≠ ⊤)
     (hOx : O ≠ x) :
     Nonempty
-      (ScaledDistSupport (I := I) S O T t x
+      (ScaledDistanceSupport (I := I) S O T t x
         (Module.finrank Real E : Real) Λ
         (riemannianEDistOf
           (I := I) (S.base.metric t) O x).toReal) := by
@@ -1372,7 +1029,7 @@ theorem scaled_of_quad
       n = ((Module.finrank Real E - 1 : Nat) : Real) := by
     rfl
   obtain ⟨core⟩ :=
-    calabi_core_of_sol
+    calabi_core_of_solution
       (I := I) S hS O hreg hricQuad ht htpos x hfinite' hOx
         hEnorm hq hRicLower hr hnDim
   have hcoef :
@@ -1385,7 +1042,7 @@ theorem scaled_of_quad
   obtain ⟨h⟩ := core.scale hT ht hcoef
   exact ⟨h⟩
 
-end DistanceBarrierCore
+end DistanceBarrier
 
 end DifferentialGeometry.PDE.RicciFlow
 

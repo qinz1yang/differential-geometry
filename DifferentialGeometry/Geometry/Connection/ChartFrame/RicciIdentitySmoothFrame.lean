@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.RicciIdentity
+import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Identities.Ricci
 import DifferentialGeometry.Geometry.Connection.ChartFrame.ChartMetric
 import Mathlib.Analysis.SpecialFunctions.Sqrt
 import Mathlib.Geometry.Manifold.BumpFunction
@@ -30,7 +30,7 @@ open DifferentialGeometry.Tensor0SBundle
 private noncomputable def chartFrameNormFiber
     (g : SmoothRiemannianMetric I M) (α : M) (b : M)
     (i : Fin (Module.finrank ℝ E)) : TangentSpace I b :=
-  let v : TangentSpace I b := chartBasisVecFiber (I := I) α i b
+  let v : TangentSpace I b := DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i b
   let raw : TangentSpace I b :=
     v - ∑ j : Fin i.val,
       (g.inner b v
@@ -50,9 +50,9 @@ noncomputable def chartFrameNorm
 private noncomputable def chartFrameRawFiber
     (g : SmoothRiemannianMetric I M) (α : M) (b : M)
     (i : Fin (Module.finrank ℝ E)) : TangentSpace I b :=
-  chartBasisVecFiber (I := I) α i b -
+  DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i b -
     ∑ j : Fin i.val,
-      (g.inner b (chartBasisVecFiber (I := I) α i b)
+      (g.inner b (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i b)
           (chartFrameNormFiber (I := I) g α b
             ⟨j.val, lt_trans j.isLt i.isLt⟩)) •
         chartFrameNormFiber (I := I) g α b
@@ -74,7 +74,7 @@ omit [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
 private lemma chartFrameRawFiber_at_zero
     (g : SmoothRiemannianMetric I M) (α : M) (b : M) :
     chartFrameRawFiber (I := I) g α b ⟨0, NeZero.pos _⟩ =
-      chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ b := by
+      DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ b := by
   unfold chartFrameRawFiber
   simp
 
@@ -84,9 +84,9 @@ private lemma chartFrameNormFiber_at_zero
     chartFrameNormFiber (I := I) g α b ⟨0, NeZero.pos _⟩ =
       (Real.sqrt
           (g.inner b
-            (chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ b)
-            (chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ b)))⁻¹ •
-        chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ b := by
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ b)
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ b)))⁻¹ •
+        DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ b := by
   rw [chartFrameNormFiber_eq, chartFrameRawFiber_at_zero]
 
 omit [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
@@ -99,9 +99,9 @@ private lemma chartFrameNormFiber_at_zero_norm
   classical
   rw [chartFrameNormFiber_at_zero]
   set v : TangentSpace I b :=
-    chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ b with hv_def
+    DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ b with hv_def
   have hv_ne_zero : v ≠ 0 := by
-    have hLI := chartBasisFamily_linearIndependent (I := I) α hb
+    have hLI := DifferentialGeometry.Tensor.Coordinates.chartBasisFamily_linearIndependent (I := I) α hb
     intro hv0
     have : (1 : ℝ) • v = 0 := by rw [one_smul]; exact hv0
     have h := hLI.ne_zero (i := ⟨0, NeZero.pos _⟩)
@@ -137,11 +137,11 @@ noncomputable def smoothOrthoFrame
   fun b => (chartBumpAt (I := I) (M := M) α : M → ℝ) b •
     chartFrameNorm (I := I) g α i b
 
-noncomputable def smoothOrthoFrameNbhd (α : M) : Set M :=
+noncomputable def smoothOrthoFrameNeighborhood (α : M) : Set M :=
   {b : M | (chartBumpAt (I := I) (M := M) α : M → ℝ) b = 1}
 
 noncomputable def smoothOrthoOpen (α : M) : Set M :=
-  interior (smoothOrthoFrameNbhd (I := I) (M := M) α)
+  interior (smoothOrthoFrameNeighborhood (I := I) (M := M) α)
 
 omit [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M]
     [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
@@ -151,8 +151,8 @@ lemma smoothOrthoOpen_open (α : M) :
 
 omit [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [SigmaCompactSpace M] [T2Space M]
     [BoundarylessManifold I M] in
-lemma smoothOrthoFrameNbhd_mem_nhds (α : M) :
-    smoothOrthoFrameNbhd (I := I) (M := M) α ∈ 𝓝 α := by
+lemma smoothOrthoFrameNeighborhood_mem_nhds (α : M) :
+    smoothOrthoFrameNeighborhood (I := I) (M := M) α ∈ 𝓝 α := by
   classical
   exact (chartBumpAt (I := I) (M := M) α).eventuallyEq_one
 
@@ -161,21 +161,21 @@ omit [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M]
 lemma mem_smoothOrthoOpen (α : M) :
     α ∈ smoothOrthoOpen (I := I) (M := M) α := by
   exact mem_interior_iff_mem_nhds.mpr
-    (smoothOrthoFrameNbhd_mem_nhds (I := I) (M := M) α)
+    (smoothOrthoFrameNeighborhood_mem_nhds (I := I) (M := M) α)
 
 omit [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [SigmaCompactSpace M] [T2Space M]
     [BoundarylessManifold I M] in
-lemma mem_smoothOrthoFrameNbhd_self (α : M) :
-    α ∈ smoothOrthoFrameNbhd (I := I) (M := M) α := by
+lemma mem_smoothOrthoFrameNeighborhood_self (α : M) :
+    α ∈ smoothOrthoFrameNeighborhood (I := I) (M := M) α := by
   classical
   change (chartBumpAt (I := I) (M := M) α : M → ℝ) α = 1
   exact (chartBumpAt (I := I) (M := M) α).eq_one
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
-lemma smoothOrthoFrame_eq_on_nbhd
+lemma smoothOrthoFrame_eq_on_neighborhood
     (g : SmoothRiemannianMetric I M) (α : M)
     (i : Fin (Module.finrank ℝ E)) {b : M}
-    (hb : b ∈ smoothOrthoFrameNbhd (I := I) (M := M) α) :
+    (hb : b ∈ smoothOrthoFrameNeighborhood (I := I) (M := M) α) :
     smoothOrthoFrame (I := I) g α i b =
       chartFrameNorm (I := I) g α i b := by
   classical
@@ -185,8 +185,8 @@ lemma smoothOrthoFrame_eq_on_nbhd
 
 omit [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [SigmaCompactSpace M] [T2Space M]
     [BoundarylessManifold I M] in
-lemma smoothOrthoFrameNbhd_subset_chartAt_source (α : M) :
-    smoothOrthoFrameNbhd (I := I) (M := M) α ⊆ (chartAt H α).source := by
+lemma smoothOrthoFrameNeighborhood_subset_chartAt_source (α : M) :
+    smoothOrthoFrameNeighborhood (I := I) (M := M) α ⊆ (chartAt H α).source := by
   classical
   intro b hb
   have hb1 : (chartBumpAt (I := I) (M := M) α : M → ℝ) b = 1 := hb
@@ -196,17 +196,17 @@ lemma smoothOrthoFrameNbhd_subset_chartAt_source (α : M) :
   exact (chartBumpAt (I := I) (M := M) α).support_subset_source hsupp
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
-lemma smoothOrthoFrameNbhd_subset_baseSet (α : M) :
-    smoothOrthoFrameNbhd (I := I) (M := M) α ⊆
+lemma smoothOrthoFrameNeighborhood_subset_baseSet (α : M) :
+    smoothOrthoFrameNeighborhood (I := I) (M := M) α ⊆
       (trivializationAt E (TangentSpace I) α).baseSet := by
   intro b hb
   rw [trivializationAt_baseSet_eq_chartAt_source]
-  exact smoothOrthoFrameNbhd_subset_chartAt_source (I := I) (M := M) α hb
+  exact smoothOrthoFrameNeighborhood_subset_chartAt_source (I := I) (M := M) α hb
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
 theorem smoothOrthoFrame_orthonormal_of_chartFrameNorm
     (g : SmoothRiemannianMetric I M) (α : M)
-    {b : M} (hb : b ∈ smoothOrthoFrameNbhd (I := I) (M := M) α)
+    {b : M} (hb : b ∈ smoothOrthoFrameNeighborhood (I := I) (M := M) α)
     (i j : Fin (Module.finrank ℝ E))
     (hOrth : g.inner b
         (chartFrameNorm (I := I) g α i b)
@@ -214,8 +214,8 @@ theorem smoothOrthoFrame_orthonormal_of_chartFrameNorm
     g.inner b
         (smoothOrthoFrame (I := I) g α i b)
         (smoothOrthoFrame (I := I) g α j b) = if i = j then 1 else 0 := by
-  rw [smoothOrthoFrame_eq_on_nbhd (I := I) g α i hb,
-      smoothOrthoFrame_eq_on_nbhd (I := I) g α j hb]
+  rw [smoothOrthoFrame_eq_on_neighborhood (I := I) g α i hb,
+      smoothOrthoFrame_eq_on_neighborhood (I := I) g α j hb]
   exact hOrth
 
 omit [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
@@ -232,9 +232,9 @@ omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [Boundary
 theorem chartBasisVecFiber_eq_of_chartAt_eq
     {α₁ α₂ : M} (h : chartAt H α₁ = chartAt H α₂)
     (i : Fin (Module.finrank ℝ E)) (x : M) :
-    chartBasisVecFiber (I := I) α₁ i x = chartBasisVecFiber (I := I) α₂ i x := by
+    DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α₁ i x = DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α₂ i x := by
   classical
-  unfold chartBasisVecFiber
+  unfold DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber
   have h_triv : trivializationAt E (TangentSpace I) α₁ =
       trivializationAt E (TangentSpace I) α₂ := by
     rw [TangentBundle.trivializationAt_eq_localTriv (I := I) α₁,
@@ -253,7 +253,7 @@ theorem chartBasisVecFiber_eq_of_chartAt_eq
     exact h_triv
   exact congrArg (fun e : LT =>
     let _ : Bundle.Trivialization.IsLinear ℝ e.1 := e.2
-    e.1.symmL ℝ x (chartModelBasis E i)) he
+    e.1.symmL ℝ x (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i)) he
 
 omit [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
 private theorem chartFrame_eq_of_chartAt_eq_strong
@@ -353,7 +353,7 @@ private lemma g_inner_sum_left
 
 
 omit [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
-private theorem chartFrameNormFiber_orth_strong_aux
+private theorem chartFrameNormFiber_orth_strong
     (g : SmoothRiemannianMetric I M) (α : M) {b : M}
     (hb : b ∈ (trivializationAt E (TangentSpace I) α).baseSet) :
     ∀ k : ℕ, ∀ i : Fin (Module.finrank ℝ E), i.val ≤ k →
@@ -368,8 +368,8 @@ private theorem chartFrameNormFiber_orth_strong_aux
   classical
   have hLI : LinearIndependent ℝ
       (fun i : Fin (Module.finrank ℝ E) =>
-        chartBasisVecFiber (I := I) α i b) :=
-    chartBasisFamily_linearIndependent (I := I) α hb
+        DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i b) :=
+    DifferentialGeometry.Tensor.Coordinates.chartBasisFamily_linearIndependent (I := I) α hb
   intro k
   induction k with
   | zero =>
@@ -408,26 +408,26 @@ private theorem chartFrameNormFiber_orth_strong_aux
               (chartFrameRawFiber (I := I) g α b i) = 0 := by
         intro j hj_lt
         rw [show chartFrameRawFiber (I := I) g α b i =
-            chartBasisVecFiber (I := I) α i b -
+            DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i b -
               ∑ j' : Fin i.val,
-                (g.inner b (chartBasisVecFiber (I := I) α i b)
+                (g.inner b (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i b)
                     (chartFrameNormFiber (I := I) g α b
                       ⟨j'.val, lt_trans j'.isLt i.isLt⟩)) •
                   chartFrameNormFiber (I := I) g α b
                     ⟨j'.val, lt_trans j'.isLt i.isLt⟩ from rfl]
         rw [show ((g.inner b) (chartFrameNormFiber (I := I) g α b j))
-              (chartBasisVecFiber (I := I) α i b -
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i b -
                 ∑ j' : Fin i.val,
-                  (g.inner b (chartBasisVecFiber (I := I) α i b)
+                  (g.inner b (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i b)
                       (chartFrameNormFiber (I := I) g α b
                         ⟨j'.val, lt_trans j'.isLt i.isLt⟩)) •
                     chartFrameNormFiber (I := I) g α b
                       ⟨j'.val, lt_trans j'.isLt i.isLt⟩) =
             ((g.inner b) (chartFrameNormFiber (I := I) g α b j))
-              (chartBasisVecFiber (I := I) α i b) -
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i b) -
             ((g.inner b) (chartFrameNormFiber (I := I) g α b j))
               (∑ j' : Fin i.val,
-                (g.inner b (chartBasisVecFiber (I := I) α i b)
+                (g.inner b (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i b)
                     (chartFrameNormFiber (I := I) g α b
                       ⟨j'.val, lt_trans j'.isLt i.isLt⟩)) •
                   chartFrameNormFiber (I := I) g α b
@@ -439,13 +439,13 @@ private theorem chartFrameNormFiber_orth_strong_aux
             (fun j' => chartFrameNormFiber (I := I) g α b
               ⟨j'.val, lt_trans j'.isLt i.isLt⟩)
             (fun j' => g.inner b
-              (chartBasisVecFiber (I := I) α i b)
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i b)
               (chartFrameNormFiber (I := I) g α b
                 ⟨j'.val, lt_trans j'.isLt i.isLt⟩))]
         have hsum_eq :
             ∑ j' ∈ (Finset.univ : Finset (Fin i.val)),
                 g.inner b
-                    (chartBasisVecFiber (I := I) α i b)
+                    (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i b)
                     (chartFrameNormFiber (I := I) g α b
                       ⟨j'.val, lt_trans j'.isLt i.isLt⟩) *
                   g.inner b
@@ -454,13 +454,13 @@ private theorem chartFrameNormFiber_orth_strong_aux
                       ⟨j'.val, lt_trans j'.isLt i.isLt⟩) =
               g.inner b
                 (chartFrameNormFiber (I := I) g α b j)
-                (chartBasisVecFiber (I := I) α i b) := by
+                (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i b) := by
           have hj_in_fin : j.val < i.val := hj_lt
           set j_inFin : Fin i.val := ⟨j.val, hj_in_fin⟩
           have hsingleton :
               ∑ j' ∈ (Finset.univ : Finset (Fin i.val)),
                   g.inner b
-                      (chartBasisVecFiber (I := I) α i b)
+                      (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i b)
                       (chartFrameNormFiber (I := I) g α b
                         ⟨j'.val, lt_trans j'.isLt i.isLt⟩) *
                     g.inner b
@@ -468,7 +468,7 @@ private theorem chartFrameNormFiber_orth_strong_aux
                       (chartFrameNormFiber (I := I) g α b
                         ⟨j'.val, lt_trans j'.isLt i.isLt⟩) =
                 g.inner b
-                    (chartBasisVecFiber (I := I) α i b)
+                    (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i b)
                     (chartFrameNormFiber (I := I) g α b
                       ⟨j_inFin.val, lt_trans j_inFin.isLt i.isLt⟩) *
                   g.inner b
@@ -514,16 +514,16 @@ private theorem chartFrameNormFiber_orth_strong_aux
         ring
       have hraw_ne : chartFrameRawFiber (I := I) g α b i ≠ 0 := by
         intro hraw_zero
-        have hv_eq : chartBasisVecFiber (I := I) α i b =
+        have hv_eq : DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i b =
             ∑ j' : Fin i.val,
-              (g.inner b (chartBasisVecFiber (I := I) α i b)
+              (g.inner b (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i b)
                 (chartFrameNormFiber (I := I) g α b
                   ⟨j'.val, lt_trans j'.isLt i.isLt⟩)) •
                 chartFrameNormFiber (I := I) g α b
                   ⟨j'.val, lt_trans j'.isLt i.isLt⟩ := by
-          have h_eq : chartBasisVecFiber (I := I) α i b -
+          have h_eq : DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i b -
               ∑ j' : Fin i.val,
-                (g.inner b (chartBasisVecFiber (I := I) α i b)
+                (g.inner b (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i b)
                     (chartFrameNormFiber (I := I) g α b
                       ⟨j'.val, lt_trans j'.isLt i.isLt⟩)) •
                   chartFrameNormFiber (I := I) g α b
@@ -535,7 +535,7 @@ private theorem chartFrameNormFiber_orth_strong_aux
             chartFrameNormFiber (I := I) g α b m ∈
               Submodule.span ℝ
                 ((fun n : Fin i.val =>
-                  chartBasisVecFiber (I := I) α
+                  DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α
                     ⟨n.val, lt_trans n.isLt i.isLt⟩ b) ''
                   Set.univ) := by
           intro kk
@@ -576,10 +576,10 @@ private theorem chartFrameNormFiber_orth_strong_aux
                 have hj_lt_total : j.val < Module.finrank ℝ E :=
                   lt_trans hj_in_fin i.isLt
                 exact ih_kk ⟨j.val, hj_lt_total⟩ hj_le_kk hj_in_fin
-        have hvi_in_span : chartBasisVecFiber (I := I) α i b ∈
+        have hvi_in_span : DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i b ∈
             Submodule.span ℝ
               ((fun n : Fin i.val =>
-                chartBasisVecFiber (I := I) α
+                DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α
                   ⟨n.val, lt_trans n.isLt i.isLt⟩ b) ''
                 Set.univ) := by
           rw [hv_eq]
@@ -591,19 +591,19 @@ private theorem chartFrameNormFiber_orth_strong_aux
             have : j'.val < i.val := j'.isLt
             omega
           exact h_e_in_span_v k ⟨j'.val, lt_trans j'.isLt i.isLt⟩ hj'_le_k hj'_lt
-        have hcontra : chartBasisVecFiber (I := I) α i b ∉
+        have hcontra : DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i b ∉
             Submodule.span ℝ
               ((fun n : Fin i.val =>
-                chartBasisVecFiber (I := I) α
+                DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α
                   ⟨n.val, lt_trans n.isLt i.isLt⟩ b) ''
                 Set.univ) := by
           have hset_eq :
               ((fun n : Fin i.val =>
-                chartBasisVecFiber (I := I) α
+                DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α
                   ⟨n.val, lt_trans n.isLt i.isLt⟩ b) ''
                 Set.univ) =
               ((fun n : Fin (Module.finrank ℝ E) =>
-                chartBasisVecFiber (I := I) α n b) ''
+                DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α n b) ''
                 {n : Fin (Module.finrank ℝ E) | n.val < i.val}) := by
             ext v
             constructor
@@ -676,16 +676,16 @@ theorem chartFrameNormFiber_orthonormal
       if i = j then 1 else 0 := by
   classical
   rcases Nat.lt_trichotomy i.val j.val with hlt | heq | hgt
-  · have h := chartFrameNormFiber_orth_strong_aux (I := I) g α hb j.val j (le_refl _)
+  · have h := chartFrameNormFiber_orth_strong (I := I) g α hb j.val j (le_refl _)
     have horth := h.2.1 i hlt
     have hne : i ≠ j := by
       intro h_eq; rw [h_eq] at hlt; omega
     rw [if_neg hne, horth]
   · have hi_eq_j : i = j := Fin.ext heq
     rw [if_pos hi_eq_j, ← hi_eq_j]
-    have h := chartFrameNormFiber_orth_strong_aux (I := I) g α hb i.val i (le_refl _)
+    have h := chartFrameNormFiber_orth_strong (I := I) g α hb i.val i (le_refl _)
     exact h.2.2
-  · have h := chartFrameNormFiber_orth_strong_aux (I := I) g α hb i.val i (le_refl _)
+  · have h := chartFrameNormFiber_orth_strong (I := I) g α hb i.val i (le_refl _)
     have horth_ji := h.2.1 j hgt
     have hne : i ≠ j := by
       intro h_eq; rw [h_eq] at hgt; omega
@@ -708,21 +708,21 @@ theorem chartFrameNorm_orthonormal
 omit [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
 theorem smoothOrthoFrame_orthonormal
     (g : SmoothRiemannianMetric I M) (α : M)
-    {b : M} (hb : b ∈ smoothOrthoFrameNbhd (I := I) (M := M) α)
+    {b : M} (hb : b ∈ smoothOrthoFrameNeighborhood (I := I) (M := M) α)
     (i j : Fin (Module.finrank ℝ E)) :
     g.inner b
         (smoothOrthoFrame (I := I) g α i b)
         (smoothOrthoFrame (I := I) g α j b) =
       if i = j then 1 else 0 := by
   have hb_base : b ∈ (trivializationAt E (TangentSpace I) α).baseSet :=
-    smoothOrthoFrameNbhd_subset_baseSet (I := I) (M := M) α hb
+    smoothOrthoFrameNeighborhood_subset_baseSet (I := I) (M := M) α hb
   exact smoothOrthoFrame_orthonormal_of_chartFrameNorm (I := I) g α hb i j
     (chartFrameNorm_orthonormal (I := I) g α hb_base i j)
 
 omit [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
 private lemma smoothOrtho_li
     (g : SmoothRiemannianMetric I M) (α : M)
-    {b : M} (hb : b ∈ smoothOrthoFrameNbhd (I := I) (M := M) α) :
+    {b : M} (hb : b ∈ smoothOrthoFrameNeighborhood (I := I) (M := M) α) :
     LinearIndependent ℝ (fun i : Fin (Module.finrank ℝ E) =>
       smoothOrthoFrame (I := I) g α i b) := by
   classical
@@ -774,7 +774,7 @@ theorem smoothOrthoFrame_orthonormal_at_center
         (smoothOrthoFrame (I := I) g x j x) =
       if i = j then 1 else 0 :=
   smoothOrthoFrame_orthonormal (I := I) g x
-    (mem_smoothOrthoFrameNbhd_self (I := I) (M := M) x) i j
+    (mem_smoothOrthoFrameNeighborhood_self (I := I) (M := M) x) i j
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M]
     [BoundarylessManifold I M] in
@@ -806,10 +806,10 @@ omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [Boundary
 private lemma chartBasisVec_contMDiffOn_section
     (α : M) (i : Fin (Module.finrank ℝ E)) :
     ContMDiffOn I (I.prod 𝓘(ℝ, E)) ∞
-        (T% (fun b : M => chartBasisVecFiber (I := I) α i b))
+        (T% (fun b : M => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i b))
         (trivializationAt E (TangentSpace I) α).baseSet := by
   intro x hx
-  have h := chartBasisVec_contMDiffOn (I := I) α i x hx
+  have h := DifferentialGeometry.Tensor.Coordinates.chartBasisVec_contMDiffOn (I := I) α i x hx
   exact h
 
 
@@ -834,7 +834,7 @@ private theorem chartFrameNormFiber_contMDiffOn_strong
     refine ⟨?_, ?_⟩
     · have hsec_eq : ∀ b : M,
           chartFrameRawFiber (I := I) g α b ⟨0, NeZero.pos _⟩ =
-            chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ b :=
+            DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ b :=
         fun b => chartFrameRawFiber_at_zero (I := I) g α b
       have hbase :=
         chartBasisVec_contMDiffOn_section (I := I) α ⟨0, NeZero.pos _⟩
@@ -842,42 +842,42 @@ private theorem chartFrameNormFiber_contMDiffOn_strong
               (E := TangentSpace I) b
               (chartFrameRawFiber (I := I) g α b ⟨0, NeZero.pos _⟩)) =
           (fun b : M => TotalSpace.mk' E (E := TangentSpace I) b
-              (chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ b)) := by
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ b)) := by
         funext b; rw [hsec_eq b]
       rw [hT_eq]
       exact hbase
     · have hsec_eq : ∀ b : M,
           chartFrameNormFiber (I := I) g α b ⟨0, NeZero.pos _⟩ =
             (Real.sqrt (g.inner b
-                (chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ b)
-                (chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ b)))⁻¹ •
-              chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ b :=
+                (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ b)
+                (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ b)))⁻¹ •
+              DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ b :=
         fun b => chartFrameNormFiber_at_zero (I := I) g α b
       have hbase :=
         chartBasisVec_contMDiffOn_section (I := I) α ⟨0, NeZero.pos _⟩
       have h_inner :
           ContMDiffOn I 𝓘(ℝ) ∞
             (fun b : M => g.inner b
-                (chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ b)
-                (chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ b))
+                (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ b)
+                (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ b))
             (trivializationAt E (TangentSpace I) α).baseSet :=
         g_inner_contMDiffOn_of_sections (I := I) g hbase hbase
       have h_inner_pos : ∀ b : M,
           b ∈ (trivializationAt E (TangentSpace I) α).baseSet →
           0 < g.inner b
-              (chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ b)
-              (chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ b) := by
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ b)
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ b) := by
         intro b hb
-        have hLI := chartBasisFamily_linearIndependent (I := I) α hb
+        have hLI := DifferentialGeometry.Tensor.Coordinates.chartBasisFamily_linearIndependent (I := I) α hb
         have hv_ne_zero :
-            chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ b ≠ 0 :=
+            DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ b ≠ 0 :=
           hLI.ne_zero ⟨0, NeZero.pos _⟩
         exact g.pos b _ hv_ne_zero
       have h_sqrt_ne :
           ∀ b ∈ (trivializationAt E (TangentSpace I) α).baseSet,
           Real.sqrt (g.inner b
-              (chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ b)
-              (chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ b)) ≠ 0 := by
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ b)
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ b)) ≠ 0 := by
         intro b hb
         have := h_inner_pos b hb
         exact ne_of_gt (Real.sqrt_pos.mpr this)
@@ -885,22 +885,22 @@ private theorem chartFrameNormFiber_contMDiffOn_strong
           ContMDiffOn I 𝓘(ℝ) ∞
             (fun b : M => Real.sqrt
                 (g.inner b
-                  (chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ b)
-                  (chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ b)))
+                  (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ b)
+                  (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ b)))
             (trivializationAt E (TangentSpace I) α).baseSet := by
         intro b hb
         have h_inner_at := h_inner b hb
         have hpos := h_inner_pos b hb
         have h_sqrt_real : ContDiffAt ℝ ∞ Real.sqrt
             (g.inner b
-              (chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ b)
-              (chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ b)) :=
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ b)
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ b)) :=
           Real.contDiffAt_sqrt (ne_of_gt hpos)
         have h_sqrt_md :
             ContMDiffAt 𝓘(ℝ) 𝓘(ℝ) ∞ Real.sqrt
               (g.inner b
-                (chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ b)
-                (chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ b)) :=
+                (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ b)
+                (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ b)) :=
           h_sqrt_real.contMDiffAt
         exact h_sqrt_md.comp_contMDiffWithinAt (I := I) (I' := 𝓘(ℝ))
           (I'' := 𝓘(ℝ)) b h_inner_at
@@ -908,8 +908,8 @@ private theorem chartFrameNormFiber_contMDiffOn_strong
           ContMDiffOn I 𝓘(ℝ) ∞
             (fun b : M =>
               (Real.sqrt (g.inner b
-                (chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ b)
-                (chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ b)))⁻¹)
+                (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ b)
+                (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ b)))⁻¹)
             (trivializationAt E (TangentSpace I) α).baseSet := by
         intro b hb
         exact (h_sqrt b hb).inv₀ (h_sqrt_ne b hb)
@@ -917,9 +917,9 @@ private theorem chartFrameNormFiber_contMDiffOn_strong
           ContMDiffOn I (I.prod 𝓘(ℝ, E)) ∞
             (T% (fun b : M =>
               (Real.sqrt (g.inner b
-                (chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ b)
-                (chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ b)))⁻¹ •
-              chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ b))
+                (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ b)
+                (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ b)))⁻¹ •
+              DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ b))
             (trivializationAt E (TangentSpace I) α).baseSet :=
         ContMDiffOn.smul_section h_inv hbase
       have hT_eq : (fun b : M => TotalSpace.mk' E
@@ -927,9 +927,9 @@ private theorem chartFrameNormFiber_contMDiffOn_strong
               (chartFrameNormFiber (I := I) g α b ⟨0, NeZero.pos _⟩)) =
           (fun b : M => TotalSpace.mk' E (E := TangentSpace I) b
               ((Real.sqrt (g.inner b
-                (chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ b)
-                (chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ b)))⁻¹ •
-              chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ b)) := by
+                (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ b)
+                (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ b)))⁻¹ •
+              DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ b)) := by
         funext b; rw [hsec_eq b]
       rw [hT_eq]
       exact h_smul
@@ -957,7 +957,7 @@ private theorem chartFrameNormFiber_contMDiffOn_strong
       have h_innerCoef : ∀ j' : Fin i.val,
           ContMDiffOn I 𝓘(ℝ) ∞
             (fun b : M => g.inner b
-              (chartBasisVecFiber (I := I) α i b)
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i b)
               (chartFrameNormFiber (I := I) g α b
                 ⟨j'.val, lt_trans j'.isLt i.isLt⟩))
             (trivializationAt E (TangentSpace I) α).baseSet := by
@@ -968,7 +968,7 @@ private theorem chartFrameNormFiber_contMDiffOn_strong
           ContMDiffOn I (I.prod 𝓘(ℝ, E)) ∞
             (T% (fun b : M =>
               g.inner b
-                (chartBasisVecFiber (I := I) α i b)
+                (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i b)
                 (chartFrameNormFiber (I := I) g α b
                   ⟨j'.val, lt_trans j'.isLt i.isLt⟩) •
               chartFrameNormFiber (I := I) g α b
@@ -982,7 +982,7 @@ private theorem chartFrameNormFiber_contMDiffOn_strong
             (T% (fun b : M =>
               ∑ j' : Fin i.val,
                 g.inner b
-                  (chartBasisVecFiber (I := I) α i b)
+                  (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i b)
                   (chartFrameNormFiber (I := I) g α b
                     ⟨j'.val, lt_trans j'.isLt i.isLt⟩) •
                 chartFrameNormFiber (I := I) g α b
@@ -991,10 +991,10 @@ private theorem chartFrameNormFiber_contMDiffOn_strong
         ContMDiffOn.sum_section h_summand
       have h_raw : ContMDiffOn I (I.prod 𝓘(ℝ, E)) ∞
           (T% (fun b : M =>
-            chartBasisVecFiber (I := I) α i b -
+            DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i b -
               ∑ j' : Fin i.val,
                 g.inner b
-                  (chartBasisVecFiber (I := I) α i b)
+                  (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i b)
                   (chartFrameNormFiber (I := I) g α b
                     ⟨j'.val, lt_trans j'.isLt i.isLt⟩) •
                 chartFrameNormFiber (I := I) g α b
@@ -1003,10 +1003,10 @@ private theorem chartFrameNormFiber_contMDiffOn_strong
         ContMDiffOn.sub_section hbase_i h_sum
       have h_raw_eq : ∀ b : M,
           chartFrameRawFiber (I := I) g α b i =
-            chartBasisVecFiber (I := I) α i b -
+            DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i b -
               ∑ j' : Fin i.val,
                 g.inner b
-                  (chartBasisVecFiber (I := I) α i b)
+                  (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i b)
                   (chartFrameNormFiber (I := I) g α b
                     ⟨j'.val, lt_trans j'.isLt i.isLt⟩) •
                 chartFrameNormFiber (I := I) g α b
@@ -1020,10 +1020,10 @@ private theorem chartFrameNormFiber_contMDiffOn_strong
                 (E := TangentSpace I) b
                 (chartFrameRawFiber (I := I) g α b i)) =
             (fun b : M => TotalSpace.mk' E (E := TangentSpace I) b
-                (chartBasisVecFiber (I := I) α i b -
+                (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i b -
                   ∑ j' : Fin i.val,
                     g.inner b
-                      (chartBasisVecFiber (I := I) α i b)
+                      (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i b)
                       (chartFrameNormFiber (I := I) g α b
                         ⟨j'.val, lt_trans j'.isLt i.isLt⟩) •
                     chartFrameNormFiber (I := I) g α b
@@ -1044,7 +1044,7 @@ private theorem chartFrameNormFiber_contMDiffOn_strong
               (chartFrameRawFiber (I := I) g α b i)
               (chartFrameRawFiber (I := I) g α b i) := by
         intro b hb
-        have h_aux := chartFrameNormFiber_orth_strong_aux
+        have h_aux := chartFrameNormFiber_orth_strong
           (I := I) g α hb i.val i (le_refl _)
         have hraw_ne : chartFrameRawFiber (I := I) g α b i ≠ 0 := h_aux.1
         exact g.pos b _ hraw_ne
@@ -1168,7 +1168,7 @@ theorem smoothOrtho_isLocal
     (g : SmoothRiemannianMetric I M) (α : M) :
     IsLocalFrameOn I E (∞ : WithTop ℕ∞)
       (smoothOrthoFrame (I := I) g α)
-      (smoothOrthoFrameNbhd (I := I) (M := M) α) where
+      (smoothOrthoFrameNeighborhood (I := I) (M := M) α) where
   linearIndependent hb := smoothOrtho_li (I := I) g α hb
   generating := by
     intro b hb
@@ -1224,7 +1224,7 @@ lemma smoothOrthoOpen_subset_baseSet (α : M) :
     smoothOrthoOpen (I := I) (M := M) α ⊆
       (trivializationAt E (TangentSpace I) α).baseSet := by
   exact fun b hb =>
-    smoothOrthoFrameNbhd_subset_baseSet (I := I) (M := M) α (interior_subset hb)
+    smoothOrthoFrameNeighborhood_subset_baseSet (I := I) (M := M) α (interior_subset hb)
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M]
     [BoundarylessManifold I M] in
@@ -1442,9 +1442,9 @@ private lemma chartBasisVec_section_continuousOn_param
     (α : M) (i : Fin (Module.finrank ℝ E)) :
     ContinuousOn (fun q : ℝ × M =>
         TotalSpace.mk' E (E := fun x : M => TangentSpace I x) q.2
-          (chartBasisVecFiber (I := I) α i q.2))
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i q.2))
       (Set.univ ×ˢ (trivializationAt E (TangentSpace I) α).baseSet) := by
-  have hc := (chartBasisVec_contMDiffOn (I := I) α i).continuousOn
+  have hc := (DifferentialGeometry.Tensor.Coordinates.chartBasisVec_contMDiffOn (I := I) α i).continuousOn
   have hmap : ContinuousOn (fun q : ℝ × M => q.2)
       (Set.univ ×ˢ (trivializationAt E (TangentSpace I) α).baseSet) :=
     continuous_snd.continuousOn
@@ -1454,10 +1454,10 @@ private lemma chartBasisVec_section_continuousOn_param
     intro q hq
     exact hq.2
   have hcomp := hc.comp hmap hmaps
-  have hfun : (chartBasisVec (I := I) α i ∘ fun q : ℝ × M => q.2) =
+  have hfun : (DifferentialGeometry.Tensor.Coordinates.chartBasisVec (I := I) α i ∘ fun q : ℝ × M => q.2) =
       (fun q : ℝ × M =>
         TotalSpace.mk' E (E := fun x : M => TangentSpace I x) q.2
-          (chartBasisVecFiber (I := I) α i q.2)) := by
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i q.2)) := by
     funext q
     rfl
   rw [hfun] at hcomp
@@ -1489,7 +1489,7 @@ private theorem chartFrameNormFiber_continuousOn_metricFamily_strong
   have hbasis : ∀ i : Fin (Module.finrank ℝ E),
       ContinuousOn (fun q : ℝ × M =>
           TotalSpace.mk' E (E := fun x : M => TangentSpace I x) q.2
-            (chartBasisVecFiber (I := I) α i q.2))
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i q.2))
         (K ×ˢ U) := by
     intro i
     exact (chartBasisVec_section_continuousOn_param (I := I) α i).mono (by
@@ -1505,83 +1505,83 @@ private theorem chartFrameNormFiber_continuousOn_metricFamily_strong
     refine ⟨?_, ?_⟩
     · have hsec_eq : ∀ q : ℝ × M,
           chartFrameRawFiber (g q.1) α q.2 ⟨0, NeZero.pos _⟩ =
-            chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ q.2 :=
+            DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ q.2 :=
         fun q => chartFrameRawFiber_at_zero (I := I) (g q.1) α q.2
       have hT_eq : (fun q : ℝ × M =>
             TotalSpace.mk' E (E := fun x : M => TangentSpace I x) q.2
               (chartFrameRawFiber (g q.1) α q.2 ⟨0, NeZero.pos _⟩)) =
           (fun q : ℝ × M =>
             TotalSpace.mk' E (E := fun x : M => TangentSpace I x) q.2
-              (chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ q.2)) := by
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ q.2)) := by
         funext q; rw [hsec_eq q]
       rw [hT_eq]
       exact hbasis ⟨0, NeZero.pos _⟩
     · have hsec_eq : ∀ q : ℝ × M,
           chartFrameNormFiber (g q.1) α q.2 ⟨0, NeZero.pos _⟩ =
             (Real.sqrt ((g q.1).inner q.2
-                (chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ q.2)
-                (chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ q.2)))⁻¹ •
-              chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ q.2 :=
+                (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ q.2)
+                (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ q.2)))⁻¹ •
+              DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ q.2 :=
         fun q => chartFrameNormFiber_at_zero (I := I) (g q.1) α q.2
       have hv : ContinuousOn (fun q : ℝ × M =>
           TotalSpace.mk' E (E := fun x : M => TangentSpace I x) q.2
-            (chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ q.2))
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ q.2))
           (K ×ˢ U) := hbasis ⟨0, NeZero.pos _⟩
       have h_inner : ContinuousOn (fun q : ℝ × M =>
           (g q.1).inner q.2
-            (chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ q.2)
-            (chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ q.2))
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ q.2)
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ q.2))
           (K ×ˢ U) := by
         exact metricInner_continuousOn_family (I := I) (M := M) g hG
-          (fun q => chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ q.2)
-          (fun q => chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ q.2) hv hv
+          (fun q => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ q.2)
+          (fun q => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ q.2) hv hv
       have h_inner_pos : ∀ q : ℝ × M,
           q ∈ K ×ˢ U →
           0 < (g q.1).inner q.2
-              (chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ q.2)
-              (chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ q.2) := by
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ q.2)
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ q.2) := by
         intro q hq
-        have hLI := chartBasisFamily_linearIndependent (I := I) α (hU_base q hq)
-        have hv_ne_zero : chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ q.2 ≠ 0 :=
+        have hLI := DifferentialGeometry.Tensor.Coordinates.chartBasisFamily_linearIndependent (I := I) α (hU_base q hq)
+        have hv_ne_zero : DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ q.2 ≠ 0 :=
           hLI.ne_zero ⟨0, NeZero.pos _⟩
         exact (g q.1).pos q.2 _ hv_ne_zero
       have h_sqrt : ContinuousOn (fun q : ℝ × M =>
           Real.sqrt ((g q.1).inner q.2
-              (chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ q.2)
-              (chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ q.2)))
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ q.2)
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ q.2)))
           (K ×ˢ U) := h_inner.sqrt
       have h_sqrt_ne : ∀ q : ℝ × M, q ∈ K ×ˢ U →
           Real.sqrt ((g q.1).inner q.2
-              (chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ q.2)
-              (chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ q.2)) ≠ 0 := by
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ q.2)
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ q.2)) ≠ 0 := by
         intro q hq
         have := h_inner_pos q hq
         exact ne_of_gt (Real.sqrt_pos.mpr this)
       have h_inv : ContinuousOn (fun q : ℝ × M =>
           (Real.sqrt ((g q.1).inner q.2
-              (chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ q.2)
-              (chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ q.2)))⁻¹)
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ q.2)
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ q.2)))⁻¹)
           (K ×ˢ U) := h_sqrt.inv₀ h_sqrt_ne
       have h_smul : ContinuousOn (fun q : ℝ × M =>
           TotalSpace.mk' E (E := fun x : M => TangentSpace I x) q.2
             ((Real.sqrt ((g q.1).inner q.2
-                (chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ q.2)
-                (chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ q.2)))⁻¹ •
-              chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ q.2))
+                (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ q.2)
+                (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ q.2)))⁻¹ •
+              DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ q.2))
           (K ×ˢ U) := continuousOn_tangentSection_smul (I := I) hU_base
             (fun q : ℝ × M => (Real.sqrt ((g q.1).inner q.2
-                (chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ q.2)
-                (chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ q.2)))⁻¹) h_inv
-            (fun q => chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ q.2) hv
+                (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ q.2)
+                (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ q.2)))⁻¹) h_inv
+            (fun q => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ q.2) hv
       have hT_eq : (fun q : ℝ × M =>
             TotalSpace.mk' E (E := fun x : M => TangentSpace I x) q.2
               (chartFrameNormFiber (g q.1) α q.2 ⟨0, NeZero.pos _⟩)) =
           (fun q : ℝ × M =>
             TotalSpace.mk' E (E := fun x : M => TangentSpace I x) q.2
               ((Real.sqrt ((g q.1).inner q.2
-                  (chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ q.2)
-                  (chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ q.2)))⁻¹ •
-                chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ q.2)) := by
+                  (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ q.2)
+                  (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ q.2)))⁻¹ •
+                DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α ⟨0, NeZero.pos _⟩ q.2)) := by
         funext q; rw [hsec_eq q]
       rw [hT_eq]
       exact h_smul
@@ -1609,13 +1609,13 @@ private theorem chartFrameNormFiber_continuousOn_metricFamily_strong
       have h_innerCoef : ∀ j' : Fin i.val,
           ContinuousOn (fun q : ℝ × M =>
             (g q.1).inner q.2
-              (chartBasisVecFiber (I := I) α i q.2)
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i q.2)
               (chartFrameNormFiber (g q.1) α q.2
                 ⟨j'.val, lt_trans j'.isLt i.isLt⟩))
             (K ×ˢ U) := by
         intro j'
         exact metricInner_continuousOn_family (I := I) (M := M) g hG
-          (fun q => chartBasisVecFiber (I := I) α i q.2)
+          (fun q => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i q.2)
           (fun q => chartFrameNormFiber (g q.1) α q.2
             ⟨j'.val, lt_trans j'.isLt i.isLt⟩)
           hbase_i (h_j'_small_section j')
@@ -1623,7 +1623,7 @@ private theorem chartFrameNormFiber_continuousOn_metricFamily_strong
           ContinuousOn (fun q : ℝ × M =>
             TotalSpace.mk' E (E := fun x : M => TangentSpace I x) q.2
               ((g q.1).inner q.2
-                (chartBasisVecFiber (I := I) α i q.2)
+                (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i q.2)
                 (chartFrameNormFiber (g q.1) α q.2
                   ⟨j'.val, lt_trans j'.isLt i.isLt⟩) •
                 chartFrameNormFiber (g q.1) α q.2
@@ -1632,7 +1632,7 @@ private theorem chartFrameNormFiber_continuousOn_metricFamily_strong
         intro j' _
         exact continuousOn_tangentSection_smul (I := I) hU_base
           (fun q : ℝ × M => (g q.1).inner q.2
-            (chartBasisVecFiber (I := I) α i q.2)
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i q.2)
             (chartFrameNormFiber (g q.1) α q.2
               ⟨j'.val, lt_trans j'.isLt i.isLt⟩))
           (h_innerCoef j')
@@ -1644,7 +1644,7 @@ private theorem chartFrameNormFiber_continuousOn_metricFamily_strong
             TotalSpace.mk' E (E := fun x : M => TangentSpace I x) q.2
               (∑ j' : Fin i.val,
                 (g q.1).inner q.2
-                  (chartBasisVecFiber (I := I) α i q.2)
+                  (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i q.2)
                   (chartFrameNormFiber (g q.1) α q.2
                     ⟨j'.val, lt_trans j'.isLt i.isLt⟩) •
                 chartFrameNormFiber (g q.1) α q.2
@@ -1652,7 +1652,7 @@ private theorem chartFrameNormFiber_continuousOn_metricFamily_strong
             (K ×ˢ U) := continuousOn_tangentSection_sum (I := I) hU_base
               (Finset.univ : Finset (Fin i.val))
               (fun j' q => (g q.1).inner q.2
-                (chartBasisVecFiber (I := I) α i q.2)
+                (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i q.2)
                 (chartFrameNormFiber (g q.1) α q.2
                   ⟨j'.val, lt_trans j'.isLt i.isLt⟩) •
                 chartFrameNormFiber (g q.1) α q.2
@@ -1660,20 +1660,20 @@ private theorem chartFrameNormFiber_continuousOn_metricFamily_strong
               h_summand
       have h_raw : ContinuousOn (fun q : ℝ × M =>
           TotalSpace.mk' E (E := fun x : M => TangentSpace I x) q.2
-            (chartBasisVecFiber (I := I) α i q.2 -
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i q.2 -
               ∑ j' : Fin i.val,
                 (g q.1).inner q.2
-                  (chartBasisVecFiber (I := I) α i q.2)
+                  (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i q.2)
                   (chartFrameNormFiber (g q.1) α q.2
                     ⟨j'.val, lt_trans j'.isLt i.isLt⟩) •
                 chartFrameNormFiber (g q.1) α q.2
                   ⟨j'.val, lt_trans j'.isLt i.isLt⟩))
           (K ×ˢ U) :=
         continuousOn_section_sub (I := I) hU_base
-          (fun q => chartBasisVecFiber (I := I) α i q.2)
+          (fun q => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i q.2)
           (fun q => ∑ j' : Fin i.val,
                 (g q.1).inner q.2
-                  (chartBasisVecFiber (I := I) α i q.2)
+                  (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i q.2)
                   (chartFrameNormFiber (g q.1) α q.2
                     ⟨j'.val, lt_trans j'.isLt i.isLt⟩) •
                 chartFrameNormFiber (g q.1) α q.2
@@ -1681,10 +1681,10 @@ private theorem chartFrameNormFiber_continuousOn_metricFamily_strong
           hbase_i h_sum
       have h_raw_eq : ∀ q : ℝ × M,
           chartFrameRawFiber (g q.1) α q.2 i =
-            chartBasisVecFiber (I := I) α i q.2 -
+            DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i q.2 -
               ∑ j' : Fin i.val,
                 (g q.1).inner q.2
-                  (chartBasisVecFiber (I := I) α i q.2)
+                  (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i q.2)
                   (chartFrameNormFiber (g q.1) α q.2
                     ⟨j'.val, lt_trans j'.isLt i.isLt⟩) •
                 chartFrameNormFiber (g q.1) α q.2
@@ -1700,10 +1700,10 @@ private theorem chartFrameNormFiber_continuousOn_metricFamily_strong
                 (chartFrameRawFiber (g q.1) α q.2 i)) =
             (fun q : ℝ × M =>
               TotalSpace.mk' E (E := fun x : M => TangentSpace I x) q.2
-                (chartBasisVecFiber (I := I) α i q.2 -
+                (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i q.2 -
                   ∑ j' : Fin i.val,
                     (g q.1).inner q.2
-                      (chartBasisVecFiber (I := I) α i q.2)
+                      (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i q.2)
                       (chartFrameNormFiber (g q.1) α q.2
                         ⟨j'.val, lt_trans j'.isLt i.isLt⟩) •
                     chartFrameNormFiber (g q.1) α q.2
@@ -1727,7 +1727,7 @@ private theorem chartFrameNormFiber_continuousOn_metricFamily_strong
               (chartFrameRawFiber (g q.1) α q.2 i)
               (chartFrameRawFiber (g q.1) α q.2 i) := by
         intro q hq
-        have h_aux := chartFrameNormFiber_orth_strong_aux
+        have h_aux := chartFrameNormFiber_orth_strong
           (I := I) (g q.1) α (hU_base q hq) i.val i (le_refl _)
         have hraw_ne : chartFrameRawFiber (g q.1) α q.2 i ≠ 0 := h_aux.1
         exact (g q.1).pos q.2 _ hraw_ne

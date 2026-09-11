@@ -557,8 +557,8 @@ theorem laplacianOp_inner_eigenbasis
   exact h
 
 theorem exists_laplacianDomain_lift_iff_inner_eigenbasis
-    (g : SmoothRiemannianMetric I M)
-    (u w : Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) :
+    {g : SmoothRiemannianMetric I M}
+    {u w : Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)} :
     (∃ u_h : laplacianDomain (I := I) (M := M) g,
       H1ComplToLp (I := I) (M := M) g (u_h : H1Compl g) = u ∧
         laplacianOp (I := I) (M := M) g u_h = w) ↔
@@ -614,21 +614,6 @@ theorem exists_laplacianDomain_lift_iff_inner_eigenbasis
     rw [laplacianOp_resolvent, hu_h]
     change u - (u - w) = w
     abel
-
-example (g : SmoothRiemannianMetric I M) :
-    HilbertBasis
-      (Σ μ : NonzeroResolventEigenvalue (I := I) (M := M) g,
-        Fin (Module.finrank ℝ
-          (resolventEigenspace (I := I) (M := M) g μ.val)))
-      ℝ (Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) :=
-  resolventHilbertEigenbasisSigma (I := I) (M := M) g
-
-example (g : SmoothRiemannianMetric I M)
-    (i : Σ μ : NonzeroResolventEigenvalue (I := I) (M := M) g,
-      Fin (Module.finrank ℝ
-        (resolventEigenspace (I := I) (M := M) g μ.val))) :
-    laplacianDomain (I := I) (M := M) g :=
-  laplacianEigenfunction (I := I) (M := M) g i
 
 end Laplacian
 end Analysis

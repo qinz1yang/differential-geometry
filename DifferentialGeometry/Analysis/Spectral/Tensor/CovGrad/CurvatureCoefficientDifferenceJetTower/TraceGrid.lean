@@ -718,8 +718,8 @@ theorem riemannianFiberNormSq_iteratedCovGrad_riemannCoeff_metricFactorTelescope
         (i : ℕ) (x : M),
         riemannianFiberNormSq (I := I) (M := M) g₀ 2 (2 + i) x
             ((iteratedCovGrad (I := I) g₀ 2 2 i
-              (ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₁ -
-                ricciArmOrder0RiemannMixedCoeff (I := I) (M := M) g₀ g₁)).toSection x) ≤
+              (ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₁ -
+                ricciOrderZeroRiemannMixedCoeff (I := I) (M := M) g₀ g₁)).toSection x) ≤
           C i * ∑ j ∈ Finset.range (i + 1),
             (∑ n ∈ Finset.range (j + 1),
               ∑ e ∈ Finset.Nat.antidiagonalTuple n j,
@@ -794,8 +794,8 @@ theorem riemannianFiberNormSq_iteratedCovGrad_riemannCoeff_metricFactorTelescope
             ((iteratedCovGrad (I := I) g₀ 0 4 l Ldiff).toSection x))) = RHS := rfl
   rw [hgoal_eq]
   clear_value RHS
-  have hdecomp : ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₁ -
-      ricciArmOrder0RiemannMixedCoeff (I := I) (M := M) g₀ g₁ =
+  have hdecomp : ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₁ -
+      ricciOrderZeroRiemannMixedCoeff (I := I) (M := M) g₀ g₁ =
       (2 : ℝ) • (ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2
           (pairTraceOp (I := I) (M := M) g₀ g₁ - pairTraceOp (I := I) (M := M) g₀ g₀)
           (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 sigmaE0
@@ -1135,8 +1135,8 @@ theorem riemannianFiberNormSq_iteratedCovGrad_riemannMixedCoeff_backgroundDiffer
         (i : ℕ) (x : M),
         riemannianFiberNormSq (I := I) (M := M) g₀ 2 (2 + i) x
             ((iteratedCovGrad (I := I) g₀ 2 2 i
-              (ricciArmOrder0RiemannMixedCoeff (I := I) (M := M) g₀ g₁ -
-                ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₀)).toSection x) ≤
+              (ricciOrderZeroRiemannMixedCoeff (I := I) (M := M) g₀ g₁ -
+                ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₀)).toSection x) ≤
           C i * ∑ k ∈ Finset.range (i + 3),
             ∑ n ∈ Finset.range (k + 1),
               ∑ e ∈ Finset.Nat.antidiagonalTuple n k,

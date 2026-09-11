@@ -1,8 +1,8 @@
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.CovDerivConnectionDifferenceQuadraticBound
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.ConnectionDifference.CovariantDerivativeQuadraticBounds
 
-import DifferentialGeometry.Geometry.Metric.Convergence.LaplacianDifference
-import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivativeAlgebra
-import DifferentialGeometry.Geometry.Connection.LeviCivita.ChristoffelDiffKoszulDeriv
+import DifferentialGeometry.Geometry.Metric.Convergence.Curvature.LaplacianDifference
+import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Algebra
+import DifferentialGeometry.Geometry.Connection.LeviCivita.Christoffel.DifferenceKoszulDerivative
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
@@ -25,7 +25,7 @@ open DifferentialGeometry.Analysis.Spectral.MetricRealization
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 open DifferentialGeometry.Analysis.Laplacian
 open DifferentialGeometry.Analysis.Sobolev.TensorHilbert
-open DifferentialGeometry.HCGCompactness
+open DifferentialGeometry.CheegerGromovCompactness
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
@@ -43,6 +43,8 @@ private local instance tensorRSNormedAddCommGroupOfRiemannianBundle
     (E := fun y : M => TensorRSSpace r s I y) x
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
+set_option backward.isDefEq.respectTransparency false in
 private theorem covGrad_connectionDifferenceSection_flat_eval_eq_inner
     (g₂ g₁ : SmoothRiemannianMetric I M) (x : M) (v w u : TangentSpace I x) :
     Tensor0SSpace.toModel
@@ -171,7 +173,7 @@ private theorem field_eq_mcd1
     (Tensor0SBundle.totalNabla0S (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 2
         (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g₂)
         (Tensor0SBundle.metricTensorField (I := I) g₁)
-        (DifferentialGeometry.Geometry.Connection.metricField_totalReg (I := I) g₁ g₂))
+        (DifferentialGeometry.Geometry.Connection.metricField_totalRegularized (I := I) g₁ g₂))
       = metricCovDeriv (I := I) g₁ g₂ 1 := by
   have : IsManifold I 1 M :=
     IsManifold.of_le (I := I) (M := M) (n := ∞) (by decide : (1 : WithTop ℕ∞) ≤ ∞)
@@ -193,7 +195,7 @@ private theorem nabla3_eq_mcd2
         (Tensor0SBundle.totalNabla0S (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 2
           (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g₂)
           (Tensor0SBundle.metricTensorField (I := I) g₁)
-          (DifferentialGeometry.Geometry.Connection.metricField_totalReg (I := I) g₁ g₂)) x slots
+          (DifferentialGeometry.Geometry.Connection.metricField_totalRegularized (I := I) g₁ g₂)) x slots
       = metricCovDeriv (I := I) g₁ g₂ 2 x (Fin.cons (W x) slots) := by
   rw [field_eq_mcd1 (I := I) g₁ g₂,
     show metricCovDeriv (I := I) g₁ g₂ 2
@@ -224,7 +226,6 @@ theorem sqrt_normSq0S_comp
     _ = Real.sqrt (Λ ^ s) * Real.sqrt (Tensor0SBundle.normSq0S (I := I) g₂ x s A) := by
         rw [Real.sqrt_mul (pow_nonneg (le_trans zero_le_one hEq.1) s)]
 
-
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 private theorem lcDiff_covOne_le
     {K : Set M} (g h : SmoothRiemannianMetric I M) {C : ℝ}
@@ -241,7 +242,6 @@ private theorem lcDiff_covOne_le
     exists_diagInv_of_metricUniformEquivalentOn (I := I)
       (metricUniformEquivalentOn_symm (I := I) hEq) hx
   exact diff_le_covOne_basis_ref_lc (I := I) h g hx C hEq basis hhinv
-
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 theorem connectionDifference_gJet_le
@@ -341,7 +341,6 @@ theorem connectionDifference_gJet_le
         (3 / 2 * Λ' * (Real.sqrt Λ ^ 2 + Λ) *
           (Real.sqrt (g₂.inner x w w) * Real.sqrt (g₂.inner x u u)) * Λ) * hs2
 
-
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [SigmaCompactSpace M] in
 theorem covDerivConnectionDifference_g1_le
     (g₂ g₁ : SmoothRiemannianMetric I M) (x : M) (v w u : TangentSpace I x) :
@@ -372,7 +371,7 @@ theorem covDerivConnectionDifference_g1_le
       (by decide : ((1 : WithTop ℕ∞) + 1) ≤ ∞)
   have : ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I :=
     TangentBundle.contMDiffVectorBundle (I := I) (M := M) (n := 1)
-  obtain ⟨basis, hON⟩ := exists_gOrthonormalBasis (I := I) g₁ x
+  obtain ⟨basis, hON⟩ := DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis (I := I) g₁ x
   set B : TangentSpace I x :=
     covDerivConnectionDifference (I := I) g₂ g₁
       (smoothExtensionTangent (I := I) x v)
@@ -509,7 +508,6 @@ theorem covDerivConnectionDifference_g1_le
       nlinarith [hkos, hT1, hT2, hT3, hT4', habs1, habs2, habs3, habs4]
     have hdiv := le_of_mul_le_mul_left hmul hSBpos
     linarith
-
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [SigmaCompactSpace M] in
 theorem covDerivConnectionDifference_gJet_le

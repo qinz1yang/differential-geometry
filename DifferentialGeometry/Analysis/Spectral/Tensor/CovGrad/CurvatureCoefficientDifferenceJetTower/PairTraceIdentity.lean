@@ -1,25 +1,25 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.CurvatureCoefficientDifferenceJetTower.Grid
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.CurvatureCoefficientDifferenceJetTower.Palatini
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.CurvatureCoefficientDifferenceJetTower.PairTrace
-import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.MetricArmCoeffReindexingNorm
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.RicciDeTurckSectionDifference
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.IteratedCovGradLinear
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.MetricComparisonEndomorphismJetBound
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.CometricDoubleTraceField
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.RecoveryEndomorphismJetBound
-import DifferentialGeometry.Tensor.Multilinear.Basis
+import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.MetricPerturbation.CovariantOrderCoefficient.ReindexingNorm
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.RicciDeTurck.SectionDifference.ConnectionBicontraction
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Iterated.Linear
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.ConnectionDifference.MetricComparisonEndomorphismJetBounds
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Metric.CometricDoubleTrace
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.ConnectionDifference.RecoveryEndomorphismJetBounds
+import DifferentialGeometry.Tensor.Multilinear.Bundle.Basis
 
 import DifferentialGeometry.Tensor.Mixed.Field
-import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.RiemannianFiberNormSq.RiemannianFiberNormSqSmoothCcUniformBound
-import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.RiemannianFiberNormSq.FiberNormSubadditivity
-import DifferentialGeometry.Analysis.Sobolev.GagliardoNirenbergLpFiberNorm
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckRemainderHigherOrderTame
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.ConnectionDifferenceJetTower
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.RaisedKoszulCovariantJetTower
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.RaisedKoszulParallelRaiseJetBound
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.ConnectionDifferenceArmRiemannianFiberNormSqBound
-import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.RicciConnectionDifferencePalatini
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorFieldApplicationDropIteratedGrid
+import DifferentialGeometry.Analysis.Spectral.Tensor.UniformChartBounds.FiberNorm.UniformBound
+import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.Algebra
+import DifferentialGeometry.Analysis.Sobolev.GagliardoNirenberg.FiberNorm.Basic
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Remainder.HigherOrderTame
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.ConnectionDifference.JetTower
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.ConnectionDifference.RaisedKoszul.JetTower
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.ConnectionDifference.RaisedKoszul.ParallelRaiseJetBounds
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.ConnectionDifference.CovariantOrderFibreNormBounds
+import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.ConnectionDifference.RicciPalatini
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.Bounds.ApplicationJets
 import DifferentialGeometry.Analysis.Sobolev.BoundedFactorProductGrid
 import Mathlib.Analysis.MeanInequalities
 import Mathlib.Data.Fin.Tuple.NatAntidiagonal
@@ -77,6 +77,7 @@ lemma phiDtPair_covGrad_zero (g₀ : SmoothRiemannianMetric I M) :
 def pairTraceKernelSlotPerm : Equiv.Perm (Fin 6) :=
   CurvatureCoefficientDifferenceJetTower.sigmaE0
 
+set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
     [SigmaCompactSpace M] in
 lemma slotExtendIter_two_toModel (g₀ : SmoothRiemannianMetric I M)
@@ -91,12 +92,13 @@ lemma slotExtendIter_two_toModel (g₀ : SmoothRiemannianMetric I M)
   CurvatureCoefficientDifferenceJetTower.slotExtendIter_two_toModel
     (I := I) (M := M) g₀ X x D u
 
+set_option backward.isDefEq.respectTransparency false in
 omit [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
 theorem mixedCoeff_backgroundDifference_eq_pairTrace
     (g₀ g₁ : SmoothRiemannianMetric I M) :
-    ricciArmOrder0RiemannMixedCoeff (I := I) (M := M) g₀ g₁ -
-        ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₀ =
+    ricciOrderZeroRiemannMixedCoeff (I := I) (M := M) g₀ g₁ -
+        ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₀ =
       (2 : ℝ) • ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2
         (pairTraceKernel (I := I) (M := M) g₀)
         (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 pairTraceKernelSlotPerm

@@ -1,6 +1,6 @@
-import DifferentialGeometry.Geometry.Connection.TensorNabla.Tensor0SNabla
-import DifferentialGeometry.Geometry.Connection.LeviCivita.LeviCivitaChartLocal
-import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0SRiemannian
+import DifferentialGeometry.Geometry.Connection.TensorNabla.Tensor0S.Basic
+import DifferentialGeometry.Geometry.Connection.LeviCivita.Chart.Local
+import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Bundle.SectionRegularity
 
 
 noncomputable section
@@ -217,16 +217,6 @@ theorem tensor0SCovariantDerivative_chart_decomp_vectorField
       tensor0SIntrinsicChartCLM (I := I) s α T b (X b) +
         tensor0SChartChristoffelCorrection (I := I) cov s α T b (X b) :=
   tensor0SCovariantDerivative_chart_decomp_apply (I := I) cov s α T b (X b)
-
-example
-    (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
-    [ContMDiffCovariantDerivative cov ∞]
-    (s : ℕ) (α : M) (T : Π b : M, Tensor0SSpace s I b) (b : M)
-    (v : TangentSpace I b) :
-    (Tensor0SNabla.tensor0SCovariantDerivative I M s cov T) b v =
-      tensor0SIntrinsicChartCLM (I := I) s α T b v +
-        tensor0SChartChristoffelCorrection (I := I) cov s α T b v :=
-  tensor0SCovariantDerivative_chart_decomp_apply (I := I) cov s α T b v
 
 end Connection
 end Geometry

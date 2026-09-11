@@ -157,7 +157,7 @@ theorem w_span_uniform
       ring
     have hu0eq : u 0 = v := by
       dsimp only [u]
-      rw [galLim_initial (I := I) (M := M) hlim]
+      rw [galerkinLim_initial (I := I) (M := M) hlim]
       exact hu₀
     have hmass0 :
         (∫ x, u 0 x ∂(volumeMeasureFamily (I := I) (M := M)

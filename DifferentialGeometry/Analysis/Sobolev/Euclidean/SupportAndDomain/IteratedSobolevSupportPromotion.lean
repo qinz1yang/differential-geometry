@@ -28,7 +28,7 @@ theorem MemWkp_of_memWkp_precompact_of_ae_zero_off_compact
   classical
   have hΩ'Ω : Ω' ⊆ Ω := subset_closure.trans hΩ'_cl
   obtain ⟨δ, χ, hδ_pos, _hδ_sub, hχ_smooth, hχ_compact, _hχ_range,
-      hχ_one, hχ_supp⟩ :=
+      hχ_one, hχ_support⟩ :=
     exists_smooth_cutoff_with_neighborhood (d := d) hK_compact hΩ'_open hKΩ'
   set N : Set E := Metric.cthickening δ K with hN_def
   have hN_closed : IsClosed N := Metric.isClosed_cthickening
@@ -42,7 +42,7 @@ theorem MemWkp_of_memWkp_precompact_of_ae_zero_off_compact
     MemWkp.smul_smooth_bounded (d := d) k hp hΩ'_open hχ_smooth
       (fun j _hj x _hx => hC_bound x j _hj) hu_precompact
   have hv_tsupp : tsupport v ⊆ Ω' :=
-    (tsupport_smul_subset_left χ u).trans hχ_supp
+    (tsupport_smul_subset_left χ u).trans hχ_support
   have hv_compact : HasCompactSupport v := hχ_compact.mul_right
   have hv_memWkp_Ω : MemWkp (d := d) k p v Ω :=
     MemWkp.extend_zero (d := d) hp hΩ'_open hΩ_open hΩ'Ω

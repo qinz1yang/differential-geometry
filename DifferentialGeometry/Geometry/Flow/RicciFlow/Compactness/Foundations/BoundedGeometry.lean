@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.BoundedGeometry
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Bounds.BoundedGeometry
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Foundations.Defs
 
 open DifferentialGeometry.PDE.RicciFlow
@@ -12,7 +12,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 variable {E : Type uE} [NormedAddCommGroup E] [NormedSpace Real E]
 variable [FiniteDimensional Real E]
@@ -66,11 +66,11 @@ def atTime
 
 end FlowDerivBounds
 
-structure FlowDerivativeInput
+structure FlowCompactnessBounds
     (X : PointedFlowSeq.{u, uE, uH} (I := I)) where
   spacetime : FlowDerivBounds (I := I) X
   atZeroGeom : SeqBoundedGeometry (I := I) (X.atZero (I := I))
 
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

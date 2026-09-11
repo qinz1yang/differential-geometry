@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Metric.Basic
 import DifferentialGeometry.Geometry.Connection.ChartFrame.ChartMetric
-import DifferentialGeometry.Analysis.Sobolev.Tensor.PouWeightedNorm
-import DifferentialGeometry.Analysis.Sobolev.Tensor.PouWeightedHsNorm
+import DifferentialGeometry.Analysis.Sobolev.Tensor.PartitionOfUnity.WeightedNorm
+import DifferentialGeometry.Analysis.Sobolev.Tensor.PartitionOfUnity.WeightedSobolevNorm
 open DifferentialGeometry.Geometry.Curvature
 
 

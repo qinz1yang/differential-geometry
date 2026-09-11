@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HamiltonHarnack.MatrixHarnack
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HamiltonHarnack.TraceHarnackAlgebra
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HamiltonHarnack.MIdentities
-import DifferentialGeometry.Tensor.RSTensor.CotangentRiemannian
+import DifferentialGeometry.Geometry.Metric.TensorInner.Cotangent.InverseMetric
 
 set_option autoImplicit false
 
@@ -49,8 +49,8 @@ theorem hamilton_trace_harnack
         (vec2 V V) := by
   classical
   let g := S.base.metric clock.time
-  obtain ⟨basis, hON⟩ := exists_gOrthonormalBasis (I := I) g x
-  have hinv : MetricInverseInBasisGen (I := I) (M := M) g x basis
+  obtain ⟨basis, hON⟩ := exists_orthonormal_basis (I := I) g x
+  have hinv : MetricInverseInBasis (I := I) (M := M) g x basis
       (identityInvMetric (Idx := Fin (Module.finrank Real (TangentSpace I x)))) :=
     metricInverseInBasis_of_orthonormal (I := I) g basis hON
   let v : Fin (Module.finrank Real (TangentSpace I x)) → Real :=
@@ -74,7 +74,7 @@ theorem hamilton_trace_harnack
       Fin (Module.finrank Real (TangentSpace I x)) →
       Fin (Module.finrank Real (TangentSpace I x)) →
       Fin (Module.finrank Real (TangentSpace I x)) → Real := fun a b c d =>
-    tensor04StdAt (I := I) (M := M) (S.base.rm04 clock.time x)
+    tensor04StandardAt (I := I) (M := M) (S.base.rm04 clock.time x)
       (basis a) (basis b) (basis c) (basis d)
   let P : Fin (Module.finrank Real (TangentSpace I x)) →
       Fin (Module.finrank Real (TangentSpace I x)) →
@@ -93,7 +93,7 @@ theorem hamilton_trace_harnack
       (basis.coord r).toContinuousLinearMap
     let U : HamiltonHarnackTwoForm (TangentSpace I x) :=
       normalizedWedge (g.inner x V) er
-    let W : Tensor0SSpace 1 I x := dualToCotangentGen (I := I) (basis.coord r)
+    let W : Tensor0SSpace 1 I x := dualToCotangent (I := I) (basis.coord r)
     have hU : ∀ a b, U ![basis a, basis b] = hamiltonTraceWedge v r a b := by
       intro a b
       rw [normalizedWedge_apply]
@@ -104,9 +104,11 @@ theorem hamilton_trace_harnack
       rfl
     have hW : ∀ a, W ![basis a] = hamiltonTraceWeight r a := by
       intro a
-      change basis.coord r (basis a) = hamiltonTraceWeight r a
-      rw [hcoord r a]
-      rfl
+      rw [show ![basis a] = (fun _ : Fin 1 => basis a) by
+        funext i
+        fin_cases i
+        rfl]
+      simpa only [W, dualToCotangent_apply, hamiltonTraceWeight] using hcoord r a
     have hmatrix := hamilton_matrix_harnack (I := I) S hS hcomplete hcurv hR
       clock hclock x U W
     rw [hamiltonHarnackQuadraticAt_eq_hamiltonBlockQuadratic
@@ -151,7 +153,7 @@ theorem hamilton_trace_harnack
           (fun _ : Fin 1 => basis a) := by
         simpa [scalarFun, identityInvMetric, diagonalInvMetric] using h
   have hForm : IsAlgCurvForm (fun X Y Z W : TangentSpace I x =>
-      tensor04StdAt (I := I) (M := M) (S.base.rm04 clock.time x) X Y Z W) :=
+      tensor04StandardAt (I := I) (M := M) (S.base.rm04 clock.time x) X Y Z W) :=
     mem_algebraicCurvatureTensorSubmodule.mp
       (metricRm04At_mem_algebraicCurvatureTensorSubmodule
         (I := I) (S.base.metric clock.time) x)
@@ -211,7 +213,7 @@ theorem hamilton_trace_harnack
           (S.scalar clock.time) x) V := by
         simp [gradientAt, flowG, g, hscalarFun]
   let Ric := metricRicci (I := I) (M := M) g x
-  let K := metricCurvData (I := I) (M := M) g
+  let K := metricCurvatureSections (I := I) (M := M) g
   have hLower : Rm04LowersRm13At (I := I) g x
       (metricRm13 (I := I) (M := M) g x)
       (metricRm04 (I := I) (M := M) g x) :=

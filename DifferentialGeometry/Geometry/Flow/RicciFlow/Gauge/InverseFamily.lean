@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Metric.Pullback.DerivativeDecomposition
+import DifferentialGeometry.Geometry.Metric.Pullback.Evaluation.DerivativeDecomposition
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.ConjugatingFlow.Properties
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.Regularity.PushforwardSmooth
 open DifferentialGeometry.Geometry.Curvature
@@ -145,7 +145,7 @@ omit [FiniteDimensional ℝ E]
   [SigmaCompactSpace M]
   [T2Space M]
   [BoundarylessManifold I M] in
-theorem symm_gauge_vel
+theorem symm_gauge_velocity
     (Ψ_fam : ℝ → (M ≃ₘ⟮I, I⟯ M))
     (W : ℝ → Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
     (T : ℝ)
@@ -290,7 +290,7 @@ open DifferentialGeometry.PDE.DeTurck
 omit [CompactSpace M]
   [NeZero (Module.finrank ℝ E)]
   [I.Boundaryless] [SigmaCompactSpace M] in
-theorem gauge_vel_refl
+theorem gauge_velocity_refl
     (g g_bg : SmoothRiemannianMetric I M) (x : M) :
     Diffeomorph.pushforward (Diffeomorph.refl I M ∞)
         (deTurckVF (I := I)
@@ -322,7 +322,7 @@ theorem ricci_pullback_DT
     (hgram_RF : ∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)),
       ContMDiffOn (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ) ∞
         (fun p : ℝ × M =>
-          Integral.Measure.chartGramMatrix (I := I) (g_RF p.1) x₀ p.2 i j)
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_RF p.1) x₀ p.2 i j)
         (Set.Ioo (0 : ℝ) T ×ˢ
           (trivializationAt E (TangentSpace I) x₀).baseSet)) :
     ∀ t ∈ Set.Ioo (0 : ℝ) T, ∀ x : M, ∀ v w : TangentSpace I x,

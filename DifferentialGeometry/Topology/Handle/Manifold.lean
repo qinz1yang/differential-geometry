@@ -213,15 +213,15 @@ theorem closedCellPermute_zero {n : ℕ} (e : Fin n ≃ Fin n) :
   ext j
   simp
 
-theorem closedCellPermute_inv {n : ℕ} (e : Fin n ≃ Fin n) (x : EuclideanSpace ℝ (Fin n)) :
+theorem closedCellPermute_left_inv {n : ℕ} (e : Fin n ≃ Fin n) (x : EuclideanSpace ℝ (Fin n)) :
     closedCellPermute e.symm (closedCellPermute e x) = x := by
   ext j
   rw [closedCellPermute_apply, closedCellPermute_apply]
   simp
 
-theorem closedCellPermute_inv' {n : ℕ} (e : Fin n ≃ Fin n) (x : EuclideanSpace ℝ (Fin n)) :
+theorem closedCellPermute_right_inv {n : ℕ} (e : Fin n ≃ Fin n) (x : EuclideanSpace ℝ (Fin n)) :
     closedCellPermute e (closedCellPermute e.symm x) = x := by
-  simpa [Equiv.symm_symm] using closedCellPermute_inv e.symm x
+  simpa [Equiv.symm_symm] using closedCellPermute_left_inv e.symm x
 
 theorem closedCellPermute_coord_ne_zero {n : ℕ} (e : Fin (n + 1) ≃ Fin (n + 1))
     {s : ℝ} {x : EuclideanSpace ℝ (Fin (n + 1))}
@@ -246,7 +246,7 @@ theorem closedCellPermute_symm_eq {n : ℕ} (e : Fin n ≃ Fin n) :
     (closedCellPermute e) ((closedCellPermute e).symm x) = x :=
       (closedCellPermute e).apply_symm_apply x
     _ = (closedCellPermute e) (closedCellPermute e.symm x) :=
-      by simpa using (closedCellPermute_inv e.symm x).symm
+      by simpa using (closedCellPermute_left_inv e.symm x).symm
 
 theorem closedCellPermute_symm_apply {n : ℕ} (e : Fin n ≃ Fin n) (x : EuclideanSpace ℝ (Fin n))
     (j : Fin n) : (closedCellPermute e).symm x j = x (e j) := by
@@ -357,7 +357,7 @@ theorem closedCellShiftSucc_eq_add {n : ℕ} (c : ℝ) (x : EuclideanSpace ℝ (
     rw [if_neg hj']
     ring
 
-theorem closedCellShiftSucc_neg (n : ℕ) (c : ℝ) (x : EuclideanSpace ℝ (Fin (n + 1))) :
+theorem closedCellShiftSucc_neg_left_inv (n : ℕ) (c : ℝ) (x : EuclideanSpace ℝ (Fin (n + 1))) :
     closedCellShiftSucc n (-c) (closedCellShiftSucc n c x) = x := by
   ext j
   by_cases hj : j = (0)
@@ -368,7 +368,7 @@ theorem closedCellShiftSucc_neg (n : ℕ) (c : ℝ) (x : EuclideanSpace ℝ (Fin
     rw [closedCellShiftSucc_apply_of_ne (-c) (closedCellShiftSucc n c x) hnot]
     exact closedCellShiftSucc_apply_of_ne c x hnot
 
-theorem closedCellShiftSucc_neg' (n : ℕ) (c : ℝ) (x : EuclideanSpace ℝ (Fin (n + 1))) :
+theorem closedCellShiftSucc_neg_right_inv (n : ℕ) (c : ℝ) (x : EuclideanSpace ℝ (Fin (n + 1))) :
     closedCellShiftSucc n c (closedCellShiftSucc n (-c) x) = x := by
   ext j
   by_cases hj : j = (0)
@@ -441,7 +441,7 @@ noncomputable def closedCellInteriorChart (n : ℕ) :
     intro x hx
     change ‖closedCellShiftSucc n (-1) (closedCellInteriorChartValue n x).1‖ < 1
     rw [closedCellInteriorChartValue_coe]
-    rw [closedCellShiftSucc_neg n 1 x.1]
+    rw [closedCellShiftSucc_neg_left_inv n 1 x.1]
     exact hx
   map_target' := by
     intro y hy
@@ -452,14 +452,14 @@ noncomputable def closedCellInteriorChart (n : ℕ) :
     intro x hx
     apply Subtype.ext
     rw [closedCellInteriorChartValue_coe]
-    rw [closedCellShiftSucc_neg n 1 x.1]
+    rw [closedCellShiftSucc_neg_left_inv n 1 x.1]
     rw [closedCellProject_of_mem (le_of_lt hx)]
   right_inv' := by
     intro y hy
     apply Subtype.ext
     rw [closedCellInteriorChartValue_coe]
     rw [closedCellProject_of_mem (le_of_lt hy)]
-    rw [closedCellShiftSucc_neg' n 1 y.1]
+    rw [closedCellShiftSucc_neg_right_inv n 1 y.1]
   continuousOn_toFun := by
     have hcont : Continuous (fun x : ClosedCell (n + 1) =>
         closedCellShiftSucc n 1 x.1) := by
@@ -642,7 +642,7 @@ noncomputable def closedCellBoundaryChart (n : ℕ) (i : Fin (n + 1)) (σ : Bool
     change 0 < s * (closedCellPermute e (closedCellBoundaryInvValue n e s y.1))
       (0)
     dsimp [closedCellBoundaryInvValue]
-    rw [closedCellPermute_inv']
+    rw [closedCellPermute_right_inv]
     rw [closedCellCons_apply_zero]
     change 0 < s * (s * Real.sqrt (1 - y.1 (0) - ‖closedCellTail n y.1‖ ^ 2))
     rw [← mul_assoc, hss, one_mul]
@@ -708,7 +708,7 @@ noncomputable def closedCellBoundaryChart (n : ℕ) (i : Fin (n + 1)) (σ : Bool
     change (closedCellPermute e.symm (closedCellCons n ((closedCellPermute e x.1) (0))
         (closedCellTail n (closedCellPermute e x.1)))) = x.1
     rw [closedCellCons_split n (closedCellPermute e x.1)]
-    exact closedCellPermute_inv e x.1
+    exact closedCellPermute_left_inv e x.1
   · intro y hy
     apply Subtype.ext
     rw [closedCellBoundaryChartValue_coe]
@@ -716,7 +716,7 @@ noncomputable def closedCellBoundaryChart (n : ℕ) (i : Fin (n + 1)) (σ : Bool
       closedCellBoundaryInvValue_norm_le_one e hs y.1 hy.2 y.2
     rw [closedCellProject_of_mem hzle]
     dsimp [closedCellBoundaryInvValue]
-    rw [closedCellPermute_inv']
+    rw [closedCellPermute_right_inv]
     rw [closedCellCons_tail]
     have hnorm : ‖closedCellPermute e.symm (closedCellCons n
         (s * Real.sqrt (1 - y.1 (0) - ‖closedCellTail n y.1‖ ^ 2))
@@ -849,7 +849,7 @@ theorem closedCellSign_mul_pos {a : ℝ} (ha : a ≠ 0) :
   · have hneg : a < 0 := lt_of_le_of_ne (le_of_not_gt hapos) ha
     simp [hapos, hneg]
 
-theorem closedCell_exists_coord_ne_zero {m : ℕ} (x : EuclideanSpace ℝ (Fin (m + 1)))
+theorem exists_closedCell_coord_ne_zero {m : ℕ} (x : EuclideanSpace ℝ (Fin (m + 1)))
     (hx : 1 ≤ ‖x‖) : ∃ i : Fin (m + 1), x i ≠ 0 := by
   by_contra h
   have hx0 : x = 0 := by
@@ -887,7 +887,7 @@ noncomputable def closedCellChartAt {m : ℕ} (x : ClosedCell (m + 1)) :
     OpenPartialHomeomorph (ClosedCell (m + 1)) (EuclideanHalfSpace (m + 1)) :=
   if hx : ‖x.1‖ < 1 then closedCellInteriorChart m
   else
-    let i : Fin (m + 1) := Classical.choose (closedCell_exists_coord_ne_zero x.1 (by
+    let i : Fin (m + 1) := Classical.choose (exists_closedCell_coord_ne_zero x.1 (by
       have hle : ‖x.1‖ ≤ 1 := x.2
       have hnot : ¬ ‖x.1‖ < 1 := hx
       linarith))
@@ -904,11 +904,11 @@ noncomputable def closedCellChartedSpaceSucc (m : ℕ) :
     · rw [closedCellChartAt, dif_pos hx]
       exact hx
     · rw [closedCellChartAt, dif_neg hx]
-      have hne : x.1 (Classical.choose (closedCell_exists_coord_ne_zero x.1 (by
+      have hne : x.1 (Classical.choose (exists_closedCell_coord_ne_zero x.1 (by
           have hle : ‖x.1‖ ≤ 1 := x.2
           have hnot : ¬ ‖x.1‖ < 1 := hx
           linarith))) ≠ 0 :=
-        (Classical.choose_spec (closedCell_exists_coord_ne_zero x.1 (by
+        (Classical.choose_spec (exists_closedCell_coord_ne_zero x.1 (by
           have hle : ‖x.1‖ ≤ 1 := x.2
           have hnot : ¬ ‖x.1‖ < 1 := hx
           linarith)))
@@ -1553,10 +1553,10 @@ theorem closedCellChart_transition_mem_groupoid {m : ℕ} (x₁ x₂ : ClosedCel
     · unfold closedCellChartAt
       rw [dif_pos hx₁, dif_neg hx₂]
       exact closedCellInteriorBoundary_transition_mem_groupoid
-        (Classical.choose (closedCell_exists_coord_ne_zero x₂.1 (by
+        (Classical.choose (exists_closedCell_coord_ne_zero x₂.1 (by
           have hle : ‖x₂.1‖ ≤ 1 := x₂.2
           have hnot : ¬ ‖x₂.1‖ < 1 := hx₂
-          linarith))) (0 < x₂.1 (Classical.choose (closedCell_exists_coord_ne_zero x₂.1 (by
+          linarith))) (0 < x₂.1 (Classical.choose (exists_closedCell_coord_ne_zero x₂.1 (by
           have hle : ‖x₂.1‖ ≤ 1 := x₂.2
           have hnot : ¬ ‖x₂.1‖ < 1 := hx₂
           linarith))))
@@ -1564,27 +1564,27 @@ theorem closedCellChart_transition_mem_groupoid {m : ℕ} (x₁ x₂ : ClosedCel
     · unfold closedCellChartAt
       rw [dif_neg hx₁, dif_pos hx₂]
       exact closedCellBoundaryInterior_transition_mem_groupoid
-        (Classical.choose (closedCell_exists_coord_ne_zero x₁.1 (by
+        (Classical.choose (exists_closedCell_coord_ne_zero x₁.1 (by
           have hle : ‖x₁.1‖ ≤ 1 := x₁.2
           have hnot : ¬ ‖x₁.1‖ < 1 := hx₁
-          linarith))) (0 < x₁.1 (Classical.choose (closedCell_exists_coord_ne_zero x₁.1 (by
+          linarith))) (0 < x₁.1 (Classical.choose (exists_closedCell_coord_ne_zero x₁.1 (by
           have hle : ‖x₁.1‖ ≤ 1 := x₁.2
           have hnot : ¬ ‖x₁.1‖ < 1 := hx₁
           linarith))))
     · unfold closedCellChartAt
       rw [dif_neg hx₁, dif_neg hx₂]
       exact closedCellBoundaryBoundary_transition_mem_groupoid
-        (Classical.choose (closedCell_exists_coord_ne_zero x₁.1 (by
+        (Classical.choose (exists_closedCell_coord_ne_zero x₁.1 (by
           have hle : ‖x₁.1‖ ≤ 1 := x₁.2
           have hnot : ¬ ‖x₁.1‖ < 1 := hx₁
-          linarith))) (0 < x₁.1 (Classical.choose (closedCell_exists_coord_ne_zero x₁.1 (by
+          linarith))) (0 < x₁.1 (Classical.choose (exists_closedCell_coord_ne_zero x₁.1 (by
           have hle : ‖x₁.1‖ ≤ 1 := x₁.2
           have hnot : ¬ ‖x₁.1‖ < 1 := hx₁
           linarith))))
-        (Classical.choose (closedCell_exists_coord_ne_zero x₂.1 (by
+        (Classical.choose (exists_closedCell_coord_ne_zero x₂.1 (by
           have hle : ‖x₂.1‖ ≤ 1 := x₂.2
           have hnot : ¬ ‖x₂.1‖ < 1 := hx₂
-          linarith))) (0 < x₂.1 (Classical.choose (closedCell_exists_coord_ne_zero x₂.1 (by
+          linarith))) (0 < x₂.1 (Classical.choose (exists_closedCell_coord_ne_zero x₂.1 (by
           have hle : ‖x₂.1‖ ≤ 1 := x₂.2
           have hnot : ¬ ‖x₂.1‖ < 1 := hx₂
           linarith))))
@@ -1942,7 +1942,7 @@ theorem closedCellInclusion_contMDiff (m : ℕ) :
       intro y hy
       rw [(closedCellInteriorChart m).left_inv hy]
     exact hcong.contMDiffAt ((closedCellInteriorChart m).open_source.mem_nhds hx)
-  · let i : Fin (m + 1) := Classical.choose (closedCell_exists_coord_ne_zero x.1 (by
+  · let i : Fin (m + 1) := Classical.choose (exists_closedCell_coord_ne_zero x.1 (by
       have hle : ‖x.1‖ ≤ 1 := x.2
       have hnot : ¬ ‖x.1‖ < 1 := hx
       linarith))
@@ -2697,7 +2697,7 @@ theorem closedCellInclusion_contMDiff_of (l : ℕ) [Fact (l = (l - 1) + 1)] :
     exact hcong.contMDiffAt ((r.toOpenPartialHomeomorph ≫ₕ closedCellInteriorChart (l - 1)).open_source.mem_nhds (by
       simpa [hchart] using (mem_chart_source (H := EuclideanHalfSpace ((l - 1) + 1))
         (M := ClosedCell l) x)))
-  · let i : Fin ((l - 1) + 1) := Classical.choose (closedCell_exists_coord_ne_zero (r x).1 (by
+  · let i : Fin ((l - 1) + 1) := Classical.choose (exists_closedCell_coord_ne_zero (r x).1 (by
       have hle : ‖(r x).1‖ ≤ 1 := (r x).2
       have hnot : ¬ ‖(r x).1‖ < 1 := by
         intro h

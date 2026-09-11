@@ -1,10 +1,11 @@
 import DifferentialGeometry.Geometry.Metric.UniversalCover.Metric
 import DifferentialGeometry.Geometry.Metric.UniversalCover.Coordinates
+import DifferentialGeometry.Geometry.Metric.Completeness
 import DifferentialGeometry.Geometry.Comparison.BonnetMyers.RicciBound
-import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.RicciConnection
+import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Ricci.Basic
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Defs
-import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.CurvatureBundling
-import DifferentialGeometry.Geometry.Connection.ChartBridge.Ricci
+import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Sections
+import DifferentialGeometry.Geometry.Connection.ChartBridge.Curvature.Ricci
 import Mathlib.Topology.Covering.Basic
 import Mathlib.Topology.Homotopy.Lifting
 import Mathlib.AlgebraicTopology.FundamentalGroupoid.FundamentalGroup
@@ -14,14 +15,14 @@ import Mathlib.Topology.EMetricSpace.Lipschitz
 import Mathlib.LinearAlgebra.Trace
 import Mathlib.Logic.Equiv.Basic
 import Mathlib.Data.Finite.Defs
+
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 
 open Set Function Filter Bundle
 open scoped Topology ContDiff
-open DifferentialGeometry.Integral.Measure (SmoothRiemannianMetric chartModelBasis)
+open DifferentialGeometry (SmoothRiemannianMetric)
 
-open DifferentialGeometry.Integral.DivergenceTheorem (chartRiemannTensor)
 open DifferentialGeometry.Geometry.Riemannian.BonnetMyers
 
 noncomputable section
@@ -280,7 +281,7 @@ theorem tail_in_single_sheet
     rw [hpolar, hpolar_g, hdiag (v + w), hdiag v, hdiag w]
   have hCRB : IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x) :=
     ⟨g.inner, g.contMDiff.continuous, fun x v w => hbundle_inner x v w⟩
-  have hRegM : RegularSpace M := by
+  have hRegularityM : RegularSpace M := by
     have : LocallyCompactSpace M :=
       Manifold.locallyCompact_of_finiteDimensional (M := M) I
     infer_instance
@@ -425,21 +426,21 @@ theorem tail_in_single_sheet
     exact ⟨hyU, Set.mem_singleton _⟩
   · intro z hz
     rw [he_def, OpenPartialHomeomorph.trans_source] at hz
-    obtain ⟨hz_src, hz_slice⟩ := hz
+    obtain ⟨hz_source, hz_slice⟩ := hz
     have hez : e z = (t z).1 := rfl
     rw [hez]
-    exact (t.coe_fst hz_src).symm
+    exact (t.coe_fst hz_source).symm
   · filter_upwards [Filter.eventually_ge_atTop N] with n hn
     have hnN₂ : N₂ ≤ n := le_trans (le_max_right _ _) hn
     have hballn : Manifold.riemannianEDist I y (p (x' n)) < ε := hN₂ n hnN₂
     have hcn : Manifold.riemannianEDist I y (p (x' n)) < c :=
       lt_of_lt_of_le hballn (by rw [hε_def]; exact ENNReal.half_le_self)
     have hmemU : p (x' n) ∈ U := hc_sub hcn
-    have hx_src : x' n ∈ t.source := t.mem_source.2 hmemU
+    have hx_source : x' n ∈ t.source := t.mem_source.2 hmemU
     rw [he_def, OpenPartialHomeomorph.trans_source]
-    refine ⟨hx_src, ?_⟩
+    refine ⟨hx_source, ?_⟩
     change t (x' n) ∈ slice.source
-    have hfst : (t (x' n)).1 = p (x' n) := t.coe_fst hx_src
+    have hfst : (t (x' n)).1 = p (x' n) := t.coe_fst hx_source
     have hsnd : (t (x' n)).2 = pt := htail_fib n hn
     rw [hslice_def]
     refine ⟨?_, ?_⟩
@@ -454,7 +455,7 @@ theorem sheet_homeomorph (y : M) :
       (y' : DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover M)
       (U' : Set (DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover M))
       (_hU' : IsOpen U') (_hy'U : y' ∈ U') (_hproj : proj (X := M) y' = y),
-      ∃ _h : (U' ≃ₜ U), True := by
+      Nonempty (U' ≃ₜ U) := by
   have hpc : PathConnectedSpace M :=
     (pathConnectedSpace_iff_connectedSpace).mpr inferInstance
   obtain ⟨γ⟩ := PathConnectedSpace.joined (default : M) y
@@ -473,7 +474,7 @@ theorem sheet_homeomorph (y : M) :
     exact h1.symm.trans hproj_y'
   have hyU : y ∈ e.target := hy_eq ▸ e.map_source hy'e
   refine ⟨e.target, e.open_target, hyU, y', e.source, e.open_source, hy'e,
-    hproj_y', e.toHomeomorphSourceTarget, trivial⟩
+    hproj_y', ⟨e.toHomeomorphSourceTarget⟩⟩
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
@@ -566,7 +567,7 @@ theorem completeSpace_of_complete [CompleteSpace M]
   have huM : CauchySeq (fun n => proj (X := M) (u n)) :=
     hUC.comp_cauchySeq hu
   obtain ⟨y, hy⟩ := cauchySeq_tendsto_of_complete huM
-  have hRegM : RegularSpace M := by
+  have hRegularityM : RegularSpace M := by
     have : LocallyCompactSpace M :=
       Manifold.locallyCompact_of_finiteDimensional (M := M) I
     infer_instance
@@ -615,6 +616,48 @@ theorem completeSpace_of_complete [CompleteSpace M]
   obtain ⟨y', _hproj, htend⟩ :=
     lift_the_limit (I := I) (M := M) g hEnormBase hEnormCover hu hyM
   exact ⟨y', htend⟩
+
+omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
+    [PseudoEMetricSpace M] [SecondCountableTopology M] in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+theorem liftedMetric_complete
+    (g : SmoothRiemannianMetric I M)
+    (hg : DifferentialGeometry.RiemannianMetricComplete (I := I) g) :
+    let _ : SecondCountableTopology H :=
+      ModelWithCorners.secondCountableTopology I
+    let _ : SecondCountableTopology M :=
+      ChartedSpace.secondCountable_of_sigmaCompact H M
+    DifferentialGeometry.RiemannianMetricComplete
+      (I := I) (liftedMetric (I := I) g) := by
+  let _ : SecondCountableTopology H :=
+    ModelWithCorners.secondCountableTopology I
+  let _ : SecondCountableTopology M :=
+    ChartedSpace.secondCountable_of_sigmaCompact H M
+  let : IsManifold I 1 M :=
+    IsManifold.of_le (I := I) (M := M) (n := ∞) (by norm_num)
+  let : TopologicalSpace.MetrizableSpace M := Manifold.metrizableSpace I M
+  let : T3Space M := inferInstance
+  let : RiemannianBundle (fun x : M => TangentSpace I x) :=
+    ⟨g.toRiemannianMetric⟩
+  let : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
+    ⟨⟨g.inner, g.contMDiff.continuous, by intro x v w; rfl⟩⟩
+  let : EMetricSpace M := EMetricSpace.ofRiemannianMetric I M
+  let : CompleteSpace M := hg.complete
+  refine ⟨?_⟩
+  let : RegularSpace (UniversalCover M) := uc_regularSpace (M := M) I
+  exact completeSpace_of_complete (I := I) (M := M) g
+    (by
+      intro x v
+      rw [← ofReal_norm, norm_eq_sqrt_real_inner]
+      rfl)
+    (by
+      let : RiemannianBundle
+          (fun x : UniversalCover M => TangentSpace I x) :=
+        ⟨(liftedMetric (I := I) g).toRiemannianMetric⟩
+      intro x v
+      rw [← ofReal_norm, norm_eq_sqrt_real_inner]
+      rfl)
 
 end UniversalCover
 end Topology

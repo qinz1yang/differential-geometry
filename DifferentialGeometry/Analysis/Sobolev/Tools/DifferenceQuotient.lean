@@ -271,6 +271,46 @@ lemma memLp_translate
   rw [h_eq]; exact hv.eLpNorm_lt_top
 
 omit [NeZero d] in
+theorem memLp_diffQuot
+    {p : ℝ≥0∞} (i : Fin d) (h : ℝ) {v : E → ℝ}
+    (hv : MemLp v p volume) :
+    MemLp (diffQuot i h v) p volume := by
+  by_cases hh : h = 0
+  · subst h
+    rw [diffQuot_zero_h]
+    exact MemLp.zero
+  · rw [diffQuot_eq_translate_sub_div i hh]
+    simpa only [Pi.sub_apply, div_eq_mul_inv] using
+      ((memLp_translate i h hv).sub hv).mul_const h⁻¹
+
+omit [NeZero d] in
+theorem memLp_diffQuot_restrict
+    {p : ℝ≥0∞} {Ω K : Set E} (hΩ : MeasurableSet Ω) (hK : MeasurableSet K)
+    {u : E → ℝ} (hu : MemLp u p (volume.restrict Ω)) (k : Fin d) (s : ℝ)
+    (hKΩ : cthickening |s| K ⊆ Ω) :
+    MemLp (diffQuot k s u) p (volume.restrict K) := by
+  by_cases hs : s = 0
+  · subst s
+    rw [diffQuot_zero_h]
+    exact MemLp.zero
+  have hu0 := (memLp_indicator_iff_restrict hΩ).mpr hu
+  have hdq : MemLp (diffQuot k s (Ω.indicator u)) p volume := by
+    rw [diffQuot_eq_translate_sub_div k hs]
+    convert ((memLp_translate k s hu0).sub hu0).const_mul s⁻¹ using 1
+    ext x
+    simp only [Pi.sub_apply, div_eq_inv_mul]
+  apply (hdq.restrict K).ae_eq
+  filter_upwards [ae_restrict_mem hK] with x hx
+  have hxΩ := hKΩ (self_subset_cthickening _ hx)
+  have hxshift : x + s • EuclideanSpace.single k (1 : ℝ) ∈ Ω := by
+    apply hKΩ
+    apply closedBall_subset_cthickening hx |s|
+    rw [mem_closedBall, dist_eq_norm, add_sub_cancel_left, norm_smul]
+    simp only [PiLp.norm_single, norm_one, mul_one, Real.norm_eq_abs, le_refl]
+  simp only [diffQuot_apply_of_ne k hs, indicator_of_mem hxΩ,
+    indicator_of_mem hxshift]
+
+omit [NeZero d] in
 lemma integrable_translate
     (i : Fin d) (h : ℝ) {v : E → ℝ}
     (hv : Integrable v volume) :
@@ -732,11 +772,11 @@ theorem eLpNorm_diffQuot_le_eLpNorm_partialDeriv
 
 omit [NeZero d] in
 private lemma diffQuot_bound_of_lipschitz
-    {φ : E → ℝ} (hφ_C1 : ContDiff ℝ 1 φ) (hφ_supp : HasCompactSupport φ)
+    {φ : E → ℝ} (hφ_C1 : ContDiff ℝ 1 φ) (hφ_support : HasCompactSupport φ)
     (i : Fin d) :
     ∃ L : ℝ, 0 ≤ L ∧ ∀ h : ℝ, ∀ x : E, |diffQuot i h φ x| ≤ L := by
   obtain ⟨L, hL_nn, hLip⟩ :=
-    lipschitz_of_contDiff_compactSupport (d := d) hφ_C1 hφ_supp
+    lipschitz_of_contDiff_compactSupport (d := d) hφ_C1 hφ_support
   refine ⟨L, hL_nn, fun h x => ?_⟩
   by_cases hh : h = 0
   · rw [hh, diffQuot_zero_h]; simpa using hL_nn
@@ -783,10 +823,10 @@ theorem hasWeakPartialDeriv_of_diffQuot_tendsto_inner
           (𝓝 (∫ x, v x * (fderiv ℝ φ x) (EuclideanSpace.single i 1)
             ∂(volume : Measure E)))) :
     DeGiorgi.HasWeakPartialDeriv i g v Set.univ := by
-  intro φ hφ_smooth hφ_supp _
+  intro φ hφ_smooth hφ_support _
   have hφ_C1 : ContDiff ℝ 1 φ := hφ_smooth.of_le (by norm_cast)
   have hφ_memLp : MemLp φ 2 volume :=
-    hφ_smooth.continuous.memLp_of_hasCompactSupport hφ_supp
+    hφ_smooth.continuous.memLp_of_hasCompactSupport hφ_support
   have hIBP : ∀ n : ℕ,
       ∫ x, diffQuot i (hₙ n) v x * φ x ∂(volume : Measure E) =
         -∫ x, v x * diffQuot i (-(hₙ n)) φ x ∂(volume : Measure E) := by
@@ -799,7 +839,7 @@ theorem hasWeakPartialDeriv_of_diffQuot_tendsto_inner
         atTop
         (𝓝 (∫ x, v x * (fderiv ℝ φ x) (EuclideanSpace.single i 1)
           ∂(volume : Measure E))) :=
-    h_dual φ hφ_smooth hφ_supp
+    h_dual φ hφ_smooth hφ_support
   have hIBP_RHS_tendsto :
       Tendsto (fun n =>
         -∫ x, v x * diffQuot i (-(hₙ n)) φ x ∂(volume : Measure E))
@@ -812,7 +852,7 @@ theorem hasWeakPartialDeriv_of_diffQuot_tendsto_inner
         ∫ x, diffQuot i (hₙ n) v x * φ x ∂(volume : Measure E))
         atTop
         (𝓝 (∫ x, g x * φ x ∂(volume : Measure E))) :=
-    h_weak φ hφ_smooth hφ_supp
+    h_weak φ hφ_smooth hφ_support
   have hLHS_eq_RHS_tendsto :
       Tendsto (fun n =>
         ∫ x, diffQuot i (hₙ n) v x * φ x ∂(volume : Measure E))

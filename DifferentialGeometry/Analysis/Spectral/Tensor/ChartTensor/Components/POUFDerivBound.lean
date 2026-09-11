@@ -1,10 +1,9 @@
-import DifferentialGeometry.Analysis.Sobolev.Intrinsic.EquivalenceReverse
-import DifferentialGeometry.Analysis.Sobolev.Manifold.MorreyManifold
+import DifferentialGeometry.Analysis.Sobolev.Intrinsic.Equivalence.IntrinsicToChart.ComponentNormBound
+import DifferentialGeometry.Analysis.Sobolev.Manifold.Morrey.Basic
 import Mathlib.Analysis.Calculus.FDeriv.Mul
 
-
 noncomputable section
-
+set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter
 open scoped Manifold Topology ContDiff ENNReal NNReal BigOperators
@@ -236,14 +235,14 @@ theorem exists_fderiv_chartPushed_pou_uniform_bound (α : M) :
       ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x) with hF_def
   have hF_smooth : ContDiff ℝ ∞ F :=
     contDiff_chartSmoothExt_chartAtlasPOU_sq (I := I) (M := M) α
-  have hF_supp : HasCompactSupport F :=
+  have hF_support : HasCompactSupport F :=
     hasCompactSupport_chartSmoothExt_chartAtlasPOU_sq (I := I) (M := M) α
   have hF_fderiv_cont : Continuous (fderiv ℝ F) :=
     hF_smooth.continuous_fderiv (by decide)
-  have hF_fderiv_supp : HasCompactSupport (fderiv ℝ F) :=
-    hF_supp.fderiv ℝ
+  have hF_fderiv_support : HasCompactSupport (fderiv ℝ F) :=
+    hF_support.fderiv ℝ
   set K : Set (EuclN E) := tsupport (fderiv ℝ F) with hK_def
-  have hK_compact : IsCompact K := hF_fderiv_supp
+  have hK_compact : IsCompact K := hF_fderiv_support
   have h_zero_off_K : ∀ y : EuclN E, y ∉ K → fderiv ℝ F y = 0 := by
     intro y hy_K
     by_contra h_ne

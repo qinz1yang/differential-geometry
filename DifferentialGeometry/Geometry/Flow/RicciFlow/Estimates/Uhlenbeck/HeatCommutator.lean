@@ -122,7 +122,6 @@ theorem curvatureSlotActionContraction_one
       2 * ∑ e : Idx, ∑ d : Idx, R a e d b * DA e d := by
   simp [curvatureSlotActionContraction]
 
-
 def covariantTensorSecondDerivativeCommutatorComponents {q : Nat}
     (R : Idx -> Idx -> Idx -> Idx -> Real)
     (A : (Fin q -> Idx) -> Real)

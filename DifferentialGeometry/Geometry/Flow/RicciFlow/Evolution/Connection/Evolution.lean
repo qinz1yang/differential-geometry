@@ -143,7 +143,7 @@ theorem christoffelEvolution_of_metricFrameTimeRegularity
   simpa [gamma, target, christoffelEvolutionRHSInFrame] using hGamma
 
 omit [SigmaCompactSpace M] [T2Space M] in
-theorem gammaEvolOfInv
+theorem gammaEvolutionOfInv
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (gInv : Real -> DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M Idx)
@@ -153,7 +153,7 @@ theorem gammaEvolOfInv
     (metricCovDerivDt nablaRic :
       Real -> M -> Idx -> Idx -> Idx -> Real)
     (hinv : InvMetricLocal (I := I) S gInv frame u)
-    (hinvEvol : InverseMetricEvolutionEquationInFrame
+    (hinvEvolution : InverseMetricEvolutionEquationInFrame
       (I := I) S gInv frame u)
     (hmetric :
       MetricCovDerivDerivativeComponentsInFrameOnLocal
@@ -195,7 +195,7 @@ theorem gammaEvolOfInv
         (fun l _hl =>
           by
             have hprod :=
-              (hinvEvol t x hx k l).mul (hDiff t x hx i j l)
+              (hinvEvolution t x hx k l).mul (hDiff t x hx i j l)
             refine hprod.congr_deriv ?_
             simp))
   have hSub :
@@ -228,7 +228,7 @@ theorem gammaEvolOfInv
   simpa [gamma, target, christoffelEvolutionRHSInFrame] using hGamma
 
 omit [SigmaCompactSpace M] [T2Space M] in
-theorem gammaEvolLocal
+theorem gammaEvolutionLocal
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (gInv : Real -> DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M Idx)
@@ -238,7 +238,7 @@ theorem gammaEvolLocal
     (metricCovDerivDt nablaRic :
       Real -> M -> Idx -> Idx -> Idx -> Real)
     (hinv : InvMetricLocal (I := I) S gInv frame u)
-    (hinvEvol : InverseMetricEvolutionEquationInFrame
+    (hinvEvolution : InverseMetricEvolutionEquationInFrame
       (I := I) S gInv frame u)
     (hmetric :
       MetricCovDerivDerivativeComponentsInFrameOnLocal
@@ -280,7 +280,7 @@ theorem gammaEvolLocal
         (fun l _hl =>
           by
             have hprod :=
-              (hinvEvol t x hx k l).mul (hDiff t x hx i j l)
+              (hinvEvolution t x hx k l).mul (hDiff t x hx i j l)
             refine hprod.congr_deriv ?_
             simp))
   have hSub :
@@ -342,7 +342,7 @@ theorem christoffelEvolution_of_spacetimeSmoothMetric
       (M := M) (Idx := Idx) nablaRic)
 
 omit [SigmaCompactSpace M] in
-theorem evol_christoffel_inFrame
+theorem evolution_christoffel_inFrame
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S)
@@ -371,12 +371,12 @@ theorem evol_christoffel_inFrame
         (t : Real) x i j k)
       D.carrier
       (t : Real) := by
-  have hEvol :
+  have hEvolution :
       ChristoffelEvolutionEquationInFrameOn
         (I := I) S gInv frame hframe nablaRic :=
     christoffelEvolution_of_spacetimeSmoothMetric
       (I := I) S hS gInv gInvDt frame hframe hu nablaRic hreg hnabla
-  exact (hEvol t x hx i j k).congr_deriv
+  exact (hEvolution t x hx i j k).congr_deriv
     (christoffelEvolutionRHSInFrame_eq_coordinates_rhs
       (M := M) gInv nablaRic (t : Real) x i j k)
 

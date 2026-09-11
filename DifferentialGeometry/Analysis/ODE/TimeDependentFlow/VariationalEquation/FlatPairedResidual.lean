@@ -39,11 +39,11 @@ theorem leviCivita_basepoint_eq_rawFderiv_add_corrections
     (hCdiff : DifferentiableAt ℝ
       (fun z => chartMovingTriv (I := I) α z) (extChartAt I α α)) :
     (LeviCivita (I := I) g) X α w
-      = (centeredChartTangentEquiv (I := I) α).symm
+      = (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentEquiv (I := I) α).symm
           (fderiv ℝ (chartRawRepr (I := I) α X) (extChartAt I α α)
-              (centeredChartTangentEquiv (I := I) α w)
+              (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentEquiv (I := I) α w)
             + movingTrivCorrection (I := I) α X
-                (centeredChartTangentEquiv (I := I) α w)
+                (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentEquiv (I := I) α w)
             + christoffelCorrection (I := I) g α α
                 (chartESectionRepr (I := I) α X α) w) := by
   classical

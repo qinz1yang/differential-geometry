@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Metric.Basic
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Metric.InverseSmooth
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Metric.Covariant
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Metric.Evolution
-import DifferentialGeometry.Geometry.Coordinates.Christoffel
+import DifferentialGeometry.Geometry.Coordinates.Connection.Christoffel
 import DifferentialGeometry.Geometry.Curvature.Components.Basic
 import DifferentialGeometry.Geometry.Curvature.Components.Lowering
 import DifferentialGeometry.Geometry.Curvature.Components.TraceOneForm
@@ -10,11 +10,11 @@ import DifferentialGeometry.Geometry.Curvature.Components.RicciTrace
 import DifferentialGeometry.Geometry.Curvature.Components.LocalFrame
 import DifferentialGeometry.Geometry.Curvature.Components.Christoffel
 import DifferentialGeometry.Geometry.Curvature.Components.RicciIdentity
-import DifferentialGeometry.Geometry.Connection.MetricCompatibility
-import DifferentialGeometry.Geometry.Connection.LeviCivita.Torsion
+import DifferentialGeometry.Geometry.Connection.MetricCompatibility.Defs
+import DifferentialGeometry.Geometry.Connection.LeviCivita.Characterization.Torsion
 import DifferentialGeometry.Bundle.PartialMfderiv.Basic
 import DifferentialGeometry.Bundle.PartialMfderiv.ModelMixed
-import DifferentialGeometry.Bundle.PartialMfderiv.FixedBase
+import DifferentialGeometry.Geometry.Coordinates.Calculus.FixedBaseDerivative
 
 
 open DifferentialGeometry.PDE.RicciFlow
@@ -273,16 +273,14 @@ theorem metricCovDerivCompInFrameAtBase_eq_connectionDiff
       connectionDiffLoweredInFrame (I := I) S frame var base var x d a b +
         (S.family.metric var).inner x (frame a x)
           (connectionDiffVectorInFrame (I := I) S frame base var x d b) := by
-  have hfd : MDiffAt (T% (frame d)) x :=
-    localFrame_mdiffAt (I := I) frame hframe hu hx d
   have hfa : MDiffAt (T% (frame a)) x :=
     localFrame_mdiffAt (I := I) frame hframe hu hx a
   have hfb : MDiffAt (T% (frame b)) x :=
     localFrame_mdiffAt (I := I) frame hframe hu hx b
   have hmc :=
-    DifferentialGeometry.Geometry.Connection.metric_compatible_apply
+    DifferentialGeometry.Geometry.Connection.IsMetricCompatible.mvfderiv_inner
       (I := I) (SolutionOn.leviCivita (I := I) S ⟨var, hvar⟩).1
-      (frame d) (frame a) (frame b) hfd hfa hfb
+      (frame d x) hfa hfb
   unfold metricCovDerivCompInFrameAtBase connectionDiffLoweredInFrame
     connectionDiffVectorInFrame
   have hmc' :

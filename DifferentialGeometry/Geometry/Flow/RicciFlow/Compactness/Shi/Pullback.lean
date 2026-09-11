@@ -1,6 +1,6 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Ricci
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Ricci.Tower
 
-import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivativePullback
+import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Pullback
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 
@@ -12,7 +12,7 @@ open scoped Manifold Topology ContDiff ENNReal
 open DifferentialGeometry.Geometry.Curvature.CovariantDerivative
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [CompleteSpace E]
@@ -80,7 +80,7 @@ theorem ricCovTower_normSq0S_pullback
           (Diffeomorph.pullbackMetric (I := I) g Φ) s x)
       = Tensor0SBundle.normSq0S (I := I) g (Φ x) (2 + s)
           (ricCovTower (I := I) g g s (Φ x)) := by
-  obtain ⟨B, hB⟩ := exists_gOrthonormalBasis (Diffeomorph.pullbackMetric (I := I) g Φ) x
+  obtain ⟨B, hB⟩ := DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis (Diffeomorph.pullbackMetric (I := I) g Φ) x
   exact normSq0S_pullback_eval_of_orthonormal (I := I) g Φ x (2 + s) B hB
     (ricCovTower (I := I) (Diffeomorph.pullbackMetric (I := I) g Φ)
       (Diffeomorph.pullbackMetric (I := I) g Φ) s x)
@@ -104,7 +104,7 @@ theorem movingShiBoundOn_pullback
   rw [ricCovTower_normSq0S_pullback (I := I) (gSeq i t) Φ s x]
   exact hShi s hs i t ht (Φ x) (hV x hx)
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry
 
 end

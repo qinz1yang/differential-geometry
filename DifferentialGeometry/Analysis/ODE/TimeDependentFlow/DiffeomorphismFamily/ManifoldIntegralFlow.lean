@@ -95,7 +95,7 @@ theorem hasDerivAt_one_eq_self_on_Ioo (φ : ℝ → ℝ) {a b : ℝ}
   simp only at hkey; rw [hval] at hkey; linarith
 
 omit [FiniteDimensional ℝ E] [T2Space M] in
-theorem time_dependent_vf_local_integral_flow_bare [CompleteSpace E]
+theorem exists_local_integral_curve_of_contMDiff_autonomizedField [CompleteSpace E]
     (X : ℝ → ∀ x : M, TangentSpace I x)
     (hX : ∀ p : ℝ × M,
       ContMDiffAt (𝓘(ℝ, ℝ).prod I) ((𝓘(ℝ, ℝ).prod I).prod 𝓘(ℝ, ℝ × E)) 1

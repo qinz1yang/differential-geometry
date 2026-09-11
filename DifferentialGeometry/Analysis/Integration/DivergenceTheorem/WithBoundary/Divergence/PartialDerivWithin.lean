@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.LocalFormula
+import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.Local.Formula
 import Mathlib.Analysis.Calculus.FDeriv.Basic
 import Mathlib.Analysis.Calculus.FDeriv.Add
 import Mathlib.Analysis.Calculus.FDeriv.Mul
@@ -27,12 +27,12 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 
 def partialDerivWithin (s : Set E) (i : Fin (Module.finrank ℝ E))
     (u : E → ℝ) (y : E) : ℝ :=
-  fderivWithin ℝ u s y ((chartModelBasis E) i)
+  fderivWithin ℝ u s y ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)
 
 @[simp] lemma partialDerivWithin_def (s : Set E)
     (i : Fin (Module.finrank ℝ E)) (u : E → ℝ) (y : E) :
     partialDerivWithin (E := E) s i u y =
-      fderivWithin ℝ u s y ((chartModelBasis E) i) := rfl
+      fderivWithin ℝ u s y ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) := rfl
 
 section ComparisonWithFDeriv
 
@@ -40,16 +40,16 @@ variable {s : Set E} {i : Fin (Module.finrank ℝ E)} {u : E → ℝ} {y : E}
 
 lemma partialDerivWithin_eq_partialDeriv_of_isOpen
     (hs : IsOpen s) (hy : y ∈ s) :
-    partialDerivWithin (E := E) s i u y = partialDeriv (E := E) i u y := by
-  unfold partialDerivWithin partialDeriv
+    partialDerivWithin (E := E) s i u y = DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i u y := by
+  unfold partialDerivWithin DifferentialGeometry.Tensor.Coordinates.partialDeriv
   rw [fderivWithin_of_isOpen hs hy]
 
 lemma partialDerivWithin_eq_partialDeriv_of_mem_interior
     (hy : y ∈ interior s) :
-    partialDerivWithin (E := E) s i u y = partialDeriv (E := E) i u y := by
+    partialDerivWithin (E := E) s i u y = DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i u y := by
   have hnhds : s ∈ 𝓝 y :=
     Filter.mem_of_superset (isOpen_interior.mem_nhds hy) interior_subset
-  unfold partialDerivWithin partialDeriv
+  unfold partialDerivWithin DifferentialGeometry.Tensor.Coordinates.partialDeriv
   rw [fderivWithin_of_mem_nhds hnhds]
 
 lemma partialDerivWithin_congr {u v : E → ℝ}
@@ -78,7 +78,7 @@ lemma partialDerivWithin_contDiffOn_of_uniqueDiffOn
   have hfderiv : ContDiffOn ℝ m (fderivWithin ℝ u s) s :=
     hu.fderivWithin hs hmn
   have hconst : ContDiffOn ℝ m
-      (fun _ : E => (chartModelBasis E) i) s := contDiffOn_const
+      (fun _ : E => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) s := contDiffOn_const
   exact hfderiv.clm_apply hconst
 
 lemma partialDerivWithin_contDiffOn_top_of_uniqueDiffOn
@@ -156,7 +156,7 @@ theorem partialDerivWithin_extChartAt_target_eq_partialDeriv
     (α : M) (i : Fin (Module.finrank ℝ E)) (u : E → ℝ)
     {y : E} (hy : y ∈ interior (extChartAt I α).target) :
     partialDerivWithin (E := E) (extChartAt I α).target i u y =
-      partialDeriv (E := E) i u y :=
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i u y :=
   partialDerivWithin_eq_partialDeriv_of_mem_interior hy
 
 end ChartTarget

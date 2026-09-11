@@ -1,11 +1,12 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Uhlenbeck.Frame
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Uhlenbeck.CurvatureEvolution
-import DifferentialGeometry.Geometry.Curvature.MetricLeviCivitaReconcile
-import DifferentialGeometry.Geometry.Curvature.AlgebraicTensor
-import DifferentialGeometry.Geometry.Curvature.AlgebraicTensorMetric
-import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureOperatorLeastEigenvalue
-import DifferentialGeometry.Analysis.ODE.GlobalLipschitzAffineExistence
+import DifferentialGeometry.Geometry.Curvature.Metric.LeviCivita
+import DifferentialGeometry.Geometry.Curvature.Algebraic.Tensor
+import DifferentialGeometry.Geometry.Curvature.Algebraic.TensorMetric
+import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureOperator.LeastEigenvalue
+import DifferentialGeometry.Analysis.ODE.Existence.GlobalLipschitzAffine
 import Mathlib.Analysis.Calculus.Deriv.MeanValue
+import DifferentialGeometry.Geometry.Metric.Family.Uhlenbeck
 
 set_option autoImplicit false
 
@@ -613,6 +614,12 @@ theorem uhlenbeckIota_isometry
     (A₀ : Idx → Idx → ℝ) :
     ∃ iota : MatrixComp M Idx,
       (∀ x : M, ∀ a k : Idx, iota 0 x a k = A₀ a k) ∧
+      (∀ x : M, ContinuousOn (fun t : ℝ => iota t x) (Set.Icc 0 T)) ∧
+      (∀ t : ℝ, t ∈ Set.Ico 0 T → ∀ x : M, ∀ a k : Idx,
+        HasDerivWithinAt (fun s : ℝ => iota s x a k)
+          (∑ l : Idx,
+            uhlenbeckRupOfSolution (I := I) S gInv frame t x l k * iota t x a l)
+          (Set.Ici 0) t) ∧
       FrameRicciODEInFrameOn (D := RealTimeInterval.closed 0 T hT.le) iota
         (uhlenbeckRupOfSolution (I := I) S gInv frame) ∧
       ∀ t : ℝ, t ∈ Set.Icc 0 T → ∀ x : M, ∀ a b : Idx,
@@ -627,7 +634,7 @@ theorem uhlenbeckIota_isometry
     exact (hiota_deriv (t : ℝ) ⟨le_of_lt t.2.1, t.2.2⟩ x a k).mono (by
       intro s hs
       exact hs.1)
-  refine ⟨iota, hiota0, hframeODE, ?_⟩
+  refine ⟨iota, hiota0, hiota_cont, hiota_deriv, hframeODE, ?_⟩
   intro t ht x a b
   have hcompat := ricciOneUpCompatible_of_inverseMetric (I := I) (M := M) S gInv frame
     hgInv hginv_symm
@@ -668,6 +675,251 @@ omit [FiniteDimensional Real E] [CompleteSpace E] [IsManifold I ∞ M] [SigmaCom
       ∑ k : Idx, iota t x a k • basis k := by
   unfold uhlenbeckEndomorphismAt
   exact basis.constrL_basis (fun a : Idx => ∑ k : Idx, iota t x a k • basis k) a
+
+omit [FiniteDimensional Real E] [CompleteSpace E] [IsManifold I ∞ M] [SigmaCompactSpace M]
+    [T2Space M] in
+theorem uhlenbeckEndomorphism_eq_id_of_identity_components
+    {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
+    {x : M} (basis : Module.Basis Idx Real (TangentSpace I x))
+    (iota : MatrixComp M Idx)
+    (hiota : ∀ a k : Idx, iota 0 x a k = if a = k then 1 else 0) :
+    uhlenbeckEndomorphismAt basis iota 0 =
+      ContinuousLinearMap.id Real (TangentSpace I x) := by
+  apply ContinuousLinearMap.ext
+  intro v
+  simp only [ContinuousLinearMap.id_apply]
+  calc
+    uhlenbeckEndomorphismAt basis iota 0 v =
+        uhlenbeckEndomorphismAt basis iota 0
+          (∑ a : Idx, basis.repr v a • basis a) := by
+      rw [basis.sum_repr]
+    _ = ∑ a : Idx, basis.repr v a •
+        uhlenbeckEndomorphismAt basis iota 0 (basis a) := by
+      rw [map_sum]
+      simp only [map_smul]
+    _ = ∑ a : Idx, basis.repr v a • basis a := by
+      refine Finset.sum_congr rfl fun a _ => ?_
+      rw [uhlenbeckEndomorphism_apply_basis]
+      simp [hiota]
+    _ = v := basis.sum_repr v
+
+omit [FiniteDimensional Real E] [CompleteSpace E] [IsManifold I ∞ M] [SigmaCompactSpace M]
+    [T2Space M] in
+theorem uhlenbeckEndomorphism_continuousOn
+    {Idx : Type*} [Fintype Idx]
+    {x : M} (basis : Module.Basis Idx Real (TangentSpace I x))
+    (iota : MatrixComp M Idx) {K : Set Real}
+    (hiota : ContinuousOn (fun t : Real => iota t x) K)
+    (v : TangentSpace I x) :
+    ContinuousOn (fun t : Real => uhlenbeckEndomorphismAt basis iota t v) K := by
+  have hentry (a k : Idx) : ContinuousOn (fun t : Real => iota t x a k) K :=
+    (continuous_apply k).comp_continuousOn
+      ((continuous_apply a).comp_continuousOn hiota)
+  have hbasis (a : Idx) :
+      ContinuousOn
+        (fun t : Real => uhlenbeckEndomorphismAt basis iota t (basis a)) K := by
+    simp_rw [uhlenbeckEndomorphism_apply_basis]
+    exact continuousOn_finsetSum Finset.univ fun k _ =>
+      (hentry a k).smul continuousOn_const
+  conv =>
+    enter [1, t]
+    rw [← basis.sum_repr v, map_sum]
+  simp_rw [map_smul]
+  exact continuousOn_finsetSum Finset.univ fun a _ =>
+    (continuousOn_const : ContinuousOn
+      (fun _ : Real => (basis.repr v) a) K).smul (hbasis a)
+
+omit [SigmaCompactSpace M] in
+private theorem uhlenbeckRup_sum_smul_basis_eq_ricciSharp
+    [I.Boundaryless]
+    {D : RealTimeInterval}
+    (S : SolutionOn (I := I) (M := M) D)
+    {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
+    (gInv : Real → InverseMetricComponents M Idx)
+    (basisAt : ∀ x : M, Module.Basis Idx Real (TangentSpace I x))
+    (hgInv : ∀ t x i j,
+      ∑ k : Idx, gInv t x i k *
+        metricCompInFrame (I := I) S (fun a x => basisAt x a) t x k j =
+          if i = j then 1 else 0)
+    (hginv_symm : ∀ t x i j, gInv t x i j = gInv t x j i)
+    (t : Real) (x : M) (l : Idx) :
+    (∑ k : Idx,
+      uhlenbeckRupOfSolution (I := I) S gInv (fun a x => basisAt x a) t x l k •
+        basisAt x k) =
+      ricciSharp (I := I) (S.family.metric t) x (basisAt x l) := by
+  apply Tensor0SBundle.eq_of_inner_basis_eq
+    (I := I) (S.family.metric t) x (basisAt x)
+  intro j
+  change (S.family.metric t).inner x
+      (∑ k : Idx,
+        uhlenbeckRupOfSolution (I := I) S gInv
+          (fun a x => basisAt x a) t x l k • basisAt x k) (basisAt x j) =
+    (S.family.metric t).inner x
+      (ricciSharp (I := I) (S.family.metric t) x (basisAt x l)) (basisAt x j)
+  rw [map_sum]
+  simp only [map_smul, FunLike.coe_sum, FunLike.coe_smul,
+    Finset.sum_apply, Pi.smul_apply, smul_eq_mul]
+  change (∑ k : Idx,
+      uhlenbeckRupOfSolution (I := I) S gInv
+        (fun a x => basisAt x a) t x l k *
+          metricCompInFrame (I := I) S (fun a x => basisAt x a) t x k j) =
+    (S.family.metric t).inner x
+      (ricciSharp (I := I) (S.family.metric t) x (basisAt x l)) (basisAt x j)
+  rw [uhlenbeckRup_mul_metricComp_eq_ricci
+    (I := I) S gInv (fun a x => basisAt x a) hgInv hginv_symm t x l j]
+  rw [inner_ricciSharp]
+  simp only [ricciCompInFrame, SolutionOn.ricciAt_eq, SolutionFamily.ricciAt,
+    metricRicciAt_apply_eq_ricciTensor]
+  rfl
+
+omit [SigmaCompactSpace M] in
+private theorem uhlenbeckEndomorphism_hasDerivWithinAt_of_components
+    [I.Boundaryless]
+    {D : RealTimeInterval}
+    (S : SolutionOn (I := I) (M := M) D)
+    {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
+    (gInv : Real → InverseMetricComponents M Idx)
+    (basisAt : ∀ x : M, Module.Basis Idx Real (TangentSpace I x))
+    (iota : MatrixComp M Idx)
+    (hgInv : ∀ t x i j,
+      ∑ k : Idx, gInv t x i k *
+        metricCompInFrame (I := I) S (fun a x => basisAt x a) t x k j =
+          if i = j then 1 else 0)
+    (hginv_symm : ∀ t x i j, gInv t x i j = gInv t x j i)
+    {K : Set Real} (t : Real) (x : M) (v : TangentSpace I x)
+    (hframe : ∀ a k : Idx,
+      HasDerivWithinAt (fun s : Real => iota s x a k)
+        (∑ l : Idx,
+          uhlenbeckRupOfSolution (I := I) S gInv
+              (fun a x => basisAt x a) t x l k * iota t x a l)
+        K t) :
+    HasDerivWithinAt
+      (fun s : Real => uhlenbeckEndomorphismAt (basisAt x) iota s v)
+      (ricciSharp (I := I) (S.family.metric t) x
+        (uhlenbeckEndomorphismAt (basisAt x) iota t v))
+      K t := by
+  have hbasis (a : Idx) :
+      HasDerivWithinAt
+        (fun s : Real => uhlenbeckEndomorphismAt (basisAt x) iota s (basisAt x a))
+        (ricciSharp (I := I) (S.family.metric t) x
+          (uhlenbeckEndomorphismAt (basisAt x) iota t (basisAt x a)))
+        K t := by
+    have hsum := HasDerivWithinAt.fun_sum
+      (u := (Finset.univ : Finset Idx))
+      (fun k _ => (hframe a k).smul_const (basisAt x k))
+    have hsum' : HasDerivWithinAt
+        (fun s : Real =>
+          uhlenbeckEndomorphismAt (basisAt x) iota s (basisAt x a))
+        (∑ k : Idx,
+          (∑ l : Idx,
+            uhlenbeckRupOfSolution (I := I) S gInv
+              (fun a x => basisAt x a) t x l k * iota t x a l) • basisAt x k)
+        K t := by
+      simpa only [uhlenbeckEndomorphism_apply_basis] using hsum
+    refine hsum'.congr_deriv ?_
+    rw [uhlenbeckEndomorphism_apply_basis, map_sum]
+    simp_rw [map_smul]
+    calc
+      (∑ k : Idx, (∑ l : Idx,
+          uhlenbeckRupOfSolution (I := I) S gInv
+            (fun a x => basisAt x a) t x l k * iota t x a l) • basisAt x k) =
+          ∑ k : Idx, ∑ l : Idx,
+            (uhlenbeckRupOfSolution (I := I) S gInv
+              (fun a x => basisAt x a) t x l k * iota t x a l) • basisAt x k := by
+        refine Finset.sum_congr rfl fun k _ => ?_
+        rw [Finset.sum_smul]
+      _ = ∑ l : Idx, ∑ k : Idx,
+          (uhlenbeckRupOfSolution (I := I) S gInv
+            (fun a x => basisAt x a) t x l k * iota t x a l) • basisAt x k := by
+        rw [Finset.sum_comm]
+      _ = ∑ l : Idx, iota t x a l •
+          (∑ k : Idx, uhlenbeckRupOfSolution (I := I) S gInv
+            (fun a x => basisAt x a) t x l k • basisAt x k) := by
+        refine Finset.sum_congr rfl fun l _ => ?_
+        rw [Finset.smul_sum]
+        refine Finset.sum_congr rfl fun k _ => ?_
+        rw [smul_smul]
+        congr 1
+        ring
+      _ = ∑ l : Idx, iota t x a l •
+          ricciSharp (I := I) (S.family.metric t) x (basisAt x l) := by
+        refine Finset.sum_congr rfl fun l _ => ?_
+        rw [uhlenbeckRup_sum_smul_basis_eq_ricciSharp
+          S gInv basisAt hgInv hginv_symm t x l]
+  have hsum := HasDerivWithinAt.fun_sum
+    (u := (Finset.univ : Finset Idx)) (fun a _ =>
+      (hbasis a).const_smul ((basisAt x).repr v a))
+  have hfun (s : Real) :
+      uhlenbeckEndomorphismAt (basisAt x) iota s v =
+        ∑ a : Idx, (basisAt x).repr v a •
+          uhlenbeckEndomorphismAt (basisAt x) iota s (basisAt x a) := by
+    conv_lhs => rw [← (basisAt x).sum_repr v]
+    rw [map_sum]
+    simp only [map_smul]
+  have hderiv :
+      ricciSharp (I := I) (S.family.metric t) x
+          (uhlenbeckEndomorphismAt (basisAt x) iota t v) =
+        ∑ a : Idx, (basisAt x).repr v a •
+          ricciSharp (I := I) (S.family.metric t) x
+            (uhlenbeckEndomorphismAt (basisAt x) iota t (basisAt x a)) := by
+    rw [hfun t, map_sum]
+    simp only [map_smul]
+  rw [hderiv]
+  exact hsum.congr (fun s _ => hfun s) (hfun t)
+
+omit [SigmaCompactSpace M] in
+theorem uhlenbeckEndomorphism_hasDerivWithinAt
+    [I.Boundaryless]
+    {D : RealTimeInterval}
+    (S : SolutionOn (I := I) (M := M) D)
+    {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
+    (gInv : Real → InverseMetricComponents M Idx)
+    (basisAt : ∀ x : M, Module.Basis Idx Real (TangentSpace I x))
+    (iota : MatrixComp M Idx)
+    (hgInv : ∀ t x i j,
+      ∑ k : Idx, gInv t x i k *
+        metricCompInFrame (I := I) S (fun a x => basisAt x a) t x k j =
+          if i = j then 1 else 0)
+    (hginv_symm : ∀ t x i j, gInv t x i j = gInv t x j i)
+    (hframe : FrameRicciODEInFrameOn (D := D) iota
+      (uhlenbeckRupOfSolution (I := I) S gInv (fun a x => basisAt x a)))
+    (t : RealTimeInterval.RegularTime D) (x : M) (v : TangentSpace I x) :
+    HasDerivWithinAt
+      (fun s : Real => uhlenbeckEndomorphismAt (basisAt x) iota s v)
+      (ricciSharp (I := I) (S.family.metric t) x
+        (uhlenbeckEndomorphismAt (basisAt x) iota t v))
+      D.carrier t :=
+  uhlenbeckEndomorphism_hasDerivWithinAt_of_components
+    S gInv basisAt iota hgInv hginv_symm t x v (hframe t x)
+
+omit [SigmaCompactSpace M] in
+theorem uhlenbeckEndomorphism_hasDerivWithinAt_right
+    [I.Boundaryless]
+    {T : Real} (hT : 0 < T)
+    (S : SolutionOn (I := I) (M := M) (RealTimeInterval.closed 0 T hT.le))
+    {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
+    (gInv : Real → InverseMetricComponents M Idx)
+    (basisAt : ∀ x : M, Module.Basis Idx Real (TangentSpace I x))
+    (iota : MatrixComp M Idx)
+    (hgInv : ∀ t x i j,
+      ∑ k : Idx, gInv t x i k *
+        metricCompInFrame (I := I) S (fun a x => basisAt x a) t x k j =
+          if i = j then 1 else 0)
+    (hginv_symm : ∀ t x i j, gInv t x i j = gInv t x j i)
+    (hframe : ∀ t : Real, t ∈ Set.Ico 0 T → ∀ x : M, ∀ a k : Idx,
+      HasDerivWithinAt (fun s : Real => iota s x a k)
+        (∑ l : Idx,
+          uhlenbeckRupOfSolution (I := I) S gInv
+              (fun a x => basisAt x a) t x l k * iota t x a l)
+        (Set.Ici 0) t)
+    {t : Real} (ht : t ∈ Set.Ico 0 T) (x : M) (v : TangentSpace I x) :
+    HasDerivWithinAt
+      (fun s : Real => uhlenbeckEndomorphismAt (basisAt x) iota s v)
+      (ricciSharp (I := I) (S.family.metric t) x
+        (uhlenbeckEndomorphismAt (basisAt x) iota t v))
+      (Set.Ici 0) t :=
+  uhlenbeckEndomorphism_hasDerivWithinAt_of_components
+    S gInv basisAt iota hgInv hginv_symm t x v (hframe t ht x)
 
 omit [SigmaCompactSpace M] [T2Space M] in
 lemma uhlenbeckEndomorphism_gram_pair
@@ -817,8 +1069,8 @@ theorem uhlenbeckPulledRm04At_apply
     {Idx : Type*} [Fintype Idx]
     (basisAt : ∀ x : M, Module.Basis Idx Real (TangentSpace I x))
     (iota : MatrixComp M Idx) (t : ℝ) (x : M) (X Y Z W : TangentSpace I x) :
-    tensor04StdAt (uhlenbeckPulledRm04At S basisAt iota t x) X Y Z W =
-      tensor04StdAt (S.base.rm04 t x)
+    tensor04StandardAt (uhlenbeckPulledRm04At S basisAt iota t x) X Y Z W =
+      tensor04StandardAt (S.base.rm04 t x)
         (uhlenbeckEndomorphismAt (basisAt x) iota t X)
         (uhlenbeckEndomorphismAt (basisAt x) iota t Y)
         (uhlenbeckEndomorphismAt (basisAt x) iota t Z)
@@ -847,11 +1099,11 @@ theorem uhlenbeckPulledRm04At_mem_algebraicCurvatureTensorSubmodule
       algebraicCurvatureTensorSubmodule (I := I) (M := M) x := by
   rw [mem_algebraicCurvatureTensorSubmodule]
   let Rm : Tensor04At (I := I) (M := M) x := S.base.rm04 t x
-  have hform : IsAlgCurvForm (tensor04StdAt (I := I) (M := M) Rm) :=
+  have hform : IsAlgCurvForm (tensor04StandardAt (I := I) (M := M) Rm) :=
     mem_algebraicCurvatureTensorSubmodule.mp
       (metricRm04At_mem_algebraicCurvatureTensorSubmodule (I := I) (S.base.metric t) x)
   change IsAlgCurvForm (fun X Y Z W =>
-    tensor04StdAt (uhlenbeckPulledRm04At S basisAt iota t x) X Y Z W)
+    tensor04StandardAt (uhlenbeckPulledRm04At S basisAt iota t x) X Y Z W)
   refine ⟨?_, ?_, ?_, ?_, ?_⟩
   · intro x₁ x₂ y z w
     rw [uhlenbeckPulledRm04At_apply, uhlenbeckPulledRm04At_apply,
@@ -883,9 +1135,9 @@ theorem uhlenbeckPulledRm04At_apply_basis
     {Idx : Type*} [Fintype Idx]
     (basisAt : ∀ x : M, Module.Basis Idx Real (TangentSpace I x))
     (iota : MatrixComp M Idx) (t : ℝ) (x : M) (a b c d : Idx) :
-    tensor04StdAt (uhlenbeckPulledRm04At S basisAt iota t x) (basisAt x a) (basisAt x b) (basisAt x c) (basisAt x d) =
+    tensor04StandardAt (uhlenbeckPulledRm04At S basisAt iota t x) (basisAt x a) (basisAt x b) (basisAt x c) (basisAt x d) =
       uhlenbeckPullbackRmInFrame iota
-        (fun s x a b c d => tensor04StdAt (S.base.rm04 s x) (basisAt x a) (basisAt x b) (basisAt x c) (basisAt x d))
+        (fun s x a b c d => tensor04StandardAt (S.base.rm04 s x) (basisAt x a) (basisAt x b) (basisAt x c) (basisAt x d))
         t x a b c d := by
   classical
   change (S.base.rm04 t x :
@@ -894,9 +1146,9 @@ theorem uhlenbeckPulledRm04At_apply_basis
         uhlenbeckEndomorphismAt (basisAt x) iota t
           (vec4 (basisAt x a) (basisAt x b) (basisAt x c) (basisAt x d) i)) =
     uhlenbeckPullbackRmInFrame iota
-      (fun s x a b c d => tensor04StdAt (S.base.rm04 s x) (basisAt x a) (basisAt x b) (basisAt x c) (basisAt x d))
+      (fun s x a b c d => tensor04StandardAt (S.base.rm04 s x) (basisAt x a) (basisAt x b) (basisAt x c) (basisAt x d))
       t x a b c d
-  simp only [uhlenbeckPullbackRmInFrame, tensor04StdAt_apply]
+  simp only [uhlenbeckPullbackRmInFrame, tensor04StandardAt_apply]
   let g : Fin 4 → TangentSpace I x := fun _ => 0
   have harg : (fun i : Fin 4 =>
       uhlenbeckEndomorphismAt (basisAt x) iota t

@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.ChartLocalExistence.ChartOverlapUniqueness
-import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.ChartLocalExistence.Glue
+import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.ChartLocalExistence.Selection
 import Mathlib.Analysis.ODE.Gronwall
 import Mathlib.Geometry.Manifold.MFDeriv.Basic
 

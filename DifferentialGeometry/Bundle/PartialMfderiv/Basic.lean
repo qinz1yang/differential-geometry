@@ -120,8 +120,8 @@ theorem vderiv_mlieBracket
     change NormedSpace Real Real
     infer_instance
   have hxmem : x ∈ φ.source := mem_extChartAt_source (I := I) x
-  have hy₀tgt : y₀ ∈ φ.target := φ.map_source hxmem
-  have hy₀s : y₀ ∈ s := extChartAt_target_subset_range (I := I) x hy₀tgt
+  have hy₀target : y₀ ∈ φ.target := φ.map_source hxmem
+  have hy₀s : y₀ ∈ s := extChartAt_target_subset_range (I := I) x hy₀target
   have huniq : UniqueDiffOn Real s := I.uniqueDiffOn
   have hy₀closure : y₀ ∈ closure (interior s) := by
     exact I.range_subset_closure_interior hy₀s
@@ -242,13 +242,13 @@ theorem vderiv_mlieBracket
         =ᶠ[𝓝[s] y₀] (fun y => fderivWithin Real g s y
           (VectorField.mpullbackWithin 𝓘(Real, E) I φ.symm Z s y)) := by
     intro Z
-    filter_upwards [extChartAt_target_mem_nhdsWithin_of_mem (I := I) hy₀tgt,
+    filter_upwards [extChartAt_target_mem_nhdsWithin_of_mem (I := I) hy₀target,
       hg_event] with y hy hgy
-    have hy_src : φ.symm y ∈ φ.source := φ.map_target hy
+    have hy_source : φ.symm y ∈ φ.source := φ.map_target hy
     have hgy_diff :
         DifferentiableWithinAt Real g s (φ (φ.symm y)) := by
       simpa [φ.right_inv hy] using hgy.differentiableWithinAt hn_ne_zero
-    have h1 := mfderiv_fderivWithin_chain (φ.symm y) hy_src hgy_diff
+    have h1 := mfderiv_fderivWithin_chain (φ.symm y) hy_source hgy_diff
     have h2raw := congrArg (fun L => L (Z (φ.symm y))) h1
     erw [ContinuousLinearMap.comp_apply] at h2raw
     have h2 : mvfderiv (I := I) f (φ.symm y) (Z (φ.symm y)) =
@@ -331,7 +331,7 @@ theorem mvfderiv_apply_mlieBracket
           (fun y : M => mvfderiv (I := I) f y (X y)) x (Y x) := by
   exact vderiv_mlieBracket (I := I) X Y f x hX hY hf
 
-theorem contMDiff_partial_deriv_fst_gen
+theorem contMDiff_partial_deriv_fst
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
     {H : Type*} [TopologicalSpace H] (I : ModelWithCorners ℝ E H)
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
@@ -365,13 +365,14 @@ theorem contMDiff_partial_deriv_fst_gen
 theorem timeDeriv_smoothAt
     {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners Real E H}
-    {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-    {F : Real × M -> Real} {p0 : Real × M} {m n : WithTop ℕ∞}
+    {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I 1 M]
+    {G : Type*} [NormedAddCommGroup G] [NormedSpace Real G]
+    {F : Real × M -> G} {p0 : Real × M} {m n : WithTop ℕ∞}
     (hF : ContMDiffAt ((modelWithCornersSelf Real Real).prod I)
-      (modelWithCornersSelf Real Real) n F p0)
+      (modelWithCornersSelf Real G) n F p0)
     (hmn : m + 1 ≤ n) :
     ContMDiffAt ((modelWithCornersSelf Real Real).prod I)
-      (modelWithCornersSelf Real Real) m
+      (modelWithCornersSelf Real G) m
       (fun p : Real × M => deriv (fun t => F (t, p.2)) p.1) p0 := by
   have harg :
       ContMDiffAt
@@ -384,13 +385,13 @@ theorem timeDeriv_smoothAt
       ContMDiffAt
         (((modelWithCornersSelf Real Real).prod I).prod
           (modelWithCornersSelf Real Real))
-        (modelWithCornersSelf Real Real) n
+        (modelWithCornersSelf Real G) n
         (fun q : (Real × M) × Real => F (q.2, q.1.2)) (p0, p0.1) :=
     hF.comp (p0, p0.1) harg
   have h_apply :=
     ContMDiffAt.mfderiv_apply
       (I := modelWithCornersSelf Real Real)
-      (I' := modelWithCornersSelf Real Real)
+      (I' := modelWithCornersSelf Real G)
       (f := fun (p : Real × M) (t : Real) => F (t, p.2))
       (g := fun p : Real × M => p.1)
       (g₁ := fun p : Real × M => p)
@@ -429,6 +430,86 @@ theorem mvfderiv_mul_at
     funext y; simp [smul_eq_mul]
   rw [hsmul]
   simpa [smul_eq_mul] using congr($(mvfderiv_mul (I := I) hf hg) v)
+
+theorem mdifferentiableAt_finset_sum
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+    {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
+    {ι : Type*} (t : Finset ι) (f : ι → M → ℝ)
+    {x : M}
+    (hf : ∀ i ∈ t, MDifferentiableAt I 𝓘(ℝ, ℝ) (f i) x) :
+    MDifferentiableAt I 𝓘(ℝ, ℝ) (t.sum f) x := by
+  classical
+  induction t using Finset.induction_on with
+  | empty =>
+      change MDifferentiableAt I 𝓘(ℝ, ℝ) (fun _ : M ↦ (0 : ℝ)) x
+      exact mdifferentiableAt_const (I := I) (I' := 𝓘(ℝ, ℝ))
+        (c := (0 : ℝ)) (x := x)
+  | insert i t hit ih =>
+      have hfi : MDifferentiableAt I 𝓘(ℝ, ℝ) (f i) x := hf i (by simp [hit])
+      have hft : ∀ j ∈ t, MDifferentiableAt I 𝓘(ℝ, ℝ) (f j) x := by
+        intro j hj
+        exact hf j (by simp [hj])
+      have hsum : MDifferentiableAt I 𝓘(ℝ, ℝ) (t.sum f) x := ih hft
+      simpa [Finset.sum_insert, hit] using hfi.add hsum
+
+theorem mdiffAt_finset_sum
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+    {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
+    {ι : Type*} (t : Finset ι) (f : ι → M → ℝ)
+    {x : M}
+    (hf : ∀ i ∈ t, MDifferentiableAt I 𝓘(ℝ, ℝ) (f i) x) :
+    MDifferentiableAt I 𝓘(ℝ, ℝ) (t.sum f) x :=
+  mdifferentiableAt_finset_sum t f hf
+
+theorem mvfderiv_finset_sum_at
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+    {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
+    {ι : Type*} (t : Finset ι) (f : ι → M → ℝ)
+    {x : M} (v : TangentSpace I x)
+    (hf : ∀ i ∈ t, MDifferentiableAt I 𝓘(ℝ, ℝ) (f i) x) :
+    mvfderiv (I := I) (t.sum f) x v =
+      t.sum (fun i => mvfderiv (I := I) (f i) x v) := by
+  classical
+  induction t using Finset.induction_on with
+  | empty => simp
+  | insert i t hit ih =>
+      have hfi : MDifferentiableAt I 𝓘(ℝ, ℝ) (f i) x := hf i (by simp [hit])
+      have hft : ∀ j ∈ t, MDifferentiableAt I 𝓘(ℝ, ℝ) (f j) x := by
+        intro j hj
+        exact hf j (by simp [hj])
+      have hsum : MDifferentiableAt I 𝓘(ℝ, ℝ) (t.sum f) x :=
+        mdifferentiableAt_finset_sum t f hft
+      calc
+        mvfderiv (I := I) ((insert i t).sum f) x v =
+            mvfderiv (I := I) (f i + t.sum f) x v := by
+              simp [Finset.sum_insert, hit]
+        _ = mvfderiv (I := I) (f i) x v +
+              mvfderiv (I := I) (t.sum f) x v := by
+              have hadd := congr($(mvfderiv_add
+                (I := I) (g := f i) (g' := t.sum f)
+                (x := x) hfi hsum) v)
+              simpa [Pi.add_apply] using hadd
+        _ = (insert i t).sum (fun j => mvfderiv (I := I) (f j) x v) := by
+              rw [ih hft]
+              simp [Finset.sum_insert, hit]
+
+theorem mvfderiv_finset_sum_apply_at
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+    {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
+    {ι : Type*} (t : Finset ι) (f : ι → M → ℝ)
+    {x : M} (v : TangentSpace I x)
+    (hf : ∀ i ∈ t, MDifferentiableAt I 𝓘(ℝ, ℝ) (f i) x) :
+    mvfderiv (I := I) (fun y => ∑ i ∈ t, f i y) x v =
+      ∑ i ∈ t, mvfderiv (I := I) (f i) x v := by
+  have hfun : (fun y => ∑ i ∈ t, f i y) = t.sum f := by
+    funext y
+    simp only [Finset.sum_apply]
+  rw [hfun]
+  exact mvfderiv_finset_sum_at t f v hf
 
 theorem mvfderiv_finset_sum_mul_at
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -499,7 +580,7 @@ theorem mvfderiv_finset_sum_mul_at
       rw [ih hUt hBt]
       rw [Finset.sum_insert hat]
 
-theorem mvfderiv_finset_sum_at'
+theorem mvfderiv_finset_sum_apply
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
@@ -585,7 +666,7 @@ theorem mvfderiv_finset_sum_sum_mul_at
           rw [heqfun]
           exact (hUa.mul hBa).add htail
     exact haux t (fun j hj => hU i hi j hj) (fun j hj => hB i hi j hj)
-  rw [mvfderiv_finset_sum_at' (I := I) s
+  rw [mvfderiv_finset_sum_apply (I := I) s
     (fun i => fun y : M => ∑ j ∈ t, U i j y * B i j y) v hinner_diff]
   refine Finset.sum_congr rfl fun i hi => ?_
   rw [mvfderiv_finset_sum_mul_at (I := I) t (fun j => U i j) (fun j => B i j) v
@@ -641,22 +722,22 @@ theorem mvfderiv_apply_contMDiff
   refine hApply.congr_of_eventuallyEq ?_
   · filter_upwards [e.open_baseSet.mem_nhds (by
         simp [e])] with p hp
-    have hp_src : p ∈ (chartAt H x₀).source := by
+    have hp_source : p ∈ (chartAt H x₀).source := by
       simpa [e, TangentBundle.trivializationAt_baseSet] using hp
-    have hf_src : f p ∈ (chartAt 𝕜 (f x₀)).source := by
+    have hf_source : f p ∈ (chartAt 𝕜 (f x₀)).source := by
       rw [chartAt_self_eq]
       exact Set.mem_univ _
     rw [inTangentCoordinates_eq (I := I) (I' := 𝓘(𝕜, 𝕜))
       (f := fun p : M => p) (g := f)
       (ϕ := fun p : M => mfderiv I 𝓘(𝕜, 𝕜) f p)
-      hp_src hf_src]
+      hp_source hf_source]
     have htarget :
         (tangentBundleCore 𝓘(𝕜, 𝕜) 𝕜).coordChange
           (achart 𝕜 (f p)) (achart 𝕜 (f x₀)) (f p) = (1 : 𝕜 →L[𝕜] 𝕜) := by
       simp
     have hsource :=
       (TangentBundle.symmL_trivializationAt_eq_core
-        (𝕜 := 𝕜) (I := I) (b₀ := x₀) (b := p) hp_src).symm
+        (𝕜 := 𝕜) (I := I) (b₀ := x₀) (b := p) hp_source).symm
     have hcancel :
         e.symmL 𝕜 p (Xcoord p) = X p := by
       exact e.symmL_continuousLinearMapAt (R := 𝕜) hp (X p)
@@ -717,22 +798,22 @@ theorem mvfderiv_apply_contMDiffAt
   refine hApply.congr_of_eventuallyEq ?_
   filter_upwards [e.open_baseSet.mem_nhds (by
         simp [e])] with p hp
-  have hp_src : p ∈ (chartAt H x₀).source := by
+  have hp_source : p ∈ (chartAt H x₀).source := by
     simpa [e, TangentBundle.trivializationAt_baseSet] using hp
-  have hf_src : f p ∈ (chartAt 𝕜 (f x₀)).source := by
+  have hf_source : f p ∈ (chartAt 𝕜 (f x₀)).source := by
     rw [chartAt_self_eq]
     exact Set.mem_univ _
   rw [inTangentCoordinates_eq (I := I) (I' := 𝓘(𝕜, 𝕜))
     (f := fun p : M => p) (g := f)
     (ϕ := fun p : M => mfderiv I 𝓘(𝕜, 𝕜) f p)
-    hp_src hf_src]
+    hp_source hf_source]
   have htarget :
       (tangentBundleCore 𝓘(𝕜, 𝕜) 𝕜).coordChange
         (achart 𝕜 (f p)) (achart 𝕜 (f x₀)) (f p) = (1 : 𝕜 →L[𝕜] 𝕜) := by
     simp
   have hsource :=
     (TangentBundle.symmL_trivializationAt_eq_core
-      (𝕜 := 𝕜) (I := I) (b₀ := x₀) (b := p) hp_src).symm
+      (𝕜 := 𝕜) (I := I) (b₀ := x₀) (b := p) hp_source).symm
   have hcancel :
       e.symmL 𝕜 p (Xcoord p) = X p := by
     exact e.symmL_continuousLinearMapAt (R := 𝕜) hp (X p)
@@ -742,7 +823,7 @@ theorem mvfderiv_apply_contMDiffAt
     (mfderiv I 𝓘(𝕜, 𝕜) f p) (e.symmL 𝕜 p (Xcoord p))
   rw [hcancel]
 
-theorem prodExtDerivAt
+theorem prodExtDerivAt_two
     {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners Real E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
@@ -817,16 +898,16 @@ theorem prodExtDerivAt
     exact (continuous_snd.tendsto (t, x)).eventually
       (e.open_baseSet.mem_nhds (by simp [e]))
   filter_upwards [hbase] with p hp
-  have hp_src : p.2 ∈ (chartAt H x).source := by
+  have hp_source : p.2 ∈ (chartAt H x).source := by
     simpa [e, TangentBundle.trivializationAt_baseSet] using hp
-  have hf_src : F (p.1, p.2) ∈ (chartAt Real (F (t, x))).source := by
+  have hf_source : F (p.1, p.2) ∈ (chartAt Real (F (t, x))).source := by
     rw [chartAt_self_eq]
     exact Set.mem_univ _
   rw [inTangentCoordinates_eq (I := I) (I' := 𝓘(Real, Real))
     (f := fun p : Real × M => p.2) (g := fun p : Real × M => F (p.1, p.2))
     (ϕ := fun p : Real × M =>
       mfderiv I 𝓘(Real, Real) (fun y : M => F (p.1, y)) p.2)
-    hp_src hf_src]
+    hp_source hf_source]
   have htarget :
       (tangentBundleCore 𝓘(Real, Real) Real).coordChange
         (achart Real (F (p.1, p.2))) (achart Real (F (t, x))) (F (p.1, p.2)) =
@@ -834,7 +915,7 @@ theorem prodExtDerivAt
     simp
   have hsource :=
     (TangentBundle.symmL_trivializationAt_eq_core
-      (𝕜 := Real) (I := I) (b₀ := x) (b := p.2) hp_src).symm
+      (𝕜 := Real) (I := I) (b₀ := x) (b := p.2) hp_source).symm
   have hcancel :
       e.symmL Real p.2 (Xcoord p) = X p.2 := by
     exact e.symmL_continuousLinearMapAt (R := Real) hp (X p.2)
@@ -846,7 +927,7 @@ theorem prodExtDerivAt
         (e.symmL Real p.2 (Xcoord p))
   rw [hcancel]
 
-theorem prodExtDerivAt_gen
+theorem prodExtDerivAt
     {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners Real E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
@@ -917,16 +998,16 @@ theorem prodExtDerivAt_gen
     exact (continuous_snd.tendsto (t, x)).eventually
       (e.open_baseSet.mem_nhds (by simp [e]))
   filter_upwards [hbase] with p hp
-  have hp_src : p.2 ∈ (chartAt H x).source := by
+  have hp_source : p.2 ∈ (chartAt H x).source := by
     simpa [e, TangentBundle.trivializationAt_baseSet] using hp
-  have hf_src : F (p.1, p.2) ∈ (chartAt Real (F (t, x))).source := by
+  have hf_source : F (p.1, p.2) ∈ (chartAt Real (F (t, x))).source := by
     rw [chartAt_self_eq]
     exact Set.mem_univ _
   rw [inTangentCoordinates_eq (I := I) (I' := 𝓘(Real, Real))
     (f := fun p : Real × M => p.2) (g := fun p : Real × M => F (p.1, p.2))
     (ϕ := fun p : Real × M =>
       mfderiv I 𝓘(Real, Real) (fun y : M => F (p.1, y)) p.2)
-    hp_src hf_src]
+    hp_source hf_source]
   have htarget :
       (tangentBundleCore 𝓘(Real, Real) Real).coordChange
         (achart Real (F (p.1, p.2))) (achart Real (F (t, x))) (F (p.1, p.2)) =
@@ -934,7 +1015,7 @@ theorem prodExtDerivAt_gen
     simp
   have hsource :=
     (TangentBundle.symmL_trivializationAt_eq_core
-      (𝕜 := Real) (I := I) (b₀ := x) (b := p.2) hp_src).symm
+      (𝕜 := Real) (I := I) (b₀ := x) (b := p.2) hp_source).symm
   have hcancel :
       e.symmL Real p.2 (Xcoord p) = X p.2 := by
     exact e.symmL_continuousLinearMapAt (R := Real) hp (X p.2)
@@ -946,7 +1027,7 @@ theorem prodExtDerivAt_gen
         (e.symmL Real p.2 (Xcoord p))
   rw [hcancel]
 
-theorem prodExtDerivAt_inf
+theorem prodExtDerivAt_smooth
     {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners Real E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
@@ -962,7 +1043,7 @@ theorem prodExtDerivAt_inf
       (t, x) := by
   rw [contMDiffAt_infty]
   intro n
-  exact prodExtDerivAt_gen (m := (n : WithTop ℕ∞))
+  exact prodExtDerivAt (m := (n : WithTop ℕ∞))
     (by exact_mod_cast le_top : ((n : WithTop ℕ∞)) ≤ ∞)
     (hF.of_le (by exact_mod_cast le_top : ((n : WithTop ℕ∞) + 1) ≤ ∞)) hX
 
@@ -1044,9 +1125,9 @@ theorem prodExtDeriv_joint
       exact (continuous_snd.tendsto (t, x)).eventually
         (e.open_baseSet.mem_nhds (by simp [e]))
     filter_upwards [Filter.mem_inf_of_left hbase, self_mem_nhdsWithin] with p hp hpJu
-    have hp_src : p.2 ∈ (chartAt H x).source := by
+    have hp_source : p.2 ∈ (chartAt H x).source := by
       simpa [e, TangentBundle.trivializationAt_baseSet] using hp
-    have hf_src : F (p.1, p.2) ∈
+    have hf_source : F (p.1, p.2) ∈
         (chartAt Real (F (t, x))).source := by
       rw [chartAt_self_eq]
       exact Set.mem_univ _
@@ -1055,7 +1136,7 @@ theorem prodExtDeriv_joint
       (g := fun p : Real × M => F (p.1, p.2))
       (ϕ := fun p : Real × M =>
         mfderivWithin I 𝓘(Real, Real) (fun y : M => F (p.1, y)) u p.2)
-      hp_src hf_src]
+      hp_source hf_source]
     rw [mfderivWithin_of_isOpen hu hpJu.2]
     have htarget :
         (tangentBundleCore 𝓘(Real, Real) Real).coordChange
@@ -1064,7 +1145,7 @@ theorem prodExtDeriv_joint
       simp
     have hsource :=
       (TangentBundle.symmL_trivializationAt_eq_core
-        (𝕜 := Real) (I := I) (b₀ := x) (b := p.2) hp_src).symm
+        (𝕜 := Real) (I := I) (b₀ := x) (b := p.2) hp_source).symm
     have hcancel :
         e.symmL Real p.2 (Xcoord p) = X p.2 := by
       exact e.symmL_continuousLinearMapAt (R := Real) hp (X p.2)

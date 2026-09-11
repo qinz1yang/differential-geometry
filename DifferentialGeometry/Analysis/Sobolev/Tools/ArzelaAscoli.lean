@@ -47,13 +47,13 @@ theorem tendsto_subseq_of_uniformly_lipschitz_uniformly_bounded
   · have hK_nonempty : K.Nonempty := Set.nonempty_iff_ne_empty.mpr hK_empty
     have h_subtype_K_compact : CompactSpace K := isCompact_iff_compactSpace.mp hK_compact
     have h_subtype_K_nonempty : Nonempty K := hK_nonempty.to_subtype
-    let f_bcf : ℕ → (K →ᵇ ℝ) :=
+    let f_boundedContinuousFunction : ℕ → (K →ᵇ ℝ) :=
       fun n => BoundedContinuousFunction.mkOfCompact
         ⟨fun x : K => f n (x : E), (hf_cont n).comp continuous_subtype_val⟩
     have h_range_compact : ∀ (g : K →ᵇ ℝ) (x : K),
-        g ∈ Set.range f_bcf → g x ∈ Set.Icc (-C) C := by
+        g ∈ Set.range f_boundedContinuousFunction → g x ∈ Set.Icc (-C) C := by
       rintro g x ⟨n, rfl⟩
-      simpa [f_bcf] using restrict_mem_Icc_of_abs_le hf_bdd n x
+      simpa [f_boundedContinuousFunction] using restrict_mem_Icc_of_abs_le hf_bdd n x
     have h_Icc_compact : IsCompact (Set.Icc (-C) C : Set ℝ) := isCompact_Icc
     have h_lip_restrict : ∀ n, LipschitzWith (NNReal.mk L hL_pos) ((f n) ∘ ((↑) : K → E)) := by
       intro n
@@ -63,7 +63,7 @@ theorem tendsto_subseq_of_uniformly_lipschitz_uniformly_bounded
         (hf_lip n).comp hsubval
       rw [mul_one] at hcomp
       exact hcomp
-    have h_equicont : Equicontinuous ((↑) : (Set.range f_bcf) → K → ℝ) := by
+    have h_equicont : Equicontinuous ((↑) : (Set.range f_boundedContinuousFunction) → K → ℝ) := by
       refine Metric.equicontinuous_of_continuity_modulus
         (fun s => L * s) ?_ _ ?_
       · have : Tendsto (fun s : ℝ => L * s) (𝓝 0) (𝓝 (L * 0)) :=
@@ -75,13 +75,13 @@ theorem tendsto_subseq_of_uniformly_lipschitz_uniformly_bounded
         have : dist (f n (x : E)) (f n (y : E)) ≤ L * dist (x : E) (y : E) := by
           have := h_lip_n.dist_le_mul x y
           exact this
-        simpa [f_bcf, BoundedContinuousFunction.mkOfCompact_apply,
+        simpa [f_boundedContinuousFunction, BoundedContinuousFunction.mkOfCompact_apply,
           Subtype.dist_eq] using this
     have h_compact_closure :
-        IsCompact (closure (Set.range f_bcf : Set (K →ᵇ ℝ))) :=
+        IsCompact (closure (Set.range f_boundedContinuousFunction : Set (K →ᵇ ℝ))) :=
       BoundedContinuousFunction.arzela_ascoli (Set.Icc (-C) C) h_Icc_compact
-        (Set.range f_bcf) (fun g x hg => h_range_compact g x hg) h_equicont
-    have h_in_closure : ∀ n, f_bcf n ∈ closure (Set.range f_bcf) := fun n =>
+        (Set.range f_boundedContinuousFunction) (fun g x hg => h_range_compact g x hg) h_equicont
+    have h_in_closure : ∀ n, f_boundedContinuousFunction n ∈ closure (Set.range f_boundedContinuousFunction) := fun n =>
       subset_closure (Set.mem_range_self n)
     rcases h_compact_closure.tendsto_subseq h_in_closure with
       ⟨gInf, _, φ, hφ_mono, h_tendsto⟩
@@ -90,13 +90,13 @@ theorem tendsto_subseq_of_uniformly_lipschitz_uniformly_bounded
     have h_uniform_K :
         TendstoUniformly (fun k => fun x : K => f (φ k) x) g atTop := by
       have hTU :
-          TendstoUniformly (fun k => fun x : K => (f_bcf (φ k)) x)
+          TendstoUniformly (fun k => fun x : K => (f_boundedContinuousFunction (φ k)) x)
             (fun x : K => gInf x) atTop :=
         BoundedContinuousFunction.tendsto_iff_tendstoUniformly.mp h_tendsto
-      have hcoe : (fun k => fun x : K => (f_bcf (φ k)) x) =
+      have hcoe : (fun k => fun x : K => (f_boundedContinuousFunction (φ k)) x) =
           (fun k => fun x : K => f (φ k) (x : E)) := by
         funext k x
-        simp [f_bcf]
+        simp [f_boundedContinuousFunction]
       rw [hcoe] at hTU
       exact hTU
     have h_g_lip : LipschitzWith (NNReal.mk L hL_pos) g := by

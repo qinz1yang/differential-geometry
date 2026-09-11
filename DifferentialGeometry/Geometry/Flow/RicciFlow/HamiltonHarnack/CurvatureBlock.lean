@@ -1,11 +1,11 @@
-import DifferentialGeometry.Geometry.Curvature.AlgebraicTensor
-import DifferentialGeometry.Geometry.Curvature.AlgebraicTensorMetric
-import DifferentialGeometry.Geometry.Curvature.RicciOperatorNormBound
-import DifferentialGeometry.Geometry.Metric.TensorInner.MetricFiberData
-import DifferentialGeometry.Tensor.RSTensor.FiberMetric.Tensor0SMetricCongr
-import DifferentialGeometry.Tensor.RSTensor.FiberMetric.Tensor0SMetricIneq
-import DifferentialGeometry.Tensor.RSTensor.Product
-import DifferentialGeometry.Tensor.Multilinear.Basis
+import DifferentialGeometry.Geometry.Curvature.Algebraic.Tensor
+import DifferentialGeometry.Geometry.Curvature.Algebraic.TensorMetric
+import DifferentialGeometry.Geometry.Curvature.Bounds.RicciOperatorNorm
+import DifferentialGeometry.Geometry.Metric.TensorInner.Fiber.MetricData
+import DifferentialGeometry.Geometry.Metric.TensorInner.FiberMetric.Tensor0SMetricCongr
+import DifferentialGeometry.Geometry.Metric.TensorInner.FiberMetric.Tensor0SMetricIneq
+import DifferentialGeometry.Tensor.RSTensor.Algebra.Product
+import DifferentialGeometry.Tensor.Multilinear.Bundle.Basis
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HamiltonHarnack.Defs
 
 set_option autoImplicit false
@@ -285,11 +285,11 @@ theorem curvatureBlock_eq_sum {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     (A : algebraicCurvatureTensorSubmodule (I := I) (M := M) x)
     (U V : HamiltonHarnackTwoForm (TangentSpace I x))
     (basis : Module.Basis Idx Real (TangentSpace I x))
-    (hinv : MetricInverseInBasisGen (I := I) g x basis
+    (hinv : MetricInverseInBasis (I := I) g x basis
       (identityInvMetric (Idx := Idx))) :
     curvatureBlock g A U V =
       ∑ slots : Fin 4 → Idx,
-        tensor04StdAt (I := I) (M := M)
+        tensor04StandardAt (I := I) (M := M)
             (A : Tensor04At (I := I) (M := M) x)
             (basis (slots 0)) (basis (slots 1))
             (basis (slots 3)) (basis (slots 2)) *
@@ -339,16 +339,16 @@ private theorem curvatureKernel_finAddFlip {x : M}
   rw [hleft, hright]
   have hA := mem_algebraicCurvatureTensorSubmodule.mp A.2
   calc
-    tensor04StdAt (I := I) (M := M)
+    tensor04StandardAt (I := I) (M := M)
         (A : Tensor04At (I := I) (M := M) x)
         (v 2) (v 3) (v 1) (v 0) =
-      -tensor04StdAt (I := I) (M := M)
+      -tensor04StandardAt (I := I) (M := M)
         (A : Tensor04At (I := I) (M := M) x)
         (v 3) (v 2) (v 1) (v 0) := hA.anti_first _ _ _ _
-    _ = tensor04StdAt (I := I) (M := M)
+    _ = tensor04StandardAt (I := I) (M := M)
         (A : Tensor04At (I := I) (M := M) x)
         (v 3) (v 2) (v 0) (v 1) := (hA.anti_last _ _ _ _).symm
-    _ = tensor04StdAt (I := I) (M := M)
+    _ = tensor04StandardAt (I := I) (M := M)
         (A : Tensor04At (I := I) (M := M) x)
         (v 0) (v 1) (v 3) (v 2) := (hA.pair_swap _ _ _ _).symm
 
@@ -388,7 +388,7 @@ theorem curvatureBlock_comm {x : M}
     (A : algebraicCurvatureTensorSubmodule (I := I) (M := M) x)
     (U V : HamiltonHarnackTwoForm (TangentSpace I x)) :
     curvatureBlock g A U V = curvatureBlock g A V U := by
-  obtain ⟨basis, hON⟩ := exists_gOrthonormalBasis (I := I) g x
+  obtain ⟨basis, hON⟩ := exists_orthonormal_basis (I := I) g x
   have hinv := metricInverseInBasis_of_orthonormal (I := I) g basis hON
   have h := Tensor0SBundle.inner0S_domDomCongr (I := I) g x basis hinv
     (finAddFlip (m := 2) (n := 2))

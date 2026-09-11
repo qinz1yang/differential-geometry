@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Spectral.Tensor.Rellich.Tensor
+import DifferentialGeometry.Analysis.Spectral.Tensor.Rellich.Resolvent
 import DifferentialGeometry.Analysis.Spectral.Tensor.Spectrum.CompactInclusion
 import DifferentialGeometry.Analysis.Integration.L2.Hilbert.DenseSubset
 import Mathlib.Analysis.InnerProductSpace.Spectrum
@@ -493,12 +493,6 @@ theorem tensorLaplacianEigenvalueOf_nonneg_of_resolventEigenvalue
   obtain ⟨hμ_pos, hμ_le_one⟩ := hμ
   have h_num_nn : 0 ≤ 1 - μ := by linarith
   exact div_nonneg h_num_nn hμ_pos.le
-
-example (g : SmoothRiemannianMetric I M) (r s : ℕ) (μ : ℝ) :
-    Submodule ℝ (TensorL2 r s g) :=
-  tensorResolventEigenspace (I := I) (M := M) g r s μ
-
-example : ℝ := tensorLaplacianEigenvalueOf 0.5
 
 end TensorSpectral
 end Parabolic

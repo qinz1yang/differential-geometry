@@ -1,5 +1,5 @@
-import DifferentialGeometry.Geometry.Metric.Convergence.PullbackCross
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Preservation.Pinching.TraceFreeRicciNorm
+import DifferentialGeometry.Geometry.Metric.Convergence.Naturality.PullbackCross
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Preservation.Pinching.TraceFreeRicci.Norm
 
 open DifferentialGeometry.Geometry.Curvature
 
@@ -8,7 +8,7 @@ set_option autoImplicit false
 noncomputable section
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open DifferentialGeometry.Tensor0SBundle
 open scoped Manifold ContDiff Topology
@@ -45,5 +45,5 @@ theorem trace_free_ricci_norm_sq_cross
   rw [metricScalar_cross (I := I) (J := J),
     ricciNormSq_cross (I := I) (J := J)]
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

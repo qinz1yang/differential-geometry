@@ -43,13 +43,13 @@ local notation "EE" => EuclideanSpace ℝ (Fin d)
 omit [NeZero d] in
 private lemma wkpNorm_chosenWeakPartial_le_succ
     (k : ℕ) {Ω : Set EE} (u : EE → ℝ) (i : Fin d) :
-    iteratedWeakSobolevNorm (d := d) k 2 (chosenWeakPartial' 2 i u Ω) Ω ≤
+    iteratedWeakSobolevNorm (d := d) k 2 (chosenWeakPartialOrZero 2 i u Ω) Ω ≤
       iteratedWeakSobolevNorm (d := d) (k + 1) 2 u Ω := by
   classical
   rw [wkpNorm_succ_eq_eLpNorm_add_sum_partial (d := d) k 2 Ω u]
   refine le_trans ?_ le_add_self
   exact Finset.single_le_sum
-    (f := fun j : Fin d => iteratedWeakSobolevNorm (d := d) k 2 (chosenWeakPartial' 2 j u Ω) Ω)
+    (f := fun j : Fin d => iteratedWeakSobolevNorm (d := d) k 2 (chosenWeakPartialOrZero 2 j u Ω) Ω)
     (fun j _ => zero_le) (Finset.mem_univ i)
 
 omit [NeZero d] in
@@ -116,21 +116,21 @@ theorem wkpNorm_smul_globalSmooth_uniform
         exact le_self_add
       have hpartial_le : ∀ i : Fin d,
           iteratedWeakSobolevNorm (d := d) k 2
-            (chosenWeakPartial' 2 i (fun x => η x * u x) Ω) Ω ≤
+            (chosenWeakPartialOrZero 2 i (fun x => η x * u x) Ω) Ω ≤
             ENNReal.ofReal (Kη + Ki i) * D := by
         intro i
         have hu_W1 : DeGiorgi.MemW1p (d := d) 2 u Ω := hu.memW1p
-        have hae := chosenWeakPartial'_smul_smooth_bounded_ae (d := d)
+        have hae := chosenWeakPartialOrZero_smul_smooth_bounded_ae (d := d)
           (by norm_num : (1 : ℝ≥0∞) ≤ 2) hΩ hη_smooth h0
           (fun x hx => by
             have h := hbound 1 (by omega) x
             rwa [norm_iteratedFDeriv_one] at h) hu_W1 i
         rw [wkpNorm_congr_ae (d := d) (by norm_num : (1 : ℝ≥0∞) ≤ 2) hΩ hae]
-        have h_du_mem : MemWkp (d := d) k 2 (chosenWeakPartial' 2 i u Ω) Ω :=
+        have h_du_mem : MemWkp (d := d) k 2 (chosenWeakPartialOrZero 2 i u Ω) Ω :=
           hu.chosenWeakPartial_mem i
         have hu_k : MemWkp (d := d) k 2 u Ω := hu.le_succ
         have h_eta_du_mem : MemWkp (d := d) k 2
-            (fun x => η x * chosenWeakPartial' 2 i u Ω x) Ω :=
+            (fun x => η x * chosenWeakPartialOrZero 2 i u Ω x) Ω :=
           MemWkp.smul_smooth_bounded (d := d) k (by norm_num : (1 : ℝ≥0∞) ≤ 2)
             hΩ hη_smooth (fun j hj x _ => hbound_k j hj x) h_du_mem
         have h_dei_u_mem : MemWkp (d := d) k 2
@@ -140,7 +140,7 @@ theorem wkpNorm_smul_globalSmooth_uniform
         refine (wkpNorm_add_le (d := d) (by norm_num : (1 : ℝ≥0∞) ≤ 2) hΩ
           h_eta_du_mem h_dei_u_mem).trans ?_
         have hA : iteratedWeakSobolevNorm (d := d) k 2
-            (fun x => η x * chosenWeakPartial' 2 i u Ω x) Ω ≤
+            (fun x => η x * chosenWeakPartialOrZero 2 i u Ω x) Ω ≤
             ENNReal.ofReal Kη * D := by
           refine (hKη hΩ h_du_mem).trans ?_
           exact mul_le_mul_of_nonneg_left
@@ -156,7 +156,7 @@ theorem wkpNorm_smul_globalSmooth_uniform
         rw [← add_mul, ← ENNReal.ofReal_add hKη_nn (hKi_nn i)]
       have hsum_le :
           (∑ i : Fin d, iteratedWeakSobolevNorm (d := d) k 2
-            (chosenWeakPartial' 2 i (fun x => η x * u x) Ω) Ω) ≤
+            (chosenWeakPartialOrZero 2 i (fun x => η x * u x) Ω) Ω) ≤
             ENNReal.ofReal (∑ i : Fin d, (Kη + Ki i)) * D := by
         refine (Finset.sum_le_sum (fun i _ => hpartial_le i)).trans ?_
         rw [← Finset.sum_mul, ENNReal.ofReal_sum_of_nonneg
@@ -211,7 +211,7 @@ private lemma exists_chartCutoff (α : M) {K : Set EuclN}
       (n := (⊤ : ℕ∞)) hK.isClosed hKL
   have hζ_cd : ContDiff ℝ ∞ (fun y => ζ y) :=
     (contMDiff_iff_contDiff (n := (⊤ : ℕ∞))).mp ζ.contMDiff
-  have hζ_supp : tsupport (fun y => ζ y) ⊆ L := by
+  have hζ_support : tsupport (fun y => ζ y) ⊆ L := by
     refine closure_minimal (fun y hy => ?_) hL_compact.isClosed
     rw [Function.mem_support] at hy
     by_contra hyL
@@ -220,9 +220,9 @@ private lemma exists_chartCutoff (α : M) {K : Set EuclN}
            smooth := hζ_cd
            one_on := fun y hy =>
              (hζ_one.filter_mono (nhds_le_nhdsSet hy)).self_of_nhds
-           tsupport_subset := hζ_supp.trans hL_target
+           tsupport_subset := hζ_support.trans hL_target
            hasCompactSupport := HasCompactSupport.of_support_subset_isCompact
-             hL_compact ((subset_tsupport _).trans hζ_supp) }⟩
+             hL_compact ((subset_tsupport _).trans hζ_support) }⟩
 
 omit [NeZero dimE] [IsManifold I ∞ M] [T2Space M] [CompactSpace M] in
 private lemma cutoff_mul_coeff_contDiff (α : M) {K : Set EuclN}
@@ -266,10 +266,10 @@ private lemma exists_wkpNorm_chartCoeff_mul_le (α : M) {K : Set EuclN}
     wkpNorm_smul_globalSmooth_uniform (d := dimE) m
       (η := fun y => ζ.toFun y * c y) (by simpa using hζc_smooth) hC_nn hC_bound'
   refine ⟨K₀, hK₀_nn, ?_⟩
-  intro v hv_smooth hv_cpt hv_K Ω'' hΩ''_open _hΩ''_target
+  intro v hv_smooth hv_compact hv_K Ω'' hΩ''_open _hΩ''_target
   have hv_mem : MemWkp (d := dimE) m 2 v Ω'' :=
     memWkp_of_smooth_compactSupport_anyOpen (d := dimE) hΩ''_open
-      (by simpa using hv_smooth) hv_cpt (by norm_num : (1 : ℝ≥0∞) ≤ 2) m
+      (by simpa using hv_smooth) hv_compact (by norm_num : (1 : ℝ≥0∞) ≤ 2) m
   have h_eq : (fun y => c y * v y) = (fun y => (ζ.toFun y * c y) * v y) := by
     funext y
     by_cases hyK : y ∈ K
@@ -429,10 +429,10 @@ private lemma exists_wkpNorm_chartCoeffSum_le (α : M) {K : Set EuclN}
       α hK hK_target m (hc a ha)
   choose! Ka hKa_nn hKa using hper
   refine ⟨∑ a ∈ S, Ka a, Finset.sum_nonneg (fun a ha => hKa_nn a ha), ?_⟩
-  intro v hv_smooth hv_cpt hv_K Ω'' hΩ''_open hΩ''_target
+  intro v hv_smooth hv_compact hv_K Ω'' hΩ''_open hΩ''_target
   have h_term_mem : ∀ a ∈ S,
       MemWkp (d := dimE) m 2 (fun y => c a y * v a y) Ω'' :=
-    fun a ha => (hKa a ha (hv_smooth a ha) (hv_cpt a ha) (hv_K a ha)
+    fun a ha => (hKa a ha (hv_smooth a ha) (hv_compact a ha) (hv_K a ha)
       hΩ''_open hΩ''_target).1
   refine ⟨memWkp_finset_sum (d := dimE) hΩ''_open S _ h_term_mem, ?_⟩
   set D : ℝ≥0∞ := ∑ a ∈ S, iteratedWeakSobolevNorm (d := dimE) m 2 (v a) Ω'' with hD_def
@@ -440,7 +440,7 @@ private lemma exists_wkpNorm_chartCoeffSum_le (α : M) {K : Set EuclN}
       iteratedWeakSobolevNorm (d := dimE) m 2 (fun y => c a y * v a y) Ω'' ≤
         ENNReal.ofReal (Ka a) * D := by
     intro a ha
-    refine ((hKa a ha (hv_smooth a ha) (hv_cpt a ha) (hv_K a ha)
+    refine ((hKa a ha (hv_smooth a ha) (hv_compact a ha) (hv_K a ha)
       hΩ''_open hΩ''_target).2).trans ?_
     refine mul_le_mul_of_nonneg_left ?_ (zero_le)
     exact Finset.single_le_sum
@@ -467,8 +467,8 @@ lemma exists_wkpNorm_chartCoeffSum_bddBy (α : M) {K : Set EuclN}
   obtain ⟨Kc, hKc_nn, hKc⟩ :=
     exists_wkpNorm_chartCoeffSum_le (I := I) (M := M) α hK hK_target m S c hc
   refine ⟨Kc * (S.card : ℝ), mul_nonneg hKc_nn (by positivity), ?_⟩
-  intro v hv_cd hv_cpt hv_K Ω'' hΩ''_open hΩ''_target G hG
-  obtain ⟨h_mem, h_le⟩ := hKc hv_cd hv_cpt hv_K hΩ''_open hΩ''_target
+  intro v hv_cd hv_compact hv_K Ω'' hΩ''_open hΩ''_target G hG
+  obtain ⟨h_mem, h_le⟩ := hKc hv_cd hv_compact hv_K hΩ''_open hΩ''_target
   refine ⟨h_mem, h_le.trans ?_⟩
   have hsum : (∑ a ∈ S, iteratedWeakSobolevNorm (d := dimE) m 2 (v a) Ω'') ≤ S.card • G :=
     Finset.sum_le_card_nsmul S _ G hG

@@ -57,11 +57,11 @@ theorem riemann_covariant_variation_of_solution
     (nabla2Ric :
       Real → M → CoordinateIdx (𝕜 := Real) E → CoordinateIdx (𝕜 := Real) E →
         CoordinateIdx (𝕜 := Real) E → CoordinateIdx (𝕜 := Real) E → Real)
-    (hmetricReg :
+    (hmetricRegularity :
       MetricFrameSpacetimeRegularityInFrameOnLocal
         (I := I) S (coordInv (I := I) S x₀) gInvDt
         (coordinateFrameAt (I := I) x₀) (coordinateFrameSet (I := I) x₀))
-    (hnablaReg :
+    (hnablaRegularity :
       Nabla2RicciComponentsRegularInFrameOnLocal
         (I := I) S (coordinateFrameAt (I := I) x₀)
         (coordinateFrameSet (I := I) x₀)
@@ -141,7 +141,7 @@ theorem riemann_covariant_variation_of_solution
   have hmetricFrame :
       MetricFrameTimeRegularityInFrameOnLocal
         (I := I) S (coordInv (I := I) S x₀) gInvDt frame u :=
-    hmetricReg.toMetricFrameTimeRegularityInFrameOnLocal
+    hmetricRegularity.toMetricFrameTimeRegularityInFrameOnLocal
   have hSmooth :
       ∀ a b : CoordinateIdx (𝕜 := Real) E, ∀ s, s ∈ D.regular →
         ∀ x : M, x ∈ u →
@@ -149,7 +149,7 @@ theorem riemann_covariant_variation_of_solution
             (fun q : Real × M ↦
               (S.family.metric q.1).inner q.2 (frame a q.2) (frame b q.2)) (s, x) := by
     intro a b s hs x hx
-    have hOn := (hmetricReg.frameMetricSpacetimeSmooth a b).mono
+    have hOn := (hmetricRegularity.frameMetricSpacetimeSmooth a b).mono
       (Set.prod_mono D.regular_subset (Set.Subset.rfl))
     exact (hOn.contMDiffAt ((D.regular_isOpen.prod hu).mem_nhds ⟨hs, hx⟩)).of_le
       (by decide : (2 : WithTop ℕ∞) ≤ ∞)
@@ -164,7 +164,7 @@ theorem riemann_covariant_variation_of_solution
         ContMDiffOn I (𝓘(Real, Real).prod I) ∞
           (fun y : M ↦ (s, y)) u :=
       (contMDiffOn_const (c := s)).prodMk contMDiffOn_id
-    have hcomp := (hmetricReg.frameMetricSpacetimeSmooth a b).comp hslice
+    have hcomp := (hmetricRegularity.frameMetricSpacetimeSmooth a b).comp hslice
       (fun y hy ↦ ⟨hs, hy⟩)
     have hdiff :=
       (hcomp.contMDiffAt (hu.mem_nhds hx)).mdifferentiableAt (by simp)
@@ -196,7 +196,7 @@ theorem riemann_covariant_variation_of_solution
       christoffelVariationCovDerivCoordAt_eq_nablaGammaDtFromNabla2RicInFrame
         (I := I) S (coordInv (I := I) S x₀)
         (nablaRicComp (I := I) S (coordinateFrameAt (I := I) x₀))
-        nabla2Ric x₀ gInvDt hmetricReg hnablaReg t d k i j
+        nabla2Ric x₀ gInvDt hmetricRegularity hnablaRegularity t d k i j
   have hgammaLegacy
       (d k i j : CoordinateIdx (𝕜 := Real) E) :
       christoffelVariationCovDerivCoordAt

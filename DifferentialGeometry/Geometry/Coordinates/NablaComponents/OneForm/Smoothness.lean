@@ -105,7 +105,7 @@ theorem oneForm_eval_coordinateFrame_contMDiffAt
     (coordinateFrameAt_isLocalFrame (I := I) x₀).contMDiffAt
       (coordinateFrameSet_open (I := I) x₀)
       (coordinateFrameAt_mem (I := I) x₀) j
-  have hEval := TensorMultilinear.contMDiffAt_section_apply_gen
+  have hEval := TensorMultilinear.contMDiffAt_section_apply
     (I := I) (M := M) (n := 1) (x₀ := x₀)
     (T := fun y : M => α y) hα
     (v := fun _ : Fin 1 => coordinateFrameAt (I := I) x₀ j)
@@ -127,7 +127,7 @@ theorem nabla0SFun_one_eval_smooth_slots
       1 cov X α x₀) (fun _ : Fin 1 => Z x₀) =
       mvfderiv (I := I) (fun y : M => α y (fun _ : Fin 1 => Z y)) x₀ (X x₀) -
         α x₀ (fun _ : Fin 1 => (cov (fun y : M => Z y) x₀) (X x₀)) := by
-  rw [nabla0SFun_one_eval_coordFrame_moving
+  rw [nabla0SFun_one_eval_coordFrame_moving_of_contMDiffSection
     (I := I) cov X Z α x₀
     (modelDeriv_eq_coordDeriv0SAt (I := I) X x₀ α)
     (fun j =>
@@ -245,7 +245,7 @@ theorem nabla0SFun_one_eval_contMDiff
     hderiv.sub hcorr
   refine hmain.congr ?_
   intro p
-  rw [nabla0SFun_one_eval_coordFrame_moving
+  rw [nabla0SFun_one_eval_coordFrame_moving_of_contMDiffSection
     (I := I) cov X Z α p
     (modelDeriv_eq_coordDeriv0SAt (I := I) X p α)
     (fun j =>
@@ -293,7 +293,7 @@ theorem nabla0SFun_one_eval_coordinateFrame_contMDiffAt
   have hcorr_raw :
       ContMDiffAt I 𝓘(𝕜, 𝕜) (∞ : WithTop ℕ∞)
         (fun p : M => αinf p (fun _ : Fin 1 => W p)) x₀ := by
-    have hraw := TensorMultilinear.contMDiffAt_section_apply_gen
+    have hraw := TensorMultilinear.contMDiffAt_section_apply
       (I := I) (M := M) (n := 1) (x₀ := x₀)
       (T := fun p : M => αinf p) αinf.contMDiff.contMDiffAt
       (v := fun _ : Fin 1 => W)
@@ -326,7 +326,7 @@ theorem nabla0SFun_one_eval_coordinateFrame_contMDiffAt
     simpa [Z] using
       (coordinateFrameAt_isLocalFrame (I := I) x₀).contMDiffAt
         (coordinateFrameSet_open (I := I) x₀) hp j
-  rw [nabla0SFun_one_eval_coordFrame_moving_raw
+  rw [nabla0SFun_one_eval_coordFrame_moving
     (I := I) cov X Z α p
     (modelDeriv_eq_coordDeriv0SAt (I := I) X p α)
     (fun k =>
@@ -380,12 +380,12 @@ theorem nabla0SFun_one_contMDiff
     have haj : σ a = j := by
       fin_cases a
       simp [j]
-    have hp_src : p ∈ (chartAt H x₀).source := by
+    have hp_source : p ∈ (chartAt H x₀).source := by
       simpa [coordinateFrameSet, coordinateTrivializationAt] using hp
     rw [haj, coordinateFrameAt_apply_of_mem (I := I) (x₀ := x₀) (x := p) hp j]
     exact congrArg
       (fun L : E →L[𝕜] TangentSpace I p => L (b j))
-      (TangentBundle.symmL_trivializationAt (I := I) (𝕜 := 𝕜) hp_src)
+      (TangentBundle.symmL_trivializationAt (I := I) (𝕜 := 𝕜) hp_source)
   rw [continuousMultilinearMap_basis_repr]
   change ((trivializationAt (Tensor0SModel 1 𝕜 E)
       (Bundle.continuousMultilinearMap 𝕜 1 E (TangentSpace I : M -> Type _)) x₀

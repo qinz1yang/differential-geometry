@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Curvature.Basic
+import DifferentialGeometry.Geometry.Curvature.Riemann.RawFields
 import DifferentialGeometry.Tensor.RSTensor.Field
 open DifferentialGeometry.Geometry.Curvature
 

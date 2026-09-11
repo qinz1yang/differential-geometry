@@ -1,7 +1,7 @@
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckPrincipalCometricExtraction
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.PrincipalCometric.Extraction
 
 noncomputable section
-
+set_option backward.isDefEq.respectTransparency false
 
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Spectral
@@ -59,9 +59,9 @@ theorem ricci2_pcc_eq (g₀ g₁ : SmoothRiemannianMetric I M) :
           - ricciDeTurckPrincipalCoefficient (I := I) (M := M) g₀ g₀)
         + (ricciDeTurckPrincipalCoefficient (I := I) (M := M) g₀ g₁
           - ricciDeTurckPrincipalCoefficient (I := I) (M := M) g₀ g₀) =
-      reindexCoeffGen (I := I) (M := M) g₀ 4 2
+      reindexCoefficientInputSlots (I := I) (M := M) g₀ 4 2
           (deTurckPrincipalCometricCoeff (I := I) (M := M) g₀ g₁) koszulSlotPerm
-        + reindexCoeffGen (I := I) (M := M) g₀ 4 2
+        + reindexCoefficientInputSlots (I := I) (M := M) g₀ 4 2
             (rsDomDomCongrSection (I := I) (M := M) g₀ 4 2
               (Equiv.swap (0 : Fin 2) 1)
               (deTurckPrincipalCometricCoeff (I := I) (M := M) g₀ g₁))
@@ -88,14 +88,14 @@ theorem ricci2_pcc_eq (g₀ g₁ : SmoothRiemannianMetric I M) :
     sub_apply, add_apply,
     Tensor0SSpace.toModel_sub, Tensor0SSpace.toModel_add,
     sub_apply, add_apply]
-  simp only [reindexCoeffGen_toSection, reindexCoeffFibGen_apply,
+  simp only [reindexCoefficientInputSlots_toSection, reindexCoefficientInputSlotsFiber_apply,
     rsDomDomCongrSection_toSection, toModel_rsDomDomCongr_apply,
     deTurckPrincipalCometricCoeff_toSection_clm_eq,
     cometricDoubleTraceFib_toModel,
     Tensor0SSpace.toModel_ofModel, Tensor0SSpace.toModel_sub,
     sub_apply, ContinuousMultilinearMap.domDomCongr_apply,
     sub_apply]
-  ring
+  ring_nf
 
 end TensorSpectral
 end Parabolic

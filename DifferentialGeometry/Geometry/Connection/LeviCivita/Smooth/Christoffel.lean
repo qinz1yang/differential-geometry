@@ -51,17 +51,17 @@ private theorem metricFlatModelInChart_component_eq_coord_component_comp_eventua
           (coordinateFrameAt (I := I) x₀ i ((extChartAt I x₀).symm y))
           (coordinateFrameAt (I := I) x₀ j ((extChartAt I x₀).symm y)) := by
   filter_upwards [extChartAt_target_mem_nhdsWithin_of_mem (I := I) hy₀] with y hy
-  have hy_src : (extChartAt I x₀).symm y ∈ (chartAt H x₀).source := by
+  have hy_source : (extChartAt I x₀).symm y ∈ (chartAt H x₀).source := by
     rw [← extChartAt_source (I := I)]
     exact (extChartAt I x₀).map_target hy
   have hy_base : (extChartAt I x₀).symm y ∈ coordinateFrameSet (I := I) x₀ := by
-    simpa [coordinateFrameSet, coordinateTrivializationAt] using hy_src
+    simpa [coordinateFrameSet, coordinateTrivializationAt] using hy_source
   have hframe (k : CoordinateIdx (𝕜 := Real) E) :
       coordinateFrameAt (I := I) x₀ k ((extChartAt I x₀).symm y) =
         (trivializationAt E (TangentSpace I : M → Type _) x₀).symmL Real
           ((extChartAt I x₀).symm y) ((Module.finBasis Real E) k) := by
     rw [coordinateFrameAt_apply_of_mem (I := I) hy_base]
-    rw [TangentBundle.symmL_trivializationAt (I := I) (𝕜 := Real) hy_src]
+    rw [TangentBundle.symmL_trivializationAt (I := I) (𝕜 := Real) hy_source]
     rw [(extChartAt I x₀).right_inv hy]
     rfl
   unfold metricFlatModelInChartComponent
@@ -223,7 +223,7 @@ theorem leviCivitaChristoffelModelRHS_center_eq_christoffel
         ((ContinuousLinearMap.inverse
             (metricFlatModelInChart (I := I) g x₀ (extChartAt I x₀ x₀)))
           (LinearMap.toContinuousLinearMap ((Module.finBasis Real E).coord l)))
-  have hinv : MetricInverseInBasisGen (I := I) g x₀
+  have hinv : MetricInverseInBasis (I := I) g x₀
       (coordinateFrameAtToBasis (I := I) x₀) gInv :=
     inverseMetricFlatModelInChart_metricInverseInBasis_center (I := I) g x₀
   have hformula :=
@@ -284,10 +284,10 @@ theorem metricFlatModelInChart_component_of_mem
     metricFlatModelInChartComponent (I := I) g x₀ i j (extChartAt I x₀ x) =
       g.inner x (coordinateFrameAt (I := I) x₀ i x)
         (coordinateFrameAt (I := I) x₀ j x) := by
-  have hx_src : x ∈ (extChartAt I x₀).source := by
+  have hx_source : x ∈ (extChartAt I x₀).source := by
     simpa [coordinateFrameSet, coordinateTrivializationAt, extChartAt_source] using hx
   have hchart : x ∈ (chartAt H x₀).source := by
-    simpa [extChartAt_source] using hx_src
+    simpa [extChartAt_source] using hx_source
   have hi :
       (trivializationAt E (TangentSpace I : M -> Type _) x₀).symmL Real x
           ((Module.finBasis Real E) i) =
@@ -317,7 +317,7 @@ omit [CompleteSpace E] in
 private theorem inverseMetricFlatModelInChart_metricInverseInBasis_of_mem
     (g : SmoothRiemannianMetric I M) (x₀ : M) {x : M}
     (hx : x ∈ coordinateFrameSet (I := I) x₀) :
-    MetricInverseInBasisGen (I := I) g x (coordinateFrameAtBasis (I := I) x₀ hx)
+    MetricInverseInBasis (I := I) g x (coordinateFrameAtBasis (I := I) x₀ hx)
       (fun k l : CoordinateIdx (𝕜 := Real) E =>
         (Module.finBasis Real E).coord k
           ((ContinuousLinearMap.inverse
@@ -517,19 +517,19 @@ theorem metricFlatModelInChart_component_deriv_of_mem
   let f : M -> Real := fun y : M =>
     g.inner y (coordinateFrameAt (I := I) x₀ i y)
       (coordinateFrameAt (I := I) x₀ j y)
-  have hx_src : x ∈ (extChartAt I x₀).source := by
+  have hx_source : x ∈ (extChartAt I x₀).source := by
     simpa [coordinateFrameSet, coordinateTrivializationAt, extChartAt_source] using hx
-  have hz_tgt : z ∈ (extChartAt I x₀).target := by
-    simpa [z] using (extChartAt I x₀).map_source hx_src
+  have hz_target : z ∈ (extChartAt I x₀).target := by
+    simpa [z] using (extChartAt I x₀).map_source hx_source
   have hzRange : z ∈ Set.range I :=
-    extChartAt_target_subset_range x₀ hz_tgt
+    extChartAt_target_subset_range x₀ hz_target
   have heq :
       metricFlatModelInChartComponent (I := I) g x₀ i j
         =ᶠ[𝓝[Set.range I] z]
         writtenInExtChartAt I 𝓘(Real, Real) x₀ f := by
     have h :=
       metricFlatModelInChart_component_eq_coord_component_comp_eventually_of_mem
-        (I := I) g x₀ i j hz_tgt
+        (I := I) g x₀ i j hz_target
     change metricFlatModelInChartComponent (I := I) g x₀ i j
       =ᶠ[𝓝[Set.range I] z]
         writtenInExtChartAt I 𝓘(Real, Real) x₀ f at h
@@ -574,7 +574,7 @@ theorem leviCivitaChristoffelModelRHS_eq_christoffel_of_mem
         ((ContinuousLinearMap.inverse
             (metricFlatModelInChart (I := I) g x₀ (extChartAt I x₀ x)))
           (LinearMap.toContinuousLinearMap ((Module.finBasis Real E).coord l)))
-  have hinv : MetricInverseInBasisGen (I := I) g x
+  have hinv : MetricInverseInBasis (I := I) g x
       (coordinateFrameAtBasis (I := I) x₀ hx) gInv :=
     inverseMetricFlatModelInChart_metricInverseInBasis_of_mem (I := I) g x₀ hx
   have hformula :=
@@ -690,11 +690,11 @@ theorem metricFlatModelInChart_isInvertible_of_mem
     (hy : y ∈ (extChartAt I x₀).target) :
     (metricFlatModelInChart (I := I) g x₀ y).IsInvertible := by
   let p : M := (extChartAt I x₀).symm y
-  have hp_src : p ∈ (extChartAt I x₀).source := by
+  have hp_source : p ∈ (extChartAt I x₀).source := by
     simpa [p] using (extChartAt I x₀).map_target hy
   have hp_coord : p ∈ coordinateFrameSet (I := I) x₀ := by
     simpa [coordinateFrameSet, coordinateTrivializationAt, extChartAt_source]
-      using hp_src
+      using hp_source
   have hpT :
       p ∈ (trivializationAt E (TangentSpace I : M -> Type _) x₀).baseSet := by
     simpa [coordinateFrameSet, coordinateTrivializationAt] using hp_coord

@@ -1,8 +1,8 @@
 import DifferentialGeometry.Geometry.Connection.Coordinates.CovariantDerivativeComponents
-import DifferentialGeometry.Tensor.RSTensor.NablaOnTensors.HigherOrder
-import DifferentialGeometry.Tensor.RSTensor.NablaOnTensors.Regularity.Tensor0S
-import DifferentialGeometry.Geometry.Coordinates.Christoffel
-import DifferentialGeometry.Bundle.PartialMfderiv.FixedBase
+import DifferentialGeometry.Geometry.Connection.TensorNabla.Iterated.Basic
+import DifferentialGeometry.Geometry.Connection.TensorNabla.Regularity.Tensor0S
+import DifferentialGeometry.Geometry.Coordinates.Connection.Christoffel
+import DifferentialGeometry.Geometry.Coordinates.Calculus.FixedBaseDerivative
 
 set_option autoImplicit false
 
@@ -77,7 +77,7 @@ theorem covDerivStepComp_frameComp_eq {s : ℕ}
     (hframe : IsLocalFrameOn I E (1 : WithTop ℕ∞) frame u) (hu : IsOpen u)
     {x : M} (hx : x ∈ u) (n : Fin (s + 1) → Idx) :
     covDerivStepComp
-        (frameExtData (I := I) frame (frameComp0S (I := I) A frame) x)
+        (frameDirectionalDerivatives (I := I) frame (frameComp0S (I := I) A frame) x)
         (christoffelSymbolInFrame cov frame hframe x)
         (frameComp0S (I := I) A frame x) n =
       nablaA x (frameTuple (I := I) frame x n) := by
@@ -85,7 +85,7 @@ theorem covDerivStepComp_frameComp_eq {s : ℕ}
   set V : Fin s → (y : M) → TangentSpace I y :=
     fun q y => frame (Fin.tail n q) y with hV_def
   obtain ⟨X, hX⟩ :=
-    ContMDiffSection.exists_eq_at_gen
+    ContMDiffSection.exists_eq_at
       (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞)) x (frame (n 0) x)
   have hV_at : ∀ q : Fin s,
       ContMDiffAt I (I.prod 𝓘(Real, E)) (1 : WithTop ℕ∞)
@@ -114,7 +114,7 @@ theorem covDerivStepComp_frameComp_eq {s : ℕ}
   have hext :
       mvfderiv (I := I)
           (fun p : M => A p (fun q : Fin s => V q p)) x (frame (n 0) x) =
-        frameExtData (I := I) frame (frameComp0S (I := I) A frame) x
+        frameDirectionalDerivatives (I := I) frame (frameComp0S (I := I) A frame) x
           (Fin.tail n) (n 0) := by
     rfl
   rw [hext]

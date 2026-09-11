@@ -154,7 +154,7 @@ theorem rawVariationalIdentity_of_isLocalFlow
     RawVariationalIdentity (I := I) g X Φ_fam t x v := by
   have hcov := hcov_of_flatTrivPart_and_movingTrivResidual (I := I) g X Φ_fam t x v
     Q Dchart' d hRdiff hCdiff hsplit
-  exact rawVariationalIdentity_of_flatChartFderiv_witness (I := I) g X Φ_fam t x v Q d
+  exact rawVariationalIdentity_of_flatChartFderiv_eventuallyEq (I := I) g X Φ_fam t x v Q d
     hDchart hcontAt hwitness hRdiff hCdiff hcov
 
 end Producer

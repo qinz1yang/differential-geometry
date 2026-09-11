@@ -1,11 +1,11 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.RicciDeTurckPairing.DerivativePairingBounds
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.ZeroStateForcing
-import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.TimeDependentLowOrderOperators
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Remainder.ZeroState
+import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Time.LowOrderOperators
 
 section
 
 noncomputable section
-
+set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
@@ -541,7 +541,7 @@ theorem tensorHsInclusion_ccTensorToHs_two_three
         (r := 0) (s := 2) (show (2 : ℝ) ≤ 3 by norm_num)
         (ccTensorToHs (I := I) (M := M) g 2 (3 : ℝ) T) =
       ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) T := by
-  refine tensorHs.ext ?_
+  refine TensorHs.ext ?_
   funext i
   simp only [tensorHsInclusion_coeff_apply, ccTensorToHs_coeff]
 
@@ -558,7 +558,6 @@ end
 section
 
 noncomputable section
-
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
@@ -632,7 +631,6 @@ theorem radialLowerScaleActionCoefficients_apply_self
       (lt_of_le_of_lt hδ_le (by norm_num))
       (hreal _ (lowRadial_norm (I := I) (M := M) g hρ T))
       (gFibreOpBound_zero (I := I) (M := M) g hδ0)
-
 
 theorem exists_radialLowerScaleActionCoefficients_lipschitz_on_hs_three_ball
     (hDim : Module.finrank ℝ E = 3)
@@ -728,12 +726,12 @@ theorem exists_radialLowerScaleActionCoefficients_lipschitz_on_hs_three_ball
   have hStop : ‖ccTensorToHs (I := I) (M := M) g 2 (3 : ℝ) S‖ ≤ r0 := by
     have hrad := lowRadialH3_le (I := I) (M := M) g hρ
       (ccToHsLin (I := I) (M := M) g 2 (3 : ℝ) T)
-    rw [lowRadialH3_core (I := I) (M := M) g hρ T] at hrad
+    rw [lowRadialH3_apply_ccToHsLin (I := I) (M := M) g hρ T] at hrad
     simpa only [S, ccToHsLin_apply] using hrad.trans hTr0
   have hVtop : ‖ccTensorToHs (I := I) (M := M) g 2 (3 : ℝ) V‖ ≤ r0 := by
     have hrad := lowRadialH3_le (I := I) (M := M) g hρ
       (ccToHsLin (I := I) (M := M) g 2 (3 : ℝ) U)
-    rw [lowRadialH3_core (I := I) (M := M) g hρ U] at hrad
+    rw [lowRadialH3_apply_ccToHsLin (I := I) (M := M) g hρ U] at hrad
     simpa only [V, ccToHsLin_apply] using hrad.trans hUr0
   have hS3 : covariantJetNormSq (I := I) (M := M) g 3 S ≤ A3 ^ 2 := by
     refine (hjet3 S).trans ?_
@@ -882,7 +880,6 @@ theorem exists_radialLowerScaleActionCoefficients_lipschitz_on_hs_three_ball
         rw [hq0, hq1, hsqrt]
         simp only [K]
         ring
-
 
 theorem exists_affineLowerScaleCoefficients_covariantJetNormSq_two_bound
     (hDim : Module.finrank ℝ E = 3)

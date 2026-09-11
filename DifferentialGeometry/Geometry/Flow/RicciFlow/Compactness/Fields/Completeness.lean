@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.MetricLowerBound
 
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.MetricCompleteness
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Metric.Completeness
 
 set_option autoImplicit false
 
@@ -11,7 +11,7 @@ open scoped Manifold Topology ContDiff
 open DifferentialGeometry.Integral.Connection
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace Real E]
   [FiniteDimensional Real E] [CompleteSpace E]
@@ -24,14 +24,14 @@ variable {P : PointedRiemannianManifold (I := I)}
 variable {subseq : Nat → Nat}
 variable (Φ : PointedCGHMaps (I := I) X P subseq)
 
-namespace ConvOut
+namespace FlowMetricConvergenceData
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 theorem complete_at
     (hP : MetricComplete (I := I) P)
-    {bf : BumpFamily (I := I) Φ} {hsrc : SrcSigma Φ} {htgt : TgtSigma Φ}
+    {bf : BumpFamily (I := I) Φ} {hsrc : SourceIsSigmaCompact Φ} {htgt : TargetIsSigmaCompact Φ}
     {β ψ c : Real}
-    (co : ConvOut (I := I) Φ P.metric bf hsrc htgt β ψ)
+    (co : FlowMetricConvergenceData (I := I) Φ P.metric bf hsrc htgt β ψ)
     (hc : 0 < c)
     (hseq : letI : TopologicalSpace P.M := P.topology;
       letI : ChartedSpace H P.M := P.charted;
@@ -47,10 +47,10 @@ theorem complete_at
   let : ChartedSpace H P.M := P.charted
   let : IsManifold I ∞ P.M := P.smooth
   exact MetricComplete.complete_of_lower P hP (co.gInf t) c hc
-    (ConvOut.lower_of (I := I) (Φ := Φ) co hseq t ht)
+    (FlowMetricConvergenceData.lower_of (I := I) (Φ := Φ) co hseq t ht)
 
-end ConvOut
-end HCGCompactness
+end FlowMetricConvergenceData
+end CheegerGromovCompactness
 end DifferentialGeometry
 
 end

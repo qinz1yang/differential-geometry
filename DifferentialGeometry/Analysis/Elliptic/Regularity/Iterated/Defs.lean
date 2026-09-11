@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Elliptic.Regularity.LaplacianDomain.PerChart
+import DifferentialGeometry.Analysis.Elliptic.Regularity.LaplacianDomain.Chart.LocalRegularity
 import DifferentialGeometry.Analysis.Spectral.Scalar.Resolvent
 
 
@@ -144,15 +144,6 @@ lemma laplacianDomainPow_succ_preimage_in_range
   apply resolvent_injective (I := I) (M := M) g
   rw [resolvent_laplacianDomain_preimage_eq]
   exact hf.symm
-
-example (g : SmoothRiemannianMetric I M) :
-    Submodule ℝ (H1Compl (I := I) (M := M) g) :=
-  laplacianDomainPow (I := I) (M := M) g 0
-
-example (g : SmoothRiemannianMetric I M) :
-    laplacianDomainPow (I := I) (M := M) g 1 =
-      laplacianDomain (I := I) (M := M) g :=
-  laplacianDomainPow_one (I := I) (M := M) g
 
 end Laplacian
 end Analysis

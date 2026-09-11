@@ -227,7 +227,7 @@ private theorem roundMetric_curvature_pos_of_orthonormal
     (hXX : (roundMetric (E := E) (n := n)).inner x X X = 1)
     (hYY : (roundMetric (E := E) (n := n)).inner x Y Y = 1)
     (hXY : (roundMetric (E := E) (n := n)).inner x X Y = 0) :
-    0 < Geometry.Curvature.metricRm04StdAt
+    0 < Geometry.Curvature.metricRm04StandardAt
       (roundMetric (E := E) (n := n)) x X Y Y X := by
   rw [roundMetric_sec_value, hXX, hYY, hXY]
   norm_num
