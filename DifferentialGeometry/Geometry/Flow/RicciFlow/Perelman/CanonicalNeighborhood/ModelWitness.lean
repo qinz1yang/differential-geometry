@@ -4,6 +4,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.Noncollapsing.Predi
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Scaling.Parabolic
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.MetricApproximation.Defs
 import DifferentialGeometry.Geometry.Curvature.Bounds.ScalarNorm
+import DifferentialGeometry.Geometry.Metric.Distance.Ball
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.CheegerGromovCompactness
@@ -28,69 +29,6 @@ variable {I : ModelWithCorners Real E H}
 variable {M : Type u} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 variable [IsManifold I 1 M] [T2Space M] [SigmaCompactSpace M]
 variable {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-
-
-
-def riemannianClosedBallOf (g : SmoothRiemannianMetric I M) (x : M) (r : Real) : Set M :=
-  {y : M | DifferentialGeometry.riemannianEDistOf (I := I) g x y ≤ ENNReal.ofReal r}
-
-
-def riemannianBallOf (g : SmoothRiemannianMetric I M) (x : M) (r : Real) : Set M :=
-  {y : M | DifferentialGeometry.riemannianEDistOf (I := I) g x y < ENNReal.ofReal r}
-
-omit [FiniteDimensional Real E] [CompleteSpace E] [IsManifold I 1 M] [T2Space M]
-  [SigmaCompactSpace M] in
-theorem riemannianClosedBallOf_mono (g : SmoothRiemannianMetric I M) (x : M) {r r' : Real}
-    (h : r ≤ r') :
-    riemannianClosedBallOf (I := I) g x r ⊆ riemannianClosedBallOf (I := I) g x r' := by
-  intro y hy
-  exact le_trans hy (ENNReal.ofReal_le_ofReal h)
-
-omit [FiniteDimensional Real E] [CompleteSpace E] [IsManifold I 1 M] [T2Space M]
-  [SigmaCompactSpace M] in
-theorem riemannianBallOf_mono (g : SmoothRiemannianMetric I M) (x : M) {r r' : Real}
-    (h : r ≤ r') :
-    riemannianBallOf (I := I) g x r ⊆ riemannianBallOf (I := I) g x r' := by
-  intro y hy
-  exact lt_of_lt_of_le hy (ENNReal.ofReal_le_ofReal h)
-
-omit [FiniteDimensional Real E] [CompleteSpace E] [IsManifold I 1 M] [T2Space M]
-  [SigmaCompactSpace M] in
-theorem riemannianClosedBallOf_scaleMetric
-    (c : Real) (hc : 0 < c) (g : SmoothRiemannianMetric I M) (x : M) (r : Real) :
-    riemannianClosedBallOf (I := I) (scaleMetric (I := I) c hc g) x (Real.sqrt c * r) =
-      riemannianClosedBallOf (I := I) g x r := by
-  ext y
-  have ha0 : ENNReal.ofReal (Real.sqrt c) ≠ 0 :=
-    ne_of_gt (ENNReal.ofReal_pos.mpr (Real.sqrt_pos.2 hc))
-  have hatop : ENNReal.ofReal (Real.sqrt c) ≠ (∞ : ℝ≥0∞) := ENNReal.ofReal_ne_top
-  change DifferentialGeometry.riemannianEDistOf (I := I)
-      (scaleMetric (I := I) c hc g) x y ≤ ENNReal.ofReal (Real.sqrt c * r) ↔
-    DifferentialGeometry.riemannianEDistOf (I := I) g x y ≤ ENNReal.ofReal r
-  rw [DifferentialGeometry.edistOf_scale, ENNReal.ofReal_mul (Real.sqrt_nonneg c)]
-  constructor
-  · intro h
-    by_contra hcon
-    exact absurd ((ENNReal.mul_lt_mul_iff_right ha0 hatop).2 (not_le.1 hcon)) (not_lt.2 h)
-  · intro h
-    by_contra hcon
-    exact absurd ((ENNReal.mul_lt_mul_iff_right ha0 hatop).1 (not_le.1 hcon)) (not_lt.2 h)
-
-omit [FiniteDimensional Real E] [CompleteSpace E] [IsManifold I 1 M] [T2Space M]
-  [SigmaCompactSpace M] in
-theorem riemannianBallOf_scaleMetric
-    (c : Real) (hc : 0 < c) (g : SmoothRiemannianMetric I M) (x : M) (r : Real) :
-    riemannianBallOf (I := I) (scaleMetric (I := I) c hc g) x (Real.sqrt c * r) =
-      riemannianBallOf (I := I) g x r := by
-  ext y
-  have ha0 : ENNReal.ofReal (Real.sqrt c) ≠ 0 :=
-    ne_of_gt (ENNReal.ofReal_pos.mpr (Real.sqrt_pos.2 hc))
-  have hatop : ENNReal.ofReal (Real.sqrt c) ≠ (∞ : ℝ≥0∞) := ENNReal.ofReal_ne_top
-  change DifferentialGeometry.riemannianEDistOf (I := I)
-      (scaleMetric (I := I) c hc g) x y < ENNReal.ofReal (Real.sqrt c * r) ↔
-    DifferentialGeometry.riemannianEDistOf (I := I) g x y < ENNReal.ofReal r
-  rw [DifferentialGeometry.edistOf_scale, ENNReal.ofReal_mul (Real.sqrt_nonneg c)]
-  exact ENNReal.mul_lt_mul_iff_right ha0 hatop
 
 
 
