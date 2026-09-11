@@ -2,11 +2,10 @@
 Copyright (c) 2026 Álvaro Begué. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Álvaro Begué
+Modified for this project; see MODIFICATIONS.md for the local changes.
 -/
 import DifferentialGeometry.External.Schoenflies.Realization
 import DifferentialGeometry.External.Schoenflies.Graph.K33Planar
-
-set_option autoImplicit true
 
 /-!
 # Discharging the realization hypothesis of `lem:k33`

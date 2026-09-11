@@ -2,11 +2,10 @@
 Copyright (c) 2026 Álvaro Begué. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Álvaro Begué
+Modified for this project; see MODIFICATIONS.md for the local changes.
 -/
 import DifferentialGeometry.External.Schoenflies.OverlayExtension
 import DifferentialGeometry.External.Schoenflies.StageTransition
-
-set_option autoImplicit true
 
 /-!
 # Polygonal joining ears for boundary-touching source crosscuts
@@ -638,8 +637,8 @@ theorem exists_join_trace (hs : 0 < s) (hJ : J.Nondeg)
       _root_.Graph.edgesCover u.drawing D = cover joins := by
   let T := _root_.Graph.traceGraph u.graph u.drawing (cover joins)
   have hTle : T ≤ u.graph := _root_.Graph.traceGraph_le _
-  let : u.graph.Finite := u.graph_finite
-  let : T.Finite := _root_.Graph.Finite.of_le hTle
+  have : u.graph.Finite := u.graph_finite
+  have : T.Finite := _root_.Graph.Finite.of_le hTle
   have hpoint : _root_.Graph.pointSet T u.drawing = cover joins :=
     u.joinTrace_pointSet hs hJ hJgeom hwindow hjoins hjoinsOpen
   have hxGraph : x ∈ V(u.graph) := u.joinEnds_subset_graph hs hJ hjoins hxEnd

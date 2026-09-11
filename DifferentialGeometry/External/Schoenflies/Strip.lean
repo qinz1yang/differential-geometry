@@ -2,12 +2,11 @@
 Copyright (c) 2026 Álvaro Begué. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Álvaro Begué
+Modified for this project; see MODIFICATIONS.md for the local changes.
 -/
 import DifferentialGeometry.External.Schoenflies.Direction
 import DifferentialGeometry.External.Schoenflies.UniformBound
 import Mathlib.Data.ZMod.Basic
-
-set_option autoImplicit true
 
 /-!
 # Two-sided polygonal strips
@@ -549,7 +548,7 @@ theorem off_coord (P : ClosedPolygon m) (i : ZMod (m + 3)) (x : Plane) :
     x = P.off i (coordAlong (P.vertex i) (P.tang i) x) (coordAcross (P.vertex i) (P.tang i) x) :=
   frame_decomp isDirection_tang _ _
 
-theorem off_injective (h : P.off i t s = P.off i t' s') : t = t' ∧ s = s' := by
+theorem off_injective {t' s' : ℝ} (h : P.off i t s = P.off i t' s') : t = t' ∧ s = s' := by
   constructor
   · have := congrArg (coordAlong (P.vertex i) (P.tang i)) h
     simpa using this

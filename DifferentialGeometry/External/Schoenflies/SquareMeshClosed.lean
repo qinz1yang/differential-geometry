@@ -2,11 +2,10 @@
 Copyright (c) 2026 Álvaro Begué. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Álvaro Begué
+Modified for this project; see MODIFICATIONS.md for the local changes.
 -/
 import DifferentialGeometry.External.Schoenflies.GridAttach
 import DifferentialGeometry.External.Schoenflies.SquareCycle
-
-set_option autoImplicit true
 
 /-!
 # The anchored square mesh, closed
@@ -556,6 +555,7 @@ theorem meshGraph_ring_cycle {N : ℕ} (hN : 2 ≤ N) {fresh : List Plane}
       · exact Graph.mem_edgesCover (List.mem_cons_of_mem _
           (List.mem_append_right _ (List.mem_reverse.2 hQ'))) hzQ
 
+
 /-! ### Each ring of the mesh, as a named 2-connected subgraph
 
 `Schoenflies/SquareCycle.lean` proves that the part of *any* polygonal overlay lying on the
@@ -608,6 +608,7 @@ theorem mem_vertexSet_ringGraph {N : ℕ} (hN : 2 ≤ N) {fresh : List Plane}
   mem_vertexSet_squareGraph (meshSegments_nondeg hN hfresh) (meshRadii_pos hN hr).le
     (squarePieces_zero_subset_meshSegments hr) hy
     (by rw [frontier_closedSquare_zero (meshRadii_pos hN hr).le]; exact hyr)
+
 
 /-! ### Where a spoke crosses a ring
 
@@ -695,6 +696,7 @@ theorem smul_ne_smul {r : ℝ} (hr : r ≠ 0) {z w : Plane} (hzw : z ≠ w) : r 
   intro h
   exact hzw (smul_right_injective Plane hr h)
 
+
 /-! ### The spokes, as paths of the mesh
 
 `Schoenflies.SubdividesToPath` — now a theorem — turns each spoke into a path of the mesh from
@@ -776,6 +778,7 @@ theorem walkVertices_spokeWalk_subset {N : ℕ} (hN : 2 ≤ N) {fresh : List Pla
     x ∈ (spokePiece N z).seg :=
   walkVertices_subset_of_edges (left_mem_segment ℝ _ _)
     (fun _ hQ => spokeWalk_seg_subset hN hfresh anchors hz hQ) hx
+
 
 /-! ### The core: outer ring, two spokes, inner ring
 
@@ -895,6 +898,7 @@ theorem meshEar_isPath {N : ℕ} (hN : 2 ≤ N) {fresh : List Plane}
   · exact absurd (spokePiece_disjoint hN hzm hwm hzw h hxw) not_false
   · exact (spokePiece_inter_ringSet hN hwm hrm).subset ⟨hxw, h⟩
 
+
 /-! ### The assembly
 
 `meshCore` is the outer ring, the ear, and the inner ring. `attachRings` then adds every ring
@@ -992,6 +996,7 @@ theorem meshCore_isTwoConnected {N : ℕ} (hN : 2 ≤ N) {fresh : List Plane}
     (smul_ne_smul (ne_of_gt (inv_cast_pos hN)) hzw)
     (Or.inr hmemz) (smul_mem_vertexSet_ringGraph hN hfresh anchors hz hrm)
     (Or.inr hmemw) (smul_mem_vertexSet_ringGraph hN hfresh anchors hw hrm)
+
 
 /-! ### Adding every ring and every spoke -/
 
@@ -1117,6 +1122,7 @@ theorem attachSpokes_isTwoConnected {N : ℕ} (hN : 2 ≤ N) {fresh : List Plane
       (hmono (houter u hu)) (hmono (hinner u hu))
     exact fun h => smul_ne_self hN (hfresh u hu) (inv_mem_meshRadii hN)
       (inv_cast_lt_one hN).ne h.symm
+
 
 /-! ### Clause 5: the skeleton of the mesh is 2-connected -/
 

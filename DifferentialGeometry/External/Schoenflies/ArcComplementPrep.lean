@@ -2,6 +2,7 @@
 Copyright (c) 2026 Álvaro Begué. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Álvaro Begué
+Modified for this project; see MODIFICATIONS.md for the local changes.
 -/
 import DifferentialGeometry.External.Schoenflies.PolygonalJordan
 import DifferentialGeometry.External.Schoenflies.ModelCurve
@@ -9,8 +10,6 @@ import DifferentialGeometry.External.Schoenflies.SimpleArc
 import DifferentialGeometry.External.Schoenflies.SquareMover
 import DifferentialGeometry.External.Schoenflies.Graph.OuterFace
 import DifferentialGeometry.External.Schoenflies.UniformBound
-
-set_option autoImplicit true
 
 /-!
 # Scaffolding for the arc-complement theorem
@@ -557,6 +556,7 @@ theorem outside_frontier_closedSquare (c : Plane) (r : ℝ) :
     rcases hmem with h | h
     · exact absurd (show supDist x c ≤ r from le_of_lt (hin.subset h)) hx
     · exact h
+
 
 /-! ## Part 2: two nearby congruent squares meet twice
 

@@ -2,10 +2,9 @@
 Copyright (c) 2026 Álvaro Begué. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Álvaro Begué
+Modified for this project; see MODIFICATIONS.md for the local changes.
 -/
 import DifferentialGeometry.External.Schoenflies.InteriorHomeomorphism
-
-set_option autoImplicit true
 
 /-!
 # Boundary anchors retained by the quantitative recursion
@@ -248,7 +247,7 @@ theorem Graph.IsStageOn.exists_crosscut_path
       h.vertex_mem hlb.right_mem (hcase hlb hbnb hbC)
     let K := Graph.traceGraph G drawing (inside C)
     have hKle : K ≤ G := Graph.traceGraph_le _
-    let : K.Finite := Graph.Finite.of_le hKle
+    have : K.Finite := Graph.Finite.of_le hKle
     have hKpoint : Graph.pointSet K drawing =
         Graph.interiorPart G drawing (inside C) :=
       Graph.pointSet_traceGraph_eq_interiorPart h.isDrawing (inside C)
@@ -795,7 +794,7 @@ theorem prescribedSourceAnchorSet_hasAnchorCrosscuts :
   have hrTargetAdmissible :
       r.pair.tgt.IsAdmissible modelCurve (Plane.closedSquare 0 1) :=
     r.pair.tgt_isAdmissible hrAdmissible.isConnected_nonboundary
-  let : r.pair.src.graph.Finite := CellStructure.Realization.finite_graph r.pair.src
+  have : r.pair.src.graph.Finite := CellStructure.Realization.finite_graph r.pair.src
   have hsourceStage := hrAdmissible.isStageOn
   have htargetStage : Graph.IsStageOn r.pair.tgt.graph r.pair.tgt.drawing
       modelCurve (inside modelCurve) := by

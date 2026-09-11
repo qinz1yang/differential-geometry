@@ -2,13 +2,12 @@
 Copyright (c) 2026 Álvaro Begué. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Álvaro Begué
+Modified for this project; see MODIFICATIONS.md for the local changes.
 -/
 import DifferentialGeometry.External.Schoenflies.CommonSubdivision
 import DifferentialGeometry.External.Schoenflies.CrosscutExists
 import DifferentialGeometry.External.Schoenflies.FreshAccess
 import DifferentialGeometry.External.Schoenflies.Graph.VertexSquares
-
-set_option autoImplicit true
 
 /-!
 # Finite transfer, direction (b): toward the Jordan domain
@@ -139,7 +138,7 @@ def TargetCommonSubdivision
     K.IsTwoConnected ∧ K ≤ H ∧ IsTargetPartialTransferOf T₀ P K Hdraw par₀
 
 /-- One target ear insertion, expressed as the step consumed by relative-ear induction. -/
-def TargetEarStep [Infinite γ]
+def TargetEarStep
     (P : GeneratedPair S₀ srcOuter srcDom tgtOuter tgtDom)
     (H : Graph Plane γ) (Hdraw : γ → ℝ → Plane) : Prop :=
   ∀ (B : Graph Plane γ) (a b : Plane) (D : List γ), B.IsTwoConnected → B ≤ H →
@@ -236,7 +235,7 @@ end TargetEarStepData
 
 /-- The nontrivial reverse-ear constructor, before the already-present-edge branch is folded
 back in. -/
-def TargetEarStepConstruction [Infinite γ]
+def TargetEarStepConstruction
     (P : GeneratedPair S₀ srcOuter srcDom tgtOuter tgtDom)
     (H : Graph Plane γ) (Hdraw : γ → ℝ → Plane)
     (_hH : IsSourceExtension P.tgt tgtOuter tgtDom H Hdraw) : Prop :=
@@ -250,7 +249,7 @@ def TargetEarStepConstruction [Infinite γ]
 
 /-- Fold the explicit nontrivial reverse-ear constructor into the total `TargetEarStep`
 interface. -/
-theorem targetEarStep_of_data [Infinite γ]
+theorem targetEarStep_of_data
     {P : GeneratedPair S₀ srcOuter srcDom tgtOuter tgtDom}
     {H : Graph Plane γ} {Hdraw : γ → ℝ → Plane}
     (hH : IsSourceExtension P.tgt tgtOuter tgtDom H Hdraw)
@@ -1473,7 +1472,7 @@ def GeneratedPair.SourceEndpointFreshCombinatorics
 
 /-- The remaining prescribed-ear combinatorics after boundary anchoring has supplied strong
 accessibility: both outer endpoints are fresh and incident with the selected face alone. -/
-def TargetEarFreshCombinatorics [Infinite γ]
+def TargetEarFreshCombinatorics
     (P : GeneratedPair S₀ srcOuter srcDom tgtOuter tgtDom)
     (H : Graph Plane γ) (Hdraw : γ → ℝ → Plane) : Prop :=
   ∀ (B : Graph Plane γ) (a b : Plane) (D : List γ), B.IsTwoConnected → B ≤ H →
@@ -1491,7 +1490,6 @@ def TargetEarFreshCombinatorics [Infinite γ]
 /-- The relative no-new-incidence boundary condition, together with the static two-branch
 invariant of generated outer graphs, supplies all reverse-ear fresh combinatorics. -/
 theorem targetEarFreshCombinatorics_of_noNewNonouterIncidence_of_outerIncidenceAtMostTwo
-    [Infinite γ]
     (P : GeneratedPair S₀ srcOuter srcDom tgtOuter tgtDom)
     {H : Graph Plane γ} {Hdraw : γ → ℝ → Plane}
     (hH : IsSourceExtension P.tgt tgtOuter tgtDom H Hdraw)
@@ -1525,7 +1523,6 @@ theorem targetEarFreshCombinatorics_of_noNewNonouterIncidence_of_outerIncidenceA
 /-- Global uniqueness is a sufficient special case of the relative no-new-incidence
 condition. -/
 theorem targetEarFreshCombinatorics_of_nonouterIncidenceUnique_of_outerIncidenceAtMostTwo
-    [Infinite γ]
     (P : GeneratedPair S₀ srcOuter srcDom tgtOuter tgtDom)
     {H : Graph Plane γ} {Hdraw : γ → ℝ → Plane}
     (hH : IsSourceExtension P.tgt tgtOuter tgtDom H Hdraw)
@@ -1538,7 +1535,7 @@ theorem targetEarFreshCombinatorics_of_nonouterIncidenceUnique_of_outerIncidence
 
 /-- The relative no-new-incidence condition and an outer cycle on the base structure supply
 the reverse-ear fresh combinatorics. -/
-theorem targetEarFreshCombinatorics_of_noNewNonouterIncidence_of_outerCycle [Infinite γ]
+theorem targetEarFreshCombinatorics_of_noNewNonouterIncidence_of_outerCycle
     (P : GeneratedPair S₀ srcOuter srcDom tgtOuter tgtDom)
     {H : Graph Plane γ} {Hdraw : γ → ℝ → Plane}
     (hH : IsSourceExtension P.tgt tgtOuter tgtDom H Hdraw)
@@ -1551,7 +1548,7 @@ theorem targetEarFreshCombinatorics_of_noNewNonouterIncidence_of_outerCycle [Inf
 
 /-- The preceding reverse-ear combinatorics follows from the natural base invariant that the
 distinguished outer edges form one simple cycle. -/
-theorem targetEarFreshCombinatorics_of_nonouterIncidenceUnique_of_outerCycle [Infinite γ]
+theorem targetEarFreshCombinatorics_of_nonouterIncidenceUnique_of_outerCycle
     (P : GeneratedPair S₀ srcOuter srcDom tgtOuter tgtDom)
     {H : Graph Plane γ} {Hdraw : γ → ℝ → Plane}
     (hH : IsSourceExtension P.tgt tgtOuter tgtDom H Hdraw)
@@ -1563,7 +1560,7 @@ theorem targetEarFreshCombinatorics_of_nonouterIncidenceUnique_of_outerCycle [In
 
 /-- The combinatorial/anchoring invariant still required from the prescribed target ear order:
 both source endpoints selected by every nontrivial target ear are ready in the preceding sense. -/
-def TargetEarFreshInvariant [Infinite γ]
+def TargetEarFreshInvariant
     (P : GeneratedPair S₀ srcOuter srcDom tgtOuter tgtDom)
     (H : Graph Plane γ) (Hdraw : γ → ℝ → Plane) : Prop :=
   ∀ (B : Graph Plane γ) (a b : Plane) (D : List γ), B.IsTwoConnected → B ≤ H →
@@ -1578,7 +1575,7 @@ def TargetEarFreshInvariant [Infinite γ]
 
 /-- Relative anchoring of new ambient boundary edges and the remaining fresh-incidence
 combinatorics together give the complete reverse-ear readiness invariant. -/
-theorem targetEarFreshInvariant_of_newBoundaryAnchored [Infinite γ]
+theorem targetEarFreshInvariant_of_newBoundaryAnchored
     (P : GeneratedPair S₀ srcOuter srcDom tgtOuter tgtDom)
     (H : Graph Plane γ) (Hdraw : γ → ℝ → Plane)
     (hH : IsSourceExtension P.tgt tgtOuter tgtDom H Hdraw)
@@ -1603,7 +1600,7 @@ theorem targetEarFreshInvariant_of_newBoundaryAnchored [Infinite γ]
 
 /-- Anchoring every nonouter boundary edge is a sufficient special case of relative
 new-edge anchoring. -/
-theorem targetEarFreshInvariant_of_boundaryAnchored [Infinite γ]
+theorem targetEarFreshInvariant_of_boundaryAnchored
     (P : GeneratedPair S₀ srcOuter srcDom tgtOuter tgtDom)
     (H : Graph Plane γ) (Hdraw : γ → ℝ → Plane)
     (hH : IsSourceExtension P.tgt tgtOuter tgtDom H Hdraw)
@@ -1617,7 +1614,7 @@ theorem targetEarFreshInvariant_of_boundaryAnchored [Infinite γ]
 source face selected by that ear.  This is the geometric invariant direction (b) must maintain:
 off the wild curve it follows from polygonal-side accessibility, while a fresh wild-boundary
 endpoint is supplied by `polyAccessible_of_stronglyAccessible`. -/
-def TargetEarEndpointAccessibility [Infinite γ]
+def TargetEarEndpointAccessibility
     (P : GeneratedPair S₀ srcOuter srcDom tgtOuter tgtDom)
     (H : Graph Plane γ) (Hdraw : γ → ℝ → Plane) : Prop :=
   ∀ (B : Graph Plane γ) (a b : Plane) (D : List γ), B.IsTwoConnected → B ≤ H →
@@ -1633,7 +1630,7 @@ def TargetEarEndpointAccessibility [Infinite γ]
 /-- The fresh-anchor invariant implies the endpoint-accessibility invariant: the off-curve
 branch uses polygonal-side accessibility, and the fresh branch uses the compact carrier and
 unique-face theorem above. -/
-theorem targetEarEndpointAccessibility_of_freshInvariant [Infinite γ]
+theorem targetEarEndpointAccessibility_of_freshInvariant
     (P : GeneratedPair S₀ srcOuter srcDom tgtOuter tgtDom)
     (H : Graph Plane γ) (Hdraw : γ → ℝ → Plane)
     (hfresh : TargetEarFreshInvariant P H Hdraw) :
@@ -1751,8 +1748,8 @@ noncomputable def targetCommonSubdivisionData [Infinite γ]
   classical
   let K := Graph.traceGraph H Hdraw P.tgt.skeletonSet
   have hKle : K ≤ H := Graph.traceGraph_le _
-  letI : H.Finite := hH.finite
-  letI : K.Finite := Graph.Finite.of_le hKle
+  let : H.Finite := hH.finite
+  let : K.Finite := Graph.Finite.of_le hKle
   have hK2 : K.IsTwoConnected :=
     trace_isTwoConnected hH P.tgt_isWeaklyAdmissible.isTwoConnected
   have hvertices : V(K) ⊆ P.tgt.skeletonSet := by
@@ -1789,7 +1786,7 @@ theorem targetCommonSubdivision [Infinite γ]
     w.isTargetPartialTransferOf⟩
 
 /-- Iterate a target ear step from a common subdivision through the whole extension graph. -/
-theorem targetTransferOfEars [Infinite γ]
+theorem targetTransferOfEars
     {P : GeneratedPair S₀ srcOuter srcDom tgtOuter tgtDom}
     {H : Graph Plane γ} {Hdraw : γ → ℝ → Plane}
     (hH : IsSourceExtension P.tgt tgtOuter tgtDom H Hdraw)

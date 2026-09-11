@@ -2,11 +2,10 @@
 Copyright (c) 2026 Álvaro Begué. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Álvaro Begué
+Modified for this project; see MODIFICATIONS.md for the local changes.
 -/
 import DifferentialGeometry.External.Schoenflies.Graph.Walk
 import DifferentialGeometry.External.Schoenflies.Graph.TwoConnected
-
-set_option autoImplicit true
 
 /-!
 # Components and shortest paths
@@ -144,7 +143,6 @@ theorem iUnion_component (G : Graph α β) : ⋃ u ∈ V(G), G.component u = V(G
 theorem induce_component_le : G.induce (G.component u) ≤ G :=
   induce_le component_subset_vertexSet
 
-@[simp]
 theorem mem_vertexSet_induce_component : v ∈ V(G.induce (G.component u)) ↔ G.Reaches u v :=
   Iff.rfl
 

@@ -2,11 +2,10 @@
 Copyright (c) 2026 Álvaro Begué. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Álvaro Begué
+Modified for this project; see MODIFICATIONS.md for the local changes.
 -/
 import DifferentialGeometry.External.Schoenflies.FiniteTransferTargetMesh
 import DifferentialGeometry.External.Schoenflies.SkeletonLocal
-
-set_option autoImplicit true
 
 /-!
 # Overlaying a target skeleton with the anchored square mesh
@@ -86,7 +85,7 @@ namespace GeneratedPair
 theorem exists_targetSegmentCover
     (P : GeneratedPair S₀ srcOuter srcDom tgtOuter tgtDom) :
     Nonempty (TargetSegmentCover P) := by
-  let : Graph.Finite P.tgt.graph :=
+  have : Graph.Finite P.tgt.graph :=
     CellStructure.Realization.finite_graph P.tgt
   have hincident : ∀ z ∈ V(P.tgt.graph), ∃ e, P.tgt.graph.Inc e z := by
     intro z hz
@@ -1015,7 +1014,7 @@ noncomputable def openTargetEdgePieces
     (P : GeneratedPair S₀ srcOuter srcDom modelCurve (Plane.closedSquare 0 1)) :
     List (Set Plane) := by
   classical
-  letI : P.str.skel.Finite :=
+  have : P.str.skel.Finite :=
     ⟨P.str.finite_vertexSet, P.str.finite_edgeSet⟩
   exact (P.str.skel.edgeFinset.filter fun e => e ∉ E(P.str.outerGraph)).toList.map
     fun e => edgeArc P.tgt.drawing e \ modelCurve
@@ -1026,7 +1025,7 @@ noncomputable def openTargetEdgePieces
     A ∈ openTargetEdgePieces P ↔
       ∃ e ∈ E(P.str.skel), e ∉ E(P.str.outerGraph) ∧
         A = edgeArc P.tgt.drawing e \ modelCurve := by
-  let : P.str.skel.Finite :=
+  have : P.str.skel.Finite :=
     ⟨P.str.finite_vertexSet, P.str.finite_edgeSet⟩
   simp only [openTargetEdgePieces, List.mem_map, Finset.mem_toList, Finset.mem_filter,
     Graph.mem_edgeFinset]

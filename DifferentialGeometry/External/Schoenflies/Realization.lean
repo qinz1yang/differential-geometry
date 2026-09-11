@@ -2,12 +2,11 @@
 Copyright (c) 2026 Álvaro Begué. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Álvaro Begué
+Modified for this project; see MODIFICATIONS.md for the local changes.
 -/
 import DifferentialGeometry.External.Schoenflies.SimpleArc
 import DifferentialGeometry.External.Schoenflies.PolygonalCrosscut
 import DifferentialGeometry.External.Schoenflies.TwoArcs
-
-set_option autoImplicit true
 
 /-!
 # Realizing a polygonal Jordan curve as a `ClosedPolygon`

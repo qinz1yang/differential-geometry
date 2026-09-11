@@ -2,11 +2,10 @@
 Copyright (c) 2026 Álvaro Begué. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Álvaro Begué
+Modified for this project; see MODIFICATIONS.md for the local changes.
 -/
 import DifferentialGeometry.External.Schoenflies.Graph.Cycle
 import DifferentialGeometry.External.Schoenflies.Graph.Degree
-
-set_option autoImplicit true
 
 /-!
 # Trees
@@ -169,7 +168,7 @@ theorem IsAcyclic.longest_path_source_edge (hac : G.IsAcyclic) (hP : G.IsPath u 
 /-- **The source of a longest path in an acyclic graph is a leaf**, as soon as it carries an
 edge at all: every edge there is one of the path's, and the path leaves the vertex only once,
 so they are all the same edge. -/
-theorem IsAcyclic.longest_path_source_is_leaf [G.Finite] (hac : G.IsAcyclic)
+theorem IsAcyclic.longest_path_source_is_leaf (hac : G.IsAcyclic)
     (hP : G.IsPath u P v)
     (hlong : ∀ x' y' (Q : List β), G.IsPath x' Q y' → Q.length ≤ P.length)
     (hinc : G.Inc e u) : G.IsLeaf u := by
@@ -180,7 +179,7 @@ theorem IsAcyclic.longest_path_source_is_leaf [G.Finite] (hac : G.IsAcyclic)
 
 /-- **The target of a longest path in an acyclic graph is a leaf** too: reversing a path
 preserves its length, so the reverse is longest as well. -/
-theorem IsAcyclic.longest_path_target_is_leaf [G.Finite] (hac : G.IsAcyclic)
+theorem IsAcyclic.longest_path_target_is_leaf (hac : G.IsAcyclic)
     (hP : G.IsPath u P v)
     (hlong : ∀ x' y' (Q : List β), G.IsPath x' Q y' → Q.length ≤ P.length)
     (hinc : G.Inc e v) : G.IsLeaf v := by

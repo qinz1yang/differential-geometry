@@ -2,11 +2,10 @@
 Copyright (c) 2026 Álvaro Begué. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Álvaro Begué
+Modified for this project; see MODIFICATIONS.md for the local changes.
 -/
 import DifferentialGeometry.External.Schoenflies.OuterChain
 import DifferentialGeometry.External.Schoenflies.CombinatorialInvariance
-
-set_option autoImplicit true
 
 /-!
 # `thm:polygonal-crosscut` at the level of sets, and the geometric half of the outer-chain descent

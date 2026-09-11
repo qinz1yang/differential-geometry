@@ -6105,7 +6105,9 @@ import DifferentialGeometry.Topology.OrderedSeparatingCollars
 import DifferentialGeometry.Topology.PartitionOfUnity.CompactSupport
 import DifferentialGeometry.Topology.PartitionOfUnity.Locality
 import DifferentialGeometry.Topology.PlanarJordan.ArcAndSegment
+import DifferentialGeometry.Topology.PlanarJordan.AmbientExtension
 import DifferentialGeometry.Topology.PlanarJordan.ClosedInterior
+import DifferentialGeometry.Topology.PlanarJordan.Innermost
 import DifferentialGeometry.Topology.PlanarJordan.InvariantDisk
 import DifferentialGeometry.Topology.PlanarJordan.LocalSides
 import DifferentialGeometry.Topology.PlanarJordan.PeriodicOrbit

@@ -2,10 +2,9 @@
 Copyright (c) 2026 Álvaro Begué. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Álvaro Begué
+Modified for this project; see MODIFICATIONS.md for the local changes.
 -/
 import DifferentialGeometry.External.Schoenflies.GeneratedStructure
-
-set_option autoImplicit true
 
 /-!
 # Carriers, refinement compatibility, and the star lemmas
@@ -232,7 +231,7 @@ structure Refines {S' S : CellStructure γ} (R' : S'.Realization) (R : S.Realiza
 namespace Refines
 
 variable {S' S'' : CellStructure γ} {R : S.Realization} {R' : S'.Realization}
-  {R'' : S''.Realization} {par par' : γ → γ}
+  {R'' : S''.Realization} {par par' : γ → γ} {D' : Set Plane}
 
 /-- Every realization refines itself along the identity: the empty sequence of elementary
 refinements. -/

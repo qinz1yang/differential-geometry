@@ -2,10 +2,9 @@
 Copyright (c) 2026 Álvaro Begué. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Álvaro Begué
+Modified for this project; see MODIFICATIONS.md for the local changes.
 -/
 import DifferentialGeometry.External.Schoenflies.Curve
-
-set_option autoImplicit true
 
 /-!
 # Subarcs, open arcs, and the subarc basis
@@ -80,7 +79,7 @@ read through the identification of a real segment with an unordered closed inter
 theorem image_reparam_I : reparam a b '' I = uIcc a b := by
   have h : (fun θ : ℝ => a + θ • (b - a)) '' Icc (0 : ℝ) 1 = uIcc a b := by
     rw [← segment_eq_image' ℝ a b, segment_eq_uIcc]
-  change (fun t : ℝ => a + t * (b - a)) '' Icc 0 1 = uIcc a b
+  change (fun θ : ℝ => a + θ * (b - a)) '' Icc (0 : ℝ) 1 = uIcc a b
   simpa only [smul_eq_mul] using h
 
 theorem mapsTo_reparam : MapsTo (reparam a b) I (uIcc a b) :=

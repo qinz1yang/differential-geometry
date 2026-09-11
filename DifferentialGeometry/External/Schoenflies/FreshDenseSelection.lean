@@ -2,12 +2,11 @@
 Copyright (c) 2026 Álvaro Begué. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Álvaro Begué
+Modified for this project; see MODIFICATIONS.md for the local changes.
 -/
 import DifferentialGeometry.External.Schoenflies.BoundaryContinuity2
 import DifferentialGeometry.External.Schoenflies.TargetOverlay
 import Mathlib.Topology.Separation.Connected
-
-set_option autoImplicit true
 
 /-!
 # Selecting a finite dense list of fresh boundary anchors
@@ -60,8 +59,8 @@ theorem IsJordanCurve.subset_closure_sdiff_finite
   have hforbiddenFinite : forbidden'.Finite := by
     apply hforbidden.preimage
     exact Set.injOn_of_injective Subtype.val_injective
-  let : ConnectedSpace C := Subtype.connectedSpace hC.isConnected
-  let : Nontrivial C := by
+  have : ConnectedSpace C := Subtype.connectedSpace hC.isConnected
+  have : Nontrivial C := by
     obtain ⟨x, hx, y, hy, hxy⟩ := hC.exists_ne
     exact ⟨⟨⟨x, hx⟩, ⟨y, hy⟩, fun h => hxy (congrArg Subtype.val h)⟩⟩
   have hcleanDense : Dense (eligible' \ forbidden') :=
@@ -250,7 +249,7 @@ theorem exists_finite_freshDenseNet_of_dense {eligible : Set Plane}
 
 namespace TargetSegmentCover
 
-variable {S₀ : CellStructure γ} {srcOuter srcDom : Set Plane}
+variable {γ : Type*} {S₀ : CellStructure γ} {srcOuter srcDom : Set Plane}
   {P : GeneratedPair S₀ srcOuter srcDom modelCurve (Plane.closedSquare 0 1)}
 
 /-- Strongly accessible points on the source boundary. -/
@@ -347,7 +346,7 @@ theorem exists_clean_freshDense_of_accessibleTargetBoundary_dense
         StronglyAccessible (srcDom \ srcOuter) (P.homeo.invFun z)) ∧
       FreshAvoidsTargetNonouterEdges P fresh ∧ FreshDense fresh delta ∧
       FreshNet fresh delta := by
-  let : Graph.Finite P.tgt.graph :=
+  have : Graph.Finite P.tgt.graph :=
     CellStructure.Realization.finite_graph P.tgt
   have haccessibleSubset : accessibleTargetBoundary P ⊆ modelCurve :=
     fun _ hz => hz.1

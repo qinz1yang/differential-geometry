@@ -2,11 +2,10 @@
 Copyright (c) 2026 Álvaro Begué. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Álvaro Begué
+Modified for this project; see MODIFICATIONS.md for the local changes.
 -/
 import DifferentialGeometry.External.Schoenflies.PolyPath
 import DifferentialGeometry.External.Schoenflies.Curve
-
-set_option autoImplicit true
 
 /-!
 # Polygonal sets, and segments as arcs
@@ -37,7 +36,7 @@ theorem IsPolygonal.isCompact {A : Set Plane} (h : IsPolygonal A) : IsCompact A 
   obtain ⟨vs, rfl⟩ := h
   exact isCompact_poly vs
 
-@[simp] theorem poly_pair (a b : Plane) : poly [a, b] = segment ℝ a b := by
+theorem poly_pair (a b : Plane) : poly [a, b] = segment ℝ a b := by
   rw [poly_cons_cons, poly_singleton]
   exact union_eq_self_of_subset_right (singleton_subset_iff.2 (right_mem_segment ℝ a b))
 
@@ -47,7 +46,7 @@ theorem isPolygonal_segment (a b : Plane) : IsPolygonal (segment ℝ a b) :=
 /-- `lineMap a b` is injective on the unit interval exactly when the segment is
 nondegenerate: two parameters differ by a multiple of `b - a`. Exposed separately because the
 plane-graph drawing condition asks for the parametrization, not just its image. -/
-theorem injOn_lineMap {a b : Plane} (hab : a ≠ b) :
+theorem injOn_lineMap {I : Set ℝ} {a b : Plane} (hab : a ≠ b) :
     Set.InjOn (AffineMap.lineMap a b : ℝ → Plane) I := by
   intro s _ t _ hst
   have hba : b - a ≠ 0 := sub_ne_zero.2 (Ne.symm hab)

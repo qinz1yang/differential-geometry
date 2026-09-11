@@ -2,13 +2,12 @@
 Copyright (c) 2026 Álvaro Begué. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Álvaro Begué
+Modified for this project; see MODIFICATIONS.md for the local changes.
 -/
 import DifferentialGeometry.External.Schoenflies.Concatenate
 import DifferentialGeometry.External.Schoenflies.Graph.Cycle
 import DifferentialGeometry.External.Schoenflies.Graph.Drawing
 import DifferentialGeometry.External.Schoenflies.Polygonal
-
-set_option autoImplicit true
 
 /-!
 # The realisation of a cycle is a Jordan curve

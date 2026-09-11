@@ -2,6 +2,7 @@
 Copyright (c) 2026 Álvaro Begué. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Álvaro Begué
+Modified for this project; see MODIFICATIONS.md for the local changes.
 -/
 import DifferentialGeometry.External.Schoenflies.CombinatorialInvariance
 import DifferentialGeometry.External.Schoenflies.GeneralCrosscut
@@ -9,8 +10,6 @@ import DifferentialGeometry.External.Schoenflies.ModelCurve
 import DifferentialGeometry.External.Schoenflies.AccessibleJoin
 import DifferentialGeometry.External.Schoenflies.Jordan
 import DifferentialGeometry.External.Schoenflies.Line
-
-set_option autoImplicit true
 
 /-!
 # The initial matched pair
@@ -816,6 +815,7 @@ theorem isConnected_nonboundary : IsConnected H.realization.nonboundary := by
 
 end HexData
 
+
 /-! ### The initial skeleton is 2-connected
 
 The first clause of `def:admissible-graph`. It is a fact about the *abstract* graph — a hexagon
@@ -1168,6 +1168,7 @@ noncomputable def targetHex (hα : |α| < 1) (hβ : |β| < 1) : HexData where
 theorem targetHex_outerArcs (hα : |α| < 1) (hβ : |β| < 1) :
     (targetHex hα hβ).outerArcs = modelCurve := iUnion_tgtOuter hα hβ
 
+
 /-! ### The source realization: the curve with one polygonal crosscut
 
 The source realization is the pushforward of the target's outer cycle along `w = u⁻¹`, together
@@ -1252,6 +1253,7 @@ theorem sourceHex_outerArcs {u w : Plane → Plane} {sp : ℝ → Plane}
     rw [← Set.image_comp]
     rfl
   rw [this, iUnion_tgtOuter hα hβ, hw.image_inv_eq]
+
 
 /-! ### The skeleton homeomorphism
 
@@ -1532,6 +1534,7 @@ theorem rightInvOn_skel :
   · rw [d.skelInv_of_mem hy, d.skelMap_of_mem (d.homeo.mapsTo_inv hy), d.homeo.rightInvOn hy]
   · rw [d.skelInv_tgtChord ht, d.skelMap_cross ht]
 
+
 /-- **The skeleton homeomorphism `g` of `def:matched-pair`.** It is `u` on the outer cycle
 (clause 2), and on the crosscut it is the chosen homeomorphism `P → [u(a), u(b)]` matching
 endpoints (clause 3); clause 1 is definitional here, both realizations being realizations of
@@ -1575,6 +1578,7 @@ theorem skeletonHomeo_eq_u {x : Plane} (hx : x ∈ C) : d.skeletonHomeo.toFun x 
 `P → [u(a), u(b)]` matches the two parametrizations, hence the endpoints. -/
 theorem skeletonHomeo_cross {t : ℝ} (ht : t ∈ I) :
     d.skeletonHomeo.toFun (d.cross t) = tgtChord d.xa d.xb t := d.skelMap_cross ht
+
 
 /-! ### The two 2-cells really are the two sides of the crosscut
 
@@ -1721,6 +1725,7 @@ theorem target_closure_cell_inter (harc : ∀ A : Set Plane, IsArc A → IsConne
   · exact d.isCrosscutTarget.closure_side_inter (fun _ h => h.isSeparating harc) d.isCutPairTarget
   · exact d.isCrosscutTarget.closure_side_inter (fun _ h => h.isSeparating harc)
       d.isCutPairTarget.symm
+
 
 end InitialData
 
@@ -1870,6 +1875,7 @@ theorem exists_initialData (harc : ∀ A : Set Plane, IsArc A → IsConnected A�
   · rw [hfim]
     exact ⟨ws, rfl⟩
 
+
 /-- **`prop:initial-pair`, assembled.** There is a matched pair whose source realization is `C`
 subdivided at the `u`-preimages of the four corners of `Q` and at two further points `a, b` of
 the countable dense strongly accessible set lying in two nonadjacent corner arcs, together with
@@ -1903,5 +1909,6 @@ theorem initial_pair (harc : ∀ A : Set Plane, IsArc A → IsConnected Aᶜ) (h
     d.isConnected_sourceRealization_nonboundary, d.isConnected_targetRealization_nonboundary,
     d.polygonal_cross, by rw [d.tgt_chordSet, d.u_apply_a, d.u_apply_b],
     fun x hx => d.skeletonHomeo_eq_u hx⟩
+
 
 end Schoenflies

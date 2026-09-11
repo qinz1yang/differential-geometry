@@ -2,14 +2,13 @@
 Copyright (c) 2026 Álvaro Begué. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Álvaro Begué
+Modified for this project; see MODIFICATIONS.md for the local changes.
 -/
 import DifferentialGeometry.External.Schoenflies.Inversion
 import DifferentialGeometry.External.Schoenflies.JordanClosed
 import DifferentialGeometry.External.Schoenflies.ModelCurve
 import DifferentialGeometry.External.Schoenflies.SquareMover
 import DifferentialGeometry.External.Schoenflies.Topology
-
-set_option autoImplicit true
 
 /-!
 # The endgame: from the square extension to the relative Jordan–Schönflies theorem

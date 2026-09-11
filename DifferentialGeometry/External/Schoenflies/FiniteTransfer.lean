@@ -2,6 +2,7 @@
 Copyright (c) 2026 Álvaro Begué. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Álvaro Begué
+Modified for this project; see MODIFICATIONS.md for the local changes.
 -/
 import DifferentialGeometry.External.Schoenflies.RefinementStars
 import DifferentialGeometry.External.Schoenflies.OverlayGraph
@@ -13,8 +14,6 @@ import DifferentialGeometry.External.Schoenflies.JordanClosed
 import DifferentialGeometry.External.Schoenflies.BoundaryCyclesGenerated
 import DifferentialGeometry.External.Schoenflies.MatchedSplit
 import DifferentialGeometry.External.Schoenflies.MatchedArc
-
-set_option autoImplicit true
 
 /-!
 # Finite transfer, direction (a): toward the square
@@ -747,7 +746,7 @@ theorem exists_injective_avoiding [Infinite γ] (used : Set γ) (hused : used.Fi
 
 /-- Extend two prescribed, distinct names to an injection on a finite set, with every other
 value fresh outside a prescribed finite set. -/
-theorem exists_injective_pinned_avoiding [Infinite γ]
+theorem exists_injective_pinned_avoiding {α : Type*} [Infinite γ]
     {used : Set γ} (hused : used.Finite) {u v : γ}
     (hu : u ∈ used) (hv : v ∈ used) (huv : u ≠ v)
     {s : Set α} (hs : s.Finite) {a b : α} (hab : a ≠ b) :
@@ -755,7 +754,7 @@ theorem exists_injective_pinned_avoiding [Infinite γ]
       ∀ x ∈ s, x ≠ a → x ≠ b → name x ∉ used := by
   classical
   let inner := {x : α // x ∈ s ∧ x ≠ a ∧ x ≠ b}
-  let : Finite inner := Set.finite_coe_iff.mpr (hs.subset fun x hx => hx.1)
+  have : Finite inner := Set.finite_coe_iff.mpr (hs.subset fun x hx => hx.1)
   obtain ⟨fresh, hfresh, havoid⟩ := exists_injective_avoiding used hused inner
   let name : α → γ := fun x =>
     if hxa : x = a then u else if hxb : x = b then v
@@ -1072,9 +1071,9 @@ the current subgraph `B`, the ear `D` as a path of `H` between two distinct vert
 the freshness of the ear's interior — which is what makes the ear's interior lie in a single
 current face, since it is connected and disjoint from the current skeleton.
 
-`Infinite γ` is not decoration: the step consumes fresh cell names, and on a finite `γ` the
-statement is false. See the section docstring above. -/
-def EarStep [Infinite γ] (P : GeneratedPair S₀ srcOuter srcDom tgtOuter tgtDom)
+Constructing an `EarStep` uses `Infinite γ` to supply fresh cell names; the predicate
+itself is defined for any name type. See the section docstring above. -/
+def EarStep (P : GeneratedPair S₀ srcOuter srcDom tgtOuter tgtDom)
     (H : Graph Plane γ) (Hdraw : γ → ℝ → Plane) : Prop :=
   ∀ (B : Graph Plane γ) (a b : Plane) (D : List γ), B.IsTwoConnected → B ≤ H →
     H.IsPath a D b → a ≠ b → a ∈ V(B) → b ∈ V(B) →
@@ -1088,7 +1087,7 @@ def EarStep [Infinite γ] (P : GeneratedPair S₀ srcOuter srcDom tgtOuter tgtDo
 edges are genuinely new, produce the explicit split and its two realized crosscuts.  The
 degenerate branch in which the proposed path was already in `B` is handled by
 `earStep_of_data`. -/
-def EarStepConstruction [Infinite γ]
+def EarStepConstruction
     (P : GeneratedPair S₀ srcOuter srcDom tgtOuter tgtDom)
     (H : Graph Plane γ) (Hdraw : γ → ℝ → Plane)
     (_hH : IsSourceExtension P.src srcOuter srcDom H Hdraw) : Prop :=
@@ -1150,7 +1149,7 @@ theorem exists_sourceEarStepData [Infinite γ]
     exact vname_fresh x hxQ (fun h => hxab (Or.inl h)) (fun h => hxab (Or.inr h)) hzCell
   let edgeUsed : Set γ := T.str.cells ∪ newVertices
   have hedgeUsed_fin : edgeUsed.Finite := T.str.finite_cells.union hnewVertices_fin
-  let : Finite E(Q) := Set.finite_coe_iff.mpr hQfinE
+  have : Finite E(Q) := Set.finite_coe_iff.mpr hQfinE
   obtain ⟨freshEdge, freshEdge_inj, freshEdge_avoid⟩ :=
     exists_injective_avoiding edgeUsed hedgeUsed_fin E(Q)
   let ename : γ → γ := fun e => if he : e ∈ E(Q) then freshEdge ⟨e, he⟩ else u
@@ -1353,7 +1352,7 @@ theorem exists_sourceEarStepData [Infinite γ]
 bookkeeping theorem: the nontrivial branch is realized by `EarStepData.pair`; if the proposed
 ear contains an old edge, `Graph.ear_edges_notMem_or_union_eq` shows that the union did not
 change and the current transfer itself is the answer. -/
-theorem earStep_of_data [Infinite γ]
+theorem earStep_of_data
     {P : GeneratedPair S₀ srcOuter srcDom tgtOuter tgtDom}
     {H : Graph Plane γ} {Hdraw : γ → ℝ → Plane}
     (hH : IsSourceExtension P.src srcOuter srcDom H Hdraw)
@@ -1378,7 +1377,7 @@ is a generated matched cell structure. Given step 1 and one ear, the whole exten
 The invariant carried through the induction is `IsPartialTransferOf`, which does **not** mention
 connectedness of the open nonboundary part: `rem:intermediate-disconnection` says an
 intermediate stage may genuinely have it disconnected, and nothing here assumes otherwise. -/
-theorem transfer_of_ears_of_commonSubdivision_of_earStep [Infinite γ]
+theorem transfer_of_ears_of_commonSubdivision_of_earStep
     {P : GeneratedPair S₀ srcOuter srcDom tgtOuter tgtDom}
     {H : Graph Plane γ} {Hdraw : γ → ℝ → Plane}
     (hH : IsSourceExtension P.src srcOuter srcDom H Hdraw)
@@ -1405,7 +1404,7 @@ refines the old one by an explicit parent map.
 
 This compatibility form accepts both step interfaces as arguments. `earStep` discharges the
 second, while `commonSubdivision` in `CommonSubdivision.lean` discharges the first. -/
-theorem finite_transfer_toward_square_of_commonSubdivision_of_earStep [Infinite γ]
+theorem finite_transfer_toward_square_of_commonSubdivision_of_earStep
     {P : GeneratedPair S₀ srcOuter srcDom tgtOuter tgtDom}
     {H : Graph Plane γ} {Hdraw : γ → ℝ → Plane}
     (hH : IsSourceExtension P.src srcOuter srcDom H Hdraw)
@@ -1551,7 +1550,7 @@ theorem GeneratedPair.exists_target_crosscut
     exact fun hmem => Set.disjoint_left.1
       (P.tgt.disjoint_cell_skeletonSet P.tgt_isCellDecomposition hF) hmem
       (P.tgt.pos_mem_skeletonSet hv)
-  let : (P.str.skel.map P.tgt.pos).Finite := {
+  have : (P.str.skel.map P.tgt.pos).Finite := {
     finite_vertexSet := by
       rw [Graph.vertexSet_map]
       exact P.str.finite_vertexSet.image _

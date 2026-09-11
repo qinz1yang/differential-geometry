@@ -2,12 +2,11 @@
 Copyright (c) 2026 Álvaro Begué. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Álvaro Begué
+Modified for this project; see MODIFICATIONS.md for the local changes.
 -/
 import DifferentialGeometry.External.Schoenflies.Graph.PathGraph
 import DifferentialGeometry.External.Schoenflies.Graph.Drawing
 import DifferentialGeometry.External.Schoenflies.Graph.TwoConnected
-
-set_option autoImplicit true
 
 /-!
 # Relabelling the edges of a multigraph
@@ -28,6 +27,7 @@ open scoped Graph
 namespace Graph
 
 variable {α β δ : Type*} {G : Graph α β} {f : β → δ}
+  {e : β} {x y u v : α} {W : List β}
 
 /-- Relabel every edge of `G` by a map injective on `E(G)`, without changing its vertices. -/
 def relabelEdges (G : Graph α β) (f : β → δ) (hf : InjOn f E(G)) : Graph α δ where

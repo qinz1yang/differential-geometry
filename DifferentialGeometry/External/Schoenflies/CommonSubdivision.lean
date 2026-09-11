@@ -2,11 +2,10 @@
 Copyright (c) 2026 Álvaro Begué. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Álvaro Begué
+Modified for this project; see MODIFICATIONS.md for the local changes.
 -/
 import DifferentialGeometry.External.Schoenflies.FiniteTransfer
 import DifferentialGeometry.External.Schoenflies.RealizeSubdivHomeo
-
-set_option autoImplicit true
 
 /-!
 # Common subdivision for finite transfer
@@ -1575,8 +1574,8 @@ noncomputable def commonSubdivisionData [Infinite γ]
   classical
   let K := Graph.traceGraph H Hdraw P.src.skeletonSet
   have hKle : K ≤ H := Graph.traceGraph_le _
-  letI : H.Finite := hH.finite
-  letI : K.Finite := Graph.Finite.of_le hKle
+  let : H.Finite := hH.finite
+  let : K.Finite := Graph.Finite.of_le hKle
   have hK2 : K.IsTwoConnected :=
     trace_isTwoConnected hH P.src_isWeaklyAdmissible.isTwoConnected
   have hvertices : V(K) ⊆ P.src.skeletonSet := by

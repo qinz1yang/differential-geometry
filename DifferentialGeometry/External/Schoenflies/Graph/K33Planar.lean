@@ -2,12 +2,11 @@
 Copyright (c) 2026 Álvaro Begué. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Álvaro Begué
+Modified for this project; see MODIFICATIONS.md for the local changes.
 -/
 import DifferentialGeometry.External.Schoenflies.Graph.K33
 import DifferentialGeometry.External.Schoenflies.Graph.Redrawing
 import DifferentialGeometry.External.Schoenflies.AlternatingCrosscuts
-
-set_option autoImplicit true
 
 /-!
 # Lemma 3.10: the utility graph is not planar, and Corollary 3.11 for its subdivisions

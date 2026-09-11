@@ -2,11 +2,10 @@
 Copyright (c) 2026 Álvaro Begué. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Álvaro Begué
+Modified for this project; see MODIFICATIONS.md for the local changes.
 -/
 import DifferentialGeometry.External.Schoenflies.SquareMeshFixed
 import DifferentialGeometry.External.Schoenflies.Graph.TwoPaths
-
-set_option autoImplicit true
 
 /-!
 # The local source grid, and the missing hypothesis of the anchored square mesh

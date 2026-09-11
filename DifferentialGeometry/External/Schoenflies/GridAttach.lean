@@ -2,13 +2,12 @@
 Copyright (c) 2026 Álvaro Begué. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Álvaro Begué
+Modified for this project; see MODIFICATIONS.md for the local changes.
 -/
 import DifferentialGeometry.External.Schoenflies.LocalGrid
 import DifferentialGeometry.External.Schoenflies.Graph.Ear
 import DifferentialGeometry.External.Schoenflies.Line
 import DifferentialGeometry.External.Schoenflies.PolygonalCarrier
-
-set_option autoImplicit true
 
 /-!
 # Attaching a local source grid — `prop:local-grid-attachment`
@@ -75,6 +74,7 @@ lemmas of this module, and all three are statements about `Γ`, never about the 
   `Jarc`, with the four properties `lem:polygonal-connected` gives them
   (`Schoenflies.exists_simple_poly_of_isPreconnected` in `Schoenflies/PolygonalCarrier.lean`
   produces a polygonal path inside the open connected `D`, and `D ∩ C = ∅` gives `hJC`).
+
 
 Neither is a restatement of a goal of this module, and both are true.
 -/

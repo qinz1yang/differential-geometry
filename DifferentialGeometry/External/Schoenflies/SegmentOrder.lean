@@ -2,11 +2,10 @@
 Copyright (c) 2026 Álvaro Begué. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Álvaro Begué
+Modified for this project; see MODIFICATIONS.md for the local changes.
 -/
 import Mathlib.Analysis.Normed.Affine.AddTorsor
 import DifferentialGeometry.External.Schoenflies.SegmentCut
-
-set_option autoImplicit true
 
 /-!
 # Along one segment: the distance from an end as a coordinate

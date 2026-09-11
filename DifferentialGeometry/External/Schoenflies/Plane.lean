@@ -2,12 +2,11 @@
 Copyright (c) 2026 Álvaro Begué. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Álvaro Begué
+Modified for this project; see MODIFICATIONS.md for the local changes.
 -/
 import Mathlib.Analysis.InnerProductSpace.PiL2
 import Mathlib.Analysis.Convex.Topology
 import Mathlib.Topology.MetricSpace.Thickening
-
-set_option autoImplicit true
 
 /-!
 # The plane, and the compactness toolkit
@@ -97,7 +96,7 @@ theorem inner_eq (u v : Plane) : inner ℝ u v = u 0 * v 0 + u 1 * v 1 := by
 @[simp] theorem det_perp_left (u v : Plane) : det (perp u) v = -inner ℝ u v := by
   rw [inner_eq]; simp [det]; ring
 
-@[simp] theorem det_perp_perp (u v : Plane) : det (perp u) (perp v) = det u v := by
+theorem det_perp_perp (u v : Plane) : det (perp u) (perp v) = det u v := by
   simp [det]; ring
 
 @[simp] theorem norm_perp (u : Plane) : ‖perp u‖ = ‖u‖ := by

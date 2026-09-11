@@ -2,11 +2,10 @@
 Copyright (c) 2026 Álvaro Begué. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Álvaro Begué
+Modified for this project; see MODIFICATIONS.md for the local changes.
 -/
 import DifferentialGeometry.External.Schoenflies.SquareMeshConnected
 import DifferentialGeometry.External.Schoenflies.Graph.Ear
-
-set_option autoImplicit true
 
 /-!
 # The anchored square mesh: the three gaps an audit found
@@ -1046,6 +1045,7 @@ theorem squareMesh_outer_cycle_of_subdividesToPath {fresh : List Plane}
         (∀ Q ∈ e :: D, Q.seg ⊆ modelCurve) ∧
         Graph.edgesCover segmentDrawing (e :: D) = modelCurve :=
   meshGraph_outer_cycle (two_le_meshCount δ) hfresh anchors hsub
+
 
 /-- **The outer ring of the mesh is a 2-connected subgraph of the mesh.** The first step of the
 blueprint's assembly of clause 5, for `squareMesh` itself: the cycle carrying `S` is 2-connected

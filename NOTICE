@@ -1,2 +1,8 @@
 DifferentialGeometry
 Copyright 2026 The DifferentialGeometry contributors
+
+The files under DifferentialGeometry/External/Schoenflies are derived from
+https://github.com/alonamaloh/schoenflies-lean
+Copyright (c) 2026 Álvaro Begué. All rights reserved.
+Released under the Apache License 2.0.
+See that directory's LICENSE and MODIFICATIONS.md.

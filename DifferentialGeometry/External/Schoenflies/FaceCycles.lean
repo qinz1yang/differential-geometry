@@ -2,13 +2,12 @@
 Copyright (c) 2026 Álvaro Begué. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Álvaro Begué
+Modified for this project; see MODIFICATIONS.md for the local changes.
 -/
 import DifferentialGeometry.External.Schoenflies.Graph.CycleJordan
 import DifferentialGeometry.External.Schoenflies.Graph.RelativeEar
 import DifferentialGeometry.External.Schoenflies.Graph.OuterFace
 import DifferentialGeometry.External.Schoenflies.Subarc
-
-set_option autoImplicit true
 
 /-!
 # Face cycles: the base cycle, and the faces of a plane graph that grows by ears
@@ -291,7 +290,6 @@ theorem walkVertices_round : G.walkVertices u (D ++ [e]) = G.walkVertices u D :=
   · exact mem_walkVertices_self
   · exact hc.isPath.target_mem_walkVertices
 
-@[simp]
 theorem cycleGraph_vertexSet : V(G.cycleGraph u e D) = G.walkVertices u D := by
   rw [cycleGraph, pathGraphOf_vertexSet, hc.walkVertices_round]
 
@@ -380,6 +378,7 @@ theorem isTwoConnected : (G.cycleGraph u e D).IsTwoConnected where
         fun x hx hxc ↦ hPpath.reaches_an_end (hV x hx) hxc
 
 end IsLongCycle
+
 
 /-- A machine check that the two halves fit: the base cycle really is a legal starting point
 for `Graph.IsTwoConnected.ear_decomposition`, so a consumer that can do the base case on

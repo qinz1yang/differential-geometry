@@ -2,10 +2,9 @@
 Copyright (c) 2026 Álvaro Begué. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Álvaro Begué
+Modified for this project; see MODIFICATIONS.md for the local changes.
 -/
 import DifferentialGeometry.External.Schoenflies.SkeletonLocal
-
-set_option autoImplicit true
 
 /-!
 # The sector decomposition of a local disk, and the branches that cut it
@@ -530,6 +529,7 @@ theorem exists_isSectorPair {D : Set Plane} (hfin : D.Finite) (hdir : ∀ v ∈ 
     rw [mem_arcCCW_rotate, mem_arcCCW_rotate] at h
     exact h
 
+
 /-! #### The sector a direction lies in is unique
 
 Distinct consecutive pairs bound disjoint arcs, so the sectors are a *partition* of the free
@@ -619,6 +619,7 @@ theorem arcCCW_disjoint_of_isSectorPair {D : Set Plane} {d w d' w' : Plane}
   obtain ⟨h1, h2⟩ := IsSectorPair.unique hdir hp hp' hv hv'
   exact hne.elim (fun h => h h1) fun h => h h2
 
+
 end Plane
 
 /-! ### The punctured local disk is a finite union of open sectors
@@ -701,6 +702,7 @@ theorem IsLocalRadius.ball_diff_eq_iUnion_cone (h : IsLocalRadius S x r)
     obtain ⟨p, hp, hzp⟩ := Set.mem_iUnion₂.1 hz
     exact h.cone_subset_ball_diff hp hzp
 
+
 /-- **The sectors are pairwise disjoint**, so the decomposition of the punctured disk is a
 partition and not merely a cover. -/
 theorem cone_disjoint_of_isSectorPair {d w d' w' : Plane}
@@ -712,6 +714,7 @@ theorem cone_disjoint_of_isSectorPair {d w d' w' : Plane}
   exact Set.disjoint_left.1 (Plane.arcCCW_disjoint_of_isSectorPair
     (fun _ hv => isDirection_of_mem_localDirs hv) hp hp' hne)
     (Plane.mem_cone_iff.1 hz).1 (Plane.mem_cone_iff.1 hz').1
+
 
 /-- **Each sector is a connected component of the punctured disk.** The sectors are open,
 connected, pairwise disjoint and cover, so each is exactly the component of any of its points.
@@ -752,6 +755,7 @@ theorem IsLocalRadius.connectedComponentIn_eq_cone (h : IsLocalRadius S x r)
         (Set.disjoint_left.1 hdisj hz)
   · exact (h.isConnected_cone hp).isPreconnected.subset_connectedComponentIn hz
       (h.cone_subset_ball_diff hp)
+
 
 /-! ### Radial segments, two at a time
 
@@ -797,6 +801,7 @@ theorem mem_openSegment_radial {d : Plane} (hd : Plane.IsDirection d) (hr : 0 < 
   rcases smul_eq_zero.1 hh with h' | h'
   · nlinarith
   · exact hd.ne_zero h'
+
 
 end Schoenflies
 
@@ -912,7 +917,7 @@ theorem IsDrawing.exists_edge_radial [G.Finite] (h : IsDrawing G drawing)
 
 /-- **Uniqueness.** Two edges carrying the same radial segment are the same edge: the relative
 interior of the segment is off the vertex set, and there a point lies on only one edge. -/
-theorem IsDrawing.edge_radial_unique [G.Finite] (h : IsDrawing G drawing)
+theorem IsDrawing.edge_radial_unique (h : IsDrawing G drawing)
     (hr : IsLocalDisk G drawing x r) (hdir : Plane.IsDirection d) {e f : β}
     (he : e ∈ E(G)) (hf : f ∈ E(G)) (hse : segment ℝ x (x + r • d) ⊆ edgeArc drawing e)
     (hsf : segment ℝ x (x + r • d) ⊆ edgeArc drawing f) : e = f := by
@@ -968,7 +973,7 @@ by one edge. Together with `IsDrawing.exists_edge_radial` and `IsDrawing.edge_ra
 this says that the local directions at `x` are in bijection with the local branches, so the
 radial segments of `lem:local-skeleton-structure` really do have pairwise distinct
 directions. -/
-theorem IsDrawing.not_three_localDirs_on_edge [G.Finite] (h : IsDrawing G drawing)
+theorem IsDrawing.not_three_localDirs_on_edge (h : IsDrawing G drawing)
     (hr : IsLocalDisk G drawing x r) {e : β} (he : e ∈ E(G)) {d₁ d₂ d₃ : Plane}
     (hd₁ : Plane.IsDirection d₁) (hd₂ : Plane.IsDirection d₂) (hd₃ : Plane.IsDirection d₃)
     (h₁₂ : d₁ ≠ d₂) (h₁₃ : d₁ ≠ d₃) (h₂₃ : d₂ ≠ d₃)
