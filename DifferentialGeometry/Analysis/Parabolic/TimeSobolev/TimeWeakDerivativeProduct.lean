@@ -1,6 +1,8 @@
 import Mathlib.Analysis.Distribution.AEEqOfIntegralContDiff
 import DifferentialGeometry.Analysis.Integration.Lp.ProductL2
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.WeakDerivative.FundamentalTheorem
+import DifferentialGeometry.Analysis.Integration.Lp.Curry
+import DifferentialGeometry.Analysis.Sobolev.Euclidean.WeakDerivativeProduct
 
 noncomputable section
 
@@ -165,5 +167,84 @@ theorem exists_timeH1_of_spacetime_weak_deriv_on
   intro Q
   exact exists_timeH1_of_weak_deriv_on hab (Lp.memLp P) (Lp.memLp Q)
     (weak_deriv_of_spacetime_test_identity hΩ P R hweak)
+
+open DifferentialGeometry.Analysis.Sobolev.Euclidean
+
+theorem exists_timeH1_of_finite_weak_partial_trees {d : ℕ} {Ω : Set (EuclideanSpace ℝ (Fin d))}
+    {a b : ℝ} (hab : a < b) (hΩ : IsOpen Ω) (K : ℕ)
+    (U R : ∀ n : ℕ, (Fin n → Fin d) →
+      Lp ℝ 2 ((volume.restrict (Icc a b)).prod (volume.restrict Ω)))
+    (hUweak : ∀ n < K, ∀ α i, ∀ᵐ t ∂volume.restrict (Icc a b),
+      DeGiorgi.HasWeakPartialDeriv i
+        (fun x => U (n + 1) (Fin.cons i α) (t, x)) (fun x => U n α (t, x)) Ω)
+    (hRweak : ∀ n < K, ∀ α i, ∀ᵐ t ∂volume.restrict (Icc a b),
+      DeGiorgi.HasWeakPartialDeriv i
+        (fun x => R (n + 1) (Fin.cons i α) (t, x)) (fun x => R n α (t, x)) Ω)
+    (hroot : ∀ φ : ℝ × EuclideanSpace ℝ (Fin d) → ℝ,
+      ContDiff ℝ (⊤ : ℕ∞) φ → HasCompactSupport φ →
+      tsupport φ ⊆ Ioo a b ×ˢ Ω →
+      (∫ q, U 0 (fun i => Fin.elim0 i) q * fderiv ℝ φ q (1, 0)
+        ∂(volume.restrict (Icc a b)).prod (volume.restrict Ω)) =
+        -∫ q, R 0 (fun i => Fin.elim0 i) q * φ q
+          ∂(volume.restrict (Icc a b)).prod (volume.restrict Ω)) :
+    ∀ n ≤ K, ∀ α,
+      ∃ w : timeH1 (Lp ℝ 2 (volume.restrict Ω)) (b - a),
+        ∀ᵐ t ∂timeMeasure (b - a),
+          ((w.toFun t : EuclideanSpace ℝ (Fin d) → ℝ) =ᵐ[volume.restrict Ω]
+            fun x => U n α (a + t, x)) ∧
+          ((w.deriv t : EuclideanSpace ℝ (Fin d) → ℝ) =ᵐ[volume.restrict Ω]
+            fun x => R n α (a + t, x)) := by
+  let : Fact ((2 : ℝ≥0∞) ≠ ⊤) := ⟨by norm_num⟩
+  let : SecondCountableTopology (Lp ℝ 2 (volume.restrict Ω)) := Lp.SecondCountableTopology
+  have hw := integral_fderiv_prod_left_eq_neg_of_finite_weak_partial_trees
+    (Z := ℝ) (d := d) (μ := volume.restrict (Icc a b)) (W := Ioo a b) (Ω := Ω) K (1 : ℝ)
+    (fun n α q => U n α q) (fun n α q => R n α q)
+    (fun n _ α => (Lp.memLp (U n α)).locallyIntegrable (by norm_num))
+    (fun n _ α => (Lp.memLp (R n α)).locallyIntegrable (by norm_num)) hUweak hRweak hroot
+  intro n hn α
+  let P := Lp.curry ℝ (by norm_num : (2 : ℝ≥0∞) ≠ ⊤) (U n α)
+  have hP : ∀ φ : ℝ × EuclideanSpace ℝ (Fin d) → ℝ,
+      ContDiff ℝ (⊤ : ℕ∞) φ → HasCompactSupport φ → tsupport φ ⊆ Ioo a b ×ˢ Ω →
+      (∫ q, (Lp.uncurry ℝ (by norm_num) P) q * fderiv ℝ φ q (1, 0)
+        ∂(volume.restrict (Icc a b)).prod (volume.restrict Ω)) =
+        -∫ q, R n α q * φ q ∂(volume.restrict (Icc a b)).prod (volume.restrict Ω) := by
+    simpa only [P, Lp.uncurry_curry] using hw n hn α
+  have hex := exists_timeH1_of_spacetime_weak_deriv_on
+    (E := EuclideanSpace ℝ (Fin d)) (ν := volume) (Ω := Ω) (a := a) (b := b)
+    hab hΩ P (R n α) hP
+  obtain ⟨w, hwp, hwd⟩ := hex
+  let μ₀ := volume.restrict (Icc a b)
+  let ν₀ := volume.restrict Ω
+  let hp₀ : (2 : ℝ≥0∞) ≠ ⊤ := by norm_num
+  let Uc : Lp (Lp ℝ 2 ν₀) 2 μ₀ →ₗᵢ[ℝ] Lp ℝ 2 (μ₀.prod ν₀) :=
+    Lp.uncurry ℝ hp₀
+  have hUc : Function.Surjective Uc := Lp.uncurry_surjective hp₀
+  let Euc := LinearIsometryEquiv.ofSurjective Uc hUc
+  have hAdj : Uc.toContinuousLinearMap.adjoint =
+      (Lp.curry ℝ hp₀).toContinuousLinearEquiv.toContinuousLinearMap :=
+    Euc.adjoint_eq_symm
+  have hwd₀ : w.deriv =ᵐ[timeMeasure (b - a)]
+      fun t => Uc.toContinuousLinearMap.adjoint (R n α) (a + t) := by
+    simpa only [Uc, μ₀, ν₀] using hwd
+  have hwd' : w.deriv =ᵐ[timeMeasure (b - a)]
+      fun t => Lp.curry ℝ hp₀ (R n α) (a + t) := by
+    filter_upwards [hwd₀] with t ht
+    rw [ht, hAdj]
+    rfl
+  have hshift : MeasurePreserving (fun t : ℝ => a + t)
+      (timeMeasure (b - a)) (volume.restrict (Icc a b)) := by
+    have h := (measurePreserving_add_right volume a).restrict_image_emb
+      (Homeomorph.addRight a).isClosedEmbedding.measurableEmbedding (Icc (0 : ℝ) (b - a))
+    simpa only [timeMeasure, image_add_const_Icc, zero_add, sub_add_cancel, add_comm a] using h
+  refine ⟨w, ?_⟩
+  filter_upwards [hwp, hwd',
+    hshift.quasiMeasurePreserving.ae (Lp.curry_coeFn (𝕜 := ℝ) (by norm_num) (U n α)),
+    hshift.quasiMeasurePreserving.ae (Lp.curry_coeFn (𝕜 := ℝ) (by norm_num) (R n α))]
+    with t hwt hdt hUt hRt
+  constructor
+  · rw [← hwt]
+    exact hUt
+  · rw [hdt]
+    exact hRt
 
 end DifferentialGeometry.Analysis.Parabolic.TimeSobolev
