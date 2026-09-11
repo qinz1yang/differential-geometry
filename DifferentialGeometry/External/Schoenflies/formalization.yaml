@@ -1,0 +1,144 @@
+# formalization.yaml (v0.3): repo-root metadata for formalization projects.
+version: "v0.3"
+
+project:
+  name: "The Jordan–Schönflies theorem in Lean"
+  authors:
+    - "Álvaro Begué"
+  license: "Apache-2.0"
+
+sources:
+  - title: "The Jordan–Schönflies theorem"
+    authors:
+      - "Álvaro Begué"
+    id: "https://github.com/alonamaloh/jordan-schoenflies"
+    type: "formalization blueprint"
+    license: "CC-BY-4.0"
+    author_contacted: "n/a"
+
+status:
+  scope: >-
+    A from-scratch Mathlib formalization of the Jordan curve theorem and the
+    Jordan–Schönflies extension theorem for arbitrary Jordan curves in the real
+    plane.  The development includes the required plane topology, polygonal
+    geometry, finite multigraph and plane-drawing theory, crosscut theory,
+    matched cellulations, quantitative refinement, limit map, and boundary
+    extension arguments.
+  sorry_count: 0
+  sorry_in_definitions: 0
+  axioms:
+    - "propext"
+    - "Classical.choice"
+    - "Quot.sound"
+  main_results:
+    - declaration: "Schoenflies.jordan_schoenflies_of_homeomorph"
+      file: "Schoenflies/JordanSchoenflies.lean"
+      sorry_count: 0
+      axioms:
+        - "propext"
+        - "Classical.choice"
+        - "Quot.sound"
+      comparator_config: "Comparator/schoenflies.json"
+      literature_dependencies: []
+    - declaration: "Schoenflies.jordan_curve_theorem"
+      file: "Schoenflies/JordanClosed.lean"
+      sorry_count: 0
+      axioms:
+        - "propext"
+        - "Classical.choice"
+        - "Quot.sound"
+      literature_dependencies: []
+
+automation:
+  methods:
+    - method: "agent"
+      models:
+        - "Claude Opus 5"
+        - "Claude Fable 5"
+      framework: "Claude Code"
+      tool_setup: >-
+        Human-directed multi-agent development in isolated Git worktrees,
+        sharing a pinned Mathlib build.  Repository-local instructions in
+        docs/AGENTS.md specified interfaces, proof constraints, build checks,
+        and integration conventions.
+      cost:
+        wall_time: "six calendar days (2026-07-31 through 2026-08-05)"
+        spend_usd: "not recorded (subscription-based usage)"
+        hardware: "API-based agents and a local development machine"
+      prompting_notes: >-
+        The human author selected the source, architecture, statement targets,
+        and integration decisions.  Agents were assigned bounded modules from
+        the blueprint and required to compile without sorry, admit, or
+        native_decide. Missing results were exposed as named hypotheses until
+        discharged, never hidden as axioms. See docs/AGENTS.md and the commit
+        history for the implementation protocol and attribution.
+    - method: "agent"
+      models:
+        - "GPT-5.6 Sol"
+      framework: "Codex"
+      tool_setup: >-
+        Human-directed agentic development and project maintenance in a shared
+        local workspace, using the pinned Lean and Mathlib environment together
+        with repository build, inventory, and axiom-audit checks.
+      cost:
+        wall_time: "not recorded"
+        spend_usd: "not recorded (subscription-based usage)"
+        hardware: "API-based agent and a local development machine"
+      prompting_notes: >-
+        Codex was used to inspect, edit, and verify project artifacts, including
+        the formalization metadata and Comparator setup. Changes were checked
+        against the Lean build and the repository's existing integrity audits.
+  spend_usd: "not recorded (subscription-based usage)"
+  notes: >-
+    The formalization was produced by AI coding agents under human mathematical
+    direction and integration.  The Git history records the agent model in
+    Co-Authored-By trailers.  The generated declaration inventory and the
+    repository-wide axiom audit are maintained by scripts under docs/.
+
+fidelity:
+  divergences: >-
+    The formalization follows the companion blueprint statement by statement,
+    but sometimes proves more reusable intermediate results, packages
+    constructions differently to suit Lean and Mathlib, or uses a shorter
+    formal route.  In particular, the limit-map surjectivity proof uses nested
+    compact source stars, and the cellulation proof maintains boundary cycles
+    as data.  The complete statement alignment and recorded deviations are in
+    docs/ROADMAP.md.
+
+review:
+  status: "self-assessed"
+  reviewers: []
+  notes: >-
+    The project builds with pinned Lean and Mathlib, contains no sorry, admit,
+    or native_decide, and its repository-wide audit reports only propext,
+    Classical.choice, and Quot.sound.  It has not yet received independent
+    mathematical or Mathlib-style API review.  Comparator supplies an
+    additional exact-statement and axiom check for the headline theorem.
+
+alignment:
+  namespace: "Schoenflies"
+  statements:
+    - source: "thm:jordan"
+      lean: "Schoenflies.jordan_curve_theorem"
+      module: "Schoenflies.JordanClosed"
+      status: "proved"
+      note: "The Jordan curve theorem, packaged through IsSeparating."
+    - source: "thm:general-crosscut"
+      lean: "Schoenflies.crosscut_theorem"
+      module: "Schoenflies.JordanClosed"
+      status: "proved"
+      note: "The general crosscut theorem for a Jordan domain."
+    - source: "thm:square-extension"
+      lean: "Schoenflies.squareExtension"
+      module: "Schoenflies.JordanSchoenflies"
+      status: "proved"
+      note: "The square-extension theorem used by the final reduction."
+    - source: "thm:main"
+      lean: "Schoenflies.jordan_schoenflies_of_homeomorph"
+      module: "Schoenflies.JordanSchoenflies"
+      status: "proved"
+      note: "The blueprint's bundled Jordan–Schönflies theorem."
+
+acknowledgements: >-
+  Built on Lean, Mathlib, and their contributor communities.  The project uses
+  Comparator's trusted proof-checking design for its headline result.
