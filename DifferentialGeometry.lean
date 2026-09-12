@@ -7890,6 +7890,7 @@ import DifferentialGeometry.Topology.Manifold.BoundaryCollar.UniformInwardFlow
 import DifferentialGeometry.Topology.Manifold.BoundaryCollar.UnitSpeedField
 import DifferentialGeometry.Topology.Manifold.ChartedSpaceHomeomorph
 import DifferentialGeometry.Topology.Manifold.CollarFamily
+import DifferentialGeometry.Topology.Manifold.RelativeCollar
 import DifferentialGeometry.Topology.Manifold.BoundaryExtrema
 import DifferentialGeometry.Topology.Manifold.BoundaryIntegralCurve
 import DifferentialGeometry.Topology.Manifold.BoundaryOrder
