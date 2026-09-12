@@ -6227,6 +6227,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ClosedSlabE
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.Cohomology
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.Comparison
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ControlledExtinction
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ControlledExtinctionAssembly
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CutCap
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.Descendants
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.EmptyHistory
