@@ -1,0 +1,585 @@
+{
+  "scope": "Verified dependency-closed local-homology and derivative foundations checkpoint; full canonical-topology suite remains incomplete",
+  "baseline_commit": "b45bfa009368c8f5f531e10f4f5280e90079d6ad",
+  "baseline_ref": "refs/remotes/origin/codex/chapter35",
+  "source_project": "PoincareLean",
+  "source_module_count": 68,
+  "roots": [
+    "Poincare.Topology.Homology.RelativeMaps",
+    "Poincare.Topology.Homology.RelativeHomeomorphism",
+    "Poincare.Topology.Homology.LocalCharts",
+    "Poincare.Analysis.LocalDerivativeHomotopy",
+    "Poincare.Topology.Homology.LocalDerivativeComparison"
+  ],
+  "changed_sources": [
+    {
+      "module": "Poincare.Analysis.LocalDerivativeHomotopy",
+      "path": "Poincare/Analysis/LocalDerivativeHomotopy.lean",
+      "baseline_sha256": null,
+      "sha256": "511f23c9a970a92fb4043064494f7a57b43607ab9c15bd69bd91a5f75be23499"
+    },
+    {
+      "module": "Poincare.Topology.Homology.LocalCharts",
+      "path": "Poincare/Topology/Homology/LocalCharts.lean",
+      "baseline_sha256": "0720a889397029e32c227d63fc9990b38e161dd7ae84c3c2e31062ce7be39dc4",
+      "sha256": "4366fd4ef8ae3a0bccecce11b696e7dc1753981d10b2cdd5800fe3e3f139abe9"
+    },
+    {
+      "module": "Poincare.Topology.Homology.LocalDerivativeComparison",
+      "path": "Poincare/Topology/Homology/LocalDerivativeComparison.lean",
+      "baseline_sha256": null,
+      "sha256": "1f767b949c54895714374741c7bb0289f8ce958ab733d02a3179183bae5977b9"
+    },
+    {
+      "module": "Poincare.Topology.Homology.RelativeHomeomorphism",
+      "path": "Poincare/Topology/Homology/RelativeHomeomorphism.lean",
+      "baseline_sha256": "252e368a5ce4c966e1320a91f13672b55bbb52723a8ae2506ae6057b4b4cddfb",
+      "sha256": "9ed6f18525bbf671211af5dd60094c0b27866632a3aaa0cba26339ca873f574b"
+    },
+    {
+      "module": "Poincare.Topology.Homology.RelativeMaps",
+      "path": "Poincare/Topology/Homology/RelativeMaps.lean",
+      "baseline_sha256": "3b78b613d4b7e816f6b9f0d57c83ad629e11274cda6f749e25acd1ad17954add",
+      "sha256": "37e7765b7eb6da4f7a76751bd0fead9df5fa8b820edf9e4251ccd3330f5b4f0c"
+    }
+  ],
+  "poincare_sources": [
+    {
+      "module": "Poincare.Analysis.LocalDerivativeHomotopy",
+      "path": "Poincare/Analysis/LocalDerivativeHomotopy.lean",
+      "baseline_sha256": null,
+      "sha256": "511f23c9a970a92fb4043064494f7a57b43607ab9c15bd69bd91a5f75be23499"
+    },
+    {
+      "module": "Poincare.Topology.Homology.AffineCarriers",
+      "path": "Poincare/Topology/Homology/AffineCarriers.lean",
+      "baseline_sha256": "c3316025cecad412d006892e3538b3edc902ed7b5bef3fcdcc754dc19716be3a",
+      "sha256": "c3316025cecad412d006892e3538b3edc902ed7b5bef3fcdcc754dc19716be3a"
+    },
+    {
+      "module": "Poincare.Topology.Homology.AffineChains",
+      "path": "Poincare/Topology/Homology/AffineChains.lean",
+      "baseline_sha256": "82718caca7e57f76c7ede23c39b8b1c10162fa3451307221c904e93e78414ea8",
+      "sha256": "82718caca7e57f76c7ede23c39b8b1c10162fa3451307221c904e93e78414ea8"
+    },
+    {
+      "module": "Poincare.Topology.Homology.AffineCones",
+      "path": "Poincare/Topology/Homology/AffineCones.lean",
+      "baseline_sha256": "6ce94fd59d8af274abe2d45a9e8e5ff172f20c74cc09d599e1bcd778cd48c6ea",
+      "sha256": "6ce94fd59d8af274abe2d45a9e8e5ff172f20c74cc09d599e1bcd778cd48c6ea"
+    },
+    {
+      "module": "Poincare.Topology.Homology.AffineMesh",
+      "path": "Poincare/Topology/Homology/AffineMesh.lean",
+      "baseline_sha256": "76e1ab3a99dcca102ede5e1be12a5fc904290e951010a4b372c8309b03a7135e",
+      "sha256": "76e1ab3a99dcca102ede5e1be12a5fc904290e951010a4b372c8309b03a7135e"
+    },
+    {
+      "module": "Poincare.Topology.Homology.AffineNaturality",
+      "path": "Poincare/Topology/Homology/AffineNaturality.lean",
+      "baseline_sha256": "22bd9137dc1208145d0c2868956c2ef7479e910bfd340fc278102c55cf0eda49",
+      "sha256": "22bd9137dc1208145d0c2868956c2ef7479e910bfd340fc278102c55cf0eda49"
+    },
+    {
+      "module": "Poincare.Topology.Homology.AffineSimplex",
+      "path": "Poincare/Topology/Homology/AffineSimplex.lean",
+      "baseline_sha256": "53c12f6fc55a918584c74eb21d4e93360006f8d2186b8dd9d210fb8e765478c8",
+      "sha256": "53c12f6fc55a918584c74eb21d4e93360006f8d2186b8dd9d210fb8e765478c8"
+    },
+    {
+      "module": "Poincare.Topology.Homology.AffineSubdivision",
+      "path": "Poincare/Topology/Homology/AffineSubdivision.lean",
+      "baseline_sha256": "72a41deaa68216358983b46a7338a90a9b894910b145e09033b43dbce8fbbd2f",
+      "sha256": "72a41deaa68216358983b46a7338a90a9b894910b145e09033b43dbce8fbbd2f"
+    },
+    {
+      "module": "Poincare.Topology.Homology.AffineZeroCone",
+      "path": "Poincare/Topology/Homology/AffineZeroCone.lean",
+      "baseline_sha256": "c0666c55a5caf71c7522f9da96f9769adf4f793ade978ac6516d49606958637f",
+      "sha256": "c0666c55a5caf71c7522f9da96f9769adf4f793ade978ac6516d49606958637f"
+    },
+    {
+      "module": "Poincare.Topology.Homology.Augmentation",
+      "path": "Poincare/Topology/Homology/Augmentation.lean",
+      "baseline_sha256": "a267b51009a30b110185d9044a6f56101ebcc076bb25953e874540038aabb2ff",
+      "sha256": "a267b51009a30b110185d9044a6f56101ebcc076bb25953e874540038aabb2ff"
+    },
+    {
+      "module": "Poincare.Topology.Homology.BarycenterBounds",
+      "path": "Poincare/Topology/Homology/BarycenterBounds.lean",
+      "baseline_sha256": "b71c0370d420bce8a481ca0afa308d412fddcc1f239ea8c583e3cc0b81c309bb",
+      "sha256": "b71c0370d420bce8a481ca0afa308d412fddcc1f239ea8c583e3cc0b81c309bb"
+    },
+    {
+      "module": "Poincare.Topology.Homology.CarrierMaps",
+      "path": "Poincare/Topology/Homology/CarrierMaps.lean",
+      "baseline_sha256": "e449702207a0c64f1797d7ab8a1a513e573663a118085b95ce327cbf841ca9af",
+      "sha256": "e449702207a0c64f1797d7ab8a1a513e573663a118085b95ce327cbf841ca9af"
+    },
+    {
+      "module": "Poincare.Topology.Homology.CarrierRestriction",
+      "path": "Poincare/Topology/Homology/CarrierRestriction.lean",
+      "baseline_sha256": "a062ae554f852a6a916ed117710054fb637105a27f9fa7d66d65c1a330b7a7dd",
+      "sha256": "a062ae554f852a6a916ed117710054fb637105a27f9fa7d66d65c1a330b7a7dd"
+    },
+    {
+      "module": "Poincare.Topology.Homology.ChainCokernelElements",
+      "path": "Poincare/Topology/Homology/ChainCokernelElements.lean",
+      "baseline_sha256": "b8436e3c2b169d9ef37bd3f011fff33800d74dee80d74ea9b990b6a6d9b1e935",
+      "sha256": "b8436e3c2b169d9ef37bd3f011fff33800d74dee80d74ea9b990b6a6d9b1e935"
+    },
+    {
+      "module": "Poincare.Topology.Homology.ChainSupport",
+      "path": "Poincare/Topology/Homology/ChainSupport.lean",
+      "baseline_sha256": "c6efb629ec44666e91022abeb1d315def704ece987f141e975b7ceda6634f08a",
+      "sha256": "c6efb629ec44666e91022abeb1d315def704ece987f141e975b7ceda6634f08a"
+    },
+    {
+      "module": "Poincare.Topology.Homology.ChainsIn",
+      "path": "Poincare/Topology/Homology/ChainsIn.lean",
+      "baseline_sha256": "fc328ef54a8b97c3185392c6c6aede89668419b340bacca140192543d88bbd83",
+      "sha256": "fc328ef54a8b97c3185392c6c6aede89668419b340bacca140192543d88bbd83"
+    },
+    {
+      "module": "Poincare.Topology.Homology.CochainMaps",
+      "path": "Poincare/Topology/Homology/CochainMaps.lean",
+      "baseline_sha256": "9b02bc83064cff53553ffc50e6d27a809d91161694bfb5c3f0a8cc18e162b8e9",
+      "sha256": "9b02bc83064cff53553ffc50e6d27a809d91161694bfb5c3f0a8cc18e162b8e9"
+    },
+    {
+      "module": "Poincare.Topology.Homology.Cochains",
+      "path": "Poincare/Topology/Homology/Cochains.lean",
+      "baseline_sha256": "863bbc0d4775ff94ab84e7369c6cff617a39303df6554100387129c2ad524147",
+      "sha256": "863bbc0d4775ff94ab84e7369c6cff617a39303df6554100387129c2ad524147"
+    },
+    {
+      "module": "Poincare.Topology.Homology.ExcisionQuotient",
+      "path": "Poincare/Topology/Homology/ExcisionQuotient.lean",
+      "baseline_sha256": "351284223d2722bacb63c368fd7943d75c5a38129837c6dc56b772b1ae85fe84",
+      "sha256": "351284223d2722bacb63c368fd7943d75c5a38129837c6dc56b772b1ae85fe84"
+    },
+    {
+      "module": "Poincare.Topology.Homology.FineAffineImages",
+      "path": "Poincare/Topology/Homology/FineAffineImages.lean",
+      "baseline_sha256": "a2507ca3d1c7a141fa3a12275c41bff447d0ba755b3f0764fdfecc7ddbcf4213",
+      "sha256": "a2507ca3d1c7a141fa3a12275c41bff447d0ba755b3f0764fdfecc7ddbcf4213"
+    },
+    {
+      "module": "Poincare.Topology.Homology.Homotopy",
+      "path": "Poincare/Topology/Homology/Homotopy.lean",
+      "baseline_sha256": "e2b26b31b1b6d3c47c71f04d340ee30de24bffed9834015fb664c27c45ef971b",
+      "sha256": "e2b26b31b1b6d3c47c71f04d340ee30de24bffed9834015fb664c27c45ef971b"
+    },
+    {
+      "module": "Poincare.Topology.Homology.Integral",
+      "path": "Poincare/Topology/Homology/Integral.lean",
+      "baseline_sha256": "c17ecc2a64d9292692c9dd48d03f17b8cbf19fa7abd9f9a534df48e5567dacdb",
+      "sha256": "c17ecc2a64d9292692c9dd48d03f17b8cbf19fa7abd9f9a534df48e5567dacdb"
+    },
+    {
+      "module": "Poincare.Topology.Homology.LiftedFaces",
+      "path": "Poincare/Topology/Homology/LiftedFaces.lean",
+      "baseline_sha256": "60b375281dc367214339351961c14743dfb74a04d48b03137f51e89f8a3d0cb3",
+      "sha256": "60b375281dc367214339351961c14743dfb74a04d48b03137f51e89f8a3d0cb3"
+    },
+    {
+      "module": "Poincare.Topology.Homology.LiftedSimplex",
+      "path": "Poincare/Topology/Homology/LiftedSimplex.lean",
+      "baseline_sha256": "54038ea451cc826423ff2eee47ce9ee01e5da4fc3533a36b725988b7dbf0717a",
+      "sha256": "54038ea451cc826423ff2eee47ce9ee01e5da4fc3533a36b725988b7dbf0717a"
+    },
+    {
+      "module": "Poincare.Topology.Homology.LocalCharts",
+      "path": "Poincare/Topology/Homology/LocalCharts.lean",
+      "baseline_sha256": "0720a889397029e32c227d63fc9990b38e161dd7ae84c3c2e31062ce7be39dc4",
+      "sha256": "4366fd4ef8ae3a0bccecce11b696e7dc1753981d10b2cdd5800fe3e3f139abe9"
+    },
+    {
+      "module": "Poincare.Topology.Homology.LocalDerivativeComparison",
+      "path": "Poincare/Topology/Homology/LocalDerivativeComparison.lean",
+      "baseline_sha256": null,
+      "sha256": "1f767b949c54895714374741c7bb0289f8ce958ab733d02a3179183bae5977b9"
+    },
+    {
+      "module": "Poincare.Topology.Homology.LocalHomology",
+      "path": "Poincare/Topology/Homology/LocalHomology.lean",
+      "baseline_sha256": "62f3c9f3288e60a524e5796b961f89b22b13c959eb6b9dd07e96d624c3c042d7",
+      "sha256": "62f3c9f3288e60a524e5796b961f89b22b13c959eb6b9dd07e96d624c3c042d7"
+    },
+    {
+      "module": "Poincare.Topology.Homology.MeshBoundary",
+      "path": "Poincare/Topology/Homology/MeshBoundary.lean",
+      "baseline_sha256": "772e2e5b0418b2380fb066b75af5eb1832cd12e4859b6c170b91399a37efcd8d",
+      "sha256": "772e2e5b0418b2380fb066b75af5eb1832cd12e4859b6c170b91399a37efcd8d"
+    },
+    {
+      "module": "Poincare.Topology.Homology.MeshIteration",
+      "path": "Poincare/Topology/Homology/MeshIteration.lean",
+      "baseline_sha256": "4d05735d16b219b129aa44314874d938c1342551c980dd957d060add362276ca",
+      "sha256": "4d05735d16b219b129aa44314874d938c1342551c980dd957d060add362276ca"
+    },
+    {
+      "module": "Poincare.Topology.Homology.ModuleHomologyClasses",
+      "path": "Poincare/Topology/Homology/ModuleHomologyClasses.lean",
+      "baseline_sha256": "fac5a18749db4c0fe2edca9dbdb31747e8bde6f4ad30a6395950b7675954eb5c",
+      "sha256": "fac5a18749db4c0fe2edca9dbdb31747e8bde6f4ad30a6395950b7675954eb5c"
+    },
+    {
+      "module": "Poincare.Topology.Homology.ModuleHomologyCriterion",
+      "path": "Poincare/Topology/Homology/ModuleHomologyCriterion.lean",
+      "baseline_sha256": "d8bab53ec187f69e1960698fee8f29605c214464b423e7c469782520fedf88f3",
+      "sha256": "d8bab53ec187f69e1960698fee8f29605c214464b423e7c469782520fedf88f3"
+    },
+    {
+      "module": "Poincare.Topology.Homology.ModuleHomologyMaps",
+      "path": "Poincare/Topology/Homology/ModuleHomologyMaps.lean",
+      "baseline_sha256": "77c1bc2dab1c15addc673b4e9b4768f46b5df7475a4800b0232d8360c7b56557",
+      "sha256": "77c1bc2dab1c15addc673b4e9b4768f46b5df7475a4800b0232d8360c7b56557"
+    },
+    {
+      "module": "Poincare.Topology.Homology.OpenExcision",
+      "path": "Poincare/Topology/Homology/OpenExcision.lean",
+      "baseline_sha256": "e5bf7ed33bf7f554d7f70470e902e7b6a6e3a14fb34cea900202174714c4a7fc",
+      "sha256": "e5bf7ed33bf7f554d7f70470e902e7b6a6e3a14fb34cea900202174714c4a7fc"
+    },
+    {
+      "module": "Poincare.Topology.Homology.Relative",
+      "path": "Poincare/Topology/Homology/Relative.lean",
+      "baseline_sha256": "f3f7424601f2af6394f6ca375ef6bffd89b11a5ce0b29367a35fdcad27510d31",
+      "sha256": "f3f7424601f2af6394f6ca375ef6bffd89b11a5ce0b29367a35fdcad27510d31"
+    },
+    {
+      "module": "Poincare.Topology.Homology.RelativeFunctoriality",
+      "path": "Poincare/Topology/Homology/RelativeFunctoriality.lean",
+      "baseline_sha256": "542d9a4c7337c9275147dfa870cc6041ecb1a3658019d663d7597cfee7b730c5",
+      "sha256": "542d9a4c7337c9275147dfa870cc6041ecb1a3658019d663d7597cfee7b730c5"
+    },
+    {
+      "module": "Poincare.Topology.Homology.RelativeHomeomorphism",
+      "path": "Poincare/Topology/Homology/RelativeHomeomorphism.lean",
+      "baseline_sha256": "252e368a5ce4c966e1320a91f13672b55bbb52723a8ae2506ae6057b4b4cddfb",
+      "sha256": "9ed6f18525bbf671211af5dd60094c0b27866632a3aaa0cba26339ca873f574b"
+    },
+    {
+      "module": "Poincare.Topology.Homology.RelativeMaps",
+      "path": "Poincare/Topology/Homology/RelativeMaps.lean",
+      "baseline_sha256": "3b78b613d4b7e816f6b9f0d57c83ad629e11274cda6f749e25acd1ad17954add",
+      "sha256": "37e7765b7eb6da4f7a76751bd0fead9df5fa8b820edf9e4251ccd3330f5b4f0c"
+    },
+    {
+      "module": "Poincare.Topology.Homology.SimplexBasis",
+      "path": "Poincare/Topology/Homology/SimplexBasis.lean",
+      "baseline_sha256": "d01ab67f386a896ccc21413e1e0a0a8db66ee3ff448c474449ea9d41249e3ce0",
+      "sha256": "d01ab67f386a896ccc21413e1e0a0a8db66ee3ff448c474449ea9d41249e3ce0"
+    },
+    {
+      "module": "Poincare.Topology.Homology.SimplexBoundary",
+      "path": "Poincare/Topology/Homology/SimplexBoundary.lean",
+      "baseline_sha256": "940276bda0d543781a9e847836eceb1717c9165c60b0598d9d964042c7aa7f01",
+      "sha256": "940276bda0d543781a9e847836eceb1717c9165c60b0598d9d964042c7aa7f01"
+    },
+    {
+      "module": "Poincare.Topology.Homology.SimplexEvaluation",
+      "path": "Poincare/Topology/Homology/SimplexEvaluation.lean",
+      "baseline_sha256": "da6d62b5a6d88ac1f8fa00c41c371dd4d2441e18adaccdc45910cacc1264bba3",
+      "sha256": "da6d62b5a6d88ac1f8fa00c41c371dd4d2441e18adaccdc45910cacc1264bba3"
+    },
+    {
+      "module": "Poincare.Topology.Homology.SimplexMaps",
+      "path": "Poincare/Topology/Homology/SimplexMaps.lean",
+      "baseline_sha256": "d167149a91351b5c9bda5a2cc6617dea773ae7f9f1fee1a7a53765f9cf7f804a",
+      "sha256": "d167149a91351b5c9bda5a2cc6617dea773ae7f9f1fee1a7a53765f9cf7f804a"
+    },
+    {
+      "module": "Poincare.Topology.Homology.SimplexPushFaces",
+      "path": "Poincare/Topology/Homology/SimplexPushFaces.lean",
+      "baseline_sha256": "6325e71a0cbae364eb7f569e27298ca1e46f21520ba2e7e8205cd5f58bd4817e",
+      "sha256": "6325e71a0cbae364eb7f569e27298ca1e46f21520ba2e7e8205cd5f58bd4817e"
+    },
+    {
+      "module": "Poincare.Topology.Homology.SingularSubdivision",
+      "path": "Poincare/Topology/Homology/SingularSubdivision.lean",
+      "baseline_sha256": "63fdf248080a6a07cc6d9d17049cc73a1e33c0900a39833dbec640e9908d7117",
+      "sha256": "63fdf248080a6a07cc6d9d17049cc73a1e33c0900a39833dbec640e9908d7117"
+    },
+    {
+      "module": "Poincare.Topology.Homology.SingularSubdivisionBoundary",
+      "path": "Poincare/Topology/Homology/SingularSubdivisionBoundary.lean",
+      "baseline_sha256": "15eb577fd4e610fddfc31e6674c543b91bdab2bdfcf7e3010b4deacaca29aa09",
+      "sha256": "15eb577fd4e610fddfc31e6674c543b91bdab2bdfcf7e3010b4deacaca29aa09"
+    },
+    {
+      "module": "Poincare.Topology.Homology.SingularSubdivisionHomotopy",
+      "path": "Poincare/Topology/Homology/SingularSubdivisionHomotopy.lean",
+      "baseline_sha256": "beb680811397440352efb324bf045c78430d338f043e53ddfb39c43298481e6a",
+      "sha256": "beb680811397440352efb324bf045c78430d338f043e53ddfb39c43298481e6a"
+    },
+    {
+      "module": "Poincare.Topology.Homology.SingularSubdivisionIteration",
+      "path": "Poincare/Topology/Homology/SingularSubdivisionIteration.lean",
+      "baseline_sha256": "64f5f33cf4a8bd2ebaf02a0c4495dc46984305882d6755772463e266addc0f39",
+      "sha256": "64f5f33cf4a8bd2ebaf02a0c4495dc46984305882d6755772463e266addc0f39"
+    },
+    {
+      "module": "Poincare.Topology.Homology.SingularSubdivisionNaturality",
+      "path": "Poincare/Topology/Homology/SingularSubdivisionNaturality.lean",
+      "baseline_sha256": "38f011ab225cb415531c32ce57bbf1fa524caa8d3c36d0e4fa0b07b98051bfd5",
+      "sha256": "38f011ab225cb415531c32ce57bbf1fa524caa8d3c36d0e4fa0b07b98051bfd5"
+    },
+    {
+      "module": "Poincare.Topology.Homology.SmallChains",
+      "path": "Poincare/Topology/Homology/SmallChains.lean",
+      "baseline_sha256": "e817692da8f10539bf503437b99a1078ac1515e60f06c5f142a07926ca0ddd16",
+      "sha256": "e817692da8f10539bf503437b99a1078ac1515e60f06c5f142a07926ca0ddd16"
+    },
+    {
+      "module": "Poincare.Topology.Homology.SmallComplex",
+      "path": "Poincare/Topology/Homology/SmallComplex.lean",
+      "baseline_sha256": "17e78526dbcfe9fbab8a78259a0745832770fa950ee4185786e9a8ee12198373",
+      "sha256": "17e78526dbcfe9fbab8a78259a0745832770fa950ee4185786e9a8ee12198373"
+    },
+    {
+      "module": "Poincare.Topology.Homology.SmallCycles",
+      "path": "Poincare/Topology/Homology/SmallCycles.lean",
+      "baseline_sha256": "c1131a8a3e73a4814640f62cc925252f9b217345a9fe42053fb7b632d43df145",
+      "sha256": "c1131a8a3e73a4814640f62cc925252f9b217345a9fe42053fb7b632d43df145"
+    },
+    {
+      "module": "Poincare.Topology.Homology.SmallHomology",
+      "path": "Poincare/Topology/Homology/SmallHomology.lean",
+      "baseline_sha256": "737748add7fc5277ea54f641426e03520bb96c520531ec6508ab0c4a46f0d8db",
+      "sha256": "737748add7fc5277ea54f641426e03520bb96c520531ec6508ab0c4a46f0d8db"
+    },
+    {
+      "module": "Poincare.Topology.Homology.SmallRelative",
+      "path": "Poincare/Topology/Homology/SmallRelative.lean",
+      "baseline_sha256": "1f3c3df54422c1a417aaa795d9abd12bd9734330befd53d2e8ee07cd87d224cc",
+      "sha256": "1f3c3df54422c1a417aaa795d9abd12bd9734330befd53d2e8ee07cd87d224cc"
+    },
+    {
+      "module": "Poincare.Topology.Homology.SmallSubspaceInclusion",
+      "path": "Poincare/Topology/Homology/SmallSubspaceInclusion.lean",
+      "baseline_sha256": "a65112f9688f510fba9ed57942d86f9b64b71580331dd738df90c737a92b70e7",
+      "sha256": "a65112f9688f510fba9ed57942d86f9b64b71580331dd738df90c737a92b70e7"
+    },
+    {
+      "module": "Poincare.Topology.Homology.SubdivisionAffineAgreement",
+      "path": "Poincare/Topology/Homology/SubdivisionAffineAgreement.lean",
+      "baseline_sha256": "9e49d79cd0ae02cd824fd61a3c50c25ee74f6847673e8c16d9fe04fe4ea451f6",
+      "sha256": "9e49d79cd0ae02cd824fd61a3c50c25ee74f6847673e8c16d9fe04fe4ea451f6"
+    },
+    {
+      "module": "Poincare.Topology.Homology.SubdivisionBoundary",
+      "path": "Poincare/Topology/Homology/SubdivisionBoundary.lean",
+      "baseline_sha256": "de2b34bd4d63d5b191a87c49a20635fcc45aadba8865310bdbf35ec33bea8281",
+      "sha256": "de2b34bd4d63d5b191a87c49a20635fcc45aadba8865310bdbf35ec33bea8281"
+    },
+    {
+      "module": "Poincare.Topology.Homology.SubdivisionCarriers",
+      "path": "Poincare/Topology/Homology/SubdivisionCarriers.lean",
+      "baseline_sha256": "39af49978c09dc76716c85daf9830663fb9798178063a02139336b25bdf164b0",
+      "sha256": "39af49978c09dc76716c85daf9830663fb9798178063a02139336b25bdf164b0"
+    },
+    {
+      "module": "Poincare.Topology.Homology.SubdivisionHomotopy",
+      "path": "Poincare/Topology/Homology/SubdivisionHomotopy.lean",
+      "baseline_sha256": "2fb917368e4780cc9fe10c4355af8d9437c74ee4ed82e9dce9942f57fdb97263",
+      "sha256": "2fb917368e4780cc9fe10c4355af8d9437c74ee4ed82e9dce9942f57fdb97263"
+    },
+    {
+      "module": "Poincare.Topology.Homology.SubdivisionHomotopyIdentity",
+      "path": "Poincare/Topology/Homology/SubdivisionHomotopyIdentity.lean",
+      "baseline_sha256": "1a276ef1a486f3818d1ac14fd6ae7b893b5946068dcac7d24b70731e4e7dc134",
+      "sha256": "1a276ef1a486f3818d1ac14fd6ae7b893b5946068dcac7d24b70731e4e7dc134"
+    },
+    {
+      "module": "Poincare.Topology.Homology.SubdivisionHomotopyNaturality",
+      "path": "Poincare/Topology/Homology/SubdivisionHomotopyNaturality.lean",
+      "baseline_sha256": "d580a4dc5d110ded675cc7cc49f5da175bfe52b78628a29036e2528ce5d92f48",
+      "sha256": "d580a4dc5d110ded675cc7cc49f5da175bfe52b78628a29036e2528ce5d92f48"
+    },
+    {
+      "module": "Poincare.Topology.Homology.SubdivisionIterationHomotopy",
+      "path": "Poincare/Topology/Homology/SubdivisionIterationHomotopy.lean",
+      "baseline_sha256": "407c0f1fc6ae149c42fcba13a9f75460263af757b8e770aa36bd9aa81c45db04",
+      "sha256": "407c0f1fc6ae149c42fcba13a9f75460263af757b8e770aa36bd9aa81c45db04"
+    },
+    {
+      "module": "Poincare.Topology.Homology.SubdivisionMesh",
+      "path": "Poincare/Topology/Homology/SubdivisionMesh.lean",
+      "baseline_sha256": "a3023faf87291a6096fd97df41e3f9588ac593b2d70e280ccf086736671b8b51",
+      "sha256": "a3023faf87291a6096fd97df41e3f9588ac593b2d70e280ccf086736671b8b51"
+    },
+    {
+      "module": "Poincare.Topology.Homology.SubdivisionNaturality",
+      "path": "Poincare/Topology/Homology/SubdivisionNaturality.lean",
+      "baseline_sha256": "bc530039a61962228be9a6a3adcbf1204868e5babd32daff953223826b810b20",
+      "sha256": "bc530039a61962228be9a6a3adcbf1204868e5babd32daff953223826b810b20"
+    },
+    {
+      "module": "Poincare.Topology.Homology.SubdivisionSmallness",
+      "path": "Poincare/Topology/Homology/SubdivisionSmallness.lean",
+      "baseline_sha256": "393a84d497b9784c8833c57e9a54385708984b98bbc793c673e6a060a19b8955",
+      "sha256": "393a84d497b9784c8833c57e9a54385708984b98bbc793c673e6a060a19b8955"
+    },
+    {
+      "module": "Poincare.Topology.Homology.SubspaceCarriers",
+      "path": "Poincare/Topology/Homology/SubspaceCarriers.lean",
+      "baseline_sha256": "d0bf5770692b2c39dbcba8e754f33040249f06eddb9181822253004e0367ca48",
+      "sha256": "d0bf5770692b2c39dbcba8e754f33040249f06eddb9181822253004e0367ca48"
+    },
+    {
+      "module": "Poincare.Topology.Homology.TwoSetSmallChains",
+      "path": "Poincare/Topology/Homology/TwoSetSmallChains.lean",
+      "baseline_sha256": "1a54c2d788a914c9fc663f7300a5cc7f55997123a04b840865bbf918075f667c",
+      "sha256": "1a54c2d788a914c9fc663f7300a5cc7f55997123a04b840865bbf918075f667c"
+    },
+    {
+      "module": "Poincare.Topology.Homology.UniversalHomotopyBoundary",
+      "path": "Poincare/Topology/Homology/UniversalHomotopyBoundary.lean",
+      "baseline_sha256": "4feb22d812ddd34a8aa00dd406ab3720327c27c5ad0b023125240671379efc57",
+      "sha256": "4feb22d812ddd34a8aa00dd406ab3720327c27c5ad0b023125240671379efc57"
+    },
+    {
+      "module": "Poincare.Topology.Homology.UniversalSubdivisionFaces",
+      "path": "Poincare/Topology/Homology/UniversalSubdivisionFaces.lean",
+      "baseline_sha256": "2501f25f7e131a2b5c2e5c8da98238f60ddbb112968de53e3adbb20fcc318ef4",
+      "sha256": "2501f25f7e131a2b5c2e5c8da98238f60ddbb112968de53e3adbb20fcc318ef4"
+    },
+    {
+      "module": "Poincare.Topology.Homology.UniversalSubdivisionIteration",
+      "path": "Poincare/Topology/Homology/UniversalSubdivisionIteration.lean",
+      "baseline_sha256": "377a0655b9f387f6b8d2f34bb29fbe0255720136f87367a69e0a7c2d763b3630",
+      "sha256": "377a0655b9f387f6b8d2f34bb29fbe0255720136f87367a69e0a7c2d763b3630"
+    }
+  ],
+  "aggregate": {
+    "path": "Poincare.lean",
+    "baseline_sha256": "99c3c8e47c19f60ee50a7e0f377e59138cf4ff33ebd4e26530d3c2b7cd47d452",
+    "sha256": "d304e625c3b03ecfa892ca80296c5068eeebe76aa1d871bcbd0084f6f14a2b29",
+    "change": "Checkpoint aggregate imports exactly the 68 supplied leaves; the full recovered aggregate is not replaced"
+  },
+  "configuration": [
+    {
+      "path": "lakefile.toml",
+      "baseline_sha256": "077b9526c844322e37cf04744ec723ff068a4da3fea52f54739ca746dfcd65bf",
+      "sha256": "077b9526c844322e37cf04744ec723ff068a4da3fea52f54739ca746dfcd65bf",
+      "change": "Unchanged portable baseline file"
+    },
+    {
+      "path": "lake-manifest.json",
+      "baseline_sha256": "0c44051d1dff6f649655d6777ba90166ee9d31f69c7105663943f042f28ad9e0",
+      "sha256": "0c44051d1dff6f649655d6777ba90166ee9d31f69c7105663943f042f28ad9e0",
+      "change": "Unchanged portable baseline file"
+    },
+    {
+      "path": "lean-toolchain",
+      "baseline_sha256": "3e237b01ed208f3feae92c0848414c030fedbe2068f698e93c0d20aea4811a01",
+      "sha256": "3aac669c7a910ec2389f4e4f921b605adf6ebf2d1e0c9b9cd0be4d33f3f5db71",
+      "change": "Removed one trailing blank line; unchanged version pin"
+    }
+  ],
+  "external_imports": [
+    "Mathlib.Algebra.Category.ModuleCat.Abelian",
+    "Mathlib.Algebra.Category.ModuleCat.Colimits",
+    "Mathlib.Algebra.Category.ModuleCat.Projective",
+    "Mathlib.Algebra.Exact.Basic",
+    "Mathlib.Algebra.Homology.HomologicalComplexAbelian",
+    "Mathlib.Algebra.Homology.HomologySequence",
+    "Mathlib.Algebra.Homology.HomologySequenceLemmas",
+    "Mathlib.Algebra.Homology.QuasiIso",
+    "Mathlib.Algebra.Homology.ShortComplex.ModuleCat",
+    "Mathlib.Algebra.Module.ULift",
+    "Mathlib.Algebra.Order.Archimedean.Basic",
+    "Mathlib.AlgebraicTopology.SingularHomology.HomologyZero",
+    "Mathlib.AlgebraicTopology.SingularHomology.HomotopyInvariance",
+    "Mathlib.Analysis.Calculus.FDeriv.Basic",
+    "Mathlib.Analysis.Convex.Contractible",
+    "Mathlib.Analysis.Normed.Module.Convex",
+    "Mathlib.Analysis.Normed.Operator.LinearIsometry",
+    "Mathlib.Data.Fin.Tuple.Basic",
+    "Mathlib.Geometry.Manifold.ChartedSpace",
+    "Mathlib.LinearAlgebra.Basis.Basic",
+    "Mathlib.LinearAlgebra.FreeModule.Basic",
+    "Mathlib.Tactic.Linarith",
+    "Mathlib.Tactic.Module",
+    "Mathlib.Tactic.NormNum",
+    "Mathlib.Topology.Homeomorph.Lemmas",
+    "Mathlib.Topology.Homotopy.Basic",
+    "Mathlib.Topology.Homotopy.Contractible",
+    "Mathlib.Topology.MetricSpace.Pseudo.Lemmas"
+  ],
+  "differential_geometry_imports": [],
+  "third_party_license_sha256": "b40930bbcf80744c86c46a12bc9da056641d722716c378f5659b9e555ef833e1",
+  "missing_contract": "handoff/CANONICAL_TOPOLOGY_READY.md and the separate frozen 87-declaration files, registry and consumers",
+  "public_exports": [
+    "Poincare.Analysis.exists_punctured_ball_derivative_homotopy",
+    "Poincare.Topology.exists_ball_relative_homologyMap_eq_derivative",
+    "Poincare.Topology.integralRelativeHomologyMap_eq_of_restriction_homotopic",
+    "Poincare.Topology.integralLocalHomologyHomeomorphIso_trans",
+    "Poincare.Topology.integralLocalHomologyNeighborhoodIso_hom",
+    "Poincare.Topology.integralLocalHomologyNeighborhoodIso_map",
+    "Poincare.Topology.integralLocalHomologyNeighborhoodIso_natural",
+    "Poincare.Topology.integralLocalHomologyNeighborhoodIso_comp",
+    "Poincare.Topology.integralRelativeHomologyMap_eq_of_eqOn_neighborhood",
+    "Poincare.Topology.integralLocalHomologyOpenPartialHomeomorphIso_natural"
+  ],
+  "historical_authorities": [
+    {
+      "baseline_path": "AGENTS.md",
+      "preserved_path": "provenance/RECOVERED_AGENTS.md",
+      "sha256": "2a8573faf8017e03496e64ce730913d0defe22ce20ede08d43b71718857a7546"
+    },
+    {
+      "baseline_path": "PROJECT_CONTEXT.md",
+      "preserved_path": "provenance/RECOVERED_PROJECT_CONTEXT.md",
+      "sha256": "05cab6be53db285274cc9b5a97cc4a9fee1aef90fd5d033fd511cdf02f73cc9f"
+    }
+  ],
+  "validation": {
+    "date": "2026-09-12",
+    "slurm_job_id": "13781140",
+    "compute_host": "della-r3c2n16",
+    "aggregate_command": "lake --no-cache --iofail build Poincare",
+    "fresh_leaf_count": 68,
+    "aggregate_exit_code": 0,
+    "aggregate_log_sha256": "f81bd13e77fae57541fc95333979d7eef1f6670cdc7876ccd0f1962011272938",
+    "request_id": "1789225884170955728-topology_checkpoint-53ce33c5",
+    "input_sha256": "63afba3a0989926bde81d88d2ef617efe9d8e7f0f3cd45093ec078829caa3b4d",
+    "response_sha256": "b6dcbffcfa3e0d9f1bd3e9d9f07fd79d629a601521d9233808f1292a40e50b45",
+    "compiler_diagnostics": "zero unexpected diagnostics or sorries",
+    "declaration_linters": [
+      "unusedArguments",
+      "simpNF",
+      "synTaut",
+      "checkType"
+    ],
+    "linter_scope": "All imported Poincare modules and public consumer driver",
+    "unavailable_linter": "defLemma; configured source declaration-kind check retained",
+    "allowed_transitive_axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "public_exports_checked": [
+      "Poincare.Analysis.exists_punctured_ball_derivative_homotopy",
+      "Poincare.Topology.exists_ball_relative_homologyMap_eq_derivative",
+      "Poincare.Topology.integralRelativeHomologyMap_eq_of_restriction_homotopic",
+      "Poincare.Topology.integralLocalHomologyHomeomorphIso_trans",
+      "Poincare.Topology.integralLocalHomologyNeighborhoodIso_hom",
+      "Poincare.Topology.integralLocalHomologyNeighborhoodIso_map",
+      "Poincare.Topology.integralLocalHomologyNeighborhoodIso_natural",
+      "Poincare.Topology.integralLocalHomologyNeighborhoodIso_comp",
+      "Poincare.Topology.integralRelativeHomologyMap_eq_of_eqOn_neighborhood",
+      "Poincare.Topology.integralLocalHomologyOpenPartialHomeomorphIso_natural"
+    ],
+    "consumer_checks": [
+      "actual homeomorphism/neighborhood naturality, including degree zero",
+      "actual chart/excision square",
+      "nonidentity positive real dilation",
+      "nonlinear quadratic punctured-ball homotopy with exact interpolation",
+      "nonlinear quadratic relative-map equality with distinct endpoints"
+    ],
+    "full_topology_suite_accepted": false
+  }
+}
