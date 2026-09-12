@@ -3,6 +3,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborho
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.TerminalCurvatureJets
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Limits.FlowOfMetric
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.IteratedCovariantDerivativeFields
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CrossModelBallCapture
 
 set_option autoImplicit false
 noncomputable section
@@ -330,5 +331,92 @@ theorem first_backward_slab_of_terminal {eps kappa sigma : ℝ} {Phi : ℝ → �
         (RealTimeInterval.closed (-delta) 0 (by linarith))) := by
   obtain ⟨delta, hd, hslab⟩ := exists_terminalBackwardSlab (L.toStatic hdepth hb) h
   exact ⟨delta, hd, ⟨TerminalBackwardSlab.toBackwardExtension hslab.some⟩⟩
+
+def TerminalLimitSlabInputs {eps kappa sigma : ℝ} {Phi : ℝ → ℝ}
+    (X : NormalizedSequence.{u} eps kappa sigma Phi) (L : TerminalLimit X) : Prop :=
+  ∃ (depthBound : ℝ) (hdepth : depthBound ≤ 2 * modelDepth eps)
+    (hb : TerminalSlabBounds L depthBound),
+    0 < depthBound ∧ TerminalSlabAnalyticInputs (L.toStatic hdepth hb)
+
+theorem first_backward_slab_of_terminal_limit_slab_inputs {kappa sigma : ℝ} {Phi : ℝ → ℝ}
+    (h : ∃ epsStar : ℝ, 0 < epsStar ∧ ∀ eps : ℝ, 0 < eps → eps ≤ epsStar →
+      ∀ (X : NormalizedSequence.{u} eps kappa sigma Phi) (L : TerminalLimit X),
+        TerminalLimitSlabInputs X L) :
+    ∃ epsStar : ℝ, 0 < epsStar ∧ ∀ eps : ℝ, 0 < eps → eps ≤ epsStar →
+      ∀ (X : NormalizedSequence.{u} eps kappa sigma Phi) (L : TerminalLimit X),
+        ∃ delta : ℝ, ∃ hd : 0 < delta,
+          Nonempty (BackwardExtension L (RealTimeInterval.closed (-delta) 0 (by linarith))) := by
+  obtain ⟨epsStar, hpos, hI⟩ := h
+  refine ⟨epsStar, hpos, fun eps heps hle X L => ?_⟩
+  obtain ⟨depthBound, hdepth, hb, _hd0, han⟩ := hI eps heps hle X L
+  exact first_backward_slab_of_terminal L hdepth hb han
+
+theorem metricSourceCapture_of_metric_lower_crossModel
+    {X : PointedRiemannianSeq.{u, 0, 0} I3} {P : PointedRiemannianManifold.{u, 0, 0} I3}
+    {f : ℕ → ℕ} (F : PointedRiemannianConvergenceMaps X P f)
+    (hcomplete : MetricComplete P) {L : ℝ} (hL : 0 < L)
+    (hlower : ∀ R : ℝ, 0 < R → ∀ᶠ i in Filter.atTop,
+      riemannianClosedBallOf (I := I3) P.metric P.basepoint R ⊆
+        (F.partialDiffeomorph i).source ∧
+      ∀ y ∈ riemannianClosedBallOf (I := I3) P.metric P.basepoint R,
+        ∀ v : TangentSpace I3 y,
+          P.metric.inner y v v ≤ L ^ 2 * (X.obj (f i)).metric.inner
+            (F.partialDiffeomorph i y)
+            (mfderiv I3 I3 (F.partialDiffeomorph i) y v)
+            (mfderiv I3 I3 (F.partialDiffeomorph i) y v)) :
+    MetricSourceCapture F := by
+  have hrs : RiemannianMetricComplete (I := I3) P.metric :=
+    ⟨MetricComplete.complete P hcomplete⟩
+  intro r hr
+  have hR : 0 < L * r + 1 := by positivity
+  have hrr : r ≤ (L * r + 1) / L := by
+    rw [le_div_iff₀ hL]
+    linarith [hr.le, hL]
+  have hK : IsCompact
+      (riemannianClosedBallOf (I := I3) P.metric P.basepoint (L * r + 1)) :=
+    RiemannianMetricComplete.closedEBall_isCompact hrs P.basepoint (L * r + 1)
+  filter_upwards [hlower (L * r + 1) hR] with i hi
+  obtain ⟨hsrc, hbd⟩ := hi
+  have hcap := ball_subset_image_of_metric_lower_crossModel (J := I3) (I := I3)
+    P.metric ((X.obj (f i)).metric) (F.partialDiffeomorph i) P.basepoint hR hL hK hsrc hbd
+  have hbase : (F.partialDiffeomorph i) P.basepoint = (X.obj (f i)).basepoint :=
+    F.basepoint_map i
+  intro z hz
+  have hz' : z ∈ riemannianBallOf (I := I3) ((X.obj (f i)).metric)
+      ((F.partialDiffeomorph i) P.basepoint) ((L * r + 1) / L) := by
+    rw [hbase]
+    exact riemannianBallOf_mono _ _ hrr hz
+  obtain ⟨w, hw, hwz⟩ := hcap hz'
+  exact ⟨w, hsrc hw, hwz⟩
+
+theorem isCompact_closure_source_of_subset_closedBall
+    {X : PointedRiemannianSeq.{u, 0, 0} I3} {P : PointedRiemannianManifold.{u, 0, 0} I3}
+    {f : ℕ → ℕ} (F : PointedRiemannianConvergenceMaps X P f)
+    (hcomplete : MetricComplete P)
+    (hbounded : ∀ i, ∃ R : ℝ,
+      (F.partialDiffeomorph i).source ⊆
+        riemannianClosedBallOf (I := I3) P.metric P.basepoint R) :
+    ∀ i, IsCompact (closure (F.partialDiffeomorph i).source) := by
+  have hrs : RiemannianMetricComplete (I := I3) P.metric :=
+    ⟨MetricComplete.complete P hcomplete⟩
+  intro i
+  obtain ⟨R, hR⟩ := hbounded i
+  have hK := RiemannianMetricComplete.closedEBall_isCompact hrs P.basepoint R
+  exact IsCompact.of_isClosed_subset hK isClosed_closure
+    ((closure_mono hR).trans (le_of_eq hK.isClosed.closure_eq))
+
+theorem metricScalarAt_limit_le_of_eventually_le
+    {X : PointedRiemannianSeq.{u, 0, 0} I3} {P : PointedRiemannianManifold.{u, 0, 0} I3}
+    {f : ℕ → ℕ} (F : PointedRiemannianConvergenceMaps X P f)
+    (conv : MetricConvergenceData F)
+    (hcanonical : ∀ k, conv.domain k =
+      CanonicalMetricCompactness.canonicalSourceData F k)
+    (C : ℝ) (h : ∀ x : P.M, ∀ᶠ i in Filter.atTop,
+      metricScalarAt (I := I3) (X.obj (f i)).metric (F.partialDiffeomorph i x) ≤ C) :
+    ∀ x : P.M, metricScalarAt (I := I3) P.metric x ≤ C :=
+  fun x => le_of_tendsto
+    (DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions.pointedScalar_tendsto_of_metricCG_canonical_domains
+      (I := I3) (X := X) (L := P) (subseq := f) (Phi := F) conv hcanonical x)
+    (h x)
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
