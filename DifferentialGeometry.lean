@@ -8494,6 +8494,7 @@ import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.SeamOrientationG
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.SeamTransition
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.SmoothStructure
 import DifferentialGeometry.Topology.ThreeManifold.CutCap
+import DifferentialGeometry.Topology.ThreeManifold.CutCapGluing
 import DifferentialGeometry.Topology.ThreeManifold.CutCapReconstruction
 import DifferentialGeometry.Topology.ThreeManifold.PoincareStandard
 import DifferentialGeometry.Topology.ThreeManifold.PoincareStandardClassification

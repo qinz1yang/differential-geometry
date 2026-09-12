@@ -1,8 +1,15 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.FiniteHistory
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.GeometricCutoff
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.Metric
 import DifferentialGeometry.Geometry.Metric.Sphere.Round.Metric
 import DifferentialGeometry.Geometry.Metric.Convergence.Defs
+import DifferentialGeometry.Geometry.Metric.Distance.Ball
+import DifferentialGeometry.Geometry.Metric.CurveSpeedCalculus
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureOperator.Metric
+import DifferentialGeometry.Geometry.Operator.Laplacian.Basic
+import DifferentialGeometry.Geometry.Operator.Gradient.NormSquared
+import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.Invariance
+import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph.Composition
 import DifferentialGeometry.Analysis.TimeInterval
 import Mathlib.Data.ENNReal.Basic
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
@@ -35,25 +42,59 @@ def curvatureNormSq {M : Type u} [TopologicalSpace M]
 abbrev ModelBall (L : ℝ) : TopologicalSpace.Opens ThreeSpace :=
   ⟨Metric.ball (0 : ThreeSpace) L, Metric.isOpen_ball⟩
 
+noncomputable def riemannianBallVolume {M : Type u} [TopologicalSpace M]
+    [ChartedSpace ThreeSpace M] [IsManifold ThreeModel ∞ M]
+    [T2Space M] [SigmaCompactSpace M]
+    (g : SmoothRiemannianMetric ThreeModel M) (p : M) (r : ℝ) : ℝ :=
+  ((DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure (I := ThreeModel) (M := M) g)
+    (DifferentialGeometry.riemannianBallOf (I := ThreeModel) g p r)).toReal
+
+noncomputable def reducedAction {M : Type u} [TopologicalSpace M]
+    [ChartedSpace ThreeSpace M] [IsManifold ThreeModel ∞ M]
+    (g : ℝ → SmoothRiemannianMetric ThreeModel M) (t₀ : ℝ) (τ : ℝ) (γ : ℝ → M) : ℝ :=
+  ∫ s in (0 : ℝ)..τ,
+    Real.sqrt s *
+      (metricScalarAt (g (t₀ - s)) (γ s) +
+        DifferentialGeometry.Geometry.riemannianCurveSpeed (g (t₀ - s)) γ s ^ 2)
+
+noncomputable def reducedLength {M : Type u} [TopologicalSpace M]
+    [ChartedSpace ThreeSpace M] [IsManifold ThreeModel ∞ M]
+    (g : ℝ → SmoothRiemannianMetric ThreeModel M) (t₀ : ℝ)
+    (admissible : (ℝ → M) → Prop) (p : M) (τ : ℝ) (x : M) : ℝ :=
+  sInf {r : ℝ | ∃ γ : ℝ → M,
+    admissible γ ∧ γ 0 = p ∧ γ τ = x ∧ reducedAction g t₀ τ γ = r}
+
+noncomputable def reducedVolume {M : Type u} [TopologicalSpace M]
+    [ChartedSpace ThreeSpace M] [IsManifold ThreeModel ∞ M]
+    [T2Space M] [SigmaCompactSpace M]
+    (g : ℝ → SmoothRiemannianMetric ThreeModel M) (t₀ : ℝ)
+    (admissible : (ℝ → M) → Prop) (p : M) (τ : ℝ) (V : Set M) : ℝ≥0∞ :=
+  ∫⁻ x in V, ENNReal.ofReal
+    ((4 * Real.pi * τ) ^ (-(3 / 2 : ℝ)) *
+      Real.exp (-(reducedLength g t₀ admissible p τ x) / (2 * Real.sqrt τ)))
+    ∂(DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure (I := ThreeModel) (M := M)
+      (g (t₀ - τ)))
+
 def isLocalStabilityInput : Prop :=
   ∀ θ : ℝ, 0 < θ → θ < 1 → ∀ K : ℝ, 0 < K →
-    ∀ L : ℝ, 0 < L →
-      ∀ (v : ℕ → ℝ) (hv : ∀ i, 0 < v i) (_hvθ : ∀ i, v i ≤ θ)
-        (γ : SmoothRiemannianMetric ThreeModel ThreeSpace)
-        (ℓ : (i : ℕ) → SolutionOn (I := ThreeModel) (M := ↥(ModelBall L))
-          (RealTimeInterval.closed (0 : ℝ) (v i) (le_of_lt (hv i)))),
+    ∀ (L : ℕ → ℝ) (_hLpos : ∀ i, 0 < L i) (_hLtop : Tendsto L atTop atTop)
+      (v : ℕ → ℝ) (hv : ∀ i, 0 < v i) (_hvθ : ∀ i, v i ≤ θ)
+      (γ : SmoothRiemannianMetric ThreeModel ThreeSpace)
+      (ℓ : (i : ℕ) → SolutionOn (I := ThreeModel) (M := ↥(ModelBall (L i)))
+        (RealTimeInterval.closed (0 : ℝ) (v i) (le_of_lt (hv i)))),
       (∀ i, DifferentialGeometry.PDE.RicciFlow.IsSolutionOn (ℓ i)) →
-      (∀ i, ∀ x : ↥(ModelBall L),
+      (∀ i, ∀ x : ↥(ModelBall (L i)),
         curvatureNormSq ((ℓ i).base.metric (v i)) x
           (DifferentialGeometry.Geometry.Curvature.metricRm04At (I := ThreeModel)
-            (M := ↥(ModelBall L)) ((ℓ i).base.metric (v i)) x) ≤ K ^ 2) →
-      (∀ A : Set ThreeSpace, IsCompact A →
-        MetricCPConvergenceOn (Subtype.val ⁻¹' A) 0 (fun i => (ℓ i).base.metric 0)
-          (γ.restrictOpen (ModelBall L)) (γ.restrictOpen (ModelBall L))) →
+            (M := ↥(ModelBall (L i))) ((ℓ i).base.metric (v i)) x) ≤ K ^ 2) →
+      (∀ A : Set ThreeSpace, IsCompact A → ∀ p : ℕ,
+        Tendsto (fun i => metricDerivNormSupOn (Subtype.val ⁻¹' A) p ((ℓ i).base.metric 0)
+          (γ.restrictOpen (ModelBall (L i))) (γ.restrictOpen (ModelBall (L i))))
+          atTop (𝓝 0)) →
       ∀ A : Set ThreeSpace, IsCompact A → ∀ m : ℕ, 4 ≤ m →
         Tendsto (fun i => sSup {r : ℝ | ∃ u ∈ Set.Icc (0 : ℝ) (v i),
           metricDerivNormSupOn (Subtype.val ⁻¹' A) m ((ℓ i).base.metric u)
-            (γ.restrictOpen (ModelBall L)) (γ.restrictOpen (ModelBall L)) = r})
+            (γ.restrictOpen (ModelBall (L i))) (γ.restrictOpen (ModelBall (L i))) = r})
           atTop (𝓝 0)
 
 structure StandardCapModel where
@@ -106,11 +147,30 @@ structure PreparedCapSeed (H : ObservedHistory.{u}) (L : ℝ) (N : ℕ) (ζ : �
   order_lower : N ≤ order
   accuracy_pos : 0 < ζ
 
-structure TrackedChart (P : OrientedThreeStage.{u}) (G : ℝ → P.Metric) (q L K : ℝ) where
+structure BackwardRealization {M : Type u} [TopologicalSpace M]
+    [ChartedSpace ThreeSpace M] [IsManifold ThreeModel ∞ M]
+    (metric : ℝ → SmoothRiemannianMetric ThreeModel M) (t s : ℝ) where
+  chart : PartialDiffeomorph ThreeModel ThreeModel ThreeSpace M ∞
+  zero_mem_source : (0 : ThreeSpace) ∈ chart.source
+  ball_subset_source : Metric.ball (0 : ThreeSpace) (4 * s) ⊆ chart.source
+  curvature_bound : ∀ u ∈ Icc (t - 4 * s ^ 2) t,
+    ∀ x ∈ Metric.ball (0 : ThreeSpace) (4 * s),
+      curvatureNormSq (metric u) (chart x)
+        (DifferentialGeometry.Geometry.Curvature.metricRm04At (I := ThreeModel)
+          (M := M) (metric u) (chart x)) ≤ (s ^ 2)⁻¹
+
+inductive TrackedFace where
+  | incoming
+  | observed
+
+structure TrackedChart (P : OrientedThreeStage.{u}) (G : ℝ → P.Metric)
+    (J : PartialDiffeomorph ThreeModel ThreeModel ThreeSpace P.Carrier ∞) (q L K : ℝ) where
   time : ℝ
   time_nonneg : 0 ≤ time
   time_le : time ≤ q
+  face : TrackedFace
   flow : ℝ → ThreeSpace → P.Carrier
+  flow_zero : Set.EqOn (flow 0) ⇑J (Metric.ball (0 : ThreeSpace) L)
   flow_injective : ∀ s ∈ Icc (0 : ℝ) time, Function.Injective (flow s)
   domain : Set ThreeSpace
   domain_open : IsOpen domain
@@ -122,7 +182,7 @@ structure TrackedChart (P : OrientedThreeStage.{u}) (G : ℝ → P.Metric) (q L 
         (G (q - s)).inner (flow s x)
           (mfderiv ThreeModel ThreeModel (flow s) x V)
           (mfderiv ThreeModel ThreeModel (flow s) x W)
-  curvature_bound : ∀ s ∈ Icc (0 : ℝ) time, ∀ x : ThreeSpace,
+  curvature_bound : ∀ s ∈ Icc (0 : ℝ) time, ∀ x : ThreeSpace, ‖x‖ ≤ L →
     curvatureNormSq (normalized_metric s) x
       (DifferentialGeometry.Geometry.Curvature.metricRm04At (I := ThreeModel)
         (M := ThreeSpace) (normalized_metric s) x) ≤ K ^ 2
@@ -134,8 +194,26 @@ structure AdmissibleDatum (c : CapClass) where
   ambientMetric : ℝ → (history.stage 0).Metric
   precision : ℝ
   precision_pos : 0 < precision
-  lossTime : ℝ
-  lossTime_mem : Icc 0 history.horizon
+  scale : ℝ
+  scale_pos : 0 < scale
+
+def ProtectedSurvives {c : CapClass} (D : AdmissibleDatum.{u} c) (a : ℝ)
+    (i : Fin D.history.eventCount) : Prop :=
+  Nonempty (BackwardRealization
+    (fun u => (D.history.event i).incoming.flow.base.metric u) (D.history.time i.succ) (a / 4))
+
+def IsLossEvent {c : CapClass} (D : AdmissibleDatum.{u} c) (a : ℝ)
+    (i : Fin D.history.eventCount) : Prop :=
+  ¬ ProtectedSurvives D a i
+
+def IsStoppingFace {c : CapClass} (D : AdmissibleDatum.{u} c) (a θ : ℝ) (T : ℝ) : Prop :=
+  T ∈ Icc a (a + θ / D.scale) ∧
+    ((∃ i : Fin D.history.eventCount, IsLossEvent D a i ∧ T = D.history.time i.succ ∧
+        ∀ j : Fin D.history.eventCount, IsLossEvent D a j → a < D.history.time j.succ →
+          T ≤ D.history.time j.succ) ∨
+      ((¬ ∃ i : Fin D.history.eventCount, IsLossEvent D a i ∧ a < D.history.time i.succ ∧
+          D.history.time i.succ ≤ a + θ / D.scale) ∧
+        T = min D.history.horizon (a + θ / D.scale)))
 
 def isBufferedControlInput : Prop :=
   ∀ c : CapClass, ∀ θ : ℝ, 0 < θ → θ < 1 →
@@ -144,9 +222,14 @@ def isBufferedControlInput : Prop :=
         ∃ L₀ : ℝ, L + 2 < L₀ ∧ ∃ N₀ : ℕ, 4 ≤ N₀ ∧ ∃ ζ₀ : ℝ, 0 < ζ₀ ∧
           ∃ δ₀ : ℝ, 0 < δ₀ ∧
             ∀ D : AdmissibleDatum.{u} c, D.precision ≤ δ₀ →
-              ∀ _seed : PreparedCapSeed D.history L₀ N₀ ζ₀,
-                ∃ T : ℝ, T ∈ Icc a (a + (K + 1) * θ) ∧
-                  Nonempty (TrackedChart (D.history.stage 0) D.ambientMetric T L K)
+              ∀ seed : PreparedCapSeed D.history L₀ N₀ ζ₀,
+                ∀ T : ℝ, IsStoppingFace D a θ T →
+                  ∃ C : TrackedChart (D.history.stage 0) D.ambientMetric seed.chart T L K,
+                    ((∃ i : Fin D.history.eventCount, IsLossEvent D a i ∧
+                        T = D.history.time i.succ) → C.face = TrackedFace.incoming) ∧
+                    ((¬ ∃ i : Fin D.history.eventCount, IsLossEvent D a i ∧
+                        T = D.history.time i.succ) → C.face = TrackedFace.observed) ∧
+                    Nonempty (BackwardRealization (fun u => D.ambientMetric u) T (L / 4))
 
 structure CapEscapeModel where
   horizon : ℝ
@@ -175,56 +258,62 @@ structure CapEscapeTransfer (H : ObservedHistory.{u}) where
   barrier : isCapEscapeCostBarrier comparison
 
 structure VariationalStrip (H : ObservedHistory.{u}) where
+  pole : (H.stage 0).Carrier
   start : ℝ
   finish : ℝ
   start_nonneg : 0 ≤ start
   finish_le_horizon : finish ≤ H.horizon
   start_lt_finish : start < finish
-  pole : (H.stage 0).Carrier
   radius : ℝ
   radius_pos : 0 < radius
-
-structure ReducedLengthFunction {H : ObservedHistory.{u}}
-    (S : VariationalStrip H) where
-  value : (H.stage 0).Carrier → ℝ → ℝ
+  metricAt : ℝ → (H.stage 0).Metric
   admissible : (ℝ → (H.stage 0).Carrier) → Prop
-  cost : (ℝ → (H.stage 0).Carrier) → ℝ
+  regular : (ℝ → (H.stage 0).Carrier) → Prop
+  regular_admissible : ∀ γ, regular γ → admissible γ
 
-def IsMinimizingCurve {H : ObservedHistory.{u}}
-    {S : VariationalStrip H}
-    (L : ReducedLengthFunction S) (u : ℝ) (_hu : u ∈ Ioo S.start S.finish)
-    (x : (H.stage 0).Carrier) (γ : ℝ → (H.stage 0).Carrier) : Prop :=
-  L.admissible γ ∧ γ u = x ∧ L.cost γ = L.value x u ∧
-  ∀ δ : ℝ → (H.stage 0).Carrier, L.admissible δ → δ u = x → L.cost γ ≤ L.cost δ
+namespace VariationalStrip
 
-structure ReducedGeometry {H : ObservedHistory.{u}}
-    (S : VariationalStrip H) where
-  reducedLength : (H.stage 0).Carrier → ℝ → ℝ
-  admissible : (ℝ → (H.stage 0).Carrier) → Prop
-  lengthFunctional : (ℝ → (H.stage 0).Carrier) → ℝ
-  ambientDerivative : ((H.stage 0).Carrier → ℝ) → (H.stage 0).Carrier → ℝ
-  supportOperator : ((H.stage 0).Carrier → ℝ) → (H.stage 0).Carrier → ℝ
-  spatialNorm : (H.stage 0).Carrier → ℝ → ℝ
-  timeDerivative : ((H.stage 0).Carrier → ℝ) → (H.stage 0).Carrier → ℝ
+noncomputable def reducedLength {H : ObservedHistory.{u}} (S : VariationalStrip H) (u : ℝ)
+    (x : (H.stage 0).Carrier) : ℝ :=
+  DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.reducedLength
+    S.metricAt S.finish S.admissible S.pole (S.finish - u) x
+
+end VariationalStrip
 
 def isSurgeryVariationalInput : Prop :=
   ∀ (H : ObservedHistory.{u}) (S : VariationalStrip H),
-    ∃ G : ReducedGeometry S,
-      (∀ u ∈ Ioo S.start S.finish,
-        LowerSemicontinuousOn (fun x => G.reducedLength x u) (univ : Set (H.stage 0).Carrier) ∧
-        ∃ x : (H.stage 0).Carrier, IsLeast (range (G.reducedLength · u)) (G.reducedLength x u)) ∧
-      (∀ u ∈ Ioo S.start S.finish, ∀ x : (H.stage 0).Carrier,
-        IsLeast (range (G.reducedLength · u)) (G.reducedLength x u) →
-        ∀ η : ℝ, 0 < η →
-          ∃ F : (H.stage 0).Carrier → ℝ,
-            F x = G.reducedLength x u ∧
-            (∀ y : (H.stage 0).Carrier, y ≠ x → F y < G.reducedLength y u) ∧
-            G.timeDerivative F x + G.supportOperator F x ≤ 6 + η ∧
-            G.spatialNorm x (G.ambientDerivative F x) ≤ η) ∧
-      (∃ u : ℝ, u ∈ Ioo S.start S.finish ∧
-        ∃ x : (H.stage 0).Carrier, IsLeast (range (G.reducedLength · u))
-          (G.reducedLength x u) ∧
-        G.reducedLength x u < 0)
+    (∀ u ∈ Ioo S.start S.finish,
+      LowerSemicontinuousOn (fun x => S.reducedLength u x)
+        (univ : Set (H.stage 0).Carrier) ∧
+      (∃ x : (H.stage 0).Carrier,
+        IsLeast (range (fun y => S.reducedLength u y)) (S.reducedLength u x)) ∧
+      (∀ x : (H.stage 0).Carrier,
+        IsLeast (range (fun y => S.reducedLength u y)) (S.reducedLength u x) →
+          ∃ γ : ℝ → (H.stage 0).Carrier,
+            S.admissible γ ∧ γ 0 = S.pole ∧ γ (S.finish - u) = x ∧
+              reducedAction S.metricAt S.finish (S.finish - u) γ = S.reducedLength u x)) ∧
+    (∀ u ∈ Ioo S.start S.finish, ∀ x : (H.stage 0).Carrier,
+      IsLeast (range (fun y => S.reducedLength u y)) (S.reducedLength u x) →
+      (∀ γ : ℝ → (H.stage 0).Carrier, S.admissible γ → γ 0 = S.pole →
+        γ (S.finish - u) = x →
+        reducedAction S.metricAt S.finish (S.finish - u) γ = S.reducedLength u x →
+        S.regular γ) →
+      ∀ η : ℝ, 0 < η →
+        ∃ (U : TopologicalSpace.Opens (H.stage 0).Carrier) (hxU : x ∈ U)
+          (F : ℝ → ↥U → ℝ) (hF : ∀ σ : ℝ, ContMDiff ThreeModel 𝓘(ℝ, ℝ) ∞ (F σ)),
+          F u ⟨x, hxU⟩ = S.reducedLength u x ∧
+          (∀ y : ↥U, y ≠ ⟨x, hxU⟩ →
+            F u y < S.reducedLength u (y : (H.stage 0).Carrier)) ∧
+          deriv (fun σ : ℝ => F σ ⟨x, hxU⟩) u +
+            DifferentialGeometry.Geometry.Operator.ΔG (I := ThreeModel) (M := ↥U)
+              ((S.metricAt u).restrictOpen U) (⟨F u, hF u⟩ : C^∞⟮ThreeModel, ↥U; ℝ⟯) ⟨x, hxU⟩
+            ≤ 6 + η ∧
+          Real.sqrt (DifferentialGeometry.Geometry.Operator.normGradSqFun (I := ThreeModel)
+            (M := ↥U) ((S.metricAt u).restrictOpen U) (F u) ⟨x, hxU⟩) ≤ η) ∧
+    (∀ u ∈ Ioo S.start S.finish,
+      LowerSemicontinuousWithinAt
+        (fun τ : ℝ => sInf (range (fun x => S.reducedLength (S.finish - τ) x)) - 6 * τ)
+        (Ioo S.start S.finish) (S.finish - u))
 
 structure JacobianStrip (H : ObservedHistory.{u}) where
   pole : (H.stage 0).Carrier
@@ -235,39 +324,46 @@ structure JacobianStrip (H : ObservedHistory.{u}) where
   poleTime_le_horizon : poleTime ≤ H.horizon
   radius : ℝ
   radius_pos : 0 < radius
-  density : (H.stage 0).Carrier → ℝ
+  metricAt : ℝ → (H.stage 0).Metric
+  admissible : (ℝ → (H.stage 0).Carrier) → Prop
+  regular : (ℝ → (H.stage 0).Carrier) → Prop
+  regular_admissible : ∀ γ, regular γ → admissible γ
+
+noncomputable def regularMinimizingSet {H : ObservedHistory.{u}}
+    (g : ℝ → (H.stage 0).Metric) (t₀ : ℝ)
+    (admissible regular : (ℝ → (H.stage 0).Carrier) → Prop) (p : (H.stage 0).Carrier)
+    (τ : ℝ) : Set (H.stage 0).Carrier :=
+  {x | ∃ γ : ℝ → (H.stage 0).Carrier,
+    admissible γ ∧ regular γ ∧ γ 0 = p ∧ γ τ = x ∧
+      reducedAction g t₀ τ γ = reducedLength g t₀ admissible p τ x}
 
 def isJacobianInput : Prop :=
-  ∃ modul : ℝ → ℝ, (∀ v : ℝ, 0 < v → 0 < modul v) ∧
-    Monotone modul ∧
+  ∀ _d : OldData, ∃ modul : ℝ → ℝ,
+    (∀ v : ℝ, 0 < v → 0 < modul v) ∧ Monotone modul ∧
     (∀ ε : ℝ, 0 < ε → ∃ δ : ℝ, 0 < δ ∧ ∀ v : ℝ, 0 < v → v < δ → modul v < ε) ∧
-    ∀ (H : ObservedHistory.{u}) (S : JacobianStrip H),
+    ∀ (H : ObservedHistory.{u}) (S : JacobianStrip H) (s : ℝ),
+      s ∈ Ioo S.start S.poleTime → S.radius ^ 2 < S.poleTime - s →
       letI : MeasurableSpace (H.stage 0).Carrier := borel (H.stage 0).Carrier
-      ∀ μ : MeasureTheory.Measure (H.stage 0).Carrier,
-        (μ Set.univ).toReal ≤ (modul S.radius).toNNReal
-
-structure BackwardRealization {M : Type u} [TopologicalSpace M]
-    [ChartedSpace ThreeSpace M] [IsManifold ThreeModel ∞ M]
-    (metric : ℝ → SmoothRiemannianMetric ThreeModel M) (t s : ℝ) where
-  chart : PartialDiffeomorph ThreeModel ThreeModel ThreeSpace M ∞
-  zero_mem_source : (0 : ThreeSpace) ∈ chart.source
-  ball_subset_source : Metric.ball (0 : ThreeSpace) (4 * s) ⊆ chart.source
-  curvature_bound : ∀ u ∈ Icc (t - 4 * s ^ 2) t,
-    ∀ x ∈ Metric.ball (0 : ThreeSpace) (4 * s),
-      curvatureNormSq (metric u) (chart x)
-        (DifferentialGeometry.Geometry.Curvature.metricRm04At (I := ThreeModel)
-          (M := M) (metric u) (chart x)) ≤ (s ^ 2)⁻¹
+      ∀ (V : Set (H.stage 0).Carrier), MeasurableSet V →
+      V ⊆ regularMinimizingSet S.metricAt S.poleTime S.admissible S.regular S.pole
+        (S.poleTime - s) →
+      ∀ v : ℝ, 0 < v →
+        riemannianBallVolume (S.metricAt S.poleTime) S.pole S.radius < v * S.radius ^ 3 →
+          reducedVolume S.metricAt S.poleTime S.admissible S.pole (S.poleTime - s) V ≤
+            ENNReal.ofReal (modul v)
 
 def isOldTubeInput (d : OldData) : Prop :=
   ∀ ρ : ℝ, 0 < ρ →
-    ∃ s : ℝ, 0 < s ∧ 2 * s ≤ d.epsilon ∧ 24 * s ^ 2 ≤ d.energyBound ∧
-      ∀ (H : ObservedHistory.{u}) (i : Fin H.eventCount) (t : ℝ)
-        (x : (H.stage i.castSucc).Carrier),
-        H.time i.castSucc + (H.time i.succ - H.time i.castSucc) / 3 ≤ t →
-        t ≤ H.time i.castSucc + 2 * (H.time i.succ - H.time i.castSucc) / 3 →
-        metricScalarAt ((H.event i).incoming.flow.base.metric t) x ≤ ρ →
-        Nonempty (BackwardRealization
-          (fun u => (H.event i).incoming.flow.base.metric u) t s)
+    ∃ s : ℝ, 0 < s ∧ s ≤ min (d.epsilon / 2) (Real.sqrt (d.energyBound / 24)) ∧
+      ∃ dOld : ℝ, 0 < dOld ∧
+        ∀ (H : ObservedHistory.{u}) (P : CutoffParameters) (i : Fin H.eventCount) (t : ℝ)
+          (x : (H.stage i.castSucc).Carrier),
+          P.delta t ≤ dOld →
+          H.time i.castSucc + (H.time i.succ - H.time i.castSucc) / 3 ≤ t →
+          t ≤ H.time i.castSucc + 2 * (H.time i.succ - H.time i.castSucc) / 3 →
+          metricScalarAt ((H.event i).incoming.flow.base.metric t) x ≤ ρ →
+          Nonempty (BackwardRealization
+            (fun u => (H.event i).incoming.flow.base.metric u) t s)
 
 structure EnlargementStrip (H : ObservedHistory.{u}) where
   pole : (H.stage 0).Carrier
@@ -316,8 +412,6 @@ def isEnlargementInput : Prop :=
 
 structure RoundCovering (Z : Type u) [TopologicalSpace Z] [ChartedSpace ThreeSpace Z]
     [IsManifold ThreeModel ∞ Z] (k : SmoothRiemannianMetric ThreeModel Z) where
-  degree : ℕ
-  degree_pos : 0 < degree
   cover : C(Sphere 3, Z)
   cover_isCoveringMap : IsCoveringMap (cover : Sphere 3 → Z)
   isRound : ∀ x : Z, ∃ e : PartialDiffeomorph (𝓡 3) (𝓡 3) (Sphere 3) Z ∞,
@@ -326,12 +420,32 @@ structure RoundCovering (Z : Type u) [TopologicalSpace Z] [ChartedSpace ThreeSpa
         (DifferentialGeometry.Geometry.roundMetric
           (E := EuclideanSpace ℝ (Fin 4)) (n := 3)).inner y V W
 
+def sphereThreeBasePoint : Sphere 3 :=
+  ⟨EuclideanSpace.single 0 1, by simp⟩
+
+def RoundCovering.degree {Z : Type u} [TopologicalSpace Z] [ChartedSpace ThreeSpace Z]
+    [IsManifold ThreeModel ∞ Z] {k : SmoothRiemannianMetric ThreeModel Z}
+    (C : RoundCovering Z k) : ℕ :=
+  (C.cover ⁻¹' {C.cover sphereThreeBasePoint}).ncard
+
+theorem RoundCovering.degree_eq_one_of_injective {Z : Type u} [TopologicalSpace Z]
+    [ChartedSpace ThreeSpace Z] [IsManifold ThreeModel ∞ Z]
+    {k : SmoothRiemannianMetric ThreeModel Z} (C : RoundCovering Z k)
+    (h : Function.Injective C.cover) : C.degree = 1 := by
+  rw [RoundCovering.degree, Set.ncard_eq_one]
+  refine ⟨sphereThreeBasePoint, ?_⟩
+  apply Set.eq_singleton_iff_unique_mem.mpr
+  refine ⟨rfl, ?_⟩
+  intro y hy
+  exact h hy
+
 def isRoundDegreeInput : Prop :=
   ∀ _d : OldData, ∃ Nold : ℕ, 1 ≤ Nold ∧
     ∀ (H : ObservedHistory.{u}) (_S : EnlargementStrip H), ∀ Z : Type u,
       ∀ [TopologicalSpace Z] [ChartedSpace ThreeSpace Z] [IsManifold ThreeModel ∞ Z],
         ∀ k : SmoothRiemannianMetric ThreeModel Z,
-          Nonempty (RoundCovering Z k) → ∃ C : RoundCovering Z k, C.degree ≤ Nold
+          Nonempty (RoundCovering Z k) →
+            ∃ C : RoundCovering Z k, 1 ≤ C.degree ∧ C.degree ≤ Nold
 
 def isCommonLocalRealization : Prop :=
   isLocalStabilityInput ∧ isBufferedControlInput.{u} ∧ isSurgeryVariationalInput.{u} ∧
