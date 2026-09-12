@@ -435,15 +435,6 @@ theorem integralHomologyMap_fundamentalClass_of_preservesTangentOrientation
   rw [hcm] at hnat
   exact hnat
 
-theorem isometry_fundamentalClass_iff_preservesTangentOrientation
-    (g : SmoothRiemannianMetric ThreeModel M) (h : SmoothRiemannianMetric ThreeModel N)
-    (oM : TangentOrientationSection M) (oN : TangentOrientationSection N)
-    (e : M ≃ₜ N)
-    (he : ∀ x y, riemannianEDistOf h (e x) (e y) = riemannianEDistOf g x y) :
-    integralHomologyMap 3 (e : C(M, N)) (fundamentalClass oM) = fundamentalClass oN ↔
-      PreservesTangentOrientation oM oN e := by
-  sorry
-
 omit [SimplyConnectedSpace M] in
 theorem familyMaximum_scale (g : SmoothRiemannianMetric ThreeModel M)
     (Γ : RegularFamily (I := ThreeModel) (Q := M) (Sphere 2)) {c : ℝ} (hc : 0 < c) :
