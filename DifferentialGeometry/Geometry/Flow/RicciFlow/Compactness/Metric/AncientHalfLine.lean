@@ -45,8 +45,9 @@ theorem exists_ancient_window_subsequence
     (hne : Nonempty M)
     (gSeq : ℕ → ℝ → SmoothRiemannianMetric I M)
     (gRef : SmoothRiemannianMetric I M)
-    (hgLip : ∀ K : Set M, IsCompact K → ∀ p : ℕ, ∃ L : ℝ, 0 ≤ L ∧
-      ∀ (k : ℕ) (s t : ℝ), s ≤ 0 → t ≤ 0 → ∀ a : ℕ, a ≤ p → ∀ x : M, x ∈ K →
+    (hgLip : ∀ n : ℕ, ∀ K : Set M, IsCompact K → ∀ p : ℕ, ∃ L : ℝ, 0 ≤ L ∧
+      ∀ (k : ℕ) (s : ℝ), s ∈ Set.Icc (-(n : ℝ)) 0 → ∀ t : ℝ, t ∈ Set.Icc (-(n : ℝ)) 0 →
+        ∀ a : ℕ, a ≤ p → ∀ x : M, x ∈ K →
         metricDerivNorm (I := I) a (gSeq k s) (gSeq k t) gRef x ≤ L * |s - t|)
     (hbdd : ∀ (ρ : ℕ → ℕ), StrictMono ρ → ∀ t : ℝ, t ≤ 0 → ∀ q : ℕ,
       ∀ K : Set M, IsCompact K → ∃ C : ℝ, ∀ k : ℕ, ∀ z : M, z ∈ K →
@@ -73,8 +74,8 @@ theorem exists_ancient_window_subsequence
           ∀ a : ℕ, a ≤ p → ∀ x : M, x ∈ K' →
             metricDerivNorm (I := I) a (gSeq (φ k) s) (gSeq (φ k) t) gRef x ≤ L * |s - t| := by
       intro K' hK' p
-      obtain ⟨L, hL, hLb⟩ := hgLip K' hK' p
-      exact ⟨L, hL, fun k s hs t ht a ha x hx => hLb (φ k) s t hs.2 ht.2 a ha x hx⟩
+      obtain ⟨L, hL, hLb⟩ := hgLip n K' hK' p
+      exact ⟨L, hL, fun k s hs t ht a ha x hx => hLb (φ k) s hs t ht a ha x hx⟩
     have hbdd' : ∀ (ρ : ℕ → ℕ), StrictMono ρ → ∀ t : ℝ, t ∈ Set.Icc (-(n : ℝ)) 0 →
         ∀ q : ℕ, ∀ K' : Set M, IsCompact K' → ∃ C : ℝ, ∀ k : ℕ, ∀ z : M, z ∈ K' →
           metricCovDerivNorm (I := I) q (gSeq ((φ ∘ ρ) k) t) gRef z ≤ C :=
@@ -106,8 +107,9 @@ theorem exists_ancient_locally_uniform_subsequence
     (hne : Nonempty M)
     (gSeq : ℕ → ℝ → SmoothRiemannianMetric I M)
     (gRef : SmoothRiemannianMetric I M)
-    (hgLip : ∀ K : Set M, IsCompact K → ∀ p : ℕ, ∃ L : ℝ, 0 ≤ L ∧
-      ∀ (k : ℕ) (s t : ℝ), s ≤ 0 → t ≤ 0 → ∀ a : ℕ, a ≤ p → ∀ x : M, x ∈ K →
+    (hgLip : ∀ n : ℕ, ∀ K : Set M, IsCompact K → ∀ p : ℕ, ∃ L : ℝ, 0 ≤ L ∧
+      ∀ (k : ℕ) (s : ℝ), s ∈ Set.Icc (-(n : ℝ)) 0 → ∀ t : ℝ, t ∈ Set.Icc (-(n : ℝ)) 0 →
+        ∀ a : ℕ, a ≤ p → ∀ x : M, x ∈ K →
         metricDerivNorm (I := I) a (gSeq k s) (gSeq k t) gRef x ≤ L * |s - t|)
     (hbdd : ∀ (ρ : ℕ → ℕ), StrictMono ρ → ∀ t : ℝ, t ≤ 0 → ∀ q : ℕ,
       ∀ K : Set M, IsCompact K → ∃ C : ℝ, ∀ k : ℕ, ∀ z : M, z ∈ K →

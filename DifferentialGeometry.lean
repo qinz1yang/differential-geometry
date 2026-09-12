@@ -4524,6 +4524,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.KineticCo
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.MetricExtension
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.MetricLowerBound
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.Open.Completeness
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.Open.HalfLineWindow
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.Open.Convergence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.Open.CurvatureConvergence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.Open.Equation
