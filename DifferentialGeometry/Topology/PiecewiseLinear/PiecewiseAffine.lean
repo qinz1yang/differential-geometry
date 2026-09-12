@@ -23,6 +23,16 @@ theorem isPiecewiseAffineOn_id [FiniteDimensional ℝ E] {u : Set E} (hu : IsOpe
     IsPiecewiseAffineOn (id : E → E) u :=
   isPiecewiseAffineOn_of_affine (AffineMap.id ℝ E) hu
 
+theorem isPiecewiseAffineOn_of_subsingleton [Subsingleton E] (f : E → F) (u : Set E) :
+    IsPiecewiseAffineOn f u := by
+  intro x _
+  refine ⟨Unit, inferInstance, fun _ => univ, fun _ => AffineMap.const ℝ E (f x),
+    fun _ => ⟨IsHPolytope.univ_of_subsingleton, fun y _ => ?_, fun y _ => ?_⟩, by simp⟩
+  · rw [Subsingleton.elim y x]
+    assumption
+  · rw [Subsingleton.elim y x]
+    simp
+
 theorem isPiecewiseAffineOn_of_locally {f : E → F} {u : Set E}
     (h : ∀ x ∈ u, ∃ v, IsOpen v ∧ x ∈ v ∧ IsPiecewiseAffineOn f (u ∩ v)) :
     IsPiecewiseAffineOn f u := by

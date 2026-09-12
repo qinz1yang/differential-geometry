@@ -19,6 +19,11 @@ theorem isCompact (hC : IsHPolytope C) : IsCompact C := hC.1
 
 theorem isClosed (hC : IsHPolytope C) : IsClosed C := hC.1.isClosed
 
+theorem univ_of_subsingleton [Subsingleton E] : IsHPolytope (univ : Set E) :=
+  ⟨isCompact_univ, Empty, inferInstance, fun i => i.elim, fun i => i.elim, by
+    ext x
+    simp⟩
+
 theorem inter (hC : IsHPolytope C) (hD : IsHPolytope D) : IsHPolytope (C ∩ D) := by
   obtain ⟨hCc, ι, hι, l, c, rfl⟩ := hC
   obtain ⟨hDc, κ, hκ, m, d, rfl⟩ := hD

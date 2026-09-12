@@ -139,6 +139,13 @@ theorem hasGroupoid (A : AtlasOn G (univ : Set X)) :
   let _ := A.chartedSpace
   exact ⟨fun he he' => A.compatible _ he _ he'⟩
 
+def ofChartedSpace (G : StructureGroupoid H) [ChartedSpace H X] [HasGroupoid X G] :
+    AtlasOn G (univ : Set X) where
+  charts := atlas H X
+  source_subset _ _ := subset_univ _
+  exists_mem_source x _ := ⟨chartAt H x, chart_mem_atlas H x, mem_chart_source H x⟩
+  compatible _ he _ he' := HasGroupoid.compatible he he'
+
 end AtlasOn
 
 end DifferentialGeometry.Topology.Manifold

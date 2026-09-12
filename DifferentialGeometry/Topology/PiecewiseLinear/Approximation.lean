@@ -20,4 +20,11 @@ def PLApproximation (n : ℕ) : Prop :=
       (∀ x ∈ O₁, dist (f x) (h x) < φ x) ∧
       ∀ e ∈ A.charts, ∀ e' ∈ B.charts, e.symm ≫ₕ f ≫ₕ e' ∈ plGroupoid n
 
+theorem plApproximation_zero : PLApproximation.{u} 0 := by
+  intro X₁ X₂ _ _ _ _ _ O₁ O₂ A B h hs ht φ _ hpos
+  have hsub : Subsingleton (EuclideanSpace ℝ (Fin 0)) :=
+    (WithLp.equiv 2 (Fin 0 → ℝ)).subsingleton
+  exact ⟨h, hs, ht, fun x hx => by simpa using hpos x hx, fun e _ e' _ =>
+    mem_plGroupoid_of_isPiecewiseAffineOn (isPiecewiseAffineOn_of_subsingleton _ _)⟩
+
 end DifferentialGeometry.Topology.PiecewiseLinear
