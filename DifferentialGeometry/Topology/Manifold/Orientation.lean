@@ -1,6 +1,7 @@
 import Mathlib.Geometry.Manifold.ContMDiffMFDeriv
 import Mathlib.Geometry.Manifold.LocalDiffeomorph
 import Mathlib.LinearAlgebra.Orientation
+import DifferentialGeometry.Topology.Manifold.OpenSubtype
 import DifferentialGeometry.Topology.Manifold.Paths
 import DifferentialGeometry.Bundle.Orientation.Section
 
@@ -69,6 +70,73 @@ theorem opposite_opposite (o : ManifoldOrientation I M n) :
   exact neg_neg (o.orientation x)
 
 end ManifoldOrientation
+
+section RestrictOpen
+
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+  {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+  {n : ℕ} [FiniteDimensional ℝ E]
+
+omit [FiniteDimensional ℝ E] in
+theorem tangentChartEquiv_restrictOpen (U : TopologicalSpace.Opens M) (p x : U)
+    (hx : x ∈ (trivializationAt E (TangentSpace I) p).baseSet)
+    (hxM : x.1 ∈ (trivializationAt E (TangentSpace I) p.1).baseSet) :
+    tangentChartEquiv I U p x hx = tangentChartEquiv I M p.1 x.1 hxM := by
+  have hu : x ∈ (chartAt H p).source := by
+    simpa only [TangentBundle.trivializationAt_baseSet] using hx
+  have hm : x.1 ∈ (chartAt H p.1).source := by
+    simpa only [TangentBundle.trivializationAt_baseSet] using hxM
+  have hd : mfderiv I 𝓘(ℝ, E) (extChartAt I p : U → E) x =
+      mfderiv I 𝓘(ℝ, E) (extChartAt I p.1 : M → E) x.1 :=
+    DifferentialGeometry.mfderiv_restrict_open (extChartAt I p.1 : M → E) U x
+  have hc : (trivializationAt E (TangentSpace I) p).continuousLinearMapAt ℝ x =
+      (trivializationAt E (TangentSpace I) p.1).continuousLinearMapAt ℝ x.1 := by
+    rw [TangentBundle.continuousLinearMapAt_trivializationAt hu,
+      TangentBundle.continuousLinearMapAt_trivializationAt hm]
+    exact hd
+  apply LinearEquiv.ext
+  intro v
+  calc
+    tangentChartEquiv I U p x hx v =
+        (trivializationAt E (TangentSpace I) p).continuousLinearMapAt ℝ x v :=
+      (Trivialization.continuousLinearMapAt_apply_of_mem ℝ
+        (trivializationAt E (TangentSpace I) p) hx v).symm
+    _ = (trivializationAt E (TangentSpace I) p.1).continuousLinearMapAt ℝ x.1 v :=
+      congrArg (fun A : E →L[ℝ] E => A v) hc
+    _ = tangentChartEquiv I M p.1 x.1 hxM v :=
+      Trivialization.continuousLinearMapAt_apply_of_mem ℝ
+        (trivializationAt E (TangentSpace I) p.1) hxM v
+
+namespace ManifoldOrientation
+
+def restrictOpen (o : ManifoldOrientation I M n) (U : TopologicalSpace.Opens M) :
+    ManifoldOrientation I U n where
+  dimension_eq := o.dimension_eq
+  orientation x := o.orientation x.1
+  locally_constant := by
+    intro p x hx
+    have hxM : x.1 ∈ (trivializationAt E (TangentSpace I) p.1).baseSet := by
+      simpa only [TangentBundle.trivializationAt_baseSet, TopologicalSpace.Opens.chartAt_eq,
+        OpenPartialHomeomorph.subtypeRestr_source, mem_preimage] using hx
+    obtain ⟨V, hVo, hxV, hVm, hV⟩ := o.locally_constant p.1 x.1 hxM
+    let W : Set U := Subtype.val ⁻¹' V
+    have hWm : W ⊆ (trivializationAt E (TangentSpace I) p).baseSet := by
+      intro y hy
+      simpa only [TangentBundle.trivializationAt_baseSet, TopologicalSpace.Opens.chartAt_eq,
+        OpenPartialHomeomorph.subtypeRestr_source, mem_preimage] using hVm hy
+    refine ⟨W, hVo.preimage continuous_subtype_val, hxV, hWm, fun y hy => ?_⟩
+    rw [tangentChartEquiv_restrictOpen U p y (hWm hy) (hVm hy),
+      tangentChartEquiv_restrictOpen U p x hx hxM]
+    exact hV y.1 hy
+
+@[simp]
+theorem restrictOpen_orientation (o : ManifoldOrientation I M n) (U : TopologicalSpace.Opens M)
+    (x : U) : (o.restrictOpen U).orientation x = o.orientation x.1 := rfl
+
+end ManifoldOrientation
+
+end RestrictOpen
 
 private theorem orientation_map_trans
     {A F G : Type*} [AddCommGroup A] [Module ℝ A]

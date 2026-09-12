@@ -100,6 +100,26 @@ def componentTangentOrientation (C : ConnectedComponents M.Carrier) (x : compone
   Orientation.map (Fin n) (componentInclusionTangentEquiv M C x).symm
     (M.orientation.orientation (componentInclusion M C x))
 
+theorem componentInclusionTangentEquiv_eq_refl (C : ConnectedComponents M.Carrier)
+    (x : componentOpen M C) :
+    componentInclusionTangentEquiv M C x =
+      LinearEquiv.refl ℝ (TangentSpace 𝓘(ℝ, EuclideanSpace ℝ (Fin n)) x) := by
+  refine LinearEquiv.ext fun v => ?_
+  rw [componentInclusionTangentEquiv_apply]
+  change mfderiv 𝓘(ℝ, EuclideanSpace ℝ (Fin n)) 𝓘(ℝ, EuclideanSpace ℝ (Fin n))
+    (Subtype.val : componentOpen M C → M.Carrier) x v = v
+  rw [DifferentialGeometry.mfderiv_subtype_val]
+  rfl
+
+@[simp]
+theorem componentTangentOrientation_apply (C : ConnectedComponents M.Carrier)
+    (x : componentOpen M C) :
+    componentTangentOrientation M C x = M.orientation.orientation x.1 := by
+  rw [componentTangentOrientation]
+  erw [componentInclusionTangentEquiv_eq_refl M C x, LinearEquiv.refl_symm,
+    Orientation.map_refl]
+  rfl
+
 theorem componentTangentOrientation_locally_constant (C : ConnectedComponents M.Carrier) :
     ∀ p x : componentOpen M C,
     ∀ hx : x ∈ (trivializationAt (EuclideanSpace ℝ (Fin n)) (TangentSpace 𝓘(ℝ, EuclideanSpace ℝ (Fin n))) p).baseSet,
@@ -112,7 +132,8 @@ theorem componentTangentOrientation_locally_constant (C : ConnectedComponents M.
         Orientation.map (Fin n)
           (tangentChartEquiv 𝓘(ℝ, EuclideanSpace ℝ (Fin n)) (componentOpen M C) p x hx)
           (componentTangentOrientation M C x) := by
-  sorry
+  simpa only [ManifoldOrientation.restrictOpen_orientation, componentTangentOrientation_apply M C]
+    using (M.orientation.restrictOpen (componentOpen M C)).locally_constant
 
 def componentOrientation (C : ConnectedComponents M.Carrier) :
     ManifoldOrientation 𝓘(ℝ, EuclideanSpace ℝ (Fin n)) (componentOpen M C) n where
