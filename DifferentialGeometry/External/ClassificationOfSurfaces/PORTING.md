@@ -24,3 +24,9 @@ selection and the two-edge branch are still separate obligations. The private
 source passed 1789232885714420646-schoenflies-24adbd8c; final production gate
 1789233891983857661-schoenflies-42a7b73c passed after fresh compilation of the new
 module. See DELETION_PROVENANCE.json and DELETION_RECOGNITION.patch.
+
+Moise/GeometricFreeTriangle classifies a supplied weakly free triangle with an
+edge neighbor. Its one-/two-edge conclusions and contrary-branch vertex data
+use actual mesh geometry. All seven declaration bodies are unchanged upstream
+source; GEOMETRIC_FREE_SELECTION.json records their provenance. Geometric
+free-triangle existence for arbitrary polygon meshes remains separate.
