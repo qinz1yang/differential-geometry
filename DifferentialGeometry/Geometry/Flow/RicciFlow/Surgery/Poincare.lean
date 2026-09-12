@@ -27,9 +27,6 @@ theorem exists_diffeomorph_standardThreeSphere_of_poincareControlledExtinction
       Nonempty (Topology.ClosedOrientedManifold.OrientedDiffeomorph
         (Topology.finiteConnectedSum L).toClosedOrientedManifold
         (Topology.finiteConnectedSum K).toClosedOrientedManifold))
-    (hconn : ∀ i : Fin W.history.eventCount,
-      ∀ C : ConnectedComponents (W.history.stage i.castSucc).Carrier,
-        ((W.history.cutCapTrace.transition i).cutIncidenceGraph C).Connected)
     (hsum : ∀ i : Fin W.history.eventCount,
       (W.history.cutCapTrace.transition i).componentConnectedSumDecomposition)
     (hsumClosed : Topology.poincareStandardSumClosed.{u})
@@ -40,7 +37,7 @@ theorem exists_diffeomorph_standardThreeSphere_of_poincareControlledExtinction
     (fun G p => Topology.SphericalSpaceFormGroup.nonempty_fundamentalGroupManifoldEquiv G p)
     Topology.exists_orientedDiffeomorph_standardThreeSphere_of_subsingleton_group
     (fun p => Topology.exists_fundamentalGroupMulEquivInt_sphereTwoTimesCircle p)
-    hunit hcongr (W.isPoincareStandard hconn hsum hsumClosed)
+    hunit hcongr (W.isPoincareStandard hsum hsumClosed)
 
 def smoothPoincareConjecture : Prop :=
   ∀ (M : Type u) [TopologicalSpace M] [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M]
@@ -60,9 +57,6 @@ theorem smoothPoincareConjecture_of_poincareControlledExtinction
       Nonempty (Topology.ClosedOrientedManifold.OrientedDiffeomorph
         (Topology.finiteConnectedSum L).toClosedOrientedManifold
         (Topology.finiteConnectedSum K).toClosedOrientedManifold))
-    (hconn : ∀ (H : FiniteSurgeryHistory.{u}) (i : Fin H.eventCount)
-      (C : ConnectedComponents (H.stage i.castSucc).Carrier),
-      ((H.cutCapTrace.transition i).cutIncidenceGraph C).Connected)
     (hsum : ∀ (H : FiniteSurgeryHistory.{u}) (i : Fin H.eventCount),
       (H.cutCapTrace.transition i).componentConnectedSumDecomposition)
     (hsumClosed : Topology.poincareStandardSumClosed.{u})
@@ -77,7 +71,7 @@ theorem smoothPoincareConjecture_of_poincareControlledExtinction
   exact exists_diffeomorph_standardThreeSphere_of_poincareControlledExtinction
     (W := (hext { Carrier := M, orientation := o } g).some)
     (hunit := hunit) (hcongr := hcongr)
-    (hconn := fun i C => hconn _ i C) (hsum := fun i => hsum _ i)
+    (hsum := fun i => hsum _ i)
     (hsumClosed := hsumClosed)
 
 def topologicalPoincareConjecture : Prop :=
