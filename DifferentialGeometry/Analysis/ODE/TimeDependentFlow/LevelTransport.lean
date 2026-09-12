@@ -1,6 +1,7 @@
 import DifferentialGeometry.Analysis.Calculus.LevelPreservation
 import Mathlib.Analysis.ODE.Basic
 import Mathlib.Analysis.Calculus.FDeriv.Prod
+import Mathlib.Analysis.Calculus.Deriv.Prod
 
 namespace IsIntegralCurve
 
