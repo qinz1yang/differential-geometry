@@ -2434,6 +2434,19 @@ noncomputable def closedCellReindexHomeo (l : ℕ) [Fact (l = (l - 1) + 1)] :
              exact Continuous.subtype_mk (e.symm.continuous.comp continuous_subtype_val) (fun x => by
                exact (le_of_eq (e.symm.norm_map x.1)).trans x.2) }
 
+noncomputable def closedCellBallHomeo (n : ℕ) :
+    ClosedCell n ≃ₜ Metric.closedBall (0 : EuclideanSpace ℝ (Fin n)) 1 where
+  toFun x := ⟨x.1, by
+    have h : ‖x.1‖ ≤ 1 := x.2
+    rwa [Metric.mem_closedBall, dist_eq_norm, sub_zero]⟩
+  invFun x := ⟨x.1, by
+    have h : dist x.1 0 ≤ 1 := x.2
+    rwa [dist_eq_norm, sub_zero] at h⟩
+  left_inv x := Subtype.ext rfl
+  right_inv x := Subtype.ext rfl
+  continuous_toFun := continuous_subtype_val.subtype_mk _
+  continuous_invFun := continuous_subtype_val.subtype_mk _
+
 @[reducible]
 noncomputable def closedCellChartedSpace (l : ℕ)
     [Fact (l = (l - 1) + 1)] :

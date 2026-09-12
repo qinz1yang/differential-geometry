@@ -108,4 +108,39 @@ theorem riemannianDiskArea_diskReflection (g : SmoothRiemannianMetric 𝓘(ℝ, 
   riemannianDiskArea_reparametrize g hu diskReflection diskReflection_lipschitz
     (by simpa using diskReflection_lipschitz)
 
+omit [FiniteDimensional ℝ E] [T3Space M] [CompactSpace M] in
+theorem riemannianArea_comp_conj_of_contMDiffOn (g : SmoothRiemannianMetric 𝓘(ℝ, E) M)
+    {U : ℂ → M} {N : Set ℂ} (hN : IsOpen N) (hDN : Metric.closedBall (0 : ℂ) 1 ⊆ N)
+    (hU : ContMDiffOn 𝓘(ℝ, ℂ) 𝓘(ℝ, E) ∞ U N) :
+    riemannianArea g (U ∘ conj) (Metric.closedBall (0 : ℂ) 1) =
+      riemannianArea g U (Metric.closedBall (0 : ℂ) 1) := by
+  have hdiff : ∀ z ∈ Metric.closedBall (0 : ℂ) 1, MDifferentiableAt 𝓘(ℝ, ℂ) 𝓘(ℝ, E) U (conj z) :=
+    fun z hz => (hU.contMDiffAt (hN.mem_nhds (hDN (by
+      simpa only [Metric.mem_closedBall, dist_zero_right, Complex.norm_conj] using hz)))).mdifferentiableAt
+      (by simp)
+  have hL : LipschitzWith (1 : ℝ≥0) (conj : ℂ → ℂ) := by
+    intro x y
+    rw [Complex.isometry_conj.edist_eq]
+    simp
+  have himage : (conj : ℂ → ℂ) '' Metric.closedBall (0 : ℂ) 1 = Metric.closedBall (0 : ℂ) 1 := by
+    apply Subset.antisymm
+    · rintro _ ⟨z, hz, rfl⟩
+      simpa only [Metric.mem_closedBall, dist_zero_right, Complex.norm_conj] using hz
+    · intro z hz
+      exact ⟨conj z, by
+        simpa only [Metric.mem_closedBall, dist_zero_right, Complex.norm_conj] using hz, by simp⟩
+  have hinj : Set.InjOn (conj : ℂ → ℂ) (Metric.closedBall (0 : ℂ) 1) :=
+    fun x _ y _ hxy => by simpa using congrArg (conj : ℂ → ℂ) hxy
+  have hstep : riemannianArea g (U ∘ conj) (Metric.closedBall (0 : ℂ) 1) =
+      ∫ z in Metric.closedBall (0 : ℂ) 1,
+        |(fderiv ℝ (conj : ℂ → ℂ) z).toLinearMap.det| • riemannianAreaDensity g U (conj z) := by
+    rw [riemannianArea]
+    apply integral_congr_ae
+    filter_upwards [ae_restrict_mem measurableSet_closedBall] with z hz
+    rw [riemannianAreaDensity_precomp g (hdiff z hz) (by
+      exact Complex.differentiable_conj.differentiableAt)]
+    rfl
+  rw [hstep, ← integral_image_eq_integral_abs_det_of_lipschitz hL measurableSet_closedBall hinj
+    (riemannianAreaDensity g U), himage, ← riemannianArea]
+
 end DifferentialGeometry.Geometry

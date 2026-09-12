@@ -79,6 +79,28 @@ theorem exists_spanningDisk_area_lt [Nonempty M] [PreconnectedSpace M]
     (show leastSpanningArea g γ < leastSpanningArea g γ + ε by linarith)
   exact ⟨u, hu, ha⟩
 
+theorem exists_spanningDiskCompetitors_area_tendsto_leastSpanningArea [Nonempty M]
+    [PreconnectedSpace M] (g : SmoothRiemannianMetric 𝓘(ℝ, E) M)
+    (γ : lipschitzContractibleLoop g) :
+    ∃ uj : ℕ → C(closedDisk, M), (∀ j, uj j ∈ spanningDiskCompetitors g γ.val.val) ∧
+      Filter.Tendsto (fun j => riemannianDiskArea g (uj j)) Filter.atTop
+        (𝓝 (leastSpanningArea g γ)) := by
+  choose u hu hlt using fun j : ℕ =>
+    exists_spanningDisk_area_lt g γ (ε := 1 / ((j : ℝ) + 1)) (by positivity)
+  refine ⟨u, hu, ?_⟩
+  have hb (j : ℕ) : |riemannianDiskArea g (u j) - leastSpanningArea g γ| ≤ 1 / ((j : ℝ) + 1) := by
+    have h1 : leastSpanningArea g γ ≤ riemannianDiskArea g (u j) :=
+      leastSpanningArea_le_competitor g γ (hu j)
+    have h2 : riemannianDiskArea g (u j) < leastSpanningArea g γ + 1 / ((j : ℝ) + 1) := hlt j
+    rw [abs_le]
+    constructor <;> linarith
+  have hnorm : Filter.Tendsto
+      (fun j : ℕ => ‖riemannianDiskArea g (u j) - leastSpanningArea g γ‖) Filter.atTop (𝓝 0) := by
+    refine squeeze_zero_norm (fun j => ?_) tendsto_one_div_add_atTop_nhds_zero_nat
+    rw [norm_norm]
+    simpa only [Real.norm_eq_abs] using hb j
+  exact (tendsto_iff_norm_sub_tendsto_zero).mpr hnorm
+
 
 def constantLipschitzContractibleLoop (g : SmoothRiemannianMetric 𝓘(ℝ, E) M) (q : M) :
     lipschitzContractibleLoop g :=

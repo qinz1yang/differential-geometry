@@ -4887,6 +4887,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.ScalarCo
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.ScalarRescaling
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.ScalarThreshold
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.ShortExponential
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.SlabScalarLowerBarrier
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.CalculusBackground
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.CanonicalClass
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.ClassWidth
@@ -6287,6 +6288,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SlabSpatial
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SlabTensorContinuity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SlabTerminalConvergence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SphereSmash
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SphericalCappingBridge
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.StaticCap
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalMetricUnique
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ThreeFrameOrientation
@@ -7006,6 +7008,7 @@ import DifferentialGeometry.Geometry.MinimalSurface.Plateau.ImmersionTraceLift
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.MetricCompleteness
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.MorreyDisk
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.MorreyDiskCriterion
+import DifferentialGeometry.Geometry.MinimalSurface.Plateau.MorreyDiskExtension
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.NonconstantCoefficient
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.OpenTargetDifferential
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.OpenTargetExtension
@@ -7564,6 +7567,7 @@ import DifferentialGeometry.Topology.Homology.CochainCones
 import DifferentialGeometry.Topology.Homology.CochainMaps
 import DifferentialGeometry.Topology.Homology.Cochains
 import DifferentialGeometry.Topology.Homology.ConnectedZeroHomology
+import DifferentialGeometry.Topology.Homology.ContractibleCoverChainEvaluation
 import DifferentialGeometry.Topology.Homology.ContractibleCoverOne
 import DifferentialGeometry.Topology.Homology.ContractiblePair
 import DifferentialGeometry.Topology.Homology.ContractiblePairOne

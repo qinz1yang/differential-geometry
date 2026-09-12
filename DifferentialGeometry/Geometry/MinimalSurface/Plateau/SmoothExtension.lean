@@ -1,5 +1,6 @@
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.SmoothDiskTrace
 import DifferentialGeometry.Geometry.Metric.ConvexSourceLipschitz
+import DifferentialGeometry.Geometry.Measure.Area.Reparametrization
 
 
 
@@ -11,7 +12,7 @@ noncomputable section
 
 open Bundle Manifold DifferentialGeometry Set ContinuousMap
 open DifferentialGeometry.Topology
-open scoped Bundle Manifold ContDiff Topology ENNReal NNReal
+open scoped Bundle Manifold ContDiff Topology ComplexConjugate ENNReal NNReal
 
 namespace DifferentialGeometry.Geometry
 
@@ -43,6 +44,30 @@ theorem SmoothDiskExtension.comp
     SmoothDiskExtension (E := F) (f.comp u) (f ∘ U) := by
   obtain ⟨heq, s, hs, hDs, hU⟩ := hu
   exact ⟨fun z => congrArg f (heq z), s, hs, hDs, hf.comp_contMDiffOn hU⟩
+
+theorem SmoothDiskExtension.eventuallyEq_diskExtension {u : C(closedDisk, M)} {U : ℂ → M}
+    (h : SmoothDiskExtension (E := E) u U) {z : ℂ} (hz : z ∈ Metric.ball (0 : ℂ) 1) :
+    U =ᶠ[𝓝 z] diskExtension u := by
+  obtain ⟨heq, N, hN, hDN, hU⟩ := h
+  filter_upwards [Metric.isOpen_ball.mem_nhds hz] with w hw
+  have hwD : w ∈ Metric.closedBall (0 : ℂ) 1 := Metric.ball_subset_closedBall hw
+  rw [diskExtension_coe u ⟨w, hwD⟩]
+  exact heq ⟨w, hwD⟩
+
+theorem SmoothDiskExtension.comp_diskReflection {u : C(closedDisk, M)} {U : ℂ → M}
+    (h : SmoothDiskExtension (E := E) u U) :
+    SmoothDiskExtension (E := E) (u.comp ⟨diskReflection, diskReflection.continuous⟩) (U ∘ conj) := by
+  obtain ⟨heq, N, hN, hDN, hU⟩ := h
+  refine ⟨fun z => ?_, conj ⁻¹' N, hN.preimage Complex.continuous_conj, fun z hz => ?_, ?_⟩
+  · have hc : conj (z : ℂ) ∈ Metric.closedBall (0 : ℂ) 1 := by
+      simpa only [Metric.mem_closedBall, dist_zero_right, Complex.norm_conj] using z.property
+    have hz' : (⟨conj (z : ℂ), hc⟩ : closedDisk) = diskReflection z := Subtype.ext rfl
+    have huse := heq ⟨conj (z : ℂ), hc⟩
+    rw [hz'] at huse
+    change U (conj (z : ℂ)) = u (diskReflection z)
+    exact huse
+  · exact hDN (by simpa only [Metric.mem_closedBall, dist_zero_right, Complex.norm_conj] using hz)
+  · exact hU.comp ((Complex.conjCLE : ℂ →L[ℝ] ℂ).contMDiff.contMDiffOn) (fun z hz => hz)
 
 variable [IsManifold 𝓘(ℝ, E) ∞ M]
 
