@@ -13,6 +13,10 @@ import DifferentialGeometry.Geometry.Metric.QuadraticBounds.Unit
 import DifferentialGeometry.Geometry.Metric.NeighborhoodRetraction
 import DifferentialGeometry.Geometry.Metric.SourceTangent
 import DifferentialGeometry.Topology.LoopSpace.PeriodicDescent
+import DifferentialGeometry.Topology.LoopSpace.Regular
+import DifferentialGeometry.Topology.Homotopy.Map
+import DifferentialGeometry.Analysis.Calculus.Derivative.AffineCurveFamilies
+import DifferentialGeometry.Analysis.Calculus.IteratedDerivative.Families
 
 noncomputable section
 
@@ -501,6 +505,570 @@ private theorem regularLoop_speed_bounded (g : SmoothRiemannianMetric I Q)
   refine ⟨max 0 V, le_max_left _ _, fun t ht => ?_⟩
   exact (hV ⟨⟨t, ht⟩, rfl⟩).trans (le_max_right _ _)
 
+section LoopSmoothing
+
+variable [FiniteDimensional ℝ E] [I.Boundaryless] [CompactSpace Q] [Nonempty Q]
+  [T2Space Q]
+
+private theorem exists_uniform_retraction_dist {Q F : Type*} [TopologicalSpace Q]
+    [CompactSpace Q] [NormedAddCommGroup F] [NormedSpace ℝ F] [FiniteDimensional ℝ F]
+    {e : Q → F} {r : F → Q} {U : Set F}
+    (he : Continuous e) (hU : IsOpen U) (heU : range e ⊆ U) (hr : ContinuousOn r U)
+    (hleft : ∀ q, r (e q) = q) {ε : ℝ} (hε : 0 < ε) :
+    ∃ δ : ℝ, 0 < δ ∧ ∀ q z, dist z (e q) < δ → z ∈ U ∧ dist (e (r z)) (e q) < ε := by
+  have hS : IsCompact (range e) := isCompact_range he
+  obtain ⟨η, hη, hηU⟩ := hS.exists_cthickening_subset_open hU heU
+  obtain ⟨ρ, hρ, hρK⟩ := hS.exists_isCompact_cthickening
+  let d := min η ρ
+  have hd : 0 < d := lt_min hη hρ
+  let K := Metric.cthickening d (range e)
+  have hKU : K ⊆ U := (Metric.cthickening_mono (min_le_left η ρ) _).trans hηU
+  have hK : IsCompact K := hρK.of_isClosed_subset Metric.isClosed_cthickening
+    (Metric.cthickening_mono (min_le_right η ρ) _)
+  have hcont : ContinuousOn (e ∘ r) K := he.comp_continuousOn (hr.mono hKU)
+  have hur := hK.uniformContinuousOn_of_continuous hcont
+  obtain ⟨τ, hτ, hτr⟩ := EMetric.uniformContinuousOn_iff.mp hur (ENNReal.ofReal ε)
+    (ENNReal.ofReal_pos.mpr hε)
+  obtain ⟨a, ha, haτ⟩ := ENNReal.lt_iff_exists_nnreal_btwn.mp hτ
+  have ha0 : 0 < (a : ℝ) := by exact_mod_cast ha
+  refine ⟨min d (a : ℝ), lt_min hd ha0, fun q z hz => ?_⟩
+  have hzK : z ∈ K := Metric.mem_cthickening_of_dist_le z (e q) d (range e)
+    (mem_range_self q) (hz.trans_le (min_le_left _ _)).le
+  have hqK : e q ∈ K := Metric.self_subset_cthickening (range e) (mem_range_self q)
+  refine ⟨hKU hzK, ?_⟩
+  have hdist : edist (e (r z)) (e (r (e q))) < ENNReal.ofReal ε := by
+    apply hτr hzK hqK
+    apply lt_trans _ haτ
+    rw [edist_dist]
+    simpa only [ENNReal.ofReal_coe_nnreal] using
+      (ENNReal.ofReal_lt_ofReal_iff ha0).mpr (hz.trans_le (min_le_right _ _))
+  rw [edist_dist, ENNReal.ofReal_lt_ofReal_iff hε] at hdist
+  rwa [hleft q] at hdist
+
+omit [T2Space Q] in
+theorem continuous_regularLoop_iff {K : Type*} [TopologicalSpace K] {N : ℕ}
+    (e : SmoothLoopEmbedding (I := I) (Q := Q) N) (Γ : K → RegularLoop I Q) :
+    Continuous Γ ↔
+      Continuous (fun p : K × Surgery.Topology.Circle => e.map ((Γ p.1).toContinuousLoop p.2)) ∧
+      Continuous (fun p : K × ℝ =>
+        deriv (fun t : ℝ => e.map ((Γ p.1).toContinuousLoop (t : Surgery.Topology.Circle))) p.2) := by
+  classical
+  constructor
+  · intro h
+    have hinc : Continuous (fun k : K => (Γ k).toContinuousLoop) :=
+      regularLoopInclusion.continuous.comp h
+    have hv : Continuous (fun p : K × Surgery.Topology.Circle =>
+        e.map ((Γ p.1).toContinuousLoop p.2)) :=
+      e.smooth.continuous.comp (ContinuousMap.continuous_uncurry_of_continuous
+        ⟨fun k : K => (Γ k).toContinuousLoop, hinc⟩)
+    have hjet : Continuous (fun k : K => embeddingFirstJet (I := I) (Q := Q) e (Γ k)) :=
+      (continuous_embeddingFirstJet (I := I) (Q := Q) e).comp h
+    have hunc := ContinuousMap.continuous_uncurry_of_continuous
+      ⟨fun k : K => embeddingFirstJet (I := I) (Q := Q) e (Γ k), hjet⟩
+    have h2 : Continuous (fun p : K × Icc (0 : ℝ) 1 =>
+        deriv (fun t : ℝ => e.map ((Γ p.1).toContinuousLoop (t : Surgery.Topology.Circle))) p.2) :=
+      continuous_snd.comp hunc
+    refine ⟨hv, ?_⟩
+    refine DifferentialGeometry.Topology.continuous_of_continuousOn_Icc_of_add_one ?_ ?_
+    · rw [continuousOn_iff_continuous_domRestrict]
+      have hρ : Continuous (fun p : ↥(univ ×ˢ Icc (0 : ℝ) 1) =>
+          ((p.val.1, (⟨p.val.2, (Set.mem_prod.mp p.2).2⟩ : Icc (0 : ℝ) 1)) : K × Icc (0 : ℝ) 1)) :=
+        (continuous_subtype_val.fst).prodMk
+          ((continuous_subtype_val.snd).subtype_mk fun p => (Set.mem_prod.mp p.2).2)
+      exact (h2.comp hρ).congr fun p => rfl
+    · intro k t
+      have hp : Function.Periodic (fun t : ℝ =>
+          e.map ((Γ k).toContinuousLoop (t : Surgery.Topology.Circle))) 1 := fun s => by
+        simp only [Surgery.Topology.Circle]
+        exact congrArg (fun z => e.map ((Γ k).toContinuousLoop z))
+          (AddCircle.coe_add_period (1 : ℝ) s)
+      simpa only [iteratedDeriv_one] using
+        DifferentialGeometry.Topology.periodic_iteratedDeriv (n := 1) (T := 1) hp t
+  · rintro ⟨hv, hd⟩
+    rw [regularLoop_topology_eq_embedding (I := I) (Q := Q) e]
+    refine continuous_induced_rng.mpr ?_
+    refine ContinuousMap.continuous_of_continuous_uncurry
+      (fun k : K => embeddingFirstJet (I := I) (Q := Q) e (Γ k)) ?_
+    refine Continuous.prodMk ?_ ?_
+    · exact hv.comp (continuous_fst.prodMk
+        ((AddCircle.continuous_mk' (1 : ℝ)).comp (continuous_subtype_val.comp continuous_snd)))
+    · exact hd.comp (continuous_fst.prodMk (continuous_subtype_val.comp continuous_snd))
+
+omit [FiniteDimensional ℝ E] [I.Boundaryless] [IsManifold I ∞ Q] [CompactSpace Q]
+  [Nonempty Q] [T2Space Q] in
+theorem RegularLoop.embedded_contDiff {N : ℕ}
+    (e : SmoothLoopEmbedding (I := I) (Q := Q) N) (γ : RegularLoop I Q) :
+    ContDiff ℝ 1 (fun t : ℝ => e.map (γ.toContinuousLoop (t : Surgery.Topology.Circle))) :=
+  ((e.smooth.of_le (by simp)).comp γ.contMDiff_lift).contDiff
+
+omit [FiniteDimensional ℝ E] [I.Boundaryless] [IsManifold I ∞ Q] [CompactSpace Q]
+  [Nonempty Q] [T2Space Q] in
+theorem RegularLoop.toContinuousLoop_injective :
+    Function.Injective (RegularLoop.toContinuousLoop (I := I) (Q := Q)) := by
+  intro γ δ h
+  obtain ⟨a, ha⟩ := γ
+  obtain ⟨b, hb⟩ := δ
+  obtain rfl := h
+  exact congrArg (fun p => (⟨a, p⟩ : RegularLoop I Q)) (Subsingleton.elim ha hb)
+
+omit [T2Space Q] in
+theorem exists_regular_affine_homotopy {K : Type*} [TopologicalSpace K] {N : ℕ}
+    (e : SmoothLoopEmbedding (I := I) (Q := Q) N)
+    {r : EuclideanSpace ℝ (Fin N) → Q} {U : Set (EuclideanSpace ℝ (Fin N))}
+    (hU : IsOpen U) (hr : ContMDiffOn 𝓘(ℝ, EuclideanSpace ℝ (Fin N)) I 1 r U)
+    (hleft : ∀ q, r (e.map q) = q) (Γ : K → RegularLoop I Q)
+    (hΓ : Continuous Γ)
+    (B : C(K, ContinuousFreeLoop (EuclideanSpace ℝ (Fin N))))
+    (hB : ∀ k, ContDiff ℝ 1 (fun t : ℝ => B k (t : Surgery.Topology.Circle)))
+    (hdB : Continuous (fun p : K × ℝ =>
+      deriv (fun t : ℝ => B p.1 (t : Surgery.Topology.Circle)) p.2))
+    (hregion : ∀ (τ : unitInterval) k θ,
+      e.map ((Γ k).toContinuousLoop θ) +
+        (τ : ℝ) • (B k θ - e.map ((Γ k).toContinuousLoop θ)) ∈ U) :
+    ∃ H : unitInterval × K → RegularLoop I Q,
+      Continuous H ∧
+      (∀ τ k θ, (H (τ, k)).toContinuousLoop θ =
+        r (e.map ((Γ k).toContinuousLoop θ) +
+          (τ : ℝ) • (B k θ - e.map ((Γ k).toContinuousLoop θ)))) ∧
+      (∀ k, H (0, k) = Γ k) ∧
+      (∀ k θ, (H (1, k)).toContinuousLoop θ = r (B k θ)) := by
+  obtain ⟨hcA, hdA⟩ := (continuous_regularLoop_iff e Γ).mp hΓ
+  let v : (unitInterval × K) × Surgery.Topology.Circle → EuclideanSpace ℝ (Fin N) := fun p =>
+    e.map ((Γ p.1.2).toContinuousLoop p.2) +
+      (p.1.1 : ℝ) • (B p.1.2 p.2 - e.map ((Γ p.1.2).toContinuousLoop p.2))
+  have hproj : Continuous (fun p : (unitInterval × K) × Surgery.Topology.Circle =>
+      (p.1.2, p.2)) :=
+    (continuous_snd.comp continuous_fst).prodMk continuous_snd
+  have hc : Continuous v := (hcA.comp hproj).add
+    ((continuous_subtype_val.comp (continuous_fst.comp continuous_fst)).smul
+      ((B.uncurry.continuous.comp hproj).sub (hcA.comp hproj)))
+  have hvU (p : (unitInterval × K) × Surgery.Topology.Circle) : v p ∈ U := hregion p.1.1 p.1.2 p.2
+  let J : C(unitInterval × K, ContinuousFreeLoop Q) :=
+    (⟨r ∘ v, hr.continuousOn.comp_continuous hc hvU⟩ :
+      C((unitInterval × K) × Surgery.Topology.Circle, Q)).curry
+  have hv₁ (p : unitInterval × K) :
+      ContDiff ℝ 1 (fun t : ℝ => v (p, (t : Surgery.Topology.Circle))) := by
+    change ContDiff ℝ 1 (fun t : ℝ => e.map ((Γ p.2).toContinuousLoop (t : Surgery.Topology.Circle)) +
+      (p.1 : ℝ) • (B p.2 (t : Surgery.Topology.Circle) -
+        e.map ((Γ p.2).toContinuousLoop (t : Surgery.Topology.Circle))))
+    exact (RegularLoop.embedded_contDiff e (Γ p.2)).add
+      ((contDiff_const : ContDiff ℝ 1 (fun _ : ℝ => (p.1 : ℝ))).smul
+        ((hB p.2).sub (RegularLoop.embedded_contDiff e (Γ p.2))))
+  have hJ₁ (p : unitInterval × K) :
+      ContMDiff 𝓘(ℝ, ℝ) I 1 (fun t : ℝ => J p (t : Surgery.Topology.Circle)) := by
+    intro t
+    change ContMDiffAt 𝓘(ℝ, ℝ) I 1
+      (r ∘ fun s : ℝ => v (p, (s : Surgery.Topology.Circle))) t
+    exact ((hr _ (hvU (p, (t : Surgery.Topology.Circle)))).contMDiffAt
+      (hU.mem_nhds (hvU (p, (t : Surgery.Topology.Circle))))).comp t
+        (hv₁ p).contMDiff.contMDiffAt
+  let H : unitInterval × K → RegularLoop I Q := fun p => ⟨J p, hJ₁ p⟩
+  refine ⟨H, ?_, fun _ _ _ => rfl, ?_, ?_⟩
+  · apply (continuous_regularLoop_iff e H).mpr
+    constructor
+    · exact e.smooth.continuous.comp J.uncurry.continuous
+    · have hcReal : Continuous (fun p : (unitInterval × K) × ℝ =>
+          v (p.1, (p.2 : Surgery.Topology.Circle))) :=
+        hc.comp (continuous_fst.prodMk ((AddCircle.continuous_mk' (1 : ℝ)).comp continuous_snd))
+      have hdv : Continuous (fun p : (unitInterval × K) × ℝ =>
+          deriv (fun t : ℝ => v (p.1, (t : Surgery.Topology.Circle))) p.2) := by
+        change Continuous (fun p : (unitInterval × K) × ℝ =>
+          deriv (fun t : ℝ => e.map ((Γ p.1.2).toContinuousLoop (t : Surgery.Topology.Circle)) +
+            (p.1.1 : ℝ) • (B p.1.2 (t : Surgery.Topology.Circle) -
+              e.map ((Γ p.1.2).toContinuousLoop (t : Surgery.Topology.Circle)))) p.2)
+        exact DifferentialGeometry.Analysis.continuous_deriv_affine_family
+          (f := fun p : K × ℝ => e.map ((Γ p.1).toContinuousLoop (p.2 : Surgery.Topology.Circle)))
+          (g := fun p : K × ℝ => B p.1 (p.2 : Surgery.Topology.Circle))
+          (a := fun τ : unitInterval => (τ : ℝ))
+          (fun k => (RegularLoop.embedded_contDiff e (Γ k)).differentiable one_ne_zero)
+          (fun k => (hB k).differentiable one_ne_zero) continuous_subtype_val hdA hdB
+      exact DifferentialGeometry.Analysis.continuous_deriv_family_comp hU
+        ((e.smooth.of_le (by simp)).comp_contMDiffOn hr).contDiffOn
+        (fun p => (hv₁ p).differentiable one_ne_zero)
+        hcReal hdv (fun p => hvU (p.1, (p.2 : Surgery.Topology.Circle)))
+  · intro k
+    apply RegularLoop.toContinuousLoop_injective
+    apply ContinuousMap.ext
+    intro θ
+    change r (e.map ((Γ k).toContinuousLoop θ) + (0 : ℝ) • _) = (Γ k).toContinuousLoop θ
+    rw [zero_smul, add_zero, hleft]
+  · intro k θ
+    change r (e.map ((Γ k).toContinuousLoop θ) +
+      (1 : ℝ) • (B k θ - e.map ((Γ k).toContinuousLoop θ))) = r (B k θ)
+    rw [one_smul, ← add_sub_assoc, add_sub_cancel_left]
+
+omit [T2Space Q] in
+theorem exists_regular_nearby_homotopy_radius {N : ℕ}
+    (e : SmoothLoopEmbedding (I := I) (Q := Q) N) :
+    ∃ η : ℝ, 0 < η ∧ ∀ (K : Type*) [TopologicalSpace K]
+      (Γ Δ : K → RegularLoop I Q),
+      Continuous Γ → Continuous Δ →
+      (∀ k θ, dist (e.map ((Δ k).toContinuousLoop θ))
+        (e.map ((Γ k).toContinuousLoop θ)) < η) →
+      ∃ R : unitInterval × K → RegularLoop I Q,
+        Continuous R ∧ (∀ k, R (0, k) = Γ k) ∧ (∀ k, R (1, k) = Δ k) ∧
+        (∀ k, Γ k = Δ k → ∀ τ, R (τ, k) = Γ k) := by
+  obtain ⟨r, U, hU, heU, hr, hleft⟩ :=
+    DifferentialGeometry.Geometry.exists_smooth_neighborhood_retraction e.smooth
+      e.isClosedEmbedding.isEmbedding e.injective_mfderiv
+  obtain ⟨η, hη, hηU⟩ :=
+    (isCompact_range e.smooth.continuous).exists_cthickening_subset_open hU heU
+  refine ⟨η, hη, fun K _ Γ Δ hΓ hΔ hclose => ?_⟩
+  obtain ⟨hcB, hdB⟩ := (continuous_regularLoop_iff e Δ).mp hΔ
+  let B : C(K, ContinuousFreeLoop (EuclideanSpace ℝ (Fin N))) :=
+    ⟨fun k => (⟨e.map, e.smooth.continuous⟩ :
+        C(Q, EuclideanSpace ℝ (Fin N))).comp (Δ k).toContinuousLoop,
+      (DifferentialGeometry.Topology.FreeLoop.continuous_family_iff _).mpr hcB⟩
+  have hBval (k : K) (θ : Surgery.Topology.Circle) :
+      B k θ = e.map ((Δ k).toContinuousLoop θ) := rfl
+  have hregion (τ : unitInterval) (k : K) (θ : Surgery.Topology.Circle) :
+      e.map ((Γ k).toContinuousLoop θ) +
+        (τ : ℝ) • (B k θ - e.map ((Γ k).toContinuousLoop θ)) ∈ U := by
+    apply hηU
+    apply Metric.mem_cthickening_of_dist_le _ (e.map ((Γ k).toContinuousLoop θ)) η (range e.map)
+      (mem_range_self _)
+    have hb : ‖e.map ((Δ k).toContinuousLoop θ) -
+        e.map ((Γ k).toContinuousLoop θ)‖ < η := by
+      simpa only [dist_eq_norm] using hclose k θ
+    rw [dist_eq_norm, hBval k θ, add_sub_cancel_left, norm_smul, Real.norm_eq_abs,
+      abs_of_nonneg τ.property.1]
+    exact ((mul_le_of_le_one_left (norm_nonneg _) τ.property.2).trans_lt hb).le
+  obtain ⟨R, hc, hformula, hz, ho⟩ := exists_regular_affine_homotopy e hU
+    (hr.of_le (by exact_mod_cast le_top)) hleft Γ hΓ B
+    (fun k => RegularLoop.embedded_contDiff e (Δ k)) hdB hregion
+  refine ⟨R, hc, hz, ?_, ?_⟩
+  · intro k
+    apply RegularLoop.toContinuousLoop_injective
+    apply ContinuousMap.ext
+    intro θ
+    rw [ho]
+    exact hleft _
+  · intro k hk τ
+    apply RegularLoop.toContinuousLoop_injective
+    apply ContinuousMap.ext
+    intro θ
+    rw [hformula]
+    change r (e.map ((Γ k).toContinuousLoop θ) +
+      (τ : ℝ) • (e.map ((Δ k).toContinuousLoop θ) - e.map ((Γ k).toContinuousLoop θ))) = _
+    rw [← hk, sub_self, smul_zero, add_zero, hleft]
+
+omit [FiniteDimensional ℝ E] [I.Boundaryless] [IsManifold I ∞ Q] [CompactSpace Q]
+  [Nonempty Q] [T2Space Q] in
+private theorem isContractibleLoop_of_joined {γ δ : ContinuousFreeLoop Q}
+    (h : Joined γ δ) (hγ : IsContractibleLoop γ) : IsContractibleLoop δ := by
+  obtain ⟨q, hq⟩ := hγ
+  exact ⟨q, ((DifferentialGeometry.Topology.homotopic_iff_joined γ δ).mpr h).symm.trans hq⟩
+
+omit [FiniteDimensional ℝ E] [I.Boundaryless] [CompactSpace Q] [T2Space Q] [Nonempty Q] in
+theorem regular_homotopy_contractible {K : Type*} [TopologicalSpace K]
+    (R : unitInterval × K → RegularLoop I Q) (hc : Continuous R)
+    (hn : ∀ k, IsContractibleLoop ((R (0, k)).toContinuousLoop)) :
+    ∀ p, IsContractibleLoop ((R p).toContinuousLoop) := by
+  have hcont : Continuous (fun p : unitInterval × K => (R p).toContinuousLoop) :=
+    regularLoopInclusion.continuous.comp hc
+  rintro ⟨τ, k⟩
+  have hp : Joined (0 : unitInterval) τ :=
+    ⟨⟨⟨fun s => s * τ, continuous_id.mul continuous_const⟩, zero_mul τ, one_mul τ⟩⟩
+  have hj : Joined (R (0, k)).toContinuousLoop (R (τ, k)).toContinuousLoop :=
+    hp.map (hcont.comp (continuous_id.prodMk continuous_const))
+  exact isContractibleLoop_of_joined ((DifferentialGeometry.Topology.homotopic_iff_joined _ _).mp
+    ((DifferentialGeometry.Topology.homotopic_iff_joined _ _).mpr hj)) (hn k)
+
+omit [T2Space Q] in
+theorem exists_regular_contractible_nearby_homotopy_radius {K : Type*} [TopologicalSpace K]
+    {N : ℕ} (e : SmoothLoopEmbedding (I := I) (Q := Q) N) :
+    ∃ ε : ℝ, 0 < ε ∧ ∀ (Γ Δ : C(K, ContractibleRegularLoop (I := I) (Q := Q))),
+      (∀ k θ, dist (e.map ((Δ k).1.toContinuousLoop θ))
+        (e.map ((Γ k).1.toContinuousLoop θ)) < ε) →
+      ∃ H : Γ.Homotopy Δ, ∀ k, Γ k = Δ k → ∀ τ, H (τ, k) = Γ k := by
+  obtain ⟨ε, hε, hR⟩ := exists_regular_nearby_homotopy_radius (I := I) (Q := Q) e
+  refine ⟨ε, hε, fun Γ Δ hclose => ?_⟩
+  obtain ⟨R, hc, hz, ho, hf⟩ := hR K (fun k => (Γ k).1) (fun k => (Δ k).1)
+    (continuous_subtype_val.comp Γ.continuous) (continuous_subtype_val.comp Δ.continuous) hclose
+  have hn : ∀ p, IsContractibleLoop ((R p).toContinuousLoop) :=
+    regular_homotopy_contractible (I := I) (Q := Q) R hc (fun k => by rw [hz]; exact (Γ k).2)
+  have hcn : Continuous (fun p => (⟨R p, hn p⟩ : ContractibleRegularLoop (I := I) (Q := Q))) :=
+    hc.subtype_mk _
+  let H : Γ.Homotopy Δ :=
+    ⟨⟨fun p => ⟨R p, hn p⟩, hcn⟩, fun k => Subtype.ext (hz k), fun k => Subtype.ext (ho k)⟩
+  exact ⟨H, fun k hk τ => Subtype.ext (hf k (congrArg Subtype.val hk) τ)⟩
+
+omit [CompactSpace Q] [Nonempty Q] [T2Space Q] in
+private theorem familyHomotopy_contractible {K : Type*} [TopologicalSpace K]
+    {Γ S : C(K, ContinuousFreeLoop Q)} (H : Γ.Homotopy S)
+    {k : K} (hk : IsContractibleLoop (Γ k)) (t : unitInterval) :
+    IsContractibleLoop (H (t, k)) := by
+  have hp : Joined (0 : unitInterval) t :=
+    ⟨⟨⟨fun s => s * t, continuous_id.mul continuous_const⟩, zero_mul t, one_mul t⟩⟩
+  have hj : Joined (H (0, k)) (H (t, k)) := hp.map
+    (H.continuous.comp (continuous_id.prodMk continuous_const))
+  exact isContractibleLoop_of_joined hj (H.apply_zero k ▸ hk)
+
+omit [FiniteDimensional ℝ E] [I.Boundaryless] [IsManifold I ∞ Q] [Nonempty Q] [T2Space Q] in
+theorem exists_uniform_retracted_loop_homotopy {K : Type*} [TopologicalSpace K]
+    [CompactSpace K] {N : ℕ}
+    (e : SmoothLoopEmbedding (I := I) (Q := Q) N)
+    {r : EuclideanSpace ℝ (Fin N) → Q} {U : Set (EuclideanSpace ℝ (Fin N))}
+    (hU : IsOpen U) (heU : range e.map ⊆ U)
+    (hr : ContMDiffOn 𝓘(ℝ, EuclideanSpace ℝ (Fin N)) I ∞ r U)
+    (hleft : ∀ q, r (e.map q) = q) (Γ : C(K, ContinuousFreeLoop Q))
+    {ε : ℝ} (hε : 0 < ε) :
+    ∃ δ : ℝ, 0 < δ ∧ ∀ φ : ContDiffBump (0 : ℝ), φ.rOut < δ →
+      ∃ (S : C(K, ContinuousFreeLoop Q)) (H : Γ.Homotopy S),
+        (∀ k, ContMDiff 𝓘(ℝ, ℝ) I ∞ (fun t : ℝ => S k (t : Surgery.Topology.Circle))) ∧
+        (∀ (d : ℕ) (a : Q → EuclideanSpace ℝ (Fin d)),
+          ContMDiff I 𝓘(ℝ, EuclideanSpace ℝ (Fin d)) ∞ a →
+          ∀ j, Continuous (fun p : K × ℝ =>
+            iteratedDeriv j (fun t : ℝ => a (S p.1 (t : Surgery.Topology.Circle))) p.2)) ∧
+        (∀ t k θ, dist (e.map (H (t, k) θ)) (e.map (Γ k θ)) < ε) ∧
+        (∀ k q, Γ k = .const Surgery.Topology.Circle q →
+          ∀ t, H (t, k) = .const Surgery.Topology.Circle q) ∧
+        (∀ k, IsContractibleLoop (Γ k) → ∀ t, IsContractibleLoop (H (t, k))) ∧
+        (∀ k θ, S k θ = r (DifferentialGeometry.Topology.averagedLoop φ
+          ((⟨e.map, e.smooth.continuous⟩ :
+          C(Q, EuclideanSpace ℝ (Fin N))).comp (Γ k)) θ)) ∧
+        (∀ t k θ, H (t, k) θ = r (e.map (Γ k θ) + (t : ℝ) •
+          (DifferentialGeometry.Topology.averagedLoop φ ((⟨e.map, e.smooth.continuous⟩ :
+            C(Q, EuclideanSpace ℝ (Fin N))).comp (Γ k)) θ - e.map (Γ k θ)))) := by
+  obtain ⟨a, ha, har⟩ := exists_uniform_retraction_dist e.smooth.continuous hU heU hr.continuousOn
+    hleft hε
+  let ec : C(Q, EuclideanSpace ℝ (Fin N)) := ⟨e.map, e.smooth.continuous⟩
+  let A : C(K, ContinuousFreeLoop (EuclideanSpace ℝ (Fin N))) :=
+    (DifferentialGeometry.Topology.FreeLoop.postcompose ec).comp Γ
+  obtain ⟨δ, hδ, hδA⟩ :=
+    DifferentialGeometry.Topology.smoothPeriodic_uniform_approximation A.uncurry.continuous ha
+  refine ⟨δ, hδ, fun φ hφ => ?_⟩
+  let B : C(K, ContinuousFreeLoop (EuclideanSpace ℝ (Fin N))) :=
+    ⟨fun k => DifferentialGeometry.Topology.averagedLoop φ (A k),
+      DifferentialGeometry.Topology.averagedLoop_continuous_family φ A.continuous⟩
+  have hclose (k : K) (θ : Surgery.Topology.Circle) : dist (B k θ) (e.map (Γ k θ)) < a := by
+    obtain ⟨t, rfl⟩ := QuotientAddGroup.mk_surjective θ
+    exact hδA φ hφ k t
+  let v : (unitInterval × K) × Surgery.Topology.Circle → EuclideanSpace ℝ (Fin N) :=
+    fun p => e.map (Γ p.1.2 p.2) + (p.1.1 : ℝ) • (B p.1.2 p.2 - e.map (Γ p.1.2 p.2))
+  have hcA : Continuous (fun p : (unitInterval × K) × Surgery.Topology.Circle =>
+      e.map (Γ p.1.2 p.2)) :=
+    A.uncurry.continuous.comp ((continuous_snd.comp continuous_fst).prodMk continuous_snd)
+  have hcB : Continuous (fun p : (unitInterval × K) × Surgery.Topology.Circle =>
+      B p.1.2 p.2) :=
+    B.uncurry.continuous.comp ((continuous_snd.comp continuous_fst).prodMk continuous_snd)
+  have hcv : Continuous v := hcA.add
+    ((continuous_subtype_val.comp (continuous_fst.comp continuous_fst)).smul (hcB.sub hcA))
+  have hvclose (p : (unitInterval × K) × Surgery.Topology.Circle) :
+      dist (v p) (e.map (Γ p.1.2 p.2)) < a := by
+    dsimp only [v]
+    rw [dist_eq_norm, add_sub_cancel_left, norm_smul, Real.norm_eq_abs,
+      abs_of_nonneg p.1.1.property.1]
+    exact (mul_le_of_le_one_left (norm_nonneg _) p.1.1.property.2).trans_lt (hclose p.1.2 p.2)
+  have hvU (p : (unitInterval × K) × Surgery.Topology.Circle) : v p ∈ U :=
+    (har (Γ p.1.2 p.2) (v p) (hvclose p)).1
+  have hcH : Continuous (r ∘ v) := hr.continuousOn.comp_continuous hcv hvU
+  let J : C(unitInterval × K, ContinuousFreeLoop Q) :=
+    (⟨r ∘ v, hcH⟩ : C((unitInterval × K) × Surgery.Topology.Circle, Q)).curry
+  let S : C(K, ContinuousFreeLoop Q) :=
+    J.comp ⟨fun k => (1, k), continuous_const.prodMk continuous_id⟩
+  have hJ0 (k : K) : J (0, k) = Γ k := by
+    ext θ
+    change r (e.map (Γ k θ) + (0 : ℝ) • _) = Γ k θ
+    rw [zero_smul, add_zero, hleft]
+  let H : Γ.Homotopy S := ⟨J, hJ0, fun _ => rfl⟩
+  have hS (k : K) (θ : Surgery.Topology.Circle) : S k θ = r (B k θ) := by
+    change r (e.map (Γ k θ) + (1 : ℝ) • (B k θ - e.map (Γ k θ))) = _
+    rw [one_smul, ← add_sub_assoc, add_sub_cancel_left]
+  refine ⟨S, H, ?_, ?_, ?_, ?_,
+    (fun k hk t => familyHomotopy_contractible H hk t), hS, fun _ _ _ => rfl⟩
+  · intro k t
+    have htU : B k (t : Surgery.Topology.Circle) ∈ U :=
+      (har (Γ k (t : Surgery.Topology.Circle)) _ (hclose k _)).1
+    have hB : ContDiff ℝ ∞
+        (fun t : ℝ => B k (t : Surgery.Topology.Circle)) :=
+      DifferentialGeometry.Analysis.smoothPeriodic_contDiff φ
+        ((A k).continuous.comp (AddCircle.continuous_mk' (1 : ℝ)))
+    have hs := ((hr _ htU).contMDiffAt (hU.mem_nhds htU)).comp t hB.contMDiff.contMDiffAt
+    simpa only [hS, Function.comp_def] using hs
+  · intro d a ha j
+    simp_rw [hS]
+    have hAB : Continuous (fun p : K × ℝ => A p.1 (p.2 : Surgery.Topology.Circle)) :=
+      A.uncurry.continuous.comp
+        (continuous_fst.prodMk ((AddCircle.continuous_mk' (1 : ℝ)).comp continuous_snd))
+    exact DifferentialGeometry.Analysis.continuous_iteratedDeriv_family_comp hU
+      (ha.comp_contMDiffOn hr).contDiffOn
+      (fun k => DifferentialGeometry.Analysis.smoothPeriodic_contDiff φ
+        ((A k).continuous.comp (AddCircle.continuous_mk' (1 : ℝ))))
+      (fun j => DifferentialGeometry.Analysis.continuous_iteratedDeriv_smoothPeriodic φ hAB j)
+      (fun p => (har (Γ p.1 (p.2 : Surgery.Topology.Circle)) _ (hclose p.1 _)).1) j
+  · intro t k θ
+    exact (har (Γ k θ) (v ((t, k), θ)) (hvclose ((t, k), θ))).2
+  · intro k q hk t
+    have hAk : A k = .const Surgery.Topology.Circle (e.map q) := by
+      apply ContinuousMap.ext
+      intro θ
+      change e.map (Γ k θ) = e.map q
+      rw [hk]
+      rfl
+    have hBk : B k = .const Surgery.Topology.Circle (e.map q) := by
+      change DifferentialGeometry.Topology.averagedLoop φ (A k) = _
+      rw [hAk, DifferentialGeometry.Topology.averagedLoop_const]
+    ext θ
+    change r (e.map (Γ k θ) + (t : ℝ) • (B k θ - e.map (Γ k θ))) = q
+    rw [hk, hBk]
+    simp only [ContinuousMap.const_apply, sub_self, smul_zero, add_zero, hleft]
+
+omit [T2Space Q] in
+theorem exists_uniform_smooth_loop_homotopy {K : Type*} [TopologicalSpace K]
+    [CompactSpace K] {N : ℕ}
+    (e : SmoothLoopEmbedding (I := I) (Q := Q) N)
+    (Γ : C(K, ContinuousFreeLoop Q)) {ε : ℝ} (hε : 0 < ε) :
+    ∃ δ : ℝ, 0 < δ ∧ ∀ φ : ContDiffBump (0 : ℝ), φ.rOut < δ →
+      ∃ (S : C(K, ContinuousFreeLoop Q)) (H : Γ.Homotopy S),
+        (∀ k, ContMDiff 𝓘(ℝ, ℝ) I ∞ (fun t : ℝ => S k (t : Surgery.Topology.Circle))) ∧
+        (∀ (d : ℕ) (a : Q → EuclideanSpace ℝ (Fin d)),
+          ContMDiff I 𝓘(ℝ, EuclideanSpace ℝ (Fin d)) ∞ a →
+          ∀ j, Continuous (fun p : K × ℝ =>
+            iteratedDeriv j (fun t : ℝ => a (S p.1 (t : Surgery.Topology.Circle))) p.2)) ∧
+        (∀ t k θ, dist (e.map (H (t, k) θ)) (e.map (Γ k θ)) < ε) ∧
+        (∀ k q, Γ k = .const Surgery.Topology.Circle q →
+          ∀ t, H (t, k) = .const Surgery.Topology.Circle q) ∧
+        (∀ k, IsContractibleLoop (Γ k) → ∀ t, IsContractibleLoop (H (t, k))) := by
+  obtain ⟨r, U, hU, heU, hr, hleft⟩ :=
+    DifferentialGeometry.Geometry.exists_smooth_neighborhood_retraction e.smooth
+    e.isClosedEmbedding.isEmbedding e.injective_mfderiv
+  obtain ⟨δ, hδ, hδS⟩ := exists_uniform_retracted_loop_homotopy e hU heU hr hleft Γ hε
+  refine ⟨δ, hδ, fun φ hφ => ?_⟩
+  obtain ⟨S, H, hs, hj, hclose, hconst, hnull, _, _⟩ := hδS φ hφ
+  exact ⟨S, H, hs, hj, hclose, hconst, hnull⟩
+
+omit [T2Space Q] in
+theorem exists_smooth_regular_family {K : Type*} [TopologicalSpace K] [CompactSpace K] {N : ℕ}
+    (e : SmoothLoopEmbedding (I := I) (Q := Q) N)
+    (Γ : C(K, ContinuousFreeLoop Q)) {ε : ℝ} (hε : 0 < ε) :
+    ∃ (S : C(K, ContinuousFreeLoop Q))
+      (hs : ∀ k, ContMDiff 𝓘(ℝ, ℝ) I ∞ (fun t : ℝ => S k (t : Surgery.Topology.Circle)))
+      (H : Γ.Homotopy S),
+      Continuous (fun k => (⟨S k, (hs k).of_le (by simp)⟩ : RegularLoop I Q)) ∧
+      (∀ t k θ, dist (e.map (H (t, k) θ)) (e.map (Γ k θ)) < ε) ∧
+      (∀ k q, Γ k = .const Surgery.Topology.Circle q →
+        ∀ t, H (t, k) = .const Surgery.Topology.Circle q) ∧
+      (∀ k, IsContractibleLoop (Γ k) → ∀ t, IsContractibleLoop (H (t, k))) := by
+  obtain ⟨δ, hδ, hδS⟩ := exists_uniform_smooth_loop_homotopy (K := K) e Γ hε
+  let φ : ContDiffBump (0 : ℝ) := ⟨δ / 4, δ / 2, by positivity, by linarith⟩
+  obtain ⟨S, H, hs, hj, hclose, hconst, hnull⟩ := hδS φ (by dsimp [φ]; linarith)
+  refine ⟨S, hs, H, ?_, hclose, hconst, hnull⟩
+  apply (continuous_regularLoop_iff e (fun k => (⟨S k, (hs k).of_le (by simp)⟩ : RegularLoop I Q))).mpr
+  constructor
+  · have h0 : Continuous (fun p : K × ℝ =>
+        e.map (S p.1 (p.2 : Surgery.Topology.Circle))) := by
+      simpa only [iteratedDeriv_zero] using hj N e.map e.smooth 0
+    have hcoe : IsOpenQuotientMap (fun s : ℝ => (s : Surgery.Topology.Circle)) :=
+      QuotientAddGroup.isOpenQuotientMap_mk
+    exact (IsOpenQuotientMap.id.prodMap hcoe).continuous_comp_iff.mp h0
+  · have h1 : Continuous (fun p : K × ℝ =>
+        iteratedDeriv 1 (fun t : ℝ => e.map (S p.1 (t : Surgery.Topology.Circle))) p.2) :=
+      hj N e.map e.smooth 1
+    simpa only [iteratedDeriv_one] using h1
+
+omit [T2Space Q] in
+theorem exists_regular_contractible_representative {K : Type*} [TopologicalSpace K]
+    [CompactSpace K] {N : ℕ}
+    (e : SmoothLoopEmbedding (I := I) (Q := Q) N)
+    (Γ : C(K, ContractibleContinuousLoop Q)) :
+    ∃ (S : C(K, ContractibleRegularLoop (I := I) (Q := Q)))
+      (H : Γ.Homotopy (contractibleRegularLoopInclusion.comp S)),
+      (∀ k, ContMDiff 𝓘(ℝ, ℝ) I ∞
+        (fun t : ℝ => (S k).1.toContinuousLoop (t : Surgery.Topology.Circle))) ∧
+      (∀ k q, Γ k = (⟨constantLoops q, isContractibleLoop_constant q⟩ :
+          ContractibleContinuousLoop Q) →
+        ∀ t, H (t, k) = ⟨constantLoops q, isContractibleLoop_constant q⟩) := by
+  obtain ⟨S₀, hs, H₀, hcont, hclose, hconst, hnull⟩ :=
+    exists_smooth_regular_family (K := K) e
+      (DifferentialGeometry.Topology.ContractibleLoop.inclusion.comp Γ) zero_lt_one
+  have hSn (k : K) : IsContractibleLoop (S₀ k) := by
+    simpa only [H₀.apply_one] using hnull k (Γ k).2 1
+  let Sfun : K → ContractibleRegularLoop (I := I) (Q := Q) :=
+    fun k => ⟨⟨S₀ k, (hs k).of_le (by simp)⟩, hSn k⟩
+  have hS : Continuous Sfun := hcont.subtype_mk _
+  let S : C(K, ContractibleRegularLoop (I := I) (Q := Q)) := ⟨Sfun, hS⟩
+  let H : Γ.Homotopy (contractibleRegularLoopInclusion.comp S) :=
+    ⟨⟨fun p => ⟨H₀ p, hnull p.2 (Γ p.2).2 p.1⟩, H₀.continuous.subtype_mk _⟩,
+      fun k => Subtype.ext (H₀.apply_zero k), fun k => Subtype.ext (H₀.apply_one k)⟩
+  refine ⟨S, H, ?_, ?_⟩
+  · intro k
+    simpa only [S, ContinuousMap.coe_mk, Sfun] using hs k
+  · intro k q hk t
+    apply Subtype.ext
+    exact hconst k q (congrArg Subtype.val hk) t
+
+omit [T2Space Q] in
+theorem regular_contractible_homotopicRel_of_continuous {K : Type*} [TopologicalSpace K]
+    [CompactSpace K] {N : ℕ}
+    (e : SmoothLoopEmbedding (I := I) (Q := Q) N) :
+    ∀ (Γ Δ : C(K, ContractibleRegularLoop (I := I) (Q := Q))) (A : Set K),
+      (∀ k ∈ A, ∃ q, Γ k = constantContractibleRegularLoop q) →
+      (contractibleRegularLoopInclusion.comp Γ).HomotopicRel
+        (contractibleRegularLoopInclusion.comp Δ) A →
+      Γ.HomotopicRel Δ A := by
+  intro Γ Δ A hA ⟨Hc⟩
+  obtain ⟨ε, hε, hnear⟩ := exists_regular_contractible_nearby_homotopy_radius (K := K) e
+  let Ψ : C(unitInterval × K, ContinuousFreeLoop Q) :=
+    ⟨fun p => (Hc p).1, continuous_subtype_val.comp Hc.continuous⟩
+  obtain ⟨S₀, hs, F, hcont, hclose, hconst, hnull⟩ :=
+    exists_smooth_regular_family e Ψ hε
+  have hSn (p : unitInterval × K) : IsContractibleLoop (S₀ p) := by
+    simpa only [F.apply_one] using hnull p (Hc p).2 1
+  let Sfun : unitInterval × K → ContractibleRegularLoop (I := I) (Q := Q) :=
+    fun p => ⟨⟨S₀ p, (hs p).of_le (by simp)⟩, hSn p⟩
+  have hS : Continuous Sfun := hcont.subtype_mk _
+  let S : C(unitInterval × K, ContractibleRegularLoop (I := I) (Q := Q)) := ⟨Sfun, hS⟩
+  let Szero : C(K, ContractibleRegularLoop (I := I) (Q := Q)) :=
+    ⟨fun k => S (0, k), S.continuous.comp (continuous_const.prodMk continuous_id)⟩
+  let Sone : C(K, ContractibleRegularLoop (I := I) (Q := Q)) :=
+    ⟨fun k => S (1, k), S.continuous.comp (continuous_const.prodMk continuous_id)⟩
+  have hzclose (k : K) (θ : Surgery.Topology.Circle) :
+      dist (e.map ((Szero k).1.toContinuousLoop θ))
+        (e.map ((Γ k).1.toContinuousLoop θ)) < ε := by
+    have h := hclose 1 (0, k) θ
+    rw [F.apply_one] at h
+    change dist (e.map (S₀ (0, k) θ)) (e.map ((Hc (0, k)).1 θ)) < _ at h
+    rw [Hc.apply_zero] at h
+    exact h
+  have hoclose (k : K) (θ : Surgery.Topology.Circle) :
+      dist (e.map ((Sone k).1.toContinuousLoop θ))
+        (e.map ((Δ k).1.toContinuousLoop θ)) < ε := by
+    have h := hclose 1 (1, k) θ
+    rw [F.apply_one] at h
+    change dist (e.map (S₀ (1, k) θ)) (e.map ((Hc (1, k)).1 θ)) < _ at h
+    rw [Hc.apply_one] at h
+    exact h
+  obtain ⟨Jzero, hJzero⟩ := hnear Γ Szero hzclose
+  obtain ⟨Jone, hJone⟩ := hnear Δ Sone hoclose
+  have hfix (t : unitInterval) (k : K) (hk : k ∈ A) : S (t, k) = Γ k := by
+    obtain ⟨q, hq⟩ := hA k hk
+    have hΨ : Ψ (t, k) = .const Surgery.Topology.Circle q := by
+      change (Hc (t, k)).1 = _
+      rw [Hc.eq_fst t hk]
+      change ((Γ k).1).toContinuousLoop = _
+      rw [hq]
+      rfl
+    apply Subtype.ext
+    apply RegularLoop.toContinuousLoop_injective
+    change S₀ (t, k) = (Γ k).1.toContinuousLoop
+    rw [hq]
+    exact (F.apply_one (t, k)) ▸ hconst (t, k) q hΨ 1
+  have hΓΔ (k : K) (hk : k ∈ A) : Γ k = Δ k := by
+    apply Subtype.ext
+    apply RegularLoop.toContinuousLoop_injective
+    exact congrArg (fun γ : ContractibleContinuousLoop Q => γ.1) (Hc.fst_eq_snd hk)
+  let Jz : Γ.HomotopyRel Szero A :=
+    ⟨Jzero, fun t k hk => hJzero k (hfix 0 k hk).symm t⟩
+  let Jo : Δ.HomotopyRel Sone A :=
+    ⟨Jone, fun t k hk => hJone k ((hΓΔ k hk).symm.trans (hfix 1 k hk).symm) t⟩
+  let Jm : Szero.HomotopyRel Sone A :=
+    ⟨⟨S, fun _ => rfl, fun _ => rfl⟩,
+      fun t k hk => (hfix t k hk).trans (hfix 0 k hk).symm⟩
+  exact ⟨Jz.trans (Jm.trans Jo.symm)⟩
+
+end LoopSmoothing
+
 variable [finiteDimensionalE : FiniteDimensional ℝ E] [boundarylessI : I.Boundaryless]
   [t2Q : T2Space Q] [compactQ : CompactSpace Q] [connectedQ : ConnectedSpace Q]
 
@@ -601,7 +1169,27 @@ theorem rfs_regular_class_correspondence :
     Function.Bijective
       (FreeHomotopyClass.map (X := Sphere 2)
         (contractibleRegularLoopInclusion (I := I) (Q := Q))) := by
-  sorry
+  obtain ⟨N, ⟨e⟩⟩ := smoothLoopEmbedding_exists (I := I) (Q := Q)
+  constructor
+  · intro ξ ζ
+    induction ξ using Quotient.inductionOn with
+    | h Γ =>
+      induction ζ using Quotient.inductionOn with
+      | h Δ =>
+        intro h
+        have hc : (contractibleRegularLoopInclusion.comp Γ).Homotopic
+            (contractibleRegularLoopInclusion.comp Δ) := Quotient.exact h
+        have hr := regular_contractible_homotopicRel_of_continuous (K := Sphere 2) e Γ Δ ∅
+          (fun k hk => (Set.notMem_empty k hk).elim)
+          (ContinuousMap.homotopicRel_empty.mpr hc)
+        exact (FreeHomotopyClass.mk_eq_mk_iff _ _).mpr
+          (ContinuousMap.homotopicRel_empty.mp hr)
+  · intro ξ
+    obtain ⟨Γ, rfl⟩ := Quotient.exists_rep ξ
+    obtain ⟨S, H, _, _⟩ := exists_regular_contractible_representative (K := Sphere 2) e Γ
+    refine ⟨FreeHomotopyClass.mk S, ?_⟩
+    rw [FreeHomotopyClass.map_mk]
+    exact (FreeHomotopyClass.mk_eq_mk_iff _ _).mpr ⟨H.symm⟩
 
 
 theorem regularRepresentative_nonempty (ξ : FreeContractibleSphereClass Q) :
@@ -618,7 +1206,47 @@ theorem regular_based_pi2_correspondence (q : Q) :
       ∀ u : GenLoop (Fin 2) (ContractibleRegularLoop (I := I) (Q := Q))
           (constantContractibleRegularLoop q),
         e (Quotient.mk _ u) = Quotient.mk _ (regularGenLoopInclusion q u) := by
-  sorry
+  obtain ⟨N, ⟨e⟩⟩ := smoothLoopEmbedding_exists (I := I) (Q := Q)
+  let inc : C(ContractibleRegularLoop (I := I) (Q := Q), ContractibleContinuousLoop Q) :=
+    contractibleRegularLoopInclusion
+  have hbij : Function.Bijective
+      (DifferentialGeometry.Topology.homotopyGroupMap (N := Fin 2) inc
+        (constantContractibleRegularLoop q)) := by
+    constructor
+    · intro a b
+      induction a using Quotient.inductionOn with
+      | h p =>
+        induction b using Quotient.inductionOn with
+        | h r =>
+          intro h
+          have hc : (inc.comp p.1).HomotopicRel (inc.comp r.1) (Cube.boundary (Fin 2)) :=
+            Quotient.exact h
+          apply Quotient.sound
+          exact regular_contractible_homotopicRel_of_continuous (K := Fin 2 → unitInterval) e
+            p.1 r.1 (Cube.boundary (Fin 2)) (fun k hk => ⟨q, GenLoop.boundary p k hk⟩) hc
+    · intro a
+      induction a using Quotient.inductionOn with
+      | h p =>
+        obtain ⟨S, H, _, hfix⟩ := exists_regular_contractible_representative e p.1
+        have hSb (k : Fin 2 → unitInterval) (hk : k ∈ Cube.boundary (Fin 2)) :
+            S k = constantContractibleRegularLoop q := by
+          have h := hfix k q (GenLoop.boundary p k hk) 1
+          rw [H.apply_one] at h
+          apply Subtype.ext
+          apply RegularLoop.toContinuousLoop_injective
+          exact congrArg Subtype.val h
+        let r : GenLoop (Fin 2) (ContractibleRegularLoop (I := I) (Q := Q))
+            (constantContractibleRegularLoop q) := ⟨S, hSb⟩
+        let Hr : p.1.HomotopyRel (inc.comp S) (Cube.boundary (Fin 2)) :=
+          ⟨H, fun t k hk => (hfix k q (GenLoop.boundary p k hk) t).trans
+            (GenLoop.boundary p k hk).symm⟩
+        refine ⟨Quotient.mk _ r, Quotient.sound ?_⟩
+        exact ⟨Hr.symm⟩
+  refine ⟨MulEquiv.ofBijective
+    (DifferentialGeometry.Topology.homotopyGroupMapHom (N := Fin 2) inc
+      (constantContractibleRegularLoop q)) hbij, ?_⟩
+  intro u
+  rfl
 
 section TargetMaps
 
