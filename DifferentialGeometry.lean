@@ -3170,6 +3170,7 @@ import DifferentialGeometry.Topology.Diffeomorph.TimeDependentFlow
 import DifferentialGeometry.Topology.Diffeomorph.Translation
 import DifferentialGeometry.Topology.Diffeomorph.Radial
 import DifferentialGeometry.Topology.Embedding.Diffeomorph
+import DifferentialGeometry.Topology.Embedding.Radial
 import DifferentialGeometry.Topology.Embedding.LinearEquiv
 import DifferentialGeometry.Topology.Embedding.LocalDiffeomorph
 import DifferentialGeometry.Topology.Embedding.Sphere
