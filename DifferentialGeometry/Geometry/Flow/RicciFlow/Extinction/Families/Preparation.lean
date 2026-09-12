@@ -517,4 +517,189 @@ theorem rfs_prepared_family (g : SmoothRiemannianMetric I Q) {d : ℕ}
             regularLeastArea g (prepared p) ≤ Ainit := by
   sorry
 
+omit [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E] [CompleteSpace E]
+  [TopologicalSpace H] [TopologicalSpace Q] [ChartedSpace H Q] [IsManifold I ∞ Q]
+  hT2 hCompact hConnected hBoundary in
+theorem FlatteningProfile.beta_zero (P : FlatteningProfile) : P.beta 0 = 0 :=
+  intervalIntegral.integral_same
+
+omit [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E] [CompleteSpace E]
+  [TopologicalSpace H] [TopologicalSpace Q] [ChartedSpace H Q] [IsManifold I ∞ Q]
+  hT2 hCompact hConnected hBoundary in
+theorem FlatteningProfile.beta_one (P : FlatteningProfile) : P.beta 1 = 1 :=
+  P.integral_one
+
+omit [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E] [CompleteSpace E]
+  [TopologicalSpace H] [TopologicalSpace Q] [ChartedSpace H Q] [IsManifold I ∞ Q]
+  hT2 hCompact hConnected hBoundary in
+theorem FlatteningProfile.beta_monotoneOn (P : FlatteningProfile) :
+    MonotoneOn P.beta (Icc (0 : ℝ) 1) := by
+  intro x hx y hy hxy
+  have hx' : IntervalIntegrable P.psi volume (0 : ℝ) x :=
+    P.smooth.continuous.intervalIntegrable _ _
+  have hy' : IntervalIntegrable P.psi volume x y :=
+    P.smooth.continuous.intervalIntegrable _ _
+  have hsplit : (∫ w in (0 : ℝ)..x, P.psi w) + (∫ w in x..y, P.psi w) =
+      ∫ w in (0 : ℝ)..y, P.psi w :=
+    intervalIntegral.integral_add_adjacent_intervals hx' hy'
+  have hnonneg : 0 ≤ ∫ w in x..y, P.psi w :=
+    intervalIntegral.integral_nonneg hxy
+      (fun w hw => P.nonneg w ⟨le_trans hx.1 hw.1, le_trans hw.2 hy.2⟩)
+  change P.beta x ≤ P.beta y
+  rw [FlatteningProfile.beta, FlatteningProfile.beta, ← hsplit]
+  linarith
+
+omit [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E] [CompleteSpace E]
+  [TopologicalSpace H] [TopologicalSpace Q] [ChartedSpace H Q] [IsManifold I ∞ Q]
+  hT2 hCompact hConnected hBoundary in
+theorem FlatteningProfile.beta_mem_Icc (P : FlatteningProfile) {x : ℝ}
+    (hx : x ∈ Icc (0 : ℝ) 1) : P.beta x ∈ Icc (0 : ℝ) 1 := by
+  refine ⟨?_, ?_⟩
+  · have h0 : (0 : ℝ) ∈ Icc (0 : ℝ) 1 := ⟨le_rfl, zero_le_one⟩
+    have h := P.beta_monotoneOn h0 hx hx.1
+    rwa [P.beta_zero] at h
+  · have h1 : (1 : ℝ) ∈ Icc (0 : ℝ) 1 := ⟨zero_le_one, le_rfl⟩
+    have h := P.beta_monotoneOn hx h1 hx.2
+    rwa [P.beta_one] at h
+
+omit [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E] [CompleteSpace E]
+  [TopologicalSpace H] [TopologicalSpace Q] [ChartedSpace H Q] [IsManifold I ∞ Q]
+  hT2 hCompact hConnected hBoundary in
+theorem FlatteningProfile.beta_strictMonoOn (P : FlatteningProfile) :
+    StrictMonoOn P.beta (Icc (0 : ℝ) 1) := by
+  intro x hx y hy hxy
+  have hx' : IntervalIntegrable P.psi volume (0 : ℝ) x :=
+    P.smooth.continuous.intervalIntegrable _ _
+  have hy' : IntervalIntegrable P.psi volume x y :=
+    P.smooth.continuous.intervalIntegrable _ _
+  have hsplit : (∫ w in (0 : ℝ)..x, P.psi w) + (∫ w in x..y, P.psi w) =
+      ∫ w in (0 : ℝ)..y, P.psi w :=
+    intervalIntegral.integral_add_adjacent_intervals hx' hy'
+  have hmem : ∀ w ∈ Icc x y, w ∈ Icc (0 : ℝ) 1 :=
+    fun w hw => ⟨le_trans hx.1 hw.1, le_trans hw.2 hy.2⟩
+  have hpos : 0 < ∫ w in x..y, P.psi w := by
+    refine intervalIntegral.integral_pos hxy (P.smooth.continuous.continuousOn.mono hmem)
+      (fun w hw => P.nonneg w (hmem w ⟨hw.1.le, hw.2⟩)) ?_
+    refine ⟨(x + y) / 2, ⟨by linarith, by linarith⟩, P.positive _ ⟨?_, ?_⟩⟩
+    · exact lt_of_le_of_lt hx.1 (by linarith)
+    · exact lt_of_lt_of_le (by linarith) hy.2
+  change P.beta x < P.beta y
+  rw [FlatteningProfile.beta, FlatteningProfile.beta, ← hsplit]
+  linarith
+
+omit [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E] [CompleteSpace E]
+  [TopologicalSpace H] [TopologicalSpace Q] [ChartedSpace H Q] [IsManifold I ∞ Q]
+  hT2 hCompact hConnected hBoundary in
+theorem FlatteningProfile.hasDerivAt_beta (P : FlatteningProfile) (x : ℝ) :
+    HasDerivAt P.beta (P.psi x) x :=
+  intervalIntegral.integral_hasDerivAt_right (P.smooth.continuous.intervalIntegrable _ _)
+    (Continuous.stronglyMeasurableAtFilter P.smooth.continuous volume (𝓝 x))
+    P.smooth.continuous.continuousAt
+
+omit [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E] [CompleteSpace E]
+  [TopologicalSpace H] [TopologicalSpace Q] [ChartedSpace H Q] [IsManifold I ∞ Q]
+  hT2 hCompact hConnected hBoundary in
+theorem FlatteningProfile.deriv_beta (P : FlatteningProfile) (x : ℝ) :
+    deriv P.beta x = P.psi x :=
+  (P.hasDerivAt_beta x).deriv
+
+omit [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E] [CompleteSpace E]
+  [TopologicalSpace H] [TopologicalSpace Q] [ChartedSpace H Q] [IsManifold I ∞ Q]
+  hT2 hCompact hConnected hBoundary in
+theorem FlatteningProfile.differentiable_beta (P : FlatteningProfile) :
+    Differentiable ℝ P.beta :=
+  fun x => (P.hasDerivAt_beta x).differentiableAt
+
+omit [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E] [CompleteSpace E]
+  [TopologicalSpace H] [TopologicalSpace Q] [ChartedSpace H Q] [IsManifold I ∞ Q]
+  hT2 hCompact hConnected hBoundary in
+theorem FlatteningProfile.contDiff_beta (P : FlatteningProfile) :
+    ContDiff ℝ ∞ P.beta := by
+  rw [contDiff_infty_iff_deriv]
+  refine ⟨P.differentiable_beta, ?_⟩
+  have h : deriv P.beta = P.psi := funext fun x => P.deriv_beta x
+  rw [h]
+  exact P.smooth
+
+omit [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E] [CompleteSpace E]
+  [TopologicalSpace H] [TopologicalSpace Q] [ChartedSpace H Q] [IsManifold I ∞ Q]
+  hT2 hCompact hConnected hBoundary in
+theorem FlatteningProfile.iteratedDeriv_beta (P : FlatteningProfile) {m : ℕ} (hm : 0 < m)
+    (x : ℝ) : iteratedDeriv m P.beta x = iteratedDeriv (m - 1) P.psi x := by
+  induction m with
+  | zero => exact absurd hm (Nat.lt_irrefl 0)
+  | succ k _ =>
+      rw [iteratedDeriv_succ', Nat.add_sub_cancel]
+      congr 1
+      exact funext fun y => P.deriv_beta y
+
+omit [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E] [CompleteSpace E]
+  [TopologicalSpace H] [TopologicalSpace Q] [ChartedSpace H Q] [IsManifold I ∞ Q]
+  hT2 hCompact hConnected hBoundary in
+theorem FlatteningProfile.iteratedDeriv_beta_zero (P : FlatteningProfile) {m : ℕ} (hm : 0 < m) :
+    iteratedDeriv m P.beta 0 = 0 := by
+  rw [P.iteratedDeriv_beta hm, P.flat_zero]
+
+omit [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E] [CompleteSpace E]
+  [TopologicalSpace H] [TopologicalSpace Q] [ChartedSpace H Q] [IsManifold I ∞ Q]
+  hT2 hCompact hConnected hBoundary in
+theorem FlatteningProfile.iteratedDeriv_beta_one (P : FlatteningProfile) {m : ℕ} (hm : 0 < m) :
+    iteratedDeriv m P.beta 1 = 0 := by
+  rw [P.iteratedDeriv_beta hm, P.flat_one]
+
+omit [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E] [CompleteSpace E]
+  [TopologicalSpace H] [TopologicalSpace Q] [ChartedSpace H Q] [IsManifold I ∞ Q]
+  hT2 hCompact hConnected hBoundary in
+theorem iteratedDeriv_comp_eq_zero_of_flat {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
+    {φ : ℝ → F} {ψ : ℝ → ℝ} {x₀ : ℝ} (hφ : ContDiff ℝ ∞ φ) (hψ : ContDiff ℝ ∞ ψ)
+    (hflat : ∀ m, 0 < m → iteratedDeriv m ψ x₀ = 0) {m : ℕ} (hm : 0 < m) :
+    iteratedDeriv m (φ ∘ ψ) x₀ = 0 := by
+  rw [iteratedDeriv_vcomp_eq_sum_orderedFinpartition hφ.contDiffAt hψ.contDiffAt
+    (by exact_mod_cast le_top : (m : ℕ∞ω) ≤ ∞)]
+  refine Finset.sum_eq_zero fun c _ => ?_
+  obtain ⟨j, -⟩ := c.cover (⟨0, hm⟩ : Fin m)
+  have hzero : (fun j : Fin c.length => iteratedDeriv (c.partSize j) ψ x₀) = 0 := by
+    funext j
+    exact hflat (c.partSize j) (c.partSize_pos j)
+  rw [hzero]
+  exact ContinuousMultilinearMap.map_coord_zero _ j (by simp)
+
+omit [CompleteSpace E] hT2 hCompact hConnected hBoundary in
+theorem flatPolygon_coe_apply (g : SmoothRiemannianMetric I Q) (P : FlatteningProfile) (N : ℕ)
+    (γ : Surgery.Topology.Circle → Q) {x : ℝ} (hx : x ∈ Ico (0 : ℝ) 1) :
+    flatPolygon g P N γ (x : Surgery.Topology.Circle) =
+      shortSegment g (polygonVertex γ N ⌊(N : ℝ) * x⌋)
+        (polygonVertex γ N (⌊(N : ℝ) * x⌋ + 1))
+        (P.beta ((N : ℝ) * x - ⌊(N : ℝ) * x⌋)) := by
+  rw [flatPolygon, AddCircle.liftIco_coe_apply (p := (1 : ℝ)) (a := (0 : ℝ))
+    (by simpa using hx)]
+
+omit [CompleteSpace E] hT2 hCompact hConnected hBoundary in
+theorem flatPolygon_apply_of_mem_Ico (g : SmoothRiemannianMetric I Q) (P : FlatteningProfile)
+    (N : ℕ) (γ : Surgery.Topology.Circle → Q) {i : ℤ} {x : ℝ} (hN : 0 < N)
+    (hi : 0 ≤ i) (hiN : i < N)
+    (hx : x ∈ Ico ((i : ℝ) / N) (((i : ℝ) + 1) / N)) :
+    flatPolygon g P N γ (x : Surgery.Topology.Circle) =
+      shortSegment g (polygonVertex γ N i) (polygonVertex γ N (i + 1))
+        (P.beta ((N : ℝ) * x - i)) := by
+  have hNR : (0 : ℝ) < N := by exact_mod_cast hN
+  have hxi : (i : ℝ) ≤ (N : ℝ) * x := by
+    have h := (div_le_iff₀ hNR).mp hx.1
+    linarith [h]
+  have hxi' : (N : ℝ) * x < i + 1 := by
+    have h := (lt_div_iff₀ hNR).mp hx.2
+    linarith [h]
+  have hfloor : ⌊(N : ℝ) * x⌋ = i := Int.floor_eq_iff.mpr ⟨hxi, hxi'⟩
+  have hx0 : (0 : ℝ) ≤ x := by
+    have h : (0 : ℝ) ≤ (i : ℝ) / N := div_nonneg (by exact_mod_cast hi) hNR.le
+    linarith [h, hx.1]
+  have hx1 : x < 1 := by
+    have hle : ((i : ℝ) + 1) / N ≤ 1 := by
+      rw [div_le_one hNR]
+      have : (i + 1 : ℤ) ≤ N := by omega
+      exact_mod_cast this
+    linarith [hx.2, hle]
+  have hxI : x ∈ Ico (0 : ℝ) 1 := ⟨hx0, hx1⟩
+  rw [flatPolygon_coe_apply g P N γ hxI, hfloor]
+
 end DifferentialGeometry.PDE.RicciFlow.Extinction.Families
