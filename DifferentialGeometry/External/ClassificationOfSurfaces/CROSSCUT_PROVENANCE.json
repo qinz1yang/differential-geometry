@@ -1,0 +1,119 @@
+{
+  "upstream_repository": "https://github.com/mccorvie/classification-of-surfaces",
+  "upstream_revision": "e3c7230fe78d7b056a415d9ecae6f77887046b32",
+  "upstream_source": "ClassificationOfSurfaces/Moise/PolygonalCrosscut.lean",
+  "immutable_snapshot_sha256": "c10b056867affa21641a5ec4d08b84deebfb8d6e334ec3613ca33c68514ac5e7",
+  "license": "Apache-2.0",
+  "license_sha256": "b40930bbcf80744c86c46a12bc9da056641d722716c378f5659b9e555ef833e1",
+  "target_lean": "4.33.1",
+  "target_mathlib": "0df444a360eaa60ab8c11dca51a86af692955474",
+  "selected_upstream_declarations": [
+    {
+      "declaration": "triangle_interior_side",
+      "qualified_declaration": "LeanEval.Topology.ClassificationOfSurfaces.Moise.PolygonalTheta.MeshCrosscut.triangle_interior_side",
+      "source_start_line": 2581,
+      "documentation_start_line": 2580,
+      "declaration_sha256": "ca462522534ee73817f60b833df6ce8b080d2fb40a0bb3a68aab9ffc0d095edf",
+      "documentation_and_declaration_sha256": "a3c65fa29bb26647bee667a7efd9d7461d62c951602650f181064cf324c1aa64"
+    },
+    {
+      "declaration": "side13Mesh",
+      "qualified_declaration": "LeanEval.Topology.ClassificationOfSurfaces.Moise.PolygonalTheta.MeshCrosscut.side13Mesh",
+      "source_start_line": 2614,
+      "documentation_start_line": 2613,
+      "declaration_sha256": "397063ec25341beff5afc82a07ff8092050e65eda99cfd038db1b3e59c8df1f1",
+      "documentation_and_declaration_sha256": "0b97af47d01225687effaba4c85608f5cc9bbba8dbd7307da57ab613f3f235a4"
+    },
+    {
+      "declaration": "triangleCarrier_subset_side13",
+      "qualified_declaration": "LeanEval.Topology.ClassificationOfSurfaces.Moise.PolygonalTheta.MeshCrosscut.triangleCarrier_subset_side13",
+      "source_start_line": 2629,
+      "documentation_start_line": 2629,
+      "declaration_sha256": "2d859461a50f629d570176f630dfc354d76c9f9da31acf95468c7bf0d309de6e",
+      "documentation_and_declaration_sha256": "2d859461a50f629d570176f630dfc354d76c9f9da31acf95468c7bf0d309de6e"
+    },
+    {
+      "declaration": "side13Mesh_support",
+      "qualified_declaration": "LeanEval.Topology.ClassificationOfSurfaces.Moise.PolygonalTheta.MeshCrosscut.side13Mesh_support",
+      "source_start_line": 2670,
+      "documentation_start_line": 2669,
+      "declaration_sha256": "cc6d5b0d7bda1a718a0af5ae1d9c3e10826ab305a86b60a8fec0a2a9d19df0d0",
+      "documentation_and_declaration_sha256": "0e8b0fd2042cbb359def041eeea8cb423a5c14781b6bf26848f1363f1d042146"
+    },
+    {
+      "declaration": "side_triangles_union",
+      "qualified_declaration": "LeanEval.Topology.ClassificationOfSurfaces.Moise.PolygonalTheta.MeshCrosscut.side_triangles_union",
+      "source_start_line": 2786,
+      "documentation_start_line": 2785,
+      "declaration_sha256": "06d98eb87e251a0e9ea26fb09f7a37f6747845d309b0f4a7c9b8e54ddf2dd99a",
+      "documentation_and_declaration_sha256": "41c3bb0972f0671d9669e404368165d06e20c92849b8fb09c3ce811c533c81b5"
+    },
+    {
+      "declaration": "disjoint_side_triangles",
+      "qualified_declaration": "LeanEval.Topology.ClassificationOfSurfaces.Moise.PolygonalTheta.MeshCrosscut.disjoint_side_triangles",
+      "source_start_line": 2802,
+      "documentation_start_line": 2801,
+      "declaration_sha256": "ab0fa88cb14ceddb6d3e6163220385639e913f2c7892a7cadb7fa0318cb4770d",
+      "documentation_and_declaration_sha256": "7a8f554f484b15939c7c78c861d2f78e4c2fe19f8b4e053b045e49416a38c24d"
+    },
+    {
+      "declaration": "side13_triangles_nonempty",
+      "qualified_declaration": "LeanEval.Topology.ClassificationOfSurfaces.Moise.PolygonalTheta.MeshCrosscut.side13_triangles_nonempty",
+      "source_start_line": 2813,
+      "documentation_start_line": 2813,
+      "declaration_sha256": "c7fa864e4912de6ebb2944a00034ba874f7980f6a63673172230cb02069dc833",
+      "documentation_and_declaration_sha256": "c7fa864e4912de6ebb2944a00034ba874f7980f6a63673172230cb02069dc833"
+    },
+    {
+      "declaration": "side23_triangles_nonempty",
+      "qualified_declaration": "LeanEval.Topology.ClassificationOfSurfaces.Moise.PolygonalTheta.MeshCrosscut.side23_triangles_nonempty",
+      "source_start_line": 2823,
+      "documentation_start_line": 2823,
+      "declaration_sha256": "f6d67421adf4f20522f450955b4cee5ede1bd84728bbce6c5dcaa3dde3d2dedd",
+      "documentation_and_declaration_sha256": "f6d67421adf4f20522f450955b4cee5ede1bd84728bbce6c5dcaa3dde3d2dedd"
+    },
+    {
+      "declaration": "card_side13_triangles_lt",
+      "qualified_declaration": "LeanEval.Topology.ClassificationOfSurfaces.Moise.PolygonalTheta.MeshCrosscut.card_side13_triangles_lt",
+      "source_start_line": 2834,
+      "documentation_start_line": 2833,
+      "declaration_sha256": "0c61c4bc93d7c8a1f10e399bb2463649da9a27aad6d6439bf1a37f455954c843",
+      "documentation_and_declaration_sha256": "21700fd3f9cd3491589036f0e1fa90dc507eec26212ee1e62a03adb868665fc3"
+    },
+    {
+      "declaration": "card_side23_triangles_lt",
+      "qualified_declaration": "LeanEval.Topology.ClassificationOfSurfaces.Moise.PolygonalTheta.MeshCrosscut.card_side23_triangles_lt",
+      "source_start_line": 2846,
+      "documentation_start_line": 2846,
+      "declaration_sha256": "bae2c3adea199904a2a71ec40fae1a50f30e17491c5c4d70463db284d15e2971",
+      "documentation_and_declaration_sha256": "bae2c3adea199904a2a71ec40fae1a50f30e17491c5c4d70463db284d15e2971"
+    }
+  ],
+  "target": "TriangleMeshCrosscut.lean",
+  "target_sha256": "274fcedb3fab6d079b511d568d40de72cfff0327afcfb3784dcdd78bbe708065",
+  "selected_upstream_sha256": "1d47ca0fb78b37335531b8009f0471c92eef7ebd40c26a80debd9e00c0c578ba",
+  "adaptation_patch_sha256": "26a2f2fe5ac5943872ddc363084098910ba2832e9a4e925b2f6ebbdb4bccc9c0",
+  "checked_private_request": "1789235209202169419-schoenflies-6e17e677",
+  "source_change_from_checked": "Five exact proof bodies/scopes retained; only final partition theorem becomes public and attribution path changes.",
+  "production_validation": {
+    "status": "Passed fresh new-module artifact compilation and imported consumer gate.",
+    "request_id": "1789235455742746297-schoenflies-fb8bd5a2",
+    "input_sha256": "7aaaba3821d580d33bb08d2718c4471dc4df302c28ded62affb9c9b4adfe8eb6",
+    "result_sha256": "806edbad2f6638ff0c4a4e1ece9d72b371c3cc16944c2e128a03c28891af1eaf",
+    "job_id": "13781140",
+    "host": "della-r3c2n16",
+    "elapsed_seconds": 76.89479732513428,
+    "peak_rss_bytes": 2236350464,
+    "fresh_artifacts": [
+      "DifferentialGeometry.External.ClassificationOfSurfaces.TriangleMeshCrosscut"
+    ],
+    "artifact_log_sha256": "ae15f07ae57f529c295d58b0f612f338c2d9f69a9cf93a1fa7cb0a6fe3703803",
+    "source_guards_matched": 86,
+    "signature_axiom_pairs": 2,
+    "declaration_linters": "All imported vendor and current consumer declarations: unusedArguments, simpNF, synTaut; source defProp covers kinds.",
+    "transitive_axioms": "All imported vendor and current declarations, including private: only propext, Classical.choice, Quot.sound.",
+    "full_dg_aggregate_build": false,
+    "geometric_free_triangle_existence": false,
+    "smooth_disk_filling": false
+  }
+}

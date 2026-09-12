@@ -1,0 +1,169 @@
+/-- A mesh triangle lies wholly on one side of a realized crosscut. -/
+theorem triangle_interior_side (C : G.MeshCrosscut M) (T : M.Triangle) :
+    interior (M.triangleCarrier T.1) ⊆ G.J13.interiorRegion ∨
+      interior (M.triangleCarrier T.1) ⊆ G.J23.interiorRegion := by
+  have htriangleSupport : M.triangleCarrier T.1 ⊆ M.toPlaneComplex.support := by
+    rw [M.toPlaneComplex_support]
+    exact Set.subset_iUnion_of_subset T.1
+      (Set.subset_iUnion_of_subset T.2 subset_rfl)
+  have hinside12 : interior (M.triangleCarrier T.1) ⊆ G.J12.interiorRegion := by
+    rw [← G.J12.interior_closedRegion,
+      ← PolygonalTheta.MeshCrosscut.support_eq C]
+    exact interior_mono htriangleSupport
+  have hdisjointChord :
+      Disjoint (interior (M.triangleCarrier T.1)) G.B3 := by
+    rw [← PolygonalTheta.MeshCrosscut.chordCarrier C]
+    exact M.disjoint_interior_triangleCarrier_edgeCarrier T
+      (PolygonalTheta.MeshCrosscut.chordEdge_mem C)
+  have hsplit : interior (M.triangleCarrier T.1) ⊆
+      G.J13.interiorRegion ∪ G.J23.interiorRegion := by
+    intro p hp
+    exact G.interior12_diff_chord_subset
+      ⟨hinside12 hp, fun hpChord => Set.disjoint_left.mp hdisjointChord hp hpChord⟩
+  obtain ⟨p, hp⟩ := M.interior_triangleCarrier_nonempty T
+  rcases hsplit hp with hp13 | hp23
+  · exact Or.inl <|
+      (convex_convexHull ℝ _).interior.isPreconnected.subset_left_of_subset_union
+        G.J13.isOpen_interiorRegion G.J23.isOpen_interiorRegion
+        G.disjoint_interior13_interior23 hsplit ⟨p, hp, hp13⟩
+  · exact Or.inr <|
+      (convex_convexHull ℝ _).interior.isPreconnected.subset_right_of_subset_union
+        G.J13.isOpen_interiorRegion G.J23.isOpen_interiorRegion
+        G.disjoint_interior13_interior23 hsplit ⟨p, hp, hp23⟩
+
+/-- Select the maximal triangles lying on the `J13` side of the crosscut. -/
+noncomputable def side13Mesh (_ : G.MeshCrosscut M) : TriangleMesh := by
+  classical
+  exact M.restrictTriangles fun t =>
+    (interior (M.triangleCarrier t) ∩ G.J13.interiorRegion).Nonempty
+
+private theorem triangleCarrier_subset_side13 {t : Finset M.Vertex}
+    (ht : t ∈ C.side13Mesh.triangles) :
+    M.triangleCarrier t ⊆ G.J13.closedRegion := by
+  classical
+  have htM : t ∈ M.triangles :=
+    (M.mem_restrictTriangles_triangles fun u =>
+      (interior (M.triangleCarrier u) ∩ G.J13.interiorRegion).Nonempty).mp ht |>.1
+  have hmeet : (interior (M.triangleCarrier t) ∩ G.J13.interiorRegion).Nonempty :=
+    (M.mem_restrictTriangles_triangles fun u =>
+      (interior (M.triangleCarrier u) ∩ G.J13.interiorRegion).Nonempty).mp ht |>.2
+  let T : M.Triangle := ⟨t, htM⟩
+  have hside : interior (M.triangleCarrier t) ⊆ G.J13.interiorRegion := by
+    rcases triangle_interior_side C T with h13 | h23
+    · exact h13
+    · obtain ⟨p, hpT, hp13⟩ := hmeet
+      exact False.elim <| Set.disjoint_left.mp G.disjoint_interior13_interior23
+        hp13 (h23 hpT)
+  rw [← M.closure_interior_triangleCarrier T, PolygonalCircle.closedRegion]
+  exact closure_mono hside
+
+/-- Restricting along a realized crosscut gives exactly the first closed polygonal subdisk. -/
+theorem side13Mesh_support :
+    C.side13Mesh.toPlaneComplex.support = G.J13.closedRegion := by
+  classical
+  apply Set.Subset.antisymm
+  · rw [TriangleMesh.toPlaneComplex_support]
+    intro p hp
+    simp only [Set.mem_iUnion] at hp
+    obtain ⟨t, ht, hpt⟩ := hp
+    exact C.triangleCarrier_subset_side13 ht hpt
+  · rw [PolygonalCircle.closedRegion]
+    apply closure_minimal _ C.side13Mesh.toPlaneComplex.isCompact_support.isClosed
+    intro p hp13
+    have hp12 : p ∈ G.J12.closedRegion := by
+      rw [G.closedRegion_eq_union]
+      exact Or.inl (by rw [G.J13.closedRegion_eq_union]; exact Or.inl hp13)
+    have hpSupport : p ∈ M.toPlaneComplex.support := by
+      rwa [PolygonalTheta.MeshCrosscut.support_eq C]
+    rw [M.toPlaneComplex_support] at hpSupport
+    simp only [Set.mem_iUnion] at hpSupport
+    obtain ⟨t, ht, hpt⟩ := hpSupport
+    let T : M.Triangle := ⟨t, ht⟩
+    have hpClosure : p ∈ closure (interior (M.triangleCarrier t)) := by
+      rw [M.closure_interior_triangleCarrier T]
+      exact hpt
+    have hpInterClosure : p ∈ closure
+        (G.J13.interiorRegion ∩ interior (M.triangleCarrier t)) :=
+      G.J13.isOpen_interiorRegion.inter_closure ⟨hp13, hpClosure⟩
+    have hmeet :
+        (interior (M.triangleCarrier t) ∩ G.J13.interiorRegion).Nonempty := by
+      obtain ⟨q, hq13, hqt⟩ := Set.Nonempty.of_closure ⟨p, hpInterClosure⟩
+      exact ⟨q, hqt, hq13⟩
+    rw [TriangleMesh.toPlaneComplex_support]
+    exact Set.mem_iUnion_of_mem t <| Set.mem_iUnion_of_mem
+      ((M.mem_restrictTriangles_triangles fun u =>
+        (interior (M.triangleCarrier u) ∩ G.J13.interiorRegion).Nonempty).mpr
+          ⟨ht, hmeet⟩) hpt
+
+/-- The two restricted triangle sets partition the original mesh. -/
+theorem side_triangles_union :
+    C.side13Mesh.triangles ∪ C.side23Mesh.triangles = M.triangles := by
+  classical
+  ext t
+  constructor
+  · intro ht
+    rcases Finset.mem_union.mp ht with ht13 | ht23
+    · exact (C.mem_side13Mesh_triangles_iff.mp ht13).1
+    · exact (C.mem_side23Mesh_triangles_iff.mp ht23).1
+  · intro ht
+    let T : M.Triangle := ⟨t, ht⟩
+    rcases triangle_interior_side C T with h13 | h23
+    · exact Finset.mem_union_left _ <| C.mem_side13Mesh_triangles_iff.mpr ⟨ht, h13⟩
+    · exact Finset.mem_union_right _ <| C.mem_side23Mesh_triangles_iff.mpr ⟨ht, h23⟩
+
+/-- No maximal triangle occurs on both sides of the crosscut. -/
+theorem disjoint_side_triangles :
+    Disjoint C.side13Mesh.triangles C.side23Mesh.triangles := by
+  classical
+  rw [Finset.disjoint_left]
+  intro t ht13 ht23
+  have h13 := (C.mem_side13Mesh_triangles_iff.mp ht13).2
+  have h23 := (C.mem_side23Mesh_triangles_iff.mp ht23).2
+  obtain ⟨p, hp⟩ := M.interior_triangleCarrier_nonempty
+    ⟨t, (C.mem_side13Mesh_triangles_iff.mp ht13).1⟩
+  exact Set.disjoint_left.mp G.disjoint_interior13_interior23 (h13 hp) (h23 hp)
+
+theorem side13_triangles_nonempty : C.side13Mesh.triangles.Nonempty := by
+  obtain ⟨p, hp⟩ := G.J13.isConnected_interiorRegion.nonempty
+  have hpSupport : p ∈ C.side13Mesh.toPlaneComplex.support := by
+    rw [C.side13Mesh_support, G.J13.closedRegion_eq_union]
+    exact Or.inl hp
+  rw [TriangleMesh.toPlaneComplex_support] at hpSupport
+  simp only [Set.mem_iUnion] at hpSupport
+  obtain ⟨t, ht, -⟩ := hpSupport
+  exact ⟨t, ht⟩
+
+theorem side23_triangles_nonempty : C.side23Mesh.triangles.Nonempty := by
+  obtain ⟨p, hp⟩ := G.J23.isConnected_interiorRegion.nonempty
+  have hpSupport : p ∈ C.side23Mesh.toPlaneComplex.support := by
+    rw [C.side23Mesh_support, G.J23.closedRegion_eq_union]
+    exact Or.inl hp
+  rw [TriangleMesh.toPlaneComplex_support] at hpSupport
+  simp only [Set.mem_iUnion] at hpSupport
+  obtain ⟨t, ht, -⟩ := hpSupport
+  exact ⟨t, ht⟩
+
+/-- Each side of a proper realized crosscut has strictly fewer maximal triangles. -/
+theorem card_side13_triangles_lt :
+    C.side13Mesh.triangles.card < M.triangles.card := by
+  apply Finset.card_lt_card
+  refine Finset.ssubset_iff_subset_ne.mpr ⟨?_, ?_⟩
+  · intro t ht
+    exact (C.mem_side13Mesh_triangles_iff.mp ht).1
+  · intro heq
+    obtain ⟨t, ht23⟩ := C.side23_triangles_nonempty
+    have htM := (C.mem_side23Mesh_triangles_iff.mp ht23).1
+    have ht13 : t ∈ C.side13Mesh.triangles := by rwa [heq]
+    exact Finset.disjoint_left.mp C.disjoint_side_triangles ht13 ht23
+
+theorem card_side23_triangles_lt :
+    C.side23Mesh.triangles.card < M.triangles.card := by
+  apply Finset.card_lt_card
+  refine Finset.ssubset_iff_subset_ne.mpr ⟨?_, ?_⟩
+  · intro t ht
+    exact (C.mem_side23Mesh_triangles_iff.mp ht).1
+  · intro heq
+    obtain ⟨t, ht13⟩ := C.side13_triangles_nonempty
+    have htM := (C.mem_side13Mesh_triangles_iff.mp ht13).1
+    have ht23 : t ∈ C.side23Mesh.triangles := by rwa [heq]
+    exact Finset.disjoint_left.mp C.disjoint_side_triangles ht13 ht23
