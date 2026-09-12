@@ -412,34 +412,142 @@ theorem exists_boundary_attachment : Nonempty BoundaryAttachment := by
   exact ⟨Topology.Manifold.sphereAntipodalDiffeomorph,
     sphereAntipodalDiffeomorph_preservesOrientation_opposite⟩
 
-theorem exists_smooth_connected_sum (M : ConnectedClosedOrientedManifold.{u} 3)
+private theorem exists_manifoldOrientation_of_ballCharts
+    (M : ConnectedClosedOrientedManifold.{u} 3)
     (N : ConnectedClosedOrientedManifold.{v} 3)
     (c : OrientedBallChart M.toClosedOrientedManifold)
     (d : OrientedBallChart N.toClosedOrientedManifold) (a : BoundaryAttachment) :
-    Nonempty (SmoothConnectedSum c d a) :=
-  OrientationAssembly.exists_smooth_connected_sum_of_orientation_data c d a
+    letI := ConnectedSumQuotient.csChartedSpace c.toBallChart d.toBallChart a.1.toHomeomorph
+    letI := ConnectedSumQuotient.csIsManifold c.toBallChart d.toBallChart a.1.toHomeomorph
+      (ConnectedSumQuotient.contDiffOn_reflectMap a.1)
+      (ConnectedSumQuotient.contDiffOn_reflectMapInv a.1)
+    ∃ O : ManifoldOrientation (𝓡 3)
+        (ConnectedSumQuotient c.toBallChart d.toBallChart a.1.toHomeomorph) 3,
+      (∀ x : c.toBallChart.interior, Orientation.map (Fin 3)
+        ((OrientationAssembly.interiorLeft_isLocalDiffeomorph' c.toBallChart d.toBallChart a.1).mfderivToContinuousLinearEquiv
+          (by simp) x).toLinearEquiv (M.orientation.orientation x)
+        = O.orientation (ConnectedSumQuotient.interiorLeft c.toBallChart d.toBallChart a.1 x)) ∧
+      (∀ x : d.toBallChart.interior, Orientation.map (Fin 3)
+        ((OrientationAssembly.interiorRight_isLocalDiffeomorph' c.toBallChart d.toBallChart a.1).mfderivToContinuousLinearEquiv
+          (by simp) x).toLinearEquiv (N.orientation.orientation x)
+        = O.orientation (ConnectedSumQuotient.interiorRight c.toBallChart d.toBallChart a.1 x)) := by
+  let _ := ConnectedSumQuotient.csChartedSpace c.toBallChart d.toBallChart a.1.toHomeomorph
+  let _ := ConnectedSumQuotient.csIsManifold c.toBallChart d.toBallChart a.1.toHomeomorph
+    (ConnectedSumQuotient.contDiffOn_reflectMap a.1)
+    (ConnectedSumQuotient.contDiffOn_reflectMapInv a.1)
+  exact OrientationAssembly.exists_manifoldOrientation_of_pieces (M := M.toClosedOrientedManifold)
+    (N := N.toClosedOrientedManifold) c d a.1
+    (fun f hf =>
+      OrientationAssembly.mem_atlas_leftChart c.toBallChart d.toBallChart a.1.toHomeomorph f hf)
+    (fun g hg =>
+      OrientationAssembly.mem_atlas_rightChart c.toBallChart d.toBallChart a.1.toHomeomorph g hg)
+    (OrientationAssembly.mem_atlas_seamChartX c.toBallChart d.toBallChart a.1.toHomeomorph) a.2
 
 def orientedBallChart (M : ConnectedClosedOrientedManifold.{u} 3) :
     OrientedBallChart M.toClosedOrientedManifold :=
   Classical.choice (exists_oriented_ball_chart M)
 
-def boundaryAttachment : BoundaryAttachment := Classical.choice exists_boundary_attachment
+def boundaryAttachment : BoundaryAttachment :=
+  ⟨Topology.Manifold.sphereAntipodalDiffeomorph,
+    sphereAntipodalDiffeomorph_preservesOrientation_opposite⟩
+
+theorem boundaryAttachment_symm :
+    (boundaryAttachment.1).symm = boundaryAttachment.1 :=
+  Diffeomorph.ext fun _ => rfl
 
 def smoothConnectedSum (M : ConnectedClosedOrientedManifold.{u} 3)
-    (N : ConnectedClosedOrientedManifold.{v} 3) :
-    SmoothConnectedSum (orientedBallChart M) (orientedBallChart N) boundaryAttachment :=
-  Classical.choice (exists_smooth_connected_sum M N (orientedBallChart M)
-    (orientedBallChart N) boundaryAttachment)
+    (N : ConnectedClosedOrientedManifold.{v} 3)
+    (c : OrientedBallChart M.toClosedOrientedManifold)
+    (d : OrientedBallChart N.toClosedOrientedManifold) (a : BoundaryAttachment) :
+    SmoothConnectedSum c d a := by
+  letI := ConnectedSumQuotient.csChartedSpace c.toBallChart d.toBallChart a.1.toHomeomorph
+  letI := ConnectedSumQuotient.csIsManifold c.toBallChart d.toBallChart a.1.toHomeomorph
+    (ConnectedSumQuotient.contDiffOn_reflectMap a.1)
+    (ConnectedSumQuotient.contDiffOn_reflectMapInv a.1)
+  haveI : Nonempty (Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1) :=
+    ConnectedSumQuotient.nonempty_sphere_of_neZero
+  have hO := exists_manifoldOrientation_of_ballCharts M N c d a
+  exact
+    { charts := ConnectedSumQuotient.csChartedSpace c.toBallChart d.toBallChart a.1.toHomeomorph
+      smooth := ConnectedSumQuotient.csIsManifold c.toBallChart d.toBallChart a.1.toHomeomorph
+        (ConnectedSumQuotient.contDiffOn_reflectMap a.1)
+        (ConnectedSumQuotient.contDiffOn_reflectMapInv a.1)
+      hausdorff := inferInstance
+      compact := inferInstance
+      connected := inferInstance
+      orientation := Classical.choose hO
+      interiorLeft_localDiffeomorph :=
+        OrientationAssembly.interiorLeft_isLocalDiffeomorph' c.toBallChart d.toBallChart a.1
+      interiorRight_localDiffeomorph :=
+        OrientationAssembly.interiorRight_isLocalDiffeomorph' c.toBallChart d.toBallChart a.1
+      collar_localDiffeomorph :=
+        OrientationAssembly.collarMap_isLocalDiffeomorph' c.toBallChart d.toBallChart a.1
+      interiorLeft_preserves_orientation := (Classical.choose_spec hO).1
+      interiorRight_preserves_orientation := (Classical.choose_spec hO).2 }
+
+theorem exists_smooth_connected_sum (M : ConnectedClosedOrientedManifold.{u} 3)
+    (N : ConnectedClosedOrientedManifold.{v} 3)
+    (c : OrientedBallChart M.toClosedOrientedManifold)
+    (d : OrientedBallChart N.toClosedOrientedManifold) (a : BoundaryAttachment) :
+    Nonempty (SmoothConnectedSum c d a) :=
+  ⟨smoothConnectedSum M N c d a⟩
+
+theorem smoothConnectedSum_charts (M : ConnectedClosedOrientedManifold.{u} 3)
+    (N : ConnectedClosedOrientedManifold.{v} 3)
+    (c : OrientedBallChart M.toClosedOrientedManifold)
+    (d : OrientedBallChart N.toClosedOrientedManifold) (a : BoundaryAttachment) :
+    (smoothConnectedSum M N c d a).charts = ConnectedSumQuotient.csChartedSpace
+      c.toBallChart d.toBallChart a.1.toHomeomorph := rfl
+
+theorem smoothConnectedSum_smooth (M : ConnectedClosedOrientedManifold.{u} 3)
+    (N : ConnectedClosedOrientedManifold.{v} 3)
+    (c : OrientedBallChart M.toClosedOrientedManifold)
+    (d : OrientedBallChart N.toClosedOrientedManifold) (a : BoundaryAttachment) :
+    (smoothConnectedSum M N c d a).smooth = ConnectedSumQuotient.csIsManifold
+      c.toBallChart d.toBallChart a.1.toHomeomorph
+      (ConnectedSumQuotient.contDiffOn_reflectMap a.1)
+      (ConnectedSumQuotient.contDiffOn_reflectMapInv a.1) := rfl
+
+theorem smoothConnectedSum_interiorLeft_localDiffeomorph
+    (M : ConnectedClosedOrientedManifold.{u} 3)
+    (N : ConnectedClosedOrientedManifold.{v} 3)
+    (c : OrientedBallChart M.toClosedOrientedManifold)
+    (d : OrientedBallChart N.toClosedOrientedManifold) (a : BoundaryAttachment) :
+    (smoothConnectedSum M N c d a).interiorLeft_localDiffeomorph =
+      OrientationAssembly.interiorLeft_isLocalDiffeomorph' c.toBallChart d.toBallChart a.1 := rfl
 
 def connectedSum (M : ConnectedClosedOrientedManifold.{u} 3)
     (N : ConnectedClosedOrientedManifold.{v} 3) : ConnectedClosedOrientedManifold.{max u v} 3 :=
-  (smoothConnectedSum M N).toConnectedClosedOrientedManifold
+  (smoothConnectedSum M N (orientedBallChart M) (orientedBallChart N)
+    boundaryAttachment).toConnectedClosedOrientedManifold
 
 @[simp]
 theorem connectedSum_carrier (M : ConnectedClosedOrientedManifold.{u} 3)
     (N : ConnectedClosedOrientedManifold.{v} 3) :
     (connectedSum M N).Carrier = ConnectedSumQuotient (orientedBallChart M).toBallChart
       (orientedBallChart N).toBallChart boundaryAttachment.1.toHomeomorph := rfl
+
+@[simp]
+theorem connectedSum_charts (M : ConnectedClosedOrientedManifold.{u} 3)
+    (N : ConnectedClosedOrientedManifold.{v} 3) :
+    (connectedSum M N).charts = ConnectedSumQuotient.csChartedSpace
+      (orientedBallChart M).toBallChart (orientedBallChart N).toBallChart
+      boundaryAttachment.1.toHomeomorph := rfl
+
+@[simp]
+theorem connectedSum_smooth (M : ConnectedClosedOrientedManifold.{u} 3)
+    (N : ConnectedClosedOrientedManifold.{v} 3) :
+    (connectedSum M N).smooth = ConnectedSumQuotient.csIsManifold
+      (orientedBallChart M).toBallChart (orientedBallChart N).toBallChart
+      boundaryAttachment.1.toHomeomorph
+      (ConnectedSumQuotient.contDiffOn_reflectMap boundaryAttachment.1)
+      (ConnectedSumQuotient.contDiffOn_reflectMapInv boundaryAttachment.1) := rfl
+
+@[simp]
+theorem connectedSum_orientation (M : ConnectedClosedOrientedManifold.{u} 3)
+    (N : ConnectedClosedOrientedManifold.{v} 3) :
+    (connectedSum M N).orientation = (smoothConnectedSum M N (orientedBallChart M)
+      (orientedBallChart N) boundaryAttachment).orientation := rfl
 
 theorem connectedSum_choice_independent {M : ClosedOrientedManifold.{u} 3}
     {N : ClosedOrientedManifold.{v} 3} (c c' : OrientedBallChart M)

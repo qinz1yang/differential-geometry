@@ -11,6 +11,8 @@ import Mathlib.MeasureTheory.Function.LocallyIntegrable
 import Mathlib.MeasureTheory.Measure.Lebesgue.Basic
 import DifferentialGeometry.Geometry.Metric.QuadraticBounds.Unit
 import DifferentialGeometry.Geometry.Metric.NeighborhoodRetraction
+import DifferentialGeometry.Geometry.Metric.SourceTangent
+import DifferentialGeometry.Topology.LoopSpace.PeriodicDescent
 
 noncomputable section
 
@@ -139,11 +141,144 @@ def embeddingFirstJet {N : ℕ} (e : SmoothLoopEmbedding (I := I) (Q := Q) N)
     exact (h.continuous.comp continuous_subtype_val).prodMk
       (h.continuous_deriv_one.comp continuous_subtype_val)
 
-theorem regularLoop_topology_eq_embedding {N : ℕ}
+theorem continuous_embeddingFirstJet {N : ℕ}
     (e : SmoothLoopEmbedding (I := I) (Q := Q) N) :
+    Continuous (embeddingFirstJet (I := I) (Q := Q) e) := by
+  have hT : Continuous
+      (fun z : TangentBundle I Q =>
+        (tangentBundleModelSpaceHomeomorph 𝓘(ℝ, EuclideanSpace ℝ (Fin N)))
+          (tangentMap I 𝓘(ℝ, EuclideanSpace ℝ (Fin N)) e.map z)) :=
+    (tangentBundleModelSpaceHomeomorph 𝓘(ℝ, EuclideanSpace ℝ (Fin N))).continuous.comp
+      (e.smooth.continuous_tangentMap (by simp))
+  let T : C(TangentBundle I Q,
+      EuclideanSpace ℝ (Fin N) × EuclideanSpace ℝ (Fin N)) :=
+    ⟨fun z => (tangentBundleModelSpaceHomeomorph 𝓘(ℝ, EuclideanSpace ℝ (Fin N)))
+        (tangentMap I 𝓘(ℝ, EuclideanSpace ℝ (Fin N)) e.map z), hT⟩
+  have hjet : Continuous (fun γ : RegularLoop I Q => T.comp γ.firstJetMap) :=
+    (ContinuousMap.continuous_postcomp T).comp
+      (continuous_snd.comp RegularLoop.continuous_value_jet)
+  refine hjet.congr fun γ => ?_
+  apply ContinuousMap.ext
+  intro t
+  have hcr := tangentMap_comp_at (I := 𝓘(ℝ, ℝ)) (I' := I)
+    (I'' := 𝓘(ℝ, EuclideanSpace ℝ (Fin N)))
+    (⟨(t : ℝ), (1 : ℝ)⟩ : TangentBundle 𝓘(ℝ, ℝ) ℝ)
+    (e.smooth.mdifferentiable (by simp) (loopLift γ.toContinuousLoop (t : ℝ)))
+    (γ.contMDiff_lift.mdifferentiable one_ne_zero (t : ℝ))
+  have h2 : (tangentMap I 𝓘(ℝ, EuclideanSpace ℝ (Fin N)) e.map (γ.firstJet t)).2 =
+      mfderiv 𝓘(ℝ, ℝ) 𝓘(ℝ, EuclideanSpace ℝ (Fin N))
+        (e.map ∘ loopLift γ.toContinuousLoop) (t : ℝ) (1 : ℝ) :=
+    congrArg (fun w : TangentBundle 𝓘(ℝ, EuclideanSpace ℝ (Fin N))
+        (EuclideanSpace ℝ (Fin N)) => w.2) hcr.symm
+  simp only [ContinuousMap.comp_apply, T, embeddingFirstJet, RegularLoop.firstJetMap,
+    ContinuousMap.coe_mk]
+  refine Prod.ext ?_ ?_
+  · rfl
+  · have hsnd : ((tangentBundleModelSpaceHomeomorph 𝓘(ℝ, EuclideanSpace ℝ (Fin N)))
+        (tangentMap I 𝓘(ℝ, EuclideanSpace ℝ (Fin N)) e.map (γ.firstJet t))).2 =
+        (tangentMap I 𝓘(ℝ, EuclideanSpace ℝ (Fin N)) e.map (γ.firstJet t)).2 := rfl
+    simp only [hsnd, h2, mfderiv_eq_fderiv]
+    exact fderiv_apply_one_eq_deriv (𝕜 := ℝ)
+      (f := e.map ∘ loopLift γ.toContinuousLoop) (x := (t : ℝ))
+
+theorem continuous_value_jet_of_embeddingFirstJet_of_retraction {N : ℕ}
+    (e : SmoothLoopEmbedding (I := I) (Q := Q) N) (R : SmoothTubularRetraction e) :
+    Continuous[TopologicalSpace.induced (embeddingFirstJet (I := I) (Q := Q) e) inferInstance,
+      inferInstance] (fun γ : RegularLoop I Q => (γ.toContinuousLoop, γ.firstJetMap)) := by
+  classical
+  obtain ⟨U, hU, hrange, r, hr, hleft⟩ := R
+  let : TopologicalSpace (RegularLoop I Q) :=
+    TopologicalSpace.induced (embeddingFirstJet (I := I) (Q := Q) e) inferInstance
+  have hjet : Continuous (fun γ : RegularLoop I Q =>
+      embeddingFirstJet (I := I) (Q := Q) e γ) :=
+    continuous_induced_dom
+  have hS : Continuous (fun p : RegularLoop I Q × Icc (0 : ℝ) 1 =>
+      embeddingFirstJet (I := I) (Q := Q) e p.1 p.2) :=
+    continuous_eval.comp ((hjet.comp continuous_fst).prodMk continuous_snd)
+  have hval : Continuous (fun p : RegularLoop I Q × Icc (0 : ℝ) 1 =>
+      r ((embeddingFirstJet (I := I) (Q := Q) e p.1 p.2).1)) :=
+    hr.continuousOn.comp_continuous (continuous_fst.comp hS)
+      (fun _ => hrange (mem_range_self _))
+  have hW : Continuous (fun p : RegularLoop I Q × ℝ =>
+      p.1.toContinuousLoop (p.2 : Surgery.Topology.Circle)) := by
+    refine DifferentialGeometry.Topology.continuous_of_continuousOn_Icc_of_add_one ?_ ?_
+    · have hρ : Continuous (fun p :
+          (univ ×ˢ Icc (0 : ℝ) 1 : Set (RegularLoop I Q × ℝ)) =>
+          ((p.1.1, (⟨p.1.2, (Set.mem_prod.mp p.2).2⟩ : Icc (0 : ℝ) 1)) :
+            RegularLoop I Q × Icc (0 : ℝ) 1)) :=
+        (continuous_subtype_val.fst).prodMk
+          ((continuous_subtype_val.snd).subtype_mk fun p => (Set.mem_prod.mp p.2).2)
+      have hdom : Continuous (fun p :
+          (univ ×ˢ Icc (0 : ℝ) 1 : Set (RegularLoop I Q × ℝ)) =>
+          r ((embeddingFirstJet (I := I) (Q := Q) e p.1.1
+            ⟨p.1.2, (Set.mem_prod.mp p.2).2⟩).1)) :=
+        (hval.comp hρ).congr fun _ => rfl
+      refine continuousOn_iff_continuous_domRestrict.mpr (hdom.congr fun p => ?_)
+      exact hleft (loopLift p.1.1.toContinuousLoop (p.1.2 : ℝ))
+    · intro k t
+      exact congrArg (fun x => k.toContinuousLoop x) (AddCircle.coe_add_period (1 : ℝ) t)
+  have hV : Continuous (fun p : RegularLoop I Q × Surgery.Topology.Circle =>
+      p.1.toContinuousLoop p.2) := by
+    have hcoe : IsOpenQuotientMap (fun s : ℝ => (s : Surgery.Topology.Circle)) :=
+      QuotientAddGroup.isOpenQuotientMap_mk
+    refine (IsOpenQuotientMap.id.prodMap hcoe).continuous_comp_iff.mp ?_
+    exact hW
+  have hvalue : Continuous (fun γ : RegularLoop I Q => γ.toContinuousLoop) := by
+    rw [DifferentialGeometry.Topology.FreeLoop.continuous_family_iff]
+    exact hV
+  have hfirstJet : Continuous (fun γ : RegularLoop I Q => γ.firstJetMap) := by
+    apply ContinuousMap.continuous_of_continuous_uncurry
+    have hJ : Continuous (fun p : RegularLoop I Q × Icc (0 : ℝ) 1 =>
+        TotalSpace.mk' E (r ((embeddingFirstJet (I := I) (Q := Q) e p.1 p.2).1))
+          (mfderiv 𝓘(ℝ, EuclideanSpace ℝ (Fin N)) I r
+            ((embeddingFirstJet (I := I) (Q := Q) e p.1 p.2).1)
+            ((embeddingFirstJet (I := I) (Q := Q) e p.1 p.2).2))) :=
+      (DifferentialGeometry.Geometry.continuousOn_source_tangentMap hU
+        (hr.of_le (by exact_mod_cast le_top))).comp_continuous hS
+        (fun _ => ⟨hrange (mem_range_self _), trivial⟩)
+    refine hJ.congr fun p => ?_
+    obtain ⟨γ, t⟩ := p
+    have hcomp : loopLift γ.toContinuousLoop =
+        r ∘ (e.map ∘ loopLift γ.toContinuousLoop) := by
+      funext s
+      exact (hleft (loopLift γ.toContinuousLoop s)).symm
+    have hmd : MDifferentiableAt 𝓘(ℝ, EuclideanSpace ℝ (Fin N)) I r
+        (e.map (loopLift γ.toContinuousLoop (t : ℝ))) :=
+      ((hr (e.map (loopLift γ.toContinuousLoop (t : ℝ)))
+        (hrange (mem_range_self _))).contMDiffAt
+          (hU.mem_nhds (hrange (mem_range_self _)))).mdifferentiableAt (by simp)
+    have hv : DifferentiableAt ℝ (e.map ∘ loopLift γ.toContinuousLoop) (t : ℝ) :=
+      (((e.smooth.of_le (by simp)).comp γ.contMDiff_lift).contDiff.differentiable
+        one_ne_zero (t : ℝ))
+    have htv := DifferentialGeometry.Geometry.tangent_velocity_comp
+      (r := r) (v := e.map ∘ loopLift γ.toContinuousLoop) (t := (t : ℝ)) hmd hv
+    rw [← hcomp] at htv
+    have hjet_eq : tangentMap 𝓘(ℝ, ℝ) I (loopLift γ.toContinuousLoop)
+        (⟨(t : ℝ), (1 : ℝ)⟩ : TangentBundle 𝓘(ℝ, ℝ) ℝ) = γ.firstJet t := rfl
+    rw [hjet_eq] at htv
+    simp only [Function.uncurry_apply_pair, embeddingFirstJet,
+      RegularLoop.firstJetMap, ContinuousMap.coe_mk]
+    exact htv.symm
+  exact hvalue.prodMk hfirstJet
+
+theorem regularLoop_topology_eq_embedding_of_retraction {N : ℕ}
+    (e : SmoothLoopEmbedding (I := I) (Q := Q) N) (R : SmoothTubularRetraction e) :
+    regularLoopTopologicalSpace (I := I) (Q := Q) =
+      TopologicalSpace.induced (embeddingFirstJet e) inferInstance :=
+  le_antisymm
+    (continuous_iff_le_induced.mp (continuous_embeddingFirstJet (I := I) (Q := Q) e))
+    (continuous_iff_le_induced.mp
+      (continuous_value_jet_of_embeddingFirstJet_of_retraction (I := I) (Q := Q) e R))
+
+theorem regularLoop_topology_eq_embedding {N : ℕ}
+    (e : SmoothLoopEmbedding (I := I) (Q := Q) N)
+    [FiniteDimensional ℝ E] [I.Boundaryless] [CompactSpace Q] [Nonempty Q] :
     regularLoopTopologicalSpace (I := I) (Q := Q) =
       TopologicalSpace.induced (embeddingFirstJet e) inferInstance := by
-  sorry
+  obtain ⟨r, U, hU, hrange, hr, hleft⟩ :=
+    DifferentialGeometry.Geometry.exists_smooth_neighborhood_retraction
+      (e := e.map) e.smooth e.isClosedEmbedding.isEmbedding e.injective_mfderiv
+  exact regularLoop_topology_eq_embedding_of_retraction e ⟨U, hU, hrange, r, hr, hleft⟩
 
 def HasContinuousSmoothLoopJets {K : Type*} [TopologicalSpace K] {N : ℕ}
     (e : SmoothLoopEmbedding (I := I) (Q := Q) N)

@@ -177,11 +177,12 @@ end DifferentialGeometry.Topology.ConnectedSumQuotient
 
 namespace DifferentialGeometry.Topology.BallChart
 
-universe u
+universe u u'
 
 def puncturedHomeomorphOfImage {n : ℕ} {M : Type u} [TopologicalSpace M]
     [ChartedSpace (EuclideanSpace ℝ (Fin n)) M]
-    (c c' : BallChart n (𝓡 n) M) (Φ : M ≃ₜ M)
+    {M' : Type u'} [TopologicalSpace M'] [ChartedSpace (EuclideanSpace ℝ (Fin n)) M']
+    (c : BallChart n (𝓡 n) M) (c' : BallChart n (𝓡 n) M') (Φ : M ≃ₜ M')
     (hΦ : Φ '' (c.chart '' Metric.ball (0 : EuclideanSpace ℝ (Fin n)) 1) =
       c'.chart '' Metric.ball (0 : EuclideanSpace ℝ (Fin n)) 1) :
     c.Punctured ≃ₜ c'.Punctured := by
@@ -197,7 +198,7 @@ def puncturedHomeomorphOfImage {n : ℕ} {M : Type u} [TopologicalSpace M]
   have hmem : ∀ x : c.Punctured, Φ (x : M) ∉
       c'.chart '' Metric.ball (0 : EuclideanSpace ℝ (Fin n)) 1 :=
     fun x h => x.2 ((key x).mp h)
-  have hmem' : ∀ y : c'.Punctured, Φ.symm (y : M) ∉
+  have hmem' : ∀ y : c'.Punctured, Φ.symm (y : M') ∉
       c.chart '' Metric.ball (0 : EuclideanSpace ℝ (Fin n)) 1 :=
     fun y h => y.2 (by
       rw [← Φ.apply_symm_apply y]
@@ -214,14 +215,17 @@ end DifferentialGeometry.Topology.BallChart
 
 namespace DifferentialGeometry.Topology.ConnectedSumQuotient
 
-universe u v
+universe u v u' v'
 
-variable {M : Type u} {N : Type v}
+variable {M : Type u} {N : Type v} {M' : Type u'} {N' : Type v'}
   [TopologicalSpace M] [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M]
+  [TopologicalSpace M'] [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M']
   [TopologicalSpace N] [ChartedSpace (EuclideanSpace ℝ (Fin 3)) N]
+  [TopologicalSpace N'] [ChartedSpace (EuclideanSpace ℝ (Fin 3)) N']
 
 def homeomorphOfPuncturedHomeomorph
-    (c c' : BallChart 3 (𝓡 3) M) (d d' : BallChart 3 (𝓡 3) N)
+    (c : BallChart 3 (𝓡 3) M) (c' : BallChart 3 (𝓡 3) M')
+    (d : BallChart 3 (𝓡 3) N) (d' : BallChart 3 (𝓡 3) N')
     (a a' : Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1 ≃ₜ
       Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1)
     (eB : c.Punctured ≃ₜ c'.Punctured) (eX : d.Punctured ≃ₜ d'.Punctured)
@@ -234,10 +238,11 @@ def homeomorphOfPuncturedHomeomorph
     c'.boundaryMap (d'.boundaryMap ∘ a') eS eB eX hB hX
 
 def homeomorphOfBallImage
-    (c c' : BallChart 3 (𝓡 3) M) (d d' : BallChart 3 (𝓡 3) N)
+    (c : BallChart 3 (𝓡 3) M) (c' : BallChart 3 (𝓡 3) M')
+    (d : BallChart 3 (𝓡 3) N) (d' : BallChart 3 (𝓡 3) N')
     (a a' : Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1 ≃ₜ
       Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1)
-    (Φ : M ≃ₜ M) (Ψ : N ≃ₜ N)
+    (Φ : M ≃ₜ M') (Ψ : N ≃ₜ N')
     (hΦ : Φ '' (c.chart '' Metric.ball (0 : EuclideanSpace ℝ (Fin 3)) 1) =
       c'.chart '' Metric.ball (0 : EuclideanSpace ℝ (Fin 3)) 1)
     (hΨ : Ψ '' (d.chart '' Metric.ball (0 : EuclideanSpace ℝ (Fin 3)) 1) =
@@ -262,3 +267,65 @@ def homeomorphOfBallImage
     exact hX z
 
 end DifferentialGeometry.Topology.ConnectedSumQuotient
+
+namespace DifferentialGeometry.Topology
+
+universe u v u' v'
+
+private abbrev E3 := EuclideanSpace ℝ (Fin 3)
+
+theorem connectedSum_homeomorph_of_ballChart_agreement
+    (M : ConnectedClosedOrientedManifold.{u} 3) (M' : ConnectedClosedOrientedManifold.{u'} 3)
+    (N : ConnectedClosedOrientedManifold.{v} 3) (N' : ConnectedClosedOrientedManifold.{v'} 3)
+    (Φ : M.Carrier ≃ₜ M'.Carrier) (Ψ : N.Carrier ≃ₜ N'.Carrier)
+    (hΦ : ∀ x ∈ Metric.closedBall (0 : E3) 1,
+      Φ ((orientedBallChart M).toBallChart.chart x) =
+        (orientedBallChart M').toBallChart.chart x)
+    (hΨ : ∀ x ∈ Metric.closedBall (0 : E3) 1,
+      Ψ ((orientedBallChart N).toBallChart.chart x) =
+        (orientedBallChart N').toBallChart.chart x) :
+    Nonempty ((connectedSum M N).Carrier ≃ₜ (connectedSum M' N').Carrier) := by
+  let c := (orientedBallChart M).toBallChart
+  let c' := (orientedBallChart M').toBallChart
+  let d := (orientedBallChart N).toBallChart
+  let d' := (orientedBallChart N').toBallChart
+  let a := boundaryAttachment.1.toHomeomorph
+  have hclosed : ∀ z : Metric.sphere (0 : E3) 1, (z : E3) ∈ Metric.closedBall (0 : E3) 1 :=
+    fun z => Metric.sphere_subset_closedBall z.2
+  have hballM : Φ '' (c.chart '' Metric.ball (0 : E3) 1) =
+      c'.chart '' Metric.ball (0 : E3) 1 := by
+    ext y
+    constructor
+    · rintro ⟨_, ⟨x, hx, rfl⟩, rfl⟩
+      exact ⟨x, hx, (hΦ x (Metric.ball_subset_closedBall hx)).symm⟩
+    · rintro ⟨x, hx, rfl⟩
+      exact ⟨c.chart x, ⟨x, hx, rfl⟩, hΦ x (Metric.ball_subset_closedBall hx)⟩
+  have hballN : Ψ '' (d.chart '' Metric.ball (0 : E3) 1) =
+      d'.chart '' Metric.ball (0 : E3) 1 := by
+    ext y
+    constructor
+    · rintro ⟨_, ⟨x, hx, rfl⟩, rfl⟩
+      exact ⟨x, hx, (hΨ x (Metric.ball_subset_closedBall hx)).symm⟩
+    · rintro ⟨x, hx, rfl⟩
+      exact ⟨d.chart x, ⟨x, hx, rfl⟩, hΨ x (Metric.ball_subset_closedBall hx)⟩
+  have hB : ∀ z : Metric.sphere (0 : E3) 1,
+      Φ (c.chart (z : E3)) = c'.chart ((Homeomorph.refl (Metric.sphere (0 : E3) 1)) z : E3) :=
+    fun z => hΦ (z : E3) (hclosed z)
+  have hX : ∀ z : Metric.sphere (0 : E3) 1,
+      Ψ (d.chart (a z : E3)) =
+        d'.chart (a ((Homeomorph.refl (Metric.sphere (0 : E3) 1)) z) : E3) :=
+    fun z => hΨ (a z : E3) (hclosed (a z))
+  exact ⟨ConnectedSumQuotient.homeomorphOfBallImage c c' d d' a a Φ Ψ hballM hballN
+    (Homeomorph.refl _) hB hX⟩
+
+theorem connectedSum_homeomorph_comm (M : ConnectedClosedOrientedManifold.{u} 3)
+    (N : ConnectedClosedOrientedManifold.{v} 3) :
+    Nonempty ((connectedSum M N).Carrier ≃ₜ (connectedSum N M).Carrier) := by
+  have hsymm : (boundaryAttachment.1.toHomeomorph).symm = boundaryAttachment.1.toHomeomorph := by
+    rw [← Diffeomorph.symm_toHomeomorph, boundaryAttachment_symm]
+  have h := ConnectedSumQuotient.commHomeomorph (orientedBallChart M).toBallChart
+    (orientedBallChart N).toBallChart boundaryAttachment.1.toHomeomorph
+  rw [hsymm] at h
+  exact ⟨h⟩
+
+end DifferentialGeometry.Topology
