@@ -1,6 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.AncientExtension
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.EntropyBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.SelectedCountersequenceAdapter
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.WitnessStrictStability
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.Reconstruction.RiemannFromRicci
 
 set_option autoImplicit false
@@ -39,18 +40,40 @@ def StrictWitness (S : SolutionOn (I := I3) (M := M) D)
 
 theorem oriented_witness_mono (S : SolutionOn (I := I3) (M := M) D)
     (hS : IsSolutionOn S) (o : TangentOrientationSection M)
-    {delta eps kappa : ℝ} (hd : 0 < delta) (hde : delta ≤ eps) (he : eps < 1)
-    {x : M} {t : ℝ} (hw : OrientedWitness S o delta kappa x t) :
+    {delta eps kappa : ℝ} (hde : delta ≤ eps) (he : eps < 1)
+    {x : M} {t : ℝ}
+    (hreg : ∀ s ∈ Set.Ioo (-modelDepth delta) 0,
+      parabolicTime t (S.scalar t x) s ∈ D.regular)
+    (hw : OrientedWitness S o delta kappa x t) :
     OrientedWitness S o eps kappa x t := by
-  sorry
+  obtain ⟨W, oN, hO⟩ := hw
+  exact ⟨W.mono_of_regular hS hde he hreg, oN, hO⟩
 
 theorem strict_model_witness_open (S : SolutionOn (I := I3) (M := M) D)
-    (hS : IsSolutionOn S) {eps kappa : ℝ} (heps : 0 < eps) (heps1 : eps < 1)
-    (hkappa : 0 < kappa) (U : Set (M × ℝ)) (hU : IsOpen U)
+    (hS : IsSolutionOn S) {eps kappa : ℝ}
+    (U : Set (M × ℝ)) (hU : IsOpen U)
     (hadmissible : ∀ q ∈ U,
-      Set.Icc (q.2 - (eps * S.scalar q.2 q.1)⁻¹) q.2 ⊆ D.carrier) :
+      Set.Icc (q.2 - (eps * S.scalar q.2 q.1)⁻¹) q.2 ⊆ D.regular) :
     IsOpen (U ∩ {q : M × ℝ | StrictWitness S eps kappa q.1 q.2}) := by
-  sorry
+  have hbase := isOpen_setOf_regular_strict_model_witness (S := S) hS eps kappa
+  have heq : U ∩ {q : M × ℝ | StrictWitness S eps kappa q.1 q.2} =
+      U ∩ {q : M × ℝ |
+        Set.Icc (q.2 - (eps * S.scalar q.2 q.1)⁻¹) q.2 ⊆ D.regular ∧
+          ∃ W : WindowedModelWitness eps kappa S q.1 q.2,
+            ∀ a b : ℕ, a + 2 * b ≤ modelOrder eps →
+              ∀ s ∈ Set.Icc (-modelDepth eps) 0,
+                ∀ y ∈ riemannianClosedBallOf (W.model.S.base.metric 0)
+                  W.model.basepoint (modelRadius eps),
+                  tensor02CovDerivNormWith (I := I3) a (W.comparison.jet b s)
+                    (W.model.S.base.metric s) (W.model.S.base.metric s) y < eps} := by
+    ext q
+    constructor
+    · rintro ⟨hq, hW⟩
+      exact ⟨hq, hadmissible q hq, hW⟩
+    · rintro ⟨hq, _, hW⟩
+      exact ⟨hq, hW⟩
+  rw [heq]
+  exact hU.inter hbase
 
 
 theorem selected_countersequence_of_radius_failure {eps small kappa sigma : ℝ} {Phi : ℝ → ℝ}
