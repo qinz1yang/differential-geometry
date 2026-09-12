@@ -1,7 +1,7 @@
-# Local homology and derivative foundations
+# Local homology, derivatives and linear determinant signs
 
 This separate `PoincareLean` project contains a dependency-closed checkpoint of
-74 Poincare modules. It extends the recovered Chapter 35 source at commit
+88 Poincare modules. It extends the recovered Chapter 35 source at commit
 `b45bfa009368c8f5f531e10f4f5280e90079d6ad` and preserves its mathematical objects
 and `Poincare` namespaces. `Poincare.lean` imports every included leaf.
 
@@ -19,9 +19,12 @@ The additions prove:
 - equality of the original ambient relative maps with the invertible derivative
   in every natural homological degree, including degree zero;
 - equality of relative H0 maps for pointwise joined continuous maps preserving
-  the given subspaces.
+  the given subspaces;
+- multiplication by the sign of the determinant for the actual top local
+  integral homology map of any continuous linear equivalence of a finite-dimensional
+  real normed space, including dimension zero.
 
-The six changed modules and their exact baseline/current hashes are listed in
+The seven new/changed modules and their exact baseline/current hashes are listed in
 [provenance/SNAPSHOT.json](provenance/SNAPSHOT.json). The derivative homotopy
 retains its [upstream attribution and modification record](provenance/README.md).
 
@@ -50,7 +53,22 @@ declaration linters over the entire
 imported package and the consumers. The previous 68-module checkpoint was
 published as `76917c5e2`.
 
-The final source hashes and evidence for both checkpoints are recorded in
+The new 88-module snapshot retains those 74 sources unchanged and adds 13
+unchanged baseline dependencies plus `LocalLinearMaps`. The latter passed its
+fresh module and imported consumer gate in the original isolated project,
+request `1789235551579974740-topology-d57a1cb3`. Its sole new public result uses
+the given continuous linear equivalence directly; reflection, sphere and matrix
+proof machinery remains private. Consumers checked nonidentity positive and
+negative maps, an actual nonzero class moved by negation, and rank zero.
+
+The final portable 88-module gate passed in Slurm 13781140, request
+`1789236250289124336-topology_checkpoint-db7e7dbe`. All 14 added leaves and the
+root freshly compiled with zero diagnostics in 5:55.36; the full request took
+401.64 seconds. All 93 source/configuration/harness guards and 22 exact
+signature/axiom pairs passed, including all 13 public exports. Stock declaration
+linters and standard-only axiom checks covered the imported package and consumers.
+The unchanged 74 leaves retain their earlier compilation evidence.
+Source hashes and the separate validation records are recorded in
 [provenance/SNAPSHOT.json](provenance/SNAPSHOT.json). No acceptance of the larger
 topology suite is asserted.
 

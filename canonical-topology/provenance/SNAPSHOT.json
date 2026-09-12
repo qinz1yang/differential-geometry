@@ -1,15 +1,16 @@
 {
-  "scope": "Dependency-closed 74-module local homology and all-degree derivative comparison checkpoint; limited package gate passed",
+  "scope": "Dependency-closed 88-module local homology, derivative comparison and linear determinant-sign checkpoint; portable gate passed, full topology suite incomplete",
   "baseline_commit": "b45bfa009368c8f5f531e10f4f5280e90079d6ad",
   "baseline_ref": "refs/remotes/origin/codex/chapter35",
   "source_project": "PoincareLean",
-  "source_module_count": 74,
+  "source_module_count": 88,
   "roots": [
     "Poincare.Topology.Homology.RelativeMaps",
     "Poincare.Topology.Homology.RelativeHomeomorphism",
     "Poincare.Topology.Homology.LocalCharts",
     "Poincare.Analysis.LocalDerivativeHomotopy",
-    "Poincare.Topology.Homology.LocalDerivativeComparison"
+    "Poincare.Topology.Homology.LocalDerivativeComparison",
+    "Poincare.Topology.Homology.LocalLinearMaps"
   ],
   "changed_sources": [
     {
@@ -29,6 +30,12 @@
       "path": "Poincare/Topology/Homology/LocalDerivativeComparison.lean",
       "baseline_sha256": null,
       "sha256": "92c6c3563a5c73463c8e9f6758f5a5b9ba64f61ee636f608508b31d34b7b52bc"
+    },
+    {
+      "module": "Poincare.Topology.Homology.LocalLinearMaps",
+      "path": "Poincare/Topology/Homology/LocalLinearMaps.lean",
+      "baseline_sha256": null,
+      "sha256": "d9284f07e88a77db3a9f90fa22291b8c2c6a5d3c7036f30e26865afe8ec0459d"
     },
     {
       "module": "Poincare.Topology.Homology.RelativeHomeomorphism",
@@ -165,6 +172,24 @@
       "sha256": "f119522616c7beca7894c6317fce0c63f6a4287b319ce292f85239d61a956377"
     },
     {
+      "module": "Poincare.Topology.Homology.ContractibleCoverOne",
+      "path": "Poincare/Topology/Homology/ContractibleCoverOne.lean",
+      "baseline_sha256": "b30839f6222963437f50af378b4869ace50a82c96953db95f6ee0aaf43649efb",
+      "sha256": "b30839f6222963437f50af378b4869ace50a82c96953db95f6ee0aaf43649efb"
+    },
+    {
+      "module": "Poincare.Topology.Homology.ContractiblePair",
+      "path": "Poincare/Topology/Homology/ContractiblePair.lean",
+      "baseline_sha256": "54b57739916b55ddd9bf68b4628370aacbcc610860356301a4af0e383d68e8d5",
+      "sha256": "54b57739916b55ddd9bf68b4628370aacbcc610860356301a4af0e383d68e8d5"
+    },
+    {
+      "module": "Poincare.Topology.Homology.ContractiblePairOne",
+      "path": "Poincare/Topology/Homology/ContractiblePairOne.lean",
+      "baseline_sha256": "bccca8817b10e958b54548c14527bf925811994512935b13735a2d06c7d2458a",
+      "sha256": "bccca8817b10e958b54548c14527bf925811994512935b13735a2d06c7d2458a"
+    },
+    {
       "module": "Poincare.Topology.Homology.Cycles",
       "path": "Poincare/Topology/Homology/Cycles.lean",
       "baseline_sha256": "68248e5d61a9634d1ebe98bf4d7dc074f63afb1ed98055366febe3ef0a1a0339",
@@ -225,6 +250,12 @@
       "sha256": "62f3c9f3288e60a524e5796b961f89b22b13c959eb6b9dd07e96d624c3c042d7"
     },
     {
+      "module": "Poincare.Topology.Homology.LocalLinearMaps",
+      "path": "Poincare/Topology/Homology/LocalLinearMaps.lean",
+      "baseline_sha256": null,
+      "sha256": "d9284f07e88a77db3a9f90fa22291b8c2c6a5d3c7036f30e26865afe8ec0459d"
+    },
+    {
       "module": "Poincare.Topology.Homology.MeshBoundary",
       "path": "Poincare/Topology/Homology/MeshBoundary.lean",
       "baseline_sha256": "772e2e5b0418b2380fb066b75af5eb1832cd12e4859b6c170b91399a37efcd8d",
@@ -255,6 +286,12 @@
       "sha256": "77c1bc2dab1c15addc673b4e9b4768f46b5df7475a4800b0232d8360c7b56557"
     },
     {
+      "module": "Poincare.Topology.Homology.OneDimensionalSphere",
+      "path": "Poincare/Topology/Homology/OneDimensionalSphere.lean",
+      "baseline_sha256": "2823e5659e11088a67fef0c7aa604a1348df69eab3d36870a3c615b029085f42",
+      "sha256": "2823e5659e11088a67fef0c7aa604a1348df69eab3d36870a3c615b029085f42"
+    },
+    {
       "module": "Poincare.Topology.Homology.OpenExcision",
       "path": "Poincare/Topology/Homology/OpenExcision.lean",
       "baseline_sha256": "e5bf7ed33bf7f554d7f70470e902e7b6a6e3a14fb34cea900202174714c4a7fc",
@@ -265,6 +302,18 @@
       "path": "Poincare/Topology/Homology/PathChains.lean",
       "baseline_sha256": "66b896ed9eac3cd9193e6cba7ff2103a13618fa163582f25a3b8630e34a2efb6",
       "sha256": "66b896ed9eac3cd9193e6cba7ff2103a13618fa163582f25a3b8630e34a2efb6"
+    },
+    {
+      "module": "Poincare.Topology.Homology.RadialHomotopy",
+      "path": "Poincare/Topology/Homology/RadialHomotopy.lean",
+      "baseline_sha256": "162ae0a1909afa2ed5c3ea0823f7960bf2cf3b94aa90be937ab7553ea52ca3fd",
+      "sha256": "162ae0a1909afa2ed5c3ea0823f7960bf2cf3b94aa90be937ab7553ea52ca3fd"
+    },
+    {
+      "module": "Poincare.Topology.Homology.ReducedZero",
+      "path": "Poincare/Topology/Homology/ReducedZero.lean",
+      "baseline_sha256": "56bb2f5063f7b145ffc52b0b2bcb08eb33f77e128c0cd491a63673d87fbe41d4",
+      "sha256": "56bb2f5063f7b145ffc52b0b2bcb08eb33f77e128c0cd491a63673d87fbe41d4"
     },
     {
       "module": "Poincare.Topology.Homology.Relative",
@@ -393,6 +442,30 @@
       "sha256": "a65112f9688f510fba9ed57942d86f9b64b71580331dd738df90c737a92b70e7"
     },
     {
+      "module": "Poincare.Topology.Homology.SphereHomologyOne",
+      "path": "Poincare/Topology/Homology/SphereHomologyOne.lean",
+      "baseline_sha256": "3575ac7193cfb8796e4f73f39b6768837e1a3b8b5a9d3911616c281d33148824",
+      "sha256": "3575ac7193cfb8796e4f73f39b6768837e1a3b8b5a9d3911616c281d33148824"
+    },
+    {
+      "module": "Poincare.Topology.Homology.SphereHomologyShift",
+      "path": "Poincare/Topology/Homology/SphereHomologyShift.lean",
+      "baseline_sha256": "120403e15e7d76f337f05047f999ed6c07bdb057168ce97704b301392c09caeb",
+      "sha256": "120403e15e7d76f337f05047f999ed6c07bdb057168ce97704b301392c09caeb"
+    },
+    {
+      "module": "Poincare.Topology.Homology.SpherePuncture",
+      "path": "Poincare/Topology/Homology/SpherePuncture.lean",
+      "baseline_sha256": "b2d7f194600b43f6ad6f1f805aedad90d9d3d3bee292c57264ebb3d99f0897c1",
+      "sha256": "b2d7f194600b43f6ad6f1f805aedad90d9d3d3bee292c57264ebb3d99f0897c1"
+    },
+    {
+      "module": "Poincare.Topology.Homology.SphereRank",
+      "path": "Poincare/Topology/Homology/SphereRank.lean",
+      "baseline_sha256": "18b4612b248c42978437e058d870ed8d794d4ae6500a21c601adce12080e194e",
+      "sha256": "18b4612b248c42978437e058d870ed8d794d4ae6500a21c601adce12080e194e"
+    },
+    {
       "module": "Poincare.Topology.Homology.SubdivisionAffineAgreement",
       "path": "Poincare/Topology/Homology/SubdivisionAffineAgreement.lean",
       "baseline_sha256": "9e49d79cd0ae02cd824fd61a3c50c25ee74f6847673e8c16d9fe04fe4ea451f6",
@@ -459,6 +532,18 @@
       "sha256": "d0bf5770692b2c39dbcba8e754f33040249f06eddb9181822253004e0367ca48"
     },
     {
+      "module": "Poincare.Topology.Homology.TotallyDisconnectedZero",
+      "path": "Poincare/Topology/Homology/TotallyDisconnectedZero.lean",
+      "baseline_sha256": "90c354b5cd6148631a4122c9ccadc95d73bd15f9c7d5d6ae0895ed6172882756",
+      "sha256": "90c354b5cd6148631a4122c9ccadc95d73bd15f9c7d5d6ae0895ed6172882756"
+    },
+    {
+      "module": "Poincare.Topology.Homology.TwoPointReducedZero",
+      "path": "Poincare/Topology/Homology/TwoPointReducedZero.lean",
+      "baseline_sha256": "9a45ae2895ddb8dcce541775cb7b9dbb4bc2738df94a661c1c8e7391b026b7dc",
+      "sha256": "9a45ae2895ddb8dcce541775cb7b9dbb4bc2738df94a661c1c8e7391b026b7dc"
+    },
+    {
       "module": "Poincare.Topology.Homology.TwoSetSmallChains",
       "path": "Poincare/Topology/Homology/TwoSetSmallChains.lean",
       "baseline_sha256": "1a54c2d788a914c9fc663f7300a5cc7f55997123a04b840865bbf918075f667c",
@@ -483,6 +568,12 @@
       "sha256": "377a0655b9f387f6b8d2f34bb29fbe0255720136f87367a69e0a7c2d763b3630"
     },
     {
+      "module": "Poincare.Topology.Homology.ZeroAugmentation",
+      "path": "Poincare/Topology/Homology/ZeroAugmentation.lean",
+      "baseline_sha256": "6842c625b099ba6f00a31be07bc75e34d5ba8ced507b867cd826fe7278d0ba30",
+      "sha256": "6842c625b099ba6f00a31be07bc75e34d5ba8ced507b867cd826fe7278d0ba30"
+    },
+    {
       "module": "Poincare.Topology.Homology.ZeroChainClasses",
       "path": "Poincare/Topology/Homology/ZeroChainClasses.lean",
       "baseline_sha256": "157a02ac79f2138d12c57ad34772458141b7f3177b3a2626a8ae1daa1a8c306d",
@@ -498,8 +589,8 @@
   "aggregate": {
     "path": "Poincare.lean",
     "baseline_sha256": "99c3c8e47c19f60ee50a7e0f377e59138cf4ff33ebd4e26530d3c2b7cd47d452",
-    "sha256": "0e56309623116ac86e36573523fcaffcfbc9151821f1493a96fbf93956d17401",
-    "change": "Checkpoint aggregate imports exactly the 74 supplied leaves; the full recovered aggregate is not replaced"
+    "sha256": "6c3232d2d719e0a2c333f7ce045ce6909c07173574d8080ba61ac9f834c687aa",
+    "change": "Checkpoint aggregate imports exactly the 88 supplied leaves; the full recovered aggregate is not replaced"
   },
   "configuration": [
     {
@@ -522,6 +613,8 @@
     }
   ],
   "external_imports": [
+    "Mathlib.Algebra.BigOperators.Group.Finset.Piecewise",
+    "Mathlib.Algebra.BigOperators.GroupWithZero.Finset",
     "Mathlib.Algebra.Category.ModuleCat.Abelian",
     "Mathlib.Algebra.Category.ModuleCat.Colimits",
     "Mathlib.Algebra.Category.ModuleCat.Projective",
@@ -531,21 +624,43 @@
     "Mathlib.Algebra.Homology.HomologySequenceLemmas",
     "Mathlib.Algebra.Homology.QuasiIso",
     "Mathlib.Algebra.Homology.ShortComplex.ModuleCat",
+    "Mathlib.Algebra.Module.Submodule.Equiv",
     "Mathlib.Algebra.Module.ULift",
     "Mathlib.Algebra.Order.Archimedean.Basic",
     "Mathlib.AlgebraicTopology.SingularHomology.HomologyZero",
     "Mathlib.AlgebraicTopology.SingularHomology.HomotopyInvariance",
     "Mathlib.Analysis.Calculus.FDeriv.Basic",
     "Mathlib.Analysis.Convex.Contractible",
+    "Mathlib.Analysis.InnerProductSpace.PiL2",
+    "Mathlib.Analysis.InnerProductSpace.Projection.FiniteDimensional",
+    "Mathlib.Analysis.InnerProductSpace.Projection.Reflection",
+    "Mathlib.Analysis.Normed.Module.Ball.RadialEquiv",
+    "Mathlib.Analysis.Normed.Module.Basic",
+    "Mathlib.Analysis.Normed.Module.Connected",
     "Mathlib.Analysis.Normed.Module.Convex",
     "Mathlib.Analysis.Normed.Operator.LinearIsometry",
     "Mathlib.Data.Fin.Tuple.Basic",
+    "Mathlib.Data.Finset.Dedup",
+    "Mathlib.Data.Sign.Basic",
     "Mathlib.Geometry.Manifold.ChartedSpace",
+    "Mathlib.Geometry.Manifold.Instances.Sphere",
     "Mathlib.LinearAlgebra.Basis.Basic",
+    "Mathlib.LinearAlgebra.Determinant",
+    "Mathlib.LinearAlgebra.Finsupp.Pi",
     "Mathlib.LinearAlgebra.FreeModule.Basic",
+    "Mathlib.LinearAlgebra.FreeModule.Finite.Basic",
+    "Mathlib.LinearAlgebra.Matrix.Determinant.Basic",
+    "Mathlib.LinearAlgebra.Matrix.NonsingularInverse",
+    "Mathlib.LinearAlgebra.Matrix.ToLin",
+    "Mathlib.LinearAlgebra.Matrix.Transvection",
+    "Mathlib.LinearAlgebra.Span.Basic",
     "Mathlib.Tactic.Linarith",
     "Mathlib.Tactic.Module",
     "Mathlib.Tactic.NormNum",
+    "Mathlib.Topology.Algebra.Module.ContinuousLinearMap.PiProd",
+    "Mathlib.Topology.Algebra.Module.FiniteDimension",
+    "Mathlib.Topology.Algebra.Module.Spaces.ContinuousLinearMap",
+    "Mathlib.Topology.Connected.TotallyDisconnected",
     "Mathlib.Topology.Homeomorph.Lemmas",
     "Mathlib.Topology.Homotopy.Basic",
     "Mathlib.Topology.Homotopy.Contractible",
@@ -566,7 +681,8 @@
     "Poincare.Topology.integralRelativeHomologyMap_eq_of_eqOn_neighborhood",
     "Poincare.Topology.integralLocalHomologyOpenPartialHomeomorphIso_natural",
     "Poincare.Topology.integralRelativeHomologyMap_zero_eq_of_joined",
-    "Poincare.Topology.integralRelativeHomologyMap_eq_derivative"
+    "Poincare.Topology.integralRelativeHomologyMap_eq_derivative",
+    "Poincare.Topology.integralRelativeHomologyMap_linearEquiv_eq_det_sign"
   ],
   "historical_authorities": [
     {
@@ -626,7 +742,7 @@
     ],
     "full_topology_suite_accepted": false
   },
-  "validation": {
+  "previous_all_degree_checkpoint_validation": {
     "status": "passed for this 74-module checkpoint; full topology suite incomplete",
     "date": "2026-09-12",
     "slurm_job": "13781140",
@@ -674,5 +790,91 @@
       "ambient cubic map",
       "nonzero H0 class in zero-dimensional space"
     ]
+  },
+  "original_linear_sign_validation": {
+    "scope": "Original isolated LocalLinearMaps module and imported consumers; not the portable aggregate",
+    "source_sha256": "d9284f07e88a77db3a9f90fa22291b8c2c6a5d3c7036f30e26865afe8ec0459d",
+    "request_id": "1789235551579974740-topology-d57a1cb3",
+    "input_sha256": "b69853d8f169601c64d42cd1f4117e29096cd289103183f8a413d63aecda3cdc",
+    "result_sha256": "1e867f95b936f6b14c44709650f86218a2f18568a6f8e93ee034fe0b38e0e2a5",
+    "artifact_log_sha256": "30c2fc58c5f3daf65cedc2f15737cef5d265e3dea9ed072fc8f762c1a2b4cf28",
+    "slurm_job": "13781140",
+    "host": "della-r3c2n16",
+    "status": "passed",
+    "source_guards": 161,
+    "public_and_consumer_signature_axiom_pairs": 5,
+    "linters": [
+      "unusedArguments",
+      "simpNF",
+      "synTaut",
+      "checkType"
+    ],
+    "linter_scope": "All imported Poincare declarations and current consumers, including private declarations",
+    "allowed_transitive_axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "elapsed_seconds": 111.93056225776672,
+    "peak_summed_rss_bytes": 2506186752,
+    "full_topology_suite_accepted": false
+  },
+  "validation": {
+    "status": "passed for this 88-module checkpoint; full topology suite incomplete",
+    "project": "topology_checkpoint",
+    "fresh_build_scope": "The 13 additional unchanged baseline leaves, new LocalLinearMaps and root; the previous 74 leaves retain their recorded compilation evidence.",
+    "linters": [
+      "unusedArguments",
+      "simpNF",
+      "synTaut",
+      "checkType"
+    ],
+    "linter_scope": "All imported Poincare declarations and current consumers, including private declarations",
+    "defLemma": "Unavailable in the pinned Mathlib; source declaration-kind checks retained.",
+    "allowed_transitive_axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "new_consumer_probes": [
+      "nonidentity real negation",
+      "nonidentity positive real dilation",
+      "actual nonzero local H1 class moved by negation",
+      "all linear equivalences in rank zero"
+    ],
+    "full_topology_suite_accepted": false,
+    "date": "2026-09-12",
+    "slurm_job": "13781140",
+    "host": "della-r3c2n16",
+    "request_id": "1789236250289124336-topology_checkpoint-db7e7dbe",
+    "input_sha256": "5cc03fd73cdc7a02b58a06865991707e62e62661fa35d4d948f5738eb0ed45b7",
+    "result_sha256": "e11b6b4ca6e5550c43dcdf521c7da6e62a7eadfc9a4fb6bb032cf29398ff536d",
+    "artifact_log_sha256": "ac021e4e8f6aab4873682a659be87ae397ecf60db93530b530351daafeb0e323",
+    "source_config_harness_hash_guards": 93,
+    "freshly_built_modules": [
+      "Poincare.Topology.Homology.ContractiblePair",
+      "Poincare.Topology.Homology.ContractiblePairOne",
+      "Poincare.Topology.Homology.ContractibleCoverOne",
+      "Poincare.Topology.Homology.RadialHomotopy",
+      "Poincare.Topology.Homology.TotallyDisconnectedZero",
+      "Poincare.Topology.Homology.ZeroAugmentation",
+      "Poincare.Topology.Homology.SpherePuncture",
+      "Poincare.Topology.Homology.ReducedZero",
+      "Poincare.Topology.Homology.SphereHomologyShift",
+      "Poincare.Topology.Homology.OneDimensionalSphere",
+      "Poincare.Topology.Homology.TwoPointReducedZero",
+      "Poincare.Topology.Homology.SphereHomologyOne",
+      "Poincare.Topology.Homology.SphereRank",
+      "Poincare.Topology.Homology.LocalLinearMaps",
+      "Poincare"
+    ],
+    "exact_public_exports": 13,
+    "public_and_consumer_signature_axiom_pairs": 22,
+    "unexpected_diagnostics": 0,
+    "elapsed_seconds": 401.6428349018097,
+    "peak_summed_rss_bytes": 2557407232,
+    "aggregate_exit_code": 0,
+    "artifact_elapsed": "5:55.36",
+    "artifact_max_rss_kib": 2068092
   }
 }
