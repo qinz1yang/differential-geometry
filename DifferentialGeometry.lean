@@ -6218,6 +6218,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.AncestryCor
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.Background
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.Backward
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.BasedTransport
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CappingCover
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ChartOrientation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ChildParent
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ClosedOrientedStage
@@ -8584,6 +8585,8 @@ import DifferentialGeometry.Topology.ThreeManifold.schoenflies
 import DifferentialGeometry.Topology.UniformConvergence
 import DifferentialGeometry.Topology.VanKampen.AmalgamatedProduct
 import DifferentialGeometry.Topology.VanKampen.Based
+import DifferentialGeometry.Topology.VanKampen.CollarDeformation
+import DifferentialGeometry.Topology.VanKampen.HomotopyRetract
 import DifferentialGeometry.Topology.VanKampen.BoundaryCollarInjection
 import DifferentialGeometry.Topology.VanKampen.BoundaryCollarOrientation
 import DifferentialGeometry.Topology.VanKampen.BoundaryCollarRestriction
