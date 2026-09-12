@@ -53,10 +53,13 @@ private theorem exists_addLipschitz_family {P : Type*}
   refine ⟨e, fun _ _ => rfl, contDiff_snd.add hG, ?_⟩
   exact contDiff_addLipschitz_symm hG (by simp) hLip (fun _ => hC)
 
-theorem exists_isotopy_graphOn_family {E : Type*}
+theorem exists_isotopy_graphOn_family_with_support {E : Type*}
     [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
     {g : ℝ × E → ℝ} (hg : ContDiff ℝ ∞ g) {K : Set E} (hK : IsCompact K)
-    (hfixed : ∀ s ∈ Set.Icc (0 : ℝ) 1, ∀ x ∉ K, g (s, x) = g (0, x)) :
+    (hfixed : ∀ s ∈ Set.Icc (0 : ℝ) 1, ∀ x ∉ K, g (s, x) = g (0, x))
+    (b : ContDiffBump (0 : ℝ)) {B D : ℝ≥0} (hB : LipschitzWith B b)
+    (hbound : ∀ s ∈ Set.Icc (0 : ℝ) 1, ∀ x ∈ K, ‖g (s, x) - g (0, x)‖ ≤ D)
+    {R : ℝ} (hR : 0 < R) (hcoeff : (D : ℝ) * B * R⁻¹ ≤ 1 / 2) :
     ∃ H : ℝ → ((E × ℝ) ≃ₘ[ℝ] (E × ℝ)),
       ContDiff ℝ ∞ (fun z : ℝ × (E × ℝ) => H z.1 z.2) ∧
       ContDiff ℝ ∞ (fun z : ℝ × (E × ℝ) => (H z.1).symm z.2) ∧
@@ -71,36 +74,20 @@ theorem exists_isotopy_graphOn_family {E : Type*}
         {p : E × ℝ | p.1 ∈ s ∧ g (Real.smoothTransition t, p.1) ≤ p.2}) ∧
       (∀ (t : ℝ) (s : Set E), H t '' {p : E × ℝ | p.1 ∈ s ∧ g (0, p.1) < p.2} =
         {p : E × ℝ | p.1 ∈ s ∧ g (Real.smoothTransition t, p.1) < p.2}) ∧
-      ∃ J : Set (E × ℝ), IsCompact J ∧ ∀ t : ℝ,
-        Set.EqOn (H t) id Jᶜ ∧ Set.EqOn (H t).symm id Jᶜ := by
+      let C : Set (E × ℝ) := {p | p.1 ∈ K ∧ ‖p.2 - g (0, p.1)‖ ≤ b.rOut * R}
+      IsCompact C ∧ ∀ t : ℝ, Set.EqOn (H t) id Cᶜ ∧ Set.EqOn (H t).symm id Cᶜ := by
   let f : E → ℝ := fun x => g (0, x)
   have hf : ContDiff ℝ ∞ f := hg.comp (contDiff_const.prodMk contDiff_id)
   let d : ℝ × E → ℝ := fun p => g p - f p.2
   have hd : ContDiff ℝ ∞ d := hg.sub (hf.comp contDiff_snd)
   have htime : ∀ t : ℝ, Real.smoothTransition t ∈ Set.Icc (0 : ℝ) 1 :=
     fun t => ⟨Real.smoothTransition.nonneg t, Real.smoothTransition.le_one t⟩
-  let b : ContDiffBump (0 : ℝ) := ⟨1, 2, by norm_num, by norm_num⟩
-  have hb₀ : b 0 = 1 := b.one_of_mem_closedBall (by norm_num [b])
-  obtain ⟨B, hB⟩ := ContDiff.lipschitzWith_of_hasCompactSupport b.hasCompactSupport
-    b.contDiff (show (∞ : ℕ∞ω) ≠ 0 by simp)
-  obtain ⟨D₀, hD₀⟩ := (isCompact_Icc.prod hK).exists_bound_of_continuousOn
-    (show ContinuousOn d (Set.Icc (0 : ℝ) 1 ×ˢ K) from hd.continuous.continuousOn)
-  let D : ℝ := max D₀ 0 + 1
-  have hD : 0 < D := by dsimp only [D]; linarith [le_max_right D₀ 0]
-  have hbound : ∀ t x, ‖d (Real.smoothTransition t, x)‖ ≤ D := by
+  have hb₀ : b 0 = 1 := b.one_of_mem_closedBall (Metric.mem_closedBall_self b.rIn_pos.le)
+  have hbound' : ∀ t x, ‖d (Real.smoothTransition t, x)‖ ≤ D := by
     intro t x
     by_cases hx : x ∈ K
-    · exact (hD₀ _ ⟨htime t, hx⟩).trans
-        (by dsimp only [D]; linarith [le_max_left D₀ 0])
-    · simpa only [d, f, hfixed _ (htime t) x hx, sub_self, norm_zero] using hD.le
-  let R : ℝ := 2 * D * B + 1
-  have hR : 0 < R := by
-    dsimp only [R]
-    positivity
-  have hcoeff : D * (B : ℝ) * R⁻¹ ≤ 1 / 2 := by
-    apply (mul_inv_le_iff₀ hR).2
-    dsimp only [R]
-    linarith
+    · exact hbound _ (htime t) x hx
+    · simpa only [d, f, hfixed _ (htime t) x hx, sub_self, norm_zero] using D.coe_nonneg
   let G : (ℝ × E) × ℝ → ℝ := fun z =>
     b (R⁻¹ * (z.2 - f z.1.2)) * d (Real.smoothTransition z.1.1, z.1.2)
   have hG : ContDiff ℝ ∞ G :=
@@ -110,7 +97,7 @@ theorem exists_isotopy_graphOn_family {E : Type*}
         contDiff_fst.snd))
   have hLip : ∀ p : ℝ × E, LipschitzWith (1 / 2) (fun y => G (p, y)) :=
     fun p => lipschitzWith_scaled_bump_mul b hB hR hcoeff (f p.2)
-      (d (Real.smoothTransition p.1, p.2)) (hbound p.1 p.2)
+      (d (Real.smoothTransition p.1, p.2)) (hbound' p.1 p.2)
   obtain ⟨e, he, hEf, hi⟩ := exists_addLipschitz_family hG hLip
   have hF : ContDiff ℝ ∞ (fun z : ℝ × (E × ℝ) => (z.2.1, e (z.1, z.2.1) z.2.2)) :=
     contDiff_snd.fst.prodMk
@@ -169,15 +156,15 @@ theorem exists_isotopy_graphOn_family {E : Type*}
     rw [hH, ← hzero]
     exact (hmono (t, p.1)).lt_iff_lt.symm
   let J : Set (E × ℝ) := (fun p : E × ℝ => (p.1, p.2 + f p.1)) ''
-    (K ×ˢ Metric.closedBall (0 : ℝ) (2 * R))
+    (K ×ˢ Metric.closedBall (0 : ℝ) (b.rOut * R))
   have hJ : IsCompact J :=
-    (hK.prod (isCompact_closedBall (0 : ℝ) (2 * R))).image
+    (hK.prod (isCompact_closedBall (0 : ℝ) (b.rOut * R))).image
       (continuous_fst.prodMk (continuous_snd.add (hf.continuous.comp continuous_fst)))
   have hfix : ∀ t p, p ∉ J → H t p = p := by
     intro t p hp
     have hz : G ((t, p.1), p.2) = 0 := by
       by_cases hx : p.1 ∈ K
-      · have hu : 2 * R < ‖p.2 - f p.1‖ := by
+      · have hu : b.rOut * R < ‖p.2 - f p.1‖ := by
           by_contra hu
           apply hp
           refine ⟨(p.1, p.2 - f p.1), ⟨hx, ?_⟩, ?_⟩
@@ -187,14 +174,26 @@ theorem exists_isotopy_graphOn_family {E : Type*}
             · exact sub_add_cancel _ _
         have hb : b (R⁻¹ * (p.2 - f p.1)) = 0 := by
           apply b.zero_of_le_dist
-          change 2 ≤ dist (R⁻¹ * (p.2 - f p.1)) 0
+          change b.rOut ≤ dist (R⁻¹ * (p.2 - f p.1)) 0
           rw [dist_zero_right, norm_mul, Real.norm_of_nonneg (inv_nonneg.mpr hR.le)]
           rw [← div_eq_inv_mul]
           exact (le_div_iff₀ hR).2 hu.le
         simp only [G, hb, zero_mul]
       · simp only [G, d, f, hfixed _ (htime t) p.1 hx, sub_self, mul_zero]
     rw [hH, he, hz, add_zero]
-  refine ⟨H, hF, hI, ?_, hHfst, hgraph, hfiber, ?_, ?_, ?_, J, hJ, ?_⟩
+  have hJ_eq : J = {p : E × ℝ | p.1 ∈ K ∧ ‖p.2 - g (0, p.1)‖ ≤ b.rOut * R} := by
+    ext p
+    constructor
+    · rintro ⟨q, hq, rfl⟩
+      refine ⟨hq.1, ?_⟩
+      change ‖q.2 + f q.1 - f q.1‖ ≤ b.rOut * R
+      rw [add_sub_cancel_right]
+      simpa only [Metric.mem_closedBall, dist_zero_right] using hq.2
+    · rintro ⟨hx, hy⟩
+      refine ⟨(p.1, p.2 - f p.1), ⟨hx, ?_⟩, ?_⟩
+      · simpa only [Metric.mem_closedBall, dist_zero_right, f] using hy
+      · exact Prod.ext rfl (sub_add_cancel _ _)
+  refine ⟨H, hF, hI, ?_, hHfst, hgraph, hfiber, ?_, ?_, ?_, hJ_eq ▸ hJ, ?_⟩
   · apply Diffeomorph.ext
     intro p
     rw [hH, he]
@@ -229,10 +228,55 @@ theorem exists_isotopy_graphOn_family {E : Type*}
   · intro t
     constructor
     · intro p hp
-      exact hfix t p hp
+      exact hfix t p (hJ_eq.symm ▸ hp)
     · intro p hp
-      have h := congrArg (H t).symm (hfix t p hp)
+      have h := congrArg (H t).symm (hfix t p (hJ_eq.symm ▸ hp))
       simpa only [Diffeomorph.symm_apply_apply, id_eq] using h.symm
+
+theorem exists_isotopy_graphOn_family {E : Type*}
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    {g : ℝ × E → ℝ} (hg : ContDiff ℝ ∞ g) {K : Set E} (hK : IsCompact K)
+    (hfixed : ∀ s ∈ Set.Icc (0 : ℝ) 1, ∀ x ∉ K, g (s, x) = g (0, x)) :
+    ∃ H : ℝ → ((E × ℝ) ≃ₘ[ℝ] (E × ℝ)),
+      ContDiff ℝ ∞ (fun z : ℝ × (E × ℝ) => H z.1 z.2) ∧
+      ContDiff ℝ ∞ (fun z : ℝ × (E × ℝ) => (H z.1).symm z.2) ∧
+      H 0 = Diffeomorph.refl 𝓘(ℝ, E × ℝ) (E × ℝ) ∞ ∧
+      (∀ (t : ℝ) (p : E × ℝ), (H t p).1 = p.1) ∧
+      (∀ (t : ℝ) (x : E), H t (x, g (0, x)) = (x, g (Real.smoothTransition t, x))) ∧
+      (∀ (t : ℝ) (p : E × ℝ), g (0, p.1) = g (Real.smoothTransition t, p.1) →
+        H t p = p ∧ (H t).symm p = p) ∧
+      (∀ (t : ℝ) (s : Set E), H t '' Set.graphOn (fun x => g (0, x)) s =
+        Set.graphOn (fun x => g (Real.smoothTransition t, x)) s) ∧
+      (∀ (t : ℝ) (s : Set E), H t '' {p : E × ℝ | p.1 ∈ s ∧ g (0, p.1) ≤ p.2} =
+        {p : E × ℝ | p.1 ∈ s ∧ g (Real.smoothTransition t, p.1) ≤ p.2}) ∧
+      (∀ (t : ℝ) (s : Set E), H t '' {p : E × ℝ | p.1 ∈ s ∧ g (0, p.1) < p.2} =
+        {p : E × ℝ | p.1 ∈ s ∧ g (Real.smoothTransition t, p.1) < p.2}) ∧
+      ∃ J : Set (E × ℝ), IsCompact J ∧ ∀ t : ℝ,
+        Set.EqOn (H t) id Jᶜ ∧ Set.EqOn (H t).symm id Jᶜ := by
+  let f : E → ℝ := fun x => g (0, x)
+  let d : ℝ × E → ℝ := fun p => g p - f p.2
+  have hd : ContinuousOn d (Set.Icc (0 : ℝ) 1 ×ˢ K) :=
+    (hg.continuous.sub
+      ((hg.continuous.comp (continuous_const.prodMk continuous_id)).comp continuous_snd)).continuousOn
+  let b : ContDiffBump (0 : ℝ) := ⟨1, 2, by norm_num, by norm_num⟩
+  obtain ⟨B, hB⟩ := ContDiff.lipschitzWith_of_hasCompactSupport b.hasCompactSupport
+    b.contDiff (show (∞ : ℕ∞ω) ≠ 0 by simp)
+  obtain ⟨D₀, hD₀⟩ := (isCompact_Icc.prod hK).exists_bound_of_continuousOn hd
+  let D : ℝ≥0 := ⟨max D₀ 0, le_max_right _ _⟩
+  have hbound : ∀ s ∈ Set.Icc (0 : ℝ) 1, ∀ x ∈ K, ‖g (s, x) - g (0, x)‖ ≤ D := by
+    intro s hs x hx
+    exact (hD₀ _ ⟨hs, hx⟩).trans (le_max_left _ _)
+  let R : ℝ := 2 * D * B + 1
+  have hR : 0 < R := by dsimp only [R]; positivity
+  have hcoeff : (D : ℝ) * B * R⁻¹ ≤ 1 / 2 := by
+    apply (mul_inv_le_iff₀ hR).2
+    dsimp only [R]
+    linarith
+  obtain ⟨H, hforward, hinverse, hzero, hfst, hgraph, hfiber, himage, hepi, hstrict,
+      hcompact, hfix⟩ :=
+    exists_isotopy_graphOn_family_with_support hg hK hfixed b hB hbound hR hcoeff
+  exact ⟨H, hforward, hinverse, hzero, hfst, hgraph, hfiber, himage, hepi, hstrict,
+    {p | p.1 ∈ K ∧ ‖p.2 - g (0, p.1)‖ ≤ b.rOut * R}, hcompact, hfix⟩
 
 theorem exists_isotopy_graphOn_of_hasCompactSupport {E : Type*}
     [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
