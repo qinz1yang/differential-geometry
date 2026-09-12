@@ -1,0 +1,41 @@
+name: Fork verification
+
+on:
+  push:
+    branches:
+      - codex/arbitrary-maximal-ricci-flow
+
+jobs:
+  maximal-flow:
+    runs-on: macos-14
+    timeout-minutes: 360
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Lean
+        run: |
+          curl -fsSL https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -o "$RUNNER_TEMP/elan-init.sh"
+          sh "$RUNNER_TEMP/elan-init.sh" -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Restore Mathlib cache
+        run: lake exe cache get
+
+      - name: Limit Lean memory pressure
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          path = Path("lakefile.toml")
+          text = path.read_text()
+          text = text.replace(
+              'defaultTargets = ["DifferentialGeometry"]\n',
+              'defaultTargets = ["DifferentialGeometry"]\nweakLeanArgs = ["-j", "1"]\n',
+          )
+          path.write_text(text)
+          PY
+
+      - name: Build maximal-flow module
+        run: >-
+          lake -KmaxJobs=1 build
+          +DifferentialGeometry.Geometry.Flow.RicciFlow.Extension.MaximalFlow:olean
