@@ -189,6 +189,7 @@ import DifferentialGeometry.Analysis.Elliptic.Barrier.StrongMinimumUpperSupport
 import DifferentialGeometry.Analysis.Elliptic.Barrier.SupportComparison
 import DifferentialGeometry.Analysis.Elliptic.Barrier.TouchingSupportsDifferentiability
 import DifferentialGeometry.Analysis.Elliptic.Coefficients
+import DifferentialGeometry.Analysis.Elliptic.ComplexPlane.BoundaryGrowth
 import DifferentialGeometry.Analysis.Elliptic.ComplexPlane.Disk.GreenIdentity
 import DifferentialGeometry.Analysis.Elliptic.ComplexPlane.Disk.ImageHarmonic
 import DifferentialGeometry.Analysis.Elliptic.ComplexPlane.Disk.ImagePotential
@@ -200,6 +201,7 @@ import DifferentialGeometry.Analysis.Elliptic.ComplexPlane.Disk.RegularizerLapla
 import DifferentialGeometry.Analysis.Elliptic.ComplexPlane.Disk.SupportMargin
 import DifferentialGeometry.Analysis.Elliptic.ComplexPlane.Gradient
 import DifferentialGeometry.Analysis.Elliptic.ComplexPlane.GreenIdentity
+import DifferentialGeometry.Analysis.Elliptic.ComplexPlane.HalfDiskBarrier
 import DifferentialGeometry.Analysis.Elliptic.ComplexPlane.LaplacianCalculus
 import DifferentialGeometry.Analysis.Elliptic.ComplexPlane.LaplacianConvolution
 import DifferentialGeometry.Analysis.Elliptic.ComplexPlane.LaplacianMinimum
