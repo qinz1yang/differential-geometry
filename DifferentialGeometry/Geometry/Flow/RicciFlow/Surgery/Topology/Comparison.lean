@@ -1,6 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ChildParent
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.Homology
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.GeometricCutoff
+import DifferentialGeometry.Topology.VanKampen.SmoothSphereSeparation
 
 
 
@@ -61,6 +62,92 @@ theorem nonempty_exteriorRegions_of_region_eq_univ (P : OrientedThreeStage.{u})
     exact isEmptyElim b
   rw [hemp, Set.union_empty]
 
+theorem rfs_exterior_branches_of_side_data (P : OrientedThreeStage.{u})
+    (C : SmoothSphericalRegion P)
+    (side : C.Boundary → SmoothSphericalRegion P)
+    (hinter : ∀ b, (side b).region ∩ C.region =
+      (Subtype.val : C.region → P.Carrier) '' Set.range (C.sphere b))
+    (hbdry : ∀ b,
+      letI := (side b).charts
+      letI := (side b).smooth
+      (Subtype.val : (side b).region → P.Carrier) ''
+        (𝓡∂ 3).boundary (side b).region =
+          (Subtype.val : C.region → P.Carrier) '' Set.range (C.sphere b))
+    (hdisj : Pairwise fun b c => Disjoint (side b).region (side c).region)
+    (hcover : C.region ∪ (⋃ b, (side b).region) = univ) :
+    Nonempty (ExteriorRegions C) :=
+  ⟨⟨side, hcover, hinter, hbdry, hdisj⟩⟩
+
+theorem exterior_branch_eq_of_mem (P : OrientedThreeStage.{u}) (C : SmoothSphericalRegion P)
+    (E : ExteriorRegions C)
+    {b d : C.Boundary} {x : P.Carrier} (hb : x ∈ (E.exterior b).region)
+    (hd : x ∈ (E.exterior d).region) : b = d := by
+  by_contra hne
+  exact Set.disjoint_left.mp (E.disjoint hne) hb hd
+
+theorem exists_exterior_of_notMem_region (P : OrientedThreeStage.{u}) (C : SmoothSphericalRegion P)
+    (E : ExteriorRegions C)
+    {x : P.Carrier} (hx : x ∉ C.region) : ∃ b, x ∈ (E.exterior b).region := by
+  have h : x ∈ C.region ∪ ⋃ b, (E.exterior b).region := by
+    rw [E.cover]
+    trivial
+  rcases h with h' | h'
+  · exact absurd h' hx
+  · exact Set.mem_iUnion.mp h'
+
+theorem exterior_inter_region_subset_sphere (P : OrientedThreeStage.{u})
+    (C : SmoothSphericalRegion P) (E : ExteriorRegions C) (b : C.Boundary) :
+    (E.exterior b).region ∩ C.region ⊆
+      (Subtype.val : C.region → P.Carrier) '' Set.range (C.sphere b) := by
+  intro x hx
+  rwa [E.intersection b] at hx
+
+theorem region_eq_univ_of_isEmpty_boundary (P : OrientedThreeStage.{u})
+    (C : SmoothSphericalRegion P) (E : ExteriorRegions C) [IsEmpty C.Boundary] :
+    C.region = univ := by
+  have h := E.cover
+  rw [Set.iUnion_of_empty, Set.union_empty] at h
+  exact h
+
+theorem nonempty_boundary_of_region_ne_univ (P : OrientedThreeStage.{u})
+    (C : SmoothSphericalRegion P) (E : ExteriorRegions C) (h : C.region ≠ univ) :
+    Nonempty C.Boundary := by
+  by_contra h'
+  have : IsEmpty C.Boundary := not_nonempty_iff.mp h'
+  exact h (region_eq_univ_of_isEmpty_boundary P C E)
+
+theorem exists_exterior_not_subset_region (P : OrientedThreeStage.{u})
+    (C : SmoothSphericalRegion P) (E : ExteriorRegions C) (h : C.region ≠ univ) :
+    ∃ b, ¬ (E.exterior b).region ⊆ C.region := by
+  obtain ⟨x, hx⟩ := (Set.ne_univ_iff_exists_notMem C.region).mp h
+  obtain ⟨b, hb⟩ := exists_exterior_of_notMem_region P C E hx
+  exact ⟨b, fun hsub => hx (hsub hb)⟩
+
+theorem exists_unique_exterior_of_notMem_region (P : OrientedThreeStage.{u})
+    (C : SmoothSphericalRegion P) (E : ExteriorRegions C) {x : P.Carrier} (hx : x ∉ C.region) :
+    ∃! b, x ∈ (E.exterior b).region :=
+  ⟨Classical.choose (exists_exterior_of_notMem_region P C E hx),
+    Classical.choose_spec (exists_exterior_of_notMem_region P C E hx),
+    fun _ hd => exterior_branch_eq_of_mem P C E hd
+      (Classical.choose_spec (exists_exterior_of_notMem_region P C E hx))⟩
+
+theorem exists_chartedSpace_closure_component_of_surgery_sphere
+    (P : OrientedThreeStage.{0}) [SimplyConnectedSpace P.Carrier] (C : SmoothSphericalRegion P)
+    (b : C.Boundary)
+    (he : IsSmoothEmbedding (𝓡 2) (𝓡 3) ∞ (fun y : Sphere 2 => (C.sphere b y).1))
+    (p : ((Set.range fun y : Sphere 2 => (C.sphere b y).1)ᶜ : Set P.Carrier)) :
+    ∃ c : ChartedSpace (EuclideanHalfSpace 3)
+        (closure (Subtype.val '' connectedComponent p) : Set P.Carrier),
+      letI := c
+      IsManifold (𝓡∂ 3) ∞ (closure (Subtype.val '' connectedComponent p) : Set P.Carrier) ∧
+      ContMDiff (𝓡∂ 3) (𝓡 3) ∞ (Subtype.val :
+        (closure (Subtype.val '' connectedComponent p) : Set P.Carrier) → P.Carrier) ∧
+      ∀ q : (closure (Subtype.val '' connectedComponent p) : Set P.Carrier),
+        (𝓡∂ 3).IsBoundaryPoint q ↔
+          (q : P.Carrier) ∈ Set.range (fun y : Sphere 2 => (C.sphere b y).1) :=
+  DifferentialGeometry.Topology.ThreeManifold.exists_chartedSpace_closure_component_of_smoothSphereEmbedding
+    (M := P.Carrier) he p
+
 namespace GeometricCutoffRecord
 
 variable {H : ObservedHistory.{u}} {i : Fin H.eventCount} {parameters : CutoffParameters}
@@ -108,6 +195,63 @@ structure ComparisonSupport where
     (G.static b.1).inclusion ((G.static b.1).witness.collapse x)
   tip : G.ChildBoundary c → (G.Child c).Carrier
   tip_eq : ∀ b, (tip b).1 = (G.static b.1).inclusion (G.static b.1).witness.tip
+
+theorem rfs_comparison_support_of_inputs
+    (I1_level : G.ChildBoundary c → ℝ)
+    (I1_lower : ∀ b, -(G.static b.1).delta⁻¹ < I1_level b)
+    (I1_below_tip : ∀ b, I1_level b < (G.static b.1).witness.tipCoordinate)
+    (I1_negative : ∀ b, I1_level b < 0)
+    (I2_parameter : (b : G.ChildBoundary c) →
+      Sphere 2 × ↑(Icc (I1_level b) 0) → neckCentralDomain (G.static b.1).delta)
+    (I2_eq : ∀ b x, (I2_parameter b x).1.1 = (x.1, x.2.1))
+    (I3_collar : (b : G.ChildBoundary c) →
+      C(Sphere 2 × ↑(Icc (I1_level b) 0), (G.Parent c).Carrier))
+    (I3_eq : ∀ b x, (I3_collar b x).1 = ((G.static b.1).neck.chart (I2_parameter b x).1).1)
+    (I4_inter : ∀ b, Set.range (I3_collar b) ∩
+        Set.range (G.transition.childCoreIntoParent c) =
+      Set.range (fun y : Sphere 2 =>
+        I3_collar b (y, ⟨0, (I1_negative b).le, le_rfl⟩)))
+    (I5_disjoint : Pairwise fun b d =>
+      Disjoint (Set.range (I3_collar b)) (Set.range (I3_collar d)))
+    (I6_support : SmoothSphericalRegion (G.Parent c))
+    (I6_eq : I6_support.region = Set.range (G.transition.childCoreIntoParent c) ∪
+      (⋃ b, Set.range (I3_collar b)))
+    (I6_terminal : ∀ x ∈ I6_support.region,
+      x.1 ∈ (H.event i).incoming.terminalRegularRegion)
+    (I7_label : G.ChildBoundary c ≃ I6_support.Boundary)
+    (I7_eq : ∀ b,
+      (Subtype.val : I6_support.region → (G.Parent c).Carrier) ''
+        Set.range (I6_support.sphere (I7_label b)) =
+      Set.range (fun y : Sphere 2 =>
+        I3_collar b (y, ⟨I1_level b, le_rfl, (I1_negative b).le⟩)))
+    (I8_exterior : ExteriorRegions I6_support)
+    (I8_localCollapse : (b : G.ChildBoundary c) →
+      C(neckCentralDomain (G.static b.1).delta, (G.Child c).Carrier))
+    (I8_localCollapse_eq : ∀ b x, (I8_localCollapse b x).1 =
+      (G.static b.1).inclusion ((G.static b.1).witness.collapse x))
+    (I8_tip : G.ChildBoundary c → (G.Child c).Carrier)
+    (I8_tip_eq : ∀ b, (I8_tip b).1 = (G.static b.1).inclusion (G.static b.1).witness.tip) :
+    Nonempty (G.ComparisonSupport c) :=
+  ⟨{ level := I1_level
+     level_lower := I1_lower
+     level_below_tip := I1_below_tip
+     level_negative := I1_negative
+     collarParameter := I2_parameter
+     collarParameter_eq := I2_eq
+     collar := I3_collar
+     collar_eq := I3_eq
+     collar_core_intersection := I4_inter
+     collar_disjoint := I5_disjoint
+     support := I6_support
+     support_eq := I6_eq
+     support_terminal := I6_terminal
+     boundaryLabel := I7_label
+     boundary_eq := I7_eq
+     exterior := I8_exterior
+     localCollapse := I8_localCollapse
+     localCollapse_eq := I8_localCollapse_eq
+     tip := I8_tip
+     tip_eq := I8_tip_eq }⟩
 
 theorem rfs_comparison_support
     [SimplyConnectedSpace (G.Parent c).Carrier] : Nonempty (G.ComparisonSupport c) := by
@@ -533,6 +677,82 @@ def rfs_whole_parent_map : C((G.Parent c).Carrier, (G.Child c).Carrier) :=
 theorem wholeParentMap_spec : K.IsWholeParentMap K.rfs_whole_parent_map :=
   (Classical.choose_spec K.exists_unique_wholeParentMap).1
 
+theorem rfs_whole_parent_map_eq_wholeParentMap (d : (G.Child c).Carrier) :
+    K.rfs_whole_parent_map = K.wholeParentMap d :=
+  ((Classical.choose_spec K.exists_unique_wholeParentMap).2 _
+    (K.wholeParentMap_isWholeParentMap d)).symm
+
+theorem rfs_whole_parent_map_childCore (x : G.transition.ChildCore c) :
+    K.rfs_whole_parent_map (G.transition.childCoreIntoParent c x) =
+      G.transition.childCoreInclusion c x :=
+  K.wholeParentMap_spec.1 x
+
+theorem rfs_whole_parent_map_collar (b : G.ChildBoundary c)
+    (w : Sphere 2 × ↑(Icc (K.level b) 0)) :
+    K.rfs_whole_parent_map (K.collar b w) =
+      K.localCollapse b (K.collarParameter b w) :=
+  K.wholeParentMap_spec.2.1 b w
+
+theorem rfs_whole_parent_map_eq_tip_of_mem_exterior (b : G.ChildBoundary c)
+    {x : (G.Parent c).Carrier}
+    (hx : x ∈ (K.exterior.exterior (K.boundaryLabel b)).region) :
+    K.rfs_whole_parent_map x = K.tip b :=
+  K.wholeParentMap_spec.2.2 b x hx
+
+theorem rfs_whole_parent_map_locallyConstant_of_notMem {x : (G.Parent c).Carrier}
+    (hx : x ∉ K.support.region) :
+    ∃ U ∈ 𝓝 x, ∀ y ∈ U, K.rfs_whole_parent_map y = K.rfs_whole_parent_map x := by
+  classical
+  let : Fintype K.support.Boundary := K.support.finiteBoundary
+  obtain ⟨b₀, hb₀⟩ := K.exterior_exists x hx
+  have hxS : x ∈ (K.exterior.exterior (K.boundaryLabel b₀)).region := hb₀
+  have hclosed : IsClosed (K.support.region ∪
+      ⋃ e : {e' : K.support.Boundary // e' ≠ K.boundaryLabel b₀},
+        (K.exterior.exterior e.1).region) :=
+    K.support.compact.isClosed.union
+      (isClosed_iUnion_of_finite fun e : {e' : K.support.Boundary // e' ≠ K.boundaryLabel b₀} =>
+        (K.exterior.exterior e.1).compact.isClosed)
+  have hxU : x ∈ (K.support.region ∪
+      ⋃ e : {e' : K.support.Boundary // e' ≠ K.boundaryLabel b₀},
+        (K.exterior.exterior e.1).region)ᶜ := by
+    intro hmem
+    rcases hmem with hR | hU
+    · exact hx hR
+    · obtain ⟨e, he⟩ := Set.mem_iUnion.mp hU
+      exact (Set.disjoint_left.mp (K.exterior.disjoint (Ne.symm e.2))) hxS he
+  refine ⟨_, hclosed.isOpen_compl.mem_nhds hxU, ?_⟩
+  intro y hy
+  have hyS : y ∈ (K.exterior.exterior (K.boundaryLabel b₀)).region := by
+    have hcover : y ∈ K.support.region ∪ ⋃ e, (K.exterior.exterior e).region := by
+      rw [K.exterior.cover]
+      trivial
+    rcases hcover with hR | hU
+    · exact absurd hR (fun h => hy (Or.inl h))
+    · obtain ⟨e, he⟩ := Set.mem_iUnion.mp hU
+      by_cases hee : e = K.boundaryLabel b₀
+      · rwa [hee] at he
+      · exact absurd (Set.mem_iUnion.mpr ⟨⟨e, hee⟩, he⟩) (fun h => hy (Or.inr h))
+  rw [K.rfs_whole_parent_map_eq_tip_of_mem_exterior b₀ hxS,
+    K.rfs_whole_parent_map_eq_tip_of_mem_exterior b₀ hyS]
+
+theorem rfs_whole_parent_map_surjective_of_cover
+    (hcov : Set.range (G.transition.childCoreInclusion c) ∪
+      (⋃ b : G.ChildBoundary c, Set.range (fun w : Sphere 2 × ↑(Icc (K.level b) 0) =>
+        K.localCollapse b (K.collarParameter b w))) = univ) :
+    Function.Surjective K.rfs_whole_parent_map := by
+  intro v
+  have hv : v ∈ Set.range (G.transition.childCoreInclusion c) ∪
+      (⋃ b : G.ChildBoundary c, Set.range (fun w : Sphere 2 × ↑(Icc (K.level b) 0) =>
+        K.localCollapse b (K.collarParameter b w))) := by
+    rw [hcov]
+    trivial
+  rcases hv with hcore | hcollar
+  · obtain ⟨y, rfl⟩ := hcore
+    exact ⟨G.transition.childCoreIntoParent c y, K.rfs_whole_parent_map_childCore y⟩
+  · obtain ⟨b, hb⟩ := Set.mem_iUnion.mp hcollar
+    obtain ⟨w, rfl⟩ := hb
+    exact ⟨K.collar b w, K.rfs_whole_parent_map_collar b w⟩
+
 def LocalTerminalLengthControl (f : C((G.Parent c).Carrier, (G.Child c).Carrier)) : Prop :=
   ∀ x ∈ K.support.region, ∃ U ∈ 𝓝 x,
     (∀ y ∈ U, y.1 ∈ (H.event i).incoming.terminalRegularRegion) ∧
@@ -549,6 +769,51 @@ def LocalTerminalLengthControl (f : C((G.Parent c).Carrier, (G.Child c).Carrier)
       riemannianCurveLength (H.event i).outputMetric
         (fun t => (f ⟨(γ t).1, hparent t⟩).1) a b ≤
           riemannianCurveLength (H.event i).terminal.metric γ a b)
+
+theorem rfs_whole_parent_map_localTerminalLengthControl_of_lipschitz
+    (hf : ∀ (y z : (G.Parent c).Carrier),
+      ∀ hy : y.1 ∈ (H.event i).incoming.terminalRegularRegion,
+      ∀ hz : z.1 ∈ (H.event i).incoming.terminalRegularRegion,
+      riemannianEDistOf (H.event i).outputMetric (K.rfs_whole_parent_map y).1
+        (K.rfs_whole_parent_map z).1 ≤
+      riemannianEDistOf (H.event i).terminal.metric ⟨y.1, hy⟩ ⟨z.1, hz⟩) :
+    K.LocalTerminalLengthControl K.rfs_whole_parent_map := by
+  intro x hx
+  refine ⟨{y : (G.Parent c).Carrier | y.1 ∈ (H.event i).incoming.terminalRegularRegion},
+    ((H.event i).incoming.terminalRegularRegion_isOpen.preimage continuous_subtype_val).mem_nhds
+      (K.support_terminal x hx),
+    fun _ hy => hy, fun y _ z _ hy hz => hf y z hy hz, ?_⟩
+  intro γ hparent a b hab hγ hU hlen
+  unfold riemannianCurveLength
+  refine iSup_le fun p => ?_
+  refine le_trans (Finset.sum_le_sum fun k _ => ?_) (le_iSup (fun q : ℕ ×
+    {u : ℕ → ℝ // Monotone u ∧ ∀ j, u j ∈ Icc a b} =>
+      ∑ j ∈ Finset.range q.1, riemannianEDistOf (H.event i).terminal.metric
+        (γ (q.2.1 (j + 1))) (γ (q.2.1 j))) p)
+  exact hf ⟨(γ (p.2.1 (k + 1))).1, hparent (p.2.1 (k + 1))⟩
+    ⟨(γ (p.2.1 k)).1, hparent (p.2.1 k)⟩ (γ (p.2.1 (k + 1))).2 (γ (p.2.1 k)).2
+
+theorem rfs_collapse_degree_of_local_inputs
+    (hlip : ∀ (y z : (G.Parent c).Carrier),
+      ∀ hy : y.1 ∈ (H.event i).incoming.terminalRegularRegion,
+      ∀ hz : z.1 ∈ (H.event i).incoming.terminalRegularRegion,
+      riemannianEDistOf (H.event i).outputMetric (K.rfs_whole_parent_map y).1
+        (K.rfs_whole_parent_map z).1 ≤
+      riemannianEDistOf (H.event i).terminal.metric ⟨y.1, hy⟩ ⟨z.1, hz⟩)
+    (hcov : Set.range (G.transition.childCoreInclusion c) ∪
+      (⋃ b : G.ChildBoundary c, Set.range (fun w : Sphere 2 × ↑(Icc (K.level b) 0) =>
+        K.localCollapse b (K.collarParameter b w))) = univ) :
+    K.LocalTerminalLengthControl K.rfs_whole_parent_map ∧
+    (∀ x ∉ K.support.region, ∃ U ∈ 𝓝 x, ∀ y ∈ U,
+      K.rfs_whole_parent_map y = K.rfs_whole_parent_map x) ∧
+    (∀ x : G.transition.ChildCore c,
+      K.rfs_whole_parent_map (G.transition.childCoreIntoParent c x) =
+        G.transition.childCoreInclusion c x) ∧
+    Function.Surjective K.rfs_whole_parent_map :=
+  ⟨K.rfs_whole_parent_map_localTerminalLengthControl_of_lipschitz hlip,
+    fun _ hx => K.rfs_whole_parent_map_locallyConstant_of_notMem hx,
+    fun x => K.rfs_whole_parent_map_childCore x,
+    K.rfs_whole_parent_map_surjective_of_cover hcov⟩
 
 theorem rfs_collapse_degree [SimplyConnectedSpace (G.Parent c).Carrier] :
     K.LocalTerminalLengthControl K.rfs_whole_parent_map ∧
@@ -581,6 +846,40 @@ theorem rfs_child_comparison
             riemannianEDistOf ((H.stage i.castSucc).componentMetric
               ((H.event i).incoming.flow.base.metric s) (G.transition.childParent c)) x y := by
   sorry
+
+theorem rfs_child_comparison_maps_of_inputs
+    (Kc : (c : ConnectedComponents (H.stage i.succ).Carrier) → G.ComparisonSupport c) :
+    ∃ f : (c : ConnectedComponents (H.stage i.succ).Carrier) →
+      C((G.Parent c).Carrier, (G.Child c).Carrier),
+      ∀ c, ∃ K : G.ComparisonSupport c, f c = K.rfs_whole_parent_map :=
+  ⟨fun c => (Kc c).rfs_whole_parent_map, fun c => ⟨Kc c, rfl⟩⟩
+
+theorem rfs_child_comparison_length_of_inputs
+    (f : (c : ConnectedComponents (H.stage i.succ).Carrier) →
+      C((G.Parent c).Carrier, (G.Child c).Carrier))
+    (Kc : (c : ConnectedComponents (H.stage i.succ).Carrier) → G.ComparisonSupport c)
+    (hf : ∀ c, f c = (Kc c).rfs_whole_parent_map)
+    (s₀ : ℝ) (hs₀ : s₀ ∈ Ico (H.time i.castSucc) (H.time i.succ)) (ell : ℝ → ℝ)
+    (hell : ∀ s ∈ Ioo s₀ (H.time i.succ), 1 ≤ ell s)
+    (htend : Filter.Tendsto ell (𝓝[<] (H.time i.succ)) (𝓝 1))
+    (hlen : ∀ c, ∀ s ∈ Ioo s₀ (H.time i.succ), ∀ x y : (G.Parent c).Carrier,
+      riemannianEDistOf ((H.stage i.succ).componentMetric (H.event i).outputMetric c)
+        ((Kc c).rfs_whole_parent_map x) ((Kc c).rfs_whole_parent_map y) ≤
+      ENNReal.ofReal (ell s) * riemannianEDistOf
+        ((H.stage i.castSucc).componentMetric
+          ((H.event i).incoming.flow.base.metric s) (G.transition.childParent c)) x y) :
+    ∃ s₀ ∈ Ico (H.time i.castSucc) (H.time i.succ), ∃ ell : ℝ → ℝ,
+      (∀ s ∈ Ioo s₀ (H.time i.succ), 1 ≤ ell s) ∧
+      Filter.Tendsto ell (𝓝[<] (H.time i.succ)) (𝓝 1) ∧
+      ∀ c, ∀ s ∈ Ioo s₀ (H.time i.succ), ∀ x y : (G.Parent c).Carrier,
+        riemannianEDistOf ((H.stage i.succ).componentMetric (H.event i).outputMetric c)
+          (f c x) (f c y) ≤
+        ENNReal.ofReal (ell s) * riemannianEDistOf
+          ((H.stage i.castSucc).componentMetric
+            ((H.event i).incoming.flow.base.metric s) (G.transition.childParent c)) x y :=
+  ⟨s₀, hs₀, ell, hell, htend, fun c s hs x y => by
+    rw [hf c]
+    exact hlen c s hs x y⟩
 
 end GeometricCutoffRecord
 
