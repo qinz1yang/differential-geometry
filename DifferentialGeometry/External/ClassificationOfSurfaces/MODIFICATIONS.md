@@ -86,3 +86,23 @@ production module freshly compiled and its imported public consumer gate passed
 1789233891983857661-schoenflies-42a7b73c. Root matched all92 source guards, read
 all three type/axiom pairs and verified the exact upstream recognition delta. Geometric free-triangle existence,
 the two-edge branch, compatible rounding and smooth disk filling remain open.
+
+## Geometric free-triangle classification
+
+Moise/GeometricFreeTriangle retains seven declarations and their attached
+upstream documentation/scopes from FreeTriangleMove. GEOMETRIC_FREE_SELECTION.json
+records exact original body hashes and source locations. The import uses the
+previously selected OneEdgeAttachment layer; only the modification-notice path
+changes locally. The one- and two-boundary-edge cases produce the actual
+geometric frontier configurations. The contrary case identifies an actual
+isolated boundary vertex and cutting diagonals. It does not assert geometric
+freeness exists for every polygonal mesh.
+
+The unchanged bodies and a concrete midpoint two-triangle mesh consumer pass
+1789233897698956242-schoenflies-ff473eb1, with stock declaration linters and
+standard-only axioms. Final production gate
+1789234647397384846-schoenflies-3ad41b77 passed in73.49s, freshly compiling
+only the new module. Root matched all nine source guards, read all eight
+signature/axiom pairs, and independently matched all seven upstream bodies.
+All imported vendor and consumer declaration linters and standard-only axioms
+pass. This is not a full DifferentialGeometry aggregate build.

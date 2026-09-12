@@ -4,7 +4,7 @@
   "license": "Apache-2.0",
   "target_lean": "leanprover/lean4:v4.33.1",
   "target_mathlib": "0df444a360eaa60ab8c11dca51a86af692955474",
-  "scope": "Six selected source modules, including native polygon triangulation, geometric one-edge attachment and the actual remaining closed-region producer; fresh production artifact/imported consumer/linter/axiom gates pass.",
+  "scope": "Seven selected source modules; fresh production artifact/imported consumer/linter/axiom gates pass, including geometric free-triangle classification.",
   "source_files": {
     "DifferentialGeometry/External/ClassificationOfSurfaces/Moise/PlaneComplex.lean": {
       "upstream_sha256": "289d152b60da667c2022c5d811be8718d93a2a95181f7aa31654193a7c1a115a",
@@ -45,6 +45,13 @@
       "target_sha256": "18c50c759e669e4829959317fb5508d735d795a73a0bf33264f1278605eb4efe",
       "checked_private_request": "1789232885714420646-schoenflies-24adbd8c",
       "source_change_from_checked": "Consolidate four sources; retain nine statements/bodies/scopes; omit unused private edge specialization; expose only final engine; restore upstream recognition documentation and localize attribution paths."
+    },
+    "DifferentialGeometry/External/ClassificationOfSurfaces/Moise/GeometricFreeTriangle.lean": {
+      "upstream_path": "ClassificationOfSurfaces/Moise/FreeTriangleMove.lean (seven selected declarations)",
+      "selection_provenance": "GEOMETRIC_FREE_SELECTION.json",
+      "target_sha256": "5871952ecf3af05f88472bcaf105e10a3c98e7ea0952a4fd47d2466b209d8be2",
+      "checked_request": "1789233897698956242-schoenflies-ff473eb1",
+      "source_change_from_checked": "Only required modification-notice path; seven declaration bodies unchanged."
     }
   },
   "license_sha256": "b40930bbcf80744c86c46a12bc9da056641d722716c378f5659b9e555ef833e1",
@@ -156,5 +163,27 @@
     "aggregate_registration": "New leaf registered in flat DifferentialGeometry.lean.",
     "full_dg_aggregate_build": false,
     "smooth_disk_filling": false
+  },
+  "geometric_free_validation": {
+    "status": "Passed fresh new-module artifact compilation and imported consumer gate; not a full DifferentialGeometry aggregate build.",
+    "request_id": "1789234647397384846-schoenflies-3ad41b77",
+    "input_sha256": "ec59c435d8e2109bc12cba68b73e1484f3d8e067771edee6d48fb18e6c891191",
+    "result_sha256": "07bdd98669266fca87f3cf234d6ee473358758953e4c749bef73a0eadad3bc6c",
+    "job_id": "13781140",
+    "host": "della-r3c2n16",
+    "elapsed_seconds": 73.48781871795654,
+    "peak_rss_bytes": 2229227520,
+    "fresh_artifacts": [
+      "DifferentialGeometry.External.ClassificationOfSurfaces.Moise.GeometricFreeTriangle"
+    ],
+    "artifact_log_sha256": "5da66eb7bea62bb84fceba9a2fbf2bcf986153ece681ffcd3ad4d9c05576ebc6",
+    "source_guards_matched": 9,
+    "signature_axiom_pairs": 8,
+    "declaration_linters": "All imported vendor and current consumer declarations: unusedArguments, simpNF, synTaut; source defProp covers kinds at this pin.",
+    "transitive_axioms": "All imported vendor and consumer declarations, including private: only propext, Classical.choice, Quot.sound.",
+    "upstream_bodies_verified": 7,
+    "aggregate_registration": "Flat DifferentialGeometry.lean import.",
+    "full_dg_aggregate_build": false,
+    "geometric_free_triangle_existence": false
   }
 }

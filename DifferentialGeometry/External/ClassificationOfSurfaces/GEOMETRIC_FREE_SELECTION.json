@@ -1,0 +1,91 @@
+{
+  "upstream_repository": "https://github.com/mccorvie/classification-of-surfaces",
+  "upstream_revision": "e3c7230fe78d7b056a415d9ecae6f77887046b32",
+  "upstream_source": "ClassificationOfSurfaces/Moise/FreeTriangleMove.lean",
+  "upstream_source_sha256": "8b37afc857119ad493869d06f06c8c59c6aff251ccbb0e1c13b3d1a3fe91559a",
+  "target": "Moise/GeometricFreeTriangle.lean",
+  "target_sha256": "5871952ecf3af05f88472bcaf105e10a3c98e7ea0952a4fd47d2466b209d8be2",
+  "license": "Apache-2.0",
+  "declarations": [
+    {
+      "declaration": "IsTwoEdgeFreeTriangle",
+      "qualified_declaration": "LeanEval.Topology.ClassificationOfSurfaces.Moise.TriangleMesh.IsTwoEdgeFreeTriangle",
+      "upstream_declaration_start_line": 198,
+      "upstream_documentation_start_line": 196,
+      "declaration_sha256": "0219fd932f3d157772222dc8cea21d0107305632203ce5c4ee2e193006ecdf40",
+      "documentation_and_declaration_sha256": "79f96c0b1f24799cf457a3ae3cd366186d0b8ad29b1ededae771e302e80024b7"
+    },
+    {
+      "declaration": "IsGeometricallyFreeTriangle",
+      "qualified_declaration": "LeanEval.Topology.ClassificationOfSurfaces.Moise.TriangleMesh.IsGeometricallyFreeTriangle",
+      "upstream_declaration_start_line": 204,
+      "upstream_documentation_start_line": 203,
+      "declaration_sha256": "03e12c61faf7c1758a12bdf84e93a717a26c7355dd3abac996f1a8a7d937b19e",
+      "documentation_and_declaration_sha256": "f9f39a73afe4116b66839c2dfb60ebc83add7a2d34f883591da7148a11011e58"
+    },
+    {
+      "declaration": "freeTriangleBaseSegment_eq_oppositeEdgeCarrier",
+      "qualified_declaration": "LeanEval.Topology.ClassificationOfSurfaces.Moise.TriangleMesh.freeTriangleBaseSegment_eq_oppositeEdgeCarrier",
+      "upstream_declaration_start_line": 475,
+      "upstream_documentation_start_line": 475,
+      "declaration_sha256": "7cd8b7d12ae31dd2a658ef14ce6f7e63917f22d9dce4b0e4646ee2ae9a0e3d47",
+      "documentation_and_declaration_sha256": "7cd8b7d12ae31dd2a658ef14ce6f7e63917f22d9dce4b0e4646ee2ae9a0e3d47"
+    },
+    {
+      "declaration": "isGeometricallyFreeTriangle_of_boundaryEdges_card_one",
+      "qualified_declaration": "LeanEval.Topology.ClassificationOfSurfaces.Moise.TriangleMesh.isGeometricallyFreeTriangle_of_boundaryEdges_card_one",
+      "upstream_declaration_start_line": 501,
+      "upstream_documentation_start_line": 501,
+      "declaration_sha256": "07895f235b3b18a2156ab9cfa28751cb9ca4064e9e18a6e8cccae76a7771a1ee",
+      "documentation_and_declaration_sha256": "07895f235b3b18a2156ab9cfa28751cb9ca4064e9e18a6e8cccae76a7771a1ee"
+    },
+    {
+      "declaration": "isGeometricallyFreeTriangle_of_boundaryEdges_card_two",
+      "qualified_declaration": "LeanEval.Topology.ClassificationOfSurfaces.Moise.TriangleMesh.isGeometricallyFreeTriangle_of_boundaryEdges_card_two",
+      "upstream_declaration_start_line": 517,
+      "upstream_documentation_start_line": 515,
+      "declaration_sha256": "cfdb770d357d99b6295e06f663adf310af4526c601595e4bc96f9c3c0f47e678",
+      "documentation_and_declaration_sha256": "ac422c2659de53033944ab1f1ddc0f3558fe580e2b576352d2686bb377aaddb0"
+    },
+    {
+      "declaration": "isGeometricallyFreeTriangle_of_isFreeTriangle",
+      "qualified_declaration": "LeanEval.Topology.ClassificationOfSurfaces.Moise.TriangleMesh.isGeometricallyFreeTriangle_of_isFreeTriangle",
+      "upstream_declaration_start_line": 691,
+      "upstream_documentation_start_line": 688,
+      "declaration_sha256": "bd9cb6f1e20ba8341ef02a69db5f77c1d92d066816b212ccb2fe51414226d99a",
+      "documentation_and_declaration_sha256": "1ebf2a088e2c98a283a17d755c65794e466925558b3eae1ff64f508696769375"
+    },
+    {
+      "declaration": "exists_cutting_diagonal_configuration",
+      "qualified_declaration": "LeanEval.Topology.ClassificationOfSurfaces.Moise.TriangleMesh.exists_cutting_diagonal_configuration",
+      "upstream_declaration_start_line": 710,
+      "upstream_documentation_start_line": 707,
+      "declaration_sha256": "883d71069c9fdb374979177f6162dc286c6a69391a522e6cc10716953e2c1629",
+      "documentation_and_declaration_sha256": "ba0b3a7852445cd12ef66964ff77ce015e7c782895eb7a5162db994db28036e0"
+    }
+  ],
+  "changes": "Seven exact original declaration bodies and attached documentation/scopes, importing the previously selected OneEdgeAttachment module; local modification notice path adjusted.",
+  "source_check_request": "1789233897698956242-schoenflies-ff473eb1",
+  "production_validation": {
+    "status": "Passed fresh new-module artifact compilation and imported consumer gate; not a full DifferentialGeometry aggregate build.",
+    "request_id": "1789234647397384846-schoenflies-3ad41b77",
+    "input_sha256": "ec59c435d8e2109bc12cba68b73e1484f3d8e067771edee6d48fb18e6c891191",
+    "result_sha256": "07bdd98669266fca87f3cf234d6ee473358758953e4c749bef73a0eadad3bc6c",
+    "job_id": "13781140",
+    "host": "della-r3c2n16",
+    "elapsed_seconds": 73.48781871795654,
+    "peak_rss_bytes": 2229227520,
+    "fresh_artifacts": [
+      "DifferentialGeometry.External.ClassificationOfSurfaces.Moise.GeometricFreeTriangle"
+    ],
+    "artifact_log_sha256": "5da66eb7bea62bb84fceba9a2fbf2bcf986153ece681ffcd3ad4d9c05576ebc6",
+    "source_guards_matched": 9,
+    "signature_axiom_pairs": 8,
+    "declaration_linters": "All imported vendor and current consumer declarations: unusedArguments, simpNF, synTaut; source defProp covers kinds at this pin.",
+    "transitive_axioms": "All imported vendor and consumer declarations, including private: only propext, Classical.choice, Quot.sound.",
+    "upstream_bodies_verified": 7,
+    "aggregate_registration": "Flat DifferentialGeometry.lean import.",
+    "full_dg_aggregate_build": false,
+    "geometric_free_triangle_existence": false
+  }
+}
