@@ -8480,6 +8480,7 @@ import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.PuncturedImageBa
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.Quotient
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.SeamChart
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.SeamOrientation
+import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.SeamTransition
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.SmoothStructure
 import DifferentialGeometry.Topology.ThreeManifold.CutCap
 import DifferentialGeometry.Topology.ThreeManifold.CutCapReconstruction
