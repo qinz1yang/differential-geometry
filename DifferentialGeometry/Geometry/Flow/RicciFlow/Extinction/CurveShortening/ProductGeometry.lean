@@ -5,6 +5,7 @@ import DifferentialGeometry.Geometry.Curvature.DimensionOne.Flat
 import DifferentialGeometry.Geometry.Curvature.Metric.Scaling
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Product
 import DifferentialGeometry.Geometry.Curvature.Naturality.Pullback.LocalIterCov
+import DifferentialGeometry.Geometry.Connection.LeviCivita.Koszul.Metric
 
 
 noncomputable section
@@ -91,6 +92,56 @@ theorem nablaKRm04Field_eq_iterCov {D : RealTimeInterval}
   simpa only [SolutionFamily.rm04] using nablaKRm_eq_iterCov F t m
 
 
+private theorem scaleEuclideanLine_bilinear_coercive (c : ℝ) (hc : 0 < c) :
+    IsCoercive (c • (innerSL ℝ : ℝ →L[ℝ] ℝ →L[ℝ] ℝ)) := by
+  refine ⟨c, hc, ?_⟩
+  intro v
+  change c * ‖v‖ * ‖v‖ ≤ c * inner ℝ v v
+  rw [real_inner_self_eq_norm_sq]
+  nlinarith
+
+omit [FiniteDimensional ℝ E] [CompleteSpace E] [IsManifold I ∞ M] in
+theorem leviCivita_apply_const_scaleEuclidean (c : ℝ) (hc : 0 < c) (a : ℝ) :
+    ∀ y u : ℝ,
+      (DifferentialGeometry.Geometry.Connection.LeviCivita (I := 𝓘(ℝ, ℝ))
+        (DifferentialGeometry.scaleMetric (I := 𝓘(ℝ, ℝ)) c hc
+          (DifferentialGeometry.euclideanMetric (E := ℝ)))).toFun
+        (fun _ : ℝ => a) y u = 0 := by
+  intro y u
+  let g : SmoothRiemannianMetric 𝓘(ℝ, ℝ) ℝ :=
+    DifferentialGeometry.scaleMetric (I := 𝓘(ℝ, ℝ)) c hc
+      (DifferentialGeometry.euclideanMetric (E := ℝ))
+  let B : ℝ → ℝ →L[ℝ] ℝ →L[ℝ] ℝ := fun _ => c • (innerSL ℝ)
+  have hB : ∀ y : ℝ, tangentBilinearFormToModel y (g.inner y) = B y := by
+    intro y
+    ext
+    rfl
+  have hBdiff : DifferentiableAt ℝ B y := by
+    have hcst : B = Function.const ℝ (B y) := rfl
+    rw [hcst]
+    exact differentiableAt_const _
+  have hco : IsCoercive (B y) := scaleEuclideanLine_bilinear_coercive c hc
+  have hkey := DifferentialGeometry.Geometry.Connection.const_cov_eq_koszul
+    g B hB hBdiff hco u a
+  have hfderiv : fderiv ℝ B y = 0 := by
+    have hcst : B = Function.const ℝ (B y) := rfl
+    rw [hcst, fderiv_const]
+    rfl
+  rw [hfderiv] at hkey
+  have hzero : MetricKoszul.koszulVec hco
+      (0 : ℝ →L[ℝ] ℝ →L[ℝ] ℝ →L[ℝ] ℝ) u a = 0 := by
+    rw [MetricKoszul.koszulVec]
+    have h0 : MetricKoszul.koszulCov
+        (0 : ℝ →L[ℝ] ℝ →L[ℝ] ℝ →L[ℝ] ℝ) u a = 0 := by
+      simp [MetricKoszul.koszulCov]
+    rw [h0, ← map_zero (B y)]
+    exact IsCoercive.sharp_apply hco 0
+  rw [hzero] at hkey
+  rw [DifferentialGeometry.Geometry.Connection.LeviCivita_eq_leviCivitaConnectionOfMetric]
+  exact (tangentSpaceModelContinuousLinearEquiv (I := 𝓘(ℝ, ℝ)) y).injective
+    (by rw [map_zero]; exact hkey)
+
+omit [SigmaCompactSpace M] in
 theorem coverVerticalUnit_smooth_parallel (g : SmoothRiemannianMetric I M)
     (lambda : ℝ) (hlambda : 0 < lambda) :
     ContMDiff (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, ℝ)).tangent ∞
@@ -98,7 +149,64 @@ theorem coverVerticalUnit_smooth_parallel (g : SmoothRiemannianMetric I M)
         (⟨p, coverVerticalUnit lambda p⟩ : TangentBundle (I.prod 𝓘(ℝ, ℝ)) (M × ℝ))) ∧
     ∀ (p : M × ℝ) (v : TangentSpace (I.prod 𝓘(ℝ, ℝ)) p),
       (metricCov (coverProductMetric g lambda hlambda)) (coverVerticalUnit lambda) p v = 0 := by
-  sorry
+  let hline : SmoothRiemannianMetric 𝓘(ℝ, ℝ) ℝ :=
+    DifferentialGeometry.scaleMetric (I := 𝓘(ℝ, ℝ)) (lambda ^ 2) (pow_pos hlambda 2)
+      (DifferentialGeometry.euclideanMetric (E := ℝ))
+  refine ⟨?_, ?_⟩
+  · let W : (q : ℝ) → TangentSpace 𝓘(ℝ, ℝ) q := fun _ => (lambda⁻¹ : ℝ)
+    have hline_smooth : ContMDiff 𝓘(ℝ, ℝ)
+        (𝓘(ℝ, ℝ).prod 𝓘(ℝ, ℝ)) ∞ (T% W) :=
+      (contMDiff_vectorSpace_iff_contDiff (𝕜 := ℝ)).mpr contDiff_const
+    have hpair : ContMDiff (I.prod 𝓘(ℝ, ℝ))
+        ((I.prod 𝓘(ℝ, E)).prod (𝓘(ℝ, ℝ).prod 𝓘(ℝ, ℝ))) ∞
+        (fun p : M × ℝ =>
+          (TotalSpace.mk' E p.1 (0 : TangentSpace I p.1),
+            TotalSpace.mk' ℝ p.2 (W p.2))) :=
+      ((contMDiff_zeroSection ℝ (TangentSpace I)).comp contMDiff_fst).prodMk
+        (hline_smooth.comp contMDiff_snd)
+    exact (contMDiff_equivTangentBundleProd_symm (I := I) (I' := 𝓘(ℝ, ℝ))
+      (M := M) (M' := ℝ)).comp hpair
+  · intro p v
+    let X : (q : M) → TangentSpace I q :=
+      DifferentialGeometry.Geometry.Curvature.smoothExtensionTangent (I := I) p.1 v.1
+    let Y : (q : ℝ) → TangentSpace 𝓘(ℝ, ℝ) q :=
+      DifferentialGeometry.Geometry.Curvature.smoothExtensionTangent (I := 𝓘(ℝ, ℝ)) p.2 v.2
+    let Z : (q : M) → TangentSpace I q := fun _ => 0
+    let W : (q : ℝ) → TangentSpace 𝓘(ℝ, ℝ) q := fun _ => (lambda⁻¹ : ℝ)
+    have hX : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% X) :=
+      DifferentialGeometry.Geometry.Curvature.smoothExtensionTangent_contMDiff (I := I) p.1 v.1
+    have hY : ContMDiff 𝓘(ℝ, ℝ) (𝓘(ℝ, ℝ).prod 𝓘(ℝ, ℝ)) ∞ (T% Y) :=
+      DifferentialGeometry.Geometry.Curvature.smoothExtensionTangent_contMDiff (I := 𝓘(ℝ, ℝ))
+        p.2 v.2
+    have hZ : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% Z) :=
+      contMDiff_zeroSection ℝ (TangentSpace I)
+    have hW : ContMDiff 𝓘(ℝ, ℝ) (𝓘(ℝ, ℝ).prod 𝓘(ℝ, ℝ)) ∞ (T% W) :=
+      (contMDiff_vectorSpace_iff_contDiff (𝕜 := ℝ)).mpr contDiff_const
+    have hconn := DifferentialGeometry.Geometry.Connection.leviCivita_prod
+      (I := I) (J := 𝓘(ℝ, ℝ)) g hline X Z Y W hX hZ hY hW p
+    have hv : (X p.1, Y p.2) = v := by
+      have hX' : X p.1 = v.1 :=
+        DifferentialGeometry.Geometry.Curvature.smoothExtensionTangent_eq (I := I) p.1 v.1
+      have hY' : Y p.2 = v.2 :=
+        DifferentialGeometry.Geometry.Curvature.smoothExtensionTangent_eq (I := 𝓘(ℝ, ℝ)) p.2 v.2
+      rw [hX', hY']
+      exact Prod.eta v
+    have hzero : (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I)
+        g).toFun Z p.1 (X p.1) = 0 := by
+      change ((DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g).toFun
+        (0 : (q : M) → TangentSpace I q) p.1) (X p.1) = 0
+      rw [CovariantDerivative.zero]
+      rfl
+    have hflat : (DifferentialGeometry.Geometry.Connection.LeviCivita (I := 𝓘(ℝ, ℝ))
+        hline).toFun W p.2 (Y p.2) = 0 :=
+      leviCivita_apply_const_scaleEuclidean (lambda ^ 2) (pow_pos hlambda 2) (lambda⁻¹) p.2 (Y p.2)
+    have hkey : (DifferentialGeometry.Geometry.Connection.LeviCivita
+        (I := I.prod 𝓘(ℝ, ℝ)) (g.prod hline)).toFun
+        (fun q : M × ℝ => (Z q.1, W q.2)) p (X p.1, Y p.2) = 0 := by
+      rw [hconn, hzero, hflat]
+      rfl
+    rw [← hv]
+    exact hkey
 
 section QuotientVertical
 variable (A : QuotientProductAtlas I M)
