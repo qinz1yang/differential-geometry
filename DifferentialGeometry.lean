@@ -1867,6 +1867,8 @@ import DifferentialGeometry.Bundle.Zero
 import DifferentialGeometry.External.ClassificationOfSurfaces.Moise.PlaneComplex
 import DifferentialGeometry.External.ClassificationOfSurfaces.Moise.LineSubdivision
 import DifferentialGeometry.External.ClassificationOfSurfaces.Moise.FreeTriangle
+import DifferentialGeometry.External.ClassificationOfSurfaces.Moise.OneEdgeAttachment
+import DifferentialGeometry.External.ClassificationOfSurfaces.PrePolygonTriangulation
 import DifferentialGeometry.External.DeGiorgi.BallExtension
 import DifferentialGeometry.External.DeGiorgi.BallExtension.ApproximationControl
 import DifferentialGeometry.External.DeGiorgi.BallExtension.Core

@@ -1,0 +1,188 @@
+{
+  "repository": "https://github.com/mccorvie/classification-of-surfaces",
+  "revision": "e3c7230fe78d7b056a415d9ecae6f77887046b32",
+  "license": "Apache-2.0",
+  "scope": "28 selected declarations, retained byte for byte; no selected mathematical body changes. First22 inside TriangleMesh with variable (M : TriangleMesh), last6 at Moise scope with qualified TriangleMesh names.",
+  "upstream_sources": {
+    "FreeTriangleMove.lean": {
+      "path": "ClassificationOfSurfaces/Moise/FreeTriangleMove.lean",
+      "sha256": "8b37afc857119ad493869d06f06c8c59c6aff251ccbb0e1c13b3d1a3fe91559a",
+      "url": "https://github.com/mccorvie/classification-of-surfaces/blob/e3c7230fe78d7b056a415d9ecae6f77887046b32/ClassificationOfSurfaces/Moise/FreeTriangleMove.lean"
+    },
+    "PolygonalSchoenflies.lean": {
+      "path": "ClassificationOfSurfaces/Moise/PolygonalSchoenflies.lean",
+      "sha256": "8b3aa241482b4e551817f1ea0111f6cbc52d494a950268eb8a3e78c99ff3963f",
+      "url": "https://github.com/mccorvie/classification-of-surfaces/blob/e3c7230fe78d7b056a415d9ecae6f77887046b32/ClassificationOfSurfaces/Moise/PolygonalSchoenflies.lean"
+    }
+  },
+  "selected_declarations": [
+    {
+      "file": "FreeTriangleMove.lean",
+      "declaration": "freeTriangleOrder",
+      "declaration_start_line": 131,
+      "body_sha256": "fb8c5249fd694193a5eb7979db65b7dd978d633f12bf2005c415ed1f34917c9b"
+    },
+    {
+      "file": "FreeTriangleMove.lean",
+      "declaration": "freeTriangleOrder_affineIndependent",
+      "declaration_start_line": 134,
+      "body_sha256": "af6e1ad61e13988240ea9a22c5a1fa339bce6cfbdf890bda1b94359d151af203"
+    },
+    {
+      "file": "FreeTriangleMove.lean",
+      "declaration": "triangle_eq_orderedVertices",
+      "declaration_start_line": 144,
+      "body_sha256": "e776b67fd8574b685a354d01fbf19424e4f0223868b21e843aa3e2a87fd62d33"
+    },
+    {
+      "file": "FreeTriangleMove.lean",
+      "declaration": "triangleEdges_eq_orderedEdges",
+      "declaration_start_line": 161,
+      "body_sha256": "00c660d8b616e6292d83d2f57f8674754e27b2e55a1ae9714af5eef0e1d14cbe"
+    },
+    {
+      "file": "FreeTriangleMove.lean",
+      "declaration": "IsOneEdgeFreeTriangle",
+      "declaration_start_line": 192,
+      "body_sha256": "16c310ef72b782efdd247802dfd7ee3a85e519468bb27a54faca87ba6c30f948"
+    },
+    {
+      "file": "FreeTriangleMove.lean",
+      "declaration": "freeTriangleBase_diff_endpoints_disjoint_apexEdges",
+      "declaration_start_line": 208,
+      "body_sha256": "ce90045336916052817bc9a83394f553a3dfd8a5fe3727955353e876b32867f9"
+    },
+    {
+      "file": "FreeTriangleMove.lean",
+      "declaration": "freeTriangleBaseEdge",
+      "declaration_start_line": 244,
+      "body_sha256": "fb5a86427283b4dcb7699cbb29edce9caaf562d5923a5388b91ebf1e7cb4b638"
+    },
+    {
+      "file": "FreeTriangleMove.lean",
+      "declaration": "freeTriangleApexEdge0",
+      "declaration_start_line": 248,
+      "body_sha256": "ab39c6114836cfb66978391e890b4042cf1560080db78c4a197501c3310bbc44"
+    },
+    {
+      "file": "FreeTriangleMove.lean",
+      "declaration": "freeTriangleApexEdge1",
+      "declaration_start_line": 253,
+      "body_sha256": "cfff698ef7f963acccd9e1743256272d701a9170fc509616b2380460cb9df78e"
+    },
+    {
+      "file": "FreeTriangleMove.lean",
+      "declaration": "freeTriangleBaseEdge_card",
+      "declaration_start_line": 257,
+      "body_sha256": "bb5bd030069fc24238acdeb950901c8512fcedfd8da9f7385a01ebb128059c5d"
+    },
+    {
+      "file": "FreeTriangleMove.lean",
+      "declaration": "freeTriangleBaseEdge_subset",
+      "declaration_start_line": 263,
+      "body_sha256": "23c3dc3dfd3e072879317fd8dd211d1fdd603eed5bdd985ba2a818def104f3ef"
+    },
+    {
+      "file": "FreeTriangleMove.lean",
+      "declaration": "freeTriangleBaseEdge_mem_edges",
+      "declaration_start_line": 269,
+      "body_sha256": "a18febafc9777c94195d5e3c5ece9b641101f380abc009a326c534010df63684"
+    },
+    {
+      "file": "FreeTriangleMove.lean",
+      "declaration": "freeTriangleApexEdge0_card",
+      "declaration_start_line": 275,
+      "body_sha256": "6a3a0b659ab3138cfad828505360ed5f082d8bd4718c47dee236d3973f192538"
+    },
+    {
+      "file": "FreeTriangleMove.lean",
+      "declaration": "freeTriangleApexEdge1_card",
+      "declaration_start_line": 280,
+      "body_sha256": "0788f56cb5a820953b284d9ca0727f5784299491dbfb6593f487c96e1c500541"
+    },
+    {
+      "file": "FreeTriangleMove.lean",
+      "declaration": "freeTriangleApexEdge0_subset",
+      "declaration_start_line": 285,
+      "body_sha256": "aba3811596e27d638c26aeff6d6ed494ba484d47d456a00ba403fe7af35e3873"
+    },
+    {
+      "file": "FreeTriangleMove.lean",
+      "declaration": "freeTriangleApexEdge1_subset",
+      "declaration_start_line": 291,
+      "body_sha256": "7ae3a690a21e016bc815766f54906b390fe065d1db8cd7868fecadd163496b8d"
+    },
+    {
+      "file": "FreeTriangleMove.lean",
+      "declaration": "image_freeTriangleBaseEdge",
+      "declaration_start_line": 309,
+      "body_sha256": "ce2f295ad6a8c7955d1397ea7a8c42bd77156d10586f9351098e20696d2ea99a"
+    },
+    {
+      "file": "FreeTriangleMove.lean",
+      "declaration": "freeTriangleBaseEdge_carrier",
+      "declaration_start_line": 330,
+      "body_sha256": "4598cb624220392f5535e71dcd93ee4fcc4fdea1138150e3dc272a17752775e5"
+    },
+    {
+      "file": "FreeTriangleMove.lean",
+      "declaration": "freeTriangleApexEdge0_carrier",
+      "declaration_start_line": 335,
+      "body_sha256": "bb7a35752dbffad06085f43dce5e6edf0dc8665e234a75a45aac5bb481b678ee"
+    },
+    {
+      "file": "FreeTriangleMove.lean",
+      "declaration": "freeTriangleApexEdge1_carrier",
+      "declaration_start_line": 344,
+      "body_sha256": "d4b90f95cde174788f87da272d778c40836b04b40a271da3b8c61f0fec2b16eb"
+    },
+    {
+      "file": "FreeTriangleMove.lean",
+      "declaration": "triangleEdges_eq_freeTriangleEdges",
+      "declaration_start_line": 353,
+      "body_sha256": "fcb771c5a94302e6f7bab6a8ad30f71a9cb5afad99cac2007eef56fbb7e6e5ba"
+    },
+    {
+      "file": "FreeTriangleMove.lean",
+      "declaration": "triangleVertex_mem_freeTriangleApexEdges",
+      "declaration_start_line": 386,
+      "body_sha256": "813cb5478516501bd9ffaeab41b279ef5387be77a4f71827814beada666dc741"
+    },
+    {
+      "file": "PolygonalSchoenflies.lean",
+      "declaration": "TriangleMesh.isBoundaryEdge_freeTriangleBaseEdge_of_oneEdgeFree",
+      "declaration_start_line": 1489,
+      "body_sha256": "c2af5a9a6cbfd8e6c409d0fb2337efe54aac6e39b2733384d3b0c7cce316b9c5"
+    },
+    {
+      "file": "PolygonalSchoenflies.lean",
+      "declaration": "TriangleMesh.not_isBoundaryEdge_freeTriangleApexEdge0_of_oneEdgeFree",
+      "declaration_start_line": 1510,
+      "body_sha256": "14717016e8ba01c9c9697f83ae688a3c370b1ecbd64d69b05cf8c1aab0b801d7"
+    },
+    {
+      "file": "PolygonalSchoenflies.lean",
+      "declaration": "TriangleMesh.not_isBoundaryEdge_freeTriangleApexEdge1_of_oneEdgeFree",
+      "declaration_start_line": 1534,
+      "body_sha256": "8bf136277e0cb6c52c453275afe9d14f201a35d03494097c4ee69e7d58ac87b0"
+    },
+    {
+      "file": "PolygonalSchoenflies.lean",
+      "declaration": "TriangleMesh.edgeCarrier_subset_eraseTriangle_support_of_not_boundary",
+      "declaration_start_line": 1559,
+      "body_sha256": "e65fd48b8be2b8ace302dbec41986c374b4956351f727b69404ba2e8082a0424"
+    },
+    {
+      "file": "PolygonalSchoenflies.lean",
+      "declaration": "TriangleMesh.eraseTriangle_support_inter_triangleCarrier_of_oneEdgeFree",
+      "declaration_start_line": 1589,
+      "body_sha256": "5ebe6c3263a051538af14e7c3372f0315381c8d10d560cae886ef9a07161042d"
+    },
+    {
+      "file": "PolygonalSchoenflies.lean",
+      "declaration": "TriangleMesh.frontier_eraseTriangle_support_of_oneEdgeFree",
+      "declaration_start_line": 1684,
+      "body_sha256": "4fe361dd88b739cb225aca94abaf2230a595da254e6693215c6061d78bf3548f"
+    }
+  ]
+}
