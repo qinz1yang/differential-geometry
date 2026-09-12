@@ -8466,6 +8466,7 @@ import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.Collar
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.Construction
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.Finite
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.InteriorChart
+import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.LocalDiffeomorphism
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.Quotient
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.SeamChart
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.SmoothStructure
