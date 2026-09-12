@@ -1,4 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.Background
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ChartSimplexBlend
 import Mathlib.AlgebraicTopology.SingularHomology.HomotopyInvariance
 import Mathlib.AlgebraicTopology.SimplicialSet.TopAdj
 import Mathlib.Algebra.Category.ModuleCat.Abelian
@@ -122,86 +123,8 @@ def singularSimplexChain {n : ℕ} (f : C(stdSimplex ℝ (Fin (n + 1)), X)) :
     ((TopCat.toSSetObjEquiv (TopCat.of X) (.op ⦋n⦌)).symm f)
 
 
-def standardThreeOrientation : Orientation ℝ ThreeSpace (Fin 3) :=
-  (EuclideanSpace.basisFun (Fin 3) ℝ).toBasis.orientation
-
-def positiveTetrahedronVertex : Fin 4 → ThreeSpace :=
-  ![WithLp.toLp 2 ![-1, -1, -1], WithLp.toLp 2 ![1, 0, 0],
-    WithLp.toLp 2 ![0, 1, 0], WithLp.toLp 2 ![0, 0, 1]]
-
-
-def positiveTetrahedron : C(stdSimplex ℝ (Fin 4), ThreeSpace) where
-  toFun q := ∑ i : Fin 4, q.val i • positiveTetrahedronVertex i
-  continuous_toFun := continuous_finsetSum _ fun i _ =>
-    ((continuous_apply i).comp continuous_subtype_val).smul continuous_const
-
-
-theorem positiveTetrahedron_det :
-    Matrix.det (fun i j : Fin 3 =>
-      (positiveTetrahedronVertex j.succ - positiveTetrahedronVertex 0) i) = 4 := by
-  convert Matrix.det_fin_three (fun i j : Fin 3 =>
-    (positiveTetrahedronVertex j.succ - positiveTetrahedronVertex 0) i) using 1
-  norm_num [positiveTetrahedronVertex, Matrix.cons_val_two, Matrix.cons_val_three]
-
-
-theorem positiveTetrahedron_coordinate (q : stdSimplex ℝ (Fin 4)) (i : Fin 3) :
-    positiveTetrahedron q i = q.val i.succ - q.val 0 := by
-  fin_cases i <;>
-    simp [positiveTetrahedron, positiveTetrahedronVertex, Fin.sum_univ_succ] <;> ring
-
-
-theorem positiveTetrahedron_zero_iff (q : stdSimplex ℝ (Fin 4)) :
-    positiveTetrahedron q = 0 ↔ ∀ i : Fin 4, q.val i = (1 / 4 : ℝ) := by
-  constructor
-  · intro h
-    have hc : ∀ i : Fin 3, q.val i.succ - q.val 0 = 0 := by
-      intro i
-      rw [← positiveTetrahedron_coordinate, h]
-      rfl
-    have hc0 := hc 0
-    have hc1 := hc 1
-    have hc2 := hc 2
-    change q.val 1 - q.val 0 = 0 at hc0
-    change q.val 2 - q.val 0 = 0 at hc1
-    change q.val 3 - q.val 0 = 0 at hc2
-    have hsum := q.property.2
-    simp [Fin.sum_univ_succ] at hsum
-    have hzero : q.val 0 = (1 / 4 : ℝ) := by linarith
-    exact Fin.cases hzero (fun j => by have hj := hc j; linarith)
-  · intro h
-    ext i
-    rw [positiveTetrahedron_coordinate, h, h]
-    simp
-
-
-theorem positiveTetrahedron_face_ne_zero (q : stdSimplex ℝ (Fin 4))
-    (i : Fin 4) (hi : q.val i = 0) : positiveTetrahedron q ≠ 0 := by
-  intro h
-  have hquarter := (positiveTetrahedron_zero_iff q).mp h i
-  linarith
-
 variable {M : Type u} [TopologicalSpace M] [ChartedSpace ThreeSpace M]
     [IsManifold ThreeModel ∞ M]
-
-structure OrientedChartSimplex (o : TangentOrientationSection M) (x : M) where
-  chart : OpenPartialHomeomorph M ThreeSpace
-  center_mem : x ∈ chart.source
-  differentiableAt : MDifferentiableAt ThreeModel ThreeModel chart x
-  derivative_bijective : Function.Bijective (mfderiv ThreeModel ThreeModel chart x)
-  positive : Orientation.map (Fin 3)
-    (LinearEquiv.ofBijective (mfderiv ThreeModel ThreeModel chart x).toLinearMap
-      derivative_bijective) (o.orientation x) = standardThreeOrientation
-  radius : ℝ
-  radius_pos : 0 < radius
-  simplex_inside : ∀ q : stdSimplex ℝ (Fin 4),
-    chart x + radius • positiveTetrahedron q ∈ chart.target
-
-
-def OrientedChartSimplex.simplex {o : TangentOrientationSection M} {x : M}
-    (S : OrientedChartSimplex o x) : C(stdSimplex ℝ (Fin 4), M) where
-  toFun q := S.chart.symm (S.chart x + S.radius • positiveTetrahedron q)
-  continuous_toFun := S.chart.continuousOn_symm.comp_continuous
-    (by fun_prop) S.simplex_inside
 
 private theorem orientation_map_comp_simplex
     {A B C : Type*} [AddCommGroup A] [AddCommGroup B] [AddCommGroup C]
@@ -704,9 +627,16 @@ theorem OrientedChartSimplex.localClass_eq_of_sameChart
   obtain ⟨H, hH⟩ := S.exists_sameChart_simplexFamily T hchart
   exact S.localClass_eq_of_simplexFamily T H hH
 
+theorem OrientedChartSimplex.localClass_eq_of_positive_charts
+    (S T : OrientedChartSimplex o x) : S.localClass = T.localClass := by
+  obtain ⟨H, hH⟩ := S.exists_positiveCharts_simplexFamily T
+  exact S.localClass_eq_of_simplexFamily T H hH
+
 theorem exists_unique_localOrientationClass (o : TangentOrientationSection M) (x : M) :
     ∃! xi : LocalIntegralHomology M x 3, ∀ S : OrientedChartSimplex o x, S.localClass = xi := by
-  sorry
+  obtain ⟨S⟩ := exists_orientedChartSimplex o x
+  exact ⟨S.localClass, fun T => T.localClass_eq_of_positive_charts S,
+    fun xi hxi => (hxi S).symm⟩
 
 def localOrientationClass (o : TangentOrientationSection M) (x : M) :
     LocalIntegralHomology M x 3 :=
