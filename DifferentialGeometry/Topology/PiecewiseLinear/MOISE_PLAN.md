@@ -164,6 +164,16 @@
 
 ## 6. 验证记录
 
+- 2026-09-12（Phase 3 车道 F 首轮，工作树 `D:\differential-geometry-moise-plan`，分支 `codex/moise-smoothing`）：新增五个模块
+  `Polyhedra.lean`（`IsPolyhedron`、单形是 H-多面体、有限复形的底空间是多面体）、`Barycentric.lean`（重心权唯一性、
+  `openSimplex`、载体面、面的极端性、复形中开面不交、`weights` 及其仿射性）、`Subdivision.lean`（`IsSubdivision`，
+  粗复形的单形是所含细单形之并）、`Derived.lean`（旗、任意内点的导出细分 `derived` 是 `Geometry.SimplicialComplex`，
+  `barycentricSubdivision`，`IsSubdivision`）、`Mesh.lean`（重心细分网格 ≤ N/(N+1)，迭代得任意细的细分
+  `exists_isSubdivision_diam_lt`）。每个模块用 Phase 1 配方在共享检出的构件上逐模块检查（`lean` 直接调用，
+  LEAN_PATH 取共享检出的包与构建库，新 olean 写入共享构建库，脚本 `check-f.ps1`），零错误零警告；
+  十个端点（含 `derived_isSubdivision`、`barycentricSubdivision_isSubdivision`、`exists_isSubdivision_diam_lt`）
+  `#print axioms` 只含标准公理。未登记根聚合（整合仍按负责人指示推迟）。
+
 - 2026-09-11（Phase 1 第二轮，负责人指示不等完整构建）：`IsPiecewiseAffineOn` 改为基于 `IsPiecewiseAffineWithinAt`
   （`𝓝[s] x`）的定义并重跑整条链；新增 `Manifold.lean`、`Polyhedron.lean`，以及 `Smoothing.lean` 中的
   `PLSmoothingModel`/`plSmoothing_of_plSmoothingModel`。九个模块逐个 `lake env lean` 加 lakefile 选项检查零错误零警告；

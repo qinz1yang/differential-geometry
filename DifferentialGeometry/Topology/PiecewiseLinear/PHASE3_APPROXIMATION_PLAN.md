@@ -139,10 +139,10 @@ E 最后。每车道的对外接口定理在本文件 §4 表中列出，签名�
 
 | 编号 | 内容 | 拟定 Lean | 消费者 | 状态 | 行数 |
 |---|---|---|---|---|---|
-| F1.1 | 紧致多面体 | `def IsPolyhedron (P : Set E) : Prop := ∃ (ι : Type) (_ : Finite ι) (C : ι → Set E), (∀ i, IsHPolytope (C i)) ∧ P = ⋃ i, C i`；对有限并、交、仿射像封闭 | 全部 | new | 1k |
+| F1.1 | 紧致多面体 | `def IsPolyhedron (P : Set E) : Prop := ∃ (ι : Type) (_ : Finite ι) (C : ι → Set E), (∀ i, IsHPolytope (C i)) ∧ P = ⋃ i, C i`；对有限并、交、仿射像封闭 | 全部 | done（`Polyhedra.lean`，2026-09-12） | 1k |
 | F1.2 | 多面体可三角剖分（RS 2.8–2.11：H-多面体交成胞腔复形，逐维锥分） | `theorem IsPolyhedron.exists_simplicialComplex (hP : IsPolyhedron P) : ∃ K : Geometry.SimplicialComplex ℝ E, Finite K.faces ∧ K.space = P` | F2, T2 | new | 4k–7k |
-| F2.1 | 细分 | `def Geometry.SimplicialComplex.IsSubdivision (K' K) : Prop := K'.space = K.space ∧ ∀ s ∈ K'.faces, ∃ t ∈ K.faces, convexHull ℝ ↑s ⊆ convexHull ℝ ↑t`；传递性；子复形的细分 | 全部 | new | 1k–2k |
-| F2.2 | 重心细分与网格 | `def barycentricSubdivision (K)`；`barycentricSubdivision_isSubdivision`；`theorem exists_isSubdivision_diam_lt (K) (hK : Finite K.faces) (ε) (hε : 0 < ε) : ∃ K', IsSubdivision K' K ∧ ∀ s ∈ K'.faces, Metric.diam (convexHull ℝ ↑s) < ε`（本库 `FaceBarycenter.lean`、`Homology/AffineSubdivision.lean` 可部分复用） | §23 正则邻域、§33–35 的"充分细" | new | 3k–5k |
+| F2.1 | 细分 | `def Geometry.SimplicialComplex.IsSubdivision (K' K) : Prop := K'.space = K.space ∧ ∀ s ∈ K'.faces, ∃ t ∈ K.faces, convexHull ℝ ↑s ⊆ convexHull ℝ ↑t`；传递性；子复形的细分 | 全部 | done（`Subdivision.lean` + `Barycentric.lean`：`IsSubdivision`、`openSimplex`、载体面、`weights`；2026-09-12） | 1k–2k |
+| F2.2 | 重心细分与网格 | `def barycentricSubdivision (K)`；`barycentricSubdivision_isSubdivision`；`theorem exists_isSubdivision_diam_lt (K) (hK : Finite K.faces) (ε) (hε : 0 < ε) : ∃ K', IsSubdivision K' K ∧ ∀ s ∈ K'.faces, Metric.diam (convexHull ℝ ↑s) < ε`（本库 `FaceBarycenter.lean`、`Homology/AffineSubdivision.lean` 可部分复用） | §23 正则邻域、§33–35 的"充分细" | done（`Derived.lean`：任意内点的导出细分 `derived`、`barycentricSubdivision`；`Mesh.lean`：`exists_isSubdivision_diam_lt`；2026-09-12） | 3k–5k |
 | F2.3 | 子复形化 / 公共细分（RS 2.12） | `theorem exists_isSubdivision_subcomplexes (K) (hK : Finite K.faces) (P : Finset (Set E)) (hP : ∀ p ∈ P, IsPolyhedron p ∧ p ⊆ K.space) : ∃ K', IsSubdivision K' K ∧ ∀ p ∈ P, ∃ L ≤ K', L.space = p`；推论 `exists_common_subdivision (K L) (h : K.space = L.space)` | §25–§35 到处用"取三角剖分使 S, Δ, N, J 为子复形" | new | 8k–15k |
 | F3.1 | PL 映射经细分单纯（RS 2.14） | `theorem IsPiecewiseAffineOn.exists_isSubdivision_affineOn (hK : Finite K.faces) (hf : IsPiecewiseAffineOn f K.space) : ∃ K', IsSubdivision K' K ∧ ∀ s ∈ K'.faces, ∃ A : E →ᵃ[ℝ] F, EqOn f A (convexHull ℝ ↑s)` 及逆命题 | 一般位置、覆盖提升、§25 | new | 3k–5k |
 | F3.2 | 1 维单纯逼近 | 多面体中任意道路同伦于 PL 道路；闭道路同理（D4） | §24–§25, §30–§35 中"PL 闭道路" | new | 1k–2k |
@@ -157,6 +157,12 @@ E 最后。每车道的对外接口定理在本文件 §4 表中列出，签名�
 | F6.2 | 开子集的局部有限三角剖分与穷竭（Moise 8.2/8.3 的 PL 版） | `theorem exists_exhaustion (U : Opens M) : ∃ N : ℕ → Set M, (∀ i, IsCompact (N i) ∧ IsPolyhedralManifoldWithBoundary 3 (N i) ∧ N i ⊆ interior (N (i+1))) ∧ ⋃ i, N i = U`（`M` 第二可数 PL 3-流形；连通分支处理留给 36.1） | §35.1–35.2（局部有限性）、§36.1 | new | 8k–15k |
 | T1 | `CombinatorialManifoldPLStructure n`（`Polyhedron.lean` 已陈述） | 有限组合流形的实现有与线性结构相容的 PL 图册（图卡 = 顶点 star 的 PL 参数化，用 F3.3） | §35–36 把多面体层结论搬回图册 | new | 4k–6k |
 | T2 | `PLManifoldTriangulation n`（已陈述） | 紧致 PL 流形有组合三角剖分（沿有限 PL 图卡归纳，用 F1.2、F2.3、F3.3） | §35.2 应用于 `M₁` 的紧致片 | new | 6k–10k |
+
+实现记录（2026-09-12）：F2 的导出细分按"每个面选一个内点、旗张成单形"的一般形式实现（`Derived.lean`），
+重心细分是特例；`inter_subset_convexHull` 由"过一点的旗唯一"（顶面系数由该点决定，逐层剥离归纳）证明。
+F1.2 与 F2.3 将共用同一套机制：H-多面体的（暴露）面、相对内部（Mathlib `intrinsicInterior`）、面的旗，
+以及"从相对内点出发的射线恰交相对边界一次"，据此定义凸胞腔复形（交集复形 `σ ∩ τ`）的导出细分；
+这是 F1.2/F2.3 的既定路线，估计合计 5k–10k 行。
 
 ### 4.1 2D 输入与同调（车道 S 前半、车道 H）
 
