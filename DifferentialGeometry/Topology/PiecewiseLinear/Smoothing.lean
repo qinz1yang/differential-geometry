@@ -1,4 +1,5 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.ChartGluing
+import DifferentialGeometry.Topology.Manifold.Homeomorph.Transport
 import Mathlib.Geometry.Manifold.Instances.Real
 
 open Set Topology
@@ -15,6 +16,20 @@ def PLSmoothing (n : ℕ) : Prop :=
     ∃ C' : ChartedSpace (EuclideanSpace ℝ (Fin n)) X,
       letI := C'
       IsManifold (𝓡 n) ∞ X
+
+def PLSmoothingModel (n : ℕ) : Prop :=
+  ∀ {X : Type u} [TopologicalSpace X] [T2Space X] [SecondCountableTopology X]
+    (C : ChartedSpace (EuclideanSpace ℝ (Fin n)) X),
+    (letI := C; HasGroupoid X (plGroupoid n)) →
+    ∃ (N : Type u) (_ : TopologicalSpace N) (_ : ChartedSpace (EuclideanSpace ℝ (Fin n)) N),
+      IsManifold (𝓡 n) ∞ N ∧ Nonempty (X ≃ₜ N)
+
+theorem plSmoothing_of_plSmoothingModel {n : ℕ} (h : PLSmoothingModel.{u} n) :
+    PLSmoothing.{u} n := by
+  intro X _ _ _ C hC
+  obtain ⟨N, _, _, hN, ⟨e⟩⟩ := h C hC
+  exact ⟨DifferentialGeometry.Manifold.Homeomorph.pullbackChartedSpace e,
+    DifferentialGeometry.Manifold.Homeomorph.instIsManifoldPullback (I := 𝓡 n) (n := ∞) e⟩
 
 variable {n : ℕ} {X : Type u} [TopologicalSpace X] [T2Space X] [CompactSpace X]
   [ChartedSpace (EuclideanSpace ℝ (Fin n)) X]

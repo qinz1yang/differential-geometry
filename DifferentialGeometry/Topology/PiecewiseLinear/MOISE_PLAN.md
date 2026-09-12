@@ -70,11 +70,18 @@
 
 - `IsHPolytope C`：有限个闭仿射半空间之交且有界（紧）；对仿射映射原像、仿射等价像、有限交封闭；
   有限维空间中每点在任一开集内有 H-多面体邻域（坐标立方体）。
-- `IsPiecewiseAffineOn f u`：`∀ x ∈ u`，存在有限个 H-多面体 `Cᵢ ⊆ u`，`⋃ Cᵢ ∈ 𝓝 x`，`f` 在每个 `Cᵢ` 上与一个仿射映射相等。
-  这是 Rourke–Sanderson / Moise 意义下“局部对有限凸胞腔分解逐块仿射”的 PL 映射；与“对某个三角剖分逐单形仿射”
-  等价（胞腔复形的单纯细分定理），本阶段不需要该等价，需要时另证。
-  所需性质：恒同、限制、局部性、congr、复合（用 `Cᵢ ∩ Aᵢ⁻¹(Dⱼ)`，不需公共细分）、同胚的逆
-  （先舍去内部为空的多面体——它们无处稠密——再用仿射等价像）。
+- `IsPiecewiseAffineWithinAt f s x`：存在有限个 H-多面体 `Cᵢ ⊆ s`，`⋃ Cᵢ ∈ 𝓝[s] x`，`f` 在每个 `Cᵢ` 上与一个仿射映射相等；
+  `IsPiecewiseAffineOn f s := ∀ x ∈ s, IsPiecewiseAffineWithinAt f s x`。用 `𝓝[s] x` 而非 `𝓝 x`，
+  使同一定义既适用于开集（此时二者相同）也适用于多面体（Rourke–Sanderson / Moise 意义下的多面体上 PL 映射）。
+  与“对某个三角剖分逐单形仿射”等价（胞腔复形的单纯细分定理），需要时另证。
+  已证性质：恒同、限制（`inter_of_mem_nhds`/`of_inter_of_mem_nhds`）、局部性、congr、复合
+  （用 `Cᵢ ∩ Aᵢ⁻¹(Dⱼ)`，不需公共细分）、集合内连续、同胚的逆（先舍去内部为空的多面体——它们无处稠密——再用仿射等价像）。
+- `piecewiseAffineProperty n m` 是 `plGroupoid n`/`plGroupoid m` 的 `StructureGroupoid.LocalInvariantProp`
+  （`Manifold.lean`），由此 PL 流形之间的映射 `IsPLWithinAt/IsPLAt/IsPLOn/IsPL n m f` 通过 Mathlib 的
+  `ChartedSpace.LiftProp*` 定义，并自动得到图卡无关性（`isPLAt_iff_of_mem_maximalAtlas`）、恒同与图卡为 PL。
+- 多面体层（`Polyhedron.lean`）：`IsPLHomeomorphOn f P Q`（`BijOn` + 双向逐块仿射）、`IsPLBall n`/`IsPLSphere n`
+  （与标准单形 / 其边界 PL 同胚）、`IsCombinatorialManifold n K`（Moise 定义：顶点 link 是 PL `(n-1)`-球面；
+  `n = 0` 时 link 为空）、`PLTriangulation n X`（有限几何复形 + 与 `X` 的 PL 同胚，逐图卡逐块仿射）。
 - `plPregroupoid n : Pregroupoid ℝⁿ`，`plGroupoid n := (plPregroupoid n).groupoid`，`ClosedUnderRestriction`。
   PL 流形 = `[ChartedSpace ℝⁿ M] [HasGroupoid M (plGroupoid n)]`；流形间 PL 映射逐图卡定义。
 - 开子集上的部分图册 `AtlasOn G U`（`G` 任意结构群胚，`U : Set X`）：图卡为 `OpenPartialHomeomorph X ℝⁿ`，
@@ -91,8 +98,16 @@
   强正函数在局部紧可分空间上有连续正下界）。目标空间的度量任意，与 Moise 一致。该命题在 `n ≤ 3` 为真
   （`n = 2` 即 Moise 定理 8.4，`n = 3` 即定理 36.1），`n ≥ 4` 为假；因此条件定理不隐藏目标。
   拼接桥只用 `X₁ = X₂ = X`、`h = id_O`、`φ x = ½·infDist x Oᶜ` 的特例。
+  流形语言的同一陈述 **A′ `PLApproximationManifold n`**（`Manifold.lean`：PL `n`-流形 `M₁ M₂`、同胚 `h`、
+  连续正 `φ`，存在 PL 同胚 `f`（`IsPL n n f ∧ IsPL n n f.symm`）φ-逼近 `h`）是未来经典证明的自然目标；
+  `A′ → A` 的归约（子类型上的图册、`OpenPartialHomeomorph` 与子类型同胚互换、`isPLAt_iff_of_mem_maximalAtlas`
+  转回逐图卡群胚条件）列为 Phase 3 首项。
 - **B `PLSmoothing n : Prop`**：同一 carrier/拓扑上 `HasGroupoid X (plGroupoid n) → ∃ C', IsManifold (𝓡 n) ∞ X`。
-  `n ≤ 7` 为真（`n = 3` 经典），`n = 8` 为假。
+  `n ≤ 7` 为真（`n = 3` 经典），`n = 8` 为假。更弱的 **B′ `PLSmoothingModel n`**（只要求存在与 `X` 同胚的光滑模型）
+  已证蕴含 B（`plSmoothing_of_plSmoothingModel`，用本库 `pullbackChartedSpace`），所以 Phase 2 只需证 B′。
+- **T1 `CombinatorialManifoldPLStructure n`**：有限组合 `n`-流形 `K` 的实现 `K.space` 有 PL 图册，且图卡与 `K` 的线性结构
+  逐块仿射相容。**T2 `PLManifoldTriangulation n`**：紧致 PL `n`-流形有 `PLTriangulation`，其复形是组合流形。
+  两者是 A、B 的经典证明与图册模型之间的桥（Moise §7 定理 5–6、§23；Rourke–Sanderson 第 3 章）。
 - 两者都以 `Prop` 定义 + 显式假设出现在定理签名中，**不引入 `sorry`/`axiom`**；条件定理不使用经典定理名
   （NAMING.md §3：不得靠命题假设获得经典名）。
 
@@ -113,10 +128,13 @@
    `PLApproximation n → PLSmoothing n → ∃ C : ChartedSpace ℝⁿ X, IsManifold (𝓡 n) ∞ X`，
    并给出 `n = 3` 的书中接口形式。
 
+8. `Manifold.lean` — PL 群胚的局部不变性质与 PL 流形间映射 `IsPL* n m`。
+9. `Polyhedron.lean` — PL 同胚、PL 球/球面、组合流形、`PLTriangulation`，以及桥接口 T1、T2 的陈述。
+
 验收：每个模块按模块名构建通过、零警告；端点 `#print axioms` 只含标准公理；条件性由签名显式表达。
 已证生产者：1–4、6 的桥与归纳、7 的装配。条件性消费者：6、7 的端点（依赖 A、B）。
 
-### Phase 2（候选，待 Phase 1 验收后定）：B `PLSmoothing 3`
+### Phase 2（候选，待 Phase 1 验收后定）：B′ `PLSmoothingModel 3`（蕴含 B）
 
 路线：PL 3-流形的柄分解（来自三角剖分的二次导出细分）+ 本库光滑柄粘接
 （`Topology/Handle/*`, `Topology/Morse/Attachment/*`）；0/1-柄直接光滑，2-柄需光滑曲面中 PL 圆周的光滑化与框架，
@@ -124,6 +142,8 @@
 本库 `Topology/Manifold/Sphere*`、`ClosedBall`、`Morse` 现有生产者。B 也需要 Phase 3 的“PL 图册 ⇔ 组合三角剖分”桥。
 
 ### Phase 3+：A `PLApproximation 3` 的经典链（Moise §17, §23–27, §30–36）
+
+首项（维数无关，纯胶水）：`PLApproximationManifold n → PLApproximation n`；其次 T1、T2 两座桥。随后：
 
 PL 基础（细分、公共细分、正则邻域，§23）→ PL Schoenflies（§17，Alexander）→ 覆盖空间 PL 结构、
 Stallings 环定理、Dehn 引理（§24–27）→ 多面体插值、典范构形、管的柄分解（§30–32）→ 线性图正则邻域与
@@ -133,6 +153,12 @@ classification-of-surfaces 的 `Topology/InvarianceOfDomain.lean`）。与光滑
 本链只用 PL Schoenflies；对方若走“PL 局部平坦/三角剖分/相对光滑化”路线可消费本链。
 
 ## 6. 验证记录
+
+- 2026-09-11（Phase 1 第二轮，负责人指示不等完整构建）：`IsPiecewiseAffineOn` 改为基于 `IsPiecewiseAffineWithinAt`
+  （`𝓝[s] x`）的定义并重跑整条链；新增 `Manifold.lean`、`Polyhedron.lean`，以及 `Smoothing.lean` 中的
+  `PLSmoothingModel`/`plSmoothing_of_plSmoothingModel`。九个模块逐个 `lake env lean` 加 lakefile 选项检查零错误零警告；
+  端点与主要引理（含 `plSmoothing_of_plSmoothingModel`、`piecewiseAffineProperty_localInvariantProp`、`isPL_id`、
+  `isPLAt_iff_of_mem_maximalAtlas`、`isPLBall_stdSimplex`）`#print axioms` 均只含标准公理。
 
 - 2026-09-11：源码审计与路线固定。
 - 2026-09-11（Phase 1 首轮）：以下七个模块在本检出用 `lake env lean` 加 lakefile 选项
