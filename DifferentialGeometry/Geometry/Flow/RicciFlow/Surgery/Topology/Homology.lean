@@ -769,6 +769,57 @@ theorem isUnit_apply_iff_isUnit_apply_of_linearEquiv (e e' : A ≃ₗ[ℤ] ℤ) 
   rw [← h]
   exact (isUnit_apply_iff_of_int_linearEquiv (e.symm.trans e') (e c)).symm
 
+theorem isUnit_apply_iff_isUnit_apply_of_linearEquiv_trans {B : Type*} [AddCommGroup B]
+    [Module ℤ B] (f : A ≃ₗ[ℤ] B) (e : B ≃ₗ[ℤ] ℤ) (e' : A ≃ₗ[ℤ] ℤ) (c : A) :
+    IsUnit (e (f c)) ↔ IsUnit (e' c) :=
+  isUnit_apply_iff_isUnit_apply_of_linearEquiv (f.trans e) e' c
+
+theorem isUnit_apply_iff_exists_surjective_functional (e : A ≃ₗ[ℤ] ℤ) (c : A) :
+    IsUnit (e c) ↔ ∃ φ : A →ₗ[ℤ] ℤ, Function.Surjective φ ∧ φ c = 1 := by
+  constructor
+  · intro h
+    rcases Int.isUnit_iff.mp h with h | h
+    · exact ⟨e.toLinearMap, fun y => ⟨e.symm y, e.apply_symm_apply y⟩, h⟩
+    · refine ⟨-e.toLinearMap, fun y => ⟨e.symm (-y), ?_⟩, ?_⟩
+      · simp only [LinearMap.neg_apply, LinearEquiv.coe_toLinearMap,
+          LinearEquiv.apply_symm_apply, neg_neg]
+      · simp only [LinearMap.neg_apply, LinearEquiv.coe_toLinearMap, h]
+        norm_num
+  · rintro ⟨φ, -, hc⟩
+    have h2 : (e c) • e.symm 1 = c := by
+      rw [← map_zsmul, smul_eq_mul, mul_one, LinearEquiv.symm_apply_apply]
+    have hmul : (e c) * φ (e.symm 1) = 1 := calc
+      (e c) * φ (e.symm 1) = φ ((e c) • e.symm 1) := by rw [map_zsmul, smul_eq_mul]
+      _ = φ c := by rw [h2]
+      _ = 1 := hc
+    exact Int.isUnit_iff.mpr (Int.eq_one_or_neg_one_of_mul_eq_one hmul)
+
+theorem isUnit_apply_iff_forall_exists_zsmul (e : A ≃ₗ[ℤ] ℤ) (c : A) :
+    IsUnit (e c) ↔ ∀ a : A, ∃ k : ℤ, a = k • c := by
+  constructor
+  · intro h a
+    obtain ⟨v, hv⟩ := h
+    refine ⟨e a * ((v⁻¹ : ℤˣ) : ℤ), ?_⟩
+    apply e.injective
+    rw [map_zsmul, smul_eq_mul, ← hv, mul_assoc, Units.inv_mul, mul_one]
+  · intro h
+    obtain ⟨k, hk⟩ := h (e.symm 1)
+    have h1 : e c * k = 1 := by
+      have h2 := congrArg e hk
+      rw [map_zsmul, LinearEquiv.apply_symm_apply, smul_eq_mul] at h2
+      rw [mul_comm]
+      exact h2.symm
+    exact Int.isUnit_iff.mpr (Int.eq_one_or_neg_one_of_mul_eq_one h1)
+
+theorem bijective_zsmul_iff_of_linearEquiv {B : Type*} [AddCommGroup B] [Module ℤ B]
+    (f : A ≃ₗ[ℤ] B) (c : A) :
+    Function.Bijective (fun z : ℤ => z • f c) ↔ Function.Bijective (fun z : ℤ => z • c) := by
+  have hfun : (fun z : ℤ => z • f c) = ⇑f ∘ fun z : ℤ => z • c := by
+    funext z
+    rw [Function.comp_apply, map_zsmul]
+  rw [hfun]
+  exact Equiv.comp_bijective (fun z : ℤ => z • c) f.toEquiv
+
 end ZsmulGenerator
 
 
@@ -777,6 +828,31 @@ theorem localOrientationClass_generator_iff_isUnit (o : TangentOrientationSectio
       IsUnit (localIntegralHomologyEquivInt (M := M) x (localOrientationClass o x)) :=
   (isUnit_apply_iff_bijective_zsmul (localIntegralHomologyEquivInt (M := M) x)
     (localOrientationClass o x)).symm
+
+
+theorem localOrientationClass_generator_iff_exists_surjective_functional
+    (o : TangentOrientationSection M) (x : M) :
+    Function.Bijective (fun z : ℤ => z • localOrientationClass o x) ↔
+      ∃ φ : LocalIntegralHomology M x 3 →ₗ[ℤ] ℤ,
+        Function.Surjective φ ∧ φ (localOrientationClass o x) = 1 :=
+  (localOrientationClass_generator_iff_isUnit o x).trans
+    (isUnit_apply_iff_exists_surjective_functional _ _)
+
+
+theorem localOrientationClass_generator_iff_forall_exists_zsmul
+    (o : TangentOrientationSection M) (x : M) :
+    Function.Bijective (fun z : ℤ => z • localOrientationClass o x) ↔
+      ∀ a : LocalIntegralHomology M x 3, ∃ k : ℤ, a = k • localOrientationClass o x :=
+  (localOrientationClass_generator_iff_isUnit o x).trans
+    (isUnit_apply_iff_forall_exists_zsmul _ _)
+
+
+theorem localOrientationClass_generator_of_exists_surjective_functional
+    (o : TangentOrientationSection M) (x : M)
+    (φ : LocalIntegralHomology M x 3 →ₗ[ℤ] ℤ) (hφ : Function.Surjective φ)
+    (h : φ (localOrientationClass o x) = 1) :
+    Function.Bijective (fun z : ℤ => z • localOrientationClass o x) :=
+  (localOrientationClass_generator_iff_exists_surjective_functional o x).mpr ⟨φ, hφ, h⟩
 
 
 theorem localOrientationClass_generator (o : TangentOrientationSection M) (x : M) :

@@ -103,14 +103,6 @@ structure BufferedCanonical (S : SolutionOn (I := I3) (M := M) D)
         ∀ z ∈ neck.map '' (Set.univ ×ˢ ({0} : Set ℝ)),
           metricDistance (S.base.metric t) y z ≤ C / Real.sqrt (S.scalar t x))
 
-theorem kappa_canonical_neighborhood :
-    ∃ epsCan : ℝ, 0 < epsCan ∧ ∀ eps : ℝ, 0 < eps → eps ≤ epsCan →
-      ∃ C1 C2 : ℝ, 1 ≤ C1 ∧ 1 ≤ C2 ∧ ∀ kappa : ℝ, 0 < kappa →
-        ∀ P : PointedFlowData.{u, 0, 0} I3 ancientTimeInterval,
-          IsAncientKappaSolution kappa P → PointedFlowScalarAtBase P 1 →
-          TangentOrientationSection P.M → Nonempty (CanonicalWitness P.S eps C1 C2 P.basepoint 0) := by
-  sorry
-
 theorem good_point_derivatives {kappa : ℝ} (hkappa : 0 < kappa) :
     ∃ epsStar C : ℝ, 0 < epsStar ∧ 0 < C ∧
       ∀ (M : Type u) [TopologicalSpace M] [ChartedSpace ThreeSpace M]
@@ -466,8 +458,23 @@ def HalfLineExtensionAncient {eps kappa sigma : ℝ} {Phi : ℝ → ℝ}
         SolutionOn (I := I3) (M := L.space.M) ancientTimeInterval),
       ∃ C : ℝ,
         IsAncientKappaSolution kappa (flowOfMetric ancientTimeInterval L.space g hsol) ∧
-        PointedFlowScalarAtBase (flowOfMetric ancientTimeInterval L.space g hsol) 1 ∧
         PointedFlowRmNormSqBounded (flowOfMetric ancientTimeInterval L.space g hsol) C
+
+theorem pointedFlowScalarAtBase_flowOfMetric {eps kappa sigma : ℝ} {Phi : ℝ → ℝ}
+    {X : NormalizedSequence.{u} eps kappa sigma Phi} {L : TerminalLimit X}
+    {g : ℝ → SmoothRiemannianMetric I3 L.space.M} (hg : g 0 = L.space.metric)
+    (hsol : IsSolutionOn ({ base := { metric := g } } :
+      SolutionOn (I := I3) (M := L.space.M) ancientTimeInterval)) :
+    PointedFlowScalarAtBase (flowOfMetric ancientTimeInterval L.space g hsol) 1 := by
+  change (flowOfMetric ancientTimeInterval L.space g hsol).S.scalar 0
+    (flowOfMetric ancientTimeInterval L.space g hsol).basepoint = 1
+  change metricScalarAt ((flowOfMetric ancientTimeInterval L.space g hsol).S.base.metric 0)
+    (flowOfMetric ancientTimeInterval L.space g hsol).basepoint = 1
+  rw [show (flowOfMetric ancientTimeInterval L.space g hsol).S.base.metric 0 = g 0 from rfl,
+    show (flowOfMetric ancientTimeInterval L.space g hsol).basepoint = L.space.basepoint from rfl,
+    hg]
+  exact L.scalar_one
+
 
 def HalfLineAnalyticInputs {eps kappa sigma : ℝ} {Phi : ℝ → ℝ}
     {X : NormalizedSequence.{u} eps kappa sigma Phi} {L : TerminalLimit X}
@@ -485,7 +492,10 @@ theorem ancientExtension_of_halfLine {eps kappa sigma : ℝ} {Phi : ℝ → ℝ}
   have hlim : IsHalfLineExtension B g := ⟨hg0, hagree, diagonal, hdiag, hconv⟩
   have hsol : IsSolutionOn ({ base := { metric := g } } :
       SolutionOn (I := I3) (M := L.space.M) ancientTimeInterval) := hflow g hlim
-  obtain ⟨C, hanc1, hanc2, hanc3⟩ := hanc g hlim hsol
+  obtain ⟨C, hanc1, hanc3⟩ := hanc g hlim hsol
+  have hanc2 : PointedFlowScalarAtBase
+      (flowOfMetric ancientTimeInterval L.space g hsol) 1 :=
+    pointedFlowScalarAtBase_flowOfMetric hlim.1 hsol
   obtain ⟨Cr, hCr⟩ := hrm g hlim
   refine ⟨{ extension :=
               { solution := ({ base := { metric := g } } :

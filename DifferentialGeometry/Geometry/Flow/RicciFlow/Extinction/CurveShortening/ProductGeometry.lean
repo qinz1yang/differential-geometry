@@ -262,6 +262,258 @@ theorem quotientVerticalUnit_cover (lambda : ℝ) (p : M × ℝ) :
       (coverVerticalUnit lambda p) = quotientVerticalUnit A lambda (productCoverProjection p) :=
   (exists_quotientVerticalUnit A lambda).choose_spec p
 
+omit [CompleteSpace E] [SigmaCompactSpace M] in
+private theorem inner_quotientProductMetric_cover [I.Boundaryless] (g : SmoothRiemannianMetric I M)
+    (lambda : ℝ) (hlambda : 0 < lambda)
+    (p : M × ℝ) (v w : TangentSpace (I.prod 𝓘(ℝ, ℝ)) p) :
+    letI := A.charts
+    letI := A.smoothManifold
+    (quotientProductMetric A g lambda hlambda).inner (productCoverProjection (M := M) p)
+        (mfderiv (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, ℝ)) (productCoverProjection (M := M)) p v)
+        (mfderiv (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, ℝ)) (productCoverProjection (M := M)) p w) =
+      (coverProductMetric g lambda hlambda).inner p v w := by
+  let := A.charts
+  let := A.smoothManifold
+  rw [← localPullMetric_inner (I := I.prod 𝓘(ℝ, ℝ)) (J := I.prod 𝓘(ℝ, ℝ))
+    (g := quotientProductMetric A g lambda hlambda) (f := productCoverProjection (M := M))
+    (hf := isLocalDiffeomorph_productCoverProjection A) p v w]
+  exact congrArg (fun k : SmoothRiemannianMetric (I.prod 𝓘(ℝ, ℝ)) (M × ℝ) => k.inner p v w)
+    (localPullMetric_descendedMetric (I := I.prod 𝓘(ℝ, ℝ)) (M := M × ℝ)
+      (N := M × Surgery.Topology.Circle) (g := coverProductMetric g lambda hlambda)
+      (f := productCoverProjection (M := M))
+      (hf := isLocalDiffeomorph_productCoverProjection A)
+      (hsurj := surjective_productCoverProjection (M := M))
+      (hcompat := metricFiberCompatible_coverProductMetric A g lambda hlambda))
+
+omit [CompleteSpace E] [SigmaCompactSpace M] in
+private theorem pullbackMetricCross_coverProjection_restrictOpen_localSection
+    [I.Boundaryless] (g : SmoothRiemannianMetric I M) (lambda : ℝ) (hlambda : 0 < lambda)
+    (y : M × Surgery.Topology.Circle) :
+    letI := A.charts
+    letI := A.smoothManifold
+    let S := LocalSection.ofLocal (⇑(productCoverProjection (M := M)))
+      (isLocalDiffeomorph_productCoverProjection A) (surjective_productCoverProjection (M := M)) y
+    Diffeomorph.pullbackMetricCross ((coverProductMetric g lambda hlambda).restrictOpen S.V) S.s =
+      (quotientProductMetric A g lambda hlambda).restrictOpen S.U := by
+  let := A.charts
+  let := A.smoothManifold
+  let S := LocalSection.ofLocal (⇑(productCoverProjection (M := M)))
+    (isLocalDiffeomorph_productCoverProjection A) (surjective_productCoverProjection (M := M)) y
+  apply SmoothRiemannianMetric.ext_inner
+  intro z v w
+  have hsec : (⇑(productCoverProjection (M := M))) (S.toSource z) =
+      (z : M × Surgery.Topology.Circle) := S.isSec z
+  have hchv : mfderiv (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, ℝ))
+      (⇑(productCoverProjection (M := M))) (S.toSource z)
+      (mfderiv (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, ℝ)) S.toSource z v) = v := by
+    have h := congrArg (fun (L : TangentSpace (I.prod 𝓘(ℝ, ℝ)) z →L[ℝ]
+        TangentSpace (I.prod 𝓘(ℝ, ℝ))
+          (⇑(productCoverProjection (M := M)) (S.toSource z))) => L v)
+      (S.dproj_sec (isLocalDiffeomorph_productCoverProjection A) z)
+    simp only [ContinuousLinearMap.comp_apply] at h
+    exact h.trans (mfderiv_subtype_val_apply (I := I.prod 𝓘(ℝ, ℝ)) S.U z v)
+  have hchw : mfderiv (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, ℝ))
+      (⇑(productCoverProjection (M := M))) (S.toSource z)
+      (mfderiv (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, ℝ)) S.toSource z w) = w := by
+    have h := congrArg (fun (L : TangentSpace (I.prod 𝓘(ℝ, ℝ)) z →L[ℝ]
+        TangentSpace (I.prod 𝓘(ℝ, ℝ))
+          (⇑(productCoverProjection (M := M)) (S.toSource z))) => L w)
+      (S.dproj_sec (isLocalDiffeomorph_productCoverProjection A) z)
+    simp only [ContinuousLinearMap.comp_apply] at h
+    exact h.trans (mfderiv_subtype_val_apply (I := I.prod 𝓘(ℝ, ℝ)) S.U z w)
+  rw [S.pullback_inner_eval (coverProductMetric g lambda hlambda) z v w,
+    SmoothRiemannianMetric.restrictOpen_inner]
+  rw [← inner_quotientProductMetric_cover A g lambda hlambda (S.toSource z)
+    (mfderiv (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, ℝ)) S.toSource z v)
+    (mfderiv (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, ℝ)) S.toSource z w)]
+  rw [hchv, hchw, hsec]
+
+theorem quotientVerticalUnit_unit [I.Boundaryless] (g : SmoothRiemannianMetric I M)
+    (lambda : ℝ) (hlambda : 0 < lambda) :
+    letI := A.charts
+    letI := A.smoothManifold
+    ∀ q, (quotientProductMetric A g lambda hlambda).inner q
+      (quotientVerticalUnit A lambda q) (quotientVerticalUnit A lambda q) = 1 := by
+  let := A.charts
+  let := A.smoothManifold
+  intro q
+  obtain ⟨p, hp⟩ := surjective_productCoverProjection (M := M) q
+  rw [← hp, ← quotientVerticalUnit_cover A lambda p]
+  rw [inner_quotientProductMetric_cover A g lambda hlambda p
+    (coverVerticalUnit lambda p) (coverVerticalUnit lambda p)]
+  exact coverVerticalUnit_unit g lambda hlambda p
+
+theorem quotientVerticalUnit_contMDiff [I.Boundaryless] (g : SmoothRiemannianMetric I M)
+    (lambda : ℝ) (hlambda : 0 < lambda) :
+    letI := A.charts
+    letI := A.smoothManifold
+    ContMDiff (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, ℝ)).tangent ∞
+      (fun q : M × Surgery.Topology.Circle =>
+        (⟨q, quotientVerticalUnit A lambda q⟩ :
+          TangentBundle (I.prod 𝓘(ℝ, ℝ)) (M × Surgery.Topology.Circle))) := by
+  let := A.charts
+  let := A.smoothManifold
+  let f : M × ℝ → M × Surgery.Topology.Circle := ⇑(productCoverProjection (M := M))
+  have hcover : ContMDiff (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, ℝ)).tangent ∞
+      (fun p : M × ℝ =>
+        (⟨p, coverVerticalUnit lambda p⟩ : TangentBundle (I.prod 𝓘(ℝ, ℝ)) (M × ℝ))) :=
+    (coverVerticalUnit_smooth_parallel g lambda hlambda).1
+  have htangent : ContMDiff (I.prod 𝓘(ℝ, ℝ)).tangent (I.prod 𝓘(ℝ, ℝ)).tangent ∞
+      (tangentMap (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, ℝ)) f) :=
+    A.cover_smooth.contMDiff_tangentMap (le_refl _)
+  have hcomp : ContMDiff (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, ℝ)).tangent ∞
+      (fun p : M × ℝ =>
+        (⟨f p, quotientVerticalUnit A lambda (f p)⟩ :
+          TangentBundle (I.prod 𝓘(ℝ, ℝ)) (M × Surgery.Topology.Circle))) := by
+    refine htangent.comp hcover |>.congr ?_
+    intro p
+    rw [← quotientVerticalUnit_cover A lambda p]
+    rfl
+  intro q
+  let S := LocalSection.ofLocal f (isLocalDiffeomorph_productCoverProjection A)
+    (surjective_productCoverProjection (M := M)) q
+  refine (contMDiffAt_subtype_iff (U := S.U)
+    (f := fun q' : M × Surgery.Topology.Circle =>
+      (⟨q', quotientVerticalUnit A lambda q'⟩ :
+        TangentBundle (I.prod 𝓘(ℝ, ℝ)) (M × Surgery.Topology.Circle)))
+    (x := ⟨q, S.mem⟩)).mp ?_
+  have hcomp2 : ContMDiff (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, ℝ)).tangent ∞
+      (fun z : S.U =>
+        (⟨f (((S.s z : S.V) : M × ℝ)),
+          quotientVerticalUnit A lambda (f (((S.s z : S.V) : M × ℝ)))⟩ :
+          TangentBundle (I.prod 𝓘(ℝ, ℝ)) (M × Surgery.Topology.Circle))) :=
+    hcomp.comp (contMDiff_subtype_val.comp S.s.contMDiff)
+  have hfun : (fun z : S.U =>
+        (⟨f (((S.s z : S.V) : M × ℝ)),
+          quotientVerticalUnit A lambda (f (((S.s z : S.V) : M × ℝ)))⟩ :
+          TangentBundle (I.prod 𝓘(ℝ, ℝ)) (M × Surgery.Topology.Circle))) =
+      fun z : S.U =>
+        (⟨(z : M × Surgery.Topology.Circle),
+          quotientVerticalUnit A lambda (z : M × Surgery.Topology.Circle)⟩ :
+          TangentBundle (I.prod 𝓘(ℝ, ℝ)) (M × Surgery.Topology.Circle)) := by
+    funext z
+    rw [S.isSec z]
+  rw [hfun] at hcomp2
+  exact hcomp2.contMDiffAt
+
+theorem metricCov_quotientProductMetric_quotientVerticalUnit [I.Boundaryless] (g : SmoothRiemannianMetric I M)
+    (lambda : ℝ) (hlambda : 0 < lambda) :
+    letI := A.charts
+    letI := A.smoothManifold
+    ∀ q (v : TangentSpace (I.prod 𝓘(ℝ, ℝ)) q),
+      (metricCov (quotientProductMetric A g lambda hlambda))
+        (quotientVerticalUnit A lambda) q v = 0 := by
+  let := A.charts
+  let := A.smoothManifold
+  let f : M × ℝ → M × Surgery.Topology.Circle := ⇑(productCoverProjection (M := M))
+  have hf : IsLocalDiffeomorph (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, ℝ)) ∞ f :=
+    isLocalDiffeomorph_productCoverProjection A
+  let Usec : ContMDiffSection (I.prod 𝓘(ℝ, ℝ)) (E × ℝ) ∞
+      (TangentSpace (I.prod 𝓘(ℝ, ℝ)) : M × Surgery.Topology.Circle → Type _) :=
+    ⟨fun q => quotientVerticalUnit A lambda q,
+      quotientVerticalUnit_contMDiff A g lambda hlambda⟩
+  let CVsec : ContMDiffSection (I.prod 𝓘(ℝ, ℝ)) (E × ℝ) ∞
+      (TangentSpace (I.prod 𝓘(ℝ, ℝ)) : M × ℝ → Type _) :=
+    ⟨fun p => coverVerticalUnit lambda p,
+      (coverVerticalUnit_smooth_parallel g lambda hlambda).1⟩
+  intro q v
+  let S := LocalSection.ofLocal f hf (surjective_productCoverProjection (M := M)) q
+  let Qres : ContMDiffSection (I.prod 𝓘(ℝ, ℝ)) (E × ℝ) ∞
+      (TangentSpace (I.prod 𝓘(ℝ, ℝ)) : ↥S.U → Type _) :=
+    restrictOpenTangentSection S.U Usec
+  have hUsec : (fun q' : M × Surgery.Topology.Circle => Usec q') =
+      quotientVerticalUnit A lambda := rfl
+  have hQres : (fun z : ↥S.U => Qres z) =
+      restrictOpenTangentField S.U (fun y => Usec y) := rfl
+  have hQresval : ∀ z : ↥S.U, Qres z =
+      (quotientVerticalUnit A lambda (z : M × Surgery.Topology.Circle) :
+        TangentSpace (I.prod 𝓘(ℝ, ℝ)) (z : M × Surgery.Topology.Circle)) := by
+    intro z
+    simp only [Qres, restrictOpenTangentSection, ContMDiffSection.coeFn_mk,
+      restrictOpenTangentField_apply]
+    rfl
+  have hpush : (fun y : ↥S.V => (pushFwdSectionCross S.s Qres) y) =
+      restrictOpenTangentField S.V (fun y => CVsec y) := by
+    funext y
+    rw [restrictOpenTangentField_apply, ← Diffeomorph.apply_symm_apply S.s y]
+    rw [pushFwdSectionCross_apply_at_image (I := I.prod 𝓘(ℝ, ℝ)) (J := I.prod 𝓘(ℝ, ℝ))
+      (Phi := S.s) (X := Qres) (x := S.s.symm y)]
+    rw [Diffeomorph.apply_symm_apply S.s y]
+    have hSz : S.toSource (S.s.symm y) = (y : M × ℝ) := by
+      simp only [LocalSection.toSource, Diffeomorph.apply_symm_apply]
+    have hsec : (⇑(productCoverProjection (M := M))) (S.toSource (S.s.symm y)) =
+        ((S.s.symm y : ↥S.U) : M × Surgery.Topology.Circle) :=
+      S.isSec (S.s.symm y)
+    have hchain : mfderiv (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, ℝ)) f (S.toSource (S.s.symm y))
+        (mfderiv (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, ℝ)) S.toSource (S.s.symm y)
+          (Qres (S.s.symm y))) =
+          (Qres (S.s.symm y) : TangentSpace (I.prod 𝓘(ℝ, ℝ)) (S.toSource (S.s.symm y))) := by
+      have h := congrArg (fun (L : TangentSpace (I.prod 𝓘(ℝ, ℝ)) (S.s.symm y) →L[ℝ]
+          TangentSpace (I.prod 𝓘(ℝ, ℝ)) (f (S.toSource (S.s.symm y)))) =>
+            L (Qres (S.s.symm y)))
+        (S.dproj_sec hf (S.s.symm y))
+      simp only [ContinuousLinearMap.comp_apply] at h
+      exact h.trans (mfderiv_subtype_val_apply (I := I.prod 𝓘(ℝ, ℝ)) S.U (S.s.symm y)
+        (Qres (S.s.symm y)))
+    have hcv : mfderiv (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, ℝ)) f (S.toSource (S.s.symm y))
+        (CVsec (S.toSource (S.s.symm y))) =
+          (Qres (S.s.symm y) : TangentSpace (I.prod 𝓘(ℝ, ℝ)) (S.toSource (S.s.symm y))) := by
+      change mfderiv (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, ℝ)) f (S.toSource (S.s.symm y))
+        (coverVerticalUnit lambda (S.toSource (S.s.symm y))) = (Qres (S.s.symm y) : _)
+      rw [quotientVerticalUnit_cover A lambda (S.toSource (S.s.symm y)), hsec]
+      exact (hQresval (S.s.symm y)).symm
+    exact (S.mfderiv_toSource_apply (S.s.symm y) (Qres (S.s.symm y))).symm.trans
+      (((hf.mfderivToContinuousLinearEquiv infty_ne_zero
+        (S.toSource (S.s.symm y))).injective (hchain.trans hcv.symm)).trans
+        (congrArg CVsec hSz))
+  have hmetric : Diffeomorph.pullbackMetricCross
+      ((coverProductMetric g lambda hlambda).restrictOpen S.V) S.s =
+      (quotientProductMetric A g lambda hlambda).restrictOpen S.U :=
+    pullbackMetricCross_coverProjection_restrictOpen_localSection A g lambda hlambda q
+  have hcovercov : (metricCov ((coverProductMetric g lambda hlambda).restrictOpen S.V))
+      (restrictOpenTangentField S.V (fun y => CVsec y)) (S.s ⟨q, S.mem⟩)
+      (mfderiv (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, ℝ)) (⇑S.s) ⟨q, S.mem⟩ v) = 0 := by
+    rw [metricCov_restrictOpen_globalSection (coverProductMetric g lambda hlambda) S.V CVsec
+      (S.s ⟨q, S.mem⟩)
+      (mfderiv (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, ℝ)) (⇑S.s) ⟨q, S.mem⟩ v)]
+    exact (coverVerticalUnit_smooth_parallel g lambda hlambda).2
+      ((S.s ⟨q, S.mem⟩ : ↥S.V) : M × ℝ)
+      (mfderiv (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, ℝ)) (⇑S.s) ⟨q, S.mem⟩ v)
+  have hpb := metricCov_pullbackCross
+    (g := (coverProductMetric g lambda hlambda).restrictOpen S.V)
+    (Phi := S.s) (Y := Qres) ⟨q, S.mem⟩ v
+  rw [hmetric] at hpb
+  rw [hpush, hcovercov] at hpb
+  have hinjS := ((S.s).mfderivToContinuousLinearEquiv infty_ne_zero ⟨q, S.mem⟩).injective
+  have hzero : (metricCov ((quotientProductMetric A g lambda hlambda).restrictOpen S.U))
+      (fun z => Qres z) ⟨q, S.mem⟩ v = 0 := hinjS (by rw [map_zero]; exact hpb)
+  have hsec := metricCov_restrictOpen_globalSection (quotientProductMetric A g lambda hlambda)
+    S.U Usec ⟨q, S.mem⟩ v
+  rw [hUsec] at hsec
+  rw [hQres] at hzero
+  rw [← hsec]
+  exact hzero
+
+omit [CompleteSpace E] [SigmaCompactSpace M] in
+theorem exists_pullbackMetricCross_quotientProductMetric [I.Boundaryless] (g : SmoothRiemannianMetric I M)
+    (lambda : ℝ) (hlambda : 0 < lambda) (q : M × Surgery.Topology.Circle) :
+    letI := A.charts
+    letI := A.smoothManifold
+    ∃ (U : TopologicalSpace.Opens (M × Surgery.Topology.Circle))
+      (V : TopologicalSpace.Opens (M × ℝ))
+      (s : V ≃ₘ⟮I.prod 𝓘(ℝ, ℝ), I.prod 𝓘(ℝ, ℝ)⟯ U) (p : M × ℝ),
+      q ∈ U ∧ p ∈ V ∧
+      Diffeomorph.pullbackMetricCross
+          ((quotientProductMetric A g lambda hlambda).restrictOpen U) s =
+        (coverProductMetric g lambda hlambda).restrictOpen V := by
+  let := A.charts
+  let := A.smoothManifold
+  let S := LocalSection.ofLocal (⇑(productCoverProjection (M := M)))
+    (isLocalDiffeomorph_productCoverProjection A) (surjective_productCoverProjection (M := M)) q
+  refine ⟨S.U, S.V, S.s.symm, S.toSource ⟨q, S.mem⟩, S.mem, ?_, ?_⟩
+  · exact (S.s ⟨q, S.mem⟩).2
+  · exact Diffeomorph.pullbackMetricCross_symm_eq_iff.mp
+      (pullbackMetricCross_coverProjection_restrictOpen_localSection A g lambda hlambda q)
 theorem quotientVerticalUnit_smooth_unit_parallel [I.Boundaryless] (g : SmoothRiemannianMetric I M)
     (lambda : ℝ) (hlambda : 0 < lambda) :
     letI := A.charts
@@ -275,7 +527,9 @@ theorem quotientVerticalUnit_smooth_unit_parallel [I.Boundaryless] (g : SmoothRi
     ∀ q (v : TangentSpace (I.prod 𝓘(ℝ, ℝ)) q),
       (metricCov (quotientProductMetric A g lambda hlambda))
         (quotientVerticalUnit A lambda) q v = 0 := by
-  sorry
+  exact ⟨quotientVerticalUnit_contMDiff A g lambda hlambda,
+    quotientVerticalUnit_unit A g lambda hlambda,
+    metricCov_quotientProductMetric_quotientVerticalUnit A g lambda hlambda⟩
 end QuotientVertical
 
 private noncomputable def scaleEuclidean (lambda : ℝ) (hlambda : 0 < lambda) :

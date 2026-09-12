@@ -569,6 +569,30 @@ theorem scalar_arclength_commutator (B : RicciBackground (I := I) (M := M) D a b
   field_simp [ne_of_gt hvpos]
   ring_nf
 
+omit [SigmaCompactSpace M] in
+theorem CurveMap.derivWithin_curvatureSq (B : RicciBackground (I := I) (M := M) D a b)
+    (hsu : s < u) (hwindow : Icc s u ⊆ Icc a b)
+    (c : CurveMap M) (hc : c.IsSolutionOn B.family.metric (Icc s u))
+    (x t : ℝ) (ht : t ∈ Icc s u) :
+    derivWithin (fun r => c.curvatureSq B.family.metric x r) (Icc s u) t =
+      2 * (B.family.metric t).inner (c.lift x t)
+          (c.Dt B.family.metric (Icc s u) (c.curvatureVector B.family.metric) x t)
+          (c.curvatureVector B.family.metric x t) -
+      2 * B.family.ricciAt t (c.lift x t)
+          (vec2 (c.curvatureVector B.family.metric x t)
+            (c.curvatureVector B.family.metric x t)) := by
+  have hk : CurveMap.Field.SmoothOn (I := I) (c.curvatureVector B.family.metric) (Icc s u) :=
+    CurveMap.Field.smoothOn_curvatureVector B.family.metric B.smooth
+      (fun r hr => B.regular (hwindow hr)) (uniqueDiffOn_Icc hsu) c hc.smooth hc.immersed
+  have h := moving_inner_derivative B hsu hwindow c hc.smooth
+    (c.curvatureVector B.family.metric) (c.curvatureVector B.family.metric) hk hk x t ht
+  have hsymm := (B.family.metric t).symm (c.lift x t)
+    (c.Dt B.family.metric (Icc s u) (c.curvatureVector B.family.metric) x t)
+    (c.curvatureVector B.family.metric x t)
+  simp only [CurveMap.curvatureSq, CurveMap.normSq]
+  rw [h, hsymm]
+  ring
+
 theorem rfs_csf_curvature (B : RicciBackground (I := I) (M := M) D a b)
     (hsu : s < u) (hwindow : Icc s u ⊆ Icc a b)
     (c : CurveMap M) (hc : c.IsSolutionOn B.family.metric (Icc s u))

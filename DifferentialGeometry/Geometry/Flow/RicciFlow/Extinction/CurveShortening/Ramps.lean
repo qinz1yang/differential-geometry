@@ -227,15 +227,15 @@ private theorem ramp_angle_mul_speed {E : Type*} [NormedAddCommGroup E] [NormedS
   · rw [ProductCurve.angle_eq c g lambda x t]
     field_simp
 
-theorem productCurve_integral_angle {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+theorem productCurve_integral_angle_of_smoothOn {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
     [FiniteDimensional ℝ E] [CompleteSpace E] {H : Type*} [TopologicalSpace H]
     {I : ModelWithCorners ℝ E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
     (c : ProductCurve M) (g : ℝ → SmoothRiemannianMetric I M)
-    (lambda : ℝ) (hlambda : 0 < lambda) {J : Set ℝ} (hc : c.IsSolutionOn g lambda J)
+    (lambda : ℝ) (hlambda : 0 < lambda) {J : Set ℝ} (hsmooth : c.SmoothOn (I := I) J)
     {t : ℝ} (ht : t ∈ J) :
     c.integral g lambda (c.angle g lambda) t = c.degree * lambda := by
-  have hslice := slice_slice_contDiffOn (H := H) (I := I) c ht hc.smooth.2
+  have hslice := slice_slice_contDiffOn (H := H) (I := I) c ht hsmooth.2
   have hdiff : ∀ x : ℝ, DifferentiableAt ℝ (fun z : ℝ => c.y z t) x := fun x =>
     (hslice.differentiableOn (by norm_num)).differentiableAt Filter.univ_mem
   have hderiv : ∀ x : ℝ, HasDerivAt (fun z : ℝ => c.y z t)
@@ -257,6 +257,16 @@ theorem productCurve_integral_angle {E : Type*} [NormedAddCommGroup E] [NormedSp
         have hincr : c.y 1 t = c.y 0 t + (c.degree : ℝ) := by simpa using c.increment 0 t
         rw [hincr]
         ring
+
+theorem productCurve_integral_angle {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    [FiniteDimensional ℝ E] [CompleteSpace E] {H : Type*} [TopologicalSpace H]
+    {I : ModelWithCorners ℝ E H}
+    {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+    (c : ProductCurve M) (g : ℝ → SmoothRiemannianMetric I M)
+    (lambda : ℝ) (hlambda : 0 < lambda) {J : Set ℝ} (hc : c.IsSolutionOn g lambda J)
+    {t : ℝ} (ht : t ∈ J) :
+    c.integral g lambda (c.angle g lambda) t = c.degree * lambda :=
+  productCurve_integral_angle_of_smoothOn c g lambda hlambda hc.smooth ht
 
 private theorem ramp_slice_continuous {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
     [FiniteDimensional ℝ E] [CompleteSpace E] {H : Type*} [TopologicalSpace H]

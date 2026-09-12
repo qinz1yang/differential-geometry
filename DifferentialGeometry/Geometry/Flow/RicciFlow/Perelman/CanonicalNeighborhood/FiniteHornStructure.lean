@@ -240,6 +240,267 @@ theorem nonempty_hornBarriers_of_neckSectionBarrier {g : SmoothRiemannianMetric 
     obtain ⟨t, ht⟩ := hi c hc hd'
     exact ⟨t, (hrange i).symm ▸ ht⟩
 
+noncomputable def tailIndex (g : SmoothRiemannianMetric I3 W) (H : FiniteHorn g) : ℕ :=
+  Classical.choose H.cylindrical_tail
+
+omit [SigmaCompactSpace W] in
+theorem tailIndex_spec (g : SmoothRiemannianMetric I3 W) (H : FiniteHorn g) :
+    ∀ x ∈ H.subend (tailIndex g H), ∃ (cyl : CylinderReference)
+      (F : PartialDiffeomorph IC I3 Cylinder W ∞) (p : Sphere 2),
+      F (p, 0) = x ∧
+      Nonempty (GlobalNeckCrossSection F H.subend H.axial.point H.axial.length) ∧
+      Set.univ ×ˢ Set.Icc (-H.collar_depth) H.collar_depth ⊆ F.source ∧
+      ∃ hQ : 0 < metricScalarAt g x,
+        Nonempty (MetricComparisonOn (fun _ => cyl.metric 0)
+          (fun _ => scaleMetric (metricScalarAt g x) hQ g) F
+          (Set.univ ×ˢ Set.Icc (-H.collar_depth) H.collar_depth)
+          {0} (⌈H.neck_precision⁻¹⌉₊) H.neck_precision) :=
+  Classical.choose_spec H.cylindrical_tail
+
+structure EndChart (g : SmoothRiemannianMetric I3 W) (H : FiniteHorn g) (x : W)
+    (hx : x ∈ H.subend (tailIndex g H)) where
+  cyl : CylinderReference
+  F : PartialDiffeomorph IC I3 Cylinder W ∞
+  p : Sphere 2
+  center : F (p, 0) = x
+  cross : GlobalNeckCrossSection F H.subend H.axial.point H.axial.length
+  source_sub : Set.univ ×ˢ Set.Icc (-H.collar_depth) H.collar_depth ⊆ F.source
+  Q_pos : 0 < metricScalarAt g x
+  cmp : MetricComparisonOn (fun _ => cyl.metric 0)
+    (fun _ => scaleMetric (metricScalarAt g x) Q_pos g) F
+    (Set.univ ×ˢ Set.Icc (-H.collar_depth) H.collar_depth)
+    {0} (⌈H.neck_precision⁻¹⌉₊) H.neck_precision
+
+omit [SigmaCompactSpace W] in
+noncomputable def endChart (g : SmoothRiemannianMetric I3 W) (H : FiniteHorn g) (x : W)
+    (hx : x ∈ H.subend (tailIndex g H)) : EndChart g H x hx :=
+  Classical.choice (show Nonempty (EndChart g H x hx) from by
+    obtain ⟨cyl, F, p, hcenter, hG, hsource, hQ, hcmp⟩ := tailIndex_spec g H x hx
+    obtain ⟨G⟩ := hG
+    obtain ⟨cmp⟩ := hcmp
+    exact ⟨⟨cyl, F, p, hcenter, G, hsource, hQ, cmp⟩⟩)
+
+omit [SigmaCompactSpace W] in
+noncomputable def neckTube (g : SmoothRiemannianMetric I3 W) (H : FiniteHorn g)
+    (ray : EndRay H.endpoint) (d : ℕ → ℝ) (i : ℕ) : GlobalNeckTube W := by
+  classical
+  exact if h : ray.point (d i) ∈ H.subend (tailIndex g H) then
+    (endChart g H (ray.point (d i)) h).cross.tube
+  else H.tube
+
+omit [SigmaCompactSpace W] in
+theorem eventually_mem_tail (g : SmoothRiemannianMetric I3 W) (H : FiniteHorn g)
+    (ray : EndRay H.endpoint) (d : ℕ → ℝ) (hd : ∀ i, d i ∈ Set.Ioc 0 ray.length)
+    (hzero : Filter.Tendsto d Filter.atTop (nhds 0)) :
+    ∀ᶠ i in Filter.atTop, ray.point (d i) ∈ H.subend (tailIndex g H) := by
+  have hdist : Filter.Tendsto
+      (fun i => dist (ray.point (d i) : UniformSpace.Completion W) H.endpoint) Filter.atTop
+      (nhds 0) := by
+    simpa only [ray.radial _ (hd _)] using hzero
+  exact finiteHorn_eventually_mem_subend g H
+    ((tendsto_iff_dist_tendsto_zero).mpr hdist) (tailIndex g H)
+
+noncomputable def transverseShortcutConstant (W : Type u) [MetricSpace W]
+    [ChartedSpace ThreeSpace W] [IsManifold I3 ∞ W] : ℝ :=
+  Classical.choose (exists_uniform_transverse_shortcuts (M := W))
+
+omit [SigmaCompactSpace W] in
+theorem transverseShortcutConstant_pos (W : Type u) [MetricSpace W]
+    [ChartedSpace ThreeSpace W] [IsManifold I3 ∞ W] :
+    0 < transverseShortcutConstant W :=
+  (Classical.choose_spec (exists_uniform_transverse_shortcuts (M := W))).1
+
+omit [SigmaCompactSpace W] in
+theorem transverseShortcutConstant_spec (W : Type u) [MetricSpace W]
+    [ChartedSpace ThreeSpace W] [IsManifold I3 ∞ W] :
+    ∀ (C : CylinderReference) (h : ℝ → SmoothRiemannianMetric IC Cylinder)
+      (g : ℝ → SmoothRiemannianMetric I3 W) (F : PartialDiffeomorph IC I3 Cylinder W ∞)
+      (U : Set Cylinder) (times : Set ℝ) (order : ℕ) (eps z : ℝ),
+      MetricComparisonOn h g F U times order eps → h 0 = C.metric 0 → 0 ≤ eps → eps ≤ 1 →
+      0 ∈ times → U ⊆ F.source → (∀ y : Sphere 2, (y, z) ∈ U) → ∀ x y : Sphere 2,
+      ∃ gamma : ℝ → W, gamma 0 = F (x, z) ∧ gamma 1 = F (y, z) ∧
+        ContMDiffOn 𝓘(ℝ, ℝ) I3 1 gamma (Set.Icc (0 : ℝ) 1) ∧
+        (∀ s ∈ Set.Icc (0 : ℝ) 1, gamma s ∈ F '' (Set.univ ×ˢ ({z} : Set ℝ))) ∧
+        metricPathELength (g 0) gamma 0 1 ≤ ENNReal.ofReal (transverseShortcutConstant W) :=
+  (Classical.choose_spec (exists_uniform_transverse_shortcuts (M := W))).2
+
+omit [SigmaCompactSpace W] in
+theorem endChart_section_diameter_le (g : SmoothRiemannianMetric I3 W) (H : FiniteHorn g)
+    (x : W) (hx : x ∈ H.subend (tailIndex g H)) :
+    ∀ y ∈ (endChart g H x hx).cross.tube.sectionSet (1 / 2),
+      dist x y ≤ transverseShortcutConstant W / Real.sqrt (metricScalarAt g x) := by
+  set E := endChart g H x hx with hE
+  intro y hy
+  have hy' : y ∈ Set.range (fun q : Sphere 2 => E.F (q, (0 : ℝ))) := by
+    rw [← GlobalNeckTube.range_sectionMap E.cross.tube (1 / 2),
+      show (fun q : Sphere 2 => E.cross.tube.map (q, 1 / 2)) =
+        (fun q : Sphere 2 => E.F (q, 0)) from funext E.cross.center_eq] at hy
+    exact hy
+  obtain ⟨q, hq⟩ := hy'
+  rw [← hq]
+  have hlevel : ∀ z : Sphere 2, (z, (0 : ℝ)) ∈
+      (Set.univ ×ˢ Set.Icc (-H.collar_depth) H.collar_depth : Set Cylinder) := by
+    intro z
+    exact ⟨Set.mem_univ _, by constructor <;> linarith [H.collar_depth_pos]⟩
+  obtain ⟨gamma, hstart, hend, hsmooth, _hmem, hlen⟩ :=
+    transverseShortcutConstant_spec W E.cyl (fun _ => E.cyl.metric 0)
+      (fun _ => scaleMetric (metricScalarAt g x) E.Q_pos g) E.F
+      (Set.univ ×ˢ Set.Icc (-H.collar_depth) H.collar_depth) {0}
+      (⌈H.neck_precision⁻¹⌉₊) H.neck_precision 0 E.cmp rfl H.neck_precision_pos.le
+      (by linarith [H.neck_precision_small]) (by simp) E.source_sub hlevel E.p q
+  have hdist := (edistOf_le_metricPathELength
+    (scaleMetric (metricScalarAt g x) E.Q_pos g) (by norm_num : (0 : ℝ) ≤ 1) hsmooth).trans hlen
+  rw [hstart, hend, E.center, edistOf_scale] at hdist
+  have hreal := ENNReal.toReal_mono ENNReal.ofReal_ne_top hdist
+  rw [ENNReal.toReal_mul, ENNReal.toReal_ofReal (Real.sqrt_nonneg _),
+    ENNReal.toReal_ofReal (transverseShortcutConstant_pos W).le] at hreal
+  change Real.sqrt (metricScalarAt g x) * metricDistance g x (E.F (q, 0)) ≤
+    transverseShortcutConstant W at hreal
+  rw [← H.intrinsic] at hreal
+  exact (le_div_iff₀ (Real.sqrt_pos.mpr E.Q_pos)).mpr (by linarith)
+
+private theorem sqrt_ratio_bound {L eta s e : ℝ} (hL : 0 < L) (heta : 0 < eta)
+    (h : (2 * L / eta) ^ 2 < s * e) :
+    L / Real.sqrt (s * e) < eta / 2 := by
+  have hpos : 0 < 2 * L / eta := by positivity
+  have hlt : 2 * L / eta < Real.sqrt (s * e) := by
+    rw [Real.lt_sqrt hpos.le]
+    exact h
+  have hdiv := div_lt_div_of_pos_left hL hpos hlt
+  have heq : L / (2 * L / eta) = eta / 2 := by
+    field_simp
+  simpa only [heq] using hdiv
+
+private theorem div_sqrt_lt_mul {L eta s d : ℝ} (hs : 0 < s) (hd : 0 < d)
+    (h : L / Real.sqrt (s * d ^ 2) < eta) : L / Real.sqrt s < d * eta := by
+  have hsqrt : Real.sqrt (s * d ^ 2) = Real.sqrt s * d := by
+    rw [Real.sqrt_mul hs.le, Real.sqrt_sq hd.le]
+  rw [hsqrt] at h
+  have hne : Real.sqrt s ≠ 0 := by positivity
+  calc L / Real.sqrt s = d * (L / (Real.sqrt s * d)) := by
+        field_simp
+    _ < d * eta := mul_lt_mul_of_pos_left h hd
+
+def NeckEndScale (g : SmoothRiemannianMetric I3 W) (H : FiniteHorn g) (ray : EndRay H.endpoint)
+    (d : ℕ → ℝ) : Prop :=
+  ∀ a b : ℝ, -1 < a → a < b → b < 1 / 10 → ∀ᶠ i in Filter.atTop, ∃ j : ℕ,
+    {x : W | dist (x : UniformSpace.Completion W) H.endpoint < (1 - a) * d i} ⊆ H.subend j ∧
+    H.subend j ⊆ {x : W | dist (x : UniformSpace.Completion W) H.endpoint < (1 + b) * d i} ∧
+    (∀ x ∈ H.subend j, (neckTube g H ray d i).height x < 1 / 2)
+
+omit [SigmaCompactSpace W] in
+theorem neckSectionBarrier_of_neckEndScale (g : SmoothRiemannianMetric I3 W) (H : FiniteHorn g)
+    (ray : EndRay H.endpoint) (d : ℕ → ℝ) (hd : ∀ i, d i ∈ Set.Ioc 0 ray.length)
+    (hzero : Filter.Tendsto d Filter.atTop (nhds 0))
+    (hlarge : Filter.Tendsto (fun i => metricScalarAt g (ray.point (d i)) * d i ^ 2)
+      Filter.atTop Filter.atTop)
+    (hscale : NeckEndScale g H ray d) : Nonempty (NeckSectionBarrier H ray d) := by
+  classical
+  refine ⟨neckTube g H ray d, ?_, ?_⟩
+  · refine ⟨transverseShortcutConstant W, transverseShortcutConstant_pos W, ?_⟩
+    filter_upwards [eventually_mem_tail g H ray d hd hzero] with i hgood
+    have htube : neckTube g H ray d i = (endChart g H (ray.point (d i)) hgood).cross.tube := by
+      rw [neckTube, dif_pos hgood]
+    intro x hx
+    rw [htube] at hx
+    exact endChart_section_diameter_le g H (ray.point (d i)) hgood x hx
+  · intro eta heta heta10
+    have hb0 : eta < (eta + 1 / 10) / 2 := by linarith
+    have hb0' : (eta + 1 / 10) / 2 < 1 / 10 := by linarith
+    have ha1 : -1 < -(eta / 2) := by linarith
+    have hb1 : eta / 2 < 1 / 10 := by linarith
+    filter_upwards [eventually_mem_tail g H ray d hd hzero,
+      hscale eta ((eta + 1 / 10) / 2) (by linarith) hb0 hb0',
+      hscale (-(eta / 2)) (eta / 2) ha1 (by linarith) hb1,
+      hlarge.eventually_ge_atTop (max 1 ((2 * transverseShortcutConstant W / eta) ^ 2 + 1))]
+      with i hgood hj0 hj1 hbig
+    obtain ⟨j0, hsub0, _hsup0, hdeep0⟩ := hj0
+    obtain ⟨j1, hsub1, hsup1, _hdeep1⟩ := hj1
+    set E := endChart g H (ray.point (d i)) hgood with hE
+    have htube : neckTube g H ray d i = E.cross.tube := by rw [neckTube, dif_pos hgood]
+    have hdpos : 0 < d i := (hd i).1
+    have hsmul : 1 ≤ metricScalarAt g (ray.point (d i)) * d i ^ 2 :=
+      le_trans (le_max_left _ _) hbig
+    have hs_pos : 0 < metricScalarAt g (ray.point (d i)) := by
+      nlinarith [hsmul, sq_nonneg (d i), sq_pos_of_pos hdpos]
+    have hspread : transverseShortcutConstant W /
+        Real.sqrt (metricScalarAt g (ray.point (d i)) * d i ^ 2) < eta / 2 := by
+      refine sqrt_ratio_bound (transverseShortcutConstant_pos W) heta ?_
+      have h2 : (2 * transverseShortcutConstant W / eta) ^ 2 + 1 ≤
+          metricScalarAt g (ray.point (d i)) * d i ^ 2 := le_trans (le_max_right _ _) hbig
+      linarith
+    have hcenter_ball : ∀ q : Sphere 2,
+        dist (E.F (q, 0) : UniformSpace.Completion W) H.endpoint < (1 - (-(eta / 2))) * d i := by
+      intro q
+      have hdiam := endChart_section_diameter_le g H (ray.point (d i)) hgood (E.F (q, 0))
+        (by
+          rw [← GlobalNeckTube.range_sectionMap E.cross.tube (1 / 2),
+            show (fun r : Sphere 2 => E.cross.tube.map (r, 1 / 2)) =
+              (fun r : Sphere 2 => E.F (r, 0)) from funext E.cross.center_eq]
+          exact ⟨q, rfl⟩)
+      have hle : transverseShortcutConstant W /
+          Real.sqrt (metricScalarAt g (ray.point (d i))) < d i * (eta / 2) :=
+        div_sqrt_lt_mul hs_pos hdpos hspread
+      have hlt : dist (ray.point (d i)) (E.F (q, 0)) < (eta / 2) * d i := by
+        rw [mul_comm (eta / 2) (d i)]
+        exact lt_of_le_of_lt hdiam hle
+      calc dist (E.F (q, 0) : UniformSpace.Completion W) H.endpoint
+          ≤ dist (E.F (q, 0) : UniformSpace.Completion W)
+              (ray.point (d i) : UniformSpace.Completion W) +
+            dist (ray.point (d i) : UniformSpace.Completion W) H.endpoint := dist_triangle _ _ _
+        _ = dist (ray.point (d i)) (E.F (q, 0)) + d i := by
+              rw [UniformSpace.Completion.dist_eq, dist_comm (E.F (q, 0)) (ray.point (d i)),
+                ray.radial (d i) (hd i)]
+        _ < (eta / 2) * d i + d i := by linarith
+        _ = (1 - (-(eta / 2))) * d i := by ring
+    have hcenter_sub1 : ∀ q : Sphere 2, E.F (q, 0) ∈ H.subend j1 :=
+      fun q => hsub1 (hcenter_ball q)
+    intro c hc0 hc1
+    have hc0' : dist (c ⟨0, by simp⟩ : UniformSpace.Completion W) H.endpoint <
+        (1 - eta) * d i := by
+      rw [div_lt_iff₀ hdpos] at hc0
+      linarith
+    have hh0 : E.cross.tube.height (c ⟨0, by simp⟩) < 1 / 2 := by
+      have h := hdeep0 (c ⟨0, by simp⟩) (hsub0 hc0')
+      rwa [htube] at h
+    have hout1 : c ⟨1, by simp⟩ ∉ H.subend j1 := by
+      intro hmem
+      have h := hsup1 hmem
+      have hmono : (1 + eta / 2) * d i < (1 + eta) * d i :=
+        mul_lt_mul_of_pos_right (by linarith) hdpos
+      rw [lt_div_iff₀ hdpos] at hc1
+      exact (not_lt_of_ge (hmono.trans hc1).le) h
+    have hh1 : 1 / 2 < E.cross.tube.height (c ⟨1, by simp⟩) :=
+      GlobalNeckCrossSection.outer_side_of_center_in_subend g H E.cross j1 hcenter_sub1 _
+        hout1
+    let gamma : ℝ → W := fun t => c (Set.projIcc (0 : ℝ) 1 (by norm_num) t)
+    have hcont : ContinuousOn gamma (Set.Icc (0 : ℝ) 1) :=
+      (c.continuous.comp continuous_projIcc).continuousOn
+    have hg0 : gamma 0 = c ⟨0, by simp⟩ := by
+      simp only [gamma, Set.projIcc_of_mem (by norm_num : (0 : ℝ) ≤ 1) (by norm_num : (0 : ℝ) ∈ Set.Icc (0 : ℝ) 1)]
+    have hg1 : gamma 1 = c ⟨1, by simp⟩ := by
+      simp only [gamma, Set.projIcc_of_mem (by norm_num : (0 : ℝ) ≤ 1) (by norm_num : (1 : ℝ) ∈ Set.Icc (0 : ℝ) 1)]
+    obtain ⟨s, hs, hmem⟩ := E.cross.path_meets_center gamma hcont (by rw [hg0]; exact hh0)
+      (by rw [hg1]; exact hh1)
+    refine ⟨⟨s, hs⟩, ?_⟩
+    have hmem' : c ⟨s, hs⟩ ∈ Set.range (fun q : Sphere 2 => E.F (q, (0 : ℝ))) := by
+      rwa [show gamma s = c ⟨s, hs⟩ from by
+        simp only [gamma, Set.projIcc_of_mem (by norm_num : (0 : ℝ) ≤ 1) hs]] at hmem
+    rw [htube, ← GlobalNeckTube.range_sectionMap E.cross.tube (1 / 2),
+      show (fun q : Sphere 2 => E.cross.tube.map (q, 1 / 2)) =
+        (fun q : Sphere 2 => E.F (q, 0)) from funext E.cross.center_eq]
+    exact hmem'
+
+omit [SigmaCompactSpace W] in
+theorem nonempty_hornBarriers_of_neckEndScale (g : SmoothRiemannianMetric I3 W) (H : FiniteHorn g)
+    (ray : EndRay H.endpoint) (d : ℕ → ℝ) (hd : ∀ i, d i ∈ Set.Ioc 0 ray.length)
+    (hzero : Filter.Tendsto d Filter.atTop (nhds 0))
+    (hlarge : Filter.Tendsto (fun i => metricScalarAt g (ray.point (d i)) * d i ^ 2)
+      Filter.atTop Filter.atTop)
+    (hscale : NeckEndScale g H ray d) : Nonempty (HornBarriers H ray d) := by
+  obtain ⟨b⟩ := neckSectionBarrier_of_neckEndScale g H ray d hd hzero hlarge hscale
+  exact nonempty_hornBarriers_of_neckSectionBarrier H ray d b
+
 theorem finite_horn_barriers {g : SmoothRiemannianMetric I3 W}
     (H : FiniteHorn g) (endData : EndGeometry H) (ray : EndRay H.endpoint)
     (d : ℕ → ℝ) (hd : ∀ i, d i ∈ Set.Ioc 0 ray.length)

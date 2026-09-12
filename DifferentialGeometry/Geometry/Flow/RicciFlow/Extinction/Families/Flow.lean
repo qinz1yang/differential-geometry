@@ -176,4 +176,215 @@ theorem rfs_ramp_uniform_bounds_of_product_bounds
     simpa only [sub_self] using hb
   · exact hslope s hs t ht
 
+omit [FiniteDimensional ℝ E] [CompleteSpace E] [IsManifold I ∞ Q] [SigmaCompactSpace Q]
+  hT2 hCompact hConnected hBoundary in
+private theorem productCurve_slice_y_sub_const (c c₀ : ProductCurve Q) (t t₀ : ℝ)
+    (hc : c.SmoothOn (I := I) {t}) (hc₀ : c₀.SmoothOn (I := I) {t₀})
+    (hmap : ∀ z, c.map z t = c₀.map z t₀) :
+    ∃ k : ℝ, ∀ x, c.y x t - c₀.y x t₀ = k := by
+  have hcy : Continuous (fun x : ℝ => c.y x t) := by
+    have hz : ContDiffOn ℝ ∞ (fun z : ℝ => (z, t)) univ := by fun_prop
+    have h := hc.2.comp hz (fun z _ => ⟨mem_univ z, mem_singleton t⟩)
+    exact continuousOn_univ.mp h.continuousOn
+  have hc₀y : Continuous (fun x : ℝ => c₀.y x t₀) := by
+    have hz : ContDiffOn ℝ ∞ (fun z : ℝ => (z, t₀)) univ := by fun_prop
+    have h := hc₀.2.comp hz (fun z _ => ⟨mem_univ z, mem_singleton t₀⟩)
+    exact continuousOn_univ.mp h.continuousOn
+  have hcont : Continuous (fun x : ℝ => c.y x t - c₀.y x t₀) := hcy.sub hc₀y
+  have hint : ∀ x, ∃ n : ℤ, c.y x t - c₀.y x t₀ = (n : ℝ) := by
+    intro x
+    have hcoe : ((c.y x t - c₀.y x t₀ : ℝ) : Surgery.Topology.Circle) = 0 := by
+      rw [AddCircle.coe_sub, c.lift_eq x t, c₀.lift_eq x t₀, hmap (x : Surgery.Topology.Circle),
+        sub_self]
+    obtain ⟨n, hn⟩ := (AddCircle.coe_eq_zero_iff (1 : ℝ)).mp hcoe
+    exact ⟨n, by simpa using hn.symm⟩
+  have hconst : ∀ x, c.y x t - c₀.y x t₀ = c.y 0 t - c₀.y 0 t₀ := by
+    intro x
+    obtain ⟨n, hn⟩ := hint x
+    obtain ⟨m, hm⟩ := hint 0
+    have hnm : n = m := by
+      by_contra hne
+      rcases lt_or_gt_of_ne hne with hlt | hgt
+      · have hmem : (c.y x t - c₀.y x t₀) + 1 / 2 ∈
+            Set.Icc (c.y x t - c₀.y x t₀) (c.y 0 t - c₀.y 0 t₀) := by
+          refine ⟨by linarith, ?_⟩
+          have h1 : n + 1 ≤ m := by omega
+          have h2 : (n : ℝ) + 1 ≤ (m : ℝ) := by exact_mod_cast h1
+          rw [hn, hm]
+          linarith
+        obtain ⟨z, _, hz⟩ := isPreconnected_univ.intermediate_value (Set.mem_univ x)
+          (Set.mem_univ 0) hcont.continuousOn hmem
+        obtain ⟨nz, hnz⟩ := hint z
+        have hz' : (nz : ℝ) = (n : ℝ) + 1 / 2 := by
+          rw [← hnz]
+          simpa only [hn] using hz
+        have hcast : ((2 * nz : ℤ) : ℝ) = ((2 * n + 1 : ℤ) : ℝ) := by push_cast; linarith
+        have hzi : 2 * nz = 2 * n + 1 := Int.cast_inj.mp hcast
+        omega
+      · have hmem : (c.y 0 t - c₀.y 0 t₀) + 1 / 2 ∈
+            Set.Icc (c.y 0 t - c₀.y 0 t₀) (c.y x t - c₀.y x t₀) := by
+          refine ⟨by linarith, ?_⟩
+          have h1 : m + 1 ≤ n := by omega
+          have h2 : (m : ℝ) + 1 ≤ (n : ℝ) := by exact_mod_cast h1
+          rw [hn, hm]
+          linarith
+        obtain ⟨z, _, hz⟩ := isPreconnected_univ.intermediate_value (Set.mem_univ 0)
+          (Set.mem_univ x) hcont.continuousOn hmem
+        obtain ⟨nz, hnz⟩ := hint z
+        have hz' : (nz : ℝ) = (m : ℝ) + 1 / 2 := by
+          rw [← hnz]
+          simpa only [hm] using hz
+        have hcast : ((2 * nz : ℤ) : ℝ) = ((2 * m + 1 : ℤ) : ℝ) := by push_cast; linarith
+        have hzi : 2 * nz = 2 * m + 1 := Int.cast_inj.mp hcast
+        omega
+    rw [hn, hm, hnm]
+  exact ⟨c.y 0 t - c₀.y 0 t₀, hconst⟩
+
+omit [FiniteDimensional ℝ E] [CompleteSpace E] [SigmaCompactSpace Q]
+  hT2 hCompact hConnected hBoundary in
+private theorem productCurve_slice_speed_eq (g : SmoothRiemannianMetric I Q) (lambda : ℝ)
+    (c c₀ : ProductCurve Q) (t t₀ : ℝ)
+    (hc : c.SmoothOn (I := I) {t}) (hc₀ : c₀.SmoothOn (I := I) {t₀})
+    (hmap : ∀ z, c.map z t = c₀.map z t₀) :
+    ∀ x, c.speed (fun _ => g) lambda x t = c₀.speed (fun _ => g) lambda x t₀ := by
+  obtain ⟨k, hk⟩ := productCurve_slice_y_sub_const c c₀ t t₀ hc hc₀ hmap
+  have hky : (fun z : ℝ => c.y z t) = fun z : ℝ => c₀.y z t₀ + k := by
+    funext z
+    linarith [hk z]
+  have hd : ∀ x, deriv (fun z : ℝ => c.y z t) x = deriv (fun z : ℝ => c₀.y z t₀) x := by
+    intro x
+    rw [hky, deriv_add_const]
+  have hM : (fun y : ℝ => (c.map (y : Surgery.Topology.Circle) t).1) =
+      fun y : ℝ => (c₀.map (y : Surgery.Topology.Circle) t₀).1 := by
+    funext y
+    exact congrArg Prod.fst (hmap (y : Surgery.Topology.Circle))
+  intro x
+  have hxM : (c.map (x : Surgery.Topology.Circle) t).1 =
+      (c₀.map (x : Surgery.Topology.Circle) t₀).1 :=
+    congrArg Prod.fst (hmap (x : Surgery.Topology.Circle))
+  simp only [ProductCurve.speed, ProductCurve.inner, ProductCurve.X, ProductCurve.projection,
+    CurveMap.lift, CurveMap.X]
+  rw [hM, hxM, hd x]
+  rfl
+
+omit [CompleteSpace E] [SigmaCompactSpace Q] hT2 hCompact hConnected hBoundary in
+private theorem productCurve_slice_curvatureSq_eq (g : SmoothRiemannianMetric I Q) (lambda : ℝ)
+    (c c₀ : ProductCurve Q) (t t₀ : ℝ)
+    (hc : c.SmoothOn (I := I) {t}) (hc₀ : c₀.SmoothOn (I := I) {t₀})
+    (hmap : ∀ z, c.map z t = c₀.map z t₀) :
+    ∀ x, c.curvatureSq (fun _ => g) lambda x t =
+      c₀.curvatureSq (fun _ => g) lambda x t₀ := by
+  obtain ⟨k, hk⟩ := productCurve_slice_y_sub_const c c₀ t t₀ hc hc₀ hmap
+  have hY : (fun z : ℝ => deriv (fun w : ℝ => c.y w t) z) =
+      fun z : ℝ => deriv (fun w : ℝ => c₀.y w t₀) z := by
+    funext z
+    have hky : (fun w : ℝ => c.y w t) = fun w : ℝ => c₀.y w t₀ + k := by
+      funext w
+      linarith [hk w]
+    rw [hky, deriv_add_const]
+  have hspd := productCurve_slice_speed_eq g lambda c c₀ t t₀ hc hc₀ hmap
+  have hM : (fun y : ℝ => (c.map (y : Surgery.Topology.Circle) t).1) =
+      fun y : ℝ => (c₀.map (y : Surgery.Topology.Circle) t₀).1 := by
+    funext y
+    exact congrArg Prod.fst (hmap (y : Surgery.Topology.Circle))
+  have hUT : ∀ z : ℝ,
+      ((c.unitTangent (fun _ => g) lambda z t).1 : E) =
+        ((c₀.unitTangent (fun _ => g) lambda z t₀).1 : E) := by
+    intro z
+    simp only [ProductCurve.unitTangent, ProductCurve.X, ProductCurve.projection, CurveMap.lift,
+      CurveMap.X]
+    rw [hM, hspd z]
+    rfl
+  have hUT2 : ∀ z : ℝ,
+      (c.unitTangent (fun _ => g) lambda z t).2 =
+        (c₀.unitTangent (fun _ => g) lambda z t₀).2 := by
+    intro z
+    simp only [ProductCurve.unitTangent, ProductCurve.X]
+    rw [hspd z, congrFun hY z]
+    rfl
+  have hfield1 : (fun z : ℝ => (c.unitTangent (fun _ => g) lambda z t).1) =
+      fun z : ℝ => (c₀.unitTangent (fun _ => g) lambda z t₀).1 := funext hUT
+  have hfield2 : (fun z : ℝ => (c.unitTangent (fun _ => g) lambda z t).2) =
+      fun z : ℝ => (c₀.unitTangent (fun _ => g) lambda z t₀).2 := funext hUT2
+  intro x
+  have hxM : (c.map (x : Surgery.Topology.Circle) t).1 =
+      (c₀.map (x : Surgery.Topology.Circle) t₀).1 :=
+    congrArg Prod.fst (hmap (x : Surgery.Topology.Circle))
+  simp only [ProductCurve.curvatureSq, ProductCurve.curvatureVector, ProductCurve.Ds,
+    ProductCurve.Dx, ProductCurve.normSq, ProductCurve.inner,
+    ProductCurve.projection, CurveMap.lift]
+  rw [hfield1, hfield2, hM, hxM, hspd x]
+  rfl
+
+omit [CompleteSpace E] [SigmaCompactSpace Q] hT2 hCompact hConnected hBoundary in
+private theorem productCurve_slice_curvature_eq (g : SmoothRiemannianMetric I Q) (lambda : ℝ)
+    (c c₀ : ProductCurve Q) (t t₀ : ℝ)
+    (hc : c.SmoothOn (I := I) {t}) (hc₀ : c₀.SmoothOn (I := I) {t₀})
+    (hmap : ∀ z, c.map z t = c₀.map z t₀) :
+    ∀ x, c.curvature (fun _ => g) lambda x t = c₀.curvature (fun _ => g) lambda x t₀ := by
+  intro x
+  rw [ProductCurve.curvature, ProductCurve.curvature]
+  exact congrArg Real.sqrt (productCurve_slice_curvatureSq_eq g lambda c c₀ t t₀ hc hc₀ hmap x)
+
+omit [FiniteDimensional ℝ E] [CompleteSpace E] [SigmaCompactSpace Q]
+  hT2 hCompact hConnected hBoundary in
+private theorem productCurve_slice_length_eq (g : SmoothRiemannianMetric I Q) (lambda : ℝ)
+    (c c₀ : ProductCurve Q) (t t₀ : ℝ)
+    (hc : c.SmoothOn (I := I) {t}) (hc₀ : c₀.SmoothOn (I := I) {t₀})
+    (hmap : ∀ z, c.map z t = c₀.map z t₀) :
+    c.length (fun _ => g) lambda t = c₀.length (fun _ => g) lambda t₀ := by
+  simp only [ProductCurve.length, ProductCurve.integral]
+  refine intervalIntegral.integral_congr (fun x _ => ?_)
+  rw [one_mul, one_mul, productCurve_slice_speed_eq g lambda c c₀ t t₀ hc hc₀ hmap x]
+
+omit [CompleteSpace E] [SigmaCompactSpace Q] hT2 hCompact hConnected hBoundary in
+private theorem productCurve_slice_totalCurvature_eq (g : SmoothRiemannianMetric I Q) (lambda : ℝ)
+    (c c₀ : ProductCurve Q) (t t₀ : ℝ)
+    (hc : c.SmoothOn (I := I) {t}) (hc₀ : c₀.SmoothOn (I := I) {t₀})
+    (hmap : ∀ z, c.map z t = c₀.map z t₀) :
+    c.totalCurvature (fun _ => g) lambda t = c₀.totalCurvature (fun _ => g) lambda t₀ := by
+  simp only [ProductCurve.totalCurvature, ProductCurve.integral]
+  refine intervalIntegral.integral_congr (fun x _ => ?_)
+  rw [productCurve_slice_curvature_eq g lambda c c₀ t t₀ hc hc₀ hmap x,
+    productCurve_slice_speed_eq g lambda c c₀ t t₀ hc hc₀ hmap x]
+
+omit [SigmaCompactSpace Q] hCompact hConnected hBoundary in
+theorem rfs_prepared_family_solution_initial_bounds
+    (B : RicciBackground (I := I) (M := Q) D a b) (lambda L₀ Theta₀ : ℝ)
+    (prepared : RegularFamily (I := I) (Q := Q) (Sphere 2))
+    (solutions : Sphere 2 → ProductCurve Q)
+    (hinitial : ∀ p, (initialRamp (prepared p).1).SmoothOn (I := I) {0} ∧
+      (initialRamp (prepared p).1).length (fun _ => B.family.metric a) lambda 0 ≤ L₀ ∧
+      (initialRamp (prepared p).1).totalCurvature (fun _ => B.family.metric a) lambda 0 ≤ Theta₀)
+    (hsol : ∀ p, (solutions p).IsSolutionOn B.family.metric lambda (Icc a b))
+    (hmap : ∀ p z, (solutions p).map z a = ((prepared p).1 z, z)) :
+    ∀ p, (solutions p).length B.family.metric lambda a ≤ L₀ ∧
+      (solutions p).totalCurvature B.family.metric lambda a ≤ Theta₀ := by
+  intro p
+  have haI : ({a} : Set ℝ) ⊆ Icc a b := by
+    intro x hx
+    rw [mem_singleton_iff] at hx
+    subst hx
+    exact ⟨le_rfl, B.lt.le⟩
+  have hs : (solutions p).SmoothOn (I := I) {a} :=
+    ⟨(hsol p).smooth.1.mono (Set.prod_mono Subset.rfl haI),
+      (hsol p).smooth.2.mono (Set.prod_mono Subset.rfl haI)⟩
+  have hmap' : ∀ z, (solutions p).map z a = (initialRamp ((prepared p).1)).map z 0 := by
+    intro z
+    rw [hmap p z]
+    rfl
+  have hlen := productCurve_slice_length_eq (B.family.metric a) lambda (solutions p)
+    (initialRamp ((prepared p).1)) a 0 hs (hinitial p).1 hmap'
+  have hcurv := productCurve_slice_totalCurvature_eq (B.family.metric a) lambda (solutions p)
+    (initialRamp ((prepared p).1)) a 0 hs (hinitial p).1 hmap'
+  have hlenβ : (solutions p).length (fun _ => B.family.metric a) lambda a =
+      (solutions p).length B.family.metric lambda a := rfl
+  have hcurvβ : (solutions p).totalCurvature (fun _ => B.family.metric a) lambda a =
+      (solutions p).totalCurvature B.family.metric lambda a := rfl
+  refine ⟨?_, ?_⟩
+  · rw [← hlenβ]
+    exact hlen.trans_le (hinitial p).2.1
+  · rw [← hcurvβ]
+    exact hcurv.trans_le (hinitial p).2.2
+
 end DifferentialGeometry.PDE.RicciFlow.Extinction.Families

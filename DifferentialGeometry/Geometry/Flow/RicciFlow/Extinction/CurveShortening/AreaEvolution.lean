@@ -803,6 +803,57 @@ theorem rfs_csf_area_error (B : RicciBackground (I := I) (M := M) D a b)
     simp [CurveMap.areaError, CurveMap.integral, CurveMap.normSq, hW]
 
 
+omit [CompleteSpace E] hBoundary hT2 hCompact hNonempty [SigmaCompactSpace M] in
+theorem continuousOn_areaError_of_smoothOn_curvatureVector {D : RealTimeInterval}
+    (g : ℝ → SmoothRiemannianMetric I M)
+    (hG : MetricFamilySmoothOn (I := I) (M := M) D g) {J : Set ℝ} (hJreg : J ⊆ D.regular)
+    (hJuniq : UniqueDiffOn ℝ J) (c : CurveMap M) (hc : c.SmoothOn (I := I) J)
+    (hi : c.ImmersedOn (I := I) J)
+    (hκ : CurveMap.Field.SmoothOn (I := I) (c.curvatureVector g) J)
+    (hab : a < b) (hJab : Icc a b ⊆ J) :
+    ContinuousOn (fun t => c.areaError g J t) (Icc a b) := by
+  have hv : CurveMap.Field.SmoothOn (I := I) (c.velocity (I := I) J) J :=
+    CurveMap.Field.smoothOn_velocity c hc hJuniq
+  have hW : CurveMap.Field.SmoothOn (I := I)
+      (fun x t => c.velocity (I := I) J x t - c.curvatureVector g x t) J :=
+    CurveMap.Field.smoothOn_sub hc _ _ hv hκ
+  have hT : CurveMap.Field.SmoothOn (I := I) (c.unitTangent g) J :=
+    CurveMap.Field.smoothOn_unitTangent g hG hJreg c hc hi
+  have hinner : ContDiffOn ℝ ∞ (fun p : ℝ × ℝ => (g p.2).inner (c.lift p.1 p.2)
+      (c.velocity (I := I) J p.1 p.2 - c.curvatureVector g p.1 p.2)
+      (c.unitTangent g p.1 p.2)) (univ ×ˢ J) :=
+    CurveMap.Field.smoothOn_inner g hG hJreg c hc _ _ hW hT
+  have hsmul : CurveMap.Field.SmoothOn (I := I)
+      (fun x t => ((g t).inner (c.lift x t)
+        (c.velocity (I := I) J x t - c.curvatureVector g x t)
+        (c.unitTangent g x t)) • c.unitTangent g x t) J :=
+    CurveMap.Field.smoothOn_const_smul c hc
+      (fun x t => (g t).inner (c.lift x t)
+        (c.velocity (I := I) J x t - c.curvatureVector g x t)
+        (c.unitTangent g x t)) hinner (c.unitTangent g) hT
+  have hNVE : CurveMap.Field.SmoothOn (I := I) (c.normalVelocityError g J) J :=
+    (CurveMap.Field.smoothOn_sub hc _ _ hW hsmul).congr fun p hp => by
+      simp only [CurveMap.normalVelocityError]
+  have hnorm : ContDiffOn ℝ ∞ (fun p : ℝ × ℝ =>
+      c.normSq g (c.normalVelocityError g J) p.1 p.2) (univ ×ˢ J) :=
+    CurveMap.Field.smoothOn_inner g hG hJreg c hc (c.normalVelocityError g J)
+      (c.normalVelocityError g J) hNVE hNVE
+  have hsqrt : ContinuousOn (fun p : ℝ × ℝ =>
+      Real.sqrt (c.normSq g (c.normalVelocityError g J) p.1 p.2)) (univ ×ˢ J) :=
+    hnorm.continuousOn.sqrt
+  have hspeed : ContinuousOn (fun p : ℝ × ℝ => c.speed g p.1 p.2) (univ ×ˢ J) :=
+    (CurveMap.Field.smoothOn_speed g hG hJreg c hc hi).continuousOn
+  have hint : ContinuousOn (fun p : ℝ × ℝ =>
+      Real.sqrt (c.normSq g (c.normalVelocityError g J) p.1 p.2) * c.speed g p.1 p.2)
+      (univ ×ˢ J) := hsqrt.mul hspeed
+  have hrect : ContinuousOn (fun p : ℝ × ℝ =>
+      Real.sqrt (c.normSq g (c.normalVelocityError g J) p.1 p.2) * c.speed g p.1 p.2)
+      (Icc (0 : ℝ) 1 ×ˢ Icc a b) :=
+    hint.mono (Set.prod_mono (subset_univ _) hJab)
+  simpa only [CurveMap.areaError, CurveMap.integral] using
+    continuousOn_intervalIntegral_of_continuousOn_rectangle hab.le hrect
+
+
 omit hBoundary hNonempty [SigmaCompactSpace M] in
 theorem rfs_csf_slope_le_of_window_comparison (B : RicciBackground (I := I) (M := M) D a b)
     (γ : ℝ → ContinuousFreeLoop M)

@@ -27,7 +27,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
 variable {N : Type*} [TopologicalSpace N] [ChartedSpace H N]
   [IsManifold I ∞ N]
 
-private theorem infty_ne_zero : (∞ : WithTop ℕ∞) ≠ 0 := by decide
+theorem infty_ne_zero : (∞ : WithTop ℕ∞) ≠ 0 := by decide
 
 noncomputable def localPushInner
     (g : SmoothRiemannianMetric I M) (f : M → N)
@@ -123,7 +123,7 @@ private theorem chosenPreimage_spec
     f (chosenPreimage hsurj y) = y :=
   Classical.choose_spec (hsurj y)
 
-private noncomputable def descendedInner
+noncomputable def descendedInner
     (g : SmoothRiemannianMetric I M) (f : M → N)
     (hf : IsLocalDiffeomorph I I ∞ f)
     (hsurj : Function.Surjective f) (y : N) :
@@ -132,7 +132,7 @@ private noncomputable def descendedInner
     localPushInner g f hf (chosenPreimage hsurj y)
 
 omit [FiniteDimensional Real E] [IsManifold I ∞ N] in
-private theorem descendedInner_eq_localPushInner
+theorem descendedInner_eq_localPushInner
     (g : SmoothRiemannianMetric I M) (f : M → N)
     (hf : IsLocalDiffeomorph I I ∞ f)
     (hsurj : Function.Surjective f)
@@ -142,7 +142,7 @@ private theorem descendedInner_eq_localPushInner
     (chosenPreimage_spec hsurj (f x))
 
 omit [FiniteDimensional Real E] [IsManifold I ∞ N] in
-private theorem descendedInner_eq_localPushInner_of_eq
+theorem descendedInner_eq_localPushInner_of_eq
     (g : SmoothRiemannianMetric I M) (f : M → N)
     (hf : IsLocalDiffeomorph I I ∞ f)
     (hsurj : Function.Surjective f)
@@ -153,7 +153,7 @@ private theorem descendedInner_eq_localPushInner_of_eq
   exact descendedInner_eq_localPushInner g f hf hsurj hcompat x
 
 omit [FiniteDimensional Real E] [IsManifold I ∞ N] in
-private theorem cast_localPushInner_apply
+theorem cast_localPushInner_apply
     (g : SmoothRiemannianMetric I M) (f : M → N)
     (hf : IsLocalDiffeomorph I I ∞ f)
     (x : M) (y : N) (hxy : f x = y)
@@ -296,14 +296,14 @@ private theorem descendedInner_pos
   apply g.pos
   exact (hf.mfderivToContinuousLinearEquiv infty_ne_zero x).symm.map_ne_zero_iff.mpr ha
 
-private noncomputable def tangentOpenEquiv
+noncomputable def tangentOpenEquiv
     (U : Opens N) (x : U) :
     TangentSpace I (x : N) ≃L[Real] TangentSpace I x :=
   (tangentSpaceModelContinuousLinearEquiv (I := I) (x : N)).trans
     (tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
 
 omit [FiniteDimensional Real E] [IsManifold I ∞ N] in
-private theorem mfderiv_subtype_val_tangentOpenEquiv
+theorem mfderiv_subtype_val_tangentOpenEquiv
     (U : Opens N) (x : U) (v : TangentSpace I (x : N)) :
     mfderiv I I (Subtype.val : U → N) x (tangentOpenEquiv U x v) = v := by
   rw [mfderiv_subtype_val_apply]
@@ -315,7 +315,7 @@ private theorem mfderiv_subtype_val_tangentOpenEquiv
   rw [tangentSpaceModelContinuousLinearEquiv_symm_apply]
   exact tangentSpaceModelContinuousLinearEquiv_apply (I := I) (x : N) v
 
-private structure LocalSection
+structure LocalSection
     (I : ModelWithCorners Real E H)
     (f : M → N) (y : N) where
   U : Opens N
@@ -324,7 +324,7 @@ private structure LocalSection
   mem : y ∈ U
   isSec : ∀ z : U, f ((s z : V) : M) = (z : N)
 
-private noncomputable def LocalSection.ofLocal
+noncomputable def LocalSection.ofLocal
     (f : M → N) (hf : IsLocalDiffeomorph I I ∞ f)
     (hsurj : Function.Surjective f) (y : N) : LocalSection I f y := by
   let x := chosenPreimage hsurj y
@@ -354,14 +354,14 @@ namespace LocalSection
 
 variable {f : M → N} {y : N} (S : LocalSection I f y)
 
-private def toSource : S.U → M := fun z => ((S.s z : S.V) : M)
+def toSource : S.U → M := fun z => ((S.s z : S.V) : M)
 
 omit [FiniteDimensional Real E] [IsManifold I ∞ M] [IsManifold I ∞ N] in
-private theorem toSource_contMDiff : ContMDiff I I ∞ S.toSource := by
+theorem toSource_contMDiff : ContMDiff I I ∞ S.toSource := by
   exact (contMDiff_subtype_val (I := I)).comp S.s.contMDiff
 
 omit [FiniteDimensional Real E] [IsManifold I ∞ M] [IsManifold I ∞ N] in
-private theorem mfderiv_toSource_apply
+theorem mfderiv_toSource_apply
     (z : S.U) (v : TangentSpace I z) :
     mfderiv I I S.toSource z v = mfderiv I I S.s z v := by
   have hval : MDifferentiableAt I I
@@ -373,7 +373,7 @@ private theorem mfderiv_toSource_apply
     mfderiv_comp_apply z hval hs v, mfderiv_subtype_val_apply]
 
 omit [FiniteDimensional Real E] [IsManifold I ∞ M] [IsManifold I ∞ N] in
-private theorem dproj_sec
+theorem dproj_sec
     (hf : IsLocalDiffeomorph I I ∞ f) (z : S.U) :
     (mfderiv I I f (S.toSource z)).comp (mfderiv I I S.toSource z) =
       mfderiv I I (Subtype.val : S.U → N) z := by
@@ -387,7 +387,7 @@ private theorem dproj_sec
   exact hcomp.symm
 
 omit [FiniteDimensional Real E] [IsManifold I ∞ M] [IsManifold I ∞ N] in
-private theorem inverse_mfderiv_eq
+theorem inverse_mfderiv_eq
     (hf : IsLocalDiffeomorph I I ∞ f) (z : S.U)
     (hsec : f (S.toSource z) = (z : N))
     (v : TangentSpace I (z : N)) :
@@ -422,7 +422,7 @@ private theorem inverse_mfderiv_eq
   rw [heq]
   exact (cast_tangent_eq_of_heq hsec _ _ (heq_of_eq hright)).symm
 
-private theorem pullback_inner_eval
+theorem pullback_inner_eval
     [T2Space M] [T2Space N]
     (g : SmoothRiemannianMetric I M) (z : S.U)
     (v w : TangentSpace I z) :
@@ -436,7 +436,7 @@ private theorem pullback_inner_eval
     S.mfderiv_toSource_apply, S.mfderiv_toSource_apply]
   rfl
 
-private theorem descendedInner_locally_eq
+theorem descendedInner_locally_eq
     [T2Space M] [T2Space N]
     (g : SmoothRiemannianMetric I M)
     (hf : IsLocalDiffeomorph I I ∞ f)

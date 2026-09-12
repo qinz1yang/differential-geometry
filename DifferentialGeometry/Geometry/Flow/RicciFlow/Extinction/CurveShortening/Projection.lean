@@ -86,6 +86,80 @@ theorem angle_eq (x t : ℝ) :
   · field_simp
     ring
 
+omit [TopologicalSpace M] [CompleteSpace E] in
+theorem deriv_y_add_period (t x : ℝ) :
+    deriv (fun z => c.y z t) (x + 1) = deriv (fun z => c.y z t) x := by
+  rw [← deriv_comp_add_const (f := fun z => c.y z t) (a := 1) (x := x)]
+  have h : (fun z => c.y (z + 1) t) = fun z => c.y z t + c.degree := by
+    funext z
+    rw [c.increment]
+  rw [h, deriv_add_const]
+
+omit [FiniteDimensional ℝ E] [CompleteSpace E] in
+theorem speed_add_period {J : Set ℝ} (hc : c.SmoothOn (I := I) J)
+    (t : ℝ) (ht : t ∈ J) (x : ℝ) :
+    c.speed g lambda (x + 1) t = c.speed g lambda x t := by
+  have hl : c.projection.lift (x + 1) t = c.projection.lift x t :=
+    CurveMap.lift_add_period c.projection t x
+  have hγ : MDifferentiableAt 𝓘(ℝ, ℝ) I (fun z : ℝ => c.projection.lift z t) (x + 1) :=
+    (contMDiffOn_univ.mp (CurveMap.space_slice_contMDiffOn c.projection J hc.1 t ht)).mdifferentiableAt
+      (by simp)
+  have hX : c.projection.X (I := I) (x + 1) t = c.projection.X (I := I) x t :=
+    CurveMap.X_add_period c.projection t x hγ
+  have hy : deriv (fun z => c.y z t) (x + 1) = deriv (fun z => c.y z t) x :=
+    deriv_y_add_period c t x
+  simp only [ProductCurve.speed, ProductCurve.inner, ProductCurve.X]
+  rw [hl, hX, hy]
+
+omit [FiniteDimensional ℝ E] [CompleteSpace E] in
+theorem angle_add_period {J : Set ℝ} (hc : c.SmoothOn (I := I) J)
+    (t : ℝ) (ht : t ∈ J) (x : ℝ) :
+    c.angle g lambda (x + 1) t = c.angle g lambda x t := by
+  rw [ProductCurve.angle_eq, ProductCurve.angle_eq, speed_add_period c g lambda hc t ht x,
+    deriv_y_add_period c t x]
+
+omit [FiniteDimensional ℝ E] [CompleteSpace E] in
+theorem angle_mul_speed_periodic {J : Set ℝ} (hc : c.SmoothOn (I := I) J)
+    (t : ℝ) (ht : t ∈ J) :
+    Function.Periodic (fun x => c.angle g lambda x t * c.speed g lambda x t) 1 := by
+  intro x
+  simp only [angle_add_period c g lambda hc t ht x, speed_add_period c g lambda hc t ht x]
+
+omit [CompleteSpace E] in
+theorem abs_ds_angle_le_curvature (x t : ℝ) :
+    |c.ds g lambda (c.angle g lambda) x t| ≤ c.curvature g lambda x t := by
+  have hcv2 : (c.curvatureVector g lambda x t).2 =
+      (c.speed g lambda x t)⁻¹ *
+        deriv (fun z => (c.speed g lambda z t)⁻¹ * deriv (fun w => c.y w t) z) x := by
+    simp only [ProductCurve.curvatureVector, ProductCurve.Ds, ProductCurve.Dx,
+      ProductCurve.unitTangent, ProductCurve.X, Prod.smul_snd, smul_eq_mul]
+  have hle : lambda ^ 2 * ((c.curvatureVector g lambda x t).2 *
+      (c.curvatureVector g lambda x t).2) ≤ c.curvatureSq g lambda x t := by
+    have hnn := DifferentialGeometry.metric_inner_self_nonneg (g t) (c.projection.lift x t)
+      ((c.curvatureVector g lambda x t).1)
+    simp only [ProductCurve.curvatureSq, ProductCurve.normSq, ProductCurve.inner]
+    nlinarith [hnn]
+  have hsqrt : |lambda * (c.curvatureVector g lambda x t).2| ≤ c.curvature g lambda x t := by
+    rw [ProductCurve.curvature, ← Real.sqrt_sq_eq_abs]
+    refine Real.sqrt_le_sqrt ?_
+    calc (lambda * (c.curvatureVector g lambda x t).2) ^ 2
+        = lambda ^ 2 * ((c.curvatureVector g lambda x t).2 *
+            (c.curvatureVector g lambda x t).2) := by ring
+      _ ≤ c.curvatureSq g lambda x t := hle
+  have hangle : (fun z => c.angle g lambda z t) =
+      fun z => lambda * ((c.speed g lambda z t)⁻¹ * deriv (fun w => c.y w t) z) := by
+    funext z
+    rw [ProductCurve.angle_eq, mul_assoc]
+  rw [ProductCurve.ds, hangle, deriv_const_mul_field]
+  have hprod : (c.speed g lambda x t)⁻¹ *
+      (lambda * deriv (fun z => (c.speed g lambda z t)⁻¹ *
+        deriv (fun w => c.y w t) z) x) =
+      lambda * ((c.speed g lambda x t)⁻¹ *
+        deriv (fun z => (c.speed g lambda z t)⁻¹ * deriv (fun w => c.y w t) z) x) := by
+    ring
+  rw [hprod, ← hcv2]
+  exact hsqrt
+
 omit [FiniteDimensional ℝ E] [CompleteSpace E] in
 theorem projection_speed_eq {J : Set ℝ} (hlambda : 0 < lambda)
     (hi : c.projection.ImmersedOn (I := I) J) (x t : ℝ) (ht : t ∈ J) :
@@ -729,13 +803,63 @@ theorem rfs_csf_swept_annulus (B : RicciBackground (I := I) (M := M) D a b)
         ∫ v in s..t, (curveOfLoopFamily γ).sweptDensity B.family.metric (Icc a b) v) := by
   sorry
 
+omit hCompact hNonempty in
 theorem projected_sweptDensity_le_totalCurvature
     (B : RicciBackground (I := I) (M := M) D a b) (lambda : ℝ) (hlambda : 0 < lambda)
     (c : ProductCurve M) (hc : c.IsSolutionOn B.family.metric lambda (Icc a b))
+    (hi : c.projection.ImmersedOn (I := I) (Icc a b))
     (t : ℝ) (ht : t ∈ Icc a b) :
     c.projection.sweptDensity B.family.metric (Icc a b) t ≤
       c.totalCurvature B.family.metric lambda t := by
-  sorry
+  have hpoint : ∀ x, Real.sqrt (c.projection.normSq B.family.metric
+        (c.projection.velocity (I := I) (Icc a b)) x t) *
+          c.projection.speed B.family.metric x t ≤
+      c.curvature B.family.metric lambda x t * c.speed B.family.metric lambda x t := by
+    intro x
+    have hvel : c.projection.velocity (I := I) (Icc a b) x t =
+        (c.curvatureVector B.family.metric lambda x t).1 := by
+      rw [← hc.equation x t ht]
+      rfl
+    have hnorm : c.projection.normSq B.family.metric
+        (c.projection.velocity (I := I) (Icc a b)) x t =
+        (B.family.metric t).inner (c.projection.lift x t)
+          (c.curvatureVector B.family.metric lambda x t).1
+          (c.curvatureVector B.family.metric lambda x t).1 := by
+      simp only [CurveMap.normSq, hvel]
+    have hle : c.projection.normSq B.family.metric
+        (c.projection.velocity (I := I) (Icc a b)) x t ≤
+        c.curvatureSq B.family.metric lambda x t := by
+      rw [hnorm, ProductCurve.curvatureSq, ProductCurve.normSq, ProductCurve.inner]
+      nlinarith [sq_nonneg (lambda * (c.curvatureVector B.family.metric lambda x t).2)]
+    have hcurv : Real.sqrt (c.projection.normSq B.family.metric
+        (c.projection.velocity (I := I) (Icc a b)) x t) ≤
+        c.curvature B.family.metric lambda x t := by
+      simpa only [ProductCurve.curvature] using Real.sqrt_le_sqrt hle
+    have hspeed : c.projection.speed B.family.metric x t ≤
+        c.speed B.family.metric lambda x t := by
+      have h2 : c.projection.speed B.family.metric x t ^ 2 ≤
+          c.speed B.family.metric lambda x t ^ 2 := by
+        rw [ProductCurve.speed_sq_add c B.family.metric lambda x t]
+        nlinarith [sq_nonneg (lambda * deriv (fun z => c.y z t) x)]
+      simpa only [Real.sqrt_sq (c.projection.speed_nonneg B.family.metric x t),
+        Real.sqrt_sq (c.speed_nonneg B.family.metric lambda x t)] using
+        Real.sqrt_le_sqrt h2
+    exact mul_le_mul hcurv hspeed (c.projection.speed_nonneg B.family.metric x t)
+      (ProductCurve.curvature_nonneg c B.family.metric lambda x t)
+  have hint : IntegrableOn (fun x => c.curvature B.family.metric lambda x t *
+      c.speed B.family.metric lambda x t) (Ioc (0 : ℝ) 1) volume :=
+    (ProductCurve.curvature_mul_speed_integrable c B.family.metric lambda hlambda
+      hc hi t ht).1
+  have hnn : 0 ≤ᵐ[volume.restrict (Ioc (0 : ℝ) 1)]
+      (fun x => Real.sqrt (c.projection.normSq B.family.metric
+        (c.projection.velocity (I := I) (Icc a b)) x t) *
+        c.projection.speed B.family.metric x t) :=
+    ae_of_all _ (fun x => mul_nonneg (Real.sqrt_nonneg _)
+      (c.projection.speed_nonneg B.family.metric x t))
+  have hle := MeasureTheory.integral_mono_of_nonneg hnn hint (ae_of_all _ hpoint)
+  simpa only [CurveMap.sweptDensity, CurveMap.integral, ProductCurve.totalCurvature,
+    ProductCurve.integral,
+    intervalIntegral.integral_of_le zero_le_one] using hle
 
 omit hT2 hCompact hNonempty hBoundary in
 theorem exp_increment_le (k h delta : ℝ) (hk : 0 ≤ k) (hh : 0 ≤ h) (hdelta : h ≤ delta) :

@@ -107,4 +107,24 @@ theorem exists_unique_fundamentalClass_of_local_realization (o : TangentOrientat
   exists_unique_fundamentalClass_of_exists o
     (exists_fundamentalClass_of_local_realization_at o hprop x₀ h) ⟨x₀, hinj⟩
 
+omit [ConnectedSpace M] in
+theorem exists_unique_fundamentalClass_of_exists_of_subsingleton [T2Space M] [CompactSpace M]
+    (o : TangentOrientationSection M) (x : M)
+    (h : ∃ z : IntegralHomology M 3, ∀ y : M,
+      absoluteToRelative M ({y}ᶜ) 3 z = localOrientationClass o y)
+    (hsub : Subsingleton (IntegralHomology ({x}ᶜ : Set M) 3)) :
+    ∃! z : IntegralHomology M 3, ∀ y : M,
+      absoluteToRelative M ({y}ᶜ) 3 z = localOrientationClass o y :=
+  exists_unique_fundamentalClass_of_exists o h
+    ⟨x, absoluteToRelative_compl_singleton_injective_of_subsingleton x hsub⟩
+
+omit [ConnectedSpace M] in
+theorem fundamentalClass_generator_of_subsingleton [T2Space M] [CompactSpace M]
+    (o : TangentOrientationSection M) (x : M)
+    (hlocal : Function.Bijective (fun z : ℤ => z • localOrientationClass o x))
+    (hsub : Subsingleton (IntegralHomology ({x}ᶜ : Set M) 3)) :
+    Function.Bijective (fun z : ℤ => z • fundamentalClass o) :=
+  fundamentalClass_generator_of o x hlocal
+    (absoluteToRelative_compl_singleton_injective_of_subsingleton x hsub)
+
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology

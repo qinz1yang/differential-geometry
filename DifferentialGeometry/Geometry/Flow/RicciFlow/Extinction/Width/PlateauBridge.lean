@@ -4,6 +4,8 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.PlateauClas
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.MorreyDisk
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.SmoothExtension
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.DiskLocality
+import DifferentialGeometry.Geometry.MinimalSurface.Plateau.DiskTensionSmoothness
+import DifferentialGeometry.Geometry.MinimalSurface.Plateau.SmoothDensity
 
 noncomputable section
 open Bundle Manifold Set MeasureTheory Filter Topology DifferentialGeometry
@@ -163,6 +165,59 @@ theorem SmoothDisk.isHarmonic_of_diskMapTension_eq_zero_interior
     diskLocalTension_eq_diskMapTension]
   exact h z hz
 
+omit [FiniteDimensional ℝ E] in
+theorem SmoothDisk.isConformal_of_diskMapConformalAt_on_ball
+    (w : SmoothDisk (I := 𝓘(ℝ, E)) (Q := Q)) (g : SmoothRiemannianMetric 𝓘(ℝ, E) Q)
+    {U : ℂ → Q} (h : Geometry.SmoothDiskExtension (E := E) w.map U)
+    (hball : ∀ z ∈ Metric.ball (0 : ℂ) 1, Geometry.DiskMapConformalAt g U z) :
+    w.IsConformal g := by
+  obtain ⟨heq, N, hN, hDN, hU⟩ := h
+  exact (SmoothDisk.isConformal_iff_diskMapConformalAt w g ⟨heq, N, hN, hDN, hU⟩).mpr
+    (Geometry.diskMapConformalAt_of_ball g hN hU hDN hball)
+
+theorem SmoothDisk.isHarmonic_of_diskMapTension_eq_zero_on_ball
+    (w : SmoothDisk (I := 𝓘(ℝ, E)) (Q := Q)) (g : SmoothRiemannianMetric 𝓘(ℝ, E) Q)
+    {U : ℂ → Q} (h : Geometry.SmoothDiskExtension (E := E) w.map U)
+    (hball : ∀ z ∈ Metric.ball (0 : ℂ) 1, (Geometry.diskMapTension g U z : E) = 0) :
+    w.IsHarmonic g := by
+  obtain ⟨heq, N, hN, hDN, hU⟩ := h
+  intro z F
+  have hgermU (w' : ℂ) (hw' : w' ∈ Metric.ball (0 : ℂ) 1) :
+      U =ᶠ[𝓝 w'] diskExtension (⇑w.map) := by
+    filter_upwards [Metric.isOpen_ball.mem_nhds hw'] with y hy
+    have hyb : y ∈ Metric.closedBall (0 : ℂ) 1 := Metric.ball_subset_closedBall hy
+    rw [diskExtension_coe w.map ⟨y, hyb⟩]
+    exact heq ⟨y, hyb⟩
+  have hgermF (w' : ℂ) (hw' : w' ∈ Metric.ball (0 : ℂ) 1)
+      (hwd : w' ∈ F.domain) : F.map =ᶠ[𝓝 w'] diskExtension (⇑w.map) := by
+    filter_upwards [F.isOpen_domain.mem_nhds hwd,
+      Filter.mem_of_superset (Metric.isOpen_ball.mem_nhds hw') Metric.ball_subset_closedBall]
+      with y hyd hyb
+    exact F.agrees ⟨hyd, hyb⟩
+  have hcase : (z : ℂ) ∈ Metric.ball (0 : ℂ) 1 ∨ (z : ℂ) ∈ closure (Metric.ball (0 : ℂ) 1) := by
+    by_cases hz : (z : ℂ) ∈ Metric.ball (0 : ℂ) 1
+    · exact Or.inl hz
+    · refine Or.inr ?_
+      rw [closure_ball (0 : ℂ) (by norm_num : (1 : ℝ) ≠ 0)]
+      exact z.property
+  rcases hcase with hz | hz
+  · have h1 : (Geometry.diskMapTension g F.map (z : ℂ) : E)
+        = (Geometry.diskMapTension g U (z : ℂ) : E) :=
+      (Geometry.diskMapTension_congr_of_eventuallyEq g (hgermF _ hz F.mem_domain)).trans
+        (Geometry.diskMapTension_congr_of_eventuallyEq g (hgermU _ hz)).symm
+    rw [diskLocalTension_eq_diskMapTension]
+    exact h1.trans (hball _ hz)
+  · have hzero : (Geometry.diskMapTension g F.map (z : ℂ) : E) = 0 :=
+      Geometry.diskMapTension_eq_zero_of_mem_closure_ball g F.isOpen_domain F.smooth
+        F.mem_domain hz (fun w' hw' hwd => by
+          have h1 : (Geometry.diskMapTension g F.map w' : E)
+              = (Geometry.diskMapTension g U w' : E) :=
+            (Geometry.diskMapTension_congr_of_eventuallyEq g (hgermF _ hw' hwd)).trans
+              (Geometry.diskMapTension_congr_of_eventuallyEq g (hgermU _ hw')).symm
+          exact h1.trans (hball _ hw'))
+    rw [diskLocalTension_eq_diskMapTension]
+    exact hzero
+
 end StandardModel
 
 section Trace
@@ -264,6 +319,37 @@ theorem diskArea_eq_riemannianDiskArea_of_diskCompetitor
     (v : DiskCompetitor g γ) :
     diskArea g v.1.map = Geometry.riemannianDiskArea g v.1.map :=
   diskArea_eq_riemannianDiskArea g v.1.map
+
+section StandardDensity
+
+variable [CompactSpace Q] [T3Space Q]
+
+theorem smooth_exact_disk_density_stdModel
+    (g : SmoothRiemannianMetric 𝓘(ℝ, E) Q) (γ : RegularLoop 𝓘(ℝ, E) Q)
+    (hγ : ContMDiff 𝓘(ℝ, ℝ) 𝓘(ℝ, E) ∞ (loopLift γ.toContinuousLoop))
+    (v : DiskCompetitor g γ.toContinuousLoop) :
+    ∃ w : ℕ → SmoothDisk (I := 𝓘(ℝ, E)) (Q := Q),
+      (∀ j θ, (w j).map (diskBoundary θ) = γ θ) ∧
+      Filter.Tendsto (fun j => diskArea g (w j).map) Filter.atTop (𝓝 (diskArea g v.1.map)) := by
+  have hv : v.1.map ∈ Geometry.spanningDiskCompetitors g γ.toContinuousLoop :=
+    mem_spanningDiskCompetitors_of_diskCompetitor g γ.toContinuousLoop v
+  obtain ⟨vj, Uj, hdata, htend⟩ :=
+    Geometry.exists_smooth_spanning_disks_smooth_extension_tendsto_area g hγ hv
+  refine ⟨fun j => smoothDisk_of_smoothDiskExtension (E := E) (hdata j).1, ?_, ?_⟩
+  · intro j θ
+    have h1 : (smoothDisk_of_smoothDiskExtension (E := E) (hdata j).1).map = vj j := rfl
+    rw [h1]
+    exact (diskTrace_eq_iff (vj j) γ.toContinuousLoop).mp (hdata j).2 θ
+  · have hfun : (fun j => diskArea g
+        (smoothDisk_of_smoothDiskExtension (E := E) (hdata j).1).map) =
+        fun j => Geometry.riemannianDiskArea g (vj j) := by
+      funext j
+      rw [diskArea_eq_riemannianDiskArea]
+      rfl
+    rw [hfun, diskArea_eq_riemannianDiskArea g v.1.map]
+    exact htend
+
+end StandardDensity
 
 end Competitors
 

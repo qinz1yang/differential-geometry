@@ -41,6 +41,67 @@ theorem smooth_critical_values_null {m n : ℕ}
       exact hx.2 ((LinearMap.injective_iff_surjective).mp (LinearMap.ker_eq_bot.mp hker))
   · sorry
 
+private theorem surjective_comp_comp_iff_of_isInvertible {V₁ V₂ V₃ : Type*}
+    [AddCommGroup V₁] [Module ℝ V₁] [TopologicalSpace V₁]
+    [AddCommGroup V₂] [Module ℝ V₂] [TopologicalSpace V₂]
+    [AddCommGroup V₃] [Module ℝ V₃] [TopologicalSpace V₃]
+    {A : V₂ →L[ℝ] V₃} (hA : A.IsInvertible) {L : V₁ →L[ℝ] V₂} {B : V₁ →L[ℝ] V₁}
+    (hB : B.IsInvertible) :
+    Function.Surjective (A.comp (L.comp B)) ↔ Function.Surjective L := by
+  constructor
+  · intro h u
+    obtain ⟨w, hw⟩ := h (A u)
+    exact ⟨B w, hA.injective (by simpa only [ContinuousLinearMap.comp_apply] using hw)⟩
+  · intro h v
+    obtain ⟨w, hw⟩ := h (A.inverse v)
+    refine ⟨B.inverse w, ?_⟩
+    simp only [ContinuousLinearMap.comp_apply]
+    rw [hB.self_apply_inverse, hw, hA.self_apply_inverse]
+
+private theorem surjective_of_comp_continuousLinearEquiv {E₁ E₂ G : Type*}
+    [NormedAddCommGroup E₁] [NormedSpace ℝ E₁] [NormedAddCommGroup E₂] [NormedSpace ℝ E₂]
+    [NormedAddCommGroup G] [NormedSpace ℝ G]
+    {f : E₁ → G} {x : E₁} (e : E₂ ≃L[ℝ] E₁) (hf : DifferentiableAt ℝ f x) :
+    Function.Surjective (fderiv ℝ (fun z : E₂ => f (e z)) (e.symm x)) →
+      Function.Surjective (fderiv ℝ f x) := by
+  intro h
+  have hf' : DifferentiableAt ℝ f (e (e.symm x)) := by rwa [e.apply_symm_apply]
+  have hchain : fderiv ℝ (fun z : E₂ => f (e z)) (e.symm x) =
+      (fderiv ℝ f x).comp (e : E₂ →L[ℝ] E₁) := by
+    rw [← Function.comp_def]
+    rw [fderiv_comp (e.symm x) hf' e.differentiableAt]
+    rw [ContinuousLinearEquiv.fderiv]
+    rw [e.apply_symm_apply]
+  rw [hchain] at h
+  exact Function.Surjective.of_comp (f := ⇑(fderiv ℝ f x)) (g := ⇑e) h
+
+private theorem volume_image_not_surjective_fderiv_eq_zero {E : Type*} [NormedAddCommGroup E]
+    [NormedSpace ℝ E] [FiniteDimensional ℝ E] [CompleteSpace E]
+    (n : ℕ) {F : E → EuclideanSpace ℝ (Fin n)} {U : Set E} (hU : IsOpen U)
+    (hF : ContDiffOn ℝ ∞ F U) :
+    volume (F '' {x | x ∈ U ∧ ¬Function.Surjective (fderiv ℝ F x)}) = 0 := by
+  let e : E ≃L[ℝ] EuclideanSpace ℝ (Fin (Module.finrank ℝ E)) :=
+    ContinuousLinearEquiv.ofFinrankEq (by rw [finrank_euclideanSpace_fin])
+  have hU' : IsOpen (e '' U) := e.isOpenMap U hU
+  have hsymm : ContDiffOn ℝ ∞ (fun z : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)) => e.symm z)
+      (e '' U) := (e.symm.contDiff).contDiffOn
+  have hmaps : MapsTo (fun z : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)) => e.symm z)
+      (e '' U) U := by
+    rintro z ⟨y, hy, rfl⟩
+    simpa only [e.symm_apply_apply] using hy
+  have hG : ContDiffOn ℝ ∞ (fun z : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)) => F (e.symm z))
+      (e '' U) := hF.comp hsymm hmaps
+  have hkey : ∀ x ∈ U, ¬ Function.Surjective (fderiv ℝ F x) →
+      ¬ Function.Surjective (fderiv ℝ (fun z : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)) =>
+        F (e.symm z)) (e x)) := by
+    intro x hxU hxns hsurj
+    exact hxns (surjective_of_comp_continuousLinearEquiv e.symm
+      ((hF.differentiableOn (by norm_num)).differentiableAt (hU.mem_nhds hxU)) hsurj)
+  refine measure_mono_null ?_ (smooth_critical_values_null (m := Module.finrank ℝ E)
+    (F := fun z : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)) => F (e.symm z)) (e '' U) hU' hG)
+  rintro z ⟨x, hx, rfl⟩
+  exact ⟨e x, ⟨⟨x, hx.1, rfl⟩, hkey x hx.1 hx.2⟩, by simp only [e.symm_apply_apply]⟩
+
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
     [FiniteDimensional ℝ E] [CompleteSpace E]
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
@@ -82,6 +143,96 @@ theorem local_immersion_gauss [I.Boundaryless] [T2Space M]
       g.inner (F x) (immersionSecondFundamental U F g h x X Z)
         (immersionSecondFundamental U F g h x Y W) := by
   sorry
+
+private theorem surjective_mfderiv_congr_point
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+    {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
+    {n : ℕ} {H' : Type*} [TopologicalSpace H']
+    {J : ModelWithCorners ℝ (EuclideanSpace ℝ (Fin n)) H'}
+    {N : Type*} [TopologicalSpace N] [ChartedSpace H' N]
+    {F : M → N} {x x' : M} (h : x' = x) :
+    Function.Surjective ((mfderiv I J F x') : E →L[ℝ] EuclideanSpace ℝ (Fin n)) ↔
+      Function.Surjective ((mfderiv I J F x) : E →L[ℝ] EuclideanSpace ℝ (Fin n)) := by
+  subst h
+  rfl
+
+private theorem chartRep_surjective_iff
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
+    {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+    {n : ℕ} {H' : Type*} [TopologicalSpace H']
+    {J : ModelWithCorners ℝ (EuclideanSpace ℝ (Fin n)) H'}
+    {N : Type*} [TopologicalSpace N] [ChartedSpace H' N] [IsManifold J ∞ N]
+    {F : M → N} {p : M} {q : N} {x : M}
+    (hxp : x ∈ (chartAt H p).source) (hFxq : F x ∈ (chartAt H' q).source)
+    (hF : MDifferentiableAt I J F x) :
+    Function.Surjective ((fderiv ℝ
+        (fun y : E => extChartAt J q (F ((extChartAt I p).symm y))) (extChartAt I p x)) :
+        E →L[ℝ] EuclideanSpace ℝ (Fin n)) ↔
+      Function.Surjective ((mfderiv I J F ((extChartAt I p).symm (extChartAt I p x))) :
+        E →L[ℝ] EuclideanSpace ℝ (Fin n)) := by
+  have hxE : x ∈ (extChartAt I p).source := by rw [extChartAt_source]; exact hxp
+  have hyT : extChartAt I p x ∈ (extChartAt I p).target := (extChartAt I p).map_source hxE
+  have hFxE : F x ∈ (extChartAt J q).source := by rw [extChartAt_source]; exact hFxq
+  have hFyE : F ((extChartAt I p).symm (extChartAt I p x)) ∈ (extChartAt J q).source := by
+    rw [(extChartAt I p).left_inv hxE]; exact hFxE
+  have hφdiff : MDifferentiableAt 𝓘(ℝ, E) I (extChartAt I p).symm (extChartAt I p x) := by
+    have h := mdifferentiableWithinAt_extChartAt_symm (I := I) (x := p) hyT
+    rw [I.range_eq_univ] at h
+    exact mdifferentiableWithinAt_univ.mp h
+  have hF' : MDifferentiableAt I J F ((extChartAt I p).symm (extChartAt I p x)) := by
+    rw [(extChartAt I p).left_inv hxE]
+    exact hF
+  have hqdiff : MDifferentiableAt J 𝓘(ℝ, EuclideanSpace ℝ (Fin n)) (extChartAt J q)
+      (F ((extChartAt I p).symm (extChartAt I p x))) := by
+    simpa only [(extChartAt I p).left_inv hxE] using
+      (mdifferentiableAt_extChartAt (I := J) (x := q) hFxq)
+  have hA : (mfderiv% (extChartAt J q)
+      (F ((extChartAt I p).symm (extChartAt I p x)))).IsInvertible :=
+    isInvertible_mfderiv_extChartAt (I := J) (x := q) hFyE
+  have hB : (mfderiv% (extChartAt I p).symm (extChartAt I p x)).IsInvertible := by
+    have h := isInvertible_mfderivWithin_extChartAt_symm (I := I) (x := p) hyT
+    rwa [I.range_eq_univ, mfderivWithin_univ] at h
+  have hcomp1 : HasMFDerivAt 𝓘(ℝ, E) J
+      (fun y : E => F ((extChartAt I p).symm y)) (extChartAt I p x)
+      (mfderiv% F ((extChartAt I p).symm (extChartAt I p x)) ∘SL
+        mfderiv% (extChartAt I p).symm (extChartAt I p x)) :=
+    HasMFDerivAt.comp (extChartAt I p x) hF'.hasMFDerivAt hφdiff.hasMFDerivAt
+  have hcomp2 : HasMFDerivAt 𝓘(ℝ, E) 𝓘(ℝ, EuclideanSpace ℝ (Fin n))
+      (fun y : E => extChartAt J q (F ((extChartAt I p).symm y))) (extChartAt I p x)
+      (mfderiv% (extChartAt J q) (F ((extChartAt I p).symm (extChartAt I p x))) ∘SL
+        (mfderiv% F ((extChartAt I p).symm (extChartAt I p x)) ∘SL
+          mfderiv% (extChartAt I p).symm (extChartAt I p x))) :=
+    HasMFDerivAt.comp (extChartAt I p x) hqdiff.hasMFDerivAt hcomp1
+  have hfd : ((fderiv ℝ (fun y : E => extChartAt J q (F ((extChartAt I p).symm y)))
+        (extChartAt I p x)) : E →L[ℝ] EuclideanSpace ℝ (Fin n)) =
+      ((mfderiv% (extChartAt J q) (F ((extChartAt I p).symm (extChartAt I p x))) ∘SL
+        (mfderiv% F ((extChartAt I p).symm (extChartAt I p x)) ∘SL
+          mfderiv% (extChartAt I p).symm (extChartAt I p x))) :
+        E →L[ℝ] EuclideanSpace ℝ (Fin n)) := by
+    rw [← mfderiv_eq_fderiv]
+    exact hcomp2.mfderiv
+  rw [hfd]
+  exact surjective_comp_comp_iff_of_isInvertible hA hB
+
+private theorem not_surjective_fderiv_chartRep
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
+    {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+    {n : ℕ} {H' : Type*} [TopologicalSpace H']
+    {J : ModelWithCorners ℝ (EuclideanSpace ℝ (Fin n)) H'}
+    {N : Type*} [TopologicalSpace N] [ChartedSpace H' N] [IsManifold J ∞ N]
+    {F : M → N} {p : M} {q : N} {x : M}
+    (hxp : x ∈ (chartAt H p).source) (hFxq : F x ∈ (chartAt H' q).source)
+    (hF : MDifferentiableAt I J F x) :
+    ¬ Function.Surjective (mfderiv I J F x) →
+      ¬ Function.Surjective (fderiv ℝ
+        (fun y : E => extChartAt J q (F ((extChartAt I p).symm y))) (extChartAt I p x)) := by
+  intro hns hsurj
+  have hxE : x ∈ (extChartAt I p).source := by rw [extChartAt_source]; exact hxp
+  exact hns (((chartRep_surjective_iff hxp hFxq hF).trans
+    (surjective_mfderiv_congr_point ((extChartAt I p).left_inv hxE))).mp hsurj)
 
 theorem smooth_manifold_critical_values_null_in_chart
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -172,7 +323,77 @@ theorem smooth_manifold_critical_values_null_in_chart
     have hxP : x ∈ ⋃ p ∈ P, (chartAt H p).source := by rw [hcover]; trivial
     obtain ⟨p, hp, hxp⟩ := mem_iUnion₂.mp hxP
     exact mem_iUnion₂.mpr ⟨p, hp, x, ⟨hx, hxp⟩, rfl⟩
-  · sorry
+  · obtain ⟨P, hPc, hP⟩ := TopologicalSpace.isOpen_iUnion_countable
+      (fun p : M => (chartAt H p).source) (fun p => (chartAt H p).open_source)
+    have hcover : (⋃ p ∈ P, (chartAt H p).source) = univ := by
+      rw [hP]
+      exact iUnion_eq_univ_iff.mpr fun x => ⟨x, mem_chart_source H x⟩
+    set T : Set M := {x | x ∈ S ∧ F x ∈ (chartAt H' q).source ∧
+      ¬Function.Surjective (mfderiv I J F x)} with hTdef
+    have key : ∀ p ∈ P,
+        volume ((extChartAt J q ∘ F) '' (T ∩ (chartAt H p).source)) = 0 := by
+      intro p hp
+      set B : Set M := (S ∩ F ⁻¹' (chartAt H' q).source) ∩ (chartAt H p).source with hBdef
+      have hBopen : IsOpen B :=
+        IsOpen.inter
+          (hF.continuousOn.isOpen_inter_preimage hS (chartAt H' q).open_source)
+          (chartAt H p).open_source
+      have hBsub : B ⊆ (chartAt H p).source := fun x hx => hx.2
+      have hBsubE : B ⊆ (extChartAt I p).source := by
+        intro x hx
+        rw [extChartAt_source]
+        exact hBsub hx
+      have hBsubS : B ⊆ S := fun x hx => hx.1.1
+      have hBmap : ∀ x ∈ B, F x ∈ (chartAt H' q).source := fun x hx => hx.1.2
+      set V : Set E := (extChartAt I p) '' B with hVdef
+      have hVsub : V ⊆ (extChartAt I p).target := by
+        rintro _ ⟨x, hx, rfl⟩
+        exact (extChartAt I p).map_source (hBsubE hx)
+      have hVopen : IsOpen V := by
+        have hopen := (continuousOn_extChartAt_symm (I := I) p).isOpen_inter_preimage
+          (isOpen_extChartAt_target (I := I) p) hBopen
+        rw [← PartialEquiv.image_source_inter_eq' (extChartAt I p) B,
+          Set.inter_eq_right.mpr hBsubE] at hopen
+        exact hopen
+      have hBmem : ∀ y ∈ V, (extChartAt I p).symm y ∈ B := by
+        intro y hy
+        rw [hVdef] at hy
+        obtain ⟨z, hz, hzy⟩ := hy
+        rw [← hzy, (extChartAt I p).left_inv (hBsubE hz)]
+        exact hz
+      have hsymm : ContMDiffOn 𝓘(ℝ, E) I ∞ (extChartAt I p).symm V :=
+        (contMDiffOn_extChartAt_symm (I := I) (n := ∞) p).mono hVsub
+      have hcomp : ContMDiffOn 𝓘(ℝ, E) J ∞ (F ∘ (extChartAt I p).symm) V :=
+        hF.comp hsymm fun y hy => hBsubS (hBmem y hy)
+      have hchart : ContMDiffOn J 𝓘(ℝ, EuclideanSpace ℝ (Fin n)) ∞ (extChartAt J q)
+          (chartAt H' q).source :=
+        contMDiffOn_extChartAt (I := J) (n := ∞) (x := q)
+      have hfinal : ContMDiffOn 𝓘(ℝ, E) 𝓘(ℝ, EuclideanSpace ℝ (Fin n)) ∞
+          (fun y => extChartAt J q (F ((extChartAt I p).symm y))) V :=
+        hchart.comp hcomp fun y hy => hBmap _ (hBmem y hy)
+      have hcd : ContDiffOn ℝ ∞ (fun y => extChartAt J q (F ((extChartAt I p).symm y))) V :=
+        contMDiffOn_iff_contDiffOn.mp hfinal
+      have hnull := volume_image_not_surjective_fderiv_eq_zero n hVopen hcd
+      refine measure_mono_null ?_ hnull
+      rintro z ⟨x, hx, rfl⟩
+      have hxT : x ∈ T := hx.1
+      rw [hTdef] at hxT
+      have hxB : x ∈ B := ⟨⟨hxT.1, hxT.2.1⟩, hx.2⟩
+      have hFmd : MDifferentiableAt I J F x :=
+        ((hF x hxT.1).mdifferentiableWithinAt (by norm_num)).mdifferentiableAt
+          (hS.mem_nhds hxT.1)
+      refine ⟨extChartAt I p x, ⟨⟨x, hxB, rfl⟩,
+        not_surjective_fderiv_chartRep (hxp := hx.2) (hFxq := hxT.2.1) hFmd hxT.2.2⟩, ?_⟩
+      simp only [Function.comp_apply]
+      rw [(extChartAt I p).left_inv (hBsubE hxB)]
+    have hunion : volume
+        (⋃ p ∈ P, (extChartAt J q ∘ F) '' (T ∩ (chartAt H p).source)) = 0 :=
+      (measure_biUnion_null_iff hPc).mpr key
+    refine measure_mono_null ?_ hunion
+    rintro z ⟨x, hx, rfl⟩
+    have hxP : x ∈ ⋃ p ∈ P, (chartAt H p).source := by rw [hcover]; trivial
+    obtain ⟨p, hp, hxp⟩ := mem_iUnion₂.mp hxP
+    exact mem_iUnion₂.mpr ⟨p, hp, x, ⟨hx, hxp⟩, rfl⟩
 
 section SliceSmoothness
 

@@ -1,4 +1,5 @@
 import DifferentialGeometry.Topology.Homology.ConnectedZeroHomology
+import DifferentialGeometry.Topology.Homology.RelativeMaps
 import Mathlib.Algebra.Homology.HomologicalComplexAbelian
 
 
@@ -22,6 +23,24 @@ theorem integralAbsoluteToRelative_zero_epi (A : Set X) :
   exact HomologicalComplex.epi_homologyMap_of_epi_of_not_rel
     (integralRelativeChainSequence A).g 0 (by intro j; simp)
 
+
+
+theorem integralRelativeHomologyMap_zero_eq_of_joined
+    {Y : Type u} [TopologicalSpace Y]
+    (f g : C(X, Y)) (A : Set X) (B : Set Y)
+    (hf : Set.MapsTo f A B) (hg : Set.MapsTo g A B)
+    (h : ∀ x, Joined (f x) (g x)) :
+    integralRelativeHomologyMap 0 f hf = integralRelativeHomologyMap 0 g hg := by
+  have hsurj : Function.Surjective (integralAbsoluteToRelative 0 A) :=
+    (ModuleCat.epi_iff_surjective _).mp (integralAbsoluteToRelative_zero_epi A)
+  have habs := integralSingularHomologyMap_zero_eq_of_joined f g h
+  have hcomp : (integralRelativeHomologyMap 0 f hf).comp (integralAbsoluteToRelative 0 A) =
+      (integralRelativeHomologyMap 0 g hg).comp (integralAbsoluteToRelative 0 A) := by
+    rw [← integralAbsoluteToRelative_natural, ← integralAbsoluteToRelative_natural, habs]
+  apply LinearMap.ext
+  intro a
+  obtain ⟨b, rfl⟩ := hsurj a
+  exact LinearMap.congr_fun hcomp b
 
 
 theorem integralRelativeZero_subsingleton [PathConnectedSpace X]

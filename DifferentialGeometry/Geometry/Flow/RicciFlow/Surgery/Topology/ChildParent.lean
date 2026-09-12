@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CappingCover
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.EventData
 import Mathlib.Analysis.Convex.PathConnected
 import Mathlib.Geometry.Manifold.MFDeriv.Atlas
@@ -463,6 +464,46 @@ theorem childCap_boundary_eq (c : ConnectedComponents Q.Carrier) (b : E.ChildCap
   rw [← E.childCapFun_eq c b (sphereToThreeBall y), E.trace.capping.boundary_eq]
   exact E.childCoreInclusionFun_eq c
     ⟨E.trace.tubes.coreBoundarySphere b.1 (E.trace.capping.attaching b.1 y), b.2 _⟩
+
+theorem childCore_compactSpace (c : ConnectedComponents Q.Carrier) : CompactSpace (E.ChildCore c) := by
+  let := E.core_compact
+  obtain ⟨x, hx⟩ := ConnectedComponents.surjective_coe (E.childCoreComponent c)
+  have hs : ({y : E.trace.tubes.core | ConnectedComponents.mk y = E.childCoreComponent c} : Set _) =
+      connectedComponent x := by
+    ext y
+    rw [← hx]
+    exact ConnectedComponents.coe_eq_coe'
+  have hc : IsCompact ({y : E.trace.tubes.core |
+      ConnectedComponents.mk y = E.childCoreComponent c} : Set _) := by
+    rw [hs]
+    exact isClosed_connectedComponent.isCompact
+  exact isCompact_iff_compactSpace.mp hc
+
+theorem childCoreInclusion_injective (c : ConnectedComponents Q.Carrier) :
+    Function.Injective (E.childCoreInclusion c) := by
+  intro x y h
+  have hval : (E.childCoreInclusionFun c x).1 = (E.childCoreInclusionFun c y).1 :=
+    congrArg Subtype.val h
+  have hpres : E.trace.presentation (E.trace.capping.coreInclusion x.1) =
+      E.trace.presentation (E.trace.capping.coreInclusion y.1) := by
+    rw [E.childCoreInclusionFun_eq c x, E.childCoreInclusionFun_eq c y, hval]
+  exact Subtype.ext (E.trace.capping.coreEmbedding.injective (E.trace.presentation.injective hpres))
+
+theorem childCoreInclusion_isEmbedding (c : ConnectedComponents Q.Carrier) :
+    Topology.IsEmbedding (E.childCoreInclusion c) := by
+  let : CompactSpace (E.ChildCore c) := E.childCore_compactSpace c
+  exact (Continuous.isClosedEmbedding (E.childCoreInclusion c).continuous
+    (E.childCoreInclusion_injective c)).isEmbedding
+
+theorem childCore_range_isSimplyConnected (c : ConnectedComponents Q.Carrier)
+    [SimplyConnectedSpace (E.ChildCore c)] :
+    IsSimplyConnected (Set.range (E.childCoreInclusion c)) :=
+  ((E.childCoreInclusion_isEmbedding c).toHomeomorph.toHomotopyEquiv).symm.simplyConnectedSpace
+
+theorem childCap_range_isSimplyConnected (c : ConnectedComponents Q.Carrier)
+    (b : E.ChildCapBoundary c) :
+    IsSimplyConnected (Set.range (E.childCap c b)) :=
+  ((E.childCap_isEmbedding c b).toHomeomorph.toHomotopyEquiv).symm.simplyConnectedSpace
 
 theorem range_childCoreInclusion_union_range_childCap
     (c : ConnectedComponents Q.Carrier) :

@@ -307,4 +307,43 @@ theorem diskMapTension_eq_zero_of_ball (g : SmoothRiemannianMetric 𝓘(ℝ, E) 
   rw [hzψ, map_zero] at hsymm
   exact hsymm.symm
 
+theorem diskMapTension_eq_zero_of_mem_closure_ball
+    (g : SmoothRiemannianMetric 𝓘(ℝ, E) M) {U : ℂ → M}
+    {s : Set ℂ} (hs : IsOpen s) (hU : ContMDiffOn 𝓘(ℝ, ℂ) 𝓘(ℝ, E) ∞ U s)
+    {z : ℂ} (hz : z ∈ s) (hzcl : z ∈ closure (Metric.ball (0 : ℂ) 1))
+    (hball : ∀ w ∈ Metric.ball (0 : ℂ) 1, w ∈ s → diskMapTension g U w = 0) :
+    diskMapTension g U z = 0 := by
+  set p : M := U z with hp
+  have hV : IsOpen (s ∩ U ⁻¹' (chartAt E p).source) :=
+    hU.continuousOn.isOpen_inter_preimage hs (chartAt E p).open_source
+  have hU' : ContMDiffOn 𝓘(ℝ, ℂ) 𝓘(ℝ, E) ∞ U (s ∩ U ⁻¹' (chartAt E p).source) :=
+    hU.mono inter_subset_left
+  have hsrc' : ∀ w ∈ s ∩ U ⁻¹' (chartAt E p).source, U w ∈ (chartAt E p).source :=
+    fun _ hw => hw.2
+  have hzV : z ∈ s ∩ U ⁻¹' (chartAt E p).source :=
+    ⟨hz, by rw [hp]; exact mem_chart_source E (U z)⟩
+  have hψ : ContDiffOn ℝ ∞ (fun w => (trivializationAt E (TangentSpace 𝓘(ℝ, E)) p).continuousLinearMapAt ℝ
+      (U w) (diskMapTension g U w)) (s ∩ U ⁻¹' (chartAt E p).source) :=
+    contDiffOn_diskMapTension_trivAt g hV hU' hsrc'
+  have hEqOn : EqOn (fun w => (trivializationAt E (TangentSpace 𝓘(ℝ, E)) p).continuousLinearMapAt ℝ
+      (U w) (diskMapTension g U w)) (fun _ => (0 : E))
+      (Metric.ball (0 : ℂ) 1 ∩ (s ∩ U ⁻¹' (chartAt E p).source)) := by
+    intro w hw
+    simp only [hball w hw.1 hw.2.1, map_zero]
+  have hsub : closure (Metric.ball (0 : ℂ) 1) ∩ (s ∩ U ⁻¹' (chartAt E p).source) ⊆
+      closure (Metric.ball (0 : ℂ) 1 ∩ (s ∩ U ⁻¹' (chartAt E p).source)) :=
+    hV.closure_inter
+  have hzT : z ∈ closure (Metric.ball (0 : ℂ) 1) ∩ (s ∩ U ⁻¹' (chartAt E p).source) :=
+    ⟨hzcl, hzV⟩
+  have hmain := hEqOn.of_subset_closure (hψ.continuousOn.mono inter_subset_right) continuousOn_const
+    (fun x hx => ⟨subset_closure hx.1, hx.2⟩) hsub
+  have hzψ : (trivializationAt E (TangentSpace 𝓘(ℝ, E)) p).continuousLinearMapAt ℝ (U z)
+      (diskMapTension g U z) = 0 := hmain hzT
+  have hb : U z ∈ (trivializationAt E (TangentSpace 𝓘(ℝ, E)) p).baseSet := by
+    rw [TangentBundle.trivializationAt_baseSet, hp]
+    exact mem_chart_source E (U z)
+  have hsymm := Trivialization.symmL_continuousLinearMapAt
+    (trivializationAt E (TangentSpace 𝓘(ℝ, E)) p) (R := ℝ) hb (diskMapTension g U z)
+  simpa only [hzψ, map_zero] using hsymm.symm
+
 end DifferentialGeometry.Geometry

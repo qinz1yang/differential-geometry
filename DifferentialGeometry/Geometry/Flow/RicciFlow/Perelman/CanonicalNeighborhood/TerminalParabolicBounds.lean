@@ -94,4 +94,52 @@ theorem bounded_curvature_at_distance_of_parabolicCurvatureBounds {eps kappa sig
   ⟨boundedAtDistance_of_parabolicCurvatureBounds X h,
     terminalDerivativeBounds_of_parabolicCurvatureBounds X h⟩
 
+theorem normalizedSequence_modelDepth_window {eps kappa sigma : ℝ} {Phi : ℝ → ℝ}
+    (X : NormalizedSequence.{u} eps kappa sigma Phi) (heps : 0 < eps) :
+    ∀ i : ℕ, Set.Icc (-modelDepth eps) 0 ⊆ (X.interval i).carrier ∧
+      Set.Ico (-modelDepth eps) 0 ⊆ (X.interval i).regular := by
+  have hm : 0 < modelDepth eps := by
+    simp only [modelDepth]
+    exact inv_pos.mpr heps
+  intro i
+  have hd : modelDepth eps ≤ X.depth i := X.depth_buffer i
+  have hpos : 0 < X.depth i := lt_of_lt_of_le hm hd
+  constructor
+  · rw [X.carrier_eq i]
+    intro t ht
+    exact ⟨by linarith [ht.1, hd, hpos], ht.2⟩
+  · rw [X.regular_eq i]
+    intro t ht
+    exact ⟨by linarith [ht.1, hd, hpos], ht.2⟩
+
+def TerminalParabolicCurvatureControl {eps kappa sigma : ℝ} {Phi : ℝ → ℝ}
+    (X : NormalizedSequence.{u} eps kappa sigma Phi) (start : ℝ) : Prop :=
+  ∀ rho : ℝ, 0 < rho → ∃ curvature radius : ℝ, 0 < curvature ∧ 0 < radius ∧
+    (∀ i, IsCompact {y : (X.term i).M |
+      riemannianEDistOf (I := I3) ((X.term i).S.base.metric start) (X.term i).basepoint y ≤
+        ENNReal.ofReal (radius / Real.sqrt curvature)}) ∧
+    (∀ i, ∀ t ∈ Set.Icc start 0, ∀ y : (X.term i).M,
+      riemannianEDistOf (I := I3) ((X.term i).S.base.metric start) (X.term i).basepoint y ≤
+        ENNReal.ofReal (radius / Real.sqrt curvature) →
+      curvDerivNormSq (I := I3) 0 ((X.term i).S.base.metric t) y ≤ curvature ^ 2) ∧
+    (∀ i, ∀ y : (X.term i).M,
+      metricDistance ((X.term i).S.base.metric 0) (X.term i).basepoint y ≤ rho →
+      riemannianEDistOf (I := I3) ((X.term i).S.base.metric start) (X.term i).basepoint y ≤
+        ENNReal.ofReal (radius / (2 * Real.sqrt curvature)))
+
+theorem parabolicCurvatureBoundsAtBase_of_terminalParabolicCurvatureControl
+    {eps kappa sigma : ℝ} {Phi : ℝ → ℝ} (X : NormalizedSequence.{u} eps kappa sigma Phi)
+    (heps : 0 < eps) (h : TerminalParabolicCurvatureControl X (-(modelDepth eps))) :
+    ParabolicCurvatureBoundsAtBase X := by
+  have hm : 0 < modelDepth eps := by
+    simp only [modelDepth]
+    exact inv_pos.mpr heps
+  refine ⟨fun rho hrho => ?_⟩
+  obtain ⟨curvature, radius, hK, hR, hball, hcurv, hcover⟩ := h rho hrho
+  exact ⟨-(modelDepth eps), curvature, radius, by linarith, hK, hR,
+    fun i => (normalizedSequence_modelDepth_window X heps i).1,
+    fun i => (normalizedSequence_modelDepth_window X heps i).2,
+    hball, hcurv, hcover⟩
+
+
 end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn

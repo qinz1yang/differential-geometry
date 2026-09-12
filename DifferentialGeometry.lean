@@ -45,6 +45,7 @@ import DifferentialGeometry.Analysis.Calculus.Derivative.ImmersionLiftRegularity
 import DifferentialGeometry.Analysis.Calculus.Derivative.LeftEndpoint
 import DifferentialGeometry.Analysis.Calculus.Derivative.ParametricIntervalIntegral
 import DifferentialGeometry.Analysis.Calculus.Derivative.Punctured
+import DifferentialGeometry.Analysis.Calculus.Derivative.PuncturedBallDerivativeHomotopy
 import DifferentialGeometry.Analysis.Calculus.Derivative.Right
 import DifferentialGeometry.Analysis.Calculus.Derivative.TargetModulus
 import DifferentialGeometry.Analysis.Calculus.Derivative.UpperContact
@@ -813,6 +814,7 @@ import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.Exponential
 import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.GaussianTail
 import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.Invariance
 import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.MetricComparison
+import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.Product
 import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.Properties
 import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.Scaling
 import DifferentialGeometry.Analysis.Integration.Measure.SmoothDensity
@@ -3202,6 +3204,7 @@ import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.Metric.Extension
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.Metric.Framed
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.Metric.JetBounds
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.Metric.LocalJetBounds
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.Metric.LocalGeometry
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.Metric.Subsequence
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.Phase.Endpoint
@@ -4003,6 +4006,7 @@ import DifferentialGeometry.Geometry.Coordinates.Fields.Vector
 import DifferentialGeometry.Geometry.Coordinates.Frame.Chart
 import DifferentialGeometry.Geometry.Coordinates.Frame.Coordinate
 import DifferentialGeometry.Geometry.Coordinates.Frame.Product
+import DifferentialGeometry.Geometry.Coordinates.Frame.TangentProduct
 import DifferentialGeometry.Geometry.Coordinates.MetricCompatibility.Coordinate
 import DifferentialGeometry.Geometry.Coordinates.MetricCompatibility.Covariant
 import DifferentialGeometry.Geometry.Coordinates.MetricCompatibility.Inverse
@@ -4814,6 +4818,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.JetPolyn
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.JointRegularity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.MixedJetPolynomials
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.ParallelFrameJetDerivative
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.ParallelFrameMetricInverse
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.PolynomialField
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.Raising
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.RmJetEvolutionPolynomial
@@ -4954,6 +4959,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.HamiltonHarnack.UhlenbeckTra
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LocalProduct
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ParallelLineSplitting
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.AmbientCollarShortening
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.AncientCanonicalNeighborhood
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.AncientExtension
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.BackgroundJetTransfer
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.BadPointSelection
@@ -6262,6 +6268,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.Comparison
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ControlledExtinction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ControlledExtinctionAssembly
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CutCap
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CutCapCompletion
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CubeSphereGenerator
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.Descendants
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.EmptyHistory
@@ -7620,7 +7627,9 @@ import DifferentialGeometry.Topology.Homology.Local.NeighborhoodReduced
 import DifferentialGeometry.Topology.Homology.Local.NeighborhoodSphere
 import DifferentialGeometry.Topology.Homology.Local.Translation
 import DifferentialGeometry.Topology.Homology.LocalCharts
+import DifferentialGeometry.Topology.Homology.LocalDerivativeComparison
 import DifferentialGeometry.Topology.Homology.LocalHomology
+import DifferentialGeometry.Topology.Homology.LocalLinearMaps
 import DifferentialGeometry.Topology.Homology.Manifold
 import DifferentialGeometry.Topology.Homology.ManifoldBoundary
 import DifferentialGeometry.Topology.Homology.ManifoldDoubleEuler
@@ -7689,6 +7698,7 @@ import DifferentialGeometry.Topology.Homology.SphereHurewicz
 import DifferentialGeometry.Topology.Homology.SpherePuncture
 import DifferentialGeometry.Topology.Homology.SphereRank
 import DifferentialGeometry.Topology.Homology.SphereTopHomology
+import DifferentialGeometry.Topology.Homology.SquareFundamentalChain
 import DifferentialGeometry.Topology.Homology.Subdivision.AffinePieces
 import DifferentialGeometry.Topology.Homology.Subdivision.AffineSimplex
 import DifferentialGeometry.Topology.Homology.Subdivision.Barycentric

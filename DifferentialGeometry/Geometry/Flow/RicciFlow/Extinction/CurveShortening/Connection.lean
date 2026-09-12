@@ -248,6 +248,48 @@ theorem Field.smoothOn_unitTangent {D : RealTimeInterval}
   exact Field.smoothOn_const_smul c hc (fun x t => (c.speed g x t)⁻¹) hinv (c.X) hX
 
 
+omit [FiniteDimensional ℝ E] [CompleteSpace E] in
+theorem Field.smoothOn_velocity (c : CurveMap M) {J : Set ℝ}
+    (hc : c.SmoothOn (I := I) J) (hJ : UniqueDiffOn ℝ J) :
+    CurveMap.Field.SmoothOn (I := I) (c.velocity (I := I) J) J := by
+  have hc' : ContMDiffOn (𝓘(ℝ, ℝ).prod 𝓘(ℝ, ℝ)) I ∞
+      (fun p : ℝ × ℝ => c.lift p.1 p.2) (univ ×ˢ J) := by
+    rw [CurveMap.SmoothOn] at hc
+    rw [modelWithCornersSelf_prod, ← chartedSpaceSelf_prod] at hc
+    exact hc
+  have h := ContMDiffOn.mfderivWithin_snd (I' := I) (N := M)
+    (γ := fun a b : ℝ => c.lift a b) (s := (univ : Set ℝ)) (u := J)
+    (n := ∞) (m := ∞) hc' hJ le_rfl
+  rw [CurveMap.Field.SmoothOn, modelWithCornersSelf_prod, ← chartedSpaceSelf_prod]
+  refine h.congr (fun p hp => ?_)
+  simp only [CurveMap.velocity]
+  congr 1
+
+omit [FiniteDimensional ℝ E] [CompleteSpace E] in
+theorem Field.smoothOn_sub {c : CurveMap M} {J : Set ℝ} (hc : c.SmoothOn (I := I) J)
+    (V W : c.Field (I := I)) (hV : V.SmoothOn (I := I) J) (hW : W.SmoothOn (I := I) J) :
+    CurveMap.Field.SmoothOn (I := I) (fun x t => V x t - W x t) J := by
+  intro p hp
+  let e := trivializationAt E (TangentSpace I) (c.lift p.1 p.2)
+  have hbase : c.lift p.1 p.2 ∈ e.baseSet :=
+    FiberBundle.mem_baseSet_trivializationAt E (TangentSpace I) (c.lift p.1 p.2)
+  have hVrep : ContMDiffWithinAt 𝓘(ℝ, ℝ × ℝ) 𝓘(ℝ, E) ∞
+      (fun q : ℝ × ℝ => (e (⟨c.lift q.1 q.2, V q.1 q.2⟩ : TangentBundle I M)).2)
+      (univ ×ˢ J) p := (Bundle.contMDiffWithinAt_totalSpace.mp (hV p hp)).2
+  have hWrep : ContMDiffWithinAt 𝓘(ℝ, ℝ × ℝ) 𝓘(ℝ, E) ∞
+      (fun q : ℝ × ℝ => (e (⟨c.lift q.1 q.2, W q.1 q.2⟩ : TangentBundle I M)).2)
+      (univ ×ˢ J) p := (Bundle.contMDiffWithinAt_totalSpace.mp (hW p hp)).2
+  rw [Bundle.contMDiffWithinAt_totalSpace]
+  refine ⟨hc p hp, ?_⟩
+  refine (hVrep.sub hWrep).congr_of_eventuallyEq ?_ ?_
+  · have hneigh : (fun q : ℝ × ℝ => c.lift q.1 q.2) ⁻¹' e.baseSet ∈ 𝓝[univ ×ˢ J] p :=
+      (hc p hp).continuousWithinAt.preimage_mem_nhdsWithin
+        (e.open_baseSet.mem_nhds hbase)
+    filter_upwards [hneigh, self_mem_nhdsWithin] with q hq _
+    exact (e.linear ℝ hq).map_sub (V q.1 q.2) (W q.1 q.2)
+  · exact (e.linear ℝ hbase).map_sub (V p.1 p.2) (W p.1 p.2)
+
+
 omit [CompleteSpace E] in
 theorem Dt_eq_covDerivAlong (c : CurveMap M) (g : ℝ → SmoothRiemannianMetric I M)
     (J : Set ℝ) (V : c.Field (I := I)) (x t : ℝ) (ht : J ∈ 𝓝 t) :
@@ -1329,7 +1371,7 @@ omit [FiniteDimensional ℝ E] [CompleteSpace E] [SigmaCompactSpace M] [T2Space 
 theorem chartRep_field_contDiffWithinAt
     (c : CurveMap M) (J : Set ℝ) (hc : c.SmoothOn (I := I) J)
     (V : c.Field (I := I)) (hV : V.SmoothOn (I := I) J) (x t : ℝ) (ht : t ∈ J) :
-    ∀ᶠ z in 𝓝[univ ×ˢ J] (x, t), ContDiffWithinAt ℝ 2
+    ∀ᶠ z in 𝓝[univ ×ˢ J] (x, t), ContDiffWithinAt ℝ ∞
       (fun p : ℝ × ℝ =>
         (trivializationAt E (TangentSpace I) (c.lift x t)).continuousLinearMapAt ℝ
           (c.lift p.1 p.2) (V p.1 p.2)) (univ ×ˢ J) z := by
@@ -1369,9 +1411,9 @@ theorem chartRep_field_contDiffWithinAt
         ∈ (trivializationAt E (TangentSpace I) (c.lift x t)).baseSet := hp
     rw [Trivialization.continuousLinearMapAt_apply_of_mem (R := ℝ)
       (e := trivializationAt E (TangentSpace I) (c.lift x t)) hp' (V p.1 p.2)]
-  have hcd : ContDiffWithinAt ℝ 2 (fun p : ℝ × ℝ =>
+  have hcd : ContDiffWithinAt ℝ ∞ (fun p : ℝ × ℝ =>
       (trivializationAt E (TangentSpace I) (c.lift x t) (F p)).2) (univ ×ˢ J) z :=
-    (contMDiffWithinAt_iff_contDiffWithinAt.mp hiff.2).of_le (WithTop.coe_le_coe.mpr le_top)
+    contMDiffWithinAt_iff_contDiffWithinAt.mp hiff.2
   exact hcd.congr_of_eventuallyEq heq.symm (heq.symm.eq_of_nhdsWithin hzS)
 
 
@@ -1717,7 +1759,7 @@ theorem pullback_commutator {D : RealTimeInterval} {a b s u : ℝ}
   have hZsmooth : ∀ᶠ z in 𝓝[univ ×ˢ J] (x, t), ContDiffWithinAt ℝ 2 Z (univ ×ˢ J) z := by
     have h := chartRep_field_contDiffWithinAt (I := I) (M := M) c J hc V hV x t htJ
     filter_upwards [h] with z hz
-    exact hz
+    exact hz.of_le (WithTop.coe_le_coe.mpr le_top)
   have hgood_self : β ∈ chartLeviCivitaGoodSet (I := I) β :=
     self_mem_chartLeviCivitaGoodSet (I := I) β
   have hDxChart : (fun r : ℝ => trivToE (I := I) β (c.lift x r) ((c.Dx B.family.metric V) x r))
@@ -2185,5 +2227,296 @@ theorem CurveMap.Dt_eq_covDerivAlong_of_mem_Ioo (c : CurveMap M)
     {s u x t : ℝ} (ht : t ∈ Ioo s u) :
     c.Dt g (Icc s u) V x t = covDerivAlong (g t) (c.lift x) (V x) t :=
   CurveMap.Dt_eq_covDerivAlong c g (Icc s u) V x t (Icc_mem_nhds ht.1 ht.2)
+
+omit [FiniteDimensional ℝ E] [CompleteSpace E]
+  [TopologicalSpace H] hBoundary in
+private theorem contDiffWithinAt_deriv_fst_strip {G : Type*} [NormedAddCommGroup G]
+    [NormedSpace ℝ G] {J : Set ℝ} (hJ : UniqueDiffOn ℝ J)
+    {F : ℝ × ℝ → G} {z : ℝ × ℝ} (hz : z ∈ (univ : Set ℝ) ×ˢ J)
+    (hF : ∀ᶠ w in 𝓝[((univ : Set ℝ) ×ˢ J)] z,
+      ContDiffWithinAt ℝ ∞ F ((univ : Set ℝ) ×ˢ J) w) :
+    ContDiffWithinAt ℝ ∞ (fun q : ℝ × ℝ => deriv (fun u : ℝ => F (u, q.2)) q.1)
+      ((univ : Set ℝ) ×ˢ J) z := by
+  have hWon : UniqueDiffOn ℝ ((univ : Set ℝ) ×ˢ J) := UniqueDiffOn.prod uniqueDiffOn_univ hJ
+  have hzat : ContDiffWithinAt ℝ ∞ F ((univ : Set ℝ) ×ˢ J) z := hF.self_of_nhdsWithin hz
+  set v : ℝ × ℝ := (1, 0) with hv
+  have hk : ContDiffWithinAt ℝ ∞ (fun _ : ℝ × ℝ => v) ((univ : Set ℝ) ×ˢ J) z :=
+    contDiffWithinAt_const
+  have hfd : ContDiffWithinAt ℝ ∞
+      (fun q : ℝ × ℝ => fderivWithin ℝ F ((univ : Set ℝ) ×ˢ J) q v)
+      ((univ : Set ℝ) ×ˢ J) z :=
+    ContDiffWithinAt.fderivWithin_right_apply (𝕜 := ℝ) (f := F)
+      (k := fun _ => v) (s := (univ : Set ℝ) ×ˢ J) (x₀ := z) hzat hk hWon
+      (by simp) hz
+  have hkey (q : ℝ × ℝ) (hqF : ContDiffWithinAt ℝ ∞ F ((univ : Set ℝ) ×ˢ J) q)
+      (hq : q ∈ (univ : Set ℝ) ×ˢ J) :
+      deriv (fun u : ℝ => F (u, q.2)) q.1
+        = fderivWithin ℝ F ((univ : Set ℝ) ×ˢ J) q v := by
+    have hdiff : DifferentiableWithinAt ℝ F ((univ : Set ℝ) ×ˢ J) q :=
+      hqF.differentiableWithinAt (by simp)
+    have hFW := hdiff.hasFDerivWithinAt
+    have hgin : HasFDerivWithinAt (fun u : ℝ => ((u, q.2) : ℝ × ℝ))
+        (ContinuousLinearMap.inl ℝ ℝ ℝ) univ q.1 :=
+      ((hasFDerivAt_id q.1).prodMk (hasFDerivAt_const q.2 q.1)).hasFDerivWithinAt
+    have hmap : MapsTo (fun u : ℝ => ((u, q.2) : ℝ × ℝ)) univ ((univ : Set ℝ) ×ˢ J) :=
+      fun u _ => ⟨mem_univ u, hq.2⟩
+    have hcomp := hFW.comp q.1 hgin hmap
+    have hderivAt : HasFDerivAt (fun u : ℝ => F (u, q.2))
+        ((fderivWithin ℝ F ((univ : Set ℝ) ×ˢ J) q).comp (ContinuousLinearMap.inl ℝ ℝ ℝ))
+        q.1 := hcomp.hasFDerivAt (by simp)
+    calc deriv (fun u : ℝ => F (u, q.2)) q.1
+        = (fderiv ℝ (fun u : ℝ => F (u, q.2)) q.1) 1 := rfl
+      _ = (((fderivWithin ℝ F ((univ : Set ℝ) ×ˢ J) q).comp
+            (ContinuousLinearMap.inl ℝ ℝ ℝ)) 1) := by rw [hderivAt.fderiv]
+      _ = fderivWithin ℝ F ((univ : Set ℝ) ×ˢ J) q v := by
+            rw [ContinuousLinearMap.comp_apply, ContinuousLinearMap.inl_apply]
+  refine hfd.congr_of_eventuallyEq ?_ ?_
+  · filter_upwards [hF, self_mem_nhdsWithin] with q hqF hq
+    exact hkey q hqF hq
+  · exact hkey z hzat hz
+
+omit [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] hBoundary in
+theorem contDiffWithinAt_chartChristoffelOnE_comp
+    {D : RealTimeInterval} {g : ℝ → SmoothRiemannianMetric I M}
+    (hG : MetricFamilySmoothOn (I := I) (M := M) D g)
+    {J : Set ℝ} (hJreg : J ⊆ D.regular) (hJun : UniqueDiffOn ℝ J)
+    {β : M} {Φ : ℝ × ℝ → E} {z : ℝ × ℝ} (hz : z ∈ (univ : Set ℝ) ×ˢ J)
+    (hΦ : ContDiffWithinAt ℝ ∞ Φ ((univ : Set ℝ) ×ˢ J) z)
+    (hΦint : Φ z ∈ interior (extChartAt I β).target)
+    (i j k : Fin (Module.finrank ℝ E)) :
+    ContDiffWithinAt ℝ ∞
+      (fun q : ℝ × ℝ => chartChristoffel (I := I) (g q.2) β i j k (Φ q))
+      ((univ : Set ℝ) ×ˢ J) z := by
+  have hWc : ((univ : Set ℝ) ×ˢ J) ∈ 𝓝[((univ : Set ℝ) ×ˢ J)] z := self_mem_nhdsWithin
+  set Uset : Set (ℝ × ℝ) := ((univ : Set ℝ) ×ˢ J) ∩ Φ ⁻¹' interior (extChartAt I β).target
+    with hUset
+  have hcw : ContinuousWithinAt Φ ((univ : Set ℝ) ×ˢ J) z := hΦ.continuousWithinAt
+  have hV : Φ ⁻¹' (interior (extChartAt I β).target : Set E) ∈ 𝓝[((univ : Set ℝ) ×ˢ J)] z :=
+    hcw.preimage_mem_nhdsWithin (isOpen_interior.mem_nhds hΦint)
+  have hcont : ContDiffWithinAt ℝ ∞
+      (fun p : ℝ × E => chartChristoffel (I := I) (g p.1) β i j k p.2)
+      (J ×ˢ interior (extChartAt I β).target) (z.2, Φ z) :=
+    (MetricFamilySmoothOn.chartChristoffelOnE_contDiffOn (I := I) (D := D)
+      (g_fam := g) hG hJreg hJun β i j k).contDiffWithinAt ⟨hz.2, hΦint⟩
+  have hψ : ContDiffWithinAt ℝ ∞ (fun q : ℝ × ℝ => (q.2, Φ q)) Uset z :=
+    (contDiffWithinAt_snd (𝕜 := ℝ) (s := Uset) (p := z) :
+      ContDiffWithinAt ℝ ∞ (fun q : ℝ × ℝ => q.2) Uset z).prodMk
+      (hΦ.mono (t := Uset) (by rw [hUset]; exact Set.inter_subset_left))
+  have hmaps : MapsTo (fun q : ℝ × ℝ => (q.2, Φ q)) Uset
+      (J ×ˢ interior (extChartAt I β).target) :=
+    fun q hq => ⟨hq.1.2, hq.2⟩
+  have hcomp := hcont.comp z hψ hmaps
+  refine hcomp.mono_of_mem_nhdsWithin ?_
+  rw [hUset]
+  simpa only [Set.inter_comm] using Filter.inter_mem hV hWc
+
+omit [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] hBoundary in
+theorem contDiffWithinAt_chartChristoffelContraction
+    {D : RealTimeInterval} {g : ℝ → SmoothRiemannianMetric I M}
+    (hG : MetricFamilySmoothOn (I := I) (M := M) D g)
+    {J : Set ℝ} (hJreg : J ⊆ D.regular) (hJun : UniqueDiffOn ℝ J)
+    {β : M} {P Q Φ : ℝ × ℝ → E} {z : ℝ × ℝ} (hz : z ∈ (univ : Set ℝ) ×ˢ J)
+    (hP : ContDiffWithinAt ℝ ∞ P ((univ : Set ℝ) ×ˢ J) z)
+    (hQ : ContDiffWithinAt ℝ ∞ Q ((univ : Set ℝ) ×ˢ J) z)
+    (hΦ : ContDiffWithinAt ℝ ∞ Φ ((univ : Set ℝ) ×ˢ J) z)
+    (hΦint : Φ z ∈ interior (extChartAt I β).target) :
+    ContDiffWithinAt ℝ ∞
+      (fun q : ℝ × ℝ => chartChristoffelContraction (I := I) (g q.2) β (P q) (Q q) (Φ q))
+      ((univ : Set ℝ) ×ˢ J) z := by
+  have hsum : ContDiffWithinAt ℝ ∞
+      (fun q : ℝ × ℝ => ∑ k : Fin (Module.finrank ℝ E),
+        (∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
+          chartChristoffel (I := I) (g q.2) β i j k (Φ q) *
+            chartCoord (E := E) i (P q) * chartCoord (E := E) j (Q q)) •
+        DifferentialGeometry.Tensor.Coordinates.chartModelBasis E k)
+      ((univ : Set ℝ) ×ˢ J) z := by
+    refine ContDiffWithinAt.sum (s := Finset.univ) (fun k _ => ?_)
+    refine ContDiffWithinAt.smul_const ?_ (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E k)
+    refine ContDiffWithinAt.sum (s := Finset.univ) (fun i _ => ?_)
+    refine ContDiffWithinAt.sum (s := Finset.univ) (fun j _ => ?_)
+    have hPi : ContDiffWithinAt ℝ ∞ (fun q : ℝ × ℝ => chartCoord (E := E) i (P q))
+        ((univ : Set ℝ) ×ˢ J) z := by
+      have h1 : ContDiffWithinAt ℝ ∞
+          (fun q : ℝ × ℝ =>
+            DifferentialGeometry.Analysis.Parabolic.TensorSpectral.chartCoordCLM E i (P q))
+          ((univ : Set ℝ) ×ˢ J) z :=
+        hP.continuousLinearMap_comp
+          (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.chartCoordCLM E i)
+      refine h1.congr (fun q _ => ?_) ?_
+      · simp only [DifferentialGeometry.Analysis.Parabolic.TensorSpectral.chartCoordCLM_apply,
+          chartCoord_def, Module.Basis.equivFun_apply]
+      · simp only [DifferentialGeometry.Analysis.Parabolic.TensorSpectral.chartCoordCLM_apply,
+          chartCoord_def, Module.Basis.equivFun_apply]
+    have hQj : ContDiffWithinAt ℝ ∞ (fun q : ℝ × ℝ => chartCoord (E := E) j (Q q))
+        ((univ : Set ℝ) ×ˢ J) z := by
+      have h1 : ContDiffWithinAt ℝ ∞
+          (fun q : ℝ × ℝ =>
+            DifferentialGeometry.Analysis.Parabolic.TensorSpectral.chartCoordCLM E j (Q q))
+          ((univ : Set ℝ) ×ˢ J) z :=
+        hQ.continuousLinearMap_comp
+          (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.chartCoordCLM E j)
+      refine h1.congr (fun q _ => ?_) ?_
+      · simp only [DifferentialGeometry.Analysis.Parabolic.TensorSpectral.chartCoordCLM_apply,
+          chartCoord_def, Module.Basis.equivFun_apply]
+      · simp only [DifferentialGeometry.Analysis.Parabolic.TensorSpectral.chartCoordCLM_apply,
+          chartCoord_def, Module.Basis.equivFun_apply]
+    exact (((contDiffWithinAt_chartChristoffelOnE_comp (I := I) (D := D) (g := g) hG
+      hJreg hJun hz hΦ hΦint i j k).mul
+        hPi).mul hQj)
+  refine hsum.congr (fun q _ => ?_) ?_
+  · exact (chartChristoffelContraction_def (I := I) (g q.2) β (P q) (Q q) (Φ q)).symm
+  · exact (chartChristoffelContraction_def (I := I) (g z.2) β (P z) (Q z) (Φ z)).symm
+
+omit [CompleteSpace E] [SigmaCompactSpace M] in
+theorem chartRep_Dx_contDiffWithinAt {D : RealTimeInterval} {g : ℝ → SmoothRiemannianMetric I M}
+    (hG : MetricFamilySmoothOn (I := I) (M := M) D g)
+    {J : Set ℝ} (hJreg : J ⊆ D.regular) (hJun : UniqueDiffOn ℝ J)
+    (c : CurveMap M) (hc : c.SmoothOn (I := I) J)
+    (V : c.Field (I := I)) (hV : V.SmoothOn (I := I) J) (x t : ℝ) (ht : t ∈ J) :
+    ContDiffWithinAt ℝ ∞
+      (fun p : ℝ × ℝ => trivToE (I := I) (c.lift x t) (c.lift p.1 p.2)
+        (c.Dx g V p.1 p.2)) ((univ : Set ℝ) ×ˢ J) (x, t) := by
+  classical
+  let Z : ℝ × ℝ → E := fun q => trivToE (I := I) (c.lift x t) (c.lift q.1 q.2) (V q.1 q.2)
+  let Φ : ℝ × ℝ → E := fun q => extChartAt I (c.lift x t) (c.lift q.1 q.2)
+  have hz : (x, t) ∈ (univ : Set ℝ) ×ˢ J := ⟨mem_univ x, ht⟩
+  have hZev : ∀ᶠ w in 𝓝[((univ : Set ℝ) ×ˢ J)] (x, t),
+      ContDiffWithinAt ℝ ∞ Z ((univ : Set ℝ) ×ˢ J) w :=
+    chartRep_field_contDiffWithinAt (I := I) (M := M) c J hc V hV x t ht
+  have hΦev : ∀ᶠ w in 𝓝[((univ : Set ℝ) ×ˢ J)] (x, t),
+      ContDiffWithinAt ℝ ∞ Φ ((univ : Set ℝ) ×ˢ J) w := by
+    have hcont : ContinuousWithinAt (fun p : ℝ × ℝ => c.lift p.1 p.2)
+        ((univ : Set ℝ) ×ˢ J) (x, t) :=
+      (hc (x, t) ⟨mem_univ x, ht⟩).continuousWithinAt
+    have hsrc : (fun p : ℝ × ℝ => c.lift p.1 p.2) ⁻¹' (chartAt H (c.lift x t)).source
+        ∈ 𝓝[((univ : Set ℝ) ×ˢ J)] (x, t) :=
+      hcont.preimage_mem_nhdsWithin
+        ((chartAt H (c.lift x t)).open_source.mem_nhds (mem_chart_source H (c.lift x t)))
+    filter_upwards [hsrc, self_mem_nhdsWithin] with q hqS hqW
+    have hq2 : ContMDiffWithinAt 𝓘(ℝ, ℝ × ℝ) I ∞ (fun p : ℝ × ℝ => c.lift p.1 p.2)
+        ((univ : Set ℝ) ×ˢ J) q := hc q hqW
+    have hext : ContMDiffAt I 𝓘(ℝ, E) ∞ (extChartAt I (c.lift x t)) (c.lift q.1 q.2) :=
+      contMDiffAt_extChartAt' (I := I) (n := ∞) (x := c.lift x t) hqS
+    exact contMDiffWithinAt_iff_contDiffWithinAt.mp (hext.comp_contMDiffWithinAt q hq2)
+  have hdZ : ContDiffWithinAt ℝ ∞ (fun q : ℝ × ℝ => deriv (fun u : ℝ => Z (u, q.2)) q.1)
+      ((univ : Set ℝ) ×ˢ J) (x, t) :=
+    contDiffWithinAt_deriv_fst_strip hJun hz hZev
+  have hdΦ : ContDiffWithinAt ℝ ∞ (fun q : ℝ × ℝ => deriv (fun u : ℝ => Φ (u, q.2)) q.1)
+      ((univ : Set ℝ) ×ˢ J) (x, t) :=
+    contDiffWithinAt_deriv_fst_strip hJun hz hΦev
+  have hZat : ContDiffWithinAt ℝ ∞ Z ((univ : Set ℝ) ×ˢ J) (x, t) := hZev.self_of_nhdsWithin hz
+  have hΦat : ContDiffWithinAt ℝ ∞ Φ ((univ : Set ℝ) ×ˢ J) (x, t) := hΦev.self_of_nhdsWithin hz
+  have hΦint : Φ (x, t) ∈ interior (extChartAt I (c.lift x t)).target :=
+    DifferentialGeometry.Integral.DivergenceTheorem.extChartAt_target_subset_interior_of_boundaryless
+      (I := I) (c.lift x t)
+      ((extChartAt I (c.lift x t)).map_source (mem_extChartAt_source (I := I) (c.lift x t)))
+  have hR : ContDiffWithinAt ℝ ∞
+      (fun q : ℝ × ℝ => deriv (fun u : ℝ => Z (u, q.2)) q.1 +
+        chartChristoffelContraction (I := I) (g q.2) (c.lift x t)
+          (deriv (fun u : ℝ => Φ (u, q.2)) q.1) (Z q) (Φ q))
+      ((univ : Set ℝ) ×ˢ J) (x, t) :=
+    hdZ.add (contDiffWithinAt_chartChristoffelContraction (I := I) (D := D) (g := g) hG
+      hJreg hJun hz hdΦ hZat hΦat hΦint)
+  have hev : (fun p : ℝ × ℝ => trivToE (I := I) (c.lift x t) (c.lift p.1 p.2)
+        (c.Dx g V p.1 p.2))
+      =ᶠ[𝓝[((univ : Set ℝ) ×ˢ J)] (x, t)]
+      (fun q : ℝ × ℝ => deriv (fun u : ℝ => Z (u, q.2)) q.1 +
+        chartChristoffelContraction (I := I) (g q.2) (c.lift x t)
+          (deriv (fun u : ℝ => Φ (u, q.2)) q.1) (Z q) (Φ q)) := by
+    have hgood : (fun q : ℝ × ℝ => c.lift q.1 q.2) ⁻¹'
+        (chartLeviCivitaGoodSet (I := I) (c.lift x t)) ∈ 𝓝[((univ : Set ℝ) ×ˢ J)] (x, t) :=
+      (hc (x, t) ⟨mem_univ x, ht⟩).continuousWithinAt.preimage_mem_nhdsWithin
+        ((chartLeviCivitaGoodSet_isOpen (I := I) (c.lift x t)).mem_nhds
+          (self_mem_chartLeviCivitaGoodSet (I := I) (c.lift x t)))
+    filter_upwards [hgood, self_mem_nhdsWithin] with q hqg hqW
+    have hγ : MDifferentiableAt 𝓘(ℝ, ℝ) I (fun y : ℝ => c.lift y q.2) q.1 :=
+      (contMDiffWithinAt_univ.mp
+        (c.space_slice_contMDiffWithinAt (I := I) J hc q.1 q.2 hqW.2)).mdifferentiableAt
+        (by norm_num)
+    have hVtot : MDifferentiableWithinAt 𝓘(ℝ, ℝ) (I.prod 𝓘(ℝ, E))
+        (fun y : ℝ => (⟨c.lift y q.2, V y q.2⟩ : TotalSpace E (TangentSpace I))) univ q.1 :=
+      (Field.space_slice_contMDiffWithinAt (I := I) c J V hV q.1 q.2 hqW.2).mdifferentiableWithinAt
+        (by norm_num)
+    rw [trivToE_Dx_eq_chart (I := I) (M := M) g c V (c.lift x t) q.1 q.2 hqg hγ hVtot]
+    simp only [Z, Φ, chartCurve]
+    rfl
+  exact hR.congr_of_eventuallyEq hev (hev.self_of_nhdsWithin hz)
+
+namespace CurveMap
+
+omit [CompleteSpace E] [SigmaCompactSpace M] in
+theorem Field.smoothOn_Dx {D : RealTimeInterval}
+    (g : ℝ → SmoothRiemannianMetric I M)
+    (hG : MetricFamilySmoothOn (I := I) (M := M) D g) {J : Set ℝ} (hJ : J ⊆ D.regular)
+    (hJun : UniqueDiffOn ℝ J)
+    (c : CurveMap M) (hc : c.SmoothOn (I := I) J)
+    (V : c.Field (I := I)) (hV : V.SmoothOn (I := I) J) :
+    CurveMap.Field.SmoothOn (I := I) (c.Dx g V) J := by
+  intro p hp
+  rw [Bundle.contMDiffWithinAt_totalSpace]
+  refine ⟨hc p hp, ?_⟩
+  have hcd := chartRep_Dx_contDiffWithinAt (I := I) (M := M) (D := D) (g := g) hG hJ hJun
+    c hc V hV p.1 p.2 hp.2
+  have hcd' : ContMDiffWithinAt 𝓘(ℝ, ℝ × ℝ) 𝓘(ℝ, E) ∞
+      (fun q : ℝ × ℝ => trivToE (I := I) (c.lift p.1 p.2) (c.lift q.1 q.2)
+        (c.Dx g V q.1 q.2)) ((univ : Set ℝ) ×ˢ J) p :=
+    contMDiffWithinAt_iff_contDiffWithinAt.mpr hcd
+  have hcont : ContinuousWithinAt (fun q : ℝ × ℝ => c.lift q.1 q.2) ((univ : Set ℝ) ×ˢ J) p :=
+    (hc p hp).continuousWithinAt
+  have hbase : c.lift p.1 p.2
+      ∈ (trivializationAt E (TangentSpace I) (c.lift p.1 p.2)).baseSet :=
+    FiberBundle.mem_baseSet_trivializationAt E (TangentSpace I) (c.lift p.1 p.2)
+  have hneigh : (fun q : ℝ × ℝ => c.lift q.1 q.2) ⁻¹'
+      (trivializationAt E (TangentSpace I) (c.lift p.1 p.2)).baseSet
+      ∈ 𝓝[((univ : Set ℝ) ×ˢ J)] p :=
+    hcont.preimage_mem_nhdsWithin
+      ((trivializationAt E (TangentSpace I) (c.lift p.1 p.2)).open_baseSet.mem_nhds hbase)
+  have hev : (fun q : ℝ × ℝ =>
+        (trivializationAt E (TangentSpace I) (c.lift p.1 p.2)
+          (⟨c.lift q.1 q.2, c.Dx g V q.1 q.2⟩ : TangentBundle I M)).2)
+      =ᶠ[𝓝[((univ : Set ℝ) ×ˢ J)] p]
+      (fun q : ℝ × ℝ => trivToE (I := I) (c.lift p.1 p.2) (c.lift q.1 q.2)
+        (c.Dx g V q.1 q.2)) := by
+    filter_upwards [hneigh, self_mem_nhdsWithin] with q hqB _
+    exact (Trivialization.continuousLinearMapAt_apply_of_mem (R := ℝ)
+      (e := trivializationAt E (TangentSpace I) (c.lift p.1 p.2)) hqB
+      (c.Dx g V q.1 q.2)).symm
+  exact hcd'.congr_of_eventuallyEq hev (hev.self_of_nhdsWithin hp)
+
+omit [CompleteSpace E] [SigmaCompactSpace M] in
+theorem Field.smoothOn_curvatureVector {D : RealTimeInterval}
+    (g : ℝ → SmoothRiemannianMetric I M)
+    (hG : MetricFamilySmoothOn (I := I) (M := M) D g) {J : Set ℝ} (hJ : J ⊆ D.regular)
+    (hJun : UniqueDiffOn ℝ J)
+    (c : CurveMap M) (hc : c.SmoothOn (I := I) J) (hi : c.ImmersedOn (I := I) J) :
+    CurveMap.Field.SmoothOn (I := I) (c.curvatureVector g) J := by
+  have hsp : ContDiffOn ℝ ∞ (fun p : ℝ × ℝ => c.speed g p.1 p.2) ((univ : Set ℝ) ×ˢ J) :=
+    Field.smoothOn_speed g hG hJ c hc hi
+  have hinv : ContDiffOn ℝ ∞ (fun p : ℝ × ℝ => (c.speed g p.1 p.2)⁻¹)
+      ((univ : Set ℝ) ×ˢ J) := by
+    refine hsp.inv ?_
+    intro p hp
+    exact ne_of_gt (c.speed_pos g hi p.1 p.2 hp.2)
+  have hU : CurveMap.Field.SmoothOn (I := I) (c.unitTangent g) J :=
+    Field.smoothOn_unitTangent g hG hJ c hc hi
+  have hDxU : CurveMap.Field.SmoothOn (I := I) (c.Dx g (c.unitTangent g)) J :=
+    Field.smoothOn_Dx g hG hJ hJun c hc (c.unitTangent g) hU
+  have hDs : c.curvatureVector g = fun x t => (c.speed g x t)⁻¹ • c.Dx g (c.unitTangent g) x t := rfl
+  rw [hDs]
+  exact Field.smoothOn_const_smul c hc (fun x t => (c.speed g x t)⁻¹) hinv
+    (c.Dx g (c.unitTangent g)) hDxU
+
+omit [CompleteSpace E] [SigmaCompactSpace M] in
+theorem Field.smoothOn_curvatureSq {D : RealTimeInterval}
+    (g : ℝ → SmoothRiemannianMetric I M)
+    (hG : MetricFamilySmoothOn (I := I) (M := M) D g) {J : Set ℝ} (hJ : J ⊆ D.regular)
+    (hJun : UniqueDiffOn ℝ J)
+    (c : CurveMap M) (hc : c.SmoothOn (I := I) J) (hi : c.ImmersedOn (I := I) J) :
+    ContDiffOn ℝ ∞ (fun p : ℝ × ℝ => c.curvatureSq g p.1 p.2) ((univ : Set ℝ) ×ˢ J) := by
+  have hk : CurveMap.Field.SmoothOn (I := I) (c.curvatureVector g) J :=
+    Field.smoothOn_curvatureVector g hG hJ hJun c hc hi
+  exact Field.smoothOn_inner g hG hJ c hc (c.curvatureVector g) (c.curvatureVector g) hk hk
+
+end CurveMap
 
 end DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening
