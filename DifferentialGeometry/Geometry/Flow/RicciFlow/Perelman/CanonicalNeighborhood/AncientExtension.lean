@@ -1,6 +1,7 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHornStructure
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.BlowupConvergence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.RemotePointTriangle
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.ClosedOpenPropagation
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.ModelCurvaturePropagation
 
 set_option autoImplicit false
 noncomputable section
@@ -113,13 +114,16 @@ theorem good_point_derivatives {kappa : ℝ} (hkappa : 0 < kappa) :
       ∀ (M : Type u) [TopologicalSpace M] [ChartedSpace ThreeSpace M]
         [IsManifold I3 ∞ M] [T2Space M] [SigmaCompactSpace M]
         (D : RealTimeInterval) (S : SolutionOn (I := I3) (M := M) D),
-        IsSolutionOn S → ∀ eps : ℝ, 0 < eps → eps ≤ epsStar →
+        IsSolutionOn S → interior D.carrier ⊆ D.regular →
+          ∀ eps : ℝ, 0 < eps → eps ≤ epsStar →
           ∀ x t, Nonempty (WindowedModelWitness eps kappa S x t) →
             (∀ v : TangentSpace I3 x, |scalarDifferential S t x v| ≤
               2 * C * S.scalar t x * Real.sqrt (S.scalar t x) *
                 Real.sqrt ((S.base.metric t).inner x v v)) ∧
             |derivWithin (fun s => S.scalar s x) (Set.Iic t) t| ≤ C * S.scalar t x ^ 2 := by
-  sorry
+  exact good_point_derivatives_of_modelCurvatureBound
+    (KappaSolutions.ancientKappa_modelCurvatureBoundNearBase
+      (I := I3) (by simp [ThreeSpace]) hkappa)
 
 theorem local_propagation {kappa : ℝ} (hkappa : 0 < kappa) :
     ∃ epsStar c C : ℝ, 0 < epsStar ∧ 0 < c ∧ 0 < C ∧
@@ -134,7 +138,7 @@ theorem local_propagation {kappa : ℝ} (hkappa : 0 < kappa) :
                   (X.term i).S.scalar v y ≤ 4 * L ∧
                   Real.sqrt (FlowMetricBall.rmNormSq (X.term i).S v y) ≤
                     C * (L + (Phi (4 * X.scale i * L) + Phi 0) / X.scale i) := by
-  sorry
+  exact canonical_neighborhood_local_propagation hkappa
 
 theorem good_point_buffered_canonical {kappa alpha theta : ℝ}
     (hkappa : 0 < kappa) (ha : 0 < alpha) (haSmall : alpha < 1 / 44)
