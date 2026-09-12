@@ -18,7 +18,7 @@ open scoped Interval Topology
 
 noncomputable section
 
-variable {E : Type} [NormedAddCommGroup E] [NormedSpace ℝ E]
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 
 private theorem hasDerivAt_second (g : E → ℝ) (hg : ContDiff ℝ 2 g) (x : E) (t : ℝ) :
     HasDerivAt (fun t : ℝ => (fderiv ℝ g (t • x)) x)
@@ -166,7 +166,7 @@ theorem second_order_taylor_integral_of_fderiv_eq_zero (g : E → ℝ) (hg : Con
   rw [second_order_taylor_integral g hg x, hx₀]
   simp
 
-theorem fderiv_translate {F : Type} [NormedAddCommGroup F] [NormedSpace ℝ F]
+theorem fderiv_translate {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
     (g : E → F) (c y : E) (hg : DifferentiableAt ℝ g (y + c)) :
     fderiv ℝ (fun z : E => g (z + c)) y = fderiv ℝ g (y + c) := by
   have hc : HasFDerivAt (fun z : E => z + c) (1 : E →L[ℝ] E) y := by
@@ -208,7 +208,7 @@ theorem fderiv_fderiv_translate (g : E → ℝ) (hg : ContDiff ℝ 2 g) (c y : E
 
 namespace Calculus
 
-variable {F : Type} [NormedAddCommGroup F] [NormedSpace ℝ F] [CompleteSpace F]
+variable {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F] [CompleteSpace F]
 
 def hadamardFactor (f : ℝ → F) (a : ℝ) (x : ℝ) : F :=
   ∫ t in (0 : ℝ)..1, deriv f (a + t * (x - a))

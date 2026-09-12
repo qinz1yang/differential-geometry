@@ -17,7 +17,7 @@ private abbrev Plane := EuclideanSpace Real (Fin 2)
 
 section Model
 
-variable {E : Type} [NormedAddCommGroup E] [NormedSpace Real E]
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
   [FiniteDimensional Real E]
 
 private local instance : MeasurableSpace E := borel E
@@ -125,11 +125,11 @@ open DifferentialGeometry.Integral.DivergenceTheorem
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Tensor.Coordinates
 
-variable {E : Type} [NormedAddCommGroup E] [NormedSpace Real E]
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
   [FiniteDimensional Real E]
-variable {H : Type} [TopologicalSpace H]
+variable {H : Type*} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H} [I.Boundaryless]
-variable {M : Type} [TopologicalSpace M] [ChartedSpace H M]
+variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M]
 
 private local instance : MeasurableSpace E := borel E

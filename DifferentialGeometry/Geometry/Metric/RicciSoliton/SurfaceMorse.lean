@@ -18,11 +18,11 @@ open Curvature Operator
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Topology.Morse
 
-variable {E : Type} [NormedAddCommGroup E] [NormedSpace Real E]
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
   [FiniteDimensional Real E]
-variable {H : Type} [TopologicalSpace H]
+variable {H : Type*} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H} [I.Boundaryless]
-variable {M : Type} [TopologicalSpace M] [ChartedSpace H M]
+variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [SigmaCompactSpace M] [T2Space M]
   [ConnectedSpace M]
 
@@ -62,7 +62,7 @@ private lemma strictAntiOn_mul_exp_neg_Ici_one :
 private abbrev Plane := EuclideanSpace Real (Fin 2)
 
 private lemma isConnected_source_inter_preimage_sphere
-    {X : Type} [TopologicalSpace X]
+    {X : Type*} [TopologicalSpace X]
     (e : OpenPartialHomeomorph X Plane) {r R : Real}
     (hr : 0 ≤ r) (hrR : r < R)
     (hball : Metric.ball (0 : Plane) R ⊆ e.target) :
@@ -142,7 +142,7 @@ private lemma exists_lt_strictAntiOn_sub_const_mul_exp
     (mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr (le_of_lt hx)) hc)
 
 private noncomputable def connectedComponentsEquivOfPairwiseDisjointOpenConnectedCover
-    {X J : Type} [TopologicalSpace X] (U : J → Set X)
+    {X J : Type*} [TopologicalSpace X] (U : J → Set X)
     (hopen : ∀ j, IsOpen (U j))
     (hdisj : Pairwise fun i j => Disjoint (U i) (U j))
     (hcover : ⋃ j, U j = Set.univ)
@@ -170,7 +170,7 @@ private noncomputable def connectedComponentsEquivOfPairwiseDisjointOpenConnecte
   exact isOpen_iUnion fun k => hopen k
 
 private lemma isConnected_of_image_subtype_val
-    {X : Type} [TopologicalSpace X] {s : Set X} {U : Set s}
+    {X : Type*} [TopologicalSpace X] {s : Set X} {U : Set s}
     (hU : IsConnected (Subtype.val '' U)) :
     IsConnected U := by
   refine ⟨?_, ?_⟩
@@ -178,7 +178,7 @@ private lemma isConnected_of_image_subtype_val
   · exact Topology.IsInducing.subtypeVal.isPreconnected_image.mp hU.isPreconnected
 
 private lemma sum_eq_zero_partitioned_by_equicardinal_predicates
-    {X : Type} [Fintype X] (P Q : X → Prop)
+    {X : Type*} [Fintype X] (P Q : X → Prop)
     (e : {x : X // P x} ≃ {x : X // Q x})
     (hcover : ∀ x, P x ∨ Q x) (hdisj : ∀ x, ¬(P x ∧ Q x))
     (hPnonempty : Nonempty {x : X // P x})

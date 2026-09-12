@@ -31,7 +31,7 @@ open Filter QuadraticForm
 open MeasureTheory
 open DifferentialGeometry.Analysis
 
-variable {E : Type} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
 
 def morseNormalFormWeights (morseIndex : ℕ) : Fin (Module.finrank ℝ E) → ℝ :=
   fun i => if (i : ℕ) < morseIndex then -1 else 1

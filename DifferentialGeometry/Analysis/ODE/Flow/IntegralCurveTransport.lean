@@ -365,8 +365,8 @@ theorem integralCurve_eq_of_agree_zero [IsManifold I ∞ M] [BoundarylessManifol
     (h : γ 0 = γ' 0) : γ = γ' :=
   integralCurve_eq_of_agree v hv hγ hγ' h
 
-theorem curveAt_hcomplete_irrel {E : Type} [NormedAddCommGroup E] [NormedSpace ℝ E]
-    {H : Type} [TopologicalSpace H] {M : Type} [TopologicalSpace M] [ChartedSpace H M]
+theorem curveAt_hcomplete_irrel {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    {H : Type*} [TopologicalSpace H] {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
     {I : ModelWithCorners ℝ E H} [I.Boundaryless]
     [IsManifold I ∞ M] [T2Space M]
     (v : (x : M) → TangentSpace I x)

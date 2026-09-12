@@ -19,12 +19,12 @@ section Naturality
 
 open scoped Manifold ContDiff
 
-variable {E : Type} [NormedAddCommGroup E] [NormedSpace ℝ E]
-  {F : Type} [NormedAddCommGroup F] [NormedSpace ℝ F]
-  {H : Type} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
-  {G : Type} [TopologicalSpace G] {J : ModelWithCorners ℝ F G}
-  {M : Type} [TopologicalSpace M] [ChartedSpace H M]
-  {N : Type} [TopologicalSpace N] [ChartedSpace G N]
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
+  {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+  {G : Type*} [TopologicalSpace G] {J : ModelWithCorners ℝ F G}
+  {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
+  {N : Type*} [TopologicalSpace N] [ChartedSpace G N]
 
 theorem isCriticalPointAt_comp_iff
     {φ : M → N} {f : N → ℝ} {x : M}
@@ -44,7 +44,7 @@ theorem isCriticalPointAt_comp_iff
 
 end Naturality
 
-variable {E : Type} [NormedAddCommGroup E] [NormedSpace ℝ E]
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 
 theorem isNondegenerateCriticalPointAt_model_iff
     {f : E → ℝ} {x : E} (hf : ContDiffAt ℝ 2 f x) :
@@ -122,9 +122,9 @@ private theorem eventually_fderiv_eq_zero_imp_eq (g : E → ℝ) (x : E)
   change fderiv ℝ g y = fderiv ℝ g x
   rw [hyzero, hcrit]
 
-variable {H : Type} [TopologicalSpace H]
+variable {H : Type*} [TopologicalSpace H]
 variable {I : ModelWithCorners ℝ E H} [I.Boundaryless]
-variable {M : Type} [TopologicalSpace M] [ChartedSpace H M]
+variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
 
 omit [FiniteDimensional ℝ E] [I.Boundaryless] in
 private theorem chartRep_contDiffOn {n : WithTop ℕ∞} [IsManifold I n M] (f : M → ℝ)

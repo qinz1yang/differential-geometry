@@ -11,8 +11,8 @@ open DifferentialGeometry.Analysis.ODE
 
 noncomputable section
 
-variable {E : Type} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
-variable {H : Type} [TopologicalSpace H] {M : Type} [TopologicalSpace M] [ChartedSpace H M]
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+variable {H : Type*} [TopologicalSpace H] {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
 variable {I : ModelWithCorners ℝ E H}
 
 theorem no_critical_value_transport [I.Boundaryless] [IsManifold I ∞ M]
@@ -194,8 +194,8 @@ theorem no_critical_values [I.Boundaryless] [IsManifold I ∞ M]
     ⟨v, Φ, hv, hsupp, hdfOn, hrate, ⟨hcomplete, hflow, htie⟩, _hbnd, _hstrict, _hbnd', _hstrict'⟩
   exact ⟨Φ, hflow⟩
 
-theorem reverseFlow_value_on_levelSet {E : Type} [NormedAddCommGroup E] [NormedSpace ℝ E]
-    [FiniteDimensional ℝ E] {H : Type} [TopologicalSpace H] {M : Type}
+theorem reverseFlow_value_on_levelSet {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    [FiniteDimensional ℝ E] {H : Type*} [TopologicalSpace H] {M : Type*}
     [TopologicalSpace M] [ChartedSpace H M] [T2Space M]
     (I : ModelWithCorners ℝ E H) [I.Boundaryless]
     [IsManifold I ∞ M] (f : M → ℝ)
@@ -335,8 +335,8 @@ noncomputable def noCriticalValueSublevelHomeomorph [I.Boundaryless] [IsManifold
           change f z ≤ a at hz
           exact hz) }
 
-noncomputable def levelSetTransportHomeomorph {E : Type} [NormedAddCommGroup E]
-    [NormedSpace ℝ E] [FiniteDimensional ℝ E] {H : Type} [TopologicalSpace H] {M : Type}
+noncomputable def levelSetTransportHomeomorph {E : Type*} [NormedAddCommGroup E]
+    [NormedSpace ℝ E] [FiniteDimensional ℝ E] {H : Type*} [TopologicalSpace H] {M : Type*}
     [TopologicalSpace M] [ChartedSpace H M] [T2Space M]
     (I : ModelWithCorners ℝ E H) [I.Boundaryless]
     [IsManifold I ∞ M] (f : M → ℝ)
@@ -427,8 +427,8 @@ noncomputable def levelSetTransportHomeomorph {E : Type} [NormedAddCommGroup E]
           hjointc.comp hpair
         exact Continuous.subtype_mk hmain (by intro y; exact hfrom y) }
 
-theorem frontier_sublevel_eq_levelSet {E : Type} [NormedAddCommGroup E] [NormedSpace ℝ E]
-    [FiniteDimensional ℝ E] {H : Type} [TopologicalSpace H] {M : Type}
+theorem frontier_sublevel_eq_levelSet {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    [FiniteDimensional ℝ E] {H : Type*} [TopologicalSpace H] {M : Type*}
     [TopologicalSpace M] [ChartedSpace H M] [T2Space M]
     (I : ModelWithCorners ℝ E H) [I.Boundaryless]
     [IsManifold I ∞ M] (f : M → ℝ)
@@ -520,8 +520,8 @@ theorem frontier_sublevel_eq_levelSet {E : Type} [NormedAddCommGroup E] [NormedS
           exact not_le_of_gt hgt⟩⟩
       exact hiff.mp hxcompl
 
-noncomputable def levelSetCollarHomeomorph {E : Type} [NormedAddCommGroup E]
-    [NormedSpace ℝ E] [FiniteDimensional ℝ E] {H : Type} [TopologicalSpace H] {M : Type}
+noncomputable def levelSetCollarHomeomorph {E : Type*} [NormedAddCommGroup E]
+    [NormedSpace ℝ E] [FiniteDimensional ℝ E] {H : Type*} [TopologicalSpace H] {M : Type*}
     [TopologicalSpace M] [ChartedSpace H M] [T2Space M]
     (I : ModelWithCorners ℝ E H) [I.Boundaryless]
     [IsManifold I ∞ M] (f : M → ℝ)
