@@ -186,4 +186,125 @@ theorem exists_diffeomorph_standardThreeSphere_of_isPoincareStandard
     hunit hcongr P.factors hL
   exact ⟨P.diffeomorph.trans s.1⟩
 
+private theorem diffeomorph_symm_nonempty {M N : ClosedOrientedManifold.{u} 3}
+    (h : Nonempty (M.Carrier ≃ₘ⟮𝓡 3, 𝓡 3⟯ N.Carrier)) :
+    Nonempty (N.Carrier ≃ₘ⟮𝓡 3, 𝓡 3⟯ M.Carrier) :=
+  h.elim fun f => ⟨f.symm⟩
+
+private theorem diffeomorph_trans_nonempty {M N P : ClosedOrientedManifold.{u} 3}
+    (h₁ : Nonempty (M.Carrier ≃ₘ⟮𝓡 3, 𝓡 3⟯ N.Carrier))
+    (h₂ : Nonempty (N.Carrier ≃ₘ⟮𝓡 3, 𝓡 3⟯ P.Carrier)) :
+    Nonempty (M.Carrier ≃ₘ⟮𝓡 3, 𝓡 3⟯ P.Carrier) :=
+  h₁.elim fun f => h₂.elim fun g => ⟨f.trans g⟩
+
+private theorem finiteConnectedSum_append_of_unit_assoc_transport_diffeo
+    (hunitR : ∀ X : ConnectedClosedOrientedManifold.{u} 3,
+      Nonempty ((connectedSum X standardThreeSphereLift.{u}).toClosedOrientedManifold.Carrier
+        ≃ₘ⟮𝓡 3, 𝓡 3⟯ X.toClosedOrientedManifold.Carrier))
+    (hunitL : ∀ X : ConnectedClosedOrientedManifold.{u} 3,
+      Nonempty ((connectedSum standardThreeSphereLift.{u} X).toClosedOrientedManifold.Carrier
+        ≃ₘ⟮𝓡 3, 𝓡 3⟯ X.toClosedOrientedManifold.Carrier))
+    (hassoc : ∀ X Y Z : ConnectedClosedOrientedManifold.{u} 3,
+      Nonempty ((connectedSum (connectedSum X Y) Z).toClosedOrientedManifold.Carrier
+        ≃ₘ⟮𝓡 3, 𝓡 3⟯
+        (connectedSum X (connectedSum Y Z)).toClosedOrientedManifold.Carrier))
+    (htransportR : ∀ X Y Y' : ConnectedClosedOrientedManifold.{u} 3,
+      Nonempty (Y.toClosedOrientedManifold.Carrier ≃ₘ⟮𝓡 3, 𝓡 3⟯
+        Y'.toClosedOrientedManifold.Carrier) →
+      Nonempty ((connectedSum X Y).toClosedOrientedManifold.Carrier ≃ₘ⟮𝓡 3, 𝓡 3⟯
+        (connectedSum X Y').toClosedOrientedManifold.Carrier))
+    (L K : List (ConnectedClosedOrientedManifold.{u} 3)) :
+    Nonempty ((finiteConnectedSum (L ++ K)).toClosedOrientedManifold.Carrier ≃ₘ⟮𝓡 3, 𝓡 3⟯
+      (connectedSum (finiteConnectedSum L)
+        (finiteConnectedSum K)).toClosedOrientedManifold.Carrier) := by
+  induction L generalizing K with
+  | nil =>
+      rw [List.nil_append, finiteConnectedSum_nil]
+      exact diffeomorph_symm_nonempty (hunitL (finiteConnectedSum K))
+  | cons M L ih =>
+      cases L with
+      | nil =>
+          cases K with
+          | nil =>
+              simp only [finiteConnectedSum_nil, finiteConnectedSum_singleton]
+              exact diffeomorph_symm_nonempty (hunitR M)
+          | cons N K =>
+              simp only [List.cons_append, List.nil_append, finiteConnectedSum_singleton,
+                finiteConnectedSum_cons_cons]
+              exact ⟨(ClosedOrientedManifold.OrientedDiffeomorph.refl
+                (connectedSum M (finiteConnectedSum (N :: K))).toClosedOrientedManifold).1⟩
+      | cons N L =>
+          simp only [List.cons_append, finiteConnectedSum_cons_cons]
+          exact diffeomorph_trans_nonempty
+            (htransportR M (finiteConnectedSum ((N :: L) ++ K))
+              (connectedSum (finiteConnectedSum (N :: L)) (finiteConnectedSum K)) (ih K))
+            (diffeomorph_symm_nonempty
+              (hassoc M (finiteConnectedSum (N :: L)) (finiteConnectedSum K)))
+
+private theorem finiteConnectedSum_congr_of_transport_diffeo
+    (htransportL : ∀ X X' Y : ConnectedClosedOrientedManifold.{u} 3,
+      Nonempty (X.toClosedOrientedManifold.Carrier ≃ₘ⟮𝓡 3, 𝓡 3⟯
+        X'.toClosedOrientedManifold.Carrier) →
+      Nonempty ((connectedSum X Y).toClosedOrientedManifold.Carrier ≃ₘ⟮𝓡 3, 𝓡 3⟯
+        (connectedSum X' Y).toClosedOrientedManifold.Carrier))
+    (htransportR : ∀ X Y Y' : ConnectedClosedOrientedManifold.{u} 3,
+      Nonempty (Y.toClosedOrientedManifold.Carrier ≃ₘ⟮𝓡 3, 𝓡 3⟯
+        Y'.toClosedOrientedManifold.Carrier) →
+      Nonempty ((connectedSum X Y).toClosedOrientedManifold.Carrier ≃ₘ⟮𝓡 3, 𝓡 3⟯
+        (connectedSum X Y').toClosedOrientedManifold.Carrier))
+    {L K : List (ConnectedClosedOrientedManifold.{u} 3)}
+    (hf : List.Forall₂ (fun (M N : ConnectedClosedOrientedManifold.{u} 3) =>
+      Nonempty (M.toClosedOrientedManifold.Carrier ≃ₘ⟮𝓡 3, 𝓡 3⟯
+        N.toClosedOrientedManifold.Carrier)) L K) :
+    Nonempty ((finiteConnectedSum L).toClosedOrientedManifold.Carrier ≃ₘ⟮𝓡 3, 𝓡 3⟯
+      (finiteConnectedSum K).toClosedOrientedManifold.Carrier) := by
+  refine List.Forall₂.rec (motive := fun L K _ =>
+    Nonempty ((finiteConnectedSum L).toClosedOrientedManifold.Carrier ≃ₘ⟮𝓡 3, 𝓡 3⟯
+      (finiteConnectedSum K).toClosedOrientedManifold.Carrier)) ?_ ?_ hf
+  · exact ⟨(ClosedOrientedManifold.OrientedDiffeomorph.refl
+      (finiteConnectedSum ([] : List (ConnectedClosedOrientedManifold.{u} 3))).toClosedOrientedManifold).1⟩
+  · intro M N L' K' hM hL' ih
+    cases L' with
+    | nil =>
+        have hK' : K' = [] := List.forall₂_nil_left_iff.mp hL'
+        subst hK'
+        simp only [finiteConnectedSum_singleton]
+        exact hM
+    | cons M2 L'' =>
+        cases K' with
+        | nil => exact absurd (List.forall₂_nil_right_iff.mp hL') (by simp)
+        | cons N2 K'' =>
+            simp only [finiteConnectedSum_cons_cons]
+            exact diffeomorph_trans_nonempty
+              (htransportL M N (finiteConnectedSum (M2 :: L'')) hM)
+              (htransportR N (finiteConnectedSum (M2 :: L''))
+                (finiteConnectedSum (N2 :: K'')) ih)
+
+theorem poincareStandardSumClosed_of_unit_assoc_transport
+    (hunitR : ∀ X : ConnectedClosedOrientedManifold.{u} 3,
+      Nonempty ((connectedSum X standardThreeSphereLift.{u}).toClosedOrientedManifold.Carrier
+        ≃ₘ⟮𝓡 3, 𝓡 3⟯ X.toClosedOrientedManifold.Carrier))
+    (hunitL : ∀ X : ConnectedClosedOrientedManifold.{u} 3,
+      Nonempty ((connectedSum standardThreeSphereLift.{u} X).toClosedOrientedManifold.Carrier
+        ≃ₘ⟮𝓡 3, 𝓡 3⟯ X.toClosedOrientedManifold.Carrier))
+    (hassoc : ∀ X Y Z : ConnectedClosedOrientedManifold.{u} 3,
+      Nonempty ((connectedSum (connectedSum X Y) Z).toClosedOrientedManifold.Carrier
+        ≃ₘ⟮𝓡 3, 𝓡 3⟯
+        (connectedSum X (connectedSum Y Z)).toClosedOrientedManifold.Carrier))
+    (htransportL : ∀ X X' Y : ConnectedClosedOrientedManifold.{u} 3,
+      Nonempty (X.toClosedOrientedManifold.Carrier ≃ₘ⟮𝓡 3, 𝓡 3⟯
+        X'.toClosedOrientedManifold.Carrier) →
+      Nonempty ((connectedSum X Y).toClosedOrientedManifold.Carrier ≃ₘ⟮𝓡 3, 𝓡 3⟯
+        (connectedSum X' Y).toClosedOrientedManifold.Carrier))
+    (htransportR : ∀ X Y Y' : ConnectedClosedOrientedManifold.{u} 3,
+      Nonempty (Y.toClosedOrientedManifold.Carrier ≃ₘ⟮𝓡 3, 𝓡 3⟯
+        Y'.toClosedOrientedManifold.Carrier) →
+      Nonempty ((connectedSum X Y).toClosedOrientedManifold.Carrier ≃ₘ⟮𝓡 3, 𝓡 3⟯
+        (connectedSum X Y').toClosedOrientedManifold.Carrier)) :
+    poincareStandardSumClosed.{u} := by
+  refine poincareStandardSumClosed_of_connectedSum_laws ?_ ?_
+  · exact fun L K =>
+      finiteConnectedSum_append_of_unit_assoc_transport_diffeo hunitR hunitL hassoc htransportR L K
+  · exact fun hf => finiteConnectedSum_congr_of_transport_diffeo htransportL htransportR hf
+
 end DifferentialGeometry.Topology
