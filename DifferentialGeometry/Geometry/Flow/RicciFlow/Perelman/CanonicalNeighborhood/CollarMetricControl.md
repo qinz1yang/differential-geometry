@@ -1,0 +1,5 @@
+# CollarMetricControl
+
+- Chapter25 owns this new leaf under claim 592998da-7641-47c1-88f1-7f50f038c0b2. It derives length estimates from the actual cylinder and MetricComparisonOn, with complete curve containment in the genuine map source.
+- The cylinder at time zero has twice the unit round-sphere metric and the Euclidean axial metric. Cross-model differentiation is needed; the unit-cylinder metric from Chapter23 has a different sphere factor. Intrinsic and ambient distances must remain distinct.
+- Verified: focused7 EMPTY41.09s, named1 clean76.45s/10612, fresh audit1 standard-only29.88s for all8 publics. Receipts in E:/lean-tools/chapter25-terminal-local-20260909/. The uniform sphere constant uses continuous intrinsic Riemannian distance and compactness, avoiding a competing metric-space instance. Keep product vectors typed as TangentSpace IC before rewriting; explicitly give E:=ThreeSpace in dIncl. Only the reference family at time zero is identified, so both static horn and shrinking-cylinder comparisons apply. No original horn card is closed.

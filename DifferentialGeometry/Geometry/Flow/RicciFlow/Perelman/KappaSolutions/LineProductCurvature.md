@@ -1,0 +1,3 @@
+- `lem:ksol-rank-one-terminal-bounded`: compute the actual line-product curvature from native chart/Koszul identities, adapting the checked cylinder route without changing lower files.
+- Frozen at the owner's candidate-audit request: elaboration has only unused-parameter warnings, but no accepted focused/named/fresh chain; not registered or committed.
+- candidate49608ce9f still admits the general product identity. Coordinate its producer rather than continuing this draft; terminal splitting and surface jets/injectivity remain separate.

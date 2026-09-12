@@ -1,0 +1,3 @@
+- `lem:ksol-rank-one-terminal-bounded`: native orthonormal product trace gives scalar(h + ds²) = scalar(h), with exact coefficient one.
+- Frozen and untested at the owner's candidate-audit request; not registered or committed. No consumer has been switched to this draft.
+- candidate49608ce9f already has the trace in Metric/Product/ScalarCurvature, still consuming its product-curvature admission; reuse that API after upstream integration.
