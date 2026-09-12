@@ -309,61 +309,6 @@ private theorem exists_ball_local_homologyMap_translation_eq_det_sign
   intro x
   rfl
 
-private theorem integralLocalHomologyOpenPartialHomeomorphIso_comp_neighborhood
-    {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
-    [T1Space X] [T1Space Y]
-    (n : ℕ) (e : OpenPartialHomeomorph X Y) (a : X)
-    (U : Set X) (hU : IsOpen U) (haU : a ∈ U) (hUs : U ⊆ e.source) :
-    (integralLocalHomologyOpenPartialHomeomorphIso n e a (hUs haU)).hom.hom.comp
-        (integralLocalHomologyNeighborhoodIso n a U hU haU).hom.hom =
-      integralRelativeHomologyMap n
-        (⟨fun x : U => e x, (e.continuousOn.mono hUs).domRestrict⟩ : C(U, Y))
-        (show MapsTo (fun x : U => e x)
-          ({(⟨a, haU⟩ : U)}ᶜ : Set U) ({e a}ᶜ : Set Y)
-          from fun x hx h => hx (Subtype.ext (e.injOn (hUs x.property) (hUs haU) h))) := by
-  have ha : a ∈ e.source := hUs haU
-  let I := integralLocalHomologyOpenPartialHomeomorphIso n e a ha
-  let Js := integralLocalHomologyNeighborhoodIso n a e.source e.open_source ha
-  let Jt := integralLocalHomologyNeighborhoodIso n (e a) e.target e.open_target (e.map_source ha)
-  let Ju := integralLocalHomologyNeighborhoodIso n a U hU haU
-  let q := singularPairRestriction (ContinuousMap.id X) hUs
-  have hq : MapsTo q ({(⟨a, haU⟩ : U)}ᶜ : Set U)
-      ({(⟨a, ha⟩ : e.source)}ᶜ : Set e.source) := by
-    intro x hx h
-    change q x = (⟨a, ha⟩ : e.source) at h
-    have hval : (x : X) = a := congrArg (fun z : e.source => (z : X)) h
-    exact hx (Subtype.ext hval)
-  let g : C(e.source, Y) := ⟨fun x => e x, e.continuousOn.domRestrict⟩
-  have hg : MapsTo g ({(⟨a, ha⟩ : e.source)}ᶜ : Set e.source) ({e a}ᶜ : Set Y) :=
-    fun x hx h => hx (Subtype.ext (e.injOn x.property ha h))
-  have hepair : MapsTo e.toHomeomorphSourceTarget
-      ({(⟨a, ha⟩ : e.source)}ᶜ : Set e.source)
-      ({(⟨e a, e.map_source ha⟩ : e.target)}ᶜ : Set e.target) := by
-    intro x hx h
-    apply hx
-    apply e.toHomeomorphSourceTarget.injective
-    exact h
-  have hsource : I.hom.hom.comp Js.hom.hom = integralRelativeHomologyMap n g hg := by
-    have hnat := congrArg (fun f => f.hom)
-      (integralLocalHomologyOpenPartialHomeomorphIso_natural n e a ha)
-    change I.hom.hom.comp Js.hom.hom = Jt.hom.hom.comp
-      (integralLocalHomologyHomeomorphIso n e.toHomeomorphSourceTarget
-        (⟨a, ha⟩ : e.source)).hom.hom at hnat
-    rw [hnat]
-    change (integralRelativeHomologyMap n (singularSubspaceInclusion e.target)
-        (neighborhoodPointComplement_mapsTo (e a) e.target (e.map_source ha))).comp
-      (integralRelativeHomologyMap n
-        ⟨e.toHomeomorphSourceTarget, e.toHomeomorphSourceTarget.continuous⟩
-        hepair) =
-      integralRelativeHomologyMap n g hg
-    rw [← integralRelativeHomologyMap_comp]
-    rfl
-  have hnested : Js.hom.hom.comp (integralRelativeHomologyMap n q hq) = Ju.hom.hom :=
-    integralLocalHomologyNeighborhoodIso_comp n a U e.source hU e.open_source hUs haU
-  change I.hom.hom.comp Ju.hom.hom = _
-  rw [← hnested, ← LinearMap.comp_assoc, hsource, ← integralRelativeHomologyMap_comp]
-  rfl
-
 private theorem integralLocalHomologyOpenPartialHomeomorphIso_translation_eq_det_sign_of_hasFDerivAt
     {E : Type u} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
     (e : OpenPartialHomeomorph E E) (a : E) (ha : a ∈ e.source)

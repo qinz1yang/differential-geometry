@@ -5,13 +5,16 @@ additive publication within the shared DifferentialGeometry Git repository. Its 
 library is `Poincare`; its sources retain the original mathematical namespaces.
 
 The source baseline is the recovered Chapter 35 commit
-`b45bfa009368c8f5f531e10f4f5280e90079d6ad`. This checkpoint includes the 88-module
-dependency closure of six roots covering local homology, derivatives and the
-linear determinant-sign action. The prior 74 sources are unchanged. The expanded package passed its fresh
-14-added-leaf/root build and public consumer, linter and axiom gate in Slurm
-13781140, request `1789236250289124336-topology_checkpoint-db7e7dbe`.
-[provenance/SNAPSHOT.json](provenance/SNAPSHOT.json) records the exact source and
-configuration identity. It is not the full recovered Chapter 35 project.
+`b45bfa009368c8f5f531e10f4f5280e90079d6ad`. This checkpoint includes the 89-module
+dependency closure of seven roots covering local homology, derivatives,
+determinant signs and oriented chart compatibility. The latest gate freshly
+compiled the three affected leaves and root in Slurm 13781140, request
+`1789242935902017893-topology_checkpoint-96e8ea73`; 86 unchanged source leaves
+retain their verified earlier compilation. All 17 public exports and the
+consumer, linter and axiom checks passed on that snapshot.
+[provenance/SNAPSHOT.json](provenance/SNAPSHOT.json) records exact source and
+configuration identity and preserves the earlier validation records. It is not
+the full recovered Chapter 35 project.
 
 Preserve Lean `leanprover/lean4:v4.33.1`, Mathlib
 `0df444a360eaa60ab8c11dca51a86af692955474`, and DifferentialGeometry `v0.1.2`

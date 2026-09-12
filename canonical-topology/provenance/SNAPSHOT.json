@@ -1,16 +1,17 @@
 {
-  "scope": "Dependency-closed 88-module local homology and derivative determinant-sign checkpoint; portable gate passed, full topology suite incomplete",
+  "scope": "Dependency-closed 89-module local homology, derivative determinant-sign and oriented chart-compatibility checkpoint; portable gate passed, full topology suite incomplete",
   "baseline_commit": "b45bfa009368c8f5f531e10f4f5280e90079d6ad",
   "baseline_ref": "refs/remotes/origin/codex/chapter35",
   "source_project": "PoincareLean",
-  "source_module_count": 88,
+  "source_module_count": 89,
   "roots": [
     "Poincare.Topology.Homology.RelativeMaps",
     "Poincare.Topology.Homology.RelativeHomeomorphism",
     "Poincare.Topology.Homology.LocalCharts",
     "Poincare.Analysis.LocalDerivativeHomotopy",
     "Poincare.Topology.Homology.LocalDerivativeComparison",
-    "Poincare.Topology.Homology.LocalLinearMaps"
+    "Poincare.Topology.Homology.LocalLinearMaps",
+    "Poincare.Topology.Homology.LocalOrientation"
   ],
   "changed_sources": [
     {
@@ -23,19 +24,25 @@
       "module": "Poincare.Topology.Homology.LocalCharts",
       "path": "Poincare/Topology/Homology/LocalCharts.lean",
       "baseline_sha256": "0720a889397029e32c227d63fc9990b38e161dd7ae84c3c2e31062ce7be39dc4",
-      "sha256": "4366fd4ef8ae3a0bccecce11b696e7dc1753981d10b2cdd5800fe3e3f139abe9"
+      "sha256": "b41c6b72f5200f1534eaa31f9c75d3f652b32bb513a08e2818c6f148d8a67f1a"
     },
     {
       "module": "Poincare.Topology.Homology.LocalDerivativeComparison",
       "path": "Poincare/Topology/Homology/LocalDerivativeComparison.lean",
       "baseline_sha256": null,
-      "sha256": "2fe9fc911a447921b0a966f7ecc861ce06e4d606a8b585da298fab91d07f85c1"
+      "sha256": "37278b20cf3a2092979b052a09d06d4d6349a39dc2e88262efab92c5d664a98a"
     },
     {
       "module": "Poincare.Topology.Homology.LocalLinearMaps",
       "path": "Poincare/Topology/Homology/LocalLinearMaps.lean",
       "baseline_sha256": null,
       "sha256": "d9284f07e88a77db3a9f90fa22291b8c2c6a5d3c7036f30e26865afe8ec0459d"
+    },
+    {
+      "module": "Poincare.Topology.Homology.LocalOrientation",
+      "path": "Poincare/Topology/Homology/LocalOrientation.lean",
+      "baseline_sha256": null,
+      "sha256": "c2bac8747de8d129db028b333f6a0688eb8d5a317afe390234f3c81796e1c01f"
     },
     {
       "module": "Poincare.Topology.Homology.RelativeHomeomorphism",
@@ -235,13 +242,13 @@
       "module": "Poincare.Topology.Homology.LocalCharts",
       "path": "Poincare/Topology/Homology/LocalCharts.lean",
       "baseline_sha256": "0720a889397029e32c227d63fc9990b38e161dd7ae84c3c2e31062ce7be39dc4",
-      "sha256": "4366fd4ef8ae3a0bccecce11b696e7dc1753981d10b2cdd5800fe3e3f139abe9"
+      "sha256": "b41c6b72f5200f1534eaa31f9c75d3f652b32bb513a08e2818c6f148d8a67f1a"
     },
     {
       "module": "Poincare.Topology.Homology.LocalDerivativeComparison",
       "path": "Poincare/Topology/Homology/LocalDerivativeComparison.lean",
       "baseline_sha256": null,
-      "sha256": "2fe9fc911a447921b0a966f7ecc861ce06e4d606a8b585da298fab91d07f85c1"
+      "sha256": "37278b20cf3a2092979b052a09d06d4d6349a39dc2e88262efab92c5d664a98a"
     },
     {
       "module": "Poincare.Topology.Homology.LocalHomology",
@@ -254,6 +261,12 @@
       "path": "Poincare/Topology/Homology/LocalLinearMaps.lean",
       "baseline_sha256": null,
       "sha256": "d9284f07e88a77db3a9f90fa22291b8c2c6a5d3c7036f30e26865afe8ec0459d"
+    },
+    {
+      "module": "Poincare.Topology.Homology.LocalOrientation",
+      "path": "Poincare/Topology/Homology/LocalOrientation.lean",
+      "baseline_sha256": null,
+      "sha256": "c2bac8747de8d129db028b333f6a0688eb8d5a317afe390234f3c81796e1c01f"
     },
     {
       "module": "Poincare.Topology.Homology.MeshBoundary",
@@ -589,8 +602,8 @@
   "aggregate": {
     "path": "Poincare.lean",
     "baseline_sha256": "99c3c8e47c19f60ee50a7e0f377e59138cf4ff33ebd4e26530d3c2b7cd47d452",
-    "sha256": "6c3232d2d719e0a2c333f7ce045ce6909c07173574d8080ba61ac9f834c687aa",
-    "change": "Checkpoint aggregate imports exactly the 88 supplied leaves; the full recovered aggregate is not replaced"
+    "sha256": "ac39f0b90c33e3e5e228341ede39f16b4717913ac81ac3840e504c32fad9083f",
+    "change": "Checkpoint aggregate imports exactly the 89 supplied leaves; the full recovered aggregate is not replaced"
   },
   "configuration": [
     {
@@ -629,7 +642,10 @@
     "Mathlib.Algebra.Order.Archimedean.Basic",
     "Mathlib.AlgebraicTopology.SingularHomology.HomologyZero",
     "Mathlib.AlgebraicTopology.SingularHomology.HomotopyInvariance",
+    "Mathlib.Analysis.Calculus.FDeriv.Add",
     "Mathlib.Analysis.Calculus.FDeriv.Basic",
+    "Mathlib.Analysis.Calculus.FDeriv.Comp",
+    "Mathlib.Analysis.Calculus.FDeriv.Congr",
     "Mathlib.Analysis.Convex.Contractible",
     "Mathlib.Analysis.InnerProductSpace.PiL2",
     "Mathlib.Analysis.InnerProductSpace.Projection.FiniteDimensional",
@@ -644,6 +660,7 @@
     "Mathlib.Data.Sign.Basic",
     "Mathlib.Geometry.Manifold.ChartedSpace",
     "Mathlib.Geometry.Manifold.Instances.Sphere",
+    "Mathlib.Geometry.Manifold.VectorBundle.Tangent",
     "Mathlib.LinearAlgebra.Basis.Basic",
     "Mathlib.LinearAlgebra.Determinant",
     "Mathlib.LinearAlgebra.Finsupp.Pi",
@@ -653,6 +670,7 @@
     "Mathlib.LinearAlgebra.Matrix.NonsingularInverse",
     "Mathlib.LinearAlgebra.Matrix.ToLin",
     "Mathlib.LinearAlgebra.Matrix.Transvection",
+    "Mathlib.LinearAlgebra.Orientation",
     "Mathlib.LinearAlgebra.Span.Basic",
     "Mathlib.Tactic.Linarith",
     "Mathlib.Tactic.Module",
@@ -664,7 +682,8 @@
     "Mathlib.Topology.Homeomorph.Lemmas",
     "Mathlib.Topology.Homotopy.Basic",
     "Mathlib.Topology.Homotopy.Contractible",
-    "Mathlib.Topology.MetricSpace.Pseudo.Lemmas"
+    "Mathlib.Topology.MetricSpace.Pseudo.Lemmas",
+    "Mathlib.Topology.OpenPartialHomeomorph.Continuity"
   ],
   "differential_geometry_imports": [],
   "third_party_license_sha256": "b40930bbcf80744c86c46a12bc9da056641d722716c378f5659b9e555ef833e1",
@@ -683,7 +702,10 @@
     "Poincare.Topology.integralRelativeHomologyMap_zero_eq_of_joined",
     "Poincare.Topology.integralRelativeHomologyMap_eq_derivative",
     "Poincare.Topology.integralRelativeHomologyMap_linearEquiv_eq_det_sign",
-    "Poincare.Topology.integralLocalHomologyOpenPartialHomeomorphIso_translation_eq_det_sign"
+    "Poincare.Topology.integralLocalHomologyOpenPartialHomeomorphIso_translation_eq_det_sign",
+    "Poincare.Topology.integralLocalHomologyOpenPartialHomeomorphIso_comp_neighborhood",
+    "Poincare.Topology.integralLocalHomologyOpenPartialHomeomorphIso_trans",
+    "Poincare.Topology.oriented_local_homology_chart_maps_eq"
   ],
   "historical_authorities": [
     {
@@ -821,23 +843,25 @@
     "full_topology_suite_accepted": false
   },
   "validation": {
-    "status": "passed for the selected 88-module checkpoint; full topology suite incomplete",
+    "status": "passed for the selected 89-module checkpoint; full topology suite incomplete",
     "date": "2026-09-12",
     "slurm_job": "13781140",
     "host": "della-r3c2n16",
-    "request_id": "1789239376984243943-topology_checkpoint-ed89b504",
-    "input_sha256": "1d9a70257d0f2c97f4ad188e99264683a33a7c38d068b4889f015d1af917bc64",
-    "result_sha256": "f182fff4afdbb31441cbedf0dc6260d403234d31a4281087745989605f0c0518",
-    "artifact_log_sha256": "9c10bec76573a71a6e4f36f86a96243d3dd8fa788f9fa3302dc87a7556405db4",
+    "request_id": "1789242935902017893-topology_checkpoint-96e8ea73",
+    "input_sha256": "f89b3e44e839740da7aa437dc93a2e26a54b202e04813ddb23998fdd12f0f2c0",
+    "result_sha256": "8237087b4a162c4b9ba6eec479177ca7f86b4b6437282104692b661b5a84caeb",
+    "artifact_log_sha256": "b33ddec3f0a6abfb39fc76e3c82059727c95aa90b14fa8a22f1399495093ad81",
     "source_config_harness_hash_guards": 99,
     "freshly_built_modules": [
+      "Poincare.Topology.Homology.LocalCharts",
       "Poincare.Topology.Homology.LocalDerivativeComparison",
+      "Poincare.Topology.Homology.LocalOrientation",
       "Poincare"
     ],
-    "root_build": "lake --no-cache --iofail build +Poincare.Topology.Homology.LocalDerivativeComparison:leanArts Poincare",
-    "fresh_build_scope": "Changed LocalDerivativeComparison and Poincare root; 87 unchanged source leaves retain the verified earlier checkpoint evidence.",
-    "exact_public_exports": 14,
-    "public_and_consumer_signature_axiom_pairs": 25,
+    "root_build": "lake --no-cache --iofail build +Poincare.Topology.Homology.LocalOrientation:leanArts +Poincare.Topology.Homology.LocalCharts:leanArts +Poincare.Topology.Homology.LocalDerivativeComparison:leanArts Poincare",
+    "fresh_build_scope": "Three changed/new leaves and Poincare root; 86 unchanged source leaves retain the verified earlier checkpoint evidence.",
+    "exact_public_exports": 17,
+    "public_and_consumer_signature_axiom_pairs": 32,
     "linters": [
       "unusedArguments",
       "simpNF",
@@ -852,13 +876,13 @@
       "Quot.sound"
     ],
     "unexpected_diagnostics": 0,
-    "elapsed_seconds": 124.06748008728027,
-    "peak_summed_rss_bytes": 2581647360,
+    "elapsed_seconds": 183.53363585472107,
+    "peak_summed_rss_bytes": 2615336960,
     "full_topology_suite_accepted": false,
     "consumer_probes": [
-      "All prior linear-sign and all-degree consumers unchanged",
-      "Actual restricted nonidentity open partial homeomorphism x \u21a6 5-x from (1,3), basepoint2,target3, negative derivative sign",
-      "Zero-dimensional actual open partial homeomorphism and degree-zero map"
+      "All 25 previous public/consumer signature and axiom pairs reproduced byte-identically",
+      "Actual translated real manifold charts sending the same point2 to2 and3; equality of their normalized manifold-local homology maps, with tangent trivializations and C1 structure derived",
+      "Actual restricted affine chart composition in every natural degree; a point belongs to the first source and is excluded from the composite source"
     ]
   },
   "previous_linear_sign_checkpoint_validation": {
@@ -918,5 +942,55 @@
     "aggregate_exit_code": 0,
     "artifact_elapsed": "5:55.36",
     "artifact_max_rss_kib": 2068092
+  },
+  "previous_local_diffeomorphism_sign_validation": {
+    "status": "passed for the selected 88-module checkpoint; full topology suite incomplete",
+    "date": "2026-09-12",
+    "slurm_job": "13781140",
+    "host": "della-r3c2n16",
+    "request_id": "1789239376984243943-topology_checkpoint-ed89b504",
+    "input_sha256": "1d9a70257d0f2c97f4ad188e99264683a33a7c38d068b4889f015d1af917bc64",
+    "result_sha256": "f182fff4afdbb31441cbedf0dc6260d403234d31a4281087745989605f0c0518",
+    "artifact_log_sha256": "9c10bec76573a71a6e4f36f86a96243d3dd8fa788f9fa3302dc87a7556405db4",
+    "source_config_harness_hash_guards": 99,
+    "freshly_built_modules": [
+      "Poincare.Topology.Homology.LocalDerivativeComparison",
+      "Poincare"
+    ],
+    "root_build": "lake --no-cache --iofail build +Poincare.Topology.Homology.LocalDerivativeComparison:leanArts Poincare",
+    "fresh_build_scope": "Changed LocalDerivativeComparison and Poincare root; 87 unchanged source leaves retain the verified earlier checkpoint evidence.",
+    "exact_public_exports": 14,
+    "public_and_consumer_signature_axiom_pairs": 25,
+    "linters": [
+      "unusedArguments",
+      "simpNF",
+      "synTaut",
+      "checkType"
+    ],
+    "linter_scope": "All imported Poincare declarations and current consumers, including private declarations",
+    "defLemma": "Unavailable in the pinned Mathlib; source declaration-kind checks retained.",
+    "allowed_transitive_axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "unexpected_diagnostics": 0,
+    "elapsed_seconds": 124.06748008728027,
+    "peak_summed_rss_bytes": 2581647360,
+    "full_topology_suite_accepted": false,
+    "consumer_probes": [
+      "All prior linear-sign and all-degree consumers unchanged",
+      "Actual restricted nonidentity open partial homeomorphism x \u21a6 5-x from (1,3), basepoint2,target3, negative derivative sign",
+      "Zero-dimensional actual open partial homeomorphism and degree-zero map"
+    ]
+  },
+  "original_oriented_chart_validation": {
+    "request_id": "1789242759150425414-topology-72ed40e6",
+    "slurm_job": "13781140",
+    "input_sha256": "9bf4920436087b54497bd26bbb158f9a95b4ced5ea8914a994e23ea595d50fe8",
+    "source_config_harness_hash_guards": 110,
+    "signature_axiom_pairs": 16,
+    "elapsed_seconds": 125.4607,
+    "scope": "Fresh LocalCharts and LocalDerivativeComparison artifacts, full LocalOrientation source, translated chart/actual manifold-map/rank-zero transition/restricted-composition consumers; all-package/current stock4 and standard-only axioms"
   }
 }

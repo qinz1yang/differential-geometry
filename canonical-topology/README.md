@@ -1,7 +1,7 @@
-# Local homology and derivative determinant signs
+# Local homology and oriented chart compatibility
 
 This separate `PoincareLean` project contains a dependency-closed checkpoint of
-88 Poincare modules. It extends the recovered Chapter 35 source at commit
+89 Poincare modules. It extends the recovered Chapter 35 source at commit
 `b45bfa009368c8f5f531e10f4f5280e90079d6ad` and preserves its mathematical objects
 and `Poincare` namespaces. `Poincare.lean` imports every included leaf.
 
@@ -25,9 +25,14 @@ The additions prove:
   real normed space, including dimension zero;
 - the actual local-homology map of a differentiable open partial homeomorphism
   with differentiable inverse equals its derivative determinant sign after
-  translating source and target basepoints to zero, including dimension zero.
+  translating source and target basepoints to zero, including dimension zero;
+- composition and neighborhood restriction laws for actual open-partial-homeomorphism
+  local maps in every natural degree;
+- equality of the normalized local top-homology maps from the same manifold
+  point under two charts whose actual tangent trivializations preserve the
+  same orientation, for finite-dimensional real normed models including rank zero.
 
-The seven new/changed modules and their exact baseline/current hashes are listed in
+The eight new/changed modules and their exact baseline/current hashes are listed in
 [provenance/SNAPSHOT.json](provenance/SNAPSHOT.json). The derivative homotopy
 retains its [upstream attribution and modification record](provenance/README.md).
 
@@ -92,6 +97,28 @@ and dimension zero. All-package and consumer declaration linters and
 standard-only transitive axioms pass. The 87 unchanged leaves retain their
 earlier compilation evidence; the previous 88-leaf checkpoint's evidence is
 preserved in the snapshot record.
+
+The oriented-chart extension adds `LocalOrientation`, bringing the checkpoint to
+89 leaves and 17 public exports. Its primary theorem compares maps from the
+same actual manifold local-homology group to the model's group at zero. The
+hypothesis concerns one tangent orientation and the actual two trivializations;
+no independent local generators or locally constant charts are supplied.
+Two shared neighborhood/composition laws now live in `LocalCharts`. The old
+55-line private neighborhood helper was moved there unchanged, and all three
+retained public derivative-comparison proofs are unchanged.
+
+Final portable request `1789242935902017893-topology_checkpoint-96e8ea73`
+passed in Slurm 13781140 in 183.53 seconds. `LocalCharts`,
+`LocalDerivativeComparison`, `LocalOrientation` and `Poincare` freshly compiled
+without diagnostics in 2:14.67. All 99 guards and 32 signature/axiom pairs
+passed, including all 17 public exports and every previous consumer readback.
+The new consumers use actual translated manifold charts and a restricted
+composition whose source is a proper intersection. All-package and consumer
+stock declaration linters and standard-only transitive axioms pass. The 86
+unchanged leaves retain their earlier compilation evidence. The original
+full-source gate separately checks a rank-zero oriented chart transition.
+These results establish pointwise chart compatibility; producing one coherent
+class over a neighborhood remains the next step.
 
 ## Remaining topology work
 
