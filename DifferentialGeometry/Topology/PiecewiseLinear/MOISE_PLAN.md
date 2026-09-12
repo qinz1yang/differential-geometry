@@ -100,8 +100,10 @@
   拼接桥只用 `X₁ = X₂ = X`、`h = id_O`、`φ x = ½·infDist x Oᶜ` 的特例。
   流形语言的同一陈述 **A′ `PLApproximationManifold n`**（`Manifold.lean`：PL `n`-流形 `M₁ M₂`、同胚 `h`、
   连续正 `φ`，存在 PL 同胚 `f`（`IsPL n n f ∧ IsPL n n f.symm`）φ-逼近 `h`）是未来经典证明的自然目标；
-  `A′ → A` 的归约（子类型上的图册、`OpenPartialHomeomorph` 与子类型同胚互换、`isPLAt_iff_of_mem_maximalAtlas`
-  转回逐图卡群胚条件）列为 Phase 3 首项。
+  `A′ → A` 的归约已证：`plApproximation_of_plApproximationManifold`（`ApproximationManifold.lean`；
+  `AtlasOn.subtypeChartedSpace` 把开集上的图册变成子类型上的图卡空间并继承群胚，
+  `OpenPartialHomeomorph` 与子类型同胚互换，再用 `isPLAt_iff_of_mem_maximalAtlas` 转回逐图卡群胚条件）。
+  因此未来只需在流形语言中证明 A′（`n = 3`）。
 - **B `PLSmoothing n : Prop`**：同一 carrier/拓扑上 `HasGroupoid X (plGroupoid n) → ∃ C', IsManifold (𝓡 n) ∞ X`。
   `n ≤ 7` 为真（`n = 3` 经典），`n = 8` 为假。更弱的 **B′ `PLSmoothingModel n`**（只要求存在与 `X` 同胚的光滑模型）
   已证蕴含 B（`plSmoothing_of_plSmoothingModel`，用本库 `pullbackChartedSpace`），所以 Phase 2 只需证 B′。
@@ -130,6 +132,7 @@
 
 8. `Manifold.lean` — PL 群胚的局部不变性质与 PL 流形间映射 `IsPL* n m`。
 9. `Polyhedron.lean` — PL 同胚、PL 球/球面、组合流形、`PLTriangulation`，以及桥接口 T1、T2 的陈述。
+10. `ApproximationManifold.lean` — 开集图册的子类型图卡空间；`plApproximation_of_plApproximationManifold`。
 
 验收：每个模块按模块名构建通过、零警告；端点 `#print axioms` 只含标准公理；条件性由签名显式表达。
 已证生产者：1–4、6 的桥与归纳、7 的装配。条件性消费者：6、7 的端点（依赖 A、B）。
@@ -143,7 +146,7 @@
 
 ### Phase 3+：A `PLApproximation 3` 的经典链（Moise §17, §23–27, §30–36）
 
-首项（维数无关，纯胶水）：`PLApproximationManifold n → PLApproximation n`；其次 T1、T2 两座桥。随后：
+首项 `PLApproximationManifold n → PLApproximation n` 已证（见 §4.2）；其次 T1、T2 两座桥。随后：
 
 PL 基础（细分、公共细分、正则邻域，§23）→ PL Schoenflies（§17，Alexander）→ 覆盖空间 PL 结构、
 Stallings 环定理、Dehn 引理（§24–27）→ 多面体插值、典范构形、管的柄分解（§30–32）→ 线性图正则邻域与
@@ -159,6 +162,8 @@ classification-of-surfaces 的 `Topology/InvarianceOfDomain.lean`）。与光滑
   `PLSmoothingModel`/`plSmoothing_of_plSmoothingModel`。九个模块逐个 `lake env lean` 加 lakefile 选项检查零错误零警告；
   端点与主要引理（含 `plSmoothing_of_plSmoothingModel`、`piecewiseAffineProperty_localInvariantProp`、`isPL_id`、
   `isPLAt_iff_of_mem_maximalAtlas`、`isPLBall_stdSimplex`）`#print axioms` 均只含标准公理。
+- 2026-09-11（深夜）：`ApproximationManifold.lean` 通过检查；`plApproximation_of_plApproximationManifold`
+  与 `AtlasOn.subtypeChartedSpace_hasGroupoid`、`AtlasOn.subtypeRestr_mem_maximalAtlas` 公理审计只含标准公理。
 
 - 2026-09-11：源码审计与路线固定。
 - 2026-09-11（Phase 1 首轮）：以下七个模块在本检出用 `lake env lean` 加 lakefile 选项
