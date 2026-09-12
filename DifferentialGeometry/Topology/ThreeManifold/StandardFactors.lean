@@ -3,6 +3,7 @@ import DifferentialGeometry.Topology.Manifold.SphereOrientation
 import DifferentialGeometry.Topology.Manifold.ProductOrientation
 import DifferentialGeometry.Topology.Manifold.Quotient
 import DifferentialGeometry.Topology.FundamentalGroup.Sphere
+import DifferentialGeometry.Topology.FundamentalGroup.SphericalQuotient
 import DifferentialGeometry.Geometry.Metric.Sphere.Isometry.OrthogonalAction
 import Mathlib.Topology.Covering.Basic
 
@@ -633,6 +634,27 @@ theorem projection_isLocalDiffeomorph : IsLocalDiffeomorph (𝓡 3) (𝓡 3) ∞
   G.smoothQuotient.local_diffeomorph
 
 theorem projection_isCoveringMap : IsCoveringMap G.projection := G.smoothQuotient.covering
+
+noncomputable def fundamentalGroupEquivOfFiber
+    {p : G.manifold.Carrier} (e : G.projection ⁻¹' {p}) :
+    FundamentalGroup G.manifold.Carrier p ≃* G.group :=
+  ((isQuotientCoveringMap_quotientMk_of_properlyDiscontinuousSMul (G := G.group)
+      (E := sphere (0 : EuclideanSpace ℝ (Fin 4)) 1)).fundamentalGroupEquiv e).trans
+    (MulEquiv.inv' G.group).symm
+
+noncomputable def fundamentalGroupManifoldEquiv (p : G.manifold.Carrier) :
+    FundamentalGroup G.manifold.Carrier p ≃* G.group :=
+  G.fundamentalGroupEquivOfFiber
+    ⟨Classical.choose (G.projection_surjective p),
+      Classical.choose_spec (G.projection_surjective p)⟩
+
+theorem nonempty_fundamentalGroupManifoldEquiv (p : G.manifold.Carrier) :
+    Nonempty (FundamentalGroup G.manifold.Carrier p ≃* G.group) :=
+  ⟨G.fundamentalGroupManifoldEquiv p⟩
+
+theorem fundamentalGroupEquivOfFiber_north_eq :
+    G.fundamentalGroupEquivOfFiber ⟨sphereThreeNorth, rfl⟩ =
+      fundamentalGroupFiniteFreeSphereThreeQuotientEquiv (G := G.group) := rfl
 
 theorem projection_positive (x : sphere (0 : EuclideanSpace ℝ (Fin 4)) 1) :
     Orientation.map (Fin 3)
