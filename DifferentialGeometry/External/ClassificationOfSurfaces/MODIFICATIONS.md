@@ -55,3 +55,34 @@ The two new production leaves passed fresh module/import consumer gate
 1789231441425991048-schoenflies-788bbe3d. The earlier three-module gate is
 preserved separately; exact final evidence is recorded in PROVENANCE.json. There is no claim of geometric free-triangle selection, remaining
 polygonal-disk recognition, compatible rounding, or smooth disk filling.
+
+## Native polygon after one-edge deletion
+
+PrePolygonDeletion combines the checked native complementary-arc, Jordan-frontier,
+polygonal-frontier and compact-region recognition proofs in one coherent leaf.
+Nine declaration statements and proof bodies are preserved; the unused private
+edge specialization is omitted. Only
+Schoenflies.PrePolygon.exists_prePolygon_closed_region_erase_triangle_of_one_edge_free
+is public. Namespace and open scopes remain unchanged. The final engine assumes
+only the original mesh frontier equation and actual geometric one-edge freeness;
+no original support, remaining-disk or surviving-triangle assumption is added.
+It returns an actual remaining PrePolygon with support/frontier, oriented arcs,
+endpoint coordinates and exact attaching-set equations.
+
+The compact-region recognition proof adapts PolygonalCircle.eq_closedRegion_of_isCompact_frontier_eq
+from PolygonalSchoenflies.lean:2410 at the pinned revision to native IsSeparating
+and inside/outside. Its original documentation and Apache notice are preserved.
+DELETION_RECOGNITION.patch records the exact zero-context selected-declaration
+delta; DELETION_PROVENANCE.json records immutable upstream hashes, the four
+checked native source hashes and final module hash. Other new private proofs
+use the already integrated native Jordan/polygonal APIs and checked mesh
+attachment equations. Consolidation changes only imports, legal notice paths,
+the final theorem's visibility and restored upstream recognition documentation,
+plus removal of that unused private specialization.
+
+The combined private source passed 1789232885714420646-schoenflies-24adbd8c
+with stock declaration linters and standard-only axiom readbacks. The new
+production module freshly compiled and its imported public consumer gate passed
+1789233891983857661-schoenflies-42a7b73c. Root matched all92 source guards, read
+all three type/axiom pairs and verified the exact upstream recognition delta. Geometric free-triangle existence,
+the two-edge branch, compatible rounding and smooth disk filling remain open.

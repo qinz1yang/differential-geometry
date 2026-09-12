@@ -34,7 +34,8 @@ Apache-2.0 §4(b).
 - **License**: Apache-2.0 (`ClassificationOfSurfaces/LICENSE`)
 
 Selected finite planar mesh, line-subdivision, free-triangle and geometric
-attachment modules, plus the bridge to the existing native PrePolygon API.
+attachment modules, plus native PrePolygon triangulation and the remaining
+closed polygonal region after a geometric one-edge deletion.
 The original namespace, README, attribution and documentation are retained.
 See `ClassificationOfSurfaces/PORTING.md`, `MODIFICATIONS.md` and `UPSTREAM.patch`
 for scope, exact changes and verification. This port does not include the
