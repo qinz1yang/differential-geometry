@@ -22,10 +22,6 @@ theorem exists_diffeomorph_standardThreeSphere_of_poincareControlledExtinction
           FundamentalGroup (L.get i).Carrier (x i))))
     (hquot : ∀ (G : Topology.SphericalSpaceFormGroup) (p : G.manifold.Carrier),
       Nonempty (FundamentalGroup G.manifold.Carrier p ≃* G.group))
-    (htrivial : ∀ (G : Topology.SphericalSpaceFormGroup), Subsingleton G.group →
-      Nonempty (Topology.ClosedOrientedManifold.OrientedDiffeomorph
-        G.manifold.toClosedOrientedManifold
-        Topology.standardThreeSphereLift.{u}.toClosedOrientedManifold))
     (hproduct : ∀ p : Topology.SphereTwoTimesCircle,
       Nonempty (FundamentalGroup Topology.SphereTwoTimesCircle p ≃* Multiplicative ℤ))
     (hunit : ∀ N : Topology.ConnectedClosedOrientedManifold.{u} 3,
@@ -45,7 +41,8 @@ theorem exists_diffeomorph_standardThreeSphere_of_poincareControlledExtinction
     [ConnectedSpace M.Carrier] [SimplyConnectedSpace M.Carrier] :
     Nonempty (M.Carrier ≃ₘ⟮𝓡 3, 𝓡 3⟯ Topology.standardThreeSphereLift.{u}.Carrier) :=
   Topology.exists_diffeomorph_standardThreeSphere_of_isPoincareStandard
-    hpi hquot htrivial hproduct hunit hcongr (W.isPoincareStandard hcut hsum)
+    hpi hquot Topology.exists_orientedDiffeomorph_standardThreeSphere_of_subsingleton_group
+    hproduct hunit hcongr (W.isPoincareStandard hcut hsum)
 
 def smoothPoincareConjecture : Prop :=
   ∀ (M : Type u) [TopologicalSpace M] [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M]
@@ -62,10 +59,6 @@ theorem smoothPoincareConjecture_of_poincareControlledExtinction
           FundamentalGroup (L.get i).Carrier (x i))))
     (hquot : ∀ (G : Topology.SphericalSpaceFormGroup) (p : G.manifold.Carrier),
       Nonempty (FundamentalGroup G.manifold.Carrier p ≃* G.group))
-    (htrivial : ∀ (G : Topology.SphericalSpaceFormGroup), Subsingleton G.group →
-      Nonempty (Topology.ClosedOrientedManifold.OrientedDiffeomorph
-        G.manifold.toClosedOrientedManifold
-        Topology.standardThreeSphereLift.{u}.toClosedOrientedManifold))
     (hproduct : ∀ p : Topology.SphereTwoTimesCircle,
       Nonempty (FundamentalGroup Topology.SphereTwoTimesCircle p ≃* Multiplicative ℤ))
     (hunit : ∀ N : Topology.ConnectedClosedOrientedManifold.{u} 3,
@@ -92,7 +85,7 @@ theorem smoothPoincareConjecture_of_poincareControlledExtinction
     (E := EuclideanSpace ℝ (Fin 3)) (M := M) (n := 3) (by simp)
   exact exists_diffeomorph_standardThreeSphere_of_poincareControlledExtinction
     (W := (hext { Carrier := M, orientation := o } g).some)
-    (hpi := hpi) (hquot := hquot) (htrivial := htrivial) (hproduct := hproduct)
+    (hpi := hpi) (hquot := hquot) (hproduct := hproduct)
     (hunit := hunit) (hcongr := hcongr)
     (hcut := fun i => hcut _ i) (hsum := hsum)
 
