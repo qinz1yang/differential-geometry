@@ -4,6 +4,7 @@
 !/DifferentialGeometry/
 !/.github
 !/Examples/
+!/canonical-topology/
 !/DifferentialGeometry.lean
 !/lake-manifest.json
 !/lakefile.toml
