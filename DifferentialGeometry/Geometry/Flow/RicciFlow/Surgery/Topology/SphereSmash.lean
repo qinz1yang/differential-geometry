@@ -1719,6 +1719,784 @@ theorem sphereTwo_parameter_positive (x : EuclideanSpace ℝ (Fin 2))
   field_simp
   ring
 
+
+private lemma sp_fderiv_single_eq_deriv {m : ℕ}
+    (f : EuclideanSpace ℝ (Fin 3) → EuclideanSpace ℝ (Fin m))
+    (x : EuclideanSpace ℝ (Fin 3)) (h : DifferentiableAt ℝ f x) (k : Fin 3) (i : Fin m) :
+    (fderiv ℝ f x (EuclideanSpace.single k 1)) i =
+      deriv (fun t : ℝ => (f (x + t • EuclideanSpace.single k 1)) i) 0 := by
+  have hg : HasDerivAt (fun t : ℝ => x + t • EuclideanSpace.single k 1)
+      (EuclideanSpace.single k 1) 0 := by
+    have h1 : HasDerivAt (fun t : ℝ => t • (EuclideanSpace.single k 1 : EuclideanSpace ℝ (Fin 3)))
+        (EuclideanSpace.single k 1 : EuclideanSpace ℝ (Fin 3)) 0 := by
+      simpa using (hasDerivAt_id (0 : ℝ)).smul_const (EuclideanSpace.single k 1 : EuclideanSpace ℝ (Fin 3))
+    simpa using h1.const_add x
+  have hcomp : HasDerivAt (fun t : ℝ => f (x + t • EuclideanSpace.single k 1))
+      (fderiv ℝ f x (EuclideanSpace.single k 1)) 0 := by
+    have hf' : HasFDerivAt f (fderiv ℝ f x)
+        (x + (0 : ℝ) • (EuclideanSpace.single k 1 : EuclideanSpace ℝ (Fin 3))) := by
+      simpa using h.hasFDerivAt
+    exact hf'.comp_hasDerivAt 0 hg
+  have hproj := (PiLp.proj (𝕜 := ℝ) (β := fun _ : Fin m => ℝ) (p := 2) (i := i)).hasFDerivAt.comp_hasDerivAt 0 hcomp
+  exact hproj.deriv.symm
+
+private lemma sp_deriv_const_div (c b c2 s : ℝ) :
+    deriv (fun s : ℝ => c / (1 + s ^ 2 + b ^ 2 + c2 ^ 2)) s =
+      -2 * c * s / (1 + s ^ 2 + b ^ 2 + c2 ^ 2) ^ 2 := by
+  have hD : (1 + s ^ 2 + b ^ 2 + c2 ^ 2) ≠ 0 := by positivity
+  rw [deriv_fun_div (c := fun _ : ℝ => c) (d := fun s : ℝ => 1 + s ^ 2 + b ^ 2 + c2 ^ 2)
+    (by fun_prop) (by fun_prop) hD]
+  rw [deriv_const]
+  rw [deriv_fun_add (f := fun s : ℝ => 1 + s ^ 2 + b ^ 2) (g := fun _ : ℝ => c2 ^ 2)
+    (by fun_prop) (by fun_prop)]
+  rw [deriv_fun_add (f := fun s : ℝ => 1 + s ^ 2) (g := fun _ : ℝ => b ^ 2)
+    (by fun_prop) (by fun_prop)]
+  rw [deriv_fun_add (f := fun _ : ℝ => (1 : ℝ)) (g := fun s : ℝ => s ^ 2)
+    (by fun_prop) (by fun_prop)]
+  simp only [deriv_const, deriv_fun_pow (f := fun s : ℝ => s) differentiableAt_id 2, deriv_id'']
+  field_simp
+  ring
+
+private lemma sp_deriv_lin_div (b c2 s : ℝ) :
+    deriv (fun s : ℝ => 2 * s / (1 + s ^ 2 + b ^ 2 + c2 ^ 2)) s =
+      2 * (1 + b ^ 2 + c2 ^ 2 - s ^ 2) / (1 + s ^ 2 + b ^ 2 + c2 ^ 2) ^ 2 := by
+  have hD : (1 + s ^ 2 + b ^ 2 + c2 ^ 2) ≠ 0 := by positivity
+  rw [deriv_fun_div (c := fun s : ℝ => 2 * s) (d := fun s : ℝ => 1 + s ^ 2 + b ^ 2 + c2 ^ 2)
+    (by fun_prop) (by fun_prop) hD]
+  rw [deriv_const_mul_id (2 : ℝ)]
+  rw [deriv_fun_add (f := fun s : ℝ => 1 + s ^ 2 + b ^ 2) (g := fun _ : ℝ => c2 ^ 2)
+    (by fun_prop) (by fun_prop)]
+  rw [deriv_fun_add (f := fun s : ℝ => 1 + s ^ 2) (g := fun _ : ℝ => b ^ 2)
+    (by fun_prop) (by fun_prop)]
+  rw [deriv_fun_add (f := fun _ : ℝ => (1 : ℝ)) (g := fun s : ℝ => s ^ 2)
+    (by fun_prop) (by fun_prop)]
+  simp only [deriv_const, deriv_fun_pow (f := fun s : ℝ => s) differentiableAt_id 2, deriv_id'']
+  field_simp
+  ring
+
+private lemma sp_deriv_quad_div (b c2 s : ℝ) :
+    deriv (fun s : ℝ => (s ^ 2 + b ^ 2 + c2 ^ 2 - 1) / (1 + s ^ 2 + b ^ 2 + c2 ^ 2)) s =
+      4 * s / (1 + s ^ 2 + b ^ 2 + c2 ^ 2) ^ 2 := by
+  have hD : (1 + s ^ 2 + b ^ 2 + c2 ^ 2) ≠ 0 := by positivity
+  rw [deriv_fun_div (c := fun s : ℝ => s ^ 2 + b ^ 2 + c2 ^ 2 - 1)
+    (d := fun s : ℝ => 1 + s ^ 2 + b ^ 2 + c2 ^ 2) (by fun_prop) (by fun_prop) hD]
+  rw [deriv_fun_sub (f := fun s : ℝ => s ^ 2 + b ^ 2 + c2 ^ 2) (g := fun _ : ℝ => (1 : ℝ))
+    (by fun_prop) (by fun_prop)]
+  rw [deriv_fun_add (f := fun s : ℝ => s ^ 2 + b ^ 2) (g := fun _ : ℝ => c2 ^ 2)
+    (by fun_prop) (by fun_prop)]
+  rw [deriv_fun_add (f := fun s : ℝ => s ^ 2) (g := fun _ : ℝ => b ^ 2)
+    (by fun_prop) (by fun_prop)]
+  rw [deriv_fun_add (f := fun s : ℝ => 1 + s ^ 2 + b ^ 2) (g := fun _ : ℝ => c2 ^ 2)
+    (by fun_prop) (by fun_prop)]
+  rw [deriv_fun_add (f := fun s : ℝ => 1 + s ^ 2) (g := fun _ : ℝ => b ^ 2)
+    (by fun_prop) (by fun_prop)]
+  rw [deriv_fun_add (f := fun _ : ℝ => (1 : ℝ)) (g := fun s : ℝ => s ^ 2)
+    (by fun_prop) (by fun_prop)]
+  simp only [deriv_const, deriv_fun_pow (f := fun s : ℝ => s) differentiableAt_id 2, deriv_id'']
+  field_simp
+  ring
+
+
+
+
+
+private lemma sp_deriv_three_00 (x : ThreeSpace) (hx : ∀ i : Fin 3, x i ∈ Ioo (0 : ℝ) 1) :
+    deriv (fun t : ℝ => (orientedSphereThreeInterior (x + t • EuclideanSpace.single 0 1)) 0) 0 =
+      (2 * (1 + openCubeCoordinate (x 1) ^ 2 + openCubeCoordinate (x 2) ^ 2 - openCubeCoordinate (x 0) ^ 2) / (1 + openCubeCoordinate (x 0) ^ 2 + openCubeCoordinate (x 1) ^ 2 + openCubeCoordinate (x 2) ^ 2) ^ 2) * ((2 * (x 0) ^ 2 - 2 * (x 0) + 1) / ((x 0) * (1 - (x 0))) ^ 2) := by
+  have hzk : (x 0 : ℝ) ≠ 0 := ne_of_gt (hx 0).1
+  have hok : (x 0 : ℝ) ≠ 1 := ne_of_lt (hx 0).2
+  have hfun : (fun t : ℝ => (orientedSphereThreeInterior (x + t • EuclideanSpace.single 0 1)) 0) =
+      fun t : ℝ => 2 * openCubeCoordinate (x 0 + t) / (1 + openCubeCoordinate (x 0 + t) ^ 2 + openCubeCoordinate (x 1) ^ 2 + openCubeCoordinate (x 2) ^ 2) := by
+    funext t
+    rw [orientedSphereThreeInterior_eq_param]
+    simp [sphereThreeInteriorParam]
+  rw [hfun]
+  have hmain : deriv ((fun s : ℝ => 2 * s / (1 + s ^ 2 + openCubeCoordinate (x 1) ^ 2 + openCubeCoordinate (x 2) ^ 2)) ∘ (fun t : ℝ => openCubeCoordinate (x 0 + t))) 0 =
+      (2 * (1 + openCubeCoordinate (x 1) ^ 2 + openCubeCoordinate (x 2) ^ 2 - openCubeCoordinate (x 0) ^ 2) / (1 + openCubeCoordinate (x 0) ^ 2 + openCubeCoordinate (x 1) ^ 2 + openCubeCoordinate (x 2) ^ 2) ^ 2) * ((2 * (x 0) ^ 2 - 2 * (x 0) + 1) / ((x 0) * (1 - (x 0))) ^ 2) := by
+    have hc : DifferentiableAt ℝ (fun s : ℝ => 2 * s / (1 + s ^ 2 + openCubeCoordinate (x 1) ^ 2 + openCubeCoordinate (x 2) ^ 2))
+        (openCubeCoordinate (x 0 + 0)) := by
+      fun_prop (disch := positivity)
+    have hg : DifferentiableAt ℝ (fun t : ℝ => openCubeCoordinate (x 0 + t)) 0 := by
+      simpa only [add_zero] using differentiableAt_oc_shift (x 0) hzk hok
+    have hcomp := deriv_comp 0 hc hg
+    rw [hcomp, add_zero]
+    rw [sp_deriv_lin_div (openCubeCoordinate (x 1)) (openCubeCoordinate (x 2)) (openCubeCoordinate (x 0)), deriv_oc_shift (x 0) hzk hok]
+    try ring
+  simpa only [Function.comp_def] using hmain
+
+private lemma sp_deriv_three_01 (x : ThreeSpace) (hx : ∀ i : Fin 3, x i ∈ Ioo (0 : ℝ) 1) :
+    deriv (fun t : ℝ => (orientedSphereThreeInterior (x + t • EuclideanSpace.single 0 1)) 1) 0 =
+      (-2 * (2 * openCubeCoordinate (x 1)) * openCubeCoordinate (x 0) / (1 + openCubeCoordinate (x 0) ^ 2 + openCubeCoordinate (x 1) ^ 2 + openCubeCoordinate (x 2) ^ 2) ^ 2) * ((2 * (x 0) ^ 2 - 2 * (x 0) + 1) / ((x 0) * (1 - (x 0))) ^ 2) := by
+  have hzk : (x 0 : ℝ) ≠ 0 := ne_of_gt (hx 0).1
+  have hok : (x 0 : ℝ) ≠ 1 := ne_of_lt (hx 0).2
+  have hfun : (fun t : ℝ => (orientedSphereThreeInterior (x + t • EuclideanSpace.single 0 1)) 1) =
+      fun t : ℝ => 2 * openCubeCoordinate (x 1) / (1 + openCubeCoordinate (x 0 + t) ^ 2 + openCubeCoordinate (x 1) ^ 2 + openCubeCoordinate (x 2) ^ 2) := by
+    funext t
+    rw [orientedSphereThreeInterior_eq_param]
+    simp [sphereThreeInteriorParam]
+  rw [hfun]
+  have hmain : deriv ((fun s : ℝ => 2 * openCubeCoordinate (x 1) / (1 + s ^ 2 + openCubeCoordinate (x 1) ^ 2 + openCubeCoordinate (x 2) ^ 2)) ∘ (fun t : ℝ => openCubeCoordinate (x 0 + t))) 0 =
+      (-2 * (2 * openCubeCoordinate (x 1)) * openCubeCoordinate (x 0) / (1 + openCubeCoordinate (x 0) ^ 2 + openCubeCoordinate (x 1) ^ 2 + openCubeCoordinate (x 2) ^ 2) ^ 2) * ((2 * (x 0) ^ 2 - 2 * (x 0) + 1) / ((x 0) * (1 - (x 0))) ^ 2) := by
+    have hc : DifferentiableAt ℝ (fun s : ℝ => 2 * openCubeCoordinate (x 1) / (1 + s ^ 2 + openCubeCoordinate (x 1) ^ 2 + openCubeCoordinate (x 2) ^ 2))
+        (openCubeCoordinate (x 0 + 0)) := by
+      fun_prop (disch := positivity)
+    have hg : DifferentiableAt ℝ (fun t : ℝ => openCubeCoordinate (x 0 + t)) 0 := by
+      simpa only [add_zero] using differentiableAt_oc_shift (x 0) hzk hok
+    have hcomp := deriv_comp 0 hc hg
+    rw [hcomp, add_zero]
+    rw [sp_deriv_const_div (2 * openCubeCoordinate (x 1)) (openCubeCoordinate (x 1)) (openCubeCoordinate (x 2)) (openCubeCoordinate (x 0)), deriv_oc_shift (x 0) hzk hok]
+    try ring
+  simpa only [Function.comp_def] using hmain
+
+private lemma sp_deriv_three_02 (x : ThreeSpace) (hx : ∀ i : Fin 3, x i ∈ Ioo (0 : ℝ) 1) :
+    deriv (fun t : ℝ => (orientedSphereThreeInterior (x + t • EuclideanSpace.single 0 1)) 2) 0 =
+      (-2 * (2 * openCubeCoordinate (x 2)) * openCubeCoordinate (x 0) / (1 + openCubeCoordinate (x 0) ^ 2 + openCubeCoordinate (x 1) ^ 2 + openCubeCoordinate (x 2) ^ 2) ^ 2) * ((2 * (x 0) ^ 2 - 2 * (x 0) + 1) / ((x 0) * (1 - (x 0))) ^ 2) := by
+  have hzk : (x 0 : ℝ) ≠ 0 := ne_of_gt (hx 0).1
+  have hok : (x 0 : ℝ) ≠ 1 := ne_of_lt (hx 0).2
+  have hfun : (fun t : ℝ => (orientedSphereThreeInterior (x + t • EuclideanSpace.single 0 1)) 2) =
+      fun t : ℝ => 2 * openCubeCoordinate (x 2) / (1 + openCubeCoordinate (x 0 + t) ^ 2 + openCubeCoordinate (x 1) ^ 2 + openCubeCoordinate (x 2) ^ 2) := by
+    funext t
+    rw [orientedSphereThreeInterior_eq_param]
+    simp [sphereThreeInteriorParam]
+  rw [hfun]
+  have hmain : deriv ((fun s : ℝ => 2 * openCubeCoordinate (x 2) / (1 + s ^ 2 + openCubeCoordinate (x 1) ^ 2 + openCubeCoordinate (x 2) ^ 2)) ∘ (fun t : ℝ => openCubeCoordinate (x 0 + t))) 0 =
+      (-2 * (2 * openCubeCoordinate (x 2)) * openCubeCoordinate (x 0) / (1 + openCubeCoordinate (x 0) ^ 2 + openCubeCoordinate (x 1) ^ 2 + openCubeCoordinate (x 2) ^ 2) ^ 2) * ((2 * (x 0) ^ 2 - 2 * (x 0) + 1) / ((x 0) * (1 - (x 0))) ^ 2) := by
+    have hc : DifferentiableAt ℝ (fun s : ℝ => 2 * openCubeCoordinate (x 2) / (1 + s ^ 2 + openCubeCoordinate (x 1) ^ 2 + openCubeCoordinate (x 2) ^ 2))
+        (openCubeCoordinate (x 0 + 0)) := by
+      fun_prop (disch := positivity)
+    have hg : DifferentiableAt ℝ (fun t : ℝ => openCubeCoordinate (x 0 + t)) 0 := by
+      simpa only [add_zero] using differentiableAt_oc_shift (x 0) hzk hok
+    have hcomp := deriv_comp 0 hc hg
+    rw [hcomp, add_zero]
+    rw [sp_deriv_const_div (2 * openCubeCoordinate (x 2)) (openCubeCoordinate (x 1)) (openCubeCoordinate (x 2)) (openCubeCoordinate (x 0)), deriv_oc_shift (x 0) hzk hok]
+    try ring
+  simpa only [Function.comp_def] using hmain
+
+private lemma sp_deriv_three_03 (x : ThreeSpace) (hx : ∀ i : Fin 3, x i ∈ Ioo (0 : ℝ) 1) :
+    deriv (fun t : ℝ => (orientedSphereThreeInterior (x + t • EuclideanSpace.single 0 1)) 3) 0 =
+      (4 * openCubeCoordinate (x 0) / (1 + openCubeCoordinate (x 0) ^ 2 + openCubeCoordinate (x 1) ^ 2 + openCubeCoordinate (x 2) ^ 2) ^ 2) * ((2 * (x 0) ^ 2 - 2 * (x 0) + 1) / ((x 0) * (1 - (x 0))) ^ 2) := by
+  have hzk : (x 0 : ℝ) ≠ 0 := ne_of_gt (hx 0).1
+  have hok : (x 0 : ℝ) ≠ 1 := ne_of_lt (hx 0).2
+  have hfun : (fun t : ℝ => (orientedSphereThreeInterior (x + t • EuclideanSpace.single 0 1)) 3) =
+      fun t : ℝ => (openCubeCoordinate (x 0 + t) ^ 2 + openCubeCoordinate (x 1) ^ 2 + openCubeCoordinate (x 2) ^ 2 - 1) / (1 + openCubeCoordinate (x 0 + t) ^ 2 + openCubeCoordinate (x 1) ^ 2 + openCubeCoordinate (x 2) ^ 2) := by
+    funext t
+    rw [orientedSphereThreeInterior_eq_param]
+    simp [sphereThreeInteriorParam]
+  rw [hfun]
+  have hmain : deriv ((fun s : ℝ => (s ^ 2 + openCubeCoordinate (x 1) ^ 2 + openCubeCoordinate (x 2) ^ 2 - 1) / (1 + s ^ 2 + openCubeCoordinate (x 1) ^ 2 + openCubeCoordinate (x 2) ^ 2)) ∘ (fun t : ℝ => openCubeCoordinate (x 0 + t))) 0 =
+      (4 * openCubeCoordinate (x 0) / (1 + openCubeCoordinate (x 0) ^ 2 + openCubeCoordinate (x 1) ^ 2 + openCubeCoordinate (x 2) ^ 2) ^ 2) * ((2 * (x 0) ^ 2 - 2 * (x 0) + 1) / ((x 0) * (1 - (x 0))) ^ 2) := by
+    have hc : DifferentiableAt ℝ (fun s : ℝ => (s ^ 2 + openCubeCoordinate (x 1) ^ 2 + openCubeCoordinate (x 2) ^ 2 - 1) / (1 + s ^ 2 + openCubeCoordinate (x 1) ^ 2 + openCubeCoordinate (x 2) ^ 2))
+        (openCubeCoordinate (x 0 + 0)) := by
+      fun_prop (disch := positivity)
+    have hg : DifferentiableAt ℝ (fun t : ℝ => openCubeCoordinate (x 0 + t)) 0 := by
+      simpa only [add_zero] using differentiableAt_oc_shift (x 0) hzk hok
+    have hcomp := deriv_comp 0 hc hg
+    rw [hcomp, add_zero]
+    rw [sp_deriv_quad_div (openCubeCoordinate (x 1)) (openCubeCoordinate (x 2)) (openCubeCoordinate (x 0)), deriv_oc_shift (x 0) hzk hok]
+    try ring
+  simpa only [Function.comp_def] using hmain
+
+private lemma sp_deriv_three_10 (x : ThreeSpace) (hx : ∀ i : Fin 3, x i ∈ Ioo (0 : ℝ) 1) :
+    deriv (fun t : ℝ => (orientedSphereThreeInterior (x + t • EuclideanSpace.single 1 1)) 0) 0 =
+      (-2 * (2 * openCubeCoordinate (x 0)) * openCubeCoordinate (x 1) / (1 + openCubeCoordinate (x 1) ^ 2 + openCubeCoordinate (x 0) ^ 2 + openCubeCoordinate (x 2) ^ 2) ^ 2) * ((2 * (x 1) ^ 2 - 2 * (x 1) + 1) / ((x 1) * (1 - (x 1))) ^ 2) := by
+  have hzk : (x 1 : ℝ) ≠ 0 := ne_of_gt (hx 1).1
+  have hok : (x 1 : ℝ) ≠ 1 := ne_of_lt (hx 1).2
+  have hfun : (fun t : ℝ => (orientedSphereThreeInterior (x + t • EuclideanSpace.single 1 1)) 0) =
+      fun t : ℝ => 2 * openCubeCoordinate (x 0) / (1 + openCubeCoordinate (x 0) ^ 2 + openCubeCoordinate (x 1 + t) ^ 2 + openCubeCoordinate (x 2) ^ 2) := by
+    funext t
+    rw [orientedSphereThreeInterior_eq_param]
+    simp [sphereThreeInteriorParam]
+  rw [hfun]
+  have hmain : deriv ((fun s : ℝ => 2 * openCubeCoordinate (x 0) / (1 + openCubeCoordinate (x 0) ^ 2 + s ^ 2 + openCubeCoordinate (x 2) ^ 2)) ∘ (fun t : ℝ => openCubeCoordinate (x 1 + t))) 0 =
+      (-2 * (2 * openCubeCoordinate (x 0)) * openCubeCoordinate (x 1) / (1 + openCubeCoordinate (x 1) ^ 2 + openCubeCoordinate (x 0) ^ 2 + openCubeCoordinate (x 2) ^ 2) ^ 2) * ((2 * (x 1) ^ 2 - 2 * (x 1) + 1) / ((x 1) * (1 - (x 1))) ^ 2) := by
+    have hcom : (fun s : ℝ => 2 * openCubeCoordinate (x 0) / (1 + openCubeCoordinate (x 0) ^ 2 + s ^ 2 + openCubeCoordinate (x 2) ^ 2)) = (fun s : ℝ => 2 * openCubeCoordinate (x 0) / (1 + s ^ 2 + openCubeCoordinate (x 0) ^ 2 + openCubeCoordinate (x 2) ^ 2)) := by
+      funext s
+      ring
+    have hc : DifferentiableAt ℝ (fun s : ℝ => 2 * openCubeCoordinate (x 0) / (1 + s ^ 2 + openCubeCoordinate (x 0) ^ 2 + openCubeCoordinate (x 2) ^ 2))
+        (openCubeCoordinate (x 1 + 0)) := by
+      fun_prop (disch := positivity)
+    have hg : DifferentiableAt ℝ (fun t : ℝ => openCubeCoordinate (x 1 + t)) 0 := by
+      simpa only [add_zero] using differentiableAt_oc_shift (x 1) hzk hok
+    have hcomp := deriv_comp 0 hc hg
+    rw [hcom]
+    rw [hcomp, add_zero]
+    rw [sp_deriv_const_div (2 * openCubeCoordinate (x 0)) (openCubeCoordinate (x 0)) (openCubeCoordinate (x 2)) (openCubeCoordinate (x 1)), deriv_oc_shift (x 1) hzk hok]
+    try ring
+  simpa only [Function.comp_def] using hmain
+
+private lemma sp_deriv_three_11 (x : ThreeSpace) (hx : ∀ i : Fin 3, x i ∈ Ioo (0 : ℝ) 1) :
+    deriv (fun t : ℝ => (orientedSphereThreeInterior (x + t • EuclideanSpace.single 1 1)) 1) 0 =
+      (2 * (1 + openCubeCoordinate (x 0) ^ 2 + openCubeCoordinate (x 2) ^ 2 - openCubeCoordinate (x 1) ^ 2) / (1 + openCubeCoordinate (x 1) ^ 2 + openCubeCoordinate (x 0) ^ 2 + openCubeCoordinate (x 2) ^ 2) ^ 2) * ((2 * (x 1) ^ 2 - 2 * (x 1) + 1) / ((x 1) * (1 - (x 1))) ^ 2) := by
+  have hzk : (x 1 : ℝ) ≠ 0 := ne_of_gt (hx 1).1
+  have hok : (x 1 : ℝ) ≠ 1 := ne_of_lt (hx 1).2
+  have hfun : (fun t : ℝ => (orientedSphereThreeInterior (x + t • EuclideanSpace.single 1 1)) 1) =
+      fun t : ℝ => 2 * openCubeCoordinate (x 1 + t) / (1 + openCubeCoordinate (x 0) ^ 2 + openCubeCoordinate (x 1 + t) ^ 2 + openCubeCoordinate (x 2) ^ 2) := by
+    funext t
+    rw [orientedSphereThreeInterior_eq_param]
+    simp [sphereThreeInteriorParam]
+  rw [hfun]
+  have hmain : deriv ((fun s : ℝ => 2 * s / (1 + openCubeCoordinate (x 0) ^ 2 + s ^ 2 + openCubeCoordinate (x 2) ^ 2)) ∘ (fun t : ℝ => openCubeCoordinate (x 1 + t))) 0 =
+      (2 * (1 + openCubeCoordinate (x 0) ^ 2 + openCubeCoordinate (x 2) ^ 2 - openCubeCoordinate (x 1) ^ 2) / (1 + openCubeCoordinate (x 1) ^ 2 + openCubeCoordinate (x 0) ^ 2 + openCubeCoordinate (x 2) ^ 2) ^ 2) * ((2 * (x 1) ^ 2 - 2 * (x 1) + 1) / ((x 1) * (1 - (x 1))) ^ 2) := by
+    have hcom : (fun s : ℝ => 2 * s / (1 + openCubeCoordinate (x 0) ^ 2 + s ^ 2 + openCubeCoordinate (x 2) ^ 2)) = (fun s : ℝ => 2 * s / (1 + s ^ 2 + openCubeCoordinate (x 0) ^ 2 + openCubeCoordinate (x 2) ^ 2)) := by
+      funext s
+      ring
+    have hc : DifferentiableAt ℝ (fun s : ℝ => 2 * s / (1 + s ^ 2 + openCubeCoordinate (x 0) ^ 2 + openCubeCoordinate (x 2) ^ 2))
+        (openCubeCoordinate (x 1 + 0)) := by
+      fun_prop (disch := positivity)
+    have hg : DifferentiableAt ℝ (fun t : ℝ => openCubeCoordinate (x 1 + t)) 0 := by
+      simpa only [add_zero] using differentiableAt_oc_shift (x 1) hzk hok
+    have hcomp := deriv_comp 0 hc hg
+    rw [hcom]
+    rw [hcomp, add_zero]
+    rw [sp_deriv_lin_div (openCubeCoordinate (x 0)) (openCubeCoordinate (x 2)) (openCubeCoordinate (x 1)), deriv_oc_shift (x 1) hzk hok]
+    try ring
+  simpa only [Function.comp_def] using hmain
+
+private lemma sp_deriv_three_12 (x : ThreeSpace) (hx : ∀ i : Fin 3, x i ∈ Ioo (0 : ℝ) 1) :
+    deriv (fun t : ℝ => (orientedSphereThreeInterior (x + t • EuclideanSpace.single 1 1)) 2) 0 =
+      (-2 * (2 * openCubeCoordinate (x 2)) * openCubeCoordinate (x 1) / (1 + openCubeCoordinate (x 1) ^ 2 + openCubeCoordinate (x 0) ^ 2 + openCubeCoordinate (x 2) ^ 2) ^ 2) * ((2 * (x 1) ^ 2 - 2 * (x 1) + 1) / ((x 1) * (1 - (x 1))) ^ 2) := by
+  have hzk : (x 1 : ℝ) ≠ 0 := ne_of_gt (hx 1).1
+  have hok : (x 1 : ℝ) ≠ 1 := ne_of_lt (hx 1).2
+  have hfun : (fun t : ℝ => (orientedSphereThreeInterior (x + t • EuclideanSpace.single 1 1)) 2) =
+      fun t : ℝ => 2 * openCubeCoordinate (x 2) / (1 + openCubeCoordinate (x 0) ^ 2 + openCubeCoordinate (x 1 + t) ^ 2 + openCubeCoordinate (x 2) ^ 2) := by
+    funext t
+    rw [orientedSphereThreeInterior_eq_param]
+    simp [sphereThreeInteriorParam]
+  rw [hfun]
+  have hmain : deriv ((fun s : ℝ => 2 * openCubeCoordinate (x 2) / (1 + openCubeCoordinate (x 0) ^ 2 + s ^ 2 + openCubeCoordinate (x 2) ^ 2)) ∘ (fun t : ℝ => openCubeCoordinate (x 1 + t))) 0 =
+      (-2 * (2 * openCubeCoordinate (x 2)) * openCubeCoordinate (x 1) / (1 + openCubeCoordinate (x 1) ^ 2 + openCubeCoordinate (x 0) ^ 2 + openCubeCoordinate (x 2) ^ 2) ^ 2) * ((2 * (x 1) ^ 2 - 2 * (x 1) + 1) / ((x 1) * (1 - (x 1))) ^ 2) := by
+    have hcom : (fun s : ℝ => 2 * openCubeCoordinate (x 2) / (1 + openCubeCoordinate (x 0) ^ 2 + s ^ 2 + openCubeCoordinate (x 2) ^ 2)) = (fun s : ℝ => 2 * openCubeCoordinate (x 2) / (1 + s ^ 2 + openCubeCoordinate (x 0) ^ 2 + openCubeCoordinate (x 2) ^ 2)) := by
+      funext s
+      ring
+    have hc : DifferentiableAt ℝ (fun s : ℝ => 2 * openCubeCoordinate (x 2) / (1 + s ^ 2 + openCubeCoordinate (x 0) ^ 2 + openCubeCoordinate (x 2) ^ 2))
+        (openCubeCoordinate (x 1 + 0)) := by
+      fun_prop (disch := positivity)
+    have hg : DifferentiableAt ℝ (fun t : ℝ => openCubeCoordinate (x 1 + t)) 0 := by
+      simpa only [add_zero] using differentiableAt_oc_shift (x 1) hzk hok
+    have hcomp := deriv_comp 0 hc hg
+    rw [hcom]
+    rw [hcomp, add_zero]
+    rw [sp_deriv_const_div (2 * openCubeCoordinate (x 2)) (openCubeCoordinate (x 0)) (openCubeCoordinate (x 2)) (openCubeCoordinate (x 1)), deriv_oc_shift (x 1) hzk hok]
+    try ring
+  simpa only [Function.comp_def] using hmain
+
+private lemma sp_deriv_three_13 (x : ThreeSpace) (hx : ∀ i : Fin 3, x i ∈ Ioo (0 : ℝ) 1) :
+    deriv (fun t : ℝ => (orientedSphereThreeInterior (x + t • EuclideanSpace.single 1 1)) 3) 0 =
+      (4 * openCubeCoordinate (x 1) / (1 + openCubeCoordinate (x 1) ^ 2 + openCubeCoordinate (x 0) ^ 2 + openCubeCoordinate (x 2) ^ 2) ^ 2) * ((2 * (x 1) ^ 2 - 2 * (x 1) + 1) / ((x 1) * (1 - (x 1))) ^ 2) := by
+  have hzk : (x 1 : ℝ) ≠ 0 := ne_of_gt (hx 1).1
+  have hok : (x 1 : ℝ) ≠ 1 := ne_of_lt (hx 1).2
+  have hfun : (fun t : ℝ => (orientedSphereThreeInterior (x + t • EuclideanSpace.single 1 1)) 3) =
+      fun t : ℝ => (openCubeCoordinate (x 0) ^ 2 + openCubeCoordinate (x 1 + t) ^ 2 + openCubeCoordinate (x 2) ^ 2 - 1) / (1 + openCubeCoordinate (x 0) ^ 2 + openCubeCoordinate (x 1 + t) ^ 2 + openCubeCoordinate (x 2) ^ 2) := by
+    funext t
+    rw [orientedSphereThreeInterior_eq_param]
+    simp [sphereThreeInteriorParam]
+  rw [hfun]
+  have hmain : deriv ((fun s : ℝ => (openCubeCoordinate (x 0) ^ 2 + s ^ 2 + openCubeCoordinate (x 2) ^ 2 - 1) / (1 + openCubeCoordinate (x 0) ^ 2 + s ^ 2 + openCubeCoordinate (x 2) ^ 2)) ∘ (fun t : ℝ => openCubeCoordinate (x 1 + t))) 0 =
+      (4 * openCubeCoordinate (x 1) / (1 + openCubeCoordinate (x 1) ^ 2 + openCubeCoordinate (x 0) ^ 2 + openCubeCoordinate (x 2) ^ 2) ^ 2) * ((2 * (x 1) ^ 2 - 2 * (x 1) + 1) / ((x 1) * (1 - (x 1))) ^ 2) := by
+    have hcom : (fun s : ℝ => (openCubeCoordinate (x 0) ^ 2 + s ^ 2 + openCubeCoordinate (x 2) ^ 2 - 1) / (1 + openCubeCoordinate (x 0) ^ 2 + s ^ 2 + openCubeCoordinate (x 2) ^ 2)) = (fun s : ℝ => (s ^ 2 + openCubeCoordinate (x 0) ^ 2 + openCubeCoordinate (x 2) ^ 2 - 1) / (1 + s ^ 2 + openCubeCoordinate (x 0) ^ 2 + openCubeCoordinate (x 2) ^ 2)) := by
+      funext s
+      ring
+    have hc : DifferentiableAt ℝ (fun s : ℝ => (s ^ 2 + openCubeCoordinate (x 0) ^ 2 + openCubeCoordinate (x 2) ^ 2 - 1) / (1 + s ^ 2 + openCubeCoordinate (x 0) ^ 2 + openCubeCoordinate (x 2) ^ 2))
+        (openCubeCoordinate (x 1 + 0)) := by
+      fun_prop (disch := positivity)
+    have hg : DifferentiableAt ℝ (fun t : ℝ => openCubeCoordinate (x 1 + t)) 0 := by
+      simpa only [add_zero] using differentiableAt_oc_shift (x 1) hzk hok
+    have hcomp := deriv_comp 0 hc hg
+    rw [hcom]
+    rw [hcomp, add_zero]
+    rw [sp_deriv_quad_div (openCubeCoordinate (x 0)) (openCubeCoordinate (x 2)) (openCubeCoordinate (x 1)), deriv_oc_shift (x 1) hzk hok]
+    try ring
+  simpa only [Function.comp_def] using hmain
+
+private lemma sp_deriv_three_20 (x : ThreeSpace) (hx : ∀ i : Fin 3, x i ∈ Ioo (0 : ℝ) 1) :
+    deriv (fun t : ℝ => (orientedSphereThreeInterior (x + t • EuclideanSpace.single 2 1)) 0) 0 =
+      (-2 * (2 * openCubeCoordinate (x 0)) * openCubeCoordinate (x 2) / (1 + openCubeCoordinate (x 2) ^ 2 + openCubeCoordinate (x 0) ^ 2 + openCubeCoordinate (x 1) ^ 2) ^ 2) * ((2 * (x 2) ^ 2 - 2 * (x 2) + 1) / ((x 2) * (1 - (x 2))) ^ 2) := by
+  have hzk : (x 2 : ℝ) ≠ 0 := ne_of_gt (hx 2).1
+  have hok : (x 2 : ℝ) ≠ 1 := ne_of_lt (hx 2).2
+  have hfun : (fun t : ℝ => (orientedSphereThreeInterior (x + t • EuclideanSpace.single 2 1)) 0) =
+      fun t : ℝ => 2 * openCubeCoordinate (x 0) / (1 + openCubeCoordinate (x 0) ^ 2 + openCubeCoordinate (x 1) ^ 2 + openCubeCoordinate (x 2 + t) ^ 2) := by
+    funext t
+    rw [orientedSphereThreeInterior_eq_param]
+    simp [sphereThreeInteriorParam]
+  rw [hfun]
+  have hmain : deriv ((fun s : ℝ => 2 * openCubeCoordinate (x 0) / (1 + openCubeCoordinate (x 0) ^ 2 + openCubeCoordinate (x 1) ^ 2 + s ^ 2)) ∘ (fun t : ℝ => openCubeCoordinate (x 2 + t))) 0 =
+      (-2 * (2 * openCubeCoordinate (x 0)) * openCubeCoordinate (x 2) / (1 + openCubeCoordinate (x 2) ^ 2 + openCubeCoordinate (x 0) ^ 2 + openCubeCoordinate (x 1) ^ 2) ^ 2) * ((2 * (x 2) ^ 2 - 2 * (x 2) + 1) / ((x 2) * (1 - (x 2))) ^ 2) := by
+    have hcom : (fun s : ℝ => 2 * openCubeCoordinate (x 0) / (1 + openCubeCoordinate (x 0) ^ 2 + openCubeCoordinate (x 1) ^ 2 + s ^ 2)) = (fun s : ℝ => 2 * openCubeCoordinate (x 0) / (1 + s ^ 2 + openCubeCoordinate (x 0) ^ 2 + openCubeCoordinate (x 1) ^ 2)) := by
+      funext s
+      ring
+    have hc : DifferentiableAt ℝ (fun s : ℝ => 2 * openCubeCoordinate (x 0) / (1 + s ^ 2 + openCubeCoordinate (x 0) ^ 2 + openCubeCoordinate (x 1) ^ 2))
+        (openCubeCoordinate (x 2 + 0)) := by
+      fun_prop (disch := positivity)
+    have hg : DifferentiableAt ℝ (fun t : ℝ => openCubeCoordinate (x 2 + t)) 0 := by
+      simpa only [add_zero] using differentiableAt_oc_shift (x 2) hzk hok
+    have hcomp := deriv_comp 0 hc hg
+    rw [hcom]
+    rw [hcomp, add_zero]
+    rw [sp_deriv_const_div (2 * openCubeCoordinate (x 0)) (openCubeCoordinate (x 0)) (openCubeCoordinate (x 1)) (openCubeCoordinate (x 2)), deriv_oc_shift (x 2) hzk hok]
+    try ring
+  simpa only [Function.comp_def] using hmain
+
+private lemma sp_deriv_three_21 (x : ThreeSpace) (hx : ∀ i : Fin 3, x i ∈ Ioo (0 : ℝ) 1) :
+    deriv (fun t : ℝ => (orientedSphereThreeInterior (x + t • EuclideanSpace.single 2 1)) 1) 0 =
+      (-2 * (2 * openCubeCoordinate (x 1)) * openCubeCoordinate (x 2) / (1 + openCubeCoordinate (x 2) ^ 2 + openCubeCoordinate (x 0) ^ 2 + openCubeCoordinate (x 1) ^ 2) ^ 2) * ((2 * (x 2) ^ 2 - 2 * (x 2) + 1) / ((x 2) * (1 - (x 2))) ^ 2) := by
+  have hzk : (x 2 : ℝ) ≠ 0 := ne_of_gt (hx 2).1
+  have hok : (x 2 : ℝ) ≠ 1 := ne_of_lt (hx 2).2
+  have hfun : (fun t : ℝ => (orientedSphereThreeInterior (x + t • EuclideanSpace.single 2 1)) 1) =
+      fun t : ℝ => 2 * openCubeCoordinate (x 1) / (1 + openCubeCoordinate (x 0) ^ 2 + openCubeCoordinate (x 1) ^ 2 + openCubeCoordinate (x 2 + t) ^ 2) := by
+    funext t
+    rw [orientedSphereThreeInterior_eq_param]
+    simp [sphereThreeInteriorParam]
+  rw [hfun]
+  have hmain : deriv ((fun s : ℝ => 2 * openCubeCoordinate (x 1) / (1 + openCubeCoordinate (x 0) ^ 2 + openCubeCoordinate (x 1) ^ 2 + s ^ 2)) ∘ (fun t : ℝ => openCubeCoordinate (x 2 + t))) 0 =
+      (-2 * (2 * openCubeCoordinate (x 1)) * openCubeCoordinate (x 2) / (1 + openCubeCoordinate (x 2) ^ 2 + openCubeCoordinate (x 0) ^ 2 + openCubeCoordinate (x 1) ^ 2) ^ 2) * ((2 * (x 2) ^ 2 - 2 * (x 2) + 1) / ((x 2) * (1 - (x 2))) ^ 2) := by
+    have hcom : (fun s : ℝ => 2 * openCubeCoordinate (x 1) / (1 + openCubeCoordinate (x 0) ^ 2 + openCubeCoordinate (x 1) ^ 2 + s ^ 2)) = (fun s : ℝ => 2 * openCubeCoordinate (x 1) / (1 + s ^ 2 + openCubeCoordinate (x 0) ^ 2 + openCubeCoordinate (x 1) ^ 2)) := by
+      funext s
+      ring
+    have hc : DifferentiableAt ℝ (fun s : ℝ => 2 * openCubeCoordinate (x 1) / (1 + s ^ 2 + openCubeCoordinate (x 0) ^ 2 + openCubeCoordinate (x 1) ^ 2))
+        (openCubeCoordinate (x 2 + 0)) := by
+      fun_prop (disch := positivity)
+    have hg : DifferentiableAt ℝ (fun t : ℝ => openCubeCoordinate (x 2 + t)) 0 := by
+      simpa only [add_zero] using differentiableAt_oc_shift (x 2) hzk hok
+    have hcomp := deriv_comp 0 hc hg
+    rw [hcom]
+    rw [hcomp, add_zero]
+    rw [sp_deriv_const_div (2 * openCubeCoordinate (x 1)) (openCubeCoordinate (x 0)) (openCubeCoordinate (x 1)) (openCubeCoordinate (x 2)), deriv_oc_shift (x 2) hzk hok]
+    try ring
+  simpa only [Function.comp_def] using hmain
+
+private lemma sp_deriv_three_22 (x : ThreeSpace) (hx : ∀ i : Fin 3, x i ∈ Ioo (0 : ℝ) 1) :
+    deriv (fun t : ℝ => (orientedSphereThreeInterior (x + t • EuclideanSpace.single 2 1)) 2) 0 =
+      (2 * (1 + openCubeCoordinate (x 0) ^ 2 + openCubeCoordinate (x 1) ^ 2 - openCubeCoordinate (x 2) ^ 2) / (1 + openCubeCoordinate (x 2) ^ 2 + openCubeCoordinate (x 0) ^ 2 + openCubeCoordinate (x 1) ^ 2) ^ 2) * ((2 * (x 2) ^ 2 - 2 * (x 2) + 1) / ((x 2) * (1 - (x 2))) ^ 2) := by
+  have hzk : (x 2 : ℝ) ≠ 0 := ne_of_gt (hx 2).1
+  have hok : (x 2 : ℝ) ≠ 1 := ne_of_lt (hx 2).2
+  have hfun : (fun t : ℝ => (orientedSphereThreeInterior (x + t • EuclideanSpace.single 2 1)) 2) =
+      fun t : ℝ => 2 * openCubeCoordinate (x 2 + t) / (1 + openCubeCoordinate (x 0) ^ 2 + openCubeCoordinate (x 1) ^ 2 + openCubeCoordinate (x 2 + t) ^ 2) := by
+    funext t
+    rw [orientedSphereThreeInterior_eq_param]
+    simp [sphereThreeInteriorParam]
+  rw [hfun]
+  have hmain : deriv ((fun s : ℝ => 2 * s / (1 + openCubeCoordinate (x 0) ^ 2 + openCubeCoordinate (x 1) ^ 2 + s ^ 2)) ∘ (fun t : ℝ => openCubeCoordinate (x 2 + t))) 0 =
+      (2 * (1 + openCubeCoordinate (x 0) ^ 2 + openCubeCoordinate (x 1) ^ 2 - openCubeCoordinate (x 2) ^ 2) / (1 + openCubeCoordinate (x 2) ^ 2 + openCubeCoordinate (x 0) ^ 2 + openCubeCoordinate (x 1) ^ 2) ^ 2) * ((2 * (x 2) ^ 2 - 2 * (x 2) + 1) / ((x 2) * (1 - (x 2))) ^ 2) := by
+    have hcom : (fun s : ℝ => 2 * s / (1 + openCubeCoordinate (x 0) ^ 2 + openCubeCoordinate (x 1) ^ 2 + s ^ 2)) = (fun s : ℝ => 2 * s / (1 + s ^ 2 + openCubeCoordinate (x 0) ^ 2 + openCubeCoordinate (x 1) ^ 2)) := by
+      funext s
+      ring
+    have hc : DifferentiableAt ℝ (fun s : ℝ => 2 * s / (1 + s ^ 2 + openCubeCoordinate (x 0) ^ 2 + openCubeCoordinate (x 1) ^ 2))
+        (openCubeCoordinate (x 2 + 0)) := by
+      fun_prop (disch := positivity)
+    have hg : DifferentiableAt ℝ (fun t : ℝ => openCubeCoordinate (x 2 + t)) 0 := by
+      simpa only [add_zero] using differentiableAt_oc_shift (x 2) hzk hok
+    have hcomp := deriv_comp 0 hc hg
+    rw [hcom]
+    rw [hcomp, add_zero]
+    rw [sp_deriv_lin_div (openCubeCoordinate (x 0)) (openCubeCoordinate (x 1)) (openCubeCoordinate (x 2)), deriv_oc_shift (x 2) hzk hok]
+    try ring
+  simpa only [Function.comp_def] using hmain
+
+private lemma sp_deriv_three_23 (x : ThreeSpace) (hx : ∀ i : Fin 3, x i ∈ Ioo (0 : ℝ) 1) :
+    deriv (fun t : ℝ => (orientedSphereThreeInterior (x + t • EuclideanSpace.single 2 1)) 3) 0 =
+      (4 * openCubeCoordinate (x 2) / (1 + openCubeCoordinate (x 2) ^ 2 + openCubeCoordinate (x 0) ^ 2 + openCubeCoordinate (x 1) ^ 2) ^ 2) * ((2 * (x 2) ^ 2 - 2 * (x 2) + 1) / ((x 2) * (1 - (x 2))) ^ 2) := by
+  have hzk : (x 2 : ℝ) ≠ 0 := ne_of_gt (hx 2).1
+  have hok : (x 2 : ℝ) ≠ 1 := ne_of_lt (hx 2).2
+  have hfun : (fun t : ℝ => (orientedSphereThreeInterior (x + t • EuclideanSpace.single 2 1)) 3) =
+      fun t : ℝ => (openCubeCoordinate (x 0) ^ 2 + openCubeCoordinate (x 1) ^ 2 + openCubeCoordinate (x 2 + t) ^ 2 - 1) / (1 + openCubeCoordinate (x 0) ^ 2 + openCubeCoordinate (x 1) ^ 2 + openCubeCoordinate (x 2 + t) ^ 2) := by
+    funext t
+    rw [orientedSphereThreeInterior_eq_param]
+    simp [sphereThreeInteriorParam]
+  rw [hfun]
+  have hmain : deriv ((fun s : ℝ => (openCubeCoordinate (x 0) ^ 2 + openCubeCoordinate (x 1) ^ 2 + s ^ 2 - 1) / (1 + openCubeCoordinate (x 0) ^ 2 + openCubeCoordinate (x 1) ^ 2 + s ^ 2)) ∘ (fun t : ℝ => openCubeCoordinate (x 2 + t))) 0 =
+      (4 * openCubeCoordinate (x 2) / (1 + openCubeCoordinate (x 2) ^ 2 + openCubeCoordinate (x 0) ^ 2 + openCubeCoordinate (x 1) ^ 2) ^ 2) * ((2 * (x 2) ^ 2 - 2 * (x 2) + 1) / ((x 2) * (1 - (x 2))) ^ 2) := by
+    have hcom : (fun s : ℝ => (openCubeCoordinate (x 0) ^ 2 + openCubeCoordinate (x 1) ^ 2 + s ^ 2 - 1) / (1 + openCubeCoordinate (x 0) ^ 2 + openCubeCoordinate (x 1) ^ 2 + s ^ 2)) = (fun s : ℝ => (s ^ 2 + openCubeCoordinate (x 0) ^ 2 + openCubeCoordinate (x 1) ^ 2 - 1) / (1 + s ^ 2 + openCubeCoordinate (x 0) ^ 2 + openCubeCoordinate (x 1) ^ 2)) := by
+      funext s
+      ring
+    have hc : DifferentiableAt ℝ (fun s : ℝ => (s ^ 2 + openCubeCoordinate (x 0) ^ 2 + openCubeCoordinate (x 1) ^ 2 - 1) / (1 + s ^ 2 + openCubeCoordinate (x 0) ^ 2 + openCubeCoordinate (x 1) ^ 2))
+        (openCubeCoordinate (x 2 + 0)) := by
+      fun_prop (disch := positivity)
+    have hg : DifferentiableAt ℝ (fun t : ℝ => openCubeCoordinate (x 2 + t)) 0 := by
+      simpa only [add_zero] using differentiableAt_oc_shift (x 2) hzk hok
+    have hcomp := deriv_comp 0 hc hg
+    rw [hcom]
+    rw [hcomp, add_zero]
+    rw [sp_deriv_quad_div (openCubeCoordinate (x 0)) (openCubeCoordinate (x 1)) (openCubeCoordinate (x 2)), deriv_oc_shift (x 2) hzk hok]
+    try ring
+  simpa only [Function.comp_def] using hmain
+
+
+private lemma fin_succ_two_eq_three : (Fin.succ 2 : Fin 4) = 3 := rfl
+
+private lemma fin4_succAbove_one_zero : (1 : Fin 4).succAbove (0 : Fin 3) = 0 := by decide
+private lemma fin4_succAbove_one_one : (1 : Fin 4).succAbove (1 : Fin 3) = 2 := by decide
+private lemma fin4_succAbove_one_two : (1 : Fin 4).succAbove (2 : Fin 3) = 3 := by decide
+private lemma fin4_succAbove_two_zero : (2 : Fin 4).succAbove (0 : Fin 3) = 0 := by decide
+private lemma fin4_succAbove_two_one : (2 : Fin 4).succAbove (1 : Fin 3) = 1 := by decide
+private lemma fin4_succAbove_two_two : (2 : Fin 4).succAbove (2 : Fin 3) = 3 := by decide
+private lemma fin4_succAbove_three_zero : (3 : Fin 4).succAbove (0 : Fin 3) = 0 := by decide
+private lemma fin4_succAbove_three_one : (3 : Fin 4).succAbove (1 : Fin 3) = 1 := by decide
+private lemma fin4_succAbove_three_two : (3 : Fin 4).succAbove (2 : Fin 3) = 2 := by decide
+
+private lemma det_four_general (A : Matrix (Fin 4) (Fin 4) ℝ) :
+    A.det =
+      A 0 0 * A 1 1 * A 2 2 * A 3 3 - A 0 0 * A 1 1 * A 2 3 * A 3 2 -
+        A 0 0 * A 1 2 * A 2 1 * A 3 3 + A 0 0 * A 1 2 * A 2 3 * A 3 1 +
+        A 0 0 * A 1 3 * A 2 1 * A 3 2 - A 0 0 * A 1 3 * A 2 2 * A 3 1 -
+        A 0 1 * A 1 0 * A 2 2 * A 3 3 + A 0 1 * A 1 0 * A 2 3 * A 3 2 +
+        A 0 1 * A 1 2 * A 2 0 * A 3 3 - A 0 1 * A 1 2 * A 2 3 * A 3 0 -
+        A 0 1 * A 1 3 * A 2 0 * A 3 2 + A 0 1 * A 1 3 * A 2 2 * A 3 0 +
+        A 0 2 * A 1 0 * A 2 1 * A 3 3 - A 0 2 * A 1 0 * A 2 3 * A 3 1 -
+        A 0 2 * A 1 1 * A 2 0 * A 3 3 + A 0 2 * A 1 1 * A 2 3 * A 3 0 +
+        A 0 2 * A 1 3 * A 2 0 * A 3 1 - A 0 2 * A 1 3 * A 2 1 * A 3 0 -
+        A 0 3 * A 1 0 * A 2 1 * A 3 2 + A 0 3 * A 1 0 * A 2 2 * A 3 1 +
+        A 0 3 * A 1 1 * A 2 0 * A 3 2 - A 0 3 * A 1 1 * A 2 2 * A 3 0 -
+        A 0 3 * A 1 2 * A 2 0 * A 3 1 + A 0 3 * A 1 2 * A 2 1 * A 3 0 := by
+  rw [Matrix.det_succ_row_zero, Fin.sum_univ_four]
+  rw [Matrix.det_fin_three, Matrix.det_fin_three, Matrix.det_fin_three, Matrix.det_fin_three]
+  simp only [Matrix.submatrix_apply, Fin.zero_succAbove, Fin.succ_zero_eq_one,
+    Fin.succ_one_eq_two, fin_succ_two_eq_three, fin4_succAbove_one_zero, fin4_succAbove_one_one,
+    fin4_succAbove_one_two, fin4_succAbove_two_zero, fin4_succAbove_two_one,
+    fin4_succAbove_two_two, fin4_succAbove_three_zero, fin4_succAbove_three_one,
+    fin4_succAbove_three_two, Fin.isValue]
+  norm_num
+  ring
+
+private def spGeoA (u v w : ℝ) : Matrix (Fin 4) (Fin 4) ℝ :=
+  !![2 * u, 2 * (1 + v ^ 2 + w ^ 2 - u ^ 2), -2 * (2 * u) * v, -2 * (2 * u) * w;
+    2 * v, -2 * (2 * v) * u, 2 * (1 + u ^ 2 + w ^ 2 - v ^ 2), -2 * (2 * v) * w;
+    2 * w, -2 * (2 * w) * u, -2 * (2 * w) * v, 2 * (1 + u ^ 2 + v ^ 2 - w ^ 2);
+    u ^ 2 + v ^ 2 + w ^ 2 - 1, 4 * u, 4 * v, 4 * w]
+
+private lemma sp_geoA_det (u v w : ℝ) :
+    Matrix.det (spGeoA u v w) = 8 * (1 + u ^ 2 + v ^ 2 + w ^ 2) ^ 4 := by
+  rw [det_four_general]
+  simp only [spGeoA, Matrix.of_apply, Matrix.cons_val_zero, Matrix.cons_val_one,
+    Matrix.cons_val_two, Matrix.cons_val_three, Matrix.vecHead, Matrix.vecTail,
+    Function.comp_apply, Fin.isValue, Fin.succ_zero_eq_one, Fin.succ_one_eq_two]
+  ring
+
+
+private lemma spGeoA_apply_00 (u v w : ℝ) :
+    spGeoA u v w 0 0 = 2 * u := by
+  simp [spGeoA]
+
+private lemma spGeoA_apply_01 (u v w : ℝ) :
+    spGeoA u v w 0 1 = 2 * (1 + v ^ 2 + w ^ 2 - u ^ 2) := by
+  simp [spGeoA]
+
+private lemma spGeoA_apply_02 (u v w : ℝ) :
+    spGeoA u v w 0 2 = -2 * (2 * u) * v := by
+  simp [spGeoA]
+
+private lemma spGeoA_apply_03 (u v w : ℝ) :
+    spGeoA u v w 0 3 = -2 * (2 * u) * w := by
+  simp [spGeoA]
+
+private lemma spGeoA_apply_10 (u v w : ℝ) :
+    spGeoA u v w 1 0 = 2 * v := by
+  simp [spGeoA]
+
+private lemma spGeoA_apply_11 (u v w : ℝ) :
+    spGeoA u v w 1 1 = -2 * (2 * v) * u := by
+  simp [spGeoA]
+
+private lemma spGeoA_apply_12 (u v w : ℝ) :
+    spGeoA u v w 1 2 = 2 * (1 + u ^ 2 + w ^ 2 - v ^ 2) := by
+  simp [spGeoA]
+
+private lemma spGeoA_apply_13 (u v w : ℝ) :
+    spGeoA u v w 1 3 = -2 * (2 * v) * w := by
+  simp [spGeoA]
+
+private lemma spGeoA_apply_20 (u v w : ℝ) :
+    spGeoA u v w 2 0 = 2 * w := by
+  simp [spGeoA]
+
+private lemma spGeoA_apply_21 (u v w : ℝ) :
+    spGeoA u v w 2 1 = -2 * (2 * w) * u := by
+  simp [spGeoA]
+
+private lemma spGeoA_apply_22 (u v w : ℝ) :
+    spGeoA u v w 2 2 = -2 * (2 * w) * v := by
+  simp [spGeoA]
+
+private lemma spGeoA_apply_23 (u v w : ℝ) :
+    spGeoA u v w 2 3 = 2 * (1 + u ^ 2 + v ^ 2 - w ^ 2) := by
+  simp [spGeoA]
+
+private lemma spGeoA_apply_30 (u v w : ℝ) :
+    spGeoA u v w 3 0 = u ^ 2 + v ^ 2 + w ^ 2 - 1 := by
+  simp [spGeoA]
+
+private lemma spGeoA_apply_31 (u v w : ℝ) :
+    spGeoA u v w 3 1 = 4 * u := by
+  simp [spGeoA]
+
+private lemma spGeoA_apply_32 (u v w : ℝ) :
+    spGeoA u v w 3 2 = 4 * v := by
+  simp [spGeoA]
+
+private lemma spGeoA_apply_33 (u v w : ℝ) :
+    spGeoA u v w 3 3 = 4 * w := by
+  simp [spGeoA]
+
+private lemma differentiableAt_sphereThreeInteriorParam (p : ℝ × ℝ × ℝ) :
+    DifferentiableAt ℝ sphereThreeInteriorParam p := by
+  rw [differentiableAt_piLp]
+  intro i
+  simp only [sphereThreeInteriorParam, PiLp.toLp_apply]
+  fin_cases i <;>
+    simp only [Fin.reduceFinMk, Fin.isValue, Matrix.cons_val_zero, Matrix.cons_val_one,
+      Matrix.cons_val_two, Matrix.cons_val_three, div_eq_mul_inv] <;>
+    first
+      | exact (by fun_prop : DifferentiableAt ℝ (fun p : ℝ × ℝ × ℝ => 2 * p.1) p).mul
+          ((by fun_prop : DifferentiableAt ℝ
+            (fun p : ℝ × ℝ × ℝ => 1 + p.1 ^ 2 + p.2.1 ^ 2 + p.2.2 ^ 2) p).inv
+            (by positivity))
+      | exact (by fun_prop : DifferentiableAt ℝ (fun p : ℝ × ℝ × ℝ => 2 * p.2.1) p).mul
+          ((by fun_prop : DifferentiableAt ℝ
+            (fun p : ℝ × ℝ × ℝ => 1 + p.1 ^ 2 + p.2.1 ^ 2 + p.2.2 ^ 2) p).inv
+            (by positivity))
+      | exact (by fun_prop : DifferentiableAt ℝ (fun p : ℝ × ℝ × ℝ => 2 * p.2.2) p).mul
+          ((by fun_prop : DifferentiableAt ℝ
+            (fun p : ℝ × ℝ × ℝ => 1 + p.1 ^ 2 + p.2.1 ^ 2 + p.2.2 ^ 2) p).inv
+            (by positivity))
+      | exact (by fun_prop : DifferentiableAt ℝ
+            (fun p : ℝ × ℝ × ℝ => p.1 ^ 2 + p.2.1 ^ 2 + p.2.2 ^ 2 - 1) p).mul
+          ((by fun_prop : DifferentiableAt ℝ
+            (fun p : ℝ × ℝ × ℝ => 1 + p.1 ^ 2 + p.2.1 ^ 2 + p.2.2 ^ 2) p).inv
+            (by positivity))
+
+private lemma differentiableAt_cubeCoordinate_three (x : ThreeSpace)
+    (hx : ∀ i : Fin 3, x i ∈ Ioo (0 : ℝ) 1) (i : Fin 3) :
+    DifferentiableAt ℝ (fun x : ThreeSpace => openCubeCoordinate (x i)) x := by
+  have hz : (x i : ℝ) ≠ 0 := ne_of_gt (hx i).1
+  have ho : (x i : ℝ) ≠ 1 := ne_of_lt (hx i).2
+  have hc := (hasDerivAt_openCubeCoordinate (x i) hz ho).differentiableAt
+  have hp : DifferentiableAt ℝ (fun x : ThreeSpace => x i) x :=
+    (PiLp.proj (𝕜 := ℝ) (β := fun _ : Fin 3 => ℝ) (p := 2) (i := i)).differentiableAt
+  exact hc.comp x hp
+
+private lemma differentiableAt_orientedSphereThreeInterior (x : ThreeSpace)
+    (hx : ∀ i : Fin 3, x i ∈ Ioo (0 : ℝ) 1) :
+    DifferentiableAt ℝ orientedSphereThreeInterior x := by
+  have htriple : DifferentiableAt ℝ (fun x : ThreeSpace =>
+      (openCubeCoordinate (x 0), openCubeCoordinate (x 1), openCubeCoordinate (x 2))) x :=
+    (differentiableAt_cubeCoordinate_three x hx 0).prodMk
+      ((differentiableAt_cubeCoordinate_three x hx 1).prodMk
+        (differentiableAt_cubeCoordinate_three x hx 2))
+  have hpar := differentiableAt_sphereThreeInteriorParam
+    (openCubeCoordinate (x 0), openCubeCoordinate (x 1), openCubeCoordinate (x 2))
+  have hcomp := hpar.comp x htriple
+  have hfun : orientedSphereThreeInterior = sphereThreeInteriorParam ∘
+      (fun x : ThreeSpace =>
+        (openCubeCoordinate (x 0), openCubeCoordinate (x 1), openCubeCoordinate (x 2))) := by
+    funext y
+    rw [Function.comp_apply, orientedSphereThreeInterior_eq_param]
+  exact hfun ▸ hcomp
+
+private lemma sp_point_three (x : ThreeSpace) (i : Fin 4) :
+    orientedSphereThreeInterior x i =
+      spGeoA (openCubeCoordinate (x 0)) (openCubeCoordinate (x 1))
+          (openCubeCoordinate (x 2)) i 0 /
+        (1 + openCubeCoordinate (x 0) ^ 2 + openCubeCoordinate (x 1) ^ 2 +
+          openCubeCoordinate (x 2) ^ 2) := by
+  rw [orientedSphereThreeInterior_eq_param]
+  fin_cases i <;>
+    simp [sphereThreeInteriorParam, spGeoA, Matrix.cons_val_two, Matrix.cons_val_three,
+      Matrix.vecHead, Matrix.vecTail, Function.comp_apply]
+
+private lemma sp_fderiv_three_00 (x : ThreeSpace)
+    (hx : ∀ i : Fin 3, x i ∈ Ioo (0 : ℝ) 1) :
+    (fderiv ℝ orientedSphereThreeInterior x (EuclideanSpace.single 0 1)) 0 =
+      spGeoA (openCubeCoordinate (x 0)) (openCubeCoordinate (x 1))
+          (openCubeCoordinate (x 2)) 0 1 /
+        (1 + openCubeCoordinate (x 0) ^ 2 + openCubeCoordinate (x 1) ^ 2 +
+          openCubeCoordinate (x 2) ^ 2) ^ 2 *
+        ((2 * (x 0) ^ 2 - 2 * (x 0) + 1) / ((x 0) * (1 - (x 0))) ^ 2) := by
+  rw [sp_fderiv_single_eq_deriv orientedSphereThreeInterior x
+      (differentiableAt_orientedSphereThreeInterior x hx) 0 0,
+    sp_deriv_three_00 x hx, spGeoA_apply_01]
+
+private lemma sp_fderiv_three_01 (x : ThreeSpace)
+    (hx : ∀ i : Fin 3, x i ∈ Ioo (0 : ℝ) 1) :
+    (fderiv ℝ orientedSphereThreeInterior x (EuclideanSpace.single 0 1)) 1 =
+      spGeoA (openCubeCoordinate (x 0)) (openCubeCoordinate (x 1))
+          (openCubeCoordinate (x 2)) 1 1 /
+        (1 + openCubeCoordinate (x 0) ^ 2 + openCubeCoordinate (x 1) ^ 2 +
+          openCubeCoordinate (x 2) ^ 2) ^ 2 *
+        ((2 * (x 0) ^ 2 - 2 * (x 0) + 1) / ((x 0) * (1 - (x 0))) ^ 2) := by
+  rw [sp_fderiv_single_eq_deriv orientedSphereThreeInterior x
+      (differentiableAt_orientedSphereThreeInterior x hx) 0 1,
+    sp_deriv_three_01 x hx, spGeoA_apply_11]
+
+private lemma sp_fderiv_three_02 (x : ThreeSpace)
+    (hx : ∀ i : Fin 3, x i ∈ Ioo (0 : ℝ) 1) :
+    (fderiv ℝ orientedSphereThreeInterior x (EuclideanSpace.single 0 1)) 2 =
+      spGeoA (openCubeCoordinate (x 0)) (openCubeCoordinate (x 1))
+          (openCubeCoordinate (x 2)) 2 1 /
+        (1 + openCubeCoordinate (x 0) ^ 2 + openCubeCoordinate (x 1) ^ 2 +
+          openCubeCoordinate (x 2) ^ 2) ^ 2 *
+        ((2 * (x 0) ^ 2 - 2 * (x 0) + 1) / ((x 0) * (1 - (x 0))) ^ 2) := by
+  rw [sp_fderiv_single_eq_deriv orientedSphereThreeInterior x
+      (differentiableAt_orientedSphereThreeInterior x hx) 0 2,
+    sp_deriv_three_02 x hx, spGeoA_apply_21]
+
+private lemma sp_fderiv_three_03 (x : ThreeSpace)
+    (hx : ∀ i : Fin 3, x i ∈ Ioo (0 : ℝ) 1) :
+    (fderiv ℝ orientedSphereThreeInterior x (EuclideanSpace.single 0 1)) 3 =
+      spGeoA (openCubeCoordinate (x 0)) (openCubeCoordinate (x 1))
+          (openCubeCoordinate (x 2)) 3 1 /
+        (1 + openCubeCoordinate (x 0) ^ 2 + openCubeCoordinate (x 1) ^ 2 +
+          openCubeCoordinate (x 2) ^ 2) ^ 2 *
+        ((2 * (x 0) ^ 2 - 2 * (x 0) + 1) / ((x 0) * (1 - (x 0))) ^ 2) := by
+  rw [sp_fderiv_single_eq_deriv orientedSphereThreeInterior x
+      (differentiableAt_orientedSphereThreeInterior x hx) 0 3,
+    sp_deriv_three_03 x hx, spGeoA_apply_31]
+
+private lemma sp_fderiv_three_10 (x : ThreeSpace)
+    (hx : ∀ i : Fin 3, x i ∈ Ioo (0 : ℝ) 1) :
+    (fderiv ℝ orientedSphereThreeInterior x (EuclideanSpace.single 1 1)) 0 =
+      spGeoA (openCubeCoordinate (x 0)) (openCubeCoordinate (x 1))
+          (openCubeCoordinate (x 2)) 0 2 /
+        (1 + openCubeCoordinate (x 0) ^ 2 + openCubeCoordinate (x 1) ^ 2 +
+          openCubeCoordinate (x 2) ^ 2) ^ 2 *
+        ((2 * (x 1) ^ 2 - 2 * (x 1) + 1) / ((x 1) * (1 - (x 1))) ^ 2) := by
+  rw [sp_fderiv_single_eq_deriv orientedSphereThreeInterior x
+      (differentiableAt_orientedSphereThreeInterior x hx) 1 0,
+    sp_deriv_three_10 x hx, spGeoA_apply_02]
+  ring_nf
+
+private lemma sp_fderiv_three_11 (x : ThreeSpace)
+    (hx : ∀ i : Fin 3, x i ∈ Ioo (0 : ℝ) 1) :
+    (fderiv ℝ orientedSphereThreeInterior x (EuclideanSpace.single 1 1)) 1 =
+      spGeoA (openCubeCoordinate (x 0)) (openCubeCoordinate (x 1))
+          (openCubeCoordinate (x 2)) 1 2 /
+        (1 + openCubeCoordinate (x 0) ^ 2 + openCubeCoordinate (x 1) ^ 2 +
+          openCubeCoordinate (x 2) ^ 2) ^ 2 *
+        ((2 * (x 1) ^ 2 - 2 * (x 1) + 1) / ((x 1) * (1 - (x 1))) ^ 2) := by
+  rw [sp_fderiv_single_eq_deriv orientedSphereThreeInterior x
+      (differentiableAt_orientedSphereThreeInterior x hx) 1 1,
+    sp_deriv_three_11 x hx, spGeoA_apply_12]
+  ring_nf
+
+private lemma sp_fderiv_three_12 (x : ThreeSpace)
+    (hx : ∀ i : Fin 3, x i ∈ Ioo (0 : ℝ) 1) :
+    (fderiv ℝ orientedSphereThreeInterior x (EuclideanSpace.single 1 1)) 2 =
+      spGeoA (openCubeCoordinate (x 0)) (openCubeCoordinate (x 1))
+          (openCubeCoordinate (x 2)) 2 2 /
+        (1 + openCubeCoordinate (x 0) ^ 2 + openCubeCoordinate (x 1) ^ 2 +
+          openCubeCoordinate (x 2) ^ 2) ^ 2 *
+        ((2 * (x 1) ^ 2 - 2 * (x 1) + 1) / ((x 1) * (1 - (x 1))) ^ 2) := by
+  rw [sp_fderiv_single_eq_deriv orientedSphereThreeInterior x
+      (differentiableAt_orientedSphereThreeInterior x hx) 1 2,
+    sp_deriv_three_12 x hx, spGeoA_apply_22]
+  ring_nf
+
+private lemma sp_fderiv_three_13 (x : ThreeSpace)
+    (hx : ∀ i : Fin 3, x i ∈ Ioo (0 : ℝ) 1) :
+    (fderiv ℝ orientedSphereThreeInterior x (EuclideanSpace.single 1 1)) 3 =
+      spGeoA (openCubeCoordinate (x 0)) (openCubeCoordinate (x 1))
+          (openCubeCoordinate (x 2)) 3 2 /
+        (1 + openCubeCoordinate (x 0) ^ 2 + openCubeCoordinate (x 1) ^ 2 +
+          openCubeCoordinate (x 2) ^ 2) ^ 2 *
+        ((2 * (x 1) ^ 2 - 2 * (x 1) + 1) / ((x 1) * (1 - (x 1))) ^ 2) := by
+  rw [sp_fderiv_single_eq_deriv orientedSphereThreeInterior x
+      (differentiableAt_orientedSphereThreeInterior x hx) 1 3,
+    sp_deriv_three_13 x hx, spGeoA_apply_32]
+  ring_nf
+
+private lemma sp_fderiv_three_20 (x : ThreeSpace)
+    (hx : ∀ i : Fin 3, x i ∈ Ioo (0 : ℝ) 1) :
+    (fderiv ℝ orientedSphereThreeInterior x (EuclideanSpace.single 2 1)) 0 =
+      spGeoA (openCubeCoordinate (x 0)) (openCubeCoordinate (x 1))
+          (openCubeCoordinate (x 2)) 0 3 /
+        (1 + openCubeCoordinate (x 0) ^ 2 + openCubeCoordinate (x 1) ^ 2 +
+          openCubeCoordinate (x 2) ^ 2) ^ 2 *
+        ((2 * (x 2) ^ 2 - 2 * (x 2) + 1) / ((x 2) * (1 - (x 2))) ^ 2) := by
+  rw [sp_fderiv_single_eq_deriv orientedSphereThreeInterior x
+      (differentiableAt_orientedSphereThreeInterior x hx) 2 0,
+    sp_deriv_three_20 x hx, spGeoA_apply_03]
+  ring_nf
+
+private lemma sp_fderiv_three_21 (x : ThreeSpace)
+    (hx : ∀ i : Fin 3, x i ∈ Ioo (0 : ℝ) 1) :
+    (fderiv ℝ orientedSphereThreeInterior x (EuclideanSpace.single 2 1)) 1 =
+      spGeoA (openCubeCoordinate (x 0)) (openCubeCoordinate (x 1))
+          (openCubeCoordinate (x 2)) 1 3 /
+        (1 + openCubeCoordinate (x 0) ^ 2 + openCubeCoordinate (x 1) ^ 2 +
+          openCubeCoordinate (x 2) ^ 2) ^ 2 *
+        ((2 * (x 2) ^ 2 - 2 * (x 2) + 1) / ((x 2) * (1 - (x 2))) ^ 2) := by
+  rw [sp_fderiv_single_eq_deriv orientedSphereThreeInterior x
+      (differentiableAt_orientedSphereThreeInterior x hx) 2 1,
+    sp_deriv_three_21 x hx, spGeoA_apply_13]
+  ring_nf
+
+private lemma sp_fderiv_three_22 (x : ThreeSpace)
+    (hx : ∀ i : Fin 3, x i ∈ Ioo (0 : ℝ) 1) :
+    (fderiv ℝ orientedSphereThreeInterior x (EuclideanSpace.single 2 1)) 2 =
+      spGeoA (openCubeCoordinate (x 0)) (openCubeCoordinate (x 1))
+          (openCubeCoordinate (x 2)) 2 3 /
+        (1 + openCubeCoordinate (x 0) ^ 2 + openCubeCoordinate (x 1) ^ 2 +
+          openCubeCoordinate (x 2) ^ 2) ^ 2 *
+        ((2 * (x 2) ^ 2 - 2 * (x 2) + 1) / ((x 2) * (1 - (x 2))) ^ 2) := by
+  rw [sp_fderiv_single_eq_deriv orientedSphereThreeInterior x
+      (differentiableAt_orientedSphereThreeInterior x hx) 2 2,
+    sp_deriv_three_22 x hx, spGeoA_apply_23]
+  ring_nf
+
+private lemma sp_fderiv_three_23 (x : ThreeSpace)
+    (hx : ∀ i : Fin 3, x i ∈ Ioo (0 : ℝ) 1) :
+    (fderiv ℝ orientedSphereThreeInterior x (EuclideanSpace.single 2 1)) 3 =
+      spGeoA (openCubeCoordinate (x 0)) (openCubeCoordinate (x 1))
+          (openCubeCoordinate (x 2)) 3 3 /
+        (1 + openCubeCoordinate (x 0) ^ 2 + openCubeCoordinate (x 1) ^ 2 +
+          openCubeCoordinate (x 2) ^ 2) ^ 2 *
+        ((2 * (x 2) ^ 2 - 2 * (x 2) + 1) / ((x 2) * (1 - (x 2))) ^ 2) := by
+  rw [sp_fderiv_single_eq_deriv orientedSphereThreeInterior x
+      (differentiableAt_orientedSphereThreeInterior x hx) 2 3,
+    sp_deriv_three_23 x hx, spGeoA_apply_33]
+  ring_nf
+
+private lemma mul_diagonal_apply (A : Matrix (Fin 4) (Fin 4) ℝ) (d : Fin 4 → ℝ)
+    (i j : Fin 4) : (A * Matrix.diagonal d) i j = A i j * d j := by
+  rw [Matrix.mul_apply, Fin.sum_univ_four]
+  fin_cases j <;> simp [Matrix.diagonal]
+
+private lemma fin4_mk_zero (h : 0 < 4) : (⟨0, h⟩ : Fin 4) = 0 := rfl
+
+private lemma fin4_mk_one (h : 1 < 4) : (⟨1, h⟩ : Fin 4) = 1 := rfl
+
+private lemma fin4_mk_two (h : 2 < 4) : (⟨2, h⟩ : Fin 4) = 2 := rfl
+
+private lemma fin4_mk_three (h : 3 < 4) : (⟨3, h⟩ : Fin 4) = 3 := rfl
+
+private lemma fin_cases_four_one {α : Sort*} (A : α) (F : Fin 3 → α) :
+    Fin.cases A F (1 : Fin 4) = F 0 := rfl
+
+private lemma fin_cases_four_two {α : Sort*} (A : α) (F : Fin 3 → α) :
+    Fin.cases A F (2 : Fin 4) = F 1 := rfl
+
+private lemma fin_cases_four_three {α : Sort*} (A : α) (F : Fin 3 → α) :
+    Fin.cases A F (3 : Fin 4) = F 2 := rfl
+
+private def smashScale (x : ThreeSpace) : Fin 4 → ℝ :=
+  ![(1 : ℝ) / (1 + openCubeCoordinate (x 0) ^ 2 + openCubeCoordinate (x 1) ^ 2 +
+        openCubeCoordinate (x 2) ^ 2),
+    (2 * (x 0) ^ 2 - 2 * (x 0) + 1) / ((x 0) * (1 - (x 0))) ^ 2 /
+      (1 + openCubeCoordinate (x 0) ^ 2 + openCubeCoordinate (x 1) ^ 2 +
+        openCubeCoordinate (x 2) ^ 2) ^ 2,
+    (2 * (x 1) ^ 2 - 2 * (x 1) + 1) / ((x 1) * (1 - (x 1))) ^ 2 /
+      (1 + openCubeCoordinate (x 0) ^ 2 + openCubeCoordinate (x 1) ^ 2 +
+        openCubeCoordinate (x 2) ^ 2) ^ 2,
+    (2 * (x 2) ^ 2 - 2 * (x 2) + 1) / ((x 2) * (1 - (x 2))) ^ 2 /
+      (1 + openCubeCoordinate (x 0) ^ 2 + openCubeCoordinate (x 1) ^ 2 +
+        openCubeCoordinate (x 2) ^ 2) ^ 2]
+
+private lemma det_colScale (A : Matrix (Fin 4) (Fin 4) ℝ) (d : Fin 4 → ℝ) :
+    Matrix.det (fun i j => A i j * d j) = Matrix.det A * (d 0 * d 1 * d 2 * d 3) := by
+  have hfun : (fun i j : Fin 4 => A i j * d j) =
+      (A * Matrix.diagonal d : Matrix (Fin 4) (Fin 4) ℝ) := by
+    funext i j
+    rw [mul_diagonal_apply]
+  rw [hfun, Matrix.det_mul, Matrix.det_diagonal, Fin.prod_univ_four]
+
 theorem standardSmash_parameter_positive (x : ThreeSpace)
     (hx : ∀ i : Fin 3, x i ∈ Ioo (0 : ℝ) 1) :
     DifferentiableAt ℝ orientedSphereThreeInterior x ∧
@@ -1726,7 +2504,47 @@ theorem standardSmash_parameter_positive (x : ThreeSpace)
         Fin.cases (orientedSphereThreeInterior x i)
           (fun k => (fderiv ℝ orientedSphereThreeInterior x
             (EuclideanSpace.single k 1)) i) j) := by
-  sorry
+  refine ⟨differentiableAt_orientedSphereThreeInterior x hx, ?_⟩
+  have hframe : (fun i j : Fin 4 =>
+        Fin.cases (orientedSphereThreeInterior x i)
+          (fun k => (fderiv ℝ orientedSphereThreeInterior x
+            (EuclideanSpace.single k 1)) i) j) =
+      fun i j : Fin 4 =>
+        spGeoA (openCubeCoordinate (x 0)) (openCubeCoordinate (x 1))
+          (openCubeCoordinate (x 2)) i j * smashScale x j := by
+    funext i j
+    fin_cases i <;> fin_cases j <;>
+      simp only [fin4_mk_zero, fin4_mk_one, fin4_mk_two, fin4_mk_three, Fin.cases_zero,
+        fin_cases_four_one, fin_cases_four_two, fin_cases_four_three, sp_point_three,
+        sp_fderiv_three_00 x hx, sp_fderiv_three_01 x hx, sp_fderiv_three_02 x hx,
+        sp_fderiv_three_03 x hx, sp_fderiv_three_10 x hx, sp_fderiv_three_11 x hx,
+        sp_fderiv_three_12 x hx, sp_fderiv_three_13 x hx, sp_fderiv_three_20 x hx,
+        sp_fderiv_three_21 x hx, sp_fderiv_three_22 x hx, sp_fderiv_three_23 x hx,
+        spGeoA_apply_00, spGeoA_apply_01, spGeoA_apply_02, spGeoA_apply_03, spGeoA_apply_10,
+        spGeoA_apply_11, spGeoA_apply_12, spGeoA_apply_13, spGeoA_apply_20, spGeoA_apply_21,
+        spGeoA_apply_22, spGeoA_apply_23, spGeoA_apply_30, spGeoA_apply_31, spGeoA_apply_32,
+        spGeoA_apply_33, smashScale, Matrix.cons_val_zero,
+        Matrix.cons_val_one, Matrix.cons_val_two, Matrix.cons_val_three, Matrix.vecHead,
+        Matrix.vecTail, Function.comp_apply, Fin.succ_zero_eq_one, Fin.succ_one_eq_two] <;>
+      ring_nf
+  rw [hframe, det_colScale, sp_geoA_det]
+  simp only [smashScale, vec4_two, vec4_three, Matrix.cons_val_zero, Matrix.cons_val_one]
+  have hd0 : 0 < (2 * (x 0) ^ 2 - 2 * (x 0) + 1) / ((x 0) * (1 - (x 0))) ^ 2 := by
+    apply div_pos
+    · nlinarith [sq_nonneg ((x 0) - 1 / 2)]
+    · exact pow_pos (mul_pos (hx 0).1 (by linarith [(hx 0).2])) 2
+  have hd1 : 0 < (2 * (x 1) ^ 2 - 2 * (x 1) + 1) / ((x 1) * (1 - (x 1))) ^ 2 := by
+    apply div_pos
+    · nlinarith [sq_nonneg ((x 1) - 1 / 2)]
+    · exact pow_pos (mul_pos (hx 1).1 (by linarith [(hx 1).2])) 2
+  have hd2 : 0 < (2 * (x 2) ^ 2 - 2 * (x 2) + 1) / ((x 2) * (1 - (x 2))) ^ 2 := by
+    apply div_pos
+    · nlinarith [sq_nonneg ((x 2) - 1 / 2)]
+    · exact pow_pos (mul_pos (hx 2).1 (by linarith [(hx 2).2])) 2
+  have hDpos : 0 < 1 + openCubeCoordinate (x 0) ^ 2 + openCubeCoordinate (x 1) ^ 2 +
+      openCubeCoordinate (x 2) ^ 2 := by positivity
+  positivity
+
 
 
 theorem standardSmashHomeomorph_interior (z : I^(Fin 3))
