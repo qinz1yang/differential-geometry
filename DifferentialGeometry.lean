@@ -292,6 +292,7 @@ import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.SobolevBounds.
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.Weitzenbock.IntegratedCovariantTensor
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.Weitzenbock.IntegratedMixedTensor
 import DifferentialGeometry.Analysis.Elliptic.DistributionalSupersolution
+import DifferentialGeometry.Analysis.Elliptic.Euclidean.QuadraticGrowth
 import DifferentialGeometry.Analysis.Elliptic.Euclidean.Regularity.CoefficientDerivative
 import DifferentialGeometry.Analysis.Elliptic.Euclidean.Regularity.DifferenceQuotient
 import DifferentialGeometry.Analysis.Elliptic.Euclidean.Regularity.Differentiation
