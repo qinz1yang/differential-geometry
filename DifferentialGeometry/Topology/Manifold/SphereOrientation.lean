@@ -20,6 +20,33 @@ def sphereOutwardDeterminant (n : ℕ)
           (fun y : sphere (0 : EuclideanSpace ℝ (Fin (n + 1))) 1 ↦
             (y : EuclideanSpace ℝ (Fin (n + 1)))) x (b k))) j) i)
 
+theorem sphereOrientation_eq_of_characterization (n : ℕ)
+    (o o' : ManifoldOrientation (𝓡 n) (sphere (0 : EuclideanSpace ℝ (Fin (n + 1))) 1) n)
+    (ho : ∀ x, ∀ b : Basis (Fin n) ℝ (TangentSpace (𝓡 n) x),
+      b.orientation = o.orientation x ↔ 0 < sphereOutwardDeterminant n x b)
+    (ho' : ∀ x, ∀ b : Basis (Fin n) ℝ (TangentSpace (𝓡 n) x),
+      b.orientation = o'.orientation x ↔ 0 < sphereOutwardDeterminant n x b) :
+    o = o' := by
+  apply ManifoldOrientation.ext
+  intro x
+  have : Module.Finite ℝ (TangentSpace (𝓡 n) x) := by
+    change Module.Finite ℝ (EuclideanSpace ℝ (Fin n))
+    infer_instance
+  have hdim : Module.finrank ℝ (TangentSpace (𝓡 n) x) = n := by
+    change Module.finrank ℝ (EuclideanSpace ℝ (Fin n)) = n
+    exact finrank_euclideanSpace_fin
+  let b : Basis (Fin n) ℝ (TangentSpace (𝓡 n) x) :=
+    Module.finBasisOfFinrankEq ℝ (TangentSpace (𝓡 n) x) hdim
+  have key : (b.orientation = o.orientation x) ↔ (b.orientation = o'.orientation x) :=
+    (ho x b).trans (ho' x b).symm
+  rcases b.orientation_eq_or_eq_neg (o.orientation x) with h | h
+  · exact h.trans (key.mp h.symm)
+  · have hne : o.orientation x ≠ b.orientation := by
+      intro hb
+      exact Module.Ray.ne_neg_self b.orientation (hb.symm.trans h)
+    have hne' : o'.orientation x ≠ b.orientation := fun hb => hne (key.mpr hb.symm).symm
+    exact h.trans ((Basis.orientation_ne_iff_eq_neg b (o'.orientation x)).mp hne').symm
+
 theorem exists_unique_sphere_orientation (n : ℕ) (hn : 1 ≤ n) :
     ∃! o : ManifoldOrientation (𝓡 n)
         (sphere (0 : EuclideanSpace ℝ (Fin (n + 1))) 1) n,
