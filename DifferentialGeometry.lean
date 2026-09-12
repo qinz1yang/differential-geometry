@@ -5273,6 +5273,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.Nonc
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.NoncompactPointedLimit
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.NoncompactShrinkerAvr
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.NoncompactShrinkerClassification
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.NoncompactShrinkerCylinderReduction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.NoncompactShrinkerCover
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.NonnegativeCurvatureScalarNorm
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.NormalizedKLimCompactness
@@ -6998,6 +6999,7 @@ import DifferentialGeometry.Geometry.MinimalSurface.Plateau.SmoothDiskTrace
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.SmoothExtension
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.SmoothTraceLift
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.TraceAnnulus
+import DifferentialGeometry.Geometry.MinimalSurface.Plateau.TracePhaseAnnulus
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.UpperComparison
 import DifferentialGeometry.Geometry.MinimalSurface.Variation.DiskDivergence
 import DifferentialGeometry.Geometry.MinimalSurface.Variation.DiskFirstVariation
