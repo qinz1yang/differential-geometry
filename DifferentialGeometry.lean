@@ -8473,6 +8473,7 @@ import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.Construction
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.Finite
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.InteriorChart
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.LocalDiffeomorphism
+import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.InteriorChartDerivatives
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.OrientationPrelude
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.PuncturedImageBall
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.Quotient
