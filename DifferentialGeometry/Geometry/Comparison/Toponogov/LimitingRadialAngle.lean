@@ -146,7 +146,7 @@ private theorem euclideanPlane_cosineLaw (O X Y : EuclideanPlane) :
   rw [show X - O - (Y - O) = X - Y by abel] at h
   simpa only [pow_two, dist_eq_norm, norm_sub_rev] using h
 
-theorem limitingRadialAngle_triangle {X : Type*} [MetricSpace X]
+private theorem limitingRadialAngle_triangle_fin3 {X : Type*} [MetricSpace X]
     (E : X) (L : Fin 3 → ℝ) (γ : Fin 3 → ℝ → X)
     (hL : ∀ i, 0 < L i) (hrad : IsRadialFamily E L γ)
     (hmono : ∀ i j, i ≠ j → CoordinatewiseNonincreasingOn (L i) (L j)
@@ -266,6 +266,56 @@ theorem limitingRadialAngle_triangle {X : Type*} [MetricSpace X]
       exact (hm.1 hρ0 hs ht hρs).trans (hm.2 hρ0 hρ2 ht hρt)
     exact hΘsmall.trans (hΘρ.trans hC)
 
+theorem limitingRadialAngle_triangle {X : Type*} [MetricSpace X] {ι : Type*}
+    (E : X) (L : ι → ℝ) (γ : ι → ℝ → X)
+    (hL : ∀ i, 0 < L i) (hrad : IsRadialFamily E L γ)
+    (hmono : ∀ i j, i ≠ j → CoordinatewiseNonincreasingOn (L i) (L j)
+      (radialComparisonAngle γ i j))
+    {i j k : ι} (hij : i ≠ j) (hjk : j ≠ k) (hik : i ≠ k) :
+    limitingRadialAngle L γ i k ≤
+      limitingRadialAngle L γ i j + limitingRadialAngle L γ j k := by
+  let L' : Fin 3 → ℝ := ![L i, L j, L k]
+  let γ' : Fin 3 → ℝ → X := ![γ i, γ j, γ k]
+  have hL' : ∀ n : Fin 3, 0 < L' n := by
+    intro n
+    fin_cases n
+    · exact hL i
+    · exact hL j
+    · exact hL k
+  have hrad' : IsRadialFamily E L' γ' := by
+    intro n s hs
+    fin_cases n
+    · exact hrad i s hs
+    · exact hrad j s hs
+    · exact hrad k s hs
+  have hpair : ∀ n m : Fin 3, n ≠ m →
+      CoordinatewiseNonincreasingOn (L' n) (L' m) (radialComparisonAngle γ' n m) := by
+    intro n m hnm
+    fin_cases n <;> fin_cases m
+    · exact absurd rfl hnm
+    · exact hmono i j hij
+    · exact hmono i k hik
+    · exact hmono j i (Ne.symm hij)
+    · exact absurd rfl hnm
+    · exact hmono j k hjk
+    · exact hmono k i (Ne.symm hik)
+    · exact hmono k j (Ne.symm hjk)
+    · exact absurd rfl hnm
+  have h := limitingRadialAngle_triangle_fin3 E L' γ' hL' hrad' hpair
+  have e₀₂ : limitingRadialAngle L' γ' (0 : Fin 3) (2 : Fin 3) =
+      limitingRadialAngle L γ i k := by
+    simp only [L', γ', limitingRadialAngle, positiveRectangleValues, radialComparisonAngle]
+    simp
+  have e₀₁ : limitingRadialAngle L' γ' (0 : Fin 3) (1 : Fin 3) =
+      limitingRadialAngle L γ i j := by
+    simp only [L', γ', limitingRadialAngle, positiveRectangleValues, radialComparisonAngle]
+    simp
+  have e₁₂ : limitingRadialAngle L' γ' (1 : Fin 3) (2 : Fin 3) =
+      limitingRadialAngle L γ j k := by
+    simp only [L', γ', limitingRadialAngle, positiveRectangleValues, radialComparisonAngle]
+    simp
+  rwa [e₀₂, e₀₁, e₁₂] at h
+
 theorem limitingRadialAngle_package {X : Type*} [MetricSpace X]
     (E : X) (L : Fin 3 → ℝ) (γ : Fin 3 → ℝ → X)
     (hL : ∀ i, 0 < L i) (hrad : IsRadialFamily E L γ)
@@ -284,6 +334,6 @@ theorem limitingRadialAngle_package {X : Type*} [MetricSpace X]
     fun i j _ ↦ limitingRadialAngle_comm L γ i j, ?_⟩
   · exact fun i j hij ↦
       tendsto_limitingRadialAngle γ (hL i) (hL j) (hmono i j hij)
-  · exact limitingRadialAngle_triangle E L γ hL hrad hmono
+  · exact limitingRadialAngle_triangle_fin3 E L γ hL hrad hmono
 
 end DifferentialGeometry.Toponogov
