@@ -21,16 +21,20 @@ import Poincare.Topology.Homology.ContractibleCoverOne
 import Poincare.Topology.Homology.ContractiblePair
 import Poincare.Topology.Homology.ContractiblePairOne
 import Poincare.Topology.Homology.Cycles
+import Poincare.Topology.Homology.EuclideanLocalTop
 import Poincare.Topology.Homology.ExcisionQuotient
 import Poincare.Topology.Homology.FineAffineImages
 import Poincare.Topology.Homology.Homotopy
 import Poincare.Topology.Homology.Integral
 import Poincare.Topology.Homology.LiftedFaces
 import Poincare.Topology.Homology.LiftedSimplex
+import Poincare.Topology.Homology.LocalBallHomology
 import Poincare.Topology.Homology.LocalCharts
+import Poincare.Topology.Homology.LocalCompactHomology
 import Poincare.Topology.Homology.LocalDerivativeComparison
 import Poincare.Topology.Homology.LocalHomology
 import Poincare.Topology.Homology.LocalLinearMaps
+import Poincare.Topology.Homology.LocalOrientation
 import Poincare.Topology.Homology.MeshBoundary
 import Poincare.Topology.Homology.MeshIteration
 import Poincare.Topology.Homology.ModuleHomologyClasses
@@ -64,8 +68,10 @@ import Poincare.Topology.Homology.SmallRelative
 import Poincare.Topology.Homology.SmallSubspaceInclusion
 import Poincare.Topology.Homology.SphereHomologyOne
 import Poincare.Topology.Homology.SphereHomologyShift
+import Poincare.Topology.Homology.SphereHomologyVanishing
 import Poincare.Topology.Homology.SpherePuncture
 import Poincare.Topology.Homology.SphereRank
+import Poincare.Topology.Homology.SphereTopHomology
 import Poincare.Topology.Homology.SubdivisionAffineAgreement
 import Poincare.Topology.Homology.SubdivisionBoundary
 import Poincare.Topology.Homology.SubdivisionCarriers
@@ -86,5 +92,3 @@ import Poincare.Topology.Homology.UniversalSubdivisionIteration
 import Poincare.Topology.Homology.ZeroAugmentation
 import Poincare.Topology.Homology.ZeroChainClasses
 import Poincare.Topology.Homology.ZeroHomologyMaps
-import Poincare.Topology.Homology.LocalOrientation
-import Poincare.Topology.Homology.LocalBallHomology

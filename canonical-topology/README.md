@@ -1,7 +1,7 @@
-# Local homology, chart compatibility and closed-ball classes
+# Local homology and unique compact chart classes
 
 This separate `PoincareLean` project contains a dependency-closed checkpoint of
-90 Poincare modules. It extends the recovered Chapter 35 source at commit
+94 Poincare modules. It extends the recovered Chapter 35 source at commit
 `b45bfa009368c8f5f531e10f4f5280e90079d6ad` and preserves its mathematical objects
 and `Poincare` namespaces. `Poincare.lean` imports every included leaf.
 
@@ -34,9 +34,12 @@ The additions prove:
 - the actual closed-ball-to-center restriction isomorphism and its induced-map
   equation, together with a unique relative class whose local restrictions
   agree after translation, in every natural degree and real normed space,
-  for every center and nonnegative radius including boundary points.
+  for every center and nonnegative radius including boundary points;
+- the actual compact-pair chart isomorphism, its excision map equation and its
+  point-restriction square, together with a produced compact chart neighborhood
+  and a unique relative class whose normalized local restrictions agree.
 
-The nine new/changed modules and their exact baseline/current hashes are listed in
+The ten new/changed modules and their exact baseline/current hashes are listed in
 [provenance/SNAPSHOT.json](provenance/SNAPSHOT.json). The derivative homotopy
 retains its [upstream attribution and modification record](provenance/README.md).
 
@@ -140,8 +143,27 @@ previous readback pairs unchanged. New consumers checked both inverse laws,
 a nonzero rank-zero H0 class, a real boundary-point translation and uniqueness.
 All-package/current-consumer stock declaration linters and standard-only
 axioms passed. The 89 previous leaves remain byte-identical and retain their
-earlier compilation evidence. Transporting this class to compact chart
-neighborhoods is the next proof layer.
+earlier compilation evidence.
+
+The compact-chart extension adds `LocalCompactHomology` and three unchanged
+baseline dependencies used by the nonzero Euclidean3 consumer. The checkpoint
+now contains 94 leaves and 25 public exports. Its main theorem constructs a
+compact neighborhood inside the supplied chart and a unique relative class
+with every normalized restriction equal to one prescribed model class. The
+chart isomorphism and actual map equations work in every natural degree.
+No preconstructed compact neighborhood or coherent family is supplied.
+
+Request `1789250063643581109-topology_checkpoint-2f2e02e3` freshly compiled
+the four added leaves and root without diagnostics in 2:18.61. The final
+consumer replay `1789250353396415278-topology_checkpoint-c6197cda` passed in
+52.24 seconds after duplicate universe declarations were removed from the
+combined test harness. All 94 source files remained unchanged between those
+checks. All 109 guards and 48 signature/axiom pairs passed, including all
+40 previous readback pairs unchanged. New consumers verify the inverse
+restriction square, nonzero classes at every point of an actual translated
+Euclidean3 chart, and the exact negative-class law on the same compact set.
+All-package/current-consumer stock linters and standard-only axioms passed.
+The 90 previous leaves remain byte-identical and retain their earlier evidence.
 
 ## Remaining topology work
 

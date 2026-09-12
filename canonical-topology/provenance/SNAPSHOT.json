@@ -1,9 +1,9 @@
 {
-  "scope": "Dependency-closed 90-module local homology, determinant-sign, oriented chart compatibility and closed-ball class checkpoint; portable gate passed, full topology suite incomplete",
+  "scope": "Dependency-closed 94-module local homology, oriented chart compatibility, closed-ball and unique compact chart-class checkpoint; portable gate passed, full topology suite incomplete",
   "baseline_commit": "b45bfa009368c8f5f531e10f4f5280e90079d6ad",
   "baseline_ref": "refs/remotes/origin/codex/chapter35",
   "source_project": "PoincareLean",
-  "source_module_count": 90,
+  "source_module_count": 94,
   "roots": [
     "Poincare.Topology.Homology.RelativeMaps",
     "Poincare.Topology.Homology.RelativeHomeomorphism",
@@ -12,7 +12,8 @@
     "Poincare.Topology.Homology.LocalDerivativeComparison",
     "Poincare.Topology.Homology.LocalLinearMaps",
     "Poincare.Topology.Homology.LocalOrientation",
-    "Poincare.Topology.Homology.LocalBallHomology"
+    "Poincare.Topology.Homology.LocalBallHomology",
+    "Poincare.Topology.Homology.LocalCompactHomology"
   ],
   "changed_sources": [
     {
@@ -32,6 +33,12 @@
       "path": "Poincare/Topology/Homology/LocalCharts.lean",
       "baseline_sha256": "0720a889397029e32c227d63fc9990b38e161dd7ae84c3c2e31062ce7be39dc4",
       "sha256": "b41c6b72f5200f1534eaa31f9c75d3f652b32bb513a08e2818c6f148d8a67f1a"
+    },
+    {
+      "module": "Poincare.Topology.Homology.LocalCompactHomology",
+      "path": "Poincare/Topology/Homology/LocalCompactHomology.lean",
+      "baseline_sha256": null,
+      "sha256": "5e9257600ce282aae819b203d68c7878ee00187eadc00f2c196b40efad03fe35"
     },
     {
       "module": "Poincare.Topology.Homology.LocalDerivativeComparison",
@@ -210,6 +217,12 @@
       "sha256": "68248e5d61a9634d1ebe98bf4d7dc074f63afb1ed98055366febe3ef0a1a0339"
     },
     {
+      "module": "Poincare.Topology.Homology.EuclideanLocalTop",
+      "path": "Poincare/Topology/Homology/EuclideanLocalTop.lean",
+      "baseline_sha256": "7508c8afff592e2467599360a3d4517d4dcba1f7acccb3d961d9defaeb47a9ee",
+      "sha256": "7508c8afff592e2467599360a3d4517d4dcba1f7acccb3d961d9defaeb47a9ee"
+    },
+    {
       "module": "Poincare.Topology.Homology.ExcisionQuotient",
       "path": "Poincare/Topology/Homology/ExcisionQuotient.lean",
       "baseline_sha256": "351284223d2722bacb63c368fd7943d75c5a38129837c6dc56b772b1ae85fe84",
@@ -256,6 +269,12 @@
       "path": "Poincare/Topology/Homology/LocalCharts.lean",
       "baseline_sha256": "0720a889397029e32c227d63fc9990b38e161dd7ae84c3c2e31062ce7be39dc4",
       "sha256": "b41c6b72f5200f1534eaa31f9c75d3f652b32bb513a08e2818c6f148d8a67f1a"
+    },
+    {
+      "module": "Poincare.Topology.Homology.LocalCompactHomology",
+      "path": "Poincare/Topology/Homology/LocalCompactHomology.lean",
+      "baseline_sha256": null,
+      "sha256": "5e9257600ce282aae819b203d68c7878ee00187eadc00f2c196b40efad03fe35"
     },
     {
       "module": "Poincare.Topology.Homology.LocalDerivativeComparison",
@@ -480,6 +499,12 @@
       "sha256": "120403e15e7d76f337f05047f999ed6c07bdb057168ce97704b301392c09caeb"
     },
     {
+      "module": "Poincare.Topology.Homology.SphereHomologyVanishing",
+      "path": "Poincare/Topology/Homology/SphereHomologyVanishing.lean",
+      "baseline_sha256": "1ea3fbbd371a840c64230ec1351b616eaf1dc6e2251684771a8076d5a38cf4a9",
+      "sha256": "1ea3fbbd371a840c64230ec1351b616eaf1dc6e2251684771a8076d5a38cf4a9"
+    },
+    {
       "module": "Poincare.Topology.Homology.SpherePuncture",
       "path": "Poincare/Topology/Homology/SpherePuncture.lean",
       "baseline_sha256": "b2d7f194600b43f6ad6f1f805aedad90d9d3d3bee292c57264ebb3d99f0897c1",
@@ -490,6 +515,12 @@
       "path": "Poincare/Topology/Homology/SphereRank.lean",
       "baseline_sha256": "18b4612b248c42978437e058d870ed8d794d4ae6500a21c601adce12080e194e",
       "sha256": "18b4612b248c42978437e058d870ed8d794d4ae6500a21c601adce12080e194e"
+    },
+    {
+      "module": "Poincare.Topology.Homology.SphereTopHomology",
+      "path": "Poincare/Topology/Homology/SphereTopHomology.lean",
+      "baseline_sha256": "46310fb75e457dc810e2bf1ed05acd74579d5092f1b878066113b0eaf53f9f24",
+      "sha256": "46310fb75e457dc810e2bf1ed05acd74579d5092f1b878066113b0eaf53f9f24"
     },
     {
       "module": "Poincare.Topology.Homology.SubdivisionAffineAgreement",
@@ -615,8 +646,8 @@
   "aggregate": {
     "path": "Poincare.lean",
     "baseline_sha256": "99c3c8e47c19f60ee50a7e0f377e59138cf4ff33ebd4e26530d3c2b7cd47d452",
-    "sha256": "955b1ad4bd306c0d8851be427905049f5eb7f56cc912e6728da75216b8aefae2",
-    "change": "Checkpoint aggregate imports exactly the 90 supplied leaves; the full recovered aggregate is not replaced"
+    "sha256": "ae360bb3e3e0d28cea07f9e52f6963f3a7c4b2c5b9b0986afc057b17c98e0c6b",
+    "change": "Flat94-leaf checkpoint aggregate; full recovered aggregate remains separate"
   },
   "configuration": [
     {
@@ -698,6 +729,7 @@
     "Mathlib.Topology.Homeomorph.Lemmas",
     "Mathlib.Topology.Homotopy.Basic",
     "Mathlib.Topology.Homotopy.Contractible",
+    "Mathlib.Topology.MetricSpace.ProperSpace",
     "Mathlib.Topology.MetricSpace.Pseudo.Lemmas",
     "Mathlib.Topology.OpenPartialHomeomorph.Continuity"
   ],
@@ -725,7 +757,11 @@
     "Poincare.Topology.integralClosedBallLocalHomologyIso",
     "Poincare.Topology.integralClosedBallLocalHomologyIso_hom",
     "Poincare.Topology.integralRelativeHomologyMap_closedBall_translation",
-    "Poincare.Topology.existsUnique_closedBall_class_with_normalized_local_maps"
+    "Poincare.Topology.existsUnique_closedBall_class_with_normalized_local_maps",
+    "Poincare.Topology.integralRelativeHomologyOpenPartialHomeomorphIso",
+    "Poincare.Topology.integralRelativeHomologyOpenPartialHomeomorphIso_comp_excision",
+    "Poincare.Topology.integralRelativeHomologyOpenPartialHomeomorphIso_local_restriction",
+    "Poincare.Topology.exists_compact_chart_neighborhood_class"
   ],
   "historical_authorities": [
     {
@@ -863,23 +899,28 @@
     "full_topology_suite_accepted": false
   },
   "validation": {
-    "status": "passed for the selected 90-module checkpoint; full topology suite incomplete",
+    "status": "passed for the selected94-module checkpoint; full topology suite incomplete",
     "date": "2026-09-12",
     "slurm_job": "13781140",
     "host": "della-r3c2n16",
-    "request_id": "1789247905874477991-topology_checkpoint-baeeac80",
-    "input_sha256": "8ba1d5d5981da7e117ea74d00eb7998165fa13ae8991e33fc93b823b18d67f50",
-    "result_sha256": "0f7c97117916d43ef4e5d0e2cb73c8d260c1f0cea8427dac5ca44d237c0b5e8c",
-    "artifact_log_sha256": "6a9a41fb949a178baec875d4cdd04e3ced4284fbb93c721e87c6718068637363",
-    "source_config_harness_hash_guards": 102,
+    "request_id": "1789250353396415278-topology_checkpoint-c6197cda",
+    "input_sha256": "2dc1a59c564d2f96d5b79f91a60ffbd9464998830567af1c0cfcb071697de056",
+    "result_sha256": "fc82aab73d79d119d90f9ac02557ea4f434b5b0beaf758772a2b84d86d4d06a1",
+    "artifact_build_request_id": "1789250063643581109-topology_checkpoint-2f2e02e3",
+    "artifact_build_input_sha256": "0424718a325b755e2f43b0b807de1a1e55f4e09845d2e23e10eb4ed675af7f5f",
+    "artifact_log_sha256": "0db0d53aff10dffa7540fadf143888c2f0ce8cab162fc2a1b72ab180035a4f9e",
+    "source_config_harness_hash_guards": 109,
     "freshly_built_modules": [
-      "Poincare.Topology.Homology.LocalBallHomology",
+      "Poincare.Topology.Homology.LocalCompactHomology",
+      "Poincare.Topology.Homology.SphereTopHomology",
+      "Poincare.Topology.Homology.SphereHomologyVanishing",
+      "Poincare.Topology.Homology.EuclideanLocalTop",
       "Poincare"
     ],
-    "root_build": "lake --no-cache --iofail build +Poincare.Topology.Homology.LocalBallHomology:leanArts Poincare",
-    "fresh_build_scope": "New LocalBallHomology leaf and Poincare root; all 89 previous source leaves remain byte-identical and retain verified earlier checkpoint evidence.",
-    "exact_public_exports": 21,
-    "public_and_consumer_signature_axiom_pairs": 40,
+    "root_build": "lake --no-cache --iofail build +Poincare.Topology.Homology.LocalCompactHomology:leanArts +Poincare.Topology.Homology.EuclideanLocalTop:leanArts Poincare",
+    "fresh_build_scope": "Four added leaves and root compiled silently in2:18.61, RSS1910136KiB. Three added dependencies match the recovered baseline byte-for-byte. All90 previous leaves remain unchanged. Only duplicate universe declarations in the combined consumer harness were removed before the final replay; all94 source files match the successful build.",
+    "exact_public_exports": 25,
+    "public_and_consumer_signature_axiom_pairs": 48,
     "linters": [
       "unusedArguments",
       "simpNF",
@@ -894,15 +935,16 @@
       "Quot.sound"
     ],
     "unexpected_diagnostics": 0,
-    "elapsed_seconds": 118.75284838676453,
-    "peak_summed_rss_bytes": 2630623232,
+    "elapsed_seconds": 52.240987062454224,
+    "peak_summed_rss_bytes": 3072536576,
     "full_topology_suite_accepted": false,
     "consumer_probes": [
-      "All 32 previous public/consumer signature and axiom pairs reproduced byte-identically",
-      "Actual nonzero rank-zero relative and local H0 class for every nonnegative radius",
-      "Both actual center-restriction inverse equations for arbitrary natural degree, center and nonnegative radius",
-      "Actual real center3 radius2 boundary point5 translation compatibility",
-      "Unique closed-ball class with all normalized restrictions for arbitrary natural degree"
+      "All40 previous readback pairs reproduced byte-identically",
+      "All8 new imported public/consumer readback pairs reproduced byte-identically",
+      "Actual inverse compact-chart restriction square",
+      "Nonzero compact relative class and all local restrictions from a nonzero model class",
+      "Actual nonzero Euclidean3 local class with a translated chart",
+      "On the SAME compact neighborhood, normalization by -mu holds exactly for the negative class"
     ]
   },
   "previous_linear_sign_checkpoint_validation": {
@@ -1064,5 +1106,60 @@
     "signature_axiom_pairs": 10,
     "elapsed_seconds": 67.68618965148926,
     "scope": "Fresh LocalBallHomology artifact and imported public consumers, all-package/current stock4 linters and standard-only axioms; full original aggregate not built"
+  },
+  "consumer_roots": [
+    "Poincare.Topology.Homology.EuclideanLocalTop"
+  ],
+  "previous_closed_ball_validation": {
+    "status": "passed for the selected 90-module checkpoint; full topology suite incomplete",
+    "date": "2026-09-12",
+    "slurm_job": "13781140",
+    "host": "della-r3c2n16",
+    "request_id": "1789247905874477991-topology_checkpoint-baeeac80",
+    "input_sha256": "8ba1d5d5981da7e117ea74d00eb7998165fa13ae8991e33fc93b823b18d67f50",
+    "result_sha256": "0f7c97117916d43ef4e5d0e2cb73c8d260c1f0cea8427dac5ca44d237c0b5e8c",
+    "artifact_log_sha256": "6a9a41fb949a178baec875d4cdd04e3ced4284fbb93c721e87c6718068637363",
+    "source_config_harness_hash_guards": 102,
+    "freshly_built_modules": [
+      "Poincare.Topology.Homology.LocalBallHomology",
+      "Poincare"
+    ],
+    "root_build": "lake --no-cache --iofail build +Poincare.Topology.Homology.LocalBallHomology:leanArts Poincare",
+    "fresh_build_scope": "New LocalBallHomology leaf and Poincare root; all 89 previous source leaves remain byte-identical and retain verified earlier checkpoint evidence.",
+    "exact_public_exports": 21,
+    "public_and_consumer_signature_axiom_pairs": 40,
+    "linters": [
+      "unusedArguments",
+      "simpNF",
+      "synTaut",
+      "checkType"
+    ],
+    "linter_scope": "All imported Poincare declarations and current consumers, including private declarations",
+    "defLemma": "Unavailable in the pinned Mathlib; source declaration-kind checks retained.",
+    "allowed_transitive_axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "unexpected_diagnostics": 0,
+    "elapsed_seconds": 118.75284838676453,
+    "peak_summed_rss_bytes": 2630623232,
+    "full_topology_suite_accepted": false,
+    "consumer_probes": [
+      "All 32 previous public/consumer signature and axiom pairs reproduced byte-identically",
+      "Actual nonzero rank-zero relative and local H0 class for every nonnegative radius",
+      "Both actual center-restriction inverse equations for arbitrary natural degree, center and nonnegative radius",
+      "Actual real center3 radius2 boundary point5 translation compatibility",
+      "Unique closed-ball class with all normalized restrictions for arbitrary natural degree"
+    ]
+  },
+  "original_compact_chart_validation": {
+    "request_id": "1789249831757911301-topology-9742031c",
+    "slurm_job": "13781140",
+    "input_sha256": "590e43e34657f95e056f3cb66ea4a3f680909d35b3c8db84340186d6d5365c2d",
+    "source_config_harness_hash_guards": 98,
+    "signature_axiom_pairs": 8,
+    "elapsed_seconds": 77.60096573829651,
+    "scope": "Fresh new leaf and imported four public exports with inverse, nonzero Euclidean3 and same-K negation consumers; all-package/current stock4 and standard-only axioms"
   }
 }

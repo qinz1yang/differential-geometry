@@ -5,15 +5,15 @@ The recovered source baseline is commit
 `refs/remotes/origin/codex/chapter35` in the controller's existing Git objects.
 No source baseline was downloaded to prepare this checkpoint.
 
-[SNAPSHOT.json](SNAPSHOT.json) records all 90 supplied module paths and hashes,
-including their baseline hashes and the nine new/changed leaves. The five new
+[SNAPSHOT.json](SNAPSHOT.json) records all 94 supplied module paths and hashes,
+including their baseline hashes and the ten new/changed leaves. The six new
 files have a null baseline hash. Existing baseline hashes were independently
 compared against the actual Git blobs. Every supplied leaf is byte-identical
 to its current counterpart in the isolated Poincare workspace.
 
 The portable `lakefile.toml` and `lake-manifest.json` are unchanged. The
 `lean-toolchain` copy removes one trailing blank line while retaining its exact
-version. The selected `Poincare.lean` is a checkpoint aggregate for the 90
+version. The selected `Poincare.lean` is a checkpoint aggregate for the 94
 supplied leaves; it does not overwrite the full recovered project's aggregate.
 Original/current hashes for these files are recorded separately.
 
@@ -95,3 +95,27 @@ leaf and root, then passed all-package/consumer stock linters, standard-only
 axioms, 21 public exports and 40 exact signature/axiom pairs. All 102 source
 and configuration guards matched. Previous validation records are preserved
 in SNAPSHOT.json; the missing frozen handoff and full topology suite remain open.
+
+## Unique compact chart classes
+
+`Poincare/Topology/Homology/LocalCompactHomology.lean` is a new 481-line module
+with four public exports and twelve private construction helpers. It combines
+the existing actual open excision, chart maps and closed-ball class theorem.
+It retains the chart isomorphism's actual excision and point-restriction laws,
+then constructs a compact neighborhood and a unique normalized relative class.
+No differential-geometry source, global fundamental class or deferred input
+is introduced.
+
+`EuclideanLocalTop`, `SphereTopHomology` and `SphereHomologyVanishing` are
+unchanged copies of the recovered baseline, including their documentation.
+Their actual Git blobs were compared before copying. They support the new
+nonzero three-dimensional consumer. All 90 previous leaves remain unchanged.
+
+The four added leaves and root compiled silently in request
+`1789250063643581109-topology_checkpoint-2f2e02e3`. The final replay
+`1789250353396415278-topology_checkpoint-c6197cda` passes all-package/current
+stock linters, standard-only axioms, 25 public exports and 48 exact readback
+pairs. Its only intervening repair removed duplicate universe declarations
+from the combined consumer harness. All 94 source files match the successful
+build, and all 109 final input guards match. SNAPSHOT.json preserves both
+the artifact-build identity and the final replay evidence.
