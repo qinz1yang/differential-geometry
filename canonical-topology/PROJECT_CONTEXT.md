@@ -5,7 +5,7 @@ additive publication within the shared DifferentialGeometry Git repository. Its 
 library is `Poincare`; its sources retain the original mathematical namespaces.
 
 The source baseline is the recovered Chapter 35 commit
-`b45bfa009368c8f5f531e10f4f5280e90079d6ad`. This checkpoint includes the 68-module
+`b45bfa009368c8f5f531e10f4f5280e90079d6ad`. This checkpoint includes the 74-module
 dependency closure of five extended/new local-homology and derivative modules.
 [provenance/SNAPSHOT.json](provenance/SNAPSHOT.json) records the exact source and
 configuration identity. It is not the full recovered Chapter 35 project.
@@ -21,7 +21,7 @@ in the enclosing Schoenflies controller's
 [topology brief](../../plan/CANONICAL_TOPOLOGY_SPINOFF_BRIEF.md), and
 [active plan](../../plan/plan_smooth_schoenflies.md). Those controller records
 are external to this portable package. The package README records its limited
-delivered scope and verified checkpoint independently.
+delivered scope and checkpoint status independently.
 
 The frozen topology handoff is still missing. Do not reconstruct its public
 contract from this foundations checkpoint. Neither the full canonical topology

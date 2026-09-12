@@ -16,6 +16,8 @@ import Poincare.Topology.Homology.ChainSupport
 import Poincare.Topology.Homology.ChainsIn
 import Poincare.Topology.Homology.CochainMaps
 import Poincare.Topology.Homology.Cochains
+import Poincare.Topology.Homology.ConnectedZeroHomology
+import Poincare.Topology.Homology.Cycles
 import Poincare.Topology.Homology.ExcisionQuotient
 import Poincare.Topology.Homology.FineAffineImages
 import Poincare.Topology.Homology.Homotopy
@@ -31,10 +33,12 @@ import Poincare.Topology.Homology.ModuleHomologyClasses
 import Poincare.Topology.Homology.ModuleHomologyCriterion
 import Poincare.Topology.Homology.ModuleHomologyMaps
 import Poincare.Topology.Homology.OpenExcision
+import Poincare.Topology.Homology.PathChains
 import Poincare.Topology.Homology.Relative
 import Poincare.Topology.Homology.RelativeFunctoriality
 import Poincare.Topology.Homology.RelativeHomeomorphism
 import Poincare.Topology.Homology.RelativeMaps
+import Poincare.Topology.Homology.RelativeZero
 import Poincare.Topology.Homology.SimplexBasis
 import Poincare.Topology.Homology.SimplexBoundary
 import Poincare.Topology.Homology.SimplexEvaluation
@@ -66,3 +70,5 @@ import Poincare.Topology.Homology.TwoSetSmallChains
 import Poincare.Topology.Homology.UniversalHomotopyBoundary
 import Poincare.Topology.Homology.UniversalSubdivisionFaces
 import Poincare.Topology.Homology.UniversalSubdivisionIteration
+import Poincare.Topology.Homology.ZeroChainClasses
+import Poincare.Topology.Homology.ZeroHomologyMaps

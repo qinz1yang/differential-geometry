@@ -5,15 +5,15 @@ The recovered source baseline is commit
 `refs/remotes/origin/codex/chapter35` in the controller's existing Git objects.
 No source baseline was downloaded to prepare this checkpoint.
 
-[SNAPSHOT.json](SNAPSHOT.json) records all 68 supplied module paths and hashes,
-including their baseline hashes and the five new/changed leaves. The two new
+[SNAPSHOT.json](SNAPSHOT.json) records all 74 supplied module paths and hashes,
+including their baseline hashes and the six new/changed leaves. The two new
 files have a null baseline hash. Existing baseline hashes were independently
 compared against the actual Git blobs. Every supplied leaf is byte-identical
 to its current counterpart in the isolated Poincare workspace.
 
 The portable `lakefile.toml` and `lake-manifest.json` are unchanged. The
 `lean-toolchain` copy removes one trailing blank line while retaining its exact
-version. The selected `Poincare.lean` is a checkpoint aggregate for the 68
+version. The selected `Poincare.lean` is a checkpoint aggregate for the 74
 supplied leaves; it does not overwrite the full recovered project's aggregate.
 Original/current hashes for these files are recorded separately.
 
@@ -49,9 +49,11 @@ authority records as provenance. Their historical Mac paths, branch instructions
 and earlier release scope are not current instructions; the active package
 [AGENTS.md](../AGENTS.md) records the current owner directions.
 
-Source identity and import closure are packaging evidence. The main controller
-verified fresh compilation of all 68 leaves and the root, public consumers,
-package-wide stock declaration linters and standard-only transitive axioms on
-2026-09-12. SNAPSHOT.json records the final request and evidence digests.
+Source identity and import closure are packaging evidence. The previous
+68-module checkpoint passed fresh leaves/root, public consumers, package-wide
+stock linters and standard-only transitive axioms on 2026-09-12. The expanded
+74-module snapshot also passed its fresh affected-leaf/root gate, all-package
+and consumer declaration linters, 12 public exports, four nonidentity consumers
+and a nonzero degree-zero class consumer. SNAPSHOT.json records current hashes and both verified checkpoints.
 This does not certify the full canonical-topology suite or compatibility with
 the missing frozen contract.

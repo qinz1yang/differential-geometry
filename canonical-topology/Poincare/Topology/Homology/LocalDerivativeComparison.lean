@@ -1,5 +1,6 @@
 import Poincare.Analysis.LocalDerivativeHomotopy
-import Poincare.Topology.Homology.RelativeMaps
+import Poincare.Topology.Homology.RelativeHomeomorphism
+import Poincare.Topology.Homology.RelativeZero
 import Mathlib.Analysis.Convex.Contractible
 
 noncomputable section
@@ -76,5 +77,61 @@ theorem exists_ball_relative_homologyMap_eq_derivative
     (Nat.succ_ne_zero n) F
   exact (integralRelativeHomologyMap_eq_of_restriction_homotopic n g h V
     ({0}ᶜ : Set F) hg hh hrestr).symm
+
+theorem integralRelativeHomologyMap_eq_derivative
+    {E F : Type u} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    [NormedAddCommGroup F] [NormedSpace ℝ F]
+    (f : C(E, F)) (A : E ≃L[ℝ] F) (hzero : f 0 = 0)
+    (hf : HasFDerivAt f (A : E →L[ℝ] F) 0)
+    (hpair : MapsTo f ({0}ᶜ : Set E) ({0}ᶜ : Set F)) (n : ℕ) :
+    integralRelativeHomologyMap n f hpair =
+      integralRelativeHomologyMap n ⟨A, A.continuous⟩
+        (show MapsTo A ({0}ᶜ : Set E) ({0}ᶜ : Set F) from
+          fun _ hx h => hx (A.injective (h.trans (map_zero A).symm))) := by
+  let L : C(E, F) := ⟨A, A.continuous⟩
+  have hL : MapsTo L ({0}ᶜ : Set E) ({0}ᶜ : Set F) :=
+    fun _ hx h => hx (A.injective (h.trans (map_zero A).symm))
+  change integralRelativeHomologyMap n f hpair =
+    integralRelativeHomologyMap n L hL
+  cases n with
+  | zero =>
+    exact integralRelativeHomologyMap_zero_eq_of_joined f L
+      ({0}ᶜ : Set E) ({0}ᶜ : Set F) hpair hL
+      (fun _ => ⟨PathConnectedSpace.somePath _ _⟩)
+  | succ n =>
+    obtain ⟨r, hr, _, g, h, hg, hh, hgp, hhp, hcompare⟩ :=
+      exists_ball_relative_homologyMap_eq_derivative A hzero hf
+        (s := Set.univ) Filter.univ_mem f.continuous.continuousOn
+    let U : Set E := Metric.ball (0 : E) r
+    let J := integralLocalHomologyNeighborhoodIso (n + 1) (0 : E) U
+      Metric.isOpen_ball (Metric.mem_ball_self hr)
+    have hJmap : J.hom.hom =
+        integralRelativeHomologyMap (n + 1) (singularSubspaceInclusion U)
+          (neighborhoodPointComplement_mapsTo (0 : E) U (Metric.mem_ball_self hr)) :=
+      integralLocalHomologyNeighborhoodIso_hom (n + 1) (0 : E) U
+        Metric.isOpen_ball (Metric.mem_ball_self hr)
+    have hsurj : Function.Surjective J.hom.hom := by
+      intro a
+      refine ⟨J.inv.hom a, ?_⟩
+      exact congrArg (fun k => k.hom a) J.inv_hom_id
+    have hcomp : (integralRelativeHomologyMap (n + 1) f hpair).comp J.hom.hom =
+        (integralRelativeHomologyMap (n + 1) L hL).comp J.hom.hom := by
+      simp only [hJmap]
+      rw [← integralRelativeHomologyMap_comp, ← integralRelativeHomologyMap_comp]
+      have hincf : f.comp (singularSubspaceInclusion U) = h := by
+        apply ContinuousMap.ext
+        intro x
+        exact (hh x).symm
+      have hincL : L.comp (singularSubspaceInclusion U) = g := by
+        apply ContinuousMap.ext
+        intro x
+        exact (hg x).symm
+      simpa only [hincf, hincL] using
+        (show integralRelativeHomologyMap (n + 1) h hhp =
+          integralRelativeHomologyMap (n + 1) g hgp from hcompare n)
+    apply LinearMap.ext
+    intro a
+    obtain ⟨b, rfl⟩ := hsurj a
+    exact LinearMap.congr_fun hcomp b
 
 end Poincare.Topology

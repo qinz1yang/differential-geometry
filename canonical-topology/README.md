@@ -1,7 +1,7 @@
 # Local homology and derivative foundations
 
 This separate `PoincareLean` project contains a dependency-closed checkpoint of
-68 Poincare modules. It extends the recovered Chapter 35 source at commit
+74 Poincare modules. It extends the recovered Chapter 35 source at commit
 `b45bfa009368c8f5f531e10f4f5280e90079d6ad` and preserves its mathematical objects
 and `Poincare` namespaces. `Poincare.lean` imports every included leaf.
 
@@ -15,9 +15,13 @@ The additions prove:
 - a punctured-ball homotopy from an invertible derivative to the given map,
   with a positive radius, continuous endpoints and the interpolation formula;
 - equality of the corresponding relative-homology maps on one produced ball
-  in every positive homological degree.
+  in every positive homological degree;
+- equality of the original ambient relative maps with the invertible derivative
+  in every natural homological degree, including degree zero;
+- equality of relative H0 maps for pointwise joined continuous maps preserving
+  the given subspaces.
 
-The five changed modules and their exact baseline/current hashes are listed in
+The six changed modules and their exact baseline/current hashes are listed in
 [provenance/SNAPSHOT.json](provenance/SNAPSHOT.json). The derivative homotopy
 retains its [upstream attribution and modification record](provenance/README.md).
 
@@ -35,19 +39,20 @@ On Della all sustained checks belong to the shared Slurm CPU worker. Use the
 existing exact caches offline; local cache paths and any validation-only path
 manifest stay outside the published package files.
 
-The checkpoint passed on 2026-09-12 in Slurm CPU job `13781140` on
-`della-r3c2n16`. `lake --no-cache --iofail build Poincare` freshly compiled all
-68 included leaves and the root with no compiler diagnostics. The matching
-Kimina/REPL then passed the public consumers, exact signatures, transitive axiom
-guards and four stock declaration linters (`unusedArguments`, `simpNF`,
-`synTaut`, `checkType`) over the entire imported Poincare package. `defLemma`
-is unavailable at this pin; the configured source declaration-kind check remains
-active. All ten additions and the nonidentity consumers use only `propext`,
-`Classical.choice` and `Quot.sound`.
+The 74-module checkpoint passed its final affected-module/root build and
+consumer/linter/axiom gate in Slurm 13781140, request
+1789229647248153045-topology_checkpoint-a464ec28. The six additional leaves,
+changed derivative-comparison source and root freshly compiled with zero
+diagnostics; unchanged leaves retain their verified prior compilation. All 12
+public exports, four nonidentity consumers, and a nonzero degree-zero class
+consumer passed exact signatures and standard-only axiom guards, with stock
+declaration linters over the entire
+imported package and the consumers. The previous 68-module checkpoint was
+published as `76917c5e2`.
 
-The final source hashes, request identity and evidence digests are recorded in
-[provenance/SNAPSHOT.json](provenance/SNAPSHOT.json). This acceptance concerns
-only the included foundations checkpoint.
+The final source hashes and evidence for both checkpoints are recorded in
+[provenance/SNAPSHOT.json](provenance/SNAPSHOT.json). No acceptance of the larger
+topology suite is asserted.
 
 ## Remaining topology work
 
