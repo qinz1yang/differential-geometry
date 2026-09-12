@@ -97,10 +97,5 @@ theorem parametricJacobian_eq_zero_of_eventuallyEq_const (I : ModelWithCorners â
   simp [Matrix.det_fin_two]
 
 
-#print axioms parametricJacobian_eq_riemannianAreaDensity
-#print axioms diskArea_eq_riemannianDiskArea
-#print axioms parametricJacobian_eq_zero_of_subsingleton_model
-#print axioms eventuallyEq_const_of_subsingleton_model
-#print axioms parametricJacobian_eq_zero_of_eventuallyEq_const
 
 end DifferentialGeometry.PDE.RicciFlow.Extinction.Width
