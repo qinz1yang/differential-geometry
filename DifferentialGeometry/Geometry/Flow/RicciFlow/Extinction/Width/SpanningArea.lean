@@ -16,6 +16,7 @@ import Mathlib.MeasureTheory.Integral.Bochner.Set
 import DifferentialGeometry.Geometry.Metric.Comparison.CompactLowerBound
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.WeakLength
 import DifferentialGeometry.Geometry.Measure.Area.SpanningComponent
+import DifferentialGeometry.Geometry.Measure.Area.AnnulusCompetitor
 import DifferentialGeometry.Geometry.Metric.Completeness
 import DifferentialGeometry.Geometry.Metric.Pullback.Cross
 import DifferentialGeometry.Topology.StandardModel
@@ -1789,6 +1790,103 @@ theorem loopUniformDistance_comm (g : SmoothRiemannianMetric I Q)
     exact Manifold.riemannianEDist_comm (I := I) (x := x) (y := y)
   exact congrArg sSup (congrArg Set.range (funext fun θ => congrArg ENNReal.toReal (hd _ _)))
 
+omit finiteDimensionalE boundarylessI t2Q compactQ connectedQ in
+private theorem parametricJacobian_eq_riemannianAreaDensity_of_mem_nhds
+    (g : SmoothRiemannianMetric I Q) (U : ℂ → Q) {s : Set ℂ} {z : ℂ} (hs : s ∈ 𝓝 z) :
+    parametricJacobian g U s z = Geometry.riemannianAreaDensity g U z := by
+  by_cases hd : MDifferentiableAt 𝓘(ℝ, ℂ) I U z
+  · rw [parametricJacobian, if_pos hd.mdifferentiableWithinAt,
+      mfderivWithin_of_mem_nhds (f := U) hs]
+    rw [Geometry.riemannianAreaDensity, Geometry.tangentTwoJacobian]
+    refine congrArg Real.sqrt ?_
+    have hmat : (fun i j : Fin 2 => (g.inner (U z))
+          (mfderiv 𝓘(ℝ, ℂ) I U z (diskBasis i))
+          (mfderiv 𝓘(ℝ, ℂ) I U z (diskBasis j)))
+        = Matrix.of (fun i j : Fin 2 => (g.inner (U z))
+          (mfderiv 𝓘(ℝ, ℂ) I U z (diskBasis i))
+          (mfderiv 𝓘(ℝ, ℂ) I U z (diskBasis j))) := rfl
+    rw [hmat, Matrix.det_fin_two]
+    simp only [Matrix.of_apply]
+    have h0 : diskBasis (0 : Fin 2) = (1 : ℂ) := by simp [diskBasis]
+    have h1 : diskBasis (1 : Fin 2) = Complex.I := by simp [diskBasis]
+    rw [h0, h1]
+    rw [g.symm (U z) (mfderiv 𝓘(ℝ, ℂ) I U z Complex.I) (mfderiv 𝓘(ℝ, ℂ) I U z (1 : ℂ))]
+    ring
+  · rw [parametricJacobian, if_neg (fun h => hd (h.mdifferentiableAt hs)),
+      Geometry.riemannianAreaDensity_eq_zero_of_not_mdifferentiableAt g hd]
+
+omit [NormedAddCommGroup E] [NormedSpace ℝ E] [TopologicalSpace H] [TopologicalSpace Q]
+  [ChartedSpace H Q] [IsManifold I ∞ Q] finiteDimensionalE boundarylessI t2Q compactQ connectedQ in
+private theorem ae_annulusRectangle_interior :
+    ∀ᵐ z ∂volume.restrict annulusRectangle, z ∈ interior annulusRectangle := by
+  have hfront : volume (frontier annulusRectangle) = 0 :=
+    annulusRectangle_convex.addHaar_frontier volume
+  have hdiff : volume (annulusRectangle \ interior annulusRectangle) = 0 := by
+    refine measure_mono_null ?_ hfront
+    intro z hz
+    rw [frontier, annulusRectangle_compact.isClosed.closure_eq]
+    exact hz
+  have h : ∀ᵐ z ∂volume, z ∉ annulusRectangle \ interior annulusRectangle := by
+    rw [ae_iff]
+    simpa only [not_not, Set.ofPred_mem_eq] using hdiff
+  filter_upwards [ae_restrict_mem annulusRectangle_compact.isClosed.measurableSet,
+    ae_restrict_of_ae h] with z hz hznot
+  exact not_not.mp fun hzi => hznot ⟨hz, hzi⟩
+
+omit finiteDimensionalE boundarylessI t2Q compactQ connectedQ in
+private theorem annulusArea_eq_riemannianArea (g : SmoothRiemannianMetric I Q) (u : Annulus → Q) :
+    annulusArea g u = Geometry.riemannianArea g (annulusExtension u) annulusRectangle := by
+  rw [annulusArea, Geometry.riemannianArea]
+  refine integral_congr_ae ?_
+  filter_upwards [ae_annulusRectangle_interior] with z hz
+  exact parametricJacobian_eq_riemannianAreaDensity_of_mem_nhds g (annulusExtension u)
+    (Filter.mem_of_superset (isOpen_interior.mem_nhds hz) interior_subset)
+
+omit finiteDimensionalE boundarylessI t2Q compactQ connectedQ in
+private theorem diskArea_eq_riemannianArea (g : SmoothRiemannianMetric I Q) (u : Disk → Q) :
+    diskArea g u =
+      Geometry.riemannianArea g (Geometry.diskExtension u) (Metric.closedBall (0 : ℂ) 1) := by
+  rw [diskArea, Geometry.riemannianArea]
+  refine integral_congr_ae ?_
+  filter_upwards [Geometry.ae_disk_interior] with z hz
+  have hs : Metric.closedBall (0 : ℂ) 1 ∈ 𝓝 z :=
+    Filter.mem_of_superset (Metric.isOpen_ball.mem_nhds hz) Metric.ball_subset_closedBall
+  refine (parametricJacobian_congr_on (s := Metric.closedBall (0 : ℂ) 1)
+    (v := Geometry.diskExtension u) g ?_
+    (Metric.ball_subset_closedBall hz)).trans ?_
+  · intro w hw
+    simp only [diskExtension, dif_pos hw, Geometry.diskExtension, Function.comp_apply]
+    rw [Geometry.diskRetraction_coe ⟨w, hw⟩]
+  · exact parametricJacobian_eq_riemannianAreaDensity_of_mem_nhds g (Geometry.diskExtension u) hs
+
+omit boundarylessI t2Q compactQ connectedQ in
+private theorem riemannianAreaDensity_pullbackMetricCross_standardModel
+    {A : Type*} [TopologicalSpace A] [ChartedSpace E A] [IsManifold 𝓘(ℝ, E) ∞ A] [T2Space A]
+    (g : SmoothRiemannianMetric I Q) (Ψ : A ≃ₘ⟮𝓘(ℝ, E), I⟯ Q) (U : ℂ → A) (z : ℂ) :
+    Geometry.riemannianAreaDensity (Diffeomorph.pullbackMetricCross g Ψ) U z =
+      Geometry.riemannianAreaDensity g (fun w => Ψ (U w)) z := by
+  by_cases hU : MDifferentiableAt 𝓘(ℝ, ℂ) 𝓘(ℝ, E) U z
+  · have hd : mfderiv 𝓘(ℝ, ℂ) I (fun w => Ψ (U w)) z =
+        (mfderiv 𝓘(ℝ, E) I (Ψ : A → Q) (U z)).comp (mfderiv 𝓘(ℝ, ℂ) 𝓘(ℝ, E) U z) :=
+      mfderiv_comp z (Ψ.contMDiff.contMDiffAt.mdifferentiableAt (by simp)) hU
+    have hv (c : ℂ) : (mfderiv 𝓘(ℝ, E) I (Ψ : A → Q) (U z))
+        ((mfderiv 𝓘(ℝ, ℂ) 𝓘(ℝ, E) U z) c) =
+        (mfderiv 𝓘(ℝ, ℂ) I (fun w => Ψ (U w)) z) c := by
+      rw [hd]
+      rfl
+    simp only [Geometry.riemannianAreaDensity, Geometry.tangentTwoJacobian,
+      Diffeomorph.pullbackMetricCross_inner, hv]
+  · have hU' : ¬ MDifferentiableAt 𝓘(ℝ, ℂ) I (fun w => Ψ (U w)) z := by
+      intro h
+      refine hU ?_
+      have hcomp : MDifferentiableAt 𝓘(ℝ, ℂ) 𝓘(ℝ, E) (fun w => Ψ.symm (Ψ (U w))) z :=
+        (Ψ.symm.contMDiff.contMDiffAt.mdifferentiableAt (by simp)).comp z h
+      have heq : (fun w => Ψ.symm (Ψ (U w))) = U :=
+        funext fun w => Ψ.symm_apply_apply (U w)
+      rwa [heq] at hcomp
+    rw [Geometry.riemannianAreaDensity_eq_zero_of_not_mdifferentiableAt _ hU,
+      Geometry.riemannianAreaDensity_eq_zero_of_not_mdifferentiableAt _ hU']
+
 omit connectedQ in
 theorem disk_annulus_gluing (g : SmoothRiemannianMetric I Q)
     (γ₀ γ₁ : ContinuousFreeLoop Q) (u : DiskCompetitor g γ₀) (A : LipschitzAnnulus g)
@@ -1796,7 +1894,181 @@ theorem disk_annulus_gluing (g : SmoothRiemannianMetric I Q)
     (htrace₁ : ∀ θ, A.map (⟨1, by simp⟩, θ) = γ₁ θ) :
     ∃ v : DiskCompetitor g γ₁,
       diskArea g v.1.map = diskArea g u.1.map + annulusArea g A.map := by
-  sorry
+  classical
+  obtain ⟨Lu, hLu⟩ := u.1.isLipschitz
+  obtain ⟨La, hLa⟩ := A.isLipschitz
+  let c : Geometry.Topology.StandardModelCopy I Q E :=
+    Geometry.Topology.standardModelCopy (I := I) (M := Q)
+      (e := ContinuousLinearEquiv.refl ℝ E)
+  let _ : TopologicalSpace c.Q := c.topos
+  let _ : ChartedSpace E c.Q := c.charted
+  let _ : IsManifold 𝓘(ℝ, E) ∞ c.Q := c.mfld
+  let _ : T2Space c.Q := c.t2
+  have _ : CompactSpace c.Q := c.equiv.toHomeomorph.compactSpace
+  have _ : T3Space c.Q := inferInstance
+  let Φ : Q ≃ₘ⟮I, 𝓘(ℝ, E)⟯ c.Q := c.equiv
+  let g' : SmoothRiemannianMetric 𝓘(ℝ, E) c.Q :=
+    Diffeomorph.pullbackMetricCross g Φ.symm
+  let proj : ℝ × Surgery.Topology.Circle → Annulus :=
+    fun p => (projIcc 0 1 zero_le_one p.1, p.2)
+  let U : ℂ → c.Q := fun z => Φ (Geometry.diskExtension u.1.map z)
+  let H' : ℝ × Surgery.Topology.Circle → c.Q := fun p => Φ (A.map (proj p))
+  have hproj : LipschitzWith 1 proj := by
+    have h := ((LipschitzWith.projIcc (zero_le_one : (0 : ℝ) ≤ 1)).comp
+      (LipschitzWith.prod_fst (α := ℝ) (β := Surgery.Topology.Circle))).prodMk
+        (LipschitzWith.prod_snd (α := ℝ) (β := Surgery.Topology.Circle))
+    simpa only [proj, one_mul, max_self, Function.comp_apply] using h
+  have hproj_edist (p q : ℝ × Surgery.Topology.Circle) :
+      edist (proj p) (proj q) ≤ edist p q := by
+    exact (hproj p q).trans_eq (one_mul _)
+  have hH' : ∀ p q : ℝ × Surgery.Topology.Circle,
+      riemannianEDistOf g' (H' p) (H' q) ≤ (La : ℝ≥0∞) * edist p q := by
+    intro p q
+    rw [pullbackMetricCross_riemannianEDistOf g Φ.symm (H' p) (H' q)]
+    simp only [H', Φ.symm_apply_apply]
+    calc riemannianEDistOf g (A.map (proj p)) (A.map (proj q))
+        ≤ (La : ℝ≥0∞) * edist (proj p) (proj q) := hLa (proj p) (proj q)
+      _ ≤ (La : ℝ≥0∞) * edist p q := mul_le_mul' le_rfl (hproj_edist p q)
+  have hU' : ∀ z w : ℂ, riemannianEDistOf g' (U z) (U w) ≤ (Lu : ℝ≥0∞) * edist z w := by
+    intro z w
+    rw [pullbackMetricCross_riemannianEDistOf g Φ.symm (U z) (U w)]
+    simp only [U, Φ.symm_apply_apply, Geometry.diskExtension, Function.comp_apply]
+    calc riemannianEDistOf g (u.1.map (Geometry.diskRetraction z))
+          (u.1.map (Geometry.diskRetraction w))
+        ≤ (Lu : ℝ≥0∞) * edist (Geometry.diskRetraction z) (Geometry.diskRetraction w) :=
+          hLu (Geometry.diskRetraction z) (Geometry.diskRetraction w)
+      _ ≤ (Lu : ℝ≥0∞) * edist z w :=
+          mul_le_mul' le_rfl ((Geometry.diskRetraction_lipschitz z w).trans_eq (one_mul _))
+  have hglue : ∀ θ : Surgery.Topology.Circle,
+      U (AddCircle.toCircle θ : ℂ) = H' (0, θ) := by
+    intro θ
+    let b : Disk := ⟨(AddCircle.toCircle θ : ℂ), by
+      simpa only [Metric.mem_closedBall, dist_zero_right] using
+        (AddCircle.toCircle θ).norm_coe.le⟩
+    have hb : b = diskBoundary θ := Subtype.ext rfl
+    have hdr : Geometry.diskRetraction (AddCircle.toCircle θ : ℂ) = diskBoundary θ := by
+      rw [← hb]
+      exact Geometry.diskRetraction_coe b
+    have hp : proj (0, θ) = ((⟨0, by simp⟩ : Icc (0 : ℝ) 1), θ) := by
+      have hp0 : projIcc 0 1 zero_le_one (0 : ℝ) = (⟨0, by simp⟩ : Icc (0 : ℝ) 1) :=
+        (projIcc_of_mem zero_le_one (left_mem_Icc.mpr zero_le_one)).trans (Subtype.ext rfl)
+      simp only [proj, hp0]
+    have hlef : U (AddCircle.toCircle θ : ℂ) = Φ (γ₀ θ) := by
+      simp only [U, Geometry.diskExtension, Function.comp_apply, hdr, u.2 θ]
+    have hrig : H' (0, θ) = Φ (γ₀ θ) := by
+      simp only [H', hp, htrace₀ θ]
+    rw [hlef, hrig]
+  obtain ⟨Ka, hKa⟩ := Geometry.attachDiskAnnulus_riemannian_lipschitz g' hU' hH' hglue
+  have harea := Geometry.attachDiskAnnulus_area g' hU' hH' hglue
+  have hcont : Continuous (DifferentialGeometry.Topology.attachDiskAnnulus U H') :=
+    Geometry.continuous_of_riemannian_lipschitz g' hKa
+  let vmap : C(Disk, Q) :=
+    ⟨fun z => Φ.symm (DifferentialGeometry.Topology.attachDiskAnnulus U H' (z : ℂ)),
+      (Φ.symm.continuous.comp hcont).comp continuous_subtype_val⟩
+  have hvlip : ∃ L : ℝ≥0, ∀ z w : Disk,
+      riemannianEDistOf g (vmap z) (vmap w) ≤ (L : ℝ≥0∞) * edist z w := by
+    refine ⟨Ka, fun z w => ?_⟩
+    simp only [vmap, ContinuousMap.coe_mk]
+    rw [← pullbackMetricCross_riemannianEDistOf g Φ.symm
+      (DifferentialGeometry.Topology.attachDiskAnnulus U H' (z : ℂ))
+      (DifferentialGeometry.Topology.attachDiskAnnulus U H' (w : ℂ))]
+    exact hKa (z : ℂ) (w : ℂ)
+  have hvtrace : ∀ θ : Surgery.Topology.Circle, vmap (diskBoundary θ) = γ₁ θ := by
+    intro θ
+    have hb : DifferentialGeometry.Topology.attachDiskAnnulus U H' (diskBoundary θ : ℂ) =
+        H' (1, θ) :=
+      DifferentialGeometry.Topology.attachDiskAnnulus_boundary U H' θ
+    have hp1 : proj (1, θ) = ((⟨1, by simp⟩ : Icc (0 : ℝ) 1), θ) := by
+      have hp : projIcc 0 1 zero_le_one (1 : ℝ) = (⟨1, by simp⟩ : Icc (0 : ℝ) 1) :=
+        (projIcc_of_mem zero_le_one (right_mem_Icc.mpr zero_le_one)).trans (Subtype.ext rfl)
+      simp only [proj, hp]
+    have h1 : H' (1, θ) = Φ (γ₁ θ) := by
+      simp only [H', hp1, htrace₁ θ]
+    simp only [vmap, ContinuousMap.coe_mk, hb, h1, Φ.symm_apply_apply]
+  have hdisk : diskArea g u.1.map =
+      Geometry.riemannianArea g' U (Metric.closedBall (0 : ℂ) 1) := by
+    rw [diskArea_eq_riemannianArea g u.1.map, Geometry.riemannianArea, Geometry.riemannianArea]
+    refine integral_congr_ae ?_
+    filter_upwards with z
+    rw [riemannianAreaDensity_pullbackMetricCross_standardModel g Φ.symm U z]
+    exact (Geometry.riemannianAreaDensity_congr g (Filter.Eventually.of_forall fun w => by
+      simp only [U, Φ.symm_apply_apply])).symm
+  have hann : Geometry.cylinderArea g' H' = annulusArea g A.map := by
+    rw [Geometry.cylinderArea, Geometry.riemannianArea,
+      annulusArea_eq_riemannianArea g A.map, Geometry.riemannianArea]
+    refine integral_congr_ae ?_
+    filter_upwards [ae_annulusRectangle_interior] with z hz
+    rw [riemannianAreaDensity_pullbackMetricCross_standardModel g Φ.symm (Geometry.cylinderLift H') z]
+    refine (Geometry.riemannianAreaDensity_congr g ?_).symm
+    filter_upwards [isOpen_interior.mem_nhds hz] with w hw
+    have hwmem : w ∈ annulusRectangle := interior_subset hw
+    have hp : proj (w.re, (w.im : Surgery.Topology.Circle)) =
+        ((⟨w.re, hwmem.1⟩ : Icc (0 : ℝ) 1), (w.im : Surgery.Topology.Circle)) := by
+      simp only [proj, projIcc_of_mem zero_le_one hwmem.1]
+    simp only [Geometry.cylinderLift, H', hp, Φ.symm_apply_apply]
+    exact annulusExtension_agrees A.map hwmem
+  have hglued : Geometry.riemannianArea g (Geometry.diskExtension vmap) (Metric.closedBall (0 : ℂ) 1) =
+      Geometry.riemannianArea g' (DifferentialGeometry.Topology.attachDiskAnnulus U H')
+        (Metric.closedBall (0 : ℂ) 1) := by
+    rw [Geometry.riemannianArea, Geometry.riemannianArea]
+    refine integral_congr_ae ?_
+    filter_upwards [Geometry.ae_disk_interior] with z hz
+    rw [riemannianAreaDensity_pullbackMetricCross_standardModel g Φ.symm
+      (DifferentialGeometry.Topology.attachDiskAnnulus U H') z]
+    refine (Geometry.riemannianAreaDensity_congr g ?_).symm
+    filter_upwards [Metric.isOpen_ball.mem_nhds hz] with w hw
+    have hdr : (Geometry.diskRetraction w : ℂ) = w :=
+      congrArg Subtype.val (Geometry.diskRetraction_coe ⟨w, Metric.ball_subset_closedBall hw⟩)
+    simp only [vmap, ContinuousMap.coe_mk, Geometry.diskExtension, Function.comp_apply, hdr]
+  refine ⟨⟨{ map := vmap, isLipschitz := hvlip }, hvtrace⟩, ?_⟩
+  calc diskArea g vmap
+      = Geometry.riemannianArea g (Geometry.diskExtension vmap) (Metric.closedBall (0 : ℂ) 1) :=
+        diskArea_eq_riemannianArea g vmap
+    _ = Geometry.riemannianArea g' (DifferentialGeometry.Topology.attachDiskAnnulus U H')
+          (Metric.closedBall (0 : ℂ) 1) := hglued
+    _ = Geometry.riemannianArea g' U (Metric.closedBall (0 : ℂ) 1) + Geometry.cylinderArea g' H' :=
+        harea
+    _ = diskArea g u.1.map + annulusArea g A.map := by rw [← hdisk, hann]
+
+omit [NormedAddCommGroup E] [NormedSpace ℝ E] [TopologicalSpace H] [TopologicalSpace Q]
+  [ChartedSpace H Q] [IsManifold I ∞ Q] finiteDimensionalE boundarylessI t2Q compactQ connectedQ in
+private theorem edist_proj_le' (x y : ℝ) :
+    edist ((x : Surgery.Topology.Circle)) ((y : Surgery.Topology.Circle)) ≤ edist x y := by
+  rw [edist_dist, edist_dist, dist_eq_norm, dist_eq_norm, ← AddCircle.coe_sub]
+  exact ENNReal.ofReal_le_ofReal QuotientAddGroup.norm_mk_le_norm
+
+omit [NormedAddCommGroup E] [NormedSpace ℝ E] [TopologicalSpace H] [TopologicalSpace Q]
+  [ChartedSpace H Q] [IsManifold I ∞ Q] finiteDimensionalE boundarylessI t2Q compactQ connectedQ in
+private theorem loopLength_eq_riemannianCurveLength_real'
+    {E' : Type*} [NormedAddCommGroup E'] [NormedSpace ℝ E'] [FiniteDimensional ℝ E']
+    {Q' : Type*} [TopologicalSpace Q'] [ChartedSpace E' Q'] [IsManifold 𝓘(ℝ, E') ∞ Q']
+    [T2Space Q'] [CompactSpace Q']
+    (g : SmoothRiemannianMetric 𝓘(ℝ, E') Q') (γ : ContinuousFreeLoop Q')
+    (hlip : IsLipschitzLoop g γ) :
+    loopLength g γ = Geometry.riemannianCurveLength g (loopLift γ) 0 1 := by
+  have hb : ∀ x y : ℝ, riemannianEDistOf g (loopLift γ x) (loopLift γ y) ≤
+      ((hlip.choose : ℝ≥0) : ℝ≥0∞) * edist x y := by
+    intro x y
+    have h := hlip.choose_spec (x : Surgery.Topology.Circle) (y : Surgery.Topology.Circle)
+    simp only [loopLift] at h ⊢
+    exact h.trans (mul_le_mul' le_rfl (edist_proj_le' x y))
+  rw [Geometry.riemannianCurveLength_eq_integral g hb 0 1]
+  simp only [loopLength, Geometry.riemannianCurveSpeed, loopVelocity, loopLift]
+
+omit [TopologicalSpace H] [TopologicalSpace Q] [ChartedSpace H Q] [IsManifold I ∞ Q]
+  boundarylessI t2Q compactQ connectedQ in
+private theorem riemannianCurveLength_pullbackMetricCross'
+    {E' : Type*} [NormedAddCommGroup E'] [NormedSpace ℝ E'] [FiniteDimensional ℝ E']
+    {H' : Type*} [TopologicalSpace H'] {J : ModelWithCorners ℝ E' H'}
+    {P : Type*} [TopologicalSpace P] [ChartedSpace H' P] [IsManifold J ∞ P] [T2Space P]
+    {A : Type*} [TopologicalSpace A] [ChartedSpace E A] [IsManifold 𝓘(ℝ, E) ∞ A] [T2Space A]
+    (g : SmoothRiemannianMetric J P) (Ψ : A ≃ₘ⟮𝓘(ℝ, E), J⟯ P) (γ : ℝ → A) (a b : ℝ) :
+    Surgery.Topology.riemannianCurveLength (Diffeomorph.pullbackMetricCross g Ψ) γ a b =
+      Surgery.Topology.riemannianCurveLength g (fun t => Ψ (γ t)) a b := by
+  unfold Surgery.Topology.riemannianCurveLength
+  refine congrArg sSup (congrArg Set.range (funext fun p => ?_))
+  refine Finset.sum_congr rfl fun i _ => ?_
+  rw [pullbackMetricCross_riemannianEDistOf]
 
 theorem rfs_nearby_loop_annulus (g : SmoothRiemannianMetric I Q) :
     ∃ ρ C : ℝ, 0 < ρ ∧ 0 < C ∧
@@ -1813,7 +2085,173 @@ theorem rfs_nearby_loop_annulus (g : SmoothRiemannianMetric I Q) :
             (loopLength g γ₀ + loopLength g γ₁) ∧
           ∀ u : DiskCompetitor g γ₀, ∃ v : DiskCompetitor g γ₁,
             diskArea g v.1.map = diskArea g u.1.map + annulusArea g A.map := by
-  sorry
+  classical
+  let c : Geometry.Topology.StandardModelCopy I Q E :=
+    Geometry.Topology.standardModelCopy (I := I) (M := Q)
+      (e := ContinuousLinearEquiv.refl ℝ E)
+  let _ : TopologicalSpace c.Q := c.topos
+  let _ : ChartedSpace E c.Q := c.charted
+  let _ : IsManifold 𝓘(ℝ, E) ∞ c.Q := c.mfld
+  let _ : T2Space c.Q := c.t2
+  have _ : CompactSpace c.Q := c.equiv.toHomeomorph.compactSpace
+  have _ : T3Space c.Q := inferInstance
+  have _ : ConnectedSpace c.Q :=
+    c.equiv.toHomeomorph.surjective.connectedSpace c.equiv.toHomeomorph.continuous
+  let Φ : Q ≃ₘ⟮I, 𝓘(ℝ, E)⟯ c.Q := c.equiv
+  let g' : SmoothRiemannianMetric 𝓘(ℝ, E) c.Q :=
+    Diffeomorph.pullbackMetricCross g Φ.symm
+  let Φc : C(Q, c.Q) := ⟨fun x => Φ x, Φ.continuous⟩
+  have hdist (x y : c.Q) :
+      riemannianEDistOf g' x y = riemannianEDistOf g (Φ.symm x) (Φ.symm y) :=
+    pullbackMetricCross_riemannianEDistOf g Φ.symm x y
+  have hdict (γ₀ γ₁ : ContinuousFreeLoop Q) :
+      (Geometry.riemannianLoopDistance g' (Φc.comp γ₀) (Φc.comp γ₁) : ℝ) =
+        loopUniformDistance g γ₀ γ₁ := by
+    rw [loopUniformDistance, Geometry.riemannianLoopDistance_eq_iSup]
+    have hbdd : BddAbove (Set.range (fun θ : Surgery.Topology.Circle =>
+        (riemannianEDistOf g' (Φc.comp γ₀ θ) (Φc.comp γ₁ θ)).toReal)) := by
+      refine ⟨(⨆ θ, riemannianEDistOf g' (Φc.comp γ₀ θ) (Φc.comp γ₁ θ)).toReal, ?_⟩
+      rintro x ⟨θ, rfl⟩
+      exact ENNReal.toReal_mono
+        (Geometry.riemannianLoopEDist_ne_top g' (Φc.comp γ₀) (Φc.comp γ₁))
+        (le_iSup (fun θ => riemannianEDistOf g' (Φc.comp γ₀ θ) (Φc.comp γ₁ θ)) θ)
+    have hfun : (fun θ : Surgery.Topology.Circle =>
+          (riemannianEDistOf g' (Φc.comp γ₀ θ) (Φc.comp γ₁ θ)).toReal) =
+        (fun θ => (riemannianEDistOf g (γ₀ θ) (γ₁ θ)).toReal) := by
+      funext θ
+      rw [hdist]
+      simp only [Φc, ContinuousMap.comp_apply, ContinuousMap.coe_mk, Φ.symm_apply_apply]
+    rw [hfun] at hbdd ⊢
+    exact le_antisymm (ciSup_le fun θ => le_csSup hbdd ⟨θ, rfl⟩)
+      (csSup_le (Set.range_nonempty _) fun x hx => by
+        rcases hx with ⟨θ, rfl⟩
+        exact le_ciSup hbdd θ)
+  obtain ⟨ρ', C', hρ', hC', hmain⟩ := Geometry.exists_nearby_loop_annulus g'
+  refine ⟨(ρ' : ℝ), (C' : ℝ), ?_, ?_, ?_⟩
+  · exact_mod_cast hρ'
+  · exact_mod_cast hC'
+  · intro γ₀ γ₁ hl₀ hl₁ hnear
+    obtain ⟨L₀, hL₀⟩ := hl₀
+    obtain ⟨L₁, hL₁⟩ := hl₁
+    have hγ₀' : ∀ s t : Surgery.Topology.Circle,
+        riemannianEDistOf g' (Φc.comp γ₀ s) (Φc.comp γ₀ t) ≤ (L₀ : ℝ≥0∞) * edist s t := by
+      intro s t
+      rw [hdist]
+      simp only [Φc, ContinuousMap.comp_apply, ContinuousMap.coe_mk, Φ.symm_apply_apply]
+      exact hL₀ s t
+    have hγ₁' : ∀ s t : Surgery.Topology.Circle,
+        riemannianEDistOf g' (Φc.comp γ₁ s) (Φc.comp γ₁ t) ≤ (L₁ : ℝ≥0∞) * edist s t := by
+      intro s t
+      rw [hdist]
+      simp only [Φc, ContinuousMap.comp_apply, ContinuousMap.coe_mk, Φ.symm_apply_apply]
+      exact hL₁ s t
+    have hnear' : Geometry.riemannianLoopDistance g' (Φc.comp γ₀) (Φc.comp γ₁) < ρ' := by
+      have h : (Geometry.riemannianLoopDistance g' (Φc.comp γ₀) (Φc.comp γ₁) : ℝ) < (ρ' : ℝ) := by
+        rw [hdict γ₀ γ₁]
+        exact hnear
+      exact_mod_cast h
+    obtain ⟨⟨K, hK⟩, harea, _⟩ := hmain (Φc.comp γ₀) (Φc.comp γ₁) L₀ L₁ hγ₀' hγ₁' hnear'
+    have hfin (θ : Surgery.Topology.Circle) :
+        riemannianEDistOf g' (Φc.comp γ₀ θ) (Φc.comp γ₁ θ) ≠ ⊤ := by
+      refine ne_top_of_le_ne_top ?_
+        (Geometry.riemannianEDist_le_loopDistance g' (Φc.comp γ₀) (Φc.comp γ₁) θ)
+      rw [Geometry.riemannianLoopDistance_coe]
+      exact Geometry.riemannianLoopEDist_ne_top g' (Φc.comp γ₀) (Φc.comp γ₁)
+    let Φgeo : ℝ × Surgery.Topology.Circle → c.Q :=
+      fun p => Geometry.geodesicAnnulus g' (Φc.comp γ₀) (Φc.comp γ₁) p
+    have hΦgeo : Continuous Φgeo :=
+      Geometry.continuous_of_riemannian_lipschitz g' (fun p q => hK p q)
+    have hpairs : LipschitzWith 1 (fun p : Annulus => ((p.1 : ℝ), p.2)) := by
+      simpa only [one_mul, max_self, Function.comp_apply] using
+        ((LipschitzWith.subtype_val (Icc (0 : ℝ) 1)).comp
+          (LipschitzWith.prod_fst (α := Icc (0 : ℝ) 1) (β := Surgery.Topology.Circle))).prodMk
+            (LipschitzWith.prod_snd (α := Icc (0 : ℝ) 1) (β := Surgery.Topology.Circle))
+    have hAlip : ∀ p q : Annulus,
+        riemannianEDistOf g (Φ.symm (Φgeo ((p.1 : ℝ), p.2)))
+          (Φ.symm (Φgeo ((q.1 : ℝ), q.2))) ≤ (K : ℝ≥0∞) * edist p q := by
+      intro p q
+      rw [← hdist (Φgeo ((p.1 : ℝ), p.2)) (Φgeo ((q.1 : ℝ), q.2))]
+      calc riemannianEDistOf g' (Φgeo ((p.1 : ℝ), p.2)) (Φgeo ((q.1 : ℝ), q.2))
+          ≤ (K : ℝ≥0∞) * edist ((p.1 : ℝ), p.2) ((q.1 : ℝ), q.2) := hK _ _
+        _ ≤ (K : ℝ≥0∞) * edist p q := mul_le_mul' le_rfl ((hpairs p q).trans_eq (one_mul _))
+    let A : LipschitzAnnulus g :=
+      { map := ⟨fun p => Φ.symm (Φgeo ((p.1 : ℝ), p.2)),
+          Φ.symm.continuous.comp (hΦgeo.comp hpairs.continuous)⟩
+        isLipschitz := ⟨K, hAlip⟩ }
+    have hA (s : Icc (0 : ℝ) 1) (θ : Surgery.Topology.Circle) :
+        A.map (s, θ) = Φ.symm (Φgeo ((s : ℝ), θ)) := rfl
+    have hΦc₀ (θ : Surgery.Topology.Circle) : (Φc.comp γ₀) θ = Φ (γ₀ θ) := rfl
+    have hΦc₁ (θ : Surgery.Topology.Circle) : (Φc.comp γ₁) θ = Φ (γ₁ θ) := rfl
+    have hΦgeop (p : ℝ × Surgery.Topology.Circle) :
+        Φgeo p = Geometry.geodesicAnnulus g' (Φc.comp γ₀) (Φc.comp γ₁) p := rfl
+    have h0 : ∀ θ : Surgery.Topology.Circle, A.map (⟨0, by simp⟩, θ) = γ₀ θ := by
+      intro θ
+      rw [hA ⟨0, by simp⟩ θ, hΦgeop, Geometry.geodesicAnnulus_zero, hΦc₀ θ,
+        Φ.symm_apply_apply]
+    have h1 : ∀ θ : Surgery.Topology.Circle, A.map (⟨1, by simp⟩, θ) = γ₁ θ := by
+      intro θ
+      rw [hA ⟨1, by simp⟩ θ, hΦgeop,
+        Geometry.geodesicAnnulus_one g' (Φc.comp γ₀) (Φc.comp γ₁) θ (hfin θ),
+        hΦc₁ θ, Φ.symm_apply_apply]
+    have hrad : ∀ θ (s t : Icc (0 : ℝ) 1),
+        riemannianEDistOf g (A.map (s, θ)) (A.map (t, θ)) =
+          ENNReal.ofReal |(s : ℝ) - t| * riemannianEDistOf g (γ₀ θ) (γ₁ θ) := by
+      intro θ s t
+      have hp_s : projIcc 0 1 zero_le_one (s : ℝ) = s := projIcc_of_mem zero_le_one s.property
+      have hp_t : projIcc 0 1 zero_le_one (t : ℝ) = t := projIcc_of_mem zero_le_one t.property
+      simp only [hA, hΦgeop, Geometry.geodesicAnnulus, hp_s, hp_t, hΦc₀ θ, hΦc₁ θ]
+      rw [← hdist,
+        Geometry.riemannianEDistOf_geodesicInterpolation (g := g') (x := Φ (γ₀ θ))
+          (y := Φ (γ₁ θ)) (by simpa only [hΦc₀ θ, hΦc₁ θ] using hfin θ) s.property t.property,
+        hdist]
+      simp only [Φ.symm_apply_apply]
+    have hlen (γ : ContinuousFreeLoop Q) (hlip : IsLipschitzLoop g γ)
+        (hlip' : IsLipschitzLoop g' (Φc.comp γ)) :
+        loopLength g' (Φc.comp γ) = loopLength g γ := by
+      have h₁ := loopLength_eq_riemannianCurveLength (g := g') (γ := Φc.comp γ) hlip'
+      have h₂ := loopLength_eq_riemannianCurveLength (g := g) (γ := γ) hlip
+      rw [riemannianCurveLength_pullbackMetricCross' g Φ.symm (loopLift (Φc.comp γ)) 0 1] at h₁
+      have hfun : (fun t => Φ.symm (loopLift (Φc.comp γ) t)) = loopLift γ := by
+        funext t
+        simp only [loopLift, Φc, ContinuousMap.comp_apply, ContinuousMap.coe_mk,
+          Φ.symm_apply_apply]
+      rw [hfun] at h₁
+      exact ENNReal.ofReal_eq_ofReal_iff (loopLength_nonneg _ _) (loopLength_nonneg _ _) |>.mp
+        (h₁.trans h₂.symm)
+    have hl₀len : Geometry.riemannianCurveLength g' (loopLift (Φc.comp γ₀)) 0 1 =
+        loopLength g γ₀ := by
+      rw [← loopLength_eq_riemannianCurveLength_real' g' (Φc.comp γ₀) ⟨L₀, hγ₀'⟩,
+        hlen γ₀ ⟨L₀, hL₀⟩ ⟨L₀, hγ₀'⟩]
+    have hl₁len : Geometry.riemannianCurveLength g' (loopLift (Φc.comp γ₁)) 0 1 =
+        loopLength g γ₁ := by
+      rw [← loopLength_eq_riemannianCurveLength_real' g' (Φc.comp γ₁) ⟨L₁, hγ₁'⟩,
+        hlen γ₁ ⟨L₁, hL₁⟩ ⟨L₁, hγ₁'⟩]
+    have hann : annulusArea g A.map = Geometry.cylinderArea g' Φgeo := by
+      rw [annulusArea_eq_riemannianArea, Geometry.cylinderArea, Geometry.riemannianArea,
+        Geometry.riemannianArea]
+      refine integral_congr_ae ?_
+      filter_upwards [ae_annulusRectangle_interior] with z hz
+      rw [riemannianAreaDensity_pullbackMetricCross_standardModel g Φ.symm
+        (Geometry.cylinderLift Φgeo) z]
+      refine (Geometry.riemannianAreaDensity_congr g ?_).symm
+      filter_upwards [isOpen_interior.mem_nhds hz] with w hw
+      have hwmem : w ∈ annulusRectangle := interior_subset hw
+      rw [annulusExtension_agrees A.map hwmem,
+        hA ⟨w.re, hwmem.1⟩ (w.im : Surgery.Topology.Circle), hΦgeop, Geometry.cylinderLift,
+        hΦgeop]
+    have hgeo : Geometry.cylinderArea g' Φgeo =
+        Geometry.geodesicAnnulusArea g' (Φc.comp γ₀) (Φc.comp γ₁) := by
+      rw [← Geometry.geodesicAnnulusArea_eq_cylinderArea g' (Φc.comp γ₀) (Φc.comp γ₁)]
+    refine ⟨A, h0, h1, hrad, ?_, ?_⟩
+    · rw [hann, hgeo]
+      calc Geometry.geodesicAnnulusArea g' (Φc.comp γ₀) (Φc.comp γ₁)
+          ≤ (C' : ℝ) * (Geometry.riemannianLoopDistance g' (Φc.comp γ₀) (Φc.comp γ₁) : ℝ) *
+              (Geometry.riemannianCurveLength g' (loopLift (Φc.comp γ₀)) 0 1 +
+                Geometry.riemannianCurveLength g' (loopLift (Φc.comp γ₁)) 0 1) := harea
+        _ = (C' : ℝ) * loopUniformDistance g γ₀ γ₁ * (loopLength g γ₀ + loopLength g γ₁) := by
+            rw [hdict γ₀ γ₁, hl₀len, hl₁len]
+    · intro u
+      exact disk_annulus_gluing g γ₀ γ₁ u A h0 h1
 
 omit connectedQ in
 theorem rfs_disk_competitor_exists (g : SmoothRiemannianMetric I Q)

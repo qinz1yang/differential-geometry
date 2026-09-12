@@ -285,6 +285,36 @@ theorem metricCLMSection_jointContMDiffOn_of_chartGram_on
   · exact MetricCLMSectionCoordinates.inCoordinates_metric_eq_chartGram_sum
       (g q₀.1) α hbase0 v w
 
+namespace MetricFamilySmoothOn
+
+omit [NeZero (Module.finrank ℝ E)] in
+theorem metricCLMSection_contMDiffOn {D : RealTimeInterval}
+    {g : ℝ → SmoothRiemannianMetric I M}
+    (hG : MetricFamilySmoothOn (I := I) (M := M) D g)
+    {J : Set ℝ} (hJ : J ⊆ D.regular) :
+    ContMDiffOn (𝓘(ℝ, ℝ).prod I) (I.prod 𝓘(ℝ, E →L[ℝ] E →L[ℝ] ℝ)) ∞
+      (fun p : ℝ × M => (⟨p.2, (g p.1).inner p.2⟩ :
+        TotalSpace (E →L[ℝ] E →L[ℝ] ℝ)
+          (fun x => TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ)))
+      (J ×ˢ (Set.univ : Set M)) := by
+  refine metricCLMSection_jointContMDiffOn_of_chartGram_on (I := I) g J ?_
+  intro x₀ i j
+  let e := trivializationAt E (TangentSpace I) x₀
+  let b := DifferentialGeometry.Tensor.Coordinates.chartModelBasis E
+  have hframe : IsLocalFrameOn I E (∞ : ℕ∞ω) (e.localFrame b) e.baseSet :=
+    e.isLocalFrameOn_localFrame_baseSet I (∞ : ℕ∞ω) b
+  have hsm := (hG.frameCompSmooth (e.localFrame b) hframe i j).mono
+    (Set.prod_mono hJ (subset_refl _))
+  refine hsm.congr ?_
+  rintro ⟨t, y⟩ ⟨ht, hy⟩
+  rw [e.localFrame_apply_of_mem_baseSet b hy, e.localFrame_apply_of_mem_baseSet b hy]
+  simp only [DifferentialGeometry.Tensor.Coordinates.chartGramMatrix, Matrix.of_apply,
+    DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber, Trivialization.basisAt,
+    Module.Basis.map_apply, e, b, Trivialization.linearEquivAt_symm_apply]
+  rw [Trivialization.symmL_apply _ hy, Trivialization.symmL_apply _ hy]
+
+end MetricFamilySmoothOn
+
 omit [NeZero (Module.finrank ℝ E)] in
 theorem metricCLMSection_jointContMDiffOn_of_chartGram
     (g_DT : ℝ → SmoothRiemannianMetric I M) (T : ℝ)

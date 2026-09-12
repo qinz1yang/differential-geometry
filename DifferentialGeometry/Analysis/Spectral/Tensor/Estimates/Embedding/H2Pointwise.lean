@@ -212,6 +212,96 @@ theorem hs2_low2
     (pow_le_pow_left₀
       (Finset.sum_nonneg (fun j _ => norm_nonneg _)) hsum 2)
 
+theorem hs_grad_low2
+    (g : SmoothRiemannianMetric I M) (s : ℕ) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ T : SmoothCcTensor g 0 s,
+      (∀ x : M,
+        riemannianFiberNormSq (I := I) (M := M) g 0 (s + 1) x
+            ((covGrad (I := I) (M := M) g 0 s T).toSection x) ≤
+          (C * ‖ccTensorToHs (I := I) (M := M) g s
+            ((Module.finrank ℝ E / 2 + 2 : ℕ) : ℝ) T‖) ^ 2) ∧
+      (∑ j ∈ Finset.range (Module.finrank ℝ E / 2 + 2),
+          ‖iteratedCovGrad (I := I) g 0 (s + 1) j
+            (covGrad (I := I) (M := M) g 0 s T)‖ ^ 2) ≤
+        (C * ‖ccTensorToHs (I := I) (M := M) g s
+          ((Module.finrank ℝ E / 2 + 2 : ℕ) : ℝ) T‖) ^ 2 := by
+  classical
+  obtain ⟨Cpt, hCpt, hpt⟩ :=
+    exists_riemannianFiberNorm_le_iteratedCovGrad_l2_jetSum_supercritical
+      (I := I) (M := M) g 0 (s + 1)
+  obtain ⟨Chs, hChs, hhs⟩ := hsJet_le (I := I) (M := M) g s (Module.finrank ℝ E / 2 + 2)
+  let C : ℝ := Cpt * Chs + Chs + 1
+  have hC : 0 ≤ C := by dsimp [C]; positivity
+  refine ⟨C, hC, ?_⟩
+  intro T
+  let N : ℝ := ‖ccTensorToHs (I := I) (M := M) g s
+    ((Module.finrank ℝ E / 2 + 2 : ℕ) : ℝ) T‖
+  let V : SmoothCcTensor g 0 (s + 1) :=
+    covGrad (I := I) (M := M) g 0 s T
+  have hN : 0 ≤ N := norm_nonneg _
+  have hCptChs : Cpt * Chs ≤ C := by dsimp [C]; nlinarith
+  have hChsC : Chs ≤ C := by dsimp [C]; nlinarith [mul_nonneg hCpt hChs]
+  have hlin :
+      ∑ j ∈ Finset.range (Module.finrank ℝ E / 2 + 3),
+          ‖iteratedCovGrad (I := I) g 0 s j T‖ ≤ Chs * N := by
+    simpa [N] using hhs T
+  have hshift :
+      ∑ j ∈ Finset.range (Module.finrank ℝ E / 2 + 2),
+          ‖iteratedCovGrad (I := I) g 0 (s + 1) j V‖ ^ 2 ≤
+        ∑ j ∈ Finset.range (Module.finrank ℝ E / 2 + 3),
+          ‖iteratedCovGrad (I := I) g 0 s j T‖ ^ 2 := by
+    have hreindex :
+        ∑ j ∈ Finset.range (Module.finrank ℝ E / 2 + 2),
+            ‖iteratedCovGrad (I := I) g 0 (s + 1) j V‖ ^ 2 =
+          ∑ j ∈ Finset.range (Module.finrank ℝ E / 2 + 2),
+            ‖iteratedCovGrad (I := I) g 0 s (j + 1) T‖ ^ 2 := by
+      refine Finset.sum_congr rfl fun j _ => ?_
+      rw [show V = covGrad (I := I) (M := M) g 0 s T from rfl,
+        grad_jet_norm (I := I) (M := M) g s j T]
+    rw [hreindex,
+      Finset.sum_range_succ' (fun i => ‖iteratedCovGrad (I := I) g 0 s i T‖ ^ 2)
+        (Module.finrank ℝ E / 2 + 2)]
+    exact le_add_of_nonneg_right (sq_nonneg _)
+  have hsqsum :
+      ∑ j ∈ Finset.range (Module.finrank ℝ E / 2 + 3),
+          ‖iteratedCovGrad (I := I) g 0 s j T‖ ^ 2 ≤
+        (∑ j ∈ Finset.range (Module.finrank ℝ E / 2 + 3),
+          ‖iteratedCovGrad (I := I) g 0 s j T‖) ^ 2 :=
+    Finset.sum_sq_le_sq_sum_of_nonneg (fun j _ => norm_nonneg _)
+  have hlin_sq :
+      (∑ j ∈ Finset.range (Module.finrank ℝ E / 2 + 3),
+          ‖iteratedCovGrad (I := I) g 0 s j T‖) ^ 2 ≤
+        (Chs * N) ^ 2 :=
+    pow_le_pow_left₀ (Finset.sum_nonneg (fun j _ => norm_nonneg _)) hlin 2
+  have hVjet :
+      ∑ j ∈ Finset.range (Module.finrank ℝ E / 2 + 2),
+          ‖iteratedCovGrad (I := I) g 0 (s + 1) j V‖ ^ 2 ≤
+        (C * N) ^ 2 := by
+    calc
+      _ ≤ (∑ j ∈ Finset.range (Module.finrank ℝ E / 2 + 3),
+          ‖iteratedCovGrad (I := I) g 0 s j T‖) ^ 2 := hshift.trans hsqsum
+      _ ≤ (Chs * N) ^ 2 := hlin_sq
+      _ ≤ (C * N) ^ 2 :=
+        pow_le_pow_left₀ (mul_nonneg hChs hN)
+          (mul_le_mul_of_nonneg_right hChsC hN) 2
+  constructor
+  · intro x
+    have hpt' := hpt V x
+    calc
+      riemannianFiberNormSq (I := I) (M := M) g 0 (s + 1) x
+          (V.toSection x)
+          ≤ Cpt ^ 2 * ∑ j ∈ Finset.range (Module.finrank ℝ E / 2 + 2),
+              ‖iteratedCovGrad (I := I) g 0 (s + 1) j V‖ ^ 2 := hpt'
+      _ ≤ Cpt ^ 2 * (Chs * N) ^ 2 :=
+        mul_le_mul_of_nonneg_left
+          (hshift.trans (hsqsum.trans hlin_sq)) (sq_nonneg Cpt)
+      _ = (Cpt * Chs * N) ^ 2 := by ring
+      _ ≤ (C * N) ^ 2 :=
+        pow_le_pow_left₀
+          (mul_nonneg (mul_nonneg hCpt hChs) hN)
+          (mul_le_mul_of_nonneg_right hCptChs hN) 2
+  · exact hVjet
+
 theorem hs3_grad_low2
     (hDim : Module.finrank ℝ E = 3)
     (g : SmoothRiemannianMetric I M) (s : ℕ) :
@@ -225,82 +315,13 @@ theorem hs3_grad_low2
             (covGrad (I := I) (M := M) g 0 s T)‖ ^ 2) ≤
         (C * ‖ccTensorToHs (I := I) (M := M) g s (3 : ℝ) T‖) ^ 2 := by
   classical
-  obtain ⟨Cpt, hCpt, hpt⟩ :=
-    exists_riemannianFiberNorm_le_iteratedCovGrad_l2_jetSum_supercritical
-      (I := I) (M := M) g 0 (s + 1)
-  obtain ⟨Chs, hChs, hhs⟩ := hsJet_le (I := I) (M := M) g s 3
-  let C : ℝ := Cpt * Chs + Chs + 1
-  have hC : 0 ≤ C := by dsimp [C]; positivity
+  obtain ⟨C, hC, hbound⟩ := hs_grad_low2 (I := I) (M := M) g s
+  have hcard : Module.finrank ℝ E / 2 + 2 = 3 := by rw [hDim]
   refine ⟨C, hC, ?_⟩
   intro T
-  let N : ℝ := ‖ccTensorToHs (I := I) (M := M) g s (3 : ℝ) T‖
-  let V : SmoothCcTensor g 0 (s + 1) :=
-    covGrad (I := I) (M := M) g 0 s T
-  have hN : 0 ≤ N := norm_nonneg _
-  have hCptChs : Cpt * Chs ≤ C := by
-    dsimp [C]
-    nlinarith
-  have hChsC : Chs ≤ C := by
-    dsimp [C]
-    nlinarith [mul_nonneg hCpt hChs]
-  have hrange : Finset.range (Module.finrank ℝ E / 2 + 2) = Finset.range 3 := by
-    rw [hDim]
-  have hlin :
-      ∑ j ∈ Finset.range 4,
-          ‖iteratedCovGrad (I := I) g 0 s j T‖ ≤ Chs * N := by
-    simpa [N] using hhs T
-  have hshift :
-      ∑ j ∈ Finset.range 3,
-          ‖iteratedCovGrad (I := I) g 0 (s + 1) j V‖ ^ 2 ≤
-        ∑ j ∈ Finset.range 4,
-          ‖iteratedCovGrad (I := I) g 0 s j T‖ ^ 2 := by
-    dsimp [V]
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, zero_add]
-    rw [grad_jet_norm (I := I) (M := M) g s 0 T,
-      grad_jet_norm (I := I) (M := M) g s 1 T,
-      grad_jet_norm (I := I) (M := M) g s 2 T]
-    nlinarith [sq_nonneg
-      ‖iteratedCovGrad (I := I) g 0 s 0 T‖]
-  have hsqsum :
-      ∑ j ∈ Finset.range 4,
-          ‖iteratedCovGrad (I := I) g 0 s j T‖ ^ 2 ≤
-        (∑ j ∈ Finset.range 4,
-          ‖iteratedCovGrad (I := I) g 0 s j T‖) ^ 2 :=
-    Finset.sum_sq_le_sq_sum_of_nonneg (fun j _ => norm_nonneg _)
-  have hlin_sq :
-      (∑ j ∈ Finset.range 4,
-          ‖iteratedCovGrad (I := I) g 0 s j T‖) ^ 2 ≤
-        (Chs * N) ^ 2 :=
-    pow_le_pow_left₀ (Finset.sum_nonneg (fun j _ => norm_nonneg _)) hlin 2
-  have hVjet :
-      ∑ j ∈ Finset.range 3,
-          ‖iteratedCovGrad (I := I) g 0 (s + 1) j V‖ ^ 2 ≤
-        (C * N) ^ 2 := by
-    calc
-      _ ≤ (∑ j ∈ Finset.range 4,
-          ‖iteratedCovGrad (I := I) g 0 s j T‖) ^ 2 := hshift.trans hsqsum
-      _ ≤ (Chs * N) ^ 2 := hlin_sq
-      _ ≤ (C * N) ^ 2 :=
-        pow_le_pow_left₀ (mul_nonneg hChs hN)
-          (mul_le_mul_of_nonneg_right hChsC hN) 2
-  constructor
-  · intro x
-    have hpt' := hpt V x
-    rw [hrange] at hpt'
-    calc
-      riemannianFiberNormSq (I := I) (M := M) g 0 (s + 1) x
-          (V.toSection x)
-          ≤ Cpt ^ 2 * ∑ j ∈ Finset.range 3,
-              ‖iteratedCovGrad (I := I) g 0 (s + 1) j V‖ ^ 2 := hpt'
-      _ ≤ Cpt ^ 2 * (Chs * N) ^ 2 :=
-        mul_le_mul_of_nonneg_left
-          (hshift.trans (hsqsum.trans hlin_sq)) (sq_nonneg Cpt)
-      _ = (Cpt * Chs * N) ^ 2 := by ring
-      _ ≤ (C * N) ^ 2 :=
-        pow_le_pow_left₀
-          (mul_nonneg (mul_nonneg hCpt hChs) hN)
-          (mul_le_mul_of_nonneg_right hCptChs hN) 2
-  · exact hVjet
+  have hT := hbound T
+  rw [hcard] at hT
+  simpa using hT
 
 attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
   Tensor0SBundle.tensorRSSpaceNormedSpace in

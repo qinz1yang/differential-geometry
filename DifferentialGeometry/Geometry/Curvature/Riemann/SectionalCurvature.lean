@@ -226,6 +226,36 @@ theorem sectionalCurvatureDenominator_eq_zero_of_right_smul
     rw [ContinuousLinearMap.map_smul, smul_eq_mul]
   rw [hRR, hR]; ring
 
+omit [Module.Finite ℝ E] [NeZero (Module.finrank ℝ E)] in
+theorem linearIndependent_pair_of_sectionalCurvatureDenominator_pos
+    (g : SmoothRiemannianMetric I M) (p : M) (v w : TangentSpace I p)
+    (hpos : 0 < sectionalCurvatureDenominator (I := I) g p v w) :
+    LinearIndependent ℝ ![v, w] := by
+  rw [LinearIndependent.pair_iff]
+  intro a b hab
+  by_cases ha : a = 0
+  · subst ha
+    have hbw : b • w = 0 := by simpa using hab
+    by_cases hb : b = 0
+    · exact ⟨rfl, hb⟩
+    · exfalso
+      have hw : w = 0 := (smul_eq_zero.mp hbw).resolve_left hb
+      rw [hw, sectionalCurvatureDenominator_def] at hpos
+      simp at hpos
+  · exfalso
+    have h1 : a • v = -(b • w) := eq_neg_of_add_eq_zero_left hab
+    have hv : v = (-(b * a⁻¹)) • w := by
+      calc v = a⁻¹ • (a • v) := (inv_smul_smul₀ ha v).symm
+        _ = a⁻¹ • (-(b • w)) := by rw [h1]
+        _ = -(a⁻¹ • (b • w)) := by rw [smul_neg]
+        _ = -((b * a⁻¹) • w) := by rw [smul_comm, smul_smul]
+        _ = (-(b * a⁻¹)) • w := (neg_smul _ _).symm
+    have hz := sectionalCurvatureDenominator_eq_zero_of_left_smul (I := I) g p
+      (-(b * a⁻¹)) w
+    rw [hv] at hpos
+    rw [hz] at hpos
+    exact (lt_irrefl 0) hpos
+
 omit [NeZero (Module.finrank ℝ E)] in
 theorem sectionalCurvatureNumerator_smul_left
     (g : SmoothRiemannianMetric I M) (p : M) (c : ℝ)
@@ -546,6 +576,22 @@ theorem sectionalCurvature_eq_metricRm04StandardAt_div
         (g.inner x v v * g.inner x w w - (g.inner x v w) ^ 2) := by
   rw [sectionalCurvature_def, sectionalCurvatureNumerator_eq_metricRm04StandardAt,
     sectionalCurvatureDenominator_def]
+
+omit [NeZero (Module.finrank ℝ E)] in
+theorem sectionalCurvature_eq_zero_of_metricRm04StandardAt_eq_zero
+    (g : SmoothRiemannianMetric I M) (x : M) (v w : TangentSpace I x)
+    (hzero : Curvature.metricRm04StandardAt (I := I) g x v w w v = 0) :
+    sectionalCurvature (I := I) g x v w = 0 := by
+  rw [sectionalCurvature_eq_metricRm04StandardAt_div, hzero, zero_div]
+
+omit [NeZero (Module.finrank ℝ E)] in
+theorem sectionalCurvature_eq_zero_of_metricRm04At_vec4_eq_zero
+    (g : SmoothRiemannianMetric I M) (x : M) (v w : TangentSpace I x)
+    (hzero : Curvature.metricRm04At (I := I) (M := M) g x
+      (vec4 (I := I) v w w v) = 0) :
+    sectionalCurvature (I := I) g x v w = 0 :=
+  sectionalCurvature_eq_zero_of_metricRm04StandardAt_eq_zero (I := I) g x v w
+    ((Curvature.metricRm04StandardAt_apply (I := I) (M := M) g x v w w v).trans hzero)
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem sectionalCurvature_eq_metricRm04StandardAt_of_unit_orthogonal

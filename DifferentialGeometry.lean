@@ -4802,6 +4802,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.JetPolyn
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.JetPolynomials
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.JointRegularity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.MixedJetPolynomials
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.ParallelFrameJetDerivative
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.PolynomialField
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.Raising
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.RmJetEvolutionPolynomial
@@ -6246,6 +6247,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.Comparison
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ControlledExtinction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ControlledExtinctionAssembly
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CutCap
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CubeSphereGenerator
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.Descendants
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.EmptyHistory
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.EventBridge
@@ -7554,6 +7556,7 @@ import DifferentialGeometry.Topology.Homology.CarrierMaps
 import DifferentialGeometry.Topology.Homology.CarrierRestriction
 import DifferentialGeometry.Topology.Homology.ChainCokernelElements
 import DifferentialGeometry.Topology.Homology.ChainSupport
+import DifferentialGeometry.Topology.Homology.ChainSupportCompact
 import DifferentialGeometry.Topology.Homology.ChainsIn
 import DifferentialGeometry.Topology.Homology.ClosedManifold
 import DifferentialGeometry.Topology.Homology.CochainCones
@@ -7572,6 +7575,7 @@ import DifferentialGeometry.Topology.Homology.EuclideanLocalVanishing
 import DifferentialGeometry.Topology.Homology.EulerCharacteristic
 import DifferentialGeometry.Topology.Homology.ExcisionQuotient
 import DifferentialGeometry.Topology.Homology.FineAffineImages
+import DifferentialGeometry.Topology.Homology.HomologyTwoFrontier
 import DifferentialGeometry.Topology.Homology.Homotopy
 import DifferentialGeometry.Topology.Homology.HurewiczEquivalences
 import DifferentialGeometry.Topology.Homology.HurewiczFrontier
@@ -8174,6 +8178,7 @@ import DifferentialGeometry.Topology.Manifold.ShearedCylinder
 import DifferentialGeometry.Topology.Manifold.SmoothBicollar
 import DifferentialGeometry.Topology.Manifold.SmoothBilinearEigenpair
 import DifferentialGeometry.Topology.Manifold.SmoothBoundaryAtlas
+import DifferentialGeometry.Topology.Manifold.SmoothEmbeddingComposition
 import DifferentialGeometry.Topology.Manifold.SmoothEmbeddingDiffeomorph
 import DifferentialGeometry.Topology.Manifold.SmoothEmbeddingFromOpen
 import DifferentialGeometry.Topology.Manifold.SmoothEmbeddingLocalDiffeomorph
@@ -8535,6 +8540,7 @@ import DifferentialGeometry.Topology.ThreeManifold.CutCapReconstruction
 import DifferentialGeometry.Topology.ThreeManifold.PoincareStandard
 import DifferentialGeometry.Topology.ThreeManifold.PoincareStandardClassification
 import DifferentialGeometry.Topology.ThreeManifold.SmoothSchoenflies
+import DifferentialGeometry.Topology.ThreeManifold.SphereTwoTimesCircleHomology
 import DifferentialGeometry.Topology.ThreeManifold.SphericalSpaceFormTrivial
 import DifferentialGeometry.Topology.ThreeManifold.StandardFactors
 import DifferentialGeometry.Topology.ThreeManifold.StandardSphere

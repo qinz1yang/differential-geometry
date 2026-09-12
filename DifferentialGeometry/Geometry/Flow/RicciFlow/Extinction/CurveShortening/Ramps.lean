@@ -227,7 +227,7 @@ private theorem ramp_angle_mul_speed {E : Type*} [NormedAddCommGroup E] [NormedS
   · rw [ProductCurve.angle_eq c g lambda x t]
     field_simp
 
-private theorem ramp_integral_angle {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+theorem productCurve_integral_angle {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
     [FiniteDimensional ℝ E] [CompleteSpace E] {H : Type*} [TopologicalSpace H]
     {I : ModelWithCorners ℝ E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
@@ -588,7 +588,7 @@ theorem rfs_csf_ramp_angle (B : RicciBackground (I := I) (M := M) D a b)
       (abs_le.mp ((sq_le_one_iff_abs_le_one _).mp
         (ramp_angle_sq_le_one c B.family.metric lambda x t))).2⟩
   · intro t ht
-    exact ramp_integral_angle c B.family.metric lambda hlambda hc ht
+    exact productCurve_integral_angle c B.family.metric lambda hlambda hc ht
   · exact ramp_degree_pos c B.family.metric lambda hlambda ⟨le_rfl, hsv.le⟩ hc hpos
   · intro hdeg t ht
     exact ramp_slice_isEmbedding c B.family.metric lambda hlambda hc hpos hdeg ht

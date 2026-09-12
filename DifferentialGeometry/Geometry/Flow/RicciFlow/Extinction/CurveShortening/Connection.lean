@@ -143,6 +143,112 @@ theorem Field.smoothOn_X (c : CurveMap M) (J : Set ℝ) (hc : c.SmoothOn (I := I
     rfl)
 
 omit [CompleteSpace E] in
+theorem Field.smoothOn_inner {D : RealTimeInterval}
+    (g : ℝ → SmoothRiemannianMetric I M)
+    (hG : MetricFamilySmoothOn (I := I) (M := M) D g) {J : Set ℝ} (hJ : J ⊆ D.regular)
+    (c : CurveMap M) (hc : c.SmoothOn (I := I) J)
+    (V W : c.Field (I := I)) (hV : V.SmoothOn (I := I) J) (hW : W.SmoothOn (I := I) J) :
+    ContDiffOn ℝ ∞
+      (fun p : ℝ × ℝ => (g p.2).inner (c.lift p.1 p.2) (V p.1 p.2) (W p.1 p.2))
+      (univ ×ˢ J) := by
+  have hΨ := MetricFamilySmoothOn.metricCLMSection_contMDiffOn (I := I) (M := M) hG hJ
+  intro p hp
+  have hπ : ContMDiffWithinAt 𝓘(ℝ, ℝ × ℝ) 𝓘(ℝ, ℝ) ∞
+      (fun q : ℝ × ℝ => q.2) (univ ×ˢ J) p := by
+    rw [modelWithCornersSelf_prod, ← chartedSpaceSelf_prod]
+    exact contMDiffWithinAt_snd
+  have hΦ : ContMDiffWithinAt 𝓘(ℝ, ℝ × ℝ) (𝓘(ℝ, ℝ).prod I) ∞
+      (fun q : ℝ × ℝ => (q.2, c.lift q.1 q.2)) (univ ×ˢ J) p :=
+    hπ.prodMk (hc p hp)
+  have hmaps : MapsTo (fun q : ℝ × ℝ => (q.2, c.lift q.1 q.2)) (univ ×ˢ J)
+      (J ×ˢ (univ : Set M)) := fun q hq => ⟨hq.2, mem_univ _⟩
+  have hψ : ContMDiffWithinAt 𝓘(ℝ, ℝ × ℝ) (I.prod 𝓘(ℝ, E →L[ℝ] E →L[ℝ] ℝ)) ∞
+      (fun q : ℝ × ℝ => (⟨c.lift q.1 q.2, (g q.2).inner (c.lift q.1 q.2)⟩ :
+        TotalSpace (E →L[ℝ] E →L[ℝ] ℝ)
+          (fun x => TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ)))
+      (univ ×ˢ J) p :=
+    (hΨ (p.2, c.lift p.1 p.2) ⟨hp.2, mem_univ _⟩).comp p hΦ hmaps
+  have hv : ContMDiffWithinAt 𝓘(ℝ, ℝ × ℝ) (I.prod 𝓘(ℝ, E)) ∞
+      (fun q : ℝ × ℝ => TotalSpace.mk' E (c.lift q.1 q.2) (V q.1 q.2)) (univ ×ˢ J) p :=
+    hV p hp
+  have hw : ContMDiffWithinAt 𝓘(ℝ, ℝ × ℝ) (I.prod 𝓘(ℝ, E)) ∞
+      (fun q : ℝ × ℝ => TotalSpace.mk' E (c.lift q.1 q.2) (W q.1 q.2)) (univ ×ˢ J) p :=
+    hW p hp
+  have happ := ContMDiffWithinAt.clm_bundle_apply₂ (𝕜 := ℝ) (F₁ := E) (F₂ := E) (F₃ := ℝ)
+    (E₁ := TangentSpace I (M := M)) (E₂ := TangentSpace I (M := M))
+    (E₃ := Bundle.Trivial M ℝ)
+    (b := fun q : ℝ × ℝ => c.lift q.1 q.2) (s := univ ×ˢ J) (x := p)
+    (ψ := fun q : ℝ × ℝ => (g q.2).inner (c.lift q.1 q.2))
+    (v := fun q : ℝ × ℝ => V q.1 q.2) (w := fun q : ℝ × ℝ => W q.1 q.2)
+    hψ hv hw
+  rw [Bundle.contMDiffWithinAt_totalSpace] at happ
+  exact happ.2.contDiffWithinAt
+
+omit [FiniteDimensional ℝ E] [CompleteSpace E] in
+theorem Field.smoothOn_const_smul (c : CurveMap M) {J : Set ℝ} (hc : c.SmoothOn (I := I) J)
+    (a : ℝ → ℝ → ℝ)
+    (ha : ContDiffOn ℝ ∞ (fun p : ℝ × ℝ => a p.1 p.2) (univ ×ˢ J))
+    (V : c.Field (I := I)) (hV : V.SmoothOn (I := I) J) :
+    CurveMap.Field.SmoothOn (I := I) (fun x t => a x t • V x t) J := by
+  intro p hp
+  let e := trivializationAt E (TangentSpace I) (c.lift p.1 p.2)
+  have hbase : c.lift p.1 p.2 ∈ e.baseSet :=
+    FiberBundle.mem_baseSet_trivializationAt E (TangentSpace I) (c.lift p.1 p.2)
+  have hlift : ContMDiffWithinAt 𝓘(ℝ, ℝ × ℝ) I ∞ (fun q : ℝ × ℝ => c.lift q.1 q.2)
+      (univ ×ˢ J) p := hc p hp
+  have hVrep : ContMDiffWithinAt 𝓘(ℝ, ℝ × ℝ) 𝓘(ℝ, E) ∞
+      (fun q : ℝ × ℝ =>
+        (e (⟨c.lift q.1 q.2, V q.1 q.2⟩ : TangentBundle I M)).2) (univ ×ˢ J) p :=
+    (Bundle.contMDiffWithinAt_totalSpace.mp (hV p hp)).2
+  have hsm : ContMDiffWithinAt 𝓘(ℝ, ℝ × ℝ) 𝓘(ℝ, E) ∞
+      (fun q : ℝ × ℝ =>
+        a q.1 q.2 • (e (⟨c.lift q.1 q.2, V q.1 q.2⟩ : TangentBundle I M)).2)
+      (univ ×ˢ J) p :=
+    ((contMDiffWithinAt_iff_contDiffWithinAt.mpr (ha.contDiffWithinAt hp)).smul hVrep)
+  rw [Bundle.contMDiffWithinAt_totalSpace]
+  refine ⟨hlift, ?_⟩
+  refine hsm.congr_of_eventuallyEq ?_ ?_
+  · have hneigh : (fun q : ℝ × ℝ => c.lift q.1 q.2) ⁻¹' e.baseSet ∈ 𝓝[univ ×ˢ J] p :=
+      hlift.continuousWithinAt.preimage_mem_nhdsWithin (e.open_baseSet.mem_nhds hbase)
+    filter_upwards [hneigh, self_mem_nhdsWithin] with q hq _
+    exact (e.linear ℝ hq).map_smul (a q.1 q.2) (V q.1 q.2)
+  · exact (e.linear ℝ hbase).map_smul (a p.1 p.2) (V p.1 p.2)
+
+omit [CompleteSpace E] in
+theorem Field.smoothOn_speed {D : RealTimeInterval}
+    (g : ℝ → SmoothRiemannianMetric I M)
+    (hG : MetricFamilySmoothOn (I := I) (M := M) D g) {J : Set ℝ} (hJ : J ⊆ D.regular)
+    (c : CurveMap M) (hc : c.SmoothOn (I := I) J) (hi : c.ImmersedOn (I := I) J) :
+    ContDiffOn ℝ ∞ (fun p : ℝ × ℝ => c.speed g p.1 p.2) (univ ×ˢ J) := by
+  have hX : CurveMap.Field.SmoothOn (I := I) (c.X) J := CurveMap.Field.smoothOn_X c J hc
+  have hinner := Field.smoothOn_inner g hG hJ c hc (c.X) (c.X) hX hX
+  have hfun : (fun p : ℝ × ℝ => c.speed g p.1 p.2) =
+      fun p : ℝ × ℝ =>
+        Real.sqrt ((g p.2).inner (c.lift p.1 p.2) (c.X p.1 p.2) (c.X p.1 p.2)) := rfl
+  rw [hfun]
+  refine hinner.sqrt ?_
+  intro p hp
+  exact ne_of_gt ((g p.2).pos (c.lift p.1 p.2) (c.X p.1 p.2) (hi p.1 p.2 hp.2))
+
+omit [CompleteSpace E] in
+theorem Field.smoothOn_unitTangent {D : RealTimeInterval}
+    (g : ℝ → SmoothRiemannianMetric I M)
+    (hG : MetricFamilySmoothOn (I := I) (M := M) D g) {J : Set ℝ} (hJ : J ⊆ D.regular)
+    (c : CurveMap M) (hc : c.SmoothOn (I := I) J) (hi : c.ImmersedOn (I := I) J) :
+    CurveMap.Field.SmoothOn (I := I) (c.unitTangent g) J := by
+  have hX : CurveMap.Field.SmoothOn (I := I) (c.X) J := CurveMap.Field.smoothOn_X c J hc
+  have hsp : ContDiffOn ℝ ∞ (fun p : ℝ × ℝ => c.speed g p.1 p.2) (univ ×ˢ J) :=
+    Field.smoothOn_speed g hG hJ c hc hi
+  have hinv : ContDiffOn ℝ ∞ (fun p : ℝ × ℝ => (c.speed g p.1 p.2)⁻¹) (univ ×ˢ J) := by
+    refine hsp.inv ?_
+    intro p hp
+    exact ne_of_gt (c.speed_pos g hi p.1 p.2 hp.2)
+  have htan : c.unitTangent g = fun x t => (c.speed g x t)⁻¹ • c.X x t := rfl
+  rw [htan]
+  exact Field.smoothOn_const_smul c hc (fun x t => (c.speed g x t)⁻¹) hinv (c.X) hX
+
+
+omit [CompleteSpace E] in
 theorem Dt_eq_covDerivAlong (c : CurveMap M) (g : ℝ → SmoothRiemannianMetric I M)
     (J : Set ℝ) (V : c.Field (I := I)) (x t : ℝ) (ht : J ∈ 𝓝 t) :
     c.Dt g J V x t = covDerivAlong (g t) (c.lift x) (V x) t := by

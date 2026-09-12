@@ -399,6 +399,99 @@ theorem exists_goodWindow_finset_of_energy_bound {a b d C threshold : ℝ} (hd :
     · intro w hw t ht
       exact ⟨by linarith [hd, ht.1], by linarith [hd, ht.2]⟩
 
+omit [SigmaCompactSpace Q] hCompact hConnected hBoundary in
+theorem rfs_finite_good_windows_of_energy_input (B : RicciBackground (I := I) (M := Q) D a b)
+    (L₀ Theta₀ : ℝ) (K : CurveShorteningRegularityInput B L₀ Theta₀)
+    (E : CurveShorteningEnergyInput (I := I) (M := Q) (D := D) (a := a) (b := b) B L₀) :
+    let delta := localRegularityDelta B L₀ Theta₀ K
+    let r₀ := localRegularityRadius B L₀ Theta₀ K
+    let areg := localRegularityCoefficient B L₀ Theta₀ K 0
+    let C_E := Real.exp (B.B₀ * (b - a)) * L₀
+    ∀ ell threshold : ℝ, 0 < ell → 0 < threshold →
+      let r := min r₀ (min (ell / 2) (delta ^ 2 / threshold))
+      let d := delta * r ^ 2
+      d < b - a →
+      ∀ lambda : ℝ, 0 < lambda → lambda ≤ 1 → ∀ c : ProductCurve Q,
+        c.IsSolutionOn B.family.metric lambda (Icc a b) →
+        c.IsRampOn B.family.metric lambda (Icc a b) → c.degree = 1 →
+        c.length B.family.metric lambda a ≤ L₀ →
+        c.totalCurvature B.family.metric lambda a ≤ Theta₀ →
+        (∀ t ∈ Icc a b, ell ≤ c.length B.family.metric lambda t) →
+        ∃ starts : Finset ℝ,
+          (∀ w ∈ starts, w ∈ Icc a (b - d) ∧ c.energy B.family.metric lambda w ≤ threshold) ∧
+          goodWindowUnion starts d ⊆ Ioo a b ∧
+          volume (Icc a b \ goodWindowUnion starts d) ≤ ENNReal.ofReal (d + C_E / threshold) ∧
+          (∀ x t, t ∈ goodWindowUnion starts d →
+            c.curvature B.family.metric lambda x t ≤ Real.sqrt (2 * areg / d)) ∧
+          ∀ w ∈ starts, Icc (w + 5 * d / 8) (w + 7 * d / 8) ⊆ Ioo (w + d / 2) (w + d) := by
+  dsimp only [localRegularityDelta, localRegularityRadius, localRegularityCoefficient]
+  intro ell threshold hell hth _hdlt lambda hlambda hlambda_one c hsol hramp hdeg hlen hcurv hlenlower
+  set r : ℝ := min K.radius (min (ell / 2) (K.delta ^ 2 / threshold)) with hrdef
+  set d : ℝ := K.delta * r ^ 2 with hddef
+  have hdpos : 0 < d := by
+    rw [hddef]
+    exact mul_pos K.delta_pos (pow_pos (lt_min K.radius_pos
+      (lt_min (half_pos hell) (div_pos (pow_pos K.delta_pos 2) hth))) 2)
+  obtain ⟨hintE, hboundE⟩ := E.energy_product lambda hlambda hlambda_one b B.lt le_rfl
+    (Icc a b) (Or.inr rfl) c hsol hlen a b le_rfl B.lt.le ⟨B.lt.le, le_rfl⟩
+  have hEint : IntervalIntegrable (c.energy B.family.metric lambda) volume a b :=
+    (intervalIntegrable_iff_integrableOn_Icc_of_le B.lt.le).mpr hintE
+  have hEnn : ∀ t ∈ Icc a b, 0 ≤ c.energy B.family.metric lambda t :=
+    fun t _ => productCurve_energy_nonneg c B.family.metric lambda t
+  obtain ⟨starts, hmem, hsub, hvol, hwin⟩ :=
+    exists_goodWindow_finset_of_energy_bound hdpos B.lt.le hEint hEnn hboundE hth
+  refine ⟨starts, hmem, hsub, hvol, ?_, hwin⟩
+  intro x t ht
+  obtain ⟨w, hw, htw⟩ := ht
+  obtain ⟨hwIcc, hwenergy⟩ := hmem w hw
+  have hwIccab : w ∈ Icc a b := ⟨hwIcc.1, le_trans hwIcc.2 (by linarith [hdpos])⟩
+  have hslice := E.slice_product lambda hlambda hlambda_one b B.lt le_rfl (Icc a b) (Or.inr rfl)
+    c hsol hlen w hwIccab
+  have hrpos : 0 < r := by
+    rw [hrdef]
+    exact lt_min K.radius_pos (lt_min (half_pos hell) (div_pos (pow_pos K.delta_pos 2) hth))
+  have hrle : r ≤ K.radius := by rw [hrdef]; exact min_le_left _ _
+  have hreth : r * threshold ≤ K.delta ^ 2 := by
+    have h1 : r ≤ K.delta ^ 2 / threshold := by
+      rw [hrdef]
+      exact le_trans (min_le_right _ _) (min_le_right _ _)
+    calc r * threshold ≤ (K.delta ^ 2 / threshold) * threshold :=
+          mul_le_mul_of_nonneg_right h1 hth.le
+      _ = K.delta ^ 2 := div_mul_cancel₀ _ hth.ne'
+  have hwlen : r ≤ c.length B.family.metric lambda w := by
+    have h1 : r ≤ ell / 2 := by
+      rw [hrdef]
+      exact le_trans (min_le_right _ _) (min_le_left _ _)
+    exact le_trans (le_trans h1 (by linarith)) (hlenlower w hwIccab)
+  have harc : ∀ p q : ℝ, p ≤ q → q ≤ p + 1 →
+      c.arcLength B.family.metric lambda p q w = r →
+      c.arcTotalCurvature B.family.metric lambda p q w ≤ K.delta := by
+    intro p q hpq hqp hlen_eq
+    obtain ⟨h1, h2⟩ := productCurve_arcTotalCurvature_le_sqrt B.family.metric lambda c
+      hsol.smooth hsol.immersed p q w hpq hqp hwIccab (fun _ _ _ => hslice)
+    calc c.arcTotalCurvature B.family.metric lambda p q w
+        ≤ Real.sqrt (c.arcLength B.family.metric lambda p q w *
+            c.arcEnergy B.family.metric lambda p q w) := h1
+      _ = Real.sqrt (r * c.arcEnergy B.family.metric lambda p q w) := by rw [hlen_eq]
+      _ ≤ Real.sqrt (r * threshold) :=
+          Real.sqrt_le_sqrt (mul_le_mul_of_nonneg_left (h2.trans hwenergy) hrpos.le)
+      _ ≤ K.delta := Real.sqrt_le_iff.2 ⟨K.delta_pos.le, hreth⟩
+  have hwtmem : w ∈ Ico a b := ⟨hwIccab.1, lt_of_le_of_lt hwIcc.2 (by linarith [hdpos])⟩
+  have htmem : t ∈ Icc a b :=
+    ⟨by linarith [htw.1, hdpos, hwIcc.1], by linarith [htw.2, hdpos, hwIcc.2]⟩
+  have hwt : w < t := by linarith [htw.1, hdpos]
+  have htle : t ≤ w + K.delta * r ^ 2 := by
+    rw [← hddef]
+    linarith [htw.2, hdpos]
+  have hkey := K.product lambda hlambda hlambda_one b B.lt le_rfl (Icc a b) (Or.inr rfl) c hsol
+    hlen hcurv w hwtmem r hrpos hrle hwlen harc 0 x t htmem hwt htle
+  have hbound : c.normSq B.family.metric lambda (c.curvatureVector B.family.metric lambda) x t ≤
+      K.coefficient 0 * (t - w) ^ (-(1 : ℤ)) := by
+    rw [productCurve_iteratedDs_zero] at hkey
+    exact hkey
+  exact productCurve_curvature_le_of_window B.family.metric lambda x t w (K.coefficient 0) d
+    hdpos (K.coefficient_pos 0).le (by linarith [htw.1, hdpos]) hbound
+
 theorem rfs_finite_good_windows (B : RicciBackground (I := I) (M := Q) D a b)
     (L₀ Theta₀ : ℝ) (K : CurveShorteningRegularityInput B L₀ Theta₀) :
     let delta := localRegularityDelta B L₀ Theta₀ K

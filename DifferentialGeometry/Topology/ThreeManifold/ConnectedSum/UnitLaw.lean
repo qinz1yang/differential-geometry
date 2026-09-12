@@ -172,8 +172,8 @@ theorem homeomorph_of_unitFilling (F : UnitFilling c d a) :
   ⟨Continuous.homeoOfEquivCompactToT2 (f := quotientEquiv F) (continuous_quotientMap F)⟩
 
 def BallComplementCollar (F : UnitFilling c d a) : Prop :=
-  ∀ (z : csS2) (p : ConnectedSumQuotient.K), (p.2 : ℝ) < 0 →
-    (F.fill (ConnectedSumQuotient.radialRightClamp d.toBallChart z p) : M.Carrier) =
+  ∀ p : ConnectedSumQuotient.K, (p.2 : ℝ) < 0 →
+    (F.fill (ConnectedSumQuotient.radialRightClamp d.toBallChart (a.1 p.1) p) : M.Carrier) =
       c.toBallChart.chart ((1 + (p.2 : ℝ)) • p.1)
 
 theorem quotientMap_collarMap (F : UnitFilling c d a) (hcollar : BallComplementCollar F)
@@ -185,7 +185,7 @@ theorem quotientMap_collarMap (F : UnitFilling c d a) (hcollar : BallComplementC
     rfl
   · rw [ConnectedSumQuotient.collarMap_eq_if]
     simp only [if_neg (not_le.mpr (lt_of_not_ge ht)), ConnectedSumQuotient.collarRight]
-    exact hcollar (a.1 p.1) p (lt_of_not_ge ht)
+    exact hcollar p (lt_of_not_ge ht)
 
 def BallComplementSmooth (F : UnitFilling c d a) : Prop :=
   IsLocalDiffeomorph (𝓡 3) (𝓡 3) ∞

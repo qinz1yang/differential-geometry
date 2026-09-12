@@ -1297,5 +1297,36 @@ noncomputable def metricCompactnessOfPairwiseApproximateIsometries
     MetricCompactLimit (I := I) X :=
   (canonicalMetricCompactness (I := I) P B).compactness
 
+def HasSubsequencePairwiseApproximateIsometries
+    (X : PointedRiemannianSeq.{u, uE, uH} (I := I))
+    (P : ∀ k, ProperMetricOn (I := I) (X.obj k)) : Prop :=
+  ∃ σ : Nat → Nat, StrictMono σ ∧
+    HasPairwiseApproximateIsometries (I := I) (X := X.subseq σ) (fun k => P (σ k))
+
+theorem exists_connectedCanonicalMetricCompactness_of_hasSubsequencePairwiseApproximateIsometries
+    (X : PointedRiemannianSeq.{u, uE, uH} (I := I))
+    (hcomplete : SeqMetricComplete (I := I) X)
+    (hconnected : ∀ i : Nat,
+      let _ : TopologicalSpace (X.obj i).M := (X.obj i).topology
+      ConnectedSpace (X.obj i).M)
+    (hsub : HasSubsequencePairwiseApproximateIsometries (I := I) X
+      (fun k => properMetricOn (I := I) (X.obj k)
+        (hcomplete.complete k) (hconnected k))) :
+    Nonempty (ConnectedCanonicalMetricCompactness (I := I) X) := by
+  obtain ⟨σ, hσ, hpair⟩ := hsub
+  let Pσ : ∀ k : Nat, ProperMetricOn (I := I) ((X.subseq σ).obj k) :=
+    fun k => properMetricOn (I := I) ((X.subseq σ).obj k)
+      ((hcomplete.subseq σ).complete k)
+      (PointedRiemannianSeq.connected_subseq hconnected σ k)
+  have hpair' : HasPairwiseApproximateIsometries (I := I) (X := X.subseq σ) Pσ := hpair
+  let Cσ : CanonicalMetricCompactness (I := I) (X.subseq σ) :=
+    canonicalMetricCompactness (I := I) Pσ hpair'
+  have hconnσ := canonical_metric_compactness_connected (I := I) Pσ hpair'
+  let C : CanonicalMetricCompactness (I := I) X := Cσ.ofSubsequence σ hσ
+  refine ⟨{ canonical := C, connected := ?_ }⟩
+  have hlim : C.compactness.limit = Cσ.compactness.limit := rfl
+  rw [hlim]
+  exact hconnσ
+
 end CheegerGromovCompactness
 end DifferentialGeometry

@@ -243,14 +243,14 @@ private theorem curveMap_energy_nonneg (c : CurveMap M) (g : ℝ → SmoothRiema
     mul_nonneg (c.normSq_nonneg g (c.curvatureVector g) x t) (c.speed_nonneg g x t)
 
 omit [CompleteSpace E] [SigmaCompactSpace M] t2M in
-private theorem productCurve_energy_nonneg (c : ProductCurve M)
+theorem productCurve_energy_nonneg (c : ProductCurve M)
     (g : ℝ → SmoothRiemannianMetric I M) (lambda t : ℝ) : 0 ≤ c.energy g lambda t :=
   intervalIntegral.integral_nonneg zero_le_one fun x _ =>
     mul_nonneg (productCurve_normSq_nonneg c g lambda (c.curvatureVector g lambda) x t)
       (c.speed_nonneg g lambda x t)
 
 omit [CompleteSpace E] [SigmaCompactSpace M] t2M in
-private theorem productCurve_arcTotalCurvature_le_sqrt (g : ℝ → SmoothRiemannianMetric I M)
+theorem productCurve_arcTotalCurvature_le_sqrt (g : ℝ → SmoothRiemannianMetric I M)
     (lambda : ℝ) (c : ProductCurve M) {J : Set ℝ} (hc : c.SmoothOn (I := I) J)
     (hi : c.ImmersedOn (I := I) J) (p q t : ℝ) (hpq : p ≤ q) (hqp : q ≤ p + 1)
     (ht : t ∈ J)
@@ -296,6 +296,29 @@ private theorem productCurve_arcTotalCurvature_le_sqrt (g : ℝ → SmoothRieman
       (fun x => mul_nonneg (productCurve_normSq_nonneg c g lambda (c.curvatureVector g lambda) x t)
         (c.speed_nonneg g lambda x t)) hqp
     simpa only [ProductCurve.arcEnergy, ProductCurve.energy, ProductCurve.integral] using hle
+
+private theorem zpow_neg_one_half_eq (d : ℝ) (hd : d ≠ 0) : (d / 2) ^ (-(1 : ℤ)) = 2 / d := by
+  rw [zpow_neg_one]
+  field_simp
+
+omit [CompleteSpace E] [SigmaCompactSpace M] t2M in
+theorem productCurve_iteratedDs_zero (c : ProductCurve M)
+    (g : ℝ → SmoothRiemannianMetric I M) (lambda : ℝ) (V : c.Field (I := I)) :
+    c.iteratedDs g lambda 0 V = V := rfl
+
+omit [CompleteSpace E] [SigmaCompactSpace M] t2M in
+theorem productCurve_curvature_le_of_window {c : ProductCurve M}
+    (g : ℝ → SmoothRiemannianMetric I M) (lambda x t w A d : ℝ) (hd : 0 < d) (hA : 0 ≤ A)
+    (hlo : d / 2 ≤ t - w)
+    (hbound : c.normSq g lambda (c.curvatureVector g lambda) x t ≤ A * (t - w) ^ (-(1 : ℤ))) :
+    c.curvature g lambda x t ≤ Real.sqrt (2 * A / d) := by
+  have hz : (t - w) ^ (-(1 : ℤ)) ≤ (d / 2) ^ (-(1 : ℤ)) :=
+    zpow_neg_le_of_le (by linarith) hlo 1
+  have h1 : A * (t - w) ^ (-(1 : ℤ)) ≤ A * (d / 2) ^ (-(1 : ℤ)) :=
+    mul_le_mul_of_nonneg_left hz hA
+  have h2 : (d / 2) ^ (-(1 : ℤ)) = 2 / d := zpow_neg_one_half_eq d (by linarith)
+  have h3 : A * (2 / d) = 2 * A / d := by ring
+  exact Real.sqrt_le_sqrt (hbound.trans (h1.trans_eq (by rw [h2, h3])))
 
 variable [compactM : CompactSpace M] [nonemptyM : Nonempty M] [hBoundary : I.Boundaryless]
 include t2M compactM nonemptyM hBoundary

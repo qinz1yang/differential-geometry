@@ -1,3 +1,4 @@
+import DifferentialGeometry.Analysis.Calculus.Sard
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.Derivative.CovariantDerivativeAlong
 import DifferentialGeometry.Geometry.Curvature.Metric.Defs
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.Basic
@@ -19,7 +20,26 @@ theorem smooth_critical_values_null {m n : ℕ}
     (U : Set (EuclideanSpace ℝ (Fin m))) (hU : IsOpen U)
     (hF : ContDiffOn ℝ ∞ F U) :
     volume (F '' {x | x ∈ U ∧ ¬Function.Surjective (fderiv ℝ F x)}) = 0 := by
-  sorry
+  rcases lt_trichotomy m n with hlt | heq | hgt
+  · refine measure_mono_null (image_mono ?_) (ContDiffOn.addHaar_image_eq_zero_of_finrank_lt
+      (F := EuclideanSpace ℝ (Fin n)) volume hU (hF.of_le (by norm_num)) ?_)
+    · rintro x ⟨hxU, -⟩
+      exact hxU
+    · rw [finrank_euclideanSpace_fin, finrank_euclideanSpace_fin]
+      exact hlt
+  · subst heq
+    refine MeasureTheory.addHaar_image_eq_zero_of_det_fderivWithin_eq_zero
+      (f' := fun x => fderiv ℝ F x) volume ?_ ?_
+    · intro x hx
+      exact (hF.differentiableOn (by norm_num)).differentiableAt
+        (hU.mem_nhds hx.1) |>.hasFDerivAt.hasFDerivWithinAt
+    · intro x hx
+      by_contra hdet
+      have hker : (fderiv ℝ F x).ker = ⊥ := by
+        by_contra h
+        exact hdet (LinearMap.det_eq_zero_iff_ker_ne_bot.mpr h)
+      exact hx.2 ((LinearMap.injective_iff_surjective).mp (LinearMap.ker_eq_bot.mp hker))
+  · sorry
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
     [FiniteDimensional ℝ E] [CompleteSpace E]
@@ -77,7 +97,82 @@ theorem smooth_manifold_critical_values_null_in_chart
     volume ((extChartAt J q ∘ F) ''
       {x | x ∈ S ∧ F x ∈ (chartAt H' q).source ∧
         ¬Function.Surjective (mfderiv I J F x)}) = 0 := by
-  sorry
+  classical
+  by_cases hdim : Module.finrank ℝ E < n
+  · obtain ⟨P, hPc, hP⟩ := TopologicalSpace.isOpen_iUnion_countable
+      (fun p : M => (chartAt H p).source) (fun p => (chartAt H p).open_source)
+    have hcover : (⋃ p ∈ P, (chartAt H p).source) = univ := by
+      rw [hP]
+      exact iUnion_eq_univ_iff.mpr fun x => ⟨x, mem_chart_source H x⟩
+    set T : Set M := {x | x ∈ S ∧ F x ∈ (chartAt H' q).source ∧
+      ¬Function.Surjective (mfderiv I J F x)}
+    have key : ∀ p ∈ P,
+        volume ((extChartAt J q ∘ F) '' (T ∩ (chartAt H p).source)) = 0 := by
+      intro p hp
+      set B : Set M := (S ∩ F ⁻¹' (chartAt H' q).source) ∩ (chartAt H p).source
+      have hBopen : IsOpen B :=
+        IsOpen.inter
+          (hF.continuousOn.isOpen_inter_preimage hS (chartAt H' q).open_source)
+          (chartAt H p).open_source
+      have hBsub : B ⊆ (chartAt H p).source := fun x hx => hx.2
+      have hBsubE : B ⊆ (extChartAt I p).source := by
+        intro x hx
+        rw [extChartAt_source]
+        exact hBsub hx
+      have hBsubS : B ⊆ S := fun x hx => hx.1.1
+      have hBmap : ∀ x ∈ B, F x ∈ (chartAt H' q).source := fun x hx => hx.1.2
+      set V : Set E := (extChartAt I p) '' B
+      have hVsub : V ⊆ (extChartAt I p).target := by
+        rintro _ ⟨x, hx, rfl⟩
+        exact (extChartAt I p).map_source (hBsubE hx)
+      have hVopen : IsOpen V := by
+        have hopen := (continuousOn_extChartAt_symm (I := I) p).isOpen_inter_preimage
+          (isOpen_extChartAt_target (I := I) p) hBopen
+        rw [← PartialEquiv.image_source_inter_eq' (extChartAt I p) B,
+          Set.inter_eq_right.mpr hBsubE] at hopen
+        exact hopen
+      have hBsymm : B = (extChartAt I p).symm '' V := by
+        ext x
+        constructor
+        · intro hx
+          exact ⟨extChartAt I p x, ⟨x, hx, rfl⟩, (extChartAt I p).left_inv (hBsubE hx)⟩
+        · rintro ⟨y, ⟨z, hz, rfl⟩, rfl⟩
+          rw [(extChartAt I p).left_inv (hBsubE hz)]
+          exact hz
+      have hBmem : ∀ y ∈ V, (extChartAt I p).symm y ∈ B := by
+        intro y hy
+        rw [hBsymm]
+        exact ⟨y, hy, rfl⟩
+      have hsymm : ContMDiffOn 𝓘(ℝ, E) I 1 (extChartAt I p).symm V :=
+        ((contMDiffOn_extChartAt_symm (I := I) (n := ∞) p).of_le (by norm_num)).mono hVsub
+      have hcomp : ContMDiffOn 𝓘(ℝ, E) J 1 (F ∘ (extChartAt I p).symm) V :=
+        (hF.of_le (by norm_num)).comp hsymm fun y hy => hBsubS (hBmem y hy)
+      have hchart : ContMDiffOn J 𝓘(ℝ, EuclideanSpace ℝ (Fin n)) 1 (extChartAt J q)
+          (chartAt H' q).source :=
+        (contMDiffOn_extChartAt (I := J) (n := ∞) (x := q)).of_le (by norm_num)
+      have hfinal : ContMDiffOn 𝓘(ℝ, E) 𝓘(ℝ, EuclideanSpace ℝ (Fin n)) 1
+          (fun y => extChartAt J q (F ((extChartAt I p).symm y))) V :=
+        hchart.comp hcomp fun y hy => hBmap _ (hBmem y hy)
+      have hcd : ContDiffOn ℝ 1 (fun y => extChartAt J q (F ((extChartAt I p).symm y)))
+          V := contMDiffOn_iff_contDiffOn.mp hfinal
+      have hnull := ContDiffOn.addHaar_image_eq_zero_of_finrank_lt
+        (F := EuclideanSpace ℝ (Fin n)) volume hVopen hcd
+        (by rw [finrank_euclideanSpace_fin]; exact hdim)
+      refine measure_mono_null ?_ hnull
+      rintro z ⟨x, hx, rfl⟩
+      have hxB : x ∈ B := ⟨⟨hx.1.1, hx.1.2.1⟩, hx.2⟩
+      refine ⟨extChartAt I p x, ⟨x, hxB, rfl⟩, ?_⟩
+      simp only [Function.comp_apply]
+      rw [(extChartAt I p).left_inv (hBsubE hxB)]
+    have hunion : volume
+        (⋃ p ∈ P, (extChartAt J q ∘ F) '' (T ∩ (chartAt H p).source)) = 0 :=
+      (measure_biUnion_null_iff hPc).mpr key
+    refine measure_mono_null ?_ hunion
+    rintro z ⟨x, hx, rfl⟩
+    have hxP : x ∈ ⋃ p ∈ P, (chartAt H p).source := by rw [hcover]; trivial
+    obtain ⟨p, hp, hxp⟩ := mem_iUnion₂.mp hxP
+    exact mem_iUnion₂.mpr ⟨p, hp, x, ⟨hx, hxp⟩, rfl⟩
+  · sorry
 
 section SliceSmoothness
 

@@ -1,5 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.LocalCGTInjectivity
 import DifferentialGeometry.Geometry.Comparison.Volume.BishopGromovNonpositiveLocal
+import DifferentialGeometry.Geometry.Comparison.CheegerGromovTaylor.InjectivityRadius.Basic
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.BoundedGeometry.InjectivityRadiusDecay.Existence
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Bounds.BoundedGeometry
 
@@ -865,6 +866,123 @@ theorem exists_pos_injectivity_radius_on_ball
         Real.exp_le_exp.mpr (by nlinarith [hC, hDleA])
       exact mul_le_mul_of_nonneg_left hmono
         (mul_nonneg ha.le (pow_nonneg (lt_min base.pos one_pos).le _))
+
+theorem exists_uniform_injectivity_radius_on_ball_of_local_jets
+    (X : PointedRiemannianSeq.{u, uE, uH} (I := I))
+    (hcomplete : SeqMetricComplete (I := I) X)
+    (hconn : ∀ k : Nat,
+      let _ : TopologicalSpace (X.obj k).M := (X.obj k).topology
+      ConnectedSpace (X.obj k).M)
+    (hinj : BaseInjBound (I := I) X)
+    (hjets : ∀ A : Real, 0 < A → ∀ p : Nat, ∃ C : Real, 0 ≤ C ∧
+      ∀ᶠ i in atTop,
+        let _ : TopologicalSpace (X.obj i).M := (X.obj i).topology
+        let _ : ChartedSpace H (X.obj i).M := (X.obj i).charted
+        let _ : IsManifold I ∞ (X.obj i).M := (X.obj i).smooth
+        let _ : T2Space (X.obj i).M := (X.obj i).t2
+        let _ : SigmaCompactSpace (X.obj i).M := (X.obj i).sigmaCompact
+        ∀ x : (X.obj i).M,
+          riemannianEDistOf (I := I) (X.obj i).metric (X.obj i).basepoint x ≤
+            ENNReal.ofReal A → curvDerivNorm (I := I) p (X.obj i).metric x ≤ C)
+    (A : Real) (hA : 0 < A) :
+    ∃ ρ : Real, 0 < ρ ∧ ∀ᶠ i in atTop,
+      let _ : TopologicalSpace (X.obj i).M := (X.obj i).topology
+      let _ : EMetricSpace (X.obj i).M := (X.obj i).emetricSpace (I := I)
+      ∀ x : (X.obj i).M,
+        edist (X.obj i).basepoint x ≤ ENNReal.ofReal A →
+          HasInjRadiusAt (I := I) (X.obj i) x ρ := by
+  classical
+  obtain ⟨C, hC, hbound⟩ := hjets (2 * A + 3) (by linarith) 0
+  obtain ⟨N, hN⟩ := Filter.eventually_atTop.mp hbound
+  let σ : Nat → Nat := fun k => N + k
+  let X' := X.subseq σ
+  have hcomplete' : SeqMetricComplete (I := I) X' := hcomplete.subseq σ
+  have hconn' : ∀ k : Nat,
+      let _ : TopologicalSpace (X'.obj k).M := (X'.obj k).topology
+      ConnectedSpace (X'.obj k).M := PointedRiemannianSeq.connected_subseq hconn σ
+  have hinj' : BaseInjBound (I := I) X' := hinj.subseq σ
+  have hrm' : ∀ k : Nat,
+      letI : TopologicalSpace (X'.obj k).M := (X'.obj k).topology
+      letI : ChartedSpace H (X'.obj k).M := (X'.obj k).charted
+      letI : IsManifold I ∞ (X'.obj k).M := (X'.obj k).smooth
+      letI : T2Space (X'.obj k).M := (X'.obj k).t2
+      letI : EMetricSpace (X'.obj k).M := (X'.obj k).emetricSpace (I := I)
+      ∀ y : (X'.obj k).M,
+        edist (X'.obj k).basepoint y ≤ ENNReal.ofReal (2 * A + 3) →
+        Real.sqrt (Tensor0SBundle.normSq0S (I := I) (X'.obj k).metric y 4
+          (metricRm04At (I := I) (M := (X'.obj k).M) (X'.obj k).metric y)) ≤ C := by
+    intro k
+    let : TopologicalSpace (X'.obj k).M := (X'.obj k).topology
+    let : ChartedSpace H (X'.obj k).M := (X'.obj k).charted
+    let : IsManifold I ∞ (X'.obj k).M := (X'.obj k).smooth
+    let : T2Space (X'.obj k).M := (X'.obj k).t2
+    let : SigmaCompactSpace (X'.obj k).M := (X'.obj k).sigmaCompact
+    let : EMetricSpace (X'.obj k).M := (X'.obj k).emetricSpace (I := I)
+    intro y hy
+    have hy' : riemannianEDistOf (I := I) (X'.obj k).metric
+        (X'.obj k).basepoint y ≤ ENNReal.ofReal (2 * A + 3) := by
+      rw [PointedRiemannianManifold.riemannianEDistOf_eq_edist (I := I) (X'.obj k)]
+      exact hy
+    have hjet := hN (σ k) (Nat.le_add_right N k) y hy'
+    exact (normSq0S_metricRm04At_le_curvDerivNorm (I := I)
+      (X'.obj k).metric y).trans hjet
+  have hpull' : ∀ k : Nat,
+      letI : TopologicalSpace (X'.obj k).M := (X'.obj k).topology
+      letI : ChartedSpace H (X'.obj k).M := (X'.obj k).charted
+      letI : IsManifold I ∞ (X'.obj k).M := (X'.obj k).smooth
+      letI : SigmaCompactSpace (X'.obj k).M := (X'.obj k).sigmaCompact
+      letI : T2Space (X'.obj k).M := (X'.obj k).t2
+      letI : T2Space (TangentBundle I (X'.obj k).M) := (X'.obj k).t2TangentBundle
+      letI : RiemannianBundle (fun y : (X'.obj k).M => TangentSpace I y) :=
+        (X'.obj k).riemBundle (I := I)
+      letI : (y : (X'.obj k).M) → InnerProductSpace Real (TangentSpace I y) :=
+        (X'.obj k).riemInner (I := I)
+      letI : IsContinuousRiemannianBundle E
+          (fun y : (X'.obj k).M => TangentSpace I y) := (X'.obj k).riemBundle_cont (I := I)
+      letI : EMetricSpace (X'.obj k).M := (X'.obj k).emetricSpace (I := I)
+      letI : CompleteSpace (X'.obj k).M :=
+        MetricComplete.complete (I := I) (X'.obj k) (hcomplete'.complete k)
+      letI : IsRiemannianManifold I (X'.obj k).M := ⟨fun _ _ => rfl⟩
+      ∀ (x : (X'.obj k).M)
+        (hEnorm : ∀ (y : (X'.obj k).M) (w : TangentSpace I y),
+          ‖w‖ₑ = ENNReal.ofReal (Real.sqrt ((X'.obj k).metric.inner y w w)))
+        (q R : Real), 0 ≤ q → 0 < R →
+        (∀ z, z ∈ Metric.ball (0 : E) R → z ≠ 0 →
+          ∀ t, t ∈ Set.Ioo (0 : Real) 1 →
+            ¬ IsConjVec (I := I) (X'.obj k).metric hEnorm x
+              ((t • normalFrame (I := I) (X'.obj k).metric x z : TangentSpace I x) : E)) →
+        ricciBoundedBelowOn (I := I) (X'.obj k).metric
+          {y : (X'.obj k).M | riemannianEDist I x y < ENNReal.ofReal R}
+          (-(((Module.finrank Real E - 1 : Nat) : Real) * q ^ 2)) →
+        intrinsicPullVol (I := I) (X'.obj k).metric hEnorm x R ≤
+          (MeasureTheory.volume : MeasureTheory.Measure E).toSphere Set.univ *
+            ENNReal.ofReal (hyperbolicRadialVolume q (Module.finrank Real E - 1) R) := by
+    intro k
+    let : TopologicalSpace (X'.obj k).M := (X'.obj k).topology
+    let : ChartedSpace H (X'.obj k).M := (X'.obj k).charted
+    let : IsManifold I ∞ (X'.obj k).M := (X'.obj k).smooth
+    let : SigmaCompactSpace (X'.obj k).M := (X'.obj k).sigmaCompact
+    let : T2Space (X'.obj k).M := (X'.obj k).t2
+    let : T2Space (TangentBundle I (X'.obj k).M) := (X'.obj k).t2TangentBundle
+    let : RiemannianBundle (fun y : (X'.obj k).M => TangentSpace I y) :=
+      (X'.obj k).riemBundle (I := I)
+    let : (y : (X'.obj k).M) → InnerProductSpace Real (TangentSpace I y) :=
+      (X'.obj k).riemInner (I := I)
+    let : IsContinuousRiemannianBundle E
+        (fun y : (X'.obj k).M => TangentSpace I y) := (X'.obj k).riemBundle_cont (I := I)
+    let : EMetricSpace (X'.obj k).M := (X'.obj k).emetricSpace (I := I)
+    let : CompleteSpace (X'.obj k).M :=
+      MetricComplete.complete (I := I) (X'.obj k) (hcomplete'.complete k)
+    let : IsRiemannianManifold I (X'.obj k).M := ⟨fun _ _ => rfl⟩
+    intro x hEnorm q R hq hR hno hRic
+    exact intrinsicPullVol_le_hyperbolic_of_ricciBoundedBelowOn
+      (I := I) (X'.obj k).metric hEnorm x hq hR hno hRic
+  obtain ⟨ρ, hρ, hdec⟩ :=
+    exists_pos_injectivity_radius_on_ball (I := I) X' hcomplete' hconn' hinj' A hA C hC hrm' hpull'
+  refine ⟨ρ, hρ, ?_⟩
+  refine Filter.eventually_atTop.mpr ⟨N, fun i hi => ?_⟩
+  obtain ⟨k, rfl⟩ := Nat.exists_eq_add_of_le hi
+  exact hdec k
 
 end CheegerGromovCompactness
 end DifferentialGeometry

@@ -1,5 +1,8 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.ModelWitness
 import DifferentialGeometry.Geometry.Metric.UniversalCover.Metric
+import DifferentialGeometry.Geometry.Curvature.Algebraic.CurvatureOperatorConeMetric
+import DifferentialGeometry.Geometry.Curvature.Riemann.SectionalCurvature
+import DifferentialGeometry.Geometry.Curvature.DimensionThree.SectionalCurvature
 import Mathlib.Geometry.Manifold.Instances.Real
 
 set_option autoImplicit false
@@ -40,6 +43,50 @@ local instance upstreamAncientSplittingLocallyPathConnected :
 local instance upstreamAncientSplittingSemilocallySimplyConnected :
     SemilocallySimplyConnectedSpace F.M :=
   manifold_semilocallySimplyConnectedSpace (I := I) (M := F.M)
+
+omit [I.Boundaryless] in
+theorem pointedFlow_metricAlgebraicCurvatureTensorAt_mem_nonnegativeCone
+    (hop : ∀ t : ℝ, t ≤ 0 → PointedFlowNonnegativeCurvatureOperator (I := I) F t)
+    (t : ℝ) (ht : t ≤ 0) :
+    ∀ x : F.M, metricAlgebraicCurvatureTensorAt (I := I) (M := F.M)
+        (F.S.base.metric t) x ∈
+      algebraicCurvatureOperatorNonnegativeCone (I := I) (M := F.M) := by
+  intro x
+  rw [metricAlgebraicCurvatureTensorAt_mem_curvatureOperatorNonnegativeCone_iff]
+  intro n c v w
+  have h := hop t ht x n c v w
+  simpa only [SolutionOn.family, SolutionFamily.rm04, metricRm04_apply,
+    metricRm04StandardAt_apply] using h
+
+theorem ancient_leastCurvatureOperatorEigenvalueAt_eq_zero_of_null_plane
+    (hdim : Module.finrank ℝ E = 3)
+    (hcurvature : ∀ t : ℝ, t ≤ 0 → PointedFlowNonnegativeCurvatureOperator (I := I) F t)
+    (t₀ : ℝ) (ht₀ : t₀ ≤ 0) (x₀ : F.M) (v₀ w₀ : TangentSpace I x₀)
+    (hplane : 0 <
+      (F.S.family.metric t₀).inner x₀ v₀ v₀ *
+        (F.S.family.metric t₀).inner x₀ w₀ w₀ -
+          ((F.S.family.metric t₀).inner x₀ v₀ w₀) ^ 2)
+    (hnull : F.S.base.rm04 t₀ x₀ (vec4 (I := I) v₀ w₀ w₀ v₀) = 0) :
+    leastCurvatureOperatorEigenvalueAt (I := I) (F.S.base.metric t₀) x₀
+      (metricAlgebraicCurvatureTensorAt (I := I) (M := F.M)
+        (F.S.base.metric t₀) x₀) = 0 := by
+  have hcone := pointedFlow_metricAlgebraicCurvatureTensorAt_mem_nonnegativeCone
+    F hcurvature t₀ ht₀ x₀
+  have hvw : LinearIndependent ℝ ![v₀, w₀] :=
+    Geometry.Riemannian.linearIndependent_pair_of_sectionalCurvatureDenominator_pos
+      (I := I) (F.S.base.metric t₀) x₀ v₀ w₀
+      (by simpa only [Geometry.Riemannian.sectionalCurvatureDenominator_def,
+          SolutionOn.family] using hplane)
+  have hsec : Geometry.Riemannian.sectionalCurvature (I := I)
+      (F.S.base.metric t₀) x₀ v₀ w₀ = 0 :=
+    Geometry.Riemannian.sectionalCurvature_eq_zero_of_metricRm04At_vec4_eq_zero
+      (I := I) (F.S.base.metric t₀) x₀ v₀ w₀
+      (by simpa only [SolutionFamily.rm04, metricRm04_apply] using hnull)
+  have hdimTx : Module.finrank ℝ (TangentSpace I x₀) = 3 := by
+    have hfin : Module.finrank ℝ (TangentSpace I x₀) = Module.finrank ℝ E := rfl
+    rw [hfin, hdim]
+  exact Geometry.Curvature.DimensionThree.leastCurvatureOperatorEigenvalueAt_eq_zero_of_sectionalCurvature_eq_zero
+    (I := I) (F.S.base.metric t₀) x₀ hdimTx hcone v₀ w₀ hvw hsec
 
 theorem ancient_fixed_universal_cover_product_of_null_plane
     (hdim : Module.finrank ℝ E = 3)

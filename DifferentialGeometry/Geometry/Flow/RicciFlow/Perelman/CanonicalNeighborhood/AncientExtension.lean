@@ -3,6 +3,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborho
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.ClosedOpenPropagation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.ModelCurvaturePropagation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.PointedScalarConvergence
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CanonicalStrictBounds
 
 set_option autoImplicit false
 noncomputable section
@@ -140,6 +141,69 @@ theorem local_propagation {kappa : ℝ} (hkappa : 0 < kappa) :
                   Real.sqrt (FlowMetricBall.rmNormSq (X.term i).S v y) ≤
                     C * (L + (Phi (4 * X.scale i * L) + Phi 0) / X.scale i) := by
   exact canonical_neighborhood_local_propagation hkappa
+
+theorem CanonicalWitness.exists_bufferedCanonical
+    {D : RealTimeInterval} {S : SolutionOn (I := I3) (M := M) D}
+    {x : M} {t : ℝ} {tolerance C1 C2 alpha H : ℝ}
+    (W : CanonicalWitness S tolerance C1 C2 x t) (htol : tolerance < alpha)
+    (hcap : ∀ cap : LocalCap S tolerance x t W.domain.carrier,
+      (∃ hdepth : ∀ y ∈ cap.tube,
+          10000 / Real.sqrt (S.scalar t x) ≤ metricDistance (S.base.metric t) x y,
+        W.alternative = CanonicalAlternative.cap cap hdepth) →
+      ∃ (v : M) (neck : StrongNeck S alpha v t),
+        v ∈ cap.tube ∧
+        (max C1 C2 + 1)⁻¹ * S.scalar t x ≤ S.scalar t v ∧
+        S.scalar t v ≤ (max C1 C2 + 1) * S.scalar t x ∧
+        (∀ z ∈ neck.map '' (Set.univ ×ˢ ({0} : Set ℝ)),
+          H / Real.sqrt (S.scalar t x) ≤ metricDistance (S.base.metric t) x z) ∧
+        (∀ y ∈ neck.map '' (Set.univ ×ˢ ({0} : Set ℝ)),
+          ∀ z ∈ neck.map '' (Set.univ ×ˢ ({0} : Set ℝ)),
+            metricDistance (S.base.metric t) y z ≤
+              (max C1 C2 + 1) / Real.sqrt (S.scalar t x))) :
+    Nonempty (BufferedCanonical S alpha (max C1 C2 + 1) H x t) := by
+  obtain ⟨hC, hC1, hC2, hscalar, hrm, hvolume⟩ := W.strict_curvature_volume_reserves
+  let W' : CanonicalWitness S tolerance (max C1 C2 + 1) (max C1 C2 + 1) x t :=
+    W.enlarge_constants hC1.le hC2.le
+  obtain ⟨a, b, margin, ha, har, hm, hbm, hinner, houter⟩ := W'.exists_radial_reserve
+  refine ⟨{ tolerance := tolerance
+            tolerance_pos := W.eps_pos
+            tolerance_lt := htol
+            witness := W'
+            a := a
+            b := b
+            margin := margin
+            a_pos := ha
+            margin_pos := hm
+            radial_margin := hbm.le
+            inner_ball := hinner
+            outer_ball := houter
+            scalar_reserve := hscalar
+            rm_reserve := hrm
+            volume_reserve := fun hv => hvolume (by
+              simpa only [W', CanonicalWitness.enlarge_constants_requiresVolume] using hv)
+            cap_collar := fun cap hc => ?_ }⟩
+  obtain ⟨hdepth, halteq⟩ := hc
+  simp only [W', CanonicalWitness.enlarge_constants] at halteq
+  have halteq' : W.alternative = CanonicalAlternative.cap cap hdepth := by
+    cases hW : W.alternative with
+    | neck data =>
+        rw [hW] at halteq
+        simp only [CanonicalAlternative.mono_constant] at halteq
+        exact absurd halteq (by simp)
+    | cap data deep =>
+        rw [hW] at halteq
+        simp only [CanonicalAlternative.mono_constant] at halteq
+        cases halteq
+        rfl
+    | positive whole data hsec =>
+        rw [hW] at halteq
+        simp only [CanonicalAlternative.mono_constant] at halteq
+        exact absurd halteq (by simp)
+    | round whole data =>
+        rw [hW] at halteq
+        simp only [CanonicalAlternative.mono_constant] at halteq
+        exact absurd halteq (by simp)
+  exact hcap cap ⟨hdepth, halteq'⟩
 
 theorem good_point_buffered_canonical {kappa alpha theta : ℝ}
     (hkappa : 0 < kappa) (ha : 0 < alpha) (haSmall : alpha < 1 / 44)
@@ -353,6 +417,110 @@ structure AncientExtension {eps kappa sigma : ℝ} {Phi : ℝ → ℝ}
   ancient : IsAncientKappaSolution kappa extension.pointed
   normalized : PointedFlowScalarAtBase extension.pointed 1
   global_rm : ∃ C : ℝ, PointedFlowRmNormSqBounded extension.pointed C
+
+def IsHalfLineExtension {eps kappa sigma : ℝ} {Phi : ℝ → ℝ}
+    {X : NormalizedSequence.{u} eps kappa sigma Phi} {L : TerminalLimit X}
+    {J : RealTimeInterval} (B : BackwardExtension L J)
+    (g : ℝ → SmoothRiemannianMetric I3 L.space.M) : Prop :=
+  g 0 = L.space.metric ∧
+    (∀ s ∈ J.carrier, g s = B.solution.base.metric s) ∧
+    ∃ diagonal : ℕ → ℕ, ∃ hdiag : StrictMono diagonal,
+      ConvergesOn (subsequenceMaps L.maps (B.subseq ∘ diagonal)
+        (B.strictMono.comp hdiag))
+        ({ base := { metric := g } } :
+          SolutionOn (I := I3) (M := L.space.M) ancientTimeInterval)
+
+def HalfLineExtensionExists {eps kappa sigma : ℝ} {Phi : ℝ → ℝ}
+    {X : NormalizedSequence.{u} eps kappa sigma Phi} {L : TerminalLimit X}
+    {J : RealTimeInterval} (B : BackwardExtension L J) : Prop :=
+  ∃ g : ℝ → SmoothRiemannianMetric I3 L.space.M, IsHalfLineExtension B g
+
+def HalfLineExtensionIsFlow {eps kappa sigma : ℝ} {Phi : ℝ → ℝ}
+    {X : NormalizedSequence.{u} eps kappa sigma Phi} {L : TerminalLimit X}
+    {J : RealTimeInterval} (B : BackwardExtension L J) : Prop :=
+  ∀ g : ℝ → SmoothRiemannianMetric I3 L.space.M, IsHalfLineExtension B g →
+    IsSolutionOn ({ base := { metric := g } } :
+      SolutionOn (I := I3) (M := L.space.M) ancientTimeInterval)
+
+def HalfLineExtensionSliceGeometry {eps kappa sigma : ℝ} {Phi : ℝ → ℝ}
+    {X : NormalizedSequence.{u} eps kappa sigma Phi} {L : TerminalLimit X}
+    {J : RealTimeInterval} (B : BackwardExtension L J) : Prop :=
+  ∀ g : ℝ → SmoothRiemannianMetric I3 L.space.M, IsHalfLineExtension B g →
+    (∀ t ∈ ancientTimeInterval.carrier,
+      MetricComplete ({ L.space with metric := g t } : PointedRiemannianManifold.{u, 0, 0} I3)) ∧
+    ∀ t ∈ ancientTimeInterval.carrier, SecLower (g t) 0 Set.univ
+
+def HalfLineExtensionCurvatureBound {eps kappa sigma : ℝ} {Phi : ℝ → ℝ}
+    {X : NormalizedSequence.{u} eps kappa sigma Phi} {L : TerminalLimit X}
+    {J : RealTimeInterval} (B : BackwardExtension L J) : Prop :=
+  ∀ g : ℝ → SmoothRiemannianMetric I3 L.space.M, IsHalfLineExtension B g →
+    ∃ C : ℝ, ∀ t ∈ ancientTimeInterval.carrier, ∀ x : L.space.M,
+      FlowMetricBall.rmNormSq ({ base := { metric := g } } :
+        SolutionOn (I := I3) (M := L.space.M) ancientTimeInterval) t x ≤ C
+
+def HalfLineExtensionAncient {eps kappa sigma : ℝ} {Phi : ℝ → ℝ}
+    {X : NormalizedSequence.{u} eps kappa sigma Phi} {L : TerminalLimit X}
+    {J : RealTimeInterval} (B : BackwardExtension L J) : Prop :=
+  ∀ g : ℝ → SmoothRiemannianMetric I3 L.space.M, IsHalfLineExtension B g →
+    ∀ hsol : IsSolutionOn ({ base := { metric := g } } :
+        SolutionOn (I := I3) (M := L.space.M) ancientTimeInterval),
+      ∃ C : ℝ,
+        IsAncientKappaSolution kappa (flowOfMetric ancientTimeInterval L.space g hsol) ∧
+        PointedFlowScalarAtBase (flowOfMetric ancientTimeInterval L.space g hsol) 1 ∧
+        PointedFlowRmNormSqBounded (flowOfMetric ancientTimeInterval L.space g hsol) C
+
+def HalfLineAnalyticInputs {eps kappa sigma : ℝ} {Phi : ℝ → ℝ}
+    {X : NormalizedSequence.{u} eps kappa sigma Phi} {L : TerminalLimit X}
+    {J : RealTimeInterval} (B : BackwardExtension L J) : Prop :=
+  HalfLineExtensionExists B ∧ HalfLineExtensionIsFlow B ∧
+    HalfLineExtensionSliceGeometry B ∧ HalfLineExtensionCurvatureBound B ∧
+    HalfLineExtensionAncient B
+
+theorem ancientExtension_of_halfLine {eps kappa sigma : ℝ} {Phi : ℝ → ℝ}
+    {X : NormalizedSequence.{u} eps kappa sigma Phi} {L : TerminalLimit X}
+    {J : RealTimeInterval} (B : BackwardExtension L J)
+    (h : HalfLineAnalyticInputs B) :
+    Nonempty (AncientExtension B) := by
+  obtain ⟨⟨g, hg0, hagree, diagonal, hdiag, hconv⟩, hflow, hgeom, hrm, hanc⟩ := h
+  have hlim : IsHalfLineExtension B g := ⟨hg0, hagree, diagonal, hdiag, hconv⟩
+  have hsol : IsSolutionOn ({ base := { metric := g } } :
+      SolutionOn (I := I3) (M := L.space.M) ancientTimeInterval) := hflow g hlim
+  obtain ⟨C, hanc1, hanc2, hanc3⟩ := hanc g hlim hsol
+  obtain ⟨Cr, hCr⟩ := hrm g hlim
+  refine ⟨{ extension :=
+              { solution := ({ base := { metric := g } } :
+                  SolutionOn (I := I3) (M := L.space.M) ancientTimeInterval)
+                isSolution := hsol
+                terminal := hg0
+                subseq := B.subseq ∘ diagonal
+                strictMono := B.strictMono.comp hdiag
+                convergence := hconv
+                complete := fun t ht => (hgeom g hlim).1 t ht
+                nonnegative := fun t ht => (hgeom g hlim).2 t ht
+                compact_time_bound := fun a b hab hsub =>
+                  ⟨Cr, fun t ht x => hCr t (hsub ht) x⟩ }
+            agrees := hagree
+            diagonal := diagonal
+            strictMono := hdiag
+            maps_agree := rfl
+            ancient := hanc1
+            normalized := hanc2
+            global_rm := ⟨C, hanc3⟩ }⟩
+
+theorem ancient_extension_of_frontier {kappa sigma : ℝ} {Phi : ℝ → ℝ}
+    (h : ∃ epsStar : ℝ, 0 < epsStar ∧ ∀ eps : ℝ, 0 < eps → eps ≤ epsStar →
+      ∀ (X : NormalizedSequence.{u} eps kappa sigma Phi) (L : TerminalLimit X)
+        (delta : ℝ) (hd : 0 < delta)
+        (B : BackwardExtension L (RealTimeInterval.closed (-delta) 0 (by linarith))),
+        HalfLineAnalyticInputs B) :
+    ∃ epsStar : ℝ, 0 < epsStar ∧ ∀ eps : ℝ, 0 < eps → eps ≤ epsStar →
+      ∀ (X : NormalizedSequence.{u} eps kappa sigma Phi) (L : TerminalLimit X)
+        (delta : ℝ) (hd : 0 < delta)
+        (B : BackwardExtension L (RealTimeInterval.closed (-delta) 0 (by linarith))),
+          Nonempty (AncientExtension B) := by
+  obtain ⟨epsStar, hpos, hI⟩ := h
+  exact ⟨epsStar, hpos, fun eps heps hle X L delta hd B =>
+    ancientExtension_of_halfLine B (hI eps heps hle X L delta hd B)⟩
 
 theorem ancient_extension {kappa sigma : ℝ} {Phi : ℝ → ℝ}
     (hkappa : 0 < kappa) (hsigma : 0 < sigma) (hPhi : AdmissiblePinchingFunction Phi) :

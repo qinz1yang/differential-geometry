@@ -714,6 +714,71 @@ theorem localOrientationClass_generator_of_isUnit (o : TangentOrientationSection
     rw [mul_assoc, Units.inv_mul, mul_one, e.symm_apply_apply]
 
 
+section ZsmulGenerator
+
+variable {A : Type*} [AddCommGroup A] [Module ℤ A]
+
+theorem isUnit_apply_iff_bijective_zsmul (e : A ≃ₗ[ℤ] ℤ) (c : A) :
+    IsUnit (e c) ↔ Function.Bijective (fun z : ℤ => z • c) := by
+  constructor
+  · intro h
+    obtain ⟨u, hu⟩ := h
+    have hfun : (fun z : ℤ => z • c) = fun z : ℤ => e.symm ((z : ℤ) * (u : ℤ)) := by
+      funext z
+      apply e.injective
+      rw [map_zsmul, hu, smul_eq_mul, LinearEquiv.apply_symm_apply]
+    rw [hfun]
+    constructor
+    · intro a b hab
+      have h2 : (a : ℤ) * (u : ℤ) = (b : ℤ) * (u : ℤ) := e.symm.injective hab
+      exact mul_right_cancel₀ (Units.ne_zero u) h2
+    · intro w
+      refine ⟨e w * ((u⁻¹ : ℤˣ) : ℤ), ?_⟩
+      change e.symm ((e w * ((u⁻¹ : ℤˣ) : ℤ)) * (u : ℤ)) = w
+      rw [mul_assoc, Units.inv_mul, mul_one, e.symm_apply_apply]
+  · intro h
+    obtain ⟨k, hk⟩ := h.surjective (e.symm 1)
+    have hk' : k * e c = 1 := by
+      have h := congrArg e hk
+      rw [map_zsmul, LinearEquiv.apply_symm_apply, smul_eq_mul] at h
+      exact h
+    exact isUnit_iff_exists_inv.mpr ⟨k, by rw [mul_comm]; exact hk'⟩
+
+theorem isUnit_apply_iff_of_int_linearEquiv (φ : ℤ ≃ₗ[ℤ] ℤ) (m : ℤ) :
+    IsUnit (φ m) ↔ IsUnit m := by
+  have hg : IsUnit (φ 1) := by
+    refine isUnit_iff_exists_inv.mpr ⟨φ.symm 1, ?_⟩
+    have hs := map_smul φ (φ.symm 1) (1 : ℤ)
+    simp only [smul_eq_mul, mul_one, LinearEquiv.apply_symm_apply] at hs
+    rw [mul_comm]
+    exact hs.symm
+  have hm : φ m = m * (φ 1) := by
+    have hs := map_smul φ m (1 : ℤ)
+    simpa only [smul_eq_mul, mul_one] using hs
+  have hφ : φ 1 = 1 ∨ φ 1 = -1 := Int.isUnit_iff.mp hg
+  rw [hm]
+  rcases hφ with h | h
+  · rw [h, mul_one]
+  · rw [h, mul_neg_one]
+    exact ⟨fun hh => by simpa using hh.neg, fun hh => hh.neg⟩
+
+theorem isUnit_apply_iff_isUnit_apply_of_linearEquiv (e e' : A ≃ₗ[ℤ] ℤ) (c : A) :
+    IsUnit (e c) ↔ IsUnit (e' c) := by
+  have h : (e.symm.trans e') (e c) = e' c := by
+    rw [LinearEquiv.trans_apply, LinearEquiv.symm_apply_apply]
+  rw [← h]
+  exact (isUnit_apply_iff_of_int_linearEquiv (e.symm.trans e') (e c)).symm
+
+end ZsmulGenerator
+
+
+theorem localOrientationClass_generator_iff_isUnit (o : TangentOrientationSection M) (x : M) :
+    Function.Bijective (fun z : ℤ => z • localOrientationClass o x) ↔
+      IsUnit (localIntegralHomologyEquivInt (M := M) x (localOrientationClass o x)) :=
+  (isUnit_apply_iff_bijective_zsmul (localIntegralHomologyEquivInt (M := M) x)
+    (localOrientationClass o x)).symm
+
+
 theorem localOrientationClass_generator (o : TangentOrientationSection M) (x : M) :
     Function.Bijective (fun z : ℤ => z • localOrientationClass o x) := by
   sorry

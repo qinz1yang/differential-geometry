@@ -185,7 +185,7 @@ theorem w_span_uniform
     have hlower : L ≤ flowW (I := I) (M := M) S s (theta + q) (u q) :=
       hgood (theta + q) hthetaq hbudgetq (u q) hsmoothq hposq hmassq
     have hW := gallim_w_lt (I := I) (M := M)
-      hS hDim hr hlim hpot href htheta hposPath q hqIco
+      hS hr hlim hpot href htheta hposPath q hqIco
     have hWflow :
         flowW (I := I) (M := M) S s (theta + q) (u q) ≤
           flowW (I := I) (M := M) S t theta v := by

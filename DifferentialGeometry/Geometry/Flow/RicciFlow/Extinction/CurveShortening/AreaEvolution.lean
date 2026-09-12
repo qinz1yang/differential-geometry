@@ -282,6 +282,316 @@ private theorem le_of_dini_off_finset : ∀ (n : ℕ) (a b : ℝ) (C : ℝ → �
       linarith
 
 
+private theorem exists_integral_ratio_bounds {rho : ℝ → ℝ} {a b t : ℝ}
+    (hrho : ContinuousOn rho (Icc a b)) (ht : t ∈ Ico a b) {η : ℝ} (hη : 0 < η) :
+    ∃ δ > 0, ∀ h ∈ Ioo (0 : ℝ) δ, t + h ≤ b →
+      |h⁻¹ * (∫ w in t..(t + h), rho w) - rho t| ≤ η ∧
+      |∫ w in t..(t + h), rho w| ≤ h * (|rho t| + 1) := by
+  have htb : t ≤ b := ht.2.le
+  have htIcc : t ∈ Icc a b := ⟨ht.1, htb⟩
+  obtain ⟨δ₀, hδ₀pos, hδ₀⟩ :=
+    (Metric.continuousWithinAt_iff.mp (hrho.continuousWithinAt htIcc)) (min η 1)
+      (lt_min hη one_pos)
+  refine ⟨min δ₀ (b - t), lt_min hδ₀pos (sub_pos.mpr ht.2), ?_⟩
+  intro h hh hb
+  have hh0 : 0 < h := hh.1
+  have hδ₀h : h < δ₀ := lt_of_lt_of_le hh.2 (min_le_left _ _)
+  have hth : t ≤ t + h := by linarith
+  have hsub : Icc t (t + h) ⊆ Icc a b := fun y hy =>
+    ⟨le_trans ht.1 hy.1, le_trans hy.2 hb⟩
+  have hcont1 : ContinuousOn rho (uIcc t (t + h)) := by
+    rw [uIcc_of_le hth]
+    exact hrho.mono hsub
+  have hInt1 : IntervalIntegrable rho volume t (t + h) := hcont1.intervalIntegrable
+  have hpoint : ∀ w ∈ uIoc t (t + h), ‖rho w - rho t‖ ≤ min η 1 := by
+    intro w hw
+    rw [uIoc_of_le hth] at hw
+    have hwt : dist w t < δ₀ := by
+      rw [Real.dist_eq, abs_of_nonneg (sub_nonneg.mpr hw.1.le)]
+      linarith [hw.2]
+    have h1 := hδ₀ (hsub ⟨hw.1.le, hw.2⟩) hwt
+    rw [Real.dist_eq] at h1
+    rw [Real.norm_eq_abs]
+    exact le_of_lt h1
+  have hbound := intervalIntegral.norm_integral_le_of_norm_le_const (a := t) (b := t + h)
+    (C := min η 1) (f := fun w => rho w - rho t) hpoint
+  have hb' : |∫ w in t..(t + h), (rho w - rho t)| ≤ min η 1 * h := by
+    rw [Real.norm_eq_abs, add_sub_cancel_left, abs_of_pos hh0] at hbound
+    exact hbound
+  have hcdiff : (∫ w in t..(t + h), (fun _ : ℝ => rho t) w) = h * rho t := by
+    rw [intervalIntegral.integral_const, smul_eq_mul]
+    ring
+  have hdiff : (∫ w in t..(t + h), rho w) - h * rho t = ∫ w in t..(t + h), (rho w - rho t) := by
+    rw [← hcdiff, ← intervalIntegral.integral_sub hInt1 intervalIntegrable_const]
+  have hminη : min η 1 ≤ η := min_le_left _ _
+  have hmin1 : min η 1 ≤ 1 := min_le_right _ _
+  constructor
+  · have h2 : h⁻¹ * (∫ w in t..(t + h), rho w) - rho t
+        = h⁻¹ * ((∫ w in t..(t + h), rho w) - h * rho t) := by
+      rw [mul_sub, ← mul_assoc, inv_mul_cancel₀ (ne_of_gt hh0), one_mul]
+    rw [h2, abs_mul, abs_of_pos (inv_pos.mpr hh0), hdiff]
+    have hthis := mul_le_mul_of_nonneg_left hb' (le_of_lt (inv_pos.mpr hh0))
+    have hcalc : h⁻¹ * (min η 1 * h) = min η 1 := by field_simp
+    linarith [hthis, hcalc.le, hcalc.ge, hminη]
+  · have h3 : |∫ w in t..(t + h), (rho w - rho t)| ≤ h := by
+      have h4 : min η 1 * h ≤ 1 * h := mul_le_mul_of_nonneg_right hmin1 hh0.le
+      linarith [hb', h4]
+    have h5 : |∫ w in t..(t + h), rho w|
+        ≤ |(∫ w in t..(t + h), rho w) - h * rho t| + h * |rho t| := by
+      have h6 : (∫ w in t..(t + h), rho w)
+          = ((∫ w in t..(t + h), rho w) - h * rho t) + h * rho t := by ring
+      calc |∫ w in t..(t + h), rho w|
+          = |((∫ w in t..(t + h), rho w) - h * rho t) + h * rho t| := congrArg abs h6
+        _ ≤ |(∫ w in t..(t + h), rho w) - h * rho t| + |h * rho t| := abs_add_le _ _
+        _ = |(∫ w in t..(t + h), rho w) - h * rho t| + h * |rho t| := by
+            rw [abs_mul, abs_of_pos hh0]
+    rw [hdiff] at h5
+    nlinarith [h5, h3]
+
+private theorem exp_sub_one_sub_id_abs_le (u : ℝ) (hu : |u| ≤ 1) :
+    |Real.exp u - 1 - u| ≤ u ^ 2 := by
+  have hu1 : ‖(u : ℂ)‖ ≤ 1 := by
+    rw [Complex.norm_real, Real.norm_eq_abs]
+    exact hu
+  have h3 : ((Real.exp u - 1 - u : ℝ) : ℂ) = Complex.exp (u : ℂ) - 1 - (u : ℂ) := by
+    rw [Complex.ofReal_sub, Complex.ofReal_sub, Complex.ofReal_exp, Complex.ofReal_one]
+  have h4 : ‖((Real.exp u - 1 - u : ℝ) : ℂ)‖ ≤ u ^ 2 := by
+    rw [h3]
+    calc ‖Complex.exp (u : ℂ) - 1 - (u : ℂ)‖ ≤ ‖(u : ℂ)‖ ^ 2 :=
+          Complex.norm_exp_sub_one_sub_id_le hu1
+      _ = u ^ 2 := by rw [Complex.norm_real, Real.norm_eq_abs, sq_abs]
+  simpa only [Complex.norm_real, Real.norm_eq_abs] using h4
+
+private theorem exists_exp_integral_slope_bound {rho : ℝ → ℝ} {a b t : ℝ}
+    (hrho : ContinuousOn rho (Icc a b)) (ht : t ∈ Ico a b) {η : ℝ} (hη : 0 < η) :
+    ∃ δ > 0, ∀ h ∈ Ioo (0 : ℝ) δ, t + h ≤ b →
+      |(Real.exp (∫ w in t..(t + h), rho w) - 1) / h - rho t| ≤ η := by
+  set R : ℝ := |rho t| + 1 with hR
+  have hRpos : 0 < R := by rw [hR]; positivity
+  obtain ⟨δ₁, hδ₁pos, hδ₁⟩ := exists_integral_ratio_bounds hrho ht (η := η / 2) (by linarith)
+  refine ⟨min (min δ₁ (1 / R)) ((η / 2) / R ^ 2), ?_, ?_⟩
+  · have h1 : 0 < R ^ 2 := pow_pos hRpos 2
+    have h2 : 0 < (η / 2) / R ^ 2 := div_pos (by linarith) h1
+    exact lt_min (lt_min hδ₁pos (div_pos one_pos hRpos)) h2
+  intro h hh hb
+  have hh0 : 0 < h := hh.1
+  have hδ₁h : h < δ₁ := lt_of_lt_of_le hh.2 (le_trans (min_le_left _ _) (min_le_left _ _))
+  have h1R : h < 1 / R := lt_of_lt_of_le hh.2 (le_trans (min_le_left _ _) (min_le_right _ _))
+  have hηR : h < (η / 2) / R ^ 2 := lt_of_lt_of_le hh.2 (min_le_right _ _)
+  obtain ⟨hratio, hbnd⟩ := hδ₁ h ⟨hh.1, hδ₁h⟩ hb
+  set u : ℝ := ∫ w in t..(t + h), rho w with hu
+  have hu_bnd : |u| ≤ h * R := by
+    simpa only [hR] using hbnd
+  have hu1 : |u| ≤ 1 := by
+    have h2 := mul_lt_mul_of_pos_right h1R hRpos
+    have h3 : (1 / R) * R = 1 := by field_simp
+    have h4 : h * R < 1 := by linarith [h2, h3.le, h3.ge]
+    exact le_of_lt (lt_of_le_of_lt hu_bnd h4)
+  have hexp := exp_sub_one_sub_id_abs_le u hu1
+  have hfirst : |u / h - rho t| ≤ η / 2 := by
+    have h2 : h⁻¹ * (∫ w in t..(t + h), rho w) = u / h := by
+      rw [hu, div_eq_mul_inv, mul_comm]
+    rw [← h2]
+    exact hratio
+  have hsecond : |(Real.exp u - 1 - u) / h| ≤ η / 2 := by
+    have h2 : |(Real.exp u - 1 - u) / h| = |Real.exp u - 1 - u| / h := by
+      rw [abs_div, abs_of_pos hh0]
+    have h3 : |Real.exp u - 1 - u| / h ≤ u ^ 2 / h :=
+      div_le_div_of_nonneg_right hexp hh0.le
+    have h4 : u ^ 2 ≤ (h * R) ^ 2 := by
+      have h5 := abs_le.mp hu_bnd
+      nlinarith [h5.1, h5.2]
+    have h5 : u ^ 2 / h ≤ h * R ^ 2 := by
+      have h6 : u ^ 2 ≤ h ^ 2 * R ^ 2 := by nlinarith [h4]
+      rw [div_le_iff₀ hh0]
+      nlinarith [h6]
+    have h7 : h * R ^ 2 ≤ η / 2 := by
+      rw [div_eq_mul_inv] at hηR
+      have h8 : h * R ^ 2 < (η / 2 / R ^ 2) * R ^ 2 := mul_lt_mul_of_pos_right hηR (pow_pos hRpos 2)
+      have h9 : (η / 2 / R ^ 2) * R ^ 2 = η / 2 := by field_simp
+      linarith [h8, h9.le]
+    linarith [h2.le, h2.ge, h3, h5, h7]
+  have hkey : (Real.exp u - 1) / h - rho t
+      = (u / h - rho t) + (Real.exp u - 1 - u) / h := by
+    rw [← sub_add_cancel (Real.exp u - 1) u, add_div]
+    ring
+  rw [hkey]
+  calc |(u / h - rho t) + (Real.exp u - 1 - u) / h|
+      ≤ |u / h - rho t| + |(Real.exp u - 1 - u) / h| := abs_add_le _ _
+    _ ≤ η / 2 + η / 2 := add_le_add hfirst hsecond
+    _ = η := by ring
+
+
+private theorem exists_exp_integral_product_slope_bound {rho F : ℝ → ℝ} {a b t : ℝ}
+    (hrho : ContinuousOn rho (Icc a b)) (hF : ContinuousOn F (Icc a b))
+    (ht : t ∈ Ico a b) {ε : ℝ} (hε : 0 < ε) :
+    ∃ δ > 0, ∀ h ∈ Ioo (0 : ℝ) δ, t + h ≤ b →
+      |h⁻¹ * (∫ w in t..(t + h), Real.exp (∫ z in t..w, rho z) * F w) - F t| ≤ ε := by
+  have htb : t ≤ b := ht.2.le
+  have htIcc : t ∈ Icc a b := ⟨ht.1, htb⟩
+  have hIntOn : IntegrableOn rho (uIcc t b) volume := by
+    rw [uIcc_of_le htb]
+    exact (hrho.mono (Icc_subset_Icc ht.1 le_rfl)).integrableOn_compact isCompact_Icc
+  have hprimCont : ContinuousOn (fun w : ℝ => ∫ z in t..w, rho z) (uIcc t b) :=
+    intervalIntegral.continuousOn_primitive_interval hIntOn
+  have hprimCont' : ContinuousOn (fun w : ℝ => ∫ z in t..w, rho z) (Icc t b) := by
+    rw [← uIcc_of_le htb]
+    exact hprimCont
+  have hgcont : ContinuousOn (fun w : ℝ => Real.exp (∫ z in t..w, rho z) * F w) (Icc t b) :=
+    (Real.continuous_exp.comp_continuousOn hprimCont').mul
+      (hF.mono (Icc_subset_Icc ht.1 le_rfl))
+  obtain ⟨δ₁, hδ₁pos, hδ₁⟩ :=
+    (Metric.continuousWithinAt_iff.mp (hgcont.continuousWithinAt ⟨le_rfl, htb⟩)) ε hε
+  refine ⟨min δ₁ (b - t), lt_min hδ₁pos (sub_pos.mpr ht.2), ?_⟩
+  intro h hh hb
+  have hh0 : 0 < h := hh.1
+  have hδ₁h : h < δ₁ := lt_of_lt_of_le hh.2 (min_le_left _ _)
+  have hth : t ≤ t + h := by linarith
+  have hsub : Icc t (t + h) ⊆ Icc t b := fun y hy => ⟨hy.1, le_trans hy.2 hb⟩
+  have hgInt : IntervalIntegrable (fun w : ℝ => Real.exp (∫ z in t..w, rho z) * F w)
+      volume t (t + h) :=
+    (show ContinuousOn (fun w : ℝ => Real.exp (∫ z in t..w, rho z) * F w) (uIcc t (t + h)) from by
+      rw [uIcc_of_le hth]
+      exact hgcont.mono hsub).intervalIntegrable
+  have hgt : Real.exp (∫ z in t..t, rho z) * F t = F t := by
+    simp
+  have hpoint : ∀ w ∈ uIoc t (t + h), ‖Real.exp (∫ z in t..w, rho z) * F w - F t‖ ≤ ε := by
+    intro w hw
+    rw [uIoc_of_le hth] at hw
+    have hwt : dist w t < δ₁ := by
+      rw [Real.dist_eq, abs_of_nonneg (sub_nonneg.mpr hw.1.le)]
+      linarith [hw.2]
+    have h1 := hδ₁ (hsub ⟨hw.1.le, hw.2⟩) hwt
+    rw [Real.dist_eq, hgt] at h1
+    rw [Real.norm_eq_abs]
+    exact le_of_lt h1
+  have hbound := intervalIntegral.norm_integral_le_of_norm_le_const (a := t) (b := t + h)
+    (C := ε) (f := fun w : ℝ => Real.exp (∫ z in t..w, rho z) * F w - F t) hpoint
+  have hb' : |∫ w in t..(t + h), (Real.exp (∫ z in t..w, rho z) * F w - F t)| ≤ ε * h := by
+    rw [Real.norm_eq_abs, add_sub_cancel_left, abs_of_pos hh0] at hbound
+    exact hbound
+  have hcdiff : (∫ w in t..(t + h), (fun _ : ℝ => F t) w) = h * F t := by
+    rw [intervalIntegral.integral_const, smul_eq_mul]
+    ring
+  have hdiff : (∫ w in t..(t + h), Real.exp (∫ z in t..w, rho z) * F w) - h * F t
+      = ∫ w in t..(t + h), (Real.exp (∫ z in t..w, rho z) * F w - F t) := by
+    rw [← hcdiff, ← intervalIntegral.integral_sub hgInt intervalIntegrable_const]
+  have h2 : h⁻¹ * (∫ w in t..(t + h), Real.exp (∫ z in t..w, rho z) * F w) - F t
+      = h⁻¹ * ((∫ w in t..(t + h), Real.exp (∫ z in t..w, rho z) * F w) - h * F t) := by
+    rw [mul_sub, ← mul_assoc, inv_mul_cancel₀ (ne_of_gt hh0), one_mul]
+  rw [h2, abs_mul, abs_of_pos (inv_pos.mpr hh0), hdiff]
+  have hthis := mul_le_mul_of_nonneg_left hb' (le_of_lt (inv_pos.mpr hh0))
+  have hcalc : h⁻¹ * (ε * h) = ε := by field_simp
+  linarith [hthis, hcalc.le, hcalc.ge]
+
+
+private theorem neg_mul_le_abs_mul (x y : ℝ) : -x * y ≤ |x| * |y| := by
+  calc -x * y = -(x * y) := by ring
+    _ ≤ |x * y| := neg_le_abs _
+    _ = |x| * |y| := abs_mul x y
+
+private theorem exists_slope_le_of_exp_integral_comparison {A rho F : ℝ → ℝ} {a b : ℝ}
+    (hA : ContinuousOn A (Icc a b)) (hrho : ContinuousOn rho (Icc a b))
+    (hF : ContinuousOn F (Icc a b))
+    (hint : ∀ s ∈ Icc a b, ∀ u ∈ Icc s b,
+      Real.exp (∫ w in s..u, rho w) * A u ≤
+        A s + ∫ v in s..u, Real.exp (∫ w in s..v, rho w) * F v)
+    {t : ℝ} (ht : t ∈ Ico a b) {ε : ℝ} (hε : 0 < ε) :
+    ∃ δ > 0, ∀ h ∈ Ioo (0 : ℝ) δ, t + h ≤ b →
+      (A (t + h) - A t) / h ≤ -rho t * A t + F t + ε := by
+  have htb : t ≤ b := ht.2.le
+  have htIcc : t ∈ Icc a b := ⟨ht.1, htb⟩
+  set R : ℝ := |rho t| + 1 with hR
+  have hRpos : 0 < R := by rw [hR]; positivity
+  set η : ℝ := min (ε / (3 * (|A t| + 1))) (min (ε / (3 * R)) 1) with hη
+  have hA1pos : 0 < |A t| + 1 := by positivity
+  have hηA : η ≤ ε / (3 * (|A t| + 1)) := by
+    rw [hη]
+    exact min_le_left _ _
+  have hηR : η ≤ ε / (3 * R) := by
+    rw [hη]
+    exact le_trans (min_le_right _ _) (min_le_left _ _)
+  have hη1 : η ≤ 1 := by
+    rw [hη]
+    exact le_trans (min_le_right _ _) (min_le_right _ _)
+  have hηpos : 0 < η := by
+    rw [hη]
+    have h1 : 0 < ε / (3 * (|A t| + 1)) := div_pos hε (by linarith)
+    have h2 : 0 < ε / (3 * R) := div_pos hε (by linarith)
+    exact lt_min h1 (lt_min h2 one_pos)
+  obtain ⟨δ₁, hδ₁pos, hδ₁⟩ := exists_exp_integral_slope_bound hrho ht (η := η) hηpos
+  obtain ⟨δ₂, hδ₂pos, hδ₂⟩ :=
+    exists_exp_integral_product_slope_bound hrho hF ht (ε := ε / 3) (by linarith)
+  obtain ⟨δ₃, hδ₃pos, hδ₃⟩ := (Metric.continuousWithinAt_iff.mp (hA.continuousWithinAt htIcc)) η hηpos
+  refine ⟨min (min δ₁ δ₂) δ₃, lt_min (lt_min hδ₁pos hδ₂pos) hδ₃pos, ?_⟩
+  intro h hh hb
+  have hh0 : 0 < h := hh.1
+  have hδ₁h : h < δ₁ := lt_of_lt_of_le hh.2 (le_trans (min_le_left _ _) (min_le_left _ _))
+  have hδ₂h : h < δ₂ := lt_of_lt_of_le hh.2 (le_trans (min_le_left _ _) (min_le_right _ _))
+  have hδ₃h : h < δ₃ := lt_of_lt_of_le hh.2 (min_le_right _ _)
+  have hth : t ≤ t + h := by linarith
+  have htIcc' : t + h ∈ Icc a b := ⟨by linarith [ht.1], hb⟩
+  set u : ℝ := ∫ w in t..(t + h), rho w with hu
+  set P : ℝ := ∫ w in t..(t + h), Real.exp (∫ z in t..w, rho z) * F w with hP
+  have hratio : |(Real.exp u - 1) / h - rho t| ≤ η := by
+    have h := hδ₁ h ⟨hh.1, hδ₁h⟩ hb
+    rwa [← hu] at h
+  have hprod : |h⁻¹ * P - F t| ≤ ε / 3 := by
+    have h := hδ₂ h ⟨hh.1, hδ₂h⟩ hb
+    rwa [← hP] at h
+  have hAdist : |A (t + h) - A t| < η := by
+    have h := hδ₃ htIcc' (by rw [Real.dist_eq, add_sub_cancel_left, abs_of_pos hh0]; exact hδ₃h)
+    rwa [Real.dist_eq] at h
+  have hAineq : |A (t + h)| ≤ |A t| + 1 := by
+    have h2 : |A (t + h)| ≤ |A t| + |A (t + h) - A t| := by
+      calc |A (t + h)| = |A t + (A (t + h) - A t)| := congrArg abs (by ring)
+        _ ≤ |A t| + |A (t + h) - A t| := abs_add_le _ _
+    linarith [h2, hAdist, hη1]
+  have hineq := hint t htIcc (t + h) ⟨hth, hb⟩
+  have hle : (Real.exp u * A (t + h) - A t) / h ≤ P / h := by
+    rw [div_le_div_iff_of_pos_right hh0]
+    rw [hP, hu]
+    linarith [hineq]
+  have hPle : P / h ≤ F t + ε / 3 := by
+    have h6 := (abs_le.mp hprod).2
+    have h2 : h⁻¹ * P = P / h := by rw [div_eq_mul_inv, mul_comm]
+    linarith [h6, h2.le, h2.ge]
+  have hsplit : (A (t + h) - A t) / h
+      = (Real.exp u * A (t + h) - A t) / h - ((Real.exp u - 1) / h) * A (t + h) := by
+    rw [div_mul_eq_mul_div, ← sub_div]
+    ring
+  have htail : -(((Real.exp u - 1) / h) * A (t + h))
+      ≤ -rho t * A t + |rho t| * η + η * (|A t| + 1) := by
+    have h1 : -(((Real.exp u - 1) / h) - rho t) * A (t + h)
+        ≤ |((Real.exp u - 1) / h) - rho t| * |A (t + h)| := neg_mul_le_abs_mul _ _
+    have h2 : |((Real.exp u - 1) / h) - rho t| * |A (t + h)| ≤ η * |A (t + h)| :=
+      mul_le_mul_of_nonneg_right hratio (abs_nonneg _)
+    have h3 : η * |A (t + h)| ≤ η * (|A t| + 1) :=
+      mul_le_mul_of_nonneg_left hAineq hηpos.le
+    have h4 : -rho t * (A (t + h) - A t) ≤ |rho t| * η := by
+      have h5 : -rho t * (A (t + h) - A t) ≤ |rho t| * |A (t + h) - A t| := neg_mul_le_abs_mul _ _
+      have h6 : |rho t| * |A (t + h) - A t| ≤ |rho t| * η :=
+        mul_le_mul_of_nonneg_left hAdist.le (abs_nonneg _)
+      linarith [h5, h6]
+    have h7 : -(((Real.exp u - 1) / h) * A (t + h))
+        = -rho t * A (t + h) + (-(((Real.exp u - 1) / h) - rho t) * A (t + h)) := by ring
+    have h8 : -rho t * A (t + h) = -rho t * A t + (-rho t * (A (t + h) - A t)) := by ring
+    linarith [h1, h2, h3, h4, h7.le, h7.ge, h8.le, h8.ge]
+  have hnum1 : |rho t| * η ≤ ε / 3 := by
+    have h1 : R * η ≤ R * (ε / (3 * R)) := mul_le_mul_of_nonneg_left hηR hRpos.le
+    have h2 : R * (ε / (3 * R)) = ε / 3 := by field_simp
+    have h3 : |rho t| ≤ R := by rw [hR]; linarith [abs_nonneg (rho t)]
+    have h4 : |rho t| * η ≤ R * η := mul_le_mul_of_nonneg_right h3 hηpos.le
+    linarith [h1, h2.le, h2.ge, h4]
+  have hnum2 : η * (|A t| + 1) ≤ ε / 3 := by
+    have h1 : (|A t| + 1) * η ≤ (|A t| + 1) * (ε / (3 * (|A t| + 1))) :=
+      mul_le_mul_of_nonneg_left hηA hA1pos.le
+    have h2 : (|A t| + 1) * (ε / (3 * (|A t| + 1))) = ε / 3 := by field_simp
+    linarith [h1, h2.le, h2.ge]
+  have h1 := hsplit.le
+  linarith [h1, hle, hPle, htail, hnum1, hnum2]
+
+
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
     [FiniteDimensional ℝ E] [CompleteSpace E]
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
@@ -491,6 +801,37 @@ theorem rfs_csf_area_error (B : RicciBackground (I := I) (M := M) D a b)
       simp only [CurveMap.normalVelocityError, h0, map_smul, smul_apply, smul_eq_mul, hT,
         mul_one, sub_self]
     simp [CurveMap.areaError, CurveMap.integral, CurveMap.normSq, hW]
+
+
+omit hBoundary hNonempty [SigmaCompactSpace M] in
+theorem rfs_csf_slope_le_of_window_comparison (B : RicciBackground (I := I) (M := M) D a b)
+    (γ : ℝ → ContinuousFreeLoop M)
+    (hA : ContinuousOn (loopFamilyLeastArea B.family.metric γ) (Icc a b))
+    (hF : ContinuousOn (fun t => (curveOfLoopFamily γ).areaError B.family.metric (Icc a b) t)
+      (Icc a b))
+    (hwindow : ∀ s ∈ Icc a b, ∀ u ∈ Icc s b,
+      Real.exp (∫ w in s..u, scalarMinimum B.family w / 2) *
+          loopFamilyLeastArea B.family.metric γ u ≤
+        loopFamilyLeastArea B.family.metric γ s +
+          ∫ v in s..u, Real.exp (∫ w in s..v, scalarMinimum B.family w / 2) *
+            (-2 * Real.pi + (curveOfLoopFamily γ).areaError B.family.metric (Icc a b) v)) :
+    ∀ t ∈ Ico a b, ∀ ε > 0, ∃ δ > 0, ∀ h ∈ Ioo (0 : ℝ) δ, t + h ≤ b →
+      (loopFamilyLeastArea B.family.metric γ (t + h) -
+          loopFamilyLeastArea B.family.metric γ t) / h ≤
+        -2 * Real.pi - scalarMinimum B.family t * loopFamilyLeastArea B.family.metric γ t / 2 +
+          (curveOfLoopFamily γ).areaError B.family.metric (Icc a b) t + ε := by
+  intro t ht ε hε
+  have hrho : ContinuousOn (fun w => scalarMinimum B.family w / 2) (Icc a b) :=
+    (RicciBackground.continuousOn_scalarMinimum B).div_const 2
+  obtain ⟨δ, hδpos, hδ⟩ := exists_slope_le_of_exp_integral_comparison hA hrho
+    (continuousOn_const.add hF) hwindow ht hε
+  refine ⟨δ, hδpos, fun h hh hb => ?_⟩
+  have h2 : -(scalarMinimum B.family t / 2) * loopFamilyLeastArea B.family.metric γ t +
+      (-2 * Real.pi + (curveOfLoopFamily γ).areaError B.family.metric (Icc a b) t) + ε
+      = -2 * Real.pi - scalarMinimum B.family t * loopFamilyLeastArea B.family.metric γ t / 2 +
+        (curveOfLoopFamily γ).areaError B.family.metric (Icc a b) t + ε := by ring
+  exact (hδ h hh hb).trans_eq h2
+
 
 theorem rfs_csf_embedded_area (B : RicciBackground (I := I) (M := M) D a b)
     (hdim : Module.finrank ℝ E = 3) (γ : ℝ → ContinuousFreeLoop M)

@@ -1,5 +1,6 @@
 import DifferentialGeometry.Topology.Homology.SphereHurewicz
 import DifferentialGeometry.Topology.Homology.SphereGenerator
+import DifferentialGeometry.Topology.Homology.HurewiczFrontier
 import DifferentialGeometry.Topology.Homotopy.CubeSphereProjection
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.LoopClass
 
@@ -163,5 +164,82 @@ theorem hurewicz_three_isomorphism_of_cubeSphereFundamentalClass_isSphereHomolog
       simpa using sphereHurewicz_zsmul 2 (-1) x cubeSphereFundamentalClass a
     rw [hneg, sphereHurewicz_cubeSphereFundamentalClass]
     exact bijective_neg_comp.mpr hb
+
+theorem hurewiczThree_eq_freeSphereHomologyImage (x : X) (a : HomotopyGroup (Fin 3) X x) :
+    hurewiczThree x a =
+      freeSphereHomologyImage 2 cubeSphereFundamentalClass (homotopyGroupToFreeSphere 2 x a) :=
+  (congrFun (sphereHurewicz_cubeSphereFundamentalClass x) a).symm
+
+theorem hurewiczCubeClass_eq_freeSphereHomologyImage (x : X) (c : GenLoop (Fin 3) X x) :
+    hurewiczCubeClass c =
+      freeSphereHomologyImage 2 cubeSphereFundamentalClass
+        (homotopyGroupToFreeSphere 2 x (Quotient.mk _ c)) :=
+  hurewiczThree_eq_freeSphereHomologyImage x (Quotient.mk _ c)
+
+theorem hurewiczThree_bijective_of_isSphereHurewiczIsomorphism_cubeSphereFundamentalClass
+    (x : X) (h : IsSphereHurewiczIsomorphism 2 X x cubeSphereFundamentalClass) :
+    Function.Bijective (hurewiczThree x) :=
+  (hurewiczThree_bijective_iff_sphereHurewicz_cubeSphereFundamentalClass x).mpr h.1
+
+theorem isSphereHomologyGenerator_cubeSphereFundamentalClass_iff_coordinate :
+    IsSphereHomologyGenerator.{u} 2 cubeSphereFundamentalClass ↔
+      integralLiftedSphereTopEquiv.{u} 2 cubeSphereFundamentalClass = 1 ∨
+        integralLiftedSphereTopEquiv.{u} 2 cubeSphereFundamentalClass = -1 := by
+  constructor
+  · intro h
+    rcases (isSphereHomologyGenerator_iff_eq_or_eq_neg_integralLiftedSphereGenerator 2
+      cubeSphereFundamentalClass).mp h with h' | h'
+    · exact Or.inl (by rw [h', integralLiftedSphereGenerator_coordinate])
+    · exact Or.inr (by rw [h', map_neg, integralLiftedSphereGenerator_coordinate])
+  · rintro (h | h)
+    · exact ⟨integralLiftedSphereTopEquiv 2, h⟩
+    · refine ⟨(integralLiftedSphereTopEquiv 2).trans (LinearEquiv.neg ℤ), ?_⟩
+      rw [LinearEquiv.trans_apply, h]
+      simp
+
+variable {M : Type u} [TopologicalSpace M] [SimplyConnectedSpace M]
+
+theorem sphereHurewiczTwoCanonical_of_hurewicz_two_isomorphism :
+    SphereHurewiczTwoCanonical M :=
+  (sphereHurewicz_two_isomorphism_iff_canonical_generator (X := M)).mp
+    (fun x c hc => hurewicz_two_isomorphism x c hc)
+
+theorem sphereHurewiczThreeCanonical_of_hurewicz_three_isomorphism :
+    SphereHurewiczThreeCanonical M :=
+  (sphereHurewicz_three_isomorphism_iff_canonical_generator (X := M)).mp
+    (fun x hπ₂ c hc => hurewicz_three_isomorphism x hπ₂ c hc)
+
+theorem homotopyTwo_subsingleton_of_sphereHurewiczTwoCanonical
+    (h : SphereHurewiczTwoCanonical M)
+    (hH₂ : Subsingleton (integralSingularHomology 2 M)) (x : M) :
+    Subsingleton (HomotopyGroup (Fin 2) M x) :=
+  @Function.Injective.subsingleton _ _ _ (h x).1.1 hH₂
+
+theorem hurewiczThree_bijective_of_sphereHurewiczThreeCanonical (x : M)
+    (hπ₂ : Subsingleton (HomotopyGroup (Fin 2) M x))
+    (hgen : IsSphereHomologyGenerator.{u} 2 cubeSphereFundamentalClass)
+    (h : SphereHurewiczThreeCanonical M) :
+    Function.Bijective (hurewiczThree x) :=
+  hurewiczThree_bijective_of_isSphereHurewiczIsomorphism_cubeSphereFundamentalClass x
+    (IsSphereHurewiczIsomorphism.of_isSphereHomologyGenerator 2 x hgen (h x hπ₂))
+
+theorem rfs_homotopy_groups_of_sphereHurewiczCanonical (q : M)
+    (hH₂ : Subsingleton (integralSingularHomology 2 M))
+    (hgen : IsSphereHomologyGenerator.{u} 2 cubeSphereFundamentalClass)
+    (hcanonTwo : SphereHurewiczTwoCanonical M)
+    (hcanonThree : SphereHurewiczThreeCanonical M) :
+    Subsingleton (HomotopyGroup (Fin 2) M q) ∧ Function.Bijective (hurewiczThree q) :=
+  ⟨homotopyTwo_subsingleton_of_sphereHurewiczTwoCanonical hcanonTwo hH₂ q,
+    hurewiczThree_bijective_of_sphereHurewiczThreeCanonical q
+      (homotopyTwo_subsingleton_of_sphereHurewiczTwoCanonical hcanonTwo hH₂ q)
+      hgen hcanonThree⟩
+
+theorem rfs_homotopy_groups_of_subsingleton_homology_two (q : M)
+    (hH₂ : Subsingleton (integralSingularHomology 2 M))
+    (hgen : IsSphereHomologyGenerator.{u} 2 cubeSphereFundamentalClass) :
+    Subsingleton (HomotopyGroup (Fin 2) M q) ∧ Function.Bijective (hurewiczThree q) :=
+  rfs_homotopy_groups_of_sphereHurewiczCanonical q hH₂ hgen
+    sphereHurewiczTwoCanonical_of_hurewicz_two_isomorphism
+    sphereHurewiczThreeCanonical_of_hurewicz_three_isomorphism
 
 end DifferentialGeometry.Topology

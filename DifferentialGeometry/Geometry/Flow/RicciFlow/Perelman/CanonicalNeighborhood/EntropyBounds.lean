@@ -340,7 +340,7 @@ theorem exists_entropyTest_of_contMDiff [I.Boundaryless]
 theorem exists_muSmooth_step [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
     [BoundarylessManifold I M] {D : RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn S)
-    (hDim : Module.finrank ℝ E = 3) {a₀ a b : ℝ} (ha₀a : a₀ < a)
+    {a₀ a b : ℝ} (ha₀a : a₀ < a)
     (hab : Set.Icc a₀ b ⊆ D.regular) :
     ∃ rho : ℝ, 0 < rho ∧
       ∀ {s t theta : ℝ}, s ∈ Set.Icc a b → t ∈ Set.Icc a b → s ≤ t →
@@ -515,13 +515,12 @@ theorem exists_muSmooth_step [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
       rw [hu0eval, hu0]
     exact h
   have hW := DifferentialGeometry.PDE.RicciFlow.Entropy.gallim_w_lt
-    (I := I) (M := M) hS hDim hr hlim hpot href htheta hposPath (t - s) hqIco
+    (I := I) (M := M) hS hr hlim hpot href htheta hposPath (t - s) hqIco
   have hWflow : DifferentialGeometry.PDE.RicciFlow.Entropy.flowW (I := I) (M := M) S s
         (theta + (t - s)) (u (t - s)) ≤
       DifferentialGeometry.PDE.RicciFlow.Entropy.flowW (I := I) (M := M) S t theta
         (fun x => w.value x * w.value x) := by
     dsimp only [DifferentialGeometry.PDE.RicciFlow.Entropy.flowW, u]
-    rw [hDim] at hW ⊢
     have hts : t - (t - s) = s := by ring
     simpa only [G, hGq, hG0, hts, hu0fun,
       DifferentialGeometry.Integral.Measure.volumeMeasureFamily,
@@ -566,12 +565,12 @@ theorem exists_muSmooth_step [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
 theorem exists_muSmooth_step_chain [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
     [BoundarylessManifold I M] {D : RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn S)
-    (hDim : Module.finrank ℝ E = 3) {a₀ a b : ℝ} (ha₀a : a₀ < a)
+    {a₀ a b : ℝ} (ha₀a : a₀ < a)
     (hab : Set.Icc a₀ b ⊆ D.regular) {t1 t2 tau : ℝ}
     (h1 : t1 ∈ Set.Icc a b) (h2 : t2 ∈ Set.Icc a b) (hle : t1 ≤ t2) (htau : 0 < tau) :
     muSmooth (S.base.metric t1) (tau + t2 - t1) ≤ muSmooth (S.base.metric t2) tau := by
   classical
-  obtain ⟨rho, hrho, hstepL⟩ := exists_muSmooth_step (I := I) (M := M) S hS hDim ha₀a hab
+  obtain ⟨rho, hrho, hstepL⟩ := exists_muSmooth_step (I := I) (M := M) S hS ha₀a hab
   let delta : ℝ := rho / 2
   have hdelta : 0 < delta := half_pos hrho
   have hdelta_rho : delta ≤ rho := by
@@ -630,7 +629,7 @@ theorem exists_muSmooth_step_chain [NeZero (Module.finrank ℝ E)] [I.Boundaryle
 theorem mu_monotone_of_regular [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
     [BoundarylessManifold I M] {D : RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn S)
-    (hDim : Module.finrank ℝ E = 3) {t1 t2 tau : ℝ} (hle : t1 ≤ t2)
+    {t1 t2 tau : ℝ} (hle : t1 ≤ t2)
     (hreg : Set.Icc t1 t2 ⊆ D.regular) (htau : 0 < tau) :
     muSmooth (S.base.metric t1) (tau + t2 - t1) ≤ muSmooth (S.base.metric t2) tau := by
   classical
@@ -648,7 +647,7 @@ theorem mu_monotone_of_regular [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
     · rcases le_total x t2 with hx2 | hx2
       · exact hreg ⟨hx1, hx2⟩
       · exact hsl2 ⟨by linarith [hx2, ht2in.1], by linarith [hx.2, ht2in.2]⟩
-  exact exists_muSmooth_step_chain (I := I) (M := M) S hS hDim ha₀a hsub
+  exact exists_muSmooth_step_chain (I := I) (M := M) S hS ha₀a hsub
     ⟨le_rfl, hle⟩ ⟨hle, le_rfl⟩ hle htau
 
 end MuMonotoneBridge
@@ -656,9 +655,10 @@ end MuMonotoneBridge
 theorem mu_monotone [I.Boundaryless] {D : RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn S)
     (hdim : 2 ≤ Module.finrank ℝ E) {t1 t2 tau : ℝ}
-    (h1 : t1 ∈ D.carrier) (h2 : t2 ∈ D.carrier) (hle : t1 ≤ t2) (htau : 0 < tau) :
+    (hle : t1 ≤ t2) (hreg : Set.Icc t1 t2 ⊆ D.regular) (htau : 0 < tau) :
     muSmooth (S.base.metric t1) (tau + t2 - t1) ≤ muSmooth (S.base.metric t2) tau := by
-  sorry
+  have : NeZero (Module.finrank ℝ E) := ⟨by omega⟩
+  exact mu_monotone_of_regular (I := I) (M := M) S hS hle hreg htau
 
 
 theorem mu_compact_scale_lower [I.Boundaryless]
