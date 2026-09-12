@@ -8149,6 +8149,7 @@ import DifferentialGeometry.Topology.Manifold.SmoothNormalReorientation
 import DifferentialGeometry.Topology.Manifold.SmoothOpenCover
 import DifferentialGeometry.Topology.Manifold.SmoothOrientation
 import DifferentialGeometry.Topology.Manifold.SmoothOrientationComparison
+import DifferentialGeometry.Topology.Manifold.SmoothOrientationCompatible
 import DifferentialGeometry.Topology.Manifold.SmoothOrientationComposition
 import DifferentialGeometry.Topology.Manifold.SmoothOrientationLocal
 import DifferentialGeometry.Topology.Manifold.SmoothOrientationOpen
@@ -8472,6 +8473,8 @@ import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.Construction
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.Finite
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.InteriorChart
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.LocalDiffeomorphism
+import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.OrientationPrelude
+import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.PuncturedImageBall
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.Quotient
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.SeamChart
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.SeamOrientation

@@ -2,6 +2,7 @@ import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.Construction
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.SmoothStructure
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.SeamOrientation
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.LocalDiffeomorphism
+import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.PuncturedImageBall
 
 open scoped Manifold ContDiff Topology
 open Bundle Manifold Set Topology
@@ -79,7 +80,6 @@ theorem exists_smooth_connected_sum_of_orientation
     {M : ConnectedClosedOrientedManifold.{u} 3} {N : ConnectedClosedOrientedManifold.{v} 3}
     (c : OrientedBallChart M.toClosedOrientedManifold) (d : OrientedBallChart N.toClosedOrientedManifold)
     (a : BoundaryAttachment)
-    [ConnectedSpace c.toBallChart.Punctured] [ConnectedSpace d.toBallChart.Punctured]
     (hO :
       letI := csChartedSpace c.toBallChart d.toBallChart a.1.toHomeomorph
       letI := csIsManifold c.toBallChart d.toBallChart a.1.toHomeomorph
