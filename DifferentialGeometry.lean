@@ -4883,6 +4883,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.ComponentHa
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.DiskVariation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.LeastArea
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.AreaBridge
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.AreaTransport
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.Loops
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.Plateau
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.PlateauClassical
