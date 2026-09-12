@@ -1,5 +1,6 @@
 import DifferentialGeometry.Topology.ThreeManifold.PoincareStandard
 import DifferentialGeometry.Topology.ThreeManifold.CutCapReconstruction
+import DifferentialGeometry.Topology.ThreeManifold.SphericalSpaceFormTrivial
 import DifferentialGeometry.Topology.FundamentalGroup.SphericalQuotient
 import DifferentialGeometry.Topology.FundamentalGroup.Sphere
 import DifferentialGeometry.Topology.FundamentalGroup.HomotopyEquiv
@@ -73,21 +74,23 @@ private theorem exists_orientedDiffeomorph_standardThreeSphere_of_isStandardFact
     Nonempty (ClosedOrientedManifold.OrientedDiffeomorph
       F.toClosedOrientedManifold standardThreeSphereLift.{u}.toClosedOrientedManifold) := by
   rcases hstd with ⟨G, ⟨e⟩⟩ | ⟨f, _hf⟩
-  · obtain ⟨g⟩ := htrivial G (by
-      have := hsub
-      have he : Subsingleton (FundamentalGroup G.manifold.Carrier (e.1 p)) :=
-        (fundamentalGroupMulEquivOfHomotopyEquiv e.1.toHomeomorph.toHomotopyEquiv
-          p (e.1 p) rfl).symm.subsingleton
-      have := he
-      exact (hquot G (e.1 p)).some.symm.subsingleton)
+  · have hsubG : Subsingleton ↥G.group := by
+      let eiso := fundamentalGroupMulEquivOfHomotopyEquiv e.1.toHomeomorph.toHomotopyEquiv
+        p (e.1 p) rfl
+      let qiso := (hquot G (e.1 p)).some
+      have h₁ : Subsingleton (FundamentalGroup G.manifold.Carrier (e.1 p)) :=
+        @Equiv.subsingleton.symm _ _ eiso.toEquiv hsub
+      exact @Equiv.subsingleton.symm _ _ qiso.toEquiv h₁
+    obtain ⟨g⟩ := htrivial G hsubG
     exact ⟨e.trans g⟩
   · exfalso
-    have := hsub
+    let eiso := fundamentalGroupMulEquivOfHomotopyEquiv f.toHomeomorph.toHomotopyEquiv
+      p (f p) rfl
+    let ziso := (hproduct (f p)).some
     have hprod : Subsingleton (FundamentalGroup SphereTwoTimesCircle (f p)) :=
-      (fundamentalGroupMulEquivOfHomotopyEquiv f.toHomeomorph.toHomotopyEquiv
-        p (f p) rfl).symm.subsingleton
-    have := hprod
-    exact not_subsingleton_multiplicative_int ((hproduct (f p)).some.symm.subsingleton)
+      @Equiv.subsingleton.symm _ _ eiso.toEquiv hsub
+    exact not_subsingleton_multiplicative_int
+      (@Equiv.subsingleton.symm _ _ ziso.toEquiv hprod)
 
 theorem poincareStandardSumClosed_of_connectedSum_laws
     (happend : ∀ (L K : List (ConnectedClosedOrientedManifold.{u} 3)),
