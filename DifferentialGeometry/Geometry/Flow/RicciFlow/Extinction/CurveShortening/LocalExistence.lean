@@ -1,5 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.Basic
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.Loops
+import DifferentialGeometry.Geometry.Comparison.Variation.FirstVariation.Basic
 import Mathlib.Analysis.Calculus.ContDiff.FTaylorSeries
 
 noncomputable section
@@ -51,13 +52,97 @@ structure CircleReparametrization (J : Set ℝ) where
       ∀ᶠ p in 𝓝[univ ×ˢ J] (x, t),
         (localLift p : AddCircle (1 : ℝ)) = (map p.2).symm (p.1 : AddCircle (1 : ℝ))
 
+omit [CompleteSpace E] in
 theorem parabolic_gauge_velocity [I.Boundaryless] (g : ℝ → SmoothRiemannianMetric I M)
     (c : CurveMap M) {J : Set ℝ} (hc : c.SmoothOn (I := I) J)
     (hi : c.ImmersedOn (I := I) J) (x t : ℝ) (ht : t ∈ J) :
     0 < (c.speed g x t) ^ (-2 : ℤ) ∧
     (c.speed g x t) ^ (-2 : ℤ) • c.Dx g c.X x t = c.curvatureVector g x t +
       (deriv (fun y => c.speed g y t) x / c.speed g x t ^ 3) • c.X x t := by
-  sorry
+  classical
+  have hspos : 0 < c.speed g x t := c.speed_pos g hi x t ht
+  have hne : c.speed g x t ≠ 0 := ne_of_gt hspos
+  have hγ : ContMDiffAt 𝓘(ℝ, ℝ) I ∞ (fun y : ℝ => c.lift y t) x :=
+    (c.smooth_slice hc ht).contMDiffAt
+  have hγ2 : ContMDiffAt 𝓘(ℝ, ℝ) I 2 (fun y : ℝ => c.lift y t) x := by
+    refine hγ.of_le (m := 2) ?_
+    change ((2 : ℕ∞) : ℕ∞ω) ≤ ((⊤ : ℕ∞) : ℕ∞ω)
+    exact WithTop.coe_le_coe.mpr le_top
+  have hrep : DifferentiableAt ℝ
+      (DifferentialGeometry.Geometry.Riemannian.CovariantDerivativeAlong.chartRepAt
+        (I := I) (fun y : ℝ => c.lift y t) (fun s : ℝ => c.X s t) x) x := by
+    simpa only [CurveMap.X] using
+      DifferentialGeometry.Geometry.Riemannian.CovariantDerivativeAlong.differentiableAt_chartRepAt_curveVelocity
+        (I := I) hγ2
+  have hpair : HasDerivAt (fun s : ℝ => (g t).inner (c.lift s t) (c.X s t) (c.X s t))
+      ((g t).inner (c.lift x t)
+          (DifferentialGeometry.Geometry.Riemannian.CovariantDerivativeAlong.covDerivAlong
+            (g t) (fun y : ℝ => c.lift y t) (fun s : ℝ => c.X s t) x) (c.X x t) +
+        (g t).inner (c.lift x t) (c.X x t)
+          (DifferentialGeometry.Geometry.Riemannian.CovariantDerivativeAlong.covDerivAlong
+            (g t) (fun y : ℝ => c.lift y t) (fun s : ℝ => c.X s t) x)) x :=
+    DifferentialGeometry.Geometry.Riemannian.Variation.inner_deriv_at (I := I) (n := ∞)
+      (by simp) (g t) (fun y : ℝ => c.lift y t) (fun s : ℝ => c.X s t)
+      (fun s : ℝ => c.X s t) x hγ hrep hrep
+  have hF : HasDerivAt (fun s : ℝ => (g t).inner (c.lift s t) (c.X s t) (c.X s t))
+      (2 * (g t).inner (c.lift x t) (c.X x t) (c.Dx g c.X x t)) x := by
+    have hval : (g t).inner (c.lift x t)
+        (DifferentialGeometry.Geometry.Riemannian.CovariantDerivativeAlong.covDerivAlong
+          (g t) (fun y : ℝ => c.lift y t) (fun s : ℝ => c.X s t) x) (c.X x t) +
+      (g t).inner (c.lift x t) (c.X x t)
+        (DifferentialGeometry.Geometry.Riemannian.CovariantDerivativeAlong.covDerivAlong
+          (g t) (fun y : ℝ => c.lift y t) (fun s : ℝ => c.X s t) x) =
+        2 * (g t).inner (c.lift x t) (c.X x t) (c.Dx g c.X x t) := by
+      rw [show c.Dx g c.X x t =
+        DifferentialGeometry.Geometry.Riemannian.CovariantDerivativeAlong.covDerivAlong
+          (g t) (fun y : ℝ => c.lift y t) (fun s : ℝ => c.X s t) x from rfl]
+      rw [← (g t).symm (c.lift x t) (c.X x t)
+        (DifferentialGeometry.Geometry.Riemannian.CovariantDerivativeAlong.covDerivAlong
+          (g t) (fun y : ℝ => c.lift y t) (fun s : ℝ => c.X s t) x)]
+      ring
+    exact hval ▸ hpair
+  have hneF : (g t).inner (c.lift x t) (c.X x t) (c.X x t) ≠ 0 := by
+    intro h0
+    exact hne (by simp [CurveMap.speed, h0])
+  have hspeed : HasDerivAt (fun y : ℝ => c.speed g y t)
+      ((2 * (g t).inner (c.lift x t) (c.X x t) (c.Dx g c.X x t)) /
+        (2 * c.speed g x t)) x := by
+    have := hF.sqrt hneF
+    simpa only [CurveMap.speed] using this
+  have hspd : deriv (fun y : ℝ => c.speed g y t) x =
+      (g t).inner (c.lift x t) (c.X x t) (c.Dx g c.X x t) / c.speed g x t := by
+    rw [hspeed.deriv]
+    field_simp
+  have hinv : HasDerivAt (fun y : ℝ => (c.speed g y t)⁻¹)
+      (-(2 * ((g t).inner (c.lift x t) (c.X x t) (c.Dx g c.X x t)) /
+          (2 * c.speed g x t)) / c.speed g x t ^ 2) x :=
+    hspeed.inv hne
+  have hsmul := DifferentialGeometry.Geometry.Riemannian.CovariantDerivativeAlong.covDerivAlong_smulFun
+    (g t) (fun y : ℝ => c.lift y t) (fun y : ℝ => (c.speed g y t)⁻¹)
+    (fun s : ℝ => c.X s t) x hinv.differentiableAt hrep
+  refine ⟨zpow_pos hspos _, ?_⟩
+  rw [show c.curvatureVector g x t = (c.speed g x t)⁻¹ •
+      DifferentialGeometry.Geometry.Riemannian.CovariantDerivativeAlong.covDerivAlong
+        (g t) (fun y : ℝ => c.lift y t)
+        (fun s : ℝ => (c.speed g s t)⁻¹ • c.X s t) x from rfl]
+  rw [hsmul, hinv.deriv, hspd]
+  have hz : c.speed g x t ^ (-2 : ℤ) = (c.speed g x t)⁻¹ * (c.speed g x t)⁻¹ := by
+    rw [zpow_neg, zpow_ofNat, pow_two, mul_inv]
+  have hcoef : (c.speed g x t)⁻¹ *
+        (-(2 * ((g t).inner (c.lift x t) (c.X x t) (c.Dx g c.X x t)) /
+            (2 * c.speed g x t)) / c.speed g x t ^ 2) +
+      ((g t).inner (c.lift x t) (c.X x t) (c.Dx g c.X x t) /
+        c.speed g x t / c.speed g x t ^ 3) = 0 := by
+    field_simp
+    ring
+  have hdi : (c.speed g x t)⁻¹ *
+        (-(2 * ((g t).inner (c.lift x t) (c.X x t) (c.Dx g c.X x t)) /
+            (2 * c.speed g x t)) / c.speed g x t ^ 2) =
+      -((g t).inner (c.lift x t) (c.X x t) (c.Dx g c.X x t) /
+        c.speed g x t / c.speed g x t ^ 3) := by
+    linarith [hcoef]
+  rw [hz, smul_add, smul_smul, smul_smul, hdi, neg_smul]
+  abel
 
 @[instance_reducible] def smoothImmersionTopology {N : ℕ} (e : Width.SmoothLoopEmbedding (I := I) (Q := M) N) :
     TopologicalSpace (SmoothImmersion (I := I) (M := M)) :=
