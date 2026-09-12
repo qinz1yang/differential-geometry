@@ -1,14 +1,17 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.Connection
 import DifferentialGeometry.Geometry.Comparison.Variation.Covariant.TwoParameterFields
 import DifferentialGeometry.Geometry.Comparison.Variation.FirstVariation.Basic
+import DifferentialGeometry.Geometry.Curvature.Bounds.RiemannTensorOperator
 import Mathlib.Analysis.SpecialFunctions.Sqrt
 
 noncomputable section
 open Bundle Manifold Set Filter
 open scoped Manifold ContDiff Topology
 open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 open DifferentialGeometry.Geometry.Riemannian.CovariantDerivativeAlong
 open DifferentialGeometry.Geometry.Riemannian.Variation
+open DifferentialGeometry.Tensor0SBundle
 
 namespace DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening
 
@@ -313,7 +316,132 @@ theorem rfs_csf_curvature (B : RicciBackground (I := I) (M := M) D a b)
         (c.unitTangent B.family.metric x t) (c.unitTangent B.family.metric x t) := by
   sorry
 
-theorem curvature_evolution_le (B : RicciBackground (I := I) (M := M) D a b)
+omit [SigmaCompactSpace M] in
+theorem riemannVector_eq_riemannOp (G : SolutionFamily (I := I) (M := M))
+    (t : ℝ) (p : M) (A V W : TangentSpace I p) :
+    riemannVector G t p A V W =
+      riemannOp (LeviCivita (G.metric t)) p A V W := by
+  have hcov : CovariantDerivative.ContMDiffCovariantDerivativeLocally
+      (LeviCivita (G.metric t)) ∞ :=
+    leviCivita_contMDiffCovariantDerivativeLocally (I := I) (G.metric t)
+  change connectionRiemannCurvatureField (G.connection t)
+      (tangentConstAt (I := I) p A) (tangentConstAt (I := I) p V)
+      (tangentConstAt (I := I) p W) p = _
+  exact connectionRiemannCurvatureField_tangentConst_eq_riemannOp (I := I)
+    (cov := LeviCivita (G.metric t)) hcov p A V W
+
+omit [SigmaCompactSpace M] in
+theorem riemann_pair_eq_rm04 (G : SolutionFamily (I := I) (M := M))
+    (t : ℝ) (p : M) (A V : TangentSpace I p) :
+    (G.metric t).inner p (riemannVector G t p A V V) A =
+      (G.rm04At t p) (vec4 A V V A) := by
+  have hrm : metricRm04StandardAt (I := I) (G.metric t) p A V V A =
+      (G.rm04At t p) (vec4 A V V A) :=
+    metricRm04StandardAt_apply (I := I) (G.metric t) p A V V A
+  rw [riemannVector_eq_riemannOp G t p A V V, ← hrm,
+    rm04_eq_inner (I := I) (G.metric t) p A V A]
+  exact ((G.metric t).symm p A _).symm
+
+omit [SigmaCompactSpace M] hBoundary in
+theorem rm04_unit_le (B : RicciBackground (I := I) (M := M) D a b)
+    (t : ℝ) (ht : t ∈ Icc a b) {p : M} (X T : TangentSpace I p)
+    (hTT : (B.family.metric t).inner p T T = 1) :
+    (B.family.rm04At t p) (vec4 X T T X) ≤
+      B.B₁ * (B.family.metric t).inner p X X := by
+  have h1 := abs_apply_le_norm0S (B.family.metric t) p 4 (B.family.rm04At t p) (vec4 X T T X)
+  have hprod : (∏ a : Fin 4, Real.sqrt ((B.family.metric t).inner p ((vec4 X T T X) a)
+      ((vec4 X T T X) a))) = (B.family.metric t).inner p X X := by
+    rw [Fin.prod_univ_four]
+    simp [vec4, hTT]
+    exact Real.mul_self_sqrt (DifferentialGeometry.metric_inner_self_nonneg (B.family.metric t) p X)
+  rw [hprod] at h1
+  have hnorm : Real.sqrt (normSq0S (B.family.metric t) p 4 (B.family.rm04At t p)) ≤ B.B₁ :=
+    Real.sqrt_le_iff.mpr ⟨B.B₁_nonneg, B.riemann_bound t ht p⟩
+  exact (le_abs_self _).trans (h1.trans (mul_le_mul_of_nonneg_right hnorm
+    (DifferentialGeometry.metric_inner_self_nonneg (B.family.metric t) p X)))
+
+omit [SigmaCompactSpace M] hBoundary in
+theorem ricci_unit_le (B : RicciBackground (I := I) (M := M) D a b)
+    (t : ℝ) (ht : t ∈ Icc a b) {p : M} (T : TangentSpace I p)
+    (hTT : (B.family.metric t).inner p T T = 1) :
+    B.family.ricciAt t p (vec2 T T) ≤ B.B₀ := by
+  have h1 := abs_apply_le_norm0S (B.family.metric t) p 2 (B.family.ricciAt t p) (vec2 T T)
+  have hprod : (∏ a : Fin 2, Real.sqrt ((B.family.metric t).inner p ((vec2 T T) a)
+      ((vec2 T T) a))) = 1 := by
+    rw [Fin.prod_univ_two]
+    simp [vec2, hTT]
+  rw [hprod, mul_one] at h1
+  have hnorm : Real.sqrt (normSq0S (B.family.metric t) p 2 (B.family.ricciAt t p)) ≤ B.B₀ :=
+    Real.sqrt_le_iff.mpr ⟨B.B₀_nonneg, B.ricci_bound t ht p⟩
+  exact (le_abs_self _).trans (h1.trans hnorm)
+
+omit [SigmaCompactSpace M] hBoundary in
+theorem ricci_pair_ge (B : RicciBackground (I := I) (M := M) D a b)
+    (t : ℝ) (ht : t ∈ Icc a b) {p : M} (X : TangentSpace I p) :
+    -(B.B₀ * (B.family.metric t).inner p X X) ≤ B.family.ricciAt t p (vec2 X X) := by
+  have h1 := abs_apply_le_norm0S (B.family.metric t) p 2 (B.family.ricciAt t p) (vec2 X X)
+  have hprod : (∏ a : Fin 2, Real.sqrt ((B.family.metric t).inner p ((vec2 X X) a)
+      ((vec2 X X) a))) = (B.family.metric t).inner p X X := by
+    rw [Fin.prod_univ_two]
+    simp [vec2]
+    exact Real.mul_self_sqrt (DifferentialGeometry.metric_inner_self_nonneg (B.family.metric t) p X)
+  rw [hprod] at h1
+  have hnorm : Real.sqrt (normSq0S (B.family.metric t) p 2 (B.family.ricciAt t p)) ≤ B.B₀ :=
+    Real.sqrt_le_iff.mpr ⟨B.B₀_nonneg, B.ricci_bound t ht p⟩
+  exact (abs_le.mp (h1.trans (mul_le_mul_of_nonneg_right hnorm
+    (DifferentialGeometry.metric_inner_self_nonneg (B.family.metric t) p X)))).1
+
+omit [SigmaCompactSpace M] hBoundary in
+theorem nablaRicci_vec3 (G : SolutionFamily (I := I) (M := M))
+    (t : ℝ) (p : M) (A V Z : TangentSpace I p) :
+    nablaRicci G t p A V Z =
+      (totalNabla0SFun 2 (G.connection t) (G.ricci t) p) (vec3 A V Z) := by
+  change (totalNabla0SFun 2 (G.connection t) (G.ricci t) p) (Fin.cons A (vec2 V Z)) = _
+  congr 1
+  funext i
+  fin_cases i <;> rfl
+
+omit [SigmaCompactSpace M] hBoundary in
+theorem nablaRicci_unit_le (B : RicciBackground (I := I) (M := M) D a b)
+    (t : ℝ) (ht : t ∈ Icc a b) {p : M} (T X : TangentSpace I p)
+    (hTT : (B.family.metric t).inner p T T = 1) :
+    |nablaRicci B.family t p T T X| ≤ B.B₂ * Real.sqrt ((B.family.metric t).inner p X X) := by
+  rw [nablaRicci_vec3 B.family t p T T X]
+  have h1 := abs_apply_le_norm0S (B.family.metric t) p 3
+    (totalNabla0SFun 2 (B.family.connection t) (B.family.ricci t) p) (vec3 T T X)
+  have hprod : (∏ a : Fin 3, Real.sqrt
+      ((B.family.metric t).inner p ((vec3 T T X) a) ((vec3 T T X) a)))
+      = Real.sqrt ((B.family.metric t).inner p X X) := by
+    rw [Fin.prod_univ_three]
+    simp [vec3, hTT]
+  rw [hprod] at h1
+  have hnorm : Real.sqrt (normSq0S (B.family.metric t) p 3
+      (totalNabla0SFun 2 (B.family.connection t) (B.family.ricci t) p)) ≤ B.B₂ :=
+    Real.sqrt_le_iff.mpr ⟨B.B₂_nonneg, B.nablaRicci_bound t ht p⟩
+  exact h1.trans (mul_le_mul_of_nonneg_right hnorm (Real.sqrt_nonneg _))
+
+omit [SigmaCompactSpace M] hBoundary in
+theorem nablaRicci_unit_right_le (B : RicciBackground (I := I) (M := M) D a b)
+    (t : ℝ) (ht : t ∈ Icc a b) {p : M} (T X : TangentSpace I p)
+    (hTT : (B.family.metric t).inner p T T = 1) :
+    |nablaRicci B.family t p X T T| ≤ B.B₂ * Real.sqrt ((B.family.metric t).inner p X X) := by
+  rw [nablaRicci_vec3 B.family t p X T T]
+  have h1 := abs_apply_le_norm0S (B.family.metric t) p 3
+    (totalNabla0SFun 2 (B.family.connection t) (B.family.ricci t) p) (vec3 X T T)
+  have hprod : (∏ a : Fin 3, Real.sqrt
+      ((B.family.metric t).inner p ((vec3 X T T) a) ((vec3 X T T) a)))
+      = Real.sqrt ((B.family.metric t).inner p X X) := by
+    rw [Fin.prod_univ_three]
+    simp [vec3, hTT]
+  rw [hprod] at h1
+  have hnorm : Real.sqrt (normSq0S (B.family.metric t) p 3
+      (totalNabla0SFun 2 (B.family.connection t) (B.family.ricci t) p)) ≤ B.B₂ :=
+    Real.sqrt_le_iff.mpr ⟨B.B₂_nonneg, B.nablaRicci_bound t ht p⟩
+  exact h1.trans (mul_le_mul_of_nonneg_right hnorm (Real.sqrt_nonneg _))
+
+
+theorem curvature_evolution_le_of_rfs_csf_curvature
+    (B : RicciBackground (I := I) (M := M) D a b)
     (hsu : s < u) (hwindow : Icc s u ⊆ Icc a b)
     (c : CurveMap M) (hc : c.IsSolutionOn B.family.metric (Icc s u))
     (x t : ℝ) (ht : t ∈ Icc s u) :
@@ -322,7 +450,85 @@ theorem curvature_evolution_le (B : RicciBackground (I := I) (M := M) D a b)
       2 * c.normSq B.family.metric (c.normalCurvatureDerivative B.family.metric) x t +
       2 * c.curvatureSq B.family.metric x t ^ 2 +
       2 * B.C * (c.curvatureSq B.family.metric x t + c.curvature B.family.metric x t) := by
-  sorry
+  have hmain := rfs_csf_curvature B hsu hwindow c hc x t ht
+  have htt : (B.family.metric t).inner (c.lift x t)
+      (c.unitTangent B.family.metric x t) (c.unitTangent B.family.metric x t) = 1 :=
+    (tangent_curvature_geometry B.family.metric c (Icc s u) hc.smooth hc.immersed x t ht).1
+  have hk2 : 0 ≤ c.curvatureSq B.family.metric x t :=
+    c.normSq_nonneg B.family.metric (c.curvatureVector B.family.metric) x t
+  have hk : 0 ≤ c.curvature B.family.metric x t := c.curvature_nonneg B.family.metric x t
+  have hRic1 : c.ricciTangent B.family x t ≤ B.B₀ :=
+    ricci_unit_le B t (hwindow ht) (c.unitTangent B.family.metric x t) htt
+  have hRic2 : -(B.B₀ * c.curvatureSq B.family.metric x t) ≤
+      B.family.ricciAt t (c.lift x t)
+        (vec2 (c.curvatureVector B.family.metric x t) (c.curvatureVector B.family.metric x t)) :=
+    ricci_pair_ge B t (hwindow ht) (c.curvatureVector B.family.metric x t)
+  have hRi : (B.family.metric t).inner (c.lift x t)
+      (riemannVector B.family t (c.lift x t) (c.curvatureVector B.family.metric x t)
+        (c.unitTangent B.family.metric x t) (c.unitTangent B.family.metric x t))
+      (c.curvatureVector B.family.metric x t) ≤ B.B₁ * c.curvatureSq B.family.metric x t := by
+    rw [riemann_pair_eq_rm04 B.family t (c.lift x t) (c.curvatureVector B.family.metric x t)
+      (c.unitTangent B.family.metric x t)]
+    exact rm04_unit_le B t (hwindow ht) (c.curvatureVector B.family.metric x t)
+      (c.unitTangent B.family.metric x t) htt
+  have hN1 : -(B.B₂ * c.curvature B.family.metric x t) ≤
+      nablaRicci B.family t (c.lift x t) (c.unitTangent B.family.metric x t)
+        (c.unitTangent B.family.metric x t) (c.curvatureVector B.family.metric x t) :=
+    (abs_le.mp (nablaRicci_unit_le B t (hwindow ht) (c.unitTangent B.family.metric x t)
+      (c.curvatureVector B.family.metric x t) htt)).1
+  have hN2 : nablaRicci B.family t (c.lift x t) (c.curvatureVector B.family.metric x t)
+      (c.unitTangent B.family.metric x t) (c.unitTangent B.family.metric x t) ≤
+      B.B₂ * c.curvature B.family.metric x t :=
+    (abs_le.mp (nablaRicci_unit_right_le B t (hwindow ht) (c.unitTangent B.family.metric x t)
+      (c.curvatureVector B.family.metric x t) htt)).2
+  have hb1 : 4 * c.curvatureSq B.family.metric x t * c.ricciTangent B.family x t ≤
+      4 * B.B₀ * c.curvatureSq B.family.metric x t := by
+    have h := mul_le_mul_of_nonneg_left hRic1 (show (0:ℝ) ≤ 4 * c.curvatureSq B.family.metric x t by positivity)
+    linarith [h]
+  have hb2 : -(2 * B.family.ricciAt t (c.lift x t)
+        (vec2 (c.curvatureVector B.family.metric x t) (c.curvatureVector B.family.metric x t))) ≤
+      2 * B.B₀ * c.curvatureSq B.family.metric x t := by
+    linarith [hRic2]
+  have hb3 : 2 * (B.family.metric t).inner (c.lift x t)
+      (riemannVector B.family t (c.lift x t) (c.curvatureVector B.family.metric x t)
+        (c.unitTangent B.family.metric x t) (c.unitTangent B.family.metric x t))
+      (c.curvatureVector B.family.metric x t) ≤ 2 * B.B₁ * c.curvatureSq B.family.metric x t := by
+    linarith [hRi]
+  have hb4 : -(4 * nablaRicci B.family t (c.lift x t) (c.unitTangent B.family.metric x t)
+        (c.unitTangent B.family.metric x t) (c.curvatureVector B.family.metric x t)) ≤
+      4 * B.B₂ * c.curvature B.family.metric x t := by
+    linarith [hN1]
+  have hb5 : 2 * nablaRicci B.family t (c.lift x t) (c.curvatureVector B.family.metric x t)
+      (c.unitTangent B.family.metric x t) (c.unitTangent B.family.metric x t) ≤
+      2 * B.B₂ * c.curvature B.family.metric x t := by
+    linarith [hN2]
+  have hbound : 4 * c.curvatureSq B.family.metric x t * c.ricciTangent B.family x t -
+      2 * B.family.ricciAt t (c.lift x t)
+        (vec2 (c.curvatureVector B.family.metric x t) (c.curvatureVector B.family.metric x t)) +
+      2 * (B.family.metric t).inner (c.lift x t)
+        (riemannVector B.family t (c.lift x t) (c.curvatureVector B.family.metric x t)
+          (c.unitTangent B.family.metric x t) (c.unitTangent B.family.metric x t))
+        (c.curvatureVector B.family.metric x t) -
+      4 * nablaRicci B.family t (c.lift x t) (c.unitTangent B.family.metric x t)
+        (c.unitTangent B.family.metric x t) (c.curvatureVector B.family.metric x t) +
+      2 * nablaRicci B.family t (c.lift x t) (c.curvatureVector B.family.metric x t)
+        (c.unitTangent B.family.metric x t) (c.unitTangent B.family.metric x t) ≤
+      2 * B.C * (c.curvatureSq B.family.metric x t + c.curvature B.family.metric x t) := by
+    rw [RicciBackground.C]
+    nlinarith [hb1, hb2, hb3, hb4, hb5, hk2, hk, B.B₀_nonneg, B.B₁_nonneg, B.B₂_nonneg]
+  rw [hmain]
+  linarith [hbound]
+
+theorem curvature_evolution_le (B : RicciBackground (I := I) (M := M) D a b)
+    (hsu : s < u) (hwindow : Icc s u ⊆ Icc a b)
+    (c : CurveMap M) (hc : c.IsSolutionOn B.family.metric (Icc s u))
+    (x t : ℝ) (ht : t ∈ Icc s u) :
+    derivWithin (c.curvatureSq B.family.metric x) (Icc s u) t ≤
+      c.ds B.family.metric (c.ds B.family.metric (c.curvatureSq B.family.metric)) x t -
+      2 * c.normSq B.family.metric (c.normalCurvatureDerivative B.family.metric) x t +
+      2 * c.curvatureSq B.family.metric x t ^ 2 +
+      2 * B.C * (c.curvatureSq B.family.metric x t + c.curvature B.family.metric x t) :=
+  curvature_evolution_le_of_rfs_csf_curvature B hsu hwindow c hc x t ht
 
 
 theorem rfs_csf_regularized_curvature (B : RicciBackground (I := I) (M := M) D a b)
