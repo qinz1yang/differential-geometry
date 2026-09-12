@@ -22,13 +22,6 @@ jobs:
       - name: Restore Mathlib cache
         run: lake exe cache get
 
-      - name: Add build swap
-        run: |
-          sudo fallocate -l 12G /swapfile
-          sudo chmod 600 /swapfile
-          sudo mkswap /swapfile
-          sudo swapon /swapfile
-
       - name: Limit Lean memory pressure
         run: |
           python3 - <<'PY'
