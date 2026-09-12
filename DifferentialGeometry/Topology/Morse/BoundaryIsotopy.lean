@@ -1,7 +1,7 @@
 import DifferentialGeometry.Topology.Manifold.BoundaryVectorField
 import DifferentialGeometry.Topology.Diffeomorph.BoundaryFlow
 import DifferentialGeometry.Topology.Morse.BoundaryRegularVectorField
-import DifferentialGeometry.Topology.Morse.Flow
+import DifferentialGeometry.Topology.Morse.RegularLevel.Flow
 import DifferentialGeometry.Topology.Morse.BoundaryPerturbation
 import DifferentialGeometry.Topology.Diffeomorph.TimeDependentFlow
 import DifferentialGeometry.Analysis.ODE.InvariantHyperplane
