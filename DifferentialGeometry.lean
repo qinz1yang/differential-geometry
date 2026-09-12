@@ -3168,8 +3168,10 @@ import DifferentialGeometry.Topology.Diffeomorph.Perturbation
 import DifferentialGeometry.Topology.Diffeomorph.Restriction
 import DifferentialGeometry.Topology.Diffeomorph.TimeDependentFlow
 import DifferentialGeometry.Topology.Diffeomorph.Translation
+import DifferentialGeometry.Topology.Diffeomorph.Convex
 import DifferentialGeometry.Topology.Diffeomorph.Radial
 import DifferentialGeometry.Topology.Embedding.Diffeomorph
+import DifferentialGeometry.Topology.Embedding.Convex
 import DifferentialGeometry.Topology.Embedding.Radial
 import DifferentialGeometry.Topology.Embedding.LinearEquiv
 import DifferentialGeometry.Topology.Embedding.LocalDiffeomorph
