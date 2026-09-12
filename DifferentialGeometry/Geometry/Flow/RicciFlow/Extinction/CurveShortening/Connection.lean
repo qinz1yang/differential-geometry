@@ -1,4 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.Basic
+import DifferentialGeometry.Bundle.PartialMfderiv.TimeDerivative
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Connection.DifferenceTimeDerivative
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.Derivative.MFDerivAlongCurve
 
@@ -27,6 +28,22 @@ def Field.SmoothOn {c : CurveMap M} (V : c.Field (I := I)) (J : Set ℝ) : Prop 
   ContMDiffOn 𝓘(ℝ, ℝ × ℝ) I.tangent ∞
     (fun p : ℝ × ℝ => (⟨c.lift p.1 p.2, V p.1 p.2⟩ : TangentBundle I M))
     (univ ×ˢ J)
+
+omit [FiniteDimensional ℝ E] [CompleteSpace E] in
+theorem Field.smoothOn_X (c : CurveMap M) (J : Set ℝ) (hc : c.SmoothOn (I := I) J) :
+    CurveMap.Field.SmoothOn (I := I) (c.X) J := by
+  have hc' : ContMDiffOn (𝓘(ℝ, ℝ).prod 𝓘(ℝ, ℝ)) I ∞
+      (fun p : ℝ × ℝ => c.lift p.1 p.2) (univ ×ˢ J) := by
+    rw [CurveMap.SmoothOn] at hc
+    rw [modelWithCornersSelf_prod, ← chartedSpaceSelf_prod] at hc
+    exact hc
+  have h := ContMDiffOn.time_mfderivWithin (I := 𝓘(ℝ, ℝ)) (I' := I) (N := M)
+    (γ := fun x t => c.lift x t) (s := univ) (u := J) (n := ∞) (m := ∞)
+    hc' uniqueDiffOn_univ le_rfl
+  rw [CurveMap.Field.SmoothOn, modelWithCornersSelf_prod, ← chartedSpaceSelf_prod]
+  exact h.congr (fun p hp => by
+    simp only [CurveMap.X, mfderivWithin_univ]
+    rfl)
 
 omit [CompleteSpace E] in
 theorem Dt_eq_covDerivAlong (c : CurveMap M) (g : ℝ → SmoothRiemannianMetric I M)
@@ -394,17 +411,19 @@ theorem chartRepAtBase_differentiableWithinAt
   rw [(trivializationAt E (TangentSpace I) (γ t)).coe_linearMapAt_of_mem hmem]
 
 omit [SigmaCompactSpace M] in
-theorem moving_inner_derivative {D : RealTimeInterval} {a b s u : ℝ}
+theorem hasDerivWithinAt_moving_inner {D : RealTimeInterval} {a b s u : ℝ}
     (B : RicciBackground (I := I) (M := M) D a b)
     (hsu : s < u) (hwindow : Icc s u ⊆ Icc a b)
     (c : CurveMap M) (hc : c.SmoothOn (I := I) (Icc s u))
     (V W : c.Field (I := I)) (hV : V.SmoothOn (I := I) (Icc s u))
     (hW : W.SmoothOn (I := I) (Icc s u)) (x t : ℝ) (ht : t ∈ Icc s u) :
-    derivWithin (fun r => (B.family.metric r).inner (c.lift x r) (V x r) (W x r))
-      (Icc s u) t =
-      (B.family.metric t).inner (c.lift x t) (c.Dt B.family.metric (Icc s u) V x t) (W x t) +
-      (B.family.metric t).inner (c.lift x t) (V x t) (c.Dt B.family.metric (Icc s u) W x t) -
-      2 * B.family.ricciAt t (c.lift x t) (vec2 (V x t) (W x t)) := by
+    HasDerivWithinAt (fun r => (B.family.metric r).inner (c.lift x r) (V x r) (W x r))
+      (-2 * B.family.ricciAt t (c.lift x t) (vec2 (V x t) (W x t)) +
+        ((B.family.metric t).inner (c.lift x t)
+          (c.Dt B.family.metric (Icc s u) V x t) (W x t) +
+        (B.family.metric t).inner (c.lift x t) (V x t)
+          (c.Dt B.family.metric (Icc s u) W x t)))
+      (Icc s u) t := by
   classical
   set J : Set ℝ := Icc s u with hJ
   have htJ : t ∈ J := ht
@@ -578,14 +597,23 @@ theorem moving_inner_derivative {D : RealTimeInterval} {a b s u : ℝ}
         rw [hU, chartCurve_def]
         exact (extChartAt I α).left_inv hsrcr]
   have hcons := hdiag.congr_of_eventuallyEq hEq (hEq.eq_of_nhdsWithin htJ)
-  have hfinal : derivWithin (fun r : ℝ => (B.family.metric r).inner (c.lift x r) (V x r) (W x r))
-        (Icc s u) t =
-      -2 * B.family.ricciAt t α (vec2 (Vx t) (Wx t)) +
-      ((B.family.metric t).inner (c.lift x t) (c.Dt B.family.metric J V x t) (W x t) +
-        (B.family.metric t).inner (c.lift x t) (V x t) (c.Dt B.family.metric J W x t)) :=
-    hcons.derivWithin huniq
-  rw [hfinal]
-  simp only [hJ, hVx, hWx]
+  simpa only [hJ, hα, hγ, hVx, hWx] using hcons
+
+omit [SigmaCompactSpace M] in
+theorem moving_inner_derivative {D : RealTimeInterval} {a b s u : ℝ}
+    (B : RicciBackground (I := I) (M := M) D a b)
+    (hsu : s < u) (hwindow : Icc s u ⊆ Icc a b)
+    (c : CurveMap M) (hc : c.SmoothOn (I := I) (Icc s u))
+    (V W : c.Field (I := I)) (hV : V.SmoothOn (I := I) (Icc s u))
+    (hW : W.SmoothOn (I := I) (Icc s u)) (x t : ℝ) (ht : t ∈ Icc s u) :
+    derivWithin (fun r => (B.family.metric r).inner (c.lift x r) (V x r) (W x r))
+      (Icc s u) t =
+      (B.family.metric t).inner (c.lift x t) (c.Dt B.family.metric (Icc s u) V x t) (W x t) +
+      (B.family.metric t).inner (c.lift x t) (V x t) (c.Dt B.family.metric (Icc s u) W x t) -
+      2 * B.family.ricciAt t (c.lift x t) (vec2 (V x t) (W x t)) := by
+  have h := (hasDerivWithinAt_moving_inner B hsu hwindow c hc V W hV hW x t ht).derivWithin
+    ((uniqueDiffOn_Icc hsu) t ht)
+  rw [h]
   ring
 
 theorem pullback_commutator {D : RealTimeInterval} {a b s u : ℝ}

@@ -398,14 +398,13 @@ theorem sphericalSpaceFormCoveringGeneralized_of_inputs
   exact horient M S.quotient ⟨S.equiv⟩
 
 theorem sphericalSpaceFormCovering_of_inputs
-    (hbridge : sectionalCurvatureMetricBridge.{0})
-    (horient : roundSphereQuotientOrientedCovering.{0}) :
-    sphericalSpaceFormCovering :=
+    (hbridge : sectionalCurvatureMetricBridge.{u})
+    (horient : roundSphereQuotientOrientedCovering.{u}) :
+    sphericalSpaceFormCovering.{u} :=
   sphericalSpaceFormCoveringGeneralized_of_inputs hbridge horient
 
 theorem sphericalSpaceFormCovering_iff_generalized :
-    sphericalSpaceFormCovering ↔ sphericalSpaceFormCoveringGeneralized.{0} :=
+    sphericalSpaceFormCovering.{u} ↔ sphericalSpaceFormCoveringGeneralized.{u} :=
   Iff.rfl
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
-

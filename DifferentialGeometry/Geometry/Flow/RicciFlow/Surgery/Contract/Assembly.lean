@@ -27,12 +27,6 @@ structure PoincareExtinctionContracts (DiscardedCutOpen : Type u → Prop) where
     ∀ (H : DifferentialGeometry.PDE.RicciFlow.Surgery.FiniteSurgeryHistory.{u})
     (i : Fin H.eventCount), (H.cutCapTrace.transition i).componentConnectedSumDecomposition
   sumInput : DifferentialGeometry.Topology.poincareStandardSumClosed.{u}
-  productInput : ∀ p : DifferentialGeometry.Topology.SphereTwoTimesCircle,
-    Nonempty (FundamentalGroup DifferentialGeometry.Topology.SphereTwoTimesCircle p ≃*
-      Multiplicative ℤ)
-  quotientInput : ∀ (G : DifferentialGeometry.Topology.SphericalSpaceFormGroup)
-    (p : G.manifold.Carrier),
-    Nonempty (FundamentalGroup G.manifold.Carrier p ≃* G.group)
   unitInput : ∀ N : DifferentialGeometry.Topology.ConnectedClosedOrientedManifold.{u} 3,
     Nonempty (DifferentialGeometry.Topology.ClosedOrientedManifold.OrientedDiffeomorph
       (DifferentialGeometry.Topology.connectedSum N

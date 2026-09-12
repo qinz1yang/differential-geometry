@@ -317,18 +317,91 @@ def CurveMap.PairingEvolution (B : RicciBackground (I := I) (M := M) D a b)
     (fun r => c.normSq B.family.metric (c.X) x r)
     (-2 * c.normSq B.family.metric (c.X) x t * c.q B.family x t) (Icc s u) t
 
-omit [SigmaCompactSpace M] hBoundary in
+theorem CurveMap.pairingEvolution {D : RealTimeInterval} {a b s u : ℝ}
+    (B : RicciBackground (I := I) (M := M) D a b)
+    (hsu : s < u) (hwindow : Icc s u ⊆ Icc a b)
+    (c : CurveMap M) (hc : c.IsSolutionOn B.family.metric (Icc s u)) :
+    CurveMap.PairingEvolution (I := I) (D := D) (a := a) (b := b) (s := s) (u := u) B c := by
+  intro x t ht
+  have hX : CurveMap.Field.SmoothOn (I := I) (c.X) (Icc s u) :=
+    CurveMap.Field.smoothOn_X c (Icc s u) hc.smooth
+  have hmov := hasDerivWithinAt_moving_inner B hsu hwindow c hc.smooth (c.X) (c.X) hX hX x t ht
+  have hmov' : HasDerivWithinAt (fun r => c.normSq B.family.metric (c.X) x r)
+      (-2 * B.family.ricciAt t (c.lift x t) (vec2 (c.X x t) (c.X x t)) +
+        ((B.family.metric t).inner (c.lift x t)
+          (c.Dt B.family.metric (Icc s u) (c.X) x t) (c.X x t) +
+        (B.family.metric t).inner (c.lift x t) (c.X x t)
+          (c.Dt B.family.metric (Icc s u) (c.X) x t)))
+      (Icc s u) t := hmov
+  have hdtx : c.Dt B.family.metric (Icc s u) (c.X) x t =
+      c.Dx B.family.metric (c.curvatureVector B.family.metric) x t := by
+    rw [pullback_torsion_free B.toSmoothMetricWindow hsu hwindow c hc.smooth x t ht]
+    simp only [CurveMap.Dx]
+    congr 1
+    funext y
+    exact hc.equation y t ht
+  have hspeed : 0 < c.speed B.family.metric x t :=
+    c.speed_pos B.family.metric hc.immersed x t ht
+  have hXs : c.X x t = c.speed B.family.metric x t • c.unitTangent B.family.metric x t := by
+    rw [CurveMap.unitTangent, smul_smul, mul_inv_cancel₀ (ne_of_gt hspeed), one_smul]
+  have hDxH : c.Dx B.family.metric (c.curvatureVector B.family.metric) x t =
+      c.speed B.family.metric x t •
+        c.Ds B.family.metric (c.curvatureVector B.family.metric) x t := by
+    rw [CurveMap.Ds, smul_smul, mul_inv_cancel₀ (ne_of_gt hspeed), one_smul]
+  have hgeom : (B.family.metric t).inner (c.lift x t)
+      (c.Ds B.family.metric (c.curvatureVector B.family.metric) x t)
+      (c.unitTangent B.family.metric x t) = -c.curvatureSq B.family.metric x t :=
+    (tangent_curvature_geometry B.family.metric c (Icc s u) hc.smooth hc.immersed x t ht).2.2
+  have hcross : (B.family.metric t).inner (c.lift x t)
+      (c.Dx B.family.metric (c.curvatureVector B.family.metric) x t) (c.X x t) =
+      -(c.speed B.family.metric x t ^ 2 * c.curvatureSq B.family.metric x t) := by
+    rw [hDxH, hXs]
+    simp only [map_smul, smul_apply, smul_eq_mul]
+    rw [hgeom]
+    ring
+  have hric : B.family.ricciAt t (c.lift x t) (vec2 (c.X x t) (c.X x t)) =
+      c.speed B.family.metric x t ^ 2 * c.ricciTangent B.family x t := by
+    have hvec : vec2 (c.X x t) (c.X x t) =
+        fun i : Fin 2 => c.speed B.family.metric x t •
+          vec2 (c.unitTangent B.family.metric x t)
+            (c.unitTangent B.family.metric x t) i := by
+      funext i
+      fin_cases i <;> simp [vec2, hXs]
+    rw [hvec, CurveMap.ricciTangent]
+    rw [(B.family.ricciAt t (c.lift x t)).map_smul_univ
+      (fun _ : Fin 2 => c.speed B.family.metric x t)
+      (vec2 (c.unitTangent B.family.metric x t) (c.unitTangent B.family.metric x t))]
+    simp only [Fin.prod_univ_two, smul_eq_mul]
+    ring
+  have hval : -2 * B.family.ricciAt t (c.lift x t) (vec2 (c.X x t) (c.X x t)) +
+      ((B.family.metric t).inner (c.lift x t)
+          (c.Dx B.family.metric (c.curvatureVector B.family.metric) x t) (c.X x t) +
+        (B.family.metric t).inner (c.lift x t) (c.X x t)
+          (c.Dx B.family.metric (c.curvatureVector B.family.metric) x t)) =
+      -2 * c.normSq B.family.metric (c.X) x t * c.q B.family x t := by
+    have hsymm := (B.family.metric t).symm (c.lift x t) (c.X x t)
+      (c.Dx B.family.metric (c.curvatureVector B.family.metric) x t)
+    rw [hric, hsymm, hcross, normSq_velocity_eq_speed_sq]
+    simp only [CurveMap.q, pow_two]
+    ring
+  rw [hdtx] at hmov'
+  rw [hval] at hmov'
+  exact hmov'
+
 theorem rfs_csf_speed (B : RicciBackground (I := I) (M := M) D a b)
     (hsu : s < u) (hwindow : Icc s u ⊆ Icc a b)
     (c : CurveMap M) (hc : c.IsSolutionOn B.family.metric (Icc s u))
-    (hX : CurveMap.Field.SmoothOn (I := I) (c.X) (Icc s u))
-    (hpair : CurveMap.PairingEvolution (I := I) (D := D) (a := a) (b := b) (s := s) (u := u) B c)
     (x t : ℝ) (ht : t ∈ Icc s u) :
     derivWithin (c.speed B.family.metric x) (Icc s u) t =
       -c.q B.family x t * c.speed B.family.metric x t ∧
     c.Dt B.family.metric (Icc s u) (c.unitTangent B.family.metric) x t =
       c.Ds B.family.metric (c.curvatureVector B.family.metric) x t +
         c.q B.family x t • c.unitTangent B.family.metric x t := by
+  have hX : CurveMap.Field.SmoothOn (I := I) (c.X) (Icc s u) :=
+    CurveMap.Field.smoothOn_X c (Icc s u) hc.smooth
+  have hpair : CurveMap.PairingEvolution (I := I) (D := D) (a := a) (b := b)
+      (s := s) (u := u) B c :=
+    CurveMap.pairingEvolution B hsu hwindow c hc
   have huniq : UniqueDiffWithinAt ℝ (Icc s u) t := (uniqueDiffOn_Icc hsu) t ht
   have hvpos : 0 < c.speed B.family.metric x t :=
     c.speed_pos B.family.metric hc.immersed x t ht
@@ -749,12 +822,14 @@ theorem speed_exponential_bounds (B : RicciBackground (I := I) (M := M) D a b)
     (c : CurveMap M) (hc : c.IsSolutionOn B.family.metric (Icc s u))
     (K : ℝ)
     (hcurv : ∀ x t, t ∈ Icc s u → c.curvature B.family.metric x t ≤ K)
-    (hsp : CurveMap.SpeedEvolution (I := I) (D := D) (a := a) (b := b) (s := s) (u := u) B c)
     (x t : ℝ) (ht : t ∈ Icc s u) :
     c.speed B.family.metric x s * Real.exp (-(K ^ 2 + B.B₀) * (t - s)) ≤
       c.speed B.family.metric x t ∧
     c.speed B.family.metric x t ≤
       c.speed B.family.metric x s * Real.exp (B.B₀ * (t - s)) := by
+  have hsp : CurveMap.SpeedEvolution (I := I) (D := D) (a := a) (b := b) (s := s) (u := u) B c :=
+    CurveMap.speedEvolution_of_pairingEvolution B c hc.immersed
+      (CurveMap.pairingEvolution B hsu hwindow c hc)
   have hs : s ∈ Icc s u := ⟨le_rfl, hsu.le⟩
   constructor
   · have hmono := expGrowth_monotone B c x (K ^ 2 + B.B₀) (fun τ hτ => hsp x τ hτ)

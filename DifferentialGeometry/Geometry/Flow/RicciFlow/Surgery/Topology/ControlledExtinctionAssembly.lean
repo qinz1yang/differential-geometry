@@ -42,16 +42,17 @@ theorem globalMetricStep_iff_globalStepConclusion
     (DiscardedCutOpen : Type u → Prop)
     (inputs : GlobalStepInputs.{u} p τ ε d k DiscardedCutOpen) :
     globalMetricStep p τ ε d k a₀ DiscardedCutOpen inputs ↔
-      GlobalStepConclusion.{u} p a₀ :=
+      GlobalStepConclusion.{u} p τ ε d k a₀ DiscardedCutOpen inputs :=
   Iff.rfl
 
-theorem globalMetricStep_inputs_independent
+theorem globalMetricStep_scale_positive
     (p : CutoffParameters) (τ ε d : ℝ) (k : ℕ) (a₀ : ℝ)
     (DiscardedCutOpen : Type u → Prop)
-    (inputs inputs' : GlobalStepInputs.{u} p τ ε d k DiscardedCutOpen) :
-    (globalMetricStep p τ ε d k a₀ DiscardedCutOpen inputs ↔
-      globalMetricStep p τ ε d k a₀ DiscardedCutOpen inputs') :=
-  Iff.rfl
+    (inputs : GlobalStepInputs.{u} p τ ε d k DiscardedCutOpen)
+    (h : globalMetricStep p τ ε d k a₀ DiscardedCutOpen inputs) :
+    ∃ hstar : ℝ, 0 < hstar ∧ 2 * hstar ^ 2 < τ := by
+  obtain ⟨hstar, hpos, hlt, _⟩ := h
+  exact ⟨hstar, hpos, hlt⟩
 
 def TangentOrientationSection.toManifoldOrientation {M : Type u} [TopologicalSpace M]
     [ChartedSpace ThreeSpace M] [IsManifold ThreeModel ∞ M]

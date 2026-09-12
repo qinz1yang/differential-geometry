@@ -34,6 +34,23 @@ structure OneStepIncoming where
   singular : slab.SingularEndpoint
   parameters : CutoffParameters
 
+namespace OneStepIncoming
+
+def ofRecord {H : ObservedHistory.{u}} {i : Fin H.eventCount} {p : CutoffParameters}
+    (R : GeometricCutoffRecord H i p) : OneStepIncoming.{u} where
+  stage := H.stage i.castSucc
+  startTime := H.time i.castSucc
+  endTime := H.time i.succ
+  startTime_nonneg := by
+    simpa [H.time_zero] using H.time_strictMono.le_iff_le.mpr (Fin.zero_le i.castSucc)
+  startTime_lt_endTime := H.time_strictMono i.castSucc_lt_succ
+  slab := (H.event i).incoming
+  terminal := (H.event i).terminal
+  singular := R.singular
+  parameters := p
+
+end OneStepIncoming
+
 abbrev HalfNeckCylinder := {p : NeckCylinder // 0 ≤ p.2}
 
 structure TerminalCorePresentation (D : OneStepIncoming.{u}) (ε Λ : ℝ) where
@@ -186,7 +203,7 @@ def IsPositiveSpaceFormModel (M : ConnectedClosedOrientedManifold.{u} 3) : Prop 
     IsConstantPositiveSectionalCurvature g
 
 def sphericalSpaceFormCovering : Prop :=
-  ∀ (M : ConnectedClosedOrientedManifold.{0} 3) (g : SmoothRiemannianMetric ThreeModel M.Carrier),
+  ∀ (M : ConnectedClosedOrientedManifold.{u} 3) (g : SmoothRiemannianMetric ThreeModel M.Carrier),
     IsConstantPositiveSectionalCurvature g →
     ∃ G : DifferentialGeometry.Topology.SphericalSpaceFormGroup,
       Nonempty (ClosedOrientedManifold.OrientedDiffeomorph M.toClosedOrientedManifold
@@ -272,6 +289,10 @@ def protectionInput (τ ε Λ : ℝ) : Prop :=
     (collar : (c : ConnectedComponents ↥D.slab.terminalRegularOpen) →
       P.hornIndex c → Set ↥D.slab.terminalRegularOpen),
     τ ≤ D.endTime → 0 < rTest → IsCompact X →
+    (∀ c, c ∈ P.component → P.core c ⊆ X) →
+    (∀ x ∈ X, (∀ c, c ∈ P.component → x ∉ P.core c) →
+      ∃ (c : ConnectedComponents ↥D.slab.terminalRegularOpen) (e : P.hornIndex c),
+        x ∈ collar c e) →
     (∀ c e, collar c e ⊆ P.core c) →
     precutCanonicalCoverage D X rTest
       ((c : ConnectedComponents ↥D.slab.terminalRegularOpen) × P.hornIndex c)
@@ -291,18 +312,26 @@ structure GlobalStepInputs (p : CutoffParameters) (τ ε d : ℝ) (k : ℕ)
   pieceInput : ∀ (C : Type u) [TopologicalSpace C] [ChartedSpace ThreeSpace C]
     [IsManifold ThreeModel ∞ C] [T2Space C] [CompactSpace C],
     DiscardedCutOpen C → HasElementaryDiscardDecomposition C
-  roundInput : sphericalSpaceFormCovering
+  roundInput : sphericalSpaceFormCovering.{u}
   cylinderInput : hornCylinderLimit.{u} ε endInput.lambda
   protectInput : protectionInput.{u} τ ε endInput.lambda
 
-def GlobalStepConclusion (p : CutoffParameters) (a₀ : ℝ) : Prop :=
-  ∃ hstar : ℝ, 0 < hstar ∧
+def GlobalStepConclusion (p : CutoffParameters) (τ ε d : ℝ) (k : ℕ) (a₀ : ℝ)
+    (DiscardedCutOpen : Type u → Prop)
+    (inputs : GlobalStepInputs.{u} p τ ε d k DiscardedCutOpen) : Prop :=
+  ∃ hstar : ℝ, 0 < hstar ∧ 2 * hstar ^ 2 < τ ∧
     ∀ (H : ObservedHistory.{u}) (i : Fin H.eventCount),
+      τ ≤ H.time i.succ →
       Nonempty (GeometricCutoffRecord H i p) →
-      ∃ (K : ObservedHistory.{u}) (j : Fin K.eventCount),
+      ∃ (K : ObservedHistory.{u}) (j : Fin K.eventCount) (R : GeometricCutoffRecord K j p),
         j.val = H.eventCount ∧ ObservedHistory.IsPrefixOf H K ∧
         K.eventCount = H.eventCount + 1 ∧
-        Nonempty (GeometricCutoffRecord K j p) ∧
+        τ ≤ K.time (Fin.succ j) ∧
+        Nonempty (TerminalCorePresentation (OneStepIncoming.ofRecord R) ε
+          inputs.endInput.lambda) ∧
+        (∀ α : (K.event j).transition.trace.tubes.Index,
+          R.nominalRadius ⟨α⟩ = hstar) ∧
+        DiscardedCutOpen (K.event j).discarded.Carrier ∧
         (∀ C : ConnectedComponents (K.event j).discarded.Carrier,
           componentIsPoincareStandard (K.event j).discarded.toClosedOrientedManifold C) ∧
         (∀ x : (K.stage (Fin.succ j)).Carrier,
@@ -311,7 +340,6 @@ def GlobalStepConclusion (p : CutoffParameters) (a₀ : ℝ) : Prop :=
 def globalMetricStep (p : CutoffParameters) (τ ε d : ℝ) (k : ℕ) (a₀ : ℝ)
     (DiscardedCutOpen : Type u → Prop)
     (inputs : GlobalStepInputs.{u} p τ ε d k DiscardedCutOpen) : Prop :=
-  let _ := inputs
-  GlobalStepConclusion.{u} p a₀
+  GlobalStepConclusion.{u} p τ ε d k a₀ DiscardedCutOpen inputs
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
