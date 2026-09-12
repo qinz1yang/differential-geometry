@@ -6241,7 +6241,9 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.Descendants
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.EmptyHistory
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.EventBridge
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.EventData
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.EventExtension
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.EventRescaling
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ExtinctionBound
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ExtinctionReconstruction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.FiniteHistory
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.FreeLoopClass

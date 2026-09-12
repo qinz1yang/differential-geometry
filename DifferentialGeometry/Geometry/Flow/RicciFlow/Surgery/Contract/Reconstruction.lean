@@ -109,4 +109,61 @@ def geometricReconstructionBackground : Prop :=
   boundaryCollarGeometry.{u} ∧ ballEmbeddingIsotopy.{u} ∧
     sphereDiffeomorphismIsotopyConnected ∧ seifertVanKampenPushout.{u}
 
+def ballEmbeddingAmbientIsotopy : Prop :=
+  ∀ (ι : Type u) [Fintype ι]
+    (U : Type u) [TopologicalSpace U] [ChartedSpace ThreeSpace U]
+    [IsManifold ThreeModel ∞ U] [ConnectedSpace U]
+    (o : ManifoldOrientation ThreeModel U 3)
+    (e e' : ι → OrientedBallEmbedding U o),
+    (Pairwise fun i j =>
+      Disjoint ((e i).chart '' Metric.closedBall (0 : ThreeSpace) 1)
+        ((e j).chart '' Metric.closedBall (0 : ThreeSpace) 1)) →
+    (Pairwise fun i j =>
+      Disjoint ((e' i).chart '' Metric.closedBall (0 : ThreeSpace) 1)
+        ((e' j).chart '' Metric.closedBall (0 : ThreeSpace) 1)) →
+    ∃ H : ℝ → Diffeomorph ThreeModel ThreeModel U U ∞,
+      H 0 = Diffeomorph.refl ThreeModel U ∞ ∧
+      ContMDiff (𝓘(ℝ, ℝ).prod ThreeModel) ThreeModel ∞
+        (fun q : ℝ × U => H q.1 q.2) ∧
+      ContMDiff (𝓘(ℝ, ℝ).prod ThreeModel) ThreeModel ∞
+        (fun q : ℝ × U => (H q.1).symm q.2) ∧
+      (∀ t, (H t).preservesOrientation o o) ∧
+      ∃ K : Set U, IsCompact K ∧
+        (∀ t, Set.EqOn (H t) (id : U → U) Kᶜ) ∧
+        (∀ t, Set.EqOn (H t).symm (id : U → U) Kᶜ) ∧
+        ∀ i : ι, ∀ x : ThreeSpace,
+          x ∈ Metric.closedBall (0 : ThreeSpace) 2 → H 1 ((e i).chart x) = (e' i).chart x
+
+def ballEmbeddingAmbientDiffeomorphism : Prop :=
+  ∀ (U : Type u) [TopologicalSpace U] [ChartedSpace ThreeSpace U]
+    [IsManifold ThreeModel ∞ U] [ConnectedSpace U]
+    (o : ManifoldOrientation ThreeModel U 3) (e e' : OrientedBallEmbedding U o),
+    ∃ Φ : Diffeomorph ThreeModel ThreeModel U U ∞,
+      Φ.preservesOrientation o o ∧
+      ∀ x : ThreeSpace, x ∈ Metric.closedBall (0 : ThreeSpace) 2 →
+        Φ (e.chart x) = e'.chart x
+
+theorem ballEmbeddingIsotopy_of_ambientIsotopy
+    (h : ballEmbeddingAmbientIsotopy.{u}) : ballEmbeddingIsotopy.{u} := by
+  intro ι _ U _ _ _ _ _ o e e' he he'
+  obtain ⟨H, h0, hc, hc', -, K, hK, hKe, hKe', hball⟩ := h ι U o e e' he he'
+  refine ⟨H, h0, hc, hc', K, hK, hKe, hKe', 1, by norm_num, le_rfl, fun i x hx => ?_⟩
+  exact hball i x (Metric.closedBall_subset_closedBall (by norm_num) hx)
+
+theorem ballEmbeddingAmbientDiffeomorphism_of_ambientIsotopy
+    (h : ballEmbeddingAmbientIsotopy.{u}) : ballEmbeddingAmbientDiffeomorphism.{u} := by
+  intro U _ _ _ _ o e e'
+  have hd : Pairwise fun i j : PUnit =>
+      Disjoint (((fun _ : PUnit => e) i).chart '' Metric.closedBall (0 : ThreeSpace) 1)
+        (((fun _ : PUnit => e) j).chart '' Metric.closedBall (0 : ThreeSpace) 1) :=
+    fun i j hij => (hij (Subsingleton.elim i j)).elim
+  have hd' : Pairwise fun i j : PUnit =>
+      Disjoint (((fun _ : PUnit => e') i).chart '' Metric.closedBall (0 : ThreeSpace) 1)
+        (((fun _ : PUnit => e') j).chart '' Metric.closedBall (0 : ThreeSpace) 1) :=
+    fun i j hij => (hij (Subsingleton.elim i j)).elim
+  obtain ⟨H, -, -, -, hpres, -, -, -, -, hball⟩ :=
+    h PUnit U o (fun _ : PUnit => e) (fun _ : PUnit => e') hd hd'
+  exact ⟨H 1, hpres 1, fun x hx => hball PUnit.unit x hx⟩
+
+
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology

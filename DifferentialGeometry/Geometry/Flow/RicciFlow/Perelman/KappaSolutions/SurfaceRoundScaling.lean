@@ -13,7 +13,7 @@ open DifferentialGeometry.Integral.Measure
 open CanonicalNeighborhood
 open scoped Manifold ContDiff
 
-variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
+variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
 variable [FiniteDimensional Real E] [CompleteSpace E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]

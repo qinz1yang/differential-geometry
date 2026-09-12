@@ -329,3 +329,147 @@ theorem connectedSum_homeomorph_comm (M : ConnectedClosedOrientedManifold.{u} 3)
   exact ⟨h⟩
 
 end DifferentialGeometry.Topology
+
+set_option autoImplicit false
+noncomputable section
+open Bundle Manifold Set Topology
+open scoped Manifold ContDiff Topology
+
+namespace DifferentialGeometry.Topology
+
+universe u
+
+theorem chart_image_ball_of_closedBall_two
+    {M : Type u} [TopologicalSpace M] [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M]
+    (c c' : BallChart 3 (𝓡 3) M) (Φ : M → M)
+    (hΦ : ∀ x : EuclideanSpace ℝ (Fin 3), x ∈ Metric.closedBall (0 : EuclideanSpace ℝ (Fin 3)) 2 →
+      Φ (c.chart x) = c'.chart x) :
+    Φ '' (c.chart '' Metric.ball (0 : EuclideanSpace ℝ (Fin 3)) 1) =
+      c'.chart '' Metric.ball (0 : EuclideanSpace ℝ (Fin 3)) 1 := by
+  ext y
+  constructor
+  · rintro ⟨z, ⟨x, hx, rfl⟩, rfl⟩
+    exact ⟨x, hx, (hΦ x (Metric.closedBall_subset_closedBall (by norm_num)
+      (Metric.ball_subset_closedBall hx))).symm⟩
+  · rintro ⟨x, hx, rfl⟩
+    exact ⟨c.chart x, ⟨x, hx, rfl⟩,
+      hΦ x (Metric.closedBall_subset_closedBall (by norm_num) (Metric.ball_subset_closedBall hx))⟩
+
+theorem chart_sphere_agreement_of_closedBall_two
+    {M : Type u} [TopologicalSpace M] [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M]
+    (c c' : BallChart 3 (𝓡 3) M) (Φ : M → M)
+    (hΦ : ∀ x : EuclideanSpace ℝ (Fin 3), x ∈ Metric.closedBall (0 : EuclideanSpace ℝ (Fin 3)) 2 →
+      Φ (c.chart x) = c'.chart x)
+    (z : Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1) :
+    Φ (c.chart (z : EuclideanSpace ℝ (Fin 3))) = c'.chart (z : EuclideanSpace ℝ (Fin 3)) :=
+  hΦ (z : EuclideanSpace ℝ (Fin 3)) (Metric.closedBall_subset_closedBall (by norm_num)
+    (Metric.sphere_subset_closedBall z.2))
+
+end DifferentialGeometry.Topology
+
+namespace DifferentialGeometry.Topology.ConnectedSumQuotient
+
+universe u
+
+variable {M N : Type u} [TopologicalSpace M] [ChartedSpace csModel M]
+  [TopologicalSpace N] [ChartedSpace csModel N]
+  (c c' : BallChart 3 (𝓡 3) M) (d d' : BallChart 3 (𝓡 3) N)
+  (a : csSphere ≃ₜ csSphere)
+  (Φ : Diffeomorph (𝓡 3) (𝓡 3) M M ∞) (Ψ : Diffeomorph (𝓡 3) (𝓡 3) N N ∞)
+  (hΦ : ∀ x : csModel, x ∈ Metric.closedBall (0 : csModel) 2 →
+    Φ (c.chart x) = c'.chart x)
+  (hΨ : ∀ x : csModel, x ∈ Metric.closedBall (0 : csModel) 2 →
+    Ψ (d.chart x) = d'.chart x)
+
+def homeomorphOfClosedBallTwoAgreement :
+    ConnectedSumQuotient c d a ≃ₜ ConnectedSumQuotient c' d' a :=
+  homeomorphOfBallImage c c' d d' a a Φ.toHomeomorph Ψ.toHomeomorph
+    (chart_image_ball_of_closedBall_two c c' Φ hΦ)
+    (chart_image_ball_of_closedBall_two d d' Ψ hΨ)
+    (Homeomorph.refl csSphere)
+    (fun z => by simpa using chart_sphere_agreement_of_closedBall_two c c' Φ hΦ z)
+    (fun z => by simpa using chart_sphere_agreement_of_closedBall_two d d' Ψ hΨ (a z))
+
+theorem homeomorphOfClosedBallTwoAgreement_inl (y : c.Punctured) :
+    homeomorphOfClosedBallTwoAgreement c c' d d' a Φ Ψ hΦ hΨ (inl c d a y)
+      = inl c' d' a
+        (BallChart.puncturedHomeomorphOfImage c c' Φ.toHomeomorph
+          (chart_image_ball_of_closedBall_two c c' Φ hΦ) y) :=
+  rfl
+
+theorem homeomorphOfClosedBallTwoAgreement_inr (y : d.Punctured) :
+    homeomorphOfClosedBallTwoAgreement c c' d d' a Φ Ψ hΦ hΨ (inr c d a y)
+      = inr c' d' a
+        (BallChart.puncturedHomeomorphOfImage d d' Ψ.toHomeomorph
+          (chart_image_ball_of_closedBall_two d d' Ψ hΨ) y) :=
+  rfl
+
+theorem homeomorphOfClosedBallTwoAgreement_seamLeft (x : Seam) :
+    homeomorphOfClosedBallTwoAgreement c c' d d' a Φ Ψ hΦ hΨ (seamLeft c d a x)
+      = seamLeft c' d' a x := by
+  have hball : (max 1 ‖(x : csModel)‖) • (seamDir x : csModel)
+      ∈ Metric.closedBall (0 : csModel) 2 := by
+    have hr0 : 0 ≤ max 1 ‖(x : csModel)‖ := le_trans zero_le_one (le_max_left _ _)
+    have hrmax : max 1 ‖(x : csModel)‖ ≤ 3 / 2 := max_le (by norm_num) (le_of_lt x.2.2)
+    rw [Metric.mem_closedBall, dist_zero_right, norm_smul, Real.norm_of_nonneg hr0,
+      norm_coe_sphere, mul_one]
+    exact le_trans hrmax (by norm_num)
+  simp only [seamLeft]
+  rw [homeomorphOfClosedBallTwoAgreement_inl]
+  refine congrArg (inl c' d' a) ?_
+  refine Subtype.ext ?_
+  exact hΦ _ hball
+
+theorem homeomorphOfClosedBallTwoAgreement_seamRight (x : Seam) :
+    homeomorphOfClosedBallTwoAgreement c c' d d' a Φ Ψ hΦ hΨ (seamRight c d a x)
+      = seamRight c' d' a x := by
+  have hz : ‖(a (seamDir x) : csModel)‖ = 1 := norm_coe_sphere _
+  have hball : (max 1 (2 - ‖(x : csModel)‖)) • (a (seamDir x) : csModel)
+      ∈ Metric.closedBall (0 : csModel) 2 := by
+    have hr0 : 0 ≤ max 1 (2 - ‖(x : csModel)‖) := le_trans zero_le_one (le_max_left _ _)
+    have hrmax : max 1 (2 - ‖(x : csModel)‖) ≤ 3 / 2 :=
+      max_le (by norm_num) (by linarith [x.2.1])
+    rw [Metric.mem_closedBall, dist_zero_right, norm_smul, Real.norm_of_nonneg hr0, hz, mul_one]
+    exact le_trans hrmax (by norm_num)
+  simp only [seamRight]
+  rw [homeomorphOfClosedBallTwoAgreement_inr]
+  refine congrArg (inr c' d' a) ?_
+  refine Subtype.ext ?_
+  exact hΨ _ hball
+
+theorem homeomorphOfClosedBallTwoAgreement_seamMap (x : Seam) :
+    homeomorphOfClosedBallTwoAgreement c c' d d' a Φ Ψ hΦ hΨ (seamMap c d a x)
+      = seamMap c' d' a x := by
+  simp only [seamMap]
+  split_ifs
+  · exact homeomorphOfClosedBallTwoAgreement_seamLeft c c' d d' a Φ Ψ hΦ hΨ x
+  · exact homeomorphOfClosedBallTwoAgreement_seamRight c c' d d' a Φ Ψ hΦ hΨ x
+
+end DifferentialGeometry.Topology.ConnectedSumQuotient
+
+
+namespace DifferentialGeometry.Topology.ConnectedSumQuotient
+
+universe u
+
+variable {M N : Type u} [TopologicalSpace M] [ChartedSpace csModel M]
+  [TopologicalSpace N] [ChartedSpace csModel N]
+  (c c' : BallChart 3 (𝓡 3) M) (d d' : BallChart 3 (𝓡 3) N)
+  (a : csSphere ≃ₜ csSphere)
+  (Φ : Diffeomorph (𝓡 3) (𝓡 3) M M ∞) (Ψ : Diffeomorph (𝓡 3) (𝓡 3) N N ∞)
+  (hΦ : ∀ x : csModel, x ∈ Metric.closedBall (0 : csModel) 2 →
+    Φ (c.chart x) = c'.chart x)
+  (hΨ : ∀ x : csModel, x ∈ Metric.closedBall (0 : csModel) 2 →
+    Ψ (d.chart x) = d'.chart x)
+
+theorem seamChartX_comp_homeomorphOfClosedBallTwoAgreement (y : ConnectedSumQuotient c d a)
+    (hy : y ∈ (seamChartX c d a).source) :
+    seamChartX c' d' a
+        (homeomorphOfClosedBallTwoAgreement c c' d d' a Φ Ψ hΦ hΨ y)
+      = seamChartX c d a y := by
+  rw [seamChartX_source] at hy
+  obtain ⟨x, rfl⟩ := hy
+  rw [homeomorphOfClosedBallTwoAgreement_seamMap]
+  rw [seamChartX_apply_seamMap, seamChartX_apply_seamMap]
+
+end DifferentialGeometry.Topology.ConnectedSumQuotient

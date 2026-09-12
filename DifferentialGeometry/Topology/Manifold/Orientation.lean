@@ -70,6 +70,66 @@ theorem opposite_opposite (o : ManifoldOrientation I M n) :
   intro x
   exact neg_neg (o.orientation x)
 
+theorem eq_of_eq_at [PreconnectedSpace M] {n : ℕ}
+    (o₁ o₂ : ManifoldOrientation I M n) (x₀ : M)
+    (h₀ : o₁.orientation x₀ = o₂.orientation x₀) : o₁ = o₂ := by
+  have hbase : ∀ x : M, x ∈ (trivializationAt E (TangentSpace I) x).baseSet := by
+    intro x
+    rw [TangentBundle.trivializationAt_baseSet]
+    exact mem_chart_source H x
+  have hlocal : ∀ x : M, ∃ U : Set M, IsOpen U ∧ x ∈ U ∧ ∀ y ∈ U,
+      (o₁.orientation y = o₂.orientation y ↔ o₁.orientation x = o₂.orientation x) := by
+    intro x
+    obtain ⟨U₁, hU₁o, hx₁, hU₁s, h₁⟩ := o₁.locally_constant x x (hbase x)
+    obtain ⟨U₂, hU₂o, hx₂, hU₂s, h₂⟩ := o₂.locally_constant x x (hbase x)
+    refine ⟨U₁ ∩ U₂, hU₁o.inter hU₂o, ⟨hx₁, hx₂⟩, fun y hy => ?_⟩
+    obtain ⟨hy₁, hy₂⟩ := hy
+    have hcc : tangentChartEquiv I M x y (hU₁s hy₁) =
+        tangentChartEquiv I M x y (hU₂s hy₂) := by
+      rw [Subsingleton.elim (hU₁s hy₁) (hU₂s hy₂)]
+    have e₁ : Orientation.map (Fin n) (tangentChartEquiv I M x y (hU₂s hy₂)) (o₁.orientation y)
+        = Orientation.map (Fin n) (tangentChartEquiv I M x x (hbase x)) (o₁.orientation x) := by
+      rw [← hcc]
+      exact h₁ y hy₁
+    have e₂ := h₂ y hy₂
+    constructor
+    · intro hyy
+      have h1 : Orientation.map (Fin n) (tangentChartEquiv I M x y (hU₂s hy₂))
+            (o₁.orientation y)
+          = Orientation.map (Fin n) (tangentChartEquiv I M x y (hU₂s hy₂)) (o₂.orientation y) := by
+        rw [hyy]
+      exact (Orientation.map (Fin n) (tangentChartEquiv I M x x (hbase x))).injective
+        (e₁.symm.trans (h1.trans e₂))
+    · intro hxx
+      have h1 : Orientation.map (Fin n) (tangentChartEquiv I M x x (hbase x)) (o₁.orientation x)
+          = Orientation.map (Fin n) (tangentChartEquiv I M x x (hbase x)) (o₂.orientation x) := by
+        rw [hxx]
+      exact (Orientation.map (Fin n) (tangentChartEquiv I M x y (hU₂s hy₂))).injective
+        (e₁.trans (h1.trans e₂.symm))
+  have hSopen : IsOpen {x : M | o₁.orientation x = o₂.orientation x} := by
+    rw [isOpen_iff_mem_nhds]
+    intro x hx
+    obtain ⟨U, hUo, hxU, hU⟩ := hlocal x
+    exact Filter.mem_of_superset (hUo.mem_nhds hxU) (fun y hy => (hU y hy).mpr hx)
+  have hScompl : IsOpen {x : M | o₁.orientation x = o₂.orientation x}ᶜ := by
+    rw [isOpen_iff_mem_nhds]
+    intro x hx
+    obtain ⟨U, hUo, hxU, hU⟩ := hlocal x
+    exact Filter.mem_of_superset (hUo.mem_nhds hxU) (fun y hy hys => hx ((hU y hy).mp hys))
+  have hSc : IsClopen {x : M | o₁.orientation x = o₂.orientation x} :=
+    ⟨isOpen_compl_iff.mp hScompl, hSopen⟩
+  have hx₀ : x₀ ∈ ({x : M | o₁.orientation x = o₂.orientation x} : Set M) := h₀
+  rcases isClopen_iff.mp hSc with hE | hU
+  · rw [hE] at hx₀
+    exact absurd hx₀ (Set.notMem_empty x₀)
+  · apply ManifoldOrientation.ext
+    intro x
+    have hx : x ∈ ({x : M | o₁.orientation x = o₂.orientation x} : Set M) := by
+      rw [hU]
+      exact Set.mem_univ x
+    exact hx
+
+
 end ManifoldOrientation
 
 section RestrictOpen

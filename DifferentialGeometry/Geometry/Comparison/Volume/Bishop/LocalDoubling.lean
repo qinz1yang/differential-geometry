@@ -31,24 +31,4 @@ theorem one_le_localDoublingFactor (n : ℕ) (a : ℝ) :
     exact (hyperbolicDensity_pos hq ht.1).le
   · exact (hyperbolicDen_continuous q (n - 1)).intervalIntegrable _ _
 
-universe u uE uH
-
-variable {E : Type uE} [NormedAddCommGroup E] [NormedSpace ℝ E]
-  [FiniteDimensional ℝ E] [CompleteSpace E]
-  {H : Type uH} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
-  {M : Type u} [TopologicalSpace M] [ChartedSpace H M]
-  [IsManifold I ∞ M] [T2Space M] [CompactSpace M]
-
-
-theorem local_volume_doubling [I.Boundaryless]
-    (g : SmoothRiemannianMetric I M) (hdim : 2 ≤ Module.finrank ℝ E)
-    (x : M) {a r : ℝ} (ha : 0 ≤ a) (hr : 0 < r)
-    (hRic : ∀ y ∈ riemannianBallOf (I := I) g x r, ∀ v : TangentSpace I y,
-      -a * r⁻¹ ^ 2 * g.inner y v v ≤ metricRicciAt g y (fun _ => v)) :
-    (riemannianVolumeMeasure I M g (riemannianBallOf (I := I) g x r)).toReal ≤
-      localDoublingFactor (Module.finrank ℝ E) a *
-        (riemannianVolumeMeasure I M g (riemannianBallOf (I := I) g x (r / 2))).toReal := by
-  sorry
-
-
 end DifferentialGeometry.Geometry.Riemannian.VolumeComparison

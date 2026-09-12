@@ -18,7 +18,7 @@ open scoped Manifold ContDiff _root_.Topology
 
 universe u uE uH
 
-variable {E : Type uE} [NormedAddCommGroup E] [NormedSpace ℝ E]
+variable {E : Type uE} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
   [FiniteDimensional ℝ E] [CompleteSpace E]
   {H : Type uH} [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
   (F : PointedFlowData.{u, uE, uH} (I := I) ancientTimeInterval)

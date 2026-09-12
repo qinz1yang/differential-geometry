@@ -46,6 +46,7 @@ theorem ancientKappaSurface_entropy_minimum_and_scalar_constant
     fun _ ht x => ancientKappaSurface_scalar_pos F hdim hF ht x
   obtain ⟨rho, _, hrho, hbackward⟩ :=
     ancientKappaSurface_exists_backward_entropy_minimum F hF hdim
+  have : NeZero (Module.finrank ℝ E) := ⟨by omega⟩
   exact surfaceEntropy_rigidity_of_backward_minimum F.S.family.metric
     (totalScalarCurvature (F.S.family.metric 0))
     (fun _ ht => ancientSurfaceFlow_totalScalar_eq_terminal F.S F.isSolution hdim ht)

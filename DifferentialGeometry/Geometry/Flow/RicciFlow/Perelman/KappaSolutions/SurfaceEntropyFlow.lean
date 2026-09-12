@@ -21,7 +21,7 @@ open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
 open DifferentialGeometry.Tensor0SBundle
 open CanonicalNeighborhood
-open scoped Manifold ContDiff _root_.Topology
+open scoped Manifold ContDiff Topology
 
 private theorem surfaceFlow_continuousOn_Iic_of_slabs
     {f : Real → Real}
@@ -37,7 +37,7 @@ private theorem surfaceFlow_continuousOn_Iic_of_slabs
     exact ⟨hsl.le, hs⟩
   exact ((hf (t - 1) hleft) t ⟨hlt.le, ht⟩).mono_of_mem_nhdsWithin hlocal
 
-variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
+variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
 variable [FiniteDimensional Real E] [CompleteSpace E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
@@ -165,6 +165,8 @@ end ConservedQuantities
 section EntropyFlow
 
 variable [I.Boundaryless] [ConnectedSpace M]
+
+variable [NeZero (Module.finrank ℝ E)]
 
 theorem surfaceEntropy_exists_meanZero_poisson
     (g : SmoothRiemannianMetric I M) :
