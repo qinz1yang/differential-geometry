@@ -8467,6 +8467,7 @@ import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.Finite
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.InteriorChart
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.Quotient
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.SeamChart
+import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.SmoothStructure
 import DifferentialGeometry.Topology.ThreeManifold.CutCap
 import DifferentialGeometry.Topology.ThreeManifold.CutCapReconstruction
 import DifferentialGeometry.Topology.ThreeManifold.PoincareStandard
