@@ -2,6 +2,7 @@ import DifferentialGeometry.Topology.Manifold.ClosedOriented
 import DifferentialGeometry.Topology.Manifold.SphereOrientation
 import DifferentialGeometry.Topology.Manifold.ProductOrientation
 import DifferentialGeometry.Topology.Manifold.Quotient
+import DifferentialGeometry.Topology.FundamentalGroup.Sphere
 import DifferentialGeometry.Geometry.Metric.Sphere.Isometry.OrthogonalAction
 import Mathlib.Topology.Covering.Basic
 
@@ -159,6 +160,11 @@ end SphericalSpaceFormGroup
 
 abbrev SphereTwoTimesCircle :=
   sphere (0 : EuclideanSpace ℝ (Fin 3)) 1 × sphere (0 : EuclideanSpace ℝ (Fin 2)) 1
+
+theorem exists_fundamentalGroupMulEquivInt_sphereTwoTimesCircle
+    (p : SphereTwoTimesCircle) :
+    Nonempty (FundamentalGroup SphereTwoTimesCircle p ≃* Multiplicative ℤ) :=
+  ⟨fundamentalGroupProdSphereOneEquivInt p.1 p.2⟩
 
 def sphereTwoTimesCircleOrientation :
     ManifoldOrientation ((𝓡 2).prod (𝓡 1)) SphereTwoTimesCircle 3 :=
