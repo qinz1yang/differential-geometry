@@ -4,7 +4,7 @@
   "upstream_source": "ClassificationOfSurfaces/Moise/FreeTriangleMove.lean",
   "upstream_source_sha256": "8b37afc857119ad493869d06f06c8c59c6aff251ccbb0e1c13b3d1a3fe91559a",
   "target": "Moise/GeometricFreeTriangle.lean",
-  "target_sha256": "5871952ecf3af05f88472bcaf105e10a3c98e7ea0952a4fd47d2466b209d8be2",
+  "target_sha256": "6c57f9ee62cdadb834f182c04be313aa0cc0ed4e2f63c51e8aad3c999056c847",
   "license": "Apache-2.0",
   "declarations": [
     {
@@ -62,11 +62,19 @@
       "upstream_documentation_start_line": 707,
       "declaration_sha256": "883d71069c9fdb374979177f6162dc286c6a69391a522e6cc10716953e2c1629",
       "documentation_and_declaration_sha256": "ba0b3a7852445cd12ef66964ff77ce015e7c782895eb7a5162db994db28036e0"
+    },
+    {
+      "declaration": "frontier_triangleCarrier_subset_freeTriangleEdges",
+      "qualified_declaration": "LeanEval.Topology.ClassificationOfSurfaces.Moise.TriangleMesh.frontier_triangleCarrier_subset_freeTriangleEdges",
+      "upstream_declaration_start_line": 402,
+      "upstream_documentation_start_line": 399,
+      "declaration_sha256": "371bd5bddef5f99b3d9a254e0b068b4b6000c073aa9183da402e4fad82c2f509",
+      "documentation_and_declaration_sha256": "ff103ca10d88aa8463432d93282868e9dcb65ebb5d454044c01ff887b1c5a18e"
     }
   ],
-  "changes": "Seven exact original declaration bodies and attached documentation/scopes, importing the previously selected OneEdgeAttachment module; local modification notice path adjusted.",
+  "changes": "Eight exact original declaration bodies and attached documentation/scopes; selected frontier coverage appended in the original TriangleMesh variable scope. Imports and original seven declarations unchanged.",
   "source_check_request": "1789233897698956242-schoenflies-ff473eb1",
-  "production_validation": {
+  "previous_production_validation": {
     "status": "Passed fresh new-module artifact compilation and imported consumer gate; not a full DifferentialGeometry aggregate build.",
     "request_id": "1789234647397384846-schoenflies-3ad41b77",
     "input_sha256": "ec59c435d8e2109bc12cba68b73e1484f3d8e067771edee6d48fb18e6c891191",
@@ -87,5 +95,65 @@
     "aggregate_registration": "Flat DifferentialGeometry.lean import.",
     "full_dg_aggregate_build": false,
     "geometric_free_triangle_existence": false
+  },
+  "production_validation": {
+    "status": "Passed fresh two-changed-module artifact compilation and imported consumer gate.",
+    "request_id": "1789237030840224641-schoenflies-8667db40",
+    "input_sha256": "a439332ae519433237dfdfb3f8a0417a0f97c1cb61a382293b14b312f4b138f5",
+    "result_sha256": "3647f322dc9484c03bd0e76b1a1a037cb0540b54dea59de78e4c232f0afe5f1d",
+    "artifact_log_sha256": "2ae825bdbb21f244bf2c79a7e2b3544f35b3fbdb840807035323578247d93233",
+    "slurm_job": "13781140",
+    "host": "della-r3c2n16",
+    "elapsed_seconds": 95.17960333824158,
+    "peak_summed_rss_bytes": 2238570496,
+    "source_guards_matched": 107,
+    "type_axiom_pairs": 14,
+    "freshly_built_modules": [
+      "DifferentialGeometry.External.ClassificationOfSurfaces.Moise.GeometricFreeTriangle",
+      "DifferentialGeometry.External.ClassificationOfSurfaces.PrePolygonDeletion"
+    ],
+    "artifact_elapsed": "1:04.11",
+    "artifact_max_rss_kib": 1696732,
+    "stock_linters": [
+      "unusedArguments",
+      "simpNF",
+      "synTaut"
+    ],
+    "linter_scope": "All imported vendor and current consumer declarations, including private declarations.",
+    "approved_axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "unexpected_diagnostics": 0,
+    "consumer_probes": [
+      "Actual PrePolygon triangulation and all oriented one-edge deletion outputs",
+      "Actual PrePolygon triangulation and all oriented two-edge deletion outputs",
+      "Actual erased triangle count decreases by one"
+    ],
+    "full_dg_aggregate_build": false,
+    "geometric_free_triangle_existence": false,
+    "smooth_disk_filling": false
+  },
+  "triangle_frontier_source_check": {
+    "status": "Passed isolated exact-source gate; final production gate pending.",
+    "request_id": "1789236092448851439-schoenflies-e77176ea",
+    "input_sha256": "eee33acc7000a07a9b483109aa2fe7e1ea2ad0d8d47ba4b3fe5fb32013991dc2",
+    "result_sha256": "79c431931c0b1f3588d77e5e14ef31428451d2491aea7d36392b62173598664d",
+    "job_id": "13781140",
+    "elapsed_seconds": 4.579173803329468,
+    "source_guards_matched": 98,
+    "type_axiom_pairs": 12,
+    "approved_axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "stock_linters": [
+      "unusedArguments",
+      "simpNF",
+      "synTaut"
+    ],
+    "all_source_and_consumer_axioms_guarded": true
   }
 }

@@ -10,7 +10,7 @@
   "upstream_declaration_sha256": "a044458e37a7e9e9902a43eab6eb4f9efaf449713e4332e4793d38fc04e637cb",
   "recognition_delta": "DELETION_RECOGNITION.patch",
   "recognition_delta_sha256": "658619dbb1ae5aa7522980cec0dbcb7a8c6e44f25219b384f2e70c13bd810364",
-  "production_source_sha256": "18c50c759e669e4829959317fb5508d735d795a73a0bf33264f1278605eb4efe",
+  "production_source_sha256": "8606d4955c9c51e082266072c8ae5f74051f15715c4b2371ef4c1827cb01f99e",
   "checked_native_sources": {
     "PrePolygonComplementaryArc.lean": "50f40d9782ba0cf1e9299b0286a0a6cb96a84c29ae95b1796f8dc3c8a9ed0a00",
     "PrePolygonDeletionFrontier.lean": "ce270b01e08c05958e524c4591c89e0c37a12fcce45919c3ad2a4a9e30c20de5",
@@ -50,9 +50,19 @@
     "Consolidate four checked bodies into one leaf; preserve all namespace and open scopes.",
     "Retain nine mathematical statements and bodies; expose only the final closed-region engine; omit the unused private edge specialization.",
     "Replace per-scratch import headers by their precise dependency union; no source options added.",
-    "Preserve original recognition documentation and Apache attribution; update license/modification paths."
+    "Preserve original recognition documentation and Apache attribution; update license/modification paths.",
+    "Append six exact checked native declarations; promote only the two-edge closed-region engine.",
+    "Reuse the existing three private helpers exactly once; preserve all nine old declarations and their scopes.",
+    "Import the extended GeometricFreeTriangle and precise native JordanClosed leaf; no new module or aggregate import.",
+    "Omit the unused upstream old-frontier split from production."
   ],
-  "production_validation": {
+  "remaining_obligations": [
+    "Final production validation of the integrated two-edge extension.",
+    "Produce an actual geometric free triangle without assuming the desired certificate.",
+    "Compatible smooth rounding and disk absorption."
+  ],
+  "previous_production_source_sha256": "18c50c759e669e4829959317fb5508d735d795a73a0bf33264f1278605eb4efe",
+  "one_edge_production_validation": {
     "status": "Passed fresh one-new-module artifact and imported public consumer gate.",
     "request_id": "1789233891983857661-schoenflies-42a7b73c",
     "input_sha256": "eed023089393b8fe1b8de38c2495fd50f2db9ead695be9afe0b65168ea76c40a",
@@ -84,10 +94,82 @@
     "full_dg_aggregate_build": false,
     "smooth_disk_filling": false
   },
-  "public_declaration": "Schoenflies.PrePolygon.exists_prePolygon_closed_region_erase_triangle_of_one_edge_free",
-  "remaining_obligations": [
-    "Produce an actual geometric free triangle without assuming the desired certificate.",
-    "Two-edge deletion.",
-    "Compatible smooth rounding and disk absorption."
-  ]
+  "production_validation": {
+    "status": "Passed fresh two-changed-module artifact compilation and imported consumer gate.",
+    "request_id": "1789237030840224641-schoenflies-8667db40",
+    "input_sha256": "a439332ae519433237dfdfb3f8a0417a0f97c1cb61a382293b14b312f4b138f5",
+    "result_sha256": "3647f322dc9484c03bd0e76b1a1a037cb0540b54dea59de78e4c232f0afe5f1d",
+    "artifact_log_sha256": "2ae825bdbb21f244bf2c79a7e2b3544f35b3fbdb840807035323578247d93233",
+    "slurm_job": "13781140",
+    "host": "della-r3c2n16",
+    "elapsed_seconds": 95.17960333824158,
+    "peak_summed_rss_bytes": 2238570496,
+    "source_guards_matched": 107,
+    "type_axiom_pairs": 14,
+    "freshly_built_modules": [
+      "DifferentialGeometry.External.ClassificationOfSurfaces.Moise.GeometricFreeTriangle",
+      "DifferentialGeometry.External.ClassificationOfSurfaces.PrePolygonDeletion"
+    ],
+    "artifact_elapsed": "1:04.11",
+    "artifact_max_rss_kib": 1696732,
+    "stock_linters": [
+      "unusedArguments",
+      "simpNF",
+      "synTaut"
+    ],
+    "linter_scope": "All imported vendor and current consumer declarations, including private declarations.",
+    "approved_axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "unexpected_diagnostics": 0,
+    "consumer_probes": [
+      "Actual PrePolygon triangulation and all oriented one-edge deletion outputs",
+      "Actual PrePolygon triangulation and all oriented two-edge deletion outputs",
+      "Actual erased triangle count decreases by one"
+    ],
+    "full_dg_aggregate_build": false,
+    "geometric_free_triangle_existence": false,
+    "smooth_disk_filling": false
+  },
+  "public_declarations": [
+    "Schoenflies.PrePolygon.exists_prePolygon_closed_region_erase_triangle_of_one_edge_free",
+    "Schoenflies.PrePolygon.exists_prePolygon_closed_region_erase_triangle_of_two_edge_free"
+  ],
+  "two_edge_source_check": {
+    "status": "Passed isolated exact-source gate; final production gate pending.",
+    "request_id": "1789236092448851439-schoenflies-e77176ea",
+    "input_sha256": "eee33acc7000a07a9b483109aa2fe7e1ea2ad0d8d47ba4b3fe5fb32013991dc2",
+    "result_sha256": "79c431931c0b1f3588d77e5e14ef31428451d2491aea7d36392b62173598664d",
+    "job_id": "13781140",
+    "elapsed_seconds": 4.579173803329468,
+    "source_guards_matched": 98,
+    "type_axiom_pairs": 12,
+    "approved_axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "stock_linters": [
+      "unusedArguments",
+      "simpNF",
+      "synTaut"
+    ],
+    "all_source_and_consumer_axioms_guarded": true
+  },
+  "two_edge_native_source_sha256": "f8042ef09bf0de24b2aea00e07ae550e3ba26d5b06bf44f2548383050003e51f",
+  "two_edge_addition_delta": {
+    "path": "TWO_EDGE_ADDITION.patch",
+    "sha256": "f1beb54cda49d8b73b765a3defe3da89501c17d7f5485aef1c5cd86a07236bd2",
+    "base": "Previously checked native one-edge production source, not an upstream source replacement."
+  },
+  "two_edge_declarations": {
+    "free_triangle_frontier_eq_edges": "5c6d46f18fdd007c4f3b7bf4c6eb19a341a7ea9bf7027bb6d7fa03d60f8bb1bf",
+    "closure_diff_crosscut_side": "a1e87a9c988e4c3fc318210a698994eac38afa67b98cb6b23065d515f2d9130b",
+    "closure_inside_crosscut_sides_inter": "19056581f967a6f04b3deb6dee39b08fbdd10d04261205d0b408009b6ee9c7b7",
+    "PrePolygon.two_edge_free_crosscut": "7f1e06337daf86f892a73dacaf730e9f5eb1d84988093aa37db9dc184f79ed94",
+    "PrePolygon.two_edge_free_region_and_attachment": "d7d01ecb5e6d92535a76a5469abb96a883a29852b089e8cb75df35a44522657e",
+    "PrePolygon.exists_prePolygon_closed_region_erase_triangle_of_two_edge_free": "a01b12b9d8cf186acabddbf43ababd8612da72254a163d4b54341f3f09513d80"
+  }
 }

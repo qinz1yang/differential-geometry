@@ -4,7 +4,7 @@
   "license": "Apache-2.0",
   "target_lean": "leanprover/lean4:v4.33.1",
   "target_mathlib": "0df444a360eaa60ab8c11dca51a86af692955474",
-  "scope": "Eight selected source modules; fresh production artifact/imported consumer/linter/axiom gates pass, including the actual mesh partition along a realized crosscut.",
+  "scope": "Eight selected source modules; fresh changed-source/imported consumer, linter and axiom gates pass, including both native one-edge and two-edge deletion engines and the realized crosscut partition.",
   "source_files": {
     "DifferentialGeometry/External/ClassificationOfSurfaces/Moise/PlaneComplex.lean": {
       "upstream_sha256": "289d152b60da667c2022c5d811be8718d93a2a95181f7aa31654193a7c1a115a",
@@ -42,16 +42,18 @@
     "DifferentialGeometry/External/ClassificationOfSurfaces/PrePolygonDeletion.lean": {
       "upstream_path": "ClassificationOfSurfaces/Moise/PolygonalSchoenflies.lean (selected compact-frontier recognition only)",
       "selection_provenance": "DELETION_PROVENANCE.json",
-      "target_sha256": "18c50c759e669e4829959317fb5508d735d795a73a0bf33264f1278605eb4efe",
+      "target_sha256": "8606d4955c9c51e082266072c8ae5f74051f15715c4b2371ef4c1827cb01f99e",
       "checked_private_request": "1789232885714420646-schoenflies-24adbd8c",
-      "source_change_from_checked": "Consolidate four sources; retain nine statements/bodies/scopes; omit unused private edge specialization; expose only final engine; restore upstream recognition documentation and localize attribution paths."
+      "source_change_from_checked": "Reuse existing three private helpers; append six exact native bodies, promoting only the two-edge engine; preserve all nine old declarations; update precise imports.",
+      "previous_target_sha256": "18c50c759e669e4829959317fb5508d735d795a73a0bf33264f1278605eb4efe"
     },
     "DifferentialGeometry/External/ClassificationOfSurfaces/Moise/GeometricFreeTriangle.lean": {
-      "upstream_path": "ClassificationOfSurfaces/Moise/FreeTriangleMove.lean (seven selected declarations)",
+      "upstream_path": "ClassificationOfSurfaces/Moise/FreeTriangleMove.lean (eight selected declarations)",
       "selection_provenance": "GEOMETRIC_FREE_SELECTION.json",
-      "target_sha256": "5871952ecf3af05f88472bcaf105e10a3c98e7ea0952a4fd47d2466b209d8be2",
+      "target_sha256": "6c57f9ee62cdadb834f182c04be313aa0cc0ed4e2f63c51e8aad3c999056c847",
       "checked_request": "1789233897698956242-schoenflies-ff473eb1",
-      "source_change_from_checked": "Only required modification-notice path; seven declaration bodies unchanged."
+      "source_change_from_checked": "Append unchanged selected frontier coverage; preserve seven old bodies and exact scopes.",
+      "previous_target_sha256": "5871952ecf3af05f88472bcaf105e10a3c98e7ea0952a4fd47d2466b209d8be2"
     },
     "DifferentialGeometry/External/ClassificationOfSurfaces/TriangleMeshCrosscut.lean": {
       "upstream_path": "ClassificationOfSurfaces/Moise/PolygonalCrosscut.lean (adapted mesh-side arguments)",
@@ -138,7 +140,7 @@
     "root_independent_review": "All ten guarded hashes match final current source; all24 signature/axiom messages read; actual finite nonempty simplicial face/intersection and mesh support/frontier/deletion consumers pass; all28 selected attachment declaration bodies independently match pinned upstream sources.",
     "aggregate_registration": "All five leaves registered in DifferentialGeometry.lean."
   },
-  "deletion_provenance_sha256": "4210c75700fa043a2c13918aec154e076e77d0e412c54cbe9ed67f00f2f3b39d",
+  "deletion_provenance_sha256": "02e8681f2502f18b66b41c494192f7e44456f30c7098a8c1c681ab1c7a4c3aca",
   "deletion_validation": {
     "status": "Passed fresh one-new-module artifact and imported public consumer gate.",
     "request_id": "1789233891983857661-schoenflies-42a7b73c",
@@ -210,6 +212,67 @@
     "signature_axiom_pairs": 2,
     "declaration_linters": "All imported vendor and current consumer declarations: unusedArguments, simpNF, synTaut; source defProp covers kinds.",
     "transitive_axioms": "All imported vendor and current declarations, including private: only propext, Classical.choice, Quot.sound.",
+    "full_dg_aggregate_build": false,
+    "geometric_free_triangle_existence": false,
+    "smooth_disk_filling": false
+  },
+  "geometric_free_selection_sha256": "622a8ff97680344e44a70c21ad4808f4e5b60fce3cf49677f35acd047b090aa9",
+  "two_edge_source_validation": {
+    "status": "Passed isolated exact-source gate; final production gate pending.",
+    "request_id": "1789236092448851439-schoenflies-e77176ea",
+    "input_sha256": "eee33acc7000a07a9b483109aa2fe7e1ea2ad0d8d47ba4b3fe5fb32013991dc2",
+    "result_sha256": "79c431931c0b1f3588d77e5e14ef31428451d2491aea7d36392b62173598664d",
+    "job_id": "13781140",
+    "elapsed_seconds": 4.579173803329468,
+    "source_guards_matched": 98,
+    "type_axiom_pairs": 12,
+    "approved_axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "stock_linters": [
+      "unusedArguments",
+      "simpNF",
+      "synTaut"
+    ],
+    "all_source_and_consumer_axioms_guarded": true
+  },
+  "two_edge_production_validation": {
+    "status": "Passed fresh two-changed-module artifact compilation and imported consumer gate.",
+    "request_id": "1789237030840224641-schoenflies-8667db40",
+    "input_sha256": "a439332ae519433237dfdfb3f8a0417a0f97c1cb61a382293b14b312f4b138f5",
+    "result_sha256": "3647f322dc9484c03bd0e76b1a1a037cb0540b54dea59de78e4c232f0afe5f1d",
+    "artifact_log_sha256": "2ae825bdbb21f244bf2c79a7e2b3544f35b3fbdb840807035323578247d93233",
+    "slurm_job": "13781140",
+    "host": "della-r3c2n16",
+    "elapsed_seconds": 95.17960333824158,
+    "peak_summed_rss_bytes": 2238570496,
+    "source_guards_matched": 107,
+    "type_axiom_pairs": 14,
+    "freshly_built_modules": [
+      "DifferentialGeometry.External.ClassificationOfSurfaces.Moise.GeometricFreeTriangle",
+      "DifferentialGeometry.External.ClassificationOfSurfaces.PrePolygonDeletion"
+    ],
+    "artifact_elapsed": "1:04.11",
+    "artifact_max_rss_kib": 1696732,
+    "stock_linters": [
+      "unusedArguments",
+      "simpNF",
+      "synTaut"
+    ],
+    "linter_scope": "All imported vendor and current consumer declarations, including private declarations.",
+    "approved_axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "unexpected_diagnostics": 0,
+    "consumer_probes": [
+      "Actual PrePolygon triangulation and all oriented one-edge deletion outputs",
+      "Actual PrePolygon triangulation and all oriented two-edge deletion outputs",
+      "Actual erased triangle count decreases by one"
+    ],
     "full_dg_aggregate_build": false,
     "geometric_free_triangle_existence": false,
     "smooth_disk_filling": false

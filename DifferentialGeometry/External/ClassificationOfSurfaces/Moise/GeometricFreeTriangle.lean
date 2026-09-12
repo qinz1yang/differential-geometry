@@ -330,6 +330,82 @@ theorem exists_cutting_diagonal_configuration
       omega
   exact ⟨a, b, v, hab, hva, hvb, htriangle, hboundary, hvFrontier⟩
 
+-- Normalizing all six finite-order cases for the three geometric edges exceeds the default.
+/-- The frontier of a maximal triangle is covered by the base and the two apex edges in every
+Figure 3.3 ordering. -/
+theorem frontier_triangleCarrier_subset_freeTriangleEdges (T : M.Triangle) (k : Fin 3) :
+    frontier (M.triangleCarrier T.1) ⊆
+      segment ℝ (M.freeTriangleOrder T k 0) (M.freeTriangleOrder T k 1) ∪
+        (segment ℝ (M.freeTriangleOrder T k 0) (M.freeTriangleOrder T k 2) ∪
+          segment ℝ (M.freeTriangleOrder T k 1) (M.freeTriangleOrder T k 2)) := by
+  intro p hp
+  obtain ⟨e, hecard, heT, hpe⟩ := M.exists_edge_of_mem_frontier_triangle T.2 hp
+  have he : e ∈ M.triangleEdges T.1 :=
+    Finset.mem_powersetCard.mpr ⟨heT, hecard⟩
+  have hcarrier (a b : M.Vertex) :
+      convexHull ℝ (M.position '' (({a, b} : Finset M.Vertex) : Set M.Vertex)) =
+        segment ℝ (M.position a) (M.position b) := by
+    rw [show M.position '' (({a, b} : Finset M.Vertex) : Set M.Vertex) =
+      {M.position a, M.position b} by ext q; simp [eq_comm]]
+    exact convexHull_pair _ _
+  rw [M.triangleEdges_eq_orderedEdges T] at he
+  simp only [Finset.mem_insert, Finset.mem_singleton] at he
+  have hpEdges : p ∈
+      segment ℝ (M.position (M.orderedVertex T 0)) (M.position (M.orderedVertex T 1)) ∪
+        (segment ℝ (M.position (M.orderedVertex T 0)) (M.position (M.orderedVertex T 2)) ∪
+          segment ℝ (M.position (M.orderedVertex T 1))
+            (M.position (M.orderedVertex T 2))) := by
+    rcases he with rfl | rfl | rfl
+    · rw [hcarrier] at hpe
+      exact Or.inl hpe
+    · rw [hcarrier] at hpe
+      exact Or.inr (Or.inl hpe)
+    · rw [hcarrier] at hpe
+      exact Or.inr (Or.inr hpe)
+  have horder :
+      segment ℝ (M.freeTriangleOrder T k 0) (M.freeTriangleOrder T k 1) ∪
+          (segment ℝ (M.freeTriangleOrder T k 0) (M.freeTriangleOrder T k 2) ∪
+            segment ℝ (M.freeTriangleOrder T k 1) (M.freeTriangleOrder T k 2)) =
+        segment ℝ (M.position (M.orderedVertex T 0)) (M.position (M.orderedVertex T 1)) ∪
+          (segment ℝ (M.position (M.orderedVertex T 0)) (M.position (M.orderedVertex T 2)) ∪
+            segment ℝ (M.position (M.orderedVertex T 1))
+              (M.position (M.orderedVertex T 2))) := by
+    ext x
+    simp only [Set.mem_union]
+    have hsymm (a b : Plane) : x ∈ segment ℝ a b ↔ x ∈ segment ℝ b a := by
+      rw [segment_symm]
+    have h01 := hsymm (M.position (M.orderedVertex T 0))
+      (M.position (M.orderedVertex T 1))
+    have h02 := hsymm (M.position (M.orderedVertex T 0))
+      (M.position (M.orderedVertex T 2))
+    have h12 := hsymm (M.position (M.orderedVertex T 1))
+      (M.position (M.orderedVertex T 2))
+    fin_cases k
+    · simp only [freeTriangleOrder, Fin.isValue, Fin.zero_eta, Equiv.swap_apply_right,
+        Equiv.swap_apply_def, Fin.reduceEq, ↓reduceIte, one_ne_zero]
+      constructor
+      · rintro (h | h | h)
+        · exact Or.inr (Or.inr (h12.mpr h))
+        · exact Or.inr (Or.inl (h02.mpr h))
+        · exact Or.inl (h01.mpr h)
+      · rintro (h | h | h)
+        · exact Or.inr (Or.inr (h01.mp h))
+        · exact Or.inr (Or.inl (h02.mp h))
+        · exact Or.inl (h12.mp h)
+    · simp only [freeTriangleOrder, Fin.isValue, Fin.mk_one, Equiv.swap_apply_def, Fin.reduceEq,
+        ↓reduceIte, zero_ne_one]
+      constructor
+      · rintro (h | h | h)
+        · exact Or.inr (Or.inl h)
+        · exact Or.inl h
+        · exact Or.inr (Or.inr (h12.mpr h))
+      · rintro (h | h | h)
+        · exact Or.inr (Or.inl h)
+        · exact Or.inl h
+        · exact Or.inr (Or.inr (h12.mp h))
+    · simp [freeTriangleOrder]
+  rwa [horder]
+
 end TriangleMesh
 end Moise
 end ClassificationOfSurfaces
