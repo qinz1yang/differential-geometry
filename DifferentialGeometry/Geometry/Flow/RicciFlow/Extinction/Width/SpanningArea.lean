@@ -19,6 +19,8 @@ import DifferentialGeometry.Geometry.Measure.Area.SpanningComponent
 import DifferentialGeometry.Geometry.Metric.Completeness
 import DifferentialGeometry.Geometry.Metric.Pullback.Cross
 import DifferentialGeometry.Topology.StandardModel
+import DifferentialGeometry.Geometry.Metric.ScalarCurveComparison
+import DifferentialGeometry.Analysis.Calculus.Variation.Lipschitz
 
 noncomputable section
 
@@ -1301,12 +1303,324 @@ theorem integrable_loopSpeed (g : SmoothRiemannianMetric I Q)
     _ ≤ ‖fderiv ℝ (e.map ∘ loopLift γ) t‖ * ‖(1 : ℝ)‖ := ContinuousLinearMap.le_opNorm _ _
     _ ≤ (L : ℝ) := by simpa only [norm_one, mul_one] using hnorm
 
+section CurveSpeedComparison
+
+omit finiteDimensionalE boundarylessI t2Q compactQ connectedQ in
+theorem subsingleton_of_subsingleton_model (I : ModelWithCorners ℝ E H) (h : Subsingleton E) :
+    Subsingleton H := by
+  refine ⟨fun a b => ?_⟩
+  have h1 : (I : H → E) a = (I : H → E) b := @Subsingleton.elim E h _ _
+  have h2 : I.invFun ((I : H → E) a) = I.invFun ((I : H → E) b) := congrArg _ h1
+  rw [show I.invFun ((I : H → E) a) = a from by simp [I.left_inv a],
+    show I.invFun ((I : H → E) b) = b from by simp [I.left_inv b]] at h2
+  exact h2
+
+omit finiteDimensionalE boundarylessI t2Q compactQ connectedQ in
+def curveSpeed (g : SmoothRiemannianMetric I Q) (γ : ℝ → Q) (t : ℝ) : ℝ :=
+  Real.sqrt (g.inner (γ t) (mfderiv 𝓘(ℝ, ℝ) I γ t (1 : ℝ))
+    (mfderiv 𝓘(ℝ, ℝ) I γ t (1 : ℝ)))
+
+omit finiteDimensionalE boundarylessI t2Q compactQ connectedQ in
+theorem curveSpeed_nonneg (g : SmoothRiemannianMetric I Q) (γ : ℝ → Q) (t : ℝ) :
+    0 ≤ curveSpeed g γ t := Real.sqrt_nonneg _
+
+omit finiteDimensionalE boundarylessI t2Q compactQ connectedQ in
+theorem loopLength_eq_integral_curveSpeed (g : SmoothRiemannianMetric I Q)
+    (γ : ContinuousFreeLoop Q) :
+    loopLength g γ = ∫ t in Icc (0 : ℝ) 1, curveSpeed g (loopLift γ) t := rfl
+
+omit compactQ connectedQ in
+theorem abs_deriv_le_curveSpeed_of_edist_bound (g : SmoothRiemannianMetric I Q)
+    {γ : ℝ → Q} {ν : ℝ → ℝ} {x : ℝ}
+    (hγ : MDifferentiableAt 𝓘(ℝ, ℝ) I γ x) (hν : DifferentiableAt ℝ ν x)
+    (hbound : ∀ y, |ν y - ν x| ≤ (riemannianEDistOf g (γ x) (γ y)).toReal) :
+    |deriv ν x| ≤ curveSpeed g γ x := by
+  by_cases hdim : Module.finrank ℝ E = 0
+  · have hsub : Subsingleton H :=
+      subsingleton_of_subsingleton_model I (Module.finrank_zero_iff.mp hdim)
+    have hlocal : γ =ᶠ[𝓝 x] (fun _ => γ x) := by
+      filter_upwards [hγ.continuousAt
+        ((chartAt H (γ x)).open_source.mem_nhds (mem_chart_source H (γ x)))] with y hy
+      exact (chartAt H (γ x)).injOn hy (mem_chart_source H (γ x))
+        (@Subsingleton.elim H hsub _ _)
+    have hconst : ν =ᶠ[𝓝 x] (fun _ => ν x) := by
+      filter_upwards [hlocal] with y hy
+      have h := hbound y
+      rw [hy, riemannianEDistOf_self, ENNReal.toReal_zero] at h
+      exact sub_eq_zero.mp (abs_nonpos_iff.mp h)
+    rw [hconst.deriv_eq, deriv_const, abs_zero]
+    exact curveSpeed_nonneg g γ x
+  · let : NeZero (Module.finrank ℝ E) := ⟨hdim⟩
+    let : NeZero (Module.finrank ℝ ℝ) := ⟨by simp⟩
+    have h := DifferentialGeometry.Geometry.metric_differential_le_of_edist_le
+      (I := I) (M := Q) (J := 𝓘(ℝ, ℝ)) (N := ℝ) (V := ℝ)
+      (g := g) (h := DifferentialGeometry.Geometry.standardEuclideanMetric ℝ)
+      (u := γ) (v := ν) (L := 1) hγ hν.mdifferentiableAt (fun y => by
+        rw [DifferentialGeometry.Geometry.riemannianEDistOf_standardEuclideanMetric,
+          edist_dist, Real.dist_eq, ENNReal.coe_one, one_mul, abs_sub_comm]
+        exact (ENNReal.ofReal_le_ofReal (hbound y)).trans ENNReal.ofReal_toReal_le) (1 : ℝ)
+    change DifferentialGeometry.Geometry.riemannianCurveSpeed
+      (DifferentialGeometry.Geometry.standardEuclideanMetric ℝ) ν x ≤
+      (1 : ℝ≥0) * curveSpeed g γ x at h
+    simpa only [DifferentialGeometry.Geometry.riemannianCurveSpeed_real,
+      NNReal.coe_one, one_mul] using h
+
+omit compactQ connectedQ in
+theorem curveSpeed_le_abs_deriv_of_edist_upper_bound (g : SmoothRiemannianMetric I Q)
+    {γ : ℝ → Q} {ν : ℝ → ℝ} {x : ℝ}
+    (hγ : MDifferentiableAt 𝓘(ℝ, ℝ) I γ x) (hν : DifferentiableAt ℝ ν x)
+    (hbound : ∀ y, riemannianEDistOf g (γ x) (γ y) ≤ ENNReal.ofReal |ν y - ν x|) :
+    curveSpeed g γ x ≤ |deriv ν x| := by
+  by_cases hdim : Module.finrank ℝ E = 0
+  · let : Subsingleton E := Module.finrank_zero_iff.mp hdim
+    let : Subsingleton (TangentSpace I (γ x)) := ‹Subsingleton E›
+    have hz : mfderiv 𝓘(ℝ, ℝ) I γ x (1 : ℝ) = (0 : TangentSpace I (γ x)) :=
+      Subsingleton.elim _ _
+    have hzero : curveSpeed g γ x = 0 := by
+      unfold curveSpeed
+      rw [hz]
+      simp
+    rw [hzero]
+    exact abs_nonneg _
+  · let : NeZero (Module.finrank ℝ E) := ⟨hdim⟩
+    let : NeZero (Module.finrank ℝ ℝ) := ⟨by simp⟩
+    have h := DifferentialGeometry.Geometry.metric_differential_le_of_edist_le
+      (I := 𝓘(ℝ, ℝ)) (M := ℝ) (J := I) (N := Q) (V := ℝ)
+      (g := DifferentialGeometry.Geometry.standardEuclideanMetric ℝ) (h := g)
+      (u := ν) (v := γ) (L := 1) hν.mdifferentiableAt hγ (fun y => by
+        rw [DifferentialGeometry.Geometry.riemannianEDistOf_standardEuclideanMetric,
+          edist_dist, Real.dist_eq, ENNReal.coe_one, one_mul, abs_sub_comm]
+        exact hbound y) (1 : ℝ)
+    change curveSpeed g γ x ≤
+      (1 : ℝ≥0) * DifferentialGeometry.Geometry.riemannianCurveSpeed
+        (DifferentialGeometry.Geometry.standardEuclideanMetric ℝ) ν x at h
+    simpa only [DifferentialGeometry.Geometry.riemannianCurveSpeed_real,
+      NNReal.coe_one, one_mul] using h
+
+omit finiteDimensionalE boundarylessI t2Q compactQ connectedQ in
+theorem abs_toReal_riemannianEDistOf_sub_le (g : SmoothRiemannianMetric I Q) (p : Q) {x y : Q}
+    (hpx : riemannianEDistOf g p x ≠ ⊤) (hpy : riemannianEDistOf g p y ≠ ⊤)
+    (hxy : riemannianEDistOf g x y ≠ ⊤) :
+    |(riemannianEDistOf g p x).toReal - (riemannianEDistOf g p y).toReal| ≤
+      (riemannianEDistOf g x y).toReal := by
+  have hyx : riemannianEDistOf g y x ≠ ⊤ := by
+    rwa [DifferentialGeometry.riemannianEDistOf_comm g x y] at hxy
+  rw [abs_sub_le_iff]
+  refine ⟨?_, ?_⟩
+  · have h := DifferentialGeometry.riemannianEDistOf_toReal_triangle g p y x hpy hyx
+    have hc : (riemannianEDistOf g y x).toReal = (riemannianEDistOf g x y).toReal := by
+      rw [← DifferentialGeometry.riemannianEDistOf_comm g x y]
+    linarith [h, hc]
+  · have h := DifferentialGeometry.riemannianEDistOf_toReal_triangle g p x y hpx hxy
+    linarith
+
+omit compactQ connectedQ in
+theorem riemannianEDistOf_le_integral_curveSpeed (g : SmoothRiemannianMetric I Q)
+    {γ : ℝ → Q} {C : ℝ≥0} {a b : ℝ}
+    (hγ : ∀ x y, riemannianEDistOf g (γ x) (γ y) ≤ (C : ℝ≥0∞) * edist x y)
+    (hint : IntervalIntegrable (curveSpeed g γ) volume a b)
+    (hmd : ∀ᵐ t ∂volume.restrict (Icc a b), MDifferentiableAt 𝓘(ℝ, ℝ) I γ t)
+    (hab : a ≤ b) :
+    (riemannianEDistOf g (γ a) (γ b)).toReal ≤ ∫ t in a..b, curveSpeed g γ t := by
+  have hfin : ∀ x y : ℝ, riemannianEDistOf g (γ x) (γ y) ≠ ⊤ := fun x y =>
+    ne_top_of_le_ne_top (ENNReal.mul_ne_top ENNReal.coe_ne_top ENNReal.ofReal_ne_top)
+      (by simpa only [edist_dist, Real.dist_eq] using hγ x y)
+  have hsplit : ∀ x y : ℝ, (riemannianEDistOf g (γ x) (γ y)).toReal ≤ (C : ℝ) * |x - y| :=
+    fun x y => by
+      have hle : riemannianEDistOf g (γ x) (γ y) ≤ (C : ℝ≥0∞) * edist x y := hγ x y
+      have hne : ((C : ℝ≥0∞) * edist x y) ≠ ⊤ := by
+        rw [edist_dist, Real.dist_eq]
+        exact ENNReal.mul_ne_top ENNReal.coe_ne_top ENNReal.ofReal_ne_top
+      refine (ENNReal.toReal_mono hne hle).trans_eq ?_
+      rw [ENNReal.toReal_mul, ENNReal.coe_toReal, edist_dist, Real.dist_eq,
+        ENNReal.toReal_ofReal (abs_nonneg _)]
+  let ν : ℝ → ℝ := fun t => (riemannianEDistOf g (γ a) (γ t)).toReal
+  have hν : LipschitzWith C ν := by
+    apply LipschitzWith.of_dist_le_mul
+    intro x y
+    rw [Real.dist_eq, Real.dist_eq]
+    exact (abs_toReal_riemannianEDistOf_sub_le g (γ a) (hfin a x) (hfin a y)
+      (hfin x y)).trans (hsplit x y)
+  have hνac := hν.lipschitzOnWith.absolutelyContinuousOnInterval (a := a) (b := b)
+  have hae : deriv ν ≤ᵐ[volume.restrict (Icc a b)] curveSpeed g γ := by
+    filter_upwards [ae_restrict_of_ae hν.ae_differentiableAt_real, hmd] with t hdt hγt
+    refine (le_abs_self _).trans (abs_deriv_le_curveSpeed_of_edist_bound g hγt hdt ?_)
+    intro y
+    rw [abs_sub_comm]
+    exact abs_toReal_riemannianEDistOf_sub_le g (γ a) (hfin a t) (hfin a y) (hfin t y)
+  have hmono := intervalIntegral.integral_mono_ae_restrict hab hνac.intervalIntegrable_deriv
+    hint hae
+  rw [hνac.integral_deriv_eq_sub] at hmono
+  simpa only [ν, riemannianEDistOf_self, ENNReal.toReal_zero, sub_zero] using hmono
+
+omit finiteDimensionalE boundarylessI t2Q compactQ connectedQ in
+theorem riemannianCurveLength_le_of_edist_le_sub (g : SmoothRiemannianMetric I Q) (f : ℝ → Q)
+    {v : ℝ → ℝ} {a b : ℝ} (hab : a ≤ b) (hv : MonotoneOn v (Icc a b))
+    (h : ∀ x ∈ Icc a b, ∀ y ∈ Icc a b, x ≤ y →
+      riemannianEDistOf g (f y) (f x) ≤ ENNReal.ofReal (v y - v x)) :
+    Surgery.Topology.riemannianCurveLength g f a b ≤ ENNReal.ofReal (v b - v a) := by
+  unfold Surgery.Topology.riemannianCurveLength
+  refine iSup_le fun p => ?_
+  obtain ⟨n, ⟨u, hu, hs⟩⟩ := p
+  have hstep : ∀ i ∈ Finset.range n,
+      riemannianEDistOf g (f (u (i + 1))) (f (u i)) ≤
+        ENNReal.ofReal (v (u (i + 1)) - v (u i)) :=
+    fun i _ => h (u i) (hs i) (u (i + 1)) (hs (i + 1)) (hu (Nat.le_succ i))
+  calc ∑ i ∈ Finset.range n, riemannianEDistOf g (f (u (i + 1))) (f (u i))
+      ≤ ∑ i ∈ Finset.range n, ENNReal.ofReal (v (u (i + 1)) - v (u i)) :=
+        Finset.sum_le_sum hstep
+    _ = ENNReal.ofReal (∑ i ∈ Finset.range n, (v (u (i + 1)) - v (u i))) :=
+        (ENNReal.ofReal_sum_of_nonneg
+          (fun i _ => sub_nonneg.mpr (hv (hs i) (hs (i + 1)) (hu (Nat.le_succ i))))).symm
+    _ = ENNReal.ofReal (v (u n) - v (u 0)) := by rw [Finset.sum_range_sub fun i => v (u i)]
+    _ ≤ ENNReal.ofReal (v b - v a) :=
+        ENNReal.ofReal_le_ofReal
+          (by linarith [hv ⟨le_rfl, hab⟩ (hs 0) (hs 0).1, hv (hs n) ⟨hab, le_rfl⟩ (hs n).2])
+
+omit connectedQ in
+theorem loopLength_le_riemannianCurveLength (g : SmoothRiemannianMetric I Q)
+    (γ : ContinuousFreeLoop Q) (hlip : IsLipschitzLoop g γ) :
+    Surgery.Topology.riemannianCurveLength g (loopLift γ) 0 1 ≤
+      ENNReal.ofReal (loopLength g γ) := by
+  obtain ⟨L, hL⟩ := hlip
+  have hlip' : IsLipschitzLoop g γ := ⟨L, hL⟩
+  have hquot : LipschitzWith 1 (fun t : ℝ => (t : Surgery.Topology.Circle)) := by
+    apply LipschitzWith.of_dist_le_mul
+    intro x y
+    simp only [NNReal.coe_one, one_mul, dist_eq_norm]
+    rw [← AddCircle.coe_sub]
+    exact QuotientAddGroup.norm_mk_le_norm
+  have hγC : ∀ x y : ℝ,
+      riemannianEDistOf g (loopLift γ x) (loopLift γ y) ≤ (L : ℝ≥0∞) * edist x y :=
+    fun x y => (hL (x : Surgery.Topology.Circle) (y : Surgery.Topology.Circle)).trans
+      (mul_le_mul' le_rfl (by simpa using hquot.edist_le_mul x y))
+  have hint01 : IntervalIntegrable (curveSpeed g (loopLift γ)) volume 0 1 := by
+    have h : IntegrableOn (curveSpeed g (loopLift γ)) (uIcc (0 : ℝ) 1) := by
+      rw [uIcc_of_le (by norm_num : (0 : ℝ) ≤ 1)]
+      exact integrable_loopSpeed g γ hlip'
+    exact h.intervalIntegrable
+  have hmd01 : ∀ᵐ t ∂volume.restrict (Icc (0 : ℝ) 1),
+      MDifferentiableAt 𝓘(ℝ, ℝ) I (loopLift γ) t := ae_mdifferentiable_loopLift g γ hlip'
+  have hintsub : ∀ x y : ℝ, x ∈ Icc (0 : ℝ) 1 → y ∈ Icc (0 : ℝ) 1 →
+      IntervalIntegrable (curveSpeed g (loopLift γ)) volume x y := by
+    intro x y hx hy
+    refine hint01.mono_set ?_
+    rw [uIcc_of_le (by norm_num : (0 : ℝ) ≤ 1)]
+    intro t ht
+    simp only [Set.uIcc, Set.mem_Icc] at ht
+    exact ⟨le_trans (le_min hx.1 hy.1) ht.1, le_trans ht.2 (max_le hx.2 hy.2)⟩
+  have hmdsub : ∀ x y : ℝ, x ∈ Icc (0 : ℝ) 1 → y ∈ Icc (0 : ℝ) 1 →
+      ∀ᵐ t ∂volume.restrict (Icc x y), MDifferentiableAt 𝓘(ℝ, ℝ) I (loopLift γ) t :=
+    fun x y hx hy => ae_restrict_of_ae_restrict_of_subset
+      (show Icc x y ⊆ Icc (0 : ℝ) 1 from
+        fun t ht => ⟨le_trans hx.1 ht.1, le_trans ht.2 hy.2⟩) hmd01
+  let v : ℝ → ℝ := fun t => ∫ s in (0 : ℝ)..t, curveSpeed g (loopLift γ) s
+  have hv : MonotoneOn v (Icc (0 : ℝ) 1) := by
+    intro x hx y hy hxy
+    have hadd := intervalIntegral.integral_add_adjacent_intervals
+      (hintsub 0 x ⟨le_rfl, by norm_num⟩ hx) (hintsub x y hx hy)
+    have hnn : 0 ≤ ∫ s in x..y, curveSpeed g (loopLift γ) s :=
+      intervalIntegral.integral_nonneg_of_forall hxy fun s => curveSpeed_nonneg g (loopLift γ) s
+    simp only [v] at hadd ⊢
+    linarith
+  have h : ∀ x ∈ Icc (0 : ℝ) 1, ∀ y ∈ Icc (0 : ℝ) 1, x ≤ y →
+      riemannianEDistOf g (loopLift γ y) (loopLift γ x) ≤ ENNReal.ofReal (v y - v x) := by
+    intro x hx y hy hxy
+    have hfin : riemannianEDistOf g (loopLift γ x) (loopLift γ y) ≠ ⊤ :=
+      ne_top_of_le_ne_top (ENNReal.mul_ne_top ENNReal.coe_ne_top ENNReal.ofReal_ne_top)
+        (by simpa only [edist_dist, Real.dist_eq] using hγC x y)
+    have hpoint := riemannianEDistOf_le_integral_curveSpeed g hγC (hintsub x y hx hy)
+      (hmdsub x y hx hy) hxy
+    have hvxy : v y - v x = ∫ s in x..y, curveSpeed g (loopLift γ) s := by
+      have hadd := intervalIntegral.integral_add_adjacent_intervals
+        (hintsub 0 x ⟨le_rfl, by norm_num⟩ hx) (hintsub x y hx hy)
+      simp only [v]
+      linarith
+    calc riemannianEDistOf g (loopLift γ y) (loopLift γ x)
+        = riemannianEDistOf g (loopLift γ x) (loopLift γ y) :=
+          DifferentialGeometry.riemannianEDistOf_comm g (loopLift γ y) (loopLift γ x)
+      _ = ENNReal.ofReal ((riemannianEDistOf g (loopLift γ x) (loopLift γ y)).toReal) :=
+          (ENNReal.ofReal_toReal hfin).symm
+      _ ≤ ENNReal.ofReal (∫ s in x..y, curveSpeed g (loopLift γ) s) :=
+          ENNReal.ofReal_le_ofReal hpoint
+      _ = ENNReal.ofReal (v y - v x) := by rw [hvxy]
+  have hmain := riemannianCurveLength_le_of_edist_le_sub g (loopLift γ) (by norm_num) hv h
+  have hv0 : v 0 = 0 := by simp only [v, intervalIntegral.integral_same]
+  have hv1 : v 1 = loopLength g γ := by
+    simp only [v, loopLength, curveSpeed, loopVelocity,
+      intervalIntegral.integral_of_le (by norm_num : (0 : ℝ) ≤ 1)]
+    exact integral_Icc_eq_integral_Ioc.symm
+  rwa [hv0, hv1, sub_zero] at hmain
+
+omit connectedQ in
+theorem ofReal_loopLength_le_riemannianCurveLength (g : SmoothRiemannianMetric I Q)
+    (γ : ContinuousFreeLoop Q) (hlip : IsLipschitzLoop g γ) :
+    ENNReal.ofReal (loopLength g γ) ≤
+      Surgery.Topology.riemannianCurveLength g (loopLift γ) 0 1 := by
+  let : RiemannianBundle (TangentSpace I : Q → Type _) :=
+    ⟨g.toContinuousRiemannianMetric.toRiemannianMetric⟩
+  let : PseudoEMetricSpace Q := .ofRiemannianMetric I Q
+  obtain ⟨L, hL⟩ := hlip
+  have hlip' : IsLipschitzLoop g γ := ⟨L, hL⟩
+  have hquot : LipschitzWith 1 (fun t : ℝ => (t : Surgery.Topology.Circle)) := by
+    apply LipschitzWith.of_dist_le_mul
+    intro x y
+    simp only [NNReal.coe_one, one_mul, dist_eq_norm]
+    rw [← AddCircle.coe_sub]
+    exact QuotientAddGroup.norm_mk_le_norm
+  have hlift : LipschitzWith L (loopLift γ) := fun x y =>
+    (hL (x : Surgery.Topology.Circle) (y : Surgery.Topology.Circle)).trans
+      (mul_le_mul' le_rfl (by simpa using hquot.edist_le_mul x y))
+  have hV : LipschitzWith L (variationOnFromTo (loopLift γ) univ 0) :=
+    DifferentialGeometry.Analysis.lipschitz_variationOnFromTo hlift 0
+  have hVmono : Monotone (variationOnFromTo (loopLift γ) univ 0) := fun x y hxy =>
+    variationOnFromTo.monotoneOn (hlift.locallyBoundedVariationOn univ) (mem_univ 0)
+      (mem_univ x) (mem_univ y) hxy
+  have hV0 : variationOnFromTo (loopLift γ) univ 0 0 = 0 :=
+    variationOnFromTo.self (loopLift γ) univ 0
+  have hV1 : variationOnFromTo (loopLift γ) univ 0 1 =
+      (eVariationOn (loopLift γ) (Icc (0 : ℝ) 1)).toReal := by
+    simp only [variationOnFromTo, if_pos (by norm_num : (0 : ℝ) ≤ 1), univ_inter]
+  have hint01 : IntervalIntegrable (curveSpeed g (loopLift γ)) volume 0 1 := by
+    have h : IntegrableOn (curveSpeed g (loopLift γ)) (uIcc (0 : ℝ) 1) := by
+      rw [uIcc_of_le (by norm_num : (0 : ℝ) ≤ 1)]
+      exact integrable_loopSpeed g γ hlip'
+    exact h.intervalIntegrable
+  have hvac := hV.lipschitzOnWith.absolutelyContinuousOnInterval (a := 0) (b := 1)
+  have hae : curveSpeed g (loopLift γ) ≤ᵐ[volume.restrict (Icc (0 : ℝ) 1)]
+      deriv (variationOnFromTo (loopLift γ) univ 0) := by
+    filter_upwards [ae_mdifferentiable_loopLift g γ hlip',
+      ae_restrict_of_ae hV.ae_differentiableAt_real] with t ht hVt
+    refine (curveSpeed_le_abs_deriv_of_edist_upper_bound g ht hVt ?_).trans_eq
+      (abs_of_nonneg (Monotone.deriv_nonneg hVmono))
+    intro y
+    rw [abs_sub_comm]
+    exact DifferentialGeometry.Analysis.edist_le_ofReal_variationOnFromTo hlift 0 t y
+  have hle := intervalIntegral.integral_mono_ae_restrict (by norm_num : (0 : ℝ) ≤ 1)
+    hint01 hvac.intervalIntegrable_deriv hae
+  rw [hvac.integral_deriv_eq_sub, hV0, hV1, sub_zero] at hle
+  have hloop : loopLength g γ = ∫ t in (0 : ℝ)..1, curveSpeed g (loopLift γ) t := by
+    simp only [loopLength, curveSpeed, loopVelocity,
+      intervalIntegral.integral_of_le (by norm_num : (0 : ℝ) ≤ 1)]
+    exact integral_Icc_eq_integral_Ioc
+  rw [hloop]
+  calc ENNReal.ofReal (∫ t in (0 : ℝ)..1, curveSpeed g (loopLift γ) t)
+      ≤ ENNReal.ofReal ((eVariationOn (loopLift γ) (Icc (0 : ℝ) 1)).toReal) :=
+        ENNReal.ofReal_le_ofReal hle
+    _ = eVariationOn (loopLift γ) (Icc (0 : ℝ) 1) :=
+        ENNReal.ofReal_toReal
+          (DifferentialGeometry.Analysis.eVariationOn_Icc_ne_top_of_lipschitz hlift 0 1)
+    _ = Surgery.Topology.riemannianCurveLength g (loopLift γ) 0 1 := rfl
+
+end CurveSpeedComparison
+
 omit connectedQ in
 theorem loopLength_eq_riemannianCurveLength (g : SmoothRiemannianMetric I Q)
     (γ : ContinuousFreeLoop Q) (hlip : IsLipschitzLoop g γ) :
     ENNReal.ofReal (loopLength g γ) =
       Surgery.Topology.riemannianCurveLength g (loopLift γ) 0 1 := by
-  sorry
+  exact le_antisymm (ofReal_loopLength_le_riemannianCurveLength g γ hlip)
+    (loopLength_le_riemannianCurveLength g γ hlip)
 
 omit connectedQ in
 theorem riemannianCurveLength_loop_ne_top (g : SmoothRiemannianMetric I Q)
