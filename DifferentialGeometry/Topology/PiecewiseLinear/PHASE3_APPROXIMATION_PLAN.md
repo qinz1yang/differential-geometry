@@ -1,0 +1,369 @@
+# Phase 3 具体计划：A′ `PLApproximationManifold 3` 的经典证明链（Moise GTM 47）
+
+本文件是 `MOISE_PLAN.md` §5 "Phase 3+" 的展开，只描述 Phase 3；目标、基线、Phase 1/2 的状态仍以 `MOISE_PLAN.md` 为准。
+日期均为绝对日期（起草 2026-09-12）。路径省略 `DifferentialGeometry/` 前缀。
+来源：Moise, *Geometric Topology in Dimensions 2 and 3*（GTM 47，本机 PDF 副本，书页 p ≈ PDF 页 p+10）。
+"Moise a.b" 指该书 §a 定理 b；"L a.b" 指 §a 引理 b。
+
+## 0. 目标命题与已证消费者
+
+Phase 3 的唯一终点是一条定理：
+
+```lean
+theorem plApproximationManifold_three : PLApproximationManifold.{u} 3
+```
+
+其中（`Topology/PiecewiseLinear/Manifold.lean`，已定义、无 sorry）：
+
+```lean
+def PLApproximationManifold (n : ℕ) : Prop :=
+  ∀ {M₁ M₂ : Type u} [TopologicalSpace M₁] [T2Space M₁] [SecondCountableTopology M₁]
+    [MetricSpace M₂] [SecondCountableTopology M₂]
+    [ChartedSpace (EuclideanSpace ℝ (Fin n)) M₁] [ChartedSpace (EuclideanSpace ℝ (Fin n)) M₂]
+    [HasGroupoid M₁ (plGroupoid n)] [HasGroupoid M₂ (plGroupoid n)] (h : M₁ ≃ₜ M₂)
+    (φ : M₁ → ℝ), Continuous φ → (∀ x, 0 < φ x) →
+    ∃ f : M₁ ≃ₜ M₂, IsPL n n f ∧ ∀ x, dist (f x) (h x) < φ x
+```
+
+已证（Phase 1）的下游链，Phase 3 完成后自动变成无条件定理：
+
+- `plApproximation_of_plApproximationManifold : PLApproximationManifold n → PLApproximation n`（A′ → A）。
+- `exists_chartedSpace_hasGroupoid_plGroupoid_of_plApproximation`：A → 紧致 T2 拓扑 `n`-流形有 PL 图册（Moise 三角剖分定理的图册形式）。
+- `exists_isManifold_three_of_plApproximation_of_plSmoothing`：A + B（Phase 2）→ 书中接口 `∃ s : ChartedSpace ℝ³ M, IsManifold (𝓡 3) ∞ M`。
+
+Phase 3 结束时应新增两条无条件推论并做公理审计：
+
+```lean
+theorem plApproximation_three : PLApproximation.{u} 3 :=
+  plApproximation_of_plApproximationManifold plApproximationManifold_three
+
+theorem exists_chartedSpace_hasGroupoid_plGroupoid_three {X : Type u} [TopologicalSpace X] [T2Space X]
+    [CompactSpace X] [ChartedSpace (EuclideanSpace ℝ (Fin 3)) X] :
+    ∃ C : ChartedSpace (EuclideanSpace ℝ (Fin 3)) X, letI := C; HasGroupoid X (plGroupoid 3)
+```
+
+### 0.1 A′ 与 Moise 36.1 的对应，以及必须处理的非紧性
+
+Moise 36.1：`M₁ M₂` PL 3-流形，`U ⊆ M₁` 开，`h : U → M₂` 同胚到开集 `h(U)`，`φ ≫ 0` 于 `U`；
+则存在 PLH `f : U → M₂`，`f` 是 `h` 的 φ-逼近且 `f(U) = h(U)`。
+A′ 是 `U = M₁`、`h` 满射的情形；两集拼接桥需要的开子集情形已经由
+`plApproximation_of_plApproximationManifold` 通过 `Opens` 子类型 PL 流形归约到 A′。
+因此 A′ 的证明必须覆盖**非紧致** `M₁`（开子集通常非紧），且 `M₂` 的度量任意。
+Moise 的"强正函数"在这里换成连续正函数 `φ`（局部紧可分空间上二者等价，见 `MOISE_PLAN.md` §4.2）。
+
+Moise 的推导顺序是 35.1（线性图正则邻域，非紧、流形层）→ 35.2（多面体 3-流形带边，非紧）→ 36.1（开集，
+`f(U) = h(U)` 由穷竭 + 不变域得到，"与 8.4 从 6.4 的过渡完全一样"）。本计划保持这一顺序。
+
+### 0.2 与用户路线图 `main04.tex` 的关系
+
+`Moise_Theorem/main04.tex` 按 Shalen 1984 的路线（覆盖塔、Nielsen、受控对齐、Heegaard 结构）组织章节，
+而本计划按 Moise §30–36（伪胞腔 / 典范构形）组织；二者的终点陈述相同（`thm:boundaryless-approx-main04` = 36.1）。
+选 Moise 的理由：本机有完整可核对的书面证明；Shalen 原文不在本机。章节名重合处在下表中标注
+（`chap:pl-schoenflies`、`chap:pl-coverings`、`chap:regular-neighborhoods`、`chap:dehn-loop`、
+`chap:noncompact-approximation`、`chap:two-set-gluing`）。路线图"仅在证明来源固定后才加入平面 Schoenflies 边"的保留
+现在可以落地：Moise §17 的证明确实使用平面多边形 Schoenflies（3.6）、自由 2-胞腔引理（3.3）与平面线性图的驯顺嵌入（10.8），
+见 §4.2。
+
+## 1. 表示层决定（Phase 3 词汇）
+
+Phase 1 刻意用 H-多面体 + 图册回避了细分理论；Phase 3 无法回避：正则邻域、胞腔分解、分裂运算、Euler 数与
+同调计数、一般位置全部以三角剖分表达。以下决定在实现前冻结（修改需回写本文件与 `MOISE_PLAN.md` §7）。
+
+- **D1 两个层次。** (i) *多面体层*：固定 `E := EuclideanSpace ℝ (Fin N)`；紧致多面体 = 有限个 H-多面体之并
+  （`IsPolyhedron`）；三角剖分 = 有限 `Geometry.SimplicialComplex ℝ E`（Mathlib 原生，本库 `Topology/SimplicialComplex/*`
+  已有 link、star、Euler 数、实现同胚）；PL 映射 = `IsPiecewiseAffineOn` / `IsPLHomeomorphOn`；组合流形（带边）
+  由顶点 link 定义。(ii) *流形层*：`[ChartedSpace ℝ³ M] [HasGroupoid M (plGroupoid 3)]`，映射用 `IsPL`。
+  Moise §23–§35 的对象（多面体 3-胞腔、多面体 2-球面、正则邻域、CST）都定义在多面体层，通过"`M` 中的紧致多面体"
+  （`PolyhedronIn`：有限复形 + 逐图卡 PL 的嵌入，与 `PLTriangulation` 同型）进入流形层。
+- **D2 不引入带边 PL 流形的图卡范畴。** 带边对象只作为多面体层的有限复形 `IsCombinatorialManifoldWithBoundary 3 K`
+  出现（在 ℝᴺ 中，或作为 PL 流形内的 `PolyhedronIn`）。§25 需要的 2-重覆盖用 24.6 + 7.1 实现成有限复形，
+  不需要抽象带边流形。
+- **D3 同调层用有限复形的单纯 ℤ-链。** 可定向性（23.14 的 3-链定义）、`p¹`（H₁ 的秩）、`χ`（顶点−边+面）、
+  28.11 型引理全部在单纯链上陈述与证明；需要拓扑不变性的地方按 Moise 原路（21.4–21.5 经细分不变性与 2D 结果）处理，
+  或在车道 H 决定改用本库奇异同调（`Topology/Homology/*`）加比较定理。这是 Phase 3 最大的开放设计点（§8 R3）。
+- **D4 基本群与覆盖用 Mathlib/本库。** `FundamentalGroup`、`Path`、`IsCoveringMap`、`IsCoveringMap.liftPath`、
+  `monodromy`（Mathlib `Topology/Homotopy/Lifting.lean`）；本库 `Topology/Covering/*`（`BoolCocycle`、`DoubleCoverComponents`、
+  `DeckGroup`、`SimplyConnectedCover`）与 `Topology/VanKampen/*`（`FreeProduct`、`SimplyConnectedUnion`）是复用候选，
+  使用前必须做 `#print axioms`（Phase 2 审计指出树中存在 sorry 支撑的链）。多面体中的道路先取 PL 代表
+  （1 维单纯逼近，车道 F 提供）。
+- **D5 一般位置只做本链用到的三种。** (a) 两张多面体曲面（或曲面与 2-胞腔）经任意小 PLH 后横截相交于有限条
+  多边形与折线（§26.4、§30–§34 的"cross one another"）；(b) PL 奇异 2-胞腔的正规形式（§25 L2：奇点为不交多边形与折线，
+  仅"crossing"）；(c) 多边形相对水平平面族的一般位置（§17.12）。不做一般的 PL 一般位置定理。
+- **D6 不变域定理外部移植。** mccorvie/classification-of-surfaces@e3c7230 的
+  `ClassificationOfSurfaces/Topology/InvarianceOfDomain.lean`（813 行，Lean 4.32.0，Apache-2.0）给出维数无关的
+  `invariance_of_domain_open_map (f : E → E) (U) (hU : IsOpen U) (hf : ContinuousOn f U) (hinj : InjOn f U) : IsOpen (f '' U)`
+  （解析证明：Stone–Weierstrass 光滑逼近 + Jacobian 测度论证）。单文件移植到 `Topology/InvarianceOfDomain.lean`，
+  去注释、按本库 linter 修整；用于 23.8（`Bd = Fr`）与 36.1 的过渡。
+
+## 2. 章节依赖（只列 36.1 实际消费的边）
+
+- §7 / §8.2（PL 复形、开集是多面体）→ 一切；本计划用 §1 的 D1 替代 §7 的"PL 复形"。
+- 2D 输入：3.3, 3.6, 5.3, 5.4, 10.8 → §17；2.7–2.8, 4.4 → §26.7, §27.2, §30.1；§21–22（χ, p¹, 可定向性，22.5–22.9, 22.11）
+  → §23.18–19, §26.8, §28.6, §30.4, §30.6, §32, §33 L7/L11/L12。
+- §17（PL Schoenflies, 推移性质 17.4–17.8）→ §23.9–23.11, §28.1 后半, §30.5, §33 末（3-胞腔延拓）。
+- §23（三角剖分 3-流形：23.2–23.4, 23.8, 23.9–23.12, 23.14–23.19）→ §24.7–24.8, §25, §26.2, §28, §30.4, §36.1。
+- §24（覆盖：24.1–24.6 通用；24.7, 24.8 二重覆盖；24.9–24.12 CST）→ §25 L3, §28.19, §31。
+- §25（Stallings 环定理 25.1, 25.2）→ §26.4。
+- §26（26.1–26.4 双领与扩展环定理；26.6–26.8 ℝ³ 中曲面；问题 26.3）→ §27.1, §28.1 后半, §30.4, §30.6, §30.7, §32 Type 2, §33 L5/L9–L11。
+- §27.1–27.4（胞腔同胚、环带中多边形；**27.5 Dehn 引理不在关键路径**）→ §28.2–28.3, §31.4, §32 L2, §35 L1。
+- §28.2–28.4, 28.6–28.11, 28.19–28.20（**28.5, 28.12–28.18 不在关键路径**）→ §30.3–30.4, §31.4, §32, §33 L7, §34 L4/L11。
+- §30.1–30.8 → §31.1–31.2, §32 Step 2, §33 L5, §34 L3。
+- §31 → §32.1。§32.1–32.4 → §33。§33.1 → §34 L1。§34.1 → §35.1。§35.1 → §35.2 → §36.1 → A′。
+
+## 3. 车道划分
+
+| 车道 | 内容 | 前置 | 估计 Lean 行数 |
+|---|---|---|---|
+| F 基础 | §4.0：多面体/三角剖分/细分/公共细分/PL 映射单纯化/link 唯一性/锥延拓/正则邻域/一般位置/局部有限三角剖分与穷竭/T1、T2 | 无 | 35k–60k |
+| H 同调与曲面 | §4.1 后半：单纯链、H₁、p¹、χ、可定向性；§21–22 所需；23.14–23.19；28.11 | F1–F3 | 20k–35k |
+| S Schoenflies 与 3-胞腔 | §4.1 前半（3.3, 3.6, 5.3, 5.4, 10.8）；§17；23.9–23.12；PL Alexander 技巧；30.5 | F | 20k–35k |
+| C 覆盖 / 环定理 / 环带 / 实心环面 | §24、§25、§26、§27.1–27.4、§28（关键子集） | F, H, S | 45k–75k |
+| I 插值与逼近 | §30–§34 | C, S, H | 60k–100k |
+| E 终局 | D6 不变域移植（可立即开始）；§35–§36；穷竭；端点与推论；公理审计 | I, F6 | 15k–25k |
+
+总计约 **200k–330k** 行（不含 Phase 1 的 1.4k 与 Phase 2）。这比 `MOISE_PLAN.md` 早先给出的 Phase 3 估计
+（110k–210k）高：早先估计在通读 §24–§35 之前给出；通读后可见 §25、§32–§34 各自都是 2D 项目
+（88.7k 行 `Moise/` 目录）量级的一半以上。时间：4 条并行车道、每车道每日 1k–1.5k 已验证行，约 6–9 个月；
+单车道则线性放大。降本杠杆：D6（−1k）、D4 复用（−10k–20k）、H 车道若能避免完整 2D 分类（§8 R3，不确定）。
+
+顺序：F、H、S、E0（D6 移植）立即并行；C 在 F1–F4、H 前半、S 的 §17 完成后开始；I 在 C 的 §26.4、§28 与 S 完成后开始；
+E 最后。每车道的对外接口定理在本文件 §4 表中列出，签名冻结后修改必须回写此表。
+
+## 4. 分章定理清单与拟定 Lean 陈述
+
+记 `ℝ³ := EuclideanSpace ℝ (Fin 3)`，`E` 为有限维实赋范空间。所有签名是**拟定**形式（实现时可调整隐式参数与
+携带的有限性假设），但陈述的数学内容不得弱化。表中"状态"：`new` 待写；`ext` 外部移植；`nat` 本库已有或可直接推出；
+`skip` 不在关键路径。
+
+### 4.0 车道 F：PL 基础（维数无关，除非注明 3D）
+
+| 编号 | 内容 | 拟定 Lean | 消费者 | 状态 | 行数 |
+|---|---|---|---|---|---|
+| F1.1 | 紧致多面体 | `def IsPolyhedron (P : Set E) : Prop := ∃ (ι : Type) (_ : Finite ι) (C : ι → Set E), (∀ i, IsHPolytope (C i)) ∧ P = ⋃ i, C i`；对有限并、交、仿射像封闭 | 全部 | new | 1k |
+| F1.2 | 多面体可三角剖分（RS 2.8–2.11：H-多面体交成胞腔复形，逐维锥分） | `theorem IsPolyhedron.exists_simplicialComplex (hP : IsPolyhedron P) : ∃ K : Geometry.SimplicialComplex ℝ E, Finite K.faces ∧ K.space = P` | F2, T2 | new | 4k–7k |
+| F2.1 | 细分 | `def Geometry.SimplicialComplex.IsSubdivision (K' K) : Prop := K'.space = K.space ∧ ∀ s ∈ K'.faces, ∃ t ∈ K.faces, convexHull ℝ ↑s ⊆ convexHull ℝ ↑t`；传递性；子复形的细分 | 全部 | new | 1k–2k |
+| F2.2 | 重心细分与网格 | `def barycentricSubdivision (K)`；`barycentricSubdivision_isSubdivision`；`theorem exists_isSubdivision_diam_lt (K) (hK : Finite K.faces) (ε) (hε : 0 < ε) : ∃ K', IsSubdivision K' K ∧ ∀ s ∈ K'.faces, Metric.diam (convexHull ℝ ↑s) < ε`（本库 `FaceBarycenter.lean`、`Homology/AffineSubdivision.lean` 可部分复用） | §23 正则邻域、§33–35 的"充分细" | new | 3k–5k |
+| F2.3 | 子复形化 / 公共细分（RS 2.12） | `theorem exists_isSubdivision_subcomplexes (K) (hK : Finite K.faces) (P : Finset (Set E)) (hP : ∀ p ∈ P, IsPolyhedron p ∧ p ⊆ K.space) : ∃ K', IsSubdivision K' K ∧ ∀ p ∈ P, ∃ L ≤ K', L.space = p`；推论 `exists_common_subdivision (K L) (h : K.space = L.space)` | §25–§35 到处用"取三角剖分使 S, Δ, N, J 为子复形" | new | 8k–15k |
+| F3.1 | PL 映射经细分单纯（RS 2.14） | `theorem IsPiecewiseAffineOn.exists_isSubdivision_affineOn (hK : Finite K.faces) (hf : IsPiecewiseAffineOn f K.space) : ∃ K', IsSubdivision K' K ∧ ∀ s ∈ K'.faces, ∃ A : E →ᵃ[ℝ] F, EqOn f A (convexHull ℝ ↑s)` 及逆命题 | 一般位置、覆盖提升、§25 | new | 3k–5k |
+| F3.2 | 1 维单纯逼近 | 多面体中任意道路同伦于 PL 道路；闭道路同理（D4） | §24–§25, §30–§35 中"PL 闭道路" | new | 1k–2k |
+| F3.3 | link 的 PL 唯一性（RS 2.21–2.24） | 同一多面体的两个三角剖分中同一点的 link PL 同胚；推论：`IsCombinatorialManifold n K` 只依赖 `K.space` 的 PL 结构 | T2、§23 | new | 5k–8k |
+| F3.4 | PL 球/球面基本性质与锥延拓（PL Alexander 技巧） | `theorem exists_isPLHomeomorphOn_of_frontier (h₁ : IsPLBall n B₁) (h₂ : IsPLBall n B₂) (hf : IsPLHomeomorphOn f (frontier B₁) (frontier B₂)) : ∃ g, IsPLHomeomorphOn g B₁ B₂ ∧ EqOn g f (frontier B₁)`；PL 球的边界是 PL 球面；`IsPLBall` 在 PL 同胚下不变；标准单形的锥 | §17.5, §23.11, §33 末尾, §34 (5)–(7) | new | 3k–5k |
+| F4.1 | 带边组合流形与边界复形 | `def IsCombinatorialManifoldWithBoundary (n) (K) : Prop`（顶点 link 是 PL `(n−1)`-球面或 PL `(n−1)`-球）；`def boundaryComplex (K)`（恰在一个 `n`-面中的 `(n−1)`-面及其面）；`theorem isCombinatorialManifold_boundaryComplex (h : IsCombinatorialManifoldWithBoundary (n+1) K) : IsCombinatorialManifold n (boundaryComplex K)`（Moise 23.3/23.7 的 3D 证明经 23.2/23.6） | §23–§35 | new | 3k–5k |
+| F4.2 | 正则邻域（`b²K` 中与 `L` 相交的单形） | `def regularNeighborhood (K L) (h : L ≤ K) : Geometry.SimplicialComplex ℝ E`；`regularNeighborhood_space_mem_nhdsSet`；`N(v)`, `N'(σ)` 的定义与"是 3-胞腔、两两交于 2-胞腔"（Moise §23 预备）；**3D**：`theorem isCombinatorialManifoldWithBoundary_regularNeighborhood (hK : IsCombinatorialManifold 3 K) (hL : L ≤ K) : IsCombinatorialManifoldWithBoundary 3 (regularNeighborhood K L h)`（`chap:regular-neighborhoods`） | §23.12, §24.11–12, §25, §26.3, §27.5, §28.19, §32, §33–§35 | new | 6k–10k |
+| F4.3 | 管的对偶胞腔与分裂盘（§32 开头定义） | 对 PL 3-流形中 1 维复形 `K` 的正则邻域 `N`：分裂盘 `D_e`（`D_e ∩ K` = 边中点）把 `N` 分成 3-胞腔 `C_v`，每个恰含一个顶点；`C_v ∩ C_w = D_e`；可取任意小直径 | §32–§35 | new | 3k–5k |
+| F5.1 | 一般位置 (a)：曲面对 | 紧致多面体曲面（带边）`S₁ S₂ ⊆ ℝ³` 与 `ε`：存在 PLH `h` ε-接近恒同、在给定闭集外恒同，使 `h '' S₁ ∩ S₂` 为有限个不交多边形与折线之并且横截（Moise 的"cross one another"）；平面族版本（§17.12 的水平平面） | §17.12, §26.4, §26.6, §28.2, §30.4, §32–§34 | new | 6k–10k |
+| F5.2 | 一般位置 (b)：奇异 2-胞腔正规形式 | PL 映射 `D : Δ → M` 局部同胚、至多 2 对 1，可微扰使奇点集为不交多边形与折线的并且为"crossing"（§25 L2 前言） | §25 | new | 4k–8k |
+| F6.1 | PL 流形中的紧致多面体 | `structure PolyhedronIn (n) (M) [ChartedSpace ℝⁿ M]`（有限复形 `K ⊆ ℝᴺ`、映射 `g`、`BijOn g K.space P`、逐图卡两向 PL）；`IsPolyhedralManifoldWithBoundary 3 (P : Set M)`；`M` 中多面体 3-胞腔 / 2-球面 / CST 的定义；"落在一个 `Int \|St v\|`（即一张图卡）内的多面体对象可搬到 ℝ³" | §23 以后所有流形层陈述 | new | 3k–5k |
+| F6.2 | 开子集的局部有限三角剖分与穷竭（Moise 8.2/8.3 的 PL 版） | `theorem exists_exhaustion (U : Opens M) : ∃ N : ℕ → Set M, (∀ i, IsCompact (N i) ∧ IsPolyhedralManifoldWithBoundary 3 (N i) ∧ N i ⊆ interior (N (i+1))) ∧ ⋃ i, N i = U`（`M` 第二可数 PL 3-流形；连通分支处理留给 36.1） | §35.1–35.2（局部有限性）、§36.1 | new | 8k–15k |
+| T1 | `CombinatorialManifoldPLStructure n`（`Polyhedron.lean` 已陈述） | 有限组合流形的实现有与线性结构相容的 PL 图册（图卡 = 顶点 star 的 PL 参数化，用 F3.3） | §35–36 把多面体层结论搬回图册 | new | 4k–6k |
+| T2 | `PLManifoldTriangulation n`（已陈述） | 紧致 PL 流形有组合三角剖分（沿有限 PL 图卡归纳，用 F1.2、F2.3、F3.3） | §35.2 应用于 `M₁` 的紧致片 | new | 6k–10k |
+
+### 4.1 2D 输入与同调（车道 S 前半、车道 H）
+
+| 编号 | 内容 | 拟定 Lean / 来源 | 消费者 | 状态 | 行数 |
+|---|---|---|---|---|---|
+| P.1 | 平面多边形 Schoenflies（Moise 3.6）与组合形式 5.3（多边形界定组合 2-胞腔） | 由 vendored `External/Schoenflies/`（拓扑平面版）导出多边形版，或直接按 Moise §3 组合证明；输出 `theorem isPLBall_of_isPLSphere_one {J : Set ℝ²} (hJ : IsPLSphere 1 J) : ∃ D, IsPLBall 2 D ∧ frontier D = J` | §17, §21.4, §26.7, §27.2 | new/ext | 5k–10k |
+| P.2 | 5.4：多面体 2-胞腔边界间 PLH 延拓 | F3.4 的 `n = 2` 实例（锥延拓）加 5.3 | §17.10, §33 L13, §34 | new | 1k |
+| P.3 | 3.3 / 17.2–17.3：2-胞腔的胞腔分解至少有两个自由 2-胞腔；不在给定真子复形中的自由胞腔 | 组合陈述（用 P.1 的分离性质） | §17.9–17.12 | new | 2k–4k |
+| P.4 | 10.8：ℝ² 中有限线性图驯顺（给定开集 `U ⊇ M`、`φ ≫ 0`，存在同胚 `h : ℝ² ≃ₜ ℝ²`，`h(M)` 多面体，`U` 外恒同，`U` 上 φ-逼近恒同） | §10 定理 6–8（框架定理 10.6 + 收缩族） | §17.2（胞腔复形可视为多面体） | new | 6k–10k |
+| P.5 | 2.7–2.8 θ-图、4.4 盘中两弧不分离、Problem 4.1 | 平面分离引理（可由本库 `Topology/PlanarJordan/*` 或 `SphereSeparation` 的 2D 情形推出） | §26.7, §27.2, §30.1 | new/nat | 2k–4k |
+| H.1 | 有限复形的单纯 ℤ-链、边界、`H₁`、`H₂`、`H₃`，`p¹`（秩），`χ` 与 Euler–Poincaré | D3；本库 `EulerCharacteristic.lean` 的 `faceEulerChar` 复用 | §21–23, §24.8, §28, §31–§34 | new | 8k–12k |
+| H.2 | 可定向性（23.14 的 3-链定义；带边 `∂C³` 是 `∂K` 上的 2-循环）、23.15–23.17 | `def IsOrientable (K)`；子复形与二重覆盖的可定向性 | §24.7–24.8, §24.11, §26.8, §33 L11 | new | 3k–5k |
+| H.3 | §21：开胞腔复形的 χ 与运算 α–δ 不变；21.6 `χ(J) = 0`；21.7 2-胞腔 `χ = 1`；21.8 加法；21.10–21.11 分裂与张成 | 组合陈述于多面体曲面 | §22, §23.18–19, §28.20, §30.4, §33 L7 | new | 4k–6k |
+| H.4 | §22：22.5 `χ = 2 − (2h + m)`、22.6–22.7 `p¹` 与 `χ`、22.8–22.10 分类（可定向 + χ 决定同胚型）、22.11 单连通 ⟹ 2-球面、Problems 22.11–22.12 | 只对**多面体**紧致曲面陈述；22.9 用于 §33 L11–L12；22.11 用于 §30.6、§32；备选：移植 classification-of-surfaces 的 `classification_of_surfaces`（拓扑版，142k 行依赖，**不推荐**整体移植） | §26.8, §28.6, §30.4, §30.6, §32, §33 | new | 10k–18k |
+| H.5 | 23.18–23.19：`h(B) = p¹(N)`（`dim L ≤ 1`）、`p¹(K) ≥ h(Bd \|K\|)`（可定向带边） | 用 23.11–23.16、H.3、H.4 | §24.8 | new | 4k–6k |
+| H.6 | 28.11：`K = K₁ ∪ K₂`，`Zⁿ` 在 `K₁` 上、在 `K` 上零调 ⟹ `K₁` 上同调于 `K₁ ∩ K₂` 上的循环 | 单纯链的直接计算 | §31.4, §34 L4 | new | 1k |
+
+### 4.2 车道 S：§17 PL Schoenflies（`chap:pl-schoenflies`）与 3-胞腔
+
+| 编号 | 内容 | 拟定 Lean | 消费者 | 状态 | 行数 |
+|---|---|---|---|---|---|
+| S.1 | 17.1：ℝ³ 中闭 3-流形带边 `M` 有 `Bd M = Fr M` | D6 + F4.1 | §17.12, §23.8 | new | 1k |
+| S.2 | 17.4–17.8 推移性质：3-单形对每个面有推移性质；PLH 保持；单嵌入 2-球面有推移性质 | `def HasPushProperty (C : Set ℝ³) (D₁ : Set ℝ³) : Prop := ∀ N, IsPolyhedron N → closure (C \ frontier D₁) ⊆ interior N → ∃ h : ℝ³ ≃ₜ ℝ³, IsPiecewiseAffineOn h univ ∧ h '' D₁ = closure (frontier C \ D₁) ∧ EqOn h id Nᶜ` | §23.10, §33 末, §34 | new | 4k–7k |
+| S.3 | 17.9–17.11：凸多面体 3-胞腔边界单嵌入；2-胞腔与点的 join；两单嵌入球面交于平面 2-胞腔之并单嵌入 | 用 P.3 的自由胞腔删除归纳 | §17.12 | new | 4k–6k |
+| S.4 | **17.12 PL Schoenflies** | `theorem exists_isPLBall_of_isPLSphere_two {S : Set ℝ³} (hS : IsPLSphere 2 S) : ∃ B, IsPLBall 3 B ∧ frontier B = S ∧ Bornology.IsBounded B`；证明：水平平面族一般位置（F5.1 变体）、指标 `Ind S` 归纳（L1–L6）、S.3 收尾 | §23.9, §28.1 后半, §30.5, §33 末 | new | 8k–12k |
+| S.5 | 23.9–23.11 流形版：`Int \|St v\|` 内多面体 2-球面界定组合 3-胞腔；推移；两 3-胞腔交于 2-胞腔之并是 3-胞腔 | `theorem isPLBall_union_of_inter_isPLBall_two (h₁ : IsPLBall 3 C₁) (h₂ : IsPLBall 3 C₂) (hD : IsPLBall 2 (C₁ ∩ C₂)) (hD₁ : C₁ ∩ C₂ ⊆ frontier C₁) (hD₂ : C₁ ∩ C₂ ⊆ frontier C₂) : IsPLBall 3 (C₁ ∪ C₂)`（在图卡内） | F4.2 的 3D 部分、§23.12, §23.18, §26.2, §32 | new | 2k–3k |
+| S.6 | 30.5：嵌套拓扑 3-胞腔 `C₁ ⊆ Int C₂`、`Cl(C₂ − C₁)` 球壳 ⟹ 中间有多面体 3-胞腔 | 用 30.4（车道 I）+ S.4；放在 I 完成 30.4 后收尾 | §34 L3 | new | 1k |
+| S.7 | §33 末尾引用的 3-胞腔延拓（书中编号疑为笔误，§18 是 Antoine 集）：`Bd C_v ↔ Bd C''_v` 的 PLH 延拓到 3-胞腔 | S.4 + F3.4 | §33, §34 (5)–(7), §35 | new | 0.5k |
+
+### 4.3 车道 C（1）：§23 三角剖分 3-流形
+
+| 编号 | 内容 | 拟定 Lean | 消费者 | 状态 | 行数 |
+|---|---|---|---|---|---|
+| M.0 | 23.1（三角剖分 3-流形是组合流形） | **不需要**：本链所有三角剖分由构造是组合的（T2 经 F3.3；正则邻域经 F4.2；覆盖提升经 C.3）。记录以防有人误加 | — | skip | 0 |
+| M.1 | 23.2 / 23.4：边界点的 3-胞腔邻域 `C³ ∩ Bd M = 2-胞腔` | 由 F4.1 的 link 是 PL 2-球直接给出（star 结构） | §26.2, Problem 26.1–26.3 | new | 1k–2k |
+| M.2 | 23.5–23.7 倍化、`\|∂K\| = Bd \|K\|` | D2 下只需 `boundaryComplex_space_eq_frontier`（F4.1）；倍化仅 23.13/23.16 用，见 H.5 | H.5 | new | 1k–2k |
+| M.3 | 23.8：`Bd M' = Fr M'`（闭带边 3-流形在 3-流形内） | D6 | §28.1 后半, §30.4, §36.1 | new | 0.5k |
+| M.4 | 23.12–23.13, 23.16：`\|L\|` 与 `N(L)` 组合等价；带边流形是某 3-流形中子复形的正则邻域 | 用 S.5 反复；23.16 需 H.2 | §23.19（H.5） | new | 3k–5k |
+
+### 4.4 车道 C（2）：§24 覆盖空间（`chap:pl-coverings`）
+
+| 编号 | 内容 | 拟定 Lean | 消费者 | 状态 | 行数 |
+|---|---|---|---|---|---|
+| C.1 | 24.1–24.4：提升、诱导同态单射、`k`-重覆盖与指标 | Mathlib `IsCoveringMap.liftPath`、`monodromy`、`existsUnique_continuousMap_lifts`；本库 `Covering/*` | §25 | nat | 1k（桥接） |
+| C.2 | 24.5：由 π₁ 的指标 `k` 子群构造 `k`-重覆盖 | **改用组合构造**：有限组合流形 `K` 上的 ℤ₂ 1-上循环 ⟹ 二重覆盖复形（本库 `Covering/BoolCocycle.lean` 为复用候选） | C.4, C.5 | new/nat | 3k–5k |
+| C.3 | 24.6：三角剖分提升到覆盖，且组合流形性保持 | `theorem exists_lift_simplicialComplex (p : X̃ → K.space) (hp : IsCoveringMap p) (hfin : finite sheets) : ∃ (N) (K̃ : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin N))) (e : K̃.space ≃ₜ X̃), Finite K̃.faces ∧ (∀ s ∈ K̃.faces, p ∘ e affine onto a face) ∧ (IsCombinatorialManifoldWithBoundary 3 K → IsCombinatorialManifoldWithBoundary 3 K̃)`（用 7.1 的抽象复形实现） | §25 L3 | new | 4k–6k |
+| C.4 | 24.7：不可定向连通带边多面体 3-流形有二重覆盖（且覆盖可定向，Problem 24.11） | 定向上循环 + C.2 | §25 L3 | new | 2k–3k |
+| C.5 | 24.8：紧致连通可定向带边、某边界分支非 2-球面 ⟹ 二重覆盖 | H.5 的 `p¹ > 0` ⟹ `H₁ → ℤ₂` 满 ⟹ C.2 | §25 L3 | new | 2k–3k |
+| C.6 | 24.9–24.10 CST 与柱形图、CST 两两组合等价 | `def IsCST (S : Set M)`（有限个 3-胞腔循环相邻交于 2-胞腔）；`exists_cylindricalDiagram` | §28, §30.7, §31 | new | 3k–5k |
+| C.7 | 24.11–24.12：可定向 3-流形中多边形的正则邻域是 CST；可缩多边形的正则邻域是 CST（任意 `M`） | 用 F4.2、H.2、C.4 的定向传递（24.12 只需 28.19 的特例：`J = Bd Δ`，Problem 28.4 指出可直接证） | §28.19, §31, §34 L1 | new | 3k–5k |
+
+### 4.5 车道 C（3）：§25 Stallings 环定理（`chap:dehn-loop`）
+
+| 编号 | 内容 | 拟定 Lean | 消费者 | 状态 | 行数 |
+|---|---|---|---|---|---|
+| L.1 | 奇异 2-胞腔、`L(X)` 共轭类、正规系统 `[M₁, K₁, D, K(Δ), B₁, N₁]` 与复杂度 | 定义层 | L.2–L.4 | new | 2k–3k |
+| L.2 | 25 L1：`B` 2-球面时（`B'` 为 `\|L\|` 的正则邻域是 `k`-环带，π 自由）直接得非奇异 `D₁` | 用 P.1 变体（球面上多边形界定 2-胞腔）、F4.2 | L.4 | new | 2k–3k |
+| L.3 | 25 L2：局部同胚、至多 2 对 1 的 `D` 的四种情形（Case 1–4，切开与复杂度归纳） | F5.2 正规形式 + 柱形图（Figure 25.2）+ 基本群字计算（Figures 25.3–25.6） | L.4 | new | 8k–14k |
+| L.4 | 25 L3 / **25.1**：对每个正规系统存在非奇异 `D'`（二重覆盖降复杂度：C.3–C.5，`g*` 指标 2 不满） | `theorem loop_theorem_stallings (hK : IsCombinatorialManifoldWithBoundary 3 K) (B : boundary component) (N : Subgroup (FundamentalGroup B.space P₀)) [N.Normal] (D : PL singular 2-cell with Bd D ⊆ B.space) (hD : loopClass (Bd D) ∉ N) : ∃ Δ ⊆ K.space, IsPLBall 2 Δ ∧ Δ ∩ (boundaryComplex K).space = frontier Δ ∧ frontier Δ ⊆ B.space ∧ loopClass (frontier Δ) ∉ N` | L.5 | new | 8k–12k |
+| L.5 | **25.2 环定理第一形式**（可定向、`N = ⊥`） | `theorem loop_theorem (hK) (hor : IsOrientable K) (B) (L : loop in B) (hL : contractible in K.space) (hB : ¬ contractible in B.space) : ∃ Δ, IsPLBall 2 Δ ∧ Δ ⊆ K.space ∧ frontier Δ = Δ ∩ (boundaryComplex K).space ∧ ¬ contractible (frontier Δ) in B.space` | §26.4 | new | 1k |
+
+### 4.6 车道 C（4）：§26 双领邻域与扩展环定理；ℝ³ 中的曲面
+
+| 编号 | 内容 | 拟定 Lean | 消费者 | 状态 | 行数 |
+|---|---|---|---|---|---|
+| B.1 | 26.1：3-流形带边 `N` 的边界分支之并两侧（two sided）定义与命题 | `def IsTwoSided (M² : Set M³)` | §26.3, §30.4 | new | 1k |
+| B.2 | Problems 26.1–26.3（27.1 用）：`Bd M³` 中多面体 2-胞腔 `d` 的任意邻域含多面体 3-胞腔 `C` 使 `d = C ∩ Bd M³`；`N ⊆ Int M³` 两侧各一 | 用 M.1、F4.2 | §26.2, §27.1 | new | 2k–3k |
+| B.3 | 26.2 领邻域（紧致 `B = Bd M³` 有 PLH `ρ : B × [0,1] ↔ W`） | 对 `B` 的 2-胞腔分解归纳（用 B.2、S.5） | §26.3 | new | 3k–5k |
+| B.4 | 26.3 双领邻域（紧致两侧多面体 2-流形 `M² ⊆ Int M³`） | `theorem exists_bicollar (hM : IsPolyhedralSurface M²) (h2 : IsTwoSided M²) : ∃ ρ : M² × Icc (-1) 1 → M³, PL embedding, ρ (P, 0) = P, range ρ ∈ 𝓝ˢ M²` | §26.4, §28.1 后半, §30.7 | new | 2k–3k |
+| B.5 | **26.4 扩展环定理**（Papakyriakopoulos）：`M²` 紧致两侧、`ker i* ≠ 1` ⟹ 多面体 2-胞腔 `Δ`，`Δ ∩ M² = Bd Δ` 在 `M²` 中不可缩 | `theorem loop_theorem_two_sided (hK : IsCombinatorialManifoldWithBoundary 3 K) (hM : compact polyhedral 2-manifold M² ⊆ interior K.space) (h2 : IsTwoSided M²) (hker : ¬ Function.Injective (π₁-map)) : ∃ Δ, IsPLBall 2 Δ ∧ Δ ⊆ K.space ∧ Δ ∩ M² = frontier Δ ∧ ¬ contractible (frontier Δ) in M²`；证明：F5.1（相对 `Bd W`）、最内多边形三情形、L.5 | §30.4, §30.6, §30.7, §33 L9–L10 | new | 5k–8k |
+| B.6 | 26.6：ℝ³ 中紧致连通多面体 2-流形两侧，且 `ℝ³ − M²` 恰两分支、`M²` 为公共边界 | 用 F5.1（`ρ(Δ)` 相对 `M²` 一般位置）+ 图的奇偶论证 + B.4 | §26.7, §30.6, §32 Type 2, §33 L5 | new | 4k–6k |
+| B.7 | 26.7：三张带边曲面公共边界，其中一张在另两张之并的内部 | 2.7 的三维类比（P.5） | §32 Type 2 | new | 2k–3k |
+| B.8 | 26.8：ℝ³ 中紧致连通多面体 2-流形可定向 | 用 S.4/S.5（放入 3-球面三角剖分）+ H.1 `H₃ ≅ ℤ` + 无 Möbius 带 | §33 L11 | new | 2k–4k |
+
+### 4.7 车道 C（5）：§27.1–27.4 胞腔同胚（27.5 Dehn 引理 **skip**）
+
+| 编号 | 内容 | 拟定 Lean | 消费者 | 状态 | 行数 |
+|---|---|---|---|---|---|
+| D.1 | 27.1：`Bd N` 上的胞腔 PLH `h : M² ↔ M²` 延拓为 `M³ ↔ M³`，`N ↔ N`，给定邻域外恒同 | B.2 + F3.4（两 3-胞腔的锥延拓） | §27.4, §28.2 | new | 2k–3k |
+| D.2 | 27.2：PL 环带中两个不界定 2-胞腔的多边形经有限个胞腔 PLH 互变（边界固定） | 矩形图中的一般位置与 P.5 | §27.3, §27.4, §28.1 后半, §28.2 | new | 4k–6k |
+| D.3 | 27.3：PL 环带内部多边形要么界定 2-胞腔要么携带 `H₁(A)` 与 `π(A)` 的生成元 | `theorem polygon_in_annulus (hA : IsPLAnnulus A) (hJ : IsPLSphere 1 J) (hJA : J ⊆ interior A) : (∃ D, IsPLBall 2 D ∧ D ⊆ A ∧ frontier D = J) ∨ carriesGenerator J A` | §31.4, §32 L2, §35 L1 | new | 1k |
+| D.4 | 27.4：环带 `A ⊆ Bd N` 中 `J ↦ J'` 的 PLH `M³ ↔ M³`，`W` 外恒同 | D.1 + D.2 | §28.2, §28.13（skip） | new | 1k |
+
+### 4.8 车道 C（6）：§28 CST 边界上的多边形（关键子集）
+
+| 编号 | 内容 | 拟定 Lean | 消费者 | 状态 | 行数 |
+|---|---|---|---|---|---|
+| T.1 | 28.1 **后半**：ℝ³ 中 PL 实心环面 `S`，`Δ₁ Δ₂` 为两不交多面体 2-胞腔、`Δ_i ∩ Bd S = Bd Δ_i` 把 `Bd S` 分成两环带 ⟹ `S` 是 CST（两块 `D_i` 由 S.4 给出，`S ⊆ D₁ ∪ D₂` 由 M.3 + B.4 + 连通性） | `theorem isCST_of_two_meridian_disks ...` | §30.7 Case 2 | new | 3k–4k |
+| T.2 | 纬向多边形 `J_x`、标准位置定义；28.2、28.3（经胞腔 PLH 把多边形放入标准位置，`W` 外恒同） | D.1, D.2, D.4 | T.3–T.7, §34 L11 | new | 3k–5k |
+| T.3 | 28.4：标准位置下 `Z¹(J) ∼ n·Y¹` 于 `S` | H.1 | T.6 | new | 1k |
+| T.4 | 28.6：`T` 上不交非平凡多边形 `J_i` 的补分支闭包是环带 | T.2 + H.4（可定向排除 Möbius） | §32 Type 2/3、"no fourth type" | new | 2k–3k |
+| T.5 | 28.7, 28.8：非平凡多边形正则邻域的补是环带；不交多边形之并携带 `H₁(S)` 生成元 ⟹ 每个都携带 | T.2, T.4 | §28.19, §34 L11 | new | 2k |
+| T.6 | 28.9：`J ∼ 0` 于 `T` ⟹ `J` 在 `T` 中界定 2-胞腔 | T.2, T.3 | §31.4, §32 L2 | new | 1k–2k |
+| T.7 | 28.10：`K ⊆ T` 携带生成元、`J ⊆ T − K` 不界定 ⟹ `J` 携带 `H₁(S)` 生成元 | T.5, T.6 | §34 L4/L11（核对） | new | 1k |
+| T.8 | 28.19：`Δ ∩ M² = Bd Δ = J` ⟹ `J` 在 `M²` 中有环带邻域（`N(J)` 是 CST 的特例 C.7；`M² ∩ N` 环带或 Möbius，后者由 T.5 排除） | `theorem exists_annular_nhd_of_spanning_disk` | §30.3–30.4, §33 L7 | new | 2k–3k |
+| T.9 | 分裂运算（split `M² ∪ Δ` apart at `Δ`）定义与 28.20：`χ(M₁²) = χ(M²) + 2` | 定义 + H.3 | §30.3–30.4, §30.6, §32, §33 L3–L7, §34 Op.1 | new | 2k–3k |
+
+### 4.9 车道 I（1）：§30 多面体插值定理
+
+| 编号 | 内容 | 拟定 Lean | 消费者 | 状态 | 行数 |
+|---|---|---|---|---|---|
+| I.1 | 30.1：单连通、局部连通、连通开集道路连通的 `X` 中，`C ∪ D` 分离 `H` 与 `K` ⟹ `C` 或 `D` 分离（Δ 上的 4.4 型分离） | `theorem separates_of_union_separates [SimplyConnectedSpace X] [LocallyConnectedSpace X] (hpath : ∀ U, IsOpen U → IsConnected U → IsPathConnected U) (hC : IsClosed C) (hD : IsClosed D) ... : Separates C H K ∨ Separates D H K`；需要"单连通 ⟹ 圆周上映射延拓到圆盘"（Mathlib `SimplyConnectedSpace` + P.5） | I.2, §32 Step 2 | new | 3k–5k |
+| I.2 | 30.2：有限分支的闭集分离 ⟹ 某分支分离 | 归纳 | §30.4, §30.6, §33 L5/L6, §33 L10 | new | 0.5k |
+| I.3 | 30.3：分裂运算保持分离性（`N(Δ)`、`Bd A_i`、`C'`） | T.8, T.9 | §30.4, §30.6, §30.7, §32 | new | 2k–3k |
+| I.4 | **30.4 球壳定理**：ℝ³ 中球壳 `X` 内有多面体 2-球面分离 `B₀` 与 `B₁` | `theorem exists_isPLSphere_separating_of_sphericalShell (X : Set ℝ³) (hX : IsSphericalShell X B₀ B₁) : ∃ S, IsPLSphere 2 S ∧ S ⊆ interior X ∧ Separates S B₀ B₁`；证明：F4.2 的多面体邻域 `N`、M.3、B.1、B.5、T.8、I.3、`p¹` 下降（H.4） | S.6, §34 L3 | new | 4k–6k |
+| I.5 | 30.6 环壳定理：ℝ³ 中环壳 `Y` 内有多面体环面分离 `T₀` 与 `T₁` | I.2, I.3, B.5, B.6, van Kampen 最简情形（本库 `VanKampen/FreeProduct.lean`，待审计）、H.4（`π(T)` 交换 ⟹ 环面，避免 26.8） | §30.7 | new | 5k–8k |
+| I.6 | 30.7：拓扑实心环面 `S₁ ⊆ Int S₂`、`Cl(S₂ − S₁)` 环壳 ⟹ 存在 CST `S`，`S₁ ⊆ Int S`，`S ⊆ S₂` | I.5, B.5, I.3, T.1 | §31.1 | new | 3k–4k |
+| I.7 | 30.8：脊 `J` 生成 `π(S)` | `π(S₂) ≅ ℤ` 与收缩核 | §31.2, §34 L1–L2 | new | 1k–2k |
+
+### 4.10 车道 I（2）：§31 典范构形
+
+| 编号 | 内容 | 拟定 Lean | 消费者 | 状态 | 行数 |
+|---|---|---|---|---|---|
+| K.1 | 定义：绕 `y` 轴旋转的 2-胞腔链 `D_j` → 实心环面 `S_j`、环带 `A_j`、圆 `J_j`；同胚 `h`；多面体 `S''_j`，`T''_j` 两两一般位置 | `structure CanonicalConfiguration` | K.2–K.4, §32 | new | 2k–3k |
+| K.2 | 31.1（存在，I.6 反复）、31.2（`J'_j, J'_{j+1}` 携带 `π(S''_j)` 生成元，I.7）、31.3（`S''_i ∩ S''_{i+2} = ∅`） | | §32 | new | 2k |
+| K.3 | 31.4：`T''_j ∩ T''_{j+1}` 中多边形要么携带两侧生成元要么在两侧各界定 2-胞腔 | H.6, T.6, D.3, F3.2 | §32 L2 | new | 2k–3k |
+
+### 4.11 车道 I（3）：§32 管的柄分解与伪胞腔
+
+| 编号 | 内容 | 拟定 Lean | 消费者 | 状态 | 行数 |
+|---|---|---|---|---|---|
+| Q.1 | 管、对偶胞腔、分裂盘（F4.3）、开 2-胞腔、伪胞腔 `E = U ∪ J`（`U − P` 多面体） | `structure PseudoCell` | Q.2–Q.4, §33 | new | 1k–2k |
+| Q.2 | **32.1**：分裂盘 `D` 的像 `D'` 附近存在伪胞腔 `E`，`Bd E = Bd D'`，`E ⊆ W`，`Int E` 在 `Int(C'₁ ∪ C'₂)` 中分离 `v'₁` 与 `v'₂`；证明：无穷同心环带 `A_i` 与典范构形（K.1–K.3）、L1 闭性、L2（K.3）、L3 分离、Step 1（I.3 内分裂）、Type 1–3（I.1, B.6, B.7, T.4）、"无第四类"（T.4） | `theorem exists_pseudoCell (tube data) (W : closed nbhd of Int D' \ {P'}) ... : ∃ E : PseudoCell, ...` | §32.2–32.4 | new | 10k–16k |
+| Q.3 | 32.2：`(C'₁ ∪ C'₂) − E` 恰两分支，`Bd C'_i ∩ Bd N' ⊆ Fr U_i` | Q.2 + 多面体 2-流形局部结构 | §33 L6 | new | 2k |
+| Q.4 | 32.3：所有边同时处理，得 `C''_i` 与 (7)–(10) | Q.2, Q.3 | §33 L1 | new | 3k–4k |
+| Q.5 | 32.4：伪胞腔中心附近有多面体 2-胞腔 `Δ₁ ⊆ N(P', δ)`，`Bd Δ₁ = Δ₁ ∩ E` 在 `E` 中界定含 `P'` 的 2-胞腔 | 最内分裂归纳（I.3, T.9） | §33 L8, §33 末 | new | 2k–3k |
+
+### 4.12 车道 I（4）：§33 线性图正则邻域的 PLH 逼近
+
+| 编号 | 内容 | 拟定 Lean | 消费者 | 状态 | 行数 |
+|---|---|---|---|---|---|
+| G.1 | L1–L2：`C''_v` 直径小；多面体带边 3-流形 `X`，`K' ⊆ Int X ⊆ Int N'`，`Bd X` 与伪胞腔一般位置 | Q.4, F5.1（伪胞腔的多面体部分） | G.2–G.5 | new | 2k–3k |
+| G.2 | L3–L4：每个 `E ∩ Bd X` 是单个多边形（分裂减少分支数） | I.3, T.9 | G.3 | new | 2k–3k |
+| G.3 | L5–L6：`X`、`Bd X` 连通（I.2, B.6）；`A'_v = C''_v ∩ Bd X` 连通带边 2-流形，`Bd A'_v` 在伪胞腔中 | | G.4 | new | 2k–3k |
+| G.4 | L7–L9：无 LTD（环定理盘）；L8 用 Q.5 + S.4 的 2-球面分离；L9 用最内分裂 | B.5, Q.5, S.4, I.2 | G.5 | new | 4k–6k |
+| G.5 | L10–L12：`i* : π(Bd X) ↔ π(N' − K')` 同构（`Bd N × (0,1) ≅ Int N' − K'`，Figure 33.1 的 PL 格论证，I.2）；`Bd X ≅ Bd N`（B.8 + H.4 22.9）；`A'_v` 是盘或带孔盘（H.4 计数） | | G.6 | new | 4k–6k |
+| G.6 | L13 + 定理收尾：PLH `f : Bd N ↔ Bd X`，`f(A_v) = A'_v`（P.2 反复、Figure 33.2–33.3 的盘拼接），Q.5 替换 `E ∩ X` 为多面体盘，延拓到分裂盘与 3-胞腔（S.7） | **33.1** `theorem exists_regularNeighborhood_plh_approx (K : finite connected linear graph ⊆ ℝ³ without end-points) (U : Opens ℝ³) (hKU : K ⊆ U) (h : U → ℝ³) (hh : IsOpenEmbedding-like homeomorphism onto image) (ε) : ∃ N (regular nbhd of K in U) (f : ℝ³ → ℝ³), IsPLHomeomorphOn f N (f '' N) ∧ f '' N ∈ 𝓝ˢ (h '' K) ∧ ∀ P ∈ N, dist (h P) (f P) < ε` | §34 L1 | new | 4k–6k |
+
+### 4.13 车道 I（5）：§34 多面体 3-胞腔的 PLH 逼近
+
+| 编号 | 内容 | 拟定 Lean | 消费者 | 状态 | 行数 |
+|---|---|---|---|---|---|
+| A.1 | 归约：`K` 推入 `Int K`（PLH 接近恒同），`h` 延拓到邻域 `U`；细分使 link 中"边内部不分离两顶点" | F2.2, F3.4 | A.2 | new | 2k |
+| A.2 | L1–L2：1-骨架正则邻域 `N` 与 PLH `f₁ : N ↔ N''`（G.6），条件 (1)–(5)；`J' = Bd σ'` 携带 `π(N''_σ)` 生成元（I.7） | G.6, I.7 | A.3–A.6 | new | 2k–3k |
+| A.3 | L3–L5：`σ'` 的任意小多面体 3-胞腔邻域 `C_σ`（S.6/I.4）；L4 `Bd C ∩ Bd N''_σ ∩ Bd N''` 携带 `H₁(N''_σ)` 生成元（H.6）；L5 的 (1)–(8) | | A.4 | new | 3k–5k |
+| A.4 | Operations 1–2 与 L6–L8（保持条件；终止性） | I.3, T.9 | A.5 | new | 3k–5k |
+| A.5 | L9–L11：`Bd C_σ ∩ Bd C''_v ∩ Bd N''` 无多边形；无两端在同一 `D''_e` 的折线；每个分支恰穿过每个 `Bd D''_e` 一次（T.5 28.8） | | A.6 | new | 4k–6k |
+| A.6 | 收尾：`D_σ, C(σ³), X(σ³, v)` 的复制（`W_i` 三孔球面、`X_i/Y_i` 选择、无界分支论证），分 (1)–(7) 步延拓 PLH | **34.1** `theorem exists_plh_approx_of_isPLBall (hK : IsPLBall 3 K) (h : K → ℝ³) (hh : homeomorphism into) (ε) (hε : 0 < ε) : ∃ f : ℝ³ → ℝ³, IsPLHomeomorphOn f K (f '' K) ∧ ∀ P ∈ K, dist (h P) (f P) < ε` | §35.1 | new | 6k–10k |
+
+### 4.14 车道 E：§35–§36 与端点
+
+| 编号 | 内容 | 拟定 Lean | 消费者 | 状态 | 行数 |
+|---|---|---|---|---|---|
+| E.0 | D6 不变域移植 | `theorem invariance_of_domain_open_map` 及流形版 `isOpen_range_of_isOpen_of_continuous_injective` | M.3, E.4 | ext | 1k |
+| E.1 | **35.1**：PL 3-流形 `M₁` 中 1 维多面体 `K`（可非紧、闭于 `U`）、`U ⊇ K` 开、`h : U → M₂` 同胚（到像）、`φ` 连续正 ⟹ 正则邻域 `N` 与 PLH `f : N ↔ X ⊆ M₂`，`X ∈ 𝓝ˢ (h '' K)`，φ-逼近。证明：`ε(A) = inf φ\|A`、对偶胞腔改造（Figure 35.1）、逐胞腔用 A.6（在图卡内）、条件 (2)–(8)、L1–L3（D.3、极小性条件）、拼接 | `theorem exists_regularNeighborhood_plh_approx_manifold ...`（流形层，F6.1/F6.2 的局部有限性） | E.2 | new | 6k–10k |
+| E.2 | **35.2**：`K` 为 `M₁` 中（局部有限）多面体 3-流形带边、`h : K → M₂`、`φ` ⟹ PLH `f : K → M₂` φ-逼近。证明 = A.1–A.6 在流形层的重复，以 E.1 代替 G.6，逐单形处理 | `theorem exists_plh_approx_of_polyhedralManifold ...` | E.3 | new | 4k–6k |
+| E.3 | 36.1 的过渡（Moise 8.4 的三维版）：连通分支归约、穷竭 `N_i ⊆ Int N_{i+1}`（F6.2）、`φ'` 的 (a)–(d)、E.0 得 `h(U)` 与 `Int N'_i` 开、M.3 得 `f(Bd N_{i+1}) = Fr f(N_{i+1})`、连通性得 `N'_i ⊆ f(N_{i+1})` | `theorem exists_plh_approx_of_isOpen (U : Opens M₁) (h : U → M₂) ... : ∃ f, IsPLOn 3 3 f U ∧ f '' U = h '' U ∧ ∀ x ∈ U, dist (f x) (h x) < φ x` | E.4 | new | 3k–5k |
+| E.4 | **端点**与推论、公理审计 | `plApproximationManifold_three`（E.3 取 `U = M₁`，`f` 双射 ⟹ `M₁ ≃ₜ M₂`，`IsPL 3 3 f` 由 `IsPLOn` 于 `univ` 得到）；推论 `plApproximation_three`、`exists_chartedSpace_hasGroupoid_plGroupoid_three`；`#print axioms` | 书中 `FND-SMOOTHABILITY` 链（与 Phase 2 合成） | new | 1k |
+
+## 5. 验收标准
+
+- 每个模块用 Phase 1 相同的配方逐模块检查（`lake env lean -DautoImplicit=false -DmaxSynthPendingDepth=3 -Dweak.linter.mathlibStandardSet=true -Dlinter.style.header=false -Dlinter.style.longLine=false -Dpp.unicode.fun=true`，或共享检出中的 `scripts/lake-locked.ps1 check`），零错误零警告；
+  非 vendored Lean 零注释、零 docstring；新叶子登记到 `DifferentialGeometry.lean`。
+- 车道对外接口定理（§4 表中带粗体或标明"消费者"跨车道者）签名冻结；变更需同时更新本表。
+- 每车道结束时对其接口定理做 `#print axioms`，只允许 `propext`、`Classical.choice`、`Quot.sound`；
+  D4/D6 复用的外部或本库声明在首次使用时单独审计并把结果记入 `MOISE_PLAN.md` §6。
+- 陈述与 Moise 编号的对照只维护在本文件（Lean 源不得含注释）；证明与书中不同处在本文件 §8 记录。
+- 报告规则：在 `plApproximationManifold_three` 完成前，所有 Phase 1 端点保持"条件性"报告；每车道报告分"已证生产者 / 条件性消费者"。
+- 不在共享检出启动完整 `lake build`；聚焦检查按 `WORKING_STATUS.md` 与 `lake-locked.ps1 status` 协调。
+
+## 6. 文件布局提案（`Topology/PiecewiseLinear/` 下）
+
+`Polyhedra.lean`、`Subdivision.lean`、`CommonSubdivision.lean`、`SimplicialMaps.lean`、`LinkUniqueness.lean`、
+`ConeExtension.lean`、`CombinatorialManifoldWithBoundary.lean`、`RegularNeighborhood.lean`、`Tube.lean`、
+`GeneralPosition/{Surfaces,SingularDisk,Planes}.lean`、`PolyhedronIn.lean`、`Exhaustion.lean`、`Triangulation/{Realization,Existence}.lean`（T1/T2）；
+`Homology/{Chains,FirstHomology,Orientation,EulerCharacteristic}.lean`；`Plane/{PolygonalSchoenflies,DiskExtension,FreeCells,TameGraphs,Separation}.lean`；
+`Surface/{OpenCellComplex,Classification,Handles}.lean`；`Schoenflies/{PushProperty,SimplyImbedded,Main}.lean`；
+`ThreeManifold/{Boundary,CellUnion,RegularNeighborhoodEquivalence,Orientation,BettiHandles}.lean`；
+`Covering/{Cocycle,LiftTriangulation,TwoFold,SolidTorus}.lean`；`LoopTheorem/{NormalSystem,SphereCase,TwoToOne,Stallings,FirstForm}.lean`；
+`Bicollar/{Collar,Bicollar,Extended,SurfacesInSpace}.lean`；`Cellular/{Extension,Annulus,Polygon}.lean`；
+`SolidTorus/{Meridian,StandardPosition,Polygons,Splitting}.lean`；`Interpolation/{Separation,Splitting,SphericalShell,ToroidalShell,SolidTori,Spine}.lean`；
+`Canonical/{Configuration,Polygons}.lean`；`PseudoCell/{Defs,Existence,Components,Disk}.lean`；
+`GraphApprox/{Setup,Boundary,LoopDisks,Isomorphism,Assembly}.lean`；`CellApprox/{Setup,Operations,Crossings,Assembly}.lean`；
+`Approximation/{GraphManifold,ManifoldWithBoundary,OpenSubset}.lean`；`Endpoint.lean`。
+约 60–80 个新叶子；每个文件控制在 3k 行以内。
+
+## 7. 与 Schoenflies 负责人的接口
+
+三个互不蕴含的 Schoenflies：
+
+1. 平面拓扑版（`External/Schoenflies/`，vendored，已证）：本链在 P.1 中把它降到多边形版使用（或独立组合证明）。
+2. PL ℝ³ 版（Alexander；Moise 17.12）：本链在车道 S 自证 `exists_isPLBall_of_isPLSphere_two`，输入 PL 2-球面，
+   输出 PL 3-球。它**依赖**平面多边形 Schoenflies（3.6）、3.3 与 10.8——这条早先只是"可能"的边现已由证明来源确定。
+3. 光滑 ℝ³ 版（负责人，`Topology/ThreeManifold/SmoothSchoenflies.lean` 的 `smooth_schoenflies_three`，目前 sorry）：
+   本链不消费它。若负责人希望经 PL 版导出光滑版，需要"光滑 2-球面 ⇒ 同痕于 PL 2-球面"与"PL 3-球的光滑化"两座桥，
+   均为 Phase 2 级别的 PL/光滑比较，不在 Phase 3 范围；Phase 3 车道 S 完成后可作为其上游被消费。
+
+## 8. 风险与开放决定
+
+- **R1 规模。** 200k–330k 行是当前最诚实的估计（§3）；若资源只允许单车道，应先做 F、S、E.0，它们对 Phase 2（T1/T2）也有用。
+- **R2 一般位置。** D5 的三种一般位置是全链最容易被低估的部分；Moise 到处以"slight perturbation"带过。建议车道 F 先用
+  §26.6 的证明（最简单的曲面对情形）做样板，确定表示后再推广。
+- **R3 同调层。** D3 若用单纯链，需要 `p¹` 与 `χ` 在细分与 PL 同胚下不变（组合证明可行但长）；若用本库奇异同调，需要
+  有限复形的单纯–奇异比较定理（本库 `Homology/Subdivision*` 有部分素材）。车道 H 开工前必须二选一并记录。
+- **R4 2D 分类。** §22 只对多面体曲面陈述可减少一半工作量；22.9（可定向 + χ ⟹ 同胚型）在 §33 L11–L12 的使用可能可以改成
+  `p¹` 计数直接给出"盘或带孔盘"，若成立可跳过 22.8–22.10；实现时验证。
+- **R5 非紧性。** E.1/E.2 需要 §33/§34 的构造在局部有限复形上进行（每步只影响有限个单形）；这是 Moise 一句"virtually a repetition"
+  掩盖的真实成本，估计已计入 E.1/E.2。
+- **R6 书中引用。** §33 末尾的"Theorem 18.2"与 §18（Antoine 集）不符，本计划按其内容用 S.7；其它引用已逐条核对到本文件 §2。
+- **R7 外部复用。** D4 的本库覆盖/van Kampen 声明与 D6 的移植都必须先 `#print axioms`；Phase 2 审计已发现树中有 sorry 支撑链。
