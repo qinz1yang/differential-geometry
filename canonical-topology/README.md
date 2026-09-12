@@ -1,4 +1,4 @@
-# Local homology, derivatives and linear determinant signs
+# Local homology and derivative determinant signs
 
 This separate `PoincareLean` project contains a dependency-closed checkpoint of
 88 Poincare modules. It extends the recovered Chapter 35 source at commit
@@ -22,7 +22,10 @@ The additions prove:
   the given subspaces;
 - multiplication by the sign of the determinant for the actual top local
   integral homology map of any continuous linear equivalence of a finite-dimensional
-  real normed space, including dimension zero.
+  real normed space, including dimension zero;
+- the actual local-homology map of a differentiable open partial homeomorphism
+  with differentiable inverse equals its derivative determinant sign after
+  translating source and target basepoints to zero, including dimension zero.
 
 The seven new/changed modules and their exact baseline/current hashes are listed in
 [provenance/SNAPSHOT.json](provenance/SNAPSHOT.json). The derivative homotopy
@@ -71,6 +74,24 @@ The unchanged 74 leaves retain their earlier compilation evidence.
 Source hashes and the separate validation records are recorded in
 [provenance/SNAPSHOT.json](provenance/SNAPSHOT.json). No acceptance of the larger
 topology suite is asserted.
+
+The derivative-sign extension keeps the same 88 leaves and exposes one further
+public result in the existing `LocalDerivativeComparison` module. The forward
+and inverse differentiability hypotheses concern the actual local map; no
+chosen derivative equivalence, point-fixing equation or global puncture
+preservation is required. Four private helpers handle the produced small ball,
+translations and neighborhood cancellation once. Both previous public derivative
+proofs are preserved.
+
+Final portable request `1789239376984243943-topology_checkpoint-ed89b504`
+passed in Slurm 13781140 in 124.07 seconds. The changed leaf and `Poincare`
+root freshly compiled without diagnostics in 1:16.87. All 99 guards and 25
+signature/axiom pairs passed, covering all 14 public exports, the unchanged
+prior consumers, an actual restricted nonidentity map with negative derivative,
+and dimension zero. All-package and consumer declaration linters and
+standard-only transitive axioms pass. The 87 unchanged leaves retain their
+earlier compilation evidence; the previous 88-leaf checkpoint's evidence is
+preserved in the snapshot record.
 
 ## Remaining topology work
 

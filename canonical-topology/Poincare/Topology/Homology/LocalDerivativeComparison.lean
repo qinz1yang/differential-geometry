@@ -2,6 +2,12 @@ import Poincare.Analysis.LocalDerivativeHomotopy
 import Poincare.Topology.Homology.RelativeHomeomorphism
 import Poincare.Topology.Homology.RelativeZero
 import Mathlib.Analysis.Convex.Contractible
+import Poincare.Topology.Homology.LocalLinearMaps
+import Poincare.Topology.Homology.LocalCharts
+import Mathlib.Analysis.Calculus.FDeriv.Add
+import Mathlib.Analysis.Calculus.FDeriv.Comp
+import Mathlib.Analysis.Calculus.FDeriv.Congr
+import Mathlib.Topology.OpenPartialHomeomorph.Continuity
 
 noncomputable section
 
@@ -133,5 +139,305 @@ theorem integralRelativeHomologyMap_eq_derivative
     intro a
     obtain ⟨b, rfl⟩ := hsurj a
     exact LinearMap.congr_fun hcomp b
+
+private theorem exists_ball_local_homologyMap_eq_det_sign
+    {E : Type u} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+    {f : E → E} (A : E ≃L[ℝ] E) (hzero : f 0 = 0)
+    (hf : HasFDerivAt f (A : E →L[ℝ] E) 0)
+    {s : Set E} (hs : s ∈ 𝓝 (0 : E)) (hc : ContinuousOn f s) :
+    ∃ (r : ℝ) (hr : 0 < r), Metric.ball (0 : E) r ⊆ s ∧
+      ∃ h : C(Metric.ball (0 : E) r, E), (∀ x, h x = f (x : E)) ∧
+        ∃ hp : MapsTo h
+            ({(⟨0, Metric.mem_ball_self hr⟩ : Metric.ball (0 : E) r)}ᶜ : Set _)
+            ({0}ᶜ : Set E),
+          (integralRelativeHomologyMap (Module.finrank ℝ E) h hp).comp
+              (integralLocalHomologyNeighborhoodIso (Module.finrank ℝ E) (0 : E)
+                (Metric.ball (0 : E) r) Metric.isOpen_ball (Metric.mem_ball_self hr)).inv.hom =
+            (SignType.sign (LinearMap.det A.toLinearMap) : ℤ) • LinearMap.id := by
+  obtain ⟨r, hr, hrs, g, h, hg, hh, hgp, hhp, hcompare⟩ :=
+    exists_ball_relative_homologyMap_eq_derivative A hzero hf hs hc
+  let U : Set E := Metric.ball (0 : E) r
+  let J := integralLocalHomologyNeighborhoodIso (Module.finrank ℝ E) (0 : E) U
+    Metric.isOpen_ball (Metric.mem_ball_self hr)
+  let L := toContinuousMap A
+  have hL : MapsTo L ({0}ᶜ : Set E) ({0}ᶜ : Set E) :=
+    fun _ hx h => hx (A.injective (h.trans (map_zero A).symm))
+  have hinc : L.comp (singularSubspaceInclusion U) = g := by
+    apply ContinuousMap.ext
+    intro x
+    exact (hg x).symm
+  have hJmap : J.hom.hom =
+      integralRelativeHomologyMap (Module.finrank ℝ E) (singularSubspaceInclusion U)
+        (neighborhoodPointComplement_mapsTo (0 : E) U (Metric.mem_ball_self hr)) :=
+    integralLocalHomologyNeighborhoodIso_hom (Module.finrank ℝ E) (0 : E) U
+      Metric.isOpen_ball (Metric.mem_ball_self hr)
+  have hgmap : integralRelativeHomologyMap (Module.finrank ℝ E) g hgp =
+      (integralRelativeHomologyMap (Module.finrank ℝ E) L hL).comp J.hom.hom := by
+    rw [hJmap, ← integralRelativeHomologyMap_comp]
+    simp only [hinc]
+  have hall (n : ℕ) : integralRelativeHomologyMap n h hhp =
+      integralRelativeHomologyMap n g hgp := by
+    cases n with
+    | zero =>
+        exact integralRelativeHomologyMap_zero_eq_of_joined h g _ _ hhp hgp
+          (fun _ => ⟨PathConnectedSpace.somePath _ _⟩)
+    | succ n => exact hcompare n
+  have hcancel : J.hom.hom.comp J.inv.hom = LinearMap.id :=
+    congrArg (fun k => k.hom) J.inv_hom_id
+  refine ⟨r, hr, hrs, h, hh, hhp, ?_⟩
+  change (integralRelativeHomologyMap (Module.finrank ℝ E) h hhp).comp J.inv.hom = _
+  rw [hall, hgmap, LinearMap.comp_assoc, hcancel, LinearMap.comp_id]
+  exact integralRelativeHomologyMap_linearEquiv_eq_det_sign A
+
+private theorem exists_ball_local_homologyMap_translation_eq_det_sign
+    {E : Type u} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+    {f : E → E} (a : E) (A : E ≃L[ℝ] E) (hf : HasFDerivAt f (A : E →L[ℝ] E) a)
+    {s : Set E} (hs : s ∈ 𝓝 a) (hc : ContinuousOn f s) :
+    ∃ (r : ℝ) (hr : 0 < r), Metric.ball a r ⊆ s ∧
+      ∃ h : C(Metric.ball a r, E), (∀ x, h x = f (x : E)) ∧
+        ∃ hp : MapsTo h
+            ({(⟨a, Metric.mem_ball_self hr⟩ : Metric.ball a r)}ᶜ : Set _)
+            ({f a}ᶜ : Set E),
+          (integralRelativeHomologyMap (Module.finrank ℝ E)
+              (toContinuousMap (Homeomorph.subRight (f a)))
+              (show MapsTo (Homeomorph.subRight (f a)) ({f a}ᶜ : Set E) ({0}ᶜ : Set E)
+                from fun _ hx => sub_ne_zero.mpr hx)).comp
+              ((integralRelativeHomologyMap (Module.finrank ℝ E) h hp).comp
+                (integralLocalHomologyNeighborhoodIso (Module.finrank ℝ E) a
+                  (Metric.ball a r) Metric.isOpen_ball (Metric.mem_ball_self hr)).inv.hom) =
+            (SignType.sign (LinearMap.det A.toLinearMap) : ℤ) •
+              integralRelativeHomologyMap (Module.finrank ℝ E)
+                (toContinuousMap (Homeomorph.subRight a))
+                (show MapsTo (Homeomorph.subRight a) ({a}ᶜ : Set E) ({0}ᶜ : Set E)
+                  from fun _ hx => sub_ne_zero.mpr hx) := by
+  let F : E → E := fun x => f (a + x) - f a
+  let t := (fun x : E => a + x) ⁻¹' s
+  have hFzero : F 0 = 0 := by simp [F]
+  have hFderiv : HasFDerivAt F (A : E →L[ℝ] E) 0 := by
+    exact ((hasFDerivAt_comp_add_left a).mpr (by simpa only [add_zero] using hf)).sub_const (f a)
+  have ht : t ∈ 𝓝 (0 : E) :=
+    (show ContinuousAt (fun x : E => a + x) 0 from by fun_prop).preimage_mem_nhds
+      (by simpa only [add_zero] using hs)
+  have hFc : ContinuousOn F t :=
+    (hc.comp' (show ContinuousOn (fun x : E => a + x) t from by fun_prop)
+      (show MapsTo (fun x : E => a + x) t s from fun _ hx => hx)).sub
+      (show ContinuousOn (fun _ : E => f a) t from continuousOn_const)
+  obtain ⟨r, hr, hrt, g, hg, hgp, hsign⟩ :=
+    exists_ball_local_homologyMap_eq_det_sign A hFzero hFderiv ht hFc
+  let U := Metric.ball (0 : E) r
+  let V := Metric.ball a r
+  have hsub (x : V) : (x : E) - a ∈ U := by
+    simpa only [U, V, Metric.mem_ball, dist_eq_norm, sub_zero] using x.property
+  have hadd (x : E) : a + (x - a) = x := by
+    simp [sub_eq_add_neg]
+  have hVs : V ⊆ s := by
+    intro x hx
+    have hx' := hrt (hsub ⟨x, hx⟩)
+    change a + (x - a) ∈ s at hx'
+    simpa only [hadd] using hx'
+  let h : C(V, E) := ⟨fun x => f x, (hc.mono hVs).domRestrict⟩
+  let k : C(V, U) := ⟨fun x => ⟨(x : E) - a, hsub x⟩, by fun_prop⟩
+  have hkp : MapsTo k ({(⟨a, Metric.mem_ball_self hr⟩ : V)}ᶜ : Set V)
+      ({(⟨0, Metric.mem_ball_self hr⟩ : U)}ᶜ : Set U) := by
+    intro x hx hx0
+    apply hx
+    apply Subtype.ext
+    exact sub_eq_zero.mp (congrArg Subtype.val hx0)
+  have hp : MapsTo h ({(⟨a, Metric.mem_ball_self hr⟩ : V)}ᶜ : Set V)
+      ({f a}ᶜ : Set E) := by
+    intro x hx hxa
+    apply hgp (hkp hx)
+    rw [hg (k x)]
+    change f (a + ((x : E) - a)) - f a = 0
+    rw [hadd]
+    exact sub_eq_zero.mpr hxa
+  let S := toContinuousMap (Homeomorph.subRight a)
+  let T := toContinuousMap (Homeomorph.subRight (f a))
+  have hS : MapsTo S ({a}ᶜ : Set E) ({0}ᶜ : Set E) := fun _ hx => sub_ne_zero.mpr hx
+  have hT : MapsTo T ({f a}ᶜ : Set E) ({0}ᶜ : Set E) := fun _ hx => sub_ne_zero.mpr hx
+  let n := Module.finrank ℝ E
+  let J0 := integralLocalHomologyNeighborhoodIso n (0 : E) U Metric.isOpen_ball
+    (Metric.mem_ball_self hr)
+  let Ja := integralLocalHomologyNeighborhoodIso n a V Metric.isOpen_ball
+    (Metric.mem_ball_self hr)
+  have hJ0 : J0.hom.hom = integralRelativeHomologyMap n (singularSubspaceInclusion U)
+      (neighborhoodPointComplement_mapsTo (0 : E) U (Metric.mem_ball_self hr)) := rfl
+  have hJa : Ja.hom.hom = integralRelativeHomologyMap n (singularSubspaceInclusion V)
+      (neighborhoodPointComplement_mapsTo a V (Metric.mem_ball_self hr)) := rfl
+  have hcomm : (integralRelativeHomologyMap n S hS).comp Ja.hom.hom =
+      J0.hom.hom.comp (integralRelativeHomologyMap n k hkp) := by
+    rw [hJ0, hJa, ← integralRelativeHomologyMap_comp, ← integralRelativeHomologyMap_comp]
+    rfl
+  have hcancel0 : J0.inv.hom.comp J0.hom.hom = LinearMap.id :=
+    congrArg (fun q => q.hom) J0.hom_inv_id
+  have hcancelA : Ja.hom.hom.comp Ja.inv.hom = LinearMap.id :=
+    congrArg (fun q => q.hom) Ja.inv_hom_id
+  have hkmap : (integralRelativeHomologyMap n k hkp).comp Ja.inv.hom =
+      J0.inv.hom.comp (integralRelativeHomologyMap n S hS) := by
+    calc
+      (integralRelativeHomologyMap n k hkp).comp Ja.inv.hom =
+          (J0.inv.hom.comp J0.hom.hom).comp
+            ((integralRelativeHomologyMap n k hkp).comp Ja.inv.hom) := by
+        rw [hcancel0, LinearMap.id_comp]
+      _ = J0.inv.hom.comp
+          ((J0.hom.hom.comp (integralRelativeHomologyMap n k hkp)).comp Ja.inv.hom) := by
+        simp only [LinearMap.comp_assoc]
+      _ = J0.inv.hom.comp
+          (((integralRelativeHomologyMap n S hS).comp Ja.hom.hom).comp Ja.inv.hom) := by
+        rw [← hcomm]
+      _ = J0.inv.hom.comp (integralRelativeHomologyMap n S hS) := by
+        rw [LinearMap.comp_assoc, hcancelA, LinearMap.comp_id]
+  have hsquare : T.comp h = g.comp k := by
+    apply ContinuousMap.ext
+    intro x
+    change f (x : E) - f a = g (k x)
+    rw [hg (k x)]
+    change f (x : E) - f a = f (a + ((x : E) - a)) - f a
+    rw [hadd]
+  have hsquareMap : (integralRelativeHomologyMap n T hT).comp
+      (integralRelativeHomologyMap n h hp) =
+      (integralRelativeHomologyMap n g hgp).comp (integralRelativeHomologyMap n k hkp) := by
+    rw [← integralRelativeHomologyMap_comp, ← integralRelativeHomologyMap_comp]
+    simp only [hsquare]
+  refine ⟨r, hr, hVs, h, fun _ => rfl, hp, ?_⟩
+  change (integralRelativeHomologyMap n T hT).comp
+      ((integralRelativeHomologyMap n h hp).comp Ja.inv.hom) =
+    (SignType.sign (LinearMap.det A.toLinearMap) : ℤ) • integralRelativeHomologyMap n S hS
+  rw [← LinearMap.comp_assoc, hsquareMap, LinearMap.comp_assoc, hkmap,
+    ← LinearMap.comp_assoc, hsign]
+  apply LinearMap.ext
+  intro x
+  rfl
+
+private theorem integralLocalHomologyOpenPartialHomeomorphIso_comp_neighborhood
+    {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
+    [T1Space X] [T1Space Y]
+    (n : ℕ) (e : OpenPartialHomeomorph X Y) (a : X)
+    (U : Set X) (hU : IsOpen U) (haU : a ∈ U) (hUs : U ⊆ e.source) :
+    (integralLocalHomologyOpenPartialHomeomorphIso n e a (hUs haU)).hom.hom.comp
+        (integralLocalHomologyNeighborhoodIso n a U hU haU).hom.hom =
+      integralRelativeHomologyMap n
+        (⟨fun x : U => e x, (e.continuousOn.mono hUs).domRestrict⟩ : C(U, Y))
+        (show MapsTo (fun x : U => e x)
+          ({(⟨a, haU⟩ : U)}ᶜ : Set U) ({e a}ᶜ : Set Y)
+          from fun x hx h => hx (Subtype.ext (e.injOn (hUs x.property) (hUs haU) h))) := by
+  have ha : a ∈ e.source := hUs haU
+  let I := integralLocalHomologyOpenPartialHomeomorphIso n e a ha
+  let Js := integralLocalHomologyNeighborhoodIso n a e.source e.open_source ha
+  let Jt := integralLocalHomologyNeighborhoodIso n (e a) e.target e.open_target (e.map_source ha)
+  let Ju := integralLocalHomologyNeighborhoodIso n a U hU haU
+  let q := singularPairRestriction (ContinuousMap.id X) hUs
+  have hq : MapsTo q ({(⟨a, haU⟩ : U)}ᶜ : Set U)
+      ({(⟨a, ha⟩ : e.source)}ᶜ : Set e.source) := by
+    intro x hx h
+    change q x = (⟨a, ha⟩ : e.source) at h
+    have hval : (x : X) = a := congrArg (fun z : e.source => (z : X)) h
+    exact hx (Subtype.ext hval)
+  let g : C(e.source, Y) := ⟨fun x => e x, e.continuousOn.domRestrict⟩
+  have hg : MapsTo g ({(⟨a, ha⟩ : e.source)}ᶜ : Set e.source) ({e a}ᶜ : Set Y) :=
+    fun x hx h => hx (Subtype.ext (e.injOn x.property ha h))
+  have hepair : MapsTo e.toHomeomorphSourceTarget
+      ({(⟨a, ha⟩ : e.source)}ᶜ : Set e.source)
+      ({(⟨e a, e.map_source ha⟩ : e.target)}ᶜ : Set e.target) := by
+    intro x hx h
+    apply hx
+    apply e.toHomeomorphSourceTarget.injective
+    exact h
+  have hsource : I.hom.hom.comp Js.hom.hom = integralRelativeHomologyMap n g hg := by
+    have hnat := congrArg (fun f => f.hom)
+      (integralLocalHomologyOpenPartialHomeomorphIso_natural n e a ha)
+    change I.hom.hom.comp Js.hom.hom = Jt.hom.hom.comp
+      (integralLocalHomologyHomeomorphIso n e.toHomeomorphSourceTarget
+        (⟨a, ha⟩ : e.source)).hom.hom at hnat
+    rw [hnat]
+    change (integralRelativeHomologyMap n (singularSubspaceInclusion e.target)
+        (neighborhoodPointComplement_mapsTo (e a) e.target (e.map_source ha))).comp
+      (integralRelativeHomologyMap n
+        ⟨e.toHomeomorphSourceTarget, e.toHomeomorphSourceTarget.continuous⟩
+        hepair) =
+      integralRelativeHomologyMap n g hg
+    rw [← integralRelativeHomologyMap_comp]
+    rfl
+  have hnested : Js.hom.hom.comp (integralRelativeHomologyMap n q hq) = Ju.hom.hom :=
+    integralLocalHomologyNeighborhoodIso_comp n a U e.source hU e.open_source hUs haU
+  change I.hom.hom.comp Ju.hom.hom = _
+  rw [← hnested, ← LinearMap.comp_assoc, hsource, ← integralRelativeHomologyMap_comp]
+  rfl
+
+private theorem integralLocalHomologyOpenPartialHomeomorphIso_translation_eq_det_sign_of_hasFDerivAt
+    {E : Type u} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+    (e : OpenPartialHomeomorph E E) (a : E) (ha : a ∈ e.source)
+    (A : E ≃L[ℝ] E) (hf : HasFDerivAt e (A : E →L[ℝ] E) a) :
+    (integralRelativeHomologyMap (Module.finrank ℝ E)
+        (toContinuousMap (Homeomorph.subRight (e a)))
+        (show MapsTo (Homeomorph.subRight (e a)) ({e a}ᶜ : Set E) ({0}ᶜ : Set E)
+          from fun _ hx => sub_ne_zero.mpr hx)).comp
+        (integralLocalHomologyOpenPartialHomeomorphIso (Module.finrank ℝ E) e a ha).hom.hom =
+      (SignType.sign (LinearMap.det A.toLinearMap) : ℤ) •
+        integralRelativeHomologyMap (Module.finrank ℝ E)
+          (toContinuousMap (Homeomorph.subRight a))
+          (show MapsTo (Homeomorph.subRight a) ({a}ᶜ : Set E) ({0}ᶜ : Set E)
+            from fun _ hx => sub_ne_zero.mpr hx) := by
+  obtain ⟨r, hr, hrs, h, hh, hp, hsign⟩ :=
+    exists_ball_local_homologyMap_translation_eq_det_sign a A hf
+      (e.open_source.mem_nhds ha) e.continuousOn
+  let n := Module.finrank ℝ E
+  let U := Metric.ball a r
+  let I := integralLocalHomologyOpenPartialHomeomorphIso n e a ha
+  let J := integralLocalHomologyNeighborhoodIso n a U Metric.isOpen_ball (Metric.mem_ball_self hr)
+  let g : C(U, E) := ⟨fun x => e x, (e.continuousOn.mono hrs).domRestrict⟩
+  have hgh : g = h := by
+    apply ContinuousMap.ext
+    intro x
+    exact (hh x).symm
+  have hsmall : I.hom.hom.comp J.hom.hom = integralRelativeHomologyMap n h hp := by
+    have H := integralLocalHomologyOpenPartialHomeomorphIso_comp_neighborhood
+      n e a U Metric.isOpen_ball (Metric.mem_ball_self hr) hrs
+    change I.hom.hom.comp J.hom.hom = integralRelativeHomologyMap n g _ at H
+    simpa only [hgh] using H
+  have hcancel : J.hom.hom.comp J.inv.hom = LinearMap.id :=
+    congrArg (fun f => f.hom) J.inv_hom_id
+  have hI : I.hom.hom = (integralRelativeHomologyMap n h hp).comp J.inv.hom := by
+    have H := congrArg (fun f => f.comp J.inv.hom) hsmall
+    simpa only [LinearMap.comp_assoc, hcancel, LinearMap.comp_id] using H
+  change (integralRelativeHomologyMap n _ _).comp I.hom.hom = _
+  rw [hI]
+  exact hsign
+
+theorem integralLocalHomologyOpenPartialHomeomorphIso_translation_eq_det_sign
+    {E : Type u} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+    (e : OpenPartialHomeomorph E E) (a : E) (ha : a ∈ e.source)
+    (he : DifferentiableAt ℝ e a) (he' : DifferentiableAt ℝ e.symm (e a)) :
+    (integralRelativeHomologyMap (Module.finrank ℝ E)
+        (toContinuousMap (Homeomorph.subRight (e a)))
+        (show MapsTo (Homeomorph.subRight (e a)) ({e a}ᶜ : Set E) ({0}ᶜ : Set E)
+          from fun _ hx => sub_ne_zero.mpr hx)).comp
+        (integralLocalHomologyOpenPartialHomeomorphIso (Module.finrank ℝ E) e a ha).hom.hom =
+      (SignType.sign (LinearMap.det (fderiv ℝ e a).toLinearMap) : ℤ) •
+        integralRelativeHomologyMap (Module.finrank ℝ E)
+          (toContinuousMap (Homeomorph.subRight a))
+          (show MapsTo (Homeomorph.subRight a) ({a}ᶜ : Set E) ({0}ᶜ : Set E)
+            from fun _ hx => sub_ne_zero.mpr hx) := by
+  let D := fderiv ℝ e a
+  let D' := fderiv ℝ e.symm (e a)
+  have hleft : D'.comp D = ContinuousLinearMap.id ℝ E := by
+    calc
+      D'.comp D = fderiv ℝ (e.symm ∘ e) a := (fderiv_comp a he' he).symm
+      _ = fderiv ℝ (id : E → E) a := Filter.EventuallyEq.fderiv_eq
+        (show (e.symm ∘ e : E → E) =ᶠ[𝓝 a] id from e.eventually_left_inverse ha)
+      _ = ContinuousLinearMap.id ℝ E := fderiv_id
+  have hright : D.comp D' = ContinuousLinearMap.id ℝ E := by
+    have he0 : DifferentiableAt ℝ e (e.symm (e a)) := by rwa [e.left_inv ha]
+    calc
+      D.comp D' = (fderiv ℝ e (e.symm (e a))).comp D' := by rw [e.left_inv ha]
+      _ = fderiv ℝ (e ∘ e.symm) (e a) := (fderiv_comp (e a) he0 he').symm
+      _ = fderiv ℝ (id : E → E) (e a) :=
+        Filter.EventuallyEq.fderiv_eq
+          (show (e ∘ e.symm : E → E) =ᶠ[𝓝 (e a)] id from
+            e.eventually_right_inverse (e.map_source ha))
+      _ = ContinuousLinearMap.id ℝ E := fderiv_id
+  let A := ContinuousLinearEquiv.equivOfInverse' D D' hright hleft
+  exact integralLocalHomologyOpenPartialHomeomorphIso_translation_eq_det_sign_of_hasFDerivAt
+    e a ha A he.hasFDerivAt
 
 end Poincare.Topology
