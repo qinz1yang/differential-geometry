@@ -1,5 +1,8 @@
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.Derivative.CovariantDerivativeAlong
 import DifferentialGeometry.Geometry.Curvature.Metric.Defs
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.Basic
+import DifferentialGeometry.Geometry.Curve.Reparametrization
+import DifferentialGeometry.Geometry.Comparison.Variation.Covariant.TwoParameterFields
 import Mathlib.MeasureTheory.Function.Jacobian
 
 noncomputable section
@@ -8,6 +11,7 @@ open scoped Manifold ContDiff Topology
 open DifferentialGeometry
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Riemannian.CovariantDerivativeAlong
+open DifferentialGeometry.Geometry.Riemannian.Variation
 namespace DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening
 
 theorem smooth_critical_values_null {m n : ℕ}
@@ -74,5 +78,245 @@ theorem smooth_manifold_critical_values_null_in_chart
       {x | x ∈ S ∧ F x ∈ (chartAt H' q).source ∧
         ¬Function.Surjective (mfderiv I J F x)}) = 0 := by
   sorry
+
+section SliceSmoothness
+
+omit [FiniteDimensional ℝ E] [CompleteSpace E] in
+private theorem slice_smul_contMDiff (gamma : ℝ → M)
+    (V : ∀ x, TangentSpace I (gamma x))
+    (f : ℝ → ℝ) (hf : ContMDiff 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) ∞ f)
+    (hV : ContMDiff 𝓘(ℝ, ℝ) I.tangent ∞
+      (fun x => TotalSpace.mk' E (gamma x) (V x))) :
+    ContMDiff 𝓘(ℝ, ℝ) I.tangent ∞
+      (fun x => TotalSpace.mk' E (gamma x) (f x • V x)) := by
+  intro x
+  have hv := (contMDiffAt_totalSpace.mp (hV x))
+  rw [contMDiffAt_totalSpace]
+  refine ⟨hv.1, ?_⟩
+  let e := trivializationAt E (TangentSpace I) (gamma x)
+  have he : gamma x ∈ e.baseSet :=
+    FiberBundle.mem_baseSet_trivializationAt E (TangentSpace I) (gamma x)
+  have hnear : ∀ᶠ y in 𝓝 x, gamma y ∈ e.baseSet :=
+    hv.1.continuousAt (e.open_baseSet.mem_nhds he)
+  apply ((hf x).smul hv.2).congr_of_eventuallyEq
+  filter_upwards [hnear] with y hy
+  exact (e.linear ℝ hy).2 (f y) (V y)
+
+omit [FiniteDimensional ℝ E] [CompleteSpace E] in
+private theorem slice_inner_contDiff (g : SmoothRiemannianMetric I M) (gamma : ℝ → M)
+    (V W : ∀ x, TangentSpace I (gamma x))
+    (hg : ContMDiff 𝓘(ℝ, ℝ) I ∞ gamma)
+    (hV : ContMDiff 𝓘(ℝ, ℝ) I.tangent ∞
+      (fun x => TotalSpace.mk' E (gamma x) (V x)))
+    (hW : ContMDiff 𝓘(ℝ, ℝ) I.tangent ∞
+      (fun x => TotalSpace.mk' E (gamma x) (W x))) :
+    ContDiff ℝ ∞ (fun x => g.inner (gamma x) (V x) (W x)) := by
+  have htotal : ContMDiff 𝓘(ℝ, ℝ) (I.prod 𝓘(ℝ, ℝ)) ∞
+      (fun x => TotalSpace.mk' ℝ (E := Bundle.Trivial M ℝ)
+        (gamma x) (g.inner (gamma x) (V x) (W x))) := by
+    apply ContMDiff.clm_bundle_apply₂ (F₁ := E) (F₂ := E)
+    · exact g.contMDiff.comp hg
+    · exact hV
+    · exact hW
+  apply contMDiff_iff_contDiff.mp
+  intro x
+  have hx := htotal x
+  simp only [contMDiffAt_totalSpace] at hx
+  exact hx.2
+
+omit [FiniteDimensional ℝ E] [CompleteSpace E] in
+private theorem slice_velocity_contMDiff (gamma : ℝ → M)
+    (hg : ContMDiff 𝓘(ℝ, ℝ) I ∞ gamma) :
+    ContMDiff 𝓘(ℝ, ℝ) I.tangent ∞
+      (fun x => TotalSpace.mk' E (gamma x) (mfderiv 𝓘(ℝ, ℝ) I gamma x (1 : ℝ))) := by
+  have hunit : ContMDiff 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ).tangent ∞
+      (fun x : ℝ => TotalSpace.mk' ℝ
+        (E := (TangentSpace 𝓘(ℝ, ℝ) : ℝ → Type _)) x (1 : ℝ)) := by
+    intro x
+    rw [contMDiffAt_totalSpace]
+    refine ⟨contMDiffAt_id, ?_⟩
+    simpa only [trivializationAt_model_space_apply] using
+      (contMDiffAt_const (c := (1 : ℝ)))
+  change ContMDiff 𝓘(ℝ, ℝ) I.tangent ∞
+    (tangentMap 𝓘(ℝ, ℝ) I gamma ∘ fun x : ℝ =>
+      TotalSpace.mk' ℝ (E := (TangentSpace 𝓘(ℝ, ℝ) : ℝ → Type _)) x (1 : ℝ))
+  exact (hg.contMDiff_tangentMap (le_refl _)).comp hunit
+
+omit [CompleteSpace E] in
+private theorem slice_covAlong_contMDiff
+    [I.Boundaryless]
+    (g : SmoothRiemannianMetric I M) (gamma : ℝ → M)
+    (V : ∀ x, TangentSpace I (gamma x))
+    (hV : ContMDiff 𝓘(ℝ, ℝ) I.tangent ∞
+      (fun x => TotalSpace.mk' E (gamma x) (V x))) :
+    ContMDiff 𝓘(ℝ, ℝ) I.tangent ∞
+      (fun x => TotalSpace.mk' E (gamma x) (covDerivAlong g gamma V x)) := by
+  have htwo := cov_fst_smooth g (fun x _ : ℝ => gamma x) (fun x _ => V x)
+    (hV.comp contMDiff_fst)
+  exact htwo.comp (contMDiff_id.prodMk (contMDiff_const (c := (0 : ℝ))))
+
+omit [FiniteDimensional ℝ E] [CompleteSpace E] [IsManifold I ∞ M] in
+private theorem slice_space_smooth (c : CurveMap M) (J : Set ℝ)
+    (hc : c.SmoothOn (I := I) J) (t : ℝ) (ht : t ∈ J) :
+    ContMDiff 𝓘(ℝ, ℝ) I ∞ (fun x => c.lift x t) :=
+  contMDiffOn_univ.mp (CurveMap.space_slice_contMDiffOn c J hc t ht)
+
+omit [FiniteDimensional ℝ E] [CompleteSpace E] in
+theorem CurveMap.speed_contDiff (g : ℝ → SmoothRiemannianMetric I M) (c : CurveMap M)
+    (J : Set ℝ) (hc : c.SmoothOn (I := I) J) (hi : c.ImmersedOn (I := I) J)
+    (t : ℝ) (ht : t ∈ J) :
+    ContDiff ℝ ∞ (fun x => c.speed g x t) := by
+  have hg := slice_space_smooth c J hc t ht
+  have hX := slice_velocity_contMDiff (fun x => c.lift x t) hg
+  have hsq := slice_inner_contDiff (g t) (fun x => c.lift x t)
+    (fun x => c.X x t) (fun x => c.X x t) hg hX hX
+  exact hsq.sqrt (fun x => ne_of_gt ((g t).pos _ _ (hi x t ht)))
+
+omit [FiniteDimensional ℝ E] [CompleteSpace E] in
+theorem CurveMap.unitTangent_contMDiff (g : ℝ → SmoothRiemannianMetric I M)
+    (c : CurveMap M) (J : Set ℝ) (hc : c.SmoothOn (I := I) J)
+    (hi : c.ImmersedOn (I := I) J) (t : ℝ) (ht : t ∈ J) :
+    ContMDiff 𝓘(ℝ, ℝ) I.tangent ∞
+      (fun x => TotalSpace.mk' E (c.lift x t) (c.unitTangent g x t)) := by
+  have hg := slice_space_smooth c J hc t ht
+  have hX := slice_velocity_contMDiff (fun x => c.lift x t) hg
+  have hs := c.speed_contDiff g J hc hi t ht
+  exact slice_smul_contMDiff (fun x => c.lift x t) (fun x => c.X x t)
+    (fun x => (c.speed g x t)⁻¹)
+    (hs.inv (fun x => ne_of_gt (c.speed_pos g hi x t ht))).contMDiff hX
+
+omit [CompleteSpace E] in
+theorem CurveMap.curvatureVector_contMDiff
+    [I.Boundaryless] (g : ℝ → SmoothRiemannianMetric I M)
+    (c : CurveMap M) (J : Set ℝ) (hc : c.SmoothOn (I := I) J)
+    (hi : c.ImmersedOn (I := I) J) (t : ℝ) (ht : t ∈ J) :
+    ContMDiff 𝓘(ℝ, ℝ) I.tangent ∞
+      (fun x => TotalSpace.mk' E (c.lift x t) (c.curvatureVector g x t)) := by
+  have hg := slice_space_smooth c J hc t ht
+  have hs := c.speed_contDiff g J hc hi t ht
+  have hDT := slice_covAlong_contMDiff (g t) (fun x => c.lift x t)
+    (fun x => c.unitTangent g x t) (c.unitTangent_contMDiff g J hc hi t ht)
+  exact slice_smul_contMDiff (fun x => c.lift x t)
+    (fun x => c.Dx g (c.unitTangent g) x t) (fun x => (c.speed g x t)⁻¹)
+    (hs.inv (fun x => ne_of_gt (c.speed_pos g hi x t ht))).contMDiff hDT
+
+omit [CompleteSpace E] in
+theorem CurveMap.curvatureSq_contDiff
+    [I.Boundaryless] (g : ℝ → SmoothRiemannianMetric I M)
+    (c : CurveMap M) (J : Set ℝ) (hc : c.SmoothOn (I := I) J)
+    (hi : c.ImmersedOn (I := I) J) (t : ℝ) (ht : t ∈ J) :
+    ContDiff ℝ ∞ (fun x => c.curvatureSq g x t) := by
+  have hg := slice_space_smooth c J hc t ht
+  have hH := c.curvatureVector_contMDiff g J hc hi t ht
+  have hsq := slice_inner_contDiff (g t) (fun x => c.lift x t)
+    (fun x => c.curvatureVector g x t) (fun x => c.curvatureVector g x t) hg hH hH
+  simpa only [CurveMap.curvatureSq, CurveMap.normSq] using hsq
+
+end SliceSmoothness
+
+namespace CurveMap
+
+omit [TopologicalSpace M] in
+theorem lift_add_period (c : CurveMap M) (t : ℝ) :
+    Function.Periodic (fun x => c.lift x t) 1 :=
+  fun x => congrArg (fun z => c z t) (AddCircle.coe_add_period (1 : ℝ) x)
+
+omit [FiniteDimensional ℝ E] [CompleteSpace E] [IsManifold I ∞ M] in
+theorem X_add_period (c : CurveMap M) (t x : ℝ)
+    (h : MDifferentiableAt 𝓘(ℝ, ℝ) I (fun y => c.lift y t) (x + 1)) :
+    c.X (I := I) (x + 1) t = c.X (I := I) x t := by
+  have hd := DifferentialGeometry.Geometry.mfderiv_comp_add_apply_one
+    (I := I) (γ := fun y => c.lift y t) x 1 h
+  have hper : (fun y => c.lift (y + 1) t) = fun y => c.lift y t :=
+    funext (fun y => c.lift_add_period t y)
+  rw [hper] at hd
+  exact hd.symm
+
+omit [FiniteDimensional ℝ E] [CompleteSpace E] in
+theorem speed_add_period (g : ℝ → SmoothRiemannianMetric I M) (c : CurveMap M) (t x : ℝ)
+    (h : MDifferentiableAt 𝓘(ℝ, ℝ) I (fun y => c.lift y t) (x + 1)) :
+    c.speed g (x + 1) t = c.speed g x t := by
+  have hl : c.lift (x + 1) t = c.lift x t := c.lift_add_period t x
+  have hX : c.X (I := I) (x + 1) t = c.X (I := I) x t := c.X_add_period t x h
+  change Real.sqrt ((g t).inner (c.lift (x + 1) t) (c.X (I := I) (x + 1) t)
+      (c.X (I := I) (x + 1) t)) =
+    Real.sqrt ((g t).inner (c.lift x t) (c.X (I := I) x t) (c.X (I := I) x t))
+  rw [hl, hX]
+
+omit [FiniteDimensional ℝ E] [CompleteSpace E] in
+theorem unitTangent_add_period (g : ℝ → SmoothRiemannianMetric I M) (c : CurveMap M)
+    (t x : ℝ) (h : MDifferentiableAt 𝓘(ℝ, ℝ) I (fun y => c.lift y t) (x + 1)) :
+    c.unitTangent g (x + 1) t = c.unitTangent g x t := by
+  have hs : c.speed g (x + 1) t = c.speed g x t := c.speed_add_period g t x h
+  have hX : c.X (I := I) (x + 1) t = c.X (I := I) x t := c.X_add_period t x h
+  simp only [CurveMap.unitTangent, hs, hX]
+  rfl
+
+omit [CompleteSpace E] in
+theorem Dx_add_period [I.Boundaryless] (g : ℝ → SmoothRiemannianMetric I M)
+    (c : CurveMap M) (t x : ℝ) (V : c.Field (I := I))
+    (hVper : Function.Periodic (fun y => V y t) 1)
+    (hVsmooth : ContMDiff 𝓘(ℝ, ℝ) I.tangent ∞
+      (fun y => TotalSpace.mk' E (c.lift y t) (V y t)))
+    (hγ : MDifferentiableAt 𝓘(ℝ, ℝ) I (fun y => c.lift y t) (x + 1)) :
+    c.Dx g V (x + 1) t = c.Dx g V x t := by
+  have hVdiff : DifferentiableAt ℝ
+      (chartRepAt (I := I) (fun y => c.lift y t) (fun y => V y t) (x + 1)) (x + 1) :=
+    differentiableAt_chartRepAt_of_contMDiff_two
+      (hVsmooth.of_le (WithTop.coe_le_coe.mpr (le_top : (2 : ℕ∞) ≤ ⊤))) (x + 1)
+  have hφ : DifferentiableAt ℝ (fun s : ℝ => s + 1) x := differentiableAt_id.add_const 1
+  have hcomp := covDerivAlong_comp (g t) (fun y => c.lift y t) (fun y => V y t)
+    (fun s : ℝ => s + 1) x hγ hVdiff hφ
+  have hF : (fun s => c.lift (s + 1) t) = fun s => c.lift s t :=
+    funext (fun s => c.lift_add_period t s)
+  have hW : (fun s => V (s + 1) t) = fun s => V s t := funext (fun s => hVper s)
+  rw [hF, hW] at hcomp
+  have hd : deriv (fun s : ℝ => s + 1) x = 1 := by simp
+  rw [hd, one_smul] at hcomp
+  exact hcomp.symm
+
+
+omit [FiniteDimensional ℝ E] [CompleteSpace E] [IsManifold I ∞ M] in
+private theorem slice_mdifferentiableAt (c : CurveMap M) (J : Set ℝ) (hc : c.SmoothOn (I := I) J)
+    (t : ℝ) (ht : t ∈ J) (y : ℝ) :
+    MDifferentiableAt 𝓘(ℝ, ℝ) I (fun z => c.lift z t) y :=
+  (slice_space_smooth c J hc t ht).mdifferentiableAt (by norm_num)
+
+omit [CompleteSpace E] in
+private theorem curvatureSq_add_period [I.Boundaryless] (g : ℝ → SmoothRiemannianMetric I M)
+    (c : CurveMap M) (J : Set ℝ) (hc : c.SmoothOn (I := I) J) (hi : c.ImmersedOn (I := I) J)
+    (t : ℝ) (ht : t ∈ J) (x : ℝ) :
+    c.curvatureSq g (x + 1) t = c.curvatureSq g x t := by
+  have hγ : ∀ y, MDifferentiableAt 𝓘(ℝ, ℝ) I (fun z => c.lift z t) y :=
+    fun y => slice_mdifferentiableAt c J hc t ht y
+  have hs : c.speed g (x + 1) t = c.speed g x t := c.speed_add_period g t x (hγ (x + 1))
+  have hD : c.Dx g (c.unitTangent g) (x + 1) t = c.Dx g (c.unitTangent g) x t :=
+    c.Dx_add_period g t x (c.unitTangent g)
+      (fun y => c.unitTangent_add_period g t y (hγ (y + 1)))
+      (c.unitTangent_contMDiff g J hc hi t ht) (hγ (x + 1))
+  have hH : c.curvatureVector g (x + 1) t = c.curvatureVector g x t := by
+    change (c.speed g (x + 1) t)⁻¹ • c.Dx g (c.unitTangent g) (x + 1) t =
+      (c.speed g x t)⁻¹ • c.Dx g (c.unitTangent g) x t
+    rw [hs, hD]
+    rfl
+  have hl : c.lift (x + 1) t = c.lift x t := c.lift_add_period t x
+  change (g t).inner (c.lift (x + 1) t) (c.curvatureVector g (x + 1) t)
+      (c.curvatureVector g (x + 1) t) =
+    (g t).inner (c.lift x t) (c.curvatureVector g x t) (c.curvatureVector g x t)
+  rw [hH, hl]
+
+omit [CompleteSpace E] in
+theorem curvatureSq_speed_periodic [I.Boundaryless] (g : ℝ → SmoothRiemannianMetric I M)
+    (c : CurveMap M) (J : Set ℝ) (hc : c.SmoothOn (I := I) J) (hi : c.ImmersedOn (I := I) J)
+    (t : ℝ) (ht : t ∈ J) :
+    Function.Periodic (fun x => c.curvatureSq g x t * c.speed g x t) 1 :=
+  fun x => by
+    change c.curvatureSq g (x + 1) t * c.speed g (x + 1) t =
+      c.curvatureSq g x t * c.speed g x t
+    rw [curvatureSq_add_period g c J hc hi t ht x,
+      c.speed_add_period g t x (slice_mdifferentiableAt c J hc t ht (x + 1))]
+
+end CurveMap
+
 
 end DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening

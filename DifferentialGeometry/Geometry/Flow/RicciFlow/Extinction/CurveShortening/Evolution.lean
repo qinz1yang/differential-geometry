@@ -1,4 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.Connection
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.CalculusGeometry
 import DifferentialGeometry.Geometry.Comparison.Variation.Covariant.TwoParameterFields
 import DifferentialGeometry.Geometry.Comparison.Variation.FirstVariation.Basic
 import DifferentialGeometry.Geometry.Curvature.Bounds.RiemannTensorOperator
@@ -73,117 +74,6 @@ section TangentGeometry
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] hBoundary
 
-private theorem tangent_geometry_smul_along_smooth (gamma : ℝ → M)
-    (V : ∀ x, TangentSpace I (gamma x))
-    (f : ℝ → ℝ) (hf : ContMDiff 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) ∞ f)
-    (hV : ContMDiff 𝓘(ℝ, ℝ) I.tangent ∞
-      (fun x => TotalSpace.mk' E (gamma x) (V x))) :
-    ContMDiff 𝓘(ℝ, ℝ) I.tangent ∞
-      (fun x => TotalSpace.mk' E (gamma x) (f x • V x)) := by
-  intro x
-  have hv := (contMDiffAt_totalSpace.mp (hV x))
-  rw [contMDiffAt_totalSpace]
-  refine ⟨hv.1, ?_⟩
-  let e := trivializationAt E (TangentSpace I) (gamma x)
-  have he : gamma x ∈ e.baseSet :=
-    FiberBundle.mem_baseSet_trivializationAt E (TangentSpace I) (gamma x)
-  have hnear : ∀ᶠ y in 𝓝 x, gamma y ∈ e.baseSet :=
-    hv.1.continuousAt (e.open_baseSet.mem_nhds he)
-  apply ((hf x).smul hv.2).congr_of_eventuallyEq
-  filter_upwards [hnear] with y hy
-  exact (e.linear ℝ hy).2 (f y) (V y)
-
-private theorem tangent_geometry_inner_along_smooth (g : SmoothRiemannianMetric I M) (gamma : ℝ → M)
-    (V W : ∀ x, TangentSpace I (gamma x))
-    (hg : ContMDiff 𝓘(ℝ, ℝ) I ∞ gamma)
-    (hV : ContMDiff 𝓘(ℝ, ℝ) I.tangent ∞
-      (fun x => TotalSpace.mk' E (gamma x) (V x)))
-    (hW : ContMDiff 𝓘(ℝ, ℝ) I.tangent ∞
-      (fun x => TotalSpace.mk' E (gamma x) (W x))) :
-    ContDiff ℝ ∞ (fun x => g.inner (gamma x) (V x) (W x)) := by
-  have htotal : ContMDiff 𝓘(ℝ, ℝ) (I.prod 𝓘(ℝ, ℝ)) ∞
-      (fun x => TotalSpace.mk' ℝ (E := Bundle.Trivial M ℝ)
-        (gamma x) (g.inner (gamma x) (V x) (W x))) := by
-    apply ContMDiff.clm_bundle_apply₂ (F₁ := E) (F₂ := E)
-    · exact g.contMDiff.comp hg
-    · exact hV
-    · exact hW
-  apply contMDiff_iff_contDiff.mp
-  intro x
-  have hx := htotal x
-  simp only [contMDiffAt_totalSpace] at hx
-  exact hx.2
-
-private theorem tangent_geometry_velocity_smooth (gamma : ℝ → M)
-    (hg : ContMDiff 𝓘(ℝ, ℝ) I ∞ gamma) :
-    ContMDiff 𝓘(ℝ, ℝ) I.tangent ∞
-      (fun x => TotalSpace.mk' E (gamma x) (mfderiv 𝓘(ℝ, ℝ) I gamma x (1 : ℝ))) := by
-  have hunit : ContMDiff 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ).tangent ∞
-      (fun x : ℝ => TotalSpace.mk' ℝ
-        (E := (TangentSpace 𝓘(ℝ, ℝ) : ℝ → Type _)) x (1 : ℝ)) := by
-    intro x
-    rw [contMDiffAt_totalSpace]
-    refine ⟨contMDiffAt_id, ?_⟩
-    simpa only [trivializationAt_model_space_apply] using
-      (contMDiffAt_const (c := (1 : ℝ)))
-  change ContMDiff 𝓘(ℝ, ℝ) I.tangent ∞
-    (tangentMap 𝓘(ℝ, ℝ) I gamma ∘ fun x : ℝ =>
-      TotalSpace.mk' ℝ (E := (TangentSpace 𝓘(ℝ, ℝ) : ℝ → Type _)) x (1 : ℝ))
-  exact (hg.contMDiff_tangentMap (le_refl _)).comp hunit
-
-private theorem tangent_geometry_cov_along_smooth
-    [FiniteDimensional ℝ E] [I.Boundaryless]
-    (g : SmoothRiemannianMetric I M) (gamma : ℝ → M)
-    (V : ∀ x, TangentSpace I (gamma x))
-    (hV : ContMDiff 𝓘(ℝ, ℝ) I.tangent ∞
-      (fun x => TotalSpace.mk' E (gamma x) (V x))) :
-    ContMDiff 𝓘(ℝ, ℝ) I.tangent ∞
-      (fun x => TotalSpace.mk' E (gamma x) (covDerivAlong g gamma V x)) := by
-  have htwo := cov_fst_smooth g (fun x _ : ℝ => gamma x) (fun x _ => V x)
-    (hV.comp contMDiff_fst)
-  exact htwo.comp (contMDiff_id.prodMk (contMDiff_const (c := (0 : ℝ))))
-
-omit [IsManifold I ∞ M] in
-private theorem tangent_geometry_slice_smooth (c : CurveMap M) (J : Set ℝ)
-    (hc : c.SmoothOn (I := I) J)
-    (t : ℝ) (ht : t ∈ J) : ContMDiff 𝓘(ℝ, ℝ) I ∞ (fun x => c.lift x t) := by
-  have hp : ContMDiff 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ × ℝ) ∞ (fun x => (x, t)) :=
-    (contDiff_id.prodMk contDiff_const).contMDiff
-  exact contMDiffOn_univ.mp (hc.comp hp.contMDiffOn (fun _ _ => ⟨mem_univ _, ht⟩))
-
-private theorem tangent_geometry_unit_smooth (g : ℝ → SmoothRiemannianMetric I M)
-    (c : CurveMap M) (J : Set ℝ) (hc : c.SmoothOn (I := I) J)
-    (hi : c.ImmersedOn (I := I) J) (t : ℝ) (ht : t ∈ J) :
-    ContMDiff 𝓘(ℝ, ℝ) I.tangent ∞
-      (fun x => TotalSpace.mk' E (c.lift x t) (c.unitTangent g x t)) := by
-  have hg := tangent_geometry_slice_smooth c J hc t ht
-  have hX := tangent_geometry_velocity_smooth (fun x => c.lift x t) hg
-  have hi2 := tangent_geometry_inner_along_smooth (g t) (fun x => c.lift x t)
-    (fun x => c.X x t) (fun x => c.X x t) hg hX hX
-  have hs : ContDiff ℝ ∞ (fun x => c.speed g x t) :=
-    hi2.sqrt (fun x => ne_of_gt ((g t).pos _ _ (hi x t ht)))
-  exact tangent_geometry_smul_along_smooth (fun x => c.lift x t) (fun x => c.X x t)
-    (fun x => (c.speed g x t)⁻¹)
-    (hs.inv (fun x => ne_of_gt (c.speed_pos g hi x t ht))).contMDiff hX
-
-private theorem tangent_geometry_curvature_smooth
-    [FiniteDimensional ℝ E] [I.Boundaryless] (g : ℝ → SmoothRiemannianMetric I M)
-    (c : CurveMap M) (J : Set ℝ) (hc : c.SmoothOn (I := I) J)
-    (hi : c.ImmersedOn (I := I) J) (t : ℝ) (ht : t ∈ J) :
-    ContMDiff 𝓘(ℝ, ℝ) I.tangent ∞
-      (fun x => TotalSpace.mk' E (c.lift x t) (c.curvatureVector g x t)) := by
-  have hg := tangent_geometry_slice_smooth c J hc t ht
-  have hX := tangent_geometry_velocity_smooth (fun x => c.lift x t) hg
-  have hi2 := tangent_geometry_inner_along_smooth (g t) (fun x => c.lift x t)
-    (fun x => c.X x t) (fun x => c.X x t) hg hX hX
-  have hs : ContDiff ℝ ∞ (fun x => c.speed g x t) :=
-    hi2.sqrt (fun x => ne_of_gt ((g t).pos _ _ (hi x t ht)))
-  have hDT := tangent_geometry_cov_along_smooth (g t) (fun x => c.lift x t)
-    (fun x => c.unitTangent g x t) (tangent_geometry_unit_smooth g c J hc hi t ht)
-  exact tangent_geometry_smul_along_smooth (fun x => c.lift x t)
-    (fun x => c.Dx g (c.unitTangent g) x t) (fun x => (c.speed g x t)⁻¹)
-    (hs.inv (fun x => ne_of_gt (c.speed_pos g hi x t ht))).contMDiff hDT
-
 private theorem tangent_geometry_unit_norm (g : ℝ → SmoothRiemannianMetric I M)
     (c : CurveMap M) (J : Set ℝ) (hi : c.ImmersedOn (I := I) J)
     (x t : ℝ) (ht : t ∈ J) :
@@ -208,9 +98,10 @@ theorem tangent_curvature_geometry (g : ℝ → SmoothRiemannianMetric I M)
   let _ := (inferInstance : CompleteSpace E)
   let _ := (inferInstance : SigmaCompactSpace M)
   let _ := (inferInstance : T2Space M)
-  have hg := tangent_geometry_slice_smooth c J hc t ht
-  have hT := tangent_geometry_unit_smooth g c J hc hi t ht
-  have hH := tangent_geometry_curvature_smooth g c J hc hi t ht
+  have hg : ContMDiff 𝓘(ℝ, ℝ) I ∞ (fun y => c.lift y t) :=
+    contMDiffOn_univ.mp (CurveMap.space_slice_contMDiffOn c J hc t ht)
+  have hT := CurveMap.unitTangent_contMDiff g c J hc hi t ht
+  have hH := CurveMap.curvatureVector_contMDiff g c J hc hi t ht
   have hunit := tangent_geometry_unit_norm g c J hi
   have hDxT : ∀ y, (g t).inner (c.lift y t)
       (c.Dx g (c.unitTangent g) y t) (c.unitTangent g y t) = 0 := by

@@ -34,30 +34,27 @@ theorem rfs_ramp_small_angle (g : SmoothRiemannianMetric I Q)
   sorry
 
 
-def localRegularityDelta (B : RicciBackground (I := I) (M := Q) D a b)
-    (L₀ Theta₀ : ℝ) (hL₀ : 0 ≤ L₀) (hTheta₀ : 0 ≤ Theta₀) : ℝ :=
-  Classical.choose (rfs_csf_local_regularity B L₀ Theta₀ hL₀ hTheta₀)
+def localRegularityDelta (B : RicciBackground (I := I) (M := Q) D a b) (L₀ Theta₀ : ℝ)
+    (K : CurveShorteningRegularityInput B L₀ Theta₀) : ℝ :=
+  K.delta
 
+def localRegularityRadius (B : RicciBackground (I := I) (M := Q) D a b) (L₀ Theta₀ : ℝ)
+    (K : CurveShorteningRegularityInput B L₀ Theta₀) : ℝ :=
+  K.radius
 
-def localRegularityRadius (B : RicciBackground (I := I) (M := Q) D a b)
-    (L₀ Theta₀ : ℝ) (hL₀ : 0 ≤ L₀) (hTheta₀ : 0 ≤ Theta₀) : ℝ :=
-  Classical.choose (Classical.choose_spec
-    (rfs_csf_local_regularity B L₀ Theta₀ hL₀ hTheta₀))
-
-def localRegularityCoefficient (B : RicciBackground (I := I) (M := Q) D a b)
-    (L₀ Theta₀ : ℝ) (hL₀ : 0 ≤ L₀) (hTheta₀ : 0 ≤ Theta₀) : ℕ → ℝ :=
-  Classical.choose (Classical.choose_spec (Classical.choose_spec
-    (rfs_csf_local_regularity B L₀ Theta₀ hL₀ hTheta₀)))
+def localRegularityCoefficient (B : RicciBackground (I := I) (M := Q) D a b) (L₀ Theta₀ : ℝ)
+    (K : CurveShorteningRegularityInput B L₀ Theta₀) : ℕ → ℝ :=
+  K.coefficient
 
 
 def goodWindowUnion (starts : Finset ℝ) (d : ℝ) : Set ℝ :=
   {t | ∃ w ∈ starts, t ∈ Icc (w + 5 * d / 8) (w + 7 * d / 8)}
 
 theorem rfs_finite_good_windows (B : RicciBackground (I := I) (M := Q) D a b)
-    (L₀ Theta₀ : ℝ) (hL₀ : 0 ≤ L₀) (hTheta₀ : 0 ≤ Theta₀) :
-    let delta := localRegularityDelta B L₀ Theta₀ hL₀ hTheta₀
-    let r₀ := localRegularityRadius B L₀ Theta₀ hL₀ hTheta₀
-    let areg := localRegularityCoefficient B L₀ Theta₀ hL₀ hTheta₀ 0
+    (L₀ Theta₀ : ℝ) (K : CurveShorteningRegularityInput B L₀ Theta₀) :
+    let delta := localRegularityDelta B L₀ Theta₀ K
+    let r₀ := localRegularityRadius B L₀ Theta₀ K
+    let areg := localRegularityCoefficient B L₀ Theta₀ K 0
     let C_E := Real.exp (B.B₀ * (b - a)) * L₀
     ∀ ell threshold : ℝ, 0 < ell → 0 < threshold →
       let r := min r₀ (min (ell / 2) (delta ^ 2 / threshold))

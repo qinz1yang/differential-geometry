@@ -1941,11 +1941,11 @@ theorem diskArea_scale (g : SmoothRiemannianMetric I Q) {c : ℝ} (hc : 0 < c)
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
+omit connectedQ in
 theorem diskArea_reparametrize (g : SmoothRiemannianMetric I Q) (u : LipschitzDisk g)
     (φ : Disk ≃ₜ Disk) (hφ : ∃ L : ℝ≥0, LipschitzWith L φ)
     (hφinv : ∃ L : ℝ≥0, LipschitzWith L φ.symm) :
     diskArea g (u.map ∘ φ) = diskArea g u.map := by
-  let _ := connectedQ
   obtain ⟨L, hL⟩ := hφ
   let f := diskReparamExtension φ
   let s := Metric.closedBall (0 : ℂ) 1

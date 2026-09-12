@@ -2,7 +2,6 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.Assembly
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ControlledExtinction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.EventBridge
 import DifferentialGeometry.Topology.Manifold.CollarFamily
-import DifferentialGeometry.Topology.ThreeManifold.PoincareStandard
 import DifferentialGeometry.Topology.VanKampen.FullGroupoid
 
 set_option autoImplicit false
@@ -121,26 +120,23 @@ def InitialIdentification.toFiniteSurgeryHistory
 theorem exists_poincare_controlled_extinction_of_observedHistory
     (P : OrientedThreeStage.{u}) (g : P.Metric) (H : ObservedHistory.{u})
     (A : InitialIdentification P g H) (hn : 0 < H.eventCount)
-    (hc : (i : Fin H.eventCount) → SmoothCutCapCompletion (H.event i).transition)
-    (hout : (i : Fin H.eventCount) →
-      letI : ChartedSpace (EuclideanHalfSpace 3) (H.event i).old := (H.event i).oldCharts
-      IsSmoothEmbedding (𝓡∂ 3) ThreeModel ∞
-        (fun x : (H.event i).old => (H.event i).transition.trace.capping.coreInclusion x.1))
-    (hctrl : ∀ i : Fin H.eventCount, ∀ c : ConnectedComponents (H.event i).discarded.Carrier,
-      DifferentialGeometry.Topology.isPoincareStandard
-        ((H.event i).discarded.toClosedOrientedManifold.component c).Carrier)
+    (bridge : (i : Fin H.eventCount) →
+      DifferentialGeometry.PDE.RicciFlow.Surgery.MetricCutCapEvent
+        (H.stage i.castSucc).toClosedOrientedManifold
+        (H.stage i.succ).toClosedOrientedManifold
+        (H.time i.castSucc) (H.time i.succ))
+    (hbridge_initial : ∀ i : Fin H.eventCount,
+      (bridge i).incoming.flow.base.metric (H.time i.castSucc) = H.initialMetric i.castSucc)
+    (hbridge_output : ∀ i : Fin H.eventCount,
+      (bridge i).outputMetric = H.initialMetric i.succ)
+    (hctrl : ∀ i : Fin H.eventCount, (bridge i).transition.poincareControlled)
     (hempty : IsEmpty (H.stage (Fin.last H.eventCount)).Carrier) :
-    Nonempty (PoincareControlledExtinction P.toClosedOrientedManifold g) := by
-  refine ⟨{ history := H.toSurgeryFiniteSurgeryHistory_of_cutCapCompletion hn hc hout
-            time := H.time (Fin.last H.eventCount)
-            time_pos := H.last_time_pos hn
-            initial := A.toFiniteSurgeryHistory hn (H.toSurgeryEvents hc hout)
-              (H.toSurgeryEvents_initial hc hout) (H.toSurgeryEvents_output hc hout)
-            controlled := ?_
-            extinct := ?_ }⟩
-  · intro i
-    exact SphericalCutCapTransition.ofSmoothCutCapTransition_poincareControlled
-      (H.event i).transition (hc i) (hctrl i)
-  · exact ⟨rfl, hempty⟩
+    Nonempty (PoincareControlledExtinction P.toClosedOrientedManifold g) :=
+  ⟨{ history := H.toSurgeryFiniteSurgeryHistory hn bridge hbridge_initial hbridge_output
+     time := H.time (Fin.last H.eventCount)
+     time_pos := H.last_time_pos hn
+     initial := A.toFiniteSurgeryHistory hn bridge hbridge_initial hbridge_output
+     controlled := hctrl
+     extinct := ⟨rfl, hempty⟩ }⟩
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
