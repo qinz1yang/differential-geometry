@@ -1,7 +1,7 @@
 import DifferentialGeometry.Topology.Attachment.Basic
 import Mathlib.Geometry.Manifold.LocalDiffeomorph
 
-open scoped Manifold ContDiff
+open scoped Manifold ContDiff Topology
 
 namespace DifferentialGeometry.Topology
 
@@ -157,6 +157,111 @@ theorem jointly_surjective (z : ConnectedSumQuotient c d a) :
   · exact Or.inl ⟨x, rfl⟩
   · exact Or.inr ⟨y, rfl⟩
 
+theorem inl_eq_inr_iff (p : c.Punctured) (q : d.Punctured) :
+    inl c d a p = inr c d a q ↔
+      ∃ z, c.boundaryMap z = p ∧ d.boundaryMap (a z) = q :=
+  adjunction_cell_eq_lower_iff c.boundaryMap (d.boundaryMap ∘ a)
+    (d.boundaryMap_injective.comp a.injective) p q
+
+theorem inl_ne_inr_of_forall (p : c.Punctured) (q : d.Punctured)
+    (h : ∀ z, c.boundaryMap z = p → d.boundaryMap (a z) ≠ q) :
+    inl c d a p ≠ inr c d a q := by
+  intro hpq
+  obtain ⟨z, hz, hz'⟩ := (inl_eq_inr_iff c d a p q).mp hpq
+  exact h z hz hz'
+
+theorem isOpen_image_inl {U : Set c.Punctured} (hU : IsOpen U)
+    (hdisj : ∀ z, c.boundaryMap z ∉ U) :
+    IsOpen (inl c d a '' U) := by
+  have hcoe : (adjunctionMk c.boundaryMap (d.boundaryMap ∘ a)) ⁻¹'
+      (inl c d a '' U) = Sum.inl '' U := by
+    ext s
+    constructor
+    · rintro ⟨p, hpU, hp⟩
+      cases s with
+      | inl x =>
+          refine ⟨x, ?_, rfl⟩
+          rwa [← (inl_injective c d a hp)]
+      | inr y =>
+          obtain ⟨z, hz, -⟩ := (inl_eq_inr_iff c d a p y).mp hp
+          exact absurd (hz.symm ▸ hpU) (hdisj z)
+    · rintro ⟨x, hx, rfl⟩
+      exact ⟨x, hx, rfl⟩
+  change IsOpen[TopologicalSpace.coinduced
+    (adjunctionMk c.boundaryMap (d.boundaryMap ∘ a)) inferInstance] (inl c d a '' U)
+  rw [isOpen_coinduced, hcoe]
+  exact isOpenMap_inl U hU
+
+theorem isOpen_image_inr {V : Set d.Punctured} (hV : IsOpen V)
+    (hdisj : ∀ z, d.boundaryMap z ∉ V) :
+    IsOpen (inr c d a '' V) := by
+  have hcoe : (adjunctionMk c.boundaryMap (d.boundaryMap ∘ a)) ⁻¹'
+      (inr c d a '' V) = Sum.inr '' V := by
+    ext s
+    constructor
+    · rintro ⟨q, hqV, hq⟩
+      cases s with
+      | inr y =>
+          refine ⟨y, ?_, rfl⟩
+          rwa [← (inr_injective c d a hq)]
+      | inl x =>
+          obtain ⟨z, -, hz⟩ := (inl_eq_inr_iff c d a x q).mp hq.symm
+          exact absurd (hz.symm ▸ hqV) (hdisj (a z))
+    · rintro ⟨y, hy, rfl⟩
+      exact ⟨y, hy, rfl⟩
+  change IsOpen[TopologicalSpace.coinduced
+    (adjunctionMk c.boundaryMap (d.boundaryMap ∘ a)) inferInstance] (inr c d a '' V)
+  rw [isOpen_coinduced, hcoe]
+  exact isOpenMap_inr V hV
+
+theorem isOpen_image_union {U : Set c.Punctured} {V : Set d.Punctured} (hU : IsOpen U)
+    (hV : IsOpen V) (hdisjU : ∀ z, c.boundaryMap z ∉ U)
+    (hdisjV : ∀ z, d.boundaryMap z ∉ V) :
+    IsOpen (inl c d a '' U ∪ inr c d a '' V) := by
+  have hcoe : (adjunctionMk c.boundaryMap (d.boundaryMap ∘ a)) ⁻¹'
+      (inl c d a '' U ∪ inr c d a '' V) = Sum.inl '' U ∪ Sum.inr '' V := by
+    ext s
+    constructor
+    · rintro (⟨p, hpU, hp⟩ | ⟨q, hqV, hq⟩)
+      · cases s with
+        | inl x =>
+            refine Or.inl ⟨x, ?_, rfl⟩
+            rwa [← (inl_injective c d a hp)]
+        | inr y =>
+            obtain ⟨z, hz, -⟩ := (inl_eq_inr_iff c d a p y).mp hp
+            exact absurd (hz.symm ▸ hpU) (hdisjU z)
+      · cases s with
+        | inl x =>
+            obtain ⟨z, -, hz⟩ := (inl_eq_inr_iff c d a x q).mp hq.symm
+            exact absurd (hz.symm ▸ hqV) (hdisjV (a z))
+        | inr y =>
+            refine Or.inr ⟨y, ?_, rfl⟩
+            rwa [← (inr_injective c d a hq)]
+    · rintro (⟨x, hx, rfl⟩ | ⟨y, hy, rfl⟩)
+      · exact Or.inl ⟨x, hx, rfl⟩
+      · exact Or.inr ⟨y, hy, rfl⟩
+  change IsOpen[TopologicalSpace.coinduced
+    (adjunctionMk c.boundaryMap (d.boundaryMap ∘ a)) inferInstance]
+    (inl c d a '' U ∪ inr c d a '' V)
+  rw [isOpen_coinduced, hcoe]
+  exact (isOpenMap_inl U hU).union (isOpenMap_inr V hV)
+
 end ConnectedSumQuotient
+
+theorem frontier_half_le_subset_eq_zero {α : Type*} [TopologicalSpace α] (f : α → ℝ)
+    (hf : Continuous f) : frontier {p : α | 0 ≤ f p} ⊆ {p | f p = 0} := by
+  intro p hp
+  have hcl : p ∈ closure {q : α | 0 ≤ f q} := frontier_subset_closure hp
+  have hcl' : p ∈ closure ({q : α | 0 ≤ f q}ᶜ) := by
+    have h : p ∈ frontier ({q : α | 0 ≤ f q}ᶜ) := by
+      rwa [frontier_compl]
+    exact frontier_subset_closure h
+  have hge : 0 ≤ f p :=
+    closure_minimal (fun q hq => hq) (isClosed_le continuous_const hf) hcl
+  have hle : f p ≤ 0 := by
+    refine closure_minimal (fun q hq => ?_) (isClosed_le hf continuous_const) hcl'
+    have hq' : ¬ (0 ≤ f q) := hq
+    exact le_of_lt (not_le.mp hq')
+  exact le_antisymm hle hge
 
 end DifferentialGeometry.Topology

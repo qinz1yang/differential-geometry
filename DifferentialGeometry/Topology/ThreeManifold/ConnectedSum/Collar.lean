@@ -190,6 +190,152 @@ theorem interior_collar_cover [T2Space M] [T2Space N]
     · refine Or.inr (Or.inr ⟨(a.symm z, ⟨0, by constructor <;> norm_num [collarInterval]⟩), ?_⟩)
       simpa only [a.apply_symm_apply] using collarMap_zero_right c d a (a.symm z)
 
+theorem mem_chart_source_of_norm_le_two {x : EuclideanSpace ℝ (Fin 3)} (hx : ‖x‖ ≤ 2) :
+    x ∈ c.chart.source :=
+  c.closedBall_subset_source (by simpa [Metric.mem_closedBall, dist_zero_right] using hx)
+
+theorem continuous_radialFamily
+    (z : CollarDomain → Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1)
+    (r : CollarDomain → ℝ) (hz : Continuous z) (hr : Continuous r)
+    (h1 : ∀ p, 1 ≤ r p) (h2 : ∀ p, r p ≤ 2) :
+    Continuous fun p => c.radialMap (z p) (r p) ⟨h1 p, h2 p⟩ := by
+  have hsmul : Continuous fun p : CollarDomain =>
+      r p • ((z p : EuclideanSpace ℝ (Fin 3))) :=
+    hr.smul (continuous_subtype_val.comp hz)
+  have hsrc : ∀ p : CollarDomain,
+      r p • ((z p : EuclideanSpace ℝ (Fin 3))) ∈ c.chart.source := by
+    intro p
+    refine mem_chart_source_of_norm_le_two c ?_
+    have hz1 : ‖(z p : EuclideanSpace ℝ (Fin 3))‖ = 1 := by
+      simpa only [Metric.mem_sphere, dist_zero_right] using (z p).2
+    rw [norm_smul, Real.norm_eq_abs, abs_of_nonneg (le_trans zero_le_one (h1 p)), hz1, mul_one]
+    exact h2 p
+  have hchart : Continuous fun p : CollarDomain =>
+      (⟨c.chart (r p • ((z p : EuclideanSpace ℝ (Fin 3)))),
+        (c.radialMap (z p) (r p) ⟨h1 p, h2 p⟩).2⟩ : c.Punctured) :=
+    ((c.chart.contMDiffOn_toFun.continuousOn.comp_continuous hsmul hsrc)).subtype_mk _
+  convert hchart using 1
+  funext p
+  exact Subtype.ext rfl
+
+def radialLeftClamp : CollarDomain → c.Punctured :=
+  fun p => c.radialMap p.1 (max 1 (1 + (p.2 : ℝ))) (by
+    refine ⟨le_max_left _ _, max_le (by norm_num) ?_⟩
+    have h := p.2.2.2
+    linarith)
+
+theorem continuous_radialLeftClamp : Continuous (radialLeftClamp c) := by
+  have hr : Continuous fun p : CollarDomain => max 1 (1 + (p.2 : ℝ)) :=
+    continuous_const.max (continuous_const.add (continuous_subtype_val.comp continuous_snd))
+  refine continuous_radialFamily c (fun p => p.1) (fun p => max 1 (1 + (p.2 : ℝ)))
+    continuous_fst hr ?_ ?_
+  · intro p; exact le_max_left _ _
+  · intro p
+    refine max_le (by norm_num) ?_
+    have h := p.2.2.2
+    linarith
+
+theorem radialLeftClamp_of_nonneg (p : CollarDomain) (ht : 0 ≤ (p.2 : ℝ)) :
+    radialLeftClamp c p = c.radialMap p.1 (1 + (p.2 : ℝ))
+      (by
+        have h := collar_left_radius p.2 ht
+        exact ⟨h.1, le_trans (le_of_lt h.2) (by norm_num)⟩) := by
+  apply Subtype.ext
+  change c.chart ((max 1 (1 + (p.2 : ℝ))) • ((p.1 : EuclideanSpace ℝ (Fin 3)))) =
+    c.chart ((1 + (p.2 : ℝ)) • ((p.1 : EuclideanSpace ℝ (Fin 3))))
+  rw [max_eq_right (by linarith : (1 : ℝ) ≤ 1 + (p.2 : ℝ))]
+
+def radialRightClamp (z : Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1) :
+    CollarDomain → c.Punctured :=
+  fun p => c.radialMap z (max 1 (1 - (p.2 : ℝ))) (by
+    refine ⟨le_max_left _ _, max_le (by norm_num) ?_⟩
+    have h := p.2.2.1
+    linarith)
+
+theorem continuous_radialRightClamp
+    (z : CollarDomain → Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1) (hz : Continuous z) :
+    Continuous fun p => radialRightClamp c (z p) p := by
+  have hr : Continuous fun p : CollarDomain => max 1 (1 - (p.2 : ℝ)) :=
+    continuous_const.max (continuous_const.sub (continuous_subtype_val.comp continuous_snd))
+  refine continuous_radialFamily c z (fun p => max 1 (1 - (p.2 : ℝ))) hz hr ?_ ?_
+  · intro p; exact le_max_left _ _
+  · intro p
+    refine max_le (by norm_num) ?_
+    have h := p.2.2.1
+    linarith
+
+theorem radialRightClamp_of_neg (z : Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1)
+    (p : CollarDomain) (ht : (p.2 : ℝ) < 0) :
+    radialRightClamp c z p = c.radialMap z (1 - (p.2 : ℝ))
+      (by
+        have h := collar_right_radius p.2 ht.le
+        exact ⟨h.1, le_trans (le_of_lt h.2) (by norm_num)⟩) := by
+  apply Subtype.ext
+  change c.chart ((max 1 (1 - (p.2 : ℝ))) • ((z : EuclideanSpace ℝ (Fin 3)))) =
+    c.chart ((1 - (p.2 : ℝ)) • ((z : EuclideanSpace ℝ (Fin 3))))
+  rw [max_eq_right (by linarith : (1 : ℝ) ≤ 1 - (p.2 : ℝ))]
+
+def collarLeft : CollarDomain → ConnectedSumQuotient c d a.toHomeomorph :=
+  fun p => inl c d a.toHomeomorph (radialLeftClamp c p)
+
+def collarRight : CollarDomain → ConnectedSumQuotient c d a.toHomeomorph :=
+  fun p => inr c d a.toHomeomorph (radialRightClamp d (a p.1) p)
+
+theorem continuous_collarLeft : Continuous (collarLeft c d a) :=
+  (continuous_inl c d a.toHomeomorph).comp (continuous_radialLeftClamp c)
+
+theorem continuous_collarRight : Continuous (collarRight c d a) := by
+  have hz : Continuous fun p : CollarDomain => a p.1 :=
+    Continuous.comp a.toHomeomorph.continuous_toFun continuous_fst
+  exact (continuous_inr c d a.toHomeomorph).comp (continuous_radialRightClamp d _ hz)
+
+theorem collarLeft_of_nonneg (p : CollarDomain) (ht : 0 ≤ (p.2 : ℝ)) :
+    collarLeft c d a p = collarMap c d a p := by
+  rw [collarMap_of_nonneg c d a p ht]
+  exact congrArg (inl c d a.toHomeomorph) (radialLeftClamp_of_nonneg c p ht)
+
+theorem collarRight_of_neg (p : CollarDomain) (ht : (p.2 : ℝ) < 0) :
+    collarRight c d a p = collarMap c d a p := by
+  rw [collarMap_of_neg c d a p ht]
+  exact congrArg (inr c d a.toHomeomorph) (radialRightClamp_of_neg d (a p.1) p ht)
+
+theorem collarLeft_eq_collarRight_of_eq_zero (p : CollarDomain) (ht : (p.2 : ℝ) = 0) :
+    collarLeft c d a p = collarRight c d a p := by
+  have hleft : radialLeftClamp c p = c.boundaryMap p.1 := by
+    apply Subtype.ext
+    change c.chart ((max 1 (1 + (p.2 : ℝ))) • ((p.1 : EuclideanSpace ℝ (Fin 3)))) =
+      c.chart ((p.1 : EuclideanSpace ℝ (Fin 3)))
+    rw [ht]
+    norm_num
+  have hright : radialRightClamp d (a p.1) p = d.boundaryMap (a p.1) := by
+    apply Subtype.ext
+    change d.chart ((max 1 (1 - (p.2 : ℝ))) •
+        (((a p.1 : Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1) :
+          EuclideanSpace ℝ (Fin 3)))) =
+      d.chart (((a p.1 : Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1) :
+        EuclideanSpace ℝ (Fin 3)))
+    rw [ht]
+    norm_num
+  rw [collarLeft, collarRight, hleft, hright]
+  exact boundary_eq c d a.toHomeomorph p.1
+
+theorem collarMap_eq_if :
+    collarMap c d a = fun p : CollarDomain =>
+      if 0 ≤ (p.2 : ℝ) then collarLeft c d a p else collarRight c d a p := by
+  funext p
+  by_cases ht : 0 ≤ (p.2 : ℝ)
+  · rw [if_pos ht, ← collarLeft_of_nonneg c d a p ht]
+  · rw [if_neg ht, ← collarRight_of_neg c d a p (lt_of_not_ge ht)]
+
+theorem continuous_collarMap : Continuous (collarMap c d a) := by
+  rw [collarMap_eq_if]
+  refine continuous_if ?_ (continuous_collarLeft c d a).continuousOn
+    (continuous_collarRight c d a).continuousOn
+  intro p hp
+  exact collarLeft_eq_collarRight_of_eq_zero c d a p
+    (frontier_half_le_subset_eq_zero (fun q : CollarDomain => (q.2 : ℝ))
+      (continuous_subtype_val.comp continuous_snd) hp)
+
 end ConnectedSumQuotient
 
 end DifferentialGeometry.Topology
