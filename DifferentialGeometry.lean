@@ -3213,6 +3213,7 @@ import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.CompactEm
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Compactness.BonnetMyers
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Compactness.BoundedGeometry
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Compactness.Construction
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Compactness.LocalJets
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Compactness.NormalCharts
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.ConnectedComponent
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergence.Defs
@@ -4668,6 +4669,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Curvature.MultiNor
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Curvature.NormEvolution
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Curvature.NormHeatEquation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Curvature.NormEvolutionInequality
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Curvature.Flatness
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Distance.Barrier
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Distance.CalabiSupport
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Distance.Laplacian
@@ -4860,6 +4862,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.C
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.ComponentFlow
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.Connection
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.Continuation
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.ContinuationFrontier
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.Evolution
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.IntegralBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.LocalExistence
@@ -5264,6 +5267,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.Loca
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.LocalDiffeomorphEmbedding
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.LocalDiffeomorphPartial
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.LocalExtensionUniformTimeJets
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.LocalInjectivityRadiusDecay
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.LocalMetricCompactness
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.LocalMetricDistance
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.LocalMetricInverse

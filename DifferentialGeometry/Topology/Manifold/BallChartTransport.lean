@@ -235,3 +235,79 @@ theorem nonempty_connectedSumQuotient_diffeomorph_of_ballChartTransport
     (fun x hx => by simpa only [Diffeomorph.coe_toHomeomorph] using hΨd x hx)
 
 end DifferentialGeometry.Topology
+
+
+namespace DifferentialGeometry.Topology
+
+universe u v w
+
+def OrientedBallChartTransport {M : ConnectedClosedOrientedManifold.{u} 3}
+    {M' : ConnectedClosedOrientedManifold.{v} 3}
+    (c : OrientedBallChart M.toClosedOrientedManifold)
+    (c' : OrientedBallChart M'.toClosedOrientedManifold) : Prop :=
+  ∃ Φ : M.Carrier ≃ₘ⟮𝓡 3, 𝓡 3⟯ M'.Carrier,
+    Φ.preservesOrientation M.orientation M'.orientation ∧
+      ∀ x ∈ Metric.closedBall (0 : EuclideanSpace ℝ (Fin 3)) 2,
+        Φ (c.toBallChart.chart x) = c'.toBallChart.chart x
+
+theorem OrientedBallChartTransport.refl
+    {M : ConnectedClosedOrientedManifold.{u} 3}
+    (c : OrientedBallChart M.toClosedOrientedManifold) :
+    OrientedBallChartTransport c c :=
+  ⟨Diffeomorph.refl (𝓡 3) M.Carrier ∞, Diffeomorph.preservesOrientation_refl M.orientation,
+    fun _ _ => rfl⟩
+
+theorem OrientedBallChartTransport.symm
+    {M : ConnectedClosedOrientedManifold.{u} 3} {M' : ConnectedClosedOrientedManifold.{v} 3}
+    {c : OrientedBallChart M.toClosedOrientedManifold}
+    {c' : OrientedBallChart M'.toClosedOrientedManifold}
+    (h : OrientedBallChartTransport c c') : OrientedBallChartTransport c' c := by
+  obtain ⟨Φ, hΦo, hΦ⟩ := h
+  exact ⟨Φ.symm, Diffeomorph.preservesOrientation_symm hΦo, fun x hx => by
+    rw [← hΦ x hx, Diffeomorph.symm_apply_apply]⟩
+
+theorem OrientedBallChartTransport.trans
+    {M : ConnectedClosedOrientedManifold.{u} 3} {M' : ConnectedClosedOrientedManifold.{v} 3}
+    {M'' : ConnectedClosedOrientedManifold.{w} 3}
+    {c : OrientedBallChart M.toClosedOrientedManifold}
+    {c' : OrientedBallChart M'.toClosedOrientedManifold}
+    {c'' : OrientedBallChart M''.toClosedOrientedManifold}
+    (h : OrientedBallChartTransport c c') (h' : OrientedBallChartTransport c' c'') :
+    OrientedBallChartTransport c c'' := by
+  obtain ⟨Φ, hΦo, hΦ⟩ := h
+  obtain ⟨Ψ, hΨo, hΨ⟩ := h'
+  exact ⟨Φ.trans Ψ, Diffeomorph.preservesOrientation_trans hΦo hΨo, fun x hx => by
+    simp only [Diffeomorph.coe_trans, Function.comp_apply, hΦ x hx, hΨ x hx]⟩
+
+theorem OrientedBallChartTransport.toBallChartTransport
+    {M : ConnectedClosedOrientedManifold.{u} 3} {M' : ConnectedClosedOrientedManifold.{v} 3}
+    {c : OrientedBallChart M.toClosedOrientedManifold}
+    {c' : OrientedBallChart M'.toClosedOrientedManifold}
+    (h : OrientedBallChartTransport c c') :
+    Manifold.BallChartTransport c.toBallChart c'.toBallChart := by
+  obtain ⟨Φ, -, hΦ⟩ := h
+  exact ⟨Φ, hΦ⟩
+
+theorem nonempty_connectedSumQuotient_diffeomorph_of_orientedBallChartTransport
+    {M : ConnectedClosedOrientedManifold.{u} 3} {M' : ConnectedClosedOrientedManifold.{v} 3}
+    {N : ConnectedClosedOrientedManifold.{u} 3} {N' : ConnectedClosedOrientedManifold.{v} 3}
+    (c : OrientedBallChart M.toClosedOrientedManifold)
+    (c' : OrientedBallChart M'.toClosedOrientedManifold)
+    (d : OrientedBallChart N.toClosedOrientedManifold)
+    (d' : OrientedBallChart N'.toClosedOrientedManifold)
+    (a : BoundaryAttachment)
+    (hΦ : OrientedBallChartTransport c c') (hΨ : OrientedBallChartTransport d d') :
+    letI := ConnectedSumQuotient.csChartedSpace c.toBallChart d.toBallChart a.1.toHomeomorph
+    letI := ConnectedSumQuotient.csIsManifold c.toBallChart d.toBallChart a.1.toHomeomorph
+      (ConnectedSumQuotient.contDiffOn_reflectMap a.1)
+      (ConnectedSumQuotient.contDiffOn_reflectMapInv a.1)
+    letI := ConnectedSumQuotient.csChartedSpace c'.toBallChart d'.toBallChart a.1.toHomeomorph
+    letI := ConnectedSumQuotient.csIsManifold c'.toBallChart d'.toBallChart a.1.toHomeomorph
+      (ConnectedSumQuotient.contDiffOn_reflectMap a.1)
+      (ConnectedSumQuotient.contDiffOn_reflectMapInv a.1)
+    Nonempty (ConnectedSumQuotient c.toBallChart d.toBallChart a.1.toHomeomorph ≃ₘ⟮𝓡 3, 𝓡 3⟯
+      ConnectedSumQuotient c'.toBallChart d'.toBallChart a.1.toHomeomorph) :=
+  nonempty_connectedSumQuotient_diffeomorph_of_ballChartTransport c c' d d' a
+    hΦ.toBallChartTransport hΨ.toBallChartTransport
+
+end DifferentialGeometry.Topology
