@@ -1,5 +1,5 @@
 {
-  "scope": "Dependency-closed 88-module local homology, derivative comparison and linear determinant-sign checkpoint; portable gate passed, full topology suite incomplete",
+  "scope": "Dependency-closed 88-module local homology and derivative determinant-sign checkpoint; portable gate passed, full topology suite incomplete",
   "baseline_commit": "b45bfa009368c8f5f531e10f4f5280e90079d6ad",
   "baseline_ref": "refs/remotes/origin/codex/chapter35",
   "source_project": "PoincareLean",
@@ -29,7 +29,7 @@
       "module": "Poincare.Topology.Homology.LocalDerivativeComparison",
       "path": "Poincare/Topology/Homology/LocalDerivativeComparison.lean",
       "baseline_sha256": null,
-      "sha256": "92c6c3563a5c73463c8e9f6758f5a5b9ba64f61ee636f608508b31d34b7b52bc"
+      "sha256": "2fe9fc911a447921b0a966f7ecc861ce06e4d606a8b585da298fab91d07f85c1"
     },
     {
       "module": "Poincare.Topology.Homology.LocalLinearMaps",
@@ -241,7 +241,7 @@
       "module": "Poincare.Topology.Homology.LocalDerivativeComparison",
       "path": "Poincare/Topology/Homology/LocalDerivativeComparison.lean",
       "baseline_sha256": null,
-      "sha256": "92c6c3563a5c73463c8e9f6758f5a5b9ba64f61ee636f608508b31d34b7b52bc"
+      "sha256": "2fe9fc911a447921b0a966f7ecc861ce06e4d606a8b585da298fab91d07f85c1"
     },
     {
       "module": "Poincare.Topology.Homology.LocalHomology",
@@ -682,7 +682,8 @@
     "Poincare.Topology.integralLocalHomologyOpenPartialHomeomorphIso_natural",
     "Poincare.Topology.integralRelativeHomologyMap_zero_eq_of_joined",
     "Poincare.Topology.integralRelativeHomologyMap_eq_derivative",
-    "Poincare.Topology.integralRelativeHomologyMap_linearEquiv_eq_det_sign"
+    "Poincare.Topology.integralRelativeHomologyMap_linearEquiv_eq_det_sign",
+    "Poincare.Topology.integralLocalHomologyOpenPartialHomeomorphIso_translation_eq_det_sign"
   ],
   "historical_authorities": [
     {
@@ -820,6 +821,47 @@
     "full_topology_suite_accepted": false
   },
   "validation": {
+    "status": "passed for the selected 88-module checkpoint; full topology suite incomplete",
+    "date": "2026-09-12",
+    "slurm_job": "13781140",
+    "host": "della-r3c2n16",
+    "request_id": "1789239376984243943-topology_checkpoint-ed89b504",
+    "input_sha256": "1d9a70257d0f2c97f4ad188e99264683a33a7c38d068b4889f015d1af917bc64",
+    "result_sha256": "f182fff4afdbb31441cbedf0dc6260d403234d31a4281087745989605f0c0518",
+    "artifact_log_sha256": "9c10bec76573a71a6e4f36f86a96243d3dd8fa788f9fa3302dc87a7556405db4",
+    "source_config_harness_hash_guards": 99,
+    "freshly_built_modules": [
+      "Poincare.Topology.Homology.LocalDerivativeComparison",
+      "Poincare"
+    ],
+    "root_build": "lake --no-cache --iofail build +Poincare.Topology.Homology.LocalDerivativeComparison:leanArts Poincare",
+    "fresh_build_scope": "Changed LocalDerivativeComparison and Poincare root; 87 unchanged source leaves retain the verified earlier checkpoint evidence.",
+    "exact_public_exports": 14,
+    "public_and_consumer_signature_axiom_pairs": 25,
+    "linters": [
+      "unusedArguments",
+      "simpNF",
+      "synTaut",
+      "checkType"
+    ],
+    "linter_scope": "All imported Poincare declarations and current consumers, including private declarations",
+    "defLemma": "Unavailable in the pinned Mathlib; source declaration-kind checks retained.",
+    "allowed_transitive_axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "unexpected_diagnostics": 0,
+    "elapsed_seconds": 124.06748008728027,
+    "peak_summed_rss_bytes": 2581647360,
+    "full_topology_suite_accepted": false,
+    "consumer_probes": [
+      "All prior linear-sign and all-degree consumers unchanged",
+      "Actual restricted nonidentity open partial homeomorphism x \u21a6 5-x from (1,3), basepoint2,target3, negative derivative sign",
+      "Zero-dimensional actual open partial homeomorphism and degree-zero map"
+    ]
+  },
+  "previous_linear_sign_checkpoint_validation": {
     "status": "passed for this 88-module checkpoint; full topology suite incomplete",
     "project": "topology_checkpoint",
     "fresh_build_scope": "The 13 additional unchanged baseline leaves, new LocalLinearMaps and root; the previous 74 leaves retain their recorded compilation evidence.",
