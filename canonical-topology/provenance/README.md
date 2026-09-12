@@ -5,15 +5,15 @@ The recovered source baseline is commit
 `refs/remotes/origin/codex/chapter35` in the controller's existing Git objects.
 No source baseline was downloaded to prepare this checkpoint.
 
-[SNAPSHOT.json](SNAPSHOT.json) records all 94 supplied module paths and hashes,
-including their baseline hashes and the ten new/changed leaves. The six new
+[SNAPSHOT.json](SNAPSHOT.json) records all 96 supplied module paths and hashes,
+including their baseline hashes and the twelve new/changed leaves. The eight new
 files have a null baseline hash. Existing baseline hashes were independently
 compared against the actual Git blobs. Every supplied leaf is byte-identical
 to its current counterpart in the isolated Poincare workspace.
 
 The portable `lakefile.toml` and `lake-manifest.json` are unchanged. The
 `lean-toolchain` copy removes one trailing blank line while retaining its exact
-version. The selected `Poincare.lean` is a checkpoint aggregate for the 94
+version. The selected `Poincare.lean` is a checkpoint aggregate for the 96
 supplied leaves; it does not overwrite the full recovered project's aggregate.
 Original/current hashes for these files are recorded separately.
 
@@ -81,7 +81,7 @@ the missing frozen contract.
 
 ## Closed-ball local classes
 
-`Poincare/Topology/Homology/LocalBallHomology.lean` is a new 399-line module
+`Poincare/Topology/Homology/LocalBallHomology.lean` was introduced as a 399-line module
 using the existing singular/relative homology and pinned Mathlib APIs. Its four
 public results retain arbitrary normed real spaces, natural degrees, centers
 and nonnegative radii, including zero and boundary cases. The actual complement
@@ -135,3 +135,29 @@ stock linters, standard-only axioms, 26 public exports and 51 exact readback
 pairs. All 48 previous readback pairs are identical, and all 115 guards match.
 The nonzero and Euclidean3 consumers passed. SNAPSHOT.json preserves the
 previous compact-chart checkpoint and the original imported-neighborhood gate.
+
+## Bounded star-convex complements
+
+`Topology/Homotopy/StarConvexComplement.lean` contains the generalized radial
+expansion formerly used only for a centered closed ball. Its public homotopy
+equivalence uses Mathlib's actual `ContinuousMap.inclusion`; the lower topology
+module has no homology dependency. `Topology/Homology/LocalStarConvex.lean`
+applies the existing pair short exact sequences and Mathlib's homology functor
+to identify the original relative restriction with an isomorphism.
+
+The two new leaves contain 134 and 56 lines. `LocalBallHomology` now contains
+269 lines, with its final 241 lines and all four public declaration bodies
+preserved verbatim. The old radial construction is replaced, not duplicated.
+The other 93 previously supplied leaves are unchanged. The expanded aggregate
+contains 96 leaves; dependency configuration and existing attribution are
+unchanged. The new original proofs use pinned Mathlib and Poincare APIs.
+
+Final portable request `1789254131971909628-topology_checkpoint-8c2ff12b`
+passed in Slurm 13781140 in 235.92 seconds. The two new leaves, refactored
+`LocalBallHomology`, affected `LocalCompactHomology` and `LocalOrientation`,
+and `Poincare` freshly compiled without diagnostics in 2:54.59. All 122
+source/configuration/harness guards and 61 signature/axiom pairs passed.
+All 51 previous pairs and the ten new public/consumer pairs match their earlier
+readbacks byte for byte. All-package/current-consumer stock linters and
+standard-only transitive axioms passed. The 91 unchanged leaves not rebuilt
+in this run retain their earlier compilation evidence.

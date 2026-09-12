@@ -1,9 +1,9 @@
 {
-  "scope": "Dependency-closed 94-module local homology and oriented compact chart-class checkpoint; portable gate passed, full topology suite incomplete",
+  "scope": "Dependency-closed 96-module local homology and oriented compact chart-class checkpoint; portable gate passed, full topology suite incomplete",
   "baseline_commit": "b45bfa009368c8f5f531e10f4f5280e90079d6ad",
   "baseline_ref": "refs/remotes/origin/codex/chapter35",
   "source_project": "PoincareLean",
-  "source_module_count": 94,
+  "source_module_count": 96,
   "roots": [
     "Poincare.Topology.Homology.RelativeMaps",
     "Poincare.Topology.Homology.RelativeHomeomorphism",
@@ -26,7 +26,7 @@
       "module": "Poincare.Topology.Homology.LocalBallHomology",
       "path": "Poincare/Topology/Homology/LocalBallHomology.lean",
       "baseline_sha256": null,
-      "sha256": "9d8d258f2f9b5470fbf1d0385ad68c45e9cf9e20c210eefedcc5c4e7b14edf3d"
+      "sha256": "02ad4cf473fe18a6a9e873c2ed5e79fbad5cac11493d510ad46ce6fce83ac3a9"
     },
     {
       "module": "Poincare.Topology.Homology.LocalCharts",
@@ -59,6 +59,12 @@
       "sha256": "c75edd6d472dc57273d9d3ee1ffec230c0f1c7b35e9f040765ad936dc453c530"
     },
     {
+      "module": "Poincare.Topology.Homology.LocalStarConvex",
+      "path": "Poincare/Topology/Homology/LocalStarConvex.lean",
+      "baseline_sha256": null,
+      "sha256": "4fd5f6b61fc4a331eca3a79633ade9039c6bf7810c0a6aff7d58e152f8b21f01"
+    },
+    {
       "module": "Poincare.Topology.Homology.RelativeHomeomorphism",
       "path": "Poincare/Topology/Homology/RelativeHomeomorphism.lean",
       "baseline_sha256": "252e368a5ce4c966e1320a91f13672b55bbb52723a8ae2506ae6057b4b4cddfb",
@@ -75,6 +81,12 @@
       "path": "Poincare/Topology/Homology/RelativeZero.lean",
       "baseline_sha256": "67dfaa37dcdb4bcded416c759d86a3889ead7f0436cc5e97502bd44716f4ec3f",
       "sha256": "6e3fa2156309518597f9ccc00ea87c6cfd424480c54674d5d3d6b64e4e207b0a"
+    },
+    {
+      "module": "Poincare.Topology.Homotopy.StarConvexComplement",
+      "path": "Poincare/Topology/Homotopy/StarConvexComplement.lean",
+      "baseline_sha256": null,
+      "sha256": "ff5c10ae8999a75c2aba098b19905573557f750dfc7eac075e53000cdbdc799b"
     }
   ],
   "poincare_sources": [
@@ -262,7 +274,7 @@
       "module": "Poincare.Topology.Homology.LocalBallHomology",
       "path": "Poincare/Topology/Homology/LocalBallHomology.lean",
       "baseline_sha256": null,
-      "sha256": "9d8d258f2f9b5470fbf1d0385ad68c45e9cf9e20c210eefedcc5c4e7b14edf3d"
+      "sha256": "02ad4cf473fe18a6a9e873c2ed5e79fbad5cac11493d510ad46ce6fce83ac3a9"
     },
     {
       "module": "Poincare.Topology.Homology.LocalCharts",
@@ -299,6 +311,12 @@
       "path": "Poincare/Topology/Homology/LocalOrientation.lean",
       "baseline_sha256": null,
       "sha256": "c75edd6d472dc57273d9d3ee1ffec230c0f1c7b35e9f040765ad936dc453c530"
+    },
+    {
+      "module": "Poincare.Topology.Homology.LocalStarConvex",
+      "path": "Poincare/Topology/Homology/LocalStarConvex.lean",
+      "baseline_sha256": null,
+      "sha256": "4fd5f6b61fc4a331eca3a79633ade9039c6bf7810c0a6aff7d58e152f8b21f01"
     },
     {
       "module": "Poincare.Topology.Homology.MeshBoundary",
@@ -641,13 +659,19 @@
       "path": "Poincare/Topology/Homology/ZeroHomologyMaps.lean",
       "baseline_sha256": "ff96bdb01077e8c63f760e0cc3715cf9299b90dd24fc9fc72dd97eb171e6b36a",
       "sha256": "ff96bdb01077e8c63f760e0cc3715cf9299b90dd24fc9fc72dd97eb171e6b36a"
+    },
+    {
+      "module": "Poincare.Topology.Homotopy.StarConvexComplement",
+      "path": "Poincare/Topology/Homotopy/StarConvexComplement.lean",
+      "baseline_sha256": null,
+      "sha256": "ff5c10ae8999a75c2aba098b19905573557f750dfc7eac075e53000cdbdc799b"
     }
   ],
   "aggregate": {
     "path": "Poincare.lean",
     "baseline_sha256": "99c3c8e47c19f60ee50a7e0f377e59138cf4ff33ebd4e26530d3c2b7cd47d452",
-    "sha256": "ae360bb3e3e0d28cea07f9e52f6963f3a7c4b2c5b9b0986afc057b17c98e0c6b",
-    "change": "Flat94-leaf checkpoint aggregate; full recovered aggregate remains separate"
+    "sha256": "20eea7150efb34d0c01a9fa63f5340c63b63c0de45a8459007b792b42a34c893",
+    "change": "Flat96-leaf checkpoint aggregate; full recovered aggregate remains separate"
   },
   "configuration": [
     {
@@ -729,6 +753,7 @@
     "Mathlib.Topology.Homeomorph.Lemmas",
     "Mathlib.Topology.Homotopy.Basic",
     "Mathlib.Topology.Homotopy.Contractible",
+    "Mathlib.Topology.MetricSpace.Bounded",
     "Mathlib.Topology.MetricSpace.ProperSpace",
     "Mathlib.Topology.MetricSpace.Pseudo.Lemmas",
     "Mathlib.Topology.OpenPartialHomeomorph.Continuity"
@@ -762,7 +787,11 @@
     "Poincare.Topology.integralRelativeHomologyOpenPartialHomeomorphIso_comp_excision",
     "Poincare.Topology.integralRelativeHomologyOpenPartialHomeomorphIso_local_restriction",
     "Poincare.Topology.exists_compact_chart_neighborhood_class",
-    "Poincare.Topology.exists_compact_neighborhood_class_with_oriented_chart_maps"
+    "Poincare.Topology.exists_compact_neighborhood_class_with_oriented_chart_maps",
+    "Poincare.Topology.boundedStarConvexComplementHomotopyEquiv",
+    "Poincare.Topology.boundedStarConvexComplementHomotopyEquiv_toFun",
+    "Poincare.Topology.integralBoundedStarConvexLocalHomologyIso",
+    "Poincare.Topology.integralBoundedStarConvexLocalHomologyIso_hom"
   ],
   "historical_authorities": [
     {
@@ -900,23 +929,27 @@
     "full_topology_suite_accepted": false
   },
   "validation": {
-    "status": "passed for the selected94-module checkpoint; full topology suite incomplete",
+    "status": "passed for the selected96-module checkpoint; full topology suite incomplete",
     "date": "2026-09-12",
     "slurm_job": "13781140",
     "host": "della-r3c2n16",
-    "request_id": "1789251985955893192-topology_checkpoint-9c57dab9",
-    "input_sha256": "5c1892facdeb0c186e3641a5f27fc961b9fb5c97b11b88f9c7e455e9892c9baf",
-    "result_sha256": "59e0b17ab81509f0587cb9edfe991a5a30b46c06b5e101fed22c2808f2547850",
-    "artifact_log_sha256": "2cf24b5b01dbf8ffa4dc4375302d6b50e75ceb13a1deba3741d668ea142c49a3",
-    "source_config_harness_hash_guards": 115,
+    "request_id": "1789254131971909628-topology_checkpoint-8c2ff12b",
+    "input_sha256": "813f47a4d0078b0729a8bbf37af589ead332a8df5672fc05730e932b5e4026de",
+    "result_sha256": "1d52206af2e2c631d3f0e12968007acdd78c23f987cf06ebc6ed1d6ad3585565",
+    "artifact_log_sha256": "c16050a3161c5713b43d858f26afaad9425e7a31c55f3224d23e5a79bf5e3017",
+    "source_config_harness_hash_guards": 122,
     "freshly_built_modules": [
+      "Poincare.Topology.Homotopy.StarConvexComplement",
+      "Poincare.Topology.Homology.LocalStarConvex",
+      "Poincare.Topology.Homology.LocalBallHomology",
+      "Poincare.Topology.Homology.LocalCompactHomology",
       "Poincare.Topology.Homology.LocalOrientation",
       "Poincare"
     ],
-    "root_build": "lake --no-cache --iofail build +Poincare.Topology.Homology.LocalOrientation:leanArts Poincare",
-    "fresh_build_scope": "Changed LocalOrientation leaf and root compiled silently in 1:09.90, RSS 1950020 KiB. All 93 other leaves and the 94-module aggregate remain byte-identical and retain previous compilation evidence.",
-    "exact_public_exports": 26,
-    "public_and_consumer_signature_axiom_pairs": 51,
+    "root_build": "lake --no-cache --iofail build +Poincare.Topology.Homotopy.StarConvexComplement:leanArts +Poincare.Topology.Homology.LocalStarConvex:leanArts +Poincare.Topology.Homology.LocalBallHomology:leanArts Poincare",
+    "fresh_build_scope": "Two new leaves, refactored LocalBallHomology, affected LocalCompactHomology and LocalOrientation, and root compiled silently in 2:54.59, RSS 1952160 KiB. The 93 other previous source leaves remain byte-identical; 91 unchanged leaves retain previous compilation evidence without fresh recompilation in this run.",
+    "exact_public_exports": 30,
+    "public_and_consumer_signature_axiom_pairs": 61,
     "linters": [
       "unusedArguments",
       "simpNF",
@@ -931,14 +964,15 @@
       "Quot.sound"
     ],
     "unexpected_diagnostics": 0,
-    "elapsed_seconds": 127.76891088485718,
-    "peak_summed_rss_bytes": 2682777600,
+    "elapsed_seconds": 235.92325925827026,
+    "peak_summed_rss_bytes": 2691182592,
     "full_topology_suite_accepted": false,
     "consumer_probes": [
-      "All48 previous readback pairs reproduced byte-identically",
-      "Unique compact neighborhood class normalized in every chart with compatible actual tangent orientation",
-      "Nonzero compact relative class and all local restrictions from a nonzero model class",
-      "Actual nonzero Euclidean3 local class, using the existing generator equivalence"
+      "All51 previous signature/axiom pairs reproduced byte-identically",
+      "All4 new public and6 consumer readbacks match the original imported gate byte-identically",
+      "Actual segment endpoint restriction in all natural degrees and arbitrary real normed space",
+      "Planar segment endpoint and rank-zero singleton",
+      "Actual complement inclusion, inverse of original restriction map, and agreement with the old closed-ball map"
     ]
   },
   "previous_linear_sign_checkpoint_validation": {
@@ -1213,5 +1247,59 @@
     "signature_axiom_pairs": 4,
     "elapsed_seconds": 83.30232262611389,
     "scope": "Fresh LocalOrientation303 artifact and imported public/consumer checks; not the original797-file aggregate"
+  },
+  "previous_oriented_neighborhood_validation": {
+    "status": "passed for the selected94-module checkpoint; full topology suite incomplete",
+    "date": "2026-09-12",
+    "slurm_job": "13781140",
+    "host": "della-r3c2n16",
+    "request_id": "1789251985955893192-topology_checkpoint-9c57dab9",
+    "input_sha256": "5c1892facdeb0c186e3641a5f27fc961b9fb5c97b11b88f9c7e455e9892c9baf",
+    "result_sha256": "59e0b17ab81509f0587cb9edfe991a5a30b46c06b5e101fed22c2808f2547850",
+    "artifact_log_sha256": "2cf24b5b01dbf8ffa4dc4375302d6b50e75ceb13a1deba3741d668ea142c49a3",
+    "source_config_harness_hash_guards": 115,
+    "freshly_built_modules": [
+      "Poincare.Topology.Homology.LocalOrientation",
+      "Poincare"
+    ],
+    "root_build": "lake --no-cache --iofail build +Poincare.Topology.Homology.LocalOrientation:leanArts Poincare",
+    "fresh_build_scope": "Changed LocalOrientation leaf and root compiled silently in 1:09.90, RSS 1950020 KiB. All 93 other leaves and the 94-module aggregate remain byte-identical and retain previous compilation evidence.",
+    "exact_public_exports": 26,
+    "public_and_consumer_signature_axiom_pairs": 51,
+    "linters": [
+      "unusedArguments",
+      "simpNF",
+      "synTaut",
+      "checkType"
+    ],
+    "linter_scope": "All imported Poincare declarations and current consumers, including private declarations",
+    "defLemma": "Unavailable in the pinned Mathlib; source declaration-kind checks retained.",
+    "allowed_transitive_axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "unexpected_diagnostics": 0,
+    "elapsed_seconds": 127.76891088485718,
+    "peak_summed_rss_bytes": 2682777600,
+    "full_topology_suite_accepted": false,
+    "consumer_probes": [
+      "All48 previous readback pairs reproduced byte-identically",
+      "Unique compact neighborhood class normalized in every chart with compatible actual tangent orientation",
+      "Nonzero compact relative class and all local restrictions from a nonzero model class",
+      "Actual nonzero Euclidean3 local class, using the existing generator equivalence"
+    ]
+  },
+  "original_star_convex_validation": {
+    "request_id": "1789253988925359922-topology-0ce08747",
+    "input_sha256": "06f862c2566e4538c16aebf83799378e7856198faab9efc176ab4b0bbf98b1fd",
+    "result_sha256": "39c5c667e6f679d8de3696db3e5fddc51ba0cf3f6f859b4b39e000fcf079255e",
+    "source_config_harness_hash_guards": 109,
+    "public_and_consumer_signature_axiom_pairs": 14,
+    "elapsed_seconds": 113.43370723724365,
+    "slurm_job": "13781140",
+    "host": "della-r3c2n16",
+    "status": "passed with zero unexpected diagnostics, strict stock linters and standard-only transitive axioms",
+    "fresh_build_scope": "StarConvexComplement, LocalStarConvex and LocalBallHomology freshly compiled; original imported public and consumer checks passed."
   }
 }

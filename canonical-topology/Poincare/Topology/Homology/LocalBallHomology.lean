@@ -1,16 +1,10 @@
-import Poincare.Topology.Homology.RelativeHomeomorphism
+import Poincare.Topology.Homology.LocalStarConvex
 import Poincare.Topology.Homology.RelativeZero
-import Mathlib.Analysis.Convex.Contractible
-import Mathlib.Analysis.Normed.Module.Basic
 import Mathlib.Tactic.Abel
-import Mathlib.Tactic.FieldSimp
-import Mathlib.Tactic.Linarith
-import Mathlib.Tactic.Positivity
 
 noncomputable section
 
-open CategoryTheory ContinuousMap Set Metric
-open scoped Topology
+open CategoryTheory Set Metric
 
 universe u
 
@@ -20,137 +14,13 @@ variable {E : Type u} [NormedAddCommGroup E] [NormedSpace ℝ E]
 
 omit [NormedSpace ℝ E] in
 private theorem closedBall_complement_subset_point_complement {r : ℝ} (hr : 0 ≤ r) :
-    (closedBall (0 : E) r)ᶜ ⊆ ({0}ᶜ : Set E) := by
-  intro x hx hzero
-  have hnorm : r < ‖x‖ := by simpa only [mem_compl_iff, mem_closedBall_zero_iff, not_le] using hx
-  have hxzero : x = 0 := hzero
-  rw [hxzero, norm_zero] at hnorm
-  exact (not_lt_of_ge hr) hnorm
-
-private def closedBallComplementInclusion (r : ℝ) (hr : 0 ≤ r) :
-    C(((closedBall (0 : E) r)ᶜ : Set E), ({0}ᶜ : Set E)) :=
-  singularPairRestriction (ContinuousMap.id E) (closedBall_complement_subset_point_complement hr)
-
-private def radialExpansion (r : ℝ) : C(unitInterval × ({0}ᶜ : Set E), E) where
-  toFun p := (1 + (1 - p.1.val) * r / ‖p.2.val‖) • p.2.val
-  continuous_toFun := by
-    apply Continuous.smul
-    · apply Continuous.add continuous_const
-      apply Continuous.div
-      · fun_prop
-      · fun_prop
-      · intro p
-        exact norm_ne_zero_iff.mpr p.2.property
-    · fun_prop
-
-private theorem radialExpansion_norm (r : ℝ) (hr : 0 ≤ r)
-    (t : unitInterval) (x : ({0}ᶜ : Set E)) :
-    ‖radialExpansion r (t, x)‖ = ‖x.val‖ + (1 - t.val) * r := by
-  have hx : 0 < ‖x.val‖ := norm_pos_iff.mpr x.property
-  have hs : 0 ≤ (1 - t.val) * r := mul_nonneg (sub_nonneg.mpr t.property.2) hr
-  change ‖(1 + (1 - t.val) * r / ‖x.val‖) • x.val‖ = _
-  rw [norm_smul, Real.norm_eq_abs, abs_of_nonneg (by positivity)]
-  field_simp
-
-private theorem radialExpansion_one (r : ℝ) (x : ({0}ᶜ : Set E)) :
-    radialExpansion r (1, x) = x.val := by
-  simp [radialExpansion]
-
-private theorem radialExpansion_zero_mem_closedBall_complement
-    (r : ℝ) (hr : 0 ≤ r) (x : ({0}ᶜ : Set E)) :
-    radialExpansion r (0, x) ∈ (closedBall (0 : E) r)ᶜ := by
-  simp only [mem_compl_iff, mem_closedBall_zero_iff, not_le]
-  rw [radialExpansion_norm r hr]
-  have hx : 0 < ‖x.val‖ := norm_pos_iff.mpr x.property
-  change r < ‖x.val‖ + (1 - (0 : ℝ)) * r
-  linarith
-
-private def closedBallComplementPush (r : ℝ) (hr : 0 ≤ r) :
-    C(({0}ᶜ : Set E), ((closedBall (0 : E) r)ᶜ : Set E)) := by
-  let f : C(({0}ᶜ : Set E), E) :=
-    (radialExpansion r).comp ⟨fun x => ((0 : unitInterval), x),
-      continuous_const.prodMk continuous_id⟩
-  exact ⟨fun x => ⟨f x, radialExpansion_zero_mem_closedBall_complement r hr x⟩,
-    f.continuous.subtype_mk (fun x => radialExpansion_zero_mem_closedBall_complement r hr x)⟩
-
-private def closedBallComplementHomotopyEquiv (r : ℝ) (hr : 0 ≤ r) :
-    ((closedBall (0 : E) r)ᶜ : Set E) ≃ₕ ({0}ᶜ : Set E) where
-  toFun := closedBallComplementInclusion r hr
-  invFun := closedBallComplementPush r hr
-  left_inv := by
-    refine ⟨⟨⟨fun p => ⟨radialExpansion r (p.1, closedBallComplementInclusion r hr p.2), ?_⟩,
-      ?_⟩, ?_, ?_⟩⟩
-    · simp only [mem_compl_iff, mem_closedBall_zero_iff, not_le]
-      rw [radialExpansion_norm r hr]
-      have hx : r < ‖p.2.val‖ := by
-        simpa only [mem_compl_iff, mem_closedBall_zero_iff, not_le] using p.2.property
-      exact lt_of_lt_of_le hx (le_add_of_nonneg_right
-        (mul_nonneg (sub_nonneg.mpr p.1.property.2) hr))
-    · apply Continuous.subtype_mk
-      exact (radialExpansion r).continuous.comp
-        (continuous_fst.prodMk ((closedBallComplementInclusion r hr).continuous.comp continuous_snd))
-    · intro x
-      rfl
-    · intro x
-      exact Subtype.ext (radialExpansion_one r _)
-  right_inv := by
-    refine ⟨⟨⟨fun p => ⟨radialExpansion r p, ?_⟩, ?_⟩, ?_, ?_⟩⟩
-    · change radialExpansion r p ≠ 0
-      apply norm_pos_iff.mp
-      rw [radialExpansion_norm r hr]
-      exact add_pos_of_pos_of_nonneg (norm_pos_iff.mpr p.2.property)
-        (mul_nonneg (sub_nonneg.mpr p.1.property.2) hr)
-    · exact (radialExpansion r).continuous.subtype_mk _
-    · intro x
-      rfl
-    · intro x
-      exact Subtype.ext (radialExpansion_one r _)
-
-end Poincare.Topology
-
-end
-
-noncomputable section
-
-open CategoryTheory ContinuousMap Set Metric
-open scoped Topology
-
-universe u
-
-namespace Poincare.Topology
-
-private theorem integralSingularChainMap_quasiIso_of_homotopyEquiv
-    {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y] (e : X ≃ₕ Y) :
-    QuasiIso (integralSingularChainMap e.toFun) := by
-  rw [quasiIso_iff]
-  intro n
-  rw [quasiIsoAt_iff_isIso_homologyMap,
-    ConcreteCategory.isIso_iff_bijective]
-  exact (integralSingularHomologyHomotopyEquiv n e).bijective
-
-variable {E : Type u} [NormedAddCommGroup E] [NormedSpace ℝ E]
-
-private theorem integralClosedBallToLocalChainMap_quasiIso (r : ℝ) (hr : 0 ≤ r) :
-    QuasiIso (integralRelativeChainMap (ContinuousMap.id E)
-      (closedBall_complement_subset_point_complement hr)) := by
-  have hA : QuasiIso (integralSingularChainMap
-      (singularPairRestriction (ContinuousMap.id E)
-        (closedBall_complement_subset_point_complement hr))) :=
-    integralSingularChainMap_quasiIso_of_homotopyEquiv (closedBallComplementHomotopyEquiv r hr)
-  have hE : QuasiIso (integralSingularChainMap (ContinuousMap.id E)) :=
-    integralSingularChainMap_quasiIso_of_homotopyEquiv (ContinuousMap.HomotopyEquiv.refl E)
-  exact HomologicalComplex.HomologySequence.quasiIso_τ₃
-    (integralRelativeSequenceMap (ContinuousMap.id E)
-      (closedBall_complement_subset_point_complement hr))
-    (integralRelativeChainSequence_shortExact ((closedBall (0 : E) r)ᶜ))
-    (integralRelativeChainSequence_shortExact ({0}ᶜ : Set E)) hA hE
+    (closedBall (0 : E) r)ᶜ ⊆ ({0}ᶜ : Set E) :=
+  compl_subset_compl.mpr (singleton_subset_iff.mpr (mem_closedBall_self hr))
 
 private def integralClosedBallToLocalHomologyIso (n : ℕ) (r : ℝ) (hr : 0 ≤ r) :
-    integralRelativeHomology n ((closedBall (0 : E) r)ᶜ) ≅ integralLocalHomology n (0 : E) := by
-  letI := integralClosedBallToLocalChainMap_quasiIso (E := E) r hr
-  exact asIso (HomologicalComplex.homologyMap
-    (integralRelativeChainMap (ContinuousMap.id E)
-      (closedBall_complement_subset_point_complement hr)) n)
+    integralRelativeHomology n ((closedBall (0 : E) r)ᶜ) ≅ integralLocalHomology n (0 : E) :=
+  integralBoundedStarConvexLocalHomologyIso n (mem_closedBall_self hr)
+    ((convex_closedBall (0 : E) r).starConvex (mem_closedBall_self hr)) isBounded_closedBall
 
 end Poincare.Topology
 

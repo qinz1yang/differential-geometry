@@ -5,18 +5,21 @@ additive publication within the shared DifferentialGeometry Git repository. Its 
 library is `Poincare`; its sources retain the original mathematical namespaces.
 
 The source baseline is the recovered Chapter 35 commit
-`b45bfa009368c8f5f531e10f4f5280e90079d6ad`. This checkpoint includes 94 modules:
+`b45bfa009368c8f5f531e10f4f5280e90079d6ad`. This checkpoint includes 96 modules:
 the dependency closure of nine roots covering local homology, derivatives,
 determinant signs, oriented chart compatibility, closed-ball classes and
 unique compact chart classes, plus the actual Euclidean3 consumer's dependencies.
-The latest artifact/root gate freshly compiled the changed LocalOrientation
-leaf and root in Slurm 13781140, request
-`1789251985955893192-topology_checkpoint-9c57dab9`, and passed in 127.77 seconds.
-The same run checked all 26 public exports and 51 signature/axiom pairs,
-including all 48 previous pairs unchanged. The 93 other leaves and aggregate
-remain byte-identical and retain their earlier compilation evidence.
-The new theorem produces a unique compact class with every oriented chart
-normalization agreeing; global oriented generators remain open.
+The latest gate freshly compiled the two star-convex leaves, refactored
+LocalBallHomology, affected LocalCompactHomology and LocalOrientation, and root
+in Slurm 13781140, request
+`1789254131971909628-topology_checkpoint-8c2ff12b`. It passed in 235.92 seconds.
+The same run checked all 30 public exports and 61 signature/axiom pairs,
+including all 51 previous pairs unchanged. The 93 other previous source leaves
+remain byte-identical; 91 unchanged leaves retain earlier compilation evidence.
+The new public complement-inclusion equivalence and relative restriction
+isomorphism work for bounded star-convex sets about a member in arbitrary real
+normed spaces and every natural degree. The closed-ball public statements and
+entire proof bodies are preserved. Global oriented generators remain open.
 [provenance/SNAPSHOT.json](provenance/SNAPSHOT.json) records exact source and
 configuration identity and preserves the earlier validation records. It is not
 the full recovered Chapter 35 project.

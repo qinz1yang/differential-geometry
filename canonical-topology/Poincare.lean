@@ -35,6 +35,7 @@ import Poincare.Topology.Homology.LocalDerivativeComparison
 import Poincare.Topology.Homology.LocalHomology
 import Poincare.Topology.Homology.LocalLinearMaps
 import Poincare.Topology.Homology.LocalOrientation
+import Poincare.Topology.Homology.LocalStarConvex
 import Poincare.Topology.Homology.MeshBoundary
 import Poincare.Topology.Homology.MeshIteration
 import Poincare.Topology.Homology.ModuleHomologyClasses
@@ -92,3 +93,4 @@ import Poincare.Topology.Homology.UniversalSubdivisionIteration
 import Poincare.Topology.Homology.ZeroAugmentation
 import Poincare.Topology.Homology.ZeroChainClasses
 import Poincare.Topology.Homology.ZeroHomologyMaps
+import Poincare.Topology.Homotopy.StarConvexComplement
