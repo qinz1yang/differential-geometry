@@ -131,7 +131,34 @@ private theorem chart_transition_orientation_map_comp
 
 theorem simplexDerivativeTransition_det_pos (S T : OrientedChartSimplex o x) :
     0 < LinearMap.det (simplexDerivativeTransition S T).toLinearMap := by
-  sorry
+  have hcard : Fintype.card (Fin 3) = Module.finrank ℝ ThreeSpace := by simp
+  have hS : Orientation.map (Fin 3) (simplexDerivativeEquiv S).toLinearEquiv
+      (o.orientation x) = standardThreeOrientation := by
+    have h : (simplexDerivativeEquiv S).toLinearEquiv =
+        LinearEquiv.ofBijective (mfderiv ThreeModel ThreeModel S.chart x).toLinearMap
+          S.derivative_bijective := rfl
+    rw [h]
+    exact S.positive
+  have hT : Orientation.map (Fin 3) (simplexDerivativeEquiv T).toLinearEquiv
+      (o.orientation x) = standardThreeOrientation := by
+    have h : (simplexDerivativeEquiv T).toLinearEquiv =
+        LinearEquiv.ofBijective (mfderiv ThreeModel ThreeModel T.chart x).toLinearMap
+          T.derivative_bijective := rfl
+    rw [h]
+    exact T.positive
+  have hmap : Orientation.map (Fin 3) (simplexDerivativeTransition S T).toLinearEquiv
+      standardThreeOrientation = standardThreeOrientation := by
+    have htrans : (simplexDerivativeTransition S T).toLinearEquiv =
+        (simplexDerivativeEquiv S).toLinearEquiv.symm.trans
+          (simplexDerivativeEquiv T).toLinearEquiv := rfl
+    rw [htrans, ← chart_transition_orientation_map_comp]
+    conv_lhs => rw [← hS]
+    conv_rhs => rw [← hT]
+    congr 1
+    exact (Orientation.map (Fin 3) (simplexDerivativeEquiv S).toLinearEquiv).symm_apply_apply
+      (o.orientation x)
+  exact (Orientation.map_eq_iff_det_pos standardThreeOrientation
+    (simplexDerivativeTransition S T).toLinearEquiv hcard).mp hmap
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
 
@@ -144,10 +171,31 @@ variable {M : Type u} [TopologicalSpace M] [ChartedSpace ThreeSpace M]
     [IsManifold ThreeModel ∞ M] {o : TangentOrientationSection M} {x : M}
 
 
+set_option backward.isDefEq.respectTransparency false in
 private theorem chartSimplex_hasFDerivAt_native (S : OrientedChartSimplex o x) :
     HasFDerivAt (S.chart ∘ (chartAt ThreeSpace x).symm)
       (simplexDerivativeEquiv S).toContinuousLinearMap (chartAt ThreeSpace x x) := by
-  sorry
+  have hmd : MDifferentiableAt ThreeModel ThreeModel (⇑S.chart : M → ThreeSpace) x :=
+    S.differentiableAt
+  have hβ := hmd.hasMFDerivAt.2
+  rw [ModelWithCorners.range_eq_univ ThreeModel, hasFDerivWithinAt_univ] at hβ
+  have hfun : writtenInExtChartAt ThreeModel ThreeModel x (⇑S.chart) =
+      (S.chart ∘ (chartAt ThreeSpace x).symm) := by
+    funext y
+    simp only [writtenInExtChartAt, Function.comp_apply]
+    rw [extChartAt_model_space_eq_id, PartialEquiv.refl_coe]
+    rw [extChartAt_coe_symm]
+    rfl
+  have hpt : extChartAt ThreeModel x x = chartAt ThreeSpace x x := by
+    rw [extChartAt_coe]
+    rfl
+  have hderiv : (simplexDerivativeEquiv S).toContinuousLinearMap =
+      mfderiv ThreeModel ThreeModel (⇑S.chart) x := by
+    ext v
+    simp only [simplexDerivativeEquiv]
+    rfl
+  rw [hfun, hpt] at hβ
+  exact hβ.congr_fderiv hderiv.symm
 
 theorem chartSimplex_hasFDerivAt_transition (S T : OrientedChartSimplex o x) :
     HasFDerivAt (T.chart ∘ S.chart.symm)
