@@ -6227,6 +6227,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.Backward
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.BasedTransport
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CappingCover
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ChartOrientation
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ChartSimplexBlend
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ChildParent
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ClosedOrientedStage
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ClosedSlabEndpoints
