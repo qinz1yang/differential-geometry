@@ -101,6 +101,17 @@ theorem path_meets_section (T : GlobalNeckTube W) {q : ℝ}
     ⟨hstart.le, hend.le⟩
   exact ⟨s, hs, (T.mem_sectionSet_iff hq (c s)).2 hsq⟩
 
+omit [IsManifold I3 ∞ W] [SigmaCompactSpace W] in
+theorem range_sectionMap (T : GlobalNeckTube W) (q : ℝ) :
+    Set.range (fun p : Sphere 2 => T.map (p, q)) = T.sectionSet q := by
+  ext x
+  constructor
+  · rintro ⟨p, rfl⟩
+    exact ⟨(p, q), ⟨Set.mem_univ _, rfl⟩, rfl⟩
+  · rintro ⟨y, hy, rfl⟩
+    refine ⟨y.1, ?_⟩
+    rw [← hy.2]
+
 end GlobalNeckTube
 
 structure GlobalNeckCrossSection
@@ -303,6 +314,18 @@ structure HornBarriers {g : SmoothRiemannianMetric I3 W} (H : FiniteHorn g)
       dist (c ⟨0, by simp⟩ : UniformSpace.Completion W) H.endpoint / d i < 1 - eta →
       1 + eta < dist (c ⟨1, by simp⟩ : UniformSpace.Completion W) H.endpoint / d i →
       ∃ t, c t ∈ Set.range (sphere i)
+
+structure NeckSectionBarrier {g : SmoothRiemannianMetric I3 W} (H : FiniteHorn g)
+    (ray : EndRay H.endpoint) (d : ℕ → ℝ) where
+  tube : ℕ → GlobalNeckTube W
+  section_diameter : ∃ L : ℝ, 0 < L ∧ ∀ᶠ i in Filter.atTop,
+    ∀ x ∈ (tube i).sectionSet (1 / 2),
+      dist (ray.point (d i)) x ≤ L / Real.sqrt (metricScalarAt g (ray.point (d i)))
+  separates : ∀ eta : ℝ, 0 < eta → eta < 1 / 10 → ∀ᶠ i in Filter.atTop,
+    ∀ c : C(Set.Icc (0 : ℝ) 1, W),
+      dist (c ⟨0, by simp⟩ : UniformSpace.Completion W) H.endpoint / d i < 1 - eta →
+      1 + eta < dist (c ⟨1, by simp⟩ : UniformSpace.Completion W) H.endpoint / d i →
+      ∃ t, c t ∈ (tube i).sectionSet (1 / 2)
 
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn

@@ -190,6 +190,56 @@ theorem finite_horn_cone_convergence {g : SmoothRiemannianMetric I3 W}
         angles)
       hreal)
 
+omit [SigmaCompactSpace W] in
+theorem nonempty_hornBarriers_of_neckSectionBarrier {g : SmoothRiemannianMetric I3 W}
+    (H : FiniteHorn g) (ray : EndRay H.endpoint) (d : ℕ → ℝ)
+    (barrier : NeckSectionBarrier H ray d) : Nonempty (HornBarriers H ray d) := by
+  classical
+  have hrange : ∀ i : ℕ, Set.range (fun p : Sphere 2 => (barrier.tube i).map (p, 1 / 2)) =
+      (barrier.tube i).sectionSet (1 / 2) :=
+    fun i => GlobalNeckTube.range_sectionMap (barrier.tube i) (1 / 2)
+  refine ⟨{ sphere := fun i p => (barrier.tube i).map (p, 1 / 2)
+            embedding := ?_
+            smooth := ?_
+            diameter_bound := ?_
+            radial_barrier := ?_ }⟩
+  · intro i
+    have hmem : ∀ p : Sphere 2, (p, (1 / 2 : ℝ)) ∈ (barrier.tube i).map.source := by
+      intro p
+      rw [(barrier.tube i).source_eq]
+      exact ⟨Set.mem_univ _, by norm_num⟩
+    have hcont : Continuous (fun p : Sphere 2 => (barrier.tube i).map (p, 1 / 2)) := by
+      exact ((barrier.tube i).map.contMDiffOn_toFun.continuousOn).comp_continuous
+        (f := fun p : Sphere 2 => (p, (1 / 2 : ℝ))) (by fun_prop) (fun p => hmem p)
+    have hinj : Function.Injective (fun p : Sphere 2 => (barrier.tube i).map (p, 1 / 2)) := by
+      intro p q hpq
+      have hp : (barrier.tube i).map.invFun
+          ((barrier.tube i).map.toFun (p, (1 / 2 : ℝ))) = (p, (1 / 2 : ℝ)) :=
+        (barrier.tube i).map.left_inv' (hmem p)
+      have hq : (barrier.tube i).map.invFun
+          ((barrier.tube i).map.toFun (q, (1 / 2 : ℝ))) = (q, (1 / 2 : ℝ)) :=
+        (barrier.tube i).map.left_inv' (hmem q)
+      have hpq' : (barrier.tube i).map.toFun (p, (1 / 2 : ℝ)) =
+          (barrier.tube i).map.toFun (q, (1 / 2 : ℝ)) := hpq
+      have h : (p, (1 / 2 : ℝ)) = (q, (1 / 2 : ℝ)) := by rw [← hp, hpq', hq]
+      exact congrArg Prod.fst h
+    exact (hcont.isClosedEmbedding hinj).isEmbedding
+  · intro i
+    have hmem : ∀ p : Sphere 2, (p, (1 / 2 : ℝ)) ∈ (barrier.tube i).map.source := by
+      intro p
+      rw [(barrier.tube i).source_eq]
+      exact ⟨Set.mem_univ _, by norm_num⟩
+    exact (barrier.tube i).map.contMDiffOn_toFun.comp_contMDiff
+      (contMDiff_id.prodMk contMDiff_const) (fun p => hmem p)
+  · obtain ⟨L, hL, hbound⟩ := barrier.section_diameter
+    refine ⟨L, hL, ?_⟩
+    filter_upwards [hbound] with i hi x hx
+    exact hi x ((hrange i).symm ▸ hx)
+  · intro eta heta heta'
+    filter_upwards [barrier.separates eta heta heta'] with i hi c hc hd'
+    obtain ⟨t, ht⟩ := hi c hc hd'
+    exact ⟨t, (hrange i).symm ▸ ht⟩
+
 theorem finite_horn_barriers {g : SmoothRiemannianMetric I3 W}
     (H : FiniteHorn g) (endData : EndGeometry H) (ray : EndRay H.endpoint)
     (d : ℕ → ℝ) (hd : ∀ i, d i ∈ Set.Ioc 0 ray.length)

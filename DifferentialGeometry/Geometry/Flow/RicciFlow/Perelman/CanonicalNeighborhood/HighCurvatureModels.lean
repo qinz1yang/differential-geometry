@@ -7,6 +7,9 @@ import DifferentialGeometry.Geometry.Curvature.DimensionThree.Reconstruction.Rie
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.MixedCurvatureJet
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.UniversalDerivativeConsequences
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AncientKappaSourceCapture
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.PinchingDatum
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.CurvatureBounds
+import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureOperatorBounds
 
 set_option autoImplicit false
 noncomputable section
@@ -299,7 +302,235 @@ theorem closed_flow_models [CompactSpace M] [ConnectedSpace M]
     ∃ kappa : ℝ, 0 < kappa ∧ ∀ eps : ℝ, 0 < eps → eps < 1 →
       ∃ Q0 : ℝ, 0 < Q0 ∧ ∀ x t, t ∈ Set.Ico 0 T → Q0 ≤ S.scalar t x →
         OrientedWitness S o eps kappa x t := by
-  sorry
+  classical
+  have hdim : Module.finrank ℝ ThreeSpace = 3 := by simp [ThreeSpace]
+  obtain ⟨kappa, hkappa, hbelow⟩ :=
+    spatial_no_local_collapsing (I := I3) (M := M) hT S hS hdim (rho := 1) one_pos
+  refine ⟨kappa, hkappa, fun eps heps heps1 => ?_⟩
+  obtain ⟨K, hKpos, hKinit⟩ :=
+    DifferentialGeometry.Geometry.Curvature.DimensionThree.exists_curvatureOperatorLowerBoundAt_metricRm04
+      (I := I3) (M := M) (S.base.metric 0) hdim
+  have hinit : ∀ x : M, curvatureOperatorLowerBoundAt (I := I3) (S.base.metric 0) x
+      ⟨S.base.rm04 0 x, metricRm04At_mem_algebraicCurvatureTensorSubmodule
+        (I := I3) (S.base.metric 0) x⟩ K := by
+    intro x
+    simpa only [SolutionFamily.rm04, metricRm04_apply] using hKinit x
+  obtain ⟨Phi0, hPhi0, hPhi0ge⟩ := exists_admissiblePinchingFunction_ge
+    (psi := hamiltonIveyPinchingBound K)
+    ((hamiltonIveyPinchingBound_monotone hKpos.le).monotoneOn (Set.Ici 0))
+    (fun s _ => hamiltonIveyPinchingBound_nonneg hKpos.le s)
+    (hamiltonIveyPinchingBound_quotient_tendsto hKpos.le)
+  have hKexp : 0 < K * Real.exp 3 := mul_pos hKpos (Real.exp_pos 3)
+  let Phi : ℝ → ℝ := fun s => Phi0 s + K * Real.exp 3
+  have hPhi : AdmissiblePinchingFunction Phi := hPhi0.add_const hKexp.le
+  let A : ℝ := 2 / T
+  have hA : 0 < A := by dsimp only [A]; positivity
+  let Phi' : ℝ → ℝ := rescalePinchingFunction A Phi
+  have hPhi' : AdmissiblePinchingFunction Phi' := hPhi.rescale hA
+  let sigma : ℝ := Real.sqrt A / 2
+  have hsigma : 0 < sigma := by dsimp only [sigma]; positivity
+  obtain ⟨r, hrpos, hrle, hmodel⟩ :=
+    abstract_model_theorem (eps := eps) (kappa := kappa) (sigma := sigma) (Phi := Phi')
+      heps heps1 hkappa hsigma hPhi'
+  obtain ⟨C2, hC2nn, hC2⟩ := exists_curvature_bound_on_carrier_interval_of_isSolutionOn
+    (I := I3) (M := M) S hS (a := 0) (b := T / 2)
+    (by intro s hs; exact ⟨hs.1, lt_of_le_of_lt hs.2 (by linarith)⟩)
+  let Msc : ℝ := (3:ℝ) ^ 2 * Real.sqrt C2
+  have hMsc : ∀ s ∈ Set.Icc 0 (T / 2), ∀ y : M, S.scalar s y ≤ Msc := by
+    intro s hs y
+    have h1 := scalar_abs_le_rm (I := I3) (S.base.metric s) y
+    have h2 : normSq0S (I := I3) (S.base.metric s) y 4
+        (metricRm04At (I := I3) (S.base.metric s) y) ≤ C2 := by
+      have h := hC2 s hs y
+      simpa only [SolutionOn.family_metric] using h
+    have h3 : Module.finrank ℝ (TangentSpace I3 y) = Module.finrank ℝ ThreeSpace := rfl
+    rw [h3, hdim] at h1
+    refine le_trans (le_abs_self _) (le_trans h1 ?_)
+    refine mul_le_mul_of_nonneg_left (Real.sqrt_le_sqrt h2) (by positivity)
+  let Q0 : ℝ := max Msc (A / r ^ 2) + 1
+  have hQ0pos : 0 < Q0 := by
+    have h1 : 0 < A / r ^ 2 := div_pos hA (pow_pos hrpos 2)
+    have h2 : A / r ^ 2 ≤ max Msc (A / r ^ 2) := le_max_right _ _
+    dsimp only [Q0]
+    linarith
+  refine ⟨Q0, hQ0pos, fun x t ht hscalar => ?_⟩
+  have hQ0big : Msc < Q0 := by
+    have h2 : Msc ≤ max Msc (A / r ^ 2) := le_max_left _ _
+    dsimp only [Q0]
+    linarith
+  have htgt : T / 2 < t := by
+    by_contra hcon
+    have hs : t ∈ Set.Icc 0 (T / 2) := ⟨ht.1, not_lt.mp hcon⟩
+    have h := hMsc t hs x
+    linarith
+  have hAt1 : 1 < A * t := by
+    have heq : A * (T / 2) = 1 := by dsimp only [A]; field_simp
+    have h2 := mul_lt_mul_of_pos_left htgt hA
+    linarith
+  let T3 : ℝ := (t + T) / 2
+  have hT3gt : T / 2 < T3 := by dsimp only [T3]; linarith
+  have hT3lt : T3 < T := by dsimp only [T3]; linarith [ht.2]
+  have hT3nn : 0 ≤ T3 := by linarith [hT, hT3gt]
+  have hT3sub : Set.Icc 0 T3 ⊆ (RealTimeInterval.closedOpen 0 T hT).carrier := by
+    intro s hs
+    exact ⟨hs.1, lt_of_le_of_lt hs.2 hT3lt⟩
+  have himpinch : PhiAlmostNonnegative (I := I3) (M := M) S (Set.Icc 0 T3) Phi := by
+    have hprop := curvatureOperatorRegionPropagationOn_of_initial_lower_bound (I := I3) (M := M)
+      S hS hT3nn hKpos (by simpa using hT3sub)
+      (by intro s hs; exact ⟨hs.1, by linarith [hs.2, hT3lt]⟩) hdim hinit
+    intro t' ht' y
+    obtain ⟨basis, horth, _⟩ := hprop t' (by simpa using ht') y
+    have hbound : -leastCurvatureOperatorEigenvalueAt (I := I3) (S.base.metric t') y
+        ⟨S.base.rm04 t' y, metricRm04At_mem_algebraicCurvatureTensorSubmodule
+          (I := I3) (S.base.metric t') y⟩ ≤ hamiltonIveyPinchingBound K (S.scalar t' y) := by
+      refine le_csInf ⟨1 * max (S.scalar t' y) 0 + 2 * 1 * K * Real.exp (2 + (2 * (1:ℝ))⁻¹),
+        1, one_pos, rfl⟩ ?_
+      rintro a ⟨d, hd, rfl⟩
+      have hmain := hamilton_ivey_asymptotic_pinching_of_curvatureOperatorRegionPropagationOn
+        (I := I3) (M := M) S hKpos hd hprop t' (by simpa using ht') y
+      have hpinch : -leastCurvatureOperatorEigenvalueAt (I := I3) (S.base.metric t') y
+          ⟨S.base.rm04 t' y, metricRm04At_mem_algebraicCurvatureTensorSubmodule
+            (I := I3) (S.base.metric t') y⟩ ≤
+          DimensionThree.pinchHeight3 (leastCurvatureOperatorEigenvalueAt (I := I3)
+            (S.base.metric t') y ⟨S.base.rm04 t' y,
+              metricRm04At_mem_algebraicCurvatureTensorSubmodule (I := I3) (S.base.metric t') y⟩) :=
+        le_max_left _ _
+      have hden : (1 : ℝ) ≤ 1 + 2 * K * (t' - 0) := by
+        have h2 : 0 ≤ 2 * K * (t' - 0) :=
+          mul_nonneg (mul_nonneg (by norm_num) hKpos.le) (by linarith [ht'.1])
+        linarith
+      have hfrac : 2 * d * K * Real.exp (2 + (2 * d)⁻¹) / (1 + 2 * K * (t' - 0)) ≤
+          2 * d * K * Real.exp (2 + (2 * d)⁻¹) :=
+        div_le_self (mul_nonneg (mul_nonneg (by linarith) hKpos.le)
+          (le_of_lt (Real.exp_pos _))) hden
+      have hmax : d * S.scalar t' y ≤ d * max (S.scalar t' y) 0 :=
+        mul_le_mul_of_nonneg_left (le_max_left _ _) hd.le
+      linarith
+    have hkey : -leastCurvatureOperatorEigenvalueAt (I := I3) (S.base.metric t') y
+        ⟨S.base.rm04 t' y, metricRm04At_mem_algebraicCurvatureTensorSubmodule
+          (I := I3) (S.base.metric t') y⟩ ≤ Phi (S.scalar t' y) := by
+      rcases le_total 0 (S.scalar t' y) with hR | hR
+      · have h1 := hPhi0ge (S.scalar t' y) hR
+        have hexp : (0:ℝ) ≤ K * Real.exp 3 := hKexp.le
+        dsimp only [Phi]
+        linarith
+      · have h1 := hamiltonIveyPinchingBound_le_of_nonpos hKpos.le hR
+        have h2 := hPhi0.pos (S.scalar t' y)
+        dsimp only [Phi]
+        linarith
+    have heq := DimensionThree.leastCurvatureOperatorEigenvalueAt_eq_sectionalMin (I := I3)
+      (S.base.metric t') y basis horth ⟨S.base.rm04 t' y,
+        metricRm04At_mem_algebraicCurvatureTensorSubmodule (I := I3) (S.base.metric t') y⟩
+    rw [DimensionThree.curvatureOperatorLowerBoundAt_iff_neg_sectionalMin_le (I := I3)
+      (S.base.metric t') basis horth (A := ⟨S.base.rm04 t' y,
+        metricRm04At_mem_algebraicCurvatureTensorSubmodule (I := I3) (S.base.metric t') y⟩)
+      (K := Phi (S.scalar t' y)), ← heq]
+    exact hkey
+  have hbase0 : (0:ℝ) ∈ (RealTimeInterval.closedOpen 0 T hT).carrier := ⟨le_rfl, hT⟩
+  let Dpar : RealTimeInterval := parabolicInterval (RealTimeInterval.closedOpen 0 T hT) 0 A hbase0
+  let SI : SolutionOn (I := I3) (M := M) Dpar := parabolicSolution (I := I3) (M := M) S 0 A hA hbase0
+  have hcar : Dpar.carrier = Set.Ico 0 (A * T) := by
+    dsimp only [Dpar]
+    simpa using parabolicInterval_closedOpen_carrier (T := T) (τ := 0) (R := A) hT hA hbase0
+  have hregcar : Dpar.regular = Set.Ioo 0 (A * T) := by
+    dsimp only [Dpar]
+    simpa using parabolicInterval_closedOpen_regular (T := T) (τ := 0) (R := A) hT hA hbase0
+  let T'' : ℝ := A * T3
+  have hT''1 : 1 ≤ T'' := by
+    have h1 : A * (T / 2) = 1 := by dsimp only [A]; field_simp
+    have h2 : A * (T / 2) < A * T3 := mul_lt_mul_of_pos_left hT3gt hA
+    dsimp only [T'']
+    linarith
+  have hT''lt : T'' < A * T := by
+    dsimp only [T'']
+    exact mul_lt_mul_of_pos_left hT3lt hA
+  let D'' : RealTimeInterval := RealTimeInterval.closed 0 T'' (by linarith)
+  let S'' : SolutionOn (I := I3) (M := M) D'' := SI.timeRestrict D''
+  have hsub'' : D''.carrier ⊆ Dpar.carrier := by
+    intro s hs
+    rw [hcar]
+    exact ⟨hs.1, lt_of_le_of_lt hs.2 hT''lt⟩
+  have hreg'' : D''.regular ⊆ Dpar.regular := by
+    intro s hs
+    rw [hregcar]
+    exact ⟨hs.1, lt_of_lt_of_le hs.2 hT''lt.le⟩
+  have hSI : IsSolutionOn SI := parabolicSolution_isSolutionOn (I := I3) (M := M) S hS 0 A hA hbase0
+  have hS'' : IsSolutionOn S'' := isSolutionOn_timeRestrict (I := I3) (M := M) hSI hsub'' hreg''
+  have hpin_para : PhiAlmostNonnegative (I := I3) (M := M) SI
+      {s : ℝ | parabolicTime 0 A s ∈ Set.Icc 0 T3} Phi' :=
+    phiAlmostNonnegative_paraSolution (I := I3) (M := M) S hA hbase0 himpinch
+  have hnoncollapse : SpatiallyKappaNoncollapsedBelowScale S'' kappa sigma := by
+    have hpara := parabolic_spatial_noncollapse (I := I3) (M := M) S 0 A hA hbase0 kappa 1 hbelow
+    have hres := spatiallyKappaNoncollapsed_timeRestrict (S := SI) (D' := D'') hsub'' hpara
+    have hle : sigma ≤ Real.sqrt A * 1 := by
+      have hsA : 0 < Real.sqrt A := Real.sqrt_pos.mpr hA
+      dsimp only [sigma]
+      rw [mul_one]
+      linarith
+    exact ⟨hsigma, fun t B hB => hres.2 t B (le_trans hB hle)⟩
+  have hcurv : ∀ a b : ℝ, a ≤ b → Set.Icc a b ⊆ D''.carrier → ∃ C : ℝ,
+      ∀ s ∈ Set.Icc a b, ∀ y : M, FlowMetricBall.rmNormSq S'' s y ≤ C := by
+    intro a b hab hsubab
+    obtain ⟨C, hCnn, hC⟩ := exists_curvature_bound_on_carrier_interval_of_isSolutionOn
+      (I := I3) (M := M) S'' hS'' hsubab
+    refine ⟨C, fun s hs y => ?_⟩
+    have h := hC s hs y
+    simpa only [FlowMetricBall.rmNormSq, SolutionFamily.rm04, metricRm04_apply,
+      SolutionOn.family_metric] using h
+  have hpin : PhiAlmostNonnegative (I := I3) (M := M) S'' D''.carrier Phi' := by
+    intro s hs y
+    have hs' : parabolicTime 0 A s ∈ Set.Icc 0 T3 := by
+      have hs2 : s ≤ T'' := hs.2
+      dsimp only [T''] at hs2
+      have hle : s / A ≤ T3 := by
+        rw [div_le_iff₀ hA]
+        rwa [mul_comm] at hs2
+      exact ⟨by simpa only [parabolicTime, zero_add] using div_nonneg hs.1 hA.le,
+        by simpa only [parabolicTime, zero_add] using hle⟩
+    exact hpin_para s hs' y
+  have hhyp : ClosedModelHypotheses S'' kappa sigma Phi' :=
+    { isSolution := hS''
+      complete := fun s _ => RiemannianMetricComplete.of_compact (I := I3) (M := M) (S''.base.metric s)
+      curvature := hcurv
+      pinching := hpin
+      noncollapse := hnoncollapse }
+  have hmem : A * t ∈ Set.Icc 1 T'' := by
+    refine ⟨hAt1.le, ?_⟩
+    dsimp only [T'']
+    have h1 : t ≤ T3 := by dsimp only [T3]; linarith [ht.2]
+    exact mul_le_mul_of_nonneg_left h1 hA.le
+  have hthr : r⁻¹ ^ 2 ≤ S''.scalar (A * t) x := by
+    have h1 : A / r ^ 2 ≤ Q0 := by
+      have h2 : A / r ^ 2 ≤ max Msc (A / r ^ 2) := le_max_right _ _
+      dsimp only [Q0]
+      linarith
+    have hQ0gt : A / r ^ 2 < Q0 := by
+      dsimp only [Q0]
+      linarith [le_max_right Msc (A / r ^ 2)]
+    have h2 : A / r ^ 2 < S.scalar t x := lt_of_lt_of_le hQ0gt hscalar
+    have hsc : S''.scalar (A * t) x = A⁻¹ * S.scalar t x := by
+      have htime : parabolicTime 0 A (A * t) = t := by
+        dsimp only [parabolicTime]
+        field_simp
+        ring
+      dsimp only [S'', SI]
+      rw [scalar_timeRestrict, parabolicSolution_scalar]
+      simp only [htime]
+    rw [hsc]
+    calc r⁻¹ ^ 2 = 1 / r ^ 2 := by rw [inv_pow, one_div]
+      _ = A⁻¹ * (A / r ^ 2) := by field_simp
+      _ ≤ A⁻¹ * S.scalar t x := mul_le_mul_of_nonneg_left h2.le (inv_nonneg.mpr hA.le)
+  have hwit0 : OrientedWitness S'' o eps kappa x (A * t) :=
+    hmodel M o T'' hT''1 S'' hhyp x (A * t) hmem hthr
+  have hwit1 : OrientedWitness SI o eps kappa x (A * t) :=
+    orientedWitness_of_timeRestrict (S := SI) (D' := D'') hsub'' hwit0
+  have hwit2 := (orientedWitness_paraSolution_iff S o hA hbase0 (A * t) x eps kappa).mp hwit1
+  have htime : parabolicTime 0 A (A * t) = t := by
+    dsimp only [parabolicTime]
+    field_simp
+    ring
+  rw [htime] at hwit2
+  exact hwit2
 
 theorem arbitrary_high_curvature_blowup [CompactSpace M] [ConnectedSpace M]
     [T2Space (TangentBundle I3 M)] {T : ℝ} (hT : 0 < T)
