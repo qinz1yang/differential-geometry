@@ -48,3 +48,20 @@ unchanged upstream declarations, including triangle-frontier coverage. The
 original one-edge theorem and seven classification declarations are preserved.
 No new module or aggregate import is needed. Geometric free-triangle existence,
 compatible smooth rounding and disk absorption remain open.
+
+TriangleMeshGeometricFree now proves existence of two distinct geometrically
+free triangles for an actual mesh whose support is the closed inside of a
+native Jordan curve and has more than one triangle. Its PrePolygon producer
+retains exact support/frontier and the singleton-or-two alternative. All
+sixteen mechanics are private. The proof reuses the pinned finite induction,
+native crosscut partition, geometric classification and existing deletion
+engines. Both original attributions are preserved. GEOMETRIC_FREE_EXISTENCE.json
+records exact source selection, modifications and fresh verification.
+
+Final production gate1789240536150541849-schoenflies-21a0cb81 passes in78.73s,
+after fresh compilation of the new leaf. All98guards, three signature/axiom
+pairs, all-vendor/current stock3 linters and standard-only axioms pass. The
+consumer starts with an actual polygon, chooses a triangle and obtains the
+actual smaller polygonal region through either deletion branch. Smooth
+rounding, disk filling and the three-dimensional suite remain open; this is
+not a full DifferentialGeometry aggregate build.

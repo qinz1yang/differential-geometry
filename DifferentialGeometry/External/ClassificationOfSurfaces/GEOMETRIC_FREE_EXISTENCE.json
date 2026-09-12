@@ -1,0 +1,332 @@
+{
+  "module": "DifferentialGeometry.External.ClassificationOfSurfaces.TriangleMeshGeometricFree",
+  "target_sha256": "5add0faade44a34ec2812e1a18cba8a04429caa18247c66ed69a465947e76377",
+  "lean": "leanprover/lean4:v4.33.1",
+  "mathlib": "0df444a360eaa60ab8c11dca51a86af692955474",
+  "sources": [
+    {
+      "repository": "https://github.com/mccorvie/classification-of-surfaces",
+      "revision": "e3c7230fe78d7b056a415d9ecae6f77887046b32",
+      "path": "ClassificationOfSurfaces/Moise/PolygonalSchoenflies.lean",
+      "sha256": "8b3aa241482b4e551817f1ea0111f6cbc52d494a950268eb8a3e78c99ff3963f",
+      "license": "Apache-2.0",
+      "selected_arguments": [
+        "Edge-neighbor existence from connected support interior, near line 930",
+        "Two distinct weakly free triangles, lines 1131\u20131168",
+        "Bad-free cutting diagonal and mesh crosscut, lines 1247\u20131406",
+        "Frontier trace and freeness transfer, lines 1925\u20132075",
+        "Chord incidence and uniqueness, lines 2078\u20132157",
+        "Singleton-side geometric freeness, lines 2160\u20132260",
+        "Strong induction, lines 2320\u20132417"
+      ]
+    },
+    {
+      "repository": "https://github.com/alonamaloh/schoenflies-lean",
+      "revision": "05a43d29cde026618777db3d4e4316204ccca237",
+      "path": "Schoenflies/FreshDenseSelection.lean",
+      "current_vendored_source_sha256": "752f03e12bf251008bd8714e25014de6712a9fcf1ccd2e3135e9211943f71fdc",
+      "license": "Apache-2.0",
+      "selected_declaration": "Schoenflies.IsJordanCurve.subset_closure_sdiff_finite",
+      "selection": "The exact declaration body and signature retained privately; no public duplicate is exposed."
+    }
+  ],
+  "public_declarations": [
+    "LeanEval.Topology.ClassificationOfSurfaces.Moise.TriangleMesh.exists_two_geometrically_free_triangles_of_jordan_support",
+    "Schoenflies.PrePolygon.exists_triangle_mesh_inside_singleton_or_two_geometrically_free"
+  ],
+  "retained_declarations": 18,
+  "private_declarations": 16,
+  "source_mapping": "Exact retained source fragments and declaration/body comparisons are embedded below.",
+  "upstream_delta": "The original PolygonalCircle and MeshCrosscut interfaces are replaced by native IsJordanCurve, IsCrosscut, IsCutPair and the exact restricted TriangleMesh. Supports, frontier, connected interior, strict count decrease, chord incidence and geometric-free transfer are derived; no disk, shelling, or dual-tree premise is added. No smooth filling is claimed.",
+  "private_combined_gate": {
+    "request_id": "1789239604150922162-schoenflies-bf230efe",
+    "input_sha256": "e3718010be59df3f72b2543703909787a47f00203c0d24d79de8c6a330840612",
+    "result_sha256": "232183cd21394775467fc76eb33936d55ed4c8e2ba57b34460818716fc024d2b",
+    "elapsed_seconds": 38.08136010169983,
+    "job_id": "13781140",
+    "host": "della-r3c2n16",
+    "status": "passed: zero unexpected diagnostics or sorries; review source and axiom guards separately",
+    "source_snapshot": "Original private child/induction source; promotion changes visibility/namespace and omits a scratch-only consumer. This is not public-source acceptance."
+  },
+  "staged_public_gate": {
+    "request_id": "1789240426642358604-schoenflies-9a0efddc",
+    "input_sha256": "13963371271d4e5453408fda9a5a6bab32f423235cd27c618d1568dc9adbe310",
+    "elapsed_seconds": 36.34957194328308,
+    "status": "passed: zero unexpected diagnostics or sorries; review source and axiom guards separately",
+    "source_sha256": "5add0faade44a34ec2812e1a18cba8a04429caa18247c66ed69a465947e76377",
+    "guards": 114,
+    "signature_axiom_pairs": 3,
+    "consumer_repair": "Parenthesized the conditional count-decrease conclusion; production source unchanged."
+  },
+  "source_fragments": [
+    {
+      "source": "/scratch/gpfs/KARTHIKN/ayush/differential-geometry-schoenflies/.changes/slurm-prepared/planar-triangulation/mesh-edge-neighbor/MeshEdgeNeighbor.lean",
+      "sha256": "f5862b1d4e4965aa639a663a7a114979e7ab1bb49b54df0330ac8cde4a9f7c0c",
+      "retained_body_sha256": "2af0a7ce30dce0713e8bacb76546a7ce08f830638ce10073f4f4b707f9bc8b98",
+      "changes": [
+        "Preserve all declarations and proof bodies; consolidate imports and source-level copyright/open notices."
+      ]
+    },
+    {
+      "source": "/scratch/gpfs/KARTHIKN/ayush/differential-geometry-schoenflies/.changes/slurm-prepared/planar-triangulation/two-weak-free/TwoWeakFreeTriangles.lean",
+      "sha256": "6370e53b9b9ff321b0dcbadf7fb04338be374eacb8aa8304a2a0f1c1696eca8f",
+      "retained_body_sha256": "c8b58761db156df39faf4570542c89520b1587062da1ae5ef00e2c6575221cfb",
+      "changes": [
+        "Preserve all declarations and proof bodies; consolidate imports and source-level copyright/open notices."
+      ]
+    },
+    {
+      "source": "/scratch/gpfs/KARTHIKN/ayush/differential-geometry-schoenflies/.changes/slurm-prepared/planar-triangulation/native-bad-free-crosscut/BadFreeCrosscut.lean",
+      "sha256": "363754ee3cb007c9153fafc9f40d811673498c6cedf93fc7c6d7fa200ce1d448",
+      "retained_body_sha256": "e012f9ca765a517687fac26f9e24dc1de519b51c30e539dd53b0aa7262600309",
+      "changes": [
+        "Omit the scratch-only polygon_bad_free_crosscut_partition_consumer; retain both load-bearing private declarations unchanged."
+      ]
+    },
+    {
+      "source": "/scratch/gpfs/KARTHIKN/ayush/differential-geometry-schoenflies/.changes/slurm-prepared/planar-triangulation/native-bad-free-crosscut/CrosscutChordIncidence.lean",
+      "sha256": "466b4543f42ee2d63c5fdca52dbab23b623cd2aa6762fb6e577f7c764d21ef23",
+      "retained_body_sha256": "ed9446005cdcab1c0f281a8cd919cc4b6c0345bfb5b859a1b193fbab9610a1d6",
+      "changes": [
+        "Preserve all declarations and proof bodies; consolidate imports and source-level copyright/open notices."
+      ]
+    },
+    {
+      "source": "/scratch/gpfs/KARTHIKN/ayush/differential-geometry-schoenflies/.changes/slurm-prepared/mesh-frontier-transfer/FrontierTransfer.lean",
+      "sha256": "81455fd4900aca34038ad9ff304b41175ee84231cf5ba557264610b395d82ea1",
+      "retained_body_sha256": "e0089f4ecb05a8d7b17af2df5da50d892df41c9c8bbb580d4996ef1455a00650",
+      "changes": [
+        "Preserve all declarations and proof bodies; consolidate imports and source-level copyright/open notices."
+      ]
+    },
+    {
+      "source": "/scratch/gpfs/KARTHIKN/ayush/differential-geometry-schoenflies/.changes/slurm-prepared/planar-triangulation/native-bad-free-crosscut/SingletonSide.lean",
+      "sha256": "bcfb1e9efcf2750f67092f74fe0924d79ec8c5b08a685b039eafa91aa7b31fc7",
+      "retained_body_sha256": "6da879a68df48b6e44af9c775ab68e1c68ea76ef560f7b2455164cbbd2c5618b",
+      "changes": [
+        "Preserve all declarations and proof bodies; consolidate imports and source-level copyright/open notices."
+      ]
+    },
+    {
+      "source": "/scratch/gpfs/KARTHIKN/ayush/differential-geometry-schoenflies/.changes/slurm-prepared/mesh-geometric-free-induction/GeometricFreeInduction.lean",
+      "sha256": "fb5f766bfa08f5d6e8a252c029559f904b003607b3376f62609ca833c49d30f3",
+      "retained_body_sha256": "af77e36a089bae0faba8890b5dd9a4a913db8253820a91b1d05c596ca96ef7bb",
+      "changes": [
+        "Promote only the induction primary into the existing TriangleMesh namespace; all binders and proof body unchanged."
+      ]
+    },
+    {
+      "source": "/scratch/gpfs/KARTHIKN/ayush/differential-geometry-schoenflies/.changes/slurm-prepared/mesh-geometric-free-induction/GeometricFreeInduction-consumer.lean",
+      "sha256": "aa18be3b2190297485699acd6668c554e696b560f46051f2a90c6eade465cae8",
+      "retained_body_sha256": "79e7f351bec8ed5102bd6db30173f02f74450867566af5f61be4d0c40d9e2746",
+      "changes": [
+        "Promote the exact singleton-or-two-geometric-free polygon producer and route its call to the promoted TriangleMesh primary."
+      ]
+    }
+  ],
+  "declarations": [
+    {
+      "declaration": "TriangleMesh.exists_edge_neighbor_of_isPreconnected_interior",
+      "target_start_line": 31,
+      "checked_source": "/scratch/gpfs/KARTHIKN/ayush/differential-geometry-schoenflies/.changes/slurm-prepared/planar-triangulation/mesh-edge-neighbor/MeshEdgeNeighbor.lean",
+      "checked_declaration": "TriangleMesh.exists_edge_neighbor_of_isPreconnected_interior",
+      "checked_start_line": 15,
+      "checked_block_sha256": "0f6ca6fe0d88bc40c4048cdcf1c8612ed0d311f04bbdc6b0b7b2348b74335671",
+      "target_block_sha256": "0f6ca6fe0d88bc40c4048cdcf1c8612ed0d311f04bbdc6b0b7b2348b74335671",
+      "body_byte_identical": true
+    },
+    {
+      "declaration": "IsJordanCurve.subset_closure_sdiff_finite",
+      "target_start_line": 122,
+      "checked_source": "/scratch/gpfs/KARTHIKN/ayush/differential-geometry-schoenflies/.changes/slurm-prepared/planar-triangulation/two-weak-free/TwoWeakFreeTriangles.lean",
+      "checked_declaration": "IsJordanCurve.subset_closure_sdiff_finite",
+      "checked_start_line": 25,
+      "checked_block_sha256": "3b01e1c059163da013b462073b478aaa6f529abefdc6f75dbba9f48d9f4dfe38",
+      "target_block_sha256": "3b01e1c059163da013b462073b478aaa6f529abefdc6f75dbba9f48d9f4dfe38",
+      "body_byte_identical": true
+    },
+    {
+      "declaration": "TriangleMesh.exists_frontier_not_mem_triangleCarrier",
+      "target_start_line": 164,
+      "checked_source": "/scratch/gpfs/KARTHIKN/ayush/differential-geometry-schoenflies/.changes/slurm-prepared/planar-triangulation/two-weak-free/TwoWeakFreeTriangles.lean",
+      "checked_declaration": "TriangleMesh.exists_frontier_not_mem_triangleCarrier",
+      "checked_start_line": 67,
+      "checked_block_sha256": "044efd0a38c994ae5b9a458c357922c7b98d1520e1100cc67b914e3875ce46fd",
+      "target_block_sha256": "044efd0a38c994ae5b9a458c357922c7b98d1520e1100cc67b914e3875ce46fd",
+      "body_byte_identical": true
+    },
+    {
+      "declaration": "TriangleMesh.exists_two_free_triangles_of_isJordanCurve_frontier",
+      "target_start_line": 260,
+      "checked_source": "/scratch/gpfs/KARTHIKN/ayush/differential-geometry-schoenflies/.changes/slurm-prepared/planar-triangulation/two-weak-free/TwoWeakFreeTriangles.lean",
+      "checked_declaration": "TriangleMesh.exists_two_free_triangles_of_isJordanCurve_frontier",
+      "checked_start_line": 163,
+      "checked_block_sha256": "ab54d44acb0addb86a0717877029d65f63a13847591ecc7376d8ef239e99c3bb",
+      "target_block_sha256": "ab54d44acb0addb86a0717877029d65f63a13847591ecc7376d8ef239e99c3bb",
+      "body_byte_identical": true
+    },
+    {
+      "declaration": "bad_free_crosscut_interior_closure",
+      "target_start_line": 297,
+      "checked_source": "/scratch/gpfs/KARTHIKN/ayush/differential-geometry-schoenflies/.changes/slurm-prepared/planar-triangulation/native-bad-free-crosscut/BadFreeCrosscut.lean",
+      "checked_declaration": "bad_free_crosscut_interior_closure",
+      "checked_start_line": 16,
+      "checked_block_sha256": "eec644402d12cb154f568e3d64057acf9a479a4ed02ae8fe8eed48cbace1c2f0",
+      "target_block_sha256": "eec644402d12cb154f568e3d64057acf9a479a4ed02ae8fe8eed48cbace1c2f0",
+      "body_byte_identical": true
+    },
+    {
+      "declaration": "exists_mesh_crosscut_of_bad_free_triangle",
+      "target_start_line": 310,
+      "checked_source": "/scratch/gpfs/KARTHIKN/ayush/differential-geometry-schoenflies/.changes/slurm-prepared/planar-triangulation/native-bad-free-crosscut/BadFreeCrosscut.lean",
+      "checked_declaration": "exists_mesh_crosscut_of_bad_free_triangle",
+      "checked_start_line": 29,
+      "checked_block_sha256": "662e37434cefb447c6186668e0d7132040242fd15b29942db5d7b78c4038061e",
+      "target_block_sha256": "662e37434cefb447c6186668e0d7132040242fd15b29942db5d7b78c4038061e",
+      "body_byte_identical": true
+    },
+    {
+      "declaration": "exists_restricted_triangle_edge_subset",
+      "target_start_line": 360,
+      "checked_source": "/scratch/gpfs/KARTHIKN/ayush/differential-geometry-schoenflies/.changes/slurm-prepared/planar-triangulation/native-bad-free-crosscut/CrosscutChordIncidence.lean",
+      "checked_declaration": "exists_restricted_triangle_edge_subset",
+      "checked_start_line": 14,
+      "checked_block_sha256": "be495c0c274cd3907e17d3814dc0e624ecc21fd53fb0d653ccfc0efb15ecfd13",
+      "target_block_sha256": "be495c0c274cd3907e17d3814dc0e624ecc21fd53fb0d653ccfc0efb15ecfd13",
+      "body_byte_identical": true
+    },
+    {
+      "declaration": "restricted_triangle_eq_of_opposite_edge_triangle",
+      "target_start_line": 377,
+      "checked_source": "/scratch/gpfs/KARTHIKN/ayush/differential-geometry-schoenflies/.changes/slurm-prepared/planar-triangulation/native-bad-free-crosscut/CrosscutChordIncidence.lean",
+      "checked_declaration": "restricted_triangle_eq_of_opposite_edge_triangle",
+      "checked_start_line": 31,
+      "checked_block_sha256": "2f29bb7f99e3f806d33597b623a2a0150bfa7fd97d2cb83d19374d78a960e86f",
+      "target_block_sha256": "2f29bb7f99e3f806d33597b623a2a0150bfa7fd97d2cb83d19374d78a960e86f",
+      "body_byte_identical": true
+    },
+    {
+      "declaration": "exists_unique_triangle_on_each_crosscut_side",
+      "target_start_line": 399,
+      "checked_source": "/scratch/gpfs/KARTHIKN/ayush/differential-geometry-schoenflies/.changes/slurm-prepared/planar-triangulation/native-bad-free-crosscut/CrosscutChordIncidence.lean",
+      "checked_declaration": "exists_unique_triangle_on_each_crosscut_side",
+      "checked_start_line": 53,
+      "checked_block_sha256": "b5a0cde51855f5ae4ca8a6cf3ab56b84cd1feb598cf56ebbb6fbf7d6a0f3a37f",
+      "target_block_sha256": "b5a0cde51855f5ae4ca8a6cf3ab56b84cd1feb598cf56ebbb6fbf7d6a0f3a37f",
+      "body_byte_identical": true
+    },
+    {
+      "declaration": "frontier_closure_inside_eq_curve",
+      "target_start_line": 441,
+      "checked_source": "/scratch/gpfs/KARTHIKN/ayush/differential-geometry-schoenflies/.changes/slurm-prepared/mesh-frontier-transfer/FrontierTransfer.lean",
+      "checked_declaration": "frontier_closure_inside_eq_curve",
+      "checked_start_line": 16,
+      "checked_block_sha256": "45f834fdc400c7d443d7f3c0565e71bb330deea906e1e33e883c6fee6698c5fe",
+      "target_block_sha256": "45f834fdc400c7d443d7f3c0565e71bb330deea906e1e33e883c6fee6698c5fe",
+      "body_byte_identical": true
+    },
+    {
+      "declaration": "triangle_inter_crosscut_subset_endpoints",
+      "target_start_line": 452,
+      "checked_source": "/scratch/gpfs/KARTHIKN/ayush/differential-geometry-schoenflies/.changes/slurm-prepared/mesh-frontier-transfer/FrontierTransfer.lean",
+      "checked_declaration": "triangle_inter_crosscut_subset_endpoints",
+      "checked_start_line": 27,
+      "checked_block_sha256": "4120c066bb2449f82f4c4cb19a41b51bb1543cc85be2fb2a468784514485be53",
+      "target_block_sha256": "4120c066bb2449f82f4c4cb19a41b51bb1543cc85be2fb2a468784514485be53",
+      "body_byte_identical": true
+    },
+    {
+      "declaration": "frontier_inter_triangleCarrier_crosscut_side",
+      "target_start_line": 517,
+      "checked_source": "/scratch/gpfs/KARTHIKN/ayush/differential-geometry-schoenflies/.changes/slurm-prepared/mesh-frontier-transfer/FrontierTransfer.lean",
+      "checked_declaration": "frontier_inter_triangleCarrier_crosscut_side",
+      "checked_start_line": 92,
+      "checked_block_sha256": "241bbb50023a7f0a3693d4b4d6a7d907112fb33e4542684c854421d81ff72c9f",
+      "target_block_sha256": "241bbb50023a7f0a3693d4b4d6a7d907112fb33e4542684c854421d81ff72c9f",
+      "body_byte_identical": true
+    },
+    {
+      "declaration": "isGeometricallyFreeTriangle_of_crosscut_side",
+      "target_start_line": 568,
+      "checked_source": "/scratch/gpfs/KARTHIKN/ayush/differential-geometry-schoenflies/.changes/slurm-prepared/mesh-frontier-transfer/FrontierTransfer.lean",
+      "checked_declaration": "isGeometricallyFreeTriangle_of_crosscut_side",
+      "checked_start_line": 143,
+      "checked_block_sha256": "f5c4d07c7d2aec695938fa66acc4367345ae0b5958bb3093a007b1e6662ee4c3",
+      "target_block_sha256": "f5c4d07c7d2aec695938fa66acc4367345ae0b5958bb3093a007b1e6662ee4c3",
+      "body_byte_identical": true
+    },
+    {
+      "declaration": "closure_inside_crosscut_sides_inter",
+      "target_start_line": 599,
+      "checked_source": "/scratch/gpfs/KARTHIKN/ayush/differential-geometry-schoenflies/.changes/slurm-prepared/planar-triangulation/native-bad-free-crosscut/SingletonSide.lean",
+      "checked_declaration": "closure_inside_crosscut_sides_inter",
+      "checked_start_line": 16,
+      "checked_block_sha256": "19056581f967a6f04b3deb6dee39b08fbdd10d04261205d0b408009b6ee9c7b7",
+      "target_block_sha256": "19056581f967a6f04b3deb6dee39b08fbdd10d04261205d0b408009b6ee9c7b7",
+      "body_byte_identical": true
+    },
+    {
+      "declaration": "exists_geometricallyFreeTriangle_of_crosscut_side_card_one",
+      "target_start_line": 632,
+      "checked_source": "/scratch/gpfs/KARTHIKN/ayush/differential-geometry-schoenflies/.changes/slurm-prepared/planar-triangulation/native-bad-free-crosscut/SingletonSide.lean",
+      "checked_declaration": "exists_geometricallyFreeTriangle_of_crosscut_side_card_one",
+      "checked_start_line": 49,
+      "checked_block_sha256": "e13a43bddc8851769c33730ebd6ea71275716ccae5848726e47f030148746845",
+      "target_block_sha256": "e13a43bddc8851769c33730ebd6ea71275716ccae5848726e47f030148746845",
+      "body_byte_identical": true
+    },
+    {
+      "declaration": "exists_geometrically_free_triangle_not_containing_edge",
+      "target_start_line": 740,
+      "checked_source": "/scratch/gpfs/KARTHIKN/ayush/differential-geometry-schoenflies/.changes/slurm-prepared/mesh-geometric-free-induction/GeometricFreeInduction.lean",
+      "checked_declaration": "exists_geometrically_free_triangle_not_containing_edge",
+      "checked_start_line": 17,
+      "checked_block_sha256": "a60a1e063f8e5bc7d66f0b4fafd74806fc87b4e5db348b4000e109c80bdafe2f",
+      "target_block_sha256": "a60a1e063f8e5bc7d66f0b4fafd74806fc87b4e5db348b4000e109c80bdafe2f",
+      "body_byte_identical": true
+    },
+    {
+      "declaration": "_root_.LeanEval.Topology.ClassificationOfSurfaces.Moise.TriangleMesh.exists_two_geometrically_free_triangles_of_jordan_support",
+      "target_start_line": 753,
+      "checked_source": "/scratch/gpfs/KARTHIKN/ayush/differential-geometry-schoenflies/.changes/slurm-prepared/mesh-geometric-free-induction/GeometricFreeInduction.lean",
+      "checked_declaration": "exists_two_geometrically_free_triangles_of_jordan_support",
+      "checked_start_line": 30,
+      "checked_block_sha256": "f699e4425f0aef1e7309cd6195223ee611eccd9d1052f8cf1e566f533e026b53",
+      "target_block_sha256": "c23cb1f6820086405acca370944fd448fd1c4d0273f5d67982a4dcdbb7b314d6",
+      "body_byte_identical": true
+    },
+    {
+      "declaration": "PrePolygon.exists_triangle_mesh_inside_singleton_or_two_geometrically_free",
+      "target_start_line": 841,
+      "checked_source": "/scratch/gpfs/KARTHIKN/ayush/differential-geometry-schoenflies/.changes/slurm-prepared/mesh-geometric-free-induction/GeometricFreeInduction-consumer.lean",
+      "checked_declaration": "polygon_mesh_geometrically_free_triangles_consumer",
+      "checked_start_line": 7,
+      "checked_block_sha256": "f87a306bf0e6d726df584d331c8a01387b388a3a0b34fbfdbef367af64b39df4",
+      "target_block_sha256": "21f6ce7149807afb7ed472488b3b05ee24564f403b099ccc40846de90698830c",
+      "body_byte_identical": false
+    }
+  ],
+  "final_public_gate": {
+    "request_id": "1789240536150541849-schoenflies-21a0cb81",
+    "input_sha256": "2f96a49a3d552358251471502e71fa9b58eb75dc50d181ecf848790e352afe1e",
+    "elapsed_seconds": 78.73241996765137,
+    "job_id": "13781140",
+    "host": "della-r3c2n16",
+    "peak_rss_bytes": 2243469312,
+    "diagnostics_status": "passed: zero unexpected diagnostics or sorries; review source and axiom guards separately",
+    "result_sha256": "7ba5ca120597f65f2574eb52063da6d18f1c86a11f2d82b4693bf3a372a077c6",
+    "artifact_log_sha256": "33d8812d8ac7f7c75aaaeca38d756a0fb26dfe0bae15229feaecdc4f9ee57470",
+    "fresh_modules": [
+      "DifferentialGeometry.External.ClassificationOfSurfaces.TriangleMeshGeometricFree"
+    ],
+    "source_guards": 98,
+    "signature_axiom_pairs": 3,
+    "declaration_linters": "unusedArguments, simpNF, synTaut over all imported vendor and current consumer declarations",
+    "transitive_axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "full_dg_aggregate_build": false
+  }
+}
