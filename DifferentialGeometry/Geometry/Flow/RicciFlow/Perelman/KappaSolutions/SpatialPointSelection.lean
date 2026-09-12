@@ -12,7 +12,7 @@ noncomputable section
 namespace DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
 
 open Filter Set
-open scoped Topology
+open scoped _root_.Topology
 
 section ProperMetric
 

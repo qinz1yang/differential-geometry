@@ -12,7 +12,7 @@ open DifferentialGeometry.Geometry
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.CheegerGromovCompactness
 open CanonicalNeighborhood
-open scoped Manifold ContDiff Topology
+open scoped Manifold ContDiff _root_.Topology
 
 universe u uE uH
 

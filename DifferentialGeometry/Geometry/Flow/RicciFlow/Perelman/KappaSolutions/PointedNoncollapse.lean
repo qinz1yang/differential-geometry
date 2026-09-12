@@ -22,7 +22,7 @@ open DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Tensor0SBundle
 open CanonicalNeighborhood
-open scoped Manifold ContDiff ENNReal Topology BigOperators
+open scoped Manifold ContDiff ENNReal _root_.Topology BigOperators
 
 universe u uE uH
 

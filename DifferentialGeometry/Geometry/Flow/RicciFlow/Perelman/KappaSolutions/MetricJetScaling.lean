@@ -13,7 +13,7 @@ open Bundle Filter Set
 open DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.Geometry.Connection
 open DifferentialGeometry.Tensor0SBundle
-open scoped Manifold ContDiff Topology BigOperators
+open scoped Manifold ContDiff _root_.Topology BigOperators
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E]

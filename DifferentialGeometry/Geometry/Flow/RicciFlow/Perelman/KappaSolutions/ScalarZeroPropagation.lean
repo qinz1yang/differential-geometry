@@ -19,7 +19,7 @@ open DifferentialGeometry.Geometry.Connection
 open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Tensor0SBundle
-open scoped Manifold ContDiff Topology
+open scoped Manifold ContDiff _root_.Topology
 
 universe u uE uH
 

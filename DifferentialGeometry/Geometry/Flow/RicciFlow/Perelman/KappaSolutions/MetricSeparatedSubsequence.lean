@@ -5,7 +5,7 @@ import Mathlib.Logic.Function.Iterate
 set_option autoImplicit false
 
 open Filter Set
-open scoped Topology
+open scoped _root_.Topology
 
 namespace DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
 

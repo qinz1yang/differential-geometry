@@ -16,7 +16,7 @@ open DifferentialGeometry.Geometry.Riemannian.BonnetMyers
 open DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.Integral.Measure
 open CanonicalNeighborhood
-open scoped Manifold ContDiff Topology ENNReal BigOperators
+open scoped Manifold ContDiff _root_.Topology ENNReal BigOperators
 
 universe u uE uH
 

@@ -428,6 +428,131 @@ theorem transDens_le_one
   filter_upwards [Ioo_mem_nhdsLT (show (0 : Real) < 1 by norm_num)] with t ht
   simpa only [γ, V, ell] using hbound t ht
 
+open DifferentialGeometry.Geometry.Curvature in
+omit [CompleteSpace E] [T2Space (TangentBundle I M)] in
+theorem transDens_le_hyperbolic_on
+    (g : SmoothRiemannianMetric I M)
+    (hEnorm : ∀ (y : M) (w : TangentSpace I y),
+      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner y w w)))
+    (p : M) (u : TangentSpace I p) (q b : Real)
+    (hq : 0 ≤ q)
+    (hd : 0 < Module.finrank Real E - 1)
+    (hu : 0 < g.inner p u u)
+    (hno : ∀ t ∈ Set.Ioo (0 : Real) b,
+      ¬ IsConjVec (I := I) g hEnorm p
+        ((t • u : TangentSpace I p) : E))
+    (hRic : ∀ t ∈ Set.Ioo (0 : Real) b,
+      -(((Module.finrank Real E - 1 : Nat) : Real) * q ^ 2) *
+          g.inner (intrinsicGeodesic (I := I) g hEnorm p u t)
+            (curveVelocity (I := I)
+              (intrinsicGeodesic (I := I) g hEnorm p u) t)
+            (curveVelocity (I := I)
+              (intrinsicGeodesic (I := I) g hEnorm p u) t) ≤
+        ricciTensor (I := I) g
+          (intrinsicGeodesic (I := I) g hEnorm p u t)
+          (curveVelocity (I := I)
+            (intrinsicGeodesic (I := I) g hEnorm p u) t)
+          (curveVelocity (I := I)
+            (intrinsicGeodesic (I := I) g hEnorm p u) t)) :
+    ∃ v : Fin (Module.finrank Real E - 1) → TangentSpace I p,
+      (∀ i j, g.inner p (v i) (v j) = if i = j then 1 else 0) ∧
+      (∀ i, g.inner p u (v i) = 0) ∧
+      let γ := intrinsicGeodesic (I := I) g hEnorm p u
+      let V := fun i => intrinsicJacobi (I := I) g hEnorm p u (v i)
+      let ell := Real.sqrt (g.inner p u u)
+      ∀ t ∈ Set.Ioo (0 : Real) b,
+        curveDensity (I := I) g γ V t ≤
+          hyperbolicDensity (q * ell) (Module.finrank Real E - 1) t := by
+  obtain ⟨v, hON, hperp'⟩ := exists_perp_pos (I := I) g p u hu
+  have hperp : ∀ i, g.inner p u (v i) = 0 := by
+    intro i; rw [g.symm p u (v i)]; exact hperp' i
+  have hanti := intrinsicRatioOfFrame_on (I := I) g hEnorm p u q b hq hd hu v hON hperp hno hRic
+  have hlim := poleLimit (I := I) g hEnorm p u q hq v hON
+  refine ⟨v, hON, hperp, ?_⟩
+  intro γ V ell t ht
+  have hpos : 0 < hyperbolicDensity (q * ell) (Module.finrank Real E - 1) t :=
+    hyperbolicDensity_pos (mul_nonneg hq (Real.sqrt_nonneg _)) ht.1
+  have hRatioLE :
+      curveDensity (I := I) g γ V t /
+        hyperbolicDensity (q * ell) (Module.finrank Real E - 1) t ≤ 1 := by
+    have hev : ∀ᶠ s in 𝓝[>] (0 : Real),
+        curveDensity (I := I) g γ V t /
+            hyperbolicDensity (q * ell) (Module.finrank Real E - 1) t ≤
+          curveDensity (I := I) g γ V s /
+            hyperbolicDensity (q * ell) (Module.finrank Real E - 1) s := by
+      filter_upwards [Ioo_mem_nhdsGT ht.1] with s hs
+      have hsb : s ∈ Set.Ioo (0 : Real) b := ⟨hs.1, hs.2.trans ht.2⟩
+      exact hanti hsb ht hs.2.le
+    exact ge_of_tendsto hlim hev
+  rwa [div_le_one hpos] at hRatioLE
+
+open DifferentialGeometry.Geometry.Curvature in
+omit [CompleteSpace E] [T2Space (TangentBundle I M)] in
+theorem transDens_le_one_on
+    (g : SmoothRiemannianMetric I M)
+    (hEnorm : ∀ (y : M) (w : TangentSpace I y),
+      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner y w w)))
+    (p : M) (u : TangentSpace I p) (q : Real)
+    (hq : 0 ≤ q)
+    (hd : 0 < Module.finrank Real E - 1)
+    (hu : 0 < g.inner p u u)
+    (hno : ∀ t ∈ Set.Ioo (0 : Real) 1,
+      ¬ IsConjVec (I := I) g hEnorm p
+        ((t • u : TangentSpace I p) : E))
+    (hRic : ∀ t ∈ Set.Ioo (0 : Real) 1,
+      -(((Module.finrank Real E - 1 : Nat) : Real) * q ^ 2) *
+          g.inner (intrinsicGeodesic (I := I) g hEnorm p u t)
+            (curveVelocity (I := I)
+              (intrinsicGeodesic (I := I) g hEnorm p u) t)
+            (curveVelocity (I := I)
+              (intrinsicGeodesic (I := I) g hEnorm p u) t) ≤
+        ricciTensor (I := I) g
+          (intrinsicGeodesic (I := I) g hEnorm p u t)
+          (curveVelocity (I := I)
+            (intrinsicGeodesic (I := I) g hEnorm p u) t)
+          (curveVelocity (I := I)
+            (intrinsicGeodesic (I := I) g hEnorm p u) t)) :
+    ∃ v : Fin (Module.finrank Real E - 1) → TangentSpace I p,
+      (∀ i j, g.inner p (v i) (v j) = if i = j then 1 else 0) ∧
+      (∀ i, g.inner p u (v i) = 0) ∧
+      curveDensity (I := I) g
+          (intrinsicGeodesic (I := I) g hEnorm p u)
+          (fun i => intrinsicJacobi (I := I) g hEnorm p u (v i)) 1 ≤
+        hyperbolicDensity (q * Real.sqrt (g.inner p u u))
+          (Module.finrank Real E - 1) 1 := by
+  obtain ⟨v, hON, hperp, hbound⟩ :=
+    transDens_le_hyperbolic_on (I := I) g hEnorm p u q 1 hq hd hu hno hRic
+  refine ⟨v, hON, hperp, ?_⟩
+  let γ : Real → M := intrinsicGeodesic (I := I) g hEnorm p u
+  let V : Fin (Module.finrank Real E - 1) →
+      ∀ t, TangentSpace I (γ t) :=
+    fun i => intrinsicJacobi (I := I) g hEnorm p u (v i)
+  let ell : Real := Real.sqrt (g.inner p u u)
+  have hγ :
+      ContMDiffAt 𝓘(Real, Real) I (1 : WithTop ℕ∞) γ 1 := by
+    simpa only [γ] using
+      (intrinsicGeodesic_contMDiffOn (I := I) g hEnorm p u).contMDiffAt
+        Filter.univ_mem
+  have hVdiff : ∀ i,
+      DifferentiableAt Real (chartRepAt (I := I) γ (V i) 1) 1 := by
+    intro i
+    simpa only [γ, V] using
+      (intrinsicJacobi_diff (I := I) g hEnorm p u (v i) 1).1
+  have hcurve :
+      Tendsto (curveDensity (I := I) g γ V) (𝓝[<] (1 : Real))
+        (𝓝 (curveDensity (I := I) g γ V 1)) :=
+    (curveDensity_cont (I := I) (n := (1 : WithTop ℕ∞)) le_rfl
+      g γ V 1 hγ hVdiff).tendsto.mono_left inf_le_left
+  have hmodel :
+      Tendsto (hyperbolicDensity (q * ell) (Module.finrank Real E - 1))
+        (𝓝[<] (1 : Real))
+        (𝓝 (hyperbolicDensity (q * ell) (Module.finrank Real E - 1) 1)) :=
+    (hyperbolicDen_continuous (q * ell) (Module.finrank Real E - 1)).continuousAt.tendsto
+      |>.mono_left inf_le_left
+  apply le_of_tendsto_of_tendsto hcurve hmodel
+  filter_upwards [Ioo_mem_nhdsLT (show (0 : Real) < 1 by norm_num)] with t ht
+  simpa only [γ, V, ell] using hbound t ht
+
 private lemma clm_smul_apply
     {F : Type*} [NormedAddCommGroup F] [NormedSpace Real F]
     (B : F →L[Real] F →L[Real] Real) (c : Real) (v w : F) :

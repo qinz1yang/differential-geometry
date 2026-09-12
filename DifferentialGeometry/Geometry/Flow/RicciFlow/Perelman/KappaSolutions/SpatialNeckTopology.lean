@@ -8,7 +8,7 @@ set_option autoImplicit false
 noncomputable section
 
 open Manifold Set
-open scoped Manifold ContDiff Topology
+open scoped Manifold ContDiff _root_.Topology
 
 namespace DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
 

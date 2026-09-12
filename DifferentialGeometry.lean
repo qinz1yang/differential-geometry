@@ -300,6 +300,7 @@ import DifferentialGeometry.Analysis.Elliptic.Euclidean.Regularity.SecondOrder
 import DifferentialGeometry.Analysis.Elliptic.Euclidean.Restriction
 import DifferentialGeometry.Analysis.Elliptic.Euclidean.WeakFormulation
 import DifferentialGeometry.Analysis.Elliptic.Euclidean.WeakHarnack
+import DifferentialGeometry.Analysis.Elliptic.HarmonicRigidity
 import DifferentialGeometry.Analysis.Elliptic.Lichnerowicz
 import DifferentialGeometry.Analysis.Elliptic.LichnerowiczSpectral
 import DifferentialGeometry.Analysis.Elliptic.Liouville
@@ -2275,7 +2276,10 @@ import DifferentialGeometry.Analysis.Spectral.Scalar.EigenBasis
 import DifferentialGeometry.Analysis.Spectral.Scalar.EigenIdx
 import DifferentialGeometry.Analysis.Spectral.Scalar.Eigenfunction
 import DifferentialGeometry.Analysis.Spectral.Scalar.Enumeration
+import DifferentialGeometry.Analysis.Spectral.Scalar.PoissonExistence
+import DifferentialGeometry.Analysis.Spectral.Scalar.PoissonSolvability
 import DifferentialGeometry.Analysis.Spectral.Scalar.Resolvent
+import DifferentialGeometry.Analysis.Spectral.Scalar.SpectralGap
 import DifferentialGeometry.Analysis.Spectral.Scalar.Spectrum
 import DifferentialGeometry.Analysis.Spectral.Scalar.WeylBounds
 import DifferentialGeometry.Analysis.Spectral.Tensor.ChartLeviCivitaParallelCLMOpNorm
@@ -4539,6 +4543,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Foundations.Nonc
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Foundations.PointedGlobal
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Foundations.PointedMaps
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Foundations.WindowEquivalence
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.AncientHalfLine
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Limits.CurvatureOperator
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Limits.Equation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Limits.FlowConvergence
@@ -4551,6 +4556,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.Bounds.Al
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.Bounds.FixedDomain
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.Bounds.UniformEquivalence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.Canonical.Compatibility
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.Canonical.ReferenceChange
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.Endpoint.Basic
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.Endpoint.CoordinateJets
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.Endpoint.CovariantEvolution

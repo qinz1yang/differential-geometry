@@ -19,6 +19,13 @@ structure PoincareExtinctionContracts (DiscardedCutOpen : Type u → Prop) where
   terminalStep : ∃ (p : CutoffParameters) (τ ε d : ℝ) (k : ℕ),
     Nonempty (GlobalStepInputs.{u} p τ ε d k DiscardedCutOpen)
   metricStep : isCommonLocalRealization.{u}
+  incidenceConnectedInput :
+    ∀ (H : DifferentialGeometry.PDE.RicciFlow.Surgery.FiniteSurgeryHistory.{u})
+    (i : Fin H.eventCount) (C : ConnectedComponents (H.stage i.castSucc).Carrier),
+    ((H.cutCapTrace.transition i).cutIncidenceGraph C).Connected
+  componentSumInput :
+    ∀ (H : DifferentialGeometry.PDE.RicciFlow.Surgery.FiniteSurgeryHistory.{u})
+    (i : Fin H.eventCount), (H.cutCapTrace.transition i).componentConnectedSumDecomposition
   sumInput : DifferentialGeometry.Topology.poincareStandardSumClosed.{u}
   productInput : ∀ p : DifferentialGeometry.Topology.SphereTwoTimesCircle,
     Nonempty (FundamentalGroup DifferentialGeometry.Topology.SphereTwoTimesCircle p ≃*
@@ -38,11 +45,5 @@ structure PoincareExtinctionContracts (DiscardedCutOpen : Type u → Prop) where
     Nonempty (DifferentialGeometry.Topology.ClosedOrientedManifold.OrientedDiffeomorph
       (DifferentialGeometry.Topology.finiteConnectedSum L).toClosedOrientedManifold
       (DifferentialGeometry.Topology.finiteConnectedSum K).toClosedOrientedManifold)
-  decompositionInput : ∀ (L : List (DifferentialGeometry.Topology.ConnectedClosedOrientedManifold.{u} 3))
-    (x : (i : Fin L.length) → (L.get i).Carrier)
-    (y : (DifferentialGeometry.Topology.finiteConnectedSum L).Carrier),
-    Nonempty (FundamentalGroup (DifferentialGeometry.Topology.finiteConnectedSum L).Carrier y ≃*
-      Monoid.CoprodI (fun i : Fin L.length =>
-        FundamentalGroup (L.get i).Carrier (x i)))
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology

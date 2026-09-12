@@ -7,7 +7,7 @@ noncomputable section
 namespace DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
 
 open Set
-open scoped Topology
+open scoped _root_.Topology
 
 private theorem anchoredSelectionFactor_bounds :
     0 < 1 - 1 / Real.sqrt 2 ∧ 1 - 1 / Real.sqrt 2 < 1 ∧

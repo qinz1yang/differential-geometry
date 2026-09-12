@@ -11,7 +11,7 @@ namespace DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
 
 open Bundle Manifold
 open DifferentialGeometry.Geometry
-open scoped Manifold ContDiff Topology
+open scoped Manifold ContDiff _root_.Topology
 
 private local instance cylinderAxialSphereDimension :
     Fact (Module.finrank ℝ (EuclideanSpace ℝ (Fin 3)) = 2 + 1) := ⟨by simp⟩

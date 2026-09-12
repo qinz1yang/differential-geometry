@@ -13,7 +13,7 @@ open DifferentialGeometry.Analysis DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Integral.Measure DifferentialGeometry.Integral.DivergenceTheorem
 open CanonicalNeighborhood
-open scoped Manifold ContDiff Topology
+open scoped Manifold ContDiff _root_.Topology
 
 private theorem continuousOn_of_uniform_time_sequences
     {E F : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [LocallyCompactSpace E]

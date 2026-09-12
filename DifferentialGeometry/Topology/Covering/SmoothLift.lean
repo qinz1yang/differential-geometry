@@ -57,4 +57,31 @@ theorem exists_smooth_lift_of_simplyConnected
   have hpg' : ∀ x, p (g x) = f x := fun x ↦ congrFun hpg x
   exact ⟨g, hg₀, hpg', contMDiff_of_lift_through_localDiffeomorph hps hf g hpg'⟩
 
+theorem contMDiff_one_of_lift_through_localDiffeomorph
+    {E F G H H' H'' W M N : Type*}
+    [NormedAddCommGroup E] [NormedSpace ℝ E]
+    [NormedAddCommGroup F] [NormedSpace ℝ F]
+    [NormedAddCommGroup G] [NormedSpace ℝ G]
+    [TopologicalSpace H] [TopologicalSpace H'] [TopologicalSpace H'']
+    [TopologicalSpace W] [ChartedSpace H W]
+    [TopologicalSpace M] [ChartedSpace H' M]
+    [TopologicalSpace N] [ChartedSpace H'' N]
+    {I : ModelWithCorners ℝ E H} {J : ModelWithCorners ℝ F H'}
+    {L : ModelWithCorners ℝ G H''}
+    {p : N → M} (hp : IsLocalDiffeomorph L J ∞ p)
+    {f : W → M} (hf : ContMDiff I J 1 f)
+    (g : C(W, N)) (hpg : ∀ x, p (g x) = f x) : ContMDiff I L 1 g := by
+  intro x
+  obtain ⟨φ, hx, hφ⟩ := hp (g x)
+  have hfx : f x ∈ φ.target := by
+    rw [← hpg x, hφ hx]
+    exact φ.map_source hx
+  have hs := ((φ.contMDiffOn_invFun.contMDiffAt (φ.open_target.mem_nhds hfx)).of_le
+    (by norm_num)).comp x (hf x)
+  refine hs.congr_of_eventuallyEq ?_
+  filter_upwards [g.continuous.continuousAt.preimage_mem_nhds (φ.open_source.mem_nhds hx)] with y hy
+  change g y = φ.symm (f y)
+  rw [← hpg y, hφ hy]
+  exact (φ.left_inv hy).symm
+
 end DifferentialGeometry.Topology

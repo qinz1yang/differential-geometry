@@ -21,7 +21,7 @@ namespace DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
 open Bundle
 open DifferentialGeometry.Geometry
 open DifferentialGeometry.Geometry.Curvature
-open scoped Manifold ContDiff Topology
+open scoped Manifold ContDiff _root_.Topology
 
 local notation "SphereTwo" => Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1
 

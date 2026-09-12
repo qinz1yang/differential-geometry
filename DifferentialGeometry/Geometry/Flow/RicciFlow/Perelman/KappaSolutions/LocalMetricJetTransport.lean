@@ -10,7 +10,7 @@ namespace DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
 
 open Bundle Set TopologicalSpace
 open DifferentialGeometry.CheegerGromovCompactness
-open scoped ContDiff Manifold Topology
+open scoped ContDiff Manifold _root_.Topology
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [CompleteSpace E]

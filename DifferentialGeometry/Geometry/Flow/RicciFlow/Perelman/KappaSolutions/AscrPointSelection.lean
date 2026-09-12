@@ -8,7 +8,7 @@ noncomputable section
 namespace DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
 
 open Filter Set
-open scoped Topology
+open scoped _root_.Topology
 
 private def ascrPointEta (i : ℕ) : ℝ := 1 / ((i : ℝ) + 2)
 

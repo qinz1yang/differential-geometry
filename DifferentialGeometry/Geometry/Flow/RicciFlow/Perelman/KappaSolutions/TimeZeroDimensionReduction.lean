@@ -15,7 +15,7 @@ open DifferentialGeometry.Geometry.Riemannian
 open DifferentialGeometry.Geometry.Riemannian.HopfRinow
 open DifferentialGeometry.Geometry.Topology
 open DifferentialGeometry.CheegerGromovCompactness
-open scoped Topology ContDiff Manifold NNReal ENNReal
+open scoped _root_.Topology ContDiff Manifold NNReal ENNReal
 
 universe u uE uH
 

@@ -10,7 +10,7 @@ namespace DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
 open Bundle Manifold Filter Set
 open DifferentialGeometry.Geometry.Connection DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.TensorLieDeriv
-open scoped Manifold ContDiff Topology BigOperators
+open scoped Manifold ContDiff _root_.Topology BigOperators
 
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
   [FiniteDimensional ℝ E] [CompleteSpace E] [NeZero (Module.finrank ℝ E)]

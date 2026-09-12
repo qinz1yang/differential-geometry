@@ -12,7 +12,7 @@ open Bundle Filter Manifold Set
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.Tensor0SBundle
-open scoped Topology ContDiff Manifold
+open scoped _root_.Topology ContDiff Manifold
 
 universe u uE uH
 

@@ -182,6 +182,20 @@ theorem unique (d₁ d₂ : SphereSides S) : d₁ = d₂ := by
 instance : Subsingleton (SphereSides S) :=
   ⟨unique⟩
 
+theorem not_isPreconnected_compl (d : SphereSides S) : ¬ IsPreconnected Sᶜ := by
+  intro hpre
+  rcases d.subset_compactSide_or_subset_endSide hpre subset_rfl with h | h
+  · have hsub : d.endSide ⊆ ∅ := fun x hx =>
+      Set.disjoint_left.mp d.disjoint (h (d.endSide_subset_compl hx)) hx
+    obtain ⟨x, hx⟩ := d.endSide_nonempty
+    rw [Set.subset_empty_iff.mp hsub] at hx
+    exact hx
+  · have hsub : d.compactSide ⊆ ∅ := fun x hx =>
+      Set.disjoint_left.mp d.disjoint hx (h (d.compactSide_subset_compl hx))
+    obtain ⟨x, hx⟩ := d.compactSide_nonempty
+    rw [Set.subset_empty_iff.mp hsub] at hx
+    exact hx
+
 end SphereSides
 
 end DifferentialGeometry.Topology.SphereSeparation

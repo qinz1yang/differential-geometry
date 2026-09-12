@@ -15,7 +15,7 @@ open DifferentialGeometry.Geometry.Riemannian.Exponential
 open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Analysis.Calculus
 open DifferentialGeometry.Tensor0SBundle
-open scoped Manifold ContDiff Topology Interval
+open scoped Manifold ContDiff _root_.Topology Interval
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [CompleteSpace E] [NeZero (Module.finrank ℝ E)]

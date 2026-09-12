@@ -9,7 +9,7 @@ open Bundle Filter Manifold Set
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Riemannian
 open DifferentialGeometry.Geometry.Topology
-open scoped Manifold ContDiff Topology NNReal
+open scoped Manifold ContDiff _root_.Topology NNReal
 
 namespace DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
 

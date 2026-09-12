@@ -10,7 +10,7 @@ namespace DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
 open Bundle Manifold Set
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.CheegerGromovCompactness
-open scoped Manifold ContDiff Topology
+open scoped Manifold ContDiff _root_.Topology
 
 def spatialNeckControlEpsilon : ℝ := (100 * (1 + Real.pi))⁻¹
 
