@@ -161,3 +161,30 @@ All 51 previous pairs and the ten new public/consumer pairs match their earlier
 readbacks byte for byte. All-package/current-consumer stock linters and
 standard-only transitive axioms passed. The 91 unchanged leaves not rebuilt
 in this run retain their earlier compilation evidence.
+
+## Local and convex-support vanishing
+
+The checkpoint adds `RelativeVanishing` (25 lines), `EuclideanLocalVanishing`
+(135 lines) and `CompactVanishing` (46 lines). `EuclideanLocalVanishing` extends
+the recovered baseline while preserving its four prior public statements,
+proof bodies and documentation. The high-degree proof reuses the existing
+dimension-at-least-two theorem; the new rank-zero/one cases use the original
+relative sequence and sphere computations. Arbitrary real norms are handled
+by an actual continuous linear equivalence to Euclidean space.
+
+The new relative-universe and convex-support modules are original proofs over
+pinned Poincare and Mathlib APIs. No DifferentialGeometry source, dependency
+change or deferred input is introduced. The star-convex primary derives center
+membership from nonemptiness internally and handles the empty set separately.
+All 96 previously supplied leaves remain unchanged.
+
+Original imported request `1789256262590000029-topology-6245d09b` freshly
+compiled all three leaves and passed 137 guards and 16 signature/axiom pairs.
+Portable request `1789256733392947972-topology_checkpoint-e20ea2ab` freshly
+compiled those leaves and root without diagnostics in 1:50.75, maximum RSS
+1923004 KiB. Its full gate passed in 172.69 seconds with 131 guards and 77
+signature/axiom pairs. The 61 previous readbacks are identical; the 16 new
+readbacks match the original gate up to `Set.univ`/`Module.finrank` qualification.
+Stock declaration linters and standard-only transitive axioms pass. Earlier
+validation records remain in SNAPSHOT.json; this is a foundations checkpoint,
+and the full topology suite remains incomplete.

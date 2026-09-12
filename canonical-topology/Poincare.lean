@@ -16,12 +16,14 @@ import Poincare.Topology.Homology.ChainSupport
 import Poincare.Topology.Homology.ChainsIn
 import Poincare.Topology.Homology.CochainMaps
 import Poincare.Topology.Homology.Cochains
+import Poincare.Topology.Homology.CompactVanishing
 import Poincare.Topology.Homology.ConnectedZeroHomology
 import Poincare.Topology.Homology.ContractibleCoverOne
 import Poincare.Topology.Homology.ContractiblePair
 import Poincare.Topology.Homology.ContractiblePairOne
 import Poincare.Topology.Homology.Cycles
 import Poincare.Topology.Homology.EuclideanLocalTop
+import Poincare.Topology.Homology.EuclideanLocalVanishing
 import Poincare.Topology.Homology.ExcisionQuotient
 import Poincare.Topology.Homology.FineAffineImages
 import Poincare.Topology.Homology.Homotopy
@@ -50,6 +52,7 @@ import Poincare.Topology.Homology.Relative
 import Poincare.Topology.Homology.RelativeFunctoriality
 import Poincare.Topology.Homology.RelativeHomeomorphism
 import Poincare.Topology.Homology.RelativeMaps
+import Poincare.Topology.Homology.RelativeVanishing
 import Poincare.Topology.Homology.RelativeZero
 import Poincare.Topology.Homology.SimplexBasis
 import Poincare.Topology.Homology.SimplexBoundary
