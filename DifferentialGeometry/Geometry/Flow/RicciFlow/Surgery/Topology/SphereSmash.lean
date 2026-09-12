@@ -74,7 +74,24 @@ def sphereThreeCubeVector (z : I^(Fin 3)) : EuclideanSpace ℝ (Fin 4) := by
     orientedSphereThreeInterior (WithLp.toLp 2 (fun i => (z i : ℝ)))
 
 theorem sphereThreeCubeVector_norm (z : I^(Fin 3)) : ‖sphereThreeCubeVector z‖ = 1 := by
-  sorry
+  classical
+  by_cases hb : z ∈ Cube.boundary (Fin 3)
+  · simp [sphereThreeCubeVector, hb, PiLp.norm_single]
+  let u : ℝ := (2 * (z 0 : ℝ) - 1) / ((z 0 : ℝ) * (1 - (z 0 : ℝ)))
+  let v : ℝ := (2 * (z 1 : ℝ) - 1) / ((z 1 : ℝ) * (1 - (z 1 : ℝ)))
+  let w : ℝ := (2 * (z 2 : ℝ) - 1) / ((z 2 : ℝ) * (1 - (z 2 : ℝ)))
+  have hd : 1 + u^2 + v^2 + w^2 ≠ 0 := by
+    nlinarith [sq_nonneg u, sq_nonneg v, sq_nonneg w]
+  have hsq : ‖sphereThreeCubeVector z‖^2 = 1 := by
+    simp only [sphereThreeCubeVector, if_neg hb]
+    change ‖(WithLp.toLp 2 ![2*u / (1+u^2+v^2+w^2), 2*v / (1+u^2+v^2+w^2),
+      2*w / (1+u^2+v^2+w^2),
+      (u^2+v^2+w^2-1) / (1+u^2+v^2+w^2)] : EuclideanSpace ℝ (Fin 4))‖^2 = 1
+    rw [EuclideanSpace.real_norm_sq_eq]
+    norm_num [Fin.sum_univ_succ]
+    field_simp [hd]
+    ring
+  nlinarith [norm_nonneg (sphereThreeCubeVector z)]
 
 theorem sphereThreeCubeVector_continuous : Continuous sphereThreeCubeVector := by
   sorry
