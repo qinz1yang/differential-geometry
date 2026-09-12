@@ -162,4 +162,27 @@ theorem component_carrier (C : ConnectedComponents M.Carrier) :
 theorem component_orientation (C : ConnectedComponents M.Carrier) :
     (component M C).orientation = componentOrientation M C := rfl
 
+theorem componentSet_eq_univ_of_preconnectedSpace [PreconnectedSpace M.Carrier]
+    (C : ConnectedComponents M.Carrier) : componentSet M C = univ := by
+  obtain ⟨x, rfl⟩ := ConnectedComponents.surjective_coe C
+  rw [componentSet_mk, PreconnectedSpace.connectedComponent_eq_univ]
+
+theorem componentOpen_eq_top_of_preconnectedSpace [PreconnectedSpace M.Carrier]
+    (C : ConnectedComponents M.Carrier) : componentOpen M C = ⊤ := by
+  ext x
+  simp [componentSet_eq_univ_of_preconnectedSpace M C]
+
+def componentDiffeomorph [PreconnectedSpace M.Carrier] (C : ConnectedComponents M.Carrier) :
+    M.Carrier ≃ₘ⟮𝓘(ℝ, EuclideanSpace ℝ (Fin n)), 𝓘(ℝ, EuclideanSpace ℝ (Fin n))⟯
+      componentOpen M C where
+  toEquiv :=
+    { toFun := fun x => ⟨x, by rw [componentOpen_eq_top_of_preconnectedSpace M C]; trivial⟩
+      invFun := fun x => x.1
+      left_inv := fun _ => rfl
+      right_inv := fun _ => rfl }
+  contMDiff_toFun := by
+    refine (ContMDiff.subtypeVal_comp_iff (componentOpen M C) _).mp ?_
+    exact contMDiff_id
+  contMDiff_invFun := contMDiff_subtype_val
+
 end DifferentialGeometry.Topology.ClosedOrientedManifold
