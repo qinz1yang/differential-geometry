@@ -380,11 +380,871 @@ def sphereThreeCubeParameter : C(I^(Fin 3), Sphere 3) :=
       simpa only [Sphere, Metric.mem_sphere, dist_zero_right] using
         sphereThreeCubeVector_norm z)⟩
 
+private lemma sp_oc_eq_sub (t : ℝ) (h0 : t ≠ 0) (h1 : t ≠ 1) :
+    openCubeCoordinate t = 1 / (1 - t) - 1 / t := by
+  unfold openCubeCoordinate
+  field_simp
+  ring
+
+private lemma sp_oc_inj {s t : ℝ} (hs0 : 0 < s) (hs1 : s < 1) (ht0 : 0 < t) (ht1 : t < 1)
+    (h : openCubeCoordinate s = openCubeCoordinate t) : s = t := by
+  have hs0' : s ≠ 0 := ne_of_gt hs0
+  have ht0' : t ≠ 0 := ne_of_gt ht0
+  have hfac : 0 < 1 - s - t + 2 * s * t := by
+    nlinarith [mul_pos (by linarith : (0 : ℝ) < 1 - s) (by linarith : (0 : ℝ) < 1 - t),
+      mul_pos hs0 ht0]
+  have h2 : (s - t) * (1 - s - t + 2 * s * t) = 0 := by
+    simp only [openCubeCoordinate] at h
+    rw [div_eq_div_iff (mul_ne_zero hs0' (by linarith)) (mul_ne_zero ht0' (by linarith))] at h
+    nlinarith [h]
+  rcases mul_eq_zero.mp h2 with h3 | h3
+  · linarith
+  · exact absurd h3 (ne_of_gt hfac)
+
+private lemma sp_oc_surj (u : ℝ) : ∃ t : ℝ, 0 < t ∧ t < 1 ∧ openCubeCoordinate t = u := by
+  set δ : ℝ := 1 / (3 + |u|) with hδ
+  have h3u : 0 < 3 + |u| := by positivity
+  have hδpos : 0 < δ := by rw [hδ]; positivity
+  have hδlt : δ < 1 := by
+    rw [hδ, div_lt_one h3u]
+    linarith [abs_nonneg u]
+  have hδhalf : δ ≤ 1 / 2 := by
+    rw [hδ, div_le_div_iff₀ h3u (by norm_num : (0 : ℝ) < 2)]
+    linarith [abs_nonneg u]
+  have hone : 1 / δ = 3 + |u| := by rw [hδ, one_div_one_div]
+  have hleft : openCubeCoordinate δ < u := by
+    have h0 : 1 / (1 - δ) ≤ 2 := by
+      rw [div_le_iff₀ (by linarith : (0 : ℝ) < 1 - δ)]
+      linarith
+    rw [sp_oc_eq_sub δ (ne_of_gt hδpos) (by linarith)]
+    nlinarith [h0, hone, neg_le_abs u]
+  have hright : u < openCubeCoordinate (1 - δ) := by
+    have h0 : 1 / (1 - (1 - δ)) = 1 / δ := by ring_nf
+    have h1 : 1 / (1 - δ) ≤ 2 := by
+      rw [div_le_iff₀ (by linarith : (0 : ℝ) < 1 - δ)]
+      linarith
+    rw [sp_oc_eq_sub (1 - δ) (by linarith) (by linarith), h0]
+    nlinarith [h1, hone, le_abs_self u]
+  have hcont : ContinuousOn openCubeCoordinate (Icc δ (1 - δ)) := by
+    refine ContinuousOn.div (by fun_prop) (by fun_prop) ?_
+    intro t ht
+    have ht0 : 0 < t := lt_of_lt_of_le hδpos ht.1
+    have ht1 : t < 1 := lt_of_le_of_lt ht.2 (by linarith)
+    exact mul_ne_zero (ne_of_gt ht0) (by linarith)
+  have hmem : u ∈ Icc (openCubeCoordinate δ) (openCubeCoordinate (1 - δ)) :=
+    ⟨le_of_lt hleft, le_of_lt hright⟩
+  obtain ⟨t, ht, htu⟩ := (intermediate_value_Icc (by linarith : δ ≤ 1 - δ) hcont) hmem
+  exact ⟨t, lt_of_lt_of_le hδpos ht.1, lt_of_le_of_lt ht.2 (by linarith), htu⟩
+
+private lemma sp_vec3_two (a b c : ℝ) : (![a, b, c] : Fin 3 → ℝ) 2 = c := by
+  rw [Matrix.cons_val_two]
+  rfl
+
+private lemma sp_sphereCubeVector_eq_param (x : I^(Fin 2)) (hx : x ∉ Cube.boundary (Fin 2)) :
+    sphereCubeVector x = sphereTwoInteriorParam (openCubeCoordinate ((x 0 : I) : ℝ),
+      openCubeCoordinate ((x 1 : I) : ℝ)) := by
+  classical
+  simp only [sphereCubeVector, if_neg hx, sphereTwoInteriorParam, openCubeCoordinate]
+
+private lemma sp_sphereCubeVector_eq_north (x : I^(Fin 2)) (hx : x ∈ Cube.boundary (Fin 2)) :
+    sphereCubeVector x = EuclideanSpace.single 2 1 := by
+  classical
+  simp only [sphereCubeVector, if_pos hx]
+
+private lemma sp_single_two : (EuclideanSpace.single 2 1 : ThreeSpace) = PiLp.single 2 2 1 := rfl
+
+private lemma sp_single_two_zero : ((EuclideanSpace.single 2 1 : ThreeSpace)) 0 = 0 := by
+  have h : ¬ ((0 : Fin 3) = 2) := by decide
+  simp only [sp_single_two, PiLp.single_apply, h, if_false]
+
+private lemma sp_single_two_one : ((EuclideanSpace.single 2 1 : ThreeSpace)) 1 = 0 := by
+  have h : ¬ ((1 : Fin 3) = 2) := by decide
+  simp only [sp_single_two, PiLp.single_apply, h, if_false]
+
+private lemma sp_single_two_two : ((EuclideanSpace.single 2 1 : ThreeSpace)) 2 = 1 := by
+  simp only [sp_single_two, PiLp.single_apply]
+  norm_num
+
+private lemma sp_two_denom_ne (p : ℝ × ℝ) : p.1 ^ 2 + p.2 ^ 2 + 1 ≠ 0 := by positivity
+
+private lemma sp_two_norm_sq_sub (p : ℝ × ℝ) :
+    ‖sphereTwoInteriorParam p - EuclideanSpace.single 2 1‖ ^ 2 =
+      4 / (p.1 ^ 2 + p.2 ^ 2 + 1) := by
+  have hd := sp_two_denom_ne p
+  rw [EuclideanSpace.real_norm_sq_eq, Fin.sum_univ_three]
+  simp only [PiLp.sub_apply, sp_single_two_zero, sp_single_two_one, sp_single_two_two, sub_zero,
+    sphereTwoInteriorParam, Matrix.cons_val_zero, Matrix.cons_val_one, sp_vec3_two]
+  field_simp
+  ring
+
+private lemma sp_two_param_zero (p : ℝ × ℝ) :
+    sphereTwoInteriorParam p 0 = 2 * p.1 / (1 + p.1 ^ 2 + p.2 ^ 2) := by
+  simp only [sphereTwoInteriorParam, PiLp.toLp_apply, Matrix.cons_val_zero]
+
+private lemma sp_two_param_one (p : ℝ × ℝ) :
+    sphereTwoInteriorParam p 1 = -2 * p.2 / (1 + p.1 ^ 2 + p.2 ^ 2) := by
+  simp only [sphereTwoInteriorParam, PiLp.toLp_apply, Matrix.cons_val_one, Matrix.cons_val_zero]
+
+private lemma sp_two_recover_zero (p : ℝ × ℝ) :
+    2 * (sphereTwoInteriorParam p 0) /
+      ‖sphereTwoInteriorParam p - EuclideanSpace.single 2 1‖ ^ 2 = p.1 := by
+  have hd := sp_two_denom_ne p
+  rw [sp_two_param_zero p, sp_two_norm_sq_sub]
+  field_simp
+  ring
+
+private lemma sp_two_recover_one (p : ℝ × ℝ) :
+    -2 * (sphereTwoInteriorParam p 1) /
+      ‖sphereTwoInteriorParam p - EuclideanSpace.single 2 1‖ ^ 2 = p.2 := by
+  have hd := sp_two_denom_ne p
+  rw [sp_two_param_one p, sp_two_norm_sq_sub]
+  field_simp
+  ring
+
+private lemma sp_two_injective : Function.Injective sphereTwoInteriorParam := by
+  intro p q hpq
+  have h0 : p.1 = q.1 := by
+    rw [← sp_two_recover_zero p, ← sp_two_recover_zero q, hpq]
+  have h1 : p.2 = q.2 := by
+    rw [← sp_two_recover_one p, ← sp_two_recover_one q, hpq]
+  exact Prod.ext h0 h1
+
+private lemma sp_two_ne_north (p : ℝ × ℝ) :
+    sphereTwoInteriorParam p ≠ EuclideanSpace.single 2 1 := by
+  intro h
+  have h2 : ‖sphereTwoInteriorParam p - EuclideanSpace.single 2 1‖ ^ 2 = 0 := by
+    rw [h, sub_self]
+    simp
+  rw [sp_two_norm_sq_sub] at h2
+  have h3 : 0 < 4 / (p.1 ^ 2 + p.2 ^ 2 + 1) := by positivity
+  linarith
+
+private lemma sp_not_boundary_coords {N : Type*} {y : I^N} (hy : y ∉ Cube.boundary N)
+    (i : N) : 0 < ((y i : I) : ℝ) ∧ ((y i : I) : ℝ) < 1 := by
+  have h0 : ((y i : I) : ℝ) ≠ 0 := fun hc => hy ⟨i, Or.inl (Subtype.ext hc)⟩
+  have h1 : ((y i : I) : ℝ) ≠ 1 := fun hc => hy ⟨i, Or.inr (Subtype.ext hc)⟩
+  exact ⟨lt_of_le_of_ne (y i).2.1 (Ne.symm h0), lt_of_le_of_ne (y i).2.2 h1⟩
+
+private lemma sp_two_fiber (a b : I^(Fin 2)) :
+    sphereCubeVector a = sphereCubeVector b ↔
+      a = b ∨ (a ∈ Cube.boundary (Fin 2) ∧ b ∈ Cube.boundary (Fin 2)) := by
+  classical
+  constructor
+  · intro h
+    by_cases ha : a ∈ Cube.boundary (Fin 2)
+    · by_cases hb : b ∈ Cube.boundary (Fin 2)
+      · exact Or.inr ⟨ha, hb⟩
+      · rw [sp_sphereCubeVector_eq_north a ha, sp_sphereCubeVector_eq_param b hb] at h
+        exact absurd h.symm (sp_two_ne_north _)
+    · by_cases hb : b ∈ Cube.boundary (Fin 2)
+      · rw [sp_sphereCubeVector_eq_param a ha, sp_sphereCubeVector_eq_north b hb] at h
+        exact absurd h (sp_two_ne_north _)
+      · refine Or.inl (funext fun i => Subtype.ext ?_)
+        have hp : sphereTwoInteriorParam (openCubeCoordinate ((a 0 : I) : ℝ),
+            openCubeCoordinate ((a 1 : I) : ℝ)) =
+            sphereTwoInteriorParam (openCubeCoordinate ((b 0 : I) : ℝ),
+              openCubeCoordinate ((b 1 : I) : ℝ)) := by
+          rw [← sp_sphereCubeVector_eq_param a ha, ← sp_sphereCubeVector_eq_param b hb]
+          exact h
+        have hpq := sp_two_injective hp
+        have h0 := sp_not_boundary_coords ha 0
+        have h1 := sp_not_boundary_coords hb 0
+        have h2 := sp_not_boundary_coords ha 1
+        have h3 := sp_not_boundary_coords hb 1
+        fin_cases i
+        · exact sp_oc_inj h0.1 h0.2 h1.1 h1.2 (congrArg Prod.fst hpq)
+        · exact sp_oc_inj h2.1 h2.2 h3.1 h3.2 (congrArg Prod.snd hpq)
+  · rintro (rfl | ⟨ha, hb⟩)
+    · rfl
+    · rw [sp_sphereCubeVector_eq_north a ha, sp_sphereCubeVector_eq_north b hb]
+
+private lemma sp_two_eq_north_iff (z : I^(Fin 2)) :
+    sphereCubeVector z = EuclideanSpace.single 2 1 ↔ z ∈ Cube.boundary (Fin 2) := by
+  constructor
+  · intro h
+    by_contra hz
+    rw [sp_sphereCubeVector_eq_param z hz] at h
+    exact sp_two_ne_north _ h
+  · exact sp_sphereCubeVector_eq_north z
+
+private lemma sp_two_cubeParam_eq_north_iff (z : I^(Fin 2)) :
+    sphereCubeParameter z = smashSphereNorth ↔ z ∈ Cube.boundary (Fin 2) := by
+  constructor
+  · intro h
+    have hv : sphereCubeVector z = EuclideanSpace.single 2 1 := by
+      have h1 := congrArg (fun y : Sphere 2 => (y : ThreeSpace)) h
+      have h2 : ((sphereCubeParameter z : Sphere 2) : ThreeSpace) = sphereCubeVector z := rfl
+      have h3 : ((smashSphereNorth : Sphere 2) : ThreeSpace) = EuclideanSpace.single 2 1 := rfl
+      rw [h2, h3] at h1
+      exact h1
+    exact (sp_two_eq_north_iff z).mp hv
+  · intro hz
+    apply Subtype.ext
+    have h2 : ((sphereCubeParameter z : Sphere 2) : ThreeSpace) = sphereCubeVector z := rfl
+    have h3 : ((smashSphereNorth : Sphere 2) : ThreeSpace) = EuclideanSpace.single 2 1 := rfl
+    rw [h2, h3]
+    exact sp_sphereCubeVector_eq_north z hz
+private lemma sp_two_param_two (p : ℝ × ℝ) :
+    sphereTwoInteriorParam p 2 = (p.1 ^ 2 + p.2 ^ 2 - 1) / (1 + p.1 ^ 2 + p.2 ^ 2) := by
+  simp only [sphereTwoInteriorParam, PiLp.toLp_apply]
+  rw [Matrix.cons_val_two]
+  rfl
+
+private lemma sp_two_recover_aux (a b c S : ℝ) (hS : S ≠ 0)
+    (hp : a ^ 2 + b ^ 2 + c ^ 2 = 1) (hS2 : S = 2 - 2 * c) :
+    sphereTwoInteriorParam (2 * a / S, -2 * b / S) = WithLp.toLp 2 ![a, b, c] := by
+  have hD : 1 + (2 * a / S) ^ 2 + (-2 * b / S) ^ 2 = 4 / S := by
+    field_simp
+    nlinarith [hp, hS2]
+  have hE : (2 * a / S) ^ 2 + (-2 * b / S) ^ 2 - 1 = 4 * c / S := by
+    field_simp
+    nlinarith [hp, hS2]
+  apply PiLp.ext
+  intro i
+  fin_cases i
+  · change sphereTwoInteriorParam (2 * a / S, -2 * b / S) 0 = a
+    rw [sp_two_param_zero, hD]
+    field_simp
+    ring
+  · change sphereTwoInteriorParam (2 * a / S, -2 * b / S) 1 = b
+    rw [sp_two_param_one, hD]
+    field_simp
+    ring
+  · change sphereTwoInteriorParam (2 * a / S, -2 * b / S) 2 = c
+    rw [sp_two_param_two, hD, hE]
+    field_simp
+
+private lemma sp_two_recover (v : ThreeSpace) (hv : ‖v‖ = 1)
+    (hne : v ≠ EuclideanSpace.single 2 1) :
+    sphereTwoInteriorParam (2 * v 0 / ‖v - EuclideanSpace.single 2 1‖ ^ 2,
+      -2 * v 1 / ‖v - EuclideanSpace.single 2 1‖ ^ 2) = v := by
+  have hv2 : (v 0) ^ 2 + (v 1) ^ 2 + (v 2) ^ 2 = 1 := by
+    have h := EuclideanSpace.real_norm_sq_eq v
+    rw [Fin.sum_univ_three, hv] at h
+    norm_num at h
+    exact h.symm
+  have hTne : ‖v - EuclideanSpace.single 2 1‖ ^ 2 ≠ 0 :=
+    ne_of_gt (pow_pos (norm_pos_iff.mpr (sub_ne_zero.mpr hne)) 2)
+  have hT : ‖v - EuclideanSpace.single 2 1‖ ^ 2 = 2 - 2 * (v 2) := by
+    rw [EuclideanSpace.real_norm_sq_eq, Fin.sum_univ_three]
+    simp only [PiLp.sub_apply, sp_single_two_zero, sp_single_two_one, sp_single_two_two, sub_zero]
+    nlinarith [hv2]
+  rw [sp_two_recover_aux (v 0) (v 1) (v 2) _ hTne hv2 hT]
+  apply PiLp.ext
+  intro i
+  fin_cases i
+  · change (WithLp.toLp 2 ![v 0, v 1, v 2] : ThreeSpace) 0 = v 0
+    rw [PiLp.toLp_apply, Matrix.cons_val_zero]
+  · change (WithLp.toLp 2 ![v 0, v 1, v 2] : ThreeSpace) 1 = v 1
+    rw [PiLp.toLp_apply, Matrix.cons_val_one, Matrix.cons_val_zero]
+  · change (WithLp.toLp 2 ![v 0, v 1, v 2] : ThreeSpace) 2 = v 2
+    rw [PiLp.toLp_apply, Matrix.cons_val_two]
+    rfl
+
+private lemma sp_sphereCubeParameter_surjective : Function.Surjective sphereCubeParameter := by
+  intro z
+  by_cases hz : (z : ThreeSpace) = EuclideanSpace.single 2 1
+  · refine ⟨0, ?_⟩
+    apply Subtype.ext
+    have h2 : ((sphereCubeParameter 0 : Sphere 2) : ThreeSpace) = sphereCubeVector 0 := rfl
+    rw [h2, sp_sphereCubeVector_eq_north 0 ⟨0, Or.inl rfl⟩]
+    exact hz.symm
+  · obtain ⟨s, hs0, hs1, hsmap⟩ := sp_oc_surj
+      (2 * (z : ThreeSpace) 0 / ‖(z : ThreeSpace) - EuclideanSpace.single 2 1‖ ^ 2)
+    obtain ⟨r, hr0, hr1, hrmap⟩ := sp_oc_surj
+      (-2 * (z : ThreeSpace) 1 / ‖(z : ThreeSpace) - EuclideanSpace.single 2 1‖ ^ 2)
+    let x : I^(Fin 2) := ![⟨s, le_of_lt hs0, le_of_lt hs1⟩, ⟨r, le_of_lt hr0, le_of_lt hr1⟩]
+    have hx0 : (x 0 : I) = ⟨s, le_of_lt hs0, le_of_lt hs1⟩ := by
+      simp only [x, Matrix.cons_val_zero]
+    have hx1 : (x 1 : I) = ⟨r, le_of_lt hr0, le_of_lt hr1⟩ := by
+      simp only [x, Matrix.cons_val_one, Matrix.cons_val_zero]
+    have hxb : x ∉ Cube.boundary (Fin 2) := by
+      rintro ⟨i, hi⟩
+      fin_cases i
+      · rcases hi with hi | hi
+        · exact absurd (congrArg Subtype.val hi) (ne_of_gt hs0)
+        · exact absurd (congrArg Subtype.val hi) (ne_of_lt hs1)
+      · rcases hi with hi | hi
+        · exact absurd (congrArg Subtype.val hi) (ne_of_gt hr0)
+        · exact absurd (congrArg Subtype.val hi) (ne_of_lt hr1)
+    refine ⟨x, ?_⟩
+    have hscene : ‖(z : ThreeSpace)‖ = 1 := by
+      simpa only [Sphere, Metric.mem_sphere, dist_zero_right] using z.2
+    have hpair : (openCubeCoordinate ((x 0 : I) : ℝ), openCubeCoordinate ((x 1 : I) : ℝ)) =
+        (2 * (z : ThreeSpace) 0 / ‖(z : ThreeSpace) - EuclideanSpace.single 2 1‖ ^ 2,
+          -2 * (z : ThreeSpace) 1 / ‖(z : ThreeSpace) - EuclideanSpace.single 2 1‖ ^ 2) := by
+      rw [hx0, hx1]
+      refine Prod.ext ?_ ?_
+      · simpa using hsmap
+      · simpa using hrmap
+    apply Subtype.ext
+    have h2 : ((sphereCubeParameter x : Sphere 2) : ThreeSpace) = sphereCubeVector x := rfl
+    rw [h2, sp_sphereCubeVector_eq_param x hxb, hpair]
+    exact sp_two_recover (z : ThreeSpace) hscene hz
+
+private lemma sp_three_denom_ne (p : ℝ × ℝ × ℝ) :
+    p.1 ^ 2 + p.2.1 ^ 2 + p.2.2 ^ 2 + 1 ≠ 0 := by positivity
+
+private lemma sp_three_param_zero (p : ℝ × ℝ × ℝ) :
+    sphereThreeInteriorParam p 0 =
+      2 * p.1 / (1 + p.1 ^ 2 + p.2.1 ^ 2 + p.2.2 ^ 2) := by
+  simp only [sphereThreeInteriorParam, PiLp.toLp_apply, Matrix.cons_val_zero]
+
+private lemma sp_three_param_one (p : ℝ × ℝ × ℝ) :
+    sphereThreeInteriorParam p 1 =
+      2 * p.2.1 / (1 + p.1 ^ 2 + p.2.1 ^ 2 + p.2.2 ^ 2) := by
+  simp only [sphereThreeInteriorParam, PiLp.toLp_apply, Matrix.cons_val_one, Matrix.cons_val_zero]
+
+private lemma sp_three_param_two (p : ℝ × ℝ × ℝ) :
+    sphereThreeInteriorParam p 2 =
+      2 * p.2.2 / (1 + p.1 ^ 2 + p.2.1 ^ 2 + p.2.2 ^ 2) := by
+  simp only [sphereThreeInteriorParam, PiLp.toLp_apply, vec4_two]
+
+private lemma sp_three_param_three (p : ℝ × ℝ × ℝ) :
+    sphereThreeInteriorParam p 3 =
+      (p.1 ^ 2 + p.2.1 ^ 2 + p.2.2 ^ 2 - 1) / (1 + p.1 ^ 2 + p.2.1 ^ 2 + p.2.2 ^ 2) := by
+  simp only [sphereThreeInteriorParam, PiLp.toLp_apply, vec4_three]
+
+private lemma sp_three_recover_zero (p : ℝ × ℝ × ℝ) :
+    2 * (sphereThreeInteriorParam p 0) /
+      ‖sphereThreeInteriorParam p - EuclideanSpace.single 3 1‖ ^ 2 = p.1 := by
+  have hd := sp_three_denom_ne p
+  rw [sp_three_param_zero p, norm_sq_sphereThreeInteriorParam_sub_single]
+  field_simp
+  ring
+
+private lemma sp_three_recover_one (p : ℝ × ℝ × ℝ) :
+    2 * (sphereThreeInteriorParam p 1) /
+      ‖sphereThreeInteriorParam p - EuclideanSpace.single 3 1‖ ^ 2 = p.2.1 := by
+  have hd := sp_three_denom_ne p
+  rw [sp_three_param_one p, norm_sq_sphereThreeInteriorParam_sub_single]
+  field_simp
+  ring
+
+private lemma sp_three_recover_two (p : ℝ × ℝ × ℝ) :
+    2 * (sphereThreeInteriorParam p 2) /
+      ‖sphereThreeInteriorParam p - EuclideanSpace.single 3 1‖ ^ 2 = p.2.2 := by
+  have hd := sp_three_denom_ne p
+  rw [sp_three_param_two p, norm_sq_sphereThreeInteriorParam_sub_single]
+  field_simp
+  ring
+
+private lemma sp_three_injective : Function.Injective sphereThreeInteriorParam := by
+  intro p q hpq
+  have h0 : p.1 = q.1 := by
+    rw [← sp_three_recover_zero p, ← sp_three_recover_zero q, hpq]
+  have h1 : p.2.1 = q.2.1 := by
+    rw [← sp_three_recover_one p, ← sp_three_recover_one q, hpq]
+  have h2 : p.2.2 = q.2.2 := by
+    rw [← sp_three_recover_two p, ← sp_three_recover_two q, hpq]
+  exact Prod.ext h0 (Prod.ext h1 h2)
+
+private lemma sp_three_ne_north (p : ℝ × ℝ × ℝ) :
+    sphereThreeInteriorParam p ≠ EuclideanSpace.single 3 1 := by
+  intro h
+  have h2 : ‖sphereThreeInteriorParam p - EuclideanSpace.single 3 1‖ ^ 2 = 0 := by
+    rw [h, sub_self]
+    simp
+  rw [norm_sq_sphereThreeInteriorParam_sub_single] at h2
+  have h3 : 0 < 4 / (p.1 ^ 2 + p.2.1 ^ 2 + p.2.2 ^ 2 + 1) := by positivity
+  linarith
+
+private lemma sp_single_three :
+    (EuclideanSpace.single 3 1 : EuclideanSpace ℝ (Fin 4)) = PiLp.single 2 3 1 := rfl
+
+private lemma sp_single_three_zero :
+    ((EuclideanSpace.single 3 1 : EuclideanSpace ℝ (Fin 4))) 0 = 0 := by
+  have h : ¬ ((0 : Fin 4) = 3) := by decide
+  simp only [sp_single_three, PiLp.single_apply, h, if_false]
+
+private lemma sp_single_three_one :
+    ((EuclideanSpace.single 3 1 : EuclideanSpace ℝ (Fin 4))) 1 = 0 := by
+  have h : ¬ ((1 : Fin 4) = 3) := by decide
+  simp only [sp_single_three, PiLp.single_apply, h, if_false]
+
+private lemma sp_single_three_two :
+    ((EuclideanSpace.single 3 1 : EuclideanSpace ℝ (Fin 4))) 2 = 0 := by
+  have h : ¬ ((2 : Fin 4) = 3) := by decide
+  simp only [sp_single_three, PiLp.single_apply, h, if_false]
+
+private lemma sp_single_three_three :
+    ((EuclideanSpace.single 3 1 : EuclideanSpace ℝ (Fin 4))) 3 = 1 := by
+  simp only [sp_single_three, PiLp.single_apply]
+  norm_num
+
+private lemma sp_threeCubeVector_eq_param (z : I^(Fin 3))
+    (hz : z ∉ Cube.boundary (Fin 3)) :
+    sphereThreeCubeVector z = sphereThreeInteriorParam (openCubeCoordinate ((z 0 : I) : ℝ),
+      openCubeCoordinate ((z 1 : I) : ℝ), openCubeCoordinate ((z 2 : I) : ℝ)) := by
+  classical
+  simp only [sphereThreeCubeVector, if_neg hz, orientedSphereThreeInterior_eq_param]
+
+private lemma sp_threeCubeVector_eq_north (z : I^(Fin 3))
+    (hz : z ∈ Cube.boundary (Fin 3)) :
+    sphereThreeCubeVector z = EuclideanSpace.single 3 1 := by
+  classical
+  simp only [sphereThreeCubeVector, if_pos hz]
+
+private lemma sp_three_fiber (a b : I^(Fin 3)) :
+    sphereThreeCubeVector a = sphereThreeCubeVector b ↔
+      a = b ∨ (a ∈ Cube.boundary (Fin 3) ∧ b ∈ Cube.boundary (Fin 3)) := by
+  classical
+  constructor
+  · intro h
+    by_cases ha : a ∈ Cube.boundary (Fin 3)
+    · by_cases hb : b ∈ Cube.boundary (Fin 3)
+      · exact Or.inr ⟨ha, hb⟩
+      · rw [sp_threeCubeVector_eq_north a ha, sp_threeCubeVector_eq_param b hb] at h
+        exact absurd h.symm (sp_three_ne_north _)
+    · by_cases hb : b ∈ Cube.boundary (Fin 3)
+      · rw [sp_threeCubeVector_eq_param a ha, sp_threeCubeVector_eq_north b hb] at h
+        exact absurd h (sp_three_ne_north _)
+      · refine Or.inl (funext fun i => Subtype.ext ?_)
+        have hp : sphereThreeInteriorParam (openCubeCoordinate ((a 0 : I) : ℝ),
+            openCubeCoordinate ((a 1 : I) : ℝ), openCubeCoordinate ((a 2 : I) : ℝ)) =
+            sphereThreeInteriorParam (openCubeCoordinate ((b 0 : I) : ℝ),
+              openCubeCoordinate ((b 1 : I) : ℝ), openCubeCoordinate ((b 2 : I) : ℝ)) := by
+          rw [← sp_threeCubeVector_eq_param a ha, ← sp_threeCubeVector_eq_param b hb]
+          exact h
+        have hpq := sp_three_injective hp
+        have h0 := sp_not_boundary_coords ha 0
+        have h1 := sp_not_boundary_coords hb 0
+        have h2 := sp_not_boundary_coords ha 1
+        have h3 := sp_not_boundary_coords hb 1
+        have h4 := sp_not_boundary_coords ha 2
+        have h5 := sp_not_boundary_coords hb 2
+        fin_cases i
+        · exact sp_oc_inj h0.1 h0.2 h1.1 h1.2 (congrArg (fun p : ℝ × ℝ × ℝ => p.1) hpq)
+        · exact sp_oc_inj h2.1 h2.2 h3.1 h3.2 (congrArg (fun p : ℝ × ℝ × ℝ => p.2.1) hpq)
+        · exact sp_oc_inj h4.1 h4.2 h5.1 h5.2 (congrArg (fun p : ℝ × ℝ × ℝ => p.2.2) hpq)
+  · rintro (rfl | ⟨ha, hb⟩)
+    · rfl
+    · rw [sp_threeCubeVector_eq_north a ha, sp_threeCubeVector_eq_north b hb]
+
+private lemma sp_three_recover_aux (v0 v1 v2 v3 T : ℝ) (hT : T ≠ 0)
+    (hv : v0 ^ 2 + v1 ^ 2 + v2 ^ 2 + v3 ^ 2 = 1) (hTv : T = 2 - 2 * v3) :
+    sphereThreeInteriorParam (2 * v0 / T, 2 * v1 / T, 2 * v2 / T) =
+      WithLp.toLp 2 ![v0, v1, v2, v3] := by
+  have hD : 1 + (2 * v0 / T) ^ 2 + (2 * v1 / T) ^ 2 + (2 * v2 / T) ^ 2 = 4 / T := by
+    field_simp
+    nlinarith [hv, hTv]
+  have hE : (2 * v0 / T) ^ 2 + (2 * v1 / T) ^ 2 + (2 * v2 / T) ^ 2 - 1 = 4 * v3 / T := by
+    field_simp
+    nlinarith [hv, hTv]
+  apply PiLp.ext
+  intro i
+  fin_cases i
+  · change sphereThreeInteriorParam (2 * v0 / T, 2 * v1 / T, 2 * v2 / T) 0 = v0
+    rw [sp_three_param_zero, hD]
+    field_simp
+    ring
+  · change sphereThreeInteriorParam (2 * v0 / T, 2 * v1 / T, 2 * v2 / T) 1 = v1
+    rw [sp_three_param_one, hD]
+    field_simp
+    ring
+  · change sphereThreeInteriorParam (2 * v0 / T, 2 * v1 / T, 2 * v2 / T) 2 = v2
+    rw [sp_three_param_two, hD]
+    field_simp
+    ring
+  · change sphereThreeInteriorParam (2 * v0 / T, 2 * v1 / T, 2 * v2 / T) 3 = v3
+    rw [sp_three_param_three, hD, hE]
+    field_simp
+
+private lemma sp_three_recover (v : EuclideanSpace ℝ (Fin 4)) (hv : ‖v‖ = 1)
+    (hne : v ≠ EuclideanSpace.single 3 1) :
+    sphereThreeInteriorParam (2 * v 0 / ‖v - EuclideanSpace.single 3 1‖ ^ 2,
+      2 * v 1 / ‖v - EuclideanSpace.single 3 1‖ ^ 2,
+      2 * v 2 / ‖v - EuclideanSpace.single 3 1‖ ^ 2) = v := by
+  have hv2 : (v 0) ^ 2 + (v 1) ^ 2 + (v 2) ^ 2 + (v 3) ^ 2 = 1 := by
+    have h := EuclideanSpace.real_norm_sq_eq v
+    rw [Fin.sum_univ_four, hv] at h
+    norm_num at h
+    exact h.symm
+  have hTne : ‖v - EuclideanSpace.single 3 1‖ ^ 2 ≠ 0 :=
+    ne_of_gt (pow_pos (norm_pos_iff.mpr (sub_ne_zero.mpr hne)) 2)
+  have hT : ‖v - EuclideanSpace.single 3 1‖ ^ 2 = 2 - 2 * (v 3) := by
+    rw [EuclideanSpace.real_norm_sq_eq, Fin.sum_univ_four]
+    simp only [PiLp.sub_apply, sp_single_three_zero, sp_single_three_one, sp_single_three_two,
+      sp_single_three_three, sub_zero]
+    nlinarith [hv2]
+  rw [sp_three_recover_aux (v 0) (v 1) (v 2) (v 3) _ hTne hv2 hT]
+  apply PiLp.ext
+  intro i
+  fin_cases i
+  · change (WithLp.toLp 2 ![v 0, v 1, v 2, v 3] : EuclideanSpace ℝ (Fin 4)) 0 = v 0
+    rw [PiLp.toLp_apply, Matrix.cons_val_zero]
+  · change (WithLp.toLp 2 ![v 0, v 1, v 2, v 3] : EuclideanSpace ℝ (Fin 4)) 1 = v 1
+    rw [PiLp.toLp_apply, Matrix.cons_val_one, Matrix.cons_val_zero]
+  · change (WithLp.toLp 2 ![v 0, v 1, v 2, v 3] : EuclideanSpace ℝ (Fin 4)) 2 = v 2
+    rw [PiLp.toLp_apply, vec4_two]
+  · change (WithLp.toLp 2 ![v 0, v 1, v 2, v 3] : EuclideanSpace ℝ (Fin 4)) 3 = v 3
+    rw [PiLp.toLp_apply, vec4_three]
+
+private lemma sp_sphereThreeCubeParameter_surjective :
+    Function.Surjective sphereThreeCubeParameter := by
+  intro z
+  by_cases hz : (z : EuclideanSpace ℝ (Fin 4)) = EuclideanSpace.single 3 1
+  · refine ⟨0, ?_⟩
+    apply Subtype.ext
+    have h2 : ((sphereThreeCubeParameter 0 : Sphere 3) : EuclideanSpace ℝ (Fin 4)) =
+        sphereThreeCubeVector 0 := rfl
+    rw [h2, sp_threeCubeVector_eq_north 0 ⟨0, Or.inl rfl⟩]
+    exact hz.symm
+  · obtain ⟨a, ha0, ha1, hamap⟩ := sp_oc_surj
+      (2 * (z : EuclideanSpace ℝ (Fin 4)) 0 /
+        ‖(z : EuclideanSpace ℝ (Fin 4)) - EuclideanSpace.single 3 1‖ ^ 2)
+    obtain ⟨b, hb0, hb1, hbmap⟩ := sp_oc_surj
+      (2 * (z : EuclideanSpace ℝ (Fin 4)) 1 /
+        ‖(z : EuclideanSpace ℝ (Fin 4)) - EuclideanSpace.single 3 1‖ ^ 2)
+    obtain ⟨c, hc0, hc1, hcmap⟩ := sp_oc_surj
+      (2 * (z : EuclideanSpace ℝ (Fin 4)) 2 /
+        ‖(z : EuclideanSpace ℝ (Fin 4)) - EuclideanSpace.single 3 1‖ ^ 2)
+    let x : I^(Fin 3) := ![⟨a, le_of_lt ha0, le_of_lt ha1⟩, ⟨b, le_of_lt hb0, le_of_lt hb1⟩,
+      ⟨c, le_of_lt hc0, le_of_lt hc1⟩]
+    have hx0 : (x 0 : I) = ⟨a, le_of_lt ha0, le_of_lt ha1⟩ := by
+      simp only [x, Matrix.cons_val_zero]
+    have hx1 : (x 1 : I) = ⟨b, le_of_lt hb0, le_of_lt hb1⟩ := by
+      simp only [x, Matrix.cons_val_one, Matrix.cons_val_zero]
+    have hx2 : (x 2 : I) = ⟨c, le_of_lt hc0, le_of_lt hc1⟩ := by
+      simp only [x]
+      rw [Matrix.cons_val_two]
+      rfl
+    have hxb : x ∉ Cube.boundary (Fin 3) := by
+      rintro ⟨i, hi⟩
+      fin_cases i
+      · rcases hi with hi | hi
+        · exact absurd (congrArg Subtype.val hi) (ne_of_gt ha0)
+        · exact absurd (congrArg Subtype.val hi) (ne_of_lt ha1)
+      · rcases hi with hi | hi
+        · exact absurd (congrArg Subtype.val hi) (ne_of_gt hb0)
+        · exact absurd (congrArg Subtype.val hi) (ne_of_lt hb1)
+      · rcases hi with hi | hi
+        · exact absurd (congrArg Subtype.val hi) (ne_of_gt hc0)
+        · exact absurd (congrArg Subtype.val hi) (ne_of_lt hc1)
+    refine ⟨x, ?_⟩
+    have hscene : ‖(z : EuclideanSpace ℝ (Fin 4))‖ = 1 := by
+      simpa only [Sphere, Metric.mem_sphere, dist_zero_right] using z.2
+    have hpair : (openCubeCoordinate ((x 0 : I) : ℝ), openCubeCoordinate ((x 1 : I) : ℝ),
+        openCubeCoordinate ((x 2 : I) : ℝ)) =
+        (2 * (z : EuclideanSpace ℝ (Fin 4)) 0 /
+            ‖(z : EuclideanSpace ℝ (Fin 4)) - EuclideanSpace.single 3 1‖ ^ 2,
+          2 * (z : EuclideanSpace ℝ (Fin 4)) 1 /
+            ‖(z : EuclideanSpace ℝ (Fin 4)) - EuclideanSpace.single 3 1‖ ^ 2,
+          2 * (z : EuclideanSpace ℝ (Fin 4)) 2 /
+            ‖(z : EuclideanSpace ℝ (Fin 4)) - EuclideanSpace.single 3 1‖ ^ 2) := by
+      rw [hx0, hx1, hx2]
+      refine Prod.ext ?_ (Prod.ext ?_ ?_)
+      · simpa using hamap
+      · simpa using hbmap
+      · simpa using hcmap
+    apply Subtype.ext
+    have h2 : ((sphereThreeCubeParameter x : Sphere 3) : EuclideanSpace ℝ (Fin 4)) =
+        sphereThreeCubeVector x := rfl
+    rw [h2, sp_threeCubeVector_eq_param x hxb, hpair]
+    exact sp_three_recover (z : EuclideanSpace ℝ (Fin 4)) hscene hz
+
+private lemma sp_two_eq_north_of_param_eq (z : I^(Fin 2)) (hw : sphereCubeParameter z = smashSphereNorth) :
+    sphereCubeVector z = EuclideanSpace.single 2 1 := by
+  have h1 := congrArg (fun y : Sphere 2 => (y : ThreeSpace)) hw
+  have h2 : ((sphereCubeParameter z : Sphere 2) : ThreeSpace) = sphereCubeVector z := rfl
+  have h3 : ((smashSphereNorth : Sphere 2) : ThreeSpace) = EuclideanSpace.single 2 1 := rfl
+  rw [h2, h3] at h1
+  exact h1
+
+private lemma sp_twoBoundary_to_three {z : I^(Fin 3)} (h : ![z 0, z 1] ∈ Cube.boundary (Fin 2)) :
+    z ∈ Cube.boundary (Fin 3) := by
+  rcases h with ⟨i, hi⟩
+  fin_cases i
+  · exact ⟨0, by simpa using hi⟩
+  · exact ⟨1, by simpa using hi⟩
+
+private lemma sp_threeBoundary_cases_aux {z : I^(Fin 3)} (hz : z ∈ Cube.boundary (Fin 3)) :
+    ![z 0, z 1] ∈ Cube.boundary (Fin 2) ∨ z 2 = (0 : I) ∨ z 2 = (1 : I) := by
+  rcases hz with ⟨i, hi⟩
+  fin_cases i
+  · exact Or.inl ⟨0, by simpa using hi⟩
+  · exact Or.inl ⟨1, by simpa using hi⟩
+  · rcases hi with hi | hi
+    · exact Or.inr (Or.inl hi)
+    · exact Or.inr (Or.inr hi)
+
+private lemma sp_norm_single_three :
+    ‖(EuclideanSpace.single 3 1 : EuclideanSpace ℝ (Fin 4))‖ = 1 := by
+  have h := norm_single_three
+  nlinarith [norm_nonneg (EuclideanSpace.single 3 1 : EuclideanSpace ℝ (Fin 4))]
+
+private def spNorthThree : Sphere 3 :=
+  ⟨EuclideanSpace.single 3 1, by
+    simpa only [Sphere, Metric.mem_sphere, dist_zero_right] using sp_norm_single_three⟩
+
+private lemma sp_threeCubeParameter_eq_north (z : I^(Fin 3))
+    (hz : z ∈ Cube.boundary (Fin 3)) : sphereThreeCubeParameter z = spNorthThree := by
+  apply Subtype.ext
+  have h2 : ((sphereThreeCubeParameter z : Sphere 3) : EuclideanSpace ℝ (Fin 4)) =
+      sphereThreeCubeVector z := rfl
+  have h3 : ((spNorthThree : Sphere 3) : EuclideanSpace ℝ (Fin 4)) =
+      EuclideanSpace.single 3 1 := rfl
+  rw [h2, h3]
+  exact sp_threeCubeVector_eq_north z hz
+
+private lemma sp_threeParameter_fiber (a b : I^(Fin 3)) :
+    sphereThreeCubeParameter a = sphereThreeCubeParameter b ↔
+      a = b ∨ (a ∈ Cube.boundary (Fin 3) ∧ b ∈ Cube.boundary (Fin 3)) := by
+  constructor
+  · intro h
+    have hv : sphereThreeCubeVector a = sphereThreeCubeVector b := by
+      have hh := congrArg (fun y : Sphere 3 => (y : EuclideanSpace ℝ (Fin 4))) h
+      have h2 : ((sphereThreeCubeParameter a : Sphere 3) : EuclideanSpace ℝ (Fin 4)) =
+          sphereThreeCubeVector a := rfl
+      have h3 : ((sphereThreeCubeParameter b : Sphere 3) : EuclideanSpace ℝ (Fin 4)) =
+          sphereThreeCubeVector b := rfl
+      rw [h2, h3] at hh
+      exact hh
+    exact (sp_three_fiber a b).mp hv
+  · rintro (rfl | ⟨ha, hb⟩)
+    · rfl
+    · rw [sp_threeCubeParameter_eq_north a ha, sp_threeCubeParameter_eq_north b hb]
+
+private lemma sp_mem_wedge_iff (p : Sphere 2 × Circle) :
+    p ∈ sphereCircleWedge ↔ p.1 = smashSphereNorth ∨ p.2 = 0 := by
+  simp only [sphereCircleWedge, Set.mem_ofPred_eq]
+
+private lemma sp_circle_coe_eq_zero_iff {t : ℝ} (h0 : 0 ≤ t) (h1 : t ≤ 1) :
+    (t : Circle) = 0 ↔ t = 0 ∨ t = 1 := by
+  constructor
+  · intro h
+    by_cases ht : t = 1
+    · exact Or.inr ht
+    · refine Or.inl ?_
+      have hmem : t ∈ Ico (0 : ℝ) 1 := ⟨h0, lt_of_le_of_ne h1 ht⟩
+      exact (AddCircle.coe_eq_zero_iff_of_mem_Ico (p := (1 : ℝ)) hmem).mp h
+  · rintro (rfl | rfl)
+    · exact (AddCircle.coe_zero (p := (1 : ℝ)) : ((0 : ℝ) : Circle) = 0)
+    · exact (AddCircle.coe_period (p := (1 : ℝ)) : ((1 : ℝ) : Circle) = 0)
+
+private lemma sp_circle_coe_inj {t s : ℝ} (ht : t ∈ Icc 0 1) (hs : s ∈ Icc 0 1)
+    (h : (t : Circle) = (s : Circle)) :
+    t = s ∨ (t = 0 ∧ s = 1) ∨ (t = 1 ∧ s = 0) := by
+  by_cases ht1 : t = 1
+  · subst ht1
+    have hper : ((1 : ℝ) : Circle) = 0 := AddCircle.coe_period (p := (1 : ℝ))
+    rw [hper] at h
+    rcases (sp_circle_coe_eq_zero_iff hs.1 hs.2).mp h.symm with h' | h'
+    · exact Or.inr (Or.inr ⟨rfl, h'⟩)
+    · exact Or.inl h'.symm
+  · by_cases hs1 : s = 1
+    · subst hs1
+      have hper : ((1 : ℝ) : Circle) = 0 := AddCircle.coe_period (p := (1 : ℝ))
+      rw [hper] at h
+      rcases (sp_circle_coe_eq_zero_iff ht.1 ht.2).mp h with h' | h'
+      · exact Or.inr (Or.inl ⟨h', rfl⟩)
+      · exact Or.inl h'
+    · refine Or.inl ?_
+      have ht' : t ∈ Ico (0 : ℝ) (0 + 1) := ⟨ht.1, by simpa using lt_of_le_of_ne ht.2 ht1⟩
+      have hs' : s ∈ Ico (0 : ℝ) (0 + 1) := ⟨hs.1, by simpa using lt_of_le_of_ne hs.2 hs1⟩
+      exact (AddCircle.coe_eq_coe_iff_of_mem_Ico ht' hs').mp h
+
+private lemma sp_smash_boundary_wedge (z : I^(Fin 3)) (hz : z ∈ Cube.boundary (Fin 3)) :
+    cubeSphereCircleParameter z ∈ sphereCircleWedge := by
+  rw [sp_mem_wedge_iff]
+  rcases sp_threeBoundary_cases_aux hz with h | h | h
+  · left
+    change sphereCubeParameter ![z 0, z 1] = smashSphereNorth
+    apply Subtype.ext
+    have h2 : ((sphereCubeParameter ![z 0, z 1] : Sphere 2) : ThreeSpace) =
+        sphereCubeVector ![z 0, z 1] := rfl
+    have h3 : ((smashSphereNorth : Sphere 2) : ThreeSpace) = EuclideanSpace.single 2 1 := rfl
+    rw [h2, h3]
+    exact sp_sphereCubeVector_eq_north _ h
+  · right
+    change ((z 2 : ℝ) : Circle) = 0
+    rw [h]
+    exact (AddCircle.coe_zero (p := (1 : ℝ)) : ((0 : ℝ) : Circle) = 0)
+  · right
+    change ((z 2 : ℝ) : Circle) = 0
+    rw [h]
+    exact (AddCircle.coe_period (p := (1 : ℝ)) : ((1 : ℝ) : Circle) = 0)
+
+private lemma sp_smash_boundary_eq (z w : I^(Fin 3)) (hz : z ∈ Cube.boundary (Fin 3))
+    (hw : w ∈ Cube.boundary (Fin 3)) : smashCubeParameter z = smashCubeParameter w := by
+  have h1 : (cubeSphereCircleParameter z : Sphere 2 × Circle) ∈ sphereCircleWedge :=
+    sp_smash_boundary_wedge z hz
+  have h2 : (cubeSphereCircleParameter w : Sphere 2 × Circle) ∈ sphereCircleWedge :=
+    sp_smash_boundary_wedge w hw
+  have h3 : Quotient.mk sphereCircleSmashSetoid (cubeSphereCircleParameter z) =
+      Quotient.mk sphereCircleSmashSetoid (cubeSphereCircleParameter w) :=
+    Quotient.sound (Or.inr ⟨h1, h2⟩)
+  exact h3
+
+private lemma sp_smash_fiber (a b : I^(Fin 3)) :
+    smashCubeParameter a = smashCubeParameter b ↔
+      a = b ∨ (a ∈ Cube.boundary (Fin 3) ∧ b ∈ Cube.boundary (Fin 3)) := by
+  constructor
+  · intro h
+    have h' : Quotient.mk sphereCircleSmashSetoid (cubeSphereCircleParameter a) =
+        Quotient.mk sphereCircleSmashSetoid (cubeSphereCircleParameter b) := h
+    rw [Quotient.eq] at h'
+    change cubeSphereCircleParameter a = cubeSphereCircleParameter b ∨
+      (cubeSphereCircleParameter a ∈ sphereCircleWedge ∧
+        cubeSphereCircleParameter b ∈ sphereCircleWedge) at h'
+    rcases h' with heq | ⟨hwa, hwb⟩
+    · have h1 : sphereCubeParameter ![a 0, a 1] = sphereCubeParameter ![b 0, b 1] :=
+        congrArg Prod.fst heq
+      have h2 : ((a 2 : ℝ) : Circle) = ((b 2 : ℝ) : Circle) := congrArg Prod.snd heq
+      have hv : sphereCubeVector ![a 0, a 1] = sphereCubeVector ![b 0, b 1] := by
+        have hh := congrArg (fun y : Sphere 2 => (y : ThreeSpace)) h1
+        have h4 : ((sphereCubeParameter ![a 0, a 1] : Sphere 2) : ThreeSpace) =
+            sphereCubeVector ![a 0, a 1] := rfl
+        have h5 : ((sphereCubeParameter ![b 0, b 1] : Sphere 2) : ThreeSpace) =
+            sphereCubeVector ![b 0, b 1] := rfl
+        rw [h4, h5] at hh
+        exact hh
+      rcases (sp_two_fiber ![a 0, a 1] ![b 0, b 1]).mp hv with hpair | ⟨hp2a, hp2b⟩
+      · have ha0 : a 0 = b 0 := by
+          have hh := congrArg (fun z : I^(Fin 2) => z 0) hpair
+          simpa using hh
+        have ha1 : a 1 = b 1 := by
+          have hh := congrArg (fun z : I^(Fin 2) => z 1) hpair
+          simpa using hh
+        rcases sp_circle_coe_inj (a 2).2 (b 2).2 h2 with h3 | ⟨h3, h4⟩ | ⟨h3, h4⟩
+        · refine Or.inl (funext fun i => ?_)
+          apply Subtype.ext
+          fin_cases i
+          · exact congrArg Subtype.val ha0
+          · exact congrArg Subtype.val ha1
+          · exact h3
+        · exact Or.inr ⟨⟨2, Or.inl (Subtype.ext h3)⟩, ⟨2, Or.inr (Subtype.ext h4)⟩⟩
+        · exact Or.inr ⟨⟨2, Or.inr (Subtype.ext h3)⟩, ⟨2, Or.inl (Subtype.ext h4)⟩⟩
+      · exact Or.inr ⟨sp_twoBoundary_to_three hp2a, sp_twoBoundary_to_three hp2b⟩
+    · have hwa' := (sp_mem_wedge_iff _).mp hwa
+      have hwb' := (sp_mem_wedge_iff _).mp hwb
+      have ha : a ∈ Cube.boundary (Fin 3) := by
+        rcases hwa' with hw | hw
+        · exact sp_twoBoundary_to_three
+            ((sp_two_eq_north_iff _).mp (sp_two_eq_north_of_param_eq _ hw))
+        · rcases (sp_circle_coe_eq_zero_iff (a 2).2.1 (a 2).2.2).mp hw with h' | h'
+          · exact ⟨2, Or.inl (Subtype.ext h')⟩
+          · exact ⟨2, Or.inr (Subtype.ext h')⟩
+      have hb : b ∈ Cube.boundary (Fin 3) := by
+        rcases hwb' with hw | hw
+        · exact sp_twoBoundary_to_three
+            ((sp_two_eq_north_iff _).mp (sp_two_eq_north_of_param_eq _ hw))
+        · rcases (sp_circle_coe_eq_zero_iff (b 2).2.1 (b 2).2.2).mp hw with h' | h'
+          · exact ⟨2, Or.inl (Subtype.ext h')⟩
+          · exact ⟨2, Or.inr (Subtype.ext h')⟩
+      exact Or.inr ⟨ha, hb⟩
+  · rintro (rfl | ⟨ha, hb⟩)
+    · rfl
+    · exact sp_smash_boundary_eq a b ha hb
+
+private lemma sp_smash_rep (y : SphereCircleSmash) :
+    ∃ z : I^(Fin 3), smashCubeParameter z = y := by
+  induction y using Quotient.inductionOn with
+  | h x =>
+    obtain ⟨z, hz⟩ := sp_sphereCubeParameter_surjective x.1
+    obtain ⟨t, ⟨ht0, ht1⟩, htc⟩ := AddCircle.eq_coe_Ico x.2
+    have hmem : t ∈ I := ⟨ht0, ht1.le⟩
+    let tt : I := ⟨t, hmem⟩
+    have htt : ((tt : I) : ℝ) = t := rfl
+    have hpair : ![z 0, z 1] = z := by
+      funext i
+      fin_cases i <;> rfl
+    refine ⟨![z 0, z 1, tt], ?_⟩
+    have hx : cubeSphereCircleParameter ![z 0, z 1, tt] = x := by
+      refine Prod.ext ?_ ?_
+      · change sphereCubeParameter ![z 0, z 1] = x.1
+        rw [hpair, hz]
+      · change ((tt : I) : Circle) = x.2
+        rw [htt]
+        exact htc
+    rw [← hx]
+    rfl
+
+private lemma sp_sphereThreeCubeParameter_surjective' :
+    Function.Surjective sphereThreeCubeParameter := sp_sphereThreeCubeParameter_surjective
+
+private lemma sp_quotient_maps (a b : I^(Fin 3))
+    (hker : ∀ a b : I^(Fin 3), smashCubeParameter a = smashCubeParameter b ↔
+      sphereThreeCubeParameter a = sphereThreeCubeParameter b) :
+    smashCubeParameter a = smashCubeParameter b ↔
+      sphereThreeCubeParameter a = sphereThreeCubeParameter b := hker a b
 theorem exists_unique_standardSmashHomeomorph :
     ∃! e : SphereCircleSmash ≃ₜ Sphere 3,
       (⟨e, e.continuous⟩ : C(SphereCircleSmash, Sphere 3)).comp smashCubeParameter =
         sphereThreeCubeParameter := by
-  sorry
+  have hsq : Topology.IsQuotientMap sphereCircleSmashQuotient :=
+    isQuotientMap_quotient_mk' (s := sphereCircleSmashSetoid)
+  have hg : Topology.IsQuotientMap cubeSphereCircleParameter := by
+    refine Topology.IsQuotientMap.of_surjective_continuous ?_ cubeSphereCircleParameter.continuous
+    rintro ⟨p, c⟩
+    obtain ⟨z, hz⟩ := sp_sphereCubeParameter_surjective p
+    obtain ⟨t, ⟨ht0, ht1⟩, htc⟩ := AddCircle.eq_coe_Ico c
+    have hmem : t ∈ I := ⟨ht0, ht1.le⟩
+    let tt : I := ⟨t, hmem⟩
+    have htt : ((tt : I) : ℝ) = t := rfl
+    have hpair : ![z 0, z 1] = z := by
+      funext i
+      fin_cases i <;> rfl
+    refine ⟨![z 0, z 1, tt], ?_⟩
+    refine Prod.ext ?_ ?_
+    · change sphereCubeParameter ![z 0, z 1] = p
+      rw [hpair, hz]
+    · change ((tt : I) : Circle) = c
+      rw [htt]
+      exact htc
+  have h₁ : Topology.IsQuotientMap smashCubeParameter := by
+    change Topology.IsQuotientMap (⇑sphereCircleSmashQuotient ∘ ⇑cubeSphereCircleParameter)
+    exact Topology.IsQuotientMap.comp hsq hg
+  have h₂ : Topology.IsQuotientMap sphereThreeCubeParameter :=
+    Topology.IsQuotientMap.of_surjective_continuous sp_sphereThreeCubeParameter_surjective
+      sphereThreeCubeParameter.continuous
+  have hker : ∀ a b : I^(Fin 3), smashCubeParameter a = smashCubeParameter b ↔
+      sphereThreeCubeParameter a = sphereThreeCubeParameter b := by
+    intro a b
+    rw [sp_smash_fiber a b, sp_threeParameter_fiber a b]
+  have hfac₁ : Function.FactorsThrough sphereThreeCubeParameter
+      (smashCubeParameter : (I^(Fin 3)) → SphereCircleSmash) :=
+    fun a b hab => (hker a b).mp hab
+  have hfac₂ : Function.FactorsThrough smashCubeParameter
+      (sphereThreeCubeParameter : (I^(Fin 3)) → Sphere 3) :=
+    fun a b hab => (hker a b).mpr hab
+  let φ : C(SphereCircleSmash, Sphere 3) := h₁.lift sphereThreeCubeParameter hfac₁
+  let ψ : C(Sphere 3, SphereCircleSmash) := h₂.lift smashCubeParameter hfac₂
+  have hφ : φ.comp smashCubeParameter = sphereThreeCubeParameter :=
+    h₁.lift_comp sphereThreeCubeParameter hfac₁
+  have hψ : ψ.comp sphereThreeCubeParameter = smashCubeParameter :=
+    h₂.lift_comp smashCubeParameter hfac₂
+  have hφ_apply : ∀ x : I^(Fin 3), φ (smashCubeParameter x) = sphereThreeCubeParameter x :=
+    fun x => congrFun (congrArg (fun g : C(I^(Fin 3), Sphere 3) =>
+      (g : (I^(Fin 3)) → Sphere 3)) hφ) x
+  have hψ_apply : ∀ x : I^(Fin 3), ψ (sphereThreeCubeParameter x) = smashCubeParameter x :=
+    fun x => congrFun (congrArg (fun g : C(I^(Fin 3), SphereCircleSmash) =>
+      (g : (I^(Fin 3)) → SphereCircleSmash)) hψ) x
+  let e : SphereCircleSmash ≃ₜ Sphere 3 :=
+    { toFun := φ
+      invFun := ψ
+      left_inv := fun y => by
+        obtain ⟨a, rfl⟩ := sp_smash_rep y
+        rw [hφ_apply a, hψ_apply a]
+      right_inv := fun y => by
+        obtain ⟨a, rfl⟩ := sp_sphereThreeCubeParameter_surjective y
+        rw [hψ_apply a, hφ_apply a]
+      continuous_toFun := φ.continuous
+      continuous_invFun := ψ.continuous }
+  refine ⟨e, ?_, ?_⟩
+  · change (⟨e, e.continuous⟩ : C(SphereCircleSmash, Sphere 3)).comp smashCubeParameter =
+      sphereThreeCubeParameter
+    have hcoe : (⟨e, e.continuous⟩ : C(SphereCircleSmash, Sphere 3)) = φ := rfl
+    rw [hcoe]
+    exact hφ
+  · intro e' he'
+    refine Homeomorph.ext fun y => ?_
+    obtain ⟨a, rfl⟩ := sp_smash_rep y
+    have h1 : e' (smashCubeParameter a) = sphereThreeCubeParameter a := by
+      have hh := congrFun (congrArg (fun g : C(I^(Fin 3), Sphere 3) =>
+        (g : (I^(Fin 3)) → Sphere 3)) he') a
+      simpa only [ContinuousMap.comp_apply, ContinuousMap.coe_mk] using hh
+    exact h1.trans (hφ_apply a).symm
 
 def standardSmashHomeomorph : SphereCircleSmash ≃ₜ Sphere 3 :=
   Classical.choose exists_unique_standardSmashHomeomorph

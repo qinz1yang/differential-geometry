@@ -279,11 +279,315 @@ def sphereCubeParameter : C(I^(Fin 2), Sphere 2) :=
     sphereCubeVector_continuous.subtype_mk (fun x => by
       simpa only [Sphere, Metric.mem_sphere, dist_zero_right] using sphereCubeVector_norm x)⟩
 
+private def sfMap (t : ℝ) : ℝ := (2 * t - 1) / (t * (1 - t))
+
+private def sfParam (p : ℝ × ℝ) : ThreeSpace :=
+  WithLp.toLp 2 ![2 * p.1 / (1 + p.1 ^ 2 + p.2 ^ 2), -2 * p.2 / (1 + p.1 ^ 2 + p.2 ^ 2),
+    (p.1 ^ 2 + p.2 ^ 2 - 1) / (1 + p.1 ^ 2 + p.2 ^ 2)]
+
+private lemma sf_single_eq : (EuclideanSpace.single 2 1 : ThreeSpace) = PiLp.single 2 2 1 := rfl
+
+private lemma sf_coe (x : I^(Fin 2)) :
+    ((sphereCubeParameter x : Sphere 2) : ThreeSpace) = sphereCubeVector x := rfl
+
+private lemma sf_sphereCubeVector_eq_param (x : I^(Fin 2)) (hx : x ∉ Cube.boundary (Fin 2)) :
+    sphereCubeVector x = sfParam (sfMap ((x 0 : I) : ℝ), sfMap ((x 1 : I) : ℝ)) := by
+  classical
+  simp only [sphereCubeVector, if_neg hx, sfParam, sfMap]
+
+private lemma sf_sphereCubeVector_eq_north (x : I^(Fin 2)) (hx : x ∈ Cube.boundary (Fin 2)) :
+    sphereCubeVector x = EuclideanSpace.single 2 1 := by
+  classical
+  simp only [sphereCubeVector, if_pos hx]
+
+private lemma sf_north_zero : ((EuclideanSpace.single 2 1 : ThreeSpace)) 0 = 0 := by
+  have h : ¬ ((0 : Fin 3) = 2) := by decide
+  simp only [sf_single_eq, PiLp.single_apply, h, if_false]
+
+private lemma sf_north_one : ((EuclideanSpace.single 2 1 : ThreeSpace)) 1 = 0 := by
+  have h : ¬ ((1 : Fin 3) = 2) := by decide
+  simp only [sf_single_eq, PiLp.single_apply, h, if_false]
+
+private lemma sf_north_two : ((EuclideanSpace.single 2 1 : ThreeSpace)) 2 = 1 := by
+  simp only [sf_single_eq, PiLp.single_apply]
+  norm_num
+
+private lemma sf_param_zero (p : ℝ × ℝ) :
+    sfParam p 0 = 2 * p.1 / (1 + p.1 ^ 2 + p.2 ^ 2) := by
+  simp only [sfParam, PiLp.toLp_apply, Matrix.cons_val_zero]
+
+private lemma sf_param_one (p : ℝ × ℝ) :
+    sfParam p 1 = -2 * p.2 / (1 + p.1 ^ 2 + p.2 ^ 2) := by
+  simp only [sfParam, PiLp.toLp_apply, Matrix.cons_val_one, Matrix.cons_val_zero]
+
+private lemma sf_param_two (p : ℝ × ℝ) :
+    sfParam p 2 = (p.1 ^ 2 + p.2 ^ 2 - 1) / (1 + p.1 ^ 2 + p.2 ^ 2) := by
+  simp only [sfParam, PiLp.toLp_apply]
+  rw [Matrix.cons_val_two]
+  rfl
+
+private lemma sf_denom_pos (p : ℝ × ℝ) : 0 < p.1 ^ 2 + p.2 ^ 2 + 1 := by positivity
+
+private lemma sf_denom_ne (p : ℝ × ℝ) : p.1 ^ 2 + p.2 ^ 2 + 1 ≠ 0 :=
+  ne_of_gt (sf_denom_pos p)
+
+private lemma sf_norm_sq (p : ℝ × ℝ) : ‖sfParam p‖ ^ 2 = 1 := by
+  have hd := sf_denom_ne p
+  rw [EuclideanSpace.real_norm_sq_eq, Fin.sum_univ_three]
+  simp only [sf_param_zero, sf_param_one, sf_param_two]
+  field_simp
+  ring
+
+private lemma sf_norm_sq_sub (p : ℝ × ℝ) :
+    ‖sfParam p - EuclideanSpace.single 2 1‖ ^ 2 = 4 / (p.1 ^ 2 + p.2 ^ 2 + 1) := by
+  have hd := sf_denom_ne p
+  rw [EuclideanSpace.real_norm_sq_eq, Fin.sum_univ_three]
+  simp only [PiLp.sub_apply, sf_north_zero, sf_north_one, sf_north_two, sub_zero,
+    sf_param_zero, sf_param_one, sf_param_two]
+  field_simp
+  ring
+
+private lemma sf_recover_zero (p : ℝ × ℝ) :
+    2 * (sfParam p 0) / ‖sfParam p - EuclideanSpace.single 2 1‖ ^ 2 = p.1 := by
+  have hd := sf_denom_ne p
+  rw [sf_param_zero, sf_norm_sq_sub]
+  field_simp
+  ring
+
+private lemma sf_recover_one (p : ℝ × ℝ) :
+    -2 * (sfParam p 1) / ‖sfParam p - EuclideanSpace.single 2 1‖ ^ 2 = p.2 := by
+  have hd := sf_denom_ne p
+  rw [sf_param_one, sf_norm_sq_sub]
+  field_simp
+  ring
+
+private lemma sf_param_injective : Function.Injective sfParam := by
+  intro p q hpq
+  have h0 : p.1 = q.1 := by
+    rw [← sf_recover_zero p, ← sf_recover_zero q, hpq]
+  have h1 : p.2 = q.2 := by
+    rw [← sf_recover_one p, ← sf_recover_one q, hpq]
+  exact Prod.ext h0 h1
+
+private lemma sf_param_ne_north (p : ℝ × ℝ) : sfParam p ≠ EuclideanSpace.single 2 1 := by
+  intro h
+  have h2 : ‖sfParam p - EuclideanSpace.single 2 1‖ ^ 2 = 0 := by
+    rw [h, sub_self]
+    simp
+  rw [sf_norm_sq_sub] at h2
+  have h3 : 0 < 4 / (p.1 ^ 2 + p.2 ^ 2 + 1) := by positivity
+  linarith
+
+private lemma sf_map_eq_sub (t : ℝ) (h0 : t ≠ 0) (h1 : t ≠ 1) :
+    sfMap t = 1 / (1 - t) - 1 / t := by
+  unfold sfMap
+  field_simp
+  ring
+
+private lemma sf_map_injective {s t : ℝ} (hs0 : 0 < s) (hs1 : s < 1) (ht0 : 0 < t)
+    (ht1 : t < 1) (h : sfMap s = sfMap t) : s = t := by
+  have hs0' : s ≠ 0 := ne_of_gt hs0
+  have hs1' : s ≠ 1 := ne_of_lt hs1
+  have ht0' : t ≠ 0 := ne_of_gt ht0
+  have ht1' : t ≠ 1 := ne_of_lt ht1
+  have hfac : 0 < 1 - s - t + 2 * s * t := by
+    nlinarith [mul_pos (by linarith : (0 : ℝ) < 1 - s) (by linarith : (0 : ℝ) < 1 - t),
+      mul_pos hs0 ht0]
+  have h2 : (s - t) * (1 - s - t + 2 * s * t) = 0 := by
+    simp only [sfMap] at h
+    rw [div_eq_div_iff (mul_ne_zero hs0' (by linarith)) (mul_ne_zero ht0' (by linarith))] at h
+    nlinarith [h]
+  rcases mul_eq_zero.mp h2 with h3 | h3
+  · linarith
+  · exact absurd h3 (ne_of_gt hfac)
+
+private lemma sf_map_surjective (u : ℝ) : ∃ t : ℝ, 0 < t ∧ t < 1 ∧ sfMap t = u := by
+  set δ : ℝ := 1 / (3 + |u|) with hδ
+  have h3u : 0 < 3 + |u| := by positivity
+  have hδpos : 0 < δ := by rw [hδ]; positivity
+  have hδlt : δ < 1 := by
+    rw [hδ, div_lt_one h3u]
+    linarith [abs_nonneg u]
+  have hδhalf : δ ≤ 1 / 2 := by
+    rw [hδ, div_le_div_iff₀ h3u (by norm_num : (0 : ℝ) < 2)]
+    linarith [abs_nonneg u]
+  have hone : 1 / δ = 3 + |u| := by
+    rw [hδ, one_div_one_div]
+  have hleft : sfMap δ < u := by
+    have h0 : 1 / (1 - δ) ≤ 2 := by
+      rw [div_le_iff₀ (by linarith : (0 : ℝ) < 1 - δ)]
+      linarith
+    rw [sf_map_eq_sub δ (ne_of_gt hδpos) (by linarith)]
+    nlinarith [h0, hone, neg_le_abs u]
+  have hright : u < sfMap (1 - δ) := by
+    have h0 : 1 / (1 - (1 - δ)) = 1 / δ := by ring_nf
+    have h1 : 1 / (1 - δ) ≤ 2 := by
+      rw [div_le_iff₀ (by linarith : (0 : ℝ) < 1 - δ)]
+      linarith
+    rw [sf_map_eq_sub (1 - δ) (by linarith) (by linarith), h0]
+    nlinarith [h1, hone, le_abs_self u]
+  have hcont : ContinuousOn sfMap (Icc δ (1 - δ)) := by
+    refine ContinuousOn.div (by fun_prop) (by fun_prop) ?_
+    intro t ht
+    have ht0 : 0 < t := lt_of_lt_of_le hδpos ht.1
+    have ht1 : t < 1 := lt_of_le_of_lt ht.2 (by linarith)
+    exact mul_ne_zero (ne_of_gt ht0) (by linarith)
+  have hmem : u ∈ Icc (sfMap δ) (sfMap (1 - δ)) := ⟨le_of_lt hleft, le_of_lt hright⟩
+  obtain ⟨t, ht, htu⟩ := (intermediate_value_Icc (by linarith : δ ≤ 1 - δ) hcont) hmem
+  exact ⟨t, lt_of_lt_of_le hδpos ht.1, lt_of_le_of_lt ht.2 (by linarith), htu⟩
+
+private lemma sf_not_boundary_coords {y : I^(Fin 2)} (hy : y ∉ Cube.boundary (Fin 2))
+    (i : Fin 2) : 0 < ((y i : I) : ℝ) ∧ ((y i : I) : ℝ) < 1 := by
+  have h0 : ((y i : I) : ℝ) ≠ 0 := fun hc => hy ⟨i, Or.inl (Subtype.ext hc)⟩
+  have h1 : ((y i : I) : ℝ) ≠ 1 := fun hc => hy ⟨i, Or.inr (Subtype.ext hc)⟩
+  exact ⟨lt_of_le_of_ne (y i).2.1 (Ne.symm h0), lt_of_le_of_ne (y i).2.2 h1⟩
+
+private lemma sf_sphereCubeVector_eq_iff (a b : I^(Fin 2)) :
+    sphereCubeVector a = sphereCubeVector b ↔
+      a = b ∨ (a ∈ Cube.boundary (Fin 2) ∧ b ∈ Cube.boundary (Fin 2)) := by
+  classical
+  constructor
+  · intro h
+    by_cases ha : a ∈ Cube.boundary (Fin 2)
+    · by_cases hb : b ∈ Cube.boundary (Fin 2)
+      · exact Or.inr ⟨ha, hb⟩
+      · rw [sf_sphereCubeVector_eq_north a ha, sf_sphereCubeVector_eq_param b hb] at h
+        exact absurd h.symm (sf_param_ne_north _)
+    · by_cases hb : b ∈ Cube.boundary (Fin 2)
+      · rw [sf_sphereCubeVector_eq_param a ha, sf_sphereCubeVector_eq_north b hb] at h
+        exact absurd h (sf_param_ne_north _)
+      · refine Or.inl (funext fun i => Subtype.ext ?_)
+        have hp : sfParam (sfMap ((a 0 : I) : ℝ), sfMap ((a 1 : I) : ℝ)) =
+            sfParam (sfMap ((b 0 : I) : ℝ), sfMap ((b 1 : I) : ℝ)) := by
+          rw [← sf_sphereCubeVector_eq_param a ha, ← sf_sphereCubeVector_eq_param b hb]
+          exact h
+        have hpq := sf_param_injective hp
+        have h0 := sf_not_boundary_coords ha 0
+        have h1 := sf_not_boundary_coords hb 0
+        have h2 := sf_not_boundary_coords ha 1
+        have h3 := sf_not_boundary_coords hb 1
+        fin_cases i
+        · exact sf_map_injective h0.1 h0.2 h1.1 h1.2 (congrArg Prod.fst hpq)
+        · exact sf_map_injective h2.1 h2.2 h3.1 h3.2 (congrArg Prod.snd hpq)
+  · rintro (rfl | ⟨ha, hb⟩)
+    · rfl
+    · rw [sf_sphereCubeVector_eq_north a ha, sf_sphereCubeVector_eq_north b hb]
+
+private lemma sf_param_recover_aux (a b c S : ℝ) (hS : S ≠ 0)
+    (hp : a ^ 2 + b ^ 2 + c ^ 2 = 1) (hS2 : S = 2 - 2 * c) :
+    sfParam (2 * a / S, -2 * b / S) = WithLp.toLp 2 ![a, b, c] := by
+  have hD : 1 + (2 * a / S) ^ 2 + (-2 * b / S) ^ 2 = 4 / S := by
+    field_simp
+    nlinarith [hp, hS2]
+  have hE : (2 * a / S) ^ 2 + (-2 * b / S) ^ 2 - 1 = 4 * c / S := by
+    field_simp
+    nlinarith [hp, hS2]
+  apply PiLp.ext
+  intro i
+  fin_cases i
+  · change sfParam (2 * a / S, -2 * b / S) 0 = a
+    rw [sf_param_zero, hD]
+    field_simp
+    ring
+  · change sfParam (2 * a / S, -2 * b / S) 1 = b
+    rw [sf_param_one, hD]
+    field_simp
+    ring
+  · change sfParam (2 * a / S, -2 * b / S) 2 = c
+    rw [sf_param_two, hD, hE]
+    field_simp
+
+private lemma sf_param_recover (v : ThreeSpace) (hv : ‖v‖ = 1)
+    (hne : v ≠ EuclideanSpace.single 2 1) :
+    sfParam (2 * v 0 / ‖v - EuclideanSpace.single 2 1‖ ^ 2,
+      -2 * v 1 / ‖v - EuclideanSpace.single 2 1‖ ^ 2) = v := by
+  have hv2 : (v 0) ^ 2 + (v 1) ^ 2 + (v 2) ^ 2 = 1 := by
+    have h := EuclideanSpace.real_norm_sq_eq v
+    rw [Fin.sum_univ_three, hv] at h
+    norm_num at h
+    exact h.symm
+  have hTne : ‖v - EuclideanSpace.single 2 1‖ ^ 2 ≠ 0 :=
+    ne_of_gt (pow_pos (norm_pos_iff.mpr (sub_ne_zero.mpr hne)) 2)
+  have hT : ‖v - EuclideanSpace.single 2 1‖ ^ 2 = 2 - 2 * (v 2) := by
+    rw [EuclideanSpace.real_norm_sq_eq, Fin.sum_univ_three]
+    simp only [PiLp.sub_apply, sf_north_zero, sf_north_one, sf_north_two, sub_zero]
+    nlinarith [hv2]
+  rw [sf_param_recover_aux (v 0) (v 1) (v 2) _ hTne hv2 hT]
+  apply PiLp.ext
+  intro i
+  fin_cases i
+  · change (WithLp.toLp 2 ![v 0, v 1, v 2] : ThreeSpace) 0 = v 0
+    rw [PiLp.toLp_apply, Matrix.cons_val_zero]
+  · change (WithLp.toLp 2 ![v 0, v 1, v 2] : ThreeSpace) 1 = v 1
+    rw [PiLp.toLp_apply, Matrix.cons_val_one, Matrix.cons_val_zero]
+  · change (WithLp.toLp 2 ![v 0, v 1, v 2] : ThreeSpace) 2 = v 2
+    rw [PiLp.toLp_apply, Matrix.cons_val_two]
+    rfl
+
+private lemma sf_sphereCubeParameter_surjective : Function.Surjective sphereCubeParameter := by
+  intro z
+  by_cases hz : (z : ThreeSpace) = EuclideanSpace.single 2 1
+  · refine ⟨0, ?_⟩
+    apply Subtype.ext
+    rw [sf_coe, sf_sphereCubeVector_eq_north 0 ⟨0, Or.inl rfl⟩]
+    exact hz.symm
+  · obtain ⟨s, hs0, hs1, hsmap⟩ := sf_map_surjective
+      (2 * (z : ThreeSpace) 0 / ‖(z : ThreeSpace) - EuclideanSpace.single 2 1‖ ^ 2)
+    obtain ⟨r, hr0, hr1, hrmap⟩ := sf_map_surjective
+      (-2 * (z : ThreeSpace) 1 / ‖(z : ThreeSpace) - EuclideanSpace.single 2 1‖ ^ 2)
+    let x : I^(Fin 2) := ![⟨s, le_of_lt hs0, le_of_lt hs1⟩, ⟨r, le_of_lt hr0, le_of_lt hr1⟩]
+    have hx0 : (x 0 : I) = ⟨s, le_of_lt hs0, le_of_lt hs1⟩ := by
+      simp only [x, Matrix.cons_val_zero]
+    have hx1 : (x 1 : I) = ⟨r, le_of_lt hr0, le_of_lt hr1⟩ := by
+      simp only [x, Matrix.cons_val_one, Matrix.cons_val_zero]
+    have hxb : x ∉ Cube.boundary (Fin 2) := by
+      rintro ⟨i, hi⟩
+      fin_cases i
+      · rcases hi with hi | hi
+        · exact absurd (congrArg Subtype.val hi) (ne_of_gt hs0)
+        · exact absurd (congrArg Subtype.val hi) (ne_of_lt hs1)
+      · rcases hi with hi | hi
+        · exact absurd (congrArg Subtype.val hi) (ne_of_gt hr0)
+        · exact absurd (congrArg Subtype.val hi) (ne_of_lt hr1)
+    refine ⟨x, ?_⟩
+    have hscene : ‖(z : ThreeSpace)‖ = 1 := by
+      simpa only [Sphere, Metric.mem_sphere, dist_zero_right] using z.2
+    have hpair : (sfMap ((x 0 : I) : ℝ), sfMap ((x 1 : I) : ℝ)) =
+        (2 * (z : ThreeSpace) 0 / ‖(z : ThreeSpace) - EuclideanSpace.single 2 1‖ ^ 2,
+          -2 * (z : ThreeSpace) 1 / ‖(z : ThreeSpace) - EuclideanSpace.single 2 1‖ ^ 2) := by
+      rw [hx0, hx1]
+      refine Prod.ext ?_ ?_
+      · simpa using hsmap
+      · simpa using hrmap
+    apply Subtype.ext
+    rw [sf_coe, sf_sphereCubeVector_eq_param x hxb, hpair]
+    exact sf_param_recover (z : ThreeSpace) hscene hz
+
 variable {X : Type u} [TopologicalSpace X] {x : X}
+
+private lemma sf_factorsThrough (c : GenLoop (Fin 2) X x) :
+    Function.FactorsThrough c.val sphereCubeParameter := by
+  intro a b hab
+  have hv : sphereCubeVector a = sphereCubeVector b := by
+    simpa only [sf_coe] using congrArg (fun y : Sphere 2 => (y : ThreeSpace)) hab
+  rcases (sf_sphereCubeVector_eq_iff a b).mp hv with h | ⟨ha, hb⟩
+  · rw [h]
+  · rw [c.property a ha, c.property b hb]
 
 theorem exists_unique_sphereFactor (c : GenLoop (Fin 2) X x) :
     ∃! f : C(Sphere 2, X), f.comp sphereCubeParameter = c.val := by
-  sorry
+  have hq : Topology.IsQuotientMap sphereCubeParameter :=
+    Topology.IsQuotientMap.of_surjective_continuous sf_sphereCubeParameter_surjective
+      sphereCubeParameter.continuous
+  refine ⟨hq.lift c.val (sf_factorsThrough c), hq.lift_comp c.val (sf_factorsThrough c), ?_⟩
+  intro f hf
+  have h1 : f.comp sphereCubeParameter = (hq.lift c.val (sf_factorsThrough c)).comp
+      sphereCubeParameter := by
+    rw [hf, hq.lift_comp]
+  refine ContinuousMap.ext fun y => ?_
+  obtain ⟨a, ha⟩ := sf_sphereCubeParameter_surjective y
+  rw [← ha]
+  exact congrFun (congrArg (fun g : C(I^(Fin 2), X) => (g : (I^(Fin 2)) → X)) h1) a
 
 def sphereFactor (c : GenLoop (Fin 2) X x) : C(Sphere 2, X) :=
   Classical.choose (exists_unique_sphereFactor c)
@@ -295,7 +599,60 @@ theorem sphereFactor_eq (c : GenLoop (Fin 2) X x) :
 theorem sphereFactor_homotopic {c d : GenLoop (Fin 2) X x}
     (h : c.val.HomotopicRel d.val (Cube.boundary (Fin 2))) :
     ContinuousMap.Homotopic (sphereFactor c) (sphereFactor d) := by
-  sorry
+  obtain ⟨H⟩ := h
+  let Q : C(I × I^(Fin 2), I × Sphere 2) :=
+    ⟨fun p => (p.1, sphereCubeParameter p.2),
+      continuous_fst.prodMk (sphereCubeParameter.continuous.comp continuous_snd)⟩
+  have hQsurj : Function.Surjective Q := by
+    rintro ⟨t, y⟩
+    obtain ⟨a, ha⟩ := sf_sphereCubeParameter_surjective y
+    refine ⟨(t, a), ?_⟩
+    exact Prod.ext rfl ha
+  have hQ : Topology.IsQuotientMap Q :=
+    Topology.IsQuotientMap.of_surjective_continuous hQsurj Q.continuous
+  have hfac : Function.FactorsThrough H.toContinuousMap Q := by
+    intro p q hpq
+    have ht : p.1 = q.1 := (Prod.ext_iff.mp hpq).1
+    have hq2 : sphereCubeParameter p.2 = sphereCubeParameter q.2 := (Prod.ext_iff.mp hpq).2
+    have hv : sphereCubeVector p.2 = sphereCubeVector q.2 := by
+      simpa only [sf_coe] using congrArg (fun y : Sphere 2 => (y : ThreeSpace)) hq2
+    rcases (sf_sphereCubeVector_eq_iff p.2 q.2).mp hv with hpq2 | ⟨hp, hq'⟩
+    · exact congrArg H.toContinuousMap (Prod.ext ht hpq2)
+    · exact ((H.eq_fst p.1 hp).trans (c.property p.2 hp)).trans
+        (((H.eq_fst q.1 hq').trans (c.property q.2 hq')).symm)
+  let F : C(I × Sphere 2, X) := hQ.lift H.toContinuousMap hfac
+  have hF : F.comp Q = H.toContinuousMap := hQ.lift_comp H.toContinuousMap hfac
+  have hzero_fun (a : I^(Fin 2)) : F (0, sphereCubeParameter a) = c.val a := by
+    have h := congrFun (congrArg (fun g : C(I × I^(Fin 2), X) =>
+      (g : I × (I^(Fin 2)) → X)) hF) (0, a)
+    exact h.trans (H.apply_zero a)
+  have hone_fun (a : I^(Fin 2)) : F (1, sphereCubeParameter a) = d.val a := by
+    have h := congrFun (congrArg (fun g : C(I × I^(Fin 2), X) =>
+      (g : I × (I^(Fin 2)) → X)) hF) (1, a)
+    exact h.trans (H.apply_one a)
+  let K0 : C(Sphere 2, I × Sphere 2) :=
+    ⟨fun y => (0, y), continuous_const.prodMk continuous_id⟩
+  let K1 : C(Sphere 2, I × Sphere 2) :=
+    ⟨fun y => (1, y), continuous_const.prodMk continuous_id⟩
+  have hzero : (F.comp K0).comp sphereCubeParameter = c.val := by
+    ext a
+    simpa only [ContinuousMap.comp_apply, ContinuousMap.coe_mk, K0] using hzero_fun a
+  have hone : (F.comp K1).comp sphereCubeParameter = d.val := by
+    ext a
+    simpa only [ContinuousMap.comp_apply, ContinuousMap.coe_mk, K1] using hone_fun a
+  have hK0 : F.comp K0 = sphereFactor c :=
+    (Classical.choose_spec (exists_unique_sphereFactor c)).2 (F.comp K0) hzero
+  have hK1 : F.comp K1 = sphereFactor d :=
+    (Classical.choose_spec (exists_unique_sphereFactor d)).2 (F.comp K1) hone
+  refine ⟨{ toContinuousMap := F, map_zero_left := ?_, map_one_left := ?_ }⟩
+  · intro y
+    have h := congrFun (congrArg (fun g : C(Sphere 2, X) => (g : Sphere 2 → X)) hK0) y
+    change F (0, y) = sphereFactor c y
+    simpa only [ContinuousMap.comp_apply, ContinuousMap.coe_mk, K0] using h
+  · intro y
+    have h := congrFun (congrArg (fun g : C(Sphere 2, X) => (g : Sphere 2 → X)) hK1) y
+    change F (1, y) = sphereFactor d y
+    simpa only [ContinuousMap.comp_apply, ContinuousMap.coe_mk, K1] using h
 
 
 def forgetBasedSphere (x : X) : HomotopyGroup (Fin 2) X x → FreeHomotopyClass (Sphere 2) X :=

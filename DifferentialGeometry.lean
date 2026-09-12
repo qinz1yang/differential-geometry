@@ -6524,6 +6524,7 @@ import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Norm
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Norm.CovariantTwoTensor
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Norm.IntrinsicComparison
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Norm.Recurrence
+import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Product
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Pullback
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Recurrence
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Restriction
@@ -6684,6 +6685,7 @@ import DifferentialGeometry.Geometry.Metric.LoopDistance
 import DifferentialGeometry.Geometry.Metric.LoopDistanceContinuity
 import DifferentialGeometry.Geometry.Metric.LoopLengthBounds
 import DifferentialGeometry.Geometry.Metric.LoopLengthReparametrization
+import DifferentialGeometry.Geometry.Metric.LoopLipschitz
 import DifferentialGeometry.Geometry.Metric.ManifoldApproximation
 import DifferentialGeometry.Geometry.Metric.MetricFiberData.Defs
 import DifferentialGeometry.Geometry.Metric.MetricFiberData.Hom

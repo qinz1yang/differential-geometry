@@ -1,6 +1,9 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.Product
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.BackgroundBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Ricci.Trace
+import DifferentialGeometry.Geometry.Curvature.DimensionOne.Flat
+import DifferentialGeometry.Geometry.Curvature.Metric.Scaling
+import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Product
 
 
 noncomputable section
@@ -166,25 +169,72 @@ theorem quotientVerticalUnit_smooth_unit_parallel [I.Boundaryless] (g : SmoothRi
   sorry
 end QuotientVertical
 
-theorem coverProduct_iterCov_rm04_apply (g : SmoothRiemannianMetric I M)
+private noncomputable def scaleEuclidean (lambda : ℝ) (hlambda : 0 < lambda) :
+    SmoothRiemannianMetric 𝓘(ℝ, ℝ) ℝ :=
+  DifferentialGeometry.scaleMetric (I := 𝓘(ℝ, ℝ)) (lambda ^ 2) (pow_pos hlambda 2)
+    (DifferentialGeometry.euclideanMetric (E := ℝ))
+
+private lemma scaleEuclidean_flat (lambda : ℝ) (hlambda : 0 < lambda) :
+    ∀ (y : ℝ) (w : Fin 4 → TangentSpace 𝓘(ℝ, ℝ) y),
+      metricRm04At (scaleEuclidean lambda hlambda) y w = 0 := by
+  intro y w
+  rw [← metricRm04_apply (I := 𝓘(ℝ, ℝ)) (M := ℝ) (g := scaleEuclidean lambda hlambda) (x := y)]
+  rw [scaleEuclidean,
+    DifferentialGeometry.Geometry.Curvature.metricRm_scale (I := 𝓘(ℝ, ℝ)) (M := ℝ)
+      (c := lambda ^ 2) (hc := pow_pos hlambda 2)
+      (g := DifferentialGeometry.euclideanMetric (E := ℝ)) y]
+  rw [metricRm04_apply (I := 𝓘(ℝ, ℝ)) (M := ℝ)
+    (g := DifferentialGeometry.euclideanMetric (E := ℝ)) (x := y)]
+  rw [DifferentialGeometry.Geometry.Curvature.metricRm04At_eq_zero_of_finrank_le_one
+    (I := 𝓘(ℝ, ℝ)) (M := ℝ) (g := DifferentialGeometry.euclideanMetric (E := ℝ))
+    (hE := by simp) y]
+  simp
+
+private lemma scaleEuclidean_ricci_flat (lambda : ℝ) (hlambda : 0 < lambda) :
+    ∀ (y : ℝ) (w : Fin 2 → TangentSpace 𝓘(ℝ, ℝ) y),
+      metricRicciAt (scaleEuclidean lambda hlambda) y w = 0 := by
+  intro y w
+  have hw : w = (vec2 (I := 𝓘(ℝ, ℝ)) (x := y) (w 0) (w 1) :
+      Fin 2 → TangentSpace 𝓘(ℝ, ℝ) y) := by
+    funext i
+    fin_cases i <;> rfl
+  conv_lhs => rw [hw]
+  rw [DifferentialGeometry.metricRicciAt_apply_eq_ricciTensor (g := scaleEuclidean lambda hlambda)
+      y (w 0) (w 1),
+    DifferentialGeometry.Geometry.Curvature.ricciTensor_apply_basisSum]
+  refine Finset.sum_eq_zero (fun i _ => ?_)
+  rw [DifferentialGeometry.Geometry.Curvature.riemannOp_eq_zero_of_finrank_le_one
+    (I := 𝓘(ℝ, ℝ)) (M := ℝ)
+    (cov := DifferentialGeometry.Geometry.Connection.LeviCivita (I := 𝓘(ℝ, ℝ))
+      (scaleEuclidean lambda hlambda))
+    (by simp) y _ _ _]
+  simp
+
+omit [SigmaCompactSpace M] in
+theorem coverProduct_iterCov_rm04_apply [I.Boundaryless] (g : SmoothRiemannianMetric I M)
     (lambda : ℝ) (hlambda : 0 < lambda) (m : ℕ) (p : M × ℝ)
     (v : Fin (4 + m) → TangentSpace (I.prod 𝓘(ℝ, ℝ)) p) :
     iterCov (coverProductMetric g lambda hlambda) 4
         (metricRm04 (coverProductMetric g lambda hlambda)) m p v =
-      iterCov g 4 (metricRm04 g) m p.1 (fun i => (v i).1) := by
-  sorry
+      iterCov g 4 (metricRm04 g) m p.1 (fun i => (v i).1) :=
+  CheegerGromovCompactness.iterCov_prod_flat_apply (I := I) (J := 𝓘(ℝ, ℝ)) (M := M) (N := ℝ)
+    (g := g) (h := scaleEuclidean lambda hlambda)
+    (scaleEuclidean_flat lambda hlambda) m p v
 
-
-theorem coverProduct_iterCov_ricci_apply (g : SmoothRiemannianMetric I M)
+omit [SigmaCompactSpace M] in
+theorem coverProduct_iterCov_ricci_apply [I.Boundaryless] (g : SmoothRiemannianMetric I M)
     (lambda : ℝ) (hlambda : 0 < lambda) (m : ℕ) (p : M × ℝ)
     (v : Fin (2 + m) → TangentSpace (I.prod 𝓘(ℝ, ℝ)) p) :
     iterCov (coverProductMetric g lambda hlambda) 2
         (metricRicci (coverProductMetric g lambda hlambda)) m p v =
-      iterCov g 2 (metricRicci g) m p.1 (fun i => (v i).1) := by
-  sorry
+      iterCov g 2 (metricRicci g) m p.1 (fun i => (v i).1) :=
+  CheegerGromovCompactness.iterCov_ricci_prod_flat_apply (I := I) (J := 𝓘(ℝ, ℝ)) (M := M) (N := ℝ)
+    (g := g) (h := scaleEuclidean lambda hlambda)
+    (scaleEuclidean_ricci_flat lambda hlambda) m p v
 
 
-theorem coverProduct_iterCov_rm04_mixed (g : SmoothRiemannianMetric I M)
+omit [SigmaCompactSpace M] in
+theorem coverProduct_iterCov_rm04_mixed [I.Boundaryless] (g : SmoothRiemannianMetric I M)
     (lambda : ℝ) (hlambda : 0 < lambda) (m : ℕ) (p : M × ℝ)
     (v : Fin (4 + m) → TangentSpace (I.prod 𝓘(ℝ, ℝ)) p)
     (i : Fin (4 + m)) (hi : (v i).1 = 0) :
@@ -194,7 +244,8 @@ theorem coverProduct_iterCov_rm04_mixed (g : SmoothRiemannianMetric I M)
   exact (iterCov g 4 (metricRm04 g) m p.1).map_coord_zero i hi
 
 
-theorem coverProduct_iterCov_ricci_mixed (g : SmoothRiemannianMetric I M)
+omit [SigmaCompactSpace M] in
+theorem coverProduct_iterCov_ricci_mixed [I.Boundaryless] (g : SmoothRiemannianMetric I M)
     (lambda : ℝ) (hlambda : 0 < lambda) (m : ℕ) (p : M × ℝ)
     (v : Fin (2 + m) → TangentSpace (I.prod 𝓘(ℝ, ℝ)) p)
     (i : Fin (2 + m)) (hi : (v i).1 = 0) :
@@ -203,7 +254,8 @@ theorem coverProduct_iterCov_ricci_mixed (g : SmoothRiemannianMetric I M)
   rw [coverProduct_iterCov_ricci_apply]
   exact (iterCov g 2 (metricRicci g) m p.1).map_coord_zero i hi
 
-theorem coverProduct_iterCov_normSq (g : SmoothRiemannianMetric I M)
+omit [SigmaCompactSpace M] in
+theorem coverProduct_iterCov_normSq [I.Boundaryless] (g : SmoothRiemannianMetric I M)
     (lambda : ℝ) (hlambda : 0 < lambda) (m : ℕ) (p : M × ℝ) :
     normSq0S (coverProductMetric g lambda hlambda) p (4 + m)
         (iterCov (coverProductMetric g lambda hlambda) 4
@@ -213,7 +265,13 @@ theorem coverProduct_iterCov_normSq (g : SmoothRiemannianMetric I M)
         (iterCov (coverProductMetric g lambda hlambda) 2
           (metricRicci (coverProductMetric g lambda hlambda)) m p) =
       normSq0S g p.1 (2 + m) (iterCov g 2 (metricRicci g) m p.1) := by
-  sorry
+  refine ⟨?_, ?_⟩
+  · exact CheegerGromovCompactness.normSq0S_prod_of_forall_fst (I := I) (J := 𝓘(ℝ, ℝ))
+      (M := M) (N := ℝ) g (scaleEuclidean lambda hlambda) p (4 + m) _ _
+      (fun slots => coverProduct_iterCov_rm04_apply g lambda hlambda m p slots)
+  · exact CheegerGromovCompactness.normSq0S_prod_of_forall_fst (I := I) (J := 𝓘(ℝ, ℝ))
+      (M := M) (N := ℝ) g (scaleEuclidean lambda hlambda) p (2 + m) _ _
+      (fun slots => coverProduct_iterCov_ricci_apply g lambda hlambda m p slots)
 
 section QuotientCurvature
 variable (A : QuotientProductAtlas I M)
