@@ -173,6 +173,12 @@
   LEAN_PATH 取共享检出的包与构建库，新 olean 写入共享构建库，脚本 `check-f.ps1`），零错误零警告；
   十个端点（含 `derived_isSubdivision`、`barycentricSubdivision_isSubdivision`、`exists_isSubdivision_diam_lt`）
   `#print axioms` 只含标准公理。未登记根聚合（整合仍按负责人指示推迟）。
+  同日第二批：`Star.lean`（有限复形中闭星是底空间内的邻域 `closedStar_mem_nhdsWithin`；逐单形仿射的映射分段仿射
+  `isPiecewiseAffineOn_space_of_forall_face`；仿射无关集上的赋值延拓为仿射映射）、`SimplicialMap.lean`
+  （载体面 `carrierFace`、顶点映射的单纯延拓 `simplicialMap`、单纯同构给出 PL 同胚 `isPLHomeomorphOn_simplicialMap`）、
+  `RegularNeighborhood.lean`（`regularNeighborhoodIn`、二次重心细分 `secondDerived`、`regularNeighborhood K A`
+  及其邻域性质 `regularNeighborhood_mem_nhdsWithin`）。同样逐模块检查零错误零警告，十六个端点公理审计只含标准公理。
+  推送至 `origin/codex/moise-smoothing`。
 
 - 2026-09-11（Phase 1 第二轮，负责人指示不等完整构建）：`IsPiecewiseAffineOn` 改为基于 `IsPiecewiseAffineWithinAt`
   （`𝓝[s] x`）的定义并重跑整条链；新增 `Manifold.lean`、`Polyhedron.lean`，以及 `Smoothing.lean` 中的
