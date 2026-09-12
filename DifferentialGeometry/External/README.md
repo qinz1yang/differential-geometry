@@ -25,3 +25,16 @@ documentation are preserved.
 Original `LICENSE`, `README.md`, and `CITATION.cff` are preserved unmodified.
 Any modifications we make are tracked in `DeGiorgi/MODIFICATIONS.md` per
 Apache-2.0 §4(b).
+
+## `ClassificationOfSurfaces/`
+
+- **Source**: https://github.com/mccorvie/classification-of-surfaces
+- **Commit**: `e3c7230fe78d7b056a415d9ecae6f77887046b32`
+- **Authors**: ClassificationOfSurfaces contributors
+- **License**: Apache-2.0 (`ClassificationOfSurfaces/LICENSE`)
+
+Three selected finite planar mesh, line-subdivision and free-triangle modules.
+The original namespace, README, attribution and documentation are retained.
+See `ClassificationOfSurfaces/PORTING.md`, `MODIFICATIONS.md` and `UPSTREAM.patch`
+for scope, exact changes and verification. This port does not include the
+upstream surface-classification or polygonal Jordan development.

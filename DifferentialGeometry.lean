@@ -1864,6 +1864,9 @@ import DifferentialGeometry.Bundle.VectorField
 import DifferentialGeometry.Bundle.VectorFieldLieBracket
 import DifferentialGeometry.Bundle.VectorFieldPushforward
 import DifferentialGeometry.Bundle.Zero
+import DifferentialGeometry.External.ClassificationOfSurfaces.Moise.PlaneComplex
+import DifferentialGeometry.External.ClassificationOfSurfaces.Moise.LineSubdivision
+import DifferentialGeometry.External.ClassificationOfSurfaces.Moise.FreeTriangle
 import DifferentialGeometry.External.DeGiorgi.BallExtension
 import DifferentialGeometry.External.DeGiorgi.BallExtension.ApproximationControl
 import DifferentialGeometry.External.DeGiorgi.BallExtension.Core

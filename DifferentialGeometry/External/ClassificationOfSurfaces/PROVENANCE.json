@@ -1,0 +1,61 @@
+{
+  "repository": "https://github.com/mccorvie/classification-of-surfaces",
+  "revision": "e3c7230fe78d7b056a415d9ecae6f77887046b32",
+  "license": "Apache-2.0",
+  "target_lean": "leanprover/lean4:v4.33.1",
+  "target_mathlib": "0df444a360eaa60ab8c11dca51a86af692955474",
+  "scope": "Three source modules with fresh production artifact, imported consumer, declaration linter and axiom checks passed.",
+  "source_files": {
+    "DifferentialGeometry/External/ClassificationOfSurfaces/Moise/PlaneComplex.lean": {
+      "upstream_sha256": "289d152b60da667c2022c5d811be8718d93a2a95181f7aa31654193a7c1a115a",
+      "checked_scratch_sha256": "5e6f8c770d980c7cb74c719f8a357ebea148a2177c7712e3369f11933b0d1bc4",
+      "target_sha256": "d7b272f9f636f1916803ee6d0d3ea1e26cb8e6ac030f4f3fb73d7967912d9db6",
+      "source_change_from_checked": "Only import prefix and required modification-notice path."
+    },
+    "DifferentialGeometry/External/ClassificationOfSurfaces/Moise/LineSubdivision.lean": {
+      "upstream_sha256": "4203bf915073953d29b93830b4836119fa15721b6934d5b91504fecb35bc65b4",
+      "checked_scratch_sha256": "076740db3579bb39d176f8006650debfec0aab70be7e619f7b0ed97ff356f7a2",
+      "target_sha256": "15fcd42a88b44d5ef27be1e0058af3547624bb304ece91c97edea624fbeb51d7",
+      "source_change_from_checked": "Only import prefix and required modification-notice path."
+    },
+    "DifferentialGeometry/External/ClassificationOfSurfaces/Moise/FreeTriangle.lean": {
+      "upstream_sha256": "2a0eb938f16ed1c152ab95120b7b6069317b0124c77bea64cb9c168e1910e132",
+      "checked_scratch_sha256": "c9a2be6c04f88babeb30dc795e76f0888ed1965cc752283da7c4962c3e3928b3",
+      "target_sha256": "885f08ae1fc42ead08d0975cae0fc47ff473d6be6cc0ea9ff10590036dccb60e",
+      "source_change_from_checked": "Only import prefix and required modification-notice path."
+    }
+  },
+  "license_sha256": "b40930bbcf80744c86c46a12bc9da056641d722716c378f5659b9e555ef833e1",
+  "upstream_readme_sha256": "ff5c7016899463713c15d2bed9c7ead390a3fb48d706afb6c36cf8ea33a09656",
+  "upstream_diff_sha256": "03c049f1cf84f568da94e922ba549f0580c243117bb3589daf78ad5fd544af9a",
+  "validation": {
+    "date": "2026-09-12",
+    "slurm_job": "13781140",
+    "host": "della-r3c2n16",
+    "request_id": "1789229595852836547-schoenflies-fb0bcf52",
+    "input_sha256": "68069e347d62d9efb5c81d4ffab4e9933f860535ab1ec47e3699517f9c5c26e7",
+    "response_sha256": "e044e8439812a68c96b04babe01f37404f008496512f085b1181f2251dd7c4d2",
+    "artifact_log_sha256": "3adb787124a97725bc427347532f69b546a84fb0178f06f9e9a1b750443b8445",
+    "freshly_built_modules": [
+      "DifferentialGeometry.External.ClassificationOfSurfaces.Moise.PlaneComplex",
+      "DifferentialGeometry.External.ClassificationOfSurfaces.Moise.LineSubdivision",
+      "DifferentialGeometry.External.ClassificationOfSurfaces.Moise.FreeTriangle"
+    ],
+    "public_and_consumer_signature_axiom_pairs": 47,
+    "linters": [
+      "unusedArguments",
+      "simpNF",
+      "synTaut"
+    ],
+    "linter_scope": "All declarations owned by the three imported vendor modules, including private declarations, and current consumers.",
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "unexpected_diagnostics": 0,
+    "aggregate_registration": "All three leaves registered in DifferentialGeometry.lean.",
+    "full_dg_aggregate_build": false,
+    "smooth_disk_filling": false
+  }
+}
