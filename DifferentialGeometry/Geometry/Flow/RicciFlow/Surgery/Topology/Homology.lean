@@ -675,6 +675,38 @@ theorem fundamentalClass_generator (o : TangentOrientationSection M) :
     Function.Bijective (fun z : ℤ => z • fundamentalClass o) := by
   sorry
 
+omit hT2 hCompact hConnected in
+theorem exists_unique_fundamentalClass_of_exists (o : TangentOrientationSection M)
+    (h : ∃ z : IntegralHomology M 3, ∀ x : M,
+      absoluteToRelative M ({x}ᶜ) 3 z = localOrientationClass o x)
+    (hinj : ∃ x : M, Function.Injective (absoluteToRelative M ({x}ᶜ) 3)) :
+    ∃! z : IntegralHomology M 3, ∀ x : M,
+      absoluteToRelative M ({x}ᶜ) 3 z = localOrientationClass o x := by
+  obtain ⟨z, hz⟩ := h
+  refine ⟨z, hz, ?_⟩
+  intro z' hz'
+  obtain ⟨x, hx⟩ := hinj
+  exact hx (by rw [hz, hz'])
+
+omit hConnected in
+theorem fundamentalClass_generator_of (o : TangentOrientationSection M) (x : M)
+    (hlocal : Function.Bijective (fun z : ℤ => z • localOrientationClass o x))
+    (hinj : Function.Injective (absoluteToRelative M ({x}ᶜ) 3)) :
+    Function.Bijective (fun z : ℤ => z • fundamentalClass o) := by
+  let A : IntegralHomology M 3 →ₗ[ℤ] LocalIntegralHomology M x 3 :=
+    (absoluteToRelative M ({x}ᶜ) 3).hom
+  have hA : ∀ z : ℤ, A (z • fundamentalClass o) = z • localOrientationClass o x := by
+    intro z
+    rw [map_zsmul, fundamentalClass_local]
+  constructor
+  · intro a b hab
+    apply hlocal.injective
+    have h := congrArg A hab
+    rwa [hA, hA] at h
+  · intro w
+    obtain ⟨z, hz⟩ := hlocal.surjective (A w)
+    exact ⟨z, hinj (hA z ▸ hz)⟩
+
 def fundamentalClassEquiv (o : TangentOrientationSection M) :
     ℤ ≃ₗ[ℤ] IntegralHomology M 3 :=
   (AddEquiv.ofBijective
