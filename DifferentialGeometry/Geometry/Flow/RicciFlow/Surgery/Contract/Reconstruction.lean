@@ -35,10 +35,16 @@ def relativeCollarUniqueness : Prop :=
     [IsManifold (𝓡∂ 3) ∞ M] [T2Space M] [SigmaCompactSpace M]
     (c₀ c₁ : PartialDiffeomorph ((𝓡 2).prod (𝓡∂ 1)) (𝓡∂ 3)
       (S × EuclideanHalfSpace 1) M ∞),
+    (∀ p : S, (p, 0) ∈ c₀.source ∧ (p, 0) ∈ c₁.source) →
     (∀ p : S, c₀ (p, 0) = c₁ (p, 0)) →
-      ∃ δ : ℝ, 0 < δ ∧
-        ∀ U : Set M, IsOpen U →
-          (∀ (p : S) (t : EuclideanHalfSpace 1), t.1 0 < δ → c₀ (p, t) ∈ U ∧ c₁ (p, t) ∈ U) →
+    (∀ p : S, c₀ (p, 0) ∈ (𝓡∂ 3).boundary M) →
+      ∀ U : Set M, IsOpen U →
+        (∃ ε : ℝ, 0 < ε ∧ ∀ (p : S) (t : EuclideanHalfSpace 1), t.1 0 < ε →
+          c₀ (p, t) ∈ U ∧ c₁ (p, t) ∈ U) →
+        ∃ δ : ℝ, 0 < δ ∧
+          (∀ (p : S) (t : EuclideanHalfSpace 1), t.1 0 < δ →
+            (p, t) ∈ c₀.source ∧ (p, t) ∈ c₁.source ∧
+              c₀ (p, t) ∈ U ∧ c₁ (p, t) ∈ U) ∧
           ∃ Φ : Diffeomorph (𝓡∂ 3) (𝓡∂ 3) M M ∞,
             (∀ (p : S) (t : EuclideanHalfSpace 1), t.1 0 < δ →
               Φ (c₀ (p, t)) = c₁ (p, t)) ∧

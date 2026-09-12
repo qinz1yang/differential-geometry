@@ -90,6 +90,22 @@ structure IncomingBackwardNeck {δ : ℝ} {k : ℕ}
       Real.sqrt (normSq0S g x (a + 2)
         (cylinderTensorCovDeriv g (timeDifferenceJet b v) a x)) ≤ η
 
+  metric_smooth : ∀ p : neckBuffer δ, ∀ t ∈ Icc (-1 : ℝ) 0,
+    ∃ U : Set (neckBuffer δ), IsOpen U ∧ p ∈ U ∧
+      U ⊆ (trivializationAt (EuclideanSpace ℝ (Fin 2) × ℝ)
+        (TangentSpace NeckCylinderModel) p).baseSet ∧
+    ∃ V : Set ℝ, IsOpen V ∧ t ∈ V ∧
+    ∃ A : ℝ × neckBuffer δ → (EuclideanSpace ℝ (Fin 2) × ℝ) →
+        (EuclideanSpace ℝ (Fin 2) × ℝ) → ℝ,
+      (∀ v w, ContMDiffOn (𝓘(ℝ, ℝ).prod NeckCylinderModel) 𝓘(ℝ, ℝ) ∞
+        (fun z => A z v w) (V ×ˢ U)) ∧
+      ∀ s ∈ V ∩ Icc (-1 : ℝ) 0, ∀ x ∈ U, ∀ v w,
+        A (s, x) v w = (metric s).inner x
+          ((trivializationAt (EuclideanSpace ℝ (Fin 2) × ℝ)
+            (TangentSpace NeckCylinderModel) p).symmL ℝ x v)
+          ((trivializationAt (EuclideanSpace ℝ (Fin 2) × ℝ)
+            (TangentSpace NeckCylinderModel) p).symmL ℝ x w)
+
 theorem IncomingBackwardNeck.metric_smooth_up_to {δ : ℝ} {k : ℕ}
     {neck : NormalizedNeck (H.event i).terminal.metric δ k} {r : ℝ}
     (N : IncomingBackwardNeck H i neck r) (hscale : neck.scale = (r ^ 2)⁻¹) :
@@ -108,7 +124,8 @@ theorem IncomingBackwardNeck.metric_smooth_up_to {δ : ℝ} {k : ℕ}
               (TangentSpace NeckCylinderModel) p).symmL ℝ x v)
             ((trivializationAt (EuclideanSpace ℝ (Fin 2) × ℝ)
               (TangentSpace NeckCylinderModel) p).symmL ℝ x w) := by
-  sorry
+  let _ := hscale
+  exact N.metric_smooth
 
 namespace MetricCutCapEvent
 

@@ -133,7 +133,7 @@ theorem loopLength_postcompose_le (g : SmoothRiemannianMetric I P)
       (IsLipschitzLoop.postcompose g h f L hf γ hlip)]
   exact riemannianCurveLength_comp_le g h f L hf (loopLift γ) 0 1
 
-omit connectedQ in
+omit connectedQ connectedP in
 theorem leastArea_postcompose_le (g : SmoothRiemannianMetric I P)
     (h : SmoothRiemannianMetric J Q) (f : C(P, Q)) (L : ℝ≥0)
     (hf : ∀ x y, riemannianEDistOf h (f x) (f y) ≤
@@ -165,7 +165,8 @@ theorem leastArea_postcompose_le (g : SmoothRiemannianMetric I P)
     simpa only [mul_comm] using (div_le_iff₀ hpos).mp hdiv
 
 include finiteDimensionalE finiteDimensionalF boundarylessI boundarylessJ
-  t2P t2Q compactP compactQ connectedP connectedQ in
+  t2P t2Q compactP compactQ connectedQ in
+omit connectedP in
 theorem rfs_composed_family_regularization (g : SmoothRiemannianMetric I P)
     (h : SmoothRiemannianMetric J Q) (f : C(P, Q)) (L : ℝ≥0)
     (hf : ∀ x y, riemannianEDistOf h (f x) (f y) ≤

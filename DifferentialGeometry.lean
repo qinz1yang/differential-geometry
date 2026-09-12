@@ -6845,6 +6845,7 @@ import DifferentialGeometry.Geometry.Metric.Sphere.Quotient.PositiveCover
 import DifferentialGeometry.Geometry.Metric.Sphere.Quotient.PositiveSpaceForm
 import DifferentialGeometry.Geometry.Metric.Sphere.Quotient.RoundMetric
 import DifferentialGeometry.Geometry.Metric.Sphere.Quotient.SpaceForm
+import DifferentialGeometry.Geometry.Metric.Sphere.Quotient.SpaceFormGroup
 import DifferentialGeometry.Geometry.Metric.Sphere.Round.BasisPoints
 import DifferentialGeometry.Geometry.Metric.Sphere.Round.ChartGram
 import DifferentialGeometry.Geometry.Metric.Sphere.Round.GreatCircle
@@ -8605,6 +8606,7 @@ import DifferentialGeometry.Topology.VanKampen.ConnectedSum
 import DifferentialGeometry.Topology.VanKampen.ConnectedSumNeck
 import DifferentialGeometry.Topology.VanKampen.ConnectedSumNeckFundamentalGroup
 import DifferentialGeometry.Topology.VanKampen.ConnectedSumNeckHomotopy
+import DifferentialGeometry.Topology.VanKampen.ConnectedSumNeckRealization
 import DifferentialGeometry.Topology.VanKampen.ConnectorFreeProductCover
 import DifferentialGeometry.Topology.VanKampen.CoverCycle
 import DifferentialGeometry.Topology.VanKampen.CoveredPath
