@@ -5,15 +5,15 @@ The recovered source baseline is commit
 `refs/remotes/origin/codex/chapter35` in the controller's existing Git objects.
 No source baseline was downloaded to prepare this checkpoint.
 
-[SNAPSHOT.json](SNAPSHOT.json) records all 88 supplied module paths and hashes,
-including their baseline hashes and the seven new/changed leaves. The three new
+[SNAPSHOT.json](SNAPSHOT.json) records all 90 supplied module paths and hashes,
+including their baseline hashes and the nine new/changed leaves. The five new
 files have a null baseline hash. Existing baseline hashes were independently
 compared against the actual Git blobs. Every supplied leaf is byte-identical
 to its current counterpart in the isolated Poincare workspace.
 
 The portable `lakefile.toml` and `lake-manifest.json` are unchanged. The
 `lean-toolchain` copy removes one trailing blank line while retaining its exact
-version. The selected `Poincare.lean` is a checkpoint aggregate for the 88
+version. The selected `Poincare.lean` is a checkpoint aggregate for the 90
 supplied leaves; it does not overwrite the full recovered project's aggregate.
 Original/current hashes for these files are recorded separately.
 
@@ -78,3 +78,20 @@ and standard-only axioms, 13 public exports and 22 signature/axiom pairs. All
 their earlier compilation evidence; this run did not freshly rebuild them.
 This does not certify the full canonical-topology suite or compatibility with
 the missing frozen contract.
+
+## Closed-ball local classes
+
+`Poincare/Topology/Homology/LocalBallHomology.lean` is a new 399-line module
+using the existing singular/relative homology and pinned Mathlib APIs. Its four
+public results retain arbitrary normed real spaces, natural degrees, centers
+and nonnegative radii, including zero and boundary cases. The actual complement
+inclusion is a homotopy equivalence; the resulting center restriction is an
+isomorphism. A translation homotopy proves all normalized restrictions of one
+unique class agree. The 22 construction helpers are private.
+
+The 89 previous leaves are unchanged. Portable request
+`1789247905874477991-topology_checkpoint-baeeac80` freshly compiled the new
+leaf and root, then passed all-package/consumer stock linters, standard-only
+axioms, 21 public exports and 40 exact signature/axiom pairs. All 102 source
+and configuration guards matched. Previous validation records are preserved
+in SNAPSHOT.json; the missing frozen handoff and full topology suite remain open.

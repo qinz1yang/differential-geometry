@@ -5,13 +5,14 @@ additive publication within the shared DifferentialGeometry Git repository. Its 
 library is `Poincare`; its sources retain the original mathematical namespaces.
 
 The source baseline is the recovered Chapter 35 commit
-`b45bfa009368c8f5f531e10f4f5280e90079d6ad`. This checkpoint includes the 89-module
-dependency closure of seven roots covering local homology, derivatives,
-determinant signs and oriented chart compatibility. The latest gate freshly
-compiled the three affected leaves and root in Slurm 13781140, request
-`1789242935902017893-topology_checkpoint-96e8ea73`; 86 unchanged source leaves
-retain their verified earlier compilation. All 17 public exports and the
-consumer, linter and axiom checks passed on that snapshot.
+`b45bfa009368c8f5f531e10f4f5280e90079d6ad`. This checkpoint includes the 90-module
+dependency closure of eight roots covering local homology, derivatives,
+determinant signs, oriented chart compatibility and closed-ball classes.
+The latest gate freshly compiled LocalBallHomology and the root in Slurm
+13781140, request `1789247905874477991-topology_checkpoint-baeeac80`;
+all 89 previous leaves remain byte-identical and retain verified earlier
+compilation. All 21 public exports and the consumer, linter and axiom checks
+passed on that snapshot.
 [provenance/SNAPSHOT.json](provenance/SNAPSHOT.json) records exact source and
 configuration identity and preserves the earlier validation records. It is not
 the full recovered Chapter 35 project.

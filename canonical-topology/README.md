@@ -1,7 +1,7 @@
-# Local homology and oriented chart compatibility
+# Local homology, chart compatibility and closed-ball classes
 
 This separate `PoincareLean` project contains a dependency-closed checkpoint of
-89 Poincare modules. It extends the recovered Chapter 35 source at commit
+90 Poincare modules. It extends the recovered Chapter 35 source at commit
 `b45bfa009368c8f5f531e10f4f5280e90079d6ad` and preserves its mathematical objects
 and `Poincare` namespaces. `Poincare.lean` imports every included leaf.
 
@@ -30,9 +30,13 @@ The additions prove:
   local maps in every natural degree;
 - equality of the normalized local top-homology maps from the same manifold
   point under two charts whose actual tangent trivializations preserve the
-  same orientation, for finite-dimensional real normed models including rank zero.
+  same orientation, for finite-dimensional real normed models including rank zero;
+- the actual closed-ball-to-center restriction isomorphism and its induced-map
+  equation, together with a unique relative class whose local restrictions
+  agree after translation, in every natural degree and real normed space,
+  for every center and nonnegative radius including boundary points.
 
-The eight new/changed modules and their exact baseline/current hashes are listed in
+The nine new/changed modules and their exact baseline/current hashes are listed in
 [provenance/SNAPSHOT.json](provenance/SNAPSHOT.json). The derivative homotopy
 retains its [upstream attribution and modification record](provenance/README.md).
 
@@ -117,8 +121,27 @@ composition whose source is a proper intersection. All-package and consumer
 stock declaration linters and standard-only transitive axioms pass. The 86
 unchanged leaves retain their earlier compilation evidence. The original
 full-source gate separately checks a rank-zero oriented chart transition.
-These results establish pointwise chart compatibility; producing one coherent
-class over a neighborhood remains the next step.
+These results establish pointwise chart compatibility. The following extension
+constructs the required class on model-space closed balls.
+
+The closed-ball extension adds `LocalBallHomology`, bringing the checkpoint to
+90 leaves and 21 public exports. It identifies the actual center restriction
+with an isomorphism and proves a unique class whose translated local
+restrictions agree at every point of the closed ball. The statements allow
+arbitrary real normed spaces, all natural homology degrees, arbitrary centers,
+radius zero and boundary points. They assume a prescribed local class, not a
+fundamental class or coherence certificate.
+
+Final portable request `1789247905874477991-topology_checkpoint-baeeac80`
+passed in Slurm 13781140 in 118.75 seconds. The new leaf and `Poincare` root
+freshly compiled without diagnostics in 1:06.46. All 102 guards and 40
+signature/axiom pairs passed, including all 21 public exports and all 32
+previous readback pairs unchanged. New consumers checked both inverse laws,
+a nonzero rank-zero H0 class, a real boundary-point translation and uniqueness.
+All-package/current-consumer stock declaration linters and standard-only
+axioms passed. The 89 previous leaves remain byte-identical and retain their
+earlier compilation evidence. Transporting this class to compact chart
+neighborhoods is the next proof layer.
 
 ## Remaining topology work
 

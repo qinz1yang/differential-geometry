@@ -87,3 +87,4 @@ import Poincare.Topology.Homology.ZeroAugmentation
 import Poincare.Topology.Homology.ZeroChainClasses
 import Poincare.Topology.Homology.ZeroHomologyMaps
 import Poincare.Topology.Homology.LocalOrientation
+import Poincare.Topology.Homology.LocalBallHomology
