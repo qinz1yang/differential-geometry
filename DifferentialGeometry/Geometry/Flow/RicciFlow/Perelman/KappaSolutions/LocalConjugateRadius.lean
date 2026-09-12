@@ -156,6 +156,38 @@ theorem exists_uniform_local_jacobi_scale (n : ℕ) {R K : ℝ}
   change gronwallBound 0 (max (S * s ^ 2) 1) (S * s ^ 2) 1 ≤ 1 / 4
   linarith
 
+theorem exists_uniform_gronwall_scale (n : ℕ) (hn : 0 < n) :
+    ∃ c : ℝ, 0 < c ∧ ∀ K : ℝ, 0 < K → ∀ s : ℝ,
+      0 ≤ s → s ≤ c / Real.sqrt K →
+        gronwallBound 0 (max (Real.sqrt (n : ℝ) * K * s ^ 2) 1)
+          (Real.sqrt (n : ℝ) * K * s ^ 2) 1 ≤ 1 / 4 := by
+  obtain ⟨κ, B, hκ, hB, hsmall⟩ :=
+    exists_gron_smallK (D := 1) (B₀ := (1 / 4 : ℝ)) (by norm_num) (by norm_num)
+  have hnR : 0 < Real.sqrt (n : ℝ) := Real.sqrt_pos.mpr (by exact_mod_cast hn)
+  have hdiv : 0 < κ / Real.sqrt (n : ℝ) := div_pos hκ hnR
+  refine ⟨Real.sqrt (κ / Real.sqrt (n : ℝ)), Real.sqrt_pos.mpr hdiv, ?_⟩
+  intro K hK s hs0 hs
+  have hKpos : 0 < Real.sqrt K := Real.sqrt_pos.mpr hK
+  have hs2 : s ^ 2 ≤ (Real.sqrt (κ / Real.sqrt (n : ℝ)) / Real.sqrt K) ^ 2 :=
+    (sq_le_sq₀ hs0 (div_nonneg (Real.sqrt_nonneg _) hKpos.le)).2 hs
+  have hquot : (Real.sqrt (κ / Real.sqrt (n : ℝ)) / Real.sqrt K) ^ 2 =
+      κ / Real.sqrt (n : ℝ) / K := by
+    rw [div_pow, Real.sq_sqrt hdiv.le, Real.sq_sqrt hK.le]
+  have hkey : Real.sqrt (n : ℝ) * K * s ^ 2 ≤ κ := by
+    have h3 : K * s ^ 2 ≤ κ / Real.sqrt (n : ℝ) :=
+      (mul_le_mul_of_nonneg_left (hs2.trans_eq hquot) hK.le).trans_eq (by
+        field_simp)
+    calc Real.sqrt (n : ℝ) * K * s ^ 2
+        = Real.sqrt (n : ℝ) * (K * s ^ 2) := by ring
+      _ ≤ Real.sqrt (n : ℝ) * (κ / Real.sqrt (n : ℝ)) :=
+          mul_le_mul_of_nonneg_left h3 hnR.le
+      _ = κ := by field_simp
+  have hnonneg : 0 ≤ Real.sqrt (n : ℝ) * K * s ^ 2 :=
+    mul_nonneg (mul_nonneg hnR.le hK.le) (sq_nonneg s)
+  have hbound := hsmall hnonneg hkey
+  simp only [mul_one] at hbound
+  linarith
+
 theorem intrinsicFrame_localOn_of_local_curvature
     (g : SmoothRiemannianMetric I M) (hEnorm : IsMetricNorm (I := I) g)
     (p : M) {R K r : ℝ} (hK : 0 ≤ K) (hrR : r ≤ R)

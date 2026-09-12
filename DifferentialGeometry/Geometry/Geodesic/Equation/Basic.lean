@@ -134,6 +134,49 @@ lemma chartChristoffelContraction_neg
   rw [hneg, chartChristoffelContraction_smul_smul (I := I) g α (-1 : ℝ) v y]
   norm_num
 
+omit [NeZero (Module.finrank ℝ E)] in
+theorem contDiffAt_chartChristoffelContraction
+    (g : SmoothRiemannianMetric I M) (α : M) (u w y : E)
+    (hy : y ∈ interior (extChartAt I α).target) :
+    ContDiffAt ℝ ∞
+      (fun p : E × E × E => chartChristoffelContraction g α p.1 p.2.1 p.2.2) (u, w, y) := by
+  classical
+  have hC : ∀ k : Fin (Module.finrank ℝ E), ContDiffAt ℝ ∞
+      (fun p : E × E × E => ∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
+        chartChristoffel (I := I) g α i j k p.2.2 * chartCoord (E := E) i p.1 *
+          chartCoord (E := E) j p.2.1) (u, w, y) := by
+    intro k
+    refine ContDiffAt.sum (fun i _ => ?_)
+    refine ContDiffAt.sum (fun j _ => ?_)
+    refine ContDiffAt.mul (ContDiffAt.mul ?_ ?_) ?_
+    · set Γk : E → ℝ := chartChristoffel (I := I) g α i j k with hΓk
+      have hΓksmooth : ContDiffAt ℝ ∞ Γk y := by
+        have h := (chartChristoffel_contDiffOn_interior (I := I) g α i j k).contDiffAt
+          (isOpen_interior.mem_nhds hy)
+        exact hΓk ▸ h
+      exact ContDiffAt.comp (x := (u, w, y)) (g := Γk) (f := fun p : E × E × E => p.2.2)
+        hΓksmooth (by fun_prop)
+    · have hci : ContDiffAt ℝ ∞ (fun v : E => chartCoord (E := E) i v) u :=
+        (ContinuousLinearMap.contDiff
+          (((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).coord i).toContinuousLinearMap)).contDiffAt
+      exact ContDiffAt.comp (x := (u, w, y)) (g := fun v : E => chartCoord (E := E) i v)
+        (f := fun p : E × E × E => p.1) hci (by fun_prop)
+    · have hcj : ContDiffAt ℝ ∞ (fun v : E => chartCoord (E := E) j v) w :=
+        (ContinuousLinearMap.contDiff
+          (((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).coord j).toContinuousLinearMap)).contDiffAt
+      exact ContDiffAt.comp (x := (u, w, y)) (g := fun v : E => chartCoord (E := E) j v)
+        (f := fun p : E × E × E => p.2.1) hcj (by fun_prop)
+  have hrewrite : (fun p : E × E × E => chartChristoffelContraction g α p.1 p.2.1 p.2.2)
+      = fun p : E × E × E => ∑ k : Fin (Module.finrank ℝ E),
+          (∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
+            chartChristoffel (I := I) g α i j k p.2.2 * chartCoord (E := E) i p.1 *
+              chartCoord (E := E) j p.2.1) •
+            DifferentialGeometry.Tensor.Coordinates.chartModelBasis E k := by
+    funext p
+    rw [chartChristoffelContraction_def]
+  rw [hrewrite]
+  exact ContDiffAt.sum (fun k _ => (hC k).smul contDiffAt_const)
+
 def geodesicVectorField (g : SmoothRiemannianMetric I M)
     (p : TangentBundle I M) : TangentSpace I.tangent p :=
   (p.2, - chartChristoffelContraction (I := I) g p.proj p.2 p.2

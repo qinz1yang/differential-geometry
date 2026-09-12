@@ -443,6 +443,127 @@ theorem cutIncidenceGraph_connected (C : ConnectedComponents M.Carrier) :
     (E.cutIncidenceGraph C).Connected :=
   E.cutIncidenceGraph_connected_of_removedBand_isOpen (fun a => E.tubes.removedBand_isOpen a) C
 
+theorem CompleteEnumeration.length_eq {C : ConnectedComponents M.Carrier}
+    {L K : List (ConnectedClosedOrientedManifold.{u} 3)}
+    (hL : E.CompleteEnumeration C L) (hK : E.CompleteEnumeration C K) :
+    L.length = K.length := by
+  have h1 := E.ncard_associatedFactors_eq_length hL
+  have h2 := E.ncard_associatedFactors_eq_length hK
+  omega
+
+theorem associatedFactors_nonempty (C : ConnectedComponents M.Carrier) :
+    (E.associatedFactors C).Nonempty := by
+  obtain ⟨x, hx⟩ := E.exists_core_mem_componentSet C
+  exact ⟨E.associatedFactor x, x, hx, rfl⟩
+
+theorem one_le_length_of_completeEnumeration {C : ConnectedComponents M.Carrier}
+    {L : List (ConnectedClosedOrientedManifold.{u} 3)} (hL : E.CompleteEnumeration C L) :
+    1 ≤ L.length := by
+  have h := E.ncard_associatedFactors_eq_length hL
+  have hpos : 0 < (E.associatedFactors C).ncard :=
+    Set.ncard_pos (E.associatedFactors_finite C) |>.mpr (E.associatedFactors_nonempty C)
+  omega
+
+theorem cutIndices_eq_empty_iff (C : ConnectedComponents M.Carrier) :
+    E.cutIndices C = ∅ ↔
+      ∀ a : E.tubes.Index, ¬ ∃ z : Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1 ×
+        Set.Icc (-2 : ℝ) 2, E.tubes.tube a z ∈
+          ClosedOrientedManifold.componentSet M C := by
+  constructor
+  · intro h a hz
+    exact absurd (h ▸ (E.mem_cutIndices_iff_exists_tube_mem_componentSet C a).mpr hz)
+      (Finset.notMem_empty a)
+  · intro h
+    rw [← Finset.not_nonempty_iff_eq_empty]
+    rintro ⟨a, ha⟩
+    exact h a ((E.mem_cutIndices_iff_exists_tube_mem_componentSet C a).mp ha)
+
+theorem componentSet_subset_core_of_cutIndices_eq_empty (C : ConnectedComponents M.Carrier)
+    (hC : E.cutIndices C = ∅) :
+    ClosedOrientedManifold.componentSet M C ⊆ E.tubes.core := by
+  intro y hy
+  by_contra hnot
+  obtain ⟨a, ha⟩ := E.exists_mem_removedBand_of_notMem_core hnot
+  exact Finset.notMem_empty a (hC ▸ E.mem_cutIndices_of_mem_removedBand C ha hy)
+
+theorem associatedFactor_eq_of_mem_componentSet_of_cutIndices_eq_empty
+    (C : ConnectedComponents M.Carrier) (hC : E.cutIndices C = ∅)
+    {x x' : E.tubes.core} (hx : ConnectedComponents.mk x.1 = C)
+    (hx' : ConnectedComponents.mk x'.1 = C) :
+    E.associatedFactor x = E.associatedFactor x' := by
+  have hsub := E.componentSet_subset_core_of_cutIndices_eq_empty C hC
+  have hlc : IsLocallyConstant fun w : (M.component C).Carrier =>
+      E.associatedFactor ⟨w.1, hsub w.2⟩ := by
+    rw [IsLocallyConstant.iff_eventually_eq]
+    intro w
+    obtain ⟨O, hO, hOloc⟩ := E.exists_nhds_associatedFactor_eq ⟨w.1, hsub w.2⟩
+    filter_upwards [continuous_subtype_val.continuousAt.preimage_mem_nhds hO] with w' hw'
+    exact hOloc w'.1 hw' (hsub w'.2)
+  have key := hlc.apply_eq_of_preconnectedSpace
+    (⟨x.1, hx⟩ : (M.component C).Carrier) (⟨x'.1, hx'⟩ : (M.component C).Carrier)
+  have hx_eq : x = ⟨x.1, hsub hx⟩ := Subtype.ext rfl
+  have hx'_eq : x' = ⟨x'.1, hsub hx'⟩ := Subtype.ext rfl
+  rw [hx_eq, hx'_eq]
+  exact key
+
+theorem exists_associatedFactors_eq_singleton_of_cutIndices_eq_empty
+    (C : ConnectedComponents M.Carrier) (hC : E.cutIndices C = ∅) :
+    ∃ N : ConnectedClosedOrientedManifold.{u} 3, E.associatedFactors C = {N} := by
+  obtain ⟨x₀, hx₀⟩ := E.exists_core_mem_componentSet C
+  refine ⟨E.associatedFactor x₀, ?_⟩
+  ext N
+  constructor
+  · rintro ⟨x, hx, rfl⟩
+    rw [Set.mem_singleton_iff]
+    exact E.associatedFactor_eq_of_mem_componentSet_of_cutIndices_eq_empty C hC hx hx₀
+  · intro hN
+    rw [Set.mem_singleton_iff] at hN
+    exact ⟨x₀, hx₀, hN.symm⟩
+
+theorem eq_singleton_of_completeEnumeration_of_cutIndices_eq_empty
+    {C : ConnectedComponents M.Carrier} {L : List (ConnectedClosedOrientedManifold.{u} 3)}
+    (hL : E.CompleteEnumeration C L) (hC : E.cutIndices C = ∅) :
+    ∃ N : ConnectedClosedOrientedManifold.{u} 3, L = [N] := by
+  obtain ⟨N, hN⟩ := E.exists_associatedFactors_eq_singleton_of_cutIndices_eq_empty C hC
+  refine ⟨N, ?_⟩
+  have hlen : L.length = 1 := by
+    rw [← E.ncard_associatedFactors_eq_length hL, hN, Set.ncard_singleton]
+  obtain ⟨a, ha⟩ := List.length_eq_one_iff.mp hlen
+  have hmem : a ∈ L := by rw [ha]; exact List.mem_singleton.mpr rfl
+  have haN : a = N := by
+    have h := hL.2.1 a hmem
+    rw [hN, Set.mem_singleton_iff] at h
+    exact h
+  rw [ha, haN]
+
+def NoTubeRealization : Prop :=
+  ∀ (C : ConnectedComponents M.Carrier) (N : ConnectedClosedOrientedManifold.{u} 3),
+    E.cutIndices C = ∅ → E.associatedFactors C = {N} →
+      Nonempty (ClosedOrientedManifold.OrientedDiffeomorph
+        (M.component C).toClosedOrientedManifold N.toClosedOrientedManifold)
+
+theorem localReconstruction_of_noTubeRealization (hr : E.NoTubeRealization)
+    (hC : ∀ C : ConnectedComponents M.Carrier, E.cutIndices C = ∅) :
+    E.localReconstruction := by
+  intro C L hL
+  obtain ⟨N, hN⟩ := E.exists_associatedFactors_eq_singleton_of_cutIndices_eq_empty C (hC C)
+  obtain ⟨ρ⟩ := hr C N (hC C) hN
+  obtain ⟨N', hL'⟩ := E.eq_singleton_of_completeEnumeration_of_cutIndices_eq_empty hL (hC C)
+  have hNN' : N' = N := by
+    have hmem : N' ∈ L := by rw [hL']; exact List.mem_singleton.mpr rfl
+    have h := hL.2.1 N' hmem
+    rw [hN, Set.mem_singleton_iff] at h
+    exact h
+  refine ⟨0, [], rfl, by simp, ?_, ?_⟩
+  · rw [hL']; simp [hC C]
+  rw [hL', hNN']
+  exact ⟨ρ⟩
+
+theorem localReconstruction_of_isEmpty_index [IsEmpty E.tubes.Index]
+    (hr : E.NoTubeRealization) : E.localReconstruction :=
+  E.localReconstruction_of_noTubeRealization hr fun _ =>
+    Finset.not_nonempty_iff_eq_empty.mp fun h => h.elim fun a _ => isEmptyElim a
+
 end SphericalCutCapTransition
 
 namespace FiniteCutCapTrace

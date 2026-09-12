@@ -1105,6 +1105,272 @@ theorem CurveMap.ds_curvatureSq_sq_le_mul_normSq_normalCurvatureDerivative
   rw [← hnn, ← hkk] at hcs
   nlinarith [hcs]
 
+omit [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
+theorem CurveMap.ds_regularizedCurvature (g : ℝ → SmoothRiemannianMetric I M)
+    (c : CurveMap M) (J : Set ℝ) (hc : c.SmoothOn (I := I) J)
+    (hi : c.ImmersedOn (I := I) J) (ε : ℝ) (hε : 0 < ε) (x t : ℝ) (ht : t ∈ J) :
+    c.ds g (c.regularizedCurvature g ε) x t =
+      (1 / (2 * c.regularizedCurvature g ε x t)) * c.ds g (c.curvatureSq g) x t := by
+  have hu : ContDiff ℝ ∞ (fun y => c.curvatureSq g y t) :=
+    c.curvatureSq_contDiff g J hc hi t ht
+  have hd : DifferentiableAt ℝ (fun y => c.curvatureSq g y t) x :=
+    hu.contDiffAt.differentiableAt (by norm_num)
+  have hpos : c.curvatureSq g x t + ε ^ 2 ≠ 0 := by
+    have h0 : 0 ≤ c.curvatureSq g x t := c.normSq_nonneg g (c.curvatureVector g) x t
+    nlinarith [sq_nonneg ε]
+  have hsqrt : HasDerivAt (fun y => Real.sqrt (c.curvatureSq g y t + ε ^ 2))
+      (deriv (fun y => c.curvatureSq g y t) x /
+        (2 * Real.sqrt (c.curvatureSq g x t + ε ^ 2))) x :=
+    (hd.hasDerivAt.add_const (ε ^ 2)).sqrt hpos
+  have hderiv : deriv (fun y => c.regularizedCurvature g ε y t) x =
+      (1 / (2 * c.regularizedCurvature g ε x t)) *
+        deriv (fun y => c.curvatureSq g y t) x := by
+    have h1 : (fun y => c.regularizedCurvature g ε y t)
+        = fun y => Real.sqrt (c.curvatureSq g y t + ε ^ 2) := rfl
+    rw [h1, hsqrt.deriv]
+    simp only [CurveMap.regularizedCurvature]
+    ring
+  simp only [CurveMap.ds]
+  rw [hderiv]
+  ring
+
+omit [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] hBoundary in
+theorem CurveMap.derivWithin_regularizedCurvature (g : ℝ → SmoothRiemannianMetric I M)
+    (c : CurveMap M) (J : Set ℝ) (ε : ℝ) (hε : 0 < ε) (x t : ℝ)
+    (huniq : UniqueDiffWithinAt ℝ J t)
+    (hu : HasDerivWithinAt (fun r => c.curvatureSq g x r)
+      (derivWithin (fun r => c.curvatureSq g x r) J t) J t) :
+    derivWithin (fun r => c.regularizedCurvature g ε x r) J t =
+      (1 / (2 * c.regularizedCurvature g ε x t)) *
+        derivWithin (fun r => c.curvatureSq g x r) J t := by
+  have hpos : c.curvatureSq g x t + ε ^ 2 ≠ 0 := by
+    have h0 : 0 ≤ c.curvatureSq g x t := c.normSq_nonneg g (c.curvatureVector g) x t
+    nlinarith [sq_nonneg ε]
+  have h1 : HasDerivWithinAt (fun r => c.curvatureSq g x r + ε ^ 2)
+      (derivWithin (fun r => c.curvatureSq g x r) J t) J t :=
+    hu.add_const (ε ^ 2)
+  have h2 := h1.sqrt hpos
+  have hfun : (fun r => c.regularizedCurvature g ε x r) =
+      fun r => Real.sqrt (c.curvatureSq g x r + ε ^ 2) := rfl
+  rw [hfun, h2.derivWithin huniq]
+  simp only [CurveMap.regularizedCurvature]
+  ring
+
+omit [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
+theorem CurveMap.differentiableAt_ds_curvatureSq (g : ℝ → SmoothRiemannianMetric I M)
+    (c : CurveMap M) (J : Set ℝ) (hc : c.SmoothOn (I := I) J)
+    (hi : c.ImmersedOn (I := I) J) (x t : ℝ) (ht : t ∈ J) :
+    DifferentiableAt ℝ (fun y => c.ds g (c.curvatureSq g) y t) x := by
+  have hu : ContDiff ℝ ∞ (fun y => c.curvatureSq g y t) :=
+    c.curvatureSq_contDiff g J hc hi t ht
+  have hdu : ContDiff ℝ ∞ (fun y => deriv (fun z => c.curvatureSq g z t) y) := by
+    simpa using hu.iterate_deriv 1
+  have hs : ContDiff ℝ ∞ (fun y => (c.speed g y t)⁻¹) :=
+    (c.speed_contDiff g J hc hi t ht).inv (fun y => ne_of_gt (c.speed_pos g hi y t ht))
+  have hmul : ContDiff ℝ ∞ (fun y => (c.speed g y t)⁻¹ *
+      deriv (fun z => c.curvatureSq g z t) y) := hs.mul hdu
+  have hfun : (fun y => c.ds g (c.curvatureSq g) y t) =
+      fun y => (c.speed g y t)⁻¹ * deriv (fun z => c.curvatureSq g z t) y := rfl
+  rw [hfun]
+  exact hmul.contDiffAt.differentiableAt (by norm_num)
+
+omit [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
+theorem CurveMap.ds_ds_regularizedCurvature (g : ℝ → SmoothRiemannianMetric I M)
+    (c : CurveMap M) (J : Set ℝ) (hc : c.SmoothOn (I := I) J)
+    (hi : c.ImmersedOn (I := I) J) (ε : ℝ) (hε : 0 < ε) (x t : ℝ) (ht : t ∈ J) :
+    c.ds g (c.ds g (c.regularizedCurvature g ε)) x t =
+      (1 / (2 * c.regularizedCurvature g ε x t)) *
+          c.ds g (c.ds g (c.curvatureSq g)) x t -
+        (c.ds g (c.curvatureSq g) x t) ^ 2 /
+          (4 * c.regularizedCurvature g ε x t ^ 3) := by
+  have hdy : DifferentiableAt ℝ (fun y => c.ds g (c.curvatureSq g) y t) x :=
+    CurveMap.differentiableAt_ds_curvatureSq g c J hc hi x t ht
+  set d : ℝ → ℝ := fun y => c.ds g (c.curvatureSq g) y t with hd
+  set f : ℝ → ℝ := fun y => 1 / (2 * c.regularizedCurvature g ε y t) with hfdef
+  have hu : ContDiff ℝ ∞ (fun y => c.curvatureSq g y t) :=
+    c.curvatureSq_contDiff g J hc hi t ht
+  have hdu : DifferentiableAt ℝ (fun y => c.curvatureSq g y t) x :=
+    hu.contDiffAt.differentiableAt (by norm_num)
+  have hsqpos : 0 < c.curvatureSq g x t + ε ^ 2 := by
+    have h0 : 0 ≤ c.curvatureSq g x t := c.normSq_nonneg g (c.curvatureVector g) x t
+    nlinarith [sq_nonneg ε]
+  have hreg : DifferentiableAt ℝ (fun y => c.regularizedCurvature g ε y t) x := by
+    have h1 : HasDerivAt (fun y => Real.sqrt (c.curvatureSq g y t + ε ^ 2))
+        (deriv (fun y => c.curvatureSq g y t) x /
+          (2 * Real.sqrt (c.curvatureSq g x t + ε ^ 2))) x :=
+      (hdu.hasDerivAt.add_const (ε ^ 2)).sqrt (ne_of_gt hsqpos)
+    have hfun : (fun y => c.regularizedCurvature g ε y t) =
+        fun y => Real.sqrt (c.curvatureSq g y t + ε ^ 2) := rfl
+    rw [hfun]
+    exact h1.differentiableAt
+  have hregne : c.regularizedCurvature g ε x t ≠ 0 := by
+    simp only [CurveMap.regularizedCurvature]
+    exact ne_of_gt (Real.sqrt_pos.mpr hsqpos)
+  have hd' : DifferentiableAt ℝ d x := hdy
+  have hsne : c.speed g x t ≠ 0 := ne_of_gt (c.speed_pos g hi x t ht)
+  have hu' : deriv (fun y => c.curvatureSq g y t) x =
+      c.speed g x t * c.ds g (c.curvatureSq g) x t := by
+    have hident : c.ds g (c.curvatureSq g) x t =
+        (c.speed g x t)⁻¹ * deriv (fun y => c.curvatureSq g y t) x := rfl
+    rw [hident]
+    field_simp
+  have hreg' : deriv (fun y => c.regularizedCurvature g ε y t) x =
+      (1 / (2 * c.regularizedCurvature g ε x t)) *
+        (c.speed g x t * c.ds g (c.curvatureSq g) x t) := by
+    have h1 : HasDerivAt (fun y => Real.sqrt (c.curvatureSq g y t + ε ^ 2))
+        (deriv (fun y => c.curvatureSq g y t) x /
+          (2 * Real.sqrt (c.curvatureSq g x t + ε ^ 2))) x :=
+      (hdu.hasDerivAt.add_const (ε ^ 2)).sqrt (ne_of_gt hsqpos)
+    have hfun : (fun y => c.regularizedCurvature g ε y t) =
+        fun y => Real.sqrt (c.curvatureSq g y t + ε ^ 2) := rfl
+    rw [hfun, h1.deriv, hu']
+    simp only [CurveMap.regularizedCurvature]
+    ring
+  have hf' : DifferentiableAt ℝ f x := by
+    rw [hfdef]
+    exact (differentiableAt_const (c := (1 : ℝ))).div
+      ((differentiableAt_const (c := (2 : ℝ))).mul hreg)
+      (mul_ne_zero two_ne_zero hregne)
+  have hfder : deriv f x = -(c.speed g x t * d x) /
+      (4 * c.regularizedCurvature g ε x t ^ 3) := by
+    rw [hfdef]
+    have hfe : (fun y => 1 / (2 * c.regularizedCurvature g ε y t)) =
+        fun y => (2 * c.regularizedCurvature g ε y t)⁻¹ := by
+      funext y
+      rw [one_div]
+    rw [hfe, deriv_fun_inv''
+      (c := fun y => 2 * c.regularizedCurvature g ε y t)
+      ((differentiableAt_const (c := (2 : ℝ))).mul hreg)
+      (mul_ne_zero two_ne_zero hregne),
+      deriv_const_mul (d := fun y => c.regularizedCurvature g ε y t) (2 : ℝ) hreg, hreg']
+    simp only [hd]
+    field_simp
+    ring
+  have hfun : (fun y => c.ds g (c.regularizedCurvature g ε) y t) = f * d := by
+    funext y
+    simp only [Pi.mul_apply, hfdef, hd]
+    exact CurveMap.ds_regularizedCurvature g c J hc hi ε hε y t ht
+  have hkey : c.ds g (c.ds g (c.regularizedCurvature g ε)) x t =
+      (c.speed g x t)⁻¹ * deriv (fun y => c.ds g (c.regularizedCurvature g ε) y t) x := rfl
+  have hder : deriv (fun y => c.ds g (c.regularizedCurvature g ε) y t) x = deriv (f * d) x := by
+    rw [hfun]
+  have hds2 : c.ds g (c.ds g (c.curvatureSq g)) x t = (c.speed g x t)⁻¹ * deriv d x := by
+    rw [hd]
+    rfl
+  rw [hkey, hder, deriv_mul hf' hd', hds2, hfder]
+  have hdval : d x = c.ds g (c.curvatureSq g) x t := by rw [hd]
+  have hfval : f x = 1 / (2 * c.regularizedCurvature g ε x t) := by rw [hfdef]
+  simp only [hdval, hfval]
+  field_simp
+  ring
+
+
+omit [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
+theorem CurveMap.ds_inner (g : ℝ → SmoothRiemannianMetric I M) (c : CurveMap M)
+    (J : Set ℝ) (hc : c.SmoothOn (I := I) J)
+    (V W : c.Field (I := I))
+    (x t : ℝ) (ht : t ∈ J)
+    (hV : ContMDiff 𝓘(ℝ, ℝ) I.tangent ∞
+      (fun y : ℝ =>
+        (TotalSpace.mk' E (E := (TangentSpace I : M → Type _))
+          (c.lift y t) (V y t) : TangentBundle I M)))
+    (hW : ContMDiff 𝓘(ℝ, ℝ) I.tangent ∞
+      (fun y : ℝ =>
+        (TotalSpace.mk' E (E := (TangentSpace I : M → Type _))
+          (c.lift y t) (W y t) : TangentBundle I M))) :
+    c.ds g (fun y r => (g r).inner (c.lift y r) (V y r) (W y r)) x t =
+      (g t).inner (c.lift x t) (c.Ds g V x t) (W x t) +
+        (g t).inner (c.lift x t) (V x t) (c.Ds g W x t) := by
+  have hγ : ContMDiff 𝓘(ℝ, ℝ) I ∞ (fun y : ℝ => c.lift y t) :=
+    contMDiffOn_univ.mp (CurveMap.space_slice_contMDiffOn c J hc t ht)
+  have hd := metric_compat_hasDerivAt_inner (by simp : (1 : WithTop ℕ∞) ≤ ∞) (g t)
+    (fun y : ℝ => c.lift y t) (fun y => V y t) (fun y => W y t) x hγ
+    (chartRep_diff (I := I) (fun y : ℝ => c.lift y t) (fun y => V y t) hV x)
+    (chartRep_diff (I := I) (fun y : ℝ => c.lift y t) (fun y => W y t) hW x)
+  rw [CurveMap.ds, hd.deriv]
+  simp only [CurveMap.Ds, CurveMap.Dx, map_smul, smul_apply, smul_eq_mul]
+  ring
+
+omit [CompleteSpace E] in
+theorem CurveMap.derivWithin_curvatureSq_le_regularized
+    (g : ℝ → SmoothRiemannianMetric I M) (c : CurveMap M)
+    (s u : ℝ) (hsu : s < u) (hc : c.SmoothOn (I := I) (Icc s u))
+    (hi : c.ImmersedOn (I := I) (Icc s u)) (ε C : ℝ) (hε : 0 < ε) (hC : 0 ≤ C)
+    (x t : ℝ) (ht : t ∈ Icc s u)
+    (hu : HasDerivWithinAt (fun r => c.curvatureSq g x r)
+      (derivWithin (fun r => c.curvatureSq g x r) (Icc s u) t) (Icc s u) t)
+    (hce : derivWithin (fun r => c.curvatureSq g x r) (Icc s u) t ≤
+      c.ds g (c.ds g (c.curvatureSq g)) x t -
+      2 * c.normSq g (c.normalCurvatureDerivative g) x t +
+      2 * c.curvatureSq g x t ^ 2 +
+      2 * C * (c.curvatureSq g x t + c.curvature g x t)) :
+    derivWithin (fun r => c.regularizedCurvature g ε x r) (Icc s u) t ≤
+      c.ds g (c.ds g (c.regularizedCurvature g ε)) x t +
+        c.curvatureSq g x t * c.regularizedCurvature g ε x t +
+        C * (c.regularizedCurvature g ε x t + 1) := by
+  have huniq : UniqueDiffWithinAt ℝ (Icc s u) t := (uniqueDiffOn_Icc hsu) t ht
+  have hk2nn : 0 ≤ c.curvatureSq g x t :=
+    c.normSq_nonneg g (c.curvatureVector g) x t
+  have hN2nn : 0 ≤ c.normSq g (c.normalCurvatureDerivative g) x t :=
+    c.normSq_nonneg g (c.normalCurvatureDerivative g) x t
+  have hsqpos : 0 < c.curvatureSq g x t + ε ^ 2 := by nlinarith [sq_nonneg ε]
+  have hregpos : 0 < c.regularizedCurvature g ε x t := by
+    simp only [CurveMap.regularizedCurvature]
+    exact Real.sqrt_pos.mpr hsqpos
+  have hrsq : c.regularizedCurvature g ε x t ^ 2 = c.curvatureSq g x t + ε ^ 2 :=
+    Real.sq_sqrt hsqpos.le
+  have hksq : c.curvature g x t ^ 2 = c.curvatureSq g x t := c.curvature_sq g x t
+  have hknn : 0 ≤ c.curvature g x t := c.curvature_nonneg g x t
+  have hkle : c.curvature g x t ≤ c.regularizedCurvature g ε x t := by
+    simp only [CurveMap.regularizedCurvature, CurveMap.curvature]
+    exact Real.sqrt_le_sqrt (by nlinarith [sq_nonneg ε])
+  have hchain := CurveMap.derivWithin_regularizedCurvature g c (Icc s u) ε hε x t huniq hu
+  have hds2 := CurveMap.ds_ds_regularizedCurvature g c (Icc s u) hc hi ε hε x t ht
+  have hcs := CurveMap.ds_curvatureSq_sq_le_mul_normSq_normalCurvatureDerivative
+    (g := g) c (Icc s u) hc hi x t ht
+  rw [hchain, hds2]
+  have hstep : (1 / (2 * c.regularizedCurvature g ε x t)) *
+      derivWithin (fun r => c.curvatureSq g x r) (Icc s u) t ≤
+      (1 / (2 * c.regularizedCurvature g ε x t)) *
+        (c.ds g (c.ds g (c.curvatureSq g)) x t -
+          2 * c.normSq g (c.normalCurvatureDerivative g) x t +
+          2 * c.curvatureSq g x t ^ 2 +
+          2 * C * (c.curvatureSq g x t + c.curvature g x t)) :=
+    mul_le_mul_of_nonneg_left hce (by positivity)
+  refine hstep.trans ?_
+  have hD : 0 ≤ c.regularizedCurvature g ε x t ^ 2 - c.curvatureSq g x t := by
+    rw [hrsq]
+    nlinarith [sq_nonneg ε]
+  have hE : 0 ≤ c.regularizedCurvature g ε x t - c.curvature g x t := by linarith [hkle]
+  have hr2 : 0 ≤ c.regularizedCurvature g ε x t ^ 2 := sq_nonneg _
+  have hCr2 : 0 ≤ C * c.regularizedCurvature g ε x t ^ 2 := mul_nonneg hC hr2
+  have hp1 : 0 ≤ (c.regularizedCurvature g ε x t ^ 2 - c.curvatureSq g x t) *
+      c.normSq g (c.normalCurvatureDerivative g) x t := mul_nonneg hD hN2nn
+  have hp2 : 0 ≤ (c.regularizedCurvature g ε x t ^ 2 - c.curvatureSq g x t) *
+      (c.curvatureSq g x t * c.regularizedCurvature g ε x t ^ 2) :=
+    mul_nonneg hD (mul_nonneg hk2nn hr2)
+  have hp3 : 0 ≤ (c.regularizedCurvature g ε x t ^ 2 - c.curvatureSq g x t) *
+      (C * c.regularizedCurvature g ε x t ^ 2) := mul_nonneg hD hCr2
+  have hp4 : 0 ≤ (c.regularizedCurvature g ε x t - c.curvature g x t) *
+      (C * c.regularizedCurvature g ε x t ^ 2) := mul_nonneg hE hCr2
+  field_simp
+  nlinarith [hcs, hp1, hp2, hp3, hp4, hknn, hksq]
+
+
+theorem CurveMap.normSq_normalCurvatureDerivative (g : ℝ → SmoothRiemannianMetric I M)
+    (c : CurveMap M) (J : Set ℝ) (hc : c.SmoothOn (I := I) J)
+    (hi : c.ImmersedOn (I := I) J) (x t : ℝ) (ht : t ∈ J) :
+    c.normSq g (c.normalCurvatureDerivative g) x t =
+      c.normSq g (c.Ds g (c.curvatureVector g)) x t - c.curvatureSq g x t ^ 2 := by
+  have hgeom := tangent_curvature_geometry g c J hc hi x t ht
+  have hN : c.normalCurvatureDerivative g x t =
+      c.Ds g (c.curvatureVector g) x t + c.curvatureSq g x t • c.unitTangent g x t := rfl
+  rw [CurveMap.normSq, CurveMap.normSq, hN]
+  simp only [map_add, add_apply, map_smul, smul_apply, smul_eq_mul]
+  rw [(g t).symm (c.lift x t) (c.unitTangent g x t) (c.Ds g (c.curvatureVector g) x t),
+    hgeom.1, hgeom.2.2]
+  ring
+
 theorem rfs_csf_regularized_curvature (B : RicciBackground (I := I) (M := M) D a b)
     (hsu : s < u) (hwindow : Icc s u ⊆ Icc a b)
     (c : CurveMap M) (hc : c.IsSolutionOn B.family.metric (Icc s u))

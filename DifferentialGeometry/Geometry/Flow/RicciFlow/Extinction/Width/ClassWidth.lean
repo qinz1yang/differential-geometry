@@ -477,4 +477,60 @@ theorem tendsto_regularLeastArea_of_uniform_metric
       add_lt_add_of_le_of_lt (mul_le_mul_of_nonneg_left hBbound hδ.le) hhalf
     _ ≤ ε := by linarith
 
+include finiteDimensionalE boundarylessI t2Q compactQ connectedQ in
+theorem continuousOn_regularLeastArea_family
+    (D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval)
+    (g : ℝ → SmoothRiemannianMetric I Q)
+    (hg : DifferentialGeometry.Geometry.Curvature.MetricFamilySmoothOn D g)
+    {s : Set ℝ} (hs : s ⊆ D.regular)
+    (Γ : ℝ → ContractibleRegularLoop (I := I) (Q := Q))
+    (hΓ : ContinuousOn Γ s) :
+    ContinuousOn (fun t => regularLeastArea (g t) (Γ t)) s := by
+  apply continuousOn_iff_continuous_domRestrict.mpr
+  rw [continuous_iff_continuousAt]
+  intro t₀
+  apply Metric.tendsto_nhds.mpr
+  intro ε hε
+  have hΓc : ContinuousAt (fun t : s => Γ t.1) t₀ :=
+    (continuousOn_iff_continuous_domRestrict.mp hΓ).continuousAt
+  have hbase : ContinuousAt (regularLeastArea (g t₀.1)) (Γ t₀.1) :=
+    (continuous_regularLeastArea (g t₀.1)).continuousAt
+  let A := regularLeastArea (g t₀.1) (Γ t₀.1)
+  have hA : 0 ≤ A := regularLeastArea_nonneg (g t₀.1) (Γ t₀.1)
+  let δ := min (1 / 2 : ℝ) (ε / (2 * (A + 2)))
+  have hδ : 0 < δ := lt_min (by norm_num) (div_pos hε (by positivity))
+  have hδone : δ < 1 := (min_le_left _ _).trans_lt (by norm_num)
+  have hδbound : δ * (A + 2) < ε := by
+    have h1 : δ ≤ ε / (2 * (A + 2)) := min_le_right _ _
+    have h2 : 0 < 2 * (A + 2) := by linarith
+    have h3 := (le_div_iff₀ h2).mp h1
+    nlinarith
+  have hloop : ∀ᶠ t : s in 𝓝 t₀,
+      dist (regularLeastArea (g t₀.1) (Γ t.1)) A < δ :=
+    Metric.tendsto_nhds.mp (hbase.tendsto.comp hΓc.tendsto) δ hδ
+  have hι : Continuous (fun t : s =>
+      (⟨t.1, D.regular_subset (hs t.2)⟩ : D.carrier)) :=
+    continuous_subtype_val.subtype_mk fun t => D.regular_subset (hs t.2)
+  have hmetric : ∀ᶠ t : s in 𝓝 t₀, ∀ q (v : TangentSpace I q),
+      |(g t.1).inner q v v - (g t₀.1).inner q v v| ≤ δ * (g t₀.1).inner q v v :=
+    by
+      filter_upwards [hι.continuousAt.preimage_mem_nhds
+        (eventually_uniform_relative_metric_bound D g hg
+          ⟨t₀.1, D.regular_subset (hs t₀.2)⟩ hδ)] with t ht
+      simpa using ht
+  filter_upwards [hmetric, hloop] with t ht hlt
+  rw [Real.dist_eq] at hlt ⊢
+  have hloop' : |regularLeastArea (g t₀.1) (Γ t.1) - A| ≤ δ := le_of_lt hlt
+  have hbdd : regularLeastArea (g t₀.1) (Γ t.1) ≤ A + 1 := by
+    have h := (abs_le.mp hloop').2
+    linarith
+  have hrel := regularLeastArea_relative_metric_bound (g t₀.1) (g t.1) hδ.le hδone ht
+    (Γ t.1)
+  calc |regularLeastArea (g t.1) (Γ t.1) - A| ≤
+      |regularLeastArea (g t.1) (Γ t.1) - regularLeastArea (g t₀.1) (Γ t.1)| +
+        |regularLeastArea (g t₀.1) (Γ t.1) - A| := abs_sub_le _ _ _
+    _ ≤ δ * regularLeastArea (g t₀.1) (Γ t.1) + δ := add_le_add hrel hloop'
+    _ ≤ δ * (A + 2) := by nlinarith
+    _ < ε := hδbound
+
 end DifferentialGeometry.PDE.RicciFlow.Extinction.Width

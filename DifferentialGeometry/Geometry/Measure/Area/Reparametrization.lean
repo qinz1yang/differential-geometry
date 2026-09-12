@@ -101,4 +101,11 @@ theorem riemannianDiskArea_reparametrize (g : SmoothRiemannianMetric 𝓘(ℝ, E
     hΦ hΨ measurableSet_closedBall hi, himage]
   rfl
 
+theorem riemannianDiskArea_diskReflection (g : SmoothRiemannianMetric 𝓘(ℝ, E) M)
+    {u : closedDisk → M} {C : ℝ≥0}
+    (hu : ∀ x y, riemannianEDistOf g (u x) (u y) ≤ (C : ℝ≥0∞) * edist x y) :
+    riemannianDiskArea g (u ∘ diskReflection) = riemannianDiskArea g u :=
+  riemannianDiskArea_reparametrize g hu diskReflection diskReflection_lipschitz
+    (by simpa using diskReflection_lipschitz)
+
 end DifferentialGeometry.Geometry

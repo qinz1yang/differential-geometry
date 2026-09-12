@@ -202,6 +202,457 @@ theorem mu_sobolev_relaxation [I.Boundaryless]
         exact iInf_of_empty _
       rw [h1, h2]
 
+section MuMonotoneBridge
+
+private local instance instMeasurableSpaceBridge : MeasurableSpace M := borel M
+private local instance instBorelSpaceBridge : BorelSpace M := ⟨rfl⟩
+
+theorem entropyValue_eq_wFunctional [I.Boundaryless]
+    (g : SmoothRiemannianMetric I M) {tau : ℝ} (htau : 0 < tau) (w : EntropyTest g)
+    (hw : ContMDiff I 𝓘(ℝ, ℝ) ∞ w.value) (hwpos : ∀ x, 0 < w.value x) :
+    entropyValue g tau w =
+      DifferentialGeometry.PDE.RicciFlow.Entropy.wFunctional
+        (riemannianVolumeMeasure I M g) (Module.finrank ℝ E) tau
+        (fun x => metricScalarAt (I := I) (M := M) g x)
+        (fun x => g.inner x
+          (DifferentialGeometry.Geometry.Operator.gradFun g
+            (DifferentialGeometry.PDE.RicciFlow.Entropy.perelmanPotential
+              (Module.finrank ℝ E) tau (fun y => w.value y * w.value y)) x)
+          (DifferentialGeometry.Geometry.Operator.gradFun g
+            (DifferentialGeometry.PDE.RicciFlow.Entropy.perelmanPotential
+              (Module.finrank ℝ E) tau (fun y => w.value y * w.value y)) x))
+        (DifferentialGeometry.PDE.RicciFlow.Entropy.perelmanPotential
+          (Module.finrank ℝ E) tau (fun y => w.value y * w.value y)) := by
+  classical
+  let : IsFiniteMeasure (riemannianVolumeMeasure I M g) :=
+    riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace (I := I) (M := M) g
+  let n : ℕ := Module.finrank ℝ E
+  let μ : Measure M := riemannianVolumeMeasure I M g
+  let R : M → ℝ := fun x => metricScalarAt (I := I) (M := M) g x
+  let v : M → ℝ := w.value
+  have hv : ContMDiff I 𝓘(ℝ, ℝ) ∞ v := hw
+  have hvpos : ∀ x : M, 0 < v x := hwpos
+  have hRc : Continuous R := by
+    simpa only [R] using (metricScalar_smooth (I := I) (M := M) g).continuous
+  have hSq := DifferentialGeometry.PDE.RicciFlow.Entropy.w_square_form
+    μ g n htau R hv hvpos
+  simp only [DifferentialGeometry.Geometry.Connection.gradient_eq_gradFun] at hSq
+  have hae : (fun x : M => (w.gradient x : TangentSpace I x)) =ᵐ[μ]
+      (fun x => DifferentialGeometry.Geometry.Operator.gradFun g v x) :=
+    DifferentialGeometry.Analysis.Sobolev.IntrinsicLp.HasWeakRiemannianGradLp.ae_eq
+      (g := g) (u := v)
+      (G := fun x : M => (w.gradient x : TangentSpace I x))
+      (G' := fun x => DifferentialGeometry.Geometry.Operator.gradFun g v x)
+      w.weak_gradient
+      (hasWeakRiemannianGradLp_gradFun_of_contMDiff (I := I) (M := M) hv)
+      (by
+        have h2 : MemLp (fun x => Real.sqrt
+            (g.inner x (w.gradient x) (w.gradient x))) 2 μ := w.gradient_memLp
+        exact h2.mono_exponent (by norm_num))
+      (by
+        have h2 : MemLp (fun x => Real.sqrt
+            (g.inner x (DifferentialGeometry.Geometry.Operator.gradFun g v x)
+              (DifferentialGeometry.Geometry.Operator.gradFun g v x))) 2 μ :=
+          DifferentialGeometry.Analysis.Sobolev.Equivalence.memLp_g_norm_gradFun_smooth
+            (I := I) (M := M) g 2 hv
+        exact h2.mono_exponent (by norm_num))
+  let I₁ : M → ℝ := fun x => 4 * tau * g.inner x (w.gradient x) (w.gradient x) +
+      tau * R x * w.value x ^ 2 - w.value x ^ 2 * Real.log (w.value x ^ 2)
+  let I₂ : M → ℝ := fun x =>
+      4 * tau * g.inner x (DifferentialGeometry.Geometry.Operator.gradFun g v x)
+        (DifferentialGeometry.Geometry.Operator.gradFun g v x) +
+      tau * R x * (v x * v x) - (v x * v x) * Real.log (v x * v x)
+  let c : ℝ := Real.log
+    (DifferentialGeometry.PDE.RicciFlow.Entropy.perelmanDensityPrefactor n tau) - (n : ℝ)
+  have henergy : Continuous (fun x => g.inner x
+      (DifferentialGeometry.Geometry.Operator.gradFun g v x)
+      (DifferentialGeometry.Geometry.Operator.gradFun g v x)) := by
+    have hinner := TangentBundle.continuous_g_inner_of_smooth_sections
+      (I := I) (M := M) g
+      (DifferentialGeometry.Geometry.Operator.gradG (I := I) g ⟨v, hv⟩)
+      (DifferentialGeometry.Geometry.Operator.gradG (I := I) g ⟨v, hv⟩)
+    exact hinner.congr (fun _ => rfl)
+  have hsq : Continuous (fun x : M => v x * v x) := hv.continuous.mul hv.continuous
+  have hI₂cont : Continuous I₂ := by
+    have h3 : Continuous (fun x => (v x * v x) * Real.log (v x * v x)) :=
+      hsq.mul (hsq.log fun x => (mul_pos (hvpos x) (hvpos x)).ne')
+    have h1 : Continuous (fun x => 4 * tau * g.inner x
+        (DifferentialGeometry.Geometry.Operator.gradFun g v x)
+        (DifferentialGeometry.Geometry.Operator.gradFun g v x)) := henergy.const_mul (4 * tau)
+    have h2 : Continuous (fun x => tau * R x * (v x * v x)) :=
+      (hRc.const_mul tau).mul hsq
+    exact ((h1.add h2).sub h3).congr
+      (fun x => by simp only [I₂, Pi.add_apply, Pi.sub_apply])
+  have hI₂int : Integrable I₂ μ :=
+    hI₂cont.integrable_of_hasCompactSupport (HasCompactSupport.of_compactSpace _)
+  have hvvint : Integrable (fun x => v x * v x) μ :=
+    hsq.integrable_of_hasCompactSupport (HasCompactSupport.of_compactSpace _)
+  have hI₁I₂ : (∫ x, I₁ x ∂μ) = ∫ x, I₂ x ∂μ := by
+    apply integral_congr_ae
+    filter_upwards [hae] with x hx
+    simp only [I₁, I₂, v, hx, pow_two]
+  have hvvmass : (∫ x, v x * v x ∂μ) = 1 := by
+    have hchange : (∫ x, v x * v x ∂μ) =
+        ∫ x, w.value x ^ 2 ∂(riemannianVolumeMeasure I M g) := by
+      apply integral_congr_ae
+      filter_upwards with x
+      rw [pow_two]
+    rw [hchange]
+    exact w.normalized
+  have hI₂add : (∫ x, I₂ x + c * (v x * v x) ∂μ) =
+      (∫ x, I₂ x ∂μ) + c := by
+    rw [integral_add hI₂int (hvvint.const_mul c), integral_const_mul, hvvmass, mul_one]
+  have hc : c = -(n : ℝ) / 2 * Real.log (4 * Real.pi * tau) - (n : ℝ) := by
+    have hpref := DifferentialGeometry.PDE.RicciFlow.Entropy.log_prefactor n htau
+    dsimp only [c]
+    rw [hpref]
+  have hent : entropyValue g tau w =
+      (∫ x, I₁ x ∂μ) - ((n : ℝ) / 2 * Real.log (4 * Real.pi * tau)) - (n : ℝ) := by
+    simp only [entropyValue, I₁, μ, R, n]
+  have hkey : entropyValue g tau w = (∫ x, I₂ x ∂μ) + c := by
+    rw [hent, hI₁I₂, hc]
+    ring
+  rw [hkey, hSq, hI₂add]
+
+omit [CompleteSpace E] in
+theorem exists_entropyTest_of_contMDiff [I.Boundaryless]
+    (g : SmoothRiemannianMetric I M) {v : M → ℝ} (hv : ContMDiff I 𝓘(ℝ, ℝ) ∞ v)
+    (hpos : ∀ x, 0 < v x)
+    (hmass : (∫ x, v x ^ 2 ∂(riemannianVolumeMeasure I M g)) = 1) :
+    ∃ w : EntropyTest g, w.value = v := by
+  classical
+  let : IsFiniteMeasure (riemannianVolumeMeasure I M g) :=
+    riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace (I := I) (M := M) g
+  obtain ⟨B, hB⟩ := (isCompact_range hv.continuous.norm).bddAbove
+  have hvmLp : MemLp v 2 (riemannianVolumeMeasure I M g) :=
+    MemLp.of_bound hv.continuous.aestronglyMeasurable B
+      (Filter.Eventually.of_forall fun x => hB ⟨x, rfl⟩)
+  exact ⟨{ value := v
+           gradient := fun x => DifferentialGeometry.Geometry.Operator.gradFun g v x
+           value_memLp := hvmLp
+           weak_gradient := hasWeakRiemannianGradLp_gradFun_of_contMDiff (I := I) (M := M) hv
+           gradient_memLp :=
+             DifferentialGeometry.Analysis.Sobolev.Equivalence.memLp_g_norm_gradFun_smooth
+               (I := I) (M := M) g 2 hv
+           nonnegative := Filter.Eventually.of_forall fun x => (hpos x).le
+           normalized := hmass }, rfl⟩
+
+theorem exists_muSmooth_step [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
+    [BoundarylessManifold I M] {D : RealTimeInterval}
+    (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn S)
+    (hDim : Module.finrank ℝ E = 3) {a₀ a b : ℝ} (ha₀a : a₀ < a)
+    (hab : Set.Icc a₀ b ⊆ D.regular) :
+    ∃ rho : ℝ, 0 < rho ∧
+      ∀ {s t theta : ℝ}, s ∈ Set.Icc a b → t ∈ Set.Icc a b → s ≤ t →
+        t - s ≤ rho → 0 < theta →
+        muSmooth (S.base.metric s) (theta + t - s) ≤ muSmooth (S.base.metric t) theta := by
+  classical
+  obtain ⟨rho0, hrho0, _hrho0one, hspan⟩ :=
+    DifferentialGeometry.PDE.RicciFlow.Entropy.gallim_span (I := I) (M := M) S hS hab
+  let r : ℝ := min rho0 (a - a₀)
+  have hr : 0 < r := lt_min hrho0 (sub_pos.mpr ha₀a)
+  have hr_rho : r ≤ rho0 := min_le_left _ _
+  have hr_gap : r ≤ a - a₀ := min_le_right _ _
+  refine ⟨r / 2, half_pos hr, ?_⟩
+  intro s t theta hs ht hst hgap htheta
+  have hqle : 0 ≤ t - s := sub_nonneg.mpr hst
+  have hqlt : t - s < r := lt_of_le_of_lt hgap (half_lt_self hr)
+  have hleft : a₀ ≤ t - r := by
+    have : a₀ ≤ a - (a - a₀) := by linarith
+    linarith [hs.1, hr_gap, this]
+  refine le_iInf fun w => le_iInf fun hw => le_iInf fun hwpos => ?_
+  let zeta : C^∞⟮I, M; ℝ⟯ := ⟨fun x => w.value x * w.value x, hw.mul hw⟩
+  let u0 : DifferentialGeometry.Integral.L2.SmoothCcTensor (S.family.metric t) 0 0 :=
+    DifferentialGeometry.Analysis.Sobolev.scalarCc (I := I) (M := M) (S.family.metric t) zeta
+  have hu0 : DifferentialGeometry.Tensor0SBundle.TensorRSField.scalar0
+      (n := (∞ : WithTop ℕ∞)) u0.toSection = fun x => w.value x * w.value x := by
+    funext x
+    exact congrFun (DifferentialGeometry.Analysis.Sobolev.scalar0_scalarCc (I := I) (M := M)
+      (S.family.metric t) zeta) x
+  have hinit : ∀ x : M, 0 < DifferentialGeometry.Tensor0SBundle.TensorRSField.scalar0
+      (n := (∞ : WithTop ℕ∞)) u0.toSection x := by
+    intro x
+    rw [hu0]
+    exact mul_pos (hwpos x) (hwpos x)
+  obtain ⟨V, phi, ulim, hlim, hpot⟩ :=
+    hspan ⟨t, hab ⟨ha₀a.le.trans ht.1, ht.2⟩⟩
+      ⟨ha₀a.le.trans ht.1, ht.2⟩ r hr hr_rho hleft u0
+  let G : DifferentialGeometry.Geometry.Curvature.MetricConnectionFamily (I := I) (M := M) ℝ :=
+    DifferentialGeometry.PDE.RicciFlow.Entropy.reverseFamily
+      (DifferentialGeometry.PDE.RicciFlow.flowG (I := I) S) t
+  let u : ℝ → M → ℝ := fun z x =>
+    DifferentialGeometry.Analysis.Spectral.scalarSpecSum (I := I) (M := M)
+      (S.family.metric t) (fun i z => ulim z i) z x
+  have hGq : G.metric (t - s) = S.family.metric s := by
+    change S.family.metric (t - (t - s)) = S.family.metric s
+    have hts : t - (t - s) = s := by ring
+    rw [hts]
+  have hG0 : G.metric 0 = S.family.metric t := by
+    change S.family.metric (t - 0) = S.family.metric t
+    rw [sub_zero]
+  have hposPath : ∀ z ∈ Set.Icc (0 : ℝ) r, ∀ x : M, 0 < u z x := by
+    simpa only [u] using
+      DifferentialGeometry.PDE.RicciFlow.Entropy.gallim_pos_on (I := I) (M := M)
+        S hS hab ⟨t, hab ⟨ha₀a.le.trans ht.1, ht.2⟩⟩
+        ⟨ha₀a.le.trans ht.1, ht.2⟩ hr hleft hlim hpot hinit
+  have href : ∀ z ∈ Set.Icc (0 : ℝ) r, t - z ∈ D.regular := by
+    intro z hz
+    apply hab
+    constructor
+    · linarith [hz.2, hleft]
+    · linarith [hz.1, ht.2]
+  have hmassPath := DifferentialGeometry.PDE.RicciFlow.Entropy.heatpot_mass_on
+    (I := I) (M := M) S hS ⟨t, hab ⟨ha₀a.le.trans ht.1, ht.2⟩⟩ hr hpot href
+  have hqIcc : t - s ∈ Set.Icc (0 : ℝ) r := ⟨hqle, hqlt.le⟩
+  have hqIco : t - s ∈ Set.Ico (0 : ℝ) r := ⟨hqle, hqlt⟩
+  have hu0eval : u 0 = DifferentialGeometry.Tensor0SBundle.TensorRSField.scalar0
+      (n := (∞ : WithTop ℕ∞)) u0.toSection := by
+    simpa only [u] using
+      DifferentialGeometry.PDE.RicciFlow.Entropy.galerkinLim_initial (I := I) (M := M) hlim
+  have hvol0 : DifferentialGeometry.Integral.Measure.volumeMeasureFamily (I := I) (M := M) G 0
+      = DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure (I := I) (M := M)
+        (S.base.metric t) := by
+    simp only [DifferentialGeometry.Integral.Measure.volumeMeasureFamily,
+      DifferentialGeometry.Integral.Measure.metricFamilyForMeasure,
+      DifferentialGeometry.Integral.Measure.riemannianMeasureFamily,
+      hG0, SolutionOn.family_metric]
+  have hmass0 : (∫ x, u 0 x ∂(DifferentialGeometry.Integral.Measure.volumeMeasureFamily
+      (I := I) (M := M) G 0)) = 1 := by
+    rw [hvol0, hu0eval, hu0]
+    simpa only [pow_two] using w.normalized
+  have hvolq : DifferentialGeometry.Integral.Measure.volumeMeasureFamily (I := I) (M := M) G (t - s)
+      = DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure (I := I) (M := M)
+        (S.base.metric s) := by
+    have hts : t - (t - s) = s := by ring
+    simp only [DifferentialGeometry.Integral.Measure.volumeMeasureFamily,
+      DifferentialGeometry.Integral.Measure.metricFamilyForMeasure,
+      DifferentialGeometry.Integral.Measure.riemannianMeasureFamily,
+      hGq, SolutionOn.family_metric]
+  have hmassq : (∫ x, u (t - s) x ∂(DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure
+      (I := I) (M := M) (S.base.metric s))) = 1 := by
+    have hm := (hmassPath (t - s) hqIcc).trans hmass0
+    rwa [hvolq] at hm
+  have hsmoothq : ContMDiff I 𝓘(ℝ, ℝ) ∞ (u (t - s)) := hpot.sliceSmooth (t - s) hqIcc
+  have hposq : ∀ x : M, 0 < u (t - s) x := hposPath (t - s) hqIcc
+  have hsqrtDiff : ContMDiff I 𝓘(ℝ, ℝ) ∞ (fun x => Real.sqrt (u (t - s) x)) := by
+    have hsq : ContDiffOn ℝ ∞ Real.sqrt (Set.Ioi (0 : ℝ)) := by
+      simpa only [id_eq] using
+        ContDiffOn.sqrt (f := id) (s := Set.Ioi (0 : ℝ))
+          (contDiffOn_id (𝕜 := ℝ) (s := Set.Ioi (0 : ℝ))) (fun x hx => ne_of_gt hx)
+    have hsqM : ContMDiffOn 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) ∞ Real.sqrt (Set.Ioi (0 : ℝ)) :=
+      (contMDiffOn_iff_contDiffOn (𝕜 := ℝ)).mpr hsq
+    refine contMDiffOn_univ.mp ?_
+    refine (hsqM.comp (s := Set.univ) (t := Set.Ioi (0 : ℝ))
+      (contMDiffOn_univ.mpr hsmoothq) ?_).congr ?_
+    · intro x _
+      exact hposq x
+    · intro x _
+      rfl
+  have hsqrtMemLp : MemLp (fun x => Real.sqrt (u (t - s) x)) 2
+      (DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure (I := I) (M := M)
+        (S.base.metric s)) := by
+    let : IsFiniteMeasure (DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure
+        (I := I) (M := M) (S.base.metric s)) :=
+      riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace (I := I) (M := M) (S.base.metric s)
+    obtain ⟨B, hB⟩ := (isCompact_range hsqrtDiff.continuous.norm).bddAbove
+    exact MemLp.of_bound hsqrtDiff.continuous.aestronglyMeasurable B
+      (Filter.Eventually.of_forall fun x => hB ⟨x, rfl⟩)
+  have hgradMemLp : MemLp (fun x => Real.sqrt ((S.base.metric s).inner x
+      (DifferentialGeometry.Geometry.Operator.gradFun (S.base.metric s)
+        (fun y => Real.sqrt (u (t - s) y)) x)
+      (DifferentialGeometry.Geometry.Operator.gradFun (S.base.metric s)
+        (fun y => Real.sqrt (u (t - s) y)) x))) 2
+      (DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure (I := I) (M := M)
+        (S.base.metric s)) := by
+    let : IsFiniteMeasure (DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure
+        (I := I) (M := M) (S.base.metric s)) :=
+      riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace (I := I) (M := M) (S.base.metric s)
+    have hcont : Continuous (fun x => Real.sqrt ((S.base.metric s).inner x
+        (DifferentialGeometry.Geometry.Operator.gradFun (S.base.metric s)
+          (fun y => Real.sqrt (u (t - s) y)) x)
+        (DifferentialGeometry.Geometry.Operator.gradFun (S.base.metric s)
+          (fun y => Real.sqrt (u (t - s) y)) x))) := by
+      have hinner := TangentBundle.continuous_g_inner_of_smooth_sections
+        (I := I) (M := M) (S.base.metric s)
+        (DifferentialGeometry.Geometry.Operator.gradG (I := I) (S.base.metric s)
+          ⟨fun y => Real.sqrt (u (t - s) y), hsqrtDiff⟩)
+        (DifferentialGeometry.Geometry.Operator.gradG (I := I) (S.base.metric s)
+          ⟨fun y => Real.sqrt (u (t - s) y), hsqrtDiff⟩)
+      exact Real.continuous_sqrt.comp (hinner.congr (fun _ => rfl))
+    obtain ⟨B, hB⟩ := (isCompact_range hcont.norm).bddAbove
+    exact MemLp.of_bound hcont.aestronglyMeasurable B
+      (Filter.Eventually.of_forall fun x => hB ⟨x, rfl⟩)
+  let ws : EntropyTest (S.base.metric s) :=
+    { value := fun x => Real.sqrt (u (t - s) x)
+      gradient := fun x => DifferentialGeometry.Geometry.Operator.gradFun (S.base.metric s)
+        (fun y => Real.sqrt (u (t - s) y)) x
+      value_memLp := hsqrtMemLp
+      weak_gradient := hasWeakRiemannianGradLp_gradFun_of_contMDiff (I := I) (M := M) hsqrtDiff
+      gradient_memLp := hgradMemLp
+      nonnegative := Filter.Eventually.of_forall fun x => Real.sqrt_nonneg _
+      normalized := by
+        have hsq_eq : (fun x => Real.sqrt (u (t - s) x) ^ 2) = u (t - s) := by
+          funext x
+          exact Real.sq_sqrt (hposq x).le
+        rw [hsq_eq]
+        exact hmassq }
+  have hscalarS : (fun x => metricScalarAt (I := I) (M := M) (S.base.metric s) x) =
+      S.scalar s := by
+    funext x
+    rw [SolutionOn.scalar_eq_metricTrace]
+    rfl
+  have hscalarT : (fun x => metricScalarAt (I := I) (M := M) (S.base.metric t) x) =
+      S.scalar t := by
+    funext x
+    rw [SolutionOn.scalar_eq_metricTrace]
+    rfl
+  have hdensityq : (fun y => ws.value y * ws.value y) = u (t - s) := by
+    funext y
+    exact Real.mul_self_sqrt (hposq y).le
+  have hu0fun : (fun x => DifferentialGeometry.Analysis.Spectral.scalarSpecSum (I := I) (M := M)
+      (S.family.metric t) (fun i r => ulim r i) 0 x) = (fun x => w.value x * w.value x) := by
+    have h : u 0 = (fun x => w.value x * w.value x) := by
+      rw [hu0eval, hu0]
+    exact h
+  have hW := DifferentialGeometry.PDE.RicciFlow.Entropy.gallim_w_lt
+    (I := I) (M := M) hS hDim hr hlim hpot href htheta hposPath (t - s) hqIco
+  have hWflow : DifferentialGeometry.PDE.RicciFlow.Entropy.flowW (I := I) (M := M) S s
+        (theta + (t - s)) (u (t - s)) ≤
+      DifferentialGeometry.PDE.RicciFlow.Entropy.flowW (I := I) (M := M) S t theta
+        (fun x => w.value x * w.value x) := by
+    dsimp only [DifferentialGeometry.PDE.RicciFlow.Entropy.flowW, u]
+    rw [hDim] at hW ⊢
+    have hts : t - (t - s) = s := by ring
+    simpa only [G, hGq, hG0, hts, hu0fun,
+      DifferentialGeometry.Integral.Measure.volumeMeasureFamily,
+      DifferentialGeometry.Integral.Measure.metricFamilyForMeasure,
+      DifferentialGeometry.Integral.Measure.riemannianMeasureFamily,
+      add_zero, sub_zero] using hW
+  have htau : theta + t - s = theta + (t - s) := by ring
+  have hleft_eq : (entropyValue (S.base.metric s) (theta + t - s) ws : EReal) =
+      (DifferentialGeometry.PDE.RicciFlow.Entropy.flowW (I := I) (M := M) S s
+        (theta + (t - s)) (u (t - s)) : EReal) := by
+    rw [htau]
+    rw [entropyValue_eq_wFunctional (I := I) (M := M) (S.base.metric s)
+      (by linarith : (0 : ℝ) < theta + (t - s)) ws hsqrtDiff
+      (fun x => Real.sqrt_pos.mpr (hposq x))]
+    dsimp only [DifferentialGeometry.PDE.RicciFlow.Entropy.flowW]
+    simp only [hdensityq, hscalarS,
+      DifferentialGeometry.Geometry.Connection.gradient_eq_gradFun,
+      SolutionOn.family_metric]
+  have hright_eq : (DifferentialGeometry.PDE.RicciFlow.Entropy.flowW (I := I) (M := M) S t
+        theta (fun x => w.value x * w.value x) : EReal) =
+      (entropyValue (S.base.metric t) theta w : EReal) := by
+    rw [entropyValue_eq_wFunctional (I := I) (M := M) (S.base.metric t) htheta w hw hwpos]
+    dsimp only [DifferentialGeometry.PDE.RicciFlow.Entropy.flowW]
+    simp only [hscalarT, DifferentialGeometry.Geometry.Connection.gradient_eq_gradFun,
+      SolutionOn.family_metric]
+  have hmule : muSmooth (S.base.metric s) (theta + t - s) ≤
+      (entropyValue (S.base.metric s) (theta + t - s) ws : EReal) := by
+    unfold muSmooth
+    refine (iInf_le (f := fun w : EntropyTest (S.base.metric s) =>
+      ⨅ (_ : ContMDiff I 𝓘(ℝ, ℝ) ∞ w.value),
+        ⨅ (_ : ∀ x, 0 < w.value x),
+          (entropyValue (S.base.metric s) (theta + t - s) w : EReal)) ws).trans ?_
+    refine (iInf_le (f := fun _ : ContMDiff I 𝓘(ℝ, ℝ) ∞ ws.value =>
+      ⨅ (_ : ∀ x, 0 < ws.value x),
+        (entropyValue (S.base.metric s) (theta + t - s) ws : EReal)) hsqrtDiff).trans ?_
+    exact iInf_le (f := fun _ : ∀ x, 0 < ws.value x =>
+      (entropyValue (S.base.metric s) (theta + t - s) ws : EReal))
+      (fun x => Real.sqrt_pos.mpr (hposq x))
+  exact hmule.trans (hleft_eq.trans_le
+    ((EReal.coe_le_coe hWflow).trans_eq hright_eq))
+
+theorem exists_muSmooth_step_chain [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
+    [BoundarylessManifold I M] {D : RealTimeInterval}
+    (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn S)
+    (hDim : Module.finrank ℝ E = 3) {a₀ a b : ℝ} (ha₀a : a₀ < a)
+    (hab : Set.Icc a₀ b ⊆ D.regular) {t1 t2 tau : ℝ}
+    (h1 : t1 ∈ Set.Icc a b) (h2 : t2 ∈ Set.Icc a b) (hle : t1 ≤ t2) (htau : 0 < tau) :
+    muSmooth (S.base.metric t1) (tau + t2 - t1) ≤ muSmooth (S.base.metric t2) tau := by
+  classical
+  obtain ⟨rho, hrho, hstepL⟩ := exists_muSmooth_step (I := I) (M := M) S hS hDim ha₀a hab
+  let delta : ℝ := rho / 2
+  have hdelta : 0 < delta := half_pos hrho
+  have hdelta_rho : delta ≤ rho := by
+    dsimp only [delta]
+    linarith
+  let Good : ℝ → Prop := fun t => ∀ theta : ℝ, 0 < theta →
+    muSmooth (S.base.metric t1) (theta + t - t1) ≤ muSmooth (S.base.metric t) theta
+  have hbase : Good t1 := by
+    intro theta htheta
+    have h : theta + t1 - t1 = theta := by ring
+    rw [h]
+  have hgrid : ∀ n : Nat, ∀ t ∈ Set.Icc t1 b, t ≤ t1 + (n : ℝ) * delta → Good t := by
+    intro n
+    induction n with
+    | zero =>
+        intro t ht hta
+        have hta' : t = t1 := by
+          norm_num at hta
+          exact le_antisymm hta ht.1
+        subst hta'
+        exact hbase
+    | succ n ih =>
+        intro t ht htn
+        let s : ℝ := max t1 (t - delta)
+        have hs1 : t1 ≤ s := le_max_left _ _
+        have hst : s ≤ t := by
+          apply max_le ht.1
+          linarith [hdelta.le]
+        have hsb : s ≤ b := hst.trans ht.2
+        have hsn : s ≤ t1 + (n : ℝ) * delta := by
+          apply max_le
+          · have hn0 : 0 ≤ (n : ℝ) * delta := mul_nonneg (Nat.cast_nonneg n) hdelta.le
+            linarith
+          · norm_num [Nat.cast_succ] at htn ⊢
+            linarith
+        have hgap : t - s ≤ delta := by
+          have hsLower : t - delta ≤ s := le_max_right _ _
+          linarith
+        have hgood := ih s ⟨hs1, hsb⟩ hsn
+        intro theta htheta
+        have htheta' : 0 < theta + t - s := by linarith
+        have hgood' := hgood (theta + t - s) htheta'
+        have hstep' := hstepL (s := s) (t := t) (theta := theta)
+          ⟨h1.1.trans hs1, hsb⟩ ⟨h1.1.trans ht.1, ht.2⟩ hst
+          (hgap.trans hdelta_rho) htheta
+        have hchain : (theta + t - s) + s - t1 = theta + t - t1 := by ring
+        rw [hchain] at hgood'
+        exact hgood'.trans hstep'
+  obtain ⟨N, hN⟩ := exists_nat_gt ((t2 - t1) / delta)
+  have hcover : t2 ≤ t1 + (N : ℝ) * delta := by
+    have hmul : t2 - t1 < (N : ℝ) * delta := (div_lt_iff₀ hdelta).mp hN
+    linarith
+  have hgood2 := hgrid N t2 ⟨hle, h2.2⟩ hcover
+  exact hgood2 tau htau
+
+theorem mu_monotone_of_regular [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
+    [BoundarylessManifold I M] {D : RealTimeInterval}
+    (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn S)
+    (hDim : Module.finrank ℝ E = 3) {t1 t2 tau : ℝ} (hle : t1 ≤ t2)
+    (hreg : Set.Icc t1 t2 ⊆ D.regular) (htau : 0 < tau) :
+    muSmooth (S.base.metric t1) (tau + t2 - t1) ≤ muSmooth (S.base.metric t2) tau := by
+  classical
+  obtain ⟨l1, u1, ht1in, hsl1⟩ :=
+    mem_nhds_iff_exists_Ioo_subset.mp
+      (D.regular_isOpen.mem_nhds (hreg ⟨le_rfl, hle⟩))
+  obtain ⟨l2, u2, ht2in, hsl2⟩ :=
+    mem_nhds_iff_exists_Ioo_subset.mp
+      (D.regular_isOpen.mem_nhds (hreg ⟨hle, le_rfl⟩))
+  have ha₀a : (l1 + t1) / 2 < t1 := by linarith [ht1in.1]
+  have hsub : Set.Icc ((l1 + t1) / 2) t2 ⊆ D.regular := by
+    intro x hx
+    rcases le_total x t1 with hx1 | hx1
+    · exact hsl1 ⟨by linarith [hx.1, ht1in.1], by linarith [hx1, ht1in.2]⟩
+    · rcases le_total x t2 with hx2 | hx2
+      · exact hreg ⟨hx1, hx2⟩
+      · exact hsl2 ⟨by linarith [hx2, ht2in.1], by linarith [hx.2, ht2in.2]⟩
+  exact exists_muSmooth_step_chain (I := I) (M := M) S hS hDim ha₀a hsub
+    ⟨le_rfl, hle⟩ ⟨hle, le_rfl⟩ hle htau
+
+end MuMonotoneBridge
+
 theorem mu_monotone [I.Boundaryless] {D : RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn S)
     (hdim : 2 ≤ Module.finrank ℝ E) {t1 t2 tau : ℝ}

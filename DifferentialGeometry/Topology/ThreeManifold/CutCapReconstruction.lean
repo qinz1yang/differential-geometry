@@ -22,6 +22,24 @@ theorem isStandardFactor_of_isSphereTwoTimesCircleFactor
     isStandardFactor F :=
   Or.inr h
 
+theorem isSphereTwoTimesCircleFactor_of_orientedDiffeomorph
+    {F F' : ConnectedClosedOrientedManifold.{u} 3}
+    (h : Nonempty (ClosedOrientedManifold.OrientedDiffeomorph
+      F'.toClosedOrientedManifold F.toClosedOrientedManifold))
+    (hF : isSphereTwoTimesCircleFactor F) : isSphereTwoTimesCircleFactor F' := by
+  obtain ⟨g⟩ := h
+  obtain ⟨f, hf⟩ := hF
+  exact ⟨g.1.trans f, Diffeomorph.preservesOrientation_trans g.2 hf⟩
+
+theorem isSphereTwoTimesCircleFactor_iff_of_orientedDiffeomorph
+    {F F' : ConnectedClosedOrientedManifold.{u} 3}
+    (h : Nonempty (ClosedOrientedManifold.OrientedDiffeomorph
+      F'.toClosedOrientedManifold F.toClosedOrientedManifold)) :
+    isSphereTwoTimesCircleFactor F ↔ isSphereTwoTimesCircleFactor F' :=
+  ⟨isSphereTwoTimesCircleFactor_of_orientedDiffeomorph h,
+    isSphereTwoTimesCircleFactor_of_orientedDiffeomorph
+      (h.map ClosedOrientedManifold.OrientedDiffeomorph.symm)⟩
+
 namespace ClosedOrientedManifold
 
 variable (M : ClosedOrientedManifold.{u} 3) [ConnectedSpace M.Carrier]

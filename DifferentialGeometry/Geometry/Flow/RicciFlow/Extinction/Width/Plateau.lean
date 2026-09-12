@@ -218,6 +218,55 @@ def SmoothDisk.IsHarmonic (u : SmoothDisk (I := I) (Q := Q))
   ∀ z : Disk, ∀ F : DiskLocalExtension (I := I) u.map z,
     diskLocalTension g F.map (z : ℂ) = 0
 
+def DiskLocalTensionClosureLocality (g : SmoothRiemannianMetric I Q) : Prop :=
+  ∀ {F G : ℂ → Q} {U : Set ℂ}, IsOpen U → EqOn F G U → ∀ {z : ℂ}, z ∈ closure U →
+    ContMDiffAt 𝓘(ℝ, ℂ) I ∞ F z → ContMDiffAt 𝓘(ℝ, ℂ) I ∞ G z →
+    (diskLocalTension g F z : E) = (diskLocalTension g G z : E)
+
+theorem diskLocalTension_congr_of_eqOn_of_mem_closure (g : SmoothRiemannianMetric I Q)
+    (hloc : DiskLocalTensionClosureLocality (I := I) (Q := Q) g)
+    {F G : ℂ → Q} {U : Set ℂ} (hU : IsOpen U) (hFG : EqOn F G U) {z : ℂ}
+    (hz : z ∈ closure U) (hF : ContMDiffAt 𝓘(ℝ, ℂ) I ∞ F z)
+    (hG : ContMDiffAt 𝓘(ℝ, ℂ) I ∞ G z) :
+    (diskLocalTension g F z : E) = (diskLocalTension g G z : E) :=
+  hloc hU hFG hz hF hG
+
+theorem SmoothDisk.isHarmonic_of_localExtension (g : SmoothRiemannianMetric I Q)
+    (hloc : DiskLocalTensionClosureLocality (I := I) (Q := Q) g)
+    (u : SmoothDisk (I := I) (Q := Q))
+    {U : ℂ → Q} {N : Set ℂ} (hN : IsOpen N) (hDN : Metric.closedBall (0 : ℂ) 1 ⊆ N)
+    (hsm : ContMDiffOn 𝓘(ℝ, ℂ) I ∞ U N)
+    (hag : EqOn U (diskExtension u.map) (N ∩ Metric.closedBall (0 : ℂ) 1))
+    (hharm : ∀ z ∈ Metric.closedBall (0 : ℂ) 1, (diskLocalTension g U z : E) = 0) :
+    u.IsHarmonic g := by
+  intro z F
+  have hNmem : N ∈ 𝓝 (z : ℂ) := hN.mem_nhds (hDN z.property)
+  have hmem : F.domain ∩ N ∈ 𝓝 (z : ℂ) :=
+    Filter.inter_mem (F.isOpen_domain.mem_nhds F.mem_domain) hNmem
+  have hball : (z : ℂ) ∈ closure (Metric.ball (0 : ℂ) 1) := by
+    rw [closure_ball (0 : ℂ) (by norm_num : (1 : ℝ) ≠ 0)]
+    exact z.property
+  have hzcl : (z : ℂ) ∈ closure (F.domain ∩ N ∩ Metric.ball (0 : ℂ) 1) := by
+    rw [mem_closure_iff_nhds]
+    intro t ht
+    have hA : t ∩ (F.domain ∩ N) ∈ 𝓝 (z : ℂ) := Filter.inter_mem ht hmem
+    obtain ⟨w, hwtA, hwb⟩ := mem_closure_iff_nhds.mp hball (t ∩ (F.domain ∩ N)) hA
+    obtain ⟨hwt, hwd, hwN⟩ := hwtA
+    exact ⟨w, hwt, ⟨hwd, hwN⟩, hwb⟩
+  have hVopen : IsOpen (F.domain ∩ N ∩ Metric.ball (0 : ℂ) 1) :=
+    (F.isOpen_domain.inter hN).inter Metric.isOpen_ball
+  have heq : EqOn F.map U (F.domain ∩ N ∩ Metric.ball (0 : ℂ) 1) := by
+    intro w hw
+    obtain ⟨⟨hwd, hwN⟩, hwb⟩ := hw
+    rw [F.agrees ⟨hwd, Metric.ball_subset_closedBall hwb⟩,
+      hag ⟨hwN, Metric.ball_subset_closedBall hwb⟩]
+  have hFsm : ContMDiffAt 𝓘(ℝ, ℂ) I ∞ F.map (z : ℂ) :=
+    (F.smooth (z : ℂ) F.mem_domain).contMDiffAt (F.isOpen_domain.mem_nhds F.mem_domain)
+  have hUsm : ContMDiffAt 𝓘(ℝ, ℂ) I ∞ U (z : ℂ) :=
+    (hsm (z : ℂ) (hDN z.property)).contMDiffAt hNmem
+  rw [hloc hVopen heq hzcl hFsm hUsm]
+  exact hharm (z : ℂ) z.property
+
 structure SmoothWeaklyMonotoneCircleMap where
   map : C(Surgery.Topology.Circle, Surgery.Topology.Circle)
   lift : ℝ → ℝ

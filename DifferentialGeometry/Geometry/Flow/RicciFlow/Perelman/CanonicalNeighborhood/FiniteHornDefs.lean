@@ -182,6 +182,10 @@ structure _root_.DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborho
           (fun _ => scaleMetric (metricScalarAt g x) hQ g) F
           (Set.univ ×ˢ Set.Icc (-collar_depth) collar_depth)
           {0} (⌈neck_precision⁻¹⌉₊) neck_precision)
+  ambient_end_isometry : ∃ i, (∀ x ∈ subend i, ∀ y ∈ subend i,
+      dist x y = dist (inclusion x) (inclusion y)) ∧
+    ∀ x ∈ subend i, dist (x : UniformSpace.Completion W) endpoint =
+      dist (inclusion x) ambient_end
 
 attribute [local instance] FiniteHorn.ambient_metric
 

@@ -1,5 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.Evolution
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Scalar.JointRegularity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.LeastArea
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.ClassWidth
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.LocalExistence
 import Mathlib.Analysis.Calculus.MeanValue
 import Mathlib.Analysis.ODE.Gronwall
@@ -405,6 +407,50 @@ def scalarMinimum (G : SolutionFamily (I := I) (M := M)) (t : ℝ) : ℝ :=
 
 def areaIntegratingFactor (G : SolutionFamily (I := I) (M := M)) (s v : ℝ) : ℝ :=
   Real.exp ((1 / 2 : ℝ) * ∫ w in s..v, scalarMinimum G w)
+
+omit hBoundary hNonempty [SigmaCompactSpace M] in
+theorem continuousOn_scalarMinimum_of_isSolutionOn (S : SolutionOn (I := I) (M := M) D)
+    (hS : IsSolutionOn (I := I) S) (hreg : Icc a b ⊆ D.regular) :
+    ContinuousOn (scalarMinimum S.base) (Icc a b) := by
+  have hj := scalar_joint (I := I) S hS
+  have hincl : ContinuousOn (fun p : Set.Icc a b × M => ((p.1 : ℝ), p.2)) univ := by
+    fun_prop
+  have hmaps : MapsTo (fun p : Set.Icc a b × M => ((p.1 : ℝ), p.2))
+      univ (D.regular ×ˢ (univ : Set M)) :=
+    fun p _ => ⟨hreg p.1.2, mem_univ _⟩
+  have hcomp : ContinuousOn ((fun p : ℝ × M => S.scalar p.1 p.2) ∘
+      fun p : Set.Icc a b × M => ((p.1 : ℝ), p.2)) univ :=
+    hj.continuousOn.comp hincl hmaps
+  have hcont : Continuous (fun p : Set.Icc a b × M => S.scalar (p.1 : ℝ) p.2) := by
+    rw [← continuousOn_univ]
+    refine hcomp.congr fun p _ => ?_
+    rfl
+  have hsinf : Continuous (fun t : Set.Icc a b => sInf
+      ((fun x : M => S.scalar (t : ℝ) x) '' (univ : Set M))) :=
+    isCompact_univ.continuous_sInf hcont
+  apply continuousOn_iff_continuous_domRestrict.mpr
+  refine hsinf.congr fun t => ?_
+  simp only [scalarMinimum, SolutionOn.scalar, Set.image_univ, Set.domRestrict_apply]
+
+omit hBoundary hNonempty [SigmaCompactSpace M] in
+theorem RicciBackground.continuousOn_scalarMinimum
+    (B : RicciBackground (I := I) (M := M) D a b) :
+    ContinuousOn (scalarMinimum B.family) (Icc a b) :=
+  continuousOn_scalarMinimum_of_isSolutionOn (I := I)
+    (show SolutionOn (I := I) (M := M) D from ⟨B.family⟩) B.equation B.regular
+
+omit hNonempty [SigmaCompactSpace M] in
+theorem continuousOn_loopFamilyLeastArea_of_continuousRegularFamily [ConnectedSpace M]
+    (B : RicciBackground (I := I) (M := M) D a b)
+    (γ : ℝ → ContinuousFreeLoop M)
+    (Γ : ℝ → Width.ContractibleRegularLoop (I := I) (Q := M))
+    (hΓ : ContinuousOn Γ (Icc a b))
+    (hagree : ∀ t ∈ Icc a b, (Γ t).1.toContinuousLoop = γ t) :
+    ContinuousOn (loopFamilyLeastArea B.family.metric γ) (Icc a b) :=
+  (Width.continuousOn_regularLeastArea_family (I := I) (Q := M) D B.family.metric B.smooth
+    B.regular Γ hΓ).congr fun t ht => by
+      simp only [Width.regularLeastArea, Width.leastArea, loopFamilyLeastArea,
+        hagree t ht]
 
 theorem rfs_csf_boundary_isotopy (γ : ℝ → ContinuousFreeLoop M)
     (hγ : (curveOfLoopFamily γ).SmoothOn (I := I) (Icc a b))

@@ -1,4 +1,5 @@
 import DifferentialGeometry.Geometry.Exponential.Intrinsic.Restriction
+import DifferentialGeometry.Geometry.Exponential.Intrinsic.Agreement
 import Mathlib.Data.ENNReal.Real
 
 set_option autoImplicit false
@@ -106,6 +107,34 @@ theorem intrinsicInjOn_ball
       (Metric.ball (0 : E) r) := by
   have h := intrinsicInjOn_eball (I := I) g hEnorm p hr
   rwa [Metric.eball_ofReal] at h
+
+omit [CompleteSpace E] [T2Space (TangentBundle I M)] [ConnectedSpace M] in
+theorem injOn_expMap_ball_of_intrinsicInjRadius
+    (g : SmoothRiemannianMetric I M)
+    (hEnorm : ∀ x : M, ∀ v : TangentSpace I x,
+      ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x v v)))
+    (p : M) {r : Real}
+    (hr : ENNReal.ofReal r < intrinsicInjRadius (I := I) g hEnorm p) :
+    InjOn (fun v : TangentSpace I p =>
+      DifferentialGeometry.Geometry.Riemannian.Exponential.expMap (I := I) g p v)
+      {v : TangentSpace I p | Real.sqrt (g.inner p v v) < r} := by
+  intro u hu w hw huw
+  have hinj := intrinsicInjOn_ball (I := I) g hEnorm p hr
+  have hmem : ∀ v : TangentSpace I p,
+      Real.sqrt (g.inner p v v) < r →
+        (normalFrame (I := I) g p).symm v ∈ Metric.ball (0 : E) r := by
+    intro v hv
+    rw [Metric.mem_ball, dist_zero_right,
+      ← normalFrame_sqrt (I := I) g p ((normalFrame (I := I) g p).symm v),
+      ContinuousLinearEquiv.apply_symm_apply]
+    exact hv
+  have hkey : intrinsicFramedExp (I := I) g hEnorm p ((normalFrame (I := I) g p).symm u) =
+      intrinsicFramedExp (I := I) g hEnorm p ((normalFrame (I := I) g p).symm w) := by
+    simp only [intrinsicFrame_apply, ContinuousLinearEquiv.apply_symm_apply,
+      ← DifferentialGeometry.Geometry.Riemannian.Exponential.expMap_eq_expMapIntrinsic
+        (I := I) g hEnorm p]
+    exact huw
+  exact (normalFrame (I := I) g p).symm.injective (hinj (hmem u hu) (hmem w hw) hkey)
 
 omit [CompleteSpace E] [T2Space (TangentBundle I M)] [ConnectedSpace M] in
 theorem intrinsicInjRadiusSet_restrictOpen

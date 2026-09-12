@@ -1,8 +1,13 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHornDefs
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.BlowupConvergence
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.ConeConvergence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.ConeTerminalExclusion
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHornDirectionCompactness
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHornEndpoint
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHornEndAngleMonotone
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHornIntrinsicRays
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHornRayApproximation
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHornTwoScale
 import Mathlib.Topology.MetricSpace.Completion
 
 set_option autoImplicit false
@@ -26,38 +31,164 @@ attribute [local instance] PointedFlowData.topology PointedFlowData.charted
 
 variable {W : Type u} [MetricSpace W] [ChartedSpace ThreeSpace W]
   [IsManifold I3 ∞ W] [SigmaCompactSpace W]
+
+attribute [local instance] FiniteHorn.ambient_metric
+attribute [local instance] EndAngles.metric
+
+structure AmbientEndIsometry {g : SmoothRiemannianMetric I3 W} (H : FiniteHorn g) : Prop where
+  deep : ∃ i, (∀ x ∈ H.subend i, ∀ y ∈ H.subend i,
+      dist x y = dist (H.inclusion x) (H.inclusion y)) ∧
+    ∀ x ∈ H.subend i, dist (x : UniformSpace.Completion W) H.endpoint =
+      dist (H.inclusion x) H.ambient_end
+
+omit [SigmaCompactSpace W] in
+theorem finiteHorn_ambientEndIsometry {g : SmoothRiemannianMetric I3 W} (H : FiniteHorn g) :
+    AmbientEndIsometry H :=
+  ⟨H.ambient_end_isometry⟩
+
+omit [SigmaCompactSpace W] in
+theorem finiteHorn_frontier_escape_of_ambientEndIsometry {g : SmoothRiemannianMetric I3 W}
+    (H : FiniteHorn g) (hiso : AmbientEndIsometry H) :
+    ∀ w : ℕ → W,
+      Filter.Tendsto (fun i => (w i : UniformSpace.Completion W)) Filter.atTop
+        (nhds H.endpoint) →
+      ∀ R : ℝ, 0 < R → ∀ᶠ i in Filter.atTop, ∀ z ∈ H.outer_frontier,
+        R * dist (w i : UniformSpace.Completion W) H.endpoint < dist (H.inclusion (w i)) z := by
+  obtain ⟨i₀, -, hdist⟩ := hiso.deep
+  obtain ⟨δ, hδ, hfar⟩ := H.frontier_far
+  intro w hw R hR
+  have hmem : ∀ᶠ i in Filter.atTop, w i ∈ H.subend i₀ :=
+    finiteHorn_eventually_mem_subend g H hw i₀
+  have hsmall : ∀ᶠ i in Filter.atTop,
+      dist (w i : UniformSpace.Completion W) H.endpoint < δ / (R + 1) := by
+    have hpos : 0 < δ / (R + 1) := div_pos hδ (by linarith)
+    exact hw.eventually (Metric.ball_mem_nhds H.endpoint hpos)
+  filter_upwards [hmem, hsmall] with i hi hsi
+  intro z hz
+  have hzδ : δ ≤ dist z H.ambient_end := hfar z hz
+  have hri : dist (w i : UniformSpace.Completion W) H.endpoint =
+      dist (H.inclusion (w i)) H.ambient_end := hdist (w i) hi
+  have hkey : δ - dist (w i : UniformSpace.Completion W) H.endpoint ≤
+      dist z (H.inclusion (w i)) := by
+    have h := abs_dist_sub_le z (H.inclusion (w i)) H.ambient_end
+    rw [← hri] at h
+    have := (abs_le.mp h).2
+    linarith
+  have hexpand : R * dist (w i : UniformSpace.Completion W) H.endpoint <
+      δ - dist (w i : UniformSpace.Completion W) H.endpoint := by
+    have h := (lt_div_iff₀ (by linarith : (0 : ℝ) < R + 1)).mp hsi
+    nlinarith
+  rw [dist_comm (H.inclusion (w i)) z]
+  linarith
+
+theorem finite_horn_end_rays_of_ambientEndIsometry {g : SmoothRiemannianMetric I3 W}
+    (H : FiniteHorn g) (hiso : AmbientEndIsometry H) : Nonempty (EndGeometry H) :=
+  ⟨{ unique_endpoint := finiteHorn_unique_endpoint g H
+     intrinsic_ambient := hiso.deep
+     rays := finiteHorn_intrinsic_rays g H
+     frontier_escape := finiteHorn_frontier_escape_of_ambientEndIsometry H hiso }⟩
+
 theorem finite_horn_end_rays {g : SmoothRiemannianMetric I3 W} (H : FiniteHorn g) :
-    Nonempty (EndGeometry H) := by
-  sorry
+    Nonempty (EndGeometry H) :=
+  finite_horn_end_rays_of_ambientEndIsometry H (finiteHorn_ambientEndIsometry H)
+
+noncomputable def hornRayApproximationDepth (W : Type u) [MetricSpace W]
+    [ChartedSpace ThreeSpace W] [IsManifold I3 ∞ W] [SigmaCompactSpace W] : ℝ :=
+  Classical.choose (exists_finiteHorn_ray_approximation_depth (W := W))
+
+noncomputable def hornEndAngleDepth (W : Type u) [MetricSpace W]
+    [ChartedSpace ThreeSpace W] [IsManifold I3 ∞ W] [SigmaCompactSpace W] : ℝ :=
+  Classical.choose (finite_horn_end_angle_of_depth (W := W))
+
+noncomputable def hornAngleComparisonDepth (W : Type u) [MetricSpace W]
+    [ChartedSpace ThreeSpace W] [IsManifold I3 ∞ W] [SigmaCompactSpace W] : ℝ :=
+  Classical.choose (finite_horn_endComparisonAngle_le_angle (W := W))
+
+noncomputable def hornDepthThreshold (W : Type u) [MetricSpace W]
+    [ChartedSpace ThreeSpace W] [IsManifold I3 ∞ W] [SigmaCompactSpace W] : ℝ :=
+  max (max (hornRayApproximationDepth W) (hornEndAngleDepth W))
+    (max (hornAngleComparisonDepth W) 1)
+
+theorem hornRayApproximationDepth_pos (W : Type u) [MetricSpace W]
+    [ChartedSpace ThreeSpace W] [IsManifold I3 ∞ W] [SigmaCompactSpace W] :
+    0 < hornRayApproximationDepth W :=
+  (Classical.choose_spec (exists_finiteHorn_ray_approximation_depth (W := W))).1
+
+theorem hornEndAngleDepth_pos (W : Type u) [MetricSpace W]
+    [ChartedSpace ThreeSpace W] [IsManifold I3 ∞ W] [SigmaCompactSpace W] :
+    0 < hornEndAngleDepth W :=
+  (Classical.choose_spec (finite_horn_end_angle_of_depth (W := W))).1
+
+theorem hornAngleComparisonDepth_pos (W : Type u) [MetricSpace W]
+    [ChartedSpace ThreeSpace W] [IsManifold I3 ∞ W] [SigmaCompactSpace W] :
+    0 < hornAngleComparisonDepth W :=
+  (Classical.choose_spec (finite_horn_endComparisonAngle_le_angle (W := W))).1
+
+theorem hornRayApproximationDepth_le_hornDepthThreshold (W : Type u) [MetricSpace W]
+    [ChartedSpace ThreeSpace W] [IsManifold I3 ∞ W] [SigmaCompactSpace W] :
+    hornRayApproximationDepth W ≤ hornDepthThreshold W := by
+  rw [hornDepthThreshold]
+  exact le_trans (le_max_left _ _) (le_max_left _ _)
+
+theorem hornEndAngleDepth_le_hornDepthThreshold (W : Type u) [MetricSpace W]
+    [ChartedSpace ThreeSpace W] [IsManifold I3 ∞ W] [SigmaCompactSpace W] :
+    hornEndAngleDepth W ≤ hornDepthThreshold W := by
+  rw [hornDepthThreshold]
+  exact le_trans (le_max_right _ _) (le_max_left _ _)
+
+theorem hornAngleComparisonDepth_le_hornDepthThreshold (W : Type u) [MetricSpace W]
+    [ChartedSpace ThreeSpace W] [IsManifold I3 ∞ W] [SigmaCompactSpace W] :
+    hornAngleComparisonDepth W ≤ hornDepthThreshold W := by
+  rw [hornDepthThreshold]
+  exact le_trans (le_max_left _ _) (le_max_right _ _)
+
+theorem hornDepthThreshold_pos (W : Type u) [MetricSpace W]
+    [ChartedSpace ThreeSpace W] [IsManifold I3 ∞ W] [SigmaCompactSpace W] :
+    0 < hornDepthThreshold W := by
+  have h : 0 < hornRayApproximationDepth W := hornRayApproximationDepth_pos W
+  exact lt_of_lt_of_le h (hornRayApproximationDepth_le_hornDepthThreshold W)
 
 theorem finite_horn_ray_approximation {g : SmoothRiemannianMetric I3 W}
-    (H : FiniteHorn g) (endData : EndGeometry H) :
+    (H : FiniteHorn g) (_endData : EndGeometry H)
+    (hdepth : hornRayApproximationDepth W ≤ H.collar_depth) :
     ∃ d : ℝ, 0 < d ∧ ∀ a b : EndRay H.endpoint,
       ∀ lo hi : Fin 2 → ℝ, (∀ k, 0 < lo k) → (∀ k, lo k ≤ hi k) →
       hi 0 ≤ a.length → hi 1 ≤ b.length → (∀ k, hi k ≤ d) →
-      Nonempty (RayApproximation H a b lo hi) := by
-  sorry
+      Nonempty (RayApproximation H a b lo hi) :=
+  (Classical.choose_spec (exists_finiteHorn_ray_approximation_depth (W := W))).2 g H hdepth
 
 theorem finite_horn_end_angle {g : SmoothRiemannianMetric I3 W}
-    (H : FiniteHorn g) (endData : EndGeometry H) : Nonempty (EndAngles H) := by
-  sorry
+    (H : FiniteHorn g) (_endData : EndGeometry H)
+    (hdepth : hornEndAngleDepth W ≤ H.collar_depth) : Nonempty (EndAngles H) :=
+  (Classical.choose_spec (finite_horn_end_angle_of_depth (W := W))).2 g H hdepth
 
 
+omit [SigmaCompactSpace W] in
 theorem finite_horn_direction_compactness {g : SmoothRiemannianMetric I3 W}
-    (H : FiniteHorn g) (endData : EndGeometry H) (angles : EndAngles H) :
+    (H : FiniteHorn g) (_endData : EndGeometry H) (angles : EndAngles H)
+    (hnet : ScaleDirectionNet g H) (hsep : ScaleSeparatedEndRays g H) :
     letI := angles.metric
     TotallyBounded (Set.univ : Set angles.quotient) ∧
       CompactSpace (UniformSpace.Completion angles.quotient) ∧
       ∃ a b : EndRay H.endpoint, 0 < angles.angle a b := by
-  sorry
+  have htb : TotallyBounded (Set.univ : Set angles.quotient) :=
+    totallyBounded_quotient_of_scaleDirectionNet H angles hnet
+  exact ⟨htb, compactSpace_completion_of_totallyBounded htb,
+    exists_pos_angle_of_separatedEndRays H angles (separatedEndRays_of_scaleSeparated H angles hsep)⟩
 
 
 theorem finite_horn_cone_convergence {g : SmoothRiemannianMetric I3 W}
-    (H : FiniteHorn g) (endData : EndGeometry H) (angles : EndAngles H)
+    (H : FiniteHorn g) (_endData : EndGeometry H) (angles : EndAngles H)
     (ray : EndRay H.endpoint) (d : ℕ → ℝ) (hd : ∀ i, d i ∈ Set.Ioc 0 ray.length)
-    (hzero : Filter.Tendsto d Filter.atTop (nhds 0)) :
-    Nonempty (AnnularConvergence H angles ray d) := by
-  sorry
+    (hzero : Filter.Tendsto d Filter.atTop (nhds 0))
+    (hreal : ConeDistanceRealization H angles ray d)
+    (hdepth : hornAngleComparisonDepth W ≤ H.collar_depth) :
+    Nonempty (AnnularConvergence H angles ray d) :=
+  nonempty_annularConvergence_of_coneAnnulusRealization H angles ray d hd hzero
+    (coneAnnulusRealization_of_coneDistanceRealization
+      ((Classical.choose_spec (finite_horn_endComparisonAngle_le_angle (W := W))).2 g H hdepth
+        angles)
+      hreal)
 
 theorem finite_horn_barriers {g : SmoothRiemannianMetric I3 W}
     (H : FiniteHorn g) (endData : EndGeometry H) (ray : EndRay H.endpoint)
@@ -67,15 +198,21 @@ theorem finite_horn_barriers {g : SmoothRiemannianMetric I3 W}
       Filter.atTop Filter.atTop) : Nonempty (HornBarriers H ray d) := by
   sorry
 
+structure ScaleCurvatureUpperBound {g : SmoothRiemannianMetric I3 W} (H : FiniteHorn g)
+    (ray : EndRay H.endpoint) (d : ℕ → ℝ) : Prop where
+  upper : ∃ C : ℝ, 0 < C ∧ ∀ᶠ i in Filter.atTop,
+    metricScalarAt g (ray.point (d i)) * d i ^ 2 ≤ C
+
+omit [SigmaCompactSpace W] in
 theorem finite_horn_two_scale_comparison {g : SmoothRiemannianMetric I3 W}
-    (H : FiniteHorn g) (endData : EndGeometry H) (angles : EndAngles H)
+    (H : FiniteHorn g) (_endData : EndGeometry H) (_angles : EndAngles H)
     (ray : EndRay H.endpoint) (d : ℕ → ℝ) (hd : ∀ i, d i ∈ Set.Ioc 0 ray.length)
     (hzero : Filter.Tendsto d Filter.atTop (nhds 0))
-    (annuli : AnnularConvergence H angles ray d) :
+    (hupper : ScaleCurvatureUpperBound H ray d) :
     ∃ c C : ℝ, 0 < c ∧ c ≤ C ∧ ∀ᶠ i in Filter.atTop,
       c ≤ metricScalarAt g (ray.point (d i)) * d i ^ 2 ∧
-      metricScalarAt g (ray.point (d i)) * d i ^ 2 ≤ C := by
-  sorry
+      metricScalarAt g (ray.point (d i)) * d i ^ 2 ≤ C :=
+  finite_horn_two_scale_comparison_of_upper_bound H ray d hd hzero hupper.upper
 
 structure ConeFlowLimit (X : FlowSequence.{u}) where
   delta : ℝ
@@ -144,9 +281,63 @@ structure RealizedFiniteHorn (X : FlowSequence.{u}) where
   radii : ℕ → ℝ
   radii_mem : ∀ i, radii i ∈ Set.Ioc 0 horn.axial.length
   radii_zero : Filter.Tendsto radii Filter.atTop (nhds 0)
+  directionNet : ScaleDirectionNet metric horn
+  separatedRays : ScaleSeparatedEndRays metric horn
+  coneRealization : ∀ (angles : EndAngles horn) (ray : EndRay horn.endpoint) (d : ℕ → ℝ),
+    (∀ i, d i ∈ Set.Ioc 0 ray.length) → Filter.Tendsto d Filter.atTop (nhds 0) →
+    ConeDistanceRealization horn angles ray d
+  depth_ok : hornDepthThreshold space ≤ horn.collar_depth
+  curvatureUpper : ScaleCurvatureUpperBound horn horn.axial radii
 
 attribute [local instance] RealizedFiniteHorn.metric_space RealizedFiniteHorn.charted
   RealizedFiniteHorn.smooth RealizedFiniteHorn.sigmaCompact
+
+namespace RealizedFiniteHorn
+
+theorem end_rays {X : FlowSequence.{u}} (H : RealizedFiniteHorn X) :
+    Nonempty (EndGeometry H.horn) :=
+  finite_horn_end_rays H.horn
+
+theorem ray_approximation {X : FlowSequence.{u}} (H : RealizedFiniteHorn X)
+    (endData : EndGeometry H.horn) :
+    ∃ d : ℝ, 0 < d ∧ ∀ a b : EndRay H.horn.endpoint,
+      ∀ lo hi : Fin 2 → ℝ, (∀ k, 0 < lo k) → (∀ k, lo k ≤ hi k) →
+      hi 0 ≤ a.length → hi 1 ≤ b.length → (∀ k, hi k ≤ d) →
+      Nonempty (RayApproximation H.horn a b lo hi) :=
+  finite_horn_ray_approximation H.horn endData
+    (le_trans (hornRayApproximationDepth_le_hornDepthThreshold H.space) H.depth_ok)
+
+theorem end_angle {X : FlowSequence.{u}} (H : RealizedFiniteHorn X)
+    (endData : EndGeometry H.horn) : Nonempty (EndAngles H.horn) :=
+  finite_horn_end_angle H.horn endData
+    (le_trans (hornEndAngleDepth_le_hornDepthThreshold H.space) H.depth_ok)
+
+theorem direction_compactness {X : FlowSequence.{u}} (H : RealizedFiniteHorn X)
+    (endData : EndGeometry H.horn) (angles : EndAngles H.horn) :
+    letI := angles.metric
+    TotallyBounded (Set.univ : Set angles.quotient) ∧
+      CompactSpace (UniformSpace.Completion angles.quotient) ∧
+      ∃ a b : EndRay H.horn.endpoint, 0 < angles.angle a b :=
+  finite_horn_direction_compactness H.horn endData angles H.directionNet H.separatedRays
+
+theorem cone_convergence {X : FlowSequence.{u}} (H : RealizedFiniteHorn X)
+    (endData : EndGeometry H.horn) (angles : EndAngles H.horn)
+    (ray : EndRay H.horn.endpoint) (d : ℕ → ℝ) (hd : ∀ i, d i ∈ Set.Ioc 0 ray.length)
+    (hzero : Filter.Tendsto d Filter.atTop (nhds 0)) :
+    Nonempty (AnnularConvergence H.horn angles ray d) :=
+  finite_horn_cone_convergence H.horn endData angles ray d hd hzero
+    (H.coneRealization angles ray d hd hzero)
+    (le_trans (hornAngleComparisonDepth_le_hornDepthThreshold H.space) H.depth_ok)
+
+theorem two_scale_comparison {X : FlowSequence.{u}} (H : RealizedFiniteHorn X)
+    (endData : EndGeometry H.horn) (angles : EndAngles H.horn) :
+    ∃ c C : ℝ, 0 < c ∧ c ≤ C ∧ ∀ᶠ i in Filter.atTop,
+      c ≤ metricScalarAt H.metric (H.horn.axial.point (H.radii i)) * H.radii i ^ 2 ∧
+      metricScalarAt H.metric (H.horn.axial.point (H.radii i)) * H.radii i ^ 2 ≤ C :=
+  finite_horn_two_scale_comparison H.horn endData angles H.horn.axial H.radii
+    H.radii_mem H.radii_zero H.curvatureUpper
+
+end RealizedFiniteHorn
 
 theorem finite_horn_construction {kappa sigma : ℝ} {Phi : ℝ → ℝ}
     (hkappa : 0 < kappa) (hsigma : 0 < sigma) (hPhi : AdmissiblePinchingFunction Phi) :
@@ -155,7 +346,7 @@ theorem finite_horn_construction {kappa sigma : ℝ} {Phi : ℝ → ℝ}
         ∃ epsStar : ℝ, 0 < epsStar ∧ ∀ eps : ℝ, 0 < eps → eps ≤ epsStar →
           ∀ X : NormalizedSequence.{u} eps kappa sigma Phi,
             FiniteControlledRadius X → ∃ H : RealizedFiniteHorn X.toFlowSequence,
-              H.horn.neck_precision = alpha ∧ H.horn.collar_depth = collar := by
+              H.horn.neck_precision = alpha ∧ collar ≤ H.horn.collar_depth := by
   sorry
 
 theorem finite_horn_smooth_cone_patch {eps kappa sigma : ℝ} {Phi : ℝ → ℝ}
@@ -181,12 +372,11 @@ theorem finite_horn_produces_cone {kappa sigma : ℝ} {Phi : ℝ → ℝ}
   refine ⟨e, he, ?_⟩
   intro eps hp hsmall X R
   obtain ⟨H, _hprecision, _hcollar⟩ := hconstruct eps hp hsmall X R
-  obtain ⟨endData⟩ := finite_horn_end_rays H.horn
-  obtain ⟨angles⟩ := finite_horn_end_angle H.horn endData
-  obtain ⟨annuli⟩ := finite_horn_cone_convergence H.horn endData angles
+  obtain ⟨endData⟩ := H.end_rays
+  obtain ⟨angles⟩ := H.end_angle endData
+  obtain ⟨annuli⟩ := H.cone_convergence endData angles
     H.horn.axial H.radii H.radii_mem H.radii_zero
-  have bounds := finite_horn_two_scale_comparison H.horn endData angles
-    H.horn.axial H.radii H.radii_mem H.radii_zero annuli
+  have bounds := H.two_scale_comparison endData angles
   exact finite_horn_smooth_cone_patch X hkappa hsigma hPhi H endData angles annuli bounds
 
 
@@ -196,57 +386,5 @@ theorem bounded_curvature_at_distance {kappa sigma : ℝ} {Phi : ℝ → ℝ}
       ∀ X : NormalizedSequence.{u} eps kappa sigma Phi,
         BoundedAtDistance X ∧ TerminalDerivativeBounds X := by
   sorry
-
-
-attribute [local instance] FiniteHorn.ambient_metric
-
-structure AmbientEndIsometry {g : SmoothRiemannianMetric I3 W} (H : FiniteHorn g) : Prop where
-  deep : ∃ i, (∀ x ∈ H.subend i, ∀ y ∈ H.subend i,
-      dist x y = dist (H.inclusion x) (H.inclusion y)) ∧
-    ∀ x ∈ H.subend i, dist (x : UniformSpace.Completion W) H.endpoint =
-      dist (H.inclusion x) H.ambient_end
-
-omit [SigmaCompactSpace W] in
-theorem finiteHorn_frontier_escape_of_ambientEndIsometry {g : SmoothRiemannianMetric I3 W}
-    (H : FiniteHorn g) (hiso : AmbientEndIsometry H) :
-    ∀ w : ℕ → W,
-      Filter.Tendsto (fun i => (w i : UniformSpace.Completion W)) Filter.atTop
-        (nhds H.endpoint) →
-      ∀ R : ℝ, 0 < R → ∀ᶠ i in Filter.atTop, ∀ z ∈ H.outer_frontier,
-        R * dist (w i : UniformSpace.Completion W) H.endpoint < dist (H.inclusion (w i)) z := by
-  obtain ⟨i₀, -, hdist⟩ := hiso.deep
-  obtain ⟨δ, hδ, hfar⟩ := H.frontier_far
-  intro w hw R hR
-  have hmem : ∀ᶠ i in Filter.atTop, w i ∈ H.subend i₀ :=
-    finiteHorn_eventually_mem_subend g H hw i₀
-  have hsmall : ∀ᶠ i in Filter.atTop,
-      dist (w i : UniformSpace.Completion W) H.endpoint < δ / (R + 1) := by
-    have hpos : 0 < δ / (R + 1) := div_pos hδ (by linarith)
-    exact hw.eventually (Metric.ball_mem_nhds H.endpoint hpos)
-  filter_upwards [hmem, hsmall] with i hi hsi
-  intro z hz
-  have hzδ : δ ≤ dist z H.ambient_end := hfar z hz
-  have hri : dist (w i : UniformSpace.Completion W) H.endpoint =
-      dist (H.inclusion (w i)) H.ambient_end := hdist (w i) hi
-  have hkey : δ - dist (w i : UniformSpace.Completion W) H.endpoint ≤
-      dist z (H.inclusion (w i)) := by
-    have h := abs_dist_sub_le z (H.inclusion (w i)) H.ambient_end
-    rw [← hri] at h
-    have := (abs_le.mp h).2
-    linarith
-  have hexpand : R * dist (w i : UniformSpace.Completion W) H.endpoint <
-      δ - dist (w i : UniformSpace.Completion W) H.endpoint := by
-    have h := (lt_div_iff₀ (by linarith : (0 : ℝ) < R + 1)).mp hsi
-    nlinarith
-  rw [dist_comm (H.inclusion (w i)) z]
-  linarith
-
-theorem finite_horn_end_rays_of_ambientEndIsometry {g : SmoothRiemannianMetric I3 W}
-    (H : FiniteHorn g) (hiso : AmbientEndIsometry H) : Nonempty (EndGeometry H) :=
-  ⟨{ unique_endpoint := finiteHorn_unique_endpoint g H
-     intrinsic_ambient := hiso.deep
-     rays := finiteHorn_intrinsic_rays g H
-     frontier_escape := finiteHorn_frontier_escape_of_ambientEndIsometry H hiso }⟩
-
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn

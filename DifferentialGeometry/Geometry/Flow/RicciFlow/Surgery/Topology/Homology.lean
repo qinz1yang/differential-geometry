@@ -693,6 +693,27 @@ noncomputable def localIntegralHomologyEquivInt (x : M) :
     (E := ULift.{u} ThreeSpace) 1 hfin M x
 
 
+theorem localOrientationClass_generator_of_isUnit (o : TangentOrientationSection M) (x : M)
+    (h : IsUnit (localIntegralHomologyEquivInt (M := M) x (localOrientationClass o x))) :
+    Function.Bijective (fun z : ℤ => z • localOrientationClass o x) := by
+  let e := localIntegralHomologyEquivInt (M := M) x
+  obtain ⟨u, hu⟩ := h
+  have hfun : (fun z : ℤ => z • localOrientationClass o x) =
+      fun z : ℤ => e.symm ((z : ℤ) * (u : ℤ)) := by
+    funext z
+    apply e.injective
+    rw [map_zsmul, hu, smul_eq_mul, LinearEquiv.apply_symm_apply]
+  rw [hfun]
+  constructor
+  · intro a b hab
+    have h2 : (a : ℤ) * (u : ℤ) = (b : ℤ) * (u : ℤ) := e.symm.injective hab
+    exact mul_right_cancel₀ (Units.ne_zero u) h2
+  · intro w
+    refine ⟨e w * ((u⁻¹ : ℤˣ) : ℤ), ?_⟩
+    change e.symm ((e w * ((u⁻¹ : ℤˣ) : ℤ)) * (u : ℤ)) = w
+    rw [mul_assoc, Units.inv_mul, mul_one, e.symm_apply_apply]
+
+
 theorem localOrientationClass_generator (o : TangentOrientationSection M) (x : M) :
     Function.Bijective (fun z : ℤ => z • localOrientationClass o x) := by
   sorry

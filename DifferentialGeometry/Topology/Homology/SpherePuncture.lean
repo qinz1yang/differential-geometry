@@ -32,6 +32,13 @@ theorem spherePuncture_contractible (v : sphere (0 : E) 1) :
   (spherePunctureHomeomorph v).contractibleSpace
 
 
+theorem integralSingularHomology_subsingleton_of_punctured_sphere (n : ℕ) (hn : n ≠ 0)
+    (v : sphere (0 : E) 1) :
+    Subsingleton (integralSingularHomology n ({v}ᶜ : Set (sphere (0 : E) 1))) := by
+  let := spherePuncture_contractible v
+  exact integralSingularHomology_subsingleton_of_contractible n hn _
+
+
 theorem unitSphere_ne_antipode (v : sphere (0 : E) 1) : v ≠ -v := by
   intro h
   have he : (v : E) = -(v : E) := congrArg Subtype.val h

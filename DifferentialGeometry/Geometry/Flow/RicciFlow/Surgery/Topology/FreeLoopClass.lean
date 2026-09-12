@@ -1,5 +1,12 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.LoopClass
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.BasedTransport
 import DifferentialGeometry.Topology.Homotopy.CubeInterior
+import DifferentialGeometry.Topology.Homotopy.TransportComposition
+import DifferentialGeometry.Topology.Homotopy.TransportContinuity
+import DifferentialGeometry.Topology.LoopSpace.CircleCurry
+import DifferentialGeometry.Topology.LoopSpace.FiberInclusion
+import DifferentialGeometry.Topology.LoopSpace.HigherConnectivity
+import DifferentialGeometry.Topology.LoopSpace.AdjunctionTransport
 
 noncomputable section
 
@@ -655,6 +662,117 @@ theorem sphereFactor_homotopic {c d : GenLoop (Fin 2) X x}
     simpa only [ContinuousMap.comp_apply, ContinuousMap.coe_mk, K1] using h
 
 
+private theorem sphereCubeParameter_eq_of_mem_boundary {v : I^(Fin 2)}
+    (hv : v ∈ Cube.boundary (Fin 2)) :
+    sphereCubeParameter v = sphereCubeParameter 0 := by
+  apply Subtype.ext
+  change sphereCubeVector v = sphereCubeVector 0
+  rw [sf_sphereCubeVector_eq_north v hv,
+    sf_sphereCubeVector_eq_north 0 ⟨0, Or.inl rfl⟩]
+
+private def sphereCubeFamilyQuotient (K : Type v) [TopologicalSpace K] :
+    C(K × I^(Fin 2), K × Sphere 2) :=
+  ContinuousMap.prodMap (ContinuousMap.id K) sphereCubeParameter
+
+private theorem isQuotientMap_sphereCubeFamilyQuotient (K : Type v) [TopologicalSpace K] :
+    Topology.IsQuotientMap (sphereCubeFamilyQuotient K) := by
+  have hp : IsProperMap (sphereCubeFamilyQuotient K) :=
+    isProperMap_id.prodMap sphereCubeParameter.continuous.isProperMap
+  exact hp.isClosedMap.isQuotientMap hp.continuous
+    ((Function.surjective_id : Function.Surjective (id : K → K)).prodMap
+      sf_sphereCubeParameter_surjective)
+
+private theorem sphereCubeFamily_factors {K : Type v} [TopologicalSpace K]
+    (F : C(K × I^(Fin 2), X)) (b : C(K, X))
+    (hb : ∀ k v, v ∈ Cube.boundary (Fin 2) → F (k, v) = b k) :
+    ∀ k v v', sphereCubeParameter v = sphereCubeParameter v' → F (k, v) = F (k, v') := by
+  intro k v v' hv
+  have hvv : sphereCubeVector v = sphereCubeVector v' := by
+    change ((sphereCubeParameter v : Sphere 2) : ThreeSpace) =
+      ((sphereCubeParameter v' : Sphere 2) : ThreeSpace)
+    exact congrArg (fun y : Sphere 2 => (y : ThreeSpace)) hv
+  rcases (sf_sphereCubeVector_eq_iff v v').mp hvv with h | ⟨h1, h2⟩
+  · rw [h]
+  · rw [hb k v h1, hb k v' h2]
+
+private def sphereCubeFamilyDescendValue {K : Type v} [TopologicalSpace K]
+    (F : C(K × I^(Fin 2), X))
+    (hfac : ∀ k v v', sphereCubeParameter v = sphereCubeParameter v' → F (k, v) = F (k, v')) :
+    C(K × Sphere 2, X) :=
+  ⟨fun z => F (z.1, Classical.choose (sf_sphereCubeParameter_surjective z.2)), by
+    refine (isQuotientMap_sphereCubeFamilyQuotient K).continuous_iff.mpr ?_
+    refine F.continuous.congr ?_
+    intro z
+    exact (hfac z.1 _ _ (Classical.choose_spec
+      (sf_sphereCubeParameter_surjective (sphereCubeParameter z.2)))).symm⟩
+
+private theorem sphereCubeFamilyDescendValue_projection {K : Type v} [TopologicalSpace K]
+    (F : C(K × I^(Fin 2), X))
+    (hfac : ∀ k v v', sphereCubeParameter v = sphereCubeParameter v' → F (k, v) = F (k, v'))
+    (k : K) (v : I^(Fin 2)) :
+    sphereCubeFamilyDescendValue F hfac (k, sphereCubeParameter v) = F (k, v) :=
+  hfac k _ _ (Classical.choose_spec (sf_sphereCubeParameter_surjective (sphereCubeParameter v)))
+
+theorem genLoop_homotopic_of_sphereFactor_homotopic [SimplyConnectedSpace X]
+    (c d : GenLoop (Fin 2) X x) (h : (sphereFactor c).Homotopic (sphereFactor d)) :
+    GenLoop.Homotopic c d := by
+  obtain ⟨H⟩ := h
+  have hbase : (0 : I^(Fin 2)) ∈ Cube.boundary (Fin 2) := ⟨0, Or.inl rfl⟩
+  let p : Path x x :=
+    { toFun := fun t => H (t, sphereCubeParameter 0)
+      continuous_toFun := H.continuous.comp (continuous_id.prodMk continuous_const)
+      source' := ((H.apply_zero (sphereCubeParameter 0)).trans
+        (by simpa only [ContinuousMap.comp_apply] using
+          DFunLike.congr_fun (sphereFactor_eq c) (0 : I^(Fin 2)))).trans (c.property 0 hbase)
+      target' := ((H.apply_one (sphereCubeParameter 0)).trans
+        (by simpa only [ContinuousMap.comp_apply] using
+          DFunLike.congr_fun (sphereFactor_eq d) (0 : I^(Fin 2)))).trans (d.property 0 hbase) }
+  let F : C(unitInterval × I^(Fin 2), X) :=
+    ⟨fun z => H (z.1, sphereCubeParameter z.2),
+      H.continuous.comp (continuous_fst.prodMk
+        (sphereCubeParameter.continuous.comp continuous_snd))⟩
+  have h0 : ∀ v, F (0, v) = c.val v := fun v => (H.apply_zero (sphereCubeParameter v)).trans
+    (by simpa only [ContinuousMap.comp_apply] using DFunLike.congr_fun (sphereFactor_eq c) v)
+  have h1 : ∀ v, F (1, v) = d.val v := fun v => (H.apply_one (sphereCubeParameter v)).trans
+    (by simpa only [ContinuousMap.comp_apply] using DFunLike.congr_fun (sphereFactor_eq d) v)
+  have hb : ∀ t v, v ∈ Cube.boundary (Fin 2) → F (t, v) = p t := fun t v hv => by
+    change H (t, sphereCubeParameter v) = H (t, sphereCubeParameter 0)
+    rw [sphereCubeParameter_eq_of_mem_boundary hv]
+  have htr := DifferentialGeometry.Topology.genLoopTransport_extension_unique 1 p c d F h0 h1 hb
+  have hp := DifferentialGeometry.Topology.genLoopTransport_path_homotopic 1
+    (SimplyConnectedSpace.paths_homotopic p (Path.refl x)) c
+  have hr := DifferentialGeometry.Topology.genLoopTransport_refl_homotopic 1 c
+  exact hr.symm.trans (hp.symm.trans htr.symm)
+
+theorem exists_sphereFactor_homotopic [PathConnectedSpace X] (x : X) (f : C(Sphere 2, X)) :
+    ∃ c : GenLoop (Fin 2) X x, f.Homotopic (sphereFactor c) := by
+  classical
+  let c₀ : GenLoop (Fin 2) X (f (sphereCubeParameter 0)) :=
+    ⟨f.comp sphereCubeParameter, fun v hv => by
+      change f (sphereCubeParameter v) = f (sphereCubeParameter 0)
+      rw [sphereCubeParameter_eq_of_mem_boundary hv]⟩
+  let p : Path (f (sphereCubeParameter 0)) x :=
+    PathConnectedSpace.somePath (f (sphereCubeParameter 0)) x
+  let Γ : GenLoop (Fin 2) X x := DifferentialGeometry.Topology.genLoopTransport 1 p c₀
+  let F : C(unitInterval × I^(Fin 2), X) :=
+    (DifferentialGeometry.Topology.cubePathHomotopy 1 p c₀).toContinuousMap
+  have hb : ∀ t v, v ∈ Cube.boundary (Fin 2) → F (t, v) = p t :=
+    DifferentialGeometry.Topology.cubePathHomotopy_boundary 1 p c₀
+  let hfac := sphereCubeFamily_factors F p.toContinuousMap hb
+  let K : C(unitInterval × Sphere 2, X) := sphereCubeFamilyDescendValue F hfac
+  have hK (t : unitInterval) (v : I^(Fin 2)) : K (t, sphereCubeParameter v) = F (t, v) :=
+    sphereCubeFamilyDescendValue_projection F hfac t v
+  refine ⟨Γ, ⟨⟨K, ?_, ?_⟩⟩⟩
+  · intro z
+    obtain ⟨v, rfl⟩ := sf_sphereCubeParameter_surjective z
+    exact (hK 0 v).trans ((DifferentialGeometry.Topology.cubePathHomotopy 1 p c₀).apply_zero v)
+  · intro z
+    obtain ⟨v, rfl⟩ := sf_sphereCubeParameter_surjective z
+    refine (hK 1 v).trans ?_
+    refine ((DifferentialGeometry.Topology.cubePathHomotopy 1 p c₀).apply_one v).trans ?_
+    exact (by simpa only [ContinuousMap.comp_apply] using
+      (DFunLike.congr_fun (sphereFactor_eq Γ) v).symm)
+
 def forgetBasedSphere (x : X) : HomotopyGroup (Fin 2) X x → FreeHomotopyClass (Sphere 2) X :=
   Quotient.lift (fun c => FreeHomotopyClass.mk (sphereFactor c))
     (fun _ _ h => (FreeHomotopyClass.mk_eq_mk_iff _ _).2 (sphereFactor_homotopic h))
@@ -669,6 +787,101 @@ theorem forgetBasedSphere_one (x : X) : forgetBasedSphere x 1 =
   apply congrArg FreeHomotopyClass.mk
   exact ((Classical.choose_spec (exists_unique_sphereFactor
     (GenLoop.const : GenLoop (Fin 2) X x))).2 (ContinuousMap.const (Sphere 2) x) rfl).symm
+
+theorem forgetBasedSphere_bijective [PathConnectedSpace X] [SimplyConnectedSpace X] (x : X) :
+    Function.Bijective (forgetBasedSphere x) := by
+  constructor
+  · intro a b hab
+    induction a using Quotient.inductionOn with
+    | h c =>
+      induction b using Quotient.inductionOn with
+      | h d =>
+        change FreeHomotopyClass.mk (sphereFactor c) = FreeHomotopyClass.mk (sphereFactor d) at hab
+        exact Quotient.sound (genLoop_homotopic_of_sphereFactor_homotopic c d
+          ((FreeHomotopyClass.mk_eq_mk_iff _ _).mp hab))
+  · intro ξ
+    induction ξ using Quotient.inductionOn with
+    | h f =>
+      obtain ⟨c, hc⟩ := exists_sphereFactor_homotopic x f
+      exact ⟨Quotient.mk _ c, by
+        change FreeHomotopyClass.mk (sphereFactor c) = FreeHomotopyClass.mk f
+        exact (FreeHomotopyClass.mk_eq_mk_iff _ _).mpr hc.symm⟩
+
+theorem sphereFactor_natural {P Q : Type u} [TopologicalSpace P] [TopologicalSpace Q]
+    (g : C(P, Q)) {x : ContinuousFreeLoop P}
+    (c : GenLoop (Fin 2) (ContinuousFreeLoop P) x) :
+    (loopPostcompose g).comp (sphereFactor c) =
+      sphereFactor (genLoopPostcompose (loopPostcompose g) c) := by
+  refine (Classical.choose_spec (exists_unique_sphereFactor
+    (genLoopPostcompose (loopPostcompose g) c))).2 _ ?_
+  dsimp only
+  rw [ContinuousMap.comp_assoc, sphereFactor_eq c]
+  rfl
+
+theorem forgetBasedSphere_natural {P Q : Type u} [TopologicalSpace P] [TopologicalSpace Q]
+    (g : C(P, Q)) (x : ContinuousFreeLoop P)
+    (a : HomotopyGroup (Fin 2) (ContinuousFreeLoop P) x) :
+    FreeHomotopyClass.map (loopPostcompose g) (forgetBasedSphere x a) =
+      forgetBasedSphere (loopPostcompose g x) (basedHomotopyMap (loopPostcompose g) x a) := by
+  induction a using Quotient.inductionOn with
+  | h c =>
+    change FreeHomotopyClass.mk ((loopPostcompose g).comp (sphereFactor c)) =
+      FreeHomotopyClass.mk (sphereFactor (genLoopPostcompose (loopPostcompose g) c))
+    rw [sphereFactor_natural g c]
+
+private theorem pathTransportClass_eq_mk_genLoopTransport {x y : X} (n : ℕ) (p : Path x y)
+    (c : GenLoop (Fin (n + 1)) X x) :
+    pathTransportClass p c = Quotient.mk _
+      (DifferentialGeometry.Topology.genLoopTransport n p c) :=
+  ((Classical.choose_spec (exists_unique_pathTransportClass p c)).2 _
+    ⟨DifferentialGeometry.Topology.genLoopTransport n p c, rfl,
+      ⟨⟨DifferentialGeometry.Topology.cubePathHomotopy n p c,
+        DifferentialGeometry.Topology.cubePathHomotopy_boundary n p c⟩⟩⟩).symm
+
+private theorem pathTransport_eq_homotopyGroupTransport {x y : X} (n : ℕ) (p : Path x y)
+    (a : HomotopyGroup (Fin (n + 1)) X x) :
+    pathTransport (k := n + 1) p a = DifferentialGeometry.Topology.homotopyGroupTransport n p a := by
+  induction a using Quotient.inductionOn with
+  | h c =>
+    rw [pathTransport_pathTransportClass, pathTransportClass_eq_mk_genLoopTransport n p c]
+    rfl
+
+theorem sphereFactor_genLoopTransport_homotopic {x y : X} (γ : Path x y)
+    (c : GenLoop (Fin 2) X x) :
+    (sphereFactor c).Homotopic
+      (sphereFactor (DifferentialGeometry.Topology.genLoopTransport 1 γ c)) := by
+  let F : C(unitInterval × I^(Fin 2), X) :=
+    (DifferentialGeometry.Topology.cubePathHomotopy 1 γ c).toContinuousMap
+  have hb : ∀ t v, v ∈ Cube.boundary (Fin 2) → F (t, v) = γ t :=
+    DifferentialGeometry.Topology.cubePathHomotopy_boundary 1 γ c
+  let hfac := sphereCubeFamily_factors F γ.toContinuousMap hb
+  let K : C(unitInterval × Sphere 2, X) := sphereCubeFamilyDescendValue F hfac
+  have hK (t : unitInterval) (v : I^(Fin 2)) : K (t, sphereCubeParameter v) = F (t, v) :=
+    sphereCubeFamilyDescendValue_projection F hfac t v
+  refine ⟨⟨K, ?_, ?_⟩⟩
+  · intro z
+    obtain ⟨v, rfl⟩ := sf_sphereCubeParameter_surjective z
+    exact (hK 0 v).trans (((DifferentialGeometry.Topology.cubePathHomotopy 1 γ c).apply_zero v).trans
+      (by simpa only [ContinuousMap.comp_apply] using
+        (DFunLike.congr_fun (sphereFactor_eq c) v).symm))
+  · intro z
+    obtain ⟨v, rfl⟩ := sf_sphereCubeParameter_surjective z
+    exact (hK 1 v).trans (((DifferentialGeometry.Topology.cubePathHomotopy 1 γ c).apply_one v).trans
+      (by simpa only [ContinuousMap.comp_apply] using
+        (DFunLike.congr_fun (sphereFactor_eq
+          (DifferentialGeometry.Topology.genLoopTransport 1 γ c)) v).symm))
+
+theorem forgetBasedSphere_homotopyGroupTransport {x y : X} (γ : Path x y)
+    (a : HomotopyGroup (Fin 2) X x) :
+    forgetBasedSphere y (DifferentialGeometry.Topology.homotopyGroupTransport 1 γ a) =
+      forgetBasedSphere x a := by
+  induction a using Quotient.inductionOn with
+  | h c =>
+    change FreeHomotopyClass.mk
+        (sphereFactor (DifferentialGeometry.Topology.genLoopTransport 1 γ c)) =
+      FreeHomotopyClass.mk (sphereFactor c)
+    exact (FreeHomotopyClass.mk_eq_mk_iff _ _).mpr
+      (sphereFactor_genLoopTransport_homotopic γ c).symm
 
 theorem sphereFamily_homotopic_const_of_pi2_subsingleton
     (h : ∀ q : X, Subsingleton (HomotopyGroup (Fin 2) X q))
@@ -1369,6 +1582,48 @@ def freeLoopAdjunctionHom (x : X) : HomotopyGroup (Fin 3) X x →*
 @[simp] theorem freeLoopAdjunctionHom_apply (x : X) (a : HomotopyGroup (Fin 3) X x) :
     freeLoopAdjunctionHom x a = freeLoopAdjunction x a := rfl
 
+theorem freeLoopAdjunction_eq_piThreeFreeLoopPiTwoMulEquiv (x : X)
+    [Subsingleton (HomotopyGroup (Fin 2) X x)] (a : HomotopyGroup (Fin 3) X x) :
+    freeLoopAdjunction x a = DifferentialGeometry.Topology.piThreeFreeLoopPiTwoMulEquiv x a := by
+  induction a using Quotient.inductionOn with
+  | h c =>
+    have htrans : DifferentialGeometry.Topology.piThreeFreeLoopPiTwoMulEquiv x (Quotient.mk _ c) =
+        (DifferentialGeometry.Topology.basedCircleInclusionMulEquiv x
+          ((DifferentialGeometry.Topology.basedCirclePiTwoMulEquiv x).symm
+            (Quotient.mk _ c)) :
+          HomotopyGroup (Fin 2) (ContinuousFreeLoop X) (constantLoops x)) := rfl
+    have hfree : freeLoopAdjunction x (Quotient.mk _ c) =
+        (Quotient.mk _ (genLoopPostcompose (basedLoopInclusion x) (cubeAdjunct c)) :
+          HomotopyGroup (Fin 2) (ContinuousFreeLoop X) (constantLoops x)) := rfl
+    have hincl : (DifferentialGeometry.Topology.basedCircleInclusionMulEquiv x
+          (Quotient.mk _ (DifferentialGeometry.Topology.genLoopCircleCurry 1 x c)) :
+          HomotopyGroup (Fin 2) (ContinuousFreeLoop X) (constantLoops x)) =
+        (Quotient.mk _ (DifferentialGeometry.Topology.genLoopBasedMap
+            (DifferentialGeometry.Topology.basedCircleInclusion x)
+            (DifferentialGeometry.Topology.basedCircleConstant x)
+            (DifferentialGeometry.Topology.FreeLoop.constants x) rfl
+            (DifferentialGeometry.Topology.genLoopCircleCurry 1 x c)) :
+          HomotopyGroup (Fin 2) (ContinuousFreeLoop X) (constantLoops x)) := rfl
+    rw [hfree, htrans, DifferentialGeometry.Topology.basedCirclePiTwoMulEquiv_symm_mk, hincl]
+    refine congrArg (Quotient.mk _) (Subtype.ext (ContinuousMap.ext (fun p =>
+      ContinuousMap.ext (fun z => ?_))))
+    obtain ⟨t, ht, rfl⟩ := AddCircle.eq_coe_Ico (p := (1 : ℝ)) z
+    change (cubeAdjunct c p).1 ((t : ℝ) : Circle) =
+      (DifferentialGeometry.Topology.genLoopCircleCurry 1 x c p).val ((t : ℝ) : Circle)
+    rw [cubeAdjunct_apply c p ⟨t, ht.1, le_of_lt ht.2⟩,
+      DifferentialGeometry.Topology.genLoopCircleCurry_coe 1 x c p ⟨t, ht.1, le_of_lt ht.2⟩]
+    exact congrArg c (by
+      funext i
+      fin_cases i <;> rfl)
+
+theorem freeLoopAdjunction_bijective (x : X) [Subsingleton (HomotopyGroup (Fin 2) X x)] :
+    Function.Bijective (freeLoopAdjunction x) := by
+  have h : freeLoopAdjunction x =
+      ⇑(DifferentialGeometry.Topology.piThreeFreeLoopPiTwoMulEquiv x) :=
+    funext fun a => freeLoopAdjunction_eq_piThreeFreeLoopPiTwoMulEquiv x a
+  rw [h]
+  exact (DifferentialGeometry.Topology.piThreeFreeLoopPiTwoMulEquiv x).bijective
+
 theorem freeLoopAdjunction_natural {Y : Type u} [TopologicalSpace Y]
     (f : C(X, Y)) (a : HomotopyGroup (Fin 3) X x) :
     basedHomotopyMap (loopPostcompose f) (constantLoops x) (freeLoopAdjunction x a) =
@@ -1399,7 +1654,12 @@ theorem rfs_free_loop_class (o : TangentOrientationSection M) (q : M) :
     PathConnectedSpace (ContinuousFreeLoop M) ∧ SimplyConnectedSpace (ContinuousFreeLoop M) ∧
     Function.Bijective (freeLoopAdjunction q) ∧
     Function.Bijective (forgetBasedSphere (constantLoops q)) := by
-  sorry
+  have htwo : Subsingleton (HomotopyGroup (Fin 2) M q) := (rfs_homotopy_groups o q).1
+  have hpc : PathConnectedSpace (ContinuousFreeLoop M) :=
+    DifferentialGeometry.Topology.freeLoop_pathConnected_of_simplyConnected
+  have hsc : SimplyConnectedSpace (ContinuousFreeLoop M) :=
+    DifferentialGeometry.Topology.freeLoop_simplyConnected_of_piTwo q
+  exact ⟨hpc, hsc, freeLoopAdjunction_bijective q, forgetBasedSphere_bijective (constantLoops q)⟩
 
 def freeLoopAdjunctionEquiv (o : TangentOrientationSection M) (q : M) :
     HomotopyGroup (Fin 3) M q ≃*
@@ -1416,7 +1676,29 @@ def positiveFreeLoopClass (o : TangentOrientationSection M) : FreeSphereClass M 
 
 theorem positiveFreeLoopClass_eq (o : TangentOrientationSection M) (q : M) :
     positiveFreeLoopClass o = forgetBasedSphere (constantLoops q) (positiveBasedLoopClass o q) := by
-  sorry
+  have hpc : PathConnectedSpace M := inferInstance
+  let q₀ : M := Classical.choice (inferInstance : Nonempty M)
+  let p : Path q₀ q := PathConnectedSpace.somePath q₀ q
+  have h2q : Subsingleton (HomotopyGroup (Fin 2) M q) := (rfs_homotopy_groups o q).1
+  have h2q₀ : Subsingleton (HomotopyGroup (Fin 2) M q₀) := (rfs_homotopy_groups o q₀).1
+  have hbase : positiveFreeLoopClass o =
+      forgetBasedSphere (constantLoops q₀) (positiveBasedLoopClass o q₀) := rfl
+  rw [hbase]
+  have htransport : DifferentialGeometry.Topology.homotopyGroupTransport 2 p
+      (positiveHomotopyClass o q₀) = positiveHomotopyClass o q := by
+    rw [← pathTransport_eq_homotopyGroupTransport 2 p (positiveHomotopyClass o q₀)]
+    exact positiveHomotopyClass_pathTransport o p
+  have hmain : positiveBasedLoopClass o q =
+      DifferentialGeometry.Topology.homotopyGroupTransport 1 (p.map constantLoops.continuous)
+        (positiveBasedLoopClass o q₀) := by
+    rw [positiveBasedLoopClass, positiveBasedLoopClass,
+      freeLoopAdjunction_eq_piThreeFreeLoopPiTwoMulEquiv q,
+      freeLoopAdjunction_eq_piThreeFreeLoopPiTwoMulEquiv q₀, ← htransport]
+    exact DifferentialGeometry.Topology.piThreeFreeLoopPiTwoMulEquiv_transport p
+      (positiveHomotopyClass o q₀)
+  rw [hmain]
+  exact (forgetBasedSphere_homotopyGroupTransport (p.map constantLoops.continuous)
+    (positiveBasedLoopClass o q₀)).symm
 
 theorem positiveFreeLoopClass_nontrivial (o : TangentOrientationSection M) (q : M) :
     positiveFreeLoopClass o ≠ FreeHomotopyClass.mk
@@ -1489,7 +1771,16 @@ theorem positiveFreeLoopClass_natural (oM : TangentOrientationSection M)
     (oN : TangentOrientationSection N) (f : C(M, N)) (hf : orientedDegree oM oN f = 1) :
     FreeHomotopyClass.map (loopPostcompose f) (positiveFreeLoopClass oM) =
       positiveFreeLoopClass oN := by
-  sorry
+  let q₀ : M := Classical.choice (inferInstance : Nonempty M)
+  have hstep : basedHomotopyMap (loopPostcompose f) (constantLoops q₀)
+      (positiveBasedLoopClass oM q₀) = positiveBasedLoopClass oN (f q₀) := by
+    unfold positiveBasedLoopClass
+    rw [freeLoopAdjunction_natural f (positiveHomotopyClass oM q₀),
+      rfs_degree_class_transport oM oN f q₀, hf, zpow_one]
+  rw [positiveFreeLoopClass_eq oM q₀, positiveFreeLoopClass_eq oN (f q₀),
+    forgetBasedSphere_natural f (constantLoops q₀)
+      (positiveBasedLoopClass oM q₀), hstep]
+  simp only [loopPostcompose_constantLoops]
 
 theorem positiveFreeContractibleClass_natural (oM : TangentOrientationSection M)
     (oN : TangentOrientationSection N) (f : C(M, N)) (hf : orientedDegree oM oN f = 1) :

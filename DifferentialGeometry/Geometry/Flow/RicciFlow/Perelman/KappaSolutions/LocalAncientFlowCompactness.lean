@@ -67,6 +67,51 @@ theorem exists_local_ancient_flow_compactness
               D.referenceMetric = D.limitMetric) := by
   sorry
 
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+theorem exists_local_ancient_flow_compactness_form_iff
+    (X : PointedFlowSeq.{u, uE, uH} (I := I)) :
+    (∃ (L : PointedFlowData.{u, uE, uH} (I := I) X.D) (phi : ℕ → ℕ),
+      StrictMono phi ∧
+      ∃ Phi : PointedCGHMaps (I := I) X (L.atTime (I := I) 0) phi,
+        (let _ : TopologicalSpace L.M := L.topology
+         ConnectedSpace L.M) ∧
+        (∀ t ∈ X.D.carrier, MetricComplete (I := I) (L.atTime (I := I) t)) ∧
+        ∀ t ∈ X.D.carrier,
+          ∃ C : MetricConvergenceData (I := I) (Phi.atTime (L := L) t),
+            (∀ k, C.domain k = CanonicalMetricCompactness.canonicalSourceData
+              (I := I) (Phi.atTime (L := L) t) k) ∧
+            (∀ k,
+              let D := C.domain k
+              let _ : TopologicalSpace
+                (MetricSourceDomain (I := I) (Phi.atTime (L := L) t) k) := D.topology
+              let _ : ChartedSpace H
+                (MetricSourceDomain (I := I) (Phi.atTime (L := L) t) k) := D.charted
+              let _ : IsManifold I ∞
+                (MetricSourceDomain (I := I) (Phi.atTime (L := L) t) k) := D.smooth
+              D.referenceMetric = D.limitMetric)) ↔
+    (∃ (L : PointedFlowData.{u, uE, uH} (I := I) X.D) (phi : ℕ → ℕ),
+      StrictMono phi ∧
+      ∃ Phi : PointedCGHMaps (I := I) X (L.atTime (I := I) 0) phi,
+        (let _ : TopologicalSpace L.M := L.topology
+         ConnectedSpace L.M) ∧
+        (∀ t ∈ X.D.carrier, MetricComplete (I := I) (L.atTime (I := I) t)) ∧
+        ∀ t ∈ X.D.carrier,
+          ∃ C : MetricConvergenceData (I := I) (Phi.atTime (L := L) t),
+            ∀ k, C.domain k = CanonicalMetricCompactness.canonicalSourceData
+              (I := I) (Phi.atTime (L := L) t) k) := by
+  constructor
+  · rintro ⟨L, phi, hphi, Phi, hconn, hcomplete, hconv⟩
+    exact ⟨L, phi, hphi, Phi, hconn, hcomplete, fun t ht => by
+      obtain ⟨C, hC, _⟩ := hconv t ht
+      exact ⟨C, hC⟩⟩
+  · rintro ⟨L, phi, hphi, Phi, hconn, hcomplete, hconv⟩
+    refine ⟨L, phi, hphi, Phi, hconn, hcomplete, fun t ht => ?_⟩
+    obtain ⟨C, hC⟩ := hconv t ht
+    refine ⟨C, hC, fun k => ?_⟩
+    rw [hC k]
+    with_unfolding_all
+      rfl
+
 end DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
 
 end

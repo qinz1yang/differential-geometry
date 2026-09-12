@@ -86,6 +86,49 @@ theorem riemannianCurveLength_eq_eVariationOn
 
 end CurveLengthVariation
 
+
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+theorem riemannianEDistOf_le_riemannianCurveLength [RegularSpace M]
+    (g : SmoothRiemannianMetric I M) (γ : ℝ → M) {a b : ℝ} (hab : a ≤ b) :
+    riemannianEDistOf g (γ a) (γ b) ≤ riemannianCurveLength g γ a b := by
+  let : RiemannianBundle (TangentSpace I : M → Type _) := ⟨g.toRiemannianMetric⟩
+  let : IsContinuousRiemannianBundle E (TangentSpace I : M → Type _) :=
+    ⟨g.inner, g.contMDiff.continuous, fun _ _ _ => rfl⟩
+  let : PseudoEMetricSpace M := PseudoEMetricSpace.ofRiemannianMetric I M
+  rw [riemannianCurveLength_eq_eVariationOn]
+  exact eVariationOn.edist_le γ ⟨le_rfl, hab⟩ ⟨hab, le_rfl⟩
+
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+theorem riemannianCurveLength_le_pathELength [RegularSpace M]
+    (g : SmoothRiemannianMetric I M) {γ : ℝ → M} {a b : ℝ}
+    (hγ : ContMDiffOn 𝓘(ℝ, ℝ) I 1 γ (Icc a b)) :
+    (let : RiemannianBundle (TangentSpace I : M → Type _) := ⟨g.toRiemannianMetric⟩
+     let : IsContinuousRiemannianBundle E (TangentSpace I : M → Type _) :=
+       ⟨g.inner, g.contMDiff.continuous, fun _ _ _ => rfl⟩
+     riemannianCurveLength g γ a b ≤ pathELength I γ a b) := by
+  let : RiemannianBundle (TangentSpace I : M → Type _) := ⟨g.toRiemannianMetric⟩
+  let : IsContinuousRiemannianBundle E (TangentSpace I : M → Type _) :=
+    ⟨g.inner, g.contMDiff.continuous, fun _ _ _ => rfl⟩
+  unfold riemannianCurveLength
+  refine iSup_le fun p => ?_
+  obtain ⟨n, ⟨u, hu, hs⟩⟩ := p
+  have htele : ∀ n : ℕ, ∑ i ∈ Finset.range n, pathELength I γ (u i) (u (i + 1)) =
+      pathELength I γ (u 0) (u n) := by
+    intro n
+    induction n with
+    | zero => simp
+    | succ n ih =>
+      rw [Finset.sum_range_succ, ih, pathELength_add (hu (Nat.zero_le n)) (hu (Nat.le_succ n))]
+  calc ∑ i ∈ Finset.range n, riemannianEDistOf g (γ (u (i + 1))) (γ (u i))
+      ≤ ∑ i ∈ Finset.range n, pathELength I γ (u i) (u (i + 1)) := by
+        refine Finset.sum_le_sum fun i _ => ?_
+        rw [riemannianEDistOf_comm]
+        exact riemannianEDist_le_pathELength
+          (hγ.mono (Icc_subset_Icc (hs i).1 (hs (i + 1)).2)) rfl rfl (hu (Nat.le_succ i))
+    _ = pathELength I γ (u 0) (u n) := htele n
+    _ ≤ pathELength I γ a b := pathELength_mono (hs 0).1 (hs n).2
 theorem rfs_local_to_global_length [FiniteDimensional ℝ E] [FiniteDimensional ℝ F]
     [T2Space M] [T2Space N] [SecondCountableTopology M] [SecondCountableTopology N]
     [ConnectedSpace M] [ConnectedSpace N]

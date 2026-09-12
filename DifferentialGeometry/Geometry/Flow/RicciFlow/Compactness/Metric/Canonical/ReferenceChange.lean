@@ -213,6 +213,46 @@ theorem exists_metricConvergenceData_canonicalSourceData
   · with_unfolding_all
     rfl
 
+omit [I.Boundaryless] [CompleteSpace E] in
+theorem canonicalSourceData_referenceMetric_eq_limitMetric
+    (Ψ : PointedRiemannianConvergenceMaps (I := I) X L phi) (k : ℕ) :
+    let D := CanonicalMetricCompactness.canonicalSourceData (I := I) Ψ k
+    letI : TopologicalSpace (MetricSourceDomain (I := I) Ψ k) := D.topology
+    letI : ChartedSpace H (MetricSourceDomain (I := I) Ψ k) := D.charted
+    letI : IsManifold I ∞ (MetricSourceDomain (I := I) Ψ k) := D.smooth
+    D.referenceMetric = D.limitMetric := by
+  with_unfolding_all
+    rfl
+
+omit [I.Boundaryless] in
+theorem exists_metricConvergenceData_canonicalSourceData_iff
+    (Ψ : PointedRiemannianConvergenceMaps (I := I) X L phi) :
+    (∃ C : MetricConvergenceData (I := I) Ψ,
+      (∀ k : ℕ, C.domain k = CanonicalMetricCompactness.canonicalSourceData (I := I) Ψ k) ∧
+      (∀ k : ℕ,
+        let D := C.domain k
+        letI : TopologicalSpace (MetricSourceDomain (I := I) Ψ k) := D.topology
+        letI : ChartedSpace H (MetricSourceDomain (I := I) Ψ k) := D.charted
+        letI : IsManifold I ∞ (MetricSourceDomain (I := I) Ψ k) := D.smooth
+        D.referenceMetric = D.limitMetric)) ↔
+      (∀ K : Set L.M,
+        (letI : TopologicalSpace L.M := L.topology; IsCompact K) →
+        ∀ p : ℕ, ∀ ε : ℝ, 0 < ε → ∃ k0 : ℕ, ∀ k : ℕ, k0 ≤ k →
+          (CanonicalMetricCompactness.canonicalSourceData (I := I) Ψ k).derivNormSupOn
+            (I := I) K p < ε) := by
+  constructor
+  · rintro ⟨C, hC, _⟩ K hK p ε hε
+    obtain ⟨k0, hk0⟩ := C.converges K hK p ε hε
+    refine ⟨k0, fun k hk => ?_⟩
+    obtain ⟨_, hlt⟩ := hk0 k hk
+    rwa [hC k] at hlt
+  · intro hconv
+    obtain ⟨C, hC, _⟩ :=
+      exists_metricConvergenceData_canonicalSourceData (I := I) Ψ hconv
+    refine ⟨C, hC, fun k => ?_⟩
+    rw [hC k]
+    exact canonicalSourceData_referenceMetric_eq_limitMetric (I := I) Ψ k
+
 end CanonicalSourceData
 
 section SourceReferenceSwap

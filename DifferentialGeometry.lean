@@ -808,6 +808,7 @@ import DifferentialGeometry.Analysis.Integration.Measure.PullbackCross
 import DifferentialGeometry.Analysis.Integration.Measure.PullbackGradient
 import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.Basic
 import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.CompactVolumeEquivalence
+import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.Euclidean
 import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.Exponential
 import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.GaussianTail
 import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.Invariance
@@ -3991,6 +3992,7 @@ import DifferentialGeometry.Geometry.Coordinates.Fields.Tensor
 import DifferentialGeometry.Geometry.Coordinates.Fields.Vector
 import DifferentialGeometry.Geometry.Coordinates.Frame.Chart
 import DifferentialGeometry.Geometry.Coordinates.Frame.Coordinate
+import DifferentialGeometry.Geometry.Coordinates.Frame.Product
 import DifferentialGeometry.Geometry.Coordinates.MetricCompatibility.Coordinate
 import DifferentialGeometry.Geometry.Coordinates.MetricCompatibility.Covariant
 import DifferentialGeometry.Geometry.Coordinates.MetricCompatibility.Inverse
@@ -4526,6 +4528,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.MetricExt
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.MetricLowerBound
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.Open.Completeness
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.Open.HalfLineWindow
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.Open.HalfLineConvergence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.Open.Convergence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.Open.CurvatureConvergence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.Open.Equation
@@ -4876,6 +4879,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.Flow
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.GapComparison
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.GoodWindows
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.ObservedComparison
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.ObservedComparisonRecord
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.ObservedRescaling
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.Preparation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.ScalarComparison
@@ -6269,6 +6273,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.Homology
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.LinearOrientation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.LoopClass
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.LoopModel
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.LowDegreeHurewiczCubeBridge
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.MetricEvent
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ObservationTower
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.OrientationDegree
@@ -6990,6 +6995,7 @@ import DifferentialGeometry.Geometry.MinimalSurface.Plateau.DiskMetricDerivative
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.DiskReflectionCovariant
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.DiskReflectionDifferential
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.DiskSmoothLipschitz
+import DifferentialGeometry.Geometry.MinimalSurface.Plateau.DiskTensionSmoothness
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.ExactAttainment
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.Existence
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.HomogeneousRegularity
@@ -7568,6 +7574,7 @@ import DifferentialGeometry.Topology.Homology.ExcisionQuotient
 import DifferentialGeometry.Topology.Homology.FineAffineImages
 import DifferentialGeometry.Topology.Homology.Homotopy
 import DifferentialGeometry.Topology.Homology.HurewiczEquivalences
+import DifferentialGeometry.Topology.Homology.HurewiczFrontier
 import DifferentialGeometry.Topology.Homology.HurewiczLowDegrees
 import DifferentialGeometry.Topology.Homology.Integral
 import DifferentialGeometry.Topology.Homology.LiftedFaces
@@ -7877,6 +7884,7 @@ import DifferentialGeometry.Topology.Manifold.Attachment.RadialInducedBoundaryOr
 import DifferentialGeometry.Topology.Manifold.Attachment.RadialManifold
 import DifferentialGeometry.Topology.Manifold.Attachment.RadialWitness
 import DifferentialGeometry.Topology.Manifold.AddCircle
+import DifferentialGeometry.Topology.Manifold.BallChartPalaisTransport
 import DifferentialGeometry.Topology.Manifold.BallChartTransport
 import DifferentialGeometry.Topology.Manifold.BallDiffeomorphExtension
 import DifferentialGeometry.Topology.Manifold.BicollarComponents

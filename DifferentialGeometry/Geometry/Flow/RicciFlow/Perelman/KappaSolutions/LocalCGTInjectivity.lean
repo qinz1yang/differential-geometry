@@ -120,6 +120,107 @@ theorem exists_uniform_local_cgt_radius
 private local instance localCGTMeasurableE : MeasurableSpace E := borel E
 private local instance localCGTBorelE : BorelSpace E := ⟨rfl⟩
 
+theorem intrInj_ge_vol_of_local_ball
+    (g : SmoothRiemannianMetric I M)
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
+    (p : M) {K R r₀ s q : Real} {v : ENNReal}
+    (hK : 0 < K) (hR : 0 < R)
+    (hRpi : R ≤ Real.pi / Real.sqrt K)
+    (hRmBall : ∀ y : M, y ∈ Metric.eball p (ENNReal.ofReal (3 * R / 4)) →
+      Real.sqrt (Tensor0SBundle.normSq0S (I := I) g y 4
+        (metricRm04At (I := I) (M := M) g y)) ≤ K)
+    (hloc : IsLocalDiffeomorphOn (modelWithCornersSelf Real E) I
+        (↑(⊤ : ℕ∞) : WithTop ℕ∞)
+        (intrinsicFramedExp (I := I) g hEnorm p) (Metric.ball (0 : E) R))
+    (hr₀ : 0 < r₀) (hs : 0 < s)
+    (hfit : r₀ + 2 * s < R) (hquarter : r₀ < R / 4)
+    (hq : 0 ≤ q)
+    (hRicBall : ∀ y : M, riemannianEDist I p y < ENNReal.ofReal (r₀ + s) →
+      ∀ w : TangentSpace I y,
+        -(((Module.finrank Real E - 1 : Nat) : Real) * q ^ 2) * g.inner y w w ≤
+          ricciTensor (I := I) g y w w)
+    (hcpt : @IsCompact M PseudoEMetricSpace.toUniformSpace.toTopologicalSpace
+      (Metric.closedEBall p (ENNReal.ofReal s)))
+    (hvol : v ≤ riemannianVolumeMeasure (I := I) (M := M) g
+      {y : M | riemannianEDist I p y < ENNReal.ofReal s}) :
+    ENNReal.ofReal (r₀ / 2) * v /
+        (((volume : Measure
+            (EuclideanSpace Real (Fin (Module.finrank Real E)))).toSphere Set.univ) *
+          ENNReal.ofReal (hyperbolicRadialVolume q (Module.finrank Real E - 1) s) +
+        (volume : Measure E).toSphere Set.univ *
+          ENNReal.ofReal (hyperbolicRadialVolume q (Module.finrank Real E - 1) (r₀ + s)))
+      ≤ intrinsicInjRadius (I := I) g hEnorm p := by
+  classical
+  let V : ENNReal :=
+    riemannianVolumeMeasure (I := I) (M := M) g
+      {y : M | riemannianEDist I p y < ENNReal.ofReal s}
+  let P : ENNReal := intrinsicPullVol (I := I) g hEnorm p (r₀ + s)
+  let D : ENNReal :=
+    ((volume : Measure
+        (EuclideanSpace Real (Fin (Module.finrank Real E)))).toSphere Set.univ) *
+      ENNReal.ofReal (hyperbolicRadialVolume q (Module.finrank Real E - 1) s) +
+    (volume : Measure E).toSphere Set.univ *
+      ENNReal.ofReal (hyperbolicRadialVolume q (Module.finrank Real E - 1) (r₀ + s))
+  have hRm :
+      ∀ z : E, ‖z‖ < 3 * R / 4 →
+        Real.sqrt (Tensor0SBundle.normSq0S (I := I) g
+          (intrinsicFramedExp (I := I) g hEnorm p z) 4
+          (metricRm04At (I := I) (M := M) g
+            (intrinsicFramedExp (I := I) g hEnorm p z))) ≤ K := by
+    intro z hz
+    refine intrinsicFrame_rm04_bound_of_ball (I := I) g hEnorm p (ρ := 3 * R / 4) ?_ ?_
+    · intro y hy
+      apply hRmBall
+      exact Metric.mem_eball'.mpr (by
+        rw [IsRiemannianManifold.out (I := I) p y]
+        exact hy)
+    · linarith
+  have hno : ∀ z, z ∈ Metric.ball (0 : E) (r₀ + s) → z ≠ 0 →
+      ∀ t, t ∈ Ioo (0 : Real) 1 →
+        ¬ IsConjVec (I := I) g hEnorm p
+          ((t • normalFrame (I := I) g p z : TangentSpace I p) : E) := by
+    intro z hz hz0 t ht
+    have htz : t • z ∈ Metric.ball (0 : E) R := by
+      rw [Metric.mem_ball, dist_zero_right] at hz ⊢
+      rw [norm_smul, Real.norm_of_nonneg ht.1.le]
+      calc
+        t * ‖z‖ < 1 * ‖z‖ :=
+          mul_lt_mul_of_pos_right ht.2 (norm_pos_iff.mpr hz0)
+        _ = ‖z‖ := one_mul _
+        _ < r₀ + s := hz
+        _ < R := by linarith
+    have hraw := framedExp_not_conj (I := I) g hEnorm p (t • z)
+      (hloc ⟨t • z, htz⟩)
+    simpa only [map_smul] using hraw
+  have hV :
+      V ≤ ((volume : Measure
+          (EuclideanSpace Real (Fin (Module.finrank Real E)))).toSphere Set.univ) *
+        ENNReal.ofReal (hyperbolicRadialVolume q (Module.finrank Real E - 1) s) := by
+    simpa only [V] using
+      (riemannianVolumeMeasure_ball_le_hyperbolic_of_isCompact_closedEBall
+        (I := I) g hEnorm p hq hs hcpt
+        (fun y w hy => hRicBall y (hy.trans_le (ENNReal.ofReal_le_ofReal (by linarith))) w))
+  have hP :
+      P ≤ (volume : Measure E).toSphere Set.univ *
+        ENNReal.ofReal
+          (hyperbolicRadialVolume q (Module.finrank Real E - 1) (r₀ + s)) := by
+    simpa only [P] using
+      (intrinsicPullVol_le_hyperbolic_of_ricciBoundedBelowOn (I := I) g hEnorm p hq
+        (add_pos hr₀ hs) hno
+        (fun y hy w => hRicBall y hy w))
+  have hDen : V + P ≤ D := by
+    simpa only [D] using add_le_add hV hP
+  have hcgt :
+      ENNReal.ofReal (r₀ / 2) * V / (V + P) ≤
+        intrinsicInjRadius (I := I) g hEnorm p := by
+    simpa only [V, P] using
+      (intrinsicInjRadius_ge_cheeger_gromov_taylor_on (I := I) (K := K) (R := R) (r₀ := r₀)
+        (s := s) g hEnorm p hK hR hRpi hRm hloc hr₀ hfit hquarter)
+  have hvolV : v ≤ V := by simpa only [V] using hvol
+  exact
+    (ENNReal.div_le_div
+      (mul_le_mul_right hvolV (ENNReal.ofReal (r₀ / 2))) hDen).trans hcgt
+
 variable [T2Space (TangentBundle I M)] [ConnectedSpace M]
 
 theorem intrInj_ge_vol_of_ball
