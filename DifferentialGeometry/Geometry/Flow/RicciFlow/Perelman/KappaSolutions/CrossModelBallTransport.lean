@@ -114,7 +114,7 @@ theorem image_riemannianBallOf_pullbackMetricCross
 
 section Volume
 
-variable [FiniteDimensional ℝ F] [CompleteSpace E] [CompleteSpace F]
+variable [I.Boundaryless] [FiniteDimensional ℝ F] [CompleteSpace E] [CompleteSpace F]
   [SigmaCompactSpace M] [T2Space N] [SigmaCompactSpace N]
 
 private local instance crossModelBallMeasurableM : MeasurableSpace M := borel M
@@ -122,6 +122,7 @@ private local instance crossModelBallBorelM : BorelSpace M := ⟨rfl⟩
 private local instance crossModelBallMeasurableN : MeasurableSpace N := borel N
 private local instance crossModelBallBorelN : BorelSpace N := ⟨rfl⟩
 
+omit [CompleteSpace E] [CompleteSpace F] in
 theorem riemannianBallOf_volume_pullbackMetricCross
     (g : SmoothRiemannianMetric J N) (Phi : M ≃ₘ⟮I, J⟯ N)
     (x : M) (r : ℝ) :

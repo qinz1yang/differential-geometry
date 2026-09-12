@@ -98,6 +98,7 @@ private local instance cylinderAvrLiftBorel : BorelSpace (UniversalCover M) := �
 private local instance cylinderAvrC1 : IsManifold I 1 M :=
   IsManifold.of_le (n := ∞) (by decide)
 
+omit [CompleteSpace E] in
 theorem cylinderCover_ball_volume_le
     (g : SmoothRiemannianMetric I M) (h : SmoothRiemannianMetric (𝓡 2) SphereTwo)
     (Psi : (SphereTwo × ℝ) ≃ₘ⟮(𝓡 2).prod 𝓘(ℝ, ℝ), I⟯ UniversalCover M)
@@ -146,6 +147,7 @@ theorem cylinderCover_ball_volume_le
         riemannianVolumeMeasure (I := 𝓡 2) (M := SphereTwo) h univ :=
       cylinderAvr_product_ball_volume_le h gP hprod u r hr
 
+omit [CompleteSpace E] in
 theorem cylinderCover_asymptoticVolumeRatio_eq_zero
     (g : SmoothRiemannianMetric I M) (hdim : Module.finrank ℝ E = 3)
     (h : SmoothRiemannianMetric (𝓡 2) SphereTwo)

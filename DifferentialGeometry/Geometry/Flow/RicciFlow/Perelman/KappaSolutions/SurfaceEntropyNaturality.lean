@@ -16,7 +16,7 @@ open scoped Manifold ContDiff
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [CompleteSpace E]
-  {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+  {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
   {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [T2Space M] [CompactSpace M]
   {N : Type*} [TopologicalSpace N] [ChartedSpace H N] [IsManifold I ∞ N]
@@ -29,6 +29,7 @@ private local instance : BorelSpace N := ⟨rfl⟩
 private local instance : IsManifold I 1 M := IsManifold.of_le (n := ∞) (by decide)
 private local instance : IsManifold I 1 N := IsManifold.of_le (n := ∞) (by decide)
 
+omit [CompleteSpace E] in
 theorem integral_pullbackMetric_comp
     (g : SmoothRiemannianMetric I N) (Phi : M ≃ₘ⟮I, I⟯ N) (f : N → ℝ) :
     (∫ x, f (Phi x)
@@ -38,6 +39,7 @@ theorem integral_pullbackMetric_comp
     Phi.toHomeomorph.measurableEmbedding f
 
 
+omit [CompleteSpace E] in
 theorem surfaceArea_pullbackMetric
     (g : SmoothRiemannianMetric I N) (Phi : M ≃ₘ⟮I, I⟯ N) :
     surfaceArea (Diffeomorph.pullbackMetric g Phi) = surfaceArea g := by
