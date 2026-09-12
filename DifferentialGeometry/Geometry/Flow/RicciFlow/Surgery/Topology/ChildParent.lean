@@ -466,4 +466,20 @@ theorem childCap_boundary_eq (c : ConnectedComponents Q.Carrier) (b : E.ChildCap
 
 end SmoothCutCapTransition
 
+namespace SmoothCutCapTransition
+
+theorem childParent_congr {P Q D N P' Q' D' N' : OrientedThreeStage.{u}}
+    (E : SmoothCutCapTransition P Q D N) (F : SmoothCutCapTransition P' Q' D' N')
+    (hp : P = P') (hq : Q = Q') (hd : D = D') (hn : N = N') (hEF : HEq E F)
+    (c : ConnectedComponents Q.Carrier) :
+    (hp ▸ E.childParent c) = F.childParent (hq ▸ c) := by
+  cases hp
+  cases hq
+  cases hd
+  cases hn
+  cases eq_of_heq hEF
+  rfl
+
+end SmoothCutCapTransition
+
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology

@@ -93,6 +93,10 @@ structure AncestorRestrictionData (short long : ObservedHistory.{u}) where
   count_le : short.eventCount ≤ long.eventCount
   stage_eq : ∀ j : Fin (short.eventCount + 1), short.stage j =
     long.stage (Fin.castLE (Nat.add_le_add_right count_le 1) j)
+  discarded_eq : ∀ j : Fin short.eventCount, (short.event j).discarded =
+    (long.event (Fin.castLE count_le j)).discarded
+  capped_eq : ∀ j : Fin short.eventCount, (short.event j).capped =
+    (long.event (Fin.castLE count_le j)).capped
   transition_eq : ∀ j : Fin short.eventCount,
     HEq (short.event j).transition (long.event (Fin.castLE count_le j)).transition
 
@@ -106,6 +110,16 @@ def componentToLong (j : Fin (short.eventCount + 1)) :
       ConnectedComponents (long.stage (Fin.castLE (Nat.add_le_add_right R.count_le 1) j)).Carrier :=
   fun c => (R.stage_eq j) ▸ c
 
+private theorem componentToLong_parent (j : Fin short.eventCount)
+    (c : ConnectedComponents (short.stage j.succ).Carrier) :
+    R.componentToLong j.castSucc ((short.event j).transition.childParent c) =
+      (long.event (Fin.castLE R.count_le j)).transition.childParent
+        (R.componentToLong j.succ c) :=
+  SmoothCutCapTransition.childParent_congr (short.event j).transition
+    (long.event (Fin.castLE R.count_le j)).transition
+    (R.stage_eq j.castSucc) (R.stage_eq j.succ) (R.discarded_eq j) (R.capped_eq j)
+    (R.transition_eq j) c
+
 theorem rfs_finite_ancestry_restrict
     (terminal : ConnectedComponents (long.stage (Fin.last long.eventCount)).Carrier)
     (earlier : ConnectedComponents (short.stage (Fin.last short.eventCount)).Carrier)
@@ -116,7 +130,14 @@ theorem rfs_finite_ancestry_restrict
       ((rfs_finite_ancestor_chain short earlier).component j) =
         (rfs_finite_ancestor_chain long terminal).component
           (Fin.castLE (Nat.add_le_add_right R.count_le 1) j) := by
-  sorry
+  intro j
+  induction j using Fin.reverseInduction with
+  | last =>
+    rw [(rfs_finite_ancestor_chain short earlier).terminal_eq]
+    exact hearlier
+  | cast j ih =>
+    rw [(rfs_finite_ancestor_chain short earlier).parent_eq, componentToLong_parent R j, ih]
+    exact ((rfs_finite_ancestor_chain long terminal).parent_eq (Fin.castLE R.count_le j)).symm
 
 end AncestorRestrictionData
 

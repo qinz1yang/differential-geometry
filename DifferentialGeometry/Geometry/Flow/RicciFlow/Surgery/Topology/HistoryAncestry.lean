@@ -9,19 +9,6 @@ namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
 
 universe u
 
-private theorem childParent_congr_all_stages
-    {P Q D N P' Q' D' N' : OrientedThreeStage.{u}}
-    (E : SmoothCutCapTransition P Q D N) (F : SmoothCutCapTransition P' Q' D' N')
-    (hp : P = P') (hq : Q = Q') (hd : D = D') (hn : N = N') (hEF : HEq E F)
-    (c : ConnectedComponents Q.Carrier) :
-    (hp ▸ E.childParent c) = F.childParent (hq ▸ c) := by
-  cases hp
-  cases hq
-  cases hd
-  cases hn
-  cases eq_of_heq hEF
-  rfl
-
 namespace ObservedHistory
 
 
@@ -29,6 +16,8 @@ theorem ancestorRestriction (H : ObservedHistory.{u}) (t : Icc (0 : ℝ) H.horiz
     AncestorRestrictionData (H.restrict t) H where
   count_le := Nat.le_of_lt_succ (H.activeStage t).isLt
   stage_eq _ := rfl
+  discarded_eq _ := rfl
+  capped_eq _ := rfl
   transition_eq _ := HEq.rfl
 
 theorem finite_ancestry_restrict (H : ObservedHistory.{u})
@@ -64,7 +53,8 @@ private theorem componentToOther_parent (j : Fin H.eventCount)
     R.componentToOther j.castSucc ((H.event j).transition.childParent c) =
       (K.event (Fin.cast R.count_eq j)).transition.childParent
         (R.componentToOther j.succ c) :=
-  childParent_congr_all_stages (H.event j).transition (K.event (Fin.cast R.count_eq j)).transition
+  SmoothCutCapTransition.childParent_congr (H.event j).transition
+    (K.event (Fin.cast R.count_eq j)).transition
     (R.stage_eq j.castSucc) (R.stage_eq j.succ)
     (R.event_eq j).discarded_eq (R.event_eq j).capped_eq (R.event_eq j).transition_heq c
 
