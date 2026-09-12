@@ -2,6 +2,8 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ChildParent
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.Homology
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.GeometricCutoff
 import DifferentialGeometry.Topology.VanKampen.SmoothSphereSeparation
+import DifferentialGeometry.Topology.Manifold.SmoothEmbeddingComposition
+import DifferentialGeometry.Topology.SphereSeparation.HalfSpaceClosure
 
 
 
@@ -36,7 +38,7 @@ structure SmoothSphericalRegion (P : OrientedThreeStage.{u}) where
   Boundary : Type
   [finiteBoundary : Fintype Boundary]
   sphere : Boundary → C(Sphere 2, region)
-  sphere_smooth : ∀ b, IsSmoothEmbedding (𝓡 2) (𝓡∂ 3) ∞ (sphere b)
+  sphere_smooth : ∀ b, IsSmoothEmbedding (𝓡 2) ThreeModel ∞ (fun y : Sphere 2 => (sphere b y).1)
   sphere_disjoint : Pairwise fun b c => Disjoint (Set.range (sphere b)) (Set.range (sphere c))
   boundary_eq : (𝓡∂ 3).boundary region = ⋃ b, Set.range (sphere b)
 
@@ -141,6 +143,71 @@ theorem exists_unique_exterior_of_notMem_region (P : OrientedThreeStage.{u})
     Classical.choose_spec (exists_exterior_of_notMem_region P C E hx),
     fun _ hd => exterior_branch_eq_of_mem P C E hd
       (Classical.choose_spec (exists_exterior_of_notMem_region P C E hx))⟩
+
+
+theorem sphereEmbedding_of_region (P : OrientedThreeStage.{u}) (C : SmoothSphericalRegion P)
+    (b : C.Boundary) :
+    IsSmoothEmbedding (𝓡 2) ThreeModel ∞ (fun y : Sphere 2 => (C.sphere b y).1) :=
+  C.sphere_smooth b
+
+theorem nonempty_smoothTwoSidedCollar_of_region (P : OrientedThreeStage.{u})
+    (C : SmoothSphericalRegion P) (b : C.Boundary) :
+    Nonempty (DifferentialGeometry.Topology.SmoothTwoSidedCollar
+      (𝓡 2) ThreeModel (fun y : Sphere 2 => (C.sphere b y).1)) :=
+  DifferentialGeometry.Topology.exists_smoothTwoSidedCollar_of_smoothSphereEmbedding
+    (fun y : Sphere 2 => (C.sphere b y).1) (sphereEmbedding_of_region P C b)
+
+theorem interiorImage_subset_compl_sphere (P : OrientedThreeStage.{u})
+    (C : SmoothSphericalRegion P) (b : C.Boundary) :
+    letI := C.charts
+    letI := C.smooth
+    (Subtype.val : C.region → P.Carrier) '' (𝓡∂ 3).interior C.region ⊆
+      (Set.range (fun y : Sphere 2 => (C.sphere b y).1))ᶜ :=
+  letI := C.charts
+  letI := C.smooth
+  fun _ hx =>
+    let ⟨p, hp, hpx⟩ := hx
+    hpx ▸ fun hrange =>
+      let ⟨y, hy⟩ := hrange
+      have hmem : C.sphere b y ∈ (𝓡∂ 3).boundary C.region :=
+        C.boundary_eq ▸ Set.mem_iUnion.mpr ⟨b, Set.mem_range_self y⟩
+      have hne : p = C.sphere b y := C.induced.isEmbedding.injective hy.symm
+      (ModelWithCorners.disjoint_interior_boundary
+        (I := (𝓡∂ 3)) (M := C.region)).le_bot ⟨hne ▸ hp, hmem⟩
+
+theorem interiorImage_subset_side_of_union (P : OrientedThreeStage.{u})
+    (C : SmoothSphericalRegion P) [ConnectedSpace P.Carrier] (b : C.Boundary) {B D : Set P.Carrier}
+    (hBopen : IsOpen B) (hDopen : IsOpen D) (hdisjoint : Disjoint B D)
+    (hunion : (Set.range (fun y : Sphere 2 => (C.sphere b y).1))ᶜ = B ∪ D) :
+    letI := C.charts
+    letI := C.smooth
+    ((Subtype.val : C.region → P.Carrier) '' (𝓡∂ 3).interior C.region ⊆ B ∨
+      (Subtype.val : C.region → P.Carrier) '' (𝓡∂ 3).interior C.region ⊆ D) :=
+  letI := C.charts
+  letI := C.smooth
+  C.interior_connected.isPreconnected.subset_or_subset hBopen hDopen hdisjoint
+    (hunion ▸ interiorImage_subset_compl_sphere P C b)
+
+theorem interiorImage_subset_collar_side (P : OrientedThreeStage.{u}) (C : SmoothSphericalRegion P)
+    [ConnectedSpace P.Carrier] [SimplyConnectedSpace P.Carrier]
+    [Nonempty (Sphere 2)] [CompactSpace (Sphere 2)] [ConnectedSpace (Sphere 2)]
+    [LocallyPathConnectedSpace P.Carrier]
+    (b : C.Boundary)
+    (h : DifferentialGeometry.Topology.SmoothTwoSidedCollar (𝓡 2) ThreeModel
+      (fun y : Sphere 2 => (C.sphere b y).1)) :
+    letI := C.charts
+    letI := C.smooth
+    ((Subtype.val : C.region → P.Carrier) '' (𝓡∂ 3).interior C.region ⊆
+        h.toTwoSidedCollar.negativeSide ∨
+      (Subtype.val : C.region → P.Carrier) '' (𝓡∂ 3).interior C.region ⊆
+        h.toTwoSidedCollar.positiveSide) :=
+  letI := C.charts
+  letI := C.smooth
+  interiorImage_subset_side_of_union P C b
+    h.toTwoSidedCollar.isOpen_negativeSide
+    h.toTwoSidedCollar.isOpen_positiveSide
+    h.toTwoSidedCollar.disjoint_negativeSide_positiveSide
+    h.toTwoSidedCollar.complement_eq_negativeSide_union_positiveSide
 
 theorem exists_chartedSpace_closure_component_of_surgery_sphere
     (P : OrientedThreeStage.{0}) [SimplyConnectedSpace P.Carrier] (C : SmoothSphericalRegion P)
@@ -1490,5 +1557,85 @@ theorem rfs_child_comparison_length_of_inputs
     exact hlen c s hs x y⟩
 
 end GeometricCutoffRecord
+
+end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
+
+
+namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
+
+universe u
+
+theorem smoothSphericalRegion_of_collar_side (P : OrientedThreeStage.{u})
+    {e : Sphere 2 → P.Carrier}
+    (he : IsSmoothEmbedding (𝓡 2) ThreeModel ∞ e)
+    {B : Set P.Carrier} (hBopen : IsOpen B) (hBconn : IsConnected B)
+    (hBclosure : closure B = B ∪ Set.range e)
+    (normalChart : ∀ x : Sphere 2,
+      Nonempty (DifferentialGeometry.Topology.SphereSeparation.EmbeddedSphereSideNormalChart
+        e B x)) :
+    Nonempty (SmoothSphericalRegion P) := by
+  classical
+  let chartsInst : ChartedSpace (EuclideanHalfSpace 3) ↥(closure B) :=
+    DifferentialGeometry.Topology.SphereSeparation.sideClosureChartedSpace
+      hBopen hBclosure normalChart
+  let smoothInst : IsManifold (𝓡∂ 3) ∞ ↥(closure B) :=
+    DifferentialGeometry.Topology.SphereSeparation.sideClosureIsManifold
+      hBopen hBclosure normalChart
+  have hcompact : IsCompact (closure B) := isClosed_closure.isCompact
+  have hconn : IsConnected (closure B) := hBconn.closure
+  have hinduced : IsSmoothEmbedding (𝓡∂ 3) ThreeModel ∞
+      (Subtype.val : ↥(closure B) → P.Carrier) :=
+    DifferentialGeometry.Topology.SphereSeparation.sideClosure_inclusion_isSmoothEmbedding
+      hBopen hBclosure normalChart
+  have hinterior : IsConnected ((Subtype.val : ↥(closure B) → P.Carrier) ''
+      (𝓡∂ 3).interior (closure B)) := by
+    rw [DifferentialGeometry.Topology.SphereSeparation.sideClosure_interior_image
+      hBopen hBclosure normalChart]
+    exact hBconn
+  have hsphere (y : Sphere 2) : e y ∈ closure B := hBclosure ▸ Or.inr ⟨y, rfl⟩
+  let sphereMap : PUnit → C(Sphere 2, ↥(closure B)) := fun _ =>
+    ⟨fun y => ⟨e y, hsphere y⟩, Continuous.subtype_mk he.contMDiff.continuous _⟩
+  have hsphereMap_apply (b : PUnit) (y : Sphere 2) : (sphereMap b y).1 = e y := rfl
+  have hsphere_smooth : ∀ b, IsSmoothEmbedding (𝓡 2) ThreeModel ∞
+      (fun y : Sphere 2 => (sphereMap b y).1) := fun b => he
+  have hbdy : (𝓡∂ 3).boundary (closure B) = ⋃ b, Set.range (sphereMap b) := by
+    have himg := DifferentialGeometry.Topology.SphereSeparation.sideClosure_boundary_image
+      hBopen hBclosure normalChart
+    have hiff : ∀ q : ↥(closure B), q ∈ (𝓡∂ 3).boundary (closure B) ↔
+        q.1 ∈ Set.range e := by
+      intro q
+      constructor
+      · intro hq
+        rw [← himg]
+        exact ⟨q, hq, rfl⟩
+      · rintro ⟨y, hy⟩
+        have hmem : e y ∈ (Subtype.val : ↥(closure B) → P.Carrier) ''
+            (𝓡∂ 3).boundary (closure B) := by
+          rw [himg]
+          exact ⟨y, rfl⟩
+        obtain ⟨q', hq', hq'val⟩ := hmem
+        have hq'e : q' = q := Subtype.ext (hq'val.trans hy)
+        rwa [hq'e] at hq'
+    ext q
+    rw [hiff q]
+    simp only [Set.mem_iUnion, Set.mem_range]
+    constructor
+    · rintro ⟨y, hy⟩
+      exact ⟨PUnit.unit, y, Subtype.ext hy⟩
+    · rintro ⟨b, y, hy⟩
+      exact ⟨y, congrArg Subtype.val hy⟩
+  exact ⟨{ region := closure B
+           compact := hcompact
+           connected := hconn
+           charts := chartsInst
+           smooth := smoothInst
+           induced := hinduced
+           interior_connected := hinterior
+           Boundary := PUnit
+           finiteBoundary := inferInstance
+           sphere := sphereMap
+           sphere_smooth := hsphere_smooth
+           sphere_disjoint := fun b d h => absurd (Subsingleton.elim b d) h
+           boundary_eq := hbdy }⟩
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology

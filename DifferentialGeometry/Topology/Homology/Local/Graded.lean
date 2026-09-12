@@ -55,6 +55,16 @@ theorem isZero_localEuclidean_at_of_gt (n q : ℕ) (p : EuclideanSpace ℝ (Fin 
   rw [he] at hi
   exact (isZero_localEuclidean_of_gt R n q h).of_iso hi
 
+theorem isZero_localEuclidean_at_succ (n q : ℕ) (p : EuclideanSpace ℝ (Fin n)) (h : q + 1 ≠ n) :
+    IsZero (relativeHomology (TopCat.of (EuclideanSpace ℝ (Fin n)))
+      ({p}ᶜ : Set (EuclideanSpace ℝ (Fin n))) R (q + 1)) := by
+  let e := (Homeomorph.subRight p).toOpenPartialHomeomorph
+  have he : e p = 0 := sub_self p
+  have hi := chartLocalHomologyIso (X := TopCat.of (EuclideanSpace ℝ (Fin n)))
+    (Y := TopCat.of (EuclideanSpace ℝ (Fin n))) e p (mem_univ p) R (q + 1)
+  rw [he] at hi
+  exact (isZero_localEuclidean_succ R n q h).of_iso hi
+
 
 theorem not_isZero_localEuclidean_at_top (n : ℕ) (p : EuclideanSpace ℝ (Fin (n + 1))) :
     ¬IsZero (relativeHomology (TopCat.of (EuclideanSpace ℝ (Fin (n + 1))))
@@ -88,6 +98,16 @@ theorem isZero_localManifold_interior_of_gt (hx : I.IsInteriorPoint x) (q : ℕ)
   exact (isZero_localEuclidean_at_of_gt R n q (e x) hq).of_iso
     (chartLocalHomologyIso (X := TopCat.of M)
       (Y := TopCat.of (EuclideanSpace ℝ (Fin n))) e x he R q)
+
+theorem isZero_localManifold_interior_of_lt (hx : I.IsInteriorPoint x) (q : ℕ) (hq0 : q ≠ 0)
+    (hq : q < n) :
+    IsZero (relativeHomology (TopCat.of M) ({x}ᶜ : Set M) R q) := by
+  obtain ⟨q', rfl⟩ := Nat.exists_eq_succ_of_ne_zero hq0
+  let e := (DifferentialGeometry.Manifold.interiorChart I 0 x).toOpenPartialHomeomorph
+  have he : x ∈ e.source := (DifferentialGeometry.Manifold.mem_interiorChart_source_iff I 0 x).mpr hx
+  exact (isZero_localEuclidean_at_succ R n q' (e x) (by omega)).of_iso
+    (chartLocalHomologyIso (X := TopCat.of M)
+      (Y := TopCat.of (EuclideanSpace ℝ (Fin n))) e x he R (q' + 1))
 
 end Manifold
 

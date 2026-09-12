@@ -274,6 +274,79 @@ theorem rfs_local_to_global_length [FiniteDimensional ℝ E] [FiniteDimensional 
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
+theorem rfs_local_to_global_length_of_ne_top [FiniteDimensional ℝ E] [FiniteDimensional ℝ F]
+    [T2Space M] [T2Space N] [SecondCountableTopology M] [SecondCountableTopology N]
+    (g : SmoothRiemannianMetric I M) (h : SmoothRiemannianMetric J N)
+    (f : C(M, N)) (L : ℝ≥0)
+    (hloc : ∀ x : M, ∃ U ∈ 𝓝 x, ∀ (a b : ℝ) (γ : ℝ → M),
+      a ≤ b → ContinuousOn γ (Icc a b) → MapsTo γ (Icc a b) U →
+      riemannianCurveLength g γ a b ≠ ⊤ →
+      riemannianCurveLength h (f ∘ γ) a b ≤ L * riemannianCurveLength g γ a b)
+    {x y : M} (hgfin : riemannianEDistOf g x y ≠ ⊤) :
+    riemannianEDistOf h (f x) (f y) ≤ L * riemannianEDistOf g x y := by
+  have hMreg : RegularSpace M := regularSpace_of_chartedSpace I
+  have hNreg : RegularSpace N := regularSpace_of_chartedSpace J
+  let : RiemannianBundle (TangentSpace I : M → Type _) := ⟨g.toRiemannianMetric⟩
+  let : IsContinuousRiemannianBundle E (TangentSpace I : M → Type _) :=
+    ⟨g.inner, g.contMDiff.continuous, fun _ _ _ => rfl⟩
+  let : PseudoEMetricSpace M := .ofRiemannianMetric I M
+  let : RiemannianBundle (TangentSpace J : N → Type _) := ⟨h.toRiemannianMetric⟩
+  let : IsContinuousRiemannianBundle F (TangentSpace J : N → Type _) :=
+    ⟨h.inner, h.contMDiff.continuous, fun _ _ _ => rfl⟩
+  let : PseudoEMetricSpace N := .ofRiemannianMetric J N
+  let Admissible : Type _ :=
+    {γ : ℝ → M // γ 0 = x ∧ γ 1 = y ∧ ContinuousOn γ (Icc 0 1) ∧
+      riemannianCurveLength g γ 0 1 ≠ ⊤}
+  have hne : Nonempty Admissible := by
+    obtain ⟨r, hr1, hr2⟩ := exists_between (lt_top_iff_ne_top.mpr hgfin)
+    obtain ⟨γ, hγ0, hγ1, hγsm, hγlen⟩ := Manifold.exists_lt_of_riemannianEDist_lt hr1
+    exact ⟨⟨γ, hγ0, hγ1, hγsm.continuousOn,
+      ne_top_of_lt ((riemannianCurveLength_le_pathELength g hγsm).trans_lt hγlen)⟩⟩
+  have hinner : riemannianEDistOf h (f x) (f y) ≤
+      ⨅ (γ : Admissible), (L : ℝ≥0∞) * riemannianCurveLength g γ.1 0 1 := by
+    refine le_iInf fun γ => ?_
+    have h1 : riemannianEDistOf h (f (γ.1 0)) (f (γ.1 1)) ≤
+        riemannianCurveLength h (f ∘ γ.1) 0 1 :=
+      riemannianEDistOf_le_riemannianCurveLength h (f ∘ γ.1) (by norm_num)
+    rw [γ.2.1, γ.2.2.1] at h1
+    exact h1.trans (riemannianCurveLength_comp_le_of_local g h f L hloc γ.2.2.2.1 γ.2.2.2.2)
+  have hstep : ⨅ (γ : Admissible), (L : ℝ≥0∞) * riemannianCurveLength g γ.1 0 1 =
+      (L : ℝ≥0∞) * ⨅ (γ : Admissible), riemannianCurveLength g γ.1 0 1 := by
+    rw [ENNReal.mul_iInf' (fun hL _ => absurd hL ENNReal.coe_ne_top) (fun _ => hne)]
+  have hle : ⨅ (γ : Admissible), riemannianCurveLength g γ.1 0 1 ≤
+      riemannianEDistOf g x y := by
+    refine le_of_forall_gt_imp_ge_of_dense fun r hr => ?_
+    obtain ⟨r', hr1, hr2⟩ := exists_between hr
+    obtain ⟨γ, hγ0, hγ1, hγsm, hγlen⟩ := Manifold.exists_lt_of_riemannianEDist_lt hr1
+    have hfin : riemannianCurveLength g γ 0 1 ≠ ⊤ :=
+      ne_top_of_lt ((riemannianCurveLength_le_pathELength g hγsm).trans_lt hγlen)
+    refine (iInf_le (fun γ : Admissible => riemannianCurveLength g γ.1 0 1)
+      ⟨γ, hγ0, hγ1, hγsm.continuousOn, hfin⟩).trans ?_
+    exact le_of_lt ((riemannianCurveLength_le_pathELength g hγsm).trans_lt (hγlen.trans hr2))
+  calc riemannianEDistOf h (f x) (f y)
+      ≤ ⨅ (γ : Admissible), (L : ℝ≥0∞) * riemannianCurveLength g γ.1 0 1 := hinner
+    _ = (L : ℝ≥0∞) * ⨅ (γ : Admissible), riemannianCurveLength g γ.1 0 1 := hstep
+    _ ≤ (L : ℝ≥0∞) * riemannianEDistOf g x y := mul_le_mul_right hle _
+
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+theorem rfs_local_to_global_length_of_ne_zero [FiniteDimensional ℝ E] [FiniteDimensional ℝ F]
+    [T2Space M] [T2Space N] [SecondCountableTopology M] [SecondCountableTopology N]
+    (g : SmoothRiemannianMetric I M) (h : SmoothRiemannianMetric J N)
+    (f : C(M, N)) (L : ℝ≥0) (hL : L ≠ 0)
+    (hloc : ∀ x : M, ∃ U ∈ 𝓝 x, ∀ (a b : ℝ) (γ : ℝ → M),
+      a ≤ b → ContinuousOn γ (Icc a b) → MapsTo γ (Icc a b) U →
+      riemannianCurveLength g γ a b ≠ ⊤ →
+      riemannianCurveLength h (f ∘ γ) a b ≤ L * riemannianCurveLength g γ a b) :
+    ∀ x y, riemannianEDistOf h (f x) (f y) ≤ L * riemannianEDistOf g x y := by
+  intro x y
+  by_cases hfin : riemannianEDistOf g x y = ⊤
+  · rw [hfin, ENNReal.mul_top (by simpa using hL)]
+    exact le_top
+  · exact rfs_local_to_global_length_of_ne_top g h f L hloc hfin
+
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem rfs_weak_length [FiniteDimensional ℝ E] [FiniteDimensional ℝ F]
     [T2Space M] [T2Space N] [SecondCountableTopology M] [SecondCountableTopology N]
     [I.Boundaryless] [J.Boundaryless]

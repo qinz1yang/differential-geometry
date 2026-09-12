@@ -156,4 +156,38 @@ theorem chartBasisVecFiber_prod_eq_sum (p z : M × N)
     rw [map_smul]
     rfl
 
+
+omit [FiniteDimensional ℝ E] [FiniteDimensional ℝ E'] in
+theorem trivializationAt_continuousLinearMapAt_prod_pair (p : M × N) (v : E × E') :
+    (trivializationAt (E × E') (TangentSpace (I.prod J)) p).continuousLinearMapAt ℝ p v =
+      ((trivializationAt E (TangentSpace I) p.1).continuousLinearMapAt ℝ p.1 v.1,
+       (trivializationAt E' (TangentSpace J) p.2).continuousLinearMapAt ℝ p.2 v.2) := by
+  have hp : p ∈ (trivializationAt (E × E') (TangentSpace (I.prod J)) p).baseSet :=
+    FiberBundle.mem_baseSet_trivializationAt (E × E') (TangentSpace (I.prod J)) p
+  have h1 : p.1 ∈ (trivializationAt E (TangentSpace I) p.1).baseSet :=
+    FiberBundle.mem_baseSet_trivializationAt E (TangentSpace I) p.1
+  have h2 : p.2 ∈ (trivializationAt E' (TangentSpace J) p.2).baseSet :=
+    FiberBundle.mem_baseSet_trivializationAt E' (TangentSpace J) p.2
+  have hinj : Function.Injective
+      ((trivializationAt (E × E') (TangentSpace (I.prod J)) p).symmL ℝ p) := by
+    intro a b hab
+    have h := congrArg
+      ((trivializationAt (E × E') (TangentSpace (I.prod J)) p).continuousLinearMapAt ℝ p) hab
+    rwa [Bundle.Trivialization.continuousLinearMapAt_symmL _ hp a,
+      Bundle.Trivialization.continuousLinearMapAt_symmL _ hp b] at h
+  refine hinj ?_
+  rw [Bundle.Trivialization.symmL_continuousLinearMapAt _ hp v,
+    trivializationAt_symmL_prod (I := I) (J := J) p p hp,
+    Bundle.Trivialization.symmL_continuousLinearMapAt _ h1 v.1,
+    Bundle.Trivialization.symmL_continuousLinearMapAt _ h2 v.2]
+  rfl
+
+omit [FiniteDimensional ℝ E] [FiniteDimensional ℝ E'] in
+theorem trivializationAt_continuousLinearMapAt_prod (p : M × N)
+    (v : TangentSpace (I.prod J) p) :
+    (trivializationAt (E × E') (TangentSpace (I.prod J)) p).continuousLinearMapAt ℝ p v =
+      ((trivializationAt E (TangentSpace I) p.1).continuousLinearMapAt ℝ p.1 v.1,
+       (trivializationAt E' (TangentSpace J) p.2).continuousLinearMapAt ℝ p.2 v.2) :=
+  trivializationAt_continuousLinearMapAt_prod_pair (I := I) (J := J) p (v.1, v.2)
+
 end DifferentialGeometry

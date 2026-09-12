@@ -5,6 +5,12 @@ import DifferentialGeometry.Geometry.Curvature.DiskBoundary
 import DifferentialGeometry.Geometry.Curvature.DiskRegularizer
 import DifferentialGeometry.Geometry.Curvature.CurveReparametrization
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.AngleTrace
+import DifferentialGeometry.Geometry.Metric.NeighborhoodRetraction
+import DifferentialGeometry.Geometry.MinimalSurface.Plateau.SmoothExtension
+import DifferentialGeometry.Geometry.Curvature.DiskSectionalDensity
+import DifferentialGeometry.Geometry.Measure.Area.EuclideanDisk
+import Mathlib.Geometry.Manifold.PartitionOfUnity
+import Mathlib.Geometry.Manifold.WhitneyEmbedding
 
 noncomputable section
 
@@ -308,6 +314,156 @@ def SmoothDisk.boundaryCurvatureDensity (u : SmoothDisk (I := I) (Q := Q))
     rw [htrace, sigma.lift_eq]
     exact c.curvatureVector (fun _ => g) (sigma.lift x) 0
   exact g.inner (u.map z) V (u.inwardConormal g z) * u.boundarySpeed g x
+
+section SmoothExtension
+
+variable [I.Boundaryless] [T2Space Q] [CompactSpace Q] [hne : Nonempty Q]
+
+omit [CompleteSpace E] in
+theorem SmoothDisk.exists_smoothExtension (u : SmoothDisk (I := I) (Q := Q)) :
+    ∃ U : ℂ → Q, (∀ z : Disk, U z = u.map z) ∧
+      ∃ N : Set ℂ, IsOpen N ∧ Metric.closedBall (0 : ℂ) 1 ⊆ N ∧
+        ContMDiffOn 𝓘(ℝ, ℂ) I ∞ U N := by
+  classical
+  obtain ⟨n, e, he, hemb, hi⟩ :=
+    exists_embedding_euclidean_of_compact (I := I) (M := Q)
+  obtain ⟨r, Ur, hUr, hrange, hr, hleft⟩ :=
+    DifferentialGeometry.Geometry.exists_smooth_neighborhood_retraction he
+      hemb.isEmbedding hi
+  let ext : (z : Disk) → DiskLocalExtension (I := I) u.map z :=
+    fun z => Classical.choice (u.smooth z)
+  let Ucov : ℂ → Set ℂ := fun x =>
+    if hx : x ∈ Metric.closedBall (0 : ℂ) 1 then (ext ⟨x, hx⟩).domain else Set.univ
+  have hUcov : ∀ x ∈ Metric.closedBall (0 : ℂ) 1, Ucov x ∈ 𝓝 x := by
+    intro x hx
+    dsimp only [Ucov]
+    rw [dif_pos hx]
+    exact (ext ⟨x, hx⟩).isOpen_domain.mem_nhds (ext ⟨x, hx⟩).mem_domain
+  obtain ⟨ι, f, hfsub⟩ :=
+    SmoothBumpCovering.exists_isSubordinate (I := 𝓘(ℝ, ℂ)) (M := ℂ)
+      (s := Metric.closedBall (0 : ℂ) 1) (U := Ucov) Metric.isClosed_closedBall hUcov
+  let ρ : SmoothPartitionOfUnity ι 𝓘(ℝ, ℂ) ℂ (Metric.closedBall (0 : ℂ) 1) :=
+    f.toSmoothPartitionOfUnity
+  have hsub : ρ.IsSubordinate (fun i => Ucov (f.c i)) := hfsub.toSmoothPartitionOfUnity
+  let Fl : ∀ i, DiskLocalExtension (I := I) u.map ⟨f.c i, f.c_mem' i⟩ :=
+    fun i => ext ⟨f.c i, f.c_mem' i⟩
+  let D : ι → Set ℂ := fun i => (Fl i).domain
+  have hUci : ∀ i, Ucov (f.c i) = D i := by
+    intro i
+    dsimp only [Ucov, D, Fl]
+    rw [dif_pos (f.c_mem' i)]
+  have hsubD : ρ.IsSubordinate D := fun i => (hUci i) ▸ hsub i
+  let g : ι → ℂ → EuclideanSpace ℝ (Fin n) :=
+    fun i z => if z ∈ D i then e ((Fl i).map z) else 0
+  have hg : ∀ i, ContMDiffOn 𝓘(ℝ, ℂ) 𝓘(ℝ, EuclideanSpace ℝ (Fin n)) ∞ (g i) (D i) := by
+    intro i
+    have hcomp : ContMDiffOn 𝓘(ℝ, ℂ) 𝓘(ℝ, EuclideanSpace ℝ (Fin n)) ∞
+        (fun z => e ((Fl i).map z)) (D i) :=
+      he.comp_contMDiffOn (Fl i).smooth
+    refine hcomp.congr ?_
+    intro z hz
+    dsimp only [g]
+    rw [if_pos hz]
+  let V : ℂ → EuclideanSpace ℝ (Fin n) := fun z => ∑ᶠ i, ρ i z • g i z
+  have hVsm : ContMDiff 𝓘(ℝ, ℂ) 𝓘(ℝ, EuclideanSpace ℝ (Fin n)) ∞ V :=
+    hsubD.contMDiff_finsum_smul (fun i => (Fl i).isOpen_domain) hg
+  have hVeq : ∀ z (hz : z ∈ Metric.closedBall (0 : ℂ) 1),
+      V z = e (u.map ⟨z, hz⟩) := by
+    intro z hz
+    have hfin : Function.HasFiniteSupport (fun i : ι => ρ i z) := ρ.locallyFinite.point_finite z
+    have hterm : ∀ i, ρ i z • g i z = ρ i z • e (u.map ⟨z, hz⟩) := by
+      intro i
+      by_cases h : ρ i z = 0
+      · rw [h, zero_smul, zero_smul]
+      · have hmem : z ∈ D i :=
+          hsubD i (subset_tsupport (ρ i) (Function.mem_support.mpr h))
+        dsimp only [g]
+        rw [if_pos hmem, ((Fl i).agrees ⟨hmem, hz⟩).trans (diskExtension_coe u.map ⟨z, hz⟩)]
+    calc V z = ∑ᶠ i, ρ i z • g i z := rfl
+      _ = ∑ᶠ i, ρ i z • e (u.map ⟨z, hz⟩) := finsum_congr hterm
+      _ = (∑ᶠ i, ρ i z) • e (u.map ⟨z, hz⟩) := (finsum_smul' hfin _).symm
+      _ = (1 : ℝ) • e (u.map ⟨z, hz⟩) := by rw [ρ.sum_eq_one hz]
+      _ = e (u.map ⟨z, hz⟩) := one_smul ℝ _
+  refine ⟨fun z => r (V z), ?_, V ⁻¹' Ur, hUr.preimage hVsm.continuous, ?_, ?_⟩
+  · intro z
+    change r (V (z : ℂ)) = u.map z
+    rw [hVeq (z : ℂ) z.property, hleft]
+  · intro z hz
+    rw [Set.mem_preimage]
+    exact hrange (hVeq z hz ▸ mem_range_self (u.map ⟨z, hz⟩))
+  · exact hr.comp hVsm.contMDiffOn (fun z hz => hz)
+
+end SmoothExtension
+
+section StandardModelDensity
+
+variable {M : Type*} [TopologicalSpace M] [ChartedSpace E M] [IsManifold 𝓘(ℝ, E) ∞ M]
+  [T2Space M] [CompactSpace M]
+
+omit [CompleteSpace E] in
+theorem SmoothDisk.exists_smoothDiskExtension (u : SmoothDisk (I := 𝓘(ℝ, E)) (Q := M)) :
+    ∃ U : ℂ → M, DifferentialGeometry.Geometry.SmoothDiskExtension (E := E) u.map U := by
+  obtain ⟨U, hU, N, hN, hsub, hsm⟩ :=
+    SmoothDisk.exists_smoothExtension (I := 𝓘(ℝ, E)) (Q := M) (hne := ⟨u.map diskCenter⟩) u
+  exact ⟨U, hU, N, hN, hsub, hsm⟩
+
+omit [CompleteSpace E] [T2Space M] [CompactSpace M] in
+theorem SmoothDisk.sectionalDensity_eq (u : SmoothDisk (I := 𝓘(ℝ, E)) (Q := M))
+    (g : SmoothRiemannianMetric 𝓘(ℝ, E) M) (U : ℂ → M)
+    (hU : DifferentialGeometry.Geometry.SmoothDiskExtension (E := E) u.map U)
+    {z : ℂ} (hz : z ∈ Metric.ball (0 : ℂ) 1) :
+    DifferentialGeometry.Geometry.diskMapSectionalDensity g U z =
+      diskExtension (u.sectionalDensity g) z := by
+  have hzcb : z ∈ Metric.closedBall (0 : ℂ) 1 := Metric.ball_subset_closedBall hz
+  have hUeq : U =ᶠ[𝓝 z] diskExtension u.map := by
+    filter_upwards [Metric.isOpen_ball.mem_nhds hz] with w hw
+    rw [diskExtension_coe u.map ⟨w, Metric.ball_subset_closedBall hw⟩]
+    exact hU.1 ⟨w, Metric.ball_subset_closedBall hw⟩
+  have hUz : U z = diskExtension u.map z := hUeq.eq_of_nhds
+  have hmf : mfderiv 𝓘(ℝ, ℂ) 𝓘(ℝ, E) U z
+      = mfderiv 𝓘(ℝ, ℂ) 𝓘(ℝ, E) (diskExtension u.map) z := hUeq.mfderiv_eq
+  have hwin : mfderivWithin 𝓘(ℝ, ℂ) 𝓘(ℝ, E) (diskExtension u.map)
+        (Metric.closedBall (0 : ℂ) 1) z
+      = mfderiv 𝓘(ℝ, ℂ) 𝓘(ℝ, E) (diskExtension u.map) z :=
+    mfderivWithin_of_mem_nhds
+      (Filter.mem_of_superset (Metric.isOpen_ball.mem_nhds hz) Metric.ball_subset_closedBall)
+  have hd1 : u.differential (⟨z, hzcb⟩ : Disk) (1 : ℂ) =
+      mfderivWithin 𝓘(ℝ, ℂ) 𝓘(ℝ, E) (diskExtension u.map)
+        (Metric.closedBall (0 : ℂ) 1) z (1 : ℂ) := rfl
+  have hdI : u.differential (⟨z, hzcb⟩ : Disk) Complex.I =
+      mfderivWithin 𝓘(ℝ, ℂ) 𝓘(ℝ, E) (diskExtension u.map)
+        (Metric.closedBall (0 : ℂ) 1) z Complex.I := rfl
+  simp only [DifferentialGeometry.Geometry.diskMapSectionalDensity,
+    DifferentialGeometry.Geometry.diskMapConformalCoefficient,
+    DifferentialGeometry.Geometry.diskMapPartial, SmoothDisk.sectionalDensity,
+    SmoothDisk.conformalFactor, diskExtension, dif_pos hzcb]
+  rw [hUz, hmf]
+  simp only [← hwin, hd1, hdI]
+  rw [← diskExtension_coe u.map ⟨z, hzcb⟩]
+  by_cases hpos : 0 < g.inner (diskExtension u.map z)
+      (mfderivWithin 𝓘(ℝ, ℂ) 𝓘(ℝ, E) (diskExtension u.map) (Metric.closedBall (0 : ℂ) 1) z (1 : ℂ))
+      (mfderivWithin 𝓘(ℝ, ℂ) 𝓘(ℝ, E) (diskExtension u.map) (Metric.closedBall (0 : ℂ) 1) z (1 : ℂ))
+  · rw [if_pos hpos]
+  · rw [if_neg hpos]
+    have hnn : 0 ≤ g.inner (diskExtension u.map z)
+        (mfderivWithin 𝓘(ℝ, ℂ) 𝓘(ℝ, E) (diskExtension u.map) (Metric.closedBall (0 : ℂ) 1) z (1 : ℂ))
+        (mfderivWithin 𝓘(ℝ, ℂ) 𝓘(ℝ, E) (diskExtension u.map) (Metric.closedBall (0 : ℂ) 1) z (1 : ℂ)) := by
+      by_cases hv : mfderivWithin 𝓘(ℝ, ℂ) 𝓘(ℝ, E) (diskExtension u.map)
+          (Metric.closedBall (0 : ℂ) 1) z (1 : ℂ) = 0
+      · simp [hv]
+      · exact (g.pos _ _ hv).le
+    rw [le_antisymm (not_lt.mp hpos) hnn, mul_zero]
+
+omit [CompleteSpace E] [T2Space M] [CompactSpace M] in
+theorem SmoothDisk.sectionalDensity_ae_eq (u : SmoothDisk (I := 𝓘(ℝ, E)) (Q := M))
+    (g : SmoothRiemannianMetric 𝓘(ℝ, E) M) (U : ℂ → M)
+    (hU : DifferentialGeometry.Geometry.SmoothDiskExtension (E := E) u.map U) :
+    (fun z => DifferentialGeometry.Geometry.diskMapSectionalDensity g U z) =ᵐ[volume.restrict (Metric.closedBall (0 : ℂ) 1)]
+      diskExtension (u.sectionalDensity g) := by
+  filter_upwards [DifferentialGeometry.Geometry.ae_disk_interior] with z hz
+  exact SmoothDisk.sectionalDensity_eq u g U hU hz
+
+end StandardModelDensity
 
 variable [hBoundary : I.Boundaryless] [hT2 : T2Space Q] [hCompact : CompactSpace Q]
 include hBoundary hT2 hCompact

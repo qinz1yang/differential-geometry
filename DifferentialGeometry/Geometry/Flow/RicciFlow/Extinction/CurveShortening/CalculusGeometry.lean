@@ -478,6 +478,23 @@ private theorem slice_space_smooth (c : CurveMap M) (J : Set ℝ)
   contMDiffOn_univ.mp (CurveMap.space_slice_contMDiffOn c J hc t ht)
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] in
+theorem CurveMap.speed_sq_contDiff (g : ℝ → SmoothRiemannianMetric I M) (c : CurveMap M)
+    (J : Set ℝ) (hc : c.SmoothOn (I := I) J) (t : ℝ) (ht : t ∈ J) :
+    ContDiff ℝ ∞ (fun x => c.speed g x t ^ 2) := by
+  have hg := slice_space_smooth c J hc t ht
+  have hX := slice_velocity_contMDiff (fun x => c.lift x t) hg
+  have hsq := slice_inner_contDiff (g t) (fun x => c.lift x t)
+    (fun x => c.X x t) (fun x => c.X x t) hg hX hX
+  have hfun : (fun x => c.speed g x t ^ 2) = fun x =>
+      (g t).inner (c.lift x t) (c.X (I := I) x t) (c.X (I := I) x t) := by
+    funext x
+    rw [CurveMap.speed]
+    exact Real.sq_sqrt (DifferentialGeometry.metric_inner_self_nonneg (g t) (c.lift x t)
+      (c.X (I := I) x t))
+  rw [hfun]
+  exact hsq
+
+omit [FiniteDimensional ℝ E] [CompleteSpace E] in
 theorem CurveMap.speed_contDiff (g : ℝ → SmoothRiemannianMetric I M) (c : CurveMap M)
     (J : Set ℝ) (hc : c.SmoothOn (I := I) J) (hi : c.ImmersedOn (I := I) J)
     (t : ℝ) (ht : t ∈ J) :

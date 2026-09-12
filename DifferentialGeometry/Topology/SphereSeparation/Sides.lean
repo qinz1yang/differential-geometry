@@ -196,6 +196,89 @@ theorem not_isPreconnected_compl (d : SphereSides S) : ¬ IsPreconnected Sᶜ :=
     rw [Set.subset_empty_iff.mp hsub] at hx
     exact hx
 
+theorem not_mem_connectedComponentIn_of_mem_other_side
+    (d : SphereSides S) {p z : X} (hp : p ∈ d.endSide) (hz : z ∈ d.compactSide) :
+    z ∉ connectedComponentIn Sᶜ p := by
+  intro hzcomp
+  have hpcompl : p ∈ Sᶜ := d.endSide_subset_compl hp
+  have hsub : connectedComponentIn Sᶜ p ⊆ Sᶜ := connectedComponentIn_subset Sᶜ p
+  rcases d.subset_compactSide_or_subset_endSide isPreconnected_connectedComponentIn hsub with h | h
+  · exact Set.disjoint_left.mp d.disjoint (h (mem_connectedComponentIn hpcompl)) hp
+  · exact Set.disjoint_left.mp d.disjoint hz (h hzcomp)
+
+theorem not_mem_connectedComponentIn_of_mem_other_side_symm
+    (d : SphereSides S) {p z : X} (hp : p ∈ d.compactSide) (hz : z ∈ d.endSide) :
+    z ∉ connectedComponentIn Sᶜ p := by
+  intro hzcomp
+  have hpcompl : p ∈ Sᶜ := d.compactSide_subset_compl hp
+  have hsub : connectedComponentIn Sᶜ p ⊆ Sᶜ := connectedComponentIn_subset Sᶜ p
+  rcases d.subset_compactSide_or_subset_endSide isPreconnected_connectedComponentIn hsub with h | h
+  · exact Set.disjoint_left.mp d.disjoint (h hzcomp) hz
+  · exact Set.disjoint_left.mp d.disjoint hp (h (mem_connectedComponentIn hpcompl))
+
+theorem side_iff_of_isPreconnected_subset_compl (d : SphereSides S) {C : Set X}
+    (hC : IsPreconnected C) (hsub : C ⊆ Sᶜ) {a b : X} (ha : a ∈ C) (hb : b ∈ C) :
+    (a ∈ d.compactSide ↔ b ∈ d.compactSide) ∧ (a ∈ d.endSide ↔ b ∈ d.endSide) := by
+  rcases d.subset_compactSide_or_subset_endSide hC hsub with h | h
+  · exact ⟨iff_of_true (h ha) (h hb),
+      iff_of_false
+        (fun hx => Set.disjoint_left.mp d.disjoint (h ha) hx)
+        (fun hx => Set.disjoint_left.mp d.disjoint (h hb) hx)⟩
+  · exact ⟨iff_of_false
+        (fun hx => Set.disjoint_left.mp d.disjoint hx (h ha))
+        (fun hx => Set.disjoint_left.mp d.disjoint hx (h hb)),
+      iff_of_true (h ha) (h hb)⟩
+
+theorem not_same_side_of_halves
+    (d : SphereSides S) {U A B : Set X} (hSne : S.Nonempty) (hUopen : IsOpen U)
+    (hSU : S ⊆ U) (hcover : A ∪ B ∪ S = U) :
+    ¬ ((A ⊆ d.compactSide ∧ B ⊆ d.compactSide) ∨
+        (A ⊆ d.endSide ∧ B ⊆ d.endSide)) := by
+  rintro (⟨hAB, hBB⟩ | ⟨hAE, hBE⟩)
+  · have hUc : closure d.endSide ⊆ Uᶜ := by
+      refine closure_minimal ?_ hUopen.isClosed_compl
+      intro x hx
+      have hxcompl : x ∈ Sᶜ := d.endSide_subset_compl hx
+      intro hxU
+      have : x ∈ A ∪ B ∪ S := hcover ▸ hxU
+      rcases this with (hxA | hxB) | hxS
+      · exact Set.disjoint_left.mp d.disjoint (hAB hxA) hx
+      · exact Set.disjoint_left.mp d.disjoint (hBB hxB) hx
+      · exact hxcompl hxS
+    have hfront : S ⊆ closure d.endSide := by
+      simpa only [d.frontier_endSide] using
+        (frontier_subset_closure : frontier d.endSide ⊆ closure d.endSide)
+    obtain ⟨x, hxS⟩ := hSne
+    exact (hUc (hfront hxS)) (hSU hxS)
+  · have hUc : closure d.compactSide ⊆ Uᶜ := by
+      refine closure_minimal ?_ hUopen.isClosed_compl
+      intro x hx
+      have hxcompl : x ∈ Sᶜ := d.compactSide_subset_compl hx
+      intro hxU
+      have : x ∈ A ∪ B ∪ S := hcover ▸ hxU
+      rcases this with (hxA | hxB) | hxS
+      · exact Set.disjoint_left.mp d.disjoint hx (hAE hxA)
+      · exact Set.disjoint_left.mp d.disjoint hx (hBE hxB)
+      · exact hxcompl hxS
+    have hfront : S ⊆ closure d.compactSide := by
+      simpa only [d.frontier_compactSide] using
+        (frontier_subset_closure : frontier d.compactSide ⊆ closure d.compactSide)
+    obtain ⟨x, hxS⟩ := hSne
+    exact (hUc (hfront hxS)) (hSU hxS)
+
+theorem halves_subset_opposite_sides
+    (d : SphereSides S) {U A B : Set X} (hSne : S.Nonempty) (hUopen : IsOpen U)
+    (hSU : S ⊆ U) (hcover : A ∪ B ∪ S = U)
+    (hApre : IsPreconnected A) (hAc : A ⊆ Sᶜ)
+    (hBpre : IsPreconnected B) (hBc : B ⊆ Sᶜ) :
+    (A ⊆ d.compactSide ∧ B ⊆ d.endSide) ∨ (A ⊆ d.endSide ∧ B ⊆ d.compactSide) := by
+  rcases d.subset_compactSide_or_subset_endSide hApre hAc with hA | hA <;>
+    rcases d.subset_compactSide_or_subset_endSide hBpre hBc with hB | hB
+  · exact absurd (Or.inl ⟨hA, hB⟩) (not_same_side_of_halves d hSne hUopen hSU hcover)
+  · exact Or.inl ⟨hA, hB⟩
+  · exact Or.inr ⟨hA, hB⟩
+  · exact absurd (Or.inr ⟨hA, hB⟩) (not_same_side_of_halves d hSne hUopen hSU hcover)
+
 end SphereSides
 
 end DifferentialGeometry.Topology.SphereSeparation

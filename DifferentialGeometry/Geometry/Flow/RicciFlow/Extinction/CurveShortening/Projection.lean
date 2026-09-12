@@ -1,5 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.Ramps
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.AreaEvolution
+import Mathlib.MeasureTheory.Integral.IntervalIntegral.Periodic
 
 noncomputable section
 
@@ -125,6 +126,18 @@ theorem angle_mul_speed_periodic {J : Set ℝ} (hc : c.SmoothOn (I := I) J)
   intro x
   simp only [angle_add_period c g lambda hc t ht x, speed_add_period c g lambda hc t ht x]
 
+omit [FiniteDimensional ℝ E] [CompleteSpace E] in
+theorem speed_periodic {J : Set ℝ} (hc : c.SmoothOn (I := I) J) (t : ℝ) (ht : t ∈ J) :
+    Function.Periodic (fun x => c.speed g lambda x t) 1 :=
+  fun x => speed_add_period c g lambda hc t ht x
+
+omit [FiniteDimensional ℝ E] [CompleteSpace E] in
+theorem arcLength_period_eq_length {J : Set ℝ} (hc : c.SmoothOn (I := I) J) (t : ℝ)
+    (ht : t ∈ J) (x : ℝ) :
+    c.arcLength g lambda x (x + 1) t = c.length g lambda t := by
+  have h := (speed_periodic c g lambda hc t ht).intervalIntegral_add_eq x 0
+  simpa [ProductCurve.arcLength, ProductCurve.length, ProductCurve.integral, one_mul] using h
+
 omit [CompleteSpace E] in
 theorem abs_ds_angle_le_curvature (x t : ℝ) :
     |c.ds g lambda (c.angle g lambda) x t| ≤ c.curvature g lambda x t := by
@@ -215,6 +228,24 @@ theorem speed_pos {J : Set ℝ}
   rw [speed, Real.sqrt_pos, inner]
   simp only [X]
   nlinarith [hpos, sq_nonneg (deriv (fun z => c.y z t) x), sq_nonneg lambda]
+
+omit [FiniteDimensional ℝ E] [CompleteSpace E] in
+theorem speed_pos_of_immersedOn {J : Set ℝ} (hlambda : 0 < lambda)
+    (hi : c.ImmersedOn (I := I) J) (x t : ℝ) (ht : t ∈ J) :
+    0 < c.speed g lambda x t := by
+  have hX : c.X (I := I) x t ≠ 0 := hi x t ht
+  rw [speed, Real.sqrt_pos, inner_X_self]
+  rcases eq_or_ne (c.projection.X (I := I) x t) 0 with h | h
+  · have hdy : deriv (fun z => c.y z t) x ≠ 0 := by
+      intro hd
+      exact hX (by simp [X, h, hd])
+    have hzero : (g t).inner (c.projection.lift x t) (c.projection.X (I := I) x t)
+        (c.projection.X (I := I) x t) = 0 := by simp [h]
+    rw [hzero, zero_add]
+    exact mul_pos (pow_pos hlambda 2) (sq_pos_of_ne_zero hdy)
+  · have hpos : 0 < (g t).inner (c.projection.lift x t) (c.projection.X (I := I) x t)
+        (c.projection.X (I := I) x t) := (g t).pos _ _ h
+    nlinarith [sq_nonneg (deriv (fun z => c.y z t) x), sq_nonneg lambda]
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] in
 theorem horizontalSpeedFraction_pos {J : Set ℝ} (hlambda : 0 < lambda)
@@ -329,6 +360,69 @@ theorem speed_contDiff {J : Set ℝ} (hc : c.SmoothOn (I := I) J)
     rw [← speed_sq_add c g lambda z t, Real.sqrt_sq (c.speed_nonneg g lambda z t)]
   rw [hfun]
   exact hsqrt
+
+omit [FiniteDimensional ℝ E] [CompleteSpace E] in
+theorem speed_contDiff_of_immersedOn {J : Set ℝ} (hlambda : 0 < lambda)
+    (hc : c.SmoothOn (I := I) J) (hi : c.ImmersedOn (I := I) J) (t : ℝ) (ht : t ∈ J) :
+    ContDiff ℝ ∞ (fun z => c.speed g lambda z t) := by
+  have hsq : ContDiff ℝ ∞ (fun z => (c.projection.speed g z t) ^ 2 +
+      lambda ^ 2 * deriv (fun w => c.y w t) z ^ 2) :=
+    (CurveMap.speed_sq_contDiff g c.projection J hc.1 t ht).add
+      ((contDiff_const (c := lambda ^ 2)).mul ((y_deriv_contDiff c hc t ht).pow 2))
+  have hfun : (fun z => c.speed g lambda z t) = fun z => Real.sqrt
+      ((c.projection.speed g z t) ^ 2 + lambda ^ 2 * deriv (fun w => c.y w t) z ^ 2) := by
+    funext z
+    rw [← speed_sq_add c g lambda z t, Real.sqrt_sq (c.speed_nonneg g lambda z t)]
+  rw [hfun]
+  exact hsq.sqrt (fun z => ne_of_gt (by
+    rw [← speed_sq_add c g lambda z t]
+    exact pow_pos (speed_pos_of_immersedOn c g lambda hlambda hi z t ht) 2))
+
+omit [FiniteDimensional ℝ E] [CompleteSpace E] in
+theorem angle_contDiff_of_immersedOn {J : Set ℝ} (hlambda : 0 < lambda)
+    (hc : c.SmoothOn (I := I) J) (hi : c.ImmersedOn (I := I) J) (t : ℝ) (ht : t ∈ J) :
+    ContDiff ℝ ∞ (fun z => c.angle g lambda z t) := by
+  have hs := speed_contDiff_of_immersedOn c g lambda hlambda hc hi t ht
+  have hd := y_deriv_contDiff c hc t ht
+  have hfun : (fun z => c.angle g lambda z t) =
+      fun z => lambda * (c.speed g lambda z t)⁻¹ * deriv (fun w => c.y w t) z := by
+    funext z
+    rw [angle_eq]
+  rw [hfun]
+  exact (contDiff_const.mul (hs.inv fun z =>
+    ne_of_gt (speed_pos_of_immersedOn c g lambda hlambda hi z t ht))).mul hd
+
+omit [CompleteSpace E] in
+theorem abs_angle_sub_le_mul_arcLength {J : Set ℝ} (hlambda : 0 < lambda)
+    (hc : c.SmoothOn (I := I) J) (hi : c.ImmersedOn (I := I) J) {t : ℝ} (ht : t ∈ J)
+    {K x y : ℝ} (hcurv : ∀ z, c.curvature g lambda z t ≤ K) (hxy : x ≤ y) :
+    |c.angle g lambda y t - c.angle g lambda x t| ≤ K * c.arcLength g lambda x y t := by
+  have hcd := angle_contDiff_of_immersedOn c g lambda hlambda hc hi t ht
+  have hdiff : ∀ z ∈ uIcc x y, DifferentiableAt ℝ (fun z => c.angle g lambda z t) z :=
+    fun z _ => (hcd.differentiable (by norm_num)).differentiableAt
+  have hcont : Continuous (fun z => deriv (fun z => c.angle g lambda z t) z) :=
+    hcd.continuous_deriv (by norm_num)
+  have hFTC : (∫ z in x..y, deriv (fun z => c.angle g lambda z t) z) =
+      c.angle g lambda y t - c.angle g lambda x t :=
+    intervalIntegral.integral_deriv_eq_sub hdiff (hcont.intervalIntegrable x y)
+  have hbound : ∀ z ∈ Icc x y, |deriv (fun z => c.angle g lambda z t) z| ≤
+      K * c.speed g lambda z t := by
+    intro z _
+    have hds := abs_ds_angle_le_curvature c g lambda z t
+    rw [ProductCurve.ds] at hds
+    have hsp := speed_pos_of_immersedOn c g lambda hlambda hi z t ht
+    rw [abs_mul, abs_inv, abs_of_pos hsp, inv_mul_eq_div, div_le_iff₀ hsp] at hds
+    exact hds.trans (mul_le_mul_of_nonneg_right (hcurv z) (c.speed_nonneg g lambda z t))
+  have hspeed := (speed_contDiff_of_immersedOn c g lambda hlambda hc hi t ht).continuous
+  calc |c.angle g lambda y t - c.angle g lambda x t|
+      = |∫ z in x..y, deriv (fun z => c.angle g lambda z t) z| := by rw [hFTC]
+    _ ≤ ∫ z in x..y, |deriv (fun z => c.angle g lambda z t) z| :=
+        intervalIntegral.abs_integral_le_integral_abs hxy
+    _ ≤ ∫ z in x..y, K * c.speed g lambda z t :=
+        intervalIntegral.integral_mono_on hxy (hcont.abs.intervalIntegrable x y)
+          ((continuous_const.mul hspeed).intervalIntegrable x y) hbound
+    _ = K * c.arcLength g lambda x y t := by
+        rw [intervalIntegral.integral_const_mul, ProductCurve.arcLength]
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] in
 theorem horizontalSpeedFraction_contDiff {J : Set ℝ} (hlambda : 0 < lambda)

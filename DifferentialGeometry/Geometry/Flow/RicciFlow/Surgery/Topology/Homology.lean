@@ -1,5 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.Background
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ChartSimplexBlend
+import DifferentialGeometry.Topology.Homology.LiftedSphere
+import DifferentialGeometry.Topology.Homology.ContractibleCoverChainEvaluation
 import DifferentialGeometry.Topology.Homology.EuclideanLocalTop
 import Mathlib.AlgebraicTopology.SingularHomology.HomotopyInvariance
 import Mathlib.AlgebraicTopology.SimplicialSet.TopAdj
@@ -854,6 +856,540 @@ theorem localOrientationClass_generator_of_exists_surjective_functional
     Function.Bijective (fun z : ℤ => z • localOrientationClass o x) :=
   (localOrientationClass_generator_iff_exists_surjective_functional o x).mpr ⟨φ, hφ, h⟩
 
+
+section
+
+open DifferentialGeometry.Topology
+
+def integralSimplexChainMap {X : Type u} [TopologicalSpace X] (n : ℕ)
+    (σ : C(stdSimplex ℝ (Fin (n + 1)), X)) :
+    integralSingularCoefficients ⟶ (integralSingularChains X).X n :=
+  (TopCat.toSSet.obj (TopCat.of X)).ιChainComplex
+    ((TopCat.toSSetObjEquiv (TopCat.of X) (.op ⦋n⦌)).symm σ)
+
+private def euclideanPuncturedFace {X : Type u} [TopologicalSpace X] (p : X)
+    (σ : C(stdSimplex ℝ (Fin 4), X))
+    (hσ : ∀ (i : Fin 4) (q : stdSimplex ℝ (Fin 3)), σ (orientedSimplexFace i q) ≠ p)
+    (i : Fin 4) : C(stdSimplex ℝ (Fin 3), ({p}ᶜ : Set X)) :=
+  ⟨fun q => ⟨σ (orientedSimplexFace i q), hσ i q⟩,
+    (σ.continuous.comp (orientedSimplexFace i).continuous).subtype_mk _⟩
+
+set_option backward.isDefEq.respectTransparency false in
+private theorem euclideanPuncturedFace_chain {X : Type u} [TopologicalSpace X] (p : X)
+    (σ : C(stdSimplex ℝ (Fin 4), X))
+    (hσ : ∀ (i : Fin 4) (q : stdSimplex ℝ (Fin 3)), σ (orientedSimplexFace i q) ≠ p)
+    (i : Fin 4) :
+    integralSimplexChainMap 2 (euclideanPuncturedFace p σ hσ i) ≫
+      (integralSingularChainMap (singularSubspaceInclusion ({(p : X)}ᶜ : Set X))).f 2 =
+        integralSimplexChainMap 2 (σ.comp (orientedSimplexFace i)) :=
+  SSet.ι_chainComplexMap_f (TopCat.toSSet.obj (TopCat.of ({p}ᶜ : Set X)))
+    (TopCat.toSSet.obj (TopCat.of X))
+    (TopCat.toSSet.map (TopCat.ofHom (singularSubspaceInclusion ({(p : X)}ᶜ : Set X))))
+    integralSingularCoefficients
+    ((TopCat.toSSetObjEquiv (TopCat.of ({p}ᶜ : Set X)) (.op ⦋2⦌)).symm
+      (euclideanPuncturedFace p σ hσ i))
+
+set_option backward.isDefEq.respectTransparency false in
+private theorem euclideanSimplexChain_boundary {X : Type u} [TopologicalSpace X]
+    (σ : C(stdSimplex ℝ (Fin 4), X)) :
+    integralSimplexChainMap 3 σ ≫ (integralSingularChains X).d 3 2 =
+      ∑ i : Fin 4, (-1 : ℤ) ^ i.val •
+        integralSimplexChainMap 2 (σ.comp (orientedSimplexFace i)) :=
+  (TopCat.toSSet.obj (TopCat.of X)).ιChainComplex_d (R := integralSingularCoefficients)
+    ((TopCat.toSSetObjEquiv (TopCat.of X) (.op ⦋3⦌)).symm σ)
+
+set_option backward.isDefEq.respectTransparency false in
+private theorem euclideanRelativeChain_boundary {X : Type u} [TopologicalSpace X] (p : X)
+    (σ : C(stdSimplex ℝ (Fin 4), X))
+    (hσ : ∀ (i : Fin 4) (q : stdSimplex ℝ (Fin 3)), σ (orientedSimplexFace i q) ≠ p) :
+    (integralSimplexChainMap 3 σ ≫ (cokernel.π (integralSingularChainMap
+      (singularSubspaceInclusion ({(p : X)}ᶜ : Set X)))).f 3) ≫
+      (integralRelativeChains ({(p : X)}ᶜ : Set X)).d 3 2 = 0 := by
+  let quotientMap := cokernel.π (integralSingularChainMap
+    (singularSubspaceInclusion ({(p : X)}ᶜ : Set X)))
+  have hπ : (integralSingularChainMap (singularSubspaceInclusion ({(p : X)}ᶜ : Set X))).f 2 ≫
+      quotientMap.f 2 = 0 :=
+    congrArg (fun f => f.f 2) (cokernel.condition
+      (integralSingularChainMap (singularSubspaceInclusion ({(p : X)}ᶜ : Set X))))
+  have hf (i : Fin 4) :
+      integralSimplexChainMap 2 (σ.comp (orientedSimplexFace i)) ≫ quotientMap.f 2 = 0 := by
+    rw [← euclideanPuncturedFace_chain p σ hσ i, Category.assoc, hπ, comp_zero]
+  change (integralSimplexChainMap 3 σ ≫ quotientMap.f 3) ≫
+    (cokernel (integralSingularChainMap (singularSubspaceInclusion ({(p : X)}ᶜ : Set X)))).d 3 2 = 0
+  rw [Category.assoc, quotientMap.comm 3 2, ← Category.assoc, euclideanSimplexChain_boundary]
+  simp only [Preadditive.sum_comp, Linear.smul_comp, hf, smul_zero, Finset.sum_const_zero]
+
+def simplexLocalClass {X : Type u} [TopologicalSpace X] (p : X)
+    (σ : C(stdSimplex ℝ (Fin 4), X))
+    (hσ : ∀ (i : Fin 4) (q : stdSimplex ℝ (Fin 3)), σ (orientedSimplexFace i q) ≠ p) :
+    integralLocalHomology 3 p :=
+  ((integralRelativeChains ({(p : X)}ᶜ : Set X)).liftCycles
+      (integralSimplexChainMap 3 σ ≫ (cokernel.π (integralSingularChainMap
+        (singularSubspaceInclusion ({(p : X)}ᶜ : Set X)))).f 3) 2
+      ((ComplexShape.down ℕ).next_eq' (by rfl))
+      (euclideanRelativeChain_boundary p σ hσ) ≫
+    (integralRelativeChains ({(p : X)}ᶜ : Set X)).homologyπ 3) (ULift.up 1)
+
+private def liftedPositiveTetrahedron : C(stdSimplex ℝ (Fin 4), DifferentialGeometry.Topology.liftedSphereSpace.{u} 1) where
+  toFun q := (ULift.up (positiveTetrahedron q) : DifferentialGeometry.Topology.liftedSphereSpace.{u} 1)
+  continuous_toFun :=
+    (Homeomorph.ulift (X := ThreeSpace) : DifferentialGeometry.Topology.liftedSphereSpace.{u} 1 ≃ₜ ThreeSpace).symm.continuous.comp
+      positiveTetrahedron.continuous
+
+private theorem liftedPositiveTetrahedron_face_ne_zero (i : Fin 4)
+    (q : stdSimplex ℝ (Fin 3)) :
+    liftedPositiveTetrahedron (orientedSimplexFace i q) ≠ (0 : DifferentialGeometry.Topology.liftedSphereSpace.{u} 1) := by
+  intro hh
+  exact positiveTetrahedron_face_ne_zero (orientedSimplexFace i q) i
+    (orientedSimplexFace_zero i q) (ULift.up_inj.mp hh)
+
+def euclideanStandardSimplexClass : integralLocalHomology 3 (0 : DifferentialGeometry.Topology.liftedSphereSpace.{u} 1) :=
+  simplexLocalClass (0 : DifferentialGeometry.Topology.liftedSphereSpace.{u} 1) liftedPositiveTetrahedron
+    (fun i q => liftedPositiveTetrahedron_face_ne_zero i q)
+
+theorem integralSimplexChainMap_naturality {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
+    (n : ℕ) (f : C(X, Y)) (s : C(stdSimplex ℝ (Fin (n + 1)), X)) :
+    integralSimplexChainMap n s ≫ (integralSingularChainMap f).f n = integralSimplexChainMap n (f.comp s) := by
+  have h := SSet.ι_chainComplexMap_f (TopCat.toSSet.obj (TopCat.of X))
+    (TopCat.toSSet.obj (TopCat.of Y)) (TopCat.toSSet.map (TopCat.ofHom f))
+    integralSingularCoefficients ((TopCat.toSSetObjEquiv (TopCat.of X) (.op ⦋n⦌)).symm s)
+  have hσ : (ConcreteCategory.hom ((TopCat.toSSet.map (TopCat.ofHom f)).app (Opposite.op ⦋n⦌)))
+      (((TopCat.of X).toSSetObjEquiv (Opposite.op ⦋n⦌)).symm s) =
+      ((TopCat.of Y).toSSetObjEquiv (Opposite.op ⦋n⦌)).symm (f.comp s) := by
+    apply (TopCat.toSSetObjEquiv (TopCat.of Y) (Opposite.op ⦋n⦌)).injective
+    rw [Equiv.apply_symm_apply]
+    exact integralSingularSimplexMap_apply n f _
+  rw [hσ] at h
+  exact h
+
+theorem integralRelativeHomologyMap_liftCycles_apply
+    {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
+    (n : ℕ) (f : C(X, Y)) {A : Set X} {B : Set Y} (hf : MapsTo f A B)
+    (z : integralSingularCoefficients ⟶ (integralRelativeChains A).X (n + 1))
+    (hz : z ≫ (integralRelativeChains A).d (n + 1) n = 0)
+    (h : (z ≫ (integralRelativeChainMap f hf).f (n + 1)) ≫
+      (integralRelativeChains B).d (n + 1) n = 0) :
+    integralRelativeHomologyMap (n + 1) f hf
+      ((((integralRelativeChains A).liftCycles z n ((ComplexShape.down ℕ).next_eq' (by rfl)) hz) ≫
+        (integralRelativeChains A).homologyπ (n + 1)) (ULift.up 1)) =
+      ((((integralRelativeChains B).liftCycles (z ≫ (integralRelativeChainMap f hf).f (n + 1)) n
+        ((ComplexShape.down ℕ).next_eq' (by rfl)) h) ≫
+        (integralRelativeChains B).homologyπ (n + 1)) (ULift.up 1)) := by
+  have hm :
+      ((integralRelativeChains A).liftCycles z n ((ComplexShape.down ℕ).next_eq' (by rfl)) hz ≫
+          (integralRelativeChains A).homologyπ (n + 1)) ≫
+        HomologicalComplex.homologyMap (integralRelativeChainMap f hf) (n + 1) =
+      (integralRelativeChains B).liftCycles (z ≫ (integralRelativeChainMap f hf).f (n + 1)) n
+        ((ComplexShape.down ℕ).next_eq' (by rfl)) h ≫
+      (integralRelativeChains B).homologyπ (n + 1) := by
+    rw [Category.assoc, HomologicalComplex.homologyπ_naturality, ← Category.assoc,
+      HomologicalComplex.liftCycles_comp_cyclesMap]
+  exact congrArg (fun k => k (ULift.up 1)) hm
+
+set_option backward.isDefEq.respectTransparency false in
+theorem relativeChain_subspaceInclusion_apply {X : Type u} [TopologicalSpace X] (A : Set X) (p : A)
+    (σ : C(stdSimplex ℝ (Fin 4), A)) :
+    (integralSimplexChainMap 3 σ ≫ (cokernel.π (integralSingularChainMap
+        (singularSubspaceInclusion ({(p : A)}ᶜ : Set A)))).f 3) ≫
+      (integralRelativeChainMap (singularSubspaceInclusion A)
+        (A := ({(p : A)}ᶜ : Set A)) (B := ({(p : X)}ᶜ : Set X))
+        (fun _ hy hyx => hy (Subtype.ext hyx))).f 3 =
+      integralSimplexChainMap 3 (⟨fun q => (σ q : X), σ.continuous.subtype_val⟩ :
+        C(stdSimplex ℝ (Fin 4), X)) ≫
+      (cokernel.π (integralSingularChainMap
+        (singularSubspaceInclusion ({(p : X)}ᶜ : Set X)))).f 3 := by
+  have hnat := congrArg (fun k => k.f 3) (integralRelativeChainMap_π
+    (singularSubspaceInclusion A)
+    (A := ({(p : A)}ᶜ : Set A)) (B := ({(p : X)}ᶜ : Set X))
+    (fun _ hy hyx => hy (Subtype.ext hyx)))
+  simp only [HomologicalComplex.comp_f] at hnat
+  rw [Category.assoc, hnat, ← Category.assoc, integralSimplexChainMap_naturality]
+  rfl
+
+set_option backward.isDefEq.respectTransparency false in
+theorem relativeChain_map_apply {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
+    (g : C(X, Y)) {A : Set X} {B : Set Y} (hg : MapsTo g A B)
+    (σ : C(stdSimplex ℝ (Fin 4), X)) (σ' : C(stdSimplex ℝ (Fin 4), Y)) (hσ' : σ' = g.comp σ) :
+    (integralSimplexChainMap 3 σ ≫ (cokernel.π (integralSingularChainMap
+        (singularSubspaceInclusion A))).f 3) ≫
+      (integralRelativeChainMap g hg).f 3 =
+      integralSimplexChainMap 3 σ' ≫
+        (cokernel.π (integralSingularChainMap (singularSubspaceInclusion B))).f 3 := by
+  have hnat := congrArg (fun k => k.f 3) (integralRelativeChainMap_π g hg)
+  simp only [HomologicalComplex.comp_f] at hnat
+  rw [Category.assoc, hnat, ← Category.assoc, integralSimplexChainMap_naturality, hσ']
+
+set_option backward.isDefEq.respectTransparency false in
+theorem integralLocalHomologyNeighborhoodIso_hom_liftCycles {X : Type u} [TopologicalSpace X] [T1Space X]
+    (U : Set X) (hU : IsOpen U) (p : X) (hp : p ∈ U)
+    (z : integralSingularCoefficients ⟶ (integralRelativeChains ({(⟨p, hp⟩ : U)}ᶜ : Set U)).X 3)
+    (hz : z ≫ (integralRelativeChains ({(⟨p, hp⟩ : U)}ᶜ : Set U)).d 3 2 = 0)
+    (z' : integralSingularCoefficients ⟶ (integralRelativeChains ({(p : X)}ᶜ : Set X)).X 3)
+    (hz' : z' ≫ (integralRelativeChains ({(p : X)}ᶜ : Set X)).d 3 2 = 0)
+    (hzz : z ≫ (integralRelativeChainMap (singularSubspaceInclusion U)
+      (A := ({(⟨p, hp⟩ : U)}ᶜ : Set U)) (B := ({(p : X)}ᶜ : Set X))
+      (neighborhoodPointComplement_mapsTo p U hp)).f 3 = z') :
+    (integralLocalHomologyNeighborhoodIso 3 p U hU hp).hom.hom
+      ((((integralRelativeChains ({(⟨p, hp⟩ : U)}ᶜ : Set U)).liftCycles z 2
+        ((ComplexShape.down ℕ).next_eq' (by rfl)) hz) ≫
+        (integralRelativeChains ({(⟨p, hp⟩ : U)}ᶜ : Set U)).homologyπ 3) (ULift.up 1)) =
+      ((((integralRelativeChains ({(p : X)}ᶜ : Set X)).liftCycles z' 2
+        ((ComplexShape.down ℕ).next_eq' (by rfl)) hz') ≫
+        (integralRelativeChains ({(p : X)}ᶜ : Set X)).homologyπ 3) (ULift.up 1)) := by
+  rw [integralLocalHomologyNeighborhoodIso_hom]
+  rw [integralRelativeHomologyMap_liftCycles_apply (n := 2) (f := singularSubspaceInclusion U)
+    (A := ({(⟨p, hp⟩ : U)}ᶜ : Set U)) (B := ({(p : X)}ᶜ : Set X))
+    (hf := neighborhoodPointComplement_mapsTo p U hp) (z := z) (hz := hz)
+    (h := hzz.symm ▸ hz')]
+  exact congrArg (fun k : integralSingularCoefficients ⟶
+      (integralRelativeChains ({(p : X)}ᶜ : Set X)).homology 3 => k (ULift.up 1))
+    (chainComplex_liftCycles_homologyπ_congr 2 _ _ _ _ hzz)
+
+set_option backward.isDefEq.respectTransparency false in
+theorem integralLocalHomologyNeighborhoodIso_inv_liftCycles {X : Type u} [TopologicalSpace X] [T1Space X]
+    (U : Set X) (hU : IsOpen U) (p : X) (hp : p ∈ U)
+    (z : integralSingularCoefficients ⟶ (integralRelativeChains ({(⟨p, hp⟩ : U)}ᶜ : Set U)).X 3)
+    (hz : z ≫ (integralRelativeChains ({(⟨p, hp⟩ : U)}ᶜ : Set U)).d 3 2 = 0)
+    (z' : integralSingularCoefficients ⟶ (integralRelativeChains ({(p : X)}ᶜ : Set X)).X 3)
+    (hz' : z' ≫ (integralRelativeChains ({(p : X)}ᶜ : Set X)).d 3 2 = 0)
+    (hzz : z ≫ (integralRelativeChainMap (singularSubspaceInclusion U)
+      (A := ({(⟨p, hp⟩ : U)}ᶜ : Set U)) (B := ({(p : X)}ᶜ : Set X))
+      (neighborhoodPointComplement_mapsTo p U hp)).f 3 = z') :
+    (integralLocalHomologyNeighborhoodIso 3 p U hU hp).inv.hom
+      ((((integralRelativeChains ({(p : X)}ᶜ : Set X)).liftCycles z' 2
+        ((ComplexShape.down ℕ).next_eq' (by rfl)) hz') ≫
+        (integralRelativeChains ({(p : X)}ᶜ : Set X)).homologyπ 3) (ULift.up 1)) =
+      ((((integralRelativeChains ({(⟨p, hp⟩ : U)}ᶜ : Set U)).liftCycles z 2
+        ((ComplexShape.down ℕ).next_eq' (by rfl)) hz) ≫
+        (integralRelativeChains ({(⟨p, hp⟩ : U)}ᶜ : Set U)).homologyπ 3) (ULift.up 1)) := by
+  rw [← integralLocalHomologyNeighborhoodIso_hom_liftCycles U hU p hp z hz z' hz' hzz]
+  exact Iso.hom_inv_id_apply (integralLocalHomologyNeighborhoodIso 3 p U hU hp) _
+
+set_option backward.isDefEq.respectTransparency false in
+theorem integralLocalHomologyHomeomorphIso_hom_liftCycles {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
+    (g : X ≃ₜ Y) (p : X)
+    (z : integralSingularCoefficients ⟶ (integralRelativeChains ({(p : X)}ᶜ : Set X)).X 3)
+    (hz : z ≫ (integralRelativeChains ({(p : X)}ᶜ : Set X)).d 3 2 = 0)
+    (z' : integralSingularCoefficients ⟶ (integralRelativeChains ({(g p : Y)}ᶜ : Set Y)).X 3)
+    (hz' : z' ≫ (integralRelativeChains ({(g p : Y)}ᶜ : Set Y)).d 3 2 = 0)
+    (hzz : z ≫ (integralRelativeChainMap (⟨g, g.continuous⟩ : C(X, Y))
+      (A := ({(p : X)}ᶜ : Set X)) (B := ({(g p : Y)}ᶜ : Set Y))
+      (fun _ hy => g.injective.ne hy)).f 3 = z') :
+    (integralLocalHomologyHomeomorphIso 3 g p).hom.hom
+      ((((integralRelativeChains ({(p : X)}ᶜ : Set X)).liftCycles z 2
+        ((ComplexShape.down ℕ).next_eq' (by rfl)) hz) ≫
+        (integralRelativeChains ({(p : X)}ᶜ : Set X)).homologyπ 3) (ULift.up 1)) =
+      ((((integralRelativeChains ({(g p : Y)}ᶜ : Set Y)).liftCycles z' 2
+        ((ComplexShape.down ℕ).next_eq' (by rfl)) hz') ≫
+        (integralRelativeChains ({(g p : Y)}ᶜ : Set Y)).homologyπ 3) (ULift.up 1)) := by
+  rw [integralLocalHomologyHomeomorphIso, integralRelativeHomologyHomeomorphIso_hom]
+  rw [integralRelativeHomologyMap_liftCycles_apply (n := 2) (f := (⟨g, g.continuous⟩ : C(X, Y)))
+    (A := ({(p : X)}ᶜ : Set X)) (B := ({(g p : Y)}ᶜ : Set Y))
+    (hf := fun _ hy => g.injective.ne hy) (z := z) (hz := hz)
+    (h := hzz.symm ▸ hz')]
+  exact congrArg (fun k : integralSingularCoefficients ⟶
+      (integralRelativeChains ({(g p : Y)}ᶜ : Set Y)).homology 3 => k (ULift.up 1))
+    (chainComplex_liftCycles_homologyπ_congr 2 _ _ _ _ hzz)
+
+private theorem bijective_zsmul_iff_of_linearEquiv_apply {A B : Type*} [AddCommGroup A] [Module ℤ A]
+    [AddCommGroup B] [Module ℤ B] (f : A ≃ₗ[ℤ] B) (c : A) (c' : B) (h : f c = c') :
+    Function.Bijective (fun z : ℤ => z • c) ↔ Function.Bijective (fun z : ℤ => z • c') := by
+  rw [← h]
+  exact (bijective_zsmul_iff_of_linearEquiv f c).symm
+
+private theorem bijective_zsmul_simplexLocalClass_of_basepoint_eq {X : Type u} [TopologicalSpace X]
+    {p q : X} (hp : p = q) (σ : C(stdSimplex ℝ (Fin 4), X))
+    (hσp : ∀ (i : Fin 4) (t : stdSimplex ℝ (Fin 3)), σ (orientedSimplexFace i t) ≠ p)
+    (hσq : ∀ (i : Fin 4) (t : stdSimplex ℝ (Fin 3)), σ (orientedSimplexFace i t) ≠ q)
+    (h : Function.Bijective (fun z : ℤ => z • simplexLocalClass q σ hσq)) :
+    Function.Bijective (fun z : ℤ => z • simplexLocalClass p σ hσp) := by
+  subst hp
+  have heq : simplexLocalClass p σ hσq = simplexLocalClass p σ hσp := by
+    unfold simplexLocalClass
+    exact congrArg (fun k => k (ULift.up 1))
+      (chainComplex_liftCycles_homologyπ_congr
+        (K := integralRelativeChains ({(p : X)}ᶜ)) 2 _ _ _ _ rfl)
+  rwa [heq] at h
+
+theorem localOrientationClass_generator_of_euclideanStandardSimplex
+    (o : TangentOrientationSection M) (x : M)
+    (h : Function.Bijective (fun z : ℤ => z • euclideanStandardSimplexClass.{u})) :
+    Function.Bijective (fun z : ℤ => z • localOrientationClass o x) := by
+  classical
+  have : T1Space M := ChartedSpace.t1Space ThreeSpace M
+  obtain ⟨S⟩ := exists_orientedChartSimplex o x
+  let LM := DifferentialGeometry.Topology.liftedSphereSpace.{u} 1
+  let uliftSymm : ThreeSpace ≃ₜ LM :=
+    (Homeomorph.ulift (X := ThreeSpace) : LM ≃ₜ ThreeSpace).symm
+  let chartU : OpenPartialHomeomorph M LM := S.chart.trans uliftSymm.toOpenPartialHomeomorph
+  have hxU : x ∈ chartU.source := by
+    rw [OpenPartialHomeomorph.trans_source]
+    exact ⟨S.center_mem, Set.mem_univ _⟩
+  have hSU : ∀ q : stdSimplex ℝ (Fin 4), S.simplex q ∈ chartU.source := by
+    intro q
+    rw [OpenPartialHomeomorph.trans_source]
+    exact ⟨S.chart.map_target (S.simplex_inside q), Set.mem_univ _⟩
+  let SU : C(stdSimplex ℝ (Fin 4), chartU.source) :=
+    ⟨fun q => ⟨S.simplex q, hSU q⟩, S.simplex.continuous.subtype_mk hSU⟩
+  have hSface : ∀ (i : Fin 4) (q : stdSimplex ℝ (Fin 3)),
+      S.simplex (orientedSimplexFace i q) ≠ x := fun i q => orientedSimplex_face_ne_center S i q
+  have hSUne : ∀ (i : Fin 4) (q : stdSimplex ℝ (Fin 3)),
+      SU (orientedSimplexFace i q) ≠ (⟨x, hxU⟩ : chartU.source) :=
+    fun i q hh => hSface i q (congrArg Subtype.val hh)
+  let zU : integralSingularCoefficients ⟶
+      (integralRelativeChains ({(⟨x, hxU⟩ : chartU.source)}ᶜ : Set chartU.source)).X 3 :=
+    integralSimplexChainMap 3 SU ≫ (cokernel.π (integralSingularChainMap
+      (singularSubspaceInclusion ({(⟨x, hxU⟩ : chartU.source)}ᶜ : Set chartU.source)))).f 3
+  have hzU : (integralSimplexChainMap 3 SU ≫ (cokernel.π (integralSingularChainMap
+      (singularSubspaceInclusion ({(⟨x, hxU⟩ : chartU.source)}ᶜ : Set chartU.source)))).f 3) ≫
+      (integralRelativeChains ({(⟨x, hxU⟩ : chartU.source)}ᶜ : Set chartU.source)).d 3 2 = 0 :=
+    euclideanRelativeChain_boundary (X := chartU.source) ⟨x, hxU⟩ SU hSUne
+  let zX : integralSingularCoefficients ⟶
+      (integralRelativeChains ({(x : M)}ᶜ : Set M)).X 3 :=
+    integralSimplexChainMap 3 S.simplex ≫ (cokernel.π (integralSingularChainMap
+      (singularSubspaceInclusion ({(x : M)}ᶜ : Set M)))).f 3
+  have hzX : (integralSimplexChainMap 3 S.simplex ≫ (cokernel.π (integralSingularChainMap
+      (singularSubspaceInclusion ({(x : M)}ᶜ : Set M)))).f 3) ≫
+      (integralRelativeChains ({(x : M)}ᶜ : Set M)).d 3 2 = 0 :=
+    euclideanRelativeChain_boundary (X := M) x S.simplex hSface
+  have hchainU : zU ≫ (integralRelativeChainMap (singularSubspaceInclusion (chartU.source : Set M))
+      (A := ({(⟨x, hxU⟩ : chartU.source)}ᶜ : Set chartU.source)) (B := ({(x : M)}ᶜ : Set M))
+      (neighborhoodPointComplement_mapsTo x chartU.source hxU)).f 3 = zX :=
+    relativeChain_map_apply (singularSubspaceInclusion (chartU.source : Set M))
+      (neighborhoodPointComplement_mapsTo x chartU.source hxU) SU S.simplex rfl
+  have hclassX : localOrientationClass o x =
+      (((integralRelativeChains ({(x : M)}ᶜ : Set M)).liftCycles zX 2
+        ((ComplexShape.down ℕ).next_eq' (by rfl)) hzX) ≫
+        (integralRelativeChains ({(x : M)}ᶜ : Set M)).homologyπ 3) (ULift.up 1) := by
+    rw [← localOrientationClass_spec o x S]
+    rfl
+  have hclassU : (integralLocalHomologyNeighborhoodIso 3 x chartU.source chartU.open_source hxU).inv.hom
+      (localOrientationClass o x) =
+      (((integralRelativeChains ({(⟨x, hxU⟩ : chartU.source)}ᶜ : Set chartU.source)).liftCycles zU 2
+        ((ComplexShape.down ℕ).next_eq' (by rfl)) hzU) ≫
+        (integralRelativeChains ({(⟨x, hxU⟩ : chartU.source)}ᶜ : Set chartU.source)).homologyπ 3)
+        (ULift.up 1) := by
+    rw [hclassX]
+    exact integralLocalHomologyNeighborhoodIso_inv_liftCycles chartU.source chartU.open_source x hxU zU hzU zX hzX hchainU
+  let cU : ↑(integralLocalHomology 3 (⟨x, hxU⟩ : chartU.source)) :=
+    (integralLocalHomologyNeighborhoodIso 3 x chartU.source chartU.open_source hxU).toLinearEquiv.symm
+      (localOrientationClass o x)
+  have hcU : cU =
+      (((integralRelativeChains ({(⟨x, hxU⟩ : chartU.source)}ᶜ : Set chartU.source)).liftCycles zU 2
+        ((ComplexShape.down ℕ).next_eq' (by rfl)) hzU) ≫
+        (integralRelativeChains ({(⟨x, hxU⟩ : chartU.source)}ᶜ : Set chartU.source)).homologyπ 3)
+        (ULift.up 1) := hclassU
+  have hstepU : Function.Bijective (fun z : ℤ => z • cU) ↔
+      Function.Bijective (fun z : ℤ => z • localOrientationClass o x) :=
+    (bijective_zsmul_iff_of_linearEquiv_apply
+      ((integralLocalHomologyNeighborhoodIso 3 x chartU.source chartU.open_source hxU).toLinearEquiv.symm)
+      (localOrientationClass o x) cU rfl).symm
+  let tauU : C(stdSimplex ℝ (Fin 4), LM) :=
+    ⟨fun q => chartU (S.simplex q), chartU.continuousOn.comp_continuous S.simplex.continuous hSU⟩
+  have hchartU (q : stdSimplex ℝ (Fin 4)) :
+      tauU q = (ULift.up (S.chart x + S.radius • positiveTetrahedron q) : LM) := by
+    change chartU (S.simplex q) = (ULift.up (S.chart x + S.radius • positiveTetrahedron q) : LM)
+    change uliftSymm (S.chart (S.chart.symm (S.chart x + S.radius • positiveTetrahedron q))) =
+      (ULift.up (S.chart x + S.radius • positiveTetrahedron q) : LM)
+    rw [S.chart.right_inv (S.simplex_inside q)]
+    rfl
+  have htauUne : ∀ (i : Fin 4) (q : stdSimplex ℝ (Fin 3)),
+      tauU (orientedSimplexFace i q) ≠ chartU x := by
+    intro i q hh
+    exact hSface i q (chartU.injOn (hSU (orientedSimplexFace i q)) hxU hh)
+  let tauV : C(stdSimplex ℝ (Fin 4), chartU.target) :=
+    ⟨fun q => ⟨chartU (S.simplex q), chartU.map_source (hSU q)⟩,
+      (chartU.continuousOn.comp_continuous S.simplex.continuous hSU).subtype_mk _⟩
+  let p₀ : chartU.target := chartU.toHomeomorphSourceTarget (⟨x, hxU⟩ : chartU.source)
+  have htauVne : ∀ (i : Fin 4) (q : stdSimplex ℝ (Fin 3)), tauV (orientedSimplexFace i q) ≠ p₀ :=
+    fun i q hh => htauUne i q (congrArg Subtype.val hh)
+  let zV : integralSingularCoefficients ⟶
+      (integralRelativeChains ({(p₀ : chartU.target)}ᶜ : Set chartU.target)).X 3 :=
+    integralSimplexChainMap 3 tauV ≫ (cokernel.π (integralSingularChainMap
+      (singularSubspaceInclusion ({(p₀ : chartU.target)}ᶜ : Set chartU.target)))).f 3
+  have hzV : (integralSimplexChainMap 3 tauV ≫ (cokernel.π (integralSingularChainMap
+      (singularSubspaceInclusion ({(p₀ : chartU.target)}ᶜ : Set chartU.target)))).f 3) ≫
+      (integralRelativeChains ({(p₀ : chartU.target)}ᶜ : Set chartU.target)).d 3 2 = 0 :=
+    euclideanRelativeChain_boundary (X := chartU.target) p₀ tauV htauVne
+  have hchainV : zU ≫ (integralRelativeChainMap
+      (⟨chartU.toHomeomorphSourceTarget, chartU.toHomeomorphSourceTarget.continuous⟩ :
+        C(chartU.source, chartU.target))
+      (A := ({(⟨x, hxU⟩ : chartU.source)}ᶜ : Set chartU.source))
+      (B := ({(p₀ : chartU.target)}ᶜ : Set chartU.target))
+      (fun _ hy => chartU.toHomeomorphSourceTarget.injective.ne hy)).f 3 = zV :=
+    relativeChain_map_apply
+      (⟨chartU.toHomeomorphSourceTarget, chartU.toHomeomorphSourceTarget.continuous⟩ :
+        C(chartU.source, chartU.target))
+      (fun _ hy => chartU.toHomeomorphSourceTarget.injective.ne hy) SU tauV rfl
+  have hV : (integralLocalHomologyHomeomorphIso 3 chartU.toHomeomorphSourceTarget
+      (⟨x, hxU⟩ : chartU.source)).toLinearEquiv cU =
+      (((integralRelativeChains ({(p₀ : chartU.target)}ᶜ : Set chartU.target)).liftCycles zV 2
+        ((ComplexShape.down ℕ).next_eq' (by rfl)) hzV) ≫
+        (integralRelativeChains ({(p₀ : chartU.target)}ᶜ : Set chartU.target)).homologyπ 3)
+        (ULift.up 1) := by
+    rw [hcU]
+    exact integralLocalHomologyHomeomorphIso_hom_liftCycles chartU.toHomeomorphSourceTarget
+      (⟨x, hxU⟩ : chartU.source) zU hzU zV hzV hchainV
+  let cV : ↑(integralLocalHomology 3 (p₀ : chartU.target)) :=
+    (integralLocalHomologyHomeomorphIso 3 chartU.toHomeomorphSourceTarget
+      (⟨x, hxU⟩ : chartU.source)).toLinearEquiv cU
+  have hstepV : Function.Bijective (fun z : ℤ => z • cV) ↔
+      Function.Bijective (fun z : ℤ => z • cU) :=
+    (bijective_zsmul_iff_of_linearEquiv_apply
+      ((integralLocalHomologyHomeomorphIso 3 chartU.toHomeomorphSourceTarget
+        (⟨x, hxU⟩ : chartU.source)).toLinearEquiv) cU cV rfl).symm
+  let zT : integralSingularCoefficients ⟶
+      (integralRelativeChains ({(chartU x : LM)}ᶜ : Set LM)).X 3 :=
+    integralSimplexChainMap 3 tauU ≫ (cokernel.π (integralSingularChainMap
+      (singularSubspaceInclusion ({(chartU x : LM)}ᶜ : Set LM)))).f 3
+  have hzT : (integralSimplexChainMap 3 tauU ≫ (cokernel.π (integralSingularChainMap
+      (singularSubspaceInclusion ({(chartU x : LM)}ᶜ : Set LM)))).f 3) ≫
+      (integralRelativeChains ({(chartU x : LM)}ᶜ : Set LM)).d 3 2 = 0 :=
+    euclideanRelativeChain_boundary (X := LM) (chartU x) tauU htauUne
+  have hchainT : zV ≫ (integralRelativeChainMap (singularSubspaceInclusion (chartU.target : Set LM))
+      (A := ({(p₀ : chartU.target)}ᶜ : Set chartU.target))
+      (B := ({(chartU x : LM)}ᶜ : Set LM))
+      (neighborhoodPointComplement_mapsTo (chartU x) chartU.target (chartU.map_source hxU))).f 3 = zT :=
+    relativeChain_map_apply (singularSubspaceInclusion (chartU.target : Set LM))
+      (neighborhoodPointComplement_mapsTo (chartU x) chartU.target (chartU.map_source hxU)) tauV tauU rfl
+  have hdefV : cV =
+      (integralLocalHomologyHomeomorphIso 3 chartU.toHomeomorphSourceTarget
+        (⟨x, hxU⟩ : chartU.source)).toLinearEquiv cU := rfl
+  have hT : (integralLocalHomologyNeighborhoodIso 3 p₀.val chartU.target chartU.open_target
+      p₀.property).toLinearEquiv cV =
+      (((integralRelativeChains ({(chartU x : LM)}ᶜ : Set LM)).liftCycles zT 2
+        ((ComplexShape.down ℕ).next_eq' (by rfl)) hzT) ≫
+        (integralRelativeChains ({(chartU x : LM)}ᶜ : Set LM)).homologyπ 3) (ULift.up 1) := by
+    rw [hdefV, hV]
+    exact integralLocalHomologyNeighborhoodIso_hom_liftCycles chartU.target chartU.open_target p₀.val p₀.property
+      zV hzV zT hzT hchainT
+  let cT : ↑(integralLocalHomology 3 (chartU x)) :=
+    (integralLocalHomologyNeighborhoodIso 3 p₀.val chartU.target chartU.open_target
+      p₀.property).toLinearEquiv cV
+  have hstepT : Function.Bijective (fun z : ℤ => z • cT) ↔
+      Function.Bijective (fun z : ℤ => z • cV) :=
+    (bijective_zsmul_iff_of_linearEquiv_apply
+      ((integralLocalHomologyNeighborhoodIso 3 p₀.val chartU.target chartU.open_target
+        p₀.property).toLinearEquiv) cV cT rfl).symm
+  let tr : LM ≃ₜ LM := Homeomorph.addRight (-(chartU x))
+  have htr0 : tr (chartU x) = (0 : LM) := add_neg_cancel _
+  let tauT : C(stdSimplex ℝ (Fin 4), LM) :=
+    ⟨fun q => tr (tauU q), tr.continuous.comp tauU.continuous⟩
+  have htauTne : ∀ (i : Fin 4) (q : stdSimplex ℝ (Fin 3)),
+      tauT (orientedSimplexFace i q) ≠ tr (chartU x) := by
+    intro i q hh
+    exact htauUne i q (tr.injective hh)
+  let zT' : integralSingularCoefficients ⟶
+      (integralRelativeChains ({(tr (chartU x) : LM)}ᶜ : Set LM)).X 3 :=
+    integralSimplexChainMap 3 tauT ≫ (cokernel.π (integralSingularChainMap
+      (singularSubspaceInclusion ({(tr (chartU x) : LM)}ᶜ : Set LM)))).f 3
+  have hzT' : (integralSimplexChainMap 3 tauT ≫ (cokernel.π (integralSingularChainMap
+      (singularSubspaceInclusion ({(tr (chartU x) : LM)}ᶜ : Set LM)))).f 3) ≫
+      (integralRelativeChains ({(tr (chartU x) : LM)}ᶜ : Set LM)).d 3 2 = 0 :=
+    euclideanRelativeChain_boundary (X := LM) (tr (chartU x)) tauT htauTne
+  have hchainT' : zT ≫ (integralRelativeChainMap (⟨tr, tr.continuous⟩ : C(LM, LM))
+      (A := ({(chartU x : LM)}ᶜ : Set LM)) (B := ({(tr (chartU x) : LM)}ᶜ : Set LM))
+      (fun _ hy => tr.injective.ne hy)).f 3 = zT' :=
+    relativeChain_map_apply (⟨tr, tr.continuous⟩ : C(LM, LM)) (fun _ hy => tr.injective.ne hy)
+      tauU tauT (by ext q; rfl)
+  have hdefT : cT =
+      (integralLocalHomologyNeighborhoodIso 3 p₀.val chartU.target chartU.open_target
+        p₀.property).toLinearEquiv cV := rfl
+  have hT' : (integralLocalHomologyHomeomorphIso 3 tr (chartU x)).toLinearEquiv cT =
+      (((integralRelativeChains ({(tr (chartU x) : LM)}ᶜ : Set LM)).liftCycles zT' 2
+        ((ComplexShape.down ℕ).next_eq' (by rfl)) hzT') ≫
+        (integralRelativeChains ({(tr (chartU x) : LM)}ᶜ : Set LM)).homologyπ 3) (ULift.up 1) := by
+    rw [hdefT, hT]
+    exact integralLocalHomologyHomeomorphIso_hom_liftCycles tr (chartU x) zT hzT zT' hzT' hchainT'
+  let cT' : ↑(integralLocalHomology 3 (tr (chartU x))) :=
+    (integralLocalHomologyHomeomorphIso 3 tr (chartU x)).toLinearEquiv cT
+  have hstepT' : Function.Bijective (fun z : ℤ => z • cT') ↔
+      Function.Bijective (fun z : ℤ => z • cT) :=
+    (bijective_zsmul_iff_of_linearEquiv_apply
+      ((integralLocalHomologyHomeomorphIso 3 tr (chartU x)).toLinearEquiv) cT cT' rfl).symm
+  let sc : LM ≃ₜ LM :=
+    Homeomorph.smulOfNeZero (S.radius⁻¹) (inv_ne_zero (ne_of_gt S.radius_pos))
+  let tauS : C(stdSimplex ℝ (Fin 4), LM) :=
+    ⟨fun q => sc (tauT q), sc.continuous.comp tauT.continuous⟩
+  have htauSne : ∀ (i : Fin 4) (q : stdSimplex ℝ (Fin 3)),
+      tauS (orientedSimplexFace i q) ≠ sc (tr (chartU x)) := by
+    intro i q hh
+    exact htauTne i q (sc.injective hh)
+  have hsc0 : (Homeomorph.smulOfNeZero (S.radius⁻¹) (inv_ne_zero (ne_of_gt S.radius_pos)) :
+      LM ≃ₜ LM) (0 : LM) = S.radius⁻¹ • (0 : LM) := rfl
+  have hzero : sc (tr (chartU x)) = (0 : LM) := by
+    rw [htr0]
+    change (Homeomorph.smulOfNeZero (S.radius⁻¹) (inv_ne_zero (ne_of_gt S.radius_pos)) :
+      LM ≃ₜ LM) (0 : LM) = 0
+    rw [hsc0]
+    exact smul_zero _
+  have htauS : tauS = liftedPositiveTetrahedron := by
+    apply ContinuousMap.ext
+    intro q
+    change sc (tr (tauU q)) = (ULift.up (positiveTetrahedron q) : LM)
+    rw [hchartU q]
+    have htr : tr (ULift.up (S.chart x + S.radius • positiveTetrahedron q)) =
+        (ULift.up (S.chart x + S.radius • positiveTetrahedron q + (-(S.chart x))) : LM) := rfl
+    have hcancel : S.chart x + S.radius • positiveTetrahedron q + (-(S.chart x)) =
+        S.radius • positiveTetrahedron q := by abel
+    have hscT : sc (ULift.up (S.radius • positiveTetrahedron q)) =
+        (ULift.up (S.radius⁻¹ • (S.radius • positiveTetrahedron q)) : LM) := rfl
+    rw [htr, hcancel, hscT, smul_smul, inv_mul_cancel₀ (ne_of_gt S.radius_pos), one_smul]
+  let zS : integralSingularCoefficients ⟶
+      (integralRelativeChains ({(sc (tr (chartU x)) : LM)}ᶜ : Set LM)).X 3 :=
+    integralSimplexChainMap 3 tauS ≫ (cokernel.π (integralSingularChainMap
+      (singularSubspaceInclusion ({(sc (tr (chartU x)) : LM)}ᶜ : Set LM)))).f 3
+  have hzS : (integralSimplexChainMap 3 tauS ≫ (cokernel.π (integralSingularChainMap
+      (singularSubspaceInclusion ({(sc (tr (chartU x)) : LM)}ᶜ : Set LM)))).f 3) ≫
+      (integralRelativeChains ({(sc (tr (chartU x)) : LM)}ᶜ : Set LM)).d 3 2 = 0 :=
+    euclideanRelativeChain_boundary (X := LM) (sc (tr (chartU x))) tauS htauSne
+  have hchainS : zT' ≫ (integralRelativeChainMap (⟨sc, sc.continuous⟩ : C(LM, LM))
+      (A := ({(tr (chartU x) : LM)}ᶜ : Set LM)) (B := ({(sc (tr (chartU x)) : LM)}ᶜ : Set LM))
+      (fun _ hy => sc.injective.ne hy)).f 3 = zS :=
+    relativeChain_map_apply (⟨sc, sc.continuous⟩ : C(LM, LM)) (fun _ hy => sc.injective.ne hy)
+      tauT tauS (by ext q; rfl)
+  have hdefT' : cT' = (integralLocalHomologyHomeomorphIso 3 tr (chartU x)).toLinearEquiv cT := rfl
+  have hS : (integralLocalHomologyHomeomorphIso 3 sc (tr (chartU x))).toLinearEquiv cT' =
+      (((integralRelativeChains ({(sc (tr (chartU x)) : LM)}ᶜ : Set LM)).liftCycles zS 2
+        ((ComplexShape.down ℕ).next_eq' (by rfl)) hzS) ≫
+        (integralRelativeChains ({(sc (tr (chartU x)) : LM)}ᶜ : Set LM)).homologyπ 3) (ULift.up 1) := by
+    rw [hdefT', hT']
+    exact integralLocalHomologyHomeomorphIso_hom_liftCycles sc (tr (chartU x)) zT' hzT' zS hzS hchainS
+  let cS : ↑(integralLocalHomology 3 (sc (tr (chartU x)))) :=
+    (integralLocalHomologyHomeomorphIso 3 sc (tr (chartU x))).toLinearEquiv cT'
+  have hstepS : Function.Bijective (fun z : ℤ => z • cS) ↔
+      Function.Bijective (fun z : ℤ => z • cT') :=
+    (bijective_zsmul_iff_of_linearEquiv_apply
+      ((integralLocalHomologyHomeomorphIso 3 sc (tr (chartU x))).toLinearEquiv) cT' cS rfl).symm
+  have hliftedSne : ∀ (i : Fin 4) (t : stdSimplex ℝ (Fin 3)),
+      liftedPositiveTetrahedron (orientedSimplexFace i t) ≠ sc (tr (chartU x)) := by
+    intro i t
+    rw [← htauS]
+    exact htauSne i t
+  have hchainE : (integralSimplexChainMap 3 tauS ≫ (cokernel.π (integralSingularChainMap
+      (singularSubspaceInclusion ({(sc (tr (chartU x)) : LM)}ᶜ : Set LM)))).f 3) =
+      integralSimplexChainMap 3 liftedPositiveTetrahedron ≫ (cokernel.π (integralSingularChainMap
+        (singularSubspaceInclusion ({(sc (tr (chartU x)) : LM)}ᶜ : Set LM)))).f 3 := by
+    rw [htauS]
+  have hcSraw : cS =
+      (((integralRelativeChains ({(sc (tr (chartU x)) : LM)}ᶜ : Set LM)).liftCycles zS 2
+        ((ComplexShape.down ℕ).next_eq' (by rfl)) hzS) ≫
+        (integralRelativeChains ({(sc (tr (chartU x)) : LM)}ᶜ : Set LM)).homologyπ 3)
+        (ULift.up 1) := hS
+  have hclassS : cS =
+      simplexLocalClass (sc (tr (chartU x))) liftedPositiveTetrahedron hliftedSne := by
+    rw [hcSraw]
+    unfold simplexLocalClass
+    exact congrArg (fun k => k (ULift.up 1))
+      (chainComplex_liftCycles_homologyπ_congr
+        (K := integralRelativeChains ({(sc (tr (chartU x)) : LM)}ᶜ)) 2 _ _ _ _ hchainE)
+  have hfinal : Function.Bijective (fun z : ℤ => z • cS) := by
+    rw [hclassS]
+    exact bijective_zsmul_simplexLocalClass_of_basepoint_eq hzero liftedPositiveTetrahedron hliftedSne
+      (fun i t => liftedPositiveTetrahedron_face_ne_zero i t) h
+  exact (hstepS.trans (hstepT'.trans (hstepT.trans (hstepV.trans hstepU)))).mp hfinal
+
+end
 
 theorem localOrientationClass_generator (o : TangentOrientationSection M) (x : M) :
     Function.Bijective (fun z : ℤ => z • localOrientationClass o x) := by

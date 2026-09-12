@@ -42,6 +42,28 @@ theorem subset_left_or_subset_right (p : ComplementPair S)
   apply hC.subset_or_subset p.isOpen_left p.isOpen_right p.disjoint
   simpa only [p.union_eq_compl] using hCS
 
+theorem not_mem_connectedComponentIn_of_left_of_right (p : ComplementPair S) {a z : X}
+    (ha : a ∈ p.right) (hz : z ∈ p.left) : z ∉ connectedComponentIn Sᶜ a := by
+  intro hzcomp
+  have hacompl : a ∈ Sᶜ := p.right_subset_compl ha
+  have hsub : connectedComponentIn Sᶜ a ⊆ Sᶜ := connectedComponentIn_subset Sᶜ a
+  rcases p.subset_left_or_subset_right isPreconnected_connectedComponentIn hsub with h | h
+  · exact Set.disjoint_left.mp p.disjoint (h (mem_connectedComponentIn hacompl)) ha
+  · exact Set.disjoint_left.mp p.disjoint hz (h hzcomp)
+
+theorem side_iff_of_isPreconnected_subset_compl (p : ComplementPair S) {C : Set X}
+    (hC : IsPreconnected C) (hsub : C ⊆ Sᶜ) {a b : X} (ha : a ∈ C) (hb : b ∈ C) :
+    (a ∈ p.left ↔ b ∈ p.left) ∧ (a ∈ p.right ↔ b ∈ p.right) := by
+  rcases p.subset_left_or_subset_right hC hsub with h | h
+  · exact ⟨iff_of_true (h ha) (h hb),
+      iff_of_false
+        (fun hx => Set.disjoint_left.mp p.disjoint (h ha) hx)
+        (fun hx => Set.disjoint_left.mp p.disjoint (h hb) hx)⟩
+  · exact ⟨iff_of_false
+        (fun hx => Set.disjoint_left.mp p.disjoint hx (h ha))
+        (fun hx => Set.disjoint_left.mp p.disjoint hx (h hb)),
+      iff_of_true (h ha) (h hb)⟩
+
 theorem closure_left_eq (p : ComplementPair S) (hSleft : S ⊆ closure p.left) :
     closure p.left = p.left ∪ S := by
   apply Set.Subset.antisymm

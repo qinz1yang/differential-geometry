@@ -116,6 +116,11 @@ theorem pullbackForm_apply (B : F →L[ℝ] F →L[ℝ] ℝ) (D : E →L[ℝ] F)
     pullbackForm (B, D) u v = B (D u) (D v) :=
   rfl
 
+theorem pullbackForm_pullbackForm_symm (B : F →L[ℝ] F →L[ℝ] ℝ) (e : E ≃L[ℝ] F) :
+    pullbackForm (pullbackForm (B, (e : E →L[ℝ] F)), (e.symm : F →L[ℝ] E)) = B := by
+  ext v w
+  simp [pullbackForm_apply]
+
 theorem pullbackForm.contDiff :
     ContDiff ℝ (∞ : WithTop ℕ∞) (pullbackForm (E := E) (F := F)) := by
   unfold pullbackForm ContinuousLinearMap.bilinearComp

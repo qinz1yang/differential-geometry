@@ -1525,5 +1525,920 @@ theorem intrinsic_frame_metric_iterated_fderiv_norm_le_local
     ContinuousMultilinearMap.opNorm_le_diag_unit
       hAsymm htwoS hdiag
   simpa only [A, S] using hbound
+section
+
+variable {M : Type u} [TopologicalSpace M] [ChartedSpace H M]
+  [IsManifold I ∞ M] [T2Space M] [SigmaCompactSpace M]
+variable [RiemannianBundle fun x : M => TangentSpace I x]
+
+omit [CompleteSpace E] in
+theorem CurvatureJetTerm.eval_le_at_local_order
+    [PseudoEMetricSpace M]
+    [IsRiemannianManifold I M] [CompleteSpace M]
+    [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
+    (g : SmoothRiemannianMetric I M)
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
+    (p : M) (u a b : E)
+    (N : Nat) (C : Nat -> Real) (hC : forall k, 0 <= C k)
+    (B : IntrinsicJacobiJetAtom -> Real) (P : IntrinsicJacobiJetAtom -> Prop)
+    {A : Real}
+    (hcurv : forall (k : Nat) (x : M)
+      (v : Fin (k + 3) -> TangentSpace I x),
+      k <= N ->
+      riemannianEDistOf (I := I) g p x <= ENNReal.ofReal A ->
+      Real.sqrt
+          (g.inner x (curvOpN (I := I) g k x v)
+            (curvOpN (I := I) g k x v)) <=
+        C k * ∏ i, Real.sqrt (g.inner x (v i) (v i)))
+    (q : Real × Real)
+    (hq : riemannianEDistOf (I := I) g p
+        (intrinsicLaunch3 (I := I) g hEnorm p u a b ((q.1, 0), q.2)) <=
+      ENNReal.ofReal A)
+    (hatom : forall (atom : IntrinsicJacobiJetAtom), P atom ->
+        Real.sqrt
+            (g.inner
+              (intrinsicLaunch3 (I := I) g hEnorm p u a b ((q.1, 0), q.2))
+              (atom.eval (I := I) g hEnorm p u a b q)
+              (atom.eval (I := I) g hEnorm p u a b q)) <=
+          B atom) :
+    forall term : CurvatureJetTerm, term.curvOrderAtMost N ->
+        term.allAtoms P ->
+        Real.sqrt
+            (g.inner
+              (intrinsicLaunch3 (I := I) g hEnorm p u a b ((q.1, 0), q.2))
+              (term.eval (I := I) g hEnorm p u a b q)
+              (term.eval (I := I) g hEnorm p u a b q)) <=
+          term.majorant C B := by
+  intro term
+  induction term with
+  | zero =>
+      intro _ hterm
+      simp only [CurvatureJetTerm.eval, CurvatureJetTerm.majorant, map_zero,
+        Real.sqrt_zero]
+      exact le_rfl
+  | atom atom =>
+      intro _ hterm
+      exact hatom atom hterm
+  | add y z ihy ihz =>
+      intro htN hterm
+      let x :=
+        intrinsicLaunch3 (I := I) g hEnorm p u a b ((q.1, 0), q.2)
+      calc
+        Real.sqrt
+            (g.inner x
+              ((y + z).eval (I := I) g hEnorm p u a b q)
+              ((y + z).eval (I := I) g hEnorm p u a b q)) <=
+            Real.sqrt
+                (g.inner x
+                  (y.eval (I := I) g hEnorm p u a b q)
+                  (y.eval (I := I) g hEnorm p u a b q)) +
+              Real.sqrt
+                (g.inner x
+                  (z.eval (I := I) g hEnorm p u a b q)
+                  (z.eval (I := I) g hEnorm p u a b q)) := by
+          simpa only [CurvatureJetTerm.eval] using
+            Geometry.Riemannian.sqrt_inner_add_le (I := I) g x
+              (y.eval (I := I) g hEnorm p u a b q)
+              (z.eval (I := I) g hEnorm p u a b q)
+        _ <= y.majorant C B + z.majorant C B :=
+          add_le_add (ihy htN.1 hterm.1) (ihz htN.2 hterm.2)
+        _ = (y + z).majorant C B := rfl
+  | scale c y ih =>
+      intro htN hterm
+      let x :=
+        intrinsicLaunch3 (I := I) g hEnorm p u a b ((q.1, 0), q.2)
+      calc
+        Real.sqrt
+            (g.inner x
+              ((c • y).eval (I := I) g hEnorm p u a b q)
+              ((c • y).eval (I := I) g hEnorm p u a b q)) =
+            |c| * Real.sqrt
+              (g.inner x
+                (y.eval (I := I) g hEnorm p u a b q)
+                (y.eval (I := I) g hEnorm p u a b q)) := by
+          rw [CurvatureJetTerm.eval.eq_def]
+          exact Geometry.Riemannian.sqrt_inner_smul (I := I) g x c
+            (y.eval (I := I) g hEnorm p u a b q)
+        _ <= |c| * y.majorant C B :=
+          mul_le_mul_of_nonneg_left (ih htN hterm) (abs_nonneg c)
+        _ = (c • y).majorant C B := rfl
+  | curv k slots ih =>
+      intro htN hterm
+      simp only [CurvatureJetTerm.curvOrderAtMost] at htN
+      let x :=
+        intrinsicLaunch3 (I := I) g hEnorm p u a b ((q.1, 0), q.2)
+      have hprod :
+          (∏ i : Fin (k + 3),
+              Real.sqrt
+                (g.inner x
+                  ((slots i).eval (I := I) g hEnorm p u a b q)
+                  ((slots i).eval (I := I) g hEnorm p u a b q))) <=
+            ∏ i : Fin (k + 3), (slots i).majorant C B := by
+        apply Finset.prod_le_prod
+        · intro i hi
+          exact Real.sqrt_nonneg _
+        · intro i hi
+          exact ih i (htN.2 i) (hterm i)
+      calc
+        Real.sqrt
+            (g.inner x
+              ((CurvatureJetTerm.curv k slots).eval
+                (I := I) g hEnorm p u a b q)
+              ((CurvatureJetTerm.curv k slots).eval
+                (I := I) g hEnorm p u a b q)) <=
+            C k * ∏ i : Fin (k + 3),
+              Real.sqrt
+                (g.inner x
+                  ((slots i).eval (I := I) g hEnorm p u a b q)
+                  ((slots i).eval (I := I) g hEnorm p u a b q)) := by
+          simpa only [CurvatureJetTerm.eval] using
+            hcurv k x
+              (fun i => (slots i).eval (I := I) g hEnorm p u a b q) htN.1 hq
+        _ <= C k * ∏ i : Fin (k + 3), (slots i).majorant C B :=
+          mul_le_mul_of_nonneg_left hprod (hC k)
+        _ = (CurvatureJetTerm.curv k slots).majorant C B := rfl
+
+end
+theorem intrinsic_jacobi_jets_le_local_order
+    (P : PointedRiemannianManifold.{u, uE, uH} (I := I))
+    (hcomplete : MetricComplete (I := I) P)
+    (hconn : letI : TopologicalSpace P.M := P.topology; ConnectedSpace P.M)
+    (p : P.M) {R U D A : Real} (hD : 0 <= D) (hAU : U <= A)
+    (N : Nat) (C : Nat -> Real) (hC : forall k : Nat, 0 <= C k)
+    (hN : forall k : Nat, k <= N ->
+      HasLocalCurvDerivBound (I := I) P p A k (C k))
+    (u : E) :
+    letI : TopologicalSpace P.M := P.topology
+    letI : ChartedSpace H P.M := P.charted
+    letI : IsManifold I ∞ P.M := P.smooth
+    letI : IsManifold I 1 P.M :=
+      IsManifold.of_le (I := I) (M := P.M) (n := ∞) (by decide)
+    letI : SigmaCompactSpace P.M := P.sigmaCompact
+    letI : T2Space P.M := P.t2
+    letI : T2Space (TangentBundle I P.M) := P.t2TangentBundle
+    letI : RiemannianBundle (fun x : P.M => TangentSpace I x) :=
+      P.riemBundle (I := I)
+    letI : (x : P.M) -> InnerProductSpace Real (TangentSpace I x) :=
+      P.riemInner (I := I)
+    letI : IsContinuousRiemannianBundle E
+        (fun x : P.M => TangentSpace I x) :=
+      P.riemBundle_cont (I := I)
+    letI : EMetricSpace P.M := P.emetricSpace (I := I)
+    letI : CompleteSpace P.M :=
+      MetricComplete.complete (I := I) P hcomplete
+    letI : ConnectedSpace P.M := hconn
+    let hEnorm : Geometry.Riemannian.IsMetricNorm
+        (I := I) (M := P.M) P.metric := by
+      intro x v
+      with_unfolding_all
+        exact
+          Geometry.Riemannian.tensor0SBundle_enorm_eq_riemannianBundle_enorm
+            (I := I) P.metric x v
+    let leafNorm : E -> E -> IntrinsicJacobiJetAtom -> Real -> Real -> Real :=
+      fun a b atom r t =>
+        Real.sqrt
+          (P.metric.inner
+            (intrinsicLaunch3 (I := I) P.metric hEnorm p u a b ((r, 0), t))
+            (atom.eval (I := I) P.metric hEnorm p u a b (r, t))
+            (atom.eval (I := I) P.metric hEnorm p u a b (r, t)))
+    Real.sqrt (P.metric.inner p u u) + R * D <= U ->
+    forall n, n + 1 <= N -> forall (a b : E),
+      Real.sqrt (P.metric.inner p a a) <= D ->
+      Real.sqrt (P.metric.inner p b b) <= D ->
+      forall r, |r| <= R ->
+        (forall k, k <= n ->
+          forall t, t ∈ Icc (0 : Real) 1 ->
+            leafNorm a b (.bJet k) r t <= jacobiJetBound C U D n) ∧
+        (forall k, k <= n ->
+          forall t, t ∈ Icc (0 : Real) 1 ->
+            leafNorm a b (.bTime k) r t <= jacobiJetBound C U D n) := by
+  let _ : TopologicalSpace P.M := P.topology
+  let _ : ChartedSpace H P.M := P.charted
+  let _ : IsManifold I ∞ P.M := P.smooth
+  let _ : IsManifold I 1 P.M :=
+    IsManifold.of_le (I := I) (M := P.M) (n := ∞) (by decide)
+  let _ : SigmaCompactSpace P.M := P.sigmaCompact
+  let _ : T2Space P.M := P.t2
+  let _ : T2Space (TangentBundle I P.M) := P.t2TangentBundle
+  let _ : RiemannianBundle (fun x : P.M => TangentSpace I x) :=
+    P.riemBundle (I := I)
+  let _ : (x : P.M) -> InnerProductSpace Real (TangentSpace I x) :=
+    P.riemInner (I := I)
+  let _ : IsContinuousRiemannianBundle E
+      (fun x : P.M => TangentSpace I x) :=
+    P.riemBundle_cont (I := I)
+  let _ : EMetricSpace P.M := P.emetricSpace (I := I)
+  let _ : CompleteSpace P.M :=
+    MetricComplete.complete (I := I) P hcomplete
+  let _ : ConnectedSpace P.M := hconn
+  let hEnorm : Geometry.Riemannian.IsMetricNorm
+      (I := I) (M := P.M) P.metric := by
+    intro x v
+    with_unfolding_all
+      exact
+        Geometry.Riemannian.tensor0SBundle_enorm_eq_riemannianBundle_enorm
+          (I := I) P.metric x v
+  dsimp only
+  intro hu n hnN
+  induction n with
+  | zero =>
+      intro a b ha hb r hr
+      have hU : 0 <= U := by
+        have hR : 0 <= R := (abs_nonneg r).trans hr
+        exact
+          (add_nonneg (Real.sqrt_nonneg _) (mul_nonneg hR hD)).trans hu
+      have hspeed :
+          Real.sqrt
+              (P.metric.inner p (u + r • a) (u + r • a)) <= U :=
+        localLaunchSpeed_le (I := I) P p u a ha hr hD hu
+      have hpair :=
+        intrinsic_jacobi_jet_pair_le_of_local (I := I) P hcomplete hconn p
+          (C0 := C 0) (U := U) (eps := 0) (delta := D) (A := A)
+          (hC 0) hAU (hN 0 (by omega)) u a b 0 r
+          hU hspeed (by norm_num)
+          (by
+            intro t ht
+            change Real.sqrt
+              (P.metric.inner
+                (intrinsicLaunch3 (I := I) P.metric hEnorm p u a b ((r, 0), t))
+                (intrinsicJetResidual
+                  (I := I) P.metric hEnorm p u a b 0 (r, t))
+                (intrinsicJetResidual
+                  (I := I) P.metric hEnorm p u a b 0 (r, t))) <= 0
+            rw [intrinsicJetResidual_zero (I := I) P.metric hEnorm p u a b r t]
+            simpa only [map_zero, Real.sqrt_zero] using
+              (le_refl (0 : Real)))
+          (by
+            change Real.sqrt
+              (P.metric.inner
+                (intrinsicLaunch3 (I := I) P.metric hEnorm p u a b ((r, 0), 0))
+                ((IntrinsicJacobiJetAtom.bJet 0).eval
+                  (I := I) P.metric hEnorm p u a b (r, 0))
+                ((IntrinsicJacobiJetAtom.bJet 0).eval
+                  (I := I) P.metric hEnorm p u a b (r, 0))) <= D
+            rw [IntrinsicJacobiJetAtom.b_jet_time_zero]
+            simpa only [map_zero, Real.sqrt_zero] using hD)
+          (by
+            change Real.sqrt
+              (P.metric.inner
+                (intrinsicLaunch3 (I := I) P.metric hEnorm p u a b ((r, 0), 0))
+                ((IntrinsicJacobiJetAtom.bTime 0).eval
+                  (I := I) P.metric hEnorm p u a b (r, 0))
+                ((IntrinsicJacobiJetAtom.bTime 0).eval
+                  (I := I) P.metric hEnorm p u a b (r, 0))) <= D
+            rw [IntrinsicJacobiJetAtom.b_time_zero]
+            let u0 : TangentSpace I p :=
+              show TangentSpace I p from u + r • a + (0 : Real) • b
+            change Real.sqrt
+              (P.metric.inner
+                (intrinsicGeodesic (I := I) P.metric hEnorm p u0 0) b b) <= D
+            rw [intrinsicGeodesic_zero
+              (I := I) P.metric hEnorm p u0]
+            exact hb)
+      have hrate : 0 <= jacobiJetGrowthRate C U := (jacobi_jet_growth_rate_pos C U).le
+      constructor
+      · intro k hk
+        have hk0 : k = 0 := Nat.eq_zero_of_le_zero hk
+        subst k
+        intro t ht
+        calc
+          Real.sqrt
+              (P.metric.inner
+                (intrinsicLaunch3 (I := I) P.metric hEnorm p u a b ((r, 0), t))
+                ((IntrinsicJacobiJetAtom.bJet 0).eval
+                  (I := I) P.metric hEnorm p u a b (r, t))
+                ((IntrinsicJacobiJetAtom.bJet 0).eval
+                  (I := I) P.metric hEnorm p u a b (r, t))) <=
+              gronwallBound D (jacobiJetGrowthRate C U) 0 t := by
+            change Real.sqrt
+              (P.metric.inner
+                (intrinsicLaunch3 (I := I) P.metric hEnorm p u a b ((r, 0), t))
+                (intrinsicLaunchJet
+                  (I := I) P.metric hEnorm p u a b 0 (r, t))
+                (intrinsicLaunchJet
+                  (I := I) P.metric hEnorm p u a b 0 (r, t))) <=
+                gronwallBound D (jacobiJetGrowthRate C U) 0 t
+            simpa only [jacobiJetGrowthRate] using hpair.1 t ht
+          _ <= gronwallBound D (jacobiJetGrowthRate C U) 0 1 :=
+            gronwallBound_mono hD (by norm_num) hrate ht.2
+          _ = jacobiJetBound C U D 0 := rfl
+      · intro k hk
+        have hk0 : k = 0 := Nat.eq_zero_of_le_zero hk
+        subst k
+        intro t ht
+        calc
+          Real.sqrt
+              (P.metric.inner
+                (intrinsicLaunch3 (I := I) P.metric hEnorm p u a b ((r, 0), t))
+                ((IntrinsicJacobiJetAtom.bTime 0).eval
+                  (I := I) P.metric hEnorm p u a b (r, t))
+                ((IntrinsicJacobiJetAtom.bTime 0).eval
+                  (I := I) P.metric hEnorm p u a b (r, t))) <=
+              gronwallBound D (jacobiJetGrowthRate C U) 0 t := by
+            change Real.sqrt
+              (P.metric.inner
+                (intrinsicLaunch3 (I := I) P.metric hEnorm p u a b ((r, 0), t))
+                (Geometry.Riemannian.Variation.covSnd
+                  (I := I) P.metric
+                  (fun s t => intrinsicLaunch3
+                    (I := I) P.metric hEnorm p u a b ((s, 0), t))
+                  (fun s t => intrinsicLaunchJet
+                    (I := I) P.metric hEnorm p u a b 0 (s, t)) r t)
+                (Geometry.Riemannian.Variation.covSnd
+                  (I := I) P.metric
+                  (fun s t => intrinsicLaunch3
+                    (I := I) P.metric hEnorm p u a b ((s, 0), t))
+                  (fun s t => intrinsicLaunchJet
+                    (I := I) P.metric hEnorm p u a b 0 (s, t)) r t)) <=
+                gronwallBound D (jacobiJetGrowthRate C U) 0 t
+            simpa only [jacobiJetGrowthRate] using hpair.2 t ht
+          _ <= gronwallBound D (jacobiJetGrowthRate C U) 0 1 :=
+            gronwallBound_mono hD (by norm_num) hrate ht.2
+          _ = jacobiJetBound C U D 0 := rfl
+  | succ n ih =>
+      intro a b ha hb r hr
+      have hU : 0 <= U := by
+        have hR : 0 <= R := (abs_nonneg r).trans hr
+        exact
+          (add_nonneg (Real.sqrt_nonneg _) (mul_nonneg hR hD)).trans hu
+      have hspeed :
+          Real.sqrt
+              (P.metric.inner p (u + r • a) (u + r • a)) <= U :=
+        localLaunchSpeed_le (I := I) P p u a ha hr hD hu
+      have hprev := ih (by omega) a b ha hb r hr
+      have hself := ih (by omega) a a ha ha r hr
+      have hcap : 0 <= jacobiJetBound C U D n :=
+        jacobi_jet_bound_nonneg C hD n
+      have heps : 0 <= jacobiJetForcingBound C U (jacobiJetBound C U D n) n :=
+        jacobi_jet_forcing_bound_nonneg C hC hU hcap n
+      have hres : forall t, t ∈ Ico (0 : Real) 1 ->
+          Real.sqrt
+              (P.metric.inner
+                (intrinsicLaunch3 (I := I) P.metric hEnorm p u a b ((r, 0), t))
+                (intrinsicJetResidual
+                  (I := I) P.metric hEnorm p u a b (n + 1) (r, t))
+                (intrinsicJetResidual
+                  (I := I) P.metric hEnorm p u a b (n + 1) (r, t))) <=
+            jacobiJetForcingBound C U (jacobiJetBound C U D n) n := by
+        intro t ht
+        rw [show intrinsicJetResidual
+              (I := I) P.metric hEnorm p u a b (n + 1) (r, t) =
+            (intrinsicJacobiResidualTerm (n + 1)).eval
+              (I := I) P.metric hEnorm p u a b (r, t) by
+          exact congrFun
+            (congrFun
+              (intrinsic_jacobi_residual_term_eval
+                (I := I) P.metric hEnorm p u a b (n + 1)) r) t]
+        have hqt : riemannianEDistOf (I := I) P.metric p
+            (intrinsicLaunch3 (I := I) P.metric hEnorm p u a b ((r, 0), t)) <=
+              ENNReal.ofReal A := by
+          have ht0 : (0 : Real) <= t := ht.1
+          have ht1 : t <= 1 := ht.2.le
+          have hlaunch :
+              intrinsicLaunch3 (I := I) P.metric hEnorm p u a b ((r, 0), t) =
+                intrinsicGeodesic (I := I) P.metric hEnorm p (u + r • a) t := by
+            simp only [intrinsicLaunch3, zero_smul, add_zero]
+          rw [hlaunch]
+          exact (intrinsicGeodesic_riemannianEDistOf_le (I := I) P hcomplete hconn
+            hEnorm p (u + r • a) hspeed ht0 ht1).trans
+            (ENNReal.ofReal_le_ofReal hAU)
+        apply CurvatureJetTerm.eval_le_at_local_order
+          (I := I) P.metric hEnorm p u a b N C hC
+          (jacobiJetAtomBound U (jacobiJetBound C U D n))
+          (fun atom => atom.atMost n) (A := A)
+          (fun k x v hk hx =>
+            HasCurvDerivBound.curv_op_n_le_local
+              (I := I) P p (hN k hk) x hx v)
+          (r, t) hqt
+        · intro atom hatom
+          have hbaseSelf :
+              intrinsicLaunch3 (I := I) P.metric hEnorm p u a b ((r, 0), t) =
+                intrinsicLaunch3 (I := I) P.metric hEnorm p u a a ((r, 0), t) := by
+            simp only [intrinsicLaunch3, zero_smul, add_zero]
+          cases atom with
+          | pathT =>
+              let u0 : TangentSpace I p :=
+                show TangentSpace I p from
+                  u + r • a + (0 : Real) • b
+              have hspeedSq :=
+                intrinsicGeodesic_speedSq_eq
+                  (I := I) P.metric hEnorm p u0 t
+              change Real.sqrt
+                  (P.metric.inner
+                    (intrinsicLaunch3
+                      (I := I) P.metric hEnorm p u a b ((r, 0), t))
+                    ((IntrinsicJacobiJetAtom.pathT).eval
+                      (I := I) P.metric hEnorm p u a b (r, t))
+                    ((IntrinsicJacobiJetAtom.pathT).eval
+                      (I := I) P.metric hEnorm p u a b (r, t))) <= U
+              rw [show P.metric.inner
+                    (intrinsicLaunch3
+                      (I := I) P.metric hEnorm p u a b ((r, 0), t))
+                    ((IntrinsicJacobiJetAtom.pathT).eval
+                      (I := I) P.metric hEnorm p u a b (r, t))
+                    ((IntrinsicJacobiJetAtom.pathT).eval
+                      (I := I) P.metric hEnorm p u a b (r, t)) =
+                  P.metric.inner p (u + r • a) (u + r • a) by
+                simp only [IntrinsicJacobiJetAtom.eval, intrinsicLaunch3, varSnd]
+                change P.metric.inner
+                    (intrinsicGeodesic (I := I) P.metric hEnorm p u0 t)
+                    (mfderiv 𝓘(Real, Real) I
+                      (fun v => intrinsicGeodesic
+                        (I := I) P.metric hEnorm p u0 v) t 1)
+                    (mfderiv 𝓘(Real, Real) I
+                      (fun v => intrinsicGeodesic
+                        (I := I) P.metric hEnorm p u0 v) t 1) =
+                  P.metric.inner p (u + r • a) (u + r • a)
+                have hfun :
+                    (fun v => intrinsicGeodesic
+                      (I := I) P.metric hEnorm p u0 v) =
+                      intrinsicGeodesic (I := I) P.metric hEnorm p u0 := rfl
+                rw [hfun, hspeedSq]
+                simp only [u0, zero_smul, add_zero]]
+              exact hspeed
+          | pathDt =>
+              rw [IntrinsicJacobiJetAtom.path_dt_zero]
+              simpa only [jacobiJetAtomBound, map_zero, Real.sqrt_zero] using
+                (le_refl (0 : Real))
+          | aJet k =>
+              rw [IntrinsicJacobiJetAtom.a_jet_eq_self]
+              rw [hbaseSelf]
+              simpa only [jacobiJetAtomBound] using hself.1 k hatom t ⟨ht.1, ht.2.le⟩
+          | aTime k =>
+              rw [IntrinsicJacobiJetAtom.a_time_eq_self]
+              rw [hbaseSelf]
+              simpa only [jacobiJetAtomBound] using hself.2 k hatom t ⟨ht.1, ht.2.le⟩
+          | bJet k =>
+              simpa only [jacobiJetAtomBound] using hprev.1 k hatom t ⟨ht.1, ht.2.le⟩
+          | bTime k =>
+              simpa only [jacobiJetAtomBound] using hprev.2 k hatom t ⟨ht.1, ht.2.le⟩
+        · exact (intrinsicJacobiResidualTerm.curvOrderAtMost (n + 1)).mono (by omega)
+        · exact intrinsic_jacobi_residual_term_all_atoms n
+      have hpair :=
+        intrinsic_jacobi_jet_pair_le_of_local (I := I) P hcomplete hconn p
+          (C0 := C 0) (U := U) (A := A)
+          (eps := jacobiJetForcingBound C U (jacobiJetBound C U D n) n) (delta := 0)
+          (hC 0) hAU (hN 0 (by omega)) u a b (n + 1) r
+          hU hspeed heps hres
+          (by
+            change Real.sqrt
+              (P.metric.inner
+                (intrinsicLaunch3 (I := I) P.metric hEnorm p u a b ((r, 0), 0))
+                ((IntrinsicJacobiJetAtom.bJet (n + 1)).eval
+                  (I := I) P.metric hEnorm p u a b (r, 0))
+                ((IntrinsicJacobiJetAtom.bJet (n + 1)).eval
+                  (I := I) P.metric hEnorm p u a b (r, 0))) <= 0
+            rw [IntrinsicJacobiJetAtom.b_jet_time_zero]
+            simpa only [map_zero, Real.sqrt_zero] using
+              (le_refl (0 : Real)))
+          (by
+            change Real.sqrt
+              (P.metric.inner
+                (intrinsicLaunch3 (I := I) P.metric hEnorm p u a b ((r, 0), 0))
+                ((IntrinsicJacobiJetAtom.bTime (n + 1)).eval
+                  (I := I) P.metric hEnorm p u a b (r, 0))
+                ((IntrinsicJacobiJetAtom.bTime (n + 1)).eval
+                  (I := I) P.metric hEnorm p u a b (r, 0))) <= 0
+            rw [IntrinsicJacobiJetAtom.b_time_succ_time_zero]
+            simpa only [map_zero, Real.sqrt_zero] using
+              (le_refl (0 : Real)))
+      have hrate : 0 <= jacobiJetGrowthRate C U := (jacobi_jet_growth_rate_pos C U).le
+      have hnewPos : forall t, t ∈ Icc (0 : Real) 1 ->
+          Real.sqrt
+              (P.metric.inner
+                (intrinsicLaunch3 (I := I) P.metric hEnorm p u a b ((r, 0), t))
+                ((IntrinsicJacobiJetAtom.bJet (n + 1)).eval
+                  (I := I) P.metric hEnorm p u a b (r, t))
+                ((IntrinsicJacobiJetAtom.bJet (n + 1)).eval
+                  (I := I) P.metric hEnorm p u a b (r, t))) <=
+            jacobiJetBound C U D (n + 1) := by
+        intro t ht
+        calc
+          Real.sqrt
+              (P.metric.inner
+                (intrinsicLaunch3 (I := I) P.metric hEnorm p u a b ((r, 0), t))
+                ((IntrinsicJacobiJetAtom.bJet (n + 1)).eval
+                  (I := I) P.metric hEnorm p u a b (r, t))
+                ((IntrinsicJacobiJetAtom.bJet (n + 1)).eval
+                  (I := I) P.metric hEnorm p u a b (r, t))) <=
+              gronwallBound 0 (jacobiJetGrowthRate C U)
+                (jacobiJetForcingBound C U (jacobiJetBound C U D n) n) t := by
+            change Real.sqrt
+              (P.metric.inner
+                (intrinsicLaunch3 (I := I) P.metric hEnorm p u a b ((r, 0), t))
+                (intrinsicLaunchJet
+                  (I := I) P.metric hEnorm p u a b (n + 1) (r, t))
+                (intrinsicLaunchJet
+                  (I := I) P.metric hEnorm p u a b (n + 1) (r, t))) <=
+                gronwallBound 0 (jacobiJetGrowthRate C U)
+                  (jacobiJetForcingBound C U (jacobiJetBound C U D n) n) t
+            simpa only [jacobiJetGrowthRate] using hpair.1 t ht
+          _ <= gronwallBound 0 (jacobiJetGrowthRate C U)
+              (jacobiJetForcingBound C U (jacobiJetBound C U D n) n) 1 :=
+            gronwallBound_mono (by norm_num) heps hrate ht.2
+          _ <= jacobiJetBound C U D (n + 1) :=
+            jacobi_jet_bound_step_le C U D n
+      have hnewTime : forall t, t ∈ Icc (0 : Real) 1 ->
+          Real.sqrt
+              (P.metric.inner
+                (intrinsicLaunch3 (I := I) P.metric hEnorm p u a b ((r, 0), t))
+                ((IntrinsicJacobiJetAtom.bTime (n + 1)).eval
+                  (I := I) P.metric hEnorm p u a b (r, t))
+                ((IntrinsicJacobiJetAtom.bTime (n + 1)).eval
+                  (I := I) P.metric hEnorm p u a b (r, t))) <=
+            jacobiJetBound C U D (n + 1) := by
+        intro t ht
+        calc
+          Real.sqrt
+              (P.metric.inner
+                (intrinsicLaunch3 (I := I) P.metric hEnorm p u a b ((r, 0), t))
+                ((IntrinsicJacobiJetAtom.bTime (n + 1)).eval
+                  (I := I) P.metric hEnorm p u a b (r, t))
+                ((IntrinsicJacobiJetAtom.bTime (n + 1)).eval
+                  (I := I) P.metric hEnorm p u a b (r, t))) <=
+              gronwallBound 0 (jacobiJetGrowthRate C U)
+                (jacobiJetForcingBound C U (jacobiJetBound C U D n) n) t := by
+            change Real.sqrt
+              (P.metric.inner
+                (intrinsicLaunch3 (I := I) P.metric hEnorm p u a b ((r, 0), t))
+                (Geometry.Riemannian.Variation.covSnd
+                  (I := I) P.metric
+                  (fun s t => intrinsicLaunch3
+                    (I := I) P.metric hEnorm p u a b ((s, 0), t))
+                  (fun s t => intrinsicLaunchJet
+                    (I := I) P.metric hEnorm p u a b (n + 1) (s, t)) r t)
+                (Geometry.Riemannian.Variation.covSnd
+                  (I := I) P.metric
+                  (fun s t => intrinsicLaunch3
+                    (I := I) P.metric hEnorm p u a b ((s, 0), t))
+                  (fun s t => intrinsicLaunchJet
+                    (I := I) P.metric hEnorm p u a b (n + 1) (s, t)) r t)) <=
+                gronwallBound 0 (jacobiJetGrowthRate C U)
+                  (jacobiJetForcingBound C U (jacobiJetBound C U D n) n) t
+            simpa only [jacobiJetGrowthRate] using hpair.2 t ht
+          _ <= gronwallBound 0 (jacobiJetGrowthRate C U)
+              (jacobiJetForcingBound C U (jacobiJetBound C U D n) n) 1 :=
+            gronwallBound_mono (by norm_num) heps hrate ht.2
+          _ <= jacobiJetBound C U D (n + 1) :=
+            jacobi_jet_bound_step_le C U D n
+      constructor
+      · intro k hk t ht
+        rcases Nat.lt_or_eq_of_le hk with hklt | rfl
+        · exact (hprev.1 k (Nat.lt_succ_iff.mp hklt) t ht).trans
+            (jacobi_jet_bound_le_succ C U D n)
+        · exact hnewPos t ht
+      · intro k hk t ht
+        rcases Nat.lt_or_eq_of_le hk with hklt | rfl
+        · exact (hprev.2 k (Nat.lt_succ_iff.mp hklt) t ht).trans
+            (jacobi_jet_bound_le_succ C U D n)
+        · exact hnewTime t ht
+theorem intrinsic_metric_jet_le_of_local_order
+    (P : PointedRiemannianManifold.{u, uE, uH} (I := I))
+    (hcomplete : MetricComplete (I := I) P)
+    (hconn : letI : TopologicalSpace P.M := P.topology; ConnectedSpace P.M)
+    (p : P.M) {A : Real}
+    (N : Nat) (C : Nat -> Real) (hC : forall k : Nat, 0 <= C k)
+    (hN : forall k : Nat, k <= N ->
+      HasLocalCurvDerivBound (I := I) P p A k (C k))
+    (u a b : E) (n : Nat) {U D : Real} (hD : 0 ≤ D) (hAU : U ≤ A) :
+    letI : TopologicalSpace P.M := P.topology
+    letI : ChartedSpace H P.M := P.charted
+    letI : IsManifold I ∞ P.M := P.smooth
+    letI : IsManifold I 1 P.M :=
+      IsManifold.of_le (I := I) (M := P.M) (n := ∞) (by decide)
+    letI : SigmaCompactSpace P.M := P.sigmaCompact
+    letI : T2Space P.M := P.t2
+    letI : T2Space (TangentBundle I P.M) := P.t2TangentBundle
+    letI : RiemannianBundle (fun x : P.M => TangentSpace I x) :=
+      P.riemBundle (I := I)
+    letI : (x : P.M) → InnerProductSpace Real (TangentSpace I x) :=
+      P.riemInner (I := I)
+    letI : IsContinuousRiemannianBundle E
+        (fun x : P.M => TangentSpace I x) :=
+      P.riemBundle_cont (I := I)
+    letI : EMetricSpace P.M := P.emetricSpace (I := I)
+    letI : CompleteSpace P.M :=
+      MetricComplete.complete (I := I) P hcomplete
+    letI : ConnectedSpace P.M := hconn
+    let hEnorm : ∀ (x : P.M) (v : TangentSpace I x),
+        ‖v‖ₑ = ENNReal.ofReal
+          (Real.sqrt (P.metric.inner x v v)) := by
+      intro x v
+      with_unfolding_all
+        exact
+          Geometry.Riemannian.tensor0SBundle_enorm_eq_riemannianBundle_enorm
+            (I := I) P.metric x v
+    n + 1 ≤ N →
+    Real.sqrt (P.metric.inner p u u) ≤ U →
+    Real.sqrt (P.metric.inner p a a) ≤ D →
+    Real.sqrt (P.metric.inner p b b) ≤ D →
+    |intrinsicMetricJet (I := I) P.metric hEnorm p u a b n 0| ≤
+      2 ^ n * jacobiJetBound C U D n ^ 2 := by
+  let _ : TopologicalSpace P.M := P.topology
+  let _ : ChartedSpace H P.M := P.charted
+  let _ : IsManifold I ∞ P.M := P.smooth
+  let _ : IsManifold I 1 P.M :=
+    IsManifold.of_le (I := I) (M := P.M) (n := ∞) (by decide)
+  let _ : SigmaCompactSpace P.M := P.sigmaCompact
+  let _ : T2Space P.M := P.t2
+  let _ : T2Space (TangentBundle I P.M) := P.t2TangentBundle
+  let _ : RiemannianBundle (fun x : P.M => TangentSpace I x) :=
+    P.riemBundle (I := I)
+  let _ : (x : P.M) → InnerProductSpace Real (TangentSpace I x) :=
+    P.riemInner (I := I)
+  let _ : IsContinuousRiemannianBundle E
+      (fun x : P.M => TangentSpace I x) :=
+    P.riemBundle_cont (I := I)
+  let _ : EMetricSpace P.M := P.emetricSpace (I := I)
+  let _ : CompleteSpace P.M :=
+    MetricComplete.complete (I := I) P hcomplete
+  let _ : ConnectedSpace P.M := hconn
+  let hEnorm : ∀ (x : P.M) (v : TangentSpace I x),
+      ‖v‖ₑ = ENNReal.ofReal
+        (Real.sqrt (P.metric.inner x v v)) := by
+    intro x v
+    with_unfolding_all
+      exact
+        Geometry.Riemannian.tensor0SBundle_enorm_eq_riemannianBundle_enorm
+          (I := I) P.metric x v
+  dsimp only
+  intro hnN hu ha hb
+  have hjets :=
+    intrinsic_jacobi_jets_le_local_order (I := I) P hcomplete hconn p
+      (R := 0) (U := U) (D := D) (A := A) hD hAU N C hC hN u
+      (by simpa using hu)
+      n hnN a b ha hb 0 (by simp)
+  apply intrinsic_metric_jet_abs_le (I := I) P.metric hEnorm p u a b n 0
+    (jacobiJetBound C U D n) (jacobi_jet_bound_nonneg C hD n)
+  intro k hk
+  simpa only [IntrinsicJacobiJetAtom.eval, intrinsicLaunchJet] using
+    hjets.1 k hk 1 (by constructor <;> norm_num)
+
+theorem intrinsic_frame_metric_iterated_fderiv_norm_le_local_order
+    (P : PointedRiemannianManifold.{u, uE, uH} (I := I))
+    (hcomplete : MetricComplete (I := I) P)
+    (hconn : letI : TopologicalSpace P.M := P.topology; ConnectedSpace P.M)
+    (p : P.M) {A : Real}
+    (N : Nat) (C : Nat -> Real) (hC : forall k : Nat, 0 <= C k)
+    (hN : forall k : Nat, k <= N ->
+      HasLocalCurvDerivBound (I := I) P p A k (C k))
+    (z : E) (n : Nat) (U : Real) (hAU : U ≤ A)
+    (hzU : ‖z‖ ≤ U) :
+    letI : TopologicalSpace P.M := P.topology
+    letI : ChartedSpace H P.M := P.charted
+    letI : IsManifold I ∞ P.M := P.smooth
+    letI : IsManifold I 1 P.M :=
+      IsManifold.of_le (I := I) (M := P.M) (n := ∞) (by decide)
+    letI : SigmaCompactSpace P.M := P.sigmaCompact
+    letI : T2Space P.M := P.t2
+    letI : T2Space (TangentBundle I P.M) := P.t2TangentBundle
+    letI : RiemannianBundle (fun x : P.M => TangentSpace I x) :=
+      P.riemBundle (I := I)
+    letI : (x : P.M) → InnerProductSpace Real (TangentSpace I x) :=
+      P.riemInner (I := I)
+    letI : IsContinuousRiemannianBundle E
+        (fun x : P.M => TangentSpace I x) :=
+      P.riemBundle_cont (I := I)
+    letI : EMetricSpace P.M := P.emetricSpace (I := I)
+    letI : CompleteSpace P.M :=
+      MetricComplete.complete (I := I) P hcomplete
+    letI : ConnectedSpace P.M := hconn
+    let hEnorm : ∀ (x : P.M) (v : TangentSpace I x),
+        ‖v‖ₑ = ENNReal.ofReal
+          (Real.sqrt (P.metric.inner x v v)) := by
+      intro x v
+      with_unfolding_all
+        exact
+          Geometry.Riemannian.tensor0SBundle_enorm_eq_riemannianBundle_enorm
+            (I := I) P.metric x v
+    n + 1 ≤ N →
+      ContDiffAt Real ∞
+        (intrinsicFrameMetric (I := I) P.metric hEnorm p) z →
+      ‖iteratedFDeriv Real n
+          (intrinsicFrameMetric (I := I) P.metric hEnorm p) z‖ ≤
+        ContinuousMultilinearMap.polarConst n *
+          (2 * (2 ^ n * jacobiJetBound C U 1 n ^ 2)) := by
+  let _ : TopologicalSpace P.M := P.topology
+  let _ : ChartedSpace H P.M := P.charted
+  let _ : IsManifold I ∞ P.M := P.smooth
+  let _ : IsManifold I 1 P.M :=
+    IsManifold.of_le (I := I) (M := P.M) (n := ∞) (by decide)
+  let _ : SigmaCompactSpace P.M := P.sigmaCompact
+  let _ : T2Space P.M := P.t2
+  let _ : T2Space (TangentBundle I P.M) := P.t2TangentBundle
+  let _ : RiemannianBundle (fun x : P.M => TangentSpace I x) :=
+    P.riemBundle (I := I)
+  let _ : (x : P.M) → InnerProductSpace Real (TangentSpace I x) :=
+    P.riemInner (I := I)
+  let _ : IsContinuousRiemannianBundle E
+      (fun x : P.M => TangentSpace I x) :=
+    P.riemBundle_cont (I := I)
+  let _ : EMetricSpace P.M := P.emetricSpace (I := I)
+  let _ : CompleteSpace P.M :=
+    MetricComplete.complete (I := I) P hcomplete
+  let _ : ConnectedSpace P.M := hconn
+  let hEnorm : ∀ (x : P.M) (v : TangentSpace I x),
+      ‖v‖ₑ = ENNReal.ofReal
+        (Real.sqrt (P.metric.inner x v v)) := by
+    intro x v
+    with_unfolding_all
+      exact
+        Geometry.Riemannian.tensor0SBundle_enorm_eq_riemannianBundle_enorm
+          (I := I) P.metric x v
+  dsimp only
+  intro hnN hsmooth
+  let A :=
+    iteratedFDeriv Real n
+      (intrinsicFrameMetric (I := I) P.metric hEnorm p) z
+  let S : Real := 2 ^ n * jacobiJetBound C U 1 n ^ 2
+  have hS : 0 ≤ S := by
+    exact mul_nonneg (by positivity) (sq_nonneg _)
+  have htwoS : 0 ≤ 2 * S := mul_nonneg (by norm_num) hS
+  have hAsymm : A.IsSymmetric := by
+    intro σ
+    exact iterFDeriv_perm hsmooth σ
+  have hdiag :
+      ∀ a : E, ‖a‖ ≤ 1 → ‖A (fun _ => a)‖ ≤ 2 * S := by
+    intro a ha
+    let B : E →L[Real] E →L[Real] Real := A (fun _ => a)
+    have hBsymm : ∀ v w : E, B v w = B w v := by
+      intro v w
+      have hmetric :
+          (fun y : E =>
+              intrinsicFrameMetric (I := I) P.metric hEnorm p y v w) =
+            fun y : E =>
+              intrinsicFrameMetric (I := I) P.metric hEnorm p y w v := by
+        funext y
+        rw [intrinsicFrameMetric_apply, intrinsicFrameMetric_apply]
+        exact P.metric.symm _ _ _
+      calc
+        B v w =
+            iteratedFDeriv Real n
+              (fun y : E =>
+                intrinsicFrameMetric (I := I) P.metric hEnorm p y v w) z
+              (fun _ => a) := by
+          exact (iterFDeriv_apply₂ hsmooth n v w (fun _ => a)).symm
+        _ = iteratedFDeriv Real n
+              (fun y : E =>
+                intrinsicFrameMetric (I := I) P.metric hEnorm p y w v) z
+              (fun _ => a) := by rw [hmetric]
+        _ = B w v :=
+          iterFDeriv_apply₂ hsmooth n w v (fun _ => a)
+    have hBdiag : ∀ b : E, ‖b‖ ≤ 1 → |B b b| ≤ S := by
+      intro b hb
+      have hzu :
+          Real.sqrt
+              (P.metric.inner p
+                (normalFrame (I := I) P.metric p z)
+                (normalFrame (I := I) P.metric p z)) ≤ U := by
+        simpa only [normalFrame_sqrt] using hzU
+      have hau :
+          Real.sqrt
+              (P.metric.inner p
+                (normalFrame (I := I) P.metric p a)
+                (normalFrame (I := I) P.metric p a)) ≤ 1 := by
+        simpa only [normalFrame_sqrt] using ha
+      have hbu :
+          Real.sqrt
+              (P.metric.inner p
+                (normalFrame (I := I) P.metric p b)
+                (normalFrame (I := I) P.metric p b)) ≤ 1 := by
+        simpa only [normalFrame_sqrt] using hb
+      have hjet :=
+        intrinsic_metric_jet_le_of_local_order (I := I) P hcomplete hconn p N C hC hN
+          (normalFrame (I := I) P.metric p z)
+          (normalFrame (I := I) P.metric p a)
+          (normalFrame (I := I) P.metric p b) n
+          (U := U) (D := 1) (by norm_num) hAU hnN hzu hau hbu
+      change
+        |iteratedFDeriv Real n
+            (intrinsicFrameMetric (I := I) P.metric hEnorm p) z
+            (fun _ => a) b b| ≤ S
+      rw [intrinsicMetric_diag_jet (I := I) P.metric hEnorm p z a b n
+        hsmooth]
+      exact hjet
+    have hB :=
+      ContinuousLinearMap.opNorm_le_diag2 B hBsymm hS hBdiag
+    simpa only [B] using hB
+  have hbound :=
+    ContinuousMultilinearMap.opNorm_le_diag_unit
+      hAsymm htwoS hdiag
+  simpa only [A, S] using hbound
+omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+theorem exists_forall_le_hasLocalCurvDerivBound_of_curvDerivNorm_eventually
+    (X : PointedRiemannianSeq.{u, uE, uH} (I := I))
+    (hjets : ∀ A : Real, 0 < A → ∀ p : Nat, ∃ C : Real, 0 ≤ C ∧
+      ∀ᶠ i in Filter.atTop,
+        let _ : TopologicalSpace (X.obj i).M := (X.obj i).topology
+        let _ : ChartedSpace H (X.obj i).M := (X.obj i).charted
+        let _ : IsManifold I ∞ (X.obj i).M := (X.obj i).smooth
+        let _ : T2Space (X.obj i).M := (X.obj i).t2
+        let _ : SigmaCompactSpace (X.obj i).M := (X.obj i).sigmaCompact
+        ∀ x : (X.obj i).M,
+          riemannianEDistOf (I := I) (X.obj i).metric (X.obj i).basepoint x ≤
+            ENNReal.ofReal A → curvDerivNorm (I := I) p (X.obj i).metric x ≤ C)
+    (A : Real) (hA : 0 < A) (N : Nat) :
+    ∃ C : Nat → Real, (∀ k : Nat, 0 ≤ C k) ∧
+      ∀ᶠ i in Filter.atTop,
+        ∀ k : Nat, k ≤ N →
+          HasLocalCurvDerivBound (I := I) (X.obj i) (X.obj i).basepoint A k (C k) := by
+  classical
+  choose C hC hCbound using fun k : Nat => hjets A hA k
+  refine ⟨C, hC, ?_⟩
+  have hsta : ∀ᶠ i in Filter.atTop,
+      ∀ k ∈ Finset.range (N + 1),
+        HasLocalCurvDerivBound (I := I) (X.obj i) (X.obj i).basepoint A k (C k) := by
+    rw [Filter.eventually_all_finset]
+    intro k _
+    exact hCbound k
+  refine hsta.mono fun i hi k hk => hi k ?_
+  exact Finset.mem_range.mpr (Nat.lt_succ_of_le hk)
+theorem exists_eventually_intrinsicFrameMetric_iteratedFDeriv_norm_le_of_curvDerivNorm_eventually
+    (X : PointedRiemannianSeq.{u, uE, uH} (I := I))
+    (hcomplete : SeqMetricComplete (I := I) X)
+    (hconn : ∀ i : Nat,
+      letI : TopologicalSpace (X.obj i).M := (X.obj i).topology
+      ConnectedSpace (X.obj i).M)
+    (hjets : ∀ A : Real, 0 < A → ∀ p : Nat, ∃ C : Real, 0 ≤ C ∧
+      ∀ᶠ i in Filter.atTop,
+        let _ : TopologicalSpace (X.obj i).M := (X.obj i).topology
+        let _ : ChartedSpace H (X.obj i).M := (X.obj i).charted
+        let _ : IsManifold I ∞ (X.obj i).M := (X.obj i).smooth
+        let _ : T2Space (X.obj i).M := (X.obj i).t2
+        let _ : SigmaCompactSpace (X.obj i).M := (X.obj i).sigmaCompact
+        ∀ x : (X.obj i).M,
+          riemannianEDistOf (I := I) (X.obj i).metric (X.obj i).basepoint x ≤
+            ENNReal.ofReal A → curvDerivNorm (I := I) p (X.obj i).metric x ≤ C)
+    (A : Real) (hA : 0 < A) (n : Nat) {U : Real} (hUA : U ≤ A) :
+    ∃ Cb : Real, 0 ≤ Cb ∧
+      ∀ᶠ i in Filter.atTop,
+        letI : TopologicalSpace (X.obj i).M := (X.obj i).topology
+        letI : ChartedSpace H (X.obj i).M := (X.obj i).charted
+        letI : IsManifold I ∞ (X.obj i).M := (X.obj i).smooth
+        letI : IsManifold I 1 (X.obj i).M :=
+          IsManifold.of_le (I := I) (M := (X.obj i).M) (n := ∞) (by decide)
+        letI : SigmaCompactSpace (X.obj i).M := (X.obj i).sigmaCompact
+        letI : T2Space (X.obj i).M := (X.obj i).t2
+        letI : T2Space (TangentBundle I (X.obj i).M) := (X.obj i).t2TangentBundle
+        letI : RiemannianBundle (fun x : (X.obj i).M => TangentSpace I x) :=
+          (X.obj i).riemBundle (I := I)
+        letI : (x : (X.obj i).M) → InnerProductSpace Real (TangentSpace I x) :=
+          (X.obj i).riemInner (I := I)
+        letI : IsContinuousRiemannianBundle E
+            (fun x : (X.obj i).M => TangentSpace I x) :=
+          (X.obj i).riemBundle_cont (I := I)
+        letI : EMetricSpace (X.obj i).M := (X.obj i).emetricSpace (I := I)
+        letI : CompleteSpace (X.obj i).M :=
+          MetricComplete.complete (I := I) (X.obj i) (hcomplete.complete i)
+        letI : ConnectedSpace (X.obj i).M := hconn i
+        let hEnorm : ∀ (x : (X.obj i).M) (v : TangentSpace I x),
+            ‖v‖ₑ = ENNReal.ofReal
+              (Real.sqrt ((X.obj i).metric.inner x v v)) := by
+          intro x v
+          with_unfolding_all
+            exact
+              Geometry.Riemannian.tensor0SBundle_enorm_eq_riemannianBundle_enorm
+                (I := I) (X.obj i).metric x v
+        ∀ z : E, ‖z‖ ≤ U →
+          ContDiffAt Real ∞
+            (intrinsicFrameMetric (I := I) (X.obj i).metric hEnorm
+              (X.obj i).basepoint) z →
+          ‖iteratedFDeriv Real n
+            (intrinsicFrameMetric (I := I) (X.obj i).metric hEnorm
+              (X.obj i).basepoint) z‖ ≤ Cb := by
+  classical
+  obtain ⟨C, hC, hsta⟩ :=
+    exists_forall_le_hasLocalCurvDerivBound_of_curvDerivNorm_eventually
+      (I := I) X hjets A hA (n + 1)
+  refine ⟨ContinuousMultilinearMap.polarConst n *
+      (2 * (2 ^ n * jacobiJetBound C U 1 n ^ 2)), ?_, ?_⟩
+  · exact mul_nonneg (ContinuousMultilinearMap.polarConst_nonneg n)
+      (mul_nonneg (by norm_num)
+        (mul_nonneg (pow_nonneg (by norm_num) n) (sq_nonneg _)))
+  · refine hsta.mono fun i hi => ?_
+    let _ : TopologicalSpace (X.obj i).M := (X.obj i).topology
+    let _ : ChartedSpace H (X.obj i).M := (X.obj i).charted
+    let _ : IsManifold I ∞ (X.obj i).M := (X.obj i).smooth
+    let _ : IsManifold I 1 (X.obj i).M :=
+      IsManifold.of_le (I := I) (M := (X.obj i).M) (n := ∞) (by decide)
+    let _ : SigmaCompactSpace (X.obj i).M := (X.obj i).sigmaCompact
+    let _ : T2Space (X.obj i).M := (X.obj i).t2
+    let _ : T2Space (TangentBundle I (X.obj i).M) := (X.obj i).t2TangentBundle
+    let _ : RiemannianBundle (fun x : (X.obj i).M => TangentSpace I x) :=
+      (X.obj i).riemBundle (I := I)
+    let _ : (x : (X.obj i).M) → InnerProductSpace Real (TangentSpace I x) :=
+      (X.obj i).riemInner (I := I)
+    let _ : IsContinuousRiemannianBundle E
+        (fun x : (X.obj i).M => TangentSpace I x) :=
+      (X.obj i).riemBundle_cont (I := I)
+    let _ : EMetricSpace (X.obj i).M := (X.obj i).emetricSpace (I := I)
+    let _ : CompleteSpace (X.obj i).M :=
+      MetricComplete.complete (I := I) (X.obj i) (hcomplete.complete i)
+    let _ : ConnectedSpace (X.obj i).M := hconn i
+    intro hEnorm z hz hcd
+    exact intrinsic_frame_metric_iterated_fderiv_norm_le_local_order (I := I)
+      (X.obj i) (hcomplete.complete i) (hconn i) (X.obj i).basepoint
+      (n + 1) C hC (fun k hk => hi k hk) z n U hUA hz
+      (le_refl (n + 1)) hcd
 end CheegerGromovCompactness
 end DifferentialGeometry

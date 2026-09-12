@@ -1,5 +1,8 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.Flow
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.LocalRegularity
+import Mathlib.MeasureTheory.Integral.IntervalIntegral.Periodic
+import Mathlib.MeasureTheory.Integral.DominatedConvergence
+import Mathlib.Topology.Order.IntermediateValue
 import Mathlib.Analysis.SpecialFunctions.Integrals.Basic
 
 
@@ -24,6 +27,138 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 
 include hT2 hCompact hConnected hBoundary
 
+omit [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E] [CompleteSpace E]
+  [TopologicalSpace H] [TopologicalSpace Q] [ChartedSpace H Q] [IsManifold I ∞ Q]
+  [SigmaCompactSpace Q] hT2 hCompact hConnected hBoundary in
+theorem le_of_arclength_lipschitz_integral_bound {u v : ℝ → ℝ} {x₀ K ell lam : ℝ}
+    (hK : 0 < K) (hell : 0 < ell) (hlam : 0 ≤ lam)
+    (hucont : ContinuousOn u (Icc x₀ (x₀ + 1)))
+    (hvcont : ContinuousOn v (Icc x₀ (x₀ + 1)))
+    (hvnn : ∀ x ∈ Icc x₀ (x₀ + 1), 0 ≤ v x)
+    (hunonneg : ∀ x ∈ Icc x₀ (x₀ + 1), 0 ≤ u x)
+    (hslope : ∀ x, x₀ ≤ x → x ≤ x₀ + 1 →
+      |u x - u x₀| ≤ K * ∫ z in x₀..x, v z)
+    (hmass : (∫ z in x₀..(x₀ + 1), u z * v z) = lam)
+    (hL : ell ≤ ∫ z in x₀..(x₀ + 1), v z) :
+    u x₀ ≤ 2 * lam / ell + 2 * Real.sqrt (K * lam) := by
+  have hx1 : x₀ ≤ x₀ + 1 := by linarith
+  have hLu : uIcc x₀ (x₀ + 1) = Icc x₀ (x₀ + 1) := uIcc_of_le hx1
+  have hvcont' : ContinuousOn v (uIcc x₀ (x₀ + 1)) := by rw [hLu]; exact hvcont
+  have hucont' : ContinuousOn u (uIcc x₀ (x₀ + 1)) := by rw [hLu]; exact hucont
+  have hLint : IntervalIntegrable v volume x₀ (x₀ + 1) := hvcont'.intervalIntegrable
+  have hFc : ContinuousOn (fun x => ∫ z in x₀..x, v z) (Icc x₀ (x₀ + 1)) := by
+    rw [← hLu]
+    exact intervalIntegral.continuousOn_primitive_interval' hLint left_mem_uIcc
+  rcases le_or_gt (u x₀) 0 with hm | hm
+  · have h1 : 0 ≤ 2 * lam / ell := by positivity
+    have h2 : 0 ≤ 2 * Real.sqrt (K * lam) := by
+      have : 0 ≤ K * lam := mul_nonneg hK.le hlam
+      positivity
+    linarith
+  set L := ∫ z in x₀..(x₀ + 1), v z with hLdef
+  have hLpos : 0 < L := lt_of_lt_of_le hell hL
+  have hmem : min L (u x₀ / (2 * K)) ∈
+      Icc ((fun x => ∫ z in x₀..x, v z) x₀) ((fun x => ∫ z in x₀..x, v z) (x₀ + 1)) := by
+    have h0 : (fun x => ∫ z in x₀..x, v z) x₀ = 0 := intervalIntegral.integral_same
+    have h1 : (fun x => ∫ z in x₀..x, v z) (x₀ + 1) = L := rfl
+    rw [h0, h1]
+    exact ⟨le_min hLpos.le (by positivity), min_le_left _ _⟩
+  obtain ⟨ξ, hξ, hξeq⟩ := intermediate_value_Icc hx1 hFc hmem
+  have hξeq' : (∫ w in x₀..ξ, v w) = min L (u x₀ / (2 * K)) := hξeq
+  have hξ1 : x₀ ≤ ξ := hξ.1
+  have hξ2 : ξ ≤ x₀ + 1 := hξ.2
+  have hsub : Icc x₀ ξ ⊆ Icc x₀ (x₀ + 1) := Icc_subset_Icc le_rfl hξ2
+  have hmono : ∀ (f : ℝ → ℝ), ContinuousOn f (Icc x₀ (x₀ + 1)) →
+      IntervalIntegrable f volume x₀ ξ := by
+    intro f hf
+    have : ContinuousOn f (uIcc x₀ ξ) := by rw [uIcc_of_le hξ1]; exact hf.mono hsub
+    exact this.intervalIntegrable
+  have hFmono : ∀ z ∈ Icc x₀ ξ, (∫ w in x₀..z, v w) ≤ min L (u x₀ / (2 * K)) := by
+    intro z hz
+    have hle : (∫ w in x₀..z, v w) ≤ ∫ w in x₀..ξ, v w :=
+      intervalIntegral.integral_mono_interval le_rfl hz.1 hz.2
+        ((ae_restrict_iff' measurableSet_Ioc).mpr
+          (ae_of_all _ (fun w hw => hvnn w ⟨hw.1.le, hw.2.trans hξ2⟩)))
+        (hmono v hvcont)
+    rw [hξeq'] at hle
+    exact hle
+  have hpt : ∀ z ∈ Icc x₀ ξ, u x₀ - K * min L (u x₀ / (2 * K)) ≤ u z := by
+    intro z hz
+    have h := hslope z hz.1 (hz.2.trans hξ2)
+    have h2 : K * (∫ w in x₀..z, v w) ≤ K * min L (u x₀ / (2 * K)) :=
+      mul_le_mul_of_nonneg_left (hFmono z hz) hK.le
+    have habs : |u x₀ - u z| ≤ K * min L (u x₀ / (2 * K)) := by
+      rw [abs_sub_comm]; exact h.trans h2
+    linarith [le_abs_self (u x₀ - u z)]
+  have hhalf : u x₀ / 2 ≤ u x₀ - K * min L (u x₀ / (2 * K)) := by
+    have hq := min_le_right L (u x₀ / (2 * K))
+    have h2K : (0 : ℝ) < 2 * K := by positivity
+    have h1 : min L (u x₀ / (2 * K)) * (2 * K) ≤ u x₀ := by
+      calc min L (u x₀ / (2 * K)) * (2 * K) ≤ (u x₀ / (2 * K)) * (2 * K) :=
+            mul_le_mul_of_nonneg_right hq h2K.le
+        _ = u x₀ := by field_simp
+    nlinarith [h1]
+  have hint_uv : IntervalIntegrable (fun z => u z * v z) volume x₀ ξ :=
+    hmono _ (hucont.mul hvcont)
+  have hint_tail : IntervalIntegrable (fun z => u z * v z) volume ξ (x₀ + 1) := by
+    have hsub' : Icc ξ (x₀ + 1) ⊆ Icc x₀ (x₀ + 1) := Icc_subset_Icc hξ1 le_rfl
+    have : ContinuousOn (fun z => u z * v z) (uIcc ξ (x₀ + 1)) := by
+      rw [uIcc_of_le hξ2]
+      exact (hucont.mul hvcont).mono hsub'
+    exact this.intervalIntegrable
+  have hsplit : (∫ z in x₀..ξ, u z * v z) + (∫ z in ξ..(x₀ + 1), u z * v z) = lam := by
+    rw [intervalIntegral.integral_add_adjacent_intervals hint_uv hint_tail, hmass]
+  have htail : 0 ≤ ∫ z in ξ..(x₀ + 1), u z * v z :=
+    intervalIntegral.integral_nonneg hξ2 (fun z hz =>
+      mul_nonneg (hunonneg z (Icc_subset_Icc hξ1 le_rfl hz))
+        (hvnn z (Icc_subset_Icc hξ1 le_rfl hz)))
+  have hmain : (u x₀ / 2) * min L (u x₀ / (2 * K)) ≤ lam := by
+    have hc : IntervalIntegrable (fun z => (u x₀ - K * min L (u x₀ / (2 * K))) * v z)
+        volume x₀ ξ := hmono _ (continuousOn_const.mul hvcont)
+    have hmono1 : (∫ z in x₀..ξ, (u x₀ - K * min L (u x₀ / (2 * K))) * v z) ≤
+        ∫ z in x₀..ξ, u z * v z :=
+      intervalIntegral.integral_mono_on hξ1 hc hint_uv
+        (fun z hz => mul_le_mul_of_nonneg_right (hpt z hz) (hvnn z (hsub hz)))
+    have hconst : (∫ z in x₀..ξ, (u x₀ - K * min L (u x₀ / (2 * K))) * v z) =
+        (u x₀ - K * min L (u x₀ / (2 * K))) * min L (u x₀ / (2 * K)) := by
+      rw [intervalIntegral.integral_const_mul, hξeq']
+    have hstep : (u x₀ - K * min L (u x₀ / (2 * K))) * min L (u x₀ / (2 * K)) ≤
+        ∫ z in x₀..ξ, u z * v z := by rw [← hconst]; exact hmono1
+    have hfin : (∫ z in x₀..ξ, u z * v z) ≤ lam := by linarith [hsplit, htail]
+    nlinarith [hm, hhalf, hstep, hfin]
+  rcases le_or_gt L (u x₀ / (2 * K)) with hcase | hcase
+  · have hq : min L (u x₀ / (2 * K)) = L := min_eq_left hcase
+    rw [hq] at hmain
+    have hle1 : (u x₀ / 2) * ell ≤ lam :=
+      (mul_le_mul_of_nonneg_left hL (by positivity)).trans hmain
+    have hle2 : u x₀ ≤ 2 * lam / ell := by
+      rw [le_div_iff₀ hell]
+      nlinarith
+    have h2 : 0 ≤ 2 * Real.sqrt (K * lam) := by
+      have : 0 ≤ K * lam := mul_nonneg hK.le hlam
+      positivity
+    linarith
+  · have hq : min L (u x₀ / (2 * K)) = u x₀ / (2 * K) := min_eq_right hcase.le
+    rw [hq] at hmain
+    have hval : (u x₀ / 2) * (u x₀ / (2 * K)) = u x₀ ^ 2 / (4 * K) := by
+      field_simp
+      ring
+    have hfin : u x₀ ^ 2 / (4 * K) ≤ lam := hval ▸ hmain
+    have hsq : u x₀ ^ 2 ≤ 4 * K * lam := by
+      rw [div_le_iff₀ (by positivity : (0 : ℝ) < 4 * K)] at hfin
+      linarith
+    have hroot : u x₀ ≤ Real.sqrt (4 * K * lam) := by
+      rw [← Real.sqrt_sq hm.le]
+      exact Real.sqrt_le_sqrt hsq
+    have hres : Real.sqrt (4 * K * lam) = 2 * Real.sqrt (K * lam) := by
+      rw [show (4 : ℝ) * K * lam = 2 ^ 2 * (K * lam) by ring,
+        Real.sqrt_mul (by positivity : (0 : ℝ) ≤ (2 : ℝ) ^ 2),
+        Real.sqrt_sq (by norm_num : (0 : ℝ) ≤ 2)]
+    rw [hres] at hroot
+    have hl : 0 ≤ 2 * lam / ell := by positivity
+    linarith
+
+omit [SigmaCompactSpace Q] hT2 hCompact hConnected hBoundary in
 theorem rfs_ramp_small_angle (g : SmoothRiemannianMetric I Q)
     (c : ProductCurve Q) (lambda t ell K : ℝ) (hlambda : 0 < lambda)
     (hell : 0 < ell) (hK : 0 < K) (hdegree : c.degree = 1)
@@ -32,7 +167,45 @@ theorem rfs_ramp_small_angle (g : SmoothRiemannianMetric I Q)
     (hlength : ell ≤ c.length (fun _ => g) lambda t)
     (hcurvature : ∀ x, c.curvature (fun _ => g) lambda x t ≤ K) :
     ∀ x, c.angle (fun _ => g) lambda x t ≤ 2 * lambda / ell + 2 * Real.sqrt (K * lambda) := by
-  sorry
+  intro x
+  have ht : t ∈ ({t} : Set ℝ) := mem_singleton t
+  have hucont : ContinuousOn (fun z => c.angle (fun _ => g) lambda z t) (Icc x (x + 1)) :=
+    ((c.angle_contDiff_of_immersedOn (fun _ => g) lambda hlambda hsmooth hramp.1 t
+      ht).continuous).continuousOn
+  have hvcont : ContinuousOn (fun z => c.speed (fun _ => g) lambda z t) (Icc x (x + 1)) :=
+    ((c.speed_contDiff_of_immersedOn (fun _ => g) lambda hlambda hsmooth hramp.1 t
+      ht).continuous).continuousOn
+  have hvnn : ∀ z ∈ Icc x (x + 1), 0 ≤ c.speed (fun _ => g) lambda z t :=
+    fun z _ => Real.sqrt_nonneg _
+  have hunonneg : ∀ z ∈ Icc x (x + 1), 0 ≤ c.angle (fun _ => g) lambda z t :=
+    fun z _ => (hramp.2 z t ht).le
+  have hslope : ∀ y, x ≤ y → y ≤ x + 1 →
+      |c.angle (fun _ => g) lambda y t - c.angle (fun _ => g) lambda x t| ≤
+        K * ∫ z in x..y, c.speed (fun _ => g) lambda z t := by
+    intro y hy1 _
+    simpa [ProductCurve.arcLength] using
+      c.abs_angle_sub_le_mul_arcLength (fun _ => g) lambda hlambda hsmooth hramp.1 ht
+        hcurvature hy1
+  have hmass : (∫ z in x..(x + 1),
+      c.angle (fun _ => g) lambda z t * c.speed (fun _ => g) lambda z t) = lambda := by
+    have hshift := (c.angle_mul_speed_periodic (fun _ => g) lambda hsmooth t ht).intervalIntegral_add_eq x 0
+    rw [zero_add] at hshift
+    have hbase := productCurve_integral_angle_of_smoothOn c (fun _ => g) lambda hlambda hsmooth ht
+    rw [ProductCurve.integral, hdegree, Int.cast_one, one_mul] at hbase
+    calc (∫ z in x..(x + 1),
+          c.angle (fun _ => g) lambda z t * c.speed (fun _ => g) lambda z t)
+        = ∫ z in (0 : ℝ)..1,
+          c.angle (fun _ => g) lambda z t * c.speed (fun _ => g) lambda z t := hshift
+      _ = lambda := hbase
+  have hlen : ell ≤ ∫ z in x..(x + 1), c.speed (fun _ => g) lambda z t := by
+    have hlen_eq : (∫ z in x..(x + 1), c.speed (fun _ => g) lambda z t) =
+        c.length (fun _ => g) lambda t :=
+      c.arcLength_period_eq_length (fun _ => g) lambda hsmooth t ht x
+    rw [hlen_eq]
+    exact hlength
+  exact le_of_arclength_lipschitz_integral_bound (u := fun z => c.angle (fun _ => g) lambda z t)
+    (v := fun z => c.speed (fun _ => g) lambda z t) (x₀ := x) (K := K) (ell := ell)
+    (lam := lambda) hK hell hlambda.le hucont hvcont hvnn hunonneg hslope hmass hlen
 
 
 def localRegularityDelta (B : RicciBackground (I := I) (M := Q) D a b) (L₀ Theta₀ : ℝ)

@@ -43,6 +43,19 @@ theorem diskReflection_lipschitz : LipschitzWith 1 diskReflection := by
 
 @[simp] theorem diskReflection_symm : diskReflection.symm = diskReflection := rfl
 
+private theorem diskReflection_coe (z : closedDisk) :
+    ((diskReflection z : closedDisk) : ℂ) = starRingEnd ℂ (z : ℂ) := rfl
+
+private theorem diskBoundary_coe_circle (θ : loopCircle) :
+    ((diskBoundary θ : closedDisk) : ℂ) = ((AddCircle.toCircle θ : Circle) : ℂ) := rfl
+
+theorem diskReflection_diskBoundary (θ : loopCircle) :
+    diskReflection (diskBoundary θ) = diskBoundary (-θ) := by
+  refine Subtype.ext ?_
+  rw [diskReflection_coe, diskBoundary_coe_circle, diskBoundary_coe_circle,
+    AddCircle.toCircle_neg, Circle.coe_inv]
+  exact (Complex.inv_eq_conj (Circle.norm_coe (AddCircle.toCircle θ))).symm
+
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
   {M : Type*} [TopologicalSpace M] [ChartedSpace E M] [IsManifold 𝓘(ℝ, E) ∞ M]
   [T3Space M] [CompactSpace M]

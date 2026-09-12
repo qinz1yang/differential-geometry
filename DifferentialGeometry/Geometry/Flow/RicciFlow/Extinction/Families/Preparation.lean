@@ -466,57 +466,6 @@ theorem shortSegment_neighborhood (g : SmoothRiemannianMetric I Q) :
       exact (hkey p p (fun _ => p) (shortSegment g p p) hne hDlt hconstseg hspec
         ⟨by linarith [ht.1], by linarith [ht.2]⟩).symm
 
-theorem rfs_flat_polygon_bounds (g : SmoothRiemannianMetric I Q)
-    (P : FlatteningProfile) {d : ℕ} (e : SmoothLoopEmbedding (I := I) (Q := Q) d) :
-    ∃ radius : ℝ, 0 < radius ∧
-      (∀ (N : ℕ), 2 ≤ N → ∀ γ : RegularLoop I Q,
-        (∀ i : Fin N, riemannianEDistOf g (polygonVertex γ N i.val)
-          (polygonVertex γ N (i.val + 1)) < ENNReal.ofReal radius) →
-        ∃ c : RegularLoop I Q,
-          (∀ z, c z = flatPolygon g P N γ z) ∧
-          ContMDiff 𝓘(ℝ, ℝ) I ∞ (loopLift c.toContinuousLoop) ∧
-          (∀ (i : ℤ) (m : ℕ), 0 < m →
-            iteratedDeriv m (e.map ∘ loopLift c.toContinuousLoop) ((i : ℝ) / N) = 0) ∧
-          loopLength g c.toContinuousLoop =
-            ∑ i : Fin N, (riemannianEDistOf g (polygonVertex γ N i.val)
-              (polygonVertex γ N (i.val + 1))).toReal ∧
-          loopLength g c.toContinuousLoop ≤ loopLength g γ.toContinuousLoop ∧
-          ∀ lambda : ℝ, 0 < lambda → lambda ≤ 1 →
-            (initialRamp c).SmoothOn (I := I) univ ∧
-            (initialRamp c).IsRampOn (fun _ => g) lambda univ ∧
-            (initialRamp c).length (fun _ => g) lambda 0 ≤ loopLength g γ.toContinuousLoop + 1 ∧
-            (initialRamp c).totalCurvature (fun _ => g) lambda 0 ≤ (N : ℝ) * Real.pi) ∧
-      (∀ (K : Type*) [TopologicalSpace K] (N : ℕ), 2 ≤ N →
-        ∀ v : K → Surgery.Topology.Circle → Q,
-          (∀ i : Fin N, Continuous (fun k => polygonVertex (v k) N i.val)) →
-          (∀ k (i : Fin N), riemannianEDistOf g (polygonVertex (v k) N i.val)
-            (polygonVertex (v k) N (i.val + 1)) < ENNReal.ofReal radius) →
-          ∀ m : ℕ, Continuous (fun p : K × ℝ =>
-            iteratedDeriv m (fun x : ℝ =>
-              e.map (flatPolygon g P N (v p.1) (x : Surgery.Topology.Circle))) p.2)) := by
-  sorry
-
-theorem rfs_prepared_family (g : SmoothRiemannianMetric I Q) {d : ℕ}
-    (e : SmoothLoopEmbedding (I := I) (Q := Q) d)
-    (Γ : RegularFamily (I := I) (Q := Q) (Sphere 2)) (eta : ℝ) (heta : 0 < eta) :
-    ∃ P : FlatteningProfile, ∃ N : ℕ, 2 ≤ N ∧
-      ∃ prepared : RegularFamily (I := I) (Q := Q) (Sphere 2),
-        (∀ p z, (prepared p).1 z = flatPolygon g P N (Γ p).1 z) ∧
-        HasContinuousSmoothLoopJets e prepared ∧
-        ContinuousMap.Homotopic prepared Γ ∧
-        (∀ p, |regularLeastArea g (prepared p) - regularLeastArea g (Γ p)| < eta) ∧
-        let L₀ := 1 + sSup (Set.range (fun p => loopLength g (Γ p).1.toContinuousLoop))
-        let Theta₀ := (N : ℝ) * Real.pi
-        let Ainit := familyMaximum g Γ + eta
-        0 ≤ L₀ ∧ 0 ≤ Theta₀ ∧ 0 ≤ Ainit ∧
-          ∀ p (lambda : ℝ), 0 < lambda → lambda ≤ 1 →
-            (initialRamp (prepared p).1).SmoothOn (I := I) univ ∧
-            (initialRamp (prepared p).1).IsRampOn (fun _ => g) lambda univ ∧
-            (initialRamp (prepared p).1).length (fun _ => g) lambda 0 ≤ L₀ ∧
-            (initialRamp (prepared p).1).totalCurvature (fun _ => g) lambda 0 ≤ Theta₀ ∧
-            regularLeastArea g (prepared p) ≤ Ainit := by
-  sorry
-
 omit [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E] [CompleteSpace E]
   [TopologicalSpace H] [TopologicalSpace Q] [ChartedSpace H Q] [IsManifold I ∞ Q]
   hT2 hCompact hConnected hBoundary in
@@ -701,5 +650,357 @@ theorem flatPolygon_apply_of_mem_Ico (g : SmoothRiemannianMetric I Q) (P : Flatt
     linarith [hx.2, hle]
   have hxI : x ∈ Ico (0 : ℝ) 1 := ⟨hx0, hx1⟩
   rw [flatPolygon_coe_apply g P N γ hxI, hfloor]
+
+omit [CompleteSpace E] hCompact hConnected in
+theorem IsShortSegment.speed_eq (g : SmoothRiemannianMetric I Q) {p q : Q} {c : ℝ → Q}
+    (hc : IsShortSegment g p q c) {s : ℝ} (hs : s ∈ Ioo (0 : ℝ) 1) :
+    Real.sqrt (g.inner (c s) (mfderiv 𝓘(ℝ, ℝ) I c s (1 : ℝ))
+      (mfderiv 𝓘(ℝ, ℝ) I c s (1 : ℝ))) = (riemannianEDistOf g p q).toReal := by
+  classical
+  by_cases hdim : Module.finrank ℝ E = 0
+  · have hq : c (1 / 4 : ℝ) = c (1 / 2 : ℝ) :=
+      @IsPreconnected.constant ℝ _ Q _ (discrete_topology_of_finrank_eq_zero I hdim)
+        (Ioo (-1 : ℝ) 2) isPreconnected_Ioo c hc.1.continuousOn (1 / 4) (1 / 2)
+        (by norm_num) (by norm_num)
+    have hdf := hc.2.2.2.2 (1 / 4) (by norm_num : (1 / 4 : ℝ) ∈ Icc (0 : ℝ) 1)
+      (1 / 2) (by norm_num : (1 / 2 : ℝ) ∈ Icc (0 : ℝ) 1)
+    rw [hq, riemannianEDistOf_self] at hdf
+    have hfac : ENNReal.ofReal |(1 / 4 : ℝ) - 1 / 2| ≠ 0 := by
+      rw [ENNReal.ofReal_ne_zero_iff]
+      norm_num
+    have hD : riemannianEDistOf g p q = 0 := by
+      rcases mul_eq_zero.mp hdf.symm with h | h
+      · exact absurd h hfac
+      · exact h
+    have hsubE : Subsingleton E := Module.finrank_zero_iff.mp hdim
+    have hv : mfderiv 𝓘(ℝ, ℝ) I c s (1 : ℝ) = 0 :=
+      @Subsingleton.elim (TangentSpace I (c s)) hsubE _ _
+    rw [hD, hv]
+    simp
+  · let _ : NeZero (Module.finrank ℝ E) := ⟨hdim⟩
+    have hms : s ∈ Ioo (-1 : ℝ) 2 := ⟨by linarith [hs.1], by linarith [hs.2]⟩
+    have hmd : MDifferentiableAt 𝓘(ℝ, ℝ) I c s :=
+      (hc.1.contMDiffAt (isOpen_Ioo.mem_nhds hms)).mdifferentiableAt (by norm_num)
+    have hlim := riemannianEDistOf_div_tendsto_speed (I := I) g c s hmd
+    have hIoo : Ioo (0 : ℝ) (1 - s) ∈ 𝓝[Ioi (0 : ℝ)] (0 : ℝ) :=
+      Ioo_mem_nhdsGT (by linarith [hs.2])
+    have hev : (fun h : ℝ => (riemannianEDistOf g (c (s + h)) (c s)).toReal / h)
+        =ᶠ[𝓝[Ioi (0 : ℝ)] (0 : ℝ)] fun _ => (riemannianEDistOf g p q).toReal := by
+      filter_upwards [hIoo] with h hh
+      have hpos : 0 < h := hh.1
+      have hlt : h < 1 - s := hh.2
+      have hmem : s + h ∈ Icc (0 : ℝ) 1 := ⟨by linarith [hs.1, hpos], by linarith⟩
+      have hdf := hc.2.2.2.2 (s + h) hmem s ⟨le_of_lt hs.1, le_of_lt hs.2⟩
+      have habs : |s + h - s| = h := by rw [add_sub_cancel_left, abs_of_pos hpos]
+      rw [habs] at hdf
+      have hprod : (ENNReal.ofReal h * riemannianEDistOf g p q).toReal =
+          h * (riemannianEDistOf g p q).toReal := by
+        rw [ENNReal.toReal_mul, ENNReal.toReal_ofReal (le_of_lt hpos)]
+      rw [hdf, hprod]
+      exact mul_div_cancel_left₀ _ (ne_of_gt hpos)
+    exact tendsto_nhds_unique hlim (tendsto_const_nhds.congr' hev.symm)
+
+omit [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E] [CompleteSpace E]
+  [TopologicalSpace H] [TopologicalSpace Q] [ChartedSpace H Q] [IsManifold I ∞ Q]
+  hT2 hCompact hConnected hBoundary in
+private lemma deriv_beta_affine (P : FlatteningProfile) (N : ℕ) (i : ℤ) (x : ℝ) :
+    deriv (fun y : ℝ => P.beta ((N : ℝ) * y - (i : ℝ))) x = (N : ℝ) * P.psi ((N : ℝ) * x - (i : ℝ)) := by
+  have hinner : HasDerivAt (fun y : ℝ => (N : ℝ) * y - (i : ℝ)) (N : ℝ) x := by
+    simpa using ((hasDerivAt_id x).const_mul (N : ℝ)).sub_const (i : ℝ)
+  have h2 : HasDerivAt (fun y : ℝ => P.beta ((N : ℝ) * y - (i : ℝ)))
+      (P.psi ((N : ℝ) * x - (i : ℝ)) * (N : ℝ)) x :=
+    (P.hasDerivAt_beta _).comp x hinner
+  rw [h2.deriv, mul_comm]
+
+omit [CompleteSpace E] [FiniteDimensional ℝ E] [IsManifold I ∞ Q]
+  hT2 hCompact hConnected hBoundary in
+private lemma curveVelocity_comp (f : ℝ → Q) (φ : ℝ → ℝ) (t : ℝ)
+    (hf : MDifferentiableAt 𝓘(ℝ, ℝ) I f (φ t)) (hφ : DifferentiableAt ℝ φ t) :
+    mfderiv 𝓘(ℝ, ℝ) I (fun s : ℝ => f (φ s)) t (1 : ℝ) =
+      deriv φ t • mfderiv 𝓘(ℝ, ℝ) I f (φ t) (1 : ℝ) := by
+  have ha : MDifferentiableAt 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) φ t := hφ.mdifferentiableAt
+  have hcomp : mfderiv 𝓘(ℝ, ℝ) I (fun s : ℝ => f (φ s)) t (1 : ℝ) =
+      (mfderiv 𝓘(ℝ, ℝ) I f (φ t)) ((mfderiv 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) φ t) (1 : ℝ)) :=
+    mfderiv_comp_apply (f := φ) (g := f) (x := t) hf ha (1 : ℝ)
+  have ha_one : (mfderiv 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) φ t) (1 : ℝ) = deriv φ t := by
+    have hclm : mfderiv 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) φ t =
+        ContinuousLinearMap.toSpanSingleton ℝ (deriv φ t) := by
+      rw [mfderiv_eq_fderiv, ← toSpanSingleton_deriv]
+    have h := congrArg (fun L : ℝ →L[ℝ] ℝ => L 1) hclm
+    rw [ContinuousLinearMap.toSpanSingleton_apply, one_smul] at h
+    exact h
+  rw [hcomp, ha_one]
+  let A := mfderiv 𝓘(ℝ, ℝ) I f (φ t)
+  have hA : A ((tangentSpaceModelContinuousLinearEquiv (I := 𝓘(ℝ, ℝ)) (φ t)).symm (deriv φ t)) =
+      deriv φ t • A ((tangentSpaceModelContinuousLinearEquiv (I := 𝓘(ℝ, ℝ)) (φ t)).symm 1) := by
+    rw [← A.map_smul]
+    congr 1
+    apply (tangentSpaceModelContinuousLinearEquiv (I := 𝓘(ℝ, ℝ)) (φ t)).injective
+    simp
+  with_unfolding_all exact hA
+
+omit [CompleteSpace E] hCompact hConnected in
+theorem shortSegment_comp_beta_speed (g : SmoothRiemannianMetric I Q) (P : FlatteningProfile)
+    {p q : Q} (hseg : IsShortSegment g p q (shortSegment g p q)) {N : ℕ} {i : ℤ} {x : ℝ}
+    (ha : (N : ℝ) * x - (i : ℝ) ∈ Ioo (0 : ℝ) 1) :
+    Real.sqrt (g.inner (shortSegment g p q (P.beta ((N : ℝ) * x - (i : ℝ))))
+      (mfderiv 𝓘(ℝ, ℝ) I (fun y : ℝ => shortSegment g p q (P.beta ((N : ℝ) * y - (i : ℝ)))) x (1 : ℝ))
+      (mfderiv 𝓘(ℝ, ℝ) I (fun y : ℝ => shortSegment g p q (P.beta ((N : ℝ) * y - (i : ℝ)))) x (1 : ℝ)))
+      = (N : ℝ) * P.psi ((N : ℝ) * x - (i : ℝ)) * (riemannianEDistOf g p q).toReal := by
+  have haI : (N : ℝ) * x - (i : ℝ) ∈ Icc (0 : ℝ) 1 := ⟨ha.1.le, ha.2.le⟩
+  have h0 : (0 : ℝ) ∈ Icc (0 : ℝ) 1 := ⟨le_rfl, zero_le_one⟩
+  have h1 : (1 : ℝ) ∈ Icc (0 : ℝ) 1 := ⟨zero_le_one, le_rfl⟩
+  have hb : P.beta ((N : ℝ) * x - (i : ℝ)) ∈ Ioo (0 : ℝ) 1 :=
+    ⟨by simpa only [P.beta_zero] using P.beta_strictMonoOn h0 haI ha.1,
+      by simpa only [P.beta_one] using P.beta_strictMonoOn haI h1 ha.2⟩
+  have hSmd : MDifferentiableAt 𝓘(ℝ, ℝ) I (shortSegment g p q) (P.beta ((N : ℝ) * x - (i : ℝ))) :=
+    (hseg.1.contMDiffAt (isOpen_Ioo.mem_nhds ⟨by linarith [hb.1], by linarith [hb.2]⟩)).mdifferentiableAt
+      (by norm_num)
+  have hφd : DifferentiableAt ℝ (fun y : ℝ => P.beta ((N : ℝ) * y - (i : ℝ))) x := by
+    have hinner : Differentiable ℝ (fun y : ℝ => (N : ℝ) * y - (i : ℝ)) := by
+      simpa using ((differentiable_id.const_mul (N : ℝ)).sub_const (i : ℝ))
+    simpa only [Function.comp_def] using (P.differentiable_beta.comp hinner).differentiableAt
+  have hchain := curveVelocity_comp (shortSegment g p q)
+    (fun y : ℝ => P.beta ((N : ℝ) * y - (i : ℝ))) x hSmd hφd
+  have hderiv := deriv_beta_affine P N i x
+  have hnn : 0 ≤ (N : ℝ) * P.psi ((N : ℝ) * x - (i : ℝ)) :=
+    mul_nonneg (Nat.cast_nonneg N) (P.nonneg _ haI)
+  have hv := IsShortSegment.speed_eq g hseg hb
+  rw [hchain, hderiv, gInner_smul_self, ← hv, Real.sqrt_mul (sq_nonneg _),
+    Real.sqrt_sq_eq_abs, abs_of_nonneg hnn]
+
+omit [CompleteSpace E] hCompact hConnected in
+private lemma flatPolygon_pointwise_speed (g : SmoothRiemannianMetric I Q) (P : FlatteningProfile)
+    {N : ℕ} (hN : 0 < N) (γ : Surgery.Topology.Circle → Q) {i : ℤ} (hi : 0 ≤ i) (hiN : i < N)
+    (hseg : IsShortSegment g (polygonVertex γ N i) (polygonVertex γ N (i + 1))
+      (shortSegment g (polygonVertex γ N i) (polygonVertex γ N (i + 1))))
+    {x : ℝ} (hxab : x ∈ Ioo ((i : ℝ) / N) (((i : ℝ) + 1) / N)) :
+    Real.sqrt (g.inner (flatPolygon g P N γ (x : Surgery.Topology.Circle))
+      (mfderiv 𝓘(ℝ, ℝ) I
+        (fun y : ℝ => flatPolygon g P N γ (y : Surgery.Topology.Circle)) x (1 : ℝ))
+      (mfderiv 𝓘(ℝ, ℝ) I
+        (fun y : ℝ => flatPolygon g P N γ (y : Surgery.Topology.Circle)) x (1 : ℝ)))
+    = (N : ℝ) * P.psi ((N : ℝ) * x - (i : ℝ)) *
+      (riemannianEDistOf g (polygonVertex γ N i) (polygonVertex γ N (i + 1))).toReal := by
+  have hNR : (0 : ℝ) < N := by exact_mod_cast hN
+  have hxilt : (i : ℝ) < (N : ℝ) * x := by
+    have h := (div_lt_iff₀ hNR).mp hxab.1
+    linarith [h]
+  have hxi' : (N : ℝ) * x < (i : ℝ) + 1 := by
+    have h := (lt_div_iff₀ hNR).mp hxab.2
+    linarith [h]
+  have haI : (N : ℝ) * x - (i : ℝ) ∈ Ioo (0 : ℝ) 1 := ⟨by linarith, by linarith⟩
+  have hval := flatPolygon_apply_of_mem_Ico g P N γ hN hi hiN ⟨hxab.1.le, hxab.2⟩
+  have hev : (fun y : ℝ => flatPolygon g P N γ (y : Surgery.Topology.Circle)) =ᶠ[𝓝 x]
+      (fun y : ℝ => shortSegment g (polygonVertex γ N i) (polygonVertex γ N (i + 1))
+        (P.beta ((N : ℝ) * y - (i : ℝ)))) := by
+    filter_upwards [isOpen_Ioo.mem_nhds hxab] with y hy
+    exact flatPolygon_apply_of_mem_Ico g P N γ hN hi hiN ⟨hy.1.le, hy.2⟩
+  have hmf : mfderiv 𝓘(ℝ, ℝ) I
+        (fun y : ℝ => flatPolygon g P N γ (y : Surgery.Topology.Circle)) x =
+      mfderiv 𝓘(ℝ, ℝ) I
+        (fun y : ℝ => shortSegment g (polygonVertex γ N i) (polygonVertex γ N (i + 1))
+          (P.beta ((N : ℝ) * y - (i : ℝ)))) x :=
+    Filter.EventuallyEq.mfderiv_eq (I := 𝓘(ℝ, ℝ)) (I' := I) hev
+  rw [hval, hmf]
+  exact shortSegment_comp_beta_speed g P hseg haI
+
+omit [CompleteSpace E] hCompact hConnected in
+private lemma flatPolygon_piece_integral (g : SmoothRiemannianMetric I Q) (P : FlatteningProfile)
+    {N : ℕ} (hN : 0 < N) (γ : Surgery.Topology.Circle → Q) {i : ℤ} (hi : 0 ≤ i) (hiN : i < N)
+    (hseg : IsShortSegment g (polygonVertex γ N i) (polygonVertex γ N (i + 1))
+      (shortSegment g (polygonVertex γ N i) (polygonVertex γ N (i + 1)))) :
+    (∫ x in ((i : ℝ) / N)..(((i : ℝ) + 1) / N),
+        Real.sqrt (g.inner (flatPolygon g P N γ (x : Surgery.Topology.Circle))
+          (mfderiv 𝓘(ℝ, ℝ) I
+            (fun y : ℝ => flatPolygon g P N γ (y : Surgery.Topology.Circle)) x (1 : ℝ))
+          (mfderiv 𝓘(ℝ, ℝ) I
+            (fun y : ℝ => flatPolygon g P N γ (y : Surgery.Topology.Circle)) x (1 : ℝ))))
+      = (riemannianEDistOf g (polygonVertex γ N i) (polygonVertex γ N (i + 1))).toReal := by
+  have hNR : (0 : ℝ) < N := by exact_mod_cast hN
+  have hNne : (N : ℝ) ≠ 0 := ne_of_gt hNR
+  have hab : (i : ℝ) / N < ((i : ℝ) + 1) / N := by
+    rw [div_lt_div_iff_of_pos_right hNR]
+    linarith
+  have hpoint : EqOn (fun x : ℝ => Real.sqrt
+        (g.inner (flatPolygon g P N γ (x : Surgery.Topology.Circle))
+          (mfderiv 𝓘(ℝ, ℝ) I
+            (fun y : ℝ => flatPolygon g P N γ (y : Surgery.Topology.Circle)) x (1 : ℝ))
+          (mfderiv 𝓘(ℝ, ℝ) I
+            (fun y : ℝ => flatPolygon g P N γ (y : Surgery.Topology.Circle)) x (1 : ℝ))))
+      (fun x : ℝ => (N : ℝ) * P.psi ((N : ℝ) * x - (i : ℝ)) *
+        (riemannianEDistOf g (polygonVertex γ N i) (polygonVertex γ N (i + 1))).toReal)
+      (uIoo ((i : ℝ) / N) (((i : ℝ) + 1) / N)) := by
+    intro x hx
+    have h1 : (i : ℝ) / N < x := by
+      simpa only [min_eq_left hab.le] using hx.1
+    have h2 : x < ((i : ℝ) + 1) / N := by
+      simpa only [max_eq_right hab.le] using hx.2
+    exact flatPolygon_pointwise_speed g P hN γ hi hiN hseg ⟨h1, h2⟩
+  rw [intervalIntegral.integral_congr_uIoo hpoint]
+  rw [intervalIntegral.integral_mul_const]
+  have hsub : (∫ x in ((i : ℝ) / N)..(((i : ℝ) + 1) / N),
+      (N : ℝ) * P.psi ((N : ℝ) * x - (i : ℝ))) = ∫ u in (0 : ℝ)..1, P.psi u := by
+    have hcomp := intervalIntegral.integral_comp_mul_add (f := fun u : ℝ => (N : ℝ) * P.psi u)
+      (a := (i : ℝ) / N) (b := ((i : ℝ) + 1) / N) (c := (N : ℝ)) (d := -(i : ℝ)) hNne
+    have hla : (N : ℝ) * ((i : ℝ) / N) + -(i : ℝ) = 0 := by
+      field_simp
+      ring
+    have hlb : (N : ℝ) * (((i : ℝ) + 1) / N) + -(i : ℝ) = 1 := by
+      field_simp
+      ring
+    rw [hla, hlb] at hcomp
+    simp only [sub_eq_add_neg]
+    rw [hcomp, smul_eq_mul, intervalIntegral.integral_const_mul, ← mul_assoc,
+      inv_mul_cancel₀ hNne, one_mul]
+  rw [hsub, P.integral_one, one_mul]
+
+omit [CompleteSpace E] hCompact hConnected in
+private lemma flatPolygon_piece_intervalIntegrable (g : SmoothRiemannianMetric I Q)
+    (P : FlatteningProfile) {N : ℕ} (hN : 0 < N) (γ : Surgery.Topology.Circle → Q) {i : ℤ}
+    (hi : 0 ≤ i) (hiN : i < N)
+    (hseg : IsShortSegment g (polygonVertex γ N i) (polygonVertex γ N (i + 1))
+      (shortSegment g (polygonVertex γ N i) (polygonVertex γ N (i + 1)))) :
+    IntervalIntegrable (fun x : ℝ => Real.sqrt
+      (g.inner (flatPolygon g P N γ (x : Surgery.Topology.Circle))
+        (mfderiv 𝓘(ℝ, ℝ) I
+          (fun y : ℝ => flatPolygon g P N γ (y : Surgery.Topology.Circle)) x (1 : ℝ))
+        (mfderiv 𝓘(ℝ, ℝ) I
+          (fun y : ℝ => flatPolygon g P N γ (y : Surgery.Topology.Circle)) x (1 : ℝ))))
+      volume ((i : ℝ) / N) (((i : ℝ) + 1) / N) := by
+  have hNR : (0 : ℝ) < N := by exact_mod_cast hN
+  have hab : (i : ℝ) / N < ((i : ℝ) + 1) / N := by
+    rw [div_lt_div_iff_of_pos_right hNR]
+    linarith
+  have hcont : Continuous (fun x : ℝ => (N : ℝ) * P.psi ((N : ℝ) * x - (i : ℝ)) *
+      (riemannianEDistOf g (polygonVertex γ N i) (polygonVertex γ N (i + 1))).toReal) :=
+    (continuous_const.mul (P.smooth.continuous.comp ((continuous_const.mul continuous_id).sub continuous_const))).mul
+      continuous_const
+  refine (hcont.intervalIntegrable _ _).congr_uIoo ?_
+  intro x hx
+  have h1 : (i : ℝ) / N < x := by
+    simpa only [min_eq_left hab.le] using hx.1
+  have h2 : x < ((i : ℝ) + 1) / N := by
+    simpa only [max_eq_right hab.le] using hx.2
+  exact (flatPolygon_pointwise_speed g P hN γ hi hiN hseg ⟨h1, h2⟩).symm
+
+omit [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E] [CompleteSpace E]
+  [TopologicalSpace H] [TopologicalSpace Q] [ChartedSpace H Q] [IsManifold I ∞ Q]
+  hT2 hCompact hConnected hBoundary in
+private lemma integral_zero_one_eq_sum (F : ℝ → ℝ) (N : ℕ) (hN : 0 < N)
+    (hint : ∀ k < N, IntervalIntegrable F volume ((k : ℝ) / N) (((k + 1 : ℕ) : ℝ) / N)) :
+    (∫ x in (0 : ℝ)..1, F x) =
+      ∑ k ∈ Finset.range N, ∫ x in ((k : ℝ) / N)..(((k + 1 : ℕ) : ℝ) / N), F x := by
+  have hNne : (N : ℝ) ≠ 0 := ne_of_gt (by exact_mod_cast hN)
+  have h := intervalIntegral.sum_integral_adjacent_intervals (f := F)
+    (a := fun k : ℕ => (k : ℝ) / N) (μ := volume) (n := N) hint
+  simpa only [Nat.cast_zero, zero_div, div_self hNne] using h.symm
+
+omit [CompleteSpace E] hCompact hConnected in
+theorem flatPolygon_loopLength_eq_sum (g : SmoothRiemannianMetric I Q) (P : FlatteningProfile)
+    {N : ℕ} (hN : 0 < N) (γ : Surgery.Topology.Circle → Q) (c : RegularLoop I Q)
+    (hc : ∀ z, c z = flatPolygon g P N γ z)
+    (hseg : ∀ i : ℤ, 0 ≤ i → i < N → IsShortSegment g (polygonVertex γ N i)
+      (polygonVertex γ N (i + 1))
+      (shortSegment g (polygonVertex γ N i) (polygonVertex γ N (i + 1)))) :
+    loopLength g c.toContinuousLoop =
+      ∑ i : Fin N, (riemannianEDistOf g (polygonVertex γ N (i : ℤ))
+        (polygonVertex γ N ((i : ℤ) + 1))).toReal := by
+  have hNR : (0 : ℝ) < N := by exact_mod_cast hN
+  have hNne : (N : ℝ) ≠ 0 := ne_of_gt hNR
+  have hlift : loopLift c.toContinuousLoop =
+      fun x : ℝ => flatPolygon g P N γ (x : Surgery.Topology.Circle) := by
+    funext x
+    rw [loopLift]
+    exact hc _
+  have hloop : loopLength g c.toContinuousLoop = ∫ x in Icc (0 : ℝ) 1, Real.sqrt
+      (g.inner (flatPolygon g P N γ (x : Surgery.Topology.Circle))
+        (mfderiv 𝓘(ℝ, ℝ) I
+          (fun y : ℝ => flatPolygon g P N γ (y : Surgery.Topology.Circle)) x (1 : ℝ))
+        (mfderiv 𝓘(ℝ, ℝ) I
+          (fun y : ℝ => flatPolygon g P N γ (y : Surgery.Topology.Circle)) x (1 : ℝ))) := by
+    rw [loopLength]
+    simp only [loopVelocity]
+    rw [hlift]
+  rw [hloop, ← MeasureTheory.restrict_Ioc_eq_restrict_Icc,
+    ← intervalIntegral.integral_of_le zero_le_one]
+  have hpieceInt : ∀ k < N, IntervalIntegrable (fun x : ℝ => Real.sqrt
+      (g.inner (flatPolygon g P N γ (x : Surgery.Topology.Circle))
+        (mfderiv 𝓘(ℝ, ℝ) I
+          (fun y : ℝ => flatPolygon g P N γ (y : Surgery.Topology.Circle)) x (1 : ℝ))
+        (mfderiv 𝓘(ℝ, ℝ) I
+          (fun y : ℝ => flatPolygon g P N γ (y : Surgery.Topology.Circle)) x (1 : ℝ))))
+      volume ((k : ℝ) / N) (((k + 1 : ℕ) : ℝ) / N) := by
+    intro k hk
+    simpa only [Int.cast_natCast, Nat.cast_add, Nat.cast_one] using
+      flatPolygon_piece_intervalIntegrable (I := I) g P hN γ (Int.natCast_nonneg k)
+        (by exact_mod_cast hk) (hseg (k : ℤ) (Int.natCast_nonneg k) (by exact_mod_cast hk))
+  rw [integral_zero_one_eq_sum (fun x : ℝ => Real.sqrt
+      (g.inner (flatPolygon g P N γ (x : Surgery.Topology.Circle))
+        (mfderiv 𝓘(ℝ, ℝ) I
+          (fun y : ℝ => flatPolygon g P N γ (y : Surgery.Topology.Circle)) x (1 : ℝ))
+        (mfderiv 𝓘(ℝ, ℝ) I
+          (fun y : ℝ => flatPolygon g P N γ (y : Surgery.Topology.Circle)) x (1 : ℝ))))
+      N hN hpieceInt]
+  rw [Finset.sum_congr rfl (fun k hk => by
+    simpa only [Int.cast_natCast, Nat.cast_add, Nat.cast_one] using
+      flatPolygon_piece_integral (I := I) g P hN γ (Int.natCast_nonneg k)
+        (by exact_mod_cast Finset.mem_range.mp hk)
+        (hseg (k : ℤ) (Int.natCast_nonneg k) (by exact_mod_cast Finset.mem_range.mp hk)))]
+  rw [Fin.sum_univ_eq_sum_range
+    (fun k : ℕ => (riemannianEDistOf g (polygonVertex γ N (k : ℤ))
+      (polygonVertex γ N ((k : ℤ) + 1))).toReal)]
+
+theorem rfs_flat_polygon_bounds (g : SmoothRiemannianMetric I Q)
+    (P : FlatteningProfile) {d : ℕ} (e : SmoothLoopEmbedding (I := I) (Q := Q) d) :
+    ∃ radius : ℝ, 0 < radius ∧
+      (∀ (N : ℕ), 2 ≤ N → ∀ γ : RegularLoop I Q,
+        (∀ i : Fin N, riemannianEDistOf g (polygonVertex γ N i.val)
+          (polygonVertex γ N (i.val + 1)) < ENNReal.ofReal radius) →
+        ∃ c : RegularLoop I Q,
+          (∀ z, c z = flatPolygon g P N γ z) ∧
+          ContMDiff 𝓘(ℝ, ℝ) I ∞ (loopLift c.toContinuousLoop) ∧
+          (∀ (i : ℤ) (m : ℕ), 0 < m →
+            iteratedDeriv m (e.map ∘ loopLift c.toContinuousLoop) ((i : ℝ) / N) = 0) ∧
+          loopLength g c.toContinuousLoop =
+            ∑ i : Fin N, (riemannianEDistOf g (polygonVertex γ N i.val)
+              (polygonVertex γ N (i.val + 1))).toReal ∧
+          loopLength g c.toContinuousLoop ≤ loopLength g γ.toContinuousLoop ∧
+          ∀ lambda : ℝ, 0 < lambda → lambda ≤ 1 →
+            (initialRamp c).SmoothOn (I := I) univ ∧
+            (initialRamp c).IsRampOn (fun _ => g) lambda univ ∧
+            (initialRamp c).length (fun _ => g) lambda 0 ≤ loopLength g γ.toContinuousLoop + 1 ∧
+            (initialRamp c).totalCurvature (fun _ => g) lambda 0 ≤ (N : ℝ) * Real.pi) ∧
+      (∀ (K : Type*) [TopologicalSpace K] (N : ℕ), 2 ≤ N →
+        ∀ v : K → Surgery.Topology.Circle → Q,
+          (∀ i : Fin N, Continuous (fun k => polygonVertex (v k) N i.val)) →
+          (∀ k (i : Fin N), riemannianEDistOf g (polygonVertex (v k) N i.val)
+            (polygonVertex (v k) N (i.val + 1)) < ENNReal.ofReal radius) →
+          ∀ m : ℕ, Continuous (fun p : K × ℝ =>
+            iteratedDeriv m (fun x : ℝ =>
+              e.map (flatPolygon g P N (v p.1) (x : Surgery.Topology.Circle))) p.2)) := by
+  sorry
+
+theorem rfs_prepared_family (g : SmoothRiemannianMetric I Q) {d : ℕ}
+    (e : SmoothLoopEmbedding (I := I) (Q := Q) d)
+    (Γ : RegularFamily (I := I) (Q := Q) (Sphere 2)) (eta : ℝ) (heta : 0 < eta) :
+    ∃ P : FlatteningProfile, ∃ N : ℕ, 2 ≤ N ∧
+      ∃ prepared : RegularFamily (I := I) (Q := Q) (Sphere 2),
+        (∀ p z, (prepared p).1 z = flatPolygon g P N (Γ p).1 z) ∧
+        HasContinuousSmoothLoopJets e prepared ∧
+        ContinuousMap.Homotopic prepared Γ ∧
+        (∀ p, |regularLeastArea g (prepared p) - regularLeastArea g (Γ p)| < eta) ∧
+        let L₀ := 1 + sSup (Set.range (fun p => loopLength g (Γ p).1.toContinuousLoop))
+        let Theta₀ := (N : ℝ) * Real.pi
+        let Ainit := familyMaximum g Γ + eta
+        0 ≤ L₀ ∧ 0 ≤ Theta₀ ∧ 0 ≤ Ainit ∧
+          ∀ p (lambda : ℝ), 0 < lambda → lambda ≤ 1 →
+            (initialRamp (prepared p).1).SmoothOn (I := I) univ ∧
+            (initialRamp (prepared p).1).IsRampOn (fun _ => g) lambda univ ∧
+            (initialRamp (prepared p).1).length (fun _ => g) lambda 0 ≤ L₀ ∧
+            (initialRamp (prepared p).1).totalCurvature (fun _ => g) lambda 0 ≤ Theta₀ ∧
+            regularLeastArea g (prepared p) ≤ Ainit := by
+  sorry
+
 
 end DifferentialGeometry.PDE.RicciFlow.Extinction.Families

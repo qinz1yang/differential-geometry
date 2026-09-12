@@ -756,3 +756,25 @@ noncomputable def ContMDiffVectorBundleHom.ofTensorialAt
 end VBC
 
 end MapSection
+
+section TrivializationSymmL
+
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+  {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
+  {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
+  {V : M → Type*} [TopologicalSpace (TotalSpace F V)] [∀ x, TopologicalSpace (V x)]
+  [FiberBundle F V] [∀ x, AddCommGroup (V x)] [∀ x, Module ℝ (V x)] [VectorBundle ℝ F V]
+
+theorem Bundle.Trivialization.contMDiffOn_symmL_section
+    [ContMDiffVectorBundle ∞ F V I]
+    (e : Trivialization F (Bundle.TotalSpace.proj : Bundle.TotalSpace F V → M))
+    [MemTrivializationAtlas e] (w : F) :
+    ContMDiffOn I (I.prod 𝓘(ℝ, F)) ∞
+      (fun x => (⟨x, e.symmL ℝ x w⟩ : Bundle.TotalSpace F V)) e.baseSet := by
+  rw [Bundle.Trivialization.contMDiffOn_section_iff (s := fun x => e.symmL ℝ x w)
+    e e.open_baseSet (fun _ hx => hx)]
+  exact (contMDiffOn_const (c := w)).congr (fun x hx => by
+    rw [Bundle.Trivialization.symmL_apply e hx w, Bundle.Trivialization.apply_mk_symm e hx w])
+
+end TrivializationSymmL

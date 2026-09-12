@@ -1086,6 +1086,120 @@ theorem rfs_csf_area_comparison_ode (A rho F : ℝ → ℝ) (s t : ℝ) (hst : s
   simp only [hs, h0, sub_zero] at hmain
   linarith
 
+omit hCompact hNonempty [SigmaCompactSpace M] in
+theorem continuousOn_loopFamily_areaError (B : RicciBackground (I := I) (M := M) D a b)
+    (γ : ℝ → ContinuousFreeLoop M)
+    (hγ : (curveOfLoopFamily γ).SmoothOn (I := I) (Icc a b))
+    (hi : (curveOfLoopFamily γ).ImmersedOn (I := I) (Icc a b)) :
+    ContinuousOn (fun t => (curveOfLoopFamily γ).areaError B.family.metric (Icc a b) t)
+      (Icc a b) := by
+  have hκ : CurveMap.Field.SmoothOn (I := I)
+      ((curveOfLoopFamily γ).curvatureVector B.family.metric) (Icc a b) :=
+    CurveMap.Field.smoothOn_curvatureVector B.family.metric B.smooth B.regular
+      (uniqueDiffOn_Icc B.lt) (curveOfLoopFamily γ) hγ hi
+  exact continuousOn_areaError_of_smoothOn_curvatureVector B.family.metric B.smooth B.regular
+    (uniqueDiffOn_Icc B.lt) (curveOfLoopFamily γ) hγ hi hκ B.lt subset_rfl
+
+omit hNonempty [SigmaCompactSpace M] in
+theorem rfs_csf_immersed_area_of_continuousOn_leastArea_of_slope
+    (B : RicciBackground (I := I) (M := M) D a b)
+    (γ : ℝ → ContinuousFreeLoop M)
+    (hγ : (curveOfLoopFamily γ).SmoothOn (I := I) (Icc a b))
+    (hi : (curveOfLoopFamily γ).ImmersedOn (I := I) (Icc a b))
+    (hA : ContinuousOn (loopFamilyLeastArea B.family.metric γ) (Icc a b))
+    (hslope : ∀ t ∈ Ico a b, ∀ ε > 0, ∃ δ > 0, ∀ h ∈ Ioo (0 : ℝ) δ, t + h ≤ b →
+      (loopFamilyLeastArea B.family.metric γ (t + h) -
+          loopFamilyLeastArea B.family.metric γ t) / h ≤
+        -2 * Real.pi - scalarMinimum B.family t * loopFamilyLeastArea B.family.metric γ t / 2 +
+          (curveOfLoopFamily γ).areaError B.family.metric (Icc a b) t + ε) :
+    ContinuousOn (loopFamilyLeastArea B.family.metric γ) (Icc a b) ∧
+      (∀ s ∈ Icc a b, ∀ t ∈ Icc s b,
+        areaIntegratingFactor B.family s t * loopFamilyLeastArea B.family.metric γ t ≤
+          loopFamilyLeastArea B.family.metric γ s +
+            ∫ v in s..t, areaIntegratingFactor B.family s v *
+              (-2 * Real.pi + (curveOfLoopFamily γ).areaError B.family.metric (Icc a b) v)) ∧
+      (∀ t ∈ Ico a b, ∀ ε > 0, ∃ δ > 0, ∀ h ∈ Ioo (0 : ℝ) δ, t + h ≤ b →
+        (loopFamilyLeastArea B.family.metric γ (t + h) -
+            loopFamilyLeastArea B.family.metric γ t) / h ≤
+          -2 * Real.pi - scalarMinimum B.family t * loopFamilyLeastArea B.family.metric γ t / 2 +
+            (curveOfLoopFamily γ).areaError B.family.metric (Icc a b) t + ε) := by
+  have hF := continuousOn_loopFamily_areaError (I := I) (M := M) B γ hγ hi
+  refine ⟨hA, ?_, hslope⟩
+  intro s hs t ht
+  have hst : s ≤ t := ht.1
+  have hAsub : Icc s t ⊆ Icc a b := Icc_subset_Icc hs.1 ht.2
+  have hA' : ContinuousOn (loopFamilyLeastArea B.family.metric γ) (Icc s t) :=
+    hA.mono hAsub
+  have hrho : ContinuousOn (fun v => scalarMinimum B.family v / 2) (Icc s t) :=
+    ((RicciBackground.continuousOn_scalarMinimum B).div_const 2).mono hAsub
+  have hF' : ContinuousOn (fun v => -2 * Real.pi +
+      (curveOfLoopFamily γ).areaError B.family.metric (Icc a b) v) (Icc s t) :=
+    (continuousOn_const.add hF).mono hAsub
+  have hDini : ∀ v ∈ Ico s t, v ∉ (∅ : Finset ℝ) → ∀ ε > 0, ∃ δ > 0,
+      ∀ h ∈ Ioo (0 : ℝ) δ, v + h ≤ t →
+        (loopFamilyLeastArea B.family.metric γ (v + h) -
+            loopFamilyLeastArea B.family.metric γ v) / h ≤
+          -(scalarMinimum B.family v / 2) * loopFamilyLeastArea B.family.metric γ v +
+            (-2 * Real.pi + (curveOfLoopFamily γ).areaError B.family.metric (Icc a b) v) + ε := by
+    intro v hv _ ε hε
+    obtain ⟨δ, hδpos, hδ⟩ := hslope v ⟨le_trans hs.1 hv.1, lt_of_lt_of_le hv.2 ht.2⟩ ε hε
+    refine ⟨δ, hδpos, fun h hh hb => ?_⟩
+    have h1 := hδ h hh (le_trans hb ht.2)
+    have h2 : -2 * Real.pi - scalarMinimum B.family v *
+          loopFamilyLeastArea B.family.metric γ v / 2 +
+          (curveOfLoopFamily γ).areaError B.family.metric (Icc a b) v + ε =
+        -(scalarMinimum B.family v / 2) * loopFamilyLeastArea B.family.metric γ v +
+          (-2 * Real.pi + (curveOfLoopFamily γ).areaError B.family.metric (Icc a b) v) + ε := by
+      ring
+    linarith [h1, h2.le, h2.ge]
+  have hmain := rfs_csf_area_comparison_ode (A := loopFamilyLeastArea B.family.metric γ)
+    (rho := fun v => scalarMinimum B.family v / 2)
+    (F := fun v => -2 * Real.pi + (curveOfLoopFamily γ).areaError B.family.metric (Icc a b) v)
+    s t hst hA' hrho hF' (∅ : Finset ℝ) hDini
+  have hrho' : (fun w => scalarMinimum B.family w / 2) =
+      fun w => (1 / 2 : ℝ) * scalarMinimum B.family w := by
+    funext w; ring
+  rw [hrho'] at hmain
+  simpa only [areaIntegratingFactor, intervalIntegral.integral_const_mul] using hmain
+
+
+omit hNonempty [SigmaCompactSpace M] in
+theorem rfs_csf_immersed_area_of_continuousOn_leastArea_of_window
+    (B : RicciBackground (I := I) (M := M) D a b)
+    (γ : ℝ → ContinuousFreeLoop M)
+    (hγ : (curveOfLoopFamily γ).SmoothOn (I := I) (Icc a b))
+    (hi : (curveOfLoopFamily γ).ImmersedOn (I := I) (Icc a b))
+    (hA : ContinuousOn (loopFamilyLeastArea B.family.metric γ) (Icc a b))
+    (hwindow : ∀ s ∈ Icc a b, ∀ u ∈ Icc s b,
+      Real.exp (∫ w in s..u, scalarMinimum B.family w / 2) *
+          loopFamilyLeastArea B.family.metric γ u ≤
+        loopFamilyLeastArea B.family.metric γ s +
+          ∫ v in s..u, Real.exp (∫ w in s..v, scalarMinimum B.family w / 2) *
+            (-2 * Real.pi + (curveOfLoopFamily γ).areaError B.family.metric (Icc a b) v)) :
+    ContinuousOn (loopFamilyLeastArea B.family.metric γ) (Icc a b) ∧
+      (∀ s ∈ Icc a b, ∀ t ∈ Icc s b,
+        areaIntegratingFactor B.family s t * loopFamilyLeastArea B.family.metric γ t ≤
+          loopFamilyLeastArea B.family.metric γ s +
+            ∫ v in s..t, areaIntegratingFactor B.family s v *
+              (-2 * Real.pi + (curveOfLoopFamily γ).areaError B.family.metric (Icc a b) v)) ∧
+      (∀ t ∈ Ico a b, ∀ ε > 0, ∃ δ > 0, ∀ h ∈ Ioo (0 : ℝ) δ, t + h ≤ b →
+        (loopFamilyLeastArea B.family.metric γ (t + h) -
+            loopFamilyLeastArea B.family.metric γ t) / h ≤
+          -2 * Real.pi - scalarMinimum B.family t * loopFamilyLeastArea B.family.metric γ t / 2 +
+            (curveOfLoopFamily γ).areaError B.family.metric (Icc a b) t + ε) := by
+  have hF := continuousOn_loopFamily_areaError (I := I) (M := M) B γ hγ hi
+  have hrho' : (fun w => scalarMinimum B.family w / 2) =
+      fun w => (1 / 2 : ℝ) * scalarMinimum B.family w := by
+    funext w; ring
+  refine ⟨hA, ?_, rfs_csf_slope_le_of_window_comparison B γ hA hF ?_⟩
+  · intro s hs t ht
+    have h := hwindow s hs t ht
+    rw [hrho'] at h
+    simpa only [areaIntegratingFactor, intervalIntegral.integral_const_mul] using h
+  · intro s hs u hu
+    exact hwindow s hs u hu
+
+
 theorem rfs_csf_generic_curves (B : RicciBackground (I := I) (M := M) D a b)
     (hdim : Module.finrank ℝ E = 3) {N : ℕ}
     (e : Width.SmoothLoopEmbedding (I := I) (Q := M) N)

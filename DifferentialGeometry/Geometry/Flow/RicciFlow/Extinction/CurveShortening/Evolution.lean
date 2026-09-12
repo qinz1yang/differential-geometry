@@ -593,27 +593,6 @@ theorem CurveMap.derivWithin_curvatureSq (B : RicciBackground (I := I) (M := M) 
   rw [h, hsymm]
   ring
 
-theorem rfs_csf_curvature (B : RicciBackground (I := I) (M := M) D a b)
-    (hsu : s < u) (hwindow : Icc s u ⊆ Icc a b)
-    (c : CurveMap M) (hc : c.IsSolutionOn B.family.metric (Icc s u))
-    (x t : ℝ) (ht : t ∈ Icc s u) :
-    derivWithin (c.curvatureSq B.family.metric x) (Icc s u) t =
-      c.ds B.family.metric (c.ds B.family.metric (c.curvatureSq B.family.metric)) x t -
-      2 * c.normSq B.family.metric (c.normalCurvatureDerivative B.family.metric) x t +
-      2 * c.curvatureSq B.family.metric x t ^ 2 +
-      4 * c.curvatureSq B.family.metric x t * c.ricciTangent B.family x t -
-      2 * B.family.ricciAt t (c.lift x t)
-        (vec2 (c.curvatureVector B.family.metric x t) (c.curvatureVector B.family.metric x t)) +
-      2 * (B.family.metric t).inner (c.lift x t)
-        (riemannVector B.family t (c.lift x t) (c.curvatureVector B.family.metric x t)
-          (c.unitTangent B.family.metric x t) (c.unitTangent B.family.metric x t))
-        (c.curvatureVector B.family.metric x t) -
-      4 * nablaRicci B.family t (c.lift x t) (c.unitTangent B.family.metric x t)
-        (c.unitTangent B.family.metric x t) (c.curvatureVector B.family.metric x t) +
-      2 * nablaRicci B.family t (c.lift x t) (c.curvatureVector B.family.metric x t)
-        (c.unitTangent B.family.metric x t) (c.unitTangent B.family.metric x t) := by
-  sorry
-
 omit [SigmaCompactSpace M] in
 theorem riemannVector_eq_riemannOp (G : SolutionFamily (I := I) (M := M))
     (t : ℝ) (p : M) (A V W : TangentSpace I p) :
@@ -639,6 +618,607 @@ theorem riemann_pair_eq_rm04 (G : SolutionFamily (I := I) (M := M))
   rw [riemannVector_eq_riemannOp G t p A V V, ← hrm,
     rm04_eq_inner (I := I) (G.metric t) p A V A]
   exact ((G.metric t).symm p A _).symm
+
+omit [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
+theorem CurveMap.ds_inner (g : ℝ → SmoothRiemannianMetric I M) (c : CurveMap M)
+    (J : Set ℝ) (hc : c.SmoothOn (I := I) J)
+    (V W : c.Field (I := I))
+    (x t : ℝ) (ht : t ∈ J)
+    (hV : ContMDiff 𝓘(ℝ, ℝ) I.tangent ∞
+      (fun y : ℝ =>
+        (TotalSpace.mk' E (E := (TangentSpace I : M → Type _))
+          (c.lift y t) (V y t) : TangentBundle I M)))
+    (hW : ContMDiff 𝓘(ℝ, ℝ) I.tangent ∞
+      (fun y : ℝ =>
+        (TotalSpace.mk' E (E := (TangentSpace I : M → Type _))
+          (c.lift y t) (W y t) : TangentBundle I M))) :
+    c.ds g (fun y r => (g r).inner (c.lift y r) (V y r) (W y r)) x t =
+      (g t).inner (c.lift x t) (c.Ds g V x t) (W x t) +
+        (g t).inner (c.lift x t) (V x t) (c.Ds g W x t) := by
+  have hγ : ContMDiff 𝓘(ℝ, ℝ) I ∞ (fun y : ℝ => c.lift y t) :=
+    contMDiffOn_univ.mp (CurveMap.space_slice_contMDiffOn c J hc t ht)
+  have hd := metric_compat_hasDerivAt_inner (by simp : (1 : WithTop ℕ∞) ≤ ∞) (g t)
+    (fun y : ℝ => c.lift y t) (fun y => V y t) (fun y => W y t) x hγ
+    (chartRep_diff (I := I) (fun y : ℝ => c.lift y t) (fun y => V y t) hV x)
+    (chartRep_diff (I := I) (fun y : ℝ => c.lift y t) (fun y => W y t) hW x)
+  rw [CurveMap.ds, hd.deriv]
+  simp only [CurveMap.Ds, CurveMap.Dx, map_smul, smul_apply, smul_eq_mul]
+  ring
+
+theorem CurveMap.normSq_normalCurvatureDerivative (g : ℝ → SmoothRiemannianMetric I M)
+    (c : CurveMap M) (J : Set ℝ) (hc : c.SmoothOn (I := I) J)
+    (hi : c.ImmersedOn (I := I) J) (x t : ℝ) (ht : t ∈ J) :
+    c.normSq g (c.normalCurvatureDerivative g) x t =
+      c.normSq g (c.Ds g (c.curvatureVector g)) x t - c.curvatureSq g x t ^ 2 := by
+  have hgeom := tangent_curvature_geometry g c J hc hi x t ht
+  have hN : c.normalCurvatureDerivative g x t =
+      c.Ds g (c.curvatureVector g) x t + c.curvatureSq g x t • c.unitTangent g x t := rfl
+  rw [CurveMap.normSq, CurveMap.normSq, hN]
+  simp only [map_add, add_apply, map_smul, smul_apply, smul_eq_mul]
+  rw [(g t).symm (c.lift x t) (c.unitTangent g x t) (c.Ds g (c.curvatureVector g) x t),
+    hgeom.1, hgeom.2.2]
+  ring
+
+omit [CompleteSpace E] [SigmaCompactSpace M] in
+theorem CurveMap.Ds_curvatureVector_slice_contMDiff
+    (g : ℝ → SmoothRiemannianMetric I M)
+    (hG : MetricFamilySmoothOn (I := I) (M := M) D g) {J : Set ℝ} (hJ : J ⊆ D.regular)
+    (hJun : UniqueDiffOn ℝ J)
+    (c : CurveMap M) (hc : c.SmoothOn (I := I) J) (hi : c.ImmersedOn (I := I) J)
+    (t : ℝ) (ht : t ∈ J) :
+    ContMDiff 𝓘(ℝ, ℝ) I.tangent ∞
+      (fun y : ℝ => (TotalSpace.mk' E (E := (TangentSpace I : M → Type _))
+        (c.lift y t) (c.Ds g (c.curvatureVector g) y t) : TangentBundle I M)) := by
+  have hκ : CurveMap.Field.SmoothOn (I := I) (c.curvatureVector g) J :=
+    CurveMap.Field.smoothOn_curvatureVector g hG hJ hJun c hc hi
+  have hDx : CurveMap.Field.SmoothOn (I := I) (c.Dx g (c.curvatureVector g)) J :=
+    CurveMap.Field.smoothOn_Dx g hG hJ hJun c hc (c.curvatureVector g) hκ
+  have hsp : ContDiffOn ℝ ∞ (fun p : ℝ × ℝ => c.speed g p.1 p.2) (univ ×ˢ J) :=
+    CurveMap.Field.smoothOn_speed g hG hJ c hc hi
+  have hinv : ContDiffOn ℝ ∞ (fun p : ℝ × ℝ => (c.speed g p.1 p.2)⁻¹) (univ ×ˢ J) := by
+    refine hsp.inv ?_
+    intro p hp
+    exact ne_of_gt (c.speed_pos g hi p.1 p.2 hp.2)
+  have hDs : CurveMap.Field.SmoothOn (I := I)
+      (c.Ds g (c.curvatureVector g)) J := by
+    have hfun : c.Ds g (c.curvatureVector g) =
+        (fun x t => (c.speed g x t)⁻¹ • c.Dx g (c.curvatureVector g) x t) := rfl
+    rw [hfun]
+    exact CurveMap.Field.smoothOn_const_smul c hc (fun x t => (c.speed g x t)⁻¹) hinv
+      (c.Dx g (c.curvatureVector g)) hDx
+  intro y
+  exact contMDiffWithinAt_univ.mp
+    (Field.space_slice_contMDiffWithinAt (I := I) c J _ hDs y t ht)
+
+omit [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
+theorem CurveMap.differentiableAt_inner_slice (g : ℝ → SmoothRiemannianMetric I M)
+    (c : CurveMap M) (J : Set ℝ) (hc : c.SmoothOn (I := I) J)
+    (V W : c.Field (I := I)) (x t : ℝ) (ht : t ∈ J)
+    (hV : ContMDiff 𝓘(ℝ, ℝ) I.tangent ∞
+      (fun y : ℝ => (TotalSpace.mk' E (E := (TangentSpace I : M → Type _))
+        (c.lift y t) (V y t) : TangentBundle I M)))
+    (hW : ContMDiff 𝓘(ℝ, ℝ) I.tangent ∞
+      (fun y : ℝ => (TotalSpace.mk' E (E := (TangentSpace I : M → Type _))
+        (c.lift y t) (W y t) : TangentBundle I M))) :
+    DifferentiableAt ℝ (fun y : ℝ => (g t).inner (c.lift y t) (V y t) (W y t)) x := by
+  have hγ : ContMDiff 𝓘(ℝ, ℝ) I ∞ (fun y : ℝ => c.lift y t) :=
+    contMDiffOn_univ.mp (CurveMap.space_slice_contMDiffOn c J hc t ht)
+  exact (metric_compat_hasDerivAt_inner (I := I) (n := ∞) (by simp) (g t)
+    (fun y : ℝ => c.lift y t) (fun y => V y t) (fun y => W y t) x hγ
+    (chartRep_diff _ _ hV x) (chartRep_diff _ _ hW x)).differentiableAt
+
+omit [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
+theorem CurveMap.ds_curvatureSq_eq (g : ℝ → SmoothRiemannianMetric I M)
+    (c : CurveMap M) (J : Set ℝ) (hc : c.SmoothOn (I := I) J)
+    (hi : c.ImmersedOn (I := I) J) (x t : ℝ) (ht : t ∈ J) :
+    c.ds g (c.curvatureSq g) x t =
+      2 * (g t).inner (c.lift x t)
+        (c.Ds g (c.curvatureVector g) x t) (c.curvatureVector g x t) := by
+  have hκ := CurveMap.curvatureVector_contMDiff g c J hc hi t ht
+  have h := CurveMap.ds_inner g c J hc (c.curvatureVector g) (c.curvatureVector g) x t ht hκ hκ
+  have hsymm := (g t).symm (c.lift x t) (c.Ds g (c.curvatureVector g) x t)
+    (c.curvatureVector g x t)
+  have hsq : c.curvatureSq g =
+      (fun y r : ℝ => (g r).inner (c.lift y r) (c.curvatureVector g y r)
+        (c.curvatureVector g y r)) := rfl
+  rw [hsq, h, hsymm]
+  ring
+
+omit [CompleteSpace E] [SigmaCompactSpace M] in
+theorem CurveMap.ds_ds_curvatureSq_eq (g : ℝ → SmoothRiemannianMetric I M)
+    (hG : MetricFamilySmoothOn (I := I) (M := M) D g) {J : Set ℝ} (hJ : J ⊆ D.regular)
+    (hJun : UniqueDiffOn ℝ J)
+    (c : CurveMap M) (hc : c.SmoothOn (I := I) J) (hi : c.ImmersedOn (I := I) J)
+    (x t : ℝ) (ht : t ∈ J) :
+    c.ds g (c.ds g (c.curvatureSq g)) x t =
+      2 * (g t).inner (c.lift x t)
+        (c.Ds g (c.Ds g (c.curvatureVector g)) x t) (c.curvatureVector g x t) +
+      2 * (g t).inner (c.lift x t)
+        (c.Ds g (c.curvatureVector g) x t) (c.Ds g (c.curvatureVector g) x t) := by
+  have h1 : ∀ y : ℝ, c.ds g (c.curvatureSq g) y t =
+      2 * (g t).inner (c.lift y t) (c.Ds g (c.curvatureVector g) y t)
+        (c.curvatureVector g y t) :=
+    fun y => CurveMap.ds_curvatureSq_eq g c J hc hi y t ht
+  have hD := CurveMap.Ds_curvatureVector_slice_contMDiff g hG hJ hJun c hc hi t ht
+  have hκ := CurveMap.curvatureVector_contMDiff g c J hc hi t ht
+  have h2 := CurveMap.ds_inner g c J hc (c.Ds g (c.curvatureVector g))
+    (c.curvatureVector g) x t ht hD hκ
+  have hdiff := CurveMap.differentiableAt_inner_slice g c J hc
+    (c.Ds g (c.curvatureVector g)) (c.curvatureVector g) x t ht hD hκ
+  have hds : c.ds g (c.ds g (c.curvatureSq g)) x t =
+      (c.speed g x t)⁻¹ * deriv (fun y => c.ds g (c.curvatureSq g) y t) x := rfl
+  have hds2 : c.ds g (fun y r => (g r).inner (c.lift y r)
+      (c.Ds g (c.curvatureVector g) y r) (c.curvatureVector g y r)) x t =
+      (c.speed g x t)⁻¹ * deriv (fun y => (g t).inner (c.lift y t)
+        (c.Ds g (c.curvatureVector g) y t) (c.curvatureVector g y t)) x := rfl
+  rw [hds]
+  have hcongr : deriv (fun y => c.ds g (c.curvatureSq g) y t) x =
+      deriv (fun y => 2 * (g t).inner (c.lift y t)
+        (c.Ds g (c.curvatureVector g) y t) (c.curvatureVector g y t)) x :=
+    Filter.EventuallyEq.deriv_eq (Filter.Eventually.of_forall h1)
+  rw [hcongr, deriv_const_mul 2 hdiff]
+  have hval : (c.speed g x t)⁻¹ * (2 * deriv (fun y => (g t).inner (c.lift y t)
+      (c.Ds g (c.curvatureVector g) y t) (c.curvatureVector g y t)) x) =
+      2 * c.ds g (fun y r => (g r).inner (c.lift y r)
+        (c.Ds g (c.curvatureVector g) y r) (c.curvatureVector g y r)) x t := by
+    rw [hds2]
+    ring
+  rw [hval, h2]
+  ring
+
+omit [SigmaCompactSpace M] in
+theorem CurveMap.contDiffWithinAt_ricciTensor_slice
+    (g : SmoothRiemannianMetric I M) (c : CurveMap M) (J : Set ℝ)
+    (hc : c.SmoothOn (I := I) J)
+    (V W : c.Field (I := I)) (x t : ℝ) (ht : t ∈ J)
+    (hV : ContMDiff 𝓘(ℝ, ℝ) I.tangent ∞
+      (fun y : ℝ => (TotalSpace.mk' E (E := (TangentSpace I : M → Type _))
+        (c.lift y t) (V y t) : TangentBundle I M)))
+    (hW : ContMDiff 𝓘(ℝ, ℝ) I.tangent ∞
+      (fun y : ℝ => (TotalSpace.mk' E (E := (TangentSpace I : M → Type _))
+        (c.lift y t) (W y t) : TangentBundle I M))) :
+    ContDiffWithinAt ℝ ∞ (fun y : ℝ =>
+      ricciTensor (I := I) g (c.lift y t) (V y t) (W y t)) univ x := by
+  have hγ : ContMDiff 𝓘(ℝ, ℝ) I ∞ (fun y : ℝ => c.lift y t) :=
+    contMDiffOn_univ.mp (CurveMap.space_slice_contMDiffOn c J hc t ht)
+  have hsec : ContMDiff 𝓘(ℝ, ℝ) (I.prod 𝓘(ℝ, E →L[ℝ] E →L[ℝ] ℝ)) ∞
+      (fun y : ℝ => (TotalSpace.mk' (E →L[ℝ] E →L[ℝ] ℝ)
+        (E := fun x : M => TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ)
+        (c.lift y t) (ricciTensor (I := I) g (c.lift y t)))) :=
+    (ricciTensor_contMDiff (I := I) g).comp hγ
+  have happ := ContMDiffWithinAt.clm_bundle_apply₂ (𝕜 := ℝ) (F₁ := E) (F₂ := E) (F₃ := ℝ)
+    (E₁ := TangentSpace I (M := M)) (E₂ := TangentSpace I (M := M))
+    (E₃ := Bundle.Trivial M ℝ)
+    (b := fun y : ℝ => c.lift y t) (s := (univ : Set ℝ)) (x := x)
+    (ψ := fun y : ℝ => ricciTensor (I := I) g (c.lift y t))
+    (v := fun y : ℝ => V y t) (w := fun y : ℝ => W y t)
+    (hsec x).contMDiffWithinAt (hV x).contMDiffWithinAt (hW x).contMDiffWithinAt
+  rw [Bundle.contMDiffWithinAt_totalSpace] at happ
+  rw [← contMDiffWithinAt_iff_contDiffWithinAt]
+  exact happ.2
+
+omit [SigmaCompactSpace M] in
+theorem CurveMap.contDiffWithinAt_ricciTangent_slice
+    (g : SmoothRiemannianMetric I M) (c : CurveMap M) (J : Set ℝ)
+    (hc : c.SmoothOn (I := I) J)
+    (V W : c.Field (I := I)) (x t : ℝ) (ht : t ∈ J)
+    (hV : ContMDiff 𝓘(ℝ, ℝ) I.tangent ∞
+      (fun y : ℝ => (TotalSpace.mk' E (E := (TangentSpace I : M → Type _))
+        (c.lift y t) (V y t) : TangentBundle I M)))
+    (hW : ContMDiff 𝓘(ℝ, ℝ) I.tangent ∞
+      (fun y : ℝ => (TotalSpace.mk' E (E := (TangentSpace I : M → Type _))
+        (c.lift y t) (W y t) : TangentBundle I M))) :
+    ContDiffWithinAt ℝ ∞ (fun y : ℝ =>
+      metricRicciAt (I := I) g (c.lift y t) (vec2 (V y t) (W y t))) univ x := by
+  have h := CurveMap.contDiffWithinAt_ricciTensor_slice (I := I) g c J hc V W x t ht hV hW
+  have heq : (fun y : ℝ => ricciTensor (I := I) g (c.lift y t) (V y t) (W y t)) =
+      (fun y : ℝ => metricRicciAt (I := I) g (c.lift y t) (vec2 (V y t) (W y t))) :=
+    funext (fun y => (DifferentialGeometry.metricRicciAt_apply_eq_ricciTensor (I := I) g
+      (c.lift y t) (V y t) (W y t)).symm)
+  rwa [heq] at h
+
+omit [SigmaCompactSpace M] hBoundary in
+theorem CurveMap.ricciTangent_continuousOn
+    (B : RicciBackground (I := I) (M := M) D a b)
+    (hwindow : Icc s u ⊆ Icc a b)
+    (c : CurveMap M) (hc : c.IsSolutionOn B.family.metric (Icc s u)) :
+    ContinuousOn (fun p : ℝ × ℝ => c.ricciTangent B.family p.1 p.2) (univ ×ˢ Icc s u) := by
+  set g := B.family.metric with hg
+  have hwu : Icc s u ⊆ D.regular := fun r hr => B.regular (hwindow hr)
+  have hu : CurveMap.Field.SmoothOn (I := I) (c.unitTangent g) (Icc s u) :=
+    CurveMap.Field.smoothOn_unitTangent g B.smooth hwu c hc.smooth hc.immersed
+  have hbc : ContinuousOn (fun p : ℝ × ℝ => c.lift p.1 p.2) (univ ×ˢ Icc s u) :=
+    (hc.smooth.continuousOn)
+  have huc : ContinuousOn (fun p : ℝ × ℝ =>
+      (⟨c.lift p.1 p.2, c.unitTangent g p.1 p.2⟩ : TangentBundle I M)) (univ ×ˢ Icc s u) :=
+    hu.continuousOn
+  have hτ : Continuous (fun q : (univ ×ˢ Icc s u : Set (ℝ × ℝ)) => (q.1 : ℝ × ℝ).2) :=
+    continuous_snd.comp continuous_subtype_val
+  have hτK : ∀ q : (univ ×ˢ Icc s u : Set (ℝ × ℝ)), (q.1 : ℝ × ℝ).2 ∈ D.carrier :=
+    fun q => D.regular_subset (hwu q.2.2)
+  have hb : Continuous (fun q : (univ ×ˢ Icc s u : Set (ℝ × ℝ)) => c.lift (q.1 : ℝ × ℝ).1 (q.1 : ℝ × ℝ).2) :=
+    hbc.domRestrict
+  have hv : ∀ i : Fin 2, Continuous (fun q : (univ ×ˢ Icc s u : Set (ℝ × ℝ)) =>
+      (⟨c.lift (q.1 : ℝ × ℝ).1 (q.1 : ℝ × ℝ).2,
+        c.unitTangent g (q.1 : ℝ × ℝ).1 (q.1 : ℝ × ℝ).2⟩ : TangentBundle I M)) := by
+    intro i
+    exact huc.domRestrict
+  have hmain := tensor0SFamilyContinuousOnSet.eval_continuous (I := I) (M := M) (s := 2)
+    (K := D.carrier) (A := fun t x => B.family.ricci t x) B.equation.ricciCont
+    (P := (univ ×ˢ Icc s u : Set (ℝ × ℝ))) hτ hτK hb
+    (v := fun i q => c.unitTangent g (q.1 : ℝ × ℝ).1 (q.1 : ℝ × ℝ).2) hv
+  rw [continuousOn_iff_continuous_domRestrict]
+  refine hmain.congr (fun q => ?_)
+  simp only [SolutionFamily.ricci_apply, CurveMap.ricciTangent]
+  congr 1
+  funext i
+  fin_cases i <;> simp [vec2, hg]
+
+omit [SigmaCompactSpace M] in
+theorem CurveMap.q_continuousOn
+    (B : RicciBackground (I := I) (M := M) D a b)
+    (hsu : s < u) (hwindow : Icc s u ⊆ Icc a b)
+    (c : CurveMap M) (hc : c.IsSolutionOn B.family.metric (Icc s u)) :
+    ContinuousOn (fun p : ℝ × ℝ => c.q B.family p.1 p.2) (univ ×ˢ Icc s u) := by
+  have hwu : Icc s u ⊆ D.regular := fun r hr => B.regular (hwindow hr)
+  have hk : ContinuousOn (fun p : ℝ × ℝ => c.curvatureSq B.family.metric p.1 p.2)
+      (univ ×ˢ Icc s u) :=
+    (CurveMap.Field.smoothOn_curvatureSq B.family.metric B.smooth hwu
+      (uniqueDiffOn_Icc hsu) c hc.smooth hc.immersed).continuousOn
+  exact hk.add (CurveMap.ricciTangent_continuousOn (I := I) (M := M) B hwindow c hc)
+
+omit [SigmaCompactSpace M] in
+theorem CurveMap.differentiableAt_q_slice (B : RicciBackground (I := I) (M := M) D a b)
+    (c : CurveMap M) (hc : c.IsSolutionOn B.family.metric (Icc s u))
+    (x t : ℝ) (ht : t ∈ Icc s u) :
+    DifferentiableAt ℝ (fun y : ℝ => c.q B.family y t) x := by
+  have hk2 : ContDiff ℝ ∞ (fun y : ℝ => c.curvatureSq B.family.metric y t) :=
+    c.curvatureSq_contDiff B.family.metric (Icc s u) hc.smooth hc.immersed t ht
+  have hu := CurveMap.unitTangent_contMDiff B.family.metric c (Icc s u) hc.smooth hc.immersed t ht
+  have hric : ContDiffWithinAt ℝ ∞ (fun y : ℝ => c.ricciTangent B.family y t) univ x :=
+    CurveMap.contDiffWithinAt_ricciTangent_slice (B.family.metric t) c (Icc s u) hc.smooth
+      (c.unitTangent B.family.metric) (c.unitTangent B.family.metric) x t ht hu hu
+  exact ((hk2.contDiffAt.add (contDiffWithinAt_univ.mp hric)).differentiableAt (by norm_num))
+
+omit [SigmaCompactSpace M] in
+theorem CurveMap.inner_riemannVector_eq_rm04
+    (G : SolutionFamily (I := I) (M := M)) (t : ℝ) (p : M)
+    (A B Z W : TangentSpace I p) :
+    (G.metric t).inner p (riemannVector G t p A B Z) W =
+      G.rm04At t p (vec4 A B Z W) := by
+  have hcov : CovariantDerivative.ContMDiffCovariantDerivativeLocally
+      (LeviCivita (G.metric t)) ∞ :=
+    leviCivita_contMDiffCovariantDerivativeLocally (I := I) (G.metric t)
+  have hrm : G.rm04At t p =
+      DifferentialGeometry.Geometry.Curvature.metricRm04At (I := I) (G.metric t) p := rfl
+  rw [riemannVector_eq_riemannOp G t p A B Z, hrm,
+    DifferentialGeometry.metricRm04At_eq_riemannCurvature04At,
+    DifferentialGeometry.Geometry.Curvature.CovariantDerivative.riemannCurvature04At_apply_const
+      (I := I) (G.metric t) (LeviCivita (G.metric t)) hcov A B Z W]
+  rw [← DifferentialGeometry.connectionRiemannCurvatureField_tangentConst_eq_riemannOp
+    (I := I) (cov := LeviCivita (G.metric t)) hcov p A B Z]
+  exact (G.metric t).symm p _ W
+
+omit [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] hBoundary in
+theorem CurveMap.Ds_add (g : ℝ → SmoothRiemannianMetric I M) (c : CurveMap M)
+    (V W : c.Field (I := I)) (x t : ℝ)
+    (hV : DifferentiableAt ℝ (chartRepAt (I := I) (fun y : ℝ => c.lift y t)
+      (fun y : ℝ => V y t) x) x)
+    (hW : DifferentiableAt ℝ (chartRepAt (I := I) (fun y : ℝ => c.lift y t)
+      (fun y : ℝ => W y t) x) x) :
+    c.Ds g (fun y r => V y r + W y r) x t = c.Ds g V x t + c.Ds g W x t := by
+  have h := covDerivAlong_add (I := I) (g t) (fun y : ℝ => c.lift y t)
+    (fun y => V y t) (fun y => W y t) x hV hW
+  simp only [CurveMap.Ds, CurveMap.Dx]
+  rw [h, smul_add]
+
+omit [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] hBoundary in
+theorem CurveMap.Ds_smulFun (g : ℝ → SmoothRiemannianMetric I M) (c : CurveMap M)
+    (V : c.Field (I := I)) (a : ℝ → ℝ → ℝ) (x t : ℝ)
+    (ha : DifferentiableAt ℝ (fun y : ℝ => a y t) x)
+    (hV : DifferentiableAt ℝ (chartRepAt (I := I) (fun y : ℝ => c.lift y t)
+      (fun y : ℝ => V y t) x) x) :
+    c.Ds g (fun y r => a y r • V y r) x t =
+      (c.ds g a x t) • V x t + a x t • c.Ds g V x t := by
+  have h := covDerivAlong_smulFun (I := I) (g t) (fun y : ℝ => c.lift y t)
+    (fun y => a y t) (fun y => V y t) x ha hV
+  simp only [CurveMap.Ds, CurveMap.Dx, CurveMap.ds]
+  rw [h, smul_add, smul_smul, smul_smul]
+  module
+
+theorem CurveMap.Dt_Ds_commutator
+    (B : RicciBackground (I := I) (M := M) D a b)
+    (hsu : s < u) (hwindow : Icc s u ⊆ Icc a b)
+    (c : CurveMap M) (hc : c.IsSolutionOn B.family.metric (Icc s u))
+    (V : c.Field (I := I)) (hV : V.SmoothOn (I := I) (Icc s u))
+    (x t : ℝ) (ht : t ∈ Icc s u) :
+    c.Dt B.family.metric (Icc s u) (c.Ds B.family.metric V) x t =
+      c.Ds B.family.metric (c.Dt B.family.metric (Icc s u) V) x t +
+      c.q B.family x t • c.Ds B.family.metric V x t +
+      (c.speed B.family.metric x t)⁻¹ •
+        (riemannVector B.family t (c.lift x t) (c.velocity (Icc s u) x t) (c.X x t) (V x t) +
+          connectionVariation B.family (Icc s u) t (c.lift x t) (c.X x t) (V x t)) := by
+  have huniq : UniqueDiffWithinAt ℝ (Icc s u) t := (uniqueDiffOn_Icc hsu) t ht
+  have hvpos : 0 < c.speed B.family.metric x t :=
+    c.speed_pos B.family.metric hc.immersed x t ht
+  have hDxV : CurveMap.Field.SmoothOn (I := I) (c.Dx B.family.metric V) (Icc s u) :=
+    CurveMap.Field.smoothOn_Dx B.family.metric B.smooth
+      (fun r hr => B.regular (hwindow hr)) (uniqueDiffOn_Icc hsu) c hc.smooth V hV
+  have hVrep : DifferentiableWithinAt ℝ
+      (chartRepAtBase (I := I) (c.lift x t) (fun r : ℝ => c.lift x r)
+        (fun r : ℝ => c.Dx B.family.metric V x r)) (Icc s u) t :=
+    chartRepAtBase_differentiableWithinAt (I := I)
+      (Field.time_slice_contMDiffWithinAt (I := I) c (Icc s u) _ hDxV x t ht)
+  have hsp : ContDiffOn ℝ ∞ (fun p : ℝ × ℝ => c.speed B.family.metric p.1 p.2)
+      (univ ×ˢ Icc s u) :=
+    CurveMap.Field.smoothOn_speed B.family.metric B.smooth
+      (fun r hr => B.regular (hwindow hr)) c hc.smooth hc.immersed
+  have hz : ContDiffWithinAt ℝ ∞ (fun r : ℝ => (x, r)) (Icc s u) t :=
+    contDiffWithinAt_const.prodMk contDiffWithinAt_id
+  have hslice : ContDiffWithinAt ℝ ∞ (fun r : ℝ => c.speed B.family.metric x r)
+      (Icc s u) t :=
+    (hsp.contDiffWithinAt ⟨mem_univ x, ht⟩).comp t hz (fun r hr => ⟨mem_univ x, hr⟩)
+  have hspeed_diff : DifferentiableWithinAt ℝ (fun r : ℝ => c.speed B.family.metric x r)
+      (Icc s u) t := (hslice.differentiableWithinAt (by norm_num))
+  have ha : DifferentiableWithinAt ℝ (fun r : ℝ => (c.speed B.family.metric x r)⁻¹)
+      (Icc s u) t :=
+    hspeed_diff.inv (ne_of_gt hvpos)
+  have hleib := Dt_smulFun_at c B.family.metric (Icc s u)
+    (fun y r => (c.speed B.family.metric y r)⁻¹) (c.Dx B.family.metric V) x t huniq ha hVrep
+  have hdtinv : derivWithin (fun r : ℝ => (c.speed B.family.metric x r)⁻¹)
+      (Icc s u) t = c.q B.family x t * (c.speed B.family.metric x t)⁻¹ := by
+    have hsd : HasDerivWithinAt (fun r : ℝ => c.speed B.family.metric x r)
+        (-c.q B.family x t * c.speed B.family.metric x t) (Icc s u) t := by
+      rw [← (rfs_csf_speed B hsu hwindow c hc x t ht).1]
+      exact hspeed_diff.hasDerivWithinAt
+    have hsd' : HasDerivWithinAt (fun r : ℝ => (c.speed B.family.metric x r)⁻¹)
+        (-(-c.q B.family x t * c.speed B.family.metric x t) /
+          (c.speed B.family.metric x t) ^ 2) (Icc s u) t :=
+      hsd.inv (ne_of_gt hvpos)
+    rw [hsd'.derivWithin huniq]
+    field_simp
+  have hpc := pullback_commutator B hsu hwindow c hc.smooth V hV x t ht
+  have hpc' : c.Dt B.family.metric (Icc s u) (c.Dx B.family.metric V) x t =
+      c.Dx B.family.metric (c.Dt B.family.metric (Icc s u) V) x t +
+      (riemannVector B.family t (c.lift x t) (c.velocity (Icc s u) x t) (c.X x t) (V x t) +
+        connectionVariation B.family (Icc s u) t (c.lift x t) (c.X x t) (V x t)) := by
+    rw [sub_eq_iff_eq_add] at hpc
+    rw [hpc]
+    abel
+  have hDsV : c.Ds B.family.metric V =
+      (fun y r => (c.speed B.family.metric y r)⁻¹ • c.Dx B.family.metric V y r) := rfl
+  rw [hDsV, hleib, hdtinv, hpc']
+  have hDxVe : c.Dx B.family.metric V x t =
+      c.speed B.family.metric x t • c.Ds B.family.metric V x t := by
+    rw [CurveMap.Ds, smul_smul, mul_inv_cancel₀ (ne_of_gt hvpos), one_smul]
+  have hDsDt : c.Ds B.family.metric (c.Dt B.family.metric (Icc s u) V) x t =
+      (c.speed B.family.metric x t)⁻¹ •
+        c.Dx B.family.metric (c.Dt B.family.metric (Icc s u) V) x t := rfl
+  rw [hDxVe, hDsDt, smul_add, smul_add, smul_smul]
+  dsimp only []
+  have hqv : (c.q B.family x t * (c.speed B.family.metric x t)⁻¹) *
+      c.speed B.family.metric x t = c.q B.family x t := by
+    rw [mul_assoc, inv_mul_cancel₀ (ne_of_gt hvpos), mul_one]
+  simp only [CurveMap.Ds]
+  rw [hqv]
+  module
+
+theorem CurveMap.Dt_curvatureVector_inner
+    (B : RicciBackground (I := I) (M := M) D a b)
+    (hsu : s < u) (hwindow : Icc s u ⊆ Icc a b)
+    (c : CurveMap M) (hc : c.IsSolutionOn B.family.metric (Icc s u))
+    (x t : ℝ) (ht : t ∈ Icc s u) :
+    (B.family.metric t).inner (c.lift x t)
+        (c.Dt B.family.metric (Icc s u) (c.curvatureVector B.family.metric) x t)
+        (c.curvatureVector B.family.metric x t) =
+      (B.family.metric t).inner (c.lift x t)
+          (c.Ds B.family.metric (c.Ds B.family.metric (c.curvatureVector B.family.metric)) x t)
+          (c.curvatureVector B.family.metric x t) +
+        2 * c.curvatureSq B.family.metric x t ^ 2 +
+        2 * c.curvatureSq B.family.metric x t * c.ricciTangent B.family x t +
+        (B.family.metric t).inner (c.lift x t)
+          (riemannVector B.family t (c.lift x t) (c.curvatureVector B.family.metric x t)
+            (c.unitTangent B.family.metric x t) (c.unitTangent B.family.metric x t))
+          (c.curvatureVector B.family.metric x t) -
+        2 * nablaRicci B.family t (c.lift x t) (c.unitTangent B.family.metric x t)
+          (c.unitTangent B.family.metric x t) (c.curvatureVector B.family.metric x t) +
+        nablaRicci B.family t (c.lift x t) (c.curvatureVector B.family.metric x t)
+          (c.unitTangent B.family.metric x t) (c.unitTangent B.family.metric x t) := by
+  have hcvs : ∀ (A V : TangentSpace I (c.lift x t)),
+      connectionVariation B.family (Icc s u) t (c.lift x t) A V =
+        connectionVariation B.family (Icc a b) t (c.lift x t) A V :=
+    fun A V => connectionVariation_congr_set B hsu hwindow t ht (c.lift x t) A V
+  have hvpos : 0 < c.speed B.family.metric x t :=
+    c.speed_pos B.family.metric hc.immersed x t ht
+  have hgeom := tangent_curvature_geometry B.family.metric c (Icc s u) hc.smooth hc.immersed x t ht
+  have hX : c.X x t = c.speed B.family.metric x t • c.unitTangent B.family.metric x t := by
+    rw [CurveMap.unitTangent, smul_smul, mul_inv_cancel₀ (ne_of_gt hvpos), one_smul]
+  have horth : (B.family.metric t).inner (c.lift x t) (c.unitTangent B.family.metric x t)
+      (c.curvatureVector B.family.metric x t) = 0 := by
+    rw [← hgeom.2.1]
+    exact (B.family.metric t).symm (c.lift x t) (c.unitTangent B.family.metric x t)
+      (c.curvatureVector B.family.metric x t)
+  have hκκ : (B.family.metric t).inner (c.lift x t)
+      (c.Ds B.family.metric (c.unitTangent B.family.metric) x t)
+      (c.curvatureVector B.family.metric x t) = c.curvatureSq B.family.metric x t := rfl
+  have hq : c.q B.family x t = c.curvatureSq B.family.metric x t +
+      c.ricciTangent B.family x t := rfl
+  have hu_sm : CurveMap.Field.SmoothOn (I := I) (c.unitTangent B.family.metric) (Icc s u) :=
+    CurveMap.Field.smoothOn_unitTangent B.family.metric B.smooth
+      (fun r hr => B.regular (hwindow hr)) c hc.smooth hc.immersed
+  have hu_slice := CurveMap.unitTangent_contMDiff B.family.metric c (Icc s u) hc.smooth
+    hc.immersed t ht
+  have hq_diff : DifferentiableAt ℝ (fun y : ℝ => c.q B.family y t) x :=
+    CurveMap.differentiableAt_q_slice B c hc x t ht
+  have hDsκ_slice := CurveMap.Ds_curvatureVector_slice_contMDiff B.family.metric B.smooth
+    (fun r hr => B.regular (hwindow hr)) (uniqueDiffOn_Icc hsu) c hc.smooth hc.immersed t ht
+  have hDsκ_rep : DifferentiableAt ℝ (chartRepAt (I := I) (fun y : ℝ => c.lift y t)
+      (fun y : ℝ => c.Ds B.family.metric (c.curvatureVector B.family.metric) y t) x) x :=
+    chartRep_diff (I := I) (fun y : ℝ => c.lift y t)
+      (fun y : ℝ => c.Ds B.family.metric (c.curvatureVector B.family.metric) y t) hDsκ_slice x
+  have hu_rep : DifferentiableAt ℝ (chartRepAt (I := I) (fun y : ℝ => c.lift y t)
+      (fun y : ℝ => c.unitTangent B.family.metric y t) x) x :=
+    chartRep_diff (I := I) (fun y : ℝ => c.lift y t)
+      (fun y : ℝ => c.unitTangent B.family.metric y t) hu_slice x
+  have hqu_rep : DifferentiableAt ℝ (chartRepAt (I := I) (fun y : ℝ => c.lift y t)
+      (fun y : ℝ => c.q B.family y t • c.unitTangent B.family.metric y t) x) x := by
+    rw [chartRepAt_smulFun]
+    exact hq_diff.smul hu_rep
+  have hDtκ : c.Dt B.family.metric (Icc s u) (c.curvatureVector B.family.metric) x t =
+      c.Dt B.family.metric (Icc s u)
+        (c.Ds B.family.metric (c.unitTangent B.family.metric)) x t := rfl
+  have hcomm := CurveMap.Dt_Ds_commutator B hsu hwindow c hc
+    (c.unitTangent B.family.metric) hu_sm x t ht
+  have hDxDt : c.Dx B.family.metric
+      (c.Dt B.family.metric (Icc s u) (c.unitTangent B.family.metric)) x t =
+      c.Dx B.family.metric (fun y r =>
+        c.Ds B.family.metric (c.curvatureVector B.family.metric) y r +
+        c.q B.family y r • c.unitTangent B.family.metric y r) x t := by
+    simp only [CurveMap.Dx]
+    exact DifferentialGeometry.Geometry.Riemannian.covDerivAlong_congr_curve (I := I) (B.family.metric t) (γ := fun y : ℝ => c.lift y t)
+      (γ' := fun y : ℝ => c.lift y t)
+      (V := fun y : ℝ => c.Dt B.family.metric (Icc s u) (c.unitTangent B.family.metric) y t)
+      (V' := fun y : ℝ => c.Ds B.family.metric (c.curvatureVector B.family.metric) y t +
+        c.q B.family y t • c.unitTangent B.family.metric y t)
+      Filter.EventuallyEq.rfl (Filter.Eventually.of_forall (fun y =>
+        (rfs_csf_speed B hsu hwindow c hc y t ht).2))
+  have hDsDt : c.Ds B.family.metric
+      (c.Dt B.family.metric (Icc s u) (c.unitTangent B.family.metric)) x t =
+      c.Ds B.family.metric (fun y r =>
+        c.Ds B.family.metric (c.curvatureVector B.family.metric) y r +
+        c.q B.family y r • c.unitTangent B.family.metric y r) x t := by
+    have h1 : c.Ds B.family.metric
+        (c.Dt B.family.metric (Icc s u) (c.unitTangent B.family.metric)) =
+        (fun y r => (c.speed B.family.metric y r)⁻¹ • c.Dx B.family.metric
+          (c.Dt B.family.metric (Icc s u) (c.unitTangent B.family.metric)) y r) := rfl
+    have h2 : c.Ds B.family.metric (fun y r =>
+        c.Ds B.family.metric (c.curvatureVector B.family.metric) y r +
+        c.q B.family y r • c.unitTangent B.family.metric y r) =
+        (fun y r => (c.speed B.family.metric y r)⁻¹ • c.Dx B.family.metric (fun y r =>
+          c.Ds B.family.metric (c.curvatureVector B.family.metric) y r +
+          c.q B.family y r • c.unitTangent B.family.metric y r) y r) := rfl
+    rw [h1, h2]
+    dsimp only []
+    rw [hDxDt]
+  have hsplit : c.Ds B.family.metric (fun y r =>
+        c.Ds B.family.metric (c.curvatureVector B.family.metric) y r +
+        c.q B.family y r • c.unitTangent B.family.metric y r) x t =
+      c.Ds B.family.metric (c.Ds B.family.metric (c.curvatureVector B.family.metric)) x t +
+      c.Ds B.family.metric (fun y r => c.q B.family y r • c.unitTangent B.family.metric y r) x t :=
+    CurveMap.Ds_add B.family.metric c (c.Ds B.family.metric (c.curvatureVector B.family.metric))
+      (fun y r => c.q B.family y r • c.unitTangent B.family.metric y r) x t hDsκ_rep hqu_rep
+  have hleib2 : c.Ds B.family.metric
+      (fun y r => c.q B.family y r • c.unitTangent B.family.metric y r) x t =
+      (c.ds B.family.metric (fun y r => c.q B.family y r) x t) •
+          c.unitTangent B.family.metric x t +
+        c.q B.family x t • c.Ds B.family.metric (c.unitTangent B.family.metric) x t :=
+    CurveMap.Ds_smulFun B.family.metric c (c.unitTangent B.family.metric)
+      (fun y r => c.q B.family y r) x t hq_diff hu_rep
+  have hRpair : (B.family.metric t).inner (c.lift x t)
+      (riemannVector B.family t (c.lift x t) (c.velocity (Icc s u) x t) (c.X x t)
+        (c.unitTangent B.family.metric x t)) (c.curvatureVector B.family.metric x t) =
+      c.speed B.family.metric x t * (B.family.metric t).inner (c.lift x t)
+        (riemannVector B.family t (c.lift x t) (c.curvatureVector B.family.metric x t)
+          (c.unitTangent B.family.metric x t) (c.unitTangent B.family.metric x t))
+        (c.curvatureVector B.family.metric x t) := by
+    rw [hc.equation x t ht, hX, CurveMap.inner_riemannVector_eq_rm04,
+      CurveMap.inner_riemannVector_eq_rm04]
+    have h1 : vec4 (I := I) (c.curvatureVector B.family.metric x t)
+        (c.speed B.family.metric x t • c.unitTangent B.family.metric x t)
+        (c.unitTangent B.family.metric x t) (c.curvatureVector B.family.metric x t) =
+        Function.update (vec4 (I := I) (c.curvatureVector B.family.metric x t)
+          (c.unitTangent B.family.metric x t) (c.unitTangent B.family.metric x t)
+          (c.curvatureVector B.family.metric x t)) 1
+          (c.speed B.family.metric x t • c.unitTangent B.family.metric x t) := by
+      funext i
+      fin_cases i <;> simp [vec4, Function.update]
+    have h2 : Function.update (vec4 (I := I) (c.curvatureVector B.family.metric x t)
+        (c.unitTangent B.family.metric x t) (c.unitTangent B.family.metric x t)
+        (c.curvatureVector B.family.metric x t)) 1 (c.unitTangent B.family.metric x t) =
+        vec4 (I := I) (c.curvatureVector B.family.metric x t)
+          (c.unitTangent B.family.metric x t) (c.unitTangent B.family.metric x t)
+          (c.curvatureVector B.family.metric x t) := by
+      funext i
+      fin_cases i <;> simp [vec4, Function.update]
+    have hscale := ContinuousMultilinearMap.map_update_smul (B.family.rm04At t (c.lift x t))
+      (vec4 (I := I) (c.curvatureVector B.family.metric x t)
+        (c.unitTangent B.family.metric x t) (c.unitTangent B.family.metric x t)
+        (c.curvatureVector B.family.metric x t)) 1 (c.speed B.family.metric x t)
+      (c.unitTangent B.family.metric x t)
+    exact (congrArg (fun w => (B.family.rm04At t (c.lift x t)) w) h1).trans <|
+      hscale.trans <| (congrArg (fun w =>
+        c.speed B.family.metric x t • (B.family.rm04At t (c.lift x t)) w) h2).trans
+        (by simp only [smul_eq_mul])
+  have hCVpair : (B.family.metric t).inner (c.lift x t)
+      (connectionVariation B.family (Icc s u) t (c.lift x t) (c.X x t)
+        (c.unitTangent B.family.metric x t)) (c.curvatureVector B.family.metric x t) =
+      c.speed B.family.metric x t *
+        (-2 * nablaRicci B.family t (c.lift x t) (c.unitTangent B.family.metric x t)
+            (c.unitTangent B.family.metric x t) (c.curvatureVector B.family.metric x t) +
+          nablaRicci B.family t (c.lift x t) (c.curvatureVector B.family.metric x t)
+            (c.unitTangent B.family.metric x t) (c.unitTangent B.family.metric x t)) := by
+    rw [hX, hcvs (c.speed B.family.metric x t • c.unitTangent B.family.metric x t)
+      (c.unitTangent B.family.metric x t)]
+    rw [(connectionVariation_tensor B t (hwindow ht) (c.lift x t)).2.2
+      (c.speed B.family.metric x t) (c.unitTangent B.family.metric x t)
+      (c.unitTangent B.family.metric x t)]
+    rw [map_smul, smul_apply, smul_eq_mul]
+    rw [rfs_csf_connection B t (hwindow ht) (c.lift x t) (c.unitTangent B.family.metric x t)
+      (c.unitTangent B.family.metric x t) (c.curvatureVector B.family.metric x t)]
+    ring
+  rw [hDtκ, hcomm, hDsDt, hsplit, hleib2]
+  simp only [map_add, add_apply, map_smul, smul_apply, smul_eq_mul]
+  rw [hRpair, hCVpair, horth, hκκ, hq]
+  field_simp [ne_of_gt hvpos]
+  ring
+
+theorem CurveMap.ds_ds_curvatureSq_sub_normSq_normalCurvatureDerivative
+    (g : ℝ → SmoothRiemannianMetric I M)
+    (hG : MetricFamilySmoothOn (I := I) (M := M) D g) {J : Set ℝ} (hJ : J ⊆ D.regular)
+    (hJun : UniqueDiffOn ℝ J)
+    (c : CurveMap M) (hc : c.SmoothOn (I := I) J) (hi : c.ImmersedOn (I := I) J)
+    (x t : ℝ) (ht : t ∈ J) :
+    c.ds g (c.ds g (c.curvatureSq g)) x t -
+      2 * c.normSq g (c.normalCurvatureDerivative g) x t +
+      2 * c.curvatureSq g x t ^ 2 =
+    2 * (g t).inner (c.lift x t)
+        (c.Ds g (c.Ds g (c.curvatureVector g)) x t) (c.curvatureVector g x t) +
+      4 * c.curvatureSq g x t ^ 2 := by
+  rw [CurveMap.ds_ds_curvatureSq_eq g hG hJ hJun c hc hi x t ht,
+    CurveMap.normSq_normalCurvatureDerivative g c J hc hi x t ht]
+  have hnn : c.normSq g (c.Ds g (c.curvatureVector g)) x t =
+      (g t).inner (c.lift x t) (c.Ds g (c.curvatureVector g) x t)
+        (c.Ds g (c.curvatureVector g) x t) := rfl
+  rw [hnn]
+  ring
+
+
+theorem rfs_csf_curvature (B : RicciBackground (I := I) (M := M) D a b)
+    (hsu : s < u) (hwindow : Icc s u ⊆ Icc a b)
+    (c : CurveMap M) (hc : c.IsSolutionOn B.family.metric (Icc s u))
+    (x t : ℝ) (ht : t ∈ Icc s u) :
+    derivWithin (c.curvatureSq B.family.metric x) (Icc s u) t =
+      c.ds B.family.metric (c.ds B.family.metric (c.curvatureSq B.family.metric)) x t -
+      2 * c.normSq B.family.metric (c.normalCurvatureDerivative B.family.metric) x t +
+      2 * c.curvatureSq B.family.metric x t ^ 2 +
+      4 * c.curvatureSq B.family.metric x t * c.ricciTangent B.family x t -
+      2 * B.family.ricciAt t (c.lift x t)
+        (vec2 (c.curvatureVector B.family.metric x t) (c.curvatureVector B.family.metric x t)) +
+      2 * (B.family.metric t).inner (c.lift x t)
+        (riemannVector B.family t (c.lift x t) (c.curvatureVector B.family.metric x t)
+          (c.unitTangent B.family.metric x t) (c.unitTangent B.family.metric x t))
+        (c.curvatureVector B.family.metric x t) -
+      4 * nablaRicci B.family t (c.lift x t) (c.unitTangent B.family.metric x t)
+        (c.unitTangent B.family.metric x t) (c.curvatureVector B.family.metric x t) +
+      2 * nablaRicci B.family t (c.lift x t) (c.curvatureVector B.family.metric x t)
+        (c.unitTangent B.family.metric x t) (c.unitTangent B.family.metric x t) := by
+  have hcurv := CurveMap.derivWithin_curvatureSq B hsu hwindow c hc x t ht
+  have hC := CurveMap.Dt_curvatureVector_inner B hsu hwindow c hc x t ht
+  have hB := CurveMap.ds_ds_curvatureSq_sub_normSq_normalCurvatureDerivative
+    B.family.metric B.smooth (fun r hr => B.regular (hwindow hr)) (uniqueDiffOn_Icc hsu)
+    c hc.smooth hc.immersed x t ht
+  rw [hcurv, hB]
+  linarith [hC]
 
 omit [SigmaCompactSpace M] hBoundary in
 theorem rm04_unit_le (B : RicciBackground (I := I) (M := M) D a b)
@@ -1289,32 +1869,6 @@ theorem CurveMap.ds_ds_regularizedCurvature (g : ℝ → SmoothRiemannianMetric 
   ring
 
 
-omit [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
-theorem CurveMap.ds_inner (g : ℝ → SmoothRiemannianMetric I M) (c : CurveMap M)
-    (J : Set ℝ) (hc : c.SmoothOn (I := I) J)
-    (V W : c.Field (I := I))
-    (x t : ℝ) (ht : t ∈ J)
-    (hV : ContMDiff 𝓘(ℝ, ℝ) I.tangent ∞
-      (fun y : ℝ =>
-        (TotalSpace.mk' E (E := (TangentSpace I : M → Type _))
-          (c.lift y t) (V y t) : TangentBundle I M)))
-    (hW : ContMDiff 𝓘(ℝ, ℝ) I.tangent ∞
-      (fun y : ℝ =>
-        (TotalSpace.mk' E (E := (TangentSpace I : M → Type _))
-          (c.lift y t) (W y t) : TangentBundle I M))) :
-    c.ds g (fun y r => (g r).inner (c.lift y r) (V y r) (W y r)) x t =
-      (g t).inner (c.lift x t) (c.Ds g V x t) (W x t) +
-        (g t).inner (c.lift x t) (V x t) (c.Ds g W x t) := by
-  have hγ : ContMDiff 𝓘(ℝ, ℝ) I ∞ (fun y : ℝ => c.lift y t) :=
-    contMDiffOn_univ.mp (CurveMap.space_slice_contMDiffOn c J hc t ht)
-  have hd := metric_compat_hasDerivAt_inner (by simp : (1 : WithTop ℕ∞) ≤ ∞) (g t)
-    (fun y : ℝ => c.lift y t) (fun y => V y t) (fun y => W y t) x hγ
-    (chartRep_diff (I := I) (fun y : ℝ => c.lift y t) (fun y => V y t) hV x)
-    (chartRep_diff (I := I) (fun y : ℝ => c.lift y t) (fun y => W y t) hW x)
-  rw [CurveMap.ds, hd.deriv]
-  simp only [CurveMap.Ds, CurveMap.Dx, map_smul, smul_apply, smul_eq_mul]
-  ring
-
 omit [CompleteSpace E] in
 theorem CurveMap.derivWithin_curvatureSq_le_regularized
     (g : ℝ → SmoothRiemannianMetric I M) (c : CurveMap M)
@@ -1381,20 +1935,6 @@ theorem CurveMap.derivWithin_curvatureSq_le_regularized
   nlinarith [hcs, hp1, hp2, hp3, hp4, hknn, hksq]
 
 
-theorem CurveMap.normSq_normalCurvatureDerivative (g : ℝ → SmoothRiemannianMetric I M)
-    (c : CurveMap M) (J : Set ℝ) (hc : c.SmoothOn (I := I) J)
-    (hi : c.ImmersedOn (I := I) J) (x t : ℝ) (ht : t ∈ J) :
-    c.normSq g (c.normalCurvatureDerivative g) x t =
-      c.normSq g (c.Ds g (c.curvatureVector g)) x t - c.curvatureSq g x t ^ 2 := by
-  have hgeom := tangent_curvature_geometry g c J hc hi x t ht
-  have hN : c.normalCurvatureDerivative g x t =
-      c.Ds g (c.curvatureVector g) x t + c.curvatureSq g x t • c.unitTangent g x t := rfl
-  rw [CurveMap.normSq, CurveMap.normSq, hN]
-  simp only [map_add, add_apply, map_smul, smul_apply, smul_eq_mul]
-  rw [(g t).symm (c.lift x t) (c.unitTangent g x t) (c.Ds g (c.curvatureVector g) x t),
-    hgeom.1, hgeom.2.2]
-  ring
-
 theorem rfs_csf_regularized_curvature (B : RicciBackground (I := I) (M := M) D a b)
     (hsu : s < u) (hwindow : Icc s u ⊆ Icc a b)
     (c : CurveMap M) (hc : c.IsSolutionOn B.family.metric (Icc s u))
@@ -1409,6 +1949,35 @@ theorem rfs_csf_regularized_curvature (B : RicciBackground (I := I) (M := M) D a
         c.ds B.family.metric (c.ds B.family.metric (c.regularizedCurvature B.family.metric ε)) x t +
         c.curvatureSq B.family.metric x t * c.regularizedCurvature B.family.metric ε x t +
         B.C * (c.regularizedCurvature B.family.metric ε x t + 1)) := by
-  sorry
+  refine ⟨?_, ?_, ?_⟩
+  · have hcs := CurveMap.Field.smoothOn_curvatureSq B.family.metric B.smooth
+      (fun r hr => B.regular (hwindow hr)) (uniqueDiffOn_Icc hsu) c hc.smooth hc.immersed
+    have h1 : ContDiffOn ℝ ∞ (fun p : ℝ × ℝ =>
+        c.curvatureSq B.family.metric p.1 p.2 + ε ^ 2) (univ ×ˢ Icc s u) :=
+      hcs.add contDiffOn_const
+    refine h1.sqrt ?_
+    intro p hp
+    exact ne_of_gt (by
+      have h0 : 0 ≤ c.curvatureSq B.family.metric p.1 p.2 :=
+        c.normSq_nonneg B.family.metric (c.curvatureVector B.family.metric) p.1 p.2
+      have h2 : 0 < ε ^ 2 := sq_pos_of_pos hε
+      linarith)
+  · intro x t ht
+    exact c.regularizedCurvature_error B.family.metric ε hε.le x t
+  · intro x t ht
+    have hdiff : DifferentiableWithinAt ℝ (fun r : ℝ => c.curvatureSq B.family.metric x r)
+        (Icc s u) t := by
+      have hcs := CurveMap.Field.smoothOn_curvatureSq B.family.metric B.smooth
+        (fun r hr => B.regular (hwindow hr)) (uniqueDiffOn_Icc hsu) c hc.smooth hc.immersed
+      have hz : ContDiffWithinAt ℝ ∞ (fun r : ℝ => (x, r)) (Icc s u) t :=
+        contDiffWithinAt_const.prodMk contDiffWithinAt_id
+      exact ((hcs.contDiffWithinAt ⟨mem_univ x, ht⟩).comp t hz
+        (fun r hr => ⟨mem_univ x, hr⟩)).differentiableWithinAt (by norm_num)
+    have hCnn : 0 ≤ B.C := by
+      rw [RicciBackground.C]
+      linarith [B.B₀_nonneg, B.B₁_nonneg, B.B₂_nonneg]
+    exact CurveMap.derivWithin_curvatureSq_le_regularized B.family.metric c s u hsu hc.smooth
+      hc.immersed ε B.C hε hCnn x t ht hdiff.hasDerivWithinAt
+      (curvature_evolution_le B hsu hwindow c hc x t ht)
 
 end DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening

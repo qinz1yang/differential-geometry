@@ -1,4 +1,7 @@
 import Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic
+import Mathlib.MeasureTheory.Integral.IntervalIntegral.FundThmCalculus
+import Mathlib.MeasureTheory.Integral.Prod
+import Mathlib.MeasureTheory.Function.LocallyIntegrable
 import Mathlib.MeasureTheory.Integral.DominatedConvergence
 import Mathlib.Analysis.Calculus.ParametricIntegral
 import Mathlib.Analysis.Calculus.ContDiff.Basic
@@ -434,5 +437,120 @@ theorem contDiffOn_paramIntervalIntegral
             funext x
             rw [fderivWithin_univ, hfdEq x]
           simpa [hfw] using hIH
+
+open Set in
+theorem continuousWithinAt_paramIntervalIntegral {F : ℝ → ℝ → ℝ} {S : Set ℝ} (hS : IsCompact S)
+    (hFc : ContinuousOn (fun p : ℝ × ℝ => F p.2 p.1) (S ×ˢ (univ : Set ℝ)))
+    {x₀ : ℝ} (hx₀ : x₀ ∈ S) :
+    ContinuousWithinAt (fun t => ∫ x in (0 : ℝ)..1, F x t) S x₀ := by
+  have hK : IsCompact (S ×ˢ (Icc (0 : ℝ) 1 : Set ℝ)) := hS.prod isCompact_Icc
+  have hcK : ContinuousOn (fun p : ℝ × ℝ => F p.2 p.1) (S ×ˢ Icc (0 : ℝ) 1) :=
+    hFc.mono (Set.prod_mono Subset.rfl (Set.subset_univ _))
+  obtain ⟨C, hC⟩ := hK.exists_bound_of_continuousOn hcK
+  have hslice : ∀ t ∈ S, Continuous (fun x : ℝ => F x t) := by
+    intro t ht
+    have hcomp : ContinuousOn (fun x : ℝ => F x t) (univ : Set ℝ) :=
+      hFc.comp (ContinuousOn.prodMk continuousOn_const continuousOn_id)
+        (fun x _ => ⟨ht, mem_univ x⟩)
+    exact continuousOn_univ.mp hcomp
+  have hslice2 : ∀ ρ : ℝ, ContinuousOn (fun τ : ℝ => F ρ τ) S := fun ρ =>
+    hFc.comp (ContinuousOn.prodMk continuousOn_id continuousOn_const)
+      (fun τ hτ => ⟨hτ, mem_univ ρ⟩)
+  refine intervalIntegral.continuousWithinAt_of_dominated_interval (μ := volume) (X := ℝ) (E := ℝ)
+    (F := fun t x => F x t) (x₀ := x₀) (bound := fun _ => C) (a := 0) (b := 1)
+    (s := S) ?_ ?_ intervalIntegrable_const ?_
+  · filter_upwards [self_mem_nhdsWithin] with t ht
+    exact (hslice t ht).aestronglyMeasurable
+  · filter_upwards [self_mem_nhdsWithin] with x hx
+    refine Eventually.of_forall fun t ht => ?_
+    exact hC (x, t) ⟨hx, by simpa [Set.uIcc_of_le (show (0:ℝ) ≤ 1 by norm_num)] using Set.uIoc_subset_uIcc ht⟩
+  · exact Eventually.of_forall fun ρ _ => (hslice2 ρ).continuousWithinAt hx₀
+
+open Set in
+theorem hasDerivWithinAt_paramIntervalIntegral {F G : ℝ → ℝ → ℝ} {s u : ℝ}
+    (hFc : ContinuousOn (fun p : ℝ × ℝ => F p.1 p.2) ((univ : Set ℝ) ×ˢ Icc s u))
+    (hGc : ContinuousOn (fun p : ℝ × ℝ => G p.1 p.2) ((univ : Set ℝ) ×ˢ Icc s u))
+    (hderiv : ∀ x t, t ∈ Icc s u → HasDerivWithinAt (fun τ => F x τ) (G x t) (Icc s u) t) :
+    ∀ t ∈ Icc s u, HasDerivWithinAt (fun τ => ∫ x in (0 : ℝ)..1, F x τ)
+      (∫ x in (0 : ℝ)..1, G x t) (Icc s u) t := by
+  have hFslice : ∀ τ ∈ Icc s u, Continuous (fun x : ℝ => F x τ) := by
+    intro τ hτ
+    exact continuousOn_univ.mp (hFc.comp
+      (ContinuousOn.prodMk continuousOn_id continuousOn_const)
+      (fun x _ => ⟨mem_univ x, hτ⟩))
+  have hGslice : ∀ τ ∈ Icc s u, Continuous (fun x : ℝ => G x τ) := by
+    intro τ hτ
+    exact continuousOn_univ.mp (hGc.comp
+      (ContinuousOn.prodMk continuousOn_id continuousOn_const)
+      (fun x _ => ⟨mem_univ x, hτ⟩))
+  have hGslice2 : ∀ x : ℝ, ContinuousOn (fun ρ : ℝ => G x ρ) (Icc s u) := fun x =>
+    hGc.comp (ContinuousOn.prodMk continuousOn_const continuousOn_id)
+      (fun ρ hρ => ⟨mem_univ x, hρ⟩)
+  have hGc' : ContinuousOn (fun p : ℝ × ℝ => G p.2 p.1) (Icc s u ×ˢ (univ : Set ℝ)) :=
+    hGc.comp (ContinuousOn.prodMk continuousOn_snd continuousOn_fst)
+      (fun p hp => ⟨mem_univ p.2, hp.1⟩)
+  have hΦcont : ContinuousOn (fun τ => ∫ x in (0 : ℝ)..1, G x τ) (Icc s u) := fun τ hτ =>
+    continuousWithinAt_paramIntervalIntegral isCompact_Icc hGc' hτ
+  intro t ht
+  have hFTC : ∀ (x τ : ℝ), τ ∈ Icc s u → (∫ ρ in t..τ, G x ρ) = F x τ - F x t := by
+    intro x τ hτ
+    have hsub : uIcc t τ ⊆ Icc s u := by
+      intro ρ hρ
+      exact ⟨le_trans (le_min ht.1 hτ.1) hρ.1, le_trans hρ.2 (max_le ht.2 hτ.2)⟩
+    have hsub' : Ioo (min t τ) (max t τ) ⊆ Ioo s u := by
+      intro ρ hρ
+      exact ⟨lt_of_le_of_lt (le_min ht.1 hτ.1) hρ.1,
+        lt_of_lt_of_le hρ.2 (max_le ht.2 hτ.2)⟩
+    have hFcontOn : ContinuousOn (fun ρ => F x ρ) (Icc s u) :=
+      fun ρ hρ => (hderiv x ρ hρ).continuousWithinAt
+    refine intervalIntegral.integral_eq_sub_of_hasDeriv_right ?_ ?_ ?_
+    · exact hFcontOn.mono hsub
+    · intro ρ hρ
+      have hρ' := hsub' hρ
+      exact ((hderiv x ρ ⟨hρ'.1.le, hρ'.2.le⟩).hasDerivAt
+        (Icc_mem_nhds hρ'.1 hρ'.2)).hasDerivWithinAt
+    · exact ((hGslice2 x).mono hsub).intervalIntegrable
+  have hstep : ∀ τ ∈ Icc s u,
+      (∫ x in (0 : ℝ)..1, F x τ) - (∫ x in (0 : ℝ)..1, F x t)
+        = ∫ ρ in t..τ, ∫ x in (0 : ℝ)..1, G x ρ := by
+    intro τ hτ
+    have h1 : (∫ x in (0 : ℝ)..1, F x τ) - (∫ x in (0 : ℝ)..1, F x t)
+        = ∫ x in (0 : ℝ)..1, (F x τ - F x t) :=
+      (intervalIntegral.integral_sub ((hFslice τ hτ).intervalIntegrable 0 1)
+        ((hFslice t ht).intervalIntegrable 0 1)).symm
+    have h2 : (∫ x in (0 : ℝ)..1, (F x τ - F x t))
+        = ∫ x in (0 : ℝ)..1, ∫ ρ in t..τ, G x ρ :=
+      intervalIntegral.integral_congr fun x _ => (hFTC x τ hτ).symm
+    have h3 : (∫ x in (0 : ℝ)..1, ∫ ρ in t..τ, G x ρ)
+        = ∫ ρ in t..τ, ∫ x in (0 : ℝ)..1, G x ρ := by
+      refine intervalIntegral_intervalIntegral_swap ?_
+      have hcompact : IsCompact (uIcc (0 : ℝ) 1 ×ˢ uIcc t τ) :=
+        isCompact_uIcc.prod isCompact_uIcc
+      have hcont : ContinuousOn (fun p : ℝ × ℝ => G p.1 p.2)
+          (uIcc (0 : ℝ) 1 ×ˢ uIcc t τ) :=
+        hGc.mono (Set.prod_mono (Set.subset_univ _) (by
+          intro ρ hρ
+          exact ⟨le_trans (le_min ht.1 hτ.1) hρ.1, le_trans hρ.2 (max_le ht.2 hτ.2)⟩))
+      have h := (hcont.integrableOn_compact (μ := volume) hcompact).mono_set
+        (Set.prod_mono Set.uIoc_subset_uIcc Set.uIoc_subset_uIcc)
+      exact h
+    exact h1.trans (h2.trans h3)
+  have hsub_self : uIcc t t ⊆ Icc s u := by
+    intro ρ hρ
+    have hρt : ρ = t := by simpa [Set.uIcc_self] using hρ
+    exact hρt ▸ ht
+  have hΦint : IntervalIntegrable (fun τ => ∫ x in (0 : ℝ)..1, G x τ) volume t t :=
+    ContinuousOn.intervalIntegrable (μ := volume) (hΦcont.mono hsub_self)
+  have hprim : HasDerivWithinAt (fun τ => ∫ ρ in t..τ, ∫ x in (0 : ℝ)..1, G x ρ)
+      (∫ x in (0 : ℝ)..1, G x t) (Icc s u) t :=
+    @intervalIntegral.integral_hasDerivWithinAt_right ℝ _ _ _
+      (fun τ => ∫ x in (0 : ℝ)..1, G x τ) t t hΦint (Icc s u) (Icc s u)
+      (@intervalIntegral.FTCFilter.nhdsIcc t s u ⟨ht⟩)
+      (ContinuousOn.stronglyMeasurableAtFilter_nhdsWithin hΦcont measurableSet_Icc t)
+      (hΦcont.continuousWithinAt ht)
+  refine (hprim.const_add (∫ x in (0 : ℝ)..1, F x t)).congr ?_ ?_
+  · intro y hy
+    linarith [hstep y hy]
+  · linarith [hstep t ht]
 
 end DifferentialGeometry.Analysis.Calculus

@@ -311,3 +311,50 @@ theorem nonempty_connectedSumQuotient_diffeomorph_of_orientedBallChartTransport
     hΦ.toBallChartTransport hΨ.toBallChartTransport
 
 end DifferentialGeometry.Topology
+namespace DifferentialGeometry.Topology
+
+universe u v
+
+variable {M : Type*} [TopologicalSpace M] [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M]
+  {M' : Type*} [TopologicalSpace M'] [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M']
+
+def BallChart.pullback (c' : BallChart 3 (𝓡 3) M')
+    (Φ : Diffeomorph (𝓡 3) (𝓡 3) M M' ∞) : BallChart 3 (𝓡 3) M where
+  chart := c'.chart.trans (Diffeomorph.toPartialDiffeomorph Φ.symm)
+  closedBall_subset_source := by
+    intro x hx
+    change x ∈ (c'.chart.toOpenPartialHomeomorph.trans
+      (Diffeomorph.toPartialDiffeomorph Φ.symm).toOpenPartialHomeomorph).source
+    rw [OpenPartialHomeomorph.trans_source]
+    exact ⟨c'.closedBall_subset_source hx, Set.mem_univ _⟩
+
+theorem BallChart.pullback_apply (c' : BallChart 3 (𝓡 3) M')
+    (Φ : Diffeomorph (𝓡 3) (𝓡 3) M M' ∞) (x : EuclideanSpace ℝ (Fin 3)) :
+    (BallChart.pullback c' Φ).chart x = Φ.symm (c'.chart x) := by
+  change (c'.chart.toOpenPartialHomeomorph.trans
+    (Diffeomorph.toPartialDiffeomorph Φ.symm).toOpenPartialHomeomorph) x = _
+  rw [OpenPartialHomeomorph.trans_apply]
+  rfl
+
+theorem BallChart.map_pullback (c' : BallChart 3 (𝓡 3) M')
+    (Φ : Diffeomorph (𝓡 3) (𝓡 3) M M' ∞) (x : EuclideanSpace ℝ (Fin 3)) :
+    Φ ((BallChart.pullback c' Φ).chart x) = c'.chart x := by
+  rw [BallChart.pullback_apply, Diffeomorph.apply_symm_apply]
+
+theorem exists_ballChart_pullback (c' : BallChart 3 (𝓡 3) M')
+    (Φ : Diffeomorph (𝓡 3) (𝓡 3) M M' ∞) :
+    ∃ c : BallChart 3 (𝓡 3) M,
+      ∀ x ∈ Metric.closedBall (0 : EuclideanSpace ℝ (Fin 3)) 2,
+        Φ (c.chart x) = c'.chart x :=
+  ⟨BallChart.pullback c' Φ, fun x _ => BallChart.map_pullback c' Φ x⟩
+
+theorem exists_orientedBallChart_pullback {M : ConnectedClosedOrientedManifold.{u} 3}
+    {M' : ConnectedClosedOrientedManifold.{v} 3}
+    (c' : OrientedBallChart M'.toClosedOrientedManifold)
+    (Φ : M.Carrier ≃ₘ⟮𝓡 3, 𝓡 3⟯ M'.Carrier) :
+    ∃ c : BallChart 3 (𝓡 3) M.Carrier,
+      ∀ x ∈ Metric.closedBall (0 : EuclideanSpace ℝ (Fin 3)) 2,
+        Φ (c.chart x) = c'.toBallChart.chart x :=
+  exists_ballChart_pullback c'.toBallChart Φ
+
+end DifferentialGeometry.Topology

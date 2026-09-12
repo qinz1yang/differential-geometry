@@ -2520,3 +2520,45 @@ theorem Field.smoothOn_curvatureSq {D : RealTimeInterval}
 end CurveMap
 
 end DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening
+
+namespace DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening
+
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  [FiniteDimensional ℝ E] [CompleteSpace E]
+variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+variable [SigmaCompactSpace M] [T2Space M]
+variable [hBoundary : I.Boundaryless] {D : RealTimeInterval} {a b s u : ℝ}
+include hBoundary
+
+
+omit [SigmaCompactSpace M] in
+theorem connectionVariation_congr_set
+    (B : RicciBackground (I := I) (M := M) D a b)
+    (hsu : s < u) (hwindow : Icc s u ⊆ Icc a b)
+    (t : ℝ) (ht : t ∈ Icc s u) (p : M) (A V : TangentSpace I p) :
+    connectionVariation B.family (Icc s u) t p A V =
+      connectionVariation B.family (Icc a b) t p A V := by
+  have hderiv : derivWithin
+      (fun r : ℝ => B.family.connection r (tangentConstAt (I := I) p V) p A)
+      (Icc s u) t = derivWithin
+      (fun r : ℝ => B.family.connection r (tangentConstAt (I := I) p V) p A)
+      (Icc a b) t := by
+    rw [(hasDerivWithinAt_spatialConnection B t (hwindow ht) p A V).mono hwindow |>.derivWithin
+        (uniqueDiffOn_Icc hsu t ht),
+      (hasDerivWithinAt_spatialConnection B t (hwindow ht) p A V).derivWithin
+        (uniqueDiffOn_Icc B.lt t (hwindow ht))]
+  unfold connectionVariation
+  rw [hderiv]
+
+theorem rfs_csf_connection_of_subset
+    (B : RicciBackground (I := I) (M := M) D a b)
+    (hsu : s < u) (hwindow : Icc s u ⊆ Icc a b)
+    (t : ℝ) (ht : t ∈ Icc s u) (p : M) (A V Z : TangentSpace I p) :
+    (B.family.metric t).inner p (connectionVariation B.family (Icc s u) t p A V) Z =
+      -nablaRicci B.family t p A V Z - nablaRicci B.family t p V A Z +
+        nablaRicci B.family t p Z A V := by
+  rw [connectionVariation_congr_set B hsu hwindow t ht p A V]
+  exact rfs_csf_connection B t (hwindow ht) p A V Z
+
+end DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening

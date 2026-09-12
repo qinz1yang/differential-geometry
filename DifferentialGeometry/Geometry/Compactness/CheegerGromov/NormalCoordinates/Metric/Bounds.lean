@@ -167,6 +167,27 @@ theorem half_le_metricCoerciveConst
   rw [← normal_coord_metric_zero (I := I) (X.obj k) x]
   exact (h.metric_equiv k x 0 h0 v).1
 
+theorem half_le_metric_inner
+    {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
+    (h : NormalCoordMetricBounds (I := I) X)
+    (k : Nat) (x : (X.obj k).M) :
+    letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
+    letI : ChartedSpace H (X.obj k).M := (X.obj k).charted
+    letI : IsManifold I ∞ (X.obj k).M := (X.obj k).smooth
+    letI : T2Space (TangentBundle I (X.obj k).M) :=
+      (X.obj k).t2TangentBundle
+    ∀ v : E, (1 / 2 : Real) * ‖v‖ ^ 2 ≤ (X.obj k).metric.inner x v v := by
+  let : TopologicalSpace (X.obj k).M := (X.obj k).topology
+  let : ChartedSpace H (X.obj k).M := (X.obj k).charted
+  let : IsManifold I ∞ (X.obj k).M := (X.obj k).smooth
+  let : T2Space (TangentBundle I (X.obj k).M) :=
+    (X.obj k).t2TangentBundle
+  intro v
+  have h1 : (1 / 2 : Real) ≤ metricCoerciveConst (I := I) (X.obj k).metric x :=
+    h.half_le_metricCoerciveConst k x
+  have h2 := metricCoerciveConst_le (I := I) (X.obj k).metric x v
+  nlinarith [sq_nonneg ‖v‖, h1, h2]
+
 omit [NeZero (Module.finrank ℝ E)] in
 theorem fderiv_apply_le
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
