@@ -164,4 +164,44 @@ def RicciBackground.C {D : RealTimeInterval} {a b : ℝ}
     (B : RicciBackground (I := I) (M := M) D a b) : ℝ :=
   1 + 3 * B.B₀ + B.B₁ + 3 * B.B₂
 
+namespace CurveMap
+
+omit [FiniteDimensional ℝ E] [CompleteSpace E] [IsManifold I ∞ M] in
+theorem time_slice_contMDiffWithinAt (c : CurveMap M) (J : Set ℝ)
+    (hc : c.SmoothOn (I := I) J) (x t : ℝ) (ht : t ∈ J) :
+    ContMDiffWithinAt 𝓘(ℝ, ℝ) I ∞ (fun s => c.lift x s) J t := by
+  have hmem : (x, t) ∈ (univ : Set ℝ) ×ˢ J := ⟨mem_univ x, ht⟩
+  have hz : ContMDiffWithinAt 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ × ℝ) ∞ (fun s : ℝ => (x, s)) J t := by
+    rw [modelWithCornersSelf_prod, ← chartedSpaceSelf_prod]
+    exact contMDiffWithinAt_const.prodMk contMDiffWithinAt_id
+  have hto : Set.MapsTo (fun s : ℝ => (x, s)) J ((univ : Set ℝ) ×ˢ J) :=
+    fun s _ => ⟨mem_univ x, by assumption⟩
+  exact (hc (x, t) hmem).comp t hz hto
+
+omit [FiniteDimensional ℝ E] [CompleteSpace E] [IsManifold I ∞ M] in
+theorem time_slice_contMDiffOn (c : CurveMap M) (J : Set ℝ)
+    (hc : c.SmoothOn (I := I) J) (x : ℝ) :
+    ContMDiffOn 𝓘(ℝ, ℝ) I ∞ (fun s => c.lift x s) J :=
+  fun t ht => time_slice_contMDiffWithinAt c J hc x t ht
+
+omit [FiniteDimensional ℝ E] [CompleteSpace E] [IsManifold I ∞ M] in
+theorem space_slice_contMDiffWithinAt (c : CurveMap M) (J : Set ℝ)
+    (hc : c.SmoothOn (I := I) J) (x t : ℝ) (ht : t ∈ J) :
+    ContMDiffWithinAt 𝓘(ℝ, ℝ) I ∞ (fun z => c.lift z t) univ x := by
+  have hmem : (x, t) ∈ (univ : Set ℝ) ×ˢ J := ⟨mem_univ x, ht⟩
+  have hz : ContMDiffWithinAt 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ × ℝ) ∞ (fun z : ℝ => (z, t)) univ x := by
+    rw [modelWithCornersSelf_prod, ← chartedSpaceSelf_prod]
+    exact contMDiffWithinAt_id.prodMk contMDiffWithinAt_const
+  have hto : Set.MapsTo (fun z : ℝ => (z, t)) univ ((univ : Set ℝ) ×ˢ J) :=
+    fun z _ => ⟨mem_univ z, ht⟩
+  exact (hc (x, t) hmem).comp x hz hto
+
+omit [FiniteDimensional ℝ E] [CompleteSpace E] [IsManifold I ∞ M] in
+theorem space_slice_contMDiffOn (c : CurveMap M) (J : Set ℝ)
+    (hc : c.SmoothOn (I := I) J) (t : ℝ) (ht : t ∈ J) :
+    ContMDiffOn 𝓘(ℝ, ℝ) I ∞ (fun z => c.lift z t) univ :=
+  fun x _ => space_slice_contMDiffWithinAt c J hc x t ht
+
+end CurveMap
+
 end DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening

@@ -222,4 +222,11 @@ theorem pullback_torsion_free {D : RealTimeInterval} {a b s u : ℝ}
       c.Dx B.family.metric (c.velocity (Icc s u)) x t := by
   sorry
 
+omit [CompleteSpace E] in
+theorem CurveMap.Dt_eq_covDerivAlong_of_mem_Ioo (c : CurveMap M)
+    (g : ℝ → SmoothRiemannianMetric I M) (V : c.Field (I := I))
+    {s u x t : ℝ} (ht : t ∈ Ioo s u) :
+    c.Dt g (Icc s u) V x t = covDerivAlong (g t) (c.lift x) (V x) t :=
+  CurveMap.Dt_eq_covDerivAlong c g (Icc s u) V x t (Icc_mem_nhds ht.1 ht.2)
+
 end DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening
