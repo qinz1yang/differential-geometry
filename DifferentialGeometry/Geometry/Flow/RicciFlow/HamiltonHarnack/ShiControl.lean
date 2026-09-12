@@ -249,6 +249,145 @@ theorem exists_hamiltonPerturbedBlock_slab_control
   exact ⟨K, B, C, hK, hB, hC, rfl, hCphi, hCpsiW, hCpsiU, hShi⟩
 
 omit [NeZero (Module.finrank Real E)] [I.Boundaryless] [SigmaCompactSpace M] in
+private theorem hamilton_bianchi_trace_at_orthonormal
+    {D : RealTimeInterval} {n : Nat}
+    (S : SolutionOn (I := I) (M := M) D) (t : Real) (x : M)
+    (basis : Module.Basis (Fin n) Real (TangentSpace I x))
+    (horth : ∀ i j,
+      (S.base.metric t).inner x (basis i) (basis j) =
+        if i = j then (1 : Real) else 0) :
+    SecondBianchiAt (I := I) (nablaRm04Field (I := I) S t x) ∧
+      NablaRmSymmAt (I := I) (nablaRm04Field (I := I) S t x) ∧
+        NablaRicTraceAt (I := I) basis
+          (fun i j => if i = j then (1 : Real) else 0)
+          (nablaRm04Field (I := I) S t x)
+          (metricNablaRic (I := I) (M := M) (S.base.metric t) x) := by
+  have hinv := DifferentialGeometry.Tensor0SBundle.metricInverseInBasis_of_orthonormal
+    (I := I) (S.base.metric t) basis horth
+  simpa [nablaRm04Field, SolutionOn.family, SolutionFamily.connection,
+    SolutionFamily.rm04, metricNablaRic, metricCov, metricRm04, metricRicci,
+    DifferentialGeometry.Geometry.Curvature.metricCov,
+    DifferentialGeometry.Geometry.Curvature.metricRm04,
+    DifferentialGeometry.Geometry.Curvature.metricRicci] using
+    (DifferentialGeometry.Geometry.Connection.levi_civita_bianchi_trace_identities
+      (I := I) (M := M) (S.base.metric t) basis
+        (fun i j => if i = j then (1 : Real) else 0) hinv)
+
+omit [NeZero (Module.finrank Real E)] [I.Boundaryless] [SigmaCompactSpace M] in
+private theorem hamilton_nabla_rm_components_pair_symm
+    {D : RealTimeInterval} {n : Nat}
+    (S : SolutionOn (I := I) (M := M) D) (t : Real) (x : M)
+    (basis : Module.Basis (Fin n) Real (TangentSpace I x))
+    (horth : ∀ i j,
+      (S.base.metric t).inner x (basis i) (basis j) =
+        if i = j then (1 : Real) else 0) :
+    ∀ e, Rm04PairSymm (fun a b c d =>
+      nablaRm04Field (I := I) S t x
+        (vec5 (I := I) (basis e) (basis a) (basis b) (basis c) (basis d))) := by
+  have hSymm := (hamilton_bianchi_trace_at_orthonormal
+    (I := I) S t x basis horth).2.1
+  intro e
+  refine ⟨?_, ?_, ?_⟩
+  · intro a b c d
+    simpa only [vec5] using
+      hSymm.2.1 (basis e) (basis b) (basis a) (basis c) (basis d)
+  · intro a b c d
+    simpa only [vec5] using
+      hSymm.1 (basis e) (basis a) (basis b) (basis c) (basis d)
+  · intro a b c d
+    simpa only [vec5] using
+      hSymm.2.2 (basis e) (basis a) (basis b) (basis c) (basis d)
+
+omit [NeZero (Module.finrank Real E)] [I.Boundaryless] [SigmaCompactSpace M] in
+private theorem hamilton_rm_components_symm
+    {D : RealTimeInterval} {n : Nat}
+    (S : SolutionOn (I := I) (M := M) D)
+    (t : RealTimeInterval.RegularTime D) (x : M)
+    (basis : Module.Basis (Fin n) Real (TangentSpace I x)) :
+    Rm04Symm (fun a b c d => S.base.rm04 (t : Real) x
+      (vec4 (I := I) (basis a) (basis b) (basis c) (basis d))) := by
+  have hRm13 := fun tau : RealTimeInterval.RegularTime D =>
+    rm13OfSolution (I := I) S (tau : Real)
+  have hLower := fun
+      (tau : RealTimeInterval.RegularTime D) (y : M) =>
+    solution_rm04LowersRm13At (I := I) S (tau : Real) y
+  have hInput := rm04InputSkew_regular
+    (I := I) S S.base.rm13 S.base.rm04 hRm13 hLower t x
+  have hOutput := rm04OutputSkew_regular
+    (I := I) S S.base.rm13 S.base.rm04 hRm13 hLower t x
+  have hPair := rm04PairSymm_regular
+    (I := I) S S.base.rm13 S.base.rm04 hRm13 hLower t x
+  have hFirst := rm04FirstBianchi_regular
+    (I := I) S S.base.rm13 S.base.rm04 hRm13 hLower t x
+  refine ⟨?_, ?_, ?_, ?_⟩
+  · intro i j k l
+    simpa only [vec4] using
+      hInput (basis j) (basis i) (basis k) (basis l)
+  · intro i j k l
+    simpa only [vec4] using
+      hOutput (basis i) (basis j) (basis k) (basis l)
+  · intro i j k l
+    simpa only [vec4] using
+      hPair (basis i) (basis j) (basis k) (basis l)
+  · intro i j k l
+    simpa only [vec4] using
+      hFirst (basis i) (basis j) (basis k) (basis l)
+
+omit [NeZero (Module.finrank Real E)] [I.Boundaryless] [SigmaCompactSpace M] in
+private theorem hamilton_curvature_ricci_trace_components
+    {D : RealTimeInterval} {n : Nat}
+    (S : SolutionOn (I := I) (M := M) D)
+    (t : RealTimeInterval.RegularTime D) (x : M)
+    (basis : Module.Basis (Fin n) Real (TangentSpace I x))
+    (horth : ∀ i j,
+      (S.base.metric (t : Real)).inner x (basis i) (basis j) =
+        if i = j then (1 : Real) else 0) :
+    curvatureRicciTraceComponents
+      (fun a b c d => S.base.rm04 (t : Real) x
+        (vec4 (I := I) (basis a) (basis b) (basis c) (basis d)))
+      (fun a b => metricRicci (I := I) (M := M)
+        (S.base.metric (t : Real)) x
+          (vec2 (I := I) (basis a) (basis b))) := by
+  intro i j
+  symm
+  simpa only [SolutionOn.ricci, SolutionFamily.ricci] using
+    (ricci_diag_eq_sum_rm04_diag_of_orthonormal
+      (I := I) (S.base.metric (t : Real)) basis
+      (S.ricci (t : Real)) (S.base.rm13 (t : Real)) (S.base.rm04 (t : Real))
+      (ricciTraceOfSolution (I := I) S (t : Real))
+      (solution_rm04LowersRm13At (I := I) S (t : Real) x) horth i j)
+
+omit [NeZero (Module.finrank Real E)] [I.Boundaryless] [SigmaCompactSpace M] in
+private theorem hamilton_contracted_curvature_derivative_components
+    {D : RealTimeInterval} {n : Nat}
+    (S : SolutionOn (I := I) (M := M) D) (t : Real) (x : M)
+    (basis : Module.Basis (Fin n) Real (TangentSpace I x))
+    (horth : ∀ i j,
+      (S.base.metric t).inner x (basis i) (basis j) =
+        if i = j then (1 : Real) else 0) :
+    contractedCurvatureDerivativeComponents
+      (fun e a b c d => nablaRm04Field (I := I) S t x
+        (vec5 (I := I) (basis e) (basis a) (basis b) (basis c) (basis d)))
+      (fun a b c => metricNablaRic (I := I) (M := M)
+        (S.base.metric t) x
+          (vec3 (I := I) (basis a) (basis b) (basis c))) := by
+  intro p q r
+  have hcore := hamilton_bianchi_trace_at_orthonormal
+    (I := I) S t x basis horth
+  have hDiv := curvature_divergence_eq_hamiltonP (I := I) basis
+    (fun i j => if i = j then (1 : Real) else 0)
+    (nablaRm04Field (I := I) S t x)
+    (metricNablaRic (I := I) (M := M) (S.base.metric t) x)
+    hcore.1 hcore.2.1 hcore.2.2 (basis r) (basis q) (basis p)
+  simp only [ite_mul, one_mul, zero_mul, Finset.sum_ite_eq,
+    Finset.mem_univ, if_true, hamiltonP_apply] at hDiv
+  rw [metricNablaRic_last_two_symm (I := I) (M := M)
+      (S.base.metric t) x (basis q) (basis r) (basis p),
+    metricNablaRic_last_two_symm (I := I) (M := M)
+      (S.base.metric t) x (basis r) (basis q) (basis p)] at hDiv
+  simpa only [vec3, vec5] using hDiv
+
+omit [NeZero (Module.finrank Real E)] [I.Boundaryless] [SigmaCompactSpace M] in
 theorem exists_hamiltonPerturbedBlock_reaction_lower_bound
     (K S0 : Real) :
     ∃ C : Real, 0 ≤ C ∧
@@ -290,6 +429,194 @@ theorem exists_hamiltonPerturbedBlock_reaction_lower_bound
           2 * psi * (∑ e, ∑ a, ∑ b,
             (hamiltonTestJetDU clock Ric
               (fun i j ↦ if i = j then (1 : Real) else 0) W e a b) ^ 2) := by
-  sorry
+  classical
+  let B : Real :=
+    Real.sqrt K + (Module.finrank Real E : Real) * Real.sqrt K +
+      (Module.finrank Real E : Real) * Real.sqrt K +
+      S0 * ((Module.finrank Real E : Real) ^ 2 * Real.sqrt K +
+        (Module.finrank Real E : Real) ^ 3 * (Real.sqrt K) ^ 2) +
+      (Module.finrank Real E : Real) * Real.sqrt K / 2
+  obtain ⟨C, hC, hCphi, hCpsiW, hCpsiU⟩ :=
+    exists_hamiltonPerturbedBlock_control_constant
+      (Idx := Fin (Module.finrank Real E)) B S0
+  simp only [Fintype.card_fin] at hCphi hCpsiW hCpsiU
+  refine ⟨C, hC, ?_⟩
+  intro D S hS clock ht x n basis horth phi Lphi psi psi' U W hderiv helapsed
+    hphi hpsi hpsi1 hU
+  dsimp only
+  have hn : (n : Real) = (Module.finrank Real E : Real) := by
+    have h : Module.finrank Real E = n := by
+      have h' : Module.finrank Real (TangentSpace I x) = n := by
+        simpa only [Fintype.card_fin] using
+          (Module.finrank_eq_card_basis (R := Real) basis)
+      rwa [show Module.finrank Real (TangentSpace I x) =
+        Module.finrank Real E from rfl] at h'
+    exact_mod_cast h.symm
+  have hS0 : 0 ≤ S0 := le_trans clock.elapsed_pos.le helapsed
+  have hB : B = Real.sqrt K + (n : Real) * Real.sqrt K +
+      (n : Real) * Real.sqrt K +
+      S0 * ((n : Real) ^ 2 * Real.sqrt K +
+        (n : Real) ^ 3 * (Real.sqrt K) ^ 2) +
+      (n : Real) * Real.sqrt K / 2 := by
+    dsimp only [B]
+    rw [hn]
+  have hCphi' : 2 * (B + 1) * (n : Real) ^ 3 ≤ C := by
+    simpa only [← hn] using hCphi
+  have hCpsiW' : 2 * B * S0 * (n : Real) ^ 3 +
+      4 * B * S0 ^ 2 * (n : Real) ^ 4 +
+      B * S0 ^ 2 * (n : Real) ^ 2 +
+      4 * B ^ 2 * S0 ^ 2 * (n : Real) ^ 2 + (n : Real) ^ 2 ≤ C := by
+    simpa only [← hn] using hCpsiW
+  have hCpsiU' : 4 * B * (n : Real) ^ 3 +
+      (8 * B + 4) * (n : Real) ^ 4 + B * (n : Real) +
+      2 * B * (n : Real) ^ 2 + 1 ≤ C := by
+    simpa only [← hn] using hCpsiU
+  let R : Fin n → Fin n → Fin n → Fin n → Real := fun a b c d =>
+    S.base.rm04 clock.time x
+      (vec4 (I := I) (basis a) (basis b) (basis c) (basis d))
+  let Ric : Fin n → Fin n → Real := fun a b =>
+    metricRicci (I := I) (M := M) (S.base.metric clock.time) x
+      (vec2 (I := I) (basis a) (basis b))
+  let nablaR : Fin n → Fin n → Fin n → Fin n → Fin n → Real := fun e a b c d =>
+    nablaRm04Field (I := I) S clock.time x
+      (vec5 (I := I) (basis e) (basis a) (basis b) (basis c) (basis d))
+  let nablaRic : Fin n → Fin n → Fin n → Real := fun a b c =>
+    metricNablaRic (I := I) (M := M) (S.base.metric clock.time) x
+      (vec3 (I := I) (basis a) (basis b) (basis c))
+  let nablaP : Fin n → Fin n → Fin n → Fin n → Real := fun e a b c =>
+    metricNabla2Ric (I := I) (M := M) (S.base.metric clock.time) x
+        (vec4 (I := I) (basis e) (basis a) (basis b) (basis c)) -
+      metricNabla2Ric (I := I) (M := M) (S.base.metric clock.time) x
+        (vec4 (I := I) (basis e) (basis b) (basis a) (basis c))
+  have hdiv : ∀ a b, (∑ e, nablaP e e a b) =
+      hamiltonDivPAt (I := I) (S.base.metric clock.time) x
+        (vec2 (I := I) (basis a) (basis b)) := by
+    intro a b
+    have hinvTrace :=
+      DifferentialGeometry.Tensor0SBundle.metricInverseInBasis_of_orthonormal
+      (I := I) (S.base.metric clock.time) basis horth
+    have htrace := hamiltonDivPAt_apply_eq_trace_hamiltonNablaP
+      (I := I) (S.base.metric clock.time) basis
+        (DifferentialGeometry.Tensor0SBundle.identityInvMetric (Idx := Fin n))
+        hinvTrace (basis a) (basis b)
+    simp only [DifferentialGeometry.Tensor0SBundle.identityInvMetric,
+      DifferentialGeometry.Tensor0SBundle.diagonalInvMetric, ite_mul, one_mul,
+      zero_mul, Finset.sum_ite_eq, Finset.mem_univ, if_true] at htrace
+    symm
+    simpa only [nablaP, hamiltonNablaPField_apply] using htrace
+  have hMAt_eq : hamiltonMAt (I := I) clock (S.base.metric clock.time) x =
+      hamiltonDivPAt (I := I) (S.base.metric clock.time) x +
+        hamiltonCurvatureRicciAt (I := I) (S.base.metric clock.time) x +
+        (1 / (2 * clock.elapsed) : Real) •
+          metricRicci (I := I) (M := M) (S.base.metric clock.time) x := by
+    simpa only [SolutionOn.family] using
+      hamiltonMAt_eq_hamiltonDivPAt_add (I := I) S hS clock ht x
+  have hMoriginEq : hamiltonMOriginField (I := I) clock.origin clock.time
+        (S.base.metric clock.time) x =
+      hamiltonDivPAt (I := I) (S.base.metric clock.time) x +
+        hamiltonCurvatureRicciAt (I := I) (S.base.metric clock.time) x +
+        (1 / (2 * clock.elapsed) : Real) •
+          metricRicci (I := I) (M := M) (S.base.metric clock.time) x := by
+    rw [hamiltonMOriginField_apply (I := I) clock.origin clock.time
+      (S.base.metric clock.time) x]
+    simp only [HarnackClock.elapsed]
+  have hMoriginMAt : hamiltonMOriginField (I := I) clock.origin clock.time
+        (S.base.metric clock.time) x =
+      hamiltonMAt (I := I) clock (S.base.metric clock.time) x :=
+    hMoriginEq.trans hMAt_eq.symm
+  have hMAtOrigin : ∀ A B : TangentSpace I x,
+      hamiltonMAt (I := I) clock (S.base.metric clock.time) x
+          (vec2 (I := I) A B) =
+        hamiltonMOriginField (I := I) clock.origin clock.time
+          (S.base.metric clock.time) x (vec2 (I := I) A B) :=
+    fun A B => (congrArg (fun F => F (vec2 (I := I) A B)) hMoriginMAt).symm
+  have hMcomp : hamiltonMComponent clock R Ric (fun i j => ∑ e, nablaP e e i j) =
+      fun a b => hamiltonMOriginField (I := I) clock.origin clock.time
+        (S.base.metric clock.time) x (vec2 (I := I) (basis a) (basis b)) := by
+    funext a b
+    simp_rw [hdiv]
+    calc
+      hamiltonMComponent clock R Ric
+          (fun i j => hamiltonDivPAt (I := I)
+            (S.base.metric clock.time) x
+              (vec2 (I := I) (basis i) (basis j))) a b =
+          hamiltonMAt (I := I) clock (S.base.metric clock.time) x
+            (vec2 (I := I) (basis a) (basis b)) := by
+        change hamiltonMComponent clock
+            (fun i j k l => metricRm04 (I := I) (M := M)
+              (S.family.metric clock.time) x
+              (vec4 (I := I) (basis i) (basis j) (basis k) (basis l)))
+            (fun i j => metricRicci (I := I) (M := M)
+              (S.family.metric clock.time) x
+              (vec2 (I := I) (basis i) (basis j)))
+            (fun i j => hamiltonDivPAt (I := I)
+              (S.family.metric clock.time) x
+              (vec2 (I := I) (basis i) (basis j))) a b = _
+        exact hamiltonMComponent_eq_hamiltonMAt_orthonormal
+          (I := I) S hS clock ht x basis horth a b
+      _ = hamiltonMOriginField (I := I) clock.origin clock.time
+          (S.base.metric clock.time) x
+            (vec2 (I := I) (basis a) (basis b)) :=
+        hMAtOrigin (basis a) (basis b)
+  have hPcomp : hamiltonPComponent nablaRic =
+      fun a b c => hamiltonPField (I := I) (S.base.metric clock.time) x
+        (vec3 (I := I) (basis a) (basis b) (basis c)) := by
+    funext a b c
+    simp only [nablaRic, hamiltonPComponent, hamiltonPField_apply,
+      hamiltonPAt_apply]
+  have hRm : Rm04Symm R := by
+    simpa only [R] using
+      hamilton_rm_components_symm (I := I) S ⟨clock.time, ht⟩ x basis
+  have hNablaRm : ∀ e, Rm04PairSymm (nablaR e) := by
+    intro e
+    simpa only [nablaR] using
+      hamilton_nabla_rm_components_pair_symm
+        (I := I) S clock.time x basis horth e
+  have hRic : ∀ a b, Ric a b = Ric b a := by
+    intro a b
+    simpa only [Ric, metricRicci_apply] using
+      metricRicciAt_symm (I := I) (M := M) (S.base.metric clock.time) x
+        (basis a) (basis b)
+  have hNablaRic : ∀ a b c, nablaRic a b c = nablaRic a c b := by
+    intro a b c
+    simpa only [nablaRic] using
+      metricNablaRic_last_two_symm (I := I) (M := M)
+        (S.base.metric clock.time) x (basis a) (basis b) (basis c)
+  have hTrace : curvatureRicciTraceComponents R Ric := by
+    simpa only [R, Ric] using
+      hamilton_curvature_ricci_trace_components
+        (I := I) S ⟨clock.time, ht⟩ x basis horth
+  have hContract : contractedCurvatureDerivativeComponents nablaR nablaRic := by
+    simpa only [nablaR, nablaRic] using
+      hamilton_contracted_curvature_derivative_components
+        (I := I) S clock.time x basis horth
+  have hNablaPSkew : ∀ e a b c, nablaP e a b c = -nablaP e b a c := by
+    intro e a b c
+    dsimp only [nablaP]
+    ring
+  have hM : ∀ a b, hamiltonMComponent clock R Ric
+        (fun i j => ∑ e, nablaP e e i j) a b =
+      hamiltonMComponent clock R Ric (fun i j => ∑ e, nablaP e e i j) b a := by
+    intro a b
+    have hsym : hamiltonMAt (I := I) clock (S.base.metric clock.time) x
+          (vec2 (I := I) (basis a) (basis b)) =
+        hamiltonMAt (I := I) clock (S.base.metric clock.time) x
+          (vec2 (I := I) (basis b) (basis a)) := by
+      simpa only [SolutionOn.family] using
+        hamiltonMAt_symm (I := I) S clock ht x (basis a) (basis b)
+    rw [hMcomp]
+    exact (hMAtOrigin (basis a) (basis b)).symm.trans
+      (hsym.trans (hMAtOrigin (basis b) (basis a)))
+  have heq := hamiltonPerturbedBlock_heat_product_eq_j_add_sigma_square
+    clock R Ric nablaR nablaRic nablaP (fun _ _ _ => 0)
+    phi Lphi psi psi' U W hRm hNablaRm hRic hNablaRic hTrace hContract
+    hNablaPSkew hM hU
+  have hmain := hamiltonPerturbedBlock_reaction_ge_of_curvature_derivative_bound
+    (I := I) S hS clock ht x basis horth K S0 B C phi Lphi psi psi'
+    hS0 helapsed hderiv hB hCphi' hCpsiW' hCpsiU' U W hU hphi hpsi hpsi1
+  dsimp only at hmain
+  rw [heq] at hmain
+  rw [hPcomp, hMcomp] at hmain
+  exact hmain
 
 end DifferentialGeometry.PDE.RicciFlow
