@@ -165,3 +165,43 @@ both changed leaves. All107guards, all14signature/axiom pairs, stock3over all
 imported vendor/current declarations and standard-only axioms pass. Both full
 oriented deletion consumers and the actual count-decrease consumer passed.
 Both edited leaves were already registered in the flat aggregate.
+
+## Geometrically free triangles in native Jordan meshes
+
+`TriangleMeshGeometricFree.lean` retains the finite induction from
+ClassificationOfSurfaces at e3c7230fe78d7b056a415d9ecae6f77887046b32. Its
+public TriangleMesh primary starts with a native Jordan curve, the exact
+closed-inside support equation, and more than one maximal triangle. It
+produces two distinct actual maximal triangles whose frontier trace is
+one of the one-edge/two-edge geometric-free configurations. The PrePolygon
+producer retains the actual mesh support/frontier and explicitly separates
+the singleton case from the two-geometric-free case.
+
+The separate leaf consumes the existing crosscut partition and geometric
+classification interfaces. It adds no public cut package, disk-recognition
+premise, dual-tree premise, shelling, or assumed geometric-free triangle.
+All sixteen proof mechanics are private. The finite-exclusion density proof
+is retained from the existing native FreshDenseSelection declaration with
+its Álvaro Begué/Apache attribution, below that file's later mesh-transfer
+imports; no public duplicate density declaration is added. The existing
+FreshDenseSelection file and its public API are unchanged.
+
+GEOMETRIC_FREE_EXISTENCE.json records the eight selected checked source fragments
+and all eighteen retained declarations:
+seventeen proof bodies are byte-identical, including the induction; only
+the polygon producer's call changes to the promoted primary's name. The
+induction becomes public in the original TriangleMesh namespace and the
+producer becomes public in PrePolygon. The scratch-only bad-free-crosscut
+consumer is omitted. The existing crosscut partition, freeness definitions,
+deletions, and unrelated sources are untouched.
+
+Full staged source gate1789240426642358604-schoenflies-9a0efddc passes
+in36.35s. Final production request1789240536150541849-schoenflies-21a0cb81
+passes in78.73s after freshly compiling the new862-line module. All98current
+source guards, three exact public/consumer signature-axiom pairs, stock3over
+all imported vendor/current declarations and standard-only axioms pass.
+Root independently matched all18 binder/conclusion blocks against the checked
+private sources,17 unchanged proof bodies and the sole producer-call rename.
+The deletion consumer retains actual survivor support/frontier and count
+decrease. The new leaf is registered in the flat aggregate. This is a fresh
+leaf/imported REPL gate, not a full DifferentialGeometry aggregate build.
