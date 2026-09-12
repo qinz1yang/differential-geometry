@@ -8610,6 +8610,7 @@ import DifferentialGeometry.Topology.VanKampen.EmbeddedCell
 import DifferentialGeometry.Topology.VanKampen.EmbeddedCellCollar
 import DifferentialGeometry.Topology.VanKampen.Evaluation
 import DifferentialGeometry.Topology.VanKampen.FiniteConnectedSum
+import DifferentialGeometry.Topology.VanKampen.FiniteConnectedSumFreeProduct
 import DifferentialGeometry.Topology.VanKampen.FreeProduct
 import DifferentialGeometry.Topology.VanKampen.FullGroupoid
 import DifferentialGeometry.Topology.VanKampen.GroupoidTelescope
