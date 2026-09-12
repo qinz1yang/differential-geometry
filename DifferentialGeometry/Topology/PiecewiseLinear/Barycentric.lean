@@ -175,4 +175,126 @@ theorem face_eq_of_mem_openSimplex (K : Geometry.SimplicialComplex ℝ E) {t₁ 
     (face_subset_of_mem_openSimplex_of_mem_convexHull K h₂ h₁ hx₂
       (openSimplex_subset_convexHull _ hx₁))
 
+open Classical in
+noncomputable def weights (s : Finset E) (x : E) : E → ℝ :=
+  if h : x ∈ convexHull ℝ (s : Set E) then
+    Classical.choose (mem_convexHull_iff_exists_weights.mp h)
+  else 0
+
+theorem weights_spec {s : Finset E} {x : E} (hx : x ∈ convexHull ℝ (s : Set E)) :
+    (∀ v ∈ s, 0 ≤ weights s x v) ∧ ∑ v ∈ s, weights s x v = 1 ∧
+      ∑ v ∈ s, weights s x v • v = x := by
+  rw [weights, dif_pos hx]
+  exact Classical.choose_spec (mem_convexHull_iff_exists_weights.mp hx)
+
+theorem weights_nonneg {s : Finset E} {x : E} (hx : x ∈ convexHull ℝ (s : Set E)) {v : E}
+    (hv : v ∈ s) : 0 ≤ weights s x v :=
+  (weights_spec hx).1 v hv
+
+theorem sum_weights {s : Finset E} {x : E} (hx : x ∈ convexHull ℝ (s : Set E)) :
+    ∑ v ∈ s, weights s x v = 1 :=
+  (weights_spec hx).2.1
+
+theorem sum_weights_smul {s : Finset E} {x : E} (hx : x ∈ convexHull ℝ (s : Set E)) :
+    ∑ v ∈ s, weights s x v • v = x :=
+  (weights_spec hx).2.2
+
+theorem weights_eq {s : Finset E} (hs : AffineIndependent ℝ ((↑) : s → E)) {x : E}
+    (hx : x ∈ convexHull ℝ (s : Set E)) {w : E → ℝ} (hw : ∑ v ∈ s, w v = 1)
+    (hwx : ∑ v ∈ s, w v • v = x) : ∀ v ∈ s, weights s x v = w v :=
+  eq_on_of_sum_smul_eq hs (sum_weights hx) hw ((sum_weights_smul hx).trans hwx.symm)
+
+theorem weights_combo {s : Finset E} (hs : AffineIndependent ℝ ((↑) : s → E)) {a b : E}
+    (ha : a ∈ convexHull ℝ (s : Set E)) (hb : b ∈ convexHull ℝ (s : Set E)) {α β : ℝ}
+    (hα : 0 ≤ α) (hβ : 0 ≤ β) (hab : α + β = 1) :
+    ∀ v ∈ s, weights s (α • a + β • b) v = α * weights s a v + β * weights s b v := by
+  have hmem : α • a + β • b ∈ convexHull ℝ (s : Set E) :=
+    (convex_convexHull ℝ _) ha hb hα hβ hab
+  refine weights_eq hs hmem ?_ ?_
+  · rw [Finset.sum_add_distrib, ← Finset.mul_sum, ← Finset.mul_sum, sum_weights ha,
+      sum_weights hb, mul_one, mul_one, hab]
+  · simp_rw [add_smul, mul_smul]
+    rw [Finset.sum_add_distrib, ← Finset.smul_sum, ← Finset.smul_sum, sum_weights_smul ha,
+      sum_weights_smul hb]
+
+theorem mem_openSimplex_iff_weights_pos {s t : Finset E}
+    (hs : AffineIndependent ℝ ((↑) : s → E)) (ht : t ⊆ s) {x : E}
+    (hx : x ∈ convexHull ℝ (s : Set E)) :
+    x ∈ openSimplex t ↔ ∀ v ∈ s, 0 < weights s x v ↔ v ∈ t := by
+  classical
+  constructor
+  · rintro ⟨w, hw₀, hw₁, hwx⟩ v hv
+    let w' : E → ℝ := fun u => if u ∈ t then w u else 0
+    have hw'₁ : ∑ u ∈ s, w' u = 1 := by
+      simp only [w']
+      rw [Finset.sum_ite_mem, Finset.inter_eq_right.mpr ht]
+      exact hw₁
+    have hw'x : ∑ u ∈ s, w' u • u = x := by
+      simp only [w', ite_smul, zero_smul]
+      rw [Finset.sum_ite_mem, Finset.inter_eq_right.mpr ht]
+      exact hwx
+    rw [weights_eq hs hx hw'₁ hw'x v hv]
+    by_cases hvt : v ∈ t
+    · simp [w', hvt, hw₀ v hvt]
+    · simp [w', hvt]
+  · intro h
+    refine ⟨weights s x, fun v hv => (h v (ht hv)).mpr hv, ?_, ?_⟩
+    · rw [← sum_weights hx]
+      exact Finset.sum_subset ht fun v hv hvt =>
+        le_antisymm (not_lt.mp (mt (h v hv).mp hvt)) (weights_nonneg hx hv)
+    · refine (Finset.sum_subset ht fun v hv hvt => ?_).trans (sum_weights_smul hx)
+      rw [le_antisymm (not_lt.mp (mt (h v hv).mp hvt)) (weights_nonneg hx hv), zero_smul]
+
+theorem mem_openSimplex_self_iff {s : Finset E} (hs : AffineIndependent ℝ ((↑) : s → E))
+    {x : E} (hx : x ∈ convexHull ℝ (s : Set E)) :
+    x ∈ openSimplex s ↔ ∀ v ∈ s, 0 < weights s x v := by
+  rw [mem_openSimplex_iff_weights_pos hs (Finset.Subset.refl s) hx]
+  exact forall₂_congr fun v hv => ⟨fun h => h.mpr hv, fun h => ⟨fun _ => hv, fun _ => h⟩⟩
+
+theorem weights_sum_smul {s : Finset E} (hs : AffineIndependent ℝ ((↑) : s → E)) {ι : Type*}
+    (S : Finset ι) {p : ι → E} (hp : ∀ i ∈ S, p i ∈ convexHull ℝ (s : Set E)) {l : ι → ℝ}
+    (hl : ∀ i ∈ S, 0 ≤ l i) (hl₁ : ∑ i ∈ S, l i = 1) :
+    ∀ v ∈ s, weights s (∑ i ∈ S, l i • p i) v = ∑ i ∈ S, l i * weights s (p i) v := by
+  have hmem : ∑ i ∈ S, l i • p i ∈ convexHull ℝ (s : Set E) :=
+    (convex_convexHull ℝ _).sum_mem hl hl₁ hp
+  refine weights_eq hs hmem ?_ ?_
+  · rw [Finset.sum_comm, ← hl₁]
+    refine Finset.sum_congr rfl fun i hi => ?_
+    rw [← Finset.mul_sum, sum_weights (hp i hi), mul_one]
+  · simp_rw [Finset.sum_smul, mul_smul]
+    rw [Finset.sum_comm]
+    refine Finset.sum_congr rfl fun i hi => ?_
+    rw [← Finset.smul_sum, sum_weights_smul (hp i hi)]
+
+theorem mem_openSimplex_image_iff [DecidableEq E] {ι : Type*} {S : Finset ι} {f : ι → E}
+    (hf : Set.InjOn f S) {x : E} :
+    x ∈ openSimplex (S.image f) ↔
+      ∃ l : ι → ℝ, (∀ i ∈ S, 0 < l i) ∧ ∑ i ∈ S, l i = 1 ∧ ∑ i ∈ S, l i • f i = x := by
+  classical
+  constructor
+  · rintro ⟨w, hw₀, hw₁, hwx⟩
+    refine ⟨w ∘ f, fun i hi => hw₀ _ (Finset.mem_image_of_mem f hi), ?_, ?_⟩
+    · rw [← hw₁, Finset.sum_image fun i hi j hj h => hf hi hj h]
+      rfl
+    · rw [← hwx, Finset.sum_image fun i hi j hj h => hf hi hj h]
+      rfl
+  · rintro ⟨l, hl₀, hl₁, hlx⟩
+    let w : E → ℝ := fun p => ∑ i ∈ S.filter fun i => f i = p, l i
+    have hw : ∀ i ∈ S, w (f i) = l i := by
+      intro i hi
+      have hfilter : (S.filter fun j => f j = f i) = {i} := by
+        ext j
+        simp only [Finset.mem_filter, Finset.mem_singleton]
+        exact ⟨fun h => hf h.1 hi h.2, fun h => by subst h; exact ⟨hi, rfl⟩⟩
+      simp only [w, hfilter, Finset.sum_singleton]
+    refine ⟨w, ?_, ?_, ?_⟩
+    · intro p hp
+      obtain ⟨i, hi, rfl⟩ := Finset.mem_image.mp hp
+      rw [hw i hi]
+      exact hl₀ i hi
+    · rw [Finset.sum_image fun i hi j hj h => hf hi hj h, ← hl₁]
+      exact Finset.sum_congr rfl fun i hi => hw i hi
+    · rw [Finset.sum_image fun i hi j hj h => hf hi hj h, ← hlx]
+      exact Finset.sum_congr rfl fun i hi => by rw [hw i hi]
+
 end DifferentialGeometry.Topology.PiecewiseLinear
