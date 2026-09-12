@@ -1314,7 +1314,38 @@ private theorem canonicalRoughLap0SField_eq_neg_swap
       (-1 : Real) • Tensor0SField.domDomCongr ∞
         (Equiv.swap (0 : Fin 2) 1)
         (canonicalRoughLap0SField (I := I) g cov hcov A) := by
-  sorry
+  have hsecond := canonicalSecondNabla0S_eq_neg_domDomCongr
+    (I := I) cov hcov A hA
+  dsimp only at hsecond
+  have htrace :=
+    Tensor.RSTensor.metricTraceFirstTwoField_domDomCongr_frontExtendEquiv
+      (I := I) (M := M) g (Equiv.swap (0 : Fin 2) 1)
+      (CanonicalSpatialDerivs0S.ofSmoothConnection (I := I) cov hcov A).nabla2A
+  calc canonicalRoughLap0SField (I := I) g cov hcov A
+      = Tensor.RSTensor.metricTraceFirstTwoField (I := I) (M := M) g
+          (CanonicalSpatialDerivs0S.ofSmoothConnection (I := I) cov hcov A).nabla2A :=
+        rfl
+    _ = Tensor.RSTensor.metricTraceFirstTwoField (I := I) (M := M) g
+          ((-1 : Real) • Tensor0SField.domDomCongr ∞
+            (frontExtendEquiv (frontExtendEquiv (Equiv.swap (0 : Fin 2) 1)))
+            (CanonicalSpatialDerivs0S.ofSmoothConnection (I := I) cov hcov A).nabla2A) := by
+        exact congrArg
+          (fun B => Tensor.RSTensor.metricTraceFirstTwoField (I := I) (M := M) g B)
+          hsecond
+    _ = (-1 : Real) • Tensor.RSTensor.metricTraceFirstTwoField (I := I) (M := M) g
+          (Tensor0SField.domDomCongr ∞
+            (frontExtendEquiv (frontExtendEquiv (Equiv.swap (0 : Fin 2) 1)))
+            (CanonicalSpatialDerivs0S.ofSmoothConnection (I := I) cov hcov A).nabla2A) := by
+        exact Tensor.RSTensor.metricTraceFirstTwoField_smul (I := I) (M := M) g
+          (-1 : Real) _
+    _ = (-1 : Real) • Tensor0SField.domDomCongr ∞ (Equiv.swap (0 : Fin 2) 1)
+          (Tensor.RSTensor.metricTraceFirstTwoField (I := I) (M := M) g
+            (CanonicalSpatialDerivs0S.ofSmoothConnection (I := I) cov hcov A).nabla2A) := by
+        exact congrArg
+          (fun B => (-1 : Real) • B) htrace
+    _ = (-1 : Real) • Tensor0SField.domDomCongr ∞ (Equiv.swap (0 : Fin 2) 1)
+          (canonicalRoughLap0SField (I := I) g cov hcov A) :=
+        rfl
 
 private theorem canonicalRoughLap0SField_skew
     (g : SmoothRiemannianMetric I M)
