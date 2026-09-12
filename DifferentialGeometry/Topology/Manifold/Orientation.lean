@@ -338,6 +338,41 @@ theorem exists_manifoldOrientation_of_compatibleOrientation
     simp only [tangentChartEquiv]
     rw [hmapy, hmapx]
 
+theorem isCompatibleOrientation_of_manifoldOrientation
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+    {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+    {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M] {n : ℕ}
+    (o : ManifoldOrientation I M n) :
+    DifferentialGeometry.VectorBundle.IsCompatibleOrientation (F := E) (TangentSpace I)
+      o.orientation := by
+  intro x
+  have hx : x ∈ (trivializationAt E (TangentSpace I) x).baseSet :=
+    FiberBundle.mem_baseSet_trivializationAt ..
+  obtain ⟨U, hUopen, hxU, hUsub, hconst⟩ := o.locally_constant x x hx
+  refine ⟨trivializationAt E (TangentSpace I) x, inferInstance, U, hUopen.mem_nhds hxU, hUsub,
+    Orientation.map (Fin n) (tangentChartEquiv I M x x hx) (o.orientation x), ?_⟩
+  intro y hy
+  have hL : ((trivializationAt E (TangentSpace I) x).continuousLinearEquivAt ℝ y (hUsub hy)).toLinearEquiv =
+      tangentChartEquiv I M x y (hUsub hy) :=
+    LinearEquiv.ext fun _ => rfl
+  rw [hL]
+  exact hconst y hy
+
+theorem nonempty_manifoldOrientation_iff_exists_compatibleOrientation
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+    {M : Type*} [TopologicalSpace M] [ChartedSpace E M] [IsManifold 𝓘(ℝ, E) ∞ M] {n : ℕ}
+    (hdim : Module.finrank ℝ E = n) :
+    Nonempty (ManifoldOrientation 𝓘(ℝ, E) M n) ↔
+      ∃ o : ∀ x : M, Orientation ℝ (TangentSpace 𝓘(ℝ, E) x) (Fin n),
+        DifferentialGeometry.VectorBundle.IsCompatibleOrientation (F := E)
+          (TangentSpace 𝓘(ℝ, E)) o := by
+  constructor
+  · rintro ⟨o⟩
+    exact ⟨o.orientation,
+      isCompatibleOrientation_of_manifoldOrientation (I := 𝓘(ℝ, E)) (M := M) (o := o)⟩
+  · rintro ⟨o, ho⟩
+    exact exists_manifoldOrientation_of_compatibleOrientation hdim o ho
+
 theorem exists_manifoldOrientation_of_simply_connected
     {E M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
     [TopologicalSpace M] [ChartedSpace E M] [IsManifold 𝓘(ℝ, E) ∞ M]
