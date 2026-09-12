@@ -9,12 +9,14 @@ The source baseline is the recovered Chapter 35 commit
 the dependency closure of nine roots covering local homology, derivatives,
 determinant signs, oriented chart compatibility, closed-ball classes and
 unique compact chart classes, plus the actual Euclidean3 consumer's dependencies.
-The latest artifact/root gate compiled the four added leaves and root in Slurm
-13781140, request `1789250063643581109-topology_checkpoint-2f2e02e3`.
-The final consumer replay `1789250353396415278-topology_checkpoint-c6197cda`
-passed after a harness-only universe repair; all source files remained unchanged.
-All 90 previous leaves remain byte-identical and retain earlier compilation.
-All 25 public exports and the consumer, linter and axiom checks passed.
+The latest artifact/root gate freshly compiled the changed LocalOrientation
+leaf and root in Slurm 13781140, request
+`1789251985955893192-topology_checkpoint-9c57dab9`, and passed in 127.77 seconds.
+The same run checked all 26 public exports and 51 signature/axiom pairs,
+including all 48 previous pairs unchanged. The 93 other leaves and aggregate
+remain byte-identical and retain their earlier compilation evidence.
+The new theorem produces a unique compact class with every oriented chart
+normalization agreeing; global oriented generators remain open.
 [provenance/SNAPSHOT.json](provenance/SNAPSHOT.json) records exact source and
 configuration identity and preserves the earlier validation records. It is not
 the full recovered Chapter 35 project.

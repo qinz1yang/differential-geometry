@@ -119,3 +119,19 @@ pairs. Its only intervening repair removed duplicate universe declarations
 from the combined consumer harness. All 94 source files match the successful
 build, and all 109 final input guards match. SNAPSHOT.json preserves both
 the artifact-build identity and the final replay evidence.
+
+## Oriented compact neighborhood classes
+
+`LocalOrientation` now also constructs a compact neighborhood and unique
+relative class normalized consistently in all charts with compatible actual
+tangent orientations. Its old 260 lines are preserved; only one import and
+one theorem are added. The class and chart maps are the
+existing Poincare objects, and no global fundamental-class input is assumed.
+The other 93 leaves and 94-module aggregate are unchanged.
+
+Portable request `1789251985955893192-topology_checkpoint-9c57dab9` freshly
+compiled the changed leaf and root, then passed all-package/current-consumer
+stock linters, standard-only axioms, 26 public exports and 51 exact readback
+pairs. All 48 previous readback pairs are identical, and all 115 guards match.
+The nonzero and Euclidean3 consumers passed. SNAPSHOT.json preserves the
+previous compact-chart checkpoint and the original imported-neighborhood gate.

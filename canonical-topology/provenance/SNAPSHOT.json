@@ -1,5 +1,5 @@
 {
-  "scope": "Dependency-closed 94-module local homology, oriented chart compatibility, closed-ball and unique compact chart-class checkpoint; portable gate passed, full topology suite incomplete",
+  "scope": "Dependency-closed 94-module local homology and oriented compact chart-class checkpoint; portable gate passed, full topology suite incomplete",
   "baseline_commit": "b45bfa009368c8f5f531e10f4f5280e90079d6ad",
   "baseline_ref": "refs/remotes/origin/codex/chapter35",
   "source_project": "PoincareLean",
@@ -56,7 +56,7 @@
       "module": "Poincare.Topology.Homology.LocalOrientation",
       "path": "Poincare/Topology/Homology/LocalOrientation.lean",
       "baseline_sha256": null,
-      "sha256": "c2bac8747de8d129db028b333f6a0688eb8d5a317afe390234f3c81796e1c01f"
+      "sha256": "c75edd6d472dc57273d9d3ee1ffec230c0f1c7b35e9f040765ad936dc453c530"
     },
     {
       "module": "Poincare.Topology.Homology.RelativeHomeomorphism",
@@ -298,7 +298,7 @@
       "module": "Poincare.Topology.Homology.LocalOrientation",
       "path": "Poincare/Topology/Homology/LocalOrientation.lean",
       "baseline_sha256": null,
-      "sha256": "c2bac8747de8d129db028b333f6a0688eb8d5a317afe390234f3c81796e1c01f"
+      "sha256": "c75edd6d472dc57273d9d3ee1ffec230c0f1c7b35e9f040765ad936dc453c530"
     },
     {
       "module": "Poincare.Topology.Homology.MeshBoundary",
@@ -761,7 +761,8 @@
     "Poincare.Topology.integralRelativeHomologyOpenPartialHomeomorphIso",
     "Poincare.Topology.integralRelativeHomologyOpenPartialHomeomorphIso_comp_excision",
     "Poincare.Topology.integralRelativeHomologyOpenPartialHomeomorphIso_local_restriction",
-    "Poincare.Topology.exists_compact_chart_neighborhood_class"
+    "Poincare.Topology.exists_compact_chart_neighborhood_class",
+    "Poincare.Topology.exists_compact_neighborhood_class_with_oriented_chart_maps"
   ],
   "historical_authorities": [
     {
@@ -903,24 +904,19 @@
     "date": "2026-09-12",
     "slurm_job": "13781140",
     "host": "della-r3c2n16",
-    "request_id": "1789250353396415278-topology_checkpoint-c6197cda",
-    "input_sha256": "2dc1a59c564d2f96d5b79f91a60ffbd9464998830567af1c0cfcb071697de056",
-    "result_sha256": "fc82aab73d79d119d90f9ac02557ea4f434b5b0beaf758772a2b84d86d4d06a1",
-    "artifact_build_request_id": "1789250063643581109-topology_checkpoint-2f2e02e3",
-    "artifact_build_input_sha256": "0424718a325b755e2f43b0b807de1a1e55f4e09845d2e23e10eb4ed675af7f5f",
-    "artifact_log_sha256": "0db0d53aff10dffa7540fadf143888c2f0ce8cab162fc2a1b72ab180035a4f9e",
-    "source_config_harness_hash_guards": 109,
+    "request_id": "1789251985955893192-topology_checkpoint-9c57dab9",
+    "input_sha256": "5c1892facdeb0c186e3641a5f27fc961b9fb5c97b11b88f9c7e455e9892c9baf",
+    "result_sha256": "59e0b17ab81509f0587cb9edfe991a5a30b46c06b5e101fed22c2808f2547850",
+    "artifact_log_sha256": "2cf24b5b01dbf8ffa4dc4375302d6b50e75ceb13a1deba3741d668ea142c49a3",
+    "source_config_harness_hash_guards": 115,
     "freshly_built_modules": [
-      "Poincare.Topology.Homology.LocalCompactHomology",
-      "Poincare.Topology.Homology.SphereTopHomology",
-      "Poincare.Topology.Homology.SphereHomologyVanishing",
-      "Poincare.Topology.Homology.EuclideanLocalTop",
+      "Poincare.Topology.Homology.LocalOrientation",
       "Poincare"
     ],
-    "root_build": "lake --no-cache --iofail build +Poincare.Topology.Homology.LocalCompactHomology:leanArts +Poincare.Topology.Homology.EuclideanLocalTop:leanArts Poincare",
-    "fresh_build_scope": "Four added leaves and root compiled silently in2:18.61, RSS1910136KiB. Three added dependencies match the recovered baseline byte-for-byte. All90 previous leaves remain unchanged. Only duplicate universe declarations in the combined consumer harness were removed before the final replay; all94 source files match the successful build.",
-    "exact_public_exports": 25,
-    "public_and_consumer_signature_axiom_pairs": 48,
+    "root_build": "lake --no-cache --iofail build +Poincare.Topology.Homology.LocalOrientation:leanArts Poincare",
+    "fresh_build_scope": "Changed LocalOrientation leaf and root compiled silently in 1:09.90, RSS 1950020 KiB. All 93 other leaves and the 94-module aggregate remain byte-identical and retain previous compilation evidence.",
+    "exact_public_exports": 26,
+    "public_and_consumer_signature_axiom_pairs": 51,
     "linters": [
       "unusedArguments",
       "simpNF",
@@ -935,16 +931,14 @@
       "Quot.sound"
     ],
     "unexpected_diagnostics": 0,
-    "elapsed_seconds": 52.240987062454224,
-    "peak_summed_rss_bytes": 3072536576,
+    "elapsed_seconds": 127.76891088485718,
+    "peak_summed_rss_bytes": 2682777600,
     "full_topology_suite_accepted": false,
     "consumer_probes": [
-      "All40 previous readback pairs reproduced byte-identically",
-      "All8 new imported public/consumer readback pairs reproduced byte-identically",
-      "Actual inverse compact-chart restriction square",
+      "All48 previous readback pairs reproduced byte-identically",
+      "Unique compact neighborhood class normalized in every chart with compatible actual tangent orientation",
       "Nonzero compact relative class and all local restrictions from a nonzero model class",
-      "Actual nonzero Euclidean3 local class with a translated chart",
-      "On the SAME compact neighborhood, normalization by -mu holds exactly for the negative class"
+      "Actual nonzero Euclidean3 local class, using the existing generator equivalence"
     ]
   },
   "previous_linear_sign_checkpoint_validation": {
@@ -1161,5 +1155,63 @@
     "signature_axiom_pairs": 8,
     "elapsed_seconds": 77.60096573829651,
     "scope": "Fresh new leaf and imported four public exports with inverse, nonzero Euclidean3 and same-K negation consumers; all-package/current stock4 and standard-only axioms"
+  },
+  "previous_compact_chart_validation": {
+    "status": "passed for the selected94-module checkpoint; full topology suite incomplete",
+    "date": "2026-09-12",
+    "slurm_job": "13781140",
+    "host": "della-r3c2n16",
+    "request_id": "1789250353396415278-topology_checkpoint-c6197cda",
+    "input_sha256": "2dc1a59c564d2f96d5b79f91a60ffbd9464998830567af1c0cfcb071697de056",
+    "result_sha256": "fc82aab73d79d119d90f9ac02557ea4f434b5b0beaf758772a2b84d86d4d06a1",
+    "artifact_build_request_id": "1789250063643581109-topology_checkpoint-2f2e02e3",
+    "artifact_build_input_sha256": "0424718a325b755e2f43b0b807de1a1e55f4e09845d2e23e10eb4ed675af7f5f",
+    "artifact_log_sha256": "0db0d53aff10dffa7540fadf143888c2f0ce8cab162fc2a1b72ab180035a4f9e",
+    "source_config_harness_hash_guards": 109,
+    "freshly_built_modules": [
+      "Poincare.Topology.Homology.LocalCompactHomology",
+      "Poincare.Topology.Homology.SphereTopHomology",
+      "Poincare.Topology.Homology.SphereHomologyVanishing",
+      "Poincare.Topology.Homology.EuclideanLocalTop",
+      "Poincare"
+    ],
+    "root_build": "lake --no-cache --iofail build +Poincare.Topology.Homology.LocalCompactHomology:leanArts +Poincare.Topology.Homology.EuclideanLocalTop:leanArts Poincare",
+    "fresh_build_scope": "Four added leaves and root compiled silently in2:18.61, RSS1910136KiB. Three added dependencies match the recovered baseline byte-for-byte. All90 previous leaves remain unchanged. Only duplicate universe declarations in the combined consumer harness were removed before the final replay; all94 source files match the successful build.",
+    "exact_public_exports": 25,
+    "public_and_consumer_signature_axiom_pairs": 48,
+    "linters": [
+      "unusedArguments",
+      "simpNF",
+      "synTaut",
+      "checkType"
+    ],
+    "linter_scope": "All imported Poincare declarations and current consumers, including private declarations",
+    "defLemma": "Unavailable in the pinned Mathlib; source declaration-kind checks retained.",
+    "allowed_transitive_axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "unexpected_diagnostics": 0,
+    "elapsed_seconds": 52.240987062454224,
+    "peak_summed_rss_bytes": 3072536576,
+    "full_topology_suite_accepted": false,
+    "consumer_probes": [
+      "All40 previous readback pairs reproduced byte-identically",
+      "All8 new imported public/consumer readback pairs reproduced byte-identically",
+      "Actual inverse compact-chart restriction square",
+      "Nonzero compact relative class and all local restrictions from a nonzero model class",
+      "Actual nonzero Euclidean3 local class with a translated chart",
+      "On the SAME compact neighborhood, normalization by -mu holds exactly for the negative class"
+    ]
+  },
+  "original_oriented_neighborhood_validation": {
+    "request_id": "1789251770395436479-topology-4abd7668",
+    "slurm_job": "13781140",
+    "input_sha256": "6d76b9aa517174023f1d7ed5072489facbb9e6952cfea2ba0509d18113421cec",
+    "source_config_harness_hash_guards": 103,
+    "signature_axiom_pairs": 4,
+    "elapsed_seconds": 83.30232262611389,
+    "scope": "Fresh LocalOrientation303 artifact and imported public/consumer checks; not the original797-file aggregate"
   }
 }

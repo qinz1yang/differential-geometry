@@ -1,4 +1,5 @@
 import Poincare.Topology.Homology.LocalDerivativeComparison
+import Poincare.Topology.Homology.LocalCompactHomology
 import Mathlib.LinearAlgebra.Orientation
 import Mathlib.Geometry.Manifold.VectorBundle.Tangent
 
@@ -256,5 +257,47 @@ theorem oriented_local_homology_chart_maps_eq
   change L (J.hom.hom (J.inv.hom z)) = R (J.hom.hom (J.inv.hom z)) at h
   rw [hz] at h
   exact h
+
+open ContinuousMap in
+theorem exists_compact_neighborhood_class_with_oriented_chart_maps
+    {E M : Type u} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+    [TopologicalSpace M] [T2Space M] [ChartedSpace E M] [IsManifold 𝓘(ℝ, E) 1 M]
+    (p : M) (μ : integralLocalHomology (Module.finrank ℝ E) (0 : E)) :
+    ∃ (K : Set M) (hK : K ⊆ (chartAt E p).source), IsCompact K ∧ p ∈ interior K ∧
+      ∃! a : integralRelativeHomology (Module.finrank ℝ E) Kᶜ,
+        ∀ (x : M) (hx : x ∈ K) (y : M) (hy : x ∈ (chartAt E y).source)
+          (o : Orientation ℝ (TangentSpace 𝓘(ℝ, E) x) (Fin (Module.finrank ℝ E))),
+          Orientation.map _
+            ((trivializationAt E (TangentSpace 𝓘(ℝ, E)) p).continuousLinearEquivAt ℝ x
+              (by simpa only [TangentBundle.trivializationAt_baseSet] using hK hx)).toLinearEquiv o =
+            Orientation.map _
+              ((trivializationAt E (TangentSpace 𝓘(ℝ, E)) y).continuousLinearEquivAt ℝ x
+                (by simpa only [TangentBundle.trivializationAt_baseSet] using hy)).toLinearEquiv o →
+          integralRelativeHomologyMap (Module.finrank ℝ E)
+            (toContinuousMap (Homeomorph.subRight (chartAt E y x)))
+            (show MapsTo (Homeomorph.subRight (chartAt E y x))
+              ({chartAt E y x}ᶜ : Set E) ({0}ᶜ : Set E)
+              from fun _ hz => sub_ne_zero.mpr hz)
+            ((integralLocalHomologyOpenPartialHomeomorphIso (Module.finrank ℝ E)
+              (chartAt E y) x hy).hom.hom
+              (integralRelativeHomologyMap (Module.finrank ℝ E) (ContinuousMap.id M)
+                (show Kᶜ ⊆ ({x}ᶜ : Set M) from
+                  fun _ hz heq => hz (heq.symm ▸ hx)) a)) = μ := by
+  obtain ⟨K, hK, hcompact, hpK, a, ha, huniq⟩ := exists_compact_chart_neighborhood_class
+    (Module.finrank ℝ E) (chartAt E p) p (mem_chart_source E p) μ
+  refine ⟨K, hK, hcompact, hpK, a, ?_, ?_⟩
+  · intro x hx y hy o hori
+    have hmaps := oriented_local_homology_chart_maps_eq p y x (hK hx) hy o hori
+    have h := LinearMap.congr_fun hmaps
+      (integralRelativeHomologyMap (Module.finrank ℝ E) (ContinuousMap.id M)
+        (show Kᶜ ⊆ ({x}ᶜ : Set M) from fun _ hz heq => hz (heq.symm ▸ hx)) a)
+    exact h.symm.trans (ha x hx)
+  · intro b hb
+    apply huniq b
+    intro x hx
+    let A := ((trivializationAt E (TangentSpace 𝓘(ℝ, E)) p).continuousLinearEquivAt ℝ x
+      (by simpa only [TangentBundle.trivializationAt_baseSet] using hK hx)).toLinearEquiv
+    exact hb x hx p (hK hx)
+      (Orientation.map _ A.symm (Module.finBasis ℝ E).orientation) rfl
 
 end Poincare.Topology

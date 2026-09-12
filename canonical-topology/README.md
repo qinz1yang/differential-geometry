@@ -1,4 +1,4 @@
-# Local homology and unique compact chart classes
+# Local homology and oriented compact chart classes
 
 This separate `PoincareLean` project contains a dependency-closed checkpoint of
 94 Poincare modules. It extends the recovered Chapter 35 source at commit
@@ -37,7 +37,9 @@ The additions prove:
   for every center and nonnegative radius including boundary points;
 - the actual compact-pair chart isomorphism, its excision map equation and its
   point-restriction square, together with a produced compact chart neighborhood
-  and a unique relative class whose normalized local restrictions agree.
+  and a unique relative class whose normalized local restrictions agree;
+- a unique compact-neighborhood class with the same normalization in every
+  chart whose actual tangent trivialization preserves the base-chart orientation.
 
 The ten new/changed modules and their exact baseline/current hashes are listed in
 [provenance/SNAPSHOT.json](provenance/SNAPSHOT.json). The derivative homotopy
@@ -164,6 +166,21 @@ restriction square, nonzero classes at every point of an actual translated
 Euclidean3 chart, and the exact negative-class law on the same compact set.
 All-package/current-consumer stock linters and standard-only axioms passed.
 The 90 previous leaves remain byte-identical and retain their earlier evidence.
+
+The oriented-neighborhood extension keeps the same 94 leaves and adds one
+public theorem to `LocalOrientation`, for 26 public exports. All previous
+source blocks in that module remain unchanged. It produces one compact
+neighborhood and one unique relative class whose normalization agrees in
+every chart with compatible actual tangent orientation. A prescribed model
+class may be arbitrary; no global orientation or fundamental class is assumed.
+
+Final portable request `1789251985955893192-topology_checkpoint-9c57dab9`
+passed in Slurm 13781140 in 127.77 seconds. The changed leaf and root freshly
+compiled without diagnostics in 1:09.90. All 115 guards and 51 signature/axiom
+pairs passed; all 48 previous readback pairs are byte-identical. Consumers
+verify nonzero restrictions at every point and an actual Euclidean3 class.
+All-package/current-consumer stock linters and standard-only axioms passed.
+The other 93 leaves and the aggregate are unchanged and retain prior evidence.
 
 ## Remaining topology work
 
