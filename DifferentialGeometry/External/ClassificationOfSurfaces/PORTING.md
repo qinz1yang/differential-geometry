@@ -13,3 +13,14 @@ The native PrePolygonTriangulation bridge additionally exposes a finite Mathlib 
 Moise/OneEdgeAttachment retains28 selected upstream declarations, checked as 1789229500842743602-schoenflies-19a31622. The geometric one-edge condition is the exact frontier/triangle intersection equal to the base segment; its deletion theorem retains the actual attaching apex edges and frontier equation. ONE_EDGE_SELECTION.json records exact source provenance. It supplies no remaining-disk assumption or conclusion. Its production import placement passed the same final gate as the native bridge; PROVENANCE.json retains the exact input, result and artifact-log digests.
 
 No duplicate polygonal Jordan proof, surface classification library, shelling theorem or smooth disk filling is included in this selected port.
+
+PrePolygonDeletion provides the native closed-region producer after an actual
+one-edge-free triangle is removed. Its sole public engine retains the remaining
+polygon's oriented old-boundary and attaching arcs, actual frontier and support
+equalities. Import DifferentialGeometry.External.ClassificationOfSurfaces.PrePolygonDeletion.
+It does not assume a remaining disk. The original frontier equality and geometric
+one-edge condition are essential supplied inputs; geometric free-triangle
+selection and the two-edge branch are still separate obligations. The private
+source passed 1789232885714420646-schoenflies-24adbd8c; final production gate
+1789233891983857661-schoenflies-42a7b73c passed after fresh compilation of the new
+module. See DELETION_PROVENANCE.json and DELETION_RECOGNITION.patch.

@@ -4,7 +4,7 @@
   "license": "Apache-2.0",
   "target_lean": "leanprover/lean4:v4.33.1",
   "target_mathlib": "0df444a360eaa60ab8c11dca51a86af692955474",
-  "scope": "Five selected source modules, including the native polygon triangulation bridge and one-edge attachment layer, with fresh production artifact, imported consumer, declaration linter and axiom checks passed.",
+  "scope": "Six selected source modules, including native polygon triangulation, geometric one-edge attachment and the actual remaining closed-region producer; fresh production artifact/imported consumer/linter/axiom gates pass.",
   "source_files": {
     "DifferentialGeometry/External/ClassificationOfSurfaces/Moise/PlaneComplex.lean": {
       "upstream_sha256": "289d152b60da667c2022c5d811be8718d93a2a95181f7aa31654193a7c1a115a",
@@ -38,6 +38,13 @@
       "target_sha256": "bd068f29814eb1df334411e1d9716f7191ffa72be3501707f8acf0d575cae8fb",
       "checked_request": "1789229500842743602-schoenflies-19a31622",
       "source_change_from_checked": "Only import prefix and required modification-notice path; all28 selected declaration bodies unchanged."
+    },
+    "DifferentialGeometry/External/ClassificationOfSurfaces/PrePolygonDeletion.lean": {
+      "upstream_path": "ClassificationOfSurfaces/Moise/PolygonalSchoenflies.lean (selected compact-frontier recognition only)",
+      "selection_provenance": "DELETION_PROVENANCE.json",
+      "target_sha256": "18c50c759e669e4829959317fb5508d735d795a73a0bf33264f1278605eb4efe",
+      "checked_private_request": "1789232885714420646-schoenflies-24adbd8c",
+      "source_change_from_checked": "Consolidate four sources; retain nine statements/bodies/scopes; omit unused private edge specialization; expose only final engine; restore upstream recognition documentation and localize attribution paths."
     }
   },
   "license_sha256": "b40930bbcf80744c86c46a12bc9da056641d722716c378f5659b9e555ef833e1",
@@ -116,5 +123,38 @@
     },
     "root_independent_review": "All ten guarded hashes match final current source; all24 signature/axiom messages read; actual finite nonempty simplicial face/intersection and mesh support/frontier/deletion consumers pass; all28 selected attachment declaration bodies independently match pinned upstream sources.",
     "aggregate_registration": "All five leaves registered in DifferentialGeometry.lean."
+  },
+  "deletion_provenance_sha256": "4210c75700fa043a2c13918aec154e076e77d0e412c54cbe9ed67f00f2f3b39d",
+  "deletion_validation": {
+    "status": "Passed fresh one-new-module artifact and imported public consumer gate.",
+    "request_id": "1789233891983857661-schoenflies-42a7b73c",
+    "input_sha256": "eed023089393b8fe1b8de38c2495fd50f2db9ead695be9afe0b65168ea76c40a",
+    "result_sha256": "ff820a5242a4cd91d3c12afaa3d959342f7857a1d1cd371dd123a30a085176cf",
+    "artifacts_log_sha256": "190b52915412ee4ed8133302a4b957f4d5c142fc52b508c322573acf957df8de",
+    "job_id": "13781140",
+    "host": "della-r3c2n16",
+    "elapsed_seconds": 188.45638227462769,
+    "peak_rss_bytes": 2236469248,
+    "freshly_built_modules": [
+      "DifferentialGeometry.External.ClassificationOfSurfaces.PrePolygonDeletion"
+    ],
+    "source_guards_matched": 92,
+    "type_axiom_pairs": 3,
+    "unexpected_diagnostics": 0,
+    "stock_linters": [
+      "unusedArguments",
+      "simpNF",
+      "synTaut"
+    ],
+    "axiom_scope": "All imported ClassificationOfSurfaces declarations, including private helpers, and current consumers.",
+    "approved_axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "root_independent_review": "All92 current guarded hashes and submitted input match. All six type/axiom messages read. Nine retained mathematical bodies match checked private source exactly; omitted unused private edge specialization. Upstream recognition body hash and exact zero-context delta independently verified. Actual input polygon produces the mesh and full surviving polygon support/frontier/oriented-arc/attachment equations.",
+    "aggregate_registration": "New leaf registered in flat DifferentialGeometry.lean.",
+    "full_dg_aggregate_build": false,
+    "smooth_disk_filling": false
   }
 }

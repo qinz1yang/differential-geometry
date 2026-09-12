@@ -1,0 +1,93 @@
+{
+  "upstream_repository": "https://github.com/mccorvie/classification-of-surfaces",
+  "upstream_revision": "e3c7230fe78d7b056a415d9ecae6f77887046b32",
+  "license": "Apache-2.0",
+  "license_sha256": "b40930bbcf80744c86c46a12bc9da056641d722716c378f5659b9e555ef833e1",
+  "upstream_source": "ClassificationOfSurfaces/Moise/PolygonalSchoenflies.lean",
+  "upstream_source_sha256": "8b3aa241482b4e551817f1ea0111f6cbc52d494a950268eb8a3e78c99ff3963f",
+  "selected_upstream_declaration": "LeanEval.Topology.ClassificationOfSurfaces.Moise.PolygonalCircle.eq_closedRegion_of_isCompact_frontier_eq",
+  "upstream_declaration_start_line": 2410,
+  "upstream_declaration_sha256": "a044458e37a7e9e9902a43eab6eb4f9efaf449713e4332e4793d38fc04e637cb",
+  "recognition_delta": "DELETION_RECOGNITION.patch",
+  "recognition_delta_sha256": "658619dbb1ae5aa7522980cec0dbcb7a8c6e44f25219b384f2e70c13bd810364",
+  "production_source_sha256": "18c50c759e669e4829959317fb5508d735d795a73a0bf33264f1278605eb4efe",
+  "checked_native_sources": {
+    "PrePolygonComplementaryArc.lean": "50f40d9782ba0cf1e9299b0286a0a6cb96a84c29ae95b1796f8dc3c8a9ed0a00",
+    "PrePolygonDeletionFrontier.lean": "ce270b01e08c05958e524c4591c89e0c37a12fcce45919c3ad2a4a9e30c20de5",
+    "PrePolygonDeletionBoundary.lean": "13e19a7b8579ad7de1dbc0d0ada45e0803be6ada1b12b270f8b3fa9dd8861f91",
+    "PrePolygonDeletionRegion.lean": "6508ff0890f1f0a083756b840fb040cd4869eeb5c14fd021f7e9ea3b6b9c0249"
+  },
+  "checked_declarations": {
+    "closure_diff_arc_of_subset_jordan": "a000f9624fe98899f1bdc24a1b126348f540b1b18f01558dc2bbd455b92f6d7d",
+    "free_triangle_apex_edges_isArcBetween": "d3a57a1917a9348fd3bb312c463545c8749f87005c77dc4f205de316a46b0d33",
+    "jordan_frontier_erase_triangle_of_one_edge_free": "3363c65202007ea6471df6c64b1935dee6353e55a6161ba9854b935536ab9b8b",
+    "PrePolygon.jordan_frontier_erase_triangle_of_one_edge_free": "43228cc9dddaaba871349218c99e4a8d2f58079f51311fb00d16102480e5593c",
+    "isPolygonal_closure_diff_segment_of_subset_jordan": "56285f51d15e14379ac5adc6f09af9b40b462addfd36facc21475455d8305f8e",
+    "PrePolygon.exists_prePolygon_frontier_erase_triangle_of_one_edge_free": "fe6c55c2e087be52bc31b0fec124c8ddbe31f87158b41b2b153181ccfbcf7f19",
+    "eq_closure_inside_of_isCompact_frontier_eq": "f886c3c88ec5b2323072e5d97ca5879b374a9caaa261b9eaa91e8d8fce26bf4a",
+    "interior_erase_triangle_support_nonempty_of_one_edge_free": "43b143c09fc45a6e78fb637148a018b8c75a322f5c4a7375af2a501f15f688b6",
+    "PrePolygon.exists_prePolygon_closed_region_erase_triangle_of_one_edge_free": "ea1dc83480d189dbfa4859a359cddfd89eff0534eff1ee0ac71b5a2a49a6b9dd"
+  },
+  "source_check": {
+    "request_id": "1789232885714420646-schoenflies-24adbd8c",
+    "input_sha256": "c56651c8c9e83dd9052f75ca50c2b309c3f4c0c32bcf591687352a52f87ee688",
+    "result_sha256": "12e11ab4e00d2b051fc784b98062f587d6271b8f105ad6cb9485d87db1ed9997",
+    "unexpected_diagnostics": 0,
+    "type_axiom_pairs": 11,
+    "stock_linters": [
+      "unusedArguments",
+      "simpNF",
+      "synTaut"
+    ],
+    "approved_axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "source_guards_matched": 94
+  },
+  "production_changes": [
+    "Consolidate four checked bodies into one leaf; preserve all namespace and open scopes.",
+    "Retain nine mathematical statements and bodies; expose only the final closed-region engine; omit the unused private edge specialization.",
+    "Replace per-scratch import headers by their precise dependency union; no source options added.",
+    "Preserve original recognition documentation and Apache attribution; update license/modification paths."
+  ],
+  "production_validation": {
+    "status": "Passed fresh one-new-module artifact and imported public consumer gate.",
+    "request_id": "1789233891983857661-schoenflies-42a7b73c",
+    "input_sha256": "eed023089393b8fe1b8de38c2495fd50f2db9ead695be9afe0b65168ea76c40a",
+    "result_sha256": "ff820a5242a4cd91d3c12afaa3d959342f7857a1d1cd371dd123a30a085176cf",
+    "artifacts_log_sha256": "190b52915412ee4ed8133302a4b957f4d5c142fc52b508c322573acf957df8de",
+    "job_id": "13781140",
+    "host": "della-r3c2n16",
+    "elapsed_seconds": 188.45638227462769,
+    "peak_rss_bytes": 2236469248,
+    "freshly_built_modules": [
+      "DifferentialGeometry.External.ClassificationOfSurfaces.PrePolygonDeletion"
+    ],
+    "source_guards_matched": 92,
+    "type_axiom_pairs": 3,
+    "unexpected_diagnostics": 0,
+    "stock_linters": [
+      "unusedArguments",
+      "simpNF",
+      "synTaut"
+    ],
+    "axiom_scope": "All imported ClassificationOfSurfaces declarations, including private helpers, and current consumers.",
+    "approved_axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "root_independent_review": "All92 current guarded hashes and submitted input match. All six type/axiom messages read. Nine retained mathematical bodies match checked private source exactly; omitted unused private edge specialization. Upstream recognition body hash and exact zero-context delta independently verified. Actual input polygon produces the mesh and full surviving polygon support/frontier/oriented-arc/attachment equations.",
+    "aggregate_registration": "New leaf registered in flat DifferentialGeometry.lean.",
+    "full_dg_aggregate_build": false,
+    "smooth_disk_filling": false
+  },
+  "public_declaration": "Schoenflies.PrePolygon.exists_prePolygon_closed_region_erase_triangle_of_one_edge_free",
+  "remaining_obligations": [
+    "Produce an actual geometric free triangle without assuming the desired certificate.",
+    "Two-edge deletion.",
+    "Compatible smooth rounding and disk absorption."
+  ]
+}
