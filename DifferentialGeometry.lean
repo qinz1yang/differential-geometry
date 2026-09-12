@@ -149,6 +149,7 @@ import DifferentialGeometry.Analysis.Calculus.SmoothExtension.JetGluing.ProductM
 import DifferentialGeometry.Analysis.Calculus.SmoothExtension.JetGluing.Smooth
 import DifferentialGeometry.Analysis.Calculus.SmoothExtension.Local
 import DifferentialGeometry.Analysis.Calculus.SmoothExtension.SmoothExtension
+import DifferentialGeometry.Analysis.Calculus.ProdWithin
 import DifferentialGeometry.Analysis.Calculus.SmoothMax
 import DifferentialGeometry.Analysis.Calculus.SmoothTransition
 import DifferentialGeometry.Analysis.Calculus.Smoothness.AnisotropicJoint
