@@ -1,5 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.Basic
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Connection.DifferenceTimeDerivative
+import DifferentialGeometry.Geometry.Connection.ParallelTransport.Derivative.MFDerivAlongCurve
 
 noncomputable section
 open Bundle Manifold Set
@@ -9,6 +10,7 @@ open DifferentialGeometry.Geometry.Connection
 open DifferentialGeometry.Geometry.Riemannian.CovariantDerivativeAlong
 open DifferentialGeometry.Geometry.Riemannian.AlongCurve
 open DifferentialGeometry.Geometry.Riemannian.Geodesic
+open DifferentialGeometry.Geometry.Riemannian.MFDerivAlongCurve
 open DifferentialGeometry.Tensor0SBundle
 open DifferentialGeometry.Geometry.Operator
 
@@ -598,6 +600,7 @@ theorem pullback_commutator {D : RealTimeInterval} {a b s u : ℝ}
       connectionVariation B.family (Icc s u) t (c.lift x t) (c.X x t) (V x t) := by
   sorry
 
+omit [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] hBoundary in
 theorem pullback_torsion_free {D : RealTimeInterval} {a b s u : ℝ}
     (B : SmoothMetricWindow (I := I) (M := M) D a b)
     (hsu : s < u) (hwindow : Icc s u ⊆ Icc a b)
@@ -605,7 +608,123 @@ theorem pullback_torsion_free {D : RealTimeInterval} {a b s u : ℝ}
     (x t : ℝ) (ht : t ∈ Icc s u) :
     c.Dt B.family.metric (Icc s u) c.X x t =
       c.Dx B.family.metric (c.velocity (Icc s u)) x t := by
-  sorry
+  have _ := hwindow
+  classical
+  set J : Set ℝ := Icc s u with hJ
+  have htJ : t ∈ J := ht
+  have huniqJ : UniqueDiffOn ℝ J := by rw [hJ]; exact uniqueDiffOn_Icc hsu
+  have huniqJt : UniqueMDiffWithinAt 𝓘(ℝ, ℝ) J t := by
+    rw [uniqueMDiffWithinAt_iff_uniqueDiffWithinAt]; exact huniqJ t htJ
+  have hcl : t ∈ closure (interior J) := by
+    change t ∈ closure (interior (Icc s u))
+    rw [closure_interior_Icc (ne_of_lt hsu)]; exact ht
+  set β : M := c.lift x t with hβ
+  set Φ : ℝ × ℝ → E := fun p => extChartAt I β (c.lift p.1 p.2) with hΦdef
+  have hΦsmooth : ∀ᶠ z in 𝓝[univ ×ˢ J] (x, t), ContDiffWithinAt ℝ 2 Φ (univ ×ˢ J) z := by
+    have hct : ContinuousWithinAt (fun p : ℝ × ℝ => c.lift p.1 p.2) (univ ×ˢ J) (x, t) :=
+      (hc (x, t) ⟨mem_univ x, htJ⟩).continuousWithinAt
+    have hsrc : (fun p : ℝ × ℝ => c.lift p.1 p.2) ⁻¹' (chartAt H β).source
+        ∈ 𝓝[univ ×ˢ J] (x, t) :=
+      hct.preimage_mem_nhdsWithin ((chartAt H β).open_source.mem_nhds (mem_chart_source H β))
+    filter_upwards [hsrc, self_mem_nhdsWithin] with z hz hzS
+    have hz2 : ContMDiffWithinAt 𝓘(ℝ, ℝ × ℝ) I ∞
+        (fun p : ℝ × ℝ => c.lift p.1 p.2) (univ ×ˢ J) z := hc z hzS
+    have hext : ContMDiffAt I 𝓘(ℝ, E) ∞ (extChartAt I β) (c.lift z.1 z.2) :=
+      contMDiffAt_extChartAt' (I := I) (n := ∞) (x := β) hz
+    exact contMDiffWithinAt_iff_contDiffWithinAt.mp
+      ((hext.comp_contMDiffWithinAt z hz2).of_le (by decide))
+  have hclairaut := DifferentialGeometry.Geometry.Riemannian.Variation.mixed_partialFderivWithin_comm
+    Φ x t huniqJ htJ hcl hΦsmooth
+  have hrepL : (fun r : ℝ => chartRepAtBase (I := I) β (fun s : ℝ => c.lift x s)
+        (fun s : ℝ => c.X x s) r)
+      =ᶠ[𝓝[J] t] (fun r : ℝ => fderiv ℝ (fun u : ℝ => Φ (u, r)) x 1) := by
+    have hslice : ContMDiffWithinAt 𝓘(ℝ, ℝ) I ∞ (fun r : ℝ => c.lift x r) J t :=
+      c.time_slice_contMDiffWithinAt (I := I) J hc x t htJ
+    have hsr : (fun r : ℝ => c.lift x r) ⁻¹' (chartAt H β).source ∈ 𝓝[J] t :=
+      hslice.continuousWithinAt.preimage_mem_nhdsWithin
+        ((chartAt H β).open_source.mem_nhds (mem_chart_source H β))
+    filter_upwards [hsr, self_mem_nhdsWithin] with r hr hrJ
+    have hγ : MDifferentiableAt 𝓘(ℝ, ℝ) I (fun u : ℝ => c.lift u r) x :=
+      (contMDiffWithinAt_univ.mp
+        (c.space_slice_contMDiffWithinAt (I := I) J hc x r hrJ)).mdifferentiableAt (by norm_num)
+    have hb := chartCoord_mfderiv_along_curve_eq_fderiv_of_mdifferentiableAt
+      (I := I) (M := M) (γ := fun u : ℝ => c.lift u r) hγ β hr
+    simpa only [chartRepAtBase_apply, CurveMap.X, hΦdef, Function.comp_def] using hb
+  have hrepR : (fun u : ℝ => chartRepAtBase (I := I) β (fun s : ℝ => c.lift s t)
+        (fun s : ℝ => c.velocity J s t) u)
+      =ᶠ[𝓝 x] (fun u : ℝ => fderivWithin ℝ (fun v : ℝ => Φ (u, v)) J t 1) := by
+    have hcont : ContinuousAt (fun u : ℝ => c.lift u t) x :=
+      (contMDiffWithinAt_univ.mp
+        (c.space_slice_contMDiffWithinAt (I := I) J hc x t htJ)).continuousAt
+    have hsr : (fun u : ℝ => c.lift u t) ⁻¹' (chartAt H β).source ∈ 𝓝 x :=
+      hcont.preimage_mem_nhds ((chartAt H β).open_source.mem_nhds (mem_chart_source H β))
+    filter_upwards [hsr] with u hu
+    have hγ : MDifferentiableWithinAt 𝓘(ℝ, ℝ) I (fun v : ℝ => c.lift u v) J t :=
+      (c.time_slice_contMDiffWithinAt (I := I) J hc u t htJ).mdifferentiableWithinAt (by norm_num)
+    have hγc : ContinuousWithinAt (fun v : ℝ => c.lift u v) J t :=
+      (c.time_slice_contMDiffWithinAt (I := I) J hc u t htJ).continuousWithinAt
+    have hb := chartCoord_mfderivWithin_along_curve_eq_fderivWithin
+      (I := I) (M := M) (γ := fun v : ℝ => c.lift u v) hγ hγc huniqJt hu
+    simpa only [chartRepAtBase_apply, CurveMap.velocity, hΦdef, Function.comp_def] using hb
+  have hLHS : c.Dt B.family.metric J c.X x t
+      = (trivializationAt E (TangentSpace I) β).symmL ℝ β
+          (derivWithin (fun v : ℝ => fderiv ℝ (fun u : ℝ => Φ (u, v)) x 1) J t
+            + chartChristoffelContraction (I := I) (B.family.metric t) β
+                (derivWithin (fun v : ℝ => Φ (x, v)) J t)
+                (fderiv ℝ (fun u : ℝ => Φ (u, t)) x 1)
+                (Φ (x, t))) := by
+    rw [Dt_eq_symmL_chart]
+    congr 1
+    have hpt : chartRepAtBase (I := I) β (fun s : ℝ => c.lift x s) (fun s : ℝ => c.X x s) t
+        = fderiv ℝ (fun u : ℝ => Φ (u, t)) x 1 := hrepL.self_of_nhdsWithin htJ
+    have hderL : derivWithin (chartRepAtBase (I := I) β (fun s : ℝ => c.lift x s)
+          (fun s : ℝ => c.X x s)) J t
+        = derivWithin (fun r : ℝ => fderiv ℝ (fun u : ℝ => Φ (u, r)) x 1) J t :=
+      Filter.EventuallyEq.derivWithin_eq hrepL hpt
+    have hcurveL : chartCurve (I := I) β (fun s : ℝ => c.lift x s) = fun v : ℝ => Φ (x, v) := rfl
+    rw [hderL, hpt, hcurveL]
+  have hRHS : c.Dx B.family.metric (c.velocity J) x t
+      = (trivializationAt E (TangentSpace I) β).symmL ℝ β
+          (deriv (fun u : ℝ => fderivWithin ℝ (fun v : ℝ => Φ (u, v)) J t 1) x
+            + chartChristoffelContraction (I := I) (B.family.metric t) β
+                (deriv (fun u : ℝ => Φ (u, t)) x)
+                (fderivWithin ℝ (fun v : ℝ => Φ (x, v)) J t 1)
+                (Φ (x, t))) := by
+    change (trivializationAt E (TangentSpace I) β).symmL ℝ β
+        (chartCovDerivAlong (I := I) (B.family.metric t) β (fun u : ℝ => c.lift u t)
+          (chartRepAtBase (I := I) β (fun s : ℝ => c.lift s t)
+            (fun s : ℝ => c.velocity J s t)) x) = _
+    rw [chartCovDerivAlong_def]
+    congr 1
+    have hpt : chartRepAtBase (I := I) β (fun s : ℝ => c.lift s t)
+        (fun s : ℝ => c.velocity J s t) x
+        = fderivWithin ℝ (fun v : ℝ => Φ (x, v)) J t 1 := hrepR.self_of_nhds
+    have hderR : deriv (chartRepAtBase (I := I) β (fun s : ℝ => c.lift s t)
+          (fun s : ℝ => c.velocity J s t)) x
+        = deriv (fun u : ℝ => fderivWithin ℝ (fun v : ℝ => Φ (u, v)) J t 1) x :=
+      Filter.EventuallyEq.deriv_eq hrepR
+    have hcurveR : chartCurve (I := I) β (fun s : ℝ => c.lift s t) = fun u : ℝ => Φ (u, t) := rfl
+    rw [hderR, hpt, hcurveR]
+  have hAB : (derivWithin (fun v : ℝ => fderiv ℝ (fun u : ℝ => Φ (u, v)) x 1) J t
+        + chartChristoffelContraction (I := I) (B.family.metric t) β
+            (derivWithin (fun v : ℝ => Φ (x, v)) J t)
+            (fderiv ℝ (fun u : ℝ => Φ (u, t)) x 1)
+            (Φ (x, t)))
+      = (deriv (fun u : ℝ => fderivWithin ℝ (fun v : ℝ => Φ (u, v)) J t 1) x
+        + chartChristoffelContraction (I := I) (B.family.metric t) β
+            (deriv (fun u : ℝ => Φ (u, t)) x)
+            (fderivWithin ℝ (fun v : ℝ => Φ (x, v)) J t 1)
+            (Φ (x, t))) := by
+    rw [hclairaut]
+    congr 1
+    rw [show derivWithin (fun v : ℝ => Φ (x, v)) J t
+        = fderivWithin ℝ (fun v : ℝ => Φ (x, v)) J t 1 from rfl,
+      show deriv (fun u : ℝ => Φ (u, t)) x
+        = fderiv ℝ (fun u : ℝ => Φ (u, t)) x 1 from rfl,
+      chartChristoffelContraction_symm (I := I) (B.family.metric t) β
+        (fderivWithin ℝ (fun v : ℝ => Φ (x, v)) J t 1)
+        (fderiv ℝ (fun u : ℝ => Φ (u, t)) x 1) (Φ (x, t))]
+  rw [hLHS, hRHS, hAB]
 
 omit [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] hBoundary in
 theorem CurveMap.Dt_eq_covDerivAlong_of_mem_Ioo (c : CurveMap M)

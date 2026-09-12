@@ -77,6 +77,30 @@ theorem chartCoord_mfderiv_along_curve_eq_fderiv_of_mdifferentiableAt
     rw [← hmf_eq_f, hchain]; rfl
   rw [hRHS]; rfl
 
+theorem chartCoord_mfderivWithin_along_curve_eq_fderivWithin
+    {γ : ℝ → M} {J : Set ℝ} {t₀ : ℝ} {α : M}
+    (hγ : MDifferentiableWithinAt 𝓘(ℝ, ℝ) I γ J t₀)
+    (hγc : ContinuousWithinAt γ J t₀)
+    (hxs : UniqueMDiffWithinAt 𝓘(ℝ, ℝ) J t₀)
+    (ht : γ t₀ ∈ (chartAt H α).source) :
+    ((trivializationAt E (TangentSpace I) α).continuousLinearMapAt ℝ (γ t₀))
+        ((mfderivWithin 𝓘(ℝ, ℝ) I γ J t₀ : ℝ →L[ℝ] _) (1 : ℝ)) =
+      (fderivWithin ℝ (fun s => extChartAt I α (γ s)) J t₀ : ℝ →L[ℝ] E) (1 : ℝ) := by
+  rw [TangentBundle.continuousLinearMapAt_trivializationAt (I := I)
+    (𝕜 := ℝ) (x₀ := α) (x := γ t₀) ht]
+  have hφ : MDiffAt[(chartAt H α).source] (extChartAt I α) (γ t₀) :=
+    (mdifferentiableAt_extChartAt (I := I) (x := α) ht).mdifferentiableWithinAt
+  have hpre : γ ⁻¹' (chartAt H α).source ∈ 𝓝[J] t₀ :=
+    hγc.preimage_mem_nhdsWithin ((chartAt H α).open_source.mem_nhds ht)
+  have hchain : mfderivWithin 𝓘(ℝ, ℝ) 𝓘(ℝ, E) (fun s : ℝ => extChartAt I α (γ s)) J t₀
+      = (mfderiv[(chartAt H α).source] (extChartAt I α) (γ t₀)).comp
+          (mfderivWithin 𝓘(ℝ, ℝ) I γ J t₀) :=
+    mfderivWithin_comp_of_preimage_mem_nhdsWithin (x := t₀) (f := γ)
+      (u := (chartAt H α).source) hφ hγ hpre hxs
+  rw [← mfderivWithin_eq_fderivWithin, hchain,
+    mfderivWithin_of_isOpen (chartAt H α).open_source ht]
+  rfl
+
 theorem velocity_coord_diff
     (γ : ℝ → M) (t : ℝ) (hγ : ContMDiffAt 𝓘(ℝ, ℝ) I 2 γ t) :
     DifferentiableAt ℝ

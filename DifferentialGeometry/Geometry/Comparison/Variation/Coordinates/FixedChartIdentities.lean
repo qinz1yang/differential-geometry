@@ -10,6 +10,9 @@ import DifferentialGeometry.Geometry.Connection.ChartBridge.Curvature.BasisBrack
 import DifferentialGeometry.Analysis.Integration.Measure.Chart.Density
 import Mathlib.Geometry.Manifold.ContMDiff.Defs
 import Mathlib.Analysis.Calculus.FDeriv.Symmetric
+import Mathlib.Analysis.Calculus.ContDiff.Comp
+import Mathlib.Analysis.Calculus.TangentCone.Prod
+import Mathlib.Topology.Constructions.SumProd
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 open DifferentialGeometry.Geometry.Operator
@@ -1177,6 +1180,132 @@ theorem chartCovDerivAlong_commutator_eq_riemannOp_on_variation
       (I := I) g (f s t)
       (DifferentialGeometry.Geometry.Connection.chartRiemannBasisIdentity_LeviCivita
         (I := I) g (f s t))]
+
+omit [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] in
+theorem mixed_partialFderivWithin_comm (Φ : ℝ × ℝ → E) (x t : ℝ) {J : Set ℝ}
+    (huniqJ : UniqueDiffOn ℝ J) (htJ : t ∈ J) (hcl : t ∈ closure (interior J))
+    (hΦ : ∀ᶠ z in 𝓝[univ ×ˢ J] (x, t), ContDiffWithinAt ℝ 2 Φ (univ ×ˢ J) z) :
+    derivWithin (fun v => fderiv ℝ (fun u => Φ (u, v)) x 1) J t
+      = deriv (fun u => fderivWithin ℝ (fun v => Φ (u, v)) J t 1) x := by
+  set S : Set (ℝ × ℝ) := univ ×ˢ J with hS
+  have hSuniq : UniqueDiffOn ℝ S := by
+    rw [hS]; exact UniqueDiffOn.prod uniqueDiffOn_univ huniqJ
+  have hxS : (x, t) ∈ S := by rw [hS]; exact ⟨mem_univ x, htJ⟩
+  have hclS : (x, t) ∈ closure (interior S) := by
+    rw [hS, interior_prod_eq, closure_prod_eq]
+    exact ⟨by simp, hcl⟩
+  have hmem : ∀ u v : ℝ, v ∈ J → (u, v) ∈ S := fun u v hv => by
+    rw [hS]; exact ⟨mem_univ u, hv⟩
+  have hSdef : S = univ ×ˢ J := hS
+  have htendR : Tendsto (fun v : ℝ => ((x, v) : ℝ × ℝ)) (𝓝[J] t)
+      (𝓝[univ ×ˢ J] ((x, t) : ℝ × ℝ)) := by
+    rw [tendsto_nhdsWithin_iff]
+    refine ⟨?_, ?_⟩
+    · exact ((hasFDerivAt_prodMk_right (𝕜 := ℝ) x t).continuousAt.tendsto).mono_left
+        nhdsWithin_le_nhds
+    · filter_upwards [self_mem_nhdsWithin] with v hv
+      exact hmem x v hv
+  have htendL : Tendsto (fun u : ℝ => ((u, t) : ℝ × ℝ)) (𝓝 x)
+      (𝓝[univ ×ˢ J] ((x, t) : ℝ × ℝ)) := by
+    rw [tendsto_nhdsWithin_iff]
+    refine ⟨?_, ?_⟩
+    · exact (hasFDerivAt_prodMk_left (𝕜 := ℝ) x t).continuousAt.tendsto
+    · exact Eventually.of_forall (fun u => hmem u t htJ)
+  have hΦt : ContDiffWithinAt ℝ 2 Φ S (x, t) := by
+    rw [hSdef]; exact hΦ.self_of_nhdsWithin hxS
+  have hsymm : IsSymmSndFDerivWithinAt ℝ Φ S (x, t) :=
+    ContDiffWithinAt.isSymmSndFDerivWithinAt hΦt
+      (by rw [minSmoothness_of_isRCLikeNormedField]) hSuniq hclS hxS
+  have hDd : DifferentiableWithinAt ℝ (fderivWithin ℝ Φ S) S (x, t) :=
+    (hΦt.fderivWithin_right hSuniq (m := 1) (by norm_num) hxS).differentiableWithinAt
+      (by norm_num)
+  set D : (ℝ × ℝ) →L[ℝ] ((ℝ × ℝ) →L[ℝ] E) :=
+    fderivWithin ℝ (fderivWithin ℝ Φ S) S (x, t) with hD
+  have hsym : D (1, 0) (0, 1) = D (0, 1) (1, 0) := by
+    rw [hD]; exact hsymm (1, 0) (0, 1)
+  set ev₁ : ((ℝ × ℝ) →L[ℝ] E) →L[ℝ] E :=
+    ContinuousLinearMap.apply ℝ E ((1 : ℝ), (0 : ℝ)) with hev₁
+  set ev₂ : ((ℝ × ℝ) →L[ℝ] E) →L[ℝ] E :=
+    ContinuousLinearMap.apply ℝ E ((0 : ℝ), (1 : ℝ)) with hev₂
+  have hev₁_apply : ∀ L : (ℝ × ℝ) →L[ℝ] E, ev₁ L = L (1, 0) := by
+    intro L; simp [hev₁]
+  have hev₂_apply : ∀ L : (ℝ × ℝ) →L[ℝ] E, ev₂ L = L (0, 1) := by
+    intro L; simp [hev₂]
+  have hPid : ∀ᶠ v in 𝓝[J] t, fderiv ℝ (fun u => Φ (u, v)) x 1
+      = fderivWithin ℝ Φ S (x, v) (1, 0) := by
+    filter_upwards [self_mem_nhdsWithin, htendR.eventually hΦ] with v hv hcv
+    have hd : DifferentiableWithinAt ℝ Φ S (x, v) := hcv.differentiableWithinAt (by norm_num)
+    have hι : HasFDerivWithinAt (fun u : ℝ => (u, v)) (ContinuousLinearMap.inl ℝ ℝ ℝ) univ x :=
+      (hasFDerivAt_prodMk_left x v).hasFDerivWithinAt
+    have hmap : MapsTo (fun u : ℝ => (u, v)) univ S := fun u _ => hmem u v hv
+    have hcomp := HasFDerivWithinAt.comp (x := x) hd.hasFDerivWithinAt hι hmap
+    have h1 : fderivWithin ℝ (fun u : ℝ => Φ (u, v)) univ x
+        = (fderivWithin ℝ Φ S (x, v)).comp (ContinuousLinearMap.inl ℝ ℝ ℝ) :=
+      hcomp.fderivWithin uniqueDiffWithinAt_univ
+    rw [fderivWithin_univ] at h1
+    have h2 := congrArg (fun L : ℝ →L[ℝ] E => L 1) h1
+    simp only [ContinuousLinearMap.comp_apply] at h2
+    simpa using h2
+  have hQid : ∀ᶠ u in 𝓝 x, fderivWithin ℝ Φ S (u, t) (0, 1)
+      = fderivWithin ℝ (fun v => Φ (u, v)) J t 1 := by
+    filter_upwards [htendL.eventually hΦ] with u hcu
+    have hd : DifferentiableWithinAt ℝ Φ S (u, t) := hcu.differentiableWithinAt (by norm_num)
+    have hι : HasFDerivWithinAt (fun v : ℝ => (u, v)) (ContinuousLinearMap.inr ℝ ℝ ℝ) J t :=
+      (hasFDerivAt_prodMk_right u t).hasFDerivWithinAt
+    have hmap : MapsTo (fun v : ℝ => (u, v)) J S := fun v hv => hmem u v hv
+    have hcomp := HasFDerivWithinAt.comp (x := t) hd.hasFDerivWithinAt hι hmap
+    have h1 : fderivWithin ℝ (fun v : ℝ => Φ (u, v)) J t
+        = (fderivWithin ℝ Φ S (u, t)).comp (ContinuousLinearMap.inr ℝ ℝ ℝ) :=
+      hcomp.fderivWithin (huniqJ t htJ)
+    have h2 := congrArg (fun L : ℝ →L[ℝ] E => L 1) h1
+    simp only [ContinuousLinearMap.comp_apply] at h2
+    simpa using h2.symm
+  have hPderiv : derivWithin (fun v => fderivWithin ℝ Φ S (x, v) (1, 0)) J t
+      = D (0, 1) (1, 0) := by
+    have hP : HasFDerivWithinAt (fun z : ℝ × ℝ => fderivWithin ℝ Φ S z (1, 0))
+        (ev₁.comp D) S (x, t) :=
+      HasFDerivAt.comp_hasFDerivWithinAt (x := (x, t))
+        (ContinuousLinearMap.hasFDerivAt ev₁) hDd.hasFDerivWithinAt
+    have hι : HasFDerivWithinAt (fun v : ℝ => (x, v)) (ContinuousLinearMap.inr ℝ ℝ ℝ) J t :=
+      (hasFDerivAt_prodMk_right x t).hasFDerivWithinAt
+    have hmap : MapsTo (fun v : ℝ => (x, v)) J S := fun v hv => hmem x v hv
+    have hcomp := HasFDerivWithinAt.comp (x := t) hP hι hmap
+    have h1 : fderivWithin ℝ (fun v : ℝ => fderivWithin ℝ Φ S (x, v) (1, 0)) J t
+        = (ev₁.comp D).comp (ContinuousLinearMap.inr ℝ ℝ ℝ) := hcomp.fderivWithin (huniqJ t htJ)
+    have h2 := congrArg (fun L : ℝ →L[ℝ] E => L 1) h1
+    simp only [ContinuousLinearMap.comp_apply] at h2
+    rw [derivWithin, h2]
+    simp only [hev₁_apply]
+    rfl
+  have hQderiv : deriv (fun u => fderivWithin ℝ Φ S (u, t) (0, 1)) x = D (1, 0) (0, 1) := by
+    have hQ : HasFDerivWithinAt (fun z : ℝ × ℝ => fderivWithin ℝ Φ S z (0, 1))
+        (ev₂.comp D) S (x, t) :=
+      HasFDerivAt.comp_hasFDerivWithinAt (x := (x, t))
+        (ContinuousLinearMap.hasFDerivAt ev₂) hDd.hasFDerivWithinAt
+    have hι : HasFDerivWithinAt (fun u : ℝ => (u, t)) (ContinuousLinearMap.inl ℝ ℝ ℝ) univ x :=
+      (hasFDerivAt_prodMk_left x t).hasFDerivWithinAt
+    have hmap : MapsTo (fun u : ℝ => (u, t)) univ S := fun u _ => hmem u t htJ
+    have hcomp := HasFDerivWithinAt.comp (x := x) hQ hι hmap
+    have h1 : fderivWithin ℝ (fun u : ℝ => fderivWithin ℝ Φ S (u, t) (0, 1)) univ x
+        = (ev₂.comp D).comp (ContinuousLinearMap.inl ℝ ℝ ℝ) :=
+      hcomp.fderivWithin uniqueDiffWithinAt_univ
+    have h2 := congrArg (fun L : ℝ →L[ℝ] E => L 1) h1
+    simp only [ContinuousLinearMap.comp_apply] at h2
+    rw [deriv, ← fderivWithin_univ, h2]
+    simp only [hev₂_apply]
+    rfl
+  have e1 : derivWithin (fun v => fderiv ℝ (fun u => Φ (u, v)) x 1) J t
+      = D (0, 1) (1, 0) := by
+    have hx_eq : (fderiv ℝ (fun u => Φ (u, t)) x 1)
+        = fderivWithin ℝ Φ S (x, t) (1, 0) :=
+      hPid.self_of_nhdsWithin htJ
+    exact (Filter.EventuallyEq.derivWithin_eq hPid hx_eq).trans hPderiv
+  have e2 : deriv (fun u => fderivWithin ℝ (fun v => Φ (u, v)) J t 1) x
+      = D (1, 0) (0, 1) := by
+    have hQid' : (fun u => fderivWithin ℝ Φ S (u, t) (0, 1))
+        =ᶠ[𝓝 x] (fun u => fderivWithin ℝ (fun v => Φ (u, v)) J t 1) := hQid
+    rw [← hQid'.deriv_eq, hQderiv]
+  rw [e1, e2, hsym]
 
 end Variation
 end Riemannian
