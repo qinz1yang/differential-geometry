@@ -1,4 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.LeastArea
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.AreaTransport
 import Mathlib.Topology.Order.Compact
 import DifferentialGeometry.Geometry.Metric.Family.Basic
 
