@@ -1,0 +1,41 @@
+import DifferentialGeometry.Topology.PiecewiseLinear.ChartGluing
+import Mathlib.Geometry.Manifold.Instances.Real
+
+open Set Topology
+open scoped Manifold ContDiff
+
+namespace DifferentialGeometry.Topology.PiecewiseLinear
+
+universe u
+
+def PLSmoothing (n : ℕ) : Prop :=
+  ∀ {X : Type u} [TopologicalSpace X] [T2Space X] [SecondCountableTopology X]
+    (C : ChartedSpace (EuclideanSpace ℝ (Fin n)) X),
+    (letI := C; HasGroupoid X (plGroupoid n)) →
+    ∃ C' : ChartedSpace (EuclideanSpace ℝ (Fin n)) X,
+      letI := C'
+      IsManifold (𝓡 n) ∞ X
+
+variable {n : ℕ} {X : Type u} [TopologicalSpace X] [T2Space X] [CompactSpace X]
+  [ChartedSpace (EuclideanSpace ℝ (Fin n)) X]
+
+theorem exists_isManifold_of_plApproximation_of_plSmoothing (hA : PLApproximation.{u} n)
+    (hB : PLSmoothing.{u} n) :
+    ∃ C : ChartedSpace (EuclideanSpace ℝ (Fin n)) X,
+      letI := C
+      IsManifold (𝓡 n) ∞ X := by
+  have hsc : SecondCountableTopology X :=
+    ChartedSpace.secondCountable_of_sigmaCompact (H := EuclideanSpace ℝ (Fin n)) (M := X)
+  obtain ⟨C, hC⟩ := exists_chartedSpace_hasGroupoid_plGroupoid_of_plApproximation (X := X) hA
+  exact hB C hC
+
+theorem exists_isManifold_three_of_plApproximation_of_plSmoothing {M : Type u}
+    [TopologicalSpace M] [T2Space M] [CompactSpace M]
+    [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M] (hA : PLApproximation.{u} 3)
+    (hB : PLSmoothing.{u} 3) :
+    ∃ C : ChartedSpace (EuclideanSpace ℝ (Fin 3)) M,
+      letI := C
+      IsManifold (𝓡 3) ∞ M :=
+  exists_isManifold_of_plApproximation_of_plSmoothing hA hB
+
+end DifferentialGeometry.Topology.PiecewiseLinear
