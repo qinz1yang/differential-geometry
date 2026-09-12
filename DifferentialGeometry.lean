@@ -4845,6 +4845,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.C
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.ComponentFlow
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.Connection
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.Continuation
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.DerivAlongWithin
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.Evolution
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.IntegralBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.LocalExistence
@@ -8471,6 +8472,7 @@ import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.InteriorChart
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.LocalDiffeomorphism
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.Quotient
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.SeamChart
+import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.SeamOrientation
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.SmoothStructure
 import DifferentialGeometry.Topology.ThreeManifold.CutCap
 import DifferentialGeometry.Topology.ThreeManifold.CutCapReconstruction

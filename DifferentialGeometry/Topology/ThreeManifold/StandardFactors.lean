@@ -501,7 +501,7 @@ private theorem quotientOrientationField_compatible :
 
 namespace Manifold
 
-private theorem exists_manifoldOrientation_eq_of_compatibleOrientation
+theorem exists_manifoldOrientation_eq_of_compatibleOrientation
     {E M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
     [TopologicalSpace M] [ChartedSpace E M] [IsManifold 𝓘(ℝ, E) ∞ M] {n : ℕ}
     (hdim : Module.finrank ℝ E = n)

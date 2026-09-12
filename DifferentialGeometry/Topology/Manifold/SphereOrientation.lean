@@ -228,7 +228,7 @@ private theorem frame_det_ne_zero {n : ℕ} (x : EuclideanSpace ℝ (Fin (n + 1)
   exact fun hdetzero =>
     ((LinearMap.det_eq_zero_iff_ker_ne_bot (f := Ψ)).mp hdetzero) (by rw [hker])
 
-private theorem sphereOutwardDeterminant_ne_zero (n : ℕ)
+theorem sphereOutwardDeterminant_ne_zero (n : ℕ)
     (x : sphere (0 : EuclideanSpace ℝ (Fin (n + 1))) 1)
     (b : Basis (Fin n) ℝ (TangentSpace (𝓡 n) x)) :
     sphereOutwardDeterminant n x b ≠ 0 := by
