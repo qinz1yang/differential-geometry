@@ -55,6 +55,40 @@ private theorem exists_orientedDiffeomorph_finiteConnectedSum_standardThreeSpher
       obtain ⟨s⟩ := hL M (by simp)
       exact ⟨c.trans (u.trans s)⟩
 
+private theorem not_subsingleton_multiplicative_int :
+    ¬ Subsingleton (Multiplicative ℤ) := fun h =>
+  Int.zero_ne_one (Multiplicative.ofAdd.injective (h.elim _ _))
+
+private theorem exists_orientedDiffeomorph_standardThreeSphere_of_isStandardFactor
+    (hquot : ∀ (G : SphericalSpaceFormGroup) (p : G.manifold.Carrier),
+      Nonempty (FundamentalGroup G.manifold.Carrier p ≃* G.group))
+    (htrivial : ∀ (G : SphericalSpaceFormGroup), Subsingleton G.group →
+      Nonempty (ClosedOrientedManifold.OrientedDiffeomorph
+        G.manifold.toClosedOrientedManifold
+        standardThreeSphereLift.{u}.toClosedOrientedManifold))
+    (hproduct : ∀ p : SphereTwoTimesCircle,
+      Nonempty (FundamentalGroup SphereTwoTimesCircle p ≃* Multiplicative ℤ))
+    (F : ConnectedClosedOrientedManifold.{u} 3) (p : F.Carrier)
+    (hstd : isStandardFactor F) (hsub : Subsingleton (FundamentalGroup F.Carrier p)) :
+    Nonempty (ClosedOrientedManifold.OrientedDiffeomorph
+      F.toClosedOrientedManifold standardThreeSphereLift.{u}.toClosedOrientedManifold) := by
+  rcases hstd with ⟨G, ⟨e⟩⟩ | ⟨f, _hf⟩
+  · obtain ⟨g⟩ := htrivial G (by
+      have := hsub
+      have he : Subsingleton (FundamentalGroup G.manifold.Carrier (e.1 p)) :=
+        (fundamentalGroupMulEquivOfHomotopyEquiv e.1.toHomeomorph.toHomotopyEquiv
+          p (e.1 p) rfl).symm.subsingleton
+      have := he
+      exact (hquot G (e.1 p)).some.symm.subsingleton)
+    exact ⟨e.trans g⟩
+  · exfalso
+    have := hsub
+    have hprod : Subsingleton (FundamentalGroup SphereTwoTimesCircle (f p)) :=
+      (fundamentalGroupMulEquivOfHomotopyEquiv f.toHomeomorph.toHomotopyEquiv
+        p (f p) rfl).symm.subsingleton
+    have := hprod
+    exact not_subsingleton_multiplicative_int ((hproduct (f p)).some.symm.subsingleton)
+
 theorem poincareStandardSumClosed_of_connectedSum_laws
     (happend : ∀ (L K : List (ConnectedClosedOrientedManifold.{u} 3)),
       Nonempty ((finiteConnectedSum (L ++ K)).toClosedOrientedManifold.Carrier ≃ₘ⟮𝓡 3, 𝓡 3⟯
@@ -99,10 +133,14 @@ theorem exists_diffeomorph_standardThreeSphere_of_isPoincareStandard
       Nonempty (FundamentalGroup (finiteConnectedSum L).Carrier y ≃*
         Monoid.CoprodI (fun i : Fin L.length =>
           FundamentalGroup (L.get i).Carrier (x i))))
-    (hfactor : ∀ (F : ConnectedClosedOrientedManifold.{u} 3) (p : F.Carrier),
-      isStandardFactor F → Subsingleton (FundamentalGroup F.Carrier p) →
+    (hquot : ∀ (G : SphericalSpaceFormGroup) (p : G.manifold.Carrier),
+      Nonempty (FundamentalGroup G.manifold.Carrier p ≃* G.group))
+    (htrivial : ∀ (G : SphericalSpaceFormGroup), Subsingleton G.group →
       Nonempty (ClosedOrientedManifold.OrientedDiffeomorph
-        F.toClosedOrientedManifold standardThreeSphereLift.{u}.toClosedOrientedManifold))
+        G.manifold.toClosedOrientedManifold
+        standardThreeSphereLift.{u}.toClosedOrientedManifold))
+    (hproduct : ∀ p : SphereTwoTimesCircle,
+      Nonempty (FundamentalGroup SphereTwoTimesCircle p ≃* Multiplicative ℤ))
     (hunit : ∀ M : ConnectedClosedOrientedManifold.{u} 3,
       Nonempty (ClosedOrientedManifold.OrientedDiffeomorph
         (connectedSum M standardThreeSphereLift.{u}).toClosedOrientedManifold
@@ -139,7 +177,8 @@ theorem exists_diffeomorph_standardThreeSphere_of_isPoincareStandard
       F.toClosedOrientedManifold standardThreeSphereLift.{u}.toClosedOrientedManifold) := by
     intro F hF
     obtain ⟨i, rfl⟩ := List.get_of_mem hF
-    exact hfactor (P.factors.get i) (x i) (P.standard _ hF) (hsub i)
+    exact exists_orientedDiffeomorph_standardThreeSphere_of_isStandardFactor
+      hquot htrivial hproduct (P.factors.get i) (x i) (P.standard _ hF) (hsub i)
   obtain ⟨s⟩ := exists_orientedDiffeomorph_finiteConnectedSum_standardThreeSphere
     hunit hcongr P.factors hL
   exact ⟨P.diffeomorph.trans s.1⟩

@@ -20,10 +20,14 @@ theorem exists_diffeomorph_standardThreeSphere_of_poincareControlledExtinction
       Nonempty (FundamentalGroup (Topology.finiteConnectedSum L).Carrier y ≃*
         Monoid.CoprodI (fun i : Fin L.length =>
           FundamentalGroup (L.get i).Carrier (x i))))
-    (hfactor : ∀ (F : Topology.ConnectedClosedOrientedManifold.{u} 3) (p : F.Carrier),
-      Topology.isStandardFactor F → Subsingleton (FundamentalGroup F.Carrier p) →
+    (hquot : ∀ (G : Topology.SphericalSpaceFormGroup) (p : G.manifold.Carrier),
+      Nonempty (FundamentalGroup G.manifold.Carrier p ≃* G.group))
+    (htrivial : ∀ (G : Topology.SphericalSpaceFormGroup), Subsingleton G.group →
       Nonempty (Topology.ClosedOrientedManifold.OrientedDiffeomorph
-        F.toClosedOrientedManifold Topology.standardThreeSphereLift.{u}.toClosedOrientedManifold))
+        G.manifold.toClosedOrientedManifold
+        Topology.standardThreeSphereLift.{u}.toClosedOrientedManifold))
+    (hproduct : ∀ p : Topology.SphereTwoTimesCircle,
+      Nonempty (FundamentalGroup Topology.SphereTwoTimesCircle p ≃* Multiplicative ℤ))
     (hunit : ∀ N : Topology.ConnectedClosedOrientedManifold.{u} 3,
       Nonempty (Topology.ClosedOrientedManifold.OrientedDiffeomorph
         (Topology.connectedSum N Topology.standardThreeSphereLift.{u}).toClosedOrientedManifold
@@ -41,7 +45,7 @@ theorem exists_diffeomorph_standardThreeSphere_of_poincareControlledExtinction
     [ConnectedSpace M.Carrier] [SimplyConnectedSpace M.Carrier] :
     Nonempty (M.Carrier ≃ₘ⟮𝓡 3, 𝓡 3⟯ Topology.standardThreeSphereLift.{u}.Carrier) :=
   Topology.exists_diffeomorph_standardThreeSphere_of_isPoincareStandard
-    hpi hfactor hunit hcongr (W.isPoincareStandard hcut hsum)
+    hpi hquot htrivial hproduct hunit hcongr (W.isPoincareStandard hcut hsum)
 
 def smoothPoincareConjecture : Prop :=
   ∀ (M : Type u) [TopologicalSpace M] [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M]
@@ -56,10 +60,14 @@ theorem smoothPoincareConjecture_of_poincareControlledExtinction
       Nonempty (FundamentalGroup (Topology.finiteConnectedSum L).Carrier y ≃*
         Monoid.CoprodI (fun i : Fin L.length =>
           FundamentalGroup (L.get i).Carrier (x i))))
-    (hfactor : ∀ (F : Topology.ConnectedClosedOrientedManifold.{u} 3) (p : F.Carrier),
-      Topology.isStandardFactor F → Subsingleton (FundamentalGroup F.Carrier p) →
+    (hquot : ∀ (G : Topology.SphericalSpaceFormGroup) (p : G.manifold.Carrier),
+      Nonempty (FundamentalGroup G.manifold.Carrier p ≃* G.group))
+    (htrivial : ∀ (G : Topology.SphericalSpaceFormGroup), Subsingleton G.group →
       Nonempty (Topology.ClosedOrientedManifold.OrientedDiffeomorph
-        F.toClosedOrientedManifold Topology.standardThreeSphereLift.{u}.toClosedOrientedManifold))
+        G.manifold.toClosedOrientedManifold
+        Topology.standardThreeSphereLift.{u}.toClosedOrientedManifold))
+    (hproduct : ∀ p : Topology.SphereTwoTimesCircle,
+      Nonempty (FundamentalGroup Topology.SphereTwoTimesCircle p ≃* Multiplicative ℤ))
     (hunit : ∀ N : Topology.ConnectedClosedOrientedManifold.{u} 3,
       Nonempty (Topology.ClosedOrientedManifold.OrientedDiffeomorph
         (Topology.connectedSum N Topology.standardThreeSphereLift.{u}).toClosedOrientedManifold
@@ -74,19 +82,18 @@ theorem smoothPoincareConjecture_of_poincareControlledExtinction
     (hcut : ∀ (H : FiniteSurgeryHistory.{u}) (i : Fin H.eventCount),
       (H.cutCapTrace.transition i).localReconstruction)
     (hsum : Topology.poincareStandardSumClosed.{u})
-    (hor : ∀ (M : Type u) [TopologicalSpace M] [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M]
-      [IsManifold (𝓡 3) ∞ M] [T2Space M] [CompactSpace M] [ConnectedSpace M]
-      [SimplyConnectedSpace M], Nonempty (ManifoldOrientation (𝓡 3) M 3))
     (hext : ∀ (M : Topology.ConnectedClosedOrientedManifold.{u} 3) [SimplyConnectedSpace M.Carrier]
       (g : SmoothRiemannianMetric (𝓡 3) M.Carrier),
       Nonempty (PoincareControlledExtinction M.toClosedOrientedManifold g)) :
     smoothPoincareConjecture.{u} := by
   intro M _ _ _ _ _ _ _
   obtain ⟨g⟩ := Geometry.nonempty_smoothRiemannianMetric (I := 𝓡 3) (M := M)
-  obtain ⟨o⟩ := hor M
+  obtain ⟨o⟩ := Topology.Manifold.exists_manifoldOrientation_of_simply_connected
+    (E := EuclideanSpace ℝ (Fin 3)) (M := M) (n := 3) (by simp)
   exact exists_diffeomorph_standardThreeSphere_of_poincareControlledExtinction
     (W := (hext { Carrier := M, orientation := o } g).some)
-    (hpi := hpi) (hfactor := hfactor) (hunit := hunit) (hcongr := hcongr)
+    (hpi := hpi) (hquot := hquot) (htrivial := htrivial) (hproduct := hproduct)
+    (hunit := hunit) (hcongr := hcongr)
     (hcut := fun i => hcut _ i) (hsum := hsum)
 
 def topologicalPoincareConjecture : Prop :=
