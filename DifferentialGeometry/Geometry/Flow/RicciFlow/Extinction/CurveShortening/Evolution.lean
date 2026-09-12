@@ -4,6 +4,13 @@ import DifferentialGeometry.Geometry.Comparison.Variation.Covariant.TwoParameter
 import DifferentialGeometry.Geometry.Comparison.Variation.FirstVariation.Basic
 import DifferentialGeometry.Geometry.Curvature.Bounds.RiemannTensorOperator
 import Mathlib.Analysis.SpecialFunctions.Sqrt
+import Mathlib.Analysis.Calculus.FDeriv.Symmetric
+import Mathlib.Analysis.Calculus.FDeriv.CompCLM
+import Mathlib.Analysis.Calculus.ContDiff.Comp
+import Mathlib.Analysis.Calculus.Deriv.Basic
+import Mathlib.Analysis.Calculus.TangentCone.Prod
+import Mathlib.Analysis.Calculus.TangentCone.Real
+import Mathlib.Topology.Constructions.SumProd
 
 noncomputable section
 open Bundle Manifold Set Filter
@@ -363,6 +370,155 @@ theorem rfs_csf_speed (B : RicciBackground (I := I) (M := M) D a b)
     module
 
 
+omit [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E] [CompleteSpace E]
+  [TopologicalSpace H] [SigmaCompactSpace M] [T2Space M] hBoundary in
+private theorem fderivWithin_strip_inl {a b : ℝ} (Φ : ℝ × ℝ → ℝ) {p : ℝ × ℝ}
+    (hp : p ∈ univ ×ˢ Icc a b)
+    (h : DifferentiableWithinAt ℝ Φ (univ ×ˢ Icc a b) p) :
+    fderivWithin ℝ Φ (univ ×ˢ Icc a b) p (1, 0) = deriv (fun y => Φ (y, p.2)) p.1 := by
+  have hι : HasFDerivWithinAt (fun y : ℝ => (y, p.2)) (ContinuousLinearMap.inl ℝ ℝ ℝ)
+      univ p.1 :=
+    (hasFDerivAt_prodMk_left p.1 p.2).hasFDerivWithinAt
+  have hmap : MapsTo (fun y : ℝ => (y, p.2)) univ (univ ×ˢ Icc a b) := fun y _ => hp
+  have hcomp := (h.hasFDerivWithinAt).comp p.1 hι hmap
+  have hderiv : HasDerivAt (fun y : ℝ => Φ (y, p.2))
+      ((fderivWithin ℝ Φ (univ ×ˢ Icc a b) p ∘SL ContinuousLinearMap.inl ℝ ℝ ℝ) 1) p.1 :=
+    (hcomp.hasFDerivAt univ_mem).hasDerivAt
+  rw [hderiv.deriv, ContinuousLinearMap.comp_apply, ContinuousLinearMap.inl_apply]
+
+omit [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E] [CompleteSpace E]
+  [TopologicalSpace H] [SigmaCompactSpace M] [T2Space M] hBoundary in
+private theorem fderivWithin_strip_inr {a b : ℝ} (Φ : ℝ × ℝ → ℝ) {p : ℝ × ℝ}
+    (hp : p ∈ univ ×ˢ Icc a b) (hab : a < b)
+    (h : DifferentiableWithinAt ℝ Φ (univ ×ˢ Icc a b) p) :
+    fderivWithin ℝ Φ (univ ×ˢ Icc a b) p (0, 1) =
+      derivWithin (fun r => Φ (p.1, r)) (Icc a b) p.2 := by
+  have hι : HasFDerivWithinAt (fun r : ℝ => (p.1, r)) (ContinuousLinearMap.inr ℝ ℝ ℝ)
+      (Icc a b) p.2 :=
+    (hasFDerivAt_prodMk_right p.1 p.2).hasFDerivWithinAt
+  have hmap : MapsTo (fun r : ℝ => (p.1, r)) (Icc a b) (univ ×ˢ Icc a b) :=
+    fun r hr => ⟨trivial, hr⟩
+  have hcomp := (h.hasFDerivWithinAt).comp p.2 hι hmap
+  have hderiv : HasDerivWithinAt (fun r : ℝ => Φ (p.1, r))
+      ((fderivWithin ℝ Φ (univ ×ˢ Icc a b) p ∘SL ContinuousLinearMap.inr ℝ ℝ ℝ) 1)
+      (Icc a b) p.2 :=
+    hcomp.hasDerivWithinAt
+  have huniq : UniqueDiffWithinAt ℝ (Icc a b) p.2 := (uniqueDiffOn_Icc hab) p.2 hp.2
+  rw [hderiv.derivWithin huniq, ContinuousLinearMap.comp_apply, ContinuousLinearMap.inr_apply]
+
+omit [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E] [CompleteSpace E]
+  [TopologicalSpace H] [SigmaCompactSpace M] [T2Space M] hBoundary in
+private theorem derivWithin_deriv_eq_deriv_derivWithin {a b : ℝ} (F : ℝ × ℝ → ℝ) (hab : a < b)
+    (hF : ContDiffOn ℝ ∞ F (univ ×ˢ Icc a b)) {x t : ℝ} (ht : t ∈ Icc a b) :
+    derivWithin (fun r => deriv (fun y => F (y, r)) x) (Icc a b) t =
+      deriv (fun y => derivWithin (fun r => F (y, r)) (Icc a b) t) x := by
+  have hSunique : UniqueDiffOn ℝ (univ ×ˢ Icc a b) :=
+    UniqueDiffOn.prod (𝕜 := ℝ) (s := (univ : Set ℝ)) (t := Icc a b)
+    uniqueDiffOn_univ (uniqueDiffOn_Icc hab)
+  have hmem : (x, t) ∈ univ ×ˢ Icc a b := ⟨mem_univ x, ht⟩
+  have hclos : (x, t) ∈ closure (interior (univ ×ˢ Icc a b)) := by
+    rw [interior_prod_eq, interior_univ, interior_Icc, closure_prod_eq, closure_univ,
+      closure_Ioo (ne_of_lt hab)]
+    exact ⟨mem_univ x, ht⟩
+  have hmin : minSmoothness ℝ 2 ≤ (∞ : ℕ∞ω) := by
+    simpa using (WithTop.coe_le_coe.mpr (le_top : (2 : ℕ∞) ≤ ⊤) :
+      ((2 : ℕ∞) : ℕ∞ω) ≤ ((⊤ : ℕ∞) : ℕ∞ω))
+  have hsymm := (hF (x, t) hmem).isSymmSndFDerivWithinAt hmin hSunique hclos hmem
+  have htwo : (1 : ℕ∞ω) + 1 ≤ ∞ := by
+    have hone : (1 : ℕ∞ω) + 1 = (2 : ℕ∞ω) := by norm_num
+    rw [hone]
+    exact WithTop.coe_le_coe.mpr le_top
+  have hcont1 : ContDiffWithinAt ℝ (1 : ℕ∞ω) (fderivWithin ℝ F (univ ×ˢ Icc a b))
+      (univ ×ˢ Icc a b) (x, t) :=
+    (hF (x, t) hmem).fderivWithin_right hSunique htwo hmem
+  have hdiff : DifferentiableWithinAt ℝ (fderivWithin ℝ F (univ ×ˢ Icc a b))
+      (univ ×ˢ Icc a b) (x, t) := hcont1.differentiableWithinAt (by norm_num)
+  have hd1 : DifferentiableWithinAt ℝ
+      (fun q : ℝ × ℝ => fderivWithin ℝ F (univ ×ˢ Icc a b) q (0, 1))
+      (univ ×ˢ Icc a b) (x, t) :=
+    hdiff.clm_apply (differentiableWithinAt_const (0, 1))
+  have hd0 : DifferentiableWithinAt ℝ
+      (fun q : ℝ × ℝ => fderivWithin ℝ F (univ ×ˢ Icc a b) q (1, 0))
+      (univ ×ˢ Icc a b) (x, t) :=
+    hdiff.clm_apply (differentiableWithinAt_const (1, 0))
+  have hident1 : fderivWithin ℝ
+      (fun q : ℝ × ℝ => fderivWithin ℝ F (univ ×ˢ Icc a b) q (0, 1))
+      (univ ×ˢ Icc a b) (x, t) (1, 0) =
+      fderivWithin ℝ (fderivWithin ℝ F (univ ×ˢ Icc a b)) (univ ×ˢ Icc a b) (x, t)
+        (1, 0) (0, 1) := by
+    rw [fderivWithin_clm_apply (hSunique (x, t) hmem)
+      hdiff (differentiableWithinAt_const (0, 1))]
+    simp
+  have hident0 : fderivWithin ℝ
+      (fun q : ℝ × ℝ => fderivWithin ℝ F (univ ×ˢ Icc a b) q (1, 0))
+      (univ ×ˢ Icc a b) (x, t) (0, 1) =
+      fderivWithin ℝ (fderivWithin ℝ F (univ ×ˢ Icc a b)) (univ ×ˢ Icc a b) (x, t)
+        (0, 1) (1, 0) := by
+    rw [fderivWithin_clm_apply (hSunique (x, t) hmem)
+      hdiff (differentiableWithinAt_const (1, 0))]
+    simp
+  have hA : fderivWithin ℝ
+      (fun q : ℝ × ℝ => fderivWithin ℝ F (univ ×ˢ Icc a b) q (1, 0))
+      (univ ×ˢ Icc a b) (x, t) (0, 1) =
+      derivWithin (fun r => deriv (fun y => F (y, r)) x) (Icc a b) t := by
+    rw [fderivWithin_strip_inr
+      (fun q : ℝ × ℝ => fderivWithin ℝ F (univ ×ˢ Icc a b) q (1, 0)) hmem hab hd0]
+    exact derivWithin_congr (fun r hr =>
+      fderivWithin_strip_inl F ⟨mem_univ x, hr⟩
+        ((hF (x, r) ⟨mem_univ x, hr⟩).differentiableWithinAt (by norm_num)))
+      (fderivWithin_strip_inl F ⟨mem_univ x, ht⟩
+        ((hF (x, t) hmem).differentiableWithinAt (by norm_num)))
+  have hB : fderivWithin ℝ
+      (fun q : ℝ × ℝ => fderivWithin ℝ F (univ ×ˢ Icc a b) q (0, 1))
+      (univ ×ˢ Icc a b) (x, t) (1, 0) =
+      deriv (fun y => derivWithin (fun r => F (y, r)) (Icc a b) t) x := by
+    rw [fderivWithin_strip_inl
+      (fun q : ℝ × ℝ => fderivWithin ℝ F (univ ×ˢ Icc a b) q (0, 1)) hmem hd1]
+    exact Filter.EventuallyEq.deriv_eq (Filter.Eventually.of_forall fun y =>
+      fderivWithin_strip_inr F ⟨mem_univ y, ht⟩ hab
+        ((hF (y, t) ⟨mem_univ y, ht⟩).differentiableWithinAt (by norm_num)))
+  rw [← hA, ← hB, hident0, hident1]
+  exact hsymm (0, 1) (1, 0)
+
+omit [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E] [CompleteSpace E]
+  [TopologicalSpace H] [SigmaCompactSpace M] [T2Space M] hBoundary in
+private theorem hasDerivWithinAt_deriv_strip {a b : ℝ} (F : ℝ × ℝ → ℝ) (hab : a < b)
+    (hF : ContDiffOn ℝ ∞ F (univ ×ˢ Icc a b)) {x t : ℝ} (ht : t ∈ Icc a b) :
+    HasDerivWithinAt (fun r => deriv (fun y => F (y, r)) x)
+      (deriv (fun y => derivWithin (fun r => F (y, r)) (Icc a b) t) x) (Icc a b) t := by
+  have hval := derivWithin_deriv_eq_deriv_derivWithin F hab hF (x := x) ht
+  have hSunique : UniqueDiffOn ℝ (univ ×ˢ Icc a b) :=
+    UniqueDiffOn.prod (𝕜 := ℝ) (s := (univ : Set ℝ)) (t := Icc a b)
+    uniqueDiffOn_univ (uniqueDiffOn_Icc hab)
+  have hmem : (x, t) ∈ univ ×ˢ Icc a b := ⟨mem_univ x, ht⟩
+  have htwo : (1 : ℕ∞ω) + 1 ≤ ∞ := by
+    have hone : (1 : ℕ∞ω) + 1 = (2 : ℕ∞ω) := by norm_num
+    rw [hone]
+    exact WithTop.coe_le_coe.mpr le_top
+  have hcont1 : ContDiffWithinAt ℝ (1 : ℕ∞ω) (fderivWithin ℝ F (univ ×ˢ Icc a b))
+      (univ ×ˢ Icc a b) (x, t) :=
+    (hF (x, t) hmem).fderivWithin_right hSunique htwo hmem
+  have hdiff : DifferentiableWithinAt ℝ (fderivWithin ℝ F (univ ×ˢ Icc a b))
+      (univ ×ˢ Icc a b) (x, t) := hcont1.differentiableWithinAt (by norm_num)
+  have hd1 : DifferentiableWithinAt ℝ
+      (fun q : ℝ × ℝ => fderivWithin ℝ F (univ ×ˢ Icc a b) q (1, 0))
+      (univ ×ˢ Icc a b) (x, t) :=
+    hdiff.clm_apply (differentiableWithinAt_const (1, 0))
+  have hinner : DifferentiableWithinAt ℝ (fun r : ℝ => (x, r)) (Icc a b) t :=
+    (differentiableWithinAt_const x).prodMk differentiableWithinAt_id
+  have hmap : MapsTo (fun r : ℝ => (x, r)) (Icc a b) (univ ×ˢ Icc a b) :=
+    fun r hr => ⟨trivial, hr⟩
+  have hline : DifferentiableWithinAt ℝ
+      (fun r : ℝ => fderivWithin ℝ F (univ ×ˢ Icc a b) (x, r) (1, 0)) (Icc a b) t :=
+    hd1.comp t hinner hmap
+  have hon : EqOn (fun r : ℝ => fderivWithin ℝ F (univ ×ˢ Icc a b) (x, r) (1, 0))
+      (fun r => deriv (fun y => F (y, r)) x) (Icc a b) :=
+    fun r hr => fderivWithin_strip_inl F ⟨mem_univ x, hr⟩
+      ((hF (x, r) ⟨mem_univ x, hr⟩).differentiableWithinAt (by norm_num))
+  rw [← hval]
+  exact (hline.congr hon.symm (hon ht).symm).hasDerivWithinAt
+
+
 theorem scalar_arclength_commutator (B : RicciBackground (I := I) (M := M) D a b)
     (hsu : s < u) (hwindow : Icc s u ⊆ Icc a b)
     (c : CurveMap M) (hc : c.IsSolutionOn B.family.metric (Icc s u))
@@ -372,7 +528,46 @@ theorem scalar_arclength_commutator (B : RicciBackground (I := I) (M := M) D a b
     derivWithin (c.ds B.family.metric f x) (Icc s u) t -
       c.ds B.family.metric (fun y r => derivWithin (f y) (Icc s u) r) x t =
     c.q B.family x t * c.ds B.family.metric f x t := by
-  sorry
+  have hds : c.ds B.family.metric f x =
+      fun r => (c.speed B.family.metric x r)⁻¹ * deriv (fun y => f y r) x := rfl
+  rw [hds]
+  simp only [CurveMap.ds]
+  have huniq : UniqueDiffWithinAt ℝ (Icc s u) t := (uniqueDiffOn_Icc hsu) t ht
+  have hvpos : 0 < c.speed B.family.metric x t :=
+    c.speed_pos B.family.metric hc.immersed x t ht
+  have hvnn : 0 ≤ c.speed B.family.metric x t := hvpos.le
+  have hspeed : HasDerivWithinAt (c.speed B.family.metric x)
+      (-c.q B.family x t * c.speed B.family.metric x t) (Icc s u) t := by
+    have hpair := CurveMap.pairingEvolution B hsu hwindow c hc
+    have hsq : HasDerivWithinAt (fun r => c.speed B.family.metric x r ^ 2)
+        (-2 * c.speed B.family.metric x t ^ 2 * c.q B.family x t) (Icc s u) t := by
+      convert hpair x t ht using 1
+      · funext r
+        exact (normSq_velocity_eq_speed_sq c B.family.metric x r).symm
+      · rw [normSq_velocity_eq_speed_sq]
+    have h := hsq.sqrt (by positivity)
+    convert h using 1
+    · funext r
+      exact (Real.sqrt_sq (c.speed_nonneg B.family.metric x r)).symm
+    · rw [Real.sqrt_sq hvnn]
+      field_simp
+  have hinv : HasDerivWithinAt (fun r => (c.speed B.family.metric x r)⁻¹)
+      (-(-c.q B.family x t * c.speed B.family.metric x t) /
+        (c.speed B.family.metric x t) ^ 2) (Icc s u) t :=
+    hspeed.inv (ne_of_gt hvpos)
+  have hgd : HasDerivWithinAt (fun r => deriv (fun y => f y r) x)
+      (deriv (fun y => derivWithin (f y) (Icc s u) t) x) (Icc s u) t :=
+    hasDerivWithinAt_deriv_strip (fun p : ℝ × ℝ => f p.1 p.2) hsu hf ht
+  have hmul := hinv.mul hgd
+  have hmul' : HasDerivWithinAt
+      (fun r => (c.speed B.family.metric x r)⁻¹ * deriv (fun y => f y r) x)
+      ((-(-c.q B.family x t * c.speed B.family.metric x t) /
+          (c.speed B.family.metric x t) ^ 2) * deriv (fun y => f y t) x +
+        (c.speed B.family.metric x t)⁻¹ *
+          deriv (fun y => derivWithin (f y) (Icc s u) t) x) (Icc s u) t := hmul
+  rw [hmul'.derivWithin huniq]
+  field_simp [ne_of_gt hvpos]
+  ring_nf
 
 theorem rfs_csf_curvature (B : RicciBackground (I := I) (M := M) D a b)
     (hsu : s < u) (hwindow : Icc s u ⊆ Icc a b)

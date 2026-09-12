@@ -1,4 +1,11 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.Basic
+import DifferentialGeometry.Geometry.Metric.Family.ChartCurvature.MetricFamilySmoothOn
+import DifferentialGeometry.Geometry.Connection.LeviCivita.Christoffel.CorrectionAtBasepoint
+import DifferentialGeometry.Geometry.Connection.LeviCivita.AlongCurve
+import DifferentialGeometry.Geometry.Curvature.Coordinates.ChristoffelContraction
+import DifferentialGeometry.Geometry.Connection.ParallelTransport.Derivative.CovariantDerivativeAlong
+import DifferentialGeometry.Geometry.Connection.ParallelTransport.AlongCurve
+import DifferentialGeometry.Geometry.Comparison.Variation.Coordinates.FixedChartIdentities
 import DifferentialGeometry.Bundle.PartialMfderiv.TimeDerivative
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Connection.DifferenceTimeDerivative
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.Derivative.MFDerivAlongCurve
@@ -615,6 +622,563 @@ theorem moving_inner_derivative {D : RealTimeInterval} {a b s u : ℝ}
     ((uniqueDiffOn_Icc hsu) t ht)
   rw [h]
   ring
+
+omit [SigmaCompactSpace M] hBoundary in
+theorem hasDerivWithinAt_chartChristoffel_metricFamily_fixed
+    {D : RealTimeInterval} {a b : ℝ} (B : RicciBackground (I := I) (M := M) D a b)
+    (β : M) (i j k : Fin (Module.finrank ℝ E)) {J : Set ℝ} {t : ℝ}
+    (hJreg : J ⊆ D.regular) (hJ : UniqueDiffOn ℝ J) (ht : t ∈ J)
+    {y : E} (hy : y ∈ interior (extChartAt I β).target) :
+    HasDerivWithinAt (fun r => chartChristoffel (I := I) (B.family.metric r) β i j k y)
+      (derivWithin (fun r => chartChristoffel (I := I) (B.family.metric r) β i j k y) J t) J t := by
+  have hcd : ContDiffOn ℝ ∞
+      (fun p : ℝ × E => chartChristoffel (I := I) (B.family.metric p.1) β i j k p.2)
+      (J ×ˢ interior (extChartAt I β).target) :=
+    MetricFamilySmoothOn.chartChristoffelOnE_contDiffOn (I := I) B.smooth hJreg hJ β i j k
+  have hmem : (t, y) ∈ J ×ˢ interior (extChartAt I β).target := ⟨ht, hy⟩
+  have hdiff : DifferentiableWithinAt ℝ
+      (fun p : ℝ × E => chartChristoffel (I := I) (B.family.metric p.1) β i j k p.2)
+      (J ×ˢ interior (extChartAt I β).target) (t, y) :=
+    (hcd.differentiableOn (by simp)) (t, y) hmem
+  have hG := hdiff.hasFDerivWithinAt
+  have hcurve : HasDerivWithinAt (fun r : ℝ => (r, y)) ((1 : ℝ), (0 : E)) J t :=
+    ((hasDerivAt_id t).prodMk (hasDerivAt_const t y)).hasDerivWithinAt
+  have hcomp := hG.comp_hasDerivWithinAt t hcurve (fun r hr => (⟨hr, hy⟩ :
+    (r, y) ∈ J ×ˢ interior (extChartAt I β).target))
+  have huniq : UniqueDiffWithinAt ℝ J t := hJ t ht
+  have hcomp' : HasDerivWithinAt
+      (fun r : ℝ => chartChristoffel (I := I) (B.family.metric r) β i j k y)
+      (fderivWithin ℝ
+        (fun p : ℝ × E => chartChristoffel (I := I) (B.family.metric p.1) β i j k p.2)
+        (J ×ˢ interior (extChartAt I β).target) (t, y) ((1 : ℝ), (0 : E))) J t := by
+    simpa only [Function.comp_def, Prod.fst, Prod.snd] using hcomp
+  rw [hcomp'.derivWithin huniq]
+  exact hcomp'
+
+
+omit [SigmaCompactSpace M] hBoundary in
+theorem hasDerivWithinAt_chartChristoffel_metricFamily_comp
+    {D : RealTimeInterval} {a b : ℝ} (B : RicciBackground (I := I) (M := M) D a b)
+    (β : M) (i j k : Fin (Module.finrank ℝ E)) {J : Set ℝ} {t : ℝ}
+    (hJreg : J ⊆ D.regular) (hJ : UniqueDiffOn ℝ J) (ht : t ∈ J)
+    (R : ℝ → E) (R' : E) (hR : HasDerivWithinAt R R' J t)
+    (hRint : R t ∈ interior (extChartAt I β).target)
+    (hRmem : ∀ r ∈ J, R r ∈ interior (extChartAt I β).target) :
+    HasDerivWithinAt (fun r => chartChristoffel (I := I) (B.family.metric r) β i j k (R r))
+      (derivWithin (fun r => chartChristoffel (I := I) (B.family.metric r) β i j k (R t)) J t
+        + fderiv ℝ (chartChristoffel (I := I) (B.family.metric t) β i j k) (R t) R') J t := by
+  have hcd : ContDiffOn ℝ ∞
+      (fun p : ℝ × E => chartChristoffel (I := I) (B.family.metric p.1) β i j k p.2)
+      (J ×ˢ interior (extChartAt I β).target) :=
+    MetricFamilySmoothOn.chartChristoffelOnE_contDiffOn (I := I) B.smooth hJreg hJ β i j k
+  have hmem : (t, R t) ∈ J ×ˢ interior (extChartAt I β).target := ⟨ht, hRint⟩
+  have hdiff : DifferentiableWithinAt ℝ
+      (fun p : ℝ × E => chartChristoffel (I := I) (B.family.metric p.1) β i j k p.2)
+      (J ×ˢ interior (extChartAt I β).target) (t, R t) :=
+    (hcd.differentiableOn (by simp)) (t, R t) hmem
+  have hG := hdiff.hasFDerivWithinAt
+  have huniq : UniqueDiffWithinAt ℝ J t := hJ t ht
+  have hcurve : HasDerivWithinAt (fun r : ℝ => (r, R r)) ((1 : ℝ), R') J t :=
+    ((hasDerivAt_id t).hasDerivWithinAt).prodMk hR
+  have hcomp := hG.comp_hasDerivWithinAt t hcurve (fun r hr => (⟨hr, hRmem r hr⟩ :
+    (r, R r) ∈ J ×ˢ interior (extChartAt I β).target))
+  have hcomp' : HasDerivWithinAt (fun r => chartChristoffel (I := I) (B.family.metric r) β i j k (R r))
+      (fderivWithin ℝ
+        (fun p : ℝ × E => chartChristoffel (I := I) (B.family.metric p.1) β i j k p.2)
+        (J ×ˢ interior (extChartAt I β).target) (t, R t) ((1 : ℝ), R')) J t := by
+    simpa only [Function.comp_def, Prod.fst, Prod.snd] using hcomp
+  have hf1 : HasDerivWithinAt (fun r : ℝ => chartChristoffel (I := I) (B.family.metric r) β i j k (R t))
+      (fderivWithin ℝ
+        (fun p : ℝ × E => chartChristoffel (I := I) (B.family.metric p.1) β i j k p.2)
+        (J ×ˢ interior (extChartAt I β).target) (t, R t) ((1 : ℝ), (0 : E))) J t := by
+    have hc2 : HasDerivWithinAt (fun r : ℝ => (r, R t)) ((1 : ℝ), (0 : E)) J t :=
+      ((hasDerivAt_id t).hasDerivWithinAt).prodMk
+        (hasDerivWithinAt_const (c := R t) (s := J) (x := t))
+    have h := hG.comp_hasDerivWithinAt t hc2 (fun r hr => (⟨hr, hRint⟩ :
+      (r, R t) ∈ J ×ˢ interior (extChartAt I β).target))
+    simpa only [Function.comp_def, Prod.fst, Prod.snd] using h
+  have hknown1 : HasDerivWithinAt
+      (fun r : ℝ => chartChristoffel (I := I) (B.family.metric r) β i j k (R t))
+      (derivWithin (fun r => chartChristoffel (I := I) (B.family.metric r) β i j k (R t)) J t) J t :=
+    hasDerivWithinAt_chartChristoffel_metricFamily_fixed B β i j k hJreg hJ ht hRint
+  have hF1 : fderivWithin ℝ
+        (fun p : ℝ × E => chartChristoffel (I := I) (B.family.metric p.1) β i j k p.2)
+        (J ×ˢ interior (extChartAt I β).target) (t, R t) ((1 : ℝ), (0 : E))
+      = derivWithin (fun r => chartChristoffel (I := I) (B.family.metric r) β i j k (R t)) J t :=
+    (hf1.derivWithin huniq).symm.trans (hknown1.derivWithin huniq)
+  have hslice : HasFDerivAt (fun y : E => chartChristoffel (I := I) (B.family.metric t) β i j k y)
+      (fderiv ℝ (fun y : E => chartChristoffel (I := I) (B.family.metric t) β i j k y) (R t)) (R t) := by
+    have hy_target : R t ∈ (extChartAt I β).target := interior_subset hRint
+    have hcd2 : ContDiffOn ℝ ∞ (chartChristoffel (I := I) (B.family.metric t) β i j k)
+        (interior (extChartAt I β).target) :=
+      chartChristoffel_contDiffOn_interior (I := I) (B.family.metric t) β i j k
+    exact ((hcd2.contDiffAt (isOpen_interior.mem_nhds hRint)).differentiableAt (by simp)).hasFDerivAt
+  have hK : {s : ℝ | R t + s • R' ∈ interior (extChartAt I β).target} ∈ 𝓝 (0 : ℝ) := by
+    have hcont : ContinuousAt (fun s : ℝ => R t + s • R') 0 := by fun_prop
+    have h0 : R t + (0 : ℝ) • R' = R t := by simp
+    rw [show (0 : ℝ) = 0 from rfl]
+    refine hcont.eventually (isOpen_interior.mem_nhds ?_)
+    simpa using hRint
+  have hc3 : HasDerivWithinAt (fun s : ℝ => R t + s • R') R' {s : ℝ | R t + s • R' ∈ interior (extChartAt I β).target} 0 := by
+    have h0 : (fun s : ℝ => R t + s • R') 0 = R t := by simp
+    have hder : HasDerivAt (fun s : ℝ => R t + s • R') R' 0 := by
+      simpa using ((hasDerivAt_id (0:ℝ)).smul_const R').const_add (R t)
+    exact hder.hasDerivWithinAt
+  have hcurve2 : HasDerivWithinAt (fun s : ℝ => (t, R t + s • R')) ((0 : ℝ), R')
+      {s : ℝ | R t + s • R' ∈ interior (extChartAt I β).target} 0 :=
+    (hasDerivWithinAt_const (c := t) (s := {s : ℝ | R t + s • R' ∈ interior (extChartAt I β).target})
+      (x := (0 : ℝ))).prodMk hc3
+  have h0c : (fun s : ℝ => (t, R t + s • R')) 0 = (t, R t) := by simp
+  have hj2 := (h0c.symm ▸ hG).comp_hasDerivWithinAt (x := (0 : ℝ)) hcurve2
+    (fun s hs => show (t, R t + s • R') ∈ J ×ˢ interior (extChartAt I β).target from ⟨ht, hs⟩)
+  have hf2 : HasDerivWithinAt (fun s : ℝ => chartChristoffel (I := I) (B.family.metric t) β i j k (R t + s • R'))
+      ((fderivWithin ℝ
+        (fun p : ℝ × E => chartChristoffel (I := I) (B.family.metric p.1) β i j k p.2)
+        (J ×ˢ interior (extChartAt I β).target) (t, R t)) ((0 : ℝ), R'))
+      {s : ℝ | R t + s • R' ∈ interior (extChartAt I β).target} 0 := by
+    simpa only [Function.comp_def, Prod.fst, Prod.snd, zero_smul, add_zero] using hj2
+  have hc30 : (fun s : ℝ => R t + s • R') 0 = R t := by simp
+  have hknown2 : HasDerivWithinAt (fun s : ℝ => chartChristoffel (I := I) (B.family.metric t) β i j k (R t + s • R'))
+      (fderiv ℝ (fun y : E => chartChristoffel (I := I) (B.family.metric t) β i j k y) (R t) R')
+      {s : ℝ | R t + s • R' ∈ interior (extChartAt I β).target} 0 := by
+    have h := (hc30.symm ▸ hslice).comp_hasDerivWithinAt (x := (0 : ℝ)) hc3
+    simpa only [Function.comp_def, zero_smul, add_zero] using h
+  have hKopen : IsOpen {s : ℝ | R t + s • R' ∈ interior (extChartAt I β).target} :=
+    isOpen_interior.preimage (by fun_prop)
+  have hKmem : (0 : ℝ) ∈ {s : ℝ | R t + s • R' ∈ interior (extChartAt I β).target} := by
+    simpa using hRint
+  have huniqK : UniqueDiffWithinAt ℝ {s : ℝ | R t + s • R' ∈ interior (extChartAt I β).target} 0 :=
+    hKopen.uniqueDiffWithinAt hKmem
+  have hF2 : (fderivWithin ℝ
+        (fun p : ℝ × E => chartChristoffel (I := I) (B.family.metric p.1) β i j k p.2)
+        (J ×ˢ interior (extChartAt I β).target) (t, R t)) ((0 : ℝ), R')
+      = fderiv ℝ (fun y : E => chartChristoffel (I := I) (B.family.metric t) β i j k y) (R t) R' :=
+    (hf2.derivWithin huniqK).symm.trans (hknown2.derivWithin huniqK)
+  have hval : (fderivWithin ℝ
+        (fun p : ℝ × E => chartChristoffel (I := I) (B.family.metric p.1) β i j k p.2)
+        (J ×ˢ interior (extChartAt I β).target) (t, R t)) ((1 : ℝ), R')
+      = derivWithin (fun r => chartChristoffel (I := I) (B.family.metric r) β i j k (R t)) J t
+        + fderiv ℝ (fun y : E => chartChristoffel (I := I) (B.family.metric t) β i j k y) (R t) R' := by
+    have hsplit : ((1 : ℝ), R') = ((1 : ℝ), (0 : E)) + ((0 : ℝ), R') := by simp
+    rw [hsplit, map_add, hF1, hF2]
+  rw [hval] at hcomp'
+  exact hcomp'
+
+
+omit [FiniteDimensional ℝ E] [CompleteSpace E] [TopologicalSpace H] hBoundary in
+theorem hasDerivAt_derivWithin_slice
+    (F : ℝ × ℝ → E) (x t : ℝ) {J : Set ℝ}
+    (huniqJ : UniqueDiffOn ℝ J) (htJ : t ∈ J) (hcl : t ∈ closure (interior J))
+    (hF : ∀ᶠ z in 𝓝[univ ×ˢ J] (x, t), ContDiffWithinAt ℝ 2 F (univ ×ˢ J) z) :
+    HasDerivAt (fun u : ℝ => derivWithin (fun v : ℝ => F (u, v)) J t)
+      (derivWithin (fun v : ℝ => deriv (fun u : ℝ => F (u, v)) x) J t) x := by
+  set S : Set (ℝ × ℝ) := univ ×ˢ J with hS
+  have hSuniq : UniqueDiffOn ℝ S := by
+    rw [hS]; exact UniqueDiffOn.prod uniqueDiffOn_univ huniqJ
+  have hxS : (x, t) ∈ S := by rw [hS]; exact ⟨mem_univ x, htJ⟩
+  have hclS : (x, t) ∈ closure (interior S) := by
+    rw [hS, interior_prod_eq, closure_prod_eq]
+    exact ⟨by simp, hcl⟩
+  have hmem : ∀ u v : ℝ, v ∈ J → (u, v) ∈ S := fun u v hv => by
+    rw [hS]; exact ⟨mem_univ u, hv⟩
+  have hFt : ContDiffWithinAt ℝ 2 F S (x, t) := by
+    rw [hS] at hF ⊢
+    exact hF.self_of_nhdsWithin hxS
+  have hsymm : IsSymmSndFDerivWithinAt ℝ F S (x, t) :=
+    ContDiffWithinAt.isSymmSndFDerivWithinAt hFt
+      (by rw [minSmoothness_of_isRCLikeNormedField]) hSuniq hclS hxS
+  have hDd : DifferentiableWithinAt ℝ (fderivWithin ℝ F S) S (x, t) :=
+    (hFt.fderivWithin_right hSuniq (m := 1) (by norm_num) hxS).differentiableWithinAt
+      (by norm_num)
+  set D : (ℝ × ℝ) →L[ℝ] ((ℝ × ℝ) →L[ℝ] E) :=
+    fderivWithin ℝ (fderivWithin ℝ F S) S (x, t) with hD
+  have hsym : D (1, 0) (0, 1) = D (0, 1) (1, 0) := by
+    rw [hD]; exact hsymm (1, 0) (0, 1)
+  set ev₂ : ((ℝ × ℝ) →L[ℝ] E) →L[ℝ] E :=
+    ContinuousLinearMap.apply ℝ E ((0 : ℝ), (1 : ℝ)) with hev₂
+  have hev₂_apply : ∀ L : (ℝ × ℝ) →L[ℝ] E, ev₂ L = L (0, 1) := by
+    intro L; simp [hev₂]
+  have hQ : HasFDerivWithinAt (fun z : ℝ × ℝ => fderivWithin ℝ F S z (0, 1))
+      (ev₂.comp D) S (x, t) :=
+    HasFDerivAt.comp_hasFDerivWithinAt (x := (x, t))
+      (ContinuousLinearMap.hasFDerivAt ev₂) hDd.hasFDerivWithinAt
+  have hι : HasFDerivWithinAt (fun u : ℝ => (u, t)) (ContinuousLinearMap.inl ℝ ℝ ℝ) univ x :=
+    (hasFDerivAt_prodMk_left x t).hasFDerivWithinAt
+  have hmap : MapsTo (fun u : ℝ => (u, t)) univ S := fun u _ => hmem u t htJ
+  have hcomp := HasFDerivWithinAt.comp (x := x) hQ hι hmap
+  have h1 : fderivWithin ℝ (fun u : ℝ => fderivWithin ℝ F S (u, t) (0, 1)) univ x
+      = (ev₂.comp D).comp (ContinuousLinearMap.inl ℝ ℝ ℝ) :=
+    hcomp.fderivWithin uniqueDiffWithinAt_univ
+  have hQderiv : HasDerivAt (fun u : ℝ => fderivWithin ℝ F S (u, t) (0, 1)) (D (1, 0) (0, 1)) x := by
+    have h := hcomp.hasDerivWithinAt
+    have hval : ((ev₂.comp D).comp (ContinuousLinearMap.inl ℝ ℝ ℝ)) (1 : ℝ) = D (1, 0) (0, 1) := by
+      simp only [ContinuousLinearMap.comp_apply, ContinuousLinearMap.inl_apply]
+      exact hev₂_apply (D (1, 0))
+    rw [hval] at h
+    exact h.hasDerivAt Filter.univ_mem
+  have htendL : Filter.Tendsto (fun u : ℝ => ((u, t) : ℝ × ℝ)) (𝓝 x)
+      (𝓝[univ ×ˢ J] ((x, t) : ℝ × ℝ)) := by
+    rw [tendsto_nhdsWithin_iff]
+    refine ⟨?_, ?_⟩
+    · exact (hasFDerivAt_prodMk_left (𝕜 := ℝ) x t).continuousAt.tendsto
+    · filter_upwards with u
+      exact ⟨mem_univ u, htJ⟩
+  have hQid : ∀ᶠ u in 𝓝 x, fderivWithin ℝ F S (u, t) (0, 1)
+      = fderivWithin ℝ (fun v => F (u, v)) J t 1 := by
+    filter_upwards [htendL.eventually hF] with u hcu
+    have hdu : DifferentiableWithinAt ℝ F (univ ×ˢ J) (u, t) :=
+      hcu.differentiableWithinAt (by norm_num)
+    have hd : DifferentiableWithinAt ℝ F S (u, t) := by rwa [hS]
+    have hι2 : HasFDerivWithinAt (fun v : ℝ => (u, v)) (ContinuousLinearMap.inr ℝ ℝ ℝ) J t :=
+      (hasFDerivAt_prodMk_right u t).hasFDerivWithinAt
+    have hmap2 : MapsTo (fun v : ℝ => (u, v)) J S := fun v hv => by
+      rw [hS]; exact ⟨mem_univ u, hv⟩
+    have hcomp2 := HasFDerivWithinAt.comp (x := t) hd.hasFDerivWithinAt hι2 hmap2
+    have h1' : fderivWithin ℝ (fun v : ℝ => F (u, v)) J t
+        = (fderivWithin ℝ F S (u, t)).comp (ContinuousLinearMap.inr ℝ ℝ ℝ) :=
+      hcomp2.fderivWithin (huniqJ t htJ)
+    have h2' := congrArg (fun L : ℝ →L[ℝ] E => L 1) h1'
+    simp only [ContinuousLinearMap.comp_apply, ContinuousLinearMap.inr_apply] at h2'
+    exact h2'.symm
+  have hQid2 : (fun u : ℝ => derivWithin (fun v : ℝ => F (u, v)) J t)
+      =ᶠ[𝓝 x] (fun u : ℝ => fderivWithin ℝ F S (u, t) (0, 1)) := by
+    filter_upwards [hQid] with u hu
+    rw [derivWithin, hu]
+  have hmain := hQderiv.congr_of_eventuallyEq (hQid2)
+  have hcl := DifferentialGeometry.Geometry.Riemannian.Variation.mixed_partialFderivWithin_comm
+    F x t huniqJ htJ hcl (by rw [← hS]; exact hF)
+  have hderiv_eq : deriv (fun u : ℝ => fderivWithin ℝ (fun v : ℝ => F (u, v)) J t 1) x
+      = D (1, 0) (0, 1) := (Filter.EventuallyEq.deriv_eq hQid).symm.trans hQderiv.deriv
+  have hval2 : derivWithin (fun v : ℝ => deriv (fun u : ℝ => F (u, v)) x) J t = D (1, 0) (0, 1) :=
+    hcl.trans hderiv_eq
+  rwa [hval2]
+
+
+omit [CompleteSpace E] [TopologicalSpace H] hBoundary in
+theorem hasDerivWithinAt_chartCoord_comp {P : ℝ → E} {P' : E} {J : Set ℝ} {t : ℝ}
+    (hP : HasDerivWithinAt P P' J t) (i : Fin (Module.finrank ℝ E)) :
+    HasDerivWithinAt (fun r => chartCoord (E := E) i (P r)) (chartCoord (E := E) i P') J t := by
+  set L : E →L[ℝ] ℝ := LinearMap.toContinuousLinearMap
+    ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).coord i) with hLdef
+  have hLapply : ∀ v : E, L v = chartCoord (E := E) i v := by
+    intro v
+    rw [hLdef]
+    simp only [LinearMap.coe_toContinuousLinearMap']
+    rfl
+  have h := L.hasFDerivAt.comp_hasDerivWithinAt t hP
+  simpa only [Function.comp_def, hLapply] using h
+
+omit [SigmaCompactSpace M] hBoundary in
+theorem hasDerivWithinAt_chartChristoffelContraction_metricFamily
+    {D : RealTimeInterval} {a b : ℝ} (B : RicciBackground (I := I) (M := M) D a b)
+    (β : M) {J : Set ℝ} {t : ℝ} (hJreg : J ⊆ D.regular) (hJ : UniqueDiffOn ℝ J) (ht : t ∈ J)
+    (P Q R : ℝ → E) (P' Q' R' : E)
+    (hP : HasDerivWithinAt P P' J t) (hQ : HasDerivWithinAt Q Q' J t)
+    (hR : HasDerivWithinAt R R' J t)
+    (hRint : R t ∈ interior (extChartAt I β).target)
+    (hRmem : ∀ r ∈ J, R r ∈ interior (extChartAt I β).target) :
+    HasDerivWithinAt
+      (fun r => chartChristoffelContraction (I := I) (B.family.metric r) β (P r) (Q r) (R r))
+      (∑ k : Fin (Module.finrank ℝ E),
+        (∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
+          ((derivWithin (fun r => chartChristoffel (I := I) (B.family.metric r) β i j k (R t)) J t
+              + fderiv ℝ (chartChristoffel (I := I) (B.family.metric t) β i j k) (R t) R')
+              * chartCoord (E := E) i (P t) * chartCoord (E := E) j (Q t)
+            + chartChristoffel (I := I) (B.family.metric t) β i j k (R t)
+              * chartCoord (E := E) i P' * chartCoord (E := E) j (Q t)
+            + chartChristoffel (I := I) (B.family.metric t) β i j k (R t)
+              * chartCoord (E := E) i (P t) * chartCoord (E := E) j Q')) •
+          DifferentialGeometry.Tensor.Coordinates.chartModelBasis E k) J t := by
+  classical
+  have hfun : (fun r => chartChristoffelContraction (I := I) (B.family.metric r) β (P r) (Q r) (R r))
+      = fun r => ∑ k : Fin (Module.finrank ℝ E),
+          (∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
+            chartChristoffel (I := I) (B.family.metric r) β i j k (R r)
+              * chartCoord (E := E) i (P r) * chartCoord (E := E) j (Q r)) •
+            DifferentialGeometry.Tensor.Coordinates.chartModelBasis E k := by
+    funext r
+    rw [chartChristoffelContraction_def]
+  rw [hfun]
+  refine HasDerivWithinAt.fun_sum (u := Finset.univ) (fun k _ => ?_)
+  refine HasDerivWithinAt.smul_const ?_ _
+  refine HasDerivWithinAt.fun_sum (u := Finset.univ) (fun i _ => ?_)
+  refine HasDerivWithinAt.fun_sum (u := Finset.univ) (fun j _ => ?_)
+  have hG := hasDerivWithinAt_chartChristoffel_metricFamily_comp B β i j k hJreg hJ ht R R'
+    hR hRint hRmem
+  have hPi := hasDerivWithinAt_chartCoord_comp hP i
+  have hQj := hasDerivWithinAt_chartCoord_comp hQ j
+  have hprod := (hG.mul hPi).mul hQj
+  refine hprod.congr_deriv ?_
+  simp only [Pi.mul_apply]
+  ring
+
+omit [FiniteDimensional ℝ E] [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] [I.Boundaryless] in
+private lemma sum_rotate {ι N : Type*} [Fintype ι] [AddCommMonoid N] (F : ι → ι → ι → N) :
+    (∑ i, ∑ j, ∑ k, F i j k) = ∑ k, ∑ i, ∑ j, F i j k := by
+  rw [Finset.sum_congr rfl (fun i _ => Finset.sum_comm)]
+  exact Finset.sum_comm
+
+omit [FiniteDimensional ℝ E] [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] [I.Boundaryless] in
+private lemma sum_smul_univ {ι : Type*} [Fintype ι] (f : ι → ℝ) (b : E) :
+    (∑ i, f i • b) = (∑ i, f i) • b :=
+  (Finset.sum_smul (s := Finset.univ) (f := f) (x := b)).symm
+
+omit [FiniteDimensional ℝ E] [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] [I.Boundaryless] in
+private lemma sum_sum_smul_univ {ι : Type*} [Fintype ι] (f : ι → ι → ℝ) (b : E) :
+    (∑ i, ∑ j, f i j • b) = (∑ i, ∑ j, f i j) • b := by
+  simp only [Finset.sum_smul]
+
+omit [SigmaCompactSpace M] in
+private theorem trivToE_connection_apply_chart
+    {D : RealTimeInterval} {a b : ℝ}
+    (B : RicciBackground (I := I) (M := M) D a b)
+    (β : M) (r : ℝ) (A W : TangentSpace I β) :
+    trivToE (I := I) β β (B.family.connection r (tangentConstAt (I := I) β W) β A) =
+      ∑ k, (∑ i, ∑ j,
+        chartChristoffel (I := I) (B.family.metric r) β i j k (extChartAt I β β)
+        * chartCoord (E := E) i (trivToE (I := I) β β A)
+        * chartCoord (E := E) j (trivToE (I := I) β β W))
+      • DifferentialGeometry.Tensor.Coordinates.chartModelBasis E k := by
+  classical
+  set σ : (p : M) → TangentSpace I p := tangentConstAt (I := I) β W with hσ
+  have hbase : β ∈ (trivializationAt E (TangentSpace I) β).baseSet :=
+    FiberBundle.mem_baseSet_trivializationAt E (TangentSpace I) β
+  have hgood : β ∈ chartLeviCivitaGoodSet (I := I) β := by
+    rw [mem_chartLeviCivitaGoodSet_iff_mem_extChartAt_source (I := I) β β]
+    exact mem_extChartAt_source (I := I) β
+  have hmd : MDiffAt (T% σ) β := by
+    rw [hσ]
+    exact mdifferentiableAt_tangentConstAt_self (I := I) β W
+  have hrep : chartESectionRepr (I := I) β σ β = (trivToE (I := I) β β) W := by
+    rw [chartE_section_repr_eq_trivToE, hσ, tangentConstAt_self]
+  have hconst : ∀ y ∈ (extChartAt I β).target,
+      chartESectionRepr (I := I) β σ ((extChartAt I β).symm y) = (trivToE (I := I) β β) W := by
+    intro y hy
+    rw [chartE_section_repr_eq_trivToE, hσ, tangentConstAt_apply]
+    exact TensorLieDeriv.tangentFieldModelInChart_tangentConstInChart_apply_of_mem
+      (I := I) β hy ((trivToE (I := I) β β) W)
+  have hfderiv : fderiv ℝ (chartESectionRepr (I := I) β σ ∘ ((extChartAt I β).symm : E → M))
+      (((extChartAt I β) : M → E) β) ((trivToE (I := I) β β) A) = 0 := by
+    have hy₀ : ((extChartAt I β) : M → E) β ∈ (extChartAt I β).target :=
+      (extChartAt I β).map_source (mem_extChartAt_source (I := I) β)
+    have hev : (chartESectionRepr (I := I) β σ ∘ ((extChartAt I β).symm : E → M))
+        =ᶠ[𝓝 (((extChartAt I β) : M → E) β)] Function.const E ((trivToE (I := I) β β) W) := by
+      filter_upwards [(isOpen_extChartAt_target (I := I) β).mem_nhds hy₀] with y hy
+      exact hconst y hy
+    rw [Filter.EventuallyEq.fderiv_eq hev, fderiv_const]
+    simp
+  have hconn : B.family.connection r = LeviCivita (I := I) (B.family.metric r) :=
+    (LeviCivita_eq_leviCivitaConnectionOfMetric (I := I) (B.family.metric r)).symm
+  rw [hconn, LeviCivita_chart_apply (I := I) (B.family.metric r) β hgood hmd A,
+    chartLeviCivita_apply (I := I) (B.family.metric r) β σ hgood A,
+    trivToE_trivFromE (I := I) β hbase]
+  rw [hfderiv, zero_add, hrep,
+    christoffelCorrection_basepoint_apply (I := I) (B.family.metric r) β ((trivToE (I := I) β β) W) A]
+  calc (∑ i, ∑ j, ∑ k,
+        (((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
+              ((tangentSpaceModelContinuousLinearEquiv (I := I) β) A)) i *
+            ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
+              ((trivToE (I := I) β β) W)) j *
+          chartChristoffel (I := I) (B.family.metric r) β i j k (extChartAt I β β)) •
+        DifferentialGeometry.Tensor.Coordinates.chartModelBasis E k)
+      = ∑ i, ∑ j, ∑ k,
+        (chartChristoffel (I := I) (B.family.metric r) β i j k (extChartAt I β β) *
+          chartCoord (E := E) i (trivToE (I := I) β β A) *
+          chartCoord (E := E) j (trivToE (I := I) β β W)) •
+        DifferentialGeometry.Tensor.Coordinates.chartModelBasis E k := by
+          refine Finset.sum_congr rfl (fun i _ => Finset.sum_congr rfl (fun j _ =>
+            Finset.sum_congr rfl (fun k _ => ?_)))
+          rw [chartCoord_def, chartCoord_def]
+          simp only [trivToE_basepoint]
+          congr 1
+          ring
+    _ = ∑ k, ∑ i, ∑ j,
+        (chartChristoffel (I := I) (B.family.metric r) β i j k (extChartAt I β β) *
+          chartCoord (E := E) i (trivToE (I := I) β β A) *
+          chartCoord (E := E) j (trivToE (I := I) β β W)) •
+        DifferentialGeometry.Tensor.Coordinates.chartModelBasis E k :=
+        sum_rotate (fun i j k =>
+          (chartChristoffel (I := I) (B.family.metric r) β i j k (extChartAt I β β) *
+            chartCoord (E := E) i (trivToE (I := I) β β A) *
+            chartCoord (E := E) j (trivToE (I := I) β β W)) •
+          DifferentialGeometry.Tensor.Coordinates.chartModelBasis E k)
+    _ = ∑ k, (∑ i, ∑ j,
+        chartChristoffel (I := I) (B.family.metric r) β i j k (extChartAt I β β) *
+          chartCoord (E := E) i (trivToE (I := I) β β A) *
+          chartCoord (E := E) j (trivToE (I := I) β β W)) •
+        DifferentialGeometry.Tensor.Coordinates.chartModelBasis E k := by
+          refine Finset.sum_congr rfl (fun k _ => ?_)
+          exact sum_sum_smul_univ (fun i j =>
+            chartChristoffel (I := I) (B.family.metric r) β i j k (extChartAt I β β) *
+              chartCoord (E := E) i (trivToE (I := I) β β A) *
+              chartCoord (E := E) j (trivToE (I := I) β β W))
+            (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E k)
+
+omit [SigmaCompactSpace M] in
+theorem trivToE_connectionVariation
+    {D : RealTimeInterval} {a b s u : ℝ}
+    (B : RicciBackground (I := I) (M := M) D a b)
+    (hsu : s < u) (hwindow : Icc s u ⊆ Icc a b)
+    (β : M) (t : ℝ) (ht : t ∈ Icc s u) (A W : TangentSpace I β) :
+    trivToE (I := I) β β (connectionVariation B.family (Icc s u) t β A W) =
+      ∑ k, (∑ i, ∑ j,
+        (derivWithin (fun r => chartChristoffel (I := I) (B.family.metric r) β i j k
+          (extChartAt I β β)) (Icc s u) t)
+        * chartCoord (E := E) i (trivToE (I := I) β β A)
+        * chartCoord (E := E) j (trivToE (I := I) β β W))
+      • DifferentialGeometry.Tensor.Coordinates.chartModelBasis E k := by
+  classical
+  have huniq : UniqueDiffWithinAt ℝ (Icc s u) t := (uniqueDiffOn_Icc hsu) t ht
+  have hbase : β ∈ (trivializationAt E (TangentSpace I) β).baseSet :=
+    FiberBundle.mem_baseSet_trivializationAt E (TangentSpace I) β
+  have hy₀int : ((extChartAt I β) : M → E) β ∈ interior (extChartAt I β).target :=
+    DifferentialGeometry.Integral.DivergenceTheorem.extChartAt_target_subset_interior_of_boundaryless
+      (I := I) β ((extChartAt I β).map_source (mem_extChartAt_source (I := I) β))
+  have hterm (i j k : Fin (Module.finrank ℝ E)) :
+      HasDerivWithinAt
+        (fun r => chartChristoffel (I := I) (B.family.metric r) β i j k (extChartAt I β β))
+        (derivWithin (fun r => chartChristoffel (I := I) (B.family.metric r) β i j k
+          (extChartAt I β β)) (Icc s u) t) (Icc s u) t := by
+    have hcont : ContDiffOn ℝ ∞
+        (fun p : ℝ × E => chartChristoffel (I := I) (B.family.metric p.1) β i j k p.2)
+        (Icc s u ×ˢ interior (extChartAt I β).target) :=
+      MetricFamilySmoothOn.chartChristoffelOnE_contDiffOn (I := I) (D := D)
+        (g_fam := B.family.metric) B.smooth (J := Icc s u)
+        (fun r hr => B.regular (hwindow hr)) (uniqueDiffOn_Icc hsu) β i j k
+    have hdiff : DifferentiableWithinAt ℝ
+        (fun p : ℝ × E => chartChristoffel (I := I) (B.family.metric p.1) β i j k p.2)
+        (Icc s u ×ˢ interior (extChartAt I β).target)
+        (t, ((extChartAt I β) : M → E) β) :=
+      (hcont.differentiableOn (by simp)) _ ⟨ht, hy₀int⟩
+    have hφ : HasDerivWithinAt (fun r : ℝ => (r, ((extChartAt I β) : M → E) β))
+        (1, 0) (Icc s u) t :=
+      ((hasDerivAt_id t).prodMk (hasDerivAt_const t ((extChartAt I β : M → E) β))).hasDerivWithinAt
+    have hcomp := hdiff.hasFDerivWithinAt.comp_hasDerivWithinAt t hφ
+      (fun r hr => (show (r, ((extChartAt I β) : M → E) β) ∈
+        Icc s u ×ˢ interior (extChartAt I β).target from ⟨hr, hy₀int⟩))
+    exact hcomp.congr_deriv (hcomp.derivWithin huniq).symm
+  have hsum : HasDerivWithinAt
+      (fun r => ∑ k, (∑ i, ∑ j,
+        chartChristoffel (I := I) (B.family.metric r) β i j k (extChartAt I β β)
+        * chartCoord (E := E) i (trivToE (I := I) β β A)
+        * chartCoord (E := E) j (trivToE (I := I) β β W))
+        • DifferentialGeometry.Tensor.Coordinates.chartModelBasis E k)
+      (∑ k, (∑ i, ∑ j,
+        (derivWithin (fun r => chartChristoffel (I := I) (B.family.metric r) β i j k
+          (extChartAt I β β)) (Icc s u) t)
+        * chartCoord (E := E) i (trivToE (I := I) β β A)
+        * chartCoord (E := E) j (trivToE (I := I) β β W))
+        • DifferentialGeometry.Tensor.Coordinates.chartModelBasis E k) (Icc s u) t := by
+    refine HasDerivWithinAt.fun_sum (u := Finset.univ) (fun k _ => ?_)
+    refine (HasDerivWithinAt.fun_sum (u := Finset.univ) (fun i _ =>
+      HasDerivWithinAt.fun_sum (u := Finset.univ) (fun j _ => ?_))).smul_const _
+    exact ((hterm i j k).mul_const _).mul_const _
+  have hhas : HasDerivWithinAt
+      (fun r => trivFromE (I := I) β β (∑ k, (∑ i, ∑ j,
+        chartChristoffel (I := I) (B.family.metric r) β i j k (extChartAt I β β)
+        * chartCoord (E := E) i (trivToE (I := I) β β A)
+        * chartCoord (E := E) j (trivToE (I := I) β β W))
+        • DifferentialGeometry.Tensor.Coordinates.chartModelBasis E k))
+      (trivFromE (I := I) β β (∑ k, (∑ i, ∑ j,
+        (derivWithin (fun r => chartChristoffel (I := I) (B.family.metric r) β i j k
+          (extChartAt I β β)) (Icc s u) t)
+        * chartCoord (E := E) i (trivToE (I := I) β β A)
+        * chartCoord (E := E) j (trivToE (I := I) β β W))
+        • DifferentialGeometry.Tensor.Coordinates.chartModelBasis E k)) (Icc s u) t :=
+    (trivFromE (I := I) β β).hasFDerivAt.comp_hasDerivWithinAt t hsum
+  have hpoint (r : ℝ) : B.family.connection r (tangentConstAt (I := I) β W) β A
+      = trivFromE (I := I) β β (∑ k, (∑ i, ∑ j,
+        chartChristoffel (I := I) (B.family.metric r) β i j k (extChartAt I β β)
+        * chartCoord (E := E) i (trivToE (I := I) β β A)
+        * chartCoord (E := E) j (trivToE (I := I) β β W))
+        • DifferentialGeometry.Tensor.Coordinates.chartModelBasis E k) := by
+    rw [← trivFromE_trivToE (I := I) β hbase
+      (B.family.connection r (tangentConstAt (I := I) β W) β A)]
+    exact congrArg (trivFromE (I := I) β β)
+      (trivToE_connection_apply_chart B β r A W)
+  have hderiv : HasDerivWithinAt
+      (fun r => B.family.connection r (tangentConstAt (I := I) β W) β A)
+      (trivFromE (I := I) β β (∑ k, (∑ i, ∑ j,
+        (derivWithin (fun r => chartChristoffel (I := I) (B.family.metric r) β i j k
+          (extChartAt I β β)) (Icc s u) t)
+        * chartCoord (E := E) i (trivToE (I := I) β β A)
+        * chartCoord (E := E) j (trivToE (I := I) β β W))
+        • DifferentialGeometry.Tensor.Coordinates.chartModelBasis E k)) (Icc s u) t :=
+    hhas.congr (fun r _ => hpoint r) (hpoint t)
+  rw [connectionVariation, hderiv.derivWithin huniq, trivToE_trivFromE (I := I) β hbase]
+
+
+omit [SigmaCompactSpace M] in
+theorem trivToE_connectionVariation_curveMap
+    {D : RealTimeInterval} {a b s u : ℝ}
+    (B : RicciBackground (I := I) (M := M) D a b)
+    (hsu : s < u) (hwindow : Icc s u ⊆ Icc a b)
+    (c : CurveMap M) (x t : ℝ) (ht : t ∈ Icc s u)
+    (A W : TangentSpace I (c.lift x t)) :
+    (trivializationAt E (TangentSpace I) (c.lift x t)).continuousLinearMapAt ℝ (c.lift x t)
+        (connectionVariation B.family (Icc s u) t (c.lift x t) A W) =
+      ∑ k, (∑ i, ∑ j,
+        (derivWithin (fun r => chartChristoffel (I := I) (B.family.metric r) (c.lift x t) i j k
+          (extChartAt I (c.lift x t) (c.lift x t))) (Icc s u) t)
+        * chartCoord (E := E) i
+            ((trivializationAt E (TangentSpace I) (c.lift x t)).continuousLinearMapAt ℝ (c.lift x t) A)
+        * chartCoord (E := E) j
+            ((trivializationAt E (TangentSpace I) (c.lift x t)).continuousLinearMapAt ℝ (c.lift x t) W))
+      • DifferentialGeometry.Tensor.Coordinates.chartModelBasis E k :=
+  trivToE_connectionVariation (I := I) (M := M) B hsu hwindow (c.lift x t) t ht A W
+
+
+
+omit [FiniteDimensional ℝ E] [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] hBoundary in
+theorem chartRep_field_contDiffWithinAt
+    (c : CurveMap M) (J : Set ℝ) (hc : c.SmoothOn (I := I) J)
+    (V : c.Field (I := I)) (hV : V.SmoothOn (I := I) J) (x t : ℝ) (ht : t ∈ J) :
+    ∀ᶠ z in 𝓝[univ ×ˢ J] (x, t), ContDiffWithinAt ℝ 2
+      (fun p : ℝ × ℝ =>
+        (trivializationAt E (TangentSpace I) (c.lift x t)).continuousLinearMapAt ℝ
+          (c.lift p.1 p.2) (V p.1 p.2)) (univ ×ˢ J) z := by
+  classical
+  set F : ℝ × ℝ → TangentBundle I M :=
+    fun p => (⟨c.lift p.1 p.2, V p.1 p.2⟩ : TangentBundle I M) with hF
+  have hcont : ContinuousWithinAt (fun p : ℝ × ℝ => c.lift p.1 p.2) (univ ×ˢ J) (x, t) :=
+    (hc (x, t) ⟨mem_univ x, ht⟩).continuousWithinAt
+  have hbase : c.lift x t
+      ∈ (trivializationAt E (TangentSpace I) (c.lift x t)).baseSet :=
+    FiberBundle.mem_baseSet_trivializationAt E (TangentSpace I) (c.lift x t)
+  have hneigh : (fun p : ℝ × ℝ => c.lift p.1 p.2) ⁻¹'
+      (trivializationAt E (TangentSpace I) (c.lift x t)).baseSet ∈ 𝓝[univ ×ˢ J] (x, t) :=
+    hcont.preimage_mem_nhdsWithin
+      ((trivializationAt E (TangentSpace I) (c.lift x t)).open_baseSet.mem_nhds hbase)
+  filter_upwards [hneigh, self_mem_nhdsWithin] with z hz hzS
+  have htotal : ContMDiffWithinAt 𝓘(ℝ, ℝ × ℝ) I.tangent ∞ F (univ ×ˢ J) z := hV z hzS
+  have hsrc : F z ∈ (trivializationAt E (TangentSpace I) (c.lift x t)).source := by
+    rw [hF, Trivialization.mem_source]
+    exact hz
+  have hiff := (Bundle.Trivialization.contMDiffWithinAt_iff
+    (e := trivializationAt E (TangentSpace I) (c.lift x t)) (f := F) hsrc).mp htotal
+  have hcontz : ContinuousWithinAt (fun p : ℝ × ℝ => c.lift p.1 p.2) (univ ×ˢ J) z :=
+    (hc z hzS).continuousWithinAt
+  have hsrc' : (fun p : ℝ × ℝ => c.lift p.1 p.2) ⁻¹'
+      (trivializationAt E (TangentSpace I) (c.lift x t)).baseSet ∈ 𝓝[univ ×ˢ J] z :=
+    hcontz.preimage_mem_nhdsWithin
+      ((trivializationAt E (TangentSpace I) (c.lift x t)).open_baseSet.mem_nhds hz)
+  have heq : (fun p : ℝ × ℝ =>
+        (trivializationAt E (TangentSpace I) (c.lift x t) (F p)).2)
+      =ᶠ[𝓝[univ ×ˢ J] z]
+      fun p : ℝ × ℝ =>
+        (trivializationAt E (TangentSpace I) (c.lift x t)).continuousLinearMapAt ℝ
+          (c.lift p.1 p.2) (V p.1 p.2) := by
+    filter_upwards [hsrc', self_mem_nhdsWithin] with p hp _
+    have hp' : c.lift p.1 p.2
+        ∈ (trivializationAt E (TangentSpace I) (c.lift x t)).baseSet := hp
+    rw [Trivialization.continuousLinearMapAt_apply_of_mem (R := ℝ)
+      (e := trivializationAt E (TangentSpace I) (c.lift x t)) hp' (V p.1 p.2)]
+  have hcd : ContDiffWithinAt ℝ 2 (fun p : ℝ × ℝ =>
+      (trivializationAt E (TangentSpace I) (c.lift x t) (F p)).2) (univ ×ˢ J) z :=
+    (contMDiffWithinAt_iff_contDiffWithinAt.mp hiff.2).of_le (WithTop.coe_le_coe.mpr le_top)
+  exact hcd.congr_of_eventuallyEq heq.symm (heq.symm.eq_of_nhdsWithin hzS)
+
+
 
 theorem pullback_commutator {D : RealTimeInterval} {a b s u : ℝ}
     (B : RicciBackground (I := I) (M := M) D a b)

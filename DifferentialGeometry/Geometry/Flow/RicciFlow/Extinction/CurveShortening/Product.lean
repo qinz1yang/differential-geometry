@@ -5,6 +5,8 @@ import DifferentialGeometry.Geometry.Metric.Comparison.DistanceScaling
 import DifferentialGeometry.Geometry.Metric.Scaling
 import DifferentialGeometry.Geometry.Metric.Product
 import DifferentialGeometry.Geometry.Metric.Euclidean
+import DifferentialGeometry.Geometry.Metric.Quotient
+import DifferentialGeometry.Topology.Manifold.OpenEmbedding
 import Mathlib.Analysis.SpecialFunctions.Complex.Circle
 
 noncomputable section
@@ -187,6 +189,102 @@ theorem coverProductMetric_unique [T2Space M]
   intro p v w
   rw [hĝ, coverProductMetric_inner]
 
+private def lineTranslation (c : ℝ) : ℝ ≃ₘ[ℝ] ℝ where
+  toFun s := s + c
+  invFun s := s - c
+  left_inv s := add_sub_cancel_right s c
+  right_inv s := sub_add_cancel s c
+  contMDiff_toFun := (contDiff_id.add contDiff_const).contMDiff
+  contMDiff_invFun := (contDiff_id.sub contDiff_const).contMDiff
+
+private def coverShift (c : ℝ) :
+    (M × ℝ) ≃ₘ⟮I.prod 𝓘(ℝ, ℝ), I.prod 𝓘(ℝ, ℝ)⟯ (M × ℝ) :=
+  (Diffeomorph.refl I M ∞).prodCongr (lineTranslation c)
+
+omit [FiniteDimensional ℝ E] [CompleteSpace E] [IsManifold I ∞ M] in
+private theorem coverShift_apply (c : ℝ) (p : M × ℝ) :
+    coverShift (I := I) c p = (p.1, p.2 + c) := rfl
+
+omit [FiniteDimensional ℝ E] [CompleteSpace E] [IsManifold I ∞ M] in
+private theorem mfderiv_coverShift (c : ℝ) (p : M × ℝ)
+    (v : TangentSpace (I.prod 𝓘(ℝ, ℝ)) p) :
+    mfderiv (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, ℝ)) (coverShift (I := I) c) p v = v := by
+  have hline : mfderiv 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) (lineTranslation c) p.2 =
+      ContinuousLinearMap.id ℝ ℝ := by
+    change mfderiv 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) (fun r : ℝ => r + c) p.2 = _
+    rw [mfderiv_eq_fderiv, fderiv_add_const]
+    exact fderiv_id
+  change mfderiv (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, ℝ))
+    (Prod.map (id : M → M) (lineTranslation c)) p v = _
+  rw [mfderiv_prodMap mdifferentiableAt_id
+    ((lineTranslation c).mdifferentiable (by decide) p.2),
+    mfderiv_id, hline]
+  rfl
+
+omit [CompleteSpace E] in
+private theorem pullbackMetric_coverShift [T2Space M] (g : SmoothRiemannianMetric I M)
+    (lambda : ℝ) (hlambda : 0 < lambda) (c : ℝ) :
+    Diffeomorph.pullbackMetric (coverProductMetric g lambda hlambda)
+      (coverShift (I := I) c) = coverProductMetric g lambda hlambda := by
+  apply SmoothRiemannianMetric.ext_inner
+  intro p v w
+  rw [Diffeomorph.pullbackMetric_inner, coverProductMetric_inner, coverProductMetric_inner,
+    mfderiv_coverShift, mfderiv_coverShift, coverShift_apply]
+
+omit [FiniteDimensional ℝ E] [CompleteSpace E] [IsManifold I ∞ M] in
+private theorem coe_int_period (n : ℤ) :
+    (((n : ℝ) : Surgery.Topology.Circle)) = 0 := by
+  rw [show (n : ℝ) = n • (1 : ℝ) by simp, AddCircle.coe_zsmul, AddCircle.coe_period]
+  simp
+
+omit [FiniteDimensional ℝ E] [CompleteSpace E] [IsManifold I ∞ M] in
+private theorem coverShift_fiber (n : ℤ) (p : M × ℝ) :
+    productCoverProjection (coverShift (I := I) (n : ℝ) p) = productCoverProjection p := by
+  apply Prod.ext
+  · rfl
+  · change (((p.2 + (n : ℝ)) : ℝ) : Surgery.Topology.Circle) =
+      ((p.2 : ℝ) : Surgery.Topology.Circle)
+    rw [AddCircle.coe_add, coe_int_period, add_zero]
+
+omit [FiniteDimensional ℝ E] [CompleteSpace E] [IsManifold I ∞ M] in
+private theorem exists_coverShift_of_fiber_eq {x y : M × ℝ}
+    (h : productCoverProjection x = productCoverProjection y) :
+    ∃ n : ℤ, x = coverShift (I := I) (n : ℝ) y := by
+  have h1 : x.1 = y.1 := congrArg (fun z : M × Surgery.Topology.Circle => z.1) h
+  have h2 : (x.2 : Surgery.Topology.Circle) = (y.2 : Surgery.Topology.Circle) :=
+    congrArg (fun z : M × Surgery.Topology.Circle => z.2) h
+  have hmem : x.2 - y.2 ∈ AddSubgroup.zmultiples (1 : ℝ) := by
+    rw [← QuotientAddGroup.eq_iff_sub_mem]
+    exact h2
+  obtain ⟨n, hn⟩ := AddSubgroup.mem_zmultiples_iff.mp hmem
+  refine ⟨n, Prod.ext h1 ?_⟩
+  change x.2 = y.2 + (n : ℝ)
+  rw [show (n : ℝ) = n • (1 : ℝ) by simp, hn]
+  ring
+
+omit [CompleteSpace E] in
+private theorem metricFiberCompatible_of_coverShift_invariant [T2Space M]
+    {N : Type*} [TopologicalSpace N] [ChartedSpace (ModelProd H ℝ) N]
+    [IsManifold (I.prod 𝓘(ℝ, ℝ)) ∞ N]
+    (f : M × ℝ → N)
+    (hf : IsLocalDiffeomorph (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, ℝ)) ∞ f)
+    (g : SmoothRiemannianMetric I M) (lambda : ℝ) (hlambda : 0 < lambda)
+    (hfiber : ∀ x y : M × ℝ, f x = f y → ∃ n : ℤ, x = coverShift (I := I) (n : ℝ) y)
+    (hinv : ∀ (n : ℤ) (z : M × ℝ), f (coverShift (I := I) (n : ℝ) z) = f z) :
+    metricFiberCompatible (coverProductMetric g lambda hlambda) f hf := by
+  intro x y hxy
+  obtain ⟨n, hn⟩ := hfiber x y hxy
+  subst hn
+  let Φ := coverShift (I := I) (M := M) (n : ℝ)
+  have hcomp : f ∘ (Φ : M × ℝ → M × ℝ) = f := by
+    funext z
+    exact hinv n z
+  have hmetric : Diffeomorph.pullbackMetric (coverProductMetric g lambda hlambda) Φ =
+      coverProductMetric g lambda hlambda :=
+    pullbackMetric_coverShift (I := I) g lambda hlambda (n : ℝ)
+  exact localPushInner_eq_of_fiber_preserving_isometry
+    (coverProductMetric g lambda hlambda) f hf Φ hcomp hmetric y
+
 structure QuotientProductAtlas (I : ModelWithCorners ℝ E H) (M : Type*)
     [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M] where
   charts : ChartedSpace (ModelProd H ℝ) (M × Surgery.Topology.Circle)
@@ -250,10 +348,36 @@ structure QuotientProductGeometry (A : QuotientProductAtlas I M) [T2Space M]
         (mfderiv (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, ℝ)) productCoverProjection p w) =
           (coverProductMetric g lambda hlambda).inner p v w
 
+omit [CompleteSpace E] in
 theorem exists_quotientProductGeometry (A : QuotientProductAtlas I M) [T2Space M]
+    [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (lambda : ℝ) (hlambda : 0 < lambda) :
     Nonempty (QuotientProductGeometry A g lambda hlambda) := by
-  sorry
+  let := A.charts
+  let := A.smoothManifold
+  have hf : IsLocalDiffeomorph (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, ℝ)) ∞
+      (productCoverProjection (M := M)) :=
+    DifferentialGeometry.Topology.Manifold.isLocalDiffeomorph_of_injective_mfderiv
+      (productCoverProjection (M := M)) A.cover_smooth
+      (fun p => (A.cover_derivative_bijective p).injective) rfl
+  have hsurj : Function.Surjective (productCoverProjection (M := M)) := by
+    intro q
+    obtain ⟨s, -, hs⟩ := AddCircle.eq_coe_Ico (p := (1 : ℝ)) q.2
+    exact ⟨(q.1, s), Prod.ext rfl hs⟩
+  have hcompat : metricFiberCompatible (coverProductMetric g lambda hlambda)
+      (productCoverProjection (M := M)) hf :=
+    metricFiberCompatible_of_coverShift_invariant (productCoverProjection (M := M)) hf
+      g lambda hlambda
+      (fun x y h => exists_coverShift_of_fiber_eq (I := I) h)
+      (fun n z => coverShift_fiber (I := I) n z)
+  refine ⟨⟨descendedMetric (coverProductMetric g lambda hlambda)
+    (productCoverProjection (M := M)) hf hsurj hcompat, ?_⟩⟩
+  intro p v w
+  rw [← localPullMetric_inner (descendedMetric (coverProductMetric g lambda hlambda)
+      (productCoverProjection (M := M)) hf hsurj hcompat)
+      (productCoverProjection (M := M)) hf p v w,
+    localPullMetric_descendedMetric (coverProductMetric g lambda hlambda)
+      (productCoverProjection (M := M)) hf hsurj hcompat]
 
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [IsManifold I ∞ M] in
@@ -322,14 +446,15 @@ section QuotientGeometry
 variable (A : QuotientProductAtlas I M)
 
 
-def quotientProductMetric [T2Space M] (g : SmoothRiemannianMetric I M) (lambda : ℝ)
-    (hlambda : 0 < lambda) :
+def quotientProductMetric [T2Space M] [I.Boundaryless]
+    (g : SmoothRiemannianMetric I M) (lambda : ℝ) (hlambda : 0 < lambda) :
     letI := A.charts
     letI := A.smoothManifold
     SmoothRiemannianMetric (I.prod 𝓘(ℝ, ℝ)) (M × Surgery.Topology.Circle) :=
   (exists_quotientProductGeometry A g lambda hlambda).some.metric
 
-theorem product_solution_iff [T2Space M] (g : ℝ → SmoothRiemannianMetric I M)
+theorem product_solution_iff [T2Space M] [I.Boundaryless]
+    (g : ℝ → SmoothRiemannianMetric I M)
     (lambda : ℝ) (hlambda : 0 < lambda) (c : ProductCurve M) {s u : ℝ} (hsu : s < u)
     (J : Set ℝ) (hJ : J = Ico s u ∨ J = Icc s u)
     (hylift : ContinuousOn (fun p : ℝ × ℝ => c.y p.1 p.2) (univ ×ˢ J)) :
@@ -340,7 +465,8 @@ theorem product_solution_iff [T2Space M] (g : ℝ → SmoothRiemannianMetric I M
         (fun t => quotientProductMetric A (g t) lambda hlambda) J := by
   sorry
 
-theorem product_solution_lift [T2Space M] (g : ℝ → SmoothRiemannianMetric I M)
+theorem product_solution_lift [T2Space M] [I.Boundaryless]
+    (g : ℝ → SmoothRiemannianMetric I M)
     (lambda : ℝ) (hlambda : 0 < lambda) (c : CurveMap (M × Surgery.Topology.Circle)) {s u : ℝ} (hsu : s < u)
     (J : Set ℝ) (hJ : J = Ico s u ∨ J = Icc s u)
     (hc : letI := A.charts
@@ -353,7 +479,8 @@ theorem product_solution_lift [T2Space M] (g : ℝ → SmoothRiemannianMetric I 
 
 variable [SigmaCompactSpace M] [T2Space M]
 
-def quotientProductFamily (G : SolutionFamily (I := I) (M := M)) (lambda : ℝ) (hlambda : 0 < lambda) :
+def quotientProductFamily [I.Boundaryless]
+    (G : SolutionFamily (I := I) (M := M)) (lambda : ℝ) (hlambda : 0 < lambda) :
     letI := A.charts
     letI := A.smoothManifold
     SolutionFamily (I := I.prod 𝓘(ℝ, ℝ)) (M := M × Surgery.Topology.Circle) :=
@@ -362,7 +489,8 @@ def quotientProductFamily (G : SolutionFamily (I := I) (M := M)) (lambda : ℝ) 
     letI := A.smoothManifold
     exact ⟨fun t => quotientProductMetric A (G.metric t) lambda hlambda⟩
 
-theorem quotientProduct_ricciBackground {D : Geometry.Curvature.RealTimeInterval} {a b : ℝ}
+theorem quotientProduct_ricciBackground [I.Boundaryless]
+    {D : Geometry.Curvature.RealTimeInterval} {a b : ℝ}
     (B : RicciBackground (I := I) (M := M) D a b) (lambda : ℝ) (hlambda : 0 < lambda) :
     letI := A.charts
     letI := A.smoothManifold

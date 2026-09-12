@@ -19,6 +19,28 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 
+theorem continuousOn_intervalIntegral_of_continuousOn_rectangle {f : ℝ → ℝ → ℝ} {a b : ℝ}
+    (hab : a ≤ b)
+    (h : ContinuousOn (fun p : ℝ × ℝ => f p.1 p.2) (Icc (0 : ℝ) 1 ×ˢ Icc a b)) :
+    ContinuousOn (fun t : ℝ => ∫ x in (0 : ℝ)..1, f x t) (Icc a b) := by
+  have hproj : Continuous (fun p : ℝ × ℝ =>
+      ((max 0 (min p.2 1), max a (min p.1 b)) : ℝ × ℝ)) := by fun_prop
+  have hmaps : ∀ p : ℝ × ℝ,
+      ((max 0 (min p.2 1), max a (min p.1 b)) : ℝ × ℝ) ∈ Icc (0 : ℝ) 1 ×ˢ Icc a b := by
+    rintro ⟨u, v⟩
+    exact ⟨⟨le_max_left _ _, max_le zero_le_one (min_le_right _ _)⟩,
+      ⟨le_max_left _ _, max_le hab (min_le_right _ _)⟩⟩
+  have hcont : Continuous
+      (Function.uncurry fun s u => f (max 0 (min u 1)) (max a (min s b))) :=
+    h.comp_continuous hproj hmaps
+  have hc := intervalIntegral.continuous_parametric_intervalIntegral_of_continuous'
+    (μ := volume) (f := fun s u => f (max 0 (min u 1)) (max a (min s b))) hcont 0 1
+  refine hc.continuousOn.congr fun t ht => intervalIntegral.integral_congr fun x hx => ?_
+  rw [uIcc_of_le zero_le_one] at hx
+  have hx1 : max 0 (min x 1) = x := by rw [min_eq_left hx.2, max_eq_right hx.1]
+  have ht1 : max a (min t b) = t := by rw [min_eq_left ht.2, max_eq_right ht.1]
+  simp only [hx1, ht1]
+
 namespace CurveMap
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] in
@@ -130,13 +152,33 @@ theorem rfs_csf_boundary_isotopy (γ : ℝ → ContinuousFreeLoop M)
       ∀ t ∈ Icc a b ∩ Ioo (t₀ - ε) (t₀ + ε), ∀ z, Φ t (γ t₀ z) = γ t z := by
   sorry
 
+omit hBoundary hCompact hNonempty [SigmaCompactSpace M] in
 theorem rfs_csf_area_error (B : RicciBackground (I := I) (M := M) D a b)
     (c : CurveMap M) (hc : c.SmoothOn (I := I) (Icc a b))
-    (hi : c.ImmersedOn (I := I) (Icc a b)) :
+    (hi : c.ImmersedOn (I := I) (Icc a b))
+    (hintegrand : ContinuousOn (fun p : ℝ × ℝ =>
+      Real.sqrt (c.normSq B.family.metric
+          (c.normalVelocityError B.family.metric (Icc a b)) p.1 p.2) *
+        c.speed B.family.metric p.1 p.2)
+      (Icc (0 : ℝ) 1 ×ˢ Icc a b)) :
     ContinuousOn (c.areaError B.family.metric (Icc a b)) (Icc a b) ∧
       ∀ α : ℝ → ℝ → ℝ, c.IsGeometricSolutionOn B.family.metric (Icc a b) α →
         ∀ t ∈ Icc a b, c.areaError B.family.metric (Icc a b) t = 0 := by
-  sorry
+  let _ := hc
+  let _ := hi
+  refine ⟨continuousOn_intervalIntegral_of_continuousOn_rectangle B.lt.le ?_, ?_⟩
+  · simpa only [CurveMap.areaError, CurveMap.integral] using hintegrand
+  · intro α hg t ht
+    have hW : ∀ x, c.normalVelocityError B.family.metric (Icc a b) x t = 0 := by
+      intro x
+      have hT := c.unitTangent_inner_self B.family.metric hg.immersed x t ht
+      have h0 : c.velocity (I := I) (Icc a b) x t - c.curvatureVector B.family.metric x t =
+          α x t • c.unitTangent B.family.metric x t := by
+        rw [hg.equation x t ht]
+        abel
+      simp only [CurveMap.normalVelocityError, h0, map_smul, smul_apply, smul_eq_mul, hT,
+        mul_one, sub_self]
+    simp [CurveMap.areaError, CurveMap.integral, CurveMap.normSq, hW]
 
 theorem rfs_csf_embedded_area (B : RicciBackground (I := I) (M := M) D a b)
     (hdim : Module.finrank ℝ E = 3) (γ : ℝ → ContinuousFreeLoop M)

@@ -150,7 +150,7 @@ theorem quotientVerticalUnit_cover (lambda : ℝ) (p : M × ℝ) :
       (coverVerticalUnit lambda p) = quotientVerticalUnit A lambda (productCoverProjection p) :=
   (exists_quotientVerticalUnit A lambda).choose_spec p
 
-theorem quotientVerticalUnit_smooth_unit_parallel (g : SmoothRiemannianMetric I M)
+theorem quotientVerticalUnit_smooth_unit_parallel [I.Boundaryless] (g : SmoothRiemannianMetric I M)
     (lambda : ℝ) (hlambda : 0 < lambda) :
     letI := A.charts
     letI := A.smoothManifold
@@ -218,7 +218,7 @@ theorem coverProduct_iterCov_normSq (g : SmoothRiemannianMetric I M)
 section QuotientCurvature
 variable (A : QuotientProductAtlas I M)
 
-theorem quotientProduct_iterCov_rm04_apply (g : SmoothRiemannianMetric I M)
+theorem quotientProduct_iterCov_rm04_apply [I.Boundaryless] (g : SmoothRiemannianMetric I M)
     (lambda : ℝ) (hlambda : 0 < lambda) (m : ℕ) (p : M × ℝ)
     (v : Fin (4 + m) → TangentSpace (I.prod 𝓘(ℝ, ℝ)) p) :
     letI := A.charts
@@ -230,7 +230,7 @@ theorem quotientProduct_iterCov_rm04_apply (g : SmoothRiemannianMetric I M)
       iterCov g 4 (metricRm04 g) m p.1 (fun i => (v i).1) := by
   sorry
 
-theorem quotientProduct_iterCov_ricci_apply (g : SmoothRiemannianMetric I M)
+theorem quotientProduct_iterCov_ricci_apply [I.Boundaryless] (g : SmoothRiemannianMetric I M)
     (lambda : ℝ) (hlambda : 0 < lambda) (m : ℕ) (p : M × ℝ)
     (v : Fin (2 + m) → TangentSpace (I.prod 𝓘(ℝ, ℝ)) p) :
     letI := A.charts
@@ -242,7 +242,7 @@ theorem quotientProduct_iterCov_ricci_apply (g : SmoothRiemannianMetric I M)
       iterCov g 2 (metricRicci g) m p.1 (fun i => (v i).1) := by
   sorry
 
-theorem quotientProduct_iterCov_normSq (g : SmoothRiemannianMetric I M)
+theorem quotientProduct_iterCov_normSq [I.Boundaryless] (g : SmoothRiemannianMetric I M)
     (lambda : ℝ) (hlambda : 0 < lambda) (m : ℕ) (q : M × Surgery.Topology.Circle) :
     letI := A.charts
     letI := A.smoothManifold
@@ -256,7 +256,7 @@ theorem quotientProduct_iterCov_normSq (g : SmoothRiemannianMetric I M)
       normSq0S g q.1 (2 + m) (iterCov g 2 (metricRicci g) m q.1) := by
   sorry
 
-theorem quotientProduct_ricciBackground_C {D : RealTimeInterval} {a b : ℝ}
+theorem quotientProduct_ricciBackground_C [I.Boundaryless] {D : RealTimeInterval} {a b : ℝ}
     (B : RicciBackground (I := I) (M := M) D a b) (lambda : ℝ) (hlambda : 0 < lambda) :
     letI := A.charts
     letI := A.smoothManifold
