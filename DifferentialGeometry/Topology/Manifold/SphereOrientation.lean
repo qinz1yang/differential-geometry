@@ -228,6 +228,35 @@ private theorem frame_det_ne_zero {n : ℕ} (x : EuclideanSpace ℝ (Fin (n + 1)
   exact fun hdetzero =>
     ((LinearMap.det_eq_zero_iff_ker_ne_bot (f := Ψ)).mp hdetzero) (by rw [hker])
 
+private theorem sphereOutwardDeterminant_ne_zero (n : ℕ)
+    (x : sphere (0 : EuclideanSpace ℝ (Fin (n + 1))) 1)
+    (b : Basis (Fin n) ℝ (TangentSpace (𝓡 n) x)) :
+    sphereOutwardDeterminant n x b ≠ 0 := by
+  classical
+  let D : EuclideanSpace ℝ (Fin n) →ₗ[ℝ] EuclideanSpace ℝ (Fin (n + 1)) :=
+    (mvfderiv (𝓡 n)
+      (fun y : sphere (0 : EuclideanSpace ℝ (Fin (n + 1))) 1 =>
+        (y : EuclideanSpace ℝ (Fin (n + 1)))) x).toLinearMap
+  have hframe : sphereOutwardDeterminant n x b =
+      ((EuclideanSpace.basisFun (Fin (n + 1)) ℝ).toBasis).det
+        (fun j => Fin.cases (x : EuclideanSpace ℝ (Fin (n + 1))) (fun k => D (b k)) j) :=
+    rfl
+  have hinj : Function.Injective D := injective_mvfderiv_subtypeVal_sphere (n := n) x
+  have hnorm : ‖(x : EuclideanSpace ℝ (Fin (n + 1)))‖ = 1 := by
+    have h := Metric.mem_sphere.mp x.2
+    rwa [dist_zero_right] at h
+  have htan : ∀ v, ⟪(x : EuclideanSpace ℝ (Fin (n + 1))), D v⟫_ℝ = 0 := by
+    intro v
+    have hmem : mvfderiv (𝓡 n)
+        (fun y : sphere (0 : EuclideanSpace ℝ (Fin (n + 1))) 1 =>
+          (y : EuclideanSpace ℝ (Fin (n + 1)))) x v ∈
+        (Submodule.span ℝ {(x : EuclideanSpace ℝ (Fin (n + 1)))})ᗮ := by
+      rw [← range_mvfderiv_subtypeVal (n := n) x]
+      exact ⟨v, rfl⟩
+    exact Submodule.mem_orthogonal_singleton_iff_inner_right.mp hmem
+  rw [hframe]
+  exact frame_det_ne_zero (x : EuclideanSpace ℝ (Fin (n + 1))) D hinj hnorm htan b
+
 def sphereOutwardOrientation (n : ℕ)
     (x : sphere (0 : EuclideanSpace ℝ (Fin (n + 1))) 1) :
     Orientation ℝ (TangentSpace (𝓡 n) x) (Fin n) :=
@@ -253,31 +282,6 @@ theorem sphereOutwardOrientation_characterization (n : ℕ)
         ((EuclideanSpace.basisFun (Fin (n + 1)) ℝ).toBasis).det
           (fun j => Fin.cases (x : EuclideanSpace ℝ (Fin (n + 1))) (fun k => D x (b k)) j) :=
     fun x b => rfl
-  have hinj : ∀ x : sphere (0 : EuclideanSpace ℝ (Fin (n + 1))) 1,
-      Function.Injective (D x) := by
-    intro x a b hab
-    exact injective_mvfderiv_subtypeVal_sphere (n := n) x hab
-  have hnorm : ∀ x : sphere (0 : EuclideanSpace ℝ (Fin (n + 1))) 1,
-      ‖(x : EuclideanSpace ℝ (Fin (n + 1)))‖ = 1 := by
-    intro x
-    have h := Metric.mem_sphere.mp x.2
-    rwa [dist_zero_right] at h
-  have htan : ∀ x : sphere (0 : EuclideanSpace ℝ (Fin (n + 1))) 1,
-      ∀ v, ⟪(x : EuclideanSpace ℝ (Fin (n + 1))), D x v⟫_ℝ = 0 := by
-    intro x v
-    have hmem : mvfderiv (𝓡 n)
-        (fun y : sphere (0 : EuclideanSpace ℝ (Fin (n + 1))) 1 =>
-          (y : EuclideanSpace ℝ (Fin (n + 1)))) x v ∈
-        (Submodule.span ℝ {(x : EuclideanSpace ℝ (Fin (n + 1)))})ᗮ := by
-      rw [← range_mvfderiv_subtypeVal (n := n) x]
-      exact ⟨v, rfl⟩
-    exact Submodule.mem_orthogonal_singleton_iff_inner_right.mp hmem
-  have hne : ∀ (x : sphere (0 : EuclideanSpace ℝ (Fin (n + 1))) 1)
-      (b : Basis (Fin n) ℝ (TangentSpace (𝓡 n) x)),
-      sphereOutwardDeterminant n x b ≠ 0 := by
-    intro x b
-    rw [hframe x b]
-    exact frame_det_ne_zero (x : EuclideanSpace ℝ (Fin (n + 1))) (D x) (hinj x) (hnorm x) (htan x) b
   have hmul : ∀ (x : sphere (0 : EuclideanSpace ℝ (Fin (n + 1))) 1)
       (b : Basis (Fin n) ℝ (TangentSpace (𝓡 n) x)),
       sphereOutwardDeterminant n x b = sphereOutwardDeterminant n x bs * bs.det b := by
@@ -304,7 +308,7 @@ theorem sphereOutwardOrientation_characterization (n : ℕ)
   · erw [if_pos h, b.orientation_eq_iff_det_pos bs, hmul x b]
     exact (hpos_swap b).symm.trans (mul_pos_iff_of_pos_left h).symm
   · have hneg : sphereOutwardDeterminant n x bs < 0 :=
-      lt_of_le_of_ne (le_of_not_gt h) (hne x bs)
+      lt_of_le_of_ne (le_of_not_gt h) (sphereOutwardDeterminant_ne_zero n x bs)
     erw [if_neg h, ← Basis.orientation_ne_iff_eq_neg bs b.orientation, ne_eq,
       not_congr (b.orientation_eq_iff_det_pos bs)]
     erw [← hneg_of _ (b.isUnit_det bs).ne_zero, ← hneg_swap b, hmul x b]
@@ -317,6 +321,80 @@ theorem sphereOutwardOrientation_characterization (n : ℕ)
       · intro hb
         exact Or.inr ⟨hneg, hb⟩
     exact key.symm
+
+private theorem continuous_sphereOutwardDeterminant_chartFrame (n : ℕ)
+    (p : sphere (0 : EuclideanSpace ℝ (Fin (n + 1))) 1) :
+    Continuous (fun y : (trivializationAt (EuclideanSpace ℝ (Fin n))
+        (TangentSpace (𝓡 n)) p).baseSet =>
+      sphereOutwardDeterminant n y.1
+        (((EuclideanSpace.basisFun (Fin n) ℝ).toBasis).map
+          ((tangentChartEquiv (𝓡 n) (sphere (0 : EuclideanSpace ℝ (Fin (n + 1))) 1)
+            p y.1 y.2).symm))) := by
+  classical
+  let S : Type := sphere (0 : EuclideanSpace ℝ (Fin (n + 1))) 1
+  let e := trivializationAt (EuclideanSpace ℝ (Fin n)) (TangentSpace (𝓡 n)) p
+  let bs := (EuclideanSpace.basisFun (Fin n) ℝ).toBasis
+  let ι : S → EuclideanSpace ℝ (Fin (n + 1)) := fun y => y
+  have hι : ContMDiff (𝓡 n) (𝓡 (n + 1)) 1 ι := contMDiff_coe_sphere
+  have htmap : Continuous (tangentMap (𝓡 n) (𝓡 (n + 1)) ι) :=
+    hι.continuous_tangentMap le_rfl
+  have hsnd : Continuous (fun q : TangentBundle (𝓡 (n + 1))
+      (EuclideanSpace ℝ (Fin (n + 1))) => q.2) :=
+    (contMDiff_snd_tangentBundle_modelSpace
+      (I := 𝓡 (n + 1)) (H := EuclideanSpace ℝ (Fin (n + 1))) (n := 0)).continuous
+  have hsec : ∀ k : Fin n, Continuous (fun y : ↥e.baseSet =>
+      (e.toOpenPartialHomeomorph.symm (y.1, bs k) : TangentBundle (𝓡 n) S)) := by
+    intro k
+    exact (Bundle.Trivialization.continuousOn_symm_prodMk_left e (v := bs k)).comp_continuous
+      continuous_subtype_val (fun y => y.2)
+  let frame : ↥e.baseSet → Fin (n + 1) → EuclideanSpace ℝ (Fin (n + 1)) := fun y j =>
+    Fin.cases (y.1 : EuclideanSpace ℝ (Fin (n + 1)))
+      (fun k => (NormedSpace.fromTangentSpace (ι y.1)
+        ((tangentMap (𝓡 n) (𝓡 (n + 1)) ι
+          (e.toOpenPartialHomeomorph.symm (y.1, bs k))).2) :
+          EuclideanSpace ℝ (Fin (n + 1)))) j
+  have hframe : ∀ j : Fin (n + 1), Continuous (fun y : ↥e.baseSet => frame y j) := by
+    intro j
+    refine Fin.cases ?_ ?_ j
+    · change Continuous fun y : ↥e.baseSet => ((y.1 : S) : EuclideanSpace ℝ (Fin (n + 1)))
+      exact continuous_subtype_val.comp continuous_subtype_val
+    · intro k
+      refine (hsnd.comp (htmap.comp (hsec k))).congr (fun y => ?_)
+      rfl
+  have hM : Continuous (fun y : ↥e.baseSet => Matrix.of (fun i j => frame y j i)) := by
+    apply continuous_matrix
+    intro i j
+    exact (PiLp.continuous_apply 2 (fun _ : Fin (n + 1) => ℝ) i).comp (hframe j)
+  refine hM.matrix_det.congr fun y => ?_
+  have hentry : ∀ j : Fin (n + 1), frame y j =
+      Fin.cases (y.1 : EuclideanSpace ℝ (Fin (n + 1)))
+        (fun k => (NormedSpace.fromTangentSpace (ι y.1) (mfderiv (𝓡 n) (𝓡 (n + 1)) ι y.1
+          ((bs.map ((e.linearEquivAt ℝ y.1 y.2).symm)) k)) :
+            EuclideanSpace ℝ (Fin (n + 1)))) j := by
+    intro j
+    refine Fin.cases rfl ?_ j
+    intro k
+    change (NormedSpace.fromTangentSpace (ι y.1)
+        ((tangentMap (𝓡 n) (𝓡 (n + 1)) ι
+          (e.toOpenPartialHomeomorph.symm (y.1, bs k))).2) :
+          EuclideanSpace ℝ (Fin (n + 1))) =
+      (NormedSpace.fromTangentSpace (ι y.1) (mfderiv (𝓡 n) (𝓡 (n + 1)) ι y.1
+        ((bs.map ((e.linearEquivAt ℝ y.1 y.2).symm)) k)) :
+          EuclideanSpace ℝ (Fin (n + 1)))
+    rw [show (e.toOpenPartialHomeomorph.symm (y.1, bs k) : TangentBundle (𝓡 n) S) =
+        ⟨y.1, e.symm y.1 (bs k)⟩ from (Bundle.Trivialization.mk_symm e y.2 (bs k)).symm]
+    rw [show (tangentMap (𝓡 n) (𝓡 (n + 1)) ι
+        (⟨y.1, e.symm y.1 (bs k)⟩ : TangentBundle (𝓡 n) S)).2 =
+        mfderiv (𝓡 n) (𝓡 (n + 1)) ι y.1 (e.symm y.1 (bs k)) from rfl,
+      ← Bundle.Trivialization.linearEquivAt_symm_apply (R := ℝ) e y.1 y.2 (bs k),
+      Basis.map_apply]
+  change (Matrix.of (fun i j => frame y j i)).det =
+    sphereOutwardDeterminant n y.1 (bs.map ((e.linearEquivAt ℝ y.1 y.2).symm))
+  unfold sphereOutwardDeterminant
+  congr 1
+  ext i j
+  simp only [Matrix.of_apply]
+  rw [hentry j]
 
 theorem sphereOutwardOrientation_locallyConstant (n : ℕ) (hn : 1 ≤ n) :
     ∀ p x : sphere (0 : EuclideanSpace ℝ (Fin (n + 1))) 1,
@@ -331,8 +409,85 @@ theorem sphereOutwardOrientation_locallyConstant (n : ℕ) (hn : 1 ≤ n) :
               (sphereOutwardOrientation n y) =
             Orientation.map (Fin n) (tangentChartEquiv (𝓡 n) _ p x hx)
               (sphereOutwardOrientation n x) := by
+  intro p x hx
+  classical
   let _ := hn
-  sorry
+  let S : Type := sphere (0 : EuclideanSpace ℝ (Fin (n + 1))) 1
+  let e := trivializationAt (EuclideanSpace ℝ (Fin n)) (TangentSpace (𝓡 n)) p
+  let bs := (EuclideanSpace.basisFun (Fin n) ℝ).toBasis
+  let F : ↥e.baseSet → ℝ := fun y => sphereOutwardDeterminant n y.1
+    (bs.map ((tangentChartEquiv (𝓡 n) S p y.1 y.2).symm))
+  have hF : Continuous F := continuous_sphereOutwardDeterminant_chartFrame n p
+  have hne : ∀ y : ↥e.baseSet, F y ≠ 0 := fun y => sphereOutwardDeterminant_ne_zero n y.1 _
+  have key : ∀ y : ↥e.baseSet,
+      (0 < F y → Orientation.map (Fin n) (tangentChartEquiv (𝓡 n) S p y.1 y.2)
+        (sphereOutwardOrientation n y.1) = bs.orientation) ∧
+      (F y < 0 → Orientation.map (Fin n) (tangentChartEquiv (𝓡 n) S p y.1 y.2)
+        (sphereOutwardOrientation n y.1) = -bs.orientation) := by
+    intro y
+    have hmap : (bs.map ((tangentChartEquiv (𝓡 n) S p y.1 y.2).symm)).map
+        (tangentChartEquiv (𝓡 n) S p y.1 y.2) = bs := by
+      ext k
+      simp [Basis.map_apply]
+    constructor
+    · intro hpos
+      have hb : (bs.map ((tangentChartEquiv (𝓡 n) S p y.1 y.2).symm)).orientation =
+          sphereOutwardOrientation n y.1 :=
+        (sphereOutwardOrientation_characterization n y.1 _).mpr hpos
+      calc Orientation.map (Fin n) (tangentChartEquiv (𝓡 n) S p y.1 y.2)
+            (sphereOutwardOrientation n y.1)
+          = Orientation.map (Fin n) (tangentChartEquiv (𝓡 n) S p y.1 y.2)
+              ((bs.map ((tangentChartEquiv (𝓡 n) S p y.1 y.2).symm)).orientation) := by
+              rw [hb]
+        _ = ((bs.map ((tangentChartEquiv (𝓡 n) S p y.1 y.2).symm)).map
+              (tangentChartEquiv (𝓡 n) S p y.1 y.2)).orientation :=
+              (Basis.orientation_map _ _).symm
+        _ = bs.orientation := by rw [hmap]
+    · intro hneg
+      have hne' : sphereOutwardOrientation n y.1 ≠
+          (bs.map ((tangentChartEquiv (𝓡 n) S p y.1 y.2).symm)).orientation := by
+        intro h
+        exact absurd ((sphereOutwardOrientation_characterization n y.1 _).mp h.symm)
+          (not_lt.mpr hneg.le)
+      calc Orientation.map (Fin n) (tangentChartEquiv (𝓡 n) S p y.1 y.2)
+            (sphereOutwardOrientation n y.1)
+          = -Orientation.map (Fin n) (tangentChartEquiv (𝓡 n) S p y.1 y.2)
+              ((bs.map ((tangentChartEquiv (𝓡 n) S p y.1 y.2).symm)).orientation) := by
+              rw [show sphereOutwardOrientation n y.1 =
+                  -((bs.map ((tangentChartEquiv (𝓡 n) S p y.1 y.2).symm)).orientation) from
+                (Basis.orientation_ne_iff_eq_neg _ _).mp hne', Orientation.map_neg]
+        _ = -bs.orientation := by
+              rw [← Basis.orientation_map, hmap]
+  by_cases hpos : 0 < F ⟨x, hx⟩
+  · let T : Set ↥e.baseSet := {y | 0 < F y}
+    have hT : IsOpen T := isOpen_lt continuous_const hF
+    obtain ⟨U₀, hU₀open, hU₀pre⟩ := isOpen_induced_iff.mp hT
+    refine ⟨U₀ ∩ e.baseSet, hU₀open.inter e.open_baseSet, ⟨?_, hx⟩, fun y hy => hy.2, ?_⟩
+    · have hxT : (⟨x, hx⟩ : ↥e.baseSet) ∈ T := hpos
+      have : (⟨x, hx⟩ : ↥e.baseSet) ∈ Subtype.val ⁻¹' U₀ := by
+        rw [hU₀pre]
+        exact hxT
+      exact this
+    · intro y hy
+      have hyT : (⟨y, hy.2⟩ : ↥e.baseSet) ∈ T := by
+        have h : (⟨y, hy.2⟩ : ↥e.baseSet) ∈ Subtype.val ⁻¹' U₀ := hy.1
+        rwa [hU₀pre] at h
+      rw [(key ⟨y, hy.2⟩).1 hyT, (key ⟨x, hx⟩).1 hpos]
+  · have hnegx : F ⟨x, hx⟩ < 0 := lt_of_le_of_ne (le_of_not_gt hpos) (hne ⟨x, hx⟩)
+    let T : Set ↥e.baseSet := {y | F y < 0}
+    have hT : IsOpen T := isOpen_lt hF continuous_const
+    obtain ⟨U₀, hU₀open, hU₀pre⟩ := isOpen_induced_iff.mp hT
+    refine ⟨U₀ ∩ e.baseSet, hU₀open.inter e.open_baseSet, ⟨?_, hx⟩, fun y hy => hy.2, ?_⟩
+    · have hxT : (⟨x, hx⟩ : ↥e.baseSet) ∈ T := hnegx
+      have : (⟨x, hx⟩ : ↥e.baseSet) ∈ Subtype.val ⁻¹' U₀ := by
+        rw [hU₀pre]
+        exact hxT
+      exact this
+    · intro y hy
+      have hyT : (⟨y, hy.2⟩ : ↥e.baseSet) ∈ T := by
+        have h : (⟨y, hy.2⟩ : ↥e.baseSet) ∈ Subtype.val ⁻¹' U₀ := hy.1
+        rwa [hU₀pre] at h
+      rw [(key ⟨y, hy.2⟩).2 hyT, (key ⟨x, hx⟩).2 hnegx]
 
 theorem sphereOrientation_eq_of_characterization (n : ℕ)
     (o o' : ManifoldOrientation (𝓡 n) (sphere (0 : EuclideanSpace ℝ (Fin (n + 1))) 1) n)
