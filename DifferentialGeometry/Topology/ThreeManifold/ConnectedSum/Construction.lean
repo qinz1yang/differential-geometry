@@ -1,5 +1,6 @@
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.Collar
 import DifferentialGeometry.Topology.Manifold.ClosedOriented
+import DifferentialGeometry.Topology.Manifold.StereographicAntipodal
 import DifferentialGeometry.Topology.Manifold.SphereOrientation
 
 open scoped Manifold ContDiff
@@ -92,7 +93,8 @@ theorem exists_oriented_ball_chart (M : ConnectedClosedOrientedManifold.{u} 3) :
   sorry
 
 theorem exists_boundary_attachment : Nonempty BoundaryAttachment := by
-  sorry
+  exact ⟨Topology.Manifold.sphereAntipodalDiffeomorph,
+    sphereAntipodalDiffeomorph_preservesOrientation_opposite⟩
 
 theorem exists_smooth_connected_sum (M : ConnectedClosedOrientedManifold.{u} 3)
     (N : ConnectedClosedOrientedManifold.{v} 3)
