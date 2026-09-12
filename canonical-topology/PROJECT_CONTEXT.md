@@ -5,8 +5,11 @@ additive publication within the shared DifferentialGeometry Git repository. Its 
 library is `Poincare`; its sources retain the original mathematical namespaces.
 
 The source baseline is the recovered Chapter 35 commit
-`b45bfa009368c8f5f531e10f4f5280e90079d6ad`. This checkpoint includes the 74-module
-dependency closure of five extended/new local-homology and derivative modules.
+`b45bfa009368c8f5f531e10f4f5280e90079d6ad`. This checkpoint includes the 88-module
+dependency closure of six roots covering local homology, derivatives and the
+linear determinant-sign action. The prior 74 sources are unchanged. The expanded package passed its fresh
+14-added-leaf/root build and public consumer, linter and axiom gate in Slurm
+13781140, request `1789236250289124336-topology_checkpoint-db7e7dbe`.
 [provenance/SNAPSHOT.json](provenance/SNAPSHOT.json) records the exact source and
 configuration identity. It is not the full recovered Chapter 35 project.
 
