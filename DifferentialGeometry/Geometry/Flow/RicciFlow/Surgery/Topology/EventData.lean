@@ -1,6 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.Background
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CutCap
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.WeakLength
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.Metric
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.Basic
 import DifferentialGeometry.Geometry.Metric.Pullback.PartialDiffeomorph.OpenSubtype
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Basic
@@ -47,7 +48,57 @@ def standardCapInner (x v w : ThreeSpace) : ℝ :=
 theorem exists_unique_standardCapMetric :
     ∃! g : SmoothRiemannianMetric ThreeModel ThreeSpace,
       ∀ x v w : ThreeSpace, g.inner x v w = standardCapInner x v w := by
-  sorry
+  have hrho : ∀ r : ℝ, standardCapRho r = expNegInvGlue r := by
+    intro r
+    by_cases hr : r ≤ 0
+    · simp [standardCapRho, expNegInvGlue, hr]
+    · simp only [standardCapRho, expNegInvGlue, if_neg hr]
+      congr 1
+      ring
+  have heta : ∀ x : ℝ, standardCapEta x = Real.smoothTransition (1 - x) := by
+    intro x
+    simp only [standardCapEta, Real.smoothTransition, hrho, sub_sub_cancel]
+    rw [add_comm]
+  have hangle : ∀ r : ℝ,
+      standardCapAngle r = DifferentialGeometry.PDE.RicciFlow.StandardCap.angle r := by
+    intro r
+    have h1 : (∫ u in (0 : ℝ)..r, standardCapEta (u - standardCapA0)) =
+        (∫ u in (0 : ℝ)..r,
+          Real.smoothTransition
+            (DifferentialGeometry.PDE.RicciFlow.StandardCap.transitionEnd - u)) := by
+      apply intervalIntegral.integral_congr
+      intro u _
+      change standardCapEta (u - standardCapA0) =
+        Real.smoothTransition
+          (DifferentialGeometry.PDE.RicciFlow.StandardCap.transitionEnd - u)
+      rw [heta]
+      congr 1
+      simp only [standardCapA0,
+        DifferentialGeometry.PDE.RicciFlow.StandardCap.transitionStart,
+        DifferentialGeometry.PDE.RicciFlow.StandardCap.transitionEnd]
+      ring
+    simp only [standardCapAngle, DifferentialGeometry.PDE.RicciFlow.StandardCap.angle, one_div]
+    rw [h1]
+  have hwarp : ∀ r : ℝ,
+      standardCapWarp r = DifferentialGeometry.PDE.RicciFlow.StandardCap.warpingFunction r := by
+    intro r
+    simp only [standardCapWarp, DifferentialGeometry.PDE.RicciFlow.StandardCap.warpingFunction,
+      hangle]
+  have hinner : ∀ (x v w : ThreeSpace),
+      (DifferentialGeometry.PDE.RicciFlow.StandardCap.metric).inner x v w =
+        standardCapInner x v w := by
+    intro x v w
+    by_cases hx : x = 0
+    · subst x
+      rw [DifferentialGeometry.PDE.RicciFlow.StandardCap.metric_inner_zero, standardCapInner,
+        if_pos rfl]
+    · rw [DifferentialGeometry.PDE.RicciFlow.StandardCap.metric_inner_of_ne_zero hx,
+        standardCapInner, if_neg hx]
+      rw [DifferentialGeometry.Geometry.Riemannian.radialBilinearField_apply]
+      simp only [hwarp]
+      field_simp
+  exact ⟨DifferentialGeometry.PDE.RicciFlow.StandardCap.metric, hinner, fun g' hg' =>
+    SmoothRiemannianMetric.ext_inner fun x v w => (hg' x v w).trans (hinner x v w).symm⟩
 
 def standardCapMetric : SmoothRiemannianMetric ThreeModel ThreeSpace :=
   Classical.choose exists_unique_standardCapMetric
