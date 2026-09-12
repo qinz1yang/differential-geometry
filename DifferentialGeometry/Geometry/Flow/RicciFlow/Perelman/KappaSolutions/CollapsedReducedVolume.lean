@@ -18,7 +18,7 @@ open DifferentialGeometry.Geometry.Riemannian.BonnetMyers
 open DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.Integral.Measure
 open CanonicalNeighborhood
-open scoped Manifold ContDiff Topology
+open scoped Manifold ContDiff _root_.Topology
 
 private theorem reduced_volume_scale_factor {r theta : ℝ} (hr : 0 < r) (htheta : 0 < theta) :
     (4 * Real.pi * (theta * r ^ 2)) ^ (-(3 / 2 : ℝ)) * r ^ 3 =

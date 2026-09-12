@@ -15,7 +15,7 @@ open DifferentialGeometry.Tensor0SBundle
 open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Analysis.Calculus
 open DifferentialGeometry.Geometry.Riemannian.Exponential
-open scoped Manifold ContDiff Topology Interval
+open scoped Manifold ContDiff _root_.Topology Interval
 
 universe u uE uH
 
